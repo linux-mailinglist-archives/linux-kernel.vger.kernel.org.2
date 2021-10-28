@@ -2,3871 +2,850 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDB0A43E032
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 13:45:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF6F343E02E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 13:44:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230254AbhJ1Lrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 07:47:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49732 "EHLO
+        id S230169AbhJ1LrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 07:47:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230126AbhJ1Lrs (ORCPT
+        with ESMTP id S229578AbhJ1LrS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 07:47:48 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27E4AC061570
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 04:45:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=Yv7LacMjbRcA9PYpn7THzvuXIcKlHRnhnQ+C26b2n7g=; b=AExDNCRWDNwKoAgrEcN+FI+SBp
-        IHOXbEP38J7DCoc75kads5mGbJ1A574B7/Hes12pUrU1ptHsyM6/mAKhOWu9RUTY835SZQT/hkltx
-        QBGFWDUifgQMxpjr2f/pvMQ9qSy4TTMcgXRenPAvSHmvF+/phSOq+57ERSDNVTCechGkzWPXcBUPc
-        aEMqaBVm1ah9IWe7DOWTzq3qtpU3ZzkPOB7ajUi73KgboPlzT7tpdAIa53gwkJ7FlYzdCaAQxx5oE
-        ZqnQIMZX7+kuUSFEMwqTeZ/w+6s3yFz/OyCf8IdOOdme/FEEEXrkOVvCKz2jpNVlf8EFsjIg5Mflf
-        NmF38dbg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mg3pB-000jt1-FN; Thu, 28 Oct 2021 11:44:09 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        Thu, 28 Oct 2021 07:47:18 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C9AAC061570;
+        Thu, 28 Oct 2021 04:44:51 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BFE2F3001BF;
-        Thu, 28 Oct 2021 13:44:00 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 9E42E2C101E69; Thu, 28 Oct 2021 13:44:00 +0200 (CEST)
-Date:   Thu, 28 Oct 2021 13:44:00 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     x86@kernel.org, andrew.cooper3@citrix.com,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     keescook@chromium.org, linux-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Will Deacon <will@kernel.org>, hjl.tools@gmail.com
-Subject: [RFC][PATCH] x86: Add straight-line-speculation mitigation
-Message-ID: <YXqNAJI3NJz3SQue@hirez.programming.kicks-ass.net>
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hg3dF5L70z4xYy;
+        Thu, 28 Oct 2021 22:44:49 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1635421489;
+        bh=Q4LJuj+ZIaDBE3+tOp7wjA34uTDuZcXbWzJASX0gGIk=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Hji9kz1O7IPiBXFWbVeBvcPuCNxVbCuZTmIlkfTdiD6m905w2ZgpR6b+6dnOAhlUO
+         muDI9OPquZVKrA+Q8a27UNXcE02Du9LXONawdWQFM9AW2/3PHRxNSil+RWec/Dcgha
+         dBAVHUgzpwhXqPRlkJjTfJ0nbGqBR1Mzgs8K1iH/caDtqvxl2p2tgWSm4cvLAWhmyt
+         64yFX00xeW1Y46jXtmdKijzhNG3A5fhKcVcHURIlnWmCdNIF+EpoDibDUDHoNG7Gfh
+         hhZvHSZhFYX2kd7883cctPJUXjqJ73rXew6eUJ25/UUOrBDqTHJacSBkryNSSdYlv+
+         uuE8MkoDeerHw==
+Date:   Thu, 28 Oct 2021 22:44:48 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: Tree for Oct 28
+Message-ID: <20211028224448.755b2ff0@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: multipart/signed; boundary="Sig_/5xDarADUuz+qZY9FZuZY9T/";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+--Sig_/5xDarADUuz+qZY9FZuZY9T/
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-This little patch makes use of an upcomming GCC feature to mitigate
-straight-line-speculation for x86:
+Hi all,
 
-  https://gcc.gnu.org/bugzilla/show_bug.cgi?id=102952
+Changes since 20211027:
 
-It's built tested on x86_64-allyesconfig using GCC-12+patch and GCC-11.
-It's also been boot tested on x86_64-defconfig+kvm_guest.config using
-GCC-12+patch.
+New trees: drm-intel-gt, unicode
 
-Enjoy!
+The btrfs tree still had its build failure so I marked BTRFS_FS as BROKEN.
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- arch/x86/Kconfig                              |   12 +++++
- arch/x86/Makefile                             |    4 +
- arch/x86/crypto/aegis128-aesni-asm.S          |   48 +++++++++++-----------
- arch/x86/crypto/aes_ctrby8_avx-x86_64.S       |    2 
- arch/x86/crypto/aesni-intel_asm.S             |   56 +++++++++++++-------------
- arch/x86/crypto/aesni-intel_avx-x86_64.S      |   40 +++++++++---------
- arch/x86/crypto/blake2s-core.S                |    4 -
- arch/x86/crypto/blowfish-x86_64-asm_64.S      |   12 ++---
- arch/x86/crypto/camellia-aesni-avx-asm_64.S   |   14 +++---
- arch/x86/crypto/camellia-aesni-avx2-asm_64.S  |   14 +++---
- arch/x86/crypto/camellia-x86_64-asm_64.S      |   12 ++---
- arch/x86/crypto/cast5-avx-x86_64-asm_64.S     |   12 ++---
- arch/x86/crypto/cast6-avx-x86_64-asm_64.S     |   10 ++--
- arch/x86/crypto/chacha-avx2-x86_64.S          |    6 +-
- arch/x86/crypto/chacha-avx512vl-x86_64.S      |    6 +-
- arch/x86/crypto/chacha-ssse3-x86_64.S         |    8 +--
- arch/x86/crypto/crc32-pclmul_asm.S            |    2 
- arch/x86/crypto/crc32c-pcl-intel-asm_64.S     |    2 
- arch/x86/crypto/crct10dif-pcl-asm_64.S        |    2 
- arch/x86/crypto/des3_ede-asm_64.S             |    4 -
- arch/x86/crypto/ghash-clmulni-intel_asm.S     |    6 +-
- arch/x86/crypto/nh-avx2-x86_64.S              |    2 
- arch/x86/crypto/nh-sse2-x86_64.S              |    2 
- arch/x86/crypto/poly1305-x86_64-cryptogams.pl |   38 ++++++++---------
- arch/x86/crypto/serpent-avx-x86_64-asm_64.S   |   10 ++--
- arch/x86/crypto/serpent-avx2-asm_64.S         |   10 ++--
- arch/x86/crypto/serpent-sse2-i586-asm_32.S    |    6 +-
- arch/x86/crypto/serpent-sse2-x86_64-asm_64.S  |    6 +-
- arch/x86/crypto/sha1_avx2_x86_64_asm.S        |    2 
- arch/x86/crypto/sha1_ni_asm.S                 |    2 
- arch/x86/crypto/sha1_ssse3_asm.S              |    2 
- arch/x86/crypto/sha256-avx-asm.S              |    2 
- arch/x86/crypto/sha256-avx2-asm.S             |    2 
- arch/x86/crypto/sha256-ssse3-asm.S            |    2 
- arch/x86/crypto/sha256_ni_asm.S               |    2 
- arch/x86/crypto/sha512-avx-asm.S              |    2 
- arch/x86/crypto/sha512-avx2-asm.S             |    2 
- arch/x86/crypto/sha512-ssse3-asm.S            |    2 
- arch/x86/crypto/sm4-aesni-avx-asm_64.S        |   12 ++---
- arch/x86/crypto/sm4-aesni-avx2-asm_64.S       |    8 +--
- arch/x86/crypto/twofish-avx-x86_64-asm_64.S   |   10 ++--
- arch/x86/crypto/twofish-i586-asm_32.S         |    4 -
- arch/x86/crypto/twofish-x86_64-asm_64-3way.S  |    6 +-
- arch/x86/crypto/twofish-x86_64-asm_64.S       |    4 -
- arch/x86/entry/entry_32.S                     |    2 
- arch/x86/entry/entry_64.S                     |   12 ++---
- arch/x86/entry/thunk_32.S                     |    2 
- arch/x86/entry/thunk_64.S                     |    2 
- arch/x86/entry/vdso/vdso32/system_call.S      |    2 
- arch/x86/entry/vdso/vsgx.S                    |    2 
- arch/x86/entry/vsyscall/vsyscall_emu_64.S     |    6 +-
- arch/x86/include/asm/linkage.h                |   16 +++++++
- arch/x86/include/asm/paravirt.h               |    2 
- arch/x86/include/asm/qspinlock_paravirt.h     |    4 -
- arch/x86/include/asm/static_call.h            |    2 
- arch/x86/kernel/acpi/wakeup_32.S              |    6 +-
- arch/x86/kernel/acpi/wakeup_64.S              |    1 
- arch/x86/kernel/alternative.c                 |    2 
- arch/x86/kernel/ftrace.c                      |    2 
- arch/x86/kernel/ftrace_32.S                   |    6 +-
- arch/x86/kernel/ftrace_64.S                   |   10 ++--
- arch/x86/kernel/head_32.S                     |    2 
- arch/x86/kernel/head_64.S                     |    1 
- arch/x86/kernel/irqflags.S                    |    2 
- arch/x86/kernel/paravirt.c                    |    2 
- arch/x86/kernel/relocate_kernel_32.S          |   10 ++--
- arch/x86/kernel/relocate_kernel_64.S          |   10 ++--
- arch/x86/kernel/sev_verify_cbit.S             |    2 
- arch/x86/kernel/static_call.c                 |    5 +-
- arch/x86/kernel/verify_cpu.S                  |    4 -
- arch/x86/kvm/emulate.c                        |    4 -
- arch/x86/kvm/svm/vmenter.S                    |    4 -
- arch/x86/kvm/vmx/vmenter.S                    |   14 +++---
- arch/x86/lib/atomic64_386_32.S                |    2 
- arch/x86/lib/atomic64_cx8_32.S                |   16 +++----
- arch/x86/lib/checksum_32.S                    |    8 +--
- arch/x86/lib/clear_page_64.S                  |    6 +-
- arch/x86/lib/cmpxchg16b_emu.S                 |    4 -
- arch/x86/lib/cmpxchg8b_emu.S                  |    4 -
- arch/x86/lib/copy_mc_64.S                     |    6 +-
- arch/x86/lib/copy_page_64.S                   |    4 -
- arch/x86/lib/copy_user_64.S                   |   10 ++--
- arch/x86/lib/csum-copy_64.S                   |    2 
- arch/x86/lib/error-inject.c                   |    3 -
- arch/x86/lib/getuser.S                        |   22 +++++-----
- arch/x86/lib/hweight.S                        |    6 +-
- arch/x86/lib/iomap_copy_64.S                  |    2 
- arch/x86/lib/memcpy_64.S                      |   12 ++---
- arch/x86/lib/memmove_64.S                     |    4 -
- arch/x86/lib/memset_64.S                      |    6 +-
- arch/x86/lib/msr-reg.S                        |    4 -
- arch/x86/lib/putuser.S                        |    6 +-
- arch/x86/lib/retpoline.S                      |    6 +-
- arch/x86/math-emu/div_Xsig.S                  |    2 
- arch/x86/math-emu/div_small.S                 |    2 
- arch/x86/math-emu/mul_Xsig.S                  |    6 +-
- arch/x86/math-emu/polynom_Xsig.S              |    2 
- arch/x86/math-emu/reg_norm.S                  |    6 +-
- arch/x86/math-emu/reg_round.S                 |    2 
- arch/x86/math-emu/reg_u_add.S                 |    2 
- arch/x86/math-emu/reg_u_div.S                 |    2 
- arch/x86/math-emu/reg_u_mul.S                 |    2 
- arch/x86/math-emu/reg_u_sub.S                 |    2 
- arch/x86/math-emu/round_Xsig.S                |    4 -
- arch/x86/math-emu/shr_Xsig.S                  |    8 +--
- arch/x86/math-emu/wm_shrx.S                   |   16 +++----
- arch/x86/mm/mem_encrypt_boot.S                |    4 -
- arch/x86/platform/efi/efi_stub_32.S           |    2 
- arch/x86/platform/efi/efi_stub_64.S           |    2 
- arch/x86/platform/efi/efi_thunk_64.S          |    2 
- arch/x86/platform/olpc/xo1-wakeup.S           |    6 +-
- arch/x86/power/hibernate_asm_32.S             |    4 -
- arch/x86/power/hibernate_asm_64.S             |    6 +-
- arch/x86/um/checksum_32.S                     |    4 -
- arch/x86/um/setjmp_32.S                       |    2 
- arch/x86/um/setjmp_64.S                       |    2 
- arch/x86/xen/xen-asm.S                        |   12 ++---
- arch/x86/xen/xen-head.S                       |    2 
- samples/ftrace/ftrace-direct-modify.c         |    4 -
- samples/ftrace/ftrace-direct-too.c            |    2 
- samples/ftrace/ftrace-direct.c                |    2 
- scripts/Makefile.lib                          |    3 -
- tools/objtool/arch/x86/decode.c               |   13 ++++--
- tools/objtool/builtin-check.c                 |    3 -
- tools/objtool/check.c                         |   14 ++++++
- tools/objtool/include/objtool/arch.h          |    1 
- tools/objtool/include/objtool/builtin.h       |    2 
- 127 files changed, 447 insertions(+), 387 deletions(-)
+The net-next tree gained a conflict and a semantic conflict against the
+rdma tree.
 
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -468,6 +468,18 @@ config RETPOLINE
- 	  branches. Requires a compiler with -mindirect-branch=thunk-extern
- 	  support for full protection. The kernel may run slower.
- 
-+config CC_HAS_SLS
-+	def_bool $(cc-option,-mharden-sls=all)
-+
-+config SLS
-+	bool "Mitigate Straight-Line-Speculation"
-+	depends on CC_HAS_SLS
-+	default y
-+	help
-+	  Compile the kernel with straight-line-speculation options to guard
-+          against straight line speculation. The kernel image might be slightly
-+          larger.
-+
- config X86_CPU_RESCTRL
- 	bool "x86 CPU resource control support"
- 	depends on X86 && (CPU_SUP_INTEL || CPU_SUP_AMD)
---- a/arch/x86/Makefile
-+++ b/arch/x86/Makefile
-@@ -179,6 +179,10 @@ ifdef CONFIG_RETPOLINE
-   endif
- endif
- 
-+ifdef CONFIG_SLS
-+  KBUILD_CFLAGS += -mharden-sls=all
-+endif
-+
- KBUILD_LDFLAGS += -m elf_$(UTS_MACHINE)
- 
- ifdef CONFIG_LTO_CLANG
---- a/arch/x86/crypto/aegis128-aesni-asm.S
-+++ b/arch/x86/crypto/aegis128-aesni-asm.S
-@@ -122,7 +122,7 @@ SYM_FUNC_START_LOCAL(__load_partial)
- 	pxor T0, MSG
- 
- .Lld_partial_8:
--	ret
-+	RET
- SYM_FUNC_END(__load_partial)
- 
- /*
-@@ -180,7 +180,7 @@ SYM_FUNC_START_LOCAL(__store_partial)
- 	mov %r10b, (%r9)
- 
- .Lst_partial_1:
--	ret
-+	RET
- SYM_FUNC_END(__store_partial)
- 
- /*
-@@ -225,7 +225,7 @@ SYM_FUNC_START(crypto_aegis128_aesni_ini
- 	movdqu STATE4, 0x40(STATEP)
- 
- 	FRAME_END
--	ret
-+	RET
- SYM_FUNC_END(crypto_aegis128_aesni_init)
- 
- /*
-@@ -337,7 +337,7 @@ SYM_FUNC_START(crypto_aegis128_aesni_ad)
- 	movdqu STATE3, 0x30(STATEP)
- 	movdqu STATE4, 0x40(STATEP)
- 	FRAME_END
--	ret
-+	RET
- 
- .Lad_out_1:
- 	movdqu STATE4, 0x00(STATEP)
-@@ -346,7 +346,7 @@ SYM_FUNC_START(crypto_aegis128_aesni_ad)
- 	movdqu STATE2, 0x30(STATEP)
- 	movdqu STATE3, 0x40(STATEP)
- 	FRAME_END
--	ret
-+	RET
- 
- .Lad_out_2:
- 	movdqu STATE3, 0x00(STATEP)
-@@ -355,7 +355,7 @@ SYM_FUNC_START(crypto_aegis128_aesni_ad)
- 	movdqu STATE1, 0x30(STATEP)
- 	movdqu STATE2, 0x40(STATEP)
- 	FRAME_END
--	ret
-+	RET
- 
- .Lad_out_3:
- 	movdqu STATE2, 0x00(STATEP)
-@@ -364,7 +364,7 @@ SYM_FUNC_START(crypto_aegis128_aesni_ad)
- 	movdqu STATE0, 0x30(STATEP)
- 	movdqu STATE1, 0x40(STATEP)
- 	FRAME_END
--	ret
-+	RET
- 
- .Lad_out_4:
- 	movdqu STATE1, 0x00(STATEP)
-@@ -373,11 +373,11 @@ SYM_FUNC_START(crypto_aegis128_aesni_ad)
- 	movdqu STATE4, 0x30(STATEP)
- 	movdqu STATE0, 0x40(STATEP)
- 	FRAME_END
--	ret
-+	RET
- 
- .Lad_out:
- 	FRAME_END
--	ret
-+	RET
- SYM_FUNC_END(crypto_aegis128_aesni_ad)
- 
- .macro encrypt_block a s0 s1 s2 s3 s4 i
-@@ -452,7 +452,7 @@ SYM_FUNC_START(crypto_aegis128_aesni_enc
- 	movdqu STATE2, 0x30(STATEP)
- 	movdqu STATE3, 0x40(STATEP)
- 	FRAME_END
--	ret
-+	RET
- 
- .Lenc_out_1:
- 	movdqu STATE3, 0x00(STATEP)
-@@ -461,7 +461,7 @@ SYM_FUNC_START(crypto_aegis128_aesni_enc
- 	movdqu STATE1, 0x30(STATEP)
- 	movdqu STATE2, 0x40(STATEP)
- 	FRAME_END
--	ret
-+	RET
- 
- .Lenc_out_2:
- 	movdqu STATE2, 0x00(STATEP)
-@@ -470,7 +470,7 @@ SYM_FUNC_START(crypto_aegis128_aesni_enc
- 	movdqu STATE0, 0x30(STATEP)
- 	movdqu STATE1, 0x40(STATEP)
- 	FRAME_END
--	ret
-+	RET
- 
- .Lenc_out_3:
- 	movdqu STATE1, 0x00(STATEP)
-@@ -479,7 +479,7 @@ SYM_FUNC_START(crypto_aegis128_aesni_enc
- 	movdqu STATE4, 0x30(STATEP)
- 	movdqu STATE0, 0x40(STATEP)
- 	FRAME_END
--	ret
-+	RET
- 
- .Lenc_out_4:
- 	movdqu STATE0, 0x00(STATEP)
-@@ -488,11 +488,11 @@ SYM_FUNC_START(crypto_aegis128_aesni_enc
- 	movdqu STATE3, 0x30(STATEP)
- 	movdqu STATE4, 0x40(STATEP)
- 	FRAME_END
--	ret
-+	RET
- 
- .Lenc_out:
- 	FRAME_END
--	ret
-+	RET
- SYM_FUNC_END(crypto_aegis128_aesni_enc)
- 
- /*
-@@ -532,7 +532,7 @@ SYM_FUNC_START(crypto_aegis128_aesni_enc
- 	movdqu STATE3, 0x40(STATEP)
- 
- 	FRAME_END
--	ret
-+	RET
- SYM_FUNC_END(crypto_aegis128_aesni_enc_tail)
- 
- .macro decrypt_block a s0 s1 s2 s3 s4 i
-@@ -606,7 +606,7 @@ SYM_FUNC_START(crypto_aegis128_aesni_dec
- 	movdqu STATE2, 0x30(STATEP)
- 	movdqu STATE3, 0x40(STATEP)
- 	FRAME_END
--	ret
-+	RET
- 
- .Ldec_out_1:
- 	movdqu STATE3, 0x00(STATEP)
-@@ -615,7 +615,7 @@ SYM_FUNC_START(crypto_aegis128_aesni_dec
- 	movdqu STATE1, 0x30(STATEP)
- 	movdqu STATE2, 0x40(STATEP)
- 	FRAME_END
--	ret
-+	RET
- 
- .Ldec_out_2:
- 	movdqu STATE2, 0x00(STATEP)
-@@ -624,7 +624,7 @@ SYM_FUNC_START(crypto_aegis128_aesni_dec
- 	movdqu STATE0, 0x30(STATEP)
- 	movdqu STATE1, 0x40(STATEP)
- 	FRAME_END
--	ret
-+	RET
- 
- .Ldec_out_3:
- 	movdqu STATE1, 0x00(STATEP)
-@@ -633,7 +633,7 @@ SYM_FUNC_START(crypto_aegis128_aesni_dec
- 	movdqu STATE4, 0x30(STATEP)
- 	movdqu STATE0, 0x40(STATEP)
- 	FRAME_END
--	ret
-+	RET
- 
- .Ldec_out_4:
- 	movdqu STATE0, 0x00(STATEP)
-@@ -642,11 +642,11 @@ SYM_FUNC_START(crypto_aegis128_aesni_dec
- 	movdqu STATE3, 0x30(STATEP)
- 	movdqu STATE4, 0x40(STATEP)
- 	FRAME_END
--	ret
-+	RET
- 
- .Ldec_out:
- 	FRAME_END
--	ret
-+	RET
- SYM_FUNC_END(crypto_aegis128_aesni_dec)
- 
- /*
-@@ -696,7 +696,7 @@ SYM_FUNC_START(crypto_aegis128_aesni_dec
- 	movdqu STATE3, 0x40(STATEP)
- 
- 	FRAME_END
--	ret
-+	RET
- SYM_FUNC_END(crypto_aegis128_aesni_dec_tail)
- 
- /*
-@@ -743,5 +743,5 @@ SYM_FUNC_START(crypto_aegis128_aesni_fin
- 	movdqu MSG, (%rsi)
- 
- 	FRAME_END
--	ret
-+	RET
- SYM_FUNC_END(crypto_aegis128_aesni_final)
---- a/arch/x86/crypto/aes_ctrby8_avx-x86_64.S
-+++ b/arch/x86/crypto/aes_ctrby8_avx-x86_64.S
-@@ -525,7 +525,7 @@
- 	/* return updated IV */
- 	vpshufb	xbyteswap, xcounter, xcounter
- 	vmovdqu	xcounter, (p_iv)
--	ret
-+	RET
- .endm
- 
- /*
---- a/arch/x86/crypto/aesni-intel_asm.S
-+++ b/arch/x86/crypto/aesni-intel_asm.S
-@@ -1594,7 +1594,7 @@ SYM_FUNC_START(aesni_gcm_dec)
- 	GCM_ENC_DEC dec
- 	GCM_COMPLETE arg10, arg11
- 	FUNC_RESTORE
--	ret
-+	RET
- SYM_FUNC_END(aesni_gcm_dec)
- 
- 
-@@ -1683,7 +1683,7 @@ SYM_FUNC_START(aesni_gcm_enc)
- 
- 	GCM_COMPLETE arg10, arg11
- 	FUNC_RESTORE
--	ret
-+	RET
- SYM_FUNC_END(aesni_gcm_enc)
- 
- /*****************************************************************************
-@@ -1701,7 +1701,7 @@ SYM_FUNC_START(aesni_gcm_init)
- 	FUNC_SAVE
- 	GCM_INIT %arg3, %arg4,%arg5, %arg6
- 	FUNC_RESTORE
--	ret
-+	RET
- SYM_FUNC_END(aesni_gcm_init)
- 
- /*****************************************************************************
-@@ -1716,7 +1716,7 @@ SYM_FUNC_START(aesni_gcm_enc_update)
- 	FUNC_SAVE
- 	GCM_ENC_DEC enc
- 	FUNC_RESTORE
--	ret
-+	RET
- SYM_FUNC_END(aesni_gcm_enc_update)
- 
- /*****************************************************************************
-@@ -1731,7 +1731,7 @@ SYM_FUNC_START(aesni_gcm_dec_update)
- 	FUNC_SAVE
- 	GCM_ENC_DEC dec
- 	FUNC_RESTORE
--	ret
-+	RET
- SYM_FUNC_END(aesni_gcm_dec_update)
- 
- /*****************************************************************************
-@@ -1746,7 +1746,7 @@ SYM_FUNC_START(aesni_gcm_finalize)
- 	FUNC_SAVE
- 	GCM_COMPLETE %arg3 %arg4
- 	FUNC_RESTORE
--	ret
-+	RET
- SYM_FUNC_END(aesni_gcm_finalize)
- 
- #endif
-@@ -1762,7 +1762,7 @@ SYM_FUNC_START_LOCAL(_key_expansion_256a
- 	pxor %xmm1, %xmm0
- 	movaps %xmm0, (TKEYP)
- 	add $0x10, TKEYP
--	ret
-+	RET
- SYM_FUNC_END(_key_expansion_256a)
- SYM_FUNC_END_ALIAS(_key_expansion_128)
- 
-@@ -1787,7 +1787,7 @@ SYM_FUNC_START_LOCAL(_key_expansion_192a
- 	shufps $0b01001110, %xmm2, %xmm1
- 	movaps %xmm1, 0x10(TKEYP)
- 	add $0x20, TKEYP
--	ret
-+	RET
- SYM_FUNC_END(_key_expansion_192a)
- 
- SYM_FUNC_START_LOCAL(_key_expansion_192b)
-@@ -1806,7 +1806,7 @@ SYM_FUNC_START_LOCAL(_key_expansion_192b
- 
- 	movaps %xmm0, (TKEYP)
- 	add $0x10, TKEYP
--	ret
-+	RET
- SYM_FUNC_END(_key_expansion_192b)
- 
- SYM_FUNC_START_LOCAL(_key_expansion_256b)
-@@ -1818,7 +1818,7 @@ SYM_FUNC_START_LOCAL(_key_expansion_256b
- 	pxor %xmm1, %xmm2
- 	movaps %xmm2, (TKEYP)
- 	add $0x10, TKEYP
--	ret
-+	RET
- SYM_FUNC_END(_key_expansion_256b)
- 
- /*
-@@ -1933,7 +1933,7 @@ SYM_FUNC_START(aesni_set_key)
- 	popl KEYP
- #endif
- 	FRAME_END
--	ret
-+	RET
- SYM_FUNC_END(aesni_set_key)
- 
- /*
-@@ -1957,7 +1957,7 @@ SYM_FUNC_START(aesni_enc)
- 	popl KEYP
- #endif
- 	FRAME_END
--	ret
-+	RET
- SYM_FUNC_END(aesni_enc)
- 
- /*
-@@ -2014,7 +2014,7 @@ SYM_FUNC_START_LOCAL(_aesni_enc1)
- 	aesenc KEY, STATE
- 	movaps 0x70(TKEYP), KEY
- 	aesenclast KEY, STATE
--	ret
-+	RET
- SYM_FUNC_END(_aesni_enc1)
- 
- /*
-@@ -2122,7 +2122,7 @@ SYM_FUNC_START_LOCAL(_aesni_enc4)
- 	aesenclast KEY, STATE2
- 	aesenclast KEY, STATE3
- 	aesenclast KEY, STATE4
--	ret
-+	RET
- SYM_FUNC_END(_aesni_enc4)
- 
- /*
-@@ -2147,7 +2147,7 @@ SYM_FUNC_START(aesni_dec)
- 	popl KEYP
- #endif
- 	FRAME_END
--	ret
-+	RET
- SYM_FUNC_END(aesni_dec)
- 
- /*
-@@ -2204,7 +2204,7 @@ SYM_FUNC_START_LOCAL(_aesni_dec1)
- 	aesdec KEY, STATE
- 	movaps 0x70(TKEYP), KEY
- 	aesdeclast KEY, STATE
--	ret
-+	RET
- SYM_FUNC_END(_aesni_dec1)
- 
- /*
-@@ -2312,7 +2312,7 @@ SYM_FUNC_START_LOCAL(_aesni_dec4)
- 	aesdeclast KEY, STATE2
- 	aesdeclast KEY, STATE3
- 	aesdeclast KEY, STATE4
--	ret
-+	RET
- SYM_FUNC_END(_aesni_dec4)
- 
- /*
-@@ -2372,7 +2372,7 @@ SYM_FUNC_START(aesni_ecb_enc)
- 	popl LEN
- #endif
- 	FRAME_END
--	ret
-+	RET
- SYM_FUNC_END(aesni_ecb_enc)
- 
- /*
-@@ -2433,7 +2433,7 @@ SYM_FUNC_START(aesni_ecb_dec)
- 	popl LEN
- #endif
- 	FRAME_END
--	ret
-+	RET
- SYM_FUNC_END(aesni_ecb_dec)
- 
- /*
-@@ -2477,7 +2477,7 @@ SYM_FUNC_START(aesni_cbc_enc)
- 	popl IVP
- #endif
- 	FRAME_END
--	ret
-+	RET
- SYM_FUNC_END(aesni_cbc_enc)
- 
- /*
-@@ -2570,7 +2570,7 @@ SYM_FUNC_START(aesni_cbc_dec)
- 	popl IVP
- #endif
- 	FRAME_END
--	ret
-+	RET
- SYM_FUNC_END(aesni_cbc_dec)
- 
- /*
-@@ -2627,7 +2627,7 @@ SYM_FUNC_START(aesni_cts_cbc_enc)
- 	popl IVP
- #endif
- 	FRAME_END
--	ret
-+	RET
- SYM_FUNC_END(aesni_cts_cbc_enc)
- 
- /*
-@@ -2688,7 +2688,7 @@ SYM_FUNC_START(aesni_cts_cbc_dec)
- 	popl IVP
- #endif
- 	FRAME_END
--	ret
-+	RET
- SYM_FUNC_END(aesni_cts_cbc_dec)
- 
- .pushsection .rodata
-@@ -2725,7 +2725,7 @@ SYM_FUNC_START_LOCAL(_aesni_inc_init)
- 	mov $1, TCTR_LOW
- 	movq TCTR_LOW, INC
- 	movq CTR, TCTR_LOW
--	ret
-+	RET
- SYM_FUNC_END(_aesni_inc_init)
- 
- /*
-@@ -2753,7 +2753,7 @@ SYM_FUNC_START_LOCAL(_aesni_inc)
- .Linc_low:
- 	movaps CTR, IV
- 	pshufb BSWAP_MASK, IV
--	ret
-+	RET
- SYM_FUNC_END(_aesni_inc)
- 
- /*
-@@ -2816,7 +2816,7 @@ SYM_FUNC_START(aesni_ctr_enc)
- 	movups IV, (IVP)
- .Lctr_enc_just_ret:
- 	FRAME_END
--	ret
-+	RET
- SYM_FUNC_END(aesni_ctr_enc)
- 
- #endif
-@@ -2932,7 +2932,7 @@ SYM_FUNC_START(aesni_xts_encrypt)
- 	popl IVP
- #endif
- 	FRAME_END
--	ret
-+	RET
- 
- .Lxts_enc_1x:
- 	add $64, LEN
-@@ -3092,7 +3092,7 @@ SYM_FUNC_START(aesni_xts_decrypt)
- 	popl IVP
- #endif
- 	FRAME_END
--	ret
-+	RET
- 
- .Lxts_dec_1x:
- 	add $64, LEN
---- a/arch/x86/crypto/aesni-intel_avx-x86_64.S
-+++ b/arch/x86/crypto/aesni-intel_avx-x86_64.S
-@@ -1767,7 +1767,7 @@ SYM_FUNC_START(aesni_gcm_init_avx_gen2)
-         FUNC_SAVE
-         INIT GHASH_MUL_AVX, PRECOMPUTE_AVX
-         FUNC_RESTORE
--        ret
-+        RET
- SYM_FUNC_END(aesni_gcm_init_avx_gen2)
- 
- ###############################################################################
-@@ -1788,15 +1788,15 @@ SYM_FUNC_START(aesni_gcm_enc_update_avx_
-         # must be 192
-         GCM_ENC_DEC INITIAL_BLOCKS_AVX, GHASH_8_ENCRYPT_8_PARALLEL_AVX, GHASH_LAST_8_AVX, GHASH_MUL_AVX, ENC, 11
-         FUNC_RESTORE
--        ret
-+        RET
- key_128_enc_update:
-         GCM_ENC_DEC INITIAL_BLOCKS_AVX, GHASH_8_ENCRYPT_8_PARALLEL_AVX, GHASH_LAST_8_AVX, GHASH_MUL_AVX, ENC, 9
-         FUNC_RESTORE
--        ret
-+        RET
- key_256_enc_update:
-         GCM_ENC_DEC INITIAL_BLOCKS_AVX, GHASH_8_ENCRYPT_8_PARALLEL_AVX, GHASH_LAST_8_AVX, GHASH_MUL_AVX, ENC, 13
-         FUNC_RESTORE
--        ret
-+        RET
- SYM_FUNC_END(aesni_gcm_enc_update_avx_gen2)
- 
- ###############################################################################
-@@ -1817,15 +1817,15 @@ SYM_FUNC_START(aesni_gcm_dec_update_avx_
-         # must be 192
-         GCM_ENC_DEC INITIAL_BLOCKS_AVX, GHASH_8_ENCRYPT_8_PARALLEL_AVX, GHASH_LAST_8_AVX, GHASH_MUL_AVX, DEC, 11
-         FUNC_RESTORE
--        ret
-+        RET
- key_128_dec_update:
-         GCM_ENC_DEC INITIAL_BLOCKS_AVX, GHASH_8_ENCRYPT_8_PARALLEL_AVX, GHASH_LAST_8_AVX, GHASH_MUL_AVX, DEC, 9
-         FUNC_RESTORE
--        ret
-+        RET
- key_256_dec_update:
-         GCM_ENC_DEC INITIAL_BLOCKS_AVX, GHASH_8_ENCRYPT_8_PARALLEL_AVX, GHASH_LAST_8_AVX, GHASH_MUL_AVX, DEC, 13
-         FUNC_RESTORE
--        ret
-+        RET
- SYM_FUNC_END(aesni_gcm_dec_update_avx_gen2)
- 
- ###############################################################################
-@@ -1846,15 +1846,15 @@ SYM_FUNC_START(aesni_gcm_finalize_avx_ge
-         # must be 192
-         GCM_COMPLETE GHASH_MUL_AVX, 11, arg3, arg4
-         FUNC_RESTORE
--        ret
-+        RET
- key_128_finalize:
-         GCM_COMPLETE GHASH_MUL_AVX, 9, arg3, arg4
-         FUNC_RESTORE
--        ret
-+        RET
- key_256_finalize:
-         GCM_COMPLETE GHASH_MUL_AVX, 13, arg3, arg4
-         FUNC_RESTORE
--        ret
-+        RET
- SYM_FUNC_END(aesni_gcm_finalize_avx_gen2)
- 
- ###############################################################################
-@@ -2735,7 +2735,7 @@ SYM_FUNC_START(aesni_gcm_init_avx_gen4)
-         FUNC_SAVE
-         INIT GHASH_MUL_AVX2, PRECOMPUTE_AVX2
-         FUNC_RESTORE
--        ret
-+        RET
- SYM_FUNC_END(aesni_gcm_init_avx_gen4)
- 
- ###############################################################################
-@@ -2756,15 +2756,15 @@ SYM_FUNC_START(aesni_gcm_enc_update_avx_
-         # must be 192
-         GCM_ENC_DEC INITIAL_BLOCKS_AVX2, GHASH_8_ENCRYPT_8_PARALLEL_AVX2, GHASH_LAST_8_AVX2, GHASH_MUL_AVX2, ENC, 11
-         FUNC_RESTORE
--	ret
-+	RET
- key_128_enc_update4:
-         GCM_ENC_DEC INITIAL_BLOCKS_AVX2, GHASH_8_ENCRYPT_8_PARALLEL_AVX2, GHASH_LAST_8_AVX2, GHASH_MUL_AVX2, ENC, 9
-         FUNC_RESTORE
--	ret
-+	RET
- key_256_enc_update4:
-         GCM_ENC_DEC INITIAL_BLOCKS_AVX2, GHASH_8_ENCRYPT_8_PARALLEL_AVX2, GHASH_LAST_8_AVX2, GHASH_MUL_AVX2, ENC, 13
-         FUNC_RESTORE
--	ret
-+	RET
- SYM_FUNC_END(aesni_gcm_enc_update_avx_gen4)
- 
- ###############################################################################
-@@ -2785,15 +2785,15 @@ SYM_FUNC_START(aesni_gcm_dec_update_avx_
-         # must be 192
-         GCM_ENC_DEC INITIAL_BLOCKS_AVX2, GHASH_8_ENCRYPT_8_PARALLEL_AVX2, GHASH_LAST_8_AVX2, GHASH_MUL_AVX2, DEC, 11
-         FUNC_RESTORE
--        ret
-+        RET
- key_128_dec_update4:
-         GCM_ENC_DEC INITIAL_BLOCKS_AVX2, GHASH_8_ENCRYPT_8_PARALLEL_AVX2, GHASH_LAST_8_AVX2, GHASH_MUL_AVX2, DEC, 9
-         FUNC_RESTORE
--        ret
-+        RET
- key_256_dec_update4:
-         GCM_ENC_DEC INITIAL_BLOCKS_AVX2, GHASH_8_ENCRYPT_8_PARALLEL_AVX2, GHASH_LAST_8_AVX2, GHASH_MUL_AVX2, DEC, 13
-         FUNC_RESTORE
--        ret
-+        RET
- SYM_FUNC_END(aesni_gcm_dec_update_avx_gen4)
- 
- ###############################################################################
-@@ -2814,13 +2814,13 @@ SYM_FUNC_START(aesni_gcm_finalize_avx_ge
-         # must be 192
-         GCM_COMPLETE GHASH_MUL_AVX2, 11, arg3, arg4
-         FUNC_RESTORE
--        ret
-+        RET
- key_128_finalize4:
-         GCM_COMPLETE GHASH_MUL_AVX2, 9, arg3, arg4
-         FUNC_RESTORE
--        ret
-+        RET
- key_256_finalize4:
-         GCM_COMPLETE GHASH_MUL_AVX2, 13, arg3, arg4
-         FUNC_RESTORE
--        ret
-+        RET
- SYM_FUNC_END(aesni_gcm_finalize_avx_gen4)
---- a/arch/x86/crypto/blake2s-core.S
-+++ b/arch/x86/crypto/blake2s-core.S
-@@ -171,7 +171,7 @@ SYM_FUNC_START(blake2s_compress_ssse3)
- 	movdqu		%xmm1,0x10(%rdi)
- 	movdqu		%xmm14,0x20(%rdi)
- .Lendofloop:
--	ret
-+	RET
- SYM_FUNC_END(blake2s_compress_ssse3)
- 
- #ifdef CONFIG_AS_AVX512
-@@ -251,6 +251,6 @@ SYM_FUNC_START(blake2s_compress_avx512)
- 	vmovdqu		%xmm1,0x10(%rdi)
- 	vmovdqu		%xmm4,0x20(%rdi)
- 	vzeroupper
--	retq
-+	RET
- SYM_FUNC_END(blake2s_compress_avx512)
- #endif /* CONFIG_AS_AVX512 */
---- a/arch/x86/crypto/blowfish-x86_64-asm_64.S
-+++ b/arch/x86/crypto/blowfish-x86_64-asm_64.S
-@@ -135,10 +135,10 @@ SYM_FUNC_START(__blowfish_enc_blk)
- 	jnz .L__enc_xor;
- 
- 	write_block();
--	ret;
-+	RET;
- .L__enc_xor:
- 	xor_block();
--	ret;
-+	RET;
- SYM_FUNC_END(__blowfish_enc_blk)
- 
- SYM_FUNC_START(blowfish_dec_blk)
-@@ -170,7 +170,7 @@ SYM_FUNC_START(blowfish_dec_blk)
- 
- 	movq %r11, %r12;
- 
--	ret;
-+	RET;
- SYM_FUNC_END(blowfish_dec_blk)
- 
- /**********************************************************************
-@@ -322,14 +322,14 @@ SYM_FUNC_START(__blowfish_enc_blk_4way)
- 
- 	popq %rbx;
- 	popq %r12;
--	ret;
-+	RET;
- 
- .L__enc_xor4:
- 	xor_block4();
- 
- 	popq %rbx;
- 	popq %r12;
--	ret;
-+	RET;
- SYM_FUNC_END(__blowfish_enc_blk_4way)
- 
- SYM_FUNC_START(blowfish_dec_blk_4way)
-@@ -364,5 +364,5 @@ SYM_FUNC_START(blowfish_dec_blk_4way)
- 	popq %rbx;
- 	popq %r12;
- 
--	ret;
-+	RET;
- SYM_FUNC_END(blowfish_dec_blk_4way)
---- a/arch/x86/crypto/camellia-aesni-avx-asm_64.S
-+++ b/arch/x86/crypto/camellia-aesni-avx-asm_64.S
-@@ -192,7 +192,7 @@ SYM_FUNC_START_LOCAL(roundsm16_x0_x1_x2_
- 	roundsm16(%xmm0, %xmm1, %xmm2, %xmm3, %xmm4, %xmm5, %xmm6, %xmm7,
- 		  %xmm8, %xmm9, %xmm10, %xmm11, %xmm12, %xmm13, %xmm14, %xmm15,
- 		  %rcx, (%r9));
--	ret;
-+	RET;
- SYM_FUNC_END(roundsm16_x0_x1_x2_x3_x4_x5_x6_x7_y0_y1_y2_y3_y4_y5_y6_y7_cd)
- 
- .align 8
-@@ -200,7 +200,7 @@ SYM_FUNC_START_LOCAL(roundsm16_x4_x5_x6_
- 	roundsm16(%xmm4, %xmm5, %xmm6, %xmm7, %xmm0, %xmm1, %xmm2, %xmm3,
- 		  %xmm12, %xmm13, %xmm14, %xmm15, %xmm8, %xmm9, %xmm10, %xmm11,
- 		  %rax, (%r9));
--	ret;
-+	RET;
- SYM_FUNC_END(roundsm16_x4_x5_x6_x7_x0_x1_x2_x3_y4_y5_y6_y7_y0_y1_y2_y3_ab)
- 
- /*
-@@ -778,7 +778,7 @@ SYM_FUNC_START_LOCAL(__camellia_enc_blk1
- 		    %xmm15, (key_table)(CTX, %r8, 8), (%rax), 1 * 16(%rax));
- 
- 	FRAME_END
--	ret;
-+	RET;
- 
- .align 8
- .Lenc_max32:
-@@ -865,7 +865,7 @@ SYM_FUNC_START_LOCAL(__camellia_dec_blk1
- 		    %xmm15, (key_table)(CTX), (%rax), 1 * 16(%rax));
- 
- 	FRAME_END
--	ret;
-+	RET;
- 
- .align 8
- .Ldec_max32:
-@@ -906,7 +906,7 @@ SYM_FUNC_START(camellia_ecb_enc_16way)
- 		     %xmm8, %rsi);
- 
- 	FRAME_END
--	ret;
-+	RET;
- SYM_FUNC_END(camellia_ecb_enc_16way)
- 
- SYM_FUNC_START(camellia_ecb_dec_16way)
-@@ -936,7 +936,7 @@ SYM_FUNC_START(camellia_ecb_dec_16way)
- 		     %xmm8, %rsi);
- 
- 	FRAME_END
--	ret;
-+	RET;
- SYM_FUNC_END(camellia_ecb_dec_16way)
- 
- SYM_FUNC_START(camellia_cbc_dec_16way)
-@@ -987,5 +987,5 @@ SYM_FUNC_START(camellia_cbc_dec_16way)
- 		     %xmm8, %rsi);
- 
- 	FRAME_END
--	ret;
-+	RET;
- SYM_FUNC_END(camellia_cbc_dec_16way)
---- a/arch/x86/crypto/camellia-aesni-avx2-asm_64.S
-+++ b/arch/x86/crypto/camellia-aesni-avx2-asm_64.S
-@@ -226,7 +226,7 @@ SYM_FUNC_START_LOCAL(roundsm32_x0_x1_x2_
- 	roundsm32(%ymm0, %ymm1, %ymm2, %ymm3, %ymm4, %ymm5, %ymm6, %ymm7,
- 		  %ymm8, %ymm9, %ymm10, %ymm11, %ymm12, %ymm13, %ymm14, %ymm15,
- 		  %rcx, (%r9));
--	ret;
-+	RET;
- SYM_FUNC_END(roundsm32_x0_x1_x2_x3_x4_x5_x6_x7_y0_y1_y2_y3_y4_y5_y6_y7_cd)
- 
- .align 8
-@@ -234,7 +234,7 @@ SYM_FUNC_START_LOCAL(roundsm32_x4_x5_x6_
- 	roundsm32(%ymm4, %ymm5, %ymm6, %ymm7, %ymm0, %ymm1, %ymm2, %ymm3,
- 		  %ymm12, %ymm13, %ymm14, %ymm15, %ymm8, %ymm9, %ymm10, %ymm11,
- 		  %rax, (%r9));
--	ret;
-+	RET;
- SYM_FUNC_END(roundsm32_x4_x5_x6_x7_x0_x1_x2_x3_y4_y5_y6_y7_y0_y1_y2_y3_ab)
- 
- /*
-@@ -814,7 +814,7 @@ SYM_FUNC_START_LOCAL(__camellia_enc_blk3
- 		    %ymm15, (key_table)(CTX, %r8, 8), (%rax), 1 * 32(%rax));
- 
- 	FRAME_END
--	ret;
-+	RET;
- 
- .align 8
- .Lenc_max32:
-@@ -901,7 +901,7 @@ SYM_FUNC_START_LOCAL(__camellia_dec_blk3
- 		    %ymm15, (key_table)(CTX), (%rax), 1 * 32(%rax));
- 
- 	FRAME_END
--	ret;
-+	RET;
- 
- .align 8
- .Ldec_max32:
-@@ -946,7 +946,7 @@ SYM_FUNC_START(camellia_ecb_enc_32way)
- 	vzeroupper;
- 
- 	FRAME_END
--	ret;
-+	RET;
- SYM_FUNC_END(camellia_ecb_enc_32way)
- 
- SYM_FUNC_START(camellia_ecb_dec_32way)
-@@ -980,7 +980,7 @@ SYM_FUNC_START(camellia_ecb_dec_32way)
- 	vzeroupper;
- 
- 	FRAME_END
--	ret;
-+	RET;
- SYM_FUNC_END(camellia_ecb_dec_32way)
- 
- SYM_FUNC_START(camellia_cbc_dec_32way)
-@@ -1047,5 +1047,5 @@ SYM_FUNC_START(camellia_cbc_dec_32way)
- 
- 	addq $(16 * 32), %rsp;
- 	FRAME_END
--	ret;
-+	RET;
- SYM_FUNC_END(camellia_cbc_dec_32way)
---- a/arch/x86/crypto/camellia-x86_64-asm_64.S
-+++ b/arch/x86/crypto/camellia-x86_64-asm_64.S
-@@ -213,13 +213,13 @@ SYM_FUNC_START(__camellia_enc_blk)
- 	enc_outunpack(mov, RT1);
- 
- 	movq RR12, %r12;
--	ret;
-+	RET;
- 
- .L__enc_xor:
- 	enc_outunpack(xor, RT1);
- 
- 	movq RR12, %r12;
--	ret;
-+	RET;
- SYM_FUNC_END(__camellia_enc_blk)
- 
- SYM_FUNC_START(camellia_dec_blk)
-@@ -257,7 +257,7 @@ SYM_FUNC_START(camellia_dec_blk)
- 	dec_outunpack();
- 
- 	movq RR12, %r12;
--	ret;
-+	RET;
- SYM_FUNC_END(camellia_dec_blk)
- 
- /**********************************************************************
-@@ -448,14 +448,14 @@ SYM_FUNC_START(__camellia_enc_blk_2way)
- 
- 	movq RR12, %r12;
- 	popq %rbx;
--	ret;
-+	RET;
- 
- .L__enc2_xor:
- 	enc_outunpack2(xor, RT2);
- 
- 	movq RR12, %r12;
- 	popq %rbx;
--	ret;
-+	RET;
- SYM_FUNC_END(__camellia_enc_blk_2way)
- 
- SYM_FUNC_START(camellia_dec_blk_2way)
-@@ -495,5 +495,5 @@ SYM_FUNC_START(camellia_dec_blk_2way)
- 
- 	movq RR12, %r12;
- 	movq RXOR, %rbx;
--	ret;
-+	RET;
- SYM_FUNC_END(camellia_dec_blk_2way)
---- a/arch/x86/crypto/cast5-avx-x86_64-asm_64.S
-+++ b/arch/x86/crypto/cast5-avx-x86_64-asm_64.S
-@@ -279,7 +279,7 @@ SYM_FUNC_START_LOCAL(__cast5_enc_blk16)
- 	outunpack_blocks(RR3, RL3, RTMP, RX, RKM);
- 	outunpack_blocks(RR4, RL4, RTMP, RX, RKM);
- 
--	ret;
-+	RET;
- SYM_FUNC_END(__cast5_enc_blk16)
- 
- .align 16
-@@ -352,7 +352,7 @@ SYM_FUNC_START_LOCAL(__cast5_dec_blk16)
- 	outunpack_blocks(RR3, RL3, RTMP, RX, RKM);
- 	outunpack_blocks(RR4, RL4, RTMP, RX, RKM);
- 
--	ret;
-+	RET;
- 
- .L__skip_dec:
- 	vpsrldq $4, RKR, RKR;
-@@ -393,7 +393,7 @@ SYM_FUNC_START(cast5_ecb_enc_16way)
- 
- 	popq %r15;
- 	FRAME_END
--	ret;
-+	RET;
- SYM_FUNC_END(cast5_ecb_enc_16way)
- 
- SYM_FUNC_START(cast5_ecb_dec_16way)
-@@ -431,7 +431,7 @@ SYM_FUNC_START(cast5_ecb_dec_16way)
- 
- 	popq %r15;
- 	FRAME_END
--	ret;
-+	RET;
- SYM_FUNC_END(cast5_ecb_dec_16way)
- 
- SYM_FUNC_START(cast5_cbc_dec_16way)
-@@ -483,7 +483,7 @@ SYM_FUNC_START(cast5_cbc_dec_16way)
- 	popq %r15;
- 	popq %r12;
- 	FRAME_END
--	ret;
-+	RET;
- SYM_FUNC_END(cast5_cbc_dec_16way)
- 
- SYM_FUNC_START(cast5_ctr_16way)
-@@ -559,5 +559,5 @@ SYM_FUNC_START(cast5_ctr_16way)
- 	popq %r15;
- 	popq %r12;
- 	FRAME_END
--	ret;
-+	RET;
- SYM_FUNC_END(cast5_ctr_16way)
---- a/arch/x86/crypto/cast6-avx-x86_64-asm_64.S
-+++ b/arch/x86/crypto/cast6-avx-x86_64-asm_64.S
-@@ -289,7 +289,7 @@ SYM_FUNC_START_LOCAL(__cast6_enc_blk8)
- 	outunpack_blocks(RA1, RB1, RC1, RD1, RTMP, RX, RKRF, RKM);
- 	outunpack_blocks(RA2, RB2, RC2, RD2, RTMP, RX, RKRF, RKM);
- 
--	ret;
-+	RET;
- SYM_FUNC_END(__cast6_enc_blk8)
- 
- .align 8
-@@ -336,7 +336,7 @@ SYM_FUNC_START_LOCAL(__cast6_dec_blk8)
- 	outunpack_blocks(RA1, RB1, RC1, RD1, RTMP, RX, RKRF, RKM);
- 	outunpack_blocks(RA2, RB2, RC2, RD2, RTMP, RX, RKRF, RKM);
- 
--	ret;
-+	RET;
- SYM_FUNC_END(__cast6_dec_blk8)
- 
- SYM_FUNC_START(cast6_ecb_enc_8way)
-@@ -359,7 +359,7 @@ SYM_FUNC_START(cast6_ecb_enc_8way)
- 
- 	popq %r15;
- 	FRAME_END
--	ret;
-+	RET;
- SYM_FUNC_END(cast6_ecb_enc_8way)
- 
- SYM_FUNC_START(cast6_ecb_dec_8way)
-@@ -382,7 +382,7 @@ SYM_FUNC_START(cast6_ecb_dec_8way)
- 
- 	popq %r15;
- 	FRAME_END
--	ret;
-+	RET;
- SYM_FUNC_END(cast6_ecb_dec_8way)
- 
- SYM_FUNC_START(cast6_cbc_dec_8way)
-@@ -408,5 +408,5 @@ SYM_FUNC_START(cast6_cbc_dec_8way)
- 	popq %r15;
- 	popq %r12;
- 	FRAME_END
--	ret;
-+	RET;
- SYM_FUNC_END(cast6_cbc_dec_8way)
---- a/arch/x86/crypto/chacha-avx2-x86_64.S
-+++ b/arch/x86/crypto/chacha-avx2-x86_64.S
-@@ -193,7 +193,7 @@ SYM_FUNC_START(chacha_2block_xor_avx2)
- 
- .Ldone2:
- 	vzeroupper
--	ret
-+	RET
- 
- .Lxorpart2:
- 	# xor remaining bytes from partial register into output
-@@ -498,7 +498,7 @@ SYM_FUNC_START(chacha_4block_xor_avx2)
- 
- .Ldone4:
- 	vzeroupper
--	ret
-+	RET
- 
- .Lxorpart4:
- 	# xor remaining bytes from partial register into output
-@@ -992,7 +992,7 @@ SYM_FUNC_START(chacha_8block_xor_avx2)
- .Ldone8:
- 	vzeroupper
- 	lea		-8(%r10),%rsp
--	ret
-+	RET
- 
- .Lxorpart8:
- 	# xor remaining bytes from partial register into output
---- a/arch/x86/crypto/chacha-avx512vl-x86_64.S
-+++ b/arch/x86/crypto/chacha-avx512vl-x86_64.S
-@@ -166,7 +166,7 @@ SYM_FUNC_START(chacha_2block_xor_avx512v
- 
- .Ldone2:
- 	vzeroupper
--	ret
-+	RET
- 
- .Lxorpart2:
- 	# xor remaining bytes from partial register into output
-@@ -432,7 +432,7 @@ SYM_FUNC_START(chacha_4block_xor_avx512v
- 
- .Ldone4:
- 	vzeroupper
--	ret
-+	RET
- 
- .Lxorpart4:
- 	# xor remaining bytes from partial register into output
-@@ -812,7 +812,7 @@ SYM_FUNC_START(chacha_8block_xor_avx512v
- 
- .Ldone8:
- 	vzeroupper
--	ret
-+	RET
- 
- .Lxorpart8:
- 	# xor remaining bytes from partial register into output
---- a/arch/x86/crypto/chacha-ssse3-x86_64.S
-+++ b/arch/x86/crypto/chacha-ssse3-x86_64.S
-@@ -108,7 +108,7 @@ SYM_FUNC_START_LOCAL(chacha_permute)
- 	sub		$2,%r8d
- 	jnz		.Ldoubleround
- 
--	ret
-+	RET
- SYM_FUNC_END(chacha_permute)
- 
- SYM_FUNC_START(chacha_block_xor_ssse3)
-@@ -166,7 +166,7 @@ SYM_FUNC_START(chacha_block_xor_ssse3)
- 
- .Ldone:
- 	FRAME_END
--	ret
-+	RET
- 
- .Lxorpart:
- 	# xor remaining bytes from partial register into output
-@@ -217,7 +217,7 @@ SYM_FUNC_START(hchacha_block_ssse3)
- 	movdqu		%xmm3,0x10(%rsi)
- 
- 	FRAME_END
--	ret
-+	RET
- SYM_FUNC_END(hchacha_block_ssse3)
- 
- SYM_FUNC_START(chacha_4block_xor_ssse3)
-@@ -762,7 +762,7 @@ SYM_FUNC_START(chacha_4block_xor_ssse3)
- 
- .Ldone4:
- 	lea		-8(%r10),%rsp
--	ret
-+	RET
- 
- .Lxorpart4:
- 	# xor remaining bytes from partial register into output
---- a/arch/x86/crypto/crc32-pclmul_asm.S
-+++ b/arch/x86/crypto/crc32-pclmul_asm.S
-@@ -236,5 +236,5 @@ loop_16:/* Folding rest buffer into 128b
- 	pxor    %xmm2, %xmm1
- 	pextrd  $0x01, %xmm1, %eax
- 
--	ret
-+	RET
- SYM_FUNC_END(crc32_pclmul_le_16)
---- a/arch/x86/crypto/crc32c-pcl-intel-asm_64.S
-+++ b/arch/x86/crypto/crc32c-pcl-intel-asm_64.S
-@@ -306,7 +306,7 @@ less_than_1:				# Length should be zero
- 	popq    %rsi
- 	popq    %rdi
- 	popq    %rbx
--        ret
-+        RET
- SYM_FUNC_END(crc_pcl)
- 
- .section	.rodata, "a", @progbits
---- a/arch/x86/crypto/crct10dif-pcl-asm_64.S
-+++ b/arch/x86/crypto/crct10dif-pcl-asm_64.S
-@@ -257,7 +257,7 @@ SYM_FUNC_START(crc_t10dif_pcl)
- 	# Final CRC value (x^16 * M(x)) mod G(x) is in low 16 bits of xmm0.
- 
- 	pextrw	$0, %xmm0, %eax
--	ret
-+	RET
- 
- .align 16
- .Lless_than_256_bytes:
---- a/arch/x86/crypto/des3_ede-asm_64.S
-+++ b/arch/x86/crypto/des3_ede-asm_64.S
-@@ -243,7 +243,7 @@ SYM_FUNC_START(des3_ede_x86_64_crypt_blk
- 	popq %r12;
- 	popq %rbx;
- 
--	ret;
-+	RET;
- SYM_FUNC_END(des3_ede_x86_64_crypt_blk)
- 
- /***********************************************************************
-@@ -528,7 +528,7 @@ SYM_FUNC_START(des3_ede_x86_64_crypt_blk
- 	popq %r12;
- 	popq %rbx;
- 
--	ret;
-+	RET;
- SYM_FUNC_END(des3_ede_x86_64_crypt_blk_3way)
- 
- .section	.rodata, "a", @progbits
---- a/arch/x86/crypto/ghash-clmulni-intel_asm.S
-+++ b/arch/x86/crypto/ghash-clmulni-intel_asm.S
-@@ -85,7 +85,7 @@ SYM_FUNC_START_LOCAL(__clmul_gf128mul_bl
- 	psrlq $1, T2
- 	pxor T2, T1
- 	pxor T1, DATA
--	ret
-+	RET
- SYM_FUNC_END(__clmul_gf128mul_ble)
- 
- /* void clmul_ghash_mul(char *dst, const u128 *shash) */
-@@ -99,7 +99,7 @@ SYM_FUNC_START(clmul_ghash_mul)
- 	pshufb BSWAP, DATA
- 	movups DATA, (%rdi)
- 	FRAME_END
--	ret
-+	RET
- SYM_FUNC_END(clmul_ghash_mul)
- 
- /*
-@@ -128,5 +128,5 @@ SYM_FUNC_START(clmul_ghash_update)
- 	movups DATA, (%rdi)
- .Lupdate_just_ret:
- 	FRAME_END
--	ret
-+	RET
- SYM_FUNC_END(clmul_ghash_update)
---- a/arch/x86/crypto/nh-avx2-x86_64.S
-+++ b/arch/x86/crypto/nh-avx2-x86_64.S
-@@ -153,5 +153,5 @@ SYM_FUNC_START(nh_avx2)
- 	vpaddq		T1, T0, T0
- 	vpaddq		T4, T0, T0
- 	vmovdqu		T0, (HASH)
--	ret
-+	RET
- SYM_FUNC_END(nh_avx2)
---- a/arch/x86/crypto/nh-sse2-x86_64.S
-+++ b/arch/x86/crypto/nh-sse2-x86_64.S
-@@ -119,5 +119,5 @@ SYM_FUNC_START(nh_sse2)
- 	paddq		PASS2_SUMS, T1
- 	movdqu		T0, 0x00(HASH)
- 	movdqu		T1, 0x10(HASH)
--	ret
-+	RET
- SYM_FUNC_END(nh_sse2)
---- a/arch/x86/crypto/poly1305-x86_64-cryptogams.pl
-+++ b/arch/x86/crypto/poly1305-x86_64-cryptogams.pl
-@@ -297,7 +297,7 @@ ___
- $code.=<<___;
- 	mov	\$1,%eax
- .Lno_key:
--	ret
-+	RET
- ___
- &end_function("poly1305_init_x86_64");
- 
-@@ -373,7 +373,7 @@ $code.=<<___;
- .cfi_adjust_cfa_offset	-48
- .Lno_data:
- .Lblocks_epilogue:
--	ret
-+	RET
- .cfi_endproc
- ___
- &end_function("poly1305_blocks_x86_64");
-@@ -399,7 +399,7 @@ $code.=<<___;
- 	mov	%rax,0($mac)	# write result
- 	mov	%rcx,8($mac)
- 
--	ret
-+	RET
- ___
- &end_function("poly1305_emit_x86_64");
- if ($avx) {
-@@ -429,7 +429,7 @@ ___
- 	&poly1305_iteration();
- $code.=<<___;
- 	pop $ctx
--	ret
-+	RET
- .size	__poly1305_block,.-__poly1305_block
- 
- .type	__poly1305_init_avx,\@abi-omnipotent
-@@ -594,7 +594,7 @@ $code.=<<___;
- 
- 	lea	-48-64($ctx),$ctx	# size [de-]optimization
- 	pop %rbp
--	ret
-+	RET
- .size	__poly1305_init_avx,.-__poly1305_init_avx
- ___
- 
-@@ -747,7 +747,7 @@ $code.=<<___;
- .cfi_restore	%rbp
- .Lno_data_avx:
- .Lblocks_avx_epilogue:
--	ret
-+	RET
- .cfi_endproc
- 
- .align	32
-@@ -1452,7 +1452,7 @@ $code.=<<___	if (!$win64);
- ___
- $code.=<<___;
- 	vzeroupper
--	ret
-+	RET
- .cfi_endproc
- ___
- &end_function("poly1305_blocks_avx");
-@@ -1508,7 +1508,7 @@ $code.=<<___;
- 	mov	%rax,0($mac)	# write result
- 	mov	%rcx,8($mac)
- 
--	ret
-+	RET
- ___
- &end_function("poly1305_emit_avx");
- 
-@@ -1675,7 +1675,7 @@ $code.=<<___;
- .cfi_restore 	%rbp
- .Lno_data_avx2$suffix:
- .Lblocks_avx2_epilogue$suffix:
--	ret
-+	RET
- .cfi_endproc
- 
- .align	32
-@@ -2201,7 +2201,7 @@ $code.=<<___	if (!$win64);
- ___
- $code.=<<___;
- 	vzeroupper
--	ret
-+	RET
- .cfi_endproc
- ___
- if($avx > 2 && $avx512) {
-@@ -2792,7 +2792,7 @@ $code.=<<___	if (!$win64);
- .cfi_def_cfa_register	%rsp
- ___
- $code.=<<___;
--	ret
-+	RET
- .cfi_endproc
- ___
- 
-@@ -2893,7 +2893,7 @@ $code.=<<___	if ($flavour =~ /elf32/);
- ___
- $code.=<<___;
- 	mov	\$1,%eax
--	ret
-+	RET
- .size	poly1305_init_base2_44,.-poly1305_init_base2_44
- ___
- {
-@@ -3010,7 +3010,7 @@ $code.=<<___;
- 	jnz		.Lblocks_vpmadd52_4x
- 
- .Lno_data_vpmadd52:
--	ret
-+	RET
- .size	poly1305_blocks_vpmadd52,.-poly1305_blocks_vpmadd52
- ___
- }
-@@ -3451,7 +3451,7 @@ $code.=<<___;
- 	vzeroall
- 
- .Lno_data_vpmadd52_4x:
--	ret
-+	RET
- .size	poly1305_blocks_vpmadd52_4x,.-poly1305_blocks_vpmadd52_4x
- ___
- }
-@@ -3824,7 +3824,7 @@ $code.=<<___;
- 	vzeroall
- 
- .Lno_data_vpmadd52_8x:
--	ret
-+	RET
- .size	poly1305_blocks_vpmadd52_8x,.-poly1305_blocks_vpmadd52_8x
- ___
- }
-@@ -3861,7 +3861,7 @@ $code.=<<___;
- 	mov	%rax,0($mac)	# write result
- 	mov	%rcx,8($mac)
- 
--	ret
-+	RET
- .size	poly1305_emit_base2_44,.-poly1305_emit_base2_44
- ___
- }	}	}
-@@ -3916,7 +3916,7 @@ $code.=<<___;
- 
- .Ldone_enc:
- 	mov	$otp,%rax
--	ret
-+	RET
- .size	xor128_encrypt_n_pad,.-xor128_encrypt_n_pad
- 
- .globl	xor128_decrypt_n_pad
-@@ -3967,7 +3967,7 @@ $code.=<<___;
- 
- .Ldone_dec:
- 	mov	$otp,%rax
--	ret
-+	RET
- .size	xor128_decrypt_n_pad,.-xor128_decrypt_n_pad
- ___
- }
-@@ -4109,7 +4109,7 @@ $code.=<<___;
- 	pop	%rbx
- 	pop	%rdi
- 	pop	%rsi
--	ret
-+	RET
- .size	avx_handler,.-avx_handler
- 
- .section	.pdata
---- a/arch/x86/crypto/serpent-avx-x86_64-asm_64.S
-+++ b/arch/x86/crypto/serpent-avx-x86_64-asm_64.S
-@@ -601,7 +601,7 @@ SYM_FUNC_START_LOCAL(__serpent_enc_blk8_
- 	write_blocks(RA1, RB1, RC1, RD1, RK0, RK1, RK2);
- 	write_blocks(RA2, RB2, RC2, RD2, RK0, RK1, RK2);
- 
--	ret;
-+	RET;
- SYM_FUNC_END(__serpent_enc_blk8_avx)
- 
- .align 8
-@@ -655,7 +655,7 @@ SYM_FUNC_START_LOCAL(__serpent_dec_blk8_
- 	write_blocks(RC1, RD1, RB1, RE1, RK0, RK1, RK2);
- 	write_blocks(RC2, RD2, RB2, RE2, RK0, RK1, RK2);
- 
--	ret;
-+	RET;
- SYM_FUNC_END(__serpent_dec_blk8_avx)
- 
- SYM_FUNC_START(serpent_ecb_enc_8way_avx)
-@@ -673,7 +673,7 @@ SYM_FUNC_START(serpent_ecb_enc_8way_avx)
- 	store_8way(%rsi, RA1, RB1, RC1, RD1, RA2, RB2, RC2, RD2);
- 
- 	FRAME_END
--	ret;
-+	RET;
- SYM_FUNC_END(serpent_ecb_enc_8way_avx)
- 
- SYM_FUNC_START(serpent_ecb_dec_8way_avx)
-@@ -691,7 +691,7 @@ SYM_FUNC_START(serpent_ecb_dec_8way_avx)
- 	store_8way(%rsi, RC1, RD1, RB1, RE1, RC2, RD2, RB2, RE2);
- 
- 	FRAME_END
--	ret;
-+	RET;
- SYM_FUNC_END(serpent_ecb_dec_8way_avx)
- 
- SYM_FUNC_START(serpent_cbc_dec_8way_avx)
-@@ -709,5 +709,5 @@ SYM_FUNC_START(serpent_cbc_dec_8way_avx)
- 	store_cbc_8way(%rdx, %rsi, RC1, RD1, RB1, RE1, RC2, RD2, RB2, RE2);
- 
- 	FRAME_END
--	ret;
-+	RET;
- SYM_FUNC_END(serpent_cbc_dec_8way_avx)
---- a/arch/x86/crypto/serpent-avx2-asm_64.S
-+++ b/arch/x86/crypto/serpent-avx2-asm_64.S
-@@ -601,7 +601,7 @@ SYM_FUNC_START_LOCAL(__serpent_enc_blk16
- 	write_blocks(RA1, RB1, RC1, RD1, RK0, RK1, RK2);
- 	write_blocks(RA2, RB2, RC2, RD2, RK0, RK1, RK2);
- 
--	ret;
-+	RET;
- SYM_FUNC_END(__serpent_enc_blk16)
- 
- .align 8
-@@ -655,7 +655,7 @@ SYM_FUNC_START_LOCAL(__serpent_dec_blk16
- 	write_blocks(RC1, RD1, RB1, RE1, RK0, RK1, RK2);
- 	write_blocks(RC2, RD2, RB2, RE2, RK0, RK1, RK2);
- 
--	ret;
-+	RET;
- SYM_FUNC_END(__serpent_dec_blk16)
- 
- SYM_FUNC_START(serpent_ecb_enc_16way)
-@@ -677,7 +677,7 @@ SYM_FUNC_START(serpent_ecb_enc_16way)
- 	vzeroupper;
- 
- 	FRAME_END
--	ret;
-+	RET;
- SYM_FUNC_END(serpent_ecb_enc_16way)
- 
- SYM_FUNC_START(serpent_ecb_dec_16way)
-@@ -699,7 +699,7 @@ SYM_FUNC_START(serpent_ecb_dec_16way)
- 	vzeroupper;
- 
- 	FRAME_END
--	ret;
-+	RET;
- SYM_FUNC_END(serpent_ecb_dec_16way)
- 
- SYM_FUNC_START(serpent_cbc_dec_16way)
-@@ -722,5 +722,5 @@ SYM_FUNC_START(serpent_cbc_dec_16way)
- 	vzeroupper;
- 
- 	FRAME_END
--	ret;
-+	RET;
- SYM_FUNC_END(serpent_cbc_dec_16way)
---- a/arch/x86/crypto/serpent-sse2-i586-asm_32.S
-+++ b/arch/x86/crypto/serpent-sse2-i586-asm_32.S
-@@ -553,12 +553,12 @@ SYM_FUNC_START(__serpent_enc_blk_4way)
- 
- 	write_blocks(%eax, RA, RB, RC, RD, RT0, RT1, RE);
- 
--	ret;
-+	RET;
- 
- .L__enc_xor4:
- 	xor_blocks(%eax, RA, RB, RC, RD, RT0, RT1, RE);
- 
--	ret;
-+	RET;
- SYM_FUNC_END(__serpent_enc_blk_4way)
- 
- SYM_FUNC_START(serpent_dec_blk_4way)
-@@ -612,5 +612,5 @@ SYM_FUNC_START(serpent_dec_blk_4way)
- 	movl arg_dst(%esp), %eax;
- 	write_blocks(%eax, RC, RD, RB, RE, RT0, RT1, RA);
- 
--	ret;
-+	RET;
- SYM_FUNC_END(serpent_dec_blk_4way)
---- a/arch/x86/crypto/serpent-sse2-x86_64-asm_64.S
-+++ b/arch/x86/crypto/serpent-sse2-x86_64-asm_64.S
-@@ -675,13 +675,13 @@ SYM_FUNC_START(__serpent_enc_blk_8way)
- 	write_blocks(%rsi, RA1, RB1, RC1, RD1, RK0, RK1, RK2);
- 	write_blocks(%rax, RA2, RB2, RC2, RD2, RK0, RK1, RK2);
- 
--	ret;
-+	RET;
- 
- .L__enc_xor8:
- 	xor_blocks(%rsi, RA1, RB1, RC1, RD1, RK0, RK1, RK2);
- 	xor_blocks(%rax, RA2, RB2, RC2, RD2, RK0, RK1, RK2);
- 
--	ret;
-+	RET;
- SYM_FUNC_END(__serpent_enc_blk_8way)
- 
- SYM_FUNC_START(serpent_dec_blk_8way)
-@@ -735,5 +735,5 @@ SYM_FUNC_START(serpent_dec_blk_8way)
- 	write_blocks(%rsi, RC1, RD1, RB1, RE1, RK0, RK1, RK2);
- 	write_blocks(%rax, RC2, RD2, RB2, RE2, RK0, RK1, RK2);
- 
--	ret;
-+	RET;
- SYM_FUNC_END(serpent_dec_blk_8way)
---- a/arch/x86/crypto/sha1_avx2_x86_64_asm.S
-+++ b/arch/x86/crypto/sha1_avx2_x86_64_asm.S
-@@ -674,7 +674,7 @@
- 	pop	%r12
- 	pop	%rbx
- 
--	ret
-+	RET
- 
- 	SYM_FUNC_END(\name)
- .endm
---- a/arch/x86/crypto/sha1_ni_asm.S
-+++ b/arch/x86/crypto/sha1_ni_asm.S
-@@ -290,7 +290,7 @@ SYM_FUNC_START(sha1_ni_transform)
- 	mov		%rbp, %rsp
- 	pop		%rbp
- 
--	ret
-+	RET
- SYM_FUNC_END(sha1_ni_transform)
- 
- .section	.rodata.cst16.PSHUFFLE_BYTE_FLIP_MASK, "aM", @progbits, 16
---- a/arch/x86/crypto/sha1_ssse3_asm.S
-+++ b/arch/x86/crypto/sha1_ssse3_asm.S
-@@ -99,7 +99,7 @@
- 	pop	%rbp
- 	pop	%r12
- 	pop	%rbx
--	ret
-+	RET
- 
- 	SYM_FUNC_END(\name)
- .endm
---- a/arch/x86/crypto/sha256-avx-asm.S
-+++ b/arch/x86/crypto/sha256-avx-asm.S
-@@ -458,7 +458,7 @@ SYM_FUNC_START(sha256_transform_avx)
- 	popq    %r13
- 	popq	%r12
- 	popq    %rbx
--	ret
-+	RET
- SYM_FUNC_END(sha256_transform_avx)
- 
- .section	.rodata.cst256.K256, "aM", @progbits, 256
---- a/arch/x86/crypto/sha256-avx2-asm.S
-+++ b/arch/x86/crypto/sha256-avx2-asm.S
-@@ -710,7 +710,7 @@ SYM_FUNC_START(sha256_transform_rorx)
- 	popq	%r13
- 	popq	%r12
- 	popq	%rbx
--	ret
-+	RET
- SYM_FUNC_END(sha256_transform_rorx)
- 
- .section	.rodata.cst512.K256, "aM", @progbits, 512
---- a/arch/x86/crypto/sha256-ssse3-asm.S
-+++ b/arch/x86/crypto/sha256-ssse3-asm.S
-@@ -472,7 +472,7 @@ SYM_FUNC_START(sha256_transform_ssse3)
- 	popq    %r12
- 	popq    %rbx
- 
--	ret
-+	RET
- SYM_FUNC_END(sha256_transform_ssse3)
- 
- .section	.rodata.cst256.K256, "aM", @progbits, 256
---- a/arch/x86/crypto/sha256_ni_asm.S
-+++ b/arch/x86/crypto/sha256_ni_asm.S
-@@ -326,7 +326,7 @@ SYM_FUNC_START(sha256_ni_transform)
- 
- .Ldone_hash:
- 
--	ret
-+	RET
- SYM_FUNC_END(sha256_ni_transform)
- 
- .section	.rodata.cst256.K256, "aM", @progbits, 256
---- a/arch/x86/crypto/sha512-avx-asm.S
-+++ b/arch/x86/crypto/sha512-avx-asm.S
-@@ -361,7 +361,7 @@ SYM_FUNC_START(sha512_transform_avx)
- 	pop	%rbx
- 
- nowork:
--	ret
-+	RET
- SYM_FUNC_END(sha512_transform_avx)
- 
- ########################################################################
---- a/arch/x86/crypto/sha512-avx2-asm.S
-+++ b/arch/x86/crypto/sha512-avx2-asm.S
-@@ -679,7 +679,7 @@ SYM_FUNC_START(sha512_transform_rorx)
- 	pop	%r12
- 	pop	%rbx
- 
--	ret
-+	RET
- SYM_FUNC_END(sha512_transform_rorx)
- 
- ########################################################################
---- a/arch/x86/crypto/sha512-ssse3-asm.S
-+++ b/arch/x86/crypto/sha512-ssse3-asm.S
-@@ -363,7 +363,7 @@ SYM_FUNC_START(sha512_transform_ssse3)
- 	pop	%rbx
- 
- nowork:
--	ret
-+	RET
- SYM_FUNC_END(sha512_transform_ssse3)
- 
- ########################################################################
---- a/arch/x86/crypto/sm4-aesni-avx-asm_64.S
-+++ b/arch/x86/crypto/sm4-aesni-avx-asm_64.S
-@@ -242,7 +242,7 @@ SYM_FUNC_START(sm4_aesni_avx_crypt4)
- .Lblk4_store_output_done:
- 	vzeroall;
- 	FRAME_END
--	ret;
-+	RET;
- SYM_FUNC_END(sm4_aesni_avx_crypt4)
- 
- .align 8
-@@ -352,7 +352,7 @@ SYM_FUNC_START_LOCAL(__sm4_crypt_blk8)
- 	vpshufb RTMP2, RB3, RB3;
- 
- 	FRAME_END
--	ret;
-+	RET;
- SYM_FUNC_END(__sm4_crypt_blk8)
- 
- /*
-@@ -408,7 +408,7 @@ SYM_FUNC_START(sm4_aesni_avx_crypt8)
- .Lblk8_store_output_done:
- 	vzeroall;
- 	FRAME_END
--	ret;
-+	RET;
- SYM_FUNC_END(sm4_aesni_avx_crypt8)
- 
- /*
-@@ -483,7 +483,7 @@ SYM_FUNC_START(sm4_aesni_avx_ctr_enc_blk
- 
- 	vzeroall;
- 	FRAME_END
--	ret;
-+	RET;
- SYM_FUNC_END(sm4_aesni_avx_ctr_enc_blk8)
- 
- /*
-@@ -533,7 +533,7 @@ SYM_FUNC_START(sm4_aesni_avx_cbc_dec_blk
- 
- 	vzeroall;
- 	FRAME_END
--	ret;
-+	RET;
- SYM_FUNC_END(sm4_aesni_avx_cbc_dec_blk8)
- 
- /*
-@@ -586,5 +586,5 @@ SYM_FUNC_START(sm4_aesni_avx_cfb_dec_blk
- 
- 	vzeroall;
- 	FRAME_END
--	ret;
-+	RET;
- SYM_FUNC_END(sm4_aesni_avx_cfb_dec_blk8)
---- a/arch/x86/crypto/sm4-aesni-avx2-asm_64.S
-+++ b/arch/x86/crypto/sm4-aesni-avx2-asm_64.S
-@@ -264,7 +264,7 @@ SYM_FUNC_START_LOCAL(__sm4_crypt_blk16)
- 	vpshufb RTMP2, RB3, RB3;
- 
- 	FRAME_END
--	ret;
-+	RET;
- SYM_FUNC_END(__sm4_crypt_blk16)
- 
- #define inc_le128(x, minus_one, tmp) \
-@@ -383,7 +383,7 @@ SYM_FUNC_START(sm4_aesni_avx2_ctr_enc_bl
- 
- 	vzeroall;
- 	FRAME_END
--	ret;
-+	RET;
- SYM_FUNC_END(sm4_aesni_avx2_ctr_enc_blk16)
- 
- /*
-@@ -437,7 +437,7 @@ SYM_FUNC_START(sm4_aesni_avx2_cbc_dec_bl
- 
- 	vzeroall;
- 	FRAME_END
--	ret;
-+	RET;
- SYM_FUNC_END(sm4_aesni_avx2_cbc_dec_blk16)
- 
- /*
-@@ -493,5 +493,5 @@ SYM_FUNC_START(sm4_aesni_avx2_cfb_dec_bl
- 
- 	vzeroall;
- 	FRAME_END
--	ret;
-+	RET;
- SYM_FUNC_END(sm4_aesni_avx2_cfb_dec_blk16)
---- a/arch/x86/crypto/twofish-avx-x86_64-asm_64.S
-+++ b/arch/x86/crypto/twofish-avx-x86_64-asm_64.S
-@@ -267,7 +267,7 @@ SYM_FUNC_START_LOCAL(__twofish_enc_blk8)
- 	outunpack_blocks(RC1, RD1, RA1, RB1, RK1, RX0, RY0, RK2);
- 	outunpack_blocks(RC2, RD2, RA2, RB2, RK1, RX0, RY0, RK2);
- 
--	ret;
-+	RET;
- SYM_FUNC_END(__twofish_enc_blk8)
- 
- .align 8
-@@ -307,7 +307,7 @@ SYM_FUNC_START_LOCAL(__twofish_dec_blk8)
- 	outunpack_blocks(RA1, RB1, RC1, RD1, RK1, RX0, RY0, RK2);
- 	outunpack_blocks(RA2, RB2, RC2, RD2, RK1, RX0, RY0, RK2);
- 
--	ret;
-+	RET;
- SYM_FUNC_END(__twofish_dec_blk8)
- 
- SYM_FUNC_START(twofish_ecb_enc_8way)
-@@ -327,7 +327,7 @@ SYM_FUNC_START(twofish_ecb_enc_8way)
- 	store_8way(%r11, RC1, RD1, RA1, RB1, RC2, RD2, RA2, RB2);
- 
- 	FRAME_END
--	ret;
-+	RET;
- SYM_FUNC_END(twofish_ecb_enc_8way)
- 
- SYM_FUNC_START(twofish_ecb_dec_8way)
-@@ -347,7 +347,7 @@ SYM_FUNC_START(twofish_ecb_dec_8way)
- 	store_8way(%r11, RA1, RB1, RC1, RD1, RA2, RB2, RC2, RD2);
- 
- 	FRAME_END
--	ret;
-+	RET;
- SYM_FUNC_END(twofish_ecb_dec_8way)
- 
- SYM_FUNC_START(twofish_cbc_dec_8way)
-@@ -372,5 +372,5 @@ SYM_FUNC_START(twofish_cbc_dec_8way)
- 	popq %r12;
- 
- 	FRAME_END
--	ret;
-+	RET;
- SYM_FUNC_END(twofish_cbc_dec_8way)
---- a/arch/x86/crypto/twofish-i586-asm_32.S
-+++ b/arch/x86/crypto/twofish-i586-asm_32.S
-@@ -260,7 +260,7 @@ SYM_FUNC_START(twofish_enc_blk)
- 	pop	%ebx
- 	pop	%ebp
- 	mov	$1,	%eax
--	ret
-+	RET
- SYM_FUNC_END(twofish_enc_blk)
- 
- SYM_FUNC_START(twofish_dec_blk)
-@@ -317,5 +317,5 @@ SYM_FUNC_START(twofish_dec_blk)
- 	pop	%ebx
- 	pop	%ebp
- 	mov	$1,	%eax
--	ret
-+	RET
- SYM_FUNC_END(twofish_dec_blk)
---- a/arch/x86/crypto/twofish-x86_64-asm_64-3way.S
-+++ b/arch/x86/crypto/twofish-x86_64-asm_64-3way.S
-@@ -258,7 +258,7 @@ SYM_FUNC_START(__twofish_enc_blk_3way)
- 	popq %rbx;
- 	popq %r12;
- 	popq %r13;
--	ret;
-+	RET;
- 
- .L__enc_xor3:
- 	outunpack_enc3(xor);
-@@ -266,7 +266,7 @@ SYM_FUNC_START(__twofish_enc_blk_3way)
- 	popq %rbx;
- 	popq %r12;
- 	popq %r13;
--	ret;
-+	RET;
- SYM_FUNC_END(__twofish_enc_blk_3way)
- 
- SYM_FUNC_START(twofish_dec_blk_3way)
-@@ -301,5 +301,5 @@ SYM_FUNC_START(twofish_dec_blk_3way)
- 	popq %rbx;
- 	popq %r12;
- 	popq %r13;
--	ret;
-+	RET;
- SYM_FUNC_END(twofish_dec_blk_3way)
---- a/arch/x86/crypto/twofish-x86_64-asm_64.S
-+++ b/arch/x86/crypto/twofish-x86_64-asm_64.S
-@@ -252,7 +252,7 @@ SYM_FUNC_START(twofish_enc_blk)
- 
- 	popq	R1
- 	movl	$1,%eax
--	ret
-+	RET
- SYM_FUNC_END(twofish_enc_blk)
- 
- SYM_FUNC_START(twofish_dec_blk)
-@@ -304,5 +304,5 @@ SYM_FUNC_START(twofish_dec_blk)
- 
- 	popq	R1
- 	movl	$1,%eax
--	ret
-+	RET
- SYM_FUNC_END(twofish_dec_blk)
---- a/arch/x86/entry/entry_32.S
-+++ b/arch/x86/entry/entry_32.S
-@@ -740,7 +740,7 @@ SYM_FUNC_START(schedule_tail_wrapper)
- 	popl	%eax
- 
- 	FRAME_END
--	ret
-+	RET
- SYM_FUNC_END(schedule_tail_wrapper)
- .popsection
- 
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -734,7 +734,7 @@ SYM_FUNC_START(asm_load_gs_index)
- 2:	ALTERNATIVE "", "mfence", X86_BUG_SWAPGS_FENCE
- 	swapgs
- 	FRAME_END
--	ret
-+	RET
- SYM_FUNC_END(asm_load_gs_index)
- EXPORT_SYMBOL(asm_load_gs_index)
- 
-@@ -885,7 +885,7 @@ SYM_CODE_START_LOCAL(paranoid_entry)
- 	 * is needed here.
- 	 */
- 	SAVE_AND_SET_GSBASE scratch_reg=%rax save_reg=%rbx
--	ret
-+	RET
- 
- .Lparanoid_entry_checkgs:
- 	/* EBX = 1 -> kernel GSBASE active, no restore required */
-@@ -898,7 +898,7 @@ SYM_CODE_START_LOCAL(paranoid_entry)
- 	rdmsr
- 	testl	%edx, %edx
- 	jns	.Lparanoid_entry_swapgs
--	ret
-+	RET
- 
- .Lparanoid_entry_swapgs:
- 	swapgs
-@@ -912,7 +912,7 @@ SYM_CODE_START_LOCAL(paranoid_entry)
- 
- 	/* EBX = 0 -> SWAPGS required on exit */
- 	xorl	%ebx, %ebx
--	ret
-+	RET
- SYM_CODE_END(paranoid_entry)
- 
- /*
-@@ -991,12 +991,12 @@ SYM_CODE_START_LOCAL(error_entry)
- 	movq	%rax, %rsp			/* switch stack */
- 	ENCODE_FRAME_POINTER
- 	pushq	%r12
--	ret
-+	RET
- 
- .Lerror_entry_done_lfence:
- 	FENCE_SWAPGS_KERNEL_ENTRY
- .Lerror_entry_done:
--	ret
-+	RET
- 
- 	/*
- 	 * There are two places in the kernel that can potentially fault with
---- a/arch/x86/entry/thunk_32.S
-+++ b/arch/x86/entry/thunk_32.S
-@@ -24,7 +24,7 @@ SYM_CODE_START_NOALIGN(\name)
- 	popl %edx
- 	popl %ecx
- 	popl %eax
--	ret
-+	RET
- 	_ASM_NOKPROBE(\name)
- SYM_CODE_END(\name)
- 	.endm
---- a/arch/x86/entry/thunk_64.S
-+++ b/arch/x86/entry/thunk_64.S
-@@ -50,7 +50,7 @@ SYM_CODE_START_LOCAL_NOALIGN(__thunk_res
- 	popq %rsi
- 	popq %rdi
- 	popq %rbp
--	ret
-+	RET
- 	_ASM_NOKPROBE(__thunk_restore)
- SYM_CODE_END(__thunk_restore)
- #endif
---- a/arch/x86/entry/vdso/vdso32/system_call.S
-+++ b/arch/x86/entry/vdso/vdso32/system_call.S
-@@ -78,7 +78,7 @@ SYM_INNER_LABEL(int80_landing_pad, SYM_L
- 	popl	%ecx
- 	CFI_RESTORE		ecx
- 	CFI_ADJUST_CFA_OFFSET	-4
--	ret
-+	RET
- 	CFI_ENDPROC
- 
- 	.size __kernel_vsyscall,.-__kernel_vsyscall
---- a/arch/x86/entry/vdso/vsgx.S
-+++ b/arch/x86/entry/vdso/vsgx.S
-@@ -81,7 +81,7 @@ SYM_FUNC_START(__vdso_sgx_enter_enclave)
- 	pop	%rbx
- 	leave
- 	.cfi_def_cfa		%rsp, 8
--	ret
-+	RET
- 
- 	/* The out-of-line code runs with the pre-leave stack frame. */
- 	.cfi_def_cfa		%rbp, 16
---- a/arch/x86/entry/vsyscall/vsyscall_emu_64.S
-+++ b/arch/x86/entry/vsyscall/vsyscall_emu_64.S
-@@ -19,17 +19,17 @@ __PAGE_ALIGNED_DATA
- 
- 	mov $__NR_gettimeofday, %rax
- 	syscall
--	ret
-+	RET
- 
- 	.balign 1024, 0xcc
- 	mov $__NR_time, %rax
- 	syscall
--	ret
-+	RET
- 
- 	.balign 1024, 0xcc
- 	mov $__NR_getcpu, %rax
- 	syscall
--	ret
-+	RET
- 
- 	.balign 4096, 0xcc
- 
---- a/arch/x86/include/asm/linkage.h
-+++ b/arch/x86/include/asm/linkage.h
-@@ -18,6 +18,22 @@
- #define __ALIGN_STR	__stringify(__ALIGN)
- #endif
- 
-+#ifdef CONFIG_SLS
-+#define SLS_TRAP	int3
-+#else
-+#define SLS_TRAP
-+#endif
-+
-+#define RET	ret; SLS_TRAP
-+
-+#else /* __ASSEMBLY__ */
-+
-+#ifdef CONFIG_SLS
-+#define ASM_RET	"ret; int3\n\t"
-+#else
-+#define ASM_RET	"ret\n\t"
-+#endif
-+
- #endif /* __ASSEMBLY__ */
- 
- #endif /* _ASM_X86_LINKAGE_H */
---- a/arch/x86/include/asm/paravirt.h
-+++ b/arch/x86/include/asm/paravirt.h
-@@ -665,7 +665,7 @@ bool __raw_callee_save___native_vcpu_is_
- 	    "call " #func ";"						\
- 	    PV_RESTORE_ALL_CALLER_REGS					\
- 	    FRAME_END							\
--	    "ret;"							\
-+	    ASM_RET							\
- 	    ".size " PV_THUNK_NAME(func) ", .-" PV_THUNK_NAME(func) ";"	\
- 	    ".popsection")
- 
---- a/arch/x86/include/asm/qspinlock_paravirt.h
-+++ b/arch/x86/include/asm/qspinlock_paravirt.h
-@@ -48,7 +48,7 @@ asm    (".pushsection .text;"
- 	"jne   .slowpath;"
- 	"pop   %rdx;"
- 	FRAME_END
--	"ret;"
-+	ASM_RET
- 	".slowpath: "
- 	"push   %rsi;"
- 	"movzbl %al,%esi;"
-@@ -56,7 +56,7 @@ asm    (".pushsection .text;"
- 	"pop    %rsi;"
- 	"pop    %rdx;"
- 	FRAME_END
--	"ret;"
-+	ASM_RET
- 	".size " PV_UNLOCK ", .-" PV_UNLOCK ";"
- 	".popsection");
- 
---- a/arch/x86/include/asm/static_call.h
-+++ b/arch/x86/include/asm/static_call.h
-@@ -35,7 +35,7 @@
- 	__ARCH_DEFINE_STATIC_CALL_TRAMP(name, ".byte 0xe9; .long " #func " - (. + 4)")
- 
- #define ARCH_DEFINE_STATIC_CALL_NULL_TRAMP(name)			\
--	__ARCH_DEFINE_STATIC_CALL_TRAMP(name, "ret; nop; nop; nop; nop")
-+	__ARCH_DEFINE_STATIC_CALL_TRAMP(name, "ret; int3; nop; nop; nop")
- 
- 
- #define ARCH_ADD_TRAMP_KEY(name)					\
---- a/arch/x86/kernel/acpi/wakeup_32.S
-+++ b/arch/x86/kernel/acpi/wakeup_32.S
-@@ -60,7 +60,7 @@ SYM_CODE_END(wakeup_pmode_return)
- 	popl	saved_context_eflags
- 
- 	movl	$ret_point, saved_eip
--	ret
-+	RET
- 
- 
- restore_registers:
-@@ -70,7 +70,7 @@ SYM_CODE_END(wakeup_pmode_return)
- 	movl	saved_context_edi, %edi
- 	pushl	saved_context_eflags
- 	popfl
--	ret
-+	RET
- 
- SYM_CODE_START(do_suspend_lowlevel)
- 	call	save_processor_state
-@@ -86,7 +86,7 @@ SYM_CODE_START(do_suspend_lowlevel)
- ret_point:
- 	call	restore_registers
- 	call	restore_processor_state
--	ret
-+	RET
- SYM_CODE_END(do_suspend_lowlevel)
- 
- .data
---- a/arch/x86/kernel/acpi/wakeup_64.S
-+++ b/arch/x86/kernel/acpi/wakeup_64.S
-@@ -43,6 +43,7 @@ SYM_FUNC_START(wakeup_long64)
- 	movq	saved_rip, %rax
- 	ANNOTATE_RETPOLINE_SAFE
- 	jmp	*%rax
-+	SLS_TRAP
- SYM_FUNC_END(wakeup_long64)
- 
- SYM_FUNC_START(do_suspend_lowlevel)
---- a/arch/x86/kernel/alternative.c
-+++ b/arch/x86/kernel/alternative.c
-@@ -712,7 +712,7 @@ asm (
- "	.type		int3_magic, @function\n"
- "int3_magic:\n"
- "	movl	$1, (%" _ASM_ARG1 ")\n"
--"	ret\n"
-+	ASM_RET
- "	.size		int3_magic, .-int3_magic\n"
- "	.popsection\n"
- );
---- a/arch/x86/kernel/ftrace.c
-+++ b/arch/x86/kernel/ftrace.c
-@@ -308,7 +308,7 @@ union ftrace_op_code_union {
- 	} __attribute__((packed));
- };
- 
--#define RET_SIZE		1
-+#define RET_SIZE		1 + IS_ENABLED(CONFIG_SLS)
- 
- static unsigned long
- create_trampoline(struct ftrace_ops *ops, unsigned int *tramp_size)
---- a/arch/x86/kernel/ftrace_32.S
-+++ b/arch/x86/kernel/ftrace_32.S
-@@ -19,7 +19,7 @@
- #endif
- 
- SYM_FUNC_START(__fentry__)
--	ret
-+	RET
- SYM_FUNC_END(__fentry__)
- EXPORT_SYMBOL(__fentry__)
- 
-@@ -84,7 +84,7 @@ SYM_CODE_START(ftrace_caller)
- 
- /* This is weak to keep gas from relaxing the jumps */
- SYM_INNER_LABEL_ALIGN(ftrace_stub, SYM_L_WEAK)
--	ret
-+	RET
- SYM_CODE_END(ftrace_caller)
- 
- SYM_CODE_START(ftrace_regs_caller)
-@@ -177,7 +177,7 @@ SYM_CODE_START(ftrace_graph_caller)
- 	popl	%edx
- 	popl	%ecx
- 	popl	%eax
--	ret
-+	RET
- SYM_CODE_END(ftrace_graph_caller)
- 
- .globl return_to_handler
---- a/arch/x86/kernel/ftrace_64.S
-+++ b/arch/x86/kernel/ftrace_64.S
-@@ -132,7 +132,7 @@
- #ifdef CONFIG_DYNAMIC_FTRACE
- 
- SYM_FUNC_START(__fentry__)
--	retq
-+	RET
- SYM_FUNC_END(__fentry__)
- EXPORT_SYMBOL(__fentry__)
- 
-@@ -181,11 +181,11 @@ SYM_INNER_LABEL(ftrace_graph_call, SYM_L
- 
- /*
-  * This is weak to keep gas from relaxing the jumps.
-- * It is also used to copy the retq for trampolines.
-+ * It is also used to copy the RET for trampolines.
-  */
- SYM_INNER_LABEL_ALIGN(ftrace_stub, SYM_L_WEAK)
- 	UNWIND_HINT_FUNC
--	retq
-+	RET
- SYM_FUNC_END(ftrace_epilogue)
- 
- SYM_FUNC_START(ftrace_regs_caller)
-@@ -299,7 +299,7 @@ SYM_FUNC_START(__fentry__)
- #endif
- 
- SYM_INNER_LABEL(ftrace_stub, SYM_L_GLOBAL)
--	retq
-+	RET
- 
- trace:
- 	/* save_mcount_regs fills in first two parameters */
-@@ -331,7 +331,7 @@ SYM_FUNC_START(ftrace_graph_caller)
- 
- 	restore_mcount_regs
- 
--	retq
-+	RET
- SYM_FUNC_END(ftrace_graph_caller)
- 
- SYM_FUNC_START(return_to_handler)
---- a/arch/x86/kernel/head_32.S
-+++ b/arch/x86/kernel/head_32.S
-@@ -340,7 +340,7 @@ SYM_FUNC_END(startup_32_smp)
- __INIT
- setup_once:
- 	andl $0,setup_once_ref	/* Once is enough, thanks */
--	ret
-+	RET
- 
- SYM_FUNC_START(early_idt_handler_array)
- 	# 36(%esp) %eflags
---- a/arch/x86/kernel/head_64.S
-+++ b/arch/x86/kernel/head_64.S
-@@ -173,6 +173,7 @@ SYM_INNER_LABEL(secondary_startup_64_no_
- 	movq	$1f, %rax
- 	ANNOTATE_RETPOLINE_SAFE
- 	jmp	*%rax
-+	SLS_TRAP
- 1:
- 	UNWIND_HINT_EMPTY
- 
---- a/arch/x86/kernel/irqflags.S
-+++ b/arch/x86/kernel/irqflags.S
-@@ -11,7 +11,7 @@
- SYM_FUNC_START(native_save_fl)
- 	pushf
- 	pop %_ASM_AX
--	ret
-+	RET
- SYM_FUNC_END(native_save_fl)
- .popsection
- EXPORT_SYMBOL(native_save_fl)
---- a/arch/x86/kernel/paravirt.c
-+++ b/arch/x86/kernel/paravirt.c
-@@ -41,7 +41,7 @@ extern void _paravirt_nop(void);
- asm (".pushsection .entry.text, \"ax\"\n"
-      ".global _paravirt_nop\n"
-      "_paravirt_nop:\n\t"
--     "ret\n\t"
-+	ASM_RET
-      ".size _paravirt_nop, . - _paravirt_nop\n\t"
-      ".type _paravirt_nop, @function\n\t"
-      ".popsection");
---- a/arch/x86/kernel/relocate_kernel_32.S
-+++ b/arch/x86/kernel/relocate_kernel_32.S
-@@ -91,7 +91,7 @@ SYM_CODE_START_NOALIGN(relocate_kernel)
- 	movl    %edi, %eax
- 	addl    $(identity_mapped - relocate_kernel), %eax
- 	pushl   %eax
--	ret
-+	RET
- SYM_CODE_END(relocate_kernel)
- 
- SYM_CODE_START_LOCAL_NOALIGN(identity_mapped)
-@@ -159,7 +159,7 @@ SYM_CODE_START_LOCAL_NOALIGN(identity_ma
- 	xorl    %edx, %edx
- 	xorl    %esi, %esi
- 	xorl    %ebp, %ebp
--	ret
-+	RET
- 1:
- 	popl	%edx
- 	movl	CP_PA_SWAP_PAGE(%edi), %esp
-@@ -190,7 +190,7 @@ SYM_CODE_START_LOCAL_NOALIGN(identity_ma
- 	movl	%edi, %eax
- 	addl	$(virtual_mapped - relocate_kernel), %eax
- 	pushl	%eax
--	ret
-+	RET
- SYM_CODE_END(identity_mapped)
- 
- SYM_CODE_START_LOCAL_NOALIGN(virtual_mapped)
-@@ -208,7 +208,7 @@ SYM_CODE_START_LOCAL_NOALIGN(virtual_map
- 	popl	%edi
- 	popl	%esi
- 	popl	%ebx
--	ret
-+	RET
- SYM_CODE_END(virtual_mapped)
- 
- 	/* Do the copies */
-@@ -271,7 +271,7 @@ SYM_CODE_START_LOCAL_NOALIGN(swap_pages)
- 	popl	%edi
- 	popl	%ebx
- 	popl	%ebp
--	ret
-+	RET
- SYM_CODE_END(swap_pages)
- 
- 	.globl kexec_control_code_size
---- a/arch/x86/kernel/relocate_kernel_64.S
-+++ b/arch/x86/kernel/relocate_kernel_64.S
-@@ -104,7 +104,7 @@ SYM_CODE_START_NOALIGN(relocate_kernel)
- 	/* jump to identity mapped page */
- 	addq	$(identity_mapped - relocate_kernel), %r8
- 	pushq	%r8
--	ret
-+	RET
- SYM_CODE_END(relocate_kernel)
- 
- SYM_CODE_START_LOCAL_NOALIGN(identity_mapped)
-@@ -191,7 +191,7 @@ SYM_CODE_START_LOCAL_NOALIGN(identity_ma
- 	xorl	%r14d, %r14d
- 	xorl	%r15d, %r15d
- 
--	ret
-+	RET
- 
- 1:
- 	popq	%rdx
-@@ -210,7 +210,7 @@ SYM_CODE_START_LOCAL_NOALIGN(identity_ma
- 	call	swap_pages
- 	movq	$virtual_mapped, %rax
- 	pushq	%rax
--	ret
-+	RET
- SYM_CODE_END(identity_mapped)
- 
- SYM_CODE_START_LOCAL_NOALIGN(virtual_mapped)
-@@ -231,7 +231,7 @@ SYM_CODE_START_LOCAL_NOALIGN(virtual_map
- 	popq	%r12
- 	popq	%rbp
- 	popq	%rbx
--	ret
-+	RET
- SYM_CODE_END(virtual_mapped)
- 
- 	/* Do the copies */
-@@ -288,7 +288,7 @@ SYM_CODE_START_LOCAL_NOALIGN(swap_pages)
- 	lea	PAGE_SIZE(%rax), %rsi
- 	jmp	0b
- 3:
--	ret
-+	RET
- SYM_CODE_END(swap_pages)
- 
- 	.globl kexec_control_code_size
---- a/arch/x86/kernel/sev_verify_cbit.S
-+++ b/arch/x86/kernel/sev_verify_cbit.S
-@@ -85,5 +85,5 @@ SYM_FUNC_START(sev_verify_cbit)
- #endif
- 	/* Return page-table pointer */
- 	movq	%rdi, %rax
--	ret
-+	RET
- SYM_FUNC_END(sev_verify_cbit)
---- a/arch/x86/kernel/static_call.c
-+++ b/arch/x86/kernel/static_call.c
-@@ -17,6 +17,8 @@ enum insn_type {
-  */
- static const u8 xor5rax[] = { 0x66, 0x66, 0x48, 0x31, 0xc0 };
- 
-+static const u8 retinsn[] = { RET_INSN_OPCODE, 0xcc, 0xcc, 0xcc, 0xcc };
-+
- static void __ref __static_call_transform(void *insn, enum insn_type type, void *func)
- {
- 	const void *emulate = NULL;
-@@ -42,8 +44,7 @@ static void __ref __static_call_transfor
- 		break;
- 
- 	case RET:
--		code = text_gen_insn(RET_INSN_OPCODE, insn, func);
--		size = RET_INSN_SIZE;
-+		code = &retinsn;
- 		break;
- 	}
- 
---- a/arch/x86/kernel/verify_cpu.S
-+++ b/arch/x86/kernel/verify_cpu.S
-@@ -132,9 +132,9 @@ SYM_FUNC_START_LOCAL(verify_cpu)
- .Lverify_cpu_no_longmode:
- 	popf				# Restore caller passed flags
- 	movl $1,%eax
--	ret
-+	RET
- .Lverify_cpu_sse_ok:
- 	popf				# Restore caller passed flags
- 	xorl %eax, %eax
--	ret
-+	RET
- SYM_FUNC_END(verify_cpu)
---- a/arch/x86/kvm/emulate.c
-+++ b/arch/x86/kvm/emulate.c
-@@ -315,7 +315,7 @@ static int fastop(struct x86_emulate_ctx
- 	__FOP_FUNC(#name)
- 
- #define __FOP_RET(name) \
--	"ret \n\t" \
-+	ASM_RET \
- 	".size " name ", .-" name "\n\t"
- 
- #define FOP_RET(name) \
-@@ -435,7 +435,7 @@ static int fastop(struct x86_emulate_ctx
- 	__FOP_RET(#op)
- 
- asm(".pushsection .fixup, \"ax\"\n"
--    "kvm_fastop_exception: xor %esi, %esi; ret\n"
-+    "kvm_fastop_exception: xor %esi, %esi; " ASM_RET
-     ".popsection");
- 
- FOP_START(setcc)
---- a/arch/x86/kvm/svm/vmenter.S
-+++ b/arch/x86/kvm/svm/vmenter.S
-@@ -148,7 +148,7 @@ SYM_FUNC_START(__svm_vcpu_run)
- 	pop %edi
- #endif
- 	pop %_ASM_BP
--	ret
-+	RET
- 
- 3:	cmpb $0, kvm_rebooting
- 	jne 2b
-@@ -202,7 +202,7 @@ SYM_FUNC_START(__svm_sev_es_vcpu_run)
- 	pop %edi
- #endif
- 	pop %_ASM_BP
--	ret
-+	RET
- 
- 3:	cmpb $0, kvm_rebooting
- 	jne 2b
---- a/arch/x86/kvm/vmx/vmenter.S
-+++ b/arch/x86/kvm/vmx/vmenter.S
-@@ -49,14 +49,14 @@ SYM_FUNC_START_LOCAL(vmx_vmenter)
- 	je 2f
- 
- 1:	vmresume
--	ret
-+	RET
- 
- 2:	vmlaunch
--	ret
-+	RET
- 
- 3:	cmpb $0, kvm_rebooting
- 	je 4f
--	ret
-+	RET
- 4:	ud2
- 
- 	_ASM_EXTABLE(1b, 3b)
-@@ -89,7 +89,7 @@ SYM_FUNC_START(vmx_vmexit)
- 	pop %_ASM_AX
- .Lvmexit_skip_rsb:
- #endif
--	ret
-+	RET
- SYM_FUNC_END(vmx_vmexit)
- 
- /**
-@@ -228,7 +228,7 @@ SYM_FUNC_START(__vmx_vcpu_run)
- 	pop %edi
- #endif
- 	pop %_ASM_BP
--	ret
-+	RET
- 
- 	/* VM-Fail.  Out-of-line to avoid a taken Jcc after VM-Exit. */
- 2:	mov $1, %eax
-@@ -293,7 +293,7 @@ SYM_FUNC_START(vmread_error_trampoline)
- 	pop %_ASM_AX
- 	pop %_ASM_BP
- 
--	ret
-+	RET
- SYM_FUNC_END(vmread_error_trampoline)
- 
- SYM_FUNC_START(vmx_do_interrupt_nmi_irqoff)
-@@ -326,5 +326,5 @@ SYM_FUNC_START(vmx_do_interrupt_nmi_irqo
- 	 */
- 	mov %_ASM_BP, %_ASM_SP
- 	pop %_ASM_BP
--	ret
-+	RET
- SYM_FUNC_END(vmx_do_interrupt_nmi_irqoff)
---- a/arch/x86/lib/atomic64_386_32.S
-+++ b/arch/x86/lib/atomic64_386_32.S
-@@ -30,7 +30,7 @@ SYM_FUNC_START(atomic64_##op##_386); \
- 
- #define RET \
- 	UNLOCK v; \
--	ret
-+	RET
- 
- #define RET_ENDP \
- 	RET; \
---- a/arch/x86/lib/atomic64_cx8_32.S
-+++ b/arch/x86/lib/atomic64_cx8_32.S
-@@ -18,7 +18,7 @@
- 
- SYM_FUNC_START(atomic64_read_cx8)
- 	read64 %ecx
--	ret
-+	RET
- SYM_FUNC_END(atomic64_read_cx8)
- 
- SYM_FUNC_START(atomic64_set_cx8)
-@@ -28,7 +28,7 @@ SYM_FUNC_START(atomic64_set_cx8)
- 	cmpxchg8b (%esi)
- 	jne 1b
- 
--	ret
-+	RET
- SYM_FUNC_END(atomic64_set_cx8)
- 
- SYM_FUNC_START(atomic64_xchg_cx8)
-@@ -37,7 +37,7 @@ SYM_FUNC_START(atomic64_xchg_cx8)
- 	cmpxchg8b (%esi)
- 	jne 1b
- 
--	ret
-+	RET
- SYM_FUNC_END(atomic64_xchg_cx8)
- 
- .macro addsub_return func ins insc
-@@ -68,7 +68,7 @@ SYM_FUNC_START(atomic64_\func\()_return_
- 	popl %esi
- 	popl %ebx
- 	popl %ebp
--	ret
-+	RET
- SYM_FUNC_END(atomic64_\func\()_return_cx8)
- .endm
- 
-@@ -93,7 +93,7 @@ SYM_FUNC_START(atomic64_\func\()_return_
- 	movl %ebx, %eax
- 	movl %ecx, %edx
- 	popl %ebx
--	ret
-+	RET
- SYM_FUNC_END(atomic64_\func\()_return_cx8)
- .endm
- 
-@@ -118,7 +118,7 @@ SYM_FUNC_START(atomic64_dec_if_positive_
- 	movl %ebx, %eax
- 	movl %ecx, %edx
- 	popl %ebx
--	ret
-+	RET
- SYM_FUNC_END(atomic64_dec_if_positive_cx8)
- 
- SYM_FUNC_START(atomic64_add_unless_cx8)
-@@ -149,7 +149,7 @@ SYM_FUNC_START(atomic64_add_unless_cx8)
- 	addl $8, %esp
- 	popl %ebx
- 	popl %ebp
--	ret
-+	RET
- 4:
- 	cmpl %edx, 4(%esp)
- 	jne 2b
-@@ -176,5 +176,5 @@ SYM_FUNC_START(atomic64_inc_not_zero_cx8
- 	movl $1, %eax
- 3:
- 	popl %ebx
--	ret
-+	RET
- SYM_FUNC_END(atomic64_inc_not_zero_cx8)
---- a/arch/x86/lib/checksum_32.S
-+++ b/arch/x86/lib/checksum_32.S
-@@ -127,7 +127,7 @@ SYM_FUNC_START(csum_partial)
- 8:
- 	popl %ebx
- 	popl %esi
--	ret
-+	RET
- SYM_FUNC_END(csum_partial)
- 
- #else
-@@ -245,7 +245,7 @@ SYM_FUNC_START(csum_partial)
- 90: 
- 	popl %ebx
- 	popl %esi
--	ret
-+	RET
- SYM_FUNC_END(csum_partial)
- 				
- #endif
-@@ -371,7 +371,7 @@ EXC(	movb %cl, (%edi)	)
- 	popl %esi
- 	popl %edi
- 	popl %ecx			# equivalent to addl $4,%esp
--	ret	
-+	RET
- SYM_FUNC_END(csum_partial_copy_generic)
- 
- #else
-@@ -447,7 +447,7 @@ EXC(	movb %dl, (%edi)         )
- 	popl %esi
- 	popl %edi
- 	popl %ebx
--	ret
-+	RET
- SYM_FUNC_END(csum_partial_copy_generic)
- 				
- #undef ROUND
---- a/arch/x86/lib/clear_page_64.S
-+++ b/arch/x86/lib/clear_page_64.S
-@@ -17,7 +17,7 @@ SYM_FUNC_START(clear_page_rep)
- 	movl $4096/8,%ecx
- 	xorl %eax,%eax
- 	rep stosq
--	ret
-+	RET
- SYM_FUNC_END(clear_page_rep)
- EXPORT_SYMBOL_GPL(clear_page_rep)
- 
-@@ -39,7 +39,7 @@ SYM_FUNC_START(clear_page_orig)
- 	leaq	64(%rdi),%rdi
- 	jnz	.Lloop
- 	nop
--	ret
-+	RET
- SYM_FUNC_END(clear_page_orig)
- EXPORT_SYMBOL_GPL(clear_page_orig)
- 
-@@ -47,6 +47,6 @@ SYM_FUNC_START(clear_page_erms)
- 	movl $4096,%ecx
- 	xorl %eax,%eax
- 	rep stosb
--	ret
-+	RET
- SYM_FUNC_END(clear_page_erms)
- EXPORT_SYMBOL_GPL(clear_page_erms)
---- a/arch/x86/lib/cmpxchg16b_emu.S
-+++ b/arch/x86/lib/cmpxchg16b_emu.S
-@@ -37,11 +37,11 @@ SYM_FUNC_START(this_cpu_cmpxchg16b_emu)
- 
- 	popfq
- 	mov $1, %al
--	ret
-+	RET
- 
- .Lnot_same:
- 	popfq
- 	xor %al,%al
--	ret
-+	RET
- 
- SYM_FUNC_END(this_cpu_cmpxchg16b_emu)
---- a/arch/x86/lib/cmpxchg8b_emu.S
-+++ b/arch/x86/lib/cmpxchg8b_emu.S
-@@ -32,7 +32,7 @@ SYM_FUNC_START(cmpxchg8b_emu)
- 	movl %ecx, 4(%esi)
- 
- 	popfl
--	ret
-+	RET
- 
- .Lnot_same:
- 	movl  (%esi), %eax
-@@ -40,7 +40,7 @@ SYM_FUNC_START(cmpxchg8b_emu)
- 	movl 4(%esi), %edx
- 
- 	popfl
--	ret
-+	RET
- 
- SYM_FUNC_END(cmpxchg8b_emu)
- EXPORT_SYMBOL(cmpxchg8b_emu)
---- a/arch/x86/lib/copy_mc_64.S
-+++ b/arch/x86/lib/copy_mc_64.S
-@@ -77,7 +77,7 @@ SYM_FUNC_START(copy_mc_fragile)
- .L_done_memcpy_trap:
- 	xorl %eax, %eax
- .L_done:
--	ret
-+	RET
- SYM_FUNC_END(copy_mc_fragile)
- 
- 	.section .fixup, "ax"
-@@ -132,7 +132,7 @@ SYM_FUNC_START(copy_mc_enhanced_fast_str
- 	rep movsb
- 	/* Copy successful. Return zero */
- 	xorl %eax, %eax
--	ret
-+	RET
- SYM_FUNC_END(copy_mc_enhanced_fast_string)
- 
- 	.section .fixup, "ax"
-@@ -145,7 +145,7 @@ SYM_FUNC_END(copy_mc_enhanced_fast_strin
- 	 * user-copy routines.
- 	 */
- 	movq %rcx, %rax
--	ret
-+	RET
- 
- 	.previous
- 
---- a/arch/x86/lib/copy_page_64.S
-+++ b/arch/x86/lib/copy_page_64.S
-@@ -17,7 +17,7 @@ SYM_FUNC_START(copy_page)
- 	ALTERNATIVE "jmp copy_page_regs", "", X86_FEATURE_REP_GOOD
- 	movl	$4096/8, %ecx
- 	rep	movsq
--	ret
-+	RET
- SYM_FUNC_END(copy_page)
- EXPORT_SYMBOL(copy_page)
- 
-@@ -85,5 +85,5 @@ SYM_FUNC_START_LOCAL(copy_page_regs)
- 	movq	(%rsp), %rbx
- 	movq	1*8(%rsp), %r12
- 	addq	$2*8, %rsp
--	ret
-+	RET
- SYM_FUNC_END(copy_page_regs)
---- a/arch/x86/lib/copy_user_64.S
-+++ b/arch/x86/lib/copy_user_64.S
-@@ -105,7 +105,7 @@ SYM_FUNC_START(copy_user_generic_unrolle
- 	jnz 21b
- 23:	xor %eax,%eax
- 	ASM_CLAC
--	ret
-+	RET
- 
- 	.section .fixup,"ax"
- 30:	shll $6,%ecx
-@@ -173,7 +173,7 @@ SYM_FUNC_START(copy_user_generic_string)
- 	movsb
- 	xorl %eax,%eax
- 	ASM_CLAC
--	ret
-+	RET
- 
- 	.section .fixup,"ax"
- 11:	leal (%rdx,%rcx,8),%ecx
-@@ -207,7 +207,7 @@ SYM_FUNC_START(copy_user_enhanced_fast_s
- 	movsb
- 	xorl %eax,%eax
- 	ASM_CLAC
--	ret
-+	RET
- 
- 	.section .fixup,"ax"
- 12:	movl %ecx,%edx		/* ecx is zerorest also */
-@@ -237,7 +237,7 @@ SYM_CODE_START_LOCAL(.Lcopy_user_handle_
- 1:	rep movsb
- 2:	mov %ecx,%eax
- 	ASM_CLAC
--	ret
-+	RET
- 
- 	_ASM_EXTABLE_CPY(1b, 2b)
- SYM_CODE_END(.Lcopy_user_handle_tail)
-@@ -348,7 +348,7 @@ SYM_FUNC_START(__copy_user_nocache)
- 	xorl %eax,%eax
- 	ASM_CLAC
- 	sfence
--	ret
-+	RET
- 
- 	.section .fixup,"ax"
- .L_fixup_4x8b_copy:
---- a/arch/x86/lib/csum-copy_64.S
-+++ b/arch/x86/lib/csum-copy_64.S
-@@ -201,7 +201,7 @@ SYM_FUNC_START(csum_partial_copy_generic
- 	movq 3*8(%rsp), %r13
- 	movq 4*8(%rsp), %r15
- 	addq $5*8, %rsp
--	ret
-+	RET
- .Lshort:
- 	movl %ecx, %r10d
- 	jmp  .L1
---- a/arch/x86/lib/error-inject.c
-+++ b/arch/x86/lib/error-inject.c
-@@ -1,5 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- 
-+#include <linux/linkage.h>
- #include <linux/error-injection.h>
- #include <linux/kprobes.h>
- 
-@@ -10,7 +11,7 @@ asm(
- 	".type just_return_func, @function\n"
- 	".globl just_return_func\n"
- 	"just_return_func:\n"
--	"	ret\n"
-+		ASM_RET
- 	".size just_return_func, .-just_return_func\n"
- );
- 
---- a/arch/x86/lib/getuser.S
-+++ b/arch/x86/lib/getuser.S
-@@ -57,7 +57,7 @@ SYM_FUNC_START(__get_user_1)
- 1:	movzbl (%_ASM_AX),%edx
- 	xor %eax,%eax
- 	ASM_CLAC
--	ret
-+	RET
- SYM_FUNC_END(__get_user_1)
- EXPORT_SYMBOL(__get_user_1)
- 
-@@ -71,7 +71,7 @@ SYM_FUNC_START(__get_user_2)
- 2:	movzwl (%_ASM_AX),%edx
- 	xor %eax,%eax
- 	ASM_CLAC
--	ret
-+	RET
- SYM_FUNC_END(__get_user_2)
- EXPORT_SYMBOL(__get_user_2)
- 
-@@ -85,7 +85,7 @@ SYM_FUNC_START(__get_user_4)
- 3:	movl (%_ASM_AX),%edx
- 	xor %eax,%eax
- 	ASM_CLAC
--	ret
-+	RET
- SYM_FUNC_END(__get_user_4)
- EXPORT_SYMBOL(__get_user_4)
- 
-@@ -100,7 +100,7 @@ SYM_FUNC_START(__get_user_8)
- 4:	movq (%_ASM_AX),%rdx
- 	xor %eax,%eax
- 	ASM_CLAC
--	ret
-+	RET
- #else
- 	LOAD_TASK_SIZE_MINUS_N(7)
- 	cmp %_ASM_DX,%_ASM_AX
-@@ -112,7 +112,7 @@ SYM_FUNC_START(__get_user_8)
- 5:	movl 4(%_ASM_AX),%ecx
- 	xor %eax,%eax
- 	ASM_CLAC
--	ret
-+	RET
- #endif
- SYM_FUNC_END(__get_user_8)
- EXPORT_SYMBOL(__get_user_8)
-@@ -124,7 +124,7 @@ SYM_FUNC_START(__get_user_nocheck_1)
- 6:	movzbl (%_ASM_AX),%edx
- 	xor %eax,%eax
- 	ASM_CLAC
--	ret
-+	RET
- SYM_FUNC_END(__get_user_nocheck_1)
- EXPORT_SYMBOL(__get_user_nocheck_1)
- 
-@@ -134,7 +134,7 @@ SYM_FUNC_START(__get_user_nocheck_2)
- 7:	movzwl (%_ASM_AX),%edx
- 	xor %eax,%eax
- 	ASM_CLAC
--	ret
-+	RET
- SYM_FUNC_END(__get_user_nocheck_2)
- EXPORT_SYMBOL(__get_user_nocheck_2)
- 
-@@ -144,7 +144,7 @@ SYM_FUNC_START(__get_user_nocheck_4)
- 8:	movl (%_ASM_AX),%edx
- 	xor %eax,%eax
- 	ASM_CLAC
--	ret
-+	RET
- SYM_FUNC_END(__get_user_nocheck_4)
- EXPORT_SYMBOL(__get_user_nocheck_4)
- 
-@@ -159,7 +159,7 @@ SYM_FUNC_START(__get_user_nocheck_8)
- #endif
- 	xor %eax,%eax
- 	ASM_CLAC
--	ret
-+	RET
- SYM_FUNC_END(__get_user_nocheck_8)
- EXPORT_SYMBOL(__get_user_nocheck_8)
- 
-@@ -169,7 +169,7 @@ SYM_CODE_START_LOCAL(.Lbad_get_user_clac
- bad_get_user:
- 	xor %edx,%edx
- 	mov $(-EFAULT),%_ASM_AX
--	ret
-+	RET
- SYM_CODE_END(.Lbad_get_user_clac)
- 
- #ifdef CONFIG_X86_32
-@@ -179,7 +179,7 @@ SYM_CODE_START_LOCAL(.Lbad_get_user_8_cl
- 	xor %edx,%edx
- 	xor %ecx,%ecx
- 	mov $(-EFAULT),%_ASM_AX
--	ret
-+	RET
- SYM_CODE_END(.Lbad_get_user_8_clac)
- #endif
- 
---- a/arch/x86/lib/hweight.S
-+++ b/arch/x86/lib/hweight.S
-@@ -32,7 +32,7 @@ SYM_FUNC_START(__sw_hweight32)
- 	imull $0x01010101, %eax, %eax		# w_tmp *= 0x01010101
- 	shrl $24, %eax				# w = w_tmp >> 24
- 	__ASM_SIZE(pop,) %__ASM_REG(dx)
--	ret
-+	RET
- SYM_FUNC_END(__sw_hweight32)
- EXPORT_SYMBOL(__sw_hweight32)
- 
-@@ -65,7 +65,7 @@ SYM_FUNC_START(__sw_hweight64)
- 
- 	popq    %rdx
- 	popq    %rdi
--	ret
-+	RET
- #else /* CONFIG_X86_32 */
- 	/* We're getting an u64 arg in (%eax,%edx): unsigned long hweight64(__u64 w) */
- 	pushl   %ecx
-@@ -77,7 +77,7 @@ SYM_FUNC_START(__sw_hweight64)
- 	addl    %ecx, %eax                      # result
- 
- 	popl    %ecx
--	ret
-+	RET
- #endif
- SYM_FUNC_END(__sw_hweight64)
- EXPORT_SYMBOL(__sw_hweight64)
---- a/arch/x86/lib/iomap_copy_64.S
-+++ b/arch/x86/lib/iomap_copy_64.S
-@@ -11,5 +11,5 @@
- SYM_FUNC_START(__iowrite32_copy)
- 	movl %edx,%ecx
- 	rep movsd
--	ret
-+	RET
- SYM_FUNC_END(__iowrite32_copy)
---- a/arch/x86/lib/memcpy_64.S
-+++ b/arch/x86/lib/memcpy_64.S
-@@ -39,7 +39,7 @@ SYM_FUNC_START_WEAK(memcpy)
- 	rep movsq
- 	movl %edx, %ecx
- 	rep movsb
--	ret
-+	RET
- SYM_FUNC_END(memcpy)
- SYM_FUNC_END_ALIAS(__memcpy)
- EXPORT_SYMBOL(memcpy)
-@@ -53,7 +53,7 @@ SYM_FUNC_START_LOCAL(memcpy_erms)
- 	movq %rdi, %rax
- 	movq %rdx, %rcx
- 	rep movsb
--	ret
-+	RET
- SYM_FUNC_END(memcpy_erms)
- 
- SYM_FUNC_START_LOCAL(memcpy_orig)
-@@ -137,7 +137,7 @@ SYM_FUNC_START_LOCAL(memcpy_orig)
- 	movq %r9,	1*8(%rdi)
- 	movq %r10,	-2*8(%rdi, %rdx)
- 	movq %r11,	-1*8(%rdi, %rdx)
--	retq
-+	RET
- 	.p2align 4
- .Lless_16bytes:
- 	cmpl $8,	%edx
-@@ -149,7 +149,7 @@ SYM_FUNC_START_LOCAL(memcpy_orig)
- 	movq -1*8(%rsi, %rdx),	%r9
- 	movq %r8,	0*8(%rdi)
- 	movq %r9,	-1*8(%rdi, %rdx)
--	retq
-+	RET
- 	.p2align 4
- .Lless_8bytes:
- 	cmpl $4,	%edx
-@@ -162,7 +162,7 @@ SYM_FUNC_START_LOCAL(memcpy_orig)
- 	movl -4(%rsi, %rdx), %r8d
- 	movl %ecx, (%rdi)
- 	movl %r8d, -4(%rdi, %rdx)
--	retq
-+	RET
- 	.p2align 4
- .Lless_3bytes:
- 	subl $1, %edx
-@@ -180,7 +180,7 @@ SYM_FUNC_START_LOCAL(memcpy_orig)
- 	movb %cl, (%rdi)
- 
- .Lend:
--	retq
-+	RET
- SYM_FUNC_END(memcpy_orig)
- 
- .popsection
---- a/arch/x86/lib/memmove_64.S
-+++ b/arch/x86/lib/memmove_64.S
-@@ -40,7 +40,7 @@ SYM_FUNC_START(__memmove)
- 	/* FSRM implies ERMS => no length checks, do the copy directly */
- .Lmemmove_begin_forward:
- 	ALTERNATIVE "cmp $0x20, %rdx; jb 1f", "", X86_FEATURE_FSRM
--	ALTERNATIVE "", "movq %rdx, %rcx; rep movsb; retq", X86_FEATURE_ERMS
-+	ALTERNATIVE "", "movq %rdx, %rcx; rep movsb; ret; int3", X86_FEATURE_ERMS
- 
- 	/*
- 	 * movsq instruction have many startup latency
-@@ -205,7 +205,7 @@ SYM_FUNC_START(__memmove)
- 	movb (%rsi), %r11b
- 	movb %r11b, (%rdi)
- 13:
--	retq
-+	RET
- SYM_FUNC_END(__memmove)
- SYM_FUNC_END_ALIAS(memmove)
- EXPORT_SYMBOL(__memmove)
---- a/arch/x86/lib/memset_64.S
-+++ b/arch/x86/lib/memset_64.S
-@@ -40,7 +40,7 @@ SYM_FUNC_START(__memset)
- 	movl %edx,%ecx
- 	rep stosb
- 	movq %r9,%rax
--	ret
-+	RET
- SYM_FUNC_END(__memset)
- SYM_FUNC_END_ALIAS(memset)
- EXPORT_SYMBOL(memset)
-@@ -63,7 +63,7 @@ SYM_FUNC_START_LOCAL(memset_erms)
- 	movq %rdx,%rcx
- 	rep stosb
- 	movq %r9,%rax
--	ret
-+	RET
- SYM_FUNC_END(memset_erms)
- 
- SYM_FUNC_START_LOCAL(memset_orig)
-@@ -125,7 +125,7 @@ SYM_FUNC_START_LOCAL(memset_orig)
- 
- .Lende:
- 	movq	%r10,%rax
--	ret
-+	RET
- 
- .Lbad_alignment:
- 	cmpq $7,%rdx
---- a/arch/x86/lib/msr-reg.S
-+++ b/arch/x86/lib/msr-reg.S
-@@ -35,7 +35,7 @@ SYM_FUNC_START(\op\()_safe_regs)
- 	movl    %edi, 28(%r10)
- 	popq %r12
- 	popq %rbx
--	ret
-+	RET
- 3:
- 	movl    $-EIO, %r11d
- 	jmp     2b
-@@ -77,7 +77,7 @@ SYM_FUNC_START(\op\()_safe_regs)
- 	popl %esi
- 	popl %ebp
- 	popl %ebx
--	ret
-+	RET
- 3:
- 	movl    $-EIO, 4(%esp)
- 	jmp     2b
---- a/arch/x86/lib/putuser.S
-+++ b/arch/x86/lib/putuser.S
-@@ -52,7 +52,7 @@ SYM_INNER_LABEL(__put_user_nocheck_1, SY
- 1:	movb %al,(%_ASM_CX)
- 	xor %ecx,%ecx
- 	ASM_CLAC
--	ret
-+	RET
- SYM_FUNC_END(__put_user_1)
- EXPORT_SYMBOL(__put_user_1)
- EXPORT_SYMBOL(__put_user_nocheck_1)
-@@ -66,7 +66,7 @@ SYM_INNER_LABEL(__put_user_nocheck_2, SY
- 2:	movw %ax,(%_ASM_CX)
- 	xor %ecx,%ecx
- 	ASM_CLAC
--	ret
-+	RET
- SYM_FUNC_END(__put_user_2)
- EXPORT_SYMBOL(__put_user_2)
- EXPORT_SYMBOL(__put_user_nocheck_2)
-@@ -80,7 +80,7 @@ SYM_INNER_LABEL(__put_user_nocheck_4, SY
- 3:	movl %eax,(%_ASM_CX)
- 	xor %ecx,%ecx
- 	ASM_CLAC
--	ret
-+	RET
- SYM_FUNC_END(__put_user_4)
- EXPORT_SYMBOL(__put_user_4)
- EXPORT_SYMBOL(__put_user_nocheck_4)
---- a/arch/x86/lib/retpoline.S
-+++ b/arch/x86/lib/retpoline.S
-@@ -23,7 +23,7 @@
- .Ldo_rop_\@:
- 	mov     %\reg, (%_ASM_SP)
- 	UNWIND_HINT_FUNC
--	ret
-+	RET
- .endm
- 
- .macro THUNK reg
-@@ -39,11 +39,11 @@ SYM_INNER_LABEL(__x86_indirect_thunk_\re
- 	 */
- 	ALTERNATIVE_2 __stringify(RETPOLINE \reg), \
- 		      __stringify(ud2), ALT_NOT(X86_FEATURE_RETPOLINE), \
--		      __stringify(lfence; ANNOTATE_RETPOLINE_SAFE; jmp *%\reg), X86_FEATURE_RETPOLINE_AMD
-+		      __stringify(lfence; ANNOTATE_RETPOLINE_SAFE; jmp *%\reg; int3), X86_FEATURE_RETPOLINE_AMD
- #else
- 	ALTERNATIVE_2 __stringify(ANNOTATE_RETPOLINE_SAFE; jmp *%\reg), \
- 		      __stringify(RETPOLINE \reg), X86_FEATURE_RETPOLINE, \
--		      __stringify(lfence; ANNOTATE_RETPOLINE_SAFE; jmp *%\reg), X86_FEATURE_RETPOLINE_AMD
-+		      __stringify(lfence; ANNOTATE_RETPOLINE_SAFE; jmp *%\reg; int3), X86_FEATURE_RETPOLINE_AMD
- #endif
- 
- .endm
---- a/arch/x86/math-emu/div_Xsig.S
-+++ b/arch/x86/math-emu/div_Xsig.S
-@@ -341,7 +341,7 @@ SYM_FUNC_START(div_Xsig)
- 	popl	%esi
- 
- 	leave
--	ret
-+	RET
- 
- 
- #ifdef PARANOID
---- a/arch/x86/math-emu/div_small.S
-+++ b/arch/x86/math-emu/div_small.S
-@@ -44,5 +44,5 @@ SYM_FUNC_START(FPU_div_small)
- 	popl	%esi
- 
- 	leave
--	ret
-+	RET
- SYM_FUNC_END(FPU_div_small)
---- a/arch/x86/math-emu/mul_Xsig.S
-+++ b/arch/x86/math-emu/mul_Xsig.S
-@@ -62,7 +62,7 @@ SYM_FUNC_START(mul32_Xsig)
- 
- 	popl %esi
- 	leave
--	ret
-+	RET
- SYM_FUNC_END(mul32_Xsig)
- 
- 
-@@ -115,7 +115,7 @@ SYM_FUNC_START(mul64_Xsig)
- 
- 	popl %esi
- 	leave
--	ret
-+	RET
- SYM_FUNC_END(mul64_Xsig)
- 
- 
-@@ -175,5 +175,5 @@ SYM_FUNC_START(mul_Xsig_Xsig)
- 
- 	popl %esi
- 	leave
--	ret
-+	RET
- SYM_FUNC_END(mul_Xsig_Xsig)
---- a/arch/x86/math-emu/polynom_Xsig.S
-+++ b/arch/x86/math-emu/polynom_Xsig.S
-@@ -133,5 +133,5 @@ SYM_FUNC_START(polynomial_Xsig)
- 	popl	%edi
- 	popl	%esi
- 	leave
--	ret
-+	RET
- SYM_FUNC_END(polynomial_Xsig)
---- a/arch/x86/math-emu/reg_norm.S
-+++ b/arch/x86/math-emu/reg_norm.S
-@@ -72,7 +72,7 @@ SYM_FUNC_START(FPU_normalize)
- L_exit:
- 	popl	%ebx
- 	leave
--	ret
-+	RET
- 
- 
- L_zero:
-@@ -138,7 +138,7 @@ SYM_FUNC_START(FPU_normalize_nuo)
- 
- 	popl	%ebx
- 	leave
--	ret
-+	RET
- 
- L_exit_nuo_zero:
- 	movl	TAG_Zero,%eax
-@@ -146,5 +146,5 @@ SYM_FUNC_START(FPU_normalize_nuo)
- 
- 	popl	%ebx
- 	leave
--	ret
-+	RET
- SYM_FUNC_END(FPU_normalize_nuo)
---- a/arch/x86/math-emu/reg_round.S
-+++ b/arch/x86/math-emu/reg_round.S
-@@ -437,7 +437,7 @@ LGreater_Half_53:			/* Rounding: increme
- 	popl	%edi
- 	popl	%esi
- 	leave
--	ret
-+	RET
- 
- 
- /*
---- a/arch/x86/math-emu/reg_u_add.S
-+++ b/arch/x86/math-emu/reg_u_add.S
-@@ -164,6 +164,6 @@ SYM_FUNC_START(FPU_u_add)
- 	popl	%edi
- 	popl	%esi
- 	leave
--	ret
-+	RET
- #endif /* PARANOID */
- SYM_FUNC_END(FPU_u_add)
---- a/arch/x86/math-emu/reg_u_div.S
-+++ b/arch/x86/math-emu/reg_u_div.S
-@@ -468,7 +468,7 @@ SYM_FUNC_START(FPU_u_div)
- 	popl	%esi
- 
- 	leave
--	ret
-+	RET
- #endif /* PARANOID */ 
- 
- SYM_FUNC_END(FPU_u_div)
---- a/arch/x86/math-emu/reg_u_mul.S
-+++ b/arch/x86/math-emu/reg_u_mul.S
-@@ -144,7 +144,7 @@ SYM_FUNC_START(FPU_u_mul)
- 	popl	%edi
- 	popl	%esi
- 	leave
--	ret
-+	RET
- #endif /* PARANOID */ 
- 
- SYM_FUNC_END(FPU_u_mul)
---- a/arch/x86/math-emu/reg_u_sub.S
-+++ b/arch/x86/math-emu/reg_u_sub.S
-@@ -270,5 +270,5 @@ SYM_FUNC_START(FPU_u_sub)
- 	popl	%edi
- 	popl	%esi
- 	leave
--	ret
-+	RET
- SYM_FUNC_END(FPU_u_sub)
---- a/arch/x86/math-emu/round_Xsig.S
-+++ b/arch/x86/math-emu/round_Xsig.S
-@@ -78,7 +78,7 @@ SYM_FUNC_START(round_Xsig)
- 	popl	%esi
- 	popl	%ebx
- 	leave
--	ret
-+	RET
- SYM_FUNC_END(round_Xsig)
- 
- 
-@@ -138,5 +138,5 @@ SYM_FUNC_START(norm_Xsig)
- 	popl	%esi
- 	popl	%ebx
- 	leave
--	ret
-+	RET
- SYM_FUNC_END(norm_Xsig)
---- a/arch/x86/math-emu/shr_Xsig.S
-+++ b/arch/x86/math-emu/shr_Xsig.S
-@@ -45,7 +45,7 @@ SYM_FUNC_START(shr_Xsig)
- 	popl	%ebx
- 	popl	%esi
- 	leave
--	ret
-+	RET
- 
- L_more_than_31:
- 	cmpl	$64,%ecx
-@@ -61,7 +61,7 @@ SYM_FUNC_START(shr_Xsig)
- 	movl	$0,8(%esi)
- 	popl	%esi
- 	leave
--	ret
-+	RET
- 
- L_more_than_63:
- 	cmpl	$96,%ecx
-@@ -76,7 +76,7 @@ SYM_FUNC_START(shr_Xsig)
- 	movl	%edx,8(%esi)
- 	popl	%esi
- 	leave
--	ret
-+	RET
- 
- L_more_than_95:
- 	xorl	%eax,%eax
-@@ -85,5 +85,5 @@ SYM_FUNC_START(shr_Xsig)
- 	movl	%eax,8(%esi)
- 	popl	%esi
- 	leave
--	ret
-+	RET
- SYM_FUNC_END(shr_Xsig)
---- a/arch/x86/math-emu/wm_shrx.S
-+++ b/arch/x86/math-emu/wm_shrx.S
-@@ -55,7 +55,7 @@ SYM_FUNC_START(FPU_shrx)
- 	popl	%ebx
- 	popl	%esi
- 	leave
--	ret
-+	RET
- 
- L_more_than_31:
- 	cmpl	$64,%ecx
-@@ -70,7 +70,7 @@ SYM_FUNC_START(FPU_shrx)
- 	movl	$0,4(%esi)
- 	popl	%esi
- 	leave
--	ret
-+	RET
- 
- L_more_than_63:
- 	cmpl	$96,%ecx
-@@ -84,7 +84,7 @@ SYM_FUNC_START(FPU_shrx)
- 	movl	%edx,4(%esi)
- 	popl	%esi
- 	leave
--	ret
-+	RET
- 
- L_more_than_95:
- 	xorl	%eax,%eax
-@@ -92,7 +92,7 @@ SYM_FUNC_START(FPU_shrx)
- 	movl	%eax,4(%esi)
- 	popl	%esi
- 	leave
--	ret
-+	RET
- SYM_FUNC_END(FPU_shrx)
- 
- 
-@@ -146,7 +146,7 @@ SYM_FUNC_START(FPU_shrxs)
- 	popl	%ebx
- 	popl	%esi
- 	leave
--	ret
-+	RET
- 
- /* Shift by [0..31] bits */
- Ls_less_than_32:
-@@ -163,7 +163,7 @@ SYM_FUNC_START(FPU_shrxs)
- 	popl	%ebx
- 	popl	%esi
- 	leave
--	ret
-+	RET
- 
- /* Shift by [64..95] bits */
- Ls_more_than_63:
-@@ -189,7 +189,7 @@ SYM_FUNC_START(FPU_shrxs)
- 	popl	%ebx
- 	popl	%esi
- 	leave
--	ret
-+	RET
- 
- Ls_more_than_95:
- /* Shift by [96..inf) bits */
-@@ -203,5 +203,5 @@ SYM_FUNC_START(FPU_shrxs)
- 	popl	%ebx
- 	popl	%esi
- 	leave
--	ret
-+	RET
- SYM_FUNC_END(FPU_shrxs)
---- a/arch/x86/mm/mem_encrypt_boot.S
-+++ b/arch/x86/mm/mem_encrypt_boot.S
-@@ -65,7 +65,7 @@ SYM_FUNC_START(sme_encrypt_execute)
- 	movq	%rbp, %rsp		/* Restore original stack pointer */
- 	pop	%rbp
- 
--	ret
-+	RET
- SYM_FUNC_END(sme_encrypt_execute)
- 
- SYM_FUNC_START(__enc_copy)
-@@ -151,6 +151,6 @@ SYM_FUNC_START(__enc_copy)
- 	pop	%r12
- 	pop	%r15
- 
--	ret
-+	RET
- .L__enc_copy_end:
- SYM_FUNC_END(__enc_copy)
---- a/arch/x86/platform/efi/efi_stub_32.S
-+++ b/arch/x86/platform/efi/efi_stub_32.S
-@@ -56,5 +56,5 @@ SYM_FUNC_START(efi_call_svam)
- 
- 	movl	16(%esp), %ebx
- 	leave
--	ret
-+	RET
- SYM_FUNC_END(efi_call_svam)
---- a/arch/x86/platform/efi/efi_stub_64.S
-+++ b/arch/x86/platform/efi/efi_stub_64.S
-@@ -23,5 +23,5 @@ SYM_FUNC_START(__efi_call)
- 	mov %rsi, %rcx
- 	CALL_NOSPEC rdi
- 	leave
--	ret
-+	RET
- SYM_FUNC_END(__efi_call)
---- a/arch/x86/platform/efi/efi_thunk_64.S
-+++ b/arch/x86/platform/efi/efi_thunk_64.S
-@@ -63,7 +63,7 @@ SYM_CODE_START(__efi64_thunk)
- 1:	movq	24(%rsp), %rsp
- 	pop	%rbx
- 	pop	%rbp
--	retq
-+	RET
- 
- 	.code32
- 2:	pushl	$__KERNEL_CS
---- a/arch/x86/platform/olpc/xo1-wakeup.S
-+++ b/arch/x86/platform/olpc/xo1-wakeup.S
-@@ -77,7 +77,7 @@
- 	pushfl
- 	popl saved_context_eflags
- 
--	ret
-+	RET
- 
- restore_registers:
- 	movl saved_context_ebp, %ebp
-@@ -88,7 +88,7 @@
- 	pushl saved_context_eflags
- 	popfl
- 
--	ret
-+	RET
- 
- SYM_CODE_START(do_olpc_suspend_lowlevel)
- 	call	save_processor_state
-@@ -109,7 +109,7 @@ SYM_CODE_START(do_olpc_suspend_lowlevel)
- 
- 	call	restore_registers
- 	call	restore_processor_state
--	ret
-+	RET
- SYM_CODE_END(do_olpc_suspend_lowlevel)
- 
- .data
---- a/arch/x86/power/hibernate_asm_32.S
-+++ b/arch/x86/power/hibernate_asm_32.S
-@@ -32,7 +32,7 @@ SYM_FUNC_START(swsusp_arch_suspend)
- 	FRAME_BEGIN
- 	call swsusp_save
- 	FRAME_END
--	ret
-+	RET
- SYM_FUNC_END(swsusp_arch_suspend)
- 
- SYM_CODE_START(restore_image)
-@@ -108,5 +108,5 @@ SYM_FUNC_START(restore_registers)
- 	/* tell the hibernation core that we've just restored the memory */
- 	movl	%eax, in_suspend
- 
--	ret
-+	RET
- SYM_FUNC_END(restore_registers)
---- a/arch/x86/power/hibernate_asm_64.S
-+++ b/arch/x86/power/hibernate_asm_64.S
-@@ -66,7 +66,7 @@ SYM_FUNC_START(restore_registers)
- 	/* tell the hibernation core that we've just restored the memory */
- 	movq	%rax, in_suspend(%rip)
- 
--	ret
-+	RET
- SYM_FUNC_END(restore_registers)
- 
- SYM_FUNC_START(swsusp_arch_suspend)
-@@ -96,7 +96,7 @@ SYM_FUNC_START(swsusp_arch_suspend)
- 	FRAME_BEGIN
- 	call swsusp_save
- 	FRAME_END
--	ret
-+	RET
- SYM_FUNC_END(swsusp_arch_suspend)
- 
- SYM_FUNC_START(restore_image)
-@@ -115,6 +115,7 @@ SYM_FUNC_START(restore_image)
- 	movq	relocated_restore_code(%rip), %rcx
- 	ANNOTATE_RETPOLINE_SAFE
- 	jmpq	*%rcx
-+	SLS_TRAP
- SYM_FUNC_END(restore_image)
- 
- 	/* code below has been relocated to a safe page */
-@@ -147,4 +148,5 @@ SYM_FUNC_START(core_restore_code)
- 	/* jump to the restore_registers address from the image header */
- 	ANNOTATE_RETPOLINE_SAFE
- 	jmpq	*%r8
-+	SLS_TRAP
- SYM_FUNC_END(core_restore_code)
---- a/arch/x86/um/checksum_32.S
-+++ b/arch/x86/um/checksum_32.S
-@@ -110,7 +110,7 @@ unsigned int csum_partial(const unsigned
- 7:	
- 	popl %ebx
- 	popl %esi
--	ret
-+	RET
- 
- #else
- 
-@@ -208,7 +208,7 @@ unsigned int csum_partial(const unsigned
- 80: 
- 	popl %ebx
- 	popl %esi
--	ret
-+	RET
- 				
- #endif
- 	EXPORT_SYMBOL(csum_partial)
---- a/arch/x86/um/setjmp_32.S
-+++ b/arch/x86/um/setjmp_32.S
-@@ -34,7 +34,7 @@
- 	movl %esi,12(%edx)
- 	movl %edi,16(%edx)
- 	movl %ecx,20(%edx)		# Return address
--	ret
-+	RET
- 
- 	.size kernel_setjmp,.-kernel_setjmp
- 
---- a/arch/x86/um/setjmp_64.S
-+++ b/arch/x86/um/setjmp_64.S
-@@ -33,7 +33,7 @@
- 	movq %r14,40(%rdi)
- 	movq %r15,48(%rdi)
- 	movq %rsi,56(%rdi)		# Return address
--	ret
-+	RET
- 
- 	.size kernel_setjmp,.-kernel_setjmp
- 
---- a/arch/x86/xen/xen-asm.S
-+++ b/arch/x86/xen/xen-asm.S
-@@ -28,7 +28,7 @@
-  */
- SYM_FUNC_START(xen_irq_disable_direct)
- 	movb $1, PER_CPU_VAR(xen_vcpu_info) + XEN_vcpu_info_mask
--	ret
-+	RET
- SYM_FUNC_END(xen_irq_disable_direct)
- 
- /*
-@@ -57,7 +57,7 @@ SYM_FUNC_START(check_events)
- 	pop %rcx
- 	pop %rax
- 	FRAME_END
--	ret
-+	RET
- SYM_FUNC_END(check_events)
- 
- /*
-@@ -83,7 +83,7 @@ SYM_FUNC_START(xen_irq_enable_direct)
- 	call check_events
- 1:
- 	FRAME_END
--	ret
-+	RET
- SYM_FUNC_END(xen_irq_enable_direct)
- 
- /*
-@@ -99,7 +99,7 @@ SYM_FUNC_START(xen_save_fl_direct)
- 	testb $0xff, PER_CPU_VAR(xen_vcpu_info) + XEN_vcpu_info_mask
- 	setz %ah
- 	addb %ah, %ah
--	ret
-+	RET
- SYM_FUNC_END(xen_save_fl_direct)
- 
- SYM_FUNC_START(xen_read_cr2)
-@@ -107,14 +107,14 @@ SYM_FUNC_START(xen_read_cr2)
- 	_ASM_MOV PER_CPU_VAR(xen_vcpu), %_ASM_AX
- 	_ASM_MOV XEN_vcpu_info_arch_cr2(%_ASM_AX), %_ASM_AX
- 	FRAME_END
--	ret
-+	RET
- SYM_FUNC_END(xen_read_cr2);
- 
- SYM_FUNC_START(xen_read_cr2_direct)
- 	FRAME_BEGIN
- 	_ASM_MOV PER_CPU_VAR(xen_vcpu_info) + XEN_vcpu_info_arch_cr2, %_ASM_AX
- 	FRAME_END
--	ret
-+	RET
- SYM_FUNC_END(xen_read_cr2_direct);
- .popsection
- 
---- a/arch/x86/xen/xen-head.S
-+++ b/arch/x86/xen/xen-head.S
-@@ -26,7 +26,7 @@ SYM_CODE_START(hypercall_page)
- 	.rept (PAGE_SIZE / 32)
- 		UNWIND_HINT_FUNC
- 		.skip 31, 0x90
--		ret
-+		RET
- 	.endr
- 
- #define HYPERCALL(n) \
---- a/samples/ftrace/ftrace-direct-modify.c
-+++ b/samples/ftrace/ftrace-direct-modify.c
-@@ -28,7 +28,7 @@ asm (
- "	call my_direct_func1\n"
- "	leave\n"
- "	.size		my_tramp1, .-my_tramp1\n"
--"	ret\n"
-+	ASM_RET
- "	.type		my_tramp2, @function\n"
- "	.globl		my_tramp2\n"
- "   my_tramp2:"
-@@ -36,7 +36,7 @@ asm (
- "	movq %rsp, %rbp\n"
- "	call my_direct_func2\n"
- "	leave\n"
--"	ret\n"
-+	ASM_RET
- "	.size		my_tramp2, .-my_tramp2\n"
- "	.popsection\n"
- );
---- a/samples/ftrace/ftrace-direct-too.c
-+++ b/samples/ftrace/ftrace-direct-too.c
-@@ -28,7 +28,7 @@ asm (
- "	popq %rsi\n"
- "	popq %rdi\n"
- "	leave\n"
--"	ret\n"
-+	ASM_RET
- "	.size		my_tramp, .-my_tramp\n"
- "	.popsection\n"
- );
---- a/samples/ftrace/ftrace-direct.c
-+++ b/samples/ftrace/ftrace-direct.c
-@@ -22,7 +22,7 @@ asm (
- "	call my_direct_func\n"
- "	popq %rdi\n"
- "	leave\n"
--"	ret\n"
-+	ASM_RET
- "	.size		my_tramp, .-my_tramp\n"
- "	.popsection\n"
- );
---- a/scripts/Makefile.lib
-+++ b/scripts/Makefile.lib
-@@ -241,7 +241,8 @@ objtool_args =								\
- 	$(if $(CONFIG_GCOV_KERNEL)$(CONFIG_LTO_CLANG), --no-unreachable)\
- 	$(if $(CONFIG_RETPOLINE), --retpoline)				\
- 	$(if $(CONFIG_X86_SMAP), --uaccess)				\
--	$(if $(CONFIG_FTRACE_MCOUNT_USE_OBJTOOL), --mcount)
-+	$(if $(CONFIG_FTRACE_MCOUNT_USE_OBJTOOL), --mcount)             \
-+        $(if $(CONFIG_SLS), --sls)
- 
- # Useful for describing the dependency of composite objects
- # Usage:
---- a/tools/objtool/arch/x86/decode.c
-+++ b/tools/objtool/arch/x86/decode.c
-@@ -531,6 +531,11 @@ int arch_decode_instruction(struct objto
- 		}
- 		break;
- 
-+	case 0xcc:
-+		/* int3 */
-+		*type = INSN_TRAP;
-+		break;
-+
- 	case 0xe3:
- 		/* jecxz/jrcxz */
- 		*type = INSN_JUMP_CONDITIONAL;
-@@ -697,10 +702,10 @@ const char *arch_ret_insn(int len)
- {
- 	static const char ret[5][5] = {
- 		{ BYTE_RET },
--		{ BYTE_RET, BYTES_NOP1 },
--		{ BYTE_RET, BYTES_NOP2 },
--		{ BYTE_RET, BYTES_NOP3 },
--		{ BYTE_RET, BYTES_NOP4 },
-+		{ BYTE_RET, 0xcc },
-+		{ BYTE_RET, 0xcc, BYTES_NOP1 },
-+		{ BYTE_RET, 0xcc, BYTES_NOP2 },
-+		{ BYTE_RET, 0xcc, BYTES_NOP3 },
- 	};
- 
- 	if (len < 1 || len > 5) {
---- a/tools/objtool/builtin-check.c
-+++ b/tools/objtool/builtin-check.c
-@@ -20,7 +20,7 @@
- #include <objtool/objtool.h>
- 
- bool no_fp, no_unreachable, retpoline, module, backtrace, uaccess, stats,
--     validate_dup, vmlinux, mcount, noinstr, backup;
-+     validate_dup, vmlinux, mcount, noinstr, backup, sls;
- 
- static const char * const check_usage[] = {
- 	"objtool check [<options>] file.o",
-@@ -45,6 +45,7 @@ const struct option check_options[] = {
- 	OPT_BOOLEAN('l', "vmlinux", &vmlinux, "vmlinux.o validation"),
- 	OPT_BOOLEAN('M', "mcount", &mcount, "generate __mcount_loc"),
- 	OPT_BOOLEAN('B', "backup", &backup, "create .orig files before modification"),
-+	OPT_BOOLEAN('S', "sls", &sls, "validate straight-line-speculation"),
- 	OPT_END(),
- };
- 
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -3084,6 +3084,12 @@ static int validate_branch(struct objtoo
- 		switch (insn->type) {
- 
- 		case INSN_RETURN:
-+			if (next_insn && next_insn->type == INSN_TRAP) {
-+				next_insn->ignore = true;
-+			} else if (sls && !insn->retpoline_safe) {
-+				WARN_FUNC("missing int3 after ret",
-+					  insn->sec, insn->offset);
-+			}
- 			return validate_return(func, insn, &state);
- 
- 		case INSN_CALL:
-@@ -3127,6 +3133,14 @@ static int validate_branch(struct objtoo
- 			break;
- 
- 		case INSN_JUMP_DYNAMIC:
-+			if (next_insn && next_insn->type == INSN_TRAP) {
-+				next_insn->ignore = true;
-+			} else if (sls && !insn->retpoline_safe) {
-+				WARN_FUNC("missing int3 after indirect jump",
-+					  insn->sec, insn->offset);
-+			}
-+
-+			/* fallthrough */
- 		case INSN_JUMP_DYNAMIC_CONDITIONAL:
- 			if (is_sibling_call(insn)) {
- 				ret = validate_sibling_call(file, insn, &state);
---- a/tools/objtool/include/objtool/arch.h
-+++ b/tools/objtool/include/objtool/arch.h
-@@ -26,6 +26,7 @@ enum insn_type {
- 	INSN_CLAC,
- 	INSN_STD,
- 	INSN_CLD,
-+	INSN_TRAP,
- 	INSN_OTHER,
- };
- 
---- a/tools/objtool/include/objtool/builtin.h
-+++ b/tools/objtool/include/objtool/builtin.h
-@@ -9,7 +9,7 @@
- 
- extern const struct option check_options[];
- extern bool no_fp, no_unreachable, retpoline, module, backtrace, uaccess, stats,
--            validate_dup, vmlinux, mcount, noinstr, backup;
-+            validate_dup, vmlinux, mcount, noinstr, backup, sls;
- 
- extern int cmd_parse_options(int argc, const char **argv, const char * const usage[]);
- 
+The drm-misc tree gained a conflict against Linus' tree.
 
+The amdgpu tree gained complex conflicts against the drm tree so I
+dropped it today.
+
+The tip tree regained a bulid failure for which I applied a patch.
+
+The ftrace tree gained a conflict against Linus' tree.
+
+The xen-tip tree gained conflicts against the tip tree.
+
+The char-misc tree gained a conflict against the drm-intel tree and lost
+its build failure.
+
+The kspp tree gained a conflict against the wireless-drivers-next tree.
+
+The unicode tree gained a conflict against the f2fs tree.
+
+I have disabled the ntfs file system for now as it fails a powerpc
+allyesconfig build.
+
+Non-merge commits (relative to Linus' tree): 11380
+ 10636 files changed, 647186 insertions(+), 234513 deletions(-)
+
+----------------------------------------------------------------------------
+
+I have created today's linux-next tree at
+git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+(patches at http://www.kernel.org/pub/linux/kernel/next/ ).  If you
+are tracking the linux-next tree using git, you should not use "git pull"
+to do so as that will try to merge the new linux-next release with the
+old one.  You should use "git fetch" and checkout or reset to the new
+master.
+
+You can see which trees have been included by looking in the Next/Trees
+file in the source.  There are also quilt-import.log and merge.log
+files in the Next directory.  Between each merge, the tree was built
+with a ppc64_defconfig for powerpc, an allmodconfig for x86_64, a
+multi_v7_defconfig for arm and a native build of tools/perf. After
+the final fixups (if any), I do an x86_64 modules_install followed by
+builds for x86_64 allnoconfig, powerpc allnoconfig (32 and 64 bit),
+ppc44x_defconfig, allyesconfig and pseries_le_defconfig and i386, sparc
+and sparc64 defconfig and htmldocs. And finally, a simple boot test
+of the powerpc pseries_le_defconfig kernel in qemu (with and without
+kvm enabled).
+
+Below is a summary of the state of the merge.
+
+I am currently merging 343 trees (counting Linus' and 92 trees of bug
+fix patches pending for the current merge release).
+
+Stats about the size of the tree over time can be seen at
+http://neuling.org/linux-next-size.html .
+
+Status of my local build tests will be at
+http://kisskb.ellerman.id.au/linux-next .  If maintainers want to give
+advice about cross compilers/configs that work, we are always open to add
+more builds.
+
+Thanks to Randy Dunlap for doing many randconfig builds.  And to Paul
+Gortmaker for triage and bug fixes.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+$ git checkout master
+$ git reset --hard stable
+Merging origin/master (1fc596a56b33 Merge tag 'trace-v5.15-rc6' of git://gi=
+t.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace)
+Merging fixes/fixes (3ca706c189db drm/ttm: fix type mismatch error on sparc=
+64)
+Merging kbuild-current/fixes (0664684e1ebd kbuild: Add -Werror=3Dignored-op=
+timization-argument to CLANG_FLAGS)
+Merging arc-current/for-curr (3906fe9bb7f1 Linux 5.15-rc7)
+Merging arm-current/fixes (00568b8a6364 ARM: 9148/1: handle CONFIG_CPU_ENDI=
+AN_BE32 in arch/arm/kernel/head.S)
+Merging arm64-fixes/for-next/fixes (596143e3aec3 acpi/arm64: fix next_platf=
+orm_timer() section mismatch error)
+Merging arm-soc-fixes/arm/fixes (76f79231666a Merge tag 'soc-fsl-fix-v5.15-=
+2' of git://git.kernel.org/pub/scm/linux/kernel/git/leo/linux into arm/fixe=
+s)
+Merging drivers-memory-fixes/fixes (6880fa6c5660 Linux 5.15-rc1)
+Merging m68k-current/for-linus (9fde03486402 m68k: Remove set_fs())
+Merging powerpc-fixes/fixes (d853adc7adf6 powerpc/pseries/iommu: Create hug=
+e DMA window if no MMIO32 is present)
+Merging s390-fixes/fixes (8b7216439e2e s390: add Alexander Gordeev as revie=
+wer)
+Merging sparc/master (05a59d79793d Merge git://git.kernel.org:/pub/scm/linu=
+x/kernel/git/netdev/net)
+Merging fscrypt-current/for-stable (80f6e3080bfc fs-verity: fix signed inte=
+ger overflow with i_size near S64_MAX)
+Merging net/master (6f7c88691191 usbnet: fix error return code in usbnet_pr=
+obe())
+Merging bpf/master (440ffcdd9db4 Merge https://git.kernel.org/pub/scm/linux=
+/kernel/git/bpf/bpf)
+Merging ipsec/master (93ec1320b017 xfrm: fix rcu lock in xfrm_notify_userpo=
+licy())
+Merging netfilter/master (2199f562730d ipvs: autoload ipvs on genl access)
+Merging ipvs/master (2199f562730d ipvs: autoload ipvs on genl access)
+Merging wireless-drivers/master (603a1621caa0 mwifiex: avoid null-pointer-s=
+ubtraction warning)
+Merging mac80211/master (689a0a9f505f cfg80211: correct bridge/4addr mode c=
+heck)
+Merging rdma-fixes/for-rc (64733956ebba RDMA/sa_query: Use strscpy_pad inst=
+ead of memcpy to copy a string)
+Merging sound-current/for-linus (3ab799201845 ALSA: mixer: fix deadlock in =
+snd_mixer_oss_set_volume)
+Merging sound-asoc-fixes/for-linus (a985f0eee470 Merge remote-tracking bran=
+ch 'asoc/for-5.15' into asoc-linus)
+Merging regmap-fixes/for-linus (38a4b4fb7c73 Merge remote-tracking branch '=
+regmap/for-5.15' into regmap-linus)
+Merging regulator-fixes/for-linus (519d81956ee2 Linux 5.15-rc6)
+Merging spi-fixes/for-linus (d81d0e41ed5f spi: spl022: fix Microwire full d=
+uplex mode)
+Merging pci-current/for-linus (e4e737bb5c17 Linux 5.15-rc2)
+Merging driver-core.current/driver-core-linus (519d81956ee2 Linux 5.15-rc6)
+Merging tty.current/tty-linus (519d81956ee2 Linux 5.15-rc6)
+Merging usb.current/usb-linus (519d81956ee2 Linux 5.15-rc6)
+Merging usb-gadget-fixes/fixes (e49d033bddf5 Linux 5.12-rc6)
+Merging usb-serial-fixes/usb-linus (519d81956ee2 Linux 5.15-rc6)
+Merging usb-chipidea-fixes/for-usb-fixes (f130d08a8d79 usb: chipidea: ci_hd=
+rc_imx: Also search for 'phys' phandle)
+Merging phy/fixes (6880fa6c5660 Linux 5.15-rc1)
+Merging staging.current/staging-linus (519d81956ee2 Linux 5.15-rc6)
+Merging iio-fixes/fixes-togreg (486a25084155 iio: buffer: Fix memory leak i=
+n iio_buffers_alloc_sysfs_and_mask())
+Merging char-misc.current/char-misc-linus (519d81956ee2 Linux 5.15-rc6)
+Merging soundwire-fixes/fixes (6880fa6c5660 Linux 5.15-rc1)
+Merging thunderbolt-fixes/fixes (3906fe9bb7f1 Linux 5.15-rc7)
+Merging input-current/for-linus (a02dcde595f7 Input: touchscreen - avoid bi=
+twise vs logical OR warning)
+Merging crypto-current/master (f8690a4b5a1b crypto: x86/sm4 - Fix invalid s=
+ection entry size)
+Merging vfio-fixes/for-linus (42de956ca7e5 vfio/ap_ops: Add missed vfio_uni=
+nit_group_dev())
+Merging kselftest-fixes/fixes (519d81956ee2 Linux 5.15-rc6)
+Merging modules-fixes/modules-linus (0d67e332e6df module: fix clang CFI wit=
+h MODULE_UNLOAD=3Dn)
+Merging dmaengine-fixes/fixes (6880fa6c5660 Linux 5.15-rc1)
+Merging backlight-fixes/for-backlight-fixes (a38fd8748464 Linux 5.12-rc2)
+Merging mtd-fixes/mtd/fixes (f60f5741002b mtd: rawnand: qcom: Update code w=
+ord value for raw read)
+Merging mfd-fixes/for-mfd-fixes (a61f4661fba4 mfd: intel_quark_i2c_gpio: Re=
+vert "Constify static struct resources")
+Merging v4l-dvb-fixes/fixes (206704a1fe0b media: atomisp: restore missing '=
+return' statement)
+Merging reset-fixes/reset/fixes (3ad60b4b3570 reset: socfpga: add empty dri=
+ver allowing consumers to probe)
+Merging mips-fixes/mips-fixes (740da9d7ca4e MIPS: Revert "add support for b=
+uggy MT7621S core detection")
+Merging at91-fixes/at91-fixes (dbe68bc9e82b ARM: dts: at91: sama7g5ek: to n=
+ot touch slew-rate for SDMMC pins)
+Merging omap-fixes/fixes (80d680fdccba ARM: dts: omap3430-sdp: Fix NAND dev=
+ice node)
+Merging kvm-fixes/master (95e16b4792b0 KVM: SEV-ES: go over the sev_pio_dat=
+a buffer in multiple passes if needed)
+Merging kvms390-fixes/master (0e9ff65f455d KVM: s390: preserve deliverable_=
+mask in __airqs_kick_single_vcpu)
+Merging hwmon-fixes/hwmon (ada61aa0b118 hwmon: Fix possible memleak in __hw=
+mon_device_register())
+Merging nvdimm-fixes/libnvdimm-fixes (3dd60fb9d95d nvdimm/pmem: stop using =
+q_usage_count as external pgmap refcount)
+Merging cxl-fixes/fixes (fae8817ae804 cxl/mem: Fix memory device capacity p=
+robing)
+Merging btrfs-fixes/next-fixes (d7395f03c79c Merge branch 'misc-5.15' into =
+next-fixes)
+Merging vfs-fixes/fixes (25f54d08f12f autofs: fix wait name hash calculatio=
+n in autofs_wait())
+Merging dma-mapping-fixes/for-linus (18a3c5f7abfd Merge tag 'for_linus' of =
+git://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost)
+Merging i3c-fixes/i3c/fixes (fe07bfda2fb9 Linux 5.12-rc1)
+Merging drivers-x86-fixes/fixes (7df227847ab5 platform/x86: int1092: Fix no=
+n sequential device mode handling)
+Merging samsung-krzk-fixes/fixes (6880fa6c5660 Linux 5.15-rc1)
+Merging pinctrl-samsung-fixes/fixes (6880fa6c5660 Linux 5.15-rc1)
+Merging devicetree-fixes/dt/linus (b2d70c0dbf27 dt-bindings: drm/bridge: ti=
+-sn65dsi86: Fix reg value)
+Merging scsi-fixes/fixes (282da7cef078 scsi: ufs: ufs-exynos: Correct timeo=
+ut value setting registers)
+Merging drm-fixes/drm-fixes (defbbcd99fa6 Merge tag 'amd-drm-fixes-5.15-202=
+1-10-21' of https://gitlab.freedesktop.org/agd5f/linux into drm-fixes)
+Merging amdgpu-fixes/drm-fixes (2c409ba81be2 drm/radeon: fix si_enable_smc_=
+cac() failed issue)
+Merging drm-intel-fixes/for-linux-next-fixes (6e6f96630805 drm/i915/dp: Ski=
+p the HW readout of DPCD on disabled encoders)
+Merging mmc-fixes/fixes (92b18252b91d mmc: cqhci: clear HALT state after CQ=
+E enable)
+Merging rtc-fixes/rtc-fixes (bd33335aa93d rtc: cmos: Disable irq around dir=
+ect invocation of cmos_interrupt())
+Merging gnss-fixes/gnss-linus (e73f0f0ee754 Linux 5.14-rc1)
+Merging hyperv-fixes/hyperv-fixes (8017c99680fa hyperv/vmbus: include linux=
+/bitops.h)
+Merging soc-fsl-fixes/fix (7e5e744183bb soc: fsl: dpio: fix qbman alignment=
+ error in the virtualization context)
+Merging risc-v-fixes/fixes (64a19591a293 riscv: fix misalgned trap vector b=
+ase address)
+Merging pidfd-fixes/fixes (03ba0fe4d09f file: simplify logic in __close_ran=
+ge())
+Merging fpga-fixes/fixes (2a2a79577dda fpga: ice40-spi: Add SPI device ID t=
+able)
+Merging spdx/spdx-linus (519d81956ee2 Linux 5.15-rc6)
+Merging gpio-brgl-fixes/gpio/for-current (c0eee6fbfa2b gpio: mlxbf2.c: Add =
+check for bgpio_init failure)
+Merging gpio-intel-fixes/fixes (1649b8376694 gpio: pca953x: Improve bias se=
+tting)
+Merging pinctrl-intel-fixes/fixes (3906fe9bb7f1 Linux 5.15-rc7)
+Merging erofs-fixes/fixes (c40dd3ca2a45 erofs: clear compacted_2b if compac=
+ted_4b_initial > totalidx)
+Merging integrity-fixes/fixes (843385694721 evm: Fix a small race in init_d=
+esc())
+Merging kunit-fixes/kunit-fixes (519d81956ee2 Linux 5.15-rc6)
+Merging ubifs-fixes/fixes (78c7d49f55d8 ubifs: journal: Make sure to not di=
+rty twice for auth nodes)
+Merging memblock-fixes/fixes (87066fdd2e30 Revert "mm/secretmem: use refcou=
+nt_t instead of atomic_t")
+Merging cel-fixes/for-rc (7d2a07b76933 Linux 5.14)
+Merging irqchip-fixes/irq/irqchip-fixes (b78f26926b17 irqchip/gic: Work aro=
+und broken Renesas integration)
+Merging renesas-fixes/fixes (432b52eea3dc ARM: shmobile: defconfig: Restore=
+ graphical consoles)
+Merging perf-current/perf/urgent (3ff6d64e68ab libperf tests: Fix test_stat=
+_cpu)
+Merging efi-fixes/urgent (38fa3206bf44 efi: Change down_interruptible() in =
+virt_efi_reset_system() to down_trylock())
+Merging drm-misc-fixes/for-linux-next-fixes (61b1d445f3bf drm: panel-orient=
+ation-quirks: Add quirk for GPD Win3)
+Merging kbuild/for-next (7c5c49dc2b80 [for -next only] kconfig: generate in=
+clude/generated/rustc_cfg)
+Merging perf/perf/core (342cb7ebf5e2 perf jevents: Fix some would-be warnin=
+gs)
+CONFLICT (content): Merge conflict in tools/perf/util/session.c
+Merging compiler-attributes/compiler-attributes (7c00621dcaee compiler_type=
+s: mark __compiletime_assert failure as __noreturn)
+Merging dma-mapping/for-next (9fbd8dc19aa5 dma-mapping: use 'bitmap_zalloc(=
+)' when applicable)
+Merging asm-generic/master (7efbbe6e1414 qcom_scm: hide Kconfig symbol)
+Merging arc/for-next (6880fa6c5660 Linux 5.15-rc1)
+Merging arm/for-next (61c96499021b Merge branch 'devel-stable' into for-nex=
+t)
+Merging arm64/for-next/core (e3690c95157c Merge branch 'for-next/fixes' int=
+o for-next/core)
+Merging arm-perf/for-next/perf (e656972b6986 drivers/perf: Improve build te=
+st coverage)
+Merging arm-soc/for-next (fdf79096aec7 Merge branch 'arm/drivers' into for-=
+next)
+Merging actions/for-next (444d018d8d38 ARM: dts: owl-s500-roseapplepi: Add =
+ATC2603C PMIC)
+Merging amlogic/for-next (83e38509109e Merge branch 'v5.16/dt64' into for-n=
+ext)
+Merging aspeed/for-next (509d3f2b755f Merge branches 'defconfig-for-v5.16' =
+and 'dt-for-v5.16' into for-next)
+Merging at91/at91-next (f3c0366411d6 ARM: dts: at91: sama7g5-ek: use blocks=
+ 0 and 1 of TCB0 as cs and ce)
+Merging drivers-memory/for-next (0fcbc3b7bcea Merge branch 'mem-ctrl-next' =
+into for-next)
+Merging imx-mxs/for-next (8bd7cd1cc7f0 Merge branch 'imx/maintainers' into =
+for-next)
+Merging keystone/next (cb293d3b430e Merge branch 'for_5.15/drivers-soc' int=
+o next)
+Merging mediatek/for-next (0efac36e9559 Merge branch 'v5.16-tmp/dts64' into=
+ for-next)
+Merging mvebu/for-next (04e78a787b74 arm/arm64: dts: Enable 2.5G Ethernet p=
+ort on CN9130-CRB)
+Merging omap/for-next (92d190433bd8 Merge branch 'omap-for-v5.16/gpmc' into=
+ for-next)
+Merging qcom/for-next (bbe9515ab088 Merge branches 'arm64-defconfig-for-5.1=
+6', 'arm64-for-5.16', 'drivers-for-5.16' and 'dts-for-5.16' into for-next)
+Merging raspberrypi/for-next (a036b0a5d7d6 ARM: dts: bcm2711-rpi-4-b: Fix u=
+sb's unit address)
+Merging renesas/next (525a6b4bd53f Merge branch 'renesas-arm-dt-for-v5.16' =
+into renesas-next)
+Merging reset/reset/next (8c81620ac1ac reset: mchp: sparx5: Extend support =
+for lan966x)
+Merging rockchip/for-next (cc3bcb015bb1 Merge branch 'v5.16-armsoc/dts64' i=
+nto for-next)
+Merging samsung-krzk/for-next (0d5808cf190b Merge branch 'next/dt64' into f=
+or-next)
+Merging scmi/for-linux-next (9c8df6432a73 Merge branch 'for-next/ffa' of gi=
+t://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux into for-lin=
+ux-next)
+Merging stm32/stm32-next (d4b3aaf0f90b ARM: dts: stm32: use usbphyc ck_usbo=
+_48m as USBH OHCI clock on stm32mp151)
+Merging sunxi/sunxi/for-next (7fb77af71236 Merge branch 'sunxi/dt-for-5.16'=
+ into sunxi/for-next)
+Merging tegra/for-next (bbd827b4de7e Merge branch for-5.16/arm64/defconfig =
+into for-next)
+Merging ti-k3/ti-k3-next (1e3d655fe7b4 Merge branch 'ti-k3-config-next' int=
+o ti-k3-next)
+Merging ti-k3-new/ti-k3-next (f46d16cf5b43 arm64: dts: ti: k3-j721e-sk: Add=
+ DDR carveout memory nodes)
+Merging xilinx/for-next (326b5e9db528 Merge branch 'zynqmp/soc' into for-ne=
+xt)
+Merging clk/clk-next (9c4c7a13f4c8 Merge branch 'clk-debugfs' into clk-next)
+Merging clk-imx/for-next (e8271eff5d8c clk: imx: Make CLK_IMX8ULP select MX=
+C_CLK)
+Merging clk-renesas/renesas-clk (2bd9feed2316 clk: renesas: r8a779[56]x: Ad=
+d MLP clocks)
+Merging clk-samsung/for-next (651521d396a8 clk: samsung: remove __clk_looku=
+p() usage)
+Merging csky/linux-next (e21e52ad1e01 csky: Make HAVE_TCM depend on !COMPIL=
+E_TEST)
+Merging h8300/h8300-next (1ec10274d436 h8300: don't implement set_fs)
+Merging m68k/for-next (8a3c0a74ae87 m68k: defconfig: Update defconfigs for =
+v5.15-rc1)
+Merging m68knommu/for-next (6dbe88e93c35 m68knommu: Remove MCPU32 config sy=
+mbol)
+Merging microblaze/next (43bdcbd50043 microblaze: timer: Remove unused prop=
+erties)
+Merging mips/mips-next (95b8a5e0111a MIPS: Remove NETLOGIC support)
+Merging nds32/next (07cd7745c6f2 nds32/setup: remove unused memblock_region=
+ variable in setup_memory())
+CONFLICT (content): Merge conflict in arch/nds32/Kconfig
+CONFLICT (content): Merge conflict in arch/nds32/Kbuild
+Merging nios2/for-next (7f7bc20bc41a nios2: Don't use _end for calculating =
+min_low_pfn)
+Merging openrisc/for-next (210893cad279 openrisc: signal: remove unused DEB=
+UG_SIG macro)
+Merging parisc-hd/for-next (dd7bf3ebe9e6 parisc: Remove unused constants fr=
+om asm-offsets.c)
+Merging powerpc/next (44a8214de96b powerpc/bpf: Fix write protecting JIT co=
+de)
+Merging soc-fsl/next (54c8b5b6f8a8 soc: fsl: dpio: rename the enqueue descr=
+iptor variable)
+Merging risc-v/for-next (ffa7a9141bb7 riscv: defconfig: enable DRM_NOUVEAU)
+CONFLICT (content): Merge conflict in arch/riscv/Makefile
+Merging s390/for-next (4ab5b2549146 Merge branch 'features' into for-next)
+Merging sh/for-next (8518e694203d sh: pgtable-3level: Fix cast to pointer f=
+rom integer of different size)
+Merging sparc-next/master (dd0d718152e4 Merge tag 'spi-fix-v5.8-rc2' of git=
+://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi)
+Merging uml/linux-next (ab6ff1fda1e8 uml: x86: add FORCE to user_constants.=
+h)
+Merging xtensa/xtensa-for-next (bd47cdb78997 xtensa: move section symbols t=
+o asm/sections.h)
+Merging pidfd/for-next (61bc346ce64a uapi/linux/prctl: provide macro defini=
+tions for the PR_SCHED_CORE type argument)
+Merging fscrypt/master (b7e072f9b77f fscrypt: improve a few comments)
+Merging fscache/fscache-next (d8daa20d7898 Merge branch 'fscache-remove-old=
+-io' into fscache-next)
+Merging afs/afs-next (7af08140979a Revert "gcov: clang: fix clang-11+ build=
+")
+Merging btrfs/for-next (23b461ade5ed Merge branch 'for-next-next-v5.15-2021=
+1026' into for-next-20211026)
+Applying: mark btrfs as BROKEN due to an inconsistent API change
+Merging ceph/master (324bfaa1a6cc libceph: drop ->monmap and err initializa=
+tion)
+Merging cifs/for-next (08e9f52e2dce cifs: for compound requests, use open h=
+andle if possible)
+Merging configfs/for-next (c42dd069be8d configfs: fix a race in configfs_lo=
+okup())
+Merging ecryptfs/next (682a8e2b41ef Merge tag 'ecryptfs-5.13-rc1-updates' o=
+f git://git.kernel.org/pub/scm/linux/kernel/git/tyhicks/ecryptfs)
+Merging erofs/dev (4e8bf1a67198 erofs: don't trigger WARN() when decompress=
+ion fails)
+Merging exfat/dev (efc7bd8527d0 exfat: fix incorrect loading of i_blocks fo=
+r large files)
+Merging ext3/for_next (d1ccf9fdcfc9 Merge filesystem error notification ser=
+ies from Gabriel.)
+Merging ext4/dev (916ff8d5ea0e ext4: prevent partial update of the extent b=
+locks)
+Merging f2fs/dev (02d58cd253d7 f2fs: compress: disallow disabling compress =
+on non-empty compressed file)
+Merging fsverity/fsverity (07c99001312c fs-verity: support reading signatur=
+e with ioctl)
+Merging fuse/for-next (85bf4c6df4e9 fuse: only update necessary attributes)
+Merging gfs2/for-next (e34e6f8133b8 gfs2: Fix unused value warning in do_gf=
+s2_set_flags())
+Merging jfs/jfs-next (c48a14dca2cb JFS: fix memleak in jfs_mount)
+Merging ksmbd/ksmbd-for-next (0d994cd482ee ksmbd: add buffer validation in =
+session setup)
+Merging nfs/linux-next (01d29f87fcfe NFSv4: Fix a regression in nfs_set_ope=
+n_stateid_locked())
+Merging nfs-anna/linux-next (8cfb9015280d NFS: Always provide aligned buffe=
+rs to the RPC read layers)
+Merging nfsd/nfsd-next (291cd656da04 NFSD:fix boolreturn.cocci warning)
+CONFLICT (content): Merge conflict in include/trace/events/sunrpc.h
+Merging cel/for-next (c20106944eb6 NFSD: Keep existing listeners on portlis=
+t error)
+Merging ntfs3/master (8607954cf255 fs/ntfs3: Check for NULL pointers in ni_=
+try_remove_attr_list)
+Merging orangefs/for-next (ac2c63757f4f orangefs: Fix sb refcount leak when=
+ allocate sb info failed.)
+Merging overlayfs/overlayfs-next (1dc1eed46f9f ovl: fix IOCB_DIRECT if unde=
+rlying fs doesn't support direct IO)
+Merging ubifs/next (9a620291fc01 ubifs: Export filesystem error counters)
+Merging v9fs/9p-next (9c4d94dc9a64 net/9p: increase default msize to 128k)
+Merging xfs/for-next (5ca5916b6bc9 xfs: punch out data fork delalloc blocks=
+ on COW writeback failure)
+Merging zonefs/for-next (95b115332a83 zonefs: remove redundant null bio che=
+ck)
+Merging iomap/iomap-for-next (03b8df8d43ec iomap: standardize tracepoint fo=
+rmatting and storage)
+Merging djw-vfs/vfs-for-next (d03ef4daf33a fs: forbid invalid project ID)
+Merging file-locks/locks-next (482e00075d66 fs: remove leftover comments fr=
+om mandatory locking removal)
+Merging vfs/for-next (8f40da9494cf Merge branch 'misc.namei' into for-next)
+Merging printk/for-next (ad7fea30c59e Merge branch 'for-5.16' into for-next)
+Merging pci/next (6de1dedb1db1 Merge branch 'remotes/lorenzo/pci/xgene')
+Merging pstore/for-next/pstore (c5d4fb2539ca pstore/blk: Use "%lu" to forma=
+t unsigned long)
+Merging hid/for-next (05a194aaf5e4 Merge branch 'for-5.15/upstream-fixes' i=
+nto for-next)
+Merging i2c/i2c/for-next (26701d49482a Merge branch 'i2c/for-mergewindow' i=
+nto i2c/for-next)
+Merging i3c/i3c/next (a3587e2c0578 i3c: fix incorrect address slot lookup o=
+n 64-bit)
+Merging dmi/dmi-for-next (f97a2103f1a7 firmware: dmi: Move product_sku info=
+ to the end of the modalias)
+Merging hwmon-staging/hwmon-next (f4cbba74c3ec hwmon: (nct6775) add ProArt =
+X570-CREATOR WIFI.)
+Merging jc_docs/docs-next (52ba072e110a docs: submitting-patches: make sect=
+ion about the Link: tag more explicit)
+Merging v4l-dvb/master (57c3b9f55ba8 media: venus: core: Add sdm660 DT comp=
+atible and resource struct)
+Merging v4l-dvb-next/master (bdbbd511ef0c media: stm32-dma2d: STM32 DMA2D d=
+river)
+Merging pm/linux-next (ba9410801460 Merge branches 'pm-sleep' and 'pm-cpufr=
+eq' into linux-next)
+Merging cpufreq-arm/cpufreq/arm/linux-next (b3c08d1ad2bb cpufreq: Fix param=
+eter in parse_perf_domain())
+Merging cpupower/cpupower (79a0dc5530a9 tools: cpupower: fix typo in cpupow=
+er-idle-set(1) manpage)
+Merging devfreq/devfreq-next (5cf79c293821 PM / devfreq: Strengthen check f=
+or freq_table)
+Merging opp/opp/linux-next (27ff8187f13e opp: Fix return in _opp_add_static=
+_v2())
+Merging thermal/thermal/linux-next (a67a46af4ad6 thermal/core: Deprecate ch=
+anging cooling device state from userspace)
+Merging ieee1394/for-next (54b3bd99f094 firewire: nosy: switch from 'pci_' =
+to 'dma_' API)
+Merging dlm/next (ecd95673142e fs: dlm: avoid comms shutdown delay in relea=
+se_lockspace)
+Merging rdma/for-next (e058953c0ed1 RDMA/qedr: Remove unsupported qedr_resi=
+ze_cq callback)
+Merging net-next/master (f25c0515c521 net: sched: gred: dynamically allocat=
+e tc_gred_qopt_offload)
+CONFLICT (content): Merge conflict in include/net/sock.h
+CONFLICT (content): Merge conflict in include/linux/mlx5/fs.h
+CONFLICT (content): Merge conflict in drivers/net/ethernet/mellanox/mlx5/co=
+re/en_main.c
+Applying: fixup for "RDMA/mlx5: Replace struct mlx5_core_mkey by u32 key"
+Merging bpf-next/for-next (252c765bd764 riscv, bpf: Add BPF exception table=
+s)
+Merging ipsec-next/master (83688aec17bf net/ipv4/xfrm4_tunnel.c: remove sup=
+erfluous header files from xfrm4_tunnel.c)
+Merging mlx5-next/mlx5-next (60dd57c74794 Merge brank 'mlx5_mkey' into rdma=
+.git for-next)
+Merging netfilter-next/master (241eb3f3ee42 netfilter: ebtables: use array_=
+size() helper in copy_{from,to}_user())
+Merging ipvs-next/master (241eb3f3ee42 netfilter: ebtables: use array_size(=
+) helper in copy_{from,to}_user())
+Merging wireless-drivers-next/master (a427aca0a931 Merge tag 'mt76-for-kval=
+o-2021-10-23' of https://github.com/nbd168/wireless)
+Merging bluetooth/master (c603bf1f94d0 Bluetooth: btmtksdio: add MT7921s Bl=
+uetooth support)
+Merging mac80211-next/master (62bf703f4423 cfg80211: move offchan_cac_event=
+ to a dedicated work)
+Merging mtd/mtd/next (c13de2386c78 mtd: core: don't remove debugfs director=
+y if device is in use)
+Merging nand/nand/next (fc9e18f9e987 mtd: rawnand: arasan: Prevent an unsup=
+ported configuration)
+Merging spi-nor/spi-nor/next (df872ab1ffe4 mtd: spi-nor: nxp-spifi: Make us=
+e of the helper function devm_platform_ioremap_resource_byname())
+Merging crypto/master (3ae88f676aa6 crypto: tcrypt - fix skcipher multi-buf=
+fer tests for 1420B blocks)
+Merging drm/drm-next (27f4432577e4 Merge tag 'topic/amdgpu-dp2.0-mst-2021-1=
+0-27' of git://anongit.freedesktop.org/drm/drm-misc into drm-next)
+CONFLICT (content): Merge conflict in drivers/gpu/drm/msm/msm_gem_submit.c
+CONFLICT (content): Merge conflict in drivers/gpu/drm/i915/gt/intel_context=
+.c
+CONFLICT (content): Merge conflict in drivers/gpu/drm/i915/gem/i915_gem_ttm=
+.c
+CONFLICT (content): Merge conflict in drivers/gpu/drm/drm_panel_orientation=
+_quirks.c
+CONFLICT (content): Merge conflict in drivers/gpu/drm/amd/amdkfd/kfd_migrat=
+e.c
+Merging drm-misc/for-linux-next (099afadc533f drm/kmb: Enable support for f=
+ramebuffer console)
+CONFLICT (content): Merge conflict in drivers/gpu/drm/kmb/kmb_drv.c
+Merging amdgpu/drm-next (6a806feef1d2 drm/amdgpu/display: fix build when CO=
+NFIG_DRM_AMD_DC_DCN is not set)
+CONFLICT (content): Merge conflict in drivers/gpu/drm/drm_dp_mst_topology.c
+CONFLICT (content): Merge conflict in drivers/gpu/drm/amd/display/dc/core/d=
+c_link.c
+CONFLICT (content): Merge conflict in drivers/gpu/drm/amd/display/amdgpu_dm=
+/amdgpu_dm_helpers.c
+CONFLICT (content): Merge conflict in drivers/gpu/drm/amd/display/amdgpu_dm=
+/amdgpu_dm.c
+$ git reset --hard HEAD
+Merging drm-intel/for-linux-next (5740211ea442 drm/i915/dmabuf: fix broken =
+build)
+Merging drm-intel-gt/for-linux-next-gt (5740211ea442 drm/i915/dmabuf: fix b=
+roken build)
+Merging drm-tegra/drm/tegra/for-next (5dccbc9de8f0 drm/tegra: dc: rgb: Allo=
+w changing PLLD rate on Tegra30+)
+Merging drm-msm/msm-next (02d44fde976a drm/msm/dp: fix missing #include)
+Merging imx-drm/imx-drm/next (20fbfc81e390 drm/imx: imx-tve: Make use of th=
+e helper function devm_platform_ioremap_resource())
+Merging etnaviv/etnaviv/next (81fd23e2b3cc drm/etnaviv: Implement mmap as G=
+EM object function)
+Merging regmap/for-next (a8d880671c13 Merge remote-tracking branch 'regmap/=
+for-5.16' into regmap-next)
+Merging sound/for-next (f4000b58b643 ALSA: line6: fix control and interrupt=
+ message timeouts)
+Merging sound-asoc/for-next (6f19a44bbe1d Merge remote-tracking branch 'aso=
+c/for-5.16' into asoc-next)
+Merging modules/modules-next (ced75a2f5da7 MAINTAINERS: Add Luis Chamberlai=
+n as modules maintainer)
+Merging input/next (c6ac8f0b4ca9 Input: ili210x - add ili251x firmware upda=
+te support)
+Merging block/for-next (47af7468b7e0 Merge branch 'for-5.16/block' into for=
+-next)
+CONFLICT (content): Merge conflict in fs/io_uring.c
+Merging device-mapper/for-next (54d97aac0bb9 dm: Remove redundant flush_wor=
+kqueue() calls)
+Merging libata/for-next (1af5f7af2484 pata_radisys: fix checking of DMA sta=
+te)
+Merging pcmcia/pcmcia-next (e39cdacf2f66 pcmcia: i82092: fix a null pointer=
+ dereference bug)
+Merging mmc/next (88b950ce58f7 MAINTAINERS: drop obsolete file pattern in S=
+DHCI DRIVER section)
+Merging mfd/for-mfd-next (818ed35d6425 mfd: tps80031: Remove driver)
+CONFLICT (content): Merge conflict in Documentation/devicetree/bindings/mfd=
+/brcm,cru.yaml
+Merging backlight/for-backlight-next (3976e974df1f video: backlight: ili932=
+0: Make ili9320_remove() return void)
+Merging battery/for-next (172d0ccea55c power: bq25890: add return values to=
+ error messages)
+Merging regulator/for-next (7492b724df4d Merge series "Remove TPS80031 driv=
+er" from Dmitry Osipenko <digetx@gmail.com>:)
+Merging security/next-testing (047843bdb316 Merge branch 'landlock_lsm_v34'=
+ into next-testing)
+Merging apparmor/apparmor-next (d108370c644b apparmor: fix error check)
+Merging integrity/next-integrity (cc4299ea0399 ima: Use strscpy instead of =
+strlcpy)
+Merging keys/keys-next (e377c31f788f integrity: Load mokx variables into th=
+e blacklist keyring)
+CONFLICT (content): Merge conflict in certs/system_keyring.c
+Merging safesetid/safesetid-next (1b8b71922919 LSM: SafeSetID: Mark safeset=
+id_initialized as __initdata)
+Merging selinux/next (15bf32398ad4 security: Return xattr name from securit=
+y_dentry_init_security())
+CONFLICT (content): Merge conflict in include/uapi/linux/audit.h
+CONFLICT (content): Merge conflict in fs/io_uring.c
+CONFLICT (content): Merge conflict in fs/io-wq.c
+Applying: fixup for "io_uring: init opcode in io_init_req()"
+Merging smack/next (0934ad42bb2c smackfs: use netlbl_cfg_cipsov4_del() for =
+deleting cipso_v4_doi)
+Merging tomoyo/master (7d2a07b76933 Linux 5.14)
+Merging tpmdd/next (7eba41fe8c7b tpm_tis_spi: Add missing SPI ID)
+Merging watchdog/master (ee1a0696934a watchdog: bcm63xx_wdt: fix fallthroug=
+h warning)
+Merging iommu/next (6a0df9df4c64 Merge branches 'apple/dart', 'arm/mediatek=
+', 'arm/renesas', 'arm/smmu', 'arm/tegra', 'x86/amd', 'x86/vt-d' and 'core'=
+ into next)
+Applying: fix for "iommu/dart: Exclude MSI doorbell from PCIe device IOVA r=
+ange"
+Merging audit/next (d9516f346e8b audit: return early if the filter rule has=
+ a lower priority)
+CONFLICT (content): Merge conflict in include/uapi/linux/audit.h
+Merging devicetree/for-next (9065b969c53f dt-bindings: bus: ti-sysc: Update=
+ to use yaml binding)
+Merging mailbox/mailbox-for-next (0a5ad4322927 mailbox: mtk-cmdq: Fix local=
+ clock ID usage)
+Merging spi/for-next (f2c05cbd6670 Merge remote-tracking branch 'spi/for-5.=
+16' into spi-next)
+CONFLICT (content): Merge conflict in drivers/spi/spi-tegra20-slink.c
+Merging tip/auto-latest (34d813e44ba4 Merge x86/fpu into tip/master)
+CONFLICT (content): Merge conflict in arch/x86/kernel/fpu/signal.c
+CONFLICT (content): Merge conflict in arch/x86/include/asm/fpu/api.h
+Applying: x86/fpu: include vmalloc.h for vzalloc etc
+Merging clockevents/timers/drivers/next (eda9a4f7af6e clocksource/drivers/t=
+imer-ti-dm: Select TIMER_OF)
+Merging edac/edac-for-next (f889e52436d6 Merge branch 'edac-urgent' into ed=
+ac-for-next)
+Merging irqchip/irq/irqchip-next (965acf76b68d Merge branch irq/irq_cpu_off=
+line into irq/irqchip-next)
+CONFLICT (content): Merge conflict in arch/riscv/Kconfig
+Merging ftrace/for-next (e531e90b5ab0 tracing: Increase PERF_MAX_TRACE_SIZE=
+ to handle Sentinel1 and docker together)
+CONFLICT (content): Merge conflict in kernel/trace/ftrace.c
+CONFLICT (content): Merge conflict in kernel/kprobes.c
+CONFLICT (content): Merge conflict in include/linux/trace_recursion.h
+CONFLICT (content): Merge conflict in arch/parisc/kernel/ftrace.c
+Applying: Upcoming merge conflict between ftrace and s390 trees
+Merging rcu/rcu/next (a01016aa420e refscale: Always log the error message)
+CONFLICT (content): Merge conflict in kernel/rcu/tasks.h
+Merging kvm/next (0d7d84498fb4 KVM: x86: SGX must obey the KVM_INTERNAL_ERR=
+OR_EMULATION protocol)
+CONFLICT (content): Merge conflict in arch/x86/kvm/x86.c
+CONFLICT (content): Merge conflict in arch/riscv/Kconfig
+Merging kvm-arm/next (5a2acbbb0179 Merge branch kvm/selftests/memslot into =
+kvmarm-master/next)
+Merging kvm-ppc/kvm-ppc-next (72476aaa4691 KVM: PPC: Book3S HV: Fix host ra=
+dix SLB optimisation with hash guests)
+Merging kvms390/next (3fd8417f2c72 KVM: s390: add debug statement for diag =
+318 CPNC data)
+Merging xen-tip/linux-next (97c79d816979 x86/xen: switch initial pvops IRQ =
+functions to dummy ones)
+CONFLICT (content): Merge conflict in arch/x86/xen/irq.c
+Merging percpu/for-next (a81a52b325ec Merge branch 'for-5.14-fixes' into fo=
+r-next)
+Merging workqueues/for-next (f9eaaa82b474 workqueue: doc: Call out the non-=
+reentrance conditions)
+Merging drivers-x86/for-next (fc3341b4b55f platform/x86: system76_acpi: fix=
+ Kconfig dependencies)
+Merging chrome-platform/for-next (3119c28634dd MAINTAINERS: Chrome: Drop En=
+ric Balletbo i Serra)
+Merging hsi/for-next (4ef69e17eb56 HSI: cmt_speech: unmark comments as kern=
+el-doc)
+Merging leds/for-next (97b31c1f8eb8 leds: trigger: Disable CPU trigger on P=
+REEMPT_RT)
+Merging ipmi/for-next (fc4e78481afa char: ipmi: replace snprintf in show fu=
+nctions with sysfs_emit)
+Merging driver-core/driver-core-next (27e0bcd02990 device property: Drop re=
+dundant NULL checks)
+Merging usb/usb-next (79a4479a17b8 USB: iowarrior: fix control-message time=
+outs)
+Merging usb-gadget/next (e49d033bddf5 Linux 5.12-rc6)
+Merging usb-serial/usb-next (910c996335c3 USB: serial: keyspan: fix memleak=
+ on probe errors)
+Merging usb-chipidea-next/for-usb-next (78665f57c3fa usb: chipidea: udc: ma=
+ke controller hardware endpoint primed)
+Merging tty/tty-next (73a3d4f41886 tty: rpmsg: Define tty name via constant=
+ string literal)
+Merging char-misc/char-misc-next (08e438e6296c fix for "dma-buf: move dma-b=
+uf symbols into the DMA_BUF module namespace")
+CONFLICT (content): Merge conflict in drivers/gpu/drm/tegra/gem.c
+CONFLICT (content): Merge conflict in drivers/gpu/drm/i915/gem/i915_gem_dma=
+buf.c
+Merging extcon/extcon-next (9e6ef3a25e5e dt-bindings: extcon: usbc-tusb320:=
+ Add TUSB320L compatible string)
+Merging phy-next/next (b4dc97ab0a62 phy: Sparx5 Eth SerDes: Fix return valu=
+e check in sparx5_serdes_probe())
+Merging soundwire/next (abd9a6049bb5 soundwire: qcom: add debugfs entry for=
+ soundwire register dump)
+Merging thunderbolt/next (0a0624a26f9c thunderbolt: Fix -Wrestrict warning)
+Merging vfio/next (9cef73918e15 vfio: Use cdev_device_add() instead of devi=
+ce_create())
+Merging staging/staging-next (3d34b180323b staging: r8188eu: core: remove t=
+he goto from rtw_IOL_accquire_xmit_frame)
+Merging iio/togreg (7b473ae754fe iio: frequency: adrf6780: Fix adrf6780_spi=
+_{read,write}())
+Merging mux/for-next (3516bd729358 Merge tag 's390-5.11-3' of git://git.ker=
+nel.org/pub/scm/linux/kernel/git/s390/linux)
+Merging icc/icc-next (dfe14674bf7b Merge branch 'icc-rpm' into icc-next)
+Merging dmaengine/next (07c609cc9877 dmaengine: sa11x0: Mark PM functions a=
+s __maybe_unused)
+Merging cgroup/for-next (822bc9bac9e9 cgroup: no need for cgroup_mutex for =
+/proc/cgroups)
+Merging scsi/for-next (cfb34c044d8e Merge branch 'misc' into for-next)
+Merging scsi-mkp/for-next (a1efc896cb8a scsi: sr: Remove duplicate assignme=
+nt)
+Merging vhost/linux-next (06aff93f1842 iommu/virtio: Support identity-mappe=
+d domains)
+Merging rpmsg/for-next (6ee5808de074 Merge branches 'rpmsg-next' and 'rproc=
+-next' into for-next)
+Merging gpio/for-next (7ac554888233 MAINTAINERS: Remove reference to non-ex=
+isting file)
+Merging gpio-brgl/gpio/for-next (f4a20dfac88c gpio: mc33880: Drop if with a=
+n always false condition)
+Merging gpio-intel/for-next (1649b8376694 gpio: pca953x: Improve bias setti=
+ng)
+Merging gpio-sim/gpio/gpio-sim (bb369f4373f5 selftests: gpio: add test case=
+s for gpio-sim)
+Merging pinctrl/for-next (a0f160ffcb83 pinctrl: add pinctrl/GPIO driver for=
+ Apple SoCs)
+Merging pinctrl-intel/for-next (176412f8674b pinctrl: intel: Kconfig: Add c=
+onfiguration menu to Intel pin control)
+Merging pinctrl-renesas/renesas-pinctrl (f4e260bffcf3 pinctrl: renesas: che=
+cker: Prefix common checker output)
+Merging pinctrl-samsung/for-next (f9d8de699ac4 pinctrl: samsung: support Ex=
+ynosAutov9 SoC pinctrl)
+Merging pwm/for-next (3f2b16734914 pwm: mtk-disp: Implement atomic API .get=
+_state())
+Merging userns/for-next (e9012e756d30 Merge of per_signal_struct_coredumps-=
+for-v5.16, and ucount-fixes-for-v5.16 for testing in linux-next)
+Merging ktest/for-next (170f4869e662 ktest.pl: Fix the logic for truncating=
+ the size of the log file for email)
+Merging kselftest/next (dd40f44eabe1 selftests: x86: fix [-Wstringop-overre=
+ad] warn in test_process_vm_readv())
+Merging livepatching/for-next (cd2d68f2d6b2 Merge branch 'for-5.15/cpu-hotp=
+lug' into for-next)
+Merging coresight/next (1efbcec2ef8c coresight: cti: Reduce scope for the v=
+ariable =E2=80=9Ccs_fwnode=E2=80=9D in cti_plat_create_connection())
+Merging rtc/rtc-next (a5feda3b361e rtc: s3c: Add time range)
+Merging nvdimm/libnvdimm-for-next (e765f13ed126 nvdimm/pmem: move dax_attri=
+bute_group from dax to pmem)
+Merging at24/at24/for-next (762925405482 dt-bindings: at24: add ON Semi CAT=
+24C04 and CAT24C05)
+Merging ntb/ntb-next (f96cb827ce49 ntb: ntb_pingpong: remove redundant init=
+ialization of variables msg_data and spad_data)
+Merging seccomp/for-next/seccomp (d9bbdbf324cd x86: deduplicate the spectre=
+_v2_user documentation)
+Merging kspp/for-next/kspp (879f756fa9bf Merge branches 'for-next/hardening=
+', 'for-next/overflow' and 'for-next/thread_info/cpu' into for-next/kspp)
+CONFLICT (content): Merge conflict in drivers/net/wireless/intel/iwlwifi/fw=
+/api/tx.h
+Merging kspp-gustavo/for-next/kspp (704f6142a903 firmware/psci: fix applica=
+tion of sizeof to pointer)
+Merging cisco/for-next (9e98c678c2d6 Linux 5.1-rc1)
+Merging gnss/gnss-next (0f79ce970e79 gnss: drop stray semicolons)
+Merging fsi/next (7cc2f34e1f4d fsi: sbefifo: Use interruptible mutex lockin=
+g)
+Merging slimbus/for-next (6880fa6c5660 Linux 5.15-rc1)
+Merging nvmem/for-next (413333fd6a88 nvmem: imx-ocotp: add support for post=
+ processing)
+Merging xarray/main (2c7e57a02708 idr test suite: Improve reporting from id=
+r_find_test_1)
+Merging hyperv/hyperv-next (62b834d8972b Drivers: hv: vmbus: Remove unused =
+code to check for subchannels)
+CONFLICT (content): Merge conflict in arch/x86/mm/pat/set_memory.c
+Merging auxdisplay/auxdisplay (97fbb29fc1eb MAINTAINERS: Add DT Bindings fo=
+r Auxiliary Display Drivers)
+Merging kgdb/kgdb/for-next (f8416aa29185 kernel: debug: Convert to SPDX ide=
+ntifier)
+Merging hmm/hmm (6880fa6c5660 Linux 5.15-rc1)
+Merging fpga/for-next (57b44817a8d6 MAINTAINERS: Drop outdated FPGA Manager=
+ website)
+Merging kunit/test (6880fa6c5660 Linux 5.15-rc1)
+Merging cfi/cfi/next (ff1176468d36 Linux 5.14-rc3)
+Merging kunit-next/kunit (2ab5d5e67f7a kunit: tool: continue past invalid u=
+tf-8 output)
+Merging trivial/for-next (9ff9b0d392ea Merge tag 'net-next-5.10' of git://g=
+it.kernel.org/pub/scm/linux/kernel/git/netdev/net-next)
+Merging mhi/mhi-next (8c61951b372d Merge tag 'soundwire-5.15-rc1' of git://=
+git.kernel.org/pub/scm/linux/kernel/git/vkoul/soundwire into char-misc-next)
+Merging memblock/for-next (e888fa7bb882 memblock: Check memory add/cap orde=
+ring)
+Merging init/init-user-pointers (38b082236e77 initramfs: use vfs_utimes in =
+do_copy)
+Merging counters/counters (e71ba9452f0b Linux 5.11-rc2)
+Merging rust/rust-next (988f45dfe7ea MAINTAINERS: Rust)
+CONFLICT (content): Merge conflict in scripts/kconfig/confdata.c
+CONFLICT (content): Merge conflict in scripts/Makefile.modfinal
+CONFLICT (content): Merge conflict in Makefile
+Applying: Kbuild: fix for "kbuild: split DEBUG_CFLAGS out to scripts/Makefi=
+le.debug"
+Merging cxl/next (ed97afb53365 cxl/pci: Disambiguate cxl_pci further from c=
+xl_mem)
+Merging folio/for-next (121703c1c817 mm/writeback: Add folio_write_one)
+CONFLICT (modify/delete): fs/cachefiles/rdwr.c deleted in HEAD and modified=
+ in folio/for-next. Version folio/for-next of fs/cachefiles/rdwr.c left in =
+tree.
+$ git rm -f fs/cachefiles/rdwr.c
+Applying: fix up for "9p: Convert to using the netfs helper lib to do reads=
+ and caching"
+Merging bitmap/bitmap-master-5.15 (785cb064e2f8 vsprintf: rework bitmap_lis=
+t_string)
+CONFLICT (content): Merge conflict in arch/parisc/include/asm/bitops.h
+Merging zstd/zstd-1.4.10 (464413496acb MAINTAINERS: Add maintainer entry fo=
+r zstd)
+Merging efi/next (720dff78de36 efi: Allow efi=3Druntime)
+Merging unicode/for-next (e2a58d2d3416 unicode: only export internal symbol=
+s for the selftests)
+CONFLICT (content): Merge conflict in fs/f2fs/sysfs.c
+Applying: disable ntfs for now due to
+Merging akpm-current/current (9748d08a885e shm: extend forced shm destroy t=
+o support objects from several IPC nses)
+CONFLICT (content): Merge conflict in mm/mempolicy.c
+CONFLICT (content): Merge conflict in mm/internal.h
+CONFLICT (content): Merge conflict in mm/filemap.c
+CONFLICT (content): Merge conflict in lib/bootconfig.c
+CONFLICT (content): Merge conflict in kernel/sched/core.c
+CONFLICT (content): Merge conflict in kernel/exit.c
+CONFLICT (content): Merge conflict in include/linux/sched/mm.h
+CONFLICT (content): Merge conflict in include/linux/migrate.h
+CONFLICT (content): Merge conflict in arch/s390/kernel/setup.c
+Applying: mm-filemap-check-if-thp-has-hwpoisoned-subpage-for-pmd-page-fault=
+-vs-folios
+Applying: kvmalloc etc moved to slab.h
+
+--Sig_/5xDarADUuz+qZY9FZuZY9T/
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF6jTAACgkQAVBC80lX
+0GymCggAmTAxK7hOGlyZ1CrZhQVCqpG9Ucu9IkeY378EgM620eHcF/gJlOSTMwmX
+Za7PE1COnW/YbuIGO4XJYKtuNS5w3wYxObxjzcU5+itjVvystS75YP5HmBgVU/7O
+DZKcIquBh/UZMMhAl4qI7DraMuFkLP32Eb/E4dYTRf3+RnUxvh89q8EfieZUsVOv
+0eRfA6VF0pWHm/8vX2zBMrPG8USS63OfT5TpEi2Gh4hBzIcNA89VulQziRte/wLv
+hOlYl2pDDzUBmPwwesJsSFXHkn9paEPxKOiYQIBk8OBpMMmU9FkmeG502IMdhoZd
+vUmuZTKEATT6xP88rtK1M6Qkm1ZXGw==
+=JlkT
+-----END PGP SIGNATURE-----
+
+--Sig_/5xDarADUuz+qZY9FZuZY9T/--
