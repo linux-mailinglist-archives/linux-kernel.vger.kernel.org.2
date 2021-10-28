@@ -2,159 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 858B643E0DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 14:24:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43D4643E0F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 14:26:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230383AbhJ1M0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 08:26:23 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:3532 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229998AbhJ1M0V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 08:26:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1635423834; x=1666959834;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=0Oq6s7AaG3bBjKwD3GLU5KykTSVALr5XWLndoODjwLU=;
-  b=Rue0PgcyZZgsrKknQdIrkBaZNzzj46k7JGO6pSQhVMuqPR24GtgSaY6w
-   D8B196oXaGEELWZ7iDgzJyuovmItZ+2kiw13s8B6JoestoMK1HZR0bmpw
-   S+Gq/iUsqAT3tqJZbIjY7AOxiZ6DV62vCBGfivua8RzhhccK05QTYe+k3
-   1aCHrnYL7i3rAaikCo3Brc7OUJplavf6DVF+fQ/Vd5irBzHKXcb421XAI
-   hJDtv2d9vrXNrpIBJI3n4A73R1AIh3WPOUXXSjvCC/iLn+PlmEDjGeDbx
-   xQQKhofBv2WIvL7MaE2Q0PWzrKj3+IGXndwlZ3v46USFzQnjE+zDoUX+J
-   A==;
-IronPort-SDR: Jvt9IWyJhVgbyC8C7YE7fAwf8FOQFwPQjJpYGNXGuvyTt+PIMFEcAa6JTDfEyUoGL2Hfvmaq2w
- zkokjxpdqcdZObeGyaYVsgJDNYsblmTlPAvakcUsV+KKlllU6BinRfLW99C4jvDTOLFiiJfRNd
- MuaTB72RiiUYZb1UKPwsYqdHulv250M1Fj7u7iXdc8JRinM0ukID43cpoTx4oBSVfpmEeqrKXk
- a3JA/6HV4WJHaB+8NhaQfxMC7DVbsb6Kjtf+DGbo02g+Sq2CK/YcuGIc3zi4lkIrTWnMTcUogx
- H2tJA3Ns9EAQWxB0z8je9So2
-X-IronPort-AV: E=Sophos;i="5.87,189,1631602800"; 
-   d="scan'208";a="134648670"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 28 Oct 2021 05:23:51 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Thu, 28 Oct 2021 05:23:51 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex01.mchp-main.com
- (10.10.85.143) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
- Transport; Thu, 28 Oct 2021 05:23:50 -0700
-Date:   Thu, 28 Oct 2021 14:25:33 +0200
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     Peter Rosin <peda@axentia.se>
-CC:     <robh+dt@kernel.org>, <peter.korsgaard@barco.com>,
-        <lars.povlsen@microchip.com>, <linux-i2c@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] i2c: i2c-mux-gpio: Add support 'select-delay'
- property
-Message-ID: <20211028122533.4o63fuguyqfua5tm@soft-dev3-1.localhost>
-References: <20211013141003.2388495-1-horatiu.vultur@microchip.com>
- <20211013141003.2388495-3-horatiu.vultur@microchip.com>
- <9fe92c02-40af-a077-4189-6f0c0a934745@axentia.se>
+        id S230407AbhJ1M2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 08:28:41 -0400
+Received: from gofer.mess.org ([88.97.38.141]:54929 "EHLO gofer.mess.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229868AbhJ1M2k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 08:28:40 -0400
+Received: by gofer.mess.org (Postfix, from userid 1000)
+        id 17D26C63F8; Thu, 28 Oct 2021 13:26:11 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
+        t=1635423971; bh=y3qxEYJL2Lulhgp7KZQDk3Hsdwnvvf4NctUVRGbbEF0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mAKfVr2+8Lrq5V+B3EE3AvkB8MrOTb4CtUmbzGDrhXrZHpEITWLOCk2Eb0ubtdBok
+         GMIF3E1zZcl945dli8isX1DXbSsYOFibkPUuxdpq6mJpLalTtng6+hmouQEbpPAIcC
+         tQAHNXe7tp7kvosdKDTg4YjgV99xzTdUtyhbUk4o/c+oVj0PYe2//CZuL3c/6FHKnd
+         sDFqkZDDD/2oPqsdkFsLJbHbByJSOEgtPLQCe1ERDKbdLTE4OCs8baN1WoZEre6qrs
+         HLLp6XXEyOhV9sdJlQsXoO5BDep4KIlGQisMFMZwedHQZpVHn8FKsd2RqdiIbZHxxv
+         zGXDsFmBMsrew==
+Date:   Thu, 28 Oct 2021 13:26:10 +0100
+From:   Sean Young <sean@mess.org>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     =?iso-8859-1?Q?Ma=EDra?= Canal <maira.canal@usp.br>, lkp@intel.com,
+        mchehab@kernel.org, thierry.reding@gmail.com, lee.jones@linaro.org,
+        llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pwm@vger.kernel.org
+Subject: Re: [PATCH v4] media: rc: pwm-ir-tx: Switch to atomic PWM API
+Message-ID: <20211028122610.GA18767@gofer.mess.org>
+References: <YXlxhpZWf2mxJaMi@fedora>
+ <20211028064513.guziv6uaivzlk6ki@pengutronix.de>
+ <20211028091442.GA16514@gofer.mess.org>
+ <20211028111535.x7xgz7domx2lpyfh@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <9fe92c02-40af-a077-4189-6f0c0a934745@axentia.se>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211028111535.x7xgz7domx2lpyfh@pengutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 10/27/2021 12:41, Peter Rosin wrote:
-> 
-> Hi!
+Hi Uwe,
 
-Hi Peter,
+On Thu, Oct 28, 2021 at 01:15:35PM +0200, Uwe Kleine-König wrote:
+> On Thu, Oct 28, 2021 at 10:14:42AM +0100, Sean Young wrote:
+> > On Thu, Oct 28, 2021 at 08:45:13AM +0200, Uwe Kleine-König wrote:
+> > > The conversion is right (I think),
+> > 
+> > We still have the problem that the pwm drivers calculate the period
+> > incorrectly by rounding down (except pwm-bcm2835). So the period is not
+> > as good as it could be in most cases, but this driver can't do anything
+> > about that.
+> 
+> Yeah, some time ago I started coding a round_state function
+> (wip at
+> https://git.pengutronix.de/cgit/ukl/linux/commit/?h=pwm-wip&id=ae348eb6a55d6526f30ef4a49819197d9616391e)
+> but this was pushed down on my todo-list by more important stuff.
 
-> 
-> I'm sorry for the slow response...
-> 
-> On 2021-10-13 16:10, Horatiu Vultur wrote:
-> > Use select-delay property to add a delay once the mux state is changed.
-> > This is required on some platforms to allow the GPIO signals to get
-> > stabilized.
-> >
-> > Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
-> > Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
-> > ---
-> >  drivers/i2c/muxes/i2c-mux-gpio.c | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> >
-> > diff --git a/drivers/i2c/muxes/i2c-mux-gpio.c b/drivers/i2c/muxes/i2c-mux-gpio.c
-> > index bac415a52b78..1cc69eb67221 100644
-> > --- a/drivers/i2c/muxes/i2c-mux-gpio.c
-> > +++ b/drivers/i2c/muxes/i2c-mux-gpio.c
-> > @@ -13,6 +13,8 @@
-> >  #include <linux/slab.h>
-> >  #include <linux/bits.h>
-> >  #include <linux/gpio/consumer.h>
-> > +#include <linux/delay.h>
-> > +
-> >  /* FIXME: stop poking around inside gpiolib */
-> >  #include "../../gpio/gpiolib.h"
-> >
-> > @@ -20,6 +22,7 @@ struct gpiomux {
-> >       struct i2c_mux_gpio_platform_data data;
-> >       int ngpios;
-> >       struct gpio_desc **gpios;
-> > +     int select_delay;
-> >  };
-> >
-> >  static void i2c_mux_gpio_set(const struct gpiomux *mux, unsigned val)
-> > @@ -29,6 +32,8 @@ static void i2c_mux_gpio_set(const struct gpiomux *mux, unsigned val)
-> >       values[0] = val;
-> >
-> >       gpiod_set_array_value_cansleep(mux->ngpios, mux->gpios, NULL, values);
-> > +     if (mux->select_delay)
-> > +             udelay(mux->select_delay);
-> 
-> Use fsleep(mux->select_delay) if you don't know how long the delay really
-> is.
-> 
-> However, you needlessly invoke the delay even if you do not actually change
-> the state of the mux. In order to fix that, you need to keep track of the
-> current state of the mux, but that's a chunk of boring code to write. If you
-> instead switch to using a mux-gpio from the mux subsystem and point an
-> i2c-mux-gpmux to that instance, you get that for free, and you can make simple
-> changes to the i2c-mux-gpmux driver to get this sorted properly, basically
-> exactly as this patch but with this
-> 
-> -       ret = mux_control_select(mux->control, chan->channel);
-> +       ret = mux_control_select_delay(mux->control, chan->channel,
-> +                                      mux->delay_us);
-> 
-> instead of the udelay/fsleep in this patch. That will invoke the requested
-> delay, but only if too little time has gone by since the latest state change.
+That looks great, thank you for working on that!
 
-Thanks for the advice! I will change to use i2c-mux-gpmux and make the
-changes there.
+> If you want to experiment with that ...
 
+I will have a look.
+
+> > > note this could be optimized a bit
+> > > further: state.period only depends on carrier which rarely changes, so
+> > > the calculation could be done in pwm_ir_set_carrier(). Ditto for duty
+> > > which only depends on state.period and pwm_ir->duty_cycle. (This is for
+> > > a separate commit though.)
+> > 
+> > I'm not sure what caching this is much of a win. The calculation is a few
+> > instructions, so you're not winning in the way of speed. On the flip side
+> > you use more memory since pwm_state has to be kmalloc() rather than existing
 > 
-> That interface (mux_control_select_delay) is brand new though, but available
-> in linux-next and scheduled for the next merge window. But, since I fumbled
-> this series it's a bit late for this merge window anyway (sorry again) so
-> that should not be an issue.
-
-No worries, I will try to send a new version.
-
+> I tested a bit with this patch on top of Maíra's:
 > 
-> Cheers,
-> Peter
+> 	diff --git a/drivers/media/rc/pwm-ir-tx.c b/drivers/media/rc/pwm-ir-tx.c
+> 	index 105a9c24f1e3..7585c21775bc 100644
+> 	--- a/drivers/media/rc/pwm-ir-tx.c
+> 	+++ b/drivers/media/rc/pwm-ir-tx.c
+> 	@@ -17,7 +17,7 @@
+> 	 
+> 	 struct pwm_ir {
+> 		struct pwm_device *pwm;
+> 	-	unsigned int carrier;
+> 	+	struct pwm_state state;
+> 		unsigned int duty_cycle;
+> 	 };
+> 	 
+> 	@@ -32,6 +32,7 @@ static int pwm_ir_set_duty_cycle(struct rc_dev *dev, u32 duty_cycle)
+> 		struct pwm_ir *pwm_ir = dev->priv;
+> 	 
+> 		pwm_ir->duty_cycle = duty_cycle;
+> 	+	pwm_set_relative_duty_cycle(&pwm_ir->state, pwm_ir->duty_cycle, 100);
+> 	 
+> 		return 0;
+> 	 }
+> 	@@ -43,7 +44,8 @@ static int pwm_ir_set_carrier(struct rc_dev *dev, u32 carrier)
+> 		if (!carrier)
+> 			return -EINVAL;
+> 	 
+> 	-	pwm_ir->carrier = carrier;
+> 	+	pwm_ir->state.period = DIV_ROUND_CLOSEST(NSEC_PER_SEC, carrier);
+> 	+	pwm_set_relative_duty_cycle(&pwm_ir->state, pwm_ir->duty_cycle, 100);
+> 	 
+> 		return 0;
+> 	 }
+> 	@@ -53,21 +55,15 @@ static int pwm_ir_tx(struct rc_dev *dev, unsigned int *txbuf,
+> 	 {
+> 		struct pwm_ir *pwm_ir = dev->priv;
+> 		struct pwm_device *pwm = pwm_ir->pwm;
+> 	-	struct pwm_state state;
+> 		int i;
+> 		ktime_t edge;
+> 		long delta;
+> 	 
+> 	-	pwm_init_state(pwm, &state);
+> 	-
+> 	-	state.period = DIV_ROUND_CLOSEST(NSEC_PER_SEC, pwm_ir->carrier);
+> 	-	pwm_set_relative_duty_cycle(&state, pwm_ir->duty_cycle, 100);
+> 	-
+> 		edge = ktime_get();
+> 	 
+> 		for (i = 0; i < count; i++) {
+> 	-		state.enabled = !(i % 2);
+> 	-		pwm_apply_state(pwm, &state);
+> 	+		pwm_ir->state.enabled = !(i % 2);
+> 	+		pwm_apply_state(pwm, &pwm_ir->state);
+> 	 
+> 			edge = ktime_add_us(edge, txbuf[i]);
+> 			delta = ktime_us_delta(edge, ktime_get());
+> 	@@ -75,8 +71,8 @@ static int pwm_ir_tx(struct rc_dev *dev, unsigned int *txbuf,
+> 				usleep_range(delta, delta + 10);
+> 		}
+> 	 
+> 	-	state.enabled = false;
+> 	-	pwm_apply_state(pwm, &state);
+> 	+	pwm_ir->state.enabled = false;
+> 	+	pwm_apply_state(pwm, &pwm_ir->state);
+> 	 
+> 		return count;
+> 	 }
+> 	@@ -95,8 +91,9 @@ static int pwm_ir_probe(struct platform_device *pdev)
+> 		if (IS_ERR(pwm_ir->pwm))
+> 			return PTR_ERR(pwm_ir->pwm);
+> 	 
+> 	-	pwm_ir->carrier = 38000;
+> 	-	pwm_ir->duty_cycle = 50;
+> 	+	pwm_ir->state.duty_cycle = 50;
+> 	+	pwm_init_state(pwm_ir->pwm, &pwm_ir->state);
+> 	+	pwm_ir_set_carrier(rcdev, 38000);
+> 	 
+> 		rcdev = devm_rc_allocate_device(&pdev->dev, RC_DRIVER_IR_RAW_TX);
+> 		if (!rcdev)
 > 
-> >  }
-> >
-> >  static int i2c_mux_gpio_select(struct i2c_mux_core *muxc, u32 chan)
-> > @@ -153,6 +158,8 @@ static int i2c_mux_gpio_probe_fw(struct gpiomux *mux,
-> >       if (fwnode_property_read_u32(dev->fwnode, "idle-state", &mux->data.idle))
-> >               mux->data.idle = I2C_MUX_GPIO_NO_IDLE;
-> >
-> > +     fwnode_property_read_u32(dev->fwnode, "select-delay", &mux->select_delay);
-> > +
-> >       return 0;
-> >  }
-> >
-> >
+> bloat-o-meter reports (for an arm allmodconfig build)
+> 
+> 	add/remove: 0/0 grow/shrink: 3/1 up/down: 644/-396 (248)
+> 	Function                                     old     new   delta
+> 	pwm_ir_probe                                 372     676    +304
+> 	pwm_ir_set_carrier                           108     292    +184
+> 	pwm_ir_set_duty_cycle                         68     224    +156
+> 	pwm_ir_tx                                    908     512    -396
+> 	Total: Before=2302, After=2550, chg +10.77%
 
--- 
-/Horatiu
+So 248 bytes more after your changes.
+
+> struct pwm_ir increases from 12 bytes to 40 bytes.
+> 
+> The stack space required by pwm_ir_tx decreases from 60 to 36
+> 
+> I don't know exactly how kmalloc works internally. Maybe allocating a
+> structure of size 40 bytes doesn't need more memory than a structure of
+> size 12?
+> 
+> I didn't check how runtimes change, but the size decrease of pwm_ir_tx()
+> is nice and might save a bit of runtime.
+
+I'm not following, how is this decreasing runtime? 
+
+> Probably it depends on your focus if this change is good for you or not.
+
+Decreasing size is of course a good thing.
+
+> > just on the stack, and both ioctl handlers and the probe function need to
+> > recalculate the period/duty cycle, so there is a slight increase in code size.
+> > 
+> > This change does not improve anything measurably and only increases code
+> > complexity.
+> 
+> You did measure?
+
+Thanks for prototyping this.
+
+
+Sean
