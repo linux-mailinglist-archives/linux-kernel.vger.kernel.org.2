@@ -2,147 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79C3643DB5D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 08:41:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBAA543DB5F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 08:42:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229809AbhJ1GoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 02:44:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37272 "EHLO
+        id S229878AbhJ1Goe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 02:44:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbhJ1GoU (ORCPT
+        with ESMTP id S229586AbhJ1God (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 02:44:20 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5157CC061570;
-        Wed, 27 Oct 2021 23:41:54 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id v193so5046635pfc.4;
-        Wed, 27 Oct 2021 23:41:54 -0700 (PDT)
+        Thu, 28 Oct 2021 02:44:33 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEB3AC061570
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 23:42:06 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id z2-20020a254c02000000b005b68ef4fe24so7466621yba.11
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 23:42:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AcoyO3fMqMwG0fK4IuG40aw/93zEYFu7HuO/R5EsPcY=;
-        b=CQJqNLMiJnWlBD6YwI+cWcf93Yw5P0fsrKsluED401WI4v6CNT6LO3B8lRFoqHORCO
-         F/QDRRQJgkW2u38bl+P/A8auuP34FZADO/rBq51Rv5EzorLvBipDwpj11HnT+24wWwmh
-         d0hIIwn9Dx/W/MSb4lrzh6iKPlO8hOof/XoNPBqxcouNGBsyaCyaUbPb3be8/xaz+PhW
-         b2uY5ohSoTGCmOnkmu5LC9+rzHTDt55u40zln3hmKA8+0+yDymRL5RrVWLueJMmnmz9O
-         UP7RFaGHfaubxnK+jN4c5GpAXXNWelOJHcARRFvMYSE3gvzmJrptdjMPBOtgQC36IECh
-         pzsA==
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=6u+AjwrYCRzNV1ppQBIxebat3yD3SQvtae0skIY3lNo=;
+        b=OQdX7s0MYsZvg2MVoinhzq/An17UK9xk4F1ShkS1X7AJIoR0kk77d82PZMHFAjJwe/
+         1Z9Fvz0JJ4ZreAjUvJq95p9DPqPVrbNT8+B/Hd1XFG5L9dDc6hgPcGWAzfuQL/IXELUY
+         BJE+AMEWFL9FOSFBP3abGM0OFwv5v+/lgKdQKvw0esnECGg3egjazNBmYhpsF7RcBnIt
+         xUvrK8YMCoCn4yJPuD3qMLEHVFb3u/+Zl8T4dMy0Qte9JTS12OANKQxhU9ZY5CpaK8fF
+         kJirAK2OW4V+m9x+4anTBq0Zb4ATV2YsBxjQwm0M1tKyW56HulxjPfNc8mJO3wWGPynS
+         YCyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AcoyO3fMqMwG0fK4IuG40aw/93zEYFu7HuO/R5EsPcY=;
-        b=MozAYLo+7eN6a8N7z2U1v2rBIAmN6qzGnIZG1lA59aT12aNi/bd18QOrrCdewQmVuV
-         DzJBqWAkLTooTdXLQo6Vu0v1f/Yr1DAnUHtxiSuxaBpqSZTKZVVesvB3A6afI2ByeVNX
-         jk3rN7pf+q5anIatRRdU+y/qXMJ6YFsgcWerMZeMtev+Agf3IKR610z2mqAz8+61UD73
-         V9B/mZH3nr9Qfk40/zlB/kz+V4yxL3M4c5HZ802PsgnZi9c1A+bY7Xq5EQFXOjDbmC1E
-         YLKBLvjC8f6vDRcod91InSgY+aKtcJecVdVbaZWshN0EfmCUM3v5yDV8ASGSLIpeSE21
-         X+/Q==
-X-Gm-Message-State: AOAM532vCGwSEHe96mueSs6vgn7M062VZHtR5i3Mni3z95y6pybHwhCy
-        WjWa127H27pWPGU7X/mGYOs=
-X-Google-Smtp-Source: ABdhPJyKkpTBK+phBesVI50fNl6X8PpBFxn5Sxs2Ss8oYZ/ndNAat+QhQzkV1hEBDGOWjxk+ZyywDQ==
-X-Received: by 2002:a65:6187:: with SMTP id c7mr1863381pgv.317.1635403313838;
-        Wed, 27 Oct 2021 23:41:53 -0700 (PDT)
-Received: from shinobu ([156.146.35.76])
-        by smtp.gmail.com with ESMTPSA id s7sm2206150pfu.139.2021.10.27.23.41.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 23:41:53 -0700 (PDT)
-Date:   Thu, 28 Oct 2021 15:41:48 +0900
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     David Lechner <david@lechnology.com>
-Cc:     linux-iio@vger.kernel.org, Robert Nelson <robertcnelson@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/8] counter/ti-eqep: implement over/underflow events
-Message-ID: <YXpGLMjXImwEVJGY@shinobu>
-References: <20211017013343.3385923-1-david@lechnology.com>
- <20211017013343.3385923-2-david@lechnology.com>
- <YXZZCn9O4xSTHMx5@shinobu>
- <1d9f37b9-8600-1d8c-09ff-b9d9cc592b26@lechnology.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="fpqsm0+SpoU9L8kM"
-Content-Disposition: inline
-In-Reply-To: <1d9f37b9-8600-1d8c-09ff-b9d9cc592b26@lechnology.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=6u+AjwrYCRzNV1ppQBIxebat3yD3SQvtae0skIY3lNo=;
+        b=MpKzsKBsURdWFO1UgLK/Z+NYolAg9Ia3K5kFxk6RYcy+b6sj3fuMyRh5dd/0I5mxdI
+         u+07ZrP990lHZgeUP9ODRRaQ8ei6l9BjAmd8sKRVb7x5kCpplOCLz/0QjP6v9Zz45101
+         nmIcuyKCx5jJROt6iHrNe47Q53B5OUj3LLHmEYecijYcgE/M5F3KSX5yJpED16GTsmeK
+         qTPROp2ZC7wRKJI4NkFQRwNKAMJNHz7ViWFKBDd3hYdD6iN1PwlSR5PyjUwdFqgCkm1x
+         0rRI5TF4cWicsmxpQ80/ZwpF+6G/p/i5M3NblFMzDBnQIAbXGwUMae2UdG0r/T8NEvv6
+         aFuQ==
+X-Gm-Message-State: AOAM533Adbwxi9TUiQnBP9ZHZHMrunPbVd8ocyCnnKgaWBvWEXDtDb7o
+        K5wSMyvoX6C7SbbKGN73V1tyZizAkD20QQ==
+X-Google-Smtp-Source: ABdhPJzpI+bgenpEZq6hGo6zkOJiZT9RdDaOIZ+imxux9xFbr9i7mMFrJlRCbW6YT+TUTg2ztqYxeDld8j3XjQ==
+X-Received: from spirogrip.svl.corp.google.com ([2620:15c:2cb:201:d8b1:a4bf:2b6f:92f9])
+ (user=davidgow job=sendgmr) by 2002:a25:344d:: with SMTP id
+ b74mr2711522yba.317.1635403326178; Wed, 27 Oct 2021 23:42:06 -0700 (PDT)
+Date:   Wed, 27 Oct 2021 23:41:51 -0700
+Message-Id: <20211028064154.2301049-1-davidgow@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
+Subject: [PATCH v3 1/4] kunit: tool: Do not error on tests without test plans
+From:   David Gow <davidgow@google.com>
+To:     Brendan Higgins <brendanhiggins@google.com>,
+        Rae Moar <rmr167@gmail.com>,
+        Daniel Latypov <dlatypov@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Cc:     David Gow <davidgow@google.com>, kunit-dev@googlegroups.com,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The (K)TAP spec encourages test output to begin with a 'test plan': a
+count of the number of tests being run of the form:
+1..n
 
---fpqsm0+SpoU9L8kM
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+However, some test suites might not know the number of subtests in
+advance (for example, KUnit's parameterised tests use a generator
+function). In this case, it's not possible to print the test plan in
+advance.
 
-On Wed, Oct 27, 2021 at 10:23:13AM -0500, David Lechner wrote:
-> On 10/25/21 2:13 AM, William Breathitt Gray wrote:
-> > On Sat, Oct 16, 2021 at 08:33:36PM -0500, David Lechner wrote:
-> >> @@ -260,11 +333,17 @@ static int ti_eqep_position_ceiling_write(struct=
- counter_device *counter,
-> >>   					  u64 ceiling)
-> >>   {
-> >>   	struct ti_eqep_cnt *priv =3D counter->priv;
-> >> +	u32 qposmax =3D ceiling;
-> >>  =20
-> >> -	if (ceiling !=3D (u32)ceiling)
-> >> +	/* ensure that value fits in 32-bit register */
-> >> +	if (qposmax !=3D ceiling)
-> >>   		return -ERANGE;
-> >>  =20
-> >> -	regmap_write(priv->regmap32, QPOSMAX, ceiling);
-> >> +	/* protect against infinite overflow interrupts */
-> >> +	if (qposmax =3D=3D 0)
-> >> +		return -EINVAL;
-> >=20
-> > Would you be able to explain this scenario a bit further? My expectation
-> > would be that an overflow event would only occur if the position
-> > increased past the ceiling (i.e. increased to greater than 0). Of
-> > course, running the device with a ceiling of 0 effectively guarantees
-> > overflow eventss with every movement, but I would expect a stationary
-> > device to sit with a position of 0 and thus no overflow events.
-> >=20
->=20
-> This is just the way the hardware works. I discovered this the first
-> time I enabled interrupts. Even if you clear the interrupt, it is
-> triggered again immediately when QPOSMAX =3D=3D 0.
+kunit_tool already parses test output which doesn't contain a plan, but
+reports an error. Since we want to use nested subtests with KUnit
+paramterised tests, remove this error.
 
-For this device, does an overflow event occur once the count value
-increases to equal the ceiling value, or once the count value increases
-past the ceiling value?
+Signed-off-by: David Gow <davidgow@google.com>
+Reviewed-by: Daniel Latypov <dlatypov@google.com>
+---
 
-The Counter interface defines ceiling as an inclusive upper limit (count
-value is capable of reaching ceiling) and defines COUNTER_EVENT_OVERFLOW
-as occuring when the count value increases past ceiling. I want to make
-sure the ceiling extension and COUNTER_EVENT_OVERFLOW events for this
-driver are behaving as expected of the Counter interface.
+Changes since v2:
+https://lore.kernel.org/linux-kselftest/20211027013702.2039566-1-davidgow@google.com/
+- No code changes.
+- Added Daniel's Reviewed-by.
 
-Let's use a non-zero example to be clear. Suppose we set ceiling equal
-to 10. If count is currently at 9 and increases by 1, count should
-become 10 and no COUNTER_EVENT_OVERFLOW event is expected to trigger; if
-count is 10 and further increases, count should _not_ become 11 (staying
-at 10 or starting over at the floor) but a COUNTER_EVENT_OVERFLOW event
-does trigger. Does the driver behave like this currently?
+ tools/testing/kunit/kunit_parser.py    | 5 ++---
+ tools/testing/kunit/kunit_tool_test.py | 5 ++++-
+ 2 files changed, 6 insertions(+), 4 deletions(-)
 
-William Breathitt Gray
+diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
+index 3355196d0515..50ded55c168c 100644
+--- a/tools/testing/kunit/kunit_parser.py
++++ b/tools/testing/kunit/kunit_parser.py
+@@ -340,8 +340,8 @@ def parse_test_plan(lines: LineStream, test: Test) -> bool:
+ 	"""
+ 	Parses test plan line and stores the expected number of subtests in
+ 	test object. Reports an error if expected count is 0.
+-	Returns False and reports missing test plan error if fails to parse
+-	test plan.
++	Returns False and sets expected_count to None if there is no valid test
++	plan.
+ 
+ 	Accepted format:
+ 	- '1..[number of subtests]'
+@@ -356,7 +356,6 @@ def parse_test_plan(lines: LineStream, test: Test) -> bool:
+ 	match = TEST_PLAN.match(lines.peek())
+ 	if not match:
+ 		test.expected_count = None
+-		test.add_error('missing plan line!')
+ 		return False
+ 	test.log.append(lines.pop())
+ 	expected_count = int(match.group(1))
+diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
+index 9c4126731457..bc8793145713 100755
+--- a/tools/testing/kunit/kunit_tool_test.py
++++ b/tools/testing/kunit/kunit_tool_test.py
+@@ -191,7 +191,10 @@ class KUnitParserTest(unittest.TestCase):
+ 			result = kunit_parser.parse_run_tests(
+ 				kunit_parser.extract_tap_lines(
+ 				file.readlines()))
+-		self.assertEqual(2, result.test.counts.errors)
++		# A missing test plan is not an error.
++		self.assertEqual(0, result.test.counts.errors)
++		# All tests should be accounted for.
++		self.assertEqual(10, result.test.counts.total())
+ 		self.assertEqual(
+ 			kunit_parser.TestStatus.SUCCESS,
+ 			result.status)
+-- 
+2.33.0.1079.g6e70778dc9-goog
 
---fpqsm0+SpoU9L8kM
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmF6RiEACgkQhvpINdm7
-VJJsdg//XNpg5+MylMoEuMbf267Io3LNZosnfL/H1diyxxoXDG5hF6YiRftwfYZ/
-KzYj9bpxmEpKwFpLUFfFCnfdSGfL+kpHRaPINCk5ov2jFRoiPZGGE+tmf03oemlo
-OxMP68ly/NoFQS5egtQiGEHabi5h3eIdu0Ky6N23WboRZs2UIPVg6zq3aXVMIxW/
-CfDrQd8dpDhW7Uj+WNO7jABBkanWs9n5paYRz5EDH1T+HQtBJjlYtpbyC4VxYo3B
-TGCrbjg7+nbafnqw/51krl/Gul9EqwrE4S5+uqbr4UVQJijUybhutD3tMSe6jKBD
-mzEabKLDLWKHTjRqpPgf8YlEec8jTAvxddCCuoo3H8yqi1jvdn0oMcWPiYYBkPLB
-j9rhYQgF8qe/CAThxbo1pypbXRPdPOr3HLannovCyMLo9kLi/AS+fU9Z1lF77SFb
-YZjKLNy5AeFeatP3Pve0aNBxoK3MRMIB+ollCNcYBZridF1S95JUGciiB3sz2H7e
-Qrb7EUxP2yLT31HuPHKYMGbOin5S31pSJxirNyRzbwNsGsKU04DdOCRrhkM0hnhM
-aFKy7BEAumwibahHy2jKfzrVbM+jKpRpLV91RuOfry568jIHwP/sDZ68f+f30tCg
-th+q84IGmtjDR1UtKRGZb6baAmMXW4r6nE5ktKRnq1GbgvxgOAc=
-=VDA4
------END PGP SIGNATURE-----
-
---fpqsm0+SpoU9L8kM--
