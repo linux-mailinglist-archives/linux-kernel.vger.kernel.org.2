@@ -2,101 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C19A43E237
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 15:29:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4411243E23C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 15:29:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230425AbhJ1NbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 09:31:07 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:12749 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230435AbhJ1NbE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 09:31:04 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1635427717; h=Date: Message-ID: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=x3m0T0TYkMfipQ1cWI4bbiEZDY0ERUgi7XTAfjybcjY=;
- b=CLSrPA63QYBWD+C1r3FZV6BNfb7bOz46lol8/aO8hOSxiKN20p/kbFIPvGxC0qvBOAPqr0bs
- SUYakdhUy+S1azztoauyJAsS49xehQXufcdQCBpD83KTX88L5mzgC44GpidupTKpf3nqYYJu
- bqxOqMnV4+n80v4cxg4jazkGzvs=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 617aa573f6a3eeacf9187727 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 28 Oct 2021 13:28:19
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 94702C43619; Thu, 28 Oct 2021 13:28:18 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.5 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E72BEC4338F;
-        Thu, 28 Oct 2021 13:28:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org E72BEC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S230384AbhJ1NcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 09:32:03 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:47708 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230286AbhJ1NcC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 09:32:02 -0400
+Date:   Thu, 28 Oct 2021 13:29:33 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1635427774;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=G7RMP0P0fqRHDVGvukHeKY+eqDsXta5wVjUj6pXE/Lg=;
+        b=QEzdJRKzg5a36Oer7R385oUaIwrr3pqJQcTL14q8sheKu+rJam7UOTNbb488m1oJAwFXrR
+        04ufUXs7b3rCaLkoUBkn0/xaiGw6ikGLljmZjVpGbLGGJyKYmNSTGVwgTkCVK9FVGZY3hG
+        Pncs2l+Oi2VIPpp6uZ1uaWv/hLCl/W6X/SnNCEbubawSKLUioazviGidPeAvRWn0GJYg0d
+        x/Xwak2bpgJIKODj6L6ITZF/5mfPB0F2Ba1HKZ+nKDZ6yGwEmBfHIQe5oelfsTxC0ob6EV
+        sR7SVCi9zqs0+syDhLnTtMs9VIlU2pj8/GfrGhNlOtLCs8fTDwUQVmKZZ+Xtbw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1635427774;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=G7RMP0P0fqRHDVGvukHeKY+eqDsXta5wVjUj6pXE/Lg=;
+        b=GFaCKE8jc8Oip40GUoGNpL63q/UwbMKEi+YrL1OS5HherwBxcMyXQV7toiG6bX2vqCH8U/
+        3c1EH1qa+4kC/1DQ==
+From:   "tip-bot2 for Kristen Carlson Accardi" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/core] vmlinux.lds.h: Have ORC lookup cover entire _etext - _stext
+Cc:     Kristen Carlson Accardi <kristen@linux.intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20211013175742.1197608-5-keescook@chromium.org>
+References: <20211013175742.1197608-5-keescook@chromium.org>
 MIME-Version: 1.0
+Message-ID: <163542777304.626.17338682230666549954.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH v2 3/3] mwifiex: fix division by zero in fw download path
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20211027080819.6675-4-johan@kernel.org>
-References: <20211027080819.6675-4-johan@kernel.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Sharvari Harisangam <sharvari.harisangam@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Brian Norris <briannorris@chromium.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan@kernel.org>, stable@vger.kernel.org,
-        Amitkumar Karwar <akarwar@marvell.com>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
-Message-ID: <163542769280.5095.17800694227410955005.kvalo@codeaurora.org>
-Date:   Thu, 28 Oct 2021 13:28:18 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Johan Hovold <johan@kernel.org> wrote:
+The following commit has been merged into the x86/core branch of tip:
 
-> Add the missing endpoint sanity checks to probe() to avoid division by
-> zero in mwifiex_write_data_sync() in case a malicious device has broken
-> descriptors (or when doing descriptor fuzz testing).
-> 
-> Only add checks for the firmware-download boot stage, which require both
-> command endpoints, for now. The driver looks like it will handle a
-> missing endpoint during normal operation without oopsing, albeit not
-> very gracefully as it will try to submit URBs to the default pipe and
-> fail.
-> 
-> Note that USB core will reject URBs submitted for endpoints with zero
-> wMaxPacketSize but that drivers doing packet-size calculations still
-> need to handle this (cf. commit 2548288b4fb0 ("USB: Fix: Don't skip
-> endpoint descriptors with maxpacket=0")).
-> 
-> Fixes: 4daffe354366 ("mwifiex: add support for Marvell USB8797 chipset")
-> Cc: stable@vger.kernel.org      # 3.5
-> Cc: Amitkumar Karwar <akarwar@marvell.com>
-> Signed-off-by: Johan Hovold <johan@kernel.org>
-> Reviewed-by: Brian Norris <briannorris@chromium.org>
+Commit-ID:     ca136cac37eb51649d52d5bc4271c55e30ed354c
+Gitweb:        https://git.kernel.org/tip/ca136cac37eb51649d52d5bc4271c55e30ed354c
+Author:        Kristen Carlson Accardi <kristen@linux.intel.com>
+AuthorDate:    Wed, 13 Oct 2021 10:57:42 -07:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Wed, 27 Oct 2021 11:07:59 +02:00
 
-Patch applied to wireless-drivers-next.git, thanks.
+vmlinux.lds.h: Have ORC lookup cover entire _etext - _stext
 
-89f8765a11d8 mwifiex: fix division by zero in fw download path
+When using -ffunction-sections to place each function in its own text
+section (so it can be randomized at load time in the future FGKASLR
+series), the linker will place most of the functions into separate .text.*
+sections. SIZEOF(.text) won't work here for calculating the ORC lookup
+table size, so the total text size must be calculated to include .text
+AND all .text.* sections.
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20211027080819.6675-4-johan@kernel.org/
+Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
+[ alobakin: move it to vmlinux.lds.h and make arch-indep ]
+Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Tested-by: Tony Luck <tony.luck@intel.com>
+Link: https://lore.kernel.org/r/20211013175742.1197608-5-keescook@chromium.org
+---
+ include/asm-generic/vmlinux.lds.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+index f2984af..e823491 100644
+--- a/include/asm-generic/vmlinux.lds.h
++++ b/include/asm-generic/vmlinux.lds.h
+@@ -869,10 +869,11 @@
+ 		KEEP(*(.orc_unwind))					\
+ 		__stop_orc_unwind = .;					\
+ 	}								\
++	text_size = _etext - _stext;					\
+ 	. = ALIGN(4);							\
+ 	.orc_lookup : AT(ADDR(.orc_lookup) - LOAD_OFFSET) {		\
+ 		orc_lookup = .;						\
+-		. += (((SIZEOF(.text) + LOOKUP_BLOCK_SIZE - 1) /	\
++		. += (((text_size + LOOKUP_BLOCK_SIZE - 1) /		\
+ 			LOOKUP_BLOCK_SIZE) + 1) * 4;			\
+ 		orc_lookup_end = .;					\
+ 	}
