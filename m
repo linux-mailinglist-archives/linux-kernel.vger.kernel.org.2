@@ -2,92 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8DD343EA06
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 23:10:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B0DC43EA0E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 23:12:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231352AbhJ1VMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 17:12:42 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:35679 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231299AbhJ1VMl (ORCPT
+        id S231307AbhJ1VPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 17:15:03 -0400
+Received: from mail-oi1-f179.google.com ([209.85.167.179]:37790 "EHLO
+        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230404AbhJ1VO7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 17:12:41 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HgJ9c2s6Cz4xZ1;
-        Fri, 29 Oct 2021 08:10:11 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1635455413;
-        bh=IyHTHI8wfsJBwIWK15vm9EIrjgKPX5C+Ahx30g+k4QM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=CoFrOh9xrLI9Tpxew+cQ1nlU4hQp81S8j56ACywyrUNz/RgmOIFe1aIS8BrO35x+Z
-         tvAIHDa3m/3+tj1XpBmX5F1O2EMGMdQxyPkuSizFMMHCm+EcWXQx6mxugOs2cPefYs
-         tGaELKWDcK718xayKVlEEfgm31tRh8FXIMxkC6vXiAnPZZqefHZdM2CTMLrpGYHxx1
-         VtgBC1cHqtqWePwgx/Yvpy4L5+NzfKq/vCkElnazkHITEvVRnXe+mu/C5O9Suev98L
-         idWRnfz9U6gbUvuTP8WisYzUNUybMP47uwlvQsS4iDdNbsug0Fo+jMzwm86HvDYGQz
-         cZH17bmPL7Slg==
-Date:   Fri, 29 Oct 2021 08:10:09 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: Re: linux-next: build warning after merge of the ftrace tree
-Message-ID: <20211029081009.0fd1a83a@canb.auug.org.au>
-In-Reply-To: <20211028091646.15f6e6de@gandalf.local.home>
-References: <20211028232345.5ffa43bc@canb.auug.org.au>
-        <20211028091646.15f6e6de@gandalf.local.home>
+        Thu, 28 Oct 2021 17:14:59 -0400
+Received: by mail-oi1-f179.google.com with SMTP id o83so10211044oif.4;
+        Thu, 28 Oct 2021 14:12:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GF/QKgWHePUF0ztiRXZtM8u7QRJ7KFD1ma0iq8wQWWU=;
+        b=ASpp4np0RJ7tK2HKoSLqzFu0T8gAyCue7RtUamSJsqYk9Up5HIFcy+s0y7O1C6vBAw
+         Cdyi7+oHefZyybOJcD9YflYPI1odiF1y0qXuuBWgT32QkRaMPLTXGms6uwcILMl/BSit
+         g5VJPE7tyYrbrpTMwxNGUi9/xArfatYLhJoJjlFDC+64tG4bfsRNX04nctiDTfOBg65e
+         oR1Fui7mCYF7A8BDYedkO1IGsUbmeC1mxG6LUVAEKDppSWksJkORCPiNT/H10pxbnrrK
+         ftNVVzKAiyFl+irm2XKgpanasztPQUu37btzA4ORPHwY0P4GsHQCH8/p8wNVgzaBBs2u
+         5tNQ==
+X-Gm-Message-State: AOAM530pmHfRT17uLuXX8hN6WbOUCtZeCOFwC44IdrIV4l3zpUua1ACR
+        iboVBhWeH/48TjTVz8LQcg==
+X-Google-Smtp-Source: ABdhPJxH9evASEn/c1tJsj0UAND2Xw+iRVZEN7IqIc5V72yz/Fv7Y4DcBiL1q7UGs9KDS/bTcCePJw==
+X-Received: by 2002:a54:4d89:: with SMTP id y9mr4939486oix.22.1635455551788;
+        Thu, 28 Oct 2021 14:12:31 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id k22sm1397540otn.44.2021.10.28.14.12.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 14:12:31 -0700 (PDT)
+Received: (nullmailer pid 595084 invoked by uid 1000);
+        Thu, 28 Oct 2021 21:12:30 -0000
+Date:   Thu, 28 Oct 2021 16:12:30 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Cc:     Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 7/8] dt-bindings: phy: uniphier-ahci: Add bindings for
+ Pro4 SoC
+Message-ID: <YXsSPm1SdvaeDwbq@robh.at.kernel.org>
+References: <1634687888-23900-1-git-send-email-hayashi.kunihiko@socionext.com>
+ <1634687888-23900-8-git-send-email-hayashi.kunihiko@socionext.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/VfXdm/ixJMWpftaaH9_SGGq";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1634687888-23900-8-git-send-email-hayashi.kunihiko@socionext.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/VfXdm/ixJMWpftaaH9_SGGq
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Oct 20, 2021 at 08:58:07AM +0900, Kunihiko Hayashi wrote:
+> Update AHCI-PHY binding document for UniPhier Pro4 SoC. Add a compatible
+> string, clock and reset lines for the SoC to the document.
+> 
+> Pro4 AHCI-PHY needs to control additional GIO clock line and reset lines
+> ("pm", "tx", and "rx").
+> 
+> Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+> ---
+>  .../bindings/phy/socionext,uniphier-ahci-phy.yaml    | 20 ++++++++++++++++----
+>  1 file changed, 16 insertions(+), 4 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/phy/socionext,uniphier-ahci-phy.yaml b/Documentation/devicetree/bindings/phy/socionext,uniphier-ahci-phy.yaml
+> index 745c525ce6b9..67415f7ebe8c 100644
+> --- a/Documentation/devicetree/bindings/phy/socionext,uniphier-ahci-phy.yaml
+> +++ b/Documentation/devicetree/bindings/phy/socionext,uniphier-ahci-phy.yaml
+> @@ -16,6 +16,7 @@ maintainers:
+>  properties:
+>    compatible:
+>      enum:
+> +      - socionext,uniphier-pro4-ahci-phy
+>        - socionext,uniphier-pxs2-ahci-phy
+>        - socionext,uniphier-pxs3-ahci-phy
+>  
+> @@ -30,6 +31,9 @@ properties:
+>  
+>    clock-names:
+>      oneOf:
+> +      - items:          # for Pro4
+> +          - const: gio
+> +          - const: link
 
-Hi Steven,
+Add new entries on the end...
 
-On Thu, 28 Oct 2021 09:16:46 -0400 Steven Rostedt <rostedt@goodmis.org> wro=
-te:
->
-> On Thu, 28 Oct 2021 23:23:45 +1100
-> Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->=20
-> > After merging the ftrace tree, today's linux-next build (htmldocs)
-> > produced this warning:
-> >=20
-> > Documentation/trace/histogram.rst:1766: WARNING: Inline emphasis start-=
-string without end-string. =20
->=20
-> I have no idea what that means.
+>        - items:          # for PXs2
+>            - const: link
 
-I assume you need to quote (with '\') the '*' on line 1767 (?).
+So add 'gio' here.
 
---=20
-Cheers,
-Stephen Rothwell
+And add 'minItems: 1' in this entry.
 
---Sig_/VfXdm/ixJMWpftaaH9_SGGq
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+There's also an error in 'clocks' as it needs 'minItems: 1'
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF7EbIACgkQAVBC80lX
-0GzSUQgAmG5DznI57UeGjxA7tQfKgmfGK+XCwU2PEfeteT5Qf4KWcRIp4PWIk5N2
-JIPCsw3YzOORum2ICk698gXE60PFspkF2+Bf/1sAKiFRWcaF0NsqLNPZu32CQ+Vp
-zCQT5VL2h7Zca3HA4Pv9I1VJmVanWUStuG9EpqDoOYF/ZgoZJb6+/HJY9RU12pfk
-/BcorzAXACLhTjA9Ryj2WCnTApvYlfCDHasIORhDmPPg1sxO4KV14dC2yV2Wv0Rr
-wKyYLm+O8LvY9tRECRGCZJCLV0erbTb5BOprzoh1p2s71CCyc5JtseJrMvVrzGJD
-fTlxHcMyr8JSIult+OP1e5VojIj/wg==
-=8s/S
------END PGP SIGNATURE-----
-
---Sig_/VfXdm/ixJMWpftaaH9_SGGq--
+>        - items:          # for others
+> @@ -37,12 +41,20 @@ properties:
+>            - const: phy
+>  
+>    resets:
+> -    maxItems: 2
+> +    minItems: 2
+> +    maxItems: 5
+>  
+>    reset-names:
+> -    items:
+> -      - const: link
+> -      - const: phy
+> +    oneOf:
+> +      - items:          # for Pro4
+> +          - const: gio
+> +          - const: link
+> +          - const: pm
+> +          - const: tx
+> +          - const: rx
+> +      - items:          # for others
+> +          - const: link
+> +          - const: phy
+>  
+>  required:
+>    - compatible
+> -- 
+> 2.7.4
+> 
+> 
