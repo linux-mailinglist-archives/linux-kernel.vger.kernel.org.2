@@ -2,146 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 630C743E82B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 20:18:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B05E43E821
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 20:17:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231167AbhJ1SVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 14:21:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56436 "EHLO
+        id S230495AbhJ1ST3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 14:19:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230435AbhJ1SVN (ORCPT
+        with ESMTP id S230350AbhJ1ST1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 14:21:13 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA2B6C061570;
-        Thu, 28 Oct 2021 11:18:45 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id l10-20020a056830154a00b00552b74d629aso9844314otp.5;
-        Thu, 28 Oct 2021 11:18:45 -0700 (PDT)
+        Thu, 28 Oct 2021 14:19:27 -0400
+Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27259C061243
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 11:16:59 -0700 (PDT)
+Received: by mail-oo1-xc2e.google.com with SMTP id m37-20020a4a9528000000b002b83955f771so2408359ooi.7
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 11:16:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=w7nWFW8rgu3q0FJszagEHVtFJX/cFWmjwdA+8hKw5zg=;
-        b=pXuCBj8yAutcRX6qvtAU7WWgZE8NIL3D49yvBJaCXagUDCZ910n8nNwJaM2xph/9pN
-         s1MSswiX6mgNShEdr4XPq2TX8Aq+MMFCZ9lg1vT8bHWvBhzfmjBV/EDht/ofFqJ9S90K
-         2t6s7EUsLGVGYEy9F1zN1WxB07cpU1l6qV7BCHEQ0XDWFjgLwgJgX5fCuxko1WkWAQgL
-         5Io9DxT9FjWDqXt5Iih/fwEL6q71PwZ086t+AGehpZzcpJR76yeiU7RyDAAZL1Gpir2J
-         MeGbSoHWLi/JLS9iVaY27jq09K5d3JF2kC4suSTLhTvBr4uioOtkR+bA22BlZFN98WZo
-         kvgw==
+        bh=Wusxu4vVS094WYADHFLACryqXCZAQomcEnv/oqtQUp8=;
+        b=cIHck4f7AU6fCfChVEV2LovuiRMjA9npqq575g7mD6uUXAWIZK7H/dd0FYbkYWvcLw
+         THcW+crPTr8lmtELnV92shgpOg7arjpaszvQRz613ZU/fICX96ZR7nz0A+Zs5ZWX2Kzu
+         3Fxyh0V1kgUIi49NKrpybu+L1b2eGf9O4QvZQI8qc2ZWwFFux0z41haIX4Vcc6wgljWR
+         MDV+4WCiRPJBUi+UaFPrdiEtNHYRNGNAC/yesi/c2odE1ZPoTN4ofOemZsJA0bfvkzro
+         RVFdWyPcFsTjJWMnxm3mzqX74df7+nxkEJqS8WqXZ6DsJcMWEMdTR/QCI0bM6LMkj2JB
+         0REg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=w7nWFW8rgu3q0FJszagEHVtFJX/cFWmjwdA+8hKw5zg=;
-        b=KDonqAeVA2kl6rNFXPMpkkF+IrT31NVSnNyTv/R0GG2WLJ0tapJh6Cr1vfubHK0G8g
-         FoZg+S0bBJ/yS5JMAuXVAZKnDFFlM0Wv36SjILCWrLdhPJcvBFxgcPPcJZ3lIKhhFkR1
-         muDqvAdNcXFCt1n+q53W2cylxm959KpKQ7gKnmrlJFNP4IbGqGaxjwbYxAnb3g4fwUTf
-         O1eyE/XGj1MaAY+l9c/RPIS9Cn+NMqQhFrX9uRb9a4piu83CugWBEVZcHw02KPy8W4I/
-         6Gyx2J1O83Kl3x4YWLeWdNv6wN2LQ815SE3jS0G0TBUtGjIt441/B7j0WAvlcY8rE9IN
-         D0Ig==
-X-Gm-Message-State: AOAM533vh56pK2Suh/JLd1K9A6g7mduYncAhNSAeNajOoFV2MVcGQpEP
-        c8qE/SnfA1cXrG1DUxMnDOo=
-X-Google-Smtp-Source: ABdhPJxigRqXKW/EelfF19Fcv0BBcLzdCKtUu6DSQr8700pekQ3SmkW/ey1jRNHTINR1CzJLbqW5Sg==
-X-Received: by 2002:a9d:57c9:: with SMTP id q9mr4804013oti.281.1635445125121;
-        Thu, 28 Oct 2021 11:18:45 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id x17sm331109otp.78.2021.10.28.11.18.43
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Wusxu4vVS094WYADHFLACryqXCZAQomcEnv/oqtQUp8=;
+        b=M1Ypp0cxpINudUQcYSYJcUkf31xNkVTeNB9IpGTwXiaCpD3UB9b2TnK78EnMHuBrsw
+         AIdxA7XGMSgElYJil2vSEK1K3qnF4BwhmikZMocasloW+xx57Hy3STHWcY9l2TJShs1k
+         kNkh2tJRbm1b59v39Y53xQm/wldUjQtgWcPQPSFSD2f9Zm8CuQVvQTvQ6ltCqS7Nsfua
+         +Q8HkiMnfvkyB9hdk7vXwwO+3nQ2m8clUDyZOP8wVY3iYRFnvekq0k2t0GDmvBTF5JFa
+         rZmp7+kmGfnSYfbLBocS+X3XO9KT+giJVu78/hwf3NDUilGUwNJQOoDl1YXuVp4nJ7CF
+         De+w==
+X-Gm-Message-State: AOAM5325xstWZpq1LmRhYv2+EteL+vBUI+XxXtlF9n1NGwCziYVbrLrd
+        j6cVfcMhXDWEgFSIlQucXUkGUA==
+X-Google-Smtp-Source: ABdhPJy7YMoWnmrHfImanNmbs6Unt0iAC5Q17Vv8gEqfdVoObsC06l/dfy2j5VCFf7uWMyZht8j/MQ==
+X-Received: by 2002:a4a:e218:: with SMTP id b24mr4268610oot.36.1635445018092;
+        Thu, 28 Oct 2021 11:16:58 -0700 (PDT)
+Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id bq10sm1288528oib.25.2021.10.28.11.16.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 11:18:44 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 28 Oct 2021 11:18:42 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, rafal@milecki.pl,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Thu, 28 Oct 2021 11:16:57 -0700 (PDT)
+Date:   Thu, 28 Oct 2021 11:18:45 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>
+Cc:     Yassine Oudjana <y.oudjana@protonmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "maintainer:BROADCOM BCM63XX ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Justin Chen <justinpopo6@gmail.com>,
-        "open list:WATCHDOG DEVICE DRIVERS" <linux-watchdog@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        "moderated list:BROADCOM BCM63XX ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 3/7] watchdog: bcm7038_wdt: Support platform data
- configuration
-Message-ID: <20211028181842.GA705675@roeck-us.net>
-References: <20211028172322.4021440-1-f.fainelli@gmail.com>
- <20211028172322.4021440-4-f.fainelli@gmail.com>
+        Ilia Lin <ilia.lin@kernel.org>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        phone-devel@vger.kernel.org
+Subject: Re: [PATCH 4/8] cpufreq: qcom_cpufreq_nvmem: Simplify reading kryo
+ speedbin
+Message-ID: <YXrphSSG9+zsZbJ9@ripper>
+References: <20211014083016.137441-1-y.oudjana@protonmail.com>
+ <20211014083016.137441-5-y.oudjana@protonmail.com>
+ <f4af0e40-9e93-dba9-7401-cdfc76ba667e@somainline.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211028172322.4021440-4-f.fainelli@gmail.com>
+In-Reply-To: <f4af0e40-9e93-dba9-7401-cdfc76ba667e@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 10:23:18AM -0700, Florian Fainelli wrote:
-> The BCM7038 watchdog driver needs to be able to obtain a specific clock
-> name on BCM63xx platforms which is the "periph" clock ticking at 50MHz.
-> make it possible to specify the clock name to obtain via platform data.
-> 
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+On Fri 15 Oct 11:58 PDT 2021, Konrad Dybcio wrote:
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+> 
+> On 14.10.2021 10:32, Yassine Oudjana wrote:
+> > In preparation for adding a separate device tree for MSM8996 Pro, skip reading
+> > msm-id from smem and just read the speedbin efuse.
+> >
+> While I'd really like for this to be merged, it's gonna totally wreck backwards
+> 
+> compatibility.. But then, since APCC was not defined properly before commit
+> 
+> 0a275a35ceab07 arm64: dts: qcom: msm8996: Make CPUCC actually probe (and work)
+> 
+> there's only 5.14/5.15 (both of which were non-LTS) which would *actually* break given
+> 
+> somebody decided that "ah yes, pulling in DTs from these specific mainline kernel releases
+> 
+> is a good idea"...
+> 
+> 
+> If I were to judge, it would probably be fine to rid the old mechanism..
+> 
 
-> ---
->  drivers/watchdog/bcm7038_wdt.c            | 8 +++++++-
->  include/linux/platform_data/bcm7038_wdt.h | 8 ++++++++
->  2 files changed, 15 insertions(+), 1 deletion(-)
->  create mode 100644 include/linux/platform_data/bcm7038_wdt.h
-> 
-> diff --git a/drivers/watchdog/bcm7038_wdt.c b/drivers/watchdog/bcm7038_wdt.c
-> index acaaa0005d5b..506cd7ef9c77 100644
-> --- a/drivers/watchdog/bcm7038_wdt.c
-> +++ b/drivers/watchdog/bcm7038_wdt.c
-> @@ -10,6 +10,7 @@
->  #include <linux/module.h>
->  #include <linux/of.h>
->  #include <linux/platform_device.h>
-> +#include <linux/platform_data/bcm7038_wdt.h>
->  #include <linux/pm.h>
->  #include <linux/watchdog.h>
->  
-> @@ -133,8 +134,10 @@ static void bcm7038_clk_disable_unprepare(void *data)
->  
->  static int bcm7038_wdt_probe(struct platform_device *pdev)
->  {
-> +	struct bcm7038_wdt_platform_data *pdata = pdev->dev.platform_data;
->  	struct device *dev = &pdev->dev;
->  	struct bcm7038_watchdog *wdt;
-> +	const char *clk_name = NULL;
->  	int err;
->  
->  	wdt = devm_kzalloc(dev, sizeof(*wdt), GFP_KERNEL);
-> @@ -147,7 +150,10 @@ static int bcm7038_wdt_probe(struct platform_device *pdev)
->  	if (IS_ERR(wdt->base))
->  		return PTR_ERR(wdt->base);
->  
-> -	wdt->clk = devm_clk_get(dev, NULL);
-> +	if (pdata && pdata->clk_name)
-> +		clk_name = pdata->clk_name;
-> +
-> +	wdt->clk = devm_clk_get(dev, clk_name);
->  	/* If unable to get clock, use default frequency */
->  	if (!IS_ERR(wdt->clk)) {
->  		err = clk_prepare_enable(wdt->clk);
-> diff --git a/include/linux/platform_data/bcm7038_wdt.h b/include/linux/platform_data/bcm7038_wdt.h
-> new file mode 100644
-> index 000000000000..e18cfd9ec8f9
-> --- /dev/null
-> +++ b/include/linux/platform_data/bcm7038_wdt.h
-> @@ -0,0 +1,8 @@
-> +#ifndef __BCM7038_WDT_PDATA_H
-> +#define __BCM7038_WDT_PDATA_H
-> +
-> +struct bcm7038_wdt_platform_data {
-> +	const char *clk_name;
-> +};
-> +
-> +#endif /* __BCM7038_WDT_PDATA_H */
-> -- 
-> 2.25.1
-> 
+Given that various people have reported instabilities on db820c in its
+current form - and prior to that it was too slow - I think it's fine to
+favour getting this sorted out properly over backwards compatibility.
+
+Regards,
+Bjorn
