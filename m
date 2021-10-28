@@ -2,110 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3FB743E3C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:32:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4114143E3D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:34:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231260AbhJ1Oe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 10:34:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231235AbhJ1Oe0 (ORCPT
+        id S231148AbhJ1OhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 10:37:16 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:48583 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S230435AbhJ1OhO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 10:34:26 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFFCEC061570
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 07:31:58 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id b12so6139807wrh.4
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 07:31:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=G1URQ8lQTbKqKyy5iIiPH2GPZERZgQDiwncSKKtO3yA=;
-        b=fBHmbjTKwbBV7gQItocG0wuyAy3bf5EBgQUyDfKMLm92xGS1KdK3ElxDwMrekIV/4E
-         18hPsWS+TZLWBXgxqV2DRCkEmPmmrhlQr7l17pJNdFgJnGJq7DCwbJ4wWX7+pbdvEryR
-         flIqtVwIMaUVc+HS+/siJkB7FS+4KrSgg18nvaVRFGw6phKW/ekqUUgDLQzJDvIubANZ
-         gPqWACUta8NJLoG+p33Dzh7cgf70VksltNhfBZDIPlKyt1ZG00r4MukiwYgHHo7YHMiy
-         YYp6EB0Q2GgmK7WVo3cxKv6F2V/PUcJ67OYqlVYWgUK5xbHlm4fGxO7HWHSpq5COJAzV
-         Q/1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=G1URQ8lQTbKqKyy5iIiPH2GPZERZgQDiwncSKKtO3yA=;
-        b=ma+WHanL+Glu5C6/8u+bfU4deG2MNAmyNhblCNmMze3Mr+z82ZZQQwp6XQesDBGSbz
-         2N/XWOhFwb/zWHUWhkX9uZW6Xh5MpZDUtH08hHu/0ptcwIAErURsdms2TXPVH79p0gHN
-         YsSr/kdH1vosCEpCXR3e6r/6S3yoeOYerL1Iuk6feKI9aWjw7Dz9+WhwmJXKpeItwSff
-         y3J0ta/HLcCog5I4Kjyuzpf+kWRJ5PDiZW6uP1e3oNMkgzc0pexa5yXop1rnw2IsaUUD
-         NKtjwgHRPnti1J8tU6tu2gKO0YbiGeeFRbVTUyhRx+1ufDHKlVbGRlSvhdkwO5zX9RsU
-         9MKw==
-X-Gm-Message-State: AOAM530tWZgdoBgAToLWOWtImBYtaYKUnKM6CpYDlBXoWhPk+qgvT/2s
-        X8kx5a/exmRDGV9Mpy+gle4=
-X-Google-Smtp-Source: ABdhPJxHXS8cxJcuL94+fXL/rbO0pFVs3/yhI0DSigN5Eupyioy+0wUxoViDjj0DOECe+w3Vvem8SQ==
-X-Received: by 2002:a05:6000:18c7:: with SMTP id w7mr6074015wrq.411.1635431517243;
-        Thu, 28 Oct 2021 07:31:57 -0700 (PDT)
-Received: from ?IPv6:2a01:4b00:f411:e700:e085:8cb7:7bf6:5d62? ([2a01:4b00:f411:e700:e085:8cb7:7bf6:5d62])
-        by smtp.gmail.com with ESMTPSA id c16sm3211643wrm.46.2021.10.28.07.31.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 07:31:56 -0700 (PDT)
-Message-ID: <186358f460f2093dc8a60a8120be3dc6f830c81f.camel@gmail.com>
-Subject: Re: [Outreachy kernel] [PATCH 4/7] staging: vt6655: Introduce
- `data` temporary variable
-From:   Karolina Drobnik <karolinadrobnik@gmail.com>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        Julia Lawall <julia.lawall@inria.fr>
-Cc:     outreachy-kernel@googlegroups.com, gregkh@linuxfoundation.org,
-        forest@alittletooquiet.net, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 28 Oct 2021 15:31:55 +0100
-In-Reply-To: <39890856.3BBMun7449@localhost.localdomain>
-References: <cover.1635415820.git.karolinadrobnik@gmail.com>
-         <2039159.k92FijXA2m@localhost.localdomain>
-         <alpine.DEB.2.22.394.2110281332040.9518@hadrien>
-         <39890856.3BBMun7449@localhost.localdomain>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.3-1 
+        Thu, 28 Oct 2021 10:37:14 -0400
+Received: (qmail 1352277 invoked by uid 1000); 28 Oct 2021 10:34:46 -0400
+Date:   Thu, 28 Oct 2021 10:34:46 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Paul =?iso-8859-1?Q?Heidekr=FCger?= <paul.heidekrueger@in.tum.de>
+Cc:     paulmck@kernel.org, will@kernel.org, peterz@infradead.org,
+        boqun.feng@gmail.com, parri.andrea@gmail.com,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        elver@google.com, charalampos.mainas@gmail.com,
+        pramod.bhatotia@in.tum.de
+Subject: Re: Potentially Broken Address Dependency via test_bit() When
+ Compiling With Clang
+Message-ID: <20211028143446.GA1351384@rowland.harvard.edu>
+References: <YXknxGFjvaB46d/p@Pauls-MacBook-Pro>
+ <20211027142720.GB1319606@rowland.harvard.edu>
+ <YXqZm6XTlMGDSpMT@Pauls-MacBook-Pro>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <YXqZm6XTlMGDSpMT@Pauls-MacBook-Pro>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Fabio and Julia,
+On Thu, Oct 28, 2021 at 02:37:47PM +0200, Paul Heidekrüger wrote:
+> On Wed, Oct 27, 2021 at 10:27:20AM -0400, Alan Stern wrote:
+> > On Wed, Oct 27, 2021 at 12:19:48PM +0200, Paul Heidekrüger wrote:
 
-Thank you very much for looking at my changes.
+> > > Address dependency in source code, lines 373 - 375 in fs/afs/addr_list.c:
+> > > 
+> > > > [...]
+> > > >   index = READ_ONCE(ac->alist->preferred);
+> > > >   if (test_bit(index, &set))
+> > > >     goto selected;
+> > > > [...]
+> > > 
+> > > where test_bit() expands to the following in 
+> > > include/asm-generic/bitops/non-atomic.h, lines 115 - 122:
+> > > 
+> > > > static __always_inline int
+> > > > arch_test_bit(unsigned int nr, const volatile unsigned long *addr)
+> > > > {
+> > > >   return 1UL & (addr[BIT_WORD(nr)] >> (nr & (BITS_PER_LONG-1)));
+> > > > }
+> > > > #define test_bit arch_test_bit
 
-On Thu, 2021-10-28 at 13:21 +0200, Fabio M. De Francesco wrote:
-> Hi Karolina,
+> > However, I can't follow the IR code.  Can you please explain in ordinary 
+> > English how the LLVM compiler manages to lose track of this dependency?
+> > 
+> > Alan Stern
 > 
-> I think you are using redundant parentheses in "* (data ++)" but
-> understand that those increments and dereferences are equivalent toÂ 
-> "* data ++" (according to the C precedence rules).
+> Here's what we think might be going on:
+> - In 'arch_test_bit()', 'addr[BIT_WORD(nr)]' expands to 'addr[(nr) / 64]'.
+> - Since 'addr' points to an 'unsigned long', any other result than '0' for
+>   '(nr) / 64' would be out of bounds and therefore undefined.
+> - We assume LLVM is able to figure this out and use it to get rid of the
+>   address computation all together.
 
-Yes, I added them on purpose to improve readability (+ that's also my
-preference anyway)
+Ah, that explains it.  Yes, when set is a single unsigned long (or an 
+array of length 1), the address dependency is only syntactic, not 
+semantic.  As a result, we should expect that compilers will sometimes 
+not preserve it.
 
-> While we are at it, please notice that Maintainers of different
-> subsystems may see this topic from a different point of view and that
-> they might very well ask you for removing those redundant
-> parentheses.
+The danger, of course, is that people relying on an ordering prescribed 
+by the LKMM may get fooled because (unbeknownst to them) the dependency 
+in question is not semantic.  It would be great if a static checker 
+could detect such things -- but this would require some way for us to 
+inform the checker about when the code does rely on a dependency 
+ordering.
 
-I understand, thanks for letting me know.
-
-
-On Thu, 2021-10-28 at 13:32 +0200, Julia Lawall wrote:
-> Would it be better as data[i] ?
+> We ran some experiments to see how optimisations behave when 'set' is in fact
+> an array and / or in global scope.
 > 
-> Could there be a better name than "data"?  Perhaps "table"?
+> 1. Insert a 'barrier()' in 'arch_test_bit()' before the 'return':
+> The dependency gets broken.
+> 
+> 2. Make 'set' an 'unsigned long' array of size '42', keep local scope: 
+> The dependency gets preserved.
+> 
+> 3. Keep 'set' as 'unsigend long', move to global scope: 
+> The dependency gets preserved.
 
-Hmm, now when I'm thinking about, it indeed looks like a better option.
-I would even say that `data` (or `table`/`init_table`) can be only used
-in the AL7320 case and we can go with `al2230_init_table` for AL2230.
-The line would be 61 characters long, way below the limit.
+That one's a little strange.  I don't see why the scope should make any 
+difference, so long as the compiler knows the actual type and length.
 
-What do you think?
+> 4. Make 'set' an 'unsigned long' array of size '42', move to global scope: 
+> The dependency gets preserved.
 
-
-Many thanks,
-Karolina
-
+Alan
