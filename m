@@ -2,215 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E93743DAF2
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 08:04:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B91F43DAF7
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 08:06:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229769AbhJ1GGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 02:06:14 -0400
-Received: from mga07.intel.com ([134.134.136.100]:36156 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229586AbhJ1GGO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 02:06:14 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10150"; a="293791411"
-X-IronPort-AV: E=Sophos;i="5.87,188,1631602800"; 
-   d="scan'208";a="293791411"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 23:03:47 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,188,1631602800"; 
-   d="scan'208";a="537873255"
-Received: from brentlu-brix.itwn.intel.com ([10.5.253.1])
-  by fmsmga008.fm.intel.com with ESMTP; 27 Oct 2021 23:03:43 -0700
-From:   Brent Lu <brent.lu@intel.com>
-To:     alsa-devel@alsa-project.org
-Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, Brent Lu <brent.lu@intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Julian Braha <julianbraha@gmail.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Rander Wang <rander.wang@intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Paul Olaru <paul.olaru@oss.nxp.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoc: Intel: glk_rt5682_max98357a: support ALC5682I-VS codec
-Date:   Thu, 28 Oct 2021 14:02:03 +0800
-Message-Id: <20211028060203.446093-1-brent.lu@intel.com>
-X-Mailer: git-send-email 2.25.1
+        id S229792AbhJ1GJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 02:09:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43291 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229586AbhJ1GI6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 02:08:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635401191;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QW1VwJpwnVmxxU7z0qT05ZJcs1uisimu/KzjDIJrxzY=;
+        b=BdV35ORxvsi1jbUs1zapl/5uYM+tiiKGcYwgl5nC3sZd7E8nh6n0L0WwUHs+A2HHxWJXmE
+        yfOssB64RjV6/QuFyEGL9sMzC/D233jdpls8LIjHNCnP1BPyhneNB3g01W7uMqfA+x7PxN
+        3EcuJNhJ0ywqY1HjC+I9e3MI10jr+O8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-575-FpD08W43OridSh2IluPe8g-1; Thu, 28 Oct 2021 02:06:25 -0400
+X-MC-Unique: FpD08W43OridSh2IluPe8g-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2367679EEF;
+        Thu, 28 Oct 2021 06:06:17 +0000 (UTC)
+Received: from starship (unknown [10.40.194.243])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9A8DC70953;
+        Thu, 28 Oct 2021 06:05:36 +0000 (UTC)
+Message-ID: <49c6c208841a85dbcb397acdc7f20b81402e71fb.camel@redhat.com>
+Subject: Re: [PATCH v2 23/43] KVM: VMX: Use boolean returns for Posted
+ Interrupt "test" helpers
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        David Matlack <dmatlack@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Jing Zhang <jingzhangos@google.com>
+Date:   Thu, 28 Oct 2021 09:05:35 +0300
+In-Reply-To: <20211009021236.4122790-24-seanjc@google.com>
+References: <20211009021236.4122790-1-seanjc@google.com>
+         <20211009021236.4122790-24-seanjc@google.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Detect the codec variant in probe function and update DAI link
-accordingly. Also add an new entry in enumeration table for machine
-driver enumeration.
+On Fri, 2021-10-08 at 19:12 -0700, Sean Christopherson wrote:
+> Return bools instead of ints for the posted interrupt "test" helpers.
+> The bit position of the flag being test does not matter to the callers,
+> and is in fact lost by virtue of test_bit() itself returning a bool.
+> 
+> Returning ints is potentially dangerous, e.g. "pi_test_on(pi_desc) == 1"
+> is safe-ish because ON is bit 0 and thus any sane implementation of
+> pi_test_on() will work, but for SN (bit 1), checking "== 1" would rely on
+> pi_test_on() to return 0 or 1, a.k.a. bools, as opposed to 0 or 2 (the
+> positive bit position).
+> 
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  arch/x86/kvm/vmx/posted_intr.c | 4 ++--
+>  arch/x86/kvm/vmx/posted_intr.h | 6 +++---
+>  2 files changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/vmx/posted_intr.c b/arch/x86/kvm/vmx/posted_intr.c
+> index 6c2110d91b06..1688f8dc535a 100644
+> --- a/arch/x86/kvm/vmx/posted_intr.c
+> +++ b/arch/x86/kvm/vmx/posted_intr.c
+> @@ -185,7 +185,7 @@ int pi_pre_block(struct kvm_vcpu *vcpu)
+>  			   new.control) != old.control);
+>  
+>  	/* We should not block the vCPU if an interrupt is posted for it.  */
+> -	if (pi_test_on(pi_desc) == 1)
+> +	if (pi_test_on(pi_desc))
+>  		__pi_post_block(vcpu);
+>  
+>  	local_irq_enable();
+> @@ -216,7 +216,7 @@ void pi_wakeup_handler(void)
+>  			blocked_vcpu_list) {
+>  		struct pi_desc *pi_desc = vcpu_to_pi_desc(vcpu);
+>  
+> -		if (pi_test_on(pi_desc) == 1)
+> +		if (pi_test_on(pi_desc))
+>  			kvm_vcpu_kick(vcpu);
+>  	}
+>  	spin_unlock(&per_cpu(blocked_vcpu_on_cpu_lock, cpu));
+> diff --git a/arch/x86/kvm/vmx/posted_intr.h b/arch/x86/kvm/vmx/posted_intr.h
+> index 7f7b2326caf5..36ae035f14aa 100644
+> --- a/arch/x86/kvm/vmx/posted_intr.h
+> +++ b/arch/x86/kvm/vmx/posted_intr.h
+> @@ -40,7 +40,7 @@ static inline bool pi_test_and_clear_on(struct pi_desc *pi_desc)
+>  			(unsigned long *)&pi_desc->control);
+>  }
+>  
+> -static inline int pi_test_and_set_pir(int vector, struct pi_desc *pi_desc)
+> +static inline bool pi_test_and_set_pir(int vector, struct pi_desc *pi_desc)
+>  {
+>  	return test_and_set_bit(vector, (unsigned long *)pi_desc->pir);
+>  }
+> @@ -74,13 +74,13 @@ static inline void pi_clear_sn(struct pi_desc *pi_desc)
+>  		(unsigned long *)&pi_desc->control);
+>  }
+>  
+> -static inline int pi_test_on(struct pi_desc *pi_desc)
+> +static inline bool pi_test_on(struct pi_desc *pi_desc)
+>  {
+>  	return test_bit(POSTED_INTR_ON,
+>  			(unsigned long *)&pi_desc->control);
+>  }
+>  
+> -static inline int pi_test_sn(struct pi_desc *pi_desc)
+> +static inline bool pi_test_sn(struct pi_desc *pi_desc)
+>  {
+>  	return test_bit(POSTED_INTR_SN,
+>  			(unsigned long *)&pi_desc->control);
+Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
 
-Signed-off-by: Brent Lu <brent.lu@intel.com>
----
- sound/soc/intel/boards/Kconfig                |  1 +
- sound/soc/intel/boards/glk_rt5682_max98357a.c | 53 +++++++++++++++----
- .../intel/common/soc-acpi-intel-glk-match.c   |  9 ++++
- 3 files changed, 54 insertions(+), 9 deletions(-)
-
-diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
-index f693383eb6e3..2dd5ff7e35ce 100644
---- a/sound/soc/intel/boards/Kconfig
-+++ b/sound/soc/intel/boards/Kconfig
-@@ -427,6 +427,7 @@ config SND_SOC_INTEL_GLK_RT5682_MAX98357A_MACH
- 	depends on MFD_INTEL_LPSS || COMPILE_TEST
- 	depends on SND_HDA_CODEC_HDMI && SND_SOC_SOF_HDA_AUDIO_CODEC
- 	select SND_SOC_RT5682_I2C
-+	select SND_SOC_RT5682S
- 	select SND_SOC_MAX98357A
- 	select SND_SOC_DMIC
- 	select SND_SOC_HDAC_HDMI
-diff --git a/sound/soc/intel/boards/glk_rt5682_max98357a.c b/sound/soc/intel/boards/glk_rt5682_max98357a.c
-index 9d75beec09d1..058aa7cb899a 100644
---- a/sound/soc/intel/boards/glk_rt5682_max98357a.c
-+++ b/sound/soc/intel/boards/glk_rt5682_max98357a.c
-@@ -18,14 +18,18 @@
- #include <sound/soc.h>
- #include <sound/soc-acpi.h>
- #include "../../codecs/rt5682.h"
-+#include "../../codecs/rt5682s.h"
- #include "../../codecs/hdac_hdmi.h"
- #include "hda_dsp_common.h"
- 
- /* The platform clock outputs 19.2Mhz clock to codec as I2S MCLK */
- #define GLK_PLAT_CLK_FREQ 19200000
- #define RT5682_PLL_FREQ (48000 * 512)
--#define GLK_REALTEK_CODEC_DAI "rt5682-aif1"
-+#define RT5682_DAI_NAME "rt5682-aif1"
-+#define RT5682S_DAI_NAME "rt5682s-aif1"
- #define GLK_MAXIM_CODEC_DAI "HiFi"
-+#define RT5682_DEV0_NAME "i2c-10EC5682:00"
-+#define RT5682S_DEV0_NAME "i2c-RTL5682:00"
- #define MAXIM_DEV0_NAME "MX98357A:00"
- #define DUAL_CHANNEL 2
- #define QUAD_CHANNEL 4
-@@ -43,6 +47,7 @@ struct glk_card_private {
- 	struct snd_soc_jack geminilake_headset;
- 	struct list_head hdmi_pcm_list;
- 	bool common_hdmi_codec_drv;
-+	int is_rt5682s;
- };
- 
- enum {
-@@ -139,9 +144,19 @@ static int geminilake_rt5682_codec_init(struct snd_soc_pcm_runtime *rtd)
- 	struct snd_soc_component *component = asoc_rtd_to_codec(rtd, 0)->component;
- 	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
- 	struct snd_soc_jack *jack;
--	int ret;
-+	int pll_id, pll_source, clk_id, ret;
-+
-+	if (ctx->is_rt5682s) {
-+		pll_id = RT5682S_PLL2;
-+		pll_source = RT5682S_PLL_S_MCLK;
-+		clk_id = RT5682S_SCLK_S_PLL2;
-+	} else {
-+		pll_id = RT5682_PLL1;
-+		pll_source = RT5682_PLL1_S_MCLK;
-+		clk_id = RT5682_SCLK_S_PLL1;
-+	}
- 
--	ret = snd_soc_dai_set_pll(codec_dai, 0, RT5682_PLL1_S_MCLK,
-+	ret = snd_soc_dai_set_pll(codec_dai, pll_id, pll_source,
- 					GLK_PLAT_CLK_FREQ, RT5682_PLL_FREQ);
- 	if (ret < 0) {
- 		dev_err(rtd->dev, "can't set codec pll: %d\n", ret);
-@@ -149,7 +164,7 @@ static int geminilake_rt5682_codec_init(struct snd_soc_pcm_runtime *rtd)
- 	}
- 
- 	/* Configure sysclk for codec */
--	ret = snd_soc_dai_set_sysclk(codec_dai, RT5682_SCLK_S_PLL1,
-+	ret = snd_soc_dai_set_sysclk(codec_dai, clk_id,
- 					RT5682_PLL_FREQ, SND_SOC_CLOCK_IN);
- 	if (ret < 0)
- 		dev_err(rtd->dev, "snd_soc_dai_set_sysclk err = %d\n", ret);
-@@ -344,9 +359,12 @@ SND_SOC_DAILINK_DEF(ssp1_codec,
- 
- SND_SOC_DAILINK_DEF(ssp2_pin,
- 	DAILINK_COMP_ARRAY(COMP_CPU("SSP2 Pin")));
--SND_SOC_DAILINK_DEF(ssp2_codec,
--	DAILINK_COMP_ARRAY(COMP_CODEC("i2c-10EC5682:00",
--				      GLK_REALTEK_CODEC_DAI)));
-+SND_SOC_DAILINK_DEF(ssp2_codec_5682,
-+	DAILINK_COMP_ARRAY(COMP_CODEC(RT5682_DEV0_NAME,
-+				      RT5682_DAI_NAME)));
-+SND_SOC_DAILINK_DEF(ssp2_codec_5682s,
-+	DAILINK_COMP_ARRAY(COMP_CODEC(RT5682S_DEV0_NAME,
-+				      RT5682S_DAI_NAME)));
- 
- SND_SOC_DAILINK_DEF(dmic_pin,
- 	DAILINK_COMP_ARRAY(COMP_CPU("DMIC01 Pin")));
-@@ -492,7 +510,7 @@ static struct snd_soc_dai_link geminilake_dais[] = {
- 		.ops = &geminilake_rt5682_ops,
- 		.dpcm_playback = 1,
- 		.dpcm_capture = 1,
--		SND_SOC_DAILINK_REG(ssp2_pin, ssp2_codec, platform),
-+		SND_SOC_DAILINK_REG(ssp2_pin, ssp2_codec_5682, platform),
- 	},
- 	{
- 		.name = "dmic01",
-@@ -592,12 +610,29 @@ static int geminilake_audio_probe(struct platform_device *pdev)
- 	struct snd_soc_acpi_mach *mach;
- 	const char *platform_name;
- 	struct snd_soc_card *card;
--	int ret;
-+	int ret, i;
- 
- 	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
- 	if (!ctx)
- 		return -ENOMEM;
- 
-+	/* Detect the headset codec variant */
-+	if (acpi_dev_present("RTL5682", NULL, -1)) {
-+		/* ALC5682I-VS is detected */
-+		ctx->is_rt5682s = 1;
-+
-+		for (i = 0; i < glk_audio_card_rt5682_m98357a.num_links; i++) {
-+			if (strcmp(geminilake_dais[i].name, "SSP2-Codec"))
-+				continue;
-+
-+			/* update the dai link to use rt5682s codec */
-+			geminilake_dais[i].codecs = ssp2_codec_5682s;
-+			geminilake_dais[i].num_codecs = ARRAY_SIZE(ssp2_codec_5682s);
-+			break;
-+		}
-+	} else
-+		ctx->is_rt5682s = 0;
-+
- 	INIT_LIST_HEAD(&ctx->hdmi_pcm_list);
- 
- 	card = &glk_audio_card_rt5682_m98357a;
-diff --git a/sound/soc/intel/common/soc-acpi-intel-glk-match.c b/sound/soc/intel/common/soc-acpi-intel-glk-match.c
-index 32fff9389eb3..4de4add74443 100644
---- a/sound/soc/intel/common/soc-acpi-intel-glk-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-glk-match.c
-@@ -40,6 +40,15 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_glk_machines[] = {
- 		.sof_fw_filename = "sof-glk.ri",
- 		.sof_tplg_filename = "sof-glk-rt5682.tplg",
- 	},
-+	{
-+		.id = "RTL5682",
-+		.drv_name = "glk_rt5682_max98357a",
-+		.fw_filename = "intel/dsp_fw_glk.bin",
-+		.machine_quirk = snd_soc_acpi_codec_list,
-+		.quirk_data = &glk_codecs,
-+		.sof_fw_filename = "sof-glk.ri",
-+		.sof_tplg_filename = "sof-glk-rt5682.tplg",
-+	},
- 	{
- 		.id = "10134242",
- 		.drv_name = "glk_cs4242_mx98357a",
--- 
-2.25.1
+Best regards,
+	Maxim Levitsky
 
