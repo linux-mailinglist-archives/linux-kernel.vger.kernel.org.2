@@ -2,93 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91BB743D82D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 02:35:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7522943D82F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 02:38:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229624AbhJ1AiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 20:38:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41650 "EHLO
+        id S229537AbhJ1AkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 20:40:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbhJ1AiB (ORCPT
+        with ESMTP id S229437AbhJ1AkX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 20:38:01 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF846C061570;
-        Wed, 27 Oct 2021 17:35:35 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id v16so3191695ple.9;
-        Wed, 27 Oct 2021 17:35:35 -0700 (PDT)
+        Wed, 27 Oct 2021 20:40:23 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D29CC061570
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 17:37:57 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id q16so7684348ljg.3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 17:37:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3UTHkAsYPEB52f7zz17R8yc9UXkkpLLy9VQI7Ai275w=;
-        b=g7gWwpxrpAjLZub1aBALSl+itvh+KuKGGlFvXmzADflMh5wsnGZjR/I1alqmy2qALL
-         AYMs7yharJz2u/37nMbLrSjNgLnM4+ivDXzDp0/ZrNUsXSM/VRDYWqg/D5llL2/lHVkj
-         cmVU+yRTzlSIxxN3Z+Y+G1+cf/lmxLMkRNQB5pjsHzgE5X0GHESTbXi8DyngptgNSETR
-         1qAhCvCxgrd4JYrXPU1/e0j0wFNRGcej68HbTQq7j6PS4qHCEOJ6EbYPmKOoyQFZ1nZ7
-         cirpVipcR0JuQ9BAxSdClnWN/O6JALxeRapxy/8kgLn8yFaHlQ44OWm7+7v9+XAHT4eh
-         ZTjw==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HXqQCOpu8CLs50biqo5RLezrlhQ8rX/+z0HIytvSHFM=;
+        b=UhWGxxDdtCvXQwuNGh/a6PTbTGzqmTdtJP2QgW3p1BbODTe01LeoGLpCVYRfMEvgfZ
+         zf+1bv8i/zdKEYSO7QB5AgKWE23OD9M5NsvGwloOHT+TjpWrmj2UUWKha3UuaX8Ma7dj
+         IsgaxLb+4N+Gzvyu8Ml9v7noz3vbKBQ/ZrK6iepE13fvp4fmeUTMITFZh7lWoz9wq/o7
+         c6I7sOLWUr20sB9MA+ZvPidide7Pdu7VXZqvg8H/hw2lHHI9ZN6NKf7Nd78FW/UjMFfJ
+         lgMzt2KZ3QU2kXkqaCxn+MHYhTr09+QMpk+uBSJfoJ/wTEnRomt2s3APDYlHM9za08Sj
+         1QhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3UTHkAsYPEB52f7zz17R8yc9UXkkpLLy9VQI7Ai275w=;
-        b=zxmYqKsAl0a28x2JGMvDjvA4aAV1SkBph99PLer98AqbxgRngyJQFECdwNsNIIndub
-         VIeNcfFbrutY8XJLl4h1Vpr+wiMtYLt7QtZo8hFh0pKgPPsiE679AlrfncWmE1Tz5lPq
-         OKCEiuvqre2lYDo9I5oDWEgAdDn566zaV39mtWnBgnrBdc3vk5fL4cfdYfzrHHYkmqzt
-         8DD2ioNxkoOfq4zHt4UPOxxgPEPrYneooQgzQFHKOrdBjfmm1fS3mw9sC/R+yq7g9f2+
-         UXCeg6Chhll2rGZ60UHx7N81V6qpC3pZ3kyp8AYBuKGdXRtM1RdlPGRzUJwJkWVQNsmx
-         DblQ==
-X-Gm-Message-State: AOAM533b2gk1B2RXRt2DeT23nVExGEfukoOgFuK10jmeCEu8R/xEgX+n
-        i2fxXF+b2pXlPhSAf6B9BmA=
-X-Google-Smtp-Source: ABdhPJzKiXxM74Zu2RbieygcX+4cu/ZPHrI2bJ6FHwS60+w0cGs3FspRFSJLdyLk3rkXrE7/De+NDA==
-X-Received: by 2002:a17:90a:ae18:: with SMTP id t24mr1038803pjq.92.1635381335317;
-        Wed, 27 Oct 2021 17:35:35 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id on17sm5546605pjb.47.2021.10.27.17.35.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 17:35:35 -0700 (PDT)
-From:   Yang Guang <cgel.zte@gmail.com>
-X-Google-Original-From: Yang Guang <yang.guang5@zte.com.cn>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Yang Guang <yang.guang5@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] gcc-plugins: use swap() to make code cleaner
-Date:   Thu, 28 Oct 2021 00:35:26 +0000
-Message-Id: <20211028003526.7117-1-yang.guang5@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HXqQCOpu8CLs50biqo5RLezrlhQ8rX/+z0HIytvSHFM=;
+        b=SFa0I8PEzFl1L1t/ZZOOflbdKoYMUrSFkTOlm6UkbjwUwHufBUjc9pTbzqPNgkQFC0
+         wCbIXFLdXBuba8fJNwg77E0wfzE4LYUC+qz0i1ZMVJDuwXnnevqXJzHhaMX8JK1esZY8
+         tMoU/eBy/2Rnjtz0hhDyfir5PGMN38zEjL9PQxUF9rRqm/a92X+XiexyfcSr99eH2z+J
+         L5SiVizpwF7U9EgR7mCo4SOxwEhjVH1Yhy2x7P/AfAOjuiev0qkibIECncSSBAVe1cox
+         +bk+ka2Sxr360TOVjOggw+drMxHu7VwuRwBDt6lZ8mzRHOmLLPPreEBS2FgVJ85aDRRG
+         QLxw==
+X-Gm-Message-State: AOAM530Vtu43wgENeMRnRlijxdgY4KSkzkCFKPNOkPmmYANv/Afx1Z8n
+        giyuO3yWE0nlfPgfCg9bY6GrPwF/dh7Usg8/mr3esw==
+X-Google-Smtp-Source: ABdhPJx/ZkBhi3dKE5KGYKnhgUSSycuYqcE4KP0Jbz2tVS2/1+povo5De6IlVJi8gu+smbo2PnhqZs781+xvQgBaJY0=
+X-Received: by 2002:a2e:8ed9:: with SMTP id e25mr1240733ljl.358.1635381475650;
+ Wed, 27 Oct 2021 17:37:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211027082155.206449-1-francesco.dolcini@toradex.com>
+In-Reply-To: <20211027082155.206449-1-francesco.dolcini@toradex.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 28 Oct 2021 02:37:43 +0200
+Message-ID: <CACRpkdY95RSDbNm5rMtSZmbDW9=+KtY7dAfA8PGarmQ-CF6dnQ@mail.gmail.com>
+Subject: Re: [PATCH] mfd: stmpe: Support disabling sub-functions
+To:     Francesco Dolcini <francesco.dolcini@toradex.com>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        marcel.ziswiler@toradex.com,
+        Oleksandr Suvorov <oleksandr.suvorov@toradex.com>,
+        Oleksandr Suvorov <oleksandr.suvorov@foundries.io>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using swap() make it more readable.
+On Wed, Oct 27, 2021 at 10:23 AM Francesco Dolcini
+<francesco.dolcini@toradex.com> wrote:
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Yang Guang <yang.guang5@zte.com.cn>
----
- scripts/gcc-plugins/randomize_layout_plugin.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+> From: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
+>
+> Add support of sub-functions disabling. It allows one to define
+> an stmpe sub-function device in devicetree, but keep it disabled.
+>
+> Signed-off-by: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
+> Cc: Oleksandr Suvorov <oleksandr.suvorov@foundries.io>
+> Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
 
-diff --git a/scripts/gcc-plugins/randomize_layout_plugin.c b/scripts/gcc-plugins/randomize_layout_plugin.c
-index 334741a31d0a..feee5ba8fa2b 100644
---- a/scripts/gcc-plugins/randomize_layout_plugin.c
-+++ b/scripts/gcc-plugins/randomize_layout_plugin.c
-@@ -244,11 +244,8 @@ static void full_shuffle(tree *newtree, unsigned long length, ranctx *prng_state
- 	unsigned long i, randnum;
- 
- 	for (i = length - 1; i > 0; i--) {
--		tree tmp;
- 		randnum = ranval(prng_state) % (i + 1);
--		tmp = newtree[i];
--		newtree[i] = newtree[randnum];
--		newtree[randnum] = tmp;
-+		swap(newtree[i], newtree[randnum]);
- 	}
- }
- 
--- 
-2.30.2
+Looks helpful.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
+Yours,
+Linus Walleij
