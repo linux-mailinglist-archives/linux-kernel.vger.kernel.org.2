@@ -2,98 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BA6043E699
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 18:49:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDF7343E75E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 19:31:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230462AbhJ1Qv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 12:51:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40764 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229806AbhJ1QvY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 12:51:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635439737;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XCItrNKZX+ugRebW30ECM6Yoplo+IdMbapYttnlvVF4=;
-        b=csZ7/OGjtkhcnnOtNsl0IWQZweM1bo3lbU2XhpvJ6xGSljJBJYWxK2ID9vNyoO2GtckDpu
-        m58VpnY830z1D+4TimBh5w8Vauiri0vMTOuRebL/cH8nC7Vzkli5PKWnTdeUlfaghMV6ls
-        HZG3lWU+RUJZ6NmnudgyYxaUticWNAw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-146-rL0sYMYgMyCDVsPagYbrsA-1; Thu, 28 Oct 2021 12:48:53 -0400
-X-MC-Unique: rL0sYMYgMyCDVsPagYbrsA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4832218D6A25;
-        Thu, 28 Oct 2021 16:48:52 +0000 (UTC)
-Received: from lorien.usersys.redhat.com (unknown [10.22.32.43])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 137DE5F4EA;
-        Thu, 28 Oct 2021 16:48:50 +0000 (UTC)
-Date:   Thu, 28 Oct 2021 12:48:49 -0400
-From:   Phil Auld <pauld@redhat.com>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sched/core: Export pelt_thermal_tp
-Message-ID: <YXrUcVlKj1BSIj7k@lorien.usersys.redhat.com>
-References: <20211028115005.873539-1-qais.yousef@arm.com>
- <YXrJOKb17cH6vkTc@infradead.org>
- <20211028161855.GN174703@worktop.programming.kicks-ass.net>
- <YXrOLay3BbaDObM2@infradead.org>
+        id S230466AbhJ1Rdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 13:33:37 -0400
+Received: from mga04.intel.com ([192.55.52.120]:65345 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229645AbhJ1Rdg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 13:33:36 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10151"; a="229209213"
+X-IronPort-AV: E=Sophos;i="5.87,190,1631602800"; 
+   d="scan'208";a="229209213"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2021 09:50:24 -0700
+X-IronPort-AV: E=Sophos;i="5.87,190,1631602800"; 
+   d="scan'208";a="597872778"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2021 09:50:22 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mg8bL-001oMI-GL;
+        Thu, 28 Oct 2021 19:50:03 +0300
+Date:   Thu, 28 Oct 2021 19:50:03 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v1 1/1] delay: Replace kernel.h with the necessary
+ inclusions
+Message-ID: <YXrUu8swbM3BL/4C@smile.fi.intel.com>
+References: <20211027150324.79827-1-andriy.shevchenko@linux.intel.com>
+ <20211028153055.GA440866@roeck-us.net>
+ <YXrIlT+2llnwgRpj@smile.fi.intel.com>
+ <20211028162810.GB470146@roeck-us.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YXrOLay3BbaDObM2@infradead.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <20211028162810.GB470146@roeck-us.net>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 09:22:05AM -0700 Christoph Hellwig wrote:
-> On Thu, Oct 28, 2021 at 06:18:55PM +0200, Peter Zijlstra wrote:
-> > > > @@ -36,6 +36,7 @@ EXPORT_TRACEPOINT_SYMBOL_GPL(pelt_rt_tp);
-> > > >  EXPORT_TRACEPOINT_SYMBOL_GPL(pelt_dl_tp);
-> > > >  EXPORT_TRACEPOINT_SYMBOL_GPL(pelt_irq_tp);
-> > > >  EXPORT_TRACEPOINT_SYMBOL_GPL(pelt_se_tp);
-> > > > +EXPORT_TRACEPOINT_SYMBOL_GPL(pelt_thermal_tp);
-> > > >  EXPORT_TRACEPOINT_SYMBOL_GPL(sched_cpu_capacity_tp);
-> > > >  EXPORT_TRACEPOINT_SYMBOL_GPL(sched_overutilized_tp);
-> > > >  EXPORT_TRACEPOINT_SYMBOL_GPL(sched_util_est_cfs_tp);
+On Thu, Oct 28, 2021 at 09:28:10AM -0700, Guenter Roeck wrote:
+> On Thu, Oct 28, 2021 at 06:58:13PM +0300, Andy Shevchenko wrote:
+> > On Thu, Oct 28, 2021 at 08:30:55AM -0700, Guenter Roeck wrote:
+> > > On Wed, Oct 27, 2021 at 06:03:24PM +0300, Andy Shevchenko wrote:
+> > > > When kernel.h is used in the headers it adds a lot into dependency hell,
+> > > > especially when there are circular dependencies are involved.
+> > > > 
+> > > > Replace kernel.h inclusion with the list of what is really being used.
+> > > > 
+> > > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > > > 
-> > > ... and while we're at it, all these exports are unused and should
-> > > be deleted as well.
+> > > In next-20211028:
+> > > 
+> > > Building riscv32:defconfig ... failed
+> > > --------------
+> > > Error log:
+> > > arch/riscv/lib/delay.c: In function '__delay':
+> > > arch/riscv/lib/delay.c:77:17: error: implicit declaration of function 'cpu_relax'
+> > > 
+> > > Building riscv:defconfig ... failed
+> > > --------------
+> > > Error log:
+> > > arch/riscv/lib/delay.c: In function '__delay':
+> > > arch/riscv/lib/delay.c:77:17: error: implicit declaration of function 'cpu_relax'
+> > > 
+> > > Building s390:defconfig ... failed
+> > > --------------
+> > > Error log:
+> > > <stdin>:1559:2: warning: #warning syscall futex_waitv not implemented [-Wcpp]
+> > > In file included from arch/s390/pci/pci_insn.c:12:
+> > > arch/s390/include/asm/facility.h: In function '__stfle':
+> > > arch/s390/include/asm/facility.h:98:22: error: implicit declaration of function 'min_t'
+> > > 
+> > > bisect to this patch. Probably more, but it is difficult to find out
+> > > since -next is too badly broken and has build failures all over the place.
 > > 
-> > This is my concession wrt tracepoints. Actual tracepoints are ABI,
-> > exports are in-kernel interfaces and are explicitly not ABI.
+> > Thanks for the report!
+
+I'll send the fix for above soon. Hope it will reduce amount of failures.
+
+> > I have run it on x86_64 with `kcbench -m ...` and no failures.
 > > 
-> > This way people can use an external module to get at the tracepoint data
-> > without having in-tree tracepoints.
+> > Can you share all build errors you found so far? I believe none of them related
+> > to x86* code.
+> > 
+> > Above just revealed the problematic places in the first place. Why the
+> > programmers rely on delay.h to include full bloated header pile?! (Yeah, this
+> > is rhetorical, so please share the errors, I'll try to address them)
 > 
-> All of this makes no sense at all.  These are entirely dead exports.
-> If you remove them nothing else changes.  Note taht the tracepoints
-> do have in-kernel callers, so if people thing of them as an ABI you've
-> got your ABI already with or without the exports.
+> The ones listed above are the ones I was able to identify. As I said, there
+> are so many compile and runtime failures in linux-next that it is difficult
+> to track down individual failures.
+
+Yeah, for example, I looked into this: https://kerneltests.org/builders/next-mips-next/builds/698/steps/buildcommand/logs/stdio
+
+I can't see how my patch is related to this...
+
+> Just to give you an idea (this is for
+> next-20211028):
 > 
-
-Full blown trace _events_ create an ABI. These trace points are not ABI.
-But by exporting them they are accesible to little helper modules which
-can turn them into trace events which can then by used by trace-cmd and
-ftrace etc.  That way we can have the tracepoints at the interesting spots
-in the code but still have control over them with respect to changes. 
-
-See https://github.com/auldp/tracepoints-helpers for an example. 
-
-Cheers,
-Phil
+> Build results:
+> 	total: 153 pass: 115 fail: 38
+> Failed builds:
+> 	alpha:allmodconfig
+> 	arm:allmodconfig
+> 	arm:omap2plus_defconfig
+> 	arm:davinci_all_defconfig
+> 	arm64:defconfig
+> 	arm64:allmodconfig
+> 	csky:allmodconfig
+> 	h8300:allnoconfig
+> 	h8300:tinyconfig
+> 	h8300:edosk2674_defconfig
+> 	h8300:h8300h-sim_defconfig
+> 	h8300:h8s-sim_defconfig
+> 	m68k:allmodconfig
+> 	mips:defconfig
+> 	mips:allmodconfig
+> 	mips:allnoconfig
+> 	mips:tinyconfig
+> 	mips:bcm47xx_defconfig
+> 	mips:bcm63xx_defconfig
+> 	mips:ath79_defconfig
+> 	mips:ar7_defconfig
+> 	mips:e55_defconfig
+> 	mips:cavium_octeon_defconfig
+> 	mips:malta_defconfig
+> 	mips:rt305x_defconfig
+> 	nds32:allmodconfig
+> 	parisc:allmodconfig
+> 	parisc:generic-32bit_defconfig
+> 	parisc64:generic-64bit_defconfig
+> 	powerpc:allmodconfig
+> 	riscv32:defconfig
+> 	riscv32:allmodconfig
+> 	riscv:defconfig
+> 	riscv:allmodconfig
+> 	s390:defconfig
+> 	s390:allmodconfig
+> 	sparc64:allmodconfig
+> 	xtensa:allmodconfig
+> Qemu test results:
+> 	total: 480 pass: 315 fail: 165
+> Failed tests:
+> 	<too many to list them all>
+> 
+> Build and boot logs are as always at https://kerneltests.org/builders
+> in the 'next' column in case you want to do some digging yourself.
 
 -- 
+With Best Regards,
+Andy Shevchenko
+
 
