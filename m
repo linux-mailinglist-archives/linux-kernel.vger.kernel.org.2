@@ -2,102 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DB5743E384
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:22:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6398543E38F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:24:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231215AbhJ1OY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 10:24:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58236 "EHLO
+        id S231248AbhJ1OZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 10:25:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230265AbhJ1OY4 (ORCPT
+        with ESMTP id S231228AbhJ1OZ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 10:24:56 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4CD0C061570;
-        Thu, 28 Oct 2021 07:22:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=PPSmLuVzoHR88dVTU6Qg/HVOwGDGjDCbEwYUDZUaDlA=; b=EWmPWlMidK03/7dQpQxxc/qwdO
-        QFoMaBSAyisgewIWeK58BjR12d/WSMKA1wwas528IOZsZX4b4com9WvWzq8Lg1jB+DhXn/KcO2czD
-        DFiHfPluAaQnFr/0Unq0KXCP2T0p4qbz8r/uAyD3nfS/9JuaJemHXeLl3STIYEM1CZK5jJvzsxkuN
-        HAl42zEMLvV9cNIPvsZI21dFrBY0Xhche5A3moxcI9Pc5rd+487f2PPXYLQQt+4JnCmZuRzlX5iv0
-        zjpbw8XSdI2BWODjnWpUg8Kd44B4wLlr7HGZjI79eWfFiO9YxkUsXCs8yJTFPdWkuGCDTGUwEBUxS
-        qeP0TeXw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mg6IR-00Cokj-0q; Thu, 28 Oct 2021 14:22:23 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A5B533001BF;
-        Thu, 28 Oct 2021 16:22:22 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 8961E203BE477; Thu, 28 Oct 2021 16:22:22 +0200 (CEST)
-Date:   Thu, 28 Oct 2021 16:22:22 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        X86 ML <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH] kbuild: Support clang-$ver builds
-Message-ID: <YXqyHhWGJfDkuxjP@hirez.programming.kicks-ass.net>
-References: <YXqpFHeY26sEbort@hirez.programming.kicks-ass.net>
- <CAK7LNATUpgfKJvjp0+8H6VfMLMio9+BCoyj00mAO8FcaVGCqjg@mail.gmail.com>
- <YXqwZq53WUiTeqI7@hirez.programming.kicks-ass.net>
+        Thu, 28 Oct 2021 10:25:29 -0400
+Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B4DEC061570
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 07:23:01 -0700 (PDT)
+Received: by mail-ua1-x92d.google.com with SMTP id v20so11823629uaj.9
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 07:23:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3GojDRl0lhPijBHeCI2+QHmcQrK//DxoGwC4jAHi/Us=;
+        b=I4kNYNidDOJOdRTpeS6ZtRVtbORy5aS5N6CxX+uPyWenW6db+HwJU47E9PacqSUkYj
+         qHBI1XM/od4gHRo5i81E9ILb6SKC+eujmzzrxS8bkfeR3PTgKdfwn6u0CqlJ7rn9/Xeu
+         59WuWYqKawG8Jsulh2rx7XIc7Y9yD3INZ8/4t1VY2623pk3jMHjfaSIJrOeTJKy2aTo7
+         zs1wGc0uiYtvLHPttS+E5OtbNsD23e6VZoKQZ1xZ6nPcLeEeh7Uqgmbv8gmcY/D9/DMX
+         5p9ViYsGJzxZdqwyO4PBMy4zooH+19Y5wcoRYUJJ1VqKCflyJ0OQGgh2M/dGAl7aWn7y
+         n3Dg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3GojDRl0lhPijBHeCI2+QHmcQrK//DxoGwC4jAHi/Us=;
+        b=q5inc/dahAB1R0NA2OYs6feMohXGMTS/M9dEfYI5vMrQRRMP/TRlUrFlFJxYSzh0dC
+         nOy44M3UvUmxXKuj+ubOk7H5FfCtz/WQA7CQ7dO5GDECUU4wWlHU+bMJFwW1M3dulGuT
+         uxLt6kfreJTkrJ51GGL8xHPZGitTc7LAh7cMD68gq8e8mO1K6k2VuPIbwPp/F4cBkKVQ
+         lYXkW8G0qj7B+6lWeVc50czkFr19VnVHlN+GmWuwaIzxV6t7WYAmVqoEXORazPVwWOFb
+         jgz6Gup2rdGQzbYD61RrF1U6TwadsIypihkKnW3ejUphR8UWtvb0p8//gX6TjScejPDz
+         TtNg==
+X-Gm-Message-State: AOAM5307KawFzh1D3ejdru+X5sGlTDwcL3z5VWb5XjzVDqwWJLU1Cf50
+        RBnoHz7wnQ126Ik00g8rsjjg74mv8ppqJHLGBBFiAQ==
+X-Google-Smtp-Source: ABdhPJzyreIEFUtBY+FH6rI9UXKqn/URtyI9pjIR9kW9DoUCPHs2N/1eHoXRiWdKiA2HWLZAiNOvKlc5uTRSeCWMyBs=
+X-Received: by 2002:a67:1781:: with SMTP id 123mr4698177vsx.1.1635430980648;
+ Thu, 28 Oct 2021 07:23:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YXqwZq53WUiTeqI7@hirez.programming.kicks-ass.net>
+References: <20211026115916.31553-1-semen.protsenko@linaro.org> <8b3466f1-2b16-80ca-79c7-577860fc90aa@canonical.com>
+In-Reply-To: <8b3466f1-2b16-80ca-79c7-577860fc90aa@canonical.com>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Thu, 28 Oct 2021 17:22:48 +0300
+Message-ID: <CAPLW+4=YizLzdiZ1mdCGxvPCTYhNjeiomO=q=4Xk-ZxqqH++nA@mail.gmail.com>
+Subject: Re: [PATCH] arm64: Kconfig: Enable MCT timer for ARCH_EXYNOS
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Will Deacon <will@kernel.org>,
+        Marc Zyngier <marc.zyngier@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 04:15:02PM +0200, Peter Zijlstra wrote:
-> On Thu, Oct 28, 2021 at 11:07:40PM +0900, Masahiro Yamada wrote:
-> > On Thu, Oct 28, 2021 at 10:44 PM Peter Zijlstra <peterz@infradead.org> wrote:
-> > >
-> > > Hi,
-> > >
-> > > Debian (and derived) distros ship their compilers as -$ver suffixed
-> > > binaries. For gcc it is sufficent to use:
-> > >
-> > >  $ make CC=gcc-12
-> > >
-> > > However, clang builds (esp. clang-lto) need a whole array of tools to be
-> > > exactly right, leading to unweildy stuff like:
-> > >
-> > >  $ make CC=clang-13 LD=ld.lld=14 AR=llvm-ar-13 NM=llvm-nm-13 OBJCOPY=llvm-objcopy-13 OBJDUMP=llvm-objdump-13 READELF=llvm-readelf-13 STRIP=llvm-strip-13 LLVM=1
-> > >
-> > > which is, quite franktly, totally insane and unusable. Instead use the
-> > > already mandatory LLVM variable to convey this, enabling one such as
-> > > myself to use:
-> > >
-> > >  $ make LLVM=-13
-> > >
-> > > This also lets one quickly test different clang versions.
-> > 
-> > 
-> > Please read the commit log of
-> > a0d1c951ef08ed24f35129267e3595d86f57f5d3
-> 
-> That's yuck, I like LLVM=-13 or LLVM=-12 much better to select between
-> compilers. Means I don't have to remember wth they live and or wreck
-> PATH.
+On Tue, 26 Oct 2021 at 17:03, Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
+>
+> On 26/10/2021 13:59, Sam Protsenko wrote:
+> > Some ARM64 Exynos SoCs have MCT timer block, e.g. Exynos850 and
+> > Exynos5433. CLKSRC_EXYNOS_MCT option is not visible unless COMPILE_TEST
+> > is enabled. Select CLKSRC_EXYNOS_MCT option for ARM64 ARCH_EXYNOS like
+> > it's done in arch/arm/mach-exynos/Kconfig, to enable MCT timer support
+> > for ARM64 Exynos SoCs.
+> >
+> > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> > ---
+> >  arch/arm64/Kconfig.platforms | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+>
+> +CC Marek, Marc, Mark and Chanwoo,
+> Looks like duplicated:
+> https://lore.kernel.org/lkml/20181018095708.1527-7-m.szyprowski@samsung.com/
+>
+> The topic stalled and I think this particular patch did not make sense
+> on its own, without rest of changes from Marek. I am not sure, though...
+>
 
-Even better, why not do something like:
+Krzysztof, Marek,
 
-if test "${CC:0:5}" == "clang"
-then
-	LLVM=1
-	LLVM_SFX=${CC:5}
-fi
+That series looks nice, I'm quite interested in that being applied. Do
+you think I can do something to help with that (e.g. rebasing,
+re-sending on behalf of Marek, testing on Exynos850, etc)?
 
-Then we can simply use: make CC=clang-12 and have it all just work.
-
+> Best regards,
+> Krzysztof
