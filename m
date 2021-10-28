@@ -2,110 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39CF943DE63
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 12:04:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B528B43DE64
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 12:04:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229868AbhJ1KGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 06:06:43 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:41411 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229626AbhJ1KGm (ORCPT
+        id S229978AbhJ1KGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 06:06:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229626AbhJ1KGq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 06:06:42 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hg1P71w4nz4xbr;
-        Thu, 28 Oct 2021 21:04:11 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1635415454;
-        bh=JrMqmU487cUglNJPEIYff7aDCaGDRzNchDRG8/UXyBQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=gfETxzXi1Q6kCDCAArGJh3nPt73642amUi6mos7tZP4xSuzTF5pNjMqY61rCVbj/u
-         dobuFuF1J7HtCzOXsnjcFFNpN15lsmo5MIFQ5awGWwab/wMcf1PFyL6FxzV/HF0xAN
-         FII8ni85ECTDPFa9k/SbIRsakJmGODpHMDSKZBDrwnIs/zO9mJF5zLTfKdZY3Ukqu1
-         FGMR7YirjEbgS/GzW1eYEwpgEEu/qBrI8JacEksIHj3QWUeyAAUBQ36DzL5lD6rFkq
-         d2olSO4i4LxG4gSkzZu6YgWQz3JHk+sxQZ5BrA+0a42OeU1ciBakX3N8X8e/ZJTJpE
-         Zk2/CjawQ+Y1w==
-Date:   Thu, 28 Oct 2021 21:04:10 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Qing Wang <wangqing@vivo.com>
-Subject: linux-next: manual merge of the unicode tree with the f2fs tree
-Message-ID: <20211028210410.238f4a5b@canb.auug.org.au>
+        Thu, 28 Oct 2021 06:06:46 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 116D8C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 03:04:20 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id v10so3696260pjr.3
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 03:04:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=AXByAcZfSa6g97iJNKRbFJhmVHGD98OKiOfrtE0WZ9I=;
+        b=Q+iHCWzYopN6uoNjIEin9SZJLMGXs/IM4fsJjefBHVrAgiumeYbIa2Os4Sl6SmX3wV
+         DTXcKFLb7w8fxHHJNcTeX2BIcfwZ38AoHs7JRsGrlF/pwDpiGatPtFLb7KVevzKQUfFY
+         +dHKTlYsytWvocvzaQ1O8EFpl+lPZA6x1sv0sEtTgKMdRikgnE3PCvXbRRhh9paSdkJD
+         EJ0wvWQCLFiK9D9zdB0tvpyo3u7LVJ8OPPLPSp0kCEx35H358oz318Vl7etkXxt4A4Z2
+         l0JYaRFttJKwbnN7JFSwTMOWpYId8IYCbfdKbGhdIkElAGFHwQDIFjVnqPQaXKdL47Vx
+         56MQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AXByAcZfSa6g97iJNKRbFJhmVHGD98OKiOfrtE0WZ9I=;
+        b=YUZUTsGT+rZacSKQoP9EtwXV2oLkn0GO5AuWx4im0IOx2QhViAcgwzYUh+hKfRes0W
+         C3Mngqa2VZHdA6JCX79mvwnEp4xlv9eP+rotyMdC9b2PU9QKzJwrIFTXM2JLbhDe5tJr
+         jU/IJS/futh+X84KP+Qcp0wI7hy4FETazVZFG8vpne4lkoqOP56St6QbrfWw8DaofkHK
+         EX0gFTQpWFCzH58S/MzQGuUMPgea0mv3pZfr4ZfeK+/2oenFV1SlZ8n0D4mTYl1Av5LM
+         n0KLi8AhxkKESwVXdB1Bi28nd/G3LJcmtbj4YDqtoUyq+BbIOIGxchfEJvfPeqwBI7CB
+         bzHQ==
+X-Gm-Message-State: AOAM531q8WEb4K3TEjP9i3oehiiLU4bWBlptQKbRZ+8m2COhNn+DRXtr
+        ardfxMpD8eHgNoaPHuLSr2k0Qrmb36E=
+X-Google-Smtp-Source: ABdhPJzx2r84z7FRgLjwMv+WefGTjKpfog2RI4hJ77samploRENL+kYshO1kzc5N3K0nBVc71vUTsg==
+X-Received: by 2002:a17:90b:3e87:: with SMTP id rj7mr11704753pjb.88.1635415459602;
+        Thu, 28 Oct 2021 03:04:19 -0700 (PDT)
+Received: from kvm.asia-northeast3-a.c.our-ratio-313919.internal (125.91.64.34.bc.googleusercontent.com. [34.64.91.125])
+        by smtp.gmail.com with ESMTPSA id s18sm3061999pfk.160.2021.10.28.03.04.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 03:04:19 -0700 (PDT)
+Date:   Thu, 28 Oct 2021 10:04:14 +0000
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     Christoph Lameter <cl@gentwo.de>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: Do we really need SLOB nowdays?
+Message-ID: <20211028100414.GA2928@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
+References: <20211017042852.GA3050@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
+ <20211017133618.GA7989@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
+ <20211017135708.GA8442@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
+ <YWw1n6y/AGED14HD@casper.infradead.org>
+ <CAB=+i9Tor-tmZuB8YjATT_rv68nnF2W_TvMvyGp55AGaSyKynw@mail.gmail.com>
+ <alpine.DEB.2.22.394.2110251016260.3145@gentwo.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/rfxz3Vc466dBEjl7m49JB8T";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.22.394.2110251016260.3145@gentwo.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/rfxz3Vc466dBEjl7m49JB8T
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Oct 25, 2021 at 10:17:08AM +0200, Christoph Lameter wrote:
+> On Mon, 18 Oct 2021, Hyeonggon Yoo wrote:
+> 
+> > > Better for what use case?  SLOB is for machines with 1-16MB of RAM.
+> > >
+> >
+> > 1~16M is smaller than I thought. Hmm... I'm going to see how it works on
+> > tiny configuration. Thank you Matthew!
+> 
+> Is there any reference where we can see such a configuration? Sure it does
+> not work with SLUB too?
 
-Hi all,
+I thought why Matthew said "SLOB is for machines with 1-16MB of RAM"
+is because if memory is so low, then it is sensitive to memory usage.
 
-Today's linux-next merge of the unicode tree got a conflict in:
-
-  fs/f2fs/sysfs.c
-
-between commit:
-
-  84eab2a899f2 ("f2fs: replace snprintf in show functions with sysfs_emit")
-
-from the f2fs tree and commit:
-
-  a440943e68cd ("unicode: remove the charset field from struct unicode_map")
-
-from the unicode tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc fs/f2fs/sysfs.c
-index 7d289249cd7e,650e84398f74..000000000000
---- a/fs/f2fs/sysfs.c
-+++ b/fs/f2fs/sysfs.c
-@@@ -196,8 -196,7 +196,7 @@@ static ssize_t encoding_show(struct f2f
-  	struct super_block *sb =3D sbi->sb;
- =20
-  	if (f2fs_sb_has_casefold(sbi))
-- 		return sysfs_emit(buf, "%s (%d.%d.%d)\n",
-- 			sb->s_encoding->charset,
- -		return snprintf(buf, PAGE_SIZE, "UTF-8 (%d.%d.%d)\n",
-++		return sysfs_emit(buf, "UTF-8 (%d.%d.%d)\n",
-  			(sb->s_encoding->version >> 16) & 0xff,
-  			(sb->s_encoding->version >> 8) & 0xff,
-  			sb->s_encoding->version & 0xff);
-
---Sig_/rfxz3Vc466dBEjl7m49JB8T
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF6dZoACgkQAVBC80lX
-0GxyXgf+Ia+RbMg/q/50kzkWfZFCQnRHEUhxsySqzGB8v1lZowtrN6J3/RunaOob
-C/jSrReZ5ovCtGsAZbZZgKpCLJqSfjqNr7NiF2XJF9+XbBoGuW/EWoDk6rGKicdG
-7Ie2JBAlnmqb7vUJosxQiy4NJFKR4eO1W5w+miAxXEhIX+DizFGgnyoDyaUvXYVA
-8+1wlBN7+EQkW1ThMzIUcke7B5fV9KJ/bfBSve2ZJW6SfUroT36U0TAua7JLOuEM
-zdtvUvXq2nhnR7yHuEEOGl6gHo9PRT5DFu6CZlWewxQVa9Ci9VjhdPbJJaV9jImd
-R10KmSU0qxz12J2hV9RtcIXPLBW9Kw==
-=F0/x
------END PGP SIGNATURE-----
-
---Sig_/rfxz3Vc466dBEjl7m49JB8T--
+(But I still have doubt if we can run linux on machines like that.)
