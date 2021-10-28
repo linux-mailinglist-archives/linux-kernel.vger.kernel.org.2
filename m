@@ -2,158 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08AB243DFB6
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 13:05:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34D8643DFCD
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 13:14:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230177AbhJ1LIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 07:08:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52096 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229835AbhJ1LIG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 07:08:06 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 066E560C51;
-        Thu, 28 Oct 2021 11:05:35 +0000 (UTC)
-Date:   Thu, 28 Oct 2021 12:10:01 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Andrea Merello <andrea.merello@gmail.com>
-Cc:     mchehab+huawei@kernel.org, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        lars@metafoo.de, robh+dt@kernel.org, andy.shevchenko@gmail.com,
-        matt.ranostay@konsulko.com, ardeleanalex@gmail.com,
-        jacopo@jmondi.org, Andrea Merello <andrea.merello@iit.it>
-Subject: Re: [v2 10/10] iio: imu: add BNO055 I2C driver
-Message-ID: <20211028121001.73d8abbe@jic23-huawei>
-In-Reply-To: <20211028101840.24632-11-andrea.merello@gmail.com>
-References: <20210715141742.15072-1-andrea.merello@gmail.com>
-        <20211028101840.24632-1-andrea.merello@gmail.com>
-        <20211028101840.24632-11-andrea.merello@gmail.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S230157AbhJ1LRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 07:17:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229578AbhJ1LRQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 07:17:16 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49FA3C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 04:14:50 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id 83so6035127pgc.8
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 04:14:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/BRyL9okvIG+J1Qzvl2UtiXVgsD9PcR1PiRaC7aHW94=;
+        b=KTnDCGLwkevYW+J+IByeZ+jo4Tmup46/JsSDiDeiNGE0FAK8I+KmFJY5Ge0HAvantQ
+         WLb1PHsN+Mp3ZM0ISowHYXKUfT3A9p89VCY0QAciE7rcLqfMIQr9IDtmdUb+BR2RWuah
+         jDercNAcyb3mKnx6STzepKZHH7bjXHs6hVhU7JGdc0lGmCH1x1N9aHR+FcGO30vCGnvg
+         lmHUhkW5AOHFzA2DJxN503of/IHUVbltJES7i4bsfpVHiMn1yGXEt3jClZ7TCpjU5VEm
+         BL+Ecbp68iQ5r2UbvYXVmpNc3Yf18hn+Dt9ERJk79eXdwBe8q+3jisRPGNVfm6reR2TJ
+         EN7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/BRyL9okvIG+J1Qzvl2UtiXVgsD9PcR1PiRaC7aHW94=;
+        b=1SQ93lB+mDKibNN2vq8mDe3FkAQSCXX3lUNPpIIS+oHQS1aJImyCXeL6nNqZ5OWRUa
+         Qr7agD0xC7iRa2Umq03HNW+ulejCRLRKtFRFruNJAr3jeFa9benfUFTglUHrH6HvlG0Z
+         LThWnIRCqw/jW1U7UGxUmVKhCcOQnbjirtlU94W57yL3AOYGGrYGQcQt98st2+ST/iBT
+         E77CPLIdjLJF8SW8bbC36QiUulZrxOk39TDN/RHUL/GE4xHVWFKSqznVEUUysAxWuwT+
+         rZJviEmtJa0ZjdCoMFVkaNKlUquByV3bE6O5DD9vS8VbgK+t3bElV7ZtwBcAmx17L4DL
+         VBtQ==
+X-Gm-Message-State: AOAM533ro+LHcUO8hzpQ73n5D/zFX7Qhu+qDAEenWxeN6ULRD2x349Tc
+        bW6CAEK7zrGQW1lzlUCUOF3VqrsOiFk=
+X-Google-Smtp-Source: ABdhPJzGEDug+VBXOAUz15Vn5Ai2Dt0yW0bMpLBfjgNhM3nHaw+e/JoaO2B+uFe+faOoDilp5hFgcw==
+X-Received: by 2002:a63:2a88:: with SMTP id q130mr2676980pgq.169.1635419689868;
+        Thu, 28 Oct 2021 04:14:49 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id h6sm2490590pfi.174.2021.10.28.04.14.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 04:14:49 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: deng.changcheng@zte.com.cn
+To:     akpm@linux-foundation.org
+Cc:     urezki@gmail.com, deng.changcheng@zte.com.cn,
+        linux-kernel@vger.kernel.org, Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] lib/test_vmalloc.c: use swap() to make code cleaner
+Date:   Thu, 28 Oct 2021 11:14:43 +0000
+Message-Id: <20211028111443.15744-1-deng.changcheng@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 28 Oct 2021 12:18:40 +0200
-Andrea Merello <andrea.merello@gmail.com> wrote:
+From: Changcheng Deng <deng.changcheng@zte.com.cn>
 
-> This path adds an I2C driver for communicating to a BNO055 IMU via I2C bus
-> and it enables the BNO055 core driver to work in this scenario.
-> 
-> Signed-off-by: Andrea Merello <andrea.merello@iit.it>
-Hi Andrea,
+Use swap() in order to make code cleaner. Issue found by coccinelle.
 
-A few minor things inline.
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
+---
+ lib/test_vmalloc.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-Jonathan
-
-> ---
->  drivers/iio/imu/bno055/Kconfig      |  6 ++++
->  drivers/iio/imu/bno055/Makefile     |  1 +
->  drivers/iio/imu/bno055/bno055_i2c.c | 54 +++++++++++++++++++++++++++++
->  3 files changed, 61 insertions(+)
->  create mode 100644 drivers/iio/imu/bno055/bno055_i2c.c
-> 
-> diff --git a/drivers/iio/imu/bno055/Kconfig b/drivers/iio/imu/bno055/Kconfig
-> index 941e43f0368d..87200787d548 100644
-> --- a/drivers/iio/imu/bno055/Kconfig
-> +++ b/drivers/iio/imu/bno055/Kconfig
-> @@ -7,3 +7,9 @@ config BOSH_BNO055_SERIAL
->  	tristate "Bosh BNO055 attached via serial bus"
->  	depends on SERIAL_DEV_BUS
->  	select BOSH_BNO055_IIO
-> +
-> +config BOSH_BNO055_I2C
-> +	tristate "Bosh BNO055 attached via I2C bus"
-> +	depends on I2C
-> +	select REGMAP_I2C
-> +	select BOSH_BNO055_IIO
-> diff --git a/drivers/iio/imu/bno055/Makefile b/drivers/iio/imu/bno055/Makefile
-> index 7285ade2f4b9..eaf24018cb28 100644
-> --- a/drivers/iio/imu/bno055/Makefile
-> +++ b/drivers/iio/imu/bno055/Makefile
-> @@ -2,3 +2,4 @@
->  
->  obj-$(CONFIG_BOSH_BNO055_IIO) += bno055.o
->  obj-$(CONFIG_BOSH_BNO055_SERIAL) += bno055_sl.o
-> +obj-$(CONFIG_BOSH_BNO055_I2C) += bno055_i2c.o
-> diff --git a/drivers/iio/imu/bno055/bno055_i2c.c b/drivers/iio/imu/bno055/bno055_i2c.c
-> new file mode 100644
-> index 000000000000..eea0daa6a61d
-> --- /dev/null
-> +++ b/drivers/iio/imu/bno055/bno055_i2c.c
-> @@ -0,0 +1,54 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * I2C interface for Bosh BNO055 IMU.
-> + * This file implements I2C communication up to the register read/write
-> + * level.
-
-Not really. It just uses regmap, so I'd drop this comment.
-
-> + *
-> + * Copyright (C) 2021 Istituto Italiano di Tecnologia
-> + * Electronic Design Laboratory
-> + * Written by Andrea Merello <andrea.merello@iit.it>
-> + */
-> +
-> +#include <linux/i2c.h>
-
-Why?  I'm not seeing an i2c specific calls in here.
-
-> +#include <linux/regmap.h>
-> +#include <linux/module.h>
-
-mod_devicetable.h for struct i2c_device_id
+diff --git a/lib/test_vmalloc.c b/lib/test_vmalloc.c
+index e14993bc84d2..cf41fd6df42a 100644
+--- a/lib/test_vmalloc.c
++++ b/lib/test_vmalloc.c
+@@ -393,7 +393,7 @@ static struct test_driver {
+ static void shuffle_array(int *arr, int n)
+ {
+ 	unsigned int rnd;
+-	int i, j, x;
++	int i, j;
  
-> +
-> +#include "bno055.h"
-> +
-> +#define BNO055_I2C_XFER_BURST_BREAK_THRESHOLD 3 /* FIXME */
-> +
-> +static int bno055_i2c_probe(struct i2c_client *client,
-> +			    const struct i2c_device_id *id)
-> +{
-> +	struct regmap *regmap =
-> +		devm_regmap_init_i2c(client, &bno055_regmap_config);
-> +
-> +	if (IS_ERR(regmap)) {
-> +		dev_err(&client->dev, "Unable to init register map");
-> +		return PTR_ERR(regmap);
-> +	}
-> +
-> +	return bno055_probe(&client->dev, regmap,
-> +			    BNO055_I2C_XFER_BURST_BREAK_THRESHOLD);
-> +
-> +	return 0;
-
-?
-
-> +}
-> +
-> +static const struct i2c_device_id bno055_i2c_id[] = {
-> +	{"bno055", 0},
-> +	{ },
-
-It's at terminator, so don't put a comma as we'll never add entries after this.
-
-> +};
-> +MODULE_DEVICE_TABLE(i2c, bno055_i2c_id);
-> +
-> +static struct i2c_driver bno055_driver = {
-> +	.driver = {
-> +		.name = "bno055-i2c",
-> +	},
-> +	.probe = bno055_i2c_probe,
-> +	.id_table = bno055_i2c_id
-> +};
-> +module_i2c_driver(bno055_driver);
-> +
-> +MODULE_AUTHOR("Andrea Merello");
-> +MODULE_DESCRIPTION("Bosch BNO055 I2C interface");
-> +MODULE_LICENSE("GPL v2");
+ 	for (i = n - 1; i > 0; i--)  {
+ 		get_random_bytes(&rnd, sizeof(rnd));
+@@ -402,9 +402,7 @@ static void shuffle_array(int *arr, int n)
+ 		j = rnd % i;
+ 
+ 		/* Swap indexes. */
+-		x = arr[i];
+-		arr[i] = arr[j];
+-		arr[j] = x;
++		swap(arr[i], arr[j]);
+ 	}
+ }
+ 
+-- 
+2.25.1
 
