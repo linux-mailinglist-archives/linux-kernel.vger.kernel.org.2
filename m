@@ -2,170 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1F0F43DE0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 11:48:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84C3543DE13
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 11:49:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230213AbhJ1JvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 05:51:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51156 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230177AbhJ1Juw (ORCPT
+        id S229974AbhJ1JwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 05:52:00 -0400
+Received: from outbound-smtp22.blacknight.com ([81.17.249.190]:38621 "EHLO
+        outbound-smtp22.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230301AbhJ1Jve (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 05:50:52 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 471DDC061767
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 02:48:25 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id f7-20020a1c1f07000000b0032ee11917ceso833521wmf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 02:48:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=wPEEI/42En9uKSJ0rR6svxJibQPpLgl3/xd+Q1CAzs4=;
-        b=ZaAreBeSojAVPrdAUspWmFMN01Pw9vpD9iNJLz69uRDTgfjNojHGm4jITuhKRBxEeZ
-         jCEFnusSdYFQG1mz7NV801OW+4Xau5zhrUxj4gPK0kVknJrsg+mxY/eDuE3T6VLLKhby
-         SO8kKacYT8u+LlES/iknuTHDgSWkt4ogyHPDE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=wPEEI/42En9uKSJ0rR6svxJibQPpLgl3/xd+Q1CAzs4=;
-        b=G0T9m4H8ENY9WNwciUDHQT0QETQbKCJpr4S/e2yf3VqkgNHMonDWtKvuJeoN4n8nEO
-         /k2EkR2UrOrr3DyA1LUhn+AatCR6THJTMmdZdM5aBwUkmD9GiPOZtrxOhQyv4J5HLiWx
-         mxLKcI4tkXpUyNZSrQoMbbBVHWuuf04jdSGgTPd0XvIi8gmRlH8Zt8cTsTjMp5eknpCz
-         kEUgcAsRPOtsNk50rPd08+5TqyiSH29WxZBuJM7q/Qsnh6KD9ajcarfPeSe7cvnUq5xw
-         qmP+th2f7IQB+E46dWxkmS791EIh/n1CuFfcR6HwEcZzB2WlqDs9MNKTRmO/DHdMch0G
-         YvXg==
-X-Gm-Message-State: AOAM531rlotplZj/0Xy7j19L8XYgYfhZFz1fZPBQ+p0m9k8I56VDTy9r
-        qbY6fHMqajmrA9hNuC2kekK2zA==
-X-Google-Smtp-Source: ABdhPJx6yn8XpE55PL/NDDyWj0wiSNcnZKApHrqoLEGCBiHaSDslHVx/ymfDR2GLyqJZ/7SX0JBR4A==
-X-Received: by 2002:a1c:f319:: with SMTP id q25mr3310603wmq.33.1635414503789;
-        Thu, 28 Oct 2021 02:48:23 -0700 (PDT)
-Received: from altair.lan (2.f.6.6.b.3.3.0.3.a.d.b.6.0.6.0.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:606:bda3:33b:66f2])
-        by smtp.googlemail.com with ESMTPSA id i6sm3378029wry.71.2021.10.28.02.48.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 02:48:23 -0700 (PDT)
-From:   Lorenz Bauer <lmb@cloudflare.com>
-To:     viro@zeniv.linux.org.uk, Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     mszeredi@redhat.com, gregkh@linuxfoundation.org,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v3 4/4] selftests: bpf: test RENAME_EXCHANGE and RENAME_NOREPLACE on bpffs
-Date:   Thu, 28 Oct 2021 10:47:24 +0100
-Message-Id: <20211028094724.59043-5-lmb@cloudflare.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211028094724.59043-1-lmb@cloudflare.com>
-References: <20211028094724.59043-1-lmb@cloudflare.com>
+        Thu, 28 Oct 2021 05:51:34 -0400
+Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
+        by outbound-smtp22.blacknight.com (Postfix) with ESMTPS id 603C3BABC5
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 10:48:45 +0100 (IST)
+Received: (qmail 22672 invoked from network); 28 Oct 2021 09:48:45 -0000
+Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.17.29])
+  by 81.17.254.9 with ESMTPA; 28 Oct 2021 09:48:45 -0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Mike Galbraith <efault@gmx.de>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>
+Subject: [PATCH v4 0/2] Reduce stacking and overscheduling
+Date:   Thu, 28 Oct 2021 10:48:32 +0100
+Message-Id: <20211028094834.1312-1-mgorman@techsingularity.net>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add tests to exercise the behaviour of RENAME_EXCHANGE and RENAME_NOREPLACE
-on bpffs. The former checks that after an exchange the inode of two
-directories has changed. The latter checks that the source still exists
-after a failed rename.
+Also available at
+git://git.kernel.org/pub/scm/linux/kernel/git/mel/linux.git sched-scalewakegran-v4r1
 
-Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
----
- .../selftests/bpf/prog_tests/test_bpffs.c     | 65 ++++++++++++++++++-
- 1 file changed, 64 insertions(+), 1 deletion(-)
+Changelog since v3
+o No code changes, added some additional results to patch 1
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_bpffs.c b/tools/testing/selftests/bpf/prog_tests/test_bpffs.c
-index 533e3f3a459a..d29ebfeef9c5 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_bpffs.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_bpffs.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- /* Copyright (c) 2020 Facebook */
- #define _GNU_SOURCE
-+#include <stdio.h>
- #include <sched.h>
- #include <sys/mount.h>
- #include <sys/stat.h>
-@@ -29,7 +30,8 @@ static int read_iter(char *file)
- 
- static int fn(void)
- {
--	int err;
-+	struct stat a, b, c;
-+	int err, map;
- 
- 	err = unshare(CLONE_NEWNS);
- 	if (!ASSERT_OK(err, "unshare"))
-@@ -67,6 +69,67 @@ static int fn(void)
- 	err = read_iter(TDIR "/fs2/progs.debug");
- 	if (!ASSERT_OK(err, "reading " TDIR "/fs2/progs.debug"))
- 		goto out;
-+
-+	err = mkdir(TDIR "/fs1/a", 0777);
-+	if (!ASSERT_OK(err, "creating " TDIR "/fs1/a"))
-+		goto out;
-+	err = mkdir(TDIR "/fs1/a/1", 0777);
-+	if (!ASSERT_OK(err, "creating " TDIR "/fs1/a/1"))
-+		goto out;
-+	err = mkdir(TDIR "/fs1/b", 0777);
-+	if (!ASSERT_OK(err, "creating " TDIR "/fs1/b"))
-+		goto out;
-+
-+	map = bpf_create_map(BPF_MAP_TYPE_ARRAY, 4, 4, 1, 0);
-+	if (!ASSERT_GT(map, 0, "create_map(ARRAY)"))
-+		goto out;
-+	err = bpf_obj_pin(map, TDIR "/fs1/c");
-+	if (!ASSERT_OK(err, "pin map"))
-+		goto out;
-+	close(map);
-+
-+	/* Check that RENAME_EXCHANGE works for directories. */
-+	err = stat(TDIR "/fs1/a", &a);
-+	if (!ASSERT_OK(err, "stat(" TDIR "/fs1/a)"))
-+		goto out;
-+	err = renameat2(0, TDIR "/fs1/a", 0, TDIR "/fs1/b", RENAME_EXCHANGE);
-+	if (!ASSERT_OK(err, "renameat2(/fs1/a, /fs1/b, RENAME_EXCHANGE)"))
-+		goto out;
-+	err = stat(TDIR "/fs1/b", &b);
-+	if (!ASSERT_OK(err, "stat(" TDIR "/fs1/b)"))
-+		goto out;
-+	if (!ASSERT_EQ(a.st_ino, b.st_ino, "b should have a's inode"))
-+		goto out;
-+	err = access(TDIR "/fs1/b/1", F_OK);
-+	if (!ASSERT_OK(err, "access(" TDIR "/fs1/b/1)"))
-+		goto out;
-+
-+	/* Check that RENAME_EXCHANGE works for mixed file types. */
-+	err = stat(TDIR "/fs1/c", &c);
-+	if (!ASSERT_OK(err, "stat(" TDIR "/fs1/map)"))
-+		goto out;
-+	err = renameat2(0, TDIR "/fs1/c", 0, TDIR "/fs1/b", RENAME_EXCHANGE);
-+	if (!ASSERT_OK(err, "renameat2(/fs1/c, /fs1/b, RENAME_EXCHANGE)"))
-+		goto out;
-+	err = stat(TDIR "/fs1/b", &b);
-+	if (!ASSERT_OK(err, "stat(" TDIR "/fs1/b)"))
-+		goto out;
-+	if (!ASSERT_EQ(c.st_ino, b.st_ino, "b should have c's inode"))
-+		goto out;
-+	err = access(TDIR "/fs1/c/1", F_OK);
-+	if (!ASSERT_OK(err, "access(" TDIR "/fs1/c/1)"))
-+		goto out;
-+
-+	/* Check that RENAME_NOREPLACE works. */
-+	err = renameat2(0, TDIR "/fs1/b", 0, TDIR "/fs1/a", RENAME_NOREPLACE);
-+	if (!ASSERT_ERR(err, "renameat2(RENAME_NOREPLACE)")) {
-+		err = -EINVAL;
-+		goto out;
-+	}
-+	err = access(TDIR "/fs1/b", F_OK);
-+	if (!ASSERT_OK(err, "access(" TDIR "/fs1/b)"))
-+		goto out;
-+
- out:
- 	umount(TDIR "/fs1");
- 	umount(TDIR "/fs2");
+
+These series tackles two problems. The first is that heavy wakers
+can stack an excessive number of tasks on the same CPU. The
+second is that tasks can overschedule when the task has not
+reached its minimum preemption granularity.
+
+The patches are independent but were discussed together in the thread
+https://lore.kernel.org/r/20210920142614.4891-1-mgorman@techsingularity.net
+so are presented together.
+
+With both patches on a zen3 machine
+
+hackbench-process-pipes
+                          5.15.0-rc3             5.15.0-rc3
+                             vanilla sched-scalewakegran-v3r2
+Amean     1        0.3667 (   0.00%)      0.3823 (  -4.27%)
+Amean     4        0.5343 (   0.00%)      0.4867 (   8.92%)
+Amean     7        0.5300 (   0.00%)      0.5053 (   4.65%)
+Amean     12       0.5737 (   0.00%)      0.5450 (   5.00%)
+Amean     21       0.6727 (   0.00%)      0.6807 (  -1.19%)
+Amean     30       0.8583 (   0.00%)      0.7107 *  17.20%*
+Amean     48       1.3977 (   0.00%)      1.0447 *  25.26%*
+Amean     79       1.9790 (   0.00%)      1.6033 *  18.98%*
+Amean     110      2.8020 (   0.00%)      2.0763 *  25.90%*
+Amean     141      3.6683 (   0.00%)      2.5313 *  31.00%*
+Amean     172      4.6687 (   0.00%)      3.1163 *  33.25%*
+Amean     203      5.2183 (   0.00%)      3.5560 *  31.86%*
+Amean     234      6.1077 (   0.00%)      3.8913 *  36.29%*
+Amean     265      7.1313 (   0.00%)      4.2293 *  40.69%*
+Amean     296      7.7557 (   0.00%)      4.5357 *  41.52%*
+
+                  5.15.0-rc3  5.15.0-rc3
+                     vanilla sched-scalewakegran-v3r2
+Duration User        2933.05     2034.17
+Duration System     25652.83    17137.08
+Duration Elapsed      162.50      120.25
+
+ kernel/sched/fair.c     | 27 ++++++++++++++++++++++++---
+ kernel/sched/features.h |  2 ++
+ 2 files changed, 26 insertions(+), 3 deletions(-)
+
 -- 
-2.32.0
+2.31.1
 
