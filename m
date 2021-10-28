@@ -2,102 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BF9C43E69B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 18:50:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 028C843E69C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 18:51:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229985AbhJ1QxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 12:53:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36390 "EHLO
+        id S230420AbhJ1Qxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 12:53:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229806AbhJ1QxV (ORCPT
+        with ESMTP id S229565AbhJ1Qxl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 12:53:21 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85D0EC061570
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 09:50:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/tMGaK2sUVMsCiLlAMK/jc7wo8BAZ+rnikau/I3t/GU=; b=oWjZxuKcMWE5A0iD3QNPvuEsgD
-        +OIg6fK+PcpGLkD1D1HAatr0NJpVptr4ka5d3JntFZFLxWbdowDpl/2ZRksu+jGEEduY0roUKbl+0
-        d2M8ALN+eQhvJ0jP53aLyrBnVCcNpsZOuL7I6z56y4atofVSgJJJJ7kcLGTll4NJOoOGzfRMzRHVK
-        oj7WtmUqPlC8/RglTybwqHZaqDCSvBhPFCuOx4fdCD5RzZFXyif3ndfnbM3ueF6LqS1GEhEXziINK
-        5lJvfmf/poqLol+W9HFH3rTh/Ljn3rhV3vzEtCw20f4BDc0OOtkNG1K5NDBnXjHTqEy2okFxps7N2
-        p42wFs4Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mg8c3-00CqOk-On; Thu, 28 Oct 2021 16:50:47 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2314030031A;
-        Thu, 28 Oct 2021 18:50:46 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id D53EF2064564E; Thu, 28 Oct 2021 18:50:46 +0200 (CEST)
-Date:   Thu, 28 Oct 2021 18:50:46 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Qais Yousef <qais.yousef@arm.com>, Ingo Molnar <mingo@kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sched/core: Export pelt_thermal_tp
-Message-ID: <YXrU5hQfEJFTP93d@hirez.programming.kicks-ass.net>
-References: <20211028115005.873539-1-qais.yousef@arm.com>
- <YXrJOKb17cH6vkTc@infradead.org>
- <20211028161855.GN174703@worktop.programming.kicks-ass.net>
- <YXrOLay3BbaDObM2@infradead.org>
+        Thu, 28 Oct 2021 12:53:41 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D5C8C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 09:51:14 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id t11so4834628plq.11
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 09:51:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7Ih9L7I3EtdF1qtBtw2qCRFNuaZrqIqaenrbVoXp4F4=;
+        b=XD7F5t6tImB4KG/Bnxg3NzCo0AUN5WtpFAx05860YtLZLdM118BIqyc4pGUjU8QruD
+         RukjrLOMz5ylzXC7h+v32riAQ1GzHJ4R8Z+B7zKATLV/Urov/j26O9pmx+u2B9o7TiiA
+         cranhBvRF4YmwqiJ+EszJg9Por2mPJq6svoTY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7Ih9L7I3EtdF1qtBtw2qCRFNuaZrqIqaenrbVoXp4F4=;
+        b=MHzX6EpZZEjEBL38R/XdpVp2rRv3SevZt291B763FxI+xK8H+o8NlWg+w03RlXZMgS
+         5yTYki08WJD4rIQuxQ+zjCb6uf2k4Y3F4bqf5sJVQgIBhnDwUx4GopbzEfo8mpa8LiET
+         dRamTKj71w72WC3jfIMVabVAvqv9L+/LZm6ydk+R42Sh3afX1GfwQXCgv+ASzKQ4kFI2
+         HMPegHMY3miHRDoLCOiuvr8NmlIZIhAGxDhihP7ojTqNoEL187RXLLMZV6JUXH2xE6j6
+         mecwiUU0nIOJ5M8rsvKUE4fEpgaxVeDvd7RwOX8I/VdEMWJQu3a0PtkhJNxj6VrzyE18
+         UUbA==
+X-Gm-Message-State: AOAM531GC0weU8Un4RaivyaSEsqx503w/13BmvzRjT3CoIF4e8lZXfNS
+        PwmISgVvpCQRUCHGZ3e7Nb7aEtnUOvhYRw==
+X-Google-Smtp-Source: ABdhPJyOojSJtafDXFQKqZw579NK241/uRaI/w38ND8zzEPTgrbbDGtfRJTsI4pxdwqViKcLjv7PlQ==
+X-Received: by 2002:a17:90a:e7c2:: with SMTP id kb2mr8704787pjb.15.1635439873835;
+        Thu, 28 Oct 2021 09:51:13 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id p7sm3154501pgn.52.2021.10.28.09.51.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 09:51:13 -0700 (PDT)
+Date:   Thu, 28 Oct 2021 09:51:12 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, andrew.cooper3@citrix.com,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
+        Will Deacon <will@kernel.org>, hjl.tools@gmail.com
+Subject: Re: [RFC][PATCH] x86: Add straight-line-speculation mitigation
+Message-ID: <202110280923.341FFA15D8@keescook>
+References: <YXqNAJI3NJz3SQue@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YXrOLay3BbaDObM2@infradead.org>
+In-Reply-To: <YXqNAJI3NJz3SQue@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 09:22:05AM -0700, Christoph Hellwig wrote:
-> On Thu, Oct 28, 2021 at 06:18:55PM +0200, Peter Zijlstra wrote:
-> > > > @@ -36,6 +36,7 @@ EXPORT_TRACEPOINT_SYMBOL_GPL(pelt_rt_tp);
-> > > >  EXPORT_TRACEPOINT_SYMBOL_GPL(pelt_dl_tp);
-> > > >  EXPORT_TRACEPOINT_SYMBOL_GPL(pelt_irq_tp);
-> > > >  EXPORT_TRACEPOINT_SYMBOL_GPL(pelt_se_tp);
-> > > > +EXPORT_TRACEPOINT_SYMBOL_GPL(pelt_thermal_tp);
-> > > >  EXPORT_TRACEPOINT_SYMBOL_GPL(sched_cpu_capacity_tp);
-> > > >  EXPORT_TRACEPOINT_SYMBOL_GPL(sched_overutilized_tp);
-> > > >  EXPORT_TRACEPOINT_SYMBOL_GPL(sched_util_est_cfs_tp);
-> > > 
-> > > ... and while we're at it, all these exports are unused and should
-> > > be deleted as well.
-> > 
-> > This is my concession wrt tracepoints. Actual tracepoints are ABI,
-> > exports are in-kernel interfaces and are explicitly not ABI.
-> > 
-> > This way people can use an external module to get at the tracepoint data
-> > without having in-tree tracepoints.
+On Thu, Oct 28, 2021 at 01:44:00PM +0200, Peter Zijlstra wrote:
+> Hi,
 > 
-> All of this makes no sense at all.  These are entirely dead exports.
-> If you remove them nothing else changes.  Note taht the tracepoints
-> do have in-kernel callers, so if people thing of them as an ABI you've
-> got your ABI already with or without the exports.
+> This little patch makes use of an upcomming GCC feature to mitigate
+> straight-line-speculation for x86:
+> 
+>   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=102952
+> 
+> It's built tested on x86_64-allyesconfig using GCC-12+patch and GCC-11.
+> It's also been boot tested on x86_64-defconfig+kvm_guest.config using
+> GCC-12+patch.
+> 
+> Enjoy!
+> 
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-These are not normal traceevents, these are tracepoints, the distinction
-is that these things do not show up in tracefs and there is no userspace
-visible representation of them. No userspace gives no ABI.
+I'm all for such mitigations. In x86's case, it's small and easy. I do
+note, however, than arm64 maintainers weren't as impressed:
+https://lore.kernel.org/lkml/20210305095256.GA22536@willie-the-truck/
 
-All they provide is the in-code hook and in-kernel registration
-interface. These EXPORTS export that registration interface, such that
-an out-of-tree module can make use of them.
+What's the image size impact?
 
-And yes, unused exports are iffy, out-of-tree modules are iffy, but in
-this case I made an exception since ABI contraints are worse. We very
-clearly state there is no such thing is kabi, so breaking any user of
-these exports if fair game.
+> [...]
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -468,6 +468,18 @@ config RETPOLINE
+>  	  branches. Requires a compiler with -mindirect-branch=thunk-extern
+>  	  support for full protection. The kernel may run slower.
+>  
+> +config CC_HAS_SLS
+> +	def_bool $(cc-option,-mharden-sls=all)
+> +
+> +config SLS
+> +	bool "Mitigate Straight-Line-Speculation"
+> +	depends on CC_HAS_SLS
+> +	default y
+> +	help
+> +	  Compile the kernel with straight-line-speculation options to guard
+> +          against straight line speculation. The kernel image might be slightly
+> +          larger.
 
-Breaking users of userspace trace-events gets kernel patches reverted
-(been there, done that, never want to ever be there again).
+nit: differing indents; I'd expect the last two lines to match the first
+(tab, space, space).
 
-People want to trace this stuff, but I *REALLY* do not want to commit to
-ABI, this is the middle-ground that sucks least :/
+> +
+>  config X86_CPU_RESCTRL
+>  	bool "x86 CPU resource control support"
+>  	depends on X86 && (CPU_SUP_INTEL || CPU_SUP_AMD)
+> --- a/arch/x86/Makefile
+> +++ b/arch/x86/Makefile
+> @@ -179,6 +179,10 @@ ifdef CONFIG_RETPOLINE
+>    endif
+>  endif
+>  
+> +ifdef CONFIG_SLS
+> +  KBUILD_CFLAGS += -mharden-sls=all
+> +endif
+> +
+>  KBUILD_LDFLAGS += -m elf_$(UTS_MACHINE)
+>  
+>  ifdef CONFIG_LTO_CLANG
+
+Given the earlier patch for ARM, perhaps the Kconfig and Makefile chunks
+should be at the top level instead, making this feature easier to
+implement in other architectures?
+
+> [...]
+> --- a/scripts/Makefile.lib
+> +++ b/scripts/Makefile.lib
+> @@ -241,7 +241,8 @@ objtool_args =								\
+>  	$(if $(CONFIG_GCOV_KERNEL)$(CONFIG_LTO_CLANG), --no-unreachable)\
+>  	$(if $(CONFIG_RETPOLINE), --retpoline)				\
+>  	$(if $(CONFIG_X86_SMAP), --uaccess)				\
+> -	$(if $(CONFIG_FTRACE_MCOUNT_USE_OBJTOOL), --mcount)
+> +	$(if $(CONFIG_FTRACE_MCOUNT_USE_OBJTOOL), --mcount)             \
+> +        $(if $(CONFIG_SLS), --sls)
+>  
+>  # Useful for describing the dependency of composite objects
+>  # Usage:
+> --- a/tools/objtool/arch/x86/decode.c
+> +++ b/tools/objtool/arch/x86/decode.c
+> @@ -531,6 +531,11 @@ int arch_decode_instruction(struct objto
+>  		}
+>  		break;
+>  
+> +	case 0xcc:
+> +		/* int3 */
+> +		*type = INSN_TRAP;
+> +		break;
+> +
+>  	case 0xe3:
+>  		/* jecxz/jrcxz */
+>  		*type = INSN_JUMP_CONDITIONAL;
+> @@ -697,10 +702,10 @@ const char *arch_ret_insn(int len)
+>  {
+>  	static const char ret[5][5] = {
+>  		{ BYTE_RET },
+> -		{ BYTE_RET, BYTES_NOP1 },
+> -		{ BYTE_RET, BYTES_NOP2 },
+> -		{ BYTE_RET, BYTES_NOP3 },
+> -		{ BYTE_RET, BYTES_NOP4 },
+> +		{ BYTE_RET, 0xcc },
+> +		{ BYTE_RET, 0xcc, BYTES_NOP1 },
+> +		{ BYTE_RET, 0xcc, BYTES_NOP2 },
+> +		{ BYTE_RET, 0xcc, BYTES_NOP3 },
+>  	};
+>  
+>  	if (len < 1 || len > 5) {
+> --- a/tools/objtool/builtin-check.c
+> +++ b/tools/objtool/builtin-check.c
+> @@ -20,7 +20,7 @@
+>  #include <objtool/objtool.h>
+>  
+>  bool no_fp, no_unreachable, retpoline, module, backtrace, uaccess, stats,
+> -     validate_dup, vmlinux, mcount, noinstr, backup;
+> +     validate_dup, vmlinux, mcount, noinstr, backup, sls;
+>  
+>  static const char * const check_usage[] = {
+>  	"objtool check [<options>] file.o",
+> @@ -45,6 +45,7 @@ const struct option check_options[] = {
+>  	OPT_BOOLEAN('l', "vmlinux", &vmlinux, "vmlinux.o validation"),
+>  	OPT_BOOLEAN('M', "mcount", &mcount, "generate __mcount_loc"),
+>  	OPT_BOOLEAN('B', "backup", &backup, "create .orig files before modification"),
+> +	OPT_BOOLEAN('S', "sls", &sls, "validate straight-line-speculation"),
+>  	OPT_END(),
+>  };
+>  
+> --- a/tools/objtool/check.c
+> +++ b/tools/objtool/check.c
+> @@ -3084,6 +3084,12 @@ static int validate_branch(struct objtoo
+>  		switch (insn->type) {
+>  
+>  		case INSN_RETURN:
+> +			if (next_insn && next_insn->type == INSN_TRAP) {
+> +				next_insn->ignore = true;
+> +			} else if (sls && !insn->retpoline_safe) {
+> +				WARN_FUNC("missing int3 after ret",
+> +					  insn->sec, insn->offset);
+> +			}
+>  			return validate_return(func, insn, &state);
+>  
+>  		case INSN_CALL:
+> @@ -3127,6 +3133,14 @@ static int validate_branch(struct objtoo
+>  			break;
+>  
+>  		case INSN_JUMP_DYNAMIC:
+> +			if (next_insn && next_insn->type == INSN_TRAP) {
+> +				next_insn->ignore = true;
+> +			} else if (sls && !insn->retpoline_safe) {
+> +				WARN_FUNC("missing int3 after indirect jump",
+> +					  insn->sec, insn->offset);
+> +			}
+> +
+> +			/* fallthrough */
+>  		case INSN_JUMP_DYNAMIC_CONDITIONAL:
+>  			if (is_sibling_call(insn)) {
+>  				ret = validate_sibling_call(file, insn, &state);
+
+Oh very nice; I was going to ask "how can we make sure no bare 'ret's
+sneak back into .S files" and here it is. Excellent.
+
+Random thought, not for this patch, but can objtool validate the int3
+linker padding too? (i.e. to double-check the behavior of
+7705dc855797 ("x86/vmlinux: Use INT3 instead of NOP for linker fill bytes"))
+
+-Kees
+
+-- 
+Kees Cook
