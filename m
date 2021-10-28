@@ -2,167 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48E3443F26F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 00:11:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEA6743F270
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 00:11:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231445AbhJ1WOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 18:14:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52714 "EHLO
+        id S231460AbhJ1WOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 18:14:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231344AbhJ1WOG (ORCPT
+        with ESMTP id S231344AbhJ1WON (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 18:14:06 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B786EC061767
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 15:11:38 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id om14so5742258pjb.5
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 15:11:38 -0700 (PDT)
+        Thu, 28 Oct 2021 18:14:13 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9E67C061745
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 15:11:45 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id nn3-20020a17090b38c300b001a03bb6c4ebso5901327pjb.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 15:11:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=E2XYIXxsuydI8ioAGS2fQXnQKNt1DsfxEx8xKppyXQU=;
-        b=VqLj8waAnEF+goliIoRaUjzVr+g5HL63zzjrS76mjzr7yAqHE9fVDRdYO5eLrk94TC
-         LJ7CygJJLfv1KxkAv5JWga2nnjFsCtbmVUs/CoXY5gbcvN+PTjHYWVQbVIBk8oVBwz8a
-         faEeZucH1Ku6TxvCOJ5FcDrptWVCl3vJyOapo=
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=T0f/QZdJ1qrvvm2X8TGh++QhmZa42tRv4UTvK/ZCSuQ=;
+        b=B7h5r8WgIRa7SNrNdv5poCao1B881yc9lpB/apy9LR7DB+bkNr307tWjYxHSzFsyzq
+         lk+xUpoyTds/lxjDC/JNFSuVsGKd/6B0Bm4AoVgV9xwJHeqvW8NVQUXVlsMCFvg/UYtK
+         1qyCFcmtFNTDgy/iqkO/57WNHH6pYGXvAnCuE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=E2XYIXxsuydI8ioAGS2fQXnQKNt1DsfxEx8xKppyXQU=;
-        b=tJuj1Cb/Lj8iDqoVT/ij/sPL6+tgvzqE+h5k1zgHL/rUdXtC886kPJ6QU6NCH4cwab
-         3CXOp+dzkIJ7OxPlLdaXSuY2ABzfJzqvPuTBhF0bxuPsMXaTCUbzzoN9b/2R4cg+vRKa
-         aO7uL8Ohv3yJcZj38nNWOVA6mwNH6WDoWS4I02tpWRi1m8KwtRhAcAtQ2dxO+prAf8Vk
-         sgvV2ET7KEsPspto8PXmQ4Br6/WAlXlk9mpgvdOZAWOkMqipogndh5M3X07Yx8sS7TLQ
-         yOnGohEgiVJQcBfqoM87vgIwK+Zszp4AuB0oD3GcsFWLSsYNIqnQdKjmZYduwSuR3O6n
-         p1bQ==
-X-Gm-Message-State: AOAM5307Ma5I7oQmXMEyg+Jz2rrtNb9u1/dicBJ/8kL21RsA1FONBzwc
-        vjcr/MgcFFvacVReCpE1bKkp1BRF3gOzTw==
-X-Google-Smtp-Source: ABdhPJzcNZsBgTjAuTy1EmmPdat5c/8rHkaLVHRt9eON7hxzgyRBvA2aL/UFu5K+dIxhrhYgEtIZ+A==
-X-Received: by 2002:a17:90a:71c5:: with SMTP id m5mr15753014pjs.105.1635459098062;
-        Thu, 28 Oct 2021 15:11:38 -0700 (PDT)
-Received: from philipchen.mtv.corp.google.com ([2620:15c:202:201:9954:4c46:483e:f139])
-        by smtp.gmail.com with ESMTPSA id b8sm4634367pfv.56.2021.10.28.15.11.37
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=T0f/QZdJ1qrvvm2X8TGh++QhmZa42tRv4UTvK/ZCSuQ=;
+        b=2qOhSbI/fcxZCXjDsY10H1rWG7K68ISq2hM0VrqP1e6qwvJh1IvxP4hy4r/hn3YEzp
+         oOdkiKOPHP+PdUPdejdtcOonAy3S3enVzcXu/cHzHtGpvv9yoKZY5dPLc5h8+vL0lp3N
+         LH/3qOdkOHzoCou8Y2lx9TxCNXNoKA5qk94th3OgXmuG0+7uwqvt3/TjjS87F7sw2pjm
+         3jS+Wag/ZDmbmw+L8+6jWKXOyqF7KORHTPab5j2PxEsvp1Qg3KpCiNQPKA/lE9sfBOJI
+         Ny6mHCcK1+Gi32NsWuO6SWbiRejJIGvM7Sbg8G2+Q5gdBvMBSp5y0NXG3kO66LHkhZLB
+         LkpQ==
+X-Gm-Message-State: AOAM530nmfFXelOvTsaCk0Mo4xulq7tVyEc/knfkvRW7hN/oGjMaCJD+
+        z5mcrk7clSLBNYtO2ePfhsB1jP1/5W2gj1qV
+X-Google-Smtp-Source: ABdhPJzw2Sj9zNcoXg7+/xcZEJWwdyl6rDmfrImf4aXeUsKtfklW/HEHPdG8jH874kmY4E/bVonj4Q==
+X-Received: by 2002:a17:90b:350c:: with SMTP id ls12mr7434988pjb.36.1635459105427;
+        Thu, 28 Oct 2021 15:11:45 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:8610:b491:69a6:2965])
+        by smtp.gmail.com with ESMTPSA id j6sm3521278pgf.60.2021.10.28.15.11.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 15:11:37 -0700 (PDT)
-From:   Philip Chen <philipchen@chromium.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     dianders@chromium.org, swboyd@chromium.org,
-        Philip Chen <philipchen@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: [PATCH 2/2] arm64: dts: sc7180: Support Homestar rev4
-Date:   Thu, 28 Oct 2021 15:11:32 -0700
-Message-Id: <20211028151022.2.Ib9070172c8173d8e44c10352f68f2f507a151782@changeid>
+        Thu, 28 Oct 2021 15:11:45 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Jan Kiszka <jan.kiszka@siemens.com>,
+        Kieran Bingham <kbingham@kernel.org>
+Cc:     Douglas Anderson <dianders@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Berg <johannes.berg@intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] scripts/gdb: Handle split debug for vmlinux
+Date:   Thu, 28 Oct 2021 15:11:38 -0700
+Message-Id: <20211028151120.v2.1.Ie6bd5a232f770acd8c9ffae487a02170bad3e963@changeid>
 X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
-In-Reply-To: <20211028151022.1.Ie56f55924f5c7706fe3194e710bbef6fdb8b5bc6@changeid>
-References: <20211028151022.1.Ie56f55924f5c7706fe3194e710bbef6fdb8b5bc6@changeid>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support Homestar rev4 board where Parade ps8640 is added as the
-second source edp bridge.
+This is related to two previous changes. Commit dfe4529ee4d3
+("scripts/gdb: find vmlinux where it was before") and commit
+da036ae14762 ("scripts/gdb: handle split debug").
 
-Signed-off-by: Philip Chen <philipchen@chromium.org>
+Although Chrome OS has been using the debug suffix for modules for a
+while, it has just recently started using it for vmlinux as well. That
+means we've now got to improve the detection of "vmlinux" to also
+handle that it might end with ".debug".
+
+Cc: Stephen Boyd <swboyd@chromium.org>
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
 ---
 
- arch/arm64/boot/dts/qcom/Makefile               |  1 +
- .../dts/qcom/sc7180-trogdor-homestar-r2.dts     |  2 ++
- .../dts/qcom/sc7180-trogdor-homestar-r3.dts     |  6 ++++--
- .../dts/qcom/sc7180-trogdor-homestar-r4.dts     | 17 +++++++++++++++++
- .../boot/dts/qcom/sc7180-trogdor-homestar.dtsi  |  3 ---
- 5 files changed, 24 insertions(+), 5 deletions(-)
- create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-homestar-r4.dts
+Changes in v2:
+- Don't accidentally change the file permissions.
 
-diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
-index f637c4d3729f..ba99aba1d51a 100644
---- a/arch/arm64/boot/dts/qcom/Makefile
-+++ b/arch/arm64/boot/dts/qcom/Makefile
-@@ -57,6 +57,7 @@ dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-coachz-r3.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-coachz-r3-lte.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-homestar-r2.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-homestar-r3.dtb
-+dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-homestar-r4.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-r0.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-r1.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-r1-kb.dtb
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-homestar-r2.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-homestar-r2.dts
-index db6c2da67cea..70032983fb65 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-homestar-r2.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-homestar-r2.dts
-@@ -7,6 +7,8 @@
- 
- /dts-v1/;
- 
-+#include "sc7180.dtsi"
-+#include "sc7180-trogdor-ti-sn65dsi86.dtsi"
- #include "sc7180-trogdor-homestar.dtsi"
- 
- / {
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-homestar-r3.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-homestar-r3.dts
-index 3fd8aa5bb7a6..e92e2e9e48ed 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-homestar-r3.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-homestar-r3.dts
-@@ -7,9 +7,11 @@
- 
- /dts-v1/;
- 
-+#include "sc7180.dtsi"
-+#include "sc7180-trogdor-ti-sn65dsi86.dtsi"
- #include "sc7180-trogdor-homestar.dtsi"
- 
- / {
--	model = "Google Homestar (rev3+)";
--	compatible = "google,homestar", "qcom,sc7180";
-+	model = "Google Homestar (rev3)";
-+	compatible = "google,homestar-rev3", "qcom,sc7180";
- };
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-homestar-r4.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-homestar-r4.dts
-new file mode 100644
-index 000000000000..fb27106bbb4a
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-homestar-r4.dts
-@@ -0,0 +1,17 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Google Homestar board device tree source
-+ *
-+ * Copyright 2021 Google LLC.
-+ */
-+
-+/dts-v1/;
-+
-+#include "sc7180.dtsi"
-+#include "sc7180-trogdor-parade-ps8640.dtsi"
-+#include "sc7180-trogdor-homestar.dtsi"
-+
-+/ {
-+	model = "Google Homestar (rev4+)";
-+	compatible = "google,homestar", "qcom,sc7180";
-+};
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-homestar.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-homestar.dtsi
-index 4ab890b2a1d4..f32369af1351 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-homestar.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-homestar.dtsi
-@@ -5,13 +5,10 @@
-  * Copyright 2021 Google LLC.
-  */
- 
--#include "sc7180.dtsi"
--
- ap_ec_spi: &spi6 {};
- ap_h1_spi: &spi0 {};
- 
- #include "sc7180-trogdor.dtsi"
--#include "sc7180-trogdor-ti-sn65dsi86.dtsi"
- 
- / {
- 	/* BOARD-SPECIFIC TOP LEVEL NODES */
+ scripts/gdb/linux/symbols.py | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/scripts/gdb/linux/symbols.py b/scripts/gdb/linux/symbols.py
+index 08d264ac328b..46f7542db08c 100644
+--- a/scripts/gdb/linux/symbols.py
++++ b/scripts/gdb/linux/symbols.py
+@@ -148,7 +148,8 @@ lx-symbols command."""
+         # drop all current symbols and reload vmlinux
+         orig_vmlinux = 'vmlinux'
+         for obj in gdb.objfiles():
+-            if obj.filename.endswith('vmlinux'):
++            if (obj.filename.endswith('vmlinux') or
++                obj.filename.endswith('vmlinux.debug')):
+                 orig_vmlinux = obj.filename
+         gdb.execute("symbol-file", to_string=True)
+         gdb.execute("symbol-file {0}".format(orig_vmlinux))
 -- 
 2.33.0.1079.g6e70778dc9-goog
 
