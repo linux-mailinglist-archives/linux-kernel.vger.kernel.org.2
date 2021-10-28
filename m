@@ -2,131 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8000A43E062
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 13:59:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 915FB43E067
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 13:59:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230297AbhJ1MCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 08:02:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45218 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229578AbhJ1MBv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 08:01:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 17810610FC;
-        Thu, 28 Oct 2021 11:59:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635422364;
-        bh=6SRnBqGEu6kfrjY8F8AIxFOXpP3mk9uNLODc5pl6vYo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PF+p5k3fPcX4g7U/HaBJuzIJ4k5E0pNaC5AYSReMWdptL5C6nDTIJaIE7qlYNYlG6
-         n1n/PwUdpeEdECCRPixbjSlqTeevDW0OntTvozcAaeZnGpyg9v14UXE0Uy+uDhiwA4
-         opUKp2Rh8z49oq5/De4kzH0wt2Tq2fvNA7/+mgp+6zfuqvEwWijrNqLYLBlBZuMPRL
-         88N447RwKebi4Ez1WZLL28f9yHI1UOy8Ip53Ye3TTKmeO3nK2Kc7hLybqU9+9eT+Gw
-         dD6HWh7fPMZRMI/QpI/9KZ3rirsCMx4Hs00YhSbDpBEZNMfr2ZfvOMHA6ZLmKCwWDw
-         xkF14RX5nWTCw==
-Date:   Thu, 28 Oct 2021 12:59:08 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
-        Tony Lindgren <tony@atomide.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
-        linux-omap@vger.kernel.org, openbmc@lists.ozlabs.org,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: Re: [PATCH v2 24/45] regulator: pfuze100: Use
- devm_register_power_handler()
-Message-ID: <YXqQjG+5Eshm9fl5@sirena.org.uk>
-References: <20211027211715.12671-1-digetx@gmail.com>
- <20211027211715.12671-25-digetx@gmail.com>
+        id S230318AbhJ1MCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 08:02:11 -0400
+Received: from mail-wm1-f41.google.com ([209.85.128.41]:51733 "EHLO
+        mail-wm1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230312AbhJ1MCE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 08:02:04 -0400
+Received: by mail-wm1-f41.google.com with SMTP id z200so4678917wmc.1;
+        Thu, 28 Oct 2021 04:59:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UUZZZRqs2X/yCmG5FpkNKJ3V0/nFoXe7+MUrLvu5RPY=;
+        b=6a3fX8oXqGkt/1uk7Bt2CSiRCUvL36J1Kg5prFOpgXuXpOj9euV1ShWX9Bg8GANCy0
+         IHX55d5pe3a2B2ss9Y2fMrEk2eEZKPF1T2pgPK0EUfnM5gW4T9ahs8MD/VHAux6I3lKK
+         BPWaHTuKXzIj/H9i4pZPPEvTrHLUaxCBVo06Lfx/+CXSvhGKRM15wreXZ9bLNww4G3h9
+         aR5044Dqyj9FtbDgN+mpHqRVYmEc230Pcc/r+hjYUl9Ael8oclAWXdFz72wq6N4ywmhE
+         rmFUNpvslRvNtkzjIgj+P6brrpWg3XDxyKwL6TeS/J0ahfr34hnD3hlc8OWdbCOR2LvV
+         sorQ==
+X-Gm-Message-State: AOAM531qqZO0mWpHXiRJVilTxgeZXHkkfbhzD/oiTfXyUMFzqIywERHp
+        MfvxZuyIaAS0HpPYlAt1xPE=
+X-Google-Smtp-Source: ABdhPJwpMMOf7H0HdBo/7eop+RGS3mt1nTq9UCoVM+ITcPtyWGM2tl0Uo9wcJ4RGOVL2jGC5KUZbig==
+X-Received: by 2002:a1c:4306:: with SMTP id q6mr2632176wma.29.1635422375199;
+        Thu, 28 Oct 2021 04:59:35 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id o23sm2693592wms.18.2021.10.28.04.59.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 04:59:34 -0700 (PDT)
+Date:   Thu, 28 Oct 2021 11:59:33 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     linux-hyperv@vger.kernel.org, Wei Liu <wei.liu@kernel.org>,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Michael Kelley <mikelley@microsoft.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Dexuan Cui <decui@microsoft.com>
+Subject: Re: [PATCH] x86/hyperv: Protect set_hv_tscchange_cb() against
+ getting preempted
+Message-ID: <20211028115933.ffxaqq6yhdbmvetv@liuwe-devbox-debian-v2>
+References: <20211012155005.1613352-1-vkuznets@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Wle3PKA2/qG6+6Vj"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211027211715.12671-25-digetx@gmail.com>
-X-Cookie: try again
+In-Reply-To: <20211012155005.1613352-1-vkuznets@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 12, 2021 at 05:50:05PM +0200, Vitaly Kuznetsov wrote:
+> The following issue is observed with CONFIG_DEBUG_PREEMPT when KVM loads:
+> 
+>  KVM: vmx: using Hyper-V Enlightened VMCS
+>  BUG: using smp_processor_id() in preemptible [00000000] code: systemd-udevd/488
+>  caller is set_hv_tscchange_cb+0x16/0x80
+>  CPU: 1 PID: 488 Comm: systemd-udevd Not tainted 5.15.0-rc5+ #396
+>  Hardware name: Microsoft Corporation Virtual Machine/Virtual Machine, BIOS Hyper-V UEFI Release v4.0 12/17/2019
+>  Call Trace:
+>   dump_stack_lvl+0x6a/0x9a
+>   check_preemption_disabled+0xde/0xe0
+>   ? kvm_gen_update_masterclock+0xd0/0xd0 [kvm]
+>   set_hv_tscchange_cb+0x16/0x80
+>   kvm_arch_init+0x23f/0x290 [kvm]
+>   kvm_init+0x30/0x310 [kvm]
+>   vmx_init+0xaf/0x134 [kvm_intel]
+>   ...
+> 
+> set_hv_tscchange_cb() can get preempted in between acquiring
+> smp_processor_id() and writing to HV_X64_MSR_REENLIGHTENMENT_CONTROL. This
+> is not an issue by itself: HV_X64_MSR_REENLIGHTENMENT_CONTROL is a
+> partition-wide MSR and it doesn't matter which particular CPU will be
+> used to receive reenlightenment notifications. The only real problem can
+> (in theory) be observed if the CPU whose id was acquired with
+> smp_processor_id() goes offline before we manage to write to the MSR,
+> the logic in hv_cpu_die() won't be able to reassign it correctly.
+> 
+> Reported-by: Michael Kelley <mikelley@microsoft.com>
+> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
 
---Wle3PKA2/qG6+6Vj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Applied to hyperv-next.
 
-On Thu, Oct 28, 2021 at 12:16:54AM +0300, Dmitry Osipenko wrote:
-
-> Use devm_register_power_handler() that replaces global pm_power_off_prepare
-> variable and allows to register multiple power-off handlers.
-
-Acked-by: Mark Brown <broonie@kernel.org>
-
---Wle3PKA2/qG6+6Vj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmF6kIwACgkQJNaLcl1U
-h9AyhAf+Nziuu181EjKis21sdValh/0I2qd5n6cZmpuLUeA7g6K6TyFH79y+tEkd
-Itu0nx35rsztyjl7+A8ECF9S9uJGD1N0o3cruhqU01R5Kloz9mrUDRii5R3Uh+fm
-wjXlm+iYDXdXIzRmM07WyWi8rUTpLrhHx7ogAb291MVxgxc1LqxOBAwk6hcvnDCB
-aLDZSKk0LT7/yHSU+s5sBmll+K1S09x+XUfo/7VEuf9WqctxN8t6DgnigNeg1sU1
-S3cmBREB1bkkqHuPWJhOyUeW6YyuYI8inCcpXRNtdydg4jwo5l2h16fE8e0db953
-VsD3Y2dmLQu1qKxLNZUqHCelyjTPow==
-=sNsl
------END PGP SIGNATURE-----
-
---Wle3PKA2/qG6+6Vj--
+> ---
+>  arch/x86/hyperv/hv_init.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
+> index 708a2712a516..179fc173104d 100644
+> --- a/arch/x86/hyperv/hv_init.c
+> +++ b/arch/x86/hyperv/hv_init.c
+> @@ -139,7 +139,6 @@ void set_hv_tscchange_cb(void (*cb)(void))
+>  	struct hv_reenlightenment_control re_ctrl = {
+>  		.vector = HYPERV_REENLIGHTENMENT_VECTOR,
+>  		.enabled = 1,
+> -		.target_vp = hv_vp_index[smp_processor_id()]
+>  	};
+>  	struct hv_tsc_emulation_control emu_ctrl = {.enabled = 1};
+>  
+> @@ -153,8 +152,12 @@ void set_hv_tscchange_cb(void (*cb)(void))
+>  	/* Make sure callback is registered before we write to MSRs */
+>  	wmb();
+>  
+> +	re_ctrl.target_vp = hv_vp_index[get_cpu()];
+> +
+>  	wrmsrl(HV_X64_MSR_REENLIGHTENMENT_CONTROL, *((u64 *)&re_ctrl));
+>  	wrmsrl(HV_X64_MSR_TSC_EMULATION_CONTROL, *((u64 *)&emu_ctrl));
+> +
+> +	put_cpu();
+>  }
+>  EXPORT_SYMBOL_GPL(set_hv_tscchange_cb);
+>  
+> -- 
+> 2.31.1
+> 
