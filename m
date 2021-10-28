@@ -2,196 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EE4A43D9CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 05:19:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 244A643D9CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 05:22:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229778AbhJ1DWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 23:22:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229691AbhJ1DWK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 23:22:10 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3633C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 20:19:43 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id z144so5168977iof.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 20:19:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=8iLqanegbeY/oC5IucoRrB/uNp5p6hrJTUbMi+FyPCg=;
-        b=I/BQtp4v9VF9Mrf/HLCEPNJpd/6gyYZZhOoXLzv9PA68p4CmdvxV3LrV9GdRlfmrpY
-         DlKSHwbewUBrYPxr7U4RR76y6oWMF7J4K18U/GFNGmhQNyQAsD/o648g3YZOZtci+FaP
-         GYLoNR94SVRFEgAyk0lFT5e85rc3gjBq+25ys=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=8iLqanegbeY/oC5IucoRrB/uNp5p6hrJTUbMi+FyPCg=;
-        b=O4q/WlEmqmhf2uF1zcfJoHmoWzBslBPKI0XYlbd2O18Wir01VgBX7nnEc4xbZ2vzNB
-         uC0xPwT4m8KiwKN8AR+koIU+14v+8AyXt4XzFpLtO47rh2d5JaYkoIYi93raiJeBHBHa
-         uWoD72b8o+24kWlAW71M/wIME5KVieTZf0dwyXGFsG9XD7xVWQbqSAJSp3rlFljm+FMO
-         GVWV3RswFtUWd4R7qODqHeakWHZwEC8WcBlMDbYnSL0GJQ4pho+ET1z3H12iW3rGWLxe
-         vkrmYNGmft/PRvidB66AABAAsTxozpoPcFeHR2SPAEvuIrSQH68JmI5Adxo7YqGhJl4j
-         E0aA==
-X-Gm-Message-State: AOAM530pis8iLn7Ou2c37G/ZJXQmooqAFmx61NEyEmNkMkZLwILG6YWB
-        YGNDz+A+P7EcJHDhFzUW1SvlwU5MWUYSkw==
-X-Google-Smtp-Source: ABdhPJzDTMLn9y163EmQnDA7VMAqBZP0BtZ+TZiuRJhXAiNzKOKwkmtE2QdUciVZjaOhzBY86WSX+Q==
-X-Received: by 2002:a05:6638:3727:: with SMTP id k39mr1242664jav.143.1635391182775;
-        Wed, 27 Oct 2021 20:19:42 -0700 (PDT)
-Received: from mail-il1-f177.google.com (mail-il1-f177.google.com. [209.85.166.177])
-        by smtp.gmail.com with ESMTPSA id s7sm1021801ilv.61.2021.10.27.20.19.41
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Oct 2021 20:19:42 -0700 (PDT)
-Received: by mail-il1-f177.google.com with SMTP id y17so5243153ilb.9
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 20:19:41 -0700 (PDT)
-X-Received: by 2002:a05:6e02:687:: with SMTP id o7mr1270144ils.222.1635391180904;
- Wed, 27 Oct 2021 20:19:40 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211027021857.20816-1-jason-jh.lin@mediatek.com>
- <20211027021857.20816-4-jason-jh.lin@mediatek.com> <CAC=S1ng2=XRV9s2t2dxQf1a2V2GsFwhfB8tRxnNDp-QD5eR_xQ@mail.gmail.com>
- <CAAOTY_9sCr-CM6WsZ6q7mtfqr9A5sNccC0bk1vq=Hdqr3rGkQw@mail.gmail.com>
-In-Reply-To: <CAAOTY_9sCr-CM6WsZ6q7mtfqr9A5sNccC0bk1vq=Hdqr3rGkQw@mail.gmail.com>
-From:   Fei Shao <fshao@chromium.org>
-Date:   Thu, 28 Oct 2021 11:19:04 +0800
-X-Gmail-Original-Message-ID: <CAC=S1njhuzPi6gOmGfqhtKMtDTsGPzZ7P=PoVbAviHt1o00U6w@mail.gmail.com>
-Message-ID: <CAC=S1njhuzPi6gOmGfqhtKMtDTsGPzZ7P=PoVbAviHt1o00U6w@mail.gmail.com>
-Subject: Re: [PATCH v5 3/6] drm/mediatek: Detect CMDQ execution timeout
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Cc:     "jason-jh.lin" <jason-jh.lin@mediatek.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Nancy Lin <nancy.lin@mediatek.com>, singo.chang@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S229783AbhJ1DY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 23:24:26 -0400
+Received: from smtp23.cstnet.cn ([159.226.251.23]:54384 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229704AbhJ1DYZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 23:24:25 -0400
+Received: from localhost.localdomain (unknown [124.16.138.128])
+        by APP-03 (Coremail) with SMTP id rQCowAB3fKg9F3phlTw+BQ--.43941S2;
+        Thu, 28 Oct 2021 11:21:33 +0800 (CST)
+From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
+To:     rui.zhang@intel.com, daniel.lezcano@linaro.org, amitk@kernel.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Subject: [PATCH] thermal: Fix implicit type conversion
+Date:   Thu, 28 Oct 2021 03:21:32 +0000
+Message-Id: <1635391292-2879179-1-git-send-email-jiasheng@iscas.ac.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: rQCowAB3fKg9F3phlTw+BQ--.43941S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrKFyUWFyxJF1rZr4rXr1fJFb_yoWkJFb_CF
+        n3Xr1093s8CF1FvFn7Cr18C347tasFqanag34FvwnxZ348Z343Wr1qqF98Wr48WrZYyF9r
+        ZF12kr1xAw1xZjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb48FF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+        Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
+        0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r48
+        MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
+        0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0E
+        wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJV
+        W8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1l
+        IxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUj8uctUUUU
+        U==
+X-Originating-IP: [124.16.138.128]
+X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chun-Kuang,
+The parameter 'cpu' is defined as unsigned int.
+However in the cpumask_next() it is implicitly type conversed
+to int.
+It is universally accepted that the implicit type conversion is
+terrible.
+Also, having the good programming custom will set an example for
+others.
+Thus, it might be better to change the type of 'cpu' from
+unsigned int to int.
 
-On Thu, Oct 28, 2021 at 7:47 AM Chun-Kuang Hu <chunkuang.hu@kernel.org> wro=
-te:
->
-> Hi, Fei:
->
-> Fei Shao <fshao@chromium.org> =E6=96=BC 2021=E5=B9=B410=E6=9C=8827=E6=97=
-=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=885:32=E5=AF=AB=E9=81=93=EF=BC=9A
-> >
-> > Hi Jason,
-> >
-> > On Wed, Oct 27, 2021 at 10:19 AM jason-jh.lin <jason-jh.lin@mediatek.co=
-m> wrote:
-> > >
-> > > From: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-> > >
-> > > CMDQ is used to update display register in vblank period, so
-> > > it should be execute in next 2 vblank. One vblank interrupt
-> > > before send message (occasionally) and one vblank interrupt
-> > > after cmdq done. If it fail to execute in next 3 vblank,
-> > > tiemout happen.
-> > >
-> > > Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-> > > Signed-off-by: jason-jh.lin <jason-jh.lin@mediatek.com>
-> > > Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-> > > ---
-> > >  drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 20 ++++++++++++++++++--
-> > >  1 file changed, 18 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/dr=
-m/mediatek/mtk_drm_crtc.c
-> > > index e23e3224ac67..dad1f85ee315 100644
-> > > --- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-> > > +++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-> > > @@ -54,6 +54,7 @@ struct mtk_drm_crtc {
-> > >  #if IS_REACHABLE(CONFIG_MTK_CMDQ)
-> > >         struct cmdq_client              cmdq_client;
-> > >         u32                             cmdq_event;
-> > > +       u32                             cmdq_vblank_cnt;
-> > >  #endif
-> > >
-> > >         struct device                   *mmsys_dev;
-> > > @@ -227,7 +228,10 @@ struct mtk_ddp_comp *mtk_drm_ddp_comp_for_plane(=
-struct drm_crtc *crtc,
-> > >  static void ddp_cmdq_cb(struct mbox_client *cl, void *mssg)
-> > >  {
-> > >         struct cmdq_cb_data *data =3D mssg;
-> > > +       struct cmdq_client *cmdq_cl =3D container_of(cl, struct cmdq_=
-client, client);
-> > > +       struct mtk_drm_crtc *mtk_crtc =3D container_of(cmdq_cl, struc=
-t mtk_drm_crtc, cmdq_client);
-> > >
-> > > +       mtk_crtc->cmdq_vblank_cnt =3D 0;
-> > >         cmdq_pkt_destroy(data->pkt);
-> > >  }
-> > >  #endif
-> > > @@ -483,6 +487,15 @@ static void mtk_drm_crtc_update_config(struct mt=
-k_drm_crtc *mtk_crtc,
-> > >                                            cmdq_handle->pa_base,
-> > >                                            cmdq_handle->cmd_buf_size,
-> > >                                            DMA_TO_DEVICE);
-> > > +               /*
-> > > +                * CMDQ command should execute in next 3 vblank.
-> > > +                * One vblank interrupt before send message (occasion=
-ally)
-> > > +                * and one vblank interrupt after cmdq done,
-> > > +                * so it's timeout after 3 vblank interrupt.
-> > > +                * If it fail to execute in next 3 vblank, timeout ha=
-ppen.
-> > > +                */
-> > > +               mtk_crtc->cmdq_vblank_cnt =3D 3;
-> > > +
-> > >                 mbox_send_message(mtk_crtc->cmdq_client.chan, cmdq_ha=
-ndle);
-> > >                 mbox_client_txdone(mtk_crtc->cmdq_client.chan, 0);
-> > >         }
-> > > @@ -499,11 +512,14 @@ static void mtk_crtc_ddp_irq(void *data)
-> > >
-> > >  #if IS_REACHABLE(CONFIG_MTK_CMDQ)
-> > >         if (!priv->data->shadow_register && !mtk_crtc->cmdq_client.ch=
-an)
-> > > +               mtk_crtc_ddp_config(crtc, NULL);
-> > > +       else if (mtk_crtc->cmdq_vblank_cnt > 0 && --mtk_crtc->cmdq_vb=
-lank_cnt =3D=3D 0)
-> > I think atomic_dec_and_test() does what you want to do here.
->
-> I think this operation is not necessary to be atomic operation, and
-> this statement could be reduced to
->
-> else if (--mtk_crtc->cmdq_vblank_cnt =3D=3D 0)
+Fixes: 3e8c4d3 ("drivers: thermal: Move various drivers for intel platforms into a subdir")
+Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
+---
+ drivers/thermal/intel/intel_powerclamp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I was thinking about using existing helpers to wrap up the counter
-operations, but I agree that it's not necessary.
-Just dropping the redundant check would be good enough.
+diff --git a/drivers/thermal/intel/intel_powerclamp.c b/drivers/thermal/intel/intel_powerclamp.c
+index b0eb5ec..ed46b5e 100644
+--- a/drivers/thermal/intel/intel_powerclamp.c
++++ b/drivers/thermal/intel/intel_powerclamp.c
+@@ -578,7 +578,7 @@ static int powerclamp_cpu_online(unsigned int cpu)
+ 	return 0;
+ }
+ 
+-static int powerclamp_cpu_predown(unsigned int cpu)
++static int powerclamp_cpu_predown(int cpu)
+ {
+ 	if (clamping == false)
+ 		return 0;
+-- 
+2.7.4
 
-
->
-> >
-> > > +               DRM_ERROR("mtk_crtc %d CMDQ execute command timeout!\=
-n",
-> > > +                         drm_crtc_index(&mtk_crtc->base));
-> > >  #else
-> > >         if (!priv->data->shadow_register)
-> > > -#endif
-> > >                 mtk_crtc_ddp_config(crtc, NULL);
-> > > -
-> > > +#endif
-> > >         mtk_drm_finish_page_flip(mtk_crtc);
-> > >  }
-> > >
-> > > --
-> > > 2.18.0
-> > >
