@@ -2,257 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE10643E241
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 15:29:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 326DD43E246
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 15:31:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230509AbhJ1NcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 09:32:10 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:47750 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230389AbhJ1NcE (ORCPT
+        id S230375AbhJ1NdQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 28 Oct 2021 09:33:16 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:55361 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229981AbhJ1NdO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 09:32:04 -0400
-Date:   Thu, 28 Oct 2021 13:29:35 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1635427776;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=etrM+laYrcfChaWgjrwRvOcJu32RWsw/ME+hL0QYaFE=;
-        b=l+59glzWMZ8iqQnzLrw9Zhr0fBCRRali3EVv/dXFNxYnUQwTaHFkaBtl5taikKOYFIHz2f
-        6mGhJ9MK+WwuJMvHmcaGtazsUgcUZehbeux8lHVy0nQXfYo+S/A4ooAVBEy8cgEVXQYgGZ
-        ZEq9OTjNQ7xqeNDWnbCg2Um+kq7uh2EJ2EF9FjxGOv6bQgwlXIZXiUKsFcQNZm01VoeefV
-        fIZyySCLbrB5eJ3+sfh/FUPiFbtCV7pA4MKTKXPWsF3HPjK8m9i1dAek0Xc/rdinD0XNxC
-        DBFLpqUvEtRlaZeV61wuFoAzxI3KYVagyPd8axDmLPqwXB6+g1kGpycKDl4qAg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1635427776;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=etrM+laYrcfChaWgjrwRvOcJu32RWsw/ME+hL0QYaFE=;
-        b=ENTnLK5bs0ZW85Kb9ap/HN1lhsdTzLkKAfNaxGwqvVfCk7MbzaqhcRIEieKzhtupCOE2wl
-        NLnvFGEbP5KheoAw==
-From:   "tip-bot2 for Kristen Carlson Accardi" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/core] x86/tools/relocs: Support >64K section headers
-Cc:     Kristen Carlson Accardi <kristen@linux.intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Tony Luck <tony.luck@intel.com>,
-        "H. Peter Anvin (Intel)" <hpa@zytor.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20211013175742.1197608-2-keescook@chromium.org>
-References: <20211013175742.1197608-2-keescook@chromium.org>
-MIME-Version: 1.0
-Message-ID: <163542777535.626.8659747442562324842.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        Thu, 28 Oct 2021 09:33:14 -0400
+Received: from smtpclient.apple (p4ff9fd51.dip0.t-ipconnect.de [79.249.253.81])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 49BF2CED00;
+        Thu, 28 Oct 2021 15:30:45 +0200 (CEST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 15.0 \(3693.20.0.1.32\))
+Subject: Re: [PATCH] Bluetooth: Limit duration of Remote Name Resolve
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20211028191805.1.I35b7f3a496f834de6b43a32f94b6160cb1467c94@changeid>
+Date:   Thu, 28 Oct 2021 15:30:44 +0200
+Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Archie Pusaka <apusaka@chromium.org>,
+        Miao-chen Chou <mcchou@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <180B4F43-B60A-4326-A463-327645BA8F1B@holtmann.org>
+References: <20211028191805.1.I35b7f3a496f834de6b43a32f94b6160cb1467c94@changeid>
+To:     Archie Pusaka <apusaka@google.com>
+X-Mailer: Apple Mail (2.3693.20.0.1.32)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/core branch of tip:
+Hi Archie,
 
-Commit-ID:     a54c401ae66fc78f3f0002938b3465ebd6379009
-Gitweb:        https://git.kernel.org/tip/a54c401ae66fc78f3f0002938b3465ebd6379009
-Author:        Kristen Carlson Accardi <kristen@linux.intel.com>
-AuthorDate:    Wed, 13 Oct 2021 10:57:39 -07:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 27 Oct 2021 11:07:58 +02:00
+> When doing remote name request, we cannot scan. In the normal case it's
+> OK since we can expect it to finish within a short amount of time.
+> However, there is a possibility to scan lots of devices that
+> (1) requires Remote Name Resolve
+> (2) is unresponsive to Remote Name Resolve
+> When this happens, we are stuck to do Remote Name Resolve until all is
+> done before continue scanning.
+> 
+> This patch adds a time limit to stop us spending too long on remote
+> name request. The limit is increased for every iteration where we fail
+> to complete the RNR in order to eventually solve all names.
+> 
+> Signed-off-by: Archie Pusaka <apusaka@chromium.org>
+> Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
+> 
+> ---
+> Hi maintainers, we found one instance where a test device spends ~90
+> seconds to do Remote Name Resolving, hence this patch.
+> I think it's better if we reset the time limit to the default value
+> at some point, but I don't have a good proposal where to do that, so
+> in the end I didn't.
 
-x86/tools/relocs: Support >64K section headers
+do you have a btmon trace for this as well?
 
-While the relocs tool already supports finding the total number of
-section headers if vmlinux exceeds 64K sections, it fails to read the
-extended symbol table to get section header indexes for symbols, causing
-incorrect symbol table indexes to be used when there are > 64K symbols.
+The HCI Remote Name Request is essentially a paging procedure and then a few LMP messages. It is fundamentally a connection request inside BR/EDR and if you have a remote device that has page scan disabled, but inquiry scan enabled, then you get into this funky situation. Sadly, the BR/EDR parts don’t give you any hint on this weird combination. You can't configure BlueZ that way since it is really stupid setup and I remember that GAP doesn’t have this case either, but it can happen. So we might want to check if that is what happens. And of course it needs to be a Bluetooth 2.0 device or a device that doesn’t support Secure Simple Pairing. There is a chance of really bad radio interference, but that is then just bad luck and is only going to happen every once in a blue moon.
 
-Parse the ELF file to read the extended symbol table info, and then
-replace all direct references to st_shndx with calls to sym_index(),
-which will determine whether the value can be read directly or whether
-the value should be pulled out of the extended table.
+That said, you should receive a Page Timeout in the Remote Name Request Complete event for what you describe. Or you just use HCI Remote Name Request Cancel to abort the paging. If I remember correctly then the setting for Page Timeout is also applied to Remote Name resolving procedure. So we could tweak that value. Actually once we get the “sync” work merged, we could configure different Page Timeout for connection requests and name resolving if that would help. Not sure if this is worth it, since we could as simple just cancel the request.
 
-This is needed for future FGKASLR support, which uses a separate section
-per function.
+> include/net/bluetooth/hci_core.h |  5 +++++
+> net/bluetooth/hci_event.c        | 12 ++++++++++++
+> 2 files changed, 17 insertions(+)
+> 
+> diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
+> index dd8840e70e25..df9ffedf1d29 100644
+> --- a/include/net/bluetooth/hci_core.h
+> +++ b/include/net/bluetooth/hci_core.h
+> @@ -87,6 +87,8 @@ struct discovery_state {
+> 	u8			(*uuids)[16];
+> 	unsigned long		scan_start;
+> 	unsigned long		scan_duration;
+> +	unsigned long		name_resolve_timeout;
+> +	unsigned long		name_resolve_duration;
+> };
+> 
+> #define SUSPEND_NOTIFIER_TIMEOUT	msecs_to_jiffies(2000) /* 2 seconds */
+> @@ -805,6 +807,8 @@ static inline void sco_recv_scodata(struct hci_conn *hcon, struct sk_buff *skb)
+> #define INQUIRY_CACHE_AGE_MAX   (HZ*30)   /* 30 seconds */
+> #define INQUIRY_ENTRY_AGE_MAX   (HZ*60)   /* 60 seconds */
+> 
+> +#define NAME_RESOLVE_INIT_DURATION	5120	/* msec */
+> +
+> static inline void discovery_init(struct hci_dev *hdev)
+> {
+> 	hdev->discovery.state = DISCOVERY_STOPPED;
+> @@ -813,6 +817,7 @@ static inline void discovery_init(struct hci_dev *hdev)
+> 	INIT_LIST_HEAD(&hdev->discovery.resolve);
+> 	hdev->discovery.report_invalid_rssi = true;
+> 	hdev->discovery.rssi = HCI_RSSI_INVALID;
+> +	hdev->discovery.name_resolve_duration = NAME_RESOLVE_INIT_DURATION;
+> }
+> 
+> static inline void hci_discovery_filter_clear(struct hci_dev *hdev)
+> diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+> index 3cba2bbefcd6..104a1308f454 100644
+> --- a/net/bluetooth/hci_event.c
+> +++ b/net/bluetooth/hci_event.c
+> @@ -2086,6 +2086,15 @@ static bool hci_resolve_next_name(struct hci_dev *hdev)
+> 	if (list_empty(&discov->resolve))
+> 		return false;
+> 
+> +	/* We should stop if we already spent too much time resolving names.
+> +	 * However, double the name resolve duration for the next iterations.
+> +	 */
+> +	if (time_after(jiffies, discov->name_resolve_timeout)) {
+> +		bt_dev_dbg(hdev, "Name resolve takes too long, stopping.");
+> +		discov->name_resolve_duration *= 2;
+> +		return false;
+> +	}
+> +
+> 	e = hci_inquiry_cache_lookup_resolve(hdev, BDADDR_ANY, NAME_NEEDED);
+> 	if (!e)
+> 		return false;
+> @@ -2634,6 +2643,9 @@ static void hci_inquiry_complete_evt(struct hci_dev *hdev, struct sk_buff *skb)
+> 	if (e && hci_resolve_name(hdev, e) == 0) {
+> 		e->name_state = NAME_PENDING;
+> 		hci_discovery_set_state(hdev, DISCOVERY_RESOLVING);
+> +
+> +		discov->name_resolve_timeout = jiffies +
+> +				msecs_to_jiffies(discov->name_resolve_duration);
 
-Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
-Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Acked-by: H. Peter Anvin (Intel) <hpa@zytor.com>
-Tested-by: Tony Luck <tony.luck@intel.com>
-Link: https://lore.kernel.org/r/20211013175742.1197608-2-keescook@chromium.org
----
- arch/x86/tools/relocs.c | 103 +++++++++++++++++++++++++++++----------
- 1 file changed, 78 insertions(+), 25 deletions(-)
+So if this is really caused by a device with page scan disabled and inquiry scan enabled, then this fix is just a paper over hole approach. If you have more devices requiring name resolving, you end up penalizing them and make the discovery procedure worse up to the extend that no names are resolved. So I wouldn’t be in favor of this.
 
-diff --git a/arch/x86/tools/relocs.c b/arch/x86/tools/relocs.c
-index 27c8220..3f5d397 100644
---- a/arch/x86/tools/relocs.c
-+++ b/arch/x86/tools/relocs.c
-@@ -14,6 +14,10 @@
- static Elf_Ehdr		ehdr;
- static unsigned long	shnum;
- static unsigned int	shstrndx;
-+static unsigned int	shsymtabndx;
-+static unsigned int	shxsymtabndx;
-+
-+static int sym_index(Elf_Sym *sym);
- 
- struct relocs {
- 	uint32_t	*offset;
-@@ -35,6 +39,7 @@ struct section {
- 	Elf_Shdr       shdr;
- 	struct section *link;
- 	Elf_Sym        *symtab;
-+	Elf32_Word     *xsymtab;
- 	Elf_Rel        *reltab;
- 	char           *strtab;
- };
-@@ -268,7 +273,7 @@ static const char *sym_name(const char *sym_strtab, Elf_Sym *sym)
- 		name = sym_strtab + sym->st_name;
- 	}
- 	else {
--		name = sec_name(sym->st_shndx);
-+		name = sec_name(sym_index(sym));
- 	}
- 	return name;
- }
-@@ -338,6 +343,23 @@ static uint64_t elf64_to_cpu(uint64_t val)
- #define elf_xword_to_cpu(x)	elf32_to_cpu(x)
- #endif
- 
-+static int sym_index(Elf_Sym *sym)
-+{
-+	Elf_Sym *symtab = secs[shsymtabndx].symtab;
-+	Elf32_Word *xsymtab = secs[shxsymtabndx].xsymtab;
-+	unsigned long offset;
-+	int index;
-+
-+	if (sym->st_shndx != SHN_XINDEX)
-+		return sym->st_shndx;
-+
-+	/* calculate offset of sym from head of table. */
-+	offset = (unsigned long)sym - (unsigned long)symtab;
-+	index = offset / sizeof(*sym);
-+
-+	return elf32_to_cpu(xsymtab[index]);
-+}
-+
- static void read_ehdr(FILE *fp)
- {
- 	if (fread(&ehdr, sizeof(ehdr), 1, fp) != 1) {
-@@ -471,31 +493,60 @@ static void read_strtabs(FILE *fp)
- static void read_symtabs(FILE *fp)
- {
- 	int i,j;
-+
- 	for (i = 0; i < shnum; i++) {
- 		struct section *sec = &secs[i];
--		if (sec->shdr.sh_type != SHT_SYMTAB) {
-+		int num_syms;
-+
-+		switch (sec->shdr.sh_type) {
-+		case SHT_SYMTAB_SHNDX:
-+			sec->xsymtab = malloc(sec->shdr.sh_size);
-+			if (!sec->xsymtab) {
-+				die("malloc of %" FMT " bytes for xsymtab failed\n",
-+				    sec->shdr.sh_size);
-+			}
-+			if (fseek(fp, sec->shdr.sh_offset, SEEK_SET) < 0) {
-+				die("Seek to %" FMT " failed: %s\n",
-+				    sec->shdr.sh_offset, strerror(errno));
-+			}
-+			if (fread(sec->xsymtab, 1, sec->shdr.sh_size, fp)
-+			    != sec->shdr.sh_size) {
-+				die("Cannot read extended symbol table: %s\n",
-+				    strerror(errno));
-+			}
-+			shxsymtabndx = i;
-+			continue;
-+
-+		case SHT_SYMTAB:
-+			num_syms = sec->shdr.sh_size / sizeof(Elf_Sym);
-+
-+			sec->symtab = malloc(sec->shdr.sh_size);
-+			if (!sec->symtab) {
-+				die("malloc of %" FMT " bytes for symtab failed\n",
-+				    sec->shdr.sh_size);
-+			}
-+			if (fseek(fp, sec->shdr.sh_offset, SEEK_SET) < 0) {
-+				die("Seek to %" FMT " failed: %s\n",
-+				    sec->shdr.sh_offset, strerror(errno));
-+			}
-+			if (fread(sec->symtab, 1, sec->shdr.sh_size, fp)
-+			    != sec->shdr.sh_size) {
-+				die("Cannot read symbol table: %s\n",
-+				    strerror(errno));
-+			}
-+			for (j = 0; j < num_syms; j++) {
-+				Elf_Sym *sym = &sec->symtab[j];
-+
-+				sym->st_name  = elf_word_to_cpu(sym->st_name);
-+				sym->st_value = elf_addr_to_cpu(sym->st_value);
-+				sym->st_size  = elf_xword_to_cpu(sym->st_size);
-+				sym->st_shndx = elf_half_to_cpu(sym->st_shndx);
-+			}
-+			shsymtabndx = i;
-+			continue;
-+
-+		default:
- 			continue;
--		}
--		sec->symtab = malloc(sec->shdr.sh_size);
--		if (!sec->symtab) {
--			die("malloc of %" FMT " bytes for symtab failed\n",
--			    sec->shdr.sh_size);
--		}
--		if (fseek(fp, sec->shdr.sh_offset, SEEK_SET) < 0) {
--			die("Seek to %" FMT " failed: %s\n",
--			    sec->shdr.sh_offset, strerror(errno));
--		}
--		if (fread(sec->symtab, 1, sec->shdr.sh_size, fp)
--		    != sec->shdr.sh_size) {
--			die("Cannot read symbol table: %s\n",
--				strerror(errno));
--		}
--		for (j = 0; j < sec->shdr.sh_size/sizeof(Elf_Sym); j++) {
--			Elf_Sym *sym = &sec->symtab[j];
--			sym->st_name  = elf_word_to_cpu(sym->st_name);
--			sym->st_value = elf_addr_to_cpu(sym->st_value);
--			sym->st_size  = elf_xword_to_cpu(sym->st_size);
--			sym->st_shndx = elf_half_to_cpu(sym->st_shndx);
- 		}
- 	}
- }
-@@ -762,7 +813,9 @@ static void percpu_init(void)
-  */
- static int is_percpu_sym(ElfW(Sym) *sym, const char *symname)
- {
--	return (sym->st_shndx == per_cpu_shndx) &&
-+	int shndx = sym_index(sym);
-+
-+	return (shndx == per_cpu_shndx) &&
- 		strcmp(symname, "__init_begin") &&
- 		strcmp(symname, "__per_cpu_load") &&
- 		strncmp(symname, "init_per_cpu_", 13);
-@@ -1095,7 +1148,7 @@ static int do_reloc_info(struct section *sec, Elf_Rel *rel, ElfW(Sym) *sym,
- 		sec_name(sec->shdr.sh_info),
- 		rel_type(ELF_R_TYPE(rel->r_info)),
- 		symname,
--		sec_name(sym->st_shndx));
-+		sec_name(sym_index(sym)));
- 	return 0;
- }
- 
+What LE scan window/interval is actually working against what configured BR/EDR page timeout here? The discovery procedure is something that a user triggers so we always had that one take higher priority since the user is expecting results. This means any tweaking needs to be considered carefully since it is an immediate user impact if the name is missing.
+
+Is this a LE background scan you are worried about or an LE active scan that runs in parallel during discovery?
+
+Regards
+
+Marcel
+
