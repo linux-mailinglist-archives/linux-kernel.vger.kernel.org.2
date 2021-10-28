@@ -2,109 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F03743D819
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 02:24:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BB4743D81F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 02:27:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229612AbhJ1A1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 20:27:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33276 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229469AbhJ1A1R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 20:27:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AF4FB60F9B;
-        Thu, 28 Oct 2021 00:24:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635380691;
-        bh=FiS4PSp9dq5XSaCsWhfnvL9XlrVWGShYyfrLJTdu9vE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LLiu9hL0Nnfj0wrmhGnnxL5+8GTJJbXO4vG40Y4IEyaBbUa88fsVA0M+rE2wPP55K
-         VLA6cRwCiUhxECHQOahortB3Yo2VP+oFbMEG0uElQs81v4jqhfp8kRYJAeUnnA16zJ
-         b+HS7hPoUelooieVdCl2Nx6xZkxw/UW2E15yHmAfP3nhWY0ybavp+pTPnAHxX+G4UW
-         F0ZV+G9Tqf5vDpTUtdu8DAFnC69xwsGEyN/qag6omHGpOOd3XLSLw822wOCWuz45t8
-         xD8mrOpLmMT4K4s0abdIP5Oo4QMzSeb0EDc/7elPxTr+C57KbXjFo3PtV8fNtBQS9d
-         bD3r72wnTUFYA==
-Date:   Wed, 27 Oct 2021 17:24:51 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Jane Chu <jane.chu@oracle.com>,
-        "david@fromorbit.com" <david@fromorbit.com>,
-        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
-        "vishal.l.verma@intel.com" <vishal.l.verma@intel.com>,
-        "dave.jiang@intel.com" <dave.jiang@intel.com>,
-        "agk@redhat.com" <agk@redhat.com>,
-        "snitzer@redhat.com" <snitzer@redhat.com>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "ira.weiny@intel.com" <ira.weiny@intel.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "vgoyal@redhat.com" <vgoyal@redhat.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
-Subject: Re: [dm-devel] [PATCH 0/6] dax poison recovery with
- RWF_RECOVERY_DATA flag
-Message-ID: <20211028002451.GB2237511@magnolia>
-References: <20211021001059.438843-1-jane.chu@oracle.com>
- <YXFPfEGjoUaajjL4@infradead.org>
- <e89a2b17-3f03-a43e-e0b9-5d2693c3b089@oracle.com>
- <YXJN4s1HC/Y+KKg1@infradead.org>
- <2102a2e6-c543-2557-28a2-8b0bdc470855@oracle.com>
- <YXj2lwrxRxHdr4hb@infradead.org>
+        id S229585AbhJ1A3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 20:29:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229469AbhJ1A3n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 20:29:43 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D03A5C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 17:27:17 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id i14so5846225ioa.13
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 17:27:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sladewatkins.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Z8m0fEvNaJU95RYH2afnAHTcF2ogyu1uTCTqMVbN47Q=;
+        b=YRrvvDf+LqvbcR1yxFKtOH8Mau0goOw5tPN4QG0cAgY35kwTkGsp8RHZqJAlAhhc4Y
+         Cs8WiLIa3euVsYuc6bJ/2vQPai1XQS82vyYogxWsPsLxn+UNkcaAQH2QWUwM5dhPJWc7
+         WypDUxzbRdVmerKv7O5CdHAbjQvrabsdJMA8dUkLukcFIabI6c59z1lxCfJJ/DkcW3Si
+         NqeThArgeTgSnVOGns3L4FJZv4xhp0wX92m+aXdmHY7nCmpu0V4IDCilzzty5WZ6n6ZE
+         HmWXqzY56sifJ/BGk9Ome5AUEL+CCcgMKDUX5AzzNnWvTe5bQtKqOMdpROzXmdlAjEKX
+         W4Rg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Z8m0fEvNaJU95RYH2afnAHTcF2ogyu1uTCTqMVbN47Q=;
+        b=zTFUcJcbr5R0GK2WQNiePq0+HV2qHbqzLMfeil9pZXCjaGnF2fb7MUDeywoOkhZVlf
+         HNUjutfHILQLiGA8fQQ+l/ozm6I0HkKHXJY/XxwBTxli0lt8HXH8roeBbewyJHXpK243
+         Sxg587y4uZ2cKG3aBIbcEpdS6d9jJ5ZGPaDAbFm8icVD38StDeog02NRUyYz2zwJVcoT
+         Nf/95ISSuF9kUVHtyDuZJemFYM5WJ0JePDQAtQbJXhSY3SH+xsH6UcICYH19UUD9q6Dk
+         IZFWBE7v9Kcrce8CxNKk00oCHercGTRD4X5Y+AISFkgdp5Mq4k777JEIkbA7W2bkBhPL
+         +OXg==
+X-Gm-Message-State: AOAM533QVhrdhxL3LOwY5gEkDCPnZCSIfBoCN4PIZOsVaDB1W62NDIcp
+        IHRNjirjfJve+drAD0txeoR1EQfsWFNXzAwu6T26EA==
+X-Google-Smtp-Source: ABdhPJwyw63144CGFcWfrLqbMXt0o9IUrInz6dSxLpKwKOGw1/p5eW8eUbkUTp7bNuYGjAeQIn9ZmrD0yUf2sapIyIY=
+X-Received: by 2002:a05:6602:148b:: with SMTP id a11mr595213iow.85.1635380837204;
+ Wed, 27 Oct 2021 17:27:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YXj2lwrxRxHdr4hb@infradead.org>
+References: <CAOhMmr7bWv_UgdkFZz89O4=WRfUFhXHH5hHEOBBfBaAR8f4Ygw@mail.gmail.com>
+ <CA+h21hqrX32qBmmdcNiNkp6_QvzsX61msyJ5_g+-FFJazxLgDw@mail.gmail.com>
+ <YXY15jCBCAgB88uT@d3> <CA+pv=HPyCEXvLbqpAgWutmxTmZ8TzHyxf3U3UK_KQ=ePXSigBQ@mail.gmail.com>
+ <61f29617-1334-ea71-bc35-0541b0104607@pensando.io> <20211027123408.0d4f36f2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <61e27841-5ceb-1975-ab3b-abdf8973c9f2@eaglescrag.net>
+In-Reply-To: <61e27841-5ceb-1975-ab3b-abdf8973c9f2@eaglescrag.net>
+From:   Slade Watkins <slade@sladewatkins.com>
+Date:   Wed, 27 Oct 2021 20:27:06 -0400
+Message-ID: <CA+pv=HOyQHAzeYJwZmp_gncxj-iXmFL7kYowbYfwf1ntc64rgg@mail.gmail.com>
+Subject: Re: Unsubscription Incident
+To:     "John 'Warthog9' Hawley" <warthog9@eaglescrag.net>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Shannon Nelson <snelson@pensando.io>,
+        Benjamin Poirier <benjamin.poirier@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Lijun Pan <lijunp213@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 11:49:59PM -0700, Christoph Hellwig wrote:
-> On Fri, Oct 22, 2021 at 08:52:55PM +0000, Jane Chu wrote:
-> > Thanks - I try to be honest.  As far as I can tell, the argument
-> > about the flag is a philosophical argument between two views.
-> > One view assumes design based on perfect hardware, and media error
-> > belongs to the category of brokenness. Another view sees media
-> > error as a build-in hardware component and make design to include
-> > dealing with such errors.
-> 
-> No, I don't think so.  Bit errors do happen in all media, which is
-> why devices are built to handle them.  It is just the Intel-style
-> pmem interface to handle them which is completely broken.  
+On Wed, Oct 27, 2021 at 4:42 PM John 'Warthog9' Hawley
+<warthog9@eaglescrag.net> wrote:
+>
+> On 10/27/21 12:34 PM, Jakub Kicinski wrote:
+> > On Mon, 25 Oct 2021 11:34:28 -0700 Shannon Nelson wrote:
+> >>>> It happened to a bunch of people on gmail:
+> >>>> https://lore.kernel.org/netdev/1fd8d0ac-ba8a-4836-59ab-0ed3b0321775@mojatatu.com/t/#u
+> >>> I can at least confirm that this didn't happen to me on my hosted
+> >>> Gmail through Google Workspace. Could be wrong, but it seems isolated
+> >>> to normal @gmail.com accounts.
+> >>>
+> >>> Best,
+> >>>
+> >>
+> >> Alternatively, I can confirm that my pensando.io address through gmail
+> >> was affected until I re-subscribed.
+> >
+> > Did it just work after re-subscribing again? Without cleaning the inbox?
+> > John indicated off list that Gmail started returning errors related to
+> > quota, no idea what that translates to in reality maybe they added some
+> > heuristic on too many emails from one source?
+>
+> At least for the users I've had anyone mention to me (which for the
+> record apparently this happened on the 11th, and people are only
+> reaching out now about), the reasons for the unsubscribe was that the
+> upstream servers were reporting that the users in question were over
+> quota permanently.  We take that hinting at face value, and since the
+> server is telling us (basically) that the user isn't going to be
+> accepting mail anytime soon, we go ahead and unsubscribe them and clear
+> the queue so that the users don't cause unnecessary back log.  Noting,
+> this is an automated process that runs and deals with this that runs
+> periodically.
+>
+> Also noting, that there's not a good way to notify individuals when this
+> happens because, unsurprisingly, their email providers aren't accepting
+> mail from us.
+>
+> If folks reach out to postmaster@ I'm more than happy to take a look at
+> the 'why' something happened, and I'm happy to re-subscribe folks in the
+> backend saving them the back and forth with majorodomo's command system.
+>
 
-Yeah, I agree, this takes me back to learning how to use DISKEDIT to
-work around a hole punched in a file (with a pen!) in the 1980s...
+John,
+That's great.
 
-...so would you happen to know if anyone's working on solving this
-problem for us by putting the memory controller in charge of dealing
-with media errors?
+>
+> If I had to speculate, something glitched at gmail, a subset of users
+> got an odd error code returned (which likely wasn't the correct error
+> code for the situation, and noting the number of affected users is
+> fairly small given the number of users from gmail that are subscribed).
+>  Likely similar to when gmail had that big outage and it reported
+> something way off base and as a result every gmail user got unsubscribed
+> (and subsequently resubscribed in the backend by me when the outage was
+> over).
+>
 
-> > errors in mind from start.  I guess I'm trying to articulate why
-> > it is acceptable to include the RWF_DATA_RECOVERY flag to the
-> > existing RWF_ flags. - this way, pwritev2 remain fast on fast path,
-> > and its slow path (w/ error clearing) is faster than other alternative.
-> > Other alternative being 1 system call to clear the poison, and
-> > another system call to run the fast pwrite for recovery, what
-> > happens if something happened in between?
-> 
-> Well, my point is doing recovery from bit errors is by definition not
-> the fast path.  Which is why I'd rather keep it away from the pmem
-> read/write fast path, which also happens to be the (much more important)
-> non-pmem read/write path.
+Is there any way to detect if something like that affects Google
+Workspace hosted inboxes too? Sounds like those in that group who were
+affected were very few though but I thought I'd ask anyway.
 
-The trouble is, we really /do/ want to be able to (re)write the failed
-area, and we probably want to try to read whatever we can.  Those are
-reads and writes, not {pre,f}allocation activities.  This is where Dave
-and I arrived at a month ago.
+>
+> - John 'Warthog9' Hawley
+>
 
-Unless you'd be ok with a second IO path for recovery where we're
-allowed to be slow?  That would probably have the same user interface
-flag, just a different path into the pmem driver.
-
-Ha, how about a int fd2 = recoveryfd(fd); call where you'd get whatever
-speshul options (retry raid mirrors!  scrape the film off the disk if
-you have to!) you want that can take forever, leaving the fast paths
-alone?
-
-(Ok, that wasn't entirely serious...)
-
---D
+Thanks,
+             -slade
