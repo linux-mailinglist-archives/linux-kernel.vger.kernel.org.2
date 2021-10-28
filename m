@@ -2,122 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A79443DF00
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 12:35:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 741DB43DEE0
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 12:30:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230110AbhJ1KiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 06:38:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33732 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230115AbhJ1KiQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 06:38:16 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2F21C0613B9
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 03:35:49 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id s19so9815775ljj.11
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 03:35:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KeoZAGDMBIfW4HtbIuTMUQfmtCFV3DmCcorhp6614FQ=;
-        b=fH3Tsu/PpGaoLtxaztT9fAAhsO81SkYA4w06HUdu8zxHRzt97+3rdla0h0VE4VfEhQ
-         uzpz2P+v8kPlE3Uz2zTboRiGnSUiBZqxpZ7Yk+U+QaSRcPjpwibXHHH7fkDM0oV8JHvX
-         G3OKBVxIe10IzLRXOSZ3Y97pWzT8uMTSF8dPnSsydTpvcLq7VOxtekI3ZyjzbX20x2y2
-         MADRjnQxgvVhPRQydDfXgw/r1zeRF/Flwk92cvexhKO6iqo09uVnY9n5xTo3YxBi/oEc
-         3p5wOhC9CGlPDdixea3JKevsVO6JHEKpFq+EwpTOWCHYUTlQVo060qQRdAyH+VMJE7oS
-         XZWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KeoZAGDMBIfW4HtbIuTMUQfmtCFV3DmCcorhp6614FQ=;
-        b=iz2N7Jk+hzeF9TpkiVT+j7njhROud+2e+AilRUpogCm59xflLTXkSypJE73eIgM7ZX
-         xNO4fy2NR8EzqWIM+3bmSy7WzP0TsedGxxX+iKCF7xig4uWOBJM/2qsdS8z86OKoAOjN
-         DB73+Z0jj/FEG3GAYAq2WE8S3adDN27JB0svga0n4qa1Puvg4ynB9k2fyV64mAkQjwwb
-         HVYMz+jJAtKhDVfnRebxiaKkADEyxtlvfvLm+Te6Cec/yDrF7TpI1fKch6+ae3H/Rf6Y
-         k7bXyaGbXDr+aiEspY07N3RwAswbzRGIKyEfKJrGiokHkWtpGOeKS2AbmWFc5cxfTyIZ
-         jzfg==
-X-Gm-Message-State: AOAM532y91gvpBwV7mVBmSaRrYybeMn1BNlrWtVX+unVbh2adGUCnoss
-        VhJOz+oBofuLUwnlu46sDtRyW0W8sSgXJ7/gGjHpTw==
-X-Google-Smtp-Source: ABdhPJyY282+s+lXBMxNLUwSJyE98SfhS+h4D7Wnd+KSEcWamg6Summ3m6dw39C3xli52H6jhv/ka8yi4wSOENfCF9o=
-X-Received: by 2002:a05:651c:907:: with SMTP id e7mr3954838ljq.300.1635417348240;
- Thu, 28 Oct 2021 03:35:48 -0700 (PDT)
+        id S229963AbhJ1KdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 06:33:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41410 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229775AbhJ1KdP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 06:33:15 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1AA9461056;
+        Thu, 28 Oct 2021 10:30:44 +0000 (UTC)
+Date:   Thu, 28 Oct 2021 11:35:11 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Andrea Merello <andrea.merello@gmail.com>
+Cc:     mchehab+huawei@kernel.org, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        lars@metafoo.de, robh+dt@kernel.org, andy.shevchenko@gmail.com,
+        matt.ranostay@konsulko.com, ardeleanalex@gmail.com,
+        jacopo@jmondi.org
+Subject: Re: [v2 00/10] Add support for Bosch BNO055 IMU
+Message-ID: <20211028113511.13803ecb@jic23-huawei>
+In-Reply-To: <20211028101840.24632-1-andrea.merello@gmail.com>
+References: <20210715141742.15072-1-andrea.merello@gmail.com>
+        <20211028101840.24632-1-andrea.merello@gmail.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <1635152851-23660-1-git-send-email-quic_c_sanm@quicinc.com>
- <1635152851-23660-2-git-send-email-quic_c_sanm@quicinc.com>
- <YXcBK7zqny0s4gd4@ripper> <CAE-0n51k8TycXjEkH7rHYo0j7cYbKJOnOn1keVhx2yyTcBNnvg@mail.gmail.com>
- <YXck+xCJQBRGqTCw@ripper> <CAE-0n530M3eft-o0qB+yEzGjZgCLMgY==ZgdvwiVCwqqCAVxxA@mail.gmail.com>
- <YXdsYlLWnjopyMn/@ripper> <CAE-0n51C4dm6bhds=ZZyje-Pcejxjm4MMa3m-VHjFgq7GZGrLw@mail.gmail.com>
- <YXjbs3Bv6Y3d87EC@yoga> <CAPDyKFrWQdvZX4ukHZoGz73JPfQSgqVrG_4ShMp_GrxL0NKLvg@mail.gmail.com>
- <da877712-dac9-e9d0-0bfc-25bef450eb65@codeaurora.org>
-In-Reply-To: <da877712-dac9-e9d0-0bfc-25bef450eb65@codeaurora.org>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 28 Oct 2021 12:35:11 +0200
-Message-ID: <CAPDyKFoMpmkHgUbRN4pxgW2Gy=aZpS=eVwQrg0ydFbh9_GFG6Q@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] dt-bindings: usb: qcom,dwc3: Add multi-pd bindings
- for dwc3 qcom
-To:     Rajendra Nayak <rnayak@codeaurora.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Sandeep Maheswaram <quic_c_sanm@quicinc.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        quic_pkondeti@quicinc.com, quic_ppratap@quicinc.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[...]
+Hi Andrea,
 
-> >>> Got it. So in this case we could have the various display components
-> >>> that are in the mdss gdsc domain set their frequency via OPP and then
-> >>> have that translate to a level in CX or MMCX. How do we parent the power
-> >>> domains outside of DT? I'm thinking that we'll need to do that if MMCX
-> >>> is parented by CX or something like that and the drivers for those two
-> >>> power domains are different. Is it basic string matching?
-> >>
-> >> In one way or another we need to invoke pm_genpd_add_subdomain() to link
-> >> the two power-domains (actually genpds) together, like what was done in
-> >> 3652265514f5 ("clk: qcom: gdsc: enable optional power domain support").
-> >>
-> >> In the case of MMCX and CX, my impression of the documentation is that
-> >> they are independent - but if we need to express that CX is parent of
-> >> MMCX, they are both provided by rpmhpd which already supports this by
-> >> just specifying .parent on mmcx to point to cx.
-> >
-> > I was trying to follow the discussion, but it turned out to be a bit
-> > complicated to catch up and answer all things. In any case, let me
-> > just add a few overall comments, perhaps that can help to move things
-> > forward.
-> >
-> > First, one domain can have two parent domains. Both from DT and from
-> > genpd point of view, just to make this clear.
-> >
-> > Although, it certainly looks questionable to me, to hook up the USB
-> > device to two separate power domains, one to control power and one to
-> > control performance. Especially, if it's really the same piece of HW
-> > that is managing both things.
-> []..
-> > Additionally, if it's correct to model
-> > the USB GDSC power domain as a child to the CX power domain from HW
-> > point of view, we should likely do that.
->
-> I think this would still require a few things in genpd, since
-> CX and USB GDSC are power domains from different providers.
-> Perhaps a pm_genpd_add_subdomain_by_name()?
->
+I'd advise not sending new versions of a series with the in-reply-to set
+to an older version.  It's a good way to ensure anyone using an email client
+handling threads never sees them...  It also gets very messy if we happen
+to get replies to multiple versions overlapping.
 
-I think of_genpd_add_subdomain() should help to address this. No?
+New version, new email thread.
 
-Kind regards
-Uffe
+On Thu, 28 Oct 2021 12:18:30 +0200
+Andrea Merello <andrea.merello@gmail.com> wrote:
+
+> This series (tries to) add support for Bosch BNO055 IMU to Linux IIO
+> subsystem. It is made up several patches:
+> 
+>   1/10: introduces the generic helper find_closest_unsorted()
+> 
+>   2/10 to 5/10: add some IIO modifiers, and their documentation, to the IIO
+>                 core layer, in order to being able to expose the linear
+>                 acceleration and Euler angles among standard attributes.
+> 
+>   6/10 to 8/10: add the core IIO BNO055 driver and its documentation
+>      	        (including documentation for DT bindings)
+> 
+>   9/10: adds serdev BNO055 driver to actually use the IMU via serial line
+> 
+>   10/10: adds I2C BNO055 driver to actually use the IMU via I2C wiring
+> 
+> 
+> Differences wrt v1:
+> 
+>   - Fixed GPL license version, which was wrong due to bad copy-pastes
+> 
+>   - Make less noise in log and get rid of some dev_dbg()s
+> 
+>   - Fix deferred probe handing and fix devm_add_action_or_reset() usage
+> 
+>   - Get rid of unneeded zeroing for driver data and some IIO "val2"s
+> 
+>   - Get rid of some leftovers of my attempt to support interrupts (which
+>     don't fully work unless the IMU firmware gets updated)
+> 
+>   - Move IIO buffer off stack and make sure its first zeroed not to leak
+>     kernel data
+> 
+>   - Hopefully addressed all maintainers and reviewers stylistic advices;
+>     fixed some typos
+> 
+>   - Take advantage of more kernel helpers. Note: this series depends on
+>     Yury Norov bitmap series i.e. "[PATCH 14/16] bitmap: unify find_bit
+>     operations"
+> 
+>   - Make find_closest_unsorted() become an external generic helper
+> 
+>   - Reworked sysfs ABI as per maintainers advices
+> 
+>   - Added ABI documentation where needed
+> 
+>   - Added I2C support
+> 
+>   - Reworked DT documentation as per maintainers advices. Added I2C example
+> 
+>   The serial protocol handling have been criticized because it is not very
+>   robust, however I couldn't really find any way to improve it; no changes
+>   here wrt v1. I think the protocol itself is inherently weak and there is
+>   nothing we can do about this (BTW here it is working fine).
+> 
+> Differences wrt other BNO055 drivers:
+> 
+>   Previously at least another driver for the very same chip has been posted
+>   to the Linux ML [0], but it has been never merged, and it seems no one
+>   cared of it since quite a long time.
+> 
+>   This driver differs from the above driver on the following aspects:
+> 
+>   - This driver supports also serial access
+> 
+>   - The above driver tried to support all IMU HW modes by allowing to
+>     choose one in the DT, and adapting IIO attributes accordingly. This
+>     driver does not rely on DT for this, instead settings are done via
+>     sysfs attributes.  All IIO attributes are always exposed; more on this
+>     later on. This driver however supports only a subset of the
+>     HW-supported modes.
+> 
+>   - This driver has some support for managing the IMU calibration
+> 
+> Supported operation modes:
+> 
+>   - AMG (accelerometer, magnetometer and gyroscope) mode, which provides
+>     raw (uncalibrated) measurements from the said sensors, and allows for
+>     setting some parameters about them (e.g. filter cut-off frequency, max
+>     sensor ranges, etc).
+> 
+>   - Fusion mode, which still provides AMG measures, while it also provides
+>     other data calculated by the IMU (e.g. rotation angles, linear
+>     acceleration, etc). In this mode user has no freedom to set any sensor
+>     parameter, since the HW locks them. Autocalibration and correction is
+>     performed by the IMU.
+> 
+>   IIO attributes exposing sensors parameters are always present, but in
+>   fusion modes the available values are constrained to just the one used by
+>   the HW. This is reflected in the '*_available' IIO attributes.
+> 
+>   Trying to set a not-supported value always falls back to the closest
+>   supported one, which in this case is just the one in use by the HW.
+> 
+>   IIO attributes for unavailable measurements (e.g. Euler angles in AMG
+>   mode) just read zero (which is consistent WRT what you get when reading
+>   from a buffer with those attributes enabled).
+> 
+> IMU calibration:
+> 
+>   The IMU supports for two sets of calibration parameters:
+> 
+>   - SIC matrix. user-provided; this driver doesn't currently support it
+> 
+>   - Offset and radius parameters. The IMU automatically finds out them when
+>     it is running in fusion mode; supported by this driver.
+> 
+>   The driver provides access to autocalibration flags (i.e. you can known
+>   if the IMU has successfully autocalibrated) and to calibration data blob.
+>   The user can save this blob in a "firmware" file (i.e. in /lib/firmware)
+>   that the driver looks for at probe time. If found, then the IMU is
+>   initialized with this calibration data. This saves the user from
+>   performing the calibration procedure every time (which consist of moving
+>   the IMU in various way).
+> 
+>   The driver looks for calibration data file using two different names:
+>   first a file whose name is suffixed with the IMU unique ID is searched
+>   for; this is useful when there is more than one IMU instance. If this
+>   file is not found, then a "generic" calibration file is searched for
+>   (which can be used when only one IMU is present, without struggling with
+>   fancy names, that changes on each device).
+> 
+>   In AMG mode the IIO 'offset' attributes provide access to the offsets
+>   from calibration data (if any), so that the user can apply them to the
+>   accel, angvel and magn IIO attributes. In fusion mode they are not needed
+>   and read as zero.
+> 
+> 
+> Access protocols and serdev module:
+> 
+>   The serial protocol is quite simple, but there are tricks to make it
+>   really works. Those tricks and workarounds are documented in the driver
+>   source file.
+> 
+>   The core BNO055 driver tries to group readings in burst when appropriate,
+>   in order to optimize triggered buffer operation. The threshold for
+>   splitting a burst (i.e. max number of unused bytes in the middle of a
+>   burst that will be throw away) is provided to the core driver by the
+>   lowlevel access driver (either serdev or I2C) at probe time.
+> 
+> [0] https://www.spinics.net/lists/linux-iio/msg25508.html
+> 
+> Andrea Merello (10):
+>   utils_macro: introduce find_closest_unsorted()
+>   iio: document linear acceleration modifiers
+>   iio: document euler angles modifiers
+>   iio: add modifiers for linear acceleration
+>   iio: add modifers for pitch, yaw, roll
+>   iio: document bno055 private sysfs attributes
+>   iio: imu: add Bosch Sensortec BNO055 core driver
+>   dt-bindings: iio: imu: add documentation for Bosch BNO055 bindings
+>   iio: imu: add BNO055 serdev driver
+>   iio: imu: add BNO055 I2C driver
+> 
+>  Documentation/ABI/testing/sysfs-bus-iio       |   16 +
+>  .../ABI/testing/sysfs-bus-iio-bno055          |   84 +
+>  .../bindings/iio/imu/bosch,bno055.yaml        |   59 +
+>  drivers/iio/imu/Kconfig                       |    1 +
+>  drivers/iio/imu/Makefile                      |    1 +
+>  drivers/iio/imu/bno055/Kconfig                |   15 +
+>  drivers/iio/imu/bno055/Makefile               |    5 +
+>  drivers/iio/imu/bno055/bno055.c               | 1485 +++++++++++++++++
+>  drivers/iio/imu/bno055/bno055.h               |   12 +
+>  drivers/iio/imu/bno055/bno055_i2c.c           |   54 +
+>  drivers/iio/imu/bno055/bno055_sl.c            |  568 +++++++
+>  drivers/iio/industrialio-core.c               |    6 +
+>  include/linux/util_macros.h                   |   26 +
+>  include/uapi/linux/iio/types.h                |    7 +-
+>  14 files changed, 2338 insertions(+), 1 deletion(-)
+>  create mode 100644 Documentation/ABI/testing/sysfs-bus-iio-bno055
+>  create mode 100644 Documentation/devicetree/bindings/iio/imu/bosch,bno055.yaml
+>  create mode 100644 drivers/iio/imu/bno055/Kconfig
+>  create mode 100644 drivers/iio/imu/bno055/Makefile
+>  create mode 100644 drivers/iio/imu/bno055/bno055.c
+>  create mode 100644 drivers/iio/imu/bno055/bno055.h
+>  create mode 100644 drivers/iio/imu/bno055/bno055_i2c.c
+>  create mode 100644 drivers/iio/imu/bno055/bno055_sl.c
+> 
+> --
+> 2.17.1
+
