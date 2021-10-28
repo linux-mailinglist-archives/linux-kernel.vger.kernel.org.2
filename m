@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6B5843E2B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 15:53:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57C0C43E2AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 15:52:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231280AbhJ1Nys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 09:54:48 -0400
-Received: from mslow1.mail.gandi.net ([217.70.178.240]:35529 "EHLO
+        id S231209AbhJ1Nya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 09:54:30 -0400
+Received: from mslow1.mail.gandi.net ([217.70.178.240]:58431 "EHLO
         mslow1.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231151AbhJ1NyW (ORCPT
+        with ESMTP id S231148AbhJ1NyW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 28 Oct 2021 09:54:22 -0400
 Received: from relay9-d.mail.gandi.net (unknown [217.70.183.199])
-        by mslow1.mail.gandi.net (Postfix) with ESMTP id B6B1FC0124;
-        Thu, 28 Oct 2021 13:51:26 +0000 (UTC)
+        by mslow1.mail.gandi.net (Postfix) with ESMTP id 7AC1EC5142;
+        Thu, 28 Oct 2021 13:51:27 +0000 (UTC)
 Received: (Authenticated sender: clement.leger@bootlin.com)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 1ADA0FF814;
-        Thu, 28 Oct 2021 13:50:59 +0000 (UTC)
+        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id A81E6FF816;
+        Thu, 28 Oct 2021 13:51:02 +0000 (UTC)
 From:   =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <clement.leger@bootlin.com>
 To:     "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
@@ -29,10 +29,12 @@ To:     "David S. Miller" <davem@davemloft.net>,
 Cc:     =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <clement.leger@bootlin.com>,
         netdev@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 0/3] Add FDMA support on ocelot switch driver
-Date:   Thu, 28 Oct 2021 15:49:29 +0200
-Message-Id: <20211028134932.658167-1-clement.leger@bootlin.com>
+Subject: [PATCH 1/3] net: ocelot: add support to get mac from device-tree
+Date:   Thu, 28 Oct 2021 15:49:30 +0200
+Message-Id: <20211028134932.658167-2-clement.leger@bootlin.com>
 X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20211028134932.658167-1-clement.leger@bootlin.com>
+References: <20211028134932.658167-1-clement.leger@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -40,35 +42,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series adds support for the Frame DMA present on the VSC7514
-switch. The FDMA is able to extract and inject packets on the various
-ethernet interfaces present on the switch.
+Add support to get mac from device-tree using of_get_mac_address.
 
-While adding FDMA support, bindings were switched from .txt to .yaml
-and mac address read from device-tree was added to allow be set instead
-of using random mac address.
+Signed-off-by: Clément Léger <clement.leger@bootlin.com>
+---
+ drivers/net/ethernet/mscc/ocelot_vsc7514.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-Clément Léger (3):
-  net: ocelot: add support to get mac from device-tree
-  dt-bindings: net: convert mscc,vsc7514-switch bindings to yaml
-  net: ocelot: add FDMA support
-
- .../bindings/net/mscc,vsc7514-switch.yaml     | 183 ++++
- .../devicetree/bindings/net/mscc-ocelot.txt   |  83 --
- drivers/net/ethernet/mscc/Makefile            |   1 +
- drivers/net/ethernet/mscc/ocelot.h            |   2 +
- drivers/net/ethernet/mscc/ocelot_fdma.c       | 811 ++++++++++++++++++
- drivers/net/ethernet/mscc/ocelot_fdma.h       |  60 ++
- drivers/net/ethernet/mscc/ocelot_net.c        |  30 +-
- drivers/net/ethernet/mscc/ocelot_vsc7514.c    |  20 +-
- include/linux/dsa/ocelot.h                    |  40 +-
- include/soc/mscc/ocelot.h                     |   2 +
- 10 files changed, 1140 insertions(+), 92 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/net/mscc,vsc7514-switch.yaml
- delete mode 100644 Documentation/devicetree/bindings/net/mscc-ocelot.txt
- create mode 100644 drivers/net/ethernet/mscc/ocelot_fdma.c
- create mode 100644 drivers/net/ethernet/mscc/ocelot_fdma.h
-
+diff --git a/drivers/net/ethernet/mscc/ocelot_vsc7514.c b/drivers/net/ethernet/mscc/ocelot_vsc7514.c
+index d51f799e4e86..c39118e5b3ee 100644
+--- a/drivers/net/ethernet/mscc/ocelot_vsc7514.c
++++ b/drivers/net/ethernet/mscc/ocelot_vsc7514.c
+@@ -526,7 +526,10 @@ static int ocelot_chip_init(struct ocelot *ocelot, const struct ocelot_ops *ops)
+ 
+ 	ocelot_pll5_init(ocelot);
+ 
+-	eth_random_addr(ocelot->base_mac);
++	ret = of_get_mac_address(ocelot->dev->of_node, ocelot->base_mac);
++	if (ret)
++		eth_random_addr(ocelot->base_mac);
++
+ 	ocelot->base_mac[5] &= 0xf0;
+ 
+ 	return 0;
 -- 
 2.33.0
 
