@@ -2,109 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09C9C43D94A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 04:24:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2EAC43D94E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 04:25:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229735AbhJ1C1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 22:27:20 -0400
-Received: from smtp23.cstnet.cn ([159.226.251.23]:40888 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229534AbhJ1C1T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 22:27:19 -0400
-Received: from localhost.localdomain (unknown [124.16.138.128])
-        by APP-03 (Coremail) with SMTP id rQCowAD3_2fZCXph4SE9BQ--.6388S2;
-        Thu, 28 Oct 2021 10:24:25 +0800 (CST)
-From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
-To:     valentin.schneider@arm.com, peterz@infradead.org,
-        bristot@redhat.com, dave.hansen@linux.intel.com, namit@vmware.com
-Cc:     linux-kernel@vger.kernel.org, Jiasheng Jiang <jiasheng@iscas.ac.cn>
-Subject: [PATCH v2] cpumask: Fix implicit type conversion
-Date:   Thu, 28 Oct 2021 02:24:24 +0000
-Message-Id: <1635387864-2743220-1-git-send-email-jiasheng@iscas.ac.cn>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: rQCowAD3_2fZCXph4SE9BQ--.6388S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Ar4rZF4DZF45GFWDJFWDurg_yoW8tFW3pF
-        10grWUK3ykArs5u34UAayUCw1Y93ykJ3yvkw4UGFWDuFW7Aw1kZr129F9xtryUCFZ5GFyS
-        9ryq9398uF15AFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkl14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-        6F4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr
-        1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
-        7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r
-        1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_
-        Gr1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxV
-        WUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI
-        7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r
-        1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4U
-        MIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUbpwZ7UUUU
-        U==
-X-Originating-IP: [124.16.138.128]
-X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
+        id S229783AbhJ1C1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 22:27:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37722 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229534AbhJ1C1f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 22:27:35 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F923C061570;
+        Wed, 27 Oct 2021 19:25:09 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id oa12-20020a17090b1bcc00b0019f715462a8so3506490pjb.3;
+        Wed, 27 Oct 2021 19:25:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5GRC3oKU5t8MNbDIRrWo3mHgF77PLmBHPiD3xo6WI7U=;
+        b=EqwXy5n9i8RiU1Vqj5mkd6XKFXv/7pY4aSKYpOAzquPYCEy3yMTtku9UkfYIVBtyYK
+         9+AzS1vhmGcTxOt56eLm3ysI8mBYn7XgwsbTeaLuOBI4UctuckQbRHz/8WaZ85CP231X
+         fwUbh5i8MWFMzXBeOl6BavkZuzxO4vOsyDhKidTYhxRly+qPrnNtxChJDle40rRcyclD
+         cJzNhCFliUnPwUx7OisY/NxQehcMQvtP+oJh+QjpnYJbBOMdM1D496JuP72FSAoLC4xj
+         V/XUcLyUFQaCHL+VYPW57va/GfcqBQtrVyJiNkEUfLmwj2o85jIzaoT1/IMKWwxECb6U
+         INcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5GRC3oKU5t8MNbDIRrWo3mHgF77PLmBHPiD3xo6WI7U=;
+        b=aJ5U3dzS+uW419vZlQGVzQdhSaUcNPgGR3+S//3VbxCeKGF/kyQt+RnPVBOxbqfYFr
+         BjoxAP9hwQHnIw9jvNW2X6Ik0Q6mlKN+7vCllGde90OPAe8jyoi6SUIVfPB/35GYXTNU
+         jIiBh9+ClEkEv9H4Uf79+QswQohmi033/M/ugNJzY6pDsW7xBoTji4xo7uQ0hfYKk/e7
+         porQTBWzWjxI3ygonUgr1+ugrar8rnoF19AVrMWsylO0uak2VhsPz02CYP4wG5+M4JAg
+         Q4fM32dzBOdGtC1VrD1A6Tjd38mMe7QNz+nhHvXDjv79Sl4mPjel1tPkJHZou6/0a2Ik
+         FqlQ==
+X-Gm-Message-State: AOAM533yZOY9EVaY3GZqtMN+ap4ldOlbhfQPlOeq/b+WtchNIvYEnxAT
+        SQI8jVTH9hoSu4/glwdogn0=
+X-Google-Smtp-Source: ABdhPJyaUMQa33s9XhiwDfXb5v0/Ivv7x0V/Uwo58Yx3uqZUxdP2E0LU5ZcBtVYvQUYiZ7PK9AgPdQ==
+X-Received: by 2002:a17:902:9348:b0:141:5862:28b4 with SMTP id g8-20020a170902934800b00141586228b4mr1352384plp.17.1635387908677;
+        Wed, 27 Oct 2021 19:25:08 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id c8sm1224790pfv.150.2021.10.27.19.25.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Oct 2021 19:25:08 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: deng.changcheng@zte.com.cn
+To:     tyreld@linux.ibm.com
+Cc:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        jejb@linux.ibm.com, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org,
+        Changcheng Deng <deng.changcheng@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] scsi: ibmvfc: replace scnprintf in show functions with sysfs_emit
+Date:   Thu, 28 Oct 2021 02:24:59 +0000
+Message-Id: <20211028022459.9076-1-deng.changcheng@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The description of the macro in `include/linux/cpumask.h` says the
-variable 'cpu' can be unsigned int.
-However in the for_each_cpu(), for_each_cpu_wrap() and
-for_each_cpu_and(), its value is assigned to -1.
-That doesn't make sense. Moreover in the cpumask_next(),
-cpumask_next_zero(), cpumask_next_wrap() and cpumask_next_and(),
-'cpu' will be implicitly type conversed to int if the type is
-unsigned int.
-It is universally accepted that the implicit type conversion is
-terrible.
-Also, having the good programming custom will set an example for
-others.
-Thus, it might be better to fix the macro description of 'cpu' that
-remove the '(optionally unsigned)'.
+From: Changcheng Deng <deng.changcheng@zte.com.cn>
 
-Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Fix the coccicheck warning:
+WARNING: use scnprintf or sprintf
+
+Use sysfs_emit instead of scnprintf or sprintf makes more sense.
+
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
 ---
- include/linux/cpumask.h | 8 ++++----
- 1 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/scsi/ibmvscsi/ibmvfc.c | 16 ++++++----------
+ 1 file changed, 6 insertions(+), 10 deletions(-)
 
-diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
-index bfc4690..ceaed99 100644
---- a/include/linux/cpumask.h
-+++ b/include/linux/cpumask.h
-@@ -232,7 +232,7 @@ int cpumask_any_distribute(const struct cpumask *srcp);
+diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
+index a4b0a12f8a97..7f39a965677b 100644
+--- a/drivers/scsi/ibmvscsi/ibmvfc.c
++++ b/drivers/scsi/ibmvscsi/ibmvfc.c
+@@ -3402,8 +3402,7 @@ static ssize_t ibmvfc_show_host_partition_name(struct device *dev,
+ 	struct Scsi_Host *shost = class_to_shost(dev);
+ 	struct ibmvfc_host *vhost = shost_priv(shost);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%s\n",
+-			vhost->login_buf->resp.partition_name);
++	return sysfs_emit(buf, "%s\n", vhost->login_buf->resp.partition_name);
+ }
+ 
+ static ssize_t ibmvfc_show_host_device_name(struct device *dev,
+@@ -3412,8 +3411,7 @@ static ssize_t ibmvfc_show_host_device_name(struct device *dev,
+ 	struct Scsi_Host *shost = class_to_shost(dev);
+ 	struct ibmvfc_host *vhost = shost_priv(shost);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%s\n",
+-			vhost->login_buf->resp.device_name);
++	return sysfs_emit(buf, "%s\n", vhost->login_buf->resp.device_name);
+ }
+ 
+ static ssize_t ibmvfc_show_host_loc_code(struct device *dev,
+@@ -3422,8 +3420,7 @@ static ssize_t ibmvfc_show_host_loc_code(struct device *dev,
+ 	struct Scsi_Host *shost = class_to_shost(dev);
+ 	struct ibmvfc_host *vhost = shost_priv(shost);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%s\n",
+-			vhost->login_buf->resp.port_loc_code);
++	return sysfs_emit(buf, "%s\n", vhost->login_buf->resp.port_loc_code);
+ }
+ 
+ static ssize_t ibmvfc_show_host_drc_name(struct device *dev,
+@@ -3432,8 +3429,7 @@ static ssize_t ibmvfc_show_host_drc_name(struct device *dev,
+ 	struct Scsi_Host *shost = class_to_shost(dev);
+ 	struct ibmvfc_host *vhost = shost_priv(shost);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%s\n",
+-			vhost->login_buf->resp.drc_name);
++	return sysfs_emit(buf, "%s\n", vhost->login_buf->resp.drc_name);
+ }
+ 
+ static ssize_t ibmvfc_show_host_npiv_version(struct device *dev,
+@@ -3441,7 +3437,7 @@ static ssize_t ibmvfc_show_host_npiv_version(struct device *dev,
+ {
+ 	struct Scsi_Host *shost = class_to_shost(dev);
+ 	struct ibmvfc_host *vhost = shost_priv(shost);
+-	return snprintf(buf, PAGE_SIZE, "%d\n", be32_to_cpu(vhost->login_buf->resp.version));
++	return sysfs_emit(buf, "%d\n", be32_to_cpu(vhost->login_buf->resp.version));
+ }
+ 
+ static ssize_t ibmvfc_show_host_capabilities(struct device *dev,
+@@ -3449,7 +3445,7 @@ static ssize_t ibmvfc_show_host_capabilities(struct device *dev,
+ {
+ 	struct Scsi_Host *shost = class_to_shost(dev);
+ 	struct ibmvfc_host *vhost = shost_priv(shost);
+-	return snprintf(buf, PAGE_SIZE, "%llx\n", be64_to_cpu(vhost->login_buf->resp.capabilities));
++	return sysfs_emit(buf, "%llx\n", be64_to_cpu(vhost->login_buf->resp.capabilities));
+ }
  
  /**
-  * for_each_cpu - iterate over every cpu in a mask
-- * @cpu: the (optionally unsigned) integer iterator
-+ * @cpu: the integer iterator
-  * @mask: the cpumask pointer
-  *
-  * After the loop, cpu is >= nr_cpu_ids.
-@@ -244,7 +244,7 @@ int cpumask_any_distribute(const struct cpumask *srcp);
- 
- /**
-  * for_each_cpu_not - iterate over every cpu in a complemented mask
-- * @cpu: the (optionally unsigned) integer iterator
-+ * @cpu: the integer iterator
-  * @mask: the cpumask pointer
-  *
-  * After the loop, cpu is >= nr_cpu_ids.
-@@ -258,7 +258,7 @@ extern int cpumask_next_wrap(int n, const struct cpumask *mask, int start, bool
- 
- /**
-  * for_each_cpu_wrap - iterate over every cpu in a mask, starting at a specified location
-- * @cpu: the (optionally unsigned) integer iterator
-+ * @cpu: the integer iterator
-  * @mask: the cpumask poiter
-  * @start: the start location
-  *
-@@ -273,7 +273,7 @@ extern int cpumask_next_wrap(int n, const struct cpumask *mask, int start, bool
- 
- /**
-  * for_each_cpu_and - iterate over every cpu in both masks
-- * @cpu: the (optionally unsigned) integer iterator
-+ * @cpu: the integer iterator
-  * @mask1: the first cpumask pointer
-  * @mask2: the second cpumask pointer
-  *
 -- 
-2.7.4
+2.25.1
 
