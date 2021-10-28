@@ -2,101 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18E8A43F1F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 23:38:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E004943F1F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 23:39:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231303AbhJ1VlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 17:41:13 -0400
-Received: from mail-oi1-f180.google.com ([209.85.167.180]:38599 "EHLO
-        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230476AbhJ1VlM (ORCPT
+        id S231357AbhJ1VmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 17:42:10 -0400
+Received: from mail-oi1-f176.google.com ([209.85.167.176]:37477 "EHLO
+        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230476AbhJ1VmJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 17:41:12 -0400
-Received: by mail-oi1-f180.google.com with SMTP id t4so10284361oie.5;
-        Thu, 28 Oct 2021 14:38:45 -0700 (PDT)
+        Thu, 28 Oct 2021 17:42:09 -0400
+Received: by mail-oi1-f176.google.com with SMTP id o83so10312635oif.4;
+        Thu, 28 Oct 2021 14:39:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=6OiNYLAxsFXPFjL0FqyFvTnwfqy6iGdQjj9Dv8HGhtw=;
-        b=oOC/gyb3JyCuNjj/TY0e/9L5hdBXLUKgFJ4ghshcwfLujt4grw2abN1eZsZ+rsgv8O
-         KOQO18xBxtcIA6wMsh24snpNXjWA2rARZ4CneMi7xODS1teK4BWsWYAwMjMwsWnZeSL3
-         DRrOxQrvfyLaRZsbnRCqfLbxWYZSUHCPQR5hmlw8d9y0Xd0n75vrFAROmCUCiKIHnz30
-         8ywMhslP/DFAuA5yAkfANmoPS9vtzIWo/jvCotoOG01X58ZFNU7kdaCv+y0LKnex7J7V
-         avJzWicwTkFQh0lWs+ZqUr8Cmu0pWUP52QPHg6QSaRkFIHX9viXIEIak5FXlGxzQsO25
-         Eqow==
-X-Gm-Message-State: AOAM53399kMhWoAJqz1f3j6p1XetoLIZWgifWRIG0g8PKneu0/r7Y8Ih
-        MpjHqBmPkXidSHF8YGgw/w==
-X-Google-Smtp-Source: ABdhPJxutP3x4GwMxsrgkPLF2C0wZhHfpPHmdB7Z+SB06+/wmcoJve0rxdzTGctUMhJZaHnPWesQ7A==
-X-Received: by 2002:a05:6808:1898:: with SMTP id bi24mr5172217oib.3.1635457124640;
-        Thu, 28 Oct 2021 14:38:44 -0700 (PDT)
+        bh=TQ4SKNB7MnmkITYiKq9OaxL/6LE4iRf7G2BlLXaMFT0=;
+        b=R1TLsmko/GK5kYcNdxuhzy3R60ELY0Azp/4uhBpZA76p2uxxNuX/jCyMQEiJTFq20a
+         SWEhEjfK4hk76nLQlZ/ddDdUYEKsHJhS41Xd6ZiiDiK+cuChcdJDw3yO6eft3bdKVfU+
+         W80a8bH4F9XQuKOJZhQYeh/yGEA2bg80vhobAW6HEeDhOsY+LhWbVTgSHB4bLnh9rqmB
+         hmwch6Qdhsub7oaNZAh3RTEUMJ2asgO9e7jr2deeoxYEt5B2OIa85R+CVCLNcLDioSF1
+         9cp1HhTKwxqSukX/vKJA5iwjSft5M1fXxdtGwAmRES/leYyY48xpF+S9MrmqLuwWXGfB
+         qATA==
+X-Gm-Message-State: AOAM533neS5cXkkf/zvgBo+omtZFijNLlIIWwCxQtah4omW7Mmlg7BCf
+        05sshjqgwTOvWdx+BrTkd6OswzGVBA==
+X-Google-Smtp-Source: ABdhPJzOT/3TCzv6UnPH4JVEx/wL3HRrNdHhCuWskSHZ+nZPafpkq4i3RmB5gl7enVIsnbiO+cEEdA==
+X-Received: by 2002:aca:ac0f:: with SMTP id v15mr2038214oie.46.1635457181936;
+        Thu, 28 Oct 2021 14:39:41 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id q15sm1381169otm.15.2021.10.28.14.38.43
+        by smtp.gmail.com with ESMTPSA id d28sm1377732ote.7.2021.10.28.14.39.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 14:38:44 -0700 (PDT)
-Received: (nullmailer pid 632711 invoked by uid 1000);
-        Thu, 28 Oct 2021 21:38:43 -0000
-Date:   Thu, 28 Oct 2021 16:38:43 -0500
+        Thu, 28 Oct 2021 14:39:41 -0700 (PDT)
+Received: (nullmailer pid 634348 invoked by uid 1000);
+        Thu, 28 Oct 2021 21:39:40 -0000
+Date:   Thu, 28 Oct 2021 16:39:40 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
-        Mark Brown <broonie@kernel.org>, linux-mtd@lists.infradead.org,
-        linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Julien Su <juliensu@mxic.com.tw>,
-        Jaime Liao <jaimeliao@mxic.com.tw>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Xiangsheng Hou <Xiangsheng.Hou@mediatek.com>
-Subject: Re: [PATCH 09/18] dt-bindings: spi: mxic: Document the
- nand-ecc-engine property
-Message-ID: <YXsYY6JaglRjan+L@robh.at.kernel.org>
-References: <20211020142809.349347-1-miquel.raynal@bootlin.com>
- <20211020142809.349347-10-miquel.raynal@bootlin.com>
+To:     David Heidelberg <david@ixit.cz>
+Cc:     devicetree@vger.kernel.org, Joerg Roedel <joro@8bytes.org>,
+        Will Deacon <will@kernel.org>, ~okias/devicetree@lists.sr.ht,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        iommu@lists.linux-foundation.org, Rob Herring <robh+dt@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>
+Subject: Re: [PATCH] dt-bindings: arm-smmu: Add compatible for the SDX55 SoC
+Message-ID: <YXsYnG+H8gQu4Prc@robh.at.kernel.org>
+References: <20211020231701.278846-1-david@ixit.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211020142809.349347-10-miquel.raynal@bootlin.com>
+In-Reply-To: <20211020231701.278846-1-david@ixit.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 04:28:00PM +0200, Miquel Raynal wrote:
-> This SPI controller supports interacting with an external ECC
-> engine. The nand-ecc-engine property already exist in the NAND world but
-> also applies to SPI controller nodes which have external correction
-> capabilities like Macronix's.
+On Thu, 21 Oct 2021 01:17:00 +0200, David Heidelberg wrote:
+> Add missing compatible for the SDX55 SoC.
 > 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> Signed-off-by: David Heidelberg <david@ixit.cz>
 > ---
->  .../devicetree/bindings/spi/mxicy,mx25f0a-spi.yaml          | 6 ++++++
->  1 file changed, 6 insertions(+)
-
-This should come before patch 8. The example would fail if 
-'unevaluatedProperties' did anything.
-
-Reviewed-by: Rob Herring <robh@kernel.org>
-
+>  Documentation/devicetree/bindings/iommu/arm,smmu.yaml | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/spi/mxicy,mx25f0a-spi.yaml b/Documentation/devicetree/bindings/spi/mxicy,mx25f0a-spi.yaml
-> index 4036c14fc533..01618a77627d 100644
-> --- a/Documentation/devicetree/bindings/spi/mxicy,mx25f0a-spi.yaml
-> +++ b/Documentation/devicetree/bindings/spi/mxicy,mx25f0a-spi.yaml
-> @@ -43,6 +43,12 @@ properties:
->    "#size-cells":
->      const: 0
->  
-> +  nand-ecc-engine:
-> +    allOf:
-> +      - $ref: /schemas/types.yaml#/definitions/phandle
-> +    description: NAND ECC engine used by the SPI controller in order to perform
-> +      on-the-fly correction when using a SPI-NAND memory.
-> +
->  required:
->    - compatible
->    - reg
-> -- 
-> 2.27.0
-> 
-> 
+
+Applied, thanks!
