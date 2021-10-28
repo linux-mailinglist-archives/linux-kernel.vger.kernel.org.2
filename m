@@ -2,158 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A1EE43F341
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 01:01:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E1B843F344
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 01:01:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231496AbhJ1XCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 19:02:31 -0400
-Received: from mail110.syd.optusnet.com.au ([211.29.132.97]:53038 "EHLO
-        mail110.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231481AbhJ1XC2 (ORCPT
+        id S231518AbhJ1XDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 19:03:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231493AbhJ1XDB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 19:02:28 -0400
-Received: from dread.disaster.area (pa49-180-20-157.pa.nsw.optusnet.com.au [49.180.20.157])
-        by mail110.syd.optusnet.com.au (Postfix) with ESMTPS id 233FD10911C;
-        Fri, 29 Oct 2021 09:59:56 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1mgENH-002C7K-TH; Fri, 29 Oct 2021 09:59:55 +1100
-Date:   Fri, 29 Oct 2021 09:59:55 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Jane Chu <jane.chu@oracle.com>,
-        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
-        "vishal.l.verma@intel.com" <vishal.l.verma@intel.com>,
-        "dave.jiang@intel.com" <dave.jiang@intel.com>,
-        "agk@redhat.com" <agk@redhat.com>,
-        "snitzer@redhat.com" <snitzer@redhat.com>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "ira.weiny@intel.com" <ira.weiny@intel.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "vgoyal@redhat.com" <vgoyal@redhat.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
-Subject: Re: [dm-devel] [PATCH 0/6] dax poison recovery with
- RWF_RECOVERY_DATA flag
-Message-ID: <20211028225955.GA449541@dread.disaster.area>
-References: <20211021001059.438843-1-jane.chu@oracle.com>
- <YXFPfEGjoUaajjL4@infradead.org>
- <e89a2b17-3f03-a43e-e0b9-5d2693c3b089@oracle.com>
- <YXJN4s1HC/Y+KKg1@infradead.org>
- <2102a2e6-c543-2557-28a2-8b0bdc470855@oracle.com>
- <YXj2lwrxRxHdr4hb@infradead.org>
- <20211028002451.GB2237511@magnolia>
+        Thu, 28 Oct 2021 19:03:01 -0400
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F8CAC061767
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 16:00:34 -0700 (PDT)
+Received: by mail-oi1-x229.google.com with SMTP id o83so10590484oif.4
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 16:00:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=65adDYZK+vJThwwhpee2/9MrxFuS8APYICngTX1DB0s=;
+        b=oae5dTKtxGu2NToR+ozf+x63DzWhTgCYSjaT8t75vHruG8iqdS97M5yJsuwkrTQav2
+         gJG3hZJACb5/R2h4Uu5MqKHUdyI+77qO3b4Kbdl5bzZLo8VXve3XhwHNzOjCd2uz/rG4
+         52GFzHK+hDwYaQqLefCuonC/yNG8PuBJgCDQ4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=65adDYZK+vJThwwhpee2/9MrxFuS8APYICngTX1DB0s=;
+        b=Kbx9OnzemIn37WYddaFYp/gJ/z17TRp+tAadM+vMNqkQcqRedfRkelbi7ADP3uKRze
+         m1awutP9aNtJW9gQMBqtwjgJGdjkPxu77eWXzjngpKyr+/x9QDvcWzyA2oohwZDoMPdj
+         knVdTlMtrY448L2uzzcMxrkdCFBrjtFft3k3frOtzLOAEy3eC3/1h2rEqoY9Rd5vd1zj
+         VFtJT8MP3LkV65lY7FjkeQMgln4bKYeGgjR3fKhkvnQymgKtBhtWOELcdq1+GPEApFko
+         GvpOBZ/P4ZtNq5h2MhTOhCgRYrMy+9Fd3u4Rh47DLTvNRv/lMjsBgJkaG9E1bMKiRJpF
+         FMvQ==
+X-Gm-Message-State: AOAM5329sUyxNInJRoqH6/IhhEKcjkx3bTjktNmDME7EUZUKN5bPMXsT
+        gj/2ab9gxZobTHJUM781DQSsXD0l7gHFCcJWLcNHv6993IY=
+X-Google-Smtp-Source: ABdhPJz171p5Os7DrFgYldIZYVeYxanaYEOB+mBpsSG31OWLUFDDFkXoCtzg6VJyLnG1h/+IJIDczYxp+lYyreZs/eE=
+X-Received: by 2002:a05:6808:23c2:: with SMTP id bq2mr11188025oib.32.1635462033433;
+ Thu, 28 Oct 2021 16:00:33 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Thu, 28 Oct 2021 16:00:32 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211028002451.GB2237511@magnolia>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.4 cv=VuxAv86n c=1 sm=1 tr=0 ts=617b2b6f
-        a=t5ERiztT/VoIE8AqcczM6g==:117 a=t5ERiztT/VoIE8AqcczM6g==:17
-        a=kj9zAlcOel0A:10 a=8gfv0ekSlNoA:10 a=7-415B0cAAAA:8
-        a=k1Z2RRqN3eVEGd4K9SgA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <20211028151022.1.Ie56f55924f5c7706fe3194e710bbef6fdb8b5bc6@changeid>
+References: <20211028151022.1.Ie56f55924f5c7706fe3194e710bbef6fdb8b5bc6@changeid>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Thu, 28 Oct 2021 16:00:32 -0700
+Message-ID: <CAE-0n50XwcLBmOBaRiF-qW=R-HfanjviteEzmMDbDuPJruX65g@mail.gmail.com>
+Subject: Re: [PATCH 1/2] arm64: dts: sc7180: Support Lazor/Limozeen rev9
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Philip Chen <philipchen@chromium.org>
+Cc:     dianders@chromium.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 05:24:51PM -0700, Darrick J. Wong wrote:
-> On Tue, Oct 26, 2021 at 11:49:59PM -0700, Christoph Hellwig wrote:
-> > On Fri, Oct 22, 2021 at 08:52:55PM +0000, Jane Chu wrote:
-> > > Thanks - I try to be honest.  As far as I can tell, the argument
-> > > about the flag is a philosophical argument between two views.
-> > > One view assumes design based on perfect hardware, and media error
-> > > belongs to the category of brokenness. Another view sees media
-> > > error as a build-in hardware component and make design to include
-> > > dealing with such errors.
-> > 
-> > No, I don't think so.  Bit errors do happen in all media, which is
-> > why devices are built to handle them.  It is just the Intel-style
-> > pmem interface to handle them which is completely broken.  
-> 
-> Yeah, I agree, this takes me back to learning how to use DISKEDIT to
-> work around a hole punched in a file (with a pen!) in the 1980s...
-> 
-> ...so would you happen to know if anyone's working on solving this
-> problem for us by putting the memory controller in charge of dealing
-> with media errors?
-> 
-> > > errors in mind from start.  I guess I'm trying to articulate why
-> > > it is acceptable to include the RWF_DATA_RECOVERY flag to the
-> > > existing RWF_ flags. - this way, pwritev2 remain fast on fast path,
-> > > and its slow path (w/ error clearing) is faster than other alternative.
-> > > Other alternative being 1 system call to clear the poison, and
-> > > another system call to run the fast pwrite for recovery, what
-> > > happens if something happened in between?
-> > 
-> > Well, my point is doing recovery from bit errors is by definition not
-> > the fast path.  Which is why I'd rather keep it away from the pmem
-> > read/write fast path, which also happens to be the (much more important)
-> > non-pmem read/write path.
-> 
-> The trouble is, we really /do/ want to be able to (re)write the failed
-> area, and we probably want to try to read whatever we can.  Those are
-> reads and writes, not {pre,f}allocation activities.  This is where Dave
-> and I arrived at a month ago.
-> 
-> Unless you'd be ok with a second IO path for recovery where we're
-> allowed to be slow?  That would probably have the same user interface
-> flag, just a different path into the pmem driver.
+Quoting Philip Chen (2021-10-28 15:11:31)
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi
+> index 8b79fbb75756..69666f92176a 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi
+> @@ -5,13 +5,10 @@
+>   * Copyright 2020 Google LLC.
+>   */
+>
+> -#include "sc7180.dtsi"
+> -
+>  ap_ec_spi: &spi6 {};
+>  ap_h1_spi: &spi0 {};
 
-I just don't see how 4 single line branches to propage RWF_RECOVERY
-down to the hardware is in any way an imposition on the fast path.
-It's no different for passing RWF_HIPRI down to the hardware *in the
-fast path* so that the IO runs the hardware in polling mode because
-it's faster for some hardware.
+Can we get rid of this node swap now? I think it is only around because
+early on we swapped the EC and H1 spi interfaces and then we had to swap
+it every time we made a new board.
 
-IOWs, saying that we shouldn't implement RWF_RECOVERY because it
-adds a handful of branches to the fast path is like saying that we
-shouldn't implement RWF_HIPRI because it slows down the fast path
-for non-polled IO....
+$ git grep ap_ec_spi
+arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi:ap_ec_spi: &spi6 {};
+arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi:ap_ec_spi: &spi6 {};
+arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi:ap_ec_spi: &spi6 {};
+arch/arm64/boot/dts/qcom/sc7180-trogdor-r1.dts:ap_ec_spi: &spi6 {};
 
-Just factor the actual recovery operations out into a separate
-function like:
+It feels like we'd be better off leaving that quirk in trogdor-r0, which
+conveniently isn't upstream, and then relabel the spi nodes in
+sc7180-trogdor.dtsi now. Otherwise I look at this and have to remember
+that whenever this dtsi file is included, we've already included the
+sc7180.dtsi file before it, so that the relabel actually works.
 
-static void noinline
-pmem_media_recovery(...)
-{
-}
-
-pmem_copy_from_iter()
-{
-	if ((unlikely)(flag & RECOVERY))
-		pmem_media_recovery(...);
-	return _copy_from_iter_flushcache(addr, bytes, i);
-}
-....
-
-And there's basically zero overhead in the fast paths for normal
-data IO operations, whilst supporting a simple, easy to use data
-recovery IO operations for regions that have bad media...
-
-> Ha, how about a int fd2 = recoveryfd(fd); call where you'd get whatever
-> speshul options (retry raid mirrors!  scrape the film off the disk if
-> you have to!) you want that can take forever, leaving the fast paths
-> alone?
-
-Why wouldn't we just pass RWF_RECOVERY down to a REQ_RECOVERY bio
-flag and have raid devices use that to trigger scraping whatever
-they can if there are errors? The io path through the VFS and
-filesystem to get the scraped data out to the user *is exactly the
-same*, so we're going to have to plumb this functionality into fast
-paths *somewhere along the line*.
-
-Really, I think this whole "flag propagation is too much overhead
-for the fast path" argument is completely invalid - if 4 conditional
-branches is too much overhead to add to the fast path, then we can't
-add *anything ever again* to the IO path because it has too much
-overhead and impact on the fast path.
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+>
+>  #include "sc7180-trogdor.dtsi"
+> -#include "sc7180-trogdor-ti-sn65dsi86.dtsi"
+>
+>  &ap_sar_sensor {
+>         semtech,cs0-ground;
