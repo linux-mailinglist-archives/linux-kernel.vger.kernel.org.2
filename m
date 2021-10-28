@@ -2,137 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD18E43DC91
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 09:58:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0598C43DC93
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 09:59:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229946AbhJ1IBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 04:01:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35870 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229640AbhJ1IBI (ORCPT
+        id S229968AbhJ1IBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 04:01:36 -0400
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:43471 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229640AbhJ1IBc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 04:01:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635407920;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ssfsrlUnUncXSG3OdwN60TRyrIXMk8wx4UyML93w3Ak=;
-        b=OBhd/FSwGXXpU0VYHyYR75159p8igeIpFnKAKo3BChcvgFUZZGktULqp+A8RXqNqJhd74f
-        nEgrNSnj7JRRvZ4tSTaC83qs0M7XHPgM6IWtvES4XD7tJU1SPi6lUnTbmsFVsBOn+oaQZx
-        0qXymvnKxnR5fPmx98o6TgzWdhGROEE=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-402-BK9dYZDBPl6iKe1lNtvebw-1; Thu, 28 Oct 2021 03:58:39 -0400
-X-MC-Unique: BK9dYZDBPl6iKe1lNtvebw-1
-Received: by mail-ed1-f71.google.com with SMTP id q6-20020a056402518600b003dd81fc405eso4820219edd.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 00:58:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=ssfsrlUnUncXSG3OdwN60TRyrIXMk8wx4UyML93w3Ak=;
-        b=hJSTLOKEeMan7/5i8POQO1/M5jmQb0J7BwnnVw0xAL5P4KAzlXviqN6UDy1vz21AER
-         tmayxdW2BqptNba1nPm160Vh7cLSmVbw7T5ZQjcZxHz+NSjI6HWm7/oz5cKKar9tCjby
-         dF2FKDkkfw6zuuUf9C/K4Ux2GBBi7UwiMftV2FaHWMpVX4Y05CulkkM8XCe/0CkQQF+v
-         rQR5rJQz87aMFxFPAdvAaTgoxwDVifBazmpApxHKtrSCT8gjIATzPPgQYqrZFfBw2PyR
-         9raJ+w1mrzHNdJOCGSWS00/c3X5HoCQDuvQtXUiqK6mOwFTDyavlZF9FSM6N3A8BOqm5
-         BR5A==
-X-Gm-Message-State: AOAM530i2dBAgx4dpN3fOsjCgEhvYQqws6F1bJ/HdVAfbbNop2X2N4HW
-        tSOhT2GiM5mrfPBz8K6ujhJhzXV3F/s6kVO0M9XsaF5mT13mV1hRyz1N6lTwIgk0bIUIks3hyCl
-        ZE2CNhhjHVQbO+tAC+XPTz82q
-X-Received: by 2002:aa7:cb59:: with SMTP id w25mr4013809edt.309.1635407918068;
-        Thu, 28 Oct 2021 00:58:38 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy3FCD5EBCZHOsd4tzrmApbRmN4CGccT0ac7DTwb/YZp1flrRDuAeATtlZDfxeJkjyyC59Zfw==
-X-Received: by 2002:aa7:cb59:: with SMTP id w25mr4013793edt.309.1635407917911;
-        Thu, 28 Oct 2021 00:58:37 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id s12sm1200055edj.82.2021.10.28.00.58.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Oct 2021 00:58:37 -0700 (PDT)
-Message-ID: <f7ac5427-b03a-2d3a-3255-e37ba9b15dcd@redhat.com>
-Date:   Thu, 28 Oct 2021 09:58:36 +0200
+        Thu, 28 Oct 2021 04:01:32 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=xianting.tian@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UtytliC_1635407943;
+Received: from B-LB6YLVDL-0141.local(mailfrom:xianting.tian@linux.alibaba.com fp:SMTPD_---0UtytliC_1635407943)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 28 Oct 2021 15:59:03 +0800
+Subject: Re: linux-next: Tree for Oct 25
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Shile Zhang <shile.zhang@linux.alibaba.com>
+References: <20211025204921.73cb3011@canb.auug.org.au>
+ <20211027224231.1634cc6c@canb.auug.org.au>
+ <864bbf0b-e6db-1a97-80f5-a92968a4e086@linux.alibaba.com>
+ <20211028155126.0b187410@canb.auug.org.au>
+From:   Xianting Tian <xianting.tian@linux.alibaba.com>
+Message-ID: <8c917fd9-c569-560e-5d6f-e19417f61cdf@linux.alibaba.com>
+Date:   Thu, 28 Oct 2021 15:59:02 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH] platform/surface: aggregator_registry: Add initial
- support for Surface Pro 8
-Content-Language: en-US
-To:     Maximilian Luz <luzmaximilian@gmail.com>,
-        platform-driver-x86@vger.kernel.org
-Cc:     Mark Gross <markgross@kernel.org>, linux-kernel@vger.kernel.org
-References: <20211028012845.1887219-1-luzmaximilian@gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20211028012845.1887219-1-luzmaximilian@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20211028155126.0b187410@canb.auug.org.au>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maximilian,
 
-On 10/28/21 03:28, Maximilian Luz wrote:
-> Add preliminary support for the Surface Pro 8 to the Surface Aggregator
-> registry. This includes battery/charger status and platform profile
-> support.
-> 
-> In contrast to earlier Surface Pro generations, the keyboard cover is
-> now also connected via the Surface Aggregator Module (whereas it was
-> previously connected via USB or HID-over-I2C). To properly support the
-> HID devices of that cover, however, more changes regarding hot-removal
-> of Surface Aggregator client devices as well as a new device hub driver
-> are required. We will address those things in a follow-up series, so do
-> not add any HID device IDs just yet.
-> 
-> Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
-
-Since it is just device-id additions I can still pick this up for
-5.16 if you want / if this is useful.
-
-Do you want me to pick this up for 5.16 ? 
-
-Regards,
-
-Hans
-
-
-
-> ---
->  .../platform/surface/surface_aggregator_registry.c   | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
-> 
-> diff --git a/drivers/platform/surface/surface_aggregator_registry.c b/drivers/platform/surface/surface_aggregator_registry.c
-> index 2e0d3a808d47..ce2bd88feeaa 100644
-> --- a/drivers/platform/surface/surface_aggregator_registry.c
-> +++ b/drivers/platform/surface/surface_aggregator_registry.c
-> @@ -228,6 +228,15 @@ static const struct software_node *ssam_node_group_sp7[] = {
->  	NULL,
->  };
->  
-> +static const struct software_node *ssam_node_group_sp8[] = {
-> +	&ssam_node_root,
-> +	&ssam_node_bat_ac,
-> +	&ssam_node_bat_main,
-> +	&ssam_node_tmp_pprof,
-> +	/* TODO: Add support for keyboard cover. */
-> +	NULL,
-> +};
-> +
->  
->  /* -- Device registry helper functions. ------------------------------------- */
->  
-> @@ -520,6 +529,9 @@ static const struct acpi_device_id ssam_platform_hub_match[] = {
->  	/* Surface Pro 7+ */
->  	{ "MSHW0119", (unsigned long)ssam_node_group_sp7 },
->  
-> +	/* Surface Pro 8 */
-> +	{ "MSHW0263", (unsigned long)ssam_node_group_sp8 },
-> +
->  	/* Surface Book 2 */
->  	{ "MSHW0107", (unsigned long)ssam_node_group_gen5 },
->  
-> 
-
+在 2021/10/28 下午12:51, Stephen Rothwell 写道:
+> Hi Xianting,
+>
+> On Thu, 28 Oct 2021 09:51:00 +0800 Xianting Tian <xianting.tian@linux.alibaba.com> wrote:
+>> 在 2021/10/27 下午7:42, Stephen Rothwell 写道:
+>>> Hi all,
+>>>
+>>> On Mon, 25 Oct 2021 20:49:21 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>>>> There seems to be something amiss with cnosole output in today's release
+>>>> (at least on my ppc qemu boot tests).
+>>> The console output seems to be back today.  I assume its repair had
+>>> something to do with commit
+>>>
+>>>     60f41e848492 ("Revert "tty: hvc: pass DMA capable memory to put_chars()"")
+>>>   
+>> hi Stephen，
+>>
+>> Thanks for the info, Could you share more details about the issue you met? is it about early console print issue?
+>>
+> Here is the diff between my boot logs:
+thanks, I checked the log, Can I understand it as you missed some early 
+bootup log  when use new release?
+>
+> @@ -33,14 +33,14 @@
+>   
+>   Booting from memory...
+>   OF stdout device is: /vdevice/vty@71000000
+> -Preparing to boot Linux version 5.15.0-rc6 (sfr@ash) (gcc (Debian 10.3.0-11) 10.3.0, GNU ld (GNU Binutils for Debian) 2.37) #2 SMP Fri Oct 22 20:04:18 AEDT 2021
+> +Preparing to boot Linux version 5.15.0-rc7 (sfr@ash) (gcc (Debian 10.3.0-11) 10.3.0, GNU ld (GNU Binutils for Debian) 2.37) #2 SMP Tue Oct 26 19:57:54 AEDT 2021
+>   Detected machine type: 0000000000000101
+>   command line:
+>   Max number of cores passed to firmware: 2048 (NR_CPUS = 2048)
+>   Calling ibm,client-architecture-support... done
+>   memory layout at init:
+>     memory_limit : 0000000000000000 (16 MB aligned)
+> -  alloc_bottom : 0000000002020000
+> +  alloc_bottom : 0000000002f50000
+>     alloc_top    : 0000000030000000
+>     alloc_top_hi : 0000000080000000
+>     rmo_top      : 0000000030000000
+> @@ -50,8 +50,8 @@
+>   copying OF device tree...
+>   Building dt strings...
+>   Building dt structure...
+> -Device tree strings 0x0000000002030000 -> 0x0000000002030a77
+> -Device tree struct  0x0000000002040000 -> 0x0000000002050000
+> +Device tree strings 0x0000000002f60000 -> 0x0000000002f60a77
+> +Device tree struct  0x0000000002f70000 -> 0x0000000002f80000
+>   Quiescing Open Firmware ...
+>   Booting Linux via __start() @ 0x0000000000400000 ...
+>    hash-mmu: Page sizes from device-tree:
+> @@ -59,8 +59,8 @@
+>    hash-mmu: base_shift=16: shift=16, sllp=0x0110, avpnm=0x00000000, tlbiel=1, penc=1
+>    Using 1TB segments
+>    hash-mmu: Initializing hash mmu with SLB
+> - Linux version 5.15.0-rc6 (sfr@ash) (gcc (Debian 10.3.0-11) 10.3.0, GNU ld (GNU Binutils for Debian) 2.37) #2 SMP Fri Oct 22 20:04:18 AEDT 2021
+> - Found initrd at 0xc000000001e50000:0xc00000000201d70b
+> + Linux version 5.15.0-rc7 (sfr@ash) (gcc (Debian 10.3.0-11) 10.3.0, GNU ld (GNU Binutils for Debian) 2.37) #2 SMP Tue Oct 26 19:57:54 AEDT 2021
+> + Found initrd at 0xc000000002d80000:0xc000000002f4d70b
+>    Using pSeries machine description
+>    printk: bootconsole [udbg0] enabled
+>    Partition configured for 1 cpus.
+> @@ -106,9 +106,9 @@
+>    Dentry cache hash table entries: 262144 (order: 5, 2097152 bytes, linear)
+>    Inode-cache hash table entries: 131072 (order: 4, 1048576 bytes, linear)
+>    mem auto-init: stack:off, heap alloc:off, heap free:off
+> - Memory: 1995200K/2097152K available (14208K kernel code, 3136K rwdata, 2944K rodata, 4992K init, 1531K bss, 101952K reserved, 0K cma-reserved)
+> + Memory: 1979648K/2097152K available (14208K kernel code, 3136K rwdata, 2944K rodata, 4992K init, 1531K bss, 117504K reserved, 0K cma-reserved)
+>    SLUB: HWalign=128, Order=0-3, MinObjects=0, CPUs=1, Nodes=1
+> - ftrace: allocating 33247 entries in 13 pages
+> + ftrace: allocating 33265 entries in 13 pages
+>    ftrace: allocated 13 pages with 3 groups
+>    trace event string verifier disabled
+>    rcu: Hierarchical RCU implementation.
+> @@ -124,81 +124,9 @@
+>    clocksource: timebase mult[1f40000] shift[24] registered
+>    Console: colour dummy device 80x25
+>    printk: console [hvc0] enabled
+> - printk: console [hvc0] enabled
+> - printk: bootconsole [udbg0] disabled
+>    printk: bootconsole [udbg0] disabled
+> - pid_max: default: 32768 minimum: 301
+> - Mount-cache hash table entries: 8192 (order: 0, 65536 bytes, linear)
+> - Mountpoint-cache hash table entries: 8192 (order: 0, 65536 bytes, linear)
+> - POWER8 performance monitor hardware support registered
+> - rcu: Hierarchical SRCU implementation.
+> - smp: Bringing up secondary CPUs ...
+> - smp: Brought up 1 node, 1 CPU
+> - numa: Node 0 CPUs: 0
+> - devtmpfs: initialized
+> - PCI host bridge /pci@800000020000000  ranges:
+> -   IO 0x0000200000000000..0x000020000000ffff -> 0x0000000000000000
+> -  MEM 0x0000200080000000..0x00002000ffffffff -> 0x0000000080000000
+> -  MEM 0x0000210000000000..0x000021ffffffffff -> 0x0000210000000000
+> - PCI: OF: PROBE_ONLY disabled
+> - clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 19112604462750000 ns
+> - futex hash table entries: 256 (order: -1, 32768 bytes, linear)
+> - NET: Registered PF_NETLINK/PF_ROUTE protocol family
+> - audit: initializing netlink subsys (disabled)
+> - cpuidle: using governor menu
+> - pstore: Registered nvram as persistent store backend
+>   
+> Linux ppc64le
+> -#2 SMP Fri Oct 2 audit: type=2000 audit(1634893757.210:1): state=initialized audit_enabled=0 res=1
+> - EEH: pSeries platform initialized
+> - software IO TLB: tearing down default memory pool
+> - PCI: Probing PCI hardware
+> - PCI host bridge to bus 0000:00
+> - pci_bus 0000:00: root bus resource [io  0x10000-0x1ffff] (bus address [0x0000-0xffff])
+> - pci_bus 0000:00: root bus resource [mem 0x200080000000-0x2000ffffffff] (bus address [0x80000000-0xffffffff])
+> - pci_bus 0000:00: root bus resource [mem 0x210000000000-0x21ffffffffff 64bit]
+> - pci_bus 0000:00: root bus resource [bus 00-ff]
+> - IOMMU table initialized, virtual merging enabled
+> - pci_bus 0000:00: resource 4 [io  0x10000-0x1ffff]
+> - pci_bus 0000:00: resource 5 [mem 0x200080000000-0x2000ffffffff]
+> - pci_bus 0000:00: resource 6 [mem 0x210000000000-0x21ffffffffff 64bit]
+> - EEH: No capable adapters found: recovery disabled.
+> - kprobes: kprobe jump-optimization is enabled. All kprobes are optimized if possible.
+> - iommu: Default domain type: Translated
+> - iommu: DMA domain TLB invalidation policy: strict mode
+> - vgaarb: loaded
+> - SCSI subsystem initialized
+> - usbcore: registered new interface driver usbfs
+> - usbcore: registered new interface driver hub
+> - usbcore: registered new device driver usb
+> - pps_core: LinuxPPS API ver. 1 registered
+> - pps_core: Software ver. 5.3.6 - Copyright 2005-2007 Rodolfo Giometti <giometti@linux.it>
+> - PTP clock support registered
+> - clocksource: Switched to clocksource timebase
+> - hugetlbfs: disabling because there are no supported hugepage sizes
+> - NET: Registered PF_INET protocol family
+> - IP idents hash table entries: 32768 (order: 2, 262144 bytes, linear)
+> - tcp_listen_portaddr_hash hash table entries: 4096 (order: 0, 65536 bytes, linear)
+> - TCP established hash table entries: 16384 (order: 1, 131072 bytes, linear)
+> - TCP bind hash table entries: 16384 (order: 2, 262144 bytes, linear)
+> - TCP: Hash tables configured (established 16384 bind 16384)
+> - UDP hash table entries: 2048 (order: 0, 65536 bytes, linear)
+> - UDP-Lite hash table entries: 2048 (order: 0, 65536 bytes, linear)
+> - NET: Registered PF_UNIX/PF_LOCAL protocol family
+> - RPC: Registered named UNIX socket transport module.
+> - RPC: Registered udp transport module.
+> - RPC: Registered tcp transport module.
+> - RPC: Registered tcp NFSv4.1 backchannel transport module.
+> - PCI: CLS 0 bytes, default 128
+> - Trying to unpack rootfs image as initramfs...
+> - vas: API is supported only with radix page tables
+> - workingset: timestamp_bits=38 max_order=15 bucket_order=0
+> - NFS: Registering the id_resolver key type
+> - Key type id_resolver registered
+> - Key type id_legacy registered
+> - Block layer SCSI generic (bsg) driver version 0.4 loaded (major 250)
+> - io scheduler mq-deadline registered
+> - io scheduler kyber registered
+> - Serial: 8250/16550 driver, 4 ports, IRQ sharing disabled
+> +#2 SMP Tue Oct 2 Serial: 8250/16550 driver, 4 ports, IRQ sharing disabled
+>    Non-volatile memory driver v1.3
+>    Freeing initrd memory: 1792K
+>    brd: module loaded
+> @@ -230,7 +158,7 @@
+>    ohci_hcd: USB 1.1 'Open' Host Controller (OHCI) Driver
+>    ohci-pci: OHCI PCI platform driver
+>    rtc-generic rtc-generic: registered as rtc0
+> - rtc-generic rtc-generic: setting system clock to 2021-10-22T09:09:21 UTC (1634893761)
+> + rtc-generic rtc-generic: setting system clock to 2021-10-26T09:02:50 UTC (1635238970)
+>    i2c_dev: i2c /dev entries driver
+>    device-mapper: uevent: version 1.0.3
+>    device-mapper: ioctl: 4.45.0-ioctl (2021-03-22) initialised: dm-devel@redhat.com
+>
