@@ -2,91 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1C7A43D839
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 02:44:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C39043D83C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 02:46:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229603AbhJ1AqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 20:46:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48830 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229437AbhJ1AqV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 20:46:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C2362610C7;
-        Thu, 28 Oct 2021 00:43:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635381835;
-        bh=ms2wN3CfuOl4f9invWVZz5Oi0ljrc8QJ5JepVWRQbhg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=QPUO2GZkFT9Fw6KHOgTYYKPOgbUfk+os5J7JOoQqSytc6kmkKjgHR/G4zUv32Ff8b
-         dorZI0mYv56jvr/pnEMSIov/28+89Yc6TzKXJnj8g+nWMt5h+bU4fAEx+GvP0RLnsl
-         D2RLEgfoBOQPKabt4DMspD4k4DqKfZFuRtkSabVmuviBVW+OLyMY1nc56ajj2AHTfR
-         i+3PDedNHsVbX4fmAgaeYKb/kqh8fiHhJ0dVeKbb+nhA/9DOb5o8MlqKALUZ2HPjzu
-         4ExIWzRvBx7JbR6NO7TCVYPA0yq88GGtvbunfNyJvQ53G8NewV1ruIzpWcDYw7tkHi
-         P8pMuFNMbOBjA==
-Date:   Thu, 28 Oct 2021 09:43:51 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Kalesh Singh <kaleshsingh@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>, surenb@google.com,
-        hridya@google.com, namhyung@kernel.org, kernel-team@android.com,
-        Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 2/3] tracing/kselftests: Remove triggers with references
- before their definitions
-Message-Id: <20211028094351.617b7c2ea7c56055ee68d909@kernel.org>
-In-Reply-To: <20211027195454.60993c83@rorschach.local.home>
-References: <20211027205919.1648553-1-kaleshsingh@google.com>
-        <20211027205919.1648553-3-kaleshsingh@google.com>
-        <20211028065849.76b1bd7151e440881298b523@kernel.org>
-        <CAC_TJvdxEuqkzH+VDNQvWZbLjHj0BKfnCHn647Y9-Ve2UTftRg@mail.gmail.com>
-        <20211027195454.60993c83@rorschach.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S229534AbhJ1Asi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 20:48:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229437AbhJ1Asg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 20:48:36 -0400
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FA14C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 17:46:10 -0700 (PDT)
+Received: by mail-qv1-xf30.google.com with SMTP id a5so41097qvn.4
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 17:46:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WP0EhpkPG4zhYCdaeYS6YIcnXfowG3Qfj8auHLu7RCs=;
+        b=EUM+LqN+o9a7VH2KekR6Y3w0AyEmah+uVCPv4CyO8pqV9nqErxTZPWntW2h9ZNKKL4
+         5XrX0FbXUAJRY/ge7AsF0Nf6S8tAdWeOwSoRvH3INOmxPgASeqvu4K6D+dSKdLBDPmw5
+         ePdkiNF9duZVtFg3xIVCkeTJSuMmEPWkHb1bvDAMOJXIEs1LeFl5ym78dui0ygwWKhEa
+         Yo+iXBuPbBKhz+xRPwYYIAKm3L01i+257lvHbK17Mxc3zSZnosxNZ2KP2CAY8YVkaMeV
+         dG7/h9Px9uYj3w938TzUh4Y+k1BvRhVQo66BeeyMMpWNtPBpTumQp2jVBGylPXxqqGtH
+         EbYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WP0EhpkPG4zhYCdaeYS6YIcnXfowG3Qfj8auHLu7RCs=;
+        b=zWFtegl3hVZE8MaUoUFgSWUy8xwfgnGWWIV3aTCwt6NEReJMInw/vdvbF30nowIuIV
+         6wEo71gx0iWxT5D6qqQzPX94vFhofpdyXY7l6ZVBWKcki6SqOguZqSl4cuu8MgAernT9
+         mWsR922DIdoyCSPriErOztjDCoxeyUT5Vl5RDXQ8nWB4TX+olw686ojLPtkno4MrUafE
+         8TtWCObMTaqP/QjNcCIs6gu7cnGL+g7LzxVHEc3EfOlI3ssKefabBzOMIL52FSF1LZOa
+         qxX1AssIdon8jARrBMduY2RJj55lZHrInlwm1nveXiTt7IerxevIgmgZ8wKhzHgeafNb
+         VFmQ==
+X-Gm-Message-State: AOAM530deRgab34ZDXS/r/AljzScO3iyT4x7ypzlslUwdfHQYuc7t3KI
+        NO2tgFDeES5AKFCgkHdsD6OjQ2TU8LmNvwNFS/g=
+X-Google-Smtp-Source: ABdhPJyk1ad7CpmSuwErS4kaMQ80cWFsf/AMP3JYRDaABDbZQ4W5J6rNN9xROzGYWZigqV/y4ckIjFElBHtqIMPUplI=
+X-Received: by 2002:a05:6214:411e:: with SMTP id kc30mr1228742qvb.6.1635381969675;
+ Wed, 27 Oct 2021 17:46:09 -0700 (PDT)
+MIME-Version: 1.0
+References: <1635318110-1905-1-git-send-email-huangzhaoyang@gmail.com>
+ <YXj9w+8Bwlkz5PRy@dhcp22.suse.cz> <CAGWkznHVHVBrQEiO32p2uX_5BDUMc1fE64KuV34WJfpwC_23Pw@mail.gmail.com>
+ <YXkNJjD4axYlmqQ5@dhcp22.suse.cz> <CAGWkznHrZ=Y3kG5j5aYdTV2294QGrQbM6251zcdGphzCGUP6dw@mail.gmail.com>
+ <YXk9a3X62vNTyvGE@dhcp22.suse.cz> <CAGWkznEZhPxgb_K2vcfyhnGufPMaX3ksxbJvQSurwkNtLKRTGg@mail.gmail.com>
+ <YXlGhEDYtnKtwKUb@dhcp22.suse.cz>
+In-Reply-To: <YXlGhEDYtnKtwKUb@dhcp22.suse.cz>
+From:   Zhaoyang Huang <huangzhaoyang@gmail.com>
+Date:   Thu, 28 Oct 2021 08:45:48 +0800
+Message-ID: <CAGWkznGp8Z9F8wK5UN+1Z-5NwQjZ+okpVfnq9-Gzv38xHPEDrQ@mail.gmail.com>
+Subject: Re: [RFC PATCH] mm: have kswapd only reclaiming use min protection on memcg
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Oct 2021 19:54:54 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
-
-> On Wed, 27 Oct 2021 16:26:00 -0700
-> Kalesh Singh <kaleshsingh@google.com> wrote:
-> 
-> > > Why don't you use 'tac'? I love that idea :)
-> > > Did you find any issue?  
-> > 
-> > Hi Masami,
-> > 
-> > Thanks for the reviews. As with the first set of patches using tac
-> > gives a regression here, though I'm not sure why it doesn't work -- I
-> > also thought reversing the order would handle any dependencies
-> > correctly.
-> 
-> Right, because are triggers not added by list_add_rcu() which adds to
-> the head of the list.
-
-Oops, so are the triggers shown in the reverse order?
-(newer entry is top, older one is bottom)
-Then do we need this patch, because we don't care about the
-dependency.
-
-> If anything, shouldn't things be removed in order?
-
-Hmm, I think the trigger itself might better to be changed. If any dependency in
-the trigger list, it can not be restored from the copied file, like
-below may fail.
-
-cat events/foo/bar/trigger > /tmp/foo.bar.trigger
-cat /tmp/foo.bar.trigger > events/foo/bar/trigger
-
-(of course we can use 'tac' to restore it ...)
-
-This is 
-
-Thank you,
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+On Wed, Oct 27, 2021 at 8:31 PM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Wed 27-10-21 20:05:30, Zhaoyang Huang wrote:
+> > On Wed, Oct 27, 2021 at 7:52 PM Michal Hocko <mhocko@suse.com> wrote:
+> > >
+> > > On Wed 27-10-21 17:19:56, Zhaoyang Huang wrote:
+> > > > On Wed, Oct 27, 2021 at 4:26 PM Michal Hocko <mhocko@suse.com> wrote:
+> > > > >
+> > > > > On Wed 27-10-21 15:46:19, Zhaoyang Huang wrote:
+> > > > > > On Wed, Oct 27, 2021 at 3:20 PM Michal Hocko <mhocko@suse.com> wrote:
+> > > > > > >
+> > > > > > > On Wed 27-10-21 15:01:50, Huangzhaoyang wrote:
+> > > > > > > > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> > > > > > > >
+> > > > > > > > For the kswapd only reclaiming, there is no chance to try again on
+> > > > > > > > this group while direct reclaim has. fix it by judging gfp flag.
+> > > > > > >
+> > > > > > > There is no problem description (same as in your last submissions. Have
+> > > > > > > you looked at the patch submission documentation as recommended
+> > > > > > > previously?).
+> > > > > > >
+> > > > > > > Also this patch doesn't make any sense. Both direct reclaim and kswapd
+> > > > > > > use a gfp mask which contains __GFP_DIRECT_RECLAIM (see balance_pgdat
+> > > > > > > for the kswapd part)..
+> > > > > > ok, but how does the reclaiming try with memcg's min protection on the
+> > > > > > alloc without __GFP_DIRECT_RECLAIM?
+> > > > >
+> > > > > I do not follow. There is no need to protect memcg if the allocation
+> > > > > request doesn't have __GFP_DIRECT_RECLAIM because that would fail the
+> > > > > charge if a hard limit is reached, see try_charge_memcg and
+> > > > > gfpflags_allow_blocking check.
+> > > > >
+> > > > > Background reclaim, on the other hand never breaches reclaim protection.
+> > > > >
+> > > > > What is the actual problem you want to solve?
+> > > > Imagine there is an allocation with gfp_mask & ~GFP_DIRECT_RECLAIM and
+> > > > all processes are under cgroups. Kswapd is the only hope here which
+> > > > however has a low efficiency of get_scan_count. I would like to have
+> > > > kswapd work as direct reclaim in 2nd round which will have
+> > > > protection=memory.min.
+> > >
+> > > Do you have an example where this would be a practical problem? Atomic
+> > > allocations should be rather rare.
+> > Please find below for the search result of '~__GFP_DIRECT_RECLAIM'
+> > which shows some drivers and net prefer to behave like that.
+> > Furthermore, the allocations are always together with high order.
+>
+> And what is the _practical_ problem you are seeing or trying to solve?
+We do have out of tree code behave like this and want to make the
+mechanics more robust
+>
+> --
+> Michal Hocko
+> SUSE Labs
