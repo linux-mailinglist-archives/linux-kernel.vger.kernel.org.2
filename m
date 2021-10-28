@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80F3E43DF02
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 12:36:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89A0943DF03
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 12:36:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230225AbhJ1Ki0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 06:38:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33770 "EHLO
+        id S230248AbhJ1Ki2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 06:38:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230208AbhJ1KiX (ORCPT
+        with ESMTP id S230183AbhJ1KiZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 06:38:23 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12547C061243
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 03:35:55 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id d3so9295701wrh.8
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 03:35:55 -0700 (PDT)
+        Thu, 28 Oct 2021 06:38:25 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D268DC061745
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 03:35:57 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id d10so9367421wrb.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 03:35:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=AVb5GC93bP5+2in7SXHaVRcFzvFScW/Z0MhMVVxwoss=;
-        b=UBeWVGZjUohQkuLKp9B+34RO1/T07RvSf3ohLXqfSxP5X8++zY037fpNoSiErYR0Nt
-         0uFiBOyT318fafXT1HJPh49qgSOgzuO0l0IiVc2Ln6GHGo4TcSh3ZM0ed3PtbizorHc8
-         /9N1cWxqkqVCkrl/eUV35behsErEToo+Tj8acJ/XLfB+Rflp0QmZr3IoQ2/fALLgLa80
-         puAeL+DtrzIcfpyRnu28cLgcM3tfisoVJyGBBzJbCsBgCwr1mfVKKg/n3to4nhoSw0p1
-         Q+nUblPinH81PdK5rZUJbA0H5Ew6VGjgO5n3d29bSJsx0Cf1YMhcYtp0QhFvLKsV1v2S
-         LMBg==
+        bh=IGvktVhPA6KMBN53Q9S7sFoN48GUfEwFvixIWYHV+nI=;
+        b=Sxm6VcJphDjRh8Me8C4V+iuxN95Imhe2VFw9dMiGYEPDnIANrGILveOFbbl5lffyBq
+         dB8d5n3t5HSZK+6nhvKr3YQ+YahQaX4k7yVF08/INr4GquIYITDKfXb/vlybNYyEZc3W
+         Y5u4HcDng50sSWYpb0P8h3c7RFxzRXLhCyF9AzGJTg4Ck1mFvb2DeNkwPlh+p9ogf4+h
+         Ugn+13kuXh4IoUBkTxeSOIPoZvDEn5kyDtZ3iORy9UhPX7+eMdKUxnBubHpL572ILA1u
+         AaTokTyYHdSAbGJ3N4IdI1wIQ9mQCHPVT0L9J6OoU/9YPlBJKRYQcCqby/BjgQFBzSPO
+         nm7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=AVb5GC93bP5+2in7SXHaVRcFzvFScW/Z0MhMVVxwoss=;
-        b=4ZhKEVfHkuBjx5Ogye9TjHGLm3muTl7wRyyW0QlIVfbLrZq2/dLgTVUH/6agbsfD5Q
-         WUAtYn6FoOlbjt06en04s06wRfRG1WvDJtLzhaVVUsYc7kVPl4S58eJyUTgLV8pBPeMO
-         r5JhHkRgqlDtJmpPryf8dqkXqq74juQe40FkLyqZbfqkqk8AbFG3wttbmMw8ySkZH5Tj
-         Hz8S5q9tAwsTCya8GB69vF8tLRY3mtzjoPJu0IoeFeBDz4nUyLwAKTLDwEVLs5Rkbrfe
-         S4OTpvhXXFqtWdvDoQXt9z+iS7Sw14/TT6sSWyNc5SKOrzr/LZc99/N7HXIauWAkmuz5
-         hn5g==
-X-Gm-Message-State: AOAM533G5eLu95MfirqFjT72XTsfgqpJv3oENjJsvlRZX7osxSc3Vvi/
-        7ZYaEC4BbCWKa2v6RKWy/NQ=
-X-Google-Smtp-Source: ABdhPJwiXEHBUCpyKrHw/X3PhlHP/nFSJvqYQBgj4YRA51NuRP3X7B+7tyydB+mAxH5jYHTXVT0SnA==
-X-Received: by 2002:adf:dd07:: with SMTP id a7mr4552817wrm.395.1635417353741;
-        Thu, 28 Oct 2021 03:35:53 -0700 (PDT)
+        bh=IGvktVhPA6KMBN53Q9S7sFoN48GUfEwFvixIWYHV+nI=;
+        b=LL7VZc53DGLLwgAtaeAVG9rTBLywNuaLJSrbOfQctHWVpxpyk/bXHiXabyB5Ekh1Cl
+         pS2y0G1akS+KDoN/4X41moTGyk20zAZcYmDK8ZF2J5CrfqarVT1GcHZLf9HhNQzgYYJ2
+         06ZR3VFtAIgnDk259p1cSz3sYNwvithK6vQPo8aAKkbx22Za4894c8AmahKS08xSlU1G
+         0+z6gALSRP3uRHH1c6GaKMho44q7BHtZCVaCWLgJfZ4pce1JvG1GEiEi1p4+OkaWVAgx
+         HbAPFt0oKflQYjFhtCN+sE2xYB+n2N4h+u9ti0s/sDyxuBjpI+RmYBoAdxtdzZmHJ4yS
+         LwRg==
+X-Gm-Message-State: AOAM5337tQg33PISIU2YUyCiV1AiVOFZTUl6OB1xbfUwfIOZSX/4ljFc
+        /dmfVjTIpp+BgUG4q94FFco=
+X-Google-Smtp-Source: ABdhPJy0OHC/Z0pjoruA7fVybjLgRInXO+fCbCQ6mm2m62n6br5IuulLDNIS8la03WanY6gQB39Osg==
+X-Received: by 2002:adf:e0c1:: with SMTP id m1mr4558338wri.241.1635417356520;
+        Thu, 28 Oct 2021 03:35:56 -0700 (PDT)
 Received: from localhost.localdomain ([2a01:4b00:f411:e700:e085:8cb7:7bf6:5d62])
-        by smtp.gmail.com with ESMTPSA id 13sm3768083wrz.38.2021.10.28.03.35.52
+        by smtp.gmail.com with ESMTPSA id 13sm3768083wrz.38.2021.10.28.03.35.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 03:35:53 -0700 (PDT)
+        Thu, 28 Oct 2021 03:35:56 -0700 (PDT)
 From:   Karolina Drobnik <karolinadrobnik@gmail.com>
 To:     outreachy-kernel@googlegroups.com
 Cc:     gregkh@linuxfoundation.org, forest@alittletooquiet.net,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
         Karolina Drobnik <karolinadrobnik@gmail.com>
-Subject: [PATCH 1/7] staging: vt6655: Introduce `idx` temporary variable
-Date:   Thu, 28 Oct 2021 11:35:31 +0100
-Message-Id: <34bd0e8f42597edf006a950d420345befc4e0bc2.1635415820.git.karolinadrobnik@gmail.com>
+Subject: [PATCH 2/7] staging: vt6655: Use incrementation in `idx`
+Date:   Thu, 28 Oct 2021 11:35:32 +0100
+Message-Id: <c569952d92ba51f32679c2fd87fd48ad8e49e3fc.1635415820.git.karolinadrobnik@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <cover.1635415820.git.karolinadrobnik@gmail.com>
 References: <cover.1635415820.git.karolinadrobnik@gmail.com>
@@ -65,62 +65,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a local variable to store `MISCFIFO_SYNDATA_IDX` offset.
-This change helps in shortening the lines in `rf.c` that
-are deemed too long by checkpatch.pl.
+Increment `idx` in a loop instead of adding the loop counter
+`i` to do so. Thanks to this change, the cast to unsigned short
+can be removed.
 
 Signed-off-by: Karolina Drobnik <karolinadrobnik@gmail.com>
 ---
- drivers/staging/vt6655/rf.c | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
+ drivers/staging/vt6655/rf.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/staging/vt6655/rf.c b/drivers/staging/vt6655/rf.c
-index bc4abe77db7b..f195dafb6e63 100644
+index f195dafb6e63..c07653566d17 100644
 --- a/drivers/staging/vt6655/rf.c
 +++ b/drivers/staging/vt6655/rf.c
-@@ -681,6 +681,7 @@ bool RFvWriteWakeProgSyn(struct vnt_private *priv, unsigned char rf_type,
- {
- 	void __iomem *iobase = priv->port_offset;
- 	int i;
-+	unsigned short idx = MISCFIFO_SYNDATA_IDX;
- 	unsigned char init_count = 0;
- 	unsigned char sleep_count = 0;
- 
-@@ -699,11 +700,11 @@ bool RFvWriteWakeProgSyn(struct vnt_private *priv, unsigned char rf_type,
+@@ -700,11 +700,11 @@ bool RFvWriteWakeProgSyn(struct vnt_private *priv, unsigned char rf_type,
  			return false;
  
  		for (i = 0; i < CB_AL2230_INIT_SEQ; i++)
--			MACvSetMISCFifo(priv, (unsigned short)(MISCFIFO_SYNDATA_IDX + i), al2230_init_table[i]);
-+			MACvSetMISCFifo(priv, (unsigned short)(idx + i), al2230_init_table[i]);
+-			MACvSetMISCFifo(priv, (unsigned short)(idx + i), al2230_init_table[i]);
++			MACvSetMISCFifo(priv, idx++, al2230_init_table[i]);
  
--		MACvSetMISCFifo(priv, (unsigned short)(MISCFIFO_SYNDATA_IDX + i), al2230_channel_table0[channel - 1]);
-+		MACvSetMISCFifo(priv, (unsigned short)(idx + i), al2230_channel_table0[channel - 1]);
+-		MACvSetMISCFifo(priv, (unsigned short)(idx + i), al2230_channel_table0[channel - 1]);
++		MACvSetMISCFifo(priv, idx++, al2230_channel_table0[channel - 1]);
  		i++;
--		MACvSetMISCFifo(priv, (unsigned short)(MISCFIFO_SYNDATA_IDX + i), al2230_channel_table1[channel - 1]);
-+		MACvSetMISCFifo(priv, (unsigned short)(idx + i), al2230_channel_table1[channel - 1]);
+-		MACvSetMISCFifo(priv, (unsigned short)(idx + i), al2230_channel_table1[channel - 1]);
++		MACvSetMISCFifo(priv, idx++, al2230_channel_table1[channel - 1]);
  		break;
  
  		/* Need to check, PLLON need to be low for channel setting */
-@@ -716,17 +717,17 @@ bool RFvWriteWakeProgSyn(struct vnt_private *priv, unsigned char rf_type,
+@@ -717,17 +717,17 @@ bool RFvWriteWakeProgSyn(struct vnt_private *priv, unsigned char rf_type,
  
  		if (channel <= CB_MAX_CHANNEL_24G) {
  			for (i = 0; i < CB_AL7230_INIT_SEQ; i++)
--				MACvSetMISCFifo(priv, (unsigned short)(MISCFIFO_SYNDATA_IDX + i), al7230_init_table[i]);
-+				MACvSetMISCFifo(priv, (unsigned short)(idx + i), al7230_init_table[i]);
+-				MACvSetMISCFifo(priv, (unsigned short)(idx + i), al7230_init_table[i]);
++				MACvSetMISCFifo(priv, idx++, al7230_init_table[i]);
  		} else {
  			for (i = 0; i < CB_AL7230_INIT_SEQ; i++)
--				MACvSetMISCFifo(priv, (unsigned short)(MISCFIFO_SYNDATA_IDX + i), al7230_init_table_a_mode[i]);
-+				MACvSetMISCFifo(priv, (unsigned short)(idx + i), al7230_init_table_a_mode[i]);
+-				MACvSetMISCFifo(priv, (unsigned short)(idx + i), al7230_init_table_a_mode[i]);
++				MACvSetMISCFifo(priv, idx++, al7230_init_table_a_mode[i]);
  		}
  
--		MACvSetMISCFifo(priv, (unsigned short)(MISCFIFO_SYNDATA_IDX + i), al7230_channel_table0[channel - 1]);
-+		MACvSetMISCFifo(priv, (unsigned short)(idx + i), al7230_channel_table0[channel - 1]);
+-		MACvSetMISCFifo(priv, (unsigned short)(idx + i), al7230_channel_table0[channel - 1]);
++		MACvSetMISCFifo(priv, idx++, al7230_channel_table0[channel - 1]);
  		i++;
--		MACvSetMISCFifo(priv, (unsigned short)(MISCFIFO_SYNDATA_IDX + i), al7230_channel_table1[channel - 1]);
-+		MACvSetMISCFifo(priv, (unsigned short)(idx + i), al7230_channel_table1[channel - 1]);
+-		MACvSetMISCFifo(priv, (unsigned short)(idx + i), al7230_channel_table1[channel - 1]);
++		MACvSetMISCFifo(priv, idx++, al7230_channel_table1[channel - 1]);
  		i++;
--		MACvSetMISCFifo(priv, (unsigned short)(MISCFIFO_SYNDATA_IDX + i), al7230_channel_table2[channel - 1]);
-+		MACvSetMISCFifo(priv, (unsigned short)(idx + i), al7230_channel_table2[channel - 1]);
+-		MACvSetMISCFifo(priv, (unsigned short)(idx + i), al7230_channel_table2[channel - 1]);
++		MACvSetMISCFifo(priv, idx++, al7230_channel_table2[channel - 1]);
  		break;
  
  	case RF_NOTHING:
