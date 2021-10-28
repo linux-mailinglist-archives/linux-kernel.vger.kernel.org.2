@@ -2,157 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A00E43DFE5
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 13:19:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E21C43DFED
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 13:21:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230299AbhJ1LV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 07:21:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43606 "EHLO
+        id S230157AbhJ1LXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 07:23:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230157AbhJ1LVQ (ORCPT
+        with ESMTP id S229578AbhJ1LXq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 07:21:16 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36B7EC061745
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 04:18:49 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id z2-20020a254c02000000b005b68ef4fe24so8221628yba.11
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 04:18:49 -0700 (PDT)
+        Thu, 28 Oct 2021 07:23:46 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63A6AC061570
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 04:21:19 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id w15so23386478edc.9
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 04:21:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=GArPAs92R04yZtAJ3Eyt3HPrbC6g2vwEe9LxDAEsAoI=;
-        b=mpyXcJETSPJjVF7L8fe2iYA2F2RsPPOD0pVivAwB74+al0GAinwQAe4IwSq71Pz88d
-         HanUxsrz0KUgt8v6D6bfgadmfOIbpKCOynDxw4+M4ccIAJy/xRpqz005cns9xyW7fQgg
-         JXWrZ+m6QqHX8NJp4c69iKe06Cn7dpmSusjnm1ujukAD44dOvUP904QQKYNqaY/dEi+G
-         o46gsihRHGkSsC2i40ySdv8mSEmZauEcv/mwIx9L+3mpYhXQ7LRee2leQSbDeqeyz+kr
-         qB8M4ValJTi+oR02Ktcthel+VeW7v8UK0MMz0/ofQDYBWw5XNTRRJniukz2tAwNhlcmE
-         yigw==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Op6C5+sI2HRkHLePoE/V+Eu4upF10actJBzQJBisYEY=;
+        b=IiBM5elO1GRwsifeUBbzlGsnrdnNe0MMKrHZbQV4qs9ibGLxvC1WEhSJdbrhfpCiCc
+         YSPsio769dLE37ClBW2keNGTu0+UnrbdNBhOAda5EJ9wEzyFafnkmx0P82n2IOjgcWQ+
+         z9pYjILQIJEsJUL6iW9rzaQsXNmkGsO8/wahUDnNfXMr4noL2A4P5Rq8faTSVHMQLSQR
+         KuAfTVH5lx+DTEs3ynk/3AhoXO3QnY1j61cgfrk65sToRFXJPfjCJGx7hkAl5iDy6g22
+         lY8r1XtMoexnt5PQsf+fSBKlWnrDv2AFlFxsz0bbgxbeYMZqmpVprOQx/unlC9BTbs/c
+         i/Lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=GArPAs92R04yZtAJ3Eyt3HPrbC6g2vwEe9LxDAEsAoI=;
-        b=Lt4fmgwM2D1xLeYosGHdzUMqbLk9qqQnmujU5nXoraG8mjq0VCl+Vik2A8TKvHxASo
-         TZac6BZbmOu9FfDDQbCtOu9vUtPsgv967ETupqN0C8iq92MiGLeaIBS32Sqf8yJ7X7g/
-         SSlI4muE8QY3UI+g+xcYvlBJFnWjZLVW0uIzB121mzcqvf8bl8RXhTqeb0v7KdeZ3i7j
-         jNYqq7mKOqKa2s5CWKHYrGBjXvxE98kc7aRNFFFvRU1lPZrQHieVIrllkQTwidVEV25Q
-         E34Divk1Xz/E/G2/9frYF/IS7OU13yA/6rVk9FofkW3dNNIQnLQadg+YwxvQ4ZPVh0D0
-         hrlg==
-X-Gm-Message-State: AOAM533or1tJCJYXeft+pnqz+2TtadVs7tohSKfldcIbxJkLgmooo4Fl
-        9gbP9yW5JZEBwSSizsNLumdUF48cmlSi
-X-Google-Smtp-Source: ABdhPJyLWi7XzEVenNr7snS37vs2wJPBKmPwYx/gvza6YS5LzQGepbfu6AjkxrtFFuQ+Tk+836P7OeSqObiU
-X-Received: from apusaka-p920.tpe.corp.google.com ([2401:fa00:1:10:a9d:c667:f9ff:b40e])
- (user=apusaka job=sendgmr) by 2002:a25:424a:: with SMTP id
- p71mr3949088yba.101.1635419928437; Thu, 28 Oct 2021 04:18:48 -0700 (PDT)
-Date:   Thu, 28 Oct 2021 19:18:42 +0800
-Message-Id: <20211028191805.1.I35b7f3a496f834de6b43a32f94b6160cb1467c94@changeid>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
-Subject: [PATCH] Bluetooth: Limit duration of Remote Name Resolve
-From:   Archie Pusaka <apusaka@google.com>
-To:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        Marcel Holtmann <marcel@holtmann.org>
-Cc:     CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        Archie Pusaka <apusaka@chromium.org>,
-        Miao-chen Chou <mcchou@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Op6C5+sI2HRkHLePoE/V+Eu4upF10actJBzQJBisYEY=;
+        b=1SpO41NzoFbjUekDbxM+j18PEOpluAdv5kUmHr3nY1qdgtRnYsF03y5YS0rH7dXvNB
+         JXaU4FxCg6vp0zQyQ8llL1ENBnPY3wV9oRzTr18odhXoOLgx/Ummg69iBO2ND+k88ZkT
+         Rg4jS0pq4f/znfzjtwuLo808hTn9ixtgQUe8zl29ct68Yebx+VoZYr1fin39G6YozjJb
+         /Fil/pPjSQgDSOQZYEYLGwz1rDYg/gmkA4sp7jmv1XE7zzhYSkITIrrEcfCmBm5H87B0
+         YuUwIDQRrD9MjPiOOhrnY8a44npEYCXfJ0FVzxXRz7U+uUTHbuS2ivP1Zsx3TWgAgRZo
+         9KhQ==
+X-Gm-Message-State: AOAM533IDES+uccqqgvS5VIOKlzQv3/umrTP+B9M0jfTnqf34ks43WJL
+        786Z6UqER4qWeCY/b3+Vp8g=
+X-Google-Smtp-Source: ABdhPJwO2z7zzpNUKDPjGWnGeh/nQymbrNIcxwE3Qx/2P0UOU7kNvL41RLmv0Efqnm2zTaSNCtdrWg==
+X-Received: by 2002:a17:906:16c9:: with SMTP id t9mr4706299ejd.104.1635420077776;
+        Thu, 28 Oct 2021 04:21:17 -0700 (PDT)
+Received: from localhost.localdomain (host-79-56-54-101.retail.telecomitalia.it. [79.56.54.101])
+        by smtp.gmail.com with ESMTPSA id q17sm1148529ejp.106.2021.10.28.04.21.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 04:21:17 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     outreachy-kernel@googlegroups.com
+Cc:     gregkh@linuxfoundation.org, forest@alittletooquiet.net,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Karolina Drobnik <karolinadrobnik@gmail.com>,
+        Karolina Drobnik <karolinadrobnik@gmail.com>
+Subject: Re: [Outreachy kernel] [PATCH 4/7] staging: vt6655: Introduce `data` temporary variable
+Date:   Thu, 28 Oct 2021 13:21:16 +0200
+Message-ID: <2039159.k92FijXA2m@localhost.localdomain>
+In-Reply-To: <dc72a4c3539aed70569f66396ed3b51818bc2aea.1635415820.git.karolinadrobnik@gmail.com>
+References: <cover.1635415820.git.karolinadrobnik@gmail.com> <dc72a4c3539aed70569f66396ed3b51818bc2aea.1635415820.git.karolinadrobnik@gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Archie Pusaka <apusaka@chromium.org>
+On Thursday, October 28, 2021 12:35:34 PM CEST Karolina Drobnik wrote:
+> Add a variable to store initialization tables. Use this variable
+> in AL2230 initialization.
+> 
+> Signed-off-by: Karolina Drobnik <karolinadrobnik@gmail.com>
+> ---
+>  drivers/staging/vt6655/rf.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/staging/vt6655/rf.c b/drivers/staging/vt6655/rf.c
+> index ea74701917e5..afd202ea3356 100644
+> --- a/drivers/staging/vt6655/rf.c
+> +++ b/drivers/staging/vt6655/rf.c
+> @@ -684,6 +684,7 @@ bool RFvWriteWakeProgSyn(struct vnt_private *priv, 
+unsigned char rf_type,
+>  	unsigned short idx = MISCFIFO_SYNDATA_IDX;
+>  	unsigned char init_count = 0;
+>  	unsigned char sleep_count = 0;
+> +	const unsigned long *data;
+>  
+>  	VNSvOutPortW(iobase + MAC_REG_MISCFFNDEX, 0);
+>  	switch (rf_type) {
+> @@ -699,8 +700,9 @@ bool RFvWriteWakeProgSyn(struct vnt_private *priv, 
+unsigned char rf_type,
+>  		if (init_count > (MISCFIFO_SYNDATASIZE - sleep_count))
+>  			return false;
+>  
+> +		data = al2230_init_table;
+>  		for (i = 0; i < CB_AL2230_INIT_SEQ; i++)
+> -			MACvSetMISCFifo(priv, idx++, 
+al2230_init_table[i]);
+> +			MACvSetMISCFifo(priv, idx++, *(data++));
 
-When doing remote name request, we cannot scan. In the normal case it's
-OK since we can expect it to finish within a short amount of time.
-However, there is a possibility to scan lots of devices that
-(1) requires Remote Name Resolve
-(2) is unresponsive to Remote Name Resolve
-When this happens, we are stuck to do Remote Name Resolve until all is
-done before continue scanning.
+Hi Karolina,
 
-This patch adds a time limit to stop us spending too long on remote
-name request. The limit is increased for every iteration where we fail
-to complete the RNR in order to eventually solve all names.
+I think you are using redundant parentheses in "* (data ++)" but understand 
+that those increments and dereferences are equivalent to "* data ++" 
+(according to the C precedence rules).
 
-Signed-off-by: Archie Pusaka <apusaka@chromium.org>
-Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
+Some time ago I suggested that you use those redundant parentheses because
+Greg Kroah-Hartman had previously explained that he prefers not to see 
+"*foo++" because maintainers and reviewers are not required to remember the C 
+precedence rules.
 
----
-Hi maintainers, we found one instance where a test device spends ~90
-seconds to do Remote Name Resolving, hence this patch.
-I think it's better if we reset the time limit to the default value
-at some point, but I don't have a good proposal where to do that, so
-in the end I didn't.
+I hope my suggestion isn't based on a misunderstanding of what Greg wants 
+here and that your patch can be accepted as is.
+
+While we are at it, please notice that Maintainers of different subsystems 
+may see this topic from a different point of view and that they might very 
+well ask you for removing those redundant parentheses.
+
+I'd suggest to use grep and find out what is preferred in other subsystems, 
+when you want to contribute to other parts of Linux.
+
+Thanks,
+
+Fabio
+
+>  		MACvSetMISCFifo(priv, idx++, 
+al2230_channel_table0[channel - 1]);
+>  		MACvSetMISCFifo(priv, idx++, 
+al2230_channel_table1[channel - 1]);
+> -- 
+> 2.30.2
+> 
+> -- 
+> You received this message because you are subscribed to the Google Groups 
+"outreachy-kernel" group.
+> To unsubscribe from this group and stop receiving emails from it, send an 
+email to outreachy-kernel+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/
+outreachy-kernel/dc72a4c3539aed70569f66396ed3b51818bc2aea.
+1635415820.git.karolinadrobnik%40gmail.com.
+> 
 
 
- include/net/bluetooth/hci_core.h |  5 +++++
- net/bluetooth/hci_event.c        | 12 ++++++++++++
- 2 files changed, 17 insertions(+)
 
-diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
-index dd8840e70e25..df9ffedf1d29 100644
---- a/include/net/bluetooth/hci_core.h
-+++ b/include/net/bluetooth/hci_core.h
-@@ -87,6 +87,8 @@ struct discovery_state {
- 	u8			(*uuids)[16];
- 	unsigned long		scan_start;
- 	unsigned long		scan_duration;
-+	unsigned long		name_resolve_timeout;
-+	unsigned long		name_resolve_duration;
- };
- 
- #define SUSPEND_NOTIFIER_TIMEOUT	msecs_to_jiffies(2000) /* 2 seconds */
-@@ -805,6 +807,8 @@ static inline void sco_recv_scodata(struct hci_conn *hcon, struct sk_buff *skb)
- #define INQUIRY_CACHE_AGE_MAX   (HZ*30)   /* 30 seconds */
- #define INQUIRY_ENTRY_AGE_MAX   (HZ*60)   /* 60 seconds */
- 
-+#define NAME_RESOLVE_INIT_DURATION	5120	/* msec */
-+
- static inline void discovery_init(struct hci_dev *hdev)
- {
- 	hdev->discovery.state = DISCOVERY_STOPPED;
-@@ -813,6 +817,7 @@ static inline void discovery_init(struct hci_dev *hdev)
- 	INIT_LIST_HEAD(&hdev->discovery.resolve);
- 	hdev->discovery.report_invalid_rssi = true;
- 	hdev->discovery.rssi = HCI_RSSI_INVALID;
-+	hdev->discovery.name_resolve_duration = NAME_RESOLVE_INIT_DURATION;
- }
- 
- static inline void hci_discovery_filter_clear(struct hci_dev *hdev)
-diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-index 3cba2bbefcd6..104a1308f454 100644
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -2086,6 +2086,15 @@ static bool hci_resolve_next_name(struct hci_dev *hdev)
- 	if (list_empty(&discov->resolve))
- 		return false;
- 
-+	/* We should stop if we already spent too much time resolving names.
-+	 * However, double the name resolve duration for the next iterations.
-+	 */
-+	if (time_after(jiffies, discov->name_resolve_timeout)) {
-+		bt_dev_dbg(hdev, "Name resolve takes too long, stopping.");
-+		discov->name_resolve_duration *= 2;
-+		return false;
-+	}
-+
- 	e = hci_inquiry_cache_lookup_resolve(hdev, BDADDR_ANY, NAME_NEEDED);
- 	if (!e)
- 		return false;
-@@ -2634,6 +2643,9 @@ static void hci_inquiry_complete_evt(struct hci_dev *hdev, struct sk_buff *skb)
- 	if (e && hci_resolve_name(hdev, e) == 0) {
- 		e->name_state = NAME_PENDING;
- 		hci_discovery_set_state(hdev, DISCOVERY_RESOLVING);
-+
-+		discov->name_resolve_timeout = jiffies +
-+				msecs_to_jiffies(discov->name_resolve_duration);
- 	} else {
- 		/* When BR/EDR inquiry is active and no LE scanning is in
- 		 * progress, then change discovery state to indicate completion.
--- 
-2.33.0.1079.g6e70778dc9-goog
 
