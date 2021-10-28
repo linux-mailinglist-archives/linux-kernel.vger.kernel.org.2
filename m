@@ -2,65 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8CF043DD39
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 10:57:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EEBE43DD36
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 10:56:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229992AbhJ1I76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 04:59:58 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:46218 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229791AbhJ1I75 (ORCPT
+        id S229987AbhJ1I6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 04:58:33 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:4688 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229877AbhJ1I6c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 04:59:57 -0400
-Date:   Thu, 28 Oct 2021 10:57:28 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1635411449;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=h3Cje/SqvoYZHCrFh9PDa4DmqMrBzIUj2b9Zikpc8xU=;
-        b=gDLavLb42mgNDpGDuSnlwyEe1Z9r4m/Po0NnjCth7VpzBoYctRmN0Ub+FN7H8YPPpHHyGp
-        KVlQ/td991cNpKG+Kh1j+AhkiSQ0M8FvyC8s0Dg+w9t7e+jfFKPQ8DER19/5fEy+BA/oma
-        Ay/x3wMdwYUlLPug8/yX2ffc6LIp77YO9F3MsQ6zoIllIpjlI+U/47FsWweq6HNOPeymMm
-        dY2y/Ez+MCEz4igh8j/chZB4sisOcWAnaxAfNG7zVQX0XxatZ8eQVTN0Asx2Vducr53qRM
-        LfSh3lTCULwNdPMXfgy1fxLFkJ1H6M6UxDBSOkqgKh03YsZOsQvre/dBDawveQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1635411449;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=h3Cje/SqvoYZHCrFh9PDa4DmqMrBzIUj2b9Zikpc8xU=;
-        b=5c0RE0K570oOvLi7kvEji7sKkb5/YnQB9kigXLanVL78HNxEFboadXTM25uOQvRSVBp8KC
-        5fIuamHGKliWQMBQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Gregor Beck <gregor.beck@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>
-Subject: Re: 5.4.143-rt63 fscache sleeps while holding a look
-Message-ID: <20211028085728.j34fsqbvtb5hqqfc@linutronix.de>
-References: <CAEvSrYKjfkO=q=kK=2GEo707QDuEGjKA5Nn3E+9=QGOxnFE+vw@mail.gmail.com>
+        Thu, 28 Oct 2021 04:58:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1635411366; x=1666947366;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=/0UPLaDhy5BJJ6FFv8PzjnYUUj7i5fsxoZCJyakl5BQ=;
+  b=uBvd1HQJgTbCg68hBc0eRGUQDF7mrRjhIfu/GLSdMh2gQ/64QxNSJA1q
+   PJVLsFLr/5fvy8GKAWNiNUUAOrlS9tl+RNF8sPNee5dXM+zX5Zg73Mg+3
+   V1uVfKZ5WF32l4Ya13pw3gBip7vzjVbbxdp0BMCXUd64JP34pOaXeyKIP
+   j7B6avxwceQUmsPm6wjWEDfEAQeVKVawxAJTPlVoviF6PD67eAHdvfeW1
+   SvhrdGoYyZ1gA6VhJgOsVysty+UcFsLLxZmXUsxgMXcCHRIV4FwcIegkP
+   25xuAUliWQOQOkrJRp8CZxkdssKUdXmgLawrl/XwnnVuV6zPGnRm0ACsI
+   g==;
+IronPort-SDR: yty8zBVIjgtCtz9mlh4VOpVaraBtaIwXR43SXtqVi4Z2aTxe5IeCShX5JgUlGtfCL0p8NG5/B4
+ WAmFTQytlmG3zIIt4OstqR6SuscnqgoSpaCcIHapXJlBtPO1NpT43z04jXR0ryh7xjwjnHwh3I
+ siW5OEQAOd5ixyb/RRcctAbvbJh3c7mA5jvkqng+8RznHnn5GQ9Tmlo5qO7btwqVy1FPN2bFG0
+ q6QF3vDgAeC7e6TYgHYlxY7x9BpkOFl6ZSGEkpYb1YZa3ZeFMQlaxRFRhcZixtL6PJD6FXRsA2
+ WxCAhz2RtNc8RCDok0IKhoqp
+X-IronPort-AV: E=Sophos;i="5.87,189,1631602800"; 
+   d="scan'208";a="149848806"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 28 Oct 2021 01:56:05 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Thu, 28 Oct 2021 01:56:05 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex02.mchp-main.com
+ (10.10.85.144) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
+ Transport; Thu, 28 Oct 2021 01:56:04 -0700
+Date:   Thu, 28 Oct 2021 10:57:47 +0200
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     Vinod Koul <vkoul@kernel.org>
+CC:     Alexandre Belloni <alexandre.belloni@bootlin.com>, <kishon@ti.com>,
+        <robh+dt@kernel.org>, <andrew@lunn.ch>,
+        <linux-phy@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 3/3] phy: Add lan966x ethernet serdes PHY driver
+Message-ID: <20211028085747.hhpbcfaevmt4wrl2@soft-dev3-1.localhost>
+References: <20211015123920.176782-1-horatiu.vultur@microchip.com>
+ <20211015123920.176782-4-horatiu.vultur@microchip.com>
+ <YW8HIHTCVgB+URJ5@matsya>
+ <20211020091733.fxph2pq3xa3byvry@soft-dev3-1.localhost>
+ <YXA3VVUGEjUR4HDC@matsya>
+ <YXA6lZBTeA6aNxVD@piout.net>
+ <YXEEcJHuEdFLPyCU@matsya>
+ <20211021091032.ffaoncg5jjdwdeyg@soft-dev3-1.localhost>
+ <YXGoGtbFeKa+TVk2@matsya>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="utf-8"
 Content-Disposition: inline
-In-Reply-To: <CAEvSrYKjfkO=q=kK=2GEo707QDuEGjKA5Nn3E+9=QGOxnFE+vw@mail.gmail.com>
+In-Reply-To: <YXGoGtbFeKa+TVk2@matsya>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-14 10:29:40 [+0200], Gregor Beck wrote:
-Hi,
-
-> with kernel 5.4.143-rt63 fscache might sleep while holding a lock:
+The 10/21/2021 23:19, Vinod Koul wrote:
 > 
-> [ 1392.058346] BUG: sleeping function called from invalid context at
-> kernel/locking/rtmutex.c:973
-> [ 1392.058349] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 159,
-> name: kswapd0
-> [ 1392.058351] Preemption disabled at:
-> [ 1392.058351] [<ffffffffc053a2a5>] fscache_enqueue_object+0x45/0x100
-> [fscache]
+> On 21-10-21, 11:10, Horatiu Vultur wrote:
+> > The 10/21/2021 11:40, Vinod Koul wrote:
+> > >
+> > > On 20-10-21, 17:49, Alexandre Belloni wrote:
+> > > > On 20/10/2021 21:05:49+0530, Vinod Koul wrote:
+> > > > > > > > +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
+> > > > > > >
+> > > > > > > Any reason why this is dual licensed, why not GPL only?
+> > > > > >
+> > > > > > No reason, I think I copy this from a different file.
+> > > > >
+> > > > > Please have a chat with your lawyers on the correct license this should
+> > > > > have!
+> > > > Dual GPL and MIT was Microsemi's policy, I'm not sure it carried over to
+> > > > Microchip.
+> > >
+> > > That is why they need to talk to someone and decide what license
+> > > applies :)
+> >
+> > I have changed it to be the same as the one on sparx5 because also
+> > sparx5 is a Microchip product. On sparx5 we used:
+> > 'SPDX-License-Identifier: GPL-2.0-or-later'
+> 
+> Has the code been copied/derived from somewhere/auto generated from
+> scripts/tools or entirely written by you?
 
-This brings some memory back. Let me stare at it.
+Sorry for late reply, but I was out of office without access to the
+emails.
 
-> Gregor
+The register file 'lan966x_serdes_regs.h' was autogenerated from some
+internal scripts. Which takes the info from here [1] and generates these
+header files. The reason why we generate them is that is more error proof
+that writting them manually. We are doing the same for sparx5
+registers[2]
 
-Sebastian
+The other file 'lan966x_serdes.c' was entirely written by me.
+
+[1] https://github.com/microchip-ung/lan9668_reginfo
+[2] https://elixir.bootlin.com/linux/latest/source/drivers/phy/microchip/sparx5_serdes_regs.h
+
+> 
+> --
+> ~Vinod
+
+-- 
+/Horatiu
