@@ -2,100 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 086FC43DCFD
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 10:34:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CAFB43DCFE
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 10:35:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229950AbhJ1Ige (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 04:36:34 -0400
-Received: from mail-ua1-f47.google.com ([209.85.222.47]:43872 "EHLO
-        mail-ua1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229626AbhJ1Igd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 04:36:33 -0400
-Received: by mail-ua1-f47.google.com with SMTP id v3so10001403uam.10;
-        Thu, 28 Oct 2021 01:34:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BYbaXCUYNWuEm6VFzPPAR1kV9z1lrK0IXCwkfP1SadA=;
-        b=CYzzkop7dRZE4eMMbeQXAov/bGioCy9Vt2iQQo7NEMYOSjzlawqGYZNUpHzifso/Pz
-         YtPcDnzLNbF+fGVNtgtxu4jpFTetyfANZUcPoxRu85e4rRErbykvUhy3EEOtNS9rpl0T
-         wYD5kVjXrj5o1NaZkD/LOegZfA2K6hxGShWnxB5g9ttRbyJmw6nq9LtloR/vabXDqsGV
-         aR4WdRpu6VdbYVzqR3j/97XYCPuflf0KLDv2A0TlpJKOlxgxdVPOjSmXHZPPtUkX86bA
-         cN1cjrQn558HOalE/sxjnZcM7WY/ZrWDb6l+tbJxGwTI6Ze2FnuPUhGUnKWtUB02QQAJ
-         +5tA==
-X-Gm-Message-State: AOAM530ClTACY7IG5IfUGh0klMmlKDceIZimSQpNOqi/eOvSz90gSGSt
-        1R4DYOKYWlTWR+V163USJYj4seAeSYds/Q==
-X-Google-Smtp-Source: ABdhPJy7dwNsDkMlFGm70cwUIGaZe5jNg5oeikWbOuZRRL7EdVAVPjQ4CqAAPliqbdh8uGEXtdU6nQ==
-X-Received: by 2002:a9f:3881:: with SMTP id t1mr2733578uaf.127.1635410046224;
-        Thu, 28 Oct 2021 01:34:06 -0700 (PDT)
-Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com. [209.85.222.46])
-        by smtp.gmail.com with ESMTPSA id q24sm253216vkn.20.2021.10.28.01.34.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Oct 2021 01:34:06 -0700 (PDT)
-Received: by mail-ua1-f46.google.com with SMTP id s4so10174581uaq.0;
-        Thu, 28 Oct 2021 01:34:06 -0700 (PDT)
-X-Received: by 2002:ab0:2bd2:: with SMTP id s18mr2843638uar.78.1635410045974;
- Thu, 28 Oct 2021 01:34:05 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211005001914.28574-1-rdunlap@infradead.org> <20211005001914.28574-3-rdunlap@infradead.org>
- <20211027205431.GX7074@brightrain.aerifal.cx>
-In-Reply-To: <20211027205431.GX7074@brightrain.aerifal.cx>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 28 Oct 2021 10:33:54 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWUQkhYxXfrG4MG-Ghi62P_XVxkCMb_6qijP-MMgn-JWg@mail.gmail.com>
-Message-ID: <CAMuHMdWUQkhYxXfrG4MG-Ghi62P_XVxkCMb_6qijP-MMgn-JWg@mail.gmail.com>
-Subject: Re: [PATCH 2/5 v3] sh: add git tree to MAINTAINERS
-To:     Rich Felker <dalias@libc.org>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Content-Type: text/plain; charset="UTF-8"
+        id S229968AbhJ1IhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 04:37:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51806 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229626AbhJ1IhX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 04:37:23 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id ECEC7610C8;
+        Thu, 28 Oct 2021 08:34:56 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mg0sA-0025Rg-TI; Thu, 28 Oct 2021 09:34:55 +0100
+Date:   Thu, 28 Oct 2021 09:34:54 +0100
+Message-ID: <8735olbl8x.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Zhiyuan Dai <daizhiyuan@phytium.com.cn>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Hector Martin <marcan@marcan.st>,
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] irqchip/gic-v3: Fix EOImode semantics in git_cpu_sys_reg_init()
+In-Reply-To: <1635408092-5259-1-git-send-email-daizhiyuan@phytium.com.cn>
+References: <1635408092-5259-1-git-send-email-daizhiyuan@phytium.com.cn>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: daizhiyuan@phytium.com.cn, tglx@linutronix.de, marcan@marcan.st, will@kernel.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rich,
+Hi Zhiuyan,
 
-On Wed, Oct 27, 2021 at 10:54 PM Rich Felker <dalias@libc.org> wrote:
-> On Mon, Oct 04, 2021 at 05:19:11PM -0700, Randy Dunlap wrote:
-> > Add the git tree location for linux-sh.
-> >
-> > Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+On Thu, 28 Oct 2021 09:01:31 +0100,
+Zhiyuan Dai <daizhiyuan@phytium.com.cn> wrote:
+> 
+> ICC_CTLR_EL1 is a 64-bit register.EOImode, bit [1] EOI mode
+> for the current Security state.
+> 
+> current code semantics is set ICC_CTLR_EL1 register to zero.
+> This patch only set the EOImode Bit to zero.
+> 
+> refs: See Arm IHI 0069G, page 12-229.
+> 
+> Signed-off-by: Zhiyuan Dai <daizhiyuan@phytium.com.cn>
+> ---
+>  drivers/irqchip/irq-gic-v3.c       | 9 +++++++--
+>  include/linux/irqchip/arm-gic-v3.h | 3 +--
+>  2 files changed, 8 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
+> index fd4e9a3..96466fc0 100644
+> --- a/drivers/irqchip/irq-gic-v3.c
+> +++ b/drivers/irqchip/irq-gic-v3.c
+> @@ -967,6 +967,7 @@ static void gic_cpu_sys_reg_init(void)
+>  	u64 need_rss = MPIDR_RS(mpidr);
+>  	bool group0;
+>  	u32 pribits;
+> +	u32 val;
+>  
+>  	/*
+>  	 * Need to check that the SRE bit has actually been set. If
+> @@ -1009,12 +1010,16 @@ static void gic_cpu_sys_reg_init(void)
+>  	 */
+>  	gic_write_bpr1(0);
+>  
+> +	val = gic_read_ctlr();
+> +
+>  	if (static_branch_likely(&supports_deactivate_key)) {
+>  		/* EOI drops priority only (mode 1) */
+> -		gic_write_ctlr(ICC_CTLR_EL1_EOImode_drop);
+> +		val |= ICC_CTLR_EL1_EOImode;
+> +		gic_write_ctlr(val);
+>  	} else {
+>  		/* EOI deactivates interrupt too (mode 0) */
+> -		gic_write_ctlr(ICC_CTLR_EL1_EOImode_drop_dir);
+> +		val &= ~ICC_CTLR_EL1_EOImode;
+> +		gic_write_ctlr(val);
 
-> > --- linux-next-20211001.orig/MAINTAINERS
-> > +++ linux-next-20211001/MAINTAINERS
-> > @@ -18047,6 +18047,7 @@ M:    Yoshinori Sato <ysato@users.sourcefor
-> >  M:   Rich Felker <dalias@libc.org>
-> >  L:   linux-sh@vger.kernel.org
-> >  S:   Maintained
-> > +T:   git git://git.libc.org/linux-sh
-> >  Q:   http://patchwork.kernel.org/project/linux-sh/list/
-> >  F:   Documentation/sh/
-> >  F:   arch/sh/
->
-> I'm omitting this for now since (as noted on the cgit description)
-> this server is not provisioned adequately for cloning from scratch,
-> and should only be used for fetch into an already-populated mainline
-> repo clone. If that's a problem I can see about getting it moved
-> somewhere more appropriate.
+I really wonder why you would need a read-modify-write sequence. There
+are no bits in ICC_CTLR_EL1 that we would want to preserve:
 
-Perhaps you can move it to kernel.org?
+- PHME: if it is writable, we really want it to be 0, as we don't use
+  1:N distribution
 
-> The rest of this series should appear in next shortly.
+- CBPR: We only use G1 interrupts, and we use ICC_BPR1_EL1 for
+  preemption, hence the value being 0
 
-Thanks a lot!
+All the other fields (apart from EOImode, obviously) are read-only or
+RES0, as per the architecture.
 
-Gr{oetje,eeting}s,
+Can you explain what you are trying to achieve here?
 
-                        Geert
+Thanks,
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+	M.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-- 
+Without deviation from the norm, progress is not possible.
