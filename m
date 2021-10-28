@@ -2,106 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 480C743F1F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 23:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B84B43F1FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 23:40:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231382AbhJ1Vmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 17:42:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230476AbhJ1Vmi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 17:42:38 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88F80C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 14:40:11 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id x27-20020a9d459b000000b0055303520cc4so10550498ote.13
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 14:40:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=89VrJzRM6RSUwQ34qooXEsp/HB/bFE0T6xqi3PWio58=;
-        b=Nst+4BGfxiu2+vvOdbBbejnK23enK5y2aRCcIlfvWfygRepiXwpjAi1yLCbk9FkpsQ
-         /tl8Z5Iw4Y6eBlJZ4W7R7bvSp2lHtGJbg6aqHsCzunrD0Ip/s1csNK3H1Z/Agb0EyYf1
-         euuSz0KhaeB4kZI8kXUjLU4gzwtLPkx8/uewJ9kqt59N+WZLV70BsdlxP1HGg9KgMuFy
-         ZSrTJKpXubIIdc1h8DJagtmniI0xWdanAaFf9akHyt4sAZpQMILbeYf4GIjVdA5Y+w14
-         OBNbtwxXnSj5qqWaUDfBrvzGmFQPY0RbyIhQAH4D9M2Ja45pWiSwFFftBGr3g1oWR/DK
-         0Mog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=89VrJzRM6RSUwQ34qooXEsp/HB/bFE0T6xqi3PWio58=;
-        b=q//E5bw9VpdLYliasIbKUfnM48g96ZfOc7kV1Op2mZUvtq1dP4UqIA7qdQGPl3lzvi
-         P6Y9JMUReihqdb6qr36u7VSlNwmbtPIo2nhpA9giWc0rJa9LDdsH1I3bQlcacTIdnYUL
-         EKaMI6hBo3WLQK81LAecKUf5tI2fjNkjVPDOlSgy9feEUqmmJfdBmWWJIHpXZAqfMAwt
-         sxGFBJYj+9yFKFYZn6Tivk+ajhbBqGNSdRVcqgqOSouBIvlc1i9pgnG69U1E4e8Q3izu
-         KthM7hAnlNUtH2OiNwrlSCtmlcDtR5T98kysj8rLzMKrkY/BW3qgskcqEJwaryM8hnLN
-         v+qw==
-X-Gm-Message-State: AOAM53118NbTozvXJu0Vrk+Pk6I2pjwIaz+goNktDjf7jsZ0HezOGCma
-        JaYTaqff9zS8H3oFlpl81yH4aw==
-X-Google-Smtp-Source: ABdhPJxD4RRQf4ewazIJAWZ25QZm3uIKBcw8qNYQDjh2e9Od46iqsRzLjKGWXVgPI5aOcdnn2F12Jg==
-X-Received: by 2002:a05:6830:2693:: with SMTP id l19mr5551898otu.45.1635457210829;
-        Thu, 28 Oct 2021 14:40:10 -0700 (PDT)
-Received: from ?IPv6:2600:380:541f:dad6:7383:302f:cb69:f16c? ([2600:380:541f:dad6:7383:302f:cb69:f16c])
-        by smtp.gmail.com with ESMTPSA id l8sm1398021otv.8.2021.10.28.14.40.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Oct 2021 14:40:10 -0700 (PDT)
-Subject: Re: [BUG] About "io_uring: add more uring info to fdinfo for debug"
-To:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Hao Xu <haoxu@linux.alibaba.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Eric Dumazet <edumazet@google.com>
-References: <9ac22d4d-c841-651a-fdd5-9fb3a65c57ab@gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <e72cdd44-c027-e51c-8b57-24f39bf21d87@kernel.dk>
-Date:   Thu, 28 Oct 2021 15:40:09 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231441AbhJ1VnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 17:43:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57376 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231401AbhJ1Vm6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 17:42:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4FD7360FF2;
+        Thu, 28 Oct 2021 21:40:28 +0000 (UTC)
+Date:   Thu, 28 Oct 2021 22:40:25 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ocfs2-devel@oss.oracle.com, kvm-ppc@vger.kernel.org,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH v8 00/17] gfs2: Fix mmap + page fault deadlocks
+Message-ID: <YXsYyWIKjvm6a9GX@arm.com>
+References: <YXCbv5gdfEEtAYo8@arm.com>
+ <CAHk-=wgP058PNY8eoWW=5uRMox-PuesDMrLsrCWPS+xXhzbQxQ@mail.gmail.com>
+ <YXL9tRher7QVmq6N@arm.com>
+ <CAHk-=wg4t2t1AaBDyMfOVhCCOiLLjCB5TFVgZcV4Pr8X2qptJw@mail.gmail.com>
+ <CAHc6FU7BEfBJCpm8wC3P+8GTBcXxzDWcp6wAcgzQtuaJLHrqZA@mail.gmail.com>
+ <YXhH0sBSyTyz5Eh2@arm.com>
+ <CAHk-=wjWDsB-dDj+x4yr8h8f_VSkyB7MbgGqBzDRMNz125sZxw@mail.gmail.com>
+ <YXmkvfL9B+4mQAIo@arm.com>
+ <CAHk-=wjQqi9cw1Guz6a8oBB0xiQNF_jtFzs3gW0k7+fKN-mB1g@mail.gmail.com>
+ <YXsUNMWFpmT1eQcX@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <9ac22d4d-c841-651a-fdd5-9fb3a65c57ab@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YXsUNMWFpmT1eQcX@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/28/21 3:24 PM, Eric Dumazet wrote:
-> Hi
+On Thu, Oct 28, 2021 at 10:20:52PM +0100, Catalin Marinas wrote:
+> On Wed, Oct 27, 2021 at 02:14:48PM -0700, Linus Torvalds wrote:
+> > On Wed, Oct 27, 2021 at 12:13 PM Catalin Marinas
+> > <catalin.marinas@arm.com> wrote:
+> > > As an alternative, you mentioned earlier that a per-thread fault status
+> > > was not feasible on x86 due to races. Was this only for the hw poison
+> > > case? I think the uaccess is slightly different.
+> > 
+> > It's not x86-specific, it's very generic.
+> > 
+> > If we set some flag in the per-thread status, we'll need to be careful
+> > about not overwriting it if we then have a subsequent NMI that _also_
+> > takes a (completely unrelated) page fault - before we then read the
+> > per-thread flag.
+> > 
+> > Think 'perf' and fetching backtraces etc.
+> > 
+> > Note that the NMI page fault can easily also be a pointer coloring
+> > fault on arm64, for exactly the same reason that whatever original
+> > copy_from_user() code was. So this is not a "oh, pointer coloring
+> > faults are different". They have the same re-entrancy issue.
+> > 
+> > And both the "pagefault_disable" and "fault happens in interrupt
+> > context" cases are also the exact same 'faulthandler_disabled()'
+> > thing. So even at fault time they look very similar.
 > 
-> I was looking at commit 83f84356bc8f2d
-> ("io_uring: add more uring info to fdinfo for debug") after receiving
-> syzbot reports.
+> They do look fairly similar but we should have the information in the
+> fault handler to distinguish: not a page fault (pte permission or p*d
+> translation), in_task(), user address, fixup handler. But I agree the
+> logic looks fragile.
 > 
-> I suspect that the following :
+> I think for nested contexts we can save the uaccess fault state on
+> exception entry, restore it on return. Or (needs some thinking on
+> atomicity) save it in a local variable. The high-level API would look
+> something like:
 > 
-> +       for (i = cached_sq_head; i < sq_tail; i++) {
-> +               unsigned int sq_idx = READ_ONCE(ctx->sq_array[i & sq_mask]);
-> +
-> +               if (likely(sq_idx <= sq_mask)) {
-> +                       struct io_uring_sqe *sqe = &ctx->sq_sqes[sq_idx];
-> +
-> +                       seq_printf(m, "%5u: opcode:%d, fd:%d, flags:%x, user_data:%llu\n",
-> +                                  sq_idx, sqe->opcode, sqe->fd, sqe->flags, sqe->user_data);
-> +               }
-> +       }
+> 	unsigned long uaccess_flags;	/* we could use TIF_ flags */
 > 
-> 
-> Can loop around ~2^32 times if sq_tail is close to ~0U
-> 
-> I see various READ_ONCE(), which are probably not good enough.
-> 
-> At very minimum I would handling wrapping...
+> 	uaccess_flags = begin_retriable_uaccess();
+> 	copied = copy_page_from_iter_atomic(...);
+> 	retry = end_retriable_uaccess(uaccess_flags);
 
-Thanks for reporting this. I think on top of wrapping, the loop should
-just be capped at sq_entries as well. There's no point dumping more than
-that, ever.
-
-I'll take a stab at this.
+It doesn't work with local flags, so it would need to be saved on
+exception entry (interrupt, breakpoint etc.) on the stack, restore on
+return. But the API would return pretty close (and probably still more
+complicated than copy_*() returning an error code).
 
 -- 
-Jens Axboe
-
+Catalin
