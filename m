@@ -2,120 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CCAD43F16C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 23:17:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA94B43F175
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 23:18:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231178AbhJ1VTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 17:19:30 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:49901 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230404AbhJ1VT3 (ORCPT
+        id S231313AbhJ1VUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 17:20:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231138AbhJ1VU2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 17:19:29 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HgJKQ2sdcz4xZ1;
-        Fri, 29 Oct 2021 08:16:57 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1635455820;
-        bh=77b6Wqpi5myKp7cmYqHYaq9WuF85O34cJH2RaLKBxUM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=uyiUdjfjUiWv6vLY7jPJidnMGI3NSeDl4eLBuV23oGFhYPyvu2bFtGHGd5UjDCyvS
-         EPcs0FJpU+zeV3rnXH3I1HRdkP1sa1PH9STvSu4HVtdqDpeaumLWwwRBuztVCLcqsV
-         eyCKH3SnBnLFlEXJQKdh55UPr8M/NLZw37ofcK6RjzeRpGG2s9OSGO6s8pYe+gPZ8X
-         rn9NfJgV83EAWJ+AfigdvyXIZUkNIbJ//Pf9iM8LgXUxuAldqRI71V4L/h/xqpsdB7
-         knZKi/BNR7Qx679v7CqtWxPnHmNpD1/M+V08cW1VCJawFa4xLSI6USj2MDgcunhbO8
-         XJs60vWbZwvzw==
-Date:   Fri, 29 Oct 2021 08:16:56 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        <lkft-triage@lists.linaro.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: riscv: delay.c:77:17: error: implicit declaration of function
- 'cpu_relax' [-Werror=implicit-function-declaration]
-Message-ID: <20211029081656.29a66889@canb.auug.org.au>
-In-Reply-To: <3555118a-914f-8c21-d5c9-7f3d969d357e@huawei.com>
-References: <CA+G9fYs6X5ce1BhynpivZLU7MvPq+vkrJCM7oSJf8GJBApCqZg@mail.gmail.com>
-        <3555118a-914f-8c21-d5c9-7f3d969d357e@huawei.com>
+        Thu, 28 Oct 2021 17:20:28 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74CC0C061570;
+        Thu, 28 Oct 2021 14:18:01 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id s10-20020a17090a6e4a00b001a5f4da9892so1777540pjm.3;
+        Thu, 28 Oct 2021 14:18:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Jou6sI/KcnOeQv+a2iral3PpAFCWpJuyKMRKWua0a48=;
+        b=C6Umwyu/hmjCCvlZmL3dD7PlIrwJchxY/lFJEMj3Hszi67ofJcX3ibK5DCn4t4eNYu
+         Y3NvzuK4AswCwzda3y49jxcZ5tnZ0rdFZ0atVDd/Tz/A1VDOC1yJqEfGK+X0ptpuRJeX
+         t9XPf2DjI0izRG5zPUmmFhhEs1ycZTeA74QJ5ceJ9qvCVKMCOJrzv0/bYLmeeFthrGyZ
+         Uto+7TQH6gdJ+xAho4a5woegYgsNlynwl8HfN2TjS0kZ6zyx70Vjz3InVS7B7pgmRifs
+         5CRpEVhS9S/EqpbMhZcFph2+jw0+aYztXZbtUJOujNZi5myt9B5vY4/mdw7ffzMapoLn
+         KDkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Jou6sI/KcnOeQv+a2iral3PpAFCWpJuyKMRKWua0a48=;
+        b=DhwYg53M0jnDgzAFMWSm3YvE/FJW0krPYE5X5veu4m8hSg3u32s/hxoBqdDWlvmHyZ
+         TV1SX2c8OtGYN5tey8yIGy0ZoQCNnSG1TetBwnpogT5CE5IzOp4atgG7VQSKDRc9qX3Z
+         JbUHglKLiTi8v9XiaYjBItiaRTdfyIdrUg5P8Nl79R38PX7zDtE0B1Vl+HEh5s42Rkpj
+         Cn5ru7M2cExEPUJGHzjQqZwbzzMFU0VF1Qyk/0aVevEtCm5t1OWkRotZB4KK+RhUZth1
+         807+AWuXYalcAtrFAUcGz/U8FJZExn7zcqWa7JHKQEvSxsLfj8TgZaH8xRTvrXKLf/bw
+         NWoQ==
+X-Gm-Message-State: AOAM533EHiXHxac/WmIiQD3EG2TTgFXZmx2aUwuX1fpcutI0pvmA8IIq
+        quOF33BLH0aZpjEnqpL8icuhpcY9dMg=
+X-Google-Smtp-Source: ABdhPJxMEnAJGc9z70QJHr5gbVot/6vvEJLopcBpATJ+S8l/YxnukPHRFF0BIgzfQCOpRnsczcxE2g==
+X-Received: by 2002:a17:902:d202:b0:13a:709b:dfb0 with SMTP id t2-20020a170902d20200b0013a709bdfb0mr6143389ply.34.1635455880925;
+        Thu, 28 Oct 2021 14:18:00 -0700 (PDT)
+Received: from jaschultz-Thelio-Major.corp.microsoft.com ([2001:4898:80e8:0:1173:767a:1b1e:f6a4])
+        by smtp.gmail.com with ESMTPSA id t14sm3506610pga.62.2021.10.28.14.17.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 14:18:00 -0700 (PDT)
+From:   Jarrett Schultz <jaschultzms@gmail.com>
+X-Google-Original-From: Jarrett Schultz <jaschultzMS@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>
+Cc:     linux-arm-msm@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
+        Jarrett Schultz <jaschultzMS@gmail.com>
+Subject: [PATCH 0/3] platform: surface: Introduce Surface XBL Driver
+Date:   Thu, 28 Oct 2021 14:17:50 -0700
+Message-Id: <20211028211753.573480-1-jaschultzMS@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/A+1lE0AWxzXcwYX7hLCIbyc";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/A+1lE0AWxzXcwYX7hLCIbyc
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Introduce the Surface Extensible Boot Loader driver for the Surface Duo.
+Exposes information about the driver to user space via sysfs.
 
-Hi all,
+Jarrett Schultz (3):
+  dt-bindings: platform: microsoft: Document surface xbl
+  platform: surface: Add surface xbl
+  arm64: dts: qcom: surface-duo: Add surface xbl
 
-[cc'ing Andy and Andrew]
+ .../ABI/testing/sysfs-platform-surface-xbl    |  78 ++++++
+ .../platform/microsoft/surface-xbl.yaml       |  37 +++
+ MAINTAINERS                                   |   9 +
+ .../dts/qcom/sm8150-microsoft-surface-duo.dts |   6 +
+ drivers/platform/surface/Kconfig              |  10 +
+ drivers/platform/surface/Makefile             |   1 +
+ drivers/platform/surface/surface-xbl.c        | 223 ++++++++++++++++++
+ 7 files changed, 364 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-platform-surface-xbl
+ create mode 100644 Documentation/devicetree/bindings/platform/microsoft/surface-xbl.yaml
+ create mode 100644 drivers/platform/surface/surface-xbl.c
 
-On Thu, 28 Oct 2021 22:57:02 +0800 Kefeng Wang <wangkefeng.wang@huawei.com>=
- wrote:
->
->  From c83a7b83ff96ba77a7c26090ccdd42aa7722788f Mon Sep 17 00:00:00 2001
-> From: Kefeng Wang <wangkefeng.wang@huawei.com>
-> Date: Thu, 28 Oct 2021 23:03:13 +0800
-> Subject: [PATCH] riscv: Fix implicit declaration of function 'cpu_relax'
->=20
-> Including <asm/processor.h> to fix the implicit declaration of function
-> 'cpu_relax'.
->=20
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-> ---
-> After  "include/linux/delay.h: replace kernel.h with the necessary inclus=
-ions", we need this include.
->=20
->   arch/riscv/lib/delay.c | 2 ++
->   1 file changed, 2 insertions(+)
->=20
-> diff --git a/arch/riscv/lib/delay.c b/arch/riscv/lib/delay.c
-> index f51c9a03bca1..8148dcdee894 100644
-> --- a/arch/riscv/lib/delay.c
-> +++ b/arch/riscv/lib/delay.c
-> @@ -8,6 +8,8 @@
->   #include <linux/timex.h>
->   #include <linux/export.h>
->=20
-> +#include <asm/processor.h>
-> +
->   /*
->    * This is copies from arch/arm/include/asm/delay.h
->    *
-> --=20
-> 2.26.2
+-- 
+2.25.1
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/A+1lE0AWxzXcwYX7hLCIbyc
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF7E0gACgkQAVBC80lX
-0GzREQf/Q4E7qFg/IApEKzU4bhquoI5QuysvDZvnFl9WK9ha8r+sAN0ZBIeODfa4
-bmeKbb8JRfhdWbOzIyOIKAgF6lEawqDCxvSnX/muItuBCAsYK2wFe8ZfbKwTTsGt
-vxADZEg9unMeiTH5BTlPGEpoCZFzMjha2eImRnLhysGjGa3jM9kUv+La24HizMmg
-Hc/9t/qaJ0SmPL90kNbkqen1/546aKjG3wi0tvm+WPRWFPY/FFrJEz9ipf/mR5cx
-yo09wZj7Rd5MQkI/VjGpRhsXsVltP4kWp2v4ZMBu+NnLB73ZzRaGuxWZsVNxuytr
-N8yX9UabqHI0m57sW2UfWozd5ApNsw==
-=ZeJi
------END PGP SIGNATURE-----
-
---Sig_/A+1lE0AWxzXcwYX7hLCIbyc--
