@@ -2,450 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18E1143D87E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 03:25:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1C6243D885
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 03:27:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229685AbhJ1B2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 21:28:08 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:40588 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229505AbhJ1B2H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 21:28:07 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx72kD_Hlh1kohAA--.36465S2;
-        Thu, 28 Oct 2021 09:25:24 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>
-Subject: [PATCH bpf-next v8] test_bpf: Add module parameter test_suite
-Date:   Thu, 28 Oct 2021 09:25:21 +0800
-Message-Id: <1635384321-28128-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Dx72kD_Hlh1kohAA--.36465S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3Cr4rCr1fGr15Cr17Ar1kZrb_yoWkGry8pF
-        WUXrn0yF18JF97XF4xXF17Aa4FyF40y3y8KrWfJryqyrs5AryUtF48K34Iqrn3Jr40vw15
-        Za10vFs8G3W2yaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9j14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr
-        1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
-        7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r
-        1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02
-        628vn2kIc2xKxwCY02Avz4vE14v_KwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbV
-        WUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF
-        67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42
-        IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1l
-        IxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvf
-        C2KfnxnUUI43ZEXa7VUbLiSPUUUUU==
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S229704AbhJ1BaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 21:30:18 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:23654 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229636AbhJ1BaR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 21:30:17 -0400
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19RMoQ0b004983;
+        Thu, 28 Oct 2021 01:26:23 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-type : mime-version;
+ s=corp-2021-07-09; bh=00hIRxLONqx+89sOGBZdZ0BNvFPX/tr/Ga097oZol8E=;
+ b=RXWQ1nVHFH22oxLuSTWSm+MUpBaedacM3oodIlY/4ca9cEpy7DOnC+cIDWMUhejse9B1
+ cFA/ornvfk0wHiUVR9wOgnxm7pcDEiWlylc8u2CjVdyDtUzModADyfgdHuqFeRrlYY2X
+ XUbF0jszYU2J0DjjY2nSHClyJJulhpcL9aKC/4uyqint3gdCN8+/xSwXcUlFbhw6L3wg
+ SXXLQarXL9aDcrelbY8F8r5andnKiDBTocW072q1KKJyMMVqsB3pGTcdrZAEdQ9Mjkjz
+ hfWxnnnEhW55fbR5utvO0L6Oh1CfcpcAbzjq+yLkudrwAO0L/Q4K1gDY6MHhP92sEbAo sQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3bx4fj6ctg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 28 Oct 2021 01:26:22 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19S1G2P3136150;
+        Thu, 28 Oct 2021 01:26:22 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2173.outbound.protection.outlook.com [104.47.59.173])
+        by userp3030.oracle.com with ESMTP id 3bx4h39y0s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 28 Oct 2021 01:26:21 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CeZeAwLfVj0nL+YJy8sIk+zk0h8ZhbGk9RQ3Fr33b7Og9AI6Gsvdr5WINIgIbaqVilte4UfdhvGYFqGL2g8gkzoWJ2tot6l6QWdoSfz55yVIS9B7etAOabvdA97EqZxXmU+vQ+MPxMg4c4FIBF6VbkjQlORHGehpt3c13JHkcGf1KcX52wloET3xBA3ZrxaO6OmDEua+YErGht/ZzCu7wdd8Vbjli5XEOAOi7L0Qkei3dcmgg6uRwJ+tn+8h2tja1Ss121wrek3sKxBjaiLKSgk5zfplt1YpVlWh7f+G7Xacdm28mIS4qTX5uK2+Gy90tdFbcynHDxsw9KXb2Yj6Fg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=00hIRxLONqx+89sOGBZdZ0BNvFPX/tr/Ga097oZol8E=;
+ b=cVrc9ERBkhGcKMDYheuIGoyRTCWc7fWTsnoL/7wceO6+vCQ65TA3+855kETErWXC1zaqREXvgylBEGTcP54hKhc8EujwPWpsGJJXSM2IZvIzWVhsUGN6H6+cMj2UB4D0LNY1CW4YSoFserlzSMgxDs+4nROmREAL1dUq6L2tzO93I6Em0JsuUcEHvYbDRPZ+RBaN2qiWe3lcW9MeW6HVGNDLRzx5/dUp3ATW7ymH7MipbZXiWsVNuZqW2E2xtLqfSHWVk3/ySVvU/ZlvXwP0e5a9XJN+C3TDiGABBDeWHRjhfoQ/D2toVlaH9qteXYBs3aJVLquZTnKnn/SYvSYOcg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=00hIRxLONqx+89sOGBZdZ0BNvFPX/tr/Ga097oZol8E=;
+ b=R9J2bIbpyyoAIDSOJtkw0O1NQnUw4d4954SxzNxdQgnEI/rRtpzb9m4IPVnBYsniflBdTG++KL84WX1qAQH6XHD1Kheqmwtl/K3LeTmqmgTzUOABfKP2v1FMrNCJtikfbmk3OstC3YfFYcqzAEdfq6zgcq7l1T//O1xI+1NHS+g=
+Authentication-Results: lists.xenproject.org; dkim=none (message not signed)
+ header.d=none;lists.xenproject.org; dmarc=none action=none
+ header.from=oracle.com;
+Received: from BYAPR10MB2663.namprd10.prod.outlook.com (2603:10b6:a02:a9::20)
+ by BY5PR10MB3761.namprd10.prod.outlook.com (2603:10b6:a03:1ff::33) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.13; Thu, 28 Oct
+ 2021 01:26:18 +0000
+Received: from BYAPR10MB2663.namprd10.prod.outlook.com
+ ([fe80::2848:63dc:b87:8021]) by BYAPR10MB2663.namprd10.prod.outlook.com
+ ([fe80::2848:63dc:b87:8021%7]) with mapi id 15.20.4649.014; Thu, 28 Oct 2021
+ 01:26:18 +0000
+From:   Dongli Zhang <dongli.zhang@oracle.com>
+To:     xen-devel@lists.xenproject.org, x86@kernel.org
+Cc:     boris.ostrovsky@oracle.com, jgross@suse.com,
+        sstabellini@kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
+        joe.jin@oracle.com, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/1] xen: delay xen_hvm_init_time_ops() if kdump is boot on vcpu>=32
+Date:   Wed, 27 Oct 2021 18:25:43 -0700
+Message-Id: <20211028012543.8776-1-dongli.zhang@oracle.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: SN4PR0701CA0044.namprd07.prod.outlook.com
+ (2603:10b6:803:2d::17) To BYAPR10MB2663.namprd10.prod.outlook.com
+ (2603:10b6:a02:a9::20)
+MIME-Version: 1.0
+Received: from localhost.localdomain (138.3.200.16) by SN4PR0701CA0044.namprd07.prod.outlook.com (2603:10b6:803:2d::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.15 via Frontend Transport; Thu, 28 Oct 2021 01:26:16 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ee9e348d-fa09-4a9f-f005-08d999b1f0e0
+X-MS-TrafficTypeDiagnostic: BY5PR10MB3761:
+X-Microsoft-Antispam-PRVS: <BY5PR10MB3761F0B338E4D170F1F9D35FF0869@BY5PR10MB3761.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: GZ0PE8fRiQtK/1s94b3zXHZ978dGcJr5t2hJngZ1Nb853CSC2Yg4NTSdVZHrui0WyNyEuD2Mw4peahW/L2CZPZNcdOhZd0m4oBkPjivgOonoh+hoT0AbG38qmJJEOXtwKSfj8I6JEvmUy/u3qBaRVq7n5tvaUy40WCLM78MDkdZCM6ene7lwrK8+oEHhq4l6oaKdxKjO+Cdgi8okwM8YVb/yeADTmvomRkyGSX0WeIJY8p/Ab4ZgHURR5BQ+Jqg4PzeE8Us5D9Q/nenuQbYiThNTDnThhVHAFOYh0J3at/o7mYWAcFzCoEQMG/6wCJwTHzer0GqJlMAqhWx7zLCA94GtXEYWSP/7/LUa+Mbco9M3J4riAYUcZaQfOfQDhZMqFVtrpRPo++PVC2PDG5dcjK6fWUTnhMWlr2aJpzU4Y5N6zc/cD+N454BFzC4uK2AMLSYV9r6R7TybRuP+piDN3cBgInhhHWE8Q5PCOxPxxvBoHfKug/83sp5+/tQ2An9d9XApoZthkxlFa10YajJKHlBA3rc4XGxJJ9MevyhWePpl0kJZp+dzLNPU2+s9QHHittyv7It8c9lb8+WgecSu721YlhfJSFgPWDqnbfwX8u6Wiyiyl553oGPyVJtDKqfXB6AFEUL5n++5hvFydIsaxkQDGFy99JXmwHtsGeIepSYbEbhg+hXxc3EfS8Ndfnvk2k4XvmV4W+Ks3v+rNB0Abp37OuwzND4wIT8+XKOjFmaL3YRhLRYBNU01GFQRc8Guq3/JGDlL0dLX/221+hDjeyuOi4twWrbyPSJuonbqEgE=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2663.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(36756003)(2616005)(5660300002)(38350700002)(2906002)(66556008)(86362001)(956004)(66476007)(316002)(6666004)(6506007)(38100700002)(83380400001)(186003)(6486002)(66946007)(8936002)(6512007)(508600001)(44832011)(26005)(52116002)(7416002)(4326008)(966005)(1076003)(8676002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?90jjWBT5DMTT5TE7WJ7uCYuMl3UkX10N8b6g7zr8ZQSpf2xNqKPKxKvFmsCl?=
+ =?us-ascii?Q?xUHYB9TJyyOAWgD8peO0JLJBMgsaKC1Ryjqo6AEcbU55xZF/DA3L/c3yQmnk?=
+ =?us-ascii?Q?dAr76I1pb3TGQGIxggg7PVYWStyZErJw3v3QXqgwi7ncbfuaSpJetsvCYFQp?=
+ =?us-ascii?Q?bntFohuSaPU12yHfptFAdtwJn16mZIyifPEWUjwepe69A4nwZicC5H03Yu7N?=
+ =?us-ascii?Q?mV08XCfjiqlFJm1X4MPWM7FhNjUWZV4NjS82sP8UJlztSnArPjHEiUW1pGli?=
+ =?us-ascii?Q?Ahr2RMCOUcjIQeDZ/ZzOVHPeJTpzoNzirQDqK5p95AaNt0olQ07CZhZyYiWx?=
+ =?us-ascii?Q?+TP2ODfCpm0JVM2pXByNU2Xus28q5Z3Y61+G39tgianMAlvHbcbEE0hI+8us?=
+ =?us-ascii?Q?wo3539OIgjsSJNAdqzYJTWI/+bG0z0pcDXPaFIsOpCFbYx81Ea2bREbXIM3A?=
+ =?us-ascii?Q?1BPNAkDSRyvSI3x0XcYZ6GRir7APZ6R8E4yn2sfL7wujuEPIOzuVEUSGRPaO?=
+ =?us-ascii?Q?iHUJFQhNLqtOYSw5FZtdEHNVj5y5Sxt7WYHGkCfL8/ifZRSNCCpWTves6VLb?=
+ =?us-ascii?Q?78PV+X+cI54COPvn4bgbTNDsQxNmwzMFyfZgP4jVGof63/roUFzp28THAUk+?=
+ =?us-ascii?Q?tXmud+uQZu00LjFrj4Otd1SSEm/cXHRzwy5zeqcnkL9aSNjF+iZKYSrtYhpC?=
+ =?us-ascii?Q?kLGjSfHxJHiSSWyk2s9pICsL977TMh6V6VJb/tkKlyzkLnCANuFG1T3z1PQM?=
+ =?us-ascii?Q?98AObkglseytl9zuHE+oY6g7a3XGjfBQE7Nc7arAGUsecwL7D6xdSZtKcyOp?=
+ =?us-ascii?Q?GdXLLwoVHuQXmgRO8b8MolF3mgOQOxDG9ABiyq2w7CjOFPDn9E/EUx9Pm0+W?=
+ =?us-ascii?Q?NYo9BI53cCD6bIeVfgYczP56fi/4+S727c/q6aiuHkBuj2LH9ViUOEWC5wJY?=
+ =?us-ascii?Q?c1h3dpYTKBF5ZDp4vxdVNAEqy7AW4bMaMjFYGVc55SgIQ5qzOlsFU62a40wz?=
+ =?us-ascii?Q?eoDGz6Xj2EgY/8OUKOz/UHG+ZvYItwGf9YieJKuHoeAMvaYBXoIAL2cns2Y4?=
+ =?us-ascii?Q?5J97rxZ5r95rjq2yXJqUsGezX/s6ZHD6LasMGNKnHtkyAEdZ3k0yWjLUpLFj?=
+ =?us-ascii?Q?+NrjjC6PbEwiTLXl1HtExYiqL3nP4JSJ2YBVxafKAwFAz0Trlq5zj2FTa2Qw?=
+ =?us-ascii?Q?UNZTRmpoKvsCPGmcxyJBuCUGwQOhstSuixCNePjviHUTic+TeXhLzflsTxHt?=
+ =?us-ascii?Q?Dwn5SEEuk8B6KHsORQ8Gq7OnOJ5ZnmEO0birBxVVm620eBFvtjTxWSs3QzLs?=
+ =?us-ascii?Q?ncRgjeqp0dP1JQSv/ZZLcoSahU96gCINlHolJmhhJ74ilRwWmgvWVX7bxtuA?=
+ =?us-ascii?Q?e3IJ5BcpNguE3b/gjFVYiJcITiAlOwlQKJsG929+IhCShaLHqvifIJAmT/NR?=
+ =?us-ascii?Q?7UClibjGpV4yTEnRioKcK6gW5PjhAIeetmzPHaVaQWrusQEmYjVannfxtPOX?=
+ =?us-ascii?Q?OcQQVSMAIPtzRf+NPsk5hegEVhwbLFjY9OLmBWArkBk+BP9odJUiYYnJoX0v?=
+ =?us-ascii?Q?fYtt9Mf/zsEGfQDWIfMG1cFBhlqVUBnsR8OJPc0K+mTuQ30ckvDE0quA2yIV?=
+ =?us-ascii?Q?0fCCTiWyvhSKP3OPqcbXO18=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ee9e348d-fa09-4a9f-f005-08d999b1f0e0
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2663.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Oct 2021 01:26:18.1638
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Jki7SmEMuVURk2MiuuiD6+QLaRR6Q9Gcq0RGgOTkxdbW/AWGjUu80ZY9PqJgoY0dzunokPZLGHrfkqL+T8OWPA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB3761
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10150 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 suspectscore=0
+ mlxscore=0 adultscore=0 malwarescore=0 phishscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
+ definitions=main-2110280006
+X-Proofpoint-GUID: HVIeaRs42jHKtvGrgD95e0-5YT6Jr_vo
+X-Proofpoint-ORIG-GUID: HVIeaRs42jHKtvGrgD95e0-5YT6Jr_vo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After commit 9298e63eafea ("bpf/tests: Add exhaustive tests of ALU
-operand magnitudes"), when modprobe test_bpf.ko with jit on mips64,
-there exists segment fault due to the following reason:
+The sched_clock() can be used very early since
+commit 857baa87b642 ("sched/clock: Enable sched clock early"). In addition,
+with commit 38669ba205d1 ("x86/xen/time: Output xen sched_clock time from
+0"), kdump kernel in Xen HVM guest may panic at very early stage when
+accessing &__this_cpu_read(xen_vcpu)->time as in below:
 
-ALU64_MOV_X: all register value magnitudes jited:1
-Break instruction in kernel code[#1]
+setup_arch()
+ -> init_hypervisor_platform()
+     -> x86_init.hyper.init_platform = xen_hvm_guest_init()
+         -> xen_hvm_init_time_ops()
+             -> xen_clocksource_read()
+                 -> src = &__this_cpu_read(xen_vcpu)->time;
 
-It seems that the related jit implementations of some test cases
-in test_bpf() have problems. At this moment, I do not care about
-the segment fault while I just want to verify the test cases of
-tail calls.
+This is because Xen HVM supports at most MAX_VIRT_CPUS=32 'vcpu_info'
+embedded inside 'shared_info' during early stage until xen_vcpu_setup() is
+used to allocate/relocate 'vcpu_info' for boot cpu at arbitrary address.
 
-Based on the above background and motivation, add the following
-module parameter test_suite to the test_bpf.ko:
-test_suite=<string>: only the specified test suite will be run, the
-string can be "test_bpf", "test_tail_calls" or "test_skb_segment".
+However, when Xen HVM guest panic on vcpu >= 32, since
+xen_vcpu_info_reset(0) would set per_cpu(xen_vcpu, cpu) = NULL when
+vcpu >= 32, xen_clocksource_read() on vcpu >= 32 would panic.
 
-If test_suite is not specified, but test_id, test_name or test_range
-is specified, set 'test_bpf' as the default test suite.
+This patch delays xen_hvm_init_time_ops() to later in
+xen_hvm_smp_prepare_boot_cpu() after the 'vcpu_info' for boot vcpu is
+registered when the boot vcpu is >= 32.
 
-This is useful to only test the corresponding test suite when specify
-the valid test_suite string.
+Another option is to always delay xen_hvm_init_time_ops() for any vcpus
+(including vcpu=0). Since to delay xen_hvm_init_time_ops() may lead to
+clock backward issue, it is preferred to avoid that for regular boot (The
+pv_sched_clock=native_sched_clock() is used at the very beginning until
+xen_sched_clock() is registered). That requires to adjust
+xen_sched_clock_offset. That's why we only delay xen_hvm_init_time_ops()
+for vcpu>=32.
 
-Any invalid test suite will result in -EINVAL being returned and no
-tests being run. If the test_suite is not specified or specified as
-empty string, it does not change the current logic, all of the test
-cases will be run.
+This issue can be reproduced on purpose via below command at the guest
+side when kdump/kexec is enabled:
 
-Here are some test results:
- # dmesg -c
- # modprobe test_bpf
- # dmesg | grep Summary
- test_bpf: Summary: 1009 PASSED, 0 FAILED, [0/997 JIT'ed]
- test_bpf: test_tail_calls: Summary: 8 PASSED, 0 FAILED, [0/8 JIT'ed]
- test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
+"taskset -c 33 echo c > /proc/sysrq-trigger"
 
- # rmmod test_bpf
- # dmesg -c
- # modprobe test_bpf test_suite=test_bpf
- # dmesg | tail -1
- test_bpf: Summary: 1009 PASSED, 0 FAILED, [0/997 JIT'ed]
-
- # rmmod test_bpf
- # dmesg -c
- # modprobe test_bpf test_suite=test_tail_calls
- # dmesg
- test_bpf: #0 Tail call leaf jited:0 21 PASS
- [...]
- test_bpf: #7 Tail call error path, index out of range jited:0 32 PASS
- test_bpf: test_tail_calls: Summary: 8 PASSED, 0 FAILED, [0/8 JIT'ed]
-
- # rmmod test_bpf
- # dmesg -c
- # modprobe test_bpf test_suite=test_skb_segment
- # dmesg
- test_bpf: #0 gso_with_rx_frags PASS
- test_bpf: #1 gso_linear_no_head_frag PASS
- test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
-
- # rmmod test_bpf
- # dmesg -c
- # modprobe test_bpf test_id=1
- # dmesg
- test_bpf: test_bpf: set 'test_bpf' as the default test_suite.
- test_bpf: #1 TXA jited:0 54 51 50 PASS
- test_bpf: Summary: 1 PASSED, 0 FAILED, [0/1 JIT'ed]
-
- # rmmod test_bpf
- # dmesg -c
- # modprobe test_bpf test_suite=test_bpf test_name=TXA
- # dmesg
- test_bpf: #1 TXA jited:0 54 50 51 PASS
- test_bpf: Summary: 1 PASSED, 0 FAILED, [0/1 JIT'ed]
-
- # rmmod test_bpf
- # dmesg -c
- # modprobe test_bpf test_suite=test_tail_calls test_range=6,7
- # dmesg
- test_bpf: #6 Tail call error path, NULL target jited:0 41 PASS
- test_bpf: #7 Tail call error path, index out of range jited:0 32 PASS
- test_bpf: test_tail_calls: Summary: 2 PASSED, 0 FAILED, [0/2 JIT'ed]
-
- # rmmod test_bpf
- # dmesg -c
- # modprobe test_bpf test_suite=test_skb_segment test_id=1
- # dmesg
- test_bpf: #1 gso_linear_no_head_frag PASS
- test_bpf: test_skb_segment: Summary: 1 PASSED, 0 FAILED
-
-By the way, the above segment fault has been fixed in the latest bpf-next
-tree.
-
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-Acked-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Tested-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Reference:
+https://lists.xenproject.org/archives/html/xen-devel/2021-10/msg00571.html
+Cc: Joe Jin <joe.jin@oracle.com>
+Signed-off-by: Dongli Zhang <dongli.zhang@oracle.com>
 ---
+Changed since v1:
+  - Add commit message to explain why xen_hvm_init_time_ops() is delayed
+    for any vcpus. (Suggested by Boris Ostrovsky)
+  - Add a comment in xen_hvm_smp_prepare_boot_cpu() referencing the related
+    code in xen_hvm_guest_init(). (suggested by Juergen Gross)
 
-v8:
-  -- Use strscpy(test_suite, "test_bpf", sizeof(test_suite))
-     instead of strcpy, suggested by Johan Almbladh, thank you.
+ arch/x86/xen/enlighten_hvm.c | 20 +++++++++++++++++++-
+ arch/x86/xen/smp_hvm.c       |  8 ++++++++
+ 2 files changed, 27 insertions(+), 1 deletion(-)
 
-v7:
-  -- Rename prepare_bpf_tests() to prepare_test_range(), remove
-     some unnecessary code, suggested by Johan Almbladh, thank you.
-
-v6:
-  -- Compute the valid range once in the beginning of prepare_bpf_tests(),
-     suggested by Johan Almbladh, thank you.
-
-v5:
-  -- Remove some duplicated code, suggested by Johan Almbladh,
-     thank you.
-  -- Initialize test_range[2] to {0, INT_MAX}.
-  -- If test_suite is specified, but test_range is not specified,
-     set the upper limit of each test_suite to overwrite INT_MAX.
-
-v4:
-  -- Fix the following checkpatch issues:
-     CHECK: Alignment should match open parenthesis
-     CHECK: Please don't use multiple blank lines
-
-     ./scripts/checkpatch.pl --strict *.patch
-     total: 0 errors, 0 warnings, 0 checks, 299 lines checked
-
-     the default max-line-length is 100 in ./scripts/checkpatch.pl,
-     but it seems that the netdev/checkpatch is 80:
-     https://patchwork.hopto.org/static/nipa/559961/12545157/checkpatch/stdout
-
-v3:
-  -- Use test_suite instead of test_type as module parameter
-  -- Make test_id, test_name and test_range selection applied to each test suite
-
-v2:
-  -- Fix typo in the commit message
-  -- Use my private email to send
-
- lib/test_bpf.c | 212 ++++++++++++++++++++++++++++++++++++---------------------
- 1 file changed, 135 insertions(+), 77 deletions(-)
-
-diff --git a/lib/test_bpf.c b/lib/test_bpf.c
-index e5b10fd..adae395 100644
---- a/lib/test_bpf.c
-+++ b/lib/test_bpf.c
-@@ -14316,72 +14316,9 @@ module_param_string(test_name, test_name, sizeof(test_name), 0);
- static int test_id = -1;
- module_param(test_id, int, 0);
- 
--static int test_range[2] = { 0, ARRAY_SIZE(tests) - 1 };
-+static int test_range[2] = { 0, INT_MAX };
- module_param_array(test_range, int, NULL, 0);
- 
--static __init int find_test_index(const char *test_name)
--{
--	int i;
--
--	for (i = 0; i < ARRAY_SIZE(tests); i++) {
--		if (!strcmp(tests[i].descr, test_name))
--			return i;
--	}
--	return -1;
--}
--
--static __init int prepare_bpf_tests(void)
--{
--	if (test_id >= 0) {
--		/*
--		 * if a test_id was specified, use test_range to
--		 * cover only that test.
--		 */
--		if (test_id >= ARRAY_SIZE(tests)) {
--			pr_err("test_bpf: invalid test_id specified.\n");
--			return -EINVAL;
--		}
--
--		test_range[0] = test_id;
--		test_range[1] = test_id;
--	} else if (*test_name) {
--		/*
--		 * if a test_name was specified, find it and setup
--		 * test_range to cover only that test.
--		 */
--		int idx = find_test_index(test_name);
--
--		if (idx < 0) {
--			pr_err("test_bpf: no test named '%s' found.\n",
--			       test_name);
--			return -EINVAL;
--		}
--		test_range[0] = idx;
--		test_range[1] = idx;
--	} else {
--		/*
--		 * check that the supplied test_range is valid.
--		 */
--		if (test_range[0] >= ARRAY_SIZE(tests) ||
--		    test_range[1] >= ARRAY_SIZE(tests) ||
--		    test_range[0] < 0 || test_range[1] < 0) {
--			pr_err("test_bpf: test_range is out of bound.\n");
--			return -EINVAL;
--		}
--
--		if (test_range[1] < test_range[0]) {
--			pr_err("test_bpf: test_range is ending before it starts.\n");
--			return -EINVAL;
--		}
--	}
--
--	return 0;
--}
--
--static __init void destroy_bpf_tests(void)
--{
--}
--
- static bool exclude_test(int test_id)
- {
- 	return test_id < test_range[0] || test_id > test_range[1];
-@@ -14553,6 +14490,10 @@ static __init int test_skb_segment(void)
- 	for (i = 0; i < ARRAY_SIZE(skb_segment_tests); i++) {
- 		const struct skb_segment_test *test = &skb_segment_tests[i];
- 
-+		cond_resched();
-+		if (exclude_test(i))
-+			continue;
-+
- 		pr_info("#%d %s ", i, test->descr);
- 
- 		if (test_skb_segment_single(test)) {
-@@ -14934,6 +14875,8 @@ static __init int test_tail_calls(struct bpf_array *progs)
- 		int ret;
- 
- 		cond_resched();
-+		if (exclude_test(i))
-+			continue;
- 
- 		pr_info("#%d %s ", i, test->descr);
- 		if (!fp) {
-@@ -14966,29 +14909,144 @@ static __init int test_tail_calls(struct bpf_array *progs)
- 	return err_cnt ? -EINVAL : 0;
- }
- 
-+static char test_suite[32];
-+module_param_string(test_suite, test_suite, sizeof(test_suite), 0);
-+
-+static __init int find_test_index(const char *test_name)
-+{
-+	int i;
-+
-+	if (!strcmp(test_suite, "test_bpf")) {
-+		for (i = 0; i < ARRAY_SIZE(tests); i++) {
-+			if (!strcmp(tests[i].descr, test_name))
-+				return i;
-+		}
-+	}
-+
-+	if (!strcmp(test_suite, "test_tail_calls")) {
-+		for (i = 0; i < ARRAY_SIZE(tail_call_tests); i++) {
-+			if (!strcmp(tail_call_tests[i].descr, test_name))
-+				return i;
-+		}
-+	}
-+
-+	if (!strcmp(test_suite, "test_skb_segment")) {
-+		for (i = 0; i < ARRAY_SIZE(skb_segment_tests); i++) {
-+			if (!strcmp(skb_segment_tests[i].descr, test_name))
-+				return i;
-+		}
-+	}
-+
-+	return -1;
-+}
-+
-+static __init int prepare_test_range(void)
-+{
-+	int valid_range;
-+
-+	if (!strcmp(test_suite, "test_bpf"))
-+		valid_range = ARRAY_SIZE(tests);
-+	else if (!strcmp(test_suite, "test_tail_calls"))
-+		valid_range = ARRAY_SIZE(tail_call_tests);
-+	else if (!strcmp(test_suite, "test_skb_segment"))
-+		valid_range = ARRAY_SIZE(skb_segment_tests);
-+	else
-+		return 0;
-+
-+	if (test_id >= 0) {
-+		/*
-+		 * if a test_id was specified, use test_range to
-+		 * cover only that test.
-+		 */
-+		if (test_id >= valid_range) {
-+			pr_err("test_bpf: invalid test_id specified for '%s' suite.\n",
-+			       test_suite);
-+			return -EINVAL;
-+		}
-+
-+		test_range[0] = test_id;
-+		test_range[1] = test_id;
-+	} else if (*test_name) {
-+		/*
-+		 * if a test_name was specified, find it and setup
-+		 * test_range to cover only that test.
-+		 */
-+		int idx = find_test_index(test_name);
-+
-+		if (idx < 0) {
-+			pr_err("test_bpf: no test named '%s' found for '%s' suite.\n",
-+			       test_name, test_suite);
-+			return -EINVAL;
-+		}
-+		test_range[0] = idx;
-+		test_range[1] = idx;
-+	} else if (test_range[0] != 0 || test_range[1] != INT_MAX) {
-+		/*
-+		 * check that the supplied test_range is valid.
-+		 */
-+		if (test_range[0] < 0 || test_range[1] >= valid_range) {
-+			pr_err("test_bpf: test_range is out of bound for '%s' suite.\n",
-+			       test_suite);
-+			return -EINVAL;
-+		}
-+
-+		if (test_range[1] < test_range[0]) {
-+			pr_err("test_bpf: test_range is ending before it starts.\n");
-+			return -EINVAL;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- static int __init test_bpf_init(void)
- {
- 	struct bpf_array *progs = NULL;
- 	int ret;
- 
--	ret = prepare_bpf_tests();
-+	if (strlen(test_suite) &&
-+	    strcmp(test_suite, "test_bpf") &&
-+	    strcmp(test_suite, "test_tail_calls") &&
-+	    strcmp(test_suite, "test_skb_segment")) {
-+		pr_err("test_bpf: invalid test_suite '%s' specified.\n", test_suite);
-+		return -EINVAL;
-+	}
+diff --git a/arch/x86/xen/enlighten_hvm.c b/arch/x86/xen/enlighten_hvm.c
+index e68ea5f4ad1c..7734dec52794 100644
+--- a/arch/x86/xen/enlighten_hvm.c
++++ b/arch/x86/xen/enlighten_hvm.c
+@@ -216,7 +216,25 @@ static void __init xen_hvm_guest_init(void)
+ 	WARN_ON(xen_cpuhp_setup(xen_cpu_up_prepare_hvm, xen_cpu_dead_hvm));
+ 	xen_unplug_emulated_devices();
+ 	x86_init.irqs.intr_init = xen_init_IRQ;
+-	xen_hvm_init_time_ops();
 +
 +	/*
-+	 * if test_suite is not specified, but test_id, test_name or test_range
-+	 * is specified, set 'test_bpf' as the default test suite.
++	 * Only MAX_VIRT_CPUS 'vcpu_info' are embedded inside 'shared_info'
++	 * and the VM would use them until xen_vcpu_setup() is used to
++	 * allocate/relocate them at arbitrary address.
++	 *
++	 * However, when Xen HVM guest panic on vcpu >= MAX_VIRT_CPUS,
++	 * per_cpu(xen_vcpu, cpu) is still NULL at this stage. To access
++	 * per_cpu(xen_vcpu, cpu) via xen_clocksource_read() would panic.
++	 *
++	 * Therefore we delay xen_hvm_init_time_ops() to
++	 * xen_hvm_smp_prepare_boot_cpu() when boot vcpu is >= MAX_VIRT_CPUS.
 +	 */
-+	if (!strlen(test_suite) &&
-+	    (test_id != -1 || strlen(test_name) ||
-+	    (test_range[0] != 0 || test_range[1] != INT_MAX))) {
-+		pr_info("test_bpf: set 'test_bpf' as the default test_suite.\n");
-+		strscpy(test_suite, "test_bpf", sizeof(test_suite));
-+	}
++	if (xen_vcpu_nr(0) >= MAX_VIRT_CPUS)
++		pr_info("Delay xen_hvm_init_time_ops() as kernel is running on vcpu=%d\n",
++			xen_vcpu_nr(0));
++	else
++		xen_hvm_init_time_ops();
 +
-+	ret = prepare_test_range();
- 	if (ret < 0)
- 		return ret;
+ 	xen_hvm_init_mmu_ops();
  
--	ret = test_bpf();
--	destroy_bpf_tests();
--	if (ret)
--		return ret;
-+	if (!strlen(test_suite) || !strcmp(test_suite, "test_bpf")) {
-+		ret = test_bpf();
-+		if (ret)
-+			return ret;
-+	}
+ #ifdef CONFIG_KEXEC_CORE
+diff --git a/arch/x86/xen/smp_hvm.c b/arch/x86/xen/smp_hvm.c
+index 6ff3c887e0b9..f99043df8bb5 100644
+--- a/arch/x86/xen/smp_hvm.c
++++ b/arch/x86/xen/smp_hvm.c
+@@ -19,6 +19,14 @@ static void __init xen_hvm_smp_prepare_boot_cpu(void)
+ 	 */
+ 	xen_vcpu_setup(0);
  
--	ret = prepare_tail_call_tests(&progs);
--	if (ret)
--		return ret;
--	ret = test_tail_calls(progs);
--	destroy_tail_call_tests(progs);
--	if (ret)
--		return ret;
-+	if (!strlen(test_suite) || !strcmp(test_suite, "test_tail_calls")) {
-+		ret = prepare_tail_call_tests(&progs);
-+		if (ret)
-+			return ret;
-+		ret = test_tail_calls(progs);
-+		destroy_tail_call_tests(progs);
-+		if (ret)
-+			return ret;
-+	}
- 
--	return test_skb_segment();
-+	if (!strlen(test_suite) || !strcmp(test_suite, "test_skb_segment"))
-+		return test_skb_segment();
++	/*
++	 * The xen_hvm_init_time_ops() is delayed from
++	 * xen_hvm_guest_init() to here to avoid panic when the kernel
++	 * boots from vcpu>=MAX_VIRT_CPUS (32).
++	 */
++	if (xen_vcpu_nr(0) >= MAX_VIRT_CPUS)
++		xen_hvm_init_time_ops();
 +
-+	return 0;
- }
- 
- static void __exit test_bpf_exit(void)
+ 	/*
+ 	 * The alternative logic (which patches the unlock/lock) runs before
+ 	 * the smp bootup up code is activated. Hence we need to set this up
 -- 
-2.1.0
+2.17.1
 
