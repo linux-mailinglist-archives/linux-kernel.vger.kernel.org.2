@@ -2,77 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8462B43E25F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 15:33:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57A9343E261
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 15:35:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230437AbhJ1NfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 09:35:21 -0400
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:25235 "EHLO
-        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230017AbhJ1NfU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 09:35:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1635427973; x=1666963973;
-  h=to:cc:from:subject:message-id:date:mime-version:
-   content-transfer-encoding;
-  bh=9TsYvEwcIfA8bgN64rkLfWRSFHsVk2LbPCCy1OTa3ME=;
-  b=oLRCSUnwwDklDFyEuWRXWRsMwsfKxALotbyKgKk8QRszpUHTHgkkExO8
-   CmhwycPyKgggt0CGginRNkUJBEk9D2/P4NnpxTQZOeMlqZ+fz3NiXS/Pu
-   j3qVVLdnCEBrVkJkF7MfA9DBRVqz5Zfef0e6RklnI0uM8w2ogYFh2u5cu
-   Y=;
-Received: from unknown (HELO ironmsg01-sd.qualcomm.com) ([10.53.140.141])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 28 Oct 2021 06:32:53 -0700
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg01-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2021 06:32:52 -0700
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Thu, 28 Oct 2021 06:32:53 -0700
-Received: from [10.110.38.143] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7; Thu, 28 Oct 2021
- 06:32:52 -0700
-To:     Masahiro Yamada <masahiroy@kernel.org>
-CC:     <linux-kbuild@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-From:   Qian Cai <quic_qiancai@quicinc.com>
-Subject: Introduce "make debugconfig"
-Message-ID: <962c0565-89a3-c6d2-37e0-a93c8c753d57@quicinc.com>
-Date:   Thu, 28 Oct 2021 09:32:51 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S230254AbhJ1NiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 09:38:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40130 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229887AbhJ1NiR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 09:38:17 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AFF5261038;
+        Thu, 28 Oct 2021 13:35:49 +0000 (UTC)
+Date:   Thu, 28 Oct 2021 09:35:47 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        live-patching@vger.kernel.org
+Subject: Re: [PATCH v1 0/5] Implement livepatch on PPC32
+Message-ID: <20211028093547.48c69dfe@gandalf.local.home>
+In-Reply-To: <cover.1635423081.git.christophe.leroy@csgroup.eu>
+References: <cover.1635423081.git.christophe.leroy@csgroup.eu>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi there, some general debugging features like kmemleak, KASAN, lockdep,
+On Thu, 28 Oct 2021 14:24:00 +0200
+Christophe Leroy <christophe.leroy@csgroup.eu> wrote:
 
-UBSAN etc help fix many viruses like a microscope. On the other hand, those
- features are scatter around and mixed up with more situational debugging
- options making them difficult to consume properly.
+> This series implements livepatch on PPC32.
+> 
+> This is largely copied from what's done on PPC64.
+> 
+> Christophe Leroy (5):
+>   livepatch: Fix build failure on 32 bits processors
+>   powerpc/ftrace: No need to read LR from stack in _mcount()
+>   powerpc/ftrace: Add module_trampoline_target() for PPC32
+>   powerpc/ftrace: Activate HAVE_DYNAMIC_FTRACE_WITH_REGS on PPC32
+>   powerpc/ftrace: Add support for livepatch to PPC32
+> 
+>  arch/powerpc/Kconfig                  |   2 +-
+>  arch/powerpc/include/asm/livepatch.h  |   4 +-
+>  arch/powerpc/kernel/module_32.c       |  33 +++++
+>  arch/powerpc/kernel/trace/ftrace.c    |  53 +++-----
+>  arch/powerpc/kernel/trace/ftrace_32.S | 187 ++++++++++++++++++++++++--
+>  kernel/livepatch/core.c               |   4 +-
+>  6 files changed, 230 insertions(+), 53 deletions(-)
+> 
 
+This is great that you are doing this, but I wonder if it would even be
+easier, and more efficient, if you could implement
+HAVE_DYNAMIC_FTRACE_WITH_ARGS?
 
+Then you don't need to save all regs for live kernel patching. And I am
+also working on function tracing with arguments with this too.
 
-Since I have been deal with those options on a daily basis for the last
+That is, to call a generic ftrace callback, you need to save all the args
+that are stored in registers to prevent the callback from clobbering them.
+As live kernel patching only needs to have the arguments of the functions,
+you save time from having to save the other regs as well.
 
-a few years and accumulated the knowledge of their pros and cons, I am
+The callbacks now have "struct ftrace_regs" instead of pt_regs, because it
+will allow non ftrace_regs_caller functions to access the arguments if it
+is supported.
 
-thinking about to create an initial "make debugconfig" target, so that
-it could amplify the general debugging/testing efforts and help
-establish sensitive default values for those options across the broad.
+Look at how x86_64 implements this. It should be possible to do this for
+all other archs as well.
 
+Also note, by doing this, we can then get rid of the ftrace_graph_caller,
+and have function graph tracer be a function tracing callback, as it will
+allow ftrace_graph_caller to have access to the stack and the return as
+well.
 
-The idea is to have a debugconfig inside kernel/configs/ and update
-scripts/kconfig/Makefile and Documentation/admin-guide/README.rst
-accordingly. I am still trying to figure out a few implementation
-details like how to convert an existing .config to debugconfig, but want
-to gather some feedback before I dive in too deep.
+If you need any more help or information to do this, I'd be happy to assist
+you.
+
+Note, you can implement this first, (I looked over the patches and they
+seem fine) and then update both ppc64 and ppc32 to implement
+DYNAMIC_FTRACE_WITH_ARGS.
+
+Cheers,
+
+-- Steve
