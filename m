@@ -2,192 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B834F43E56F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 17:47:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D7C543E571
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 17:47:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230425AbhJ1Ptg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 11:49:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36159 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230407AbhJ1Pta (ORCPT
+        id S230429AbhJ1Pti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 11:49:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230423AbhJ1Ptf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 11:49:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635436023;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CbmNsSUrvGPtUZE+MWwRLOXXOyUhB+AbdYKB6eOYzgI=;
-        b=A2+MzG9VRxzCdP01FQTteiGI9DnLvYndC+MU2PY5uYdrJ4eyo+H24bptCO3kLCDW46xB3o
-        eUQQQPSL8ewMKaUSiXq56bwh/DkLDZMPxdnEhY/jIFf0q6owCjXifBICI3D/7g9qw78Dj1
-        +djfTCMGZhinv3PRXE0McP1ZdEbZmxQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-359-qmR5zb0kMGqaJpP-fhah4A-1; Thu, 28 Oct 2021 11:47:01 -0400
-X-MC-Unique: qmR5zb0kMGqaJpP-fhah4A-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 00705802682;
-        Thu, 28 Oct 2021 15:46:58 +0000 (UTC)
-Received: from starship (unknown [10.40.194.243])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 193772637D;
-        Thu, 28 Oct 2021 15:46:48 +0000 (UTC)
-Message-ID: <412931e082b33403c8778cae7376325871ab0d54.camel@redhat.com>
-Subject: Re: [PATCH v2 34/43] KVM: x86: Remove defunct pre_block/post_block
- kvm_x86_ops hooks
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        David Matlack <dmatlack@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Jing Zhang <jingzhangos@google.com>
-Date:   Thu, 28 Oct 2021 18:46:11 +0300
-In-Reply-To: <20211009021236.4122790-35-seanjc@google.com>
-References: <20211009021236.4122790-1-seanjc@google.com>
-         <20211009021236.4122790-35-seanjc@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Thu, 28 Oct 2021 11:49:35 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7682C061745
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 08:47:08 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id z20so26956707edc.13
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 08:47:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=usp.br; s=usp-google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=I35xArwltgiSIDBXrA/Vf3yctOp3/8GeHcmmTTSQz2I=;
+        b=XfsWYOjc3jrRehmYG0Ww3uMg7/yWXF7kuZrYyXaUUL7XiAeEbVX3Qyi6dkCVQfTmWI
+         yr9KVWBc5It7BdCCSQNzzncW7tg8SHQalJMAscKcV+wBvjCg8v5KXRfSia/m/GGQT0nH
+         Z+0C6x6X/inK4kBotlFaie/jSAT/wY/JZSxH+N6nTLRYMLuRdGjFf5Yjr9Fg8SV3Ds5X
+         drMFUdAHXrIfV2e6A508fxgfKhZeBmVw2EFJPTPE6caqLt6vuUIBvO5BBaBvhbF4arMf
+         B6ynfIcEisPd64XP+BwWWbQbJ3MB3mWHQr2/x4haqqbS4OlwnctRHSW5+aV9nSNSuSOo
+         BzWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=I35xArwltgiSIDBXrA/Vf3yctOp3/8GeHcmmTTSQz2I=;
+        b=kU092IvW1ykiUFxKoGuZKzf+J162H/t7frGXTAPBGasEBz1wR1UJa3ixq9l9z11LmA
+         hClqPzygGyNegjBPdvFvfCsaWzWh917ovW19imvcfXbCEWQx9MR5qWkbTSyhffIgqndy
+         v4ScTfKYAksxAf/CuDcWTrByioIzoD8MDKRLHHton/tH2I3ZBDgykYNtyYJZkX67gciX
+         BolBdlYrCC/9Spw8fCci5pgn58GsZ4Og9GKpzljRx4w3fhUXYUDbjDN+rydMrncESgtx
+         /mrTqZkp0ag5GZuNT/e1xXFMIH2O2x/N6sP0J6uIV1B6esTC8wp1242jHoDA7uQqoHge
+         uDSA==
+X-Gm-Message-State: AOAM531FMPagKX6xj9VmON33m8FsYITB+ardTcYt921pq6OOXb3v4i6O
+        MloLofbmyIttqX5mwhR2HxuYb2z7fSK75TJryq6Oew==
+X-Google-Smtp-Source: ABdhPJwAYSs3BPjpV09HmLQ7ZGUrfadfg/HQzTUY7V9O4KylolyNfDWq6MXXHmbJJUCYzHyxMPhxLQ5XHjPISctuniw=
+X-Received: by 2002:a17:906:2a06:: with SMTP id j6mr6373148eje.401.1635436027126;
+ Thu, 28 Oct 2021 08:47:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20210926223322.848641-1-isabellabdoamaral@usp.br>
+ <20210926223322.848641-2-isabellabdoamaral@usp.br> <CABVgOS=Ux00jm9Qiy-u0zhhHUBpmXQCsnFdr=sEU-1q1XBWM7w@mail.gmail.com>
+In-Reply-To: <CABVgOS=Ux00jm9Qiy-u0zhhHUBpmXQCsnFdr=sEU-1q1XBWM7w@mail.gmail.com>
+From:   Isabella B do Amaral <isabellabdoamaral@usp.br>
+Date:   Thu, 28 Oct 2021 12:46:55 -0300
+Message-ID: <CAAniXFSgtYP3OFqTNmfRQg0kUtJb3oztT8od9XnMdj+LMNwNKA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/5] hash.h: remove unused define directive
+To:     David Gow <davidgow@google.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Enzo Ferreira <ferreiraenzoa@gmail.com>,
+        =?UTF-8?Q?Augusto_Dur=C3=A3es_Camargo?= 
+        <augusto.duraes33@gmail.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Daniel Latypov <dlatypov@google.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        ~lkcamp/patches@lists.sr.ht,
+        Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-10-08 at 19:12 -0700, Sean Christopherson wrote:
-> Drop kvm_x86_ops' pre/post_block() now that all implementations are nops.
-> 
-> No functional change intended.
-> 
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  arch/x86/include/asm/kvm-x86-ops.h |  2 --
->  arch/x86/include/asm/kvm_host.h    | 12 ------------
->  arch/x86/kvm/vmx/vmx.c             | 13 -------------
->  arch/x86/kvm/x86.c                 |  6 +-----
->  4 files changed, 1 insertion(+), 32 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/kvm-x86-ops.h b/arch/x86/include/asm/kvm-x86-ops.h
-> index cefe1d81e2e8..c2b007171abd 100644
-> --- a/arch/x86/include/asm/kvm-x86-ops.h
-> +++ b/arch/x86/include/asm/kvm-x86-ops.h
-> @@ -96,8 +96,6 @@ KVM_X86_OP(handle_exit_irqoff)
->  KVM_X86_OP_NULL(request_immediate_exit)
->  KVM_X86_OP(sched_in)
->  KVM_X86_OP_NULL(update_cpu_dirty_logging)
-> -KVM_X86_OP_NULL(pre_block)
-> -KVM_X86_OP_NULL(post_block)
->  KVM_X86_OP_NULL(vcpu_blocking)
->  KVM_X86_OP_NULL(vcpu_unblocking)
->  KVM_X86_OP_NULL(update_pi_irte)
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 328103a520d3..76a8dddc1a48 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1445,18 +1445,6 @@ struct kvm_x86_ops {
->  	const struct kvm_pmu_ops *pmu_ops;
->  	const struct kvm_x86_nested_ops *nested_ops;
->  
-> -	/*
-> -	 * Architecture specific hooks for vCPU blocking due to
-> -	 * HLT instruction.
-> -	 * Returns for .pre_block():
-> -	 *    - 0 means continue to block the vCPU.
-> -	 *    - 1 means we cannot block the vCPU since some event
-> -	 *        happens during this period, such as, 'ON' bit in
-> -	 *        posted-interrupts descriptor is set.
-> -	 */
-> -	int (*pre_block)(struct kvm_vcpu *vcpu);
-> -	void (*post_block)(struct kvm_vcpu *vcpu);
-> -
->  	void (*vcpu_blocking)(struct kvm_vcpu *vcpu);
->  	void (*vcpu_unblocking)(struct kvm_vcpu *vcpu);
->  
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index a24f19874716..13e732a818f3 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -7462,16 +7462,6 @@ void vmx_update_cpu_dirty_logging(struct kvm_vcpu *vcpu)
->  		secondary_exec_controls_clearbit(vmx, SECONDARY_EXEC_ENABLE_PML);
->  }
->  
-> -static int vmx_pre_block(struct kvm_vcpu *vcpu)
-> -{
-> -	return 0;
-> -}
-> -
-> -static void vmx_post_block(struct kvm_vcpu *vcpu)
-> -{
-> -
-> -}
-> -
->  static void vmx_setup_mce(struct kvm_vcpu *vcpu)
->  {
->  	if (vcpu->arch.mcg_cap & MCG_LMCE_P)
-> @@ -7665,9 +7655,6 @@ static struct kvm_x86_ops vmx_x86_ops __initdata = {
->  	.cpu_dirty_log_size = PML_ENTITY_NUM,
->  	.update_cpu_dirty_logging = vmx_update_cpu_dirty_logging,
->  
-> -	.pre_block = vmx_pre_block,
-> -	.post_block = vmx_post_block,
-> -
->  	.pmu_ops = &intel_pmu_ops,
->  	.nested_ops = &vmx_nested_ops,
->  
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 909e932a7ae7..9643f23c28c7 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -9898,8 +9898,7 @@ static inline int vcpu_block(struct kvm *kvm, struct kvm_vcpu *vcpu)
->  {
->  	bool hv_timer;
->  
-> -	if (!kvm_arch_vcpu_runnable(vcpu) &&
-> -	    (!kvm_x86_ops.pre_block || static_call(kvm_x86_pre_block)(vcpu) == 0)) {
-> +	if (!kvm_arch_vcpu_runnable(vcpu)) {
->  		/*
->  		 * Switch to the software timer before halt-polling/blocking as
->  		 * the guest's timer may be a break event for the vCPU, and the
-> @@ -9921,9 +9920,6 @@ static inline int vcpu_block(struct kvm *kvm, struct kvm_vcpu *vcpu)
->  		if (hv_timer)
->  			kvm_lapic_switch_to_hv_timer(vcpu);
->  
-> -		if (kvm_x86_ops.post_block)
-> -			static_call(kvm_x86_post_block)(vcpu);
-> -
->  		if (!kvm_check_request(KVM_REQ_UNHALT, vcpu))
->  			return 1;
->  	}
+Hi, David,
 
-Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+On Sat, Oct 2, 2021 at 4:20 AM David Gow <davidgow@google.com> wrote:
+>
+> On Mon, Sep 27, 2021 at 6:33 AM Isabella Basso <isabellabdoamaral@usp.br>=
+ wrote:
+> >
+> > Currently, there exist hash_32() and __hash_32() functions, which were
+> > introduced in a patch [1] targeting architecture specific optimizations=
+.
+> > These functions can be overridden on a per-architecture basis to achiev=
+e
+> > such optimizations. They must set their corresponding define directive
+> > (HAVE_ARCH_HASH_32 and HAVE_ARCH__HASH_32, respectively) so that header
+> > files can deal with these overrides properly.
+> >
+> > As the supported 32-bit architectures that have their own hash function
+> > implementation (i.e. m68k, Microblaze, H8/300, pa-risc) have only been
+> > making use of the (more general) __hash_32() function (which only lacks
+> > a right shift operation when compared to the hash_32() function),
+> > remove the define directive corresponding to the arch-specific hash_32(=
+)
+> > implementation.
+> >
+> > [1] https://lore.kernel.org/lkml/20160525073311.5600.qmail@ns.scienceho=
+rizons.net/
+> >
+> > Changes since v1:
+> > - As suggested by David Gow:
+> >   1. Reword commit message.
+>
+> Maybe move this changelog to below the "---", so it doesn't show up in
+> the final commit message?
 
-Best regards,
-	Maxim Levitsky
+Oh, okay! Thanks for pointing that out :) I didn't quite know how I
+should put these.
 
+>
+> >
+> > Tested-by: David Gow <davidgow@google.com>
+> > Co-developed-by: Augusto Dur=C3=A3es Camargo <augusto.duraes33@gmail.co=
+m>
+> > Signed-off-by: Augusto Dur=C3=A3es Camargo <augusto.duraes33@gmail.com>
+> > Co-developed-by: Enzo Ferreira <ferreiraenzoa@gmail.com>
+> > Signed-off-by: Enzo Ferreira <ferreiraenzoa@gmail.com>
+> > Signed-off-by: Isabella Basso <isabellabdoamaral@usp.br>
+> > ---
+>
+> This looks sensible enough to me. Since no-one seems to be speaking up
+> in architecture-specific hash_32()'s defence, let's get rid of it.
+>
+> Reviewed-by: David Gow <davidgow@google.com>
+>
+
+Alright! Thanks for the review.
+
+Cheers,
+--
+Isabella B.
+
+>
+> >  include/linux/hash.h       |  5 +----
+> >  lib/test_hash.c            | 24 +-----------------------
+> >  tools/include/linux/hash.h |  5 +----
+> >  3 files changed, 3 insertions(+), 31 deletions(-)
+> >
+> > diff --git a/include/linux/hash.h b/include/linux/hash.h
+> > index ad6fa21d977b..38edaa08f862 100644
+> > --- a/include/linux/hash.h
+> > +++ b/include/linux/hash.h
+> > @@ -62,10 +62,7 @@ static inline u32 __hash_32_generic(u32 val)
+> >         return val * GOLDEN_RATIO_32;
+> >  }
+> >
+> > -#ifndef HAVE_ARCH_HASH_32
+> > -#define hash_32 hash_32_generic
+> > -#endif
+> > -static inline u32 hash_32_generic(u32 val, unsigned int bits)
+> > +static inline u32 hash_32(u32 val, unsigned int bits)
+> >  {
+> >         /* High bits are more random, so use them. */
+> >         return __hash_32(val) >> (32 - bits);
+> > diff --git a/lib/test_hash.c b/lib/test_hash.c
+> > index 0ee40b4a56dd..d4b0cfdb0377 100644
+> > --- a/lib/test_hash.c
+> > +++ b/lib/test_hash.c
+> > @@ -94,22 +94,7 @@ test_int_hash(unsigned long long h64, u32 hash_or[2]=
+[33])
+> >                         pr_err("hash_32(%#x, %d) =3D %#x > %#x", h0, k,=
+ h1, m);
+> >                         return false;
+> >                 }
+> > -#ifdef HAVE_ARCH_HASH_32
+> > -               h2 =3D hash_32_generic(h0, k);
+> > -#if HAVE_ARCH_HASH_32 =3D=3D 1
+> > -               if (h1 !=3D h2) {
+> > -                       pr_err("hash_32(%#x, %d) =3D %#x !=3D hash_32_g=
+eneric() "
+> > -                               " =3D %#x", h0, k, h1, h2);
+> > -                       return false;
+> > -               }
+> > -#else
+> > -               if (h2 > m) {
+> > -                       pr_err("hash_32_generic(%#x, %d) =3D %#x > %#x"=
+,
+> > -                               h0, k, h1, m);
+> > -                       return false;
+> > -               }
+> > -#endif
+> > -#endif
+> > +
+> >                 /* Test hash_64 */
+> >                 hash_or[1][k] |=3D h1 =3D hash_64(h64, k);
+> >                 if (h1 > m) {
+> > @@ -227,13 +212,6 @@ test_hash_init(void)
+> >  #else
+> >         pr_info("__hash_32() has no arch implementation to test.");
+> >  #endif
+> > -#ifdef HAVE_ARCH_HASH_32
+> > -#if HAVE_ARCH_HASH_32 !=3D 1
+> > -       pr_info("hash_32() is arch-specific; not compared to generic.")=
+;
+> > -#endif
+> > -#else
+> > -       pr_info("hash_32() has no arch implementation to test.");
+> > -#endif
+> >  #ifdef HAVE_ARCH_HASH_64
+> >  #if HAVE_ARCH_HASH_64 !=3D 1
+> >         pr_info("hash_64() is arch-specific; not compared to generic.")=
+;
+> > diff --git a/tools/include/linux/hash.h b/tools/include/linux/hash.h
+> > index ad6fa21d977b..38edaa08f862 100644
+> > --- a/tools/include/linux/hash.h
+> > +++ b/tools/include/linux/hash.h
+> > @@ -62,10 +62,7 @@ static inline u32 __hash_32_generic(u32 val)
+> >         return val * GOLDEN_RATIO_32;
+> >  }
+> >
+> > -#ifndef HAVE_ARCH_HASH_32
+> > -#define hash_32 hash_32_generic
+> > -#endif
+> > -static inline u32 hash_32_generic(u32 val, unsigned int bits)
+> > +static inline u32 hash_32(u32 val, unsigned int bits)
+> >  {
+> >         /* High bits are more random, so use them. */
+> >         return __hash_32(val) >> (32 - bits);
+> > --
+> > 2.33.0
+> >
