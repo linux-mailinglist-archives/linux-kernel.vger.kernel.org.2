@@ -2,144 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4952B43E33B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:12:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 978DE43E33D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:13:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231175AbhJ1OPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 10:15:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55908 "EHLO
+        id S230455AbhJ1OPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 10:15:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230401AbhJ1OPT (ORCPT
+        with ESMTP id S230376AbhJ1OPp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 10:15:19 -0400
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E70BC061745
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 07:12:53 -0700 (PDT)
-Received: by mail-qv1-xf2d.google.com with SMTP id b17so643076qvl.9
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 07:12:53 -0700 (PDT)
+        Thu, 28 Oct 2021 10:15:45 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7FA9C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 07:13:18 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id w15so25539123edc.9
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 07:13:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=usp.br; s=usp-google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :content-transfer-encoding;
-        bh=uW58SAoHp5gKtMj6ifGXFk+JxLdoMkUhiHrsFeoWED0=;
-        b=zZ/ta4zcx78S1ykzXCOnSW+WYNsFe+FBlOt0zENV5et2S2CahkS7ZIOC3zheDk2nGg
-         vjdQYf+krCbAL7FueegDec3werSgU3hvjmVnPBoIcAz/RdD3qzDUkDkvKQ1WcoVfC+hh
-         FeeDOw/M5LvhvXnzIlKCL4Q3OF+/F+RmFVOXBlremDHzMl/4j175kLmyPPoPDLC7avkY
-         1sq4cOmRbJ6/K8SNUSGSTWzO7H2gcKviqz7rS7SuE675wvRYqK81cyg8fJsWmvffnuV4
-         j/p/gkdnR0lanuFtdh3jCowa0BWKwoKT//UzTIWdCN3U4fJGRIw9g3FPR4Pmcr2Vl9Ok
-         2wEA==
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=2HfodvIKsXmdxTtsXOvx0knfgEclU3IICQbU3Ulbeso=;
+        b=AxlRapfPYendyh+fP+pokIB+ry3X22Nm37GimJ0AKBb11iO5dWGizMLp78HALEUXk4
+         5FAPeUVpRwGjcTOVuKwWxCR2MyvHvIPneTVVvM4jfkMy1qGyfQcyQ8CbsIkQ0TgJxuY0
+         f9b+K98dwgFwGBnkl3SHdudosMM3xssdoz0ppmjfbeHoxEEv8j2C9ALZnS1zMOIGz1SL
+         lydnO4UoGLf4MpZrliUg/6zr+BpmEj0l5gh7AshzOBYdOWLVWdB/BuGRsYxvXJM3XW5h
+         yujhp0vNBQLqfH1EAwxlbuqyfJ5p6dCNZ5PqRwKYcsBhtYqdMZ0jg9QWzndD2y6XStTe
+         ZHbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:content-transfer-encoding;
-        bh=uW58SAoHp5gKtMj6ifGXFk+JxLdoMkUhiHrsFeoWED0=;
-        b=MKVR7V/v24zYVzOuziZFqAOqUCKzpBh4868h0LFWBaSSew7rHgSQoRfisqdQHRmWMD
-         Qu1jd0fEiUmSUbEGLw2hHkmB1ghBRi5Fn3HyRTMdi0wCH4/V3ZmItCQ1/d1BqQzNzg2k
-         wKex4f1Ubp8lf3O33VidMF3RarQnyHgR2M3jy/q6dJZkLbZrmi17r0OlGt6UiDZdoaDI
-         j1WObBTwUfKuoPhMAoFH2/38iRUboyXc6mKe8uDu209BrlTlfOVKvOi3MpWdAiJRiV4q
-         AowjLsha9+C8RIoevAaEoNBHYoch7Hq5oPkUn+hpkVcxX3/zp8LJG3VJtqLyXmJLv8wD
-         FWHw==
-X-Gm-Message-State: AOAM532kpNfReA1pbF/xl3r2ugGIA/R8tpkNgDO6714HXC6GNiqdniSL
-        FTBedlYzDQewJtFGsCGjEOdGuA==
-X-Google-Smtp-Source: ABdhPJzvjeGfiBQ/MFDfr1Y2HOJ/W8Fc8X/sP1RtFracnUJlEZQuBrRJkLpeNUt51rVx5me0ZSJ+1A==
-X-Received: by 2002:a05:6214:262d:: with SMTP id gv13mr4305114qvb.40.1635430372183;
-        Thu, 28 Oct 2021 07:12:52 -0700 (PDT)
-Received: from fedora ([187.64.134.142])
-        by smtp.gmail.com with ESMTPSA id bi26sm2010360qkb.102.2021.10.28.07.12.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 07:12:51 -0700 (PDT)
-Date:   Thu, 28 Oct 2021 11:12:47 -0300
-From:   =?iso-8859-1?Q?Ma=EDra?= Canal <maira.canal@usp.br>
-To:     sean@mess.org, mchehab@kernel.org, thierry.reding@gmail.com,
-        u.kleine-koenig@pengutronix.de, lee.jones@linaro.org
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pwm@vger.kernel.org
-Subject: [PATCH] media: ir-rx51: Switch to atomic PWM API
-Message-ID: <YXqv339PJTHcGxJg@fedora>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=2HfodvIKsXmdxTtsXOvx0knfgEclU3IICQbU3Ulbeso=;
+        b=roG72/+uvx/J/hspc/83CP5SZhPEibomLDYnXnwHbxxsHQWVydgx7sKlchAngloCrD
+         fVjo7UIsOoExpTHPk/FO0FzHcbtHjeqT3VCh4fJbAA0luta6K6X9f1jFtyea3hlnQzIm
+         5fFarrmLko59U0Q+6cWwu3Tk/ZQTDp/IPgXp2chnuQy+Nmh7ocrfclX2PqeqsugxGUg3
+         3ehdQUBKtSt6wHOMpHkpI1xGOY0Wlb5Np/hnLC6mHBENIz6vzVEgSQWqaxJzx8AGkzos
+         Fy0hDTy9aZ3CvBhQZWWL1hxJRvTicIzRSFzzRwVIyR74XzAOpEtGQ1AlsBCwOhOF8Cm4
+         0ldw==
+X-Gm-Message-State: AOAM533qHzeCTqQlOoaoFFp1DLtqW1rty0OFLiN0PuJrM+Ia/3v77YUM
+        hYdir9eRH5akSM9hEYB2YAkrhqhk+BaOhbcvMIsBASXqwXHR4w==
+X-Google-Smtp-Source: ABdhPJx7xbYO3adfzEdDBvMW/w1USw7c2rkLDD2FkHY1ila44wcCYWIIbjglpZRlhGy45J2a59Uh6OCPYkKbn37zQy4=
+X-Received: by 2002:a17:906:c7c1:: with SMTP id dc1mr5908906ejb.6.1635430396601;
+ Thu, 28 Oct 2021 07:13:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 28 Oct 2021 19:43:04 +0530
+Message-ID: <CA+G9fYu=0pViKt-9bZA91qaq1WgHBYA4=o1kHz6VMNp_3EBM1g@mail.gmail.com>
+Subject: s390: facility.h:98:22: error: implicit declaration of function
+ 'min_t' [-Werror=implicit-function-declaration]
+To:     linux-s390@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        lkft-triage@lists.linaro.org
+Cc:     Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove legacy PWM interface (pwm_config, pwm_enable, pwm_disable) and
-replace it for the atomic PWM API.
+Regression found on s390 gcc-11 built with defconfig
+Following build warnings / errors reported on linux next 20211028.
 
-Signed-off-by: Maíra Canal <maira.canal@usp.br>
----
- drivers/media/rc/ir-rx51.c | 27 +++++++++++++--------------
- 1 file changed, 13 insertions(+), 14 deletions(-)
+metadata:
+    git_describe: next-20211028
+    git_repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
+    git_short_log: 503f375baa99 (\"Add linux-next specific files for 20211028\")
+    target_arch: s390
+    toolchain: gcc-11
 
-diff --git a/drivers/media/rc/ir-rx51.c b/drivers/media/rc/ir-rx51.c
-index a0d9c02a7588..7a643a94e181 100644
---- a/drivers/media/rc/ir-rx51.c
-+++ b/drivers/media/rc/ir-rx51.c
-@@ -19,6 +19,7 @@
- struct ir_rx51 {
- 	struct rc_dev *rcdev;
- 	struct pwm_device *pwm;
-+	struct pwm_state *state;
- 	struct hrtimer timer;
- 	struct device	     *dev;
- 	wait_queue_head_t     wqueue;
-@@ -32,22 +33,22 @@ struct ir_rx51 {
- 
- static inline void ir_rx51_on(struct ir_rx51 *ir_rx51)
- {
--	pwm_enable(ir_rx51->pwm);
-+	ir_rx51->state->enabled = true;
-+	pwm_apply_state(ir_rx51->pwm, ir_rx51->state);
- }
- 
- static inline void ir_rx51_off(struct ir_rx51 *ir_rx51)
- {
--	pwm_disable(ir_rx51->pwm);
-+	ir_rx51->state->enabled = false;
-+	pwm_apply_state(ir_rx51->pwm, ir_rx51->state);
- }
- 
- static int init_timing_params(struct ir_rx51 *ir_rx51)
- {
--	struct pwm_device *pwm = ir_rx51->pwm;
--	int duty, period = DIV_ROUND_CLOSEST(NSEC_PER_SEC, ir_rx51->freq);
-+	struct pwm_state *state = ir_rx51->state;
- 
--	duty = DIV_ROUND_CLOSEST(ir_rx51->duty_cycle * period, 100);
--
--	pwm_config(pwm, duty, period);
-+	state->period = DIV_ROUND_CLOSEST(NSEC_PER_SEC, ir_rx51->freq);
-+	pwm_set_relative_duty_cycle(state, ir_rx51->duty_cycle, 100);
- 
- 	return 0;
- }
-@@ -154,6 +155,8 @@ static int ir_rx51_open(struct rc_dev *dev)
- 		return res;
- 	}
- 
-+	pwm_init_state(ir_rx51->pwm, ir_rx51->state);
-+
- 	return 0;
- }
- 
-@@ -232,13 +235,9 @@ static int ir_rx51_probe(struct platform_device *dev)
- 	struct rc_dev *rcdev;
- 
- 	pwm = pwm_get(&dev->dev, NULL);
--	if (IS_ERR(pwm)) {
--		int err = PTR_ERR(pwm);
--
--		if (err != -EPROBE_DEFER)
--			dev_err(&dev->dev, "pwm_get failed: %d\n", err);
--		return err;
--	}
-+	if (IS_ERR(pwm))
-+		return dev_err_probe(&dev->dev, PTR_ERR(pwm), "pwm_get failed: %ld\n",
-+				PTR_ERR(pwm));
- 
- 	/* Use default, in case userspace does not set the carrier */
- 	ir_rx51.freq = DIV_ROUND_CLOSEST_ULL(pwm_get_period(pwm), NSEC_PER_SEC);
--- 
-2.31.1
+build error :
+--------------
+<stdin>:1559:2: warning: #warning syscall futex_waitv not implemented [-Wcpp]
+In file included from arch/s390/pci/pci_insn.c:12:
+arch/s390/include/asm/facility.h: In function '__stfle':
+arch/s390/include/asm/facility.h:98:22: error: implicit declaration of
+function 'min_t' [-Werror=implicit-function-declaration]
+   98 |                 nr = min_t(unsigned long, (nr + 1) * 8, size * 8);
+      |                      ^~~~~
+arch/s390/include/asm/facility.h:98:28: error: expected expression
+before 'unsigned'
+   98 |                 nr = min_t(unsigned long, (nr + 1) * 8, size * 8);
+      |                            ^~~~~~~~
+cc1: some warnings being treated as errors
 
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+build link:
+-----------
+https://builds.tuxbuild.com/208R0Wv3siu0646e0z4lUYcUQD3/build.log
+
+build config:
+-------------
+https://builds.tuxbuild.com/208R0Wv3siu0646e0z4lUYcUQD3/config
+
+# To install tuxmake on your system globally
+# sudo pip3 install -U tuxmake
+tuxmake --runtime podman --target-arch s390 --toolchain gcc-11
+--kconfig defconfig
+
+--
+Linaro LKFT
+https://lkft.linaro.org
