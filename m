@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBB7D43E909
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 21:39:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 546E343E90C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 21:41:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231169AbhJ1Tlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 15:41:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46496 "EHLO
+        id S231216AbhJ1ToE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 15:44:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230104AbhJ1Tlu (ORCPT
+        with ESMTP id S230104AbhJ1ToD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 15:41:50 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B298DC061570
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 12:39:23 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id i14so9567082ioa.13
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 12:39:23 -0700 (PDT)
+        Thu, 28 Oct 2021 15:44:03 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 200CBC061570
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 12:41:36 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id h81so827968iof.6
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 12:41:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=h/tSSshBuJQz7Lwgul+YjHklhggiEii8fl+Q1ov2qBg=;
-        b=JAgmYZ1JK3WXZKDXwnei5tjYJA9/Iz1jHuwZyy65wiB0AJb2MEdsiRbxmZg3h8deOT
-         D+4zKwOhUlP0HE0GWJ7bS0nwGEW1JuG3nYfKjVCQTJ3JqTQbG83Iod0YFsE15DClPURf
-         DnExxUVM2w1UgARqVS/1+f10OqITCHUK4PiwA=
+        bh=N4Eqbd0UGLUUWxA5kDPAWucE9MGTHM6kKCDv9lFpQAo=;
+        b=ZBV7ZhlI78dRC+bco4/ReoNhTGvlsH3dlmb4b8tkYmoQR40VtpGyl3rO9lLluT08/3
+         I1+iRYehy8hPfBvpRdXw/kUxwNcDxpWQpJJr3FhaaOYYcDF66H1RC0COvhTzh0+DG+8J
+         mR12svkECRLtify/O0UOombQMN3VaHR6aoM0g=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=h/tSSshBuJQz7Lwgul+YjHklhggiEii8fl+Q1ov2qBg=;
-        b=oj8YRAVoSwrs2lXxmhQdHAdCzN1i9uecjcTjoWYJt2T+cIjpKBO/li+62rjQdHoGvB
-         w/muqca/G99RYB5yITMWIQnQjMhWXjcO1/0tEEDp6vmuOVMaVzLd7PPnmqVxU9vq6cpN
-         pk1gnFPa8SuJeBJNJVAGEyxA2SmPXAnSkTyxw/G6JRz2b2TOaQPf9I+ry45mCfMG9Ygc
-         jDopivZGPxIlCnwHGAHdKH09nyX69i9tOMO/+9Y9CrRVefsB9SYBzfLBS0s0FNQxrQCl
-         0a6rNxA2G/wORfeWnsAt7ztMUcMACpd28m0v6a+1gFZGDIrHjsgSxK3Jbnb9iT8aQ0Dw
-         Yk5A==
-X-Gm-Message-State: AOAM530D+cmrvmtb9DnLM3y/9aRUGbiqsWbIPVtmF8A7QAYAoaSNEHWO
-        fwlMnFCZCWQaJvSCi8ScZZ0gXZyYKdSQNw==
-X-Google-Smtp-Source: ABdhPJxWpP9Kam7eowoXqF884yTzWA86BXKZFojsbcIpu2ttA9l9JZo+51N7FD5u2HD+TmMTfRry9A==
-X-Received: by 2002:a5d:804a:: with SMTP id b10mr2484991ior.197.1635449962944;
-        Thu, 28 Oct 2021 12:39:22 -0700 (PDT)
-Received: from mail-il1-f176.google.com (mail-il1-f176.google.com. [209.85.166.176])
-        by smtp.gmail.com with ESMTPSA id l13sm2227010ilh.14.2021.10.28.12.39.21
+        bh=N4Eqbd0UGLUUWxA5kDPAWucE9MGTHM6kKCDv9lFpQAo=;
+        b=rTzRjTVPC/9WJ5ZS791B/A3nwIQK/+Hg8dGMEIZmgf3LuEVaDIv8TyT7+zvhvSdwTs
+         QGin4V7Vd/fmPm3c8J2rLWPqqyO1tdHSMuCME6T7dQ0Pduh1Jly6gkTh2ZrsBcpEamYl
+         zNHXdoDSW8ZpZLch5HGhr+rr2+iPV2RqyhByduhEk8/9FVCA/BHAn6gDNBxqesXhdloM
+         Ox7bTdI1Yo5jzAhNNN1ZnYuAUnhI3tc0eK/qNgiijxdqZIfbPIwO4SlRLSgQ2DTEoTD8
+         w7HiK+f7nRmSxTkdlEvgY0svVaDwuP35F4R7uG/8UY5O1nZUG3W+TsWT3Wtg5OYQE5H8
+         UQaQ==
+X-Gm-Message-State: AOAM532l49jfJOr5gSNVwCFBW/nKrERXjUF5q5vz0AKnSjV3d4AVjZmg
+        HwP35GOGTR7Ri3paLZttMBYKDM6zEXgZ7Q==
+X-Google-Smtp-Source: ABdhPJxqxxK7pRuiP8CLUb8ceH6MHBNE2h3T5wOgzP5S5Bi5i3xbfUSArwmK2I9oSjlH8a59kgXrjw==
+X-Received: by 2002:a5e:8805:: with SMTP id l5mr3370781ioj.150.1635450095372;
+        Thu, 28 Oct 2021 12:41:35 -0700 (PDT)
+Received: from mail-io1-f47.google.com (mail-io1-f47.google.com. [209.85.166.47])
+        by smtp.gmail.com with ESMTPSA id m10sm2138468ila.13.2021.10.28.12.41.33
         for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Oct 2021 12:39:22 -0700 (PDT)
-Received: by mail-il1-f176.google.com with SMTP id l13so8195638ilh.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 12:39:21 -0700 (PDT)
-X-Received: by 2002:a05:6e02:1b09:: with SMTP id i9mr4341118ilv.142.1635449961589;
- Thu, 28 Oct 2021 12:39:21 -0700 (PDT)
+        Thu, 28 Oct 2021 12:41:34 -0700 (PDT)
+Received: by mail-io1-f47.google.com with SMTP id d63so9666272iof.4
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 12:41:33 -0700 (PDT)
+X-Received: by 2002:a6b:e50f:: with SMTP id y15mr4362167ioc.177.1635450093365;
+ Thu, 28 Oct 2021 12:41:33 -0700 (PDT)
 MIME-Version: 1.0
 References: <20211028105754.v5.1.I828f5db745535fb7e36e8ffdd62d546f6d08b6d1@changeid>
- <CA+cxXh=VOkRnkgfxq8DVes=xCvR=691eY-ViQxME2fHMgt1q8Q@mail.gmail.com>
-In-Reply-To: <CA+cxXh=VOkRnkgfxq8DVes=xCvR=691eY-ViQxME2fHMgt1q8Q@mail.gmail.com>
+ <20211028105754.v5.2.I09899dea340f11feab97d719cb4b62bef3179e4b@changeid>
+In-Reply-To: <20211028105754.v5.2.I09899dea340f11feab97d719cb4b62bef3179e4b@changeid>
 From:   Doug Anderson <dianders@chromium.org>
-Date:   Thu, 28 Oct 2021 12:39:09 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=Vm1X3xFFkffigKr9z_FuTeA0Z70+_0NVfWcSZy90J-Zw@mail.gmail.com>
-Message-ID: <CAD=FV=Vm1X3xFFkffigKr9z_FuTeA0Z70+_0NVfWcSZy90J-Zw@mail.gmail.com>
-Subject: Re: [PATCH v5 1/2] drm/bridge: parade-ps8640: Enable runtime power management
+Date:   Thu, 28 Oct 2021 12:41:21 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=VdybQftD90sZK36nFevkK2Et70KhTT96swi9WY0S-CEw@mail.gmail.com>
+Message-ID: <CAD=FV=VdybQftD90sZK36nFevkK2Et70KhTT96swi9WY0S-CEw@mail.gmail.com>
+Subject: Re: [PATCH v5 2/2] drm/bridge: parade-ps8640: Populate devices on aux-bus
 To:     Philip Chen <philipchen@chromium.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
         Stephen Boyd <swboyd@chromium.org>,
@@ -70,8 +70,8 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Neil Armstrong <narmstrong@baylibre.com>,
         Robert Foss <robert.foss@linaro.org>,
         dri-devel <dri-devel@lists.freedesktop.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Andrzej Hajda <andrzej.hajda@intel.com>
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Sam Ravnborg <sam@ravnborg.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -79,65 +79,49 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi,
 
-On Thu, Oct 28, 2021 at 11:02 AM Philip Chen <philipchen@chromium.org> wrote:
+On Thu, Oct 28, 2021 at 10:58 AM Philip Chen <philipchen@chromium.org> wrote:
 >
-> Add "Sam Ravnborg <sam@ravnborg.org>" to cc list for vis.
-> Remove "Andrzej Hajda <a.hajda@samsung.com>" from cc list as the
-> address can't be found.
+> Conventionally, panel is listed under the root of the device tree.
+> When userland asks for display mode, ps8640 bridge is responsible
+> for returning EDID when ps8640_bridge_get_edid() is called.
+>
+> Now enable a new option of listing panel under "aux-bus" of ps8640
+> bridge node in the device tree. In this case, panel driver can retrieve
+> EDID by triggering AUX transactions, without ps8640_bridge_get_edid()
+> calls at all.
+>
+> To prevent the "old" and "new" options from interfering with each
+> other's logic flow, disable DRM_BRIDGE_OP_EDID when the new option
+> is taken.
+>
+> Signed-off-by: Philip Chen <philipchen@chromium.org>
+> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+> ---
+> In v4, I factored out the "ps8640_ensure_hpd" change and added it to patch 1/2
+> in this patch series. But I forgot to mention it in v4 change log. Edit v4
+> change log retroactively.
+>
+> In v3, I factored out the "put_sync_suspend" change and added it to patch 1/2
+> in this patch series. But I forgot to mention it in v3 change log. Edit v3
+> change log retroactively.
+>
+> (no changes since v4)
+>
+> Changes in v4:
+> - Move the change of "ps8640_ensure_hpd" to patch 1/2 in this patch series.
+>
+> Changes in v3:
+> - Fix when to call of_node_put() in ps8640_of_panel_on_aux_bus()
+> - Move the change of "put_sync_suspend" to patch 1/2 in this patch series.
+>
+> Changes in v2:
+> - Add of_node_put() calls in ps8640_of_panel_on_aux_bus()
+> - Select DRM_DP_AUX_BUS for PS8640 driver in Kconfig
+>
+>  drivers/gpu/drm/bridge/Kconfig         |  1 +
+>  drivers/gpu/drm/bridge/parade-ps8640.c | 51 ++++++++++++++++++++------
+>  2 files changed, 40 insertions(+), 12 deletions(-)
 
-Looking at <https://lore.kernel.org/all/b2fb88db-009e-4b38-dc3d-5ce9163257de@samsung.com/>,
-it should be Andrzej Hajda <andrzej.hajda@intel.com>. I've added.
+Should have carried my tag from v4, but here it is again:
 
-
-> On Thu, Oct 28, 2021 at 10:58 AM Philip Chen <philipchen@chromium.org> wrote:
-> >
-> > Fit ps8640 driver into runtime power management framework:
-> >
-> > First, break _poweron() to 3 parts: (1) turn on power and wait for
-> > ps8640's internal MCU to finish init (2) check panel HPD (which is
-> > proxied by GPIO9) (3) the other configs. As runtime_resume() can be
-> > called before panel is powered, we only add (1) to _resume() and leave
-> > (2)(3) to _pre_enable(). We also add (2) to _aux_transfer() as we want
-> > to ensure panel HPD is asserted before we start AUX CH transactions.
-> >
-> > Second, the original driver has a mysterious delay of 50 ms between (2)
-> > and (3). Since Parade's support can't explain what the delay is for,
-> > and we don't see removing the delay break any boards at hand, remove
-> > the delay to fit into this driver change.
-> >
-> > In addition, rename "powered" to "pre_enabled" and don't check for it
-> > in the pm_runtime calls. The pm_runtime calls are already refcounted
-> > so there's no reason to check there. The other user of "powered",
-> > _get_edid(), only cares if pre_enable() has already been called.
-> >
-> > Lastly, change some existing DRM_...() logging to dev_...() along the
-> > way, since DRM_...() seem to be deprecated in [1].
-> >
-> > [1] https://patchwork.freedesktop.org/patch/454760/
-> >
-> > Signed-off-by: Philip Chen <philipchen@chromium.org>
-> > Reviewed-by: Douglas Anderson <dianders@chromium.org>
-> > Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-> > ---
-> > In v3, I added pm_suspend_ignore_children() in ps8640_probe().
-> > Also, I moved the change of "put_sync_suspend" from patch 2/2 to here.
-> > But I forgot to mention both changes. So edit v3 change log retroactively.
-> >
-> > In v4, I moved the change of "ps8640_ensure_hpd" return data type
-> > from patch 2/2 to here. But I forgot to mention it. So edit v4 change log
-> > retroactively.
-> >
-> > Changes in v5:
-> > - Move the implementation of _runtime_disable() around to resolve merge
-> >   conflict when rebasing.
-> > - Improve the document for how autosuspend_delay is picked.
-
-The new text looks good to me, thanks!
-
-Since this is from @chromium.org and only reviewed-by @chromium.org
-people, I'll plan to give it a 2-week snooze to give others ample time
-to comment on these two patches. If 2 weeks pass w/ no comments then
-I'll land to drm-misc-next. If someone gives an Ack and/or Reviewed-by
-then I'll likely land sooner.
-
--Doug
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
