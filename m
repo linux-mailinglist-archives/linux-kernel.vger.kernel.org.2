@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 817CF43E35F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:20:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0437D43E361
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:20:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231230AbhJ1OW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 10:22:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57576 "EHLO
+        id S231272AbhJ1OWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 10:22:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231182AbhJ1OW1 (ORCPT
+        with ESMTP id S231182AbhJ1OW3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 10:22:27 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 542CCC061745;
-        Thu, 28 Oct 2021 07:20:00 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id d3so10497412wrh.8;
-        Thu, 28 Oct 2021 07:20:00 -0700 (PDT)
+        Thu, 28 Oct 2021 10:22:29 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FF60C061570;
+        Thu, 28 Oct 2021 07:20:02 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id b82-20020a1c8055000000b0032ccc728d63so5210346wmd.1;
+        Thu, 28 Oct 2021 07:20:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=TTzwjJSMGjlHkXTlA0zITL/LluZlDy2EIE8RaOC2PJI=;
-        b=Lyqxw30wY1+Qu4YrrWv9AZrP77iWbXkCezYcd7gBlUxCmuguq56Kt7O/I3OeUVxue3
-         rpG4PDB3E3/aw+jz5NL7Slz2PX8qtVXrIVNe6fWe/QhrtnLm22Ii8qST2l0DYrwPmXQd
-         Ya4P/NxByV+cJRgmL7TlpNl/cpYBCSYkIZtcsgVEH5cinRAX6/kmkscyJlDRWb+hv3VR
-         QXX/hGigeX5hioY7ibMAMHKzwaH3T3NOkMTc1aHizfOXTTvMJrZog92IVUrZoEaNSMEu
-         Oo77pnlXTobtewh2RVDxsfueEgIy5sBr8NcizYz5GpbzXkMJ3kU/Aa5EnA4cmosZieo3
-         cf4Q==
+        bh=dwKhuPd0K1+EmTRAh45beol0sV7WvBTjR24Mfp3dTpE=;
+        b=N0HwkOaju3aHOIPChBq71/QS7cdj2sLk6qHh0FwX7OVXO5sW+QNvVhsxl3b6kVzZHy
+         1TsgXblfqH4lohGTZH4PrW4Cmb03P57HNMFzFRTUUUNcYWNKu9O+/wnSNr80QU14tllv
+         87+5xccCn9T5Rz/c/mL47kP6DQIlacnBh2zc9T8fgaV5WyWLsJPPLeOaCdjivi60CBb0
+         KLCcShyp7Pog1dJqJMwYSq6ayLOr85LQYKd3EeBZxP/lmKDp6XRrqCzfkHnpxm8sRrAP
+         lmmf7ZLwHtr0LiPTldNLBGBFCoJI3hM2iDQZnfW/lOVKzLEWFqgcOhgJAROKeY1ge+Co
+         x9ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=TTzwjJSMGjlHkXTlA0zITL/LluZlDy2EIE8RaOC2PJI=;
-        b=M9sVgRqSMT5KEgIDP0jCWl0KvvnkvSGUi+t4FB7zahaiUvbe1vi/QU5EPUaueDKMpA
-         PIAvt08FL5YUpTAGJpFusPPRY4XhG+sexYh8261stZMEkCIxC21USS8f+47fpd0UDfuu
-         2HNBcLkrZ5pAbVvoYOB6aVZwSXpxbh9w4sYK4kUAHrSWXvwHTzmHPN65wcWAdGHndw3w
-         BzgycxBabpsAWi512+WXRrLdzrVBN6JIlGiRAewSqS0iKqObr5zkJA9/FZf0gnomsEkw
-         FIBBL88QDR5boar50EatxuxcWfAfG/CHvJxvioMkhemFyRcqv/eyXPcal/9cIzKL7Hyy
-         WWgw==
-X-Gm-Message-State: AOAM530rGUv+WldHqjGUGXs4Y+uvXnWujuc8mxOugZejyV6qoEdAex0j
-        SkQPE0nohTuHfVeVFmP4h/U=
-X-Google-Smtp-Source: ABdhPJyDRNj6li3loAoD7ixRNKCJ3lHGxNkXGZ+nglud05oQ0vkYfqtyVHtcULhBtjciYHnjgbx2aw==
-X-Received: by 2002:adf:e489:: with SMTP id i9mr6253592wrm.22.1635430798893;
-        Thu, 28 Oct 2021 07:19:58 -0700 (PDT)
+        bh=dwKhuPd0K1+EmTRAh45beol0sV7WvBTjR24Mfp3dTpE=;
+        b=01yQKAo+fhzbhsNvZgu8ajFH63T+2SZLWlW9RGOfzh+eedHippq+cKPdLiD7/9gnLi
+         1OFLawrxUJCVMXYqw9DNwgnPnDh4RyOQg5QvBFuE3I4v/1d0wFljk9hDYE53Z3bAoQVc
+         dM2rfw49u73sEjjIA9Eh6yKUgo8l/RoJaHkwuoH/qqqUwHz5ErObadpyobhbz7E7IRjs
+         04dB3oOR88QTYA2emsv5DfoZeSGwO8VABMYYpom4L9h3bFS2r6/bvaMyWXurK9RbtKay
+         k++gUKMIR7C+gKF/bQP9gAhNwhXKqP7LKc69bpkM9m/MNzRq0TgHwVW9JnMeRYMzPYqv
+         43Mw==
+X-Gm-Message-State: AOAM533IaCBD7X6Cs2KSKco7yz8uEXBwiji3ubluxDxQzi42nnbJqHcP
+        5jxv2lYK4HFtojdcXH0sKfg=
+X-Google-Smtp-Source: ABdhPJxJf+q7NdBCBG/TUWbpWh436luTVJzFSER9ir83w9qoTEJrg8dMENgpR69PnWdTbdIfAD/BSA==
+X-Received: by 2002:a1c:f601:: with SMTP id w1mr12724598wmc.112.1635430801147;
+        Thu, 28 Oct 2021 07:20:01 -0700 (PDT)
 Received: from localhost.localdomain (i5C74E249.versanet.de. [92.116.226.73])
-        by smtp.gmail.com with ESMTPSA id m2sm6284546wml.15.2021.10.28.07.19.57
+        by smtp.gmail.com with ESMTPSA id m2sm6284546wml.15.2021.10.28.07.20.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 07:19:58 -0700 (PDT)
+        Thu, 28 Oct 2021 07:20:00 -0700 (PDT)
 From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
 To:     Russell King <linux@armlinux.org.uk>,
         Shawn Guo <shawnguo@kernel.org>,
@@ -70,9 +70,9 @@ To:     Russell King <linux@armlinux.org.uk>,
         linux-arm-kernel@lists.infradead.org, openbmc@lists.ozlabs.org
 Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
         Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH 03/13] arm: Kconfig.debug: drop reference to removed ARCH_MSM
-Date:   Thu, 28 Oct 2021 16:19:28 +0200
-Message-Id: <20211028141938.3530-4-lukas.bulwahn@gmail.com>
+Subject: [PATCH 04/13] arm: drop an obsolete ifdef with the removed config PCI_HOST_ITE8152
+Date:   Thu, 28 Oct 2021 16:19:29 +0200
+Message-Id: <20211028141938.3530-5-lukas.bulwahn@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20211028141938.3530-1-lukas.bulwahn@gmail.com>
 References: <20211028141938.3530-1-lukas.bulwahn@gmail.com>
@@ -82,36 +82,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit c0c89fafa289 ("ARM: Remove mach-msm and associated ARM architecture
-code") removes the definition of the config ARCH_MSM. Since then, the
-reference to ARCH_MSM in the dependencies of UNCOMPRESS_INCLUDE in
-Kconfig.debug is dead.
+Commit 6da5238fa384 ("ARM: 8993/1: remove it8152 PCI controller driver")
+removes the config PCI_HOST_ITE8152, but left a dangling obsolete ifndef
+in ./arch/arm/kernel/bios32.c.
 
-Fortunately, ./scripts/checkkconfigsymbols.py warns:
+Hence, ./scripts/checkkconfigsymbols.py warns:
 
-ARCH_MSM
-Referencing files: arch/arm/Kconfig.debug
+PCI_HOST_ITE8152
+Referencing files: arch/arm/kernel/bios32.c
 
-Drop the dependency on this removed config.
+Remove this obsolete ifndef.
 
 Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 ---
- arch/arm/Kconfig.debug | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/kernel/bios32.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/arch/arm/Kconfig.debug b/arch/arm/Kconfig.debug
-index 83484564b1d9..87aa6e92ee6e 100644
---- a/arch/arm/Kconfig.debug
-+++ b/arch/arm/Kconfig.debug
-@@ -1886,7 +1886,7 @@ config DEBUG_UNCOMPRESS
+diff --git a/arch/arm/kernel/bios32.c b/arch/arm/kernel/bios32.c
+index e7ef2b5bea9c..26b5d8361980 100644
+--- a/arch/arm/kernel/bios32.c
++++ b/arch/arm/kernel/bios32.c
+@@ -529,12 +529,10 @@ void pci_common_init_dev(struct device *parent, struct hw_pci *hw)
+ 	}
+ }
  
- config UNCOMPRESS_INCLUDE
- 	string
--	default "debug/uncompress.h" if ARCH_MULTIPLATFORM || ARCH_MSM || \
-+	default "debug/uncompress.h" if ARCH_MULTIPLATFORM || \
- 					PLAT_SAMSUNG || ARM_SINGLE_ARMV7M
- 	default "mach/uncompress.h"
+-#ifndef CONFIG_PCI_HOST_ITE8152
+ void pcibios_set_master(struct pci_dev *dev)
+ {
+ 	/* No special bus mastering setup handling */
+ }
+-#endif
  
+ char * __init pcibios_setup(char *str)
+ {
 -- 
 2.26.2
 
