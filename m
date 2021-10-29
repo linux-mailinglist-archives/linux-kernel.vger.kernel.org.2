@@ -2,153 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7280443FE7D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 16:33:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22D1B43FE83
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 16:34:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229607AbhJ2OfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 10:35:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46286 "EHLO
+        id S229662AbhJ2Ogp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 10:36:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbhJ2Oe7 (ORCPT
+        with ESMTP id S229610AbhJ2Ogo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 10:34:59 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 602CEC061714
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 07:32:31 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id m26so9425945pff.3
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 07:32:31 -0700 (PDT)
+        Fri, 29 Oct 2021 10:36:44 -0400
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F51AC061714
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 07:34:15 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id s1so7848291qta.13
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 07:34:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=LBHbfGOx6452n/4vMedr7l9TFvpAcwzjwR2fBU0Ds1Q=;
-        b=cdO2eWrPzdc1VeMmRqyp9nSih9DttbBHiFxE9UsL79prlg/O0eK8UU2cKjIc2OsHip
-         YZJN/WFvqzJgF04ox/wbjlb6+m6JZmGHac8m+SAgyTnfxm/VA+hivYijgQPGp/VE/a0g
-         uJAwjHLh4LaG9bWWzQidh6lEiPRKFTXZCyaL4Pw/hU59584hsWrwkHR2WcHdA0ra+IME
-         bs+eRN5p95mS4oKDB8QZvGCSrXDKi9eGhwuo1HOFV3tUBD6N17o+SSd1dM7SsZFykq96
-         enYw9H2ML0XtSihmA4c6CE7WISfxXCw9vQ+25iEFE9VtIYjqY21SoBm6ryzcKXmx3o3y
-         AsUA==
+        bh=XiM+B9qyPSJmz+1nGIcnoNS9xSSaJAUzee605rT86OM=;
+        b=X34VJuP893dPnyKj7tKDZS5M8bu1vj5GUEbKqC0ehlOgup3it/mOc80zNH2MD7O5sv
+         L6Sok1uA+G0ndCy/c83EQ25tJbqOJtJ+sWgYAEywCf+ODAJyahVsmS1V9Ya1uXi6P4dC
+         9ROX96pWoQaIrPqYl17HUBgUBvM5U/qqKvGfg1uly5yQsv70bZo4C2jIj4glbnGDmot4
+         XOyoyqzgMiMF+keg6zrOiKfwYEMBxCG4F8wVzYK93GabPXiPZC8vp3jOzx1lhuqgzlGz
+         fh+Z0QQ0bvFp5KF/7DTgS5aG0LV3rQOI6ktMEFTXGWZr7W5Yff2fvK/rCTo9VS+bjGL3
+         gMYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=LBHbfGOx6452n/4vMedr7l9TFvpAcwzjwR2fBU0Ds1Q=;
-        b=KIRlLSzpeRZd7sGCSXw9cHSMWgGuMIdNl6vLE5cEmuVgf0002uS5204BpcjGf0PcEc
-         TDD4koHFemtKSAB7s/3pzCNd5lwFcIgwP1u8XIq70wOK4QcNbSKf2BeexMZA+Cvk7A/B
-         8NIV0Bnd/L5jzzWloV/4Dw3aU2PZ1AKDcFJosyamwD1oUp5TZmFnPQStUVsEN5etA6fl
-         0rmFqd4MxNjaySsqvPiDEhscKlcSTqBqjw8Q6rQHuxzPMbF6BCSDbi8NcF/KaQ9LM+El
-         gXv7KrCv0nu8EnQkfv6uNnScO8n+96YWRNIiS6IkGhD//O3Kvq8Z6U+veRJTKkHIG8CH
-         BfXg==
-X-Gm-Message-State: AOAM531mp3LNL073SloQIFt+p3PdUhrTS7qj+mzB6WJY1xj9rbxPD1kx
-        jF3eNGgLq2j9CjmNWAiY7ANWOQ==
-X-Google-Smtp-Source: ABdhPJw2RQRMriorJ/v2MtRZDVgHUpRCix4lst52zmjGO2JYh8dpKLkpYdTzdEVr2FNlBhz7L8Otow==
-X-Received: by 2002:a05:6a00:2da:b0:47c:6256:b057 with SMTP id b26-20020a056a0002da00b0047c6256b057mr11201206pft.22.1635517950692;
-        Fri, 29 Oct 2021 07:32:30 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id g25sm7037460pfh.216.2021.10.29.07.32.29
+        bh=XiM+B9qyPSJmz+1nGIcnoNS9xSSaJAUzee605rT86OM=;
+        b=u2D+KidWZLE35yXZpmCLdW3eBM8FKPRGvQJK/AlSVN8KW0t3R0dIOTuunHTI1/qzbe
+         eZAJNmRFQKmWY+y9J34r+8zyNyWh7yhmYyGj17Th1E5qoYOhXIAIrSi9kzb6ca8GOx+Q
+         289MIDJ0VsUTYEGUEz7jfXmzQopFHANN+CDIvWWB1mGWOAX/UKRWcVGD6tu7DaYfekKm
+         D11udF8KWkX/3I12dESWJnVnV2DF9thHDcmQa5ihjdiopBAQqy1zelKhWWqDUxSGuypx
+         mrd5a2tvN9XuqeQXIDsa4Bxk70rYzv/r+ZscQJslEWcsfWOKb9y/mNYUkVEkZP97T2Ge
+         osKQ==
+X-Gm-Message-State: AOAM532dAEZXhqm0mFf1+o/HhSzSX03Tnl+mH9mYaJpAOzx03F9VcsLI
+        1upAPLW5UCRgDc/KiRH6uVyaoM6DdZ55OA==
+X-Google-Smtp-Source: ABdhPJwT0NumwZK7MrMRroChOnTroI0bTN/bQxliWUiDYlevjctMF4EdTbVW+0hQZXtexw4bI8eU1g==
+X-Received: by 2002:a05:622a:28e:: with SMTP id z14mr12014795qtw.24.1635518054536;
+        Fri, 29 Oct 2021 07:34:14 -0700 (PDT)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id a15sm3925121qkp.17.2021.10.29.07.34.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Oct 2021 07:32:29 -0700 (PDT)
-Date:   Fri, 29 Oct 2021 14:32:26 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        llvm@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Ajay Garg <ajaygargnsit@gmail.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [PATCH] KVM: x86: Shove vp_bitmap handling down into
- sparse_set_to_vcpu_mask()
-Message-ID: <YXwF+jSnDq9ONTQJ@google.com>
-References: <20211028213408.2883933-1-seanjc@google.com>
- <87pmrokn16.fsf@vitty.brq.redhat.com>
+        Fri, 29 Oct 2021 07:34:14 -0700 (PDT)
+Date:   Fri, 29 Oct 2021 10:34:12 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Ye Bin <yebin10@huawei.com>
+Cc:     axboe@kernel.dk, linux-block@vger.kernel.org, nbd@other.debian.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next v3 1/2] nbd: Fix incorrect error handle when
+ first_minor big than '0xff' in nbd_dev_add
+Message-ID: <YXwGZL+VIRhKwEgi@localhost.localdomain>
+References: <20211029094228.1853434-1-yebin10@huawei.com>
+ <20211029094228.1853434-2-yebin10@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87pmrokn16.fsf@vitty.brq.redhat.com>
+In-Reply-To: <20211029094228.1853434-2-yebin10@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021, Vitaly Kuznetsov wrote:
-> Sean Christopherson <seanjc@google.com> writes:
-> >  There's a smoke test for this in selftests, but it's not really all that
-> >  interesting.  It took me over an hour and a half just to get a Linux guest
-> >  to hit the relevant flows.  Most of that was due to QEMU 5.1 bugs (doesn't
-> >  advertise HYPERCALL MSR by default)
+On Fri, Oct 29, 2021 at 05:42:27PM +0800, Ye Bin wrote:
+> If first_minor big than '0xff' goto out_free_idr label, this will miss
+> cleanup disk.
 > 
-> This should be fixed already, right?
+> Fixes: b1a811633f73 ("block: nbd: add sanity check for first_minor")
+> Signed-off-by: Ye Bin <yebin10@huawei.com>
 
-Yeah, it's fixed in more recent versions.  That added to the confusion; the local
-copy of QEMU source I was reading didn't match the binary I was using.  Doh.
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-> > diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
-> > index 4f15c0165c05..80018cfab5c7 100644
-> > --- a/arch/x86/kvm/hyperv.c
-> > +++ b/arch/x86/kvm/hyperv.c
-> > @@ -1710,31 +1710,36 @@ int kvm_hv_get_msr_common(struct kvm_vcpu *vcpu, u32 msr, u64 *pdata, bool host)
-> >  		return kvm_hv_get_msr(vcpu, msr, pdata, host);
-> >  }
-> >  
-> > -static __always_inline unsigned long *sparse_set_to_vcpu_mask(
-> > -	struct kvm *kvm, u64 *sparse_banks, u64 valid_bank_mask,
-> > -	u64 *vp_bitmap, unsigned long *vcpu_bitmap)
-> > +static void sparse_set_to_vcpu_mask(struct kvm *kvm, u64 *sparse_banks,
-> > +				    u64 valid_bank_mask, unsigned long *vcpu_mask)
-> >  {
-> >  	struct kvm_hv *hv = to_kvm_hv(kvm);
-> > +	bool has_mismatch = atomic_read(&hv->num_mismatched_vp_indexes);
-> > +	u64 vp_bitmap[KVM_HV_MAX_SPARSE_VCPU_SET_BITS];
-> >  	struct kvm_vcpu *vcpu;
-> >  	int i, bank, sbank = 0;
-> > +	u64 *bitmap;
-> >  
-> > -	memset(vp_bitmap, 0,
-> > -	       KVM_HV_MAX_SPARSE_VCPU_SET_BITS * sizeof(*vp_bitmap));
-> > +	BUILD_BUG_ON(sizeof(vp_bitmap) >
-> > +		     sizeof(*vcpu_mask) * BITS_TO_LONGS(KVM_MAX_VCPUS));
-> > +
-> > +	/* If vp_index == vcpu_idx for all vCPUs, fill vcpu_mask directly. */
-> > +	if (likely(!has_mismatch))
-> > +		bitmap = (u64 *)vcpu_mask;
-> > +
-> > +	memset(bitmap, 0, sizeof(vp_bitmap));
-> 
-> ... but in the unlikely case has_mismatch == true 'bitmap' is still
-> uninitialized here, right? How doesn't it crash?
+Thanks,
 
-I'm sure it does crash.  I'll hack the guest to actually test this.  More below.
- 
-> >  	for_each_set_bit(bank, (unsigned long *)&valid_bank_mask,
-> >  			 KVM_HV_MAX_SPARSE_VCPU_SET_BITS)
-> > -		vp_bitmap[bank] = sparse_banks[sbank++];
-> > +		bitmap[bank] = sparse_banks[sbank++];
-> >  
-> > -	if (likely(!atomic_read(&hv->num_mismatched_vp_indexes))) {
-> > -		/* for all vcpus vp_index == vcpu_idx */
-> > -		return (unsigned long *)vp_bitmap;
-> > -	}
-> > +	if (likely(!has_mismatch))
-> > +		return;
-> >  
-> > -	bitmap_zero(vcpu_bitmap, KVM_MAX_VCPUS);
-> > +	bitmap_zero(vcpu_mask, KVM_MAX_VCPUS);
-> >  	kvm_for_each_vcpu(i, vcpu, kvm) {
-> >  		if (test_bit(kvm_hv_get_vpindex(vcpu), (unsigned long *)vp_bitmap))
-> 
-> 'vp_bitmap' also doesn't seem to be assigned to anything, I'm really
-> confused :-(
->
-> Didn't you accidentally mix up 'vp_bitmap' and 'bitmap'?
-
-No, bitmap was supposed to be initialized as:
-
-	if (likely(!has_mismatch))
-		bitmap = (u64 *)vcpu_mask;
-	else
-		bitmap = vp_bitmap;
-
-The idea being that the !mismatch case sets vcpu_mask directly, and the mismatch
-case sets vp_bitmap and then uses that to fill vcpu_mask.
+Josef
