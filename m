@@ -2,159 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A32543FD97
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 15:52:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B70F43FD9C
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 15:53:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231449AbhJ2NzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 09:55:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32899 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231260AbhJ2NzI (ORCPT
+        id S231523AbhJ2N4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 09:56:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37052 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229692AbhJ2N4A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 09:55:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635515559;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7iYH28BKY2HkWtqeMm9u+LMJde+0Yure84miKLDU7nc=;
-        b=GnxxNm8I9vi93iO58LX3Rc3D20VLn4OExY/sMapYA+/a1nDJ5QOLn5usIhzzWNDbdjA/0c
-        lajkpxcT4gpjHVS7f4vI5yJDnm4cUeyb+YwgJx4xfEhprdT0MQyFAW9rnb5nQqDNIBFdrL
-        fbWR9a9UvpWGVITLXxWoSCopcVHXUsE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-58-j-gKQqqgM8GU8CtRnIYvHw-1; Fri, 29 Oct 2021 09:52:33 -0400
-X-MC-Unique: j-gKQqqgM8GU8CtRnIYvHw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 60779100C660;
-        Fri, 29 Oct 2021 13:52:32 +0000 (UTC)
-Received: from redhat.com (unknown [10.22.16.72])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B5F425DA60;
-        Fri, 29 Oct 2021 13:51:56 +0000 (UTC)
-Date:   Fri, 29 Oct 2021 09:51:54 -0400
-From:   Joe Lawrence <joe.lawrence@redhat.com>
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>, live-patching@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Luis Chamberlain <mcgrof@kernel.org>
-Subject: Re: [PATCH 0/3] livepatch: cleanup kpl_patch kobject release
-Message-ID: <YXv8eoPKXk5gpsa7@redhat.com>
-References: <20211028125734.3134176-1-ming.lei@redhat.com>
+        Fri, 29 Oct 2021 09:56:00 -0400
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D55F1C061570;
+        Fri, 29 Oct 2021 06:53:31 -0700 (PDT)
+Received: by mail-qv1-xf2b.google.com with SMTP id kd16so6375631qvb.0;
+        Fri, 29 Oct 2021 06:53:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Z+CF8McLJtZXo6SHz1nxgycF8ae/xOR5hUS+LP7jGG8=;
+        b=UN0Z0M+dhBwkt6q37PI/52rAjqga+C+ztLmr82Rnux6+JemIk7iBqqZlTOpuQA44kf
+         /ihey/8C7DeRqq3u4bOtR/iow4iYRLK6QIOzy2E0YiZUzPRwSXh+FTrQH+3eQxdLkQki
+         tsJJgLocQLDYzDkzWaEJtNHpXXjZw1bI2mVTjuWLozUFtRIu31vmFk90dW9vLncfRRkF
+         z5+S3uATHVZnnAYYEPiaef5n2uOA0s+69QRMlxdjiG4kl7bk1mHOKRnArPt4P4Q9ZNSj
+         gipG3c4clyWVBlDj5ZScf54k5GvPN4CD0Hwb8c/35NKoS6tQ6659IPSviBT+z7fxLLUG
+         rwzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Z+CF8McLJtZXo6SHz1nxgycF8ae/xOR5hUS+LP7jGG8=;
+        b=KZJHKlD/6QJ3XH8MZ0dIQEN9l5U1ckrTcD8PavyU3rJ64VeMfqW/cio16Vx3QMez3c
+         BGMQdyBOGLo5iUbcOZyf1wcbxDmIURL36bhHUHfiNbLlz65+RWlHgR/TQp2tQYG27j8s
+         Fj85K2d97tDE6hSDF70HwbOBuGPTAn2ueRK/7nV2ktV0biEotXc7l8yVKgtUlTPiBjiq
+         TIH0mag6iLhAnm6wCYRKm8gDSbZ7evl+p3fy8NfqZs/Ow4Pg+SYvO43rRe8q+I5U/nM3
+         hm/hamxspzUb1DzyQ4k/rClTycbmFV4P0JWjLFJhZJDKahG+PqpdV+6pHHVS8qpqJCt3
+         MGkg==
+X-Gm-Message-State: AOAM532AojaSCtlEPS8HYNg6CUip5p/R/e2Nk1+/lekv7cq3EPkcrSBq
+        galaYg+Kw8lNTWLhh1AoZ3w=
+X-Google-Smtp-Source: ABdhPJx6gNizjT3moPdCwjo/KPDiRGAqujQKL/z/JSuLaswrwaTXrXIMdIdAYHKSiSONMNxlBVRKyw==
+X-Received: by 2002:a05:6214:dcf:: with SMTP id 15mr11015072qvt.23.1635515611085;
+        Fri, 29 Oct 2021 06:53:31 -0700 (PDT)
+Received: from Zekuns-MBP-16.fios-router.home (cpe-74-73-56-100.nyc.res.rr.com. [74.73.56.100])
+        by smtp.gmail.com with ESMTPSA id u6sm444100qtc.86.2021.10.29.06.53.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Oct 2021 06:53:30 -0700 (PDT)
+Date:   Fri, 29 Oct 2021 09:53:28 -0400
+From:   Zekun Shen <bruceshenzk@gmail.com>
+To:     Kalle Valo <kvalo@codeaurora.org>
+Cc:     Pontus Fuchs <pontus.fuchs@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ar5523: Fix null-ptr-deref with unexpected
+ WDCMSG_TARGET_START  =?ISO-8859-1?Q?=20reply=1B?=
+Message-ID: <YXv82KfKCW3eHhE6@Zekuns-MBP-16.fios-router.home>
+References: <YXsmPQ3awHFLuAj2@10-18-43-117.dynapool.wireless.nyu.edu>
+ <87tuh0xz9h.fsf@tynnyri.adurom.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211028125734.3134176-1-ming.lei@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <87tuh0xz9h.fsf@tynnyri.adurom.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 08:57:31PM +0800, Ming Lei wrote:
-> Hello,
->
-> The 1st patch moves module_put() to release handler of klp_patch
-> kobject.
->
-> The 2nd patch changes to free klp_patch and other kobjects without
-> klp_mutex.
->
-> The 3rd patch switches to synchronous kobject release for klp_patch.
->
+On Fri, Oct 29, 2021 at 06:53:30AM +0300, Kalle Valo wrote:
+> Zekun Shen <bruceshenzk@gmail.com> writes:
+> 
+> > Unexpected WDCMSG_TARGET_START replay can lead to null-ptr-deref
+> > when ar->tx_cmd->odata is NULL. The patch adds a null check to
+> > prevent such case.
+> >
+> > KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+> >  ar5523_cmd+0x46a/0x581 [ar5523]
+> >  ar5523_probe.cold+0x1b7/0x18da [ar5523]
+> >  ? ar5523_cmd_rx_cb+0x7a0/0x7a0 [ar5523]
+> >  ? __pm_runtime_set_status+0x54a/0x8f0
+> >  ? _raw_spin_trylock_bh+0x120/0x120
+> >  ? pm_runtime_barrier+0x220/0x220
+> >  ? __pm_runtime_resume+0xb1/0xf0
+> >  usb_probe_interface+0x25b/0x710
+> >  really_probe+0x209/0x5d0
+> >  driver_probe_device+0xc6/0x1b0
+> >  device_driver_attach+0xe2/0x120
+> >
+> > Signed-off-by: Zekun Shen <bruceshenzk@gmail.com>
+> 
+> How did you test this?
+I found the bug using a custome USBFuzz port. It's a research work
+to fuzz USB stack/drivers. I modified it to fuzz ath9k driver only,
+providing hand-crafted usb descriptors to QEMU.
 
-Hi Ming,
-
-I gave the patchset a spin on top of linus tree @ 1fc596a56b33 and ended
-up with a stuck task:
-
-Test
-----
-Enable the livepatch selftests:
-  $ grep CONFIG_TEST_LIVEPATCH .config
-  CONFIG_TEST_LIVEPATCH=m
-
-Run a continuous kernel build in the background:
-  $ while (true); do make clean && make -j$(nproc); done
-
-While continuously executing the selftests:
-  $ while (true); do make -C tools/testing/selftests/livepatch/ run_tests; done
-
-Results
--------
-...
-[  366.862278] ===== TEST: multiple target modules =====
-[  366.877470] % modprobe test_klp_callbacks_busy block_transition=N
-[  366.890468] test_klp_callbacks_busy: test_klp_callbacks_busy_init
-[  366.897280] test_klp_callbacks_busy: busymod_work_func enter
-[  366.903602] test_klp_callbacks_busy: busymod_work_func exit
-[  366.920311] % modprobe test_klp_callbacks_demo
-[  366.931737] livepatch: enabling patch 'test_klp_callbacks_demo'
-[  366.938466] test_klp_callbacks_demo: pre_patch_callback: vmlinux
-[  366.945173] test_klp_callbacks_demo: pre_patch_callback: test_klp_callbacks_busy -> [MODULE_STATE_LIVE] Normal state
-[  366.959322] livepatch: 'test_klp_callbacks_demo': starting patching transition
-[  369.699278] test_klp_callbacks_demo: post_patch_callback: vmlinux
-[  369.706118] test_klp_callbacks_demo: post_patch_callback: test_klp_callbacks_busy -> [MODULE_STATE_LIVE] Normal state
-[  369.718079] livepatch: 'test_klp_callbacks_demo': patching complete
-[  369.786485] % modprobe test_klp_callbacks_mod
-[  369.806918] livepatch: applying patch 'test_klp_callbacks_demo' to loading module 'test_klp_callbacks_mod'
-[  369.818005] test_klp_callbacks_demo: pre_patch_callback: test_klp_callbacks_mod -> [MODULE_STATE_COMING] Full formed, running module_init
-[  369.831826] test_klp_callbacks_demo: post_patch_callback: test_klp_callbacks_mod -> [MODULE_STATE_COMING] Full formed, running module_init
-[  369.846259] test_klp_callbacks_mod: test_klp_callbacks_mod_init
-[  369.865115] % rmmod test_klp_callbacks_mod
-[  369.881713] test_klp_callbacks_mod: test_klp_callbacks_mod_exit
-[  369.888790] test_klp_callbacks_demo: pre_unpatch_callback: test_klp_callbacks_mod -> [MODULE_STATE_GOING] Going away
-[  369.900583] livepatch: reverting patch 'test_klp_callbacks_demo' on unloading module 'test_klp_callbacks_mod'
-[  369.911696] test_klp_callbacks_demo: post_unpatch_callback: test_klp_callbacks_mod -> [MODULE_STATE_GOING] Going away
-[  369.946082] % echo 0 > /sys/kernel/livepatch/test_klp_callbacks_demo/enabled
-[  369.954544] test_klp_callbacks_demo: pre_unpatch_callback: vmlinux
-[  369.962117] test_klp_callbacks_demo: pre_unpatch_callback: test_klp_callbacks_busy -> [MODULE_STATE_LIVE] Normal state
-[  369.974099] livepatch: 'test_klp_callbacks_demo': starting unpatching transition
-[  370.022730] test_klp_callbacks_demo: post_unpatch_callback: vmlinux
-[  370.029763] test_klp_callbacks_demo: post_unpatch_callback: test_klp_callbacks_busy -> [MODULE_STATE_LIVE] Normal state
-[  370.042065] livepatch: 'test_klp_callbacks_demo': unpatching complete
-[  494.498310] INFO: task test-callbacks.:10039 blocked for more than 122 seconds.
-[  494.506489]       Tainted: G              K   5.15.0-rc7+ #2
-[  494.512834] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-[  494.521601] task:test-callbacks. state:D stack:    0 pid:10039 ppid: 10036 flags:0x00004000
-[  494.530958] Call Trace:
-[  494.533706]  __schedule+0x200/0x540
-[  494.537628]  schedule+0x44/0xa0
-[  494.541161]  __kernfs_remove.part.0+0x21e/0x2a0
-[  494.546251]  ? do_wait_intr_irq+0xa0/0xa0
-[  494.550761]  kernfs_remove_by_name_ns+0x50/0x90
-[  494.555852]  remove_files+0x2b/0x60
-[  494.559783]  sysfs_remove_group+0x38/0x80
-[  494.564300]  sysfs_remove_groups+0x29/0x40
-[  494.568908]  __kobject_del+0x1b/0x80
-[  494.572933]  kobject_cleanup+0x9c/0x130
-[  494.577251]  enabled_store+0xdc/0x1a0
-[  494.581379]  kernfs_fop_write_iter+0x11c/0x1b0
-[  494.586374]  new_sync_write+0x11f/0x1b0
-[  494.590690]  ? msr_build_context.constprop.0+0x5d/0xbe
-[  494.596462]  vfs_write+0x1ce/0x260
-[  494.600291]  ksys_write+0x5f/0xe0
-[  494.604024]  do_syscall_64+0x3b/0x90
-[  494.608049]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[  494.613719] RIP: 0033:0x7f66cd5aea37
-[  494.617733] RSP: 002b:00007ffe6a5e16c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-[  494.626209] RAX: ffffffffffffffda RBX: 0000000000000002 RCX: 00007f66cd5aea37
-[  494.634196] RDX: 0000000000000002 RSI: 0000562e8101ba60 RDI: 0000000000000001
-[  494.642177] RBP: 0000562e8101ba60 R08: 0000000000000000 R09: 00007f66cd6634e0
-[  494.650166] R10: 00007f66cd6633e0 R11: 0000000000000246 R12: 0000000000000002
-[  494.658156] R13: 00007f66cd6a85a0 R14: 0000000000000002 R15: 00007f66cd6a87a0
-...
-[ 1600.420533] INFO: task test-callbacks.:10039 blocked for more than 1228 seconds.
-
-Let me know if you have any questions about the tests.  If you look at
-the "^%" prefixed kernel messages in the above log, you can get a rough
-idea of the commands that the test ran.
-
-Regards,
-
--- Joe
-
+After fixing the code (fourth byte in usb packet) to WDCMSG_TARGET_START, 
+I got the null-ptr-deref bug. I believe the bug is triggerable whenever
+cmd->odata is NULL. After patching, I tested with the same input and no
+longer see the KASAN report.
+> 
+> -- 
+> https://patchwork.kernel.org/project/linux-wireless/list/
+> 
+> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
