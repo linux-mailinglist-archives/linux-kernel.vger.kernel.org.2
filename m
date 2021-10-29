@@ -2,288 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E81C440310
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 21:23:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33BE4440316
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 21:25:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230073AbhJ2T0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 15:26:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56280 "EHLO
+        id S230504AbhJ2T1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 15:27:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230024AbhJ2T0V (ORCPT
+        with ESMTP id S230370AbhJ2T1a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 15:26:21 -0400
-Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D65D9C061570
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 12:23:52 -0700 (PDT)
-Received: by mail-ua1-x932.google.com with SMTP id z22so17672086uaq.12
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 12:23:52 -0700 (PDT)
+        Fri, 29 Oct 2021 15:27:30 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DE51C061570;
+        Fri, 29 Oct 2021 12:25:01 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id v17so18005058wrv.9;
+        Fri, 29 Oct 2021 12:25:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EkiIsmNvZJCnsv/Q3CrXNMfSBQ+jZnjjk3DHLmC31KA=;
-        b=w+2lZXlomimzxiJggD5BOx3968TbKGRsxAxBh+ijDhza4ym/asZD46MmE/uotG9FXo
-         usXJlT8eIyMEtdz13HUeHVJ+QEO1x+XUKNpm+B0amcHxBUKkDKKeRZ3/7RuA8vV0uuim
-         IVTMSXMW7etRvLFAtcQQi3C9g9rXmQTzW9E2+0xjcb5FRxwlOHYfdNP4Lf/6pzJu6nUa
-         XvRygmgMqP+/vwBdudYD0CBO+GX7OMPgPivcJ7G0AZ3EVt++TzzhcCQ74yVV5UbKRFTN
-         63YrjSdbBTzRsyZNJXMi4waWZBAooMnWv1/IPKuFBJVzWgx8z5+hozXkQlkZMzAC4nzc
-         oMDQ==
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=Tvo7OsKnZiYhW/CIzL+toK1Ob0iQFZhcf7j3OyPg3VI=;
+        b=GfrBZJ5iIL2QX+F3UY0p1FFnKImW3UfN7kqg/dcOvO4f8lWc2w7qiWoPuGR2YeBRhR
+         mF7VjPK+mwaulVbIioBdngv17VHlkQ7XuoQQStaDRen0Aa8gM0FBI8Tlxt0Pg+YL4UIs
+         bozizwsms5KMPr3ZZYUfTnAG8FMfSBQdxr7z5OnwF1CkzBihDZel1yjELtS9eZgSMC6B
+         T2qKwPfCNz9g8VzTQhK9BPS4FCar+DNfqOGds8bW2mDy5IIWIk2QmgJS/csc5LgXdg5w
+         S9ve7qcjIR8BPp48lZAi7/MBoeG+ZkutgW0OyDmAMfhJxmsYtIXUFl8s+WA01RaMnNjr
+         pNYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EkiIsmNvZJCnsv/Q3CrXNMfSBQ+jZnjjk3DHLmC31KA=;
-        b=eYNniWwINKa2s/iPSP0XQcXOHHZhhj15CCKiequBby1mUNW/m1i0sm2lTdYHjUcV7Y
-         QHFJmY2ruIY+UCaP6CEslNCoXrkbvrTD+9cedv3U84OnqypG+dJn0pFgbVBJQ/NL2BLr
-         MGaz//Yf6FrdQJ3JBVPx40l0EjlKvTsvU8N4FEimnUkOpChapJyTVIyqRo+6kuNmX9fC
-         TAYicrutqfgU+qkAR4nuLvz/k7FKK1BsNXpx0Ypi4X66tC2bs/K+hNuw+ZFWJRhpTiBo
-         J/d4JYgQuBjNJuX2QhKpZcroW61YBUgYIHVOQXu8/3PkXq0Eo1MsP9Vd0nGUkeI0Xmbz
-         Tmaw==
-X-Gm-Message-State: AOAM5331wadgLXjK0bC2H3Gf9Jyd70RlCCT5LbLFwED5+gZ4GtU3E3RL
-        dGA9fTpjN1twpqFvJmIZsmKNd1LX1EdA1aYhuHjE8A==
-X-Google-Smtp-Source: ABdhPJwkG3i15KQWlLjtNkP1kmVbj44Jza/56zTBehqD3V98+Js0vFMNXaFWEaZAag4sUOqXZTwgBhydr/km74bkL0c=
-X-Received: by 2002:a67:ab48:: with SMTP id k8mr15237251vsh.30.1635535431934;
- Fri, 29 Oct 2021 12:23:51 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=Tvo7OsKnZiYhW/CIzL+toK1Ob0iQFZhcf7j3OyPg3VI=;
+        b=w02xQyjsB+QsB6dVCo/DuojCInnbh/z5NAh9ZgZJ3VLH6n4YoQli5M/8PLngjqHnwN
+         5tDJSh56/o3CbxaYZfmngYNQS5Me9YwFfQdSie1A2+jdoitsbmcL2MBMIqWgna9v9vd2
+         SeZiIpzN6huphuxB0uuok6XDm/RzKLYuRAZQ0oVzjl2crD8C7j+ObfAdGJNC8iZeLwrZ
+         8yiI6vpAiXrFxau+X24maBMtdnqLhDTlQddx9w8zFJtt5fj5CfMghZ/8P2qzN1mTDcrK
+         y8IlULHBkJhz9Kd4AWpX4z8gawkyaTu/D2zrvVcfMkPHAm2hoKW832rpuhB+qiv2Z3Sp
+         v2zg==
+X-Gm-Message-State: AOAM532/x+9vyyeXV5b4oZ0t1IpLaiaZANurEIYVfUEkFtSqwUv2dVbJ
+        cbZ/W9JlaJp/ThmOA9G7wJBHKBKS5/OXHQ==
+X-Google-Smtp-Source: ABdhPJwJT6TiYb3/JIfjJ6JLlOKjZCQT2hYhBeN/ZIZiycBjCWzDjHwZ0BUCh015OF6O6jcWdT+TvA==
+X-Received: by 2002:a5d:6da7:: with SMTP id u7mr16031755wrs.322.1635535499887;
+        Fri, 29 Oct 2021 12:24:59 -0700 (PDT)
+Received: from [192.168.8.198] ([148.252.129.16])
+        by smtp.gmail.com with ESMTPSA id j20sm5407595wmp.27.2021.10.29.12.24.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Oct 2021 12:24:59 -0700 (PDT)
+Message-ID: <f3e14569-a399-f6da-fd3e-993b579eaf74@gmail.com>
+Date:   Fri, 29 Oct 2021 20:23:53 +0100
 MIME-Version: 1.0
-References: <20211028183527.3050-1-semen.protsenko@linaro.org>
- <20211028183527.3050-4-semen.protsenko@linaro.org> <b9c33def-6b12-1e5a-4449-b1e0869a0e3a@roeck-us.net>
-In-Reply-To: <b9c33def-6b12-1e5a-4449-b1e0869a0e3a@roeck-us.net>
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Fri, 29 Oct 2021 22:23:39 +0300
-Message-ID: <CAPLW+4nToQ7+sQxZjswKtY-b-7=KeHCfyz5RPKT9iaEhnOsNow@mail.gmail.com>
-Subject: Re: [PATCH 3/7] watchdog: s3c2410: Make reset disable optional
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-watchdog@vger.kernel.org,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [dm-devel] [PATCH 0/6] dax poison recovery with RWF_RECOVERY_DATA
+ flag
+Content-Language: en-US
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jane Chu <jane.chu@oracle.com>,
+        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
+        "vishal.l.verma@intel.com" <vishal.l.verma@intel.com>,
+        "dave.jiang@intel.com" <dave.jiang@intel.com>,
+        "agk@redhat.com" <agk@redhat.com>,
+        "snitzer@redhat.com" <snitzer@redhat.com>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        "ira.weiny@intel.com" <ira.weiny@intel.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "vgoyal@redhat.com" <vgoyal@redhat.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
+References: <20211021001059.438843-1-jane.chu@oracle.com>
+ <YXFPfEGjoUaajjL4@infradead.org>
+ <e89a2b17-3f03-a43e-e0b9-5d2693c3b089@oracle.com>
+ <YXJN4s1HC/Y+KKg1@infradead.org>
+ <2102a2e6-c543-2557-28a2-8b0bdc470855@oracle.com>
+ <YXj2lwrxRxHdr4hb@infradead.org> <20211028002451.GB2237511@magnolia>
+ <20211028225955.GA449541@dread.disaster.area>
+ <22255117-52de-4b2d-822e-b4bc50bbc52b@gmail.com>
+ <20211029165747.GC2237511@magnolia>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <20211029165747.GC2237511@magnolia>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Oct 2021 at 03:16, Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On 10/28/21 11:35 AM, Sam Protsenko wrote:
-> > Not all SoCs have AUTOMATIC_WDT_RESET_DISABLE register, examples are
-> > Exynos850 and Exynos9. On such chips reset disable register shouldn't be
-> > accessed. Provide a way to avoid handling that register. This is done by
-> > introducing separate callbacks to driver data structure: one for reset
-> > disable register, and one for mask reset register. Now those callbacks
-> > can be checked and called only when those were set in driver data.
-> >
-> > This commit doesn't bring any functional change to existing devices, but
-> > merely provides an infrastructure for upcoming chips support.
-> >
->
-> That doesn't explain why the callbacks are needed instead of additional
-> feature flags.
->
+On 10/29/21 17:57, Darrick J. Wong wrote:
+> On Fri, Oct 29, 2021 at 12:46:14PM +0100, Pavel Begunkov wrote:
+>> On 10/28/21 23:59, Dave Chinner wrote:
+>> [...]
+>>>>> Well, my point is doing recovery from bit errors is by definition not
+>>>>> the fast path.  Which is why I'd rather keep it away from the pmem
+>>>>> read/write fast path, which also happens to be the (much more important)
+>>>>> non-pmem read/write path.
+>>>>
+>>>> The trouble is, we really /do/ want to be able to (re)write the failed
+>>>> area, and we probably want to try to read whatever we can.  Those are
+>>>> reads and writes, not {pre,f}allocation activities.  This is where Dave
+>>>> and I arrived at a month ago.
+>>>>
+>>>> Unless you'd be ok with a second IO path for recovery where we're
+>>>> allowed to be slow?  That would probably have the same user interface
+>>>> flag, just a different path into the pmem driver.
+>>>
+>>> I just don't see how 4 single line branches to propage RWF_RECOVERY
+>>> down to the hardware is in any way an imposition on the fast path.
+>>> It's no different for passing RWF_HIPRI down to the hardware *in the
+>>> fast path* so that the IO runs the hardware in polling mode because
+>>> it's faster for some hardware.
+>>
+>> Not particularly about this flag, but it is expensive. Surely looks
+>> cheap when it's just one feature, but there are dozens of them with
+>> limited applicability, default config kernels are already sluggish
+>> when it comes to really fast devices and it's not getting better.
+>> Also, pretty often every of them will add a bunch of extra checks
+>> to fix something of whatever it would be.
+> 
+> So we can't have data recovery because moving fast the only goal?
 
-Ok, I'll rework this patch using quirks, don't have a strong
-preference on this one. That's actually how I did that on my first
-attempt. Guess I just like "callbacks way" more, matter of taste :)
-But we already have quirks for that, so yeah, probably makes sense to
-use those for consistency.
+That's not what was said and you missed the point, which was in
+the rest of the message.
 
-> Guenter
->
-> > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> > ---
-> >   drivers/watchdog/s3c2410_wdt.c | 81 ++++++++++++++++++++++++----------
-> >   1 file changed, 58 insertions(+), 23 deletions(-)
-> >
-> > diff --git a/drivers/watchdog/s3c2410_wdt.c b/drivers/watchdog/s3c2410_wdt.c
-> > index 2395f353e52d..7c163a257d3c 100644
-> > --- a/drivers/watchdog/s3c2410_wdt.c
-> > +++ b/drivers/watchdog/s3c2410_wdt.c
-> > @@ -83,6 +83,8 @@ MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started (default="
-> >                       __MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
-> >   MODULE_PARM_DESC(soft_noboot, "Watchdog action, set to 1 to ignore reboots, 0 to reboot (default 0)");
-> >
-> > +struct s3c2410_wdt;
-> > +
-> >   /**
-> >    * struct s3c2410_wdt_variant - Per-variant config data
-> >    *
-> > @@ -96,6 +98,11 @@ MODULE_PARM_DESC(soft_noboot, "Watchdog action, set to 1 to ignore reboots, 0 to
-> >    * @rst_stat_bit: Bit number in the rst_stat register indicating a watchdog
-> >    * reset.
-> >    * @quirks: A bitfield of quirks.
-> > + * @disable_auto_reset: If set, this function will be called to disable
-> > + * automatic setting the WDT as a reset reason in RST_STAT on CPU reset; uses
-> > + * disable_reg field.
-> > + * @mask_reset: If set, this function will be called to mask WDT reset request;
-> > + * uses mask_reset_reg and mask_bit fields.
-> >    */
-> >
-> >   struct s3c2410_wdt_variant {
-> > @@ -105,6 +112,8 @@ struct s3c2410_wdt_variant {
-> >       int rst_stat_reg;
-> >       int rst_stat_bit;
-> >       u32 quirks;
-> > +     int (*disable_auto_reset)(struct s3c2410_wdt *wdt, bool mask);
-> > +     int (*mask_reset)(struct s3c2410_wdt *wdt, bool mask);
-> >   };
-> >
-> >   struct s3c2410_wdt {
-> > @@ -121,6 +130,9 @@ struct s3c2410_wdt {
-> >       struct regmap *pmureg;
-> >   };
-> >
-> > +static int s3c2410wdt_disable_wdt_reset(struct s3c2410_wdt *wdt, bool mask);
-> > +static int s3c2410wdt_mask_wdt_reset(struct s3c2410_wdt *wdt, bool mask);
-> > +
-> >   static const struct s3c2410_wdt_variant drv_data_s3c2410 = {
-> >       .quirks = 0
-> >   };
-> > @@ -138,6 +150,8 @@ static const struct s3c2410_wdt_variant drv_data_exynos5250  = {
-> >       .rst_stat_bit = 20,
-> >       .quirks = QUIRK_HAS_PMU_CONFIG | QUIRK_HAS_RST_STAT \
-> >                 | QUIRK_HAS_WTCLRINT_REG,
-> > +     .disable_auto_reset = s3c2410wdt_disable_wdt_reset,
-> > +     .mask_reset = s3c2410wdt_mask_wdt_reset,
-> >   };
-> >
-> >   static const struct s3c2410_wdt_variant drv_data_exynos5420 = {
-> > @@ -148,6 +162,8 @@ static const struct s3c2410_wdt_variant drv_data_exynos5420 = {
-> >       .rst_stat_bit = 9,
-> >       .quirks = QUIRK_HAS_PMU_CONFIG | QUIRK_HAS_RST_STAT \
-> >                 | QUIRK_HAS_WTCLRINT_REG,
-> > +     .disable_auto_reset = s3c2410wdt_disable_wdt_reset,
-> > +     .mask_reset = s3c2410wdt_mask_wdt_reset,
-> >   };
-> >
-> >   static const struct s3c2410_wdt_variant drv_data_exynos7 = {
-> > @@ -158,6 +174,8 @@ static const struct s3c2410_wdt_variant drv_data_exynos7 = {
-> >       .rst_stat_bit = 23,     /* A57 WDTRESET */
-> >       .quirks = QUIRK_HAS_PMU_CONFIG | QUIRK_HAS_RST_STAT \
-> >                 | QUIRK_HAS_WTCLRINT_REG,
-> > +     .disable_auto_reset = s3c2410wdt_disable_wdt_reset,
-> > +     .mask_reset = s3c2410wdt_mask_wdt_reset,
-> >   };
-> >
-> >   static const struct of_device_id s3c2410_wdt_match[] = {
-> > @@ -200,35 +218,53 @@ static inline struct s3c2410_wdt *freq_to_wdt(struct notifier_block *nb)
-> >       return container_of(nb, struct s3c2410_wdt, freq_transition);
-> >   }
-> >
-> > -static int s3c2410wdt_mask_and_disable_reset(struct s3c2410_wdt *wdt, bool mask)
-> > +static int s3c2410wdt_disable_wdt_reset(struct s3c2410_wdt *wdt, bool mask)
-> >   {
-> > +     const u32 mask_val = 1 << wdt->drv_data->mask_bit;
-> > +     const u32 val = mask ? mask_val : 0;
-> >       int ret;
-> > -     u32 mask_val = 1 << wdt->drv_data->mask_bit;
-> > -     u32 val = 0;
-> >
-> > -     /* No need to do anything if no PMU CONFIG needed */
-> > -     if (!(wdt->drv_data->quirks & QUIRK_HAS_PMU_CONFIG))
-> > -             return 0;
-> > +     ret = regmap_update_bits(wdt->pmureg, wdt->drv_data->disable_reg,
-> > +                              mask_val, val);
-> > +     if (ret < 0)
-> > +             dev_err(wdt->dev, "failed to update reg(%d)\n", ret);
-> >
-> > -     if (mask)
-> > -             val = mask_val;
-> > +     return ret;
-> > +}
-> >
-> > -     ret = regmap_update_bits(wdt->pmureg,
-> > -                     wdt->drv_data->disable_reg,
-> > -                     mask_val, val);
-> > -     if (ret < 0)
-> > -             goto error;
-> > +static int s3c2410wdt_mask_wdt_reset(struct s3c2410_wdt *wdt, bool mask)
-> > +{
-> > +     const u32 mask_val = 1 << wdt->drv_data->mask_bit;
-> > +     const u32 val = mask ? mask_val : 0;
-> > +     int ret;
-> >
-> > -     ret = regmap_update_bits(wdt->pmureg,
-> > -                     wdt->drv_data->mask_reset_reg,
-> > -                     mask_val, val);
-> > - error:
-> > +     ret = regmap_update_bits(wdt->pmureg, wdt->drv_data->mask_reset_reg,
-> > +                              mask_val, val);
-> >       if (ret < 0)
-> >               dev_err(wdt->dev, "failed to update reg(%d)\n", ret);
-> >
-> >       return ret;
-> >   }
-> >
-> > +static int s3c2410wdt_enable(struct s3c2410_wdt *wdt, bool en)
-> > +{
-> > +     int ret;
-> > +
-> > +     if (wdt->drv_data->disable_auto_reset) {
-> > +             ret = wdt->drv_data->disable_auto_reset(wdt, !en);
-> > +             if (ret < 0)
-> > +                     return ret;
-> > +     }
-> > +
-> > +     if (wdt->drv_data->mask_reset) {
-> > +             ret = wdt->drv_data->mask_reset(wdt, !en);
-> > +             if (ret < 0)
-> > +                     return ret;
-> > +     }
-> > +
-> > +     return 0;
-> > +}
-> > +
-> >   static int s3c2410wdt_keepalive(struct watchdog_device *wdd)
-> >   {
-> >       struct s3c2410_wdt *wdt = watchdog_get_drvdata(wdd);
-> > @@ -609,7 +645,7 @@ static int s3c2410wdt_probe(struct platform_device *pdev)
-> >       if (ret)
-> >               goto err_cpufreq;
-> >
-> > -     ret = s3c2410wdt_mask_and_disable_reset(wdt, false);
-> > +     ret = s3c2410wdt_enable(wdt, true);
-> >       if (ret < 0)
-> >               goto err_unregister;
-> >
-> > @@ -655,7 +691,7 @@ static int s3c2410wdt_remove(struct platform_device *dev)
-> >       int ret;
-> >       struct s3c2410_wdt *wdt = platform_get_drvdata(dev);
-> >
-> > -     ret = s3c2410wdt_mask_and_disable_reset(wdt, true);
-> > +     ret = s3c2410wdt_enable(wdt, false);
-> >       if (ret < 0)
-> >               return ret;
-> >
-> > @@ -672,8 +708,7 @@ static void s3c2410wdt_shutdown(struct platform_device *dev)
-> >   {
-> >       struct s3c2410_wdt *wdt = platform_get_drvdata(dev);
-> >
-> > -     s3c2410wdt_mask_and_disable_reset(wdt, true);
-> > -
-> > +     s3c2410wdt_enable(wdt, false);
-> >       s3c2410wdt_stop(&wdt->wdt_device);
-> >   }
-> >
-> > @@ -688,7 +723,7 @@ static int s3c2410wdt_suspend(struct device *dev)
-> >       wdt->wtcon_save = readl(wdt->reg_base + S3C2410_WTCON);
-> >       wdt->wtdat_save = readl(wdt->reg_base + S3C2410_WTDAT);
-> >
-> > -     ret = s3c2410wdt_mask_and_disable_reset(wdt, true);
-> > +     ret = s3c2410wdt_enable(wdt, false);
-> >       if (ret < 0)
-> >               return ret;
-> >
-> > @@ -708,7 +743,7 @@ static int s3c2410wdt_resume(struct device *dev)
-> >       writel(wdt->wtdat_save, wdt->reg_base + S3C2410_WTCNT);/* Reset count */
-> >       writel(wdt->wtcon_save, wdt->reg_base + S3C2410_WTCON);
-> >
-> > -     ret = s3c2410wdt_mask_and_disable_reset(wdt, false);
-> > +     ret = s3c2410wdt_enable(wdt, true);
-> >       if (ret < 0)
-> >               return ret;
-> >
-> >
->
+> 
+> That's so meta.
+> 
+> --D
+> 
+>> So let's add a bit of pragmatism to the picture, if there is just one
+>> user of a feature but it adds overhead for millions of machines that
+>> won't ever use it, it's expensive.
+>>
+>> This one doesn't spill yet into paths I care about, but in general
+>> it'd be great if we start thinking more about such stuff instead of
+>> throwing yet another if into the path, e.g. by shifting the overhead
+>> from linear to a constant for cases that don't use it, for instance
+>> with callbacks or bit masks.
+>>
+>>> IOWs, saying that we shouldn't implement RWF_RECOVERY because it
+>>> adds a handful of branches 	 the fast path is like saying that we
+>>> shouldn't implement RWF_HIPRI because it slows down the fast path
+>>> for non-polled IO....
+>>>
+>>> Just factor the actual recovery operations out into a separate
+>>> function like:
+>>
+>> -- 
+>> Pavel Begunkov
+
+-- 
+Pavel Begunkov
