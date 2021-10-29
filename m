@@ -2,190 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7422543FF4C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 17:17:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 190AF43FF4F
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 17:17:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229760AbhJ2PUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 11:20:03 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:40102 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbhJ2PUB (ORCPT
+        id S230022AbhJ2PUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 11:20:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229957AbhJ2PUU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 11:20:01 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52]:47698)
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mgTdM-006yR9-Qh; Fri, 29 Oct 2021 09:17:32 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:54620 helo=email.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mgTdL-004TUH-1A; Fri, 29 Oct 2021 09:17:32 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Andrea Righi <andrea.righi@canonical.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <YXrN+Hnl9pSOsWlA@arighi-desktop> <202110280955.B18CB67@keescook>
-        <878rydm56l.fsf@disp2133> <202110281136.5CE65399A7@keescook>
-        <8735okls76.fsf@disp2133> <202110290755.451B036CE9@keescook>
-Date:   Fri, 29 Oct 2021 10:17:24 -0500
-In-Reply-To: <202110290755.451B036CE9@keescook> (Kees Cook's message of "Fri,
-        29 Oct 2021 07:58:02 -0700")
-Message-ID: <87ilxfj1x7.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Fri, 29 Oct 2021 11:20:20 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B61F1C061570
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 08:17:51 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id v138so19542650ybb.8
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 08:17:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bm3czZvxnVujCnIZ5GB44Fo107YwPmJEdeZR9VzJYFc=;
+        b=iIpq7FZQ64iNhndh8cqbcroi7LVpRlVTJB6RFvHQ/YnM5RT2Dl+ufYqLzeKP5x2cek
+         Rk3lD4lGDLqekVH0+Ti/Je5/9GooVOGBAGQLU5J0p+zsVZqLc3v8YYCUmn3KGJY0+95M
+         aOnlws1Ny9XGpwp98UVGPyFwkQkYq5BqhUEITM8bvydm45Jtfxet2UKtf8KQednzX+aT
+         52XehACy69jQPDFm7NrqA8Dh7uYCGwMLtztmEK1OQrZ95P1v+RmMbk8AW9BHXHAyTJsY
+         Y4XKERSwRD9zH+9geCrLNBaW63XsyrZZYCgqp2desQqSNEkoUBY+SDyhaAhNDto1hbWK
+         nn9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bm3czZvxnVujCnIZ5GB44Fo107YwPmJEdeZR9VzJYFc=;
+        b=a9vrpTzAwwClBJVtHyz1tQVRHU5eUKiRXYmE0u28wOUoMmit1MPzhjYzLPJINV5Sog
+         R6cKVRufrlUOjpqAXteRsjZ8AIpYDyrP7ibPrZjqB3FZ4UhEJrDM8fllVtwLiHrXt30L
+         D1FbTULZiwciW8u38Fdt+k2rGAHF9lTiW4RgD9ABDsK/7uFq/CLvrF93+Bq+lehDoai/
+         lKXy5NAyMUDStTkwA4+ts1Plifq9xIvc8QJid7lDCUgYXfiPXFJMGovU4B9moxPO0WZg
+         SjqenvmzisIOZQbPMFjQar+xRwHnZ8Co3jmopduWelSp6TylwWvldIbs9zC7uvg+WUZC
+         N7qg==
+X-Gm-Message-State: AOAM530ZWVFxyN9nCUTv8UTPtXaELfNkmWhb8ZhI4OWDwvkDHjmjDEnP
+        xJki8SHD5qsH2jqmvzYxn+CEUe+uGPpIilttkr6rsA==
+X-Google-Smtp-Source: ABdhPJztMVzkEdImPQ+GHHGxN+nOZPeIN4LBvMx+N95NYN97Btb01dhxpRkhU6k1hYEfIn1TQLwwKQBhd0zy46aSs10=
+X-Received: by 2002:a05:6902:1148:: with SMTP id p8mr14084454ybu.402.1635520670889;
+ Fri, 29 Oct 2021 08:17:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1mgTdL-004TUH-1A;;;mid=<87ilxfj1x7.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1+MRm42NTtDoYFpFqFtDfcEyt5GdSQ63Sk=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=0.8 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_XMDrugObfuBody_08
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4999]
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa08 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  1.0 T_XMDrugObfuBody_08 obfuscated drug references
-X-Spam-DCC: XMission; sa08 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Kees Cook <keescook@chromium.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 1187 ms - load_scoreonly_sql: 0.06 (0.0%),
-        signal_user_changed: 13 (1.1%), b_tie_ro: 11 (0.9%), parse: 1.11
-        (0.1%), extract_message_metadata: 15 (1.2%), get_uri_detail_list: 3.2
-        (0.3%), tests_pri_-1000: 13 (1.1%), tests_pri_-950: 1.46 (0.1%),
-        tests_pri_-900: 1.19 (0.1%), tests_pri_-90: 213 (17.9%), check_bayes:
-        209 (17.6%), b_tokenize: 11 (0.9%), b_tok_get_all: 12 (1.0%),
-        b_comp_prob: 3.6 (0.3%), b_tok_touch_all: 175 (14.8%), b_finish: 1.34
-        (0.1%), tests_pri_0: 914 (77.0%), check_dkim_signature: 0.52 (0.0%),
-        check_dkim_adsp: 3.1 (0.3%), poll_dns_idle: 0.78 (0.1%), tests_pri_10:
-        2.7 (0.2%), tests_pri_500: 9 (0.8%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: selftests: seccomp_bpf failure on 5.15
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+References: <20211028094834.1312-1-mgorman@techsingularity.net> <20211028094834.1312-2-mgorman@techsingularity.net>
+In-Reply-To: <20211028094834.1312-2-mgorman@techsingularity.net>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Fri, 29 Oct 2021 17:17:38 +0200
+Message-ID: <CAKfTPtB-fJ7Pd6eYPDrHB8Ts0o7SCbN7nniAD9PSoF4Pf+xB3w@mail.gmail.com>
+Subject: Re: [PATCH 1/2] sched/fair: Couple wakee flips with heavy wakers
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Valentin Schneider <Valentin.Schneider@arm.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Mike Galbraith <efault@gmx.de>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kees Cook <keescook@chromium.org> writes:
-
-> On Thu, Oct 28, 2021 at 05:06:53PM -0500, Eric W. Biederman wrote:
->> Kees Cook <keescook@chromium.org> writes:
->> 
->> > On Thu, Oct 28, 2021 at 12:26:26PM -0500, Eric W. Biederman wrote:
->> >> Kees Cook <keescook@chromium.org> writes:
->> >> 
->> >> > On Thu, Oct 28, 2021 at 06:21:12PM +0200, Andrea Righi wrote:
->> >> >> The following sub-tests are failing in seccomp_bpf selftest:
->> >> >> 
->> >> >> 18:56:54 DEBUG| [stdout] # selftests: seccomp: seccomp_bpf
->> >> >> ...
->> >> >> 18:56:57 DEBUG| [stdout] # #  RUN           TRACE_syscall.ptrace.kill_after ...
->> >> >> 18:56:57 DEBUG| [stdout] # # seccomp_bpf.c:2023:kill_after:Expected entry ? PTRACE_EVENTMSG_SYSCALL_ENTRY : PTRACE_EVENTMSG_SYSCALL_EXIT (1) == msg (0)
->> >> >> 18:56:57 DEBUG| [stdout] # # seccomp_bpf.c:2023:kill_after:Expected entry ? PTRACE_EVENTMSG_SYSCALL_ENTRY : PTRACE_EVENTMSG_SYSCALL_EXIT (2) == msg (1)
->> >> >> 18:56:57 DEBUG| [stdout] # # seccomp_bpf.c:2023:kill_after:Expected entry ? PTRACE_EVENTMSG_SYSCALL_ENTRY : PTRACE_EVENTMSG_SYSCALL_EXIT (1) == msg (2)
->> >> >> 18:56:57 DEBUG| [stdout] # # kill_after: Test exited normally instead of by signal (code: 12)
->> >> >> 18:56:57 DEBUG| [stdout] # #          FAIL  TRACE_syscall.ptrace.kill_after
->> >> >> ...
->> >> >> 18:56:57 DEBUG| [stdout] # #  RUN           TRACE_syscall.seccomp.kill_after ...
->> >> >> 18:56:57 DEBUG| [stdout] # # seccomp_bpf.c:1547:kill_after:Expected !ptrace_syscall (1) == IS_SECCOMP_EVENT(status) (0)
->> >> >> 18:56:57 DEBUG| [stdout] # # kill_after: Test exited normally instead of by signal (code: 0)
->> >> >> 18:56:57 DEBUG| [stdout] # #          FAIL  TRACE_syscall.seccomp.kill_after
->> >> >> 18:56:57 DEBUG| [stdout] # not ok 80 TRACE_syscall.seccomp.kill_after
->> >> >> ...
->> >> >> 18:56:57 DEBUG| [stdout] # # FAILED: 85 / 87 tests passed.
->> >> >> 18:56:57 DEBUG| [stdout] # # Totals: pass:85 fail:2 xfail:0 xpass:0 skip:0 error:0
->> >> >> 18:56:57 DEBUG| [stdout] not ok 1 selftests: seccomp: seccomp_bpf # exit=1
->> >> >> 
->> >> >> I did some bisecting and found that the failures started to happen with:
->> >> >> 
->> >> >>  307d522f5eb8 ("signal/seccomp: Refactor seccomp signal and coredump generation")
->> >> >> 
->> >> >> Not sure if the test needs to be fixed after this commit, or if the
->> >> >> commit is actually introducing an issue. I'll investigate more, unless
->> >> >> someone knows already what's going on.
->> >> >
->> >> > Ah thanks for noticing; I will investigate...
->> >> 
->> >> 
->> >> I just did a quick read through of the test and while
->> >> I don't understand everything having a failure seems
->> >> very weird.
->> >> 
->> >> I don't understand the comment:
->> >> /* Tracer will redirect getpid to getppid, and we should die. */
->> >> 
->> >> As I think what happens is it the bpf programs loads the signal
->> >> number.  Tests to see if the signal number if GETPPID and allows
->> >> that system call and causes any other system call to be terminated.
->> >
->> > The test suite runs a series of seccomp filter vs syscalls under tracing,
->> > either with ptrace or with seccomp SECCOMP_RET_TRACE, to validate the
->> > expected behavioral states. It seems that what's happened is that the
->> > SIGSYS has suddenly become non-killing:
->> >
->> > #  RUN           TRACE_syscall.ptrace.kill_after ...
->> > # seccomp_bpf.c:1555:kill_after:Expected WSTOPSIG(status) & 0x80 (0) == 0x80 (128)
->> > # seccomp_bpf.c:1556:kill_after:WSTOPSIG: 31
->> > # kill_after: Test exited normally instead of by signal (code: 12)
->> > #          FAIL  TRACE_syscall.ptrace.kill_after
->> >
->> > i.e. the ptracer no longer sees a dead tracee, which would pass through
->> > here:
->> >
->> >                 if (WIFSIGNALED(status) || WIFEXITED(status))
->> >                         /* Child is dead. Time to go. */
->> >                         return;
->> >
->> > So the above saw a SIG_TRAP|SIGSYS rather than a killing SIGSYS. i.e.
->> > instead of WIFSIGNALED(stauts) being true, it instead catches a
->> > PTRACE_EVENT_STOP for SIGSYS, which should be impossible (the process
->> > should be getting killed).
->> 
->> Oh.  This is being ptraced as part of the test?
->> 
->> Yes.  The signal started being delivered.  As far as that goes that
->> sounds correct.
->> 
->> Ptrace is allowed to intercept even fatal signals.  Everything except
->> SIGKILL.
->> 
->> Is this a condition we don't want even ptrace to be able to catch?
->> 
->> I think we can arrange it so that even ptrace can't intercept this
->> signal.  I need to sit this problem on the back burner for a few
->> minutes.  It is an angle I had not considered.
->> 
->> Is it a problem that the debugger can see the signal if the process does
->> not?
+On Thu, 28 Oct 2021 at 11:48, Mel Gorman <mgorman@techsingularity.net> wrote:
 >
-> Right, I'm trying to understand that too. However, my neighbor just lost
-> power. :|
+> This patch mitigates a problem where wake_wide() allows a heavy waker
+> (e.g. X) to stack an excessive number of wakees on the same CPU. This
+> is due to the cpu_load check in wake_affine_weight. As noted by the
+> original patch author (Mike Galbraith)[1];
 >
-> What I was in the middle of checking was what ptrace "sees" going
-> through a fatal SIGSYS; my initial debugging attempts were weird.
+>         Between load updates, X, or any other waker of many, can stack
+>         wakees to a ludicrous depth.  Tracing kbuild vs firefox playing a
+>         youtube clip, I watched X stack 20 of the zillion firefox minions
+>         while their previous CPUs all had 1 lousy task running but a
+>         cpu_load() higher than the cpu_load() of X's CPU.  Most of those
+>         prev_cpus were where X had left them when it migrated. Each and
+>         every crazy depth migration was wake_affine_weight() deciding we
+>         should pull.
+>
+> Parahrasing Mike's test results from the patch.
+>
+>         With make -j8 running along with firefox with two tabs, one
+>         containing youtube's suggestions of stuff, the other a running
+>         clip, if the idle tab in focus, and don't drive mouse around,
+>         flips decay enough for wake_wide() to lose interest, but just
+>         wiggle the mouse, and it starts waking wide. Focus on the running
+>         clip, and it continuously wakes wide.
+>
+> The end result is that heavy wakers are less likely to stack tasks and,
+> depending on the workload, reduce migrations.
+>
+> From additional tests on various servers, the impact is machine dependant
+> but generally this patch improves the situation.
+>
+> hackbench-process-pipes
+>                           5.15.0-rc3             5.15.0-rc3
+>                              vanilla  sched-wakeeflips-v1r1
+> Amean     1        0.3667 (   0.00%)      0.3890 (  -6.09%)
+> Amean     4        0.5343 (   0.00%)      0.5217 (   2.37%)
+> Amean     7        0.5300 (   0.00%)      0.5387 (  -1.64%)
+> Amean     12       0.5737 (   0.00%)      0.5443 (   5.11%)
+> Amean     21       0.6727 (   0.00%)      0.6487 (   3.57%)
+> Amean     30       0.8583 (   0.00%)      0.8033 (   6.41%)
+> Amean     48       1.3977 (   0.00%)      1.2400 *  11.28%*
+> Amean     79       1.9790 (   0.00%)      1.8200 *   8.03%*
+> Amean     110      2.8020 (   0.00%)      2.5820 *   7.85%*
+> Amean     141      3.6683 (   0.00%)      3.2203 *  12.21%*
+> Amean     172      4.6687 (   0.00%)      3.8200 *  18.18%*
+> Amean     203      5.2183 (   0.00%)      4.3357 *  16.91%*
+> Amean     234      6.1077 (   0.00%)      4.8047 *  21.33%*
+> Amean     265      7.1313 (   0.00%)      5.1243 *  28.14%*
+> Amean     296      7.7557 (   0.00%)      5.5940 *  27.87%*
+>
+> While different machines showed different results, in general
+> there were much less CPU migrations of tasks
+>
+> tbench4
+>                            5.15.0-rc3             5.15.0-rc3
+>                               vanilla  sched-wakeeflips-v1r1
+> Hmean     1         824.05 (   0.00%)      802.56 *  -2.61%*
+> Hmean     2        1578.49 (   0.00%)     1645.11 *   4.22%*
+> Hmean     4        2959.08 (   0.00%)     2984.75 *   0.87%*
+> Hmean     8        5080.09 (   0.00%)     5173.35 *   1.84%*
+> Hmean     16       8276.02 (   0.00%)     9327.17 *  12.70%*
+> Hmean     32      15501.61 (   0.00%)    15925.55 *   2.73%*
+> Hmean     64      27313.67 (   0.00%)    24107.81 * -11.74%*
+> Hmean     128     32928.19 (   0.00%)    36261.75 *  10.12%*
+> Hmean     256     35434.73 (   0.00%)    38670.61 *   9.13%*
+> Hmean     512     50098.34 (   0.00%)    53243.75 *   6.28%*
+> Hmean     1024    69503.69 (   0.00%)    67425.26 *  -2.99%*
+>
+> Bit of a mixed bag but wins more than it loses.
+>
+> A new workload was added that runs a kernel build in the background
+> -jNR_CPUS while NR_CPUS pairs of tasks run Netperf TCP_RR. The
+> intent is to see if heavy background tasks disrupt ligher tasks
+>
+> multi subtest kernbench
+>                                5.15.0-rc3             5.15.0-rc3
+>                                   vanilla  sched-wakeeflips-v1r1
+> Min       elsp-256       20.80 (   0.00%)       14.89 (  28.41%)
+> Amean     elsp-256       24.08 (   0.00%)       20.94 (  13.05%)
+> Stddev    elsp-256        3.32 (   0.00%)        4.68 ( -41.16%)
+> CoeffVar  elsp-256       13.78 (   0.00%)       22.36 ( -62.33%)
+> Max       elsp-256       29.11 (   0.00%)       26.49 (   9.00%)
+>
+> multi subtest netperf-tcp-rr
+>                         5.15.0-rc3             5.15.0-rc3
+>                            vanilla  sched-wakeeflips-v1r1
+> Min       1    48286.26 (   0.00%)    49101.48 (   1.69%)
+> Hmean     1    62894.82 (   0.00%)    68963.51 *   9.65%*
+> Stddev    1     7600.56 (   0.00%)     8804.82 ( -15.84%)
+> Max       1    78975.16 (   0.00%)    87124.67 (  10.32%)
+>
+> The variability is higher as a result of the patch but both workloads
+> experienced improved performance.
+>
+> SpecJBB 2005 is a slightly more realistic workload with multiple
+> communicating Java threads
+>
+> specjbb
+>                               5.15.0-rc3             5.15.0-rc3
+>                                  vanilla  sched-wakeeflips-v1r1
+> Hmean     tput-1     50044.48 (   0.00%)    53969.00 *   7.84%*
+> Hmean     tput-2    106050.31 (   0.00%)   113580.78 *   7.10%*
+> Hmean     tput-3    156701.44 (   0.00%)   164857.00 *   5.20%*
+> Hmean     tput-4    196538.75 (   0.00%)   218373.42 *  11.11%*
+> Hmean     tput-5    247566.16 (   0.00%)   267173.09 *   7.92%*
+> Hmean     tput-6    284981.46 (   0.00%)   311007.14 *   9.13%*
+> Hmean     tput-7    328882.48 (   0.00%)   359373.89 *   9.27%*
+> Hmean     tput-8    366941.24 (   0.00%)   393244.37 *   7.17%*
+> Hmean     tput-9    402386.74 (   0.00%)   433010.43 *   7.61%*
+> Hmean     tput-10   437551.05 (   0.00%)   475756.08 *   8.73%*
+> Hmean     tput-11   481349.41 (   0.00%)   519824.54 *   7.99%*
+> Hmean     tput-12   533148.45 (   0.00%)   565070.21 *   5.99%*
+> Hmean     tput-13   570563.97 (   0.00%)   609499.06 *   6.82%*
+> Hmean     tput-14   601117.97 (   0.00%)   647876.05 *   7.78%*
+> Hmean     tput-15   639096.38 (   0.00%)   690854.46 *   8.10%*
+> Hmean     tput-16   682644.91 (   0.00%)   722826.06 *   5.89%*
+> Hmean     tput-17   732248.96 (   0.00%)   758805.17 *   3.63%*
+> Hmean     tput-18   762771.33 (   0.00%)   791211.66 *   3.73%*
+> Hmean     tput-19   780582.92 (   0.00%)   819064.19 *   4.93%*
+> Hmean     tput-20   812183.95 (   0.00%)   836664.87 *   3.01%*
+> Hmean     tput-21   821415.48 (   0.00%)   833734.23 (   1.50%)
+> Hmean     tput-22   815457.65 (   0.00%)   844393.98 *   3.55%*
+> Hmean     tput-23   819263.63 (   0.00%)   846109.07 *   3.28%*
+> Hmean     tput-24   817962.95 (   0.00%)   839682.92 *   2.66%*
+> Hmean     tput-25   807814.64 (   0.00%)   841826.52 *   4.21%*
+> Hmean     tput-26   811755.89 (   0.00%)   838543.08 *   3.30%*
+> Hmean     tput-27   799341.75 (   0.00%)   833487.26 *   4.27%*
+> Hmean     tput-28   803434.89 (   0.00%)   829022.50 *   3.18%*
+> Hmean     tput-29   803233.25 (   0.00%)   826622.37 *   2.91%*
+> Hmean     tput-30   800465.12 (   0.00%)   824347.42 *   2.98%*
+> Hmean     tput-31   791284.39 (   0.00%)   791575.67 (   0.04%)
+> Hmean     tput-32   781930.07 (   0.00%)   805725.80 (   3.04%)
+> Hmean     tput-33   785194.31 (   0.00%)   804795.44 (   2.50%)
+> Hmean     tput-34   781325.67 (   0.00%)   800067.53 (   2.40%)
+> Hmean     tput-35   777715.92 (   0.00%)   753926.32 (  -3.06%)
+> Hmean     tput-36   770516.85 (   0.00%)   783328.32 (   1.66%)
+> Hmean     tput-37   758067.26 (   0.00%)   772243.18 *   1.87%*
+> Hmean     tput-38   764815.45 (   0.00%)   769156.32 (   0.57%)
+> Hmean     tput-39   757885.41 (   0.00%)   757670.59 (  -0.03%)
+> Hmean     tput-40   750140.15 (   0.00%)   760739.13 (   1.41%)
+>
+> [1] https://lore.kernel.org/r/02c977d239c312de5e15c77803118dcf1e11f216.camel@gmx.de
+>
+> Signed-off-by: Mike Galbraith <efault@gmx.de>
+> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+> ---
+>  kernel/sched/fair.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index ff69f245b939..d00af3b97d8f 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -5865,6 +5865,14 @@ static void record_wakee(struct task_struct *p)
+>         }
+>
+>         if (current->last_wakee != p) {
+> +               int min = __this_cpu_read(sd_llc_size) << 1;
+> +               /*
+> +                * Couple the wakee flips to the waker for the case where it
+> +                * doesn't accrue flips, taking care to not push the wakee
+> +                * high enough that the wake_wide() heuristic fails.
+> +                */
+> +               if (current->wakee_flips > p->wakee_flips * min)
+> +                       p->wakee_flips++;
 
-If we don't allow ptrace to see these signals, then it makes it possible
-for complete_signal to short circuit deliver them and ignore ptrace
-later on.  Which seems nice, and allows for not needing to change
-sigaction at all in the future.
-
-I don't know if it is strictly necessary.  It is not like people using
-debuggers have complained yet.
-
-I just posted a patch that solves this by setting an extra flag called
-SA_IMMUTABLE and disabling sigaction and ptrace when the flag is set.
-
-I think that is a simple patch that sorts this out.
-
-Eric
+I have a hard time understanding the rationale behind these changes
+and the one below. Could you provide more details about why to
+increase p->wakee_flips here ? Also would be good to add such
+explanation in the commit message
+>                 current->last_wakee = p;
+>                 current->wakee_flips++;
+>         }
+> @@ -5895,7 +5903,7 @@ static int wake_wide(struct task_struct *p)
+>
+>         if (master < slave)
+>                 swap(master, slave);
+> -       if (slave < factor || master < slave * factor)
+> +       if ((slave < factor && master < (factor>>1)*factor) || master < slave * factor)
+>                 return 0;
+>         return 1;
+>  }
+> --
+> 2.31.1
+>
