@@ -2,144 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 439B8440388
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 21:49:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5848C44038B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 21:49:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230313AbhJ2Tvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 15:51:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33876 "EHLO
+        id S230467AbhJ2TwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 15:52:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229474AbhJ2Tvg (ORCPT
+        with ESMTP id S229474AbhJ2TwM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 15:51:36 -0400
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FB6DC061570;
-        Fri, 29 Oct 2021 12:49:07 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id c9so6740400qvm.5;
-        Fri, 29 Oct 2021 12:49:07 -0700 (PDT)
+        Fri, 29 Oct 2021 15:52:12 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BFF3C061570;
+        Fri, 29 Oct 2021 12:49:43 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id v17so18131463wrv.9;
+        Fri, 29 Oct 2021 12:49:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=+gnKe1uFkc5TpmUIpYEj9gZ4DQw8prrAne9JOJR9lVE=;
-        b=BSbw8g3jbztD4bxkva3/5PicIHcoFbWNV1Nc3GVX6+kpIS7f8DicCMUN55/Hbn5SvL
-         Bt7gpebQYA1BAFdnkg7tJfnnoENfNEx/VbIRcT0Bk5deO2485ulB65u6JhYiE4+ws7cC
-         p1S3E+qTWR76sFOdj+E3/8V/Kf542EhttPFaWABZNISgn9joJHInFAFkP4IQEER+jpOP
-         vTU699oQnAfp9X/1wR4qMutCbQSY8dDsv8GaPC3zCSXrd2nT6iSPiIQvtZzewsJcRJua
-         a9LJ6Jx896WIloEciHC/Fg/UQ6sJWt3aCH9Xl4/heTHFNM+pgyU3gIRdh38VedNgpm+l
-         fDtw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nODuHqqLXhrehpN4UhPvpnUAcOfWSvkEEwZIi+tzNVQ=;
+        b=moFAQkSQIf0E5S4prhj8oYc01swVqvxyZmTe25/7STN6eNI8v5997DzCigklDVzKdt
+         6fTkQwhu8+KYwlGja760WTH1Q+W124Pnf+feWy04TNfGUMaPULue4Oj9ILK9ObhbQx28
+         uudenj+zWi52+8s7M08Jo/VEh23yi8qCFV2F8DjYipcA4AHdorT1yxoCoWhXO/jjoVRD
+         GpGB2VwzxprQNZ3BuTV/xob5Uj0rqnORa8qw/Ei9QQP3L74f6nkJL5QeB2BN9kJ1Wn6s
+         qDoaAwLKhcFcr6XIDFkrCFTy1/4DLht4YiT1FU4+SEc1cshOnczwlnPCRDx2Jc7uLhkV
+         cM/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=+gnKe1uFkc5TpmUIpYEj9gZ4DQw8prrAne9JOJR9lVE=;
-        b=Z4Hrve6bpW9UdEK6bMAqodOaLjnnvO7mrMwEyCh53SFOfHpwZKSehhCOk77cCTiogy
-         WhSTXj2Zx3UPd6HzrLXYuA7+eJVLgjFlDlgXrHuYZtFRaIch5OOel4e7yteGLmpnIXuW
-         A5FlmgIJwTsdUiWqvwi0dnil6vBRVSQSExDsRHkHJN5SHIRdqsHXuv/Ru1f87Ai/BRjK
-         443nSt5HfoDuJrSL/raSbe5JHTYh4jUZynbiI1u6ftUFi1Bf5J9xapE5eJNe5iGlwgto
-         dOHzgi+NL9CwQBhk+eVH7SCbMVfY2m9BlqHn3WifTa5NeXc3IgqXBjkrlj8PcXrmhC2n
-         LnVg==
-X-Gm-Message-State: AOAM5321JtIY4GasRRIz0B/aJAfZQg00W/jNn5lAwOQu4MBu2/Gev7Aw
-        /EByVsj1+leC4MRROScOpsY=
-X-Google-Smtp-Source: ABdhPJyO1keEiJvG9UlTmcyvdIGEdNVmxfcobLYeJ4UAwpoJlR9Z3NYRUDve0KXpY+Erpepmqm6Xvw==
-X-Received: by 2002:ad4:5c63:: with SMTP id i3mr13304188qvh.2.1635536946243;
-        Fri, 29 Oct 2021 12:49:06 -0700 (PDT)
-Received: from 10-18-43-117.dynapool.wireless.nyu.edu (216-165-95-181.natpool.nyu.edu. [216.165.95.181])
-        by smtp.gmail.com with ESMTPSA id az12sm4505125qkb.28.2021.10.29.12.49.05
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nODuHqqLXhrehpN4UhPvpnUAcOfWSvkEEwZIi+tzNVQ=;
+        b=gRE6heGHhvjeihFmnZp6eQ5C+IP+w9p10emHqthzhts8K7wROJRho48z1fDDoj822/
+         l/K0pljJmvd1FNtQKmn3fZZXUGNboShuDkQB6357pDRdAQXFhxpCs+KvDHbv+gFB/Doh
+         9qRtUFtJqQdEs2RIhaULLxarVTyI30SsOLMzKkvPr8+aSJromc8uo4apg+LBx1QDPYDO
+         Yr+lK1ixJcOa3YnlR+KCDi03PaXL0WZc1QsQyX4jD4xUtvufNHEv6w1YyvxdeWYlagWy
+         Tw02KvXfqEFX4XcTSQCxZVIaKvYM2yjriqPej2Y+LZKqsm9h7cQYnp3aUtzqUmDMtob9
+         sZdA==
+X-Gm-Message-State: AOAM530Ek+HkPf74m7fMKJFcRVWtNQ+pfaeyCuZIp3bI2Y1UmVkSqTU2
+        51HnedcCIyl42CDT0t9cXxY=
+X-Google-Smtp-Source: ABdhPJwZTC4NIMQAekMcjejGmcwGU6cAwVjzEYyOma+c1LVsxfgUtlf++ZVwoIMJa4Lr1Dt53jn9nQ==
+X-Received: by 2002:a05:600c:1c21:: with SMTP id j33mr21372038wms.163.1635536982330;
+        Fri, 29 Oct 2021 12:49:42 -0700 (PDT)
+Received: from ubuntu-laptop.speedport.ip (p200300e94719c92a81a9947a27df1b21.dip0.t-ipconnect.de. [2003:e9:4719:c92a:81a9:947a:27df:1b21])
+        by smtp.gmail.com with ESMTPSA id r11sm6323365wro.93.2021.10.29.12.49.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Oct 2021 12:49:05 -0700 (PDT)
-Date:   Fri, 29 Oct 2021 15:49:03 -0400
-From:   Zekun Shen <bruceshenzk@gmail.com>
-To:     bruceshenzk@gmail.com
-Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Siva Rebbagondla <siva8118@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, brendandg@nyu.edu
-Subject: [PATCH] rsi_usb: Fix use-after-free in rsi_rx_done_handler
-Message-ID: <YXxQL/vIiYcZUu/j@10-18-43-117.dynapool.wireless.nyu.edu>
+        Fri, 29 Oct 2021 12:49:42 -0700 (PDT)
+From:   Bean Huo <huobean@gmail.com>
+To:     alim.akhtar@samsung.com, avri.altman@wdc.com,
+        asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
+        cang@codeaurora.org, daejun7.park@samsung.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/2] Clean UFS HPB 2.0
+Date:   Fri, 29 Oct 2021 21:49:29 +0200
+Message-Id: <20211029194931.293826-1-huobean@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When freeing rx_cb->rx_skb, the pointer is not set to NULL,
-a later rsi_rx_done_handler call will try to read the freed
-address.
-This bug will very likley lead to double free, although
-detected early as use-after-free bug.
+From: Bean Huo <beanhuo@micron.com>
 
-The bug is triggerable with a compromised/malfunctional usb
-device. After applying the patch, the same input no longer
-triggers the use-after-free.
+Hi Martin and  Bart,
 
-Attached is the kasan report from fuzzing.
+These patches are based on Avri's patch "scsi: ufs: ufshpb: Remove HPB2.0 flows",
+which has been applied to 5.15/scsi-fixes.
 
-BUG: KASAN: use-after-free in rsi_rx_done_handler+0x354/0x430 [rsi_usb]
-Read of size 4 at addr ffff8880188e5930 by task modprobe/231
-Call Trace:
- <IRQ>
- dump_stack+0x76/0xa0
- print_address_description.constprop.0+0x16/0x200
- ? rsi_rx_done_handler+0x354/0x430 [rsi_usb]
- ? rsi_rx_done_handler+0x354/0x430 [rsi_usb]
- __kasan_report.cold+0x37/0x7c
- ? dma_direct_unmap_page+0x90/0x110
- ? rsi_rx_done_handler+0x354/0x430 [rsi_usb]
- kasan_report+0xe/0x20
- rsi_rx_done_handler+0x354/0x430 [rsi_usb]
- __usb_hcd_giveback_urb+0x1e4/0x380
- usb_giveback_urb_bh+0x241/0x4f0
- ? __usb_hcd_giveback_urb+0x380/0x380
- ? apic_timer_interrupt+0xa/0x20
- tasklet_action_common.isra.0+0x135/0x330
- __do_softirq+0x18c/0x634
- ? handle_irq_event+0xcd/0x157
- ? handle_edge_irq+0x1eb/0x7b0
- irq_exit+0x114/0x140
- do_IRQ+0x91/0x1e0
- common_interrupt+0xf/0xf
- </IRQ>
+v1-v2:
+    fix typoes in the commit message
 
-Reported-by: Zekun Shen <bruceshenzk@gmail.com>
-Reported-by: Brendan Dolan-Gavitt <brendandg@nyu.edu>
-Signed-off-by: Zekun Shen <bruceshenzk@gmail.com>
----
- drivers/net/wireless/rsi/rsi_91x_usb.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+Bean Huo (2):
+  scsi: core: Ignore the UFSHPB preparation result
+  scsi: ufshpb: Delete ufshpb_set_write_buf_cmd()
 
-diff --git a/drivers/net/wireless/rsi/rsi_91x_usb.c b/drivers/net/wireless/rsi/rsi_91x_usb.c
-index 416976f09..d9e9bf26e 100644
---- a/drivers/net/wireless/rsi/rsi_91x_usb.c
-+++ b/drivers/net/wireless/rsi/rsi_91x_usb.c
-@@ -272,8 +272,12 @@ static void rsi_rx_done_handler(struct urb *urb)
- 	struct rsi_91x_usbdev *dev = (struct rsi_91x_usbdev *)rx_cb->data;
- 	int status = -EINVAL;
- 
-+	if (!rx_cb->rx_skb)
-+		return;
-+
- 	if (urb->status) {
- 		dev_kfree_skb(rx_cb->rx_skb);
-+		rx_cb->rx_skb = NULL;
- 		return;
- 	}
- 
-@@ -297,8 +301,10 @@ static void rsi_rx_done_handler(struct urb *urb)
- 	if (rsi_rx_urb_submit(dev->priv, rx_cb->ep_num, GFP_ATOMIC))
- 		rsi_dbg(ERR_ZONE, "%s: Failed in urb submission", __func__);
- 
--	if (status)
-+	if (status) {
- 		dev_kfree_skb(rx_cb->rx_skb);
-+		rx_cb->rx_skb = NULL;
-+	}
- }
- 
- static void rsi_rx_urb_kill(struct rsi_hw *adapter, u8 ep_num)
+ drivers/scsi/ufs/ufshcd.c | 11 +++++------
+ drivers/scsi/ufs/ufshpb.c | 14 --------------
+ 2 files changed, 5 insertions(+), 20 deletions(-)
+
 -- 
 2.25.1
 
