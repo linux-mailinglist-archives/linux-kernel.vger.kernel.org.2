@@ -2,116 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D8AC44051C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 23:53:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15930440527
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 23:54:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231305AbhJ2Vz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 17:55:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230521AbhJ2Vz0 (ORCPT
+        id S231382AbhJ2V4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 17:56:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37735 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230381AbhJ2V4w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 17:55:26 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C363DC061570;
-        Fri, 29 Oct 2021 14:52:57 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id h4so9865778qth.5;
-        Fri, 29 Oct 2021 14:52:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=V1UdoqKDsTMGzj57sLAYdTWbd/KAocfHPIazuse7XdQ=;
-        b=S3S47+H+iAK4LSyp1CpV0IVNmPUxGpr4JfKLjSwxPKb3D5t9vdLQo39KpDqZSZfgv/
-         rQlIPTjW041Z9zHYpYMadmLZzeVYzK/dydVfPbfOrEijfNhtvToL/v1ZolaDBnWGx5jM
-         B5rPvOMExJ2d3P8gs0D+LNBz6I9urC3cdYTABdrdbKHx+gm9SiT+xvCJiL1eCrGMD7H5
-         u/5MQbIBZA7UhU3ExUj95bo+8wQoE6TAOgd3XcfxceAJlFeCPXXu/8X27fJEtGjfQQe+
-         D5mN38M99FEN19yzKeKaltqRrzfUtK+NiTt55C4kXDHMIoAtfVUE5XfUAaZrTGS/Og/M
-         FTwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=V1UdoqKDsTMGzj57sLAYdTWbd/KAocfHPIazuse7XdQ=;
-        b=qvm0mWgym/aUB+zmvAeHRrJ3f8tCbDb6WM5Gh76kHQWO44e9AbUzIz48elSVkkAgI9
-         sOHMAVrqZ6QWJ52+QBzGxxoCRTtQ2nyFnlNRS14fFlY4vkvcXSzSTVimYUNQBC/uztWu
-         5sRFyAHWhZYYn9/UryGk6b4ZapczyQ0z36c81ilgj71OzXLgkgCflbnOxoODIrsmFZf7
-         Ydr8T+f4PdNLIZ1HUwNZdRVIoQS+0Qyn6Dv0kfilrtkCGnDrnK45W2Y1fXvAYsgT4yex
-         PKeyiEl4OSjGX4WTmlDqPrkLtlx+3jisvpkdHkYRyUG86fy7eI90rydDKVmyQ2w4z1rf
-         Gp/A==
-X-Gm-Message-State: AOAM531iHEtUMV6o8JILEa3CwHivPyG9VeARZ20N/8yhOOrsbIp/Fi/k
-        ITiq+ogOqs69YMRh6a4P4HinAoYAVlNLkB1eaok=
-X-Google-Smtp-Source: ABdhPJwr8IeC8d9CyxpV9jQ6HCn0WZtsIlg7iPZXIe6EDl/xrsIhxCIm4BnbUq7XrtQLJNscsS6Bmg==
-X-Received: by 2002:ac8:5988:: with SMTP id e8mr14679768qte.32.1635544376985;
-        Fri, 29 Oct 2021 14:52:56 -0700 (PDT)
-Received: from ubuntu-mate-laptop.eecs.ucf.edu ([132.170.15.255])
-        by smtp.gmail.com with ESMTPSA id h5sm5253808qtk.30.2021.10.29.14.52.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Oct 2021 14:52:56 -0700 (PDT)
-Sender: Julian Braha <julian.braha@gmail.com>
-From:   Julian Braha <julianbraha@gmail.com>
-To:     rafael@kernel.org, daniel.lezcano@linaro.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        fazilyildiran@gmail.com
-Subject: [PATCH] cpuidle: fix unmet dependencies on ARCH_SUSPEND_POSSIBLE for ARM_CPU_SUSPEND
-Date:   Fri, 29 Oct 2021 17:52:56 -0400
-Message-Id: <20211029215256.20329-1-julianbraha@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        Fri, 29 Oct 2021 17:56:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635544463;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Hqgiy2ZH+OFAPRITbn1OlFeu92K40RHfxkqwflCZe4I=;
+        b=DSPR0p5y0AtkOjgqQ2GAelXOoGn3J0Bd+w2nC/6ObGXS9bub+GcPY4PKroV6KxWeYNFqXU
+        JFwsjz6lJEYmNNmr/1cNusKKJgE2xIKKep6Av1VuPNiCpdjKiS1cqj0InpnXVy/6TSSjiE
+        NNOdAbKJK9JU2HfWf369xcYLuKN4Uag=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-250-bdhcYVAoOsGI_iIr4TGmIA-1; Fri, 29 Oct 2021 17:54:19 -0400
+X-MC-Unique: bdhcYVAoOsGI_iIr4TGmIA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C9B04362F8;
+        Fri, 29 Oct 2021 21:54:18 +0000 (UTC)
+Received: from cmirabil.remote.csb (unknown [10.22.8.50])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8C06F18351;
+        Fri, 29 Oct 2021 21:54:17 +0000 (UTC)
+From:   Charles Mirabile <cmirabil@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Charles Mirabile <cmirabil@redhat.com>,
+        Serge Schneider <serge@raspberrypi.org>,
+        Stefan Wahren <stefan.wahren@i2se.com>,
+        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+        linux-rpi-kernel@lists.infradead.org, fedora-rpi@googlegroups.com,
+        Mwesigwa Guma <mguma@redhat.com>,
+        Joel Savitz <jsavitz@redhat.com>
+Subject: [PATCH 0/5] Raspberry Pi Sense HAT driver
+Date:   Fri, 29 Oct 2021 17:55:11 -0400
+Message-Id: <20211029215516.801593-1-cmirabil@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When ARM_TEGRA_CPUIDLE or ARM_QCOM_SPM_CPUIDLE are selected,
-and ARCH_SUSPEND_POSSIBLE is disabled, Kbuild gives the
-following warnings:
+This patch series adds a set of drivers for operating the Sense HAT
+peripheral device. This board is an add on for the Raspberry Pi that is
+designed to connect using the GPIO connector via I2C.
 
-WARNING: unmet direct dependencies detected for ARM_CPU_SUSPEND
-  Depends on [n]: ARCH_SUSPEND_POSSIBLE [=n]
-  Selected by [y]:
-  - ARM_TEGRA_CPUIDLE [=y] && CPU_IDLE [=y] && (ARM [=y] || ARM64) && (ARCH_TEGRA [=n] || COMPILE_TEST [=y]) && !ARM64 && MMU [=y]
+It features:
+	- a joystick
+	- an 8x8 RGB LED matrix display
+	- a whole bunch of environmental sensors with their own drivers
+	  (those are already in upstream Linux)
 
-and
+This is a refactor of the work of Serge Schneider, the author of a
+version of this driver that is currently in the Raspberry Pi downstream
+kernel. We modified his code to make it suitable for upstream Linux.
 
-WARNING: unmet direct dependencies detected for ARM_CPU_SUSPEND
-  Depends on [n]: ARCH_SUSPEND_POSSIBLE [=n]
-  Selected by [y]:
-  - ARM_QCOM_SPM_CPUIDLE [=y] && CPU_IDLE [=y] && (ARM [=y] || ARM64) && (ARCH_QCOM [=n] || COMPILE_TEST [=y]) && !ARM64 && MMU [=y]
+A couple of tests are available for the driver in this repo:
+https://github.com/underground-software/sensehat/tree/master/tests
+	- color_test displays various solid colors on the LED panel
+	- framebuffer_test diplays a single lit cell that is
+	  controllable via the arrow keys or the joystick
 
-This is because these options enable ARM_CPU_SUSPEND
-without selecting or depending on ARCH_SUSPEND_POSSIBLE,
-despite ARM_CPU_SUSPEND depending on ARCH_SUSPEND_POSSIBLE.
+For more information about the Sense HAT, visit:
+https://www.raspberrypi.org/products/sense-hat/
 
-These unmet dependency bugs were detected by Kismet,
-a static analysis tool for Kconfig. Please advise if
-this is not the appropriate solution.
+Changes since v2:
+	- We included a device tree binding in yaml form
+	- Switched to regmap for all i2c communications
+	- Fixed a few places where we had the old rpisense
+	  name that we missed when renaming for v2
 
-Signed-off-by: Julian Braha <julianbraha@gmail.com>
----
- drivers/cpuidle/Kconfig.arm | 2 ++
- 1 file changed, 2 insertions(+)
+Signed-off-by: Charles Mirabile <cmirabil@redhat.com>
+Signed-off-by: Mwesigwa Guma <mguma@redhat.com>
+Signed-off-by: Joel Savitz <jsavitz@redhat.com>
 
-diff --git a/drivers/cpuidle/Kconfig.arm b/drivers/cpuidle/Kconfig.arm
-index 15d6c46c0a47..1b4f5ae1ee05 100644
---- a/drivers/cpuidle/Kconfig.arm
-+++ b/drivers/cpuidle/Kconfig.arm
-@@ -100,6 +100,7 @@ config ARM_MVEBU_V7_CPUIDLE
- config ARM_TEGRA_CPUIDLE
- 	bool "CPU Idle Driver for NVIDIA Tegra SoCs"
- 	depends on (ARCH_TEGRA || COMPILE_TEST) && !ARM64 && MMU
-+	depends on ARCH_SUSPEND_POSSIBLE
- 	select ARCH_NEEDS_CPU_IDLE_COUPLED if SMP
- 	select ARM_CPU_SUSPEND
- 	help
-@@ -108,6 +109,7 @@ config ARM_TEGRA_CPUIDLE
- config ARM_QCOM_SPM_CPUIDLE
- 	bool "CPU Idle Driver for Qualcomm Subsystem Power Manager (SPM)"
- 	depends on (ARCH_QCOM || COMPILE_TEST) && !ARM64 && MMU
-+	depends on ARCH_SUSPEND_POSSIBLE
- 	select ARM_CPU_SUSPEND
- 	select CPU_IDLE_MULTIPLE_DRIVERS
- 	select DT_IDLE_STATES
+Charles Mirabile (5):
+  drivers/mfd: sensehat: Raspberry Pi Sense HAT core driver
+  drivers/input/joystick: sensehat: Raspberry Pi Sense HAT joystick
+    driver
+  drivers/auxdisplay: senshat: Raspberry Pi Sense HAT display driver
+  Documentation: bindings/mfd: sensehat: Raspberry Pi Sense HAT device
+    tree binding
+  MAINTAINERS: Add sensehat driver authors to MAINTAINERS
+
+ .../bindings/mfd/raspberrypi,sensehat.yaml    |  50 ++++
+ MAINTAINERS                                   |  11 +
+ drivers/auxdisplay/Kconfig                    |   7 +
+ drivers/auxdisplay/Makefile                   |   1 +
+ drivers/auxdisplay/sensehat-display.c         | 258 ++++++++++++++++++
+ drivers/input/joystick/Kconfig                |   8 +
+ drivers/input/joystick/Makefile               |   1 +
+ drivers/input/joystick/sensehat-joystick.c    | 135 +++++++++
+ drivers/mfd/Kconfig                           |   8 +
+ drivers/mfd/Makefile                          |   1 +
+ drivers/mfd/sensehat-core.c                   | 164 +++++++++++
+ include/linux/mfd/sensehat.h                  |  64 +++++
+ 12 files changed, 708 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mfd/raspberrypi,sensehat.yaml
+ create mode 100644 drivers/auxdisplay/sensehat-display.c
+ create mode 100644 drivers/input/joystick/sensehat-joystick.c
+ create mode 100644 drivers/mfd/sensehat-core.c
+ create mode 100644 include/linux/mfd/sensehat.h
+
 -- 
-2.30.2
+2.31.1
 
