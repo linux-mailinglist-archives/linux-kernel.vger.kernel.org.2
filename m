@@ -2,126 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C97943F53E
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 05:09:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7302643F526
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 05:03:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231659AbhJ2DLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 23:11:53 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:54629 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231607AbhJ2DLu (ORCPT
+        id S231612AbhJ2DF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 23:05:29 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:25323 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231592AbhJ2DF1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 23:11:50 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1635476962; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=HU9WzdznsyNXwZ00GJMZALNrQCaBt7USfMvElBn+TRI=;
- b=rFR4EEfTCLHHIsydoC3sEF/PdTvEk2AN0AEXCadTeRDjBEGTF5/Fc6D5gqveuj64tpGmXrXr
- 104oDMkXu7wTHLm2H8tKN279kptZ8PNoYwqmaebLhXAqUJ5nV9iENU0JI2kjSYq+PSriYYCe
- MuLCT3ULXUPVhuJaRzg4vdprbyQ=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 617b65e1c8c1b282a543a9f1 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 29 Oct 2021 03:09:21
- GMT
-Sender: tjiang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3DDEAC4360D; Fri, 29 Oct 2021 03:09:21 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: tjiang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A8848C4338F;
-        Fri, 29 Oct 2021 03:09:20 +0000 (UTC)
+        Thu, 28 Oct 2021 23:05:27 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HgRvB0j8rzbhKX;
+        Fri, 29 Oct 2021 10:58:14 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Fri, 29 Oct 2021 11:02:54 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Fri, 29 Oct
+ 2021 11:02:53 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-input@vger.kernel.org>
+CC:     <benjamin.tissoires@redhat.com>, <jikos@kernel.org>,
+        <djogorchock@gmail.com>
+Subject: [PATCH -next] HID: nintendo: fix missing unlock on error in joycon_leds_create()
+Date:   Fri, 29 Oct 2021 11:10:43 +0800
+Message-ID: <20211029031043.3330240-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Fri, 29 Oct 2021 11:09:20 +0800
-From:   tjiang@codeaurora.org
-To:     Marcel Holtmann <marcel@holtmann.org>
-Cc:     Matthias Kaehlcke <mka@chromium.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        Balakrishna Godavarthi <bgodavar@codeaurora.org>,
-        c-hbandi@codeaurora.org, Hemantg <hemantg@codeaurora.org>,
-        Rocky Liao <rjliao@codeaurora.org>, zijuhu@codeaurora.org
-Subject: Re: [PATCH v3] Bluetooth: btusb: Add support for variant WCN6855 by
- using different nvm
-In-Reply-To: <68A15E46-C716-4324-8B5D-C71C9D2753C5@holtmann.org>
-References: <1d19afff955cdc8d47582297a26246d9@codeaurora.org>
- <YXgrwKUZwUWuWfG4@google.com>
- <fe118b60df5881b0e9938f57aae6f87e@codeaurora.org>
- <YXl3S7TT30PFfyB8@google.com>
- <68A15E46-C716-4324-8B5D-C71C9D2753C5@holtmann.org>
-Message-ID: <807e0545d14144d2fa8ed8b54041529f@codeaurora.org>
-X-Sender: tjiang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Marcel for the reply, I will do as what you said , thank you.
+Add the missing unlock before return from function joycon_leds_create()
+in the error handling case.
 
-regards.
-tim
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Fixes: c5e626769563 ("HID: nintendo: add player led support")
+Fixes: 697e5c7a34b0 ("HID: nintendo: add home led support")
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+ drivers/hid/hid-nintendo.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
+diff --git a/drivers/hid/hid-nintendo.c b/drivers/hid/hid-nintendo.c
+index c4270499fc6f..ddfb001a8fc9 100644
+--- a/drivers/hid/hid-nintendo.c
++++ b/drivers/hid/hid-nintendo.c
+@@ -1850,8 +1850,10 @@ static int joycon_leds_create(struct joycon_ctlr *ctlr)
+ 				      d_name,
+ 				      "green",
+ 				      joycon_player_led_names[i]);
+-		if (!name)
+-			return -ENOMEM;
++		if (!name) {
++			ret = -ENOMEM;
++			goto err_unlock;
++		}
+ 
+ 		led = &ctlr->leds[i];
+ 		led->name = name;
+@@ -1864,7 +1866,7 @@ static int joycon_leds_create(struct joycon_ctlr *ctlr)
+ 		ret = devm_led_classdev_register(&hdev->dev, led);
+ 		if (ret) {
+ 			hid_err(hdev, "Failed registering %s LED\n", led->name);
+-			return ret;
++			goto err_unlock;
+ 		}
+ 	}
+ 
+@@ -1902,6 +1904,10 @@ static int joycon_leds_create(struct joycon_ctlr *ctlr)
+ 	}
+ 
+ 	return 0;
++
++err_unlock:
++	mutex_unlock(&joycon_input_num_mutex);
++	return ret;
+ }
+ 
+ static int joycon_battery_get_property(struct power_supply *supply,
+-- 
+2.25.1
 
-On 2021-10-28 22:00, Marcel Holtmann wrote:
-> Hi Matthias,
-> 
->>>  the previous patch is submitted by zijun , as he is not working on 
->>> this
->>> project, I take over his job, so can we assume abandon the previous 
->>> patch,
->>> using my new patch ? thank you.
->>> regards.
->> 
->> Your patch is clearly based on zijun's one, it even has the same 
->> subject. A
->> change of authorship shouldn't result in resetting the version number, 
->> it's
->> still the same patch/series. You can always add a 'Co-developed-by:' 
->> tag to
->> indicate that someone else contributed to a patch, or use a 'From:' 
->> tag if
->> you only made minor changes on top of someone else's work.
-> 
-> I really don’t care much since that is for them and their company
-> policy to figure out.
-> 
->> Not sure how to proceed best with the version number, especially since 
->> there
->> are already 3 versions of the 'new' patch. Either option can create 
->> confusion,
->> I guess you can continue with the new scheme, it seems the patch is 
->> almost
->> ready to land anyway.
-> 
-> It is a total mess already for a dead simple patch like this. And they
-> keep messing it up differently every time.
-> 
-> I provided a btusb_generate_qca_nvm_name() in one of my replies, where
-> the variant variable was declared without NULL assignment and the
-> ram_version was converted from little endian in place. That was 28th
-> of September and 4 patches later the patch is still not ready to be
-> merged. The maintainer hands you the recipe and you still screw up the
-> cake multiple times; I am just done with this.
-> 
-> The next version would be a v16 btw. So seriously, how can we have 15
-> revisions so far and still not have this in a mergable state?
-> 
-> Regards
-> 
-> Marcel
