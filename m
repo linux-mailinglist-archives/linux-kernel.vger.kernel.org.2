@@ -2,227 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5F3B43FBF7
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 14:01:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E918843FDA9
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 15:56:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231458AbhJ2MEO convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 29 Oct 2021 08:04:14 -0400
-Received: from aposti.net ([89.234.176.197]:37894 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229930AbhJ2MEG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 08:04:06 -0400
-Date:   Fri, 29 Oct 2021 13:01:23 +0100
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v2 1/2] dt-bindings: Rename Ingenic CGU headers to
- ingenic,*.h
-To:     Rob Herring <robh@kernel.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, list@opendingux.net,
-        linux-clk <linux-clk@vger.kernel.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-Id: <BQMQ1R.WLWA4YQT423M3@crapouillou.net>
-In-Reply-To: <CAL_Jsq+wU=R_F3iNRfMaZtKUftQLDR2d-4Mt98QMWgt3HkOvQQ@mail.gmail.com>
-References: <20211016133322.40771-1-paul@crapouillou.net>
-        <YXiNLZ9ne8D8uv82@robh.at.kernel.org> <VCRO1R.FQ8R7TN6NPYP3@crapouillou.net>
-        <CAL_Jsq+wU=R_F3iNRfMaZtKUftQLDR2d-4Mt98QMWgt3HkOvQQ@mail.gmail.com>
+        id S231617AbhJ2N7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 09:59:10 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:48950 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231506AbhJ2N7G (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 09:59:06 -0400
+X-UUID: e0c6f2afee1c4cbcaf0fb7a8492887a0-20211029
+X-UUID: e0c6f2afee1c4cbcaf0fb7a8492887a0-20211029
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
+        (envelope-from <hector.yuan@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1191437217; Fri, 29 Oct 2021 21:56:36 +0800
+Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.792.3;
+ Fri, 29 Oct 2021 21:56:35 +0800
+Received: from mtkswgap22.mediatek.inc (172.21.77.33) by
+ mtkmbs10n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.792.3 via Frontend Transport; Fri, 29 Oct 2021 21:56:35 +0800
+From:   Hector Yuan <hector.yuan@mediatek.com>
+To:     <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-pm@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+CC:     <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>,
+        <hector.yuan@mediatek.com>
+Subject: [PATCH v1] cpufreq: mediatek-hw: Fix double devm_remap in hotplug case
+Date:   Fri, 29 Oct 2021 19:42:22 +0800
+Message-ID: <1635507743-17919-1-git-send-email-hector.yuan@mediatek.com>
+X-Mailer: git-send-email 1.7.9.5
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
-
-Le jeu., oct. 28 2021 at 17:26:54 -0500, Rob Herring <robh@kernel.org> 
-a écrit :
-> On Thu, Oct 28, 2021 at 6:46 AM Paul Cercueil <paul@crapouillou.net> 
-> wrote:
->> 
->>  Hi Rob,
->> 
->>  Le mar., oct. 26 2021 at 18:20:13 -0500, Rob Herring 
->> <robh@kernel.org>
->>  a écrit :
->>  > On Sat, Oct 16, 2021 at 02:33:21PM +0100, Paul Cercueil wrote:
->>  >>  Tidy up a bit the tree, by prefixing all 
->> include/dt-bindings/clock/
->>  >> files
->>  >>  related to Ingenic SoCs with 'ingenic,'.
->>  >>
->>  >>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
->>  >>  ---
->>  >>
->>  >>  Notes:
->>  >>      v2: Fix x1000-cgu.h and x1830-cgu.h incorrectly renamed to
->>  >>          x1000.h / x1830.h
->>  >>
->>  >>   Documentation/devicetree/bindings/clock/ingenic,cgu.yaml      
->> | 2
->>  >> +-
->>  >>   Documentation/devicetree/bindings/display/ingenic,ipu.yaml    
->> | 2
->>  >> +-
->>  >>   Documentation/devicetree/bindings/display/ingenic,lcd.yaml    
->> | 4
->>  >> ++--
->>  >>   Documentation/devicetree/bindings/dma/ingenic,dma.yaml        
->> | 2
->>  >> +-
->>  >>   Documentation/devicetree/bindings/i2c/ingenic,i2c.yaml        
->> | 2
->>  >> +-
->>  >>   Documentation/devicetree/bindings/iio/adc/ingenic,adc.yaml    
->> | 2
->>  >> +-
->>  >>   .../devicetree/bindings/memory-controllers/ingenic,nemc.yaml  
->> | 2
->>  >> +-
->>  >>   .../devicetree/bindings/mips/ingenic/ingenic,cpu.yaml         
->> | 2
->>  >> +-
->>  >>   Documentation/devicetree/bindings/mmc/ingenic,mmc.yaml        
->> | 2
->>  >> +-
->>  >>   Documentation/devicetree/bindings/mtd/ingenic,nand.yaml       
->> | 2
->>  >> +-
->>  >>   Documentation/devicetree/bindings/net/ingenic,mac.yaml        
->> | 2
->>  >> +-
->>  >>   .../devicetree/bindings/nvmem/ingenic,jz4780-efuse.yaml       
->> | 2
->>  >> +-
->>  >>   Documentation/devicetree/bindings/phy/ingenic,phy-usb.yaml    
->> | 2
->>  >> +-
->>  >>   Documentation/devicetree/bindings/remoteproc/ingenic,vpu.yaml 
->> | 2
->>  >> +-
->>  >>   Documentation/devicetree/bindings/rng/ingenic,trng.yaml       
->> | 2
->>  >> +-
->>  >>   Documentation/devicetree/bindings/rtc/ingenic,rtc.yaml        
->> | 2
->>  >> +-
->>  >>   Documentation/devicetree/bindings/serial/ingenic,uart.yaml    
->> | 2
->>  >> +-
->>  >>   Documentation/devicetree/bindings/sound/ingenic,aic.yaml      
->> | 2
->>  >> +-
->>  >>   Documentation/devicetree/bindings/sound/ingenic,codec.yaml    
->> | 2
->>  >> +-
->>  >>   Documentation/devicetree/bindings/timer/ingenic,sysost.yaml   
->> | 2
->>  >> +-
->>  >>   Documentation/devicetree/bindings/timer/ingenic,tcu.yaml      
->> | 2
->>  >> +-
->>  >>   Documentation/devicetree/bindings/usb/ingenic,musb.yaml       
->> | 2
->>  >> +-
->>  >>   arch/mips/boot/dts/ingenic/jz4725b.dtsi                       
->> | 2
->>  >> +-
->>  >>   arch/mips/boot/dts/ingenic/jz4740.dtsi                        
->> | 2
->>  >> +-
->>  >>   arch/mips/boot/dts/ingenic/jz4770.dtsi                        
->> | 2
->>  >> +-
->>  >>   arch/mips/boot/dts/ingenic/jz4780.dtsi                        
->> | 2
->>  >> +-
->>  >>   arch/mips/boot/dts/ingenic/x1000.dtsi                         
->> | 2
->>  >> +-
->>  >>   arch/mips/boot/dts/ingenic/x1830.dtsi                         
->> | 2
->>  >> +-
->>  >>   drivers/clk/ingenic/jz4725b-cgu.c                             
->> | 2
->>  >> +-
->>  >>   drivers/clk/ingenic/jz4740-cgu.c                              
->> | 2
->>  >> +-
->>  >>   drivers/clk/ingenic/jz4760-cgu.c                              
->> | 2
->>  >> +-
->>  >>   drivers/clk/ingenic/jz4770-cgu.c                              
->> | 2
->>  >> +-
->>  >>   drivers/clk/ingenic/jz4780-cgu.c                              
->> | 2
->>  >> +-
->>  >>   drivers/clk/ingenic/x1000-cgu.c                               
->> | 2
->>  >> +-
->>  >>   drivers/clk/ingenic/x1830-cgu.c                               
->> | 2
->>  >> +-
->>  >>   .../clock/{jz4725b-cgu.h => ingenic,jz4725b-cgu.h}            
->> | 0
->>  >>   .../dt-bindings/clock/{jz4740-cgu.h => ingenic,jz4740-cgu.h}  
->> | 0
->>  >>   .../dt-bindings/clock/{jz4760-cgu.h => ingenic,jz4760-cgu.h}  
->> | 0
->>  >>   .../dt-bindings/clock/{jz4770-cgu.h => ingenic,jz4770-cgu.h}  
->> | 0
->>  >>   .../dt-bindings/clock/{jz4780-cgu.h => ingenic,jz4780-cgu.h}  
->> | 0
->>  >>   .../dt-bindings/clock/{x1000-cgu.h => ingenic,x1000-cgu.h}    
->> | 0
->>  >>   .../dt-bindings/clock/{x1830-cgu.h => ingenic,x1830-cgu.h}    
->> | 0
->>  >>   42 files changed, 36 insertions(+), 36 deletions(-)
->>  >>   rename include/dt-bindings/clock/{jz4725b-cgu.h =>
->>  >> ingenic,jz4725b-cgu.h} (100%)
->>  >>   rename include/dt-bindings/clock/{jz4740-cgu.h =>
->>  >> ingenic,jz4740-cgu.h} (100%)
->>  >>   rename include/dt-bindings/clock/{jz4760-cgu.h =>
->>  >> ingenic,jz4760-cgu.h} (100%)
->>  >>   rename include/dt-bindings/clock/{jz4770-cgu.h =>
->>  >> ingenic,jz4770-cgu.h} (100%)
->>  >>   rename include/dt-bindings/clock/{jz4780-cgu.h =>
->>  >> ingenic,jz4780-cgu.h} (100%)
->>  >>   rename include/dt-bindings/clock/{x1000-cgu.h =>
->>  >> ingenic,x1000-cgu.h} (100%)
->>  >>   rename include/dt-bindings/clock/{x1830-cgu.h =>
->>  >> ingenic,x1830-cgu.h} (100%)
->>  >
->>  > Acked-by: Rob Herring <robh@kernel.org>
->>  >
->>  > However, this will be a pain to merge if there are any new users
->>  > coming
->>  > in during the merge window. If not, then Stephen can just take 
->> this.
->>  > If
->>  > there are, then at the end of the merge window is the best time. 
->> For
->>  > that to work, you need to track when all dependent changes are 
->> merged
->>  > and we need to agree who will pick this up. I usually have fixes 
->> from
->>  > breakages in the merge window anyways.
->> 
->>  I get Cc'd on all ingenic-related patches, so far I don't see 
->> anything
->>  that will cause a breakage. I think it would be okay to merge it now
->>  (we're at -rc7 after all).
-> 
-> Then can you apply this to linux-next and check it all works there.
-> Specifically, 'make dt_binding_check dtbs drivers/clk/' needs to work.
-> Or confirm you already did that.
-
-I did it on Linus' master branch and it all worked.
-
-But indeed, it does conflict on linux-next since 
-Documentation/devicetree/bindings/spi/ingenic,spi.yaml was added there.
-
-Should I rebase the patchset on top of linux-next?
-
--Paul
+When hotpluging policy cpu, cpu policy init will be called multiple times.
+Unplug CPU7 -> CPU6 -> CPU5 -> CPU4, then plug CPU4 again.
+In this case, devm_remap will double remap and resource allocate fail.
+So replace devm_remap to ioremap and release related resources in cpu exit.
 
 
+Hector.Yuan (1):
+  cpufreq: mediatek-hw: Fix double devm_remap in hotplug case
+
+ drivers/cpufreq/mediatek-cpufreq-hw.c |   33 ++++++++++++++++++++++++++++++---
+ 1 file changed, 30 insertions(+), 3 deletions(-)
