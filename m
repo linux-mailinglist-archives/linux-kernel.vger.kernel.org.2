@@ -2,154 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BA6043FB30
+	by mail.lfdr.de (Postfix) with ESMTP id 64AAE43FB33
 	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 13:06:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231891AbhJ2LJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 07:09:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231826AbhJ2LJF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 07:09:05 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CE70C061714
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 04:06:37 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mgPiK-0001mx-Nh; Fri, 29 Oct 2021 13:06:24 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mgPiH-0005QG-KK; Fri, 29 Oct 2021 13:06:21 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mgPiH-0002TX-J4; Fri, 29 Oct 2021 13:06:21 +0200
-Date:   Fri, 29 Oct 2021 13:06:02 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Sean Young <sean@mess.org>
-Cc:     =?utf-8?B?TWHDrXJh?= Canal <maira.canal@usp.br>, lkp@intel.com,
-        mchehab@kernel.org, thierry.reding@gmail.com, lee.jones@linaro.org,
-        llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pwm@vger.kernel.org
-Subject: Re: [PATCH v4] media: rc: pwm-ir-tx: Switch to atomic PWM API
-Message-ID: <20211029110602.uugnbm5vtfpghiwh@pengutronix.de>
-References: <YXlxhpZWf2mxJaMi@fedora>
- <20211028064513.guziv6uaivzlk6ki@pengutronix.de>
- <20211028091442.GA16514@gofer.mess.org>
- <20211028111535.x7xgz7domx2lpyfh@pengutronix.de>
- <20211028122610.GA18767@gofer.mess.org>
- <20211028180516.t2tpfbzztm7s6cqm@pengutronix.de>
- <20211029071608.GA28997@gofer.mess.org>
+        id S231924AbhJ2LJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 07:09:08 -0400
+Received: from mout01.posteo.de ([185.67.36.65]:39739 "EHLO mout01.posteo.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231890AbhJ2LJH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 07:09:07 -0400
+Received: from submission (posteo.de [89.146.220.130]) 
+        by mout01.posteo.de (Postfix) with ESMTPS id 3BA78240027
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 13:06:37 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1635505597; bh=mSvyEuJocHabfroP0pVRDjH0FhYqP3ziqRP7lCnGg5U=;
+        h=Date:From:To:Cc:Subject:From;
+        b=JToKr084iJytrPCdUYuFkSLGqK2Bqkm14Bhw6p8cav+w+XUhUvmwooSaKQ2SdAhf0
+         ZvBm7DTd3IPQQL/+3+h/ifDBAuDgxTrbGoMnD0JOPHcQXu8RICGzS6MAJEpUceKxDL
+         B4fwoFVeQjigDxBFXzRaj39W5o6m0SWryDtaYyoAjX3/BtmFS053Oja/3CzS9tj2FE
+         hNqbde/RNtu9CIxhci0IWcADJqTW0D72OPFNWQn+GKeNpiikfp8fJfusbmJCZfw1Xp
+         CQMUOo6GvuOLr9sLD9NE5v6J9yeupY7Xpg8I+ChKDhN9CUpyCxRQsUiHY8Qh5XPt5X
+         qECJDMUqxVHPQ==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4Hgfkf6bHZz6tmJ;
+        Fri, 29 Oct 2021 13:06:34 +0200 (CEST)
+Date:   Fri, 29 Oct 2021 11:06:34 +0000
+From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.ne@posteo.net>
+To:     Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
+Cc:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.ne@posteo.net>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        rw-r-r-0644 <r.r.qwertyuiop.r.r@gmail.com>,
+        Ash Logan <ash@heyquark.com>, linux-kernel@vger.kernel.org,
+        linux-rtc@vger.kernel.org
+Subject: Re: [PATCH] rtc: nintendo: Add a RTC driver for the GameCube, Wii
+ and Wii U
+Message-ID: <YXvVuoaxGogAnyej@latitude>
+References: <20211014220524.9988-1-linkmauve@linkmauve.fr>
+ <YXmCQnJTujtak+Qy@piout.net>
+ <YXsIwGmgy+ZIyvWI@latitude>
+ <20211028213413.7lpd62vzs46ru7ul@luna>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="azgvopiwgpdhztkw"
+        protocol="application/pgp-signature"; boundary="ZOQvc6zkganfB056"
 Content-Disposition: inline
-In-Reply-To: <20211029071608.GA28997@gofer.mess.org>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20211028213413.7lpd62vzs46ru7ul@luna>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---azgvopiwgpdhztkw
-Content-Type: text/plain; charset=iso-8859-1
+--ZOQvc6zkganfB056
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Oct 29, 2021 at 08:16:08AM +0100, Sean Young wrote:
-> On Thu, Oct 28, 2021 at 08:05:16PM +0200, Uwe Kleine-K=F6nig wrote:
-> > On Thu, Oct 28, 2021 at 01:26:10PM +0100, Sean Young wrote:
-> > > > bloat-o-meter reports (for an arm allmodconfig build)
-> > > >=20
-> > > > 	add/remove: 0/0 grow/shrink: 3/1 up/down: 644/-396 (248)
-> > > > 	Function                                     old     new   delta
-> > > > 	pwm_ir_probe                                 372     676    +304
-> > > > 	pwm_ir_set_carrier                           108     292    +184
-> > > > 	pwm_ir_set_duty_cycle                         68     224    +156
-> > > > 	pwm_ir_tx                                    908     512    -396
-> > > > 	Total: Before=3D2302, After=3D2550, chg +10.77%
-> > >=20
-> > > So 248 bytes more after your changes.
-> >=20
-> > ack. This is because the compiler inlines the division which accounts
-> > for > 100 bytes.
->=20
-> I'm surprised it's that large. This is on 32 bit?
+On Thu, Oct 28, 2021 at 11:34:13PM +0200, Emmanuel Gil Peyrot wrote:
+> On Thu, Oct 28, 2021 at 08:32:00PM +0000, Jonathan Neusch=C3=A4fer wrote:
+[...]
+> The gc-linux project had such a bus driver, and I think also an
+> USB=C2=A0Gecko driver, but from what I remember they got rejected in the
+> kernel.  I=E2=80=99d have to do some archeology to figure out why though.
 
-Yes, it's a 64 bit division on 32 bit ARM.
+Interesting, I wasn't aware that upstreaming had been attempted at all.
 
-> > > > struct pwm_ir increases from 12 bytes to 40 bytes.
-> > > >=20
-> > > > The stack space required by pwm_ir_tx decreases from 60 to 36
-> > > >=20
-> > > > I don't know exactly how kmalloc works internally. Maybe allocating=
- a
-> > > > structure of size 40 bytes doesn't need more memory than a structur=
-e of
-> > > > size 12?
-> > > >=20
-> > > > I didn't check how runtimes change, but the size decrease of pwm_ir=
-_tx()
-> > > > is nice and might save a bit of runtime.
-> > >=20
-> > > I'm not following, how is this decreasing runtime?=20
-> >=20
-> > With my changes pwm_ir_tx got smaller and { pwm_ir_probe,
-> > pwm_ir_set_carrier, pwm_ir_set_duty_cycle } got bigger. Now if for a
-> > typical runtime pattern pwm_ir_probe and pwm_ir_set_carrier run once and
-> > pwm_ir_set_duty_cycle 100 times and pwm_ir_tx 1000 times (no idea if
-> > that is realistic) it might be a net win in sum.
->=20
-> The two most common programs for sending IR are
->=20
-> ir-ctl: https://git.linuxtv.org/v4l-utils.git/tree/utils/ir-ctl/ir-ctl.c#=
-n1041
-> lircd: https://sourceforge.net/p/lirc/git/ci/master/tree/lib/transmit.c
->=20
-> For each transmission, the carrier is set. If the duty cyle is specified,
-> then that is set too. Then the transmit itself is done. Both of them
-> set the carrier and duty cycle (if required) for every transmission: sett=
-ing
-> the carrier and duty cycle is a cheap operation, and it is device property
-> which can be overriden by another process.=20
->=20
-> This means with your changes, if the carrier and duty cycle are both set
-> for each transmission, then we're doing more work. If only the carrier
-> is set for each transmission, then there is no net gain/loss (I think),
-> but the code size has increased.
+> Still, maybe it would be sensible to port their 2.6.32-era driver?
 
-OK, then I discard my patch.
+Possibly, but I think it requires a good deal of cleaning up.
 
-While reading that I wondered if it makes sense to have a callback that
-sets both carrier and duty cycle and then remove the other two.
+I have a working patchset on top of Linux 5.x, but it's not in an
+upstream-ready shape:
 
-Best regards
-Uwe
+	https://github.com/neuschaefer/linux/commits/wii
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+Unfortunately, I don't currently have the time/motivation to do
+significant work in this area, so I probably can't help much.
 
---azgvopiwgpdhztkw
+
+> I have one such USB=C2=A0Gecko btw, so I should be able to test against i=
+t.
+
+Great!
+
+
+Best regards,
+Jonathan
+
+--ZOQvc6zkganfB056
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmF71ZIACgkQwfwUeK3K
-7Am79wf/SqQB9cLC/swxCjRZ+kXJ+3z7js+zIjZQHScbxNaycBfosNwROYJ/U5IJ
-ArOIy5R7/y6PzPwE+iPEIYXA/o7tz/wamOogZWcT8ZxJVC/UlSkcx5Sh7z0xAkbC
-ISbuy4VtDhOp0+BL8g4VasCYf1yYs8SFdzcKw76FgYM4/Qmr8VRuukYL21SbHfWV
-O+W3G/MZE5NLV79x33fsPNkfvYiJav2xF1IYKde4dyJGG3HKd5uS3OGo8xU6rhpR
-WUfLjldheUvP4ZVO0HcGPJTHia1K8bFB1qfwkYDuetBhpICHk+mbpWP92OfBvtJo
-2/en1tqciILjZz/+eRRRa9kTnehVWg==
-=3f91
+iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmF71YkACgkQCDBEmo7z
+X9uaMQ//eSXCvy/kTwIbqd+WuL7h2iceEUzzYw87tcQoiZ4nIC8dGs2e/myNiw4Q
+fohwAE/0suHQV9aIB+N7ijYDTxmsmwMdFOUM+YQ6WvVx8WDXU2dePaOTp5SGDKEu
+IjDD0+kY8R2RSPxm/vKFMSxW75HTOFyy/ctgIVbxbVzfttQJ7rMLg+uASpxf7TP+
+6VbZOSXonQe1RZefeu0eUDEGy80WrUQQ0s6vQ+TrWMiwdC5MIV1tBuKy189nuvDa
+1IXY79Fq4ptYCpqh6XJ+pfGIaFZDaetF9SFEmV90yxMr/p9ySUAv9hyUDGFBh6Np
+J6hCDLsCHBL57Od7dZulf19gdQm2L7F32mTcIeN7e2GQmTgE8kA8GMMtJezEOuFa
+ltLhTjpEViKC58hQAeRkYV96Ay36kHrXbc+fgGtAUIvHZKX57P8MHrHgpAFDyco0
+mhiVs55liBhDzp+2x88SHBGrOdiIq3QRWquaWkVPToOh71HD0c16ah7NaIPuaPAn
+4flEW8IzxpOvLS1d6DqJOwaY0KL+weRhnU5RM5nLD2dt9gSTAVVqN11k8BrWRnxU
+0uSjYeqsSoWf8JYQGozm/cDWKjBTO0wLCdpKrqN/gHYkPdR2CM9K/xvBTVGKD+s0
+yIRfV80kXYOxjPymOFM5hb8+raL4HMsfOeVWyAf11/OWlZzWWdU=
+=9l8V
 -----END PGP SIGNATURE-----
 
---azgvopiwgpdhztkw--
+--ZOQvc6zkganfB056--
