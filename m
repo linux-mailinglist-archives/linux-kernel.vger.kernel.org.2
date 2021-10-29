@@ -2,251 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77ED643FF5D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 17:21:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 755DD43FEEF
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 17:02:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229928AbhJ2PYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 11:24:21 -0400
-Received: from mga05.intel.com ([192.55.52.43]:29206 "EHLO mga05.intel.com"
+        id S229791AbhJ2PEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 11:04:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54640 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229607AbhJ2PYU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 11:24:20 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10151"; a="316878773"
-X-IronPort-AV: E=Sophos;i="5.87,193,1631602800"; 
-   d="scan'208";a="316878773"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2021 08:01:02 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,193,1631602800"; 
-   d="scan'208";a="530422049"
-Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 29 Oct 2021 08:00:59 -0700
-Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mgTNL-0000PE-9H; Fri, 29 Oct 2021 15:00:59 +0000
-Date:   Fri, 29 Oct 2021 23:00:30 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [paulmck-rcu:rcu/next] BUILD SUCCESS
- a01016aa420e33f0c5f2b8d88f99966aba83ca0b
-Message-ID: <617c0c8e.tu8un4hn4Elu+Pok%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S229626AbhJ2PEY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 11:04:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EF918610C7;
+        Fri, 29 Oct 2021 15:01:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635519716;
+        bh=YU3SKyC4e2m8Lcg4RAF1+N0COfHneo3Q2e46w4Iwa8w=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=cd2JjO30e1QlVXotH2ecvoeeyFpuKEltiLrgGIFGVLpvBGQmT19cCxJoE1+ddBeiD
+         XfPbPCn1bx9HqUpAyV1aB4fCZuxC4L16zg7BCxSSlYXb5svkcOeEWUPFf82MstQWOd
+         kK04SIq0NPemINsI1IejTW/R8KOU1j/xEjowDrQ16/bBwprcBKXQp5iNQB1B7eInqV
+         sjTHoyW+Sw+uZBqyhULEKANdCrzCN0kAEUjq4l8zB3PhcbdVNmGVVnfZR3ZMzR2W2q
+         abdWXXVdgiyZgVLXeCsSBrHCJYqcLzhywEl7rUzX1bVT5FiCBoJ97EQenJZfo02NQG
+         gvG5yzMUgWXeQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 570E35C051B; Fri, 29 Oct 2021 08:01:55 -0700 (PDT)
+Date:   Fri, 29 Oct 2021 08:01:55 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Boqun Feng <boqun.feng@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-doc@vger.kernel.org, Dan Lustig <dlustig@nvidia.com>,
+        Will Deacon <will@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Anvin <hpa@zytor.com>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vince Weaver <vincent.weaver@maine.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Stephane Eranian <eranian@google.com>, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, mpe@ellerman.id.au,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [RFC v2 3/3] tools/memory-model: litmus: Add two tests for
+ unlock(A)+lock(B) ordering
+Message-ID: <20211029150155.GS880162@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20211025145416.698183-1-boqun.feng@gmail.com>
+ <20211025145416.698183-4-boqun.feng@gmail.com>
+ <YXenrNeS+IaSDwvU@hirez.programming.kicks-ass.net>
+ <20211028191129.GJ880162@paulmck-ThinkPad-P17-Gen-1>
+ <YXs3i8g+GHYbRCRQ@boqun-archlinux>
+ <20211029143442.GB1384368@rowland.harvard.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20211029143442.GB1384368@rowland.harvard.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/next
-branch HEAD: a01016aa420e33f0c5f2b8d88f99966aba83ca0b  refscale: Always log the error message
+On Fri, Oct 29, 2021 at 10:34:42AM -0400, Alan Stern wrote:
+> On Fri, Oct 29, 2021 at 07:51:39AM +0800, Boqun Feng wrote:
+> > On Thu, Oct 28, 2021 at 12:11:29PM -0700, Paul E. McKenney wrote:
+> > > On Tue, Oct 26, 2021 at 09:01:00AM +0200, Peter Zijlstra wrote:
+> > > > On Mon, Oct 25, 2021 at 10:54:16PM +0800, Boqun Feng wrote:
+> > > > > diff --git a/tools/memory-model/litmus-tests/LB+unlocklockonceonce+poacquireonce.litmus b/tools/memory-model/litmus-tests/LB+unlocklockonceonce+poacquireonce.litmus
+> > > > > new file mode 100644
+> > > > > index 000000000000..955b9c7cdc7f
+> > > > > --- /dev/null
+> > > > > +++ b/tools/memory-model/litmus-tests/LB+unlocklockonceonce+poacquireonce.litmus
+> > > > > @@ -0,0 +1,33 @@
+> > > > > +C LB+unlocklockonceonce+poacquireonce
+> > > > > +
+> > > > > +(*
+> > > > > + * Result: Never
+> > > > > + *
+> > > > > + * If two locked critical sections execute on the same CPU, all accesses
+> > > > > + * in the first must execute before any accesses in the second, even if
+> > > > > + * the critical sections are protected by different locks.
+> > > > 
+> > > > One small nit; the above "all accesses" reads as if:
+> > > > 
+> > > > 	spin_lock(s);
+> > > > 	WRITE_ONCE(*x, 1);
+> > > > 	spin_unlock(s);
+> > > > 	spin_lock(t);
+> > > > 	r1 = READ_ONCE(*y);
+> > > > 	spin_unlock(t);
+> > > > 
+> > > > would also work, except of course that's the one reorder allowed by TSO.
+> > > 
+> > > I applied this series with Peter's Acked-by, and with the above comment
+> > 
+> > Thanks!
+> > 
+> > > reading as follows:
+> > > 
+> > > +(*
+> > > + * Result: Never
+> > > + *
+> > > + * If two locked critical sections execute on the same CPU, all accesses
+> > > + * in the first must execute before any accesses in the second, even if the
+> > > + * critical sections are protected by different locks.  The one exception
+> > > + * to this rule is that (consistent with TSO) a prior write can be reordered
+> > > + * with a later read from the viewpoint of a process not holding both locks.
+> > 
+> > Just want to be accurate, in our memory model "execute" means a CPU
+> > commit an memory access instruction to the Memory Subsystem, so if we
+> > have a store W and a load R, where W executes before R, it doesn't mean
+> > the memory effect of W is observed before the memory effect of R by
+> > other CPUs, consider the following case
+> > 
+> > 
+> > 	CPU0			Memory Subsystem		CPU1
+> > 	====							====
+> > 	WRITE_ONCE(*x,1); // W ---------->|
+> > 	spin_unlock(s);                   |
+> > 	spin_lock(t);                     |
+> > 	r1 = READ_ONCE(*y); // R -------->|
+> > 	// R reads 0                      |
+> > 					  |<----------------WRITR_ONCE(*y, 1); // W'
+> > 		 W' propagates to CPU0    |
+> > 		<-------------------------|
+> > 					  |                 smp_mb();
+> > 					  |<----------------r1 = READ_ONCE(*x); // R' reads 0
+> > 					  |
+> > 					  | W progrates to CPU 1
+> > 		                          |----------------->
+> > 
+> > The "->" from CPU0 to the Memory Subsystem shows that W executes before
+> > R, however the memory effect of a store can be observed only after the
+> > Memory Subsystem propagates it to another CPU, as a result CPU1 doesn't
+> > observe W before R is executed. So the original version of the comments
+> > is correct in our memory model terminology, at least that's how I
+> > understand it, Alan can correct me if I'm wrong.
+> 
+> Indeed, that is correct.
+> 
+> It is an unfortunate inconsistency with the terminology in 
+> Documentation/memory-barriers.txt.  I suspect most people think of a 
+> write as executing when it is observed by another CPU, even though that 
+> really isn't a coherent concept.  (For example, it could easily lead 
+> somebody to think that a write observed at different times by different 
+> CPUs has executed more than once!)
 
-elapsed time: 2696m
+Agreed, the terminology is odd.  But the fact that different CPUs can
+see writes in different orders is probably always going to be a bit
+counter-intuitive, so it is good to avoid giving that intuition any
+support.
 
-configs tested: 188
-configs skipped: 3
+> > Maybe it's better to replace the sentence starting with "The one
+> > exception..." into:
+> > 
+> > One thing to notice is that even though a write executes by a read, the
+> > memory effects can still be reordered from the viewpoint of a process
+> > not holding both locks, similar to TSO ordering.
+> > 
+> > Thoughts?
+> 
+> Or more briefly:
+> 
+> 	Note: Even when a write executes before a read, their memory
+> 	effects can be reordered from the viewpoint of another CPU (the 
+> 	kind of reordering allowed by TSO).
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Very good!  I took this verbatim in a fixup patch to be combined
+with the original on my next rebase.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20211027
-i386                 randconfig-c001-20211028
-powerpc              randconfig-c003-20211028
-m68k                            q40_defconfig
-powerpc                          g5_defconfig
-m68k                         amcore_defconfig
-sh                            hp6xx_defconfig
-mips                 decstation_r4k_defconfig
-sh                      rts7751r2d1_defconfig
-xtensa                    smp_lx200_defconfig
-mips                          malta_defconfig
-powerpc                     skiroot_defconfig
-arm                           sama7_defconfig
-powerpc                      ppc64e_defconfig
-arm                            hisi_defconfig
-powerpc                      ppc40x_defconfig
-xtensa                  cadence_csp_defconfig
-powerpc                 mpc832x_rdb_defconfig
-mips                      malta_kvm_defconfig
-m68k                        mvme16x_defconfig
-sh                             shx3_defconfig
-sh                  sh7785lcr_32bit_defconfig
-sh                         apsh4a3a_defconfig
-mips                           rs90_defconfig
-powerpc                     mpc83xx_defconfig
-mips                            gpr_defconfig
-arm                          collie_defconfig
-arm                              alldefconfig
-arm                         shannon_defconfig
-mips                         tb0287_defconfig
-sh                                  defconfig
-arc                              alldefconfig
-mips                           ip32_defconfig
-mips                      loongson3_defconfig
-arm                         socfpga_defconfig
-arm                            pleb_defconfig
-openrisc                    or1ksim_defconfig
-powerpc                      pasemi_defconfig
-arc                     haps_hs_smp_defconfig
-riscv                            alldefconfig
-arc                          axs101_defconfig
-powerpc                      pcm030_defconfig
-powerpc                     redwood_defconfig
-powerpc                 mpc8272_ads_defconfig
-powerpc                     rainier_defconfig
-arm                             rpc_defconfig
-powerpc                      ppc6xx_defconfig
-arm                         at91_dt_defconfig
-mips                  maltasmvp_eva_defconfig
-m68k                          amiga_defconfig
-mips                      bmips_stb_defconfig
-powerpc                 mpc8315_rdb_defconfig
-m68k                          multi_defconfig
-powerpc                    amigaone_defconfig
-powerpc                 xes_mpc85xx_defconfig
-mips                     decstation_defconfig
-arc                           tb10x_defconfig
-sh                             sh03_defconfig
-powerpc                    mvme5100_defconfig
-arm                      integrator_defconfig
-arc                          axs103_defconfig
-mips                         rt305x_defconfig
-mips                         tb0219_defconfig
-arm                          ep93xx_defconfig
-riscv             nommu_k210_sdcard_defconfig
-arm                    vt8500_v6_v7_defconfig
-powerpc                 mpc834x_itx_defconfig
-microblaze                      mmu_defconfig
-arm                        mvebu_v5_defconfig
-arm                   milbeaut_m10v_defconfig
-arm                  randconfig-c002-20211028
-arm                  randconfig-c002-20211027
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-nios2                            allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-xtensa                           allyesconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                                defconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                              debian-10.3
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a002-20211028
-x86_64               randconfig-a004-20211028
-x86_64               randconfig-a005-20211028
-x86_64               randconfig-a001-20211028
-x86_64               randconfig-a006-20211028
-x86_64               randconfig-a003-20211028
-i386                 randconfig-a004-20211028
-i386                 randconfig-a003-20211028
-i386                 randconfig-a002-20211028
-i386                 randconfig-a006-20211028
-i386                 randconfig-a001-20211028
-i386                 randconfig-a005-20211028
-x86_64               randconfig-a013-20211027
-x86_64               randconfig-a015-20211027
-x86_64               randconfig-a011-20211027
-x86_64               randconfig-a014-20211027
-x86_64               randconfig-a016-20211027
-x86_64               randconfig-a012-20211027
-i386                 randconfig-a012-20211027
-i386                 randconfig-a013-20211027
-i386                 randconfig-a011-20211027
-i386                 randconfig-a016-20211027
-i386                 randconfig-a015-20211027
-i386                 randconfig-a014-20211027
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allyesconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
-x86_64                                  kexec
+							Thanx, Paul
 
-clang tested configs:
-riscv                randconfig-c006-20211027
-powerpc              randconfig-c003-20211027
-arm                  randconfig-c002-20211027
-mips                 randconfig-c004-20211027
-x86_64               randconfig-c007-20211027
-i386                 randconfig-c001-20211027
-s390                 randconfig-c005-20211027
-arm                  randconfig-c002-20211028
-powerpc              randconfig-c003-20211028
-riscv                randconfig-c006-20211028
-x86_64               randconfig-c007-20211028
-mips                 randconfig-c004-20211028
-s390                 randconfig-c005-20211028
-i386                 randconfig-c001-20211028
-x86_64               randconfig-a002-20211027
-x86_64               randconfig-a004-20211027
-x86_64               randconfig-a005-20211027
-x86_64               randconfig-a006-20211027
-x86_64               randconfig-a001-20211027
-x86_64               randconfig-a003-20211027
-i386                 randconfig-a003-20211027
-i386                 randconfig-a004-20211027
-i386                 randconfig-a002-20211027
-i386                 randconfig-a005-20211027
-i386                 randconfig-a001-20211027
-i386                 randconfig-a006-20211027
-x86_64               randconfig-a015-20211028
-x86_64               randconfig-a013-20211028
-x86_64               randconfig-a011-20211028
-x86_64               randconfig-a014-20211028
-x86_64               randconfig-a012-20211028
-x86_64               randconfig-a016-20211028
-i386                 randconfig-a012-20211028
-i386                 randconfig-a013-20211028
-i386                 randconfig-a011-20211028
-i386                 randconfig-a015-20211028
-i386                 randconfig-a016-20211028
-i386                 randconfig-a014-20211028
-hexagon              randconfig-r045-20211028
-riscv                randconfig-r042-20211028
-s390                 randconfig-r044-20211028
-hexagon              randconfig-r041-20211028
-hexagon              randconfig-r045-20211027
-hexagon              randconfig-r041-20211027
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> Alan
+> 
+> > Apologies for responsing late...
+> > 
+> > ("Memory Subsystem" is an abstraction in our memory model, which doesn't
+> > mean hardware implements things in the same way.).
+> > 
+> > Regards,
+> > Boqun
+> > 
+> > > + *)
+> > > 
+> > > Thank you all!
+> > > 
+> > > 							Thanx, Paul
