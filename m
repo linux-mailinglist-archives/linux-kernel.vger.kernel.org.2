@@ -2,116 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55B0B4405EA
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 01:53:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 962C04405F5
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 01:57:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231621AbhJ2Xzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 19:55:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60102 "EHLO
+        id S231642AbhJ2X7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 19:59:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231154AbhJ2Xzg (ORCPT
+        with ESMTP id S231401AbhJ2X7y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 19:55:36 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 250A4C061570;
-        Fri, 29 Oct 2021 16:53:07 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id g125so15604180oif.9;
-        Fri, 29 Oct 2021 16:53:07 -0700 (PDT)
+        Fri, 29 Oct 2021 19:59:54 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AB7BC061570;
+        Fri, 29 Oct 2021 16:57:25 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id bl14so10984274qkb.4;
+        Fri, 29 Oct 2021 16:57:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=ut6pn5cliGqKJyxhLk39cGyPq9pAH/Drj266MOylggY=;
-        b=QaB65rFyylww/otFLw4EZbF7r6sgxqFL1f9BsRxQVff5RCyCrDpCuO4ulCuDxw31ej
-         piM95O/fr1PFSsz6yzMwtHX04tBY9gk+EiBjUOWGRBwgH3uIlEgfNtL20oBaXs3LtBrv
-         fN5FWr5HqTVReG7b8+WaUpmBNPGmVZPBdNKZa2MVJiKwD3h+RtgKu9f1u3x986YF7yCy
-         z0wkqzr4JJRb6y6vS7vXfjvkpYoH3oJk0ToM7RC1hyaR5q8NWdEmzRrKMpDzLfTRDF7s
-         BxOpdBSn6uv9iW//u2iDPYbPdFVHqvVKG7S2dUus9z0BnU0kjzoZFUgyy2VvUIT5ZBBM
-         Oyig==
+        h=subject:references:to:cc:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=3KbvN+2PJvSq+0CefMz33c78Os83xV0bDXtnD0xUFVU=;
+        b=iOd0SRqmW8ANsZwlIQEPEi3y9OMrzCaajPqCmCNkRSkVNxVsP795J0OziZOoMck81H
+         56dysg0e6c+5LI2KRhskLmYWX+xyYSH9UbgBxYdJBFc5qpoO1l2QwpCHkhaceni4K+M6
+         asqARqiI8fUsigiy+tLbwuVF8wDl8qoMR9/RtDryan42u7yKrrSnt5MBxmqwSxhoX9xb
+         8kzNnMX40+08pEIeVPPat2395v/gCfallrM6v1/Cqq89bRuHRqJ2m3TOaUxca5kzzG2P
+         /KT8eIDfuEfAC8q05QQJ2log3c8tmATwZdQCA5oYUCPQU08BCLlWFWvI7LO/2MhN1ySi
+         bVwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+        h=x-gm-message-state:subject:references:to:cc:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=ut6pn5cliGqKJyxhLk39cGyPq9pAH/Drj266MOylggY=;
-        b=AC4LWqCkvt/2rcqMr2IBcpBPnAi24G4SmcO4JnBqfqMqV0pelTz4oSYVtw5wkjUPtM
-         32KCni7xPovAoi5uYGZy53Y9OnUbnhwIxolpfNYa9qNkMpWcSCG9Qk8/FcrVu0e+td3U
-         QDhMm9Uq4HIqKpwC5/U0oH+5pwua8u9jxmvEGH4Dx+fP+7WGubuXTBSCoK6nomRsmCxw
-         YansCgJ1m3LLoA0/nPiRlJrZIWF72sljB/l2WjxZ+e6w3EsBm0WrhUk2DKsgW+QYoJ0K
-         Okt4yvq2SersInUN0E6sKXl59AZ1c3mV1opFSXjB4vyu0hK24my6JeZtXrNodSiK2vDz
-         dMTQ==
-X-Gm-Message-State: AOAM532IA03LuugxvhhnqvH/FY53XuV7BuYIXG/tqcMSgfINaxxAQ8yH
-        04SC/23nQwRYxlMvXNdybyA=
-X-Google-Smtp-Source: ABdhPJxiqvaeNc1rLviXAkgYuYHSxPzhxNZZNX93sklb3OaJbFGO2MbM0uJQCW11DHJRWxkbA3RsaQ==
-X-Received: by 2002:aca:31c9:: with SMTP id x192mr15849915oix.173.1635551586095;
-        Fri, 29 Oct 2021 16:53:06 -0700 (PDT)
-Received: from [172.16.0.2] ([8.48.134.30])
-        by smtp.googlemail.com with ESMTPSA id r131sm2386537oib.27.2021.10.29.16.53.04
+        bh=3KbvN+2PJvSq+0CefMz33c78Os83xV0bDXtnD0xUFVU=;
+        b=7sx1n+0nL0EY9zUbD0Flg1kvZP5WitHK7VLyUjP8/Iyi56rN1GbepbAEY6TyTOTyrg
+         n+HdhD7MrhA9spJBBwGwj0++9uMwFSCNWuKIwcuaUZTo0WeqYZi3zH7MROcGaei5O/6V
+         3McbfBPSXrOKwYHTDWlj5FbbvZ36yaFfS+80anElowG4f+0m/jH8NXN3nAyZqRryf7sC
+         wm6XKEsLdhUE7d3SVVRp2e5/IaeQnQx0Wz1JcKiP9lMr2EZIDEZJhGOVbA8iFco3eh75
+         F6p76SjRlB4W/meLzUviJxtDAQQUZgS72ZYupTQ8ryUmK25BlzvT37M8M7JMlzabFIKE
+         pZjQ==
+X-Gm-Message-State: AOAM531yL3sRb4r+ReMaagrJskPMI4HvT+Uql6p8YV60pIgoNVI9cIfo
+        IbkN7mpS5gvragL5Z3zkRMZfryWALBs=
+X-Google-Smtp-Source: ABdhPJyrwtsQ+tLDumVxBeeMbR3YLW4VuguFkggMI1LT3xtaiPYxO0+0RKoNi09siq4/1uNnf5KjNg==
+X-Received: by 2002:a37:88c2:: with SMTP id k185mr11789362qkd.227.1635551844368;
+        Fri, 29 Oct 2021 16:57:24 -0700 (PDT)
+Received: from [192.168.1.49] (c-67-187-90-124.hsd1.tn.comcast.net. [67.187.90.124])
+        by smtp.gmail.com with ESMTPSA id g1sm4006810qtb.4.2021.10.29.16.57.23
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Oct 2021 16:53:05 -0700 (PDT)
-Message-ID: <9015da81-689a-5ff6-c5ca-55c28dec1867@gmail.com>
-Date:   Fri, 29 Oct 2021 17:53:03 -0600
+        Fri, 29 Oct 2021 16:57:24 -0700 (PDT)
+Subject: Fwd: [Bug 214867] New: UBSAN: shift-out-of-bounds in
+ drivers/of/unittest.c:1933:36
+References: <bug-214867-211671@https.bugzilla.kernel.org/>
+To:     Frank Rowand <frowand.list@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Erhard F." <erhard_f@mailbox.org>
+From:   Frank Rowand <frowand.list@gmail.com>
+X-Forwarded-Message-Id: <bug-214867-211671@https.bugzilla.kernel.org/>
+Message-ID: <c474a371-b524-1da8-4a67-e72cf8f2b0f7@gmail.com>
+Date:   Fri, 29 Oct 2021 18:57:23 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.1
-Subject: Re: Kernel leaks memory in ip6_dst_cache when suppress_prefix is
- present in ipv6 routing rules and a `fib` rule is present in ipv6 nftables
- rules
+In-Reply-To: <bug-214867-211671@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-To:     msizanoen <msizanoen@qtmlabs.xyz>, davem@davemloft.net,
-        yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <e022d597-302d-c061-0830-6ed20aa61e56@qtmlabs.xyz>
-From:   David Ahern <dsahern@gmail.com>
-In-Reply-To: <e022d597-302d-c061-0830-6ed20aa61e56@qtmlabs.xyz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/26/21 8:24 AM, msizanoen wrote:
-> The kernel leaks memory when a `fib` rule is present in ipv6 nftables
-> firewall rules and a suppress_prefix rule
-> is present in the IPv6 routing rules (used by certain tools such as
-> wg-quick). In such scenarios, every incoming
-> packet will leak an allocation in ip6_dst_cache slab cache.
-> 
-> After some hours of `bpftrace`-ing and source code reading, I tracked
-> down the issue to this commit:
->     https://github.com/torvalds/linux/commit/ca7a03c4175366a92cee0ccc4fec0038c3266e26
-> 
-> 
-> The problem with that patch is that the generic args->flags always have
-> FIB_LOOKUP_NOREF set[1][2] but the
-> ip6-specific flag RT6_LOOKUP_F_DST_NOREF might not be specified, leading
-> to fib6_rule_suppress not
-> decreasing the refcount when needed. This can be fixed by exposing the
-> protocol-specific flags to the
-> protocol specific `suppress` function, and check the protocol-specific
-> `flags` argument for
-> RT6_LOOKUP_F_DST_NOREF instead of the generic FIB_LOOKUP_NOREF when
-> decreasing the refcount.
-> 
-> How to reproduce:
-> - Add the following nftables rule to a prerouting chain: `meta nfproto
-> ipv6 fib saddr . mark . iif oif missing drop`
 
-exact command? I have not played with nftables. Do you have a stack
-trace of where the dst reference is getting taken?
+Reported in bugzilla, forwarding to the mail lists and maintainers.
+
+-Frank
 
 
-> - Run `sudo ip -6 rule add table main suppress_prefixlength 0`
-> - Watch `sudo slabtop -o | grep ip6_dst_cache` memory usage increase
-> with every incoming ipv6 packet
-> 
-> Example
-> patch:https://gist.github.com/msizanoen1/36a2853467a9bd34fadc5bb3783fde0f
-> 
-> [1]:https://github.com/torvalds/linux/blob/ca7a03c4175366a92cee0ccc4fec0038c3266e26/net/ipv6/fib6_rules.c#L71
-> 
-> [2]:https://github.com/torvalds/linux/blob/ca7a03c4175366a92cee0ccc4fec0038c3266e26/net/ipv6/fib6_rules.c#L99
-> 
-> 
-> 
+-------- Forwarded Message --------
+Subject: [Bug 214867] New: UBSAN: shift-out-of-bounds in drivers/of/unittest.c:1933:36
+Date: Fri, 29 Oct 2021 13:59:02 +0000
+From: bugzilla-daemon@bugzilla.kernel.org
 
+
+https://bugzilla.kernel.org/show_bug.cgi?id=214867
+
+            Bug ID: 214867
+           Summary: UBSAN: shift-out-of-bounds in
+                    drivers/of/unittest.c:1933:36
+           Product: Platform Specific/Hardware
+           Version: 2.5
+    Kernel Version: 5.15-rc7
+          Hardware: PPC-64
+                OS: Linux
+              Tree: Mainline
+            Status: NEW
+          Severity: normal
+          Priority: P1
+         Component: PPC-64
+          Assignee: platform_ppc-64@kernel-bugs.osdl.org
+          Reporter: erhard_f@mailbox.org
+                CC: bugzilla.kernel.org@frowand.com
+        Regression: No
+
+Created attachment 299361
+  --> https://bugzilla.kernel.org/attachment.cgi?id=299361&action=edit
+kernel dmesg (kernel 5.15-rc7, Talos II)
+
+UBSAN catches this at boot on my Talos II.
+
+[...]
+### dt-test ### EXPECT / : GPIO line <<int>> (line-C-input) hogged as input
+================================================================================
+UBSAN: shift-out-of-bounds in drivers/of/unittest.c:1933:36
+shift exponent -1 is negative
+CPU: 2 PID: 1 Comm: swapper/0 Not tainted 5.15.0-rc7-TalosII #1
+Call Trace:
+[c000000004163700] [c0000000008ffaa8] .dump_stack_lvl+0xa4/0x100 (unreliable)
+[c000000004163790] [c0000000008fb46c] .ubsan_epilogue+0x10/0x70
+[c000000004163800] [c0000000008fb270]
+.__ubsan_handle_shift_out_of_bounds+0x1f0/0x34c
+[c000000004163910] [c000000000ad94a0] .of_unittest_untrack_overlay+0x6c/0xe0
+[c0000000041639a0] [c000000002098ff8] .of_unittest+0x4c50/0x59f8
+[c000000004163b60] [c000000000011b5c] .do_one_initcall+0x7c/0x4f0
+[c000000004163c50] [c00000000200300c] .kernel_init_freeable+0x704/0x858
+[c000000004163d90] [c000000000012730] .kernel_init+0x20/0x190
+[c000000004163e10] [c00000000000ce78] .ret_from_kernel_thread+0x58/0x60
+================================================================================
+### dt-test ### EXPECT \ : OF: overlay: WARNING: memory leak will occur if
+overlay removed, property: /testcase-data-2/substation@100/status
+[...]
+
+-- 
+You may reply to this email to add a comment.
+
+You are receiving this mail because:
+You are on the CC list for the bug.
