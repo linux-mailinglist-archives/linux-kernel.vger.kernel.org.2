@@ -2,146 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E37B43F995
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 11:16:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7CBB43F9A4
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 11:17:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231494AbhJ2JS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 05:18:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:29521 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231476AbhJ2JRd (ORCPT
+        id S231458AbhJ2JUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 05:20:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58664 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231817AbhJ2JTP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 05:17:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635498904;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FKPJ14P0NBDDQOtnjBeYPNE2VaHGagsVkffrpahKyO4=;
-        b=SuraIBbmMsB14D5J/ax0pcbddp8yFFoVzgjKCeBxSRpZ4ZHs41iQw3jlJte5n5OaXQI0pu
-        TtoH8J4rLGNINV2xz1V5awU5XU6/Lyozp3mH4Q6ydfuKO1WC6O1WJziKzUbuEtT60m8cpK
-        5sGNF09Td1mA5I1UOXORiFbBWKApfxQ=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-143-Q4cR0_cfOkSC1PJhtObNfg-1; Fri, 29 Oct 2021 05:15:02 -0400
-X-MC-Unique: Q4cR0_cfOkSC1PJhtObNfg-1
-Received: by mail-wm1-f70.google.com with SMTP id 145-20020a1c0197000000b0032efc3eb9bcso1154916wmb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 02:15:01 -0700 (PDT)
+        Fri, 29 Oct 2021 05:19:15 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E3D5C061745
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 02:16:47 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id o12so22724353ybk.1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 02:16:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ii1VwS4bdocl/9x/wQu5Dr4Dw4xnbfm4TdQdq5Q+Azo=;
+        b=tm8FL5NwJB2u6qrHnZtD84LIMRI/iboApguCXaLUq9SaX/qb19ml1AcKQ5CH/E5h3w
+         S9284fol2t6LhXShzy6SrMbZi0J6usF0oon3W6pWM2clShpwDU9VOz67NU9Cb5OUDXV2
+         m/wWU94FmxgrtjlewS0P+DH13dd98L+7UgsawCrJQNo+3+Rm+mLWAmCFh+KiX4xwbd5n
+         kFAr/FEBKKvEUJ+v76aHUXx/FLgFjl6axzWrtcSI7kT//aqC4IIz0+4fnT7uhBbsoNHq
+         7IhyXKurVXnHNSNJ4YpxGWCVkY6iPwQrMXjRT1215vFhwZxrdXCuFYpo4RZUfAEMV2pV
+         BafA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=FKPJ14P0NBDDQOtnjBeYPNE2VaHGagsVkffrpahKyO4=;
-        b=oET2NGAh/Ixw08xnAvyFatLSiqHiMAhTAMtmeey39zs9xIDpambb+NCWPgTkDhOCc6
-         tgFXtZkdC/snWGeBQtW00YKhoRThXbV1R9X4YnTSxDbxhIOkX0PkEdQcYLVHj6ARaIs/
-         Vgn5By6gwh9zoAuTpyjRcIptXyUCMkJoOlkhsOWZSuLXU/OS+2DT1NPjAdjjz97cBp6e
-         p4ECp0RHVKeNYW4QvicnFTNja6zDrN9wmnQe9hqeFTUQebi78+Tj5n3lblNa6/SyYvNY
-         Miu4eLZSj3+SHxU77Z3CvDdzb18LchrVwtD1GKiN86hsnB231ugt79koRaRMVbVecSxq
-         eI1A==
-X-Gm-Message-State: AOAM532bh64f/P5aVMroxtAJ0YfwERIgHI50tNAchLX6LeMWjGO0oe5Z
-        p+WPG2AVVGvc6Wb0TL65zhTBP0TfCZjyZd1NuLHg9mX4GcWQnMpvD+4rD4CxlbagVZm+xe4Cw5P
-        LsLFugxkFxd7VDeckrlzVppMc
-X-Received: by 2002:a05:600c:3782:: with SMTP id o2mr18314881wmr.102.1635498900991;
-        Fri, 29 Oct 2021 02:15:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzBi96wOMUiniT8KYl19QAwCyp/0nDgv72yF7u0aKoMA8EIaa6Ez1bJSb8svu11JzSwqVPUsA==
-X-Received: by 2002:a05:600c:3782:: with SMTP id o2mr18314851wmr.102.1635498900780;
-        Fri, 29 Oct 2021 02:15:00 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id b8sm6816697wri.53.2021.10.29.02.14.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Oct 2021 02:15:00 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     "H. Peter Anvin" <hpa@zytor.com>, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sean Christopherson <seanjc@google.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org
-Subject: Re: [PATCH 1/2] x86/hyperv: Fix NULL deref in set_hv_tscchange_cb()
- if Hyper-V setup fails
-In-Reply-To: <20211028222148.2924457-2-seanjc@google.com>
-References: <20211028222148.2924457-1-seanjc@google.com>
- <20211028222148.2924457-2-seanjc@google.com>
-Date:   Fri, 29 Oct 2021 11:14:59 +0200
-Message-ID: <87tuh0ry3w.fsf@vitty.brq.redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ii1VwS4bdocl/9x/wQu5Dr4Dw4xnbfm4TdQdq5Q+Azo=;
+        b=VqNCpU/LEGJdN5iM1+KeGSTjv3dvS/CfssD8K/hkczwClB1iQHcvuFSgHCs0tD6gaZ
+         McYKLdo2ka51EZFanmyLwgIz50TnD3SneOGbpIFQGulZDpwkr96d072iY3j0zBe8fiZt
+         ujzsenYaxlxlIRn5AqZ4XCWyhb9hzHoyweFv4B8PX6zyeJ0AuFB+FJPzUqDvyOOCvn04
+         MKq18BP94CNwN+rkYXT8iZ/dfAIlw0tXxNkmhWZGgukgFjDlZATPONQEoj4oXAfmu5jZ
+         qP65kbhUhv79c9tk6+BrWol2BfwV/kyySUiBlshmizRQBpLx5qy+mR5PyIfeTGrYUeLe
+         n+zg==
+X-Gm-Message-State: AOAM532UV09zfaqbxQPRuR5IBI+aQY3llxUgIrn/JFxmCmUDeHMF/+Cs
+        nziN2yoXBStXicpCaC+NcOVddIesPOKVd7xbzwBV9A==
+X-Google-Smtp-Source: ABdhPJwW4nO+fDJURAek2VDCfkH2XNLlc3gfnKCDXjWDPT8d0Z9cEu/hrBUNVInc9gyOaceJ1Hk/R0u7QAnkp0Ry9yc=
+X-Received: by 2002:a25:ad02:: with SMTP id y2mr10644935ybi.141.1635499006377;
+ Fri, 29 Oct 2021 02:16:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20211029032638.84884-1-songmuchun@bytedance.com>
+ <20211029082620.jlnauplkyqmaz3ze@wittgenstein> <CAMZfGtUMLD183qHVt6=8gU4nnQD2pn1gZwZJOjCHFK73wK0=kQ@mail.gmail.com>
+ <20211029085041.fhyi2kn3bdmxt6h4@wittgenstein>
+In-Reply-To: <20211029085041.fhyi2kn3bdmxt6h4@wittgenstein>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Fri, 29 Oct 2021 17:16:10 +0800
+Message-ID: <CAMZfGtXMKSiOoswVNLCp41kMkK0o5WVyhQSeEpzUT-D-yf9V1w@mail.gmail.com>
+Subject: Re: [PATCH] seq_file: fix passing wrong private data
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     andriy.shevchenko@linux.intel.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>, revest@chromium.org,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sean Christopherson <seanjc@google.com> writes:
-
-> Check for re-enlightenment support and for a valid hv_vp_index array
-> prior to derefencing hv_vp_index when setting Hyper-V's TSC change
-> callback.  If Hyper-V setup failed in hyperv_init(), e.g. because of a
-> bad VMM config that doesn't advertise the HYPERCALL MSR, the kernel will
-> still report that it's running under Hyper-V, but will have silently
-> disabled nearly all functionality.
+On Fri, Oct 29, 2021 at 4:50 PM Christian Brauner
+<christian.brauner@ubuntu.com> wrote:
 >
->   BUG: kernel NULL pointer dereference, address: 0000000000000010
->   #PF: supervisor read access in kernel mode
->   #PF: error_code(0x0000) - not-present page
->   PGD 0 P4D 0
->   Oops: 0000 [#1] SMP
->   CPU: 4 PID: 1 Comm: swapper/0 Not tainted 5.15.0-rc2+ #75
->   Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
->   RIP: 0010:set_hv_tscchange_cb+0x15/0xa0
->   Code: <8b> 04 82 8b 15 12 17 85 01 48 c1 e0 20 48 0d ee 00 01 00 f6 c6 08
->   ...
->   Call Trace:
->    kvm_arch_init+0x17c/0x280
->    kvm_init+0x31/0x330
->    vmx_init+0xba/0x13a
->    do_one_initcall+0x41/0x1c0
->    kernel_init_freeable+0x1f2/0x23b
->    kernel_init+0x16/0x120
->    ret_from_fork+0x22/0x30
+> On Fri, Oct 29, 2021 at 04:43:40PM +0800, Muchun Song wrote:
+> > On Fri, Oct 29, 2021 at 4:26 PM Christian Brauner
+> > <christian.brauner@ubuntu.com> wrote:
+> > >
+> > > On Fri, Oct 29, 2021 at 11:26:38AM +0800, Muchun Song wrote:
+> > > > DEFINE_PROC_SHOW_ATTRIBUTE() is supposed to be used to define a series
+> > > > of functions and variables to register proc file easily. And the users
+> > > > can use proc_create_data() to pass their own private data and get it
+> > > > via seq->private in the callback. Unfortunately, the proc file system
+> > > > use PDE_DATA() to get private data instead of inode->i_private. So fix
+> > > > it. Fortunately, there only one user of it which does not pass any
+> > > > private data, so this bug does not break any in-tree codes.
+> > > >
+> > > > Fixes: 97a32539b956 ("proc: convert everything to "struct proc_ops"")
+> > > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > > > ---
+> > > >  include/linux/seq_file.h | 2 +-
+> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/include/linux/seq_file.h b/include/linux/seq_file.h
+> > > > index 103776e18555..72dbb44a4573 100644
+> > > > --- a/include/linux/seq_file.h
+> > > > +++ b/include/linux/seq_file.h
+> > > > @@ -209,7 +209,7 @@ static const struct file_operations __name ## _fops = {                   \
+> > > >  #define DEFINE_PROC_SHOW_ATTRIBUTE(__name)                           \
+> > > >  static int __name ## _open(struct inode *inode, struct file *file)   \
+> > > >  {                                                                    \
+> > > > -     return single_open(file, __name ## _show, inode->i_private);    \
+> > > > +     return single_open(file, __name ## _show, PDE_DATA(inode));     \
+> > > >  }                                                                    \
+> > > >                                                                       \
+> > > >  static const struct proc_ops __name ## _proc_ops = {                 \
+> > >
+> > > Hm, after your change DEFINE_SHOW_ATTRIBUTE() and
+> > > DEFINE_PROC_SHOW_ATTRIBUTE() macros do exactly the same things, right?:
+> >
+> > Unfortunately, they are not the same. The difference is the
+> > operation structure, namely "struct file_operations" and
+> > "struct proc_ops".
+> >
+> > DEFINE_SHOW_ATTRIBUTE() is usually used by
+> > debugfs while DEFINE_SHOW_ATTRIBUTE() is
+> > used by procfs.
 >
-> Fixes: 93286261de1b ("x86/hyperv: Reenlightenment notifications support")
-> Cc: stable@vger.kernel.org
-> Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  arch/x86/hyperv/hv_init.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
-> index 708a2712a516..6cc845c026d4 100644
-> --- a/arch/x86/hyperv/hv_init.c
-> +++ b/arch/x86/hyperv/hv_init.c
-> @@ -139,7 +139,7 @@ void set_hv_tscchange_cb(void (*cb)(void))
->  	struct hv_reenlightenment_control re_ctrl = {
->  		.vector = HYPERV_REENLIGHTENMENT_VECTOR,
->  		.enabled = 1,
-> -		.target_vp = hv_vp_index[smp_processor_id()]
-> +		.target_vp = -1,
->  	};
->  	struct hv_tsc_emulation_control emu_ctrl = {.enabled = 1};
->  
-> @@ -148,6 +148,11 @@ void set_hv_tscchange_cb(void (*cb)(void))
->  		return;
->  	}
->  
-> +	if (!hv_vp_index)
-> +		return;
-> +
-> +	re_ctrl.target_vp = hv_vp_index[smp_processor_id()];
-> +
->  	hv_reenlightenment_cb = cb;
->  
->  	/* Make sure callback is registered before we write to MSRs */
+> Ugh, right, thanks for pointing that out. I overlooked the _proc_ops
+> appendix. Not sure what's right here. There seem to have been earlier
+> callers to DEFINE_PROC_SHOW_ATTRIBUTE() that relied on PDE_DATA() but
+> there's only one caller so that change wouldn't be too bad, I guess.
 
-The patch looks good, however, it needs to be applied on top of the
-already merged:
+From my point of view, I think the macro is useful which can
+simplify the code. However there is only one user of it. I suppose
+few people know about it. For instance, the following ops can
+become the user of it.
 
-https://lore.kernel.org/linux-hyperv/20211012155005.1613352-1-vkuznets@redhat.com/
+    cifs_mount_params_proc_ops
+    nfsd_proc_ops
+    rpc_proc_ops
 
--- 
-Vitaly
-
+Thanks.
