@@ -2,151 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 969DF44001C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 18:13:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E98F9440022
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 18:15:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229957AbhJ2QP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 12:15:59 -0400
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:18680 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229645AbhJ2QP6 (ORCPT
+        id S229940AbhJ2QR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 12:17:28 -0400
+Received: from mail-yb1-f172.google.com ([209.85.219.172]:34549 "EHLO
+        mail-yb1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229645AbhJ2QR0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 12:15:58 -0400
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19T7Tt8Y012181;
-        Fri, 29 Oct 2021 11:13:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=lTtxwjvxR++684P2S/1IMv6QYTJXsMqrhLt7nJT8aUQ=;
- b=iptHpEX14/8pn5c77/BrHkJLTh9J1RXgNdA3C0l1mhNJvkM23ciBmwKZgGLkmaEgqTnR
- 68JKSNb1vGBbgQxgycp3P6V2aLBm2vLQH/VbcaxKKmNVN/G5ySlli8ZI4l3oBr4QMATg
- 3t1yofjZQEk+q9oQlHoRtEN+hNcescl6Ou6b6DjnLGj/jkd7w/i0jZYSmSbw+fJ4NFYQ
- PSo5gMDt3vuymIF1axxiY2dy3m5ZdLqcVTKNogZweFeQ32ciEYgsjLavdCpCcYvua25Y
- alD2yCyXF8Ma1w/BsJjMkI2RpkFI8HM0vQNCta04LNbPF5P9rgkKOwAyvWWxkQIV3YgE aw== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 3c0cm70hqd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 29 Oct 2021 11:13:19 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.7; Fri, 29 Oct
- 2021 17:13:17 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.7 via Frontend
- Transport; Fri, 29 Oct 2021 17:13:17 +0100
-Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com [198.61.65.32])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D6E4DB38;
-        Fri, 29 Oct 2021 16:13:16 +0000 (UTC)
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-To:     <broonie@kernel.org>
-CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <patches@opensource.cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: [PATCH] ASoC: cs42l42: Add control for audio slow-start switch
-Date:   Fri, 29 Oct 2021 17:13:05 +0100
-Message-ID: <20211029161305.12714-1-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.20.1
+        Fri, 29 Oct 2021 12:17:26 -0400
+Received: by mail-yb1-f172.google.com with SMTP id o12so25559606ybk.1;
+        Fri, 29 Oct 2021 09:14:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oKjnW8Wi5ameq9ZMSBh8BH9BlCqJ+OFy7SiHKMqkhbQ=;
+        b=3Zv/kSY/iHuzIByGrAYCn/HIJcq2a1odBHs80ClMHDkuumCRSxCfWq5Rl63Ql9ccxK
+         9DhPTLaNx4X/M+4IVruPfecbNT0UmORQI4WTJ8hvtXGg4Em67Z7pb0Kc+QgZFqXVRA3S
+         TRCI0bZ53xQKyfiLuYqhRe2VUil/Q29tCCQGL0a4PoHZjJEyEBvfltGgKzl1c9r06wqC
+         kI2ZM9JI2+JKi9wmzie53rsvUiApCU2qb21dDhVXtonyskrra//vbcENnVVRLGBTJIrl
+         48Yt5lx+bxdJ5fNC/Vp2GaZSVOK/TRMFiD7qfBpaOQoky/xxGpzOVCdtc4LQW9t0sznM
+         d4vg==
+X-Gm-Message-State: AOAM531F2DRo97uwDGfkF/kzMDZ6XRP1g/+S3OrH9Txf6E0Kk4jVV+Xt
+        38f3j7URXy6SFlu76y9HLeJICqmlDmR0BAQTb81GBCS9sVw=
+X-Google-Smtp-Source: ABdhPJwjI6ho30zLCdGoteZKoFRUeazaC/CJHWBypoQ3wkvjJG7RMribu9cR3x2tON1BJoM5kvJFSRVAbrXIK1je2v0=
+X-Received: by 2002:a25:3b49:: with SMTP id i70mr13534928yba.375.1635524097574;
+ Fri, 29 Oct 2021 09:14:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: 8DNW5L5-Bvl_mBffFrsGb-qicP5hhtpA
-X-Proofpoint-ORIG-GUID: 8DNW5L5-Bvl_mBffFrsGb-qicP5hhtpA
-X-Proofpoint-Spam-Reason: safe
+References: <20211026121651.1814251-1-mailhol.vincent@wanadoo.fr> <20211029124411.lkmngckiiwotste7@pengutronix.de>
+In-Reply-To: <20211029124411.lkmngckiiwotste7@pengutronix.de>
+From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Date:   Sat, 30 Oct 2021 01:14:46 +0900
+Message-ID: <CAMZ6Rq+RH3C3C5=qzZ_CRRF3bnW+oDB7_P_OW3UEp9Ty2GNfbQ@mail.gmail.com>
+Subject: Re: [PATCH v4] can: netlink: report the CAN controller mode supported flags
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     linux-can <linux-can@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds an ALSA control so that the slow-start audio ramp feature
-can be disabled. This is useful for high-definition audio applications.
+On Fri. 29 Oct 2021 at 21:44, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+> On 26.10.2021 21:16:51, Vincent Mailhol wrote:
+> > This patch introduces a method for the user to check both the
+> > supported and the static capabilities. The proposed method reuses the
+> > existing struct can_ctrlmode and thus do not need a new IFLA_CAN_*
+> > entry.
+> >
+> > Currently, the CAN netlink interface provides no easy ways to check
+> > the capabilities of a given controller. The only method from the
+> > command line is to try each CAN_CTRLMODE_* individually to check
+> > whether the netlink interface returns an -EOPNOTSUPP error or not
+> > (alternatively, one may find it easier to directly check the source
+> > code of the driver instead...)
+> >
+> > It appears that can_ctrlmode::mask is only used in one direction: from
+> > the userland to the kernel. So we can just reuse this field in the
+> > other direction (from the kernel to userland). But, because the
+> > semantic is different, we use a union to give this field a proper
+> > name: "supported".
+> >
+> > The union is tagged as packed to prevent any ABI from adding
+> > padding. In fact, any padding added after the union would change the
+> > offset of can_ctrlmode::flags within the structure and thus break the
+> > UAPI backward compatibility. References:
+> >
+> >   - ISO/IEC 9899-1999, section 6.7.2.1 "Structure and union
+> >     specifiers", clause 15: "There may be unnamed padding at the end
+> >     of a structure or union."
+> >
+> >   - The -mstructure-size-boundary=64 ARM option in GCC:
+> >     https://gcc.gnu.org/onlinedocs/gcc/ARM-Options.html
+> >
+> >   - A similar issue which occurred on struct can_frame:
+> >     https://lore.kernel.org/linux-can/212c8bc3-89f9-9c33-ed1b-b50ac04e7532@hartkopp.net
+> >
+> > Below table explains how the two fields can_ctrlmode::supported and
+> > can_ctrlmode::flags, when masked with any of the CAN_CTRLMODE_* bit
+> > flags, allow us to identify both the supported and the static
+> > capabilities:
+> >
+> >  supported &  flags &         Controller capabilities
+> >  CAN_CTRLMODE_*       CAN_CTRLMODE_*
+> >  -----------------------------------------------------------------------
+> >  false                false           Feature not supported (always disabled)
+> >  false                true            Static feature (always enabled)
+> >  true         false           Feature supported but disabled
+> >  true         true            Feature supported and enabled
+>
+> What about forwards and backwards compatibility?
 
-The register field is unusual in that it is a 3-bit field with only
-two valid values, 000=off and 111=on.
+Backward compatibility (new kernel, old iproute2) should be OK: the
+kernel will report the value but it will not be consumed.
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
----
- sound/soc/codecs/cs42l42.c | 32 +++++++++++++++++++++++++++++++-
- sound/soc/codecs/cs42l42.h |  3 +++
- 2 files changed, 34 insertions(+), 1 deletion(-)
+> Using the new ip (or any other user space app) on an old kernel, it
+> looks like enabled features are static features. For example the ip
+> output on a mcp251xfd with enabled CAN-FD, which is _not_ static.
+>
+> |         "linkinfo": {
+> |             "info_kind": "can",
+> |             "info_data": {
+> |                 "ctrlmode": [ "FD" ],
+> |                 "ctrlmode_static": [ "FD" ],
+> |                 "state": "ERROR-ACTIVE",
+> |                 "berr_counter": {
+> |                     "tx": 0,
+> |                     "rx": 0
+> |                 },
 
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 27a1c4c73074..0d562c274292 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -42,6 +42,7 @@ static const struct reg_default cs42l42_reg_defaults[] = {
- 	{ CS42L42_SRC_CTL,			0x10 },
- 	{ CS42L42_MCLK_CTL,			0x02 },
- 	{ CS42L42_SFTRAMP_RATE,			0xA4 },
-+	{ CS42L42_SLOW_START_ENABLE,		0x70 },
- 	{ CS42L42_I2C_DEBOUNCE,			0x88 },
- 	{ CS42L42_I2C_STRETCH,			0x03 },
- 	{ CS42L42_I2C_TIMEOUT,			0xB7 },
-@@ -177,6 +178,7 @@ static bool cs42l42_readable_register(struct device *dev, unsigned int reg)
- 	case CS42L42_MCLK_STATUS:
- 	case CS42L42_MCLK_CTL:
- 	case CS42L42_SFTRAMP_RATE:
-+	case CS42L42_SLOW_START_ENABLE:
- 	case CS42L42_I2C_DEBOUNCE:
- 	case CS42L42_I2C_STRETCH:
- 	case CS42L42_I2C_TIMEOUT:
-@@ -387,6 +389,30 @@ static const struct regmap_config cs42l42_regmap = {
- static DECLARE_TLV_DB_SCALE(adc_tlv, -9700, 100, true);
- static DECLARE_TLV_DB_SCALE(mixer_tlv, -6300, 100, true);
- 
-+static int cs42l42_slow_start_put(struct snd_kcontrol *kcontrol,
-+				  struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	u8 val;
-+
-+	/* all bits of SLOW_START_EN much change together */
-+	switch (ucontrol->value.integer.value[0]) {
-+	case 0:
-+		val = 0;
-+		break;
-+	case 1:
-+		val = CS42L42_SLOW_START_EN_MASK;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	snd_soc_component_update_bits(component, CS42L42_SLOW_START_ENABLE,
-+				      CS42L42_SLOW_START_EN_MASK, val);
-+
-+	return 0;
-+}
-+
- static const char * const cs42l42_hpf_freq_text[] = {
- 	"1.86Hz", "120Hz", "235Hz", "466Hz"
- };
-@@ -431,7 +457,11 @@ static const struct snd_kcontrol_new cs42l42_snd_controls[] = {
- 				CS42L42_DAC_HPF_EN_SHIFT, true, false),
- 	SOC_DOUBLE_R_TLV("Mixer Volume", CS42L42_MIXER_CHA_VOL,
- 			 CS42L42_MIXER_CHB_VOL, CS42L42_MIXER_CH_VOL_SHIFT,
--				0x3f, 1, mixer_tlv)
-+				0x3f, 1, mixer_tlv),
-+
-+	SOC_SINGLE_EXT("Slow Start Switch", CS42L42_SLOW_START_ENABLE,
-+			CS42L42_SLOW_START_EN_SHIFT, true, false,
-+			snd_soc_get_volsw, cs42l42_slow_start_put),
- };
- 
- static int cs42l42_hp_adc_ev(struct snd_soc_dapm_widget *w,
-diff --git a/sound/soc/codecs/cs42l42.h b/sound/soc/codecs/cs42l42.h
-index f45bcc9a3a62..c8b3267a318b 100644
---- a/sound/soc/codecs/cs42l42.h
-+++ b/sound/soc/codecs/cs42l42.h
-@@ -62,6 +62,9 @@
- #define CS42L42_INTERNAL_FS_MASK	(1 << CS42L42_INTERNAL_FS_SHIFT)
- 
- #define CS42L42_SFTRAMP_RATE		(CS42L42_PAGE_10 + 0x0A)
-+#define CS42L42_SLOW_START_ENABLE	(CS42L42_PAGE_10 + 0x0B)
-+#define CS42L42_SLOW_START_EN_MASK	GENMASK(6, 4)
-+#define CS42L42_SLOW_START_EN_SHIFT	4
- #define CS42L42_I2C_DEBOUNCE		(CS42L42_PAGE_10 + 0x0E)
- #define CS42L42_I2C_STRETCH		(CS42L42_PAGE_10 + 0x0F)
- #define CS42L42_I2C_TIMEOUT		(CS42L42_PAGE_10 + 0x10)
--- 
-2.11.0
+I missed that, nice catch!
 
+> Is it worth and add a new IFLA_CAN_CTRLMODE_EXT that doesn't pass a
+> struct, but is a NLA_NESTED type?
+
+Adding a new nested entry only for one u32 seemed overkill to
+me. This is why I tried to do the change as tiny as possible.
+
+I would like to use this IFLA_CAN_CTRLMODE_EXT as a last
+resort. I gave it a second thought and I have another idea: we
+could keep the exact same kernel code and just have the userland
+to discard the can_ctrlmode::supported if it is zero. The caveat
+would be that it will be impossible to report the static features
+of a controller which do have ctrlmode_static features but no
+ctrlmode_supported features. Other use cases would be
+supported. As a matter of fact, the two drivers which rely on the
+static features (m_can and rcar_canfd) do also have supported
+modes. So discarding can_ctrlmode::supported when it is zero would
+introduce no issue for all existing drivers. The only remaining
+risk is for the yet to be introduced drivers.
+
+So if we are ready to accept the limitation that we would not be
+able to report the static features of such hypothetical drivers,
+then we can keep the current patch (maybe add a comment) and
+introduce an if switch in iproute2 to discard zero value.
+
+The probability for such a driver to ever exist is already low. I
+think that this limitation is acceptable.
+
+What do you think?
