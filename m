@@ -2,95 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD7E0440413
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 22:29:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A42C044041C
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 22:31:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230221AbhJ2Ub7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 16:31:59 -0400
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:8962 "EHLO
-        mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229441AbhJ2Ub4 (ORCPT
+        id S231270AbhJ2Udh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 16:33:37 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:39762 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229441AbhJ2Ude (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 16:31:56 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AyjgT4qNwVuGiTMBcTkSjsMiBIKoaSvp037B8?=
- =?us-ascii?q?7TEVdfUzSL3sqynOpoVo6faaskd2ZJgfo6H1BEDtexzhHXAc2/huAV+NNDOWyF?=
- =?us-ascii?q?dABrsSkbcL+lXbalzDHgQ079YST0EGMqyOMbEYt7ef3ODHKadG/DDdytHLuQ62?=
- =?us-ascii?q?9R4EJmsGB52M9z0JczpzPXcGMzWubqBJb6Z0iPAom9JgEU5nFPiTNz0pd8qrnb?=
- =?us-ascii?q?z2vaOjTBIMBxYhgTPvsRqYrJP3GBiR2VMmWzlMybkvmFK18DAQac2YwoyG4w6Z?=
- =?us-ascii?q?2mPZ75xQ3NP508BEG8CA4/JlUgnRtg=3D=3D?=
-X-IronPort-AV: E=Sophos;i="5.84,326,1620684000"; 
-   d="scan'208";a="397787168"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 29 Oct 2021 22:29:25 +0200
-Date:   Fri, 29 Oct 2021 22:29:25 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-cc:     Doug Smythies <dsmythies@telus.net>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Len Brown <lenb@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: problem in changing from active to passive mode
-In-Reply-To: <CAJZ5v0ijM9V2UmgqM4FzckXA8SQy6pHpBTFm8LLv1Lp_L8JiLw@mail.gmail.com>
-Message-ID: <alpine.DEB.2.22.394.2110292227540.3011@hadrien>
-References: <alpine.DEB.2.22.394.2110241452460.2997@hadrien> <CAAYoRsXeQravNXKsWAZvacMmE_iBzaQ+mQxNbB5jcD_vkny+Sg@mail.gmail.com> <alpine.DEB.2.22.394.2110261658440.3825@hadrien> <CAAYoRsWXew+9Pch_9ux+UK0LFwy+211d2LmNLGKF_UTr3eS2Fw@mail.gmail.com>
- <alpine.DEB.2.22.394.2110281908150.9518@hadrien> <CAJZ5v0ihVdrZ1ogEc34+QgZUJW5-=RzP34-U1_91VTcLhbc4Nw@mail.gmail.com> <CAJZ5v0ij105B05xPGgfauwFv1KhXRnwh5p28R1y11qKWjxUOhg@mail.gmail.com> <CAJZ5v0gAax-uz+shKv4MNBiSBPKGroQGNKdYyUK4v6sRS15o_w@mail.gmail.com>
- <alpine.DEB.2.22.394.2110282112060.9518@hadrien> <CAJZ5v0jmQgg_DwqSdFsoMd5qV_ZH=cHUJtb372mqv=GSWioRgw@mail.gmail.com> <alpine.DEB.2.22.394.2110282124201.9518@hadrien> <CAJZ5v0j9fJi+Fa1404uH3V2XJUrVB5crEjcZ9tsnBtQWgCCu4w@mail.gmail.com>
- <alpine.DEB.2.22.394.2110282217390.9518@hadrien> <CAJZ5v0ijM9V2UmgqM4FzckXA8SQy6pHpBTFm8LLv1Lp_L8JiLw@mail.gmail.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Fri, 29 Oct 2021 16:33:34 -0400
+Received: from thelio.attlocal.net (107-203-255-60.lightspeed.sntcca.sbcglobal.net [107.203.255.60])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 96BD920A65A8;
+        Fri, 29 Oct 2021 13:31:04 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 96BD920A65A8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1635539464;
+        bh=GE3XUpxlHRrKfkcdglq6jQazzk3LRnWqjz2Vjqp476I=;
+        h=From:To:Cc:Subject:Date:From;
+        b=lPOUq+hvgT5+tzwa8/r4rLLtHHSf5DIPD/adXBFVwNIQL2ktzuLzV7RSVBdbh7jj8
+         qtOm1CAjWU5oDMJDDIXpIN3HoOiOh265YzrHMXL11kOWN9QuMbdXzI3dMtgPgSEry4
+         Y4CuWcN4Din5MojDrPvlhXvG4JN6GLPhIa9UXeUI=
+From:   Katherine Perez <kaperez@linux.microsoft.com>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, balbi@kernel.org
+Subject: [PATCH 0/2] arm64: dts: sm8350: add support for Microsoft Surface Duo 2
+Date:   Fri, 29 Oct 2021 13:30:14 -0700
+Message-Id: <20211029203016.2093610-1-kaperez@linux.microsoft.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add initial support for the Microsoft Surface Duo 2 based on the
+sm8350-mtp DT with the following functionality:
 
+ * UFS internal storage
+ * USB peripheral mode
+ * Remoteproc
 
-On Fri, 29 Oct 2021, Rafael J. Wysocki wrote:
+Katherine Perez (2):
+  arm64: dts: add minimal DTS for Microsoft Surface Duo2
+  arm64: dts: sm8350: fix tlmm base address
 
-> On Thu, Oct 28, 2021 at 10:18 PM Julia Lawall <julia.lawall@inria.fr> wrote:
-> >
-> >
-> >
-> > On Thu, 28 Oct 2021, Rafael J. Wysocki wrote:
-> >
-> > > On Thu, Oct 28, 2021 at 9:25 PM Julia Lawall <julia.lawall@inria.fr> wrote:
->
-> [cut]
->
-> > > Attached is a patch to do that, but please note that the 5.9 will need
-> > > to be patched too to address this issue.
-> >
-> > I'm not completely clear on what the new patch is doing and how I should
-> > test it.  If I stay in 5.15, the original patch worked for clearing des
-> > when going from passive to active.
->
-> Sorry for the confusion.
->
-> If applied to 5.15-rc alone, the last patch would cause des to be
-> cleared when switching from passive to active and if applied to both
-> 5.15-rc and 5.9, it would fix the kexec issue as well.
->
-> Never mind, though.
->
-> The patch attached to this message should cause des to be cleared when
-> switching from passive to active (because it is based on the previous
-> patch doing that) and it should prevent nonzero des from being leaked
-> via the HWP_REQUEST MSR to the new kernel started via kexec.  With
-> this patch applied to 5.15-rc des should be 0 when switching from
-> passive to active and it should also be 0 after starting another
-> kernel via kexec while intel_pstate is running in the passive mode.
->
-> Can you please verify that it works as expected?
+ arch/arm64/boot/dts/qcom/Makefile             |   1 +
+ .../qcom/sm8350-microsoft-surface-duo2.dts    | 363 ++++++++++++++++++
+ arch/arm64/boot/dts/qcom/sm8350.dtsi          |   4 +-
+ 3 files changed, 366 insertions(+), 2 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/qcom/sm8350-microsoft-surface-duo2.dts
 
-I booted 5.15 rc6 in active then changed to passive making the des field
-non zero, and then changed back to active, making it 0 again.  I them
-changed again to passive and kexeced 5.9.  The des field was again 0.
+--
+2.31.1
 
-So it looks fine.
-
-thanks,
-julia
