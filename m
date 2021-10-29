@@ -2,78 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E429E44006D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 18:35:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93B83440070
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 18:37:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229957AbhJ2Qho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 12:37:44 -0400
-Received: from mail-yb1-f171.google.com ([209.85.219.171]:34350 "EHLO
-        mail-yb1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229623AbhJ2Qhl (ORCPT
+        id S229940AbhJ2Qja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 12:39:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56853 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229676AbhJ2Qj3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 12:37:41 -0400
-Received: by mail-yb1-f171.google.com with SMTP id o12so25704277ybk.1;
-        Fri, 29 Oct 2021 09:35:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=t7EbXoQnrBFVmC/CEdkKdyC1qllJNo666H7Pkno2xpg=;
-        b=OAxTsAdLjzEjsnLboXyYhiYOOUCkBCnbHFQhDjHXF/6zhQz016Kw/xa+fCDu2QQ79S
-         Bnj2NXpEcccI0fsR0VOGzgPiFK/TqmO2U2g5k5GQIui7VG/do636PGzVwqo//T3KOPkq
-         4XXYaSbw+rAOeQFo+d0WtJf25VKODKO+R9h6+FhXlFQwH38AFTDQLfwe0Rphvsf+OElB
-         aKVa0ynklDatUjwHJY4MPKUu1yHoEnB1yBRuYbo4osW549lE1Emfg5iIqvB9D7sYxNKB
-         Thm6Zyz8yqj9BNDe5g5fILP0Zaops/hzRMhye/tRvXl8qzZl9otU4bhsePkNkd19N9Ir
-         FGJQ==
-X-Gm-Message-State: AOAM533jetbuMTS1bpbulRlSOxnZeGuhjJUrW+9CYF8VLxL5giuq4X+E
-        +kn5wjnHPLMrhwo5MDDKSJD7twNLEtbmlDD5sb5XXzohqM8=
-X-Google-Smtp-Source: ABdhPJxDGUr6UmNyi4rJyvuoUs2oesl4vhS8oM6dXBrefwQEywjHKoDXAtiOHVuSjt++3PF0bniK92jrKlFP87G2pco=
-X-Received: by 2002:a25:820b:: with SMTP id q11mr12743500ybk.536.1635525312325;
- Fri, 29 Oct 2021 09:35:12 -0700 (PDT)
+        Fri, 29 Oct 2021 12:39:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635525420;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=f0EKBqxFMa5cFoenII9BpUm91FFdFL/tse0ALEuoccU=;
+        b=NZOj7X3IttocF5CkchfM0B2bhnja3GzZxG2mg98ekuVIgwwNAe9XfY9z5WcZXBPMn3uMxe
+        i4JC3cDnrFjowPajFwAqCeE/rkPE3LrKXpqu9Gweg9EDU0iXL/uhljSq8QoLrOCXnwtbhu
+        jtATZ+8yOIDgdeJvevV84r1yW562FRM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-366-U94BKAc4NhK_iiKio3fBBw-1; Fri, 29 Oct 2021 12:36:59 -0400
+X-MC-Unique: U94BKAc4NhK_iiKio3fBBw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 393BB1006AA2;
+        Fri, 29 Oct 2021 16:36:57 +0000 (UTC)
+Received: from T590 (ovpn-8-18.pek2.redhat.com [10.72.8.18])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 249835FC23;
+        Fri, 29 Oct 2021 16:36:34 +0000 (UTC)
+Date:   Sat, 30 Oct 2021 00:36:28 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Joe Lawrence <joe.lawrence@redhat.com>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>, live-patching@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Luis Chamberlain <mcgrof@kernel.org>, ming.lei@redhat.com
+Subject: Re: [PATCH 0/3] livepatch: cleanup kpl_patch kobject release
+Message-ID: <YXwjDJx+ZZNmy7CN@T590>
+References: <20211028125734.3134176-1-ming.lei@redhat.com>
+ <YXv8eoPKXk5gpsa7@redhat.com>
 MIME-Version: 1.0
-References: <20211026180909.1953355-1-mailhol.vincent@wanadoo.fr> <20211029113405.hbqcu6chf5e3olrm@pengutronix.de>
-In-Reply-To: <20211029113405.hbqcu6chf5e3olrm@pengutronix.de>
-From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Date:   Sat, 30 Oct 2021 01:35:01 +0900
-Message-ID: <CAMZ6RqJ1CtphrUxRDWOKEsJF_uzoPbYD2mPiD56VvJ9qB7oxow@mail.gmail.com>
-Subject: Re: [RFC PATCH v1] can: m_can: m_can_read_fifo: fix memory leak in
- error branch
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     linux-can <linux-can@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Matt Kline <matt@bitbashing.io>,
-        Sean Nyekjaer <sean@geanix.com>,
-        Chandrasekar Ramakrishnan <rcsekar@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YXv8eoPKXk5gpsa7@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri. 29 Oct 2021 at 20:34, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
-> On 27.10.2021 03:09:09, Vincent Mailhol wrote:
-> > In m_can_read_fifo(), if the second call to m_can_fifo_read() fails,
-> > the function jump to the out_fail label and returns without calling
-> > m_can_receive_skb(). This means that the skb previously allocated by
-> > alloc_can_skb() is not freed. In other terms, this is a memory leak.
+On Fri, Oct 29, 2021 at 09:51:54AM -0400, Joe Lawrence wrote:
+> On Thu, Oct 28, 2021 at 08:57:31PM +0800, Ming Lei wrote:
+> > Hello,
 > >
-> > This patch adds a new goto statement: out_receive_skb and do some
-> > small code refactoring to fix the issue.
->
-> This means we pass a skb to the user space, which contains wrong data.
-> Probably 0x0, but if the CAN frame doesn't contain 0x0, it's wrong. That
-> doesn't look like a good idea. If the CAN frame broke due to a CRC issue
-> on the wire it is not received. IMHO it's best to discard the skb and
-> return the error.
+> > The 1st patch moves module_put() to release handler of klp_patch
+> > kobject.
+> >
+> > The 2nd patch changes to free klp_patch and other kobjects without
+> > klp_mutex.
+> >
+> > The 3rd patch switches to synchronous kobject release for klp_patch.
+> >
+> 
+> Hi Ming,
+> 
+> I gave the patchset a spin on top of linus tree @ 1fc596a56b33 and ended
+> up with a stuck task:
+> 
+> Test
+> ----
+> Enable the livepatch selftests:
+>   $ grep CONFIG_TEST_LIVEPATCH .config
+>   CONFIG_TEST_LIVEPATCH=m
+> 
+> Run a continuous kernel build in the background:
+>   $ while (true); do make clean && make -j$(nproc); done
+> 
+> While continuously executing the selftests:
+>   $ while (true); do make -C tools/testing/selftests/livepatch/ run_tests; done
+> 
+> Results
+> -------
 
-Arg... Guess I made the right choice to tag the patch as RFC...
+Hello Joe,
 
-Just one question, what is the correct function to discard the
-skb? The driver uses the napi polling system (which I am not
-entirely familiar with). Does it mean that the rx is not done in
-IRQ context and that we can simply use kfree_skb() instead of
-dev_kfree_skb_irq()?
+Thanks for the test!
+
+Can you replace the 3rd patch with the following one then running the test again?
+
+From 599e96f79aebc388ef3854134312c6039a7884bf Mon Sep 17 00:00:00 2001
+From: Ming Lei <ming.lei@redhat.com>
+Date: Thu, 28 Oct 2021 20:11:23 +0800
+Subject: [PATCH 3/3] livepatch: free klp_patch object synchronously
+
+klp_mutex isn't acquired before calling kobject_put(klp_patch), so it is
+fine to free klp_patch object synchronously.
+
+One issue is that enabled store() method, in which the klp_patch kobject
+itself is deleted & released. However, sysfs has provided APIs for dealing
+with this corner case, so use sysfs_break_active_protection() and
+sysfs_unbreak_active_protection() for releasing klp_patch kobject from
+enabled_store().
+
+Signed-off-by: Ming Lei <ming.lei@redhat.com>
+---
+ include/linux/livepatch.h     |  1 -
+ kernel/livepatch/core.c       | 32 +++++++++++++-------------------
+ kernel/livepatch/core.h       |  2 +-
+ kernel/livepatch/transition.c |  2 +-
+ 4 files changed, 15 insertions(+), 22 deletions(-)
+
+diff --git a/include/linux/livepatch.h b/include/linux/livepatch.h
+index 9712818997c5..4dcebf52fac5 100644
+--- a/include/linux/livepatch.h
++++ b/include/linux/livepatch.h
+@@ -169,7 +169,6 @@ struct klp_patch {
+ 	struct list_head obj_list;
+ 	bool enabled;
+ 	bool forced;
+-	struct work_struct free_work;
+ };
+ 
+ #define klp_for_each_object_static(patch, obj) \
+diff --git a/kernel/livepatch/core.c b/kernel/livepatch/core.c
+index 9ede093d699a..6cfc54f6bdcc 100644
+--- a/kernel/livepatch/core.c
++++ b/kernel/livepatch/core.c
+@@ -337,6 +337,7 @@ static ssize_t enabled_store(struct kobject *kobj, struct kobj_attribute *attr,
+ 	int ret;
+ 	bool enabled;
+ 	LIST_HEAD(to_free);
++	struct kernfs_node *kn = NULL;
+ 
+ 	ret = kstrtobool(buf, &enabled);
+ 	if (ret)
+@@ -369,7 +370,14 @@ static ssize_t enabled_store(struct kobject *kobj, struct kobj_attribute *attr,
+ out:
+ 	mutex_unlock(&klp_mutex);
+ 
+-	klp_free_patches_async(&to_free);
++	if (list_empty(&to_free)) {
++		kn = sysfs_break_active_protection(kobj, &attr->attr);
++		WARN_ON_ONCE(!kn);
++		sysfs_remove_file(kobj, &attr->attr);
++		klp_free_patches(&to_free);
++		if (kn)
++			sysfs_unbreak_active_protection(kn);
++	}
+ 
+ 	if (ret)
+ 		return ret;
+@@ -684,32 +692,19 @@ static void klp_free_patch_finish(struct klp_patch *patch)
+ 	kobject_put(&patch->kobj);
+ }
+ 
+-/*
+- * The livepatch might be freed from sysfs interface created by the patch.
+- * This work allows to wait until the interface is destroyed in a separate
+- * context.
+- */
+-static void klp_free_patch_work_fn(struct work_struct *work)
+-{
+-	struct klp_patch *patch =
+-		container_of(work, struct klp_patch, free_work);
+-
+-	klp_free_patch_finish(patch);
+-}
+-
+-static void klp_free_patch_async(struct klp_patch *patch)
++static void klp_free_patch(struct klp_patch *patch)
+ {
+ 	klp_free_patch_start(patch);
+-	schedule_work(&patch->free_work);
++	klp_free_patch_finish(patch);
+ }
+ 
+-void klp_free_patches_async(struct list_head *to_free)
++void klp_free_patches(struct list_head *to_free)
+ {
+ 	struct klp_patch *patch, *tmp_patch;
+ 
+ 	list_for_each_entry_safe(patch, tmp_patch, to_free, list) {
+ 		list_del_init(&patch->list);
+-		klp_free_patch_async(patch);
++		klp_free_patch(patch);
+ 	}
+ }
+ 
+@@ -873,7 +868,6 @@ static int klp_init_patch_early(struct klp_patch *patch)
+ 	kobject_init(&patch->kobj, &klp_ktype_patch);
+ 	patch->enabled = false;
+ 	patch->forced = false;
+-	INIT_WORK(&patch->free_work, klp_free_patch_work_fn);
+ 
+ 	klp_for_each_object_static(patch, obj) {
+ 		if (!obj->funcs)
+diff --git a/kernel/livepatch/core.h b/kernel/livepatch/core.h
+index 8ff97745ba40..ea593f370049 100644
+--- a/kernel/livepatch/core.h
++++ b/kernel/livepatch/core.h
+@@ -13,7 +13,7 @@ extern struct list_head klp_patches;
+ #define klp_for_each_patch(patch)	\
+ 	list_for_each_entry(patch, &klp_patches, list)
+ 
+-void klp_free_patches_async(struct list_head *to_free);
++void klp_free_patches(struct list_head *to_free);
+ void klp_unpatch_replaced_patches(struct klp_patch *new_patch);
+ void klp_discard_nops(struct klp_patch *new_patch);
+ 
+diff --git a/kernel/livepatch/transition.c b/kernel/livepatch/transition.c
+index a9ebc9c5db02..3eff5fc0deee 100644
+--- a/kernel/livepatch/transition.c
++++ b/kernel/livepatch/transition.c
+@@ -41,7 +41,7 @@ static void klp_transition_work_fn(struct work_struct *work)
+ 
+ 	mutex_unlock(&klp_mutex);
+ 
+-	klp_free_patches_async(&to_free);
++	klp_free_patches(&to_free);
+ }
+ static DECLARE_DELAYED_WORK(klp_transition_work, klp_transition_work_fn);
+ 
+-- 
+2.31.1
 
 
-Yours sincerely,
-Vincent Mailhol
+Thanks,
+Ming
+
