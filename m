@@ -2,168 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCF5A43FFD4
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 17:50:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5457E43FFD3
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 17:50:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229893AbhJ2Pwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 11:52:40 -0400
-Received: from foss.arm.com ([217.140.110.172]:39518 "EHLO foss.arm.com"
+        id S229760AbhJ2Pwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 11:52:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51666 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229527AbhJ2Pwi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 11:52:38 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7DD381FB;
-        Fri, 29 Oct 2021 08:50:09 -0700 (PDT)
-Received: from [10.1.196.31] (eglon.cambridge.arm.com [10.1.196.31])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AD31B3F73D;
-        Fri, 29 Oct 2021 08:50:07 -0700 (PDT)
-Subject: Re: [PATCH v2 14/23] x86/resctrl: Calculate bandwidth from the
- previous __mon_event_count() chunks
-To:     Reinette Chatre <reinette.chatre@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        H Peter Anvin <hpa@zytor.com>,
-        Babu Moger <Babu.Moger@amd.com>,
-        shameerali.kolothum.thodi@huawei.com,
-        Jamie Iles <jamie@nuviainc.com>,
-        D Scott Phillips OS <scott@os.amperecomputing.com>,
-        lcherian@marvell.com, bobo.shaobowang@huawei.com,
-        tan.shaopeng@fujitsu.com
-References: <20211001160302.31189-1-james.morse@arm.com>
- <20211001160302.31189-15-james.morse@arm.com>
- <091863be-f15c-18cf-9f1e-1f447f216098@intel.com>
- <f59842eb-887d-4134-c913-75376bc35fd4@arm.com>
- <ecc4420f-5a28-cf1f-2537-b651a31e6db3@intel.com>
-From:   James Morse <james.morse@arm.com>
-Message-ID: <76b70d56-b4b2-6fec-693a-a2105f446ec6@arm.com>
-Date:   Fri, 29 Oct 2021 16:50:06 +0100
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S229527AbhJ2Pwf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 11:52:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id DEA4D61165;
+        Fri, 29 Oct 2021 15:50:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635522606;
+        bh=C24ZEADQSvzXhTDyTXoMSH01592ojU9/SMUi01rYgTU=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=BW54T610amKwIMu8MEs6rlNqyln+uFDUyU/sp0dgli6dIWl7RO2gyUXsSvBy8mnq4
+         oRk/Wrrp4Duqk1y5sOd02V1rcNF6pw5HuNGdI/EhZplrbI5hbsXlRdrfET7Dz+jwnW
+         DqZFYBLkE7XKf9PPNwhYr8mbuMvyXEc6BSOJvHoraioibnmNMdXyMX8oiQ5qF/kPYm
+         dDCATtwJh5JszuzA1AM+8Gp8jEt8/BXH3kfbMnvzWTd57hMfPrL3gDdyJzFRG7wPRa
+         JFG77pnxzYxrga6zX7Qg83aHc2qjoIk7EnlgbRatTSViXg5ZORT3CW7nlhoTPO8IYU
+         bkmHNhg69AKjg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D1D8760987;
+        Fri, 29 Oct 2021 15:50:06 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <ecc4420f-5a28-cf1f-2537-b651a31e6db3@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] selftests/bpf: fix fclose/pclose mismatch
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163552260685.20698.10433659303294861994.git-patchwork-notify@kernel.org>
+Date:   Fri, 29 Oct 2021 15:50:06 +0000
+References: <20211026143409.42666-1-andrea.righi@canonical.com>
+In-Reply-To: <20211026143409.42666-1-andrea.righi@canonical.com>
+To:     Andrea Righi <andrea.righi@canonical.com>
+Cc:     shuah@kernel.org, linux-kselftest@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Reinette,
+Hello:
 
-On 27/10/2021 21:41, Reinette Chatre wrote:
-> On 10/27/2021 9:50 AM, James Morse wrote:
->> On 15/10/2021 23:28, Reinette Chatre wrote:
->>> On 10/1/2021 9:02 AM, James Morse wrote:
->>>> mbm_bw_count() is only called by the mbm_handle_overflow() worker once a
->>>> second. It reads the hardware register, calculates the bandwidth and
->>>> updates m->prev_bw_msr which is used to hold the previous hardware register
->>>> value.
->>>>
->>>> Operating directly on hardware register values makes it difficult to make
->>>> this code architecture independent, so that it can be moved to /fs/,
->>>> making the mba_sc feature something resctrl supports with no additional
->>>> support from the architecture.
->>>> Prior to calling mbm_bw_count(), mbm_update() reads from the same hardware
->>>> register using __mon_event_count().
->>>
->>> Looking back I think 06c5fe9b12dd ("x86/resctrl: Fix incorrect local bandwidth when mba_sc
->>> is enabled") may explain how the code ended up the way it is.
->>>
->>>> Change mbm_bw_count() to use the current chunks value from
->>>> __mon_event_count() to calculate bandwidth. This means it no longer
->>>> operates on hardware register values.
->>>
->>> ok ... so could the patch just do this as it is stated here? The way it is implemented is
->>> very complicated and hard (for me) to verify the correctness (more below).
->>
->>>> diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c
->>>> b/arch/x86/kernel/cpu/resctrl/monitor.c
->>>> index 6c8226987dd6..a1232462db14 100644
->>>> --- a/arch/x86/kernel/cpu/resctrl/monitor.c
->>>> +++ b/arch/x86/kernel/cpu/resctrl/monitor.c
->>
->>>>    static void mbm_bw_count(u32 rmid, struct rmid_read *rr)
->>>>    {
->>>>        struct rdt_hw_resource *hw_res = resctrl_to_arch_res(rr->r);
->>>>        struct mbm_state *m = &rr->d->mbm_local[rmid];
->>>> -    u64 tval, cur_bw, chunks;
->>>> +    u64 cur_bw, chunks, cur_chunks;
->>>>    -    tval = __rmid_read(rmid, rr->evtid);
->>>> -    if (tval & (RMID_VAL_ERROR | RMID_VAL_UNAVAIL))
->>>> -        return;
->>>> +    cur_chunks = rr->val;
->>>> +    chunks = cur_chunks - m->prev_bw_chunks;
->>>> +    m->prev_bw_chunks = cur_chunks;
->>>>    -    chunks = mbm_overflow_count(m->prev_bw_msr, tval, hw_res->mbm_width);
->>>> -    cur_bw = (get_corrected_mbm_count(rmid, chunks) * hw_res->mon_scale) >> 20;
->>>> +    cur_bw = (chunks * hw_res->mon_scale) >> 20;
->>
->>> I find this quite confusing. What if a new m->prev_chunks is introduced instead and
->>> initialized in __mon_event_count() to the value of chunks, and then here in mbm_bw_count
->>> it could just retrieve it (chunks = m->prev_chunks).
->>
->> (I agree the diff is noisy, it may be easier as a new function as this is a replacement
->> not a transform of the existing function)
->>
->> __mon_event_count() can also be triggered by user-space reading the file, so any of its
->> 'prev' values should be ignored, as they aren't updated on the 1-second timer needed to
->> get this in MB/s.
+This patch was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-> The resource group's mutex is taken before __mon_event_count() is called via user-space or
-> via the overflow handler so I think that mbm_bw_count() can assume that the prev values
-> are from the __mon_event_count() called just before it.
+On Tue, 26 Oct 2021 16:34:09 +0200 you wrote:
+> Make sure to use pclose() to properly close the pipe opened by popen().
+> 
+> Fixes: 81f77fd0deeb ("bpf: add selftest for stackmap with BPF_F_STACK_BUILD_ID")
+> Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
+> ---
+>  tools/testing/selftests/bpf/test_progs.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
-That is true. But changing this to work with the overflow+corrected value directly means
-it doesn't need changing again as each of those steps are moved into the architecture
-specific function. Changing this would make the later patches noisier, and we would have
-the same discussion on a later patch.
+Here is the summary with links:
+  - selftests/bpf: fix fclose/pclose mismatch
+    https://git.kernel.org/bpf/bpf-next/c/f48ad69097fe
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
->> __mon_event_count()'s chunks values hasn't been through get_corrected_mbm_count(), so it
->> would need to be rr->val, which is what this code starts with for the "number of chunks
->> ever read by this counter".
-
-> The value could be corrected in mbm_bw_count(), no?
-
-It could, but the aim of the series is to move all the architecture specific behaviour
-behind an arch helper.
-
-MPAMs counters read in bytes, and when they don't, its up to the MPAM architecture
-specific code to fix the hardware values before resctrl gets them.
-
-There is no reason for the mba_sc code to be architecture specific, it operates on the
-counters and controls.
-
-
->> The variable 'chunks' has been used too much here, so its lost its meaning. How about:
->> |    current_chunk_count = rr->val;
->> |    delta_counter = current_chunk_count - m->prev_chunk_count;
->> |    cur_bw = (delta_counter * hw_res->mon_scale) >> 20;
->> |
->> |    m->prev_chunk_count = current_chunk_count;
->>
->>
->> The 'delta_counter' step was previously hidden in mbm_overflow_count(), which also had to
->> do with overflow of the hardware counter. Because a previously sanitised value is being
->> used, the hardware counters resolution doesn't need to be considered.
->> (which helps make mba_sc architecture independent)
-
-> This is the part that is not obvious to me: is the difference between the two individually
-> sanitized measurements the same as sanitizing the difference between the two measurements?
-
-I agree get_corrected_mbm_count()'s rmid check and shift hide what it is doing, but it
-boils down to a multiply. The existing code is (a - b)*cf, which is the same as this a*cf
-- b*cf.
-
-I'm not worried about this going wrong after 18-and-a-bit Exabytes of data is transferred,
-at current memory speeds that would take decades. But: none of the 'cf' values are greater
-than two, and the hardware register has two bits taken for error codes, so there is no a
-or b that hardware can represent, with a cf less than two, that overflows a 64bit unsigned
-long.
-
-
-Thanks,
-
-James
