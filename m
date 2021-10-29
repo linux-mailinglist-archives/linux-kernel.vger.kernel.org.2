@@ -2,106 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8988543F8D9
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 10:31:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4554843F8DB
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 10:31:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232449AbhJ2Ids convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 29 Oct 2021 04:33:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43862 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232433AbhJ2Idn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 04:33:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DA6CF6115B;
-        Fri, 29 Oct 2021 08:31:12 +0000 (UTC)
-Date:   Fri, 29 Oct 2021 10:31:10 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Li Zhijian <lizhijian@cn.fujitsu.com>
-Cc:     linux-kselftest@vger.kernel.org, shuah@kernel.org,
-        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        Christian Brauner <christian@brauner.io>,
-        Philip Li <philip.li@intel.com>,
-        yang xu <xuyang2018.jy@cn.fujitsu.com>
-Subject: Re: [PATCH 1/2] kselftest: signal all child processes
-Message-ID: <20211029083110.syhqfc3ivaj53ygl@wittgenstein>
-References: <20211029024528.8086-1-lizhijian@cn.fujitsu.com>
+        id S232466AbhJ2IeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 04:34:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232455AbhJ2IeK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 04:34:10 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A37FCC061570
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 01:31:42 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: gtucker)
+        with ESMTPSA id CE2C21F45739
+Subject: Re: [PATCH 1/2] arm64: defconfig: Add SC7180 GPUCC and DISPCC as
+ module
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     catalin.marinas@arm.com, will@kernel.org, shawnguo@kernel.org,
+        bjorn.andersson@linaro.org, krzk@kernel.org,
+        geert+renesas@glider.be, vkoul@kernel.org,
+        jagan@amarulasolutions.com, agx@sigxcpu.org,
+        biju.das.jz@bp.renesas.com, aford173@gmail.com, nm@ti.com,
+        andrey.zhizhikin@leica-geosystems.com, saravanak@google.com,
+        linux-kernel@vger.kernel.org, konrad.dybcio@somainline.org,
+        marijn.suijten@somainline.org, martin.botka@somainline.org,
+        Collabora Kernel ML <kernel@collabora.com>,
+        "kernelci@groups.io" <kernelci@groups.io>
+References: <20211013105613.250450-1-angelogioacchino.delregno@collabora.com>
+ <20211013105613.250450-2-angelogioacchino.delregno@collabora.com>
+From:   Guillaume Tucker <guillaume.tucker@collabora.com>
+Message-ID: <4ccafe75-ac55-c496-5d9c-c7f5d3976159@collabora.com>
+Date:   Fri, 29 Oct 2021 09:31:39 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
+In-Reply-To: <20211013105613.250450-2-angelogioacchino.delregno@collabora.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20211029024528.8086-1-lizhijian@cn.fujitsu.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 10:45:27AM +0800, Li Zhijian wrote:
-> We have some many cases that will create child process as well, such as
-> pidfd_wait. Previously, we will signal/kill the parent process when it
-> is time out, but this signal will not be sent to its child process. In
-> such case, if child process doesn't terminate itself, ksefltest framework
-> will hang forever.
+On 13/10/2021 11:56, AngeloGioacchino Del Regno wrote:
+> SC_DISPCC_7180 and SC_GPUCC_7180 are not boot-critical clock
+> controller drivers, but these are required in order to get
+> DPU1/display support (so, to allow probing DRM_MSM) and Adreno
+> GPU support, which are modules as well.
 > 
-> below ps tree show the situation when ksefltest is blocking:
-> root      1172  0.0  0.0   5996  2500 ?        S    07:03   0:00  \_ /bin/bash /lkp/lkp/src/tests/kernel-selftests
-> root      1216  0.0  0.0   4392  1976 ?        S    07:03   0:00      \_ make run_tests -C pidfd
-> root      1218  0.0  0.0   2396  1652 ?        S    07:03   0:00          \_ /bin/sh -c BASE_DIR="/usr/src/perf_selftests-x86_64-rhel-8.3-kselftests-519d81956ee277b4419c723adfb154603c2565ba/tools/testing/selftests"; . /usr/src/perf_selftests-x86_64-rhel-8.3-kselftests-519d81956ee277b4419c723adfb154603c2565ba/tools/testing/selftests/kselftest/runner.sh; if [ "X" != "X" ]; then per_test_logging=1; fi; run_many  /usr/src/perf_selftests-x86_64-rhel-8.3-kselftests-519d81956ee277b4419c723adfb154603c2565ba/tools/testing/selftests/pidfd/pidfd_test /usr/src/perf_selftests-x86_64-rhel-8.3-kselftests-519d81956ee277b4419c723adfb154603c2565ba/tools/testing/selftests/pidfd/pidfd_fdinfo_test /usr/src/perf_selftests-x86_64-rhel-8.3-kselftests-519d81956ee277b4419c723adfb154603c2565ba/tools/testing/selftests/pidfd/pidfd_open_test /usr/src/perf_selftests-x86_64-rhel-8.3-kselftests-519d81956ee277b4419c723adfb154603c2565ba/tools/testing/selftests/pidfd/pidfd_poll_test /usr/src/perf_selftests-x86_64-rhel-8.
-> root     12491  0.0  0.0   2396   132 ?        S    07:03   0:00              \_ /bin/sh -c BASE_DIR="/usr/src/perf_selftests-x86_64-rhel-8.3-kselftests-519d81956ee277b4419c723adfb154603c2565ba/tools/testing/selftests"; . /usr/src/perf_selftests-x86_64-rhel-8.3-kselftests-519d81956ee277b4419c723adfb154603c2565ba/tools/testing/selftests/kselftest/runner.sh; if [ "X" != "X" ]; then per_test_logging=1; fi; run_many  /usr/src/perf_selftests-x86_64-rhel-8.3-kselftests-519d81956ee277b4419c723adfb154603c2565ba/tools/testing/selftests/pidfd/pidfd_test /usr/src/perf_selftests-x86_64-rhel-8.3-kselftests-519d81956ee277b4419c723adfb154603c2565ba/tools/testing/selftests/pidfd/pidfd_fdinfo_test /usr/src/perf_selftests-x86_64-rhel-8.3-kselftests-519d81956ee277b4419c723adfb154603c2565ba/tools/testing/selftests/pidfd/pidfd_open_test /usr/src/perf_selftests-x86_64-rhel-8.3-kselftests-519d81956ee277b4419c723adfb154603c2565ba/tools/testing/selftests/pidfd/pidfd_poll_test /usr/src/perf_selftests-x86_64-rhe
-> root     12492  0.0  0.0   2396   132 ?        S    07:03   0:00                  \_ /bin/sh -c BASE_DIR="/usr/src/perf_selftests-x86_64-rhel-8.3-kselftests-519d81956ee277b4419c723adfb154603c2565ba/tools/testing/selftests"; . /usr/src/perf_selftests-x86_64-rhel-8.3-kselftests-519d81956ee277b4419c723adfb154603c2565ba/tools/testing/selftests/kselftest/runner.sh; if [ "X" != "X" ]; then per_test_logging=1; fi; run_many  /usr/src/perf_selftests-x86_64-rhel-8.3-kselftests-519d81956ee277b4419c723adfb154603c2565ba/tools/testing/selftests/pidfd/pidfd_test /usr/src/perf_selftests-x86_64-rhel-8.3-kselftests-519d81956ee277b4419c723adfb154603c2565ba/tools/testing/selftests/pidfd/pidfd_fdinfo_test /usr/src/perf_selftests-x86_64-rhel-8.3-kselftests-519d81956ee277b4419c723adfb154603c2565ba/tools/testing/selftests/pidfd/pidfd_open_test /usr/src/perf_selftests-x86_64-rhel-8.3-kselftests-519d81956ee277b4419c723adfb154603c2565ba/tools/testing/selftests/pidfd/pidfd_poll_test /usr/src/perf_selftests-x86_64
-> root     12493  0.0  0.0   2396   132 ?        S    07:03   0:00                      \_ /bin/sh -c BASE_DIR="/usr/src/perf_selftests-x86_64-rhel-8.3-kselftests-519d81956ee277b4419c723adfb154603c2565ba/tools/testing/selftests"; . /usr/src/perf_selftests-x86_64-rhel-8.3-kselftests-519d81956ee277b4419c723adfb154603c2565ba/tools/testing/selftests/kselftest/runner.sh; if [ "X" != "X" ]; then per_test_logging=1; fi; run_many  /usr/src/perf_selftests-x86_64-rhel-8.3-kselftests-519d81956ee277b4419c723adfb154603c2565ba/tools/testing/selftests/pidfd/pidfd_test /usr/src/perf_selftests-x86_64-rhel-8.3-kselftests-519d81956ee277b4419c723adfb154603c2565ba/tools/testing/selftests/pidfd/pidfd_fdinfo_test /usr/src/perf_selftests-x86_64-rhel-8.3-kselftests-519d81956ee277b4419c723adfb154603c2565ba/tools/testing/selftests/pidfd/pidfd_open_test /usr/src/perf_selftests-x86_64-rhel-8.3-kselftests-519d81956ee277b4419c723adfb154603c2565ba/tools/testing/selftests/pidfd/pidfd_poll_test /usr/src/perf_selftests-x8
-> root     12496  0.0  0.0   2396   132 ?        S    07:03   0:00                          \_ /bin/sh -c BASE_DIR="/usr/src/perf_selftests-x86_64-rhel-8.3-kselftests-519d81956ee277b4419c723adfb154603c2565ba/tools/testing/selftests"; . /usr/src/perf_selftests-x86_64-rhel-8.3-kselftests-519d81956ee277b4419c723adfb154603c2565ba/tools/testing/selftests/kselftest/runner.sh; if [ "X" != "X" ]; then per_test_logging=1; fi; run_many  /usr/src/perf_selftests-x86_64-rhel-8.3-kselftests-519d81956ee277b4419c723adfb154603c2565ba/tools/testing/selftests/pidfd/pidfd_test /usr/src/perf_selftests-x86_64-rhel-8.3-kselftests-519d81956ee277b4419c723adfb154603c2565ba/tools/testing/selftests/pidfd/pidfd_fdinfo_test /usr/src/perf_selftests-x86_64-rhel-8.3-kselftests-519d81956ee277b4419c723adfb154603c2565ba/tools/testing/selftests/pidfd/pidfd_open_test /usr/src/perf_selftests-x86_64-rhel-8.3-kselftests-519d81956ee277b4419c723adfb154603c2565ba/tools/testing/selftests/pidfd/pidfd_poll_test /usr/src/perf_selftest
-> root     12498  0.0  0.0  10564  6116 ?        S    07:03   0:00                              \_ perl /usr/src/perf_selftests-x86_64-rhel-8.3-kselftests-519d81956ee277b4419c723adfb154603c2565ba/tools/testing/selftests/kselftest/prefix.pl
-> root     12503  0.0  0.0   2452   112 ?        T    07:03   0:00 ./pidfd_wait
-> root     12621  0.0  0.0   2372  1600 ?        SLs  07:04   0:00 /usr/sbin/watchdog
-> root     19438  0.0  0.0    992    60 ?        Ss   07:39   0:00 /lkp/lkp/src/bin/event/wakeup activate-monitor
+> This is being done as there are SC7180 device trees enabling
+> support for this hardware, but not being probed due to these
+> drivers not being built.
 > 
-> Here we group all its child processes so that kill() can signal all of
-> them in timeout.
-> 
-> CC: Kees Cook <keescook@chromium.org>
-> CC: Andy Lutomirski <luto@amacapital.net>
-> CC: Will Drewry <wad@chromium.org>
-> CC: Shuah Khan <shuah@kernel.org>
-> CC: Christian Brauner <christian@brauner.io>
-> CC: Philip Li <philip.li@intel.com>
-> Suggested-by: yang xu <xuyang2018.jy@cn.fujitsu.com>
-> Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+
+Tested-by: "kernelci.org bot" <bot@kernelci.org>
+
+https://staging.kernelci.org/test/plan/id/6177be0c2554c2fd1ba6c464/
+
+Thanks,
+Guillaume
+
 > ---
+>  arch/arm64/configs/defconfig | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+> index 171848ace3ac..bb97baa5f1d8 100644
+> --- a/arch/arm64/configs/defconfig
+> +++ b/arch/arm64/configs/defconfig
+> @@ -992,7 +992,9 @@ CONFIG_MSM_GCC_8994=y
+>  CONFIG_MSM_MMCC_8996=y
+>  CONFIG_MSM_GCC_8998=y
+>  CONFIG_QCS_GCC_404=y
+> +CONFIG_SC_DISPCC_7180=m
+>  CONFIG_SC_GCC_7180=y
+> +CONFIG_SC_GPUCC_7180=m
+>  CONFIG_SDM_CAMCC_845=m
+>  CONFIG_SDM_GCC_845=y
+>  CONFIG_SDM_GPUCC_845=y
+> 
 
-Seems sensible. Is it guaranteed that t->pid is neither 0 nor 1? If not
-then maybe sanity check t->pid at least for not being 1 as negating that
-would mean "signal everything that you have permission to signal". :)
-
-Otherwise,
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
-
->  tools/testing/selftests/kselftest_harness.h | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/kselftest_harness.h b/tools/testing/selftests/kselftest_harness.h
-> index ae0f0f33b2a6..c7251396e7ee 100644
-> --- a/tools/testing/selftests/kselftest_harness.h
-> +++ b/tools/testing/selftests/kselftest_harness.h
-> @@ -875,7 +875,8 @@ static void __timeout_handler(int sig, siginfo_t *info, void *ucontext)
->  	}
->  
->  	t->timed_out = true;
-> -	kill(t->pid, SIGKILL);
-> +	// signal process group
-> +	kill(-(t->pid), SIGKILL);
->  }
->  
->  void __wait_for_test(struct __test_metadata *t)
-> @@ -985,6 +986,7 @@ void __run_test(struct __fixture_metadata *f,
->  		ksft_print_msg("ERROR SPAWNING TEST CHILD\n");
->  		t->passed = 0;
->  	} else if (t->pid == 0) {
-> +		setpgrp();
->  		t->fn(t, variant);
->  		if (t->skip)
->  			_exit(255);
-> -- 
-> 2.33.0
-> 
-> 
-> 
