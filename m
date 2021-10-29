@@ -2,145 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B301F43FCE0
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 15:03:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74EF643FCFB
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 15:04:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231539AbhJ2NFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 09:05:37 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:59330 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230273AbhJ2NFf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 09:05:35 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id DA9F521637;
-        Fri, 29 Oct 2021 13:03:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1635512585; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8vLN54XXV66/B0xEIvXjyPVMcsjYtcUPtaomk/kyRyw=;
-        b=q/cjJq3HGhz/DPOoA9xxBDQkZPcz2A5xyMaznmQke8Iqbb/pwIfxSyfrposz8WKg7O18CO
-        HlMROzace7Hgab5C2CRzOQSFImkvxQ2rZfD0jYxIg6+1rXNEmJaWSpvc0GLbiD4uzdTCr8
-        bWuV0dCq9v2lcmD1P6ulUJBV0kbKbhI=
-Received: from suse.cz (unknown [10.100.201.86])
+        id S231748AbhJ2NHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 09:07:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34000 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231823AbhJ2NGg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 09:06:36 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 7F71FA3B84;
-        Fri, 29 Oct 2021 13:03:04 +0000 (UTC)
-Date:   Fri, 29 Oct 2021 15:03:01 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christian Brauner <christian@brauner.io>,
-        Christoph Hellwig <hch@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jann Horn <jannh@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Jan Engelhardt <jengelh@inai.de>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Andrea Arcangeli <aarcange@redhat.com>
-Subject: Re: [PATCH 1/1] mm: prevent a race between process_mrelease and
- exit_mmap
-Message-ID: <YXvxBSzA2YIxbwVC@dhcp22.suse.cz>
-References: <20211022014658.263508-1-surenb@google.com>
- <YXJwUUPjfg9wV6MQ@dhcp22.suse.cz>
- <CAJuCfpEcSbK8WrufZjDj-7iUxiQtrmVTqHOxFUOvLhYGz6_ttQ@mail.gmail.com>
- <CAJuCfpFccBJHHqfOKixJvLr7Xta_ojkdHGfGomwTDNKffzziRQ@mail.gmail.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 3631460FC4;
+        Fri, 29 Oct 2021 13:04:07 +0000 (UTC)
+Date:   Fri, 29 Oct 2021 09:04:05 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next 1/2] ftrace: Tidy up some false kernel-doc
+ markings
+Message-ID: <20211029090405.5e7f5c24@gandalf.local.home>
+In-Reply-To: <1635489523-76132-1-git-send-email-yang.lee@linux.alibaba.com>
+References: <1635489523-76132-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJuCfpFccBJHHqfOKixJvLr7Xta_ojkdHGfGomwTDNKffzziRQ@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 27-10-21 09:08:21, Suren Baghdasaryan wrote:
-> On Fri, Oct 22, 2021 at 10:38 AM Suren Baghdasaryan <surenb@google.com> wrote:
-> >
-> > On Fri, Oct 22, 2021 at 1:03 AM Michal Hocko <mhocko@suse.com> wrote:
-> > >
-> > > On Thu 21-10-21 18:46:58, Suren Baghdasaryan wrote:
-> > > > Race between process_mrelease and exit_mmap, where free_pgtables is
-> > > > called while __oom_reap_task_mm is in progress, leads to kernel crash
-> > > > during pte_offset_map_lock call. oom-reaper avoids this race by setting
-> > > > MMF_OOM_VICTIM flag and causing exit_mmap to take and release
-> > > > mmap_write_lock, blocking it until oom-reaper releases mmap_read_lock.
-> > > > Reusing MMF_OOM_VICTIM for process_mrelease would be the simplest way to
-> > > > fix this race, however that would be considered a hack. Fix this race
-> > > > by elevating mm->mm_users and preventing exit_mmap from executing until
-> > > > process_mrelease is finished. Patch slightly refactors the code to adapt
-> > > > for a possible mmget_not_zero failure.
-> > > > This fix has considerable negative impact on process_mrelease performance
-> > > > and will likely need later optimization.
-> > >
-> > > I am not sure there is any promise that process_mrelease will run in
-> > > parallel with the exiting process. In fact the primary purpose of this
-> > > syscall is to provide a reliable way to oom kill from user space. If you
-> > > want to optimize process exit resp. its exit_mmap part then you should
-> > > be using other means. So I would be careful calling this a regression.
-> > >
-> > > I do agree that taking the reference count is the right approach here. I
-> > > was wrong previously [1] when saying that pinning the mm struct is
-> > > sufficient. I have completely forgot about the subtle sync in exit_mmap.
-> > > One way we can approach that would be to take exclusive mmap_sem
-> > > throughout the exit_mmap unconditionally.
-> >
-> > I agree, that would probably be the cleanest way.
-> >
-> > > There was a push back against
-> > > that though so arguments would have to be re-evaluated.
-> >
-> > I'll review that discussion to better understand the reasons for the
-> > push back. Thanks for the link.
+On Fri, 29 Oct 2021 14:38:42 +0800
+Yang Li <yang.lee@linux.alibaba.com> wrote:
+
+> Deals with
+> W=1 warning: This comment starts with '/**', but isn't a kernel-doc
+> comment.
+> W=1 warning: bad line.
 > 
-> Adding Kirill and Andrea.
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+
+But are you a robot?
+
+NACK!
+
+-- Steve
+
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+> ---
+>  kernel/trace/ftrace.c            | 18 +++++++++---------
+>  kernel/trace/trace_events_hist.c |  4 ++--
+>  2 files changed, 11 insertions(+), 11 deletions(-)
 > 
-> I had some time to dig some more. The latency increase is definitely
-> coming due to process_mrelease calling the last mmput and exit_aio is
-> especially problematic. So, currently process_mrelease not only
-> releases memory but does more, including waiting for io to finish.
+> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+> index feb1ea9..679db91 100644
+> --- a/kernel/trace/ftrace.c
+> +++ b/kernel/trace/ftrace.c
+> @@ -2203,7 +2203,7 @@ static int ftrace_check_record(struct dyn_ftrace *rec, bool enable, bool update)
+>  	return FTRACE_UPDATE_MAKE_NOP;
+>  }
+>  
+> -/**
+> +/*
+>   * ftrace_update_record, set a record that now is tracing or not
+>   * @rec: the record to update
+>   * @enable: set to true if the record is tracing, false to force disable
+> @@ -2216,7 +2216,7 @@ int ftrace_update_record(struct dyn_ftrace *rec, bool enable)
+>  	return ftrace_check_record(rec, enable, true);
+>  }
+>  
+> -/**
+> +/*
+>   * ftrace_test_record, check if the record has been enabled or not
+>   * @rec: the record to test
+>   * @enable: set to true to check if enabled, false if it is disabled
+> @@ -2602,7 +2602,7 @@ struct ftrace_rec_iter {
+>  	int			index;
+>  };
+>  
+> -/**
+> +/*
+>   * ftrace_rec_iter_start, start up iterating over traced functions
+>   *
+>   * Returns an iterator handle that is used to iterate over all
+> @@ -2633,7 +2633,7 @@ struct ftrace_rec_iter *ftrace_rec_iter_start(void)
+>  	return iter;
+>  }
+>  
+> -/**
+> +/*
+>   * ftrace_rec_iter_next, get the next record to process.
+>   * @iter: The handle to the iterator.
+>   *
+> @@ -2658,7 +2658,7 @@ struct ftrace_rec_iter *ftrace_rec_iter_next(struct ftrace_rec_iter *iter)
+>  	return iter;
+>  }
+>  
+> -/**
+> +/*
+>   * ftrace_rec_iter_record, get the record at the iterator location
+>   * @iter: The current iterator location
+>   *
+> @@ -2761,7 +2761,7 @@ static int __ftrace_modify_code(void *data)
+>  	return 0;
+>  }
+>  
+> -/**
+> +/*
+>   * ftrace_run_stop_machine, go back to the stop machine method
+>   * @command: The command to tell ftrace what to do
+>   *
+> @@ -2773,7 +2773,7 @@ void ftrace_run_stop_machine(int command)
+>  	stop_machine(__ftrace_modify_code, &command, NULL);
+>  }
+>  
+> -/**
+> +/*
+>   * arch_ftrace_update_code, modify the code to trace or not trace
+>   * @command: The command that needs to be done
+>   *
+> @@ -7742,7 +7742,7 @@ void ftrace_kill(void)
+>  	ftrace_trace_function = ftrace_stub;
+>  }
+>  
+> -/**
+> +/*
+>   * Test if ftrace is dead or not.
+>   */
+>  int ftrace_is_dead(void)
+> @@ -7750,7 +7750,7 @@ int ftrace_is_dead(void)
+>  	return ftrace_disabled;
+>  }
+>  
+> -/**
+> +/*
+>   * register_ftrace_function - register a function for profiling
+>   * @ops - ops structure that holds the function for profiling.
+>   *
+> diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
+> index cddf6bf..aa93e87 100644
+> --- a/kernel/trace/trace_events_hist.c
+> +++ b/kernel/trace/trace_events_hist.c
+> @@ -836,7 +836,7 @@ static struct hist_field *find_any_var_ref(struct hist_trigger_data *hist_data,
+>   * A trigger can define one or more variables.  If any one of them is
+>   * currently referenced by any other trigger, this function will
+>   * determine that.
+> -
+> + *
+>   * Typically used to determine whether or not a trigger can be removed
+>   * - if there are any references to a trigger's variables, it cannot.
+>   *
+> @@ -3050,7 +3050,7 @@ static struct field_var *create_field_var(struct hist_trigger_data *hist_data,
+>   * events.  However, for convenience, users are allowed to directly
+>   * specify an event field in an action, which will be automatically
+>   * converted into a variable on their behalf.
+> -
+> + *
+>   * This function creates a field variable with the name var_name on
+>   * the hist trigger currently being defined on the target event.  If
+>   * subsys_name and event_name are specified, this function simply
 
-Well, I still do not see why that is a problem. This syscall is meant to
-release the address space not to do it fast.
-
-> Unconditional mmap_write_lock around free_pgtables in exit_mmap seems
-> to me the most semantically correct way forward and the pushback is on
-> the basis of regressing performance of the exit path. I would like to
-> measure that regression to confirm this. I don't have access to a big
-> machine but will ask someone in another Google team to try the test
-> Michal wrote here
-> https://lore.kernel.org/all/20170725142626.GJ26723@dhcp22.suse.cz/ on
-> a server with and without a custom patch.
-
-Well, I do not remember all the details of the discussion but I believe
-a rather large part of that discussion was a bit misled. The exist
-path - and the last mmput in particular - shouldn't trigger mmap_sem
-contention. There are only rare cases where somebody can race and take a
-lock then (e.g. proc interfaces taking the lock before mmget_notzero).
-Certainly not something to optimize for and I believe a correct and
-robust code should have a preference. As we can see a lack of proper
-synchronization has led to 2 very similar problem nobody revealed during
-review because the code is just too tricky.
-
-Btw. the above code will not really tell you much on a larger machine
-unless you manage to trigger mmap_sem contection. Otherwise you are
-measuring the mmap_sem writelock fast path and that should be really
-within a noise comparing to the whole address space destruction time. If
-that is not the case then we have a real problem with the locking...
--- 
-Michal Hocko
-SUSE Labs
