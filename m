@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7830844003F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 18:24:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE34A440059
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 18:29:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229979AbhJ2Q0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 12:26:42 -0400
-Received: from gateway20.websitewelcome.com ([192.185.68.24]:13663 "EHLO
+        id S230119AbhJ2Qbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 12:31:42 -0400
+Received: from gateway20.websitewelcome.com ([192.185.68.24]:40132 "EHLO
         gateway20.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229893AbhJ2Q0k (ORCPT
+        by vger.kernel.org with ESMTP id S229623AbhJ2Qbl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 12:26:40 -0400
-X-Greylist: delayed 1177 seconds by postgrey-1.27 at vger.kernel.org; Fri, 29 Oct 2021 12:26:40 EDT
+        Fri, 29 Oct 2021 12:31:41 -0400
 Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
-        by gateway20.websitewelcome.com (Postfix) with ESMTP id 5DBCF400DC12D
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 11:03:38 -0500 (CDT)
+        by gateway20.websitewelcome.com (Postfix) with ESMTP id DCAEF400D85E3
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 11:04:20 -0500 (CDT)
 Received: from gator4132.hostgator.com ([192.185.4.144])
         by cmsmtp with SMTP
-        id gULym0urcG0jLgULym5J43; Fri, 29 Oct 2021 11:03:38 -0500
+        id gUMem0wIPG0jLgUMem5KVK; Fri, 29 Oct 2021 11:04:20 -0500
 X-Authority-Reason: nr=8
-Received: from host-79-27-6-113.retail.telecomitalia.it ([79.27.6.113]:40438 helo=[10.0.0.44])
+Received: from host-79-27-6-113.retail.telecomitalia.it ([79.27.6.113]:40440 helo=[10.0.0.44])
         by gator4132.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
         (Exim 4.94.2)
         (envelope-from <bristot@kernel.org>)
-        id 1mgULx-001Sy2-2u; Fri, 29 Oct 2021 11:03:37 -0500
-Message-ID: <8ba373fa-2649-db63-546d-d300b9205947@kernel.org>
-Date:   Fri, 29 Oct 2021 18:03:30 +0200
+        id 1mgUMd-001U4B-MR; Fri, 29 Oct 2021 11:04:19 -0500
+Message-ID: <7c4174c7-350d-7922-b82e-862c5fa7477b@kernel.org>
+Date:   Fri, 29 Oct 2021 18:04:15 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.2.0
-Subject: Re: [PATCH V6 09/20] rtla: Add osnoise tool
+Subject: Re: [PATCH V6 11/20] rtla/osnoise: Add the hist mode
 Content-Language: en-US
-To:     Tao Zhou <tao.zhou@linux.dev>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Tom Zanussi <zanussi@kernel.org>,
+To:     Steven Rostedt <rostedt@goodmis.org>, Tao Zhou <tao.zhou@linux.dev>
+Cc:     Ingo Molnar <mingo@redhat.com>, Tom Zanussi <zanussi@kernel.org>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         Juri Lelli <juri.lelli@redhat.com>,
         Clark Williams <williams@redhat.com>,
@@ -46,10 +43,11 @@ Cc:     Steven Rostedt <rostedt@goodmis.org>,
         linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
         linux-kernel@vger.kernel.org
 References: <cover.1635284863.git.bristot@kernel.org>
- <a389dec45805f3221fe1a8e86c725ae24d16ec82.1635284863.git.bristot@kernel.org>
- <YXl+krtOjd5CzDRc@geo.homenetwork>
+ <fede3c3805cb7a70bd7c8d60ba2c5ce290cc6e1e.1635284863.git.bristot@kernel.org>
+ <YXmWTOXHYXFduayt@geo.homenetwork>
+ <20211027142918.487cd143@gandalf.local.home>
 From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-In-Reply-To: <YXl+krtOjd5CzDRc@geo.homenetwork>
+In-Reply-To: <20211027142918.487cd143@gandalf.local.home>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
@@ -60,95 +58,32 @@ X-AntiAbuse: Sender Address Domain - kernel.org
 X-BWhitelist: no
 X-Source-IP: 79.27.6.113
 X-Source-L: No
-X-Exim-ID: 1mgULx-001Sy2-2u
+X-Exim-ID: 1mgUMd-001U4B-MR
 X-Source: 
 X-Source-Args: 
 X-Source-Dir: 
-X-Source-Sender: host-79-27-6-113.retail.telecomitalia.it ([10.0.0.44]) [79.27.6.113]:40438
+X-Source-Sender: host-79-27-6-113.retail.telecomitalia.it ([10.0.0.44]) [79.27.6.113]:40440
 X-Source-Auth: kernel@bristot.me
-X-Email-Count: 1
+X-Email-Count: 15
 X-Source-Cap: YnJpc3RvdG1lO2JyaXN0b3RtZTtnYXRvcjQxMzIuaG9zdGdhdG9yLmNvbQ==
 X-Local-Domain: no
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/27/21 18:30, Tao Zhou wrote:
-> On Wed, Oct 27, 2021 at 12:06:20AM +0200, Daniel Bristot de Oliveira wrote:
+On 10/27/21 20:29, Steven Rostedt wrote:
+> On Thu, 28 Oct 2021 02:11:24 +0800
+> Tao Zhou <tao.zhou@linux.dev> wrote:
 > 
->> +/*
->> + * osnoise_set_cpus - configure osnoise to run on *cpus
->> + *
->> + * "osnoise/cpus" file is used to set the cpus in which osnoise/timerlat
->> + * will run. This function opens this file, saves the current value,
->> + * and set the cpus passed as argument.
->> + */
->> +int osnoise_set_cpus(struct osnoise_context *context, char *cpus)
->> +{
->> +	char *osnoise_cpus = tracefs_get_tracing_file("osnoise/cpus");
->> +	char curr_cpus[1024];
->> +	int retval;
->> +
->> +	context->cpus_fd = open(osnoise_cpus, O_RDWR);
->> +	if (!context->cpus_fd)
->> +		goto out_err;
-> The above check should be "context->cpus_fd < 0".
-
-Revisited all open/read/write!
-
->> +	retval = read(context->cpus_fd, &curr_cpus, sizeof(curr_cpus));
->> +	if (!retval)
->> +		goto out_close;
->> +	context->orig_cpus = strdup(curr_cpus);
->> +	if (!context->orig_cpus)
->> +		goto out_err;
-> Need to close ->cpus_fd;
+>>> +	/* one histogram for IRQ and one for thread, per cpu */
+>>> +	for (cpu = 0; cpu < nr_cpus; cpu++) {
+>>> +		data->hist[cpu].samples = calloc(1, sizeof(*data->hist) * (entries + 1));  
+>> @samples is a pointer to int and used for int array. The "sizeof(*data->hist)"
+>> should be "sizeof(int)" or am I totally wrong.
+> Or standard approach is: 
 > 
->   if (!context->orig_cpus)
->     goto out_close;
-> 
->> +	retval = write(context->cpus_fd, cpus, strlen(cpus) + 1);
->> +	if (!retval)
->> +		goto out_err;
-> Same as above. Use "goto out_close" instead.
+> 		data->hist[cpu].samples = calloc(1, sizeof(*data->hist->samples) * (entries + 1));
 
-yep! fixed in the next version.
+Fixed in the next version, thanks!
 
->> +	tracefs_put_tracing_file(osnoise_cpus);
->> +
->> +	return 0;
->> +
->> +out_close:
->> +	close(context->cpus_fd);
->> +	context->cpus_fd = -1;
->> +out_err:
->> +	tracefs_put_tracing_file(osnoise_cpus);
->> +	return 1;
->> +}
->> +
->> +/*
->> + * osnoise_restore_cpus - restore the original "osnoise/cpus"
->> + *
->> + * osnoise_set_cpus() saves the original data for the "osnoise/cpus"
->> + * file. This function restore the original config it was previously
->> + * modified.
->> + */
->> +void osnoise_restore_cpus(struct osnoise_context *context)
->> +{
->> +	int retval;
->> +
->> +	if (!context->orig_cpus)
->> +		return;
->> +
->> +	retval = write(context->cpus_fd, context->orig_cpus, strlen(context->orig_cpus));
-> __osnoise_write_runtime() check "context->cpus_fd == -1".
-> Is it possible here we need to check "context->cpus_fd == -1".
-> 
-
-So, yeah, this was inconsistent. In some parts I checked the fd, on other I
-checked if the original value was load, so the file was opened. In the next
-version I am checking if the original value was loaded, and then using it to
-define if the fd is open.
-
-Thanks for your review Tao!
 -- Daniel
