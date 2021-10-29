@@ -2,158 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1049344001B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 18:13:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 969DF44001C
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 18:13:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229807AbhJ2QPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 12:15:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229772AbhJ2QPi (ORCPT
+        id S229957AbhJ2QP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 12:15:59 -0400
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:18680 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229645AbhJ2QP6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 12:15:38 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F2BCC061570;
-        Fri, 29 Oct 2021 09:13:09 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id z20so40717129edc.13;
-        Fri, 29 Oct 2021 09:13:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0wvzHoUOEfSo0QpbymG71OXbWd0opNeWs5Mvq+1kJHs=;
-        b=bttkRNnwDVZGZ/506wkfjbdj4MbdiwdXcjXepVjxY6RlXLPW0JoGna2rKlMRho/QsF
-         CUboZ2XXsB1Gixrkq+Wryu8Rg7jOhaX1IVBA+rL/JcPi+TKwGxQrf52qrKOZ8Y64pMRr
-         3hg34vj7Sac9UUVNkFkTA1EV5tXlrKo0p0HvyEcNTWpb5RFHAmGEp8NrqfCnQ/QpIU5i
-         zDrxZ7aXNZP8XmPIEwbKxwD5tJ+A3tpuIVlm4HBmS9Cm7mUO+eUdBL1WthVMU2nWIzzS
-         1RAT9OMIbeJS+KCOIFBrnbZRKuCpLbHE2GuwtlhUYh//TlOYv+kJEZaTPS5FMMOgY4+M
-         VDjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0wvzHoUOEfSo0QpbymG71OXbWd0opNeWs5Mvq+1kJHs=;
-        b=rV2z28sEVMIPwx9JWCy1iZhq1qul4EoqQTsbG48pFOAu3i2DMTuW9esJMtMEIKg+N+
-         7uCXtApoXP/PBewxUC35JPJAvly1ex9U/opPR5Ntg87izGR+FmnMNXa0xKY9WaVs788S
-         fIc83ULQY7xtRUvjoOJhqSBK62OOYtECBdmlRWa7Bg6G9Qs42rkQVe+2EJ30nSKTzLv5
-         T9s6FdJ4XcANdsOjNupeg2KDRZFw57iCEWg8f0CBREOXsebOWPaG/Fx9dLCojo9NUT3Y
-         sEgwx+Ij02Q35XrpOqBxDDSsJm0TiDRpsp1SfWhtX4QEAUT3nOWbInbRPYy7sYXGzWMA
-         Tj/Q==
-X-Gm-Message-State: AOAM531hdjCVdVE8s5zh1A+gKBVzVheCc1cOCV6+0wfTXOyxxvqmEKQ5
-        WUGtD7LRRi3TkgOofcd6U+BctoWkICijDRPLWCjsly/8qboe1g==
-X-Google-Smtp-Source: ABdhPJzdQkG5B+bZTPGh0PQuLtcPMbFfSIS5r54brUfY+4yiYodQuzSWzST1ZdK4jctl+4Y+AjBBqCQU9lJF/eEi1yk=
-X-Received: by 2002:a17:906:1db2:: with SMTP id u18mr14568403ejh.227.1635523987737;
- Fri, 29 Oct 2021 09:13:07 -0700 (PDT)
+        Fri, 29 Oct 2021 12:15:58 -0400
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19T7Tt8Y012181;
+        Fri, 29 Oct 2021 11:13:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=lTtxwjvxR++684P2S/1IMv6QYTJXsMqrhLt7nJT8aUQ=;
+ b=iptHpEX14/8pn5c77/BrHkJLTh9J1RXgNdA3C0l1mhNJvkM23ciBmwKZgGLkmaEgqTnR
+ 68JKSNb1vGBbgQxgycp3P6V2aLBm2vLQH/VbcaxKKmNVN/G5ySlli8ZI4l3oBr4QMATg
+ 3t1yofjZQEk+q9oQlHoRtEN+hNcescl6Ou6b6DjnLGj/jkd7w/i0jZYSmSbw+fJ4NFYQ
+ PSo5gMDt3vuymIF1axxiY2dy3m5ZdLqcVTKNogZweFeQ32ciEYgsjLavdCpCcYvua25Y
+ alD2yCyXF8Ma1w/BsJjMkI2RpkFI8HM0vQNCta04LNbPF5P9rgkKOwAyvWWxkQIV3YgE aw== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 3c0cm70hqd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 29 Oct 2021 11:13:19 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.7; Fri, 29 Oct
+ 2021 17:13:17 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.7 via Frontend
+ Transport; Fri, 29 Oct 2021 17:13:17 +0100
+Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com [198.61.65.32])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D6E4DB38;
+        Fri, 29 Oct 2021 16:13:16 +0000 (UTC)
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+To:     <broonie@kernel.org>
+CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <patches@opensource.cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: [PATCH] ASoC: cs42l42: Add control for audio slow-start switch
+Date:   Fri, 29 Oct 2021 17:13:05 +0100
+Message-ID: <20211029161305.12714-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <CAOuPNLjzyG_2wGDYmwgeoQuuQ7cykJ11THf8jMrOFXZ7vXheJQ@mail.gmail.com>
- <CAOuPNLh_KY4NaVWSEV2JPp8fx0iy8E1MU8GHT-w7-hMXrvSaeA@mail.gmail.com>
- <1556211076.48404.1626763215205.JavaMail.zimbra@nod.at> <CAOuPNLhti3tocN-_D7Q0QaAx5acHpb3AQyWaUKgQPNW3XWu58g@mail.gmail.com>
- <2132615832.4458.1626900868118.JavaMail.zimbra@nod.at> <CAOuPNLhCMT7QTF+QadJyGDFNshH9VjEAzWStRpe8itw7HXve=A@mail.gmail.com>
- <CAFLxGvywv29u6DJZrJxnJJmUDSQ4xpbT0u5LNKY1uGKyQom+WA@mail.gmail.com>
- <CAAEAJfCY+X-G=7Oe9NqrJ4yQZ29DBA78jOFAX44GD0g6=s7qhg@mail.gmail.com>
- <1668790824.35266.1627559144878.JavaMail.zimbra@nod.at> <CAAEAJfDDtGcUquyP7Jn0Urttt4kSfAQbJ_qPQ90ROtWLavW9EA@mail.gmail.com>
- <CAOuPNLj+DSigRY_AgHQnGKCK-Vm4ykQBR8UfnTi2UObORTcBFg@mail.gmail.com>
- <CAOuPNLgfJGzp-RJBjydFDL1ZAvOd7=-MgXhnsb2eb_xFSLC66w@mail.gmail.com>
- <CAAEAJfBuut7VSbrrz6CxOC+Cke36eGGv8VUvfdbfLwvSBxOAAA@mail.gmail.com> <CAOuPNLjJMCyxK8mvnBo2aZQXSNqY47YeXCxWmtPECq-=csz6bQ@mail.gmail.com>
-In-Reply-To: <CAOuPNLjJMCyxK8mvnBo2aZQXSNqY47YeXCxWmtPECq-=csz6bQ@mail.gmail.com>
-From:   Pintu Agarwal <pintu.ping@gmail.com>
-Date:   Fri, 29 Oct 2021 21:42:56 +0530
-Message-ID: <CAOuPNLghc1ktLrOEf8PN+snMB3QZG-LwzPbd3kGzrhGz8mEAVg@mail.gmail.com>
-Subject: Re: MTD: How to get actual image size from MTD partition
-To:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Kernelnewbies <kernelnewbies@kernelnewbies.org>,
-        Greg KH <greg@kroah.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        Sean Nyekjaer <sean@geanix.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Phillip Lougher <phillip@squashfs.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: 8DNW5L5-Bvl_mBffFrsGb-qicP5hhtpA
+X-Proofpoint-ORIG-GUID: 8DNW5L5-Bvl_mBffFrsGb-qicP5hhtpA
+X-Proofpoint-Spam-Reason: safe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+This adds an ALSA control so that the slow-start audio ramp feature
+can be disabled. This is useful for high-definition audio applications.
 
-On Mon, 30 Aug 2021 at 21:28, Pintu Agarwal <pintu.ping@gmail.com> wrote:
->
-> On Sun, 22 Aug 2021 at 19:51, Ezequiel Garcia
-> <ezequiel@vanguardiasur.com.ar> wrote:
->
-> > In other words, IMO it's best to expose the NAND through UBI
-> > for both read-only and read-write access, using a single UBI device,
-> > and then creating UBI volumes as needed. This will allow UBI
-> > to spread wear leveling across the whole device, which is expected
-> > to increase the flash lifetime.
-> >
-> > For instance, just as some silly example, you could have something like this:
-> >
-> >                                | RootFS SquashFS  |
-> >                                | UBI block        | UBIFS User R-W area
-> > ------------------------------------------------------------------------
-> > Kernel A | Kernel B | RootFS A | RootFS B         | User
-> > ------------------------------------------------------------------------
-> >                                  UBIX
-> > ------------------------------------------------------------------------
-> >                                  /dev/mtdX
-> >
-> > This setup allows safe kernel and rootfs upgrading. The RootFS is read-only
-> > via SquashFS and there's a read-write user area. UBI is supporting all
-> > the volumes, handling bad blocks and wear leveling.
-> >
-> Dear Ezequiel,
-> Thank you so much for your reply.
->
-> This is exactly what we are also doing :)
-> In our system we have a mix of raw and ubi partitions.
-> The ubi partitioning is done almost exactly the same way.
-> Only for the rootfs (squashfs) I see we were using /mtd/block<id> to
-> mount the rootfs.
-> Now, I understood we should change it to use /dev/ubiblock<id>
-> This might have several benefits, but one most important could be,
-> using ubiblock can handle bad-blocks/wear-leveling automatically,
-> whereas mtdblocks access the flash directly ?
-> I found some references for these..
-> So, this seems good for my proposal.
->
-> Another thing that is still open for us is:
-> How do we calculate the exact image size from a raw mtd partition ?
-> For example, support for one of the raw nand partitions, the size is
-> defined as 15MB but we flash the actual image of size only 2.5MB.
-> So, in the runtime how to determine the image size as ~2.5MB (at least
-> roughly) ?
-> Is it still possible ?
->
+The register field is unusual in that it is a 3-bit field with only
+two valid values, 000=off and 111=on.
 
-I am happy to inform you that using "ubiblock" for squashfs mounting
-seems very helpful for us.
-We have seen almost the double performance boost when using ubiblock
-for rootfs as well as other read-only volume mounting.
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+---
+ sound/soc/codecs/cs42l42.c | 32 +++++++++++++++++++++++++++++++-
+ sound/soc/codecs/cs42l42.h |  3 +++
+ 2 files changed, 34 insertions(+), 1 deletion(-)
 
-However, we have found few issues while defining the read only volume as STATIC.
-With static volume we see that OTA update is failing during "fsync".
-That is ota_fsync is failing from here:
-https://gerrit.pixelexperience.org/plugins/gitiles/bootable_recovery/+/ff6df890a2a01bf3bf56d3f430b17a5ef69055cf%5E%21/otafault/ota_io.cpp
-int status = fsync(fd);
-if (status == -1 && errno == EIO)
-*
-{ have_eio_error = true; }
-*
-return status;
-}
+diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
+index 27a1c4c73074..0d562c274292 100644
+--- a/sound/soc/codecs/cs42l42.c
++++ b/sound/soc/codecs/cs42l42.c
+@@ -42,6 +42,7 @@ static const struct reg_default cs42l42_reg_defaults[] = {
+ 	{ CS42L42_SRC_CTL,			0x10 },
+ 	{ CS42L42_MCLK_CTL,			0x02 },
+ 	{ CS42L42_SFTRAMP_RATE,			0xA4 },
++	{ CS42L42_SLOW_START_ENABLE,		0x70 },
+ 	{ CS42L42_I2C_DEBOUNCE,			0x88 },
+ 	{ CS42L42_I2C_STRETCH,			0x03 },
+ 	{ CS42L42_I2C_TIMEOUT,			0xB7 },
+@@ -177,6 +178,7 @@ static bool cs42l42_readable_register(struct device *dev, unsigned int reg)
+ 	case CS42L42_MCLK_STATUS:
+ 	case CS42L42_MCLK_CTL:
+ 	case CS42L42_SFTRAMP_RATE:
++	case CS42L42_SLOW_START_ENABLE:
+ 	case CS42L42_I2C_DEBOUNCE:
+ 	case CS42L42_I2C_STRETCH:
+ 	case CS42L42_I2C_TIMEOUT:
+@@ -387,6 +389,30 @@ static const struct regmap_config cs42l42_regmap = {
+ static DECLARE_TLV_DB_SCALE(adc_tlv, -9700, 100, true);
+ static DECLARE_TLV_DB_SCALE(mixer_tlv, -6300, 100, true);
+ 
++static int cs42l42_slow_start_put(struct snd_kcontrol *kcontrol,
++				  struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	u8 val;
++
++	/* all bits of SLOW_START_EN much change together */
++	switch (ucontrol->value.integer.value[0]) {
++	case 0:
++		val = 0;
++		break;
++	case 1:
++		val = CS42L42_SLOW_START_EN_MASK;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	snd_soc_component_update_bits(component, CS42L42_SLOW_START_ENABLE,
++				      CS42L42_SLOW_START_EN_MASK, val);
++
++	return 0;
++}
++
+ static const char * const cs42l42_hpf_freq_text[] = {
+ 	"1.86Hz", "120Hz", "235Hz", "466Hz"
+ };
+@@ -431,7 +457,11 @@ static const struct snd_kcontrol_new cs42l42_snd_controls[] = {
+ 				CS42L42_DAC_HPF_EN_SHIFT, true, false),
+ 	SOC_DOUBLE_R_TLV("Mixer Volume", CS42L42_MIXER_CHA_VOL,
+ 			 CS42L42_MIXER_CHB_VOL, CS42L42_MIXER_CH_VOL_SHIFT,
+-				0x3f, 1, mixer_tlv)
++				0x3f, 1, mixer_tlv),
++
++	SOC_SINGLE_EXT("Slow Start Switch", CS42L42_SLOW_START_ENABLE,
++			CS42L42_SLOW_START_EN_SHIFT, true, false,
++			snd_soc_get_volsw, cs42l42_slow_start_put),
+ };
+ 
+ static int cs42l42_hp_adc_ev(struct snd_soc_dapm_widget *w,
+diff --git a/sound/soc/codecs/cs42l42.h b/sound/soc/codecs/cs42l42.h
+index f45bcc9a3a62..c8b3267a318b 100644
+--- a/sound/soc/codecs/cs42l42.h
++++ b/sound/soc/codecs/cs42l42.h
+@@ -62,6 +62,9 @@
+ #define CS42L42_INTERNAL_FS_MASK	(1 << CS42L42_INTERNAL_FS_SHIFT)
+ 
+ #define CS42L42_SFTRAMP_RATE		(CS42L42_PAGE_10 + 0x0A)
++#define CS42L42_SLOW_START_ENABLE	(CS42L42_PAGE_10 + 0x0B)
++#define CS42L42_SLOW_START_EN_MASK	GENMASK(6, 4)
++#define CS42L42_SLOW_START_EN_SHIFT	4
+ #define CS42L42_I2C_DEBOUNCE		(CS42L42_PAGE_10 + 0x0E)
+ #define CS42L42_I2C_STRETCH		(CS42L42_PAGE_10 + 0x0F)
+ #define CS42L42_I2C_TIMEOUT		(CS42L42_PAGE_10 + 0x10)
+-- 
+2.11.0
 
-Is this the known issue with static volume?
-
-For now we are using dynamic volume itself but the problem is that
-with dynamic volume we cannot get the exact image size from:
-$ cat /sys/class/ubi/ubi0_0/data_bytes
-==> In case of dynamic volume this will return the total volume size.
-==> Thus our md5 integrity check does not match exactly with the
-flashed image size.
-
-Is there an alternate way to handle this issue ?
-
-
-Thanks,
-Pintu
