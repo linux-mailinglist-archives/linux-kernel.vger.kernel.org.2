@@ -2,142 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 329F443FCCC
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 14:57:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96D4743FCC8
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 14:57:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231575AbhJ2M77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 08:59:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52446 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231367AbhJ2M7z (ORCPT
+        id S231607AbhJ2M7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 08:59:37 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:64247 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230475AbhJ2M7e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 08:59:55 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0A0FC061570;
-        Fri, 29 Oct 2021 05:57:26 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id g8so38659362edb.2;
-        Fri, 29 Oct 2021 05:57:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YhSN8kedoZeC71/lNKcXSi8I8fonEQD4J4/TeNpr6vw=;
-        b=JBgRi8Xilyx/PG5L52x52MAkiGMkFnYZOttYplJjAn4deDZYEHRWK/reRfubf1FGSt
-         CqOpXj5jfHPegIMK5/A9+IsabK9Uy22s/59ebEEf7BPn78oXRaPN2AYINiTWVEnvW5oP
-         awWrP0Aurn3BFI4TWnx6fDkByE+izf+UjlL3YkigiicGB5tgiLGFGv4+uiIXZXuj2PIi
-         agxIrvB9wkw36fTHez4xQWLD/6uXf9zFb6MYXKeIgFelwl+mvj8wNIrFcruZUbIBopje
-         AqdjO5ydEBGvDAL1YT1ILjd+crk5UzHze0EnNj/QwuTaTaY8qANFbSD3PuPvV7GocDgC
-         Fb+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YhSN8kedoZeC71/lNKcXSi8I8fonEQD4J4/TeNpr6vw=;
-        b=EXvPIdwkfgZ9Tfy9bh6h0frOZa8neI3g3L1rg3tt26pBRTUGIvKMYvBtjMNThzWvhP
-         Sg1ADpN10uY8sOOw7DSxBQgMPGoo+1qWlWLM7fAVWwJ4m19mSUyd2hU6zz4bKCSGP5fu
-         OOARH25uEn8Mpwf5zasoqIVkZ0gFJO8F4TO4aEyPKZ3KPkMNZyfnEHRPt5mc44rbRwyh
-         FdM7l3uMdKEjyquPpG2wodd4+U5yshCUQ92sUOJeCeWfS6TWDew4t6SuNo9jvTvwGv6e
-         a6lB/BvcWTQqcQoocTDQ1NCiLKOwqtvWFLfhGsljZPFfcMEDkln0wExFeUqudCu0nYDi
-         sBGQ==
-X-Gm-Message-State: AOAM531Bqp6kcGzaWe0m9JR8ChHapFaun3kD7HORdxpQ7iq8ZS+Ac5Tc
-        69Z1MD1VyiwsqMoQIHVpHdM7IuwFAFVrbRvfEdY=
-X-Google-Smtp-Source: ABdhPJyCoz8hyGdASer7LPDOoMscdW3QPsfedNxRAZF8N2vYp8OMBEHsLn6ZpInCpxDaGHDgeDjF9Ea8uV7h5T/VWCM=
-X-Received: by 2002:a17:906:2887:: with SMTP id o7mr13200811ejd.425.1635512245127;
- Fri, 29 Oct 2021 05:57:25 -0700 (PDT)
+        Fri, 29 Oct 2021 08:59:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1635512226; x=1667048226;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=kGqPbd0h3tvmjh82j7vteTCNPQqaMIaKsYGT5beGgLU=;
+  b=xJiSMQqeuLRmiBYE9IPUHun/owSuBJKI6jooM+GXYTiflqksr/UG2VVt
+   bdiyCGd7QeFfPPvI2fi449VIjQBz+hQK2UBcQDEsOzYqTaob1NO4Wxj99
+   vpTHxaHUOgCuRjT2tUu3iHDjtcV5Sw3q6ra5BPXUpDtzCzJ1uHr9J0F0/
+   MkxqkAKINEFscsWtOJMFR/ZDDevlKRnjah5nmVgQoI5SnDA10k5Yribdl
+   WiJ6ypwuCjpa7PaHTdf/oUYm4JwFlH7EE6s3Hmcv/7RhGSaDUcj2IUZrt
+   iSvJd5nZp5XCO6y/0tGjB1UZ1XyvQgetIIE+iZoJ0OQC3mhgYYLrsyhgV
+   w==;
+IronPort-SDR: DAZjWUtulJBBB+Sw4lw8dphJRnUfomseQVj3P2jeJuGVl+u/1f7GH2lM+L9L4feTgTVH/tbYq+
+ +A28zKes9lJcrq98/vvir+BPU+dxnS2jWsHHlEqiMGpYM8hIjtoMiajqeuw76jtdr3Sovu/UEL
+ vSQo41q7z23mMqbs1fqeprBQcnSrTx4nK1BmJwUz++aH8Xbad6lIjl7ohmexC8tP0CjnpmuDzn
+ iIKTCI0j4YaXIC4HvirSw/zwvFwhpBEOXqqx3EUJc5vsNdXSP1dbk1mMf9QDKjode8lMZ4ZLFj
+ 0U4WFgZ2jcwafARO9B/LG69+
+X-IronPort-AV: E=Sophos;i="5.87,193,1631602800"; 
+   d="scan'208";a="137336076"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 29 Oct 2021 05:57:05 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Fri, 29 Oct 2021 05:57:05 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex02.mchp-main.com
+ (10.10.85.144) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
+ Transport; Fri, 29 Oct 2021 05:57:04 -0700
+Date:   Fri, 29 Oct 2021 14:58:48 +0200
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     <p.zabel@pengutronix.de>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] dt-bindings: reset: lan966x phy reset driver bindings
+Message-ID: <20211029125848.k4vwmzxpljbwlve6@soft-dev3-1.localhost>
+References: <20211019115205.1516311-1-horatiu.vultur@microchip.com>
+ <20211019115205.1516311-2-horatiu.vultur@microchip.com>
+ <YXjD9o8ws5KWlafb@robh.at.kernel.org>
 MIME-Version: 1.0
-References: <20211028211753.573480-1-jaschultzMS@gmail.com>
- <20211028211753.573480-3-jaschultzMS@gmail.com> <CAHp75Vfq7ZkXytuAFhGOMGuH7_AsXcYf9O=p30e4OUx+a4jMgw@mail.gmail.com>
- <87fsskqvvc.fsf@kernel.org> <CAHp75VdHpHMp7X=8WcVbSUaT3pfxo-ZOTQ0BwdQqD09bJ2ddKg@mail.gmail.com>
- <877ddwqaas.fsf@kernel.org>
-In-Reply-To: <877ddwqaas.fsf@kernel.org>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 29 Oct 2021 15:56:33 +0300
-Message-ID: <CAHp75VcwbVh7K=UMgiJ1QpaeB_f_==K4Ewzjt5OwYcOAXqiyUw@mail.gmail.com>
-Subject: Re: [PATCH 2/3] platform: surface: Add surface xbl
-To:     Felipe Balbi <balbi@kernel.org>
-Cc:     Jarrett Schultz <jaschultzms@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jarrett Schultz <jaschultz@microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <YXjD9o8ws5KWlafb@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 3:34 PM Felipe Balbi <balbi@kernel.org> wrote:
-> Andy Shevchenko <andy.shevchenko@gmail.com> writes:
-> > On Fri, Oct 29, 2021 at 7:48 AM Felipe Balbi <balbi@kernel.org> wrote:
-> >> Andy Shevchenko <andy.shevchenko@gmail.com> writes:
+The 10/26/2021 22:13, Rob Herring wrote:
 
-...
+Hi Rob,
 
-> >> > Capital L will be better to read and understand the
-> >> > abbreviation. Actually usually we do something like this:
-> >> >
-> >> > Extensible Boot Loader (EBL)
-> >>
-> >> nah, this is silly Andy. It's just capitalized as eXtensible Boot
-> >> Loader, very much akin to eXtensible Host Controller Interface.
+> 
+> On Tue, Oct 19, 2021 at 01:52:04PM +0200, Horatiu Vultur wrote:
+> > Document the lan966x phy reset device driving bindings.
+> > It is using register access for the internal PHYs and toggles
+> > GPIO for external PHYs.
 > >
-> > My point here is to have a full name followed by the abbreviation. and
-> > n(O)t in (F)ancy st(Y)le.
->
-> too bad my patch removing acronyms from the kernel got rejects :-p
->
-> Seriously, this is pretty pointless. You're vouching for something that
-> will just cause confusion. Every piece of internal documentation refers
-> to xbl and you want this to be renamed to ebl because it looks nicer for
-> you. Thanks, but no thanks.
-
-Maybe I was too unclear. I'm not pushing for EBL, I'm pushing for the form os
-
-"Foo bAr BullSh*t (FABS)" vs. "(F)oo b(a)r (B)ull(s)h*t".
-
-If you have x there to be capitalized, do it like "eXtensible Boot
-Loader (XBL)". Is it too hard?
-
-...
-
-> >> >  +static const struct attribute_group inputs_attr_group = {
-> >> >  +       .attrs = inputs_attrs,
-> >> >  +};
-> >> >  +
-> >> >  +static u8 surface_xbl_readb(void __iomem *base, u32 offset)
-> >> >  +{
-> >> >  +       return readb(base + offset);
-> >> >  +}
-> >> >  +
-> >> >  +static u16 surface_xbl_readw(void __iomem *base, u32 offset)
-> >> >  +{
-> >> >  +       return readw(base + offset);
-> >> >  +}
-> >> >
-> >> > Either use corresponding io accessors in-line, or make first parameter
-> >> > to be sirface_xbl pointer. Otherwise these helpers useless.
-> >>
-> >> I agree with passing surface_xbl point as first parameter, but calling
-> >> the accessors pointless is a bit much. At a minimum, they make it easier
-> >> to ftrace the entire driver by simply ftracing surface_xbl_*
+> > Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+> > ---
+> >  .../bindings/reset/lan966x-phy,rst.yaml       | 53 +++++++++++++++++++
+> >  1 file changed, 53 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/reset/lan966x-phy,rst.yaml
 > >
-> > My point is that the above seems half-baked. It's pointless to have a
-> > func(a,b) { return readl(a + b); }. It doesn't add value.
->
-> sure it does. echo surface_xbl_* > ftrace_filter_function (or whatever
-> the filename was) it reason enough IMHO. Not to mention that these
-> little accessors will likely be optimized by the compiler.
+> > diff --git a/Documentation/devicetree/bindings/reset/lan966x-phy,rst.yaml b/Documentation/devicetree/bindings/reset/lan966x-phy,rst.yaml
+> > new file mode 100644
+> > index 000000000000..35a32458cafe
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/reset/lan966x-phy,rst.yaml
+> > @@ -0,0 +1,53 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: "http://devicetree.org/schemas/reset/lan966x-phy,rst.yaml#"
+> > +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> > +
+> > +title: Microchip Lan966x PHY Reset
+> > +
+> > +maintainers:
+> > +  - Horatiu Vultur <horatiu.vultur@microchip.com>
+> > +
+> > +description: |
+> > +  The Microchip Lan966x Switch provides 2 internal PHY which needs to be
+> > +  released from reset before they can be accessed. Also it might have external
+> > +  PHYs which requires to toggle a GPIO before the access to the PHYs.
+> > +
+> > +properties:
+> > +  $nodename:
+> > +    pattern: "^phy-reset@[0-9a-f]+$"
+> 
+> ^reset-controller@[0-9a-f]+$
 
-readl() will appear in the traces, no? But yeah I also was thinking
-about the weakness in your argument that the compiler can silently
-inline them anyway.
+I will update this
+
+> 
+> > +
+> > +  compatible:
+> > +    const: microchip,lan966x-phy-reset
+> > +
+> > +  reg:
+> > +    items:
+> > +      - description: internal phy reset registers
+> 
+> Just: maxItems: 1
+
+Same here
+
+> 
+> > +
+> > +  reg-names:
+> > +    const: phy
+> 
+> Not all that useful with only 1 entry.
+
+And here
+
+> 
+> > +
+> > +  "#reset-cells":
+> > +    const: 1
+> > +
+> > +  external-phy-reset-gpios:
+> > +    description: used for release of reset of the external PHY
+> > +    maxItems: 1
+> 
+> This belongs in the external PHY's node.
+
+My problem is if I put this in the external PHY's node, once the switch
+gets reset it would reset also the GPIO pin and then it can't connect
+to the external PHYs anymore.
+
+The switch will need anyway to call this driver to release the reset of
+the internal PHYs, so I was thinking to put also the release of the
+external PHYs in the same driver.
+
+Initially we wanted to extend the 'sparx5-switch-reset' driver to do
+this but the output of that discussion was to have 2 different drivers,
+one for the switch and one for the PHYs.
+
+> 
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - reg-names
+> > +  - "#reset-cells"
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    phy_reset: phy-reset@e2010010 {
+> > +        compatible = "microchip,lan966x-phy-reset";
+> > +        reg = <0xe2010010 0x14>;
+> > +        reg-names = "phy";
+> > +        #reset-cells = <1>;
+> > +    };
+> > --
+> > 2.33.0
+> >
+> >
 
 -- 
-With Best Regards,
-Andy Shevchenko
+/Horatiu
