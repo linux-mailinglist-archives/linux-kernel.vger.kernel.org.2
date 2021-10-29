@@ -2,113 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E873643F424
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 02:50:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47EA743F428
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 02:53:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231400AbhJ2AxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 20:53:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230211AbhJ2AxF (ORCPT
+        id S231358AbhJ2A4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 20:56:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30870 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230211AbhJ2A4H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 20:53:05 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0754EC061570
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 17:50:36 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id d3so13260140wrh.8
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 17:50:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Z8g4RDYLQyNG9ZMdk4Hxtngf0/pIGQ9iK+1OvmNdSMc=;
-        b=G45gcvq3QfMGeRiWkPge0w/mwzWzpth8eKoJidXiK5znoWHiDJ1tXdugyMFkuWAHzD
-         4rhqVcEHHV9yU7+gNA6/RCu/fYL4ZKVdQT3cKdZYXxp9jjgZSRNr0ylPwEtkxb8fRIit
-         Bh4rfalOtqadeovwDwzbspQ+s19J9vvLSiqS99Y5y0j/S7Qpvca4GN3V+sBCKpt965mN
-         l2Qe0ioslACo+xtQcXohCS8NgBLd4gWy0jnwOGo9h42K9tfSjt/Dxlk5cKJ5HLYLXLvz
-         GmXMZ+Ze6b3dq791idwF48/VJABvanQtrSaHFUAcHC0neeJKn84vlfXdXzPwxXQqi+oa
-         S+rg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Z8g4RDYLQyNG9ZMdk4Hxtngf0/pIGQ9iK+1OvmNdSMc=;
-        b=WB0kc3+ehTXEejSFJJTjOIQ9FhHHTDgKmC38zXKDSv1n69AnKZ4p8eH3B5+6II2iis
-         ZregZZujXkxk42je7WmzT4PXNdklXr7++Mui8wi+TYpwRDO16+XzD0suooq0qhLsRqpB
-         7dx5OkE4x8pssFQYw4rk0P6WYkEXCCzTs0R909w+PdRRY6XXymmC2IRhb5RjgO/wCSbe
-         KGISHvN2jPELgfWV6xspmsr3dB43Av8CroKoPrngopZA3dOsjhSR8RmRo5/pjTbzYaKB
-         GLLL38RCrMFcgBIpm8btXdfsTqxCcVzjhMejrw45wZ3Beda9xlwmuEmJn//QmLUo8xFs
-         g7Zw==
-X-Gm-Message-State: AOAM530qDCK4j0MAMXR22qQioGFgpzechwRyOtMN+a2wVbutBihF/AjA
-        ya0W4vJyFi4QITfQLhnkG98c+VUMYiw=
-X-Google-Smtp-Source: ABdhPJz/8n9hRbO3LFoNr2azmoC5Czn1zUla10qtFxjleUJ8Nb25eg0mWHiViK1cUpdzV2FiExEeXQ==
-X-Received: by 2002:adf:f486:: with SMTP id l6mr9958940wro.375.1635468634633;
-        Thu, 28 Oct 2021 17:50:34 -0700 (PDT)
-Received: from WRT-WX9.. ([95.179.207.30])
-        by smtp.gmail.com with ESMTPSA id o2sm4500852wrg.1.2021.10.28.17.50.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 17:50:34 -0700 (PDT)
-From:   Changbin Du <changbin.du@gmail.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     SeongJae Park <sj@kernel.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Changbin Du <changbin.du@gmail.com>
-Subject: [PATCH] mm/damon: remove return value from before_terminate callback
-Date:   Fri, 29 Oct 2021 08:50:23 +0800
-Message-Id: <20211029005023.8895-1-changbin.du@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        Thu, 28 Oct 2021 20:56:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635468819;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=eo6UYnZwUTssCdnmrv67GJ2sHUnck1SIMVJqaxKytiA=;
+        b=bwrGw7x42YZQfWik1GTktK0R9dbd7a18eN+1yetx9t0ptV0tIwKo9w4rKaxpCADH8Xxdp0
+        g4L2aWcQSujcL1AzNdFUPgw4ATcsrhtOpzCF41ir1dpqEz/jkwbw5juABTpfmF0QbMwLd8
+        L+fcnwsm4EbWF3dBLgdNk5z+i2N/8ec=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-259-YhhcfY9EPbeJ7J7o3OhQMw-1; Thu, 28 Oct 2021 20:53:34 -0400
+X-MC-Unique: YhhcfY9EPbeJ7J7o3OhQMw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3649210A8E01;
+        Fri, 29 Oct 2021 00:53:31 +0000 (UTC)
+Received: from dreyauc.ausil.us.com (unknown [10.22.32.92])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4D47A4180;
+        Fri, 29 Oct 2021 00:53:27 +0000 (UTC)
+From:   Dennis Gilmore <dgilmore@redhat.com>
+To:     linux-rockchip@lists.infradead.org
+Cc:     dgilmore@redhat.com, Rob Herring <robh+dt@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>,
+        Florian Klink <flokli@flokli.de>,
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS),
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Rockchip SoC
+        support), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] arm64: dts: rockchip: helios64: add variables for pcie completion
+Date:   Thu, 28 Oct 2021 19:53:19 -0500
+Message-Id: <20211029005323.144652-1-dgilmore@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the return value of 'before_terminate' callback is never used,
-we make it have no return value.
+without ep-gpios defined u-boot does not initialise PCIe
+rockchip_pcie pcie@f8000000: failed to find ep-gpios property
 
-Signed-off-by: Changbin Du <changbin.du@gmail.com>
+additionally set max-link-speed and pinctrl-names for completeness
+
+with this patch and the ones from Florian Klink applied to the dts
+file in u-boot sata drives show up in both u-boot and linux
+
+Signed-off-by: Dennis Gilmore <dgilmore@redhat.com>
 ---
- include/linux/damon.h | 2 +-
- mm/damon/dbgfs.c      | 5 ++---
- 2 files changed, 3 insertions(+), 4 deletions(-)
+ arch/arm64/boot/dts/rockchip/rk3399-kobol-helios64.dts | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/include/linux/damon.h b/include/linux/damon.h
-index 50c6eb0dee1f..041966786270 100644
---- a/include/linux/damon.h
-+++ b/include/linux/damon.h
-@@ -322,7 +322,7 @@ struct damon_callback {
- 	int (*before_start)(struct damon_ctx *context);
- 	int (*after_sampling)(struct damon_ctx *context);
- 	int (*after_aggregation)(struct damon_ctx *context);
--	int (*before_terminate)(struct damon_ctx *context);
-+	void (*before_terminate)(struct damon_ctx *context);
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-kobol-helios64.dts b/arch/arm64/boot/dts/rockchip/rk3399-kobol-helios64.dts
+index 9c2b45012daa..1e4042a7fdc3 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-kobol-helios64.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3399-kobol-helios64.dts
+@@ -534,7 +534,10 @@ &pcie_phy {
  };
  
- /**
-diff --git a/mm/damon/dbgfs.c b/mm/damon/dbgfs.c
-index befb27a29aab..eccc14b34901 100644
---- a/mm/damon/dbgfs.c
-+++ b/mm/damon/dbgfs.c
-@@ -645,18 +645,17 @@ static void dbgfs_fill_ctx_dir(struct dentry *dir, struct damon_ctx *ctx)
- 		debugfs_create_file(file_names[i], 0600, dir, ctx, fops[i]);
- }
+ &pcie0 {
++	ep-gpios = <&gpio2 RK_PD4 GPIO_ACTIVE_HIGH>;
++	max-link-speed = <2>;
+ 	num-lanes = <2>;
++	pinctrl-names = "default";
+ 	status = "okay";
  
--static int dbgfs_before_terminate(struct damon_ctx *ctx)
-+static void dbgfs_before_terminate(struct damon_ctx *ctx)
- {
- 	struct damon_target *t, *next;
- 
- 	if (!targetid_is_pid(ctx))
--		return 0;
-+		return;
- 
- 	damon_for_each_target_safe(t, next, ctx) {
- 		put_pid((struct pid *)t->id);
- 		damon_destroy_target(t);
- 	}
--	return 0;
- }
- 
- static struct damon_ctx *dbgfs_new_ctx(void)
+ 	vpcie12v-supply = <&vcc12v_dcin>;
 -- 
 2.32.0
 
