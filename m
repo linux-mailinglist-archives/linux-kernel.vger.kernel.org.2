@@ -2,121 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76EB944006E
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 18:35:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3C91440065
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 18:31:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229979AbhJ2QiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 12:38:16 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:4041 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229623AbhJ2QiP (ORCPT
+        id S230010AbhJ2QeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 12:34:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28035 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229893AbhJ2QeO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 12:38:15 -0400
-Received: from fraeml713-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Hgnyg0ytGz67MlN;
-        Sat, 30 Oct 2021 00:32:27 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml713-chm.china.huawei.com (10.206.15.32) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Fri, 29 Oct 2021 18:35:44 +0200
-Received: from localhost.localdomain (10.69.192.58) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Fri, 29 Oct 2021 17:35:41 +0100
-From:   John Garry <john.garry@huawei.com>
-To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-        <alexander.shishkin@linux.intel.com>, <jolsa@redhat.com>,
-        <namhyung@kernel.org>, <masahiroy@kernel.org>, <labbott@redhat.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>,
-        <irogers@google.com>, John Garry <john.garry@huawei.com>
-Subject: [PATCH] perf tools: Enable warnings through HOSTCFLAGS
-Date:   Sat, 30 Oct 2021 00:30:41 +0800
-Message-ID: <1635525041-151876-1-git-send-email-john.garry@huawei.com>
-X-Mailer: git-send-email 2.8.1
+        Fri, 29 Oct 2021 12:34:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635525105;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dbWwVV+hbGE8rMi2XL6X6jxBbZPWjHobzY3RTESINF4=;
+        b=F1zfIjYRuiv6nLNRS/QwcSfLXTco5ttmp8tWfb3na5gbslovdhI/jE79c7Rd6evCw1KIde
+        xjkIiq2DPSZ9wd28gUVsqhmeFDYbE2nte2gZ4H7JmUKXxky+W5LyYsOhAUkFPnowAoqTL4
+        zdaa+v3FkjB32UGjkNYBqu7q2jRipo0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-529-i6DUpVqoMI-6IH-xfuwpdA-1; Fri, 29 Oct 2021 12:31:40 -0400
+X-MC-Unique: i6DUpVqoMI-6IH-xfuwpdA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B7C3618D6A25;
+        Fri, 29 Oct 2021 16:31:39 +0000 (UTC)
+Received: from rhtmp (unknown [10.39.192.188])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 43DC860936;
+        Fri, 29 Oct 2021 16:31:35 +0000 (UTC)
+Date:   Fri, 29 Oct 2021 18:31:32 +0200
+From:   Philipp Rudo <prudo@redhat.com>
+To:     Baoquan He <bhe@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        kexec@lists.infradead.org, dyoung@redhat.com,
+        akpm@linux-foundation.org
+Subject: Re: [PATCH] s390/kexec: fix memory leak of ipl report buffer
+Message-ID: <20211029183132.20839ad0@rhtmp>
+In-Reply-To: <20211029092635.14804-1-bhe@redhat.com>
+References: <20211029092635.14804-1-bhe@redhat.com>
+Organization: Red Hat inc.
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.58]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The tools build system uses KBUILD_HOSTCFLAGS symbol for obvious purposes.
+Hi Baoquan,
 
-However this is not set for anything under tools/
+On Fri, 29 Oct 2021 17:26:35 +0800
+Baoquan He <bhe@redhat.com> wrote:
 
-As such, host tools apps built have no compiler warnings enabled.
+> A memory leak is reported by kmemleak scanning:
+> 
+> unreferenced object 0x38000195000 (size 4096):
+>   comm "kexec", pid 8548, jiffies 4294953647 (age 32443.270s)
+>   hex dump (first 32 bytes):
+>     00 00 00 c8 20 00 00 00 00 00 00 c0 02 80 00 00  .... ...........
+>     40 40 40 40 40 40 40 40 00 00 00 00 00 00 00 00  @@@@@@@@........
+>   backtrace:
+>     [<0000000011a2f199>] __vmalloc_node_range+0xc0/0x140
+>     [<0000000081fa2752>] vzalloc+0x5a/0x70
+>     [<0000000063a4c92d>] ipl_report_finish+0x2c/0x180
+>     [<00000000553304da>] kexec_file_add_ipl_report+0xf4/0x150
+>     [<00000000862d033f>] kexec_file_add_components+0x124/0x160
+>     [<000000000d2717bb>] arch_kexec_kernel_image_load+0x62/0x90
+>     [<000000002e0373b6>] kimage_file_alloc_init+0x1aa/0x2e0
+>     [<0000000060f2d14f>] __do_sys_kexec_file_load+0x17c/0x2c0
+>     [<000000008c86fe5a>] __s390x_sys_kexec_file_load+0x40/0x50
+>     [<000000001fdb9dac>] __do_syscall+0x1bc/0x1f0
+>     [<000000003ee4258d>] system_call+0x78/0xa0
+> 
+> The ipl report buffer is allocated via vmalloc, while has no chance to free
+> if the kexe loading is unloaded. This will cause obvious memory leak
+> when kexec/kdump kernel is reloaded, manually, or triggered, e.g by
+> memory hotplug.
+> 
+> Here, add struct kimage_arch to s390 to pass out the ipl report buffer
+> address, and introduce arch dependent function
+> arch_kimage_file_post_load_cleanup() to free it when unloaded.
+> 
+> Signed-off-by: Baoquan He <bhe@redhat.com>
 
-Declare HOSTCFLAGS for perf tools build, and also use that symbol in
-declaration of host_c_flags. HOSTCFLAGS comes from EXTRA_WARNINGS, which
-is independent of target platform/arch warning flags.
+other than a missing
 
-Suggested-by: Jiri Olsa <jolsa@redhat.com>
-Signed-off-by: John Garry <john.garry@huawei.com>
---
-Using HOSTCFLAGS, as opposed to KBUILD_HOSTCFLAGS, is going opposite
-direction to commit 96f14fe738b6 ("kbuild: Rename HOSTCFLAGS to
-KBUILD_HOSTCFLAGS"), so would like further opinion from Laura and
-Masahiro.
+Fixes: 99feaa717e55 ("s390/kexec_file: Create ipl report and pass to
+next kernel")
 
-diff --git a/tools/build/Build.include b/tools/build/Build.include
-index 2cf3b1bde86e..c2a95ab47379 100644
---- a/tools/build/Build.include
-+++ b/tools/build/Build.include
-@@ -99,7 +99,7 @@ cxx_flags = -Wp,-MD,$(depfile) -Wp,-MT,$@ $(CXXFLAGS) -D"BUILD_STR(s)=\#s" $(CXX
- ###
- ## HOSTCC C flags
- 
--host_c_flags = -Wp,-MD,$(depfile) -Wp,-MT,$@ $(KBUILD_HOSTCFLAGS) -D"BUILD_STR(s)=\#s" $(HOSTCFLAGS_$(basetarget).o) $(HOSTCFLAGS_$(obj))
-+host_c_flags = -Wp,-MD,$(depfile) -Wp,-MT,$@ $(HOSTCFLAGS) -D"BUILD_STR(s)=\#s" $(HOSTCFLAGS_$(basetarget).o) $(HOSTCFLAGS_$(obj))
- 
- # output directory for tests below
- TMPOUT = .tmp_$$$$
-diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-index 4a9baed28f2e..9b95ba09657f 100644
---- a/tools/perf/Makefile.config
-+++ b/tools/perf/Makefile.config
-@@ -17,6 +17,7 @@ detected     = $(shell echo "$(1)=y"       >> $(OUTPUT).config-detected)
- detected_var = $(shell echo "$(1)=$($(1))" >> $(OUTPUT).config-detected)
- 
- CFLAGS := $(EXTRA_CFLAGS) $(filter-out -Wnested-externs,$(EXTRA_WARNINGS))
-+HOSTCFLAGS := $(filter-out -Wnested-externs,$(EXTRA_WARNINGS))
- 
- include $(srctree)/tools/scripts/Makefile.arch
- 
-@@ -211,6 +212,7 @@ endif
- ifneq ($(WERROR),0)
-   CORE_CFLAGS += -Werror
-   CXXFLAGS += -Werror
-+  HOSTCFLAGS += -Werror
- endif
- 
- ifndef DEBUG
-@@ -292,6 +294,9 @@ CXXFLAGS += -ggdb3
- CXXFLAGS += -funwind-tables
- CXXFLAGS += -Wno-strict-aliasing
- 
-+HOSTCFLAGS += -Wall
-+HOSTCFLAGS += -Wextra
-+
- # Enforce a non-executable stack, as we may regress (again) in the future by
- # adding assembler files missing the .GNU-stack linker note.
- LDFLAGS += -Wl,-z,noexecstack
-diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-index a3966f290297..8ca656aa8b06 100644
---- a/tools/perf/Makefile.perf
-+++ b/tools/perf/Makefile.perf
-@@ -226,7 +226,7 @@ else
- endif
- 
- export srctree OUTPUT RM CC CXX LD AR CFLAGS CXXFLAGS V BISON FLEX AWK
--export HOSTCC HOSTLD HOSTAR
-+export HOSTCC HOSTLD HOSTAR HOSTCFLAGS
- 
- include $(srctree)/tools/build/Makefile.include
- 
--- 
-2.17.1
+the patch looks good to me.
+
+Reviewed-by: Philipp Rudo <prudo@redhat.com>
+
+> ---
+>  arch/s390/include/asm/kexec.h         | 7 +++++++
+>  arch/s390/kernel/machine_kexec_file.c | 9 +++++++++
+>  2 files changed, 16 insertions(+)
+> 
+> diff --git a/arch/s390/include/asm/kexec.h b/arch/s390/include/asm/kexec.h
+> index ea398a05f643..9f16e99fb882 100644
+> --- a/arch/s390/include/asm/kexec.h
+> +++ b/arch/s390/include/asm/kexec.h
+> @@ -74,6 +74,13 @@ void *kexec_file_add_components(struct kimage *image,
+>  int arch_kexec_do_relocs(int r_type, void *loc, unsigned long val,
+>  			 unsigned long addr);
+>  
+> +#define ARCH_HAS_KIMAGE_ARCH
+> +
+> +struct kimage_arch {
+> +	void *ipl_buf;
+> +};
+> +
+> +
+>  extern const struct kexec_file_ops s390_kexec_image_ops;
+>  extern const struct kexec_file_ops s390_kexec_elf_ops;
+>  
+> diff --git a/arch/s390/kernel/machine_kexec_file.c b/arch/s390/kernel/machine_kexec_file.c
+> index f9e4baa64b67..584c48b631b2 100644
+> --- a/arch/s390/kernel/machine_kexec_file.c
+> +++ b/arch/s390/kernel/machine_kexec_file.c
+> @@ -202,6 +202,7 @@ static int kexec_file_add_ipl_report(struct kimage *image,
+>  	buf.buffer = ipl_report_finish(data->report);
+>  	buf.bufsz = data->report->size;
+>  	buf.memsz = buf.bufsz;
+> +	image->arch.ipl_buf = buf.buffer;
+>  
+>  	data->memsz += buf.memsz;
+>  
+> @@ -321,3 +322,11 @@ int arch_kexec_kernel_image_probe(struct kimage *image, void *buf,
+>  
+>  	return kexec_image_probe_default(image, buf, buf_len);
+>  }
+> +
+> +int arch_kimage_file_post_load_cleanup(struct kimage *image)
+> +{
+> +	kvfree(image->arch.ipl_buf);
+> +	image->arch.ipl_buf = NULL;
+> +
+> +	return kexec_image_post_load_cleanup_default(image);
+> +}
 
