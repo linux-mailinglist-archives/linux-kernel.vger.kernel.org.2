@@ -2,157 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E285743FA20
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 11:42:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E26443FA22
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 11:42:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231740AbhJ2Jof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 05:44:35 -0400
-Received: from mga04.intel.com ([192.55.52.120]:50910 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231712AbhJ2Job (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 05:44:31 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10151"; a="229360160"
-X-IronPort-AV: E=Sophos;i="5.87,192,1631602800"; 
-   d="scan'208";a="229360160"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2021 02:42:01 -0700
-X-IronPort-AV: E=Sophos;i="5.87,192,1631602800"; 
-   d="scan'208";a="498845574"
-Received: from rdutta-mobl3.gar.corp.intel.com (HELO lkp-bingo.ccr.corp.intel.com) ([10.255.31.247])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2021 02:41:57 -0700
-From:   Li Zhijian <zhijianx.li@intel.com>
-To:     dave@stgolabs.net, joel@joelfernandes.org, josh@joshtriplett.org,
-        mathieu.desnoyers@efficios.com, paulmck@kernel.org,
-        rostedt@goodmis.org, rcu@vger.kernel.org
-Cc:     philip.li@intel.com, lizhijian@cn.fujitsu.com,
-        jiangshanlai@gmail.com, linux-kernel@vger.kernel.org,
-        Li Zhijian <zhijianx.li@intel.com>
-Subject: [PATCH 6/6] locktorture,rcutorture,torture: always log error message
-Date:   Fri, 29 Oct 2021 17:40:29 +0800
-Message-Id: <20211029094029.22501-7-zhijianx.li@intel.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211029094029.22501-1-zhijianx.li@intel.com>
-References: <20211029094029.22501-1-zhijianx.li@intel.com>
+        id S231667AbhJ2JpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 05:45:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36430 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231567AbhJ2JpH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 05:45:07 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8B24C061570;
+        Fri, 29 Oct 2021 02:42:38 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id e2so15872841ljg.13;
+        Fri, 29 Oct 2021 02:42:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bUZwq/1zRVot/m4BkJ4rPIhNZn7JplNtfTPmyiUeHgQ=;
+        b=KVDohj5KYCE9Wg2bGbZ1h8TmmhsNRShxs2f2bC5lFyLFz6BnMzUIWoShB6Px+EncKo
+         rwqw/eyvNbQba7I1pYOf5YWuBmzTspZ02sznpmscB2wSrfZm0miCj1aw28W1mjJnTC0r
+         tXt5b7ikg7l0JmX7ZBL/hyRRF2H5dYu1kDkstoupFOA51OZMZYTfnz/sQWnBbBJLLsjP
+         WQzwPD10LVXK2Nb8JLUjT+G0ZDrzP7/6rPv2mOWMy1vqAroh4dvWMFMe+wBhObpKTSf7
+         yZTn6xb7l/7hP6EuxME1A6kKrXYL1Na4SNSdVO+Q8WiamtlhKAKQdXmTBR/K8MagmuJZ
+         O4yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bUZwq/1zRVot/m4BkJ4rPIhNZn7JplNtfTPmyiUeHgQ=;
+        b=hbPgLkXoG/RXe7TVGxvYfp+2y62lNZasixK2K2Wdx446fg4m1D5Y0LfsxycY7xWeGK
+         JVQTiUJ08D8QZtpYlikAatH14eEdzlw0apJWh1h9QEgQr1sUJ8QkoXvrMzHSfvXZu+sS
+         qUtKid4xTLF/3cF0/bYBAgtx4nHHcc2X+ZdJOdA9Gs07V1884O2G3TzXpt6l8e0XRe6v
+         ob3rzZyUxFcI8GQFMLX0VcEYoBuEXDI+dHviTwbEtXkYYf98HNlNDGJtZtf9Rn7eZ4qd
+         ZK+VowwneZwH+XdXfux61KJ/i3M0SiDVnbqNRJ5mdQvqkiGi6YO4Uf29dPbFm+8+CwCJ
+         1Jmg==
+X-Gm-Message-State: AOAM533AgUjgKiL8J1O3S1yJJqg7zyUuWns+6Z7TP677hb6s2o8MM9eb
+        rxDyB6cQOu9Ydf+06u5EfG5vg29Z/gHHW7QAcOt9HPX4FFA=
+X-Google-Smtp-Source: ABdhPJyubNsgbqv4XY/VjVoMkl1xWj6VlS1MdprrIxo6bss7YKc6XFLOOTv8kpzsRNOI4ePmIvKpB67BQ2jD2/TwUHk=
+X-Received: by 2002:a2e:361a:: with SMTP id d26mr11017101lja.104.1635500556936;
+ Fri, 29 Oct 2021 02:42:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAMJ=MEd9WuGA0MN+n0rGD6T+sgd=yciTmeEW9TjRjNXt+cF=qQ@mail.gmail.com>
+ <20211027165800.md2gxbsku4avqjgt@linutronix.de> <CAMJ=MEfkQ9VaphaNS_qbWMOANo7P6h2Ln6iYg4JLWbWzxp85mA@mail.gmail.com>
+ <20211028084654.bgtvnibvqnz2o5rh@linutronix.de>
+In-Reply-To: <20211028084654.bgtvnibvqnz2o5rh@linutronix.de>
+From:   Ronny Meeus <ronny.meeus@gmail.com>
+Date:   Fri, 29 Oct 2021 11:42:25 +0200
+Message-ID: <CAMJ=MEez-+0mj2N0rz79eE5gJG2k99Yh+x8vdEG3YK1apiOuzg@mail.gmail.com>
+Subject: Re: Unbounded priority inversion while assigning tasks into cgroups.
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Generally, error message should be logged anyhow.
+Op do 28 okt. 2021 om 10:46 schreef Sebastian Andrzej Siewior
+<bigeasy@linutronix.de>:
+>
+> On 2021-10-27 22:54:33 [+0200], Ronny Meeus wrote:
+> > > From a looking at percpu_rw_semaphore implementation, no new readers are
+> > > allowed as long as there is a writer pending. The writer has
+> > > (unfortunately) to wait until all readers are out. But then I doubt that
+> > > this takes up to two minutes for all existing readers to leave the
+> > > critical section.
+> > >
+> >
+> > The readers can be running at low priority while there can be other threads
+> > with a medium priority will consume the complete cpu. So the low prio
+> > readers are just waiting to be scheduled and by that also block the high
+> > prio thread.
+>
+> Hmm. So you have say, 5 reads stuck in the RW semaphore while preempted
+> be medium tasks and high-prio writer is then stuck on semaphore, waiting
+> for the MED tasks to finish so the low-prio threads can leave the
+> criticial section?
 
-Signed-off-by: Li Zhijian <zhijianx.li@intel.com>
----
- include/linux/torture.h      | 9 ++-------
- kernel/locking/locktorture.c | 4 ++--
- kernel/rcu/rcutorture.c      | 8 ++++----
- kernel/torture.c             | 4 ++--
- 4 files changed, 10 insertions(+), 15 deletions(-)
+Correct. Note that 1 thread stuck in the read is already sufficient to
+get into this.
+Most of the heavy processing is done at medium priority and the
+background tasks are running at the low priority.
+Since the background tasks are implemented by scripts, a lot of
+accesses to the read part are done at low prio.
 
-diff --git a/include/linux/torture.h b/include/linux/torture.h
-index 0910c5803f35..1d2e6c4c38fa 100644
---- a/include/linux/torture.h
-+++ b/include/linux/torture.h
-@@ -38,13 +38,8 @@ do {										\
- 		pr_alert("%s" TORTURE_FLAG " %s\n", torture_type, s);		\
- 	}									\
- } while (0)
--#define VERBOSE_TOROUT_ERRSTRING(s) \
--do {										\
--	if (verbose) {								\
--		verbose_torout_sleep();						\
--		pr_alert("%s" TORTURE_FLAG "!!! %s\n", torture_type, s);	\
--	}									\
--} while (0)
-+#define TOROUT_ERRSTRING(s) \
-+	pr_alert("%s" TORTURE_FLAG "!!! %s\n", torture_type, s)
- void verbose_torout_sleep(void);
- 
- /* Definitions for online/offline exerciser. */
-diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
-index 7c5a4a087cc7..6752ce3ac424 100644
---- a/kernel/locking/locktorture.c
-+++ b/kernel/locking/locktorture.c
-@@ -1047,7 +1047,7 @@ static int __init lock_torture_init(void)
- 				       sizeof(writer_tasks[0]),
- 				       GFP_KERNEL);
- 		if (writer_tasks == NULL) {
--			VERBOSE_TOROUT_ERRSTRING("writer_tasks: Out of memory");
-+			TOROUT_ERRSTRING("writer_tasks: Out of memory");
- 			firsterr = -ENOMEM;
- 			goto unwind;
- 		}
-@@ -1058,7 +1058,7 @@ static int __init lock_torture_init(void)
- 				       sizeof(reader_tasks[0]),
- 				       GFP_KERNEL);
- 		if (reader_tasks == NULL) {
--			VERBOSE_TOROUT_ERRSTRING("reader_tasks: Out of memory");
-+			TOROUT_ERRSTRING("reader_tasks: Out of memory");
- 			kfree(writer_tasks);
- 			writer_tasks = NULL;
- 			firsterr = -ENOMEM;
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index ab4215266ebe..9197ce5c7a7d 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -2717,7 +2717,7 @@ static int rcu_torture_read_exit(void *unused)
- 				     &trs, "%s",
- 				     "rcu_torture_read_exit_child");
- 		if (IS_ERR(tsp)) {
--			VERBOSE_TOROUT_ERRSTRING("out of memory");
-+			TOROUT_ERRSTRING("out of memory");
- 			errexit = true;
- 			tsp = NULL;
- 			break;
-@@ -3044,7 +3044,7 @@ rcu_torture_init(void)
- 					   sizeof(fakewriter_tasks[0]),
- 					   GFP_KERNEL);
- 		if (fakewriter_tasks == NULL) {
--			VERBOSE_TOROUT_ERRSTRING("out of memory");
-+			TOROUT_ERRSTRING("out of memory");
- 			firsterr = -ENOMEM;
- 			goto unwind;
- 		}
-@@ -3060,7 +3060,7 @@ rcu_torture_init(void)
- 	rcu_torture_reader_mbchk = kcalloc(nrealreaders, sizeof(*rcu_torture_reader_mbchk),
- 					   GFP_KERNEL);
- 	if (!reader_tasks || !rcu_torture_reader_mbchk) {
--		VERBOSE_TOROUT_ERRSTRING("out of memory");
-+		TOROUT_ERRSTRING("out of memory");
- 		firsterr = -ENOMEM;
- 		goto unwind;
- 	}
-@@ -3079,7 +3079,7 @@ rcu_torture_init(void)
- 	if (nrealnocbers > 0) {
- 		nocb_tasks = kcalloc(nrealnocbers, sizeof(nocb_tasks[0]), GFP_KERNEL);
- 		if (nocb_tasks == NULL) {
--			VERBOSE_TOROUT_ERRSTRING("out of memory");
-+			TOROUT_ERRSTRING("out of memory");
- 			firsterr = -ENOMEM;
- 			goto unwind;
- 		}
-diff --git a/kernel/torture.c b/kernel/torture.c
-index bb8f411c974b..ef27a6c82451 100644
---- a/kernel/torture.c
-+++ b/kernel/torture.c
-@@ -570,7 +570,7 @@ int torture_shuffle_init(long shuffint)
- 	shuffle_idle_cpu = -1;
- 
- 	if (!alloc_cpumask_var(&shuffle_tmp_mask, GFP_KERNEL)) {
--		VERBOSE_TOROUT_ERRSTRING("Failed to alloc mask");
-+		TOROUT_ERRSTRING("Failed to alloc mask");
- 		return -ENOMEM;
- 	}
- 
-@@ -934,7 +934,7 @@ int _torture_create_kthread(int (*fn)(void *arg), void *arg, char *s, char *m,
- 	*tp = kthread_run(fn, arg, "%s", s);
- 	if (IS_ERR(*tp)) {
- 		ret = PTR_ERR(*tp);
--		VERBOSE_TOROUT_ERRSTRING(f);
-+		TOROUT_ERRSTRING(f);
- 		*tp = NULL;
- 	}
- 	torture_shuffle_task_register(*tp);
--- 
-2.32.0
+> > Looking at v4.9.84, at least the RT implementation of rw_semaphore
+> > > allows new readers if a writer is pending. So this could be culprit as
+> > > you would have to wait until all reader are gone and the writer needs to
+> > > grab the lock before another reader shows up. But then this shouldn't be
+> > > the case for the generic implementation and new reader should wait until
+> > > the writer got its chance.
+> > >
+> >
+> > So what do you suggest for the v4.9 kernel as a solution? Move to the RT
+> > version of the rw_semaphore and hope for the best?
+>
+> I don't think it will help. Based on what you wrote above it appears
+> that the problem is that the readers are preempted and are not leaving
+> the critical section soon enough.
+>
+> How many CPUs do you have? Maybe using a rtmutex here and allowing only
+> one reader at a time isn't that bad in your case. With one CPU for
+> instance, there isn't much space for multiple readers I guess.
+>
 
+The current system has 1 CPU with 2 cores but we have also devices
+with 14 cores on which the impact will be bigger of course.
+Note that with the rtmutex solution all accesses (read + write) will
+be serialized.
+
+I wonder why other people do not see this issue since it is present in
+all kernel versions.
+And, especially in systems with strict deadlines, I consider this a
+serious issue.
+
+Ronny
+
+> Sebastian
