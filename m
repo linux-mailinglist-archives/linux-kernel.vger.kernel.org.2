@@ -2,112 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E14204403C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 22:04:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CA064403CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 22:05:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231858AbhJ2UGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 16:06:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37236 "EHLO
+        id S231612AbhJ2UH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 16:07:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231561AbhJ2UGS (ORCPT
+        with ESMTP id S231390AbhJ2UG6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 16:06:18 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3C6FC0613B9;
-        Fri, 29 Oct 2021 13:03:47 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id v1-20020a17090a088100b001a21156830bso11427540pjc.1;
-        Fri, 29 Oct 2021 13:03:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=dR5goGjRH+faRSi6+pkacTGlwe5Jw734C5Ek8o+kxiM=;
-        b=EO5UYp4d9BPAHCW1iVC6CevixytvZOW1wSqpJwVRSt21Xo3bykzvIiwMLlmnORyFEB
-         3iE6CBm7HdlZmceoiKQ6PhLdfV8n99raNFrZuvhpnlMlHbngfcHHPTqjcvVKjqdXnkr0
-         hOSSMjttoN0fULRdSKM3wC54QGW0x16arz1I12bIZnFIYrtOPfl11dD3MKPj5u1k3Qs7
-         yiaElWlN2u85si9nIDIl7MMdE1bpI8A/RlT7kAkK2qS/RYAAy2dO8y8rhB+Q53kDwQ2J
-         mDbml3aLhSdbF2/NIusE9vsh7pKje8XDQEZDXsmOBdj0S2dX397i8F2XtSLkg/+HNAgd
-         jN3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=dR5goGjRH+faRSi6+pkacTGlwe5Jw734C5Ek8o+kxiM=;
-        b=bQk6hWsr6ZaueCQ+9ofrYrO5cRd86CX2CSV6UaDSlgBe6HCKVMFWX2IdV/gYriCtQY
-         tep2EV0tgD2CvefltnuNE0B6GPUIR6zmaQi/EO9pvSvRigYCWa0AzsDHtGi4N2VHIAlY
-         GhvXCDLsq8pCeQZYwFt9PQumYfNaVPe5WIxH1jiMCjCuQQGGQLs9PQPuS3U/w/EXsFxO
-         zcZpInnKipftEcNY+Mw/mHQsuxY2vWYZWx2Wz9czpzvHzkH9A7xHcznB0UbEiTezMb8N
-         YsRBLdLCMUaiZe1M44AQo5jJHa+lx1gwyt1Wj/5rJjWy61Q0vpQ/+mIvEB+5itl46OUf
-         WaEg==
-X-Gm-Message-State: AOAM532wH8vtSz2ab3wIbnGat3RIhZuI0zwx+O+SQStG6kOhCpxTSQnA
-        KofGMPfSlc2xlA9M03ZKn6Rd8NdGyvsdIw==
-X-Google-Smtp-Source: ABdhPJxfHPZGaIHFIxsk4OqGM5oJw5NQuLdc00Tn5tag40VnL4M5tQXeStlEaSC90MV8JJb1Te1gcA==
-X-Received: by 2002:a17:90a:4e42:: with SMTP id t2mr13798887pjl.108.1635537823599;
-        Fri, 29 Oct 2021 13:03:43 -0700 (PDT)
-Received: from stbsrv-and-01.and.broadcom.net ([192.19.11.250])
-        by smtp.gmail.com with ESMTPSA id j16sm8775041pfj.16.2021.10.29.13.03.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Oct 2021 13:03:43 -0700 (PDT)
-From:   Jim Quinlan <jim2101024@gmail.com>
-To:     linux-pci@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com, jim2101024@gmail.com,
-        james.quinlan@broadcom.com
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-rpi-kernel@lists.infradead.org (moderated list:BROADCOM
-        BCM2711/BCM2835 ARM ARCHITECTURE),
-        linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM
-        BCM2711/BCM2835 ARM ARCHITECTURE),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v6 9/9] PCI: brcmstb: change brcm_phy_stop() to return void
-Date:   Fri, 29 Oct 2021 16:03:17 -0400
-Message-Id: <20211029200319.23475-10-jim2101024@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211029200319.23475-1-jim2101024@gmail.com>
-References: <20211029200319.23475-1-jim2101024@gmail.com>
+        Fri, 29 Oct 2021 16:06:58 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA9F8C061766;
+        Fri, 29 Oct 2021 13:04:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=4j1wDZ0zukO0G9+hbxn/at8w/H0Z3/+jS5ZxjuH+1Qg=; b=fiT549T1mubjtFNw5r3p2n91Ii
+        hHZyUob1SzEvIg7BwzruzF/HJn8MYclNVRKfKPls5tVgyzD/pAlV5PdDMQGZTy3LEL0eMZj54Jg84
+        X0Hqfioer7oWU/pBF2ez2UZ3154c421X2VCViXylBcvwvrogXyEJRv5rCOkiR/u9xIGUvZ4qagi2a
+        GU/WOGztXiRGYLn0ieghPtE0j3JZNcpwT/effPmBb6A+1aDaVzsMChAc5FIHxO4YBlLxImPKiWSYJ
+        9ihZccR3tGQRd7WIm4bjFMfASeEzOx/16fo6l9bUDu/JxfSA6ksUC2fIg0cCljyqkmJxjaVJz7Eow
+        VwEc90rw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mgY61-00D8nD-Jz; Fri, 29 Oct 2021 20:03:28 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 3D10F9821D0; Fri, 29 Oct 2021 22:03:24 +0200 (CEST)
+Date:   Fri, 29 Oct 2021 22:03:24 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>, X86 ML <x86@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-hardening@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH v5 00/15] x86: Add support for Clang CFI
+Message-ID: <20211029200324.GR174703@worktop.programming.kicks-ass.net>
+References: <20211013181658.1020262-1-samitolvanen@google.com>
+ <20211026201622.GG174703@worktop.programming.kicks-ass.net>
+ <20211027120515.GC54628@C02TD0UTHF1T.local>
+ <CAMj1kXEx10gC8eH7rV-GbZZj2M3uDue6HYsKb+A5J01zOxm_FA@mail.gmail.com>
+ <20211027124852.GK174703@worktop.programming.kicks-ass.net>
+ <YXlOd1lyKZKAcJfA@hirez.programming.kicks-ass.net>
+ <CAMj1kXHKh7wv6JqusVnoiQDMm7ApFq2ujzbfWmM9AzLKFehhAA@mail.gmail.com>
+ <YXlcMluaysPBF92J@hirez.programming.kicks-ass.net>
+ <CAMj1kXECTdDLVMk2JduU5mV2TR0Cv=hZ9QOpYRsRM1jfvvNikw@mail.gmail.com>
+ <CABCJKufpS4jJxHqk8=bd1JCNbKfmLDKBbjbhjrar2+YQJFiprg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABCJKufpS4jJxHqk8=bd1JCNbKfmLDKBbjbhjrar2+YQJFiprg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We do not use the result of this function so make it void.
+On Wed, Oct 27, 2021 at 08:50:17AM -0700, Sami Tolvanen wrote:
+> On Wed, Oct 27, 2021 at 7:18 AM Ard Biesheuvel <ardb@kernel.org> wrote:
 
-Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
----
- drivers/pci/controller/pcie-brcmstb.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+> > > /*
+> > >  * Turns a Clang CFI jump-table entry into an actual function pointer.
+> > >  * These jump-table entries are simply jmp.d32 instruction with their
+> > >  * relative offset pointing to the actual function, therefore decode the
+> > >  * instruction to find the real function.
+> > >  */
+> > > static __always_inline void *nocfi_ptr(void *func)
+> > > {
+> > >         union text_poke_insn insn = *(union text_poke_insn *)func;
+> > >
+> > >         return func + sizeof(insn) + insn.disp;
+> > > }
+> > >
+> > > But really, that wants to be a compiler intrinsic.
+> >
+> > Agreed. We could easily do something similar on arm64, but I'd prefer
+> > to avoid that too.
+> 
+> I'll see what we can do. Note that the compiler built-in we previously
+> discussed would have semantics similar to function_nocfi(). It would
+> return the raw function address from a symbol name, but it wouldn't
+> decode the address from an arbitrary pointer, so this would require
+> something different.
 
-diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
-index 18b9f7c97864..c1f8fdb89cec 100644
---- a/drivers/pci/controller/pcie-brcmstb.c
-+++ b/drivers/pci/controller/pcie-brcmstb.c
-@@ -1196,9 +1196,10 @@ static inline int brcm_phy_start(struct brcm_pcie *pcie)
- 	return pcie->rescal ? brcm_phy_cntl(pcie, 1) : 0;
- }
- 
--static inline int brcm_phy_stop(struct brcm_pcie *pcie)
-+static inline void brcm_phy_stop(struct brcm_pcie *pcie)
- {
--	return pcie->rescal ? brcm_phy_cntl(pcie, 0) : 0;
-+	if (pcie->rescal)
-+		brcm_phy_cntl(pcie, 0);
- }
- 
- static void brcm_pcie_turn_off(struct brcm_pcie *pcie)
-@@ -1281,10 +1282,9 @@ static int brcm_pcie_get_regulators(struct brcm_pcie *pcie, struct pci_dev *dev)
- static int brcm_pcie_suspend(struct device *dev)
- {
- 	struct brcm_pcie *pcie = dev_get_drvdata(dev);
--	int ret;
- 
- 	brcm_pcie_turn_off(pcie);
--	ret = brcm_phy_stop(pcie);
-+	brcm_phy_stop(pcie);
- 	reset_control_rearm(pcie->rescal);
- 	clk_disable_unprepare(pcie->clk);
- 
--- 
-2.17.1
+So I had a bit of a peek at what clang generates:
+
+    3fa4:       48 c7 c7 00 00 00 00    mov    $0x0,%rdi        3fa7: R_X86_64_32S      __SCK__x86_pmu_handle_irq
+    3fab:       48 c7 c6 00 00 00 00    mov    $0x0,%rsi        3fae: R_X86_64_32S      __SCT__x86_pmu_handle_irq.cfi_jt
+    3fb2:       e8 00 00 00 00          call   3fb7 <init_hw_perf_events+0x1dc> 3fb3: R_X86_64_PLT32    __static_call_update-0x4
+
+So this then gives the trampoline jump table entry to
+__static_call_update(), with the result that it will rewrite the
+jump-table entry, not the trampoline!
+
+Now it so happens that the trampoline looks *exactly* like the
+jump-table entry (one jmp.d32 instruction), so in that regards it'll
+again 'work'.
+
+But this is all really, as in *really*, wrong. And I'm really sad I'm
+the one to have to discover this, even though I've mentioned
+static_call()s being tricky in previous reviews.
+
 
