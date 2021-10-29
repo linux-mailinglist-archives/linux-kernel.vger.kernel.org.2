@@ -2,58 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72DEE43FFEA
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 17:56:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24B8243FFF0
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 17:56:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230022AbhJ2P6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 11:58:45 -0400
-Received: from mga11.intel.com ([192.55.52.93]:58009 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229607AbhJ2P6o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 11:58:44 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10151"; a="228149056"
-X-IronPort-AV: E=Sophos;i="5.87,193,1631602800"; 
-   d="scan'208";a="228149056"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2021 08:56:15 -0700
-X-IronPort-AV: E=Sophos;i="5.87,193,1631602800"; 
-   d="scan'208";a="448407220"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2021 08:56:13 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mgUEV-0024Em-3w;
-        Fri, 29 Oct 2021 18:55:55 +0300
-Date:   Fri, 29 Oct 2021 18:55:54 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>
-Subject: Re: [PATCH v1 1/1] soc: fsl: Replace kernel.h with the necessary
- inclusions
-Message-ID: <YXwZihLk1njsBNT4@smile.fi.intel.com>
-References: <20211027153354.81129-1-andriy.shevchenko@linux.intel.com>
+        id S230121AbhJ2P7C convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 29 Oct 2021 11:59:02 -0400
+Received: from mail-oi1-f174.google.com ([209.85.167.174]:44965 "EHLO
+        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229607AbhJ2P66 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 11:58:58 -0400
+Received: by mail-oi1-f174.google.com with SMTP id y207so13932305oia.11;
+        Fri, 29 Oct 2021 08:56:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=/SMjFsF1c2jJAFrAQjbA6gkypuYLRMtEM9UCUe5CB44=;
+        b=XvruEgbq7nqBo2gsz2lqSNIuzXn6FpXLiQUfC9viytYOUOOubxsaauhvlk/erw/vpH
+         AciuLqAWXCYdmEsrF0CKe9BF+IADh3luNjqBujkPMlQr99xcq55DfpFEeZz+kC6fn8VO
+         pim4ETWFcwQo20zJPFtC/H11hQPevtK61qNNvNEuNGz0dNGsS0r0wm/e6HoJNYMbBOCp
+         ukmC8ao2yWYJ66hYb4U+RFaZtnql/A1T5VrCvmYKRisg5OvLVi2S4d+IHzBXw7dLnbDj
+         /Sqmi7ohii0MYS1VquVNTORF0LIJzcycXiebwZw+tHpZ25cRj/R2/ywYsqyWxktsLzbR
+         4wOw==
+X-Gm-Message-State: AOAM530bRLEOof/BF2tsgePqfh/DyLDffSdjP87y8B814ukz+TUXY2Mv
+        tRx5Dcj3l//1WktkiRYJJnYZU2UG1KiE/LresbM=
+X-Google-Smtp-Source: ABdhPJyt4UMxkF1vsuAi+BGZn90y8TkCvU/MAtayV4OwG5udI4L0shq0uzCyV4nG28Fc/pQknaSM5LL0g9M7DRCchMM=
+X-Received: by 2002:a05:6808:128d:: with SMTP id a13mr2577oiw.51.1635522989816;
+ Fri, 29 Oct 2021 08:56:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211027153354.81129-1-andriy.shevchenko@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20211025224032.21012-1-digetx@gmail.com> <20211025224032.21012-21-digetx@gmail.com>
+ <09c05206-c0e5-9a25-8ffa-b9291f6ea5ae@gmail.com>
+In-Reply-To: <09c05206-c0e5-9a25-8ffa-b9291f6ea5ae@gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 29 Oct 2021 17:56:18 +0200
+Message-ID: <CAJZ5v0i9OtA1nDiv8UXuF3ASdENFYJFV7+nMWm6Pcu=kw8k1aQ@mail.gmail.com>
+Subject: Re: [PATCH v14 20/39] pwm: tegra: Add runtime PM and OPP support
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux PWM List <linux-pwm@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        David Heidelberg <david@ixit.cz>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 06:33:54PM +0300, Andy Shevchenko wrote:
-> When kernel.h is used in the headers it adds a lot into dependency hell,
-> especially when there are circular dependencies are involved.
-> 
-> Replace kernel.h inclusion with the list of what is really being used.
+On Fri, Oct 29, 2021 at 5:20 PM Dmitry Osipenko <digetx@gmail.com> wrote:
+>
+> 26.10.2021 01:40, Dmitry Osipenko пишет:
+> > +     ret = devm_pm_runtime_enable(&pdev->dev);
+> > +     if (ret)
+> > +             return ret;
+> > +
+> > +     ret = devm_tegra_core_dev_init_opp_table_common(&pdev->dev);
+> > +     if (ret)
+> > +             return ret;
+> > +
+> > +     ret = pm_runtime_resume_and_get(&pdev->dev);
+> > +     if (ret)
+> > +             return ret;
+> > +
+> >       /* Set maximum frequency of the IP */
+> > -     ret = clk_set_rate(pwm->clk, pwm->soc->max_frequency);
+> > +     ret = dev_pm_opp_set_rate(pwm->dev, pwm->soc->max_frequency);
+> >       if (ret < 0) {
+> >               dev_err(&pdev->dev, "Failed to set max frequency: %d\n", ret);
+> > -             return ret;
+> > +             goto put_pm;
+> >       }
+> >
+> >       /*
+> > @@ -278,7 +294,7 @@ static int tegra_pwm_probe(struct platform_device *pdev)
+> >       if (IS_ERR(pwm->rst)) {
+> >               ret = PTR_ERR(pwm->rst);
+> >               dev_err(&pdev->dev, "Reset control is not found: %d\n", ret);
+> > -             return ret;
+> > +             goto put_pm;
+> >       }
+> >
+> >       reset_control_deassert(pwm->rst);
+> > @@ -291,10 +307,15 @@ static int tegra_pwm_probe(struct platform_device *pdev)
+> >       if (ret < 0) {
+> >               dev_err(&pdev->dev, "pwmchip_add() failed: %d\n", ret);
+> >               reset_control_assert(pwm->rst);
+> > -             return ret;
+> > +             goto put_pm;
+> >       }
+> >
+> > +     pm_runtime_put(&pdev->dev);
+> > +
+> >       return 0;
+> > +put_pm:
+> > +     pm_runtime_put_sync_suspend(&pdev->dev);
+> > +     return ret;
+> >  }
+> >
+> >  static int tegra_pwm_remove(struct platform_device *pdev)
+> > @@ -305,20 +326,44 @@ static int tegra_pwm_remove(struct platform_device *pdev)
+> >
+> >       reset_control_assert(pc->rst);
+> >
+> > +     pm_runtime_force_suspend(&pdev->dev);
+>
+> I just noticed that RPM core doesn't reset RPM-enable count of a device
+> on driver's unbind (pm_runtime_reinit). It was a bad idea to use
+> devm_pm_runtime_enable() + pm_runtime_force_suspend() here, since RPM is
+> disabled twice on driver's removal, and thus, RPM will never be enabled
+> again.
+>
+> I'll fix it for PWM and other drivers in this series, in v15.
 
-Seems nobody from PPC took this patch.
-Any idea who can take it?
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Well, for the record, IMV using pm_runtime_force_suspend() is
+generally a questionable idea.
