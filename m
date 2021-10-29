@@ -2,101 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAB5F43F9F5
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 11:33:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1A4443F9FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 11:35:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231546AbhJ2Jf5 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 29 Oct 2021 05:35:57 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:38619 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231273AbhJ2Jfz (ORCPT
+        id S231555AbhJ2Jhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 05:37:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34700 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229927AbhJ2Jhe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 05:35:55 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-232-gvdEMqvHMk-PYV3PyIWZ-Q-1; Fri, 29 Oct 2021 10:33:25 +0100
-X-MC-Unique: gvdEMqvHMk-PYV3PyIWZ-Q-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.24; Fri, 29 Oct 2021 10:33:24 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.024; Fri, 29 Oct 2021 10:33:24 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Peter Zijlstra' <peterz@infradead.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "andrew.cooper3@citrix.com" <andrew.cooper3@citrix.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-CC:     "keescook@chromium.org" <keescook@chromium.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "hjl.tools@gmail.com" <hjl.tools@gmail.com>
-Subject: RE: [RFC][PATCH] x86: Add straight-line-speculation mitigation
-Thread-Topic: [RFC][PATCH] x86: Add straight-line-speculation mitigation
-Thread-Index: AQHXy/FMvPPgdVpuSEu91k2NumunhqvpsYaQ
-Date:   Fri, 29 Oct 2021 09:33:24 +0000
-Message-ID: <6215f764fffc41c39c74a871124aa4ed@AcuMS.aculab.com>
-References: <YXqNAJI3NJz3SQue@hirez.programming.kicks-ass.net>
-In-Reply-To: <YXqNAJI3NJz3SQue@hirez.programming.kicks-ass.net>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Fri, 29 Oct 2021 05:37:34 -0400
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D47E1C061570
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 02:35:05 -0700 (PDT)
+Received: by mail-yb1-xb41.google.com with SMTP id 131so11225918ybc.7
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 02:35:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=j/OujbmrV5NaVPVMIjJKYsD0hIi39AnoQxze7LZ/iC4=;
+        b=AGc90XXmMDsiFWeLaRlU/3og6tJOx04GKr/PWG3JtOfpgwTOujCl+8ArRMD4WJ+TTo
+         NfdiKpP289AndCCSzanBcYZqUlbbYQsivrIpll2ToPg+vbfL+hgt4ulJDVb7tci8cU+D
+         cKkuMON4eGsCCbpaYUHxuDZKSxVGs3xe29savOdQqrkKNiBxnwBAUVs/N/mVAJPRoZQT
+         VlDnso1+uQMDO20JWyc6+8HroHsRqo+5CIu7OMYBvYMryndBFThhoS33yYaMBB8jTMso
+         K2ZM1KsmLhPoYXNLS8ttMb0Sy2BNHUWNQXcCoOPGjgrE2oiWPWExM2ROSrKlwx1rytcu
+         neKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=j/OujbmrV5NaVPVMIjJKYsD0hIi39AnoQxze7LZ/iC4=;
+        b=6hHEngTtYJbEIMi3Kbgf02JwEwzRaIuV0noXVOpyqeGfcJzumCvjGxjY810KU7daHA
+         j542fDQzzJ5RybKp3jNb0SW1XqAeiOx8XhL4U8KVHei8xAqkFumPH/Nwe2MwFRuQ81YU
+         ttsJ41LO85H4LEgRZPXwwiNC64gLlETpeT8W/5yD+fLS91KvyIsBnTWBmgLg7E0HoKJT
+         Zno6qBAufsVf1a2rwNfX4c6VsBa5sHGBUwJI/lbgi12UIetVL2cep/k9CMNFG/VgLRWy
+         lLZF7YrWNZZFVM/lDgCQ2r4J3sXRdv9ytIqGQYL/AN5ZxsVTzZQemBS9RwQsgxknXCda
+         McgA==
+X-Gm-Message-State: AOAM530Ht/UrF7PJSF7YyX7n4CZwRyvd1OXP8/fWA83Ux3PcOK+5zSKn
+        oMNho/CLxIArLGctkiGEJKq6NP1aGkpW6z0LdAQ=
+X-Google-Smtp-Source: ABdhPJwXt8mhZtiVV5h1sAwVFqeYECqz5zbw/Se7RSZHedi6z+W80UlhhNYrT+XQ9soZVCnQ6opnicMtvmhsKwG6AY4=
+X-Received: by 2002:a25:b19f:: with SMTP id h31mr3923827ybj.331.1635500104985;
+ Fri, 29 Oct 2021 02:35:04 -0700 (PDT)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Received: by 2002:a05:7010:4acc:b0:1bb:64fa:94ae with HTTP; Fri, 29 Oct 2021
+ 02:35:04 -0700 (PDT)
+Reply-To: mrsharrishuzzah@gmail.com
+From:   HARRIS HUZZAH <mrseliselucason@gmail.com>
+Date:   Fri, 29 Oct 2021 02:35:04 -0700
+Message-ID: <CABUmS84T1Ldv7P7+P_SNQ_O5AMbYVLkUrGJphw=95wjovosDOw@mail.gmail.com>
+Subject: My name is Mrs HARRIS HUZZAH from France,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra
-> Sent: 28 October 2021 12:44
-> 
-> This little patch makes use of an upcomming GCC feature to mitigate
-> straight-line-speculation for x86:
-...
+My name is Mrs HARRIS HUZZAH from France,
 
-This all generates the instruction sequence:
-	ret
-	int3
-because there are (apparently) times when the cpu will speculatively
-execute the instruction following a 'ret'.
+I know that this message might come to you as surprise because we
+don't know each other nor have we ever met before but accept it with
+an open and positive mind. I have a Very important request that made
+me to contact you; I was diagnosed with ovarian cancer disease which
+doctors have confirmed and announced to me that i have just few days
+to leave, Now that I=E2=80=99m ending the race like this, without any famil=
+y
+members and no child, I just came across your email contact from my
+personal search.
 
-I suspect this is likely to have a small performance impact
-on at least some cpu that has not been mentioned by anyone.
-As well as the slight increase in code size I can think of
-two more problems.
+I=E2=80=99m a business woman from France dealing with gold exportation here=
+ in
+Republic of Burkina Faso. I have decided to hand over the sum of ($4.5
+Million Dollar) in my account to you for the help of orphanage
+homes/the needy once in your location to fulfill my wish on earth. But
+before handing over my data=E2=80=99s to you, kindly assure me that you wil=
+l
+take only 50% of the money and share the rest to orphanage homes/the
+needy once in your country, Return to enable me forward to you the
+bank contact details now that I have access to Internet in the
+hospital to enable you contact the bank, always check your e-mail
+always remember me for doing good.
+Please don't forget to reply me in my Private
+E-mail:(mrsharrishuzzah@gmail.com)
 
-1) The cpu may not be able to quickly 'abort' the speculative
-   execution of the 'int3' instruction.
-   Since the is a slow instruction (not as slow as 'tan'!)
-   this might add quite a few clocks.
-   ISTR there have always been warnings about the problem
-   of speculative execution of trig functions - eg if non-code
-   follows a 'ret'.
+Your early response will be appreciated.
 
-2) int3 is almost certainly slow to decode.
-   Plausibly this might block the decoders from decoding
-   from the branch/return target.
-   Although I suspect the I-cache fetch will take longer
-   unless the decode time is really horrid.
-   The tables I have don't give execution times for int3.
-
-While slightly longer, it may be that 'jmp .' is actually
-a better instruction than 'int3'.
-Since it will block speculative execution while still
-being fast to decode and (not) execute.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+Yours Faithfully,
+Mrs.HARRIS HUZZAH
