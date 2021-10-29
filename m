@@ -2,176 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CAE644000E
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 18:07:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2355A440010
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 18:09:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230044AbhJ2QKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 12:10:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230064AbhJ2QKU (ORCPT
+        id S229868AbhJ2QLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 12:11:31 -0400
+Received: from mail-oi1-f178.google.com ([209.85.167.178]:34802 "EHLO
+        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229607AbhJ2QL1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 12:10:20 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16807C061570
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 09:07:51 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id s186so1310902yba.12
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 09:07:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ErSQ5CrQeSkmLUbZHQvgt43whunrTwbaNcEcHojj/F0=;
-        b=r13mojvJ6IxO/MNCwqjQIRl2GnGDxLpJDNBQ3Jf8Txoh9BXENinQKzMfyhu2t+R34Q
-         XaYNUIOISw7NVtii3HqpVPoYUstJaeOIWGm4Pj4x05NuuzDT8UGH/25/txTXbu2B8JBj
-         Ypqx9W3CyM3Gs0InNIieqvyefufKQJ8HVmG8kxON7/IT8O4hH/OIyikQnw/X9sXTsfVj
-         ZhhxqXJFk8HyTyk8paxVtgpt1YUowPq1Kf3IwB2JHg42qzYi91mH+vEtZg3DkJOHoVxC
-         Io8KK/VSaIWIT2snrGuPBQXCMo0miHT6J7R9Y6ztme3aNVbIj9g5V5mRx5G1yvcvX0iN
-         Slcg==
+        Fri, 29 Oct 2021 12:11:27 -0400
+Received: by mail-oi1-f178.google.com with SMTP id w193so14075655oie.1;
+        Fri, 29 Oct 2021 09:08:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ErSQ5CrQeSkmLUbZHQvgt43whunrTwbaNcEcHojj/F0=;
-        b=bKN2EJbHbAwqC9cf0a3pmU2RuCN2ZMO0dldUudbdfFou0MJe+dyXTe6fYPE02GWn+f
-         DzZK3bElVW9I+XFbtAPC8C01PcoeQN+adBfaR+iaAR0tEDJTEnus7b2xh+EtiD+bOtan
-         rvXvR5o9vgRraSUHkX6A9cnputOHLnLdNQ1U5XU3UtS4Tzecr8+NAWn656F83GwTPZec
-         56V2Q6mqqsQEfe5cbuxGNacDXDMLewVYmyZMOVgdngNDkEb8WpjNJQXlFgQTINgb1qTs
-         IZVxMRFFeNqWmimSKj+cIRWPa9Yxkuz9NOObrP9fJH2TpqYrBD9/eDrT2M9N9xPg1qFG
-         KHAg==
-X-Gm-Message-State: AOAM531CiqR6q3/uOczGGZ+lu7ILxMTrn6dl8GGaX149ww0vm8t2Ztdk
-        sOgVDWJXzTcyg9xu4fUo3uQmCa8R7F3S3F9Hp+jlzw==
-X-Google-Smtp-Source: ABdhPJyFooqk3QJhmp9xEqMlJWlYya+dgKhKFj39pBOPgPsVPxI0OQtOdHjIYjwZ9h/nmENxRVtkMKSYNvX1hUyq2xc=
-X-Received: by 2002:a25:b3c7:: with SMTP id x7mr2296339ybf.34.1635523670005;
- Fri, 29 Oct 2021 09:07:50 -0700 (PDT)
+        bh=Yd9yTVl0mzMu8CxNtY/NSg2Fd5BmOwS2ev++cNAViEI=;
+        b=UfVyve/AcWDCDtHCG3v/7H5+l2pevJufm0Zf9AxbY86e/vG4WtdXkKP4Wh8M2zpcjM
+         CtZGfxr9dU5aoon8ZGgBO2wowHhd7FUhKqepJws06IX6VV+3Yx9dlmAd/EQ6SDUmCsL2
+         Zo0gbvZNbuUr3pq071ThkvTelh9o3MAqyQQw1SjglwDICsMxeRvViTsru/2jWq9JtHkN
+         8EiBdFccF6CB7Ip96WtHuaM1RE1xcTsgT99SS402xs3TKr6ELjdBtsWj4yk2suKRAWIo
+         IuZeCiVRJVYdIgcPpv065vArP18a+mEaX+jdlIrq6l3zViAd40vS3XD/sKmrDETtOwFB
+         8sfQ==
+X-Gm-Message-State: AOAM531LRU81WkJCi2nSFXL33SAlPO1wbflrCbXFTo4IqK+uTeaD+t6M
+        Gz2JuTRkUrdHMbfOi1Qy3Pzb74C6M5EjwfdcD1A=
+X-Google-Smtp-Source: ABdhPJxt4MrRv0+zcRik2HyFB0+2oqvoK0S6Fa/NvTCUMdlq5bduCS7QsLm/TXBu76wwyRLDWsktYueSaNNKTJ5sLoo=
+X-Received: by 2002:a05:6808:e90:: with SMTP id k16mr8544666oil.166.1635523739007;
+ Fri, 29 Oct 2021 09:08:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211022014658.263508-1-surenb@google.com> <YXJwUUPjfg9wV6MQ@dhcp22.suse.cz>
- <CAJuCfpEcSbK8WrufZjDj-7iUxiQtrmVTqHOxFUOvLhYGz6_ttQ@mail.gmail.com>
- <CAJuCfpFccBJHHqfOKixJvLr7Xta_ojkdHGfGomwTDNKffzziRQ@mail.gmail.com> <YXvxBSzA2YIxbwVC@dhcp22.suse.cz>
-In-Reply-To: <YXvxBSzA2YIxbwVC@dhcp22.suse.cz>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Fri, 29 Oct 2021 09:07:39 -0700
-Message-ID: <CAJuCfpHBoMGPOUvB2ZWQ=TxbFuWBRF++UaKJZDCrQV4mzb5kMA@mail.gmail.com>
-Subject: Re: [PATCH 1/1] mm: prevent a race between process_mrelease and exit_mmap
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christian Brauner <christian@brauner.io>,
-        Christoph Hellwig <hch@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jann Horn <jannh@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Jan Engelhardt <jengelh@inai.de>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Andrea Arcangeli <aarcange@redhat.com>
+References: <1635391292-2879179-1-git-send-email-jiasheng@iscas.ac.cn>
+In-Reply-To: <1635391292-2879179-1-git-send-email-jiasheng@iscas.ac.cn>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 29 Oct 2021 18:08:48 +0200
+Message-ID: <CAJZ5v0iGmVRjwDTUPvfWcf_3t=NHLT_t-dN_4TX2N3-LxJX_Kg@mail.gmail.com>
+Subject: Re: [PATCH] thermal: Fix implicit type conversion
+To:     Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Cc:     "Zhang, Rui" <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 6:03 AM Michal Hocko <mhocko@suse.com> wrote:
+On Thu, Oct 28, 2021 at 5:22 AM Jiasheng Jiang <jiasheng@iscas.ac.cn> wrote:
 >
-> On Wed 27-10-21 09:08:21, Suren Baghdasaryan wrote:
-> > On Fri, Oct 22, 2021 at 10:38 AM Suren Baghdasaryan <surenb@google.com> wrote:
-> > >
-> > > On Fri, Oct 22, 2021 at 1:03 AM Michal Hocko <mhocko@suse.com> wrote:
-> > > >
-> > > > On Thu 21-10-21 18:46:58, Suren Baghdasaryan wrote:
-> > > > > Race between process_mrelease and exit_mmap, where free_pgtables is
-> > > > > called while __oom_reap_task_mm is in progress, leads to kernel crash
-> > > > > during pte_offset_map_lock call. oom-reaper avoids this race by setting
-> > > > > MMF_OOM_VICTIM flag and causing exit_mmap to take and release
-> > > > > mmap_write_lock, blocking it until oom-reaper releases mmap_read_lock.
-> > > > > Reusing MMF_OOM_VICTIM for process_mrelease would be the simplest way to
-> > > > > fix this race, however that would be considered a hack. Fix this race
-> > > > > by elevating mm->mm_users and preventing exit_mmap from executing until
-> > > > > process_mrelease is finished. Patch slightly refactors the code to adapt
-> > > > > for a possible mmget_not_zero failure.
-> > > > > This fix has considerable negative impact on process_mrelease performance
-> > > > > and will likely need later optimization.
-> > > >
-> > > > I am not sure there is any promise that process_mrelease will run in
-> > > > parallel with the exiting process. In fact the primary purpose of this
-> > > > syscall is to provide a reliable way to oom kill from user space. If you
-> > > > want to optimize process exit resp. its exit_mmap part then you should
-> > > > be using other means. So I would be careful calling this a regression.
-> > > >
-> > > > I do agree that taking the reference count is the right approach here. I
-> > > > was wrong previously [1] when saying that pinning the mm struct is
-> > > > sufficient. I have completely forgot about the subtle sync in exit_mmap.
-> > > > One way we can approach that would be to take exclusive mmap_sem
-> > > > throughout the exit_mmap unconditionally.
-> > >
-> > > I agree, that would probably be the cleanest way.
-> > >
-> > > > There was a push back against
-> > > > that though so arguments would have to be re-evaluated.
-> > >
-> > > I'll review that discussion to better understand the reasons for the
-> > > push back. Thanks for the link.
-> >
-> > Adding Kirill and Andrea.
-> >
-> > I had some time to dig some more. The latency increase is definitely
-> > coming due to process_mrelease calling the last mmput and exit_aio is
-> > especially problematic. So, currently process_mrelease not only
-> > releases memory but does more, including waiting for io to finish.
+> The parameter 'cpu' is defined as unsigned int.
+> However in the cpumask_next() it is implicitly type conversed
+> to int.
+> It is universally accepted that the implicit type conversion is
+> terrible.
+> Also, having the good programming custom will set an example for
+> others.
+> Thus, it might be better to change the type of 'cpu' from
+> unsigned int to int.
 >
-> Well, I still do not see why that is a problem. This syscall is meant to
-> release the address space not to do it fast.
-
-It's the same problem for a userspace memory reaper as for the
-oom-reaper. The goal is to release the memory of the victim and to
-quickly move on to the next one if needed.
-
+> Fixes: 3e8c4d3 ("drivers: thermal: Move various drivers for intel platforms into a subdir")
+> Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
+> ---
+>  drivers/thermal/intel/intel_powerclamp.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> > Unconditional mmap_write_lock around free_pgtables in exit_mmap seems
-> > to me the most semantically correct way forward and the pushback is on
-> > the basis of regressing performance of the exit path. I would like to
-> > measure that regression to confirm this. I don't have access to a big
-> > machine but will ask someone in another Google team to try the test
-> > Michal wrote here
-> > https://lore.kernel.org/all/20170725142626.GJ26723@dhcp22.suse.cz/ on
-> > a server with and without a custom patch.
+> diff --git a/drivers/thermal/intel/intel_powerclamp.c b/drivers/thermal/intel/intel_powerclamp.c
+> index b0eb5ec..ed46b5e 100644
+> --- a/drivers/thermal/intel/intel_powerclamp.c
+> +++ b/drivers/thermal/intel/intel_powerclamp.c
+> @@ -578,7 +578,7 @@ static int powerclamp_cpu_online(unsigned int cpu)
+>         return 0;
+>  }
 >
-> Well, I do not remember all the details of the discussion but I believe
-> a rather large part of that discussion was a bit misled. The exist
-> path - and the last mmput in particular - shouldn't trigger mmap_sem
-> contention. There are only rare cases where somebody can race and take a
-> lock then (e.g. proc interfaces taking the lock before mmget_notzero).
-> Certainly not something to optimize for and I believe a correct and
-> robust code should have a preference. As we can see a lack of proper
-> synchronization has led to 2 very similar problem nobody revealed during
-> review because the code is just too tricky.
-
-I totally agree that this locking is tricky and mmap_sem contention
-should be very rare in the exit_mmap path and not worth optimizing.
-
->
-> Btw. the above code will not really tell you much on a larger machine
-> unless you manage to trigger mmap_sem contection. Otherwise you are
-> measuring the mmap_sem writelock fast path and that should be really
-> within a noise comparing to the whole address space destruction time. If
-> that is not the case then we have a real problem with the locking...
-
-My understanding of that discussion is that the concern was that even
-taking uncontended mmap_sem writelock would regress the exit path.
-That was what I wanted to confirm. Am I misreading it?
-Thanks,
-Suren.
-
+> -static int powerclamp_cpu_predown(unsigned int cpu)
+> +static int powerclamp_cpu_predown(int cpu)
+>  {
+>         if (clamping == false)
+>                 return 0;
 > --
-> Michal Hocko
-> SUSE Labs
+
+I'm not going to consider any patches of this type, because IMO they
+are not improvements.
+
+Thanks!
