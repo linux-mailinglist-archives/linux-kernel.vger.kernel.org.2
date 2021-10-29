@@ -2,241 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4247243FEAC
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 16:47:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0ABF43FEAE
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 16:47:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229712AbhJ2Otp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 10:49:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49642 "EHLO
+        id S229652AbhJ2OuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 10:50:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229558AbhJ2Oto (ORCPT
+        with ESMTP id S229501AbhJ2OuT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 10:49:44 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93371C061570;
-        Fri, 29 Oct 2021 07:47:15 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id v127so8990858wme.5;
-        Fri, 29 Oct 2021 07:47:15 -0700 (PDT)
+        Fri, 29 Oct 2021 10:50:19 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 424D7C061570
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 07:47:51 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id lx5-20020a17090b4b0500b001a262880e99so7533036pjb.5
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 07:47:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :references:from:in-reply-to:content-transfer-encoding;
-        bh=0N9owYFIVYIlKo6ThDwpew2UCXBiZ1LXn6ea7t4uB8o=;
-        b=MlxU1qSvInV5I7FAjoMbKnUBbxBxjFgdtqScLAVnag8Kr9Rs2iASkX7TTDkGruCLtm
-         bX8fksRAPcNrsHN4yALEbgaZZqAbrWPZCCo5c5ChzaxiC5XDaPetlE2Yjx9pVlgpdZZy
-         CZqyOUXqtdNdzQ3fq5u81JXYx/R6W/NAPkTfnwaemN86Ewf8/mcBb+gqz83CaU3iqDS5
-         Ri6MbhIRSsPQjHEb9qFOailsENzbNIgx5+CbBVJsKPhIyT5OfXWTSyRt5PnkuYsJS4nJ
-         Je5Q1piigzFZufzYT+M1pd4jiUB075HOdq/w/yD+UaXTsljYWtbwavyqE72ZPwmGYeDy
-         p+lg==
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=hV6vofY7LVmgEKN79iTvz1KdYYvMLZvDW2AQ8HYXn/E=;
+        b=PchEGoqznLSapRib9ayECws6mKwf45wiAVWBNDkJ3CUb8tFnVGhuCvyAqoG3Y7wa+X
+         oxUXyRklHvdyeUK1TiKYHaOuXmR/fG7PRLWCycEjQwL3bKyZI5TAnrnG1TvZDENcOVAR
+         kOU65pb2p3EAVzHgR+s5jGWQLp524ixxd17ZXbRu1tRLWYCh0fthr+WyTb6cxOJqw42L
+         O2/xwEzF2LqlzPxD+R3OKWdAlGNCSL3J0DPk0JsiGX4OfvXeEa7fs8Csw0Lszdgypvk3
+         mTEsKi0ESFvBcTaG0v8Bk1Q1jiM1acSq44s4HxbkyAyVRiK798g3xcBcduWSv3+WGpNi
+         /eHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:references:from:in-reply-to
+         :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=0N9owYFIVYIlKo6ThDwpew2UCXBiZ1LXn6ea7t4uB8o=;
-        b=TgpIsIKSYYQ32KuJE32Y7H6Ch2fIgELSdxI/x9fNgpw1H4Jw5oZJ+oohnnHuzRYQgG
-         HdKz1ya+xO60KIRBisWadfxLjdn2FMMU6h6J8ZITLtxqZTfDgfncxxyC4oj2IYbuOm6e
-         kQWUB92MN4XQNPakfN2vjgQTZ+X/lkWshRIb8e+hSGDJwiKkKMFWqhOTePS6LNzFZ0f3
-         EBhudblDDxD0meN7j+QqX5RbsJ9s60S/O06cp4JBO0g7rdv6BXe6o/4BlN7bAS1jlUMY
-         C5mdNaGzlHFByIAORjovhbpPh3fAGx6LVHZS34FePisndNKBbxVe3sZQPMJsof/y3diA
-         0OTg==
-X-Gm-Message-State: AOAM530cb+YZuomru1/kXJM8gjl0YN3rzCAw7maeZK/pJ1qjyL6KRCU4
-        5jVIyaeco3L8jD7iMAafVyo=
-X-Google-Smtp-Source: ABdhPJzEUV2yOFnynEnoi4TKZEFjAZheYcIdCtWlCMSFuxZJdBp6wq14dP40Ozo6Bov7RtXwDBa2ZQ==
-X-Received: by 2002:a05:600c:2113:: with SMTP id u19mr12056582wml.125.1635518834115;
-        Fri, 29 Oct 2021 07:47:14 -0700 (PDT)
-Received: from [192.168.8.198] ([148.252.129.16])
-        by smtp.gmail.com with ESMTPSA id t189sm2176271wma.8.2021.10.29.07.47.13
+        bh=hV6vofY7LVmgEKN79iTvz1KdYYvMLZvDW2AQ8HYXn/E=;
+        b=F400Tw+IlAoVhF9JRzQ+ltQKkptD1r9sUbq87wLot7Fbu2Fo5IJ9lyhBSKMcnFd7/M
+         yX9rKJn2MpdmALwdjqPufXHbpukUM5gjY6wTZmYb1u/R+AVO6bxu+iWV7kEsPUEqgdr7
+         GxcOGKz65IxVLEMTnkGVimGZRENWEsAc53ZlqEStJH/qdg5dIl4w3CtJwsKSSfvLf86Q
+         JfaBbwwjs4+EBmGTtnIperXHHOBiVpbYGhbThrmblcTbretCEXZ23jyiRBSY6zVCFCdQ
+         GNbKKTC5UQHcj53QcsS/dIgSumD/hRRTHwBF1gvHsB5VNoZWOg64FX14WOp6sXn4SJiH
+         KsGg==
+X-Gm-Message-State: AOAM530a5zztM1yqt7qvYfYaw/D5e9YAcoIw/EoTIGd6V9cHPxWK8Znq
+        6CiaR2HyN+XKkqWN9xoGY/KtC6DoOdI=
+X-Google-Smtp-Source: ABdhPJzsXBdSdtSr21ya/684zcKViMYI/czst3dq83J9Sdp5vippaNUP/l/f/HhnItmeCDTmCor/tw==
+X-Received: by 2002:a17:902:e848:b0:13e:f908:155a with SMTP id t8-20020a170902e84800b0013ef908155amr10320481plg.13.1635518870777;
+        Fri, 29 Oct 2021 07:47:50 -0700 (PDT)
+Received: from ?IPV6:2405:201:d007:e827:3d78:7315:8c23:fdaf? ([2405:201:d007:e827:3d78:7315:8c23:fdaf])
+        by smtp.gmail.com with ESMTPSA id k22sm7629195pfu.148.2021.10.29.07.47.47
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Oct 2021 07:47:13 -0700 (PDT)
-Message-ID: <949780a1-8768-830f-ff89-f6092037cb58@gmail.com>
-Date:   Fri, 29 Oct 2021 15:46:34 +0100
+        Fri, 29 Oct 2021 07:47:50 -0700 (PDT)
+Message-ID: <8cf5e5a4-675e-8c50-f234-018321dcb93a@gmail.com>
+Date:   Fri, 29 Oct 2021 20:17:45 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [syzbot] KASAN: use-after-free Write in __io_free_req
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [Outreachy kernel] [PATCH 1/7] staging: vt6655: Introduce `idx`
+ temporary variable
 Content-Language: en-US
-To:     syzbot <syzbot+78b76ebc91042904f34e@syzkaller.appspotmail.com>,
-        axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <000000000000fba7bd05cf7eb8f5@google.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <000000000000fba7bd05cf7eb8f5@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Karolina Drobnik <karolinadrobnik@gmail.com>,
+        outreachy-kernel@googlegroups.com
+Cc:     gregkh@linuxfoundation.org, forest@alittletooquiet.net,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <cover.1635415820.git.karolinadrobnik@gmail.com>
+ <34bd0e8f42597edf006a950d420345befc4e0bc2.1635415820.git.karolinadrobnik@gmail.com>
+From:   Praveen Kumar <kpraveen.lkml@gmail.com>
+In-Reply-To: <34bd0e8f42597edf006a950d420345befc4e0bc2.1635415820.git.karolinadrobnik@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/29/21 15:34, syzbot wrote:
-> Hello,
+On 28-10-2021 16:05, Karolina Drobnik wrote:
+> Add a local variable to store `MISCFIFO_SYNDATA_IDX` offset.
+> This change helps in shortening the lines in `rf.c` that
+> are deemed too long by checkpatch.pl.
 > 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    bdcc9f6a5682 Add linux-next specific files for 20211029
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=12a87e22b00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=cea91ee10b0cd274
-> dashboard link: https://syzkaller.appspot.com/bug?extid=78b76ebc91042904f34e
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10cf03e2b00000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+78b76ebc91042904f34e@syzkaller.appspotmail.com
-
-#syz test: git://git.kernel.dk/linux-block 3884b83dff245e41def99ceacca8ed2056baf0a8
-
-> 
-> ==================================================================
-> BUG: KASAN: use-after-free in wq_list_add_head fs/io-wq.h:71 [inline]
-> BUG: KASAN: use-after-free in __io_free_req+0x33f/0x3c5 fs/io_uring.c:2040
-> Write of size 8 at addr ffff8880713ecbb8 by task syz-executor.0/8059
-> 
-> CPU: 1 PID: 8059 Comm: syz-executor.0 Not tainted 5.15.0-rc7-next-20211029-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Call Trace:
->   <TASK>
->   __dump_stack lib/dump_stack.c:88 [inline]
->   dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
->   print_address_description.constprop.0.cold+0x8d/0x320 mm/kasan/report.c:247
->   __kasan_report mm/kasan/report.c:433 [inline]
->   kasan_report.cold+0x83/0xdf mm/kasan/report.c:450
->   wq_list_add_head fs/io-wq.h:71 [inline]
->   __io_free_req+0x33f/0x3c5 fs/io_uring.c:2040
->   tctx_task_work+0x1b3/0x630 fs/io_uring.c:2207
->   task_work_run+0xdd/0x1a0 kernel/task_work.c:164
->   exit_task_work include/linux/task_work.h:32 [inline]
->   do_exit+0xc14/0x2b40 kernel/exit.c:832
->   do_group_exit+0x125/0x310 kernel/exit.c:929
->   get_signal+0x47d/0x21d0 kernel/signal.c:2820
->   arch_do_signal_or_restart+0x2a9/0x1c40 arch/x86/kernel/signal.c:868
->   handle_signal_work kernel/entry/common.c:148 [inline]
->   exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
->   exit_to_user_mode_prepare+0x17d/0x290 kernel/entry/common.c:207
->   __syscall_exit_to_user_mode_work kernel/entry/common.c:289 [inline]
->   syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:300
->   do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
->   entry_SYSCALL_64_after_hwframe+0x44/0xae
-> RIP: 0033:0x7f9da8c4ea39
-> Code: Unable to access opcode bytes at RIP 0x7f9da8c4ea0f.
-> RSP: 002b:00007f9da83a3218 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
-> RAX: fffffffffffffe00 RBX: 00007f9da8d62028 RCX: 00007f9da8c4ea39
-> RDX: 0000000000000000 RSI: 0000000000000080 RDI: 00007f9da8d62028
-> RBP: 00007f9da8d62020 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 00007f9da8d6202c
-> R13: 00007ffd6e91741f R14: 00007f9da83a3300 R15: 0000000000022000
->   </TASK>
-> 
-> Allocated by task 8059:
->   kasan_save_stack+0x1e/0x50 mm/kasan/common.c:38
->   kasan_set_track mm/kasan/common.c:46 [inline]
->   set_alloc_info mm/kasan/common.c:434 [inline]
->   __kasan_slab_alloc+0x90/0xc0 mm/kasan/common.c:467
->   kasan_slab_alloc include/linux/kasan.h:259 [inline]
->   slab_post_alloc_hook mm/slab.h:519 [inline]
->   kmem_cache_alloc_bulk+0x39d/0x720 mm/slub.c:3730
->   __io_alloc_req_refill fs/io_uring.c:1977 [inline]
->   io_alloc_req_refill fs/io_uring.c:2003 [inline]
->   io_submit_sqes.cold+0x20b/0x43d fs/io_uring.c:7325
->   __do_sys_io_uring_enter+0xf6e/0x1f50 fs/io_uring.c:10052
->   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->   do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->   entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-> Freed by task 1041:
->   kasan_save_stack+0x1e/0x50 mm/kasan/common.c:38
->   kasan_set_track+0x21/0x30 mm/kasan/common.c:46
->   kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:370
->   ____kasan_slab_free mm/kasan/common.c:366 [inline]
->   ____kasan_slab_free mm/kasan/common.c:328 [inline]
->   __kasan_slab_free+0xff/0x130 mm/kasan/common.c:374
->   kasan_slab_free include/linux/kasan.h:235 [inline]
->   slab_free_hook mm/slub.c:1723 [inline]
->   slab_free_freelist_hook+0x8b/0x1c0 mm/slub.c:1749
->   slab_free mm/slub.c:3513 [inline]
->   kmem_cache_free+0x92/0x5e0 mm/slub.c:3529
->   io_req_caches_free+0x1aa/0x1e6 fs/io_uring.c:9291
->   io_ring_exit_work+0x1e4/0xbe8 fs/io_uring.c:9467
->   process_one_work+0x9b2/0x1690 kernel/workqueue.c:2298
->   worker_thread+0x658/0x11f0 kernel/workqueue.c:2445
->   kthread+0x405/0x4f0 kernel/kthread.c:327
->   ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-> 
-> The buggy address belongs to the object at ffff8880713ecb40
->   which belongs to the cache io_kiocb of size 224
-> The buggy address is located 120 bytes inside of
->   224-byte region [ffff8880713ecb40, ffff8880713ecc20)
-> The buggy address belongs to the page:
-> page:ffffea0001c4fb00 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff8880713ec8c0 pfn:0x713ec
-> flags: 0xfff00000000200(slab|node=0|zone=1|lastcpupid=0x7ff)
-> raw: 00fff00000000200 ffffea0001c4d400 dead000000000004 ffff88814607bdc0
-> raw: ffff8880713ec8c0 00000000800c000b 00000001ffffffff 0000000000000000
-> page dumped because: kasan: bad access detected
-> page_owner tracks the page as allocated
-> page last allocated via order 0, migratetype Unmovable, gfp_mask 0x12cc0(GFP_KERNEL|__GFP_NOWARN|__GFP_NORETRY), pid 7168, ts 1580559391621, free_ts 1580537948913
->   prep_new_page mm/page_alloc.c:2418 [inline]
->   get_page_from_freelist+0xa72/0x2f50 mm/page_alloc.c:4149
->   __alloc_pages+0x1b2/0x500 mm/page_alloc.c:5369
->   alloc_pages+0x1a7/0x300 mm/mempolicy.c:2191
->   alloc_slab_page mm/slub.c:1793 [inline]
->   allocate_slab mm/slub.c:1930 [inline]
->   new_slab+0x32d/0x4a0 mm/slub.c:1993
->   ___slab_alloc+0x918/0xfe0 mm/slub.c:3022
->   kmem_cache_alloc_bulk+0x21a/0x720 mm/slub.c:3706
->   __io_alloc_req_refill fs/io_uring.c:1977 [inline]
->   io_alloc_req_refill fs/io_uring.c:2003 [inline]
->   io_submit_sqes.cold+0x20b/0x43d fs/io_uring.c:7325
->   __do_sys_io_uring_enter+0xf6e/0x1f50 fs/io_uring.c:10052
->   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->   do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->   entry_SYSCALL_64_after_hwframe+0x44/0xae
-> page last free stack trace:
->   reset_page_owner include/linux/page_owner.h:24 [inline]
->   free_pages_prepare mm/page_alloc.c:1338 [inline]
->   free_pcp_prepare+0x374/0x870 mm/page_alloc.c:1389
->   free_unref_page_prepare mm/page_alloc.c:3309 [inline]
->   free_unref_page_list+0x1a9/0xfa0 mm/page_alloc.c:3425
->   release_pages+0x3f4/0x1480 mm/swap.c:979
->   tlb_batch_pages_flush mm/mmu_gather.c:49 [inline]
->   tlb_flush_mmu_free mm/mmu_gather.c:242 [inline]
->   tlb_flush_mmu mm/mmu_gather.c:249 [inline]
->   tlb_finish_mmu+0x165/0x8c0 mm/mmu_gather.c:340
->   exit_mmap+0x1ea/0x630 mm/mmap.c:3173
->   __mmput+0x122/0x4b0 kernel/fork.c:1164
->   mmput+0x56/0x60 kernel/fork.c:1185
->   exit_mm kernel/exit.c:507 [inline]
->   do_exit+0xb27/0x2b40 kernel/exit.c:819
->   do_group_exit+0x125/0x310 kernel/exit.c:929
->   get_signal+0x47d/0x21d0 kernel/signal.c:2820
->   arch_do_signal_or_restart+0x2a9/0x1c40 arch/x86/kernel/signal.c:868
->   handle_signal_work kernel/entry/common.c:148 [inline]
->   exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
->   exit_to_user_mode_prepare+0x17d/0x290 kernel/entry/common.c:207
->   __syscall_exit_to_user_mode_work kernel/entry/common.c:289 [inline]
->   syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:300
->   do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
->   entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-> Memory state around the buggy address:
->   ffff8880713eca80: fb fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc
->   ffff8880713ecb00: fc fc fc fc fc fc fc fc fa fb fb fb fb fb fb fb
->> ffff8880713ecb80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->                                          ^
->   ffff8880713ecc00: fb fb fb fb fc fc fc fc fc fc fc fc fc fc fc fc
->   ffff8880713ecc80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> ==================================================================
-> 
-> 
+> Signed-off-by: Karolina Drobnik <karolinadrobnik@gmail.com>
 > ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>  drivers/staging/vt6655/rf.c | 17 +++++++++--------
+>  1 file changed, 9 insertions(+), 8 deletions(-)
 > 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> syzbot can test patches for this issue, for details see:
-> https://goo.gl/tpsmEJ#testing-patches
+> diff --git a/drivers/staging/vt6655/rf.c b/drivers/staging/vt6655/rf.c
+> index bc4abe77db7b..f195dafb6e63 100644
+> --- a/drivers/staging/vt6655/rf.c
+> +++ b/drivers/staging/vt6655/rf.c
+> @@ -681,6 +681,7 @@ bool RFvWriteWakeProgSyn(struct vnt_private *priv, unsigned char rf_type,
+>  {
+>  	void __iomem *iobase = priv->port_offset;
+>  	int i;
+
+Why not to make *i* as unsigned short and get rid of all the type conversions below ?
+
+> +	unsigned short idx = MISCFIFO_SYNDATA_IDX;
+>  	unsigned char init_count = 0;
+>  	unsigned char sleep_count = 0;
+>  
+> @@ -699,11 +700,11 @@ bool RFvWriteWakeProgSyn(struct vnt_private *priv, unsigned char rf_type,
+>  			return false;
+>  
+>  		for (i = 0; i < CB_AL2230_INIT_SEQ; i++)
+> -			MACvSetMISCFifo(priv, (unsigned short)(MISCFIFO_SYNDATA_IDX + i), al2230_init_table[i]);
+> +			MACvSetMISCFifo(priv, (unsigned short)(idx + i), al2230_init_table[i]);
+>  
+> -		MACvSetMISCFifo(priv, (unsigned short)(MISCFIFO_SYNDATA_IDX + i), al2230_channel_table0[channel - 1]);
+> +		MACvSetMISCFifo(priv, (unsigned short)(idx + i), al2230_channel_table0[channel - 1]);
+>  		i++;
+> -		MACvSetMISCFifo(priv, (unsigned short)(MISCFIFO_SYNDATA_IDX + i), al2230_channel_table1[channel - 1]);
+> +		MACvSetMISCFifo(priv, (unsigned short)(idx + i), al2230_channel_table1[channel - 1]);
+>  		break;
+>  
+>  		/* Need to check, PLLON need to be low for channel setting */
+> @@ -716,17 +717,17 @@ bool RFvWriteWakeProgSyn(struct vnt_private *priv, unsigned char rf_type,
+>  
+>  		if (channel <= CB_MAX_CHANNEL_24G) {
+>  			for (i = 0; i < CB_AL7230_INIT_SEQ; i++)
+> -				MACvSetMISCFifo(priv, (unsigned short)(MISCFIFO_SYNDATA_IDX + i), al7230_init_table[i]);
+> +				MACvSetMISCFifo(priv, (unsigned short)(idx + i), al7230_init_table[i]);
+>  		} else {
+>  			for (i = 0; i < CB_AL7230_INIT_SEQ; i++)
+> -				MACvSetMISCFifo(priv, (unsigned short)(MISCFIFO_SYNDATA_IDX + i), al7230_init_table_a_mode[i]);
+> +				MACvSetMISCFifo(priv, (unsigned short)(idx + i), al7230_init_table_a_mode[i]);
+>  		}
+>  
+> -		MACvSetMISCFifo(priv, (unsigned short)(MISCFIFO_SYNDATA_IDX + i), al7230_channel_table0[channel - 1]);
+> +		MACvSetMISCFifo(priv, (unsigned short)(idx + i), al7230_channel_table0[channel - 1]);
+>  		i++;
+> -		MACvSetMISCFifo(priv, (unsigned short)(MISCFIFO_SYNDATA_IDX + i), al7230_channel_table1[channel - 1]);
+> +		MACvSetMISCFifo(priv, (unsigned short)(idx + i), al7230_channel_table1[channel - 1]);
+>  		i++;
+> -		MACvSetMISCFifo(priv, (unsigned short)(MISCFIFO_SYNDATA_IDX + i), al7230_channel_table2[channel - 1]);
+> +		MACvSetMISCFifo(priv, (unsigned short)(idx + i), al7230_channel_table2[channel - 1]);
+>  		break;
+>  
+>  	case RF_NOTHING:
 > 
 
--- 
-Pavel Begunkov
+Regards,
+
+~Praveen.
