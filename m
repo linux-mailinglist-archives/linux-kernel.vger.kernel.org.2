@@ -2,104 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12106440162
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 19:43:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A23DA440168
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 19:44:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230108AbhJ2Rp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 13:45:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56948 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230075AbhJ2Rp4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 13:45:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 92B7A61040;
-        Fri, 29 Oct 2021 17:43:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635529407;
-        bh=rsaoqoFMJRkFW8HbI1/g5SAhlNrxOJ2ODlLw2rtjQVw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TWI+jjY0ML1p9Nw0Dtl1KOyq5HJqk87BImQU70Cl4KdrO+WFa4/1eXJxAHGo0I3B1
-         P/NvnMbfHSuOP2R46KsW2PdDpFH+Ejzgy2WcXm8VdW+MoO8hklvBq403DcDAKYxGDV
-         mHxsKA5ZC4yWlQanMq8jCrM8qWeXEku+Kg22esQqwvs1SMJSMjIlaZ5R1n656tYy3b
-         Lx5l4t9du+GMlRyUCeJsgwxECQ88Oq1feTNOL4xZBJ0gQ0YwGpafGfCWUZB7L8YPix
-         ksi7CCHYMIS34CwUiqSHNy3RC+DlXPwoPjbQWjjzyX44QJPRpzSWY2aJhdtHO45LE4
-         YcDzGXpMmMTQA==
-Date:   Fri, 29 Oct 2021 10:43:26 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Chao Yu <chao@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [f2fs-dev] [PATCH] f2fs: skip f2fs_preallocate_blocks() for
- overwrite case
-Message-ID: <YXwyvllUOm6jLiF5@google.com>
-References: <20210928151911.11189-1-chao@kernel.org>
- <YVNoHudG5c65X85G@google.com>
- <65f6c366-9e5b-fe7f-7c38-061996d1882b@kernel.org>
- <dec765de-407b-07c3-75f6-ec7f71c618b7@kernel.org>
+        id S230174AbhJ2RrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 13:47:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230030AbhJ2RrA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 13:47:00 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29D19C061570
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 10:44:31 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id q16so18093453ljg.3
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 10:44:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3S4Qx+KGFNvpnFZCuQvXIFkQqNbKUzy97JWB3qSsstc=;
+        b=Yl/D2AjHAXrxTC/iqj40TnEJ49hOsFuhwyqcQLRe8nMFgBFdxyYnG/rLGij6lgTVZB
+         9BwcxTUfbNnTcg6Dq/Lm9WLafqJZcSpFxOcsXaoVRAm6KrAT46UzU3vZtiZC+Fjh2Y2n
+         4rvufTOC2w9na2ri+11dVzSfFqGwUtwMW4CQQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3S4Qx+KGFNvpnFZCuQvXIFkQqNbKUzy97JWB3qSsstc=;
+        b=V5+ZZ0xQYRI8FTvR4p+/abnCfefDso336mtlsvSbmF2DihRqPq6jFCMDt2aAVzN0Hb
+         iODeUEDY1BxG1sN9fjN4om5XNPhOFx/uqSj5ryDMW47PWc2zCssZipKL9AnThEyAmOTL
+         5Vh3uge/w91OqvIalqdCECs0KbGHX5ZCcVY28MNgil+fT5zXLy3kHWnzBueZJNThgXTC
+         zdXukx9VpfOZZiEGzXSqxwtwAwZbbzFv/LffLIxRrEdkSxwkNnVgi29oRnoNWkcaremt
+         jLAU52kGr0OVA9RDCsRh7ihzSxNqtKZVSEE2f2XMtenbPWaUxlkHeBS1NHl+uF7X2ajD
+         8qLw==
+X-Gm-Message-State: AOAM530ShJbiEBIf/GNHZJi/UEB91sCj9mS6AB1ewCzRgR7z7LxrMfne
+        UVa+PFX4XSjZnpm9qkFTiSRUXr0tFM4yNL9VaQg=
+X-Google-Smtp-Source: ABdhPJwL1JDlzuNGJZPRQs6nRzqYVgT4tzJ1IUcLVKmzmCVdwOaYGCXcA9DbxRj5gmFIhTKSfYlv4w==
+X-Received: by 2002:a2e:8084:: with SMTP id i4mr4283353ljg.241.1635529469040;
+        Fri, 29 Oct 2021 10:44:29 -0700 (PDT)
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com. [209.85.208.176])
+        by smtp.gmail.com with ESMTPSA id c9sm662027lff.136.2021.10.29.10.44.28
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Oct 2021 10:44:28 -0700 (PDT)
+Received: by mail-lj1-f176.google.com with SMTP id d23so16723372ljj.10
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 10:44:28 -0700 (PDT)
+X-Received: by 2002:a05:651c:20c:: with SMTP id y12mr13458472ljn.68.1635529468040;
+ Fri, 29 Oct 2021 10:44:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <dec765de-407b-07c3-75f6-ec7f71c618b7@kernel.org>
+References: <20211029101550.2bde4593@gandalf.local.home>
+In-Reply-To: <20211029101550.2bde4593@gandalf.local.home>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 29 Oct 2021 10:44:12 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wi__d+MRw94ZfXYS4BKrSCOgAc-r3inhLh=87h_VJuLhQ@mail.gmail.com>
+Message-ID: <CAHk-=wi__d+MRw94ZfXYS4BKrSCOgAc-r3inhLh=87h_VJuLhQ@mail.gmail.com>
+Subject: Re: [GIT PULL] tracing: Fixes to comments
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/29, Chao Yu wrote:
-> Ping,
-> 
-> On 2021/9/29 8:05, Chao Yu wrote:
-> > On 2021/9/29 3:08, Jaegeuk Kim wrote:
-> > > On 09/28, Chao Yu wrote:
-> > > > In f2fs_file_write_iter(), let's use f2fs_overwrite_io() to
-> > > > check whethere it is overwrite case, for such case, we can skip
-> > > > f2fs_preallocate_blocks() in order to avoid f2fs_do_map_lock(),
-> > > > which may be blocked by checkpoint() potentially.
-> > > > 
-> > > > Signed-off-by: Chao Yu <chao@kernel.org>
-> > > > ---
-> > > >   fs/f2fs/file.c | 4 ++++
-> > > >   1 file changed, 4 insertions(+)
-> > > > 
-> > > > diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-> > > > index 13deae03df06..51fecb2f4db5 100644
-> > > > --- a/fs/f2fs/file.c
-> > > > +++ b/fs/f2fs/file.c
-> > > > @@ -4321,6 +4321,10 @@ static ssize_t f2fs_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
-> > > >           preallocated = true;
-> > > >           target_size = iocb->ki_pos + iov_iter_count(from);
-> > > > +        if (f2fs_overwrite_io(inode, iocb->ki_pos,
-> > > > +                        iov_iter_count(from)))
-> > > > +            goto write;
-> > > 
-> > > This calls f2fs_map_blocks() which can be duplicate, if it's not the overwirte
-> > > case. Do we have other benefit?
-> > 
-> > f2fs_overwrite_io() will break for append write case w/ below check:
-> > 
-> >      if (pos + len > i_size_read(inode))
-> >          return false;
-> > 
-> > I guess we may only suffer double f2fs_map_blocks() for write hole
-> > case, e.g. truncate to large size & write inside the filesize. For
-> > this case, how about adding a condition to allow double f2fs_map_blocks()
-> > only if write size is smaller than a threshold?
+On Fri, Oct 29, 2021 at 7:15 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> - Also, fix my snake instinct.
 
-I still don't see the benefit much to do double f2fs_map_blocks. What is the
-problem here?
+On the internet, nobody knows you're a snake.
 
-> > 
-> > Thanks,
-> > 
-> > > 
-> > > > +
-> > > >           err = f2fs_preallocate_blocks(iocb, from);
-> > > >           if (err) {
-> > > >   out_err:
-> > > > -- 
-> > > > 2.32.0
-> > 
-> > 
-> > _______________________________________________
-> > Linux-f2fs-devel mailing list
-> > Linux-f2fs-devel@lists.sourceforge.net
-> > https://apc01.safelinks.protection.outlook.com/?url=https%3A%2F%2Flists.sourceforge.net%2Flists%2Flistinfo%2Flinux-f2fs-devel&amp;data=04%7C01%7Cchao.yu%40oppo.com%7C421c06812eba4f922b0908d982dcdcc5%7Cf1905eb1c35341c5951662b4a54b5ee6%7C0%7C0%7C637684707374940190%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=u22eEWDAPaAZCyISyjTUOtQDLDuyKxTnNCI3eSwwWro%3D&amp;reserved=0
+                 Linus
