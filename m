@@ -2,164 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74EF643FCFB
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 15:04:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0208543FD0A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 15:05:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231748AbhJ2NHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 09:07:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34000 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231823AbhJ2NGg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 09:06:36 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        id S232149AbhJ2NHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 09:07:37 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:24956 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231761AbhJ2NHK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 09:07:10 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1635512681; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=vnbg7uJQhyANUTZhJsUI3dIJ6wgzUUdV7/qGuCSCecs=; b=rz1XMDnrVkBrqEP86S8EJFsfQ9YMusOkPTISuds6BiN6Rl/gIv+6eKSH4/Ep9jQcSTjKzmq6
+ Shf5EZ9pkktLi8tCJK/xf0WIeA24Ul1HWNZEDDE6whGGFQdjcUnPfhYAxHimnRcmAeamC7m1
+ pO4Sa4RXKHwa6CFZNa1/klqKAsw=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 617bf169f6a3eeacf9554758 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 29 Oct 2021 13:04:41
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 26728C43639; Fri, 29 Oct 2021 13:04:39 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3631460FC4;
-        Fri, 29 Oct 2021 13:04:07 +0000 (UTC)
-Date:   Fri, 29 Oct 2021 09:04:05 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next 1/2] ftrace: Tidy up some false kernel-doc
- markings
-Message-ID: <20211029090405.5e7f5c24@gandalf.local.home>
-In-Reply-To: <1635489523-76132-1-git-send-email-yang.lee@linux.alibaba.com>
-References: <1635489523-76132-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 46346C43617;
+        Fri, 29 Oct 2021 13:04:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 46346C43617
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     luciano.coelho@intel.com, davem@davemloft.net, kuba@kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] wlwifi: Fix missing error code in iwl_pci_probe()
+References: <1635501304-85589-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+Date:   Fri, 29 Oct 2021 16:04:32 +0300
+In-Reply-To: <1635501304-85589-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+        (Jiapeng Chong's message of "Fri, 29 Oct 2021 17:55:04 +0800")
+Message-ID: <87y26c2d9b.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Oct 2021 14:38:42 +0800
-Yang Li <yang.lee@linux.alibaba.com> wrote:
+Jiapeng Chong <jiapeng.chong@linux.alibaba.com> writes:
 
-> Deals with
-> W=1 warning: This comment starts with '/**', but isn't a kernel-doc
-> comment.
-> W=1 warning: bad line.
-> 
+> From: chongjiapeng <jiapeng.chong@linux.alibaba.com>
+>
+> The error code is missing in this code scenario, add the error code
+> '-EINVAL' to the return value 'ret'.
+>
+> Eliminate the follow smatch warning:
+>
+> drivers/net/wireless/intel/iwlwifi/pcie/drv.c:1376 iwl_pci_probe() warn:
+> missing error code 'ret'.
+>
 > Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Fixes: 1f171f4f1437 ("iwlwifi: Add support for getting rf id with blank otp")
+> Signed-off-by: chongjiapeng <jiapeng.chong@linux.alibaba.com>
 
-But are you a robot?
+The subject prefix should be "iwlwifi: ".
 
-NACK!
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
--- Steve
-
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> ---
->  kernel/trace/ftrace.c            | 18 +++++++++---------
->  kernel/trace/trace_events_hist.c |  4 ++--
->  2 files changed, 11 insertions(+), 11 deletions(-)
-> 
-> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-> index feb1ea9..679db91 100644
-> --- a/kernel/trace/ftrace.c
-> +++ b/kernel/trace/ftrace.c
-> @@ -2203,7 +2203,7 @@ static int ftrace_check_record(struct dyn_ftrace *rec, bool enable, bool update)
->  	return FTRACE_UPDATE_MAKE_NOP;
->  }
->  
-> -/**
-> +/*
->   * ftrace_update_record, set a record that now is tracing or not
->   * @rec: the record to update
->   * @enable: set to true if the record is tracing, false to force disable
-> @@ -2216,7 +2216,7 @@ int ftrace_update_record(struct dyn_ftrace *rec, bool enable)
->  	return ftrace_check_record(rec, enable, true);
->  }
->  
-> -/**
-> +/*
->   * ftrace_test_record, check if the record has been enabled or not
->   * @rec: the record to test
->   * @enable: set to true to check if enabled, false if it is disabled
-> @@ -2602,7 +2602,7 @@ struct ftrace_rec_iter {
->  	int			index;
->  };
->  
-> -/**
-> +/*
->   * ftrace_rec_iter_start, start up iterating over traced functions
->   *
->   * Returns an iterator handle that is used to iterate over all
-> @@ -2633,7 +2633,7 @@ struct ftrace_rec_iter *ftrace_rec_iter_start(void)
->  	return iter;
->  }
->  
-> -/**
-> +/*
->   * ftrace_rec_iter_next, get the next record to process.
->   * @iter: The handle to the iterator.
->   *
-> @@ -2658,7 +2658,7 @@ struct ftrace_rec_iter *ftrace_rec_iter_next(struct ftrace_rec_iter *iter)
->  	return iter;
->  }
->  
-> -/**
-> +/*
->   * ftrace_rec_iter_record, get the record at the iterator location
->   * @iter: The current iterator location
->   *
-> @@ -2761,7 +2761,7 @@ static int __ftrace_modify_code(void *data)
->  	return 0;
->  }
->  
-> -/**
-> +/*
->   * ftrace_run_stop_machine, go back to the stop machine method
->   * @command: The command to tell ftrace what to do
->   *
-> @@ -2773,7 +2773,7 @@ void ftrace_run_stop_machine(int command)
->  	stop_machine(__ftrace_modify_code, &command, NULL);
->  }
->  
-> -/**
-> +/*
->   * arch_ftrace_update_code, modify the code to trace or not trace
->   * @command: The command that needs to be done
->   *
-> @@ -7742,7 +7742,7 @@ void ftrace_kill(void)
->  	ftrace_trace_function = ftrace_stub;
->  }
->  
-> -/**
-> +/*
->   * Test if ftrace is dead or not.
->   */
->  int ftrace_is_dead(void)
-> @@ -7750,7 +7750,7 @@ int ftrace_is_dead(void)
->  	return ftrace_disabled;
->  }
->  
-> -/**
-> +/*
->   * register_ftrace_function - register a function for profiling
->   * @ops - ops structure that holds the function for profiling.
->   *
-> diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-> index cddf6bf..aa93e87 100644
-> --- a/kernel/trace/trace_events_hist.c
-> +++ b/kernel/trace/trace_events_hist.c
-> @@ -836,7 +836,7 @@ static struct hist_field *find_any_var_ref(struct hist_trigger_data *hist_data,
->   * A trigger can define one or more variables.  If any one of them is
->   * currently referenced by any other trigger, this function will
->   * determine that.
-> -
-> + *
->   * Typically used to determine whether or not a trigger can be removed
->   * - if there are any references to a trigger's variables, it cannot.
->   *
-> @@ -3050,7 +3050,7 @@ static struct field_var *create_field_var(struct hist_trigger_data *hist_data,
->   * events.  However, for convenience, users are allowed to directly
->   * specify an event field in an action, which will be automatically
->   * converted into a variable on their behalf.
-> -
-> + *
->   * This function creates a field variable with the name var_name on
->   * the hist trigger currently being defined on the target event.  If
->   * subsys_name and event_name are specified, this function simply
-
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
