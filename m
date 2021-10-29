@@ -2,132 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EFE344008F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 18:48:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB97F440097
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 18:49:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230044AbhJ2Qun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 12:50:43 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:56220 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229607AbhJ2Qum (ORCPT
+        id S230160AbhJ2QvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 12:51:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229811AbhJ2QvR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 12:50:42 -0400
-Date:   Fri, 29 Oct 2021 18:48:10 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1635526092;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FidfvpGxCpEED7Y8roiCwv6c14v5UAUT6Pgou9ogbrs=;
-        b=fYbGpxrOCut5U6uufJaSYtOeJJHB54X/Uoo74/kiY+ZRaKn1GukfYhrPZjsauVK+v9A9Ly
-        HUoVWF4nmbUQF0WVT+sHjIkpGSf6xfK9qlo2IpGlko/Hgcv1cktVO06GgByiU7DU7147qy
-        nOS0ky+89c9btDkRsRO9nwqIpPeMys9j3DpxD0ZSLvsYz79ewqfKnqrf3HQo8ctkfs/j5c
-        UaCJkRiCy3OLPRrwEf4wna6HyADGbv/KfFg/caqjTfpDSdnb5H0o4gdyO8yBWZHCoL8i/H
-        ssZIgRhJ+xSerFt9UkV6Oy/eHL0Fc/U5W5+9dOzHMdZV+KSAUM+B0RbT1mHzVQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1635526092;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FidfvpGxCpEED7Y8roiCwv6c14v5UAUT6Pgou9ogbrs=;
-        b=w0rrlt39fq2XBzQN+BTx1h0qKyEVZk5XSWt/z/cR56I00Uyb3kKSBWUBITJZCsSMfX2a7e
-        spA4FX8OO4RqMpDg==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Ronny Meeus <ronny.meeus@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
-        cgroups@vger.kernel.org
-Subject: Re: Unbounded priority inversion while assigning tasks into cgroups.
-Message-ID: <20211029164810.gfv6t2ml6oea3dd2@linutronix.de>
-References: <CAMJ=MEd9WuGA0MN+n0rGD6T+sgd=yciTmeEW9TjRjNXt+cF=qQ@mail.gmail.com>
- <20211027165800.md2gxbsku4avqjgt@linutronix.de>
- <CAMJ=MEfkQ9VaphaNS_qbWMOANo7P6h2Ln6iYg4JLWbWzxp85mA@mail.gmail.com>
- <20211028084654.bgtvnibvqnz2o5rh@linutronix.de>
- <CAMJ=MEez-+0mj2N0rz79eE5gJG2k99Yh+x8vdEG3YK1apiOuzg@mail.gmail.com>
+        Fri, 29 Oct 2021 12:51:17 -0400
+Received: from phobos.denx.de (phobos.denx.de [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A389AC061570;
+        Fri, 29 Oct 2021 09:48:48 -0700 (PDT)
+Received: from [IPv6:::1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: marex@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id 28B7C82952;
+        Fri, 29 Oct 2021 18:48:44 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1635526125;
+        bh=6zdVEZVllSYH2Pu2kQDESwjXTwsDnaWusbLxdvceA80=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=Qm2LC35DVg0x4tRrz3XRlrKkmMk8WgAGYcTHDq6/7sMIka9JAy/hBAu+OpkwqD8B9
+         L0nM++Z+eWa3pgNf/ecCpkmYgU4FZqeyLZQYOS7+33nCZuIAoMu10RaKDbWBlt6Kem
+         KH8cPSoiFHst4BMuQ/x6zvmVw9bOWGcXmCB0Eu4jlx1gVEa+SzLFAxiYTKe+c+GncX
+         buALthx3xKmG3TINMPfhBBZZ59wqTkjFQqkFMICmYpM/VBbAx1hzW3YhRey3cqYszs
+         4uxXTYK+gZYHLpMFxCcdJOAOi4/sV6N2CUFN3Q6KsiSXAwAd5rfw4l8WoLErO+QNp5
+         VJCLO/wL+V0DA==
+Subject: Re: [PATCH 4/8] crypto: stm32/cryp - fix race condition
+To:     Nicolas Toromanoff <nicolas.toromanoff@foss.st.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-crypto@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20211029135454.4383-1-nicolas.toromanoff@foss.st.com>
+ <20211029135454.4383-5-nicolas.toromanoff@foss.st.com>
+ <1ec60d9c-1ab4-8a92-1c6d-8093232ca039@denx.de>
+ <alpine.DEB.2.21.2110291708040.20378@gnbcxd0088.gnb.st.com>
+From:   Marek Vasut <marex@denx.de>
+Message-ID: <f8de0493-29f3-550c-611e-97b7ee36e628@denx.de>
+Date:   Fri, 29 Oct 2021 18:48:43 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAMJ=MEez-+0mj2N0rz79eE5gJG2k99Yh+x8vdEG3YK1apiOuzg@mail.gmail.com>
+In-Reply-To: <alpine.DEB.2.21.2110291708040.20378@gnbcxd0088.gnb.st.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-10-29 11:42:25 [+0200], Ronny Meeus wrote:
-> Op do 28 okt. 2021 om 10:46 schreef Sebastian Andrzej Siewior
-> <bigeasy@linutronix.de>:
-> >
-> > On 2021-10-27 22:54:33 [+0200], Ronny Meeus wrote:
-> > > > From a looking at percpu_rw_semaphore implementation, no new readers are
-> > > > allowed as long as there is a writer pending. The writer has
-> > > > (unfortunately) to wait until all readers are out. But then I doubt that
-> > > > this takes up to two minutes for all existing readers to leave the
-> > > > critical section.
-> > > >
-> > >
-> > > The readers can be running at low priority while there can be other threads
-> > > with a medium priority will consume the complete cpu. So the low prio
-> > > readers are just waiting to be scheduled and by that also block the high
-> > > prio thread.
-> >
-> > Hmm. So you have say, 5 reads stuck in the RW semaphore while preempted
-> > be medium tasks and high-prio writer is then stuck on semaphore, waiting
-> > for the MED tasks to finish so the low-prio threads can leave the
-> > criticial section?
+On 10/29/21 5:21 PM, Nicolas Toromanoff wrote:
+> On Fri, 29 Oct 2021, Marek Vasut wrote:
 > 
-> Correct. Note that 1 thread stuck in the read is already sufficient to
-> get into this.
-> Most of the heavy processing is done at medium priority and the
-> background tasks are running at the low priority.
-> Since the background tasks are implemented by scripts, a lot of
-> accesses to the read part are done at low prio.
-
-Yeah, one is enough. My guess would be that it is more visible on the
-small ones because on the bigger ones it is more likely that the thread
-gets migrated to another core.
-
-> > > Looking at v4.9.84, at least the RT implementation of rw_semaphore
-> > > > allows new readers if a writer is pending. So this could be culprit as
-> > > > you would have to wait until all reader are gone and the writer needs to
-> > > > grab the lock before another reader shows up. But then this shouldn't be
-> > > > the case for the generic implementation and new reader should wait until
-> > > > the writer got its chance.
-> > > >
-> > >
-> > > So what do you suggest for the v4.9 kernel as a solution? Move to the RT
-> > > version of the rw_semaphore and hope for the best?
-> >
-> > I don't think it will help. Based on what you wrote above it appears
-> > that the problem is that the readers are preempted and are not leaving
-> > the critical section soon enough.
-> >
-> > How many CPUs do you have? Maybe using a rtmutex here and allowing only
-> > one reader at a time isn't that bad in your case. With one CPU for
-> > instance, there isn't much space for multiple readers I guess.
-> >
+>> On 10/29/21 3:54 PM, Nicolas Toromanoff wrote:
+>>> Erase key before finalizing request.
+>>> Fixes: 9e054ec21ef8 ("crypto: stm32 - Support for STM32 CRYP crypto 
+>>> module")
+>>
+>> Can you be a bit more specific in your commit messages ? That applies 
+>> to the entire patchset. It is absolutely impossible to tell what race 
+>> is fixed here or why it is fixed by exactly this change. This applies 
+>> to the entire series.
 > 
-> The current system has 1 CPU with 2 cores but we have also devices
-> with 14 cores on which the impact will be bigger of course.
-> Note that with the rtmutex solution all accesses (read + write) will
-> be serialized.
+> I'll send a v2 with better commit messages.
+> 
+> for this specific patch:
+> We reset the saved key before the crypto_finalize_*() call. Otherwise a 
+> still pending crypto action could be ran with a wrong key = {0};
+> 
+>> And while I am at it, does the CRYP finally pass at least the most 
+>> basic kernel boot time crypto tests or does running those still 
+>> overwrite kernel memory and/or completely crash or lock up the machine ?
+> 
+> All extra tests (finally) pass.
+> 
+> With a kernel config :
+>    # CONFIG_CRYPTO_MANAGER_DISABLE_TESTS is not set
+>    CONFIG_CRYPTO_MANAGER_EXTRA_TESTS=y
+>    CONFIG_CRYPTO_DEV_STM32_CRYP=m
 
-So for the 1/2 core it should make no difference if you use an RTmutex
-instead. For the bigger ones it might not be optimal.
-
-> I wonder why other people do not see this issue since it is present in
-> all kernel versions.
-> And, especially in systems with strict deadlines, I consider this a
-> serious issue.
-
-My guess here is that most people don't use RT priorities and don't see
-this problem _or_ they have enough cores. Or they simply don't use that
-way.
-
-From PREEMPT_RT perspective, rwsem/rwlock used to be single-reader until
-late 3.x or early 4.x series (I don't remember exactly when it changed).
-Boosting multiple readers was tried once but didn't really work. 
-PREEMPT_RT has also this problem where multiple low-prio reader can
-block the high-prio writer but fortunately most critical rwsem users
-moved to RCU so it is not much of problem.
-
-> Ronny
- 
-Sebastian
+Can you also do a boot test with CRYP compiled into the kernel ?
+I recall that is how the original bug was reported -- the machine 
+crashed completely on boot even before reaching userspace, or the kernel 
+crashed on memory corruption before reaching userspace.
