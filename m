@@ -2,181 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4327843F411
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 02:43:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D6ED43F415
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 02:44:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231411AbhJ2AqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 20:46:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58544 "EHLO
+        id S231424AbhJ2Aqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 20:46:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230211AbhJ2AqC (ORCPT
+        with ESMTP id S230211AbhJ2Aqx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 20:46:02 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60F09C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 17:43:34 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id v64so13421755ybi.5
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 17:43:34 -0700 (PDT)
+        Thu, 28 Oct 2021 20:46:53 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3794C061570;
+        Thu, 28 Oct 2021 17:44:25 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id z144so9366948iof.0;
+        Thu, 28 Oct 2021 17:44:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=W2sy9b06AAoqRje0Ctkj6Www73b/rcNnA5x0L9/UX24=;
-        b=osfMTnSDFdSoxQMi2MmCecni4PyI67lbooODz48BxYWr1pwuE0/PX4UF0WK+KoSkSY
-         wGpPs4cVmKT5VDujNetRIUd1AdMGsxJyaFDCn8V55Umw63HDY45H858hK0pVZ8mxMV/k
-         qUz9YsmW2SQ7qFalwdw8/o7v9oOiYNiYpo6Tm6DAVmJJJlceIL2b7aIkDWLSoh+lrSof
-         V9Ev6Ns9rjz+wfQ2DDu1hFxyD4Jf77ZZ0T9kgj6TvLJ54KqJV7RxZXCQe17W+lRB+PDY
-         4PYQf2E8LgTU+0yLY5GyygG7U1hJxMOi1wmpUJu04J2aJDgy76W5n13/xeKP13QSeAKa
-         5mkQ==
+        bh=zQP4kRzm3ZSndyVhtvxvd/t2NKU3Z81W6oJKDHuooD0=;
+        b=Mqu8zRtKOuus4eaIvw+S3uKGxoOqY0VjK92sWkJ5SYeeKEdEGXqdK2U/WeoOLAeI+w
+         1ekw3doiTOXxiQmqIcRoUgux9R/AamtSEEyp/oc7DVmOzxynHNasxpYqHlBbZKLCusos
+         zeZM3fpFS2N0G1w26R5F/6vvTCcbUYWLQ3yxXeIZdmCoCXuh49sUAVh9UimQpOTMeS+C
+         n8nHEGPmyChZqJO6uHoOhruMoTCxDpNlebk/+XbdtxJjQMOWYx+txuz14rbYA8bPu33G
+         c0hl//lhdQOeGGyU8a/nBPyKYaxfAsq27F9ORBEfvmCorVvluWB3wN7yZx02mIARfuuw
+         kZIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=W2sy9b06AAoqRje0Ctkj6Www73b/rcNnA5x0L9/UX24=;
-        b=0jCPGfrcQnItSGVJ9k0bEd7ZTaNkaU1odrSIIrQ0w6qtv6yoZZr5IhGkLHuHPhdZ3V
-         zIgDgbOkwuNtksZ5gYwboqjFNfavYFJYFjQv44X0zAEUv0r3jzy88fsTnyFTPuv85nPU
-         seZZtRv2fEGrm7sSx7IO6L0D3Ekq9M1aRLe9Z/8ncCk7LkvuIhPRwKys8dlxu9t8/4cs
-         K5Yh47thZJ12Bj05a+JiY6wfE0k0R8zHjUClpK7zOtr7Hwdci0oIKLO52w9xd5JJdWf2
-         VoIKnhFIlmuxXslI8uP8JAP73xHEw+HB8e8Wie7W1O4Q6fbyQsAauJhrlZJiivQWt24f
-         zPKA==
-X-Gm-Message-State: AOAM531ktUsnXPASgynDYg9SihegdPOdkfFXDWVomR9FxYpQ2JilMye6
-        va7KX79T4XL+MNV/k+QxVkofHYmSjT60hia0JexSfg==
-X-Google-Smtp-Source: ABdhPJwNox5NrYrfvm37cnp2haAAo9v6DPFpH4WK42VlmRPgngm67ZOV5PVSYD5rQEW4YQAocdZjhMHu6kvrWdg84Hg=
-X-Received: by 2002:a25:50d2:: with SMTP id e201mr7747127ybb.296.1635468213277;
- Thu, 28 Oct 2021 17:43:33 -0700 (PDT)
+        bh=zQP4kRzm3ZSndyVhtvxvd/t2NKU3Z81W6oJKDHuooD0=;
+        b=6XNlWPoM+2uPO5i4Fv35ea3feUu2tLu3gj5I8A6maIdseYX7CddPeMxm8EpyeykpA1
+         A1L7ru7kzsgxGiro9ctHQ5qWGPEQx8pciQeK8SYqrL/RqZtaGBxfOJj5ANsg9LjhG9Lw
+         ZesvRSZ8ai5mhPZILZ8B6QhdWnHAbWlMMvTjMmA6uilKh8E8NlEjWtr7e1+ylm8CwpIN
+         O9VplGva/4TT28Pe7jP3yUdoLzMZlKxFw5mxZVdJcC4kUW9/4IDK6kwPUFkw3qmxFkPz
+         l+qMqTDTGv4o8I3UF5PTUrY++ZNbIeT3NVKL0JTdMbYoLSUmDA2m8P63Vpb5Y2N4sZMF
+         RQqg==
+X-Gm-Message-State: AOAM532+HYV8LM6VskFjhj+1GIuymemDc+EMZWbh9Zyc01F60vCmWgMk
+        TDVPMwkRr6JMHb2RidSB/8LKtWuuZtDFXHLJRaOhNRrOdRs=
+X-Google-Smtp-Source: ABdhPJzJKilq3tDV5Olh9mImUtsSsiwF8o6rvu8pTkX4MbWwe2o0arz6VTezLeOsEfqHk6p3OWm4ylILeLP4hUTLPMU=
+X-Received: by 2002:a5d:80d6:: with SMTP id h22mr5663782ior.152.1635468265191;
+ Thu, 28 Oct 2021 17:44:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <9ac22d4d-c841-651a-fdd5-9fb3a65c57ab@gmail.com>
- <e72cdd44-c027-e51c-8b57-24f39bf21d87@kernel.dk> <3b7dbb90-7fd5-d30f-cfe0-dd83f2cd4482@kernel.dk>
-In-Reply-To: <3b7dbb90-7fd5-d30f-cfe0-dd83f2cd4482@kernel.dk>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Thu, 28 Oct 2021 17:43:20 -0700
-Message-ID: <CANn89iJv6cRbK95Gwj=rrz2+X+Q4KQ7EtEcpz0Md0Vs1_iABPw@mail.gmail.com>
-Subject: Re: [BUG] About "io_uring: add more uring info to fdinfo for debug"
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Hao Xu <haoxu@linux.alibaba.com>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20200320212833.3507-1-sean.j.christopherson@intel.com>
+ <20200320212833.3507-24-sean.j.christopherson@intel.com> <CAJhGHyD=S6pVB+OxM7zF0_6LnMUCLqyTfMK4x9GZsdRHZmgN7Q@mail.gmail.com>
+ <YXrAM9MNqgLTU6+m@google.com>
+In-Reply-To: <YXrAM9MNqgLTU6+m@google.com>
+From:   Lai Jiangshan <jiangshanlai+lkml@gmail.com>
+Date:   Fri, 29 Oct 2021 08:44:13 +0800
+Message-ID: <CAJhGHyBKVUsuKdvfaART6NWF7Axk5=eFQLidhGrM=mUO2cv2vw@mail.gmail.com>
+Subject: Re: [PATCH v3 23/37] KVM: nVMX: Add helper to handle TLB flushes on
+ nested VM-Enter/VM-Exit
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ben Gardon <bgardon@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Liran Alon <liran.alon@oracle.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        John Haxby <john.haxby@oracle.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 5:13 PM Jens Axboe <axboe@kernel.dk> wrote:
+On Thu, Oct 28, 2021 at 11:22 PM Sean Christopherson <seanjc@google.com> wrote:
 >
-> On 10/28/21 3:40 PM, Jens Axboe wrote:
-> > On 10/28/21 3:24 PM, Eric Dumazet wrote:
-> >> Hi
-> >>
-> >> I was looking at commit 83f84356bc8f2d
-> >> ("io_uring: add more uring info to fdinfo for debug") after receiving
-> >> syzbot reports.
-> >>
-> >> I suspect that the following :
-> >>
-> >> +       for (i = cached_sq_head; i < sq_tail; i++) {
-> >> +               unsigned int sq_idx = READ_ONCE(ctx->sq_array[i & sq_mask]);
-> >> +
-> >> +               if (likely(sq_idx <= sq_mask)) {
-> >> +                       struct io_uring_sqe *sqe = &ctx->sq_sqes[sq_idx];
-> >> +
-> >> +                       seq_printf(m, "%5u: opcode:%d, fd:%d, flags:%x, user_data:%llu\n",
-> >> +                                  sq_idx, sqe->opcode, sqe->fd, sqe->flags, sqe->user_data);
-> >> +               }
-> >> +       }
-> >>
-> >>
-> >> Can loop around ~2^32 times if sq_tail is close to ~0U
-> >>
-> >> I see various READ_ONCE(), which are probably not good enough.
-> >>
-> >> At very minimum I would handling wrapping...
+> -me :-)
+>
+> On Thu, Oct 28, 2021, Lai Jiangshan wrote:
+> > On Sat, Mar 21, 2020 at 5:29 AM Sean Christopherson
+> > <sean.j.christopherson@intel.com> wrote:
 > >
-> > Thanks for reporting this. I think on top of wrapping, the loop should
-> > just be capped at sq_entries as well. There's no point dumping more than
-> > that, ever.
+> > > +       if (!nested_cpu_has_vpid(vmcs12) || !nested_has_guest_tlb_tag(vcpu)) {
+> > > +               kvm_make_request(KVM_REQ_TLB_FLUSH, vcpu);
+> > > +       } else if (is_vmenter &&
+> > > +                  vmcs12->virtual_processor_id != vmx->nested.last_vpid) {
+> > > +               vmx->nested.last_vpid = vmcs12->virtual_processor_id;
+> > > +               vpid_sync_context(nested_get_vpid02(vcpu));
+> > > +       }
+> > > +}
 > >
-> > I'll take a stab at this.
+> > (I'm sorry to pick this old email to reply to, but the problem has
+> > nothing to do with this patch nor 5c614b3583e7 and it exists since
+> > nested vmx is introduced.)
+> >
+> > I think kvm_mmu_free_guest_mode_roots() should be called
+> > if (!enable_ept && vmcs12->virtual_processor_id != vmx->nested.last_vpid)
+> > just because prev_roots doesn't cache the vpid12.
+> > (prev_roots caches PCID, which is distinctive)
+> >
+> > The problem hardly exists if L1's hypervisor is also kvm, but if L1's
+> > hypervisor is different or is also kvm with some changes in the way how it
+> > manages VPID.
 >
-> I'd probably do something like this - make sure wrap is sane and that we
-> always cap at the max number of entries we expect. This doesn't quite
-> hold true for CQEs, but honestly for debugging purposes, we only really
-> care about the sq ring side in terms of stalls. Or if we have unreaped
-> CQEs, which we'll still show.
+> Indeed.  A more straightforward error case would be if L1 and L2 share CR3, and
+> vmcs02.VPID is toggled (or used for the first time) on the L1 => L2 VM-Enter.
 >
-> This also removes the masking, as it's better to expose the ring indexes
-> directly. And just dump the raw ring head/tail for sq/cq. We still
-> include the cached info, but I think dumping the raw contents is saner
-> and more useful.
+> The fix should simply be:
 >
->
-> diff --git a/fs/io_uring.c b/fs/io_uring.c
-> index 17cb0e1b88f0..babd9950ae9f 100644
-> --- a/fs/io_uring.c
-> +++ b/fs/io_uring.c
-> @@ -10065,12 +10065,11 @@ static __cold void __io_uring_show_fdinfo(struct io_ring_ctx *ctx,
->         struct io_overflow_cqe *ocqe;
->         struct io_rings *r = ctx->rings;
->         unsigned int sq_mask = ctx->sq_entries - 1, cq_mask = ctx->cq_entries - 1;
-> -       unsigned int cached_sq_head = ctx->cached_sq_head;
-> -       unsigned int cached_cq_tail = ctx->cached_cq_tail;
->         unsigned int sq_head = READ_ONCE(r->sq.head);
->         unsigned int sq_tail = READ_ONCE(r->sq.tail);
->         unsigned int cq_head = READ_ONCE(r->cq.head);
->         unsigned int cq_tail = READ_ONCE(r->cq.tail);
-> +       unsigned int sq_entries, cq_entries;
->         bool has_lock;
->         unsigned int i;
->
-> @@ -10080,15 +10079,19 @@ static __cold void __io_uring_show_fdinfo(struct io_ring_ctx *ctx,
->          * and sq_tail and cq_head are changed by userspace. But it's ok since
->          * we usually use these info when it is stuck.
+> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> index eedcebf58004..574823370e7a 100644
+> --- a/arch/x86/kvm/vmx/nested.c
+> +++ b/arch/x86/kvm/vmx/nested.c
+> @@ -1202,17 +1202,15 @@ static void nested_vmx_transition_tlb_flush(struct kvm_vcpu *vcpu,
+>          *
+>          * If a TLB flush isn't required due to any of the above, and vpid12 is
+>          * changing then the new "virtual" VPID (vpid12) will reuse the same
+> -        * "real" VPID (vpid02), and so needs to be flushed.  There's no direct
+> -        * mapping between vpid02 and vpid12, vpid02 is per-vCPU and reused for
+> -        * all nested vCPUs.  Remember, a flush on VM-Enter does not invalidate
+> -        * guest-physical mappings, so there is no need to sync the nEPT MMU.
+> +        * "real" VPID (vpid02), and so needs to be flushed.  Like the !vpid02
+> +        * case above, this is a full TLB flush from the guest's perspective.
 >          */
-> -       seq_printf(m, "SqHead:\t%u\n", sq_head & sq_mask);
-> -       seq_printf(m, "SqTail:\t%u\n", sq_tail & sq_mask);
-> -       seq_printf(m, "CachedSqHead:\t%u\n", cached_sq_head & sq_mask);
-> -       seq_printf(m, "CqHead:\t%u\n", cq_head & cq_mask);
-> -       seq_printf(m, "CqTail:\t%u\n", cq_tail & cq_mask);
-> -       seq_printf(m, "CachedCqTail:\t%u\n", cached_cq_tail & cq_mask);
-> -       seq_printf(m, "SQEs:\t%u\n", sq_tail - cached_sq_head);
-> -       for (i = cached_sq_head; i < sq_tail; i++) {
-> -               unsigned int sq_idx = READ_ONCE(ctx->sq_array[i & sq_mask]);
-> +       seq_printf(m, "SqMask:\t\t0x%x\n", sq_mask);
-> +       seq_printf(m, "SqHead:\t%u\n", sq_head);
-> +       seq_printf(m, "SqTail:\t%u\n", sq_tail);
-> +       seq_printf(m, "CachedSqHead:\t%u\n", ctx->cached_sq_head);
-> +       seq_printf(m, "CqMask:\t0x%x\n", cq_mask);
-> +       seq_printf(m, "CqHead:\t%u\n", cq_head);
-> +       seq_printf(m, "CqTail:\t%u\n", cq_tail);
-> +       seq_printf(m, "CachedCqTail:\t%u\n", ctx->cached_cq_tail);
-> +       seq_printf(m, "SQEs:\t%u\n", sq_tail - ctx->cached_sq_head);
-> +       sq_entries = min(sq_tail - sq_head, ctx->sq_entries);
-> +       for (i = 0; i < sq_entries; i++) {
-> +               unsigned int entry = i + sq_head;
-> +               unsigned int sq_idx = READ_ONCE(ctx->sq_array[entry & sq_mask]);
->
->                 if (likely(sq_idx <= sq_mask)) {
->                         struct io_uring_sqe *sqe = &ctx->sq_sqes[sq_idx];
-> @@ -10097,9 +10100,11 @@ static __cold void __io_uring_show_fdinfo(struct io_ring_ctx *ctx,
->                                    sq_idx, sqe->opcode, sqe->fd, sqe->flags, sqe->user_data);
->                 }
+>         if (!nested_has_guest_tlb_tag(vcpu)) {
+>                 kvm_make_request(KVM_REQ_TLB_FLUSH_CURRENT, vcpu);
+>         } else if (is_vmenter &&
+>                    vmcs12->virtual_processor_id != vmx->nested.last_vpid) {
+>                 vmx->nested.last_vpid = vmcs12->virtual_processor_id;
+> -               vpid_sync_context(nested_get_vpid02(vcpu));
+> +               kvm_make_request(KVM_REQ_TLB_FLUSH_GUEST, vcpu);
+
+This change is neat.
+
+But current KVM_REQ_TLB_FLUSH_GUEST flushes vpid01 only, and it doesn't flush
+vpid02.  vmx_flush_tlb_guest() might need to be changed to flush vpid02 too.
+
+And if so, this nested_vmx_transition_tlb_flush() can be simplified further
+since KVM_REQ_TLB_FLUSH_CURRENT(!enable_ept) can be replaced with
+KVM_REQ_TLB_FLUSH_GUEST.
+
 >         }
-> -       seq_printf(m, "CQEs:\t%u\n", cached_cq_tail - cq_head);
-> -       for (i = cq_head; i < cached_cq_tail; i++) {
-> -               struct io_uring_cqe *cqe = &r->cqes[i & cq_mask];
-> +       seq_printf(m, "CQEs:\t%u\n", cq_tail - cq_head);
-> +       cq_entries = min(cq_tail - cq_head, ctx->cq_entries);
-> +       for (i = 0; i < cq_entries; i++) {
-> +               unsigned int entry = i + cq_head;
-> +               struct io_uring_cqe *cqe = &r->cqes[entry & cq_mask];
->
->                 seq_printf(m, "%5u: user_data:%llu, res:%d, flag:%x\n",
->                            i & cq_mask, cqe->user_data, cqe->res, cqe->flags);
-
-Note : you probably want to replace  (i & cq_mask) to (entry & cq_mask) here
-
-Otherwise, patch looks good to me.
-
->
-> --
-> Jens Axboe
->
+>  }
