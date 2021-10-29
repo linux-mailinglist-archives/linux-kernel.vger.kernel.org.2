@@ -2,112 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 684F043FC63
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 14:34:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E8C443FDA5
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 15:55:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231572AbhJ2MhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 08:37:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49460 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231409AbhJ2MhJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 08:37:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CE4461166;
-        Fri, 29 Oct 2021 12:34:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635510880;
-        bh=urGBo3TyC1ivuzibef95x4hk4YwD63F00Hq8ev8XTyo=;
-        h=References:From:To:Cc:Subject:Date:In-reply-to:From;
-        b=njV4Sknwn7bz0F8040IY2q+pzIl9x8AR5fNcKdM00v7Dky+E1w6+T3DhNV07zfhXP
-         VW6L+lUZUhDurLgbpEFa2WCWbr/FpIeBYggoC0eEsWyyWJL5UVNViZodCk0nPwUi4l
-         1c2H5HeSW7H1UZhIVK4yAtEszj2f/6exCpqsHk2VfvsxUVXInK/ZybwlMxm7BILflU
-         ttsMXHZYsT9J12BBvYUj1M8PU/TjzMx5hQvNoGUIhdH1qz82P0nzhEPpyaka4u74XO
-         +lUMNxG5hsuTpGDfdGqjO9TmPjkaQ+9nNPbjSxsa4Wc3a0OyT3opwMxGwOGjzYRfeX
-         s8OiGRD6OuY6A==
-References: <20211028211753.573480-1-jaschultzMS@gmail.com>
- <20211028211753.573480-3-jaschultzMS@gmail.com>
- <CAHp75Vfq7ZkXytuAFhGOMGuH7_AsXcYf9O=p30e4OUx+a4jMgw@mail.gmail.com>
- <87fsskqvvc.fsf@kernel.org>
- <CAHp75VdHpHMp7X=8WcVbSUaT3pfxo-ZOTQ0BwdQqD09bJ2ddKg@mail.gmail.com>
-User-agent: mu4e 1.6.6; emacs 28.0.60
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Jarrett Schultz <jaschultzms@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jarrett Schultz <jaschultz@microsoft.com>
-Subject: Re: [PATCH 2/3] platform: surface: Add surface xbl
-Date:   Fri, 29 Oct 2021 15:32:01 +0300
-In-reply-to: <CAHp75VdHpHMp7X=8WcVbSUaT3pfxo-ZOTQ0BwdQqD09bJ2ddKg@mail.gmail.com>
-Message-ID: <877ddwqaas.fsf@kernel.org>
+        id S231602AbhJ2N6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 09:58:17 -0400
+Received: from 11.mo550.mail-out.ovh.net ([188.165.48.29]:59659 "EHLO
+        11.mo550.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230252AbhJ2N6P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 09:58:15 -0400
+X-Greylist: delayed 3601 seconds by postgrey-1.27 at vger.kernel.org; Fri, 29 Oct 2021 09:58:15 EDT
+Received: from player770.ha.ovh.net (unknown [10.108.20.46])
+        by mo550.mail-out.ovh.net (Postfix) with ESMTP id 0370023424
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 12:38:02 +0000 (UTC)
+Received: from RCM-web10.webmail.mail.ovh.net (ip-194-187-74-233.konfederacka.maverick.com.pl [194.187.74.233])
+        (Authenticated sender: rafal@milecki.pl)
+        by player770.ha.ovh.net (Postfix) with ESMTPSA id 5DEA823DC6CDD;
+        Fri, 29 Oct 2021 12:37:51 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain
+Date:   Fri, 29 Oct 2021 14:37:51 +0200
+From:   =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Justin Chen <justinpopo6@gmail.com>,
+        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 5/7] watchdog: bcm7038_wdt: Add platform device id for
+ bcm63xx-wdt
+In-Reply-To: <20211028172322.4021440-6-f.fainelli@gmail.com>
+References: <20211028172322.4021440-1-f.fainelli@gmail.com>
+ <20211028172322.4021440-6-f.fainelli@gmail.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <02cb3c1a160854c92895d024e59a831b@milecki.pl>
+X-Sender: rafal@milecki.pl
+X-Originating-IP: 194.187.74.233
+X-Webmail-UserID: rafal@milecki.pl
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Ovh-Tracer-Id: 16945356551679290136
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrvdeghedgheduucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepggffhffvufgjfhgfkfigihgtgfesthejjhdttdervdenucfhrhhomheptfgrfhgrlhgpofhilhgvtghkihcuoehrrghfrghlsehmihhlvggtkhhirdhplheqnecuggftrfgrthhtvghrnhepveefvdetjeffueefkeeuuedvgefhgeegjefgvedvgeeiteduueeivdeltedthfetnecukfhppedtrddtrddtrddtpdduleegrddukeejrdejgedrvdeffeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphhouhhtpdhhvghlohepphhlrgihvghrjeejtddrhhgrrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehrrghfrghlsehmihhlvggtkhhirdhplhdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-10-28 19:23, Florian Fainelli wrote:
+> In order to phase out bcm63xx_wdt and use bcm7038_wdt instead, 
+> introduce
+> a platform_device_id table that allows both names to be matched.
+> 
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> ---
+>  drivers/watchdog/bcm7038_wdt.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/drivers/watchdog/bcm7038_wdt.c 
+> b/drivers/watchdog/bcm7038_wdt.c
+> index 506cd7ef9c77..2535f450e8a1 100644
+> --- a/drivers/watchdog/bcm7038_wdt.c
+> +++ b/drivers/watchdog/bcm7038_wdt.c
+> @@ -223,6 +223,13 @@ static const struct of_device_id 
+> bcm7038_wdt_match[] = {
+>  };
+>  MODULE_DEVICE_TABLE(of, bcm7038_wdt_match);
+> 
+> +static const struct platform_device_id bcm7038_wdt_devtype[] = {
+> +	{ .name = "bcm7038-wdt" },
+> +	{ .name = "bcm63xx-wdt" },
+> +	{ /* sentinel */ },
+> +};
+> +MODULE_DEVICE_TABLE(platform, bcm7038_wdt_devtype);
 
-Hi,
+Do we really want "bcm7038-wdt" here? I don't think it will ever be used
+as apparently BCM7038 uses DT.
 
-Andy Shevchenko <andy.shevchenko@gmail.com> writes:
+I'd also prefer to have Rob's comment on mapping blocks vs. mapping
+registers.
 
-> On Fri, Oct 29, 2021 at 7:48 AM Felipe Balbi <balbi@kernel.org> wrote:
->> Andy Shevchenko <andy.shevchenko@gmail.com> writes:
->
-> ...
->
->> > Capital L will be better to read and understand the
->> > abbreviation. Actually usually we do something like this:
->> >
->> > Extensible Boot Loader (EBL)
->>
->> nah, this is silly Andy. It's just capitalized as eXtensible Boot
->> Loader, very much akin to eXtensible Host Controller Interface.
->
-> My point here is to have a full name followed by the abbreviation. and
-> n(O)t in (F)ancy st(Y)le.
-
-too bad my patch removing acronyms from the kernel got rejects :-p
-
-Seriously, this is pretty pointless. You're vouching for something that
-will just cause confusion. Every piece of internal documentation refers
-to xbl and you want this to be renamed to ebl because it looks nicer for
-you. Thanks, but no thanks.
-
->> >  +static const struct attribute_group inputs_attr_group = {
->> >  +       .attrs = inputs_attrs,
->> >  +};
->> >  +
->> >  +static u8 surface_xbl_readb(void __iomem *base, u32 offset)
->> >  +{
->> >  +       return readb(base + offset);
->> >  +}
->> >  +
->> >  +static u16 surface_xbl_readw(void __iomem *base, u32 offset)
->> >  +{
->> >  +       return readw(base + offset);
->> >  +}
->> >
->> > Either use corresponding io accessors in-line, or make first parameter
->> > to be sirface_xbl pointer. Otherwise these helpers useless.
->>
->> I agree with passing surface_xbl point as first parameter, but calling
->> the accessors pointless is a bit much. At a minimum, they make it easier
->> to ftrace the entire driver by simply ftracing surface_xbl_*
->
-> My point is that the above seems half-baked. It's pointless to have a
-> func(a,b) { return readl(a + b); }. It doesn't add value.
-
-sure it does. echo surface_xbl_* > ftrace_filter_function (or whatever
-the filename was) it reason enough IMHO. Not to mention that these
-little accessors will likely be optimized by the compiler.
-
--- 
-balbi
+If we were to map whole hardware blocks, we should have per-SoC
+bindings and handling registers layouts in a driver. Right now
+bcm63xx arch code maps selected part of hardware block that is
+meant to match driver's logic (offsets 0x00 and 0x04).
