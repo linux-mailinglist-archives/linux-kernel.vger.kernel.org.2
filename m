@@ -2,105 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58253440541
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 00:03:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF878440545
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 00:05:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231468AbhJ2WGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 18:06:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231404AbhJ2WGD (ORCPT
+        id S231400AbhJ2WIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 18:08:16 -0400
+Received: from mout.kundenserver.de ([212.227.126.187]:33251 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230325AbhJ2WIP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 18:06:03 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8D82C061570;
-        Fri, 29 Oct 2021 15:03:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=oXpheV6aWkS+8lL5uEEzklnzS1V0HmKPeToiG0EuwnQ=; b=yqG8QZRcMN0bAxJ2kAZy1loRkA
-        hW8gIF9wdHAH1IxNQmm1+lgzlf+lGFClJiSaI1AK5v9q+HABnhdfJNP2G6AcZn40ofAOmrpKekn92
-        Tz2SGSQHS31pBCAhETTA1bX3jGlOeaee0ZojMWFGDk13428TG2kErYo9peBe716JFjh+KiatKLutM
-        rMwFJaN5vsCDoi4RztA76nz9cltmfJqtDhrGZw3sqAkw3OoDzJieuCk59/I5pEIX4xLy65yhyncNY
-        WTYxqqNG6EW57EZ3ZIIz2Pa13piNsN/aDPLGiPeV3SXaM6HB5YUSxOOiyXLvE8TVU9howsSumdbFR
-        UOMZ4Rdw==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mgZy9-00CQVv-Io; Fri, 29 Oct 2021 22:03:25 +0000
-Subject: Re: [PATCH 2/5] drivers/input/joystick: sensehat: Raspberry Pi Sense
- HAT joystick driver
-To:     Charles Mirabile <cmirabil@redhat.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input@vger.kernel.org,
-        Serge Schneider <serge@raspberrypi.org>,
-        Stefan Wahren <stefan.wahren@i2se.com>,
-        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
-        linux-rpi-kernel@lists.infradead.org, fedora-rpi@googlegroups.com,
-        Mwesigwa Guma <mguma@redhat.com>,
-        Joel Savitz <jsavitz@redhat.com>
-References: <20211029215516.801593-1-cmirabil@redhat.com>
- <20211029215516.801593-3-cmirabil@redhat.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <45c2b206-bc7b-ac73-4d3e-d18160b1e333@infradead.org>
-Date:   Fri, 29 Oct 2021 15:03:24 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Fri, 29 Oct 2021 18:08:15 -0400
+Received: from mail-wr1-f43.google.com ([209.85.221.43]) by
+ mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1Mzydy-1mtHtm3LZW-00x5NC for <linux-kernel@vger.kernel.org>; Sat, 30 Oct 2021
+ 00:05:44 +0200
+Received: by mail-wr1-f43.google.com with SMTP id u18so18865663wrg.5
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 15:05:44 -0700 (PDT)
+X-Gm-Message-State: AOAM530H/wtUY/3yZbzluDy+jn63vJcIckBBziQRcyEvv76rzdroo/lg
+        wWDg7b6/4bFBJUgY8ii35QbOxoKU36SzS5c9XYM=
+X-Google-Smtp-Source: ABdhPJzfwgv0LbgG3Xfr6UzxkXiZK9hLeraT8h4hEKjoLlmK3OAyU4Iib390eAxpmKqgo6ROOvk/JmnenK1h2Z2xv4E=
+X-Received: by 2002:a05:6000:18c7:: with SMTP id w7mr17331452wrq.411.1635545144483;
+ Fri, 29 Oct 2021 15:05:44 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211029215516.801593-3-cmirabil@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211029203110.8343-1-julianbraha@gmail.com>
+In-Reply-To: <20211029203110.8343-1-julianbraha@gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Sat, 30 Oct 2021 00:05:28 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1L8x48ZGhFKaMNa0MXCGrouw2EEwe9uo640bnnf=4dOA@mail.gmail.com>
+Message-ID: <CAK8P3a1L8x48ZGhFKaMNa0MXCGrouw2EEwe9uo640bnnf=4dOA@mail.gmail.com>
+Subject: Re: [PATCH] ARM: fix unmet dependency on BITREVERSE for HAVE_ARCH_BITREVERSE
+To:     Julian Braha <julianbraha@gmail.com>
+Cc:     Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        fazilyildiran@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:Vupko7xIT5uNd9SYbd+5fxgmOxygq6hPgunKDTymd0BhZQySXhd
+ WDUm/3CcUHiY7NjuLScIQtlzNWWELBp4tBDRAnpLUKafOFr+ehGxGw0eh5OretM1atMtSr8
+ 75jnteroEHTrK+JEHo7IywY3/KsocH7yCRK7PGR89VOK5keeA/Uma56zx1ZuIViAGUbn9AH
+ q7J0fmZzgsYNowbUQRFPg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Ga9JNT9RWjo=:Xk5179wHn3DiAgGVGmyNO0
+ 91WTOK3no8/SP9TQrbxGk3kCR9GXfDhJAFmBj+Ie5ciG5gEv4Fkg+DNzzIN2jh6MMZLH2dIEO
+ Tcf/YNpJ+t2Yd+QWQvJ33pDJv6Wn23G3/KKqxgeWAUVfHKsmzYnAup7fYiEMlYLwvKFvGheoA
+ bF+NPt2WeoRPfObWQVreE+cSO89f7tQaU1J61UEz2UIsY2xNlW6kJAYboIPxMbWbFn4OUHbtG
+ 1Wp8syPEForFwYKmuEIB4vTqmR8JHIS5wB0+3nSrHaGGnfFr5hkuidun3LT0FkYzdFi2GCMck
+ DCSmFdcK1l/l3G1XSL/xAKbp6UqTgBDFM7r7nNV9yfhnwwCJbkuEnkO1pDIWlS4P9RL07gUgI
+ ZP7EHUPwLuAkMFdxByQh4m//01XeOBYD6XkeiX+w13DKjQi4AIEBJ5u92t4k354BB+BFSW9z9
+ vojFSpRzrC7vY4dRan0l137+aQKEYPDSaHpfTzvfNrOBc5BR6MSOzFcW8HL0nDv9JuXY6TY59
+ 9KbcuLvgVoujS6iXnnY/AvFXmk6ClQ0tz7CYJQz1fE+2WoW7bU98+jBQyKfOAOM8NNZ9c4jxd
+ XewoIMAt8feIpJv75ypmDeRtmuKtxHA3BegVwPLe53JhMFPcmiFcStlrq6fNa3lRZikde9dkW
+ zmw46EVbIfC1lIeM2jki13LkrnCCAYn+qoBsc2IS4eBUR/HN/h7qdzhVApD4A3AJlhs0=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/29/21 2:55 PM, Charles Mirabile wrote:
-> This patch implements support for the joystick.
-> It supports left/right/up/down/enter and is
-> attached via i2c and a gpio pin for irq.
-> 
-> Signed-off-by: Charles Mirabile <cmirabil@redhat.com>
-> Signed-off-by: Mwesigwa Guma <mguma@redhat.com>
-> Signed-off-by: Joel Savitz <jsavitz@redhat.com>
-> ---
->   drivers/input/joystick/Kconfig             |   8 ++
->   drivers/input/joystick/Makefile            |   1 +
->   drivers/input/joystick/sensehat-joystick.c | 135 +++++++++++++++++++++
->   3 files changed, 144 insertions(+)
->   create mode 100644 drivers/input/joystick/sensehat-joystick.c
-> 
-> diff --git a/drivers/input/joystick/Kconfig b/drivers/input/joystick/Kconfig
-> index 3b23078bc7b5..d2f78353b74c 100644
-> --- a/drivers/input/joystick/Kconfig
-> +++ b/drivers/input/joystick/Kconfig
-> @@ -399,4 +399,12 @@ config JOYSTICK_N64
->   	  Say Y here if you want enable support for the four
->   	  built-in controller ports on the Nintendo 64 console.
->   
-> +config JOYSTICK_SENSEHAT
-> +	tristate "Raspberry Pi Sense HAT joystick"
-> +	depends on GPIOLIB && INPUT
+On Fri, Oct 29, 2021 at 10:31 PM Julian Braha <julianbraha@gmail.com> wrote:
+>
+> When ARM is enabled, and BITREVERSE is disabled,
+> Kbuild gives the following warning:
+>
+> WARNING: unmet direct dependencies detected for HAVE_ARCH_BITREVERSE
+>   Depends on [n]: BITREVERSE [=n]
+>   Selected by [y]:
+>   - ARM [=y] && (CPU_32v7M [=n] || CPU_32v7 [=y]) && !CPU_32v6 [=n]
+>
+> This is because ARM selects HAVE_ARCH_BITREVERSE
+> without selecting BITREVERSE, despite
+> HAVE_ARCH_BITREVERSE depending on BITREVERSE.
+>
+> This unmet dependency bug was found by Kismet,
+> a static analysis tool for Kconfig. Please advise if this
+> is not the appropriate solution.
+>
+> Signed-off-by: Julian Braha <julianbraha@gmail.com>
 
-I think also:
-	depends on I2C
+This works, but I think it would be better handled differently:
 
-since this one:
+The other 'select BITREVERSE' instances are for drivers that use
+bitrever(), not those that provide it.
 
-> +	select MFD_SENSEHAT_CORE
+We can probably just remove the dependency. Alternatively we could
+change arch/arm/ to
 
-also depends on I2C and 'select' does not follow any
-dependency chains.
+     select HAVE_ARCH_BITREVERSE if BITREVERSE && ((CPU_32v7M ||
+CPU_32v7) && !CPU_32v6)
 
-Same comment applies to patch 3/5 for SENSEHAT_DISPLAY.
+Regardless of what we do here, note that
 
-> +
-> +	help
-> +	  This is the joystick driver for the Raspberry Pi Sense HAT
-> +
->   endif
+a) the 'select' lines in CONFIG_ARM are sorted alphabetically, and
+   should be kept that way
 
+b) the same probably exists on arch/mips and arch/arm64, whatever we
+   do here should be the same as on the other architectures.
 
--- 
-~Randy
+        Arnd
