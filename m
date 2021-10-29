@@ -2,224 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA5A443F562
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 05:27:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DA9743F595
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 05:55:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231701AbhJ2D3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 23:29:49 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:10686 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231667AbhJ2D3r (ORCPT
+        id S231738AbhJ2D6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 23:58:05 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:41194 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231523AbhJ2D6E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 23:29:47 -0400
-Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20211029032716epoutp02a596cf3036960ca84208726d72bdf47a~yYpv6uteu1082710827epoutp02j
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 03:27:16 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20211029032716epoutp02a596cf3036960ca84208726d72bdf47a~yYpv6uteu1082710827epoutp02j
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1635478036;
-        bh=u6kkXJBk1XnEia7BxzyuolQLmLyvrfxmOr7t36gf/XQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=R5Ei2AObtIyax4nRSiibHdWeKrXk99rbnMWgJKNBFhOOXMz41EfAyrcHL08kkZiiO
-         OJKnkmODuB6yr8nHfhAIGstaGAJuMy/mBXo2ymYb53eZHbnzqmkuaB8zcvGTwJkLwM
-         vsrHcg5/tTMfi7FGNOcVYaM0vpPHjP8FtPjCRBHw=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
-        20211029032716epcas2p21c144d6a44569662084ade4c4335e92a~yYpvTRVPo2654626546epcas2p2k;
-        Fri, 29 Oct 2021 03:27:16 +0000 (GMT)
-Received: from epsmges2p1.samsung.com (unknown [182.195.36.97]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4HgSXc1SJwz4x9QN; Fri, 29 Oct
-        2021 03:27:12 +0000 (GMT)
-Received: from epcas2p2.samsung.com ( [182.195.41.54]) by
-        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        A6.53.51767.01A6B716; Fri, 29 Oct 2021 12:27:12 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas2p1.samsung.com (KnoxPortal) with ESMTPA id
-        20211029032711epcas2p1121d9342383760cd6ebd86f725305fac~yYprCxS3Q2010620106epcas2p1S;
-        Fri, 29 Oct 2021 03:27:11 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20211029032711epsmtrp28029c247a241237a72262e9796f6140b~yYprB6Ukw1709417094epsmtrp2T;
-        Fri, 29 Oct 2021 03:27:11 +0000 (GMT)
-X-AuditID: b6c32a45-447ff7000000ca37-c3-617b6a10016f
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        51.CF.08738.F0A6B716; Fri, 29 Oct 2021 12:27:11 +0900 (KST)
-Received: from perf (unknown [12.36.155.123]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20211029032711epsmtip206c3a07ba43c08cff06ef9b63926eca0~yYpq2jWqt1792317923epsmtip2j;
-        Fri, 29 Oct 2021 03:27:11 +0000 (GMT)
-Date:   Fri, 29 Oct 2021 12:54:22 +0900
-From:   Youngmin Nam <youngmin.nam@samsung.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     krzysztof.kozlowski@canonical.com, mark.rutland@arm.com,
-        daniel.lezcano@linaro.org, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, pullip.cho@samsung.com,
-        hoony.yu@samsung.com, hajun.sung@samsung.com,
-        myung-su.cha@samsung.com, kgene@kernel.org
-Subject: Re: [PATCH v1 1/2] clocksource/drivers/exynos_mct_v2: introduce
- Exynos MCT version 2 driver for next Exynos SoC
-Message-ID: <20211029035422.GA30523@perf>
+        Thu, 28 Oct 2021 23:58:04 -0400
+X-UUID: 586c81a47295411fba224f45e5108903-20211029
+X-UUID: 586c81a47295411fba224f45e5108903-20211029
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
+        (envelope-from <yunfei.dong@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 972481395; Fri, 29 Oct 2021 11:55:32 +0800
+Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.792.3;
+ Fri, 29 Oct 2021 11:55:30 +0800
+Received: from localhost.localdomain (10.17.3.154) by mtkmbs10n2.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.2.792.3 via Frontend
+ Transport; Fri, 29 Oct 2021 11:55:29 +0800
+From:   Yunfei Dong <yunfei.dong@mediatek.com>
+To:     Yunfei Dong <yunfei.dong@mediatek.com>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        "Tzung-Bi Shih" <tzungbi@chromium.org>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Tomasz Figa <tfiga@google.com>
+CC:     Hsin-Yi Wang <hsinyi@chromium.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Irui Wang <irui.wang@mediatek.com>,
+        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>,
+        <linux-mediatek@lists.infradead.org>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>
+Subject: [PATCH v8, 00/17] Support multi hardware decode using of_platform_populate
+Date:   Fri, 29 Oct 2021 11:55:10 +0800
+Message-ID: <20211029035527.454-1-yunfei.dong@mediatek.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20211027073458.GA22231@willie-the-truck>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Tf0xbVRTHc9+jj1dMzZPBuIMB5anEshVahPKYYCSAPnQanPyxmcXuAU+K
-        0B/pa5FtwRXZYCMyIVIDDUIXmLKGBVZIgQ42BpsMCeh+BLVhjFDGjLhltsucGxDbPqb+9znn
-        nu/9nnvPvTgaOoZF4qUaA6vXMOUkFhLkmJAopMQnhxlZRx1GtXujqc8vXkepybOrAupL9ypK
-        nbv3GKHs7jkBdcPZhlEtP15AqNM/X0OoTnc3Qm00XAJUv92MUkfnU98Q0T3tPYC2mBow2m47
-        gdHzcyMYfX92Npju7zpCnxywAdprj8nHPyzLULFMMasXs5oibXGppiSTfOcDZbYyVSGTS+Xp
-        VBop1jBqNpPM2Z0vfbO03NcwKa5gyo2+VD7DcWTS6xl6rdHAilVazpBJsrricl2aLpFj1JxR
-        U5KoYQ275DJZcqqv8ECZ6pTzIqarlVT+NOIBJnBUXA+EOCRSYEv9KOLnUGIIwA1XVT0I8bEH
-        wJumYYQPvADWnDmDPVOMjT7aXHAC6LStCfhgCcD1mmHUXxVEvAz7e5uC/YwRUui4ugH8HEbE
-        waHBNdQvQIlpBM7UOAMLW4hDcO6ONWAhIiSwesAZxPMLcKp12cc4LiQUcH5krz8dTrwIxxyT
-        gS4gMYLDnq4WhG8vB7at9wXxvAX+PjkQzHMk9N4f3TzCEdjpOI3y4kYAO+wPNotehZaVOuA3
-        QwkVXH9U6EfoM7vsCmyJEs/D4xPrwXxaBI/XhvLCePikuQ/wvB2e7+xGeabh4MYwyt+PG4XV
-        d1aQRhBr+d/JLP+ZWQIOO6H1vAfj01Hwuw2cRwnsdSZZgcAGtrI6Tl3Ccsk6+b+zLtKq7SDw
-        lBNyh8BX9x4kjgMEB+MA4igZJrrR/ikTKipmDh5i9Vql3ljOcuMg1TemJjQyvEjr+wsag1Ke
-        ki5LUSjkacmpsjQyQpQeXsaEEiWMgS1jWR2rf6ZDcGGkCWmd1s5sy3cvxx+7NVOxsBpxoq13
-        l/lW97eeHSbjk0L1N/sNcfF7LFld6fu6pPTfg46x9xclwt+ao65ecWGCHdnqaO2BqpQsuRlZ
-        /KLp2DiSDjRLeR/Z1jIKxIL9MXeXtoaj05auqZ6stzrOLVdFe95bWHbvGb6ZpGp4Kb95/hfb
-        3F+GuJiPRZcX/tAeXK8+WzP+UHc4IWw7ua8gIst1u8/x2VLUSqw1Jzsv9xXhheY+R0Xsu6Qh
-        F0/MuLRccOXUbeVe19dN5tmHtRbwa0RlK7ZQSQtPLm6zPha8bW1Meu6HutfahUmGvKd1d3ea
-        FycKr4fs9v7JfR+NLk5NLVgb468Zn5JBnIqRJ6B6jvkHZglhgVMEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupgkeLIzCtJLcpLzFFi42LZdlhJXpc/qzrR4PUpSYt5n2UtmvZfYrY4
-        vvY1q0X/49fMFhvf/mCy2PT4GqvF5V1z2CxmnN/HZLH0+kUmi8WPVzBZ/Os9yGixedNUZouW
-        O6YOvB5r5q1h9JjV0MvmsWlVJ5vHnWt72DzenTvH7rF5Sb1H35ZVjB6fN8kFcERx2aSk5mSW
-        pRbp2yVwZaw/8Iex4JhaxYd929kaGO/KdjFyckgImEgc2PuNqYuRi0NIYAejRP/TF2wQCRmJ
-        2ysvs0LYwhL3W46wQhQ9YJR4/fEPO0iCRUBVYvP6iWA2m4CuxLYT/xhBbBEBRYkd2/8wgzQw
-        C5xlkvi3dRdYkbBAlcS1pwvANvAKaEo0btnFAjH1KbNE38IVjBAJQYmTM5+wgNjMAloSN/69
-        BLqPA8iWllj+jwPE5BQwk7izJwKkQlRAWeLAtuNMExgFZyFpnoWkeRZC8wJG5lWMkqkFxbnp
-        ucWGBUZ5qeV6xYm5xaV56XrJ+bmbGMGRpaW1g3HPqg96hxiZOBgPMUpwMCuJ8F6eV54oxJuS
-        WFmVWpQfX1Sak1p8iFGag0VJnPdC18l4IYH0xJLU7NTUgtQimCwTB6dUA1OCJ6fli53p6xbF
-        2xoujFrRbhSp8Wm+/nqBBd5b3B9wPS20rK3e67Hl8u1C/bzexXf01muY/q3MsV3kd+2F+frr
-        pkHJHfOuvNP3vHJeOE/7WV9x+1K5HZxs/w4WTOTm2LyFyzNovfnlrRdNokKjTYv3T7Q2Dt4U
-        wRbw58wlfQFeTk7G+Zuz9m5XOKJwYeN0EYP4M/9bVlk0Fvp3qM6/XSGqrZTTERTZ/O3dPEkz
-        O+tdvpyum+oeRx9W+ZLFtOnpnx/Nk+YpRK58s8by62r9zkjB+qcathbP7inLiQXMUxXOETdZ
-        d1LsmoLVoeysvTwVwbyPfssL/Pzd8Ca5uu23/65FD/JvJx2V/XdHUc3hkRJLcUaioRZzUXEi
-        AO/cqjcbAwAA
-X-CMS-MailID: 20211029032711epcas2p1121d9342383760cd6ebd86f725305fac
-X-Msg-Generator: CA
-Content-Type: multipart/mixed;
-        boundary="----TI73IYgzdP03rYJ9SiN0qM3o3mlayfAqXHuFFMbUzbY.6Ea-=_800aa_"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20211027011125epcas2p2916524051416ede854b750c91a19073b
-References: <1b93aaf3-ed64-b105-dec4-07b6f27b385b@canonical.com>
-        <20211022042116.GA30645@perf>
-        <da83de3a-e7a2-f9b2-80f2-25c39717c3e4@canonical.com>
-        <20211026014732.GA45525@perf>
-        <91e926c4-9a3a-196d-1451-d3e7d38fc132@canonical.com>
-        <20211026104518.GA40630@perf>
-        <cb5bd5a3-1c23-0dc5-9f77-112befd7269c@canonical.com>
-        <CGME20211027011125epcas2p2916524051416ede854b750c91a19073b@epcas2p2.samsung.com>
-        <20211027013709.GA17353@perf> <20211027073458.GA22231@willie-the-truck>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-------TI73IYgzdP03rYJ9SiN0qM3o3mlayfAqXHuFFMbUzbY.6Ea-=_800aa_
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
+This series adds support for multi hardware decode into mtk-vcodec, by first adding use
+of_platform_populate to manage each hardware information: interrupt, clock, register
+bases and power. Secondly add core work queue to deal with core hardware message,
+at the same time, add msg queue for different hardware share messages. Lastly, the
+architecture of different specs are not the same, using specs type to separate them.
 
-On Wed, Oct 27, 2021 at 08:34:58AM +0100, Will Deacon wrote:
-> On Wed, Oct 27, 2021 at 10:38:37AM +0900, Youngmin Nam wrote:
-> > On Tue, Oct 26, 2021 at 01:00:51PM +0200, Krzysztof Kozlowski wrote:
-> > > On 26/10/2021 12:45, Youngmin Nam wrote:
-> > > > On Tue, Oct 26, 2021 at 09:10:28AM +0200, Krzysztof Kozlowski wrote:
-> > > >> On 26/10/2021 03:47, Youngmin Nam wrote:
-> > > >>>> If everyone added a new driver to avoid integrating with existing code,
-> > > >>>> we would have huge kernel with thousands of duplicated solutions. The
-> > > >>>> kernel also would be unmaintained.
-> > > >>>>
-> > > >>>> Such arguments were brought before several times - "I don't want to
-> > > >>>> integrating with existing code", "My use case is different", "I would
-> > > >>>> need to test the other cases", "It's complicated for me".
-> > > >>>>
-> > > >>>> Instead of pushing a new vendor driver you should integrate it with
-> > > >>>> existing code.
-> > > >>>>
-> > > >>> Let me ask you one question.
-> > > >>> If we maintain as one driver, how can people who don't have the new MCT test the new driver?
-> > > >>
-> > > >> I assume you talk about a case when someone else later changes something
-> > > >> in the driver. Such person doesn't necessarily have to test it. The same
-> > > >> as in all other cases (Exynos MCT is not special here): just ask for
-> > > >> testing on platform one doesn't have.
-> > > >>
-> > > >> Even if you submit this as separate driver, there is the exact same
-> > > >> problem. People will change the MCTv2 driver without access to hardware.
-> > > >>
-> > > > Yes, I can test the new MCT driver if someone ask for testing after modifying the new driver.
-> > > > But in this case, we don't need to test the previous MCT driver. We have only to test the new MCT driver.
-> > > 
-> > > Like with everything in Linux kernel. We merge instead of duplicate.
-> > > It's not an argument.
-> > > 
-> > > >> None of these differ for Exynos MCT from other drivers, e.g. mentioned
-> > > >> Samsung PMIC drivers, recently modified (by Will and Sam) the SoC clock
-> > > >> drivers or the ChipID drivers (changed by Chanho).
-> > > > From HW point of view, the previous MCT is almost 10-year-old IP without any major change and
-> > > > it will not be used on next new Exynos SoC.
-> > > > MCTv2 is the totally newly designed IP and it will replace the Exynos system timer.
-> > > > Device driver would be dependent with H/W. We are going to apply a lot of changes for this new MCT.
-> > > > For maintenance, I think we should separate the new MCT driver for maintenance.
-> > > > 
-> > > 
-> > > There are several similarities which actually suggest that you
-> > > exaggerate the differences.
-> > > 
-> > > The number of interrupts is the same (4+8 in older one, 12 in new one...).
-> > 
-> > I didn't "exaggerate" at all.
-> > The numer of interrups is the same. But their usage is completely different.
-> > The type of each timer is different.
-> > And previous MCT can only support upto 8 cores.
-> > 
-> > * MCTv1 (Let me call previous MCT as MCTv1)
-> >  - 4 global timer + 8 local timer
-> >  - Global timer and local timer are totally different.
-> >  - 4 global timer have only one 64bit FRC that serves as the "up-counter" with 4 "comparators"
-> >  - 8 local timer have 8 of 32bit FRC that serves as the "down-counter" without any "comparators".(just expire timer)
-> >  - local timer can be used as per-cpu event timer, so it can only support upto 8 cores.
-> > 
-> > * MCTv2
-> >  - There are no global timer and local timer anymore.
-> >  - 1 of 64bit FRC that serves as "up-counter" (just counter without "comparators")
-> >  - 12 comaprators (These are not "counter") can be used as per-cpu event timer so that it can support upto 12 cores.
-> >  - RTC source can be used as backup source.
-> > 
-> > > You assign the MCT priority also as higher than Architected Timer
-> > > (+Cc Will and Mark - is it ok for you?)
-> > >     evt->rating = 500;      /* use value higher than ARM arch timer *
-> > > 
-> > Yes, this is absolutely correct on event timer.
-> > We cannot use arm arch timer which is operating based on PPI as per-cpu event timer because of poewr mode.
-> 
-> You should be able to now that I've added support for per-cpu wakeup timers.
-> 
-> As long as the Arm arch timer is marked as C3STOP (e.g. by sticking the
-> "local-timer-stop" property in the DT notes), then the MCT will be used
-> as the wakeup source if you set the CLOCK_EVT_FEAT_PERCPU feature flag.
-> 
-> Give it a try.
-> 
-> Will
-> 
-Hi Will. Thanks for sharing information.
+This series has been tested with both MT8183 and MT8173. Decoding was working for both chips.
 
-In MCTv2, we need more time to test because this patchset is the start for MCTv2 new driver.
-This feature is for better performance not functionality.
-How about considering this later after the current patchset is merged first ?
-After doing our regression test, we will be able to consider applying this.
+Patches 1~3 rewrite get register bases and power on/off interface.
 
-Thanks.
+Patches 4 build decoder pm file to module.
 
+Patches 5 add to support 8192.
 
-------TI73IYgzdP03rYJ9SiN0qM3o3mlayfAqXHuFFMbUzbY.6Ea-=_800aa_
-Content-Type: text/plain; charset="utf-8"
+Patch 6 add component framework to support multi hardware.
 
+Patch 7 separate video encoder and decoder document
 
-------TI73IYgzdP03rYJ9SiN0qM3o3mlayfAqXHuFFMbUzbY.6Ea-=_800aa_--
+Patches 8-17 add interfaces to support core hardware.
+---
+Changes compared with v7:
+- add new patch 4 to build decoder pm file as module
+- add new patch 5 to support 8192
+- fix comments for patch 6/17
+- change some logic for using work queue instead of create thread for core hardware decode for patch 10/17
+- using work queue for hardware decode instead of create thread for patch 13/17
+- add returen value for patch 14/17
+- fix yaml check fail 15/17
+
+Changes compared with v6:
+- Use of_platform_populate to manage multi hardware, not component framework for patch 4/15
+- Re-write dtsi document for hardware architecture changed for patch 13/15 -The dtsi will write like below in patch 13/15:
+    vcodec_dec: vcodec_dec@16000000 {
+        compatible = "mediatek,mt8192-vcodec-dec";
+        #address-cells = <2>;
+        #size-cells = <2>;
+        ranges;
+        reg = <0 0x16000000 0 0x1000>;		/* VDEC_SYS */
+        mediatek,scp = <&scp>;
+        iommus = <&iommu0 M4U_PORT_L4_VDEC_MC_EXT>;
+        dma-ranges = <0x1 0x0 0x0 0x40000000 0x0 0xfff00000>;
+        vcodec_lat {
+            compatible = "mediatek,mtk-vcodec-lat";
+            reg = <0 0x16010000 0 0x800>;		/* VDEC_MISC */
+            reg-name = "reg-misc";
+            interrupts = <GIC_SPI 426 IRQ_TYPE_LEVEL_HIGH 0>;
+            iommus = <&iommu0 M4U_PORT_L5_VDEC_LAT0_VLD_EXT>,
+                 <&iommu0 M4U_PORT_L5_VDEC_LAT0_VLD2_EXT>,
+                 <&iommu0 M4U_PORT_L5_VDEC_LAT0_AVC_MV_EXT>,
+                 <&iommu0 M4U_PORT_L5_VDEC_LAT0_PRED_RD_EXT>,
+                 <&iommu0 M4U_PORT_L5_VDEC_LAT0_TILE_EXT>,
+                 <&iommu0 M4U_PORT_L5_VDEC_LAT0_WDMA_EXT>,
+                 <&iommu0 M4U_PORT_L5_VDEC_LAT0_RG_CTRL_DMA_EXT>,
+                 <&iommu0 M4U_PORT_L5_VDEC_UFO_ENC_EXT>;
+            clocks = <&topckgen CLK_TOP_VDEC_SEL>,
+                 <&vdecsys_soc CLK_VDEC_SOC_VDEC>,
+                 <&vdecsys_soc CLK_VDEC_SOC_LAT>,
+                 <&vdecsys_soc CLK_VDEC_SOC_LARB1>,
+                 <&topckgen CLK_TOP_MAINPLL_D4>;
+            clock-names = "vdec-sel", "vdec-soc-vdec", "vdec-soc-lat",
+                  "vdec-vdec", "vdec-top";
+            assigned-clocks = <&topckgen CLK_TOP_VDEC_SEL>;
+            assigned-clock-parents = <&topckgen CLK_TOP_MAINPLL_D4>;
+            power-domains = <&spm MT8192_POWER_DOMAIN_VDEC>;
+        };
+
+        vcodec_core {
+            compatible = "mediatek,mtk-vcodec-core";
+            reg = <0 0x16025000 0 0x1000>;		/* VDEC_CORE_MISC */
+            reg-names = "reg-misc";
+            interrupts = <GIC_SPI 425 IRQ_TYPE_LEVEL_HIGH 0>;
+            iommus = <&iommu0 M4U_PORT_L4_VDEC_MC_EXT>,
+                 <&iommu0 M4U_PORT_L4_VDEC_UFO_EXT>,
+                 <&iommu0 M4U_PORT_L4_VDEC_PP_EXT>,
+                 <&iommu0 M4U_PORT_L4_VDEC_PRED_RD_EXT>,
+                 <&iommu0 M4U_PORT_L4_VDEC_PRED_WR_EXT>,
+                 <&iommu0 M4U_PORT_L4_VDEC_PPWRAP_EXT>,
+                 <&iommu0 M4U_PORT_L4_VDEC_TILE_EXT>,
+                 <&iommu0 M4U_PORT_L4_VDEC_VLD_EXT>,
+                 <&iommu0 M4U_PORT_L4_VDEC_VLD2_EXT>,
+                 <&iommu0 M4U_PORT_L4_VDEC_AVC_MV_EXT>,
+                 <&iommu0 M4U_PORT_L4_VDEC_RG_CTRL_DMA_EXT>;
+            clocks = <&topckgen CLK_TOP_VDEC_SEL>,
+                 <&vdecsys CLK_VDEC_VDEC>,
+                 <&vdecsys CLK_VDEC_LAT>,
+                 <&vdecsys CLK_VDEC_LARB1>,
+                 <&topckgen CLK_TOP_MAINPLL_D4>;
+            clock-names = "vdec-sel", "vdec-soc-vdec", "vdec-soc-lat",
+                  "vdec-vdec", "vdec-top";
+            assigned-clocks = <&topckgen CLK_TOP_VDEC_SEL>;
+            assigned-clock-parents = <&topckgen CLK_TOP_MAINPLL_D4>;
+            power-domains = <&spm MT8192_POWER_DOMAIN_VDEC2>;
+        };
+    };
+
+Changes compared with v5:
+- Add decoder hardware block diagram for patch 13/15
+
+Changes compared with v4:
+- Fix comments for patch 4/15
+  >> +     if (dev->is_comp_supported) {
+  >> +             ret = mtk_vcodec_init_master(dev);
+  >> +             if (ret < 0)
+  >> +                     goto err_component_match;
+  >> +     } else {
+  >> +             platform_set_drvdata(pdev, dev);
+  >> +     }
+  Fix platform_set_drvdata.
+- Fix build error for patch 9/15
+- Add depend patch in case of error header file for patch 13/15
+
+Changes compared with v3:
+- Fix return value for patch 1/15
+- Fix comments for patch 4/15
+  > Looking up "mediatek,mtk-vcodec-core" to determine if it uses component framwork sounds like...
+  Add prameter in pdata, for all platform will use compoent after mt8183
+
+  >> +     if (dev->is_comp_supported) {
+  >> +             ret = mtk_vcodec_init_master(dev);
+  >> +             if (ret < 0)
+  >> +                     goto err_component_match;
+  >> +     } else {
+  >> +             platform_set_drvdata(pdev, dev);
+  >> +     }
+  > + Has asked the same question in [1].  Why it removes the
+  > +platform_set_drvdata() above?  mtk_vcodec_init_master() also calls platform_set_drvdata().
+  Must call component_master_add_with_match after platform_set_drvdata for component architecture.
+- Fix yaml files check fail for patch 5/15
+- Fix yaml file check fail for patch 14/15
+
+Changes compared with v1:
+- Fix many comments for patch 3/14
+- Remove unnecessary code for patch 4/14
+- Using enum mtk_vdec_hw_count instead of magic numbers for patch 6/14
+- Reconstructed get/put lat buffer for lat and core hardware for patch 7/14
+- Using yaml format to instead of txt file for patch 12/14
+
+Yunfei Dong (17):
+  media: mtk-vcodec: Get numbers of register bases from DT
+  media: mtk-vcodec: Align vcodec wake up interrupt interface
+  media: mtk-vcodec: Refactor vcodec pm interface
+  media: mtk-vcodec: Build decoder pm file as module
+  media: mtk-vcodec: Support MT8192
+  media: mtk-vcodec: Manage multi hardware information
+  dt-bindings: media: mtk-vcodec: Separate video encoder and decoder
+    dt-bindings
+  media: mtk-vcodec: Use pure single core for MT8183
+  media: mtk-vcodec: Add irq interface for multi hardware
+  media: mtk-vcodec: Add msg queue feature for lat and core architecture
+  media: mtk-vcodec: Generalize power and clock on/off interfaces
+  media: mtk-vcodec: Add new interface to lock different hardware
+  media: mtk-vcodec: Add work queue for core hardware decode
+  media: mtk-vcodec: Support 34bits dma address for vdec
+  dt-bindings: media: mtk-vcodec: Adds decoder dt-bindings for mt8192
+  media: mtk-vcodec: Add core dec and dec end ipi msg
+  media: mtk-vcodec: Use codec type to separate different hardware
+
+ .../media/mediatek,vcodec-comp-decoder.yaml   | 273 +++++++++++++++++
+ .../media/mediatek,vcodec-decoder.yaml        | 176 +++++++++++
+ .../media/mediatek,vcodec-encoder.yaml        | 187 ++++++++++++
+ .../bindings/media/mediatek-vcodec.txt        | 131 --------
+ drivers/media/platform/mtk-vcodec/Makefile    |  10 +-
+ .../platform/mtk-vcodec/mtk_vcodec_dec.c      |   4 +-
+ .../platform/mtk-vcodec/mtk_vcodec_dec.h      |   1 +
+ .../platform/mtk-vcodec/mtk_vcodec_dec_drv.c  | 212 ++++++++++---
+ .../platform/mtk-vcodec/mtk_vcodec_dec_hw.c   | 166 ++++++++++
+ .../platform/mtk-vcodec/mtk_vcodec_dec_hw.h   |  55 ++++
+ .../platform/mtk-vcodec/mtk_vcodec_dec_pm.c   | 107 +++++--
+ .../platform/mtk-vcodec/mtk_vcodec_dec_pm.h   |  13 +-
+ .../mtk-vcodec/mtk_vcodec_dec_stateful.c      |   2 +
+ .../mtk-vcodec/mtk_vcodec_dec_stateless.c     |  20 ++
+ .../platform/mtk-vcodec/mtk_vcodec_drv.h      |  75 ++++-
+ .../platform/mtk-vcodec/mtk_vcodec_enc_drv.c  |  12 +-
+ .../platform/mtk-vcodec/mtk_vcodec_enc_pm.c   |   1 -
+ .../platform/mtk-vcodec/mtk_vcodec_intr.c     |  27 +-
+ .../platform/mtk-vcodec/mtk_vcodec_intr.h     |   4 +-
+ .../platform/mtk-vcodec/mtk_vcodec_util.c     |  87 +++++-
+ .../platform/mtk-vcodec/mtk_vcodec_util.h     |   8 +-
+ .../platform/mtk-vcodec/vdec/vdec_h264_if.c   |   2 +-
+ .../mtk-vcodec/vdec/vdec_h264_req_if.c        |   2 +-
+ .../platform/mtk-vcodec/vdec/vdec_vp8_if.c    |   2 +-
+ .../platform/mtk-vcodec/vdec/vdec_vp9_if.c    |   2 +-
+ .../media/platform/mtk-vcodec/vdec_drv_if.c   |  21 +-
+ .../media/platform/mtk-vcodec/vdec_ipi_msg.h  |  16 +-
+ .../platform/mtk-vcodec/vdec_msg_queue.c      | 286 ++++++++++++++++++
+ .../platform/mtk-vcodec/vdec_msg_queue.h      | 148 +++++++++
+ .../media/platform/mtk-vcodec/vdec_vpu_if.c   |  46 ++-
+ .../media/platform/mtk-vcodec/vdec_vpu_if.h   |  22 ++
+ .../platform/mtk-vcodec/venc/venc_h264_if.c   |   2 +-
+ .../platform/mtk-vcodec/venc/venc_vp8_if.c    |   2 +-
+ 33 files changed, 1842 insertions(+), 280 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/media/mediatek,vcodec-comp-decoder.yaml
+ create mode 100644 Documentation/devicetree/bindings/media/mediatek,vcodec-decoder.yaml
+ create mode 100644 Documentation/devicetree/bindings/media/mediatek,vcodec-encoder.yaml
+ delete mode 100644 Documentation/devicetree/bindings/media/mediatek-vcodec.txt
+ create mode 100644 drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_hw.c
+ create mode 100644 drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_hw.h
+ create mode 100644 drivers/media/platform/mtk-vcodec/vdec_msg_queue.c
+ create mode 100644 drivers/media/platform/mtk-vcodec/vdec_msg_queue.h
+
+-- 
+2.25.1
+
