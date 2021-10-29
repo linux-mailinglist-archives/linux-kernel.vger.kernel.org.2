@@ -2,82 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 770F143F4F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 04:20:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C3A343F4F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 04:24:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231560AbhJ2CXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 22:23:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51784 "EHLO
+        id S231542AbhJ2C0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 22:26:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231348AbhJ2CXM (ORCPT
+        with ESMTP id S231348AbhJ2C0t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 22:23:12 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F5F8C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 19:20:45 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id 83so8378197pgc.8
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 19:20:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mhB6LkCbsKUbE+bUIvR/Nrpsu2M4JaioKKngIejiLhc=;
-        b=jlVG+VO1wHjL5B0Hkj2SEVVcUAGh7PrcbCyhNPcuXTVpP/NRyZrpYh2RlHOO6oYrTW
-         PbR1GOeMbg8NcIQgJRX5w78F9Knr93d2yQFXq2kJM0zWiWhnU9TgrsBNd9bFt+d6Nk2r
-         GjFs3JECWpH3fOdXFBWqqYTy/2L2M2iH/srfKEogAcW+JqlnBw8bFWlF5HgnlTIy44Wy
-         YFfHhdrDo4URqFGKHh0fb3WB2p3WUxS0Nk9QTXO4kNy3r2hmmJixp8x2tDyOhL1bPYfD
-         epKiICmzzvtTja91yNZDRFSpqL4TrY3h3VbVAcFNy1UHxrZUIbzek9ezqph5ss7aJmGj
-         vKBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mhB6LkCbsKUbE+bUIvR/Nrpsu2M4JaioKKngIejiLhc=;
-        b=67AzDivtI+IsEf15pSXOMEG5HjLOk0zWbUy8+xMCKOIEUC8/QswIUoEm4akCVw+mbM
-         C1eaHpNKIi3U9RlTEEVmSEBp6SA3cIuHNj+yiXKycGL1MhTGWtUdn+qBEYf/hNY0EG4k
-         KqV1ZtTDpWDcbBzxyMFLM2I0E9N41veehdJJvKSOggm9eC86zkGrjnGITb16mS7w69kA
-         A0KEXr6ha0QvPBeX+yjZA+LB+DccgqdzpHueE1V4g8S12zyw1tGU6aJCnFXl7TYoCmk8
-         lWVNB3VEWBGHqZndKqjGXm+3FilGioyariZSwpKN9CtTXEWTmTmIHLKBi6JsNp/B38+8
-         BT9A==
-X-Gm-Message-State: AOAM533KGcEOigjMif6JobYz4nRJo3QY5wbhpjUfqOUu/6DlTfd4Z6H2
-        6pZyQE9gZ3VUNvj4pUp6phZZV1M3lQsVBwPVU4146A==
-X-Google-Smtp-Source: ABdhPJwRHndRNkI7bhtBce/eYA5HiHNlGa+O3E5HB7Z9RmPlWNKvOeozIVu/Q5CdowIzhda3z/o19UtPjQ3coB7P6Gk=
-X-Received: by 2002:a63:7418:: with SMTP id p24mr6095486pgc.204.1635474044247;
- Thu, 28 Oct 2021 19:20:44 -0700 (PDT)
+        Thu, 28 Oct 2021 22:26:49 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6996CC061570;
+        Thu, 28 Oct 2021 19:24:21 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HgR7v60RPz4xbw;
+        Fri, 29 Oct 2021 13:24:11 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1635474259;
+        bh=sVrmr224bOqQZGGrw8uy5pyIGuXTOQvH5/v5xiYmCWY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=tVoz+Uy+QEYJlgQgonr3if01+krAuoWGMnq1jFzld34PD98eJQvYOpimWL1IrvJpI
+         0yMlC8HEnKetT4BOZIao22SBzr6gcUGVtpL/iasU/rPfwLYrSN3+nLgkEfVK3XO3Kw
+         eoI8Gx69P3orbK9X2hRqTDF8lJeLh3XLwLmOFauz2SV/E23pxHK1IItt5FHZxV7VA9
+         hdHmB1leuQNUqrHL4ZMTOupoRPVoNTyr6sNW5uSIlGQuVZyIvc/+eCdSxWN1Qy3ajd
+         8Jo2bYCb8JPCAq2YQ7cRFwdXB6tAvTb+6Wuu72c6bGL6SSJDGojEQsjyNhzpmqOxkO
+         M9xKtBNNSjYXw==
+Date:   Fri, 29 Oct 2021 13:24:11 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Rob Herring <robherring2@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>, Simon Xue <xxm@rock-chips.com>
+Subject: linux-next: manual merge of the devicetree tree with the pci tree
+Message-ID: <20211029132411.1bd856b0@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20211029001225.27218-1-julianbraha@gmail.com>
-In-Reply-To: <20211029001225.27218-1-julianbraha@gmail.com>
-From:   Tzung-Bi Shih <tzungbi@google.com>
-Date:   Fri, 29 Oct 2021 10:20:33 +0800
-Message-ID: <CA+Px+wUi6t3n64EPWqX0Q3vMUkBw7UrRBK_5RwnVtNsa-ZuLGw@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: fix unmet dependencies on GPIOLIB for SND_SOC_RT1015P
-To:     Julian Braha <julianbraha@gmail.com>
-Cc:     broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz,
-        tiwai@suse.com, matthias.bgg@gmail.com, trevor.wu@mediatek.com,
-        Jiaxin.Yu@mediatek.com, arnd@arndb.de, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, fazilyildiran@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/ikHRF/MsMWN=15cz=EvX1EZ";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 8:12 AM Julian Braha <julianbraha@gmail.com> wrote:
-> WARNING: unmet direct dependencies detected for SND_SOC_DMIC
->   Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && GPIOLIB [=n]
->   Selected by [y]:
->   - SND_SOC_MT8192_MT6359_RT1015_RT5682 [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && I2C [=y] && SND_SOC_MT8192 [=y] && MTK_PMIC_WRAP [=y]
-The block is not for RT1015P but it can also be fixed by the patch.
+--Sig_/ikHRF/MsMWN=15cz=EvX1EZ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-[...]
+Hi all,
 
-> This is because these config options select SND_SOC_RT1015P
-> without selecting or depending on GPIOLIB, despite
-> SND_SOC_RT1015P depending on GPIOLIB.
->
-> These unmet dependency bugs were detected by Kismet,
-> a static analysis tool for Kconfig. Please advise if this
-> is not the appropriate solution.
->
-> Signed-off-by: Julian Braha <julianbraha@gmail.com>
-Acked-by: Tzung-Bi Shih <tzungbi@google.com>
+Today's linux-next merge of the devicetree tree got a conflict in:
+
+  Documentation/devicetree/bindings/pci/rockchip-dw-pcie.yaml
+
+between commit:
+
+  af7cda832f8a ("dt-bindings: rockchip: Add DesignWare based PCIe controlle=
+r")
+
+from the pci tree and commit:
+
+  ad854f362e8c ("dt-bindings: rockchip: Add DesignWare based PCIe controlle=
+r")
+
+from the devicetree tree.
+
+These were almost identical patches.  I went with the former one sonce
+it was dated later.
+
+I fixed it up (see above) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/ikHRF/MsMWN=15cz=EvX1EZ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF7W0sACgkQAVBC80lX
+0GwjzQf/Z5idPOhLCy+Aa5cr4oIhHUC3GdiGRXoBCWVOqq8dQeMsWK3g5SHlfhrZ
+Ut9T0xTNVDA8tHjTEPlJm4n9/NotUpcXe43GPgSdu1BNHX8cANrsMw/TIocA6ILN
+P1faWJ4KeeCwlKTd2qLYhIZBYVHEp2/nsJ3RFp4e70s6GawAgfiqoxdlC5ckH2NW
+k9d6JonuodiLkLJDgai0wuIbfAcHVxdluLXamwEMUH7yoSCCFlo12zXoYw99I37E
+PdSR6aXn3OUuou21RzThGA8VfH9f0mK6mZKmRqPALOzJyy3KenYuZTjH4wgkTBVl
+jiZhjz7hqhYilEs8hvOmyM5anZ9a/g==
+=c8hV
+-----END PGP SIGNATURE-----
+
+--Sig_/ikHRF/MsMWN=15cz=EvX1EZ--
