@@ -2,84 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AA4543FD62
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 15:32:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ED4C43FD64
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 15:34:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231669AbhJ2NfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 09:35:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231401AbhJ2NfD (ORCPT
+        id S231675AbhJ2Nga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 09:36:30 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:52640 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231401AbhJ2Ng3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 09:35:03 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 137ADC061570
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 06:32:35 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id q124so13318904oig.3
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 06:32:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=TlpL8mkd3BrMa2bHIx2eDzsFNDZAM/uhnYilnuGvcGI=;
-        b=ax9cKrUmEf5xm5zQrooiI+5Dnsn94q/kOBbQ+7fFYRQK4gMtTbELz9Xulxj9VeK6Bd
-         TVSPCJNStv0kOkNI2nUc/cRnx3p7nrC0S4lB/it31MeWAITA+azYjrEOgN4YC1W29kSY
-         DIAqAJ8zodvHccOaqwcCKdIRFhbyDEO9O1t6JPiT1co3pQHKBskUYw6+TikTIxzwtql7
-         9dLPTjNKC+QggrwKHaJ5Mj+pxHqhzvd2FG3Fu1CPzDepOYQkCq2J/Dl2PhowFQYP4qjh
-         u0HohGPd4XnI727fi3saNrEIogvkgl8jWOxPyUJSwCB6yoO+V6RvN6sFZT23hx+BJavb
-         UWtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=TlpL8mkd3BrMa2bHIx2eDzsFNDZAM/uhnYilnuGvcGI=;
-        b=O1uMjo8W5N63TPv6k5jldZNG05B7v+/qEZECiyO/NrSlkTsZkVURJ3zGxgN5s+CoUk
-         ipjUgLnsQJSAJMGESucIG7U0iwmJNQhxBzmyhq3dthb8enFsne1UemNvuXjZ7nuBMT7Q
-         tWXjyNUqRZury8LZbbYUZHYkMJMvivVeJeEVY43xe5TxSIzIqVnjmHlP3aCccT/SNdT8
-         CUR4Fmr9v57OjmruntgLEzyXf75KRF6nqKpUic+GO7wsOckJN5hVALZ7rdWtKRM/rh7W
-         bDuD7D2Tu9dy9UHpLTp1ZOlYgEve6Y5N1VugQMMDQHi+JvEI8otWsYtiys4IAo0oNAdo
-         6Pmw==
-X-Gm-Message-State: AOAM5310W6YO61QvtYniVpR/2w6Sr2W0+DnZKbNIi/RQHq9MwjcMlagD
-        5SfIIVAvRlEiNzluaV6tuBb2ABeVAuhwOonuHkc=
-X-Google-Smtp-Source: ABdhPJxWcYCB+g+wIsgM4WIbpUm+hWTmmfk6WW2+HqnVYuSkVN+xD/bKzJFg0HXddC7mvwnZQoSHkLS4Ds2xWqeMV2E=
-X-Received: by 2002:aca:1314:: with SMTP id e20mr847308oii.93.1635514354416;
- Fri, 29 Oct 2021 06:32:34 -0700 (PDT)
+        Fri, 29 Oct 2021 09:36:29 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id B775B1FC9E;
+        Fri, 29 Oct 2021 13:33:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1635514439;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jl+bk6+eFqkkIxbeVoT6nkNE8xjpi1eRKvfCaKzhgHw=;
+        b=hLu4nUYtQggXol6e9hsPeWfj1mijk0IW6t+46XN1ugzXSbJWBMVw2bf+lIEVWuKb/ukmjB
+        MIQSTw64OdMlF2lDIk8kxxwvF43u9PTVaPGRI0/uEMIYMVx7ZBQqk8ory4OuG5ylsVc8lk
+        IQC9M5nbkUTMf+Urf0E8TuS76Pb6hGg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1635514439;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jl+bk6+eFqkkIxbeVoT6nkNE8xjpi1eRKvfCaKzhgHw=;
+        b=dcQDoKfiw5tnAAGMsNnLzyg7nayGOpiAab9xOUxKUnDTx37ugTANyc79efOo3lnHd614BL
+        Y/Wi2zkfei/sYSBg==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id AA9A8A3B84;
+        Fri, 29 Oct 2021 13:33:59 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id AF194DA7A9; Fri, 29 Oct 2021 15:33:26 +0200 (CEST)
+Date:   Fri, 29 Oct 2021 15:33:26 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Filipe Manana <fdmanana@gmail.com>
+Cc:     Hao Sun <sunhao.th@gmail.com>, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: INFO: task hung in btrfs_search_slot
+Message-ID: <20211029133326.GB20319@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Filipe Manana <fdmanana@gmail.com>,
+        Hao Sun <sunhao.th@gmail.com>, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <CACkBjsYV8Xv7Ha-daGhkj+uOK31HSsdt06pgMOyQcYzcxUjSyw@mail.gmail.com>
+ <CAL3q7H58SZtvEFn5zRMoMy2iJQsvAvqNEqwmvyhQuh33_H0inQ@mail.gmail.com>
 MIME-Version: 1.0
-Sender: mrmusaibrahim637@gmail.com
-Received: by 2002:a05:6838:2cc3:0:0:0:0 with HTTP; Fri, 29 Oct 2021 06:32:34
- -0700 (PDT)
-From:   Dr Haruna Bello <drharunabello4@gmail.com>
-Date:   Fri, 29 Oct 2021 06:32:34 -0700
-X-Google-Sender-Auth: csSUwbuvYSFaDf5EDDUKTvQVSG0
-Message-ID: <CAAeUjL4eQekuNg8MSwiHMvUPoskM=FejORMpj9+Xh+Z0Vfmp+w@mail.gmail.com>
-Subject: GOOD DAY
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAL3q7H58SZtvEFn5zRMoMy2iJQsvAvqNEqwmvyhQuh33_H0inQ@mail.gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Dear,
+On Wed, Oct 27, 2021 at 04:34:37PM +0100, Filipe Manana wrote:
+> On Wed, Oct 27, 2021 at 2:08 PM Hao Sun <sunhao.th@gmail.com> wrote:
+> >
+> > Hello,
+> >
+> > When using Healer to fuzz the latest Linux kernel, the following crash
+> > was triggered.
+> 
+> This is the same deadlock you reported 3 weeks ago here:
+> 
+> https://lore.kernel.org/linux-btrfs/CACkBjsax51i4mu6C0C3vJqQN3NR_iVuucoeG3U1HXjrgzn5FFQ@mail.gmail.com/
+> 
+> There's a fix in the integration branch (David's misc-next branch),
+> but it's not yet in any released kernel and not in Linus' tree as
+> well:
+> 
+> https://lore.kernel.org/linux-btrfs/cover.1634115580.git.fdmanana@suse.com/
 
-I am Dr Haruna Bello
-
-I have a Project of 18.5 Million Us Dollars to do with You
-Hence You Co-operate with me  I am assured you the said amount will
-enter your given Bank account.
-If you agree with me , further details of the Project will be
-forwarded to you as soon as I receive your wiliness to join hand with
-me.
-Am awaiting your urgent response with this informations
-Name:...................
-Sex:...............
-Age:...................
-Occupation:........
-Address:...............
-Pasport/Id Card.........
-Tel/ Fax:...............
-State:.............
-Country Of origin:..........
-Have a nice day!!
-
-My Private Email-{drharunabello4@gmail.com}
-
-Dr Haruna Bello
+It'll go to 5.15 pull and the fix is tagged for 5.14 stable so it'll be
+in some release in the 5.15-rc1 timeframe.
