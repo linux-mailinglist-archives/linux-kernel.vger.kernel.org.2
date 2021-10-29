@@ -2,151 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A116543F460
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 03:33:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D10C43F464
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 03:36:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231299AbhJ2Bf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 21:35:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:20105 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231161AbhJ2Bf2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 21:35:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635471180;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8oj4fyiyXkG+xWHY3UZohwql1+uMDTmQEs2CRVMjkdw=;
-        b=OttkDeARrogvy0SeCZHjk08m4KvOfcki6S3qtijX7CFoN3k8S5z6kmyyZiVg6cT11a7q1X
-        sJjnWNkIu0GJM93eEavci2PoA0ARLFNM+PrnAtNXhbqLcSZvyuLD86ZKo0Sb9Q8qJ+rtkC
-        EDewJ6Vw7cG3/SptrFd1GOTkejsw6bY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-75-aaIoXy5kP6-7LrAwS6jEmA-1; Thu, 28 Oct 2021 21:32:57 -0400
-X-MC-Unique: aaIoXy5kP6-7LrAwS6jEmA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4F705802B4F;
-        Fri, 29 Oct 2021 01:32:55 +0000 (UTC)
-Received: from T590 (ovpn-8-17.pek2.redhat.com [10.72.8.17])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 08AED60BF1;
-        Fri, 29 Oct 2021 01:32:41 +0000 (UTC)
-Date:   Fri, 29 Oct 2021 09:32:36 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Daejun Park <daejun7.park@samsung.com>
-Cc:     ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "huobean@gmail.com" <huobean@gmail.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        Keoseong Park <keosung.park@samsung.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        ming.lei@redhat.com
-Subject: Re: [PATCH] scsi: ufs: Fix proper API to send HPB pre-request
-Message-ID: <YXtPNIDzeln8zBCn@T590>
-References: <CGME20211027223619epcms2p60bbc74c9ba9757c58709a99acd0892ff@epcms2p6>
- <20211027223619epcms2p60bbc74c9ba9757c58709a99acd0892ff@epcms2p6>
+        id S231343AbhJ2Bie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 21:38:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33594 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229950AbhJ2Bid (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 21:38:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 428D161156;
+        Fri, 29 Oct 2021 01:36:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635471365;
+        bh=T6GOjxRPDeunaWfoQlIqxwtH/ryHC6tgJEYN67Sc7TM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=FF2p68gfMnV1hn2o67ha1jWFcjeW9bWEZI+2Hd1OeMeXQffd4l9NYjjSLUnzJj8c2
+         wydhclTsM0DWihnXg+hNglseL38vDZAogkMgrVxbo6QHStuNwnFrVOd6h8vLxlCeil
+         +WjsrSoMGe0XG7fG+pAuQXOZDyv5BflW+5UkZAbzYNvJcZ3xzk6FGp+rUWmgyJyWJ2
+         QGqZNrH9q1cM3s1rR89JPbRtJQ1Y0EOJqQUTzMvanqKBrYG2iF7BlQNmjuHfzua0cr
+         d5CuraVprdBUkVMbaWxXY8EFAL2WwOZyDsIUoUY9t/aqiubkwSzZ5YIy3UVcQz3LbW
+         SA0CH41adayyQ==
+Received: by mail-ed1-f50.google.com with SMTP id g10so32238281edj.1;
+        Thu, 28 Oct 2021 18:36:05 -0700 (PDT)
+X-Gm-Message-State: AOAM530FvnpbQHfK7uqRw/iASMUzbiWIQ5vrdZ3i8g5l4KaKP4ep7wMX
+        rUqyZj9mw2oYMUArZgJBRq621BbKBYKWDSIRDw==
+X-Google-Smtp-Source: ABdhPJxakIdbFZtjjDoY5WYj+rMrkwV5zFP3b/YfXdeu6lFutkJmex9WYAJ5Gj0hy0AQd0VijtznXGSoGv7HTeRqN80=
+X-Received: by 2002:a50:da06:: with SMTP id z6mr10927175edj.355.1635471363711;
+ Thu, 28 Oct 2021 18:36:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211027223619epcms2p60bbc74c9ba9757c58709a99acd0892ff@epcms2p6>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <20211018234923.1769028-1-sean.anderson@seco.com>
+ <YXi5CUCEi7YmNxXM@robh.at.kernel.org> <47d4c3d3-d6ab-3888-1cde-937551537e3f@seco.com>
+In-Reply-To: <47d4c3d3-d6ab-3888-1cde-937551537e3f@seco.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Thu, 28 Oct 2021 20:35:52 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqL3oZXJJ5_i4BRGpvWu1X8QFB7OGG=D+zLvvWb=UR1mWg@mail.gmail.com>
+Message-ID: <CAL_JsqL3oZXJJ5_i4BRGpvWu1X8QFB7OGG=D+zLvvWb=UR1mWg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] dt-bindings: reset: Add generic GPIO reset binding
+To:     Sean Anderson <sean.anderson@seco.com>
+Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 07:36:19AM +0900, Daejun Park wrote:
-> This patch addresses the issue of using the wrong API to create a
-> pre_request for HPB READ.
-> HPB READ candidate that require a pre-request will try to allocate a
-> pre-request only during request_timeout_ms (default: 0). Otherwise, it is
+On Thu, Oct 28, 2021 at 10:19 AM Sean Anderson <sean.anderson@seco.com> wrote:
+>
+> Hi Rob,
+>
+> On 10/26/21 10:27 PM, Rob Herring wrote:
+> > On Mon, Oct 18, 2021 at 07:49:21PM -0400, Sean Anderson wrote:
+> >> This adds a binding for a generic GPIO reset driver. This driver is
+> >> designed to easily add a GPIO-based reset to a driver which expected a
+> >> reset controller. It offers greater flexibility than a reset-gpios
+> >> property, and allows for one code path to be shared for GPIO resets and
+> >> MMIO-based resets.
+> >
+> > I would like to do this last part, but not requiring a binding change.
+> > IOW, be able to register any 'reset-gpios' property as a reset provider
+> > directly without this added level of indirection.
+>
+> That would be nice, but it seems like someone would have to go through
+> every driver with a reset-gpios property and convert them. Since the
+> reset GPIOs are
 
-Can you explain about 'only during request_timeout_ms'?
+All that has to happen is when a driver requests a reset, the reset
+subsystem can check for a 'reset-gpios' when there is not a 'resets'
+property. If it finds one, then it can either instantiate a reset
+provider or add that GPIO to an existing provider. Then you can
+convert drivers one by one, or not.
 
-From the following code in ufshpb_prep(), the pre-request is allocated
-for each READ IO in case of (!ufshpb_is_legacy(hba) && ufshpb_is_required_wb(hpb,
-transfer_len)).
+> >>
+> >> Signed-off-by: Sean Anderson <sean.anderson@seco.com>
+> >> ---
+> >>
+> >>  .../devicetree/bindings/reset/gpio-reset.yaml | 93 +++++++++++++++++++
+> >>  1 file changed, 93 insertions(+)
+> >>  create mode 100644 Documentation/devicetree/bindings/reset/gpio-reset.yaml
+> >>
+> >> diff --git a/Documentation/devicetree/bindings/reset/gpio-reset.yaml b/Documentation/devicetree/bindings/reset/gpio-reset.yaml
+> >> new file mode 100644
+> >> index 000000000000..de2ab074cea3
+> >> --- /dev/null
+> >> +++ b/Documentation/devicetree/bindings/reset/gpio-reset.yaml
+> >> @@ -0,0 +1,93 @@
+> >> +# SPDX-License-Identifier: (GPL-2.0+ OR BSD-2-Clause)
+> >
+> > GPL-2.0-only not GPL-2.0+
+>
+> GPL-2.0+ is a strict superset. And bindings are required to be BSD
+> anyway. I don't see the issue.
 
-   if (!ufshpb_is_legacy(hba) &&
-            ufshpb_is_required_wb(hpb, transfer_len)) {
-                err = ufshpb_issue_pre_req(hpb, cmd, &read_id);
+Not everyone agrees with GPLv3. What about GPLv4, v5, etc.? You're
+okay with them no matter what they say?
 
-> passed as normal READ, so deadlock problem can be resolved.
-> 
-> Signed-off-by: Daejun Park <daejun7.park@samsung.com>
-> ---
->  drivers/scsi/ufs/ufshpb.c | 11 +++++------
->  drivers/scsi/ufs/ufshpb.h |  1 +
->  2 files changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
-> index 02fb51ae8b25..3117bd47d762 100644
-> --- a/drivers/scsi/ufs/ufshpb.c
-> +++ b/drivers/scsi/ufs/ufshpb.c
-> @@ -548,8 +548,7 @@ static int ufshpb_execute_pre_req(struct ufshpb_lu *hpb, struct scsi_cmnd *cmd,
->  				 read_id);
->  	rq->cmd_len = scsi_command_size(rq->cmd);
->  
-> -	if (blk_insert_cloned_request(q, req) != BLK_STS_OK)
-> -		return -EAGAIN;
-> +	blk_execute_rq_nowait(NULL, req, true, ufshpb_pre_req_compl_fn);
+The issue is many people pay no attention. Just copy whatever they
+started from, or put whatever they want. The dts files are a mess. The
+binding docs all defaulted to GPL2. So I'm fixing the mess with
+bindings and that means dictating the license.
 
-Be care with above change, blk_insert_cloned_request() allocates
-driver tag and issues the request to LLD directly, then returns the
-result. If anything fails in the code path, -EAGAIN is returned.
+> >> +%YAML 1.2
+> >> +---
+> >> +$id: http://devicetree.org/schemas/reset/gpio-reset.yaml#
+> >> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> >> +
+> >> +title: Generic GPIO reset driver
+> >> +
+> >> +maintainers:
+> >> +  - Sean Anderson <seanga2@gmail.com>
+> >> +
+> >> +description: |
+> >> +  This is a generic GPIO reset driver which can provide a reset-controller
+> >> +  interface for GPIO-based reset lines. This driver always operates with
+> >> +  logical GPIO values; to invert the polarity, specify GPIO_ACTIVE_LOW in the
+> >> +  GPIO's flags.
+> >> +
+> >> +properties:
+> >> +  compatible:
+> >> +    const: gpio-reset
+> >> +
+> >> +  '#reset-cells':
+> >> +    const: 1
+> >> +
+> >> +  reset-gpios:
+> >> +    description: |
+> >> +      GPIOs to assert when asserting a reset. There is a one-to-one mapping
+> >> +      between the reset specifier and the index of the GPIO in this list to
+> >> +      assert.
+> >> +
+> >> +  done-gpios:
+> >> +    description: |
+> >> +      GPIOs which indicate that the device controlled by the GPIO has exited
+> >> +      reset. There must be one done GPIO for each reset GPIO, or no done GPIOs
+> >> +      at all. The driver will wait for up to done-timeout-us for the
+> >> +      corresponding done GPIO to assert before returning.
+> >
+> > This is odd. Do you have some examples of h/w needing this done signal?
+> > It certainly doesn't seem like something we have a generic need for.
+>
+> Yes [1]. This device has a "reset done" signal, but no reset timings
+> specified in the datasheet. I don't know if this is truly needed,
+> because we can read the ID register, but it is nice when bringing up the
+> device. I left it in because I was using it.
 
-But blk_execute_rq_nowait() simply queued the request in block layer,
-and run hw queue. It doesn't allocate driver tag, and doesn't issue it
-to LLD.
+Okay, but done-gpios belongs in the device node that has a done
+signal. Your binding pretty assumes you always have one because you
+need equal numbers of reset and done gpios.
 
-So ufshpb_execute_pre_req() may think the pre-request is issued to LLD
-successfully, but actually not, maybe never. What will happen after the
-READ IO is issued to device, but the pre-request(write buffer) isn't
-sent to device?
+Anyways, I don't think this binding is going anywhere.
 
->  
->  	hpb->stats.pre_req_cnt++;
->  
-> @@ -2315,19 +2314,19 @@ struct attribute_group ufs_sysfs_hpb_param_group = {
->  static int ufshpb_pre_req_mempool_init(struct ufshpb_lu *hpb)
->  {
->  	struct ufshpb_req *pre_req = NULL, *t;
-> -	int qd = hpb->sdev_ufs_lu->queue_depth / 2;
->  	int i;
->  
->  	INIT_LIST_HEAD(&hpb->lh_pre_req_free);
->  
-> -	hpb->pre_req = kcalloc(qd, sizeof(struct ufshpb_req), GFP_KERNEL);
-> -	hpb->throttle_pre_req = qd;
-> +	hpb->pre_req = kcalloc(HPB_INFLIGHT_PRE_REQ, sizeof(struct ufshpb_req),
-> +			       GFP_KERNEL);
-> +	hpb->throttle_pre_req = HPB_INFLIGHT_PRE_REQ;
->  	hpb->num_inflight_pre_req = 0;
->  
->  	if (!hpb->pre_req)
->  		goto release_mem;
->  
-> -	for (i = 0; i < qd; i++) {
-> +	for (i = 0; i < HPB_INFLIGHT_PRE_REQ; i++) {
->  		pre_req = hpb->pre_req + i;
->  		INIT_LIST_HEAD(&pre_req->list_req);
->  		pre_req->req = NULL;
-> diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
-> index a79e07398970..411a6d625f53 100644
-> --- a/drivers/scsi/ufs/ufshpb.h
-> +++ b/drivers/scsi/ufs/ufshpb.h
-> @@ -50,6 +50,7 @@
->  #define HPB_RESET_REQ_RETRIES			10
->  #define HPB_MAP_REQ_RETRIES			5
->  #define HPB_REQUEUE_TIME_MS			0
-> +#define HPB_INFLIGHT_PRE_REQ			4
+>
+> [1] https://lore.kernel.org/netdev/20211004191527.1610759-16-sean.anderson@seco.com/
+>
+> >> +
+> >> +  pre-assert-us:
+> >> +    default: 0
+> >> +    description: |
+> >> +      Microseconds to delay between when the reset was requested to be
+> >> +      asserted, and asserting the reset GPIO
+> >> +
+> >> +  post-assert-us:
+> >> +    default: 0
+> >> +    description: |
+> >> +      Microseconds to delay after asserting the reset GPIO and before returning
+> >> +      to the caller.
+> >> +
+> >> +  pre-deassert-us:
+> >> +    default: 0
+> >> +    description: |
+> >> +      Microseconds to delay between when the reset was requested to be
+> >> +      deasserted, and asserting the reset GPIO
+> >> +
+> >> +  post-deassert-us:
+> >> +    default: 0
+> >> +    description: |
+> >> +      Microseconds to delay after deasserting the reset GPIO and before
+> >> +      returning to the caller. This delay is always present, even if the done
+> >> +      GPIO goes high earlier.
+> >> +
+> >> +  done-timeout-us:
+> >> +    default: 1000
+> >> +    description:
+> >> +      Microseconds to wait for the done GPIO to assert after deasserting the
+> >> +      reset GPIO. If post-deassert-us is present, this property defaults to 10
+> >> +      times that delay. The timeout starts after waiting for the post deassert
+> >> +      delay.
+> >
+> > There's a reason we don't have all these timing values in DT. The timing
+> > requirements are defined by each device (being reset) and implied by
+> > their compatible strings. If we wanted a macro language for power
+> > sequence timings of regulators, clocks, resets, enables, etc., then we
+> > would have designed such a thing already.
+>
+> Well, there are already things like reset-assert-us and
+> reset-deassert-us in [2, 3, 4] (with different names(!)).
 
-Can you explain how this change solves the deadlock?
+Yes, things evolve poorly. What's just one more property added at a time.
 
-Thanks,
-Ming
+> Part of what I
+> want to address with this device is that there are several existing
+> properties which specify various aspects of the above timings. I think
+> it would be good to standardize on these. Maybe this should be a
+> property which applies to the reset consumer? Analogously, we also
+> have assigned-clocks so that not every driver has to know what the
+> correct frequency/parent is (especially when they can vary among
+> different hardware variations).
 
+Yes, there are some examples, but you won't find many new examples.
+The rule is power sequencing requirements/timing is implied by the
+device's compatible string.
+
+You are looking at just reset. What about timing WRT regulators and
+clocks for starters?
+
+Rob
