@@ -2,130 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EC58440589
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 00:35:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4A81440582
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 00:31:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231569AbhJ2Whj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 18:37:39 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:33447 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229546AbhJ2Whe (ORCPT
+        id S231546AbhJ2WeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 18:34:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230504AbhJ2WeV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 18:37:34 -0400
-Received: from epcas3p4.samsung.com (unknown [182.195.41.22])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20211029223503epoutp0476e4e1eaf4b90c66080427805d4408be~yoT4q-w0r0759407594epoutp04Y
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 22:35:03 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20211029223503epoutp0476e4e1eaf4b90c66080427805d4408be~yoT4q-w0r0759407594epoutp04Y
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1635546903;
-        bh=hy7AFC4W265SDo8nviZEasmF4BSTyYkkCmu+yF93+Wo=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=BZe9YQB12j93f2msc29uf40FS62zumqLXlqeRUvQOuphlgntKqqbd+GFhKlaJVIrz
-         4P9adOnnUcHGTTFqIcYv8m7lXcSfESsN1otK1xv4REnAkqmkA90PrvHzsbRufaxAU5
-         jasnR29YMh5Hfec04Zu+equFytdPTU/mCBroOCsQ=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas3p2.samsung.com (KnoxPortal) with ESMTP id
-        20211029223502epcas3p2acacfc3bcd77f6589f9673739dd775db~yoT35i_9L2346223462epcas3p2c;
-        Fri, 29 Oct 2021 22:35:02 +0000 (GMT)
-Received: from epcpadp3 (unknown [182.195.40.17]) by epsnrtp3.localdomain
-        (Postfix) with ESMTP id 4Hgy121NjWz4x9Q1; Fri, 29 Oct 2021 22:35:02 +0000
-        (GMT)
-Mime-Version: 1.0
-Subject: RE: [PATCH v2] scsi: ufshpb: Opt out pre-reqs from HPB2.0 flows
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Avri Altman <avri.altman@wdc.com>,
-        "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <20211029193002.4187-1-avri.altman@wdc.com>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <1891546521.01635546902168.JavaMail.epsvc@epcpadp3>
-Date:   Sat, 30 Oct 2021 07:30:07 +0900
-X-CMS-MailID: 20211029223007epcms2p100026018a238d5066d0946320c992056
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20211029193014epcas2p10300c03ccf0337f9dd3653f29e2057d1
-References: <20211029193002.4187-1-avri.altman@wdc.com>
-        <CGME20211029193014epcas2p10300c03ccf0337f9dd3653f29e2057d1@epcms2p1>
+        Fri, 29 Oct 2021 18:34:21 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56EACC061714
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 15:31:52 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id l1so4034210pfu.5
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 15:31:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Qp6+zjDSd4OOLDe8/BIO29FCy7h5ITgGaqmhvNYsKr8=;
+        b=Mv2KXcJNajDF1a5vJiq3Uxo93jSk5UbONlTJlUsFvFkeV3GHwlpi6nzXdgiw8k1L7Q
+         Zu+iQ27x4FVnK6Fv5/UuCT7td78f5pK1rdcxZvrMWM1Ft4YQprljfaCJxnyARaijLNry
+         ZHH/IOhPaZLk/FAGM8bpNyTZC77eObvLOmHW3QgMJe4OzWEdcefxVaRLckV6qI/jg6mk
+         mQLpuor4gB8wvoKBenRn46kuhRE2RC0sLvJND3p41Qoihcp/MVwBfUly64thvbr83lZR
+         /nHORyWnTMwMbMNXUUomU26GJyneswDebjRc8nJwtU64yvDvhb0a9KdtwfFSkVltLfSU
+         E1yQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Qp6+zjDSd4OOLDe8/BIO29FCy7h5ITgGaqmhvNYsKr8=;
+        b=VaM3rimDf1XR49lFnUSAWc8vUg3dMYOidbVuZpvAiSkOh2rv6fCZXFf6Eew3wtIq1t
+         qvBC4Uel7uTwtzMPYLji2UyRlAygbjN6RYYREuAHIP9XUFb/4RH5uuLcxZDzZJMQ63+r
+         ANlFdDy+sUFgy48b4GwjCYNmZcowiCmrt7gDsbEdoeVo47eN/Qd/hnLWHGh0QHYjJjMc
+         dsTiDeSXu8FFR4naKUW3APZ6NnTmr/zZQVonjG9RZTQi0KBOgI5EH+u9Ei9z2F1fYBWf
+         qnjb4ZY8LUPc8SieD69S+HykOwU4b1QtMYX0ceFMNAu0R1OPdxXf3RzGj/Zeh1HCl7m8
+         bP9w==
+X-Gm-Message-State: AOAM530gaVC4Ui9xVAjHtVlkH52kumCZenCPSVI9WOnazNYZxiJnyGcL
+        DL/mWo40ehO+gsCYu7LT1Gsw/gOIIPLHmZVwLy4KoQ==
+X-Google-Smtp-Source: ABdhPJwVJl6dXdrnjKqah8Re2vFUHtSVD8OCuKxa6TJxFQVkBKSdRQWe3/98ZbQ/w5Bx/AgA+O1LxzcEyqWt7sAUShs=
+X-Received: by 2002:a62:7858:0:b0:47c:1cf3:d95 with SMTP id
+ t85-20020a627858000000b0047c1cf30d95mr13882255pfc.60.1635546711320; Fri, 29
+ Oct 2021 15:31:51 -0700 (PDT)
+MIME-Version: 1.0
+References: <20211029183339.3216491-1-kaleshsingh@google.com>
+ <20211029183339.3216491-2-kaleshsingh@google.com> <20211029144524.367d6789@gandalf.local.home>
+ <CAC_TJve9OsL5taBN0ckgjG4=HxvmWfP6ULwwqnVsDyRxuQuRkg@mail.gmail.com> <20211029162549.2c22f2dd@gandalf.local.home>
+In-Reply-To: <20211029162549.2c22f2dd@gandalf.local.home>
+From:   Kalesh Singh <kaleshsingh@google.com>
+Date:   Fri, 29 Oct 2021 15:31:40 -0700
+Message-ID: <CAC_TJvfazjdZ=4Y_1YX=R+drsWKRu+faztcFjKEkkD_3Qk6_Xg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/4] tracing/histogram: Optimize division by constants
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     surenb@google.com, hridya@google.com, namhyung@kernel.org,
+        kernel-team@android.com, mhiramat@kernel.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Tom Zanussi <zanussi@kernel.org>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Avri,
- 
-> @@ -1841,13 +1575,7 @@ static void ufshpb_lu_parameter_init(struct ufs_hba *hba,
->          u32 entries_per_rgn;
->          u64 rgn_mem_size, tmp;
->  
-> -        /* for pre_req */
-> -        hpb->pre_req_min_tr_len = hpb_dev_info->max_hpb_single_cmd + 1;
-> -
-> -        if (ufshpb_is_legacy(hba))
-> -                hpb->pre_req_max_tr_len = HPB_LEGACY_CHUNK_HIGH;
-> -        else
-> -                hpb->pre_req_max_tr_len = HPB_MULTI_CHUNK_HIGH;
-> +        hpb->pre_req_max_tr_len = HPB_LEGACY_CHUNK_HIGH;
+On Fri, Oct 29, 2021 at 1:25 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> On Fri, 29 Oct 2021 11:53:16 -0700
+> Kalesh Singh <kaleshsingh@google.com> wrote:
+>
+> > > If these functions are only called when val2 is constant, can't we make it
+> > > such that we get val2 from the hist_field directly? That is:
+> > >
+> > >         u64 val2 = operand2->constant;
+> >
+> > operand2 might be a var ref to a constant, so we would need to resolve
+> > that with hist_field_var_ref().
+>
+> So can a var_ref change? If not, then we should convert that to a constant
+> for this operation.
 
-They are should be not changed, because it makes ufshpb_is_supported_chunk()
-determine to non-HPB READ when the its size is bigger than 4KB.
-
->  
->          hpb->cur_read_id = 0;
->  
-> @@ -2858,8 +2586,7 @@ void ufshpb_get_geo_info(struct ufs_hba *hba, u8 *geo_buf)
->  void ufshpb_get_dev_info(struct ufs_hba *hba, u8 *desc_buf)
->  {
->          struct ufshpb_dev_info *hpb_dev_info = &hba->ufshpb_dev;
-> -        int version, ret;
-> -        u32 max_hpb_single_cmd = HPB_MULTI_CHUNK_LOW;
-> +        int version;
->  
->          hpb_dev_info->control_mode = desc_buf[DEVICE_DESC_PARAM_HPB_CONTROL];
->  
-> @@ -2875,13 +2602,6 @@ void ufshpb_get_dev_info(struct ufs_hba *hba, u8 *desc_buf)
->          if (version == HPB_SUPPORT_LEGACY_VERSION)
->                  hpb_dev_info->is_legacy = true;
->  
-> -        ret = ufshcd_query_attr_retry(hba, UPIU_QUERY_OPCODE_READ_ATTR,
-> -                QUERY_ATTR_IDN_MAX_HPB_SINGLE_CMD, 0, 0, &max_hpb_single_cmd);
-> -        if (ret)
-> -                dev_err(hba->dev, "%s: idn: read max size of single hpb cmd query request failed",
-> -                        __func__);
-> -        hpb_dev_info->max_hpb_single_cmd = max_hpb_single_cmd;
-> -
->          /*
->           * Get the number of user logical unit to check whether all
->           * scsi_device finish initialization
-> diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
-> index a79e07398970..a4e7e33d451e 100644
-> --- a/drivers/scsi/ufs/ufshpb.h
-> +++ b/drivers/scsi/ufs/ufshpb.h
-> @@ -31,8 +31,6 @@
->  
->  /* hpb support chunk size */
->  #define HPB_LEGACY_CHUNK_HIGH                        1
-> -#define HPB_MULTI_CHUNK_LOW                        7
-> -#define HPB_MULTI_CHUNK_HIGH                        255
-
-Because of above issue, they should be remained.
+A var ref to a constant won't change. I think we can just copy the
+constant value to the var ref's hist field and then we'll be able to
+get it from there instead of calling the fn() function. I'll post
+another version with this.
 
 Thanks,
-Daejun
+Kalesh
+
+>
+> -- Steve
