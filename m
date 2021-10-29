@@ -2,110 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 768024401B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 20:07:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EDED4401B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 20:08:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230249AbhJ2SJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 14:09:26 -0400
-Received: from mga18.intel.com ([134.134.136.126]:29591 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229826AbhJ2SJY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 14:09:24 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10152"; a="217632528"
-X-IronPort-AV: E=Sophos;i="5.87,193,1631602800"; 
-   d="scan'208";a="217632528"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2021 11:06:55 -0700
-X-IronPort-AV: E=Sophos;i="5.87,193,1631602800"; 
-   d="scan'208";a="665916788"
-Received: from jongchoi-mobl.amr.corp.intel.com (HELO [10.212.201.61]) ([10.212.201.61])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2021 11:06:54 -0700
-Subject: Re: [PATCH V2 03/15] x86/sgx: Add an attribute for the amount of SGX
- memory in a NUMA node
-To:     Reinette Chatre <reinette.chatre@intel.com>, jarkko@kernel.org,
-        linux-sgx@vger.kernel.org, shuah@kernel.org,
-        dave.hansen@linux.intel.com
-Cc:     seanjc@google.com, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1635447301.git.reinette.chatre@intel.com>
- <6df03c54cc8b533de4389b663ec9e4803ced1beb.1635447301.git.reinette.chatre@intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <eb41bbbe-8563-7b6d-3883-61ab43b0b10f@intel.com>
-Date:   Fri, 29 Oct 2021 11:06:52 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <6df03c54cc8b533de4389b663ec9e4803ced1beb.1635447301.git.reinette.chatre@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        id S230119AbhJ2SLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 14:11:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38934 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229772AbhJ2SK6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 14:10:58 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3132C061570
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 11:08:29 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id a26so9913245pfr.11
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 11:08:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20210112.gappssmtp.com; s=20210112;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xFYea77yp7hHF39j7jIyl1YqhsIj0k6eOQNJFYQ5RKU=;
+        b=bvJHJP9yCpPGLyJzDOAMGmnvbTTWHWRmhJRXfAdSCfdAePRvWAOufkkIiXfH3Obgk6
+         A7OzZ3NdhixBsooGlavgr2XKjf5c4KHvc5YerFmO3gflcICkNPbumhL51LbWz1HVIZ5r
+         NUu6LyZgAuXkQkX3uzvvIOusLLikWswHAk9UUXQ9j3xKIitPaKmmaj6cegLF+86iBmaX
+         v6c4Zsq03qvHTrkiOYZSzPt1D4rl5AOtUjVbgmwdv8Sg7G5lSXwBsKAVFVBIHpN0L+Pl
+         hJ0/oG6R23DEBwx1x68rCawxxYF3RxlxtvqNrfdYHSXk1Ll2a+zXNMO+jYwx4f6c1dYb
+         CA9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=xFYea77yp7hHF39j7jIyl1YqhsIj0k6eOQNJFYQ5RKU=;
+        b=uAahhvsdR+YgAGkhDSHcgM3SNlmNNM5fXsLiOrID1GR+saLVEVSH8/dGvxuhTcgi1o
+         KjHJsDeOK3WSAKTZqR7+hNkdF7LMkeyyWKEujAa9y8eyYFkh3Fp00TOnUQMDM+eRJ/Nk
+         6k57airBIDOadWsExBi9Vsw5Clk8VSkz9Qw6z0znzplOmuV4XleIKNtQaA9CG/m58ZYq
+         F1qqAyqPq4RXdxrEWKNWXXm91unZT1QqB7XHqxrZug2v7QGANi3swpPwoA0UGW0MDMYo
+         t9ag5/hFcIDMAlh9mHfwy6R6UrJSaPcwHGiXkWpxChqoZ+JR3sNVKRkPz3XzL+uPGIK8
+         cqKA==
+X-Gm-Message-State: AOAM530OAW11gQAO3Vg9zd179/tw1rYONEVQlDHvsxLirVFVMvwkhVxN
+        Wmt/5T1FJZhNrHaTB8Ke7pfQGQ==
+X-Google-Smtp-Source: ABdhPJz5Sqz0A6jeR9OTfM5Fo3ERAYSM4YQaiaZ9xy1sEqYRBmNn0O6vk/ff3JxqslbHJZrGyjGEfg==
+X-Received: by 2002:a63:3546:: with SMTP id c67mr9131634pga.201.1635530909069;
+        Fri, 29 Oct 2021 11:08:29 -0700 (PDT)
+Received: from localhost ([2620:0:1000:5e10:b1bb:1ca3:676a:3e09])
+        by smtp.gmail.com with ESMTPSA id k8sm8099425pfu.179.2021.10.29.11.08.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Oct 2021 11:08:28 -0700 (PDT)
+Date:   Fri, 29 Oct 2021 11:08:28 -0700 (PDT)
+X-Google-Original-Date: Fri, 29 Oct 2021 11:08:25 PDT (-0700)
+Subject:     Re: [PATCH v2 0/2] riscv asan-stack fixes
+In-Reply-To: <20211029045927.72933-1-alexandre.ghiti@canonical.com>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+        ryabinin.a.a@gmail.com, glider@google.com, andreyknvl@gmail.com,
+        dvyukov@google.com, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        alexandre.ghiti@canonical.com
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     alexandre.ghiti@canonical.com
+Message-ID: <mhng-b840919e-0658-4567-8639-f15c6076a860@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/28/21 1:37 PM, Reinette Chatre wrote:
-> The amount of SGX memory on the system is determined by the BIOS and it
-> varies wildly between systems.  It can be from dozens of MB's on desktops
-> or VM's, up to many GB's on servers.  Just like for regular memory, it is
-> sometimes useful to know the amount of usable SGX memory in the system.
-> 
-> Add an attribute for the amount of SGX memory in bytes to each NUMA
-> node. The path is /sys/devices/system/node/node[0-9]*/sgx/size.
-> Calculate these values by summing up EPC section sizes for each node
-> during the driver initalization.
+On Thu, 28 Oct 2021 21:59:25 PDT (-0700), alexandre.ghiti@canonical.com wrote:
+> This small patchset fixes asan-stack for riscv.
+>
+> Changes in v2:
+>  * fix KASAN_VMALLOC=n
+>  * swap both patches in order not to have a non-bootable kernel commit
+>
+> Alexandre Ghiti (2):
+>   riscv: Do not re-populate shadow memory with
+>     kasan_populate_early_shadow
+>   riscv: Fix asan-stack clang build
+>
+>  arch/riscv/Kconfig             |  6 ++++++
+>  arch/riscv/include/asm/kasan.h |  3 +--
+>  arch/riscv/mm/kasan_init.c     | 14 +++-----------
+>  3 files changed, 10 insertions(+), 13 deletions(-)
 
-For now, can we just make the selftests read the SGX CPUID section
-leaves?  It's not as precise as knowing how much the kernel actually
-decided to use, but it's good enough for a selftest.  It also means we
-can merge something without having to worry about long-term ABI.
-
-This is also why I once suggested that we first make the selftests
-depend on some debugfs file that would be short-lived.  But, if we use
-CPUID, we don't even need to mess with debugfs.
-
-You can even just steal the code from sgx_page_cache_init() to do it.
-
-Would that work, or am I missing something?
+Thanks, these are on fixes.
