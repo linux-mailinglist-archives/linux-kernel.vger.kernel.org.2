@@ -2,94 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DA5C4404B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 23:15:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C43404404DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 23:22:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231599AbhJ2VRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 17:17:42 -0400
-Received: from mail-oi1-f174.google.com ([209.85.167.174]:36550 "EHLO
-        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230257AbhJ2VRl (ORCPT
+        id S231599AbhJ2VYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 17:24:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54856 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231315AbhJ2VYC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 17:17:41 -0400
-Received: by mail-oi1-f174.google.com with SMTP id q124so15174623oig.3;
-        Fri, 29 Oct 2021 14:15:12 -0700 (PDT)
+        Fri, 29 Oct 2021 17:24:02 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A32A2C061570;
+        Fri, 29 Oct 2021 14:21:33 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id o14so18565816wra.12;
+        Fri, 29 Oct 2021 14:21:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :references:from:in-reply-to:content-transfer-encoding;
+        bh=NiK7SwHxTnmnFF3x7Tss+IEdA+ZkPxnv1m3o6b+JWVw=;
+        b=G4WPO5OAOn+LYA/zYW/Prt6LaSXj44Y1dvqC91n0ee17yPDw3HiuPGymqqClNnuC2E
+         9tyESFakTuKtQl+fn2Tzs6OVL2YfZFVgM4jSKUQoMNzGeRzgkK8tiLs0HXEja0OPewpu
+         hvkyAoQbbJuUG9JBFIZWPIqfGAiGwPXjBJ4yTb1PYs7vyRY8cXCOapBkAAvReQhvukNd
+         W7UNXl+FzoD9PYwI8GFd8EloZwCIqSiXGDbUGmhkb4QBvRW/+pOeIS2ndmc0KrNAlIeq
+         9ZMaM+lViRibw+Cs82WC7vA0mnLxIT69Ufpiq4NwlXbVD5AFzpp6tPsmZqL5LNdwOPBM
+         ryqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=Lrv4HMu3pJ4ELKYQ4yExPi3yFrqg0rLji7k8MjNUXdo=;
-        b=WjohNrmTT6XhS6vBnTWDuTAIPidTdAELil8pe12LDAlPZtQnMe82L0iqKslnDu4z+G
-         4wxuYWYT3/1Z74odxp+amTGGOSZkMekfaVlUITU1uN79Xv5xpxoULBTxiG5u74V2mHP9
-         2SjkP7bYZH0SJZ3hVqQNAnzvlhQOkqbE1adABHthfcT66CsFYvcHHX3DKD3VyisbkJKo
-         w5SPwph7vIIo83TjkA0rMNMxz5Wr3c6JQrHJblRHnB+cLmSmsYzd0HS2QhrTdDxtDT2/
-         H4+T7EGmgFCwdHYOPUdlYf6vsxaTHhiwrxYWepg4wtUYcXgcdLiXrHoo7eUsykzzWXwC
-         hRdg==
-X-Gm-Message-State: AOAM533BaDl2HKbpvfAERM+gmm7cEggFbT6ADTGUwwSbqOl8E0XM+6gJ
-        yD44pAKDDo3UPPbDPT2ZTw==
-X-Google-Smtp-Source: ABdhPJwjB0Kh6gEJISuzMDCDeL6VRh6W0N6NspeRpaWZ/L4c9zigIOszctikcivP1FbgRMi2+kWcQA==
-X-Received: by 2002:a05:6808:2127:: with SMTP id r39mr4600232oiw.116.1635542111994;
-        Fri, 29 Oct 2021 14:15:11 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id q15sm2163138otk.81.2021.10.29.14.15.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Oct 2021 14:15:11 -0700 (PDT)
-Received: (nullmailer pid 3221282 invoked by uid 1000);
-        Fri, 29 Oct 2021 21:15:10 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Cc:     agross@kernel.org, robh+dt@kernel.org, rohitkr@codeaurora.org,
-        alsa-devel@alsa-project.org, tiwai@suse.com,
-        devicetree@vger.kernel.org, broonie@kernel.org,
-        bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        plai@codeaurora.org, swboyd@chromium.org, judyhsiao@chromium.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        perex@perex.cz, bgoswami@codeaurora.org,
-        srinivas.kandagatla@linaro.org
-In-Reply-To: <1635519876-7112-2-git-send-email-srivasam@codeaurora.org>
-References: <1635519876-7112-1-git-send-email-srivasam@codeaurora.org> <1635519876-7112-2-git-send-email-srivasam@codeaurora.org>
-Subject: Re: [PATCH v4 1/2] ASoC: google: dt-bindings: Add sc7280-herobrine machine bindings
-Date:   Fri, 29 Oct 2021 16:15:10 -0500
-Message-Id: <1635542110.100441.3221281.nullmailer@robh.at.kernel.org>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=NiK7SwHxTnmnFF3x7Tss+IEdA+ZkPxnv1m3o6b+JWVw=;
+        b=5hkK+PGqRXi1mptFUuiRrOZ8Uq3E/RRjLwV+Sg9OqEgGCiND6QV+YQuidkMvNCFk3n
+         KbuaPc0RaClHYkEGCKbFNMXjPDAdNt6KwCB7//CW/W2kezylLbGJw/ANzuYXhr48gfv6
+         LsErdVFPEDY10xehRv7dl8aK3ZNVwvTqw2vnUXhw0P1iQFpikk685yoDXrlJcSHhbXmq
+         zHE05nZw2TnRhmtYDVEBhNHdX/b267J5L+Was/ckekPOUnat4ziwUd3e7wn7kAiySq86
+         rBgskLJFovwBZMJWC4ejx6H7goexCurYmri+ZjFziIps2HlDgyZuZI+gPF1jzbve0yCA
+         yWKg==
+X-Gm-Message-State: AOAM5338OxNfuKzbSjvLn9psqelWRg4eCnHBUF2Lnduu9DqWKEPJo2SO
+        hj0fpm1AVr3sCU7go+R+kW8=
+X-Google-Smtp-Source: ABdhPJxpTjYCFrGJA9JYhtIdnjNeuD/GIrhMKYTAepyvahRY8ck6qp6Ni3P88yg44LPKNNtiTeC3Tg==
+X-Received: by 2002:a1c:e911:: with SMTP id q17mr21870719wmc.174.1635542492272;
+        Fri, 29 Oct 2021 14:21:32 -0700 (PDT)
+Received: from [192.168.8.198] ([148.252.129.16])
+        by smtp.gmail.com with ESMTPSA id o1sm6734502wru.91.2021.10.29.14.21.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Oct 2021 14:21:31 -0700 (PDT)
+Message-ID: <cebb75d5-076d-0b05-6c37-b880accc320e@gmail.com>
+Date:   Fri, 29 Oct 2021 22:20:14 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [syzbot] KASAN: use-after-free Write in __io_free_req
+Content-Language: en-US
+To:     syzbot <syzbot+78b76ebc91042904f34e@syzkaller.appspotmail.com>,
+        axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <000000000000abd1dc05cf8447ee@google.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <000000000000abd1dc05cf8447ee@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Oct 2021 20:34:35 +0530, Srinivasa Rao Mandadapu wrote:
-> Add devicetree bindings documentation file for sc7280 sound card
-> registration.
+On 10/29/21 22:12, syzbot wrote:
+> Hello,
 > 
-> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-> ---
->  .../bindings/sound/google,sc7280-herobrine.yaml    | 170 +++++++++++++++++++++
->  1 file changed, 170 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml
+> syzbot tried to test the proposed patch but the build/boot failed:
+> 
+> failed to checkout kernel repo git://git.kernel.dk/linux-block on commit 3ecd20a9c77c632a5afe4e134781e1629936adab: failed to run ["git" "checkout" "3ecd20a9c77c632a5afe4e134781e1629936adab"]: exit status 128
+> fatal: reference is not a tree: 3ecd20a9c77c632a5afe4e134781e1629936adab
+
+#syz test: https://github.com/isilence/linux.git syz-test-iofree
+
+
+> 
+> Tested on:
+> 
+> commit:         [unknown
+> git tree:       git://git.kernel.dk/linux-block 3ecd20a9c77c632a5afe4e134781e1629936adab
+> dashboard link: https://syzkaller.appspot.com/bug?extid=78b76ebc91042904f34e
+> compiler:
 > 
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
-
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-Error: Documentation/devicetree/bindings/sound/google,sc7280-herobrine.example.dts:46.24-25 syntax error
-FATAL ERROR: Unable to parse input tree
-make[1]: *** [scripts/Makefile.lib:385: Documentation/devicetree/bindings/sound/google,sc7280-herobrine.example.dt.yaml] Error 1
-make[1]: *** Waiting for unfinished jobs....
-make: *** [Makefile:1441: dt_binding_check] Error 2
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/patch/1548069
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+-- 
+Pavel Begunkov
