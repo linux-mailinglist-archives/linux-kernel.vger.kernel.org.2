@@ -2,71 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 195A343FD29
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 15:11:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 468D843FD32
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 15:11:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231401AbhJ2NNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 09:13:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37190 "EHLO mail.kernel.org"
+        id S231616AbhJ2NOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 09:14:14 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:56396 "EHLO deadmen.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231504AbhJ2NNY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 09:13:24 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B5B9D60FC4;
-        Fri, 29 Oct 2021 13:10:54 +0000 (UTC)
-Date:   Fri, 29 Oct 2021 09:10:53 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        Kalesh Singh <kaleshsingh@google.com>, lkp@lists.01.org,
-        lkp@intel.com, surenb@google.com, hridya@google.com,
-        namhyung@kernel.org, kernel-team@android.com,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Tom Zanussi <zanussi@kernel.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [tracing/selftests]  cfece71411:
- kernel-selftests.ftrace.event_trigger_-_test_inter-event_histogram_trigger_onchange_action.fail
-Message-ID: <20211029091053.18cc2c25@gandalf.local.home>
-In-Reply-To: <20211029210056.6cd7796aea59cec3e9c1d7da@kernel.org>
-References: <20211025200852.3002369-8-kaleshsingh@google.com>
-        <20211029064818.GG737@xsang-OptiPlex-9020>
-        <20211029210056.6cd7796aea59cec3e9c1d7da@kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229603AbhJ2NON (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 09:14:13 -0400
+Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
+        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
+        id 1mgRfS-0002nG-Ve; Fri, 29 Oct 2021 21:11:35 +0800
+Received: from herbert by gondobar with local (Exim 4.92)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1mgRfF-0003Cv-9w; Fri, 29 Oct 2021 21:11:21 +0800
+Date:   Fri, 29 Oct 2021 21:11:21 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Tang Bin <tangbin@cmss.chinamobile.com>
+Cc:     krzysztof.kozlowski@canonical.com, vz@mleia.com,
+        davem@davemloft.net, linux-crypto@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v3] crypto: s5p-sss - Add error handling in
+ s5p_aes_probe()
+Message-ID: <20211029131121.GB12278@gondor.apana.org.au>
+References: <20211021013422.21396-1-tangbin@cmss.chinamobile.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211021013422.21396-1-tangbin@cmss.chinamobile.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Oct 2021 21:00:56 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
-
-> > # # of passed:  85
-> > # # of failed:  26
-> > # # of unresolved:  1
-> > # # of untested:  0
-> > # # of unsupported:  0
-> > # # of xfailed:  1
-> > # # of undefined(test bug):  0
-> > not ok 1 selftests: ftrace: ftracetest # exit=1  
+On Thu, Oct 21, 2021 at 09:34:22AM +0800, Tang Bin wrote:
+> The function s5p_aes_probe() does not perform sufficient error
+> checking after executing platform_get_resource(), thus fix it.
 > 
-> Also, please configure your running environment correctly so that all
-> ftracetest passes. If you unsure how to do, please ask me.
+> Fixes: c2afad6c6105 ("crypto: s5p-sss - Add HASH support for Exynos")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> ---
+> Changes from v2
+>  - add Cc: <stable@vger.kernel.org>
+> 
+> Changes from v1
+>  - add fixed title
+> ---
+>  drivers/crypto/s5p-sss.c | 2 ++
+>  1 file changed, 2 insertions(+)
 
-Although I think it's good to test with different configurations, where not
-all tests pass. Because then there's times when a test will fail when it
-should have been ignored, and that will let us know that there's a bug in
-the test.
-
-Or, different configurations might make a test fail that should have
-passed, where a missing dependency was made.
-
-I had someone report a bug that I never caught because it only happened
-when something was configured off, and because I tested with everything on,
-I never hit that bug.
-
--- Steve
+Patch applied.  Thanks.
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
