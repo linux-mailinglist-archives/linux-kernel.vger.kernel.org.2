@@ -2,143 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F65A43FC71
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 14:43:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ADB043FC73
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 14:43:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231431AbhJ2Mp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 08:45:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48978 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230134AbhJ2MpY (ORCPT
+        id S231611AbhJ2Mpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 08:45:41 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:48680 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230134AbhJ2Mpk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 08:45:24 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2C1BC061570
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 05:42:55 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: kholk11)
-        with ESMTPSA id 137AE1F45A17
-Subject: Re: [PATCH] arm64: defconfig: enable regulator to fix mt8173
- regression
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-To:     Adrian Ratiu <adrian.ratiu@collabora.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, "kernelci.org bot" <bot@kernelci.org>,
-        Guillaume Tucker <guillaume.tucker@collabora.com>,
-        Enric Balletbo Serra <eballetbo@gmail.com>
-References: <20211011125301.3440033-1-adrian.ratiu@collabora.com>
- <bd29b949-0ec1-704f-73de-c36b5120b445@collabora.com>
-Message-ID: <03eb0fb9-f2bc-f22d-9c57-2d7d132a30c2@collabora.com>
-Date:   Fri, 29 Oct 2021 14:42:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Fri, 29 Oct 2021 08:45:40 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 149CA1FC9E;
+        Fri, 29 Oct 2021 12:43:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1635511391; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cJEtmY7YHOs6f4JedKwYztqfPBaKRZOkgFV6yjG7xFQ=;
+        b=qLTBHjnWkwLO8VU+yakuq2ofnp5lyt2Oc92oRNijQ9uiE7ms6TyBJGLqmwJIQeV1JHEWZD
+        rj7hrjs5loicxG658b4moIhB1I+q3+CO5V0Fw+5oIG0HgxixlMeq4FDWGwKApolAAtvHm2
+        7S0CG6UavvZD05dJvasJEtGtp5QeYlQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1635511391;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cJEtmY7YHOs6f4JedKwYztqfPBaKRZOkgFV6yjG7xFQ=;
+        b=mff/CtITwb0LE1/FaaXiG9ff07Gu358S91KRrkdjw639RkwCoLJRJ8KwwXYXD73VJGnVnJ
+        1pOP4Qik/aJ3shBQ==
+Received: from pobox.suse.cz (pobox.suse.cz [10.100.2.14])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id EB33FA3B88;
+        Fri, 29 Oct 2021 12:43:10 +0000 (UTC)
+Date:   Fri, 29 Oct 2021 14:43:10 +0200 (CEST)
+From:   Miroslav Benes <mbenes@suse.cz>
+To:     Peter Zijlstra <peterz@infradead.org>
+cc:     x86@kernel.org, jpoimboe@redhat.com, andrew.cooper3@citrix.com,
+        linux-kernel@vger.kernel.org, alexei.starovoitov@gmail.com,
+        ndesaulniers@google.com, bpf@vger.kernel.org
+Subject: Re: [PATCH v3 00/16] x86: Rewrite the retpoline rewrite logic
+In-Reply-To: <20211026120132.613201817@infradead.org>
+Message-ID: <alpine.LSU.2.21.2110291442190.21447@pobox.suse.cz>
+References: <20211026120132.613201817@infradead.org>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-In-Reply-To: <bd29b949-0ec1-704f-73de-c36b5120b445@collabora.com>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 19/10/21 16:38, AngeloGioacchino Del Regno ha scritto:
-> Il 11/10/21 14:53, Adrian Ratiu ha scritto:
->> A regression was introduced on some mediatek boards starting with
->> v5.15-rc1 in commit 109fd20601e2b ("arm64: dts: mediatek: mt8173:
->> Add domain supply for mfg_async") which effectively changed the
->> regulator from the always-on dummy to DA9211 without explicitely
->> enabling it, causing failures like the these caught by KernelCI
->> on Hana Chromebooks [1]:
->>
->> mtk-power-controller 10006000.syscon:power-controller: supply domain not found, 
->> using dummy regulator
->> mtu3 11271000.usb: supply vbus not found, using dummy regulator
->> xhci-mtk 11270000.usb: supply vbus not found, using dummy regulator
->>
->> There might be another bug linking these power domains in the
->> mediatek PM driver, but that is a separate issue wich needs
->> addressing, for now just fix the obvious regression due to the
->> new regulator requirement.
->>
->> [1] https://github.com/kernelci/kernelci-project/issues/66
->> Reported-by: "kernelci.org bot" <bot@kernelci.org>
->> Cc: Guillaume Tucker <guillaume.tucker@collabora.com>
->> Suggested-by: Enric Balletbo Serra <eballetbo@gmail.com>
->> Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
->> ---
->>   arch/arm64/configs/defconfig | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
->> index 156d96afbbfc..4901cc1213bb 100644
->> --- a/arch/arm64/configs/defconfig
->> +++ b/arch/arm64/configs/defconfig
->> @@ -616,6 +616,7 @@ CONFIG_REGULATOR_FIXED_VOLTAGE=y
->>   CONFIG_REGULATOR_AXP20X=y
->>   CONFIG_REGULATOR_BD718XX=y
->>   CONFIG_REGULATOR_BD9571MWV=y
->> +CONFIG_REGULATOR_DA9211=y
->>   CONFIG_REGULATOR_FAN53555=y
->>   CONFIG_REGULATOR_GPIO=y
->>   CONFIG_REGULATOR_HI6421V530=y
->>
-> 
-> Hello,
-> 
-> I've been able to get a working Hana boot, with USB probed as early as possible, as
-> well solving that KernelCI failure (as now also the usb network works fine again).
-> 
-> My proposal here, for which I have a patch that's almost ready, would be to enable
-> this regulator driver as a module instead (since Hana is the only device that's
-> using it), avoiding to increase the kernel image size for everyone.
-> 
-> 
-> Before pointing out my solution, let's first point out what's going on:
-> 
-> In mt8173.dtsi, we have a power-controller node (mediatek,mt8173-power-controller),
-> under which all of the SoC's power domain nodes are defined. In this node, we have
-> both SCPD_DOMAIN_SUPPLY domains and "regular" ones.
-> 
-> The difference between SCPD domains and the others is that the first ones require a
-> parent regulator, while the latter don't (power is supplied from some .. internal
-> supply? - either way, no parent vreg necessary/declared).
-> As a note, for now, the only two MediaTek SoCs that have a SCPD supply are MT8173
-> and MT8183... and nothing else, as the others, including the newer ones seem to
-> have no such supplies (the only newer one upstream is MT8192 and has none).
-> 
-> 
-> My solution was to split the power-controller node in two:
-> 1. spm: power-controller@0 - contains all of the non-SCPD power domains
-> 2. spm_scpd: power-controller@1 - contains the SCPD power domains.
-> 
-> This made me able to get a full boot without usb/usb-eth issues while enabling this
-> regulator as a module; this also requires us to change the
-> mediatek,power-controller.yaml binding to allow multiple instances of that driver,
-> which is anyway already permitted by the mtk-pm-domains driver itself.
-> 
-> 
-> Hence, this question comes up: how should we proceed? should we...
-> a. enable this regulator driver as module and split the power-controller in two; or
-> b. keep this commit enabling this driver built-in and still split the
->     power-controller nodes; or
-> c. just enable this driver as built-in and not care about declaring two power
->     controller nodes?
-> 
-> Can you please give us an advice?
-> 
-> Thank you,
-> - Angelo
+On Tue, 26 Oct 2021, Peter Zijlstra wrote:
 
-After a discussion on this topic, we chose to pursue option B, as enabling this
-regulator fixes a very bad regression. Splitting the power-controller nodes does
-require a bit of time due to some more research that has to be done on that topic.
+> Hi,
+> 
+> These patches rewrite the way retpolines are rewritten. Currently objtool emits
+> alternative entries for most retpoline calls. However trying to extend that led
+> to trouble (ELF files are horrid).
+> 
+> Therefore completely overhaul this and have objtool emit a .retpoline_sites
+> section that lists all compiler generated retpoline thunk calls. Then the
+> kernel can do with them as it pleases.
+> 
+> Notably it will:
+> 
+>  - rewrite them to indirect instructions for !RETPOLINE
+>  - rewrite them to lfence; indirect; for RETPOLINE_AMD,
+>    where size allows (boo clang!)
+> 
+> Specifically, the !RETPOLINE case can now also deal with the clang-special
+> conditional-indirect-tail-call:
+> 
+>   Jcc __x86_indirect_thunk_\reg.
+> 
+> Finally, also update the x86 BPF jit to catch up to recent times and do these
+> same things.
+> 
+> All this should help improve performance by removing an indirection.
+> 
+> Patches can (soon) be found here:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git objtool/core
+> 
+> Changes since v2:
+> 
+>  - rewrite the __x86_indirect_thunk_array[] stuff again
+>  - rewrite the retpoline,amd rewrite logic, it now also supports
+>    rewriting the Jcc case, if the original instruction is long enough, but
+>    more importantly, it's simpler code.
+>  - bpf label simplification patch
+>  - random assorted cleanups
+>  - actually managed to get bpf selftests working
 
-Adrian will follow with a v2 of this patch, adding a Fixes tag.
+It is already in tip, but FWIW the objtool changes look good to me
 
-Thanks everyone,
-- Angelo
+Reviewed-by: Miroslav Benes <mbenes@suse.cz>
+
+M
