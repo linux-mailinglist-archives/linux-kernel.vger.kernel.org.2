@@ -2,195 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAC8043F57E
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 05:29:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00DD343F580
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 05:36:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231703AbhJ2DcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 23:32:11 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:58726 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231611AbhJ2DcJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 23:32:09 -0400
-X-UUID: 4a2acf12752d42cfb6a33f6e711bb539-20211029
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=GRAPofEE1i4Ut9H7b86SpQ8uaHtsCBapgHD2WyQaUDw=;
-        b=pGBseJxxc0gHRTEKgtBtSgLKHmIeZcVlAQqxcMt9TmeqnFiiDm2+OGm+cdfrNSteiHLlSaa354b4amHHOmkzUz0i5Mn+8Sx8OFA6Bib9BuE6M4uaEYYmBC5ii4OA0fsELpmOnkUKJJgZFOmty6UYQNTnG/HzmZ0ZqwDMIYfSbwQ=;
-X-UUID: 4a2acf12752d42cfb6a33f6e711bb539-20211029
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
-        (envelope-from <yunfei.dong@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 472096514; Fri, 29 Oct 2021 11:29:38 +0800
-Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.792.15; Fri, 29 Oct 2021 11:29:37 +0800
-Received: from mhfsdcap04 (10.17.3.154) by mtkmbs10n1.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.2.792.15 via Frontend
- Transport; Fri, 29 Oct 2021 11:29:36 +0800
-Message-ID: <ca5381b94941f0925235e70bf1ec97d42b3511fa.camel@mediatek.com>
-Subject: Re: [PATCH v7, 03/15] media: mtk-vcodec: Refactor vcodec pm
- interface
-From:   "yunfei.dong@mediatek.com" <yunfei.dong@mediatek.com>
-To:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        "Tzung-Bi Shih" <tzungbi@chromium.org>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tomasz Figa <tfiga@google.com>
-CC:     Hsin-Yi Wang <hsinyi@chromium.org>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Irui Wang <irui.wang@mediatek.com>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>,
-        <linux-mediatek@lists.infradead.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        Tzung-Bi Shih <tzungbi@google.com>
-Date:   Fri, 29 Oct 2021 11:29:35 +0800
-In-Reply-To: <6f3e94fe-8e02-e79d-858d-620a057b87f2@collabora.com>
-References: <20211011070247.792-1-yunfei.dong@mediatek.com>
-         <20211011070247.792-4-yunfei.dong@mediatek.com>
-         <6f3e94fe-8e02-e79d-858d-620a057b87f2@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+        id S231679AbhJ2Dia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 23:38:30 -0400
+Received: from smtp25.cstnet.cn ([159.226.251.25]:37582 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231611AbhJ2Di3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 23:38:29 -0400
+Received: from localhost.localdomain (unknown [124.16.138.128])
+        by APP-05 (Coremail) with SMTP id zQCowAAH6e32a3thTamVBQ--.42489S2;
+        Fri, 29 Oct 2021 11:35:18 +0800 (CST)
+From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
+To:     rjw@rjwysocki.net, viresh.kumar@linaro.org, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Subject: [PATCH] cpufreq: Fix implicit type conversion
+Date:   Fri, 29 Oct 2021 03:35:17 +0000
+Message-Id: <1635478517-3071352-1-git-send-email-jiasheng@iscas.ac.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: zQCowAAH6e32a3thTamVBQ--.42489S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Zr45Gr48ZF4rJF1xtFWxXrb_yoW8CFW5pF
+        Wj9ayYyr4qgryjy3y7CrWkWF45KFnrJ39rKr9xGr9YywnrJ3WF9w18KF1DXrW8Crn5uF17
+        Ar1Yqay7Ga18JaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9014x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Cr
+        1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+        6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
+        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E
+        8cxan2IY04v7MxkIecxEwVAFwVW8GwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbV
+        WUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF
+        67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42
+        IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1U
+        MIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIda
+        VFxhVjvjDU0xZFpf9x0JUk3ktUUUUU=
+X-Originating-IP: [124.16.138.128]
+X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgRGFmbmEsDQoNClRoYW5rcyBmb3IgeW91ciBzdWdnZXN0aW9uLg0KDQpPbiBUaHUsIDIwMjEt
-MTAtMTQgYXQgMTU6NDQgKzAyMDAsIERhZm5hIEhpcnNjaGZlbGQgd3JvdGU6DQo+IA0KPiBPbiAx
-MS4xMC4yMSAwOTowMiwgWXVuZmVpIERvbmcgd3JvdGU6DQo+ID4gVXNpbmcgdGhlIG5lZWRlZCBw
-YXJhbSBmb3IgcG0gaW5pdC9yZWxlYXNlIGZ1bmN0aW9uIGFuZCByZW1vdmUNCj4gPiB1bnVzZWQN
-Cj4gPiBwYXJhbSBtdGtkZXYgaW4gJ3N0cnVjdCBtdGtfdmNvZGVjX3BtJy4NCj4gPiANCj4gDQo+
-IEkgc2VlIHRoYXQgdGhlcmUgaXMgYSBsb3Qgb2YgY29kZSBkdXBsaWNhdGlvbiBiZXR3ZWVuDQo+
-IG10a192Y29kZWNfcmVsZWFzZV9kZWNfcG0uYyBhbmQgbXRrX3Zjb2RlY19yZWxlYXNlX2VuY19w
-bS5jDQo+IEkgdGhpbmsgaWYgeW91IGJvdGhlciB0byBmYWN0b3IgdGhlIGRlY29kZXIgeW91IHNo
-b3VsZCBkbyB0aGUgc2FtZQ0KPiBmYWN0b3IgdG8gdGhlIGVuY29kZXIsIGJ1dCBhY3R1YWxseSB0
-aGUgbXVjaCBiZXR0ZXIgdGhpbmcgdG8gZG8NCj4gaXMgdG8gdW5pZnkgYWxsIGNvZGUgZHVwbGlj
-YXRpb24gYmV0d2VlbiB0aGVzZSB0d28gZmlsZXMsIGp1c3QgZm9yDQo+IGV4YW1wbGUgb2YgaWRl
-bnRpY2FsIGZ1bmN0aW9uczoNCj4gDQo+IG10a192Y29kZWNfZW5jL2RlY19jbG9ja19vbi9vZmYN
-Cj4gbXRrX3Zjb2RlY19yZWxlYXNlX2VuY19wbQ0KPiBtdGtfdmNvZGVjX2luaXRfZGVjX3BtDQo+
-IA0KPiBJbiBhZGRpdGlvbiwgdGhlIGZ1bmN0aW9uIG10a192Y29kZWNfZGVjX3B3X29uIGNhbiBi
-ZSByZW1vdmUgc2luY2UgaXQNCj4gb25seSBjYWxscyBwbV9ydW50aW1lX3Jlc3VtZV9hbmRfZ2V0
-Lg0KPiBJdCB3b3VsZCBiZSBtdWNoIGJldHRlciB0byBjYWxsIHBtX3J1bnRpbWVfcmVzdW1lX2Fu
-ZF9nZXQgZGlyZWN0bHkNCj4gYW5kIG5vdCBoaWRlIGl0IGluIGEgZGlmZmVyZW50IGZ1bmN0aW9u
-DQo+IA0KSSB3aWxsIGZpeCBpdCBpbiBuZXh0IHBhdGNoIHNlcmllcy4gSXQncyBub3QgdmVyeSBy
-ZWFzb25hYmxlIGluIHRoaXMNCnBhdGNoICBzZXJpZXMuDQoNCj4gVGhhbmtzLA0KPiBEYWZuYQ0K
-PiANClRoYW5rcywNCll1bmZlaSBEb25nDQo+ID4gUmV2aWV3ZWQtYnk6IFR6dW5nLUJpIFNoaWgg
-PHR6dW5nYmlAZ29vZ2xlLmNvbT4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBZdW5mZWkgRG9uZyA8eXVu
-ZmVpLmRvbmdAbWVkaWF0ZWsuY29tPg0KPiA+IC0tLQ0KPiA+ICAgLi4uL3BsYXRmb3JtL210ay12
-Y29kZWMvbXRrX3Zjb2RlY19kZWNfZHJ2LmMgIHwgIDYgKystLS0NCj4gPiAgIC4uLi9wbGF0Zm9y
-bS9tdGstdmNvZGVjL210a192Y29kZWNfZGVjX3BtLmMgICB8IDIyICsrKysrKysrLS0tLQ0KPiA+
-IC0tLS0tLS0NCj4gPiAgIC4uLi9wbGF0Zm9ybS9tdGstdmNvZGVjL210a192Y29kZWNfZGVjX3Bt
-LmggICB8ICA1ICsrKy0tDQo+ID4gICAuLi4vcGxhdGZvcm0vbXRrLXZjb2RlYy9tdGtfdmNvZGVj
-X2Rydi5oICAgICAgfCAgMSAtDQo+ID4gICAuLi4vcGxhdGZvcm0vbXRrLXZjb2RlYy9tdGtfdmNv
-ZGVjX2VuY19wbS5jICAgfCAgMSAtDQo+ID4gICA1IGZpbGVzIGNoYW5nZWQsIDE1IGluc2VydGlv
-bnMoKyksIDIwIGRlbGV0aW9ucygtKQ0KPiA+IA0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL21l
-ZGlhL3BsYXRmb3JtL210ay12Y29kZWMvbXRrX3Zjb2RlY19kZWNfZHJ2LmMgDQo+ID4gYi9kcml2
-ZXJzL21lZGlhL3BsYXRmb3JtL210ay12Y29kZWMvbXRrX3Zjb2RlY19kZWNfZHJ2LmMNCj4gPiBp
-bmRleCA4ZGI5Y2RjNjYwNDMuLmRkNzQ5ZDQxYzc1YSAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJz
-L21lZGlhL3BsYXRmb3JtL210ay12Y29kZWMvbXRrX3Zjb2RlY19kZWNfZHJ2LmMNCj4gPiArKysg
-Yi9kcml2ZXJzL21lZGlhL3BsYXRmb3JtL210ay12Y29kZWMvbXRrX3Zjb2RlY19kZWNfZHJ2LmMN
-Cj4gPiBAQCAtMjQ5LDcgKzI0OSw3IEBAIHN0YXRpYyBpbnQgbXRrX3Zjb2RlY19wcm9iZShzdHJ1
-Y3QNCj4gPiBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpDQo+ID4gICAJaWYgKElTX0VSUihkZXYtPmZ3
-X2hhbmRsZXIpKQ0KPiA+ICAgCQlyZXR1cm4gUFRSX0VSUihkZXYtPmZ3X2hhbmRsZXIpOw0KPiA+
-ICAgDQo+ID4gLQlyZXQgPSBtdGtfdmNvZGVjX2luaXRfZGVjX3BtKGRldik7DQo+ID4gKwlyZXQg
-PSBtdGtfdmNvZGVjX2luaXRfZGVjX3BtKGRldi0+cGxhdF9kZXYsICZkZXYtPnBtKTsNCj4gPiAg
-IAlpZiAocmV0IDwgMCkgew0KPiA+ICAgCQlkZXZfZXJyKCZwZGV2LT5kZXYsICJGYWlsZWQgdG8g
-Z2V0IG10IHZjb2RlYyBjbG9jaw0KPiA+IHNvdXJjZSIpOw0KPiA+ICAgCQlnb3RvIGVycl9kZWNf
-cG07DQo+ID4gQEAgLTM3OSw3ICszNzksNyBAQCBzdGF0aWMgaW50IG10a192Y29kZWNfcHJvYmUo
-c3RydWN0DQo+ID4gcGxhdGZvcm1fZGV2aWNlICpwZGV2KQ0KPiA+ICAgZXJyX2RlY19hbGxvYzoN
-Cj4gPiAgIAl2NGwyX2RldmljZV91bnJlZ2lzdGVyKCZkZXYtPnY0bDJfZGV2KTsNCj4gPiAgIGVy
-cl9yZXM6DQo+ID4gLQltdGtfdmNvZGVjX3JlbGVhc2VfZGVjX3BtKGRldik7DQo+ID4gKwltdGtf
-dmNvZGVjX3JlbGVhc2VfZGVjX3BtKCZkZXYtPnBtKTsNCj4gPiAgIGVycl9kZWNfcG06DQo+ID4g
-ICAJbXRrX3Zjb2RlY19md19yZWxlYXNlKGRldi0+ZndfaGFuZGxlcik7DQo+ID4gICAJcmV0dXJu
-IHJldDsNCj4gPiBAQCAtNDIyLDcgKzQyMiw3IEBAIHN0YXRpYyBpbnQgbXRrX3Zjb2RlY19kZWNf
-cmVtb3ZlKHN0cnVjdA0KPiA+IHBsYXRmb3JtX2RldmljZSAqcGRldikNCj4gPiAgIAkJdmlkZW9f
-dW5yZWdpc3Rlcl9kZXZpY2UoZGV2LT52ZmRfZGVjKTsNCj4gPiAgIA0KPiA+ICAgCXY0bDJfZGV2
-aWNlX3VucmVnaXN0ZXIoJmRldi0+djRsMl9kZXYpOw0KPiA+IC0JbXRrX3Zjb2RlY19yZWxlYXNl
-X2RlY19wbShkZXYpOw0KPiA+ICsJbXRrX3Zjb2RlY19yZWxlYXNlX2RlY19wbSgmZGV2LT5wbSk7
-DQo+ID4gICAJbXRrX3Zjb2RlY19md19yZWxlYXNlKGRldi0+ZndfaGFuZGxlcik7DQo+ID4gICAJ
-cmV0dXJuIDA7DQo+ID4gICB9DQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbWVkaWEvcGxhdGZv
-cm0vbXRrLXZjb2RlYy9tdGtfdmNvZGVjX2RlY19wbS5jDQo+ID4gYi9kcml2ZXJzL21lZGlhL3Bs
-YXRmb3JtL210ay12Y29kZWMvbXRrX3Zjb2RlY19kZWNfcG0uYw0KPiA+IGluZGV4IDYwMzhkYjk2
-ZjcxYy4uMjBiZDE1N2E4NTVjIDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvbWVkaWEvcGxhdGZv
-cm0vbXRrLXZjb2RlYy9tdGtfdmNvZGVjX2RlY19wbS5jDQo+ID4gKysrIGIvZHJpdmVycy9tZWRp
-YS9wbGF0Zm9ybS9tdGstdmNvZGVjL210a192Y29kZWNfZGVjX3BtLmMNCj4gPiBAQCAtMTMsMTgg
-KzEzLDE1IEBADQo+ID4gICAjaW5jbHVkZSAibXRrX3Zjb2RlY19kZWNfcG0uaCINCj4gPiAgICNp
-bmNsdWRlICJtdGtfdmNvZGVjX3V0aWwuaCINCj4gPiAgIA0KPiA+IC1pbnQgbXRrX3Zjb2RlY19p
-bml0X2RlY19wbShzdHJ1Y3QgbXRrX3Zjb2RlY19kZXYgKm10a2RldikNCj4gPiAraW50IG10a192
-Y29kZWNfaW5pdF9kZWNfcG0oc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldiwNCj4gPiArCXN0
-cnVjdCBtdGtfdmNvZGVjX3BtICpwbSkNCj4gPiAgIHsNCj4gPiAgIAlzdHJ1Y3QgZGV2aWNlX25v
-ZGUgKm5vZGU7DQo+ID4gLQlzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2Ow0KPiA+IC0Jc3Ry
-dWN0IG10a192Y29kZWNfcG0gKnBtOw0KPiA+ICsJc3RydWN0IHBsYXRmb3JtX2RldmljZSAqbGFy
-Yl9wZGV2Ow0KPiA+ICAgCXN0cnVjdCBtdGtfdmNvZGVjX2NsayAqZGVjX2NsazsNCj4gPiAgIAlz
-dHJ1Y3QgbXRrX3Zjb2RlY19jbGtfaW5mbyAqY2xrX2luZm87DQo+ID4gICAJaW50IGkgPSAwLCBy
-ZXQgPSAwOw0KPiA+ICAgDQo+ID4gLQlwZGV2ID0gbXRrZGV2LT5wbGF0X2RldjsNCj4gPiAtCXBt
-ID0gJm10a2Rldi0+cG07DQo+ID4gLQlwbS0+bXRrZGV2ID0gbXRrZGV2Ow0KPiA+ICAgCWRlY19j
-bGsgPSAmcG0tPnZkZWNfY2xrOw0KPiA+ICAgCW5vZGUgPSBvZl9wYXJzZV9waGFuZGxlKHBkZXYt
-PmRldi5vZl9ub2RlLCAibWVkaWF0ZWssbGFyYiIsIDApOw0KPiA+ICAgCWlmICghbm9kZSkgew0K
-PiA+IEBAIC0zMiwxMyArMjksMTIgQEAgaW50IG10a192Y29kZWNfaW5pdF9kZWNfcG0oc3RydWN0
-DQo+ID4gbXRrX3Zjb2RlY19kZXYgKm10a2RldikNCj4gPiAgIAkJcmV0dXJuIC0xOw0KPiA+ICAg
-CX0NCj4gPiAgIA0KPiA+IC0JcGRldiA9IG9mX2ZpbmRfZGV2aWNlX2J5X25vZGUobm9kZSk7DQo+
-ID4gKwlsYXJiX3BkZXYgPSBvZl9maW5kX2RldmljZV9ieV9ub2RlKG5vZGUpOw0KPiA+ICAgCW9m
-X25vZGVfcHV0KG5vZGUpOw0KPiA+IC0JaWYgKFdBUk5fT04oIXBkZXYpKSB7DQo+ID4gKwlpZiAo
-V0FSTl9PTighbGFyYl9wZGV2KSkgew0KPiA+ICAgCQlyZXR1cm4gLTE7DQo+ID4gICAJfQ0KPiA+
-IC0JcG0tPmxhcmJ2ZGVjID0gJnBkZXYtPmRldjsNCj4gPiAtCXBkZXYgPSBtdGtkZXYtPnBsYXRf
-ZGV2Ow0KPiA+ICsJcG0tPmxhcmJ2ZGVjID0gJmxhcmJfcGRldi0+ZGV2Ow0KPiA+ICAgCXBtLT5k
-ZXYgPSAmcGRldi0+ZGV2Ow0KPiA+ICAgDQo+ID4gICAJZGVjX2Nsay0+Y2xrX251bSA9DQo+ID4g
-QEAgLTgyLDEwICs3OCwxMCBAQCBpbnQgbXRrX3Zjb2RlY19pbml0X2RlY19wbShzdHJ1Y3QNCj4g
-PiBtdGtfdmNvZGVjX2RldiAqbXRrZGV2KQ0KPiA+ICAgCXJldHVybiByZXQ7DQo+ID4gICB9DQo+
-ID4gICANCj4gPiAtdm9pZCBtdGtfdmNvZGVjX3JlbGVhc2VfZGVjX3BtKHN0cnVjdCBtdGtfdmNv
-ZGVjX2RldiAqZGV2KQ0KPiA+ICt2b2lkIG10a192Y29kZWNfcmVsZWFzZV9kZWNfcG0oc3RydWN0
-IG10a192Y29kZWNfcG0gKnBtKQ0KPiA+ICAgew0KPiA+IC0JcG1fcnVudGltZV9kaXNhYmxlKGRl
-di0+cG0uZGV2KTsNCj4gPiAtCXB1dF9kZXZpY2UoZGV2LT5wbS5sYXJidmRlYyk7DQo+ID4gKwlw
-bV9ydW50aW1lX2Rpc2FibGUocG0tPmRldik7DQo+ID4gKwlwdXRfZGV2aWNlKHBtLT5sYXJidmRl
-Yyk7DQo+ID4gICB9DQo+ID4gICANCj4gPiAgIGludCBtdGtfdmNvZGVjX2RlY19wd19vbihzdHJ1
-Y3QgbXRrX3Zjb2RlY19wbSAqcG0pDQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbWVkaWEvcGxh
-dGZvcm0vbXRrLXZjb2RlYy9tdGtfdmNvZGVjX2RlY19wbS5oDQo+ID4gYi9kcml2ZXJzL21lZGlh
-L3BsYXRmb3JtL210ay12Y29kZWMvbXRrX3Zjb2RlY19kZWNfcG0uaA0KPiA+IGluZGV4IDI4MGFl
-YWVmZGI2NS4uYTNkZjZhZWY2Y2I5IDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvbWVkaWEvcGxh
-dGZvcm0vbXRrLXZjb2RlYy9tdGtfdmNvZGVjX2RlY19wbS5oDQo+ID4gKysrIGIvZHJpdmVycy9t
-ZWRpYS9wbGF0Zm9ybS9tdGstdmNvZGVjL210a192Y29kZWNfZGVjX3BtLmgNCj4gPiBAQCAtOSw4
-ICs5LDkgQEANCj4gPiAgIA0KPiA+ICAgI2luY2x1ZGUgIm10a192Y29kZWNfZHJ2LmgiDQo+ID4g
-ICANCj4gPiAtaW50IG10a192Y29kZWNfaW5pdF9kZWNfcG0oc3RydWN0IG10a192Y29kZWNfZGV2
-ICpkZXYpOw0KPiA+IC12b2lkIG10a192Y29kZWNfcmVsZWFzZV9kZWNfcG0oc3RydWN0IG10a192
-Y29kZWNfZGV2ICpkZXYpOw0KPiA+ICtpbnQgbXRrX3Zjb2RlY19pbml0X2RlY19wbShzdHJ1Y3Qg
-cGxhdGZvcm1fZGV2aWNlICpwZGV2LA0KPiA+ICsJc3RydWN0IG10a192Y29kZWNfcG0gKnBtKTsN
-Cj4gPiArdm9pZCBtdGtfdmNvZGVjX3JlbGVhc2VfZGVjX3BtKHN0cnVjdCBtdGtfdmNvZGVjX3Bt
-ICpwbSk7DQo+ID4gICANCj4gPiAgIGludCBtdGtfdmNvZGVjX2RlY19wd19vbihzdHJ1Y3QgbXRr
-X3Zjb2RlY19wbSAqcG0pOw0KPiA+ICAgdm9pZCBtdGtfdmNvZGVjX2RlY19wd19vZmYoc3RydWN0
-IG10a192Y29kZWNfcG0gKnBtKTsNCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tZWRpYS9wbGF0
-Zm9ybS9tdGstdmNvZGVjL210a192Y29kZWNfZHJ2LmgNCj4gPiBiL2RyaXZlcnMvbWVkaWEvcGxh
-dGZvcm0vbXRrLXZjb2RlYy9tdGtfdmNvZGVjX2Rydi5oDQo+ID4gaW5kZXggM2IxZTVlM2E0NTBl
-Li45NzNiMGIzNjQ5YzYgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9tZWRpYS9wbGF0Zm9ybS9t
-dGstdmNvZGVjL210a192Y29kZWNfZHJ2LmgNCj4gPiArKysgYi9kcml2ZXJzL21lZGlhL3BsYXRm
-b3JtL210ay12Y29kZWMvbXRrX3Zjb2RlY19kcnYuaA0KPiA+IEBAIC0xOTUsNyArMTk1LDYgQEAg
-c3RydWN0IG10a192Y29kZWNfcG0gew0KPiA+ICAgCXN0cnVjdCBtdGtfdmNvZGVjX2Nsawl2ZW5j
-X2NsazsNCj4gPiAgIAlzdHJ1Y3QgZGV2aWNlCSpsYXJidmVuYzsNCj4gPiAgIAlzdHJ1Y3QgZGV2
-aWNlCSpkZXY7DQo+ID4gLQlzdHJ1Y3QgbXRrX3Zjb2RlY19kZXYJKm10a2RldjsNCj4gPiAgIH07
-DQo+ID4gICANCj4gPiAgIC8qKg0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL21lZGlhL3BsYXRm
-b3JtL210ay12Y29kZWMvbXRrX3Zjb2RlY19lbmNfcG0uYw0KPiA+IGIvZHJpdmVycy9tZWRpYS9w
-bGF0Zm9ybS9tdGstdmNvZGVjL210a192Y29kZWNfZW5jX3BtLmMNCj4gPiBpbmRleCAxYjJlNDkz
-MGVkMjcuLjBjOGM4Zjg2Nzg4YyAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL21lZGlhL3BsYXRm
-b3JtL210ay12Y29kZWMvbXRrX3Zjb2RlY19lbmNfcG0uYw0KPiA+ICsrKyBiL2RyaXZlcnMvbWVk
-aWEvcGxhdGZvcm0vbXRrLXZjb2RlYy9tdGtfdmNvZGVjX2VuY19wbS5jDQo+ID4gQEAgLTI2LDcg
-KzI2LDYgQEAgaW50IG10a192Y29kZWNfaW5pdF9lbmNfcG0oc3RydWN0IG10a192Y29kZWNfZGV2
-DQo+ID4gKm10a2RldikNCj4gPiAgIAlwZGV2ID0gbXRrZGV2LT5wbGF0X2RldjsNCj4gPiAgIAlw
-bSA9ICZtdGtkZXYtPnBtOw0KPiA+ICAgCW1lbXNldChwbSwgMCwgc2l6ZW9mKHN0cnVjdCBtdGtf
-dmNvZGVjX3BtKSk7DQo+ID4gLQlwbS0+bXRrZGV2ID0gbXRrZGV2Ow0KPiA+ICAgCXBtLT5kZXYg
-PSAmcGRldi0+ZGV2Ow0KPiA+ICAgCWRldiA9ICZwZGV2LT5kZXY7DQo+ID4gICAJZW5jX2NsayA9
-ICZwbS0+dmVuY19jbGs7DQo+ID4gDQo=
+The variable 'cpu' and 'j' are defined as unsigned int.
+However in the for_each_cpu, their values are assigned to -1.
+That doesn't make sense and in the cpumask_next() they are
+implicitly type conversed to int.
+It is universally accepted that the implicit type conversion is
+terrible.
+Also, having the good programming custom will set an example for
+others.
+Thus, it might be better to change the definition of 'cpu' and 'j'
+from unsigned int to int.
+
+Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
+---
+ kernel/sched/cpufreq_schedutil.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
+index 4f09afd..4aff4b6 100644
+--- a/kernel/sched/cpufreq_schedutil.c
++++ b/kernel/sched/cpufreq_schedutil.c
+@@ -409,7 +409,7 @@ static unsigned int sugov_next_freq_shared(struct sugov_cpu *sg_cpu, u64 time)
+ 	struct sugov_policy *sg_policy = sg_cpu->sg_policy;
+ 	struct cpufreq_policy *policy = sg_policy->policy;
+ 	unsigned long util = 0, max = 1;
+-	unsigned int j;
++	int j;
+ 
+ 	for_each_cpu(j, policy->cpus) {
+ 		struct sugov_cpu *j_sg_cpu = &per_cpu(sugov_cpu, j);
+@@ -746,7 +746,7 @@ static int sugov_start(struct cpufreq_policy *policy)
+ {
+ 	struct sugov_policy *sg_policy = policy->governor_data;
+ 	void (*uu)(struct update_util_data *data, u64 time, unsigned int flags);
+-	unsigned int cpu;
++	int cpu;
+ 
+ 	sg_policy->freq_update_delay_ns	= sg_policy->tunables->rate_limit_us * NSEC_PER_USEC;
+ 	sg_policy->last_freq_update_time	= 0;
+@@ -783,7 +783,7 @@ static int sugov_start(struct cpufreq_policy *policy)
+ static void sugov_stop(struct cpufreq_policy *policy)
+ {
+ 	struct sugov_policy *sg_policy = policy->governor_data;
+-	unsigned int cpu;
++	int cpu;
+ 
+ 	for_each_cpu(cpu, policy->cpus)
+ 		cpufreq_remove_update_util_hook(cpu);
+-- 
+2.7.4
 
