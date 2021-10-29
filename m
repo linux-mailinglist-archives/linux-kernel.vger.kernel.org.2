@@ -2,250 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1283D440268
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 20:45:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49BB344026C
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 20:47:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230233AbhJ2SsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 14:48:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45266 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231400AbhJ2Sr4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 14:47:56 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 17F0E610CF;
-        Fri, 29 Oct 2021 18:45:26 +0000 (UTC)
-Date:   Fri, 29 Oct 2021 14:45:24 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Kalesh Singh <kaleshsingh@google.com>
-Cc:     surenb@google.com, hridya@google.com, namhyung@kernel.org,
-        kernel-team@android.com, mhiramat@kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Tom Zanussi <zanussi@kernel.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v2 1/4] tracing/histogram: Optimize division by
- constants
-Message-ID: <20211029144524.367d6789@gandalf.local.home>
-In-Reply-To: <20211029183339.3216491-2-kaleshsingh@google.com>
-References: <20211029183339.3216491-1-kaleshsingh@google.com>
-        <20211029183339.3216491-2-kaleshsingh@google.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230073AbhJ2SuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 14:50:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229489AbhJ2SuW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 14:50:22 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33B8EC061570
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 11:47:53 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id p16so22861354lfa.2
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 11:47:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uGPiPKSphOUEs2fEDAQ1oyHUSr8W7H4wPzT5A6mID2k=;
+        b=PwcTyiA+l0irgoS20hv3ruCOgqQ9pk+pMaL//cWuIfytOjzpNyUjD0wheL47Rw4p5e
+         XrhsN1D22td0eNyy9FTurkcJuSyIf4PSSbRhWBWg03sYd3a5zne0nY8hIhl5wl5Iiq0/
+         rwXzrUhn5/fXzh2aHHrpyapZm5QCvdomJAv4A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uGPiPKSphOUEs2fEDAQ1oyHUSr8W7H4wPzT5A6mID2k=;
+        b=2IDctzMI7WwbFtcDzRzbEAki1dKtGcd89CIesav35dGcbDloAu978CRV267CmH04hI
+         2OMggRYF16h11Q7YJEKknS6zVnBLJCy9ww2EgL+p5gcXIZvOskhr0mVqIxzdMJP2qJsO
+         KdhoLyK5wttOjHi0JgXdMFozmsFGQh91xnFQaKqpABjV2EIbxUxgkUUKvfN7rIsScy1H
+         rp4l/kHFkrSRkBQQUsrT1POnh0/CZjD/LxjCGrOtO0xRlV+e86tu9LQ3JJkLS17fjcNI
+         0TIyKn/YH/zQ9pRc1nI6Y7vnDFU6V7abB7tEXeC1Lz/RSYFAH5R287Rr/XwZFfsIpzs7
+         XM6g==
+X-Gm-Message-State: AOAM530VPz8GE93e+AjRaGF+bUkllVlrjd5WV0TTjUxIhPsJ/7WRhizZ
+        rKoLoVL33/spyiQGIc7QzlKQfB2oHMQK5MtnwMY=
+X-Google-Smtp-Source: ABdhPJzCZyylQ8duMQgatprCVp3sgj3LYcyyWq6lfXasrxGtDAxfWs89Jx00mD4RuL1A2nLgWe5wXA==
+X-Received: by 2002:a05:6512:12c3:: with SMTP id p3mr9965179lfg.384.1635533270662;
+        Fri, 29 Oct 2021 11:47:50 -0700 (PDT)
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com. [209.85.208.176])
+        by smtp.gmail.com with ESMTPSA id d2sm121227ljo.15.2021.10.29.11.47.49
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Oct 2021 11:47:49 -0700 (PDT)
+Received: by mail-lj1-f176.google.com with SMTP id u5so18302338ljo.8
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 11:47:49 -0700 (PDT)
+X-Received: by 2002:a05:651c:17a6:: with SMTP id bn38mr13088470ljb.56.1635533269069;
+ Fri, 29 Oct 2021 11:47:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <CAHk-=wgP058PNY8eoWW=5uRMox-PuesDMrLsrCWPS+xXhzbQxQ@mail.gmail.com>
+ <YXL9tRher7QVmq6N@arm.com> <CAHk-=wg4t2t1AaBDyMfOVhCCOiLLjCB5TFVgZcV4Pr8X2qptJw@mail.gmail.com>
+ <CAHc6FU7BEfBJCpm8wC3P+8GTBcXxzDWcp6wAcgzQtuaJLHrqZA@mail.gmail.com>
+ <YXhH0sBSyTyz5Eh2@arm.com> <CAHk-=wjWDsB-dDj+x4yr8h8f_VSkyB7MbgGqBzDRMNz125sZxw@mail.gmail.com>
+ <YXmkvfL9B+4mQAIo@arm.com> <CAHk-=wjQqi9cw1Guz6a8oBB0xiQNF_jtFzs3gW0k7+fKN-mB1g@mail.gmail.com>
+ <YXsUNMWFpmT1eQcX@arm.com> <CAHk-=wgzEKEYKRoR_abQRDO=R8xJX_FK+XC3gNhKfu=KLdxt3g@mail.gmail.com>
+ <YXw0a9n+/PLAcObB@arm.com>
+In-Reply-To: <YXw0a9n+/PLAcObB@arm.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 29 Oct 2021 11:47:33 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgNV5Ka0yTssic0JbZEcO3wvoTC65budK88k4D-34v0xA@mail.gmail.com>
+Message-ID: <CAHk-=wgNV5Ka0yTssic0JbZEcO3wvoTC65budK88k4D-34v0xA@mail.gmail.com>
+Subject: Re: [PATCH v8 00/17] gfs2: Fix mmap + page fault deadlocks
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ocfs2-devel@oss.oracle.com, kvm-ppc@vger.kernel.org,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Andy Lutomirski <luto@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Oct 2021 11:33:27 -0700
-Kalesh Singh <kaleshsingh@google.com> wrote:
+On Fri, Oct 29, 2021 at 10:50 AM Catalin Marinas
+<catalin.marinas@arm.com> wrote:
+>
+> First of all, a uaccess in interrupt should not force such signal as it
+> had nothing to do with the interrupted context. I guess we can do an
+> in_task() check in the fault handler.
 
-> If the divisor is a constant use specific division functions to
-> avoid extra branches when the trigger is hit.
-> 
-> If the divisor constant but not a power of 2, the division can be
-> replaced with a multiplication and shift in the following case:
-> 
-> Let X = dividend and Y = divisor.
-> 
-> Choose Z = some power of 2. If Y <= Z, then:
->     X / Y = (X * (Z / Y)) / Z
-> 
-> (Z / Y) is a constant (mult) which is calculated at parse time, so:
->     X / Y = (X * mult) / Z
-> 
-> The division by Z can be replaced by a shift since Z is a power of 2:
->     X / Y = (X * mult) >> shift
-> 
-> As long, as X < Z the results will not be off by more than 1.
-> 
-> Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
-> Suggested-by: Steven Rostedt <rostedt@goodmis.org>
-> ---
-> 
-> Changes in v2:
->   - Return -EDOM if divisor is a constant and zero, per Steve
-> 
->  kernel/trace/trace_events_hist.c | 117 ++++++++++++++++++++++++++++++-
->  1 file changed, 116 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-> index 364cb3091789..1084aa41f047 100644
-> --- a/kernel/trace/trace_events_hist.c
-> +++ b/kernel/trace/trace_events_hist.c
-> @@ -68,7 +68,8 @@
->  	C(INVALID_SORT_FIELD,	"Sort field must be a key or a val"),	\
->  	C(INVALID_STR_OPERAND,	"String type can not be an operand in expression"), \
->  	C(EXPECT_NUMBER,	"Expecting numeric literal"),		\
-> -	C(UNARY_MINUS_SUBEXPR,	"Unary minus not supported in sub-expressions"),
-> +	C(UNARY_MINUS_SUBEXPR,	"Unary minus not supported in sub-expressions"), \
-> +	C(DIVISION_BY_ZERO,	"Division by zero"),
->  
->  #undef C
->  #define C(a, b)		HIST_ERR_##a
-> @@ -92,6 +93,7 @@ typedef u64 (*hist_field_fn_t) (struct hist_field *field,
->  #define HIST_FIELDS_MAX		(TRACING_MAP_FIELDS_MAX + TRACING_MAP_VARS_MAX)
->  #define HIST_ACTIONS_MAX	8
->  #define HIST_CONST_DIGITS_MAX	21
-> +#define HIST_DIV_SHIFT		20  /* For optimizing division by constants */
->  
->  enum field_op_id {
->  	FIELD_OP_NONE,
-> @@ -160,6 +162,8 @@ struct hist_field {
->  
->  	/* Numeric literals are represented as u64 */
->  	u64				constant;
-> +	/* Used to optimize division by constants */
-> +	u64				div_multiplier;
->  };
->  
->  static u64 hist_field_none(struct hist_field *field,
-> @@ -311,6 +315,72 @@ static u64 hist_field_div(struct hist_field *hist_field,
->  	return div64_u64(val1, val2);
->  }
->  
-> +static u64 div_by_power_of_two(struct hist_field *hist_field,
-> +				struct tracing_map_elt *elt,
-> +				struct trace_buffer *buffer,
-> +				struct ring_buffer_event *rbe,
-> +				void *event)
-> +{
-> +	struct hist_field *operand1 = hist_field->operands[0];
-> +	struct hist_field *operand2 = hist_field->operands[1];
-> +
-> +	u64 val1 = operand1->fn(operand1, elt, buffer, rbe, event);
-> +	u64 val2 = operand2->fn(operand2, elt, buffer, rbe, event);
+Yeah. It ends up being similar to the thread flag in that you still
+end up having to protect against NMI and other users of asynchronous
+page faults.
 
-If these functions are only called when val2 is constant, can't we make it
-such that we get val2 from the hist_field directly? That is:
+So the suggestion was more of a "mindset" difference and modified
+version of the task flag rather than anything fundamentally different.
 
-	u64 val2 = operand2->constant;
+> Second, is there a chance that we enter the fault-in loop with a SIGSEGV
+> already pending? Maybe it's not a problem, we just bail out of the loop
+> early and deliver the signal, though unrelated to the actual uaccess in
+> the loop.
 
-That would save us a function call, and an indirect on at that (that gets
-slowed down by spectre).
+If we ever run in user space with a pending per-thread SIGSEGV, that
+would already be a fairly bad bug. The intent of "force_sig()" is not
+only to make sure you can't block the signal, but also that it targets
+the particular thread that caused the problem: unlike other random
+"send signal to process", a SIGSEGV caused by a bad memory access is
+really local to that _thread_, not the signal thread group.
 
-Same for the ones below.
+So somebody else sending a SIGSEGV asynchronsly is actually very
+different - it goes to the thread group (although you can specify
+individual threads too - but once you do that you're already outside
+of POSIX).
 
--- Steve
+That said, the more I look at it, the more I think I was wrong. I
+think the "we have a SIGSEGV pending" could act as the per-thread
+flag, but the complexity of the signal handling is probably an
+argument against it.
 
+Not because a SIGSEGV could already be pending, but because so many
+other situations could be pending.
 
-> +
-> +	return val1 >> __ffs64(val2);
-> +}
-> +
-> +static u64 div_by_not_power_of_two(struct hist_field *hist_field,
-> +				struct tracing_map_elt *elt,
-> +				struct trace_buffer *buffer,
-> +				struct ring_buffer_event *rbe,
-> +				void *event)
-> +{
-> +	struct hist_field *operand1 = hist_field->operands[0];
-> +	struct hist_field *operand2 = hist_field->operands[1];
-> +
-> +	u64 val1 = operand1->fn(operand1, elt, buffer, rbe, event);
-> +	u64 val2 = operand2->fn(operand2, elt, buffer, rbe, event);
-> +
-> +	return div64_u64(val1, val2);
-> +}
-> +
-> +static u64 div_by_mult_and_shift(struct hist_field *hist_field,
-> +				struct tracing_map_elt *elt,
-> +				struct trace_buffer *buffer,
-> +				struct ring_buffer_event *rbe,
-> +				void *event)
-> +{
-> +	struct hist_field *operand1 = hist_field->operands[0];
-> +	struct hist_field *operand2 = hist_field->operands[1];
-> +
-> +	u64 val1 = operand1->fn(operand1, elt, buffer, rbe, event);
-> +
-> +	/*
-> +	 * If the divisor is a constant, do a multiplication and shift instead.
-> +	 *
-> +	 * Choose Z = some power of 2. If Y <= Z, then:
-> +	 *     X / Y = (X * (Z / Y)) / Z
-> +	 *
-> +	 * (Z / Y) is a constant (mult) which is calculated at parse time, so:
-> +	 *     X / Y = (X * mult) / Z
-> +	 *
-> +	 * The division by Z can be replaced by a shift since Z is a power of 2:
-> +	 *     X / Y = (X * mult) >> HIST_DIV_SHIFT
-> +	 *
-> +	 * As long, as X < Z the results will not be off by more than 1.
-> +	 */
-> +	if (val1 < (1 << HIST_DIV_SHIFT)) {
-> +		u64 mult = operand2->div_multiplier;
-> +
-> +		return (val1 * mult + ((1 << HIST_DIV_SHIFT) - 1)) >> HIST_DIV_SHIFT;
-> +	} else {
-> +		u64 val2 = operand2->fn(operand2, elt, buffer, rbe, event);
-> +
-> +		return div64_u64(val1, val2);
-> +	}
-> +}
-> +
->  static u64 hist_field_mult(struct hist_field *hist_field,
->  			   struct tracing_map_elt *elt,
->  			   struct trace_buffer *buffer,
-> @@ -573,6 +643,37 @@ struct snapshot_context {
->  	void			*key;
->  };
->  
-> +
-> +static struct hist_field *find_var_field(struct hist_trigger_data *hist_data,
-> +					 const char *var_name);
-> +
-> +/*
-> + * Returns the specific division function to use if the divisor
-> + * is constant. This avoids extra branches when the trigger is hit.
-> + */
-> +static hist_field_fn_t hist_field_get_div_fn(struct hist_field *divisor)
-> +{
-> +	u64 div;
-> +
-> +	if (divisor->flags & HIST_FIELD_FL_VAR_REF) {
-> +		struct hist_field *var;
-> +
-> +		var = find_var_field(divisor->var.hist_data, divisor->name);
-> +		div = var->constant;
-> +	} else
-> +		div = divisor->constant;
-> +
-> +	if (!(div & (div - 1)))
-> +		return div_by_power_of_two;
-> +
-> +	/* If the divisor is too large, do a regular division */
-> +	if (div > (1 << HIST_DIV_SHIFT))
-> +		return div_by_not_power_of_two;
-> +
-> +	divisor->div_multiplier = div64_u64((u64)(1 << HIST_DIV_SHIFT), div);
-> +	return div_by_mult_and_shift;
-> +}
-> +
->  static void track_data_free(struct track_data *track_data)
->  {
->  	struct hist_elt_data *elt_data;
-> @@ -2575,6 +2676,20 @@ static struct hist_field *parse_expr(struct hist_trigger_data *hist_data,
->  	expr->operands[0] = operand1;
->  	expr->operands[1] = operand2;
->  
-> +
-> +	if (field_op == FIELD_OP_DIV &&
-> +			operand2_flags & HIST_FIELD_FL_CONST) {
-> +		u64 divisor = (var2) ? var2->constant : operand2->constant;
-> +
-> +		if (!divisor) {
-> +			hist_err(file->tr, HIST_ERR_DIVISION_BY_ZERO, errpos(str));
-> +			ret = -EDOM;
-> +			goto free;
-> +		}
-> +
-> +		op_fn = hist_field_get_div_fn(operand2);
-> +	}
-> +
->  	if (combine_consts) {
->  		if (var1)
->  			expr->operands[0] = var1;
+In particular, the signal code won't send new signals to a thread if
+that thread group is already exiting. So another thread may have
+already started the exit and core dump sequence, and is in the process
+of killing the shared signal threads, and if one of those threads is
+now in the kernel and goes through the copy_from_user() dance, that
+whole "thread group is exiting" will mean that the signal code won't
+add a new SIGSEGV to the queue.
 
+So the signal could conceptually be used as the flag to stop looping,
+but it ends up being such a complicated flag that I think it's
+probably not worth it after all. Even if it semantically would be
+fairly nice to use pre-existing machinery.
+
+Could it be worked around? Sure. That kernel loop probably has to
+check for fatal_signal_pending() anyway, so it would all work even in
+the presense of the above kinds of issues. But just the fact that I
+went and looked at just how exciting the signal code is made me think
+"ok, conceptually nice, but we take a lot of locks and we do a lot of
+special things even in the 'simple' force_sig() case".
+
+> Third is the sigcontext.pc presented to the signal handler. Normally for
+> SIGSEGV it points to the address of a load/store instruction and a
+> handler could disable MTE and restart from that point. With a syscall we
+> don't want it to point to the syscall place as it shouldn't be restarted
+> in case it copied something.
+
+I think this is actually independent of the whole "how to return
+errors". We'll still need to return an error from the system call,
+even if we also have a signal pending.
+
+                  Linus
