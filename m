@@ -2,156 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7B914403D3
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 22:08:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09C174403DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 22:09:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231169AbhJ2UK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 16:10:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39908 "EHLO mail.kernel.org"
+        id S231390AbhJ2UL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 16:11:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40300 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229458AbhJ2UKZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 16:10:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CA1DF603E5;
-        Fri, 29 Oct 2021 20:07:55 +0000 (UTC)
+        id S229979AbhJ2UL1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 16:11:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 04AFE6101E;
+        Fri, 29 Oct 2021 20:08:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635538076;
-        bh=JWNtTtZlxxStPFFK9YVHU96GPvygUXlX9vi+gf6rdT0=;
+        s=k20201202; t=1635538138;
+        bh=B1lpTPBJKOUOmSSKH19PhuTop/N0Fuwt4VAFYWghRIY=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fqhDha9Gy8xEL5TPhe5gn5OQSU07xsXUub+8fvEkKQQMHgnfou9nBUCfxq7luxlB4
-         Qi6hUHtyfemei9t8bVGFvRxiFek2KvDF+dF0wHJR8y9S/IdhyH7oKSATgYa9HYZqtK
-         A2cCCiWYlYktYN4yE7sAuJ+joFw4Jk/1P+Z46TeofuoXcEsu3vwIINoBEw6eoIE5Wq
-         u5VjiTF9lwpupE4rU9WXAxnIx8XfrtJwZEYc+7NCSjCRZ3FgRBDeqtqnBp4D8IQTmr
-         xT2d5WHGOnK+MwGbZAIFHovevQCJU5Y/3yVTbzFCqHYYn3NbAyBjtY/kSEzbJWHcAG
-         EbGeYE7g09Wyg==
-Date:   Fri, 29 Oct 2021 22:07:53 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     f.fainelli@gmail.com, rjui@broadcom.com, sbranden@broadcom.com,
-        nsaenz@kernel.org, krzk@kernel.org, stefan.wahren@i2se.com,
-        nh6z@nh6z.net, eric@anholt.net, linux-i2c@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] i2c: bcm2835: Fix the error handling in
- 'bcm2835_i2c_probe()'
-Message-ID: <YXxUmXtXBR3Oy0C3@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        f.fainelli@gmail.com, rjui@broadcom.com, sbranden@broadcom.com,
-        nsaenz@kernel.org, krzk@kernel.org, stefan.wahren@i2se.com,
-        nh6z@nh6z.net, eric@anholt.net, linux-i2c@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-References: <338008c444af4785a07fb5a402b60225a4964ae9.1629484876.git.christophe.jaillet@wanadoo.fr>
+        b=sWYWqoF+5pjy039ODvqWeSBLMYGKelDrJ38RQS6nAHJSSAWTsdfWU/0OWoHMO/rCi
+         xqLEKiWBWfmTGlDLdcWGd43ynnFsicOBT/CvQ1ED/ymVzO1gAA9Aj3Sg8YhB+lzV6x
+         dRGmux0PtIWmJ7LOjiWcwlN2OqaHOlv9ySZCJBYtCqzBWP+bS1O11D4teuq7k2TLTv
+         szA7y9vYu8QEiQVw1pUudI2183e2QzXHeyB2Gj4CnWB/DgFNkl7P/zoNIb46C+cgVd
+         uevIyZn8ygAjR+k5wKmPde74jNEw0Jc5TyCV3OqTfmBB2trksX1/u2vxqVKlVcdMia
+         vlse3EPsZ577g==
+Date:   Fri, 29 Oct 2021 13:08:57 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Pavel Begunkov <asml.silence@gmail.com>
+Cc:     Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jane Chu <jane.chu@oracle.com>,
+        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
+        "vishal.l.verma@intel.com" <vishal.l.verma@intel.com>,
+        "dave.jiang@intel.com" <dave.jiang@intel.com>,
+        "agk@redhat.com" <agk@redhat.com>,
+        "snitzer@redhat.com" <snitzer@redhat.com>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        "ira.weiny@intel.com" <ira.weiny@intel.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "vgoyal@redhat.com" <vgoyal@redhat.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
+Subject: Re: [dm-devel] [PATCH 0/6] dax poison recovery with
+ RWF_RECOVERY_DATA flag
+Message-ID: <20211029200857.GD2237511@magnolia>
+References: <YXFPfEGjoUaajjL4@infradead.org>
+ <e89a2b17-3f03-a43e-e0b9-5d2693c3b089@oracle.com>
+ <YXJN4s1HC/Y+KKg1@infradead.org>
+ <2102a2e6-c543-2557-28a2-8b0bdc470855@oracle.com>
+ <YXj2lwrxRxHdr4hb@infradead.org>
+ <20211028002451.GB2237511@magnolia>
+ <20211028225955.GA449541@dread.disaster.area>
+ <22255117-52de-4b2d-822e-b4bc50bbc52b@gmail.com>
+ <20211029165747.GC2237511@magnolia>
+ <f3e14569-a399-f6da-fd3e-993b579eaf74@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="vErO5tT5H1S1DPMw"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <338008c444af4785a07fb5a402b60225a4964ae9.1629484876.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <f3e14569-a399-f6da-fd3e-993b579eaf74@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Oct 29, 2021 at 08:23:53PM +0100, Pavel Begunkov wrote:
+> On 10/29/21 17:57, Darrick J. Wong wrote:
+> > On Fri, Oct 29, 2021 at 12:46:14PM +0100, Pavel Begunkov wrote:
+> > > On 10/28/21 23:59, Dave Chinner wrote:
+> > > [...]
+> > > > > > Well, my point is doing recovery from bit errors is by definition not
+> > > > > > the fast path.  Which is why I'd rather keep it away from the pmem
+> > > > > > read/write fast path, which also happens to be the (much more important)
+> > > > > > non-pmem read/write path.
+> > > > > 
+> > > > > The trouble is, we really /do/ want to be able to (re)write the failed
+> > > > > area, and we probably want to try to read whatever we can.  Those are
+> > > > > reads and writes, not {pre,f}allocation activities.  This is where Dave
+> > > > > and I arrived at a month ago.
+> > > > > 
+> > > > > Unless you'd be ok with a second IO path for recovery where we're
+> > > > > allowed to be slow?  That would probably have the same user interface
+> > > > > flag, just a different path into the pmem driver.
+> > > > 
+> > > > I just don't see how 4 single line branches to propage RWF_RECOVERY
+> > > > down to the hardware is in any way an imposition on the fast path.
+> > > > It's no different for passing RWF_HIPRI down to the hardware *in the
+> > > > fast path* so that the IO runs the hardware in polling mode because
+> > > > it's faster for some hardware.
+> > > 
+> > > Not particularly about this flag, but it is expensive. Surely looks
+> > > cheap when it's just one feature, but there are dozens of them with
+> > > limited applicability, default config kernels are already sluggish
+> > > when it comes to really fast devices and it's not getting better.
+> > > Also, pretty often every of them will add a bunch of extra checks
+> > > to fix something of whatever it would be.
+> > 
+> > So we can't have data recovery because moving fast the only goal?
+> 
+> That's not what was said and you missed the point, which was in
+> the rest of the message.
 
---vErO5tT5H1S1DPMw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+...whatever point you were trying to make was so vague that it was
+totally uninformative and I completely missed it.
 
-On Fri, Aug 20, 2021 at 08:43:33PM +0200, Christophe JAILLET wrote:
-> Some resource should be released if an error occurs in
-> 'bcm2835_i2c_probe()'.
-> Add an error handling path and the needed 'clk_disable_unprepare()' and
-> 'clk_rate_exclusive_put()' calls.
->=20
-> While at it, rework the bottom of the function to use this newly added
-> error handling path and have an explicit and more standard "return 0;" at
-> the end of the normal path.
->=20
-> Fixes: bebff81fb8b9 ("i2c: bcm2835: Model Divider in CCF")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+What does "callbacks or bit masks" mean, then, specifically?  How
+*exactly* would you solve the problem that Jane is seeking to solve by
+using callbacks?
 
-Could someone from the BCM community kindly test/approve this change?
+Actually, you know what?  I'm so fed up with every single DAX
+conversation turning into a ****storm of people saying NO NO NO NO NO NO
+NO NO to everything proposed that I'm actually going to respond to
+whatever I think your point is, and you can defend whatever I come up
+with.
 
-> ---
->  drivers/i2c/busses/i2c-bcm2835.c | 18 ++++++++++++++----
->  1 file changed, 14 insertions(+), 4 deletions(-)
->=20
-> diff --git a/drivers/i2c/busses/i2c-bcm2835.c b/drivers/i2c/busses/i2c-bc=
-m2835.c
-> index 37443edbf754..a2f19b4c2402 100644
-> --- a/drivers/i2c/busses/i2c-bcm2835.c
-> +++ b/drivers/i2c/busses/i2c-bcm2835.c
-> @@ -449,13 +449,14 @@ static int bcm2835_i2c_probe(struct platform_device=
- *pdev)
->  	ret =3D clk_prepare_enable(i2c_dev->bus_clk);
->  	if (ret) {
->  		dev_err(&pdev->dev, "Couldn't prepare clock");
-> -		return ret;
-> +		goto err_put_exclusive_rate;
->  	}
-> =20
->  	irq =3D platform_get_resource(pdev, IORESOURCE_IRQ, 0);
->  	if (!irq) {
->  		dev_err(&pdev->dev, "No IRQ resource\n");
-> -		return -ENODEV;
-> +		ret =3D -ENODEV;
-> +		goto err_disable_unprepare_clk;
->  	}
->  	i2c_dev->irq =3D irq->start;
-> =20
-> @@ -463,7 +464,7 @@ static int bcm2835_i2c_probe(struct platform_device *=
-pdev)
->  			  dev_name(&pdev->dev), i2c_dev);
->  	if (ret) {
->  		dev_err(&pdev->dev, "Could not request IRQ\n");
-> -		return -ENODEV;
-> +		goto err_disable_unprepare_clk;
->  	}
-> =20
->  	adap =3D &i2c_dev->adapter;
-> @@ -481,7 +482,16 @@ static int bcm2835_i2c_probe(struct platform_device =
-*pdev)
-> =20
->  	ret =3D i2c_add_adapter(adap);
->  	if (ret)
-> -		free_irq(i2c_dev->irq, i2c_dev);
-> +		goto err_free_irq;
-> +
-> +	return 0;
-> +
-> +err_free_irq:
-> +	free_irq(i2c_dev->irq, i2c_dev);
-> +err_disable_unprepare_clk:
-> +	clk_disable_unprepare(i2c_dev->bus_clk);
-> +err_put_exclusive_rate:
-> +	clk_rate_exclusive_put(i2c_dev->bus_clk);
-> =20
->  	return ret;
->  }
-> --=20
-> 2.30.2
->=20
+> > 
+> > That's so meta.
+> > 
+> > --D
+> > 
+> > > So let's add a bit of pragmatism to the picture, if there is just one
+> > > user of a feature but it adds overhead for millions of machines that
+> > > won't ever use it, it's expensive.
 
---vErO5tT5H1S1DPMw
-Content-Type: application/pgp-signature; name="signature.asc"
+Errors are infrequent, and since everything is cloud-based and disposble
+now, we can replace error handling with BUG_ON().  This will reduce code
+complexity, which will reduce code size, and improve icache usage.  Win!
 
------BEGIN PGP SIGNATURE-----
+> > > This one doesn't spill yet into paths I care about,
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmF8VJkACgkQFA3kzBSg
-KbaJ9Q//fa5saV/r7SzxO3K6INdB08qy4jv7WsqQcvKqjd+v6nkAkKVDFH8hxhPB
-prBzqeWlhaC1JrLZgptjkhFw6q2N1YFJ99OqGs0mJWi4PpNq9myxA7OjWKD64oPD
-sregXrpVzM5E79a9n7GbduJkt5PDHRmBqeZtXRrFyzbLYPVCh3leimqY5p20EMXI
-Z48PQvJgzbb5mlA3QCaL9pmZVjrnTk2WSAMCbTt80ufad72SNPvWFaqfWqdpANt6
-uYPSBkpGf1jqBo/XxS1GVhdRw2YAipvbOhgXYwjLECd+MAVttxYcOKwaowY766do
-Whe1JpunWvSbU4W4pH2hyiEElc2s5z8dttNGBbZwLJ9wqLnNSdTIGz9xLznjekoL
-afXl1kRQvPSkNOQqazn7rwIGpKwVwH64fPBbuaCQ5tnCXVU1THM/8U1yl+QQyJzG
-XlI/bP1CZbKkA4bd4BzGHCP3+RP2jrrpshyVjIV1uuu1stpNVdL/DV26reo3wgzf
-w2zs00f9WGlEj2iNBbYdqZN2cEh8KV/oWuwI52nmXgkAaLvsiRWaWKrfqikYaAZG
-SO3k06Xdg2Xf+wgHU1HBFHRhhIlCFBzr087FdR67aisx8xOrUP8iYs83VdETaJGe
-g28ReVnmVU1oafs5p5UMt0j09Wd+lA87k0RMQek/LuvYWS9t2pM=
-=fkVz
------END PGP SIGNATURE-----
+...so you sail in and say 'no' even though you don't yet care...
 
---vErO5tT5H1S1DPMw--
+> > > but in general
+> > > it'd be great if we start thinking more about such stuff instead of
+> > > throwing yet another if into the path, e.g. by shifting the overhead
+> > > from linear to a constant for cases that don't use it, for instance
+> > > with callbacks
+
+Ok so after userspace calls into pread to access a DAX file, hits the
+poisoned memory line and the machinecheck fires, what then?  I guess we
+just have to figure out how to get from the MCA handler (assuming the
+machine doesn't just reboot instantly) all the way back into memcpy?
+Ok, you're in charge of figuring that out because I don't know how to do
+that.
+
+Notably, RWF_DATA_RECOVERY is the flag that we're calling *from* a
+callback that happens after memory controller realizes it's lost
+something, kicks a notification to the OS kernel through ACPI, and the
+kernel signal userspace to do something about it.  Yeah, that's dumb
+since spinning rust already does all this for us, but that's pmem.
+
+> > > or bit masks.
+
+WTF does this even mean?
+
+--D
+
+> > > 
+> > > > IOWs, saying that we shouldn't implement RWF_RECOVERY because it
+> > > > adds a handful of branches 	 the fast path is like saying that we
+> > > > shouldn't implement RWF_HIPRI because it slows down the fast path
+> > > > for non-polled IO....
+> > > > 
+> > > > Just factor the actual recovery operations out into a separate
+> > > > function like:
+> > > 
+> > > -- 
+> > > Pavel Begunkov
+> 
+> -- 
+> Pavel Begunkov
