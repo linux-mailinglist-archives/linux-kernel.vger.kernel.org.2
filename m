@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 083864401F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 20:34:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F53C4401FE
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 20:34:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230325AbhJ2Sgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 14:36:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44658 "EHLO
+        id S230410AbhJ2Sgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 14:36:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230319AbhJ2Sgi (ORCPT
+        with ESMTP id S230421AbhJ2Sgv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 14:36:38 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C16A6C061766
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 11:34:09 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id g36-20020a25ae64000000b005c1f46f7ee6so7844934ybe.8
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 11:34:09 -0700 (PDT)
+        Fri, 29 Oct 2021 14:36:51 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE5A3C0613B9
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 11:34:22 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id a20-20020a25ae14000000b005c1961310aeso15018680ybj.3
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 11:34:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:cc;
-        bh=93iwUDOobBuls+/E5vDDQ4gbsROtaRql+3ZjfJ57cYg=;
-        b=QoWnKrdqlxAbjyByCl565yFgv7LbAxVEc9fWHpV7QHaZFLrCfCW0jqXuk1TP6EyGVC
-         cYAFFnejyfTMEmIs2d3ZqUbS1lJVfB3UI0Qrg6hCPDLOLWTXr1bD+cefwT8dMsIiTEqU
-         UIOOTbDRosaY9j42FqnnygRFjwNTsC1OkJiqjnjmIlH7pJd7oRBBPAZ1upYbctfWZBQj
-         eRZ4bzqvdE/T0FHzvkKJg1HQUrOOAO820ygOZqL8zZHIew8BjPFuAdPjp5m67cgN0lMB
-         1F+yvzVPmR68OngynN9I3P+R7lal48E3sLDPV8F/+yml38UYWQkSzAS3uiXMHi2bxjvi
-         X8gQ==
+        bh=aWdu1dWgU6LDlQT9WUgK1tbGyRaKD3AurTsATcx1ByY=;
+        b=jtbbuakJZsRZNaPCbKbfFEJmOU9Uoi3SgTKnPTxiKpMGfnbaSlJy2stcE7VXQOgk3Y
+         8bE9sTwZB4gVvZSs1w9ZbFbvJ0t1unK6DB/gzmQgkm6HgAOJEHv968FbY7hJajgtUNoY
+         2BCnTRP2ZgFqaTEimHnrN4cHb3FYJnJ5ib+SWRJpS11KIYfX42ZpP9gP+7ctok3m4WCi
+         zz6X2fY2YHn7qSqq5hKQ864OD25HPN/N2P2WJ6otYalY28oNO4h/iToCmZhKd39P8xPU
+         aAfSZLHDuo6WjfoAbCXaTjT1jVku5v4UJomfxT54+0kxQMfJyGQQcUeYWtUq28iBayuR
+         PxpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:cc;
-        bh=93iwUDOobBuls+/E5vDDQ4gbsROtaRql+3ZjfJ57cYg=;
-        b=ke8WtFlUib9aW/k1u8RSprPzx+x6bnWAwZDhsR2wn7JLEWBZmdmXtSbEq7Qlh1ev1Q
-         TnpFhD62PJ8WUaIQwFY3fChnAwkPc04DdwEytW7xxsc2Dw/A7Hms5pATdBWh1CUDyPKL
-         9GRbfStmUb3ajU1l+i3jp+q8Szf4Oyx1ISsj75OVDnhR3fpZ4gH8z0EtlujSBr888IVR
-         iABrhbV58pzhYbIIc3lZ/tVl38ScOhyTNPIaJFMiJTre1RMizceL5CgjGfjVC3Upgfin
-         DaQP3bWlmUQj3xXTx5786flIiFFVRcE52X6SCW0CFGatbUyV7VCHJWzxIrbuiwq3L5kO
-         RVHg==
-X-Gm-Message-State: AOAM533DhQxh8l7tBw8GT9oyPmYba1BXmfAPIeXmx7CdPPS2QtjxlyXm
-        VSZkpWPBV8bSgq5VEv2IIlz/OgVpYOuwHISX0g==
-X-Google-Smtp-Source: ABdhPJyHZxfyrH6eLpocM017hIpzAqnbrDsn4QA+ZJuqOtZZeAOQQ5gqFAXj+xLsHy4p8JwjyIombNa5Rhgjz7XYbw==
+        bh=aWdu1dWgU6LDlQT9WUgK1tbGyRaKD3AurTsATcx1ByY=;
+        b=Ifv0nu9cfHdypgPu9gU6/Fuy0o392ukwy051afDdGVXQcjOCvJr/WZh2Ixv5v1luhy
+         Pf0NS/A/nFxo4TacIfNy71nvNAMB4qTrccpWlKkQJL5srlkwW9U2dBcXaq+Sn9MZAAz/
+         5FfJn+OUz/9F2oILlqASk4ir1F9NdgHq+GaJLRi5NaZ3Hlm/ehVLeIRcyWEN2yPjsnOR
+         CV3H6HxQAv+jFUcuYTJn7moekMWjcGWlP80ayaYhvK8GbVg2RnIGuPYv5WG3zncCO5NA
+         ZqfTz/KYKs9zLLlft5YLBDQDRbgKf+lMV+KYCMFerFjX3UEVZl9G1sKtn/6Na9WY4fH2
+         G7ng==
+X-Gm-Message-State: AOAM530lIAdlCfiYQNSN+ptUPN7m2TKEOvl41P1syszHOj52ZTtov8jZ
+        WARr6/37dUQJSk6vUFo/ylCS6BVpvHpH104IYA==
+X-Google-Smtp-Source: ABdhPJxoOcfzYFe02j1Yvr53Nxi/e0BJwqCy7bwvJ5kG7TNG3tF0RFNwZgGROz2u207zvd8NZcELsX/MmPmadoPPMw==
 X-Received: from kaleshsingh.mtv.corp.google.com ([2620:15c:211:200:b03:1d88:1cf2:4973])
- (user=kaleshsingh job=sendgmr) by 2002:a25:d393:: with SMTP id
- e141mr327060ybf.244.1635532449020; Fri, 29 Oct 2021 11:34:09 -0700 (PDT)
-Date:   Fri, 29 Oct 2021 11:33:28 -0700
+ (user=kaleshsingh job=sendgmr) by 2002:a5b:402:: with SMTP id
+ m2mr13884785ybp.422.1635532461875; Fri, 29 Oct 2021 11:34:21 -0700 (PDT)
+Date:   Fri, 29 Oct 2021 11:33:29 -0700
 In-Reply-To: <20211029183339.3216491-1-kaleshsingh@google.com>
-Message-Id: <20211029183339.3216491-3-kaleshsingh@google.com>
+Message-Id: <20211029183339.3216491-4-kaleshsingh@google.com>
 Mime-Version: 1.0
 References: <20211029183339.3216491-1-kaleshsingh@google.com>
 X-Mailer: git-send-email 2.33.1.1089.g2158813163f-goog
-Subject: [PATCH 2/4] tracing/histogram: Update division by 0 documentation
+Subject: [PATCH v3 3/4] tracing/histogram: Document hist trigger variables
 From:   Kalesh Singh <kaleshsingh@google.com>
 Cc:     surenb@google.com, hridya@google.com, namhyung@kernel.org,
         kernel-team@android.com, rostedt@goodmis.org, mhiramat@kernel.org,
@@ -65,28 +65,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the divisor is a constant and zero, the undeifned case can be
-detected and an error returned instead of -1.
+Update the tracefs README to describe how hist trigger variables
+can be created.
 
 Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
- Documentation/trace/histogram.rst | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/trace/histogram.rst b/Documentation/trace/histogram.rst
-index 66ec972dfb78..859fd1b76c63 100644
---- a/Documentation/trace/histogram.rst
-+++ b/Documentation/trace/histogram.rst
-@@ -1766,7 +1766,8 @@ using the same key and variable from yet another event::
- Expressions support the use of addition, subtraction, multiplication and
- division operators (+-\*/).
- 
--Note that division by zero always returns -1.
-+Note if division by zero cannot be detected at parse time (i.e. the
-+divisor is not a constant), the result will be -1.
- 
- Numeric constants can also be used directly in an expression::
- 
+Changes in v2:
+  - Add Masami's Acked-by.
+
+ kernel/trace/trace.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index bc677cd64224..c41b3786401d 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -5628,6 +5628,7 @@ static const char readme_msg[] =
+ #ifdef CONFIG_HIST_TRIGGERS
+ 	"      hist trigger\t- If set, event hits are aggregated into a hash table\n"
+ 	"\t    Format: hist:keys=<field1[,field2,...]>\n"
++	"\t            [:<var1>=<field|var_ref|numeric_literal>[,<var2>=...]]\n"
+ 	"\t            [:values=<field1[,field2,...]>]\n"
+ 	"\t            [:sort=<field1[,field2,...]>]\n"
+ 	"\t            [:size=#entries]\n"
+@@ -5639,6 +5640,16 @@ static const char readme_msg[] =
+ 	"\t            common_timestamp - to record current timestamp\n"
+ 	"\t            common_cpu - to record the CPU the event happened on\n"
+ 	"\n"
++	"\t    A hist trigger variable can be:\n"
++	"\t        - a reference to a field e.g. x=current_timestamp,\n"
++	"\t        - a reference to another variable e.g. y=$x,\n"
++	"\t        - a numeric literal: e.g. ms_per_sec=1000,\n"
++	"\t        - an arithmetic expression: e.g. time_secs=current_timestamp/1000\n"
++	"\n"
++	"\t    hist trigger aritmethic expressions support addition(+), subtraction(-),\n"
++	"\t    multiplication(*) and division(/) operators. An operand can be either a\n"
++	"\t    variable reference, field or numeric literal.\n"
++	"\n"
+ 	"\t    When a matching event is hit, an entry is added to a hash\n"
+ 	"\t    table using the key(s) and value(s) named, and the value of a\n"
+ 	"\t    sum called 'hitcount' is incremented.  Keys and values\n"
 -- 
 2.33.1.1089.g2158813163f-goog
 
