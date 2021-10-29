@@ -2,298 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 432A6440301
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 21:16:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E81C440310
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 21:23:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230370AbhJ2TTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 15:19:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54758 "EHLO
+        id S230073AbhJ2T0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 15:26:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230024AbhJ2TTQ (ORCPT
+        with ESMTP id S230024AbhJ2T0V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 15:19:16 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CDBFC061714
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 12:16:47 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id t11so7431037plq.11
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 12:16:47 -0700 (PDT)
+        Fri, 29 Oct 2021 15:26:21 -0400
+Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D65D9C061570
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 12:23:52 -0700 (PDT)
+Received: by mail-ua1-x932.google.com with SMTP id z22so17672086uaq.12
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 12:23:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Fee4lFZ0WsKbU4ScFmGyAClkQKU9h+c4EKqLYfuXgB0=;
-        b=IXm2qJgJhvqkz8uR0ZCpcyXWDreKFGGQ++m4ZYgklgAKpVDl1afXwqt7NqkY+Lt548
-         BG8tJbHTUYPVu4V6ORZkJgmYsEH6L/XWi/WfFjm2CVcd/N0A6VU7LSpgDwcQFe5TitP6
-         IFbP7z5w/vP668dEwDwP/+ilxWhYL4+qBfyiZj7hblP7P5rNYHc6DL+N1dGU2uFykzPS
-         OwLd4Hd88Ca95Ja51wViAtYXdtd8wkjREKS7gf6YcDnoZBIcK3xI8eDmybGOAVuLOPrm
-         J30fbxc6BpWQGl7Sc3jdeFplawEeb42z3hNoH09AXQ47VdyBcxplktOOqsF3K+oUvnwK
-         vOTA==
+        bh=EkiIsmNvZJCnsv/Q3CrXNMfSBQ+jZnjjk3DHLmC31KA=;
+        b=w+2lZXlomimzxiJggD5BOx3968TbKGRsxAxBh+ijDhza4ym/asZD46MmE/uotG9FXo
+         usXJlT8eIyMEtdz13HUeHVJ+QEO1x+XUKNpm+B0amcHxBUKkDKKeRZ3/7RuA8vV0uuim
+         IVTMSXMW7etRvLFAtcQQi3C9g9rXmQTzW9E2+0xjcb5FRxwlOHYfdNP4Lf/6pzJu6nUa
+         XvRygmgMqP+/vwBdudYD0CBO+GX7OMPgPivcJ7G0AZ3EVt++TzzhcCQ74yVV5UbKRFTN
+         63YrjSdbBTzRsyZNJXMi4waWZBAooMnWv1/IPKuFBJVzWgx8z5+hozXkQlkZMzAC4nzc
+         oMDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Fee4lFZ0WsKbU4ScFmGyAClkQKU9h+c4EKqLYfuXgB0=;
-        b=Kbf/93KKiHporq9sif/K96XDLiVX2enVapqjn1iQ5InMDHQ2pAh1dTDNA7EDuwit77
-         rMsLhFUSgnlOwFzdlfFN9XFwyRdN4ggVrLRjpxS9R4FrquzEODRMitp1YTG+131LVGVV
-         /kJEqktDxmStvHcBlpOf2JIGS9Yknrt8kvcor5/HddsW1LIYn8aPMxJ954Q/Ti7Jeg4z
-         +xAigFeUg1EZnEYjpFi6cSLzH7nHKSRUaP3Fv5A/ImtmgZ54eaOwHEVXVMVV/ZQtH+6x
-         hvP6ZhQ1zBBLx4Sr3Pei6VdksuwJRgvl1nl1ZlVTm8E7IOTUKVAgLpsRGZBx5MYOdwpV
-         3N3w==
-X-Gm-Message-State: AOAM531xTFH8TPRJokebeXGX05vAScv6U9Ei9+eJx9TBXyuPe+Yux0Ns
-        LPXKVMRiOD+7G/702ySk69OewSEGwyO3lhR63MSsBg==
-X-Google-Smtp-Source: ABdhPJwXzXHZxQ2NGokm61i9oLlVLMppBzcCHYB/6lW2c0SZmj+c3A/Zfy1QyjYEv8JhZLuyJYOrcERjxh3NARPga0I=
-X-Received: by 2002:a17:902:6ac4:b0:13f:52e1:8840 with SMTP id
- i4-20020a1709026ac400b0013f52e18840mr11084807plt.15.1635535006473; Fri, 29
- Oct 2021 12:16:46 -0700 (PDT)
+        bh=EkiIsmNvZJCnsv/Q3CrXNMfSBQ+jZnjjk3DHLmC31KA=;
+        b=eYNniWwINKa2s/iPSP0XQcXOHHZhhj15CCKiequBby1mUNW/m1i0sm2lTdYHjUcV7Y
+         QHFJmY2ruIY+UCaP6CEslNCoXrkbvrTD+9cedv3U84OnqypG+dJn0pFgbVBJQ/NL2BLr
+         MGaz//Yf6FrdQJ3JBVPx40l0EjlKvTsvU8N4FEimnUkOpChapJyTVIyqRo+6kuNmX9fC
+         TAYicrutqfgU+qkAR4nuLvz/k7FKK1BsNXpx0Ypi4X66tC2bs/K+hNuw+ZFWJRhpTiBo
+         J/d4JYgQuBjNJuX2QhKpZcroW61YBUgYIHVOQXu8/3PkXq0Eo1MsP9Vd0nGUkeI0Xmbz
+         Tmaw==
+X-Gm-Message-State: AOAM5331wadgLXjK0bC2H3Gf9Jyd70RlCCT5LbLFwED5+gZ4GtU3E3RL
+        dGA9fTpjN1twpqFvJmIZsmKNd1LX1EdA1aYhuHjE8A==
+X-Google-Smtp-Source: ABdhPJwkG3i15KQWlLjtNkP1kmVbj44Jza/56zTBehqD3V98+Js0vFMNXaFWEaZAag4sUOqXZTwgBhydr/km74bkL0c=
+X-Received: by 2002:a67:ab48:: with SMTP id k8mr15237251vsh.30.1635535431934;
+ Fri, 29 Oct 2021 12:23:51 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211029183339.3216491-1-kaleshsingh@google.com>
- <20211029183339.3216491-2-kaleshsingh@google.com> <20211029144524.367d6789@gandalf.local.home>
- <CAC_TJve9OsL5taBN0ckgjG4=HxvmWfP6ULwwqnVsDyRxuQuRkg@mail.gmail.com>
-In-Reply-To: <CAC_TJve9OsL5taBN0ckgjG4=HxvmWfP6ULwwqnVsDyRxuQuRkg@mail.gmail.com>
-From:   Kalesh Singh <kaleshsingh@google.com>
-Date:   Fri, 29 Oct 2021 12:16:35 -0700
-Message-ID: <CAC_TJvcLKT+Gaz46Y-=7f7o12zoRWD=z4Ht5cbu+y5s5K4qEWw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] tracing/histogram: Optimize division by constants
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     surenb@google.com, hridya@google.com, namhyung@kernel.org,
-        kernel-team@android.com, mhiramat@kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Tom Zanussi <zanussi@kernel.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20211028183527.3050-1-semen.protsenko@linaro.org>
+ <20211028183527.3050-4-semen.protsenko@linaro.org> <b9c33def-6b12-1e5a-4449-b1e0869a0e3a@roeck-us.net>
+In-Reply-To: <b9c33def-6b12-1e5a-4449-b1e0869a0e3a@roeck-us.net>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Fri, 29 Oct 2021 22:23:39 +0300
+Message-ID: <CAPLW+4nToQ7+sQxZjswKtY-b-7=KeHCfyz5RPKT9iaEhnOsNow@mail.gmail.com>
+Subject: Re: [PATCH 3/7] watchdog: s3c2410: Make reset disable optional
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        linux-watchdog@vger.kernel.org,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 11:53 AM Kalesh Singh <kaleshsingh@google.com> wrote:
+On Fri, 29 Oct 2021 at 03:16, Guenter Roeck <linux@roeck-us.net> wrote:
 >
-> On Fri, Oct 29, 2021 at 11:45 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+> On 10/28/21 11:35 AM, Sam Protsenko wrote:
+> > Not all SoCs have AUTOMATIC_WDT_RESET_DISABLE register, examples are
+> > Exynos850 and Exynos9. On such chips reset disable register shouldn't be
+> > accessed. Provide a way to avoid handling that register. This is done by
+> > introducing separate callbacks to driver data structure: one for reset
+> > disable register, and one for mask reset register. Now those callbacks
+> > can be checked and called only when those were set in driver data.
 > >
-> > On Fri, 29 Oct 2021 11:33:27 -0700
-> > Kalesh Singh <kaleshsingh@google.com> wrote:
+> > This commit doesn't bring any functional change to existing devices, but
+> > merely provides an infrastructure for upcoming chips support.
 > >
-> > > If the divisor is a constant use specific division functions to
-> > > avoid extra branches when the trigger is hit.
-> > >
-> > > If the divisor constant but not a power of 2, the division can be
-> > > replaced with a multiplication and shift in the following case:
-> > >
-> > > Let X = dividend and Y = divisor.
-> > >
-> > > Choose Z = some power of 2. If Y <= Z, then:
-> > >     X / Y = (X * (Z / Y)) / Z
-> > >
-> > > (Z / Y) is a constant (mult) which is calculated at parse time, so:
-> > >     X / Y = (X * mult) / Z
-> > >
-> > > The division by Z can be replaced by a shift since Z is a power of 2:
-> > >     X / Y = (X * mult) >> shift
-> > >
-> > > As long, as X < Z the results will not be off by more than 1.
-> > >
-> > > Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
-> > > Suggested-by: Steven Rostedt <rostedt@goodmis.org>
-> > > ---
-> > >
-> > > Changes in v2:
-> > >   - Return -EDOM if divisor is a constant and zero, per Steve
-> > >
-> > >  kernel/trace/trace_events_hist.c | 117 ++++++++++++++++++++++++++++++-
-> > >  1 file changed, 116 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-> > > index 364cb3091789..1084aa41f047 100644
-> > > --- a/kernel/trace/trace_events_hist.c
-> > > +++ b/kernel/trace/trace_events_hist.c
-> > > @@ -68,7 +68,8 @@
-> > >       C(INVALID_SORT_FIELD,   "Sort field must be a key or a val"),   \
-> > >       C(INVALID_STR_OPERAND,  "String type can not be an operand in expression"), \
-> > >       C(EXPECT_NUMBER,        "Expecting numeric literal"),           \
-> > > -     C(UNARY_MINUS_SUBEXPR,  "Unary minus not supported in sub-expressions"),
-> > > +     C(UNARY_MINUS_SUBEXPR,  "Unary minus not supported in sub-expressions"), \
-> > > +     C(DIVISION_BY_ZERO,     "Division by zero"),
-> > >
-> > >  #undef C
-> > >  #define C(a, b)              HIST_ERR_##a
-> > > @@ -92,6 +93,7 @@ typedef u64 (*hist_field_fn_t) (struct hist_field *field,
-> > >  #define HIST_FIELDS_MAX              (TRACING_MAP_FIELDS_MAX + TRACING_MAP_VARS_MAX)
-> > >  #define HIST_ACTIONS_MAX     8
-> > >  #define HIST_CONST_DIGITS_MAX        21
-> > > +#define HIST_DIV_SHIFT               20  /* For optimizing division by constants */
-> > >
-> > >  enum field_op_id {
-> > >       FIELD_OP_NONE,
-> > > @@ -160,6 +162,8 @@ struct hist_field {
-> > >
-> > >       /* Numeric literals are represented as u64 */
-> > >       u64                             constant;
-> > > +     /* Used to optimize division by constants */
-> > > +     u64                             div_multiplier;
-> > >  };
-> > >
-> > >  static u64 hist_field_none(struct hist_field *field,
-> > > @@ -311,6 +315,72 @@ static u64 hist_field_div(struct hist_field *hist_field,
-> > >       return div64_u64(val1, val2);
-> > >  }
-> > >
-> > > +static u64 div_by_power_of_two(struct hist_field *hist_field,
-> > > +                             struct tracing_map_elt *elt,
-> > > +                             struct trace_buffer *buffer,
-> > > +                             struct ring_buffer_event *rbe,
-> > > +                             void *event)
-> > > +{
-> > > +     struct hist_field *operand1 = hist_field->operands[0];
-> > > +     struct hist_field *operand2 = hist_field->operands[1];
-> > > +
-> > > +     u64 val1 = operand1->fn(operand1, elt, buffer, rbe, event);
-> > > +     u64 val2 = operand2->fn(operand2, elt, buffer, rbe, event);
-> >
-> > If these functions are only called when val2 is constant, can't we make it
-> > such that we get val2 from the hist_field directly? That is:
-> >
-> >         u64 val2 = operand2->constant;
 >
-> operand2 might be a var ref to a constant, so we would need to resolve
-> that with hist_field_var_ref().
+> That doesn't explain why the callbacks are needed instead of additional
+> feature flags.
 >
-> -Kalesh
+
+Ok, I'll rework this patch using quirks, don't have a strong
+preference on this one. That's actually how I did that on my first
+attempt. Guess I just like "callbacks way" more, matter of taste :)
+But we already have quirks for that, so yeah, probably makes sense to
+use those for consistency.
+
+> Guenter
 >
+> > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> > ---
+> >   drivers/watchdog/s3c2410_wdt.c | 81 ++++++++++++++++++++++++----------
+> >   1 file changed, 58 insertions(+), 23 deletions(-)
 > >
-> > That would save us a function call, and an indirect on at that (that gets
-> > slowed down by spectre).
-
-So would it be adding something like below?
-
-if (operand2->flags & HIST_FIELD_FL_CONST)
-        val2 = operand2->constant;
-else
-        val2 = operand2->fn(operand2, elt, buffer, rbe, event);
-
-Thanks,
-Kalesh
-
+> > diff --git a/drivers/watchdog/s3c2410_wdt.c b/drivers/watchdog/s3c2410_wdt.c
+> > index 2395f353e52d..7c163a257d3c 100644
+> > --- a/drivers/watchdog/s3c2410_wdt.c
+> > +++ b/drivers/watchdog/s3c2410_wdt.c
+> > @@ -83,6 +83,8 @@ MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started (default="
+> >                       __MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
+> >   MODULE_PARM_DESC(soft_noboot, "Watchdog action, set to 1 to ignore reboots, 0 to reboot (default 0)");
 > >
-> > Same for the ones below.
+> > +struct s3c2410_wdt;
+> > +
+> >   /**
+> >    * struct s3c2410_wdt_variant - Per-variant config data
+> >    *
+> > @@ -96,6 +98,11 @@ MODULE_PARM_DESC(soft_noboot, "Watchdog action, set to 1 to ignore reboots, 0 to
+> >    * @rst_stat_bit: Bit number in the rst_stat register indicating a watchdog
+> >    * reset.
+> >    * @quirks: A bitfield of quirks.
+> > + * @disable_auto_reset: If set, this function will be called to disable
+> > + * automatic setting the WDT as a reset reason in RST_STAT on CPU reset; uses
+> > + * disable_reg field.
+> > + * @mask_reset: If set, this function will be called to mask WDT reset request;
+> > + * uses mask_reset_reg and mask_bit fields.
+> >    */
 > >
-> > -- Steve
+> >   struct s3c2410_wdt_variant {
+> > @@ -105,6 +112,8 @@ struct s3c2410_wdt_variant {
+> >       int rst_stat_reg;
+> >       int rst_stat_bit;
+> >       u32 quirks;
+> > +     int (*disable_auto_reset)(struct s3c2410_wdt *wdt, bool mask);
+> > +     int (*mask_reset)(struct s3c2410_wdt *wdt, bool mask);
+> >   };
+> >
+> >   struct s3c2410_wdt {
+> > @@ -121,6 +130,9 @@ struct s3c2410_wdt {
+> >       struct regmap *pmureg;
+> >   };
+> >
+> > +static int s3c2410wdt_disable_wdt_reset(struct s3c2410_wdt *wdt, bool mask);
+> > +static int s3c2410wdt_mask_wdt_reset(struct s3c2410_wdt *wdt, bool mask);
+> > +
+> >   static const struct s3c2410_wdt_variant drv_data_s3c2410 = {
+> >       .quirks = 0
+> >   };
+> > @@ -138,6 +150,8 @@ static const struct s3c2410_wdt_variant drv_data_exynos5250  = {
+> >       .rst_stat_bit = 20,
+> >       .quirks = QUIRK_HAS_PMU_CONFIG | QUIRK_HAS_RST_STAT \
+> >                 | QUIRK_HAS_WTCLRINT_REG,
+> > +     .disable_auto_reset = s3c2410wdt_disable_wdt_reset,
+> > +     .mask_reset = s3c2410wdt_mask_wdt_reset,
+> >   };
+> >
+> >   static const struct s3c2410_wdt_variant drv_data_exynos5420 = {
+> > @@ -148,6 +162,8 @@ static const struct s3c2410_wdt_variant drv_data_exynos5420 = {
+> >       .rst_stat_bit = 9,
+> >       .quirks = QUIRK_HAS_PMU_CONFIG | QUIRK_HAS_RST_STAT \
+> >                 | QUIRK_HAS_WTCLRINT_REG,
+> > +     .disable_auto_reset = s3c2410wdt_disable_wdt_reset,
+> > +     .mask_reset = s3c2410wdt_mask_wdt_reset,
+> >   };
+> >
+> >   static const struct s3c2410_wdt_variant drv_data_exynos7 = {
+> > @@ -158,6 +174,8 @@ static const struct s3c2410_wdt_variant drv_data_exynos7 = {
+> >       .rst_stat_bit = 23,     /* A57 WDTRESET */
+> >       .quirks = QUIRK_HAS_PMU_CONFIG | QUIRK_HAS_RST_STAT \
+> >                 | QUIRK_HAS_WTCLRINT_REG,
+> > +     .disable_auto_reset = s3c2410wdt_disable_wdt_reset,
+> > +     .mask_reset = s3c2410wdt_mask_wdt_reset,
+> >   };
+> >
+> >   static const struct of_device_id s3c2410_wdt_match[] = {
+> > @@ -200,35 +218,53 @@ static inline struct s3c2410_wdt *freq_to_wdt(struct notifier_block *nb)
+> >       return container_of(nb, struct s3c2410_wdt, freq_transition);
+> >   }
+> >
+> > -static int s3c2410wdt_mask_and_disable_reset(struct s3c2410_wdt *wdt, bool mask)
+> > +static int s3c2410wdt_disable_wdt_reset(struct s3c2410_wdt *wdt, bool mask)
+> >   {
+> > +     const u32 mask_val = 1 << wdt->drv_data->mask_bit;
+> > +     const u32 val = mask ? mask_val : 0;
+> >       int ret;
+> > -     u32 mask_val = 1 << wdt->drv_data->mask_bit;
+> > -     u32 val = 0;
+> >
+> > -     /* No need to do anything if no PMU CONFIG needed */
+> > -     if (!(wdt->drv_data->quirks & QUIRK_HAS_PMU_CONFIG))
+> > -             return 0;
+> > +     ret = regmap_update_bits(wdt->pmureg, wdt->drv_data->disable_reg,
+> > +                              mask_val, val);
+> > +     if (ret < 0)
+> > +             dev_err(wdt->dev, "failed to update reg(%d)\n", ret);
+> >
+> > -     if (mask)
+> > -             val = mask_val;
+> > +     return ret;
+> > +}
+> >
+> > -     ret = regmap_update_bits(wdt->pmureg,
+> > -                     wdt->drv_data->disable_reg,
+> > -                     mask_val, val);
+> > -     if (ret < 0)
+> > -             goto error;
+> > +static int s3c2410wdt_mask_wdt_reset(struct s3c2410_wdt *wdt, bool mask)
+> > +{
+> > +     const u32 mask_val = 1 << wdt->drv_data->mask_bit;
+> > +     const u32 val = mask ? mask_val : 0;
+> > +     int ret;
+> >
+> > -     ret = regmap_update_bits(wdt->pmureg,
+> > -                     wdt->drv_data->mask_reset_reg,
+> > -                     mask_val, val);
+> > - error:
+> > +     ret = regmap_update_bits(wdt->pmureg, wdt->drv_data->mask_reset_reg,
+> > +                              mask_val, val);
+> >       if (ret < 0)
+> >               dev_err(wdt->dev, "failed to update reg(%d)\n", ret);
+> >
+> >       return ret;
+> >   }
+> >
+> > +static int s3c2410wdt_enable(struct s3c2410_wdt *wdt, bool en)
+> > +{
+> > +     int ret;
+> > +
+> > +     if (wdt->drv_data->disable_auto_reset) {
+> > +             ret = wdt->drv_data->disable_auto_reset(wdt, !en);
+> > +             if (ret < 0)
+> > +                     return ret;
+> > +     }
+> > +
+> > +     if (wdt->drv_data->mask_reset) {
+> > +             ret = wdt->drv_data->mask_reset(wdt, !en);
+> > +             if (ret < 0)
+> > +                     return ret;
+> > +     }
+> > +
+> > +     return 0;
+> > +}
+> > +
+> >   static int s3c2410wdt_keepalive(struct watchdog_device *wdd)
+> >   {
+> >       struct s3c2410_wdt *wdt = watchdog_get_drvdata(wdd);
+> > @@ -609,7 +645,7 @@ static int s3c2410wdt_probe(struct platform_device *pdev)
+> >       if (ret)
+> >               goto err_cpufreq;
+> >
+> > -     ret = s3c2410wdt_mask_and_disable_reset(wdt, false);
+> > +     ret = s3c2410wdt_enable(wdt, true);
+> >       if (ret < 0)
+> >               goto err_unregister;
+> >
+> > @@ -655,7 +691,7 @@ static int s3c2410wdt_remove(struct platform_device *dev)
+> >       int ret;
+> >       struct s3c2410_wdt *wdt = platform_get_drvdata(dev);
+> >
+> > -     ret = s3c2410wdt_mask_and_disable_reset(wdt, true);
+> > +     ret = s3c2410wdt_enable(wdt, false);
+> >       if (ret < 0)
+> >               return ret;
+> >
+> > @@ -672,8 +708,7 @@ static void s3c2410wdt_shutdown(struct platform_device *dev)
+> >   {
+> >       struct s3c2410_wdt *wdt = platform_get_drvdata(dev);
+> >
+> > -     s3c2410wdt_mask_and_disable_reset(wdt, true);
+> > -
+> > +     s3c2410wdt_enable(wdt, false);
+> >       s3c2410wdt_stop(&wdt->wdt_device);
+> >   }
+> >
+> > @@ -688,7 +723,7 @@ static int s3c2410wdt_suspend(struct device *dev)
+> >       wdt->wtcon_save = readl(wdt->reg_base + S3C2410_WTCON);
+> >       wdt->wtdat_save = readl(wdt->reg_base + S3C2410_WTDAT);
+> >
+> > -     ret = s3c2410wdt_mask_and_disable_reset(wdt, true);
+> > +     ret = s3c2410wdt_enable(wdt, false);
+> >       if (ret < 0)
+> >               return ret;
+> >
+> > @@ -708,7 +743,7 @@ static int s3c2410wdt_resume(struct device *dev)
+> >       writel(wdt->wtdat_save, wdt->reg_base + S3C2410_WTCNT);/* Reset count */
+> >       writel(wdt->wtcon_save, wdt->reg_base + S3C2410_WTCON);
+> >
+> > -     ret = s3c2410wdt_mask_and_disable_reset(wdt, false);
+> > +     ret = s3c2410wdt_enable(wdt, true);
+> >       if (ret < 0)
+> >               return ret;
 > >
 > >
-> > > +
-> > > +     return val1 >> __ffs64(val2);
-> > > +}
-> > > +
-> > > +static u64 div_by_not_power_of_two(struct hist_field *hist_field,
-> > > +                             struct tracing_map_elt *elt,
-> > > +                             struct trace_buffer *buffer,
-> > > +                             struct ring_buffer_event *rbe,
-> > > +                             void *event)
-> > > +{
-> > > +     struct hist_field *operand1 = hist_field->operands[0];
-> > > +     struct hist_field *operand2 = hist_field->operands[1];
-> > > +
-> > > +     u64 val1 = operand1->fn(operand1, elt, buffer, rbe, event);
-> > > +     u64 val2 = operand2->fn(operand2, elt, buffer, rbe, event);
-> > > +
-> > > +     return div64_u64(val1, val2);
-> > > +}
-> > > +
-> > > +static u64 div_by_mult_and_shift(struct hist_field *hist_field,
-> > > +                             struct tracing_map_elt *elt,
-> > > +                             struct trace_buffer *buffer,
-> > > +                             struct ring_buffer_event *rbe,
-> > > +                             void *event)
-> > > +{
-> > > +     struct hist_field *operand1 = hist_field->operands[0];
-> > > +     struct hist_field *operand2 = hist_field->operands[1];
-> > > +
-> > > +     u64 val1 = operand1->fn(operand1, elt, buffer, rbe, event);
-> > > +
-> > > +     /*
-> > > +      * If the divisor is a constant, do a multiplication and shift instead.
-> > > +      *
-> > > +      * Choose Z = some power of 2. If Y <= Z, then:
-> > > +      *     X / Y = (X * (Z / Y)) / Z
-> > > +      *
-> > > +      * (Z / Y) is a constant (mult) which is calculated at parse time, so:
-> > > +      *     X / Y = (X * mult) / Z
-> > > +      *
-> > > +      * The division by Z can be replaced by a shift since Z is a power of 2:
-> > > +      *     X / Y = (X * mult) >> HIST_DIV_SHIFT
-> > > +      *
-> > > +      * As long, as X < Z the results will not be off by more than 1.
-> > > +      */
-> > > +     if (val1 < (1 << HIST_DIV_SHIFT)) {
-> > > +             u64 mult = operand2->div_multiplier;
-> > > +
-> > > +             return (val1 * mult + ((1 << HIST_DIV_SHIFT) - 1)) >> HIST_DIV_SHIFT;
-> > > +     } else {
-> > > +             u64 val2 = operand2->fn(operand2, elt, buffer, rbe, event);
-> > > +
-> > > +             return div64_u64(val1, val2);
-> > > +     }
-> > > +}
-> > > +
-> > >  static u64 hist_field_mult(struct hist_field *hist_field,
-> > >                          struct tracing_map_elt *elt,
-> > >                          struct trace_buffer *buffer,
-> > > @@ -573,6 +643,37 @@ struct snapshot_context {
-> > >       void                    *key;
-> > >  };
-> > >
-> > > +
-> > > +static struct hist_field *find_var_field(struct hist_trigger_data *hist_data,
-> > > +                                      const char *var_name);
-> > > +
-> > > +/*
-> > > + * Returns the specific division function to use if the divisor
-> > > + * is constant. This avoids extra branches when the trigger is hit.
-> > > + */
-> > > +static hist_field_fn_t hist_field_get_div_fn(struct hist_field *divisor)
-> > > +{
-> > > +     u64 div;
-> > > +
-> > > +     if (divisor->flags & HIST_FIELD_FL_VAR_REF) {
-> > > +             struct hist_field *var;
-> > > +
-> > > +             var = find_var_field(divisor->var.hist_data, divisor->name);
-> > > +             div = var->constant;
-> > > +     } else
-> > > +             div = divisor->constant;
-> > > +
-> > > +     if (!(div & (div - 1)))
-> > > +             return div_by_power_of_two;
-> > > +
-> > > +     /* If the divisor is too large, do a regular division */
-> > > +     if (div > (1 << HIST_DIV_SHIFT))
-> > > +             return div_by_not_power_of_two;
-> > > +
-> > > +     divisor->div_multiplier = div64_u64((u64)(1 << HIST_DIV_SHIFT), div);
-> > > +     return div_by_mult_and_shift;
-> > > +}
-> > > +
-> > >  static void track_data_free(struct track_data *track_data)
-> > >  {
-> > >       struct hist_elt_data *elt_data;
-> > > @@ -2575,6 +2676,20 @@ static struct hist_field *parse_expr(struct hist_trigger_data *hist_data,
-> > >       expr->operands[0] = operand1;
-> > >       expr->operands[1] = operand2;
-> > >
-> > > +
-> > > +     if (field_op == FIELD_OP_DIV &&
-> > > +                     operand2_flags & HIST_FIELD_FL_CONST) {
-> > > +             u64 divisor = (var2) ? var2->constant : operand2->constant;
-> > > +
-> > > +             if (!divisor) {
-> > > +                     hist_err(file->tr, HIST_ERR_DIVISION_BY_ZERO, errpos(str));
-> > > +                     ret = -EDOM;
-> > > +                     goto free;
-> > > +             }
-> > > +
-> > > +             op_fn = hist_field_get_div_fn(operand2);
-> > > +     }
-> > > +
-> > >       if (combine_consts) {
-> > >               if (var1)
-> > >                       expr->operands[0] = var1;
-> >
+>
