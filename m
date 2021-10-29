@@ -2,81 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B01A4400CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 18:58:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FDAF4400D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 18:58:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229772AbhJ2RAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 13:00:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41292 "EHLO mail.kernel.org"
+        id S230108AbhJ2RBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 13:01:08 -0400
+Received: from mout.gmx.net ([212.227.17.20]:33695 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230064AbhJ2RAS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 13:00:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 00B5060E8B;
-        Fri, 29 Oct 2021 16:57:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635526669;
-        bh=Su9vVSviobYVjYObOCBEe73TcGXWuppnwITxt73nSf8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OiJMNRwTxy7TtwQvyW++op3MucoWFCDDO3IMRhqz/oqUlVRo7P7fGyId2IOHS6keC
-         oeOR0pAalcKXLWbTReztyvIDld5jL4S8erPghdklD5p358ZtyjvbT5arJp7+k3f7G6
-         x8nGhyNHUE/8ZOS6uTQyu1An1BDpdP4ihsAJsF/tC1UuocgdmgKKYNoJdfCzifqb4j
-         u6Nmg8MTUQsoPBiGZFYRB9U/ONvqL8jNun2THPa2fUJpZqUfi9o/+6I3s04/yLWrtH
-         CiGHV30HjvLkDxW+KuFvYBul76atwxcdJsrPISRFShGTBWeGkg+Wn7xV3J36A3GJRI
-         E7JGhkWwq67yQ==
-Date:   Fri, 29 Oct 2021 17:57:43 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     YC Hung <yc.hung@mediatek.com>
-Cc:     tiwai@suse.com, robh+dt@kernel.org, matthias.bgg@gmail.com,
-        alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, daniel.baluta@nxp.com,
-        trevor.wu@mediatek.com, allen-kh.cheng@mediatek.com,
-        angelogioacchino.delregno@collabora.com
-Subject: Re: [PATCH v4 1/2] ASoC: SOF: mediatek: Add mt8195 dsp clock support
-Message-ID: <YXwoB7FtRw0AzgcD@sirena.org.uk>
-References: <20211028135737.8625-1-yc.hung@mediatek.com>
- <20211028135737.8625-2-yc.hung@mediatek.com>
+        id S229837AbhJ2RBH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 13:01:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1635526680;
+        bh=PQSF2kwc9XvAbcPw1umV4sRijG9uQxe85svQW+ye6D8=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=A6fMe1SD/QfY/u7RUeUTIQShp8S2JAOReGKF6lgJ661TeynVAvxrDUPzD3WFFQWJt
+         GvWNJbOPAPjRWbMLc9SILU4h5OaWJQChMPrbLieqmEHBFcx8EFgoJjW8oNiKMaO6iI
+         kks4QrU3CGGtKORiyfgN6n6SQ/EdB7V2LlpEAcno=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from titan ([79.150.72.99]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MDQeU-1mX7ok0ucI-00AUNu; Fri, 29
+ Oct 2021 18:58:00 +0200
+Date:   Fri, 29 Oct 2021 18:57:47 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Len Baker <len.baker@gmx.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        linux-hardening@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2][next] sysctl: Avoid open coded arithmetic in memory
+ allocator functions
+Message-ID: <20211029165723.GA2124@titan>
+References: <20211023105414.7316-1-len.baker@gmx.com>
+ <YXQbxSSw9qan87cm@casper.infradead.org>
+ <20211024091328.GA2912@titan>
+ <YXWeAdsMRcR5tInN@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="L+FynStKYfLi0cU9"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211028135737.8625-2-yc.hung@mediatek.com>
-X-Cookie: QED.
+In-Reply-To: <YXWeAdsMRcR5tInN@casper.infradead.org>
+X-Provags-ID: V03:K1:uhxsTK0y1/L3ecQyfEpCS0Dknh7g0VfMMUnqrACWVyGnY3LDzWz
+ 9mG41Orf2n8PelbSEivjj+1X0kRaRw3AINkibV51cpEB4ke7B6xKgrpKap806ZtV4ukT5qw
+ tvf4pNzzyg/Tp14fDbrEftJPoyCpeoWdW9wIbL5IccxVU0pdL5dg3dAZTx9YMbrUiFBnp8p
+ vPQ4vN3yp5Mq4FYoPIQ9Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:/1VxPLEeB00=:1T9BStBiezKzzXnnRRImlx
+ LC1bLzUKmCbrfCvHxY6i+Mm9FpHnhntPz0nFTkW+JPpoQ6MjJI4dTVH7STLshzB28ampH8hhr
+ ILgeTv9ylXsaS8sA6MLCDErb1lNFMnq9qft64W5PUi47XadYmiIkq975Kcr/T+NiK8VPUbonb
+ qEu8TD3CmChx1vBilnXWrrONUjtpu0H3rFRDAenf5rjEhSh4zTLlebAC0up2ojYHOvNxQjXV3
+ 85hByIiLvEnyZ8s63u4PTfvT0cwSAUyCX/yQEP6PPvJGdTNQ8N1jaB2L6QbzFrG6YgQlpvKr1
+ JIf5yKf0f4/X/Jo6ZHxy30te58sHDh29FyFnZrNT40UWUmy15qJD9LpkUI/Bnr9sycYM1XPwx
+ a4J3D7eYuKHWoysy+eJUPTBN7TE1cXoSlH2RM6qC0/sorU2aUq6iaYSMvZJDCIU91pM8aCsff
+ 3N4+foHo/1MHpZxYIyognia6RaPcpQtUZKapo54sO6w/u7gn/e1Xl5yDTlbqwdWPYpGrw5xU/
+ Amf57ZBeSS9GGPpBeMRSp8tbQnaHUSu3j5ThuwjMMZwOLgSIPSr5HHXxuI2ijPmffxOUPqrt+
+ UlnMIOawWp20+e3VyaIu0REjIl7TX4AiNBQZ9znBwx+FF5qxIuhCfDzm2p2vmFLSrULfrseVc
+ is3B9kBgJrSU4ohO9JcRsofO0yE1qYznu31T8GCSESlUrZkabNW0O6pKaYOEoodnsQlGnllgA
+ HQVu1vxgwJWX0PcDJTctxRXYsEfU6Rfl6Eqt6zCydLB/z3KM2hY9LcO6weHsS7qsGNzxazEWt
+ Z5klipWv85BG/u9+Oi1UwvJGAWQOa8o1cOqnxK4L/5lkcoJVq8uPumAEpE07brwtNuUCUsdwa
+ 22acGEEetMAVvv08degDwKGri897zPk9MBJCYx7/FYd8ihzVWC38xlfOO2cmzkrj6F+driaU9
+ OydBS48s0Oq+Qoj3A6H0yeWJyX70ocxAkNMDdxxrPnVceozO58d4OoHp+tqUvcipBIczlzDNZ
+ 8TwqOCi37kTbDvpbC4PedsB9sIvPU2aSMrTnivbnCwvLlUP1cO+mT3Eu8rIcV2sVqseVU15J5
+ QoHxZm9looDrmE=
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Matthew,
 
---L+FynStKYfLi0cU9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Sun, Oct 24, 2021 at 06:55:13PM +0100, Matthew Wilcox wrote:
+> On Sun, Oct 24, 2021 at 11:13:28AM +0200, Len Baker wrote:
+>
+> > As a last point I would like to know the opinion of Kees and
+> > Gustavo since they are also working on this task.
+> >
+> > Kees and Gustavo, what do you think?
+>
+> You might want to check who was co-author on 610b15c50e86 before
+> discarding my opinion.
 
-On Thu, Oct 28, 2021 at 09:57:36PM +0800, YC Hung wrote:
-> Add adsp clock on/off support on mt8195 platform.
->=20
-> Acked-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora=
-=2Ecom>
-> Signed-off-by: YC Hung <yc.hung@mediatek.com>
-> ---
->  sound/soc/sof/mediatek/adsp_helper.h       |   2 +-
+That was not my intention. I apologize if you have been offended. My
+intention was to involve Kees and Gustavo (who are working actively
+on this task) to add new points of view (if possible). I'm so sorry.
 
-This doesn't apply against current code, there's no such file upstream.
-Please check and resend.
-
---L+FynStKYfLi0cU9
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmF8KAYACgkQJNaLcl1U
-h9AoVAf+Lla83sRtVKTqKOk679LT17XuZlBpgOt3NtPFIbvAv9dQFo6vZbhSPUfv
-FNFch9494hJbje4GQNsx+/P8YBAu8B8KT1L9mvI2xfE+R1ififzxOa8KFibsE4ee
-kOaEBLq5sK5K4ujyPS9F6/fq5bih/0+C5YgBJtWYhW4/HwPL2eSp+U/cbLX7hUCV
-Y6WZRE3jA3UDHCl/nTSz9EZAg2BExYI3zDrEINWf26Fs+8rwx/q6y88UQofl0WBK
-kdelvP0X9dFsxgV8T3wug4bRTgfGezFAen3rkQG6I1tliMMb4XO2tvCUQlSyV3zS
-h0KJSKLReUXZNM9ANMySrqQWAFF9wA==
-=slFG
------END PGP SIGNATURE-----
-
---L+FynStKYfLi0cU9--
+Again apologies,
+Len
