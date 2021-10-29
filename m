@@ -2,87 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 581C243FA2B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 11:45:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A850743FA30
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 11:46:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231579AbhJ2Jrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 05:47:51 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:52910 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231504AbhJ2Jrs (ORCPT
+        id S231627AbhJ2Jsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 05:48:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231569AbhJ2Jsc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 05:47:48 -0400
-X-UUID: 5107aa49ecb54fbdb59b0f1e543166fc-20211029
-X-UUID: 5107aa49ecb54fbdb59b0f1e543166fc-20211029
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
-        (envelope-from <yunfei.dong@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1738094414; Fri, 29 Oct 2021 17:45:14 +0800
-Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 29 Oct 2021 17:45:12 +0800
-Received: from localhost.localdomain (10.17.3.154) by mtkmbs10n2.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.2.792.3 via Frontend
- Transport; Fri, 29 Oct 2021 17:45:11 +0800
-From:   Yunfei Dong <yunfei.dong@mediatek.com>
-To:     Yunfei Dong <yunfei.dong@mediatek.com>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tomasz Figa <tfiga@google.com>
-CC:     Hsin-Yi Wang <hsinyi@chromium.org>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Irui Wang <irui.wang@mediatek.com>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>,
-        <linux-mediatek@lists.infradead.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>
-Subject: [PATCH v1] media: mtk-vcodec: Align width and height to 64
-Date:   Fri, 29 Oct 2021 17:45:10 +0800
-Message-ID: <20211029094510.2411-1-yunfei.dong@mediatek.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 29 Oct 2021 05:48:32 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 305A9C061570
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 02:46:04 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id 71-20020a9d034d000000b00553e24ce2b8so8161958otv.7
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 02:46:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=NWKMZ//AyFWFbpFk6FF66OtPadVuan7a1ybZS8hGNR8=;
+        b=ATnVVLnKE6hkYoDSv4B8mn7x2n/0U0Bg465NnE+2yqbGZFrFG5wmfBKjJSCdiBznql
+         zhgcADvEzOyFcGgZTEt+QzcwETYTyHmUkAeqJi7fS88aCcm/H9lFQLjo9Vn1soFOG0C6
+         nJCA1Zrw5QNe8Y5tGMfnA2sdMm/dC/utFJDYJcyvpa84KOaMF29lTJP5YxAzIoKvPj68
+         G58JECCvVtO+q5j7EyAvbrX0yEdq4DhCQReNp2PVDA4CSVZwQC+4aELHyxNrSdiBXseu
+         POs3sJHrT7rofpB9n1qyOiSvktgjUzhiFT8uyNrCZS0+O+sp7FL+WSUmJCwwDm7NZwyO
+         +XFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=NWKMZ//AyFWFbpFk6FF66OtPadVuan7a1ybZS8hGNR8=;
+        b=2Th2QdZJePVIH2SBNgplyYqP27GGFZoLruXN2s4YxDvcE/F9EG+7smJkpIG1sh1TX7
+         FN56wvloMdUZJ/ABUxc35V+/oNfuXQ2EuL3ghhMQpHRaPsmQkfYEMh02yCfzOMHFOJIH
+         Q3ocU/j8EVNGe4GWiOHjk3/fXyDNDgyTWPvoByrrn7tqD0tqvtms+CX5I9FyTxNjWTu6
+         BBA2/8sCz4ch2UA1BaYPtoIFLcmPzVVBrnHqDZsvLpfHNFN+DzFbwDEkiujL3bPijG/P
+         ra6ophsBYxrUUuJ8hEXBX0FM6GZkx7z4MsdtTM9E1JNB1FEV6TC2RYnBZtbWZtRfzPCv
+         Xp2A==
+X-Gm-Message-State: AOAM5300DmzbOHvlqTWC1T1t0TkZ3A2cIPrnfpNS/ogkNtEDtnbod4Ao
+        RrWjSX1o9LVZVcYwO5fd4ux+Kl3UEujnh638OH0=
+X-Google-Smtp-Source: ABdhPJwP0sWBJqYaxS1Cdd5m2FZN8/IIL+i0Gb7hTiOHvaGD2mzgndoMUdzKamWfEioJX264szrGVkU5jhn0VmKA+J8=
+X-Received: by 2002:a9d:7482:: with SMTP id t2mr7641321otk.350.1635500763185;
+ Fri, 29 Oct 2021 02:46:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-MTK:  N
+Received: by 2002:a8a:610:0:0:0:0:0 with HTTP; Fri, 29 Oct 2021 02:46:02 -0700 (PDT)
+Reply-To: uchennailobitenone@gmail.com
+From:   uhenna <andersonrobertpass@gmail.com>
+Date:   Fri, 29 Oct 2021 02:46:02 -0700
+Message-ID: <CAP5+ZnSZX7ozBFbXYucFiBQC8tV8Det8wMYN3JySp_cNH=am0Q@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-User get width and height are 64 align when set format. Need to make
-sure all is 64 align when use width and height to calculate buffer size.
+Attention Please,
 
-Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
----
- drivers/media/platform/mtk-vcodec/vdec/vdec_h264_req_if.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I am Bar. uchenna ilobi ,  How are you, I hope you are fine and
+healthy? This is to inform you that i have concluded the transaction
+successfully with the help of a new partner from Venezuela and now the
+fund has been transferred to Venezuela into the bank account of the
+new partner.
 
-diff --git a/drivers/media/platform/mtk-vcodec/vdec/vdec_h264_req_if.c b/drivers/media/platform/mtk-vcodec/vdec/vdec_h264_req_if.c
-index 946c23088308..28c17204f9a1 100644
---- a/drivers/media/platform/mtk-vcodec/vdec/vdec_h264_req_if.c
-+++ b/drivers/media/platform/mtk-vcodec/vdec/vdec_h264_req_if.c
-@@ -562,8 +562,8 @@ static void get_pic_info(struct vdec_h264_slice_inst *inst,
- {
- 	struct mtk_vcodec_ctx *ctx = inst->ctx;
- 
--	ctx->picinfo.buf_w = (ctx->picinfo.pic_w + 15) & 0xFFFFFFF0;
--	ctx->picinfo.buf_h = (ctx->picinfo.pic_h + 31) & 0xFFFFFFE0;
-+	ctx->picinfo.buf_w = ALIGN(ctx->picinfo.pic_w, 64);
-+	ctx->picinfo.buf_h = ALIGN(ctx->picinfo.pic_h, 64);
- 	ctx->picinfo.fb_sz[0] = ctx->picinfo.buf_w * ctx->picinfo.buf_h;
- 	ctx->picinfo.fb_sz[1] = ctx->picinfo.fb_sz[0] >> 1;
- 	inst->vsi_ctx.dec.cap_num_planes =
--- 
-2.25.1
+Meanwhile, I have decided to compensate you with the sum of
+US$350,000.00 (thiree Hundred and Fifty Thousand United States
+Dollars) due to your past effort, though you disappointed me along the
+line. But nevertheless I am very happy for the successful ending of
+the transaction without any problem and that is the reason why i have
+decided to compensate you with the sum of US$350,000.00 so that you
+will share the joy with me.
 
+I advise you to contact my secretary for Atm Card of US$350.000.00,
+which I kept for you. Contact him now without any delay.
+
+Name: solomon brandy
+
+Email:solomonbrandyfiveone@gmail.com
+
+Kindly reconfirm to him the following below information:
+
+Your full name_________________________
+Your address__________________________
+Your country___________________________
+Your age______________________________
+Your occupation________________________
+Your cell Phone number______________________
+
+Note that if you did not send him the above information complete, he
+will not release the Atm card to you because he has to be sure that it
+is you. Ask him to send you the total sum of ($350.000.00 ) Atm card,
+which I kept for you.
+
+Best regards,
+
+Mr. uchenna ilobi
