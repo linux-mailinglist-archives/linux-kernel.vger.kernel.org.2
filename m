@@ -2,129 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8119443FC5A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 14:30:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B37CA43FC5B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 14:30:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231596AbhJ2MdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 08:33:07 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:17184 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230134AbhJ2MdG (ORCPT
+        id S231624AbhJ2MdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 08:33:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231604AbhJ2MdR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 08:33:06 -0400
+        Fri, 29 Oct 2021 08:33:17 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAE8EC061570
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 05:30:48 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id y80so23715133ybe.12
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 05:30:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1635510638; x=1667046638;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references;
-  bh=WX6+oirQgO/61V41wJZp+jdW5MNtOfx/cOe7FPtKI0k=;
-  b=DPSyIGUUFBd5OSTpUMA5zIjHON5HryYFIBX+WQYnqjWRuwW+sOF2stTN
-   /Q2bXp4Dd4fttusVvi+0mOaupBfI8j1oyQXaZqkjwMasvP0UW1d+S/Llt
-   MxctR/nsy9+GAf6py4boFMSEZMetFEa18lnuoqFLEI0FQSw8jTDOQtDSF
-   8=;
-Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
-  by alexa-out.qualcomm.com with ESMTP; 29 Oct 2021 05:30:38 -0700
-X-QCInternal: smtphost
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 29 Oct 2021 05:30:35 -0700
-X-QCInternal: smtphost
-Received: from kalyant-linux.qualcomm.com ([10.204.66.210])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 29 Oct 2021 18:00:22 +0530
-Received: by kalyant-linux.qualcomm.com (Postfix, from userid 94428)
-        id E01DE4D8B; Fri, 29 Oct 2021 05:30:21 -0700 (PDT)
-From:   Kalyan Thota <quic_kalyant@quicinc.com>
-To:     y@qualcomm.com, dri-devel@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        devicetree@vger.kernel.org
-Cc:     Kalyan Thota <quic_kalyant@quicinc.com>,
-        linux-kernel@vger.kernel.org, robdclark@gmail.com,
-        dianders@chromium.org, mkrishn@codeaurora.org, swboyd@chromium.org,
-        abhinavk@codeaurora.org
-Subject: [v2] drm/msm/disp/dpu1: set default group ID for CTL.
-Date:   Fri, 29 Oct 2021 05:30:19 -0700
-Message-Id: <1635510619-6715-1-git-send-email-quic_kalyant@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <y>
-References: <y>
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=POCkhyJh1pTuOpdrjR5OwVuwH9o0vid/5lSmmbQ3+/M=;
+        b=zfAI/VLA8v7vyKyANISkysL8W9SO5K++KHrxdMFv8L+PAzTNbEU6qjtjy+TBp0etkd
+         wRS8QmqlF8PX5yWM1GeeSsX6et0CK/7KeLQpQsF4ixptCyplPhm+oG8FiJV56l+ejLRs
+         Z5e0t6DOCydFXyOtMe1rwnXdkgdXVqTq44bv1BvFhHqISht6VuRxSLwrK7v2Ce6Zia6T
+         /OxiuXCscZa0vyJJQEODiUstxaP32rmE5BwxNPBsq2izYlChoJnrbUYHR/9+h262VIDv
+         dc9al8OAut0B56bGinRtiWW9RUMsi20zr7oaq7ky8gRkt9ksRhK6Vv5ZtF60aq0SncqD
+         CVdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=POCkhyJh1pTuOpdrjR5OwVuwH9o0vid/5lSmmbQ3+/M=;
+        b=XEhICx8AxskIE8i+njavh2td5xN8pkWdu9AUV8rjFtGLAI8Ii4kzv0UfWEwGjymPod
+         1l87uYGSRpnYG2PqJS9a2wTIXm0ogu+u5AEUjZ2ju2AOTlpny2HnrJma9plrFDktC2m0
+         7zo94mrn2TkMI5cnz424Kdh0uWK45O/UdRliVrMRQbkzuSM6Cxpjxky+ZNuwCsnM3kIK
+         6/Jb1YvORiHgjHcowkd+bhoh3W/E5DUCVhdLkecldLcI9Ejn6HGM6ytMTHnqrGin6ZN1
+         VTz9nsxzQvFgbfguLvNQyGtbqTryzmNYxk8z1CMmFA4O8EJ/3sYGYQWqmVX5LBZQOpNu
+         h4uA==
+X-Gm-Message-State: AOAM532Z6c9Y13CQSL8mrL2pGg8pBCFN6G8jA9FcF61DNQd8JaYedix0
+        IHwHf9/Bbi2uXlm9MYVmFQck6JICKseH/zvKzxiB2Q==
+X-Google-Smtp-Source: ABdhPJzzdCEKPjQ20a70J54hh4ha5CoDkEZTnZzmLEsEnx4gN18N8uJsgI1la1FPsNcK9CCSIHaC9tojDyYRWZhChHU=
+X-Received: by 2002:a05:6902:727:: with SMTP id l7mr12139075ybt.259.1635510648094;
+ Fri, 29 Oct 2021 05:30:48 -0700 (PDT)
+MIME-Version: 1.0
+References: <20211019123537.17146-1-vincent.guittot@linaro.org>
+ <20211019123537.17146-5-vincent.guittot@linaro.org> <2fb13962-0432-2e36-26e6-d05534464294@arm.com>
+In-Reply-To: <2fb13962-0432-2e36-26e6-d05534464294@arm.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Fri, 29 Oct 2021 14:30:36 +0200
+Message-ID: <CAKfTPtDEqYa23UmAZS5S9OX07jQr-4DWStoX0uLd2fHScMgNYg@mail.gmail.com>
+Subject: Re: [PATCH v3 4/5] sched/fair: Remove sysctl_sched_migration_cost condition
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, linux-kernel@vger.kernel.org,
+        tim.c.chen@linux.intel.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-New required programming in CTL for SC7280. Group ID informs
-HW of which VM owns that CTL. Force this group ID to
-default/disabled until virtualization support is enabled in SW.
+On Fri, 29 Oct 2021 at 12:02, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
+>
+> On 19/10/2021 14:35, Vincent Guittot wrote:
+> > With a default value of 500us, sysctl_sched_migration_cost is
+> > significanlty higher than the cost of load_balance. Remove the
+>
+> Shouldn't this be rather `load balance cost on the lowest sd`? I assume
+> here that lb cost stands for sd->max_newidle_lb_cost of the 1st sd.
 
-Changes in v1:
- - Fix documentation and add descritpion for the change (Stephen)
+Both.
 
-Signed-off-by: Kalyan Thota <quic_kalyant@quicinc.com>
----
- drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c | 2 +-
- drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h | 5 ++++-
- drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c     | 8 ++++++++
- 3 files changed, 13 insertions(+), 2 deletions(-)
+During the tests, I did on thx2, the sum of sd->max_newidle_lb_cost
+could range between 18us and 829us.
 
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
-index ce6f32a..283605c 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
-@@ -45,7 +45,7 @@
- 	(PINGPONG_SDM845_MASK | BIT(DPU_PINGPONG_TE2))
- 
- #define CTL_SC7280_MASK \
--	(BIT(DPU_CTL_ACTIVE_CFG) | BIT(DPU_CTL_FETCH_ACTIVE))
-+	(BIT(DPU_CTL_ACTIVE_CFG) | BIT(DPU_CTL_FETCH_ACTIVE) | BIT(DPU_CTL_VM_CFG))
- 
- #define MERGE_3D_SM8150_MASK (0)
- 
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
-index 4ade44b..31af04a 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
-@@ -179,13 +179,16 @@ enum {
- 
- /**
-  * CTL sub-blocks
-- * @DPU_CTL_SPLIT_DISPLAY       CTL supports video mode split display
-+ * @DPU_CTL_SPLIT_DISPLAY:	CTL supports video mode split display
-+ * @DPU_CTL_FETCH_ACTIVE:	Active CTL for fetch HW (SSPPs)
-+ * @DPU_CTL_VM_CFG:		CTL config to support multiple VMs
-  * @DPU_CTL_MAX
-  */
- enum {
- 	DPU_CTL_SPLIT_DISPLAY = 0x1,
- 	DPU_CTL_ACTIVE_CFG,
- 	DPU_CTL_FETCH_ACTIVE,
-+	DPU_CTL_VM_CFG,
- 	DPU_CTL_MAX
- };
- 
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
-index 64740ddb..02da9ec 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
-@@ -36,6 +36,7 @@
- #define  MERGE_3D_IDX   23
- #define  INTF_IDX       31
- #define CTL_INVALID_BIT                 0xffff
-+#define CTL_DEFAULT_GROUP_ID		0xf
- 
- static const u32 fetch_tbl[SSPP_MAX] = {CTL_INVALID_BIT, 16, 17, 18, 19,
- 	CTL_INVALID_BIT, CTL_INVALID_BIT, CTL_INVALID_BIT, CTL_INVALID_BIT, 0,
-@@ -498,6 +499,13 @@ static void dpu_hw_ctl_intf_cfg_v1(struct dpu_hw_ctl *ctx,
- 	u32 intf_active = 0;
- 	u32 mode_sel = 0;
- 
-+	/* CTL_TOP[31:28] carries group_id to collate CTL paths
-+	 * per VM. Explicitly disable it until VM support is
-+	 * added in SW. Power on reset value is not disable.
-+	 */
-+	if ((test_bit(DPU_CTL_VM_CFG, &ctx->caps->features)))
-+		mode_sel = CTL_DEFAULT_GROUP_ID  << 28;
-+
- 	if (cfg->intf_mode_sel == DPU_CTL_MODE_SEL_CMD)
- 		mode_sel |= BIT(17);
- 
--- 
-2.7.4
+During those tests, I had a limited number of cgroup and the
+update_blocked_average could certainly go above the 273us of SMT
+sd->max_newidle_lb_cost and the 500us of sysctl_sched_migration_cost
 
+>
+> We still use sysctl_sched_migration_cost as a floor against max_cost
+> (i.e. lb cost of all sd's) when setting rq->max_idle_balance_cost in
+> rebalance_domains().
+
+rq->max_idle_balance_cost is used to cap the value used to compute rq->avg_idle.
+
+>
+> And in the add-on discussion (disabling the call to
+> nohz_newidle_balance() you mention that sd->max_newidle_lb_cost can be
+> higher than sysctl_sched_migration_cost (even when default 500us).
+
+yes, I have reached 273us on thx2 with 2 empty cgroups
+
+>
+>
+> > condition and rely on the sd->max_newidle_lb_cost to abort
+> > newidle_balance.
+> >
+> > Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+> > ---
+> >  kernel/sched/fair.c | 3 +--
+> >  1 file changed, 1 insertion(+), 2 deletions(-)
+> >
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index e50fd751e1df..57eae0ebc492 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -10895,8 +10895,7 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+> >       rcu_read_lock();
+> >       sd = rcu_dereference_check_sched_domain(this_rq->sd);
+> >
+> > -     if (this_rq->avg_idle < sysctl_sched_migration_cost ||
+> > -         !READ_ONCE(this_rq->rd->overload) ||
+> > +     if (!READ_ONCE(this_rq->rd->overload) ||
+> >           (sd && this_rq->avg_idle < sd->max_newidle_lb_cost)) {
+> >
+> >               if (sd)
+> >
+>
