@@ -2,94 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3377F43F577
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 05:29:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5E1943F560
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 05:27:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231683AbhJ2Dbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 23:31:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231600AbhJ2Dbv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 23:31:51 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14DF9C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 20:29:23 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id j9so405659pgh.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 20:29:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yt3GCe+54FqcZOH31G5bddZOmFvvBWRqXYZp4dfbBP4=;
-        b=q88FJapufg3fkDigwnOkLElje1mOJaOMneaa+cUXfVv3z+dQxlVNwoUKzUWKvy2Rf0
-         9EUV0vPPJSHw3FH4JXXyceGvnpp9hBu8puHYOMQQ2xoyq8EBIOfPn/rgRBLqjiJZ+DT+
-         EgWhHMYyvHjxcGGRc80cYMhEOxw0oqFHlvO8ccn/0b6FLVveo7+JleqXOCGYloMZk/R0
-         x1j6ay8vk82+VHZAejPhffP8jogUeCPE8Fs6D6WAWQ29YdQ738WTbzgHkhhU+3PMW0dT
-         +qRmg7bbrMxnRayXPFtbQlPT15hoz9X7BfDK8MpvBNMAORXctA/W5k0bAUK5aYVE6pbG
-         D55Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yt3GCe+54FqcZOH31G5bddZOmFvvBWRqXYZp4dfbBP4=;
-        b=AWq2J2d1HDr3aD7YOTX0MBEv1llqbwisKdsR1+D8563NtL/rogQZb+n/vVYDvHLFeR
-         +Fx5E0Znpq+i5so+j0cYMVrbYlg2hibCATyUDK/Ja9vmVpyEhbZ4s5lZmQFa331Sa+Wp
-         a2MfT7r+0aXuIHgXunz25ErZzB9CPy/uDaUcU8SgKm6RzJmivAUc9QoGlDHzTN5m/+V8
-         PS0yQEDmmnKBOYMjSPut0SS196HtcTCQ7FPuTkHX0K3Zf8SWVDld+DB0gVDRe1xFdXdG
-         lN92zY6Mo0CkgGssy+u3cXyt/ov6dEQdedHs50pwZWBacPS8KayAk2Jxk3jfyIla02Uj
-         bR7w==
-X-Gm-Message-State: AOAM533xc5/pI8rY614f7gauOENl/k75C3EbziQZvHIYGes8wGWgdy/X
-        hgjUjo259HCVISflKOy1iZN6kA==
-X-Google-Smtp-Source: ABdhPJwf9ij8ao7F4qK1p5p4HPf/oV92hqNF2+2Coe0vzfTrDCnUq0sldGm3f725kiW8/KLIllp1UA==
-X-Received: by 2002:a65:448a:: with SMTP id l10mr6160963pgq.313.1635478162580;
-        Thu, 28 Oct 2021 20:29:22 -0700 (PDT)
-Received: from localhost.localdomain ([139.177.225.242])
-        by smtp.gmail.com with ESMTPSA id w5sm5396319pfu.85.2021.10.28.20.29.18
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 28 Oct 2021 20:29:22 -0700 (PDT)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     andriy.shevchenko@linux.intel.com, akpm@linux-foundation.org,
-        sfr@canb.auug.org.au, revest@chromium.org, adobriyan@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH] seq_file: fix passing wrong private data
-Date:   Fri, 29 Oct 2021 11:26:38 +0800
-Message-Id: <20211029032638.84884-1-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S231617AbhJ2D3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 23:29:35 -0400
+Received: from smtp25.cstnet.cn ([159.226.251.25]:34496 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231694AbhJ2D3c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 23:29:32 -0400
+Received: from localhost.localdomain (unknown [124.16.138.128])
+        by APP-05 (Coremail) with SMTP id zQCowACnr7_zaXthIn6VBQ--.42300S2;
+        Fri, 29 Oct 2021 11:26:43 +0800 (CST)
+From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
+To:     tglx@linutronix.de
+Cc:     linux-kernel@vger.kernel.org, Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Subject: [PATCH] genirq/matrix: Fix implicit type conversion
+Date:   Fri, 29 Oct 2021 03:26:41 +0000
+Message-Id: <1635478001-2572113-1-git-send-email-jiasheng@iscas.ac.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: zQCowACnr7_zaXthIn6VBQ--.42300S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7uFWxWFyfGrWkCrWDJF4xZwb_yoW8ZFy8pF
+        40y3y7t3yjqa1jg347ZaykAa9Ikw1kJrn7t398ZrySyF93Jw1IvF1qv3sxZF1UWrZ5W3W7
+        CF98t34kKF4DAaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkG14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Cr
+        1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+        6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
+        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8
+        GwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r
+        1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jrv_JF1lIxkGc2Ij
+        64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr
+        0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4U
+        MIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUxb18UUU
+        UU=
+X-Originating-IP: [124.16.138.128]
+X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DEFINE_PROC_SHOW_ATTRIBUTE() is supposed to be used to define a series
-of functions and variables to register proc file easily. And the users
-can use proc_create_data() to pass their own private data and get it
-via seq->private in the callback. Unfortunately, the proc file system
-use PDE_DATA() to get private data instead of inode->i_private. So fix
-it. Fortunately, there only one user of it which does not pass any
-private data, so this bug does not break any in-tree codes.
+The variable 'cpu' is defined as unsigned int.
+However in the for_each_cpu, its values is assigned to -1.
+That doesn't make sense and in the cpumask_next() it is implicitly
+type conversed to int.
+It is universally accepted that the implicit type conversion is
+terrible.
+Also, having the good programming custom will set an example for
+others.
+Thus, it might be better to change the definition of 'cpu' from
+unsigned int to int.
 
-Fixes: 97a32539b956 ("proc: convert everything to "struct proc_ops"")
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
 ---
- include/linux/seq_file.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/irq/matrix.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/seq_file.h b/include/linux/seq_file.h
-index 103776e18555..72dbb44a4573 100644
---- a/include/linux/seq_file.h
-+++ b/include/linux/seq_file.h
-@@ -209,7 +209,7 @@ static const struct file_operations __name ## _fops = {			\
- #define DEFINE_PROC_SHOW_ATTRIBUTE(__name)				\
- static int __name ## _open(struct inode *inode, struct file *file)	\
- {									\
--	return single_open(file, __name ## _show, inode->i_private);	\
-+	return single_open(file, __name ## _show, PDE_DATA(inode));	\
- }									\
- 									\
- static const struct proc_ops __name ## _proc_ops = {			\
+diff --git a/kernel/irq/matrix.c b/kernel/irq/matrix.c
+index 578596e..825549a 100644
+--- a/kernel/irq/matrix.c
++++ b/kernel/irq/matrix.c
+@@ -129,7 +129,7 @@ static unsigned int matrix_alloc_area(struct irq_matrix *m, struct cpumap *cm,
+ static unsigned int matrix_find_best_cpu(struct irq_matrix *m,
+ 					const struct cpumask *msk)
+ {
+-	unsigned int cpu, best_cpu, maxavl = 0;
++	int cpu, best_cpu, maxavl = 0;
+ 	struct cpumap *cm;
+ 
+ 	best_cpu = UINT_MAX;
+@@ -150,7 +150,7 @@ static unsigned int matrix_find_best_cpu(struct irq_matrix *m,
+ static unsigned int matrix_find_best_cpu_managed(struct irq_matrix *m,
+ 						const struct cpumask *msk)
+ {
+-	unsigned int cpu, best_cpu, allocated = UINT_MAX;
++	int cpu, best_cpu, allocated = UINT_MAX;
+ 	struct cpumap *cm;
+ 
+ 	best_cpu = UINT_MAX;
+@@ -209,7 +209,7 @@ void irq_matrix_assign_system(struct irq_matrix *m, unsigned int bit,
+  */
+ int irq_matrix_reserve_managed(struct irq_matrix *m, const struct cpumask *msk)
+ {
+-	unsigned int cpu, failed_cpu;
++	int cpu, failed_cpu;
+ 
+ 	for_each_cpu(cpu, msk) {
+ 		struct cpumap *cm = per_cpu_ptr(m->maps, cpu);
+@@ -250,7 +250,7 @@ int irq_matrix_reserve_managed(struct irq_matrix *m, const struct cpumask *msk)
+  */
+ void irq_matrix_remove_managed(struct irq_matrix *m, const struct cpumask *msk)
+ {
+-	unsigned int cpu;
++	int cpu;
+ 
+ 	for_each_cpu(cpu, msk) {
+ 		struct cpumap *cm = per_cpu_ptr(m->maps, cpu);
 -- 
-2.11.0
+2.7.4
 
