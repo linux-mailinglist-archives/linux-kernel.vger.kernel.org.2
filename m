@@ -2,363 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42A4D4401CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 20:20:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3E1D4401D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 20:27:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230204AbhJ2SWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 14:22:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41542 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229979AbhJ2SWq (ORCPT
+        id S230126AbhJ2S3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 14:29:37 -0400
+Received: from mail-ot1-f53.google.com ([209.85.210.53]:36401 "EHLO
+        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229498AbhJ2S3g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 14:22:46 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCAF5C061570;
-        Fri, 29 Oct 2021 11:20:17 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id d5so2409159wrc.1;
-        Fri, 29 Oct 2021 11:20:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JrKE40jJOcWo0fIdLsvXpuS6N1Sj0pGnPElzdqlDGZ8=;
-        b=kAv06qM53dCLnAXqIPfDocbqpwYm9tezeOpnU63hqurwBJ0hfh2M7wlsQ5AKTiXaDB
-         PV8J96653SL0bh3jPxVNibcFKPYT3UIj+OtvRGtkKt6EZqB/fY7ZZeAX3lyfGOaaOV34
-         Ird9Hlm0RXdmFDuCsZjDFFsoWXK7mQBaSSQILppLdGIS41/11Uioy/vttOdQsbNeLq6N
-         QUosKdLq7+WDM9jT4TAuevqd2Pxeuu7jaxG4KXCQiylY4z7EqpnF8DLWB6qYfc53EwIg
-         5xjow0kw1zJciD5j0HDjySU++HuggaN/6CjWg3Ko7VhEhFYn1Pg3I7LEC5VO7smoujwA
-         +87Q==
+        Fri, 29 Oct 2021 14:29:36 -0400
+Received: by mail-ot1-f53.google.com with SMTP id s23-20020a056830125700b00553e2ca2dccso9881693otp.3;
+        Fri, 29 Oct 2021 11:27:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JrKE40jJOcWo0fIdLsvXpuS6N1Sj0pGnPElzdqlDGZ8=;
-        b=salkeMIq37uHQyiTzvOItkvZk5YDhyT2Envw39SUIGPJpRLAA59AROzPGeBhusLVTy
-         mMpTVvAGCQDTljD+9QqCUpn5u4UCSj9V68sfUUD07tLrH8gQwAqR4JYs4ktWdiR07TUq
-         1hOuKOMA87rogNqjTRm00e+q8bqTP7Hp1tWJhMaJ8BKFfrJMS5vefqaiqw3mO0dyVzMa
-         aaxFkgQvc9GpfHvEWDsffZX1zyorgpwarSIfp3ngikdMTvwQTa467wQ1tblDLlb17y5X
-         Cf/j9dLvauiFjzwmZJJFyLrI95SReyw3DUxX60TIZB8mqT0DC9oabFT/cmpujzIOiO5f
-         PQOg==
-X-Gm-Message-State: AOAM532AGXJiLIHtXk0PjT+SPV5A+zGgHBY2GO9P5XoZJx4fCwRtNHwv
-        G6gHRBiQGtCUt73eX1X6O8pf/y1/SU0=
-X-Google-Smtp-Source: ABdhPJzjA4O9azwWSgErX8c213Bc+/YdNbNrtUf3rIylrqQggX0H19u9Q0jVoYkjiEwHP23EdTd2MQ==
-X-Received: by 2002:a05:600c:1548:: with SMTP id f8mr13213216wmg.35.1635531616375;
-        Fri, 29 Oct 2021 11:20:16 -0700 (PDT)
-Received: from ubuntu.localdomain ([85.254.74.216])
-        by smtp.googlemail.com with ESMTPSA id d8sm2887076wrm.76.2021.10.29.11.20.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Oct 2021 11:20:15 -0700 (PDT)
-From:   Toms Atteka <cpp.code.lv@gmail.com>
-To:     netdev@vger.kernel.org, pshelar@ovn.org, davem@davemloft.net,
-        kuba@kernel.org, dev@openvswitch.org, linux-kernel@vger.kernel.org
-Cc:     Toms Atteka <cpp.code.lv@gmail.com>
-Subject: [PATCH net-next v8] net: openvswitch: IPv6: Add IPv6 extension header support
-Date:   Fri, 29 Oct 2021 11:20:08 -0700
-Message-Id: <20211029182008.382113-1-cpp.code.lv@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mu4HMb4tZXB/weqJB3pLyEJlJzC5RBpRbYVUncyfRaQ=;
+        b=wYN073UdhEFGq8iOQDymhcyFQ1cvjFLGNSt63C0TKJq59COa6//6W8FBn96LlEssrH
+         H5pn4uHe69A/ULs905yn2KGP0xHyVIIcR6sGoiBlw4ibCkyranM2wbAyShtknkCSayQf
+         8NLIXUECgPIIEzIYiOaoYkIi5ixJMCgPD7ACF5025nsLCGiezAW0x8SiEt+BMZxbvHKh
+         ipuM5OqdGH+XKN+ONrKIfCq2IGNhuJBvLO0lhJil5Kfld6vcKyLz7aAfamSov60tKM0u
+         W3UWprJ+bNexn7KChYbWxRf/DBDpcCVdT/dzZhQFpDnSg5btttEzKgj/jEZX5vnIrecN
+         Txmw==
+X-Gm-Message-State: AOAM5314CfUvpPa537SLlFf/aZ2b56dpOl3jxauupkqTvv1HCLCgUAur
+        59drJbrpDb8EdHRqiEM03mLQWyl2h4MG0WkoqFQ=
+X-Google-Smtp-Source: ABdhPJw8b68iFylRPIBKkjttf46BZN35sZUnlr1Ny/PCElz9n6ckpJjtkmRdbxIIGjQu1WgbpWZZn346XQ7t9dCjLpI=
+X-Received: by 2002:a9d:a64:: with SMTP id 91mr2620592otg.198.1635532027425;
+ Fri, 29 Oct 2021 11:27:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211026222626.39222-1-ulf.hansson@linaro.org>
+ <20211027020235.GA1306582@rowland.harvard.edu> <CAPDyKFpgHJA-duQSA2uqhccrDxFqWXO1R1DJxo=aOkT5FyX+Ag@mail.gmail.com>
+ <20211027143343.GC1319606@rowland.harvard.edu> <CAPDyKFoMS-0WqNjtsrGy5-SV3RRbpgA3_HS5XDtNHH9wFgLhXg@mail.gmail.com>
+In-Reply-To: <CAPDyKFoMS-0WqNjtsrGy5-SV3RRbpgA3_HS5XDtNHH9wFgLhXg@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 29 Oct 2021 20:26:56 +0200
+Message-ID: <CAJZ5v0iKMKhdxP9htt-fVm1RVBJnRO-pzJ9eySbBOSviSXCAdQ@mail.gmail.com>
+Subject: Re: [PATCH] PM: runtime: Allow rpm_resume() to succeed when runtime
+ PM is disabled
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Alan Stern <stern@rowland.harvard.edu>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This change adds a new OpenFlow field OFPXMT_OFB_IPV6_EXTHDR and
-packets can be filtered using ipv6_ext flag.
+On Fri, Oct 29, 2021 at 12:20 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+>
+> On Wed, 27 Oct 2021 at 16:33, Alan Stern <stern@rowland.harvard.edu> wrote:
+> >
+> > On Wed, Oct 27, 2021 at 12:55:43PM +0200, Ulf Hansson wrote:
+> > > On Wed, 27 Oct 2021 at 04:02, Alan Stern <stern@rowland.harvard.edu> wrote:
+> > > >
+> > > > On Wed, Oct 27, 2021 at 12:26:26AM +0200, Ulf Hansson wrote:
+> > > > > During system suspend, the PM core sets dev->power.is_suspended for the
+> > > > > device that is being suspended. This flag is also being used in
+> > > > > rpm_resume(), to allow it to succeed by returning 1, assuming that runtime
+> > > > > PM has been disabled and the runtime PM status is RPM_ACTIVE, for the
+> > > > > device.
+> > > > >
+> > > > > To make this behaviour a bit more useful, let's drop the check for the
+> > > > > dev->power.is_suspended flag in rpm_resume(), as it doesn't really need to
+> > > > > be limited to this anyway.
+> > > > >
+> > > > > Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+> > > > > ---
+> > > > >  drivers/base/power/runtime.c | 4 ++--
+> > > > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > > > >
+> > > > > diff --git a/drivers/base/power/runtime.c b/drivers/base/power/runtime.c
+> > > > > index ec94049442b9..fadc278e3a66 100644
+> > > > > --- a/drivers/base/power/runtime.c
+> > > > > +++ b/drivers/base/power/runtime.c
+> > > > > @@ -742,8 +742,8 @@ static int rpm_resume(struct device *dev, int rpmflags)
+> > > > >   repeat:
+> > > > >       if (dev->power.runtime_error)
+> > > > >               retval = -EINVAL;
+> > > > > -     else if (dev->power.disable_depth == 1 && dev->power.is_suspended
+> > > > > -         && dev->power.runtime_status == RPM_ACTIVE)
+> > > > > +     else if (dev->power.disable_depth > 0 &&
+> > > > > +             dev->power.runtime_status == RPM_ACTIVE)
+> > > >
+> > > > IIRC there was a good reason why the original code checked for
+> > > > disable_depth == 1 rather than > 0.  But I don't remember exactly what
+> > > > the reason was.  Maybe it had something to do with the fact that during
+> > > > a system sleep __device_suspend_late calls __pm_runtime_disable, and the
+> > > > code was checking that there were no other disables in effect.
+> > >
+> > > The check was introduced in the below commit:
+> > >
+> > > Commit 6f3c77b040fc
+> > > Author: Kevin Hilman <khilman@ti.com>
+> > > Date:   Fri Sep 21 22:47:34 2012 +0000
+> > > PM / Runtime: let rpm_resume() succeed if RPM_ACTIVE, even when disabled, v2
+> > >
+> > > By reading the commit message it's pretty clear to me that the check
+> > > was added to cover only one specific use case, during system suspend.
+> > >
+> > > That is, that a driver may want to call pm_runtime_get_sync() from a
+> > > late/noirq callback (when the PM core has disabled runtime PM), to
+> > > understand whether the device is still powered on and accessible.
+> > >
+> > > > This is
+> > > > related to the documented behavior of rpm_resume (it's supposed to fail
+> > > > with -EACCES if the device is disabled for runtime PM, no matter what
+> > > > power state the device is in).
+> > > >
+> > > > That probably is also the explanation for why dev->power.is_suspended
+> > > > gets checked: It's how the code tells whether a system sleep is in
+> > > > progress.
+> > >
+> > > Yes, you are certainly correct about the current behaviour. It's there
+> > > for a reason.
+> > >
+> > > On the other hand I would be greatly surprised if this change would
+> > > cause any issues. Of course, I can't make guarantees, but I am, of
+> > > course, willing to help to fix problems if those happen.
+> > >
+> > > As a matter of fact, I think the current behaviour looks quite
+> > > inconsistent, as it depends on whether the device is being system
+> > > suspended.
+> > >
+> > > Moreover, for syscore devices (dev->power.syscore is set for them),
+> > > the PM core doesn't set the "is_suspended" flag. Those can benefit
+> > > from a common behaviour.
+> > >
+> > > Finally, I think the "is_suspended" flag actually needs to be
+> > > protected by a lock when set by the PM core, as it's being used in two
+> > > separate execution paths. Although, rather than adding a lock for
+> > > protection, we can just rely on the "disable_depth" in rpm_resume().
+> > > It would be easier and makes the behaviour consistent too.
+> >
+> > As long as is_suspended isn't _written_ in two separate execution paths,
+> > we're probably okay without a lock -- provided the code doesn't mind
+> > getting an indefinite result when a read races with a write.
+>
+> Well, indefinite doesn't sound very good to me for these cases, even
+> if it most likely never will happen.
+>
+> >
+> > > > So overall, I suspect this change should not be made.  But some other
+> > > > improvement (like a nice comment) might be in order.
+> > > >
+> > > > Alan Stern
+> > >
+> > > Thanks for reviewing!
+> >
+> > You're welcome.  Whatever you eventually decide to do should be okay
+> > with me.  I just wanted to make sure that you understood the deeper
+> > issue here and had given it some thought.  For example, it may turn out
+> > that you can resolve matters simply by updating the documentation.
+>
+> I observed the issue on cpuidle-psci. The devices it operates upon are
+> assigned as syscore devices and these are hooked up to a genpd.
+>
+> A call to pm_runtime_get_sync() can happen even after the PM core has
+> disabled runtime PM in the "late" phase. So the error code is received
+> for these real use-cases.
+>
+> Now, as we currently don't check the return value of
+> pm_runtime_get_sync() in cpuidle-psci, it's not a big deal. But it
+> certainly seems worth fixing in my opinion.
+>
+> Let's see if Rafael has some thoughts around this.
 
-Signed-off-by: Toms Atteka <cpp.code.lv@gmail.com>
----
- include/uapi/linux/openvswitch.h |   6 ++
- net/openvswitch/flow.c           | 140 +++++++++++++++++++++++++++++++
- net/openvswitch/flow.h           |  14 ++++
- net/openvswitch/flow_netlink.c   |  26 +++++-
- 4 files changed, 184 insertions(+), 2 deletions(-)
-
-diff --git a/include/uapi/linux/openvswitch.h b/include/uapi/linux/openvswitch.h
-index a87b44cd5590..43790f07e4a2 100644
---- a/include/uapi/linux/openvswitch.h
-+++ b/include/uapi/linux/openvswitch.h
-@@ -342,6 +342,7 @@ enum ovs_key_attr {
- 	OVS_KEY_ATTR_CT_ORIG_TUPLE_IPV4,   /* struct ovs_key_ct_tuple_ipv4 */
- 	OVS_KEY_ATTR_CT_ORIG_TUPLE_IPV6,   /* struct ovs_key_ct_tuple_ipv6 */
- 	OVS_KEY_ATTR_NSH,       /* Nested set of ovs_nsh_key_* */
-+	OVS_KEY_ATTR_IPV6_EXTHDRS,  /* struct ovs_key_ipv6_exthdr */
- 
- #ifdef __KERNEL__
- 	OVS_KEY_ATTR_TUNNEL_INFO,  /* struct ip_tunnel_info */
-@@ -421,6 +422,11 @@ struct ovs_key_ipv6 {
- 	__u8   ipv6_frag;	/* One of OVS_FRAG_TYPE_*. */
- };
- 
-+/* separate structure to support backward compatibility with older user space */
-+struct ovs_key_ipv6_exthdrs {
-+	__u16  hdrs;
-+};
-+
- struct ovs_key_tcp {
- 	__be16 tcp_src;
- 	__be16 tcp_dst;
-diff --git a/net/openvswitch/flow.c b/net/openvswitch/flow.c
-index 9d375e74b607..28acb40437ca 100644
---- a/net/openvswitch/flow.c
-+++ b/net/openvswitch/flow.c
-@@ -239,6 +239,144 @@ static bool icmphdr_ok(struct sk_buff *skb)
- 				  sizeof(struct icmphdr));
- }
- 
-+/**
-+ * get_ipv6_ext_hdrs() - Parses packet and sets IPv6 extension header flags.
-+ *
-+ * @skb: buffer where extension header data starts in packet
-+ * @nh: ipv6 header
-+ * @ext_hdrs: flags are stored here
-+ *
-+ * OFPIEH12_UNREP is set if more than one of a given IPv6 extension header
-+ * is unexpectedly encountered. (Two destination options headers may be
-+ * expected and would not cause this bit to be set.)
-+ *
-+ * OFPIEH12_UNSEQ is set if IPv6 extension headers were not in the order
-+ * preferred (but not required) by RFC 2460:
-+ *
-+ * When more than one extension header is used in the same packet, it is
-+ * recommended that those headers appear in the following order:
-+ *      IPv6 header
-+ *      Hop-by-Hop Options header
-+ *      Destination Options header
-+ *      Routing header
-+ *      Fragment header
-+ *      Authentication header
-+ *      Encapsulating Security Payload header
-+ *      Destination Options header
-+ *      upper-layer header
-+ */
-+static void get_ipv6_ext_hdrs(struct sk_buff *skb, struct ipv6hdr *nh,
-+			      u16 *ext_hdrs)
-+{
-+	u8 next_type = nh->nexthdr;
-+	unsigned int start = skb_network_offset(skb) + sizeof(struct ipv6hdr);
-+	int dest_options_header_count = 0;
-+
-+	*ext_hdrs = 0;
-+
-+	while (ipv6_ext_hdr(next_type)) {
-+		struct ipv6_opt_hdr _hdr, *hp;
-+
-+		switch (next_type) {
-+		case IPPROTO_NONE:
-+			*ext_hdrs |= OFPIEH12_NONEXT;
-+			/* stop parsing */
-+			return;
-+
-+		case IPPROTO_ESP:
-+			if (*ext_hdrs & OFPIEH12_ESP)
-+				*ext_hdrs |= OFPIEH12_UNREP;
-+			if ((*ext_hdrs & ~(OFPIEH12_HOP | OFPIEH12_DEST |
-+					   OFPIEH12_ROUTER | IPPROTO_FRAGMENT |
-+					   OFPIEH12_AUTH | OFPIEH12_UNREP)) ||
-+			    dest_options_header_count >= 2) {
-+				*ext_hdrs |= OFPIEH12_UNSEQ;
-+			}
-+			*ext_hdrs |= OFPIEH12_ESP;
-+			break;
-+
-+		case IPPROTO_AH:
-+			if (*ext_hdrs & OFPIEH12_AUTH)
-+				*ext_hdrs |= OFPIEH12_UNREP;
-+			if ((*ext_hdrs &
-+			     ~(OFPIEH12_HOP | OFPIEH12_DEST | OFPIEH12_ROUTER |
-+			       IPPROTO_FRAGMENT | OFPIEH12_UNREP)) ||
-+			    dest_options_header_count >= 2) {
-+				*ext_hdrs |= OFPIEH12_UNSEQ;
-+			}
-+			*ext_hdrs |= OFPIEH12_AUTH;
-+			break;
-+
-+		case IPPROTO_DSTOPTS:
-+			if (dest_options_header_count == 0) {
-+				if (*ext_hdrs &
-+				    ~(OFPIEH12_HOP | OFPIEH12_UNREP))
-+					*ext_hdrs |= OFPIEH12_UNSEQ;
-+				*ext_hdrs |= OFPIEH12_DEST;
-+			} else if (dest_options_header_count == 1) {
-+				if (*ext_hdrs &
-+				    ~(OFPIEH12_HOP | OFPIEH12_DEST |
-+				      OFPIEH12_ROUTER | OFPIEH12_FRAG |
-+				      OFPIEH12_AUTH | OFPIEH12_ESP |
-+				      OFPIEH12_UNREP)) {
-+					*ext_hdrs |= OFPIEH12_UNSEQ;
-+				}
-+			} else {
-+				*ext_hdrs |= OFPIEH12_UNREP;
-+			}
-+			dest_options_header_count++;
-+			break;
-+
-+		case IPPROTO_FRAGMENT:
-+			if (*ext_hdrs & OFPIEH12_FRAG)
-+				*ext_hdrs |= OFPIEH12_UNREP;
-+			if ((*ext_hdrs & ~(OFPIEH12_HOP |
-+					   OFPIEH12_DEST |
-+					   OFPIEH12_ROUTER |
-+					   OFPIEH12_UNREP)) ||
-+			    dest_options_header_count >= 2) {
-+				*ext_hdrs |= OFPIEH12_UNSEQ;
-+			}
-+			*ext_hdrs |= OFPIEH12_FRAG;
-+			break;
-+
-+		case IPPROTO_ROUTING:
-+			if (*ext_hdrs & OFPIEH12_ROUTER)
-+				*ext_hdrs |= OFPIEH12_UNREP;
-+			if ((*ext_hdrs & ~(OFPIEH12_HOP |
-+					   OFPIEH12_DEST |
-+					   OFPIEH12_UNREP)) ||
-+			    dest_options_header_count >= 2) {
-+				*ext_hdrs |= OFPIEH12_UNSEQ;
-+			}
-+			*ext_hdrs |= OFPIEH12_ROUTER;
-+			break;
-+
-+		case IPPROTO_HOPOPTS:
-+			if (*ext_hdrs & OFPIEH12_HOP)
-+				*ext_hdrs |= OFPIEH12_UNREP;
-+			/* OFPIEH12_HOP is set to 1 if a hop-by-hop IPv6
-+			 * extension header is present as the first
-+			 * extension header in the packet.
-+			 */
-+			if (*ext_hdrs == 0)
-+				*ext_hdrs |= OFPIEH12_HOP;
-+			else
-+				*ext_hdrs |= OFPIEH12_UNSEQ;
-+			break;
-+
-+		default:
-+			return;
-+		}
-+
-+		hp = skb_header_pointer(skb, start, sizeof(_hdr), &_hdr);
-+		if (!hp)
-+			break;
-+		next_type = hp->nexthdr;
-+		start += ipv6_optlen(hp);
-+	};
-+}
-+
- static int parse_ipv6hdr(struct sk_buff *skb, struct sw_flow_key *key)
- {
- 	unsigned short frag_off;
-@@ -254,6 +392,8 @@ static int parse_ipv6hdr(struct sk_buff *skb, struct sw_flow_key *key)
- 
- 	nh = ipv6_hdr(skb);
- 
-+	get_ipv6_ext_hdrs(skb, nh, &key->ipv6.exthdrs);
-+
- 	key->ip.proto = NEXTHDR_NONE;
- 	key->ip.tos = ipv6_get_dsfield(nh);
- 	key->ip.ttl = nh->hop_limit;
-diff --git a/net/openvswitch/flow.h b/net/openvswitch/flow.h
-index 758a8c77f736..073ab73ffeaa 100644
---- a/net/openvswitch/flow.h
-+++ b/net/openvswitch/flow.h
-@@ -32,6 +32,19 @@ enum sw_flow_mac_proto {
- #define SW_FLOW_KEY_INVALID	0x80
- #define MPLS_LABEL_DEPTH       3
- 
-+/* Bit definitions for IPv6 Extension Header pseudo-field. */
-+enum ofp12_ipv6exthdr_flags {
-+	OFPIEH12_NONEXT = 1 << 0,   /* "No next header" encountered. */
-+	OFPIEH12_ESP    = 1 << 1,   /* Encrypted Sec Payload header present. */
-+	OFPIEH12_AUTH   = 1 << 2,   /* Authentication header present. */
-+	OFPIEH12_DEST   = 1 << 3,   /* 1 or 2 dest headers present. */
-+	OFPIEH12_FRAG   = 1 << 4,   /* Fragment header present. */
-+	OFPIEH12_ROUTER = 1 << 5,   /* Router header present. */
-+	OFPIEH12_HOP    = 1 << 6,   /* Hop-by-hop header present. */
-+	OFPIEH12_UNREP  = 1 << 7,   /* Unexpected repeats encountered. */
-+	OFPIEH12_UNSEQ  = 1 << 8    /* Unexpected sequencing encountered. */
-+};
-+
- /* Store options at the end of the array if they are less than the
-  * maximum size. This allows us to get the benefits of variable length
-  * matching for small options.
-@@ -121,6 +134,7 @@ struct sw_flow_key {
- 				struct in6_addr dst;	/* IPv6 destination address. */
- 			} addr;
- 			__be32 label;			/* IPv6 flow label. */
-+			u16 exthdrs;	/* IPv6 extension header flags */
- 			union {
- 				struct {
- 					struct in6_addr src;
-diff --git a/net/openvswitch/flow_netlink.c b/net/openvswitch/flow_netlink.c
-index 65c2e3458ff5..0aeaf28594ce 100644
---- a/net/openvswitch/flow_netlink.c
-+++ b/net/openvswitch/flow_netlink.c
-@@ -344,7 +344,7 @@ size_t ovs_key_attr_size(void)
- 	/* Whenever adding new OVS_KEY_ FIELDS, we should consider
- 	 * updating this function.
- 	 */
--	BUILD_BUG_ON(OVS_KEY_ATTR_TUNNEL_INFO != 29);
-+	BUILD_BUG_ON(OVS_KEY_ATTR_TUNNEL_INFO != 30);
- 
- 	return    nla_total_size(4)   /* OVS_KEY_ATTR_PRIORITY */
- 		+ nla_total_size(0)   /* OVS_KEY_ATTR_TUNNEL */
-@@ -367,7 +367,8 @@ size_t ovs_key_attr_size(void)
- 		+ nla_total_size(2)   /* OVS_KEY_ATTR_ETHERTYPE */
- 		+ nla_total_size(40)  /* OVS_KEY_ATTR_IPV6 */
- 		+ nla_total_size(2)   /* OVS_KEY_ATTR_ICMPV6 */
--		+ nla_total_size(28); /* OVS_KEY_ATTR_ND */
-+		+ nla_total_size(28)  /* OVS_KEY_ATTR_ND */
-+		+ nla_total_size(2);  /* OVS_KEY_ATTR_IPV6_EXTHDRS */
- }
- 
- static const struct ovs_len_tbl ovs_vxlan_ext_key_lens[OVS_VXLAN_EXT_MAX + 1] = {
-@@ -435,6 +436,8 @@ static const struct ovs_len_tbl ovs_key_lens[OVS_KEY_ATTR_MAX + 1] = {
- 		.len = sizeof(struct ovs_key_ct_tuple_ipv6) },
- 	[OVS_KEY_ATTR_NSH]       = { .len = OVS_ATTR_NESTED,
- 				     .next = ovs_nsh_key_attr_lens, },
-+	[OVS_KEY_ATTR_IPV6_EXTHDRS] = {
-+		.len = sizeof(struct ovs_key_ipv6_exthdrs) },
- };
- 
- static bool check_attr_len(unsigned int attr_len, unsigned int expected_len)
-@@ -1595,6 +1598,17 @@ static int ovs_key_from_nlattrs(struct net *net, struct sw_flow_match *match,
- 		attrs &= ~(1 << OVS_KEY_ATTR_IPV6);
- 	}
- 
-+	if (attrs & (1ULL << OVS_KEY_ATTR_IPV6_EXTHDRS)) {
-+		const struct ovs_key_ipv6_exthdrs *ipv6_exthdrs_key;
-+
-+		ipv6_exthdrs_key = nla_data(a[OVS_KEY_ATTR_IPV6_EXTHDRS]);
-+
-+		SW_FLOW_KEY_PUT(match, ipv6.exthdrs,
-+				ipv6_exthdrs_key->hdrs, is_mask);
-+
-+		attrs &= ~(1ULL << OVS_KEY_ATTR_IPV6_EXTHDRS);
-+	}
-+
- 	if (attrs & (1 << OVS_KEY_ATTR_ARP)) {
- 		const struct ovs_key_arp *arp_key;
- 
-@@ -2097,6 +2111,7 @@ static int __ovs_nla_put_key(const struct sw_flow_key *swkey,
- 		ipv4_key->ipv4_frag = output->ip.frag;
- 	} else if (swkey->eth.type == htons(ETH_P_IPV6)) {
- 		struct ovs_key_ipv6 *ipv6_key;
-+		struct ovs_key_ipv6_exthdrs *ipv6_exthdrs_key;
- 
- 		nla = nla_reserve(skb, OVS_KEY_ATTR_IPV6, sizeof(*ipv6_key));
- 		if (!nla)
-@@ -2111,6 +2126,13 @@ static int __ovs_nla_put_key(const struct sw_flow_key *swkey,
- 		ipv6_key->ipv6_tclass = output->ip.tos;
- 		ipv6_key->ipv6_hlimit = output->ip.ttl;
- 		ipv6_key->ipv6_frag = output->ip.frag;
-+
-+		nla = nla_reserve(skb, OVS_KEY_ATTR_IPV6_EXTHDRS,
-+				  sizeof(*ipv6_exthdrs_key));
-+		if (!nla)
-+			goto nla_put_failure;
-+		ipv6_exthdrs_key = nla_data(nla);
-+		ipv6_exthdrs_key->hdrs = output->ipv6.exthdrs;
- 	} else if (swkey->eth.type == htons(ETH_P_NSH)) {
- 		if (nsh_key_to_nlattr(&output->nsh, is_mask, skb))
- 			goto nla_put_failure;
--- 
-2.25.1
-
+Am I thinking correctly that this is mostly about working around the
+limitations of pm_runtime_force_suspend()?
