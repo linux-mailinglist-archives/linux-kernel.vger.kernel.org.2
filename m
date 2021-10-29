@@ -2,84 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B25A43F93F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 10:50:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 715D643F948
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 10:54:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231494AbhJ2IxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 04:53:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49500 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231533AbhJ2IxO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 04:53:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 574DE61075;
-        Fri, 29 Oct 2021 08:50:44 +0000 (UTC)
-Date:   Fri, 29 Oct 2021 10:50:41 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     andriy.shevchenko@linux.intel.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>, revest@chromium.org,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH] seq_file: fix passing wrong private data
-Message-ID: <20211029085041.fhyi2kn3bdmxt6h4@wittgenstein>
-References: <20211029032638.84884-1-songmuchun@bytedance.com>
- <20211029082620.jlnauplkyqmaz3ze@wittgenstein>
- <CAMZfGtUMLD183qHVt6=8gU4nnQD2pn1gZwZJOjCHFK73wK0=kQ@mail.gmail.com>
+        id S231510AbhJ2I5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 04:57:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229797AbhJ2I47 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 04:56:59 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CD8AC061570;
+        Fri, 29 Oct 2021 01:54:31 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: gtucker)
+        with ESMTPSA id 3503E1F45797
+Subject: Re: Testing & Fuzzing Micro-Conference at Linux Plumbers Conference
+ 2021
+From:   Guillaume Tucker <guillaume.tucker@collabora.com>
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        automated-testing@lists.yoctoproject.org,
+        linux-kselftest@vger.kernel.org,
+        "kernelci@groups.io" <kernelci@groups.io>,
+        syzkaller <syzkaller@googlegroups.com>
+Cc:     Sasha Levin <sashal@kernel.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+References: <c801f7b9-1f70-e69c-99f6-5bc5c5622991@collabora.com>
+Message-ID: <2585546e-4a43-557b-c872-c273ca40d8d7@collabora.com>
+Date:   Fri, 29 Oct 2021 09:54:27 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
+In-Reply-To: <c801f7b9-1f70-e69c-99f6-5bc5c5622991@collabora.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAMZfGtUMLD183qHVt6=8gU4nnQD2pn1gZwZJOjCHFK73wK0=kQ@mail.gmail.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 04:43:40PM +0800, Muchun Song wrote:
-> On Fri, Oct 29, 2021 at 4:26 PM Christian Brauner
-> <christian.brauner@ubuntu.com> wrote:
-> >
-> > On Fri, Oct 29, 2021 at 11:26:38AM +0800, Muchun Song wrote:
-> > > DEFINE_PROC_SHOW_ATTRIBUTE() is supposed to be used to define a series
-> > > of functions and variables to register proc file easily. And the users
-> > > can use proc_create_data() to pass their own private data and get it
-> > > via seq->private in the callback. Unfortunately, the proc file system
-> > > use PDE_DATA() to get private data instead of inode->i_private. So fix
-> > > it. Fortunately, there only one user of it which does not pass any
-> > > private data, so this bug does not break any in-tree codes.
-> > >
-> > > Fixes: 97a32539b956 ("proc: convert everything to "struct proc_ops"")
-> > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > > ---
-> > >  include/linux/seq_file.h | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/include/linux/seq_file.h b/include/linux/seq_file.h
-> > > index 103776e18555..72dbb44a4573 100644
-> > > --- a/include/linux/seq_file.h
-> > > +++ b/include/linux/seq_file.h
-> > > @@ -209,7 +209,7 @@ static const struct file_operations __name ## _fops = {                   \
-> > >  #define DEFINE_PROC_SHOW_ATTRIBUTE(__name)                           \
-> > >  static int __name ## _open(struct inode *inode, struct file *file)   \
-> > >  {                                                                    \
-> > > -     return single_open(file, __name ## _show, inode->i_private);    \
-> > > +     return single_open(file, __name ## _show, PDE_DATA(inode));     \
-> > >  }                                                                    \
-> > >                                                                       \
-> > >  static const struct proc_ops __name ## _proc_ops = {                 \
-> >
-> > Hm, after your change DEFINE_SHOW_ATTRIBUTE() and
-> > DEFINE_PROC_SHOW_ATTRIBUTE() macros do exactly the same things, right?:
+On 31/08/2021 11:25, Guillaume Tucker wrote:
+> The Testing & Fuzzing Micro-Conference[1] at Linux Plumbers 2021 will
+> remain open to new proposals for talks and discussion topics until the
+> end of next week (Friday 10th Sept).  Please feel free to submit yours
+> with the "Submit new proposal" form on this page:
 > 
-> Unfortunately, they are not the same. The difference is the
-> operation structure, namely "struct file_operations" and
-> "struct proc_ops".
+>   https://linuxplumbersconf.org/event/11/abstracts/
 > 
-> DEFINE_SHOW_ATTRIBUTE() is usually used by
-> debugfs while DEFINE_SHOW_ATTRIBUTE() is
-> used by procfs.
+> The MC is currently scheduled for Wednesday 22nd.  This is where the
+> timetable will appear as submissions get accepted:
+> 
+>   https://linuxplumbersconf.org/event/11/sessions/110/#20210922
+> 
+> 
+> Last year's edition was very effective in spite of being fully online
+> rather than in-person.  Topics around testing were mentioned in many
+> other tracks too, such as real-time and toolchains.  See also the
+> related KernelCI blog post with community notes[2].  We're looking
+> forward to having an equally good virtual experience this time again.
 
-Ugh, right, thanks for pointing that out. I overlooked the _proc_ops
-appendix. Not sure what's right here. There seem to have been earlier
-callers to DEFINE_PROC_SHOW_ATTRIBUTE() that relied on PDE_DATA() but
-there's only one caller so that change wouldn't be too bad, I guess.
+Many thanks to all the speakers and attendees, it has been a very
+enjoyable and productive micro-conf.  The summary is now
+available here:
+
+  https://linuxplumbersconf.org/event/11/page/104-accepted-microconferences#summary-testing
+
+
+See also the recorded videos here:
+
+  https://youtu.be/Y_minEhZNm8?t=2370
+
+
+See you all next year, maybe in person if we're lucky!
+
+
+Best wishes,
+Guillaume
+
+> [1] https://www.linuxplumbersconf.org/blog/2021/index.php/2021/07/09/testing-and-fuzzing-microconference-accepted-into-2021-linux-plumbers-conference/
+
