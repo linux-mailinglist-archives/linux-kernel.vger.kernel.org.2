@@ -2,72 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FCE443FD7D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 15:44:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2781343FD84
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 15:45:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231539AbhJ2Nqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 09:46:32 -0400
-Received: from mail-oi1-f177.google.com ([209.85.167.177]:46641 "EHLO
-        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229998AbhJ2Nqb (ORCPT
+        id S231476AbhJ2NsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 09:48:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229603AbhJ2NsU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 09:46:31 -0400
-Received: by mail-oi1-f177.google.com with SMTP id m11so8571090oif.13;
-        Fri, 29 Oct 2021 06:44:02 -0700 (PDT)
+        Fri, 29 Oct 2021 09:48:20 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 642B3C061570;
+        Fri, 29 Oct 2021 06:45:51 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id w15so38992797edc.9;
+        Fri, 29 Oct 2021 06:45:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=24MYBPQrlcyWu6iKYLYc69TS4W86uztfRC8L7A+W0Bk=;
+        b=EiED0Ed9u66wgUVx8GbhGut3/tl6tbP4VfmRPk1SlWVSSA6VEcJfqHT2AdxkYN3I86
+         6ffdsAPXnc5M4PqqSccYVvLQAl0/hcnKoxS3ajMdMUCsd+s1/y99AY/A6bNNAoB7n3bV
+         3RvO3ZSygA9RGb4UuQnOYFY/VNQZSAsHrkoMA+YIUQ32bNsksgbe25m7aA0okaCwScVw
+         oPOg87F16ivSeygw1PjuC2XlHJ7Jma2Eh7aAR71ISFrAX1db9l//7qFS3/YyE4ij/VH5
+         32f2ZEg6m6VcOmWNn62dWtaSrvxw2765KUiHSqc1TkDHcUi1tBtkME0GbV6dG/8nlsIk
+         VVSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Q4j8kz+vDYmA/tiJro/01MgX0r2fELTiXn0N7Y88aTA=;
-        b=MSvPEq+3shc1xxE93fSYhI1erm7IZ4EVlmgOqh53s6z++5eSuzEy/h8nf0uuvZp5/f
-         ntQrOlqcIepRQ+rewjX4h37XKafvjRncXdNAHwFW0fe9RryUb1r3f/dk6eFd9GIrNe+s
-         zRk7w5tTsT5Hx15ZaDuMT+e0nznYMcVlByzXL1V0gUFsuUdmpO0J4NVk4uGEP1ektbeI
-         jPGtBAUCTfnuMts2l64ibd+uNuhM7g78VZ2zRgHs2J3yNPXx1krmQGhXLAeRi8EB/lvK
-         DrsWAWv3R/H6dg9GbNBqtsABVFCPy+DYEv7PkXu5qrMPI1uOfvbniYAGH/+ALlPTNQDq
-         l6aA==
-X-Gm-Message-State: AOAM530xE39YztOwVcYcrb619fjsPeaxVrxza/8zIsmP9CEDzAJBVbPK
-        uULPoKzFJy9fY80Au/f7DQ==
-X-Google-Smtp-Source: ABdhPJxXlg3PkICo5KK9L0xBEvGyufxGFE4IcST0wAx/bcQ2X3qjfMkNzhIl5Qv/WmDQdG6kIWuXqw==
-X-Received: by 2002:aca:3455:: with SMTP id b82mr13883274oia.102.1635515042228;
-        Fri, 29 Oct 2021 06:44:02 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id d7sm1871463otl.19.2021.10.29.06.44.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Oct 2021 06:44:01 -0700 (PDT)
-Received: (nullmailer pid 2250889 invoked by uid 1000);
-        Fri, 29 Oct 2021 13:44:00 -0000
-Date:   Fri, 29 Oct 2021 08:44:00 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     David Heidelberg <david@ixit.cz>
-Cc:     devicetree@vger.kernel.org, Joerg Roedel <joro@8bytes.org>,
-        Will Deacon <will@kernel.org>, ~okias/devicetree@lists.sr.ht,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        iommu@lists.linux-foundation.org,
-        Robin Murphy <robin.murphy@arm.com>
-Subject: Re: [PATCH] dt-bindings: arm-smmu: Add compatible for the SDX55 SoC
-Message-ID: <YXv6oMe4pw6DgIha@robh.at.kernel.org>
-References: <20211020231701.278846-1-david@ixit.cz>
- <YXsYnG+H8gQu4Prc@robh.at.kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=24MYBPQrlcyWu6iKYLYc69TS4W86uztfRC8L7A+W0Bk=;
+        b=FW98CXHZevmU2pfBc5SyqTxr8KG6HmwcSnHvQHa2TOF2ipxCCfyWWzjRvt5fmV4kGa
+         5vHiCf3HR0mN7OclF3WFd//hktvaKeNeMW8Rz4kllxvCMUqa3xCilnpo9M9cSAjBZEEK
+         GclY9AhAC3/eBfMJ7S7JQ2DIa0ZyryAlEPnGcjrsYB6b4p731v1mFJQQEpNRxU5cuwCC
+         C+eZb8X5M6Uowqv5ZJVjJDLw2rkCliT6uRP3zuKTQ572jJGcNG+51izR8q3pnbE3xyRv
+         0MZr/T7Zbxv2jV5BT4QIQtnvc31emthOx8d83BLIAR2vE/hsyWsNOrhMIm60kynuIRHo
+         mPDQ==
+X-Gm-Message-State: AOAM533aG1GDqWEJtDsHkumkNeaMpNw5yRwbheYMb9dVdqk2zF+3TaOu
+        tucyAQiOaV0ShVcmReljwpzNuVaZu/cbuaQEGg==
+X-Google-Smtp-Source: ABdhPJxQ0/i0+sqvfHqwBXtJ3INT/8FY6Sk8/OPLgfBWlIgdzuGauSfJp6OoXg9HYSIVrgFlCp3VTbhn9uVJLS1lDc0=
+X-Received: by 2002:a17:906:d553:: with SMTP id cr19mr13338966ejc.128.1635515149930;
+ Fri, 29 Oct 2021 06:45:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YXsYnG+H8gQu4Prc@robh.at.kernel.org>
+References: <20211029132411.1bd856b0@canb.auug.org.au>
+In-Reply-To: <20211029132411.1bd856b0@canb.auug.org.au>
+From:   Rob Herring <robherring2@gmail.com>
+Date:   Fri, 29 Oct 2021 08:45:37 -0500
+Message-ID: <CAL_JsqKNsvc-JqTcTGM134rHzpaibnT21HpCwzhJNA8_a8Rydg@mail.gmail.com>
+Subject: Re: linux-next: manual merge of the devicetree tree with the pci tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Simon Xue <xxm@rock-chips.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 04:39:40PM -0500, Rob Herring wrote:
-> On Thu, 21 Oct 2021 01:17:00 +0200, David Heidelberg wrote:
-> > Add missing compatible for the SDX55 SoC.
-> > 
-> > Signed-off-by: David Heidelberg <david@ixit.cz>
-> > ---
-> >  Documentation/devicetree/bindings/iommu/arm,smmu.yaml | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> 
-> Applied, thanks!
+On Thu, Oct 28, 2021 at 9:24 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> Today's linux-next merge of the devicetree tree got a conflict in:
+>
+>   Documentation/devicetree/bindings/pci/rockchip-dw-pcie.yaml
+>
+> between commit:
+>
+>   af7cda832f8a ("dt-bindings: rockchip: Add DesignWare based PCIe controller")
+>
+> from the pci tree and commit:
+>
+>   ad854f362e8c ("dt-bindings: rockchip: Add DesignWare based PCIe controller")
+>
+> from the devicetree tree.
+>
+> These were almost identical patches.  I went with the former one sonce
+> it was dated later.
 
-Now dropped. This conflicts with Will's tree, so he should take it. 
+I've dropped it from my tree.
 
 Rob
