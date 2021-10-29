@@ -2,183 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF16343FBEE
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 13:57:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0150F43FBF4
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 14:01:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231616AbhJ2L7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 07:59:50 -0400
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:58674 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231593AbhJ2L7k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 07:59:40 -0400
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19TBUfrU032509;
-        Fri, 29 Oct 2021 04:57:05 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=pfpt0220; bh=n3gJgqHdF1ncsUhhKl3qdKR/rglxHdG/0jKnJwu9G6o=;
- b=BrMz8xLff0ivJWTU5piWiaYtU4PaIQ4YXWIyrr5HchRKthmmNMy8PLt7OC/cKBTCdF6A
- YWG7jCIpaCUlgOxDlBx8PfbuBlrLpY6jTZy+SofHUfmpCxsdvcb4tKzd0Cubq06/8K2W
- fYfm8Lr6GT4J0aJf6OURkbJhzXvZDnQVERT08f01oNVw3a2biON3JemEuV51iT0UEzss
- Bmgut2xv5gbwzVC76h4S1R+jR6/go2Mu/AtKXHdqpGbWAWB9tUEroiAgCQv9f2cQndcZ
- ZA5VDBxon3n4AiWgiq1CokisMWtS9AVkviJhJc+rdLooaJfLNxgd5RPpowHzIrW4a9wc Gw== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0a-0016f401.pphosted.com with ESMTP id 3c0g54g31t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Fri, 29 Oct 2021 04:57:05 -0700
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Fri, 29 Oct
- 2021 04:57:04 -0700
-Received: from bbhushan2.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
- Transport; Fri, 29 Oct 2021 04:57:01 -0700
-From:   Bharat Bhushan <bbhushan2@marvell.com>
-To:     <will@kernel.org>, <mark.rutland@arm.com>, <robh+dt@kernel.org>,
-        <bbudiredla@marvell.com>, <sgoutham@marvell.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Bharat Bhushan <bbhushan2@marvell.com>
-Subject: [PATCH v6 4/4] perf/marvell: cn10k DDR perf event core ownership
-Date:   Fri, 29 Oct 2021 17:26:43 +0530
-Message-ID: <20211029115643.32351-5-bbhushan2@marvell.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211029115643.32351-1-bbhushan2@marvell.com>
-References: <20211029115643.32351-1-bbhushan2@marvell.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-GUID: _E3nCSHCuIUG3Cj2J3SkyKYoMrnRP7AM
-X-Proofpoint-ORIG-GUID: _E3nCSHCuIUG3Cj2J3SkyKYoMrnRP7AM
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-29_02,2021-10-29_01,2020-04-07_01
+        id S231418AbhJ2MDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 08:03:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58908 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229930AbhJ2MDb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 08:03:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AB05A610EA;
+        Fri, 29 Oct 2021 12:00:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635508862;
+        bh=NLIUXGxZ2vevTNRxREH4RJnxeLV5TFgdY4m18daIieU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=M6PH50cS5iFZ5cK2P4tF5feffMimH66Ogb+IfUYyEJvoATeCuT1zu1L3nOLq3RPNe
+         H1K5JZlvwv5P7AsTtg2UywPpQG4dssEV4x5y7Thl4fTvQx9HiEOcuVGIWYpMk30d82
+         pX812MFDlBDApizQvzhBeOdx5eFFn8rd9yDxBD7fA1SXUqEjIA3XwKDsSx4/qoXOnf
+         OlYTSO14QbNHYKc0HObE+eytEO2o6XstLcRYITAHAgGCFH7ICSzhx1V/5GTzaukbe4
+         r+iCXXXrvyNS4v25ZZwg8jj+saX64Ws6QT4zoWzZUImHFQRN+PbLq+ANaxmMNaGY9s
+         HZFCT/3CMawUg==
+Date:   Fri, 29 Oct 2021 21:00:56 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     Kalesh Singh <kaleshsingh@google.com>, lkp@lists.01.org,
+        lkp@intel.com, surenb@google.com, hridya@google.com,
+        namhyung@kernel.org, kernel-team@android.com,
+        Jonathan Corbet <corbet@lwn.net>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Tom Zanussi <zanussi@kernel.org>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [tracing/selftests]  cfece71411:
+ kernel-selftests.ftrace.event_trigger_-_test_inter-event_histogram_trigger_onchange_action.fail
+Message-Id: <20211029210056.6cd7796aea59cec3e9c1d7da@kernel.org>
+In-Reply-To: <20211029064818.GG737@xsang-OptiPlex-9020>
+References: <20211025200852.3002369-8-kaleshsingh@google.com>
+        <20211029064818.GG737@xsang-OptiPlex-9020>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As DDR perf event counters are not per core, so they should be accessed
-only by one core at a time. Select new core when previously owning core
-is going offline.
+Hi,
 
-Signed-off-by: Bharat Bhushan <bbhushan2@marvell.com>
----
-v1->v6
- - No Change
+On Fri, 29 Oct 2021 14:48:18 +0800
+kernel test robot <oliver.sang@intel.com> wrote:
 
- drivers/perf/marvell_cn10k_ddr_pmu.c | 50 ++++++++++++++++++++++++++--
- include/linux/cpuhotplug.h           |  1 +
- 2 files changed, 49 insertions(+), 2 deletions(-)
+> 
+> 
+> Greeting,
+> 
+> FYI, we noticed the following commit (built with gcc-9):
+> 
+> commit: cfece71411dbca5dc5e1fa2d9ce5a3f38e55d4fe ("[PATCH v4 7/8] tracing/selftests: Add tests for hist trigger expression parsing")
+> url: https://github.com/0day-ci/linux/commits/Kalesh-Singh/tracing-Extend-histogram-triggers-expression-parsing/20211026-042529
+> 
+> 
+> in testcase: kernel-selftests
+> version: kernel-selftests-x86_64-c8c9111a-1_20210929
+> with following parameters:
+> 
+> 	group: ftrace
+> 	ucode: 0xe2
+> 
+> test-description: The kernel contains a set of "self tests" under the tools/testing/selftests/ directory. These are intended to be small unit tests to exercise individual code paths in the kernel.
+> test-url: https://www.kernel.org/doc/Documentation/kselftest.txt
 
-diff --git a/drivers/perf/marvell_cn10k_ddr_pmu.c b/drivers/perf/marvell_cn10k_ddr_pmu.c
-index 21fccb9090c5..bef0cee3a46a 100644
---- a/drivers/perf/marvell_cn10k_ddr_pmu.c
-+++ b/drivers/perf/marvell_cn10k_ddr_pmu.c
-@@ -129,6 +129,7 @@ struct cn10k_ddr_pmu {
- 	int active_events;
- 	struct perf_event *events[DDRC_PERF_NUM_COUNTERS];
- 	struct hrtimer hrtimer;
-+	struct hlist_node node;
- };
- 
- #define to_cn10k_ddr_pmu(p)	container_of(p, struct cn10k_ddr_pmu, pmu)
-@@ -610,6 +611,24 @@ static enum hrtimer_restart cn10k_ddr_pmu_timer_handler(struct hrtimer *hrtimer)
- 	return HRTIMER_RESTART;
- }
- 
-+static int cn10k_ddr_pmu_offline_cpu(unsigned int cpu, struct hlist_node *node)
-+{
-+	struct cn10k_ddr_pmu *pmu = hlist_entry_safe(node, struct cn10k_ddr_pmu,
-+						     node);
-+	unsigned int target;
-+
-+	if (cpu != pmu->cpu)
-+		return 0;
-+
-+	target = cpumask_any_but(cpu_online_mask, cpu);
-+	if (target >= nr_cpu_ids)
-+		return 0;
-+
-+	perf_pmu_migrate_context(&pmu->pmu, cpu, target);
-+	pmu->cpu = target;
-+	return 0;
-+}
-+
- static int cn10k_ddr_perf_probe(struct platform_device *pdev)
- {
- 	struct cn10k_ddr_pmu *ddr_pmu;
-@@ -661,18 +680,31 @@ static int cn10k_ddr_perf_probe(struct platform_device *pdev)
- 	hrtimer_init(&ddr_pmu->hrtimer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
- 	ddr_pmu->hrtimer.function = cn10k_ddr_pmu_timer_handler;
- 
-+	cpuhp_state_add_instance_nocalls(
-+				CPUHP_AP_PERF_ARM_MARVELL_CN10K_DDR_ONLINE,
-+				&ddr_pmu->node);
-+
- 	ret = perf_pmu_register(&ddr_pmu->pmu, name, -1);
- 	if (ret)
--		return ret;
-+		goto error;
- 
- 	pr_info("CN10K DDR PMU Driver for ddrc@%llx\n", res->start);
- 	return 0;
-+error:
-+	cpuhp_state_remove_instance_nocalls(
-+				CPUHP_AP_PERF_ARM_MARVELL_CN10K_DDR_ONLINE,
-+				&ddr_pmu->node);
-+	return ret;
- }
- 
- static int cn10k_ddr_perf_remove(struct platform_device *pdev)
- {
- 	struct cn10k_ddr_pmu *ddr_pmu = platform_get_drvdata(pdev);
- 
-+	cpuhp_state_remove_instance_nocalls(
-+				CPUHP_AP_PERF_ARM_MARVELL_CN10K_DDR_ONLINE,
-+				&ddr_pmu->node);
-+
- 	perf_pmu_unregister(&ddr_pmu->pmu);
- 	return 0;
- }
-@@ -695,12 +727,26 @@ static struct platform_driver cn10k_ddr_pmu_driver = {
- 
- static int __init cn10k_ddr_pmu_init(void)
- {
--	return platform_driver_register(&cn10k_ddr_pmu_driver);
-+	int ret;
-+
-+	ret = cpuhp_setup_state_multi(
-+				CPUHP_AP_PERF_ARM_MARVELL_CN10K_DDR_ONLINE,
-+				"perf/marvell/cn10k/ddr:online", NULL,
-+				cn10k_ddr_pmu_offline_cpu);
-+	if (ret)
-+		return ret;
-+
-+	ret = platform_driver_register(&cn10k_ddr_pmu_driver);
-+	if (ret)
-+		cpuhp_remove_multi_state(
-+				CPUHP_AP_PERF_ARM_MARVELL_CN10K_DDR_ONLINE);
-+	return ret;
- }
- 
- static void __exit cn10k_ddr_pmu_exit(void)
- {
- 	platform_driver_unregister(&cn10k_ddr_pmu_driver);
-+	cpuhp_remove_multi_state(CPUHP_AP_PERF_ARM_MARVELL_CN10K_DDR_ONLINE);
- }
- 
- module_init(cn10k_ddr_pmu_init);
-diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
-index 832d8a74fa59..a4b521f12b58 100644
---- a/include/linux/cpuhotplug.h
-+++ b/include/linux/cpuhotplug.h
-@@ -227,6 +227,7 @@ enum cpuhp_state {
- 	CPUHP_AP_PERF_ARM_QCOM_L3_ONLINE,
- 	CPUHP_AP_PERF_ARM_APM_XGENE_ONLINE,
- 	CPUHP_AP_PERF_ARM_CAVIUM_TX2_UNCORE_ONLINE,
-+	CPUHP_AP_PERF_ARM_MARVELL_CN10K_DDR_ONLINE,
- 	CPUHP_AP_PERF_POWERPC_NEST_IMC_ONLINE,
- 	CPUHP_AP_PERF_POWERPC_CORE_IMC_ONLINE,
- 	CPUHP_AP_PERF_POWERPC_THREAD_IMC_ONLINE,
+Thanks! This issue has been found and will be fixed next version.
+
+BTW, I have some questions about this bot;
+
+> 
+> 
+> on test machine: 4 threads Intel(R) Core(TM) i5-6500 CPU @ 3.20GHz with 32G memory
+> 
+> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+> 
+> 
+> 
+> If you fix the issue, kindly add following tag
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> 
+> 
+> 
+> TAP version 13
+> 1..1
+> # selftests: ftrace: ftracetest
+> # === Ftrace unit tests ===
+> # [1] Basic trace file check	[PASS]
+> ...
+> <<< [1] - [67] have same results as parent, i.e. both PASS or both FAIL >>>
+
+At first, I guess the robot just checks the "[number]" instead
+of the test description, but the ftracetest doesn't fix the "[number]"
+for each test, Thus, it can be different when updated it.
+So if you compare the result, please check the descriptions too.
+
+> ...
+> # [67] event trigger - test multiple actions on hist trigger	[PASS]
+> 
+> >>> [68] - [72] can PASS on parent
+> # [68] event trigger - test inter-event histogram trigger onchange action	[FAIL]
+> # [69] event trigger - test inter-event histogram trigger onmatch action	[FAIL]
+> # [70] event trigger - test inter-event histogram trigger onmatch-onmax action	[FAIL]
+> # [71] event trigger - test inter-event histogram trigger onmax action	[FAIL]
+> # [72] event trigger - test inter-event histogram trigger snapshot action	[FAIL]
+> 
+> >>> [73] fail on parent, too
+> # [73] event trigger - test inter-event histogram trigger eprobe on synthetic event	[FAIL]
+> 
+> >>> [74] - [92] can PASS on parent
+> # [74] event trigger - test synthetic event create remove	[FAIL]
+> # [75] event trigger - test inter-event histogram trigger trace action with dynamic string param	[FAIL]
+> # [76] event trigger - test synthetic_events syntax parser	[FAIL]
+> # [77] event trigger - test synthetic_events syntax parser errors	[FAIL]
+> # [78] event trigger - test inter-event histogram trigger trace action	[FAIL]
+> # [79] event trigger - test event enable/disable trigger	[FAIL]
+> # [80] event trigger - test trigger filter	[FAIL]
+> # [81] event trigger - test histogram expression parsing	[FAIL]
+> # [82] event trigger - test histogram modifiers	[FAIL]
+> # [83] event trigger - test histogram parser errors	[FAIL]
+> # [84] event trigger - test histogram trigger	[FAIL]
+> # [85] event trigger - test multiple histogram triggers	[FAIL]
+> # [86] event trigger - test snapshot-trigger	[FAIL]
+> # [87] event trigger - test stacktrace-trigger	[FAIL]
+> # [88] trace_marker trigger - test histogram trigger	[FAIL]
+> # [89] trace_marker trigger - test snapshot trigger	[FAIL]
+> # [90] trace_marker trigger - test histogram with synthetic event against kernel event	[FAIL]
+> # [91] trace_marker trigger - test histogram with synthetic event	[FAIL]
+> # [92] event trigger - test traceon/off trigger	[FAIL]
+> # [93] (instance)  Basic test for tracers	[PASS]
+> ...
+> <<< [93] - [112] have same results as parent, all PASS >>>
+> ...
+> # [112] (instance)  trace_marker trigger - test histogram trigger	[PASS]
+> 
+> >>> parent has no [113]
+> # [113] (instance)  trace_marker trigger - test snapshot trigger	[PASS]
+
+And next, some patch series may *ADD* new testcases if the series add
+a new feature, so if you find the difference which is not in the
+parent commit but it is passed, please ignore that.
+
+> # tac: failed to create temporary file in '/tmp/ftracetest-dir.o54lNh': No such file or directory
+> # tac: failed to create temporary file in '/tmp/ftracetest-dir.o54lNh': No such file or directory
+> # tac: failed to create temporary file in '/tmp/ftracetest-dir.o54lNh': No such file or directory
+> # tac: failed to create temporary file in '/tmp/ftracetest-dir.o54lNh': No such file or directory
+
+And if you find this kind of new error message like above, please report it.
+This is more important for us.
+
+> # 
+> # 
+> # # of passed:  85
+> # # of failed:  26
+> # # of unresolved:  1
+> # # of untested:  0
+> # # of unsupported:  0
+> # # of xfailed:  1
+> # # of undefined(test bug):  0
+> not ok 1 selftests: ftrace: ftracetest # exit=1
+
+Also, please configure your running environment correctly so that all
+ftracetest passes. If you unsure how to do, please ask me.
+
+Thank you,
+
+> 
+> 
+> 
+> To reproduce:
+> 
+>         git clone https://github.com/intel/lkp-tests.git
+>         cd lkp-tests
+>         sudo bin/lkp install job.yaml           # job file is attached in this email
+>         bin/lkp split-job --compatible job.yaml # generate the yaml file for lkp run
+>         sudo bin/lkp run generated-yaml-file
+> 
+>         # if come across any failure that blocks the test,
+>         # please remove ~/.lkp and /lkp dir to run from a clean state.
+> 
+> 
+> 
+> ---
+> 0DAY/LKP+ Test Infrastructure                   Open Source Technology Center
+> https://lists.01.org/hyperkitty/list/lkp@lists.01.org       Intel Corporation
+> 
+> Thanks,
+> Oliver Sang
+> 
+
+
 -- 
-2.17.1
-
+Masami Hiramatsu <mhiramat@kernel.org>
