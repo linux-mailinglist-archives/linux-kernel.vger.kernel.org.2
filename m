@@ -2,114 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B17A343FE92
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 16:39:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC8F943FE9A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 16:41:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229621AbhJ2Ol5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 10:41:57 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:37660 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbhJ2Ol4 (ORCPT
+        id S229641AbhJ2OoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 10:44:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229511AbhJ2OoP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 10:41:56 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 7A54821965;
-        Fri, 29 Oct 2021 14:39:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1635518366; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EMl6XMWQU8PSi/h0g3mYu4dbu43K75wkrTIz7kMuvTc=;
-        b=AU8z2m/uf+cGXki+h7Z7wV6RYo9eOp7IrHxJ/DVsd9GQyFRY/q9O7dHK1zfWfEjnMZ/J0r
-        hYK83M6LWfXo0ANJKJurMTCime56igr7ypPGNRnTaRYSwqlxCD1dmn8kNCpA5kRUg3yqmu
-        XhLHqLKBEFQJG/4EbvHAOct2LI71PZ8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1635518366;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EMl6XMWQU8PSi/h0g3mYu4dbu43K75wkrTIz7kMuvTc=;
-        b=3llfTrrHSYKAXP7Vn4qn3OxG7skZpS/qI2gUPu8IHOZx7xvSFMBmNhiz0F3vTewvT+e3OQ
-        9gH65grZBBgIR8DQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6413A13F6F;
-        Fri, 29 Oct 2021 14:39:26 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id LsZmGJ4HfGHLOgAAMHmgww
-        (envelope-from <bp@suse.de>); Fri, 29 Oct 2021 14:39:26 +0000
-Date:   Fri, 29 Oct 2021 16:39:23 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Huang Rui <ray.huang@amd.com>
-Cc:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>,
-        linux-pm@vger.kernel.org, Deepak Sharma <deepak.sharma@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Steven Noonan <steven@valvesoftware.com>,
-        Nathan Fontenot <nathan.fontenot@amd.com>,
-        Jinzhou Su <Jinzhou.Su@amd.com>,
-        Xiaojian Du <Xiaojian.Du@amd.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v3 01/21] x86/cpufreatures: add AMD Collaborative
- Processor Performance Control feature flag
-Message-ID: <YXwHm84HYnIGm0hx@zn.tnic>
-References: <20211029130241.1984459-1-ray.huang@amd.com>
- <20211029130241.1984459-2-ray.huang@amd.com>
+        Fri, 29 Oct 2021 10:44:15 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29E9AC061570
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 07:41:47 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id o12so24842682ybk.1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 07:41:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=NWKMZ//AyFWFbpFk6FF66OtPadVuan7a1ybZS8hGNR8=;
+        b=MKETgg8TbLibza8/nA8sbUC5M+zq2jx0NGdLIkKtkILQSgvTmqBD74MvWqIjfMBTAp
+         9+ckPAMgAubFGwQ9Wja7n6Tg79nmAHwyUpqNNHVDIH3KYzJIiQ8FeauyQeDB5Xet+6bV
+         PKLhC4AucgHiM/9FXmkxbMBx2KF7LC9LdYlQOxwRLX/JYmwYLjDfU/rcHKHRtHMnhhiC
+         m5cdHUTGgaDeL4rF1WZsBxwKD5MRou42IdkoStcWgyjztUlal20kAEzxx8NSHiMXMCMG
+         gNpHRiI96Kbl2tTg9W5cmyOBMXEmrLMS7J8FeDzjlRcmNiby/2YJGIlGvd7QpE5pVYuM
+         fvyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=NWKMZ//AyFWFbpFk6FF66OtPadVuan7a1ybZS8hGNR8=;
+        b=rmHAiOw6vZjeMA4RXy5gpDyLwrcEtWLivw5v0zDUCT8TkcfMMf9To/qndsSnDGbH6q
+         3BP6C9EdQKtpHDvSkGHHOBZ9BAaRD0sZW879OlyvPC6RkZhFj3Wyms/sgmbFeSQ4CDOq
+         u45whG4vmBAaa5NUx0wnAXvPIYOAGgNSJKjp9ZzzwKXyPZU6dnHC56X3WMC/WvrkMzhR
+         TO75mhcP0fFALCLlH29ZoGSGtL1jPyXkdcv1v9ZQxASe8UDCMr/uby8reFy/dicm2HDX
+         6zksUvg7tzLs0gMXmryQdfXA27ga7iEqj2wJbI77+qJrOMHzpHpigwKhCj2YTBfBZLpU
+         8IPg==
+X-Gm-Message-State: AOAM533RHtxXDnrHSEuRf8vuPLMKNrM7xbkKieptBMkFY5egowiCOreG
+        CBDPwGN80eESvzJNlVpAndjyV7HFa2b/IkZ4PAk=
+X-Google-Smtp-Source: ABdhPJwlz9Cy19xfD52gtnmBjMaG0dxo2FThrZ1yTFJOfVIB3e//WHaMQZEoZNdlcYCVEkeNXZBxRWtvVERJmrEYN7o=
+X-Received: by 2002:a25:ba0f:: with SMTP id t15mr12857218ybg.62.1635518506293;
+ Fri, 29 Oct 2021 07:41:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211029130241.1984459-2-ray.huang@amd.com>
+Received: by 2002:a05:7110:700c:b0:fa:6b8d:fe70 with HTTP; Fri, 29 Oct 2021
+ 07:41:45 -0700 (PDT)
+Reply-To: uchennailobitenone@gmail.com
+From:   uhenna <tochiuju11@gmail.com>
+Date:   Fri, 29 Oct 2021 07:41:45 -0700
+Message-ID: <CA+6axKtzZweDpC2m0ECn_Epy5xOKRroM-eJn7rcEZL+j2eBzYQ@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 09:02:21PM +0800, Huang Rui wrote:
-> Add Collaborative Processor Performance Control feature flag for AMD
-> processors.
-> 
-> This feature flag will be used on the following amd-pstate driver. The
-> amd-pstate driver has two approaches to implement the frequency control
-> behavior. That depends on the CPU hardware implementation. One is "Full
-> MSR Support" and another is "Shared Memory Support". The feature flag
-> indicates the current processors with "Full MSR Support".
-> 
-> Signed-off-by: Huang Rui <ray.huang@amd.com>
-> ---
->  arch/x86/include/asm/cpufeatures.h | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-> index d0ce5cfd3ac1..f23dc1abd485 100644
-> --- a/arch/x86/include/asm/cpufeatures.h
-> +++ b/arch/x86/include/asm/cpufeatures.h
-> @@ -313,6 +313,7 @@
->  #define X86_FEATURE_AMD_SSBD		(13*32+24) /* "" Speculative Store Bypass Disable */
->  #define X86_FEATURE_VIRT_SSBD		(13*32+25) /* Virtualized Speculative Store Bypass Disable */
->  #define X86_FEATURE_AMD_SSB_NO		(13*32+26) /* "" Speculative Store Bypass is fixed in hardware. */
-> +#define X86_FEATURE_AMD_CPPC		(13*32+27) /* Collaborative Processor Performance Control */
->  
->  /* Thermal and Power Management Leaf, CPUID level 0x00000006 (EAX), word 14 */
->  #define X86_FEATURE_DTHERM		(14*32+ 0) /* Digital Thermal Sensor */
-> -- 
+Attention Please,
 
-Acked-by: Borislav Petkov <bp@suse.de>
+I am Bar. uchenna ilobi ,  How are you, I hope you are fine and
+healthy? This is to inform you that i have concluded the transaction
+successfully with the help of a new partner from Venezuela and now the
+fund has been transferred to Venezuela into the bank account of the
+new partner.
 
--- 
-Regards/Gruss,
-    Boris.
+Meanwhile, I have decided to compensate you with the sum of
+US$350,000.00 (thiree Hundred and Fifty Thousand United States
+Dollars) due to your past effort, though you disappointed me along the
+line. But nevertheless I am very happy for the successful ending of
+the transaction without any problem and that is the reason why i have
+decided to compensate you with the sum of US$350,000.00 so that you
+will share the joy with me.
 
-SUSE Software Solutions Germany GmbH, GF: Ivo Totev, HRB 36809, AG Nürnberg
+I advise you to contact my secretary for Atm Card of US$350.000.00,
+which I kept for you. Contact him now without any delay.
+
+Name: solomon brandy
+
+Email:solomonbrandyfiveone@gmail.com
+
+Kindly reconfirm to him the following below information:
+
+Your full name_________________________
+Your address__________________________
+Your country___________________________
+Your age______________________________
+Your occupation________________________
+Your cell Phone number______________________
+
+Note that if you did not send him the above information complete, he
+will not release the Atm card to you because he has to be sure that it
+is you. Ask him to send you the total sum of ($350.000.00 ) Atm card,
+which I kept for you.
+
+Best regards,
+
+Mr. uchenna ilobi
