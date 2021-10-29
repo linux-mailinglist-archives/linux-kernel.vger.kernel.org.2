@@ -2,335 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 568AF43FF1F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 17:09:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3CF843FF19
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 17:09:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230136AbhJ2PMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 11:12:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54906 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230010AbhJ2PMP (ORCPT
+        id S229868AbhJ2PML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 11:12:11 -0400
+Received: from out03.mta.xmission.com ([166.70.13.233]:38362 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229527AbhJ2PMJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 11:12:15 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 289B6C061714
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 08:09:47 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id d13so16585532wrf.11
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 08:09:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=WCUD7wa/UfrImVYU2GRX/0pQIO55YFU0ILpNbfg7yjE=;
-        b=I0z6ropag1QO0QDAkHx4XE8A8b+S+vIEOc4vVyXs+GlMZT/hpKP2qAY8FeEfgW+mXu
-         QkDAUYHQPO8TRAa8ldvRJna+ure7x53hGhrZhCfmn3tPWmmWjBW4nCePhtdg4853hJ6I
-         VHQ4RctOcF7G0un97tw+ZqMFmSl3vc04yLQ/3w2qGuLffzwCNXlgbaWfBLTkaBTs+kgq
-         Xy/UPTnyEEA4pPGI3rctAE1sh3OuqZri4+KehAhfqHSzqGBZ2UUMm8pT9IgV7vUPCfGX
-         ePtmfZs8HS1x2yXOWp4rc9UooI8Ig2cjp0Ipr/+TSUGxl37+80oSao6Gkf4VOqmEBgrU
-         bD4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=WCUD7wa/UfrImVYU2GRX/0pQIO55YFU0ILpNbfg7yjE=;
-        b=p8eElvI0gozXyQVI8fMrGTYCAONvQPBSAF6mUIFfj/6AEIHQxc/HiCfLLYvmDxq0Cs
-         Ps1neWp3PabjcOtpbfwySOrgtfFw9TA89zksar5hdaL1GbMm9bEqzEH28RGd6MulPGY6
-         xHTMAp7tPN/VGbffPn4beEtySEF11dKeTG+B3G+tHUEI1yT+/PEI1HFf3C9RkAmZP5oU
-         G2zLRf8tACj5L19Ak380qX1Sjt6NOCTXPEE1BbhTD8oX0TYT+o0vGLUGdpLIpZrgGqoX
-         SoZtoDYc2DDed+0Gy4VFlhiacdy8KW9P/aj9uFGcfmEuqS3D+WG+roYiJvodAE5vRq6j
-         ctcg==
-X-Gm-Message-State: AOAM531qBnMIr8DcQ1rbhjdkeTriX/9AgK82ocwfyOn0LeL8Q70NZ3vj
-        7YfBw8tfWMeNM5ksQibaL/X8Gw==
-X-Google-Smtp-Source: ABdhPJz95KAmtvq0QkYsot71ch/wgrT/8tes8TY662sqa5a+Jwmt2yQ79oIMsTAx86ojKkgIcYNPGA==
-X-Received: by 2002:adf:a1d4:: with SMTP id v20mr15236363wrv.168.1635520185673;
-        Fri, 29 Oct 2021 08:09:45 -0700 (PDT)
-Received: from xps-9300.baylibre.local (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.gmail.com with ESMTPSA id b7sm7091906wrv.72.2021.10.29.08.09.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Oct 2021 08:09:45 -0700 (PDT)
-From:   Alexandre Bailon <abailon@baylibre.com>
-To:     rafael@kernel.org, rui.zhang@intel.com, daniel.lezcano@linaro.org,
-        amitk@kernel.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ben.tseng@mediatek.com, khilman@baylibre.com, mka@chromium.org,
-        Alexandre Bailon <abailon@baylibre.com>
-Subject: [PATCH v3 2/2] thermal: add a virtual sensor to aggregate temperatures
-Date:   Fri, 29 Oct 2021 17:08:57 +0200
-Message-Id: <20211029150857.504891-3-abailon@baylibre.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211029150857.504891-1-abailon@baylibre.com>
-References: <20211029150857.504891-1-abailon@baylibre.com>
+        Fri, 29 Oct 2021 11:12:09 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52]:44310)
+        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mgTVk-006xUw-G8; Fri, 29 Oct 2021 09:09:40 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:54384 helo=email.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mgTVh-004SCm-Ga; Fri, 29 Oct 2021 09:09:39 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Andrea Righi <andrea.righi@canonical.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <YXrN+Hnl9pSOsWlA@arighi-desktop> <202110280955.B18CB67@keescook>
+        <878rydm56l.fsf@disp2133> <202110281136.5CE65399A7@keescook>
+Date:   Fri, 29 Oct 2021 10:09:04 -0500
+In-Reply-To: <202110281136.5CE65399A7@keescook> (Kees Cook's message of "Thu,
+        28 Oct 2021 11:47:48 -0700")
+Message-ID: <87k0hvkgvj.fsf_-_@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-XM-SPF: eid=1mgTVh-004SCm-Ga;;;mid=<87k0hvkgvj.fsf_-_@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/FEeRP4fHav6LdZxVWjjrMekdL2ZOhVZk=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa05.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.7 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,XMSubLong,XM_B_SpammyWords autolearn=disabled
+        version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.7 XMSubLong Long Subject
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa05 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.2 XM_B_SpammyWords One or more commonly used spammy words
+X-Spam-DCC: XMission; sa05 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Kees Cook <keescook@chromium.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 1761 ms - load_scoreonly_sql: 0.09 (0.0%),
+        signal_user_changed: 10 (0.6%), b_tie_ro: 9 (0.5%), parse: 0.85 (0.0%),
+         extract_message_metadata: 10 (0.6%), get_uri_detail_list: 2.2 (0.1%),
+        tests_pri_-1000: 17 (1.0%), tests_pri_-950: 2.7 (0.2%),
+        tests_pri_-900: 1.87 (0.1%), tests_pri_-90: 397 (22.5%), check_bayes:
+        395 (22.4%), b_tokenize: 12 (0.7%), b_tok_get_all: 10 (0.6%),
+        b_comp_prob: 2.6 (0.1%), b_tok_touch_all: 365 (20.7%), b_finish: 1.46
+        (0.1%), tests_pri_0: 1299 (73.8%), check_dkim_signature: 0.74 (0.0%),
+        check_dkim_adsp: 3.0 (0.2%), poll_dns_idle: 0.50 (0.0%), tests_pri_10:
+        3.3 (0.2%), tests_pri_500: 16 (0.9%), rewrite_mail: 0.00 (0.0%)
+Subject: [PATCH] signal: Add SA_IMMUTABLE to ensure forced siganls do not get changed
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds a virtual thermal sensor driver that reads temperature from
-multiple hardware sensors and returns an aggregated temperature.
-Currently, this supports three aggregations:
-the minimum, maximum and average temperature.
 
-Signed-off-by: Alexandre Bailon <abailon@baylibre.com>
+As Andy pointed out that there are races between
+force_sig_info_to_task and sigaction[1] when force_sig_info_task.  As
+Kees discovered[2] ptrace is also able to change these signals.
+
+In the case of seeccomp killing a process with a signal it is a
+security violation to allow the signal to be caught or manipulated.
+
+Solve this problem by introducing a new flag SA_IMMUTABLE that
+prevents sigaction and ptrace from modifying these forced signals.
+This flag is carefully made kernel internal so that no new ABI is
+introduced.
+
+Longer term I think this can be solved by guaranteeing short circuit
+delivery of signals in this case.  Unfortunately reliable and
+guaranteed short circuit delivery of these signals is still a ways off
+from being implemented, tested, and merged.  So I have implemented a much
+simpler alternative for now.
+
+[1] https://lkml.kernel.org/r/b5d52d25-7bde-4030-a7b1-7c6f8ab90660@www.fastmail.com
+[2] https://lkml.kernel.org/r/202110281136.5CE65399A7@keescook
+Cc: stable@vger.kernel.org
+Fixes: 307d522f5eb8 ("signal/seccomp: Refactor seccomp signal and coredump generation")
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
 ---
- drivers/thermal/Kconfig                  |   8 +
- drivers/thermal/Makefile                 |   1 +
- drivers/thermal/virtual_thermal_sensor.c | 218 +++++++++++++++++++++++
- 3 files changed, 227 insertions(+)
- create mode 100644 drivers/thermal/virtual_thermal_sensor.c
 
-diff --git a/drivers/thermal/Kconfig b/drivers/thermal/Kconfig
-index d7f44deab5b1..b326fae5ad1d 100644
---- a/drivers/thermal/Kconfig
-+++ b/drivers/thermal/Kconfig
-@@ -228,6 +228,14 @@ config THERMAL_MMIO
- 	  register or shared memory, is a potential candidate to work with this
- 	  driver.
+I have tested this patch and this changed works for me to fix the issue.
+
+I believe this closes all of the races that force_sig_info_to_task
+has when sigdfl is specified.  So this should be enough for anything
+that needs a guaranteed that userspace can not race with the kernel
+is handled.
+
+Can folks look this over and see if I missed something?
+Thank you,
+Eric
+
+
+ include/linux/signal_types.h           | 3 +++
+ include/uapi/asm-generic/signal-defs.h | 1 +
+ kernel/signal.c                        | 8 +++++++-
+ 3 files changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/include/linux/signal_types.h b/include/linux/signal_types.h
+index 34cb28b8f16c..927f7c0e5bff 100644
+--- a/include/linux/signal_types.h
++++ b/include/linux/signal_types.h
+@@ -70,6 +70,9 @@ struct ksignal {
+ 	int sig;
+ };
  
-+config VIRTUAL_THERMAL
-+	tristate "DT-based virtual thermal sensor driver"
-+	depends on THERMAL_OF || COMPILE_TEST
-+	help
-+	  This option enables the generic DT-based thermal sensor aggregator.
-+	  This driver creates a thermal sensor that reads multiple hardware
-+	  sensors and aggregates their output.
++/* Used to kill the race between sigaction and forced signals */
++#define SA_IMMUTABLE		0x008000000
 +
- config HISI_THERMAL
- 	tristate "Hisilicon thermal driver"
- 	depends on ARCH_HISI || COMPILE_TEST
-diff --git a/drivers/thermal/Makefile b/drivers/thermal/Makefile
-index 82fc3e616e54..8bf55973059c 100644
---- a/drivers/thermal/Makefile
-+++ b/drivers/thermal/Makefile
-@@ -60,3 +60,4 @@ obj-$(CONFIG_UNIPHIER_THERMAL)	+= uniphier_thermal.o
- obj-$(CONFIG_AMLOGIC_THERMAL)     += amlogic_thermal.o
- obj-$(CONFIG_SPRD_THERMAL)	+= sprd_thermal.o
- obj-$(CONFIG_KHADAS_MCU_FAN_THERMAL)	+= khadas_mcu_fan.o
-+obj-$(CONFIG_VIRTUAL_THERMAL) += virtual_thermal_sensor.o
-diff --git a/drivers/thermal/virtual_thermal_sensor.c b/drivers/thermal/virtual_thermal_sensor.c
-new file mode 100644
-index 000000000000..b1c5ea308abb
---- /dev/null
-+++ b/drivers/thermal/virtual_thermal_sensor.c
-@@ -0,0 +1,218 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * virtual_thermal_sensor.c - DT-based virtual thermal sensor driver.
-+ *
-+ * Copyright (c) 2021 BayLibre
-+ */
-+
-+#include <linux/err.h>
-+#include <linux/export.h>
-+#include <linux/module.h>
-+#include <linux/of_device.h>
-+#include <linux/of_platform.h>
-+#include <linux/slab.h>
-+#include <linux/thermal.h>
-+#include <linux/types.h>
-+#include <linux/string.h>
-+
-+#include <dt-bindings/thermal/virtual-sensor.h>
-+
-+struct virtual_thermal_zone_device {
-+	struct thermal_zone_device *zone;
-+	struct module *owner;
-+};
-+
-+struct virtual_thermal_sensor {
-+	int count;
-+	struct virtual_thermal_zone_device *zones;
-+	struct thermal_zone_device *tzd;
-+	int (*aggr_temp)(int temp1, int temp2);
-+
-+	struct list_head node;
-+};
-+
-+static int max_temp(int temp1, int temp2)
-+{
-+	return max(temp1, temp2);
-+}
-+
-+static int min_temp(int temp1, int temp2)
-+{
-+	return min(temp1, temp2);
-+}
-+
-+static int avg_temp(int temp1, int temp2)
-+{
-+	return (temp1 + temp2) / 2;
-+}
-+
-+static int virtual_thermal_sensor_get_temp(void *data, int *temperature)
-+{
-+	struct virtual_thermal_sensor *sensor = data;
-+	int max_temp = INT_MIN;
-+	int temp;
-+	int i;
-+
-+	for (i = 0; i < sensor->count; i++) {
-+		struct thermal_zone_device *zone;
-+
-+		zone = sensor->zones[i].zone;
-+		zone->ops->get_temp(zone, &temp);
-+		max_temp = sensor->aggr_temp(max_temp, temp);
-+	}
-+
-+	*temperature = max_temp;
-+
-+	return 0;
-+}
-+
-+static const struct thermal_zone_of_device_ops virtual_thermal_sensor_ops = {
-+	.get_temp = virtual_thermal_sensor_get_temp,
-+};
-+
-+int virtual_thermal_sensor_get_module(struct virtual_thermal_zone_device *zone,
-+				      const char *name)
-+{
-+		struct platform_device *sensor_pdev;
-+		struct device_node *node;
-+
-+		node = of_find_node_by_name(NULL, name);
-+		if (!node)
-+			return -ENODEV;
-+
-+		node = of_parse_phandle(node, "thermal-sensors", 0);
-+		if (!node)
-+			return -ENODEV;
-+
-+		sensor_pdev = of_find_device_by_node(node);
-+		if (!sensor_pdev)
-+			return -ENODEV;
-+
-+		if (!sensor_pdev->dev.driver)
-+			return -EPROBE_DEFER;
-+
-+		if (!try_module_get(sensor_pdev->dev.driver->owner))
-+			return -ENODEV;
-+
-+		zone->owner = sensor_pdev->dev.driver->owner;
-+
-+		return 0;
-+}
-+
-+void virtual_thermal_sensor_put_modules(struct virtual_thermal_sensor *sensor)
-+{
-+	int i;
-+
-+	for (i = 0; i < sensor->count; i++) {
-+		if (sensor->zones[i].zone)
-+			module_put(sensor->zones[i].owner);
-+	}
-+}
-+
-+static int virtual_thermal_sensor_probe(struct platform_device *pdev)
-+{
-+	struct virtual_thermal_sensor *sensor;
-+	struct device *dev = &pdev->dev;
-+	struct property *prop;
-+	const char *name;
-+	u32 type;
-+	int ret;
-+	int i = 0;
-+
-+	sensor = devm_kzalloc(dev, sizeof(*sensor), GFP_KERNEL);
-+	if (!sensor)
-+		return -ENOMEM;
-+	sensor->count = of_property_count_strings(dev->of_node, "thermal-sensors");
-+	if (sensor->count <= 0)
-+		return -EINVAL;
-+
-+	sensor->zones = devm_kmalloc_array(dev, sensor->count,
-+					     sizeof(*sensor->zones),
-+					     GFP_KERNEL);
-+	if (!sensor->zones)
-+		return -ENOMEM;
-+
-+	of_property_for_each_string(dev->of_node, "thermal-sensors", prop, name) {
-+		struct virtual_thermal_zone_device *virtual_zone;
-+		struct thermal_zone_device *zone;
-+
-+		virtual_zone = &sensor->zones[i++];
-+
-+		zone = thermal_zone_get_zone_by_name(name);
-+		if (IS_ERR(zone))
-+			return PTR_ERR(zone);
-+
-+		ret = virtual_thermal_sensor_get_module(virtual_zone, name);
-+		if (ret)
-+			goto err;
-+
-+		virtual_zone->zone = zone;
-+	}
-+
-+	ret = of_property_read_u32(dev->of_node, "aggregation-function", &type);
-+	if (ret)
-+		return ret;
-+
-+	switch (type) {
-+	case VIRTUAL_THERMAL_SENSOR_MAX_VAL:
-+		sensor->aggr_temp = max_temp;
-+		break;
-+	case VIRTUAL_THERMAL_SENSOR_MIN_VAL:
-+		sensor->aggr_temp = min_temp;
-+		break;
-+	case VIRTUAL_THERMAL_SENSOR_AVG_VAL:
-+		sensor->aggr_temp = avg_temp;
-+		break;
-+	default:
+ #ifndef __ARCH_UAPI_SA_FLAGS
+ #ifdef SA_RESTORER
+ #define __ARCH_UAPI_SA_FLAGS	SA_RESTORER
+diff --git a/include/uapi/asm-generic/signal-defs.h b/include/uapi/asm-generic/signal-defs.h
+index fe929e7b77ca..7572f2f46ee8 100644
+--- a/include/uapi/asm-generic/signal-defs.h
++++ b/include/uapi/asm-generic/signal-defs.h
+@@ -45,6 +45,7 @@
+ #define SA_UNSUPPORTED	0x00000400
+ #define SA_EXPOSE_TAGBITS	0x00000800
+ /* 0x00010000 used on mips */
++/* 0x00800000 used for internal SA_IMMUTABLE */
+ /* 0x01000000 used on x86 */
+ /* 0x02000000 used on x86 */
+ /*
+diff --git a/kernel/signal.c b/kernel/signal.c
+index 6a5e1802b9a2..056a107e3cbc 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -1336,6 +1336,7 @@ force_sig_info_to_task(struct kernel_siginfo *info, struct task_struct *t, bool
+ 	blocked = sigismember(&t->blocked, sig);
+ 	if (blocked || ignored || sigdfl) {
+ 		action->sa.sa_handler = SIG_DFL;
++		action->sa.sa_flags |= SA_IMMUTABLE;
+ 		if (blocked) {
+ 			sigdelset(&t->blocked, sig);
+ 			recalc_sigpending_and_wake(t);
+@@ -2760,7 +2761,8 @@ bool get_signal(struct ksignal *ksig)
+ 		if (!signr)
+ 			break; /* will return 0 */
+ 
+-		if (unlikely(current->ptrace) && signr != SIGKILL) {
++		if (unlikely(current->ptrace) && (signr != SIGKILL) &&
++		    !(sighand->action[signr -1].sa.sa_flags & SA_IMMUTABLE)) {
+ 			signr = ptrace_signal(signr, &ksig->info);
+ 			if (!signr)
+ 				continue;
+@@ -4110,6 +4112,10 @@ int do_sigaction(int sig, struct k_sigaction *act, struct k_sigaction *oact)
+ 	k = &p->sighand->action[sig-1];
+ 
+ 	spin_lock_irq(&p->sighand->siglock);
++	if (k->sa.sa_flags & SA_IMMUTABLE) {
++		spin_unlock_irq(&p->sighand->siglock);
 +		return -EINVAL;
 +	}
-+
-+	sensor->tzd = devm_thermal_zone_of_sensor_register(dev, 0, sensor,
-+							   &virtual_thermal_sensor_ops);
-+	if (IS_ERR(sensor->tzd))
-+		return PTR_ERR(sensor->tzd);
-+
-+	platform_set_drvdata(pdev, sensor);
-+
-+	return 0;
-+
-+err:
-+	virtual_thermal_sensor_put_modules(sensor);
-+
-+	return ret;
-+}
-+
-+static int virtual_thermal_sensor_remove(struct platform_device *pdev)
-+{
-+	struct virtual_thermal_sensor *sensor;
-+
-+	sensor = platform_get_drvdata(pdev);
-+	list_del(&sensor->node);
-+
-+	virtual_thermal_sensor_put_modules(sensor);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id virtual_thermal_sensor_of_match[] = {
-+	{
-+		.compatible = "virtual,thermal-sensor",
-+	},
-+	{
-+	},
-+};
-+MODULE_DEVICE_TABLE(of, virtual_thermal_sensor_of_match);
-+
-+static struct platform_driver virtual_thermal_sensor = {
-+	.probe = virtual_thermal_sensor_probe,
-+	.remove = virtual_thermal_sensor_remove,
-+	.driver = {
-+		.name = "virtual-thermal-sensor",
-+		.of_match_table = virtual_thermal_sensor_of_match,
-+	},
-+};
-+
-+module_platform_driver(virtual_thermal_sensor);
-+MODULE_AUTHOR("Alexandre Bailon <abailon@baylibre.com>");
-+MODULE_DESCRIPTION("Virtual thermal sensor");
-+MODULE_LICENSE("GPL v2");
+ 	if (oact)
+ 		*oact = *k;
+ 
 -- 
-2.32.0
+2.20.1
 
