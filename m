@@ -2,222 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2D4043F7F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 09:45:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 719DB43F7FA
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 09:45:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232252AbhJ2HsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 03:48:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230247AbhJ2HsF (ORCPT
+        id S232263AbhJ2HsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 03:48:16 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:47901 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232260AbhJ2HsM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 03:48:05 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A40AEC061570;
-        Fri, 29 Oct 2021 00:45:37 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id n67so11489652iod.9;
-        Fri, 29 Oct 2021 00:45:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YvS3OEojn6WlgoM5Pok9+XWG3Yikban/dCaVMqXh6O4=;
-        b=j0ZYEwfg/RFP3vZ0NF45LNbXn0FXnpRrSZKuYBz/v3Ti0BTmeyp9N7VQZHJ0MOpaHc
-         SyOFdeQmIvmzNxRqDvY36MWKL4TN4GyGqlch3Oic3ZzzQtFJzSqAx6Sncn84ySZo0K/U
-         CDVKvtPGDJyopdDodidwBiFnONnN0Y+zPuafOQ6zzwcj0xmqQruYxufDtrGqgVTm197X
-         YD7WbaChlI8ZDicXCuH4XD1MpdTyJ50sTFdy4MOyQqgKK1CXkRLKfxaPvxQqnar8Ew15
-         4rzhCfQnHV9Kq+c95oj4HnQu6n4EutKUy+lqQDB3VSiBsBk12fvwsyMW/u3N12jhBu3l
-         Yg8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YvS3OEojn6WlgoM5Pok9+XWG3Yikban/dCaVMqXh6O4=;
-        b=Dy+L2AIyx8TPFQn9HjDpaganSZ4/9hXjfefaJa5ZQ+Ao0OlHtHnsgU2/ANFCz027DB
-         OzcpXx7w5abhPDzg6FKagaZ0pci1jadnof3uroSqKjOP1qV0ReILwvxbYRmioikToxOR
-         CBwpMeVdB2gIg80oLTSZSHbVGvPX6NH5Ql2YL+sQTzEId9hGtr39ssnZPmNCs8nCQpfl
-         1uNJQ1bRaCyjWOvcE4ovJ5buqaIcRwO2ySeuD6ST7//Wnrw35DabK/wTIfQwCRtRT8Qe
-         run0JpMf41CZOxGtnqbQux9wy8skHBdexwjzlbDkTEJScEvBlt4xjjJ4UCzVax+weyJw
-         jITg==
-X-Gm-Message-State: AOAM530kgGMKBstBxKTuI/V7O59d1ylMJumuc/VM7XjstAdqzehCCevV
-        6DJp11l0OzhHkDqGwo+SFs0Pxb9375Pbo9YkjiI=
-X-Google-Smtp-Source: ABdhPJyETE/qLAF0grfwPy1l00eM4REeeLtmeoBWL6wOt59OXeZvcrCFeFwAw5oh/9q3xbShCHKFcImikiHaH3niayk=
-X-Received: by 2002:a05:6602:27d4:: with SMTP id l20mr6774818ios.94.1635493536891;
- Fri, 29 Oct 2021 00:45:36 -0700 (PDT)
+        Fri, 29 Oct 2021 03:48:12 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.nyi.internal (Postfix) with ESMTP id A540158040D;
+        Fri, 29 Oct 2021 03:45:43 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Fri, 29 Oct 2021 03:45:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=2Qr7yp3VVFxWnNP0fkutA51R9FY
+        qy6LYwE1X+yQ1EW0=; b=tKwuYb/Wq0dgJ2YXW12P/sqAtQl/PBCZkonpsrUxp7H
+        Wm2yBGvFgMPEOO0AT+QjNvcylVqGy1hoFDE8uUX+lqdJit4FBWpWtVXSNF5n7y51
+        jAekYKlXIAYkuc+BAy+YZoAwpsrD2KfF2i1Ykb1+en3CJkudi6kNXxAN3Q3CqJan
+        5uPI6UU/OY9YwNw6yuigw5KQC2aEjlDqFzWGh8gWql1SCdbN6ij5zSZcI2PpD5kq
+        78IQfpMsEjzwCgmCUSHbKIxwrw0mtknZZrT9OZ8Vq1mYqyEfiIFGA3dtvF8e06ia
+        iA8DH/DUP16G3rWU5JiK+iTzvWAJoMSPoHyEAYsYdGg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=2Qr7yp
+        3VVFxWnNP0fkutA51R9FYqy6LYwE1X+yQ1EW0=; b=Lj6hdvJOKSLvMmQnSku3FE
+        t22vZTkube23+oegCpP03OcB+QevKkrrsBNT/rqk6xlMqhrt2khuOIcCNdAvQaj5
+        dcMWP0vK5sg9ATJ+XRaRlDIRAXzsaxa7PASj5MhfM8PMhN4+VxKYkq0fKtQwfpZo
+        0MhLd/Ll3Gd8k98+3bH5KsCYFxDYZSv85KpwS2RGinyUL/lpUdOxprYCqIDyIZ2I
+        wh2OR1DdrSlylMJllP01oG54xRpOTiqwayZRnEUKCI6T02ZCA0c7oLVhUCxUi6b6
+        ZdWEXxs+IwI/NubGA7IXxBPYo2IXP64pPljh8nq3NgAHXjZDDy7wf+QNeBdphLtw
+        ==
+X-ME-Sender: <xms:pqZ7YQXi92jW380JZJh63OKDNrFAWXl7ZAcDlYO2_asZL5yy0u5Zxw>
+    <xme:pqZ7YUnWLWF86o-SWtc15aWM4Iolev2tg-Cp5EAu44b3twZ3-5ncqOHHd-HtMnXE2
+    GxdluszqNPOEA>
+X-ME-Received: <xmr:pqZ7YUYrtl9v1zrxsLcrpIARTYqQ1u943mMezwzv4O-Tb_kVgsHd4CqOFWrDe7hdECnhJB3UEYSki4Fx758BWlV5NTVkudGW>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvdeggedguddulecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
+    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuhe
+    ejgfffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecuvehluhhs
+    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorg
+    hhrdgtohhm
+X-ME-Proxy: <xmx:pqZ7YfW83EidWM-94C0OPFMqWKu9Dcdx9KyqddFR7Ezt4iFrOOEqcg>
+    <xmx:pqZ7YalW4Ds4QeO0Cl41yG4gd5AOa0Ar81mIXB3nz7dLavyOhgj5_A>
+    <xmx:pqZ7YUdYE_89SKS_M6R1sovAQXh7P5snpzkZHXCmXupgxjD9n141XQ>
+    <xmx:p6Z7YSEEpUeSCm1kmoQzZT6ywDBp9pqUBR0bGNMQt3FQxiFyxyXXRw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 29 Oct 2021 03:45:41 -0400 (EDT)
+Date:   Fri, 29 Oct 2021 09:45:40 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Matthew Auld <matthew.auld@intel.com>
+Subject: Re: linux-next: manual merge of the char-misc tree with the
+ drm-intel tree
+Message-ID: <YXumpITANOVt3oaJ@kroah.com>
+References: <20211028182753.56b6a174@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20211025083315.4752-1-laoar.shao@gmail.com> <20211025083315.4752-13-laoar.shao@gmail.com>
- <202110251431.F594652F@keescook> <YXmySeDsxxbA7hcq@alley>
-In-Reply-To: <YXmySeDsxxbA7hcq@alley>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Fri, 29 Oct 2021 15:44:47 +0800
-Message-ID: <CALOAHbDQkfdpW4hktPCcstEAYG6ecEan_b095NeanA7sC1K=-w@mail.gmail.com>
-Subject: Re: [PATCH v6 12/12] kernel/kthread: show a warning if kthread's comm
- is truncated
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qiang Zhang <qiang.zhang@windriver.com>,
-        robdclark <robdclark@chromium.org>,
-        christian <christian@brauner.io>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        dennis.dalessandro@cornelisnetworks.com,
-        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
-        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        kbuild test robot <lkp@intel.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211028182753.56b6a174@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 4:10 AM Petr Mladek <pmladek@suse.com> wrote:
->
-> On Mon 2021-10-25 14:35:42, Kees Cook wrote:
-> > On Mon, Oct 25, 2021 at 08:33:15AM +0000, Yafang Shao wrote:
-> > > Show a warning if task comm is truncated. Below is the result
-> > > of my test case:
-> > >
-> > > truncated kthread comm:I-am-a-kthread-with-lon, pid:14 by 6 characters
-> > >
-> > > Suggested-by: Petr Mladek <pmladek@suse.com>
-> > > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > > Reviewed-by: Kees Cook <keescook@chromium.org>
-> > > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > > Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-> > > Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> > > Cc: Peter Zijlstra <peterz@infradead.org>
-> > > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > > Cc: Al Viro <viro@zeniv.linux.org.uk>
-> > > Cc: Kees Cook <keescook@chromium.org>
-> > > Cc: Petr Mladek <pmladek@suse.com>
-> > > ---
-> > >  kernel/kthread.c | 7 ++++++-
-> > >  1 file changed, 6 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/kernel/kthread.c b/kernel/kthread.c
-> > > index 5b37a8567168..46b924c92078 100644
-> > > --- a/kernel/kthread.c
-> > > +++ b/kernel/kthread.c
-> > > @@ -399,12 +399,17 @@ struct task_struct *__kthread_create_on_node(int (*threadfn)(void *data),
-> > >     if (!IS_ERR(task)) {
-> > >             static const struct sched_param param = { .sched_priority = 0 };
-> > >             char name[TASK_COMM_LEN];
-> > > +           int len;
-> > >
-> > >             /*
-> > >              * task is already visible to other tasks, so updating
-> > >              * COMM must be protected.
-> > >              */
-> > > -           vsnprintf(name, sizeof(name), namefmt, args);
-> > > +           len = vsnprintf(name, sizeof(name), namefmt, args);
-> > > +           if (len >= TASK_COMM_LEN) {
-> >
-> > And since this failure case is slow-path, we could improve the warning
-> > as other had kind of suggested earlier with something like this instead:
-> >
-> >                       char *full_comm;
-> >
-> >                       full_comm = kvasprintf(GFP_KERNEL, namefmt, args);
->
-> You need to use va_copy()/va_end() if you want to use the same va_args
-> twice.
->
-
-Now I understand it.
-So the patch will be:
-
-diff --git a/kernel/kthread.c b/kernel/kthread.c
-index 5b37a8567168..c1ff67283725 100644
---- a/kernel/kthread.c
-+++ b/kernel/kthread.c
-@@ -399,12 +399,29 @@ struct task_struct *__kthread_create_on_node(int
-(*threadfn)(void *data),
-        if (!IS_ERR(task)) {
-                static const struct sched_param param = { .sched_priority = 0 };
-                char name[TASK_COMM_LEN];
-+               char *full_comm;
-+               va_list aq;
-+               int len;
-
-                /*
-                 * task is already visible to other tasks, so updating
-                 * COMM must be protected.
-                 */
--               vsnprintf(name, sizeof(name), namefmt, args);
-+               va_copy(aq, args);
-+               len = vsnprintf(name, sizeof(name), namefmt, aq);
-+               va_end(aq);
-+               if (len >= TASK_COMM_LEN) {
-+                       full_comm = kvasprintf(GFP_KERNEL, namefmt, args);
-+                       if (full_comm) {
-+                               pr_warn("truncated kthread comm '%s'
-to '%s' (pid:%d)\n",
-+                                       full_comm, name, task->pid);
-+                               kfree(full_comm);
-+                       } else {
-+                               pr_warn("truncated kthread comm '%s'
-(pid:%d) by %d characters\n",
-+                                       name, task->pid, len -
-TASK_COMM_LEN + 1);
-+
-+                       }
-+               }
-                set_task_comm(task, name);
-                /*
-                 * root may have changed our (kthreadd's) priority or CPU mask.
-
-That seems a little overkill to me.
-I prefer to keep the v6 as-is.
-
-> For example, see how kvasprintf() is implemented. It calls
-> vsnprintf() twice and it uses va_copy()/va_end() around the the first call.
->
-> kvasprintf() could also return NULL if there is not enough memory.
->
-> >                       pr_warn("truncated kthread comm '%s' to '%s' (pid:%d)\n",
-> >                               full_comm, name);
->
-> BTW: Is this message printed during normal boot? I did not tried the
-> patchset myself.
->
-> We should add this warning only if there is a good solution how to
-> avoid the truncated names. And we should me sure that the most common
-> kthreads/workqueues do not trigger it. It would be ugly to print many
-> warnings during boot if people could not get rid of them easily.
->
-> >                       kfree(full_comm);
-> >               }
-> > >             set_task_comm(task, name);
-> > >             /*
-> > >              * root may have changed our (kthreadd's) priority or CPU mask.
->
-> Best Regards,
-> Petr
+On Thu, Oct 28, 2021 at 06:27:53PM +1100, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Today's linux-next merge of the char-misc tree got a conflict in:
+> 
+>   drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c
+> 
+> between commit:
+> 
+>   5740211ea442 ("drm/i915/dmabuf: fix broken build")
+> 
+> from the drm-intel tree and commit:
+> 
+>   16b0314aa746 ("dma-buf: move dma-buf symbols into the DMA_BUF module namespace")
+> 
+> from the char-misc tree.
+> 
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+> 
+> -- 
+> Cheers,
+> Stephen Rothwell
+> 
+> diff --cc drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c
+> index a45d0ec2c5b6,abb854281347..000000000000
+> --- a/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c
+> +++ b/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c
+> @@@ -12,13 -13,8 +13,15 @@@
+>   #include "i915_gem_object.h"
+>   #include "i915_scatterlist.h"
+>   
+>  +#if defined(CONFIG_X86)
+>  +#include <asm/smp.h>
+>  +#else
+>  +#define wbinvd_on_all_cpus() \
+>  +	pr_warn(DRIVER_NAME ": Missing cache flush in %s\n", __func__)
+>  +#endif
+>  +
+> + MODULE_IMPORT_NS(DMA_BUF);
+> + 
+>   I915_SELFTEST_DECLARE(static bool force_different_devices;)
+>   
+>   static struct drm_i915_gem_object *dma_buf_to_obj(struct dma_buf *buf)
 
 
 
--- 
-Thanks
-Yafang
+Fix looks good, thanks!
