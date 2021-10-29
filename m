@@ -2,219 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA12F43FB28
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 13:00:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BA6043FB30
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 13:06:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231905AbhJ2LCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 07:02:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53844 "EHLO
+        id S231891AbhJ2LJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 07:09:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231849AbhJ2LCk (ORCPT
+        with ESMTP id S231826AbhJ2LJF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 07:02:40 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20C8BC061745
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 04:00:12 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id f7-20020a1c1f07000000b0032ee11917ceso3610155wmf.0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 04:00:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=O3oaDN2gpxryQcZbqbv+wyWbmX+dh9L0V5UJG38mn1g=;
-        b=flCgF7AmI58fDgqUzP7e4Us8VWrnow4KebbSQzVnOxr3F4YNjpk6Dg3qW+/Ai9684t
-         34KwUB9oajdImvPjBsMcI6ELBoaouFdO+cE/Sg/CC+vyED7hIxMbV0iSqHZrUdMOUWvr
-         anJRwKMkR2CzHG2Si5Fq1FlkUIjR10rO9IkAEPdZr2u4OD+e8flAPehf+BjYz4r8t7ux
-         puvaj0ySwfkm+UPyNWORajjj1FEL68PRsyxEdw6YWZqe+Z3NRrplCdBPL8d5CCaYTLLy
-         w7VhccfNk78AcIZeuBa61O0uHgiD2icuurk2qs6irkHFMQBAVWkyYxgV4q9Fqb9i58K1
-         gJHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=O3oaDN2gpxryQcZbqbv+wyWbmX+dh9L0V5UJG38mn1g=;
-        b=Ayc8IEYjhrOiWE3nCDlQ1oitfdwlQZGoE1eDsisGqyFz02d81g+PSDzVliD4kG1ZXg
-         ccT1JbYqx2GYgg70JwEHaXPS5BCYcIA5g34Q2/TgU5Tq0AKcxC4G+fKGFTWvM7USH2yj
-         iRn61toMRkW2WSrNL934n5g13MDhZzBi55ZySEVwa+FlJyFm/FYPTU7QYhOPZ2yiP4xw
-         BiCJi80AzwvgRM7wN1LjIRqNKC/IdNC8a4bJcdDscuy0LoxVZYj//aTnbOSNQOW0kapQ
-         pou2RBVOHrtfu/qfsy0qgBRllJoKSJWNcYovSnb220+nrrzPD3Gck6quHVPKGx84zApj
-         10Ng==
-X-Gm-Message-State: AOAM5332u1ks+pbkd5UTrgQ9RxkHHSDkMpqcXVKJFaHsTcH4cwjUVGGZ
-        lWQE0itmMEOeXukxsNEDn3Zqv1eIDtxkzQPNVqgKsg==
-X-Google-Smtp-Source: ABdhPJzp3HpqOSlplACd7S5Zr4Q/rHXMCrVSWbXT+dp44F1UF8VRvaixwQVERUzCgLKyBTopiL0CGIgZ7KCJwEzyXZg=
-X-Received: by 2002:a1c:158:: with SMTP id 85mr11988175wmb.182.1635505210272;
- Fri, 29 Oct 2021 04:00:10 -0700 (PDT)
+        Fri, 29 Oct 2021 07:09:05 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CE70C061714
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 04:06:37 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mgPiK-0001mx-Nh; Fri, 29 Oct 2021 13:06:24 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mgPiH-0005QG-KK; Fri, 29 Oct 2021 13:06:21 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mgPiH-0002TX-J4; Fri, 29 Oct 2021 13:06:21 +0200
+Date:   Fri, 29 Oct 2021 13:06:02 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Sean Young <sean@mess.org>
+Cc:     =?utf-8?B?TWHDrXJh?= Canal <maira.canal@usp.br>, lkp@intel.com,
+        mchehab@kernel.org, thierry.reding@gmail.com, lee.jones@linaro.org,
+        llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pwm@vger.kernel.org
+Subject: Re: [PATCH v4] media: rc: pwm-ir-tx: Switch to atomic PWM API
+Message-ID: <20211029110602.uugnbm5vtfpghiwh@pengutronix.de>
+References: <YXlxhpZWf2mxJaMi@fedora>
+ <20211028064513.guziv6uaivzlk6ki@pengutronix.de>
+ <20211028091442.GA16514@gofer.mess.org>
+ <20211028111535.x7xgz7domx2lpyfh@pengutronix.de>
+ <20211028122610.GA18767@gofer.mess.org>
+ <20211028180516.t2tpfbzztm7s6cqm@pengutronix.de>
+ <20211029071608.GA28997@gofer.mess.org>
 MIME-Version: 1.0
-References: <20211028191805.1.I35b7f3a496f834de6b43a32f94b6160cb1467c94@changeid>
- <180B4F43-B60A-4326-A463-327645BA8F1B@holtmann.org> <CABBYNZKpcXGD6=RrVRGiAtHM+cfKEOL=-_tER1ow_VPrm6fFhQ@mail.gmail.com>
- <CAJQfnxH=hN7ZzqNzyKqzb=wSCNktUiSnMeh77fghsudvzJyVvg@mail.gmail.com>
- <E68EB205-8B05-4A44-933A-06C5955F561A@holtmann.org> <CAJQfnxHn51XRywv68xcL4u=qERyi2S0boLBOGBnBbUfu9pQWGQ@mail.gmail.com>
- <BEAEDCF9-75D7-4D34-B272-AD044533B311@holtmann.org>
-In-Reply-To: <BEAEDCF9-75D7-4D34-B272-AD044533B311@holtmann.org>
-From:   Archie Pusaka <apusaka@google.com>
-Date:   Fri, 29 Oct 2021 18:59:59 +0800
-Message-ID: <CAJQfnxEyd54v=CJTwE6rdZ7a0Hbh4A1cK=VUYSqteU9f8hpWrw@mail.gmail.com>
-Subject: Re: [PATCH] Bluetooth: Limit duration of Remote Name Resolve
-To:     Marcel Holtmann <marcel@holtmann.org>
-Cc:     Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        Archie Pusaka <apusaka@chromium.org>,
-        Miao-chen Chou <mcchou@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="azgvopiwgpdhztkw"
+Content-Disposition: inline
+In-Reply-To: <20211029071608.GA28997@gofer.mess.org>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marcel,
 
+--azgvopiwgpdhztkw
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 29 Oct 2021 at 18:11, Marcel Holtmann <marcel@holtmann.org> wrote:
->
-> Hi Archie,
->
-> >>>>>> When doing remote name request, we cannot scan. In the normal case=
- it's
-> >>>>>> OK since we can expect it to finish within a short amount of time.
-> >>>>>> However, there is a possibility to scan lots of devices that
-> >>>>>> (1) requires Remote Name Resolve
-> >>>>>> (2) is unresponsive to Remote Name Resolve
-> >>>>>> When this happens, we are stuck to do Remote Name Resolve until al=
-l is
-> >>>>>> done before continue scanning.
-> >>>>>>
-> >>>>>> This patch adds a time limit to stop us spending too long on remot=
-e
-> >>>>>> name request. The limit is increased for every iteration where we =
-fail
-> >>>>>> to complete the RNR in order to eventually solve all names.
-> >>>>>>
-> >>>>>> Signed-off-by: Archie Pusaka <apusaka@chromium.org>
-> >>>>>> Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
-> >>>>>>
-> >>>>>> ---
-> >>>>>> Hi maintainers, we found one instance where a test device spends ~=
-90
-> >>>>>> seconds to do Remote Name Resolving, hence this patch.
-> >>>>>> I think it's better if we reset the time limit to the default valu=
-e
-> >>>>>> at some point, but I don't have a good proposal where to do that, =
-so
-> >>>>>> in the end I didn't.
-> >>>>>
-> >>>>> do you have a btmon trace for this as well?
-> >>>>>
-> >>> Yes, but only from the scanning device side. It's all lined up with
-> >>> your expectation (e.g. receiving Page Timeout in RNR Complete event).
-> >>>
-> >>>>> The HCI Remote Name Request is essentially a paging procedure and t=
-hen a few LMP messages. It is fundamentally a connection request inside BR/=
-EDR and if you have a remote device that has page scan disabled, but inquir=
-y scan enabled, then you get into this funky situation. Sadly, the BR/EDR p=
-arts don=E2=80=99t give you any hint on this weird combination. You can't c=
-onfigure BlueZ that way since it is really stupid setup and I remember that=
- GAP doesn=E2=80=99t have this case either, but it can happen. So we might =
-want to check if that is what happens. And of course it needs to be a Bluet=
-ooth 2.0 device or a device that doesn=E2=80=99t support Secure Simple Pair=
-ing. There is a chance of really bad radio interference, but that is then j=
-ust bad luck and is only going to happen every once in a blue moon.
-> >>>>
-> >>> It might be the case. I don't know the peer device, but it looks like
-> >>> the user has a lot of these exact peer devices sitting in the same
-> >>> room.
-> >>> Or another possibility would be the user just turned bluetooth off fo=
-r
-> >>> these devices just after we scan them, such that they don't answer th=
-e
-> >>> RNR.
-> >>>
-> >>>> I wonder what does the remote sets as Page_Scan_Repetition_Mode in t=
-he
-> >>>> Inquiry Result, it seems quite weird that the specs allows such stag=
-e
-> >>>> but it doesn't have a value to represent in the inquiry result, anyw=
-ay
-> >>>> I guess changing that now wouldn't really make any different given
-> >>>> such device is probably never gonna update.
-> >>>>
-> >>> The page scan repetition mode is R1
-> >>
-> >> not sure if this actually matters if your clock drifted too much apart=
-.
-> >>
-> >>>>> That said, you should receive a Page Timeout in the Remote Name Req=
-uest Complete event for what you describe. Or you just use HCI Remote Name =
-Request Cancel to abort the paging. If I remember correctly then the settin=
-g for Page Timeout is also applied to Remote Name resolving procedure. So w=
-e could tweak that value. Actually once we get the =E2=80=9Csync=E2=80=9D w=
-ork merged, we could configure different Page Timeout for connection reques=
-ts and name resolving if that would help. Not sure if this is worth it, sin=
-ce we could as simple just cancel the request.
-> >>>>
-> >>>> If I recall this correctly we used to have something like that back =
-in
-> >>>> the days the daemon had control over the discovery, the logic was th=
-at
-> >>>> each round of discovery including the name resolving had a fixed tim=
-e
-> >>>> e.g. 10 sec, so if not all device found had their name resolved we
-> >>>> would stop and proceed to the next round that way we avoid this
-> >>>> problem of devices not resolving and nothing being discovered either=
-.
-> >>>> Luckily today there might not be many devices around without EIR
-> >>>> including their names but still I think it would be better to limit
-> >>>> the amount time we spend resolving names, also it looks like it sets
-> >>>> NAME_NOT_KNOWN when RNR fails and it never proceeds to request the
-> >>>> name again so I wonder why would it be waiting ~90 seconds, we don't
-> >>>> seem to change the page timeout so it should be using the default
-> >>>> which is 5.12s so I think there is something else at play.
-> >>>>
-> >>> Yeah, we received the Page Timeout after 5s, but then we proceed to
-> >>> continue RNR the next device, which takes another 5s, and so on.
-> >>> A couple of these devices can push waiting time over 90s.
-> >>> Looking at this, I don't think cancelling RNR would help much.
-> >>> This patch would like to reintroduce the time limit, but I decided to
-> >>> make the time limit grow, otherwise the bad RNR might take the whole
-> >>> time limit and we can't resolve any names.
-> >>
-> >> I am wondering if we should add a new flag to Device Found that will i=
-ndicate Name Resolving Failed after the first Page Timeout and then bluetoo=
-thd can decide via Confirm Name mgmt command to trigger the resolving or no=
-t. We can even add a 0x02 for Don=E2=80=99t Care About The Name.
-> >>
-> > This is a great idea.
-> > However I checked that we remove the discovered device cache after
-> > every scan iteration.
-> > While I am not clear about the purpose of the cache cleanup, I had
-> > assumed that keeping a list of devices with bad RNR record would go
-> > against the intention of cleaning up the cache.
-> >
-> > If we are to bookkeep the list of bad devices, we might as well take
-> > this record into account when sorting the RNR queue, so the bad
-> > devices will be sent to the back of the queue regardless how good the
-> > RSSI is.
->
-> the inquiry cache is solely for name resolving and connection request so =
-that you are able to fill in the right values to speed up the paging.
->
-> I think it is just enough to include a flag hinting the resolving failure=
- into the Device Found message. We are sending two Device Found anyway on s=
-uccess. So now we get one on failure as well. And then lets bluetoothd do a=
-ll the caching if it wants to.
->
-Oh, I see what you mean.
-Then I shall implement this solution.
+On Fri, Oct 29, 2021 at 08:16:08AM +0100, Sean Young wrote:
+> On Thu, Oct 28, 2021 at 08:05:16PM +0200, Uwe Kleine-K=F6nig wrote:
+> > On Thu, Oct 28, 2021 at 01:26:10PM +0100, Sean Young wrote:
+> > > > bloat-o-meter reports (for an arm allmodconfig build)
+> > > >=20
+> > > > 	add/remove: 0/0 grow/shrink: 3/1 up/down: 644/-396 (248)
+> > > > 	Function                                     old     new   delta
+> > > > 	pwm_ir_probe                                 372     676    +304
+> > > > 	pwm_ir_set_carrier                           108     292    +184
+> > > > 	pwm_ir_set_duty_cycle                         68     224    +156
+> > > > 	pwm_ir_tx                                    908     512    -396
+> > > > 	Total: Before=3D2302, After=3D2550, chg +10.77%
+> > >=20
+> > > So 248 bytes more after your changes.
+> >=20
+> > ack. This is because the compiler inlines the division which accounts
+> > for > 100 bytes.
+>=20
+> I'm surprised it's that large. This is on 32 bit?
 
-> Regards
->
-> Marcel
->
+Yes, it's a 64 bit division on 32 bit ARM.
 
-Thanks,
-Archie
+> > > > struct pwm_ir increases from 12 bytes to 40 bytes.
+> > > >=20
+> > > > The stack space required by pwm_ir_tx decreases from 60 to 36
+> > > >=20
+> > > > I don't know exactly how kmalloc works internally. Maybe allocating=
+ a
+> > > > structure of size 40 bytes doesn't need more memory than a structur=
+e of
+> > > > size 12?
+> > > >=20
+> > > > I didn't check how runtimes change, but the size decrease of pwm_ir=
+_tx()
+> > > > is nice and might save a bit of runtime.
+> > >=20
+> > > I'm not following, how is this decreasing runtime?=20
+> >=20
+> > With my changes pwm_ir_tx got smaller and { pwm_ir_probe,
+> > pwm_ir_set_carrier, pwm_ir_set_duty_cycle } got bigger. Now if for a
+> > typical runtime pattern pwm_ir_probe and pwm_ir_set_carrier run once and
+> > pwm_ir_set_duty_cycle 100 times and pwm_ir_tx 1000 times (no idea if
+> > that is realistic) it might be a net win in sum.
+>=20
+> The two most common programs for sending IR are
+>=20
+> ir-ctl: https://git.linuxtv.org/v4l-utils.git/tree/utils/ir-ctl/ir-ctl.c#=
+n1041
+> lircd: https://sourceforge.net/p/lirc/git/ci/master/tree/lib/transmit.c
+>=20
+> For each transmission, the carrier is set. If the duty cyle is specified,
+> then that is set too. Then the transmit itself is done. Both of them
+> set the carrier and duty cycle (if required) for every transmission: sett=
+ing
+> the carrier and duty cycle is a cheap operation, and it is device property
+> which can be overriden by another process.=20
+>=20
+> This means with your changes, if the carrier and duty cycle are both set
+> for each transmission, then we're doing more work. If only the carrier
+> is set for each transmission, then there is no net gain/loss (I think),
+> but the code size has increased.
+
+OK, then I discard my patch.
+
+While reading that I wondered if it makes sense to have a callback that
+sets both carrier and duty cycle and then remove the other two.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--azgvopiwgpdhztkw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmF71ZIACgkQwfwUeK3K
+7Am79wf/SqQB9cLC/swxCjRZ+kXJ+3z7js+zIjZQHScbxNaycBfosNwROYJ/U5IJ
+ArOIy5R7/y6PzPwE+iPEIYXA/o7tz/wamOogZWcT8ZxJVC/UlSkcx5Sh7z0xAkbC
+ISbuy4VtDhOp0+BL8g4VasCYf1yYs8SFdzcKw76FgYM4/Qmr8VRuukYL21SbHfWV
+O+W3G/MZE5NLV79x33fsPNkfvYiJav2xF1IYKde4dyJGG3HKd5uS3OGo8xU6rhpR
+WUfLjldheUvP4ZVO0HcGPJTHia1K8bFB1qfwkYDuetBhpICHk+mbpWP92OfBvtJo
+2/en1tqciILjZz/+eRRRa9kTnehVWg==
+=3f91
+-----END PGP SIGNATURE-----
+
+--azgvopiwgpdhztkw--
