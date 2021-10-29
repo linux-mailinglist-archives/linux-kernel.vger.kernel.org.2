@@ -2,94 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7302643F526
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 05:03:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49A2A43F547
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 05:14:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231612AbhJ2DF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 23:05:29 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:25323 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231592AbhJ2DF1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 23:05:27 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HgRvB0j8rzbhKX;
-        Fri, 29 Oct 2021 10:58:14 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Fri, 29 Oct 2021 11:02:54 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Fri, 29 Oct
- 2021 11:02:53 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-input@vger.kernel.org>
-CC:     <benjamin.tissoires@redhat.com>, <jikos@kernel.org>,
-        <djogorchock@gmail.com>
-Subject: [PATCH -next] HID: nintendo: fix missing unlock on error in joycon_leds_create()
-Date:   Fri, 29 Oct 2021 11:10:43 +0800
-Message-ID: <20211029031043.3330240-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+        id S231616AbhJ2DQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 23:16:58 -0400
+Received: from smtp25.cstnet.cn ([159.226.251.25]:56260 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231558AbhJ2DQ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 23:16:56 -0400
+Received: from localhost.localdomain (unknown [124.16.138.128])
+        by APP-05 (Coremail) with SMTP id zQCowAAX+OwBZ3thKTqVBQ--.41909S2;
+        Fri, 29 Oct 2021 11:14:09 +0800 (CST)
+From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
+To:     bsingharora@gmail.com
+Cc:     linux-kernel@vger.kernel.org, Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Subject: [PATCH] taskstats: Fix implicit type conversion
+Date:   Fri, 29 Oct 2021 03:14:07 +0000
+Message-Id: <1635477247-1850773-1-git-send-email-jiasheng@iscas.ac.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: zQCowAAX+OwBZ3thKTqVBQ--.41909S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrKFy5GFyktFykZw15KFy8Krg_yoWDGFc_Ar
+        nFqr1q93ZFyrn2q3Wxua1rtFyF93y3G3W0v34UWrsrZFyrtr43J3yqgFy5Xrn5Wr4rCFnx
+        Zas8Jr9Ygw1xZjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb48FF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+        Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
+        0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r48
+        MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
+        0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUXVWUAwCIc40Y0x0E
+        wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJV
+        W8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1l
+        IxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUjHGQDUUUU
+        U==
+X-Originating-IP: [124.16.138.128]
+X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the missing unlock before return from function joycon_leds_create()
-in the error handling case.
+The variable 'cpu' is defined as unsigned int.
+However in the for_each_cpu, its values is assigned to -1.
+That doesn't make sense and in the cpumask_next() it is implicitly
+type conversed to int.
+It is universally accepted that the implicit type conversion is
+terrible.
+Also, having the good programming custom will set an example for
+others.
+Thus, it might be better to change the definition of 'cpu' from
+unsigned int to int.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Fixes: c5e626769563 ("HID: nintendo: add player led support")
-Fixes: 697e5c7a34b0 ("HID: nintendo: add home led support")
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
 ---
- drivers/hid/hid-nintendo.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ kernel/taskstats.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/hid/hid-nintendo.c b/drivers/hid/hid-nintendo.c
-index c4270499fc6f..ddfb001a8fc9 100644
---- a/drivers/hid/hid-nintendo.c
-+++ b/drivers/hid/hid-nintendo.c
-@@ -1850,8 +1850,10 @@ static int joycon_leds_create(struct joycon_ctlr *ctlr)
- 				      d_name,
- 				      "green",
- 				      joycon_player_led_names[i]);
--		if (!name)
--			return -ENOMEM;
-+		if (!name) {
-+			ret = -ENOMEM;
-+			goto err_unlock;
-+		}
+diff --git a/kernel/taskstats.c b/kernel/taskstats.c
+index 2b4898b..5d8d4e7 100644
+--- a/kernel/taskstats.c
++++ b/kernel/taskstats.c
+@@ -275,7 +275,7 @@ static int add_del_listener(pid_t pid, const struct cpumask *mask, int isadd)
+ {
+ 	struct listener_list *listeners;
+ 	struct listener *s, *tmp, *s2;
+-	unsigned int cpu;
++	int cpu;
+ 	int ret = 0;
  
- 		led = &ctlr->leds[i];
- 		led->name = name;
-@@ -1864,7 +1866,7 @@ static int joycon_leds_create(struct joycon_ctlr *ctlr)
- 		ret = devm_led_classdev_register(&hdev->dev, led);
- 		if (ret) {
- 			hid_err(hdev, "Failed registering %s LED\n", led->name);
--			return ret;
-+			goto err_unlock;
- 		}
- 	}
- 
-@@ -1902,6 +1904,10 @@ static int joycon_leds_create(struct joycon_ctlr *ctlr)
- 	}
- 
- 	return 0;
-+
-+err_unlock:
-+	mutex_unlock(&joycon_input_num_mutex);
-+	return ret;
- }
- 
- static int joycon_battery_get_property(struct power_supply *supply,
+ 	if (!cpumask_subset(mask, cpu_possible_mask))
 -- 
-2.25.1
+2.7.4
 
