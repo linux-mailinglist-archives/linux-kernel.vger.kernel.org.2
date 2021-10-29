@@ -2,305 +2,564 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA68643FEA4
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 16:45:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65BC243FEA6
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 16:45:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229885AbhJ2Oru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 10:47:50 -0400
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:17432 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229521AbhJ2Orp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 10:47:45 -0400
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19TBUpX1000422;
-        Fri, 29 Oct 2021 07:45:12 -0700
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2176.outbound.protection.outlook.com [104.47.55.176])
-        by mx0a-0016f401.pphosted.com with ESMTP id 3c0g54gptp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 29 Oct 2021 07:45:12 -0700
+        id S229957AbhJ2Orx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 10:47:53 -0400
+Received: from mail-mw2nam12on2047.outbound.protection.outlook.com ([40.107.244.47]:9346
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229811AbhJ2Ors (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 10:47:48 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lrYASEfc+3FFHNl6glexh6x/AmlHoT339lfDgrwlZJmyd4S12mwYMq0VyIRTulyiA8sbvC7NAvzQxAFYbXpaWFqmPX/vqHrmY+k5jiZJgctmhUNWrqe6ufLQaxH7/PkDb9l3iBwbdw4Wh58SNUfcxYdFYh8rwXxXEzPPz6gE81A3+KH1LjKQ1iFOdi7PymHZbyn9wyUhxadZZnFXGe9XMH7wCBXE/PlRAg0RBuOal5U0xITAfXxT6GucegmWwMcrfQSI+ggk3jytvdCTX6TtfMZwuSku4Yg7mNKBAhC4PKo10vCcGsFpXnL0SznCwl90qozIouESzNt4GpcqVR7cfg==
+ b=N0Y11pdznUIfYcYRIuBgFXcutmSfU8mu85D/XYGo2WQrVhwZm1CWLicfP+qwJTII3Ay+PbQUiGPbf4gkLhOu41nf85SPIuV1RR5uTQxNCI6s0/rUhKJPiNS80DB11kAvVOkx+3tjNaZK/LxJVxl5kB14EwLO7Cg8s7nYTNUWNLXqfto1Fwq8ZcjfodZY7SYmFkXz/cn907O2A7VFnpY8GTcbJPWAZEmHixOHrU62QE5Szm4BBYy7LI/A6FBA8s8ud6ZbuyG863w8iJ3n4zGXjNpRwR56YuJ16olupQ1+JoaOOgN6tOQsh2G2J0RM+/odX4WTQ7kM9i+W+WuWIi8jhQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=M4jSQRERgR2i22OhmYL5zhmpCCvIEKfw2TKAZvR3VW8=;
- b=IBbmE9T7WalqiIgP3YbsLRp2DVTpk9CmAChRAStV24Zt2UwESHvFEQs+Jc8XVbXsb50k54N9tS3z1mgmHzwbZqzUIch14XbcAxOPIQLNU5yaFuhgQcoCMzwK73ndyjl9fm3NLige1kkYfh0eQWBcAo9xzuTAvTvL/2IHibA/r609bIa+dySs7yBzUAx7jRzXOksNO7EMBYzhWmlF103lKwF9IfrndyUZaJdNCbb/YKaXxRFHxQjPenSTLuUjXGfQkYymmPaQ8bAoMp+KrgTR11iclpw7AZON0ftJ/9/aTL2iEmWFd90D9HxeJSeUsigcr9DvZqiig13k2HJsNRiTBA==
+ bh=S9GG9A6RyFdztiRTUHpL8Zy2fj2S2FrW3/7zWncSQkg=;
+ b=EtcEwngwoXR3flCQPrqMyrjBMX1enliWx4uUztuIVrKUbtudnmLu/jbPkooZthfgGdD47XFBi9p86CA2O/SzDfKtR+eoEZUvyxeDvSQVwf27aqIYw5vlhiF1TqrWnMIa6tqucAGj0Iq6D+yC3CpwQU7SecHBIXNUX0SunMszgKfjZxoxq3+o7P5DFdbCi4NFYfxtX6RD2yXxF4hLXEE6clHSqLxS9uHVGD8H72vfTYkHzdo55aF1acC+Mkk+FW4PYqLB0Oh/Vc6ztgDoM6ha2t4AKVARyuX/IRuU1FF8z28KMHHVzOp3uZ5a74AYVCz9hjG9hLdVbXv6n6d8lSpx0g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
- dkim=pass header.d=marvell.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=M4jSQRERgR2i22OhmYL5zhmpCCvIEKfw2TKAZvR3VW8=;
- b=cDbrxa+rxCIWPYh9sLaMJdwkTCiHJM0udSEhWWA+XyMUWErzQwstumBDNujhnmjn/sAZy+PBEEiTDtziJ7dJIn6uD+L+TrgToaOezuBCzm2Fsy+4cmsq8tAjmJOVbTCFbO8GGhxyxtrXhpSZsmTpo2ddDGnMM40glbfGC5sIaJc=
-Received: from SJ0PR18MB4009.namprd18.prod.outlook.com (2603:10b6:a03:2eb::24)
- by BYAPR18MB2904.namprd18.prod.outlook.com (2603:10b6:a03:10c::17) with
+ bh=S9GG9A6RyFdztiRTUHpL8Zy2fj2S2FrW3/7zWncSQkg=;
+ b=OK2N7KS8PM0Q7lBYK7iSQ3C4tk2tbdw00Dad08Vl+Tziyfvjb/4X5dscso4cYVYxJRhpeWxSAgp8c2ksn+1XJt1nGJz0I0LGEpFZ81mjq4tD30W8DAa3JtY79NEAmhBO/KhHlzKQ8dzurj5yzu3IAj/oXhA4PYwfzrIjFUXL1l8=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from DM4PR12MB5229.namprd12.prod.outlook.com (2603:10b6:5:398::12)
+ by DM4PR12MB5231.namprd12.prod.outlook.com (2603:10b6:5:39b::19) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.15; Fri, 29 Oct
- 2021 14:45:10 +0000
-Received: from SJ0PR18MB4009.namprd18.prod.outlook.com
- ([fe80::919c:1891:e266:2502]) by SJ0PR18MB4009.namprd18.prod.outlook.com
- ([fe80::919c:1891:e266:2502%9]) with mapi id 15.20.4649.017; Fri, 29 Oct 2021
- 14:45:10 +0000
-From:   "Volodymyr Mytnyk [C]" <vmytnyk@marvell.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     "kuba@kernel.org" <kuba@kernel.org>,
-        Mickey Rachamim <mickeyr@marvell.com>,
-        Serhiy Pshyk <serhiy.pshyk@plvision.eu>,
-        Taras Chornyi <taras.chornyi@plvision.eu>,
-        "Vadym Kochan [C]" <vkochan@marvell.com>,
-        Yevhen Orlov <yevhen.orlov@plvision.eu>,
-        "Taras Chornyi [C]" <tchornyi@marvell.com>,
+ 2021 14:45:17 +0000
+Received: from DM4PR12MB5229.namprd12.prod.outlook.com
+ ([fe80::a87d:568d:994f:c5f9]) by DM4PR12MB5229.namprd12.prod.outlook.com
+ ([fe80::a87d:568d:994f:c5f9%8]) with mapi id 15.20.4649.015; Fri, 29 Oct 2021
+ 14:45:16 +0000
+Subject: Re: [PATCH 4/4] crypto: ccp - Add SEV_INIT_EX support
+To:     Peter Gonda <pgonda@google.com>
+Cc:     David Rientjes <rientjes@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Marc Orr <marcorr@google.com>, Joerg Roedel <jroedel@suse.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        John Allen <john.allen@amd.com>,
         "David S. Miller" <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next v4] net: marvell: prestera: add firmware v4.0
- support
-Thread-Topic: [PATCH net-next v4] net: marvell: prestera: add firmware v4.0
- support
-Thread-Index: AQHXzNOS3+pDqWPNGUmXnRrg5qwGMg==
-Date:   Fri, 29 Oct 2021 14:45:10 +0000
-Message-ID: <SJ0PR18MB4009142EC8B4720B9DEC5648B2879@SJ0PR18MB4009.namprd18.prod.outlook.com>
-References: <1635485889-27504-1-git-send-email-volodymyr.mytnyk@plvision.eu>
- <YXvurO1ssFPL15Qu@lunn.ch>
-In-Reply-To: <YXvurO1ssFPL15Qu@lunn.ch>
-Accept-Language: en-GB, uk-UA, en-US
-Content-Language: en-GB
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-suggested_attachment_session_id: ca099ea5-9af5-b89e-0dc9-596c86c47ebf
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1e636359-db41-4241-6fa7-08d99aeab53b
-x-ms-traffictypediagnostic: BYAPR18MB2904:
-x-ld-processed: 70e1fb47-1155-421d-87fc-2e58f638b6e0,ExtAddr
-x-microsoft-antispam-prvs: <BYAPR18MB290421A56238CDF16795754DB2879@BYAPR18MB2904.namprd18.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: YFhLYEgNEHcFl1JcrQUf7TTU+B6V6rTW6HQWiP2NRNzYDWf92hfHLgbNl8ge97vSnjoL510B/7FmtK3EtAufEWn/EIE7hll9LulRBSGu7ZuGt8ak4UPB6LQkc7WVhBT+OO2yzwuypW2W4y0M0hScMerurbs9KsU9UG1J/UTgn6DCrYCh9dZ8clNBbJfxPLvHTbta5qEAJOH8u+dWKArQ2SzkAQ/8I6hqkdhQJQN2aqr+bHzcAhoij6WHI/YLLKGVnqvjYZ7vMGOzmdfE4b28ReNgr46A5wt6jUNHGnY7wF9AmACKA0HIYGl/JU6N7dlSMO2xnw1FCBDZf2Kw7bz/EnyEHYg+BvbAA7uu/ImZ9TgHkQbABPx2A0N6dVdJhOMQosjJ9EGXLq0jaSpUIZLvTSfaZeHGIIlxqpWXLGKXzIxCA6/nkkTTkSMh5TkjsPFiqdhQaxoJjaHKyRym9lAJb710xleo1qWK6P55BlSBDnNMWDeyEECSzQzLcsrSaT8xBSgAitJwmZ92lmvRnlrvci39w5WGs2vEGpDBKm1B4iAVsBAkB64rl+eZbM0bnat5kv99LCjfok9DOrby0+U2vT0HTVDzM8L5p2BV0+7Fzhu4Ir7LHSKItnpHEMEqfpFxDNnhHPICjEW/beHsd3t5yr6jE3kAGeTbfuJb0+SwyCWdCzKYEd/PLyevZLulUE/xizaIUIJVuTDileqM7YHmgQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR18MB4009.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(52536014)(38100700002)(55016002)(26005)(8676002)(76116006)(9686003)(64756008)(7696005)(66556008)(83380400001)(508600001)(66446008)(66946007)(66476007)(186003)(122000001)(5660300002)(38070700005)(6916009)(316002)(8936002)(6506007)(4326008)(2906002)(86362001)(54906003)(71200400001)(33656002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?SFXgU3dJ4izMS89aTGoguSYfkD4n45pnPXrjdEQ5ZPs+UJ8Z5hW23ixJE8?=
- =?iso-8859-1?Q?wQHoB5zmlboh/ujV6Yu8DeOjOzfGFmw7w62GqqKglsKGVgULH90xEQ6JoB?=
- =?iso-8859-1?Q?a6cyQJdqfBDW9bTg+eEayueMxVptCqux9lHkChWOHi3lGI9v6yXkjSXP07?=
- =?iso-8859-1?Q?cDmQNotFTzQtqmlOvh7ijnKhdhlMJ8qbm8VYkeyEFwP+Ujmv4sZhB+Hy4t?=
- =?iso-8859-1?Q?8uwWgdhk4b8TNhd2fL96aq2D9vSltu5S14pRSeTF9dg1saqune8yvYufjo?=
- =?iso-8859-1?Q?sTJEd44FxWuBhcXHvZd9Boye53BqFtzc8onVCpKmNlB9BCM6zayU02Y3VK?=
- =?iso-8859-1?Q?/B3cY9GxPLaBZuL4iz0iXtloz+DbyZ4lJOna2g04vrNqlfIwbofKk86SE4?=
- =?iso-8859-1?Q?/20yoQ2Wts+C2dAbqKsZmAI0Q/3NkB2vZxTLz5KiWcoa1yHOgBtRxw3jcR?=
- =?iso-8859-1?Q?hMvnFiBOA/xRO6mZSEeaJmN3sfIzvDvLWYxPGItp+H8LEziB6r1zhERIl/?=
- =?iso-8859-1?Q?6w33xX9rumu1cUyv0wAVvfAyon/PXbq0+lVnw4Y/vWmBAkNZes3phD7rR9?=
- =?iso-8859-1?Q?i9HctZzVFSKkov3Z6gONlY1A+lH/HyhSLjtLuRWmk966r+jYzoBb8JKP9Y?=
- =?iso-8859-1?Q?1DYdE+K2SQ6oV/Mf/TsWqTLDm0eTESAzAvhUxDcJF/DJMmxBWJVLOM2qil?=
- =?iso-8859-1?Q?1fklvA4i5UOnDFK6xWF6r3wrKPCR73yxdFMSgTVsgDYSXs7pKBB2+LDM/7?=
- =?iso-8859-1?Q?Dwmmz8W8BmfAt2KnIPcIJmpANCA+NkqYWMGBsJVJsnMi/wMrcFj2J9veb0?=
- =?iso-8859-1?Q?cZToLOrUt8s9DDaRwpWN2Cm1pOMbqXz7kDZoLr66zCcl0spLigSspHVfuW?=
- =?iso-8859-1?Q?8HOupH4QRk3LrYFFHSKm4x/ROnpOlZMXQoycwbI5AhOfE4bkxXedAREXQo?=
- =?iso-8859-1?Q?1B+ZhyT26LnTJc1YypOl41lC53OAd+xdyN5hAuRLsgNydyajTkkSjscmFD?=
- =?iso-8859-1?Q?auRlJjxIwySzYpaSevCPQIdNS1Cf4vnSigGG/XaM0FDEpTHzzdoE/kMgpI?=
- =?iso-8859-1?Q?QkN28BPQXcFYKXT8yP7NjpqOLnNsD+pQ7zKnFcTaPXTKk93dPDn/QahoRm?=
- =?iso-8859-1?Q?q0N2FNLppX0YFTrTv/h8kTMHoEC1Im0ixl68uyB7zcFBraNFxI1L4g7UAB?=
- =?iso-8859-1?Q?B16IrL7WbAeTOjk3Qhl2wJt1qULrZ8bU+/UPSY/hYuTInMIEf9DdGM4GDO?=
- =?iso-8859-1?Q?Gl853CNaNHNfqG8n29aKiPmCSdExkW4VSamC0nEYq3E1tpAyheEPL4lz7T?=
- =?iso-8859-1?Q?76lfCoi1RL4/apL6BCAaOB4RZ014sqxM+UZMOkfRT6corQQKnHpawNJ3Ya?=
- =?iso-8859-1?Q?RtW5Lco86FVrjYJiJQivHVJqEk6v70Zko1V9vsZTmRNw0LPgYOI3BVCqNo?=
- =?iso-8859-1?Q?gEBUzaPNITxWSvpwcDpofx9rBqVrcgeceZCJbi0QT27CY3UEzji00/i0Yo?=
- =?iso-8859-1?Q?OrE+BHhp1yyjy8KW1ogSGIL5F0S5wLS/XlSFxTk52QRYMIHdimeVirVLt/?=
- =?iso-8859-1?Q?ml0lkXFJByxReQ+3obYbKq0hODlHttO8zjOgjpeVRZacq/+45cv2p5PmVn?=
- =?iso-8859-1?Q?UxM6ZdORYvVMiuJ3lDG7aM2oE3eMCWj5xf1uxHIJHnk3C3zQ+3iJs4EA?=
- =?iso-8859-1?Q?=3D=3D?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211028175749.1219188-1-pgonda@google.com>
+ <20211028175749.1219188-5-pgonda@google.com>
+From:   Tom Lendacky <thomas.lendacky@amd.com>
+Message-ID: <c2076ecf-8b30-c96e-2169-bc1f031d309e@amd.com>
+Date:   Fri, 29 Oct 2021 09:45:14 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <20211028175749.1219188-5-pgonda@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SN1PR12CA0077.namprd12.prod.outlook.com
+ (2603:10b6:802:20::48) To DM4PR12MB5229.namprd12.prod.outlook.com
+ (2603:10b6:5:398::12)
 MIME-Version: 1.0
-X-OriginatorOrg: marvell.com
+Received: from office-ryzen.texastahm.com (67.79.209.213) by SN1PR12CA0077.namprd12.prod.outlook.com (2603:10b6:802:20::48) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.14 via Frontend Transport; Fri, 29 Oct 2021 14:45:15 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e7095acc-5cc4-4a68-8a33-08d99aeab8f9
+X-MS-TrafficTypeDiagnostic: DM4PR12MB5231:
+X-Microsoft-Antispam-PRVS: <DM4PR12MB5231E35F31691973701707F0EC879@DM4PR12MB5231.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: IaLLKpuxgGOGupCvsnxrikDhVSG1Xm2oyXp2C62JD5Z+/X4AfvykAK3aKkKw9Xz/66vjIglgl4M7B+y/dWepaQNOWGV56zjvQzNohxrnxcvsNn+Wz4f/1oaW74lud4FQzgA/JGy3jIeR+kf0MEVYTuMXtd2zD5xgDF3qkdBHlcj0SO3/wM0mf9qoLZNw0Xim5Wmjh/A3K2pmCb1bflS7LoNC1o/ph/6NTzYkI3Gj1wm/DC0r4LVPPWIzvuTfhU2Ni0SgH++kEqtTYf5F5OnqfL4BIA8pHnXkbmaq1D8GTIJoM5WW8FCVSQbrHv1IvrwaedddX84bYzbxFbng6i88SXm94LP0z1vBPBsu++yPqj7AOgdyP9YyUnKd1YbjoX8CX6Dvb/SodsehUUILEKMzPdPKYVX1DT9C+ufS9iJEHV4ZXwqaHYAAZF/ngVOJKPq3fCiiqd3nXv3fvt8/I3DUavkrQ4aqu5O4Q8CStHHYx7dDKT3Y00YbcP8sGAwI51CvyR8/OazTadVs6D7i6HUYuPaFoKFLSnnNStTXO45IMh3Iaw+H/qCfehuasyarPtMSVomhuYZgDYANwEwzi3HP32tpX9pJ0EhzOOZpaoLEJTu9lbcmI+RfkCj8rHsMrEAHomGlqWKUYZtpaoKH+r9OalCqo+kiKkWBPBO1biCh43CSqPGlUYZdpcT0KCcOa47kBttrbNVj0THHqKhP7LOuQD52x6RnUbFodo4lWb50TL2WKvchMbCiQZDbAnNO+3VW
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5229.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(186003)(2906002)(6512007)(86362001)(54906003)(26005)(6486002)(316002)(31686004)(508600001)(30864003)(5660300002)(36756003)(53546011)(4326008)(66476007)(956004)(8936002)(2616005)(31696002)(8676002)(6916009)(83380400001)(6506007)(38100700002)(66946007)(66556008)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?M05YU1k2L2RYc2F5LzZ0SXF5RXErVkZoUTF5Njl3RmtmdTNhQXFxZDhGYUdn?=
+ =?utf-8?B?T2gvWVVMWUxZQlVEaFd4N2RjRWtGYWplNHVVaU1DR2E2eGxiQWh1Y0dqS05x?=
+ =?utf-8?B?Wm5XOTZkRWNFcVFmTXNsMnFMeU5WcWZjTVNkUytPRnd0VTdoTnNuYmRDaGdT?=
+ =?utf-8?B?TERiZWVrZkxHSVZpUEVacCtYM1k4R1NxK1BCL3RTL2FuMDV3WEp5d0NTRVZP?=
+ =?utf-8?B?K3F2eXZRRkFwaWJHcXpSdUwyVCtPc0E5cS9OQzNBWEYxby92OHEzTnNsYThl?=
+ =?utf-8?B?UklHcnpYUzJWWk9SUFlpMERpSWw3VWF5RjF0WXdVaTdTT1ByNE1YandzWHRG?=
+ =?utf-8?B?enN4RVpUL0MxK3pWaXpBVHAwV3BFL3AwakViVGtSRGFzcUZZL0tBT29RcUNa?=
+ =?utf-8?B?Y09SOHMvQVNDaGlUVXdpdG84K0dYUUh3bndVbFVNQVE4cFd0U1lWN3pyOU1r?=
+ =?utf-8?B?SFhtazFKaDZoWm1rSDlnbkZDYzBOWnpMeHVhVFFTb2Z3QVgxcEhDQTVDUjI1?=
+ =?utf-8?B?SDhVd0xtUG9nWEQ2M1c2WjNiTVRTcjJHL3FSTXV0bUdEQVpxNWwzSUlKR3Rx?=
+ =?utf-8?B?ZWhpN09EaEJISFpORkFFNVhzL1VpeFlmbUNUc21hMUw2THlrSDdGaXc0MnU1?=
+ =?utf-8?B?d1hQZVVwRWxhWTN2cTgxVXNwYzNQT2Q5UDQzRTZLRHdDNTBMUjJaWDNNMGtx?=
+ =?utf-8?B?blJ2ZDZjNkgxMk5tREoyLzJBdnVObUs0bURValA2NGhtZ2JJYTJ2OHIzeWlJ?=
+ =?utf-8?B?WnVUVTc0d2ZCcEx3RzJ4eStJUGhZbHJBQmN2K3V0QXM1NyttYUtZQXJqcU04?=
+ =?utf-8?B?U1NycjBJaWQ0eDdtZ1hWQzd2TkFjZ1lNVkFQclp4ZGM0VkgxOWRiS3lEZisr?=
+ =?utf-8?B?YjdzSWxkK0srcjVHOHR2VFdIbE03YTR4V2NlcU5aSlRDUTY0Y1BtaUlSNGRO?=
+ =?utf-8?B?QTNFbGd4RStnUVdjK1VuM0g5Y2dPNGw4RkQvRG9aSG5jMWkrdDlZR1lHcVpO?=
+ =?utf-8?B?eVpsSk54cGF2ZURIVjFvakVQUzhOVThvTE42Vk1pZDJQdjViUStxR1ZJejRF?=
+ =?utf-8?B?YWJucExTTm9IUlFVSGthckRMMG5RKzlKVHh5RktMdDc1TU9KYU42cUx0YzVE?=
+ =?utf-8?B?dDJnaVFSbnFOa0VqN09lNE5hVFhodjhkT0QyNldWSmVEaVFxSHBwWTZVYjA2?=
+ =?utf-8?B?Z2V0M01sSUNHRWMvYUs2dmtzOUdnUTZoL1F2a1Jjak90MTVRa0NmRjIxWkgw?=
+ =?utf-8?B?M1Zwd1ZTQU1ZM25TK3Radjl5NksxbGc3SjNTazNtNi9iWWkxRjZacUVaWnNw?=
+ =?utf-8?B?RmNWbnJ3TDlILzRnRWFHUDF4enJTcmdwVEpqTkJ6My96YlZsakFLOHNmbW5F?=
+ =?utf-8?B?a1pwSFhTc2VTOE1lRnBiOVo2QVBFd3hmMi8yRTN0UGt5RVNYalFiRlpZV25i?=
+ =?utf-8?B?TDBSalNFVE1lblJxVjJxUzdnZ25naFB4VzNkdGpRZ1BRcnRjcEx5NysrOWJV?=
+ =?utf-8?B?VUZtQjRTZzJ1SHlhOWJ4Y1BBOWhPRkcxcXlLUStqWGxmZUFveHY3ZU1EdnV6?=
+ =?utf-8?B?aDE4cGJDWnhpS2hZTFlRMmRVMmc5Q1BDQUtKTlNwZlBxRldwajBhSVppN2pu?=
+ =?utf-8?B?aEN2TlBKcS9ueThDNjdjN2tEWlQ5cm5DTFdsUGFoQWp1dkt1YWNQbXMvTDdk?=
+ =?utf-8?B?dWFFOTV4dDZodzhxS0J3UXNSMlBoSGxCK0pnRTJod0Z0RDB0KzBYV09WLy9k?=
+ =?utf-8?B?TlQ2SmR4ejFRa0NsTXNxRktiWVB1YlRSTzdIbXRIbVFtYmtSZ2N0MzBHdGlP?=
+ =?utf-8?B?N1JlV0xVOGYxb0xTT212TzE2dFRXLzB2VTBVYmZnQzZ6eGhPSTF0LzJmWm5D?=
+ =?utf-8?B?c09ZMTROZ0k0M3AxOFRRKzdqY0xnYXEvWElEQjN1VDE3L1RqZGxJc3BTWGFr?=
+ =?utf-8?B?dlZHTFNSaUxsYWxsOHJZRHYweHRIS3BicTcrSW82MEZsMmRxRGRobU5vb3BO?=
+ =?utf-8?B?eXoyd0FGSkxEZWswenNsSTI1em8wdysrSjl4UDg3R3M4dGdIanViWHJmNUlv?=
+ =?utf-8?B?M2l6cnR2K1dVa2VtM3RCUmE5NWYyOHMrNE1Ub1BTV2xYaEZERlpvK3QzT0Zz?=
+ =?utf-8?B?NWZ2Wkg2UnFWQVk4eG1oeDJpazZ5N2YvOGZTMU1RK0lMUWcvN0hVNUxBcG9E?=
+ =?utf-8?Q?6r9uR5k3ylaQqwUZGZhpCxs=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e7095acc-5cc4-4a68-8a33-08d99aeab8f9
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5229.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR18MB4009.namprd18.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1e636359-db41-4241-6fa7-08d99aeab53b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Oct 2021 14:45:10.2126
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Oct 2021 14:45:16.8371
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: FZsUW5yidrBMv668PFZD8pDIgx6McaGRKEMYuvSrmh1vLI6Ypt5tlz+RSogNliuLIv7QWUDj/VfirkLx0YdIUA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR18MB2904
-X-Proofpoint-GUID: qT_lxTlPNlwUj8uGGqx5tAKbjxb5DSZ_
-X-Proofpoint-ORIG-GUID: qT_lxTlPNlwUj8uGGqx5tAKbjxb5DSZ_
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-29_03,2021-10-29_01,2020-04-07_01
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: tzhgYrCwSm2NCLjkFfoTC1cPxB83cBVL+Y+bUtY1vcNGpdllSXQ07RKd+30vITrgcWmrU9IsbOYLhgrMbDxMzA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5231
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > +struct prestera_msg_event_port_param {=0A=
-> > +     union {=0A=
-> > +             struct {=0A=
-> > +                     u8 oper;=0A=
-> > +                     __le32 mode;=0A=
-> > +                     __le32 speed;=0A=
-> > +                     u8 duplex;=0A=
-> > +                     u8 fc;=0A=
-> > +                     u8 fec;=0A=
-> =0A=
-> Makes more sense to put the 2 le32 first and then the 4 u8s. At the=0A=
-> moment, the le32 are not word aligned, so the compiler has to issue=0A=
-> more instructions.=0A=
-> =0A=
-> =0A=
-> > +             } __packed mac;=0A=
-> > +             struct {=0A=
-> > +                     u8 mdix;=0A=
-> > +                     __le64 lmode_bmap;=0A=
-> > +                     u8 fc;=0A=
-> =0A=
-> Same here, le64 first, then to two u8.=0A=
-> =0A=
-> >  union prestera_msg_port_param {=0A=
-> > -     u8  admin_state;=0A=
-> > -     u8  oper_state;=0A=
-> > -     u32 mtu;=0A=
-> > -     u8  mac[ETH_ALEN];=0A=
-> > -     u8  accept_frm_type;=0A=
-> > -     u32 speed;=0A=
-> > +     u8 admin_state;=0A=
-> > +     u8 oper_state;=0A=
-> > +     __le32 mtu;=0A=
-> =0A=
-> 2 u8 followed by a le32? Swap them.=0A=
-> =0A=
-> > +     u8 mac[ETH_ALEN];=0A=
-> =0A=
-> You then get the 6 byte MAC and the 2 u8 giving you word alignment.=0A=
-> =0A=
-> > +     u8 accept_frm_type;=0A=
-> > +     __le32 speed;=0A=
-> =0A=
-> Swap these two, keeping speed word aligned.=0A=
-> =0A=
-> >        u8 learning;=0A=
-> >        u8 flood;=0A=
-> =0A=
-> You have 3 u8 in a row, so move another u8 up to keep word alignment, say=
- type.=0A=
-> =0A=
-> > -     u32 link_mode;=0A=
-> > -     u8  type;=0A=
-> > -     u8  duplex;=0A=
-> > -     u8  fec;=0A=
-> > -     u8  fc;=0A=
-> > -     struct prestera_msg_port_mdix_param mdix;=0A=
-> > -     struct prestera_msg_port_autoneg_param autoneg;=0A=
-> > +     __le32 link_mode;=0A=
-> > +     u8 type;=0A=
-> > +     u8 duplex;=0A=
-> > +     u8 fec;=0A=
-> > +     u8 fc;=0A=
-> > +     union {=0A=
-> =0A=
-> With type moved up, this whole union becomes unaligned. So you might=0A=
-> want to explicitly add a reserved byte here. Make sure it is set to=0A=
-> zero when sent to the firmware, and ignored on receive.=0A=
-> =0A=
-> > +             struct {=0A=
-> > +                     u8 admin:1;=0A=
-> > +                     u8 fc;=0A=
-> > +                     u8 ap_enable;=0A=
-> =0A=
-> Move these three after the next union, to keep the union aligned.=0A=
-> =0A=
-> > +                     union {=0A=
-> > +                             struct {=0A=
-> > +                                     __le32 mode;=0A=
-> > +                                     u8  inband:1;=0A=
-> > +                                     __le32 speed;=0A=
-> =0A=
-> speed should be second, so it is aligned.=0A=
-> =0A=
-> > +                                     u8  duplex;=0A=
-> > +                                     u8  fec;=0A=
-> > +                                     u8  fec_supp;=0A=
-> > +                             } __packed reg_mode;=0A=
-> > +                             struct {=0A=
-> > +                                     __le32 mode;=0A=
-> > +                                     __le32 speed;=0A=
-> > +                                     u8  fec;=0A=
-> > +                                     u8  fec_supp;=0A=
-> > +                             } __packed ap_modes[PRESTERA_AP_PORT_MAX]=
-;=0A=
-> > +                     } __packed;=0A=
-> > +             } __packed mac;=0A=
-> > +             struct {=0A=
-> > +                     u8 admin:1;=0A=
-> > +                     u8 adv_enable;=0A=
-> > +                     __le64 modes;=0A=
-> > +                     __le32 mode;=0A=
-> =0A=
-> These two le64 come first to keep them aligned.=0A=
-> =0A=
-> > +                     u8 mdix;=0A=
-> > +             } __packed phy;=0A=
-> > +     } __packed link;=0A=
-> =0A=
-> =0A=
-> Hopefully you get the idea. Getting alignment correct will produce=0A=
-> smaller faster code, especially on architectures where none aligned=0A=
-> accesses are expensive.=0A=
-=0A=
-  Thanks for the comments. Those structures are packed, so there will not=
-=0A=
-be any holes (pahole is my friend now :) ). Also, the structure have been=
-=0A=
-left intentionally unmodified (with few others like prestera_msg_fdb_req,=
-=0A=
-prestera_msg_event_port_param), to be align with the FW side. The rest stru=
-cts,=0A=
-which aren't FW dependent, have been fixed (probably I should have mentione=
-d=0A=
-this in the patch-set log to make it clear). Will try to fix those also=0A=
-to make it consistent in all places. I think this is the right time for=0A=
-such changes.=0A=
-=0A=
-> =0A=
-> > @@ -475,15 +543,15 @@ static int __prestera_cmd_ret(struct prestera_swi=
-tch *sw,=0A=
-> >        struct prestera_device *dev =3D sw->dev;=0A=
-> >        int err;=0A=
-> >  =0A=
-> > -     cmd->type =3D type;=0A=
-> > +     cmd->type =3D __cpu_to_le32(type);=0A=
-> >  =0A=
-> > -     err =3D dev->send_req(dev, cmd, clen, ret, rlen, waitms);=0A=
-> > +     err =3D dev->send_req(dev, 0, cmd, clen, ret, rlen, waitms);=0A=
-> >        if (err)=0A=
-> >                return err;=0A=
-> >  =0A=
-> > -     if (ret->cmd.type !=3D PRESTERA_CMD_TYPE_ACK)=0A=
-> > +     if (__le32_to_cpu(ret->cmd.type) !=3D PRESTERA_CMD_TYPE_ACK)=0A=
-> >                return -EBADE;=0A=
-> =0A=
-> Makes more sense to apply the endianness swap to=0A=
-> PRESTERA_CMD_TYPE_ACK. That can be done at compile time, where as=0A=
-> swapping ret->cmd.type has to be done a runtime.=0A=
->=0A=
- =0A=
-Agree.=0A=
-=0A=
-> =0A=
-> > -     if (ret->status !=3D PRESTERA_CMD_ACK_OK)=0A=
-> > +     if (__le32_to_cpu(ret->status) !=3D PRESTERA_CMD_ACK_OK)=0A=
-> >                return -EINVAL;=0A=
-> =0A=
-> So this patch is now doing two different things at once. It is fixing=0A=
-> your broken endianness support, and it is changing the ABI. Please=0A=
-> separate these into different patches. Fix the endianness first, then=0A=
-> change the ABI. That will make it much easier to review.=0A=
-=0A=
-Makes sense, will do.=0A=
-=0A=
-> =0A=
->        Andrew=0A=
->=0A=
-=0A=
-    Volodymyr=0A=
+On 10/28/21 12:57 PM, Peter Gonda wrote:
+> From: David Rientjes <rientjes@google.com>
+> 
+> Add new module parameter to allow users to use SEV_INIT_EX instead of
+> SEV_INIT. This helps users who lock their SPI bus to use the PSP for SEV
+> functionality. The 'init_ex_path' parameter defaults to NULL which means
+> the kernel will use SEV_INIT, if a path is specified SEV_INIT_EX will be
+> used with the data found at the path. On certain PSP commands this
+> file is written to as the PSP updates the NV memory region. Depending on
+> file system initialization this file open may fail during module init
+> but the CCP driver for SEV already has sufficient retries for platform
+> initialization. During normal operation of PSP system and SEV commands
+> if the PSP has not been initialized it is at run time.
+
+IIUC, it looks as though the file has to exist before the very first use, 
+otherwise the initialization will fail. Did you consider checking for the 
+presence of the file first and, if not there, just using a memory area of 
+all f's (as documented in the SEV API)? Then on successful INIT, the 
+memory would be written and the file created.
+
+Either way, probably worth adding to the commit message. And if you stay 
+with having to pre-allocate the file, it's worth adding to the SEV 
+documentation what is required to be done to initialize the file.
+
+Although, INIT_EX is probably worth adding to the SEV documentation in 
+general.
+
+> 
+> Signed-off-by: David Rientjes <rientjes@google.com>
+> Co-developed-by: Peter Gonda <pgonda@google.com>
+> Signed-off-by: Peter Gonda <pgonda@google.com>
+> Cc: Tom Lendacky <thomas.lendacky@amd.com>
+> Cc: Brijesh Singh <brijesh.singh@amd.com>
+> Cc: Marc Orr <marcorr@google.com>
+> Cc: Joerg Roedel <jroedel@suse.de>
+> Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> Cc: David Rientjes <rientjes@google.com>
+> Cc: John Allen <john.allen@amd.com>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Paolo Bonzini <pbonzini@redhat.com> (
+> Cc: linux-crypto@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> ---
+>   drivers/crypto/ccp/sev-dev.c | 186 ++++++++++++++++++++++++++++++++---
+>   include/linux/psp-sev.h      |  21 ++++
+>   2 files changed, 192 insertions(+), 15 deletions(-)
+> 
+> diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
+> index b568ae734857..c8718b4cbc93 100644
+> --- a/drivers/crypto/ccp/sev-dev.c
+> +++ b/drivers/crypto/ccp/sev-dev.c
+> @@ -22,6 +22,7 @@
+>   #include <linux/firmware.h>
+>   #include <linux/gfp.h>
+>   #include <linux/cpufeature.h>
+> +#include <linux/fs.h>
+>   
+>   #include <asm/smp.h>
+>   
+> @@ -43,6 +44,10 @@ static int psp_probe_timeout = 5;
+>   module_param(psp_probe_timeout, int, 0644);
+>   MODULE_PARM_DESC(psp_probe_timeout, " default timeout value, in seconds, during PSP device probe");
+>   
+> +static char *init_ex_path;
+> +module_param(init_ex_path, charp, 0660);
+> +MODULE_PARM_DESC(init_ex_path, " Path for INIT_EX data; if set try INIT_EX");
+> +
+>   MODULE_FIRMWARE("amd/amd_sev_fam17h_model0xh.sbin"); /* 1st gen EPYC */
+>   MODULE_FIRMWARE("amd/amd_sev_fam17h_model3xh.sbin"); /* 2nd gen EPYC */
+>   MODULE_FIRMWARE("amd/amd_sev_fam19h_model0xh.sbin"); /* 3rd gen EPYC */
+> @@ -58,6 +63,14 @@ static int psp_timeout;
+>   #define SEV_ES_TMR_SIZE		(1024 * 1024)
+>   static void *sev_es_tmr;
+>   
+> +/* INIT_EX NV Storage:
+> + *   The NV Storage is a 32Kb area and must be 4Kb page aligned.  Use the page
+> + *   allocator to allocate the memory, which will return aligned memory for the
+> + *   specified allocation order.
+> + */
+> +#define NV_LENGTH (32 << 10)
+
+Just me, but I think '32 * 1024' would be a bit clearer.
+
+> +static void *sev_init_ex_nv_address;
+> +
+>   static inline bool sev_version_greater_or_equal(u8 maj, u8 min)
+>   {
+>   	struct sev_device *sev = psp_master->sev_data;
+> @@ -135,6 +148,7 @@ static int sev_cmd_buffer_len(int cmd)
+>   	case SEV_CMD_GET_ID:			return sizeof(struct sev_data_get_id);
+>   	case SEV_CMD_ATTESTATION_REPORT:	return sizeof(struct sev_data_attestation_report);
+>   	case SEV_CMD_SEND_CANCEL:			return sizeof(struct sev_data_send_cancel);
+> +	case SEV_CMD_INIT_EX:                   return sizeof(struct sev_data_init_ex);
+
+Maybe move this to just under the SEV_CMD_INIT: case statement?
+
+>   	default:				return 0;
+>   	}
+>   
+> @@ -156,6 +170,89 @@ static void *sev_fw_alloc(unsigned long len)
+>   	return page_address(page);
+>   }
+>   
+> +static int sev_read_nv_memory(void)
+> +{
+> +	struct file *fp;
+> +	ssize_t nread;
+> +
+> +	if (!sev_init_ex_nv_address)
+> +		return -EOPNOTSUPP;
+> +
+> +	fp = filp_open(init_ex_path, O_RDONLY, 0);
+> +	if (IS_ERR(fp)) {
+> +		dev_err(psp_master->dev, "sev could not open file for read\n");
+> +		return PTR_ERR(fp);
+> +	}
+> +
+> +	nread = kernel_read(fp, sev_init_ex_nv_address, NV_LENGTH, 0);
+> +	dev_dbg(psp_master->dev, "sev NV read %d bytes\n", nread);
+> +	filp_close(fp, NULL);
+
+Add a blank line here.
+
+> +	return 0;
+> +}
+> +
+> +static int sev_write_nv_memory(void)
+> +{
+> +	struct sev_device *sev = psp_master->sev_data;
+> +	struct file *fp;
+> +	loff_t offset = 0;
+> +	int ret;
+> +
+> +	if (!sev_init_ex_nv_address)
+> +		return -EOPNOTSUPP;
+> +
+> +	fp = filp_open(init_ex_path, O_CREAT | O_WRONLY, 0600);
+> +	if (IS_ERR(fp)) {
+> +		dev_err(sev->dev, "sev NV data could not be created\n");
+> +		return PTR_ERR(fp);
+> +	}
+
+Add a blank line here.
+
+> +	ret = kernel_write(fp, sev_init_ex_nv_address, NV_LENGTH, &offset);
+> +	vfs_fsync(fp, 0);
+> +	filp_close(fp, NULL);
+> +
+> +	if (ret != NV_LENGTH) {
+> +		dev_err(sev->dev,
+> +			"failed to write %d bytes to non volatile memory area, ret=%lu\n",
+> +			NV_LENGTH, ret);
+> +		if (ret >= 0)
+> +			return -EIO;
+> +		return ret;
+> +	}
+> +
+> +	dev_dbg(sev->dev, "wrote to non volatile memory area\n");
+
+Add a blank line here.
+
+> +	return 0;
+> +}
+> +
+> +static void sev_write_nv_memory_if_required(int cmd_id)
+> +{
+> +	struct sev_device *sev = psp_master->sev_data;
+> +	int ret;
+> +
+> +	if (!sev_init_ex_nv_address)
+> +		return;
+> +
+> +	/*
+> +	 * Only a few platform commands modify the SPI/NV area,
+> +	 * but none of the non-platform commands do. Only INIT,
+
+maybe say INIT(_EX)?
+
+> +	 * PLATFORM_RESET, PEK_GEN, PEK_CERT_IMPORT, and
+> +	 * PDH_GEN do.
+
+Does SHUTDOWN modify the SPI/NV area? Otherwise a separate comment about 
+why it is included below.
+
+> +	 */
+> +	switch (cmd_id) {
+> +	case SEV_CMD_FACTORY_RESET:
+> +	case SEV_CMD_INIT_EX:
+> +	case SEV_CMD_PDH_GEN:
+> +	case SEV_CMD_PEK_CERT_IMPORT:
+> +	case SEV_CMD_PEK_GEN:
+> +	case SEV_CMD_SHUTDOWN:
+> +		break;
+> +	default:
+> +		return;
+> +	};
+> +
+> +	ret = sev_write_nv_memory();
+> +	if (ret)
+> +		dev_err(sev->dev, "sev NV write failed %d\n", ret);
+
+You already have error messages in the sev_write_nv_memory() function, 
+this one probably isn't needed.
+
+> +}
+> +
+>   static int __sev_do_cmd_locked(int cmd, void *data, int *psp_ret)
+>   {
+>   	struct psp_device *psp = psp_master;
+> @@ -225,6 +322,8 @@ static int __sev_do_cmd_locked(int cmd, void *data, int *psp_ret)
+>   		dev_dbg(sev->dev, "sev command %#x failed (%#010x)\n",
+>   			cmd, reg & PSP_CMDRESP_ERR_MASK);
+>   		ret = -EIO;
+> +	} else {
+> +		sev_write_nv_memory_if_required(cmd);
+>   	}
+>   
+>   	print_hex_dump_debug("(out): ", DUMP_PREFIX_OFFSET, 16, 2, data,
+> @@ -251,22 +350,42 @@ static int sev_do_cmd(int cmd, void *data, int *psp_ret)
+>   	return rc;
+>   }
+>   
+> -static int __sev_platform_init_locked(int *error)
+> +static int __sev_init_locked(int *error)
+>   {
+> -	struct psp_device *psp = psp_master;
+>   	struct sev_data_init data;
+> -	struct sev_device *sev;
+> -	int rc = 0;
+>   
+> -	if (!psp || !psp->sev_data)
+> -		return -ENODEV;
+> +	memset(&data, 0, sizeof(data));
+> +	if (sev_es_tmr) {
+> +		u64 tmr_pa;
+>   
+> -	sev = psp->sev_data;
+> +		/*
+> +		 * Do not include the encryption mask on the physical
+> +		 * address of the TMR (firmware should clear it anyway).
+> +		 */
+> +		tmr_pa = __pa(sev_es_tmr);
+>   
+> -	if (sev->state == SEV_STATE_INIT)
+> -		return 0;
+> +		data.flags |= SEV_INIT_FLAGS_SEV_ES;
+> +		data.tmr_address = tmr_pa;
+> +		data.tmr_len = SEV_ES_TMR_SIZE;
+> +	}
+> +
+> +	return __sev_do_cmd_locked(SEV_CMD_INIT, &data, error);
+> +}
+> +
+> +static int __sev_init_ex_locked(int *error)
+> +{
+> +	struct sev_data_init_ex data;
+> +	int ret;
+>   
+>   	memset(&data, 0, sizeof(data));
+> +	data.length = sizeof(data);
+> +	data.nv_address = __psp_pa(sev_init_ex_nv_address);
+> +	data.nv_len = NV_LENGTH;
+> +
+> +	ret = sev_read_nv_memory();
+> +	if (ret)
+> +		return ret;
+> +
+>   	if (sev_es_tmr) {
+>   		u64 tmr_pa;
+>   
+> @@ -276,12 +395,30 @@ static int __sev_platform_init_locked(int *error)
+>   		 */
+>   		tmr_pa = __pa(sev_es_tmr);
+>   
+> -		data.flags |= SEV_INIT_FLAGS_SEV_ES;
+
+Inadvertant deletion?
+
+>   		data.tmr_address = tmr_pa;
+>   		data.tmr_len = SEV_ES_TMR_SIZE;
+>   	}
+
+Add a blank line here.
+
+> +	return __sev_do_cmd_locked(SEV_CMD_INIT_EX, &data, error);
+> +}
+> +
+> +static int __sev_platform_init_locked(int *error)
+> +{
+> +	struct psp_device *psp = psp_master;
+> +	struct sev_device *sev;
+> +	int rc;
+> +	int (*init_function)(int *error) = sev_init_ex_nv_address ?
+> +			__sev_init_ex_locked :
+> +			__sev_init_locked;
+
+This seems a bit much in the declaration. How about moving the assignment 
+down to just before the first call?
+
+> +
+> +	if (!psp || !psp->sev_data)
+> +		return -ENODEV;
+> +
+> +	sev = psp->sev_data;
+>   
+> -	rc = __sev_do_cmd_locked(SEV_CMD_INIT, &data, error);
+> +	if (sev->state == SEV_STATE_INIT)
+> +		return 0;
+> +
+> +	rc = init_function(error);
+>   	if (rc && *error == SEV_RET_SECURE_DATA_INVALID) {
+>   		/*
+>   		 * INIT command returned an integrity check failure
+> @@ -290,8 +427,8 @@ static int __sev_platform_init_locked(int *error)
+>   		 * failed and persistent state has been erased.
+>   		 * Retrying INIT command here should succeed.
+>   		 */
+> -		dev_dbg(sev->dev, "SEV: retrying INIT command");
+> -		rc = __sev_do_cmd_locked(SEV_CMD_INIT, &data, error);
+> +		dev_err(sev->dev, "SEV: retrying INIT command");
+
+Maybe dev_notice() instead of dev_err()?
+
+> +		rc = init_function(error);
+>   	}
+>   
+>   	if (rc)
+> @@ -307,7 +444,7 @@ static int __sev_platform_init_locked(int *error)
+>   
+>   	dev_dbg(sev->dev, "SEV firmware initialized\n");
+>   
+> -	return rc;
+> +	return 0;
+>   }
+>   
+>   int sev_platform_init(int *error)
+> @@ -987,7 +1124,7 @@ static int sev_misc_init(struct sev_device *sev)
+>   
+>   	init_waitqueue_head(&sev->int_queue);
+>   	sev->misc = misc_dev;
+> -	dev_dbg(dev, "registered SEV device\n");
+> +	dev_err(dev, "registered SEV device\n");
+
+Not sure this is a necessary change... but, if you don't want this as a 
+dev_dbg() then it should be a dev_info(), because it is not an error.
+
+>   
+>   	return 0;
+>   }
+> @@ -1061,6 +1198,12 @@ static void sev_firmware_shutdown(struct sev_device *sev)
+>   			   get_order(SEV_ES_TMR_SIZE));
+>   		sev_es_tmr = NULL;
+>   	}
+> +
+> +	if (sev_init_ex_nv_address) {
+> +		free_pages((unsigned long)sev_init_ex_nv_address,
+> +			   get_order(NV_LENGTH));
+> +		sev_init_ex_nv_address = NULL;
+> +	}
+>   }
+>   
+>   void sev_dev_destroy(struct psp_device *psp)
+> @@ -1105,6 +1248,19 @@ void sev_pci_init(void)
+>   	    sev_update_firmware(sev->dev) == 0)
+>   		sev_get_api_version();
+>   
+> +	/* If an init_ex_path is provided rely on INIT_EX for PSP initialization
+> +	 * instead of INIT.
+> +	 */
+> +	if (init_ex_path) {
+> +		sev_init_ex_nv_address = sev_fw_alloc(NV_LENGTH);
+> +		if (!sev_init_ex_nv_address) {
+> +			dev_warn(
+
+Shouldn't this be a dev_err(), since you are erroring out?
+
+> +				sev->dev,
+
+Move this up to the previous line, i.e.: dev_err(sev->dev,
+
+> +				"SEV: INIT_EX NV storage allocation failed, INIT-EX support unavailable\n");
+
+Since you're erroring out, probably enough to just have the first part of 
+that message. But if not:
+
+s/INIT-EX/INIT_EX/
+
+Thanks,
+Tom
+
+> +			goto err;
+> +		}
+> +	}
+> +
+>   	/* Obtain the TMR memory area for SEV-ES use */
+>   	sev_es_tmr = sev_fw_alloc(SEV_ES_TMR_SIZE);
+>   	if (!sev_es_tmr)
+> diff --git a/include/linux/psp-sev.h b/include/linux/psp-sev.h
+> index d48a7192e881..1595088c428b 100644
+> --- a/include/linux/psp-sev.h
+> +++ b/include/linux/psp-sev.h
+> @@ -52,6 +52,7 @@ enum sev_cmd {
+>   	SEV_CMD_DF_FLUSH		= 0x00A,
+>   	SEV_CMD_DOWNLOAD_FIRMWARE	= 0x00B,
+>   	SEV_CMD_GET_ID			= 0x00C,
+> +	SEV_CMD_INIT_EX                 = 0x00D,
+>   
+>   	/* Guest commands */
+>   	SEV_CMD_DECOMMISSION		= 0x020,
+> @@ -102,6 +103,26 @@ struct sev_data_init {
+>   	u32 tmr_len;			/* In */
+>   } __packed;
+>   
+> +/**
+> + * struct sev_data_init_ex - INIT_EX command parameters
+> + *
+> + * @length: len of the command buffer read by the PSP
+> + * @flags: processing flags
+> + * @tmr_address: system physical address used for SEV-ES
+> + * @tmr_len: len of tmr_address
+> + * @nv_address: system physical address used for PSP NV storage
+> + * @nv_len: len of nv_address
+> + */
+> +struct sev_data_init_ex {
+> +	u32 length;                     /* In */
+> +	u32 flags;                      /* In */
+> +	u64 tmr_address;                /* In */
+> +	u32 tmr_len;                    /* In */
+> +	u32 reserved;                   /* In */
+> +	u64 nv_address;                 /* In/Out */
+> +	u32 nv_len;                     /* In */
+> +} __packed;
+> +
+>   #define SEV_INIT_FLAGS_SEV_ES	0x01
+>   
+>   /**
+> 
