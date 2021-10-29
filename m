@@ -2,103 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF878440545
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 00:05:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49BCA44054B
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 00:07:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231400AbhJ2WIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 18:08:16 -0400
-Received: from mout.kundenserver.de ([212.227.126.187]:33251 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230325AbhJ2WIP (ORCPT
+        id S231520AbhJ2WJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 18:09:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230381AbhJ2WJp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 18:08:15 -0400
-Received: from mail-wr1-f43.google.com ([209.85.221.43]) by
- mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1Mzydy-1mtHtm3LZW-00x5NC for <linux-kernel@vger.kernel.org>; Sat, 30 Oct 2021
- 00:05:44 +0200
-Received: by mail-wr1-f43.google.com with SMTP id u18so18865663wrg.5
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 15:05:44 -0700 (PDT)
-X-Gm-Message-State: AOAM530H/wtUY/3yZbzluDy+jn63vJcIckBBziQRcyEvv76rzdroo/lg
-        wWDg7b6/4bFBJUgY8ii35QbOxoKU36SzS5c9XYM=
-X-Google-Smtp-Source: ABdhPJzfwgv0LbgG3Xfr6UzxkXiZK9hLeraT8h4hEKjoLlmK3OAyU4Iib390eAxpmKqgo6ROOvk/JmnenK1h2Z2xv4E=
-X-Received: by 2002:a05:6000:18c7:: with SMTP id w7mr17331452wrq.411.1635545144483;
- Fri, 29 Oct 2021 15:05:44 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211029203110.8343-1-julianbraha@gmail.com>
-In-Reply-To: <20211029203110.8343-1-julianbraha@gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Sat, 30 Oct 2021 00:05:28 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1L8x48ZGhFKaMNa0MXCGrouw2EEwe9uo640bnnf=4dOA@mail.gmail.com>
-Message-ID: <CAK8P3a1L8x48ZGhFKaMNa0MXCGrouw2EEwe9uo640bnnf=4dOA@mail.gmail.com>
-Subject: Re: [PATCH] ARM: fix unmet dependency on BITREVERSE for HAVE_ARCH_BITREVERSE
-To:     Julian Braha <julianbraha@gmail.com>
-Cc:     Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Fri, 29 Oct 2021 18:09:45 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B7AFC061570
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 15:07:16 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id y10so10762939qkp.9
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 15:07:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bvugqhuJUn7EVZO6Gy15kKWUVnZr2PLbZtifxIeae/4=;
+        b=jHT03enmBoB+Qxh+IJbT15nmFnHdeqUqiifGJvw0/wWNnQR9wkcgQ1S6zGedMWiXe/
+         nktDDM+yYYqqah+TjEqub2x+1fY/dSatdPUpINxV/3QfAJm88cFs9ljC2BCBoCYQCHi6
+         OZoLES9MoExPe1UYQ9Uc7jcEX0mTGXJq5Ge7ccJHJIFzMHpeJPbisEkiHqombgj3s1lP
+         e+WsxdFYokN/BMM1B2q4kX6w4Ksnvmf8mLU+WVN2zFit0oxD48d4gyNfwXINlk3Xe9Sk
+         ET3dzLpHpdZPqikczF6P97R7C9lixASroTAe/JBN1YyR0SdOu8pTuVw99cpDbfnFvPSE
+         GObw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=bvugqhuJUn7EVZO6Gy15kKWUVnZr2PLbZtifxIeae/4=;
+        b=EU7NAaHNG9SV4ORUkw1Nd3wpQ6oLpX1nNXqM4A08YeYA373OuPu6ucrAmi+XYkVZeb
+         ZY3/p1QBK7fKWhsg/yj5lBztd6XkL2zfFeNag/4F1fLHIn7rQzX2vGSE5gSck7nXC0M2
+         2Yaru3tGjb7T39cCfQpIwR26z7KemipL+ZSPnQKB3pvLL0G1bWs+KjQuqnMOZAF8O3dB
+         SCCxyKq4N6Y5s5OB1OU5RxGvFn1yBjWR+SbW+am310bUqX14kWk6Mf4hRDuaZFMC6oe/
+         wrWdLAJbdcY8Ki+PAxcxWdfXiUp9qQJAF2YQ1L2LgAYcVNQBAv9gkmDpFKLYzkVx1jpr
+         0Ipw==
+X-Gm-Message-State: AOAM533/DyZs01IRn03o07rygZYsXnC37tt5cEYWkNN6z18M8JpcrAH7
+        nP5SB0/9LoLoDm7VrLgjJVc=
+X-Google-Smtp-Source: ABdhPJxIHxTmDz9dbS/mmXYgUAUzgQMf0Ody82Fmpq3+crgrEJW1OD+XEzMVzi//0kibz0/EqIb6YA==
+X-Received: by 2002:a05:620a:28cc:: with SMTP id l12mr3626391qkp.423.1635545234828;
+        Fri, 29 Oct 2021 15:07:14 -0700 (PDT)
+Received: from ubuntu-mate-laptop.eecs.ucf.edu ([132.170.15.255])
+        by smtp.gmail.com with ESMTPSA id p9sm4580739qki.51.2021.10.29.15.07.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Oct 2021 15:07:14 -0700 (PDT)
+Sender: Julian Braha <julian.braha@gmail.com>
+From:   Julian Braha <julianbraha@gmail.com>
+To:     nsekhar@ti.com, brgl@bgdev.pl, linux@armlinux.org.uk
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         fazilyildiran@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:Vupko7xIT5uNd9SYbd+5fxgmOxygq6hPgunKDTymd0BhZQySXhd
- WDUm/3CcUHiY7NjuLScIQtlzNWWELBp4tBDRAnpLUKafOFr+ehGxGw0eh5OretM1atMtSr8
- 75jnteroEHTrK+JEHo7IywY3/KsocH7yCRK7PGR89VOK5keeA/Uma56zx1ZuIViAGUbn9AH
- q7J0fmZzgsYNowbUQRFPg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Ga9JNT9RWjo=:Xk5179wHn3DiAgGVGmyNO0
- 91WTOK3no8/SP9TQrbxGk3kCR9GXfDhJAFmBj+Ie5ciG5gEv4Fkg+DNzzIN2jh6MMZLH2dIEO
- Tcf/YNpJ+t2Yd+QWQvJ33pDJv6Wn23G3/KKqxgeWAUVfHKsmzYnAup7fYiEMlYLwvKFvGheoA
- bF+NPt2WeoRPfObWQVreE+cSO89f7tQaU1J61UEz2UIsY2xNlW6kJAYboIPxMbWbFn4OUHbtG
- 1Wp8syPEForFwYKmuEIB4vTqmR8JHIS5wB0+3nSrHaGGnfFr5hkuidun3LT0FkYzdFi2GCMck
- DCSmFdcK1l/l3G1XSL/xAKbp6UqTgBDFM7r7nNV9yfhnwwCJbkuEnkO1pDIWlS4P9RL07gUgI
- ZP7EHUPwLuAkMFdxByQh4m//01XeOBYD6XkeiX+w13DKjQi4AIEBJ5u92t4k354BB+BFSW9z9
- vojFSpRzrC7vY4dRan0l137+aQKEYPDSaHpfTzvfNrOBc5BR6MSOzFcW8HL0nDv9JuXY6TY59
- 9KbcuLvgVoujS6iXnnY/AvFXmk6ClQ0tz7CYJQz1fE+2WoW7bU98+jBQyKfOAOM8NNZ9c4jxd
- XewoIMAt8feIpJv75ypmDeRtmuKtxHA3BegVwPLe53JhMFPcmiFcStlrq6fNa3lRZikde9dkW
- zmw46EVbIfC1lIeM2jki13LkrnCCAYn+qoBsc2IS4eBUR/HN/h7qdzhVApD4A3AJlhs0=
+Subject: [PATCH] ARM: davinci: fix unmet dependency on PINCTRL for PINCTRL_SINGLE
+Date:   Fri, 29 Oct 2021 18:07:13 -0400
+Message-Id: <20211029220713.24420-1-julianbraha@gmail.com>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 10:31 PM Julian Braha <julianbraha@gmail.com> wrote:
->
-> When ARM is enabled, and BITREVERSE is disabled,
-> Kbuild gives the following warning:
->
-> WARNING: unmet direct dependencies detected for HAVE_ARCH_BITREVERSE
->   Depends on [n]: BITREVERSE [=n]
->   Selected by [y]:
->   - ARM [=y] && (CPU_32v7M [=n] || CPU_32v7 [=y]) && !CPU_32v6 [=n]
->
-> This is because ARM selects HAVE_ARCH_BITREVERSE
-> without selecting BITREVERSE, despite
-> HAVE_ARCH_BITREVERSE depending on BITREVERSE.
->
-> This unmet dependency bug was found by Kismet,
-> a static analysis tool for Kconfig. Please advise if this
-> is not the appropriate solution.
->
-> Signed-off-by: Julian Braha <julianbraha@gmail.com>
+When ARCH_DAVINCI is enabled and PINCTRL is disabled,
+Kbuild gives the following warning:
 
-This works, but I think it would be better handled differently:
+WARNING: unmet direct dependencies detected for PINCTRL_SINGLE
+  Depends on [n]: PINCTRL [=n] && OF [=y] && HAS_IOMEM [=y]
+  Selected by [y]:
+  - ARCH_DAVINCI [=y] && ARCH_MULTI_V5 [=y]
 
-The other 'select BITREVERSE' instances are for drivers that use
-bitrever(), not those that provide it.
+This is because ARCH_DAVINCI selects PINCTRL_SINGLE
+without selecting or depending on PINCTRL, despite
+PINCTRL_SINGLE depending on PINCTRL.
 
-We can probably just remove the dependency. Alternatively we could
-change arch/arm/ to
+This unmet dependency was detected by Kismet, a
+static analysis tool for Kconfig. Please advise
+if this is not the appropriate solution.
 
-     select HAVE_ARCH_BITREVERSE if BITREVERSE && ((CPU_32v7M ||
-CPU_32v7) && !CPU_32v6)
+Signed-off-by: Julian Braha <julianbraha@gmail.com>
+---
+ arch/arm/mach-davinci/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Regardless of what we do here, note that
+diff --git a/arch/arm/mach-davinci/Kconfig b/arch/arm/mach-davinci/Kconfig
+index 1d3aef84287d..a9ae3ba4536c 100644
+--- a/arch/arm/mach-davinci/Kconfig
++++ b/arch/arm/mach-davinci/Kconfig
+@@ -9,7 +9,7 @@ menuconfig ARCH_DAVINCI
+ 	select PM_GENERIC_DOMAINS_OF if PM && OF
+ 	select REGMAP_MMIO
+ 	select RESET_CONTROLLER
+-	select PINCTRL_SINGLE
++	imply PINCTRL_SINGLE
+ 
+ if ARCH_DAVINCI
+ 
+-- 
+2.30.2
 
-a) the 'select' lines in CONFIG_ARM are sorted alphabetically, and
-   should be kept that way
-
-b) the same probably exists on arch/mips and arch/arm64, whatever we
-   do here should be the same as on the other architectures.
-
-        Arnd
