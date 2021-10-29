@@ -2,82 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DA1F43F756
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 08:38:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4025F43F75B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 08:39:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232052AbhJ2GlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 02:41:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232031AbhJ2GlJ (ORCPT
+        id S232110AbhJ2GlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 02:41:22 -0400
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:32967 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232078AbhJ2GlT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 02:41:09 -0400
-Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 499B2C061745
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 23:38:39 -0700 (PDT)
-Received: by mail-oo1-xc29.google.com with SMTP id z11-20020a4a870b000000b002b883011c77so3033150ooh.5
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 23:38:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=lrxWSlaHCqYhum8bENEW5/SnCy2jiR0p2i+4IT353FU=;
-        b=B+yUMrtmEan6908TWx8hiXU3bHm3jisSeFvHInIf1B1n5Q7J9IgleyQi90tMSUezsD
-         38/8lBlsGCgXYFwIezakVmbBo5KDmDkmoqYGvruwfTDcnwyCkNfs4YES73cpt514c1V0
-         kNrtOrWAn8tqnzTmogu03qpWuacbQJDCN/aUY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=lrxWSlaHCqYhum8bENEW5/SnCy2jiR0p2i+4IT353FU=;
-        b=FOT9MtBM7+nfBCa/9EpfB1yy+E+lTFQOZwV4tqya/wJ7C5yrMwEECL/YDzQMIi0/F1
-         0sh3qjLsIFllqcAxbfwT096BaO//PltQMjE0g/ZQ2gN/OALqawEs4bk4OiLzLJGvpvsN
-         NnBvPbGwkA+CXtlDMYnsTYKKOy38r4aIorSD3gb6NiiNKnP47RxzV0JVbQFfuwBorRBB
-         DqHzWIHdlJ1tpVurADAKrtReZR/BEKbnfktPo6qqxWn+p/suNUTN5NYE4WGM85STJ5cP
-         GkehKvmz1xT/HUBOPLZtkalBYjofVjJpa0Vi3/8WmDrYo0jDzqbV/kniEFQH5p1wKwvB
-         G3RQ==
-X-Gm-Message-State: AOAM5332yMltMI2g9YTYee63WjhF87s6qc9o3IBIom/h4eF63FPKaFsY
-        w1ArstMWgjuFjvjl19+rAuKkjtgEPx+EBIRNaXb/B2gifDo=
-X-Google-Smtp-Source: ABdhPJytZQJN2ROOkPDTOyLMxax9ZDVghJLsWYJT0LYebDjaXf9Qn9W3wLTZ0I74Q3HnH7U6p/sFSXC9b3ZuCQJikwk=
-X-Received: by 2002:a4a:4c90:: with SMTP id a138mr6349006oob.8.1635489518497;
- Thu, 28 Oct 2021 23:38:38 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 28 Oct 2021 23:38:38 -0700
-MIME-Version: 1.0
-In-Reply-To: <20211028174015.v2.2.Ie56f55924f5c7706fe3194e710bbef6fdb8b5bc6@changeid>
-References: <20211028174015.v2.1.Ie17e51ad3eb91d72826ce651ca2786534a360210@changeid>
- <20211028174015.v2.2.Ie56f55924f5c7706fe3194e710bbef6fdb8b5bc6@changeid>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Thu, 28 Oct 2021 23:38:38 -0700
-Message-ID: <CAE-0n51hyTyCxwoSfGZCZmRGVbdYBmyBPdkjqPgZ+4gn6T9WmQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] arm64: dts: sc7180: Support Lazor/Limozeen rev9
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Philip Chen <philipchen@chromium.org>
-Cc:     dianders@chromium.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 29 Oct 2021 02:41:19 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R991e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0Uu6JQh3_1635489529;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0Uu6JQh3_1635489529)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 29 Oct 2021 14:38:50 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     rostedt@goodmis.org
+Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org,
+        Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH -next 1/2] ftrace: Tidy up some false kernel-doc markings
+Date:   Fri, 29 Oct 2021 14:38:42 +0800
+Message-Id: <1635489523-76132-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Philip Chen (2021-10-28 17:41:16)
-> Support Lazor/Limozeen rev9 board where Parade ps8640 is added as the
-> second source edp bridge.
->
-> To support different edp bridge chips in different board revisions,
-> now we move the #incldue line of the edp bridge dts fragment (e.g.
-> sc7180-trogdor-ti-sn65dsi86.dtsi) from "sc7180-trogdor-lazor.dtsi" to
-> per-board-rev dts files.
->
-> Since the edp bridge dts fragment overrides 'dsi0_out', which is
-> defined in "sc7180.dtsi", move the #incldue line of "sc7180.dtsi" from
-> "sc7180-trogdor-lazor.dtsi" to per-board-rev dts files too, before
-> the #include line of the edp bridge dts fragment.
->
-> Signed-off-by: Philip Chen <philipchen@chromium.org>
-> ---
+Deals with
+W=1 warning: This comment starts with '/**', but isn't a kernel-doc
+comment.
+W=1 warning: bad line.
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ kernel/trace/ftrace.c            | 18 +++++++++---------
+ kernel/trace/trace_events_hist.c |  4 ++--
+ 2 files changed, 11 insertions(+), 11 deletions(-)
+
+diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+index feb1ea9..679db91 100644
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -2203,7 +2203,7 @@ static int ftrace_check_record(struct dyn_ftrace *rec, bool enable, bool update)
+ 	return FTRACE_UPDATE_MAKE_NOP;
+ }
+ 
+-/**
++/*
+  * ftrace_update_record, set a record that now is tracing or not
+  * @rec: the record to update
+  * @enable: set to true if the record is tracing, false to force disable
+@@ -2216,7 +2216,7 @@ int ftrace_update_record(struct dyn_ftrace *rec, bool enable)
+ 	return ftrace_check_record(rec, enable, true);
+ }
+ 
+-/**
++/*
+  * ftrace_test_record, check if the record has been enabled or not
+  * @rec: the record to test
+  * @enable: set to true to check if enabled, false if it is disabled
+@@ -2602,7 +2602,7 @@ struct ftrace_rec_iter {
+ 	int			index;
+ };
+ 
+-/**
++/*
+  * ftrace_rec_iter_start, start up iterating over traced functions
+  *
+  * Returns an iterator handle that is used to iterate over all
+@@ -2633,7 +2633,7 @@ struct ftrace_rec_iter *ftrace_rec_iter_start(void)
+ 	return iter;
+ }
+ 
+-/**
++/*
+  * ftrace_rec_iter_next, get the next record to process.
+  * @iter: The handle to the iterator.
+  *
+@@ -2658,7 +2658,7 @@ struct ftrace_rec_iter *ftrace_rec_iter_next(struct ftrace_rec_iter *iter)
+ 	return iter;
+ }
+ 
+-/**
++/*
+  * ftrace_rec_iter_record, get the record at the iterator location
+  * @iter: The current iterator location
+  *
+@@ -2761,7 +2761,7 @@ static int __ftrace_modify_code(void *data)
+ 	return 0;
+ }
+ 
+-/**
++/*
+  * ftrace_run_stop_machine, go back to the stop machine method
+  * @command: The command to tell ftrace what to do
+  *
+@@ -2773,7 +2773,7 @@ void ftrace_run_stop_machine(int command)
+ 	stop_machine(__ftrace_modify_code, &command, NULL);
+ }
+ 
+-/**
++/*
+  * arch_ftrace_update_code, modify the code to trace or not trace
+  * @command: The command that needs to be done
+  *
+@@ -7742,7 +7742,7 @@ void ftrace_kill(void)
+ 	ftrace_trace_function = ftrace_stub;
+ }
+ 
+-/**
++/*
+  * Test if ftrace is dead or not.
+  */
+ int ftrace_is_dead(void)
+@@ -7750,7 +7750,7 @@ int ftrace_is_dead(void)
+ 	return ftrace_disabled;
+ }
+ 
+-/**
++/*
+  * register_ftrace_function - register a function for profiling
+  * @ops - ops structure that holds the function for profiling.
+  *
+diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
+index cddf6bf..aa93e87 100644
+--- a/kernel/trace/trace_events_hist.c
++++ b/kernel/trace/trace_events_hist.c
+@@ -836,7 +836,7 @@ static struct hist_field *find_any_var_ref(struct hist_trigger_data *hist_data,
+  * A trigger can define one or more variables.  If any one of them is
+  * currently referenced by any other trigger, this function will
+  * determine that.
+-
++ *
+  * Typically used to determine whether or not a trigger can be removed
+  * - if there are any references to a trigger's variables, it cannot.
+  *
+@@ -3050,7 +3050,7 @@ static struct field_var *create_field_var(struct hist_trigger_data *hist_data,
+  * events.  However, for convenience, users are allowed to directly
+  * specify an event field in an action, which will be automatically
+  * converted into a variable on their behalf.
+-
++ *
+  * This function creates a field variable with the name var_name on
+  * the hist trigger currently being defined on the target event.  If
+  * subsys_name and event_name are specified, this function simply
+-- 
+1.8.3.1
+
