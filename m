@@ -2,131 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDECC440292
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 20:52:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E609440295
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 20:53:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230383AbhJ2SzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 14:55:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49134 "EHLO
+        id S230325AbhJ2Sz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 14:55:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230084AbhJ2SzP (ORCPT
+        with ESMTP id S229489AbhJ2Sz5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 14:55:15 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1675FC061570;
-        Fri, 29 Oct 2021 11:52:47 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id y128so14664202oie.8;
-        Fri, 29 Oct 2021 11:52:47 -0700 (PDT)
+        Fri, 29 Oct 2021 14:55:57 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42B5BC061570
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 11:53:28 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id x33-20020a17090a6c2400b001a63ef25836so1721575pjj.3
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 11:53:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ldSSeVAlvOj4l8QLMah9LAJhWoH7wMHLjFmgtahfoQ0=;
-        b=KoXyKwkCjQp9WMUR5gh503BBhGxyWKs0Gg4Wgi+EkPP3TcpjRH1EAzJ3glxkaOIsp1
-         ZB2bQii6UKEccvcgY/nFkiu2iHTnzhrrCWbqTNjsWoTjj6y2Vd20ycyuXp80CKWGWgTy
-         DVYNCHEWb2YSZxwvIBW/hTNVHtqVUy7UCbT3/SxPwlHx2cG36TxAZJ7HTWeGGYMx96cM
-         8KgRjX9fv8oEcPiplRu/SsoQd1dyRkJxwdDDrZRzIGYGxj0nMWTyS41yUG4EDwStF+oS
-         zI7230e0M/lZWyO1n4PsTdtAJAucu63vs7ye3o3RfvbaywofjCN/FLGixQG2sJXYOKO0
-         HAkQ==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bBv+CmSBrWb0ocEAJGD5OU4xQhjlyiCSACmPaFkV+I4=;
+        b=UkxUEWUWz1xYHSm4eO8IgCee9Cl7olfUF0YnVboSTpIQQU2j9nVYj2VVMWelsX1QSf
+         um1ai8rw3M5CO8oWbbvsg7YVdfuCAVlm4+Koz8MfPGXoi07zT/VdlfwhQJuKPYudSLUm
+         JUihFMnA81Cm8MSDrJOiounpcNP7E6usnzbqMW2kZ2bXP+iEGAn7Dc9WyGZnaVAiRbxc
+         QuqC8br8boKRUS86Jw2QuQddqLvMVOfdSa0KmAOgBuajL9Tx8Ij/HlMgqeXNHwbmkfUJ
+         pBsrurqoi7SR5EvKGX3rs4t3teLkcWjdZN7i1RuyEuGjlXDSPfzFTZOKZMTcd1tLks53
+         nj9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=ldSSeVAlvOj4l8QLMah9LAJhWoH7wMHLjFmgtahfoQ0=;
-        b=CND9qkrFNDMKAhmaXI8JPFhfY9Hn89Yc9644loz63/Aauw6hm7BDBD5n+PrlkJrtMf
-         aQhIeZrQwAYlezTuvJGg7sAatfuYXpbDckZZL5GidihY0gJnhPH7wlhiPw29W+2UgJa+
-         b/eK/JDBOHS/JveURsWIbr5nc0rb+gQskcw2Qxfr/CO6axr5UGqBpKC8unNPpca+jfQI
-         pB2GwQ7j0O4SdFqBHORrcHn93plh5e1V/sjeLyKYwjCJ4SBH9f9XJiycJdzZZJVN9LLV
-         JYrE1S32J6xPwMwTtw/QLhsbxm6EfDyVAbfckSVHdP83qtlR8ltf8d8soHAbAWXb/16e
-         yu1w==
-X-Gm-Message-State: AOAM530YISFz8spGz900lsTHMdYxeYD0EpGOUhRNHM+GzgbTveqfspe8
-        7KyU8Ew1t9Me9iWgGJEJucs=
-X-Google-Smtp-Source: ABdhPJyjEjslkxWcZG5a7lHRh11XgnWlPh8v6MplDYzTY9R31CsIogZW4U690v8sDlzB0w21uomSlA==
-X-Received: by 2002:aca:6703:: with SMTP id z3mr9530433oix.131.1635533566474;
-        Fri, 29 Oct 2021 11:52:46 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id p14sm1890114oov.0.2021.10.29.11.52.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Oct 2021 11:52:45 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Fri, 29 Oct 2021 11:52:43 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, rafal@milecki.pl,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "maintainer:BROADCOM BCM63XX ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Justin Chen <justinpopo6@gmail.com>,
-        "open list:WATCHDOG DEVICE DRIVERS" <linux-watchdog@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        "moderated list:BROADCOM BCM63XX ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v2 6/7] MIPS: BCM63XX: Provide platform data to watchdog
- device
-Message-ID: <20211029185243.GA1722149@roeck-us.net>
-References: <20211029183430.4086765-1-f.fainelli@gmail.com>
- <20211029183430.4086765-7-f.fainelli@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bBv+CmSBrWb0ocEAJGD5OU4xQhjlyiCSACmPaFkV+I4=;
+        b=hjAa9NSNdqFYW7t9m1CRROmvTzlkz60AhFLBvRw4jYVBTQhGOL9JVUwUyYbv/xGuCz
+         2vtFKezAAvHXUpbIn4civAZEvB7QY89Daw9GPf7wW8CR/DeeZZKhnmlFSmMJvGZzenDK
+         sVGGtmiUvknQ3Ja+cQALMRALtMQlvDa859XgvMyBqOwAzgY61hBGReIfXg0wGpeiOwUv
+         5sz3noK810fgkWeQDRExXGsr4h1XsYJFvjmauhe2VjwxuSvOVaYu2Z0VzCJ1DhguMUQR
+         D1CUg+54kGtyTrPxJVBXyb7sok1A3IutqMvMaRC19IeAKi+Su4ReeELiO+GW5uVICgNc
+         2RVw==
+X-Gm-Message-State: AOAM533Y8CQUr+UPeTlskoGsr/FsrNT1amiep5zYUACUEQ2IG4XI0WBa
+        g3hoTBOTeULLaPszBvIyrQp/cQAthXKThAN6NbtBEQ==
+X-Google-Smtp-Source: ABdhPJzGoDLyGtyWEbHlWgMAPwTNPa8f3hBhvJkWfz8iePx2TipsZY39uUrw3L65nju3l83WKhblEEME9EHkbLfrpwg=
+X-Received: by 2002:a17:90b:1c0c:: with SMTP id oc12mr13415336pjb.124.1635533607445;
+ Fri, 29 Oct 2021 11:53:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211029183430.4086765-7-f.fainelli@gmail.com>
+References: <20211029183339.3216491-1-kaleshsingh@google.com>
+ <20211029183339.3216491-2-kaleshsingh@google.com> <20211029144524.367d6789@gandalf.local.home>
+In-Reply-To: <20211029144524.367d6789@gandalf.local.home>
+From:   Kalesh Singh <kaleshsingh@google.com>
+Date:   Fri, 29 Oct 2021 11:53:16 -0700
+Message-ID: <CAC_TJve9OsL5taBN0ckgjG4=HxvmWfP6ULwwqnVsDyRxuQuRkg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/4] tracing/histogram: Optimize division by constants
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     surenb@google.com, hridya@google.com, namhyung@kernel.org,
+        kernel-team@android.com, mhiramat@kernel.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Tom Zanussi <zanussi@kernel.org>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 11:34:29AM -0700, Florian Fainelli wrote:
-> In order to utilize the bcm7038_wdt.c driver which needs to know the
-> clock name to obtain, pass it via platform data using the
-> bcm7038_wdt_platform_data structure.
-> 
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+On Fri, Oct 29, 2021 at 11:45 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> On Fri, 29 Oct 2021 11:33:27 -0700
+> Kalesh Singh <kaleshsingh@google.com> wrote:
+>
+> > If the divisor is a constant use specific division functions to
+> > avoid extra branches when the trigger is hit.
+> >
+> > If the divisor constant but not a power of 2, the division can be
+> > replaced with a multiplication and shift in the following case:
+> >
+> > Let X = dividend and Y = divisor.
+> >
+> > Choose Z = some power of 2. If Y <= Z, then:
+> >     X / Y = (X * (Z / Y)) / Z
+> >
+> > (Z / Y) is a constant (mult) which is calculated at parse time, so:
+> >     X / Y = (X * mult) / Z
+> >
+> > The division by Z can be replaced by a shift since Z is a power of 2:
+> >     X / Y = (X * mult) >> shift
+> >
+> > As long, as X < Z the results will not be off by more than 1.
+> >
+> > Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
+> > Suggested-by: Steven Rostedt <rostedt@goodmis.org>
+> > ---
+> >
+> > Changes in v2:
+> >   - Return -EDOM if divisor is a constant and zero, per Steve
+> >
+> >  kernel/trace/trace_events_hist.c | 117 ++++++++++++++++++++++++++++++-
+> >  1 file changed, 116 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
+> > index 364cb3091789..1084aa41f047 100644
+> > --- a/kernel/trace/trace_events_hist.c
+> > +++ b/kernel/trace/trace_events_hist.c
+> > @@ -68,7 +68,8 @@
+> >       C(INVALID_SORT_FIELD,   "Sort field must be a key or a val"),   \
+> >       C(INVALID_STR_OPERAND,  "String type can not be an operand in expression"), \
+> >       C(EXPECT_NUMBER,        "Expecting numeric literal"),           \
+> > -     C(UNARY_MINUS_SUBEXPR,  "Unary minus not supported in sub-expressions"),
+> > +     C(UNARY_MINUS_SUBEXPR,  "Unary minus not supported in sub-expressions"), \
+> > +     C(DIVISION_BY_ZERO,     "Division by zero"),
+> >
+> >  #undef C
+> >  #define C(a, b)              HIST_ERR_##a
+> > @@ -92,6 +93,7 @@ typedef u64 (*hist_field_fn_t) (struct hist_field *field,
+> >  #define HIST_FIELDS_MAX              (TRACING_MAP_FIELDS_MAX + TRACING_MAP_VARS_MAX)
+> >  #define HIST_ACTIONS_MAX     8
+> >  #define HIST_CONST_DIGITS_MAX        21
+> > +#define HIST_DIV_SHIFT               20  /* For optimizing division by constants */
+> >
+> >  enum field_op_id {
+> >       FIELD_OP_NONE,
+> > @@ -160,6 +162,8 @@ struct hist_field {
+> >
+> >       /* Numeric literals are represented as u64 */
+> >       u64                             constant;
+> > +     /* Used to optimize division by constants */
+> > +     u64                             div_multiplier;
+> >  };
+> >
+> >  static u64 hist_field_none(struct hist_field *field,
+> > @@ -311,6 +315,72 @@ static u64 hist_field_div(struct hist_field *hist_field,
+> >       return div64_u64(val1, val2);
+> >  }
+> >
+> > +static u64 div_by_power_of_two(struct hist_field *hist_field,
+> > +                             struct tracing_map_elt *elt,
+> > +                             struct trace_buffer *buffer,
+> > +                             struct ring_buffer_event *rbe,
+> > +                             void *event)
+> > +{
+> > +     struct hist_field *operand1 = hist_field->operands[0];
+> > +     struct hist_field *operand2 = hist_field->operands[1];
+> > +
+> > +     u64 val1 = operand1->fn(operand1, elt, buffer, rbe, event);
+> > +     u64 val2 = operand2->fn(operand2, elt, buffer, rbe, event);
+>
+> If these functions are only called when val2 is constant, can't we make it
+> such that we get val2 from the hist_field directly? That is:
+>
+>         u64 val2 = operand2->constant;
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+operand2 might be a var ref to a constant, so we would need to resolve
+that with hist_field_var_ref().
 
-We'll need an Ack from a MIPS maintainer for this patch to
-be able to apply it through the watchdog tree.
+-Kalesh
 
-Guenter
-
-> ---
->  arch/mips/bcm63xx/dev-wdt.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/arch/mips/bcm63xx/dev-wdt.c b/arch/mips/bcm63xx/dev-wdt.c
-> index 2a2346a99bcb..42130914a3c2 100644
-> --- a/arch/mips/bcm63xx/dev-wdt.c
-> +++ b/arch/mips/bcm63xx/dev-wdt.c
-> @@ -9,6 +9,7 @@
->  #include <linux/init.h>
->  #include <linux/kernel.h>
->  #include <linux/platform_device.h>
-> +#include <linux/platform_data/bcm7038_wdt.h>
->  #include <bcm63xx_cpu.h>
->  
->  static struct resource wdt_resources[] = {
-> @@ -19,11 +20,18 @@ static struct resource wdt_resources[] = {
->  	},
->  };
->  
-> +static struct bcm7038_wdt_platform_data bcm63xx_wdt_pdata = {
-> +	.clk_name	= "periph",
-> +};
-> +
->  static struct platform_device bcm63xx_wdt_device = {
->  	.name		= "bcm63xx-wdt",
->  	.id		= -1,
->  	.num_resources	= ARRAY_SIZE(wdt_resources),
->  	.resource	= wdt_resources,
-> +	.dev		= {
-> +		.platform_data = &bcm63xx_wdt_pdata,
-> +	},
->  };
->  
->  int __init bcm63xx_wdt_register(void)
-> -- 
-> 2.25.1
-> 
+>
+> That would save us a function call, and an indirect on at that (that gets
+> slowed down by spectre).
+>
+> Same for the ones below.
+>
+> -- Steve
+>
+>
+> > +
+> > +     return val1 >> __ffs64(val2);
+> > +}
+> > +
+> > +static u64 div_by_not_power_of_two(struct hist_field *hist_field,
+> > +                             struct tracing_map_elt *elt,
+> > +                             struct trace_buffer *buffer,
+> > +                             struct ring_buffer_event *rbe,
+> > +                             void *event)
+> > +{
+> > +     struct hist_field *operand1 = hist_field->operands[0];
+> > +     struct hist_field *operand2 = hist_field->operands[1];
+> > +
+> > +     u64 val1 = operand1->fn(operand1, elt, buffer, rbe, event);
+> > +     u64 val2 = operand2->fn(operand2, elt, buffer, rbe, event);
+> > +
+> > +     return div64_u64(val1, val2);
+> > +}
+> > +
+> > +static u64 div_by_mult_and_shift(struct hist_field *hist_field,
+> > +                             struct tracing_map_elt *elt,
+> > +                             struct trace_buffer *buffer,
+> > +                             struct ring_buffer_event *rbe,
+> > +                             void *event)
+> > +{
+> > +     struct hist_field *operand1 = hist_field->operands[0];
+> > +     struct hist_field *operand2 = hist_field->operands[1];
+> > +
+> > +     u64 val1 = operand1->fn(operand1, elt, buffer, rbe, event);
+> > +
+> > +     /*
+> > +      * If the divisor is a constant, do a multiplication and shift instead.
+> > +      *
+> > +      * Choose Z = some power of 2. If Y <= Z, then:
+> > +      *     X / Y = (X * (Z / Y)) / Z
+> > +      *
+> > +      * (Z / Y) is a constant (mult) which is calculated at parse time, so:
+> > +      *     X / Y = (X * mult) / Z
+> > +      *
+> > +      * The division by Z can be replaced by a shift since Z is a power of 2:
+> > +      *     X / Y = (X * mult) >> HIST_DIV_SHIFT
+> > +      *
+> > +      * As long, as X < Z the results will not be off by more than 1.
+> > +      */
+> > +     if (val1 < (1 << HIST_DIV_SHIFT)) {
+> > +             u64 mult = operand2->div_multiplier;
+> > +
+> > +             return (val1 * mult + ((1 << HIST_DIV_SHIFT) - 1)) >> HIST_DIV_SHIFT;
+> > +     } else {
+> > +             u64 val2 = operand2->fn(operand2, elt, buffer, rbe, event);
+> > +
+> > +             return div64_u64(val1, val2);
+> > +     }
+> > +}
+> > +
+> >  static u64 hist_field_mult(struct hist_field *hist_field,
+> >                          struct tracing_map_elt *elt,
+> >                          struct trace_buffer *buffer,
+> > @@ -573,6 +643,37 @@ struct snapshot_context {
+> >       void                    *key;
+> >  };
+> >
+> > +
+> > +static struct hist_field *find_var_field(struct hist_trigger_data *hist_data,
+> > +                                      const char *var_name);
+> > +
+> > +/*
+> > + * Returns the specific division function to use if the divisor
+> > + * is constant. This avoids extra branches when the trigger is hit.
+> > + */
+> > +static hist_field_fn_t hist_field_get_div_fn(struct hist_field *divisor)
+> > +{
+> > +     u64 div;
+> > +
+> > +     if (divisor->flags & HIST_FIELD_FL_VAR_REF) {
+> > +             struct hist_field *var;
+> > +
+> > +             var = find_var_field(divisor->var.hist_data, divisor->name);
+> > +             div = var->constant;
+> > +     } else
+> > +             div = divisor->constant;
+> > +
+> > +     if (!(div & (div - 1)))
+> > +             return div_by_power_of_two;
+> > +
+> > +     /* If the divisor is too large, do a regular division */
+> > +     if (div > (1 << HIST_DIV_SHIFT))
+> > +             return div_by_not_power_of_two;
+> > +
+> > +     divisor->div_multiplier = div64_u64((u64)(1 << HIST_DIV_SHIFT), div);
+> > +     return div_by_mult_and_shift;
+> > +}
+> > +
+> >  static void track_data_free(struct track_data *track_data)
+> >  {
+> >       struct hist_elt_data *elt_data;
+> > @@ -2575,6 +2676,20 @@ static struct hist_field *parse_expr(struct hist_trigger_data *hist_data,
+> >       expr->operands[0] = operand1;
+> >       expr->operands[1] = operand2;
+> >
+> > +
+> > +     if (field_op == FIELD_OP_DIV &&
+> > +                     operand2_flags & HIST_FIELD_FL_CONST) {
+> > +             u64 divisor = (var2) ? var2->constant : operand2->constant;
+> > +
+> > +             if (!divisor) {
+> > +                     hist_err(file->tr, HIST_ERR_DIVISION_BY_ZERO, errpos(str));
+> > +                     ret = -EDOM;
+> > +                     goto free;
+> > +             }
+> > +
+> > +             op_fn = hist_field_get_div_fn(operand2);
+> > +     }
+> > +
+> >       if (combine_consts) {
+> >               if (var1)
+> >                       expr->operands[0] = var1;
+>
