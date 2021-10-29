@@ -2,118 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E4C943F90B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 10:38:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78C7343F90C
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 10:38:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232502AbhJ2Ik2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 04:40:28 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:44990 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232313AbhJ2Ik0 (ORCPT
+        id S232509AbhJ2IlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 04:41:10 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:53488 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232313AbhJ2IlJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 04:40:26 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 8DF1621979;
-        Fri, 29 Oct 2021 08:37:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1635496677; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Fri, 29 Oct 2021 04:41:09 -0400
+Date:   Fri, 29 Oct 2021 10:38:39 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1635496720;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=qZJtw3MieBAJxz2bywPNILccd9LrIRNQXFA0JlaFMeY=;
-        b=t6GZqZ2ZrA/zWvBOmb2gYMX4wpzmCFE/5vROmmF10stABpPd4Vix4z1Av+pYE9LvhJqnJg
-        XSGg1+c6+utFRvFbwllDCEwAkiejlzTQqeHcgSDCiefdpUUc91ZU6EbZCCgVxeEnvEfmLU
-        +8yKiddofh2oiONcJ5SAK3Vch4rgK/E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1635496677;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        bh=zJHddUlI46Qff30zfi3fJqY8SclNQ5Xl5lYf2O4sTWc=;
+        b=OhB3PuaNC6oHKH2VZie4clXTUTSDipnanrL8fKfUT2A2JAnYvO6det9QI574c/UAdRCi21
+        lyxuMMSgbrxETQU0mNCAdkrm33gBLXijZjjj3MOuouI4ZoV7bKnx5pC5WZYjJN85oHJkp2
+        IZj3cp0N65iZsz+4r/D9xagHUDKPnXGG3+GHTJfyDoDVKK00FD5JtRTJNPG049VG6ZYp/Z
+        l1SjAuRusKqWn6hHtDg60IdZswXJSWcxKreNyd9G0g/czlHK7tCycAKiOzFe/bo+FdhCsG
+        li0+HCNnJ2+y9FDbuGkBwIimSuof1ngiazjJm3MlLqsAW0VTui7FfPJcbXTKiA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1635496720;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=qZJtw3MieBAJxz2bywPNILccd9LrIRNQXFA0JlaFMeY=;
-        b=6v5ygUCQdTegipKV02UYgWAHs+kPuWGntkmtDP/e3QhMktilEhvPCS/5fzjCEcqJGMyixs
-        Y/gQKRaBvasxCQAA==
-Received: from suse.de (mgorman.udp.ovpn2.nue.suse.de [10.163.43.106])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id CED32A3B83;
-        Fri, 29 Oct 2021 08:37:55 +0000 (UTC)
-Date:   Fri, 29 Oct 2021 09:37:51 +0100
-From:   Mel Gorman <mgorman@suse.de>
-To:     Gang Li <ligang.bdlg@bytedance.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: Re: [PATCH v1] sched/numa: add per-process numa_balancing
-Message-ID: <20211029083751.GR3891@suse.de>
-References: <20211027132633.86653-1-ligang.bdlg@bytedance.com>
- <20211028153028.GP3891@suse.de>
- <b884ad7d-48d3-fcc8-d199-9e7643552a9a@bytedance.com>
+        bh=zJHddUlI46Qff30zfi3fJqY8SclNQ5Xl5lYf2O4sTWc=;
+        b=4RL1focKw2Sxw3+0gm897f09RZlcwNaoGBoS76qvCcQkGHnw6py3I6iatv+e4QoGa7b3Ji
+        pj/ZGQIpIEeaQHAw==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     linux-cachefs@redhat.com, linux-kernel@vger.kernel.org
+Cc:     David Howells <dhowells@redhat.com>, Tejun Heo <tj@kernel.org>,
+        Gregor Beck <gregor.beck@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH v2] fscache: Use only one fscache_object_cong_wait.
+Message-ID: <20211029083839.xwwt7jgzru3kcpii@linutronix.de>
+References: <20211028160628.czwdzjjjhtqywasw@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <b884ad7d-48d3-fcc8-d199-9e7643552a9a@bytedance.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20211028160628.czwdzjjjhtqywasw@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 02:12:28PM +0800, Gang Li wrote:
-> On 10/28/21 11:30 PM, Mel Gorman wrote:
-> > 
-> > That aside though, the configuration space could be better. It's possible
-> > to selectively disable NUMA balance but not selectively enable because
-> > prctl is disabled if global NUMA balancing is disabled. That could be
-> > somewhat achieved by having a default value for mm->numa_balancing based on
-> > whether the global numa balancing is disabled via command line or sysctl
-> > and enabling the static branch if prctl is used with an informational
-> > message. This is not the only potential solution but as it stands,
-> > there are odd semantic corner cases. For example, explicit enabling
-> > of NUMA balancing by prctl gets silently revoked if numa balancing is
-> > disabled via sysctl and prctl(PR_NUMA_BALANCING, PR_SET_NUMA_BALANCING,
-> > 1) means nothing.
-> > 
-> static void task_tick_fair(struct rq *rq, struct task_struct *curr, int
-> queued)
-> {
-> 	...
-> 	if (static_branch_unlikely(&sched_numa_balancing))
-> 		task_tick_numa(rq, curr);
-> 	...
-> }
-> 
-> static void task_tick_numa(struct rq *rq, struct task_struct *curr)
-> {
-> 	...
-> 	if (!READ_ONCE(curr->mm->numa_balancing))
-> 		return;
-> 	...
-> }
-> 
-> When global numa_balancing is disabled, mm->numa_balancing is useless.
+In the commit mentioned below, fscache was converted from slow-work to
+workqueue. slow_work_enqueue() and slow_work_sleep_till_thread_needed()
+did not use a per-CPU workqueue. They choose from two global waitqueues
+depending on the SLOW_WORK_VERY_SLOW bit which was not set so it always
+one waitqueue.
 
-I'm aware that this is the behaviour of the patch as-is.
+I can't find out how it is ensured that a waiter on certain CPU is woken
+up be the other side. My guess is that the timeout in schedule_timeout()
+ensures that it does not wait forever (or a random wake up).
 
-> So I
-> think prctl(PR_NUMA_BALANCING, PR_SET_NUMA_BALANCING,0/1) should return
-> error instead of modify mm->numa_balancing.
-> 
-> Is it reasonable that prctl(PR_NUMA_BALANCING,PR_SET_NUMA_BALANCING,0/1)
-> can still change the value of mm->numa_balancing when global numa_balancing
-> is disabled?
-> 
+fscache_object_sleep_till_congested() must be invoked from preemptible
+context in order for schedule() to work. In this case this_cpu_ptr()
+should complain with CONFIG_DEBUG_PREEMPT enabled except the thread is
+bound to one CPU.
 
-My point is that as it stands,
-prctl(PR_NUMA_BALANCING,PR_SET_NUMA_BALANCING,1) either does nothing or
-fails. If per-process numa balancing is to be introduced, it should have
-meaning with the global tuning affecting default behaviour and the prctl
-affecting specific behaviour.
+wake_up() wakes only one waiter and I'm not sure if it is guaranteed
+that only one waiter exists.
 
--- 
-Mel Gorman
-SUSE Labs
+Replace the per-CPU waitqueue with one global waitqueue.
+
+Fixes: 8b8edefa2fffb ("fscache: convert object to use workqueue instead of =
+slow-work")
+Reported-by: Gregor Beck <gregor.beck@gmail.com>
+Cc: stable-rt@vger.kernel.org
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+---
+v1=E2=80=A6v2:
+  - Also remove the put_cpu_var() statement.
+
+ fs/fscache/internal.h |  1 -
+ fs/fscache/main.c     |  6 ------
+ fs/fscache/object.c   | 13 +++++--------
+ 3 files changed, 5 insertions(+), 15 deletions(-)
+
+diff --git a/fs/fscache/internal.h b/fs/fscache/internal.h
+index c3e4804b8fcbf..9edb87e11680b 100644
+--- a/fs/fscache/internal.h
++++ b/fs/fscache/internal.h
+@@ -81,7 +81,6 @@ extern unsigned fscache_debug;
+ extern struct kobject *fscache_root;
+ extern struct workqueue_struct *fscache_object_wq;
+ extern struct workqueue_struct *fscache_op_wq;
+-DECLARE_PER_CPU(wait_queue_head_t, fscache_object_cong_wait);
+=20
+ extern unsigned int fscache_hash(unsigned int salt, unsigned int *data, un=
+signed int n);
+=20
+diff --git a/fs/fscache/main.c b/fs/fscache/main.c
+index 4207f98e405fd..85f8cf3a323d5 100644
+--- a/fs/fscache/main.c
++++ b/fs/fscache/main.c
+@@ -41,8 +41,6 @@ struct kobject *fscache_root;
+ struct workqueue_struct *fscache_object_wq;
+ struct workqueue_struct *fscache_op_wq;
+=20
+-DEFINE_PER_CPU(wait_queue_head_t, fscache_object_cong_wait);
+-
+ /* these values serve as lower bounds, will be adjusted in fscache_init() =
+*/
+ static unsigned fscache_object_max_active =3D 4;
+ static unsigned fscache_op_max_active =3D 2;
+@@ -138,7 +136,6 @@ unsigned int fscache_hash(unsigned int salt, unsigned i=
+nt *data, unsigned int n)
+ static int __init fscache_init(void)
+ {
+ 	unsigned int nr_cpus =3D num_possible_cpus();
+-	unsigned int cpu;
+ 	int ret;
+=20
+ 	fscache_object_max_active =3D
+@@ -161,9 +158,6 @@ static int __init fscache_init(void)
+ 	if (!fscache_op_wq)
+ 		goto error_op_wq;
+=20
+-	for_each_possible_cpu(cpu)
+-		init_waitqueue_head(&per_cpu(fscache_object_cong_wait, cpu));
+-
+ 	ret =3D fscache_proc_init();
+ 	if (ret < 0)
+ 		goto error_proc;
+diff --git a/fs/fscache/object.c b/fs/fscache/object.c
+index 6a675652129b2..7a972d144b546 100644
+--- a/fs/fscache/object.c
++++ b/fs/fscache/object.c
+@@ -798,6 +798,8 @@ void fscache_object_destroy(struct fscache_object *obje=
+ct)
+ }
+ EXPORT_SYMBOL(fscache_object_destroy);
+=20
++static DECLARE_WAIT_QUEUE_HEAD(fscache_object_cong_wait);
++
+ /*
+  * enqueue an object for metadata-type processing
+  */
+@@ -806,16 +808,12 @@ void fscache_enqueue_object(struct fscache_object *ob=
+ject)
+ 	_enter("{OBJ%x}", object->debug_id);
+=20
+ 	if (fscache_get_object(object, fscache_obj_get_queue) >=3D 0) {
+-		wait_queue_head_t *cong_wq =3D
+-			&get_cpu_var(fscache_object_cong_wait);
+=20
+ 		if (queue_work(fscache_object_wq, &object->work)) {
+ 			if (fscache_object_congested())
+-				wake_up(cong_wq);
++				wake_up(&fscache_object_cong_wait);
+ 		} else
+ 			fscache_put_object(object, fscache_obj_put_queue);
+-
+-		put_cpu_var(fscache_object_cong_wait);
+ 	}
+ }
+=20
+@@ -833,16 +831,15 @@ void fscache_enqueue_object(struct fscache_object *ob=
+ject)
+  */
+ bool fscache_object_sleep_till_congested(signed long *timeoutp)
+ {
+-	wait_queue_head_t *cong_wq =3D this_cpu_ptr(&fscache_object_cong_wait);
+ 	DEFINE_WAIT(wait);
+=20
+ 	if (fscache_object_congested())
+ 		return true;
+=20
+-	add_wait_queue_exclusive(cong_wq, &wait);
++	add_wait_queue_exclusive(&fscache_object_cong_wait, &wait);
+ 	if (!fscache_object_congested())
+ 		*timeoutp =3D schedule_timeout(*timeoutp);
+-	finish_wait(cong_wq, &wait);
++	finish_wait(&fscache_object_cong_wait, &wait);
+=20
+ 	return fscache_object_congested();
+ }
+--=20
+2.33.1
+
