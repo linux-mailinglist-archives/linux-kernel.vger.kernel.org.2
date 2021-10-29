@@ -2,85 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F6C743FA91
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 12:16:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4608543FA66
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 12:02:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231683AbhJ2KSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 06:18:31 -0400
-Received: from m1353.mail.163.com ([220.181.13.53]:38732 "EHLO
-        m1353.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231564AbhJ2KS0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 06:18:26 -0400
-X-Greylist: delayed 910 seconds by postgrey-1.27 at vger.kernel.org; Fri, 29 Oct 2021 06:18:25 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:MIME-Version:Message-ID; bh=rOLTh
-        eprtj5UZw1gUN25Lfnp583GahQE1GPJcAvg308=; b=FBBuKz5CxBPfW8opRn5IZ
-        Y5sfqaqz7Cp2xKOHYEnNaBdjBLjM/g/ojJs14AO2tFjeyh9kxqBYV7EXCpUiJjvw
-        /eQWQAQR+rkDK0GfLlFeOxGVqfesSQJGYSkFnmjX9ZEfgRmFMzRUWiPEo/gQB4Hi
-        W8Eppi8K4OSCSvFXrZjlGI=
-Received: from slark_xiao$163.com ( [112.97.60.167] ) by
- ajax-webmail-wmsvr53 (Coremail) ; Fri, 29 Oct 2021 18:00:42 +0800 (CST)
-X-Originating-IP: [112.97.60.167]
-Date:   Fri, 29 Oct 2021 18:00:42 +0800 (CST)
-From:   "Slark Xiao" <slark_xiao@163.com>
-To:     "Manivannan Sadhasivam" <mani@kernel.org>
-Cc:     hemantk@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re:Re: [PATCH] bus: mhi: pci_generic: Add new device ID support for
- T99W175
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210622(1d4788a8)
- Copyright (c) 2002-2021 www.mailtech.cn 163com
-In-Reply-To: <20211029092619.GA4945@thinkpad>
-References: <20211028034431.3563-1-slark_xiao@163.com>
- <20211029092619.GA4945@thinkpad>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=GBK
+        id S231722AbhJ2KE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 06:04:29 -0400
+Received: from foss.arm.com ([217.140.110.172]:36622 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231620AbhJ2KEZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 06:04:25 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5C0361FB;
+        Fri, 29 Oct 2021 03:01:57 -0700 (PDT)
+Received: from [192.168.154.184] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5F6D43F5A1;
+        Fri, 29 Oct 2021 03:01:54 -0700 (PDT)
+Subject: Re: [PATCH v3 4/5] sched/fair: Remove sysctl_sched_migration_cost
+ condition
+To:     Vincent Guittot <vincent.guittot@linaro.org>, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com, rostedt@goodmis.org,
+        bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
+        linux-kernel@vger.kernel.org, tim.c.chen@linux.intel.com
+References: <20211019123537.17146-1-vincent.guittot@linaro.org>
+ <20211019123537.17146-5-vincent.guittot@linaro.org>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <2fb13962-0432-2e36-26e6-d05534464294@arm.com>
+Date:   Fri, 29 Oct 2021 12:01:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Message-ID: <68a1613c.3e54.17ccb7e922b.Coremail.slark_xiao@163.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: NcGowAB3dOZKxnthSxPYAA--.38320W
-X-CM-SenderInfo: xvod2y5b0lt0i6rwjhhfrp/xtbBDQo7ZFaEFsSeGAAAse
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+In-Reply-To: <20211019123537.17146-5-vincent.guittot@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CkF0IDIwMjEtMTAtMjkgMTc6MjY6MTksICJNYW5pdmFubmFuIFNhZGhhc2l2YW0iIDxtYW5pQGtl
-cm5lbC5vcmc+IHdyb3RlOgoKPkhpLAo+Cj5PbiBUaHUsIE9jdCAyOCwgMjAyMSBhdCAxMTo0NDoz
-MUFNICswODAwLCBTbGFyayBYaWFvIHdyb3RlOgo+PiBBZGQgbmV3IGRldmljZSBJRCAweGUwYmYg
-Zm9yIFQ5OVcxNzUuCj4+IAo+Cj5UaGFua3MgZm9yIHRoZSBwYXRjaCEgQ2FuIHlvdSBzaGFyZSB0
-aGUgZGlmZmVyZW5jZSBiZXR3ZWVuIHRoaXMgbW9kZW0gYW5kIHRoZQo+b25lIChUOTlXMTc1KSB3
-ZSBhbHJlYWR5IGhhdmUgd2l0aCBQSUQgMHhlMGFiPwo+Cj5QbGVhc2UgaW5jbHVkZSB0aGUgcHJv
-ZHVjdCBwYWdlIGluIGRlc2NyaXB0aW9uIGlmIGFueS4KPgo+VGhhbmtzLAo+TWFuaQo+CkhpIE1h
-bmksCiAgIFRoYW5rcyBmb3IgdGhpcyByZXZpZXcuIAogICBBY3R1YWxseSB0aGlzIHByb2R1Y3Qo
-U0RYNTUvMHhlMGJmKSBpcyB1c2luZyBRdWFsY29tbSBTRFg1NSBuZXcgYmFzZWxpbmUoTEUxLjQp
-LCAKIGFuZCBwcmV2aW91cyBUOTlXMTc1LzB4ZTBhYiBpcyB1c2luZyBvcmlnaW5hbCBiYXNlIGxp
-bmUoTEUxLjIpLgogICBPdXIgY3VzdG9tZXIgd2FudHMgdXMgdG8gdXNlIGRpZmZlcmVudCBkZXZp
-Y2UgSUQgdG8gc2VwYXJhdGUgZnJvbSBlYWNoIG90aGVyLiAKICAgQ3VycmVudGx5IHdlIGRvbid0
-IGhhdmUgcHJvZHVjdCBwYWdlICBhcyBvdXIgY3VzdG9tZXIncyBuZXcgcHJvZHVjdCBpcyBub3Qg
-cmVsZWFzZWQuCgpUaGFua3MKU2xhcmsKPj4gVGVzdCBldmlkZW5jZSBhcyBiZWxvdzoKPj4gcm9v
-dEBqYmQtVGhpbmtQYWQtUDEtR2VuLTQ6L2RldiMgbHNwY2kgLW5uIHwgZ3JlcCBGb3hjb25uCj4+
-IDAwMDA6MDg6MDAuMCBXaXJlbGVzcyBjb250cm9sbGVyIFswZDQwXTogRm94Y29ubiBJbnRlcm5h
-dGlvbmFsLCBJbmMuIERldmljZSBbMTA1YjplMGJmXQo+PiByb290QGpiZC1UaGlua1BhZC1QMS1H
-ZW4tNDovZGV2IyBjYXQgd3dhbjBhdDAgJiBlY2hvIC1uZSAiYXRpXHIiID4gd3dhbjBhdDAKPj4g
-WzJdIDI5NzcKPj4gcm9vdEBqYmQtVGhpbmtQYWQtUDEtR2VuLTQ6L2RldiMgYXRpCj4+IE1hbnVm
-YWN0dXJlcjogUXVhbGNvbW0KPj4gTW9kZWw6IFQ5OVcxNzUKPj4gUmV2aXNpb246IFQ5OVcxNzUu
-RjAuNi4wLjAuNi5DQy4wMDUgIDEgIFtPY3QgMjEgMjAyMSAxMDowMDowMF0KPj4gSU1FSToKPj4g
-K0dDQVA6ICtDR1NNCj4+IAo+PiBPSwo+PiAKPj4gU2lnbmVkLW9mZi1ieTogU2xhcmsgWGlhbyA8
-c2xhcmtfeGlhb0AxNjMuY29tPgo+PiAtLS0KPj4gIGRyaXZlcnMvYnVzL21oaS9wY2lfZ2VuZXJp
-Yy5jIHwgMyArKysKPj4gIDEgZmlsZSBjaGFuZ2VkLCAzIGluc2VydGlvbnMoKykKPj4gCj4+IGRp
-ZmYgLS1naXQgYS9kcml2ZXJzL2J1cy9taGkvcGNpX2dlbmVyaWMuYyBiL2RyaXZlcnMvYnVzL21o
-aS9wY2lfZ2VuZXJpYy5jCj4+IGluZGV4IDU5YTQ4OTZhODAzMC4uNTY2NDgzZGMxNWRiIDEwMDY0
-NAo+PiAtLS0gYS9kcml2ZXJzL2J1cy9taGkvcGNpX2dlbmVyaWMuYwo+PiArKysgYi9kcml2ZXJz
-L2J1cy9taGkvcGNpX2dlbmVyaWMuYwo+PiBAQCAtNDIzLDYgKzQyMyw5IEBAIHN0YXRpYyBjb25z
-dCBzdHJ1Y3QgcGNpX2RldmljZV9pZCBtaGlfcGNpX2lkX3RhYmxlW10gPSB7Cj4+ICAJLyogRFc1
-OTMwZSAoc2R4NTUpLCBOb24tZVNJTSwgSXQncyBhbHNvIFQ5OVcxNzUgKi8KPj4gIAl7IFBDSV9E
-RVZJQ0UoUENJX1ZFTkRPUl9JRF9GT1hDT05OLCAweGUwYjEpLAo+PiAgCQkuZHJpdmVyX2RhdGEg
-PSAoa2VybmVsX3Vsb25nX3QpICZtaGlfZm94Y29ubl9zZHg1NV9pbmZvIH0sCj4+ICsJLyogVDk5
-VzE3NSAoc2R4NTUpICovCj4+ICsJeyBQQ0lfREVWSUNFKFBDSV9WRU5ET1JfSURfRk9YQ09OTiwg
-MHhlMGJmKSwKPj4gKwkJLmRyaXZlcl9kYXRhID0gKGtlcm5lbF91bG9uZ190KSAmbWhpX2ZveGNv
-bm5fc2R4NTVfaW5mbyB9LAo+PiAgCS8qIE1WMzEtVyAoQ2ludGVyaW9uKSAqLwo+PiAgCXsgUENJ
-X0RFVklDRSgweDEyNjksIDB4MDBiMyksCj4+ICAJCS5kcml2ZXJfZGF0YSA9IChrZXJuZWxfdWxv
-bmdfdCkgJm1oaV9tdjMxX2luZm8gfSwKPj4gLS0gCj4+IDIuMjUuMQo+PiAK
+On 19/10/2021 14:35, Vincent Guittot wrote:
+> With a default value of 500us, sysctl_sched_migration_cost is
+> significanlty higher than the cost of load_balance. Remove the
+
+Shouldn't this be rather `load balance cost on the lowest sd`? I assume
+here that lb cost stands for sd->max_newidle_lb_cost of the 1st sd.
+
+We still use sysctl_sched_migration_cost as a floor against max_cost
+(i.e. lb cost of all sd's) when setting rq->max_idle_balance_cost in
+rebalance_domains().
+
+And in the add-on discussion (disabling the call to
+nohz_newidle_balance() you mention that sd->max_newidle_lb_cost can be
+higher than sysctl_sched_migration_cost (even when default 500us).
+
+
+> condition and rely on the sd->max_newidle_lb_cost to abort
+> newidle_balance.
+> 
+> Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+> ---
+>  kernel/sched/fair.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index e50fd751e1df..57eae0ebc492 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -10895,8 +10895,7 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+>  	rcu_read_lock();
+>  	sd = rcu_dereference_check_sched_domain(this_rq->sd);
+>  
+> -	if (this_rq->avg_idle < sysctl_sched_migration_cost ||
+> -	    !READ_ONCE(this_rq->rd->overload) ||
+> +	if (!READ_ONCE(this_rq->rd->overload) ||
+>  	    (sd && this_rq->avg_idle < sd->max_newidle_lb_cost)) {
+>  
+>  		if (sd)
+> 
+
