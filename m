@@ -2,144 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 231E943F888
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 10:05:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAB8A43F88F
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 10:09:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232375AbhJ2III (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 04:08:08 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:56049 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232313AbhJ2IH4 (ORCPT
+        id S232372AbhJ2ILE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 04:11:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232305AbhJ2ILD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 04:07:56 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 9229158061F;
-        Fri, 29 Oct 2021 04:05:27 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Fri, 29 Oct 2021 04:05:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=T8QQliYtEhk4q5t0tdm2Hh5O/Vf
-        QXZ9zBNnZxk/jzEI=; b=Z6eoJZJq0Ut5F4hP4+9TCoaJtIJDtD7k2Xv5fnNEVtd
-        8G1SVwIbIWfIfVbCxznEJDE/HUjHwkCnhXswpDg1Pbnkrlae/yJD6wpwkpJDtC6E
-        dPLMlCUXqua4EuvIrLoLx54Cq+2NuryE63/4sq2tG5FMO0jYmeH7XnkYLW+/59lB
-        19iOOlcePZpMXSjpkKjmoHdJYNogrIZ87qF/UyvO8vG7adqSHcbUVIf8Sb7pc1/2
-        sljnabVdRqspEvblyb0qroYOlmNRshtWaB6u7QN0CiTjkUUgCO1oEtwP3495P7tM
-        DjnnJD8YYwJUTCz6Zpl+sA2FR8bLIKai2qWu9Up3Sug==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=T8QQli
-        YtEhk4q5t0tdm2Hh5O/VfQXZ9zBNnZxk/jzEI=; b=FLlTNFaJVmhAdFWHXLmXZU
-        voY3leb/37+JIBex0QIhiHWUvDsipU1M1e3dbO02bGXaQR9UDRYDRKoWJ3xVzVWU
-        ETjexx4DI3QkPN5mpYCyUa9ovlgr19aTpgniBU10J6T9y4gQ1XHmnXuwI6xuvVNO
-        Rkso5Z4MO+R3PGcIfTExgS3YipF2Tg9Z4QN/1puWkRbd26xFdFwYxrHoi8FXJBbg
-        bG+SjN/eJU1+4XS8KXhLPSyJ4kbcbHjIZ+vymaCcsB6BKIu/URls5IC2iJYgSo1L
-        bQ9xPNIFmZ4Nch8DiOH91iNNvXEsdrPEp0V3h0RNuWgd8KHOKaf57gjKpKywkVog
-        ==
-X-ME-Sender: <xms:RKt7YeSXrCiCbeO7YFYq-XCqAHMPpgAc2wGvelyRtrJ717gNiSnSpw>
-    <xme:RKt7YTygGWgbm3gyH8GdK2h4aEcBCMrIWY2iBahNDknFEADWQlX0u5gNDxvNl2MHz
-    K1FTnX8aAQKO3riRTc>
-X-ME-Received: <xmr:RKt7Yb15jw_gmxeV_c-5egrQN7_LUMb1Z-WEhLI6eqJU8yu4sMY1otnFawahSlKx9n9Rn2Vo75jr2cFKgHUGRiYxMx-5rkK_hzL_4cXU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvdeggedguddvfecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihi
-    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
-    htthgvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheei
-    heegudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:RKt7YaAPluwc6X3oDdXbDgGqiv8XU4-dAA6g7edKUI-23EZZv01tug>
-    <xmx:RKt7YXgrsvHS8i_b9ZzzaCdJQrM1IFnHUFXEj-56N4bfA-fLE2DXUg>
-    <xmx:RKt7YWrucJ8cWTSX5Svt8sS1i_TikQjRUrm64LZ7ZMbd2ZsTpLbk0w>
-    <xmx:R6t7YTCYbFmAnADED1yUnEGcEsCum-vXgjgXqLs6YvSN6HXt9cf44g>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 29 Oct 2021 04:05:24 -0400 (EDT)
-Date:   Fri, 29 Oct 2021 10:05:21 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        linux-arm-msm@vger.kernel.org,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        Rob Clark <robdclark@gmail.com>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        Chen Feng <puck.chen@hisilicon.com>,
-        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        linux-samsung-soc@vger.kernel.org,
-        Xinliang Liu <xinliang.liu@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        linux-kernel@vger.kernel.org, Inki Dae <inki.dae@samsung.com>,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        Sean Paul <sean@poorly.run>
-Subject: Re: [v6,02/21] drm/bridge: adv7511: Register and attach our DSI
- device at probe
-Message-ID: <20211029080521.6tmfq4kjngu5slv7@gilmour>
-References: <20211025151536.1048186-3-maxime@cerno.tech>
- <CGME20211029062347eucas1p1431402205321b066349e3ccf432d2452@eucas1p1.samsung.com>
- <73c13cf5-ca36-f47b-f53a-11d4f015505c@samsung.com>
+        Fri, 29 Oct 2021 04:11:03 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30232C061570
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 01:08:35 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id q74so16339431ybq.11
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 01:08:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=b+Le6B97XTarP+zpQalZY09j7ckTrgrQqCOfMYv/ZEc=;
+        b=DjKZY9D+OQRTBixFRj8IBTQc8b6gxJFd7rLgtm4WKbLiDaFCoiUfEbSALVPMEMKUPu
+         NSe8gzWxHV+Aie2MukOGYwtX0WeN2x8MpTZV++WsYxjzbdTwC6+HRTYWIBcsd5R2S+pC
+         Xq5nkVd+ic+9t0MQ0HWLryGQG8dWTWTNFAb7G02PAKGnLOoVG46Z3T531ns3DJr1axS9
+         T7dmloJ6pygkJjidHXGnp2IB4i9Jm24EoyBEzXLN2Qov0YG+FVmMg96MY7kxUaVh97Wj
+         LrALToH1vebbjm6EM5fBaLX+R0reOQb/qNg0PQ/PGTqN2jSJDB5ME8ahwDuQitV8BfY8
+         bmeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=b+Le6B97XTarP+zpQalZY09j7ckTrgrQqCOfMYv/ZEc=;
+        b=KQQokLyinVAw9SOP9NmXbhJt0M9vR4VVbaxI+wQUZhNSvlwqx9N8jQodVonikJzUO1
+         zj1AAacMlbABX/5KLatxj6r6BBa6jy3vY6ovcTev0TfsODbk/HphXcnidqCH9zDUlwGE
+         BTPUKZxRNZ3vmKdxDL7uU/8m3sj64TE/veF9Yos2kXMlJs3Ev+8jKdnjar6TYneX5Zo+
+         ja7SQ6Hvx9hGEGDVFzMQz0mbGOUZWnP5y1vWPJgzFWEeTT3/DkngLNL5LNLk74f7rR6J
+         jXANiU+bkcGY29K0Ig1c0wUWKV/yvpjtgEKkw8OEcbN73o6YWr9dXYY/yNz9DppZB1Yd
+         5KOw==
+X-Gm-Message-State: AOAM532Z0ydtfNPb9aOxJLLNnUZkp+ed2PwC9cXxg7QHLacKQ9N3sfhQ
+        Ie2jKsXsZB0ya/695gfJgkZ0V3VKIOSvOmALq8G2MA==
+X-Google-Smtp-Source: ABdhPJwFrM6PBPue6H1nJLQA2Et1dk4Al61AI6BdQ9f7QepIWKlUxAqSmdG3cD7H8DwNC6aPk3YoJmBjCwZw0Dd+k/U=
+X-Received: by 2002:a25:3817:: with SMTP id f23mr9775126yba.436.1635494914148;
+ Fri, 29 Oct 2021 01:08:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="dxkmld7iruoye3zb"
-Content-Disposition: inline
-In-Reply-To: <73c13cf5-ca36-f47b-f53a-11d4f015505c@samsung.com>
+References: <20211021230356.v6.1.I139e71adfd3f00b88fe9edb63d013f9cd3e24506@changeid>
+ <20211021230356.v6.3.I257ac5cfaf955d15670479efc311bbab702397f4@changeid> <AB7796C2-6543-43CD-8FA3-DAF57AB68767@holtmann.org>
+In-Reply-To: <AB7796C2-6543-43CD-8FA3-DAF57AB68767@holtmann.org>
+From:   Joseph Hwang <josephsih@google.com>
+Date:   Fri, 29 Oct 2021 16:08:23 +0800
+Message-ID: <CAHFy41_y8LS81gTHNidMdrD9tpeXf0YyvHaTKZJU+jmjuFgYXQ@mail.gmail.com>
+Subject: Re: [PATCH v6 3/3] Bluetooth: btusb: enable Mediatek to support AOSP extension
+To:     Marcel Holtmann <marcel@holtmann.org>
+Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        pali@kernel.org, chromeos-bluetooth-upstreaming@chromium.org,
+        Miao-chen Chou <mcchou@chromium.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?B?TWFyay1ZVyBDaGVuICjpmbPmj5rmlocp?= 
+        <Mark-YW.Chen@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
++Mark-YW.Chen@mediatek.com
 
---dxkmld7iruoye3zb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Some of Mediatek's controllers/firmwares do NOT support AOSP extensions.
 
-Hi Marek,
+Please refer to this Gerrit patch review link for chrome os
+(https://chromium-review.googlesource.com/c/chromiumos/third_party/kernel/+/3054233/8/drivers/bluetooth/btusb.c)
+which was reviewed by Mark-YW Chen, Mediatek's engineer.
 
-On Fri, Oct 29, 2021 at 08:23:45AM +0200, Marek Szyprowski wrote:
-> Hi,
->=20
-> On 25.10.2021 17:15, Maxime Ripard wrote:
-> > In order to avoid any probe ordering issue, the best practice is to move
-> > the secondary MIPI-DSI device registration and attachment to the
-> > MIPI-DSI host at probe time. Let's do this.
-> >
-> > Acked-by: Sam Ravnborg <sam@ravnborg.org>
-> > Tested-by: John Stultz <john.stultz@linaro.org>
-> > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+As an example, MediaTek MT7615E does not support the AOSP extensions.
+
+That was why I used a new BTUSB_QUALITY_REPORT flag in the changes v4
+and earlier ones.
+
+Please let me know how you would like to proceed with this patch.
+
+Thanks!
+Joseph
+
+
+On Mon, Oct 25, 2021 at 9:26 PM Marcel Holtmann <marcel@holtmann.org> wrote:
 >
-> This patch landed in linux-next as commit 864c49a31d6b ("drm/bridge:
-> adv7511: Register and attach our DSI device at probe"). Sadly it causes
-> endless probe-fail-defer loop on DragonBoard 410c board
-> (arch/arm64/boot/dts/qcom/apq8016-sbc.dts):
+> Hi Joseph,
+>
+> > This patch enables Mediatek to support the AOSP extension.
+> >
+> > Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
+> > Signed-off-by: Joseph Hwang <josephsih@chromium.org>
+> >
+> > ---
+> >
+> > (no changes since v5)
+> >
+> > Changes in v5:
+> > - Let the vendor command in aosp_do_open() to determine what
+> >  capabilities are supported.
+> >
+> > Changes in v4:
+> > - Call hci_set_aosp_capable in the driver.
+> > - This patch is added in this Series-changes 4.
+> >
+> > drivers/bluetooth/btusb.c | 2 ++
+> > 1 file changed, 2 insertions(+)
+> >
+> > diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+> > index 87b71740fad8..00311ebd7823 100644
+> > --- a/drivers/bluetooth/btusb.c
+> > +++ b/drivers/bluetooth/btusb.c
+> > @@ -3876,6 +3876,8 @@ static int btusb_probe(struct usb_interface *intf,
+> >               hdev->set_bdaddr = btusb_set_bdaddr_mtk;
+> >               set_bit(HCI_QUIRK_NON_PERSISTENT_SETUP, &hdev->quirks);
+> >               data->recv_acl = btusb_recv_acl_mtk;
+> > +
+> > +             hci_set_aosp_capable(hdev);
+>
+> can we get an ACK from Mediatek people that all their firmwares support the AOSP extensions.
+>
+> Regards
+>
+> Marcel
+>
 
-I'm sorry to hear that (but would have been surprised if it didn't occur)
 
-This is supposed to be fixed by 8f59ee9a570c ("drm/msm/dsi: Adjust probe
-order"). Do you have that patch applied?
+-- 
 
-Maxime
-
---dxkmld7iruoye3zb
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYXurQQAKCRDj7w1vZxhR
-xVUEAP9BeVQOJLXYw9Qy6X8VqVrrt6ZD7ANhFfeWPIL13SPJCQD/aD1IaYsn/2Vy
-K56opVCzXYlbVeFJIDN28pPvj+x/ngE=
-=e1Zt
------END PGP SIGNATURE-----
-
---dxkmld7iruoye3zb--
+Joseph Shyh-In Hwang
+Email: josephsih@google.com
