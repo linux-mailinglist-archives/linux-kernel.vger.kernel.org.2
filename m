@@ -2,55 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A813943FD1D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 15:07:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5941443FD24
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 15:10:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231572AbhJ2NKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 09:10:12 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:56390 "EHLO deadmen.hmeau.com"
+        id S231527AbhJ2NMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 09:12:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231401AbhJ2NKK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 09:10:10 -0400
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
-        id 1mgRbg-0002jJ-UI; Fri, 29 Oct 2021 21:07:40 +0800
-Received: from herbert by gondobar with local (Exim 4.92)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1mgRbf-0001wH-Fs; Fri, 29 Oct 2021 21:07:39 +0800
-Date:   Fri, 29 Oct 2021 21:07:39 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Sunil Goutham <sgoutham@marvell.com>
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] hwrng: cavium: Check health status while reading random
- data
-Message-ID: <20211029130739.GA7431@gondor.apana.org.au>
-References: <1634929505-16205-1-git-send-email-sgoutham@marvell.com>
+        id S231401AbhJ2NMf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 09:12:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 42BA461177;
+        Fri, 29 Oct 2021 13:10:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635513007;
+        bh=Pau3e3oknw4QrQXHYil27X9egBLiH4uwmv9x75hnXak=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=k09UnCjTx/Wf7Wqi25diaZRseS6+aVEGCnK60BlKwMLZg1b1dv7cx5/IgzeT5r/6V
+         iHjdhtZPMcZZiqN6Ak4VSqUvEU0x3QVizltPncJmeEpv9qpwXx92AAXsBK5x5p+5zk
+         1owgQOUCZBYuKQnGeMx9xI3TSCRD+1wxoBjle5Lfh/7W53jtIYjXx+KYXqzKOHoS0Z
+         6s05r0WCD3+L7YlRuF4ShbO2TYFI/p/TxZ+XqMSG6k8kKaLrNFDmVyMy/oMal/ZOI5
+         wQyrIEjd+6R5IeBJw+/G9cDu3tdy4vFEINWXotkWpRnyW8EGIVfJw5ta5XiUA2f/ea
+         lUzRzOjIHZ00Q==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3B38060A17;
+        Fri, 29 Oct 2021 13:10:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1634929505-16205-1-git-send-email-sgoutham@marvell.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] [net-next] ifb: fix building without CONFIG_NET_CLS_ACT
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163551300723.9482.9164183459360227411.git-patchwork-notify@kernel.org>
+Date:   Fri, 29 Oct 2021 13:10:07 +0000
+References: <20211029113102.769823-1-arnd@kernel.org>
+In-Reply-To: <20211029113102.769823-1-arnd@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, lukas@wunner.de,
+        arnd@arndb.de, willemb@google.com, tanghui20@huawei.com,
+        kernel@esmil.dk, pablo@netfilter.org, alobakin@pm.me,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 23, 2021 at 12:35:05AM +0530, Sunil Goutham wrote:
->
-> diff --git a/drivers/char/hw_random/cavium-rng-vf.c b/drivers/char/hw_random/cavium-rng-vf.c
-> index 3de4a6a..6f66919 100644
-> --- a/drivers/char/hw_random/cavium-rng-vf.c
-> +++ b/drivers/char/hw_random/cavium-rng-vf.c
->
-> @@ -15,16 +12,146 @@
->  #include <linux/pci.h>
->  #include <linux/pci_ids.h>
->  
-> +#include <asm/arch_timer.h>
+Hello:
 
-This breaks compile testing.
+This patch was applied to netdev/net-next.git (master)
+by David S. Miller <davem@davemloft.net>:
 
-Cheers,
+On Fri, 29 Oct 2021 13:30:51 +0200 you wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> The driver no longer depends on this option, but it fails to
+> build if it's disabled because the skb->tc_skip_classify is
+> hidden behind an #ifdef:
+> 
+> drivers/net/ifb.c:81:8: error: no member named 'tc_skip_classify' in 'struct sk_buff'
+>                 skb->tc_skip_classify = 1;
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next] ifb: fix building without CONFIG_NET_CLS_ACT
+    https://git.kernel.org/netdev/net-next/c/7444d706be31
+
+You are awesome, thank you!
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
