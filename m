@@ -2,143 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D6ED43F415
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 02:44:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F96143F418
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 02:46:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231424AbhJ2Aqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 20:46:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58744 "EHLO
+        id S231408AbhJ2Asm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 20:48:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230211AbhJ2Aqx (ORCPT
+        with ESMTP id S230211AbhJ2Ask (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 20:46:53 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3794C061570;
-        Thu, 28 Oct 2021 17:44:25 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id z144so9366948iof.0;
-        Thu, 28 Oct 2021 17:44:25 -0700 (PDT)
+        Thu, 28 Oct 2021 20:48:40 -0400
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DCF4C061570;
+        Thu, 28 Oct 2021 17:46:13 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id f1so7571559qto.9;
+        Thu, 28 Oct 2021 17:46:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zQP4kRzm3ZSndyVhtvxvd/t2NKU3Z81W6oJKDHuooD0=;
-        b=Mqu8zRtKOuus4eaIvw+S3uKGxoOqY0VjK92sWkJ5SYeeKEdEGXqdK2U/WeoOLAeI+w
-         1ekw3doiTOXxiQmqIcRoUgux9R/AamtSEEyp/oc7DVmOzxynHNasxpYqHlBbZKLCusos
-         zeZM3fpFS2N0G1w26R5F/6vvTCcbUYWLQ3yxXeIZdmCoCXuh49sUAVh9UimQpOTMeS+C
-         n8nHEGPmyChZqJO6uHoOhruMoTCxDpNlebk/+XbdtxJjQMOWYx+txuz14rbYA8bPu33G
-         c0hl//lhdQOeGGyU8a/nBPyKYaxfAsq27F9ORBEfvmCorVvluWB3wN7yZx02mIARfuuw
-         kZIQ==
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QY+65c0e3dWyBQrqP8qzKIb5vCuj9L4rzbD7EyWu1RU=;
+        b=FSERi+nPsTIGYYISWvWgnBvExH6uLzjrzzWIp+sgZVc4/3waSxIQsPVt54rIVup3wy
+         3CX76R4Wnqnr5Um8YZl4vcXmDafOy0cPzjtRqaUAFeNZgZn9nCbijoCxRIq151pDqoyy
+         4vkmv59yjIUyQycsDWwCerf2XO35G1UEOAFo9NTVzjLxB6woyCiHt5EnqciYlPYiG71i
+         ZQDOtwag87gmxqtjvyUMYJZmbr7XrFb1AXLu3v0POa0+mflUPfGoHrRkaG2XmO+VC3tI
+         QwUJsOcZtAt+crOpd77a2bj/P09duJXbOfxLIb+XbIQ6ZaWoWg7AypuZgRXFD1u/nOfj
+         qZ2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zQP4kRzm3ZSndyVhtvxvd/t2NKU3Z81W6oJKDHuooD0=;
-        b=6XNlWPoM+2uPO5i4Fv35ea3feUu2tLu3gj5I8A6maIdseYX7CddPeMxm8EpyeykpA1
-         A1L7ru7kzsgxGiro9ctHQ5qWGPEQx8pciQeK8SYqrL/RqZtaGBxfOJj5ANsg9LjhG9Lw
-         ZesvRSZ8ai5mhPZILZ8B6QhdWnHAbWlMMvTjMmA6uilKh8E8NlEjWtr7e1+ylm8CwpIN
-         O9VplGva/4TT28Pe7jP3yUdoLzMZlKxFw5mxZVdJcC4kUW9/4IDK6kwPUFkw3qmxFkPz
-         l+qMqTDTGv4o8I3UF5PTUrY++ZNbIeT3NVKL0JTdMbYoLSUmDA2m8P63Vpb5Y2N4sZMF
-         RQqg==
-X-Gm-Message-State: AOAM532+HYV8LM6VskFjhj+1GIuymemDc+EMZWbh9Zyc01F60vCmWgMk
-        TDVPMwkRr6JMHb2RidSB/8LKtWuuZtDFXHLJRaOhNRrOdRs=
-X-Google-Smtp-Source: ABdhPJzJKilq3tDV5Olh9mImUtsSsiwF8o6rvu8pTkX4MbWwe2o0arz6VTezLeOsEfqHk6p3OWm4ylILeLP4hUTLPMU=
-X-Received: by 2002:a5d:80d6:: with SMTP id h22mr5663782ior.152.1635468265191;
- Thu, 28 Oct 2021 17:44:25 -0700 (PDT)
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=QY+65c0e3dWyBQrqP8qzKIb5vCuj9L4rzbD7EyWu1RU=;
+        b=hsZN1k8xZhKNx5LvO4lo85VQmUH2h5PDsvTiZfFTt6Wkc4mg2LQOKuCgCWPUlzOLAk
+         Fl/Mnmo9clJJRSKrwyx1juVWviglwNOEyqmZyKj15Dj8pX81UZHKb8VhEEed3HHwHlVq
+         Lu9s7LJ23JvhkiNPhOao7WYn2sc48cPzmiXxPKY8rhPooHDFPVNPgJaB9DvCgFQg71BJ
+         K6TbqI9elgpdHpg1UwN/+1JE2Iai3Tfvx5/BwfT+dXTU0NeaybwDt9ogruB15l13w85x
+         vbfuk57NYj0ix9uMIPpId46ofIB3fq//dLqsdhyn/XfzWyh7nNwKVlOg5sV/9SVb73QJ
+         Kk1Q==
+X-Gm-Message-State: AOAM531X/k79BYgfyyYxaPBFyn3V8ed1Aikl4K8cxPg36anodq5OiLzz
+        RHdIjrtiIZ1SF4Mrq1HY0joQqpRhv8Fn+4rP/hI=
+X-Google-Smtp-Source: ABdhPJwIr6iRt8zwIUDPiwYjJszcYORv6srUQZ2L6ViPNPXks6zEi4lcFsfM5DmwIM1N6oiGkRHMng==
+X-Received: by 2002:ac8:59cb:: with SMTP id f11mr8303822qtf.350.1635468372262;
+        Thu, 28 Oct 2021 17:46:12 -0700 (PDT)
+Received: from localhost.localdomain ([67.8.38.84])
+        by smtp.gmail.com with ESMTPSA id q13sm3127907qkl.7.2021.10.28.17.46.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 17:46:12 -0700 (PDT)
+Sender: Julian Braha <julian.braha@gmail.com>
+From:   Julian Braha <julianbraha@gmail.com>
+To:     agross@kernel.org, bjorn.andersson@linaro.org,
+        linus.walleij@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] pinctrl: qcom: fix unmet dependencies on GPIOLIB for GPIOLIB_IRQCHIP
+Date:   Thu, 28 Oct 2021 20:46:10 -0400
+Message-Id: <20211029004610.35131-1-julianbraha@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20200320212833.3507-1-sean.j.christopherson@intel.com>
- <20200320212833.3507-24-sean.j.christopherson@intel.com> <CAJhGHyD=S6pVB+OxM7zF0_6LnMUCLqyTfMK4x9GZsdRHZmgN7Q@mail.gmail.com>
- <YXrAM9MNqgLTU6+m@google.com>
-In-Reply-To: <YXrAM9MNqgLTU6+m@google.com>
-From:   Lai Jiangshan <jiangshanlai+lkml@gmail.com>
-Date:   Fri, 29 Oct 2021 08:44:13 +0800
-Message-ID: <CAJhGHyBKVUsuKdvfaART6NWF7Axk5=eFQLidhGrM=mUO2cv2vw@mail.gmail.com>
-Subject: Re: [PATCH v3 23/37] KVM: nVMX: Add helper to handle TLB flushes on
- nested VM-Enter/VM-Exit
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ben Gardon <bgardon@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Liran Alon <liran.alon@oracle.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        John Haxby <john.haxby@oracle.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 11:22 PM Sean Christopherson <seanjc@google.com> wrote:
->
-> -me :-)
->
-> On Thu, Oct 28, 2021, Lai Jiangshan wrote:
-> > On Sat, Mar 21, 2020 at 5:29 AM Sean Christopherson
-> > <sean.j.christopherson@intel.com> wrote:
-> >
-> > > +       if (!nested_cpu_has_vpid(vmcs12) || !nested_has_guest_tlb_tag(vcpu)) {
-> > > +               kvm_make_request(KVM_REQ_TLB_FLUSH, vcpu);
-> > > +       } else if (is_vmenter &&
-> > > +                  vmcs12->virtual_processor_id != vmx->nested.last_vpid) {
-> > > +               vmx->nested.last_vpid = vmcs12->virtual_processor_id;
-> > > +               vpid_sync_context(nested_get_vpid02(vcpu));
-> > > +       }
-> > > +}
-> >
-> > (I'm sorry to pick this old email to reply to, but the problem has
-> > nothing to do with this patch nor 5c614b3583e7 and it exists since
-> > nested vmx is introduced.)
-> >
-> > I think kvm_mmu_free_guest_mode_roots() should be called
-> > if (!enable_ept && vmcs12->virtual_processor_id != vmx->nested.last_vpid)
-> > just because prev_roots doesn't cache the vpid12.
-> > (prev_roots caches PCID, which is distinctive)
-> >
-> > The problem hardly exists if L1's hypervisor is also kvm, but if L1's
-> > hypervisor is different or is also kvm with some changes in the way how it
-> > manages VPID.
->
-> Indeed.  A more straightforward error case would be if L1 and L2 share CR3, and
-> vmcs02.VPID is toggled (or used for the first time) on the L1 => L2 VM-Enter.
->
-> The fix should simply be:
->
-> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> index eedcebf58004..574823370e7a 100644
-> --- a/arch/x86/kvm/vmx/nested.c
-> +++ b/arch/x86/kvm/vmx/nested.c
-> @@ -1202,17 +1202,15 @@ static void nested_vmx_transition_tlb_flush(struct kvm_vcpu *vcpu,
->          *
->          * If a TLB flush isn't required due to any of the above, and vpid12 is
->          * changing then the new "virtual" VPID (vpid12) will reuse the same
-> -        * "real" VPID (vpid02), and so needs to be flushed.  There's no direct
-> -        * mapping between vpid02 and vpid12, vpid02 is per-vCPU and reused for
-> -        * all nested vCPUs.  Remember, a flush on VM-Enter does not invalidate
-> -        * guest-physical mappings, so there is no need to sync the nEPT MMU.
-> +        * "real" VPID (vpid02), and so needs to be flushed.  Like the !vpid02
-> +        * case above, this is a full TLB flush from the guest's perspective.
->          */
->         if (!nested_has_guest_tlb_tag(vcpu)) {
->                 kvm_make_request(KVM_REQ_TLB_FLUSH_CURRENT, vcpu);
->         } else if (is_vmenter &&
->                    vmcs12->virtual_processor_id != vmx->nested.last_vpid) {
->                 vmx->nested.last_vpid = vmcs12->virtual_processor_id;
-> -               vpid_sync_context(nested_get_vpid02(vcpu));
-> +               kvm_make_request(KVM_REQ_TLB_FLUSH_GUEST, vcpu);
+When PINCTRL_QCOM_SPMI_PMIC or PINCTRL_QCOM_SSBI_PMIC
+is selected, and GPIOLIB is not selected, Kbuild
+gives the following warnings:
 
-This change is neat.
+WARNING: unmet direct dependencies detected for GPIOLIB_IRQCHIP
+  Depends on [n]: GPIOLIB [=n]
+  Selected by [y]:
+  - PINCTRL_QCOM_SPMI_PMIC [=y] && PINCTRL [=y] && (ARCH_QCOM [=n] || COMPILE_TEST [=y]) && OF [=y] && SPMI [=y]
 
-But current KVM_REQ_TLB_FLUSH_GUEST flushes vpid01 only, and it doesn't flush
-vpid02.  vmx_flush_tlb_guest() might need to be changed to flush vpid02 too.
+WARNING: unmet direct dependencies detected for GPIOLIB_IRQCHIP
+  Depends on [n]: GPIOLIB [=n]
+  Selected by [y]:
+  - PINCTRL_QCOM_SSBI_PMIC [=y] && PINCTRL [=y] && (ARCH_QCOM [=n] || COMPILE_TEST [=y]) && OF [=y]
 
-And if so, this nested_vmx_transition_tlb_flush() can be simplified further
-since KVM_REQ_TLB_FLUSH_CURRENT(!enable_ept) can be replaced with
-KVM_REQ_TLB_FLUSH_GUEST.
+This is because these config options enable GPIOLIB_IRQCHIP
+without selecting or depending on GPIOLIB, despite
+GPIOLIB_IRQCHIP depending on GPIOLIB.
 
->         }
->  }
+These unmet dependency bugs were detected by Kismet,
+a static analysis tool for Kconfig. Please advise if this
+is not the appropriate solution.
+
+Signed-off-by: Julian Braha <julianbraha@gmail.com>
+---
+ drivers/pinctrl/qcom/Kconfig | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/pinctrl/qcom/Kconfig b/drivers/pinctrl/qcom/Kconfig
+index b9191f1abb1c..3e0c00766f59 100644
+--- a/drivers/pinctrl/qcom/Kconfig
++++ b/drivers/pinctrl/qcom/Kconfig
+@@ -197,6 +197,7 @@ config PINCTRL_QCOM_SPMI_PMIC
+ 	select PINMUX
+ 	select PINCONF
+ 	select GENERIC_PINCONF
++  select GPIOLIB
+ 	select GPIOLIB_IRQCHIP
+ 	select IRQ_DOMAIN_HIERARCHY
+ 	help
+@@ -211,6 +212,7 @@ config PINCTRL_QCOM_SSBI_PMIC
+ 	select PINMUX
+ 	select PINCONF
+ 	select GENERIC_PINCONF
++  select GPIOLIB
+ 	select GPIOLIB_IRQCHIP
+ 	select IRQ_DOMAIN_HIERARCHY
+ 	help
+-- 
+2.30.2
+
