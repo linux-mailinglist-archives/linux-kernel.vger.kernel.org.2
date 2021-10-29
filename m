@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BE5343FAEB
+	by mail.lfdr.de (Postfix) with ESMTP id 94CE443FAEC
 	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 12:39:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231977AbhJ2Klu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 06:41:50 -0400
-Received: from mx.socionext.com ([202.248.49.38]:15671 "EHLO mx.socionext.com"
+        id S231913AbhJ2Klw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 06:41:52 -0400
+Received: from mx.socionext.com ([202.248.49.38]:58734 "EHLO mx.socionext.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231755AbhJ2Kll (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231772AbhJ2Kll (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 29 Oct 2021 06:41:41 -0400
-Received: from unknown (HELO iyokan2-ex.css.socionext.com) ([172.31.9.54])
+Received: from unknown (HELO kinkan2-ex.css.socionext.com) ([172.31.9.52])
   by mx.socionext.com with ESMTP; 29 Oct 2021 19:39:11 +0900
 Received: from mail.mfilter.local (m-filter-1 [10.213.24.61])
-        by iyokan2-ex.css.socionext.com (Postfix) with ESMTP id D6489207616C;
+        by kinkan2-ex.css.socionext.com (Postfix) with ESMTP id D9909203F6D9;
         Fri, 29 Oct 2021 19:39:11 +0900 (JST)
 Received: from 172.31.9.51 (172.31.9.51) by m-FILTER with ESMTP; Fri, 29 Oct 2021 19:39:11 +0900
 Received: from plum.e01.socionext.com (unknown [10.212.243.119])
-        by kinkan2.css.socionext.com (Postfix) with ESMTP id 508D1B62E0;
+        by kinkan2.css.socionext.com (Postfix) with ESMTP id 841FDB62AC;
         Fri, 29 Oct 2021 19:39:11 +0900 (JST)
 From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
 To:     Vinod Koul <vkoul@kernel.org>,
@@ -28,9 +28,9 @@ To:     Vinod Koul <vkoul@kernel.org>,
 Cc:     linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Subject: [PATCH v3 5/8] phy: uniphier-pcie: Set VCOPLL clamp mode in PHY register
-Date:   Fri, 29 Oct 2021 19:39:04 +0900
-Message-Id: <1635503947-18250-6-git-send-email-hayashi.kunihiko@socionext.com>
+Subject: [PATCH v3 6/8] phy: uniphier-pcie: Add dual-phy support for NX1 SoC
+Date:   Fri, 29 Oct 2021 19:39:05 +0900
+Message-Id: <1635503947-18250-7-git-send-email-hayashi.kunihiko@socionext.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1635503947-18250-1-git-send-email-hayashi.kunihiko@socionext.com>
 References: <1635503947-18250-1-git-send-email-hayashi.kunihiko@socionext.com>
@@ -38,36 +38,142 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set VCOPLL clamp mode to mode 0 to avoid hardware unstable issue.
+NX1 SoC supports 2 lanes and has dual-phy. Should set appropriate
+configuration values to both PHY registers.
 
 Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
 ---
- drivers/phy/socionext/phy-uniphier-pcie.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/phy/socionext/phy-uniphier-pcie.c | 48 ++++++++++++++++++++++---------
+ 1 file changed, 34 insertions(+), 14 deletions(-)
 
 diff --git a/drivers/phy/socionext/phy-uniphier-pcie.c b/drivers/phy/socionext/phy-uniphier-pcie.c
-index fde8aac5f4b6..2bd8df619712 100644
+index 2bd8df619712..ebca296ef123 100644
 --- a/drivers/phy/socionext/phy-uniphier-pcie.c
 +++ b/drivers/phy/socionext/phy-uniphier-pcie.c
-@@ -51,6 +51,9 @@
- #define PCL_PHY_R26		26
- #define   VCO_CTRL		GENMASK(7, 4)	/* Tx VCO adjustment value */
- #define   VCO_CTRL_INIT_VAL	5
-+#define PCL_PHY_R28		28
-+#define   VCOPLL_CLMP		GENMASK(3, 2)	/* Tx VCOPLL clamp mode */
-+#define   VCOPLL_CLMP_VAL	0
+@@ -27,6 +27,7 @@
+ #define TESTI_DAT_MASK		GENMASK(13, 6)
+ #define TESTI_ADR_MASK		GENMASK(5, 1)
+ #define TESTI_WR_EN		BIT(0)
++#define TESTIO_PHY_SHIFT	16
  
- struct uniphier_pciephy_priv {
- 	void __iomem *base;
-@@ -158,6 +161,8 @@ static int uniphier_pciephy_init(struct phy *phy)
+ #define PCL_PHY_TEST_O		0x2004
+ #define TESTO_DAT_MASK		GENMASK(7, 0)
+@@ -65,43 +66,57 @@ struct uniphier_pciephy_priv {
+ 
+ struct uniphier_pciephy_soc_data {
+ 	bool is_legacy;
++	bool is_dual_phy;
+ 	void (*set_phymode)(struct regmap *regmap);
+ };
+ 
+ static void uniphier_pciephy_testio_write(struct uniphier_pciephy_priv *priv,
+-					  u32 data)
++					  int id, u32 data)
+ {
++	if (id)
++		data <<= TESTIO_PHY_SHIFT;
++
+ 	/* need to read TESTO twice after accessing TESTI */
+ 	writel(data, priv->base + PCL_PHY_TEST_I);
+ 	readl(priv->base + PCL_PHY_TEST_O);
+ 	readl(priv->base + PCL_PHY_TEST_O);
+ }
+ 
++static u32 uniphier_pciephy_testio_read(struct uniphier_pciephy_priv *priv, int id)
++{
++	u32 val = readl(priv->base + PCL_PHY_TEST_O);
++
++	if (id)
++		val >>= TESTIO_PHY_SHIFT;
++
++	return val & TESTO_DAT_MASK;
++}
++
+ static void uniphier_pciephy_set_param(struct uniphier_pciephy_priv *priv,
+-				       u32 reg, u32 mask, u32 param)
++				       int id, u32 reg, u32 mask, u32 param)
+ {
+ 	u32 val;
+ 
+ 	/* read previous data */
+ 	val  = FIELD_PREP(TESTI_DAT_MASK, 1);
+ 	val |= FIELD_PREP(TESTI_ADR_MASK, reg);
+-	uniphier_pciephy_testio_write(priv, val);
+-	val = readl(priv->base + PCL_PHY_TEST_O) & TESTO_DAT_MASK;
++	uniphier_pciephy_testio_write(priv, id, val);
++	val = uniphier_pciephy_testio_read(priv, id);
+ 
+ 	/* update value */
+ 	val &= ~mask;
+ 	val |= mask & param;
+ 	val = FIELD_PREP(TESTI_DAT_MASK, val);
+ 	val |= FIELD_PREP(TESTI_ADR_MASK, reg);
+-	uniphier_pciephy_testio_write(priv, val);
+-	uniphier_pciephy_testio_write(priv, val | TESTI_WR_EN);
+-	uniphier_pciephy_testio_write(priv, val);
++	uniphier_pciephy_testio_write(priv, id, val);
++	uniphier_pciephy_testio_write(priv, id, val | TESTI_WR_EN);
++	uniphier_pciephy_testio_write(priv, id, val);
+ 
+ 	/* read current data as dummy */
+ 	val  = FIELD_PREP(TESTI_DAT_MASK, 1);
+ 	val |= FIELD_PREP(TESTI_ADR_MASK, reg);
+-	uniphier_pciephy_testio_write(priv, val);
+-	readl(priv->base + PCL_PHY_TEST_O);
++	uniphier_pciephy_testio_write(priv, id, val);
++	uniphier_pciephy_testio_read(priv, id);
+ }
+ 
+ static void uniphier_pciephy_assert(struct uniphier_pciephy_priv *priv)
+@@ -127,7 +142,7 @@ static int uniphier_pciephy_init(struct phy *phy)
+ {
+ 	struct uniphier_pciephy_priv *priv = phy_get_drvdata(phy);
+ 	u32 val;
+-	int ret;
++	int ret, id;
+ 
+ 	ret = clk_prepare_enable(priv->clk);
+ 	if (ret)
+@@ -155,14 +170,16 @@ static int uniphier_pciephy_init(struct phy *phy)
+ 	if (priv->data->is_legacy)
+ 		return 0;
+ 
+-	uniphier_pciephy_set_param(priv, PCL_PHY_R00,
++	for (id = 0; id < (priv->data->is_dual_phy ? 2 : 1); id++) {
++		uniphier_pciephy_set_param(priv, id, PCL_PHY_R00,
+ 				   RX_EQ_ADJ_EN, RX_EQ_ADJ_EN);
+-	uniphier_pciephy_set_param(priv, PCL_PHY_R06, RX_EQ_ADJ,
++		uniphier_pciephy_set_param(priv, id, PCL_PHY_R06, RX_EQ_ADJ,
  				   FIELD_PREP(RX_EQ_ADJ, RX_EQ_ADJ_VAL));
- 	uniphier_pciephy_set_param(priv, PCL_PHY_R26, VCO_CTRL,
+-	uniphier_pciephy_set_param(priv, PCL_PHY_R26, VCO_CTRL,
++		uniphier_pciephy_set_param(priv, id, PCL_PHY_R26, VCO_CTRL,
  				   FIELD_PREP(VCO_CTRL, VCO_CTRL_INIT_VAL));
-+	uniphier_pciephy_set_param(priv, PCL_PHY_R28, VCOPLL_CLMP,
-+				   FIELD_PREP(VCOPLL_CLMP, VCOPLL_CLMP_VAL));
+-	uniphier_pciephy_set_param(priv, PCL_PHY_R28, VCOPLL_CLMP,
++		uniphier_pciephy_set_param(priv, id, PCL_PHY_R28, VCOPLL_CLMP,
+ 				   FIELD_PREP(VCOPLL_CLMP, VCOPLL_CLMP_VAL));
++	}
  	usleep_range(1, 10);
  
  	uniphier_pciephy_deassert(priv);
+@@ -282,15 +299,18 @@ static const struct uniphier_pciephy_soc_data uniphier_pro5_data = {
+ 
+ static const struct uniphier_pciephy_soc_data uniphier_ld20_data = {
+ 	.is_legacy = false,
++	.is_dual_phy = false,
+ 	.set_phymode = uniphier_pciephy_ld20_setmode,
+ };
+ 
+ static const struct uniphier_pciephy_soc_data uniphier_pxs3_data = {
+ 	.is_legacy = false,
++	.is_dual_phy = false,
+ };
+ 
+ static const struct uniphier_pciephy_soc_data uniphier_nx1_data = {
+ 	.is_legacy = false,
++	.is_dual_phy = true,
+ 	.set_phymode = uniphier_pciephy_nx1_setmode,
+ };
+ 
 -- 
 2.7.4
 
