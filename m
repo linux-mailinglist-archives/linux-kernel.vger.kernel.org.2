@@ -2,128 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E2D3440100
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 19:11:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8852C44010C
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 19:16:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230022AbhJ2RNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 13:13:37 -0400
-Received: from mga03.intel.com ([134.134.136.65]:42240 "EHLO mga03.intel.com"
+        id S229888AbhJ2RS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 13:18:27 -0400
+Received: from mga07.intel.com ([134.134.136.100]:3541 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229782AbhJ2RNg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 13:13:36 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10152"; a="230660096"
+        id S229772AbhJ2RS0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 13:18:26 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10152"; a="294170684"
 X-IronPort-AV: E=Sophos;i="5.87,193,1631602800"; 
-   d="scan'208";a="230660096"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2021 10:11:07 -0700
+   d="scan'208";a="294170684"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2021 10:15:57 -0700
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.87,193,1631602800"; 
-   d="scan'208";a="665899220"
-Received: from jongchoi-mobl.amr.corp.intel.com (HELO [10.212.201.61]) ([10.212.201.61])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2021 10:11:06 -0700
-Subject: Re: [PATCH V2 01/15] selftests/x86/sgx: Fix a benign linker warning
-To:     Reinette Chatre <reinette.chatre@intel.com>, jarkko@kernel.org,
-        linux-sgx@vger.kernel.org, shuah@kernel.org,
-        dave.hansen@linux.intel.com
-Cc:     seanjc@google.com, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1635447301.git.reinette.chatre@intel.com>
- <545aac243037bf5c2640929c4d8ff5c1edfe3ef8.1635447301.git.reinette.chatre@intel.com>
- <d382d0b0-15fb-5e96-accd-c3b59be72dd3@intel.com>
- <fc40dbf4-2b09-fc06-dcf6-3232ec037635@intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <fae97935-9642-5aad-b786-b068dbc0cff9@intel.com>
-Date:   Fri, 29 Oct 2021 10:11:06 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+   d="scan'208";a="598276447"
+Received: from brentlu-brix.itwn.intel.com ([10.5.253.1])
+  by orsmga004.jf.intel.com with ESMTP; 29 Oct 2021 10:15:52 -0700
+From:   Brent Lu <brent.lu@intel.com>
+To:     alsa-devel@alsa-project.org
+Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Rander Wang <rander.wang@intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Brent Lu <brent.lu@intel.com>,
+        Curtis Malainey <cujomalainey@chromium.org>,
+        Mac Chiang <mac.chiang@intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        linux-kernel@vger.kernel.org, Yong Zhi <yong.zhi@intel.com>,
+        Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>,
+        Bard Liao <bard.liao@intel.com>,
+        Malik_Hsu <malik_hsu@wistron.corp-partner.google.com>,
+        Libin Yang <libin.yang@intel.com>,
+        Paul Olaru <paul.olaru@oss.nxp.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Gongjun Song <gongjun.song@intel.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rander Wang <rander.wang@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: [PATCH v5 0/6] Multiple headphone codec driver support
+Date:   Sat, 30 Oct 2021 01:14:03 +0800
+Message-Id: <20211029171409.611600-1-brent.lu@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <fc40dbf4-2b09-fc06-dcf6-3232ec037635@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/29/21 10:09 AM, Reinette Chatre wrote:
-> On 10/28/2021 5:26 PM, Dave Hansen wrote:
->> On 10/28/21 1:37 PM, Reinette Chatre wrote:
->>> From: Sean Christopherson <sean.j.christopherson@intel.com>
->>>
->>> Pass a build id of "none" to the linker to suppress a warning about the
->>> build id being ignored:
->>>
->>>    /usr/bin/ld: warning: .note.gnu.build-id section discarded,
->>> --build-id
->>>    ignored.
->>
->> Do we have a good grasp on why this is producing a warning in the first
->> place?  This seems like something that could get merged quickly with one
->> more sentence in the changelog.
->>
-> 
-> How about a new changelog as below:
-> 
-> The enclave binary (test_encl.elf) is built with only three sections
-> (tcs, text, and data) as controlled by its custom linker script.
-> 
-> If gcc is built with "--enable-linker-build-id" (this appears to be a
-> common configuration even if it is by default off) then gcc will pass
-> "--build-id" to the linker that will prompt it (the linker) to to write
-> unique bits identifying the linked file to a ".note.gnu.build-id" section.
-> 
-> The section ".note.gnu.build-id" does not exist in the test enclave
-> resulting in the following warning emitted by the linker:
-> 
-> /usr/bin/ld: warning: .note.gnu.build-id section discarded, --build-id
-> ignored
-> 
-> The test enclave does not use the build id within the binary so fix the
-> warning by passing a build id of "none" to the linker that will disable
-> the setting from any earlier "--build-id" options and thus disable the
-> attempt to write the build id to a ".note.gnu.build-id" section that
-> does not exist.
+Support multiple headphone drivers in same machine driver. In this
+case, both rt5682 and rt5682s are supported and enumerated by different
+ACPI HID "10EC5682" and "RTL5682".
 
-Looks great, thanks for putting that together!
+V2 Changes:
+- remove useless 'NULL', 'false' in if-condition
+- can use 'comp_ids' field alone to enumerate driver
+- add comma to the end of entry in structure initialization
+- keep the table of byt/cht/cml/icl untouched
+
+V3 Changes:
+- upstreamd from SOF github, PR#3200
+- use new compatiable IDs to shrink the enumerate table of BYT and CHT
+- add 'const' to snd_soc_acpi_codecs structures
+
+V4 Changes:
+- add signoff to patch 4~6
+
+V5 Changes:
+- none, just rebase for patch 3 conflict
+
+Brent Lu (3):
+  ASoC: soc-acpi: add comp_ids field for machine driver matching
+  ASoC: Intel: sof_rt5682: detect codec variant in probe function
+  ASoC: Intel: sof_rt5682: use comp_ids to enumerate rt5682s
+
+Pierre-Louis Bossart (3):
+  ASoC: Intel: soc-acpi-byt: shrink tables using compatible IDs
+  ASoC: Intel: soc-acpi-cht: shrink tables using compatible IDs
+  ASoC: Intel: soc-acpi: use const for all uses of snd_soc_acpi_codecs
+
+ include/sound/soc-acpi.h                      |  3 +
+ sound/soc/intel/boards/sof_rt5682.c           | 34 ++-------
+ .../intel/common/soc-acpi-intel-adl-match.c   | 11 ++-
+ .../intel/common/soc-acpi-intel-bxt-match.c   |  2 +-
+ .../intel/common/soc-acpi-intel-byt-match.c   | 68 +++++++-----------
+ .../intel/common/soc-acpi-intel-cht-match.c   | 69 +++++++------------
+ .../intel/common/soc-acpi-intel-cml-match.c   |  8 +--
+ .../intel/common/soc-acpi-intel-glk-match.c   |  2 +-
+ .../intel/common/soc-acpi-intel-jsl-match.c   | 43 ++++--------
+ .../intel/common/soc-acpi-intel-kbl-match.c   | 12 ++--
+ .../intel/common/soc-acpi-intel-skl-match.c   |  2 +-
+ .../intel/common/soc-acpi-intel-tgl-match.c   | 11 ++-
+ sound/soc/soc-acpi.c                          | 24 ++++++-
+ 13 files changed, 119 insertions(+), 170 deletions(-)
+
+-- 
+2.25.1
+
