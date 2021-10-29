@@ -2,221 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB2A143FC25
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 14:19:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2867B43FC26
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 14:19:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231566AbhJ2MVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 08:21:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40476 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231504AbhJ2MVi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231602AbhJ2MVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 08:21:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48378 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231519AbhJ2MVi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 29 Oct 2021 08:21:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A6D2D61177;
-        Fri, 29 Oct 2021 12:19:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635509947;
-        bh=9Yd0Xbp5WGgVpi8fnDAMNdT+MwTu+rc4xjEJjz8SEYU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=daG1Hgx19IaEhdcCcx96zIvFY/GbIWIQCJThBFGNlY44fCA+V/bH+peDJLuKY6wat
-         aWStrztHTwYJBGl1jMYLCJtEEIzLnzVuwZG3AsLL+rsti9aOLKOe4fqVtFH6ee+4s3
-         q83f/JShhBKbaFjvL/WR8TBJm0+HQiTAUl35EOcwRuPaihbBiOWOLBKtNkdMzuWQUs
-         3j1TeeRp8phK+7ftY8iR8fKsZN/DxPMHhE68527NqrrQyOCh2OHG6KOniX4t19xQJT
-         1OJsqm63d5kRH8Dv3pXedyAn/drHu3tvwksmtLlPbSqxlBdjTN/bz4EbTp0E4jd4LZ
-         9FVA4T5QurnOA==
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Jarkko Sakkinen <jarkko@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     reinette.chatre@intel.com, tony.luck@intel.com,
-        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org
-Subject: [PATCH v9 2/2] x86/sgx: Add an attribute for the amount of SGX memory in a NUMA node
-Date:   Fri, 29 Oct 2021 15:18:57 +0300
-Message-Id: <20211029121857.477885-2-jarkko@kernel.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211029121857.477885-1-jarkko@kernel.org>
-References: <20211029121857.477885-1-jarkko@kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635509947;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=73h99hJWE5OrS3nYMF4MG/2Jws/54jgP43Y5v4A9xgo=;
+        b=AbjsF7itlpX+SOUk+oecb8f7GHea7icinKd8PyRNdWTPr91zUceQLhsYC5Bwu1ieBFX/jC
+        38KaVZXuqdMomwsP+2/xGlxQoHx0HyY1oOryUD7S7xwLqYqxbqIM26EL6asR76Eclvy2YF
+        xQAHH3uvCPj7nq2wuMWbd6CiVlYI9/4=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-554-jsz5n9DHN8qf0SwjJJmd2A-1; Fri, 29 Oct 2021 08:19:06 -0400
+X-MC-Unique: jsz5n9DHN8qf0SwjJJmd2A-1
+Received: by mail-wm1-f69.google.com with SMTP id v5-20020a1cac05000000b0032ccf04ba2cso2385882wme.2
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 05:19:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=73h99hJWE5OrS3nYMF4MG/2Jws/54jgP43Y5v4A9xgo=;
+        b=v3tnkaSuLTTFic+ny0l8PpfQ4Rgdm1pi1QIk3MQwGlskxCkofN1T4tVqMrmidhgHPu
+         rLPJST3PEojuYuQAkySYKYbpxbU0TNE3PKAc3SPaf5TUXHiTohrbcv9+uf96eF1W8fLA
+         EkLoLSo2WdTs+lq+f/j14/0FnhcbiTDlSn9mDilSfdP56QulbIvivASbU0KZ9i6yD4Fy
+         ffSQdx+wi/Qo4Dn+ptrSgItNb9cz/myf8F4ag4q7UsAK6k3n3+fNGaHbne++VvqYnj9n
+         t8brBxhtlKKeRxWIwkYrnYyWQhy7VEAYHGkiyFtynAxqiUWjVVwR0U+DsHYbq8rMB59+
+         pGUQ==
+X-Gm-Message-State: AOAM531cyZqeAEqgaJ/XuijA/UqR1IUsgei4woUXXyWcCSqcwVcw3Zh5
+        tvolYVzmGHJnRC1fOgXbDyg790+IoEFYtVF2ULNNWI1hbl8+WUX43CyF2yUGSoftJrwAeZqM9Hq
+        7ldJqIlVUKfKo2PId7A+0NADt
+X-Received: by 2002:a1c:2047:: with SMTP id g68mr10196798wmg.181.1635509944735;
+        Fri, 29 Oct 2021 05:19:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzIgpvSw0ZswIlVG9WaM8erUI+2qIw/k8U6+b3m3QP5N8rEzXJ+qTLTUwF2TuFs9XYqef7Q0g==
+X-Received: by 2002:a1c:2047:: with SMTP id g68mr10196771wmg.181.1635509944541;
+        Fri, 29 Oct 2021 05:19:04 -0700 (PDT)
+Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
+        by smtp.gmail.com with ESMTPSA id n10sm7150280wmq.24.2021.10.29.05.19.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Oct 2021 05:19:04 -0700 (PDT)
+Date:   Fri, 29 Oct 2021 14:19:02 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        "Paul A . Clarke" <pc@us.ibm.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Daniel Latypov <dlatypov@google.com>,
+        David Gow <davidgow@google.com>, eranian@google.com
+Subject: Re: [PATCH v2 00/22] Start aligning perf test with kunit style
+Message-ID: <YXvmtrBKV7eawT7h@krava>
+References: <20211013174604.747276-1-irogers@google.com>
+ <YXAINnEcHsy450zm@krava>
+ <CAP-5=fVCqisvy8-Obx9TA3Zgi_BJdefYr-g4LCsuy1KKb2xtBQ@mail.gmail.com>
+ <CAP-5=fXGvBY7hmvCAS7deNAYVxppYj9DZoxstJ93p68BHTSACw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAP-5=fXGvBY7hmvCAS7deNAYVxppYj9DZoxstJ93p68BHTSACw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The amount of SGX memory on the system is determined by the BIOS and it
-varies wildly between systems.  It can be from dozens of MB's on desktops
-or VM's, up to many GB's on servers.  Just like for regular memory, it is
-sometimes useful to know the amount of usable SGX memory in the system.
+On Thu, Oct 28, 2021 at 04:52:13PM -0700, Ian Rogers wrote:
+> On Wed, Oct 20, 2021 at 8:51 AM Ian Rogers <irogers@google.com> wrote:
+> >
+> > On Wed, Oct 20, 2021 at 5:14 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> > >
+> > > On Wed, Oct 13, 2021 at 10:45:42AM -0700, Ian Rogers wrote:
+> > > > Perf test uses its own structs and code layout that differs from ku=
+nit
+> > > > that was more recently introduced to the kernel. Besides consistenc=
+y,
+> > > > it is hoped that moving in the direction of kunit style will enable
+> > > > reuse of infrastructure like test output formatting for continuous
+> > > > testing systems. For example:
+> > > > https://lore.kernel.org/linux-kselftest/CA+GJov6tdjvY9x12JsJT14qn6c=
+7NViJxqaJk+r-K1YJzPggFDQ@mail.gmail.com/
+> > > >
+> > > > The motivation for this restructuring comes from wanting to be able=
+ to
+> > > > tag tests with a size:
+> > > > https://lore.kernel.org/linux-perf-users/CAP-5=3DfWmGyuqFKc-EMP3rbm=
+TkjZ3MS+YSajGZfeRMc38HS82gw@mail.gmail.com/
+> > > > To have more exhaustive and slower running tests.  This isn't
+> > > > something kunit currently supports, nor is the execution of python =
+and
+> > > > shell tests, but it seems sensible to work on an approach with kunit
+> > > > rather to invent a new wheel inside of perf.
+> > > >
+> > > > These initial patches are just refactoring the main test suite
+> > > > definitions to be in a more kunit style. Kunit isn't depended upon,=
+ it
+> > > > is hoped that this can be done in later patches for the sake of
+> > > > consistency.
+> > > >
+> > > > v2. Gets to a point of the perf test test suite/case structs being
+> > > >     close facsimiles of the kunit ones. It also addresses feedback =
+on
+> > > >     the v1 RFC, in particular from Jiri Olsa <jolsa@redhat.com>.
+> > >
+> > > hi,
+> > > when I compile with DEBUG=3D1 it's ok, but with just make:
+> > >
+> > > [root@krava perf]# ./perf test
+> > > Segmentation fault (core dumped)
+> > > [root@krava perf]# gdb ./perf
+> > > GNU gdb (GDB) Fedora 10.2-4.fc33
+> > > Copyright (C) 2021 Free Software Foundation, Inc.
+> > > License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/g=
+pl.html>
+> > > This is free software: you are free to change and redistribute it.
+> > > There is NO WARRANTY, to the extent permitted by law.
+> > > Type "show copying" and "show warranty" for details.
+> > > This GDB was configured as "x86_64-redhat-linux-gnu".
+> > > Type "show configuration" for configuration details.
+> > > For bug reporting instructions, please see:
+> > > <https://www.gnu.org/software/gdb/bugs/>.
+> > > Find the GDB manual and other documentation resources online at:
+> > >     <http://www.gnu.org/software/gdb/documentation/>.
+> > >
+> > > For help, type "help".
+> > > Type "apropos word" to search for commands related to "word"...
+> > > Reading symbols from ./perf...
+> > > (gdb) r test
+> > > Starting program: /home/jolsa/kernel/linux-perf/tools/perf/perf test
+> > > [Thread debugging using libthread_db enabled]
+> > > Using host libthread_db library "/lib64/libthread_db.so.1".
+> > >
+> > > Program received signal SIGSEGV, Segmentation fault.
+> > > __strlen_avx2 () at ../sysdeps/x86_64/multiarch/strlen-avx2.S:96
+> > > 96              VPCMPEQ (%rdi), %ymm0, %ymm1
+> > > Missing separate debuginfos, use: dnf debuginfo-install bzip2-libs-1.=
+0.8-4.fc33.x86_64 cyrus-sasl-lib-2.1.27-6.fc33.x86_64 elfutils-debuginfod-c=
+lient-0.185-2.fc33.x86_64 elfutils-libelf-0.185-2.fc33.x86_64 elfutils-libs=
+-0.185-2.fc33.x86_64 keyutils-libs-1.6.1-1.fc33.x86_64 krb5-libs-1.18.2-31.=
+fc33.x86_64 libbabeltrace-1.5.8-3.fc33.x86_64 libbrotli-1.0.9-3.fc33.x86_64=
+ libcap-2.48-2.fc33.x86_64 libcom_err-1.45.6-4.fc33.x86_64 libgcc-10.3.1-1.=
+fc33.x86_64 libidn2-2.3.2-1.fc33.x86_64 libnghttp2-1.43.0-1.fc33.x86_64 lib=
+psl-0.21.1-2.fc33.x86_64 libselinux-3.1-2.fc33.x86_64 libssh-0.9.6-1.fc33.x=
+86_64 libunistring-0.9.10-9.fc33.x86_64 libunwind-1.4.0-4.fc33.x86_64 libuu=
+id-2.36.1-1.fc33.x86_64 libxcrypt-4.4.26-2.fc33.x86_64 numactl-libs-2.0.14-=
+1.fc33.x86_64 openldap-2.4.50-5.fc33.x86_64 openssl-libs-1.1.1l-2.fc33.x86_=
+64 pcre-8.44-2.fc33.x86_64 perl-libs-5.32.1-471.fc33.x86_64 popt-1.18-2.fc3=
+3.x86_64 python2.7-2.7.18-15.fc33.x86_64 slang-2.3.2-8.fc33.x86_64 xz-libs-=
+5.2.5-4.fc33.x86_64 zlib-1.2.11-23.fc33.x86_64
+> > > (gdb) bt
+> > > #0  __strlen_avx2 () at ../sysdeps/x86_64/multiarch/strlen-avx2.S:96
+> > > #1  0x00000000004a3848 in __cmd_test (skiplist=3D0x0, argv=3D0x7fffff=
+ffd6c0, argc=3D0) at tests/builtin-test.c:150
+> > > #2  cmd_test (argc=3D0, argv=3D0x7fffffffd6c0) at tests/builtin-test.=
+c:628
+> > > #3  0x00000000004cc47b in run_builtin (p=3Dp@entry=3D0xa7cda8 <comman=
+ds+552>, argc=3Dargc@entry=3D1, argv=3Dargv@entry=3D0x7fffffffd6c0) at perf=
+=2Ec:313
+> > > #4  0x00000000004397ae in handle_internal_command (argv=3D0x7fffffffd=
+6c0, argc=3D1) at perf.c:365
+> > > #5  run_argv (argv=3D<synthetic pointer>, argcp=3D<synthetic pointer>=
+) at perf.c:409
+> > > #6  main (argc=3D1, argv=3D0x7fffffffd6c0) at perf.c:539
+> > > (gdb)
+> >
+> > Thanks, I'll take a look.
+>=20
+> I wasn't able to reproduce this, I tried with gcc-10 on each patch
+> individually, debug disabled and O3. I can send a v3 patch set, but
+> currently it is just a rebase of v2.
 
-Add an attribute for the amount of SGX memory in bytes to each NUMA
-node. The path is /sys/devices/system/node/node[0-9]*/sgx/size.
-Calculate these values by summing up EPC section sizes for each node
-during the driver initalization.
+ok, I'll try to debug that if I can still reproduce
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
----
-v9:
-* Fix racy initialization of sysfs attributes:
-  https://lore.kernel.org/linux-sgx/YXOsx8SvFJV5R7lU@kroah.com/
-
-v8:
-* Fix a bug in sgx_numa_init(): node->dev should be only set after
-  sysfe_create_group().  Otherwise, sysfs_remove_group() will issue a
-  warning in sgx_numa_exit(), when sgx_create_group() is unsuccessful,
-  because the group does not exist.
-
-v7:
-* Shorten memory_size to size. The prefix makes the name only longer
-  but does not clarify things more than "size" would.
-* Use device_attribute instead of kobj_attribute.
-* Use named attribute group instead of creating raw kobject just for
-  the "sgx" subdirectory.
-
-v6:
-* Initialize node->size to zero in sgx_setup_epc_section(), when the
-  node is first accessed.
-
-v5
-* A new patch based on the discussion on
-  https://lore.kernel.org/linux-sgx/3a7cab4115b4f902f3509ad8652e616b91703e1d.camel@kernel.org/T/#t
----
- Documentation/ABI/stable/sysfs-devices-node |  7 +++++
- arch/x86/include/asm/sgx.h                  |  2 ++
- arch/x86/kernel/cpu/sgx/main.c              | 31 +++++++++++++++++++++
- arch/x86/kernel/cpu/sgx/sgx.h               |  2 ++
- drivers/base/node.c                         | 16 ++++++++++-
- 5 files changed, 57 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/ABI/stable/sysfs-devices-node b/Documentation/ABI/stable/sysfs-devices-node
-index 484fc04bcc25..12dc2149e8e0 100644
---- a/Documentation/ABI/stable/sysfs-devices-node
-+++ b/Documentation/ABI/stable/sysfs-devices-node
-@@ -176,3 +176,10 @@ Contact:	Keith Busch <keith.busch@intel.com>
- Description:
- 		The cache write policy: 0 for write-back, 1 for write-through,
- 		other or unknown.
-+
-+What:		/sys/devices/system/node/nodeX/sgx/size
-+Date:		October 2021
-+Contact:	Jarkko Sakkinen <jarkko@kernel.org>
-+Description:
-+		Total available physical SGX memory, also known as Enclave Page
-+		Cache (EPC), in bytes.
-diff --git a/arch/x86/include/asm/sgx.h b/arch/x86/include/asm/sgx.h
-index 05f3e21f01a7..43d1ccae6c62 100644
---- a/arch/x86/include/asm/sgx.h
-+++ b/arch/x86/include/asm/sgx.h
-@@ -365,6 +365,8 @@ struct sgx_sigstruct {
-  * comment!
-  */
- 
-+extern const struct attribute_group sgx_node_group;
-+
- #ifdef CONFIG_X86_SGX_KVM
- int sgx_virt_ecreate(struct sgx_pageinfo *pageinfo, void __user *secs,
- 		     int *trapnr);
-diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-index a6e313f1a82d..86d6d309ff29 100644
---- a/arch/x86/kernel/cpu/sgx/main.c
-+++ b/arch/x86/kernel/cpu/sgx/main.c
-@@ -714,9 +714,12 @@ static bool __init sgx_page_cache_init(void)
- 			spin_lock_init(&sgx_numa_nodes[nid].lock);
- 			INIT_LIST_HEAD(&sgx_numa_nodes[nid].free_page_list);
- 			node_set(nid, sgx_numa_mask);
-+			sgx_numa_nodes[nid].size = 0;
- 		}
- 
- 		sgx_epc_sections[i].node =  &sgx_numa_nodes[nid];
-+		sgx_numa_nodes[nid].dev = &node_devices[nid]->dev;
-+		sgx_numa_nodes[nid].size += size;
- 
- 		sgx_nr_epc_sections++;
- 	}
-@@ -790,6 +793,34 @@ int sgx_set_attribute(unsigned long *allowed_attributes,
- }
- EXPORT_SYMBOL_GPL(sgx_set_attribute);
- 
-+#ifdef CONFIG_NUMA
-+static ssize_t size_show(struct device *dev, struct device_attribute *attr, char *buf)
-+{
-+	unsigned long size = 0;
-+	int nid;
-+
-+	for (nid = 0; nid < num_possible_nodes(); nid++) {
-+		if (dev == sgx_numa_nodes[nid].dev) {
-+			size = sgx_numa_nodes[nid].size;
-+			break;
-+		}
-+	}
-+
-+	return sysfs_emit(buf, "%lu\n", size);
-+}
-+DEVICE_ATTR_RO(size);
-+
-+static struct attribute *sgx_node_attrs[] = {
-+	&dev_attr_size.attr,
-+	NULL,
-+};
-+
-+const struct attribute_group sgx_node_group = {
-+	.name = "sgx",
-+	.attrs = sgx_node_attrs,
-+};
-+#endif /* CONFIG_NUMA */
-+
- static int __init sgx_init(void)
- {
- 	int ret;
-diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.h
-index 4628acec0009..1de8c627a286 100644
---- a/arch/x86/kernel/cpu/sgx/sgx.h
-+++ b/arch/x86/kernel/cpu/sgx/sgx.h
-@@ -39,6 +39,8 @@ struct sgx_epc_page {
-  */
- struct sgx_numa_node {
- 	struct list_head free_page_list;
-+	struct device *dev;
-+	unsigned long size;
- 	spinlock_t lock;
- };
- 
-diff --git a/drivers/base/node.c b/drivers/base/node.c
-index 4a4ae868ad9f..3f85131171f0 100644
---- a/drivers/base/node.c
-+++ b/drivers/base/node.c
-@@ -20,6 +20,9 @@
- #include <linux/pm_runtime.h>
- #include <linux/swap.h>
- #include <linux/slab.h>
-+#ifdef CONFIG_X86_SGX
-+#include <asm/sgx.h>
-+#endif
- 
- static struct bus_type node_subsys = {
- 	.name = "node",
-@@ -565,7 +568,18 @@ static struct attribute *node_dev_attrs[] = {
- 	&dev_attr_vmstat.attr,
- 	NULL
- };
--ATTRIBUTE_GROUPS(node_dev);
-+
-+static const struct attribute_group node_dev_group = {
-+	.attrs = node_dev_attrs,
-+};
-+
-+static const struct attribute_group *node_dev_groups[] = {
-+	&node_dev_group,
-+#ifdef CONFIG_X86_SGX
-+	&sgx_node_group,
-+#endif /* CONFIG_X86_SGX */
-+	NULL,
-+};
- 
- #ifdef CONFIG_HUGETLBFS
- /*
--- 
-2.32.0
+jirka
 
