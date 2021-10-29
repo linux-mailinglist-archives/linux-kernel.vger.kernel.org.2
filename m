@@ -2,167 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F02E4405DF
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 01:48:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55B0B4405EA
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 01:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231616AbhJ2XuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 19:50:23 -0400
-Received: from esa5.hgst.iphmx.com ([216.71.153.144]:46900 "EHLO
-        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230325AbhJ2XuV (ORCPT
+        id S231621AbhJ2Xzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 19:55:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231154AbhJ2Xzg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 19:50:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1635551272; x=1667087272;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=Ddepyi3yIfOVKL7Ha19dE5Ikyv/sjqqmIoGqZ1Vjb00=;
-  b=EuuUj6gtBGZV8UDAcKH9hfmUaqH4puEpItaygup8g+2Wi27pOOsR9PpW
-   voYg47wmGoDE7KP+Bk3pyWqom/XUByP28R80hTiLqxOyOi0mp0yJcd1qD
-   GnoomhaKoxoFzXz5Nh/zodt/r4nPit4DiB+l8xHO4JsVVaOClKMzF6pM9
-   8d5Uz4atkwdpWvYP81W/0YgKgEcLzk6H8UQ5m5bIvrlRayxpFX97Z6dS5
-   IfDgxmhHLNG8drPvxsrXy2WRVtEKaqg+4siTXoKhc0uHFAvzmmWtttyAc
-   nfKh41g5CTLvLUnWjv6eVL422JQtoWU8m+jjniieDs9w6IwxZPH9Txy7q
-   Q==;
-X-IronPort-AV: E=Sophos;i="5.87,194,1631548800"; 
-   d="scan'208";a="184214056"
-Received: from mail-bn8nam11lp2172.outbound.protection.outlook.com (HELO NAM11-BN8-obe.outbound.protection.outlook.com) ([104.47.58.172])
-  by ob1.hgst.iphmx.com with ESMTP; 30 Oct 2021 07:47:50 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Zi8Je8WUOJXUy/YR7bMRDwvQkIGZxVEVJFZ6UvxsizCKLX6BUiJ9S3nhuZoDOVuBrWGG2mFicMOW606VZExLl+AmI6d1l+jpVmliCg2w+CEsBxcJPe68smuKroUmB46jOepZrGgfvaYnKjIldi/HaWsSM0dmUa4tG6mtbmSuIXWMoQNb6f/ewcTQEFeozxlYky20IkySblNxOwCWzzW1Qk8gyhsYmjtfw/FKD3O6dSLvqNi7VX8odSV72PEe02kwRnEVB1JbTngiXRol6aE3Sm0JNrQP1MbADia/Z5N7caMhQa/Bg3wkiLBP68mVsxOmTGnB64rSl2ZTB122BGoQlw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Ddepyi3yIfOVKL7Ha19dE5Ikyv/sjqqmIoGqZ1Vjb00=;
- b=jxmuLzLhNjTW8PlgqLc4+e5b70Hifh6jc3D8VsO+v9zUrLMb83TvWOvg4eEwBVrAyaQ5uhAQ9oaCEGr7UEXQhYDBtWVjuZPsEJxUJYTbMDJBNYeQzcxTUgEmXv1LGV0Sm4kK9RxL0gepAk/3rFFcZ35/LzKmI5Ut9jQQtSeciYM1V6IrJxY80TB34mPtPLKbeQEyA8QX1N2OVWK9+t4JR13FYV+Na0DnZAWP8e3mXRK6rQ799lcArWLZphbKrm4+soWRaunTfC1nWebaetREa+aAkVei70TbjLG3Nb12q+BzC+fFgnGVAHwrB7NVrTZQ7q7mz4lolavQdxlYfyZB9g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+        Fri, 29 Oct 2021 19:55:36 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 250A4C061570;
+        Fri, 29 Oct 2021 16:53:07 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id g125so15604180oif.9;
+        Fri, 29 Oct 2021 16:53:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ddepyi3yIfOVKL7Ha19dE5Ikyv/sjqqmIoGqZ1Vjb00=;
- b=ZN3U636YpWm7/EtoQwJujbekOPsS8rGBdYe/+IB3ApWASu1f/umSo7ORVeXuURmlKVe+J4gJTtd34FqyVa/MiSexDU23R87Osu69MuHAqhd0MFppu+xCpgvV9hB13C7YIG6gKCnrlZL7mEBV+PCibdHO1kx6w04DNi9v1EdqVzs=
-Received: from CH2PR04MB6570.namprd04.prod.outlook.com (2603:10b6:610:64::18)
- by CH2PR04MB6902.namprd04.prod.outlook.com (2603:10b6:610:a3::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.15; Fri, 29 Oct
- 2021 23:47:49 +0000
-Received: from CH2PR04MB6570.namprd04.prod.outlook.com
- ([fe80::714e:8f57:2df8:b781]) by CH2PR04MB6570.namprd04.prod.outlook.com
- ([fe80::714e:8f57:2df8:b781%3]) with mapi id 15.20.4649.015; Fri, 29 Oct 2021
- 23:47:49 +0000
-From:   Avri Altman <Avri.Altman@wdc.com>
-To:     "daejun7.park@samsung.com" <daejun7.park@samsung.com>,
-        "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Bean Huo <beanhuo@micron.com>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: RE: [PATCH v2] scsi: ufshpb: Opt out pre-reqs from HPB2.0 flows
-Thread-Topic: [PATCH v2] scsi: ufshpb: Opt out pre-reqs from HPB2.0 flows
-Thread-Index: AQHXzPto2sCVvF7AOE+77AP4Y/IRxqvqjxaAgAAQrdA=
-Date:   Fri, 29 Oct 2021 23:47:49 +0000
-Message-ID: <CH2PR04MB657022BFB9D32FAD8472B68CFC879@CH2PR04MB6570.namprd04.prod.outlook.com>
-References: <20211029193002.4187-1-avri.altman@wdc.com>
-        <CGME20211029193014epcas2p10300c03ccf0337f9dd3653f29e2057d1@epcms2p1>
- <1891546521.01635546902168.JavaMail.epsvc@epcpadp3>
-In-Reply-To: <1891546521.01635546902168.JavaMail.epsvc@epcpadp3>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: samsung.com; dkim=none (message not signed)
- header.d=none;samsung.com; dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b5b687e0-50a9-407a-f71f-08d99b368406
-x-ms-traffictypediagnostic: CH2PR04MB6902:
-x-microsoft-antispam-prvs: <CH2PR04MB6902DE2345A276EC8013B11AFC879@CH2PR04MB6902.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 8cxaCBqSIT2KQtFNluQt7Uz3ZRoCB1RlYxuJ4fh5TciTRkRyi0/Pp1wGwOnn32LPn7KTETScB+aVZvhtn8FmUtcj3VBst9L//fmwd4nBhwoSnYAxes64aWrTeWzTYVAZSQc8FLEh+EqHkEY9N8b1XYznQgl8dLlJmjSS0V+JFFqXb3idxIiJeVaIhNNQpOSlAe4yww3R6Ak1LvYwdm59NN4csuCZPXxhMjFulyiA6WsWVAKERQ6BcSmreS381XSiNrNZ7URpVwRDNBv/2BJa8WOhjZ/xSVvZ2gJTEOwlfK+YrnVkfIN1kh50spQC4MD1d1xPTdkqDJg+PJYGrch3E9UGnn2iE8aKct1qtIiZv/JPORYUPzGQMzpkUsybGKsNbDb5Tyav69sp6Kxbdffj5zAnUvuASw7G4OnJhHatIXgJVDMwNPxTwY9gosrpAV0iiNYRRBnXHNfoKROWSAyk7rztDdwA6JpkbxuXzU2yOct2oc3eFGOjw896rmW/PtfjjaTrk4HkWX8izzba6NUZshlNlCBgDSn67RmZXuWXviCPaeaqRf63j8q1uXXZ+RhO+r51+X8y/c7d6zjCtbRU8733XNxrP+pYSgk0SvRvrxhOUQ35xuoZy9riaq+HPjnvwR6VHNOSzrGYOyAHH/TMzcHi4BG20g3HA0G+0k17/0gfbJBFXbDgPiyOGqVVXEca78p46A/FcmR2IUE/jYemwA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR04MB6570.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(9686003)(33656002)(38070700005)(55016002)(186003)(508600001)(26005)(8676002)(7696005)(2906002)(8936002)(110136005)(83380400001)(6506007)(5660300002)(76116006)(54906003)(86362001)(71200400001)(4326008)(82960400001)(66946007)(66556008)(66476007)(316002)(38100700002)(122000001)(52536014)(66446008)(64756008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?OXhiUTNTYWk1YkdHMU80ZnVMRHZJWEdEYzZKR213SS9xZ1hzakRIaEoveUlD?=
- =?utf-8?B?TTRLczdHMHpUMlV1dnZ5bGI0L0JIaHFtOXNlUUUzeEI4WFVUWWovMThjcm5z?=
- =?utf-8?B?UzNYT2NRNWhBT3MvMzd2anJpL1ZUekFrSFE5N0NkSzdEaFVPQkdsSzRKZVp4?=
- =?utf-8?B?bUdBSWlnYllFS05NeExNdTFOUGtGd3NaUndqSy9SeHNVZXBOTVpLRFEzZmN3?=
- =?utf-8?B?bmZ5S3BCdVYzSk5oOXhmM201MFlmNlc1Ym5xZTMyZGF6NU1tYmF2TEg2V3li?=
- =?utf-8?B?MmJlV0tmUWV4YVp4aGg1dklQQ3YvQnRqSnVvSi8ycGZQZTJ5elJBd0JSQUlH?=
- =?utf-8?B?Qm5PQ3JBdnBTOFZDYnE3bVBZTENkTnFMNnpxOEJqZE0zQ2pCenRYdERDUkFx?=
- =?utf-8?B?YTFkSG5KUXp2MTdMbUV2R05SS3FoRFROOVY0cXpUNHJReU1mWnNpMG1qMlZa?=
- =?utf-8?B?YU1ERHB3T0c2VFhkLzA2VUZXUTFnd1ZueGdzbFZIZjU2Z2QyeDFSbTVoWVZV?=
- =?utf-8?B?WThjUVRrV0lBTWdvNnNGdTNOU2pGdVNKYy81cm4zQmdrVTNVMmJXQjN3dk04?=
- =?utf-8?B?Nmh5QWJNZi91S3NESW5LRm5BN1c0aGpFQ1g1RzN4V3FRWkdld0RLN1RhdVJJ?=
- =?utf-8?B?SXllRG5CQ1FiRGdhL1RleFN3WkJHSG1vSjNIYWJOZkJiRVo4TXhNT0YyTUF2?=
- =?utf-8?B?Y1puVnZBVTk3OXZ0cDBRb1FCM1RZcnJILys1NmNPbk55RTFMOENET2dhaUpB?=
- =?utf-8?B?Q2RJSXhmZTc5R2JrUkozVjJ5TThhd2RwWW84TG56Zi9VWmRXUXBmaVZDbUlm?=
- =?utf-8?B?T2hOK2ZmVVNoY3VFajh3R1A1WkYwWTNrTWk1UTUrbFk2Vlpla0loYStSSWFq?=
- =?utf-8?B?NE4rWHNScmNLeVp4MlBMWGx5VVVTQjR6djBFMHRDSGl6RjlxVHZZMDhOODFq?=
- =?utf-8?B?S1lJVEVSZXBTRkxaTnBSVEtHR1JROEErWlphcUpKbXlHRGdyNC9xQ21xRGxV?=
- =?utf-8?B?VFRkUkYveFRuN2daZzBGNFNpbER3alVEYUtaVlpaVW02Wlg4bUNuU2NwREt3?=
- =?utf-8?B?azY0dmdTcnpFL1RtRUJLODYzS1NRL0I0M25XNkJ3blIveVdaVEpkQ0ZHbVRa?=
- =?utf-8?B?VGh0U1BBaDJKdWtmOTJreEt2QnVDTXA3b0MyMFkxeDJMVVNBeHQzcXJEUVJC?=
- =?utf-8?B?L05DN3pkdm5wODhDOEhnOVgyNHlRZHpYZ2NadG1Bd0FjM3orZkFjRlFvUkkx?=
- =?utf-8?B?dDVpalpXbmk2TjZqSmVTa3NCb3gwNThUcGkrWmlncTUrbHBYS29sQTVpSHJr?=
- =?utf-8?B?TEwrS1VSVFphSC93NWRld1Z4ODFSM2ZlUWtDQlcvM3A3MXFKVjl1L0dUajJQ?=
- =?utf-8?B?VmFYL3pyVmk1SGxoeHBYQXNBZ2xYdGVaNnhBbzQzRnY2SzduZWQ0U2VYMnk0?=
- =?utf-8?B?dzhScnRvN3FoYTUvVW83eTViMmlDZWNRdmFDelVEWWYxS2Nhek1IRkFkUWhH?=
- =?utf-8?B?bzl2OVh2UDZjR05nOUttK2V1Tk1HWE9RVXhpRE9LZlRsMStVemoxRGMzekt5?=
- =?utf-8?B?WDZKREY2QjNZV1hqNVdzUDhsVXVtZS9TeVp1RU1BNnNlMFkzVk53ZEpEMTAv?=
- =?utf-8?B?SG9HcDRFdlpPcEtKK3N0U2l0R2dCQndSTjRyMm56YlVYdk8yVnZjN1RNTXU5?=
- =?utf-8?B?VS9hUzl2b2MxVDJiU2NMaW9Ub2txUXhMZWllcHVVN2pvTlFSYU9Pbnkxd1ow?=
- =?utf-8?B?WVowWlRDbFZLcUlKVW5yMDRrWnBlWUc1MFNGRktBWldYMWhLSHRvLzFmemg4?=
- =?utf-8?B?MFRaTytHajlFSW9PT1lmUE5NK3hoUDE3TzJkb0pvN3A0NnZHRUUwaG5Vckdu?=
- =?utf-8?B?R0lRMWNrTlV3dUZ4U1lFdUttN0pCT1czc3Q1SUlOOG5jTVJVaWV5MW1KdG9P?=
- =?utf-8?B?NFVnZ3FrSFJ6d1JyN0hYeGxVRkQ2eGhDdGs1NDcrUXRQUHgxMllncTlzTDF3?=
- =?utf-8?B?K0p2ZjNvbEx1YmtOdURZME81U1NKN3lHczZTcEJrTCtDcXZ4ejRwa0xtZ3I4?=
- =?utf-8?B?RStiRExZeXNJSHh5RmdDMTcxQzRqdUNUeUM4UWp6ZzBTVUhGNnM2U25LNGxl?=
- =?utf-8?B?VHV0UVZXQlMzMkhjOFZPcEtMMGJjWktoaERGRmNCVjdZY1d4QStSRkUyakZx?=
- =?utf-8?B?OVE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=ut6pn5cliGqKJyxhLk39cGyPq9pAH/Drj266MOylggY=;
+        b=QaB65rFyylww/otFLw4EZbF7r6sgxqFL1f9BsRxQVff5RCyCrDpCuO4ulCuDxw31ej
+         piM95O/fr1PFSsz6yzMwtHX04tBY9gk+EiBjUOWGRBwgH3uIlEgfNtL20oBaXs3LtBrv
+         fN5FWr5HqTVReG7b8+WaUpmBNPGmVZPBdNKZa2MVJiKwD3h+RtgKu9f1u3x986YF7yCy
+         z0wkqzr4JJRb6y6vS7vXfjvkpYoH3oJk0ToM7RC1hyaR5q8NWdEmzRrKMpDzLfTRDF7s
+         BxOpdBSn6uv9iW//u2iDPYbPdFVHqvVKG7S2dUus9z0BnU0kjzoZFUgyy2VvUIT5ZBBM
+         Oyig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=ut6pn5cliGqKJyxhLk39cGyPq9pAH/Drj266MOylggY=;
+        b=AC4LWqCkvt/2rcqMr2IBcpBPnAi24G4SmcO4JnBqfqMqV0pelTz4oSYVtw5wkjUPtM
+         32KCni7xPovAoi5uYGZy53Y9OnUbnhwIxolpfNYa9qNkMpWcSCG9Qk8/FcrVu0e+td3U
+         QDhMm9Uq4HIqKpwC5/U0oH+5pwua8u9jxmvEGH4Dx+fP+7WGubuXTBSCoK6nomRsmCxw
+         YansCgJ1m3LLoA0/nPiRlJrZIWF72sljB/l2WjxZ+e6w3EsBm0WrhUk2DKsgW+QYoJ0K
+         Okt4yvq2SersInUN0E6sKXl59AZ1c3mV1opFSXjB4vyu0hK24my6JeZtXrNodSiK2vDz
+         dMTQ==
+X-Gm-Message-State: AOAM532IA03LuugxvhhnqvH/FY53XuV7BuYIXG/tqcMSgfINaxxAQ8yH
+        04SC/23nQwRYxlMvXNdybyA=
+X-Google-Smtp-Source: ABdhPJxiqvaeNc1rLviXAkgYuYHSxPzhxNZZNX93sklb3OaJbFGO2MbM0uJQCW11DHJRWxkbA3RsaQ==
+X-Received: by 2002:aca:31c9:: with SMTP id x192mr15849915oix.173.1635551586095;
+        Fri, 29 Oct 2021 16:53:06 -0700 (PDT)
+Received: from [172.16.0.2] ([8.48.134.30])
+        by smtp.googlemail.com with ESMTPSA id r131sm2386537oib.27.2021.10.29.16.53.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Oct 2021 16:53:05 -0700 (PDT)
+Message-ID: <9015da81-689a-5ff6-c5ca-55c28dec1867@gmail.com>
+Date:   Fri, 29 Oct 2021 17:53:03 -0600
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CH2PR04MB6570.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b5b687e0-50a9-407a-f71f-08d99b368406
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Oct 2021 23:47:49.4019
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Go1C1V2BI1y6iTL4uWVTyISmS4AKGeyKRDE0Nr4Ab59s4sykuJhgY+SLyB0OQ/KUlufqJ7X5eVFTAWnWl5Wg6g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR04MB6902
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.1
+Subject: Re: Kernel leaks memory in ip6_dst_cache when suppress_prefix is
+ present in ipv6 routing rules and a `fib` rule is present in ipv6 nftables
+ rules
+Content-Language: en-US
+To:     msizanoen <msizanoen@qtmlabs.xyz>, davem@davemloft.net,
+        yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <e022d597-302d-c061-0830-6ed20aa61e56@qtmlabs.xyz>
+From:   David Ahern <dsahern@gmail.com>
+In-Reply-To: <e022d597-302d-c061-0830-6ed20aa61e56@qtmlabs.xyz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBIaSBBdnJpLA0KPiANCj4gPiBAQCAtMTg0MSwxMyArMTU3NSw3IEBAIHN0YXRpYyB2b2lkIHVm
-c2hwYl9sdV9wYXJhbWV0ZXJfaW5pdChzdHJ1Y3QNCj4gdWZzX2hiYSAqaGJhLA0KPiA+ICAgICAg
-ICAgIHUzMiBlbnRyaWVzX3Blcl9yZ247DQo+ID4gICAgICAgICAgdTY0IHJnbl9tZW1fc2l6ZSwg
-dG1wOw0KPiA+DQo+ID4gLSAgICAgICAgLyogZm9yIHByZV9yZXEgKi8NCj4gPiAtICAgICAgICBo
-cGItPnByZV9yZXFfbWluX3RyX2xlbiA9IGhwYl9kZXZfaW5mby0+bWF4X2hwYl9zaW5nbGVfY21k
-ICsgMTsNCj4gPiAtDQo+ID4gLSAgICAgICAgaWYgKHVmc2hwYl9pc19sZWdhY3koaGJhKSkNCj4g
-PiAtICAgICAgICAgICAgICAgIGhwYi0+cHJlX3JlcV9tYXhfdHJfbGVuID0gSFBCX0xFR0FDWV9D
-SFVOS19ISUdIOw0KPiA+IC0gICAgICAgIGVsc2UNCj4gPiAtICAgICAgICAgICAgICAgIGhwYi0+
-cHJlX3JlcV9tYXhfdHJfbGVuID0gSFBCX01VTFRJX0NIVU5LX0hJR0g7DQo+ID4gKyAgICAgICAg
-aHBiLT5wcmVfcmVxX21heF90cl9sZW4gPSBIUEJfTEVHQUNZX0NIVU5LX0hJR0g7DQo+IA0KPiBU
-aGV5IGFyZSBzaG91bGQgYmUgbm90IGNoYW5nZWQsIGJlY2F1c2UgaXQgbWFrZXMNCj4gdWZzaHBi
-X2lzX3N1cHBvcnRlZF9jaHVuaygpIGRldGVybWluZSB0byBub24tSFBCIFJFQUQgd2hlbiB0aGUg
-aXRzIHNpemUNCj4gaXMgYmlnZ2VyIHRoYW4gNEtCLg0KWWVzLCB0aGlzIHBhdGNoIGRvd25ncmFk
-ZXMgSFBCIHRvIHN1cHBvcnQgc2luZ2xlIGJsb2NrIG9ubHkgYXMgaWYgSFBCMS4wLg0KQnV0IFlv
-dSBhcmUgY29ycmVjdC4NCnRoZSBzcGVjIG9ubHkgX3JlY29tbWVuZF8gdG8gdXNlIHByZS1yZXEg
-Y29tbWFuZHMgaWYgdHJhbnNmZXIgbGVuZ3RoID4gYk1BWF9EQVRBX1NJWkVfRk9SX0hQQl9TSU5H
-TEVfQ01ELg0KTWVhbmluZywgaXQgaXMgb2sgdG8gdXNlIEhQQi1SRUFEIHdpdGggaHBiLXJlYWQt
-aWQgPSAweDAgYW5kIHRyYW5zZmVyIGxlbmd0aCA8PSBiTUFYX0RBVEFfU0laRV9GT1JfSFBCX1NJ
-TkdMRV9DTUQuDQpXaWxsIHJlLWluc2VydCB0aG9zZSBwaWVjZXMgb2YgY29kZSBpbiB2My4NCg0K
-V2hpbGUgYXQgaXQsIEkgbm90aWNlZCB0aGF0IEkgZGlkbid0IHJlbW92ZWQgdWZzaHBiX2dldF9y
-ZWFkX2lkIC0gd2lsbCByZW1vdmUgaXQgYXMgd2VsbC4NCg0KVGhhbmtzLA0KQXZyaQ0KDQo=
+On 10/26/21 8:24 AM, msizanoen wrote:
+> The kernel leaks memory when a `fib` rule is present in ipv6 nftables
+> firewall rules and a suppress_prefix rule
+> is present in the IPv6 routing rules (used by certain tools such as
+> wg-quick). In such scenarios, every incoming
+> packet will leak an allocation in ip6_dst_cache slab cache.
+> 
+> After some hours of `bpftrace`-ing and source code reading, I tracked
+> down the issue to this commit:
+>     https://github.com/torvalds/linux/commit/ca7a03c4175366a92cee0ccc4fec0038c3266e26
+> 
+> 
+> The problem with that patch is that the generic args->flags always have
+> FIB_LOOKUP_NOREF set[1][2] but the
+> ip6-specific flag RT6_LOOKUP_F_DST_NOREF might not be specified, leading
+> to fib6_rule_suppress not
+> decreasing the refcount when needed. This can be fixed by exposing the
+> protocol-specific flags to the
+> protocol specific `suppress` function, and check the protocol-specific
+> `flags` argument for
+> RT6_LOOKUP_F_DST_NOREF instead of the generic FIB_LOOKUP_NOREF when
+> decreasing the refcount.
+> 
+> How to reproduce:
+> - Add the following nftables rule to a prerouting chain: `meta nfproto
+> ipv6 fib saddr . mark . iif oif missing drop`
+
+exact command? I have not played with nftables. Do you have a stack
+trace of where the dst reference is getting taken?
+
+
+> - Run `sudo ip -6 rule add table main suppress_prefixlength 0`
+> - Watch `sudo slabtop -o | grep ip6_dst_cache` memory usage increase
+> with every incoming ipv6 packet
+> 
+> Example
+> patch:https://gist.github.com/msizanoen1/36a2853467a9bd34fadc5bb3783fde0f
+> 
+> [1]:https://github.com/torvalds/linux/blob/ca7a03c4175366a92cee0ccc4fec0038c3266e26/net/ipv6/fib6_rules.c#L71
+> 
+> [2]:https://github.com/torvalds/linux/blob/ca7a03c4175366a92cee0ccc4fec0038c3266e26/net/ipv6/fib6_rules.c#L99
+> 
+> 
+> 
+
