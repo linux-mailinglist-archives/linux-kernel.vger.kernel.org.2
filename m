@@ -2,103 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C13E543F787
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 08:53:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 801AA43F793
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 08:59:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232146AbhJ2G4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 02:56:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54826 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232151AbhJ2G4C (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 02:56:02 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C81C7C061714
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 23:53:34 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id c4so8992310pgv.11
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 23:53:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=N33O/jKwx1/k7vQIGoBJU3vb76C/gdsxbsKwqC4sYls=;
-        b=dAIDwhYfub8YTxIIXzFRr2stikRQ4Bztr6AglvMFUQd0c3vA9PKVZMWEpexAOJO3Z9
-         QRC2brcGMVgd84c+KG0IZm5nDF07VhHXu86Dn7H1ucsSERjhJM38wzYMG/xhAW+JoDwF
-         6IDwDD8n+P1EEAKAnmHPkXJIvbV1RP08QSlQ/gsGe06BSEvI5rOzl0Co4cU9WrS6rhTl
-         lKMo+1UYf87phXMvYamf8s0C3juEe2+8L8iGzgmwR3Ek9hKlnji0pqIexCGnCrVOzRRr
-         f5qamx0gdIS2dC6Dbw/jQU6/h2PPHrEXnf7+VMuilokSnjjo/ediDxmaVAxPelyQ4F5r
-         fMpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=N33O/jKwx1/k7vQIGoBJU3vb76C/gdsxbsKwqC4sYls=;
-        b=V6NZKjjUkawL3rHdqFSewsP/7Sq7dU+A9/0nLkeoOtL0NtPYWJ5lAn13p0lMArqx48
-         oHxVCOlWHykD60Z1Tb6onyT58+elciHTrv8ppEpehBwQcAWn8vC3SCEV4dgR5PqZXUkM
-         6LPrXefDfNErmiHc/tOSgspriPKfFvyeHxTvdL4qS8xPGoPsbgzCiIyLwqDQ4Pa4fzVt
-         q2+MZDbsd9zomzSch9DJ4BHPZ3h68zaGJTXQ2bVjqhFYrQjuz3oohzjphHFk2S7I1BU9
-         yUD4S7w4AueMKZ18zZ0eHp27H2VEhuilARbN7SjWNTwEYFUI25uQtwbiPMGeMOopHw4P
-         7JTQ==
-X-Gm-Message-State: AOAM531O7uxHHyZccG50P3HQ9bYlibKGXvAdR++Snr6QBv8VojYH8MGI
-        YNWv4YNQ0IRIvULmJ1IBnn4=
-X-Google-Smtp-Source: ABdhPJwglch1mQLG80CLD8lru0CrUB6PoLM7HrZrVXwsfKeAcxUw3GazDmMTucfI5mwYLFcKwC8Itw==
-X-Received: by 2002:a05:6a00:16d2:b029:300:200b:6572 with SMTP id l18-20020a056a0016d2b0290300200b6572mr9114424pfc.62.1635490414423;
-        Thu, 28 Oct 2021 23:53:34 -0700 (PDT)
-Received: from bj10045pcu.spreadtrum.com ([117.18.48.102])
-        by smtp.gmail.com with ESMTPSA id gn1sm4729741pjb.34.2021.10.28.23.53.31
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 28 Oct 2021 23:53:34 -0700 (PDT)
-From:   Zhenguo Zhao <zhenguo6858@gmail.com>
-To:     nianfu.bai@unisoc.com, keescook@chromium.org, anton@enomsg.org,
-        ccross@android.com, tony.luck@intel.com
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] pstore: Modify kconfig to align text
-Date:   Fri, 29 Oct 2021 14:51:20 +0800
-Message-Id: <1635490280-8798-3-git-send-email-zhenguo6858@gmail.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1635490280-8798-1-git-send-email-zhenguo6858@gmail.com>
-References: <1635490280-8798-1-git-send-email-zhenguo6858@gmail.com>
+        id S232138AbhJ2HB0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 29 Oct 2021 03:01:26 -0400
+Received: from mga17.intel.com ([192.55.52.151]:55284 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230252AbhJ2HBY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 03:01:24 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10151"; a="211375315"
+X-IronPort-AV: E=Sophos;i="5.87,191,1631602800"; 
+   d="scan'208";a="211375315"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2021 23:52:20 -0700
+X-IronPort-AV: E=Sophos;i="5.87,191,1631602800"; 
+   d="scan'208";a="448274796"
+Received: from shishpan-mobl2.ccr.corp.intel.com (HELO localhost) ([10.249.254.23])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2021 23:52:18 -0700
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20211029114840.6a3a78bd@canb.auug.org.au>
+References: <20211029114840.6a3a78bd@canb.auug.org.au>
+To:     DRI <dri-devel@lists.freedesktop.org>,
+        Dave Airlie <airlied@linux.ie>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     John Harrison <John.C.Harrison@Intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Matthew Brost <matthew.brost@intel.com>
+From:   Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
+Subject: Re: linux-next: manual merge of the drm tree with Linus' tree
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Message-ID: <163549033603.4317.6416900804800927743@jlahtine-mobl.ger.corp.intel.com>
+User-Agent: alot/0.8.1
+Date:   Fri, 29 Oct 2021 09:52:16 +0300
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhenguo Zhao <Zhenguo.Zhao1@unisoc.com>
+Quoting Stephen Rothwell (2021-10-29 03:48:40)
+> Hi all,
+> 
+> Today's linux-next merge of the drm tree got a conflict in:
+> 
+>   drivers/gpu/drm/i915/i915_trace.h
+> 
+> between commit:
+> 
+>   9a4aa3a2f160 ("drm/i915: Revert 'guc_id' from i915_request tracepoint")
+> 
+> from Linus' tree and commit:
+> 
+>   3cb3e3434b9f ("drm/i915/guc: Move fields protected by guc->contexts_lock into sub structure")
+> 
+> from the drm tree.
+> 
+> I fixed it up (I used the former version) and can carry the fix as
+> necessary.
 
-Modify kconfig help for text consistency
+The resolution for the conflict is to drop the guc_id field completely
+in linux-next.
 
-Signed-off-by: Zhenguo Zhao <Zhenguo.Zhao1@unisoc.com>
----
- fs/pstore/Kconfig | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+Regards, Joonas
 
-diff --git a/fs/pstore/Kconfig b/fs/pstore/Kconfig
-index 288ed3c..008ce38 100644
---- a/fs/pstore/Kconfig
-+++ b/fs/pstore/Kconfig
-@@ -4,15 +4,15 @@ config PSTORE
- 	select CRYPTO if PSTORE_COMPRESS
- 	default n
- 	help
--	   This option enables generic access to platform level
--	   persistent storage via "pstore" filesystem that can
--	   be mounted as /dev/pstore.  Only useful if you have
--	   a platform level driver that registers with pstore to
--	   provide the data, so you probably should just go say "Y"
--	   (or "M") to a platform specific persistent store driver
--	   (e.g. ACPI_APEI on X86) which will select this for you.
--	   If you don't have a platform persistent store driver,
--	   say N.
-+	  This option enables generic access to platform level
-+	  persistent storage via "pstore" filesystem that can
-+	  be mounted as /dev/pstore.  Only useful if you have
-+	  a platform level driver that registers with pstore to
-+	  provide the data, so you probably should just go say "Y"
-+	  (or "M") to a platform specific persistent store driver
-+	  (e.g. ACPI_APEI on X86) which will select this for you.
-+	  If you don't have a platform persistent store driver,
-+	  say N.
- 
- config PSTORE_DEFAULT_KMSG_BYTES
- 	int "Default kernel log storage space" if EXPERT
--- 
-1.9.1
-
+> This is now fixed as far as linux-next is concerned, but any
+> non trivial conflicts should be mentioned to your upstream maintainer
+> when your tree is submitted for merging.  You may also want to consider
+> cooperating with the maintainer of the conflicting tree to minimise any
+> particularly complex conflicts.
+> 
+> -- 
+> Cheers,
+> Stephen Rothwell
