@@ -2,90 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82C884401A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 20:05:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B7E04401A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 20:06:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230078AbhJ2SHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 14:07:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229968AbhJ2SHl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 14:07:41 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3452C061766
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 11:05:12 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id n7so18162968ljp.5
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 11:05:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=K6KCBeD/pNCG9HZQnIVtuH+wCZVkgQgovkR8K6qXsz0=;
-        b=DK+Tp3O/3gtk6Mj6EirsKfvX8mAe0+szIVxVBHJaMcoxLOtuvV48Rqi0Ta0I9gUMTR
-         F0btd8b3EQOXM97fEoJPbO3hLFaaM//stWMVDGe6zk5xsGZmTRz6EQE2YKHKyw7CXr/F
-         N8UoFNI/13+/GBJUOvYX4fRekOCCnOhfYNR30=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=K6KCBeD/pNCG9HZQnIVtuH+wCZVkgQgovkR8K6qXsz0=;
-        b=K28UVlyPf8Mro90f0wTSPcApw/xyFXj3YVPwX4iIH/mrndN4oQkl6l2MPgjqSCRA0w
-         biKnDmXDMrNgJI8XC/OrSmA2eGN+CmmeZ+f5MoyrLtyDkfY1f/eYEb1ajLOG8gv831lt
-         ADwLFzeHGh3Aa2QZ5CfDVnzyWlvxz427vsVsheZcBK2xHaRSd4sui08LAHlLKzC4/K/A
-         5fNTrIEvZueGNSkz0ClcjneDxVqmxTpMxTrXRgQtJF21bKZhQOPrxHqPM+eNwLky+Emm
-         Qy/dpohF+g/XTOrmmj3BnvUYk52JgpZvE1cQ8taCzkBa8YQr/VId274bojQiKgTzvKK4
-         hALQ==
-X-Gm-Message-State: AOAM532CxPV3zK7WrddHzjPuSHzWENyL18TNAeVuSWnR+kI6J+fNzLYO
-        SKI0PAMSPLpp3njl/TofhvzltR5Mr6R8AnSI8eQ=
-X-Google-Smtp-Source: ABdhPJzya/lzrO9DL2ryTlBealZp+01dVqf1iSSw4UOyWtKSyAaSsOW1epXEq6D8vZPo+nM5KeJpRw==
-X-Received: by 2002:a05:651c:1686:: with SMTP id bd6mr13442552ljb.480.1635530710395;
-        Fri, 29 Oct 2021 11:05:10 -0700 (PDT)
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com. [209.85.167.50])
-        by smtp.gmail.com with ESMTPSA id bd19sm680474ljb.28.2021.10.29.11.05.09
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Oct 2021 11:05:10 -0700 (PDT)
-Received: by mail-lf1-f50.google.com with SMTP id f3so14423325lfu.12
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 11:05:09 -0700 (PDT)
-X-Received: by 2002:a05:6512:3993:: with SMTP id j19mr9826124lfu.402.1635530709299;
- Fri, 29 Oct 2021 11:05:09 -0700 (PDT)
+        id S230126AbhJ2SJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 14:09:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35642 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229826AbhJ2SI5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 14:08:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1518860FC3;
+        Fri, 29 Oct 2021 18:06:26 +0000 (UTC)
+Date:   Fri, 29 Oct 2021 19:06:23 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     Arnd Bergmann <arnd@kernel.org>, Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Brazdil <dbrazdil@google.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] [RFC] arm64: export this_cpu_has_cap
+Message-ID: <YXw4H2BNx85KnLDh@arm.com>
+References: <20211029113023.760421-1-arnd@kernel.org>
+ <9d4e09b4-47dc-ed3c-2b6d-e0d1a081e592@arm.com>
 MIME-Version: 1.0
-References: <20211029120709.79366-1-ulf.hansson@linaro.org>
-In-Reply-To: <20211029120709.79366-1-ulf.hansson@linaro.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 29 Oct 2021 11:04:53 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgQLtvDh-3zhGNCWNAssubDxgxC+7RdEmHBmK_84rLT2Q@mail.gmail.com>
-Message-ID: <CAHk-=wgQLtvDh-3zhGNCWNAssubDxgxC+7RdEmHBmK_84rLT2Q@mail.gmail.com>
-Subject: Re: [GIT PULL] MMC fixes for v5.15-rc8
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-mmc@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9d4e09b4-47dc-ed3c-2b6d-e0d1a081e592@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 5:07 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
->
->  - winbond: Silences build errors on M68K
+On Fri, Oct 29, 2021 at 02:31:23PM +0100, Suzuki K Poulose wrote:
+> On 29/10/2021 12:30, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> > 
+> > It's now used in a coresight driver that can be a loadable module:
+> > 
+> > ERROR: modpost: "this_cpu_has_cap" [drivers/hwtracing/coresight/coresight-trbe.ko] undefined!
+> > 
+> > Fixes: 8a1065127d95 ("coresight: trbe: Add infrastructure for Errata handling")
+> 
+> Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Tested-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> 
+> Will, Catalin, Mathieu,
+> 
+> Do you have a preference on how this fix can be pulled in ? This may
+> be safe to go via coresight tree if it is not too late. Otherwise,
+> it could go via the arm64 tree.
 
-I think this one is wrong.
+I think Will already closed/tagged the arm64 tree for the upcoming
+merging window, though he could take it as a fix afterwards.
 
-I think the problem is that m68k declares "claim_dma_lock()" in the
-wrong header file. It's in <asm/floppy.h> instead of <asm/dma.h>
+If it doesn't conflict with the arm64 for-next/core, it's fine by me to
+go through the coresight tree.
 
-I'm somewhat surprised that this doesn't hit m68k in other places -
-there are other drivers that use that same ISA DMA interface.
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> > ---
+> > Not sure if we actually want this to be exported, this is my local
+> > workaround for the randconfig build bot.
+> > ---
+> >   arch/arm64/kernel/cpufeature.c | 1 +
+> >   1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+> > index ecbdff795f5e..beccbcfa7391 100644
+> > --- a/arch/arm64/kernel/cpufeature.c
+> > +++ b/arch/arm64/kernel/cpufeature.c
+> > @@ -2864,6 +2864,7 @@ bool this_cpu_has_cap(unsigned int n)
+> >   	return false;
+> >   }
+> > +EXPORT_SYMBOL(this_cpu_has_cap);
 
-I've pulled this, but I hate how random that fix is.
+EXPORT_SYMBOL_GPL? I think this_cpu_has_cap() is a bit more more
+specialised than cpus_have_const_cap().
 
-(And on the topic of hate - the merge messages are just auto-munged
-from the commit line - please spend a _bit_ more time on it, ok? Or at
-least make it closer to proper English - things like "Re-enable card
-irqs after a reset in tmio driver" instead of "tmio: Re-enable card
-irqs after a reset")
+With that:
 
-              Linus
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
