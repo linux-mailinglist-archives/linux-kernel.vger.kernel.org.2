@@ -2,156 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33BE4440316
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 21:25:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3B31440313
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 21:24:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230504AbhJ2T1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 15:27:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56566 "EHLO
+        id S230313AbhJ2T1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 15:27:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230370AbhJ2T1a (ORCPT
+        with ESMTP id S230126AbhJ2T1O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 15:27:30 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DE51C061570;
-        Fri, 29 Oct 2021 12:25:01 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id v17so18005058wrv.9;
-        Fri, 29 Oct 2021 12:25:01 -0700 (PDT)
+        Fri, 29 Oct 2021 15:27:14 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CE1CC061714
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 12:24:45 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id m21so10730161pgu.13
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 12:24:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=Tvo7OsKnZiYhW/CIzL+toK1Ob0iQFZhcf7j3OyPg3VI=;
-        b=GfrBZJ5iIL2QX+F3UY0p1FFnKImW3UfN7kqg/dcOvO4f8lWc2w7qiWoPuGR2YeBRhR
-         mF7VjPK+mwaulVbIioBdngv17VHlkQ7XuoQQStaDRen0Aa8gM0FBI8Tlxt0Pg+YL4UIs
-         bozizwsms5KMPr3ZZYUfTnAG8FMfSBQdxr7z5OnwF1CkzBihDZel1yjELtS9eZgSMC6B
-         T2qKwPfCNz9g8VzTQhK9BPS4FCar+DNfqOGds8bW2mDy5IIWIk2QmgJS/csc5LgXdg5w
-         S9ve7qcjIR8BPp48lZAi7/MBoeG+ZkutgW0OyDmAMfhJxmsYtIXUFl8s+WA01RaMnNjr
-         pNYg==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4QSxhE5r/ZgGfaD75aNjGarCFi6+5alziBCSKa958aU=;
+        b=ZnRBubYecE2jp7wawPeqf/8TidZUhbRkgqVxwO2ap7/vROnjkIGUt7ejft0sAYQVsr
+         7XhvsrJm7ien9kMIwTjciAMaJXK/XSp4KChmSlu3j+9WUocHmmLt10ocTLwg53a6ZR4s
+         vSEI5kygt/0EvapJ08VR1kcnriVth9TlJtRJE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Tvo7OsKnZiYhW/CIzL+toK1Ob0iQFZhcf7j3OyPg3VI=;
-        b=w02xQyjsB+QsB6dVCo/DuojCInnbh/z5NAh9ZgZJ3VLH6n4YoQli5M/8PLngjqHnwN
-         5tDJSh56/o3CbxaYZfmngYNQS5Me9YwFfQdSie1A2+jdoitsbmcL2MBMIqWgna9v9vd2
-         SeZiIpzN6huphuxB0uuok6XDm/RzKLYuRAZQ0oVzjl2crD8C7j+ObfAdGJNC8iZeLwrZ
-         8yiI6vpAiXrFxau+X24maBMtdnqLhDTlQddx9w8zFJtt5fj5CfMghZ/8P2qzN1mTDcrK
-         y8IlULHBkJhz9Kd4AWpX4z8gawkyaTu/D2zrvVcfMkPHAm2hoKW832rpuhB+qiv2Z3Sp
-         v2zg==
-X-Gm-Message-State: AOAM532/x+9vyyeXV5b4oZ0t1IpLaiaZANurEIYVfUEkFtSqwUv2dVbJ
-        cbZ/W9JlaJp/ThmOA9G7wJBHKBKS5/OXHQ==
-X-Google-Smtp-Source: ABdhPJwJT6TiYb3/JIfjJ6JLlOKjZCQT2hYhBeN/ZIZiycBjCWzDjHwZ0BUCh015OF6O6jcWdT+TvA==
-X-Received: by 2002:a5d:6da7:: with SMTP id u7mr16031755wrs.322.1635535499887;
-        Fri, 29 Oct 2021 12:24:59 -0700 (PDT)
-Received: from [192.168.8.198] ([148.252.129.16])
-        by smtp.gmail.com with ESMTPSA id j20sm5407595wmp.27.2021.10.29.12.24.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Oct 2021 12:24:59 -0700 (PDT)
-Message-ID: <f3e14569-a399-f6da-fd3e-993b579eaf74@gmail.com>
-Date:   Fri, 29 Oct 2021 20:23:53 +0100
+        bh=4QSxhE5r/ZgGfaD75aNjGarCFi6+5alziBCSKa958aU=;
+        b=D+40h4+sfHB5rKGPyr6PjCixzj51KAmHNbay1pnlp3iUon5v6fFLzTGsSbOglpIC1R
+         TuMAHjACnbvFxhg+LWnT7rlSBKLf6h7IMLKilibMmRI1q6EWa4brRpHmRJwUF0G5MHhT
+         FwKSfRl7kKqhqr9TVrEmii8ras64rWM/lwTXY3o/PtEo7LMwRhzPygM3G9CrkjCfC5tz
+         LV+D7BZdHDmuGiBptxFgeQCPcxJRhEk8Pvv5comqWTbjwFhOgH1EiaB8Tn0C5n9RSBuP
+         fP3wT+KCHSbVHwmd7GtJl/2dppsh34HMYYQlMhpbBcSX7l8WmFwSwfziIARue4QkEp6p
+         TMGw==
+X-Gm-Message-State: AOAM532llB+2g2rchbGpAjEVw/qdlye2mewZfJ0oMAU9x/GD8MG6iHSD
+        AP8sZ2o5T1CJXf0HXUEL0wPdIQ==
+X-Google-Smtp-Source: ABdhPJyhCmbPKiOFMh9Z48rlxvioHBI5YSAgRoSyK9zemZZxBIizZ5InFQJ8XdcUYZSh9zHXevCv8A==
+X-Received: by 2002:a05:6a00:1a8d:b0:480:203b:4ccb with SMTP id e13-20020a056a001a8d00b00480203b4ccbmr260068pfv.25.1635535484778;
+        Fri, 29 Oct 2021 12:24:44 -0700 (PDT)
+Received: from evgreen-glaptop.lan ([2601:646:c780:5ba8:ee49:1984:f0a3:a0bd])
+        by smtp.gmail.com with ESMTPSA id c22sm7518317pfv.69.2021.10.29.12.24.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Oct 2021 12:24:44 -0700 (PDT)
+From:   Evan Green <evgreen@chromium.org>
+To:     Pavel Machek <pavel@ucw.cz>,
+        "Rafael J . Wysocki" <rafael@kernel.org>
+Cc:     Evan Green <evgreen@chromium.org>, Len Brown <len.brown@intel.com>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: [PATCH] PM / hibernate: Fix snapshot partial write lengths
+Date:   Fri, 29 Oct 2021 12:24:22 -0700
+Message-Id: <20211029122359.1.I1e23f382fbd8beb19fe1c06d70798b292012c57a@changeid>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [dm-devel] [PATCH 0/6] dax poison recovery with RWF_RECOVERY_DATA
- flag
-Content-Language: en-US
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Jane Chu <jane.chu@oracle.com>,
-        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
-        "vishal.l.verma@intel.com" <vishal.l.verma@intel.com>,
-        "dave.jiang@intel.com" <dave.jiang@intel.com>,
-        "agk@redhat.com" <agk@redhat.com>,
-        "snitzer@redhat.com" <snitzer@redhat.com>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "ira.weiny@intel.com" <ira.weiny@intel.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "vgoyal@redhat.com" <vgoyal@redhat.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
-References: <20211021001059.438843-1-jane.chu@oracle.com>
- <YXFPfEGjoUaajjL4@infradead.org>
- <e89a2b17-3f03-a43e-e0b9-5d2693c3b089@oracle.com>
- <YXJN4s1HC/Y+KKg1@infradead.org>
- <2102a2e6-c543-2557-28a2-8b0bdc470855@oracle.com>
- <YXj2lwrxRxHdr4hb@infradead.org> <20211028002451.GB2237511@magnolia>
- <20211028225955.GA449541@dread.disaster.area>
- <22255117-52de-4b2d-822e-b4bc50bbc52b@gmail.com>
- <20211029165747.GC2237511@magnolia>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <20211029165747.GC2237511@magnolia>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/29/21 17:57, Darrick J. Wong wrote:
-> On Fri, Oct 29, 2021 at 12:46:14PM +0100, Pavel Begunkov wrote:
->> On 10/28/21 23:59, Dave Chinner wrote:
->> [...]
->>>>> Well, my point is doing recovery from bit errors is by definition not
->>>>> the fast path.  Which is why I'd rather keep it away from the pmem
->>>>> read/write fast path, which also happens to be the (much more important)
->>>>> non-pmem read/write path.
->>>>
->>>> The trouble is, we really /do/ want to be able to (re)write the failed
->>>> area, and we probably want to try to read whatever we can.  Those are
->>>> reads and writes, not {pre,f}allocation activities.  This is where Dave
->>>> and I arrived at a month ago.
->>>>
->>>> Unless you'd be ok with a second IO path for recovery where we're
->>>> allowed to be slow?  That would probably have the same user interface
->>>> flag, just a different path into the pmem driver.
->>>
->>> I just don't see how 4 single line branches to propage RWF_RECOVERY
->>> down to the hardware is in any way an imposition on the fast path.
->>> It's no different for passing RWF_HIPRI down to the hardware *in the
->>> fast path* so that the IO runs the hardware in polling mode because
->>> it's faster for some hardware.
->>
->> Not particularly about this flag, but it is expensive. Surely looks
->> cheap when it's just one feature, but there are dozens of them with
->> limited applicability, default config kernels are already sluggish
->> when it comes to really fast devices and it's not getting better.
->> Also, pretty often every of them will add a bunch of extra checks
->> to fix something of whatever it would be.
-> 
-> So we can't have data recovery because moving fast the only goal?
+snapshot_write() is inappropriately limiting the amount of data that can
+be written in cases where a partial page has already been written. For
+example, one would expect to be able to write 1 byte, then 4095 bytes to
+the snapshot device, and have both of those complete fully (since now
+we're aligned to a page again). But what ends up happening is we write 1
+byte, then 4094/4095 bytes complete successfully.
 
-That's not what was said and you missed the point, which was in
-the rest of the message.
+The reason is that simple_write_to_buffer()'s second argument is the
+total size of the buffer, not the size of the buffer minus the offset.
+Since simple_write_to_buffer() accounts for the offset in its
+implementation, snapshot_write() can just pass the full page size
+directly down.
 
-> 
-> That's so meta.
-> 
-> --D
-> 
->> So let's add a bit of pragmatism to the picture, if there is just one
->> user of a feature but it adds overhead for millions of machines that
->> won't ever use it, it's expensive.
->>
->> This one doesn't spill yet into paths I care about, but in general
->> it'd be great if we start thinking more about such stuff instead of
->> throwing yet another if into the path, e.g. by shifting the overhead
->> from linear to a constant for cases that don't use it, for instance
->> with callbacks or bit masks.
->>
->>> IOWs, saying that we shouldn't implement RWF_RECOVERY because it
->>> adds a handful of branches 	 the fast path is like saying that we
->>> shouldn't implement RWF_HIPRI because it slows down the fast path
->>> for non-polled IO....
->>>
->>> Just factor the actual recovery operations out into a separate
->>> function like:
->>
->> -- 
->> Pavel Begunkov
+Signed-off-by: Evan Green <evgreen@chromium.org>
+---
 
+ kernel/power/user.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/power/user.c b/kernel/power/user.c
+index 740723bb388524..ad241b4ff64c58 100644
+--- a/kernel/power/user.c
++++ b/kernel/power/user.c
+@@ -177,7 +177,7 @@ static ssize_t snapshot_write(struct file *filp, const char __user *buf,
+ 		if (res <= 0)
+ 			goto unlock;
+ 	} else {
+-		res = PAGE_SIZE - pg_offp;
++		res = PAGE_SIZE;
+ 	}
+ 
+ 	if (!data_of(data->handle)) {
 -- 
-Pavel Begunkov
+2.31.0
+
