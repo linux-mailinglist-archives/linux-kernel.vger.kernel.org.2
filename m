@@ -2,113 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22916440595
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 00:49:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C38244405AB
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 01:08:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231428AbhJ2Wv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 18:51:27 -0400
-Received: from mga02.intel.com ([134.134.136.20]:5762 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229441AbhJ2WvW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 18:51:22 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10152"; a="217951556"
-X-IronPort-AV: E=Sophos;i="5.87,194,1631602800"; 
-   d="scan'208";a="217951556"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2021 15:48:51 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,194,1631602800"; 
-   d="scan'208";a="448274950"
-Received: from gupta-dev2.jf.intel.com (HELO gupta-dev2.localdomain) ([10.54.74.119])
-  by orsmga006.jf.intel.com with ESMTP; 29 Oct 2021 15:48:50 -0700
-Date:   Fri, 29 Oct 2021 15:51:09 -0700
-From:   Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Wang Kefeng <wangkefeng.wang@huawei.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] arch/Kconfig: Make CONFIG_CPU_SPECTRE available
- for all architectures
-Message-ID: <20211029225109.d3m2q4kuuzhzs2cv@gupta-dev2.localdomain>
-References: <cover.1635383031.git.pawan.kumar.gupta@linux.intel.com>
- <232b692cd79e4f6e4c3ee7055b5f02792a28d2c4.1635383031.git.pawan.kumar.gupta@linux.intel.com>
- <20211028134918.GB48435@lakrids.cambridge.arm.com>
- <20211028193658.7n2oehp6yogyqbwq@gupta-dev2.localdomain>
- <YXvIIwkfYcXEBf97@shell.armlinux.org.uk>
+        id S231129AbhJ2XIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 19:08:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229441AbhJ2XIW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 19:08:22 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C097C061570
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 16:05:53 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HgyhW5mcyz4xYy;
+        Sat, 30 Oct 2021 10:05:47 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1635548748;
+        bh=H3cNjv6S5SciLLsrPMuk8KteiaFhIW5t5HuD1Q1taKM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=sCy+c1GA60HRLWDpa6tUPXmA2gNBmLdlBXBilnDNlW1u6bNmiWBm7S5C+pscj4nqY
+         pT5xYF/Q6aMmUUpuHUsBzeB5aKuYPUZsasCiwTP+r5aqWzFbsKJ+eJIpLiEWkrwYsz
+         7N6u8aXibcaNkdNQRYndCdypYYo48CpNscDCtQK7QWnkX1DeIkOVI9OOMWcAFlwlPX
+         jD1YFUf4Y3GPfdE+qcsJdx6MtEtkmxeBQrxhd7EOXf43kAnhr7STeSr0mZmWsufaRY
+         wp3FX5W+GJtPyNgmugrYK6+dOnvzCw99l5by722iqpcmQ/Pd0lx99Iv/o5l7SQBxmi
+         XV1iXL3vyDw/Q==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     aik@ozlabs.ru, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-5.15-6 tag
+Date:   Sat, 30 Oct 2021 10:05:46 +1100
+Message-ID: <87pmrn8m9h.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
-In-Reply-To: <YXvIIwkfYcXEBf97@shell.armlinux.org.uk>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29.10.2021 11:08, Russell King (Oracle) wrote:
->On Thu, Oct 28, 2021 at 12:36:58PM -0700, Pawan Gupta wrote:
->> Isn't ARM already using CPU_SPECTRE for selecting things:
->>
->> 	config HARDEN_BRANCH_PREDICTOR
->> 	     bool "Harden the branch predictor against aliasing attacks" if EXPERT
->> 	     depends on CPU_SPECTRE
->>
->> This was the whole motivation for doing the same for x86.
->>
->> Adding a condition for all architectures is also okay, but its going to
->> a little messier:
->>
->> 	 config BPF_UNPRIV_DEFAULT_OFF
->> 	        default y if X86 || ARM || ...
->
->It doesn't have to be (but sadly we end up repeating "DEFAULT"):
->
->config BPF_UNPRIV_DEFAULT_OFF_DEFAULT
->	bool
->
->config BPF_UNPRIV_DEFAULT_OFF
->	bool "Disable unprivileged BPF by default"
->	default BPF_UNPRIV_DEFAULT_OFF_DEFAULT
->
->Then architectures can select BPF_UNPRIV_DEFAULT_OFF_DEFAULT if they
->wish this to be defaulted to "yes".
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
 
-Looks like we are settling on unconditional 'default y' for now [1].
-I have sent a v3 with 'default y' [2].
+Hi Linus,
 
->However, please note that this has limited use given that the
->BPF_UNPRIV_DEFAULT_OFF option has been around for a while now. Any
->existing configuration that mentions this symbol will override any
->default specified in the Kconfig files if the option is user-visible.
+Please pull the final set of powerpc fixes for 5.15:
 
-Yes, existing configurations will have to toggle this manually. However,
-many distros already have BPF_UNPRIV_DEFAULT_OFF=y in their
-configuration.
+The following changes since commit 787252a10d9422f3058df9a4821f389e5326c440:
 
->So, IMHO, defaults need to be set correctly from the point in time
->that the option is introduced.
+  powerpc/smp: do not decrement idle task preempt count in CPU offline (2021-10-20 21:38:01 +1100)
 
-Agree.
+are available in the git repository at:
 
-[1] https://lore.kernel.org/lkml/6130e55f-4d84-5ada-4e86-5b678e3eaf5e@iogearbox.net/
-[2] https://lore.kernel.org/lkml/0ace9ce3f97656d5f62d11093ad7ee81190c3c25.1635535215.git.pawan.kumar.gupta@linux.intel.com/
+  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.15-6
+
+for you to fetch changes up to d853adc7adf601d7d6823afe3ed396065a3e08d1:
+
+  powerpc/pseries/iommu: Create huge DMA window if no MMIO32 is present (2021-10-25 11:41:15 +1100)
+
+- ------------------------------------------------------------------
+powerpc fixes for 5.15 #6
+
+Three commits fixing some issues introduced with the recent IOMMU changes we merged.
+
+Thanks to: Alexey Kardashevskiy
+
+- ------------------------------------------------------------------
+Alexey Kardashevskiy (3):
+      powerpc/pseries/iommu: Use correct vfree for it_map
+      powerpc/pseries/iommu: Check if the default window in use before removing it
+      powerpc/pseries/iommu: Create huge DMA window if no MMIO32 is present
+
+
+ arch/powerpc/platforms/pseries/iommu.c | 27 ++++++++++----------
+ 1 file changed, 14 insertions(+), 13 deletions(-)
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJFGtCPCthwEv2Y/bUevqPMjhpYAFAmF8fhoACgkQUevqPMjh
+pYAoaRAAps3wmmCXKdVbFvqKTFzcRFiWoFa0r2c6SykG7hvo6y1r3avF5PhXU5ry
+OshoMcw+ZPFeH/Jc7VB/i7a9nQZSlf1k3Z9SaM+WVOgqFUhbE6OjC1r2VfRgo2lY
+8QFmlLesNNx5dg+NXcunFD7Z7ydQopCR9QprlpWq2ZAxcIf9z7PP/SNlfxzCMo0d
+0zYBfchkHAsg4C3/c6CjIr6lmbuPvlX3YoSyiOb9MBuAZB+fA6jNxqsW8GWbLYOA
+XNCFQ+1vqv5cwrjlo1nKCLQjYi/9MnF7/SLPeIHA/MYQBF7iuAeOCDo2ldgzKtAO
+uwSDrNiuGBya2QMU6ulnbHlropmg4NdtCp9i0jcztbDWRZl+dmJ88LqI5jE43JOF
+pgaf25jTw80yCrwxBFxfGwAesQPAxWMAV5SmqilArNu8ctCThRVeyYxIeFXpoZBA
+Gl54/3VX6lXGF0Myf1gHdu5Qqkj6W/PlOwmr/WcQLRthHhIaVnW/Y0VlWqQ1FA3e
+SsPf5XfP5VsqTXSos+t8FR9kpFaxOOC8C3Qo6bTbGYdd/dNx37AqXAK9B7vlgm3I
+ufLg5t6bx9DWLx8i+tNOqG7owY4PfwnBDgxLl9dsP41srWPdgP81/IsHnevSYis8
+QrSBgPE3+elkr2V8tRR9Eco3bYwPQDBSdMqTksfnkMJ+t1jinz0=
+=l0Ac
+-----END PGP SIGNATURE-----
