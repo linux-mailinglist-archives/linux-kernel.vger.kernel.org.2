@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B0F943F667
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 06:59:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7320D43F669
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 07:00:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231759AbhJ2FCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 01:02:04 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:35300
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229504AbhJ2FB7 (ORCPT
+        id S231782AbhJ2FDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 01:03:06 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:48558
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229504AbhJ2FDF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 01:01:59 -0400
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com [209.85.221.71])
+        Fri, 29 Oct 2021 01:03:05 -0400
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com [209.85.128.72])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 3223C3F165
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 04:59:30 +0000 (UTC)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 3AC223F1A0
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 05:00:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1635483570;
-        bh=OJg5Riv5SEPQHw6GUzsRnRLEnZCVPUrqTKYKL32qSlg=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=Ojjjrddck/GH5h+kjVnTgx3R3EttqtMURgCHtLnZFTeGZphUA2BFWcNuMXU0I5+CJ
-         pCCC3sJXwC6d1gzsmiIAwbChVh18oqxBj0KUz0O1wnqzguharDpFLCVy5/RHfaAzE5
-         PzpCLLlBfzTuTR4Y42CI3+44HYZgebC+P3y5JhyUgSG7wrJOl12k9ArGKlZ//IkU42
-         VaWZ60uSITI2U9Sb+mWgf5LMj0135zYkHtpk8DgEwKzxH88k2aRAs55ZamZR+GV6T+
-         mS20jKkQS9xsirJUWVAJ4nGwDHC41vRoxABFuTUhcnfr03cElnR3DMpRdX9TlzyQKW
-         Q3E2utzWCeNDg==
-Received: by mail-wr1-f71.google.com with SMTP id d13-20020adf9b8d000000b00160a94c235aso2974490wrc.2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 21:59:30 -0700 (PDT)
+        s=20210705; t=1635483635;
+        bh=fVrxR6rs0QgNgX/0Rgh0R5Yk7RWIkh0KqpodnVxs5fE=;
+        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+         MIME-Version;
+        b=inQ2bNo6lFjOLhfNcZ72I19brqriKf9Mpe7Wk/XmDtSNecxTA7vond9mHn0cSWaGx
+         3y1FZicCArIVsVK5gC52qYW3agqmuROvKkQTZv+jbkq4FtFiDV/ZW4mkz51MGxqaVp
+         eKeKYg3akmp7ZaEKDRZMZnosVw2UV5AlXyrjGnL0Hty//GEfkKqZAEnHhmpco9/bQo
+         xcc1gjpTejmWM+rlEVfwEwrLonSNESOY3VesCf+pCQnA06F1QsBUyfG0O9Std4ePz1
+         S86lZJzQL5ajbOyFwEmqcA/Kde+jN9zm7Gv3vJmPp5KPrS4g3LfEKCjRgigNiX2Lcc
+         aSOqnG3k6vgDQ==
+Received: by mail-wm1-f72.google.com with SMTP id o22-20020a1c7516000000b0030d6f9c7f5fso3013047wmc.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 22:00:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OJg5Riv5SEPQHw6GUzsRnRLEnZCVPUrqTKYKL32qSlg=;
-        b=Y+XmG2zo7djT+TNqBY1bgLZ7YhnloK71TYc9NkegZauuX9FhmfNig8jpxEgVAE9DgU
-         OXNHDfCpnPMm9qVyfv2RYLaDEUhEdDOn3kdbjfUL6+7gZSyPU4pwv1ZlWSbaI5dkwHBE
-         Onx2lkFEL85mwStYhfbKSa73Lt+D+/SvNQufgC1RHQ3KivrTOtwafkjWV010rvkZ2nRY
-         /8iyXV2LBP6uoYRUGMl+olZJ8CvHwc9yCrlPaABlVzBprIRThaR41lgRNmFjdYUYgW2J
-         UIeTOMBTmrUmLtEZR3wOcb/ICJFc7TZpyYeFBYAn/kXVNQyB350Jach8o9eTeZZn346D
-         x08A==
-X-Gm-Message-State: AOAM533pF+bi48m5fQ8kUt2nLTe6CPTrjkdnCqtjkff47aXRrRT/rFI5
-        6xzfdDkABEdkux/iQNgBc5QTF8JC0FeXkg4TV/iYSbdhbJHSNgCCOQpDOja4a6yqanmH4C65qBh
-        EA4FlstUoHSoOHpSsmnF5Y8XkMvDbWFNc5Kfu7O0eeA==
-X-Received: by 2002:a7b:c441:: with SMTP id l1mr8777200wmi.69.1635483569951;
-        Thu, 28 Oct 2021 21:59:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxoSjAtlbuEhehndrjjwCsmEUDmuBiMpCGgdYwnt+96mQvDORVoOvrvS1DNJy40R3xBZiwCEA==
-X-Received: by 2002:a7b:c441:: with SMTP id l1mr8777186wmi.69.1635483569839;
-        Thu, 28 Oct 2021 21:59:29 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=fVrxR6rs0QgNgX/0Rgh0R5Yk7RWIkh0KqpodnVxs5fE=;
+        b=W4h/Rrxk3+sT96rBI4yQCb4aEzuW8Vt91ZVyisttTVLh1K73I0jzw9eoyfcinKU22b
+         Yy6/bA1ZSKUA3qTvCB9R+rus6axqafTH/DEp1myc77ncR0EuiGI9vEt/VlHeLdeg3M7O
+         jKzlHOAdFEMALMbZ2YhULJfyB7VhujUpF1CzoyJjJUadeHowpOErI9lgqPUyEKYgAjpG
+         18G0c6shdSrCQX6T2V5RH4MWty1KRFPSQfpR90m4LaDdQnm+B9XR4X7jIjdaNuMixBLH
+         WP0oFmr3YWrK21g9opP7v7KiIcLyMNj1IqWc6dqXzADm1xGmOEelez5esSJMWVeCumVb
+         dIhg==
+X-Gm-Message-State: AOAM533ILHuugQwAm2s/uPXMdYUpzWsu3aKiTnXwrW2w1H2Mq+N7XHsC
+        79WYxqti4v4Hy+RkBQgGbR2lVK7VhwunVA0oWHdHRowbuJgQnx42S2NEzWZcPw70sCjsB14sndg
+        TeqdkAzXbGf4+GC5aKNtqEWovVYTa56a6XIowvvrzZg==
+X-Received: by 2002:a05:6000:186a:: with SMTP id d10mr11818529wri.279.1635483631173;
+        Thu, 28 Oct 2021 22:00:31 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyVcMpOtY2oarkcGRWdba9hc9bb3yVUoAEIjsLxk+hc+TjKojuTqQUEEMBKdf1WYqhz7f/cXw==
+X-Received: by 2002:a05:6000:186a:: with SMTP id d10mr11818509wri.279.1635483630964;
+        Thu, 28 Oct 2021 22:00:30 -0700 (PDT)
 Received: from localhost.localdomain (lfbn-lyo-1-470-249.w2-7.abo.wanadoo.fr. [2.7.60.249])
-        by smtp.gmail.com with ESMTPSA id n12sm376620wmd.3.2021.10.28.21.59.29
+        by smtp.gmail.com with ESMTPSA id d9sm712512wre.52.2021.10.28.22.00.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 21:59:29 -0700 (PDT)
+        Thu, 28 Oct 2021 22:00:30 -0700 (PDT)
 From:   Alexandre Ghiti <alexandre.ghiti@canonical.com>
 To:     Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
@@ -64,32 +65,64 @@ To:     Paul Walmsley <paul.walmsley@sifive.com>,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
         kasan-dev@googlegroups.com
 Cc:     Alexandre Ghiti <alexandre.ghiti@canonical.com>
-Subject: [PATCH v2 0/2] riscv asan-stack fixes
-Date:   Fri, 29 Oct 2021 06:59:25 +0200
-Message-Id: <20211029045927.72933-1-alexandre.ghiti@canonical.com>
+Subject: [PATCH v2 1/2] riscv: Do not re-populate shadow memory with kasan_populate_early_shadow
+Date:   Fri, 29 Oct 2021 06:59:26 +0200
+Message-Id: <20211029045927.72933-2-alexandre.ghiti@canonical.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20211029045927.72933-1-alexandre.ghiti@canonical.com>
+References: <20211029045927.72933-1-alexandre.ghiti@canonical.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This small patchset fixes asan-stack for riscv.
+When calling this function, all the shadow memory is already populated
+with kasan_early_shadow_pte which has PAGE_KERNEL protection.
+kasan_populate_early_shadow write-protects the mapping of the range
+of addresses passed in argument in zero_pte_populate, which actually
+write-protects all the shadow memory mapping since kasan_early_shadow_pte
+is used for all the shadow memory at this point. And then when using
+memblock API to populate the shadow memory, the first write access to the
+kernel stack triggers a trap. This becomes visible with the next commit
+that contains a fix for asan-stack.
 
-Changes in v2:
- * fix KASAN_VMALLOC=n
- * swap both patches in order not to have a non-bootable kernel commit
+We already manually populate all the shadow memory in kasan_early_init
+and we write-protect kasan_early_shadow_pte at the end of kasan_init
+which makes the calls to kasan_populate_early_shadow superfluous so
+we can remove them.
 
-Alexandre Ghiti (2):
-  riscv: Do not re-populate shadow memory with
-    kasan_populate_early_shadow
-  riscv: Fix asan-stack clang build
+Signed-off-by: Alexandre Ghiti <alexandre.ghiti@canonical.com>
+---
+ arch/riscv/mm/kasan_init.c | 11 -----------
+ 1 file changed, 11 deletions(-)
 
- arch/riscv/Kconfig             |  6 ++++++
- arch/riscv/include/asm/kasan.h |  3 +--
- arch/riscv/mm/kasan_init.c     | 14 +++-----------
- 3 files changed, 10 insertions(+), 13 deletions(-)
-
+diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
+index d7189c8714a9..89a8376ce44e 100644
+--- a/arch/riscv/mm/kasan_init.c
++++ b/arch/riscv/mm/kasan_init.c
+@@ -172,21 +172,10 @@ void __init kasan_init(void)
+ 	phys_addr_t p_start, p_end;
+ 	u64 i;
+ 
+-	/*
+-	 * Populate all kernel virtual address space with kasan_early_shadow_page
+-	 * except for the linear mapping and the modules/kernel/BPF mapping.
+-	 */
+-	kasan_populate_early_shadow((void *)KASAN_SHADOW_START,
+-				    (void *)kasan_mem_to_shadow((void *)
+-								VMEMMAP_END));
+ 	if (IS_ENABLED(CONFIG_KASAN_VMALLOC))
+ 		kasan_shallow_populate(
+ 			(void *)kasan_mem_to_shadow((void *)VMALLOC_START),
+ 			(void *)kasan_mem_to_shadow((void *)VMALLOC_END));
+-	else
+-		kasan_populate_early_shadow(
+-			(void *)kasan_mem_to_shadow((void *)VMALLOC_START),
+-			(void *)kasan_mem_to_shadow((void *)VMALLOC_END));
+ 
+ 	/* Populate the linear mapping */
+ 	for_each_mem_range(i, &p_start, &p_end) {
 -- 
 2.30.2
 
