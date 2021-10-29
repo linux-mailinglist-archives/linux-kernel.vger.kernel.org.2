@@ -2,179 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9577443F904
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 10:36:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E4C943F90B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 10:38:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232493AbhJ2Iif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 04:38:35 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:52575 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232437AbhJ2Iie (ORCPT
+        id S232502AbhJ2Ik2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 04:40:28 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:44990 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232313AbhJ2Ik0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 04:38:34 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20211029083604euoutp01326e96b0b0ae057ce83f3d118068c778~yc3XbuGOS2655126551euoutp01P
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 08:36:04 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20211029083604euoutp01326e96b0b0ae057ce83f3d118068c778~yc3XbuGOS2655126551euoutp01P
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1635496564;
-        bh=rGQtswDny4qK/UzHiFb+huxqfuzGLP8FOoXL2crr0fA=;
-        h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
-        b=tcwko/MsS7BipXpl0EHdcjbWQhBbNIuA1kjkcdYixpmD0tyPpjWcyFNmTdWthSxEN
-         LkotWK8zO9Gb8VB1zXpfMFtNXtYmyElEy4yIXeC31pv0JCOjnQAznZgvCHy6GVyGAT
-         1y2xx7t4/JZfADf9K0gUxR/mAbDYw/oVXEFimIYs=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20211029083604eucas1p1285bb75781ee522a82d2c225b2e1a2c6~yc3W4Do7c2420724207eucas1p1F;
-        Fri, 29 Oct 2021 08:36:04 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id F5.C8.45756.372BB716; Fri, 29
-        Oct 2021 09:36:03 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20211029083602eucas1p23bcb25ec288181943e83e9e1f1cd31ce~yc3VxKiVD2588125881eucas1p2g;
-        Fri, 29 Oct 2021 08:36:02 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20211029083602eusmtrp20534e587a8c486de19cc3b71c591b132~yc3VuwZfm0992409924eusmtrp22;
-        Fri, 29 Oct 2021 08:36:02 +0000 (GMT)
-X-AuditID: cbfec7f2-7bdff7000002b2bc-2c-617bb273cf56
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id 49.D7.31287.272BB716; Fri, 29
-        Oct 2021 09:36:02 +0100 (BST)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20211029083601eusmtip1e121b0634bb0176f3cb82f735caa032e~yc3UAGYwb2760027600eusmtip1d;
-        Fri, 29 Oct 2021 08:36:00 +0000 (GMT)
-Message-ID: <f62174cf-5786-f9d0-3a3a-3c9919f27b1e@samsung.com>
-Date:   Fri, 29 Oct 2021 10:36:00 +0200
+        Fri, 29 Oct 2021 04:40:26 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 8DF1621979;
+        Fri, 29 Oct 2021 08:37:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1635496677; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qZJtw3MieBAJxz2bywPNILccd9LrIRNQXFA0JlaFMeY=;
+        b=t6GZqZ2ZrA/zWvBOmb2gYMX4wpzmCFE/5vROmmF10stABpPd4Vix4z1Av+pYE9LvhJqnJg
+        XSGg1+c6+utFRvFbwllDCEwAkiejlzTQqeHcgSDCiefdpUUc91ZU6EbZCCgVxeEnvEfmLU
+        +8yKiddofh2oiONcJ5SAK3Vch4rgK/E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1635496677;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qZJtw3MieBAJxz2bywPNILccd9LrIRNQXFA0JlaFMeY=;
+        b=6v5ygUCQdTegipKV02UYgWAHs+kPuWGntkmtDP/e3QhMktilEhvPCS/5fzjCEcqJGMyixs
+        Y/gQKRaBvasxCQAA==
+Received: from suse.de (mgorman.udp.ovpn2.nue.suse.de [10.163.43.106])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id CED32A3B83;
+        Fri, 29 Oct 2021 08:37:55 +0000 (UTC)
+Date:   Fri, 29 Oct 2021 09:37:51 +0100
+From:   Mel Gorman <mgorman@suse.de>
+To:     Gang Li <ligang.bdlg@bytedance.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: Re: [PATCH v1] sched/numa: add per-process numa_balancing
+Message-ID: <20211029083751.GR3891@suse.de>
+References: <20211027132633.86653-1-ligang.bdlg@bytedance.com>
+ <20211028153028.GP3891@suse.de>
+ <b884ad7d-48d3-fcc8-d199-9e7643552a9a@bytedance.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0)
-        Gecko/20100101 Thunderbird/91.2.1
-Subject: Re: [v6,02/21] drm/bridge: adv7511: Register and attach our DSI
- device at probe
-Content-Language: en-US
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        linux-arm-msm@vger.kernel.org,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        Rob Clark <robdclark@gmail.com>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        Chen Feng <puck.chen@hisilicon.com>,
-        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        linux-samsung-soc@vger.kernel.org,
-        Xinliang Liu <xinliang.liu@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        linux-kernel@vger.kernel.org, Inki Dae <inki.dae@samsung.com>,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        Sean Paul <sean@poorly.run>
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-In-Reply-To: <20211029080521.6tmfq4kjngu5slv7@gilmour>
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Se0xTVxzHd+69vfdSV3IpLhzUqKtxMAggEcdZXMzYI16XLEJGopElrJsX
-        NDzUFsTJsgEKgQ4YL11pBVbQgIAwHu2kQ6hEVoi0SAElDa4yuoE8BXQDNugoFzf++/we39/3
-        9zs5NC7+mdxGn45P4GTx0lgJKSR0vyz1+skbk6X7Kv4JQjnmbgxV9tThaODFLImujZkAKrDl
-        EWisrA6gnr/9UPfUIIHGf+0j0OJKmwCZ0qYolJV/nUL57SYK9euvkUjZ24YhzZyWQMrFVYA6
-        ciOQ7apqbYZmEUfzqhEcVS1pAXpceA8gZeFTEi3pSwlUM9lGoeapfAHqbK8WvLuDnR1Kp9hh
-        cy/JtqgeU+xoSQPFqjOLBWxF61OM7cqzYOzww1aS/enPJwK2tDuMtX1rxFij3kqx168Okmxu
-        czVgm+4nswuNO0OZE8J3TnKxp89zsoBDnwlP3e2boM4OiC78/jCFSAElWxTAhYZMECxzjBIK
-        IKTFTBWA32mWBXzwHMBH9gqKDxYAbF0pEryUGJpqSL5QCeAfD4wbXXMAFle9WOuiaRFzCBaO
-        X3AKCGYvXGjLJJwsYtxgd7F9nV9jPoeZM1nr7M6cgCs59ZSTccYDWu1lmJO3rmkHcu7gzvk4
-        Y6ahtiyLdBZIJhAqphXr7MK8BY1XDBgv3gUvadXrAsiYhLCkR4fxa38Anww9Azy7wwljM8Xz
-        Duhocbo5BZcAHDHfovggG8D+NOWG4iAcNi+TztNw5k1Yrw/g0yHQ2rmMO9OQcYVD0278Eq6w
-        QPf9RloEMzPEfPcbUGWs+8/27gMLngckqk3votp0v2rTOar/fX8ARDXw4BLlcdGcPDCeS/KX
-        S+PkifHR/l+ciWsEa//7/qpx/jYomZjz7wAYDToApHHJVtFUUbJULDop/fIiJzsTKUuM5eQd
-        YDtNSDxE1eraSDETLU3gYjjuLCd7WcVol20pmNg0ejlp7njJQEiEpa+/9dh0XWbT+0nns3H1
-        x59oznmWG/RMwIEhPyYy+MdQnQOXlPu6blkwLGVn9B/e7XGz3Nv+Vczz3xxptgPBF1NdDkcd
-        TC6MUFsmYwZ9rC07w728Z+5ouuL2eXUebQkvtRnGHYOGywW+DVEZN8pdQoqOK33nVnLjtu+q
-        ffSXZXnPUc1k5TfPDOFC8auihJkgFEArwma9exuYj1Jq0iNuzo+n6oyyoHTRXrP1yKfuXWjM
-        98b+DwO0DZGKPbXi/dJjXa/4ebY7xpo079nnv37dJ6I+7O0aZXC9W+m93bWpFrXP7ajQIyO0
-        pyvyal/1IbNuyWvOgUgJIT8lDfTBZXLpv/xr/nROBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrEKsWRmVeSWpSXmKPExsVy+t/xu7pFm6oTDW7c1rC4te4cq0XvuZNM
-        FsvPrGO2uPL1PZvFnOdnGS0m3Z/AYvF8/jpGizO/dS1OvrnKYvHi3kUWix9/97FanG16w27R
-        OXEJu8XE/WfZLS7vmsNmMeP8PiaLhR+3sljM+PGP0eJQX7TF/WmzgGYs/MFs8WnWQ2aLFT+3
-        MlrcnXyE0WLG5JdsFj93zWOxWP16H7vFljcTWS2O7l/F6iDr8f5GK7vHnXPn2Tx2zrrL7vF4
-        7kZ2j9kdM1k9Fu95yeRxYsIlJo871/aweWz/9oDVY97JQI/73ceZPI7vusXusWTaVTaPvi2r
-        GD02n672+LxJLkAgSs+mKL+0JFUhI7+4xFYp2tDCSM/Q0kLPyMRSz9DYPNbKyFRJ384mJTUn
-        syy1SN8uQS/j4MVX7AVXeCueXmtgaWCcy93FyMkhIWAicWDzarYuRi4OIYGljBL393WzQiRk
-        JE5Oa4CyhSX+XOuCKnrPKHF86VWWLkYODl4BO4nJLypAalgEVCU+7+tgAbF5BQQlTs58AmaL
-        CiRJbFvwkxHEFhaIkvjbu54dxGYWEJe49WQ+E4gtAtR7pXcvM8h8ZoFLHBI39r1kgVj2llFi
-        U9MkNpAqNgFDia63XWA2p4CZxPGpB5ggJplJdG3tYoSw5SWat85mnsAoNAvJIbOQLJyFpGUW
-        kpYFjCyrGEVSS4tz03OLDfWKE3OLS/PS9ZLzczcxAhPXtmM/N+9gnPfqo94hRiYOxkOMEhzM
-        SiK8b6ZUJwrxpiRWVqUW5ccXleakFh9iNAWGxkRmKdHkfGDqzCuJNzQzMDU0MbM0MLU0M1YS
-        5906d028kEB6YklqdmpqQWoRTB8TB6dUA5NmwZwDsV5p/Rs37ox6377sxd8GN3vl2sSiQyK8
-        k5+JC6v0fTtkd+H3Sfni7o01cpKRkpUGTsJsbfI7ur70ik4O362d1Ph+4qGeYxMTz+9947Fo
-        fdTZw7eLGQ9dL3530+6ZvKRgwbLjYdkueno/A1t0OiOFrHqkTTR8uer4zVMykmYpZ/qVnPtT
-        HZXX+Jan+7XY4uPFnqqGm+Kir/QLfd/5NFp6e5+BQIa9ter+T+uONWqWJ3KdvL/XUS/d4uoq
-        s7nmuWI7tUU1/ONv/r717LHQKkf+bZo7A/WaC0+qS09I+2u8WX7py6YJwfys15j8Zz77Fm3x
-        qCbMltXrw+TlNuHBya9X9kwqjO5TUNqpxFKckWioxVxUnAgAFetmzeUDAAA=
-X-CMS-MailID: 20211029083602eucas1p23bcb25ec288181943e83e9e1f1cd31ce
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20211029062347eucas1p1431402205321b066349e3ccf432d2452
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20211029062347eucas1p1431402205321b066349e3ccf432d2452
-References: <20211025151536.1048186-3-maxime@cerno.tech>
-        <CGME20211029062347eucas1p1431402205321b066349e3ccf432d2452@eucas1p1.samsung.com>
-        <73c13cf5-ca36-f47b-f53a-11d4f015505c@samsung.com>
-        <20211029080521.6tmfq4kjngu5slv7@gilmour>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <b884ad7d-48d3-fcc8-d199-9e7643552a9a@bytedance.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mexime,
+On Fri, Oct 29, 2021 at 02:12:28PM +0800, Gang Li wrote:
+> On 10/28/21 11:30 PM, Mel Gorman wrote:
+> > 
+> > That aside though, the configuration space could be better. It's possible
+> > to selectively disable NUMA balance but not selectively enable because
+> > prctl is disabled if global NUMA balancing is disabled. That could be
+> > somewhat achieved by having a default value for mm->numa_balancing based on
+> > whether the global numa balancing is disabled via command line or sysctl
+> > and enabling the static branch if prctl is used with an informational
+> > message. This is not the only potential solution but as it stands,
+> > there are odd semantic corner cases. For example, explicit enabling
+> > of NUMA balancing by prctl gets silently revoked if numa balancing is
+> > disabled via sysctl and prctl(PR_NUMA_BALANCING, PR_SET_NUMA_BALANCING,
+> > 1) means nothing.
+> > 
+> static void task_tick_fair(struct rq *rq, struct task_struct *curr, int
+> queued)
+> {
+> 	...
+> 	if (static_branch_unlikely(&sched_numa_balancing))
+> 		task_tick_numa(rq, curr);
+> 	...
+> }
+> 
+> static void task_tick_numa(struct rq *rq, struct task_struct *curr)
+> {
+> 	...
+> 	if (!READ_ONCE(curr->mm->numa_balancing))
+> 		return;
+> 	...
+> }
+> 
+> When global numa_balancing is disabled, mm->numa_balancing is useless.
 
-On 29.10.2021 10:05, Maxime Ripard wrote:
-> On Fri, Oct 29, 2021 at 08:23:45AM +0200, Marek Szyprowski wrote:
->> On 25.10.2021 17:15, Maxime Ripard wrote:
->>> In order to avoid any probe ordering issue, the best practice is to move
->>> the secondary MIPI-DSI device registration and attachment to the
->>> MIPI-DSI host at probe time. Let's do this.
->>>
->>> Acked-by: Sam Ravnborg <sam@ravnborg.org>
->>> Tested-by: John Stultz <john.stultz@linaro.org>
->>> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
->> This patch landed in linux-next as commit 864c49a31d6b ("drm/bridge:
->> adv7511: Register and attach our DSI device at probe"). Sadly it causes
->> endless probe-fail-defer loop on DragonBoard 410c board
->> (arch/arm64/boot/dts/qcom/apq8016-sbc.dts):
-> I'm sorry to hear that (but would have been surprised if it didn't occur)
->
-> This is supposed to be fixed by 8f59ee9a570c ("drm/msm/dsi: Adjust probe
-> order"). Do you have that patch applied?
+I'm aware that this is the behaviour of the patch as-is.
 
-Yes, I did my test directly on linux next-20211028, which also contains 
-it. What might be important in my case, my DragonBoard 410c doesn't have 
-any display attached.
+> So I
+> think prctl(PR_NUMA_BALANCING, PR_SET_NUMA_BALANCING,0/1) should return
+> error instead of modify mm->numa_balancing.
+> 
+> Is it reasonable that prctl(PR_NUMA_BALANCING,PR_SET_NUMA_BALANCING,0/1)
+> can still change the value of mm->numa_balancing when global numa_balancing
+> is disabled?
+> 
 
-I've also noticed the following error during boot:
+My point is that as it stands,
+prctl(PR_NUMA_BALANCING,PR_SET_NUMA_BALANCING,1) either does nothing or
+fails. If per-process numa balancing is to be introduced, it should have
+meaning with the global tuning affecting default behaviour and the prctl
+affecting specific behaviour.
 
-[   23.847651] msm_mdp 1a01000.mdp: Adding to iommu group 3
-[   23.866044] msm_mdp 1a01000.mdp: No interconnect support may cause 
-display underflows!
-[   23.957949] irq: no irq domain found for mdss@1a00000 !
-[   23.958014] msm_dsi 1a98000.dsi: failed to request IRQ0: -22
-[   23.962229] msm_dsi: probe of 1a98000.dsi failed with error -22
-
-The above errors appeared in next-20211028 for the first time. I assume 
-that they are related.
-
-Best regards
 -- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
-
+Mel Gorman
+SUSE Labs
