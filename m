@@ -2,73 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D62743FBDD
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 13:54:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 243D643FBDF
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 13:54:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231506AbhJ2L4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 07:56:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231464AbhJ2L4q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 07:56:46 -0400
-Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C345BC061714;
-        Fri, 29 Oct 2021 04:54:17 -0700 (PDT)
-Received: by gofer.mess.org (Postfix, from userid 1000)
-        id 1493DC638B; Fri, 29 Oct 2021 12:54:13 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
-        t=1635508453; bh=1ibxwqgBZhCbkK4nb0aNYAFKQRFLUuXXiDUrBdxYH+s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=n9s6MW2Kc68g44HK8GwSp2AYpSNTNWxYIksaYr9fiqOOSv3DFrcBMwLEi77QBNchy
-         HA2ZtAIjt+hw8Vg9rAGowMOrbTKQZf6r02m7Ow/Xpl/z2W6VFMgmDzK7cqqRo8dmBl
-         EsgthhJ/+fGXuxpJdESnaz2T+rNZ8zuvtsdMuVfjSNo4cocQXT80abn6Nc3Sbm5c83
-         wrzn6iCVBY0JukBkFH8v66awRXqcFBgMhukmqTpUv0XRNiocLUUN9Qxbw9PCMbFuNO
-         orIcmolElUKprCSP5xWlejyXS93XmuIbBh3tbNXY5SVG6vShvAQgQE3W2oafxVkOUf
-         0s3voRAdpvocg==
-Date:   Fri, 29 Oct 2021 12:54:12 +0100
-From:   Sean Young <sean@mess.org>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     =?iso-8859-1?Q?Ma=EDra?= Canal <maira.canal@usp.br>, lkp@intel.com,
-        mchehab@kernel.org, thierry.reding@gmail.com, lee.jones@linaro.org,
-        llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pwm@vger.kernel.org
-Subject: Re: [PATCH v4] media: rc: pwm-ir-tx: Switch to atomic PWM API
-Message-ID: <20211029115412.GA32383@gofer.mess.org>
-References: <YXlxhpZWf2mxJaMi@fedora>
- <20211028064513.guziv6uaivzlk6ki@pengutronix.de>
- <20211028091442.GA16514@gofer.mess.org>
- <20211028111535.x7xgz7domx2lpyfh@pengutronix.de>
- <20211028122610.GA18767@gofer.mess.org>
- <20211028180516.t2tpfbzztm7s6cqm@pengutronix.de>
- <20211029071608.GA28997@gofer.mess.org>
- <20211029110602.uugnbm5vtfpghiwh@pengutronix.de>
+        id S231509AbhJ2L5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 07:57:17 -0400
+Received: from smtp1.axis.com ([195.60.68.17]:36480 "EHLO smtp1.axis.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230492AbhJ2L5Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 07:57:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; q=dns/txt; s=axis-central1; t=1635508487;
+  x=1667044487;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=WG5PX38DAgJ27VX4xJTi1uDJ28hysrGjkPPeLNkkKKE=;
+  b=kZv0agtRc6d8anqfXhH4o0B+3KOVnX9UzRXSBZvpLUjp5mFbNs/aMe47
+   FpVxvAZ4J1uweAMqr1CCPRIrcjddT5awuBAJ2X2ckg+tH9HShv8Tw7HBY
+   8SiEHA9Ju7zvXppaDhyrOduqoiY/FJPxnyVUpImUeulcld+KRyaLKmeK4
+   M3bX3Fzj9Toq3b53II/dhHFEO7YtJVFF5qeP1Wh6+XQWbkJ5hvMEa5pq3
+   4kiGx9OaxS5ALGveoo4keBaReXukKESC9E0ANh/ZSbUe/TsCJoV0T6yQ5
+   KYG9394dRmUWTYzVFGihGYyPkbVEPXHh81Afiw8239TNJZpQ+LsDavQOw
+   g==;
+Date:   Fri, 29 Oct 2021 13:54:46 +0200
+From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+CC:     Jie Deng <jie.deng@intel.com>, "wsa@kernel.org" <wsa@kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        kernel <kernel@axis.com>
+Subject: Re: [PATCH 2/2] i2c: virtio: fix completion handling
+Message-ID: <20211029115446.GA24060@axis.com>
+References: <20211019074647.19061-1-vincent.whitchurch@axis.com>
+ <20211019074647.19061-3-vincent.whitchurch@axis.com>
+ <20211019082211.ngkkkxlfcrsvfaxg@vireshk-i7>
+ <81ea2661-20f8-8836-5311-7f2ed4a1781f@intel.com>
+ <20211020091721.7kcihpevzf7h4d62@vireshk-i7>
+ <20211020103849.GA9985@axis.com>
+ <20211020104709.k6oqo2gmegiwfre4@vireshk-i7>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211029110602.uugnbm5vtfpghiwh@pengutronix.de>
+In-Reply-To: <20211020104709.k6oqo2gmegiwfre4@vireshk-i7>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 01:06:02PM +0200, Uwe Kleine-König wrote:
-> On Fri, Oct 29, 2021 at 08:16:08AM +0100, Sean Young wrote:
-> > This means with your changes, if the carrier and duty cycle are both set
-> > for each transmission, then we're doing more work. If only the carrier
-> > is set for each transmission, then there is no net gain/loss (I think),
-> > but the code size has increased.
+On Wed, Oct 20, 2021 at 12:47:09PM +0200, Viresh Kumar wrote:
+> On 20-10-21, 12:38, Vincent Whitchurch wrote:
+> > I don't quite understand how that would be safe since
+> > virtqueue_add_sgs() can fail after a few iterations and all queued
+> > request buffers can have FAIL_NEXT set.  In such a case, we would end up
+> > waiting forever with your proposed change, wouldn't we?
 > 
-> OK, then I discard my patch.
+> Good point. I didn't think of that earlier.
 > 
-> While reading that I wondered if it makes sense to have a callback that
-> sets both carrier and duty cycle and then remove the other two.
+> I think a good simple way of handling this is counting the number of
+> buffers sent and received. Once they match, we are done. That
+> shouldn't break anything else I believe.
 
-There are separate lirc ioctls to set carrier and duty cycle, that's why
-there are separate callbacks.
-
-
-Sean
+That could work, but it's not so straightforward since you would have to
+introduce locking to prevent races since the final count is only known
+after virtio_i2c_prepare_reqs() completes, while the callback could be
+called before that.  Please do not hesitate to send out a patch to fix
+it that way if that is what you prefer.
