@@ -2,301 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24EAD440514
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 23:48:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D8AC44051C
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 23:53:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231293AbhJ2VvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 17:51:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60910 "EHLO
+        id S231305AbhJ2Vz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 17:55:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230381AbhJ2VvO (ORCPT
+        with ESMTP id S230521AbhJ2Vz0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 17:51:14 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36ABBC061766
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 14:48:45 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id v20so7644715plo.7
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 14:48:45 -0700 (PDT)
+        Fri, 29 Oct 2021 17:55:26 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C363DC061570;
+        Fri, 29 Oct 2021 14:52:57 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id h4so9865778qth.5;
+        Fri, 29 Oct 2021 14:52:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
+        d=gmail.com; s=20210112;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=tH2VxMNE57TdLEF3kW+TiG1gJ6kup105nAHpfo4aRjQ=;
-        b=TqniMd9OC92oUbuWR/g6EGqJ1CKCwfAnTa3gdJtlNqh2ifMDoy8rXHHgA1VEnsAM2u
-         oXAlcL/cxzEQnM456GfsaCoopmfdW6yJPVBPuyO7i0VDbzIJrloUnClIWmT/4z10P7C4
-         bZxv4OEoA1R/ajWdEAoCB/eJxYKGL6UkXsw23XPswJ7a3jCXNze3xV4dfiKZRCRc4mI0
-         nWgq3pSmh56roF0tDyIQeOoepWE3dU+1cN/osj6VKO0YVljAus6C6PpKKUgaQehdoE+o
-         vskLAbRM+nMF7uQHUENtcBtHmU4gnNFZ51KcBvh0jEnHHXVuIztcfaf/NgivXCg3hNh4
-         7a1w==
+        bh=V1UdoqKDsTMGzj57sLAYdTWbd/KAocfHPIazuse7XdQ=;
+        b=S3S47+H+iAK4LSyp1CpV0IVNmPUxGpr4JfKLjSwxPKb3D5t9vdLQo39KpDqZSZfgv/
+         rQlIPTjW041Z9zHYpYMadmLZzeVYzK/dydVfPbfOrEijfNhtvToL/v1ZolaDBnWGx5jM
+         B5rPvOMExJ2d3P8gs0D+LNBz6I9urC3cdYTABdrdbKHx+gm9SiT+xvCJiL1eCrGMD7H5
+         u/5MQbIBZA7UhU3ExUj95bo+8wQoE6TAOgd3XcfxceAJlFeCPXXu/8X27fJEtGjfQQe+
+         D5mN38M99FEN19yzKeKaltqRrzfUtK+NiTt55C4kXDHMIoAtfVUE5XfUAaZrTGS/Og/M
+         FTwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tH2VxMNE57TdLEF3kW+TiG1gJ6kup105nAHpfo4aRjQ=;
-        b=x+eOUW9odK9QrkJReMMSfGgBxqlcO9u8VYIXx/hhk5/nfcD98SSuKh/Hx/c/lxbgQb
-         Fke95qg/haF0wqGrAdgIYM5fQb8Kw19oai2QOr/NHR5LQ94HDppD2oiSD5qWZwnaqSbE
-         fjNPQe9kmI+UAiivpJJD2UST1OUvLu35iGdbgKfxBJU1nmMe76cngJKtmzs85WXmbT5t
-         mYHDdQTcQKpKkIfBISyRrT6aTCXO9e64zX37+7YZlP2zxIN6mjEjoSbdb+ug61SGghhQ
-         IgVqr9kpAyb73ALLrxwq7YQjO3hpne4GMRPFBDPYZel+f0UiIWXZy2Jc53dHciKDsLMz
-         KSeA==
-X-Gm-Message-State: AOAM530EDKfTj4RNbBEzbdppimd2Ksf2KO7Iz9PeAmvBMpjRbq0rI9i8
-        vZcxXdJuu+9KDMi8VA7OP7Zuag==
-X-Google-Smtp-Source: ABdhPJwCns8yC5srsgHdScGYyLEOnZYnmQHhX8VvGSb7OGvONMFiXAfMV+cS/yWveArTZ4WleLCEzg==
-X-Received: by 2002:a17:90a:4b85:: with SMTP id i5mr22824096pjh.25.1635544124607;
-        Fri, 29 Oct 2021 14:48:44 -0700 (PDT)
-Received: from localhost.localdomain ([50.39.160.154])
-        by smtp.gmail.com with ESMTPSA id om13sm12214469pjb.12.2021.10.29.14.48.44
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=V1UdoqKDsTMGzj57sLAYdTWbd/KAocfHPIazuse7XdQ=;
+        b=qvm0mWgym/aUB+zmvAeHRrJ3f8tCbDb6WM5Gh76kHQWO44e9AbUzIz48elSVkkAgI9
+         sOHMAVrqZ6QWJ52+QBzGxxoCRTtQ2nyFnlNRS14fFlY4vkvcXSzSTVimYUNQBC/uztWu
+         5sRFyAHWhZYYn9/UryGk6b4ZapczyQ0z36c81ilgj71OzXLgkgCflbnOxoODIrsmFZf7
+         Ydr8T+f4PdNLIZ1HUwNZdRVIoQS+0Qyn6Dv0kfilrtkCGnDrnK45W2Y1fXvAYsgT4yex
+         PKeyiEl4OSjGX4WTmlDqPrkLtlx+3jisvpkdHkYRyUG86fy7eI90rydDKVmyQ2w4z1rf
+         Gp/A==
+X-Gm-Message-State: AOAM531iHEtUMV6o8JILEa3CwHivPyG9VeARZ20N/8yhOOrsbIp/Fi/k
+        ITiq+ogOqs69YMRh6a4P4HinAoYAVlNLkB1eaok=
+X-Google-Smtp-Source: ABdhPJwr8IeC8d9CyxpV9jQ6HCn0WZtsIlg7iPZXIe6EDl/xrsIhxCIm4BnbUq7XrtQLJNscsS6Bmg==
+X-Received: by 2002:ac8:5988:: with SMTP id e8mr14679768qte.32.1635544376985;
+        Fri, 29 Oct 2021 14:52:56 -0700 (PDT)
+Received: from ubuntu-mate-laptop.eecs.ucf.edu ([132.170.15.255])
+        by smtp.gmail.com with ESMTPSA id h5sm5253808qtk.30.2021.10.29.14.52.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Oct 2021 14:48:44 -0700 (PDT)
-From:   Tadeusz Struk <tadeusz.struk@linaro.org>
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Andy Gross <agross@kernel.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Tadeusz Struk <tadeusz.struk@linaro.org>,
-        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] media: venus: Synchronize probe() between venus_core and enc/dec
-Date:   Fri, 29 Oct 2021 14:48:33 -0700
-Message-Id: <20211029214833.2615274-1-tadeusz.struk@linaro.org>
-X-Mailer: git-send-email 2.31.1
+        Fri, 29 Oct 2021 14:52:56 -0700 (PDT)
+Sender: Julian Braha <julian.braha@gmail.com>
+From:   Julian Braha <julianbraha@gmail.com>
+To:     rafael@kernel.org, daniel.lezcano@linaro.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        fazilyildiran@gmail.com
+Subject: [PATCH] cpuidle: fix unmet dependencies on ARCH_SUSPEND_POSSIBLE for ARM_CPU_SUSPEND
+Date:   Fri, 29 Oct 2021 17:52:56 -0400
+Message-Id: <20211029215256.20329-1-julianbraha@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Venus video encode/decode hardware driver consists of three modules.
-The parent module venus-core, and two sub modules venus-enc and venus-dec.
-The venus-core module allocates a common structure that is used by the
-enc/dec modules, loads the firmware, and performs some common hardware
-initialization. Since the three modules are loaded one after the other,
-and their probe functions can run in parallel it is possible that
-the venc_probe and vdec_probe functions can finish before the core
-venus_probe function, which then can fail when, for example it
-fails to load the firmware. In this case the subsequent call to venc_open
-causes an Oops as it tries to dereference already uninitialized structures
-through dev->parent and the system crashes in __pm_runtime_resume() as in
-the trace below:
+When ARM_TEGRA_CPUIDLE or ARM_QCOM_SPM_CPUIDLE are selected,
+and ARCH_SUSPEND_POSSIBLE is disabled, Kbuild gives the
+following warnings:
 
-[   26.064835][  T485] Internal error: Oops: 96000006 [#1] PREEMPT SMP
-[   26.270914][  T485] Hardware name: Thundercomm Dragonboard 845c (DT)
-[   26.285019][  T485] pc : __pm_runtime_resume+0x34/0x178
-[   26.286374][  T213] lt9611 10-003b: hdmi cable connected
-[   26.290285][  T485] lr : venc_open+0xc0/0x278 [venus_enc]
-[   26.290326][  T485] Call trace:
-[   26.290328][  T485]  __pm_runtime_resume+0x34/0x178
-[   26.290330][  T485]  venc_open+0xc0/0x278 [venus_enc]
-[   26.290335][  T485]  v4l2_open+0x184/0x294
-[   26.290340][  T485]  chrdev_open+0x468/0x5c8
-[   26.290344][  T485]  do_dentry_open+0x260/0x54c
-[   26.290349][  T485]  path_openat+0xbe8/0xd5c
-[   26.290352][  T485]  do_filp_open+0xb8/0x168
-[   26.290354][  T485]  do_sys_openat2+0xa4/0x1e8
-[   26.290357][  T485]  __arm64_compat_sys_openat+0x70/0x9c
-[   26.290359][  T485]  invoke_syscall+0x60/0x170
-[   26.290363][  T485]  el0_svc_common+0xb8/0xf8
-[   26.290365][  T485]  do_el0_svc_compat+0x20/0x30
-[   26.290367][  T485]  el0_svc_compat+0x24/0x84
-[   26.290372][  T485]  el0t_32_sync_handler+0x7c/0xbc
-[   26.290374][  T485]  el0t_32_sync+0x1b8/0x1bc
-[   26.290381][  T485] ---[ end trace 04ca7c088b4c1a9c ]---
-[   26.290383][  T485] Kernel panic - not syncing: Oops: Fatal exception
+WARNING: unmet direct dependencies detected for ARM_CPU_SUSPEND
+  Depends on [n]: ARCH_SUSPEND_POSSIBLE [=n]
+  Selected by [y]:
+  - ARM_TEGRA_CPUIDLE [=y] && CPU_IDLE [=y] && (ARM [=y] || ARM64) && (ARCH_TEGRA [=n] || COMPILE_TEST [=y]) && !ARM64 && MMU [=y]
 
-This can be fixed by synchronizing the three probe functions and
-only allowing the venc_probe() and vdec_probe() to pass when venus_probe()
-returns success.
+and
 
-Changes in v2:
-- Change locking from mutex_lock to mutex_trylock
-  in venc_probe and vdec_probe to avoid potential deadlock.
+WARNING: unmet direct dependencies detected for ARM_CPU_SUSPEND
+  Depends on [n]: ARCH_SUSPEND_POSSIBLE [=n]
+  Selected by [y]:
+  - ARM_QCOM_SPM_CPUIDLE [=y] && CPU_IDLE [=y] && (ARM [=y] || ARM64) && (ARCH_QCOM [=n] || COMPILE_TEST [=y]) && !ARM64 && MMU [=y]
 
-Signed-off-by: Tadeusz Struk <tadeusz.struk@linaro.org>
+This is because these options enable ARM_CPU_SUSPEND
+without selecting or depending on ARCH_SUSPEND_POSSIBLE,
+despite ARM_CPU_SUSPEND depending on ARCH_SUSPEND_POSSIBLE.
+
+These unmet dependency bugs were detected by Kismet,
+a static analysis tool for Kconfig. Please advise if
+this is not the appropriate solution.
+
+Signed-off-by: Julian Braha <julianbraha@gmail.com>
 ---
- drivers/media/platform/qcom/venus/core.c |  6 ++++++
- drivers/media/platform/qcom/venus/core.h |  2 ++
- drivers/media/platform/qcom/venus/vdec.c | 24 +++++++++++++++++++++---
- drivers/media/platform/qcom/venus/venc.c | 24 +++++++++++++++++++++---
- 4 files changed, 50 insertions(+), 6 deletions(-)
+ drivers/cpuidle/Kconfig.arm | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
-index 91b15842c555..18f3e3a9823f 100644
---- a/drivers/media/platform/qcom/venus/core.c
-+++ b/drivers/media/platform/qcom/venus/core.c
-@@ -317,6 +317,7 @@ static int venus_probe(struct platform_device *pdev)
- 
- 	INIT_LIST_HEAD(&core->instances);
- 	mutex_init(&core->lock);
-+	mutex_init(&core->sync_lock);
- 	INIT_DELAYED_WORK(&core->work, venus_sys_error_handler);
- 
- 	ret = devm_request_threaded_irq(dev, core->irq, hfi_isr, hfi_isr_thread,
-@@ -331,6 +332,8 @@ static int venus_probe(struct platform_device *pdev)
- 
- 	venus_assign_register_offsets(core);
- 
-+	mutex_lock(&core->sync_lock);
-+
- 	ret = v4l2_device_register(dev, &core->v4l2_dev);
- 	if (ret)
- 		goto err_core_deinit;
-@@ -377,6 +380,7 @@ static int venus_probe(struct platform_device *pdev)
- 		goto err_dev_unregister;
- 	}
- 
-+	mutex_unlock(&core->sync_lock);
- 	venus_dbgfs_init(core);
- 
- 	return 0;
-@@ -392,6 +396,7 @@ static int venus_probe(struct platform_device *pdev)
- 	hfi_destroy(core);
- err_core_deinit:
- 	hfi_core_deinit(core, false);
-+	mutex_unlock(&core->sync_lock);
- err_core_put:
- 	if (core->pm_ops->core_put)
- 		core->pm_ops->core_put(core);
-@@ -428,6 +433,7 @@ static int venus_remove(struct platform_device *pdev)
- 
- 	mutex_destroy(&core->pm_lock);
- 	mutex_destroy(&core->lock);
-+	mutex_destroy(&core->sync_lock);
- 	venus_dbgfs_deinit(core);
- 
- 	return ret;
-diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
-index 5ec851115eca..3f80dc26febb 100644
---- a/drivers/media/platform/qcom/venus/core.h
-+++ b/drivers/media/platform/qcom/venus/core.h
-@@ -119,6 +119,7 @@ struct venus_format {
-  * @use_tz:	a flag that suggests presence of trustzone
-  * @fw:		structure of firmware parameters
-  * @lock:	a lock for this strucure
-+ * @sync_lock	a lock for probe sync between venus_core and venus_enc/dec
-  * @instances:	a list_head of all instances
-  * @insts_count:	num of instances
-  * @state:	the state of the venus core
-@@ -176,6 +177,7 @@ struct venus_core {
- 		size_t mem_size;
- 	} fw;
- 	struct mutex lock;
-+	struct mutex sync_lock;
- 	struct list_head instances;
- 	atomic_t insts_count;
- 	unsigned int state;
-diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
-index 198e47eb63f4..959e43bb6c00 100644
---- a/drivers/media/platform/qcom/venus/vdec.c
-+++ b/drivers/media/platform/qcom/venus/vdec.c
-@@ -1659,17 +1659,32 @@ static int vdec_probe(struct platform_device *pdev)
- 	if (!core)
- 		return -EPROBE_DEFER;
- 
-+	/* Sync and wait on the venus core to initialize first.
-+	 * If we manage to acquire the sync_lock here it means
-+	 * that the venus_probe() finished running */
-+	ret = mutex_trylock(&core->sync_lock);
-+	if (!ret) {
-+		return -EPROBE_DEFER;
-+	} else {
-+		if (core->state != CORE_INIT) {
-+			ret = -ENODEV;
-+			goto err_core_unlock;
-+		}
-+	}
-+
- 	platform_set_drvdata(pdev, core);
- 
- 	if (core->pm_ops->vdec_get) {
- 		ret = core->pm_ops->vdec_get(dev);
- 		if (ret)
--			return ret;
-+			goto err_core_unlock;
- 	}
- 
- 	vdev = video_device_alloc();
--	if (!vdev)
--		return -ENOMEM;
-+	if (!vdev) {
-+		ret = -ENOMEM;
-+		goto err_core_unlock;
-+	}
- 
- 	strscpy(vdev->name, "qcom-venus-decoder", sizeof(vdev->name));
- 	vdev->release = video_device_release;
-@@ -1690,11 +1705,14 @@ static int vdec_probe(struct platform_device *pdev)
- 	pm_runtime_set_autosuspend_delay(dev, 2000);
- 	pm_runtime_use_autosuspend(dev);
- 	pm_runtime_enable(dev);
-+	mutex_unlock(&core->sync_lock);
- 
- 	return 0;
- 
- err_vdev_release:
- 	video_device_release(vdev);
-+err_core_unlock:
-+	mutex_unlock(&core->sync_lock);
- 	return ret;
- }
- 
-diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
-index bc1c42dd53c0..11ec7bff5e3f 100644
---- a/drivers/media/platform/qcom/venus/venc.c
-+++ b/drivers/media/platform/qcom/venus/venc.c
-@@ -1338,17 +1338,32 @@ static int venc_probe(struct platform_device *pdev)
- 	if (!core)
- 		return -EPROBE_DEFER;
- 
-+	/* Sync and wait on the venus core to initialize first.
-+	 * If we manage to acquire the sync_lock here it means
-+	 * that the venus_probe() finished running */
-+	ret = mutex_trylock(&core->sync_lock);
-+	if (!ret) {
-+		return -EPROBE_DEFER;
-+	} else {
-+		if (core->state != CORE_INIT) {
-+			ret = -ENODEV;
-+			goto err_core_unlock;
-+		}
-+	}
-+
- 	platform_set_drvdata(pdev, core);
- 
- 	if (core->pm_ops->venc_get) {
- 		ret = core->pm_ops->venc_get(dev);
- 		if (ret)
--			return ret;
-+			goto err_core_unlock;
- 	}
- 
- 	vdev = video_device_alloc();
--	if (!vdev)
--		return -ENOMEM;
-+	if (!vdev) {
-+		ret = -ENOMEM;
-+		goto err_core_unlock;
-+	}
- 
- 	strscpy(vdev->name, "qcom-venus-encoder", sizeof(vdev->name));
- 	vdev->release = video_device_release;
-@@ -1367,11 +1382,14 @@ static int venc_probe(struct platform_device *pdev)
- 
- 	video_set_drvdata(vdev, core);
- 	pm_runtime_enable(dev);
-+	mutex_unlock(&core->sync_lock);
- 
- 	return 0;
- 
- err_vdev_release:
- 	video_device_release(vdev);
-+err_core_unlock:
-+	mutex_unlock(&core->sync_lock);
- 	return ret;
- }
- 
+diff --git a/drivers/cpuidle/Kconfig.arm b/drivers/cpuidle/Kconfig.arm
+index 15d6c46c0a47..1b4f5ae1ee05 100644
+--- a/drivers/cpuidle/Kconfig.arm
++++ b/drivers/cpuidle/Kconfig.arm
+@@ -100,6 +100,7 @@ config ARM_MVEBU_V7_CPUIDLE
+ config ARM_TEGRA_CPUIDLE
+ 	bool "CPU Idle Driver for NVIDIA Tegra SoCs"
+ 	depends on (ARCH_TEGRA || COMPILE_TEST) && !ARM64 && MMU
++	depends on ARCH_SUSPEND_POSSIBLE
+ 	select ARCH_NEEDS_CPU_IDLE_COUPLED if SMP
+ 	select ARM_CPU_SUSPEND
+ 	help
+@@ -108,6 +109,7 @@ config ARM_TEGRA_CPUIDLE
+ config ARM_QCOM_SPM_CPUIDLE
+ 	bool "CPU Idle Driver for Qualcomm Subsystem Power Manager (SPM)"
+ 	depends on (ARCH_QCOM || COMPILE_TEST) && !ARM64 && MMU
++	depends on ARCH_SUSPEND_POSSIBLE
+ 	select ARM_CPU_SUSPEND
+ 	select CPU_IDLE_MULTIPLE_DRIVERS
+ 	select DT_IDLE_STATES
 -- 
-2.31.1
+2.30.2
 
