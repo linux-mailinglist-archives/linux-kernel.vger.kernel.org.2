@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D459644035E
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 21:40:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18AE7440362
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 21:40:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231285AbhJ2Tmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 15:42:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60020 "EHLO
+        id S231269AbhJ2Tml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 15:42:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231269AbhJ2Tmb (ORCPT
+        with ESMTP id S230525AbhJ2Tmh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 15:42:31 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40E9AC061570;
-        Fri, 29 Oct 2021 12:40:02 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id s13so10964252wrb.3;
-        Fri, 29 Oct 2021 12:40:02 -0700 (PDT)
+        Fri, 29 Oct 2021 15:42:37 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45461C061570;
+        Fri, 29 Oct 2021 12:40:08 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id r8so5333989wra.7;
+        Fri, 29 Oct 2021 12:40:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=vZm9A2T24RE3QB1vLk0UMA+gWOq1n7UkyGpi6SN/IHE=;
-        b=YceGVtW30AVsOVXYivUXmm3i8/mNJJ0W8Ptgcrjp3qB/O4WwM1ITTAoczMwseKeeCg
-         +vblbOi3NdZPcbhPrVNdKlChdv+z1F1G9AWJAzrBRP1IKZ25MiVpw+yKC4TZp9JZQMxG
-         4m885QhW+uc93ulrTlxw6EwFcE8q7YMmKFfbzoHuCorXqsrBJbalVXn3H/E2euxWrOzz
-         f8rICvbqVnOtZXEBtttifSE7ts42hcW51QIqp4HFHI5Q6YyeTNrAzhwAUdiwnUHGXDaf
-         hr23zeqY/UCIehaxQOpU7TQTea2L2wY523VL+vbJ4sNM4wWzYNZRLoIbLNY4G8sZAWfN
-         A5TQ==
+        bh=Iz1/9itNHKzffmv7IN5WPf90NYweKtO8I55T4DTR9D0=;
+        b=GknvBqosrvVRhdZWoPFA+3S31LbF1oV4x9HxyljybQQ23m+RoG2gKywxQ0HZ6fED3J
+         BcVwHgxs8cioVJtb228bhJ324CHDurEOpI8ATUl9jnB+oSQwDudn31MUlXM2KgAwMnpz
+         rjacikS1rfXpddPdo6fUNln/VZTsfNjaLZ2v94BlBR3yOlKnahcC+E7kR/SIYuxuboey
+         uOIlk2kIAyxxC95nWyXy4ouNkqh67Hv7/AKObkGXv0Qn7q1jBbCWPfOPzFGj8urwhaIk
+         iM7NLeXR6v249tMoF6oyZMdLCooLY8fxlYBm1XzAU/tMFml4TDLOsXc/VZKNDbVKKIkp
+         Qm1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=vZm9A2T24RE3QB1vLk0UMA+gWOq1n7UkyGpi6SN/IHE=;
-        b=JE8200Pyjfw91VNGwPHb01cKncYek/b4EUtBQQjHq0YiuI/LVxrfPz3ckFXoOmC1Gk
-         R/QD5WDTDmePIUb9i77t5tRGUM3K2dhh5QeLdUZ9DJmRAAvNlXqr77E6nWnNGMuQLknH
-         eJlFQbvh3jjRhhF21fcvBBAgWJz0TmHj9DVgR0c2S7j9FLQERdM/i9bpENdlH1cpTen0
-         I+MHEDHy8tmAIqHs9NNW1LLJ/WtZaOxYr8wLAcQcNUlQFHBCPN7deowh3zDcRCr65UAC
-         C/IV5ou9pSBrt/Tquzd/5jQx+F4cmYg3BiCoVK6pOcoB834VPKIogD8849HndZxm+wD6
-         uF2w==
-X-Gm-Message-State: AOAM532y/mK8SGbACn2YR6gm7wsM929X9M6zPRxnSTROfnnpraAkxIKf
-        c7zGv1HDu9y+Y+jebbQGOaqKlfAfVVU=
-X-Google-Smtp-Source: ABdhPJw4waE+VCdmq0wxVL12cUjBCge80VDwLXVAhr2BIkrGOhwQkVdh9gsLBhSWov95WOxTs3hTpg==
-X-Received: by 2002:a05:600c:796:: with SMTP id z22mr13375932wmo.188.1635536400933;
-        Fri, 29 Oct 2021 12:40:00 -0700 (PDT)
+        bh=Iz1/9itNHKzffmv7IN5WPf90NYweKtO8I55T4DTR9D0=;
+        b=12HHBV32o6M24GAg7K9Q2AaJuWPe7ICOLFA3Bio4q9KGY6amlibf6iNqTskL+mIL1Z
+         0mMyvK7Yra5EEbW1iv+YrLX36dCppwzXIW1umtQRbm4poBvY5AcA1hcQGOY4tsTlGZuA
+         DFy+fNDjlwy9r0U/f++PrTWR5rbpAnu5/ENKYsCmW0yN7PksHipL/9I4YWBi1Cy2/DoP
+         Gc4SOYuPuqyJFRC8JrQmfMYPCzvsj68H7WZB3LPURPsloZrr8lJYW9j3+SwangM/Uh1l
+         TuQ1u254ikDpT7y6LN/ci9kFMyVYqyI4jfWIb0NLfM8ICb+ucf4bgj+yRNJi87012jKG
+         5yig==
+X-Gm-Message-State: AOAM53082k2+3GMqy3J+fORCReQu1RHkqN9UNWAySxRmFGoV40wadC1q
+        o26Lype86+Ndo1QrmecjF1c=
+X-Google-Smtp-Source: ABdhPJxEeM3pFnFyFERc9wtUPhS4OJ2spbRuHRdt3kYkkRiryh4lKyQTQey5MM4yKG0wg6/Z/YLnhw==
+X-Received: by 2002:a1c:2397:: with SMTP id j145mr4339558wmj.113.1635536406942;
+        Fri, 29 Oct 2021 12:40:06 -0700 (PDT)
 Received: from matrix-ESPRIMO-P710 (p200300c78f4e06341d0f9ebdf4bbe019.dip0.t-ipconnect.de. [2003:c7:8f4e:634:1d0f:9ebd:f4bb:e019])
-        by smtp.gmail.com with ESMTPSA id f7sm7668646wmg.14.2021.10.29.12.40.00
+        by smtp.gmail.com with ESMTPSA id f10sm7126673wri.84.2021.10.29.12.40.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Oct 2021 12:40:00 -0700 (PDT)
-Date:   Fri, 29 Oct 2021 21:39:58 +0200
+        Fri, 29 Oct 2021 12:40:06 -0700 (PDT)
+Date:   Fri, 29 Oct 2021 21:40:04 +0200
 From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
 To:     corbet@lwn.net, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Cc:     linux-usb@vger.kernel.org
-Subject: [PATCH 2/3] Docs: usb: update comment and code near increment usage
- count
-Message-ID: <53328d28190d987dc0ac5b455014bfe32cf39a64.1635533924.git.philipp.g.hortmann@gmail.com>
+Subject: [PATCH 3/3] Docs: usb: update writesize, copy_from_user,
+ usb_fill_bulk_urb, usb_submit_urb
+Message-ID: <939d9e91d1ac12003a08d7694b6d6bd29ba2a57d.1635533924.git.philipp.g.hortmann@gmail.com>
 References: <cover.1635533924.git.philipp.g.hortmann@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -65,29 +65,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-update comment: increment our usage count ..
-and code according to usb-skeleton.c
+update code examples writesize, copy_from_user, usb_fill_bulk_urb,
+usb_submit_urb in skel_write() according to usb-skeleton.c
 
 Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
 ---
- Documentation/driver-api/usb/writing_usb_driver.rst | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ .../driver-api/usb/writing_usb_driver.rst     | 24 ++++++++++---------
+ 1 file changed, 13 insertions(+), 11 deletions(-)
 
 diff --git a/Documentation/driver-api/usb/writing_usb_driver.rst b/Documentation/driver-api/usb/writing_usb_driver.rst
-index 5c29e5bdbe88..14eda0342649 100644
+index 14eda0342649..02c28ee10b91 100644
 --- a/Documentation/driver-api/usb/writing_usb_driver.rst
 +++ b/Documentation/driver-api/usb/writing_usb_driver.rst
-@@ -167,8 +167,8 @@ structure. This is done so that future calls to file operations will
- enable the driver to determine which device the user is addressing. All
- of this is done with the following code::
+@@ -185,24 +185,26 @@ space, points the urb to the data and submits the urb to the USB
+ subsystem. This can be seen in the following code::
  
--    /* increment our usage count for the module */
--    ++skel->open_count;
-+    /* increment our usage count for the device */
-+    kref_get(&dev->kref);
+     /* we can only write as much as 1 urb will hold */
+-    bytes_written = (count > skel->bulk_out_size) ? skel->bulk_out_size : count;
++    size_t writesize = min_t(size_t, count, MAX_TRANSFER);
  
-     /* save our object in the file's private structure */
-     file->private_data = dev;
+     /* copy the data from user space into our urb */
+-    copy_from_user(skel->write_urb->transfer_buffer, buffer, bytes_written);
++    copy_from_user(buf, user_buffer, writesize);
+ 
+     /* set up our urb */
+-    usb_fill_bulk_urb(skel->write_urb,
+-		      skel->dev,
+-		      usb_sndbulkpipe(skel->dev, skel->bulk_out_endpointAddr),
+-		      skel->write_urb->transfer_buffer,
+-		      bytes_written,
++    usb_fill_bulk_urb(urb,
++		      dev->udev,
++		      usb_sndbulkpipe(dev->udev, dev->bulk_out_endpointAddr),
++		      buf,
++		      writesize,
+ 		      skel_write_bulk_callback,
+-		      skel);
++		      dev);
+ 
+     /* send the data out the bulk port */
+-    result = usb_submit_urb(skel->write_urb);
+-    if (result) {
+-	    err("Failed submitting write urb, error %d", result);
++    retval = usb_submit_urb(urb, GFP_KERNEL);
++    if (retval) {
++	    dev_err(&dev->interface->dev,
++                "%s - failed submitting write urb, error %d\n",
++                __func__, retval);
+     }
+ 
+ 
 -- 
 2.25.1
 
