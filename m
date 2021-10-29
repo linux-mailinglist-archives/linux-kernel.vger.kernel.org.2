@@ -2,147 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F812440156
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 19:35:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AFE344015D
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 19:39:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230055AbhJ2RiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 13:38:22 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:33042
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229772AbhJ2RiV (ORCPT
+        id S230041AbhJ2Rm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 13:42:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60706 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229772AbhJ2RmY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 13:38:21 -0400
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com [209.85.167.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 70EC43F179
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 17:35:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1635528948;
-        bh=jvV6mA1s9hOJyCsNlRY4ar4PhiLrM2nEHfaCHa+wtwI=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=TRysrsLPHcqxR7esUa3LCDjvbaubjeiqZ6WhCEwJ6BQ0wKTOSPvgk5KTWdWLkTIXB
-         7uMoJCNebomP1t9ULSm65wxOAl3Iv0QSNXCZ1bWzpUrDozA5sHBsgEHmbWnPdIIGHx
-         T7xxE/+Prs6cNpEyp0d7fyaXNYJl3Cs0UkGwaqhgFSQeP9FtTqz18Puk/6kGMvIJh+
-         mvWqfm+wDECuVmtbTPFN4FiXhCYkRLcvL+wfo1F70V0c6QX76082i7VMtqPW7Hf68y
-         8/PuD0wHANpL4+2eqErNbYKdxUqrc8z5D0pBtnVd7hWwtQhv09rPXEZFhR8wNHowNB
-         A+nvVjjcDXd9w==
-Received: by mail-lf1-f71.google.com with SMTP id h21-20020a0565123c9500b003ffa23a0577so4346831lfv.18
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 10:35:48 -0700 (PDT)
+        Fri, 29 Oct 2021 13:42:24 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21811C061570
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 10:39:55 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id f3so14303233lfu.12
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 10:39:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SXYZHrunVSca58xKvNCMYWyMo/I0/JX/EjDnzxanuYQ=;
+        b=bvO4mvr2I2siAzVqu+IpyBzGbUAlBqVeEZwkANZiRfFAM21SFpA5loXvepjpKwWwgV
+         3kbfhTHEsxDZs/xTsnguniHIFTJzs2jc/1wSQqKuiE6dTTIBXfyecfru0xG4WWHjIvdA
+         beNbY7nls022JGN9HqZpEHd8pZNuYWMvAsEJw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jvV6mA1s9hOJyCsNlRY4ar4PhiLrM2nEHfaCHa+wtwI=;
-        b=nMqQomvcSOQr0t+MQKrJ4GypPX6/TFOHOqg98ZoEAUlQ51Y+7y3DeW/t5xVtjOV1Yk
-         +EzjRRLYEsKQt86lqkQRU2BheX4frPpN9nZxpY5rpiKqH1ILT1Yy9KoyMxifMDmWZZ8q
-         T/za/r1b4GIcrjgZUYS8EScLIWcjOV/UtfGFmTwOs9k8tTU/ZqBn4FrEnv/dSLhffGn6
-         jgilvLF1rymgkdp4938HGhhbIiFf+sCib/pi3v3fe+etVKeXwEHmlTZyzTXT52Q7NQGF
-         8SVi1f0+I5rmPQ/OkTnH03B7roGSYmHecR7HLfHssLGe/tiJu/f1CzpBUgm2+orHXChv
-         ryYg==
-X-Gm-Message-State: AOAM530uP7xNLHfqd0lro7jyVnyzhs5Dx6F+CsY5XO5G1nsrlNVyWQ66
-        TLTvCcOWrjBzcqmlyH5yFCPxlEpOLrngv1YxmTJuutwNlbn88S+Umzh4Z1jhUwSkkkJppEiIHFo
-        1awZ6wZKJM513EKh5foEgWbiI6qJiR9p+BvrDKCT6nA==
-X-Received: by 2002:a2e:7617:: with SMTP id r23mr12947350ljc.187.1635528947766;
-        Fri, 29 Oct 2021 10:35:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwBv6+kvbnDwAjjNuXfYL+0ezjFAhs3r2BkTi8MNivnnR7id+AwsxbYbbuG2Mbqzl68kUEMrA==
-X-Received: by 2002:a2e:7617:: with SMTP id r23mr12947326ljc.187.1635528947569;
-        Fri, 29 Oct 2021 10:35:47 -0700 (PDT)
-Received: from [192.168.3.161] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id s4sm182963lfi.180.2021.10.29.10.35.46
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SXYZHrunVSca58xKvNCMYWyMo/I0/JX/EjDnzxanuYQ=;
+        b=SXId+3TVxsyFXrgx5H8ywldh/PPRoiBivTSh/4KsXJtCXozZHdWoqU0ooJQ27Iweuk
+         O+JgwuLnbE5YnZqftIEUepaHh+BfIh3b4+Spwvx1B3ISC9cEGQMyCXnAanbo/wTlk4rs
+         W3pbZBaMuygERA1vbYH9O+31qzJKbCheE/Nu5wVQWsizMeqOoYvqsf31+NUUotrn1100
+         pQGwZzt6KZtusd9EbTUi1YVFIFFXw3HtDjaGVeB/gmLJUyaeLrZyoJgDPzgVZesU7EUg
+         Xaqo6XBjU/1L1mXm+2oqTDh+ZMu7n9FokheHNFeW3Z1+pKBIxPOWGhraD8n9l4G+5SxN
+         jl/Q==
+X-Gm-Message-State: AOAM530fEYesBQ9qeqkmjtPt60IHMIjGZXuz50dm7TNaeFxTOlQXV9d5
+        LbxMbopi6ccodmqDpPDFRFiL88I7FKdlC1ttDXA=
+X-Google-Smtp-Source: ABdhPJwDqfLftkzqzD3h/09LxW03PH6/4XKzVwi7hxCvjZtV37C8wS2MCiyVeyT6RQdWn9Ev3/lAqQ==
+X-Received: by 2002:a05:6512:16a7:: with SMTP id bu39mr11959492lfb.578.1635529193208;
+        Fri, 29 Oct 2021 10:39:53 -0700 (PDT)
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com. [209.85.167.54])
+        by smtp.gmail.com with ESMTPSA id o17sm359136lfo.176.2021.10.29.10.39.52
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Oct 2021 10:35:47 -0700 (PDT)
-Subject: Re: [PATCH] memory: mtk-smi: Fix a null dereference for the ostd
-To:     Yong Wu <yong.wu@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
-        anan.sun@mediatek.com, yi.kuo@mediatek.com,
-        anthony.huang@mediatek.com, Ikjoon Jang <ikjn@chromium.org>
-References: <20211028055056.26378-1-yong.wu@mediatek.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <23b036d1-bdc4-da55-a800-03fc3dabd48e@canonical.com>
-Date:   Fri, 29 Oct 2021 19:35:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Fri, 29 Oct 2021 10:39:52 -0700 (PDT)
+Received: by mail-lf1-f54.google.com with SMTP id y26so22411120lfa.11
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 10:39:52 -0700 (PDT)
+X-Received: by 2002:a19:f619:: with SMTP id x25mr11710609lfe.141.1635529191923;
+ Fri, 29 Oct 2021 10:39:51 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211028055056.26378-1-yong.wu@mediatek.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200803044024.GA6429@gondor.apana.org.au> <20200830223304.GA16882@gondor.apana.org.au>
+ <20201026011159.GA2428@gondor.apana.org.au> <20201227113221.GA28744@gondor.apana.org.au>
+ <20210108035450.GA6191@gondor.apana.org.au> <20210708030913.GA32097@gondor.apana.org.au>
+ <20210817013601.GA14148@gondor.apana.org.au> <20210929023843.GA28594@gondor.apana.org.au>
+ <20211029041408.GA3192@gondor.apana.org.au>
+In-Reply-To: <20211029041408.GA3192@gondor.apana.org.au>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 29 Oct 2021 10:39:35 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whEFkHvtecaUF5MEZMxW_UVUMn-bLmfAhcvx4t9Qia90A@mail.gmail.com>
+Message-ID: <CAHk-=whEFkHvtecaUF5MEZMxW_UVUMn-bLmfAhcvx4t9Qia90A@mail.gmail.com>
+Subject: Re: [GIT PULL] Crypto Fixes for 5.15
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/10/2021 07:50, Yong Wu wrote:
-> We add the ostd setting for mt8195. It introduces a abort for the
-> previous SoC which doesn't have ostd setting. This is the log:
-> 
-> Unable to handle kernel NULL pointer dereference at virtual address
-> 0000000000000080
-> ...
-> pc : mtk_smi_larb_config_port_gen2_general+0x64/0x130
-> lr : mtk_smi_larb_resume+0x54/0x98
-> ...
-> Call trace:
->  mtk_smi_larb_config_port_gen2_general+0x64/0x130
->  pm_generic_runtime_resume+0x2c/0x48
->  __genpd_runtime_resume+0x30/0xa8
->  genpd_runtime_resume+0x94/0x2c8
->  __rpm_callback+0x44/0x150
->  rpm_callback+0x6c/0x78
->  rpm_resume+0x310/0x558
->  __pm_runtime_resume+0x3c/0x88
-> 
-> In the code: larbostd = larb->larb_gen->ostd[larb->larbid],
-> if "larb->larb_gen->ostd" is null, the "larbostd" is the offset, it is
-> also a valid value, thus, use the larb->larb_gen->ostd as the condition
-> inside the "for" loop.
+On Thu, Oct 28, 2021 at 9:14 PM Herbert Xu <herbert@gondor.apana.org.au> wrote:
+>
+> This push fixes a build-time warning in x86/sm4.
 
-You need to write more clearly, what you are fixing here.
+Hmm..
 
-> 
-> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
-> ---
-> Hi Krzysztof,
-> Could you help review and conside this as a fix for the mt8195 patchset?
-> The mt8195 patchset are not in mainline, thus, I don't know its sha-id,
-> and don't add Fixes tag.
-> Thanks
-> ---
->  drivers/memory/mtk-smi.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/memory/mtk-smi.c b/drivers/memory/mtk-smi.c
-> index b883dcc0bbfa..0262a59a2d6e 100644
-> --- a/drivers/memory/mtk-smi.c
-> +++ b/drivers/memory/mtk-smi.c
-> @@ -257,7 +257,7 @@ static void mtk_smi_larb_config_port_gen2_general(struct device *dev)
->  	if (MTK_SMI_CAPS(flags_general, MTK_SMI_FLAG_SW_FLAG))
->  		writel_relaxed(SMI_LARB_SW_FLAG_1, larb->base + SMI_LARB_SW_FLAG);
->  
-> -	for (i = 0; i < SMI_LARB_PORT_NR_MAX && larbostd && !!larbostd[i]; i++)
-> +	for (i = 0; i < SMI_LARB_PORT_NR_MAX && larb->larb_gen->ostd && !!larbostd[i]; i++)
->  		writel_relaxed(larbostd[i], larb->base + SMI_LARB_OSTDL_PORTx(i));
+> Tianjia Zhang (1):
+>       crypto: x86/sm4 - Fix invalid section entry size
 
-The code does not look good. You have already a dereference at line 244:
+So I do wonder why the crypto code asm tends to use such complex
+".section" directives.
 
-	const u8 *larbostd = larb->larb_gen->ostd[larb->larbid];
+Almost everythign else in the kernel just uses
 
-You are not fixing the NULL pointer dereference.
+     .section <name>,"a"
 
->  
->  	for_each_set_bit(i, (unsigned long *)larb->mmu, 32) {
-> 
+for data (and "ax" for text).
 
+The crypto code uses that very subtle "M" flag which allows the linker
+to merge data, but how much of a win is that added complexity? Now you
+need to get the sizes exactly right, and you hit tooling issues.
 
-Best regards,
-Krzysztof
+Plus, I get the feeling that some people have just copied-and-pasted
+those things, and don't necessarily realize just _how_ subtle 'M'
+sections are.
+
+How much of a data savings is it to have this complexity? Particularly
+since I suspect most of the time these things end up being individual
+modules, and never actually get linked together at all?
+
+So I get this very strong feeling that the crypto code is doing
+complicated and fragile things that cause tooling issues - and does so
+for no good reason and no actual real-life upside.
+
+I've pulled this, but I do suspect that all the fancy
+
+   .section .rodata.xyz, "aM", @progbits, abc
+
+could just as well be
+
+    .section .rodata, "a"
+
+instead, and you guys are only causing problems for yourself by trying
+to be clever in pointless ways.
+
+            Linus
