@@ -2,130 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BDFE43FBFD
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 14:04:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16E8543FC04
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 14:06:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231481AbhJ2MHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 08:07:19 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:7821 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229692AbhJ2MHR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 08:07:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1635509089; x=1667045089;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=rLhxBIcFSdOiKZQUIOx/5AlyAZ5laI3Gc0J2/okOBqc=;
-  b=XwRA0bgFkk8UXwtqlpx7QmKKyN/zyagM+kaqP0aLQzSc4JAHQeYO4c80
-   XvZkVO2b/HlFIUyYcrrg5lWZChqdsFV/Q33YlVb1gzqna5rtxGpVLAp2t
-   4AteFeisaItJWZiNmhuGfeEqTCp2+qsbMx4MdZO9JHaG1ozqe/vzWFyYj
-   QCj8VOhe7g59kvAX7jpOX1J5i1K0TaZzxEvCWhjL790jxOKOr4EZXi9Js
-   qPiqppOLuemEY7VlI/BcKvrjhl8RQZApfAGdQqnR9oUJ3uk3rAy1QaGEE
-   sctoOSZLlvMLIHeJAHggs6nuL5O4y5PuYBEqZICiZN0tKyR/JkW9K0SGZ
-   A==;
-IronPort-SDR: TMnM0lPzY3HH4TBwEEepbdRw93UljuFTHZf4Aulz1yV0BZBP+S8296Keezbh8vAFl7FZAby7nI
- S5aQw8OkNWh/eG3T3yVQMvFLiT+IPIVcH/MQEy5/wNXcNT0A6D6nCRX5dpd2a7Mb1sjxgNz+ob
- wZBMdapUqFgQyP5cbLTf4O8Tqv1RdpKcZIn2ShQqwUO/nVSz/AbUvejxaW0Uxf0xO3O6UArr4V
- HG0wQiELInhuCQ2GNi1C+8PgB7u+pHKpr7yMs8TqrGAqAARQgF47d/DxVO4lXngQs56A3jw/At
- m8q+pW7gxWtn4KzbSm37D9r+
-X-IronPort-AV: E=Sophos;i="5.87,192,1631602800"; 
-   d="scan'208";a="150025505"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 29 Oct 2021 05:04:48 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Fri, 29 Oct 2021 05:04:48 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex01.mchp-main.com
- (10.10.85.143) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
- Transport; Fri, 29 Oct 2021 05:04:48 -0700
-Date:   Fri, 29 Oct 2021 14:06:31 +0200
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
-        <nicolas.ferre@microchip.com>, <kavyasree.kotagiri@microchip.com>,
-        <eugen.hristev@microchip.com>, <linux-clk@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH 1/3] dt-bindings: clock: lan966x: Extend for clock
- gate support
-Message-ID: <20211029120631.a7p6d6hurefz4emt@soft-dev3-1.localhost>
-References: <20211019084449.1411060-1-horatiu.vultur@microchip.com>
- <20211019084449.1411060-2-horatiu.vultur@microchip.com>
- <YXjCufT1WyLEriY2@robh.at.kernel.org>
+        id S231539AbhJ2MJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 08:09:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33442 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231510AbhJ2MJR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 08:09:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 99B5261167
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 12:06:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635509208;
+        bh=wHSN4gzbMNlP3cL0uOMD0Bz+CpMAiXAmVJsjYeOYTuY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=BqxXoqRchGkK6bbVqSvH6vrUMYS6QQNRuZLuHTaEwKjyesVVYW0M1R9xUyPPVBq/b
+         Fdea7iZFhFgpqUeLPEnikp4auVRHTVZ6HsBgNJ9tVCXmRGjBtpowc5ra9WHKtd8yMs
+         YnSeEwUk5p5XqZDY6LHNj4zVsV6VygKxVbIpTAFlPdDKR+iVPJo7M5gihmWgTLWa3m
+         RwjDuf8KYntAKGwcMzWzt+36lC0HDhifSLL4qM84mnFq2EAb1YzMwcR3ltwpvOdGKG
+         B9FDoUGyoMzoK9qogHhyPDZxWwb84e+trtmAoNNXN3M5Ajp+uRaiZXKT5tELtyfD5t
+         mplXexvNHCfhA==
+Received: by mail-wr1-f54.google.com with SMTP id k7so15767425wrd.13
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 05:06:48 -0700 (PDT)
+X-Gm-Message-State: AOAM5335fG3RA336gOYWcZbi/Qkm5usyg3DIM6/Qq4SGNVs7pUuaOiPj
+        +dYi+uWC6X75IyooMjnvDwZlzcOJS6VA6adeRJQ=
+X-Google-Smtp-Source: ABdhPJyuj/QVAPGVv6P9H50bSyp8g+Y5gAbxa7PrEH9Io/M+TBSmkz99ozucgwXHa/I3Q6KEGbXDDmRLxgKXyg6skhU=
+X-Received: by 2002:adf:e292:: with SMTP id v18mr13328237wri.369.1635509207143;
+ Fri, 29 Oct 2021 05:06:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <YXjCufT1WyLEriY2@robh.at.kernel.org>
+References: <20210927142816.2069269-1-arnd@kernel.org> <202109270923.97AFDE89DB@keescook>
+ <YVXJLE8UqgcUNIKl@phenom.ffwll.local> <878ryeit9i.fsf@intel.com>
+ <CAK8P3a0EG_C6OvG00Dg8SQacirNztLFjVonb5t2xQj9aFZ47Vg@mail.gmail.com>
+ <ca11cd15-3877-468b-c6b7-9022b6b11824@redhat.com> <YXrAm6d6ALx0aciQ@phenom.ffwll.local>
+In-Reply-To: <YXrAm6d6ALx0aciQ@phenom.ffwll.local>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Fri, 29 Oct 2021 14:06:31 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1i5=Z59=zL6MFL3oN-Wj9kbV8xsgoZG-rAn8NekZz9Og@mail.gmail.com>
+Message-ID: <CAK8P3a1i5=Z59=zL6MFL3oN-Wj9kbV8xsgoZG-rAn8NekZz9Og@mail.gmail.com>
+Subject: Re: [PATCH] [RESEND] drm: fb_helper: fix CONFIG_FB dependency
+To:     Javier Martinez Canillas <javierm@redhat.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>, Arnd Bergmann <arnd@arndb.de>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     Daniel Vetter <daniel@ffwll.ch>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 10/26/2021 22:08, Rob Herring wrote:
+On Thu, Oct 28, 2021 at 5:24 PM Daniel Vetter <daniel@ffwll.ch> wrote:
+>
+> On Wed, Oct 27, 2021 at 03:19:34PM +0200, Javier Martinez Canillas wrote:
+> > On 10/27/21 14:18, Arnd Bergmann wrote:
+> >
+> > [snip]
+> >
+> > > Right, how about this change on top?
+> > >
+> > > --- a/drivers/gpu/drm/Kconfig
+> > > +++ b/drivers/gpu/drm/Kconfig
+> > > @@ -117,9 +117,8 @@ config DRM_DEBUG_MODESET_LOCK
+> > >
+> > >  config DRM_FBDEV_EMULATION
+> > >         bool "Enable legacy fbdev support for your modesetting driver"
+> > > -       depends on DRM
+> > > -       depends on FB=y || FB=DRM
+> > > -       select DRM_KMS_HELPER
+> > > +       depends on DRM_KMS_HELPER
+> > > +       depends on FB=y || FB=DRM_KMS_HELPER
+> > >         select FB_CFB_FILLRECT
+> > >         select FB_CFB_COPYAREA
+> > >         select FB_CFB_IMAGEBLIT
+> > >
+> > > That would probably make it work for DRM=y, FB=m, DRM_KMS_HELPER=m,
+> > > but it needs more randconfig testing, which I can help with.
+> >
+> > Looks good to me as well.
+> >
+> > Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
+>
+> Is the mess I created sorted now, or something for me to do? I'm terribly
+> burried in stuff :-/
 
-Hi Rob,
+I have done a few days worth of build testing with that patch applied, and
+did not see any other problems. I've written a proper description and
+submitted it as
+https://lore.kernel.org/all/20211029120307.1407047-1-arnd@kernel.org/T
 
-> 
-> On Tue, Oct 19, 2021 at 10:44:47AM +0200, Horatiu Vultur wrote:
-> > It is required to add a new resource to be able to access the clock gate
-> > registers. Now that we have 2 resources, add also reg-names property to
-> > make more clear.
-> 
-> It is an ABI breakage to require 2 reg entries. If that's okay for this
-> binding, you need to explain why. The binding requiring 2 so that DT
-> files get updated, but the driver allowing for 1 is okay.
+The version you have in linux-next works correctly, but this patch on top
+is an improvement.
 
-I will make the resource optional not to break any ABI.
-
-> 
-> >
-> > Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
-> > ---
-> >  .../bindings/clock/microchip,lan966x-gck.yaml       | 13 +++++++++++--
-> >  1 file changed, 11 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/Documentation/devicetree/bindings/clock/microchip,lan966x-gck.yaml b/Documentation/devicetree/bindings/clock/microchip,lan966x-gck.yaml
-> > index fca83bd68e26..047c77e049f1 100644
-> > --- a/Documentation/devicetree/bindings/clock/microchip,lan966x-gck.yaml
-> > +++ b/Documentation/devicetree/bindings/clock/microchip,lan966x-gck.yaml
-> > @@ -19,7 +19,14 @@ properties:
-> >      const: microchip,lan966x-gck
-> >
-> >    reg:
-> > -    maxItems: 1
-> > +    items:
-> > +      - description: core registers
-> > +      - description: gate registers
-> > +
-> > +  reg-names:
-> > +    items:
-> > +      - const: core
-> > +      - const: gate
-> >
-> >    clocks:
-> >      items:
-> > @@ -39,6 +46,7 @@ properties:
-> >  required:
-> >    - compatible
-> >    - reg
-> > +  - reg-names
-> >    - clocks
-> >    - clock-names
-> >    - '#clock-cells'
-> > @@ -52,6 +60,7 @@ examples:
-> >          #clock-cells = <1>;
-> >          clocks = <&cpu_clk>, <&ddr_clk>, <&sys_clk>;
-> >          clock-names = "cpu", "ddr", "sys";
-> > -        reg = <0xe00c00a8 0x38>;
-> > +        reg = <0xe00c00a8 0x38>, <0xe00c02cc 0x4>;
-> > +        reg-names = "core", "gate";
-> >      };
-> >  ...
-> > --
-> > 2.33.0
-> >
-> >
-
--- 
-/Horatiu
+        Arnd
