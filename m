@@ -2,89 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBEB343F42F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 02:58:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F5E543F443
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 03:08:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231420AbhJ2BBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 21:01:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230211AbhJ2BBA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 21:01:00 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8282CC061570;
-        Thu, 28 Oct 2021 17:58:32 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id t40so7610583qtc.6;
-        Thu, 28 Oct 2021 17:58:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LHckMV0NLdWS9FKVte90nvwxIvajXuPQr1oy0D13+Jg=;
-        b=IT/uopC6YVy6fowzr1JPrxxpbdzvQRPZhqlicCjNONO2OSVYk2erQfS9i4KxDzlB6z
-         HXZDoYy1Q4nsqo97TsomH3/nIa4pFIiq1t7EGWIg6omRrU33rBsE7S8gpxSLx0Ak1avb
-         nF071ne6e6pdRaboMKIW/FoNJJXWuIw4X+qujBQqvlJNUXvqGDeA8l9f5C9tK+6pNssi
-         5v2+TutfSW9d2ETSSGG/nJoPgpE7n1gbARsCBlyTotf2xp5vWk4fKezEGrSEPrnSu6Wg
-         VY5zSkHoVgSYjWMU8M8dGUAI8KjBovGWiHCfyxIJdtQazQPqdqgRx/pk4ZgvxB7kBPNl
-         9pAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LHckMV0NLdWS9FKVte90nvwxIvajXuPQr1oy0D13+Jg=;
-        b=sdQURs7xR3HC4bQgYmwCveyWLOoVtEJnVDj2NnC7XrKARQ3eo4SePNDaADlgStuxrG
-         akvrZji0Ht+WbBV6l5bEveZmoIm5dyUik/8rVTZRR/jcLEE6ef+nR8TNs5KvfVNO7Z2D
-         v83yf1G0lpP6EaJm6HM9hc8G9WqMl2y9TANJsb7oXbv8YTrkRcHdX0c6JN3Y2dIer6R8
-         XaG9lY4utfsD+FIQ8T7CoBdZuEZsNpodveBIy1jEmvPYLbsasiAU9ocuIbWCJVVFqIZJ
-         Q6RVLTU18NgpIGfNxsDYA47/3WNGzivGTJ0t4UVet78+gBOvCwNdcAeRdYrCI2I/WkGK
-         d1hw==
-X-Gm-Message-State: AOAM531z0iWzVS5uvggIdWW4p0HgPcCQpQsNbQXFuwsmplAVbj+FB9zq
-        RL3kPWkUG8bPhaO0FXoBK57GQxKNqUg=
-X-Google-Smtp-Source: ABdhPJxsAvXIYiOS7WDBhE58FJaHZ6gsUkmLCP9iZJUPov1i1h2Q1QbMVt5HRp3aLepoKxl6H2p7Rg==
-X-Received: by 2002:ac8:5ace:: with SMTP id d14mr4475560qtd.214.1635469111600;
-        Thu, 28 Oct 2021 17:58:31 -0700 (PDT)
-Received: from localhost.localdomain (c-67-187-90-124.hsd1.tn.comcast.net. [67.187.90.124])
-        by smtp.gmail.com with ESMTPSA id g18sm3033394qto.71.2021.10.28.17.58.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 17:58:31 -0700 (PDT)
-From:   frowand.list@gmail.com
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/1] of: unittest: fix dts for interrupt-map provider build warning
-Date:   Thu, 28 Oct 2021 19:58:02 -0500
-Message-Id: <20211029005802.2047081-1-frowand.list@gmail.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S231461AbhJ2BKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 21:10:37 -0400
+Received: from smtp23.cstnet.cn ([159.226.251.23]:34390 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230211AbhJ2BKf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 21:10:35 -0400
+Received: from localhost.localdomain (unknown [124.16.138.128])
+        by APP-03 (Coremail) with SMTP id rQCowAAnLKhhSXthZAFaBQ--.31789S2;
+        Fri, 29 Oct 2021 09:07:45 +0800 (CST)
+From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
+To:     Jason@zx2c4.com, davem@davemloft.net, kuba@kernel.org
+Cc:     wireguard@lists.zx2c4.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Subject: [PATCH] wireguard: queueing: Fix implicit type conversion
+Date:   Fri, 29 Oct 2021 01:07:44 +0000
+Message-Id: <1635469664-1708957-1-git-send-email-jiasheng@iscas.ac.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: rQCowAAnLKhhSXthZAFaBQ--.31789S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrKFyUWFyxJF1rZr4rXr1fJFb_yoWkAwb_Cw
+        n7Wr12gryj9FyI9w13XrWFva4Sgay8X3yxWay8KrZrZw12qrWfX3s5XFyqqr1kG3yfAF17
+        ZF1Dtr1Sv342gjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbckFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
+        Gr1UM28EF7xvwVC2z280aVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr
+        0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+        6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
+        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVWk
+        MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
+        0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0E
+        wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJV
+        W8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI
+        42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JUHpB-UUUUU=
+X-Originating-IP: [124.16.138.128]
+X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frank Rowand <frank.rowand@sony.com>
+The parameter 'cpu' is defined as unsigned int.
+However in the cpumask_next() it is implicitly type conversed
+to int.
+It is universally accepted that the implicit type conversion is
+terrible.
+Also, having the good programming custom will set an example for
+others.
+Thus, it might be better to change the type of 'cpu' from
+unsigned int to int.
 
-Fix kernel build warning:
-drivers/of/unittest-data/tests-interrupts.dtsi:32.26-35.6: Warning (interrupt_map): /testcase-data/interrupts/intmap1: Missing '#address-cells' in interrupt-map provider
-
-A recently implemented dtc compiler warning reported the dts problem.
-
-Signed-off-by: Frank Rowand <frank.rowand@sony.com>
+Fixes: e7096c1 ("net: WireGuard secure network tunnel")
+Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
 ---
- drivers/of/unittest-data/tests-interrupts.dtsi | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/wireguard/queueing.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/of/unittest-data/tests-interrupts.dtsi b/drivers/of/unittest-data/tests-interrupts.dtsi
-index 9b60a549f502..8c2b91b998aa 100644
---- a/drivers/of/unittest-data/tests-interrupts.dtsi
-+++ b/drivers/of/unittest-data/tests-interrupts.dtsi
-@@ -31,6 +31,7 @@ test_intmap0: intmap0 {
+diff --git a/drivers/net/wireguard/queueing.h b/drivers/net/wireguard/queueing.h
+index 4ef2944..64f397f 100644
+--- a/drivers/net/wireguard/queueing.h
++++ b/drivers/net/wireguard/queueing.h
+@@ -106,7 +106,7 @@ static inline void wg_reset_packet(struct sk_buff *skb, bool encapsulating)
  
- 			test_intmap1: intmap1 {
- 				#interrupt-cells = <2>;
-+				#address-cells = <1>;
- 				interrupt-map = <0x5000 1 2 &test_intc0 15>;
- 			};
+ static inline int wg_cpumask_choose_online(int *stored_cpu, unsigned int id)
+ {
+-	unsigned int cpu = *stored_cpu, cpu_index, i;
++	int cpu = *stored_cpu, cpu_index, i;
  
+ 	if (unlikely(cpu == nr_cpumask_bits ||
+ 		     !cpumask_test_cpu(cpu, cpu_online_mask))) {
 -- 
-Frank Rowand <frank.rowand@sony.com>
+2.7.4
 
