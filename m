@@ -2,176 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BBFD43FE61
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 16:22:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC01043FE65
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 16:23:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231506AbhJ2OYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 10:24:53 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:36496 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230495AbhJ2OYw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 10:24:52 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        id S231527AbhJ2O0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 10:26:24 -0400
+Received: from phobos.denx.de ([85.214.62.61]:50100 "EHLO phobos.denx.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230036AbhJ2O0X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 10:26:23 -0400
+Received: from [IPv6:::1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 669F221968;
-        Fri, 29 Oct 2021 14:22:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1635517343; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=b3hbVsW/qd4JlhNtySvVHNwOWfFRRa/WfskrRS8x0kU=;
-        b=Q/TsdwhKvafsw3XIx0DN0WD1Emzd6dtaD7TcSz5Q+GEs1/TZufUMxi4MHAYThNeTCVkEPX
-        LHjHIkWcaSgKoh2hs4j5xohjeUX8Ee1utuCPb6sblhMkolS3iYlk99xfIOR0e6d897yE0x
-        yjsq0I3BMcfLcFPgcASRNhzBGS7HjKI=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3C28F13F6F;
-        Fri, 29 Oct 2021 14:22:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id S0YmDZ8DfGECNAAAMHmgww
-        (envelope-from <jgross@suse.com>); Fri, 29 Oct 2021 14:22:23 +0000
-From:   Juergen Gross <jgross@suse.com>
-To:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-Cc:     Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>
-Subject: [PATCH] xen/balloon: rename alloc/free_xenballooned_pages
-Date:   Fri, 29 Oct 2021 16:22:19 +0200
-Message-Id: <20211029142219.25357-1-jgross@suse.com>
-X-Mailer: git-send-email 2.26.2
+        (Authenticated sender: marex@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id 5D71F835BF;
+        Fri, 29 Oct 2021 16:23:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1635517433;
+        bh=ZWEwn6xxH9thjtW69prVFZ20jiDIdEX/mAl5N86y5gs=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=zQ6qmJoFsbPLo4fNjIbKsn7lCU5pFd4Y+8R5ranowo4Nxmas9/BVTJiCfFUc9Vyh3
+         hyAYHqJu5yndLGFMzAldklvksqkCdo4lAuL8oqscb8d/0+j8BQ/EtyaYROLCSOXkU4
+         zmZeeAm8fxHrLRtp8QxPEa1tp2roO99pUmRUBIxpOO6camEULH5Q+SMQASl9l2jB0g
+         gRAnVQ32ftQYow2aLiU4szUBz9eX1n2b4oiau9TeOlvmvRUQ3PIZ+Jp+IxpF8PK7Ev
+         BEyy+eT/r0COf5T/gWGoWQHV0YZu00+3FS6PYaY5XkpUk5JeZUBQkuH9c+CaLuPX36
+         sv5H18B800xYg==
+Subject: Re: [PATCH 4/8] crypto: stm32/cryp - fix race condition
+To:     Nicolas Toromanoff <nicolas.toromanoff@foss.st.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+Cc:     linux-crypto@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20211029135454.4383-1-nicolas.toromanoff@foss.st.com>
+ <20211029135454.4383-5-nicolas.toromanoff@foss.st.com>
+From:   Marek Vasut <marex@denx.de>
+Message-ID: <1ec60d9c-1ab4-8a92-1c6d-8093232ca039@denx.de>
+Date:   Fri, 29 Oct 2021 16:23:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211029135454.4383-5-nicolas.toromanoff@foss.st.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-alloc_xenballooned_pages() and free_xenballooned_pages() are used as
-direct replacements of xen_alloc_unpopulated_pages() and
-xen_free_unpopulated_pages() in case CONFIG_XEN_UNPOPULATED_ALLOC isn't
-defined.
+On 10/29/21 3:54 PM, Nicolas Toromanoff wrote:
+> Erase key before finalizing request.
+> Fixes: 9e054ec21ef8 ("crypto: stm32 - Support for STM32 CRYP crypto module")
 
-Guard both functions with !CONFIG_XEN_UNPOPULATED_ALLOC and rename them
-to the xen_*() variants they are replacing. This allows to remove some
-ifdeffery from the xen.h header file.
+Can you be a bit more specific in your commit messages ? That applies to 
+the entire patchset. It is absolutely impossible to tell what race is 
+fixed here or why it is fixed by exactly this change. This applies to 
+the entire series.
 
-Signed-off-by: Juergen Gross <jgross@suse.com>
----
- drivers/xen/balloon.c | 18 ++++++++++--------
- include/xen/balloon.h |  3 ---
- include/xen/xen.h     |  6 ------
- 3 files changed, 10 insertions(+), 17 deletions(-)
-
-diff --git a/drivers/xen/balloon.c b/drivers/xen/balloon.c
-index 98fae43d4cec..35fac7fb513a 100644
---- a/drivers/xen/balloon.c
-+++ b/drivers/xen/balloon.c
-@@ -575,6 +575,7 @@ void balloon_set_new_target(unsigned long target)
- }
- EXPORT_SYMBOL_GPL(balloon_set_new_target);
- 
-+#ifndef CONFIG_XEN_UNPOPULATED_ALLOC
- static int add_ballooned_pages(int nr_pages)
- {
- 	enum bp_state st;
-@@ -603,12 +604,12 @@ static int add_ballooned_pages(int nr_pages)
- }
- 
- /**
-- * alloc_xenballooned_pages - get pages that have been ballooned out
-+ * xen_alloc_unpopulated_pages - get pages that have been ballooned out
-  * @nr_pages: Number of pages to get
-  * @pages: pages returned
-  * @return 0 on success, error otherwise
-  */
--int alloc_xenballooned_pages(int nr_pages, struct page **pages)
-+int xen_alloc_unpopulated_pages(int nr_pages, struct page **pages)
- {
- 	int pgno = 0;
- 	struct page *page;
-@@ -645,7 +646,7 @@ int alloc_xenballooned_pages(int nr_pages, struct page **pages)
- 	return 0;
-  out_undo:
- 	mutex_unlock(&balloon_mutex);
--	free_xenballooned_pages(pgno, pages);
-+	xen_free_unpopulated_pages(pgno, pages);
- 	/*
- 	 * NB: free_xenballooned_pages will only subtract pgno pages, but since
- 	 * target_unpopulated is incremented with nr_pages at the start we need
-@@ -654,14 +655,14 @@ int alloc_xenballooned_pages(int nr_pages, struct page **pages)
- 	balloon_stats.target_unpopulated -= nr_pages - pgno;
- 	return ret;
- }
--EXPORT_SYMBOL(alloc_xenballooned_pages);
-+EXPORT_SYMBOL(xen_alloc_unpopulated_pages);
- 
- /**
-- * free_xenballooned_pages - return pages retrieved with get_ballooned_pages
-+ * xen_free_unpopulated_pages - return pages retrieved with get_ballooned_pages
-  * @nr_pages: Number of pages
-  * @pages: pages to return
-  */
--void free_xenballooned_pages(int nr_pages, struct page **pages)
-+void xen_free_unpopulated_pages(int nr_pages, struct page **pages)
- {
- 	int i;
- 
-@@ -680,9 +681,9 @@ void free_xenballooned_pages(int nr_pages, struct page **pages)
- 
- 	mutex_unlock(&balloon_mutex);
- }
--EXPORT_SYMBOL(free_xenballooned_pages);
-+EXPORT_SYMBOL(xen_free_unpopulated_pages);
- 
--#if defined(CONFIG_XEN_PV) && !defined(CONFIG_XEN_UNPOPULATED_ALLOC)
-+#if defined(CONFIG_XEN_PV)
- static void __init balloon_add_region(unsigned long start_pfn,
- 				      unsigned long pages)
- {
-@@ -705,6 +706,7 @@ static void __init balloon_add_region(unsigned long start_pfn,
- 	balloon_stats.total_pages += extra_pfn_end - start_pfn;
- }
- #endif
-+#endif
- 
- static int __init balloon_init(void)
- {
-diff --git a/include/xen/balloon.h b/include/xen/balloon.h
-index 95a4187f263b..d6ee920fafa4 100644
---- a/include/xen/balloon.h
-+++ b/include/xen/balloon.h
-@@ -27,9 +27,6 @@ extern struct balloon_stats balloon_stats;
- 
- void balloon_set_new_target(unsigned long target);
- 
--int alloc_xenballooned_pages(int nr_pages, struct page **pages);
--void free_xenballooned_pages(int nr_pages, struct page **pages);
--
- #ifdef CONFIG_XEN_BALLOON
- void xen_balloon_init(void);
- #else
-diff --git a/include/xen/xen.h b/include/xen/xen.h
-index 43efba045acc..9f031b5faa54 100644
---- a/include/xen/xen.h
-+++ b/include/xen/xen.h
-@@ -52,13 +52,7 @@ bool xen_biovec_phys_mergeable(const struct bio_vec *vec1,
- extern u64 xen_saved_max_mem_size;
- #endif
- 
--#ifdef CONFIG_XEN_UNPOPULATED_ALLOC
- int xen_alloc_unpopulated_pages(unsigned int nr_pages, struct page **pages);
- void xen_free_unpopulated_pages(unsigned int nr_pages, struct page **pages);
--#else
--#define xen_alloc_unpopulated_pages alloc_xenballooned_pages
--#define xen_free_unpopulated_pages free_xenballooned_pages
--#include <xen/balloon.h>
--#endif
- 
- #endif	/* _XEN_XEN_H */
--- 
-2.26.2
-
+And while I am at it, does the CRYP finally pass at least the most basic 
+kernel boot time crypto tests or does running those still overwrite 
+kernel memory and/or completely crash or lock up the machine ?
