@@ -2,201 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D07B43FD4D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 15:25:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87F3B43FD53
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 15:27:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231521AbhJ2N2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 09:28:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41576 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229603AbhJ2N16 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 09:27:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E5B561167;
-        Fri, 29 Oct 2021 13:25:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635513930;
-        bh=+RnqNEo86g+pwCtg0yvYRDENv2czIXcrxcwDKdiKWQc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ZHTmh4ANXu+8xmhlyByehrapbXIB9HbHpGKkqcVSSjt21DxYm/olgb8iVQvi7V2Xt
-         QuGqY05qQjWaAZ+ewQPqWKGbMPZ80zIvmAkZDx49zaKiWz41xt6DLICQ5rgdBv3Zt2
-         XrrulEiHtpSvrabRFuMesVf+99okZ5vT1o4cwzROLkMsOHytrtGoOQPUXS1uB51Am1
-         w/hJRlRnDDvrAFFQQCMyErEEsP2uixOqyG3/jvyxEw6Uoczaw000O5lttF/PldDwAL
-         9LqZDwWAXNTmVPS6Yv+4fSl4SrATU5HeiQH3Qm2VVOaJmoCj9hSttTne/hVTmaB4WY
-         d9nlksYhQRpJw==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1mgRst-0032Ic-DE; Fri, 29 Oct 2021 14:25:27 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Alex Dewar <alex.dewar90@gmail.com>,
-        Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Kaixu Xia <kaixuxia@tencent.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        Yang Li <abaci-bugfix@linux.alibaba.com>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev
-Subject: [PATCH] media: atomisp: properly implement g_fmt
-Date:   Fri, 29 Oct 2021 14:25:23 +0100
-Message-Id: <7be615799148168ca454df998aaa1e0b224b4328.1635513916.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.31.1
+        id S231628AbhJ2N3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 09:29:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231523AbhJ2N3j (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 09:29:39 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C8CCC061570
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 06:27:11 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: kholk11)
+        with ESMTPSA id 0DC271F45A6E
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+To:     a.hajda@samsung.com
+Cc:     narmstrong@baylibre.com, robert.foss@linaro.org,
+        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
+        jernej.skrabec@gmail.com, airlied@linux.ie, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, kernel@collabora.com,
+        linux-kernel@vger.kernel.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Subject: [PATCH 1/3] drm/bridge: parade-ps8640: Don't try to enable VDO if poweron fails
+Date:   Fri, 29 Oct 2021 15:26:48 +0200
+Message-Id: <20211029132650.918761-1-angelogioacchino.delregno@collabora.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current logic only initializes pipe->pix after setting up a
-pipeline - e. g. after start streaming.
+If the bridge cannot get powered on, there's no reason to try to
+communicate with it: change the ps8640_bridge_poweron function to
+return an error value to the caller, so that we can avoid calling
+ps8640_bridge_vdo_control() in ps8640_pre_enable() if the poweron
+sequence fails.
 
-While it makes sense to get the format of the pipeline, when
-it is set, this breaks support for generic applications, as they
-rely on getting the current sensor format (which is usually the
-highest resolution format).
-
-So, implement a call to the sensor's get_fmt, when this is called
-before setting up a pipeline.
-
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 ---
- .../staging/media/atomisp/pci/atomisp_cmd.c   | 13 +-----
- .../staging/media/atomisp/pci/atomisp_cmd.h   |  4 +-
- .../staging/media/atomisp/pci/atomisp_ioctl.c | 44 +++++++++++++++++--
- 3 files changed, 45 insertions(+), 16 deletions(-)
+ drivers/gpu/drm/bridge/parade-ps8640.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/staging/media/atomisp/pci/atomisp_cmd.c b/drivers/staging/media/atomisp/pci/atomisp_cmd.c
-index 70c8e86c3205..6b308c81ef77 100644
---- a/drivers/staging/media/atomisp/pci/atomisp_cmd.c
-+++ b/drivers/staging/media/atomisp/pci/atomisp_cmd.c
-@@ -2034,7 +2034,7 @@ static int raw_output_format_match_input(u32 input, u32 output)
- 	return -EINVAL;
- }
- 
--static u32 get_pixel_depth(u32 pixelformat)
-+u32 atomisp_get_pixel_depth(u32 pixelformat)
- {
- 	switch (pixelformat) {
- 	case V4L2_PIX_FMT_YUV420:
-@@ -4816,15 +4816,6 @@ int atomisp_get_sensor_mode_data(struct atomisp_sub_device *asd,
+diff --git a/drivers/gpu/drm/bridge/parade-ps8640.c b/drivers/gpu/drm/bridge/parade-ps8640.c
+index 4b36e4dc78f1..8c5402947b3c 100644
+--- a/drivers/gpu/drm/bridge/parade-ps8640.c
++++ b/drivers/gpu/drm/bridge/parade-ps8640.c
+@@ -293,19 +293,19 @@ static int ps8640_bridge_vdo_control(struct ps8640 *ps_bridge,
  	return 0;
  }
  
--int atomisp_get_fmt(struct video_device *vdev, struct v4l2_format *f)
--{
--	struct atomisp_video_pipe *pipe = atomisp_to_video_pipe(vdev);
--
--	f->fmt.pix = pipe->pix;
--
--	return 0;
--}
--
- static void __atomisp_update_stream_env(struct atomisp_sub_device *asd,
- 					u16 stream_index, struct atomisp_input_stream_info *stream_info)
+-static void ps8640_bridge_poweron(struct ps8640 *ps_bridge)
++static int ps8640_bridge_poweron(struct ps8640 *ps_bridge)
  {
-@@ -4973,7 +4964,7 @@ atomisp_try_fmt_file(struct atomisp_device *isp, struct v4l2_format *f)
- 		return -EINVAL;
+ 	struct regmap *map = ps_bridge->regmap[PAGE2_TOP_CNTL];
+ 	int ret, status;
+ 
+ 	if (ps_bridge->powered)
+-		return;
++		return 0;
+ 
+ 	ret = regulator_bulk_enable(ARRAY_SIZE(ps_bridge->supplies),
+ 				    ps_bridge->supplies);
+ 	if (ret < 0) {
+ 		DRM_ERROR("cannot enable regulators %d\n", ret);
+-		return;
++		return ret;
  	}
  
--	depth = get_pixel_depth(pixelformat);
-+	depth = atomisp_get_pixel_depth(pixelformat);
+ 	gpiod_set_value(ps_bridge->gpio_powerdown, 0);
+@@ -352,11 +352,13 @@ static void ps8640_bridge_poweron(struct ps8640 *ps_bridge)
  
- 	if (field == V4L2_FIELD_ANY) {
- 		field = V4L2_FIELD_NONE;
-diff --git a/drivers/staging/media/atomisp/pci/atomisp_cmd.h b/drivers/staging/media/atomisp/pci/atomisp_cmd.h
-index e8bdd264d31b..fb848d716947 100644
---- a/drivers/staging/media/atomisp/pci/atomisp_cmd.h
-+++ b/drivers/staging/media/atomisp/pci/atomisp_cmd.h
-@@ -266,8 +266,6 @@ int atomisp_compare_grid(struct atomisp_sub_device *asd,
- int atomisp_get_sensor_mode_data(struct atomisp_sub_device *asd,
- 				 struct atomisp_sensor_mode_data *config);
+ 	ps_bridge->powered = true;
  
--int atomisp_get_fmt(struct video_device *vdev, struct v4l2_format *f);
--
- /* This function looks up the closest available resolution. */
- int atomisp_try_fmt(struct video_device *vdev, struct v4l2_pix_format *f,
- 		    bool *res_overflow);
-@@ -341,6 +339,8 @@ enum atomisp_metadata_type
- atomisp_get_metadata_type(struct atomisp_sub_device *asd,
- 			  enum ia_css_pipe_id pipe_id);
- 
-+u32 atomisp_get_pixel_depth(u32 pixelformat);
-+
- /* Function for HAL to inject a fake event to wake up poll thread */
- int atomisp_inject_a_fake_event(struct atomisp_sub_device *asd, int *event);
- 
-diff --git a/drivers/staging/media/atomisp/pci/atomisp_ioctl.c b/drivers/staging/media/atomisp/pci/atomisp_ioctl.c
-index 29826f8e4143..37542ea17a38 100644
---- a/drivers/staging/media/atomisp/pci/atomisp_ioctl.c
-+++ b/drivers/staging/media/atomisp/pci/atomisp_ioctl.c
-@@ -838,15 +838,53 @@ static int atomisp_enum_fmt_cap(struct file *file, void *fh,
- static int atomisp_g_fmt_cap(struct file *file, void *fh,
- 			     struct v4l2_format *f)
- {
-+	struct v4l2_subdev_format fmt = {
-+		.which = V4L2_SUBDEV_FORMAT_ACTIVE
-+	};
- 	struct video_device *vdev = video_devdata(file);
- 	struct atomisp_device *isp = video_get_drvdata(vdev);
--
-+	struct v4l2_fmtdesc fmtdesc = { 0 };
-+	struct atomisp_video_pipe *pipe;
-+	struct atomisp_sub_device *asd;
-+	struct v4l2_subdev *camera;
-+	u32 depth;
- 	int ret;
- 
- 	rt_mutex_lock(&isp->mutex);
--	ret = atomisp_get_fmt(vdev, f);
-+	pipe = atomisp_to_video_pipe(vdev);
- 	rt_mutex_unlock(&isp->mutex);
--	return ret;
-+
-+	f->fmt.pix = pipe->pix;
-+	if (!f->fmt.pix.width) {
-+		asd = atomisp_to_video_pipe(vdev)->asd;
-+		if (!asd)
-+		    return -EINVAL;
-+
-+		camera = isp->inputs[asd->input_curr].camera;
-+		if(!camera)
-+			return -EINVAL;
-+
-+		ret = atomisp_enum_fmt_cap(file, fh, &fmtdesc);
-+		if (ret)
-+			return ret;
-+
-+		rt_mutex_lock(&isp->mutex);
-+		ret = v4l2_subdev_call(isp->inputs[asd->input_curr].camera,
-+				       pad, get_fmt, NULL, &fmt);
-+		rt_mutex_unlock(&isp->mutex);
-+		if (ret)
-+			return ret;
-+
-+		v4l2_fill_pix_format(&f->fmt.pix, &fmt.format);
-+
-+		f->fmt.pix.pixelformat = fmtdesc.pixelformat;
-+	}
-+
-+	depth = atomisp_get_pixel_depth(f->fmt.pix.pixelformat);
-+	f->fmt.pix.bytesperline = (f->fmt.pix.width * depth) >> 3;
-+	f->fmt.pix.sizeimage = f->fmt.pix.height * f->fmt.pix.bytesperline;
-+
+-	return;
 +	return 0;
+ 
+ err_regulators_disable:
+ 	regulator_bulk_disable(ARRAY_SIZE(ps_bridge->supplies),
+ 			       ps_bridge->supplies);
++
++	return ret;
  }
  
- static int atomisp_g_fmt_file(struct file *file, void *fh,
+ static void ps8640_bridge_poweroff(struct ps8640 *ps_bridge)
+@@ -381,7 +383,9 @@ static void ps8640_pre_enable(struct drm_bridge *bridge)
+ 	struct ps8640 *ps_bridge = bridge_to_ps8640(bridge);
+ 	int ret;
+ 
+-	ps8640_bridge_poweron(ps_bridge);
++	ret = ps8640_bridge_poweron(ps_bridge);
++	if (ret)
++		return;
+ 
+ 	ret = ps8640_bridge_vdo_control(ps_bridge, ENABLE);
+ 	if (ret < 0)
 -- 
-2.31.1
+2.33.0
 
