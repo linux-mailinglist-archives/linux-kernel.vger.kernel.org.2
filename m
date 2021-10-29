@@ -2,91 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDC1743F94D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 10:56:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2D1A43F950
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 10:57:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231388AbhJ2I7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 04:59:05 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:31465 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230417AbhJ2I7E (ORCPT
+        id S231392AbhJ2JAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 05:00:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54492 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230417AbhJ2JAY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 04:59:04 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-10-CZTnxGVeNEOTatoMgxGNcw-1; Fri, 29 Oct 2021 09:56:33 +0100
-X-MC-Unique: CZTnxGVeNEOTatoMgxGNcw-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.24; Fri, 29 Oct 2021 09:56:32 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.024; Fri, 29 Oct 2021 09:56:32 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Nick Desaulniers' <ndesaulniers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>
-CC:     Nathan Chancellor <nathan@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        X86 ML <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>
-Subject: RE: [PATCH] kbuild: Support clang-$ver builds
-Thread-Topic: [PATCH] kbuild: Support clang-$ver builds
-Thread-Index: AQHXzFN5HqGTEoayakmj+rTeL/YbtKvprCbw
-Date:   Fri, 29 Oct 2021 08:56:32 +0000
-Message-ID: <65a89f36d36443af9b13c1b121731ef1@AcuMS.aculab.com>
-References: <YXqpFHeY26sEbort@hirez.programming.kicks-ass.net>
- <CAK7LNATUpgfKJvjp0+8H6VfMLMio9+BCoyj00mAO8FcaVGCqjg@mail.gmail.com>
- <YXqwZq53WUiTeqI7@hirez.programming.kicks-ass.net>
- <YXqyHhWGJfDkuxjP@hirez.programming.kicks-ass.net>
- <YXq72/yPe76DhDLu@hirez.programming.kicks-ass.net>
- <YXrhZoOgv5dtFMTs@archlinux-ax161>
- <20211028204855.GP174703@worktop.programming.kicks-ass.net>
- <CAKwvOd=x9E=7WcCiieso-CDiiU-wMFcXL4W3V5j8dq7BL5QT+w@mail.gmail.com>
-In-Reply-To: <CAKwvOd=x9E=7WcCiieso-CDiiU-wMFcXL4W3V5j8dq7BL5QT+w@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Fri, 29 Oct 2021 05:00:24 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE07EC061570;
+        Fri, 29 Oct 2021 01:57:55 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id w1so17397764edd.0;
+        Fri, 29 Oct 2021 01:57:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wIjcrUqHtWhKxyVJiyTFwpHjZKAKU+hvaZr8ovt9D+g=;
+        b=FEzRq4GXzOnhMDFOTm6Nmk3VzViYKFMbqthEuUK2wsaIB1+0m2dsjLLrA6RlljEdvt
+         4dK+DjFwbphOuDMekm+U9QwqE0CZXp0SqIVprfoLlmq/pOy7P+7e7KDBgJlGx/2KqZwT
+         D94go9OutP9aTDSUIBKiNli00EKP9y8QPrNrBwBsC9HWtkA88crExmnZVs5y8gYUFGY1
+         SFvP/0A/HwlM7uS2yufCkZ43Skb34IIq7AXRZR3CEZLflkkBw/6qeE6k9PAAj0uZ8KNy
+         vjPwtzrrMFcowBSBqwOWCI48rGbMuLtlUKV8HmwpCGDqohpjxG+Ar2xblL7FHJdCqNhD
+         W32Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wIjcrUqHtWhKxyVJiyTFwpHjZKAKU+hvaZr8ovt9D+g=;
+        b=PAA3taKr0JH9L8RlIs8kWBkw8QrGlHOxWo+6N5tJPRW7ZN9ce3JnjEO+jocY3GhP4/
+         o3+yTAVlCtrhMrNc2VlaLO2n1VLqY25uSr1WKy/0zpDxZr62OyyRhGJFLT/ds3i4CPP5
+         sAxv0yCNvd/ouSytSKWeeKySxnu1PU2EkKF2nPmir42Hf/Qy5lhUeM0I1A9TVEhxGjB8
+         CCZb48DrY7rXXzc5jMl1/cgBcetcLg/b8mK/DQBBB0t9Mas5iYs/Gb35xwXkVOa1cJ0S
+         rm1JJyHkfEVRVWMPfOo/d2lINzldH9EwZ0qLuiszzjsAMALsdNcxKR1CVtUid6Si34XY
+         Ay4w==
+X-Gm-Message-State: AOAM532WhH1fLifgNzIDBm3SY6+RccSXIRojZT91dcEHPj0HHbniHYgQ
+        GO0U5Zbic+45/QtrAS6Tb6F+THdNcRPCZIfmXEc=
+X-Google-Smtp-Source: ABdhPJyco3f4t3HCaZMFI+/LYJq8w/Z6wGPGHXZ7sA8fx01gtfcHgx3TLUT1XFwj1KXGvRMzNgqza4kz5JrQbv+Perg=
+X-Received: by 2002:aa7:da05:: with SMTP id r5mr13337068eds.238.1635497874000;
+ Fri, 29 Oct 2021 01:57:54 -0700 (PDT)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+References: <20211028211753.573480-1-jaschultzMS@gmail.com>
+ <20211028211753.573480-3-jaschultzMS@gmail.com> <CAHp75Vfq7ZkXytuAFhGOMGuH7_AsXcYf9O=p30e4OUx+a4jMgw@mail.gmail.com>
+ <87fsskqvvc.fsf@kernel.org>
+In-Reply-To: <87fsskqvvc.fsf@kernel.org>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 29 Oct 2021 11:57:17 +0300
+Message-ID: <CAHp75VdHpHMp7X=8WcVbSUaT3pfxo-ZOTQ0BwdQqD09bJ2ddKg@mail.gmail.com>
+Subject: Re: [PATCH 2/3] platform: surface: Add surface xbl
+To:     Felipe Balbi <balbi@kernel.org>
+Cc:     Jarrett Schultz <jaschultzms@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jarrett Schultz <jaschultz@microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTmljayBEZXNhdWxuaWVycw0KPiBTZW50OiAyOSBPY3RvYmVyIDIwMjEgMDA6MjgNCi4u
-Lg0KPiA+ID4gMi4gVXBkYXRlIHRoZSBkb2N1bWVudGF0aW9uIHRvIGRlc2NyaWJlIHVzaW5nIHRo
-ZQ0KPiA+ID4NCj4gPiA+ICAgICQgUEFUSD0vdXNyL2xpYi9sbHZtLSMvYmluOiRQQVRIIG1ha2Ug
-TExWTT0xIC4uLg0KPiA+ID4NCj4gPiA+ICAgIHRyaWNrLiBUaGlzIGhhcyBiZWVuIHRoZSBwcmVm
-ZXJyZWQgbWV0aG9kIGZvciB1c2luZyBkaWZmZXJlbnQNCj4gPiA+ICAgIHZlcnNpb25zIG9mIExM
-Vk0gYnV0IGl0IGhhcyBuZXZlciBiZWVuIGRvY3VtZW50ZWQgYW55d2hlcmUuIFRoaXMNCj4gPiA+
-ICAgIHdvdWxkIGFsbG93IHVzIHRvIGtlZXAgdGhlIGN1cnJlbnQgYnVpbGQgaW5mcmFzdHJ1Y3R1
-cmUgd2hpbGUgZ2l2aW5nDQo+ID4gPiAgICBwZW9wbGUgY2xlYXIgaW5zdHJ1Y3Rpb25zIGZvciBo
-b3cgdG8gaGFuZGxlIGRpZmZlcmVudCB2ZXJzaW9ucyBvZg0KPiA+ID4gICAgY2xhbmcuIEFzIFBl
-dGVyIGhhcyBub3RlZCwgdGhpcyB3b3VsZCByZXF1aXJlIHBlb3BsZSB3aG8gYXJlIG5vdA0KPiA+
-ID4gICAgZmFtaWxpYXIgd2l0aCBidWlsZGluZyB3aXRoIExMVk0gdG8gYmUgY29uc3RhbnRseSBs
-b29raW5nIGF0IHRoZQ0KPiA+ID4gICAgZG9jdW1lbnRhdGlvbiB0byByZW1lbWJlciB0aGUgY29t
-bWFuZCB0byBpbnZva2UsIHdoZXJlYXMgd2l0aA0KPiA+ID4gICAgTExWTT0tIywgaXQgaXMgZWFz
-eSB0byByZW1lbWJlci4NCj4gPg0KPiA+IFJpZ2h0LCB0aGlzIGlzIG5vIG1vcmUgdGhhbiBhIGNy
-dWRlIGhhY2sgYW5kIGlzIHN1cGVyIHVuZnJpZW5kbHkuIEl0DQo+ID4gc2hvdWxkIG5ldmVyIGhh
-dmUgYmVlbiBhY2NlcHRlZC4NCj4gDQo+IExvdHMgb2YgdG9vbHMgbW9kaWZ5IFBBVEggaW4geW91
-ciBgLmJhc2hyY2Agb3IgYC56c2hyY2AgZXRjLiAgSSBkb24ndA0KPiBzZWUgaG93IHRoYXQncyBh
-bnkgZGlmZmVyZW50LCBvdGhlciB0aGFuIG9uZSBvZmYgY29tbWFuZHMgaW4gd2hpY2ggeW91DQo+
-IGFjdHVhbGx5IGludGVuZCB0byB1c2UgYSBzcGVjaWZpYyB2ZXJzaW9uLg0KDQpOb3RoaW5nIHNo
-b3VsZCBiZSBtb2RpZnlpbmcgdGhlIGRlZmF1bHQgJFBBVEgsIGVpdGhlciBieSBoYWNraW5nDQpt
-eSAuYmFzaHJjIG9yIGFueSBzeXN0ZW0gZGVmYXVsdCBmaWxlcyB0aGF0IGdldCBydW4gZmlyc3Qu
-DQoNCkl0IGlzIGFzIGhvcnJpZCBhbmQgYnJva2VuIGFzIHNldHRpbmcgTERfTElCUkFSWV9QQVRI
-Lg0KRXZlbiBsZGNvbmZpZyBpcyBwcmV0dHkgbXVjaCBhIGJyb2tlbiBpZGVhLg0KDQoJRGF2aWQN
-Cg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZh
-cm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYg
-KFdhbGVzKQ0K
+On Fri, Oct 29, 2021 at 7:48 AM Felipe Balbi <balbi@kernel.org> wrote:
+> Andy Shevchenko <andy.shevchenko@gmail.com> writes:
 
+...
+
+> > Capital L will be better to read and understand the
+> > abbreviation. Actually usually we do something like this:
+> >
+> > Extensible Boot Loader (EBL)
+>
+> nah, this is silly Andy. It's just capitalized as eXtensible Boot
+> Loader, very much akin to eXtensible Host Controller Interface.
+
+My point here is to have a full name followed by the abbreviation. and
+n(O)t in (F)ancy st(Y)le.
+
+...
+
+> >  +static const struct attribute_group inputs_attr_group = {
+> >  +       .attrs = inputs_attrs,
+> >  +};
+> >  +
+> >  +static u8 surface_xbl_readb(void __iomem *base, u32 offset)
+> >  +{
+> >  +       return readb(base + offset);
+> >  +}
+> >  +
+> >  +static u16 surface_xbl_readw(void __iomem *base, u32 offset)
+> >  +{
+> >  +       return readw(base + offset);
+> >  +}
+> >
+> > Either use corresponding io accessors in-line, or make first parameter
+> > to be sirface_xbl pointer. Otherwise these helpers useless.
+>
+> I agree with passing surface_xbl point as first parameter, but calling
+> the accessors pointless is a bit much. At a minimum, they make it easier
+> to ftrace the entire driver by simply ftracing surface_xbl_*
+
+My point is that the above seems half-baked. It's pointless to have a
+func(a,b) { return readl(a + b); }. It doesn't add value.
+
+-- 
+With Best Regards,
+Andy Shevchenko
