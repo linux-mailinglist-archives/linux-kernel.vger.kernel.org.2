@@ -2,110 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87F7143F634
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 06:38:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE6C643F63A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 06:40:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231638AbhJ2Ekl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 00:40:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53310 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbhJ2Ekj (ORCPT
+        id S231726AbhJ2EmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 00:42:24 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:48540 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231695AbhJ2EmW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 00:40:39 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB04BC061570;
-        Thu, 28 Oct 2021 21:38:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=zQtZCuMLt0UoTHhnTLG6cTSCEB8YcEsPDeHATs4O5b8=; b=q4jBIQc9FMWP7i/n3mqUTAyiia
-        WjNrG1jZHabR6jxt2LIhmyRXgn+14/ZrzHoNfSZpSJQ4T4Ic0GgbPhtimFy53FTpQs3TNCfgelMCI
-        Y9STc5apJGh/PL/P7udqyvuLLnpwBWLpW+FUUOT+Ki5vl0Rnxfe77Q58ngchkEkVID8EGMyecB/Es
-        iBPCx76mIdC/9rHzgW4rmRIjCpmgT6urZtGmqPhCAzp5zcsFzBogK96sykWVcUOM+mW/H7ezdF5Zs
-        GsCKOrcof5cPxBc0sFnBh+eGerrg1CS/AvrbfXh6lG6IoU/xM705chUY4lRAIx0PbcRf0EKN/oEA8
-        EtqLAlmg==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mgJeZ-009oiF-Dk; Fri, 29 Oct 2021 04:38:08 +0000
-Subject: Re: [PATCH 1/3] pinctrl: Add driver for Sunplus SP7021
-To:     =?UTF-8?B?V2VsbHMgTHUg5ZGC6Iqz6aiw?= <wells.lu@sunplus.com>,
-        Wells Lu <wellslutw@gmail.com>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Cc:     "qinjian@cqplus1.com" <qinjian@cqplus1.com>,
-        "dvorkin@tibbo.com" <dvorkin@tibbo.com>
-References: <1635324926-22319-1-git-send-email-wells.lu@sunplus.com>
- <1635324926-22319-2-git-send-email-wells.lu@sunplus.com>
- <3ed37bf9-d698-2a03-60e7-9b357e3abfb4@infradead.org>
- <930472fa25b7462aa49e33d694e4d759@sphcmbx02.sunplus.com.tw>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <0d1e4efe-bdc1-6646-384e-da7e90abc36d@infradead.org>
-Date:   Thu, 28 Oct 2021 21:38:06 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <930472fa25b7462aa49e33d694e4d759@sphcmbx02.sunplus.com.tw>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Fri, 29 Oct 2021 00:42:22 -0400
+Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20211029043952epoutp0338e862e9c8cbee87792ecbb48ed366ec~yZpIr4KZV0585705857epoutp03e
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 04:39:52 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20211029043952epoutp0338e862e9c8cbee87792ecbb48ed366ec~yZpIr4KZV0585705857epoutp03e
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1635482392;
+        bh=KIdFSd9RMZ1vTwpAMSHIlov3UbncuFyrg1wa2ddSedk=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=NRXFwZ5RiUk4wjTe87PlR7KI0hn1A8RYWA+oKNTHz5fN+COEOt+D2tFxchVxAt4yD
+         J4yPPJZrZAorSXC29WG4BiRfvmQFW7IxJmkxr8vz8L6YQeKLklWvQY04ZO6I4nprqv
+         MDza7ANUKIVx7fnfTuQtirZL2uyIvKEmBQeFcUKg=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
+        20211029043952epcas2p48bdc5e578aa5a9b6f997b7fef605e823~yZpIHPliK0098600986epcas2p4g;
+        Fri, 29 Oct 2021 04:39:52 +0000 (GMT)
+Received: from epsmges2p2.samsung.com (unknown [182.195.36.99]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4HgV8C0kFNz4x9Qg; Fri, 29 Oct
+        2021 04:39:39 +0000 (GMT)
+X-AuditID: b6c32a46-a0fff70000002722-16-617b7b0202f4
+Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
+        epsmges2p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        68.1C.10018.20B7B716; Fri, 29 Oct 2021 13:39:30 +0900 (KST)
+Mime-Version: 1.0
+Subject: RE: [PATCH] scsi: ufs: Fix proper API to send HPB pre-request
+Reply-To: daejun7.park@samsung.com
+Sender: Daejun Park <daejun7.park@samsung.com>
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Ming Lei <ming.lei@redhat.com>,
+        Daejun Park <daejun7.park@samsung.com>
+CC:     ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "huobean@gmail.com" <huobean@gmail.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        Keoseong Park <keosung.park@samsung.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <YXtnM9pwcBymG+Oz@T590>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20211029043930epcms2p19b67f03cdae76f455714c9a60b2ac761@epcms2p1>
+Date:   Fri, 29 Oct 2021 13:39:30 +0900
+X-CMS-MailID: 20211029043930epcms2p19b67f03cdae76f455714c9a60b2ac761
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+CMS-TYPE: 102P
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrNJsWRmVeSWpSXmKPExsWy7bCmqS5TdXWiwaNeVYsH87axWbz8eZXN
+        YtqHn8wWLw9pWqx6EG4x52wDk8WiG9uYLI6ffMdocXnXHDaL7us72CyWH//HZHFocjOTA4/H
+        5SveHjtn3WX3mLDoAKPHx6e3WDze77vK5tG3ZRWjx+dNch7tB7qZAjiism0yUhNTUosUUvOS
+        81My89JtlbyD453jTc0MDHUNLS3MlRTyEnNTbZVcfAJ03TJzgG5VUihLzCkFCgUkFhcr6dvZ
+        FOWXlqQqZOQXl9gqpRak5BSYF+gVJ+YWl+al6+WlllgZGhgYmQIVJmRnzHxUXbBDteL4hNlM
+        DYwbpbsYOTkkBEwkDm44wdLFyMUhJLCDUeLFypusXYwcHLwCghJ/dwiD1AgLuEksXzWJEcQW
+        ElCSWH9xFjtEXE/i1sM1YHE2AR2J6Sfug8VFBLwkNjxbyQgyk1ngALPE8blv2CCW8UrMaH/K
+        AmFLS2xfvhWsmVNARWLupjWsEHENiR/LepkhbFGJm6vfssPY74/NZ4SwRSRa752FqhGUePBz
+        N1RcUuLY7g9MEHa9xNY7v8COkBDoYZQ4vPMW1AJ9iWsdG8GO4BXwlVjRswcsziKgKnHu7CWo
+        GheJ7fNfgg1lFpCX2P52DjMoUJgFNCXW79IHMSUElCWO3GKBeath4292dDazAJ9Ex+G/cPEd
+        855AnaYmse7neqYJjMqzECE9C8muWQi7FjAyr2IUSy0ozk1PLTYqMILHbXJ+7iZGcKrVctvB
+        OOXtB71DjEwcjIcYJTiYlUR4L88rTxTiTUmsrEotyo8vKs1JLT7EaAr05URmKdHkfGCyzyuJ
+        NzSxNDAxMzM0NzI1MFcS57UUzU4UEkhPLEnNTk0tSC2C6WPi4JRqYJp2VEs0PqKxgO+5Zn/T
+        +lt/zwZfaheZmtNvq/HXze6gt1N5WtiP5AW1GXtNlr54HBP1jW/lVAVNg2vXE2X//WqbyN2n
+        xCK0U+7vuS458YSy1P+XgtRYts7fZFMSbqm+tfG0obeH3rw7pVdy4vmu/si96fZN+0ZpUq5s
+        8/6k14ZH3s6Q/JCRd6LwdeAHGZUJlkv3RIeW8x6OXBTl/+FT78sSwc9Znzq1hHLm7hZoD5nw
+        8cSdj7MXKyz1P/Z1yqN5+60zltr9NDySJ7OXK3hLTcDd6UJSBQ/DhA5sr/DrNa9/WMriNdtk
+        cvjEZfEyf6ZHXi9m6pm7dvvW+duvVAq92XL59I4apYnSq6vNFhSsXK/EUpyRaKjFXFScCABe
+        42AwPgQAAA==
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20211027223619epcms2p60bbc74c9ba9757c58709a99acd0892ff
+References: <YXtnM9pwcBymG+Oz@T590> <YXtYME4yW6bFA1Cb@T590>
+        <YXtPNIDzeln8zBCn@T590>
+        <20211027223619epcms2p60bbc74c9ba9757c58709a99acd0892ff@epcms2p6>
+        <20211029015015epcms2p3a46e0779e43ab84c00388d99abf3b867@epcms2p3>
+        <20211029025012epcms2p429d940cb32f5f31a2ac3fe395538a755@epcms2p4>
+        <CGME20211027223619epcms2p60bbc74c9ba9757c58709a99acd0892ff@epcms2p1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/28/21 8:40 PM, Wells Lu 呂芳騰 wrote:
-> Hi Sir,
-> 
-> Thank you for your review.
-> 
-> I modified errors in Kconfig you pointed out.
-> 
-> Could you please teach me what is the next step I need to do
-> (This is my first submission to Linux kernel main-line)?
+> On Fri, Oct 29, 2021 at 11:50:12AM +0900, Daejun Park wrote:
+> > > On Fri, Oct 29, 2021 at 10:50:15AM +0900, Daejun Park wrote:
+> > > > > On Thu, Oct 28, 2021 at 07:36:19AM +0900, Daejun Park wrote:
+> > > > > > This patch addresses the issue of using the wrong API to create a
+> > > > > > pre_request for HPB READ.
+> > > > > > HPB READ candidate that require a pre-request will try to allocate a
+> > > > > > pre-request only during request_timeout_ms (default: 0). Otherwise, it is
+> > > > >  
+> > > > > Can you explain about 'only during request_timeout_ms'?
+> > > > >  
+> > > > > From the following code in ufshpb_prep(), the pre-request is allocated
+> > > > > for each READ IO in case of (!ufshpb_is_legacy(hba) && ufshpb_is_required_wb(hpb,
+> > > > > transfer_len)).
+> > > > >  
+> > > > >    if (!ufshpb_is_legacy(hba) &&
+> > > > >             ufshpb_is_required_wb(hpb, transfer_len)) {
+> > > > >                 err = ufshpb_issue_pre_req(hpb, cmd, &read_id);
+> > > > >  
+> > > > > > passed as normal READ, so deadlock problem can be resolved.
+> > > > > > 
+> > > > > > Signed-off-by: Daejun Park <daejun7.park@samsung.com>
+> > > > > > ---
+> > > > > >  drivers/scsi/ufs/ufshpb.c | 11 +++++------
+> > > > > >  drivers/scsi/ufs/ufshpb.h |  1 +
+> > > > > >  2 files changed, 6 insertions(+), 6 deletions(-)
+> > > > > > 
+> > > > > > diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
+> > > > > > index 02fb51ae8b25..3117bd47d762 100644
+> > > > > > --- a/drivers/scsi/ufs/ufshpb.c
+> > > > > > +++ b/drivers/scsi/ufs/ufshpb.c
+> > > > > > @@ -548,8 +548,7 @@ static int ufshpb_execute_pre_req(struct ufshpb_lu *hpb, struct scsi_cmnd *cmd,
+> > > > > >                                   read_id);
+> > > > > >          rq->cmd_len = scsi_command_size(rq->cmd);
+> > > > > >  
+> > > > > > -        if (blk_insert_cloned_request(q, req) != BLK_STS_OK)
+> > > > > > -                return -EAGAIN;
+> > > > > > +        blk_execute_rq_nowait(NULL, req, true, ufshpb_pre_req_compl_fn);
+> > > > >  
+> > > > > Be care with above change, blk_insert_cloned_request() allocates
+> > > > > driver tag and issues the request to LLD directly, then returns the
+> > > > > result. If anything fails in the code path, -EAGAIN is returned.
+> > > > >  
+> > > > > But blk_execute_rq_nowait() simply queued the request in block layer,
+> > > > > and run hw queue. It doesn't allocate driver tag, and doesn't issue it
+> > > > > to LLD.
+> > > > >  
+> > > > > So ufshpb_execute_pre_req() may think the pre-request is issued to LLD
+> > > > > successfully, but actually not, maybe never. What will happen after the
+> > > > > READ IO is issued to device, but the pre-request(write buffer) isn't
+> > > > > sent to device?
+> > > > 
+> > > > In that case, the HPB READ cannot get benefit from pre-request. But it is not
+> > > > common case.
+> > >  
+> > > OK, so the device will ignore the pre-request if it isn't received in
+> > > time, not sure it is common or not, since blk_execute_rq_nowait()
+> > > doesn't provide any feedback. Here looks blk_insert_cloned_request()
+> > > is better.
+> > 
+> > Yor're right.
+> > 
+> > > > 
+> > > > > Can you explain how this change solves the deadlock?
+> > > > 
+> > > > The deadlock is happen when the READ waiting allocation of pre-request. But
+> > > > the timeout code makes to stop waiting after given time later.
+> > >  
+> > > If you mean blk-mq timeout code will be triggered, I think it won't.
+> > > Meantime, LLD may see nothing to timeout too.
+> > 
+> > I mean timeout of the HPB code. Please refer following code:
+> > 
+> > if (!ufshpb_is_legacy(hba) &&
+> >         ufshpb_is_required_wb(hpb, transfer_len)) {
+> >         err = ufshpb_issue_pre_req(hpb, cmd, &read_id);
+> >         if (err) {
+> >                 unsigned long timeout;
+> > 
+> >                 timeout = cmd->jiffies_at_alloc + msecs_to_jiffies(
+> >                           hpb->params.requeue_timeout_ms);
+> > 
+> >                 if (time_before(jiffies, timeout))
+> >                         return -EAGAIN;
+> > 
+> >                 hpb->stats.miss_cnt++;
+> >                 return 0;
+> >         }
+> > }
+> > 
+> > Although the return value of ufshpb_issue_pre_req() is -EAGAIN, the code
+> > ignores the return value and issues READ not HPB READ.
+>  
+> OK, got it, this way should avoid the deadlock. But just be curious why
+> you change hpb->throttle_pre_req to 4, seems it isn't necessary for
+> avoiding the deadlock?
 
-Hi,
+Because blk_execute_rq_nowait calls blk_mq_run_hw_queue, not dispatchs WRITE_BUFFER directly.
+So, if the next request requires pre-request, it makes the latency of first read longer.
+Therefore, it prevents this extreme case by limiting number of pre-request.
 
-I would wait another day or two to see if there are any other
-comments or reviews of the patch series, then send a v2 of
-the entire series.
-
-> 1. Should I make a patch [PATHC 1/3 v2] for Kconfig and submit
->    again?
-> 2. Or wait for other files of the patch [PATCH 1/3] being
->    reviewed and then submit patch again.
-> 3. At first patch, I used 'git send-email' command to send a
->    patch series. The command is:
->    git send-email \
->    --to linus.walleij@linaro.org \
->    --to linux-gpio@vger.kernel.org \
->    --to linux-kernel@vger.kernel.org \
->    --to robh+dt@kernel.org \
->    --to devicetree@vger.kernel.org \
->    --cc dvorkin@tibbo.com \
->    --cc qinjian@cqplus1.com \
->    --thread 000*.patch
->    Please teach me what command options of 'git send-email'
->    I should use to send the version 2 patch.
-
-I suppose that you are using git to create patches.
-I don't create patches with git, so I don't know what it takes to
-create and send v2 of a patch series.
-
-If you are not using git to create patches, you can just modify
-the Subject: line in each email to include the "v2" string.
-
-In either case, but sure to describe the changes from v1 to v2.
-This description goes after (below) the "---" line. I put it before
-the diffstat output with a blank line separating them.
-
-> 4. If this is not a correct way to reply your email, please teach
->    me how to reply maintainers' email.
-
-This is fine.
-
-thanks.
--- 
-~Randy
+Thanks,
+Daejun
