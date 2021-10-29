@@ -2,87 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D9C643FC7A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 14:44:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A9F643FC7E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 14:44:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231664AbhJ2MrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 08:47:01 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:53652 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231643AbhJ2MrA (ORCPT
+        id S231679AbhJ2MrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 08:47:15 -0400
+Received: from relmlor1.renesas.com ([210.160.252.171]:57973 "EHLO
+        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231607AbhJ2MrO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 08:47:00 -0400
-Received: from localhost (unknown [IPv6:2804:14c:124:8a08::1002])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: krisman)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id D4CF31F458B9;
-        Fri, 29 Oct 2021 13:44:30 +0100 (BST)
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH] samples: fanotify: add CC_CAN_LINK dependency
-Organization: Collabora
-References: <20211029113403.848239-1-arnd@kernel.org>
-Date:   Fri, 29 Oct 2021 09:44:25 -0300
-In-Reply-To: <20211029113403.848239-1-arnd@kernel.org> (Arnd Bergmann's
-        message of "Fri, 29 Oct 2021 13:33:35 +0200")
-Message-ID: <87tuh09f12.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain
+        Fri, 29 Oct 2021 08:47:14 -0400
+X-IronPort-AV: E=Sophos;i="5.87,192,1631545200"; 
+   d="scan'208";a="98635616"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+  by relmlie5.idc.renesas.com with ESMTP; 29 Oct 2021 21:44:44 +0900
+Received: from localhost.localdomain (unknown [10.226.36.204])
+        by relmlir6.idc.renesas.com (Postfix) with ESMTP id 2A8DE438EE78;
+        Fri, 29 Oct 2021 21:44:41 +0900 (JST)
+From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH v2 0/5] RZ/G2L: pinctrl: Support to get/set drive-strength and output-impedance-ohms
+Date:   Fri, 29 Oct 2021 13:44:32 +0100
+Message-Id: <20211029124437.20721-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arnd Bergmann <arnd@kernel.org> writes:
+Hi All,
 
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> When using a cross tools that only works for kernels, the
-> newn sample can end up with a link failure such as:
->
-> /usr/bin/ld: unrecognised emulation mode: aarch64linux
-> Supported emulations: elf_x86_64 elf32_x86_64 elf_i386 elf_iamcu elf_l1om elf_k1om i386pep i386pe
-> clang: error: linker command failed with exit code 1 (use -v to see invocation)
-> make[5]: *** [/git/arm-soc/scripts/Makefile.userprogs:28: samples/fanotify/fs-monitor] Error 1
->
-> Add a Kconfig dependency, similar to the one we use for
-> other samples.
->
-> Fixes: 5451093081db ("samples: Add fs error monitoring example")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+This patch series add support to get/set drive-strength and
+output-impedance for RZ/G2L SoC. Along with some macro renames
+and code cleanup.
 
+Cheers,
+Prabhakar
 
-Hi Arnd,
+Changes for v2:
+* Fixed review comments pointed by Geert, split up patch 4 from series [1]
 
-This was reported by Guenter Roeck yesterday, I sent a patch for it
-here:
+Note: This patch series is dependent on first two patches of series [1]
 
-https://lore.kernel.org/linux-fsdevel/87fsslasgz.fsf@collabora.com/
+[1] https://patchwork.kernel.org/project/linux-renesas-soc/cover/
+20211027134509.5036-1-prabhakar.mahadev-lad.rj@bp.renesas.com/
 
+Lad Prabhakar (5):
+  dt-bindings: pinctrl: renesas,rzg2l-pinctrl: Add output-impedance-ohms
+    property
+  pinctrl: renesas: pinctrl-rzg2l: Add helper functions to read/write
+    pin config
+  pinctrl: renesas: pinctrl-rzg2l: Add support to get/set pin config for
+    GPIO port pins
+  pinctrl: renesas: pinctrl-rzg2l: Rename PIN_CFG_* macros to match HW
+    manual
+  pinctrl: renesas: pinctrl-rzg2l: Add support to get/set drive-strength
+    and output-impedance-ohms
 
-> ---
->  samples/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/samples/Kconfig b/samples/Kconfig
-> index 147a16dafaf8..83f12c1e9ca6 100644
-> --- a/samples/Kconfig
-> +++ b/samples/Kconfig
-> @@ -122,7 +122,7 @@ config SAMPLE_CONNECTOR
->  
->  config SAMPLE_FANOTIFY_ERROR
->  	bool "Build fanotify error monitoring sample"
-> -	depends on FANOTIFY
-> +	depends on CC_CAN_LINK && FANOTIFY
->  	help
->  	  When enabled, this builds an example code that uses the
->  	  FAN_FS_ERROR fanotify mechanism to monitor filesystem
+ .../pinctrl/renesas,rzg2l-pinctrl.yaml        |   2 +
+ drivers/pinctrl/renesas/pinctrl-rzg2l.c       | 316 ++++++++++++------
+ 2 files changed, 222 insertions(+), 96 deletions(-)
 
 -- 
-Gabriel Krisman Bertazi
+2.17.1
+
