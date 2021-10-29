@@ -2,172 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E3A143F897
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 10:09:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE53943F89A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 10:10:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232410AbhJ2IMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 04:12:08 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:53350 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232341AbhJ2IMH (ORCPT
+        id S232425AbhJ2IMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 04:12:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56886 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232341AbhJ2IMi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 04:12:07 -0400
-Date:   Fri, 29 Oct 2021 08:09:37 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1635494978;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
+        Fri, 29 Oct 2021 04:12:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635495010;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=xx39K8rNJl8V4POPKV1lScHaGXhlx70GURe5GaV+m68=;
-        b=y5kmjNdUhkN8PHXQwuWEoubsoRAHu5as1KMGgPOo9aDUcrc5ECl7UATfvRzB8hzVLqq4ho
-        F5KO6fWYeqVm0gb6OzyUARN2CxQu6qe0UAOntYmw7C+i0JCvTZmb/NSHlHEn29koIrSU3P
-        fsOQeNdxDCd80WTNLWuJE7h8aLxBMzoxEXNZG3gNLjEbz9G7/4+ZCDcsj4O+qcjMWBa072
-        Q/GlXqYST1mV7pmZxpdPO21wynfK3OKjryjjbJNZSWKAnrDTk2fREjl9YExh2qf6JTfc1u
-        KBJdqZbDnTezINIAc+9I0ZXU7O6p7ohnb8TNm3FLcJhTyfE1ejpXZlSsvuC6Vw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1635494978;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xx39K8rNJl8V4POPKV1lScHaGXhlx70GURe5GaV+m68=;
-        b=0JPUNd8SvjAykuX1NDm9t3KM85K+htps2oBn9G1wqqnz/32Ji8vER+rDa2cmR/CwVcRfE4
-        qNEhUV3M0ITXbKBA==
-From:   "tip-bot2 for Eric Dumazet" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/apic] x86/apic: Reduce cache line misses in
- __x2apic_send_IPI_mask()
-Cc:     Eric Dumazet <edumazet@google.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20211007143556.574911-1-eric.dumazet@gmail.com>
-References: <20211007143556.574911-1-eric.dumazet@gmail.com>
+        bh=Xu96aStupZygtVSLHvKF+rN1vtm48eum6wSRQF0b9e4=;
+        b=KDTB7NtJvp7LvXn0CxD2NyvNyrZSfwLGv0d0+5+w1HAXk77rRWI2G4kWxCcUJz91qHvjkU
+        c13J9U+6uRXYNr5ONhkuln7FlQ8oKtBppS3FZedhtqtCtGdEnhcerMemB/EeOJIEGOBzht
+        tX5dtT576HPBu9QaUHiugGkeAbocM9A=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-296-Vm87dH2_NkOYdL67qlZ4bg-1; Fri, 29 Oct 2021 04:10:08 -0400
+X-MC-Unique: Vm87dH2_NkOYdL67qlZ4bg-1
+Received: by mail-ed1-f72.google.com with SMTP id z20-20020a05640240d400b003dce046ab51so8422420edb.14
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 01:10:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:from:to:cc:references:in-reply-to
+         :content-transfer-encoding;
+        bh=Xu96aStupZygtVSLHvKF+rN1vtm48eum6wSRQF0b9e4=;
+        b=Uy/WxXIUfdT49WBmUEdMZ3PRDJJc6Kml199BSU/p90BQfVRJLemLaKOV4ylXk9j1cm
+         EARq+GA4DzYB0ETGBSAQpHR9gtdpNOBX+SLKjjSOkjLo6UX2StQZZxDeRA3Sz2Bd2NC8
+         mgMHT/11IHmpU30MokbRGZUalFdkfXMVrWdfqtJA+h9Aq9VDL+dtnuqL4hDrQ0HjpN+m
+         p6ZiSENrfivY2pZvYK2mOpTpyhZX1CccPilXq0NkFqGXPiXcjoT/LVVynTy5U5h7gY9B
+         5my+g61q7YqMx00g3aQL3yLJWTtd6ExUMmiIMoV6x2I5rerifu2zOUTgboMU4z10ouGb
+         XfzA==
+X-Gm-Message-State: AOAM530bGqWemUTKNbIo+lhmavyxeipYn/+EUfXsxMTP06UJSr2k++DN
+        AdblXeUsfW2lg11rSq+hUh/cweLWGUB/ayKCHKQhrwmtv+9cI51BgXHy/qFvLt6ZOyKKi7n/i+K
+        GAYds9Gju5Hc9jvUnn8QeysKC
+X-Received: by 2002:a17:907:a089:: with SMTP id hu9mr12035233ejc.70.1635495007380;
+        Fri, 29 Oct 2021 01:10:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz+2ZyHD1jzsaI7gKk3psM2BsN5hgt5uesc1AMIXYBo/23b9OFF/3dpCObBH8E8pCm21h7d1Q==
+X-Received: by 2002:a17:907:a089:: with SMTP id hu9mr12035214ejc.70.1635495007158;
+        Fri, 29 Oct 2021 01:10:07 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id ne2sm2519895ejc.44.2021.10.29.01.10.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Oct 2021 01:10:06 -0700 (PDT)
+Message-ID: <82035130-d810-9f0b-259e-61280de1d81f@redhat.com>
+Date:   Fri, 29 Oct 2021 10:10:05 +0200
 MIME-Version: 1.0
-Message-ID: <163549497726.626.15251847744417014026.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v5 1/2] x86/PCI: Ignore E820 reservations for bridge
+ windows on newer systems
+Content-Language: en-US
+From:   Hans de Goede <hdegoede@redhat.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Myron Stowe <myron.stowe@redhat.com>,
+        Juha-Pekka Heikkila <juhapekka.heikkila@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>, linux-acpi@vger.kernel.org,
+        linux-pci@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?Q?Benoit_Gr=c3=a9goire?= <benoitg@coeus.ca>,
+        Hui Wang <hui.wang@canonical.com>, stable@vger.kernel.org,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
+References: <20211022012034.GA2703195@bhelgaas>
+ <75d1ef5a-13d9-9a67-0139-90b27b084c84@redhat.com>
+In-Reply-To: <75d1ef5a-13d9-9a67-0139-90b27b084c84@redhat.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/apic branch of tip:
+Hi Bjorn,
 
-Commit-ID:     cc95a07fef06a2c7917acd827b3a8322772969eb
-Gitweb:        https://git.kernel.org/tip/cc95a07fef06a2c7917acd827b3a8322772969eb
-Author:        Eric Dumazet <edumazet@google.com>
-AuthorDate:    Thu, 07 Oct 2021 07:35:56 -07:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Fri, 29 Oct 2021 10:02:17 +02:00
+On 10/22/21 11:53, Hans de Goede wrote:
+> Hi Bjorn,
+> 
+> On 10/22/21 03:20, Bjorn Helgaas wrote:
+>> On Thu, Oct 21, 2021 at 07:15:57PM +0200, Hans de Goede wrote:
+>>> On 10/20/21 23:14, Bjorn Helgaas wrote:
+>>>> On Wed, Oct 20, 2021 at 12:23:26PM +0200, Hans de Goede wrote:
+>>>>> On 10/19/21 23:52, Bjorn Helgaas wrote:
+>>>>>> On Thu, Oct 14, 2021 at 08:39:42PM +0200, Hans de Goede wrote:
+>>>>>>> Some BIOS-es contain a bug where they add addresses which map to system
+>>>>>>> RAM in the PCI host bridge window returned by the ACPI _CRS method, see
+>>>>>>> commit 4dc2287c1805 ("x86: avoid E820 regions when allocating address
+>>>>>>> space").
+>>>>>>>
+>>>>>>> To work around this bug Linux excludes E820 reserved addresses when
+>>>>>>> allocating addresses from the PCI host bridge window since 2010.
+>>>>>>> ...
+>>>>
+>>>>>> I haven't seen anybody else eager to merge this, so I guess I'll stick
+>>>>>> my neck out here.
+>>>>>>
+>>>>>> I applied this to my for-linus branch for v5.15.
+>>>>>
+>>>>> Thank you, and sorry about the build-errors which the lkp
+>>>>> kernel-test-robot found.
+>>>>>
+>>>>> I've just send out a patch which fixes these build-errors
+>>>>> (verified with both .config-s from the lkp reports).
+>>>>> Feel free to squash this into the original patch (or keep
+>>>>> them separate, whatever works for you).
+>>>>
+>>>> Thanks, I squashed the fix in.
+>>>>
+>>>> HOWEVER, I think it would be fairly risky to push this into v5.15.
+>>>> We would be relying on the assumption that current machines have all
+>>>> fixed the BIOS defect that 4dc2287c1805 addressed, and we have little
+>>>> evidence for that.
+>>>
+>>> It is a 10 year old BIOS defect, so hopefully anything from 2018
+>>> or later will not have it.
+>>
+>> We can hope.  AFAIK, Windows allocates space top-down, while Linux
+>> allocates bottom-up, so I think it's quite possible these defects
+>> would never be discovered or fixed.  In any event, I don't think we
+>> have much evidence either way.
+> 
+> Ack.
+> 
+>>>> I'm not sure there's significant benefit to having this in v5.15.
+>>>> Yes, the mainline v5.15 kernel would work on the affected machines,
+>>>> but I suspect most people with those machines are running distro
+>>>> kernels, not mainline kernels.
+>>>
+>>> Fedora and Arch do follow mainline pretty closely and a lot of
+>>> users are affected by this (see the large number of BugLinks in
+>>> the commit).
+>>>
+>>> I completely understand why you are reluctant to push this out, but
+>>> your argument about most distros not running mainline kernels also
+>>> applies to chances of people where this may cause a regression
+>>> running mainline kernels also being quite small.
+>>
+>> True.
+>>
+>>>> This issue has been around a long time, so it's not like a regression
+>>>> that we just introduced.  If we fixed these machines and regressed
+>>>> *other* machines, we'd be worse off than we are now.
+>>>
+>>> If we break one machine model and fix a whole bunch of other machines
+>>> then in my book that is a win. Ideally we would not break anything,
+>>> but we can only find out if we actually break anything if we ship
+>>> the change.
+>>
+>> I'm definitely not going to try the "fix many, break one" argument on
+>> Linus.  Of course we want to fix systems, but IMO it's far better to
+>> leave a system broken than it is to break one that used to work.
+> 
+> Right, what I meant to say with "a win" is a step in the right direction,
+> we definitely must address any regressions coming from this change as
+> soon as we learn about them.
+> 
+>>>> In the meantime, here's another possibility for working around this.
+>>>> What if we discarded remove_e820_regions() completely, but aligned the
+>>>> problem _CRS windows a little more?  The 4dc2287c1805 case was this:
+>>>>
+>>>>   BIOS-e820: 00000000bfe4dc00 - 00000000c0000000 (reserved)
+>>>>   pci_root PNP0A03:00: host bridge window [mem 0xbff00000-0xdfffffff]
+>>>>
+>>>> where the _CRS window was of size 0x20100000, i.e., 512M + 1M.  At
+>>>> least in this particular case, we could avoid the problem by throwing
+>>>> away that first 1M and aligning the window to a nice 3G boundary.
+>>>> Maybe it would be worth giving up a small fraction (less than 0.2% in
+>>>> this case) of questionable windows like this?
+>>>
+>>> The PCI BAR allocation code tries to fall back to the BIOS assigned
+>>> resource if the allocation fails. That BIOS assigned resource might
+>>> fall outside of the host bridge window after we round the address.
+>>>
+>>> My initial gut instinct here is that this has a bigger chance
+>>> of breaking things then my change.
+>>>
+>>> In the beginning of the thread you said that ideally we would
+>>> completely stop using the E820 reservations for PCI host bridge
+>>> windows. Because in hindsight messing with the windows on all
+>>> machines just to work around a clear BIOS bug in some was not a
+>>> good idea.
+>>>
+>>> This address-rounding/-aligning you now suggest, is again
+>>> messing with the windows on all machines just to work around
+>>> a clear BIOS bug in some. At least that is how I see this.
+>>
+>> That's true.  I assume Red Hat has a bunch of machines and hopefully
+>> an archive of dmesg logs from them.  Those logs should contain good
+>> E820 and _CRS information, so with a little scripting, maybe we could
+>> get some idea of what's out there.
+> 
+> We do have a (large-ish) test-lab, but that contains almost exclusively
+> servers, where as the original problem was on Dell Precision laptops.
+> 
+> Also I'm not sure if I can get aggregate data from the lab's machines.
+> I can reserve time on any model we have to debug specific problems,
+> but that is targeting one specific model. I'll ask around about this.
 
-x86/apic: Reduce cache line misses in __x2apic_send_IPI_mask()
+So I had another idea to get us a whole bunch of dmesg outputs and that
+is to use the database collected by linux-hardware.org . The dmesg
+were already individually accessible by selecting a specific model machine,
+but I asked them if they could do a dump and I just got an email that a
+dmesg dump is now available here:
 
-Using per-cpu storage for @x86_cpu_to_logical_apicid is not optimal.
+https://github.com/linuxhw/Dmesg
 
-Broadcast IPI will need at least one cache line per cpu to access this
-field.
+Note be careful with the size of the repository - it will take ~3 gigabytes
+of network traffic and ~20 gigabytes of space on the drive to checkout it.
 
-__x2apic_send_IPI_mask() is using standard bitmask operators.
+So if you want dmesg outputs to grep through for e820 / host-bridge-window
+info, here you go.
 
-By converting x86_cpu_to_logical_apicid to an array, we divide by 16x
-number of needed cache lines, because we find 16 values per cache
-line. CPU prefetcher can kick nicely.
+Regards,
 
-Also move @cluster_masks to READ_MOSTLY section to avoid false sharing.
+Hans
 
-Tested on a dual socket host with 256 cpus, cost for a full broadcast
-is now 11 usec instead of 33 usec.
-
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20211007143556.574911-1-eric.dumazet@gmail.com
----
- arch/x86/kernel/apic/x2apic_cluster.c | 27 ++++++++++++++++++++------
- 1 file changed, 21 insertions(+), 6 deletions(-)
-
-diff --git a/arch/x86/kernel/apic/x2apic_cluster.c b/arch/x86/kernel/apic/x2apic_cluster.c
-index f4da9bb..e696e22 100644
---- a/arch/x86/kernel/apic/x2apic_cluster.c
-+++ b/arch/x86/kernel/apic/x2apic_cluster.c
-@@ -15,9 +15,15 @@ struct cluster_mask {
- 	struct cpumask	mask;
- };
- 
--static DEFINE_PER_CPU(u32, x86_cpu_to_logical_apicid);
-+/*
-+ * __x2apic_send_IPI_mask() possibly needs to read
-+ * x86_cpu_to_logical_apicid for all online cpus in a sequential way.
-+ * Using per cpu variable would cost one cache line per cpu.
-+ */
-+static u32 *x86_cpu_to_logical_apicid __read_mostly;
-+
- static DEFINE_PER_CPU(cpumask_var_t, ipi_mask);
--static DEFINE_PER_CPU(struct cluster_mask *, cluster_masks);
-+static DEFINE_PER_CPU_READ_MOSTLY(struct cluster_mask *, cluster_masks);
- static struct cluster_mask *cluster_hotplug_mask;
- 
- static int x2apic_acpi_madt_oem_check(char *oem_id, char *oem_table_id)
-@@ -27,7 +33,7 @@ static int x2apic_acpi_madt_oem_check(char *oem_id, char *oem_table_id)
- 
- static void x2apic_send_IPI(int cpu, int vector)
- {
--	u32 dest = per_cpu(x86_cpu_to_logical_apicid, cpu);
-+	u32 dest = x86_cpu_to_logical_apicid[cpu];
- 
- 	/* x2apic MSRs are special and need a special fence: */
- 	weak_wrmsr_fence();
-@@ -58,7 +64,7 @@ __x2apic_send_IPI_mask(const struct cpumask *mask, int vector, int apic_dest)
- 
- 		dest = 0;
- 		for_each_cpu_and(clustercpu, tmpmsk, &cmsk->mask)
--			dest |= per_cpu(x86_cpu_to_logical_apicid, clustercpu);
-+			dest |= x86_cpu_to_logical_apicid[clustercpu];
- 
- 		if (!dest)
- 			continue;
-@@ -94,7 +100,7 @@ static void x2apic_send_IPI_all(int vector)
- 
- static u32 x2apic_calc_apicid(unsigned int cpu)
- {
--	return per_cpu(x86_cpu_to_logical_apicid, cpu);
-+	return x86_cpu_to_logical_apicid[cpu];
- }
- 
- static void init_x2apic_ldr(void)
-@@ -103,7 +109,7 @@ static void init_x2apic_ldr(void)
- 	u32 cluster, apicid = apic_read(APIC_LDR);
- 	unsigned int cpu;
- 
--	this_cpu_write(x86_cpu_to_logical_apicid, apicid);
-+	x86_cpu_to_logical_apicid[smp_processor_id()] = apicid;
- 
- 	if (cmsk)
- 		goto update;
-@@ -166,12 +172,21 @@ static int x2apic_dead_cpu(unsigned int dead_cpu)
- 
- static int x2apic_cluster_probe(void)
- {
-+	u32 slots;
-+
- 	if (!x2apic_mode)
- 		return 0;
- 
-+	slots = max_t(u32, L1_CACHE_BYTES/sizeof(u32), nr_cpu_ids);
-+	x86_cpu_to_logical_apicid = kcalloc(slots, sizeof(u32), GFP_KERNEL);
-+	if (!x86_cpu_to_logical_apicid)
-+		return 0;
-+
- 	if (cpuhp_setup_state(CPUHP_X2APIC_PREPARE, "x86/x2apic:prepare",
- 			      x2apic_prepare_cpu, x2apic_dead_cpu) < 0) {
- 		pr_err("Failed to register X2APIC_PREPARE\n");
-+		kfree(x86_cpu_to_logical_apicid);
-+		x86_cpu_to_logical_apicid = NULL;
- 		return 0;
- 	}
- 	init_x2apic_ldr();
