@@ -2,188 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78C7343F90C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 10:38:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBC6943F90F
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 10:39:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232509AbhJ2IlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 04:41:10 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:53488 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232313AbhJ2IlJ (ORCPT
+        id S232513AbhJ2ImV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 04:42:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232313AbhJ2ImU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 04:41:09 -0400
-Date:   Fri, 29 Oct 2021 10:38:39 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1635496720;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zJHddUlI46Qff30zfi3fJqY8SclNQ5Xl5lYf2O4sTWc=;
-        b=OhB3PuaNC6oHKH2VZie4clXTUTSDipnanrL8fKfUT2A2JAnYvO6det9QI574c/UAdRCi21
-        lyxuMMSgbrxETQU0mNCAdkrm33gBLXijZjjj3MOuouI4ZoV7bKnx5pC5WZYjJN85oHJkp2
-        IZj3cp0N65iZsz+4r/D9xagHUDKPnXGG3+GHTJfyDoDVKK00FD5JtRTJNPG049VG6ZYp/Z
-        l1SjAuRusKqWn6hHtDg60IdZswXJSWcxKreNyd9G0g/czlHK7tCycAKiOzFe/bo+FdhCsG
-        li0+HCNnJ2+y9FDbuGkBwIimSuof1ngiazjJm3MlLqsAW0VTui7FfPJcbXTKiA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1635496720;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zJHddUlI46Qff30zfi3fJqY8SclNQ5Xl5lYf2O4sTWc=;
-        b=4RL1focKw2Sxw3+0gm897f09RZlcwNaoGBoS76qvCcQkGHnw6py3I6iatv+e4QoGa7b3Ji
-        pj/ZGQIpIEeaQHAw==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     linux-cachefs@redhat.com, linux-kernel@vger.kernel.org
-Cc:     David Howells <dhowells@redhat.com>, Tejun Heo <tj@kernel.org>,
-        Gregor Beck <gregor.beck@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH v2] fscache: Use only one fscache_object_cong_wait.
-Message-ID: <20211029083839.xwwt7jgzru3kcpii@linutronix.de>
-References: <20211028160628.czwdzjjjhtqywasw@linutronix.de>
+        Fri, 29 Oct 2021 04:42:20 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5742CC061570
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 01:39:52 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id l7so9884366iln.8
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 01:39:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=N+B4Aqq4CeoUMbrpwWnK7z1NkNQ/HQ1RQ4+lttaMrVE=;
+        b=E2OH5s6oaV8JbG0GC/o67pIflxIyTxIwSSHrcxCuaizfTH6lGHBmW8d0MM+mzSSSN7
+         PnB4LbtLtSE7vhJuxFybszv+L3Iah5D2J+kMLf+MGFfrFGIELkPcCAIXdGEZ89Wx897G
+         /8A2lWct1zXyd6KJ2Xym2GrsEtRurVMbSRlgUe8DpzNnI2i/DAzYD0DyIW4rKVD01yPi
+         296vdDQ/AIR8lTVa+jsR88mEeAR537DGEdusQ0GQVBKfymhIi/AUjPnBOgOJHCca6k6M
+         5o1iYQMsh7srNWKB0kMzn5vJsStxa8L9ZmcG5LlaLX7R4+5BnhJSz8APXVB5zxq3P/Na
+         Qd4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=N+B4Aqq4CeoUMbrpwWnK7z1NkNQ/HQ1RQ4+lttaMrVE=;
+        b=nUdThD596ha03dRS+1KA9B9pCwhA3Yvgj8XWRhgExyRIsobpYHrFUGPFk+446xFyTC
+         8N9AWZBfHETv7f17EsnqYcT4bV0pn2Kc3mPnAu1FDieBr0yUf4x8tRxLfBmSBHwE5PRe
+         zkSdCsxAHLLynPr1LMq0kCMTkD8MlblkbFOLpkjLQTISejfFFX8TsaPUyCVLIrmvz+pB
+         U8kwnW+nfEAe+ch0c4ACXhkx401/0tNRHnoarcThBXHpG9vWrG3dw8xdzSLOo8uFbfuJ
+         HiubYHBB1bk6OzwqzWbdIOqCktRko8ZovjMx+upF2het3L0QJQTQQJpcIh7quz+WgBhI
+         AnVw==
+X-Gm-Message-State: AOAM531nz6IokVHFXoM3I5CnyjFU2Ot59Z/vsQ+c7zs6yTZxL5SzA1us
+        P3z0gCC4I0UF7ie+A0CdsllPo3cnZ7d2H7HgREw=
+X-Google-Smtp-Source: ABdhPJzULsJfJ8m4XMSmQvG+VBj94iD00pQqabodEmu4nH+DAFSQAvURUmKmgNmsH/jRu+WVTMZ22bHcgSXMtzV+ziU=
+X-Received: by 2002:a05:6e02:1c89:: with SMTP id w9mr6750533ill.189.1635496791692;
+ Fri, 29 Oct 2021 01:39:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20211028160628.czwdzjjjhtqywasw@linutronix.de>
+Sender: georgewilson18245@gmail.com
+Received: by 2002:a05:6e02:d90:0:0:0:0 with HTTP; Fri, 29 Oct 2021 01:39:51
+ -0700 (PDT)
+From:   Alicia Collins <aliciacollins634@gmail.com>
+Date:   Fri, 29 Oct 2021 00:39:51 -0800
+X-Google-Sender-Auth: 4FxwbknDZmlCSOpLMyDI49vEIHM
+Message-ID: <CAHv29jsUb=RF9Htr1wmru6Eu5f+2fX4UmypvG8nfo53o59Ty_A@mail.gmail.com>
+Subject: Hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the commit mentioned below, fscache was converted from slow-work to
-workqueue. slow_work_enqueue() and slow_work_sleep_till_thread_needed()
-did not use a per-CPU workqueue. They choose from two global waitqueues
-depending on the SLOW_WORK_VERY_SLOW bit which was not set so it always
-one waitqueue.
+Hello Dear,
 
-I can't find out how it is ensured that a waiter on certain CPU is woken
-up be the other side. My guess is that the timeout in schedule_timeout()
-ensures that it does not wait forever (or a random wake up).
+With due respect to your person and much sincerity of purpose I wish
+to write to you today, seeking for your urgent assistance in this
+humanitarian social investment project to be establish in your country
+for the mutual benefit of the orphans and the less privileged ones,
+haven't known each other or met before, I know that everything is
+controlled by God as there is nothing impossible to him. I believe
+that you and I can cooperate together in the service of the Lord,
+please open your heart to assist me in carrying out this benevolent
+project in your country/position. I am Mrs.Alicia. Collins, a dying
+widow hospitalized undergoing treatment for brain tumor disease, I
+believe that you will not expose or betray this trust and confidence
+that I am about to entrust to you for the mutual benefit of the
+orphans and the less privileged ones. My late husband made a
+substantial deposit with the Bank which I have decided to hand over
+and entrust the sum of ($ 12,500,000.00 Dollars) in the account under
+your custody for you to invest it into any social charitable project
+in your location or your country. Based on my present health status I
+am permanently indisposed to handle finances or any financial related
+project.
 
-fscache_object_sleep_till_congested() must be invoked from preemptible
-context in order for schedule() to work. In this case this_cpu_ptr()
-should complain with CONFIG_DEBUG_PREEMPT enabled except the thread is
-bound to one CPU.
+ This is the reason why I decided to contact you for your support and
+help to stand as my rightful beneficiary and claim the money for
+humanitarian purposes for the mutual benefits of the less privileged
+ones. Because If the money remains unclaimed with the bank after my
+death, those greedy bank executives will place the money as an
+unclaimed Fund and share it for their selfish and worthless ventures.
+However I need your sincerity and ability to carry out this
+transaction and fulfill my final wish in implementing the charitable
+investment project in your country as it requires absolute trust and
+devotion without any failure. Meanwhile It will be my pleasure to
+compensate you with part of the total money as my Investment
+manager/partner for your effort in handling the transaction, while the
+remaining amount shall be invested into any charity project of your
+choice there in your country.
 
-wake_up() wakes only one waiter and I'm not sure if it is guaranteed
-that only one waiter exists.
+Your early response will be appreciated to enable me to send you
+further details and the bank contact details where the fund has been
+deposited for you to contact the Bank for immediate release and
+transfer of the fund into your bank account as my rightful
+beneficiary.
+Thank you very much for your kind consideration and I wish you well
+and God enlighten you in this social humanitarian project.
 
-Replace the per-CPU waitqueue with one global waitqueue.
-
-Fixes: 8b8edefa2fffb ("fscache: convert object to use workqueue instead of =
-slow-work")
-Reported-by: Gregor Beck <gregor.beck@gmail.com>
-Cc: stable-rt@vger.kernel.org
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
-v1=E2=80=A6v2:
-  - Also remove the put_cpu_var() statement.
-
- fs/fscache/internal.h |  1 -
- fs/fscache/main.c     |  6 ------
- fs/fscache/object.c   | 13 +++++--------
- 3 files changed, 5 insertions(+), 15 deletions(-)
-
-diff --git a/fs/fscache/internal.h b/fs/fscache/internal.h
-index c3e4804b8fcbf..9edb87e11680b 100644
---- a/fs/fscache/internal.h
-+++ b/fs/fscache/internal.h
-@@ -81,7 +81,6 @@ extern unsigned fscache_debug;
- extern struct kobject *fscache_root;
- extern struct workqueue_struct *fscache_object_wq;
- extern struct workqueue_struct *fscache_op_wq;
--DECLARE_PER_CPU(wait_queue_head_t, fscache_object_cong_wait);
-=20
- extern unsigned int fscache_hash(unsigned int salt, unsigned int *data, un=
-signed int n);
-=20
-diff --git a/fs/fscache/main.c b/fs/fscache/main.c
-index 4207f98e405fd..85f8cf3a323d5 100644
---- a/fs/fscache/main.c
-+++ b/fs/fscache/main.c
-@@ -41,8 +41,6 @@ struct kobject *fscache_root;
- struct workqueue_struct *fscache_object_wq;
- struct workqueue_struct *fscache_op_wq;
-=20
--DEFINE_PER_CPU(wait_queue_head_t, fscache_object_cong_wait);
--
- /* these values serve as lower bounds, will be adjusted in fscache_init() =
-*/
- static unsigned fscache_object_max_active =3D 4;
- static unsigned fscache_op_max_active =3D 2;
-@@ -138,7 +136,6 @@ unsigned int fscache_hash(unsigned int salt, unsigned i=
-nt *data, unsigned int n)
- static int __init fscache_init(void)
- {
- 	unsigned int nr_cpus =3D num_possible_cpus();
--	unsigned int cpu;
- 	int ret;
-=20
- 	fscache_object_max_active =3D
-@@ -161,9 +158,6 @@ static int __init fscache_init(void)
- 	if (!fscache_op_wq)
- 		goto error_op_wq;
-=20
--	for_each_possible_cpu(cpu)
--		init_waitqueue_head(&per_cpu(fscache_object_cong_wait, cpu));
--
- 	ret =3D fscache_proc_init();
- 	if (ret < 0)
- 		goto error_proc;
-diff --git a/fs/fscache/object.c b/fs/fscache/object.c
-index 6a675652129b2..7a972d144b546 100644
---- a/fs/fscache/object.c
-+++ b/fs/fscache/object.c
-@@ -798,6 +798,8 @@ void fscache_object_destroy(struct fscache_object *obje=
-ct)
- }
- EXPORT_SYMBOL(fscache_object_destroy);
-=20
-+static DECLARE_WAIT_QUEUE_HEAD(fscache_object_cong_wait);
-+
- /*
-  * enqueue an object for metadata-type processing
-  */
-@@ -806,16 +808,12 @@ void fscache_enqueue_object(struct fscache_object *ob=
-ject)
- 	_enter("{OBJ%x}", object->debug_id);
-=20
- 	if (fscache_get_object(object, fscache_obj_get_queue) >=3D 0) {
--		wait_queue_head_t *cong_wq =3D
--			&get_cpu_var(fscache_object_cong_wait);
-=20
- 		if (queue_work(fscache_object_wq, &object->work)) {
- 			if (fscache_object_congested())
--				wake_up(cong_wq);
-+				wake_up(&fscache_object_cong_wait);
- 		} else
- 			fscache_put_object(object, fscache_obj_put_queue);
--
--		put_cpu_var(fscache_object_cong_wait);
- 	}
- }
-=20
-@@ -833,16 +831,15 @@ void fscache_enqueue_object(struct fscache_object *ob=
-ject)
-  */
- bool fscache_object_sleep_till_congested(signed long *timeoutp)
- {
--	wait_queue_head_t *cong_wq =3D this_cpu_ptr(&fscache_object_cong_wait);
- 	DEFINE_WAIT(wait);
-=20
- 	if (fscache_object_congested())
- 		return true;
-=20
--	add_wait_queue_exclusive(cong_wq, &wait);
-+	add_wait_queue_exclusive(&fscache_object_cong_wait, &wait);
- 	if (!fscache_object_congested())
- 		*timeoutp =3D schedule_timeout(*timeoutp);
--	finish_wait(cong_wq, &wait);
-+	finish_wait(&fscache_object_cong_wait, &wait);
-=20
- 	return fscache_object_congested();
- }
---=20
-2.33.1
-
+Best regards and God bless you.
+Sincerely Mrs.Alicia. Collins.
