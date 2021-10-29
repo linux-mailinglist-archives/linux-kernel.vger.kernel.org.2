@@ -2,151 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D26BE43F4D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 04:11:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C83B243F4DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 04:13:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231537AbhJ2CNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 22:13:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49497 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231448AbhJ2CNo (ORCPT
+        id S231530AbhJ2CPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 22:15:41 -0400
+Received: from mail-ot1-f47.google.com ([209.85.210.47]:43734 "EHLO
+        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231356AbhJ2CPk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 22:13:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635473476;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BZDNMK/nwidg9L+nz8w5aCeWPNSAafxlZqjfIW0PaA0=;
-        b=PEzrpzNYjZF61HUM4CmQE9l8ye8q7IsQewmlKx7WL0sI9VmjbFhwRo6LngFEnvo4PWexAR
-        JVPnYqF+/DWgEzvZvJheDawCafCuuneMDMrIUVrYMr5zBU96f0oCnsBoOOsKlVi3qEnhIu
-        srINZ1uA+6s3gVy+SRs7semD35fEaSw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-217-X80_X8mWPTyYCEzk8VGgsw-1; Thu, 28 Oct 2021 22:11:12 -0400
-X-MC-Unique: X80_X8mWPTyYCEzk8VGgsw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F3FCB10A8E01;
-        Fri, 29 Oct 2021 02:11:10 +0000 (UTC)
-Received: from T590 (ovpn-8-17.pek2.redhat.com [10.72.8.17])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D57A4100E12C;
-        Fri, 29 Oct 2021 02:11:01 +0000 (UTC)
-Date:   Fri, 29 Oct 2021 10:10:56 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Daejun Park <daejun7.park@samsung.com>
-Cc:     ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "huobean@gmail.com" <huobean@gmail.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        Keoseong Park <keosung.park@samsung.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        ming.lei@redhat.com
-Subject: Re: [PATCH] scsi: ufs: Fix proper API to send HPB pre-request
-Message-ID: <YXtYME4yW6bFA1Cb@T590>
-References: <YXtPNIDzeln8zBCn@T590>
- <20211027223619epcms2p60bbc74c9ba9757c58709a99acd0892ff@epcms2p6>
- <CGME20211027223619epcms2p60bbc74c9ba9757c58709a99acd0892ff@epcms2p3>
- <20211029015015epcms2p3a46e0779e43ab84c00388d99abf3b867@epcms2p3>
+        Thu, 28 Oct 2021 22:15:40 -0400
+Received: by mail-ot1-f47.google.com with SMTP id n13-20020a9d710d000000b005558709b70fso4996222otj.10;
+        Thu, 28 Oct 2021 19:13:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vM3EiRXQ2OSu4mmD6bWP+EUG0mzB9TpPF/rDTHfYIj8=;
+        b=WQ7hOtBuE892Whp/mRMnGRsNgdQk9QgBCX5kmfiL3fqvCJuqi3UYcFwFBod04Fmu5y
+         /WzcGnJSE8SCq/y3Lc43wJAF2A7QPkBktzuuMAjOGZYqMi4ylotDTCfBs4x2d1rvmz04
+         c3wrTaVZkBSRxBvaxTKHnjTplYdwZxwUekSHn9MxA3g/L6HR10CU/9QFwbovBA5bUYwe
+         uXR9XBV69y/Fv7AgAFlFAFbxoTnzo/K+e/XMyARjcBqT6S66B70TA6vCb4O0setYaqbO
+         Qf1l+dqwX6vjGymMdW12ZDdHo5OWKJDGBqpnZ++ZjP5BVe13TyKI2kfjyLKpXP2srDFA
+         L69A==
+X-Gm-Message-State: AOAM533tEjXX6spH6GlYhLlQR9e/gwJYZ/F2xRiCJ2+A3/nvC9jeTZfO
+        N80sVl1x7MJpWAzD7HgKjA==
+X-Google-Smtp-Source: ABdhPJyMHDvpVhYUlm/I6enpqef/qbWhYuWCe25Mv9RYKjQCgibt2oEWqsEAdKdJakD46cNOTl/6Lg==
+X-Received: by 2002:a05:6830:3155:: with SMTP id c21mr6450826ots.104.1635473592353;
+        Thu, 28 Oct 2021 19:13:12 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id bo35sm727867oib.40.2021.10.28.19.13.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 19:13:11 -0700 (PDT)
+Received: (nullmailer pid 1021491 invoked by uid 1000);
+        Fri, 29 Oct 2021 02:13:10 -0000
+Date:   Thu, 28 Oct 2021 21:13:10 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Vincent Knecht <vincent.knecht@mailoo.org>
+Cc:     stephan@gerhold.net, lgirdwood@gmail.com, broonie@kernel.org,
+        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: [PATCH v1 3/4] ASoC: dt-bindings: nxp, tfa989x: Add rcv-gpios
+ property for tfa9897
+Message-ID: <YXtYtsPCeh937oF6@robh.at.kernel.org>
+References: <20211024085840.1536438-1-vincent.knecht@mailoo.org>
+ <20211024085840.1536438-4-vincent.knecht@mailoo.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211029015015epcms2p3a46e0779e43ab84c00388d99abf3b867@epcms2p3>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <20211024085840.1536438-4-vincent.knecht@mailoo.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 10:50:15AM +0900, Daejun Park wrote:
-> > On Thu, Oct 28, 2021 at 07:36:19AM +0900, Daejun Park wrote:
-> > > This patch addresses the issue of using the wrong API to create a
-> > > pre_request for HPB READ.
-> > > HPB READ candidate that require a pre-request will try to allocate a
-> > > pre-request only during request_timeout_ms (default: 0). Otherwise, it is
-> >  
-> > Can you explain about 'only during request_timeout_ms'?
-> >  
-> > From the following code in ufshpb_prep(), the pre-request is allocated
-> > for each READ IO in case of (!ufshpb_is_legacy(hba) && ufshpb_is_required_wb(hpb,
-> > transfer_len)).
-> >  
-> >    if (!ufshpb_is_legacy(hba) &&
-> >             ufshpb_is_required_wb(hpb, transfer_len)) {
-> >                 err = ufshpb_issue_pre_req(hpb, cmd, &read_id);
-> >  
-> > > passed as normal READ, so deadlock problem can be resolved.
-> > > 
-> > > Signed-off-by: Daejun Park <daejun7.park@samsung.com>
-> > > ---
-> > >  drivers/scsi/ufs/ufshpb.c | 11 +++++------
-> > >  drivers/scsi/ufs/ufshpb.h |  1 +
-> > >  2 files changed, 6 insertions(+), 6 deletions(-)
-> > > 
-> > > diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
-> > > index 02fb51ae8b25..3117bd47d762 100644
-> > > --- a/drivers/scsi/ufs/ufshpb.c
-> > > +++ b/drivers/scsi/ufs/ufshpb.c
-> > > @@ -548,8 +548,7 @@ static int ufshpb_execute_pre_req(struct ufshpb_lu *hpb, struct scsi_cmnd *cmd,
-> > >                                   read_id);
-> > >          rq->cmd_len = scsi_command_size(rq->cmd);
-> > >  
-> > > -        if (blk_insert_cloned_request(q, req) != BLK_STS_OK)
-> > > -                return -EAGAIN;
-> > > +        blk_execute_rq_nowait(NULL, req, true, ufshpb_pre_req_compl_fn);
-> >  
-> > Be care with above change, blk_insert_cloned_request() allocates
-> > driver tag and issues the request to LLD directly, then returns the
-> > result. If anything fails in the code path, -EAGAIN is returned.
-> >  
-> > But blk_execute_rq_nowait() simply queued the request in block layer,
-> > and run hw queue. It doesn't allocate driver tag, and doesn't issue it
-> > to LLD.
-> >  
-> > So ufshpb_execute_pre_req() may think the pre-request is issued to LLD
-> > successfully, but actually not, maybe never. What will happen after the
-> > READ IO is issued to device, but the pre-request(write buffer) isn't
-> > sent to device?
+On Sun, Oct 24, 2021 at 10:58:39AM +0200, Vincent Knecht wrote:
+> Add optional rcv-gpios property specific to tfa9897 receiver mode.
 > 
-> In that case, the HPB READ cannot get benefit from pre-request. But it is not
-> common case.
-
-OK, so the device will ignore the pre-request if it isn't received in
-time, not sure it is common or not, since blk_execute_rq_nowait()
-doesn't provide any feedback. Here looks blk_insert_cloned_request()
-is better.
-
+> Signed-off-by: Vincent Knecht <vincent.knecht@mailoo.org>
+> ---
+>  .../devicetree/bindings/sound/nxp,tfa989x.yaml         | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
 > 
-> > Can you explain how this change solves the deadlock?
+> diff --git a/Documentation/devicetree/bindings/sound/nxp,tfa989x.yaml b/Documentation/devicetree/bindings/sound/nxp,tfa989x.yaml
+> index 7667471be1e4..a9e15baedafd 100644
+> --- a/Documentation/devicetree/bindings/sound/nxp,tfa989x.yaml
+> +++ b/Documentation/devicetree/bindings/sound/nxp,tfa989x.yaml
+> @@ -12,6 +12,16 @@ maintainers:
+>  allOf:
+>    - $ref: name-prefix.yaml#
+>  
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: nxp,tfa9897
+> +    then:
+> +      properties:
+> +        rcv-gpios:
+> +          description: optional GPIO to be asserted when receiver mode is enabled.
+
+Did you test this works? 
+
+You have to define the property outside the if/then schema at the top 
+level. Then use an if/then schema to restrict it (rcv-gpios: false).
+
+> +
+>  properties:
+>    compatible:
+>      enum:
+> -- 
+> 2.31.1
 > 
-> The deadlock is happen when the READ waiting allocation of pre-request. But
-> the timeout code makes to stop waiting after given time later.
-
-If you mean blk-mq timeout code will be triggered, I think it won't.
-Meantime, LLD may see nothing to timeout too.
-
-For example, in case of none io sched, the queue depth is 128, and 128 READ
-IOs are sent to ufshcd_queuecommand() at the same time, and all these 128 IOs
-require to allocate pre-request, but no one can move on because 128 tags are
-used up.
-
-So no request can be sent to device and BLK_STS_RESOURCE is always returned
-from ufshcd_queuecommand(), also when blk-mq timeout is triggered, all in-flight
-request's state may just be updated as IDLE, so blk-mq may find nothing to expire.
-
-In case of real io scheduler, request->tag is released when BLK_STS_RESOURCE
-is returned from ufshcd_queuecommand(), but it doesn't mean that
-pre-request can get tag always.
-
-The approach[1] of reserving one slot for pre-request should provide
-forward progress guarantee.
-
-
-[1] https://lore.kernel.org/linux-block/YXoF59XeZ5KS0jZj@T590/
-
-Thanks,
-Ming
-
+> 
+> 
+> 
