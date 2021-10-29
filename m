@@ -2,78 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 017EB43FB94
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 13:40:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D072443FB96
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 13:41:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232039AbhJ2LnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 07:43:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51068 "EHLO mail.kernel.org"
+        id S232052AbhJ2Lng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 07:43:36 -0400
+Received: from ixit.cz ([94.230.151.217]:51092 "EHLO ixit.cz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232002AbhJ2LnR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 07:43:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B44A60F0F;
-        Fri, 29 Oct 2021 11:40:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635507648;
-        bh=p4S5wYD0ma8JFulxWT4vD5+Ei5DR4SPJvvb7cb7XhYk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=gaS55Rq7T8lbLKDpfGqH0NgdXfEn7pe9faGcQnvUGPAon1I7E1IyoDQyskop7qWCM
-         s0IMLYZatwhEx7NcH+tE1vYpqhrFeHh0bu5G2O33Sxo8VZeGO+utjZdxbiXsLngVVs
-         6CWrb3FS/byH/vcPu00F40T3xXJTT+IoLcyFzaGdOKMJsA6tB9vi2EszcteTLkD6cY
-         Z87j5CPa/yUTapfpRsvgtvmTQ0+6RtUM8pK1UanDCKEYQiQMtplhTfggNJzJ97rKEZ
-         FhGrdvyKb9UKrtrs1K1AYkXQtWO94O6iBkJtjXnX0ijlYnBKGuFYqhiDWnnZqGDqsG
-         5SYXQENEgH0sA==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Roderick Colenbrander <roderick@gaikai.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Roderick Colenbrander <roderick.colenbrander@sony.com>,
-        =?UTF-8?q?Barnab=C3=A1s=20P=C5=91cze?= <pobrn@protonmail.com>,
-        "Daniel J. Ogorchock" <djogorchock@gmail.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] hid: playstation: add LEDS_CLASS dependency
-Date:   Fri, 29 Oct 2021 13:40:24 +0200
-Message-Id: <20211029114044.1058958-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S231926AbhJ2Lnf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 07:43:35 -0400
+Received: from localhost.localdomain (ip-89-176-96-70.net.upcbroadband.cz [89.176.96.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ixit.cz (Postfix) with ESMTPSA id 15ED220064;
+        Fri, 29 Oct 2021 13:41:05 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
+        t=1635507665;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=JVovMsGgjFRk/Bmjox2YczakbZiYn8efZOf5TyMV8cs=;
+        b=dDarri+tU/27QxuJZLADRt1tp4mduZ+CVkB6JQFy43SBQ0PlU2EtCLKqo4iyOpxqGVP/CN
+        d1lkI9gOAkgA+n7/DbBCVl0MChOLS766Fpnos/pXreqePfATwMJ/7/J0v9EfE7vFKYLC7d
+        ZVkuWZCkHOVIccuc8NpobZUmmMNrHcs=
+From:   David Heidelberg <david@ixit.cz>
+To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>
+Cc:     ~okias/devicetree@lists.sr.ht, phone-devel@vger.kernel.org,
+        David Heidelberg <david@ixit.cz>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: imx8mq: fix the schema check errors for fsl,tmu-calibration
+Date:   Fri, 29 Oct 2021 13:40:49 +0200
+Message-Id: <20211029114050.39520-1-david@ixit.cz>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+fsl,tmu-calibration is in u32-matrix. Use matching property syntax.
+No functional changes. Fixes warnings as:
+$ make dtbs_check
+...
+arch/arm64/boot/dts/freescale/imx8mq-librem5-r3.dt.yaml: tmu@30260000: fsl,tmu-calibration:0: Additional items are not allowed (1, 41, 2, 47, 3, 53, 4, 61, 5, 67, 6, 75, 7, 81, 8, 87, 9, 95, 10, 103, 11, 111, 65536, 27, 65537, 35, 65538, 43, 65539, 51, 65540, 59, 65541, 67, 65542, 75, 65543, 85, 65544, 93, 65545, 103, 65546, 112, 131072, 23, 131073, 35, 131074, 45, 131075, 55, 131076, 65, 131077, 75, 131078, 87, 131079, 99, 131080, 111, 196608, 21, 196609, 33, 196610, 45, 196611, 57, 196612, 69, 196613, 83, 196614, 95, 196615, 113 were unexpected)
+        From schema: /home/ubuntu/projects_remote/linux/Documentation/devicetree/bindings/thermal/qoriq-thermal.yaml
+...
 
-The new LED support causes a link failure when the LEDS subsystem
-is in a loadable module and the playstation HID driver is built-in:
-
-ld.lld: error: undefined symbol: devm_led_classdev_multicolor_register_ext
->>> referenced by hid-playstation.c
->>>               hid/hid-playstation.o:(ps_lightbar_register) in archive drivers/built-in.a
-
-Add a hard Kconfig dependency on LEDS_CLASS, but allow building with
-the multicolor support disabled, as this is apparently meant as an
-optional interface.
-
-Fixes: 8c0ab553b072 ("HID: playstation: expose DualSense player LEDs through LED class.")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: David Heidelberg <david@ixit.cz>
 ---
- drivers/hid/Kconfig | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/arm64/boot/dts/freescale/imx8mq.dtsi | 87 ++++++++++++-----------
+ 1 file changed, 44 insertions(+), 43 deletions(-)
 
-diff --git a/drivers/hid/Kconfig b/drivers/hid/Kconfig
-index a2c3d9b7bd01..cd10c398580e 100644
---- a/drivers/hid/Kconfig
-+++ b/drivers/hid/Kconfig
-@@ -899,6 +899,8 @@ config HID_PLANTRONICS
- config HID_PLAYSTATION
- 	tristate "PlayStation HID Driver"
- 	depends on HID
-+	depends on LEDS_CLASS
-+	depends on LEDS_CLASS_MULTICOLOR || !LEDS_CLASS_MULTICOLOR
- 	select CRC32
- 	select POWER_SUPPLY
- 	help
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+index 972766b67a15..50088b110ad4 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+@@ -429,49 +429,50 @@ tmu: tmu@30260000 {
+ 				clocks = <&clk IMX8MQ_CLK_TMU_ROOT>;
+ 				little-endian;
+ 				fsl,tmu-range = <0xb0000 0xa0026 0x80048 0x70061>;
+-				fsl,tmu-calibration = <0x00000000 0x00000023
+-						       0x00000001 0x00000029
+-						       0x00000002 0x0000002f
+-						       0x00000003 0x00000035
+-						       0x00000004 0x0000003d
+-						       0x00000005 0x00000043
+-						       0x00000006 0x0000004b
+-						       0x00000007 0x00000051
+-						       0x00000008 0x00000057
+-						       0x00000009 0x0000005f
+-						       0x0000000a 0x00000067
+-						       0x0000000b 0x0000006f
+-
+-						       0x00010000 0x0000001b
+-						       0x00010001 0x00000023
+-						       0x00010002 0x0000002b
+-						       0x00010003 0x00000033
+-						       0x00010004 0x0000003b
+-						       0x00010005 0x00000043
+-						       0x00010006 0x0000004b
+-						       0x00010007 0x00000055
+-						       0x00010008 0x0000005d
+-						       0x00010009 0x00000067
+-						       0x0001000a 0x00000070
+-
+-						       0x00020000 0x00000017
+-						       0x00020001 0x00000023
+-						       0x00020002 0x0000002d
+-						       0x00020003 0x00000037
+-						       0x00020004 0x00000041
+-						       0x00020005 0x0000004b
+-						       0x00020006 0x00000057
+-						       0x00020007 0x00000063
+-						       0x00020008 0x0000006f
+-
+-						       0x00030000 0x00000015
+-						       0x00030001 0x00000021
+-						       0x00030002 0x0000002d
+-						       0x00030003 0x00000039
+-						       0x00030004 0x00000045
+-						       0x00030005 0x00000053
+-						       0x00030006 0x0000005f
+-						       0x00030007 0x00000071>;
++				fsl,tmu-calibration =
++						<0x00000000 0x00000023>,
++						<0x00000001 0x00000029>,
++						<0x00000002 0x0000002f>,
++						<0x00000003 0x00000035>,
++						<0x00000004 0x0000003d>,
++						<0x00000005 0x00000043>,
++						<0x00000006 0x0000004b>,
++						<0x00000007 0x00000051>,
++						<0x00000008 0x00000057>,
++						<0x00000009 0x0000005f>,
++						<0x0000000a 0x00000067>,
++						<0x0000000b 0x0000006f>,
++
++						<0x00010000 0x0000001b>,
++						<0x00010001 0x00000023>,
++						<0x00010002 0x0000002b>,
++						<0x00010003 0x00000033>,
++						<0x00010004 0x0000003b>,
++						<0x00010005 0x00000043>,
++						<0x00010006 0x0000004b>,
++						<0x00010007 0x00000055>,
++						<0x00010008 0x0000005d>,
++						<0x00010009 0x00000067>,
++						<0x0001000a 0x00000070>,
++
++						<0x00020000 0x00000017>,
++						<0x00020001 0x00000023>,
++						<0x00020002 0x0000002d>,
++						<0x00020003 0x00000037>,
++						<0x00020004 0x00000041>,
++						<0x00020005 0x0000004b>,
++						<0x00020006 0x00000057>,
++						<0x00020007 0x00000063>,
++						<0x00020008 0x0000006f>,
++
++						<0x00030000 0x00000015>,
++						<0x00030001 0x00000021>,
++						<0x00030002 0x0000002d>,
++						<0x00030003 0x00000039>,
++						<0x00030004 0x00000045>,
++						<0x00030005 0x00000053>,
++						<0x00030006 0x0000005f>,
++						<0x00030007 0x00000071>;
+ 				#thermal-sensor-cells =  <1>;
+ 			};
+ 
 -- 
-2.29.2
+2.33.0
 
