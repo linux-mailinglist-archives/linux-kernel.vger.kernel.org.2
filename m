@@ -2,84 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0208543FD0A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 15:05:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE1BF43FD19
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 15:06:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232149AbhJ2NHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 09:07:37 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:24956 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231761AbhJ2NHK (ORCPT
+        id S232156AbhJ2NIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 09:08:24 -0400
+Received: from mail-pj1-f50.google.com ([209.85.216.50]:53042 "EHLO
+        mail-pj1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232177AbhJ2NHn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 09:07:10 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1635512681; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=vnbg7uJQhyANUTZhJsUI3dIJ6wgzUUdV7/qGuCSCecs=; b=rz1XMDnrVkBrqEP86S8EJFsfQ9YMusOkPTISuds6BiN6Rl/gIv+6eKSH4/Ep9jQcSTjKzmq6
- Shf5EZ9pkktLi8tCJK/xf0WIeA24Ul1HWNZEDDE6whGGFQdjcUnPfhYAxHimnRcmAeamC7m1
- pO4Sa4RXKHwa6CFZNa1/klqKAsw=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 617bf169f6a3eeacf9554758 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 29 Oct 2021 13:04:41
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 26728C43639; Fri, 29 Oct 2021 13:04:39 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from tykki (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 46346C43617;
-        Fri, 29 Oct 2021 13:04:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 46346C43617
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     luciano.coelho@intel.com, davem@davemloft.net, kuba@kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] wlwifi: Fix missing error code in iwl_pci_probe()
-References: <1635501304-85589-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-Date:   Fri, 29 Oct 2021 16:04:32 +0300
-In-Reply-To: <1635501304-85589-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-        (Jiapeng Chong's message of "Fri, 29 Oct 2021 17:55:04 +0800")
-Message-ID: <87y26c2d9b.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Fri, 29 Oct 2021 09:07:43 -0400
+Received: by mail-pj1-f50.google.com with SMTP id oa4so7178176pjb.2;
+        Fri, 29 Oct 2021 06:05:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KufboUyCprK+9fF7rZgzoYUlaXceRx+Ob+I3zrllYAQ=;
+        b=pj4hv9MrdwdXDA5OOyNDk6/AjrGd6CwqOMyWCKuNwCk8K3RDmRDXRKVbHZOX1pFsym
+         MIVjr7JmzTcClyx3/reE8UdJHwox6UaoKALAmXxLZVyDmJLtQ/7OpdYTbvo4ojzdJ+//
+         vSrZjRIZaljuVCzWOqLfqBcFxXeJOahsP2hGaOhuBxlyh1mDW3TuM4Qp7HR4T1LdMa1W
+         rhak9J/n1wR6t1lH12gqPrMhPdPeJZvVISntZXotewLRdLHKEShD0dNgUYtSg9KtfqjT
+         BfrmZerBnawSo+wDzDlT1Jsq294UVH3rPD/J01UhmJ8krGUlYH2V0yifMr4NLrlmxq5n
+         Gh9Q==
+X-Gm-Message-State: AOAM5310uKekKcqNzmBqHFniwWGQV5mHclExYotm0RBL3eaYUAfMZod/
+        gO8K6DdwGu3GceTrMOQ+kguW2RMHN8/faHWLES4=
+X-Google-Smtp-Source: ABdhPJw9MG05yAh3HecVfqDjx7H9rcaDkE4VNJAwOxc2B4ZcG9HCIowvT8QcnxoBpBLNidPLtYA44mxQGJEw/QZ0CsY=
+X-Received: by 2002:a17:90a:5b0c:: with SMTP id o12mr11538833pji.194.1635512714212;
+ Fri, 29 Oct 2021 06:05:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20211021174223.43310-1-kernel@esmil.dk> <20211021174223.43310-6-kernel@esmil.dk>
+ <YXtRhwULuIzvmOnt@robh.at.kernel.org>
+In-Reply-To: <YXtRhwULuIzvmOnt@robh.at.kernel.org>
+From:   Emil Renner Berthing <kernel@esmil.dk>
+Date:   Fri, 29 Oct 2021 15:05:02 +0200
+Message-ID: <CANBLGcwVh593U78tbA+rT2wDnLytQ359ErbxFBroM5tmDXSMCQ@mail.gmail.com>
+Subject: Re: [PATCH v2 05/16] dt-bindings: clock: starfive: Add JH7100 bindings
+To:     Rob Herring <robh@kernel.org>
+Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Atish Patra <atish.patra@wdc.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Michael Zhu <michael.zhu@starfivetech.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Sagar Kadam <sagar.kadam@sifive.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Fu Wei <tekkamanninja@gmail.com>,
+        Jiri Slaby <jirislaby@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jiapeng Chong <jiapeng.chong@linux.alibaba.com> writes:
-
-> From: chongjiapeng <jiapeng.chong@linux.alibaba.com>
+On Fri, 29 Oct 2021 at 03:42, Rob Herring <robh@kernel.org> wrote:
+> On Thu, 21 Oct 2021 19:42:12 +0200, Emil Renner Berthing wrote:
+> > From: Geert Uytterhoeven <geert@linux-m68k.org>
+> >
+> > Add device tree bindings for the StarFive JH7100 clock generator.
+> >
+> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> > Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
+> > ---
+> >  .../clock/starfive,jh7100-clkgen.yaml         | 56 +++++++++++++++++++
+> >  1 file changed, 56 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/clock/starfive,jh7100-clkgen.yaml
+> >
 >
-> The error code is missing in this code scenario, add the error code
-> '-EINVAL' to the return value 'ret'.
->
-> Eliminate the follow smatch warning:
->
-> drivers/net/wireless/intel/iwlwifi/pcie/drv.c:1376 iwl_pci_probe() warn:
-> missing error code 'ret'.
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Fixes: 1f171f4f1437 ("iwlwifi: Add support for getting rf id with blank otp")
-> Signed-off-by: chongjiapeng <jiapeng.chong@linux.alibaba.com>
+> Reviewed-by: Rob Herring <robh@kernel.org>
 
-The subject prefix should be "iwlwifi: ".
+Thank you! For the reset bindings you said to remove unused labels in
+the example. If you don't mind I'll do that here too, but keep the
+tag.
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+/Emil
