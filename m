@@ -2,90 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0788443FBCD
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 13:50:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CFB243FBD7
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 13:53:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231468AbhJ2LxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 07:53:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54744 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229692AbhJ2LxI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 07:53:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A75FD60FC4;
-        Fri, 29 Oct 2021 11:50:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635508240;
-        bh=H3P4wOd7EOrUAcxLCwk43Gf0aEDnKez0F55HW897lXI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Wxd9pUS0IQviAEdGYwyc9aW4xkHe56mVs0em7PiqDs3RxGxD4CqbLVEVi7j4rEiEW
-         mM0EgEVsiMzBlN2fIBBh3E9vQe8tdZlV4uBeH/MbKu4HtebZEWhdVdi9W3w3BOypG9
-         EJsBCUz/WoZ/HZbnmEkQ0T6As3VOdugCGX1l9iO+XdpTRd0sanagS2l+L4Shrt3MK4
-         Vwg64TV+zD8knPA6TiKAP27RtzRWDeh9x1V66weQUK9BU98BthkgphJJ4ppDvVGR62
-         TYdEahIota5RijYQj10H8M0wjfWBHSs3eGBsFQTtX6qix/me9KU5RZoSA4qdhbaZSv
-         dP9qFlw8k5NrQ==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Dillon Min <dillon.minfei@gmail.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Yunfei Dong <yunfei.dong@mediatek.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] media: stm32-dma2d: fix Kconfig dependencies
-Date:   Fri, 29 Oct 2021 13:50:22 +0200
-Message-Id: <20211029115036.1365378-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S230486AbhJ2L4T convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 29 Oct 2021 07:56:19 -0400
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:40107 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229692AbhJ2L4R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 07:56:17 -0400
+Received: (Authenticated sender: clement.leger@bootlin.com)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 4CB03240008;
+        Fri, 29 Oct 2021 11:53:46 +0000 (UTC)
+Date:   Fri, 29 Oct 2021 13:53:45 +0200
+From:   =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <clement.leger@bootlin.com>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/3] net: ocelot: add support to get mac from
+ device-tree
+Message-ID: <20211029135345.3b86b05a@fixe.home>
+In-Reply-To: <20211029113543.nhqwatylx4nrviei@skbuf>
+References: <20211028134932.658167-1-clement.leger@bootlin.com>
+        <20211028134932.658167-2-clement.leger@bootlin.com>
+        <20211028140611.m7whuwrzqxp2t53f@skbuf>
+        <20211028161522.6b711bb2@xps-bootlin>
+        <20211028142254.mbm7gczhhb4h5g3n@skbuf>
+        <20211028163825.7ccb1dea@xps-bootlin>
+        <20211028145142.xjgd3u2xz7kpijtl@skbuf>
+        <20211029080937.152f1876@fixe.home>
+        <20211029113543.nhqwatylx4nrviei@skbuf>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Le Fri, 29 Oct 2021 11:35:43 +0000,
+Vladimir Oltean <vladimir.oltean@nxp.com> a écrit :
 
-The new DMA2D accidentally allowed compile-testing configurations
-that clearly cannot link:
+> On Fri, Oct 29, 2021 at 08:09:37AM +0200, Clément Léger wrote:
+> > Le Thu, 28 Oct 2021 14:51:43 +0000,
+> > Vladimir Oltean <vladimir.oltean@nxp.com> a écrit :
+> >  
+> > > On Thu, Oct 28, 2021 at 04:38:25PM +0200, Clément Léger wrote:  
+> > > > Le Thu, 28 Oct 2021 14:22:55 +0000,
+> > > > Vladimir Oltean <vladimir.oltean@nxp.com> a écrit :
+> > > >  
+> > > > > On Thu, Oct 28, 2021 at 04:15:22PM +0200, Clément Léger
+> > > > > wrote:  
+> > > > > > Le Thu, 28 Oct 2021 14:06:12 +0000,
+> > > > > > Vladimir Oltean <vladimir.oltean@nxp.com> a écrit :
+> > > > > >  
+> > > > > > > On Thu, Oct 28, 2021 at 03:49:30PM +0200, Clément Léger
+> > > > > > > wrote:  
+> > > > > > > > Add support to get mac from device-tree using
+> > > > > > > > of_get_mac_address.
+> > > > > > > >
+> > > > > > > > Signed-off-by: Clément Léger <clement.leger@bootlin.com>
+> > > > > > > > ---
+> > > > > > > >  drivers/net/ethernet/mscc/ocelot_vsc7514.c | 5 ++++-
+> > > > > > > >  1 file changed, 4 insertions(+), 1 deletion(-)
+> > > > > > > >
+> > > > > > > > diff --git a/drivers/net/ethernet/mscc/ocelot_vsc7514.c
+> > > > > > > > b/drivers/net/ethernet/mscc/ocelot_vsc7514.c index
+> > > > > > > > d51f799e4e86..c39118e5b3ee 100644 ---
+> > > > > > > > a/drivers/net/ethernet/mscc/ocelot_vsc7514.c +++
+> > > > > > > > b/drivers/net/ethernet/mscc/ocelot_vsc7514.c @@ -526,7
+> > > > > > > > +526,10 @@ static int ocelot_chip_init(struct ocelot
+> > > > > > > > *ocelot, const struct ocelot_ops *ops)
+> > > > > > > > ocelot_pll5_init(ocelot);
+> > > > > > > > -	eth_random_addr(ocelot->base_mac);
+> > > > > > > > +	ret = of_get_mac_address(ocelot->dev->of_node,
+> > > > > > > > ocelot->base_mac);  
+> > > > > > >
+> > > > > > > Why not per port? This is pretty strange, I think.  
+> > > > > >
+> > > > > > Hi Vladimir,
+> > > > > >
+> > > > > > Currently, all ports share the same base mac address (5
+> > > > > > first bytes). The final mac address per port is computed in
+> > > > > > ocelot_probe_port by adding the port number as the last
+> > > > > > byte of the mac_address provided.
+> > > > > >
+> > > > > > Clément  
+> > > > >
+> > > > > Yes, I know that, but that's not my point.
+> > > > > Every switch port should be pretty much compliant with
+> > > > > ethernet-controller.yaml, if it could inherit that it would be
+> > > > > even better. And since mac-address is an
+> > > > > ethernet-controller.yaml property, it is pretty much
+> > > > > non-obvious at all that you put the mac-address property
+> > > > > directly under the switch, and manually add 0, 1, 2, 3 etc to
+> > > > > it. My request was to parse the mac-address property of each
+> > > > > port. Like this:
+> > > > >
+> > > > > base_mac = random;
+> > > > >
+> > > > > for_each_port() {
+> > > > > 	err = of_get_mac_address(port_dn, &port_mac);
+> > > > > 	if (err)
+> > > > > 		port_mac = base_mac + port;
+> > > > > }  
+> > > >
+> > > > Ok indeed. So I will parse each port for a mac-address
+> > > > property. Do you also want a fallback to use the switch base
+> > > > mac if not specified in port or should I keep the use of a
+> > > > default random mac as the base address anyway ?  
+> > >
+> > > Isn't the pseudocode I posted above explicit enough? Sorry...
+> > > Keep doing what the driver is doing right now, with an optional
+> > > mac-address override per port.
+> > > Why would we read the mac-address property of the switch? Which
+> > > other switch driver does that? Are there device trees in
+> > > circulation where this is being done?  
+> >
+> > BTW, this is actually done on sparx5 switch driver.  
+> 
+> Highly inconsistent, but true. I'm saying that because
+> Documentation/devicetree/bindings/net/microchip,sparx5-switch.yaml
+> says that "mac-address" should be under "switch", but then proceeds
+> to put it under "port@64" in the example.
 
-ld.lld: error: undefined symbol: v4l_vb2q_enable_media_source
->>> referenced by videobuf2-core.c
->>>               media/common/videobuf2/videobuf2-core.o:(vb2_core_streamon) in archive drivers/built-in.a
+Agreed, additionally the driver uses the "mac-adress" property from the
+switch node to initialize the base mac.
+Anyway, I changed my patch to use mac-adress for each port and modified
+the yaml bindings to include ethernet-controller.yaml and use a
+"mac-address" property per port.
 
-ld.lld: error: undefined symbol: v4l2_device_register
->>> referenced by dma2d.c
->>>               media/platform/stm32/dma2d/dma2d.o:(dma2d_probe) in archive drivers/built-in.a
+> 
+> Most likely not caught during review, I'm not sure if this could be
+> considered good practice.
+> 
+> > > > > > > > +	if (ret)
+> > > > > > > > +		eth_random_addr(ocelot->base_mac);
+> > > > > > > > +
+> > > > > > > >  	ocelot->base_mac[5] &= 0xf0;
+> > > > > > > >
+> > > > > > > >  	return 0;
+> > > > > > > > --
+> > > > > > > > 2.33.0  
+> > > > > > >  
+> > > > >  
+> > >  
+> >
+> >
+> >
+> > --
+> > Clément Léger,
+> > Embedded Linux and Kernel engineer at Bootlin
+> > https://bootlin.com  
 
-ld.lld: error: undefined symbol: video_device_alloc
->>> referenced by dma2d.c
->>>               media/platform/stm32/dma2d/dma2d.o:(dma2d_probe) in archive drivers/built-in.a
 
-ld.lld: error: undefined symbol: v4l2_m2m_init
->>> referenced by dma2d.c
->>>               media/platform/stm32/dma2d/dma2d.o:(dma2d_probe) in archive drivers/built-in.a
 
-Tighten the dependencies to only allow test builds when VIDEO_V4L2
-is available, but keep it possible for non-stm32 targets.
-
-Fixes: bdbbd511ef0c ("media: stm32-dma2d: STM32 DMA2D driver")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/media/platform/Kconfig | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
-index 68f16aef8754..9fbdba0fd1e7 100644
---- a/drivers/media/platform/Kconfig
-+++ b/drivers/media/platform/Kconfig
-@@ -494,7 +494,8 @@ endif # VIDEO_STI_DELTA
- 
- config VIDEO_STM32_DMA2D
- 	tristate "STM32 Chrom-Art Accelerator (DMA2D)"
--	depends on (VIDEO_DEV && VIDEO_V4L2 && ARCH_STM32) || COMPILE_TEST
-+	depends on VIDEO_DEV && VIDEO_V4L2
-+	depends on ARCH_STM32 || COMPILE_TEST
- 	select VIDEOBUF2_DMA_CONTIG
- 	select V4L2_MEM2MEM_DEV
- 	help
 -- 
-2.29.2
-
+Clément Léger,
+Embedded Linux and Kernel engineer at Bootlin
+https://bootlin.com
