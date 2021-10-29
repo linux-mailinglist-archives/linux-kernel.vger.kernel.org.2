@@ -2,442 +2,391 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 418FD440120
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 19:19:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3697440123
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 19:20:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229968AbhJ2RWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 13:22:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56174 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229772AbhJ2RWK (ORCPT
+        id S230041AbhJ2RWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 13:22:42 -0400
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:39298 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229772AbhJ2RWk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 13:22:10 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA58DC061570
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 10:19:41 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id v17so17296655wrv.9
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 10:19:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=l2HpreeQxrcpiEkneCxlFcZuuWoJwZlDGWyR3gCzd0E=;
-        b=DCc1fV5Ck2jVvsEQRwJByHjW0p6z+CWn5XNGJmHS6wVqOpVIsInHDrhr12doGJXLnG
-         RrYcddX3cG4kheHeeJdNp1UV2ekKPpoIGoSNy4sEiV+7AXgbYJkfhCIRMSaE4ge+vfXu
-         yIJF83IOlTlXNZIuDXC08pDNbFDT06T28If1Zgfmt3Dg0fm0ab5GTNyPxHiS7103eg5a
-         eYxHsum8CJxMudAXHOlJkFhYeYzSWslkv1u1E+UEhZpK+T5BH+8WjMUf/bLVSVnhT8Lw
-         NGt8sRgaRtVzyHOkvuxJk7xCcMDZrOqtWc1UYekahNOyM2Q0kv1ZZ1coQCJegokUz9hD
-         lhiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=l2HpreeQxrcpiEkneCxlFcZuuWoJwZlDGWyR3gCzd0E=;
-        b=5dcgFrOxNBG86cn+bhV0P+9v0v/+dYYgupn6ztxUZE/mH5Pwn+x6ZsR5tfIxspjQr4
-         f2ZV9NeZQLOPqZrDfq3rAaaSeeiiIOGXVA0AGGJgcOWzJvIQsIayuc6YhOdGTsQFy8Jk
-         xeGPRZ+6arqhzkpFOTsR2il5Hu80a0XzyaoNSwKqV/xOOcwP0LOZbLdPmGicgCI6avM4
-         QLxoSOsNJM5d6kdlnjRA3Bwhzfpv1qZLSKYdKLuKYUiKvNm4EVshjHL/Why3cpbmrdTU
-         zZ3iHURiZUK/Fv8/oRLn3u2ktF8KwPMKobyQC85MCW4uvGRNyuXaJvFok2YabVmhprD2
-         /8nw==
-X-Gm-Message-State: AOAM5307gN4EGJ88kvuzvpPQ67GiTOH2Lp9qybK4E3xO3BhOBgS4RcsZ
-        kSnsSZpOiMOYU0XFgWynxEB+rf4zQ4TgqGMU
-X-Google-Smtp-Source: ABdhPJy6xwzhrzRncAHgJDKg/nKsFlo5eUpdiJlVP43TQFvkg7KiMxMGpDFzBKKOPfwsU+2fENGBew==
-X-Received: by 2002:a5d:6e91:: with SMTP id k17mr15669442wrz.260.1635527980139;
-        Fri, 29 Oct 2021 10:19:40 -0700 (PDT)
-Received: from wychelm.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id m8sm6302980wri.33.2021.10.29.10.19.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Oct 2021 10:19:39 -0700 (PDT)
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Jason Wessel <jason.wessel@windriver.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>
-Cc:     Xiang wangx <wangxiang@cdjrlc.com>,
-        jing yangyang <jing.yangyang@zte.com.cn>,
-        kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        patches@linaro.org
-Subject: [PATCH v2] kdb: Adopt scheduler's task clasification
-Date:   Fri, 29 Oct 2021 18:19:35 +0100
-Message-Id: <20211029171935.2926228-1-daniel.thompson@linaro.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210916154253.2731609-1-daniel.thompson@linaro.org>
-References: <20210916154253.2731609-1-daniel.thompson@linaro.org>
+        Fri, 29 Oct 2021 13:22:40 -0400
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19T9guNc021580;
+        Fri, 29 Oct 2021 10:20:09 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0220;
+ bh=BNBPy6yoq30KNnnebf41B4x1hlBp+qktD7iKduOxm9Q=;
+ b=DIpFF09uuifPvnCwZ5pSczW+G3N4qG8iXxKPTrOmWwg2DV495HKd2aAVy33jhvqGxAEo
+ 3IH4k+XyUtzQRQMot4ci1cJLUFWy+Decffmq3zSV4QGe7HT1ffKm0IGy0pEVA2p1JtK0
+ qKunCw9fZucyaMFuSA0S2Gx1EIyOhgg/++UGPy1wrHYWLgi0U+3tivVQ3r27jwaImHGy
+ aQP38l0idereN1+NaJIwNhTpvewJeRVyKlGcVT78GvZ4LVxpbY2LkBSiCi+U5PjS8wzN
+ SV3BWsKMtVPPstOLXXQD9Ge94XLV6RhReE6XV9nWznwnpBpGexXAhJxy0r8XxoV/Yt8N EQ== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0b-0016f401.pphosted.com with ESMTP id 3c06hukhgn-14
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Fri, 29 Oct 2021 10:20:09 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Fri, 29 Oct
+ 2021 10:20:06 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
+ Transport; Fri, 29 Oct 2021 10:20:06 -0700
+Received: from machine421.marvell.com (unknown [10.29.37.2])
+        by maili.marvell.com (Postfix) with ESMTP id B07BF3F7079;
+        Fri, 29 Oct 2021 10:20:05 -0700 (PDT)
+From:   <sgoutham@marvell.com>
+To:     <herbert@gondor.apana.org.au>
+CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Sunil Goutham" <sgoutham@marvell.com>
+Subject: [PATCH v2] hwrng: cavium: Check health status while reading random data
+Date:   Fri, 29 Oct 2021 22:49:59 +0530
+Message-ID: <1635527999-21780-1-git-send-email-sgoutham@marvell.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: HZlAft3iQDa-uorpZT9eB0BrLApQCSib
+X-Proofpoint-ORIG-GUID: HZlAft3iQDa-uorpZT9eB0BrLApQCSib
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-29_04,2021-10-29_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently kdb contains some open-coded routines to generate a summary
-character for each task. This code currently issues warnings, is
-almost certainly broken and won't make sense to any kernel dev who
-has ever used /proc to examine task states.
+From: Sunil Goutham <sgoutham@marvell.com>
 
-Fix both the warning and the potential for confusion by adopting the
-scheduler's task classification. Whilst doing this we also simplify the
-filtering by using mask strings directly (which means we don't have to
-guess all the characters the scheduler might give us).
+This RNG device is present on Marvell OcteonTx2 silicons as well and
+also provides entropy health status.
 
-Unfortunately we can't quite match the scheduler classification completely.
-We add four extra states: - for idle loops and i, m and s sleeping system
-daemons (which means kthreads in one of the I, M and S states). These
-extra states are used to manage the filters for tools to make the output
-of ps and bta less noisy.
+HW continuously checks health condition of entropy and reports
+faults. Fault is in terms of co-processor cycles since last fault
+detected. This doesn't get cleared and only updated when new fault
+is detected. Also there are chances of detecting false positives.
+So to detect a entropy failure SW has to check if failures are
+persistent ie cycles elapsed is frequently updated by HW.
 
-Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
+This patch adds support to detect health failures using below algo.
+1. Consider any fault detected before 10ms as a false positive and ignore.
+   10ms is chosen randomly, no significance.
+2. Upon first failure detection make a note of cycles elapsed and when this
+   error happened in realtime (cntvct).
+3. Upon subsequent failure, check if this is new or a old one by comparing
+   current cycles with the ones since last failure. cycles or time since
+   last failure is calculated using cycles and time info captured at (2).
+
+HEALTH_CHECK status register is not available to VF, hence had to map
+PF registers. Also since cycles are in terms of co-processor cycles,
+had to retrieve co-processor clock rate from RST device.
+
+Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
 ---
+v1->v2:
+ - Fixed COMPILE_TEST failures
+ - Since silicon checks are done using standard ARM specific macros
+   had to remove COMPILE_TEST.
+---
+ drivers/char/hw_random/Kconfig         |   2 +-
+ drivers/char/hw_random/cavium-rng-vf.c | 194 +++++++++++++++++++++++++++++++--
+ drivers/char/hw_random/cavium-rng.c    |  11 +-
+ 3 files changed, 190 insertions(+), 17 deletions(-)
 
-Notes:
-    Sorry it's taken so long to respin this patch.
-    
-    v2:
-    - Fix the typos in the description (Doug)
-    - Stop trying to bend to world so I can keep 'I' exactly as
-      it was before. Instead we now replace 'I' with '-' and
-      fully adopt the scheduler description of tasks. kdb
-      it an interactive tool, not ABI so this is OK. (Doug)
-    - Don't try to enumerate all possible letters in the
-      comments and help. You can learn what to filter from
-      the output of ps anyway, (Doug)
-    - Fix the sleeping system daemon stuff.
-
- kernel/debug/kdb/kdb_bt.c      |  14 ++--
- kernel/debug/kdb/kdb_main.c    |  31 ++++-----
- kernel/debug/kdb/kdb_private.h |   4 +-
- kernel/debug/kdb/kdb_support.c | 117 +++++++--------------------------
- 4 files changed, 48 insertions(+), 118 deletions(-)
-
-diff --git a/kernel/debug/kdb/kdb_bt.c b/kernel/debug/kdb/kdb_bt.c
-index 1f9f0e47aeda..3368a2d15d73 100644
---- a/kernel/debug/kdb/kdb_bt.c
-+++ b/kernel/debug/kdb/kdb_bt.c
-@@ -74,7 +74,7 @@ static void kdb_show_stack(struct task_struct *p, void *addr)
-  */
-
- static int
--kdb_bt1(struct task_struct *p, unsigned long mask, bool btaprompt)
-+kdb_bt1(struct task_struct *p, const char *mask, bool btaprompt)
- {
- 	char ch;
-
-@@ -120,7 +120,7 @@ kdb_bt_cpu(unsigned long cpu)
- 		return;
- 	}
-
--	kdb_bt1(kdb_tsk, ~0UL, false);
-+	kdb_bt1(kdb_tsk, "A", false);
- }
-
- int
-@@ -138,8 +138,8 @@ kdb_bt(int argc, const char **argv)
- 	if (strcmp(argv[0], "bta") == 0) {
- 		struct task_struct *g, *p;
- 		unsigned long cpu;
--		unsigned long mask = kdb_task_state_string(argc ? argv[1] :
--							   NULL);
-+		const char *mask = argc ? argv[1] : kdbgetenv("PS");
-+
- 		if (argc == 0)
- 			kdb_ps_suppressed();
- 		/* Run the active tasks first */
-@@ -167,7 +167,7 @@ kdb_bt(int argc, const char **argv)
- 			return diag;
- 		p = find_task_by_pid_ns(pid, &init_pid_ns);
- 		if (p)
--			return kdb_bt1(p, ~0UL, false);
-+			return kdb_bt1(p, "A", false);
- 		kdb_printf("No process with pid == %ld found\n", pid);
- 		return 0;
- 	} else if (strcmp(argv[0], "btt") == 0) {
-@@ -176,7 +176,7 @@ kdb_bt(int argc, const char **argv)
- 		diag = kdbgetularg((char *)argv[1], &addr);
- 		if (diag)
- 			return diag;
--		return kdb_bt1((struct task_struct *)addr, ~0UL, false);
-+		return kdb_bt1((struct task_struct *)addr, "A", false);
- 	} else if (strcmp(argv[0], "btc") == 0) {
- 		unsigned long cpu = ~0;
- 		if (argc > 1)
-@@ -212,7 +212,7 @@ kdb_bt(int argc, const char **argv)
- 			kdb_show_stack(kdb_current_task, (void *)addr);
- 			return 0;
- 		} else {
--			return kdb_bt1(kdb_current_task, ~0UL, false);
-+			return kdb_bt1(kdb_current_task, "A", false);
- 		}
- 	}
-
-diff --git a/kernel/debug/kdb/kdb_main.c b/kernel/debug/kdb/kdb_main.c
-index fa6deda894a1..2c1abb86a06b 100644
---- a/kernel/debug/kdb/kdb_main.c
-+++ b/kernel/debug/kdb/kdb_main.c
-@@ -2203,8 +2203,8 @@ static void kdb_cpu_status(void)
- 			state = 'D';	/* cpu is online but unresponsive */
- 		} else {
- 			state = ' ';	/* cpu is responding to kdb */
--			if (kdb_task_state_char(KDB_TSK(i)) == 'I')
--				state = 'I';	/* idle task */
-+			if (kdb_task_state_char(KDB_TSK(i)) == '-')
-+				state = '-';	/* idle task */
- 		}
- 		if (state != prev_state) {
- 			if (prev_state != '?') {
-@@ -2271,17 +2271,15 @@ static int kdb_cpu(int argc, const char **argv)
- void kdb_ps_suppressed(void)
- {
- 	int idle = 0, daemon = 0;
--	unsigned long mask_I = kdb_task_state_string("I"),
--		      mask_M = kdb_task_state_string("M");
- 	unsigned long cpu;
- 	const struct task_struct *p, *g;
- 	for_each_online_cpu(cpu) {
- 		p = kdb_curr_task(cpu);
--		if (kdb_task_state(p, mask_I))
-+		if (kdb_task_state(p, "-"))
- 			++idle;
- 	}
- 	for_each_process_thread(g, p) {
--		if (kdb_task_state(p, mask_M))
-+		if (kdb_task_state(p, "ims"))
- 			++daemon;
- 	}
- 	if (idle || daemon) {
-@@ -2297,11 +2295,6 @@ void kdb_ps_suppressed(void)
- 	}
- }
-
--/*
-- * kdb_ps - This function implements the 'ps' command which shows a
-- *	list of the active processes.
-- *		ps [DRSTCZEUIMA]   All processes, optionally filtered by state
-- */
- void kdb_ps1(const struct task_struct *p)
- {
- 	int cpu;
-@@ -2330,17 +2323,25 @@ void kdb_ps1(const struct task_struct *p)
- 	}
- }
-
-+/*
-+ * kdb_ps - This function implements the 'ps' command which shows a
-+ *	    list of the active processes.
-+ *
-+ * ps [<state_chars>]   Show processes, optionally selecting only those whose
-+ *                      state character is found in <state_chars>.
-+ */
- static int kdb_ps(int argc, const char **argv)
- {
- 	struct task_struct *g, *p;
--	unsigned long mask, cpu;
-+	const char *mask;
-+	unsigned long cpu;
-
- 	if (argc == 0)
- 		kdb_ps_suppressed();
- 	kdb_printf("%-*s      Pid   Parent [*] cpu State %-*s Command\n",
- 		(int)(2*sizeof(void *))+2, "Task Addr",
- 		(int)(2*sizeof(void *))+2, "Thread");
--	mask = kdb_task_state_string(argc ? argv[1] : NULL);
-+	mask = argc ? argv[1] : kdbgetenv("PS");
- 	/* Run the active tasks first */
- 	for_each_online_cpu(cpu) {
- 		if (KDB_FLAG(CMD_INTERRUPT))
-@@ -2742,8 +2743,8 @@ static kdbtab_t maintab[] = {
- 	},
- 	{	.name = "bta",
- 		.func = kdb_bt,
--		.usage = "[D|R|S|T|C|Z|E|U|I|M|A]",
--		.help = "Backtrace all processes matching state flag",
-+		.usage = "[<state_chars>|A]",
-+		.help = "Backtrace all processes matching whose state matches",
- 		.flags = KDB_ENABLE_INSPECT,
- 	},
- 	{	.name = "btc",
-diff --git a/kernel/debug/kdb/kdb_private.h b/kernel/debug/kdb/kdb_private.h
-index 629590084a0d..0d2f9feea0a4 100644
---- a/kernel/debug/kdb/kdb_private.h
-+++ b/kernel/debug/kdb/kdb_private.h
-@@ -190,10 +190,8 @@ extern char kdb_grep_string[];
- extern int kdb_grep_leading;
- extern int kdb_grep_trailing;
- extern char *kdb_cmds[];
--extern unsigned long kdb_task_state_string(const char *);
- extern char kdb_task_state_char (const struct task_struct *);
--extern unsigned long kdb_task_state(const struct task_struct *p,
--				    unsigned long mask);
-+extern bool kdb_task_state(const struct task_struct *p, const char *mask);
- extern void kdb_ps_suppressed(void);
- extern void kdb_ps1(const struct task_struct *p);
- extern void kdb_send_sig(struct task_struct *p, int sig);
-diff --git a/kernel/debug/kdb/kdb_support.c b/kernel/debug/kdb/kdb_support.c
-index 7507d9a8dc6a..19f5c893580b 100644
---- a/kernel/debug/kdb/kdb_support.c
-+++ b/kernel/debug/kdb/kdb_support.c
-@@ -24,6 +24,7 @@
- #include <linux/uaccess.h>
- #include <linux/kdb.h>
- #include <linux/slab.h>
-+#include <linux/ctype.h>
- #include "kdb_private.h"
-
+diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
+index 814b3d0..1da6477 100644
+--- a/drivers/char/hw_random/Kconfig
++++ b/drivers/char/hw_random/Kconfig
+@@ -414,7 +414,7 @@ config HW_RANDOM_MESON
+ 
+ config HW_RANDOM_CAVIUM
+ 	tristate "Cavium ThunderX Random Number Generator support"
+-	depends on HW_RANDOM && PCI && (ARM64 || (COMPILE_TEST && 64BIT))
++	depends on HW_RANDOM && PCI && ARM64
+ 	default HW_RANDOM
+ 	help
+ 	  This driver provides kernel-side support for the Random Number
+diff --git a/drivers/char/hw_random/cavium-rng-vf.c b/drivers/char/hw_random/cavium-rng-vf.c
+index 3de4a6a..6f66919 100644
+--- a/drivers/char/hw_random/cavium-rng-vf.c
++++ b/drivers/char/hw_random/cavium-rng-vf.c
+@@ -1,10 +1,7 @@
++// SPDX-License-Identifier: GPL-2.0
  /*
-@@ -473,82 +474,7 @@ int kdb_putword(unsigned long addr, unsigned long word, size_t size)
- 	return diag;
- }
-
--/*
-- * kdb_task_state_string - Convert a string containing any of the
-- *	letters DRSTCZEUIMA to a mask for the process state field and
-- *	return the value.  If no argument is supplied, return the mask
-- *	that corresponds to environment variable PS, DRSTCZEU by
-- *	default.
-- * Inputs:
-- *	s	String to convert
-- * Returns:
-- *	Mask for process state.
-- * Notes:
-- *	The mask folds data from several sources into a single long value, so
-- *	be careful not to overlap the bits.  TASK_* bits are in the LSB,
-- *	special cases like UNRUNNABLE are in the MSB.  As of 2.6.10-rc1 there
-- *	is no overlap between TASK_* and EXIT_* but that may not always be
-- *	true, so EXIT_* bits are shifted left 16 bits before being stored in
-- *	the mask.
-- */
--
--/* unrunnable is < 0 */
--#define UNRUNNABLE	(1UL << (8*sizeof(unsigned long) - 1))
--#define RUNNING		(1UL << (8*sizeof(unsigned long) - 2))
--#define IDLE		(1UL << (8*sizeof(unsigned long) - 3))
--#define DAEMON		(1UL << (8*sizeof(unsigned long) - 4))
-
--unsigned long kdb_task_state_string(const char *s)
--{
--	long res = 0;
--	if (!s) {
--		s = kdbgetenv("PS");
--		if (!s)
--			s = "DRSTCZEU";	/* default value for ps */
--	}
--	while (*s) {
--		switch (*s) {
--		case 'D':
--			res |= TASK_UNINTERRUPTIBLE;
--			break;
--		case 'R':
--			res |= RUNNING;
--			break;
--		case 'S':
--			res |= TASK_INTERRUPTIBLE;
--			break;
--		case 'T':
--			res |= TASK_STOPPED;
--			break;
--		case 'C':
--			res |= TASK_TRACED;
--			break;
--		case 'Z':
--			res |= EXIT_ZOMBIE << 16;
--			break;
--		case 'E':
--			res |= EXIT_DEAD << 16;
--			break;
--		case 'U':
--			res |= UNRUNNABLE;
--			break;
--		case 'I':
--			res |= IDLE;
--			break;
--		case 'M':
--			res |= DAEMON;
--			break;
--		case 'A':
--			res = ~0UL;
--			break;
--		default:
--			  kdb_func_printf("unknown flag '%c' ignored\n", *s);
--			  break;
--		}
--		++s;
--	}
--	return res;
--}
-
- /*
-  * kdb_task_state_char - Return the character that represents the task state.
-@@ -559,7 +485,6 @@ unsigned long kdb_task_state_string(const char *s)
+- * Hardware Random Number Generator support for Cavium, Inc.
+- * Thunder processor family.
+- *
+- * This file is subject to the terms and conditions of the GNU General Public
+- * License.  See the file "COPYING" in the main directory of this archive
+- * for more details.
++ * Hardware Random Number Generator support.
++ * Cavium Thunder, Marvell OcteonTx/Tx2 processor families.
+  *
+  * Copyright (C) 2016 Cavium, Inc.
   */
- char kdb_task_state_char (const struct task_struct *p)
- {
--	unsigned int p_state;
- 	unsigned long tmp;
- 	char state;
- 	int cpu;
-@@ -568,25 +493,17 @@ char kdb_task_state_char (const struct task_struct *p)
- 	    copy_from_kernel_nofault(&tmp, (char *)p, sizeof(unsigned long)))
- 		return 'E';
-
--	cpu = kdb_process_cpu(p);
--	p_state = READ_ONCE(p->__state);
--	state = (p_state == 0) ? 'R' :
--		(p_state < 0) ? 'U' :
--		(p_state & TASK_UNINTERRUPTIBLE) ? 'D' :
--		(p_state & TASK_STOPPED) ? 'T' :
--		(p_state & TASK_TRACED) ? 'C' :
--		(p->exit_state & EXIT_ZOMBIE) ? 'Z' :
--		(p->exit_state & EXIT_DEAD) ? 'E' :
--		(p_state & TASK_INTERRUPTIBLE) ? 'S' : '?';
-+	state = task_state_to_char((struct task_struct *) p);
+@@ -15,16 +12,146 @@
+ #include <linux/pci.h>
+ #include <linux/pci_ids.h>
+ 
++#include <asm/arch_timer.h>
 +
- 	if (is_idle_task(p)) {
- 		/* Idle task.  Is it really idle, apart from the kdb
- 		 * interrupt? */
- 		if (!kdb_task_has_cpu(p) || kgdb_info[cpu].irq_depth == 1) {
- 			if (cpu != kdb_initial_cpu)
--				state = 'I';	/* idle task */
-+				state = '-';	/* idle task */
- 		}
--	} else if (!p->mm && state == 'S') {
--		state = 'M';	/* sleeping system daemon */
-+	} else if (!p->mm && strchr("IMS", state)) {
-+		state = tolower(state);		/* sleeping system daemon */
- 	}
- 	return state;
- }
-@@ -596,14 +513,28 @@ char kdb_task_state_char (const struct task_struct *p)
-  *	given by the mask.
-  * Inputs:
-  *	p	struct task for the process
-- *	mask	mask from kdb_task_state_string to select processes
-+ *	mask	set of characters used to select processes; both NULL
-+ *	        and the empty string mean adopt a default filter, which
-+ *	        is to suppress sleeping system daemons and the idle tasks
-  * Returns:
-  *	True if the process matches at least one criteria defined by the mask.
-  */
--unsigned long kdb_task_state(const struct task_struct *p, unsigned long mask)
-+bool kdb_task_state(const struct task_struct *p, const char *mask)
- {
--	char state[] = { kdb_task_state_char(p), '\0' };
--	return (mask & kdb_task_state_string(state)) != 0;
-+	char state = kdb_task_state_char(p);
++/* PCI device IDs */
++#define	PCI_DEVID_CAVIUM_RNG_PF		0xA018
++#define	PCI_DEVID_CAVIUM_RNG_VF		0xA033
 +
-+	/* If there is no mask, then we will filter code that runs when the
-+	 * scheduler is idling and any system daemons that are currently
-+	 * sleeping.
-+	 */
-+	if (!mask || mask[0] == '\0')
-+		return !strchr("-ims", state);
++#define HEALTH_STATUS_REG		0x38
 +
-+	/* A is a special case that matches all states */
-+	if (strchr(mask, 'A'))
++/* RST device info */
++#define PCI_DEVICE_ID_RST_OTX2		0xA085
++#define RST_BOOT_REG			0x1600ULL
++#define CLOCK_BASE_RATE			50000000ULL
++#define MSEC_TO_NSEC(x)			(x * 1000000)
++
+ struct cavium_rng {
+ 	struct hwrng ops;
+ 	void __iomem *result;
++	void __iomem *pf_regbase;
++	struct pci_dev *pdev;
++	u64  clock_rate;
++	u64  prev_error;
++	u64  prev_time;
+ };
+ 
++static inline bool is_octeontx(struct pci_dev *pdev)
++{
++	if (midr_is_cpu_model_range(read_cpuid_id(), MIDR_THUNDERX_83XX,
++				    MIDR_CPU_VAR_REV(0, 0),
++				    MIDR_CPU_VAR_REV(3, 0)) ||
++	    midr_is_cpu_model_range(read_cpuid_id(), MIDR_THUNDERX_81XX,
++				    MIDR_CPU_VAR_REV(0, 0),
++				    MIDR_CPU_VAR_REV(3, 0)) ||
++	    midr_is_cpu_model_range(read_cpuid_id(), MIDR_THUNDERX,
++				    MIDR_CPU_VAR_REV(0, 0),
++				    MIDR_CPU_VAR_REV(3, 0)))
 +		return true;
 +
-+	return strchr(mask, state);
++	return false;
++}
++
++static u64 rng_get_coprocessor_clkrate(void)
++{
++	u64 ret = CLOCK_BASE_RATE * 16; /* Assume 800Mhz as default */
++	struct pci_dev *pdev;
++	void __iomem *base;
++
++	pdev = pci_get_device(PCI_VENDOR_ID_CAVIUM,
++			      PCI_DEVICE_ID_RST_OTX2, NULL);
++	if (!pdev)
++		goto error;
++
++	base = pci_ioremap_bar(pdev, 0);
++	if (!base)
++		goto error_put_pdev;
++
++	/* RST: PNR_MUL * 50Mhz gives clockrate */
++	ret = CLOCK_BASE_RATE * ((readq(base + RST_BOOT_REG) >> 33) & 0x3F);
++
++	iounmap(base);
++
++error_put_pdev:
++	pci_dev_put(pdev);
++
++error:
++	return ret;
++}
++
++static int check_rng_health(struct cavium_rng *rng)
++{
++	u64 cur_err, cur_time;
++	u64 status, cycles;
++	u64 time_elapsed;
++
++
++	/* Skip checking health for OcteonTx */
++	if (!rng->pf_regbase)
++		return 0;
++
++	status = readq(rng->pf_regbase + HEALTH_STATUS_REG);
++	if (status & BIT_ULL(0)) {
++		dev_err(&rng->pdev->dev, "HWRNG: Startup health test failed\n");
++		return -EIO;
++	}
++
++	cycles = status >> 1;
++	if (!cycles)
++		return 0;
++
++	cur_time = arch_timer_read_counter();
++
++	/* RNM_HEALTH_STATUS[CYCLES_SINCE_HEALTH_FAILURE]
++	 * Number of coprocessor cycles times 2 since the last failure.
++	 * This field doesn't get cleared/updated until another failure.
++	 */
++	cycles = cycles / 2;
++	cur_err = (cycles * 1000000000) / rng->clock_rate; /* In nanosec */
++
++	/* Ignore errors that happenned a long time ago, these
++	 * are most likely false positive errors.
++	 */
++	if (cur_err > MSEC_TO_NSEC(10)) {
++		rng->prev_error = 0;
++		rng->prev_time = 0;
++		return 0;
++	}
++
++	if (rng->prev_error) {
++		/* Calculate time elapsed since last error
++		 * '1' tick of CNTVCT is 10ns, since it runs at 100Mhz.
++		 */
++		time_elapsed = (cur_time - rng->prev_time) * 10;
++		time_elapsed += rng->prev_error;
++
++		/* Check if current error is a new one or the old one itself.
++		 * If error is a new one then consider there is a persistent
++		 * issue with entropy, declare hardware failure.
++		 */
++		if (cur_err < time_elapsed) {
++			dev_err(&rng->pdev->dev, "HWRNG failure detected\n");
++			rng->prev_error = cur_err;
++			rng->prev_time = cur_time;
++			return -EIO;
++		}
++	}
++
++	rng->prev_error = cur_err;
++	rng->prev_time = cur_time;
++	return 0;
++}
++
+ /* Read data from the RNG unit */
+ static int cavium_rng_read(struct hwrng *rng, void *dat, size_t max, bool wait)
+ {
+ 	struct cavium_rng *p = container_of(rng, struct cavium_rng, ops);
+ 	unsigned int size = max;
++	int err = 0;
++
++	err = check_rng_health(p);
++	if (err)
++		return err;
+ 
+ 	while (size >= 8) {
+ 		*((u64 *)dat) = readq(p->result);
+@@ -39,6 +166,39 @@ static int cavium_rng_read(struct hwrng *rng, void *dat, size_t max, bool wait)
+ 	return max;
  }
-
- /* Maintain a small stack of kdb_flags to allow recursion without disturbing
-
-base-commit: 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f
---
-2.31.1
+ 
++static int cavium_map_pf_regs(struct cavium_rng *rng)
++{
++	struct pci_dev *pdev;
++
++	/* Health status is not supported on 83xx, skip mapping PF CSRs */
++	if (is_octeontx(rng->pdev)) {
++		rng->pf_regbase = NULL;
++		return 0;
++	}
++
++	pdev = pci_get_device(PCI_VENDOR_ID_CAVIUM,
++			      PCI_DEVID_CAVIUM_RNG_PF, NULL);
++	if (!pdev) {
++		dev_err(&pdev->dev, "Cannot find RNG PF device\n");
++		return -EIO;
++	}
++
++	rng->pf_regbase = ioremap(pci_resource_start(pdev, 0),
++				  pci_resource_len(pdev, 0));
++	if (!rng->pf_regbase) {
++		dev_err(&pdev->dev, "Failed to map PF CSR region\n");
++		pci_dev_put(pdev);
++		return -ENOMEM;
++	}
++
++	pci_dev_put(pdev);
++
++	/* Get co-processor clock rate */
++	rng->clock_rate = rng_get_coprocessor_clkrate();
++
++	return 0;
++}
++
+ /* Map Cavium RNG to an HWRNG object */
+ static int cavium_rng_probe_vf(struct	pci_dev		*pdev,
+ 			 const struct	pci_device_id	*id)
+@@ -50,6 +210,8 @@ static int cavium_rng_probe_vf(struct	pci_dev		*pdev,
+ 	if (!rng)
+ 		return -ENOMEM;
+ 
++	rng->pdev = pdev;
++
+ 	/* Map the RNG result */
+ 	rng->result = pcim_iomap(pdev, 0, 0);
+ 	if (!rng->result) {
+@@ -67,6 +229,11 @@ static int cavium_rng_probe_vf(struct	pci_dev		*pdev,
+ 
+ 	pci_set_drvdata(pdev, rng);
+ 
++	/* Health status is available only at PF, hence map PF registers. */
++	ret = cavium_map_pf_regs(rng);
++	if (ret)
++		return ret;
++
+ 	ret = devm_hwrng_register(&pdev->dev, &rng->ops);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Error registering device as HWRNG.\n");
+@@ -76,10 +243,18 @@ static int cavium_rng_probe_vf(struct	pci_dev		*pdev,
+ 	return 0;
+ }
+ 
++/* Remove the VF */
++static void cavium_rng_remove_vf(struct pci_dev *pdev)
++{
++	struct cavium_rng *rng;
++
++	rng = pci_get_drvdata(pdev);
++	iounmap(rng->pf_regbase);
++}
+ 
+ static const struct pci_device_id cavium_rng_vf_id_table[] = {
+-	{ PCI_DEVICE(PCI_VENDOR_ID_CAVIUM, 0xa033), 0, 0, 0},
+-	{0,},
++	{ PCI_DEVICE(PCI_VENDOR_ID_CAVIUM, PCI_DEVID_CAVIUM_RNG_VF) },
++	{ 0, }
+ };
+ MODULE_DEVICE_TABLE(pci, cavium_rng_vf_id_table);
+ 
+@@ -87,8 +262,9 @@ static struct pci_driver cavium_rng_vf_driver = {
+ 	.name		= "cavium_rng_vf",
+ 	.id_table	= cavium_rng_vf_id_table,
+ 	.probe		= cavium_rng_probe_vf,
++	.remove		= cavium_rng_remove_vf,
+ };
+ module_pci_driver(cavium_rng_vf_driver);
+ 
+ MODULE_AUTHOR("Omer Khaliq <okhaliq@caviumnetworks.com>");
+-MODULE_LICENSE("GPL");
++MODULE_LICENSE("GPL v2");
+diff --git a/drivers/char/hw_random/cavium-rng.c b/drivers/char/hw_random/cavium-rng.c
+index 63d6e68..b965792 100644
+--- a/drivers/char/hw_random/cavium-rng.c
++++ b/drivers/char/hw_random/cavium-rng.c
+@@ -1,10 +1,7 @@
++// SPDX-License-Identifier: GPL-2.0
+ /*
+- * Hardware Random Number Generator support for Cavium Inc.
+- * Thunder processor family.
+- *
+- * This file is subject to the terms and conditions of the GNU General Public
+- * License.  See the file "COPYING" in the main directory of this archive
+- * for more details.
++ * Hardware Random Number Generator support.
++ * Cavium Thunder, Marvell OcteonTx/Tx2 processor families.
+  *
+  * Copyright (C) 2016 Cavium, Inc.
+  */
+@@ -91,4 +88,4 @@ static struct pci_driver cavium_rng_pf_driver = {
+ 
+ module_pci_driver(cavium_rng_pf_driver);
+ MODULE_AUTHOR("Omer Khaliq <okhaliq@caviumnetworks.com>");
+-MODULE_LICENSE("GPL");
++MODULE_LICENSE("GPL v2");
+-- 
+2.7.4
 
