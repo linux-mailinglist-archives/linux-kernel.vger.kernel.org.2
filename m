@@ -2,167 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1960944014C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 19:28:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9857440153
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 19:34:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230055AbhJ2Rau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 13:30:50 -0400
-Received: from mout.gmx.net ([212.227.15.18]:41847 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229772AbhJ2Rat (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 13:30:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1635528492;
-        bh=wA5vZ50jUUEtjv2u4EvKaku5j2wbU9DZtBi8KMuY5GQ=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=QRkMLdyo1G7kEFmxR9d37Ho97vGOUTs+5HbBLZos9xmg8x4zQgvQm0EV2i8DG3BMz
-         dOO96c5Jv2xf579y5K2q793K4HvKIHGO4yHHfl8LNgj2W0AhUoVazagKOMPlhRLH+9
-         JO5DBeM5w/3MjMk+4HStzWx2Hr2ft9ozp7BKxpq0=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
- (mrgmx005 [212.227.17.184]) with ESMTPSA (Nemesis) id
- 1MysVs-1muTtO0TDu-00vsvT; Fri, 29 Oct 2021 19:28:12 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Fei Li <fei1.li@intel.com>
-Cc:     Len Baker <len.baker@gmx.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3][next] virt: acrn: Prefer array_size and struct_size over open coded arithmetic
-Date:   Fri, 29 Oct 2021 19:27:46 +0200
-Message-Id: <20211029172746.7563-1-len.baker@gmx.com>
-X-Mailer: git-send-email 2.25.1
+        id S230022AbhJ2Rg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 13:36:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229772AbhJ2Rg0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 13:36:26 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69461C061570;
+        Fri, 29 Oct 2021 10:33:57 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id bi29so10065901qkb.5;
+        Fri, 29 Oct 2021 10:33:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=7PYz8amIMiCGzOswnVMPnWhcArdnBZe4XYPwWVEAP4g=;
+        b=Z1yHRiySw6moWokSrZHTRWzRgu/4VWnZNY9KU/855rM3/Rm4l42cjTLdgJrrskDhBj
+         F0HldJwKCkO0xurugoXJysqVrc9DZi/Dg3Q/bFHblpeY11XegTEr6xvO+PZLhQl/68kU
+         DOLsgj1IIqEVcRxGuMHlukP1FoK03Jdk8Ill8vFXXnw9AtdznydE5maA4JnHogV+vzBW
+         7stXp/8k0nTzDNbBeOfBzzqYH8gdQ+PuUEL7T5Q1JO3/FC5FjGufiLqZiZnIdahzNXIG
+         PYKvSfAhTe+owz4mW4kfYQqN+UitGt35XrPoZx3y2FMiE6W6ZGas0ByDqY0AtmGMQtET
+         IlIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7PYz8amIMiCGzOswnVMPnWhcArdnBZe4XYPwWVEAP4g=;
+        b=wOhHj1XBfdMXfwObnADTojVFOfHlRbn46gnJ58+0/wj+Hi8HrGUACcDjupI/nRc0O7
+         m3/cc2trMm9nN7kB9hoCBJENUZvXNRpiu2rLvimb6ju3DhTj+xSA10OQG5zTvf6aCEwG
+         /FalO9xSepN9LjaFs6kDCgoE5G8DrEZOyy7UaoeRnR7UvYFsR/pLKmgwIuc6Fiby9Kx8
+         q9vlCKwjg1PIjZaujETv0WYYwbsAQMWWIGvswUnoAw35A7M5Echv+spEhUP3ZReAtkAJ
+         NQCJWeNw04INRSBun1aAslA7qYyKjsmcXh7G7D5oaRS1TNsjJOg182+vejP/DsHDw1e1
+         o6UA==
+X-Gm-Message-State: AOAM531VliCJTKF+rMAnewpuNUmYItG9RcPuL61vfo5Oq4UHKFkiHu+0
+        jIv0PdsiJdHZ9n3jb/a/0OE=
+X-Google-Smtp-Source: ABdhPJyu8n7mNnL1HaMwMHht/b6Jv+f1W6V1QFZG6Mq9QcDhDwFjl+1/N7YJDJ4zrVgnRmkvu0Qy4g==
+X-Received: by 2002:a05:620a:1707:: with SMTP id az7mr10204906qkb.276.1635528836639;
+        Fri, 29 Oct 2021 10:33:56 -0700 (PDT)
+Received: from [192.168.1.49] (c-67-187-90-124.hsd1.tn.comcast.net. [67.187.90.124])
+        by smtp.gmail.com with ESMTPSA id d23sm4405736qtm.11.2021.10.29.10.33.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Oct 2021 10:33:56 -0700 (PDT)
+Subject: Re: [PATCH 1/1] of: unittest: fix dts for interrupt-map provider
+ build warning
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20211029005802.2047081-1-frowand.list@gmail.com>
+ <CAL_JsqJujq0K9tF+m3qQ5GhC-yo7-vj9HRhF69UmrWA7tZv7DA@mail.gmail.com>
+ <e353b41d-48f9-5349-8b89-bafe9ab5101e@gmail.com>
+ <CAL_JsqJi8h+DnnZCb-S2apDfMGF6PimQC+ViXB+X0oa4fWPcJg@mail.gmail.com>
+From:   Frank Rowand <frowand.list@gmail.com>
+Message-ID: <de51f09d-1a63-c798-b434-a610b68e592b@gmail.com>
+Date:   Fri, 29 Oct 2021 12:33:55 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:FBYfBYOa9vEdjzrjSk0uTej9Gc4j7RFVce62dXXlYz3Q8AWd/8K
- etMArQnf7ZQoWUxlYmGX8hD9hFOaz5NQyvW1FtjtWIr13+1Dg+ZCIn5t0k+BBBTo0ZRARjs
- RtaE8oO7L8DinZaZWOQ1eUkDZrgR9sdWtaQ+SCQW7H03J7p8MZ4rBoR7YYMpZQqwNkooDI9
- Wa+DGVqlzYpj4CZ3oSCkg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:WasQtGQS9lY=:MeN2bjFhN/1OHmz5PnKj2d
- Wfu6l6LWonWkl5XsSIsmrkXC+pq1wiatw4EyKQSyQlRBloSL79qdNHj3Gmm0B1/MjCxA/y5XX
- Ygh/uVkiA3rtQDMYRt0YJG0wpTdC31kT0GJE1i3EDaoRMuLYwhqdEhJy7djkAF+U3Cl8+w0OC
- b+oYX5jLTUfxtIQsllNg8u2h/VRl2XFuF3rmPnpbE5Ld3956i0WzeNKzdgvqxxEsGwNG2WieC
- GSHwbnsBErG9JqySZOerGkfs/MQ2xGBpilcojv2mf9NjzKaA13r2+i6qUkGTFdMk+B/NdGb88
- gHxwyFOoavyF8DcGBKJM11NzEEREQbRf4WFHVTgUe9sfz/hMFKHb4HaDUwVAINpiiZ/sxy8g6
- 73jimmbrceJFOSMCcE0EJXvQ0px38ofjSKdUgJ9OqKlPIHeClzR6z9SQQACHjSvKSWeBn3FGw
- sFmlHqzPdmpGXb5UhpLfnlp0Z1xt3WQv3a0wdvgFvKLO2mXruW4w15ADT8GN2UGQW++K9p49M
- Ac43/+kDr45WBO3vCZ2RmUgl2uufnv9MyLF0WI2TPJlOk3p4wFyIop0cvpftBCezsaMtlwI0b
- WaGhTrkNrfCaa/dUsit7snlK2iNprAG1naThK+y33mcT45Z9pJ2NBQspYpr/+/KHnJEQRwWSv
- UR3YdXilKHv+K6pH9GpNMZ61W1rNfMltOlKpJjhDa2SUISExs0jsIbM4/b9F+bnAZLAUBPs9C
- ZzzJNtwYbs1MWwTkozRmD8ew7gI4rt3aMiAui8GDIikRjnazwJOvriAY7nWRKezbKNJzISlxE
- 1z+mvOE96yH54DV1qrHTc5u4dEjZ9JvFEr3v/+TferLPh1x+s7kTN/lwOKo/lu1XyyUyLgg2N
- YpjxB9bCsuZkYkxl+JwI7k6HzS1EjR+GWYH6ZtLVWYDuE3+gE8aIdke3XkoY/fwb5b/KOsC0/
- OqGdGHagoah598TAdKtPXrlBHEV5Lkk9PV1XPMK87B/cBVIlVkQnnN98AwxBFKEJ3M3DAB+G3
- Fsf6bETqTi9NO7xS3tuDjdNKQBh8btcuTwK2UXM1OmTUoC8uOvvYdxJy0aK1QdCOywPexlbvM
- 5uCDDYcE6lZJn8=
+In-Reply-To: <CAL_JsqJi8h+DnnZCb-S2apDfMGF6PimQC+ViXB+X0oa4fWPcJg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As noted in the "Deprecated Interfaces, Language Features, Attributes,
-and Conventions" documentation [1], size calculations (especially
-multiplication) should not be performed in memory allocator (or similar)
-function arguments due to the risk of them overflowing. This could lead
-to values wrapping around and a smaller allocation being made than the
-caller was expecting. Using those allocations could lead to linear
-overflows of heap memory and other misbehaviors.
+On 10/29/21 8:16 AM, Rob Herring wrote:
+> On Thu, Oct 28, 2021 at 10:07 PM Frank Rowand <frowand.list@gmail.com> wrote:
+>>
+>> On 10/28/21 9:07 PM, Rob Herring wrote:
+>>> On Thu, Oct 28, 2021 at 7:58 PM <frowand.list@gmail.com> wrote:
+>>>>
+>>>> From: Frank Rowand <frank.rowand@sony.com>
+>>>>
+>>>> Fix kernel build warning:
+>>>> drivers/of/unittest-data/tests-interrupts.dtsi:32.26-35.6: Warning (interrupt_map): /testcase-data/interrupts/intmap1: Missing '#address-cells' in interrupt-map provider
+>>>>
+>>>> A recently implemented dtc compiler warning reported the dts problem.
+>>>>
+>>>> Signed-off-by: Frank Rowand <frank.rowand@sony.com>
+>>>> ---
+>>>>  drivers/of/unittest-data/tests-interrupts.dtsi | 1 +
+>>>>  1 file changed, 1 insertion(+)
+>>>>
+>>>> diff --git a/drivers/of/unittest-data/tests-interrupts.dtsi b/drivers/of/unittest-data/tests-interrupts.dtsi
+>>>> index 9b60a549f502..8c2b91b998aa 100644
+>>>> --- a/drivers/of/unittest-data/tests-interrupts.dtsi
+>>>> +++ b/drivers/of/unittest-data/tests-interrupts.dtsi
+>>>> @@ -31,6 +31,7 @@ test_intmap0: intmap0 {
+>>>>
+>>>>                         test_intmap1: intmap1 {
+>>>>                                 #interrupt-cells = <2>;
+>>>> +                               #address-cells = <1>;
+>>>
+>>> Notice that we have 2 nodes with interrupt-map here. One has
+>>> '#address-cells' and one doesn't. Why? Because we need to test that
+>>> the code can handle both cases.>
+>>> The dtc warnings are more what should 'new' users do. I don't know
+>>> what DTs don't have #address-cells, but my guess is ancient ones.
+>>>
+>>> Rob
+>>>
+>>
+>> I had hoped to build all of the .dts files in the Linux tree, with the
+>> new dtc, but did not get to that today.  That should flush out any
+>> cases that would result in build fail from the new approach of treating
+>> all warnings as errors.  I may get to that tomorrow.
+> 
+> They are still just warnings. You mean the requirement to be warning
+> free? That's not new for dts files.
+> 
+>> If there any any existing .dts files that will trigger the interrupt
+>> map warning, will we require that they be fixed so that the build will
+>> not fail?
+> 
+> I already submitted patches for them.
 
-So, use the array_size() helper to do the arithmetic instead of the
-argument "count * size" in the vzalloc() function.
+OK, I'll drop this patchk, and instead create a patch that documents
+why the unittest .dts is missing #address-cells.
 
-Also, take the opportunity to add a flexible array member of struct
-vm_memory_region_op to the vm_memory_region_batch structure. And then,
-change the code accordingly and use the struct_size() helper to do the
-arithmetic instead of the argument "size + size * count" in the kzalloc
-function.
+-Frank
 
-This code was detected with the help of Coccinelle and audited and fixed
-manually.
-
-[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#open-co=
-ded-arithmetic-in-allocator-arguments
-
-Acked-by: Fei Li <fei1.li@intel.com>
-Signed-off-by: Len Baker <len.baker@gmx.com>
-=2D--
-Changelog v1 -> v2
-- Fix the typo "syze -> size" in the subject (Kees Cook).
-- Reduce the number of tabs in the definition of the structure
-  vm_memory_region_batch (Fei Li).
-- Add the "Acked-by" tag.
-
-Changelog v2 -> v3
-- Use the variable instead of the struct name in the sizeof()
-  function used in the array_size() function.
-
- drivers/virt/acrn/acrn_drv.h | 10 ++++++----
- drivers/virt/acrn/mm.c       |  9 ++++-----
- 2 files changed, 10 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/virt/acrn/acrn_drv.h b/drivers/virt/acrn/acrn_drv.h
-index 1be54efa666c..5663c17ad37c 100644
-=2D-- a/drivers/virt/acrn/acrn_drv.h
-+++ b/drivers/virt/acrn/acrn_drv.h
-@@ -48,6 +48,7 @@ struct vm_memory_region_op {
-  * @reserved:		Reserved.
-  * @regions_num:	The number of vm_memory_region_op.
-  * @regions_gpa:	Physical address of a vm_memory_region_op array.
-+ * @regions_op:		Flexible array of vm_memory_region_op.
-  *
-  * HC_VM_SET_MEMORY_REGIONS uses this structure to manage EPT mappings of
-  * multiple memory regions of a User VM. A &struct vm_memory_region_batch
-@@ -55,10 +56,11 @@ struct vm_memory_region_op {
-  * ACRN Hypervisor.
-  */
- struct vm_memory_region_batch {
--	u16	vmid;
--	u16	reserved[3];
--	u32	regions_num;
--	u64	regions_gpa;
-+	u16			   vmid;
-+	u16			   reserved[3];
-+	u32			   regions_num;
-+	u64			   regions_gpa;
-+	struct vm_memory_region_op regions_op[];
- };
-
- /**
-diff --git a/drivers/virt/acrn/mm.c b/drivers/virt/acrn/mm.c
-index c4f2e15c8a2b..ba241a24c48e 100644
-=2D-- a/drivers/virt/acrn/mm.c
-+++ b/drivers/virt/acrn/mm.c
-@@ -168,7 +168,7 @@ int acrn_vm_ram_map(struct acrn_vm *vm, struct acrn_vm=
-_memmap *memmap)
-
- 	/* Get the page number of the map region */
- 	nr_pages =3D memmap->len >> PAGE_SHIFT;
--	pages =3D vzalloc(nr_pages * sizeof(struct page *));
-+	pages =3D vzalloc(array_size(nr_pages, sizeof(*pages)));
- 	if (!pages)
- 		return -ENOMEM;
-
-@@ -220,16 +220,15 @@ int acrn_vm_ram_map(struct acrn_vm *vm, struct acrn_=
-vm_memmap *memmap)
- 	}
-
- 	/* Prepare the vm_memory_region_batch */
--	regions_info =3D kzalloc(sizeof(*regions_info) +
--			       sizeof(*vm_region) * nr_regions,
--			       GFP_KERNEL);
-+	regions_info =3D kzalloc(struct_size(regions_info, regions_op,
-+					   nr_regions), GFP_KERNEL);
- 	if (!regions_info) {
- 		ret =3D -ENOMEM;
- 		goto unmap_kernel_map;
- 	}
-
- 	/* Fill each vm_memory_region_op */
--	vm_region =3D (struct vm_memory_region_op *)(regions_info + 1);
-+	vm_region =3D regions_info->regions_op;
- 	regions_info->vmid =3D vm->vmid;
- 	regions_info->regions_num =3D nr_regions;
- 	regions_info->regions_gpa =3D virt_to_phys(vm_region);
-=2D-
-2.25.1
+> 
+> Rob
+> 
 
