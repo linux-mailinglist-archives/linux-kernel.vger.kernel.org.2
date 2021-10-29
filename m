@@ -2,87 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A25843FF70
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 17:26:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCBBD43FF7A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 17:28:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229894AbhJ2P3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 11:29:15 -0400
-Received: from mail1.perex.cz ([77.48.224.245]:39126 "EHLO mail1.perex.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229868AbhJ2P3O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 11:29:14 -0400
-Received: from mail1.perex.cz (localhost [127.0.0.1])
-        by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id F345FA0049;
-        Fri, 29 Oct 2021 17:26:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz F345FA0049
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
-        t=1635521204; bh=34OOJZeF7fIOonM6ercXMgmUTe4EfYzKs0a5zkCpoYc=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=dXwLqXlpGfaHehXGmpIoYdksLlU+13fd773929LyRw7lINOI4EqkJa7kmapPRce49
-         G61m9UNfn2srSKxqQNJOY5gNdaZPv0ne+/4n7smc1xjAHKe01G23CK+s+ibNH8s3y2
-         EgBCWmtld7RksURsJu1cYNEWpOvVyU8/kRne/yts=
-Received: from [192.168.100.98] (unknown [192.168.100.98])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: perex)
-        by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
-        Fri, 29 Oct 2021 17:26:34 +0200 (CEST)
-Message-ID: <f709fcff-1bd4-1251-1471-aad01fdfdedd@perex.cz>
-Date:   Fri, 29 Oct 2021 17:26:34 +0200
+        id S229957AbhJ2PbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 11:31:03 -0400
+Received: from www62.your-server.de ([213.133.104.62]:56324 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229527AbhJ2PbC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 11:31:02 -0400
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mgTnm-000DRl-Hy; Fri, 29 Oct 2021 17:28:18 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mgTnm-00091V-8q; Fri, 29 Oct 2021 17:28:18 +0200
+Subject: Re: [PATCH bpf-next v3 1/4] libfs: move shmem_exchange to
+ simple_rename_exchange
+To:     Lorenz Bauer <lmb@cloudflare.com>, viro@zeniv.linux.org.uk,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     mszeredi@redhat.com, gregkh@linuxfoundation.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, netdev@vger.kernel.org, bpf@vger.kernel.org
+References: <20211028094724.59043-1-lmb@cloudflare.com>
+ <20211028094724.59043-2-lmb@cloudflare.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <0c957c87-cfd1-fceb-ce18-54274eee9fc2@iogearbox.net>
+Date:   Fri, 29 Oct 2021 17:28:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH] ASoC: tegra: Add master volume/mute control support
+In-Reply-To: <20211028094724.59043-2-lmb@cloudflare.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-To:     Sameer Pujar <spujar@nvidia.com>, broonie@kernel.org,
-        lgirdwood@gmail.com, tiwai@suse.com
-Cc:     jonathanh@nvidia.com, thierry.reding@gmail.com,
-        alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1635159976-17355-1-git-send-email-spujar@nvidia.com>
- <79541c76-2c2b-fd4b-60c8-67ee6b8ea3fa@perex.cz>
- <8cb777f9-b73b-136c-f560-de4c31af931e@nvidia.com>
- <18b61046-ac0b-0fb3-669c-6524a03eecf0@nvidia.com>
-From:   Jaroslav Kysela <perex@perex.cz>
-In-Reply-To: <18b61046-ac0b-0fb3-669c-6524a03eecf0@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.3/26337/Fri Oct 29 10:19:12 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29. 10. 21 17:08, Sameer Pujar wrote:
+On 10/28/21 11:47 AM, Lorenz Bauer wrote:
+> Move shmem_exchange and make it available to other callers.
 > 
+> Suggested-by: <mszeredi@redhat.com>
+
+nit: Should say proper name, but we can fix it up while applying.
+
+Miklos, does the below look good to you? Would be good to have an ACK from fs
+folks before applying, please take a look if you have a chance. Thanks!
+
+> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+> ---
+>   fs/libfs.c         | 24 ++++++++++++++++++++++++
+>   include/linux/fs.h |  2 ++
+>   mm/shmem.c         | 24 +-----------------------
+>   3 files changed, 27 insertions(+), 23 deletions(-)
 > 
-> On 10/26/2021 11:53 AM, Sameer Pujar wrote:
->>
->>
->> On 10/25/2021 6:28 PM, Jaroslav Kysela wrote:
->>> On 25. 10. 21 13:06, Sameer Pujar wrote:
->>>
->>>> @@ -150,11 +186,22 @@ static int tegra210_mvc_put_mute(struct
->>>> snd_kcontrol *kcontrol,
->>>
->>> ...
->>>>
->>>>        return 1;
->>>
->>> It's a bit unrelated comment to this change, but it may be worth to
->>> verify all
->>> kcontrol put callbacks in the tegra code. Ensure that value 1 is
->>> returned only
->>> when something was really changed in hardware.
+> diff --git a/fs/libfs.c b/fs/libfs.c
+> index 51b4de3b3447..1cf144dc9ed2 100644
+> --- a/fs/libfs.c
+> +++ b/fs/libfs.c
+> @@ -448,6 +448,30 @@ int simple_rmdir(struct inode *dir, struct dentry *dentry)
+>   }
+>   EXPORT_SYMBOL(simple_rmdir);
+>   
+> +int simple_rename_exchange(struct inode *old_dir, struct dentry *old_dentry,
+> +			   struct inode *new_dir, struct dentry *new_dentry)
+> +{
+> +	bool old_is_dir = d_is_dir(old_dentry);
+> +	bool new_is_dir = d_is_dir(new_dentry);
+> +
+> +	if (old_dir != new_dir && old_is_dir != new_is_dir) {
+> +		if (old_is_dir) {
+> +			drop_nlink(old_dir);
+> +			inc_nlink(new_dir);
+> +		} else {
+> +			drop_nlink(new_dir);
+> +			inc_nlink(old_dir);
+> +		}
+> +	}
+> +	old_dir->i_ctime = old_dir->i_mtime =
+> +	new_dir->i_ctime = new_dir->i_mtime =
+> +	d_inode(old_dentry)->i_ctime =
+> +	d_inode(new_dentry)->i_ctime = current_time(old_dir);
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(simple_rename_exchange);
+> +
+>   int simple_rename(struct user_namespace *mnt_userns, struct inode *old_dir,
+>   		  struct dentry *old_dentry, struct inode *new_dir,
+>   		  struct dentry *new_dentry, unsigned int flags)
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index e7a633353fd2..333b8af405ce 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -3383,6 +3383,8 @@ extern int simple_open(struct inode *inode, struct file *file);
+>   extern int simple_link(struct dentry *, struct inode *, struct dentry *);
+>   extern int simple_unlink(struct inode *, struct dentry *);
+>   extern int simple_rmdir(struct inode *, struct dentry *);
+> +extern int simple_rename_exchange(struct inode *old_dir, struct dentry *old_dentry,
+> +				  struct inode *new_dir, struct dentry *new_dentry);
+>   extern int simple_rename(struct user_namespace *, struct inode *,
+>   			 struct dentry *, struct inode *, struct dentry *,
+>   			 unsigned int);
+> diff --git a/mm/shmem.c b/mm/shmem.c
+> index b5860f4a2738..a18dde3d3092 100644
+> --- a/mm/shmem.c
+> +++ b/mm/shmem.c
+> @@ -2945,28 +2945,6 @@ static int shmem_rmdir(struct inode *dir, struct dentry *dentry)
+>   	return shmem_unlink(dir, dentry);
+>   }
+>   
+> -static int shmem_exchange(struct inode *old_dir, struct dentry *old_dentry, struct inode *new_dir, struct dentry *new_dentry)
+> -{
+> -	bool old_is_dir = d_is_dir(old_dentry);
+> -	bool new_is_dir = d_is_dir(new_dentry);
+> -
+> -	if (old_dir != new_dir && old_is_dir != new_is_dir) {
+> -		if (old_is_dir) {
+> -			drop_nlink(old_dir);
+> -			inc_nlink(new_dir);
+> -		} else {
+> -			drop_nlink(new_dir);
+> -			inc_nlink(old_dir);
+> -		}
+> -	}
+> -	old_dir->i_ctime = old_dir->i_mtime =
+> -	new_dir->i_ctime = new_dir->i_mtime =
+> -	d_inode(old_dentry)->i_ctime =
+> -	d_inode(new_dentry)->i_ctime = current_time(old_dir);
+> -
+> -	return 0;
+> -}
+> -
+>   static int shmem_whiteout(struct user_namespace *mnt_userns,
+>   			  struct inode *old_dir, struct dentry *old_dentry)
+>   {
+> @@ -3012,7 +2990,7 @@ static int shmem_rename2(struct user_namespace *mnt_userns,
+>   		return -EINVAL;
+>   
+>   	if (flags & RENAME_EXCHANGE)
+> -		return shmem_exchange(old_dir, old_dentry, new_dir, new_dentry);
+> +		return simple_rename_exchange(old_dir, old_dentry, new_dir, new_dentry);
+>   
+>   	if (!simple_empty(new_dentry))
+>   		return -ENOTEMPTY;
 > 
-> There are cases when the mixer control update is not immediately written
-> to HW, instead the update is ACKed (stored in variable) and writen to HW
-> at a later point of time. Do these cases qualify for "return 1" as well?
 
-Yes - assuming that the get callback returns the cached value. The get/put 
-implementation should be consistent from the caller view. The driver 
-implementation (delayed write) is a separate thing.
-
-						Jaroslav
-
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
