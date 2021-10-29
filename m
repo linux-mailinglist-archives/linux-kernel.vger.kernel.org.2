@@ -2,165 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97D1743FE88
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 16:34:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 426F543FE90
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 16:38:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229851AbhJ2OhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 10:37:15 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:43727 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S229723AbhJ2OhM (ORCPT
+        id S229571AbhJ2Okz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 10:40:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47640 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229523AbhJ2Oky (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 10:37:12 -0400
-Received: (qmail 1384766 invoked by uid 1000); 29 Oct 2021 10:34:42 -0400
-Date:   Fri, 29 Oct 2021 10:34:42 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-doc@vger.kernel.org, Dan Lustig <dlustig@nvidia.com>,
-        Will Deacon <will@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Anvin <hpa@zytor.com>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vince Weaver <vincent.weaver@maine.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Stephane Eranian <eranian@google.com>, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, mpe@ellerman.id.au,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [RFC v2 3/3] tools/memory-model: litmus: Add two tests for
- unlock(A)+lock(B) ordering
-Message-ID: <20211029143442.GB1384368@rowland.harvard.edu>
-References: <20211025145416.698183-1-boqun.feng@gmail.com>
- <20211025145416.698183-4-boqun.feng@gmail.com>
- <YXenrNeS+IaSDwvU@hirez.programming.kicks-ass.net>
- <20211028191129.GJ880162@paulmck-ThinkPad-P17-Gen-1>
- <YXs3i8g+GHYbRCRQ@boqun-archlinux>
+        Fri, 29 Oct 2021 10:40:54 -0400
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28B55C061714
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 07:38:26 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id r2so7971385qtw.12
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 07:38:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FjdraEHcUKO50MDnAo25BSOWI5FEJ1ZaYZ590cMzyAs=;
+        b=S7vuW4s1rbWE0JASTqugT0IKIeXWTgxtS3+n51gJOEg5dflocWvOsnen2qrhGW83Za
+         HsbwerJHgrJG9ghjOHrn/VsG4LUEQC9Ox4tGl+6zMQQ9dQocj6oryG8FJGsMmFOEgmZ9
+         4XIlXKova8G6ehBW5BwKo/CMF5uF7xaV997yCsTLr6+Eb83U+Ux9lyAiP1ghufVMNxr0
+         uGO6Tng1D3ai+kfXqI973T0KnkQKN1MsxZWLxCu0VDn4sbeu2e+GNkEu3eM1QD1GJ9V2
+         htUNIWLnJMak99sWondvGGQHc4VvVf2Y2lF8gPQtkZ8IhjIiCvZpdQQ3NHGg4uL0h9PQ
+         kfHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FjdraEHcUKO50MDnAo25BSOWI5FEJ1ZaYZ590cMzyAs=;
+        b=QL+/7yydRFhiwYq9pEkIIZMy2bsnSg5YatFa3PP5oyNiDFKbw8MkqLpxX7+s6yBbx6
+         9SsZUNh9qqctk5P/sRnjZgunlHDoyboRt3fx4wyFSvxwU9gOk3R7XCBBbBFVzPFDSX4Y
+         dJmncbgl/xd0cyu84qLTUGTcd1mRq9rskWeTdfWACdXyExnkE2IN7nzVxmwPdXk3j1h+
+         24Q566J8GuuKwlY4zbO8XTgJxVSnicNKnwLZ+A2Id13ETbGG4/jpGIg20leVM5Qa8pNX
+         ebUbvgaf6cvLw1FadlMjJLdokAZR2s8j0CSvaYcAT+amsIlrOe0a7Ivm4k8jdW0U2Cv5
+         Xq3g==
+X-Gm-Message-State: AOAM532Xx2sZBJ9VZ1ttQDCznNVZ2B274eEZjWh82ugQysi8VZPPv469
+        bFFyEPo6HUri1v5QSJ+yLDtIfQ==
+X-Google-Smtp-Source: ABdhPJwZavYklqnkY5A7Id+6Y6Pq7XG12cjSbT3K7irZUBFT9CvtQK6YLL5ZtR5UxJHyvQhlp6HeNA==
+X-Received: by 2002:ac8:5cc5:: with SMTP id s5mr12212229qta.256.1635518305006;
+        Fri, 29 Oct 2021 07:38:25 -0700 (PDT)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id u16sm1434073qkp.116.2021.10.29.07.38.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Oct 2021 07:38:24 -0700 (PDT)
+Date:   Fri, 29 Oct 2021 10:38:23 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Ye Bin <yebin10@huawei.com>
+Cc:     axboe@kernel.dk, linux-block@vger.kernel.org, nbd@other.debian.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next v3 2/2] nbd: Fix hungtask when nbd_config_put
+Message-ID: <YXwHXxl135ZR5W9p@localhost.localdomain>
+References: <20211029094228.1853434-1-yebin10@huawei.com>
+ <20211029094228.1853434-3-yebin10@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YXs3i8g+GHYbRCRQ@boqun-archlinux>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20211029094228.1853434-3-yebin10@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 07:51:39AM +0800, Boqun Feng wrote:
-> On Thu, Oct 28, 2021 at 12:11:29PM -0700, Paul E. McKenney wrote:
-> > On Tue, Oct 26, 2021 at 09:01:00AM +0200, Peter Zijlstra wrote:
-> > > On Mon, Oct 25, 2021 at 10:54:16PM +0800, Boqun Feng wrote:
-> > > > diff --git a/tools/memory-model/litmus-tests/LB+unlocklockonceonce+poacquireonce.litmus b/tools/memory-model/litmus-tests/LB+unlocklockonceonce+poacquireonce.litmus
-> > > > new file mode 100644
-> > > > index 000000000000..955b9c7cdc7f
-> > > > --- /dev/null
-> > > > +++ b/tools/memory-model/litmus-tests/LB+unlocklockonceonce+poacquireonce.litmus
-> > > > @@ -0,0 +1,33 @@
-> > > > +C LB+unlocklockonceonce+poacquireonce
-> > > > +
-> > > > +(*
-> > > > + * Result: Never
-> > > > + *
-> > > > + * If two locked critical sections execute on the same CPU, all accesses
-> > > > + * in the first must execute before any accesses in the second, even if
-> > > > + * the critical sections are protected by different locks.
-> > > 
-> > > One small nit; the above "all accesses" reads as if:
-> > > 
-> > > 	spin_lock(s);
-> > > 	WRITE_ONCE(*x, 1);
-> > > 	spin_unlock(s);
-> > > 	spin_lock(t);
-> > > 	r1 = READ_ONCE(*y);
-> > > 	spin_unlock(t);
-> > > 
-> > > would also work, except of course that's the one reorder allowed by TSO.
-> > 
-> > I applied this series with Peter's Acked-by, and with the above comment
+On Fri, Oct 29, 2021 at 05:42:28PM +0800, Ye Bin wrote:
+> I got follow issue:
+> [  247.381177] INFO: task kworker/u10:0:47 blocked for more than 120 seconds.
+> [  247.382644]       Not tainted 4.19.90-dirty #140
+> [  247.383502] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> [  247.385027] Call Trace:
+> [  247.388384]  schedule+0xb8/0x3c0
+> [  247.388966]  schedule_timeout+0x2b4/0x380
+> [  247.392815]  wait_for_completion+0x367/0x510
+> [  247.397713]  flush_workqueue+0x32b/0x1340
+> [  247.402700]  drain_workqueue+0xda/0x3c0
+> [  247.403442]  destroy_workqueue+0x7b/0x690
+> [  247.405014]  nbd_config_put.cold+0x2f9/0x5b6
+> [  247.405823]  recv_work+0x1fd/0x2b0
+> [  247.406485]  process_one_work+0x70b/0x1610
+> [  247.407262]  worker_thread+0x5a9/0x1060
+> [  247.408699]  kthread+0x35e/0x430
+> [  247.410918]  ret_from_fork+0x1f/0x30
 > 
-> Thanks!
-> 
-> > reading as follows:
-> > 
-> > +(*
-> > + * Result: Never
-> > + *
-> > + * If two locked critical sections execute on the same CPU, all accesses
-> > + * in the first must execute before any accesses in the second, even if the
-> > + * critical sections are protected by different locks.  The one exception
-> > + * to this rule is that (consistent with TSO) a prior write can be reordered
-> > + * with a later read from the viewpoint of a process not holding both locks.
-> 
-> Just want to be accurate, in our memory model "execute" means a CPU
-> commit an memory access instruction to the Memory Subsystem, so if we
-> have a store W and a load R, where W executes before R, it doesn't mean
-> the memory effect of W is observed before the memory effect of R by
-> other CPUs, consider the following case
-> 
-> 
-> 	CPU0			Memory Subsystem		CPU1
-> 	====							====
-> 	WRITE_ONCE(*x,1); // W ---------->|
-> 	spin_unlock(s);                   |
-> 	spin_lock(t);                     |
-> 	r1 = READ_ONCE(*y); // R -------->|
-> 	// R reads 0                      |
-> 					  |<----------------WRITR_ONCE(*y, 1); // W'
-> 		 W' propagates to CPU0    |
-> 		<-------------------------|
-> 					  |                 smp_mb();
-> 					  |<----------------r1 = READ_ONCE(*x); // R' reads 0
-> 					  |
-> 					  | W progrates to CPU 1
-> 		                          |----------------->
-> 
-> The "->" from CPU0 to the Memory Subsystem shows that W executes before
-> R, however the memory effect of a store can be observed only after the
-> Memory Subsystem propagates it to another CPU, as a result CPU1 doesn't
-> observe W before R is executed. So the original version of the comments
-> is correct in our memory model terminology, at least that's how I
-> understand it, Alan can correct me if I'm wrong.
+> We can reprodeuce issue as follows:
 
-Indeed, that is correct.
+"reproduce"
 
-It is an unfortunate inconsistency with the terminology in 
-Documentation/memory-barriers.txt.  I suspect most people think of a 
-write as executing when it is observed by another CPU, even though that 
-really isn't a coherent concept.  (For example, it could easily lead 
-somebody to think that a write observed at different times by different 
-CPUs has executed more than once!)
-
-> Maybe it's better to replace the sentence starting with "The one
-> exception..." into:
+> 1. Inject memory fault in nbd_start_device
+> -1244,10 +1248,18 @@ static int nbd_start_device(struct nbd_device *nbd)
+>         nbd_dev_dbg_init(nbd);
+>         for (i = 0; i < num_connections; i++) {
+>                 struct recv_thread_args *args;
+> -
+> -               args = kzalloc(sizeof(*args), GFP_KERNEL);
+> +
+> +               if (i == 1) {
+> +                       args = NULL;
+> +                       printk("%s: inject malloc error\n", __func__);
+> +               }
+> +               else
+> +                       args = kzalloc(sizeof(*args), GFP_KERNEL);
+> 2. Inject delay in recv_work
+> -757,6 +760,8 @@ static void recv_work(struct work_struct *work)
 > 
-> One thing to notice is that even though a write executes by a read, the
-> memory effects can still be reordered from the viewpoint of a process
-> not holding both locks, similar to TSO ordering.
+>                 blk_mq_complete_request(blk_mq_rq_from_pdu(cmd));
+>         }
+> +       printk("%s: comm=%s pid=%d\n", __func__, current->comm, current->pid);
+> +       mdelay(5 * 1000);
+>         nbd_config_put(nbd);
+>         atomic_dec(&config->recv_threads);
+>         wake_up(&config->recv_wq);
+> 3. Create nbd server
+> nbd-server 8000 /tmp/disk
+> 4. Create nbd client
+> nbd-client localhost 8000 /dev/nbd1
+> Then will trigger above issue.
 > 
-> Thoughts?
+> Reason is when add delay in recv_work, lead to relase the last reference
 
-Or more briefly:
+"release"
 
-	Note: Even when a write executes before a read, their memory
-	effects can be reordered from the viewpoint of another CPU (the 
-	kind of reordering allowed by TSO).
+> of 'nbd->config_refs'. nbd_config_put will call flush_workqueue to make
+> all work finish. Obviously, it will lead to deadloop.
+> To solve this issue, according to Josef's suggestion move 'recv_work'
+> init from start device to nbd_dev_add, then destory 'recv_work'when
 
-Alan
+"destroy"
 
-> Apologies for responsing late...
+> nbd device teardown.
 > 
-> ("Memory Subsystem" is an abstraction in our memory model, which doesn't
-> mean hardware implements things in the same way.).
+> Signed-off-by: Ye Bin <yebin10@huawei.com>
+> ---
+>  drivers/block/nbd.c | 30 ++++++++++++++----------------
+>  1 file changed, 14 insertions(+), 16 deletions(-)
 > 
-> Regards,
-> Boqun
-> 
-> > + *)
-> > 
-> > Thank you all!
-> > 
-> > 							Thanx, Paul
+> diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+> index 096883ab9b76..c9a65a260668 100644
+> --- a/drivers/block/nbd.c
+> +++ b/drivers/block/nbd.c
+> @@ -1314,10 +1314,6 @@ static void nbd_config_put(struct nbd_device *nbd)
+>  		kfree(nbd->config);
+>  		nbd->config = NULL;
+>  
+> -		if (nbd->recv_workq)
+> -			destroy_workqueue(nbd->recv_workq);
+> -		nbd->recv_workq = NULL;
+> -
+>  		nbd->tag_set.timeout = 0;
+>  		nbd->disk->queue->limits.discard_granularity = 0;
+>  		nbd->disk->queue->limits.discard_alignment = 0;
+> @@ -1346,14 +1342,6 @@ static int nbd_start_device(struct nbd_device *nbd)
+>  		return -EINVAL;
+>  	}
+>  
+> -	nbd->recv_workq = alloc_workqueue("knbd%d-recv",
+> -					  WQ_MEM_RECLAIM | WQ_HIGHPRI |
+> -					  WQ_UNBOUND, 0, nbd->index);
+> -	if (!nbd->recv_workq) {
+> -		dev_err(disk_to_dev(nbd->disk), "Could not allocate knbd recv work queue.\n");
+> -		return -ENOMEM;
+> -	}
+> -
+>  	blk_mq_update_nr_hw_queues(&nbd->tag_set, config->num_connections);
+>  	nbd->pid = task_pid_nr(current);
+>  
+> @@ -1779,6 +1767,15 @@ static struct nbd_device *nbd_dev_add(int index, unsigned int refs)
+>  	}
+>  	nbd->disk = disk;
+>  
+> +	nbd->recv_workq = alloc_workqueue("nbd%d-recv",
+> +					  WQ_MEM_RECLAIM | WQ_HIGHPRI |
+> +					  WQ_UNBOUND, 0, nbd->index);
+> +	if (!nbd->recv_workq) {
+> +		dev_err(disk_to_dev(nbd->disk), "Could not allocate knbd recv work queue.\n");
+> +		err = -ENOMEM;
+> +		goto out_err_disk;
+> +	}
+> +
+
+You never free this up, you need to add a destroy_workqueue(nbd->rsv_workq) to
+nbd_dev_remove().
+
+>  	/*
+>  	 * Tell the block layer that we are not a rotational device
+>  	 */
+> @@ -1809,7 +1806,7 @@ static struct nbd_device *nbd_dev_add(int index, unsigned int refs)
+>  	disk->first_minor = index << part_shift;
+>  	if (disk->first_minor > 0xff) {
+>  		err = -EINVAL;
+> -		goto out_err_disk;
+> +		goto out_free_work;
+>  	}
+>  
+>  	disk->minors = 1 << part_shift;
+> @@ -1818,7 +1815,7 @@ static struct nbd_device *nbd_dev_add(int index, unsigned int refs)
+>  	sprintf(disk->disk_name, "nbd%d", index);
+>  	err = add_disk(disk);
+>  	if (err)
+> -		goto out_err_disk;
+> +		goto out_free_work;
+>  
+>  	/*
+>  	 * Now publish the device.
+> @@ -1827,6 +1824,8 @@ static struct nbd_device *nbd_dev_add(int index, unsigned int refs)
+>  	nbd_total_devices++;
+>  	return nbd;
+>  
+> +out_free_work:
+> +	destroy_workqueue(nbd->recv_workq);
+>  out_err_disk:
+>  	blk_cleanup_disk(disk);
+>  out_free_idr:
+> @@ -2087,8 +2086,7 @@ static void nbd_disconnect_and_put(struct nbd_device *nbd)
+>  	 * queue. And this also ensure that we can safely call nbd_clear_que()
+>  	 * to cancel the inflight I/Os.
+>  	 */
+> -	if (nbd->recv_workq)
+> -		flush_workqueue(nbd->recv_workq);
+> +	flush_workqueue(nbd->recv_workq);
+
+The comment above this part needs to be updated, as we no longer have this
+problem.  Thanks,
+
+Josef
