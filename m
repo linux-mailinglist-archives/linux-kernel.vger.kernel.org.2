@@ -2,451 +2,441 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E33F743FFF3
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 17:57:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04C8243FFF8
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 17:58:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229971AbhJ2P7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 11:59:51 -0400
-Received: from mga04.intel.com ([192.55.52.120]:11780 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229607AbhJ2P7u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 11:59:50 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10151"; a="229420209"
-X-IronPort-AV: E=Sophos;i="5.87,193,1631602800"; 
-   d="scan'208";a="229420209"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2021 08:57:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,193,1631602800"; 
-   d="scan'208";a="636730112"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmsmga001.fm.intel.com with ESMTP; 29 Oct 2021 08:57:21 -0700
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Fri, 29 Oct 2021 08:57:20 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Fri, 29 Oct 2021 08:57:20 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12 via Frontend Transport; Fri, 29 Oct 2021 08:57:20 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.170)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.12; Fri, 29 Oct 2021 08:57:19 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YAqLL2lLFKXi7/YGVjm29bRUidwdcXazfOATqrmeiEMFbWhAaNwhiM/JsX5rErlPBOTXNeJ+765QDRfPSZ8iqksKuMk6ENjs9ore0z271S2pobjpDig2f7V2yN1g10wG1B8dRzfBXHwf/+lm5QHTGCg8TWeHsQJwnGjyw+uIDyRyGF24imqhu/Rd/AZNW05urJljzUzQMEuaoEmlQ1zrje5nKUoOhA+lH929f6BkVaj8NbFvbJdzeUUyInltX3m97OfPRUacSMrRbytUK5YPSNPO5k079eaUP2/iqpOFS7nKDCvACV6Ha6j4GQqvU7SqeC5pUSU3AlcH95XRf8iipg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0KseepTp5egxrKNmymtgkEaNj/fE9BoABJkN3jg3yEs=;
- b=SseAQSdKMGHHWGHhVlQBIiiP5YGDZyI+yawePkABB7ACPAoQqwyhmuc97Dg4xR8H1ro4Y8eXQRQbPie9BBr2pfMt1ttulND1oOrA17l9twzK/MMnlYyJFGEmSTwspgn2VWrcfLBPb6ZVXExq6KhEy8BqQldZKWZrEMP8YwZHpDAW0DCOxxUD5bbScnjX8h+Nug+a3V8Y3TaGq3InYtXL70UndjKMD6wIdHajZzRmImKzKZLkXc2knRwpLyz9BEVrkKvHjqpou4IHznk5ZCL0gbeaAQJkVGafsZ7yoC4/Yd/ihKxn71IhHxe6HWAt4riUXR8cBdg6lBHnwKlPABxdgQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0KseepTp5egxrKNmymtgkEaNj/fE9BoABJkN3jg3yEs=;
- b=KqAlWwTBOlKuCVdpR3HBKS/gYvcNaIntiC4PFckDQODuGCKZilIY+e0Awj+Q9QAC/PiBmlWDhvcLj7n2wbUAZMho7n9MrG7RqvniUUTwKpRYMmXgQbx8ofmZxZZXa2JAjAyNruXK0k/GDgVsAV2I7awW+WikaE/WxfQtGRtkSXo=
-Authentication-Results: ideasonboard.com; dkim=none (message not signed)
- header.d=none;ideasonboard.com; dmarc=none action=none header.from=intel.com;
-Received: from DM6PR11MB3180.namprd11.prod.outlook.com (2603:10b6:5:9::13) by
- DM5PR11MB1706.namprd11.prod.outlook.com (2603:10b6:3:b::22) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4649.15; Fri, 29 Oct 2021 15:57:17 +0000
-Received: from DM6PR11MB3180.namprd11.prod.outlook.com
- ([fe80::3856:7f41:e399:f907]) by DM6PR11MB3180.namprd11.prod.outlook.com
- ([fe80::3856:7f41:e399:f907%7]) with mapi id 15.20.4628.020; Fri, 29 Oct 2021
- 15:57:17 +0000
-Message-ID: <9f6744db-f035-204e-2ac6-1d3dca3a2c98@intel.com>
-Date:   Fri, 29 Oct 2021 17:57:10 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.2.1
-Subject: Re: [PATCH] drm/bridge: Fix the bridge chain order for pre_enable /
- post_disable
-Content-Language: en-US
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-CC:     Sam Ravnborg <sam@ravnborg.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        <dri-devel@lists.freedesktop.org>,
-        Philip Chen <philipchen@chromium.org>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        <linux-kernel@vger.kernel.org>
-References: <20211021122719.1.I56d382006dea67ed8f30729a751fbc75434315b2@changeid>
- <YXHLrnAliqxmrrho@ravnborg.org>
- <cdcd19de-19e6-83ed-606f-defebdcc0997@intel.com>
- <YXaTJ+bwm7vSTGpv@pendragon.ideasonboard.com>
- <0e17993d-1e9f-2673-7fee-abf3787de431@intel.com>
- <YXiOVlve5RshqA/B@pendragon.ideasonboard.com>
-From:   Andrzej Hajda <andrzej.hajda@intel.com>
-Organization: Intel Technology Poland sp. z o.o. - ul. Slowackiego 173, 80-298
- Gdansk - KRS 101882 - NIP 957-07-52-316
-In-Reply-To: <YXiOVlve5RshqA/B@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: DB6P18901CA0017.EURP189.PROD.OUTLOOK.COM
- (2603:10a6:4:16::27) To DM6PR11MB3180.namprd11.prod.outlook.com
- (2603:10b6:5:9::13)
-MIME-Version: 1.0
-Received: from [192.168.0.29] (95.160.158.79) by DB6P18901CA0017.EURP189.PROD.OUTLOOK.COM (2603:10a6:4:16::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.14 via Frontend Transport; Fri, 29 Oct 2021 15:57:14 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 195d807f-3794-4cf1-391f-08d99af4c827
-X-MS-TrafficTypeDiagnostic: DM5PR11MB1706:
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-Microsoft-Antispam-PRVS: <DM5PR11MB17061469D18F03BC470D9D90EB879@DM5PR11MB1706.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XbSPwoC/aawfN23PYeWuLNkjGyiMxChkf99s11WSNtcZh/D6yXfNQCvShbeTFueVfjYhkFgtpR2Jrwx/JPsYYPfhyFmspI0hiHlqL1Tzn4TZTthiegHgM0RcSvzDlen4wchAcFW+06yzoQz69VDG+ghiu/IS/e7IbkW6grdaZOSTwmYAB8sdOKjBnfywyOwXGhKRtj+RHu5cSCcOfLXgKC6oYa/pNaXXx2AUfCWVHJtWCA4vfDN+wP5gj0z6RvuNpX4ug7OF8oAOXHWcit2V1t6pc6bcWgJqcZGMCS1Gvnx12+xFReD/+wEdMhdHHxItCvVt3Ntnf5BcaYB4HS0nyyKLzIqzpIt2+RWmM47dbNglg5gQuqpCrcXE9nyH0nwN7Qd7/ypLrDbua+btb0OI9lLUt11qGGxtjMVH/jB2w7oi5uNw0E/wZXcQ4sJzHldb1HSZeeKnIqDwQAI8Oykmz+efKUP/1BHYuibAb1RTeqz2fnI0aHz9lohcrH81R0CswHZK9Ie3V4COyUIe7IEpuSMxlKxCu11F70FM/S+iB5X+5PVrx9a/RayUxgg7B1tDiFsnm875AY1Kg+cteLu+rW0GIcODmmew+Z7M+lq5NoLAz2oIDNilx4EDpX/tT0mMoJTpOj28nIMfkgiUFLmTRua4e87r+i3OXYee3A5izdwYVHmtqjlSBmJZtj7iKd3vNBg+Id3dG90e5i+L5zZylpetRNWfWD6tu0XuOlyJwqWQOXRwXNOBgIByx4DtYGIJDW74+gd3y6cddEZv3WGgff78otKQNcx7WTlbjHInjq11dPAWVpwWeCnpANrBLcKu
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3180.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(86362001)(186003)(36916002)(66946007)(5660300002)(30864003)(44832011)(6486002)(16576012)(316002)(31686004)(54906003)(26005)(966005)(508600001)(82960400001)(7416002)(4326008)(31696002)(66556008)(6916009)(36756003)(8676002)(8936002)(38100700002)(2616005)(956004)(6666004)(53546011)(83380400001)(2906002)(66476007)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cVJJeExFbGlKRXRmbEVJSSsydUNJdFYxeGdPbWVVNm1mVHk3K2RkRHFibnNv?=
- =?utf-8?B?U1pvWjZ4V1NkTEY2eXRrODRCRGxkSjd3RkVnNWxuOXhmNUttUVVYbnkxUTZl?=
- =?utf-8?B?RjVKUlBtMzcwS3p4RTFENXlSYjFUQVZDcm5GU2ROZStHcnpIVEUwblV3TVpj?=
- =?utf-8?B?MURBQXkvTzRGcE1ueUEzNXBtUi83L3NSa2VLUWNyYXFhVnd3WGJVMUtwbUNF?=
- =?utf-8?B?KzUxOGpKa09lbE45NjQySUpzWTZGNXFTYktPSWpBbEVIUnRmT1RzaXNYbkFy?=
- =?utf-8?B?cnd3ZkdBSmxBWE5mSXNDNTNzYXpYMXhVc3ZId3dXdlY2bEZhaEcwWlpFVUdX?=
- =?utf-8?B?RmQvR0lGY1dDVTk2RTNMeURoSERpeEl1TXJJSzhFY0Q4L08xSzNkUmR2TnBy?=
- =?utf-8?B?UHU1OWxzNXlRSGJVd0VabWtCU1daRHNZaHZhUHlMM1VJRUp4U2lIQzNVOXVl?=
- =?utf-8?B?Rk1QTUQyM1ZPMlRUWWdxVVJRY1Q5aGc0Q1hXdm9nZFhGdWxsQ2owMDczOFNy?=
- =?utf-8?B?ejR2MTlLTUZoeFNVb3pkWjE1N0dRY0Y5SjNxdEx0aFJsQjZkNEY2WjE0ellT?=
- =?utf-8?B?dUZTZDBpYjA3RzlKcTFJUmlEMm04S0dlQUVVOGVNR0xNTlpMN1d4cjh6QU1n?=
- =?utf-8?B?aUY0K1RxMHE0Yng2UGtEMlZJbW9BdDZqREZEczRxSlF3YmZQMTBUVVA2NCtr?=
- =?utf-8?B?TU9HcENYeHNRY1pXQ0N0NDcyZTRTbGFSdWh5WExraUcrWG1HWk1xUmRjQzhs?=
- =?utf-8?B?cTJ4akNqRHJOdXJoMGQ4N1lvWTNBNFJ1SDMwZU00VVExdnpsZDdNeEk3QllF?=
- =?utf-8?B?NTdUY2hjelRUTHV3SlYwZHd2Y2RuUk1LYzJiVTRQclJBWjNoVVE2WXV6Z0J0?=
- =?utf-8?B?ZDB0RFJ5bk1nYUkyaVdJTkNLSmEzQzdBR2lWUmIzdzdGZURMMkVYcTVPbnFC?=
- =?utf-8?B?QUhHOWNYTklHOWlSd2wyWWh0UE8vYmpzOC9lWDl2MFE1Ymx4eWI1VjNsMzlv?=
- =?utf-8?B?T2VYLzhsdU1tQ01kK0Z1VTZOVlhseThtK0VrUktId25BVTQ2cURmaG5FaDEy?=
- =?utf-8?B?QVMxUEEralhUYTErZnJyVXdYYVBnZ3o3MlAxcDZIZHVMWkY5K3ZZRmVBSklS?=
- =?utf-8?B?alkvZUc0anZaN0w3TXpnc0pPUHp1L3g3VXpPVlN6eDNGNEpTb01UWmlsMXll?=
- =?utf-8?B?R2NpN3BQdU5ucTNVd1dCUXI1ejRCVGdJeEZ6R3hCNFl3am8wYUJZSmUzOFVm?=
- =?utf-8?B?RXFDbE8ybCtTSmVrODZDWTdaWm5sNmpoVUVoaDFNOEcyNzR3cGs3eFpTbC9E?=
- =?utf-8?B?MTNKWHhVelRWUko5WVVRZTQ0eVVQT25sSWszOE1ieEpUd0tzeGRabGlISGRL?=
- =?utf-8?B?MmdvOXFpb0FjYm03c2ZKNW5qcWZFOUI3bjQ4N1BBSG5mSVZndUdFK0FveXdZ?=
- =?utf-8?B?SGt6RUJPeU9ZRXVkWWlrWUlCM0xnTDZ5SnBYOGtNQjNhaHF6ekV5bCt5NU8r?=
- =?utf-8?B?TUR5NEZOQWN0SEJHV3Q3NzhlNnJ3MEpFeUZSNlJicTlyL0d2TUN5WHA2K2th?=
- =?utf-8?B?MGZNM1RGYmVPOHlDOC9IbGNQZDR0M0V0OVBXVG5jcHFqU1o5R2VIbXpxMHpT?=
- =?utf-8?B?dmg1TDNXU1MzZ2ZCK3k3dCtSZ3BQb0c3dGliNjhnRy81MTZ1Ym5RZW1ROTJh?=
- =?utf-8?B?YjlmSVVrK1JUZm9ERHlSbHUyQ1FxbnFLdTQvSDN4U0EwWFdQTTRlemxsdEFH?=
- =?utf-8?B?anFHL0RRYkgyVjFEcWtKamIxZGlqL1Ntd1dKYUdieDBJbmcvV1BONVZEMWdz?=
- =?utf-8?B?TWJxTFRCWmZlK1dEcEJtaHpOaG5LZkI0b3hCZ28rN1kweWVxVHZ3elR6aGtW?=
- =?utf-8?B?eDFHSzFqcUdTUkx1QXFOVk5vczBQRHhvODliOUk0R3BrNVZuWEEvbEhjZE10?=
- =?utf-8?B?Sy9MQ0ZCUHM4YldXcmR1VjNIb0RDZkppK1ZaTXBiODhBN0NiM2lIeTZLZk1B?=
- =?utf-8?B?dVBPM2dKdGpxUjZCSE1NSWY4TktEZ0lSU2dsTm13VnBYd3dVRi9MSE1JNXZ1?=
- =?utf-8?B?MFVVYkRHSzlBbDZlZGNWMzNreDFlUHBLSXZhaUt6dkw2LzY0cTF5OHppd3p2?=
- =?utf-8?B?ajNDVkZhUlZHV3ZtV0kvaFZsSW9Ld1YyVUNLNmZRWkZiSzNDRjl1OGhZM1l1?=
- =?utf-8?Q?F6MH3TV90mSBBAW3/9DhYiY=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 195d807f-3794-4cf1-391f-08d99af4c827
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3180.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Oct 2021 15:57:17.2626
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: k+9DEBEmP7EdEoDABumg1vsGVgKJPSb/CAG/3HJlje9/cZiYiC+bs2NCcoPoK9FzIDB5lTQZYVZO6+wZ792mWg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR11MB1706
-X-OriginatorOrg: intel.com
+        id S229851AbhJ2QAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 12:00:43 -0400
+Received: from esa5.hgst.iphmx.com ([216.71.153.144]:5944 "EHLO
+        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229521AbhJ2QAm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 12:00:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1635523092; x=1667059092;
+  h=from:to:cc:subject:date:message-id;
+  bh=A/GrXMSCKOlCxctHnwJOqWroQN/tVK66LSLZbe9ux5Q=;
+  b=FBOy8f+ybAVUxNIJBo7cUS7WZ6sr3ISpSHhqc1lkqMx4CRS9+EgEh/7X
+   AFf0RCcSkIkldxCmDUAAnGQP8mO9N7Wk3ryReySHP8eQLVsSuFRf4MYTc
+   +mg3TbzCok2F7N6GXejy8YUfn46wADTdhHgCrqY3fYawagnXN+x09nHnt
+   I9L7LLjWOjkR1vYasoSmtq7G9fAemWqSMRl8hCWb75gUoZqBSoRCmaeZE
+   Z3e7Hjq1J+JCF/h+nuSKPyJHB+/xu0PHC8kGmiaUW93BYmMqFY9zcSR+a
+   ZyZqcA2O4XFtNQJzK9Oko8j9iUqfpnIezc+ZOsd3McASi6Li1cjFtZNtv
+   Q==;
+X-IronPort-AV: E=Sophos;i="5.87,193,1631548800"; 
+   d="scan'208";a="184186837"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 29 Oct 2021 23:58:10 +0800
+IronPort-SDR: bv253tpnCREKrxMWvo8RdErr60o/MZhLn3Roi9v24K11vM99QOWhS5IEz4p/vN2Ps758kvATqf
+ kFj9++jVYUMKI8YQv6ekcXoHIABQF1DbUNEgpyJRGxEynvWNZEiRnIZyFipzfiwHtL2tIBHnC1
+ oqoajP/RtQ2q7uGTz7wqtlNt+i6/eAL1c/7aRwc5b89bHi8UBvcCtStKDTH9NPvg00JrI0/bFF
+ 3++Uaq+9hf8I0j5q6aNRIkqKN5eDaEt5Z2kcrXDy5BxU75Pjx3W6fLU1PXY6Kq69Dqz79SYdR2
+ 2jw9RtViFmuEPmzZ7TKsyezz
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2021 08:33:38 -0700
+IronPort-SDR: 0Beg6R/uHgsPY1gm6g7lwq7HUdSknMRIWE0j3KnEZf4y3M8f3keWTGYIyb3tTHztNdH11RyDJf
+ 5J39Dxa8bMQ6EjWtL4aLLtTDr9iGm3eBQ9NgpGD2ETTHFVh6yeAQkwMNktDGBam3MZvDCD4eRn
+ 7a5973T8cpGd+ukzmr9/XsQgoTi3PZBnHIJ5oIMfk25kc0bccLkjJuWCU7KmpQaCtYpkCM1XZd
+ JGla3eTq/UG+ejOQcA1GqjL+qBEy0bij7eveUAdfC110iUFvIblkK6nEP/P5XF99e/0jkXAMAR
+ IHk=
+WDCIronportException: Internal
+Received: from bxygm33.ad.shared ([10.45.30.255])
+  by uls-op-cesaip02.wdc.com with ESMTP; 29 Oct 2021 08:58:09 -0700
+From:   Avri Altman <avri.altman@wdc.com>
+To:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bart Van Assche <bvanassche@acm.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: [PATCH] scsi: ufshpb: Opt out pre-reqs from HPB2.0 flows
+Date:   Fri, 29 Oct 2021 18:57:54 +0300
+Message-Id: <20211029155754.3287-1-avri.altman@wdc.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+HPB allows its read commands to carry the physical addresses along with
+the LBAs, thus allowing less internal L2P-table switches in the device.
+HPB1.0 allowed a single LBA, while HPB2.0 increases this capacity up to
+255 blocks.
 
-On 27.10.2021 01:25, Laurent Pinchart wrote:
-> Hi Andrzej,
->
-> On Mon, Oct 25, 2021 at 10:11:47PM +0200, Andrzej Hajda wrote:
->> On 25.10.2021 13:21, Laurent Pinchart wrote:
->>> On Mon, Oct 25, 2021 at 01:00:10PM +0200, Andrzej Hajda wrote:
->>>> On 21.10.2021 22:21, Sam Ravnborg wrote:
->>>>> On Thu, Oct 21, 2021 at 12:29:01PM -0700, Douglas Anderson wrote:
->>>>>> Right now, the chaining order of
->>>>>> pre_enable/enable/disable/post_disable looks like this:
->>>>>>
->>>>>> pre_enable:   start from connector and move to encoder
->>>>>> enable:       start from encoder and move to connector
->>>>>> disable:      start from connector and move to encoder
->>>>>> post_disable: start from encoder and move to connector
->>>>>>
->>>>>> In the above, it can be seen that at least pre_enable() and
->>>>>> post_disable() are opposites of each other and enable() and disable()
->>>>>> are opposites. However, it seems broken that pre_enable() and enable()
->>>>>> would not move in the same direction. In other parts of Linux you can
->>>>>> see that various stages move in the same order. For instance, during
->>>>>> system suspend the "early" calls run in the same order as the normal
->>>>>> calls run in the same order as the "late" calls run in the same order
->>>>>> as the "noirq" calls.
->>>>>>
->>>>>> Let fix the above so that it makes more sense. Now we'll have:
->>>>>>
->>>>>> pre_enable:   start from encoder and move to connector
->>>>>> enable:       start from encoder and move to connector
->>>>>> disable:      start from connector and move to encoder
->>>>>> post_disable: start from connector and move to encoder
->>>>>>
->>>>>> This order is chosen because if there are parent-child relationships
->>>>>> anywhere I would expect that the encoder would be a parent and the
->>>>>> connector a child--not the other way around.
->>>>> This makes good sense as you describe it. I hope others can add more
->>>>> useful feedback.
->>>>> Added Andrzej Hajda <andrzej.hajda@intel.com> to the mail, as he have
->>>>> expressed concerns with the chain of bridges before.
->>>> Thanks Sam, but I am not sure about useful feedback - when I see bridge
->>>> chain issues it automatically triggers "whining mode" in my head :)
->>>>
->>>>>> This can be important when using the DP AUX bus to instantiate a
->>>>>> panel. The DP AUX bus is likely part of a bridge driver and is a
->>>>>> parent of the panel. We'd like the bridge to be pre_enabled before the
->>>>>> panel and the panel to be post_disabled before the
->>>>>> bridge. Specifically, this allows pm_runtime_put_sync_suspend() in a
->>>>>> bridge driver's post_suspend to work properly even a panel is under
->>>>>> it.
->>>>>>
->>>>>> NOTE: it's entirely possible that this change could break someone who
->>>>>> was relying on the old order. Hopefully this isn't the case, but if
->>>>>> this does break someone it seems like it's better to do it sonner
->>>>>> rather than later so we can fix everyone to handle the order that
->>>>>> makes the most sense.
->>>> It will break for sure. So the question is: if it is worth changing?
->>>>
->>>> New order seems good for eDP, DSI sinks [1], probably other as well.
->>>>
->>>> Old order is better for example for THC63LVD1024 [2 p. 20], I guess for
->>>> many other sinks as well.
->>>>
->>>> I am not even sure if it is protocol specific (LVDS, RGB, HDMI,...), or
->>>> it depends on specific hw pairs (source->sink).
->>>>
->>>> This is why I complain about the bridge chain - assumption that one
->>>> fixed call order will work for all setups seems to me ridiculous.
->>>>
->>>> Going back to the question - changing the order from fixed one to
->>>> another fixed one will not solve general issue.
->>>>
->>>> What can we do then?
->>>>
->>>> 1. Configurable call order? Probably doable: every chain element should
->>>> expose info if it's call should be before or after source, then some
->>>> core helper will create queue of callbacks. Seems quite complicated,
->>>> hides the logic from implementer and not fully flexible (for example,
->>>> there are protocols which require to perform sth on source, then on
->>>> sink, then again on the source).
->>>>
->>>> 2. Stop using bridge chain and call sink ops directly from the source
->>>> (this is what Exynos and VC4 do): is flexible and straightforward, gives
->>>> full control to the source.
->>> And breaks interoperability, because different sources end up calling
->>> operations in different orders. We end up having different sinks that
->>> expect calls in different ways, and divide the world in sink/source
->>> groups that don't interoperate :-(
->> I have an impression you describe current status :) More seriously, it
->> is matter of proper specification/documentation/implementations of the
->> operations. If we really need strict constraints we could try to
->> implement them on protocol level.
-> I certainly wouldn't complain if we had better documented operations :-)
->
->>>> 3. Use different abstractions to enforce proper initialization order
->>>> (like extending mipi_dsi_host_ops): requires existence of transport bus
->>>> abstraction (only DSI at the moment(?)).
->>> A real bus seems overkill, but we could have drm_bridge operations
->>> specific to particular hardware interfaces.
->>>
->>>> ... other ideas?
->>> I don't like it because of the amount of work it would require to switch
->>> to such a model, but I'm really starting to think that a variation of
->>> the second option would be best, where the sink controls the source
->>> instead of having the source controlling the sink. It's the sink that
->>> knows about its enabling/disabling sequence, and about how the source
->>> needs to be controlled to match it.
->> I am afraid it depends on the protocol and cross-calls (source->sink,
->> sink->source) can be hard to avoid in case of some protocols.
-> Do you have any particular protocol in mind ?
+Carrying more than a single record, the read operation is no longer
+purly of type "read" per-se, but some sort of a "hybrid" command -
+writing the physical address to the device and reading the required
+payload.
 
-I guess I made my claim too early, as I do not know how would you like 
-to implement this "sink controls the source".
+The HPB JEDEC spec came-up with a dual-command for that operation:
+HPB-WRITE-BUFFER (0x2) to write the physical addresses to device, and
+HPB-READ to read the payload.
 
-So the main question is why do you think sink should control the source, 
-leaving aside the current model (which looks for me source control sink) 
-I do not see why sink->source would be better than source->sink.
+Alas, the current HPB driver design - a single-scsi-LLD-module, has no
+other alternative but to spawn the READ10 command into 2 commands:
+HPB-WRITE-BUFFER and HPB-READ.
+This causes a grat deal of aggrevation to the block layer guys, up to a
+point, in which that they were willing to revert the entire HPB driver,
+regardless of the huge amount of corporate effort already inversted in
+it.
 
+Therefore, remove the pre-req API for now, as a matter of urgency to get
+it done before the closing of the merge window.
 
-Going back to your question in Exynos DSI there were following stages, 
-according to vendor code:
+Signed-off-by: James Bottomley <James.Bottomley@HansenPartnership.com>
+Signed-off-by: Avri Altman <avri.altman@wdc.com>
+Tested-by: Avri Altman <avri.altman@wdc.com>
+---
+ drivers/scsi/ufs/ufshpb.c | 270 +-------------------------------------
+ drivers/scsi/ufs/ufshpb.h |   2 -
+ 2 files changed, 2 insertions(+), 270 deletions(-)
 
-1. DSI host on.
+diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
+index 66b19500844e..bf136bd1be38 100644
+--- a/drivers/scsi/ufs/ufshpb.c
++++ b/drivers/scsi/ufs/ufshpb.c
+@@ -84,16 +84,6 @@ static bool ufshpb_is_supported_chunk(struct ufshpb_lu *hpb, int transfer_len)
+ 	return transfer_len <= hpb->pre_req_max_tr_len;
+ }
+ 
+-/*
+- * In this driver, WRITE_BUFFER CMD support 36KB (len=9) ~ 1MB (len=256) as
+- * default. It is possible to change range of transfer_len through sysfs.
+- */
+-static inline bool ufshpb_is_required_wb(struct ufshpb_lu *hpb, int len)
+-{
+-	return len > hpb->pre_req_min_tr_len &&
+-	       len <= hpb->pre_req_max_tr_len;
+-}
+-
+ static bool ufshpb_is_general_lun(int lun)
+ {
+ 	return lun < UFS_UPIU_MAX_UNIT_NUM_ID;
+@@ -365,148 +355,6 @@ static inline void ufshpb_set_write_buf_cmd(unsigned char *cdb,
+ 	cdb[9] = 0x00;	/* Control = 0x00 */
+ }
+ 
+-static struct ufshpb_req *ufshpb_get_pre_req(struct ufshpb_lu *hpb)
+-{
+-	struct ufshpb_req *pre_req;
+-
+-	if (hpb->num_inflight_pre_req >= hpb->throttle_pre_req) {
+-		dev_info(&hpb->sdev_ufs_lu->sdev_dev,
+-			 "pre_req throttle. inflight %d throttle %d",
+-			 hpb->num_inflight_pre_req, hpb->throttle_pre_req);
+-		return NULL;
+-	}
+-
+-	pre_req = list_first_entry_or_null(&hpb->lh_pre_req_free,
+-					   struct ufshpb_req, list_req);
+-	if (!pre_req) {
+-		dev_info(&hpb->sdev_ufs_lu->sdev_dev, "There is no pre_req");
+-		return NULL;
+-	}
+-
+-	list_del_init(&pre_req->list_req);
+-	hpb->num_inflight_pre_req++;
+-
+-	return pre_req;
+-}
+-
+-static inline void ufshpb_put_pre_req(struct ufshpb_lu *hpb,
+-				      struct ufshpb_req *pre_req)
+-{
+-	pre_req->req = NULL;
+-	bio_reset(pre_req->bio);
+-	list_add_tail(&pre_req->list_req, &hpb->lh_pre_req_free);
+-	hpb->num_inflight_pre_req--;
+-}
+-
+-static void ufshpb_pre_req_compl_fn(struct request *req, blk_status_t error)
+-{
+-	struct ufshpb_req *pre_req = (struct ufshpb_req *)req->end_io_data;
+-	struct ufshpb_lu *hpb = pre_req->hpb;
+-	unsigned long flags;
+-
+-	if (error) {
+-		struct scsi_cmnd *cmd = blk_mq_rq_to_pdu(req);
+-		struct scsi_sense_hdr sshdr;
+-
+-		dev_err(&hpb->sdev_ufs_lu->sdev_dev, "block status %d", error);
+-		scsi_command_normalize_sense(cmd, &sshdr);
+-		dev_err(&hpb->sdev_ufs_lu->sdev_dev,
+-			"code %x sense_key %x asc %x ascq %x",
+-			sshdr.response_code,
+-			sshdr.sense_key, sshdr.asc, sshdr.ascq);
+-		dev_err(&hpb->sdev_ufs_lu->sdev_dev,
+-			"byte4 %x byte5 %x byte6 %x additional_len %x",
+-			sshdr.byte4, sshdr.byte5,
+-			sshdr.byte6, sshdr.additional_length);
+-	}
+-
+-	blk_mq_free_request(req);
+-	spin_lock_irqsave(&hpb->rgn_state_lock, flags);
+-	ufshpb_put_pre_req(pre_req->hpb, pre_req);
+-	spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
+-}
+-
+-static int ufshpb_prep_entry(struct ufshpb_req *pre_req, struct page *page)
+-{
+-	struct ufshpb_lu *hpb = pre_req->hpb;
+-	struct ufshpb_region *rgn;
+-	struct ufshpb_subregion *srgn;
+-	__be64 *addr;
+-	int offset = 0;
+-	int copied;
+-	unsigned long lpn = pre_req->wb.lpn;
+-	int rgn_idx, srgn_idx, srgn_offset;
+-	unsigned long flags;
+-
+-	addr = page_address(page);
+-	ufshpb_get_pos_from_lpn(hpb, lpn, &rgn_idx, &srgn_idx, &srgn_offset);
+-
+-	spin_lock_irqsave(&hpb->rgn_state_lock, flags);
+-
+-next_offset:
+-	rgn = hpb->rgn_tbl + rgn_idx;
+-	srgn = rgn->srgn_tbl + srgn_idx;
+-
+-	if (!ufshpb_is_valid_srgn(rgn, srgn))
+-		goto mctx_error;
+-
+-	if (!srgn->mctx)
+-		goto mctx_error;
+-
+-	copied = ufshpb_fill_ppn_from_page(hpb, srgn->mctx, srgn_offset,
+-					   pre_req->wb.len - offset,
+-					   &addr[offset]);
+-
+-	if (copied < 0)
+-		goto mctx_error;
+-
+-	offset += copied;
+-	srgn_offset += copied;
+-
+-	if (srgn_offset == hpb->entries_per_srgn) {
+-		srgn_offset = 0;
+-
+-		if (++srgn_idx == hpb->srgns_per_rgn) {
+-			srgn_idx = 0;
+-			rgn_idx++;
+-		}
+-	}
+-
+-	if (offset < pre_req->wb.len)
+-		goto next_offset;
+-
+-	spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
+-	return 0;
+-mctx_error:
+-	spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
+-	return -ENOMEM;
+-}
+-
+-static int ufshpb_pre_req_add_bio_page(struct ufshpb_lu *hpb,
+-				       struct request_queue *q,
+-				       struct ufshpb_req *pre_req)
+-{
+-	struct page *page = pre_req->wb.m_page;
+-	struct bio *bio = pre_req->bio;
+-	int entries_bytes, ret;
+-
+-	if (!page)
+-		return -ENOMEM;
+-
+-	if (ufshpb_prep_entry(pre_req, page))
+-		return -ENOMEM;
+-
+-	entries_bytes = pre_req->wb.len * sizeof(__be64);
+-
+-	ret = bio_add_pc_page(q, bio, page, entries_bytes, 0);
+-	if (ret != entries_bytes) {
+-		dev_err(&hpb->sdev_ufs_lu->sdev_dev,
+-			"bio_add_pc_page fail: %d", ret);
+-		return -ENOMEM;
+-	}
+-	return 0;
+-}
+-
+ static inline int ufshpb_get_read_id(struct ufshpb_lu *hpb)
+ {
+ 	if (++hpb->cur_read_id >= MAX_HPB_READ_ID)
+@@ -514,88 +362,6 @@ static inline int ufshpb_get_read_id(struct ufshpb_lu *hpb)
+ 	return hpb->cur_read_id;
+ }
+ 
+-static int ufshpb_execute_pre_req(struct ufshpb_lu *hpb, struct scsi_cmnd *cmd,
+-				  struct ufshpb_req *pre_req, int read_id)
+-{
+-	struct scsi_device *sdev = cmd->device;
+-	struct request_queue *q = sdev->request_queue;
+-	struct request *req;
+-	struct scsi_request *rq;
+-	struct bio *bio = pre_req->bio;
+-
+-	pre_req->hpb = hpb;
+-	pre_req->wb.lpn = sectors_to_logical(cmd->device,
+-					     blk_rq_pos(scsi_cmd_to_rq(cmd)));
+-	pre_req->wb.len = sectors_to_logical(cmd->device,
+-					     blk_rq_sectors(scsi_cmd_to_rq(cmd)));
+-	if (ufshpb_pre_req_add_bio_page(hpb, q, pre_req))
+-		return -ENOMEM;
+-
+-	req = pre_req->req;
+-
+-	/* 1. request setup */
+-	blk_rq_append_bio(req, bio);
+-	req->rq_disk = NULL;
+-	req->end_io_data = (void *)pre_req;
+-	req->end_io = ufshpb_pre_req_compl_fn;
+-
+-	/* 2. scsi_request setup */
+-	rq = scsi_req(req);
+-	rq->retries = 1;
+-
+-	ufshpb_set_write_buf_cmd(rq->cmd, pre_req->wb.lpn, pre_req->wb.len,
+-				 read_id);
+-	rq->cmd_len = scsi_command_size(rq->cmd);
+-
+-	if (blk_insert_cloned_request(q, req) != BLK_STS_OK)
+-		return -EAGAIN;
+-
+-	hpb->stats.pre_req_cnt++;
+-
+-	return 0;
+-}
+-
+-static int ufshpb_issue_pre_req(struct ufshpb_lu *hpb, struct scsi_cmnd *cmd,
+-				int *read_id)
+-{
+-	struct ufshpb_req *pre_req;
+-	struct request *req = NULL;
+-	unsigned long flags;
+-	int _read_id;
+-	int ret = 0;
+-
+-	req = blk_get_request(cmd->device->request_queue,
+-			      REQ_OP_DRV_OUT | REQ_SYNC, BLK_MQ_REQ_NOWAIT);
+-	if (IS_ERR(req))
+-		return -EAGAIN;
+-
+-	spin_lock_irqsave(&hpb->rgn_state_lock, flags);
+-	pre_req = ufshpb_get_pre_req(hpb);
+-	if (!pre_req) {
+-		ret = -EAGAIN;
+-		goto unlock_out;
+-	}
+-	_read_id = ufshpb_get_read_id(hpb);
+-	spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
+-
+-	pre_req->req = req;
+-
+-	ret = ufshpb_execute_pre_req(hpb, cmd, pre_req, _read_id);
+-	if (ret)
+-		goto free_pre_req;
+-
+-	*read_id = _read_id;
+-
+-	return ret;
+-free_pre_req:
+-	spin_lock_irqsave(&hpb->rgn_state_lock, flags);
+-	ufshpb_put_pre_req(hpb, pre_req);
+-unlock_out:
+-	spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
+-	blk_put_request(req);
+-	return ret;
+-}
+-
+ /*
+  * This function will set up HPB read command using host-side L2P map data.
+  */
+@@ -650,8 +416,6 @@ int ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
+ 	if (!ufshpb_is_supported_chunk(hpb, transfer_len))
+ 		return 0;
+ 
+-	WARN_ON_ONCE(transfer_len > HPB_MULTI_CHUNK_HIGH);
+-
+ 	if (hpb->is_hcm) {
+ 		/*
+ 		 * in host control mode, reads are the main source for
+@@ -685,22 +449,6 @@ int ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
+ 		dev_err(hba->dev, "get ppn failed. err %d\n", err);
+ 		return err;
+ 	}
+-	if (!ufshpb_is_legacy(hba) &&
+-	    ufshpb_is_required_wb(hpb, transfer_len)) {
+-		err = ufshpb_issue_pre_req(hpb, cmd, &read_id);
+-		if (err) {
+-			unsigned long timeout;
+-
+-			timeout = cmd->jiffies_at_alloc + msecs_to_jiffies(
+-				  hpb->params.requeue_timeout_ms);
+-
+-			if (time_before(jiffies, timeout))
+-				return -EAGAIN;
+-
+-			hpb->stats.miss_cnt++;
+-			return 0;
+-		}
+-	}
+ 
+ 	ufshpb_set_hpb_read_to_upiu(hba, lrbp, ppn, transfer_len, read_id);
+ 
+@@ -1841,13 +1589,7 @@ static void ufshpb_lu_parameter_init(struct ufs_hba *hba,
+ 	u32 entries_per_rgn;
+ 	u64 rgn_mem_size, tmp;
+ 
+-	/* for pre_req */
+-	hpb->pre_req_min_tr_len = hpb_dev_info->max_hpb_single_cmd + 1;
+-
+-	if (ufshpb_is_legacy(hba))
+-		hpb->pre_req_max_tr_len = HPB_LEGACY_CHUNK_HIGH;
+-	else
+-		hpb->pre_req_max_tr_len = HPB_MULTI_CHUNK_HIGH;
++	hpb->pre_req_max_tr_len = HPB_LEGACY_CHUNK_HIGH;
+ 
+ 	hpb->cur_read_id = 0;
+ 
+@@ -2858,8 +2600,7 @@ void ufshpb_get_geo_info(struct ufs_hba *hba, u8 *geo_buf)
+ void ufshpb_get_dev_info(struct ufs_hba *hba, u8 *desc_buf)
+ {
+ 	struct ufshpb_dev_info *hpb_dev_info = &hba->ufshpb_dev;
+-	int version, ret;
+-	u32 max_hpb_single_cmd = HPB_MULTI_CHUNK_LOW;
++	int version;
+ 
+ 	hpb_dev_info->control_mode = desc_buf[DEVICE_DESC_PARAM_HPB_CONTROL];
+ 
+@@ -2875,13 +2616,6 @@ void ufshpb_get_dev_info(struct ufs_hba *hba, u8 *desc_buf)
+ 	if (version == HPB_SUPPORT_LEGACY_VERSION)
+ 		hpb_dev_info->is_legacy = true;
+ 
+-	ret = ufshcd_query_attr_retry(hba, UPIU_QUERY_OPCODE_READ_ATTR,
+-		QUERY_ATTR_IDN_MAX_HPB_SINGLE_CMD, 0, 0, &max_hpb_single_cmd);
+-	if (ret)
+-		dev_err(hba->dev, "%s: idn: read max size of single hpb cmd query request failed",
+-			__func__);
+-	hpb_dev_info->max_hpb_single_cmd = max_hpb_single_cmd;
+-
+ 	/*
+ 	 * Get the number of user logical unit to check whether all
+ 	 * scsi_device finish initialization
+diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
+index a79e07398970..a4e7e33d451e 100644
+--- a/drivers/scsi/ufs/ufshpb.h
++++ b/drivers/scsi/ufs/ufshpb.h
+@@ -31,8 +31,6 @@
+ 
+ /* hpb support chunk size */
+ #define HPB_LEGACY_CHUNK_HIGH			1
+-#define HPB_MULTI_CHUNK_LOW			7
+-#define HPB_MULTI_CHUNK_HIGH			255
+ 
+ /* hpb vender defined opcode */
+ #define UFSHPB_READ				0xF8
+-- 
+2.17.1
 
-2. DSI dev on.
-
-3. DSI host init.
-
-4. DSI dev init.
-
-5. DSI host start video.
-
-6. DSI dev display_on.
-
-How would you put it into framework?
-
-
->
->>>> Another idea, connected to the subject - some protocols require some
->>>> negotiations between source and sink bus format, or more steps than
->>>> pre_enable, enable ops to establish link. I wonder if encapsulating
->>>> drm_bridge in some protocol specific struct wouldn't be a solution, it
->>>> can be helpful as well in case of the subject.
->>>>
->>>> For example:
->>>>
->>>> struct drm_bridge_edp {
->>>>
->>>>        const struct drm_bridge_edp_funcs *funcs;
->>>>
->>>>        struct drm_bridge base;
->>>>
->>>>        ...
->>>>
->>>> };
->>>>
->>>> Then source could promote bridge pointer to bridge_edp pointer (if
->>>> applicable) and perform edp specific stuff. To make it working well
->>>> pre-enable order should be as proposed in this patchsets (encoder ->
->>>> connector), as the source should initiate negotiations.
->>>>
->>>> Btw this encapsulation stuff above asks to rename drm_bridge to
->>>> drm_sink, otherwise it would be confusing as bridges have two ends.
->>> drm_sink would be equally confusing when used for devices that have a
->>> sink and a source :-) I'm not against a rename though, if we can find a
->>> better name.
->> But in this case we are interested only in sink part of the bridge (OR
->> panel). If source is looking for specific bridge or panel
->> (drm_of_find_panel_or_bridge), it is in fact looking for sink.
-> I'm find using "sink" as part of a function name that would look up a
-> sink, but the device itself isn't necessarily just a sink, so we need a
-> more generic name.
-
-
-source is looking for the sink, and using only the sink, what is behind 
-the sink is sink's private matter :)
-
-I guess you have an approach that all these bridges/sinks/crtcs/.... are 
-parts of drm_dev and drm_dev should control them directly. My approach 
-is more local - they are part of drm_dev but mainly they 'talks' only to 
-their neighbours- sinks or sources, from drm_dev they require only few 
-global settings, and drm_dev controls them indirectly.
-
-
-Regards
-
-Andrzej
-
-
->
->>>> [1]: I use term sink as short equivalent for 'bridges AND panels'
->>>> (another issue in DRMs).
->>>>
->>>> [2]: https://www.mouser.com/datasheet/2/286/THC63LVD1024-1396205.pdf
->>>>
->>>>>> A FURTHER NOTE: Looking closer at commit 4e5763f03e10 ("drm/bridge:
->>>>>> ti-sn65dsi86: Wrap panel with panel-bridge") you can see that patch
->>>>>> inadvertently changed the order of things. The order used to be
->>>>>> correct (panel prepare was at the tail of the bridge enable) but it
->>>>>> became backwards. We'll restore the original order with this patch.
->>>>>>
->>>>>> Fixes: 4e5763f03e10 ("drm/bridge: ti-sn65dsi86: Wrap panel with panel-bridge")
->>>>>> Fixes: 05193dc38197 ("drm/bridge: Make the bridge chain a double-linked list")
->>>>>> Signed-off-by: Douglas Anderson <dianders@chromium.org>
->>>>> To make the patch complete the descriptions in drm_bridge_funcs
->>>>> need to be updated to reflect the new reality.
->>>>>
->>>>>> ---
->>>>>>
->>>>>>     drivers/gpu/drm/drm_bridge.c | 28 ++++++++++++++--------------
->>>>>>     1 file changed, 14 insertions(+), 14 deletions(-)
->>>>>>
->>>>>> diff --git a/drivers/gpu/drm/drm_bridge.c b/drivers/gpu/drm/drm_bridge.c
->>>>>> index c96847fc0ebc..98808af59afd 100644
->>>>>> --- a/drivers/gpu/drm/drm_bridge.c
->>>>>> +++ b/drivers/gpu/drm/drm_bridge.c
->>>>>> @@ -583,18 +583,14 @@ EXPORT_SYMBOL(drm_bridge_chain_mode_set);
->>>>>>     void drm_bridge_chain_pre_enable(struct drm_bridge *bridge)
->>>>> If you, or someone else, could r-b or ack the pending patches to remove
->>>>> this function, this part of the patch would no longer be needed.
->>>>>
->>>>>>     {
->>>>>>     	struct drm_encoder *encoder;
->>>>>> -	struct drm_bridge *iter;
->>>>>>     
->>>>>>     	if (!bridge)
->>>>>>     		return;
->>>>>>     
->>>>>>     	encoder = bridge->encoder;
->>>>>> -	list_for_each_entry_reverse(iter, &encoder->bridge_chain, chain_node) {
->>>>>> -		if (iter->funcs->pre_enable)
->>>>>> -			iter->funcs->pre_enable(iter);
->>>>>> -
->>>>>> -		if (iter == bridge)
->>>>>> -			break;
->>>>>> +	list_for_each_entry_from(bridge, &encoder->bridge_chain, chain_node) {
->>>>>> +		if (bridge->funcs->pre_enable)
->>>>>> +			bridge->funcs->pre_enable(bridge);
->>>>>>     	}
->>>>>>     }
->>>>>>     EXPORT_SYMBOL(drm_bridge_chain_pre_enable);
->>>>>> @@ -684,26 +680,30 @@ void drm_atomic_bridge_chain_post_disable(struct drm_bridge *bridge,
->>>>>>     					  struct drm_atomic_state *old_state)
->>>>>>     {
->>>>>>     	struct drm_encoder *encoder;
->>>>>> +	struct drm_bridge *iter;
->>>>> s/iter/bridge/ would make the patch simpler
->>>>> And then the bridge argument could be last_bridge or something.
->>>>> This would IMO increase readability of the code and make the patch smaller.
->>>>>>     
->>>>>>     	if (!bridge)
->>>>>>     		return;
->>>>>>     
->>>>>>     	encoder = bridge->encoder;
->>>>>> -	list_for_each_entry_from(bridge, &encoder->bridge_chain, chain_node) {
->>>>>> -		if (bridge->funcs->atomic_post_disable) {
->>>>>> +	list_for_each_entry_reverse(iter, &encoder->bridge_chain, chain_node) {
->>>>>> +		if (iter->funcs->atomic_post_disable) {
->>>>>>     			struct drm_bridge_state *old_bridge_state;
->>>>>>     
->>>>>>     			old_bridge_state =
->>>>>>     				drm_atomic_get_old_bridge_state(old_state,
->>>>>> -								bridge);
->>>>>> +								iter);
->>>>>>     			if (WARN_ON(!old_bridge_state))
->>>>>>     				return;
->>>>>>     
->>>>>> -			bridge->funcs->atomic_post_disable(bridge,
->>>>>> -							   old_bridge_state);
->>>>>> -		} else if (bridge->funcs->post_disable) {
->>>>>> -			bridge->funcs->post_disable(bridge);
->>>>>> +			iter->funcs->atomic_post_disable(iter,
->>>>>> +							 old_bridge_state);
->>>>>> +		} else if (iter->funcs->post_disable) {
->>>>>> +			iter->funcs->post_disable(iter);
->>>>>>     		}
->>>>>> +
->>>>>> +		if (iter == bridge)
->>>>>> +			break;
->>>>> I cannot see why this is needed, we are at the end of the list here
->>>>> anyway.
->>>>>
->>>>>>     	}
->>>>>>     }
->>>>>>     EXPORT_SYMBOL(drm_atomic_bridge_chain_post_disable);
