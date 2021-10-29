@@ -2,97 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C69943F8BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 10:21:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A38143F8BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 10:21:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232454AbhJ2IYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 04:24:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232433AbhJ2IYI (ORCPT
+        id S232462AbhJ2IYP convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 29 Oct 2021 04:24:15 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:40869 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232456AbhJ2IYO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 04:24:08 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 085EEC061570;
-        Fri, 29 Oct 2021 01:21:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=R+jZXij5/Xk2QpRoQVNw9PyvFwMYQKCNbuQ5IodArJs=; b=nn/grtlZsdiZ92/B5exkDezvj+
-        VL5sSPnLJWNGAmDVwis600h9Ro4QmOFsZBafp8VhMtPKVnscZeVkSZrYgpPh8sHIvGf8Jngfp//1L
-        QTOqH2Tkif94bqxKVJaR9u+IpFGNRIrD84YAk76LQcaIwmFisyhMHBl849Bu5GIkrIJicw245G5Hk
-        32O3Z/edQ76y09Gt8vpP/2qfD8yuePIx6YXssIBBSNCrVWaJp+6XVWHFPou3IEUq7EX5CG52hFaa6
-        ZbZF7G+ZMv4TOc5cFxMUdol5OGRtlCjN1Xv4ooCDjnNA0cjkQdLZWU9NulqW1I0+sSXB2aiOMrS7l
-        SnxZHdrg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55374)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mgN8q-0008Oe-6Y; Fri, 29 Oct 2021 09:21:37 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mgN8p-0001So-6W; Fri, 29 Oct 2021 09:21:35 +0100
-Date:   Fri, 29 Oct 2021 09:21:35 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
-Cc:     andrew@lunn.ch, netdev@vger.kernel.org, olteanv@gmail.com,
-        robh+dt@kernel.org, UNGLinuxDriver@microchip.com,
-        Woojung.Huh@microchip.com, hkallweit1@gmail.com,
-        davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        vivien.didelot@gmail.com, f.fainelli@gmail.com,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v6 net-next 06/10] net: dsa: microchip: add support for
- phylink management
-Message-ID: <YXuvD2PJukHqytHe@shell.armlinux.org.uk>
-References: <20211029052256.144739-1-prasanna.vengateshan@microchip.com>
- <20211029052256.144739-7-prasanna.vengateshan@microchip.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211029052256.144739-7-prasanna.vengateshan@microchip.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+        Fri, 29 Oct 2021 04:24:14 -0400
+Received: from smtpclient.apple (p4ff9fd51.dip0.t-ipconnect.de [79.249.253.81])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 480D7CED12;
+        Fri, 29 Oct 2021 10:21:45 +0200 (CEST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 15.0 \(3693.20.0.1.32\))
+Subject: Re: [PATCH v6 3/3] Bluetooth: btusb: enable Mediatek to support AOSP
+ extension
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <CAHFy41_y8LS81gTHNidMdrD9tpeXf0YyvHaTKZJU+jmjuFgYXQ@mail.gmail.com>
+Date:   Fri, 29 Oct 2021 10:21:44 +0200
+Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        pali@kernel.org, chromeos-bluetooth-upstreaming@chromium.org,
+        Miao-chen Chou <mcchou@chromium.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        =?utf-8?B?Ik1hcmstWVcgQ2hlbiAo6Zmz5o+a5paHKSI=?= 
+        <Mark-YW.Chen@mediatek.com>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <92566E17-4D3A-4FB5-83B2-E2B9D4BBE2EF@holtmann.org>
+References: <20211021230356.v6.1.I139e71adfd3f00b88fe9edb63d013f9cd3e24506@changeid>
+ <20211021230356.v6.3.I257ac5cfaf955d15670479efc311bbab702397f4@changeid>
+ <AB7796C2-6543-43CD-8FA3-DAF57AB68767@holtmann.org>
+ <CAHFy41_y8LS81gTHNidMdrD9tpeXf0YyvHaTKZJU+jmjuFgYXQ@mail.gmail.com>
+To:     Joseph Hwang <josephsih@google.com>
+X-Mailer: Apple Mail (2.3693.20.0.1.32)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Joseph,
 
-Sorry for missing this.
+> Some of Mediatek's controllers/firmwares do NOT support AOSP extensions.
+> 
+> Please refer to this Gerrit patch review link for chrome os
+> (https://chromium-review.googlesource.com/c/chromiumos/third_party/kernel/+/3054233/8/drivers/bluetooth/btusb.c)
+> which was reviewed by Mark-YW Chen, Mediatek's engineer.
+> 
+> As an example, MediaTek MT7615E does not support the AOSP extensions.
+> 
+> That was why I used a new BTUSB_QUALITY_REPORT flag in the changes v4
+> and earlier ones.
+> 
+> Please let me know how you would like to proceed with this patch.
 
-The use of bitmap_foo() seems to have not been commented on, which
-are now unnecessary as linkmode_foo() helpers were added in
-b31cdffa2329 ("net: phy: Move linkmode helpers to somewhere public").
+I want that inside the Mediatek specific hdev->setup() procedure, they decide if AOSP extensions are supported or not. The BTUSB flag business is getting out of hand. I really don’t want that in btusb.c anymore. I moved Intel over to do that in btintel.c and also Realtek is doing it in btrtl.c for their hardware with the MSFT extensions.
 
-On Fri, Oct 29, 2021 at 10:52:52AM +0530, Prasanna Vengateshan wrote:
-> +static void lan937x_phylink_validate(struct dsa_switch *ds, int port,
-> +				     unsigned long *supported,
-> +				     struct phylink_link_state *state)
-> +{
-> +	struct ksz_device *dev = ds->priv;
-> +	__ETHTOOL_DECLARE_LINK_MODE_MASK(mask) = { 0, };
-> +
-> +	/* Check for unsupported interfaces */
-> +	if (!phy_interface_mode_is_rgmii(state->interface) &&
-> +	    state->interface != PHY_INTERFACE_MODE_RMII &&
-> +	    state->interface != PHY_INTERFACE_MODE_MII &&
-> +	    state->interface != PHY_INTERFACE_MODE_NA &&
-> +	    state->interface != PHY_INTERFACE_MODE_INTERNAL) {
-> +		bitmap_zero(supported, __ETHTOOL_LINK_MODE_MASK_NBITS);
+We are not doing try-and-error of HCI commands. Just keep that in mind since I said that multiple times now.
 
-		linkmode_zero(supported);
+Regards
 
-...
-> +
-> +	bitmap_and(supported, supported, mask, __ETHTOOL_LINK_MODE_MASK_NBITS);
-> +	bitmap_and(state->advertising, state->advertising, mask,
-> +		   __ETHTOOL_LINK_MODE_MASK_NBITS);
+Marcel
 
-	linkmode_and(supported, supported, mask);
-	linkmode_and(state->advertising, state->advertising, mask);
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
