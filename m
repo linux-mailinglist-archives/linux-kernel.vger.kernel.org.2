@@ -2,91 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C43404404DC
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 23:22:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 058574404DE
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 23:22:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231599AbhJ2VYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 17:24:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54856 "EHLO
+        id S230381AbhJ2VYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 17:24:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231315AbhJ2VYC (ORCPT
+        with ESMTP id S230168AbhJ2VY2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 17:24:02 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A32A2C061570;
-        Fri, 29 Oct 2021 14:21:33 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id o14so18565816wra.12;
-        Fri, 29 Oct 2021 14:21:33 -0700 (PDT)
+        Fri, 29 Oct 2021 17:24:28 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48D7EC061570;
+        Fri, 29 Oct 2021 14:21:59 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id h20so10650257qko.13;
+        Fri, 29 Oct 2021 14:21:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :references:from:in-reply-to:content-transfer-encoding;
-        bh=NiK7SwHxTnmnFF3x7Tss+IEdA+ZkPxnv1m3o6b+JWVw=;
-        b=G4WPO5OAOn+LYA/zYW/Prt6LaSXj44Y1dvqC91n0ee17yPDw3HiuPGymqqClNnuC2E
-         9tyESFakTuKtQl+fn2Tzs6OVL2YfZFVgM4jSKUQoMNzGeRzgkK8tiLs0HXEja0OPewpu
-         hvkyAoQbbJuUG9JBFIZWPIqfGAiGwPXjBJ4yTb1PYs7vyRY8cXCOapBkAAvReQhvukNd
-         W7UNXl+FzoD9PYwI8GFd8EloZwCIqSiXGDbUGmhkb4QBvRW/+pOeIS2ndmc0KrNAlIeq
-         9ZMaM+lViRibw+Cs82WC7vA0mnLxIT69Ufpiq4NwlXbVD5AFzpp6tPsmZqL5LNdwOPBM
-         ryqw==
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=z7yVckty5p/EV21n48/dXnRFMYmZ7LcCmfku0IFTskI=;
+        b=Cp2KN2hQspepxD6g73KMAa1hNtZ4RvSsejofN9KHU4EYlgGu0h+Y0GnFgqm/maiTfK
+         jloy1qbf/iMYC3LZ7gw36Mfx4v9vOYKSVdkba86MNXZI8c3QaipFeRcgyn/vpyLA6p+D
+         BlUXwJTLpz7I9eJqb3CsgPriHDYNur0WRS3aqhjFKA2bZuWsI4S7S7tMDek9VudTnAb6
+         zcQG0mA5Ki6U+Z1VBQyHeC9Hs5Az1TTXJ7/8Mntq5sTvy38TFxgu30/pv9ki3fy8iKkj
+         LNRfb4lQ7gTSXT0LEiK/zVeXrPnfjiHbPXOgm2n794kVYqFrylb0R0ktYf7cV6RAGfSu
+         kuOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=NiK7SwHxTnmnFF3x7Tss+IEdA+ZkPxnv1m3o6b+JWVw=;
-        b=5hkK+PGqRXi1mptFUuiRrOZ8Uq3E/RRjLwV+Sg9OqEgGCiND6QV+YQuidkMvNCFk3n
-         KbuaPc0RaClHYkEGCKbFNMXjPDAdNt6KwCB7//CW/W2kezylLbGJw/ANzuYXhr48gfv6
-         LsErdVFPEDY10xehRv7dl8aK3ZNVwvTqw2vnUXhw0P1iQFpikk685yoDXrlJcSHhbXmq
-         zHE05nZw2TnRhmtYDVEBhNHdX/b267J5L+Was/ckekPOUnat4ziwUd3e7wn7kAiySq86
-         rBgskLJFovwBZMJWC4ejx6H7goexCurYmri+ZjFziIps2HlDgyZuZI+gPF1jzbve0yCA
-         yWKg==
-X-Gm-Message-State: AOAM5338OxNfuKzbSjvLn9psqelWRg4eCnHBUF2Lnduu9DqWKEPJo2SO
-        hj0fpm1AVr3sCU7go+R+kW8=
-X-Google-Smtp-Source: ABdhPJxpTjYCFrGJA9JYhtIdnjNeuD/GIrhMKYTAepyvahRY8ck6qp6Ni3P88yg44LPKNNtiTeC3Tg==
-X-Received: by 2002:a1c:e911:: with SMTP id q17mr21870719wmc.174.1635542492272;
-        Fri, 29 Oct 2021 14:21:32 -0700 (PDT)
-Received: from [192.168.8.198] ([148.252.129.16])
-        by smtp.gmail.com with ESMTPSA id o1sm6734502wru.91.2021.10.29.14.21.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Oct 2021 14:21:31 -0700 (PDT)
-Message-ID: <cebb75d5-076d-0b05-6c37-b880accc320e@gmail.com>
-Date:   Fri, 29 Oct 2021 22:20:14 +0100
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=z7yVckty5p/EV21n48/dXnRFMYmZ7LcCmfku0IFTskI=;
+        b=XcAAamL6+BUc+jlDGjqVp6m2hYR/iudrkrAh+wZivCRBC3NavwBx/3bZMNpOdDQQJt
+         X1besgXyRkde/0bxGbsitYjWH6MIOPrayRtF9XTM71xNJ8lrMUxZ1SjxL7Sk937850+V
+         KwJiXr1vW6zoMRlCpWsN0f4BD7VoScvEgVP99g82tfbnjRTKaOIPgMOE8l9nch0ohGHf
+         KXRZGiHLt6sb0F3rxGZyzBFLdgBmfIwJebSRSPW9MaylZr4OGw5GxjqidMp95SF5E77Q
+         8ySw4fo6wpB8WsERe3rNCOqsYpqLsLj8ufz7P1QH+FOo1+VX76wYwJi7/j8Rq18pmdN1
+         Zd2w==
+X-Gm-Message-State: AOAM533MAjsnb44wjtXrTxu7+rNdTgu84+sRuICV2CgZoDzJwspLmYm/
+        OK1i3S5oAEGmnQHitnB6VTU+fq758OEKUfdGa4Q=
+X-Google-Smtp-Source: ABdhPJwUx7gsoBynRrmACjiin57ysUdf42t0pD6NQ8LlVg+NSZQ9NFn3u8wksgMPHSZ9aTQWCPx2mQ==
+X-Received: by 2002:a05:620a:2a04:: with SMTP id o4mr11583582qkp.330.1635542518409;
+        Fri, 29 Oct 2021 14:21:58 -0700 (PDT)
+Received: from ubuntu-mate-laptop.eecs.ucf.edu ([132.170.15.255])
+        by smtp.gmail.com with ESMTPSA id u6sm1264258qtc.86.2021.10.29.14.21.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Oct 2021 14:21:58 -0700 (PDT)
+Sender: Julian Braha <julian.braha@gmail.com>
+From:   Julian Braha <julianbraha@gmail.com>
+To:     andrew@aj.id.au, linus.walleij@linaro.org, joel@jms.id.au
+Cc:     linux-aspeed@lists.ozlabs.org, linux-gpio@vger.kernel.org,
+        openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, fazilyildiran@gmail.com
+Subject: [PATCH] pinctrl: aspeed: fix unmet dependencies on MFD_SYSCON for PINCTRL_ASPEED
+Date:   Fri, 29 Oct 2021 17:21:57 -0400
+Message-Id: <20211029212157.14230-1-julianbraha@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [syzbot] KASAN: use-after-free Write in __io_free_req
-Content-Language: en-US
-To:     syzbot <syzbot+78b76ebc91042904f34e@syzkaller.appspotmail.com>,
-        axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <000000000000abd1dc05cf8447ee@google.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <000000000000abd1dc05cf8447ee@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/29/21 22:12, syzbot wrote:
-> Hello,
-> 
-> syzbot tried to test the proposed patch but the build/boot failed:
-> 
-> failed to checkout kernel repo git://git.kernel.dk/linux-block on commit 3ecd20a9c77c632a5afe4e134781e1629936adab: failed to run ["git" "checkout" "3ecd20a9c77c632a5afe4e134781e1629936adab"]: exit status 128
-> fatal: reference is not a tree: 3ecd20a9c77c632a5afe4e134781e1629936adab
+When PINCTRL_ASPEED_G* is selected,
+and MFD_SYSCON is not selected,
+Kbuild gives the following warnings:
 
-#syz test: https://github.com/isilence/linux.git syz-test-iofree
+WARNING: unmet direct dependencies detected for PINCTRL_ASPEED
+  Depends on [n]: PINCTRL [=y] && (ARCH_ASPEED [=n] || COMPILE_TEST [=y]) && OF [=y] && MFD_SYSCON [=n]
+  Selected by [y]:
+  - PINCTRL_ASPEED_G4 [=y] && PINCTRL [=y] && (MACH_ASPEED_G4 [=n] || COMPILE_TEST [=y]) && OF [=y]
 
+WARNING: unmet direct dependencies detected for PINCTRL_ASPEED
+  Depends on [n]: PINCTRL [=y] && (ARCH_ASPEED [=n] || COMPILE_TEST [=y]) && OF [=y] && MFD_S>
+  Selected by [y]:
+  - PINCTRL_ASPEED_G5 [=y] && PINCTRL [=y] && (MACH_ASPEED_G5 [=n] || COMPILE_TEST [=y]) && O>
 
-> 
-> Tested on:
-> 
-> commit:         [unknown
-> git tree:       git://git.kernel.dk/linux-block 3ecd20a9c77c632a5afe4e134781e1629936adab
-> dashboard link: https://syzkaller.appspot.com/bug?extid=78b76ebc91042904f34e
-> compiler:
-> 
+WARNING: unmet direct dependencies detected for PINCTRL_ASPEED
+  Depends on [n]: PINCTRL [=y] && (ARCH_ASPEED [=n] || COMPILE_TEST [=y]) && OF [=y] && MFD_S>
+  Selected by [y]:
+  - PINCTRL_ASPEED_G6 [=y] && PINCTRL [=y] && (MACH_ASPEED_G6 [=n] || COMPILE_TEST [=y]) && O>
 
+This is because PINCTRL_ASPEED_G* selects PINCTRL_ASPEED,
+without selecting or depending on MFD_SYSCON, despite
+PINCTRL_ASPEED depending on MFD_SYSCON.
+
+These unmet dependency bugs were detected by Kismet,
+a static analysis tool for Kconfig. Please advise
+if this is not the appropriate solution.
+
+Signed-off-by: Julian Braha <julianbraha@gmail.com>
+---
+ drivers/pinctrl/aspeed/Kconfig | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/pinctrl/aspeed/Kconfig b/drivers/pinctrl/aspeed/Kconfig
+index de8b185c4fee..b0bae6144fc2 100644
+--- a/drivers/pinctrl/aspeed/Kconfig
++++ b/drivers/pinctrl/aspeed/Kconfig
+@@ -11,6 +11,7 @@ config PINCTRL_ASPEED
+ config PINCTRL_ASPEED_G4
+ 	bool "Aspeed G4 SoC pin control"
+ 	depends on (MACH_ASPEED_G4 || COMPILE_TEST) && OF
++	depends on MFD_SYSCON
+ 	select PINCTRL_ASPEED
+ 	help
+ 	  Say Y here to enable pin controller support for Aspeed's 4th
+@@ -19,6 +20,7 @@ config PINCTRL_ASPEED_G4
+ config PINCTRL_ASPEED_G5
+ 	bool "Aspeed G5 SoC pin control"
+ 	depends on (MACH_ASPEED_G5 || COMPILE_TEST) && OF
++	depends on MFD_SYSCON
+ 	select PINCTRL_ASPEED
+ 	help
+ 	  Say Y here to enable pin controller support for Aspeed's 5th
+@@ -27,6 +29,7 @@ config PINCTRL_ASPEED_G5
+ config PINCTRL_ASPEED_G6
+ 	bool "Aspeed G6 SoC pin control"
+ 	depends on (MACH_ASPEED_G6 || COMPILE_TEST) && OF
++	depends on MFD_SYSCON
+ 	select PINCTRL_ASPEED
+ 	help
+ 	  Say Y here to enable pin controller support for Aspeed's 6th
 -- 
-Pavel Begunkov
+2.30.2
+
