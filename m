@@ -2,73 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0165440428
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 22:33:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A60D144042F
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 22:34:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231562AbhJ2Ufw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 16:35:52 -0400
-Received: from mxout03.lancloud.ru ([45.84.86.113]:55882 "EHLO
-        mxout03.lancloud.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231463AbhJ2Ufu (ORCPT
+        id S231425AbhJ2UhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 16:37:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231420AbhJ2UhP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 16:35:50 -0400
-Received: from LanCloud
-DKIM-Filter: OpenDKIM Filter v2.11.0 mxout03.lancloud.ru E52BF208D528
-Received: from LanCloud
-Received: from LanCloud
-Received: from LanCloud
-Subject: Re: [PATCH 1/3] Docs: usb: update err() to pr_err() and replace
- __FILE__
-To:     Philipp Hortmann <philipp.g.hortmann@gmail.com>, <corbet@lwn.net>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <linux-usb@vger.kernel.org>
-References: <cover.1635533924.git.philipp.g.hortmann@gmail.com>
- <e2f2c5c6995a011494105484849776a856af5bcc.1635533924.git.philipp.g.hortmann@gmail.com>
-From:   Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <49a766ec-014e-3667-828c-a4fd19c7c9e3@omp.ru>
-Date:   Fri, 29 Oct 2021 23:33:17 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Fri, 29 Oct 2021 16:37:15 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA3E5C061767
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 13:34:45 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id h7so43099793ede.8
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 13:34:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=1swJmkPi9uwotkKckAgo9jhrAoNyom1Qj18BNEzB3+I=;
+        b=r4bnOEvrYyG1JRtPLSuWESUesY5Pmj/fQOeo0PO35cPtkOYFjoUVxEf7tOWevELv9A
+         r4swx3Qvoll9tyk/tTM2J+0FIqzYay7T4YMBtkgj2gqrQQH+sFskKIlnunJ40uAcv96F
+         O50t+Au1m8r/iRAwturDRybdQ/Pw3eGlRUJtzw9WmjMFEb+erwyoYfG+hy+KBw8C8CVN
+         6CUmI3ISlVxXhRncvdDR459IMKpBNnmKmi5rfvzgep1mVtt0yuzb8h+OVTLe4TYIn2iE
+         Sl+NbwxC4YEuze/WxGcZtWZvhYdjwpaT//GwgbOVGX0RLlAGowF6FTNGfAZgl9F+amX3
+         mGmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=1swJmkPi9uwotkKckAgo9jhrAoNyom1Qj18BNEzB3+I=;
+        b=esiG1OWrAhp+tmuHRq7exPEG9QPDkwADlHHcSeuseKzhq3nO1zQL/RR+WTd906CT/K
+         NHgHdVa/wrFiowPV4+JMSnLR6lgz8vlZnL9B1lXVuMxj/qqniiumYDcooGzenfgzJu2Z
+         JgfDV0wweXHTjK2skKohKn45uSweJIaJwc+wm27qZ7nY7y6dxjvqZhHS5x5pq9fyZdbd
+         4DQpOehnC/u94pg/ohxjcYjdaG+IgE2qj9XHmqhTVlCMCglhJktrF44OYx7fWc3Txp2f
+         xm3Y7DhvZm3aQ7ApaPduT/qLA4lpE2KzNCoGxup4TkQG+owWtV3whiuDI0K9eRDroSU6
+         pqxQ==
+X-Gm-Message-State: AOAM5329Y+ar1Kk6mvjAWHe/qoitPxo8rxrv+/a6lNYe0QW7GN+NewJF
+        6IZwYLaRli5YYGrXD7HHGQHl9g34dME6kTgu+gPNhA==
+X-Google-Smtp-Source: ABdhPJx79iUWJCmvTNVwg54crO4qNoLGr19P3Hkupw22vybmIx9h2eZw/RbiShR0V5EAwTMX3p4vD7cDXkOKWcdd14s=
+X-Received: by 2002:a50:d50c:: with SMTP id u12mr17987207edi.118.1635539684417;
+ Fri, 29 Oct 2021 13:34:44 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <e2f2c5c6995a011494105484849776a856af5bcc.1635533924.git.philipp.g.hortmann@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.168.11.198]
-X-ClientProxiedBy: LFEXT01.lancloud.ru (fd00:f066::141) To
- LFEX1907.lancloud.ru (fd00:f066::207)
+References: <20211015164809.22009-1-asmaa@nvidia.com> <CAMRc=McSPG61nnq9sibBunwso1dsO6Juo2M8MtQuEEGZbWqDNw@mail.gmail.com>
+ <CH2PR12MB3895A1C9868F8F0C9CA3FC45D7879@CH2PR12MB3895.namprd12.prod.outlook.com>
+In-Reply-To: <CH2PR12MB3895A1C9868F8F0C9CA3FC45D7879@CH2PR12MB3895.namprd12.prod.outlook.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Fri, 29 Oct 2021 22:34:33 +0200
+Message-ID: <CAMRc=MebEY8wAeNpcXwgi_OaTwwYaqxqWZ6XZRoCRPZvS-724A@mail.gmail.com>
+Subject: Re: [PATCH v5 0/2] gpio: mlxbf2: Introduce proper interrupt handling
+To:     Asmaa Mnebhi <asmaa@nvidia.com>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        David Thompson <davthompson@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/29/21 10:39 PM, Philipp Hortmann wrote:
+On Fri, Oct 29, 2021 at 6:46 PM Asmaa Mnebhi <asmaa@nvidia.com> wrote:
+>
+> Hi Bart,
+>
+> I was just wondering what is the status for this series of patches?
+>
+> Thank you.
+> Asmaa
+>
+> -----Original Message-----
+> From: Bartosz Golaszewski <brgl@bgdev.pl>
+> Sent: Thursday, October 21, 2021 2:01 PM
+> To: Asmaa Mnebhi <asmaa@nvidia.com>
+> Cc: Andy Shevchenko <andy.shevchenko@gmail.com>; open list:GPIO SUBSYSTEM=
+ <linux-gpio@vger.kernel.org>; netdev <netdev@vger.kernel.org>; Linux Kerne=
+l Mailing List <linux-kernel@vger.kernel.org>; ACPI Devel Maling List <linu=
+x-acpi@vger.kernel.org>; Andrew Lunn <andrew@lunn.ch>; Jakub Kicinski <kuba=
+@kernel.org>; Linus Walleij <linus.walleij@linaro.org>; Bartosz Golaszewski=
+ <bgolaszewski@baylibre.com>; David S . Miller <davem@davemloft.net>; Rafae=
+l J . Wysocki <rjw@rjwysocki.net>; David Thompson <davthompson@nvidia.com>
+> Subject: Re: [PATCH v5 0/2] gpio: mlxbf2: Introduce proper interrupt hand=
+ling
+> Importance: High
+>
+> On Fri, Oct 15, 2021 at 6:48 PM Asmaa Mnebhi <asmaa@nvidia.com> wrote:
+> >
+> > This is a follow up on a discussion regarding proper handling of GPIO
+> > interrupts within the gpio-mlxbf2.c driver.
+> >
+> > Link to discussion:
+> > https://lore.kernel.org/netdev/20210816115953.72533-7-andriy.shevchenk
+> > o@linux.intel.com/T/
+> >
+> > Patch 1 adds support to a GPIO IRQ handler in gpio-mlxbf2.c.
+> > Patch 2 is a follow up removal of custom GPIO IRQ handling from the
+> > mlxbf_gige driver and replacing it with a simple IRQ request. The ACPI
+> > table for the mlxbf_gige driver is responsible for instantiating the
+> > PHY GPIO interrupt via GpioInt.
+> >
+> > Andy Shevchenko, could you please review this patch series.
+> > David Miller, could you please ack the changes in the mlxbf_gige
+> > driver.
+> >
+> > v5 vs. v4 patch:
+> > - Remove a fix which check if bgpio_init has failed.
+> >   This fix should in a separate patch targeting the stable
+> >   branch.
+> >
+>
+> Hi Asmaa! Did you send this fix? I can't find it in my inbox or on patchw=
+ork.
+>
+> Bart
 
-> update err() to pr_err() and replace __FILE__
-> 
-> Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
-> ---
->  Documentation/driver-api/usb/writing_usb_driver.rst | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/driver-api/usb/writing_usb_driver.rst b/Documentation/driver-api/usb/writing_usb_driver.rst
-> index 2176297e5765..5c29e5bdbe88 100644
-> --- a/Documentation/driver-api/usb/writing_usb_driver.rst
-> +++ b/Documentation/driver-api/usb/writing_usb_driver.rst
-> @@ -91,8 +91,8 @@ usually in the driver's init function, as shown here::
->  	    /* register this driver with the USB subsystem */
->  	    result = usb_register(&skel_driver);
->  	    if (result < 0) {
-> -		    err("usb_register failed for the "__FILE__ "driver."
-> -			"Error number %d", result);
-> +		    pr_err("usb_register failed for the %s driver. "
+Now both applied (with David's Acks). Sorry for the delay.
 
-   Don't break up the kernel message like this. The current code is a bad example --
-high time to fix it. :-)
-
-> +			   "Error number %d", skel_driver.name, result);
->  		    return -1;
->  	    }
->  
-
-MBR, Sergey
+Bart
