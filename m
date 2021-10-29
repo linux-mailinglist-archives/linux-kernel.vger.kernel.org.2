@@ -2,188 +2,307 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C99CE4400F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 19:09:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0C884400FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 19:10:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230055AbhJ2RMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 13:12:07 -0400
-Received: from mga07.intel.com ([134.134.136.100]:2958 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229732AbhJ2RMF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 13:12:05 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10152"; a="294169287"
-X-IronPort-AV: E=Sophos;i="5.87,193,1631602800"; 
-   d="scan'208";a="294169287"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2021 10:09:36 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,193,1631602800"; 
-   d="scan'208";a="530461506"
-Received: from orsmsx604.amr.corp.intel.com ([10.22.229.17])
-  by orsmga001.jf.intel.com with ESMTP; 29 Oct 2021 10:09:36 -0700
-Received: from orsmsx604.amr.corp.intel.com (10.22.229.17) by
- ORSMSX604.amr.corp.intel.com (10.22.229.17) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Fri, 29 Oct 2021 10:09:35 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx604.amr.corp.intel.com (10.22.229.17) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12 via Frontend Transport; Fri, 29 Oct 2021 10:09:35 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.172)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.12; Fri, 29 Oct 2021 10:09:35 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AGry5ThQPlo7g0YTnLhL8P+BkN04v3GleoW65Oxeujp8Qyz6GEA5uRogoMGwKII/vQ4IG+Gwp34YYsdkbdnhPPE8J+VTI/qoNn5HrScVgEoDZyAtr9JueuctnobtXawkrhRKHohFe64Wq09H8oNMeSDWwKHvxVU1Gt+QxVu62nXmWsG7kIY+LyJqXVqwxLNUcS6fE2XCBq+17PIMdX5cOLQsJlXy/Or8d6dHRjwjJveanjuEcBPUKI7DuHN4ddU23WOZiYdNqZR/DSyixDZFSZUmlhgUe3lcA2qAxha16bmbiQpSWm/6TK+38k3BV6rT7sOX4rsqQ1UhQynR+oEelg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=H9l8wzH9H63h2K+SrsRbXepkax+ADX7hhmyE7xVLFKo=;
- b=ClyIp54wuw3skUbYATHmE9GpwxwoSfW+PJX7dC4dHBYzdRtmoJwfJ8w1FXRNrsp9jF+EBKojcNLjBHSlemU9QkmwhAsWC2f4KDU1M3vlsY4nZ3ZdZtNxPjP8DJ9u5egHOS4JyIMes6ABGoOxyCknHn4SWOXINqqDEaschxyza8+4gL9Vn1xSHPmdrYuZW3Q/F9H5KACL4+sN3nUMSEZqVJDZloTlTTDny2iZ2pfqv3rhCw/OAmTjPCdQJZ0uVTqQ2mlx2AS0O8NLbCtsjvqon5N15gcGSCLSmhTQ1/yX3RLh2vfI5kiYWgX+aNr7Yih2564XgTu07LHJJrWe5bZAww==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=H9l8wzH9H63h2K+SrsRbXepkax+ADX7hhmyE7xVLFKo=;
- b=CIj9EXbnWwYpTifQ2ZtWPoVMmE6wTCimbRUKnB7idoIKqkA9sPkyLOxIHUFksghbnIQhrBlR6GXTDOR6wciJF8a3eYcVwcpKcgOt86W+U3JcUH//uQnDm+5OYSc2NTCSN3uv6PcOmoJp/x0jRGM6li9XNjDfxEfZumkeQITfRrM=
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=intel.com;
-Received: from BN0PR11MB5744.namprd11.prod.outlook.com (2603:10b6:408:166::16)
- by BN6PR11MB1442.namprd11.prod.outlook.com (2603:10b6:405:9::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.15; Fri, 29 Oct
- 2021 17:09:30 +0000
-Received: from BN0PR11MB5744.namprd11.prod.outlook.com
- ([fe80::494d:4194:b64e:c672]) by BN0PR11MB5744.namprd11.prod.outlook.com
- ([fe80::494d:4194:b64e:c672%7]) with mapi id 15.20.4649.015; Fri, 29 Oct 2021
- 17:09:30 +0000
-Message-ID: <fc40dbf4-2b09-fc06-dcf6-3232ec037635@intel.com>
-Date:   Fri, 29 Oct 2021 10:09:26 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.2.1
-Subject: Re: [PATCH V2 01/15] selftests/x86/sgx: Fix a benign linker warning
-Content-Language: en-US
-To:     Dave Hansen <dave.hansen@intel.com>, <jarkko@kernel.org>,
-        <linux-sgx@vger.kernel.org>, <shuah@kernel.org>,
-        <dave.hansen@linux.intel.com>
-CC:     <seanjc@google.com>, <linux-kselftest@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <cover.1635447301.git.reinette.chatre@intel.com>
- <545aac243037bf5c2640929c4d8ff5c1edfe3ef8.1635447301.git.reinette.chatre@intel.com>
- <d382d0b0-15fb-5e96-accd-c3b59be72dd3@intel.com>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-In-Reply-To: <d382d0b0-15fb-5e96-accd-c3b59be72dd3@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MWHPR15CA0051.namprd15.prod.outlook.com
- (2603:10b6:301:4c::13) To BN0PR11MB5744.namprd11.prod.outlook.com
- (2603:10b6:408:166::16)
+        id S230075AbhJ2RMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 13:12:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229732AbhJ2RMv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 13:12:51 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C93B3C061714
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 10:10:22 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id iq11so696914pjb.3
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 10:10:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ZoTHBfW5OpRgOrksI1YeC+dcq4mUI0wkCaNrcrIGxCI=;
+        b=TYEeGgWzCrG2MaDFEDODE/GMsoplATtJTDi1fjwU84i1IWZ+odVnXxElko0POzEXPV
+         Rkmj4s7xQ94MR/HfyAqbPhBcGhqYUeLo3BM4iAn25OwJeGYoGkdD4v6W0UoSB5lI7DAJ
+         sBX5lVPyIxPw2VrMzZM9IxBWKWR4+uXc4/IKPGGAvRUKm/Gp0TRPqzEVjvje+Mp0zlhs
+         otpCQ2w2ZqNuyF8LPGb8KxiooF/ORxlxdgeTU2pO1ribKkYh5jt7BSw+kmAkJDn37+5F
+         vfc76dZ3L11zZpNz9nrmRuK+H7Lv1jf8qKOWNTBwKfxGpQTe0jpEyByUctnsZmHCJOAA
+         Csjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZoTHBfW5OpRgOrksI1YeC+dcq4mUI0wkCaNrcrIGxCI=;
+        b=tkeQTr6u+s36+V0385aCNJkpeXGNlzxZINgWIr1IdHhVn9907it7WC3tNMXcLGPNcr
+         letaX/jnSR0VNOBtHHQANAmRTasaBbyO/tYX4FWbrWrDy8kHhf/A0PlhixDi4m7nxe4w
+         BL0xpu9QJ8MHjGkxWsSJd5fqu2dcD/07LxdNy8g/dzahueFx0l6kGb3s30oBxByWRy/Y
+         tIewhjuwIKzPlptLVWgGqUgOUlQX9ubRZ/T0mqYT4AAeKK+rlfx8VTD+YToqz2/CkfvT
+         kxj8c3jgRLZC1P4/ksUlp9DRlNdleaDki3kqMX2LyPu7PZPLPQ7pAzJd2baaSXAF/dTD
+         wxCA==
+X-Gm-Message-State: AOAM531xShZ1tckVlT00rTdcTfvLP1OKYDovEFbyPyJzgWn/Uyxp2BMA
+        rrwYLhzg4gynzG/eCiEO+BjddA==
+X-Google-Smtp-Source: ABdhPJxCB23Zp26lyFdz/cP8KLFUoxUrz0EMZDBkTQD3iCIpmCdJCGhYDjeSjI8wicHsFB8H8wNWnA==
+X-Received: by 2002:a17:90a:6542:: with SMTP id f2mr20622713pjs.159.1635527422006;
+        Fri, 29 Oct 2021 10:10:22 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id pj3sm11331759pjb.18.2021.10.29.10.10.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Oct 2021 10:10:21 -0700 (PDT)
+Date:   Fri, 29 Oct 2021 17:10:17 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Lai Jiangshan <jiangshanlai+lkml@gmail.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ben Gardon <bgardon@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Liran Alon <liran.alon@oracle.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        John Haxby <john.haxby@oracle.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Subject: Re: [PATCH v3 23/37] KVM: nVMX: Add helper to handle TLB flushes on
+ nested VM-Enter/VM-Exit
+Message-ID: <YXwq+Q3+I81jwv7G@google.com>
+References: <20200320212833.3507-1-sean.j.christopherson@intel.com>
+ <20200320212833.3507-24-sean.j.christopherson@intel.com>
+ <CAJhGHyD=S6pVB+OxM7zF0_6LnMUCLqyTfMK4x9GZsdRHZmgN7Q@mail.gmail.com>
+ <YXrAM9MNqgLTU6+m@google.com>
+ <CAJhGHyBKVUsuKdvfaART6NWF7Axk5=eFQLidhGrM=mUO2cv2vw@mail.gmail.com>
 MIME-Version: 1.0
-Received: from [192.168.1.221] (71.238.111.198) by MWHPR15CA0051.namprd15.prod.outlook.com (2603:10b6:301:4c::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.14 via Frontend Transport; Fri, 29 Oct 2021 17:09:29 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 704218db-bb3a-4919-5945-08d99afedf0e
-X-MS-TrafficTypeDiagnostic: BN6PR11MB1442:
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-Microsoft-Antispam-PRVS: <BN6PR11MB1442ED588C2F3A3A1A1933DEF8879@BN6PR11MB1442.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:576;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xDSE1IRsOu4dxwdIsz81D+0zvyLFDaqcAXfcj2JncvH037bHoQ2ZxWljSzD5m+dn5zfPsInGSrU3TARbvBBIqUCcDkT+/yhEpwAbocgBhVi1hFBdFO0XB7DBgrzWfbESBjC4X/uxrBPXuu2j9xjAm7sIH2StFtJ28wbgVlb0BAsKDFHBE1inlOeM+vQbSVVcrWd8PnIPHQh1ksF9HCeKklpXaKk4qEvaA5FmlkDl8y3p1nKUu7K17lAIdMP0fQ7sGMpVXRd9LsSAOOET4SR0moynDkoEawRu1k2BGTLwZIpAtRs9hXFlzL1rD7A1isX6wBQijWxFhpeGwYaxCa2RdNoVe4ENgi78QzBQoaRDwuDu8m1oUZWBsng01GuME+QkVn7mWwvbwq67K39oQxcq/0+qdPa2YvguNg0DgNeKl1PWXzqx+f9yVinirQIxLbCphTzOYl9OCBgHvK4k/rPM5oDBGwlBiqAvVib9ugZRKHX72HFPlBdb8TlMhXh16eD5r9ryuHM1Vz0lBUpNJ8/Ajw4kTSKLJGWdbD01FBqc48aEq1hBbTKbBIQglbrY7onTUTugG68R5U3Re/VveeyRCNegoHgCvjSP608q2AwnehgW1uJ/AES4HC6CThxuxTWZ7oTbduSeqoe3O1vKEILQEcBCyP+h835aY/eGtpqOxX52wUh/aWUOeoiW/WCff+VGxBewsH2Kqy2bJxPmbE2JdCRo81Lgm+TkBSa0v32H16A=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN0PR11MB5744.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(316002)(82960400001)(44832011)(16576012)(36756003)(31686004)(6666004)(186003)(4326008)(2616005)(956004)(26005)(66556008)(5660300002)(8936002)(66476007)(2906002)(31696002)(8676002)(53546011)(508600001)(38100700002)(86362001)(6486002)(66946007)(83380400001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MWpqR0FTTFlXMlYvTlBwd0xFNDhHa1ZRdzB0bTAyNUtEb1FwaFIyUjRicldv?=
- =?utf-8?B?MGVoK1lEZUhWamJ3N0VyNTUxc0g4MDVabkpGWTR4KzlFY2lhU3RsRHJzUFBU?=
- =?utf-8?B?YU5aV2w4NnVlZGowTkFsOW02SFllREFERWcvM1hRZFc1K2xxTThPaEJsU0ds?=
- =?utf-8?B?cmFwaHJsZ3lsVjNzNXVhYW51NjRua0R1V0g5MW1NUzNIQitQMXBXb1BHbFBx?=
- =?utf-8?B?NmNucmdNRU5Mbjd3UW5jNFF0N0VnMXE0VHBMVnBnNm9VZzNSd3liU0ZlbHBO?=
- =?utf-8?B?WlZ1a0krYVlnNTZZYzBsa0VqSWF6bDk4MkRpOVdiNWhHeGVoVWNhcEdSMGZt?=
- =?utf-8?B?MFl2cndyemgwdEJXSllaQWZjZ1RHbHdaV0g4Uzk5Y0UzMjBXL3Q5amFhanJv?=
- =?utf-8?B?Snh5RDUyVXRlekdlODYzNzQ5SWd6WnduMkphYUFnRDl4alllRjZhMThZdFRV?=
- =?utf-8?B?emkvQnNQcjBsWlkxbjRjdkovOGlVVksrT2hwSDZ3RXpTYWQxMEdPckNIajZB?=
- =?utf-8?B?VFp1b1AwQllJY21BMitQcU9SOHlEeFJ6Si9RSzE1SEFNWWVGNVpVaGd0Q2RE?=
- =?utf-8?B?NVRzZlgwL1h3cUVjODF4OGM1ZnBvYlAvaytKbmx6c2lNbDF6RkFpdTFHNVhs?=
- =?utf-8?B?bjVrTEZYTlZwVnIxRmtTMllWRXBHUzdzamtaQWhzWmhqeEhkenlEWkh3RUtw?=
- =?utf-8?B?dkd3TGN1cTBpWk1NZGxRYkhRNVliWjdSM3RBUS8rZ2VPdkZ1ZTJnd3hXazh6?=
- =?utf-8?B?Zk5ZaDJra0JQOWh5aTYxNk9MTk1JZmJQNDBucFpxRWdkYk1MSmF1Zzg4V0Vm?=
- =?utf-8?B?WlBLUEptb2xNczZ2MkJjL0NJUHN2OEZVR3JzS2VTaW4vdG00Uy9tWjZmTTl5?=
- =?utf-8?B?KzVROEY5VzI0Z1VKTUVHcnFaWjdKUmVJbnBucmNOTXp3ejJoODhpS1hVQ2pz?=
- =?utf-8?B?MDFZdkQ0YlJCMXR3Mkh0eGdtSHNWR0cyYkZ0THAvTmd2a2RSakwwT2pYRXdR?=
- =?utf-8?B?ZU1lanNYcUoxaWNLZDVKM2piT0Y4cWpFd0QyTVdCbGxEQzMyU2VrZHhqN2th?=
- =?utf-8?B?QzViV0tOVnloczE1UGFNN3dreGhEQmc1cFUyYnR1Y0pRc0pqSjdSUCtkYU5j?=
- =?utf-8?B?NDZVaC9rekZ3RjQzVko2bUNuS0hQNVltOUJlWUVCOEE3Y29PTTFGaW1BSy84?=
- =?utf-8?B?cFN3dEdyTkRPRTdXd1pBZEVkTXlZN2Vwd01tb0ZpQTRFV0hIbzBmRUpEYjdL?=
- =?utf-8?B?QVpTeEVBZEFoQjE0OFdzcitURXI0dFU3citxS25BSncvT1d1b3pzMnA4Wm9n?=
- =?utf-8?B?V1F6Y1VqNmNDZHZHb2VzTng1WE10bW1FbWZEbWxUandMLzV1c1MxZ0dsdlR6?=
- =?utf-8?B?aExWVUZDUkIxdVdQSHVtTTNZbFBGbXhVd2Y0NmdsSWVRYnF5Q3g3TUxkbmxZ?=
- =?utf-8?B?TjZrK0VkLzN6MHlmOGZMRTZ2a05ZVWhGZHIwcm83eXNKZlk0UU1DVTZWaXlN?=
- =?utf-8?B?Y05uangrRU1NNXRoSGkrN1piM3lrbGlYQlVsZlA4QlozL09BRUhHTUE3WkhR?=
- =?utf-8?B?cGlLLzNudXd5MkI2Q0ovbnJtb1dYY2VlMW80UzhTaytRQVgrb2dlM2ZEcXln?=
- =?utf-8?B?dHFNSWlNVzNsL1hpUjYwUm1yZk54VWZDS2ZSWUh1TzNHVGtHb3o4c2JjaFlU?=
- =?utf-8?B?Vlh6Zlk4TUg3Z0ZsbHgrRndVSC9GcStDc2lsTUcxQzJ0aWVKQlVEMXZoQVAy?=
- =?utf-8?B?U1MwdWJVdjk2cVRuQnNWeVJkT1JsVXQzTDN3ZUIrdExtSk92NlpnNU1GVGNU?=
- =?utf-8?B?QmpJYVd6TVFoeWlodzZYUDNvanBtY25iemQ2UkIvc3R3YkFRQVhnMSt6UkRR?=
- =?utf-8?B?NUdxT05Ib0c2NFZUcTl4ekl1OUZZdEFjemRRWjEzRmFPcmJHbk5WQzRYNGNQ?=
- =?utf-8?B?TzRUVXVBbGlhdmErakNZSU9kMFBSRVBvU2JHSjhRUnNWdXZ0U00rc1dCUFdJ?=
- =?utf-8?B?Y3ZDbXZoVlpKZGtESTExQ3NFL3hsWlVlMlR0OUdkYVpuQ0VocjFOandWZ1ZJ?=
- =?utf-8?B?djBvcFZ2T1FJWUxaVDZlZUlyY1JHNWhpc3dROTJMY2tCbzJJQzNPOGxVYno1?=
- =?utf-8?B?aVhIVEVWWmc2ZlU3VGNJdm1pQWlsNzFlQSthbG9EZDlDeDFnMjlWaHZNVm9G?=
- =?utf-8?B?NmFVY1V5SXVveVo2VWowZ2RlMm5Ebk9VcW9WTkRsbHhHTlZpVTdGNGhxbDBT?=
- =?utf-8?B?eG9kNjJnLzM5VVA5OVM1c2t0bHVBPT0=?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 704218db-bb3a-4919-5945-08d99afedf0e
-X-MS-Exchange-CrossTenant-AuthSource: BN0PR11MB5744.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Oct 2021 17:09:30.5749
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: SJmP/qsQAB7JzcF2KemUaDeE2bOEaZt/fbwh0RGH7CFN8bQYe3uF8i69MlEKOXMZsaXXkaYXk/iXNG6kTzODgxNeEp3hfQ+ZvpjmVsvHitg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR11MB1442
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJhGHyBKVUsuKdvfaART6NWF7Axk5=eFQLidhGrM=mUO2cv2vw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dave,
+TL;DR: I'll work on a proper series next week, there are multiple things that need
+to be fixed.
 
-On 10/28/2021 5:26 PM, Dave Hansen wrote:
-> On 10/28/21 1:37 PM, Reinette Chatre wrote:
->> From: Sean Christopherson <sean.j.christopherson@intel.com>
->>
->> Pass a build id of "none" to the linker to suppress a warning about the
->> build id being ignored:
->>
->>    /usr/bin/ld: warning: .note.gnu.build-id section discarded, --build-id
->>    ignored.
+On Fri, Oct 29, 2021, Lai Jiangshan wrote:
+> On Thu, Oct 28, 2021 at 11:22 PM Sean Christopherson <seanjc@google.com> wrote:
+> > The fix should simply be:
+> >
+> > diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> > index eedcebf58004..574823370e7a 100644
+> > --- a/arch/x86/kvm/vmx/nested.c
+> > +++ b/arch/x86/kvm/vmx/nested.c
+> > @@ -1202,17 +1202,15 @@ static void nested_vmx_transition_tlb_flush(struct kvm_vcpu *vcpu,
+> >          *
+> >          * If a TLB flush isn't required due to any of the above, and vpid12 is
+> >          * changing then the new "virtual" VPID (vpid12) will reuse the same
+> > -        * "real" VPID (vpid02), and so needs to be flushed.  There's no direct
+> > -        * mapping between vpid02 and vpid12, vpid02 is per-vCPU and reused for
+> > -        * all nested vCPUs.  Remember, a flush on VM-Enter does not invalidate
+> > -        * guest-physical mappings, so there is no need to sync the nEPT MMU.
+> > +        * "real" VPID (vpid02), and so needs to be flushed.  Like the !vpid02
+> > +        * case above, this is a full TLB flush from the guest's perspective.
+> >          */
+> >         if (!nested_has_guest_tlb_tag(vcpu)) {
+> >                 kvm_make_request(KVM_REQ_TLB_FLUSH_CURRENT, vcpu);
+> >         } else if (is_vmenter &&
+> >                    vmcs12->virtual_processor_id != vmx->nested.last_vpid) {
+> >                 vmx->nested.last_vpid = vmcs12->virtual_processor_id;
+> > -               vpid_sync_context(nested_get_vpid02(vcpu));
+> > +               kvm_make_request(KVM_REQ_TLB_FLUSH_GUEST, vcpu);
 > 
-> Do we have a good grasp on why this is producing a warning in the first
-> place?  This seems like something that could get merged quickly with one
-> more sentence in the changelog.
-> 
+> This change is neat.
 
-How about a new changelog as below:
+Heh, yeah, but too neat to be right :-)
 
-The enclave binary (test_encl.elf) is built with only three sections 
-(tcs, text, and data) as controlled by its custom linker script.
+> But current KVM_REQ_TLB_FLUSH_GUEST flushes vpid01 only, and it doesn't flush
+> vpid02.  vmx_flush_tlb_guest() might need to be changed to flush vpid02 too.
 
-If gcc is built with "--enable-linker-build-id" (this appears to be a 
-common configuration even if it is by default off) then gcc will pass 
-"--build-id" to the linker that will prompt it (the linker) to to write 
-unique bits identifying the linked file to a ".note.gnu.build-id" section.
+Hmm.  I think vmx_flush_tlb_guest() is straight up broken.  E.g. if EPT is enabled
+but L1 doesn't use EPT for L2 and doesn't intercept INVPCID, then KVM will handle
+INVPCID from L2.  That means the recent addition to kvm_invalidate_pcid() (see
+below) will flush the wrong VPID.  And it's incorrect (well, more than is required
+by the SDM) to flush both VPIDs because flushes from INVPCID (and flushes from the
+guest's perspective in general) are scoped to the current VPID, e.g. a "full" TLB
+flush in the "host" by toggling CR4.PGE flushes only the current VPID:
 
-The section ".note.gnu.build-id" does not exist in the test enclave 
-resulting in the following warning emitted by the linker:
+  Operations that architecturally invalidate entries in the TLBs or paging-structure
+  caches independent of VMX operation (e.g., the INVLPG and INVPCID instructions)
+  invalidate linear mappings and combined mappings.  They are required to do so only
+  for the current VPID (but, for combined mappings, all EP4TAs).
 
-/usr/bin/ld: warning: .note.gnu.build-id section discarded, --build-id 
-ignored
+static void kvm_invalidate_pcid(struct kvm_vcpu *vcpu, unsigned long pcid)
+{
+	struct kvm_mmu *mmu = vcpu->arch.mmu;
+	unsigned long roots_to_free = 0;
+	int i;
 
-The test enclave does not use the build id within the binary so fix the 
-warning by passing a build id of "none" to the linker that will disable 
-the setting from any earlier "--build-id" options and thus disable the 
-attempt to write the build id to a ".note.gnu.build-id" section that 
-does not exist.
+	/*
+	 * MOV CR3 and INVPCID are usually not intercepted when using TDP, but
+	 * this is reachable when running EPT=1 and unrestricted_guest=0,  and
+	 * also via the emulator.  KVM's TDP page tables are not in the scope of
+	 * the invalidation, but the guest's TLB entries need to be flushed as
+	 * the CPU may have cached entries in its TLB for the target PCID.
+	 */
+	if (unlikely(tdp_enabled)) {
+		kvm_make_request(KVM_REQ_TLB_FLUSH_GUEST, vcpu);
+		return;
+	}
 
-Reinette
+	...
+}
+
+To fix that, the "guest" flushes should always operate on the current VPID.  But
+this alone is insufficient (more below).
+
+static inline int vmx_get_current_vpid(struct kvm_vcpu *vcpu)
+{
+	if (is_guest_mode(vcpu))
+		return nested_get_vpid02(vcpu);
+	return to_vmx(vcpu)->vpid;
+}
+
+static void vmx_flush_tlb_current(struct kvm_vcpu *vcpu)
+{
+	struct kvm_mmu *mmu = vcpu->arch.mmu;
+	u64 root_hpa = mmu->root_hpa;
+
+	/* No flush required if the current context is invalid. */
+	if (!VALID_PAGE(root_hpa))
+		return;
+
+	if (enable_ept)
+		ept_sync_context(construct_eptp(vcpu, root_hpa,
+						mmu->shadow_root_level));
+	else
+		vpid_sync_context(vmx_get_current_vpid(vcpu));
+}
+
+static void vmx_flush_tlb_gva(struct kvm_vcpu *vcpu, gva_t addr)
+{
+	/*
+	 * vpid_sync_vcpu_addr() is a nop if vpid==0, see the comment in
+	 * vmx_flush_tlb_guest() for an explanation of why this is ok.
+	 */
+	vpid_sync_vcpu_addr(vmx_get_current_vpid(vcpu), addr);
+}
+
+static void vmx_flush_tlb_guest(struct kvm_vcpu *vcpu)
+{
+	/*
+	 * vpid_sync_context() is a nop if vpid==0, e.g. if enable_vpid==0 or a
+	 * vpid couldn't be allocated for this vCPU.  VM-Enter and VM-Exit are
+	 * required to flush GVA->{G,H}PA mappings from the TLB if vpid is
+	 * disabled (VM-Enter with vpid enabled and vpid==0 is disallowed),
+	 * i.e. no explicit INVVPID is necessary.
+	 */
+	vpid_sync_context(vmx_get_current_vpid(vcpu));
+}
+
+
+
+> And if so, this nested_vmx_transition_tlb_flush() can be simplified further
+> since KVM_REQ_TLB_FLUSH_CURRENT(!enable_ept) can be replaced with
+> KVM_REQ_TLB_FLUSH_GUEST.
+
+And as above KVM_REQ_TLB_FLUSH_GUEST is conceptually wrong, too.  E.g. in my
+dummy case of L1 and L2 using the same CR3, if L1 assigns L2 a VPID then L1's
+ASID is not flushed flushed on VM-Exit, so pending PTE updates for that single
+CR3 would not be flushed (sync'd in KVM) for L1 even though they were flushed
+for L2.
+
+kvm_mmu_page_role doesn't track VPID, but it does track is_guest_mode, so the
+bizarre case of L1 but not L2 having stale entries for a single CR3 is "supported".
+
+Another wrinkle that is being mishandled is if L1 doesn't intercept INVPCID and
+KVM synthesizes a nested VM-Exit from L2=>L1 before servicing KVM_REQ_MMU_SYNC,
+KVM will sync the wrong MMU because the nested transitions only service pending
+"current" flushes.  The GUEST variant also has the same bug (which I alluded to
+above).
+
+To fix that, the nVMX code should handle all pending flushes and syncs that are
+specific to the current vCPU, e.g. by replacing the open coded TLB_FLUSH_CURRENT
+check with a call to a common helper as below.  Ideally enter_guest_mode() and
+leave_guest_mode() would handle these calls so that SVM doesn't need to be updated
+if/when SVM stops flushing on all nested transitions, but VMX switches to vmcs02
+and has already modified state before getting to enter_guest_mode(), which makes
+me more than a bit nervous.
+
+@@ -3361,8 +3358,7 @@ enum nvmx_vmentry_status nested_vmx_enter_non_root_mode(struct kvm_vcpu *vcpu,
+        };
+        u32 failed_index;
+
+-       if (kvm_check_request(KVM_REQ_TLB_FLUSH_CURRENT, vcpu))
+-               kvm_vcpu_flush_tlb_current(vcpu);
++       kvm_service_pending_tlb_flush_on_nested_transition(vcpu);
+
+        evaluate_pending_interrupts = exec_controls_get(vmx) &
+                (CPU_BASED_INTR_WINDOW_EXITING | CPU_BASED_NMI_WINDOW_EXITING);
+@@ -4516,9 +4512,8 @@ void nested_vmx_vmexit(struct kvm_vcpu *vcpu, u32 vm_exit_reason,
+                (void)nested_get_evmcs_page(vcpu);
+        }
+
+-       /* Service the TLB flush request for L2 before switching to L1. */
+-       if (kvm_check_request(KVM_REQ_TLB_FLUSH_CURRENT, vcpu))
+-               kvm_vcpu_flush_tlb_current(vcpu);
++       /* Service pending TLB flush requests for L2 before switching to L1. */
++       kvm_service_pending_tlb_flush_on_nested_transition(vcpu);
+
+        /*
+         * VCPU_EXREG_PDPTR will be clobbered in arch/x86/kvm/vmx/vmx.h between
+
+
+And for nested_vmx_transition_tlb_flush(), assuming all the other things are fixed,
+the "vpid12 is changing" case does indeed become KVM_REQ_TLB_FLUSH_GUEST.  It also
+needs to be prioritized above nested_has_guest_tlb_tag() because a GUEST flush is
+"strong" than a CURRENT flush.
+
+static void nested_vmx_transition_tlb_flush(struct kvm_vcpu *vcpu,
+					    struct vmcs12 *vmcs12,
+					    bool is_vmenter)
+{
+	struct vcpu_vmx *vmx = to_vmx(vcpu);
+
+	/*
+	 * If vmcs12 doesn't use VPID, L1 expects linear and combined mappings
+	 * for *all* contexts to be flushed on VM-Enter/VM-Exit, i.e. it's a
+	 * full TLB flush from the guest's perspective.  This is required even
+	 * if VPID is disabled in the host as KVM may need to synchronize the
+	 * MMU in response to the guest TLB flush.
+	 *
+	 * Note, using TLB_FLUSH_GUEST is correct even if nested EPT is in use.
+	 * EPT is a special snowflake, as guest-physical mappings aren't
+	 * flushed on VPID invalidations, including VM-Enter or VM-Exit with
+	 * VPID disabled.  As a result, KVM _never_ needs to sync nEPT
+	 * entries on VM-Enter because L1 can't rely on VM-Enter to flush
+	 * those mappings.
+	 */
+	if (!nested_cpu_has_vpid(vmcs12)) {
+		kvm_make_request(KVM_REQ_TLB_FLUSH_GUEST, vcpu);
+		return;
+	}
+
+	/* L2 should never have a VPID if VPID is disabled. */
+	WARN_ON(!enable_vpid);
+
+	/*
+	 * VPID is enabled and in use by vmcs12.  If vpid12 is changing, then
+	 * emulate a guest TLB flush as KVM does not track vpid12 history nor
+	 * is the VPID incorporated into the MMU context.  I.e. KVM must assume
+	 * that the new vpid12 has never been used and thus represents a new
+	 * guest ASID that cannot have entries in the TLB.
+	 */
+	if (is_vmenter && vmcs12->virtual_processor_id != vmx->nested.last_vpid) {
+		vmx->nested.last_vpid = vmcs12->virtual_processor_id;
+		kvm_make_request(KVM_REQ_TLB_FLUSH_GUEST, vcpu);
+		return;
+	}
+
+	/*
+	 * If VPID is enabled, used by vmc12, and vpid12 is not changing but
+	 * but does not have a unique TLB tag (ASID), i.e. EPT is disabled and
+	 * KVM was unable to allocate a VPID for L2, flush the current context
+	 * as the effective ASID is common to both L1 and L2.
+	 */
+	if (!nested_has_guest_tlb_tag(vcpu))
+		kvm_make_request(KVM_REQ_TLB_FLUSH_CURRENT, vcpu);
+}
