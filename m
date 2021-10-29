@@ -2,201 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26C7143FDB9
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 16:00:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C01943FE16
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 16:11:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231397AbhJ2OCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 10:02:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38526 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231673AbhJ2OCf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 10:02:35 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F405C061714
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 06:59:59 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id 71so6630216wma.4
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 06:59:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=eQW1ZfP0uppKizFrHsbwkJvmM9Bvk3D3IrZDSyCjYKs=;
-        b=vuUsnrVsYvbNoZH/e4/gAwEjhSd/BGgQxCI9Zg7Yy2qQELYULiCC4aSjjIkhGAAEXD
-         5k0voinJea1cqnTsWADLgeGyoB/P4+P+F1TRe84669Xvo+eTwKLsXbti3TGPLmcL8nLe
-         7hou1wcASwRQPpExlDd8m55PqbNoKuOOwu2gH2FX9ZtXwyzPo9Zhh/bH+l26sqqo7UO7
-         ALVXBM/IXh7ItKT6OHLmW9c1IsXMfaIExnQv2VjZRFet5T/RMMg/axfH+2jXL9y8rN1a
-         s8p/qfMVLud32Jd+3PzaUFwTxohUsQvIeVdKrxWkXNvIMF/JY/ytQfpvwCqpvREZo+ex
-         6MDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=eQW1ZfP0uppKizFrHsbwkJvmM9Bvk3D3IrZDSyCjYKs=;
-        b=nJgBzBQ2MyBCvAYKy2qKJ1UZSw4jm+lxIoxR25oWWHWyuUz5UKyLmaKGpZPJY/YbAB
-         CjDfG/oK7+vmH3omd6b5Tjx+gSUFn1PNm+liTwj36aJf71hNx8HjwEmVoN73E0lcnD5o
-         y+56PG07mHPnSwvdPnRwxHcpkvWCI5KXW4anHGHS8gwTGuZ5JEMcAQgrP63Ke0ptS/O6
-         I3BhBPjjD09R5esvWpxTb+ZtgBXTZ1xROSaTqEWxS0yNW3eLfddwiEqoewi8iL8Q+kU6
-         L3LuU1iQvk16Pw7ym/UNSv5Z/B0WM2HJqPDWL+Oez+BDSt0yP1gtYwu6dlfGPlJMR8/k
-         iVgg==
-X-Gm-Message-State: AOAM533tpvWCCuB+mCrXrN5g/uJQ4HkN/1rgVF1vYPNcFowsD7LmEHSl
-        PwCjlS8+/pxAS4SxgdwfVz4ayQ==
-X-Google-Smtp-Source: ABdhPJwpVEgPPkI/zSK4lpMUwVYrjijvbgxeje/k/4cZ9kdoo9+t4DjrMi4svi9/yVEvIFaacjsgJw==
-X-Received: by 2002:a05:600c:4e94:: with SMTP id f20mr20301004wmq.52.1635515997808;
-        Fri, 29 Oct 2021 06:59:57 -0700 (PDT)
-Received: from localhost.localdomain ([2001:861:44c0:66c0:a651:7f77:f257:17dc])
-        by smtp.gmail.com with ESMTPSA id q18sm8999602wmc.7.2021.10.29.06.59.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Oct 2021 06:59:55 -0700 (PDT)
-From:   Neil Armstrong <narmstrong@baylibre.com>
-To:     a.hajda@samsung.com, Laurent.pinchart@ideasonboard.com,
-        robert.foss@linaro.org, jonas@kwiboo.se, jernej.skrabec@gmail.com
-Cc:     daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH] drm/bridge: dw-hdmi: handle ELD when DRM_BRIDGE_ATTACH_NO_CONNECTOR
-Date:   Fri, 29 Oct 2021 15:59:47 +0200
-Message-Id: <20211029135947.3022875-1-narmstrong@baylibre.com>
-X-Mailer: git-send-email 2.25.1
+        id S232002AbhJ2ONg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 10:13:36 -0400
+Received: from ixit.cz ([94.230.151.217]:52356 "EHLO ixit.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231810AbhJ2ON1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 10:13:27 -0400
+Received: from localhost.localdomain (ip-89-176-96-70.net.upcbroadband.cz [89.176.96.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ixit.cz (Postfix) with ESMTPSA id BBC6A23D91;
+        Fri, 29 Oct 2021 14:17:47 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
+        t=1635509868;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=s8yyxqFVKattkdAGWNseuY/v4m4uzmy/l55j6/y5LeA=;
+        b=YzQegZ9qN5lglFzeFSWB42tjsfLKW3WN/Ho+1q+viXsQuPhI42/ZLa8Q1Av4lgcRot/TMI
+        0qEeQwSr6rddHyGwYkNDuEbfoud/BV6lrUyQbSKftkBz1XBoN+bQGqJRy6Zpa+D9mjFPWn
+        yKREl06TTFlIm5Poz8eo/Rwf/l1Cm2E=
+From:   David Heidelberg <david@ixit.cz>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     ~okias/devicetree@lists.sr.ht, David Heidelberg <david@ixit.cz>,
+        devicetree@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] powerpc/fsl: fix the schema check errors for fsl,tmu-calibration
+Date:   Fri, 29 Oct 2021 14:17:33 +0200
+Message-Id: <20211029121733.46849-1-david@ixit.cz>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4764; h=from:subject; bh=0QP3cFB9fKKagdZLsyMILZiovdgP4DkvKvAW6aRsEQs=; b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBhe/4YQaYx/zx/h5049LOKtQeaUtncl2DkuxdhemDl XzAHsUGJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCYXv+GAAKCRB33NvayMhJ0QY1D/ 97wVWDvDmZpA3YIMODB3DjW7CpZjjK3TdXyCy8nPywIJbyYNML6ouF8IViPR7e+6QVayRuTVnlv2wu ufgr7PWFx4o1dAqzJ9RnLE1GuO+3ECXCp9fIb5GbJ0c3RgYSQpl3O3NpdqpOz55/DDmo6Z8IK2WTNL id3617cMdlbRbhhgqT3KIozXczV3ghRp6flfxy5UfGvWbbfTnHSI44uUQNCcwObLaishMVeaNWKIfo W/eL6Gduv2UhnjIBtB9fH11bDpaVfcL6k/I9UH2LOELDX+tgHKymA36LEuetjXAavXSmBNZa5p1X1n JEiv7y0lfaKQX6r+X0GnUzkDSjIRBtXA9nVgpwxkFSoiQyIzoHophFHgTuGbBPsqRArTipbQ1cGZVj AjxAU53OhwroSgmMLffgpJOh8UsEJwQmFLmm8gb4vKxD6LR4d3QgyK5mn3BK07peMPgfBG+YEmSoYW h4wvIiXhe6bJRHUdmsQUKIkA5uh0iiqfM6LVjACPg1Lkwgg3WvTYv7bGZ2E3jenb5h0lpiQBn541VW mUyDb8Hu07nKdFW3KD6gLHlzFIPAIRJfNKxzeCyNXkUoOpmSzpXPNLevI2nUd1CjJvb/LpjAFrH4yq juYS6E2QcqvLqjm1fxPA7fyvomnVNDauI0Z/vs04n4R/YZu1+y2Nmkd0b8yQ==
-X-Developer-Key: i=narmstrong@baylibre.com; a=openpgp; fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current ELD handling takes the internal connector ELD buffer and
-shares it to the I2S and AHB sub-driver.
+fsl,tmu-calibration is in u32-matrix format. Use matching property syntax.
+No functional changes. Fixes warnings as:
+$ make dtbs_check
+...
+arch/arm64/boot/dts/freescale/imx8mq-librem5-r3.dt.yaml: tmu@30260000: fsl,tmu-calibration:0: Additional items are not allowed (1, 41, 2, 47, 3, 53, 4, 61, 5, 67, 6, 75, 7, 81, 8, 87, 9, 95, 10, 103, 11, 111
+, 65536, 27, 65537, 35, 65538, 43, 65539, 51, 65540, 59, 65541, 67, 65542, 75, 65543, 85, 65544, 93, 65545, 103, 65546, 112, 131072, 23, 131073, 35, 131074, 45, 131075, 55, 131076, 65, 131077, 75, 131078, 87, 13
+1079, 99, 131080, 111, 196608, 21, 196609, 33, 196610, 45, 196611, 57, 196612, 69, 196613, 83, 196614, 95, 196615, 113 were unexpected)
+        From schema: Documentation/devicetree/bindings/thermal/qoriq-thermal.yaml
+...
 
-But with DRM_BRIDGE_ATTACH_NO_CONNECTOR, the connector is created
-elsewhere (not not), and an eventual connector is known only
-if the bridge chain up to a connector is enabled.
-
-The current dw-hdmi code gets the current connector from
-atomic_enable() so use the already stored connector pointer and
-replace the buffer pointer with a callback returning the current
-connector ELD buffer.
-
-Since a connector is not always available, either pass an empty
-ELD to the alsa HDMI driver or don't call snd_pcm_hw_constraint_eld()
-in AHB driver.
-
-Reported-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+Signed-off-by: David Heidelberg <david@ixit.cz>
 ---
- drivers/gpu/drm/bridge/synopsys/dw-hdmi-ahb-audio.c | 10 +++++++---
- drivers/gpu/drm/bridge/synopsys/dw-hdmi-audio.h     |  4 ++--
- drivers/gpu/drm/bridge/synopsys/dw-hdmi-i2s-audio.c |  9 ++++++++-
- drivers/gpu/drm/bridge/synopsys/dw-hdmi.c           | 12 ++++++++++--
- 4 files changed, 27 insertions(+), 8 deletions(-)
+ arch/powerpc/boot/dts/fsl/t1023si-post.dtsi | 79 +++++++++++----------
+ arch/powerpc/boot/dts/fsl/t1040si-post.dtsi | 71 +++++++++---------
+ 2 files changed, 76 insertions(+), 74 deletions(-)
 
-diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-ahb-audio.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-ahb-audio.c
-index d0db1acf11d7..7d2ed0ed2fe2 100644
---- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-ahb-audio.c
-+++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-ahb-audio.c
-@@ -320,13 +320,17 @@ static int dw_hdmi_open(struct snd_pcm_substream *substream)
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_dw_hdmi *dw = substream->private_data;
- 	void __iomem *base = dw->data.base;
-+	u8 *eld;
- 	int ret;
- 
- 	runtime->hw = dw_hdmi_hw;
- 
--	ret = snd_pcm_hw_constraint_eld(runtime, dw->data.eld);
--	if (ret < 0)
--		return ret;
-+	eld = dw->data.get_eld(dw->data.hdmi);
-+	if (eld) {
-+		ret = snd_pcm_hw_constraint_eld(runtime, eld);
-+		if (ret < 0)
-+			return ret;
-+	}
- 
- 	ret = snd_pcm_limit_hw_rates(runtime);
- 	if (ret < 0)
-diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-audio.h b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-audio.h
-index cb07dc0da5a7..f72d27208ebe 100644
---- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-audio.h
-+++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-audio.h
-@@ -9,15 +9,15 @@ struct dw_hdmi_audio_data {
- 	void __iomem *base;
- 	int irq;
- 	struct dw_hdmi *hdmi;
--	u8 *eld;
-+	u8 *(*get_eld)(struct dw_hdmi *hdmi);
- };
- 
- struct dw_hdmi_i2s_audio_data {
- 	struct dw_hdmi *hdmi;
--	u8 *eld;
- 
- 	void (*write)(struct dw_hdmi *hdmi, u8 val, int offset);
- 	u8 (*read)(struct dw_hdmi *hdmi, int offset);
-+	u8 *(*get_eld)(struct dw_hdmi *hdmi);
- };
- 
- #endif
-diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-i2s-audio.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-i2s-audio.c
-index feb04f127b55..f50b47ac11a8 100644
---- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-i2s-audio.c
-+++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-i2s-audio.c
-@@ -135,8 +135,15 @@ static int dw_hdmi_i2s_get_eld(struct device *dev, void *data, uint8_t *buf,
- 			       size_t len)
- {
- 	struct dw_hdmi_i2s_audio_data *audio = data;
-+	u8 *eld;
+diff --git a/arch/powerpc/boot/dts/fsl/t1023si-post.dtsi b/arch/powerpc/boot/dts/fsl/t1023si-post.dtsi
+index d552044c5afc..aa5152ca8120 100644
+--- a/arch/powerpc/boot/dts/fsl/t1023si-post.dtsi
++++ b/arch/powerpc/boot/dts/fsl/t1023si-post.dtsi
+@@ -367,45 +367,46 @@ tmu: tmu@f0000 {
+ 		reg = <0xf0000 0x1000>;
+ 		interrupts = <18 2 0 0>;
+ 		fsl,tmu-range = <0xb0000 0xa0026 0x80048 0x30061>;
+-		fsl,tmu-calibration = <0x00000000 0x0000000f
+-				       0x00000001 0x00000017
+-				       0x00000002 0x0000001e
+-				       0x00000003 0x00000026
+-				       0x00000004 0x0000002e
+-				       0x00000005 0x00000035
+-				       0x00000006 0x0000003d
+-				       0x00000007 0x00000044
+-				       0x00000008 0x0000004c
+-				       0x00000009 0x00000053
+-				       0x0000000a 0x0000005b
+-				       0x0000000b 0x00000064
+-
+-				       0x00010000 0x00000011
+-				       0x00010001 0x0000001c
+-				       0x00010002 0x00000024
+-				       0x00010003 0x0000002b
+-				       0x00010004 0x00000034
+-				       0x00010005 0x00000039
+-				       0x00010006 0x00000042
+-				       0x00010007 0x0000004c
+-				       0x00010008 0x00000051
+-				       0x00010009 0x0000005a
+-				       0x0001000a 0x00000063
+-
+-				       0x00020000 0x00000013
+-				       0x00020001 0x00000019
+-				       0x00020002 0x00000024
+-				       0x00020003 0x0000002c
+-				       0x00020004 0x00000035
+-				       0x00020005 0x0000003d
+-				       0x00020006 0x00000046
+-				       0x00020007 0x00000050
+-				       0x00020008 0x00000059
+-
+-				       0x00030000 0x00000002
+-				       0x00030001 0x0000000d
+-				       0x00030002 0x00000019
+-				       0x00030003 0x00000024>;
++		fsl,tmu-calibration =
++				<0x00000000 0x0000000f>,
++				<0x00000001 0x00000017>,
++				<0x00000002 0x0000001e>,
++				<0x00000003 0x00000026>,
++				<0x00000004 0x0000002e>,
++				<0x00000005 0x00000035>,
++				<0x00000006 0x0000003d>,
++				<0x00000007 0x00000044>,
++				<0x00000008 0x0000004c>,
++				<0x00000009 0x00000053>,
++				<0x0000000a 0x0000005b>,
++				<0x0000000b 0x00000064>,
 +
-+	eld = audio->get_eld(audio->hdmi);
-+	if (eld)
-+		memcpy(buf, eld, min_t(size_t, MAX_ELD_BYTES, len));
-+	else
-+		/* Pass en empty ELD if connector not available */
-+		memset(buf, 0, len);
- 
--	memcpy(buf, audio->eld, min_t(size_t, MAX_ELD_BYTES, len));
- 	return 0;
- }
- 
-diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
-index 62ae63565d3a..54d8fdad395f 100644
---- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
-+++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
-@@ -757,6 +757,14 @@ static void hdmi_enable_audio_clk(struct dw_hdmi *hdmi, bool enable)
- 	hdmi_writeb(hdmi, hdmi->mc_clkdis, HDMI_MC_CLKDIS);
- }
- 
-+static u8 *hdmi_audio_get_eld(struct dw_hdmi *hdmi)
-+{
-+	if (!hdmi->curr_conn)
-+		return NULL;
++				<0x00010000 0x00000011>,
++				<0x00010001 0x0000001c>,
++				<0x00010002 0x00000024>,
++				<0x00010003 0x0000002b>,
++				<0x00010004 0x00000034>,
++				<0x00010005 0x00000039>,
++				<0x00010006 0x00000042>,
++				<0x00010007 0x0000004c>,
++				<0x00010008 0x00000051>,
++				<0x00010009 0x0000005a>,
++				<0x0001000a 0x00000063>,
 +
-+	return hdmi->curr_conn->eld;
-+}
++				<0x00020000 0x00000013>,
++				<0x00020001 0x00000019>,
++				<0x00020002 0x00000024>,
++				<0x00020003 0x0000002c>,
++				<0x00020004 0x00000035>,
++				<0x00020005 0x0000003d>,
++				<0x00020006 0x00000046>,
++				<0x00020007 0x00000050>,
++				<0x00020008 0x00000059>,
 +
- static void dw_hdmi_ahb_audio_enable(struct dw_hdmi *hdmi)
- {
- 	hdmi_set_cts_n(hdmi, hdmi->audio_cts, hdmi->audio_n);
-@@ -3432,7 +3440,7 @@ struct dw_hdmi *dw_hdmi_probe(struct platform_device *pdev,
- 		audio.base = hdmi->regs;
- 		audio.irq = irq;
- 		audio.hdmi = hdmi;
--		audio.eld = hdmi->connector.eld;
-+		audio.get_eld = hdmi_audio_get_eld;
- 		hdmi->enable_audio = dw_hdmi_ahb_audio_enable;
- 		hdmi->disable_audio = dw_hdmi_ahb_audio_disable;
++				<0x00030000 0x00000002>,
++				<0x00030001 0x0000000d>,
++				<0x00030002 0x00000019>,
++				<0x00030003 0x00000024>;
+ 		#thermal-sensor-cells = <1>;
+ 	};
  
-@@ -3445,7 +3453,7 @@ struct dw_hdmi *dw_hdmi_probe(struct platform_device *pdev,
- 		struct dw_hdmi_i2s_audio_data audio;
+diff --git a/arch/powerpc/boot/dts/fsl/t1040si-post.dtsi b/arch/powerpc/boot/dts/fsl/t1040si-post.dtsi
+index f58eb820eb5e..27e6985d8bde 100644
+--- a/arch/powerpc/boot/dts/fsl/t1040si-post.dtsi
++++ b/arch/powerpc/boot/dts/fsl/t1040si-post.dtsi
+@@ -447,41 +447,42 @@ tmu: tmu@f0000 {
+ 		reg = <0xf0000 0x1000>;
+ 		interrupts = <18 2 0 0>;
+ 		fsl,tmu-range = <0xa0000 0x90026 0x8004a 0x1006a>;
+-		fsl,tmu-calibration = <0x00000000 0x00000025
+-				       0x00000001 0x00000028
+-				       0x00000002 0x0000002d
+-				       0x00000003 0x00000031
+-				       0x00000004 0x00000036
+-				       0x00000005 0x0000003a
+-				       0x00000006 0x00000040
+-				       0x00000007 0x00000044
+-				       0x00000008 0x0000004a
+-				       0x00000009 0x0000004f
+-				       0x0000000a 0x00000054
+-
+-				       0x00010000 0x0000000d
+-				       0x00010001 0x00000013
+-				       0x00010002 0x00000019
+-				       0x00010003 0x0000001f
+-				       0x00010004 0x00000025
+-				       0x00010005 0x0000002d
+-				       0x00010006 0x00000033
+-				       0x00010007 0x00000043
+-				       0x00010008 0x0000004b
+-				       0x00010009 0x00000053
+-
+-				       0x00020000 0x00000010
+-				       0x00020001 0x00000017
+-				       0x00020002 0x0000001f
+-				       0x00020003 0x00000029
+-				       0x00020004 0x00000031
+-				       0x00020005 0x0000003c
+-				       0x00020006 0x00000042
+-				       0x00020007 0x0000004d
+-				       0x00020008 0x00000056
+-
+-				       0x00030000 0x00000012
+-				       0x00030001 0x0000001d>;
++		fsl,tmu-calibration =
++				<0x00000000 0x00000025>,
++				<0x00000001 0x00000028>,
++				<0x00000002 0x0000002d>,
++				<0x00000003 0x00000031>,
++				<0x00000004 0x00000036>,
++				<0x00000005 0x0000003a>,
++				<0x00000006 0x00000040>,
++				<0x00000007 0x00000044>,
++				<0x00000008 0x0000004a>,
++				<0x00000009 0x0000004f>,
++				<0x0000000a 0x00000054>,
++
++				<0x00010000 0x0000000d>,
++				<0x00010001 0x00000013>,
++				<0x00010002 0x00000019>,
++				<0x00010003 0x0000001f>,
++				<0x00010004 0x00000025>,
++				<0x00010005 0x0000002d>,
++				<0x00010006 0x00000033>,
++				<0x00010007 0x00000043>,
++				<0x00010008 0x0000004b>,
++				<0x00010009 0x00000053>,
++
++				<0x00020000 0x00000010>,
++				<0x00020001 0x00000017>,
++				<0x00020002 0x0000001f>,
++				<0x00020003 0x00000029>,
++				<0x00020004 0x00000031>,
++				<0x00020005 0x0000003c>,
++				<0x00020006 0x00000042>,
++				<0x00020007 0x0000004d>,
++				<0x00020008 0x00000056>,
++
++				<0x00030000 0x00000012>,
++				<0x00030001 0x0000001d>;
+ 		#thermal-sensor-cells = <1>;
+ 	};
  
- 		audio.hdmi	= hdmi;
--		audio.eld	= hdmi->connector.eld;
-+		audio.get_eld	= hdmi_audio_get_eld;
- 		audio.write	= hdmi_writeb;
- 		audio.read	= hdmi_readb;
- 		hdmi->enable_audio = dw_hdmi_i2s_audio_enable;
 -- 
-2.25.1
+2.33.0
 
