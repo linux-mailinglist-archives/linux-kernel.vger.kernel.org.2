@@ -2,77 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49A2A43F547
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 05:14:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB09B43F54A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 05:15:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231616AbhJ2DQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 23:16:58 -0400
-Received: from smtp25.cstnet.cn ([159.226.251.25]:56260 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231558AbhJ2DQ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 23:16:56 -0400
-Received: from localhost.localdomain (unknown [124.16.138.128])
-        by APP-05 (Coremail) with SMTP id zQCowAAX+OwBZ3thKTqVBQ--.41909S2;
-        Fri, 29 Oct 2021 11:14:09 +0800 (CST)
-From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
-To:     bsingharora@gmail.com
-Cc:     linux-kernel@vger.kernel.org, Jiasheng Jiang <jiasheng@iscas.ac.cn>
-Subject: [PATCH] taskstats: Fix implicit type conversion
-Date:   Fri, 29 Oct 2021 03:14:07 +0000
-Message-Id: <1635477247-1850773-1-git-send-email-jiasheng@iscas.ac.cn>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: zQCowAAX+OwBZ3thKTqVBQ--.41909S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrKFy5GFyktFykZw15KFy8Krg_yoWDGFc_Ar
-        nFqr1q93ZFyrn2q3Wxua1rtFyF93y3G3W0v34UWrsrZFyrtr43J3yqgFy5Xrn5Wr4rCFnx
-        Zas8Jr9Ygw1xZjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb48FF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
-        Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
-        0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r48
-        MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
-        0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUXVWUAwCIc40Y0x0E
-        wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJV
-        W8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1l
-        IxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUjHGQDUUUU
-        U==
-X-Originating-IP: [124.16.138.128]
-X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
+        id S231558AbhJ2DSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 23:18:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24399 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231584AbhJ2DSD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 23:18:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635477335;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3pYzmXHRuJS5a4JTUR2VzeH599pTh8w8NKmslhTSrbs=;
+        b=HHegkJw46wucSIuhMlABN7N9urs8r95iqhKJi5lwmVTmCvWfR3XRprC8ilfPr6cs+tXxEQ
+        A5ldyiDWMIa/MIoxj2jgqv+4AmP1piePOrZernw7O9SVs5RSPol8fjYJtavBnthj2jTjxq
+        iI/vAHyObtmpHxCTO8lqb1Hd/UxFVuA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-421-S-hPaw3BN8ygbqkn2yGlNg-1; Thu, 28 Oct 2021 23:15:30 -0400
+X-MC-Unique: S-hPaw3BN8ygbqkn2yGlNg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5A2A7802682;
+        Fri, 29 Oct 2021 03:15:28 +0000 (UTC)
+Received: from T590 (ovpn-8-17.pek2.redhat.com [10.72.8.17])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 36C2060843;
+        Fri, 29 Oct 2021 03:15:04 +0000 (UTC)
+Date:   Fri, 29 Oct 2021 11:14:59 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Daejun Park <daejun7.park@samsung.com>
+Cc:     ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "huobean@gmail.com" <huobean@gmail.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        Keoseong Park <keosung.park@samsung.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] scsi: ufs: Fix proper API to send HPB pre-request
+Message-ID: <YXtnM9pwcBymG+Oz@T590>
+References: <YXtYME4yW6bFA1Cb@T590>
+ <YXtPNIDzeln8zBCn@T590>
+ <20211027223619epcms2p60bbc74c9ba9757c58709a99acd0892ff@epcms2p6>
+ <20211029015015epcms2p3a46e0779e43ab84c00388d99abf3b867@epcms2p3>
+ <CGME20211027223619epcms2p60bbc74c9ba9757c58709a99acd0892ff@epcms2p4>
+ <20211029025012epcms2p429d940cb32f5f31a2ac3fe395538a755@epcms2p4>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211029025012epcms2p429d940cb32f5f31a2ac3fe395538a755@epcms2p4>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The variable 'cpu' is defined as unsigned int.
-However in the for_each_cpu, its values is assigned to -1.
-That doesn't make sense and in the cpumask_next() it is implicitly
-type conversed to int.
-It is universally accepted that the implicit type conversion is
-terrible.
-Also, having the good programming custom will set an example for
-others.
-Thus, it might be better to change the definition of 'cpu' from
-unsigned int to int.
+On Fri, Oct 29, 2021 at 11:50:12AM +0900, Daejun Park wrote:
+> > On Fri, Oct 29, 2021 at 10:50:15AM +0900, Daejun Park wrote:
+> > > > On Thu, Oct 28, 2021 at 07:36:19AM +0900, Daejun Park wrote:
+> > > > > This patch addresses the issue of using the wrong API to create a
+> > > > > pre_request for HPB READ.
+> > > > > HPB READ candidate that require a pre-request will try to allocate a
+> > > > > pre-request only during request_timeout_ms (default: 0). Otherwise, it is
+> > > >  
+> > > > Can you explain about 'only during request_timeout_ms'?
+> > > >  
+> > > > From the following code in ufshpb_prep(), the pre-request is allocated
+> > > > for each READ IO in case of (!ufshpb_is_legacy(hba) && ufshpb_is_required_wb(hpb,
+> > > > transfer_len)).
+> > > >  
+> > > >    if (!ufshpb_is_legacy(hba) &&
+> > > >             ufshpb_is_required_wb(hpb, transfer_len)) {
+> > > >                 err = ufshpb_issue_pre_req(hpb, cmd, &read_id);
+> > > >  
+> > > > > passed as normal READ, so deadlock problem can be resolved.
+> > > > > 
+> > > > > Signed-off-by: Daejun Park <daejun7.park@samsung.com>
+> > > > > ---
+> > > > >  drivers/scsi/ufs/ufshpb.c | 11 +++++------
+> > > > >  drivers/scsi/ufs/ufshpb.h |  1 +
+> > > > >  2 files changed, 6 insertions(+), 6 deletions(-)
+> > > > > 
+> > > > > diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
+> > > > > index 02fb51ae8b25..3117bd47d762 100644
+> > > > > --- a/drivers/scsi/ufs/ufshpb.c
+> > > > > +++ b/drivers/scsi/ufs/ufshpb.c
+> > > > > @@ -548,8 +548,7 @@ static int ufshpb_execute_pre_req(struct ufshpb_lu *hpb, struct scsi_cmnd *cmd,
+> > > > >                                   read_id);
+> > > > >          rq->cmd_len = scsi_command_size(rq->cmd);
+> > > > >  
+> > > > > -        if (blk_insert_cloned_request(q, req) != BLK_STS_OK)
+> > > > > -                return -EAGAIN;
+> > > > > +        blk_execute_rq_nowait(NULL, req, true, ufshpb_pre_req_compl_fn);
+> > > >  
+> > > > Be care with above change, blk_insert_cloned_request() allocates
+> > > > driver tag and issues the request to LLD directly, then returns the
+> > > > result. If anything fails in the code path, -EAGAIN is returned.
+> > > >  
+> > > > But blk_execute_rq_nowait() simply queued the request in block layer,
+> > > > and run hw queue. It doesn't allocate driver tag, and doesn't issue it
+> > > > to LLD.
+> > > >  
+> > > > So ufshpb_execute_pre_req() may think the pre-request is issued to LLD
+> > > > successfully, but actually not, maybe never. What will happen after the
+> > > > READ IO is issued to device, but the pre-request(write buffer) isn't
+> > > > sent to device?
+> > > 
+> > > In that case, the HPB READ cannot get benefit from pre-request. But it is not
+> > > common case.
+> >  
+> > OK, so the device will ignore the pre-request if it isn't received in
+> > time, not sure it is common or not, since blk_execute_rq_nowait()
+> > doesn't provide any feedback. Here looks blk_insert_cloned_request()
+> > is better.
+> 
+> Yor're right.
+> 
+> > > 
+> > > > Can you explain how this change solves the deadlock?
+> > > 
+> > > The deadlock is happen when the READ waiting allocation of pre-request. But
+> > > the timeout code makes to stop waiting after given time later.
+> >  
+> > If you mean blk-mq timeout code will be triggered, I think it won't.
+> > Meantime, LLD may see nothing to timeout too.
+> 
+> I mean timeout of the HPB code. Please refer following code:
+> 
+> if (!ufshpb_is_legacy(hba) &&
+> 	ufshpb_is_required_wb(hpb, transfer_len)) {
+> 	err = ufshpb_issue_pre_req(hpb, cmd, &read_id);
+> 	if (err) {
+> 		unsigned long timeout;
+> 
+> 		timeout = cmd->jiffies_at_alloc + msecs_to_jiffies(
+> 			  hpb->params.requeue_timeout_ms);
+> 
+> 		if (time_before(jiffies, timeout))
+> 			return -EAGAIN;
+> 
+> 		hpb->stats.miss_cnt++;
+> 		return 0;
+> 	}
+> }
+> 
+> Although the return value of ufshpb_issue_pre_req() is -EAGAIN, the code
+> ignores the return value and issues READ not HPB READ.
 
-Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
----
- kernel/taskstats.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+OK, got it, this way should avoid the deadlock. But just be curious why
+you change hpb->throttle_pre_req to 4, seems it isn't necessary for
+avoiding the deadlock?
 
-diff --git a/kernel/taskstats.c b/kernel/taskstats.c
-index 2b4898b..5d8d4e7 100644
---- a/kernel/taskstats.c
-+++ b/kernel/taskstats.c
-@@ -275,7 +275,7 @@ static int add_del_listener(pid_t pid, const struct cpumask *mask, int isadd)
- {
- 	struct listener_list *listeners;
- 	struct listener *s, *tmp, *s2;
--	unsigned int cpu;
-+	int cpu;
- 	int ret = 0;
- 
- 	if (!cpumask_subset(mask, cpu_possible_mask))
--- 
-2.7.4
+
+Thanks,
+Ming
 
