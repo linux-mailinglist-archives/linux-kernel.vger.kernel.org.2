@@ -2,251 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 190AF43FF4F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 17:17:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1F6143FF4E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 17:17:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230022AbhJ2PUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 11:20:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56836 "EHLO
+        id S229936AbhJ2PUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 11:20:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229957AbhJ2PUU (ORCPT
+        with ESMTP id S229527AbhJ2PUO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 11:20:20 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B61F1C061570
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 08:17:51 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id v138so19542650ybb.8
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 08:17:51 -0700 (PDT)
+        Fri, 29 Oct 2021 11:20:14 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF3FEC061570;
+        Fri, 29 Oct 2021 08:17:45 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id v193so9533078pfc.4;
+        Fri, 29 Oct 2021 08:17:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bm3czZvxnVujCnIZ5GB44Fo107YwPmJEdeZR9VzJYFc=;
-        b=iIpq7FZQ64iNhndh8cqbcroi7LVpRlVTJB6RFvHQ/YnM5RT2Dl+ufYqLzeKP5x2cek
-         Rk3lD4lGDLqekVH0+Ti/Je5/9GooVOGBAGQLU5J0p+zsVZqLc3v8YYCUmn3KGJY0+95M
-         aOnlws1Ny9XGpwp98UVGPyFwkQkYq5BqhUEITM8bvydm45Jtfxet2UKtf8KQednzX+aT
-         52XehACy69jQPDFm7NrqA8Dh7uYCGwMLtztmEK1OQrZ95P1v+RmMbk8AW9BHXHAyTJsY
-         Y4XKERSwRD9zH+9geCrLNBaW63XsyrZZYCgqp2desQqSNEkoUBY+SDyhaAhNDto1hbWK
-         nn9A==
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=vegS3sUKUhI4LTqdf1vmY5PuKsxIFyPk9X+XdyTTR30=;
+        b=NiCS6JfInlfspOZjmAZC7As+qpH/lP4Hi6xKlazp7dwuEXxrrvnvyKjUHxDnxd4URR
+         g90vl2XwlwpRA6DiLzWFX9jvDiK9yMjgjPjjkabut9nIeoM7z6kY82AO5X5fhW2skFRs
+         q04EdyGJEDkaIt4PcrIiSELCAZccQ+wqFsLagtHv4qXA/ka8wMO0gWrp2eAa5x5abd2B
+         jyG2shwRdbsM7NseIxk7zamEIL5RHw09zphMCQUb3Q5LqQBJWSFO8xJXU4KnSnSH2oaO
+         7IfOZD5nt39p5v4hTunmUe7h3aw891j6Mq2r/BKLL0V8U7JepJm4k58WQ2N5VKCo4J8W
+         VXwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bm3czZvxnVujCnIZ5GB44Fo107YwPmJEdeZR9VzJYFc=;
-        b=a9vrpTzAwwClBJVtHyz1tQVRHU5eUKiRXYmE0u28wOUoMmit1MPzhjYzLPJINV5Sog
-         R6cKVRufrlUOjpqAXteRsjZ8AIpYDyrP7ibPrZjqB3FZ4UhEJrDM8fllVtwLiHrXt30L
-         D1FbTULZiwciW8u38Fdt+k2rGAHF9lTiW4RgD9ABDsK/7uFq/CLvrF93+Bq+lehDoai/
-         lKXy5NAyMUDStTkwA4+ts1Plifq9xIvc8QJid7lDCUgYXfiPXFJMGovU4B9moxPO0WZg
-         SjqenvmzisIOZQbPMFjQar+xRwHnZ8Co3jmopduWelSp6TylwWvldIbs9zC7uvg+WUZC
-         N7qg==
-X-Gm-Message-State: AOAM530ZWVFxyN9nCUTv8UTPtXaELfNkmWhb8ZhI4OWDwvkDHjmjDEnP
-        xJki8SHD5qsH2jqmvzYxn+CEUe+uGPpIilttkr6rsA==
-X-Google-Smtp-Source: ABdhPJztMVzkEdImPQ+GHHGxN+nOZPeIN4LBvMx+N95NYN97Btb01dhxpRkhU6k1hYEfIn1TQLwwKQBhd0zy46aSs10=
-X-Received: by 2002:a05:6902:1148:: with SMTP id p8mr14084454ybu.402.1635520670889;
- Fri, 29 Oct 2021 08:17:50 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=vegS3sUKUhI4LTqdf1vmY5PuKsxIFyPk9X+XdyTTR30=;
+        b=AK0rnlQfVHiYdhUQvogu7c1ZkvLEN2i1XQBVsRSBc8PmQAQg6SN2LcAETjVu8KlYVK
+         G2BLpuzoFYXVsp3/qxl3AOQz21bFCsR+tN+HZ2SfcWBfUrM3vUDGfeMG6ZdCq/n1qwsZ
+         LhqT8hPYNIVGIoIwG1wpa2xKv23xHg4QJFmf/Hx3gZelhBBV3OuQexCmayj9W2tcykLb
+         edbkTxiYC+cC2sCzD6hIAQ9e2cG3PUj7yr1nsAviIi20WGdiLxDkf60HxBSZ6+bvTToH
+         p1t0sv1HqTSgrmzbioX1AElbP4RzfjDL5aQVdhAIjRBvv+uq8zIuoeb3/iOD/BM6y40l
+         NyIA==
+X-Gm-Message-State: AOAM532Kv2H9NQijZGm1rUZX7mlsIjLrz47Wo5pvDKqJFN1b9mtTBnAP
+        swNs3jf2R9enY57MueDfVmV+Bsz7FStPUQ==
+X-Google-Smtp-Source: ABdhPJxaTQNUfcpkGprFQcnMx+1zSK5EZ9g3G5DdqUXmLcZNS9s9Md1Wq8AmC1xdfvo3pZ+NhDlekg==
+X-Received: by 2002:a05:6a00:14cb:b0:47f:bf22:329e with SMTP id w11-20020a056a0014cb00b0047fbf22329emr530241pfu.58.1635520665085;
+        Fri, 29 Oct 2021 08:17:45 -0700 (PDT)
+Received: from [0.0.0.0] ([150.109.126.7])
+        by smtp.gmail.com with ESMTPSA id m7sm6013660pgn.32.2021.10.29.08.17.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Oct 2021 08:17:44 -0700 (PDT)
+Subject: Re: [PATCH bpf-next] bpf: Allow bpf_d_path in perf_event_mmap
+To:     Martin KaFai Lau <kafai@fb.com>,
+        Florent Revest <revest@chromium.org>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kpsingh@kernel.org, jackmanb@google.com,
+        linux-kernel@vger.kernel.org
+References: <20211028164357.1439102-1-revest@chromium.org>
+ <20211028224653.qhuwkp75fridkzpw@kafai-mbp.dhcp.thefacebook.com>
+From:   Hengqi Chen <hengqi.chen@gmail.com>
+Message-ID: <10a745cc-5942-70ff-483f-a5c77a9776a2@gmail.com>
+Date:   Fri, 29 Oct 2021 23:17:41 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20211028094834.1312-1-mgorman@techsingularity.net> <20211028094834.1312-2-mgorman@techsingularity.net>
-In-Reply-To: <20211028094834.1312-2-mgorman@techsingularity.net>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Fri, 29 Oct 2021 17:17:38 +0200
-Message-ID: <CAKfTPtB-fJ7Pd6eYPDrHB8Ts0o7SCbN7nniAD9PSoF4Pf+xB3w@mail.gmail.com>
-Subject: Re: [PATCH 1/2] sched/fair: Couple wakee flips with heavy wakers
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Valentin Schneider <Valentin.Schneider@arm.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Mike Galbraith <efault@gmx.de>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211028224653.qhuwkp75fridkzpw@kafai-mbp.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 28 Oct 2021 at 11:48, Mel Gorman <mgorman@techsingularity.net> wrote:
->
-> This patch mitigates a problem where wake_wide() allows a heavy waker
-> (e.g. X) to stack an excessive number of wakees on the same CPU. This
-> is due to the cpu_load check in wake_affine_weight. As noted by the
-> original patch author (Mike Galbraith)[1];
->
->         Between load updates, X, or any other waker of many, can stack
->         wakees to a ludicrous depth.  Tracing kbuild vs firefox playing a
->         youtube clip, I watched X stack 20 of the zillion firefox minions
->         while their previous CPUs all had 1 lousy task running but a
->         cpu_load() higher than the cpu_load() of X's CPU.  Most of those
->         prev_cpus were where X had left them when it migrated. Each and
->         every crazy depth migration was wake_affine_weight() deciding we
->         should pull.
->
-> Parahrasing Mike's test results from the patch.
->
->         With make -j8 running along with firefox with two tabs, one
->         containing youtube's suggestions of stuff, the other a running
->         clip, if the idle tab in focus, and don't drive mouse around,
->         flips decay enough for wake_wide() to lose interest, but just
->         wiggle the mouse, and it starts waking wide. Focus on the running
->         clip, and it continuously wakes wide.
->
-> The end result is that heavy wakers are less likely to stack tasks and,
-> depending on the workload, reduce migrations.
->
-> From additional tests on various servers, the impact is machine dependant
-> but generally this patch improves the situation.
->
-> hackbench-process-pipes
->                           5.15.0-rc3             5.15.0-rc3
->                              vanilla  sched-wakeeflips-v1r1
-> Amean     1        0.3667 (   0.00%)      0.3890 (  -6.09%)
-> Amean     4        0.5343 (   0.00%)      0.5217 (   2.37%)
-> Amean     7        0.5300 (   0.00%)      0.5387 (  -1.64%)
-> Amean     12       0.5737 (   0.00%)      0.5443 (   5.11%)
-> Amean     21       0.6727 (   0.00%)      0.6487 (   3.57%)
-> Amean     30       0.8583 (   0.00%)      0.8033 (   6.41%)
-> Amean     48       1.3977 (   0.00%)      1.2400 *  11.28%*
-> Amean     79       1.9790 (   0.00%)      1.8200 *   8.03%*
-> Amean     110      2.8020 (   0.00%)      2.5820 *   7.85%*
-> Amean     141      3.6683 (   0.00%)      3.2203 *  12.21%*
-> Amean     172      4.6687 (   0.00%)      3.8200 *  18.18%*
-> Amean     203      5.2183 (   0.00%)      4.3357 *  16.91%*
-> Amean     234      6.1077 (   0.00%)      4.8047 *  21.33%*
-> Amean     265      7.1313 (   0.00%)      5.1243 *  28.14%*
-> Amean     296      7.7557 (   0.00%)      5.5940 *  27.87%*
->
-> While different machines showed different results, in general
-> there were much less CPU migrations of tasks
->
-> tbench4
->                            5.15.0-rc3             5.15.0-rc3
->                               vanilla  sched-wakeeflips-v1r1
-> Hmean     1         824.05 (   0.00%)      802.56 *  -2.61%*
-> Hmean     2        1578.49 (   0.00%)     1645.11 *   4.22%*
-> Hmean     4        2959.08 (   0.00%)     2984.75 *   0.87%*
-> Hmean     8        5080.09 (   0.00%)     5173.35 *   1.84%*
-> Hmean     16       8276.02 (   0.00%)     9327.17 *  12.70%*
-> Hmean     32      15501.61 (   0.00%)    15925.55 *   2.73%*
-> Hmean     64      27313.67 (   0.00%)    24107.81 * -11.74%*
-> Hmean     128     32928.19 (   0.00%)    36261.75 *  10.12%*
-> Hmean     256     35434.73 (   0.00%)    38670.61 *   9.13%*
-> Hmean     512     50098.34 (   0.00%)    53243.75 *   6.28%*
-> Hmean     1024    69503.69 (   0.00%)    67425.26 *  -2.99%*
->
-> Bit of a mixed bag but wins more than it loses.
->
-> A new workload was added that runs a kernel build in the background
-> -jNR_CPUS while NR_CPUS pairs of tasks run Netperf TCP_RR. The
-> intent is to see if heavy background tasks disrupt ligher tasks
->
-> multi subtest kernbench
->                                5.15.0-rc3             5.15.0-rc3
->                                   vanilla  sched-wakeeflips-v1r1
-> Min       elsp-256       20.80 (   0.00%)       14.89 (  28.41%)
-> Amean     elsp-256       24.08 (   0.00%)       20.94 (  13.05%)
-> Stddev    elsp-256        3.32 (   0.00%)        4.68 ( -41.16%)
-> CoeffVar  elsp-256       13.78 (   0.00%)       22.36 ( -62.33%)
-> Max       elsp-256       29.11 (   0.00%)       26.49 (   9.00%)
->
-> multi subtest netperf-tcp-rr
->                         5.15.0-rc3             5.15.0-rc3
->                            vanilla  sched-wakeeflips-v1r1
-> Min       1    48286.26 (   0.00%)    49101.48 (   1.69%)
-> Hmean     1    62894.82 (   0.00%)    68963.51 *   9.65%*
-> Stddev    1     7600.56 (   0.00%)     8804.82 ( -15.84%)
-> Max       1    78975.16 (   0.00%)    87124.67 (  10.32%)
->
-> The variability is higher as a result of the patch but both workloads
-> experienced improved performance.
->
-> SpecJBB 2005 is a slightly more realistic workload with multiple
-> communicating Java threads
->
-> specjbb
->                               5.15.0-rc3             5.15.0-rc3
->                                  vanilla  sched-wakeeflips-v1r1
-> Hmean     tput-1     50044.48 (   0.00%)    53969.00 *   7.84%*
-> Hmean     tput-2    106050.31 (   0.00%)   113580.78 *   7.10%*
-> Hmean     tput-3    156701.44 (   0.00%)   164857.00 *   5.20%*
-> Hmean     tput-4    196538.75 (   0.00%)   218373.42 *  11.11%*
-> Hmean     tput-5    247566.16 (   0.00%)   267173.09 *   7.92%*
-> Hmean     tput-6    284981.46 (   0.00%)   311007.14 *   9.13%*
-> Hmean     tput-7    328882.48 (   0.00%)   359373.89 *   9.27%*
-> Hmean     tput-8    366941.24 (   0.00%)   393244.37 *   7.17%*
-> Hmean     tput-9    402386.74 (   0.00%)   433010.43 *   7.61%*
-> Hmean     tput-10   437551.05 (   0.00%)   475756.08 *   8.73%*
-> Hmean     tput-11   481349.41 (   0.00%)   519824.54 *   7.99%*
-> Hmean     tput-12   533148.45 (   0.00%)   565070.21 *   5.99%*
-> Hmean     tput-13   570563.97 (   0.00%)   609499.06 *   6.82%*
-> Hmean     tput-14   601117.97 (   0.00%)   647876.05 *   7.78%*
-> Hmean     tput-15   639096.38 (   0.00%)   690854.46 *   8.10%*
-> Hmean     tput-16   682644.91 (   0.00%)   722826.06 *   5.89%*
-> Hmean     tput-17   732248.96 (   0.00%)   758805.17 *   3.63%*
-> Hmean     tput-18   762771.33 (   0.00%)   791211.66 *   3.73%*
-> Hmean     tput-19   780582.92 (   0.00%)   819064.19 *   4.93%*
-> Hmean     tput-20   812183.95 (   0.00%)   836664.87 *   3.01%*
-> Hmean     tput-21   821415.48 (   0.00%)   833734.23 (   1.50%)
-> Hmean     tput-22   815457.65 (   0.00%)   844393.98 *   3.55%*
-> Hmean     tput-23   819263.63 (   0.00%)   846109.07 *   3.28%*
-> Hmean     tput-24   817962.95 (   0.00%)   839682.92 *   2.66%*
-> Hmean     tput-25   807814.64 (   0.00%)   841826.52 *   4.21%*
-> Hmean     tput-26   811755.89 (   0.00%)   838543.08 *   3.30%*
-> Hmean     tput-27   799341.75 (   0.00%)   833487.26 *   4.27%*
-> Hmean     tput-28   803434.89 (   0.00%)   829022.50 *   3.18%*
-> Hmean     tput-29   803233.25 (   0.00%)   826622.37 *   2.91%*
-> Hmean     tput-30   800465.12 (   0.00%)   824347.42 *   2.98%*
-> Hmean     tput-31   791284.39 (   0.00%)   791575.67 (   0.04%)
-> Hmean     tput-32   781930.07 (   0.00%)   805725.80 (   3.04%)
-> Hmean     tput-33   785194.31 (   0.00%)   804795.44 (   2.50%)
-> Hmean     tput-34   781325.67 (   0.00%)   800067.53 (   2.40%)
-> Hmean     tput-35   777715.92 (   0.00%)   753926.32 (  -3.06%)
-> Hmean     tput-36   770516.85 (   0.00%)   783328.32 (   1.66%)
-> Hmean     tput-37   758067.26 (   0.00%)   772243.18 *   1.87%*
-> Hmean     tput-38   764815.45 (   0.00%)   769156.32 (   0.57%)
-> Hmean     tput-39   757885.41 (   0.00%)   757670.59 (  -0.03%)
-> Hmean     tput-40   750140.15 (   0.00%)   760739.13 (   1.41%)
->
-> [1] https://lore.kernel.org/r/02c977d239c312de5e15c77803118dcf1e11f216.camel@gmx.de
->
-> Signed-off-by: Mike Galbraith <efault@gmx.de>
-> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
-> ---
->  kernel/sched/fair.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index ff69f245b939..d00af3b97d8f 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -5865,6 +5865,14 @@ static void record_wakee(struct task_struct *p)
->         }
->
->         if (current->last_wakee != p) {
-> +               int min = __this_cpu_read(sd_llc_size) << 1;
-> +               /*
-> +                * Couple the wakee flips to the waker for the case where it
-> +                * doesn't accrue flips, taking care to not push the wakee
-> +                * high enough that the wake_wide() heuristic fails.
-> +                */
-> +               if (current->wakee_flips > p->wakee_flips * min)
-> +                       p->wakee_flips++;
 
-I have a hard time understanding the rationale behind these changes
-and the one below. Could you provide more details about why to
-increase p->wakee_flips here ? Also would be good to add such
-explanation in the commit message
->                 current->last_wakee = p;
->                 current->wakee_flips++;
->         }
-> @@ -5895,7 +5903,7 @@ static int wake_wide(struct task_struct *p)
->
->         if (master < slave)
->                 swap(master, slave);
-> -       if (slave < factor || master < slave * factor)
-> +       if ((slave < factor && master < (factor>>1)*factor) || master < slave * factor)
->                 return 0;
->         return 1;
->  }
-> --
-> 2.31.1
->
+
+On 10/29/21 6:46 AM, Martin KaFai Lau wrote:
+> On Thu, Oct 28, 2021 at 06:43:57PM +0200, Florent Revest wrote:
+>> Allow the helper to be called from the perf_event_mmap hook. This is
+>> convenient to lookup vma->vm_file and implement a similar logic as
+>> perf_event_mmap_event in BPF.
+> From struct vm_area_struct:
+> 	struct file * vm_file;          /* File we map to (can be NULL). */
+> 
+> Under perf_event_mmap, vm_file won't be NULL or bpf_d_path can handle it?
+> 
+
+Hmm, is perf_event_mmap a proper tracing target ?
+It does not appear in /sys/kernel/debug/tracing/available_filter_functions.
+
+I tried using kprobe/fentry to attach to it, both failed.
+
+>>
+>> Signed-off-by: Florent Revest <revest@chromium.org>
+>> ---
+>>  kernel/trace/bpf_trace.c | 3 +++
+>>  1 file changed, 3 insertions(+)
+>>
+>> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+>> index cbcd0d6fca7c..f6e301c775a5 100644
+>> --- a/kernel/trace/bpf_trace.c
+>> +++ b/kernel/trace/bpf_trace.c
+>> @@ -922,6 +922,9 @@ BTF_ID(func, vfs_fallocate)
+>>  BTF_ID(func, dentry_open)
+>>  BTF_ID(func, vfs_getattr)
+>>  BTF_ID(func, filp_close)
+>> +#ifdef CONFIG_PERF_EVENTS
+>> +BTF_ID(func, perf_event_mmap)
+>> +#endif
+>>  BTF_SET_END(btf_allowlist_d_path)
+>>  
+>>  static bool bpf_d_path_allowed(const struct bpf_prog *prog)
+>> -- 
+>> 2.33.0.1079.g6e70778dc9-goog
+>>
+
+--Hengqi
