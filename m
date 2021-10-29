@@ -2,86 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2355A440010
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 18:09:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59CCB440013
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 18:10:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229868AbhJ2QLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 12:11:31 -0400
-Received: from mail-oi1-f178.google.com ([209.85.167.178]:34802 "EHLO
-        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229607AbhJ2QL1 (ORCPT
+        id S229894AbhJ2QMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 12:12:41 -0400
+Received: from mail-pj1-f41.google.com ([209.85.216.41]:42778 "EHLO
+        mail-pj1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229607AbhJ2QMk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 12:11:27 -0400
-Received: by mail-oi1-f178.google.com with SMTP id w193so14075655oie.1;
-        Fri, 29 Oct 2021 09:08:59 -0700 (PDT)
+        Fri, 29 Oct 2021 12:12:40 -0400
+Received: by mail-pj1-f41.google.com with SMTP id nn3-20020a17090b38c300b001a03bb6c4ebso7715627pjb.1;
+        Fri, 29 Oct 2021 09:10:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Yd9yTVl0mzMu8CxNtY/NSg2Fd5BmOwS2ev++cNAViEI=;
-        b=UfVyve/AcWDCDtHCG3v/7H5+l2pevJufm0Zf9AxbY86e/vG4WtdXkKP4Wh8M2zpcjM
-         CtZGfxr9dU5aoon8ZGgBO2wowHhd7FUhKqepJws06IX6VV+3Yx9dlmAd/EQ6SDUmCsL2
-         Zo0gbvZNbuUr3pq071ThkvTelh9o3MAqyQQw1SjglwDICsMxeRvViTsru/2jWq9JtHkN
-         8EiBdFccF6CB7Ip96WtHuaM1RE1xcTsgT99SS402xs3TKr6ELjdBtsWj4yk2suKRAWIo
-         IuZeCiVRJVYdIgcPpv065vArP18a+mEaX+jdlIrq6l3zViAd40vS3XD/sKmrDETtOwFB
-         8sfQ==
-X-Gm-Message-State: AOAM531LRU81WkJCi2nSFXL33SAlPO1wbflrCbXFTo4IqK+uTeaD+t6M
-        Gz2JuTRkUrdHMbfOi1Qy3Pzb74C6M5EjwfdcD1A=
-X-Google-Smtp-Source: ABdhPJxt4MrRv0+zcRik2HyFB0+2oqvoK0S6Fa/NvTCUMdlq5bduCS7QsLm/TXBu76wwyRLDWsktYueSaNNKTJ5sLoo=
-X-Received: by 2002:a05:6808:e90:: with SMTP id k16mr8544666oil.166.1635523739007;
- Fri, 29 Oct 2021 09:08:59 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=LXFgbbSzEnPAENQgnYsk5t+E8VlLtZz8rFu/S8Y8Msw=;
+        b=xCnpSM/JKY2sZcPSU/KMP5cueWZ8IoDz5LKhFTuJYJlWd4K1+2iAa5O5ELDUfPR6KK
+         BhQyAoym5Sh85riTXy3v90YZpadrnnR+6bPtoRcP6/tEjklmEdSZGTRjknSE1+YsiZj7
+         MuvOZTd6HV822KGlyeIulpS2EzP1jabX8TwqcQKmfZ5Inh6msGWCInk9F18Zp6Cr34+T
+         0OIy4+43yNfw2+L4h742x+T1Nij4XBwzUMZvFqTKeLiTozPCrEcyA3HagszuXKhrCLJ0
+         2TI9QqW/5k7Q1vaoTXDKfolaCtbf79jtlSI4nd6tpW8BZCYgimc+8sSeqvvJ9vrJ+gU8
+         Z6nA==
+X-Gm-Message-State: AOAM532PDC9f+AyzRXu8nHJgg3GxhY4Q8jqmU7zhVBDg8MkXyORxWV+U
+        6Cecc2/kfzrYyR4FAWfJd1s=
+X-Google-Smtp-Source: ABdhPJyyZjQUsQT53x9DYF/g/qm71X4lEhv4Xwoz5oC82TaIBLk6Z20x3UIz6rQPP6y9gYWHRe6M2A==
+X-Received: by 2002:a17:90b:1010:: with SMTP id gm16mr20398839pjb.190.1635523811491;
+        Fri, 29 Oct 2021 09:10:11 -0700 (PDT)
+Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:201:7346:8d3b:12d0:7278])
+        by smtp.gmail.com with ESMTPSA id rj6sm11542165pjb.30.2021.10.29.09.10.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Oct 2021 09:10:10 -0700 (PDT)
+Subject: Re: [PATCH] scsi: ufshpb: Opt out pre-reqs from HPB2.0 flows
+To:     Avri Altman <avri.altman@wdc.com>,
+        "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        James Bottomley <James.Bottomley@HansenPartnership.com>
+References: <20211029155754.3287-1-avri.altman@wdc.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <52dbffa7-6549-1f1d-cc2d-9022e65b59a9@acm.org>
+Date:   Fri, 29 Oct 2021 09:10:10 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <1635391292-2879179-1-git-send-email-jiasheng@iscas.ac.cn>
-In-Reply-To: <1635391292-2879179-1-git-send-email-jiasheng@iscas.ac.cn>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 29 Oct 2021 18:08:48 +0200
-Message-ID: <CAJZ5v0iGmVRjwDTUPvfWcf_3t=NHLT_t-dN_4TX2N3-LxJX_Kg@mail.gmail.com>
-Subject: Re: [PATCH] thermal: Fix implicit type conversion
-To:     Jiasheng Jiang <jiasheng@iscas.ac.cn>
-Cc:     "Zhang, Rui" <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211029155754.3287-1-avri.altman@wdc.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 5:22 AM Jiasheng Jiang <jiasheng@iscas.ac.cn> wrote:
->
-> The parameter 'cpu' is defined as unsigned int.
-> However in the cpumask_next() it is implicitly type conversed
-> to int.
-> It is universally accepted that the implicit type conversion is
-> terrible.
-> Also, having the good programming custom will set an example for
-> others.
-> Thus, it might be better to change the type of 'cpu' from
-> unsigned int to int.
->
-> Fixes: 3e8c4d3 ("drivers: thermal: Move various drivers for intel platforms into a subdir")
-> Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
-> ---
->  drivers/thermal/intel/intel_powerclamp.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/thermal/intel/intel_powerclamp.c b/drivers/thermal/intel/intel_powerclamp.c
-> index b0eb5ec..ed46b5e 100644
-> --- a/drivers/thermal/intel/intel_powerclamp.c
-> +++ b/drivers/thermal/intel/intel_powerclamp.c
-> @@ -578,7 +578,7 @@ static int powerclamp_cpu_online(unsigned int cpu)
->         return 0;
->  }
->
-> -static int powerclamp_cpu_predown(unsigned int cpu)
-> +static int powerclamp_cpu_predown(int cpu)
->  {
->         if (clamping == false)
->                 return 0;
-> --
+On 10/29/21 8:57 AM, Avri Altman wrote:
+> HPB allows its read commands to carry the physical addresses along with
+> the LBAs, thus allowing less internal L2P-table switches in the device.
+> HPB1.0 allowed a single LBA, while HPB2.0 increases this capacity up to
+> 255 blocks.
+> 
+> Carrying more than a single record, the read operation is no longer
+> purly of type "read" per-se, but some sort of a "hybrid" command -
+   ^^^^^
+   purely?
+> writing the physical address to the device and reading the required
+> payload.
+> 
+> The HPB JEDEC spec came-up with a dual-command for that operation:
+> HPB-WRITE-BUFFER (0x2) to write the physical addresses to device, and
+> HPB-READ to read the payload.
+> 
+> Alas, the current HPB driver design - a single-scsi-LLD-module, has no
+> other alternative but to spawn the READ10 command into 2 commands:
+> HPB-WRITE-BUFFER and HPB-READ.
+> This causes a grat deal of aggrevation to the block layer guys, up to a
+> point, in which that they were willing to revert the entire HPB driver,
+> regardless of the huge amount of corporate effort already inversted in
+> it.
+> 
+> Therefore, remove the pre-req API for now, as a matter of urgency to get
+> it done before the closing of the merge window.
 
-I'm not going to consider any patches of this type, because IMO they
-are not improvements.
+Anyway:
 
-Thanks!
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
