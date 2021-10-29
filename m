@@ -2,71 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E750D43FDA0
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 15:55:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09FB143FDBE
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 16:01:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231551AbhJ2N5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 09:57:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56262 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231548AbhJ2N5D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 09:57:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A1FB16108F;
-        Fri, 29 Oct 2021 13:54:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635515665;
-        bh=qlcPpg2MIOEebv+ihjRrlmheaAPPkfcf8eJStaF1g+U=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=cPw7cUyxcZkThUiqKVMPRRfPaK5rFRZq+DcY2dkxHWs5W7dJqukwb1mQ427a8WQ30
-         JaVCTxIAskDTzQD1G0Y4qoB4ZsXQ8tCvj0dd9wkaueCkT5vITNx7qgExV6eTczDrDt
-         CULbPN9VnW7qTRyPvN53T32tMrueAGmY/T+4zr9JaKr1YgSqr8jhaqy7zp/8l2QhNT
-         0s4gJCWM9O8wX0EW/ZtZuiQq0J0QPJSXklksagL2KoH+iHFqKeA/72Y8rjAYSlAjpK
-         eByGTIuoVFwLAlO1d7p76OxPR+o6Zx8wHhoSHTi60ieUzAU5gjWXw3H8NZsapui2UG
-         D2AJJARPhtggA==
-Date:   Fri, 29 Oct 2021 06:54:23 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
-Cc:     <andrew@lunn.ch>, <netdev@vger.kernel.org>, <olteanv@gmail.com>,
-        <robh+dt@kernel.org>, <UNGLinuxDriver@microchip.com>,
-        <Woojung.Huh@microchip.com>, <hkallweit1@gmail.com>,
-        <linux@armlinux.org.uk>, <davem@davemloft.net>,
-        <linux-kernel@vger.kernel.org>, <vivien.didelot@gmail.com>,
-        <f.fainelli@gmail.com>, <devicetree@vger.kernel.org>
-Subject: Re: [PATCH v6 net-next 07/10] net: dsa: microchip: add support for
- ethtool port counters
-Message-ID: <20211029065423.493801d4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20211029052256.144739-8-prasanna.vengateshan@microchip.com>
-References: <20211029052256.144739-1-prasanna.vengateshan@microchip.com>
-        <20211029052256.144739-8-prasanna.vengateshan@microchip.com>
+        id S231628AbhJ2OD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 10:03:27 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:48920 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230036AbhJ2ODM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 10:03:12 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19TDDE7K001315;
+        Fri, 29 Oct 2021 15:55:49 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=mCiDR+gsoKv33aVNbx/ppRXPMERKyfh5jwIF1keIFKM=;
+ b=LWn+sHwm8cXD81nuGYL0rN6/Vcf/98bIOtXh+UnbEViS5Gc1B+jjiVknkG69EaH1ytwz
+ PvTTz/YQwGrHG85WdusecAijrsIiPv3OvGTBailxLaFUrwfxwvJR4Nlk89lwxDFLXuaP
+ CILeFVcYoEySNLu1T/EXnQ/V9UcBcrIZMJgvbIAH0tujk9cbApRIE11Bz0drEtAf1R6W
+ YvSLrX1heC9NGt3ESObPhdPfwvN7Yam+qyIF8FmOqjLQq5NoXqA9kmd4AwGJj4VsXPiw
+ ipMZTHluecxDHCjsT5kysBg3lkd70kZKLBlWicBcgjgKIrMc4+XAvwebHUu6VFzHiUzv Ng== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3c07xgkp6f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 Oct 2021 15:55:49 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id CEECD10002A;
+        Fri, 29 Oct 2021 15:55:45 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 78CE024C73D;
+        Fri, 29 Oct 2021 15:55:45 +0200 (CEST)
+Received: from localhost (10.75.127.48) by SFHDAG2NODE2.st.com (10.75.127.5)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.18; Fri, 29 Oct 2021 15:55:45
+ +0200
+From:   Nicolas Toromanoff <nicolas.toromanoff@foss.st.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+CC:     Marek Vasut <marex@denx.de>,
+        Nicolas Toromanoff <nicolas.toromanoff@foss.st.com>,
+        <linux-crypto@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH 0/8] STM32 CRYP driver: many fixes
+Date:   Fri, 29 Oct 2021 15:54:46 +0200
+Message-ID: <20211029135454.4383-1-nicolas.toromanoff@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-29_03,2021-10-29_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Oct 2021 10:52:53 +0530 Prasanna Vengateshan wrote:
-> Reused the KSZ common APIs for get_ethtool_stats() & get_sset_count()
-> along with relevant lan937x hooks for KSZ common layer and added
-> support for get_strings()
-> 
-> Signed-off-by: Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
+Hello,
 
->  static void lan937x_port_stp_state_set(struct dsa_switch *ds, int port,
->  				       u8 state)
->  {
-> @@ -426,6 +441,9 @@ const struct dsa_switch_ops lan937x_switch_ops = {
->  	.phy_read = lan937x_phy_read16,
->  	.phy_write = lan937x_phy_write16,
->  	.port_enable = ksz_enable_port,
-> +	.get_strings = lan937x_get_strings,
-> +	.get_ethtool_stats = ksz_get_ethtool_stats,
-> +	.get_sset_count = ksz_sset_count,
->  	.port_bridge_join = ksz_port_bridge_join,
->  	.port_bridge_leave = ksz_port_bridge_leave,
->  	.port_stp_state_set = lan937x_port_stp_state_set,
+This set of patches update the STM32 CRYP driver.
 
-Recent commit 487d3855b641 ("net: dsa: allow reporting of standard
-ethtool stats for slave devices") plumbed thru all the standard stats ops.
-You must report standard stats (get_eth_*_stats and get_stats64) before
-implementing get_ethtool_stats.
+First two update about EPROBE_DEFER management.
+Then many fixes to success the cryptomanager EXTRA_TESTS.
+And finally we reorder the initialization to set the key as last step.
+
+This patch series applies to cryptodev/master.
+
+Etienne Carriere (2):
+  crypto: stm32/cryp - defer probe for reset controller
+  crypto: stm32/cryp - don't print error on probe deferral
+
+Nicolas Toromanoff (6):
+  crypto: stm32/cryp - fix CTR counter carry
+  crypto: stm32/cryp - fix race condition
+  crypto: stm32/cryp - check early input data
+  crypto: stm32/cryp - fix double pm exit.
+  crypto: stm32/cryp - fix bugs and crash in tests
+  crypto: stm32/cryp - reorder hw initialization
+
+ drivers/crypto/stm32/stm32-cryp.c | 977 ++++++++++++------------------
+ 1 file changed, 401 insertions(+), 576 deletions(-)
+
+
+base-commit: 3ae88f676aa63366ffa9eebb8ae787c7e19f0c57
+-- 
+2.17.1
+
