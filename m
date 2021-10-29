@@ -2,117 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71CBA44028B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 20:52:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22760440284
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 20:52:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231382AbhJ2Syb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 14:54:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43408 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230221AbhJ2Sy2 (ORCPT
+        id S230196AbhJ2Sy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 14:54:26 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:48122 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229826AbhJ2SyY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 14:54:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635533518;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/vX1aXmgWDOmHXytC/xtmTFfVJMO+hskcobUwtJeMmI=;
-        b=H8seKFppfj7RTniLl8qMPFbNHiBTU/Cx6TGPmDtuYq7STB6GNxpFB/+QjX7t8a4wzfU6SA
-        p2JWZriQeHgAGkSlA3V11yBruuF+HkBR3tgbxZC3CPVge2OsRYNbzZ+EmYgxhDc7oM3GWc
-        Kh0dM4UchE9yJKCS4JjlS00zJFUzE8U=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-475-p1zGB8TrMduU9GKrjace1w-1; Fri, 29 Oct 2021 14:51:55 -0400
-X-MC-Unique: p1zGB8TrMduU9GKrjace1w-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Fri, 29 Oct 2021 14:54:24 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 008188F515;
+        by smtp-out1.suse.de (Postfix) with ESMTPS id D50A421974;
         Fri, 29 Oct 2021 18:51:53 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E18845D6CF;
-        Fri, 29 Oct 2021 18:51:34 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <CAHk-=wg_C6V_S+Aox5Fn7MuFe13ADiRVnh6UcvY4WX9JjXn3dg@mail.gmail.com>
-References: <CAHk-=wg_C6V_S+Aox5Fn7MuFe13ADiRVnh6UcvY4WX9JjXn3dg@mail.gmail.com> <163551653404.1877519.12363794970541005441.stgit@warthog.procyon.org.uk> <CAHk-=wiy4KNREEqvd10Ku8VVSY1Lb=fxTA1TzGmqnLaHM3gdTg@mail.gmail.com> <1889041.1635530124@warthog.procyon.org.uk>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     dhowells@redhat.com, Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        v9fs-developer@lists.sourceforge.net,
-        CIFS <linux-cifs@vger.kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        "open list:NFS, SUNRPC, AND..." <linux-nfs@vger.kernel.org>,
-        linux-cachefs@redhat.com, Dave Wysochanski <dwysocha@redhat.com>,
-        Shyam Prasad N <nspmangalore@gmail.com>,
-        Jeff Layton <jlayton@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 00/10] fscache: Replace and remove old I/O API
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1635533513; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xZEEWsS0omfe6n+p9ZkN0+ncu/msq8vTIZqm5m52VmM=;
+        b=D+3nhl8S82XEXqxv7QiTPQvxRdClW68MBEOVaosKePHLjVYypo9Vt8uj6gyhII7xIIoG1A
+        1HDlDRchWsIuHUrbWRdwF35Ihn6qPf4CwIBAqokIUMPOq+oYKaBv3DXq3KbLAeznCFkKRR
+        cqYV8tgtqAkKLPOyUnQdWuHO/pYDWXU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1635533513;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xZEEWsS0omfe6n+p9ZkN0+ncu/msq8vTIZqm5m52VmM=;
+        b=RMLqy2873U+JC/l4Or23eqyU3hgFzwgjZn/tNlno2M9CzAk1RxJJ488bjTp4L6m6iKaq5l
+        Zh5WvWEBkn7JCHDA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6EE6F13F79;
+        Fri, 29 Oct 2021 18:51:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id ZeeeGclCfGGoFAAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Fri, 29 Oct 2021 18:51:53 +0000
+Message-ID: <2312b5c3-ffc9-b54e-a08b-2548e3837d83@suse.de>
+Date:   Fri, 29 Oct 2021 20:51:52 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1891410.1635533494.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Fri, 29 Oct 2021 19:51:34 +0100
-Message-ID: <1891411.1635533494@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v2] drm: import DMA_BUF module namespace
+Content-Language: en-US
+To:     Marcel Ziswiler <marcel@ziswiler.com>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        dri-devel@lists.freedesktop.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Cc:     Maxime Ripard <mripard@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+        Linux Kernel Functional Testing <lkft@linaro.org>
+References: <20211027212506.3418521-1-marcel@ziswiler.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+In-Reply-To: <20211027212506.3418521-1-marcel@ziswiler.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------9UoZI03OroPWbiDYMVeDgvmE"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------9UoZI03OroPWbiDYMVeDgvmE
+Content-Type: multipart/mixed; boundary="------------2M4is0FbJj0AqLvyf1yxRAiS";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Marcel Ziswiler <marcel@ziswiler.com>,
+ Linux-Next Mailing List <linux-next@vger.kernel.org>,
+ dri-devel@lists.freedesktop.org, open list <linux-kernel@vger.kernel.org>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>
+Cc: Maxime Ripard <mripard@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Stephen Rothwell <sfr@canb.auug.org.au>,
+ Andrey Konovalov <andreyknvl@gmail.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Linus Walleij <linus.walleij@linaro.org>, Daniel Vetter <daniel@ffwll.ch>,
+ David Airlie <airlied@linux.ie>,
+ Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+ Linux Kernel Functional Testing <lkft@linaro.org>
+Message-ID: <2312b5c3-ffc9-b54e-a08b-2548e3837d83@suse.de>
+Subject: Re: [PATCH v2] drm: import DMA_BUF module namespace
+References: <20211027212506.3418521-1-marcel@ziswiler.com>
+In-Reply-To: <20211027212506.3418521-1-marcel@ziswiler.com>
 
-> But:
-> =
+--------------2M4is0FbJj0AqLvyf1yxRAiS
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-> > However, if you would rather I just removed all of fscache and (most o=
-f[*])
-> > cachefiles, that I can do.
-> =
+SGkNCg0KQW0gMjcuMTAuMjEgdW0gMjM6MjUgc2NocmllYiBNYXJjZWwgWmlzd2lsZXI6DQo+
+IEZyb206IE1hcmNlbCBaaXN3aWxlciA8bWFyY2VsLnppc3dpbGVyQHRvcmFkZXguY29tPg0K
+PiANCj4gVG9kYXkncyAtbmV4dCBmYWlscyBidWlsZGluZyBhcm02NCBkZWZjb25maWcgYXMg
+Zm9sbG93czoNCj4gDQo+IEVSUk9SOiBtb2Rwb3N0OiBtb2R1bGUgZHJtX2NtYV9oZWxwZXIg
+dXNlcyBzeW1ib2wgZG1hX2J1Zl92dW5tYXAgZnJvbQ0KPiAgIG5hbWVzcGFjZSBETUFfQlVG
+LCBidXQgZG9lcyBub3QgaW1wb3J0IGl0Lg0KPiBFUlJPUjogbW9kcG9zdDogbW9kdWxlIGRy
+bV9jbWFfaGVscGVyIHVzZXMgc3ltYm9sIGRtYV9idWZfdm1hcCBmcm9tDQo+ICAgbmFtZXNw
+YWNlIERNQV9CVUYsIGJ1dCBkb2VzIG5vdCBpbXBvcnQgaXQuDQo+IA0KPiBSZXBvcnRlZC1i
+eTogTGludXggS2VybmVsIEZ1bmN0aW9uYWwgVGVzdGluZyA8bGtmdEBsaW5hcm8ub3JnPg0K
+PiBGaXhlczogY29tbWl0IDRiMmI1ZTE0MmZmNCAoImRybTogTW92ZSBHRU0gbWVtb3J5IG1h
+bmFnZXJzIGludG8gbW9kdWxlcyIpDQo+IFNpZ25lZC1vZmYtYnk6IE1hcmNlbCBaaXN3aWxl
+ciA8bWFyY2VsLnppc3dpbGVyQHRvcmFkZXguY29tPg0KDQpJIGFkZGVkIHRoaXMgZml4IGlu
+dG8gZHJtLW1pc2MtbmV4dC4gVGhhbmtzIQ0KDQpIb3dldmVyLCBJIGhhZCB0byBpbXBvcnQg
+bGludXgtbmV4dCB3aGlsZSBkb2luZyBzby4gJ0dpdCBhbScgZGlkIGEgMy13YXkgDQptZXJn
+ZSwgd2hpY2ggbWF5IHJlc3VsdCBpbiBhIGNvbmZsaWN0IHdoZW4gdGhlIGZpeCByZWFjaGVz
+IGxpbnV4LW5leHQgDQphZ2Fpbi4gSSBhbHNvIHVwZGF0ZWQgdGhlIGNvbW1pdCBkZXNjcmlw
+dGlvbi4NCg0KQmVzdCByZWdhcmRzDQpUaG9tYXMNCg0KPiANCj4gLS0tDQo+IA0KPiBDaGFu
+Z2VzIGluIHYyOg0KPiAtIEFmdGVyIGNvbnN1bHRpbmcgdGhlIGRvY3VtZW50YXRpb24gbW92
+ZSBpdCB0byB0aGUgYm90dG9tIG9mIHRoZSBmaWxlDQo+ICAgIHdoZXJlIHRoZSBvdGhlciBN
+T0RVTEUgc3RhdGVtZW50cyBhcmUgYXMgc3VnZ2VzdGVkIGJ5IFRob21hcy4NCj4gLSBBbHNv
+IG1vdmUgaXQgZG93biB0aGVyZSBmb3IgdGhlIGRybV9nZW1fc2htZW1faGVscGVyLmMgZmls
+ZS4NCj4gDQo+ICAgZHJpdmVycy9ncHUvZHJtL2RybV9nZW1fY21hX2hlbHBlci5jICAgfCAx
+ICsNCj4gICBkcml2ZXJzL2dwdS9kcm0vZHJtX2dlbV9zaG1lbV9oZWxwZXIuYyB8IDMgKy0t
+DQo+ICAgMiBmaWxlcyBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0p
+DQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL2RybV9nZW1fY21hX2hlbHBl
+ci5jIGIvZHJpdmVycy9ncHUvZHJtL2RybV9nZW1fY21hX2hlbHBlci5jDQo+IGluZGV4IDZm
+N2IzZjhlYzA0ZDMuLjJhMzQyNDFmZWUwMjUgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvZ3B1
+L2RybS9kcm1fZ2VtX2NtYV9oZWxwZXIuYw0KPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vZHJt
+X2dlbV9jbWFfaGVscGVyLmMNCj4gQEAgLTU4MSw0ICs1ODEsNSBAQCBkcm1fZ2VtX2NtYV9w
+cmltZV9pbXBvcnRfc2dfdGFibGVfdm1hcChzdHJ1Y3QgZHJtX2RldmljZSAqZGV2LA0KPiAg
+IEVYUE9SVF9TWU1CT0woZHJtX2dlbV9jbWFfcHJpbWVfaW1wb3J0X3NnX3RhYmxlX3ZtYXAp
+Ow0KPiAgIA0KPiAgIE1PRFVMRV9ERVNDUklQVElPTigiRFJNIENNQSBtZW1vcnktbWFuYWdl
+bWVudCBoZWxwZXJzIik7DQo+ICtNT0RVTEVfSU1QT1JUX05TKERNQV9CVUYpOw0KPiAgIE1P
+RFVMRV9MSUNFTlNFKCJHUEwiKTsNCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9k
+cm1fZ2VtX3NobWVtX2hlbHBlci5jIGIvZHJpdmVycy9ncHUvZHJtL2RybV9nZW1fc2htZW1f
+aGVscGVyLmMNCj4gaW5kZXggZjczMjQ1ODJhZmU3MS4uYTViNzQzYTgzY2U5OSAxMDA2NDQN
+Cj4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL2RybV9nZW1fc2htZW1faGVscGVyLmMNCj4gKysr
+IGIvZHJpdmVycy9ncHUvZHJtL2RybV9nZW1fc2htZW1faGVscGVyLmMNCj4gQEAgLTIyLDgg
+KzIyLDYgQEANCj4gICAjaW5jbHVkZSA8ZHJtL2RybV9wcmltZS5oPg0KPiAgICNpbmNsdWRl
+IDxkcm0vZHJtX3ByaW50Lmg+DQo+ICAgDQo+IC1NT0RVTEVfSU1QT1JUX05TKERNQV9CVUYp
+Ow0KPiAtDQo+ICAgLyoqDQo+ICAgICogRE9DOiBvdmVydmlldw0KPiAgICAqDQo+IEBAIC03
+NzksNCArNzc3LDUgQEAgZHJtX2dlbV9zaG1lbV9wcmltZV9pbXBvcnRfc2dfdGFibGUoc3Ry
+dWN0IGRybV9kZXZpY2UgKmRldiwNCj4gICBFWFBPUlRfU1lNQk9MX0dQTChkcm1fZ2VtX3No
+bWVtX3ByaW1lX2ltcG9ydF9zZ190YWJsZSk7DQo+ICAgDQo+ICAgTU9EVUxFX0RFU0NSSVBU
+SU9OKCJEUk0gU0hNRU0gbWVtb3J5LW1hbmFnZW1lbnQgaGVscGVycyIpOw0KPiArTU9EVUxF
+X0lNUE9SVF9OUyhETUFfQlVGKTsNCj4gICBNT0RVTEVfTElDRU5TRSgiR1BMIHYyIik7DQo+
+IA0KDQotLSANClRob21hcyBaaW1tZXJtYW5uDQpHcmFwaGljcyBEcml2ZXIgRGV2ZWxvcGVy
+DQpTVVNFIFNvZnR3YXJlIFNvbHV0aW9ucyBHZXJtYW55IEdtYkgNCk1heGZlbGRzdHIuIDUs
+IDkwNDA5IE7DvHJuYmVyZywgR2VybWFueQ0KKEhSQiAzNjgwOSwgQUcgTsO8cm5iZXJnKQ0K
+R2VzY2jDpGZ0c2bDvGhyZXI6IEZlbGl4IEltZW5kw7ZyZmZlcg0K
 
-> I assume and think that if you just do that part first, then the
-> "convert to netfslib" of afs and ceph at that later stage will mean
-> that the fallback code will never be needed?
+--------------2M4is0FbJj0AqLvyf1yxRAiS--
 
-The netfslib coversions for afs and ceph are already in your tree and I ha=
-ve a
-patch here to do that for 9p (if you're willing to take that in the upcomi=
-ng
-merge window?).
+--------------9UoZI03OroPWbiDYMVeDgvmE
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
 
-The issue is cifs[*] and nfs.  I could leave caching in those disabled,
-pending approved patches for those filesystems.  This would mean that I
-wouldn't need the fallback code.
+-----BEGIN PGP SIGNATURE-----
 
-An alternative is that I could move the "fallback" code into fs/nfs/fscach=
-e.c
-and fs/cifs/fscache.c if that would be easier and merge it into the functi=
-ons
-there.  The problem will come when the cache wants to do I/O in larger uni=
-ts
-than page size to suit its own block size[**].
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmF8QsgFAwAAAAAACgkQlh/E3EQov+CL
+qRAAycQJlJBfMdyTGJf46MNjORkfrWlh7GAvn7ohXgbvd7vXvZjB7wO/xoZhsevjLPgKZJ0jdOaD
++mZW1hReUmiOFHUijkAs+JoRKDvhZ70a+N3y8qP8/I/D+qVqiiMgHoGFW9ZB1BdBDpN0pAB8lFtu
+jLycKeogxwYAeocuHzIwc799f9zIwvo6W1lE99DYH0se86kmLwtcoiASDGB/J1Tlisq7Us8qECzJ
+yJoM3p2LIBH2E2dxzvh8O97X/ec0nNPg2h/FawJUzrFSoXEsma6byTO59awwQRxo+T3FpALI4sxP
+uvB7V0r+60QuT8nkDcJFVKlurSzXQPO0zUMCiVSdLxv2r+GiqWJC2qKL5JzGIDjmsiUCUtnJiGCh
+2NzoDZjhbvC9BEPxii/GbjPeWKMfcQpkbs5t0DatYIMdN9dtQww/SrpwO0gZfVpBs4FJsWEZDQ7V
+K5rJZqyuP/ZVlfK7s55dPGR0FoxgGXmRz/cPZ0O59fOL/s5zMIWMPsumc64JmcKYDK3BSLCrnXu7
+oROaUGx5IO3cYyd04mIQPXb85hYsYt8/vBiovgLo+IgW7M5xKSY7otptaB5Ks7uORINKlKbcRFjo
+R5ok0eQsTyEPApa1ElTzIZQ3AYsEc2c0C9bQ8cEsbzgzJH1f3NmSGSRNoqXVoXlI/FuRSLerp/6h
+FAs=
+=f6UX
+-----END PGP SIGNATURE-----
 
-David
-
-[*] As it happens, it turns out that cifs seems to have a bug in it that
-causes the entire cache for a superblock to be discarded each time that
-superblock is mounted.
-
-[**] At some point the cache *has* to start keeping track of what data it =
-is
-holding rather than relying on bmap/SEEK_DATA/SEEK_HOLE to get round the
-extent-bridging problem.  I'm trying to take a leaf out of the book of oth=
-er
-caching filesystems and use larger block sizes (e.g. 256K) to reduce the
-overhead of cache metadata.
-
+--------------9UoZI03OroPWbiDYMVeDgvmE--
