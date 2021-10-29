@@ -2,115 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1F6143FF4E
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 17:17:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38D7043FF52
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 17:18:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229936AbhJ2PUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 11:20:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56808 "EHLO
+        id S229945AbhJ2PVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 11:21:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbhJ2PUO (ORCPT
+        with ESMTP id S229607AbhJ2PVC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 11:20:14 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF3FEC061570;
-        Fri, 29 Oct 2021 08:17:45 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id v193so9533078pfc.4;
-        Fri, 29 Oct 2021 08:17:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=vegS3sUKUhI4LTqdf1vmY5PuKsxIFyPk9X+XdyTTR30=;
-        b=NiCS6JfInlfspOZjmAZC7As+qpH/lP4Hi6xKlazp7dwuEXxrrvnvyKjUHxDnxd4URR
-         g90vl2XwlwpRA6DiLzWFX9jvDiK9yMjgjPjjkabut9nIeoM7z6kY82AO5X5fhW2skFRs
-         q04EdyGJEDkaIt4PcrIiSELCAZccQ+wqFsLagtHv4qXA/ka8wMO0gWrp2eAa5x5abd2B
-         jyG2shwRdbsM7NseIxk7zamEIL5RHw09zphMCQUb3Q5LqQBJWSFO8xJXU4KnSnSH2oaO
-         7IfOZD5nt39p5v4hTunmUe7h3aw891j6Mq2r/BKLL0V8U7JepJm4k58WQ2N5VKCo4J8W
-         VXwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vegS3sUKUhI4LTqdf1vmY5PuKsxIFyPk9X+XdyTTR30=;
-        b=AK0rnlQfVHiYdhUQvogu7c1ZkvLEN2i1XQBVsRSBc8PmQAQg6SN2LcAETjVu8KlYVK
-         G2BLpuzoFYXVsp3/qxl3AOQz21bFCsR+tN+HZ2SfcWBfUrM3vUDGfeMG6ZdCq/n1qwsZ
-         LhqT8hPYNIVGIoIwG1wpa2xKv23xHg4QJFmf/Hx3gZelhBBV3OuQexCmayj9W2tcykLb
-         edbkTxiYC+cC2sCzD6hIAQ9e2cG3PUj7yr1nsAviIi20WGdiLxDkf60HxBSZ6+bvTToH
-         p1t0sv1HqTSgrmzbioX1AElbP4RzfjDL5aQVdhAIjRBvv+uq8zIuoeb3/iOD/BM6y40l
-         NyIA==
-X-Gm-Message-State: AOAM532Kv2H9NQijZGm1rUZX7mlsIjLrz47Wo5pvDKqJFN1b9mtTBnAP
-        swNs3jf2R9enY57MueDfVmV+Bsz7FStPUQ==
-X-Google-Smtp-Source: ABdhPJxaTQNUfcpkGprFQcnMx+1zSK5EZ9g3G5DdqUXmLcZNS9s9Md1Wq8AmC1xdfvo3pZ+NhDlekg==
-X-Received: by 2002:a05:6a00:14cb:b0:47f:bf22:329e with SMTP id w11-20020a056a0014cb00b0047fbf22329emr530241pfu.58.1635520665085;
-        Fri, 29 Oct 2021 08:17:45 -0700 (PDT)
-Received: from [0.0.0.0] ([150.109.126.7])
-        by smtp.gmail.com with ESMTPSA id m7sm6013660pgn.32.2021.10.29.08.17.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Oct 2021 08:17:44 -0700 (PDT)
-Subject: Re: [PATCH bpf-next] bpf: Allow bpf_d_path in perf_event_mmap
-To:     Martin KaFai Lau <kafai@fb.com>,
-        Florent Revest <revest@chromium.org>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kpsingh@kernel.org, jackmanb@google.com,
-        linux-kernel@vger.kernel.org
-References: <20211028164357.1439102-1-revest@chromium.org>
- <20211028224653.qhuwkp75fridkzpw@kafai-mbp.dhcp.thefacebook.com>
-From:   Hengqi Chen <hengqi.chen@gmail.com>
-Message-ID: <10a745cc-5942-70ff-483f-a5c77a9776a2@gmail.com>
-Date:   Fri, 29 Oct 2021 23:17:41 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Fri, 29 Oct 2021 11:21:02 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F16AC061570
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 08:18:34 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mgTe9-0005Hf-Pj; Fri, 29 Oct 2021 17:18:21 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mgTe6-00063Y-Gs; Fri, 29 Oct 2021 17:18:18 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mgTe6-0003Rp-Fd; Fri, 29 Oct 2021 17:18:18 +0200
+Date:   Fri, 29 Oct 2021 17:18:15 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     =?utf-8?B?TWHDrXJh?= Canal <maira.canal@usp.br>
+Cc:     Sean Young <sean@mess.org>, kernel test robot <lkp@intel.com>,
+        mchehab@kernel.org, thierry.reding@gmail.com,
+        Lee Jones <lee.jones@linaro.org>, llvm@lists.linux.dev,
+        kbuild-all@lists.01.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org
+Subject: Re: [PATCH v4] media: rc: pwm-ir-tx: Switch to atomic PWM API
+Message-ID: <20211029151815.kn4ya7sk2bsrcrwo@pengutronix.de>
+References: <YXlxhpZWf2mxJaMi@fedora>
+ <20211028064513.guziv6uaivzlk6ki@pengutronix.de>
+ <20211028091442.GA16514@gofer.mess.org>
+ <20211028111535.x7xgz7domx2lpyfh@pengutronix.de>
+ <20211028122610.GA18767@gofer.mess.org>
+ <20211028180516.t2tpfbzztm7s6cqm@pengutronix.de>
+ <20211029071608.GA28997@gofer.mess.org>
+ <20211029110602.uugnbm5vtfpghiwh@pengutronix.de>
+ <20211029115412.GA32383@gofer.mess.org>
+ <CAH7FV3njgZ7sOnZZF88KZ2C4UwqxoodpUuLsnucvBxYXmaZo1Q@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20211028224653.qhuwkp75fridkzpw@kafai-mbp.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="whsgya2kubn3yddj"
+Content-Disposition: inline
+In-Reply-To: <CAH7FV3njgZ7sOnZZF88KZ2C4UwqxoodpUuLsnucvBxYXmaZo1Q@mail.gmail.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--whsgya2kubn3yddj
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 10/29/21 6:46 AM, Martin KaFai Lau wrote:
-> On Thu, Oct 28, 2021 at 06:43:57PM +0200, Florent Revest wrote:
->> Allow the helper to be called from the perf_event_mmap hook. This is
->> convenient to lookup vma->vm_file and implement a similar logic as
->> perf_event_mmap_event in BPF.
-> From struct vm_area_struct:
-> 	struct file * vm_file;          /* File we map to (can be NULL). */
-> 
-> Under perf_event_mmap, vm_file won't be NULL or bpf_d_path can handle it?
-> 
+Hello,
 
-Hmm, is perf_event_mmap a proper tracing target ?
-It does not appear in /sys/kernel/debug/tracing/available_filter_functions.
+On Fri, Oct 29, 2021 at 09:08:29AM -0300, Ma=EDra Canal wrote:
+> I would like to thank you guys for the attention and this interesting
+> discussion. I'm looking for some work in the kernel and I would like
+> to know if you guys have any suggestions for beginner tasks in this
+> subsystem. I have solid knowledge in C programming, but I started in
+> the kernel a couple of weeks ago. Anyway, thank you for all the
+> feedback.
 
-I tried using kprobe/fentry to attach to it, both failed.
+If you want something mathematically demanding, you can pick up the
+patch I pointed out to Sean, I think I won't find the time in the near
+future to work on this.
 
->>
->> Signed-off-by: Florent Revest <revest@chromium.org>
->> ---
->>  kernel/trace/bpf_trace.c | 3 +++
->>  1 file changed, 3 insertions(+)
->>
->> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
->> index cbcd0d6fca7c..f6e301c775a5 100644
->> --- a/kernel/trace/bpf_trace.c
->> +++ b/kernel/trace/bpf_trace.c
->> @@ -922,6 +922,9 @@ BTF_ID(func, vfs_fallocate)
->>  BTF_ID(func, dentry_open)
->>  BTF_ID(func, vfs_getattr)
->>  BTF_ID(func, filp_close)
->> +#ifdef CONFIG_PERF_EVENTS
->> +BTF_ID(func, perf_event_mmap)
->> +#endif
->>  BTF_SET_END(btf_allowlist_d_path)
->>  
->>  static bool bpf_d_path_allowed(const struct bpf_prog *prog)
->> -- 
->> 2.33.0.1079.g6e70778dc9-goog
->>
+The background is that PWM drivers have to round most requests and there
+is no uniformity among drivers and so if a consumer (e.g. the pwm-ir
+driver) requests say 20000 ns, it will get 18000 from some drivers and
+maybe 25000 from others. So the idea is to have a function
+pwm_round_state that has fixed rounding rules such that a consumer can
+pick the best setting for their use-case.
 
---Hengqi
+Something more mechanic in the PWM area is to convert drivers that still
+implement .config/.enable/.disable to .apply. See
+http://patchwork.ozlabs.org/project/linux-pwm/patch/20211029105617.210178-1=
+-u.kleine-koenig@pengutronix.de/
+for an example. The well-known good template is pwm_apply_legacy() after
+applying
+http://patchwork.ozlabs.org/project/linux-pwm/list/?series=3D251456 .
+
+If you want something more global: The prototype of the remove callbacks
+for platform devices returns an int:
+
+	https://elixir.bootlin.com/linux/v5.15-rc7/source/include/linux/platform_d=
+evice.h#L206
+
+However the returned value is (nearly) ignored by the driver core:
+
+	https://elixir.bootlin.com/linux/v5.15-rc7/source/drivers/base/platform.c#=
+L1433
+
+The longterm goal is to change the prototype of .remove to return void.
+As a first step making all functions return 0 is a worthwile project.
+
+The same problem exists for several other buses, one patch I sent to
+work on this goal for i2c is:
+
+	https://lore.kernel.org/r/20211021105657.72572-1-u.kleine-koenig@pengutron=
+ix.de
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--whsgya2kubn3yddj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmF8ELQACgkQwfwUeK3K
+7AlCMQf/RVnL1UcvsIreO+vijfPhlLHR119QMz4m3LCKpkYMdv1MxstUHqJnRFRm
+Q0dN7kOeSnKJgi2jckQQOneVYABnB4vGHMuygSUFZSTXnrizUxRc94rMfk+wvGR4
+LbTqhpdi/3Tm/EPKKEZxyAqphA0iTETnLWmeNz34KozaK0IZ3NTlJWdyZh2axb3f
+r8+f2p33sPTCrzwOl0DkWfZ+EW4JCrLlGHcxDqZg61WMkwD1ujYd0meVBxsLA8aI
+xSLXYL3iHlyY7INCMFcKMQmYDBv6zbkChV6oUO906IbsHZ8/0a1yrWCelAD3Zjmv
+KKOC1V8M7kUBtHX0Aqk87HRaFSRBKQ==
+=0Is5
+-----END PGP SIGNATURE-----
+
+--whsgya2kubn3yddj--
