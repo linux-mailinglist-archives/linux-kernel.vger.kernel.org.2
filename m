@@ -2,152 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4095443FF94
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 17:29:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8647B43FF8D
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 17:29:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229851AbhJ2PcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 11:32:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59544 "EHLO
+        id S230218AbhJ2Pbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 11:31:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231132AbhJ2PcC (ORCPT
+        with ESMTP id S229807AbhJ2Pbr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 11:32:02 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 333BBC06120A
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 08:29:33 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id bu18so4591240lfb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 08:29:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=zb5to8IVmbXLcOuzy5HbR2D8SvYMJeBSxxm0t+10yes=;
-        b=jJdFEoGn8EIaT8Neu3EZWdJ0T5kC3jtTFduArBVtuDx6mWscceXNrcx8A7PEO5SBFt
-         VxxBXXtewNAOyGL9NISwbn8uqUJ5agsj+UemHZbI2/6GXh0Tr7GVCB0sMxna8iiURDvP
-         v9RHYsHtNaNk3Z5iFWB2866iTaQva51DvN9TpWrWrCbscBsIE0cO9GtkiubMAwsrOnIj
-         yM8X/+Go+hn6MacM8IB9wZCUBNon7GCbqfRHOQnFdCG8KGX3ZiGnYkm2SdJYeEhRuB4s
-         y7d2vyxzyYm6MajX8LroWwZMrNJxTMCADiRhF8UTkbgJfaP60pk1oD6GF5HsVYx/WHnM
-         NnEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=zb5to8IVmbXLcOuzy5HbR2D8SvYMJeBSxxm0t+10yes=;
-        b=79VNPj80IliKRPVZgExSGF0QndQUxNvL1Oxs0/BE2iIvb4/V7/ovnIeAPGKg5dTpHZ
-         1//C2J/eMlYOHTOeISAISUHeTvVKw7fV1MX9tgN6ZnRMSKAOhrMrEHOu9iTdsSokloCB
-         +oATkNQ83/SOyIhfjkT0goDQVHuQ8gjchkHbUfSJIR4NBj44fjBIMvvqrszrTFJes/Ha
-         TzfXVToIu8lMqJ1G5jL1K6goCz30eXeGknGVPmhpK5u6uWYAf91HLSiohO+Ug5numPWw
-         3SjRwF1eX/PxjSL48+XjEb+/LmJnkIu5wytiduh5so8+dxqHtdpVd3j/wRJ4q6Rylpao
-         3wXQ==
-X-Gm-Message-State: AOAM5319ZtJpp/UpyOHmDi4vSXHB1DEUd+P1h5un+BvrJaYeQQnwasQg
-        tcgRXc9RfiyIsQ75kMDz9sRrVNT4ik8j1JGTO0oMTQ==
-X-Google-Smtp-Source: ABdhPJz3Gt3DD4ggJlW5a/iffQ9H3If6jJ5fMxiXKNlpkM72XuoMKE2zri1Er8kmZWdw04yhv5F2a0V1Eko88RxRgy4=
-X-Received: by 2002:ac2:5328:: with SMTP id f8mr11555895lfh.233.1635521371526;
- Fri, 29 Oct 2021 08:29:31 -0700 (PDT)
+        Fri, 29 Oct 2021 11:31:47 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E1AFC061766;
+        Fri, 29 Oct 2021 08:29:19 -0700 (PDT)
+From:   =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
+        s=mail; t=1635521356;
+        bh=47S71ww0oeAgpF1M5AvPvZs+YgAcY4mGa2+Jg6+IVus=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=dqjLxADx+7gG42MpSHV41hdPF7oE8VC2gn3Nd0mYq09l+Dj13qehsu/zATD1RkiQK
+         2Dp1ooRYK6APQr06sfhYosRfRoK2IamEmruabbCz2J0wW9SSVdqnHrFBhi1rWHKbCa
+         rNenwe7bWPfHWgHFozSeXyTrMtYa91+Yt5F4UhqI=
+To:     linux-input@vger.kernel.org
+Cc:     =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Jiri Kosina <jkosina@suse.cz>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: [PATCH 1/6] HID: intel-ish-hid: add support for MODULE_DEVICE_TABLE()
+Date:   Fri, 29 Oct 2021 17:28:56 +0200
+Message-Id: <20211029152901.297939-2-linux@weissschuh.net>
+X-Mailer: git-send-email 2.33.1
+In-Reply-To: <20211029152901.297939-1-linux@weissschuh.net>
+References: <20211029152901.297939-1-linux@weissschuh.net>
 MIME-Version: 1.0
-References: <20211025224032.21012-1-digetx@gmail.com> <20211025224032.21012-21-digetx@gmail.com>
- <09c05206-c0e5-9a25-8ffa-b9291f6ea5ae@gmail.com>
-In-Reply-To: <09c05206-c0e5-9a25-8ffa-b9291f6ea5ae@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 29 Oct 2021 17:28:55 +0200
-Message-ID: <CAPDyKFoa5eQTrNxyiFevUCWitUecX=hi=y7qv1dC2mqk0+0XBA@mail.gmail.com>
-Subject: Re: [PATCH v14 20/39] pwm: tegra: Add runtime PM and OPP support
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-pwm@vger.kernel.org,
-        linux-mmc@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-clk@vger.kernel.org, David Heidelberg <david@ixit.cz>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Oct 2021 at 17:20, Dmitry Osipenko <digetx@gmail.com> wrote:
->
-> 26.10.2021 01:40, Dmitry Osipenko =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > +     ret =3D devm_pm_runtime_enable(&pdev->dev);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     ret =3D devm_tegra_core_dev_init_opp_table_common(&pdev->dev);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     ret =3D pm_runtime_resume_and_get(&pdev->dev);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> >       /* Set maximum frequency of the IP */
-> > -     ret =3D clk_set_rate(pwm->clk, pwm->soc->max_frequency);
-> > +     ret =3D dev_pm_opp_set_rate(pwm->dev, pwm->soc->max_frequency);
-> >       if (ret < 0) {
-> >               dev_err(&pdev->dev, "Failed to set max frequency: %d\n", =
-ret);
-> > -             return ret;
-> > +             goto put_pm;
-> >       }
-> >
-> >       /*
-> > @@ -278,7 +294,7 @@ static int tegra_pwm_probe(struct platform_device *=
-pdev)
-> >       if (IS_ERR(pwm->rst)) {
-> >               ret =3D PTR_ERR(pwm->rst);
-> >               dev_err(&pdev->dev, "Reset control is not found: %d\n", r=
-et);
-> > -             return ret;
-> > +             goto put_pm;
-> >       }
-> >
-> >       reset_control_deassert(pwm->rst);
-> > @@ -291,10 +307,15 @@ static int tegra_pwm_probe(struct platform_device=
- *pdev)
-> >       if (ret < 0) {
-> >               dev_err(&pdev->dev, "pwmchip_add() failed: %d\n", ret);
-> >               reset_control_assert(pwm->rst);
-> > -             return ret;
-> > +             goto put_pm;
-> >       }
-> >
-> > +     pm_runtime_put(&pdev->dev);
-> > +
-> >       return 0;
-> > +put_pm:
-> > +     pm_runtime_put_sync_suspend(&pdev->dev);
-> > +     return ret;
-> >  }
-> >
-> >  static int tegra_pwm_remove(struct platform_device *pdev)
-> > @@ -305,20 +326,44 @@ static int tegra_pwm_remove(struct platform_devic=
-e *pdev)
-> >
-> >       reset_control_assert(pc->rst);
-> >
-> > +     pm_runtime_force_suspend(&pdev->dev);
->
-> I just noticed that RPM core doesn't reset RPM-enable count of a device
-> on driver's unbind (pm_runtime_reinit). It was a bad idea to use
-> devm_pm_runtime_enable() + pm_runtime_force_suspend() here, since RPM is
-> disabled twice on driver's removal, and thus, RPM will never be enabled
-> again.
->
-> I'll fix it for PWM and other drivers in this series, in v15.
+This allows to selectively autoload drivers for ISH devices.
+Currently all ISH drivers are loaded for all systems having any ISH
+device.
 
-Good catch - and sorry for not spotting it while reviewing!
+Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
 
-Maybe devm_pm_runtime_enable() isn't that useful after all? Should we
-suggest to remove it so others don't fall into the same trap?
+---
 
-Kind regards
-Uffe
+Cc: linux-kbuild@vger.kernel.org
+Cc: linux-input@vger.kernel.org
+Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc: Jiri Kosina <jkosina@suse.cz>
+Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc: Hans de Goede <hdegoede@redhat.com>
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Michal Marek <michal.lkml@markovi.net>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+---
+ include/linux/mod_devicetable.h   | 13 +++++++++++++
+ scripts/mod/devicetable-offsets.c |  3 +++
+ scripts/mod/file2alias.c          | 24 ++++++++++++++++++++++++
+ 3 files changed, 40 insertions(+)
+
+diff --git a/include/linux/mod_devicetable.h b/include/linux/mod_devicetable.h
+index ae2e75d15b21..befbf53c4b7c 100644
+--- a/include/linux/mod_devicetable.h
++++ b/include/linux/mod_devicetable.h
+@@ -895,4 +895,17 @@ struct dfl_device_id {
+ 	kernel_ulong_t driver_data;
+ };
+ 
++/* ISHTP (Integrated Sensor Hub Transport Protocol) */
++
++#define ISHTP_MODULE_PREFIX	"ishtp:"
++
++/**
++ * struct ishtp_device_id - ISHTP device identifier
++ * @guid_string: 36 char string of the form fa50ff2b-f2e8-45de-83fa-65417f2f49ba
++ * @context: pointer to driver specific data
++ */
++struct ishtp_device_id {
++	guid_t guid;
++};
++
+ #endif /* LINUX_MOD_DEVICETABLE_H */
+diff --git a/scripts/mod/devicetable-offsets.c b/scripts/mod/devicetable-offsets.c
+index cc3625617a0e..c0d3bcb99138 100644
+--- a/scripts/mod/devicetable-offsets.c
++++ b/scripts/mod/devicetable-offsets.c
+@@ -259,5 +259,8 @@ int main(void)
+ 	DEVID_FIELD(dfl_device_id, type);
+ 	DEVID_FIELD(dfl_device_id, feature_id);
+ 
++	DEVID(ishtp_device_id);
++	DEVID_FIELD(ishtp_device_id, guid);
++
+ 	return 0;
+ }
+diff --git a/scripts/mod/file2alias.c b/scripts/mod/file2alias.c
+index 49aba862073e..5258247d78ac 100644
+--- a/scripts/mod/file2alias.c
++++ b/scripts/mod/file2alias.c
+@@ -115,6 +115,17 @@ static inline void add_uuid(char *str, uuid_le uuid)
+ 		uuid.b[12], uuid.b[13], uuid.b[14], uuid.b[15]);
+ }
+ 
++static inline void add_guid(char *str, guid_t guid)
++{
++	int len = strlen(str);
++
++	sprintf(str + len, "%02X%02X%02X%02X-%02X%02X-%02X%02X-%02X%02X-%02X%02X%02X%02X%02X%02X",
++		guid.b[3], guid.b[2], guid.b[1], guid.b[0],
++		guid.b[5], guid.b[4], guid.b[7], guid.b[6],
++		guid.b[8], guid.b[9], guid.b[10], guid.b[11],
++		guid.b[12], guid.b[13], guid.b[14], guid.b[15]);
++}
++
+ /**
+  * Check that sizeof(device_id type) are consistent with size of section
+  * in .o file. If in-consistent then userspace and kernel does not agree
+@@ -1380,6 +1391,18 @@ static int do_mhi_entry(const char *filename, void *symval, char *alias)
+ 	return 1;
+ }
+ 
++/* Looks like: ishtp:{guid} */
++static int do_ishtp_entry(const char *filename, void *symval, char *alias)
++{
++	DEF_FIELD(symval, ishtp_device_id, guid);
++
++	strcpy(alias, ISHTP_MODULE_PREFIX "{");
++	add_guid(alias, guid);
++	strcat(alias, "}");
++
++	return 1;
++}
++
+ static int do_auxiliary_entry(const char *filename, void *symval, char *alias)
+ {
+ 	DEF_FIELD_ADDR(symval, auxiliary_device_id, name);
+@@ -1499,6 +1522,7 @@ static const struct devtable devtable[] = {
+ 	{"auxiliary", SIZE_auxiliary_device_id, do_auxiliary_entry},
+ 	{"ssam", SIZE_ssam_device_id, do_ssam_entry},
+ 	{"dfl", SIZE_dfl_device_id, do_dfl_entry},
++	{"ishtp", SIZE_ishtp_device_id, do_ishtp_entry},
+ };
+ 
+ /* Create MODULE_ALIAS() statements.
+-- 
+2.33.1
+
