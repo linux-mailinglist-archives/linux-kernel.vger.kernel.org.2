@@ -2,96 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3B31440313
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 21:24:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DFA844031C
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 21:25:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230313AbhJ2T1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 15:27:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56494 "EHLO
+        id S231157AbhJ2T1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 15:27:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230126AbhJ2T1O (ORCPT
+        with ESMTP id S230202AbhJ2T1p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 15:27:14 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CE1CC061714
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 12:24:45 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id m21so10730161pgu.13
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 12:24:45 -0700 (PDT)
+        Fri, 29 Oct 2021 15:27:45 -0400
+Received: from mail-ua1-x92f.google.com (mail-ua1-x92f.google.com [IPv6:2607:f8b0:4864:20::92f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3210AC061766
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 12:25:16 -0700 (PDT)
+Received: by mail-ua1-x92f.google.com with SMTP id f4so20037722uad.4
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 12:25:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4QSxhE5r/ZgGfaD75aNjGarCFi6+5alziBCSKa958aU=;
-        b=ZnRBubYecE2jp7wawPeqf/8TidZUhbRkgqVxwO2ap7/vROnjkIGUt7ejft0sAYQVsr
-         7XhvsrJm7ien9kMIwTjciAMaJXK/XSp4KChmSlu3j+9WUocHmmLt10ocTLwg53a6ZR4s
-         vSEI5kygt/0EvapJ08VR1kcnriVth9TlJtRJE=
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iOhkeO72w3GegdH+UyM0cQ4je/Oq7dw9gY0y8l00Dps=;
+        b=BpYkTOMfIuxl1LvyX+8FrzDYBlDk2ILzW92lnelWdll4LauIavVrbIPnAdsBba0Bay
+         9GJPOu/gc7iBsuroJcRmM5lFQTkB4KMxWzntnKzRtuF6APyI1rZYLwj1RWgS2b3AqL28
+         W1ZOYWW/N2Ert+OifD7ruHFgHUxPG7dTZIav8RyjyScTzUYcLo9O3a45doCe1j8rvHTM
+         4cJz19rDuihHt7YuFsYSwrKnZzIwaThqghVxPcpbJmMU2HXGA+43vMqONmFbciTK/TYL
+         GaZsyRWAUFJafjTZ4bOeV8XLUAVo7C+kccYIKaEwihABlZwGP36nNgrQTvIGBKkyl5nc
+         gx1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4QSxhE5r/ZgGfaD75aNjGarCFi6+5alziBCSKa958aU=;
-        b=D+40h4+sfHB5rKGPyr6PjCixzj51KAmHNbay1pnlp3iUon5v6fFLzTGsSbOglpIC1R
-         TuMAHjACnbvFxhg+LWnT7rlSBKLf6h7IMLKilibMmRI1q6EWa4brRpHmRJwUF0G5MHhT
-         FwKSfRl7kKqhqr9TVrEmii8ras64rWM/lwTXY3o/PtEo7LMwRhzPygM3G9CrkjCfC5tz
-         LV+D7BZdHDmuGiBptxFgeQCPcxJRhEk8Pvv5comqWTbjwFhOgH1EiaB8Tn0C5n9RSBuP
-         fP3wT+KCHSbVHwmd7GtJl/2dppsh34HMYYQlMhpbBcSX7l8WmFwSwfziIARue4QkEp6p
-         TMGw==
-X-Gm-Message-State: AOAM532llB+2g2rchbGpAjEVw/qdlye2mewZfJ0oMAU9x/GD8MG6iHSD
-        AP8sZ2o5T1CJXf0HXUEL0wPdIQ==
-X-Google-Smtp-Source: ABdhPJyhCmbPKiOFMh9Z48rlxvioHBI5YSAgRoSyK9zemZZxBIizZ5InFQJ8XdcUYZSh9zHXevCv8A==
-X-Received: by 2002:a05:6a00:1a8d:b0:480:203b:4ccb with SMTP id e13-20020a056a001a8d00b00480203b4ccbmr260068pfv.25.1635535484778;
-        Fri, 29 Oct 2021 12:24:44 -0700 (PDT)
-Received: from evgreen-glaptop.lan ([2601:646:c780:5ba8:ee49:1984:f0a3:a0bd])
-        by smtp.gmail.com with ESMTPSA id c22sm7518317pfv.69.2021.10.29.12.24.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Oct 2021 12:24:44 -0700 (PDT)
-From:   Evan Green <evgreen@chromium.org>
-To:     Pavel Machek <pavel@ucw.cz>,
-        "Rafael J . Wysocki" <rafael@kernel.org>
-Cc:     Evan Green <evgreen@chromium.org>, Len Brown <len.brown@intel.com>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: [PATCH] PM / hibernate: Fix snapshot partial write lengths
-Date:   Fri, 29 Oct 2021 12:24:22 -0700
-Message-Id: <20211029122359.1.I1e23f382fbd8beb19fe1c06d70798b292012c57a@changeid>
-X-Mailer: git-send-email 2.31.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iOhkeO72w3GegdH+UyM0cQ4je/Oq7dw9gY0y8l00Dps=;
+        b=pWy3H2vOa8Eg/LnTpLo2vyOqHRN292eKfrSVxOTp8sqmCj6Y3gAd0wWlhCzHH1JVQd
+         j/JRzivoIFzDDyZ/EFK0KRs7dLwWHxq3fIQJiiQuLI1APjNO3ieJOvpg6dKyaQ87611c
+         eKa5JkmUx4ELUV8DG9u3O4SSCzFIujT8X6/Yv7kECGnPqSszBc9D9RrE2Yb7IQg6qv4s
+         qsCjtP+7dlajop/VZ4/jU6ENmpLW9NEu3/CeW2k4YlcD9IEJ+Ia+95fySgTIS9x/X2JS
+         gAWpd4idtgd8mbouAqiL9wqHifvmFWNYcY6owT8RhEsYXWfex1rW3MHn7lzCpGQ+c23O
+         MiqQ==
+X-Gm-Message-State: AOAM531EAvBtylTdUTaIjyBT7gPMzLGTpJvnNLAO9ZhTrJX/VUcMwa2B
+        JDId07EMBg/6dwMVbw8K/2LgncYUbguyDRJ+uWveZw==
+X-Google-Smtp-Source: ABdhPJxLz+zekne4P7GYaeUWmfz8nQqPqtIf+Pn0XUP0NhGOqQedWV6arFH39XiTpXDM/Najz07v14Z2+6erQK70Hlg=
+X-Received: by 2002:a67:f1ca:: with SMTP id v10mr15087571vsm.55.1635535515312;
+ Fri, 29 Oct 2021 12:25:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211028183527.3050-1-semen.protsenko@linaro.org>
+ <20211028183527.3050-4-semen.protsenko@linaro.org> <b9c33def-6b12-1e5a-4449-b1e0869a0e3a@roeck-us.net>
+ <2a5ff8d0-c665-e25e-cb40-51326db2e26a@canonical.com>
+In-Reply-To: <2a5ff8d0-c665-e25e-cb40-51326db2e26a@canonical.com>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Fri, 29 Oct 2021 22:25:03 +0300
+Message-ID: <CAPLW+4kd0Woxenf2DUJTRD2zCn9gSg6Wq0Vbt+EjSM5zeTDvHQ@mail.gmail.com>
+Subject: Re: [PATCH 3/7] watchdog: s3c2410: Make reset disable optional
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-watchdog@vger.kernel.org,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-snapshot_write() is inappropriately limiting the amount of data that can
-be written in cases where a partial page has already been written. For
-example, one would expect to be able to write 1 byte, then 4095 bytes to
-the snapshot device, and have both of those complete fully (since now
-we're aligned to a page again). But what ends up happening is we write 1
-byte, then 4094/4095 bytes complete successfully.
+On Fri, 29 Oct 2021 at 11:04, Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
+>
+> On 29/10/2021 02:16, Guenter Roeck wrote:
+> > On 10/28/21 11:35 AM, Sam Protsenko wrote:
+> >> Not all SoCs have AUTOMATIC_WDT_RESET_DISABLE register, examples are
+> >> Exynos850 and Exynos9. On such chips reset disable register shouldn't be
+> >> accessed. Provide a way to avoid handling that register. This is done by
+> >> introducing separate callbacks to driver data structure: one for reset
+> >> disable register, and one for mask reset register. Now those callbacks
+> >> can be checked and called only when those were set in driver data.
+> >>
+> >> This commit doesn't bring any functional change to existing devices, but
+> >> merely provides an infrastructure for upcoming chips support.
+> >>
+> >
+> > That doesn't explain why the callbacks are needed instead of additional
+> > feature flags.
+> >
+>
+> Or why not skipping the disable operations if disable_reg is not provided?
+>
 
-The reason is that simple_write_to_buffer()'s second argument is the
-total size of the buffer, not the size of the buffer minus the offset.
-Since simple_write_to_buffer() accounts for the offset in its
-implementation, snapshot_write() can just pass the full page size
-directly down.
+Yeah, that was my first thought too :) Then I figured disable_reg is
+offset, and 0x0 is a valid offset too. Anyway, I'll rework this patch
+using quirks, as discussed above. Will send v2 soon.
 
-Signed-off-by: Evan Green <evgreen@chromium.org>
----
-
- kernel/power/user.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/power/user.c b/kernel/power/user.c
-index 740723bb388524..ad241b4ff64c58 100644
---- a/kernel/power/user.c
-+++ b/kernel/power/user.c
-@@ -177,7 +177,7 @@ static ssize_t snapshot_write(struct file *filp, const char __user *buf,
- 		if (res <= 0)
- 			goto unlock;
- 	} else {
--		res = PAGE_SIZE - pg_offp;
-+		res = PAGE_SIZE;
- 	}
- 
- 	if (!data_of(data->handle)) {
--- 
-2.31.0
-
+>
+> Best regards,
+> Krzysztof
