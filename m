@@ -2,153 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95539440324
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 21:26:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9526E440327
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 21:26:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231260AbhJ2T2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 15:28:34 -0400
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:22304 "EHLO
-        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230126AbhJ2T2c (ORCPT
+        id S230506AbhJ2T3K convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 29 Oct 2021 15:29:10 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:28417 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229441AbhJ2T3J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 15:28:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1635535563; x=1667071563;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=uGHBpPFpA4qUYUoXG0HiEyOTZWgjNKZOPCVYkcfWzrE=;
-  b=m8cjQJLsK3s7PliHmpwvXeaUkEFzII0nUM2KEfGOptjfM9/yx4mX9ZKf
-   7AfvdoGBWco7VR848HyQejUo9vUyu2BiAPMILbXY3iel9Ej0Wh2v16uJJ
-   qCZvYpyfE2EEqzjEL7v13iA0+uXXl4nWucX00aEq0fX4JC3WG3wMLUbX4
-   L06hyZyudg+6R4VC9kvWDm2jnytMtl/0Ld388Wpvc9/LnHWCOnrwIsPdy
-   abkyUV3sENZcoscF7wd3Ir4ggnGhXhTVTVr9lMKP3fpuVWZiW668iFeU5
-   Hha+GWlCn2QngDsv4kFm70WwgAAXptb/s0/cRsx0bOUrSy/eW5s6cgD7V
-   g==;
-X-IronPort-AV: E=Sophos;i="5.87,193,1631548800"; 
-   d="scan'208";a="295945844"
-Received: from mail-bn8nam11lp2170.outbound.protection.outlook.com (HELO NAM11-BN8-obe.outbound.protection.outlook.com) ([104.47.58.170])
-  by ob1.hgst.iphmx.com with ESMTP; 30 Oct 2021 03:26:02 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RHEVdNgU5bCmYVhZkHYSmZ3bAP32wOaZv2PgZzdwShbojjmhHFYIV1jKxRjSgr1Gntqo726S4780BQm2mQZ+l2N1KY9F6ChZniyRkSodG0ztTlMtQLggqYPErA1lASoIgf3pQuCCta/hI9u4T/MWbLdG5T5qQVgRKqvnKi/kp3J57dMN6Oby+yPSlEZAXU1VCJBWI2rOWjfEkboEJwPQU8ciaLUJeTADFqG/mmN/FeH/tt8RSPrDKewtssJWDja2pOYmLa1qILzCU/KrgGs7deqSg8BesD5YzGdBLoHmDBDSX8fptiw0lFyfJN+qLwSWeQRkyD6Omt/HCtP4clk41g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=fa1X4xfft+mV+zlly6JBRG3bMFakUu0YYRGKALiJM9k=;
- b=cxS/4SUf6Qmj6mkpT+eh6TJYUzhRgw2SfuAH4StiEq9qvXEJ79bdaVuoptyo7P5HKNsCGclC03EgEWsiI2W810JlCo3xzIL81yULKEGVowWr0XBCaY/awzMoMLw21cdgOLvSANYKNthiwL55gAlQy7gEAouIAWK4WsMNBd+cIMYKkHzhikKojqPjYvPAEDhZzm5YougwpLB7cxSl+0uXHFMu/w711I0LVSjA0O+i/V00FlcAemhiSMay8BIs6omAtX4RiGNpOaAFwMLFhsqIcLLd7mJ31O7yd6C3ESRbDKQrZqKnBLFFHm/3HzJBYKGWxWhYFRcD4zbXPrxMiaA7jQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fa1X4xfft+mV+zlly6JBRG3bMFakUu0YYRGKALiJM9k=;
- b=pg1x38084VM2Hy0tJUcxrQuICONwcrjQOQmtQrwFmKGNyWa1NNTG8tIzOFywpsdcxjymfqKRcefxqUzeFG6I/ivjQi3I6ERcUV/7roIU2tEwbqErVp+nNBQ0LrVToLndx4y/rn/ayL0GMvvOkNMu+JqB5LPd13pPCVraK/43SGM=
-Received: from DM6PR04MB6575.namprd04.prod.outlook.com (2603:10b6:5:1b7::7) by
- DM6PR04MB4554.namprd04.prod.outlook.com (2603:10b6:5:2b::30) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4628.20; Fri, 29 Oct 2021 19:26:00 +0000
-Received: from DM6PR04MB6575.namprd04.prod.outlook.com
- ([fe80::edbe:4c5:6ee8:fc59]) by DM6PR04MB6575.namprd04.prod.outlook.com
- ([fe80::edbe:4c5:6ee8:fc59%3]) with mapi id 15.20.4649.015; Fri, 29 Oct 2021
- 19:26:00 +0000
-From:   Avri Altman <Avri.Altman@wdc.com>
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-CC:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: RE: [PATCH] scsi: ufshpb: Opt out pre-reqs from HPB2.0 flows
-Thread-Topic: [PATCH] scsi: ufshpb: Opt out pre-reqs from HPB2.0 flows
-Thread-Index: AQHXzN3L0YKwjUrP8EeCo9/uqY5qHqvqTU/pgAAOYsA=
-Date:   Fri, 29 Oct 2021 19:26:00 +0000
-Message-ID: <DM6PR04MB6575A932FF6AE962DEBBFE7AFC879@DM6PR04MB6575.namprd04.prod.outlook.com>
-References: <20211029155754.3287-1-avri.altman@wdc.com>
- <yq1tugzu1ev.fsf@ca-mkp.ca.oracle.com>
-In-Reply-To: <yq1tugzu1ev.fsf@ca-mkp.ca.oracle.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: oracle.com; dkim=none (message not signed)
- header.d=none;oracle.com; dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 2d8d55ff-ecb1-4bb5-b46e-08d99b11f09b
-x-ms-traffictypediagnostic: DM6PR04MB4554:
-x-microsoft-antispam-prvs: <DM6PR04MB4554707F25F4D1836F3D2A5AFC879@DM6PR04MB4554.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: I8I6JiJJUhf0Tb8qGB4fg3oaMFmF9QebQWobFlG5uVn5/uHwwW34Yik3IZkK0JwcyUx2KaPkkmc6a6+7VHckB3vK8GZ4w4b7ZdD/T+p+xoSRePvF7IlbMVRVw34uBK9lkpK0RWr8d9XZpu/czoHbp9ihO/HD6lXUwfNa8Y1QUZci0AbG2ST8xGt6JXL8rjQ2sK/PxDxudWiCPTpt2ctpPnr7QO5tf4fO7z2oZNaygQ+vGE7NFVPNWTjFfWOZNyA3gc6qPnRE3VahOD9FFyaMETHSjkH8WsH5Eh2NEJfRWTsU6MSF+CV0uaU2Rq0CGOiSTCG/AmescgawMSccvrEsMhPpa5mc6lX1b9Gs63t9if6pWWSMHX35vr2GvOLMeTrU/9g9+po+bnzrlLt7/EYZf88qHdJZUbsiAWM2btNd7LcTdtnYmU1+9KBHSVywYyHsCsXFVgRQrYFXbLXE4Fj6RPz4lB18JIBXcAE1rPPRegoTNPMIH+jSxPQyB5/tzKPy0KCuWxym3eepzLZs5Us3/PSbssMVuMI5Rme6jdrSEMOjJGcQqg8gs9DjwDeq71kKu2sW7whBuMIFjrijhYmqLToJxttX1Hd+DqZIY3sGP7uVYE/fO2lxMfKl58ns7WMHOb7NnmnSIiLKmFueJXq4qA/hX42vlMevUe6NpOud5tTnZLPK47MZ9FIW65xIhnHIcNcb3nDmEb5E8Q1uxNuvbg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6575.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(508600001)(4326008)(8936002)(82960400001)(66556008)(4744005)(5660300002)(76116006)(55016002)(7696005)(64756008)(38070700005)(2906002)(66476007)(9686003)(66446008)(54906003)(66946007)(316002)(86362001)(8676002)(83380400001)(52536014)(33656002)(38100700002)(186003)(71200400001)(6506007)(6916009)(122000001)(26005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?KXstO9oH5Qj/SCjMAEuS8rJk8zrmmwjfvnyoSr9UNqcqrxjZI8zLF7jkoG4K?=
- =?us-ascii?Q?lM2+/+FLLtS9VCncipQaBJIgnuXyMjCSYuWgWIAiDNx6QE1n7/4Jy2biShEG?=
- =?us-ascii?Q?CuaZRYEoVlSWpmL3sQ5S+W4Ui0be3sMcGpoRK4TDgyL13w3Sm/Z3dhJ6ayJD?=
- =?us-ascii?Q?7uRj0uAIYeiXdFCbhu+JpqFIppbB22hchCALhaHqnVfuZsRF4AsTTG8tQ/W8?=
- =?us-ascii?Q?Cx25NIt30Cjl14pPb8G5z7jWh9ObLmAc6743uA94u78ZUuP4PWDA0XEe5NCo?=
- =?us-ascii?Q?yV0lt5a8Udx+7Saw/iZX7SYRRJ55L+SHz+v/D0ga+fLymj2CTw3YBJqBGrDi?=
- =?us-ascii?Q?FrkiYDE1mqyULuflv8XJHhnDFvh4prIz6JNzmFJxyiw97/rd6YoD5KjfP3r9?=
- =?us-ascii?Q?rDK9hxE1UL46ZFPg+zsqwPLA/xZN7zEiqU1gpbfdzTJIxkvRTfuPm1tnaWqy?=
- =?us-ascii?Q?dbF6pKgaQlkfkhZdISx7rjw+kHnfplk10pDKHzes/ZoAb5iM0az0WPq+ic+S?=
- =?us-ascii?Q?fb2ZtSQGL5BGk7sgn2gOlOQVY1ij954+vnOrfDsK7IbSeMggitJ9au7rCQn8?=
- =?us-ascii?Q?WYMEdoEiSW2Qo19AdwDSYNwK2qLQhRugF6QDLO+k/o0Li6Hf2OPz1xQ/ovvI?=
- =?us-ascii?Q?lG2xYpFn/klOu4DnHZi6WMEJoCZ/e4I5oO5VWVY0MH0fQL/tFCl7j2oxblby?=
- =?us-ascii?Q?dY+U5FM5VXx2M1MfHNZ3lKzqO5udc8YUWIsXtzp/LBLaQWaRSxRZV4Nz5Qd5?=
- =?us-ascii?Q?mEjL47YHLU5n/ykP+wp/gcpj20AS6uz2GeEeBnaqlD2w8tywUKYM+E2iONKI?=
- =?us-ascii?Q?9Qo94UjodwfBkGYgj33GncSFI8yRqEKHcTL6B2N5i3LqV7mnvArrZZhW8d6Q?=
- =?us-ascii?Q?hamaw/PTPliMpmcWRDlBHxv/xje9sAIts1l2maoNie7Yg5nRJm0X7p6xS1Qk?=
- =?us-ascii?Q?G07nLHGcBOfjhqEDCanq4TMbFzpXI82Om6doF61Xra5p8qf7BoizQypSstkH?=
- =?us-ascii?Q?EiV58bwLRc87JgLOj8ehfQ2vc2UMUyzHcwDmMQ6IKRIlcnCji+kGrtqTZQph?=
- =?us-ascii?Q?Wrx89+uq+Kl/8jqV+Qypj9SLlMU329kHDap4wKuvUgAaAlCYYOMweMY0HNxL?=
- =?us-ascii?Q?EmAVb4WJk2ts7ei1KviVDWzcJAWmLEm8+l5Zeo8G2r9VodDmzEmxfH9RStpp?=
- =?us-ascii?Q?6M/PSOXawEHlLEE7h2hAntW23Rl/t6dxW1+Abq67ZVda8R3fTDXZwMVP1uKr?=
- =?us-ascii?Q?0mdPV+iGTg3by2Ey1r9gLlTNDYbLjPByfJOUAywV+b8Kn/XTi04++XUMTw/E?=
- =?us-ascii?Q?h+AzJnKHCR/+MsfkGlx6oUWVsUZNzLrJYy22rZmLUYaF9Hxk06I29fl8ebMr?=
- =?us-ascii?Q?OJYXu6Lm6S5+ijEZDPuC9qTLwhkSx4+3qaA2oS9lGBOinSdktql14gtiXvOq?=
- =?us-ascii?Q?yQarIZvZmO+dJOHgq8myrLDua1ZvnVPZCVzlGDpzpWBM59qdTURixz/7DO9h?=
- =?us-ascii?Q?bx+Y1EuAJP5e9VTvSfvIKunTohnqSGPu5ui3hv9OhZkBs41EEiM/6m5/VUzV?=
- =?us-ascii?Q?jCjKy8Gpnrklvcu0B9Xvs9jFJWh1OgEZc1IBDYvmXZGE29qvUqXT3h19Thgr?=
- =?us-ascii?Q?7Q=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Fri, 29 Oct 2021 15:29:09 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-280-qeugGdCINmyifBramx3sEQ-1; Fri, 29 Oct 2021 15:26:35 -0400
+X-MC-Unique: qeugGdCINmyifBramx3sEQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 75FA08030B7;
+        Fri, 29 Oct 2021 19:26:33 +0000 (UTC)
+Received: from x1.com (unknown [10.22.10.230])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id AED5719724;
+        Fri, 29 Oct 2021 19:26:24 +0000 (UTC)
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Tao Zhou <tao.zhou@linux.dev>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        John Kacur <jkacur@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V7 00/14] RTLA: An interface for osnoise/timerlat tracers
+Date:   Fri, 29 Oct 2021 21:26:03 +0200
+Message-Id: <cover.1635535309.git.bristot@kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6575.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2d8d55ff-ecb1-4bb5-b46e-08d99b11f09b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Oct 2021 19:26:00.1488
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 2FwanqvPIk+jO+dV+2/iY1U8mirk03eY6sh0LlkFyRNDKEFklEtWFlnvQbPYgjZuyQbQ5+izonsy10UhlXe5uw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB4554
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->=20
-> Avri,
->=20
-> > HPB allows its read commands to carry the physical addresses along
-> > with the LBAs, thus allowing less internal L2P-table switches in the
-> > device.  HPB1.0 allowed a single LBA, while HPB2.0 increases this
-> > capacity up to 255 blocks.
->=20
-> Applied to 5.15/scsi-fixes, thanks!
-Forgot a nit - sending a v2.
-Sorry about that.
+The rtla(1) is a meta-tool that includes a set of commands that
+aims to analyze the real-time properties of Linux. But instead of
+testing Linux as a black box, rtla leverages kernel tracing
+capabilities to provide precise information about the properties
+and root causes of unexpected results.
 
-Thanks,
-Avri
+To start, it presents an interface to the osnoise and timerlat tracers.
+In the future, it will also serve as home to the rtsl [1] and other
+latency/noise tracers.
 
->=20
-> --
-> Martin K. Petersen      Oracle Linux Engineering
+If you just want to run it, you can download the tarball here:
+  - https://bristot.me/files/rtla/tarball/rtla-0.3.tar.bz2
+
+To compile rtla on fedora you need:
+  $ git clone git://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git
+  $ cd libtraceevent/
+  $ make
+  $ sudo make install
+  $ cd ..
+  $ git clone git://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git
+  $ cd libtracefs/
+  $ make
+  $ sudo make install
+  $ cd ..
+  $ sudo dnf install python3-docutils procps-devel
+  $ cd $rtla_src
+  $ make
+  $ sudo make install
+
+The tracing option (-t) depends some kernel patches that are
+available at [2].
+
+This tool was be discussed at the RT-MC during LPC2021 [3]
+
+[1] rtsl: https://github.com/bristot/rtsl/
+[2] https://lore.kernel.org/lkml/cover.1635533292.git.bristot@kernel.org/
+[3] https://youtu.be/cZUzc0U1jJ4
+
+Changes from v6:
+  - Revisited osnoise option config functions
+  - Properly handles offline CPUs
+  - Some cleanups
+  - Fixed an histogram allocation problem (Tao Zhou)
+  - Revisited open()/read()/write() (Tao Zhou)
+Changes from v5:
+  - Fix retval check in save_trace_to_file() (Tao Zhou)
+  - Fix goto logic in save_trace_to_file() (Tao Zhou)
+  - Removed unused save_trace_pipe_to_file() function
+  - Correctly handle an error on osnoise_set_* functions during
+    "apply config" for all tools (Tao Zhou)
+Changes from v3:
+  - Add cross-compile support (Ahmed S. Darwish)
+  - Move documentation to Documentation/tools/rtla (Jonathan Corbet)
+  - Use .rst format for documentation (Jonathan Corbet)
+  - Use include option from .rst to group common parts of the documentation
+  - Makefile (main and doc) cleanups
+Changes from v2:
+  - Fix the miss conception of the "size" for kernel histograms (Steven/Tom)
+  - Change the --skip-zeros to --with-zeros option as the former is better
+    for humans (and the latter for computers to plot charts).
+  - A lot of checkpatch fixes for the user-space part.
+Changes from v1:
+  - Fixes -t options on osnoise tracers (-t means --trace for all tools now)
+  - Fixes --bucket-size references (not --bucket_size)
+
+Daniel Bristot de Oliveira (14):
+  rtla: Real-Time Linux Analysis tool
+  rtla: Helper functions for rtla
+  rtla: Add osnoise tool
+  rtla/osnoise: Add osnoise top mode
+  rtla/osnoise: Add the hist mode
+  rtla: Add timerlat tool and timelart top mode
+  rtla/timerlat: Add timerlat hist mode
+  rtla: Add Documentation
+  rtla: Add rtla osnoise man page
+  rtla: Add rtla osnoise top documentation
+  rtla: Add rtla osnoise hist documentation
+  rtla: Add rtla timerlat documentation
+  rtla: Add rtla timerlat top documentation
+  rtla: Add rtla timerlat hist documentation
+
+ Documentation/tools/rtla/Makefile             |   41 +
+ Documentation/tools/rtla/common_appendix.rst  |   12 +
+ .../tools/rtla/common_hist_options.rst        |   23 +
+ Documentation/tools/rtla/common_options.rst   |   24 +
+ .../tools/rtla/common_osnoise_description.rst |    8 +
+ .../tools/rtla/common_osnoise_options.rst     |   17 +
+ .../rtla/common_timerlat_description.rst      |   10 +
+ .../tools/rtla/common_timerlat_options.rst    |   16 +
+ .../tools/rtla/common_top_options.rst         |    3 +
+ .../tools/rtla/rtla-osnoise-hist.rst          |   66 ++
+ Documentation/tools/rtla/rtla-osnoise-top.rst |   61 +
+ Documentation/tools/rtla/rtla-osnoise.rst     |   59 +
+ .../tools/rtla/rtla-timerlat-hist.rst         |  106 ++
+ .../tools/rtla/rtla-timerlat-top.rst          |  145 +++
+ Documentation/tools/rtla/rtla-timerlat.rst    |   57 +
+ Documentation/tools/rtla/rtla.rst             |   48 +
+ tools/tracing/rtla/Makefile                   |  102 ++
+ tools/tracing/rtla/src/osnoise.c              | 1017 +++++++++++++++++
+ tools/tracing/rtla/src/osnoise.h              |   96 ++
+ tools/tracing/rtla/src/osnoise_hist.c         |  799 +++++++++++++
+ tools/tracing/rtla/src/osnoise_top.c          |  577 ++++++++++
+ tools/tracing/rtla/src/rtla.c                 |   87 ++
+ tools/tracing/rtla/src/timerlat.c             |   72 ++
+ tools/tracing/rtla/src/timerlat.h             |    4 +
+ tools/tracing/rtla/src/timerlat_hist.c        |  820 +++++++++++++
+ tools/tracing/rtla/src/timerlat_top.c         |  615 ++++++++++
+ tools/tracing/rtla/src/trace.c                |  192 ++++
+ tools/tracing/rtla/src/trace.h                |   27 +
+ tools/tracing/rtla/src/utils.c                |  433 +++++++
+ tools/tracing/rtla/src/utils.h                |   56 +
+ 30 files changed, 5593 insertions(+)
+ create mode 100644 Documentation/tools/rtla/Makefile
+ create mode 100644 Documentation/tools/rtla/common_appendix.rst
+ create mode 100644 Documentation/tools/rtla/common_hist_options.rst
+ create mode 100644 Documentation/tools/rtla/common_options.rst
+ create mode 100644 Documentation/tools/rtla/common_osnoise_description.rst
+ create mode 100644 Documentation/tools/rtla/common_osnoise_options.rst
+ create mode 100644 Documentation/tools/rtla/common_timerlat_description.rst
+ create mode 100644 Documentation/tools/rtla/common_timerlat_options.rst
+ create mode 100644 Documentation/tools/rtla/common_top_options.rst
+ create mode 100644 Documentation/tools/rtla/rtla-osnoise-hist.rst
+ create mode 100644 Documentation/tools/rtla/rtla-osnoise-top.rst
+ create mode 100644 Documentation/tools/rtla/rtla-osnoise.rst
+ create mode 100644 Documentation/tools/rtla/rtla-timerlat-hist.rst
+ create mode 100644 Documentation/tools/rtla/rtla-timerlat-top.rst
+ create mode 100644 Documentation/tools/rtla/rtla-timerlat.rst
+ create mode 100644 Documentation/tools/rtla/rtla.rst
+ create mode 100644 tools/tracing/rtla/Makefile
+ create mode 100644 tools/tracing/rtla/src/osnoise.c
+ create mode 100644 tools/tracing/rtla/src/osnoise.h
+ create mode 100644 tools/tracing/rtla/src/osnoise_hist.c
+ create mode 100644 tools/tracing/rtla/src/osnoise_top.c
+ create mode 100644 tools/tracing/rtla/src/rtla.c
+ create mode 100644 tools/tracing/rtla/src/timerlat.c
+ create mode 100644 tools/tracing/rtla/src/timerlat.h
+ create mode 100644 tools/tracing/rtla/src/timerlat_hist.c
+ create mode 100644 tools/tracing/rtla/src/timerlat_top.c
+ create mode 100644 tools/tracing/rtla/src/trace.c
+ create mode 100644 tools/tracing/rtla/src/trace.h
+ create mode 100644 tools/tracing/rtla/src/utils.c
+ create mode 100644 tools/tracing/rtla/src/utils.h
+
+-- 
+2.31.1
+
