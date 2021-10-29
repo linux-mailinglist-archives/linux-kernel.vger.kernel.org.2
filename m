@@ -2,297 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4685743F6A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 07:24:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6B1543F6A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 07:27:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231978AbhJ2F1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 01:27:11 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:2838 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231937AbhJ2F1J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 01:27:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1635485082; x=1667021082;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=IRSWPvrkGiuKO13PQF9Y7/9y/3GE1hBh3d3HnNSY2R4=;
-  b=g2/+bOBZNLTt2PIryOn4PNouPuwvXIg/Mw0buEjF6COBMqz+N1k7h9ko
-   6rZDHxZA2HE2P9Qj6pj3C6mR/ocTt6eYbymhl620+mF+n2rH4pa6eMAZo
-   zjXx2itAfjahqdud/M+YDc4pP0Ne/aY2S0Yv5zLf/68xxnPBYEdsh59rP
-   4ByWpElzjDZZlvCZ81xus79Y0djbzMY665zc8EDxuZe4QLuuNhBv38jD9
-   JselOroiFqdORoJowdWHbepN/MnHuYlpTAAd2A/gQLBzLj4/wCKqCGRZq
-   jphPtShWmYca5X8yVmQ3Kz/7e1VsImW3ty7RZOIaQDWiZlPeShFq/qBQL
-   g==;
-IronPort-SDR: tYoNLqBo4cZhNnzu3qIuSJIANtZgzbVAKNUu5o6Su6q2g7a7PVFTXU1wItgmZ9VqZlZcP2raEf
- 2rSrlj6dMfTYL/GMVKh/F6U7m3gffsaJKX+1eAHMaRQbu5ELEeB1UmcXvAASYC4JqsjxcwWgUD
- V0babFyp+0e5joyhUkk2pWNkcGxxUjvEyRFC9aZo7Uxjkx97pcpYxS0I23YmLDmkBznqPkvZPa
- Ie8Fvl3Wwj99vYG2cn2+QYYvkMSkdt4BTjH6swCZT2mGVN5Ga76Wr0opGV0amzCuaguYQ2P+Uo
- hH6j7o0S9Yd6sJoDW0h+UsUX
-X-IronPort-AV: E=Sophos;i="5.87,191,1631602800"; 
-   d="scan'208";a="137295352"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 28 Oct 2021 22:24:41 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Thu, 28 Oct 2021 22:24:40 -0700
-Received: from CHE-LT-I21427LX.microchip.com (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Thu, 28 Oct 2021 22:24:31 -0700
-From:   Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
-To:     <andrew@lunn.ch>, <netdev@vger.kernel.org>, <olteanv@gmail.com>,
-        <robh+dt@kernel.org>
-CC:     <UNGLinuxDriver@microchip.com>, <Woojung.Huh@microchip.com>,
-        <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
-        <davem@davemloft.net>, <kuba@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <vivien.didelot@gmail.com>,
-        <f.fainelli@gmail.com>, <devicetree@vger.kernel.org>
-Subject: [PATCH v6 net-next 10/10] net: dsa: microchip: add support for vlan operations
-Date:   Fri, 29 Oct 2021 10:52:56 +0530
-Message-ID: <20211029052256.144739-11-prasanna.vengateshan@microchip.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20211029052256.144739-1-prasanna.vengateshan@microchip.com>
-References: <20211029052256.144739-1-prasanna.vengateshan@microchip.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+        id S231897AbhJ2F3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 01:29:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37474 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231788AbhJ2F3t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 01:29:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 460B460E8B;
+        Fri, 29 Oct 2021 05:27:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635485241;
+        bh=dnYSGUCJcklBjUcXGtlK8BIT0TI1nr/ntPVW2d/mYtg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ZMFdlUfEbJcD78kBHt/dNn4QVWc7XZBZxYPqC5MGYazbmqG+SWFiscGo4SudQUgpq
+         L+AbMphsTXkYLCyjKSO/VnBl/yaY6eaAOcnpPMNNGNS6zpfAo539n1cXw+v3/IEr4c
+         MWk4vAxlw+F3COestUiamFNUV4Hw3lwy14TohYZumSf3B0qgGUnG1Ns5hEmyvwDLrh
+         79BTQ0Lgt2tliZbIWyQCk20ThaN7GovQB68zBqr5bKE7j3Q31px55V4iuCZ1FTnRKC
+         0rVt2LBkkUz6Nq+53xLcCcUj4VcDXpBV4cVlluauj0Q8nXIQKeWVK4kBV/xU02/HP4
+         CtedOxWfp6B6g==
+Date:   Fri, 29 Oct 2021 14:27:17 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Kalesh Singh <kaleshsingh@google.com>
+Cc:     surenb@google.com, hridya@google.com, namhyung@kernel.org,
+        kernel-team@android.com, rostedt@goodmis.org, mhiramat@kernel.org,
+        Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v6 2/2] tracing/selftests: Add tests for hist trigger
+ expression parsing
+Message-Id: <20211029142717.d332e2a9991fe813f6f8625f@kernel.org>
+In-Reply-To: <20211028195805.2684854-3-kaleshsingh@google.com>
+References: <20211028195805.2684854-1-kaleshsingh@google.com>
+        <20211028195805.2684854-3-kaleshsingh@google.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support for VLAN add, del, prepare and filtering operations.
+On Thu, 28 Oct 2021 12:57:58 -0700
+Kalesh Singh <kaleshsingh@google.com> wrote:
 
-The VLAN aware is a global setting. Mixed vlan filterings
-are not supported. vlan_filtering_is_global is made as true
-in lan937x_setup function.
+> Add tests for the parsing of hist trigger expressions; and to
+> validate expression evaluation.
+> 
+> Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
 
-Signed-off-by: Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
----
- drivers/net/dsa/microchip/lan937x_main.c | 188 +++++++++++++++++++++++
- 1 file changed, 188 insertions(+)
+This looks good to me.
 
-diff --git a/drivers/net/dsa/microchip/lan937x_main.c b/drivers/net/dsa/microchip/lan937x_main.c
-index 980fd74b3bc1..3f1f86633173 100644
---- a/drivers/net/dsa/microchip/lan937x_main.c
-+++ b/drivers/net/dsa/microchip/lan937x_main.c
-@@ -17,6 +17,14 @@
- #include "ksz_common.h"
- #include "lan937x_dev.h"
- 
-+static int lan937x_wait_vlan_ctrl_ready(struct ksz_device *dev)
-+{
-+	unsigned int val;
-+
-+	return regmap_read_poll_timeout(dev->regmap[0], REG_SW_VLAN_CTRL, val,
-+					!(val & VLAN_START), 10, 1000);
-+}
-+
- static u8 lan937x_get_fid(u16 vid)
- {
- 	if (vid > ALU_FID_SIZE)
-@@ -25,6 +33,97 @@ static u8 lan937x_get_fid(u16 vid)
- 		return vid;
- }
- 
-+static int lan937x_get_vlan_table(struct ksz_device *dev, u16 vid,
-+				  struct lan937x_vlan *vlan_entry)
-+{
-+	u32 data;
-+	int ret;
-+
-+	mutex_lock(&dev->vlan_mutex);
-+
-+	ret = ksz_write16(dev, REG_SW_VLAN_ENTRY_INDEX__2, vid & VLAN_INDEX_M);
-+	if (ret < 0)
-+		goto exit;
-+
-+	ret = ksz_write8(dev, REG_SW_VLAN_CTRL, VLAN_READ | VLAN_START);
-+	if (ret < 0)
-+		goto exit;
-+
-+	/* wait to be cleared */
-+	ret = lan937x_wait_vlan_ctrl_ready(dev);
-+	if (ret < 0)
-+		goto exit;
-+
-+	ret = ksz_read32(dev, REG_SW_VLAN_ENTRY__4, &data);
-+	if (ret < 0)
-+		goto exit;
-+
-+	vlan_entry->valid = !!(data & VLAN_VALID);
-+	vlan_entry->fid	= data & VLAN_FID_M;
-+
-+	ret = ksz_read32(dev, REG_SW_VLAN_ENTRY_UNTAG__4,
-+			 &vlan_entry->untag_prtmap);
-+	if (ret < 0)
-+		goto exit;
-+
-+	ret = ksz_read32(dev, REG_SW_VLAN_ENTRY_PORTS__4,
-+			 &vlan_entry->fwd_map);
-+	if (ret < 0)
-+		goto exit;
-+
-+	ret = ksz_write8(dev, REG_SW_VLAN_CTRL, 0);
-+	if (ret < 0)
-+		goto exit;
-+
-+exit:
-+	mutex_unlock(&dev->vlan_mutex);
-+
-+	return ret;
-+}
-+
-+static int lan937x_set_vlan_table(struct ksz_device *dev, u16 vid,
-+				  struct lan937x_vlan *vlan_entry)
-+{
-+	u32 data;
-+	int ret;
-+
-+	mutex_lock(&dev->vlan_mutex);
-+
-+	data = vlan_entry->valid ? VLAN_VALID : 0;
-+	data |= vlan_entry->fid;
-+
-+	ret = ksz_write32(dev, REG_SW_VLAN_ENTRY__4, data);
-+	if (ret < 0)
-+		goto exit;
-+
-+	ret = ksz_write32(dev, REG_SW_VLAN_ENTRY_UNTAG__4,
-+			  vlan_entry->untag_prtmap);
-+	if (ret < 0)
-+		goto exit;
-+
-+	ret = ksz_write32(dev, REG_SW_VLAN_ENTRY_PORTS__4, vlan_entry->fwd_map);
-+	if (ret < 0)
-+		goto exit;
-+
-+	ret = ksz_write16(dev, REG_SW_VLAN_ENTRY_INDEX__2, vid & VLAN_INDEX_M);
-+	if (ret < 0)
-+		goto exit;
-+
-+	ret = ksz_write8(dev, REG_SW_VLAN_CTRL, VLAN_START | VLAN_WRITE);
-+	if (ret < 0)
-+		goto exit;
-+
-+	/* wait to be cleared */
-+	ret = lan937x_wait_vlan_ctrl_ready(dev);
-+	if (ret < 0)
-+		goto exit;
-+
-+exit:
-+	mutex_unlock(&dev->vlan_mutex);
-+
-+	return ret;
-+}
-+
- static int lan937x_read_table(struct ksz_device *dev, u32 *table)
- {
- 	int ret;
-@@ -189,6 +288,92 @@ static void lan937x_port_stp_state_set(struct dsa_switch *ds, int port,
- 		ksz_update_port_member(dev, port);
- }
- 
-+static int lan937x_port_vlan_filtering(struct dsa_switch *ds, int port,
-+				       bool flag,
-+				       struct netlink_ext_ack *extack)
-+{
-+	struct ksz_device *dev = ds->priv;
-+
-+	/* enable/disable VLAN mode, once enabled, look up process starts
-+	 * and then forwarding and discarding are done based on port
-+	 * membership of the VLAN table
-+	 */
-+	return lan937x_cfg(dev, REG_SW_LUE_CTRL_0, SW_VLAN_ENABLE, flag);
-+}
-+
-+static int lan937x_port_vlan_add(struct dsa_switch *ds, int port,
-+				 const struct switchdev_obj_port_vlan *vlan,
-+				 struct netlink_ext_ack *extack)
-+{
-+	bool untagged = vlan->flags & BRIDGE_VLAN_INFO_UNTAGGED;
-+	struct ksz_device *dev = ds->priv;
-+	struct lan937x_vlan vlan_entry;
-+	int ret;
-+
-+	ret = lan937x_get_vlan_table(dev, vlan->vid, &vlan_entry);
-+	if (ret < 0) {
-+		NL_SET_ERR_MSG_MOD(extack, "Failed to get vlan table");
-+		return ret;
-+	}
-+
-+	vlan_entry.fid = lan937x_get_fid(vlan->vid);
-+	vlan_entry.valid = true;
-+
-+	/* set/clear switch port when updating vlan table registers */
-+	if (untagged)
-+		vlan_entry.untag_prtmap |= BIT(port);
-+	else
-+		vlan_entry.untag_prtmap &= ~BIT(port);
-+
-+	vlan_entry.fwd_map |= BIT(port);
-+
-+	ret = lan937x_set_vlan_table(dev, vlan->vid, &vlan_entry);
-+	if (ret < 0) {
-+		NL_SET_ERR_MSG_MOD(extack, "Failed to set vlan table");
-+		return ret;
-+	}
-+
-+	/* change PVID */
-+	if (vlan->flags & BRIDGE_VLAN_INFO_PVID) {
-+		ret = lan937x_pwrite16(dev, port, REG_PORT_DEFAULT_VID,
-+				       vlan->vid);
-+		if (ret < 0) {
-+			NL_SET_ERR_MSG_MOD(extack, "Failed to set pvid");
-+			return ret;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static int lan937x_port_vlan_del(struct dsa_switch *ds, int port,
-+				 const struct switchdev_obj_port_vlan *vlan)
-+{
-+	struct ksz_device *dev = ds->priv;
-+	struct lan937x_vlan vlan_entry;
-+	u16 pvid;
-+	int ret;
-+
-+	lan937x_pread16(dev, port, REG_PORT_DEFAULT_VID, &pvid);
-+
-+	ret = lan937x_get_vlan_table(dev, vlan->vid, &vlan_entry);
-+	if (ret < 0) {
-+		dev_err(dev->dev, "Failed to get vlan table\n");
-+		return ret;
-+	}
-+	/* clear port fwd map & untag entries*/
-+	vlan_entry.fwd_map &= ~BIT(port);
-+	vlan_entry.untag_prtmap &= ~BIT(port);
-+
-+	ret = lan937x_set_vlan_table(dev, vlan->vid, &vlan_entry);
-+	if (ret < 0) {
-+		dev_err(dev->dev, "Failed to set vlan table\n");
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
- static int lan937x_port_fdb_add(struct dsa_switch *ds, int port,
- 				const unsigned char *addr, u16 vid)
- {
-@@ -1036,6 +1221,9 @@ const struct dsa_switch_ops lan937x_switch_ops = {
- 	.port_bridge_leave = ksz_port_bridge_leave,
- 	.port_stp_state_set = lan937x_port_stp_state_set,
- 	.port_fast_age = ksz_port_fast_age,
-+	.port_vlan_filtering = lan937x_port_vlan_filtering,
-+	.port_vlan_add = lan937x_port_vlan_add,
-+	.port_vlan_del = lan937x_port_vlan_del,
- 	.port_fdb_dump = lan937x_port_fdb_dump,
- 	.port_fdb_add = lan937x_port_fdb_add,
- 	.port_fdb_del = lan937x_port_fdb_del,
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+
+Thank you!
+
+> ---
+> Changes in v6:
+>   - Read the expression result from the trigger file,
+>     instead of creating a histogram to print the value.
+> 
+> Changes in v5:
+>   - Add README pattern to requires tag, per Masami
+> 
+> Changes in v3:
+>   - Remove .sym-offset error check tests
+> 
+> Changes in v2:
+>   - Add Namhyung's Reviewed-by
+>   - Update comment to clarify err_pos in "Too many subexpressions" test
+> 
+> 
+>  .../trigger/trigger-hist-expressions.tc       | 65 +++++++++++++++++++
+>  1 file changed, 65 insertions(+)
+>  create mode 100644 tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-expressions.tc
+> 
+> diff --git a/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-expressions.tc b/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-expressions.tc
+> new file mode 100644
+> index 000000000000..33eb79589b32
+> --- /dev/null
+> +++ b/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-expressions.tc
+> @@ -0,0 +1,65 @@
+> +#!/bin/sh
+> +# SPDX-License-Identifier: GPL-2.0
+> +# description: event trigger - test histogram expression parsing
+> +# requires: set_event events/sched/sched_process_fork/trigger events/sched/sched_process_fork/hist error_log "<var1>=<field|var_ref|numeric_literal>":README
+> +
+> +
+> +fail() { #msg
+> +    echo $1
+> +    exit_fail
+> +}
+> +
+> +test_hist_expr() { # test_name expression expected_val
+> +    trigger="events/sched/sched_process_fork/trigger"
+> +
+> +    reset_trigger_file $trigger
+> +
+> +    echo "Test hist trigger expressions - $1"
+> +
+> +    echo "hist:keys=common_pid:x=$2" > $trigger
+> +
+> +    for i in `seq 1 10` ; do ( echo "forked" > /dev/null); done
+> +
+> +    x=`grep -o 'x=[[:digit:]]*' $trigger | awk -F= '{ print $2 }'`
+> +    actual=$(( x + 0 )) # To print negative numbers correctly
+> +
+> +    if [ $actual != $3 ]; then
+> +        fail "Failed hist trigger expression evaluation: Expression: $2 Expected: $3, Actual: $actual"
+> +    fi
+> +
+> +    reset_trigger_file $trigger
+> +}
+> +
+> +check_error() { # test_name command-with-error-pos-by-^
+> +    trigger="events/sched/sched_process_fork/trigger"
+> +
+> +    echo "Test hist trigger expressions - $1"
+> +    ftrace_errlog_check 'hist:sched:sched_process_fork' "$2" $trigger
+> +}
+> +
+> +test_hist_expr "Variable assignment" "123" "123"
+> +
+> +test_hist_expr "Subtraction not associative" "16-8-4-2" "2"
+> +
+> +test_hist_expr "Division not associative" "64/8/4/2" "1"
+> +
+> +test_hist_expr "Same precedence operators (+,-) evaluated left to right" "16-8+4+2" "14"
+> +
+> +test_hist_expr "Same precedence operators (*,/) evaluated left to right" "4*3/2*2" "12"
+> +
+> +test_hist_expr "Multiplication evaluated before addition/subtraction" "4+3*2-2" "8"
+> +
+> +test_hist_expr "Division evaluated before addition/subtraction" "4+6/2-2" "5"
+> +
+> +# Division by zero returns -1
+> +test_hist_expr "Handles division by zero" "3/0" "-1"
+> +
+> +# err pos for "too many subexpressions" is dependent on where
+> +# the last subexpression was detected. This can vary depending
+> +# on how the expression tree was generated.
+> +check_error "Too many subexpressions" 'hist:keys=common_pid:x=32+^10*3/20-4'
+> +check_error "Too many subexpressions" 'hist:keys=common_pid:x=^1+2+3+4+5'
+> +
+> +check_error "Unary minus not supported in subexpression" 'hist:keys=common_pid:x=-(^1)+2'
+> +
+> +exit 0
+> -- 
+> 2.33.0.1079.g6e70778dc9-goog
+> 
+
+
 -- 
-2.27.0
-
+Masami Hiramatsu <mhiramat@kernel.org>
