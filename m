@@ -2,102 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6248243FA46
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 11:53:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4428D43FA4C
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 11:55:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231627AbhJ2Jza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 05:55:30 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:40970 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231534AbhJ2Jz2 (ORCPT
+        id S231659AbhJ2J5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 05:57:46 -0400
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:49480 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231567AbhJ2J5m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 05:55:28 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 92B151FD53;
-        Fri, 29 Oct 2021 09:52:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1635501179;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zbhf9TEdmvSWX6UxAlSctzmaGQ/0yN4dvgXyDQfs1bc=;
-        b=kpX0n4D3WjbuWYFaOkwRRUDXDH5aZjxfHh6ItZifGbh/A4WZ13D7CIPHwtYklAF939dLhT
-        cyRhzXty2BC/XJO8Vui9n4ispAn1pC8dyxmOsNqIpHl0I+mSxThQ5WRzVlbMox+NpwUJIu
-        obc6ZKz1gyk4S/4iAYQIe2M6WqSxv9Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1635501179;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zbhf9TEdmvSWX6UxAlSctzmaGQ/0yN4dvgXyDQfs1bc=;
-        b=1paGujFOqQ2Tath2BOt8dXuTEQ7H3A76HKvftk+ZMUCAkevk7xuZUfFn5wDiaEq7uJ/h8E
-        pUZDpXeZBlu5q7Dg==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 8674AA3B83;
-        Fri, 29 Oct 2021 09:52:59 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 5A20BDA7A9; Fri, 29 Oct 2021 11:52:26 +0200 (CEST)
-Date:   Fri, 29 Oct 2021 11:52:26 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: linux-next: build failure after merge of the btrfs tree
-Message-ID: <20211029095226.GV20319@suse.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20211027210924.22ef5881@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211027210924.22ef5881@canb.auug.org.au>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+        Fri, 29 Oct 2021 05:57:42 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R331e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0Uu8FkR3_1635501306;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0Uu8FkR3_1635501306)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 29 Oct 2021 17:55:12 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     luciano.coelho@intel.com
+Cc:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        chongjiapeng <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] wlwifi: Fix missing error code in iwl_pci_probe()
+Date:   Fri, 29 Oct 2021 17:55:04 +0800
+Message-Id: <1635501304-85589-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 09:09:24PM +1100, Stephen Rothwell wrote:
-> Hi all,
-> 
-> [I am not sure why this error only popped up after I merged Andrew's
-> patch set ...]
-> 
-> After merging the btrfs tree, today's linux-next build (x86_64
-> allmodconfig) failed like this:
-> 
-> In file included from include/linux/string.h:253,
->                  from include/linux/bitmap.h:11,
->                  from include/linux/cpumask.h:12,
->                  from arch/x86/include/asm/cpumask.h:5,
->                  from arch/x86/include/asm/msr.h:11,
->                  from arch/x86/include/asm/processor.h:22,
->                  from arch/x86/include/asm/cpufeature.h:5,
->                  from arch/x86/include/asm/thread_info.h:53,
->                  from include/linux/thread_info.h:60,
->                  from arch/x86/include/asm/preempt.h:7,
->                  from include/linux/preempt.h:78,
->                  from include/linux/spinlock.h:55,
->                  from include/linux/wait.h:9,
->                  from include/linux/mempool.h:8,
->                  from include/linux/bio.h:8,
->                  from fs/btrfs/ioctl.c:7:
-> In function 'memcpy',
->     inlined from '_btrfs_ioctl_send' at fs/btrfs/ioctl.c:4846:3:
-> include/linux/fortify-string.h:219:4: error: call to '__write_overflow' declared with attribute error: detected write beyond size of object (1st parameter)
->   219 |    __write_overflow();
->       |    ^~~~~~~~~~~~~~~~~~
-> 
-> Caused by commit
-> 
->   c8d9cdfc766d ("btrfs: send: prepare for v2 protocol")
-> 
-> This changes the "reserved" field of struct btrfs_ioctl_send_args from 4 u64's to 3, but the above memcpy is copying the "reserved" filed from a struct btrfs_ioctl_send_args_32 (4 u64s) into it.
+From: chongjiapeng <jiapeng.chong@linux.alibaba.com>
 
-I'll fix it in the next update. There are two structures for the ioctl
-that need to be in sync but I forgot to do that.
+The error code is missing in this code scenario, add the error code
+'-EINVAL' to the return value 'ret'.
+
+Eliminate the follow smatch warning:
+
+drivers/net/wireless/intel/iwlwifi/pcie/drv.c:1376 iwl_pci_probe() warn:
+missing error code 'ret'.
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Fixes: 1f171f4f1437 ("iwlwifi: Add support for getting rf id with blank otp")
+Signed-off-by: chongjiapeng <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/net/wireless/intel/iwlwifi/pcie/drv.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/drv.c b/drivers/net/wireless/intel/iwlwifi/pcie/drv.c
+index cff76a528967..33250d24c2b9 100644
+--- a/drivers/net/wireless/intel/iwlwifi/pcie/drv.c
++++ b/drivers/net/wireless/intel/iwlwifi/pcie/drv.c
+@@ -1442,9 +1442,10 @@ static int iwl_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	 */
+ 	if (iwl_trans->trans_cfg->rf_id &&
+ 	    iwl_trans->trans_cfg->device_family >= IWL_DEVICE_FAMILY_9000 &&
+-	    !CSR_HW_RFID_TYPE(iwl_trans->hw_rf_id) && get_crf_id(iwl_trans))
++	    !CSR_HW_RFID_TYPE(iwl_trans->hw_rf_id) && get_crf_id(iwl_trans)) {
+ 		ret = -EINVAL;
+ 		goto out_free_trans;
++	}
+ 
+ 	dev_info = iwl_pci_find_dev_info(pdev->device, pdev->subsystem_device,
+ 					 CSR_HW_REV_TYPE(iwl_trans->hw_rev),
+-- 
+2.19.1.6.gb485710b
+
