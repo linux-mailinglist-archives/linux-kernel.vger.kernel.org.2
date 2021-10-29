@@ -2,55 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F53C4401FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 20:34:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C75E344020E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 20:35:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230410AbhJ2Sgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 14:36:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44738 "EHLO
+        id S231162AbhJ2ShN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 14:37:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230421AbhJ2Sgv (ORCPT
+        with ESMTP id S230467AbhJ2ShE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 14:36:51 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE5A3C0613B9
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 11:34:22 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id a20-20020a25ae14000000b005c1961310aeso15018680ybj.3
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 11:34:22 -0700 (PDT)
+        Fri, 29 Oct 2021 14:37:04 -0400
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 332E1C0613F5
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 11:34:35 -0700 (PDT)
+Received: by mail-pf1-x449.google.com with SMTP id 12-20020a62150c000000b0047bedbb0619so5464035pfv.17
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 11:34:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:cc;
-        bh=aWdu1dWgU6LDlQT9WUgK1tbGyRaKD3AurTsATcx1ByY=;
-        b=jtbbuakJZsRZNaPCbKbfFEJmOU9Uoi3SgTKnPTxiKpMGfnbaSlJy2stcE7VXQOgk3Y
-         8bE9sTwZB4gVvZSs1w9ZbFbvJ0t1unK6DB/gzmQgkm6HgAOJEHv968FbY7hJajgtUNoY
-         2BCnTRP2ZgFqaTEimHnrN4cHb3FYJnJ5ib+SWRJpS11KIYfX42ZpP9gP+7ctok3m4WCi
-         zz6X2fY2YHn7qSqq5hKQ864OD25HPN/N2P2WJ6otYalY28oNO4h/iToCmZhKd39P8xPU
-         aAfSZLHDuo6WjfoAbCXaTjT1jVku5v4UJomfxT54+0kxQMfJyGQQcUeYWtUq28iBayuR
-         PxpA==
+        bh=pIwkJUfmtLBNksnvSqi0P2Sms1nGm8KESnXHMvPX9Og=;
+        b=fJCpI/BWluL77Q7maCUxV2xrKIE+7MJas3Ods1U9PNA8EVVEg95yke8fKTcyY8b5H3
+         qPFp4lJHYBh4nWeGtYn5hserusYrCK1Br4zRywROqExEvOSB1g9ntzQDrKSIgOuZvLrJ
+         lm8Ddp8sI0mxV1VKh1SYYv0Ck5uYEBxH23e/iXASqfCQD1VkwFColi3LuL9hFOkxdqYb
+         htog9a+F6r88oqlvXkA8xpDdDLsYPoMCWfAPebfHfL5fNV/bGoVKbp7YFsmzaihDEHKY
+         E32M0jl5nylSJRI6SdPa7u35G0iPjLPdRwtqfUcv17P8yqXgx1hcX9tLDMC3dkD/lpBY
+         Yqsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:cc;
-        bh=aWdu1dWgU6LDlQT9WUgK1tbGyRaKD3AurTsATcx1ByY=;
-        b=Ifv0nu9cfHdypgPu9gU6/Fuy0o392ukwy051afDdGVXQcjOCvJr/WZh2Ixv5v1luhy
-         Pf0NS/A/nFxo4TacIfNy71nvNAMB4qTrccpWlKkQJL5srlkwW9U2dBcXaq+Sn9MZAAz/
-         5FfJn+OUz/9F2oILlqASk4ir1F9NdgHq+GaJLRi5NaZ3Hlm/ehVLeIRcyWEN2yPjsnOR
-         CV3H6HxQAv+jFUcuYTJn7moekMWjcGWlP80ayaYhvK8GbVg2RnIGuPYv5WG3zncCO5NA
-         ZqfTz/KYKs9zLLlft5YLBDQDRbgKf+lMV+KYCMFerFjX3UEVZl9G1sKtn/6Na9WY4fH2
-         G7ng==
-X-Gm-Message-State: AOAM530lIAdlCfiYQNSN+ptUPN7m2TKEOvl41P1syszHOj52ZTtov8jZ
-        WARr6/37dUQJSk6vUFo/ylCS6BVpvHpH104IYA==
-X-Google-Smtp-Source: ABdhPJxoOcfzYFe02j1Yvr53Nxi/e0BJwqCy7bwvJ5kG7TNG3tF0RFNwZgGROz2u207zvd8NZcELsX/MmPmadoPPMw==
+        bh=pIwkJUfmtLBNksnvSqi0P2Sms1nGm8KESnXHMvPX9Og=;
+        b=pquhaR2mKJYnO2zkwlVUgyn709NOCzpO+iJvfIK+REFW9qfjEZDdtaRkfNQpK7tnqv
+         8oHFh9dl2qoYGGwxaf63k5nrY6+qhKVMfvLxH0LMIoVrOL7+HjKdoBncmWPs8cQokX4e
+         ug8cWHmlcqZTG0aK8MO/oVCUhyjj+z9clrcG6zAPUxD2g7TvK4/f6j5x3Y6rCauGEJ66
+         9BglWDsRrvcUdo9l9ZHehdBchGalm5x75pBs8KtJex8op0vewZUJj399X5dXrq2as8ys
+         6/2RxKMl+SsfrkBRh2aT26JD3ORcAVV1iK29pSYrGnC8DwTFalAvMgcklsWwV6iCiern
+         vjgg==
+X-Gm-Message-State: AOAM532lVuXL9N695YhYgFCGN+LHZKPrNr4/4Lb30rmGmZcHgR3PE45Z
+        UbeNMlzCZdSohjVCWxLo8iT8VpGLESiWg+nutw==
+X-Google-Smtp-Source: ABdhPJyz6W/gui/zwEmv5bNzGDfKp0W8dihkKOo9bnSi1OrzlXVkeu3uX3rua6U5CwSOAHKySI/G0Nydiq27fR+0dQ==
 X-Received: from kaleshsingh.mtv.corp.google.com ([2620:15c:211:200:b03:1d88:1cf2:4973])
- (user=kaleshsingh job=sendgmr) by 2002:a5b:402:: with SMTP id
- m2mr13884785ybp.422.1635532461875; Fri, 29 Oct 2021 11:34:21 -0700 (PDT)
-Date:   Fri, 29 Oct 2021 11:33:29 -0700
+ (user=kaleshsingh job=sendgmr) by 2002:a17:90b:4c4a:: with SMTP id
+ np10mr13446930pjb.233.1635532474572; Fri, 29 Oct 2021 11:34:34 -0700 (PDT)
+Date:   Fri, 29 Oct 2021 11:33:30 -0700
 In-Reply-To: <20211029183339.3216491-1-kaleshsingh@google.com>
-Message-Id: <20211029183339.3216491-4-kaleshsingh@google.com>
+Message-Id: <20211029183339.3216491-5-kaleshsingh@google.com>
 Mime-Version: 1.0
 References: <20211029183339.3216491-1-kaleshsingh@google.com>
 X-Mailer: git-send-email 2.33.1.1089.g2158813163f-goog
-Subject: [PATCH v3 3/4] tracing/histogram: Document hist trigger variables
+Subject: [PATCH v7 4/4] tracing/selftests: Add tests for hist trigger
+ expression parsing
 From:   Kalesh Singh <kaleshsingh@google.com>
 Cc:     surenb@google.com, hridya@google.com, namhyung@kernel.org,
         kernel-team@android.com, rostedt@goodmis.org, mhiramat@kernel.org,
@@ -65,48 +66,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the tracefs README to describe how hist trigger variables
-can be created.
+Add tests for the parsing of hist trigger expressions; and to
+validate expression evaluation.
 
 Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
+Changes in v7:
+  - Add error check test for divison by constant 0.
+
+Changes in v6:
+  - Read the expression result from the trigger file,
+    instead of creating a histogram to print the value.
+
+Changes in v5:
+  - Add README pattern to requires tag, per Masami
+
+Changes in v3:
+  - Remove .sym-offset error check tests
 
 Changes in v2:
-  - Add Masami's Acked-by.
+  - Add Namhyung's Reviewed-by
+  - Update comment to clarify err_pos in "Too many subexpressions" test
 
- kernel/trace/trace.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index bc677cd64224..c41b3786401d 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -5628,6 +5628,7 @@ static const char readme_msg[] =
- #ifdef CONFIG_HIST_TRIGGERS
- 	"      hist trigger\t- If set, event hits are aggregated into a hash table\n"
- 	"\t    Format: hist:keys=<field1[,field2,...]>\n"
-+	"\t            [:<var1>=<field|var_ref|numeric_literal>[,<var2>=...]]\n"
- 	"\t            [:values=<field1[,field2,...]>]\n"
- 	"\t            [:sort=<field1[,field2,...]>]\n"
- 	"\t            [:size=#entries]\n"
-@@ -5639,6 +5640,16 @@ static const char readme_msg[] =
- 	"\t            common_timestamp - to record current timestamp\n"
- 	"\t            common_cpu - to record the CPU the event happened on\n"
- 	"\n"
-+	"\t    A hist trigger variable can be:\n"
-+	"\t        - a reference to a field e.g. x=current_timestamp,\n"
-+	"\t        - a reference to another variable e.g. y=$x,\n"
-+	"\t        - a numeric literal: e.g. ms_per_sec=1000,\n"
-+	"\t        - an arithmetic expression: e.g. time_secs=current_timestamp/1000\n"
-+	"\n"
-+	"\t    hist trigger aritmethic expressions support addition(+), subtraction(-),\n"
-+	"\t    multiplication(*) and division(/) operators. An operand can be either a\n"
-+	"\t    variable reference, field or numeric literal.\n"
-+	"\n"
- 	"\t    When a matching event is hit, an entry is added to a hash\n"
- 	"\t    table using the key(s) and value(s) named, and the value of a\n"
- 	"\t    sum called 'hitcount' is incremented.  Keys and values\n"
+ .../trigger/trigger-hist-expressions.tc       | 63 +++++++++++++++++++
+ 1 file changed, 63 insertions(+)
+ create mode 100644 tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-expressions.tc
+
+diff --git a/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-expressions.tc b/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-expressions.tc
+new file mode 100644
+index 000000000000..05ffba299dbf
+--- /dev/null
++++ b/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-expressions.tc
+@@ -0,0 +1,63 @@
++#!/bin/sh
++# SPDX-License-Identifier: GPL-2.0
++# description: event trigger - test histogram expression parsing
++# requires: set_event events/sched/sched_process_fork/trigger events/sched/sched_process_fork/hist error_log "<var1>=<field|var_ref|numeric_literal>":README
++
++
++fail() { #msg
++    echo $1
++    exit_fail
++}
++
++test_hist_expr() { # test_name expression expected_val
++    trigger="events/sched/sched_process_fork/trigger"
++
++    reset_trigger_file $trigger
++
++    echo "Test hist trigger expressions - $1"
++
++    echo "hist:keys=common_pid:x=$2" > $trigger
++
++    for i in `seq 1 10` ; do ( echo "forked" > /dev/null); done
++
++    actual=`grep -o 'x=[[:digit:]]*' $trigger | awk -F= '{ print $2 }'`
++
++    if [ $actual != $3 ]; then
++        fail "Failed hist trigger expression evaluation: Expression: $2 Expected: $3, Actual: $actual"
++    fi
++
++    reset_trigger_file $trigger
++}
++
++check_error() { # test_name command-with-error-pos-by-^
++    trigger="events/sched/sched_process_fork/trigger"
++
++    echo "Test hist trigger expressions - $1"
++    ftrace_errlog_check 'hist:sched:sched_process_fork' "$2" $trigger
++}
++
++test_hist_expr "Variable assignment" "123" "123"
++
++test_hist_expr "Subtraction not associative" "16-8-4-2" "2"
++
++test_hist_expr "Division not associative" "64/8/4/2" "1"
++
++test_hist_expr "Same precedence operators (+,-) evaluated left to right" "16-8+4+2" "14"
++
++test_hist_expr "Same precedence operators (*,/) evaluated left to right" "4*3/2*2" "12"
++
++test_hist_expr "Multiplication evaluated before addition/subtraction" "4+3*2-2" "8"
++
++test_hist_expr "Division evaluated before addition/subtraction" "4+6/2-2" "5"
++
++# err pos for "too many subexpressions" is dependent on where
++# the last subexpression was detected. This can vary depending
++# on how the expression tree was generated.
++check_error "Too many subexpressions" 'hist:keys=common_pid:x=32+^10*3/20-4'
++check_error "Too many subexpressions" 'hist:keys=common_pid:x=^1+2+3+4+5'
++
++check_error "Unary minus not supported in subexpression" 'hist:keys=common_pid:x=-(^1)+2'
++
++check_error "Division by zero" 'hist:keys=common_pid:x=3/^0'
++
++exit 0
 -- 
 2.33.1.1089.g2158813163f-goog
 
