@@ -2,105 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1A2843FD57
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 15:27:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7415843FD5A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 15:28:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231669AbhJ2N3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 09:29:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59252 "EHLO
+        id S231675AbhJ2Nam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 09:30:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231594AbhJ2N3k (ORCPT
+        with ESMTP id S231602AbhJ2Nal (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 09:29:40 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9905C061570
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 06:27:11 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: kholk11)
-        with ESMTPSA id 4CD2C1F45A72
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-To:     a.hajda@samsung.com
-Cc:     narmstrong@baylibre.com, robert.foss@linaro.org,
-        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
-        jernej.skrabec@gmail.com, airlied@linux.ie, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, kernel@collabora.com,
-        linux-kernel@vger.kernel.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Subject: [PATCH 3/3] drm/bridge: parade-ps8640: Perform full poweroff if poweron fails
-Date:   Fri, 29 Oct 2021 15:26:50 +0200
-Message-Id: <20211029132650.918761-3-angelogioacchino.delregno@collabora.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211029132650.918761-1-angelogioacchino.delregno@collabora.com>
-References: <20211029132650.918761-1-angelogioacchino.delregno@collabora.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Fri, 29 Oct 2021 09:30:41 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9F60C061570
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 06:28:12 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id t11so6807891plq.11
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 06:28:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=TfnZr21wO2x4C8A4NaAvF/FsdJBBEUzdG7E98MYZoI8=;
+        b=Reb/pVqzhYpse/uOgNi08BNakaWVCa75boxbAxAG+/61M1qs7qGT16Rlyk0n83YbRO
+         WNhjeK75/IJMPnPFq3G4XnufATsdesbB79xKYxfGsL0jDyZl8gRha+7Tm3W7LvnDC7Oh
+         IHDwRBEvVlu1DcNkEgrPhE7n6bJDRuo8a1QKakoTgsb19pzbZbjYDGh52Ui85ZFtOBho
+         +qQfR7UrX8mnmQfn/V1y0G/SPXcDR3s2n1Oksa7amrggc3FIvzYldVzroXY2I04xL8Y7
+         BFWgIHtcAy+eFi2i41avdGYDWNn6Oemk0ZIKdT8M3MdeKD7wTN0GmexNzDDtm5uNouke
+         CbRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=TfnZr21wO2x4C8A4NaAvF/FsdJBBEUzdG7E98MYZoI8=;
+        b=AD9WYlDCn1nUPi1T85DFxesM/vDkue629ruSUAwUiw79EY91UiNhsFXfdZzPlNbUeR
+         wm9M1hQ17ZP944Ys7fhD2I/RYnUwO2Dl6UKtvFcjxbbhu+po19GVaYzs5LVdfAHNdtec
+         euQ4EZBisql5VO1QpHyQZz7tPJuTWw3ZDDyuFHoZ/Ou2VNSG/GQOBljQLU6IE2MbR8wU
+         kbkxlc8FAxP0dp9DfS5wCiWFhBpRDgm747rZRXGLWTyNeagRefeuoi+3lFV5zBJW9WCB
+         L1s+IGcLzI2kRTWj+3fZyyIDxHAydMD1zz3TaM2yOHuw4HdXdBYy47TlEeMEzlzla/zY
+         INHQ==
+X-Gm-Message-State: AOAM53117QI27dmST3H7rtQg5wuPRys5B/mnUcZJZ/JKEj5uYm6MQlcv
+        0rfG0xkjSeSC35YcEUflmvsTr50okObntw==
+X-Google-Smtp-Source: ABdhPJzpIDSdJ7tFZHsaJV/UnX31CAH8okR4ywXV4lx3l8k2NZnVWOFKGgJnnPDPphkQQCCmYPLgvw==
+X-Received: by 2002:a17:90b:4ac1:: with SMTP id mh1mr11550427pjb.144.1635514092420;
+        Fri, 29 Oct 2021 06:28:12 -0700 (PDT)
+Received: from localhost.localdomain ([103.16.71.115])
+        by smtp.googlemail.com with ESMTPSA id on13sm6435952pjb.23.2021.10.29.06.28.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Oct 2021 06:28:11 -0700 (PDT)
+From:   Ajith P V <ajithpv.linux@gmail.com>
+To:     TheSven73@gmail.com
+Cc:     gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Ajith P V <ajithpv.linux@gmail.com>
+Subject: [PATCH] staging: fieldbus: anybus: reframe comment to avoid warning
+Date:   Fri, 29 Oct 2021 18:57:00 +0530
+Message-Id: <20211029132700.8552-1-ajithpv.linux@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In function ps8640_bridge_poweron(), in case of a failure not relative
-to the regulators enablement, the code was disabling the regulators but
-the gpio changes that happened during the poweron sequence were not
-being reverted back to a clean poweroff state.
+host.c file comment produce warning with checkpatch as below:
+WARNING: Possible repeated word: 'interrupt'
+Reframe the comment into bullet points or steps avoid this warning.
 
-Since it is expected that, when we enter ps8640_bridge_poweron(), the
-powerdown and reset GPIOs are both in active state exactly as they were
-left in the poweroff function before, we can simply call function
-__ps8640_bridge_poweroff() in the failure case, reverting every change
-that was done during the power on sequence.
-
-Of course it was chosen to call the poweroff function instead of adding
-code to revert the GPIO changes to the poweron one to avoid duplicating
-code, as we would be doing exactly what the poweroff function does.
-
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Signed-off-by: Ajith P V <ajithpv.linux@gmail.com>
 ---
- drivers/gpu/drm/bridge/parade-ps8640.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ drivers/staging/fieldbus/anybuss/host.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/bridge/parade-ps8640.c b/drivers/gpu/drm/bridge/parade-ps8640.c
-index 9334217d02c9..8b54b515828a 100644
---- a/drivers/gpu/drm/bridge/parade-ps8640.c
-+++ b/drivers/gpu/drm/bridge/parade-ps8640.c
-@@ -346,7 +346,7 @@ static int ps8640_bridge_poweron(struct ps8640 *ps_bridge)
- 
- 	if (ret < 0) {
- 		DRM_ERROR("failed read PAGE2_GPIO_H: %d\n", ret);
--		goto err_regulators_disable;
-+		goto err_poweroff;
+diff --git a/drivers/staging/fieldbus/anybuss/host.c b/drivers/staging/fieldbus/anybuss/host.c
+index 8a75f6642c78..a344410e48fe 100644
+--- a/drivers/staging/fieldbus/anybuss/host.c
++++ b/drivers/staging/fieldbus/anybuss/host.c
+@@ -1318,11 +1318,11 @@ anybuss_host_common_probe(struct device *dev,
  	}
- 
- 	msleep(50);
-@@ -362,23 +362,22 @@ static int ps8640_bridge_poweron(struct ps8640 *ps_bridge)
- 	ret = regmap_update_bits(map, PAGE2_MCS_EN, MCS_EN, 0);
- 	if (ret < 0) {
- 		DRM_ERROR("failed write PAGE2_MCS_EN: %d\n", ret);
--		goto err_regulators_disable;
-+		goto err_poweroff;
- 	}
- 
- 	/* Switch access edp panel's edid through i2c */
- 	ret = regmap_write(map, PAGE2_I2C_BYPASS, I2C_BYPASS_EN);
- 	if (ret < 0) {
- 		DRM_ERROR("failed write PAGE2_I2C_BYPASS: %d\n", ret);
--		goto err_regulators_disable;
-+		goto err_poweroff;
- 	}
- 
- 	ps_bridge->powered = true;
- 
- 	return 0;
- 
--err_regulators_disable:
--	regulator_bulk_disable(ARRAY_SIZE(ps_bridge->supplies),
--			       ps_bridge->supplies);
-+err_poweroff:
-+	__ps8640_bridge_poweroff(ps_bridge);
- 
- 	return ret;
- }
+ 	/*
+ 	 * startup sequence:
+-	 *   perform dummy IND_AB read to prevent false 'init done' irq
++	 *   a) perform dummy IND_AB read to prevent false 'init done' irq
+ 	 *     (already done by test_dpram() above)
+-	 *   release reset
+-	 *   wait for first interrupt
+-	 *   interrupt came in: ready to go !
++	 *   b) release reset
++	 *   c) wait for first interrupt
++	 *   d) interrupt came in: ready to go !
+ 	 */
+ 	reset_deassert(cd);
+ 	if (!wait_for_completion_timeout(&cd->card_boot, TIMEOUT)) {
 -- 
-2.33.0
+2.17.1
 
