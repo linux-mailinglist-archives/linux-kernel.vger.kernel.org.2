@@ -2,98 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4688B43F765
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 08:42:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D154E43F76B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 08:44:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232051AbhJ2Go2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 02:44:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56052 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230252AbhJ2Go1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 02:44:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 50FB0610E8;
-        Fri, 29 Oct 2021 06:41:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635489719;
-        bh=RqcDgWOw64d0pQuH853Ovh8UGaEQ5JIaYpuoL87dGGY=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=M3uw2Y/Pb9Zd9tzeK/vEm4A3hEUCUptjov3lifcwStDhm0MoUnLJ+WyFXOaG3pXSQ
-         d5caAP+YahWE5x+mlLhguArmyPlcMbZtpdUJqGn3AC3KpdJ8hbB+GpRsToQu+FRtnd
-         SC9rLAHfF92MxUXmuv+fJKQUbzxAQ32BFQs7gip/xp8/0xtFMU1cYSNW0hJ6dPG5oT
-         YgGdDSI16xq3liZlTmBiAW678BVWMZkfWeJm3CaRXtyUFQxB/V6sa6KE6Ao+QRLkXa
-         7D/Auf7ZIITbLDFLd94vJyr4EbWUkDJ13kxMxsKzYSw99Fw1M32/uLUqDo29sV6QTd
-         ggPZYDaVWVWdw==
-Content-Type: text/plain; charset="utf-8"
+        id S232053AbhJ2GrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 02:47:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230252AbhJ2GrW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 02:47:22 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BBD2C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 23:44:54 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id a129so8673811yba.10
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 23:44:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=KiG/UOLRZKaANpyYo2TQlrM2jDSJHmsd3acPwY4ch4w=;
+        b=ItKy1UPyo/Uxzzn/C1aLbmO9iQzvPYFS6Z5wJEafowuWtGMqu8UDjDj/ylKgZAlvTr
+         7tL6JEvODMfVOIoJclrILNkEVDZ/yb36hXWgtWL8Pa9UXstmmFqrk5Rr2yGVFVzKE9ET
+         HXVgkVSqsoJs3tnL4WahEKT1+Y17/em0H2BAaJtw/zhV/avAQNkr5sJ8rpw1dY0GSb2n
+         MbIcw0/5h9zSCLGO2i3plVNmUgpB/s4tnY2H894saD5N3Q6ZSK4+/76BUr2TL5ITHmum
+         3LlOtNxsrKdoAH9IqhPnMCta1Rqzk06ITcOzSX46KxWhWMJ15B0NSav8SQ4PsMPbVjSe
+         q0nA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=KiG/UOLRZKaANpyYo2TQlrM2jDSJHmsd3acPwY4ch4w=;
+        b=eEdniOK3XPZ5ZqhYekMmyns3mS2V2fZOtTGz4pClazjPBV3XN0OkLYWKVWdoCsRiOj
+         T9wsLlN+0IiulSLA/2PGHXLyZe7huTjDG/UaJkLXoGrVva62KqPuPqCVAUPBHN2HZT3Q
+         EcEKiPIev8U12u0Zxbs5sejustsLU3f09bmWCQ0raOwUCVs/P/492P1tMSf+crmnnO2y
+         RWIWCvb8jfifBs9nBJX+Gomc5w4ZQtvKCriiWwgKw1fnz+bbWKD4A3VTscbdONQIe7mG
+         HUnWQiXfXvGS3ZdeI2f3fjTyev7kYSqGm1VQw8RoZcQzx4uLEkU14u++DkG5dpJrMqhh
+         cOdw==
+X-Gm-Message-State: AOAM530rlg2YPN10hE4SGzhLzAroDRTD4016H7t+J/tX9USNsjO6qwoh
+        jrN9BHQRfO6rwQYjJcfskbowGRUXZ6B2i3JVR4c=
+X-Google-Smtp-Source: ABdhPJyqHX31hDhTJj06hKBHCjSWkF3R3ZQnofWJn/7e2obyuXBqTKNjt/4ygOPQDj1B20Ht53aa8iCRePXEAwIqR4o=
+X-Received: by 2002:a25:86d1:: with SMTP id y17mr9580105ybm.174.1635489893431;
+ Thu, 28 Oct 2021 23:44:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20211019084449.1411060-4-horatiu.vultur@microchip.com>
-References: <20211019084449.1411060-1-horatiu.vultur@microchip.com> <20211019084449.1411060-4-horatiu.vultur@microchip.com>
-Subject: Re: [RFC PATCH 3/3] clk: lan966x: Extend lan966x clock driver for clock gating support
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     nicolas.ferre@microchip.com, kavyasree.kotagiri@microchip.com,
-        eugen.hristev@microchip.com, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     Horatiu Vultur <horatiu.vultur@microchip.com>,
-        mturquette@baylibre.com, robh+dt@kernel.org
-Date:   Thu, 28 Oct 2021 23:41:57 -0700
-Message-ID: <163548971798.15791.952778566228263608@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Received: by 2002:a05:7110:61d5:b0:fa:ec5d:fa31 with HTTP; Thu, 28 Oct 2021
+ 23:44:53 -0700 (PDT)
+Reply-To: mrs.butor.car@gmail.com
+From:   mrs butor car <mrs.butor.car12@gmail.com>
+Date:   Thu, 28 Oct 2021 23:44:53 -0700
+Message-ID: <CAHXB5ytnz5UkOS-q2j53X0iggBu1Q9mfKzL_kfiVTgeK=67fXA@mail.gmail.com>
+Subject: Urgent Reply,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Horatiu Vultur (2021-10-19 01:44:49)
-> diff --git a/drivers/clk/clk-lan966x.c b/drivers/clk/clk-lan966x.c
-> index 19bec94e1551..40be47092a31 100644
-> --- a/drivers/clk/clk-lan966x.c
-> +++ b/drivers/clk/clk-lan966x.c
-> @@ -188,26 +202,64 @@ static struct clk_hw *lan966x_gck_clk_register(stru=
-ct device *dev, int i)
->         return &priv->hw;
->  };
-> =20
-> +static int lan966x_gate_clk_register(struct device *dev,
-> +                                    struct clk_hw_onecell_data *hw_data,
-> +                                    void __iomem *gate_base)
-> +{
-> +       int i;
-> +
-> +       for (i =3D GCK_GATE_UHPHS; i < N_CLOCKS; ++i) {
-> +               int idx =3D i - GCK_GATE_UHPHS;
-> +
-> +               hw_data->hws[i] =3D
-> +                       clk_hw_register_gate(dev, clk_gate_desc[idx].name,
+Greetings,
 
-Use devm?
+How are you doing today?
 
-> +                                            "lan966x", 0, base,
-> +                                            clk_gate_desc[idx].bit_idx,
-> +                                            0, &clk_gate_lock);
-> +
-> +               if (IS_ERR(hw_data->hws[i]))
-> +                       return dev_err_probe(dev, PTR_ERR(hw_data->hws[i]=
-),
-> +                                            "failed to register %s clock=
-\n",
-> +                                            clk_gate_desc[idx].name);
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +static void lan966x_gate_clk_unregister(struct clk_hw_onecell_data *hw_d=
-ata)
-> +{
-> +       int i;
-> +
-> +       for (i =3D GCK_GATE_UHPHS; i < N_CLOCKS; ++i)
+I tried contacting you but could not get through. I have an important
+business transaction (US$ 32 Million Dollars).  to discuss with
+you. There are fund available and ready for investment which we will
+need your assistance to invest. Kindly get back to me as soon as
+possible for more details. please replied me with this e-mail address,
+(mrs.butor.car@gmail.com)
 
-for (int i =3D=20
+Below information is what I need from you so we can be reaching each other,
 
-should suffice
+1) Full name ...
+2) Private telephone number...
+3) Ages...
+4) Nationalities...
+5) Occupations .
+(6) Send your direct whats-sap number =
 
-> +               if (!IS_ERR(hw_data->hws[i]))
-> +                       clk_hw_unregister(hw_data->hws[i]);
-> +}
-> +
+I will be looking forward for your urgent
+Regards,
+Mrs.Butor Ca
