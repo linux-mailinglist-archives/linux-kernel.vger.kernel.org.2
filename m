@@ -2,168 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD5CB44044A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 22:44:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F15B944044D
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 22:45:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231346AbhJ2UrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 16:47:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46474 "EHLO
+        id S231458AbhJ2UsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 16:48:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230370AbhJ2UrW (ORCPT
+        with ESMTP id S230370AbhJ2UsY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 16:47:22 -0400
-Received: from mail-ua1-x92b.google.com (mail-ua1-x92b.google.com [IPv6:2607:f8b0:4864:20::92b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F580C061766
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 13:44:53 -0700 (PDT)
-Received: by mail-ua1-x92b.google.com with SMTP id z22so18036747uaq.12
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 13:44:53 -0700 (PDT)
+        Fri, 29 Oct 2021 16:48:24 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AB35C061714
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 13:45:55 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id d5so3185676wrc.1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 13:45:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=khwee+o4BIEXlURemAxOIdbb1MWFYFtT0vHvBw+Nksk=;
-        b=fYHPHD1cpSxD1HuX6GBkp650+K5AQeXGHiyXjEqXajyjaNdVOFxAbt7T8l21wpClyT
-         J9di4Hv7YTgnZOlpN+ge3ymXROyrvAYtful4TOmblnfCk2B+IIEkWDnz6VgcS9qa1l7L
-         Dl9ReFkbVhSU9XPojwjYSjv3yjv/v6N8YlmivGXQ7bRXChw4p4Hgl7vZBrmB93+NT+T/
-         dfZhvGyp2jhkBPbxdue5NLMG1+IsB0zMbQK5ymHqv4HkDbbK2Gy8PCPGATnCcTfslSIK
-         0nAECJPlasKxAvdil6RETd4qYR+eq9EJdQRW74O8g+2KL5/pHVgpi5ZQtDT3TuQ4cJ7G
-         oTAg==
+        d=bgdev-pl.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=q7JMVL7G4r57WQGGqdVOy40eDcbhr5zqpbYFZ6tt2qc=;
+        b=TU6GHjk8LerR625mUlOu+XAhKMtJtLYc934B26SqDBTji2fm78zsYJGU7Q73ULdHlN
+         MazFt/euYGnGc6CWqnKqobfiVmn7dRKBJn1z7fg5tXjmi69G+RPYp2A3JoTs1EXdVtzz
+         ebcchXX0wjf4b6OacFjRqN5OBNLT5eTK5GVgh+taVc5oDpJua4FFogYsa5/4zSSTf6tm
+         A6BEOzQnsbfplx9puF8OmndEhvwnn5jayLUbagytRrDVP7TwsYWno7BFO0TUPVV2ZYSd
+         Znk4KBJICkBtwAz6Aa+fPfwi1wLTjTPA87yZwquBtOlBQhEMSplescRH9h6zOHXa0VGK
+         TEZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=khwee+o4BIEXlURemAxOIdbb1MWFYFtT0vHvBw+Nksk=;
-        b=H4WUgp0mLsyRAcV2HyfE85/q9nhR1qRTPqglPqa44mM8dKeCsLQBGyDPBpymXWk/FZ
-         KpBYORzsUSba6GEhxzNG0GJ7lBMP02BQdD44DR0ftx1X3lwo0JGOYeWW3PTxE+6bTgNf
-         MOVZhyHDi5gQKEQ7Y1QXtVyEt1lElNRdcx62PNl9L9V7zToSWtuU5V0rhJhikJL3/GFI
-         YXcGphXSn63fizhNFXD5ZCBF4fFuad4NBCmHKlR7KA8oDw5qpNN0gwnRKcSLSA6Ka0om
-         gQit87uUHEaW1mjKOfmYBZnnuMlesPEak80mZTWEsgna5M3X2OEOQ+rKuzAlrXNFDTPr
-         0kFA==
-X-Gm-Message-State: AOAM533c9+L+a3DSW28p5VbKo2+zrv7A1HTe1FZiLLxsV8VukOWGl4Ml
-        DRQq5yhqADqGO+5ucEZBxKRBJw6Zd/0UH+cT2DN6jA==
-X-Google-Smtp-Source: ABdhPJw3mDqd696wBkxMTGZ2S5RsKu9UN9jviWzgRv7mo5KIhIFNWcJZjahUk6mPGJocTM+tXQPlbXOHE/f6tlVxbjg=
-X-Received: by 2002:a67:1781:: with SMTP id 123mr15453627vsx.1.1635540292507;
- Fri, 29 Oct 2021 13:44:52 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=q7JMVL7G4r57WQGGqdVOy40eDcbhr5zqpbYFZ6tt2qc=;
+        b=p54iAMi6Or+/AI+WArCJDxOrNBS+Ha6P0hWJ7XQ6ljC8I04oQNkBBxsUI1Ou4FodqS
+         dLb11XmObh1R10lANtCVnFsOC15g91EkEy+Wf1K0LMYlLbvem+wrbNNdFv781+EBPcf+
+         96BqKoOxEwXdI2ME3hMpD3eObqMZWSZdVCb6Zqu6SSd1IJ2AgodM5Cma5ayMi3dLgumu
+         N2Z/JyWNewZAmtl99oSNE9nX8cmU96zIFqBXK9u7wjp6suOZjTjwysXwf0UxKK0OSlNX
+         +WLWwil5V0xdsGW2nTK1F8JmTZol+y7FW7Rl0EKKc7lNjxLSh6TE0NekZCLnXx4dranu
+         0Epw==
+X-Gm-Message-State: AOAM5335msHOG32pOTcZYEm0NQLNfT8KbHpyL0FCuhaWPm4+Dc9rDLjQ
+        EfxT1vsf/Qce0gPVTejlhS2+AT9TgcDcHg==
+X-Google-Smtp-Source: ABdhPJwkeK557CAOYJFHk4vaxAvdSjgL4VwKyuX2MH+nuV/lj+hlA0Fk/sliiMoFNZnLG4A8SLDkfQ==
+X-Received: by 2002:a7b:c248:: with SMTP id b8mr1968818wmj.190.1635540353553;
+        Fri, 29 Oct 2021 13:45:53 -0700 (PDT)
+Received: from debian-brgl.home ([2a01:cb1d:334:ac00:7d50:ff5:f5c1:e225])
+        by smtp.gmail.com with ESMTPSA id k22sm6749196wrd.59.2021.10.29.13.45.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Oct 2021 13:45:53 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: [GIT PULL] gpio: fixes for v5.15
+Date:   Fri, 29 Oct 2021 22:45:50 +0200
+Message-Id: <20211029204550.24882-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-References: <20211028183527.3050-1-semen.protsenko@linaro.org>
- <20211028183527.3050-5-semen.protsenko@linaro.org> <e69282af-738b-e56e-026a-1e3adcec6a51@roeck-us.net>
-In-Reply-To: <e69282af-738b-e56e-026a-1e3adcec6a51@roeck-us.net>
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Fri, 29 Oct 2021 23:44:40 +0300
-Message-ID: <CAPLW+4nn522iRbPViTybhN8=-pQBaQPCiAQAufzBHgnEMW3HmA@mail.gmail.com>
-Subject: Re: [PATCH 4/7] watchdog: s3c2410: Add support for WDT counter enable
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-watchdog@vger.kernel.org,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Oct 2021 at 03:16, Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On 10/28/21 11:35 AM, Sam Protsenko wrote:
-> > On new Exynos chips (like Exynos850) WDT counter must be enabled to make
-> > WDT functional. It's done via CLUSTERx_NONCPU_OUT register, in
-> > CNT_EN_WDT bit. Add infrastructure needed to enable that counter.
-> >
-> > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> > ---
-> >   drivers/watchdog/s3c2410_wdt.c | 28 ++++++++++++++++++++++++++++
-> >   1 file changed, 28 insertions(+)
-> >
-> > diff --git a/drivers/watchdog/s3c2410_wdt.c b/drivers/watchdog/s3c2410_wdt.c
-> > index 7c163a257d3c..a5ef7171a90e 100644
-> > --- a/drivers/watchdog/s3c2410_wdt.c
-> > +++ b/drivers/watchdog/s3c2410_wdt.c
-> > @@ -97,12 +97,16 @@ struct s3c2410_wdt;
-> >    * @rst_stat_reg: Offset in pmureg for the register that has the reset status.
-> >    * @rst_stat_bit: Bit number in the rst_stat register indicating a watchdog
-> >    * reset.
-> > + * @cnt_en_reg: Offset in pmureg for the register that enables WDT counter.
-> > + * @cnt_en_bit: Bit number for "watchdog counter enable" in cnt_en register.
-> >    * @quirks: A bitfield of quirks.
-> >    * @disable_auto_reset: If set, this function will be called to disable
-> >    * automatic setting the WDT as a reset reason in RST_STAT on CPU reset; uses
-> >    * disable_reg field.
-> >    * @mask_reset: If set, this function will be called to mask WDT reset request;
-> >    * uses mask_reset_reg and mask_bit fields.
-> > + * @enable_counter: If set, this function will be called to enable WDT counter;
-> > + * uses cnt_en_reg and cnt_en_bit fields.
-> >    */
-> >
-> >   struct s3c2410_wdt_variant {
-> > @@ -111,9 +115,12 @@ struct s3c2410_wdt_variant {
-> >       int mask_bit;
-> >       int rst_stat_reg;
-> >       int rst_stat_bit;
-> > +     int cnt_en_reg;
-> > +     int cnt_en_bit;
-> >       u32 quirks;
-> >       int (*disable_auto_reset)(struct s3c2410_wdt *wdt, bool mask);
-> >       int (*mask_reset)(struct s3c2410_wdt *wdt, bool mask);
-> > +     int (*enable_counter)(struct s3c2410_wdt *wdt, bool mask);
->
-> Unless there are different enable functions in the future,
-> the function is unnecessary. This can be handled as feature bit.
->
+Linus,
 
-Thanks for review. I've reworked all patches to use quirk bits instead
-of callbacks. Will send v2 soon.
+This is the last batch of fixes for the GPIO subsystem. Nothing worth
+noting, just minor driver fixes.
 
-> >   };
-> >
-> >   struct s3c2410_wdt {
-> > @@ -132,6 +139,7 @@ struct s3c2410_wdt {
-> >
-> >   static int s3c2410wdt_disable_wdt_reset(struct s3c2410_wdt *wdt, bool mask);
-> >   static int s3c2410wdt_mask_wdt_reset(struct s3c2410_wdt *wdt, bool mask);
-> > +static int s3c2410wdt_enable_counter(struct s3c2410_wdt *wdt, bool en);
-> >
-> >   static const struct s3c2410_wdt_variant drv_data_s3c2410 = {
-> >       .quirks = 0
-> > @@ -246,6 +254,20 @@ static int s3c2410wdt_mask_wdt_reset(struct s3c2410_wdt *wdt, bool mask)
-> >       return ret;
-> >   }
-> >
-> > +static int s3c2410wdt_enable_counter(struct s3c2410_wdt *wdt, bool en)
-> > +{
-> > +     const u32 mask_val = 1 << wdt->drv_data->cnt_en_bit;
->
-> BIT()
->
-> > +     const u32 val = en ? mask_val : 0;
-> > +     int ret;
-> > +
-> > +     ret = regmap_update_bits(wdt->pmureg, wdt->drv_data->cnt_en_reg,
-> > +                              mask_val, val);
-> > +     if (ret < 0)
-> > +             dev_err(wdt->dev, "failed to update reg(%d)\n", ret);
-> > +
-> > +     return ret;
-> > +}
-> > +
-> >   static int s3c2410wdt_enable(struct s3c2410_wdt *wdt, bool en)
-> >   {
-> >       int ret;
-> > @@ -262,6 +284,12 @@ static int s3c2410wdt_enable(struct s3c2410_wdt *wdt, bool en)
-> >                       return ret;
-> >       }
-> >
-> > +     if (wdt->drv_data->enable_counter) {
-> > +             ret = wdt->drv_data->enable_counter(wdt, en);
-> > +             if (ret < 0)
-> > +                     return ret;
-> > +     }
-> > +
-> >       return 0;
-> >   }
-> >
-> >
->
+Please pull.
+
+Best Regards,
+Bartosz Golaszewski
+
+The following changes since commit 6fda593f3082ef1aa783ac13e89f673fd69a2cb6:
+
+  gpio: mockup: Convert to use software nodes (2021-10-06 13:04:04 +0200)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git gpio-fixes-for-v5.15
+
+for you to fetch changes up to c0eee6fbfa2b3377f1efed10dad539abeb7312aa:
+
+  gpio: mlxbf2.c: Add check for bgpio_init failure (2021-10-25 10:15:05 +0200)
+
+----------------------------------------------------------------
+gpio fixes for v5.15
+
+- fix the return value check when parsing the ngpios property in gpio-xgs-iproc
+- check the return value of bgpio_init() in gpio-mlxbf2
+
+----------------------------------------------------------------
+Asmaa Mnebhi (1):
+      gpio: mlxbf2.c: Add check for bgpio_init failure
+
+Jonas Gorski (1):
+      gpio: xgs-iproc: fix parsing of ngpios property
+
+ drivers/gpio/gpio-mlxbf2.c    | 5 +++++
+ drivers/gpio/gpio-xgs-iproc.c | 2 +-
+ 2 files changed, 6 insertions(+), 1 deletion(-)
