@@ -2,216 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A882E43F586
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 05:46:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0FFF43F58B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 05:52:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231706AbhJ2Dsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 23:48:47 -0400
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:39419 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231611AbhJ2Dsp (ORCPT
+        id S231702AbhJ2DzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 23:55:14 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:52324 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231523AbhJ2DzM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 23:48:45 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.nyi.internal (Postfix) with ESMTP id B08B95C01C2;
-        Thu, 28 Oct 2021 23:46:16 -0400 (EDT)
-Received: from imap43 ([10.202.2.93])
-  by compute2.internal (MEProxy); Thu, 28 Oct 2021 23:46:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm1; bh=4ecynQE/mi8JhloxKEfsAbzg5Np3viO
-        3Lizq0tTL4VY=; b=X2X2PCsmSdbzcEeXZWbW+ZXCPG7jmpVFtvff0XV+5qtXwQY
-        +rymTSK1eEb7us4kdoRhOO45meBl6tUxhn5VGOA9PVMvkVJVLpz7yemP5tibrz5g
-        LeccPkKhAGPB6grIs+vsPeVWAwSEV66B1RtTI9qQ8ZF8xVZaUH+PVFNYT3NJ19iU
-        c5R+WmmytsLvgjm83EMTRqW0aI2ml8xSqeMJQcZZmTqGPNd/qD2xHwb1hSeRNX+N
-        7dDQJNc27WrA25ygdXdtnB1jQT+BFzPRpg8s9E45skQv1kiuLjZs8LMldme51/r+
-        /J8yDGbZXOYhk/shNWsvOpJhPqpKOn07SDFjraA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=4ecynQ
-        E/mi8JhloxKEfsAbzg5Np3viO3Lizq0tTL4VY=; b=PuVcCq+viEy2hxryrBJalc
-        8GpInWN5x6d97JrHckjCLXXsvpNvE2snvQadDk/4kWLlbuUMx+9NrRixpw1RRAuO
-        F/ud8NXOykyOgey9LdBhlmOx5HoPTIyfzVuBf5720h4V+dq7O66r5N+uAbcAgFHw
-        Z2k/bVGeLChB5wF/Q44Oa8H8JGZj8uP3C8NVSzratoIIbKg3776YuW8X8m8lAjwG
-        h1OWNdeKFJ7GATWDLP0+tcFKbKaUhhfdb8NqE0P4i4Wt7X08my6GxraaKMmmSDl6
-        UwUJO360tr+doufy2J6CANys0TyWwzF7eji36GLIibcXiBji7wa0BSp6sqDAuyMw
-        ==
-X-ME-Sender: <xms:hm57YejhuTlnRN1NAZ0MKP_Lhu2xfrzr93qBDeq0Dru7vCWcqT2RLQ>
-    <xme:hm57YfC78U7bBIDe1YJ33k9H4KDGXX1MvETuTGB6Lig_iDQTGt3cJu7D4sf6J1WJW
-    dSJmGvxvEq_LxDWyA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvdeggedgjeduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdetnhgu
-    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
-    grthhtvghrnhephefhfeekgfekudevheffheeihedujeefjeevjeefudfgfeeutdeuvdeh
-    hfevueffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    eprghnughrvgifsegrjhdrihgurdgruh
-X-ME-Proxy: <xmx:hm57YWH9ZiQczwe8vRqUNtLmjS3MBCBW72L2-SSXY1iED6htS_WJJw>
-    <xmx:hm57YXR0zv--y_gmEdJVfBhM4jJKi2ZSOIi5acp8DV6onfiaIWiNAg>
-    <xmx:hm57YbyRu5YjlOIEkJraZ93pT8h0VjDRp1MK0ksGUQXDju_0suz4xg>
-    <xmx:iG57Yb-E3BcvJ1T9CefPUjlYNu9YPgxm-RUcMpe5u6IZuKJFKLVSTw>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 73114AC0DD1; Thu, 28 Oct 2021 23:46:14 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-1369-gd055fb5e7c-fm-20211018.002-gd055fb5e
-Mime-Version: 1.0
-Message-Id: <ad15c868-de54-41c2-8d3c-716c33b7aa8c@www.fastmail.com>
-In-Reply-To: <HK0PR06MB338025A6EC2AE11D25C34998F2B29@HK0PR06MB3380.apcprd06.prod.outlook.com>
-References: <20210925022354.10297-1-ryan_chen@aspeedtech.com>
- <CACPK8Xct9rWEu40XHWjo_uY9P7dJ=U5LBM+O3KjmjNL+9yD5QQ@mail.gmail.com>
- <HK0PR06MB338025A6EC2AE11D25C34998F2B29@HK0PR06MB3380.apcprd06.prod.outlook.com>
-Date:   Fri, 29 Oct 2021 14:15:54 +1030
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Ryan Chen" <ryan_chen@aspeedtech.com>,
-        "Joel Stanley" <joel@jms.id.au>
-Cc:     "Michael Turquette" <mturquette@baylibre.com>,
-        "Stephen Boyd" <sboyd@kernel.org>,
-        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCHv3] clk:aspeed:Fix AST2600 hpll calculate formula
+        Thu, 28 Oct 2021 23:55:12 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1635479565; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=E6TbmtpcqjlLnVfky9lLPvKer7B+7CluEi37vqoEqT8=; b=kSY0s1W+EXc6sOXULfPzSU2U2v4xRrQQz4sVtyYmxJdgW25/2swajbvahK4FqilJGvyZ9bbt
+ UVEeWT+7o6Dhgf3bcPVV4i+XOCB1hLxHGR+GZp/iiZ/uO5DUMsQmLDN48bFizpLq+bTSsSoV
+ XUEQtsELCxBGroZZdLEWjVA0UYs=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 617b7005aeb23905566e5dc7 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 29 Oct 2021 03:52:37
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9B83DC4360D; Fri, 29 Oct 2021 03:52:37 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from tynnyri.adurom.net (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 55B51C4338F;
+        Fri, 29 Oct 2021 03:52:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 55B51C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Zekun Shen <bruceshenzk@gmail.com>
+Cc:     ath9k-devel@qca.qualcomm.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ath9k: Fix out-of-bound memcpy in ath9k_hif_usb_rx_stream
+References: <YXsidrRuK6zBJicZ@10-18-43-117.dynapool.wireless.nyu.edu>
+Date:   Fri, 29 Oct 2021 06:52:31 +0300
+In-Reply-To: <YXsidrRuK6zBJicZ@10-18-43-117.dynapool.wireless.nyu.edu> (Zekun
+        Shen's message of "Thu, 28 Oct 2021 18:21:42 -0400")
+Message-ID: <87y26cxzb4.fsf@tynnyri.adurom.net>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Zekun Shen <bruceshenzk@gmail.com> writes:
 
+> Large pkt_len can lead to out-out-bound memcpy. Current
+> ath9k_hif_usb_rx_stream allows combining the content of two urb
+> inputs to one pkt. The first input can indicate the size of the
+> pkt. Any remaining size is saved in hif_dev->rx_remain_len.
+> While processing the next input, memcpy is used with rx_remain_len.
+>
+> 4-byte pkt_len can go up to 0xffff, while a single input is 0x4000
+> maximum in size (MAX_RX_BUF_SIZE). Thus, the patch adds a check for
+> pkt_len which must not exceed 2 * MAX_RX_BUG_SIZE.
+>
+> BUG: KASAN: slab-out-of-bounds in ath9k_hif_usb_rx_cb+0x490/0xed7 [ath9k_htc]
+> Read of size 46393 at addr ffff888018798000 by task kworker/0:1/23
+>
+> CPU: 0 PID: 23 Comm: kworker/0:1 Not tainted 5.6.0 #63
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+> BIOS rel-1.10.2-0-g5f4c7b1-prebuilt.qemu-project.org 04/01/2014
+> Workqueue: events request_firmware_work_func
+> Call Trace:
+>  <IRQ>
+>  dump_stack+0x76/0xa0
+>  print_address_description.constprop.0+0x16/0x200
+>  ? ath9k_hif_usb_rx_cb+0x490/0xed7 [ath9k_htc]
+>  ? ath9k_hif_usb_rx_cb+0x490/0xed7 [ath9k_htc]
+>  __kasan_report.cold+0x37/0x7c
+>  ? ath9k_hif_usb_rx_cb+0x490/0xed7 [ath9k_htc]
+>  kasan_report+0xe/0x20
+>  check_memory_region+0x15a/0x1d0
+>  memcpy+0x20/0x50
+>  ath9k_hif_usb_rx_cb+0x490/0xed7 [ath9k_htc]
+>  ? hif_usb_mgmt_cb+0x2d9/0x2d9 [ath9k_htc]
+>  ? _raw_spin_lock_irqsave+0x7b/0xd0
+>  ? _raw_spin_trylock_bh+0x120/0x120
+>  ? __usb_unanchor_urb+0x12f/0x210
+>  __usb_hcd_giveback_urb+0x1e4/0x380
+>  usb_giveback_urb_bh+0x241/0x4f0
+>  ? __hrtimer_run_queues+0x316/0x740
+>  ? __usb_hcd_giveback_urb+0x380/0x380
+>  tasklet_action_common.isra.0+0x135/0x330
+>  __do_softirq+0x18c/0x634
+>  irq_exit+0x114/0x140
+>  smp_apic_timer_interrupt+0xde/0x380
+>  apic_timer_interrupt+0xf/0x20
+>
+> Signed-off-by: Zekun Shen <bruceshenzk@gmail.com>
 
-On Fri, 8 Oct 2021, at 18:02, Ryan Chen wrote:
->> -----Original Message-----
->> From: Joel Stanley <joel@jms.id.au>
->> Sent: Friday, October 8, 2021 12:06 PM
->> To: Ryan Chen <ryan_chen@aspeedtech.com>
->> Cc: Michael Turquette <mturquette@baylibre.com>; Stephen Boyd
->> <sboyd@kernel.org>; Andrew Jeffery <andrew@aj.id.au>;
->> linux-clk@vger.kernel.org; Linux Kernel Mailing List
->> <linux-kernel@vger.kernel.org>
->> Subject: Re: [PATCHv3] clk:aspeed:Fix AST2600 hpll calculate formula
->> 
->> On Sat, 25 Sept 2021 at 02:24, Ryan Chen <ryan_chen@aspeedtech.com>
->> wrote:
->> >
->> 
->> A few notes on process:
->> 
->> > v2 -> v3: change else than if to directly else if
->> > v1 -> v2: add Fixes commit hash
->> 
->> As this is normally information for reviewers to know what you've changed
->> since the last version, we normally put this below the --- in the patch, which
->> means it is not included in the commit message.
->> 
->> Also we put a space between the PATCH and v3 in the subject. If you use the
->> tools, it will generate this for you:
->> 
->> git format-patch -v3 -1 --to=...
->> 
->> >
->> > AST2600 HPLL calculate formula [SCU200] HPLL Numerator(M): have fixed
->> > value depend on SCU strap.
->> > M = SCU500[10] ? 0x5F : SCU500[8] ? 0xBF : SCU200[12:0]
->> 
->> I recommend adding to the commit message the text from my first review:
->> 
->> From the datasheet:
->> 
->> CPU frequency selection
->> 000 1.2GHz
->> 001 1.6GHz
->> 010 1.2GHz
->> 011 1.6GHz
->> 100 800MHz
->> 101 800MHz
->> 110 800MHz
->> 111 800MHz
->> 
->> So when the system is running at 800MHz or 1.6GHz, the value for the
->> numerator (m) in SCU204 is incorrect, and must be overridden.
->
-> Yes, SCU204 will be overridden by chip design.
-> Let me clarify m is in SCU200[12:0] not SCU204. SCU204 is NB not 
-> related with freq.
->
->> 
->> >
->> > if SCU500[10] = 1, M=0x5F.
->> > else if SCU500[10]=0 & SCU500[8]=1, M=0xBF.
->> > others (SCU510[10]=0 and SCU510[8]=0)
->> > depend on SCU200[12:0] (default 0x8F) register setting.
->> >
->> > HPLL Denumerator (N) =  SCU200[18:13] (default 0x2)
->> > HPLL Divider (P)         =      SCU200[22:19] (default 0x0)
->> >
->> > Fixes: d3d04f6c330a ("clk: Add support for AST2600 SoC")
->> > Signed-off-by: Ryan Chen <ryan_chen@aspeedtech.com>
->> > ---
->> >  drivers/clk/clk-ast2600.c | 28 +++++++++++++++++++++++++++-
->> >  1 file changed, 27 insertions(+), 1 deletion(-)
->> >
->> > diff --git a/drivers/clk/clk-ast2600.c b/drivers/clk/clk-ast2600.c
->> > index 085d0a18b2b6..d30188355aaf 100644
->> > --- a/drivers/clk/clk-ast2600.c
->> > +++ b/drivers/clk/clk-ast2600.c
->> > @@ -169,6 +169,32 @@ static const struct clk_div_table
->> > ast2600_div_table[] = {  };
->> >
->> >  /* For hpll/dpll/epll/mpll */
->> > +static struct clk_hw *ast2600_calc_hpll(const char *name, u32 val) {
->> > +       unsigned int mult, div;
->> > +       u32 hwstrap = readl(scu_g6_base + ASPEED_G6_STRAP1);
->> > +
->> > +       if (val & BIT(24)) {
->> > +               /* Pass through mode */
->> > +               mult = div = 1;
->> > +       } else {
->> > +               /* F = 25Mhz * [(M + 2) / (n + 1)] / (p + 1) */
->> > +               u32 m = val  & 0x1fff;
->> > +               u32 n = (val >> 13) & 0x3f;
->> > +               u32 p = (val >> 19) & 0xf;
->> > +
->> 
->> Add a comment:
->> 
->> /* If the CPU is running at 800Mhz. */
->> 
->> > +               if (hwstrap & BIT(10))
->> > +                       m = 0x5F;
->> 
->> /* If the CPU is running at 1600Mhz. */
->> 
->> > +               else if (hwstrap & BIT(8))
->> > +                       m = 0xBF;
->> 
->> 
->> Or you could copy what I suggested in the first patch, and write it like this,
->> which I think is clear:
->> 
->> ff (hwstrap & BIT(10)) {
->>     /* CPU running at 800MHz */
->>    m = 95;
->> } else if (hwstrap & BIT(10)) {
->>     /* CPU running at 1.6GHz */
->>   m  = 191;
->> } else {
->>    /* CPU running at 1.2Ghz */
->>   m = val  & 0x1fff;
->> }
->
-> How about following 
->
-> ff (hwstrap & BIT(10)) {
->     /* CPU running at 800MHz */
->     m = 0x5F;
-> } else if (hwstrap & BIT(10)) {
+How did you test this?
 
-This is the same condition as the `if` above. That doesn't seem right.
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
->     /* CPU running at 1.6GHz */
->     m = 0xBF;
-> } else {
->    /* CPU running at 1.2Ghz */
->    m = val  & 0x1fff;
-> }
->
->> 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
