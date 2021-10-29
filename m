@@ -2,105 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74F6643FC1A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 14:14:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A72BB43FC23
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 14:18:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231468AbhJ2MRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 08:17:14 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:55758 "EHLO
+        id S231449AbhJ2MU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 08:20:59 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:55850 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230273AbhJ2MRN (ORCPT
+        with ESMTP id S230134AbhJ2MU6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 08:17:13 -0400
+        Fri, 29 Oct 2021 08:20:58 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 67061217BA;
-        Fri, 29 Oct 2021 12:14:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1635509684;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fOqJfV+Aey4e3tvNIeU6bJo2ZmdcFDdbpKccfiZf5ZU=;
-        b=vDqR5zNQvrHRU2VfsOVH9icjtoK0aeIgCmZPHpzt9gPy64fK+qcGbDlj0YkJGXd2YykPkB
-        CuCizXk9OQLbWSQsEuoqtE2YlbvAoZx8Xdx97iWOz26ZIqB/YkZtHfZ7mmzatdyiH7FENu
-        XeTq98mq73sbV0Jdm6KTdqgDWk7blqY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1635509684;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fOqJfV+Aey4e3tvNIeU6bJo2ZmdcFDdbpKccfiZf5ZU=;
-        b=Z8Z9VsJGgrw2dyn88IfmCfPIAHxI6V+mMNFInq0Lzv02uiRXdAurNJMp4cYn6tY5UtNFog
-        hMTb/kdd8mCTIoAA==
+        by smtp-out1.suse.de (Postfix) with ESMTP id 12A232196F;
+        Fri, 29 Oct 2021 12:18:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1635509909; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=9+iSz6ZxCX5bpyCjTv0yyev2kAAKQ2R39mBVeMmTFMM=;
+        b=hwEFOETDkJG2HsVXIjUVADf2us4hHwdowZ4jl+DRMmeUNwKO+gTgn9wmKTcdB6OL62GX20
+        8ZuwNYAvl5E0QfwsndQWZtIDQ6KfmI7d9cL1E0iIuKy26eka+59o/d8Y7ES2zHcY/C0GSx
+        LUO97gHmhWL6ighu27ePpem5eClfSk4=
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 57706A3B88;
-        Fri, 29 Oct 2021 12:14:44 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 0B65CA3B81;
+        Fri, 29 Oct 2021 12:18:29 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id BB779DA7A9; Fri, 29 Oct 2021 14:14:10 +0200 (CEST)
-Date:   Fri, 29 Oct 2021 14:14:09 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: linux-next: build failure after merge of the btrfs tree
-Message-ID: <20211029121409.GX20319@suse.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20211027210924.22ef5881@canb.auug.org.au>
- <20211029095226.GV20319@suse.cz>
- <20211029105052.GW20319@suse.cz>
- <CAHp75VdXJEuY86pFC+bLoGbAYuGsA+KqEV-g4Dca25HHD-njHA@mail.gmail.com>
+        id 0CDFFDA7A9; Fri, 29 Oct 2021 14:17:55 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fixes for 5.15-rc8
+Date:   Fri, 29 Oct 2021 14:17:55 +0200
+Message-Id: <cover.1635506911.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75VdXJEuY86pFC+bLoGbAYuGsA+KqEV-g4Dca25HHD-njHA@mail.gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 01:58:53PM +0300, Andy Shevchenko wrote:
-> On Friday, October 29, 2021, David Sterba <dsterba@suse.cz> wrote:
-> 
-> > On Fri, Oct 29, 2021 at 11:52:26AM +0200, David Sterba wrote:
-> > > On Wed, Oct 27, 2021 at 09:09:24PM +1100, Stephen Rothwell wrote:
-> > > > Hi all,
-> > > >
-> > > > [I am not sure why this error only popped up after I merged Andrew's
-> > > > patch set ...]
-> >
-> >
-> 
-> 
-> 
-> > Also I think that next time you can use some older version of the
-> > for-next branch instead of making the whole subsystem depend on BROKEN.
-> > This causes much more harm in the testing setups that suddenly can't
-> > work at all, compared to testing a few days older branch.
-> 
-> The Linux Next reflects current state of affairs and marking something
-> which is definitely broken as BROCKEN is what I expect as a developer who
-> tests some other stuff on top of broken code.
+Hi,
 
-I'd argue against using the big 'depdends BROKEN' hammer as much as
-possible, surely not for linux-next. Normaly the BROKEN status is earned
-after known unfixed breakage for subsystems where nobody cares. If code
-is buggy and causes crashes when testing linux-next, that's something we
-want to see, not "no test results at all".
+last minute fixes for crash on 32bit architectures when compression is
+in use. It's a regression introduced in 5.15-rc and I'd really like not
+let this into the final release, fixes via stable trees would add
+unnecessary delay.
 
-Can you imagine all compilation breakages in linux-next get resolved by
-BROKEN? I know Stephen is capable of fixing various compilation problems
-by himself and given the whole-tree scope it's heroic efforts, leaving
-the shortcuts for the rest. In this case the fix may not be obvious so
-I'd understand not merging my for-next branch at all or merging a stub
-like the latest rc instead, ie. resolving that on the integration level
-and not touching the config or code itself.
+The problem is on 32bit architectures with highmem enabled, the pages
+for compression may need to be kmapped, while the patches removed that
+as we don't use GFP_HIGHMEM allocations anymore.  The pages that don't
+come from local allocation still may be from highmem. Despite being on
+32bit there's enough such ARM machines in use so it's not a marginal
+issue.
+
+I did full revert of the patches one by one instead of a huge one.
+There's one exception for the "lzo" revert as there was an intermediate
+patch touching the same code to make it compatible with subpage.  I
+can't revert that one too, so the revert in lzo.c is manual.  Qu Wenruo
+has worked on that with me and verified the changes.
+
+Please pull, thanks.
+
+----------------------------------------------------------------
+The following changes since commit 4afb912f439c4bc4e6a4f3e7547f2e69e354108f:
+
+  btrfs: fix abort logic in btrfs_replace_file_extents (2021-10-07 22:08:06 +0200)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.15-rc7-tag
+
+for you to fetch changes up to ccaa66c8dd277ac02f96914168bb7177f7ea8117:
+
+  Revert "btrfs: compression: drop kmap/kunmap from lzo" (2021-10-29 13:25:43 +0200)
+
+----------------------------------------------------------------
+David Sterba (4):
+      Revert "btrfs: compression: drop kmap/kunmap from generic helpers"
+      Revert "btrfs: compression: drop kmap/kunmap from zstd"
+      Revert "btrfs: compression: drop kmap/kunmap from zlib"
+      Revert "btrfs: compression: drop kmap/kunmap from lzo"
+
+ fs/btrfs/compression.c |  3 ++-
+ fs/btrfs/inode.c       |  3 ++-
+ fs/btrfs/lzo.c         | 36 +++++++++++++++++++++++++-----------
+ fs/btrfs/zlib.c        | 36 +++++++++++++++++++++++++-----------
+ fs/btrfs/zstd.c        | 27 ++++++++++++++++++---------
+ 5 files changed, 72 insertions(+), 33 deletions(-)
