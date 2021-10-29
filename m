@@ -2,82 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C18143F40C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 02:42:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D46643F40E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 02:42:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231494AbhJ2Aol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 20:44:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58220 "EHLO
+        id S231504AbhJ2Aov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 20:44:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231371AbhJ2Aoj (ORCPT
+        with ESMTP id S231424AbhJ2Aou (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 20:44:39 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DEC2C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 17:42:12 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id 131so8325406ybc.7
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 17:42:12 -0700 (PDT)
+        Thu, 28 Oct 2021 20:44:50 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B66EEC061570
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 17:42:22 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id bj31so7739172qkb.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 17:42:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pb+iwuiJ8p/4MIMVnIOyQbjDhcWFiizWoltni+EWZmI=;
-        b=ZBJrpw6UbIRQuOY2Y8gUJZIlZtVkMHenS1p7jpUc9LBXjUjDnGV94wYKC6w2m5GuW0
-         /lacn6LcB1nXlSd+HZobc4M+T+Zh0OUjj9nJxBJKHEhf/2etIlDq4kcXGKWpCuRjpndf
-         QkgRA8ooZlRgCudzMPNhHBsTtirhjwZDOtlyE=
+        d=poorly.run; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wk10kPylzBJAVzPjmuOajrIPnS3gajWmticxWTOdCuY=;
+        b=UbAcK1rAc/ZIqWaaPEXhVFTwgPW8BtT5uQ8dGUkH61jG8rRp5vvh4wNS5S4TYbaKTl
+         M2cp+j9/QV33S23r0odikBILIduyC+WGtPUiWYgiCBq7mGbHifDzz1rZZ4uE9wDE1gnw
+         q4GuSwKQ6o8lhL6CFTKh7LIqeVwAVOj/hPPC45mDJtkVEtRo7Ci7rcgtEVPaj+nu0TY+
+         STgzmS9/UzOCMwr7QuN217+UUyfZKxYr0TQcRFLPNacVmrZHBEVuLDjI4cLkUUnPE8nf
+         NaenDDVwI9G8L5qfwzzAnP8z/eCS2vuHm6Q5Z9012iopBJOVnb/rnaWloXy6WXgxbpSg
+         8/aQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pb+iwuiJ8p/4MIMVnIOyQbjDhcWFiizWoltni+EWZmI=;
-        b=sL11CglvyOwbe0Sx7Waq8GgyfFQLUAcYBndj/2KgFrunHznk2HalA13HUjL47Ns/Il
-         lS6GX6YQV0Xntd99cHXJoEe3Tc3cqLZSLDGTIQHbXuu9435AlcN9kci447/9hTrHonCS
-         HRFtpGrzMHLzUEfjO7Z8372sI+dHjdPL+a+N+cnIOB/rcD5H/o/8dOaQf8EK85KLlEWV
-         trNM2cpI9+kwBU9+1HrNCoH8V2sxZujNzb4CW6PLelm8N7/fd/NVe/qr/3a9K7lwtWjv
-         8EIuUWjQhH1b9P+a2CCBhVafAS7hTXKRPbNs5OJtxbnWNsu3f3Q00ru0k2N4AciskLYu
-         TJVA==
-X-Gm-Message-State: AOAM533JpPMZdtsT5bcU5AmdAcWV9T18bVBnYaXv4Vr9jJGX+GRJSZAj
-        B4ITVbiEkO83RYZ8D6EY6Rep9iJ8+nWMsw4nWVQasw==
-X-Google-Smtp-Source: ABdhPJwOuNGQu8+3XrKEjWdE1HBVStgkNtYlbLjd708bFv3LC9VpaMwoGHcvAUiEjfxZRiz81b6ggRubWZkXPsS3e4M=
-X-Received: by 2002:a25:a567:: with SMTP id h94mr8504221ybi.532.1635468131444;
- Thu, 28 Oct 2021 17:42:11 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wk10kPylzBJAVzPjmuOajrIPnS3gajWmticxWTOdCuY=;
+        b=IuDT1uf6mXwP27EDLMaWNKCX6PVRKgZ0J0aFOl3JLkPdSvrU+9mjYFi36WX++qtCtb
+         QEChioOQXJopPE0WQOwxvnFWcm926NYufD154UKEFAVH2hXhonrIaR48f214K7G+C7qV
+         aqixK3//W2z1qKt2U12EQTmiWAzcAbYakU3LlrFwWi8U2kC5bXZHbJ3ZXMG93Oq7sccQ
+         IdWcpzFmkflkbsFwE9ymYaO3nUiDqmjDiSmbxXyex7WVBKtfEDcyn+rV+Imr6nlrCP+h
+         4bqcLhU1aDw2WsBTjTfT7sBmJQAbi2U7KW43x6wuaZqyNGanZtS1hV3llD1dUJJBxC+f
+         pLBg==
+X-Gm-Message-State: AOAM533p6hYBql9r6drpidrZ4tkz9wzaIFYc/+YwP056qsYVIjjQQx4x
+        rLsfunGoaco5ddnvUZRYuvxrpuaMhlmVpQ==
+X-Google-Smtp-Source: ABdhPJxV670d+nO1mBi8BXtGvwgleipuVr6xHBTlgZ0eFfTCnePRbf6oyR5UrIWB5wpz+O69dy68Vg==
+X-Received: by 2002:a37:8244:: with SMTP id e65mr6246239qkd.141.1635468141844;
+        Thu, 28 Oct 2021 17:42:21 -0700 (PDT)
+Received: from localhost ([167.100.64.199])
+        by smtp.gmail.com with ESMTPSA id bs34sm3043788qkb.97.2021.10.28.17.42.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 17:42:21 -0700 (PDT)
+Date:   Thu, 28 Oct 2021 20:42:20 -0400
+From:   Sean Paul <sean@poorly.run>
+To:     Mark Yacoub <markyacoub@chromium.org>
+Cc:     seanpaul@chromium.org, pmenzel@molgen.mpg.de,
+        Mark Yacoub <markyacoub@google.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org
+Subject: Re: [Intel-gfx] [PATCH v3 1/3] drm: Rename lut check functions to
+ lut channel checks
+Message-ID: <20211029004220.GA10475@art_vandelay>
+References: <20211026192104.1860504-1-markyacoub@chromium.org>
 MIME-Version: 1.0
-References: <20211028151022.1.Ie56f55924f5c7706fe3194e710bbef6fdb8b5bc6@changeid>
- <20211028151022.2.Ib9070172c8173d8e44c10352f68f2f507a151782@changeid> <CAD=FV=UK0KABr5NchZgrjSFa+7G7Ez_JPcgCVnsN0K1q++O-AA@mail.gmail.com>
-In-Reply-To: <CAD=FV=UK0KABr5NchZgrjSFa+7G7Ez_JPcgCVnsN0K1q++O-AA@mail.gmail.com>
-From:   Philip Chen <philipchen@chromium.org>
-Date:   Thu, 28 Oct 2021 17:42:00 -0700
-Message-ID: <CA+cxXhmV6dvk-980_kNSrAijX6Qbdn9gd7eshRQeWbgbJD7Lcg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] arm64: dts: sc7180: Support Homestar rev4
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211026192104.1860504-1-markyacoub@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+On Tue, Oct 26, 2021 at 03:21:00PM -0400, Mark Yacoub wrote:
+> From: Mark Yacoub <markyacoub@google.com>
+> 
+> [Why]
+> This function and enum do not do generic checking on the luts but they
+> test color channels in the LUTs.
 
-On Thu, Oct 28, 2021 at 3:55 PM Doug Anderson <dianders@chromium.org> wrote:
->
-> Hi,
->
-> On Thu, Oct 28, 2021 at 3:11 PM Philip Chen <philipchen@chromium.org> wrote:
-> >
-> > Support Homestar rev4 board where Parade ps8640 is added as the
-> > second source edp bridge.
->
-> Similar suggestion about mentioning why the include of "sc7180.dtsi"
-> moved around, but otherwise looks good.
+I'm not sure there's anything inherently specific to channels, it seems like
+one could add a new test to reflect a HW limitation and it would fit pretty well
+in the lut check function. I wonder if it would be better to expose the types of
+tests required by the crtc such that the atomic_check could also do the test?
 
-Thanks! I updated the commit message in v2.
+Sean
 
->
-> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> Keeping the name explicit as more generic LUT checks will follow.
+> 
+> Tested on Eldrid ChromeOS (TGL).
+> 
+> Signed-off-by: Mark Yacoub <markyacoub@chromium.org>
+> ---
+>  drivers/gpu/drm/drm_color_mgmt.c           | 12 ++++++------
+>  drivers/gpu/drm/i915/display/intel_color.c | 10 +++++-----
+>  include/drm/drm_color_mgmt.h               |  7 ++++---
+>  3 files changed, 15 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/drm_color_mgmt.c b/drivers/gpu/drm/drm_color_mgmt.c
+> index bb14f488c8f6c..6f4e04746d90f 100644
+> --- a/drivers/gpu/drm/drm_color_mgmt.c
+> +++ b/drivers/gpu/drm/drm_color_mgmt.c
+> @@ -585,17 +585,17 @@ int drm_plane_create_color_properties(struct drm_plane *plane,
+>  EXPORT_SYMBOL(drm_plane_create_color_properties);
+>  
+>  /**
+> - * drm_color_lut_check - check validity of lookup table
+> + * drm_color_lut_channels_check - check validity of the channels in the lookup table
+>   * @lut: property blob containing LUT to check
+>   * @tests: bitmask of tests to run
+>   *
+> - * Helper to check whether a userspace-provided lookup table is valid and
+> - * satisfies hardware requirements.  Drivers pass a bitmask indicating which of
+> - * the tests in &drm_color_lut_tests should be performed.
+> + * Helper to check whether each color channel of userspace-provided lookup table is valid and
+> + * satisfies hardware requirements. Drivers pass a bitmask indicating which of in
+> + * &drm_color_lut_channels_tests should be performed.
+>   *
+>   * Returns 0 on success, -EINVAL on failure.
+>   */
+> -int drm_color_lut_check(const struct drm_property_blob *lut, u32 tests)
+> +int drm_color_lut_channels_check(const struct drm_property_blob *lut, u32 tests)
+>  {
+>  	const struct drm_color_lut *entry;
+>  	int i;
+> @@ -625,4 +625,4 @@ int drm_color_lut_check(const struct drm_property_blob *lut, u32 tests)
+>  
+>  	return 0;
+>  }
+> -EXPORT_SYMBOL(drm_color_lut_check);
+> +EXPORT_SYMBOL(drm_color_lut_channels_check);
+> diff --git a/drivers/gpu/drm/i915/display/intel_color.c b/drivers/gpu/drm/i915/display/intel_color.c
+> index dab892d2251ba..4bb1bc76c4de9 100644
+> --- a/drivers/gpu/drm/i915/display/intel_color.c
+> +++ b/drivers/gpu/drm/i915/display/intel_color.c
+> @@ -1285,7 +1285,7 @@ static int check_luts(const struct intel_crtc_state *crtc_state)
+>  	const struct drm_property_blob *gamma_lut = crtc_state->hw.gamma_lut;
+>  	const struct drm_property_blob *degamma_lut = crtc_state->hw.degamma_lut;
+>  	int gamma_length, degamma_length;
+> -	u32 gamma_tests, degamma_tests;
+> +	u32 gamma_channels_tests, degamma_channels_tests;
+>  
+>  	/* Always allow legacy gamma LUT with no further checking. */
+>  	if (crtc_state_is_legacy_gamma(crtc_state))
+> @@ -1300,15 +1300,15 @@ static int check_luts(const struct intel_crtc_state *crtc_state)
+>  
+>  	degamma_length = INTEL_INFO(dev_priv)->color.degamma_lut_size;
+>  	gamma_length = INTEL_INFO(dev_priv)->color.gamma_lut_size;
+> -	degamma_tests = INTEL_INFO(dev_priv)->color.degamma_lut_tests;
+> -	gamma_tests = INTEL_INFO(dev_priv)->color.gamma_lut_tests;
+> +	degamma_channels_tests = INTEL_INFO(dev_priv)->color.degamma_lut_tests;
+> +	gamma_channels_tests = INTEL_INFO(dev_priv)->color.gamma_lut_tests;
+>  
+>  	if (check_lut_size(degamma_lut, degamma_length) ||
+>  	    check_lut_size(gamma_lut, gamma_length))
+>  		return -EINVAL;
+>  
+> -	if (drm_color_lut_check(degamma_lut, degamma_tests) ||
+> -	    drm_color_lut_check(gamma_lut, gamma_tests))
+> +	if (drm_color_lut_channels_check(degamma_lut, degamma_channels_tests) ||
+> +	    drm_color_lut_channels_check(gamma_lut, gamma_channels_tests))
+>  		return -EINVAL;
+>  
+>  	return 0;
+> diff --git a/include/drm/drm_color_mgmt.h b/include/drm/drm_color_mgmt.h
+> index 81c298488b0c8..cb1bf361ad3e3 100644
+> --- a/include/drm/drm_color_mgmt.h
+> +++ b/include/drm/drm_color_mgmt.h
+> @@ -94,12 +94,12 @@ int drm_plane_create_color_properties(struct drm_plane *plane,
+>  				      enum drm_color_range default_range);
+>  
+>  /**
+> - * enum drm_color_lut_tests - hw-specific LUT tests to perform
+> + * enum drm_color_lut_channels_tests - hw-specific LUT tests to perform
+>   *
+>   * The drm_color_lut_check() function takes a bitmask of the values here to
+>   * determine which tests to apply to a userspace-provided LUT.
+>   */
+> -enum drm_color_lut_tests {
+> +enum drm_color_lut_channels_tests {
+>  	/**
+>  	 * @DRM_COLOR_LUT_EQUAL_CHANNELS:
+>  	 *
+> @@ -119,5 +119,6 @@ enum drm_color_lut_tests {
+>  	DRM_COLOR_LUT_NON_DECREASING = BIT(1),
+>  };
+>  
+> -int drm_color_lut_check(const struct drm_property_blob *lut, u32 tests);
+> +int drm_color_lut_channels_check(const struct drm_property_blob *lut,
+> +				 u32 tests);
+>  #endif
+> -- 
+> 2.33.0.1079.g6e70778dc9-goog
+> 
+
+-- 
+Sean Paul, Software Engineer, Google / Chromium OS
