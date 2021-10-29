@@ -2,193 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2867B43FC26
+	by mail.lfdr.de (Postfix) with ESMTP id 9FC9043FC27
 	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 14:19:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231602AbhJ2MVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 08:21:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48378 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231519AbhJ2MVi (ORCPT
+        id S231594AbhJ2MVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 08:21:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231504AbhJ2MVs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 08:21:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635509947;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=73h99hJWE5OrS3nYMF4MG/2Jws/54jgP43Y5v4A9xgo=;
-        b=AbjsF7itlpX+SOUk+oecb8f7GHea7icinKd8PyRNdWTPr91zUceQLhsYC5Bwu1ieBFX/jC
-        38KaVZXuqdMomwsP+2/xGlxQoHx0HyY1oOryUD7S7xwLqYqxbqIM26EL6asR76Eclvy2YF
-        xQAHH3uvCPj7nq2wuMWbd6CiVlYI9/4=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-554-jsz5n9DHN8qf0SwjJJmd2A-1; Fri, 29 Oct 2021 08:19:06 -0400
-X-MC-Unique: jsz5n9DHN8qf0SwjJJmd2A-1
-Received: by mail-wm1-f69.google.com with SMTP id v5-20020a1cac05000000b0032ccf04ba2cso2385882wme.2
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 05:19:05 -0700 (PDT)
+        Fri, 29 Oct 2021 08:21:48 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9597C061714
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 05:19:19 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id d10so12896203ybe.3
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 05:19:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=10tnfe2pHN9R0eBYE2LkUNGIm0iK4Dotq+pfruoYsew=;
+        b=eLCfvMJaYk0AGY3BBsj3AanlexjWk4dw45Xfxhyc7f3cga5qHv2q1h6PlXa87quX5C
+         CZWcTY8ePOq8RLlyQVAruiR/muqkS3y2UWDCiLXstuKiuEDuB0xrdB2914jCJv7psfvJ
+         E2W9DaPB1Hp4Rkk57eH/X/sWrWWNPKbZK/Nl/5b0K0M1TRMbHiaVn47PqniojMBAPUPi
+         5EQW1GKl0gKgjLRUwkYH8m1D5apz0vDqsR5JrTWsBgbKijWG+d37/ZSfuwJpAiE3rSvc
+         bePW7TRSnPQdoH6cCjeEAm/ov5xZixPuv0YDlh1jxuDryzzIze7TZ6h8RMk4+gXuxQae
+         QzFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=73h99hJWE5OrS3nYMF4MG/2Jws/54jgP43Y5v4A9xgo=;
-        b=v3tnkaSuLTTFic+ny0l8PpfQ4Rgdm1pi1QIk3MQwGlskxCkofN1T4tVqMrmidhgHPu
-         rLPJST3PEojuYuQAkySYKYbpxbU0TNE3PKAc3SPaf5TUXHiTohrbcv9+uf96eF1W8fLA
-         EkLoLSo2WdTs+lq+f/j14/0FnhcbiTDlSn9mDilSfdP56QulbIvivASbU0KZ9i6yD4Fy
-         ffSQdx+wi/Qo4Dn+ptrSgItNb9cz/myf8F4ag4q7UsAK6k3n3+fNGaHbne++VvqYnj9n
-         t8brBxhtlKKeRxWIwkYrnYyWQhy7VEAYHGkiyFtynAxqiUWjVVwR0U+DsHYbq8rMB59+
-         pGUQ==
-X-Gm-Message-State: AOAM531cyZqeAEqgaJ/XuijA/UqR1IUsgei4woUXXyWcCSqcwVcw3Zh5
-        tvolYVzmGHJnRC1fOgXbDyg790+IoEFYtVF2ULNNWI1hbl8+WUX43CyF2yUGSoftJrwAeZqM9Hq
-        7ldJqIlVUKfKo2PId7A+0NADt
-X-Received: by 2002:a1c:2047:: with SMTP id g68mr10196798wmg.181.1635509944735;
-        Fri, 29 Oct 2021 05:19:04 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzIgpvSw0ZswIlVG9WaM8erUI+2qIw/k8U6+b3m3QP5N8rEzXJ+qTLTUwF2TuFs9XYqef7Q0g==
-X-Received: by 2002:a1c:2047:: with SMTP id g68mr10196771wmg.181.1635509944541;
-        Fri, 29 Oct 2021 05:19:04 -0700 (PDT)
-Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
-        by smtp.gmail.com with ESMTPSA id n10sm7150280wmq.24.2021.10.29.05.19.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Oct 2021 05:19:04 -0700 (PDT)
-Date:   Fri, 29 Oct 2021 14:19:02 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        "Paul A . Clarke" <pc@us.ibm.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Daniel Latypov <dlatypov@google.com>,
-        David Gow <davidgow@google.com>, eranian@google.com
-Subject: Re: [PATCH v2 00/22] Start aligning perf test with kunit style
-Message-ID: <YXvmtrBKV7eawT7h@krava>
-References: <20211013174604.747276-1-irogers@google.com>
- <YXAINnEcHsy450zm@krava>
- <CAP-5=fVCqisvy8-Obx9TA3Zgi_BJdefYr-g4LCsuy1KKb2xtBQ@mail.gmail.com>
- <CAP-5=fXGvBY7hmvCAS7deNAYVxppYj9DZoxstJ93p68BHTSACw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=10tnfe2pHN9R0eBYE2LkUNGIm0iK4Dotq+pfruoYsew=;
+        b=Y372ny3NE/H11quMp1KfRxL/3xL1OnhW0VRXXd19lPheWVhxsLNmBCUfTL8PxRkE49
+         oa5lCrIhc+0GSlnucPuTsUAvjsVjAIZy5ReSQ78eoZgGU1UQHv0H6ZJWbIL0wEIBc8Ym
+         LpnzrafvEJHPI4Xxk7yoJArwPA5Aol4Zk53FUT11c7gm7BqIO0GDLQFJC3XUSZsRF8NH
+         zpezuyiHbgDOjsUs50o3EpXJmaVOm1717zsdtyV+B/BEPamvr5gpC4j1T/chfIr6eXhS
+         i8OPR85++C7dZAoZndFlIb8z6YRZjVGmtkDycvmW5nvaqB1Ud318lcKCP8TZ6xvfDmMv
+         3lWA==
+X-Gm-Message-State: AOAM531GUNdC5uy0GHKxMJ45xWJtEaVBBiAbnTTyvKjcCzyKHe6Bwdc7
+        IaAmYLVmnxDkC3JTRHlDY0RPls4h+K4YidOakJmFzKlQJb+NLQ==
+X-Google-Smtp-Source: ABdhPJxA2IXU2YkwHzXx6V7TwviE4RmOoetMkRun+h4tOQJ4Wt9gBxFsG4ATG56L445xQG+fPAl7W5Yi3Y61mxtIlaQ=
+X-Received: by 2002:a5b:d50:: with SMTP id f16mr1224928ybr.350.1635509958954;
+ Fri, 29 Oct 2021 05:19:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CAP-5=fXGvBY7hmvCAS7deNAYVxppYj9DZoxstJ93p68BHTSACw@mail.gmail.com>
+References: <20211019123537.17146-1-vincent.guittot@linaro.org>
+ <20211019123537.17146-4-vincent.guittot@linaro.org> <67218e25-a472-baa0-19bf-71af26f5e767@arm.com>
+In-Reply-To: <67218e25-a472-baa0-19bf-71af26f5e767@arm.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Fri, 29 Oct 2021 14:19:07 +0200
+Message-ID: <CAKfTPtDHfvZQ7uKkFHdFX+gjyOW+BaSmJepGiVtfBMpJaUmtFw@mail.gmail.com>
+Subject: Re: [PATCH 3/5] sched/fair: Wait before decaying max_newidle_lb_cost
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, linux-kernel@vger.kernel.org,
+        tim.c.chen@linux.intel.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 04:52:13PM -0700, Ian Rogers wrote:
-> On Wed, Oct 20, 2021 at 8:51 AM Ian Rogers <irogers@google.com> wrote:
+On Fri, 29 Oct 2021 at 12:01, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
+>
+> On 19/10/2021 14:35, Vincent Guittot wrote:
+> > Decay max_newidle_lb_cost only when it has not been updated for a while
+> > and ensure to not decay a recently changed value.
 > >
-> > On Wed, Oct 20, 2021 at 5:14 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> > >
-> > > On Wed, Oct 13, 2021 at 10:45:42AM -0700, Ian Rogers wrote:
-> > > > Perf test uses its own structs and code layout that differs from ku=
-nit
-> > > > that was more recently introduced to the kernel. Besides consistenc=
-y,
-> > > > it is hoped that moving in the direction of kunit style will enable
-> > > > reuse of infrastructure like test output formatting for continuous
-> > > > testing systems. For example:
-> > > > https://lore.kernel.org/linux-kselftest/CA+GJov6tdjvY9x12JsJT14qn6c=
-7NViJxqaJk+r-K1YJzPggFDQ@mail.gmail.com/
-> > > >
-> > > > The motivation for this restructuring comes from wanting to be able=
- to
-> > > > tag tests with a size:
-> > > > https://lore.kernel.org/linux-perf-users/CAP-5=3DfWmGyuqFKc-EMP3rbm=
-TkjZ3MS+YSajGZfeRMc38HS82gw@mail.gmail.com/
-> > > > To have more exhaustive and slower running tests.  This isn't
-> > > > something kunit currently supports, nor is the execution of python =
-and
-> > > > shell tests, but it seems sensible to work on an approach with kunit
-> > > > rather to invent a new wheel inside of perf.
-> > > >
-> > > > These initial patches are just refactoring the main test suite
-> > > > definitions to be in a more kunit style. Kunit isn't depended upon,=
- it
-> > > > is hoped that this can be done in later patches for the sake of
-> > > > consistency.
-> > > >
-> > > > v2. Gets to a point of the perf test test suite/case structs being
-> > > >     close facsimiles of the kunit ones. It also addresses feedback =
-on
-> > > >     the v1 RFC, in particular from Jiri Olsa <jolsa@redhat.com>.
-> > >
-> > > hi,
-> > > when I compile with DEBUG=3D1 it's ok, but with just make:
-> > >
-> > > [root@krava perf]# ./perf test
-> > > Segmentation fault (core dumped)
-> > > [root@krava perf]# gdb ./perf
-> > > GNU gdb (GDB) Fedora 10.2-4.fc33
-> > > Copyright (C) 2021 Free Software Foundation, Inc.
-> > > License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/g=
-pl.html>
-> > > This is free software: you are free to change and redistribute it.
-> > > There is NO WARRANTY, to the extent permitted by law.
-> > > Type "show copying" and "show warranty" for details.
-> > > This GDB was configured as "x86_64-redhat-linux-gnu".
-> > > Type "show configuration" for configuration details.
-> > > For bug reporting instructions, please see:
-> > > <https://www.gnu.org/software/gdb/bugs/>.
-> > > Find the GDB manual and other documentation resources online at:
-> > >     <http://www.gnu.org/software/gdb/documentation/>.
-> > >
-> > > For help, type "help".
-> > > Type "apropos word" to search for commands related to "word"...
-> > > Reading symbols from ./perf...
-> > > (gdb) r test
-> > > Starting program: /home/jolsa/kernel/linux-perf/tools/perf/perf test
-> > > [Thread debugging using libthread_db enabled]
-> > > Using host libthread_db library "/lib64/libthread_db.so.1".
-> > >
-> > > Program received signal SIGSEGV, Segmentation fault.
-> > > __strlen_avx2 () at ../sysdeps/x86_64/multiarch/strlen-avx2.S:96
-> > > 96              VPCMPEQ (%rdi), %ymm0, %ymm1
-> > > Missing separate debuginfos, use: dnf debuginfo-install bzip2-libs-1.=
-0.8-4.fc33.x86_64 cyrus-sasl-lib-2.1.27-6.fc33.x86_64 elfutils-debuginfod-c=
-lient-0.185-2.fc33.x86_64 elfutils-libelf-0.185-2.fc33.x86_64 elfutils-libs=
--0.185-2.fc33.x86_64 keyutils-libs-1.6.1-1.fc33.x86_64 krb5-libs-1.18.2-31.=
-fc33.x86_64 libbabeltrace-1.5.8-3.fc33.x86_64 libbrotli-1.0.9-3.fc33.x86_64=
- libcap-2.48-2.fc33.x86_64 libcom_err-1.45.6-4.fc33.x86_64 libgcc-10.3.1-1.=
-fc33.x86_64 libidn2-2.3.2-1.fc33.x86_64 libnghttp2-1.43.0-1.fc33.x86_64 lib=
-psl-0.21.1-2.fc33.x86_64 libselinux-3.1-2.fc33.x86_64 libssh-0.9.6-1.fc33.x=
-86_64 libunistring-0.9.10-9.fc33.x86_64 libunwind-1.4.0-4.fc33.x86_64 libuu=
-id-2.36.1-1.fc33.x86_64 libxcrypt-4.4.26-2.fc33.x86_64 numactl-libs-2.0.14-=
-1.fc33.x86_64 openldap-2.4.50-5.fc33.x86_64 openssl-libs-1.1.1l-2.fc33.x86_=
-64 pcre-8.44-2.fc33.x86_64 perl-libs-5.32.1-471.fc33.x86_64 popt-1.18-2.fc3=
-3.x86_64 python2.7-2.7.18-15.fc33.x86_64 slang-2.3.2-8.fc33.x86_64 xz-libs-=
-5.2.5-4.fc33.x86_64 zlib-1.2.11-23.fc33.x86_64
-> > > (gdb) bt
-> > > #0  __strlen_avx2 () at ../sysdeps/x86_64/multiarch/strlen-avx2.S:96
-> > > #1  0x00000000004a3848 in __cmd_test (skiplist=3D0x0, argv=3D0x7fffff=
-ffd6c0, argc=3D0) at tests/builtin-test.c:150
-> > > #2  cmd_test (argc=3D0, argv=3D0x7fffffffd6c0) at tests/builtin-test.=
-c:628
-> > > #3  0x00000000004cc47b in run_builtin (p=3Dp@entry=3D0xa7cda8 <comman=
-ds+552>, argc=3Dargc@entry=3D1, argv=3Dargv@entry=3D0x7fffffffd6c0) at perf=
-=2Ec:313
-> > > #4  0x00000000004397ae in handle_internal_command (argv=3D0x7fffffffd=
-6c0, argc=3D1) at perf.c:365
-> > > #5  run_argv (argv=3D<synthetic pointer>, argcp=3D<synthetic pointer>=
-) at perf.c:409
-> > > #6  main (argc=3D1, argv=3D0x7fffffffd6c0) at perf.c:539
-> > > (gdb)
+> > Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+> > ---
+> >  include/linux/sched/topology.h |  2 +-
+> >  kernel/sched/fair.c            | 36 +++++++++++++++++++++++++---------
+> >  kernel/sched/topology.c        |  2 +-
+> >  3 files changed, 29 insertions(+), 11 deletions(-)
 > >
-> > Thanks, I'll take a look.
->=20
-> I wasn't able to reproduce this, I tried with gcc-10 on each patch
-> individually, debug disabled and O3. I can send a v3 patch set, but
-> currently it is just a rebase of v2.
+> > diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
+> > index 2f9166f6dec8..c07bfa2d80f2 100644
+> > --- a/include/linux/sched/topology.h
+> > +++ b/include/linux/sched/topology.h
+> > @@ -105,7 +105,7 @@ struct sched_domain {
+> >
+> >       /* idle_balance() stats */
+> >       u64 max_newidle_lb_cost;
+> > -     unsigned long next_decay_max_lb_cost;
+> > +     unsigned long last_decay_max_lb_cost;
+> >
+> >       u64 avg_scan_cost;              /* select_idle_sibling */
+> >
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index c4c36865321b..e50fd751e1df 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -10239,6 +10239,30 @@ void update_max_interval(void)
+> >       max_load_balance_interval = HZ*num_online_cpus()/10;
+> >  }
+> >
+> > +static inline bool update_newidle_cost(struct sched_domain *sd, u64 cost)
+> > +{
+> > +     if (cost > sd->max_newidle_lb_cost) {
+> > +             /*
+> > +              * Track max cost of a domain to make sure to not delay the
+> > +              * next wakeup on the CPU.
+> > +              */
+> > +             sd->max_newidle_lb_cost = cost;
+> > +             sd->last_decay_max_lb_cost = jiffies;
+>
+> That's the actual change of the patch: sd->last_decay_max_lb_cost being
+> moved forward also when newidle cost is updated from newidle_balance() ?
+>
+> > +     } else if (time_after(jiffies, sd->last_decay_max_lb_cost + HZ)) {
+> > +             /*
+> > +              * Decay the newidle max times by ~1% per second to ensure that
+> > +              * it is not outdated and the current max cost is actually
+> > +              * shorter.
+>
+> I assume that `max cost` refers here to a local variable of the only
+> caller of update_newidle_cost(..., 0) - rebalance_domains()?
+>
+> "the current max cost" has to be shorter so that
+> rq->max_idle_balance_cost also decays in this case. Is this what this
+> comment tries to say here?
 
-ok, I'll try to debug that if I can still reproduce
+I refer to the time tracked in sd->max_newidle_lb_cost
+here i set current_cost to zero to trigger a possible decay of
+sd->max_newidle_lb_cost
 
-jirka
-
+>
+> [...]
