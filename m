@@ -2,160 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCBBD43FF7A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 17:28:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FB9143FF83
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 17:29:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229957AbhJ2PbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 11:31:03 -0400
-Received: from www62.your-server.de ([213.133.104.62]:56324 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbhJ2PbC (ORCPT
+        id S230077AbhJ2Pbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 11:31:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229652AbhJ2Pbr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 11:31:02 -0400
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mgTnm-000DRl-Hy; Fri, 29 Oct 2021 17:28:18 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mgTnm-00091V-8q; Fri, 29 Oct 2021 17:28:18 +0200
-Subject: Re: [PATCH bpf-next v3 1/4] libfs: move shmem_exchange to
- simple_rename_exchange
-To:     Lorenz Bauer <lmb@cloudflare.com>, viro@zeniv.linux.org.uk,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     mszeredi@redhat.com, gregkh@linuxfoundation.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, netdev@vger.kernel.org, bpf@vger.kernel.org
-References: <20211028094724.59043-1-lmb@cloudflare.com>
- <20211028094724.59043-2-lmb@cloudflare.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <0c957c87-cfd1-fceb-ce18-54274eee9fc2@iogearbox.net>
-Date:   Fri, 29 Oct 2021 17:28:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Fri, 29 Oct 2021 11:31:47 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5E12C061570;
+        Fri, 29 Oct 2021 08:29:18 -0700 (PDT)
+From:   =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
+        s=mail; t=1635521356;
+        bh=xpkQwOJ7rx6E7Tl8iUgiaBxrMqco6gv/RoKR4AOF7aA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=apdbY5SvWPXfqQ3QIb2YfkeYUapqFBCQM3itUQq5AD5/K5895K0QHwqDdYETsBCqt
+         hV1EGtz/iOl0mtnhd1MUNQ3zlRTGDBUgNftBBOi/XS+Py0nmD8LdA1MCyvQ0CMz44g
+         UwBlgMqjvULYhrtjmPWawPID6+1eAnmMwj8iFTvE=
+To:     linux-input@vger.kernel.org
+Cc:     =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+        linux-kernel@vger.kernel.org,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Mark Gross <markgross@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Rushikesh S Kadam <rushikesh.s.kadam@intel.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Benson Leung <bleung@chromium.org>,
+        platform-driver-x86@vger.kernel.org, linux-kbuild@vger.kernel.org
+Subject: [PATCH 0/6] MODULE_DEVICE_TABLE() support for the ISHTP bus
+Date:   Fri, 29 Oct 2021 17:28:55 +0200
+Message-Id: <20211029152901.297939-1-linux@weissschuh.net>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-In-Reply-To: <20211028094724.59043-2-lmb@cloudflare.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.3/26337/Fri Oct 29 10:19:12 2021)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/28/21 11:47 AM, Lorenz Bauer wrote:
-> Move shmem_exchange and make it available to other callers.
-> 
-> Suggested-by: <mszeredi@redhat.com>
+Currently as soon as any ISHTP device appears all available ISHTP device
+drivers are loaded automatically.
+This series extends the MODULE_DEVICE_TABLE() functionality to properly handle
+the ishtp bus and switches the drivers over to use it.
 
-nit: Should say proper name, but we can fix it up while applying.
+Patch 1 adds the infrastructure to handle ishtp devices via MODULE_DEVICE_TABLE()
+Patch 2 replaces some inlined constants with ones now defined by mod_devicetable.h
+Patches 3-6 migrate all ishtp drivers to MODULE_DEVICE_TABLE()
 
-Miklos, does the below look good to you? Would be good to have an ACK from fs
-folks before applying, please take a look if you have a chance. Thanks!
+Note: This patchset is based on the pdx86/for-next tree because that contains
+one of the drivers that is not yet in the other trees.
 
-> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
-> ---
->   fs/libfs.c         | 24 ++++++++++++++++++++++++
->   include/linux/fs.h |  2 ++
->   mm/shmem.c         | 24 +-----------------------
->   3 files changed, 27 insertions(+), 23 deletions(-)
-> 
-> diff --git a/fs/libfs.c b/fs/libfs.c
-> index 51b4de3b3447..1cf144dc9ed2 100644
-> --- a/fs/libfs.c
-> +++ b/fs/libfs.c
-> @@ -448,6 +448,30 @@ int simple_rmdir(struct inode *dir, struct dentry *dentry)
->   }
->   EXPORT_SYMBOL(simple_rmdir);
->   
-> +int simple_rename_exchange(struct inode *old_dir, struct dentry *old_dentry,
-> +			   struct inode *new_dir, struct dentry *new_dentry)
-> +{
-> +	bool old_is_dir = d_is_dir(old_dentry);
-> +	bool new_is_dir = d_is_dir(new_dentry);
-> +
-> +	if (old_dir != new_dir && old_is_dir != new_is_dir) {
-> +		if (old_is_dir) {
-> +			drop_nlink(old_dir);
-> +			inc_nlink(new_dir);
-> +		} else {
-> +			drop_nlink(new_dir);
-> +			inc_nlink(old_dir);
-> +		}
-> +	}
-> +	old_dir->i_ctime = old_dir->i_mtime =
-> +	new_dir->i_ctime = new_dir->i_mtime =
-> +	d_inode(old_dentry)->i_ctime =
-> +	d_inode(new_dentry)->i_ctime = current_time(old_dir);
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(simple_rename_exchange);
-> +
->   int simple_rename(struct user_namespace *mnt_userns, struct inode *old_dir,
->   		  struct dentry *old_dentry, struct inode *new_dir,
->   		  struct dentry *new_dentry, unsigned int flags)
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index e7a633353fd2..333b8af405ce 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -3383,6 +3383,8 @@ extern int simple_open(struct inode *inode, struct file *file);
->   extern int simple_link(struct dentry *, struct inode *, struct dentry *);
->   extern int simple_unlink(struct inode *, struct dentry *);
->   extern int simple_rmdir(struct inode *, struct dentry *);
-> +extern int simple_rename_exchange(struct inode *old_dir, struct dentry *old_dentry,
-> +				  struct inode *new_dir, struct dentry *new_dentry);
->   extern int simple_rename(struct user_namespace *, struct inode *,
->   			 struct dentry *, struct inode *, struct dentry *,
->   			 unsigned int);
-> diff --git a/mm/shmem.c b/mm/shmem.c
-> index b5860f4a2738..a18dde3d3092 100644
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -2945,28 +2945,6 @@ static int shmem_rmdir(struct inode *dir, struct dentry *dentry)
->   	return shmem_unlink(dir, dentry);
->   }
->   
-> -static int shmem_exchange(struct inode *old_dir, struct dentry *old_dentry, struct inode *new_dir, struct dentry *new_dentry)
-> -{
-> -	bool old_is_dir = d_is_dir(old_dentry);
-> -	bool new_is_dir = d_is_dir(new_dentry);
-> -
-> -	if (old_dir != new_dir && old_is_dir != new_is_dir) {
-> -		if (old_is_dir) {
-> -			drop_nlink(old_dir);
-> -			inc_nlink(new_dir);
-> -		} else {
-> -			drop_nlink(new_dir);
-> -			inc_nlink(old_dir);
-> -		}
-> -	}
-> -	old_dir->i_ctime = old_dir->i_mtime =
-> -	new_dir->i_ctime = new_dir->i_mtime =
-> -	d_inode(old_dentry)->i_ctime =
-> -	d_inode(new_dentry)->i_ctime = current_time(old_dir);
-> -
-> -	return 0;
-> -}
-> -
->   static int shmem_whiteout(struct user_namespace *mnt_userns,
->   			  struct inode *old_dir, struct dentry *old_dentry)
->   {
-> @@ -3012,7 +2990,7 @@ static int shmem_rename2(struct user_namespace *mnt_userns,
->   		return -EINVAL;
->   
->   	if (flags & RENAME_EXCHANGE)
-> -		return shmem_exchange(old_dir, old_dentry, new_dir, new_dentry);
-> +		return simple_rename_exchange(old_dir, old_dentry, new_dir, new_dentry);
->   
->   	if (!simple_empty(new_dentry))
->   		return -ENOTEMPTY;
-> 
+Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc: Mark Gross <markgross@kernel.org>
+Cc: Hans de Goede <hdegoede@redhat.com>
+Cc: Rushikesh S Kadam <rushikesh.s.kadam@intel.com>
+Cc: Jiri Kosina <jikos@kernel.org>
+Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc: Guenter Roeck <groeck@chromium.org>
+Cc: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Cc: Benson Leung <bleung@chromium.org>
+
+Cc: platform-driver-x86@vger.kernel.org
+Cc: linux-kbuild@vger.kernel.org
+
+Thomas Weißschuh (6):
+  HID: intel-ish-hid: add support for MODULE_DEVICE_TABLE()
+  HID: intel-ish-hid: use constants for modaliases
+  HID: intel-ish-hid: fw-loader: only load for matching devices
+  HID: intel-ish-hid: hid-client: only load for matching devices
+  platform/chrome: chros_ec_ishtp: only load for matching devices
+  platform/x86: isthp_eclite: only load for matching devices
+
+ drivers/hid/intel-ish-hid/ishtp-fw-loader.c  |  7 +++++-
+ drivers/hid/intel-ish-hid/ishtp-hid-client.c |  7 +++++-
+ drivers/hid/intel-ish-hid/ishtp/bus.c        |  4 ++--
+ drivers/platform/chrome/cros_ec_ishtp.c      |  7 +++++-
+ drivers/platform/x86/intel/ishtp_eclite.c    |  7 +++++-
+ include/linux/mod_devicetable.h              | 13 +++++++++++
+ scripts/mod/devicetable-offsets.c            |  3 +++
+ scripts/mod/file2alias.c                     | 24 ++++++++++++++++++++
+ 8 files changed, 66 insertions(+), 6 deletions(-)
+
+
+base-commit: 85303db36b6e170917a7bc6aae4898c31a5272a0
+-- 
+2.33.1
 
