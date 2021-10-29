@@ -2,176 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71C7543FE75
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 16:31:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7280443FE7D
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 16:33:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231563AbhJ2Od0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 10:33:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45934 "EHLO
+        id S229607AbhJ2OfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 10:35:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230036AbhJ2OdY (ORCPT
+        with ESMTP id S229521AbhJ2Oe7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 10:33:24 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FBC1C061570
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 07:30:56 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id j1so447156plx.4
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 07:30:56 -0700 (PDT)
+        Fri, 29 Oct 2021 10:34:59 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 602CEC061714
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 07:32:31 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id m26so9425945pff.3
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 07:32:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:user-agent:in-reply-to:references
-         :message-id:mime-version:content-transfer-encoding;
-        bh=8Bxs4F85A7oXItV71QS1XAq1zhuitRsW57m5eFPOxyA=;
-        b=OOXxXvvbN6upCnhe8T+anV/C8IhTYpGLQMXwY+hZXoPSDW3zc5XTMqPBgicGbt2/7f
-         +f/wyYVYB2X00UX1TePTkEGBTruTx6g/q4LeBPi41qhb2gRnVsThTJIb3puObQzc9fTV
-         YDZvAD4fUi3F5zp6wdzPPCZ3zARuG6A7i/QDc=
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=LBHbfGOx6452n/4vMedr7l9TFvpAcwzjwR2fBU0Ds1Q=;
+        b=cdO2eWrPzdc1VeMmRqyp9nSih9DttbBHiFxE9UsL79prlg/O0eK8UU2cKjIc2OsHip
+         YZJN/WFvqzJgF04ox/wbjlb6+m6JZmGHac8m+SAgyTnfxm/VA+hivYijgQPGp/VE/a0g
+         uJAwjHLh4LaG9bWWzQidh6lEiPRKFTXZCyaL4Pw/hU59584hsWrwkHR2WcHdA0ra+IME
+         bs+eRN5p95mS4oKDB8QZvGCSrXDKi9eGhwuo1HOFV3tUBD6N17o+SSd1dM7SsZFykq96
+         enYw9H2ML0XtSihmA4c6CE7WISfxXCw9vQ+25iEFE9VtIYjqY21SoBm6ryzcKXmx3o3y
+         AsUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:user-agent:in-reply-to
-         :references:message-id:mime-version:content-transfer-encoding;
-        bh=8Bxs4F85A7oXItV71QS1XAq1zhuitRsW57m5eFPOxyA=;
-        b=glTjywowR6Z1GIOfRlH50J/nu9OVs9EPke3JzyF1HfMXwYcGD52iZ26LW/1UFCqWpr
-         ux1rDk7fPJmxBckuJD/7yBcSBeEmZbBF0+dY/FlRX4teaL8ZS6S15UEjXWmkhMWmXY4A
-         Va62ZZ3eYxD7wTKg8NP6ycqwBWrqpVz10eRXbihoT51jkUNAzYEJbHpb0UZt3gsfjkkB
-         Dh2RAaqq7PXCYtqQbtxwJcZYo07PYXsGwfonBe0ulsm+++aYqN3FLLzTKQ3nJwZfEXGP
-         WZQmMebroJpsDVOauDA2gDEyjPK9QviUy/q3XjiMAMJl4eb/tc0muJENCk+LlN3c2hyg
-         +TRw==
-X-Gm-Message-State: AOAM531vba4iyt2H4dQHwtVb/IztydWVuSf8Dh1hXRgp7j49F5bMS1fH
-        Qmpij9A2Yzqo6TtF/OnL4bPzmw==
-X-Google-Smtp-Source: ABdhPJzwVqF9ymgQCiLJqBddRnm0de8/pxD4Fy6hKvCO+eGNjpF8HUHADqJR6jAGSbhSst6jy5PFHw==
-X-Received: by 2002:a17:902:b492:b0:13f:4f30:88de with SMTP id y18-20020a170902b49200b0013f4f3088demr9770889plr.35.1635517855639;
-        Fri, 29 Oct 2021 07:30:55 -0700 (PDT)
-Received: from [127.0.0.1] (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id i184sm5649953pgc.56.2021.10.29.07.30.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Oct 2021 07:30:55 -0700 (PDT)
-Date:   Fri, 29 Oct 2021 07:30:48 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Zhenguo Zhao <zhenguo6858@gmail.com>, nianfu.bai@unisoc.com,
-        anton@enomsg.org, ccross@android.com, tony.luck@intel.com
-CC:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] pstore: Add pstore back-end choice method in kconfig
-User-Agent: K-9 Mail for Android
-In-Reply-To: <1635490280-8798-2-git-send-email-zhenguo6858@gmail.com>
-References: <1635490280-8798-1-git-send-email-zhenguo6858@gmail.com> <1635490280-8798-2-git-send-email-zhenguo6858@gmail.com>
-Message-ID: <B5B678EA-303B-4F16-AD89-EE7C31AFC4ED@chromium.org>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LBHbfGOx6452n/4vMedr7l9TFvpAcwzjwR2fBU0Ds1Q=;
+        b=KIRlLSzpeRZd7sGCSXw9cHSMWgGuMIdNl6vLE5cEmuVgf0002uS5204BpcjGf0PcEc
+         TDD4koHFemtKSAB7s/3pzCNd5lwFcIgwP1u8XIq70wOK4QcNbSKf2BeexMZA+Cvk7A/B
+         8NIV0Bnd/L5jzzWloV/4Dw3aU2PZ1AKDcFJosyamwD1oUp5TZmFnPQStUVsEN5etA6fl
+         0rmFqd4MxNjaySsqvPiDEhscKlcSTqBqjw8Q6rQHuxzPMbF6BCSDbi8NcF/KaQ9LM+El
+         gXv7KrCv0nu8EnQkfv6uNnScO8n+96YWRNIiS6IkGhD//O3Kvq8Z6U+veRJTKkHIG8CH
+         BfXg==
+X-Gm-Message-State: AOAM531mp3LNL073SloQIFt+p3PdUhrTS7qj+mzB6WJY1xj9rbxPD1kx
+        jF3eNGgLq2j9CjmNWAiY7ANWOQ==
+X-Google-Smtp-Source: ABdhPJw2RQRMriorJ/v2MtRZDVgHUpRCix4lst52zmjGO2JYh8dpKLkpYdTzdEVr2FNlBhz7L8Otow==
+X-Received: by 2002:a05:6a00:2da:b0:47c:6256:b057 with SMTP id b26-20020a056a0002da00b0047c6256b057mr11201206pft.22.1635517950692;
+        Fri, 29 Oct 2021 07:32:30 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id g25sm7037460pfh.216.2021.10.29.07.32.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Oct 2021 07:32:29 -0700 (PDT)
+Date:   Fri, 29 Oct 2021 14:32:26 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        llvm@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Ajay Garg <ajaygargnsit@gmail.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [PATCH] KVM: x86: Shove vp_bitmap handling down into
+ sparse_set_to_vcpu_mask()
+Message-ID: <YXwF+jSnDq9ONTQJ@google.com>
+References: <20211028213408.2883933-1-seanjc@google.com>
+ <87pmrokn16.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87pmrokn16.fsf@vitty.brq.redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Oct 29, 2021, Vitaly Kuznetsov wrote:
+> Sean Christopherson <seanjc@google.com> writes:
+> >  There's a smoke test for this in selftests, but it's not really all that
+> >  interesting.  It took me over an hour and a half just to get a Linux guest
+> >  to hit the relevant flows.  Most of that was due to QEMU 5.1 bugs (doesn't
+> >  advertise HYPERCALL MSR by default)
+> 
+> This should be fixed already, right?
 
+Yeah, it's fixed in more recent versions.  That added to the confusion; the local
+copy of QEMU source I was reading didn't match the binary I was using.  Doh.
 
-On October 28, 2021 11:51:19 PM PDT, Zhenguo Zhao <zhenguo6858@gmail=2Ecom=
-> wrote:
->From: Zhenguo Zhao <Zhenguo=2EZhao1@unisoc=2Ecom>
+> > diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
+> > index 4f15c0165c05..80018cfab5c7 100644
+> > --- a/arch/x86/kvm/hyperv.c
+> > +++ b/arch/x86/kvm/hyperv.c
+> > @@ -1710,31 +1710,36 @@ int kvm_hv_get_msr_common(struct kvm_vcpu *vcpu, u32 msr, u64 *pdata, bool host)
+> >  		return kvm_hv_get_msr(vcpu, msr, pdata, host);
+> >  }
+> >  
+> > -static __always_inline unsigned long *sparse_set_to_vcpu_mask(
+> > -	struct kvm *kvm, u64 *sparse_banks, u64 valid_bank_mask,
+> > -	u64 *vp_bitmap, unsigned long *vcpu_bitmap)
+> > +static void sparse_set_to_vcpu_mask(struct kvm *kvm, u64 *sparse_banks,
+> > +				    u64 valid_bank_mask, unsigned long *vcpu_mask)
+> >  {
+> >  	struct kvm_hv *hv = to_kvm_hv(kvm);
+> > +	bool has_mismatch = atomic_read(&hv->num_mismatched_vp_indexes);
+> > +	u64 vp_bitmap[KVM_HV_MAX_SPARSE_VCPU_SET_BITS];
+> >  	struct kvm_vcpu *vcpu;
+> >  	int i, bank, sbank = 0;
+> > +	u64 *bitmap;
+> >  
+> > -	memset(vp_bitmap, 0,
+> > -	       KVM_HV_MAX_SPARSE_VCPU_SET_BITS * sizeof(*vp_bitmap));
+> > +	BUILD_BUG_ON(sizeof(vp_bitmap) >
+> > +		     sizeof(*vcpu_mask) * BITS_TO_LONGS(KVM_MAX_VCPUS));
+> > +
+> > +	/* If vp_index == vcpu_idx for all vCPUs, fill vcpu_mask directly. */
+> > +	if (likely(!has_mismatch))
+> > +		bitmap = (u64 *)vcpu_mask;
+> > +
+> > +	memset(bitmap, 0, sizeof(vp_bitmap));
+> 
+> ... but in the unlikely case has_mismatch == true 'bitmap' is still
+> uninitialized here, right? How doesn't it crash?
+
+I'm sure it does crash.  I'll hack the guest to actually test this.  More below.
+ 
+> >  	for_each_set_bit(bank, (unsigned long *)&valid_bank_mask,
+> >  			 KVM_HV_MAX_SPARSE_VCPU_SET_BITS)
+> > -		vp_bitmap[bank] = sparse_banks[sbank++];
+> > +		bitmap[bank] = sparse_banks[sbank++];
+> >  
+> > -	if (likely(!atomic_read(&hv->num_mismatched_vp_indexes))) {
+> > -		/* for all vcpus vp_index == vcpu_idx */
+> > -		return (unsigned long *)vp_bitmap;
+> > -	}
+> > +	if (likely(!has_mismatch))
+> > +		return;
+> >  
+> > -	bitmap_zero(vcpu_bitmap, KVM_MAX_VCPUS);
+> > +	bitmap_zero(vcpu_mask, KVM_MAX_VCPUS);
+> >  	kvm_for_each_vcpu(i, vcpu, kvm) {
+> >  		if (test_bit(kvm_hv_get_vpindex(vcpu), (unsigned long *)vp_bitmap))
+> 
+> 'vp_bitmap' also doesn't seem to be assigned to anything, I'm really
+> confused :-(
 >
->The pstore has one storage device for back-end,so it should be
->use choice method to config=2E
->
->When ramoops config,insmod pstore_blk=2Eko,it will print unexpected,the
->module will insmod failed=2E
->
->    if (backend && strcmp(backend, psi->name)) {
->        pr_warn("ignoring unexpected backend '%s'\n", psi->name);
->        return -EPERM;
->    }
+> Didn't you accidentally mix up 'vp_bitmap' and 'bitmap'?
 
-This is by design: all the backends can be built as modules, and each can =
-be loaded and unloaded as desired=2E If it's a "choice" only one can be bui=
-lt at a time=2E
+No, bitmap was supposed to be initialized as:
 
--Kees
+	if (likely(!has_mismatch))
+		bitmap = (u64 *)vcpu_mask;
+	else
+		bitmap = vp_bitmap;
 
-
->
->Signed-off-by: Zhenguo Zhao <Zhenguo=2EZhao1@unisoc=2Ecom>
->---
-> fs/pstore/Kconfig | 57 ++++++++++++++++++++++++++++++-------------------=
-------
-> 1 file changed, 31 insertions(+), 26 deletions(-)
->
->diff --git a/fs/pstore/Kconfig b/fs/pstore/Kconfig
->index 8adabde=2E=2E288ed3c 100644
->--- a/fs/pstore/Kconfig
->+++ b/fs/pstore/Kconfig
->@@ -146,21 +146,40 @@ config PSTORE_FTRACE
->=20
-> 	  If unsure, say N=2E
->=20
->-config PSTORE_RAM
->-	tristate "Log panic/oops to a RAM buffer"
->+choice
->+	prompt "Choice pstore device"
-> 	depends on PSTORE
->-	depends on HAS_IOMEM
->-	select REED_SOLOMON
->-	select REED_SOLOMON_ENC8
->-	select REED_SOLOMON_DEC8
->+	default PSTORE_RAM
-> 	help
->-	  This enables panic and oops messages to be logged to a circular
->-	  buffer in RAM where it can be read back at some later point=2E
->-
->-	  Note that for historical reasons, the module will be named
->-	  "ramoops=2Eko"=2E
->+	  This option chooses ram or blk to use pstore device=2E
->+	config PSTORE_RAM
->+		tristate "Log panic/oops to a RAM buffer"
->+		depends on HAS_IOMEM
->+		select REED_SOLOMON
->+		select REED_SOLOMON_ENC8
->+		select REED_SOLOMON_DEC8
->+		help
->+		  This enables panic and oops messages to be logged to a circular
->+		  buffer in RAM where it can be read back at some later point=2E
->+
->+		  Note that for historical reasons, the module will be named
->+		  "ramoops=2Eko"=2E
->+
->+		  For more information, see Documentation/admin-guide/ramoops=2Erst=2E
->+
->+	config PSTORE_BLK
->+		tristate "Log panic/oops to a block device"
->+		depends on BLOCK
->+		select PSTORE_ZONE
->+		help
->+		  This enables panic and oops message to be logged to a block dev
->+		  where it can be read back at some later point=2E
->+
->+		  For more information, see Documentation/admin-guide/pstore-blk=2Erst
->+
->+		  If unsure, say N=2E
->=20
->-	  For more information, see Documentation/admin-guide/ramoops=2Erst=2E
->+endchoice
->=20
-> config PSTORE_ZONE
-> 	tristate
->@@ -169,20 +188,6 @@ config PSTORE_ZONE
-> 	  The common layer for pstore/blk (and pstore/ram in the future)
-> 	  to manage storage in zones=2E
->=20
->-config PSTORE_BLK
->-	tristate "Log panic/oops to a block device"
->-	depends on PSTORE
->-	depends on BLOCK
->-	select PSTORE_ZONE
->-	default n
->-	help
->-	  This enables panic and oops message to be logged to a block dev
->-	  where it can be read back at some later point=2E
->-
->-	  For more information, see Documentation/admin-guide/pstore-blk=2Erst
->-
->-	  If unsure, say N=2E
->-
-> config PSTORE_BLK_BLKDEV
-> 	string "block device identifier"
-> 	depends on PSTORE_BLK
-
---=20
-Kees Cook
+The idea being that the !mismatch case sets vcpu_mask directly, and the mismatch
+case sets vp_bitmap and then uses that to fill vcpu_mask.
