@@ -2,200 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D46643F40E
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 02:42:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4327843F411
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 02:43:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231504AbhJ2Aov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 20:44:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58276 "EHLO
+        id S231411AbhJ2AqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 20:46:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231424AbhJ2Aou (ORCPT
+        with ESMTP id S230211AbhJ2AqC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 20:44:50 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B66EEC061570
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 17:42:22 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id bj31so7739172qkb.2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 17:42:22 -0700 (PDT)
+        Thu, 28 Oct 2021 20:46:02 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60F09C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 17:43:34 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id v64so13421755ybi.5
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 17:43:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=poorly.run; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wk10kPylzBJAVzPjmuOajrIPnS3gajWmticxWTOdCuY=;
-        b=UbAcK1rAc/ZIqWaaPEXhVFTwgPW8BtT5uQ8dGUkH61jG8rRp5vvh4wNS5S4TYbaKTl
-         M2cp+j9/QV33S23r0odikBILIduyC+WGtPUiWYgiCBq7mGbHifDzz1rZZ4uE9wDE1gnw
-         q4GuSwKQ6o8lhL6CFTKh7LIqeVwAVOj/hPPC45mDJtkVEtRo7Ci7rcgtEVPaj+nu0TY+
-         STgzmS9/UzOCMwr7QuN217+UUyfZKxYr0TQcRFLPNacVmrZHBEVuLDjI4cLkUUnPE8nf
-         NaenDDVwI9G8L5qfwzzAnP8z/eCS2vuHm6Q5Z9012iopBJOVnb/rnaWloXy6WXgxbpSg
-         8/aQ==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=W2sy9b06AAoqRje0Ctkj6Www73b/rcNnA5x0L9/UX24=;
+        b=osfMTnSDFdSoxQMi2MmCecni4PyI67lbooODz48BxYWr1pwuE0/PX4UF0WK+KoSkSY
+         wGpPs4cVmKT5VDujNetRIUd1AdMGsxJyaFDCn8V55Umw63HDY45H858hK0pVZ8mxMV/k
+         qUz9YsmW2SQ7qFalwdw8/o7v9oOiYNiYpo6Tm6DAVmJJJlceIL2b7aIkDWLSoh+lrSof
+         V9Ev6Ns9rjz+wfQ2DDu1hFxyD4Jf77ZZ0T9kgj6TvLJ54KqJV7RxZXCQe17W+lRB+PDY
+         4PYQf2E8LgTU+0yLY5GyygG7U1hJxMOi1wmpUJu04J2aJDgy76W5n13/xeKP13QSeAKa
+         5mkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wk10kPylzBJAVzPjmuOajrIPnS3gajWmticxWTOdCuY=;
-        b=IuDT1uf6mXwP27EDLMaWNKCX6PVRKgZ0J0aFOl3JLkPdSvrU+9mjYFi36WX++qtCtb
-         QEChioOQXJopPE0WQOwxvnFWcm926NYufD154UKEFAVH2hXhonrIaR48f214K7G+C7qV
-         aqixK3//W2z1qKt2U12EQTmiWAzcAbYakU3LlrFwWi8U2kC5bXZHbJ3ZXMG93Oq7sccQ
-         IdWcpzFmkflkbsFwE9ymYaO3nUiDqmjDiSmbxXyex7WVBKtfEDcyn+rV+Imr6nlrCP+h
-         4bqcLhU1aDw2WsBTjTfT7sBmJQAbi2U7KW43x6wuaZqyNGanZtS1hV3llD1dUJJBxC+f
-         pLBg==
-X-Gm-Message-State: AOAM533p6hYBql9r6drpidrZ4tkz9wzaIFYc/+YwP056qsYVIjjQQx4x
-        rLsfunGoaco5ddnvUZRYuvxrpuaMhlmVpQ==
-X-Google-Smtp-Source: ABdhPJxV670d+nO1mBi8BXtGvwgleipuVr6xHBTlgZ0eFfTCnePRbf6oyR5UrIWB5wpz+O69dy68Vg==
-X-Received: by 2002:a37:8244:: with SMTP id e65mr6246239qkd.141.1635468141844;
-        Thu, 28 Oct 2021 17:42:21 -0700 (PDT)
-Received: from localhost ([167.100.64.199])
-        by smtp.gmail.com with ESMTPSA id bs34sm3043788qkb.97.2021.10.28.17.42.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 17:42:21 -0700 (PDT)
-Date:   Thu, 28 Oct 2021 20:42:20 -0400
-From:   Sean Paul <sean@poorly.run>
-To:     Mark Yacoub <markyacoub@chromium.org>
-Cc:     seanpaul@chromium.org, pmenzel@molgen.mpg.de,
-        Mark Yacoub <markyacoub@google.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org
-Subject: Re: [Intel-gfx] [PATCH v3 1/3] drm: Rename lut check functions to
- lut channel checks
-Message-ID: <20211029004220.GA10475@art_vandelay>
-References: <20211026192104.1860504-1-markyacoub@chromium.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=W2sy9b06AAoqRje0Ctkj6Www73b/rcNnA5x0L9/UX24=;
+        b=0jCPGfrcQnItSGVJ9k0bEd7ZTaNkaU1odrSIIrQ0w6qtv6yoZZr5IhGkLHuHPhdZ3V
+         zIgDgbOkwuNtksZ5gYwboqjFNfavYFJYFjQv44X0zAEUv0r3jzy88fsTnyFTPuv85nPU
+         seZZtRv2fEGrm7sSx7IO6L0D3Ekq9M1aRLe9Z/8ncCk7LkvuIhPRwKys8dlxu9t8/4cs
+         K5Yh47thZJ12Bj05a+JiY6wfE0k0R8zHjUClpK7zOtr7Hwdci0oIKLO52w9xd5JJdWf2
+         VoIKnhFIlmuxXslI8uP8JAP73xHEw+HB8e8Wie7W1O4Q6fbyQsAauJhrlZJiivQWt24f
+         zPKA==
+X-Gm-Message-State: AOAM531ktUsnXPASgynDYg9SihegdPOdkfFXDWVomR9FxYpQ2JilMye6
+        va7KX79T4XL+MNV/k+QxVkofHYmSjT60hia0JexSfg==
+X-Google-Smtp-Source: ABdhPJwNox5NrYrfvm37cnp2haAAo9v6DPFpH4WK42VlmRPgngm67ZOV5PVSYD5rQEW4YQAocdZjhMHu6kvrWdg84Hg=
+X-Received: by 2002:a25:50d2:: with SMTP id e201mr7747127ybb.296.1635468213277;
+ Thu, 28 Oct 2021 17:43:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211026192104.1860504-1-markyacoub@chromium.org>
+References: <9ac22d4d-c841-651a-fdd5-9fb3a65c57ab@gmail.com>
+ <e72cdd44-c027-e51c-8b57-24f39bf21d87@kernel.dk> <3b7dbb90-7fd5-d30f-cfe0-dd83f2cd4482@kernel.dk>
+In-Reply-To: <3b7dbb90-7fd5-d30f-cfe0-dd83f2cd4482@kernel.dk>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Thu, 28 Oct 2021 17:43:20 -0700
+Message-ID: <CANn89iJv6cRbK95Gwj=rrz2+X+Q4KQ7EtEcpz0Md0Vs1_iABPw@mail.gmail.com>
+Subject: Re: [BUG] About "io_uring: add more uring info to fdinfo for debug"
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
+        Hao Xu <haoxu@linux.alibaba.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 03:21:00PM -0400, Mark Yacoub wrote:
-> From: Mark Yacoub <markyacoub@google.com>
-> 
-> [Why]
-> This function and enum do not do generic checking on the luts but they
-> test color channels in the LUTs.
+On Thu, Oct 28, 2021 at 5:13 PM Jens Axboe <axboe@kernel.dk> wrote:
+>
+> On 10/28/21 3:40 PM, Jens Axboe wrote:
+> > On 10/28/21 3:24 PM, Eric Dumazet wrote:
+> >> Hi
+> >>
+> >> I was looking at commit 83f84356bc8f2d
+> >> ("io_uring: add more uring info to fdinfo for debug") after receiving
+> >> syzbot reports.
+> >>
+> >> I suspect that the following :
+> >>
+> >> +       for (i = cached_sq_head; i < sq_tail; i++) {
+> >> +               unsigned int sq_idx = READ_ONCE(ctx->sq_array[i & sq_mask]);
+> >> +
+> >> +               if (likely(sq_idx <= sq_mask)) {
+> >> +                       struct io_uring_sqe *sqe = &ctx->sq_sqes[sq_idx];
+> >> +
+> >> +                       seq_printf(m, "%5u: opcode:%d, fd:%d, flags:%x, user_data:%llu\n",
+> >> +                                  sq_idx, sqe->opcode, sqe->fd, sqe->flags, sqe->user_data);
+> >> +               }
+> >> +       }
+> >>
+> >>
+> >> Can loop around ~2^32 times if sq_tail is close to ~0U
+> >>
+> >> I see various READ_ONCE(), which are probably not good enough.
+> >>
+> >> At very minimum I would handling wrapping...
+> >
+> > Thanks for reporting this. I think on top of wrapping, the loop should
+> > just be capped at sq_entries as well. There's no point dumping more than
+> > that, ever.
+> >
+> > I'll take a stab at this.
+>
+> I'd probably do something like this - make sure wrap is sane and that we
+> always cap at the max number of entries we expect. This doesn't quite
+> hold true for CQEs, but honestly for debugging purposes, we only really
+> care about the sq ring side in terms of stalls. Or if we have unreaped
+> CQEs, which we'll still show.
+>
+> This also removes the masking, as it's better to expose the ring indexes
+> directly. And just dump the raw ring head/tail for sq/cq. We still
+> include the cached info, but I think dumping the raw contents is saner
+> and more useful.
+>
+>
+> diff --git a/fs/io_uring.c b/fs/io_uring.c
+> index 17cb0e1b88f0..babd9950ae9f 100644
+> --- a/fs/io_uring.c
+> +++ b/fs/io_uring.c
+> @@ -10065,12 +10065,11 @@ static __cold void __io_uring_show_fdinfo(struct io_ring_ctx *ctx,
+>         struct io_overflow_cqe *ocqe;
+>         struct io_rings *r = ctx->rings;
+>         unsigned int sq_mask = ctx->sq_entries - 1, cq_mask = ctx->cq_entries - 1;
+> -       unsigned int cached_sq_head = ctx->cached_sq_head;
+> -       unsigned int cached_cq_tail = ctx->cached_cq_tail;
+>         unsigned int sq_head = READ_ONCE(r->sq.head);
+>         unsigned int sq_tail = READ_ONCE(r->sq.tail);
+>         unsigned int cq_head = READ_ONCE(r->cq.head);
+>         unsigned int cq_tail = READ_ONCE(r->cq.tail);
+> +       unsigned int sq_entries, cq_entries;
+>         bool has_lock;
+>         unsigned int i;
+>
+> @@ -10080,15 +10079,19 @@ static __cold void __io_uring_show_fdinfo(struct io_ring_ctx *ctx,
+>          * and sq_tail and cq_head are changed by userspace. But it's ok since
+>          * we usually use these info when it is stuck.
+>          */
+> -       seq_printf(m, "SqHead:\t%u\n", sq_head & sq_mask);
+> -       seq_printf(m, "SqTail:\t%u\n", sq_tail & sq_mask);
+> -       seq_printf(m, "CachedSqHead:\t%u\n", cached_sq_head & sq_mask);
+> -       seq_printf(m, "CqHead:\t%u\n", cq_head & cq_mask);
+> -       seq_printf(m, "CqTail:\t%u\n", cq_tail & cq_mask);
+> -       seq_printf(m, "CachedCqTail:\t%u\n", cached_cq_tail & cq_mask);
+> -       seq_printf(m, "SQEs:\t%u\n", sq_tail - cached_sq_head);
+> -       for (i = cached_sq_head; i < sq_tail; i++) {
+> -               unsigned int sq_idx = READ_ONCE(ctx->sq_array[i & sq_mask]);
+> +       seq_printf(m, "SqMask:\t\t0x%x\n", sq_mask);
+> +       seq_printf(m, "SqHead:\t%u\n", sq_head);
+> +       seq_printf(m, "SqTail:\t%u\n", sq_tail);
+> +       seq_printf(m, "CachedSqHead:\t%u\n", ctx->cached_sq_head);
+> +       seq_printf(m, "CqMask:\t0x%x\n", cq_mask);
+> +       seq_printf(m, "CqHead:\t%u\n", cq_head);
+> +       seq_printf(m, "CqTail:\t%u\n", cq_tail);
+> +       seq_printf(m, "CachedCqTail:\t%u\n", ctx->cached_cq_tail);
+> +       seq_printf(m, "SQEs:\t%u\n", sq_tail - ctx->cached_sq_head);
+> +       sq_entries = min(sq_tail - sq_head, ctx->sq_entries);
+> +       for (i = 0; i < sq_entries; i++) {
+> +               unsigned int entry = i + sq_head;
+> +               unsigned int sq_idx = READ_ONCE(ctx->sq_array[entry & sq_mask]);
+>
+>                 if (likely(sq_idx <= sq_mask)) {
+>                         struct io_uring_sqe *sqe = &ctx->sq_sqes[sq_idx];
+> @@ -10097,9 +10100,11 @@ static __cold void __io_uring_show_fdinfo(struct io_ring_ctx *ctx,
+>                                    sq_idx, sqe->opcode, sqe->fd, sqe->flags, sqe->user_data);
+>                 }
+>         }
+> -       seq_printf(m, "CQEs:\t%u\n", cached_cq_tail - cq_head);
+> -       for (i = cq_head; i < cached_cq_tail; i++) {
+> -               struct io_uring_cqe *cqe = &r->cqes[i & cq_mask];
+> +       seq_printf(m, "CQEs:\t%u\n", cq_tail - cq_head);
+> +       cq_entries = min(cq_tail - cq_head, ctx->cq_entries);
+> +       for (i = 0; i < cq_entries; i++) {
+> +               unsigned int entry = i + cq_head;
+> +               struct io_uring_cqe *cqe = &r->cqes[entry & cq_mask];
+>
+>                 seq_printf(m, "%5u: user_data:%llu, res:%d, flag:%x\n",
+>                            i & cq_mask, cqe->user_data, cqe->res, cqe->flags);
 
-I'm not sure there's anything inherently specific to channels, it seems like
-one could add a new test to reflect a HW limitation and it would fit pretty well
-in the lut check function. I wonder if it would be better to expose the types of
-tests required by the crtc such that the atomic_check could also do the test?
+Note : you probably want to replace  (i & cq_mask) to (entry & cq_mask) here
 
-Sean
+Otherwise, patch looks good to me.
 
-> Keeping the name explicit as more generic LUT checks will follow.
-> 
-> Tested on Eldrid ChromeOS (TGL).
-> 
-> Signed-off-by: Mark Yacoub <markyacoub@chromium.org>
-> ---
->  drivers/gpu/drm/drm_color_mgmt.c           | 12 ++++++------
->  drivers/gpu/drm/i915/display/intel_color.c | 10 +++++-----
->  include/drm/drm_color_mgmt.h               |  7 ++++---
->  3 files changed, 15 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/drm_color_mgmt.c b/drivers/gpu/drm/drm_color_mgmt.c
-> index bb14f488c8f6c..6f4e04746d90f 100644
-> --- a/drivers/gpu/drm/drm_color_mgmt.c
-> +++ b/drivers/gpu/drm/drm_color_mgmt.c
-> @@ -585,17 +585,17 @@ int drm_plane_create_color_properties(struct drm_plane *plane,
->  EXPORT_SYMBOL(drm_plane_create_color_properties);
->  
->  /**
-> - * drm_color_lut_check - check validity of lookup table
-> + * drm_color_lut_channels_check - check validity of the channels in the lookup table
->   * @lut: property blob containing LUT to check
->   * @tests: bitmask of tests to run
->   *
-> - * Helper to check whether a userspace-provided lookup table is valid and
-> - * satisfies hardware requirements.  Drivers pass a bitmask indicating which of
-> - * the tests in &drm_color_lut_tests should be performed.
-> + * Helper to check whether each color channel of userspace-provided lookup table is valid and
-> + * satisfies hardware requirements. Drivers pass a bitmask indicating which of in
-> + * &drm_color_lut_channels_tests should be performed.
->   *
->   * Returns 0 on success, -EINVAL on failure.
->   */
-> -int drm_color_lut_check(const struct drm_property_blob *lut, u32 tests)
-> +int drm_color_lut_channels_check(const struct drm_property_blob *lut, u32 tests)
->  {
->  	const struct drm_color_lut *entry;
->  	int i;
-> @@ -625,4 +625,4 @@ int drm_color_lut_check(const struct drm_property_blob *lut, u32 tests)
->  
->  	return 0;
->  }
-> -EXPORT_SYMBOL(drm_color_lut_check);
-> +EXPORT_SYMBOL(drm_color_lut_channels_check);
-> diff --git a/drivers/gpu/drm/i915/display/intel_color.c b/drivers/gpu/drm/i915/display/intel_color.c
-> index dab892d2251ba..4bb1bc76c4de9 100644
-> --- a/drivers/gpu/drm/i915/display/intel_color.c
-> +++ b/drivers/gpu/drm/i915/display/intel_color.c
-> @@ -1285,7 +1285,7 @@ static int check_luts(const struct intel_crtc_state *crtc_state)
->  	const struct drm_property_blob *gamma_lut = crtc_state->hw.gamma_lut;
->  	const struct drm_property_blob *degamma_lut = crtc_state->hw.degamma_lut;
->  	int gamma_length, degamma_length;
-> -	u32 gamma_tests, degamma_tests;
-> +	u32 gamma_channels_tests, degamma_channels_tests;
->  
->  	/* Always allow legacy gamma LUT with no further checking. */
->  	if (crtc_state_is_legacy_gamma(crtc_state))
-> @@ -1300,15 +1300,15 @@ static int check_luts(const struct intel_crtc_state *crtc_state)
->  
->  	degamma_length = INTEL_INFO(dev_priv)->color.degamma_lut_size;
->  	gamma_length = INTEL_INFO(dev_priv)->color.gamma_lut_size;
-> -	degamma_tests = INTEL_INFO(dev_priv)->color.degamma_lut_tests;
-> -	gamma_tests = INTEL_INFO(dev_priv)->color.gamma_lut_tests;
-> +	degamma_channels_tests = INTEL_INFO(dev_priv)->color.degamma_lut_tests;
-> +	gamma_channels_tests = INTEL_INFO(dev_priv)->color.gamma_lut_tests;
->  
->  	if (check_lut_size(degamma_lut, degamma_length) ||
->  	    check_lut_size(gamma_lut, gamma_length))
->  		return -EINVAL;
->  
-> -	if (drm_color_lut_check(degamma_lut, degamma_tests) ||
-> -	    drm_color_lut_check(gamma_lut, gamma_tests))
-> +	if (drm_color_lut_channels_check(degamma_lut, degamma_channels_tests) ||
-> +	    drm_color_lut_channels_check(gamma_lut, gamma_channels_tests))
->  		return -EINVAL;
->  
->  	return 0;
-> diff --git a/include/drm/drm_color_mgmt.h b/include/drm/drm_color_mgmt.h
-> index 81c298488b0c8..cb1bf361ad3e3 100644
-> --- a/include/drm/drm_color_mgmt.h
-> +++ b/include/drm/drm_color_mgmt.h
-> @@ -94,12 +94,12 @@ int drm_plane_create_color_properties(struct drm_plane *plane,
->  				      enum drm_color_range default_range);
->  
->  /**
-> - * enum drm_color_lut_tests - hw-specific LUT tests to perform
-> + * enum drm_color_lut_channels_tests - hw-specific LUT tests to perform
->   *
->   * The drm_color_lut_check() function takes a bitmask of the values here to
->   * determine which tests to apply to a userspace-provided LUT.
->   */
-> -enum drm_color_lut_tests {
-> +enum drm_color_lut_channels_tests {
->  	/**
->  	 * @DRM_COLOR_LUT_EQUAL_CHANNELS:
->  	 *
-> @@ -119,5 +119,6 @@ enum drm_color_lut_tests {
->  	DRM_COLOR_LUT_NON_DECREASING = BIT(1),
->  };
->  
-> -int drm_color_lut_check(const struct drm_property_blob *lut, u32 tests);
-> +int drm_color_lut_channels_check(const struct drm_property_blob *lut,
-> +				 u32 tests);
->  #endif
-> -- 
-> 2.33.0.1079.g6e70778dc9-goog
-> 
-
--- 
-Sean Paul, Software Engineer, Google / Chromium OS
+>
+> --
+> Jens Axboe
+>
