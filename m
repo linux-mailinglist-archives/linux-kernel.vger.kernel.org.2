@@ -2,105 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE2F643F400
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 02:40:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67C6843F403
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 02:41:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231384AbhJ2Ama (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 20:42:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57686 "EHLO
+        id S231431AbhJ2Anv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 20:43:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231286AbhJ2Am3 (ORCPT
+        with ESMTP id S231400AbhJ2Ant (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 20:42:29 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EECC2C061767
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 17:40:01 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id x7so2592781pfh.7
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 17:40:01 -0700 (PDT)
+        Thu, 28 Oct 2021 20:43:49 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32C57C061714
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 17:41:22 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id n11-20020a17090a2bcb00b001a1e7a0a6a6so9307342pje.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 17:41:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=squareup.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=U/3/zU2CXtqxH4uObJNtO1IPDFEIaX70RwRGvT/y3Q8=;
-        b=XtSaEE6gibGxlYqbVm1J4DQGTHkIDfTkcxnBXMWXB6kh7UTjqNoB6wOmzUpEmB/i4K
-         pjqKE0Bl+Hr4LixkEhWebb94v8uSg6pHYTX8gETORbPSRimnuUI33kAOVTJGtjoj9vIt
-         tJduRpPvcv8jHE4n4yt/BzJqXjZFxG+bpMDhU=
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vCbr9sHhPoOYTttiMC9wrUBW6ygnU7eeaDDHFz4/imE=;
+        b=ECAx9YAlPnA1iDQafmSAgZSeqWS3vJClmNYWenxzFskKGgJJu/Enn7b9+gLoiXpAJL
+         y9Ih/K3w255iNuV83wasztitEUlwySOreXKHMiXo6mX7jRTwBUD1Q/WW22LvH3Z3rXTQ
+         qcfcyrGM5LkMOLKL6B4cvgFIXV73K0KbqHDVg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=U/3/zU2CXtqxH4uObJNtO1IPDFEIaX70RwRGvT/y3Q8=;
-        b=HNM4+OiHeIsxE5S+N356Xq/DdDF484PlN9JzC9rZ5mbsqqO0V+h8hqgTEoBvTr0VLH
-         gLXjKoK08fToSM2Le0djoKBay1NROyxuzarnILhn9hNEbkZbZm0FWMBVBDzLONPnfo2L
-         tUACNxVE0kykAe7oV4+JK/CvznhnkUkZZXu2dZbxjnxZul+npECEN/J38kRD1lokmJGA
-         iem+F1CibiCCp8z5xXQJWs83kFzHHK7PpbRT/dPaY7VEUS5c2hDq6KJzQc0gr3QfA8N2
-         I7ojeCPeM8FEdA3AmeiLg18ZbLRvC9k32R+LI9lIlyRSDg02hUgH0cIEKRWCuBmAVVbJ
-         THDA==
-X-Gm-Message-State: AOAM533kZit6pYAHA4KdzN9lEIClKmLTlxT8VZ++rx+REwzAErQykzpl
-        ZnvZSstWuicndkD5P1ZPa1R/WcPPvzMPSQ==
-X-Google-Smtp-Source: ABdhPJxK3mBHFLkooF9WIEqiTF2Lo7tSsk/o+Jjxn7VPMabG7lfc3Wh4mZV8CdT9Mh9cnStkmAw2kA==
-X-Received: by 2002:a65:62cb:: with SMTP id m11mr5679692pgv.425.1635468000985;
-        Thu, 28 Oct 2021 17:40:00 -0700 (PDT)
-Received: from benl-m5lvdt.local ([2600:6c50:4d00:cd01:14ac:e7eb:3ffb:f82f])
-        by smtp.gmail.com with ESMTPSA id me18sm4025703pjb.33.2021.10.28.17.39.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Oct 2021 17:40:00 -0700 (PDT)
-Subject: Re: [PATCH 2/2] wcn36xx: fix RX BD rate mapping for 5GHz legacy rates
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Kalle Valo <kvalo@codeaurora.org>
-Cc:     Loic Poulain <loic.poulain@linaro.org>,
-        linux-arm-msm@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, wcn36xx@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211028223131.897548-1-benl@squareup.com>
- <20211028223131.897548-2-benl@squareup.com>
- <b3473977-5bb6-06df-55c3-85f08a29a964@linaro.org>
-From:   Benjamin Li <benl@squareup.com>
-Message-ID: <631a3ab4-56d9-5c1d-be53-c885747e3f7b@squareup.com>
-Date:   Thu, 28 Oct 2021 17:39:58 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        bh=vCbr9sHhPoOYTttiMC9wrUBW6ygnU7eeaDDHFz4/imE=;
+        b=0H4qDEdbIrtsy09oiol3b2rNqWe99ksc7Ovrjyp9m57q9I/QooBAySqUu8ckoq42xc
+         /inuAaJs/rukgdX9zK95qx9de2mVldiPdCErboRqUplwH7fzIX5qcUQ29GXQ0D+yOaEQ
+         IkyPS4OKMupJQxBdO0mrzapZzxapxeZr2k2cJRScXg3aJ1yvjnUQyHl5JrtPgaqBC1hq
+         JC/g/EAuGGqPI9jyGavoXZ6XaqM0P/nsh/+mrN6uxokygikGQIgfiJB3ClGTxZS2/cH5
+         a4qOu1TS7Ilp689iKCGqrBhwfhoi5tctc6UR7Nkt/qN4aegKrLwF61KmNgBbAN/p90Ot
+         iprg==
+X-Gm-Message-State: AOAM530ypiavld+ujcK9sY3kAJntAMGoZ/FmPnA+Nankp/Aa3Zfzh/Wr
+        93DCov/QUxz8pUUGyc4//8YdePtqQvsP0w==
+X-Google-Smtp-Source: ABdhPJw1+zcw8qqYdbD+AuRBSzHxdUw5h2idj0R/H3v8Uv47IRYiimIrRoNqpSgTqGVKd80DDLomLw==
+X-Received: by 2002:a17:902:bf02:b0:13f:cfdd:804e with SMTP id bi2-20020a170902bf0200b0013fcfdd804emr6744632plb.1.1635468081547;
+        Thu, 28 Oct 2021 17:41:21 -0700 (PDT)
+Received: from philipchen.mtv.corp.google.com ([2620:15c:202:201:e956:ddc4:6e27:e270])
+        by smtp.gmail.com with ESMTPSA id s2sm4373846pfe.215.2021.10.28.17.41.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 17:41:21 -0700 (PDT)
+From:   Philip Chen <philipchen@chromium.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     dianders@chromium.org, swboyd@chromium.org,
+        Philip Chen <philipchen@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: [PATCH v2 1/3] arm64: dts: sc7180: Include gpio.h in edp bridge dts
+Date:   Thu, 28 Oct 2021 17:41:15 -0700
+Message-Id: <20211028174015.v2.1.Ie17e51ad3eb91d72826ce651ca2786534a360210@changeid>
+X-Mailer: git-send-email 2.33.1.1089.g2158813163f-goog
 MIME-Version: 1.0
-In-Reply-To: <b3473977-5bb6-06df-55c3-85f08a29a964@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/28/21 5:30 PM, Bryan O'Donoghue wrote:
-> On 28/10/2021 23:31, Benjamin Li wrote:
->> -            status.rate_idx >= sband->n_bitrates) {
-> This fix was applied because we were getting a negative index
-> 
-> If you want to remove that, you'll need to do something about this
-> 
-> status.rate_idx -= 4;
+The edp bridge dts fragment files use the macros defined in
+'dt-bindings/gpio/gpio.h'.
 
-Hmm... so you're saying there's a FW bug where sometimes we get
-bd->rate_id = 0-7 (leading to status.rate_idx = 0-3) on a 5GHz
-channel?
+To help us more flexibly order the #include lines of dts files in a
+board-revision-specific dts file, let's include the gpio header in the
+bridge dts fragment files themselves.
 
-static const struct wcn36xx_rate wcn36xx_rate_table[] = {
-    /* 11b rates */
-    {  10, 0, RX_ENC_LEGACY, 0, RATE_INFO_BW_20 },
-    {  20, 1, RX_ENC_LEGACY, 0, RATE_INFO_BW_20 },
-    {  55, 2, RX_ENC_LEGACY, 0, RATE_INFO_BW_20 },
-    { 110, 3, RX_ENC_LEGACY, 0, RATE_INFO_BW_20 },
+Signed-off-by: Philip Chen <philipchen@chromium.org>
+---
 
-    /* 11b SP (short preamble) */
-    {  10, 0, RX_ENC_LEGACY, RX_ENC_FLAG_SHORTPRE, RATE_INFO_BW_20 },
-    {  20, 1, RX_ENC_LEGACY, RX_ENC_FLAG_SHORTPRE, RATE_INFO_BW_20 },
-    {  55, 2, RX_ENC_LEGACY, RX_ENC_FLAG_SHORTPRE, RATE_INFO_BW_20 },
-    { 110, 3, RX_ENC_LEGACY, RX_ENC_FLAG_SHORTPRE, RATE_INFO_BW_20 },
+(no changes since v1)
 
-It sounds like we should WARN and drop the frame in that case. If
-you agree I'll send a v2.
+ arch/arm64/boot/dts/qcom/sc7180-trogdor-parade-ps8640.dtsi | 2 ++
+ arch/arm64/boot/dts/qcom/sc7180-trogdor-ti-sn65dsi86.dtsi  | 2 ++
+ 2 files changed, 4 insertions(+)
 
-> 
-> ---
-> bod
+diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-parade-ps8640.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-parade-ps8640.dtsi
+index a3d69540d4e4..6a84fba178d6 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-parade-ps8640.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-parade-ps8640.dtsi
+@@ -5,6 +5,8 @@
+  * Copyright 2021 Google LLC.
+  */
+ 
++#include <dt-bindings/gpio/gpio.h>
++
+ / {
+ 	pp3300_brij_ps8640: pp3300-brij-ps8640 {
+ 		compatible = "regulator-fixed";
+diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-ti-sn65dsi86.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-ti-sn65dsi86.dtsi
+index 97d5e45abd1d..6dbf413e4e5b 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-ti-sn65dsi86.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-ti-sn65dsi86.dtsi
+@@ -5,6 +5,8 @@
+  * Copyright 2021 Google LLC.
+  */
+ 
++#include <dt-bindings/gpio/gpio.h>
++
+ &dsi0_out {
+ 	remote-endpoint = <&sn65dsi86_in>;
+ 	data-lanes = <0 1 2 3>;
+-- 
+2.33.1.1089.g2158813163f-goog
+
