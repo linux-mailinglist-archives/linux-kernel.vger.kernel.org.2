@@ -2,185 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A64C94403C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 22:04:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E41BA4403CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 22:06:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231566AbhJ2UHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 16:07:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37354 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231484AbhJ2UHD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 16:07:03 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B234C061767
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 13:04:34 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id l203so10208012pfd.2
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 13:04:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YPlRuudRvswXk7E3B3ka8rl3JZvCvqQzeFmVZcMQuPI=;
-        b=N2IJwnyD/f2Knhs9wKjiOPxN6iDWj6WpWK/SSri5mVxDrNVpDuJfyxK8Kmozd+4RLB
-         TpsvhIAYZ1/wjA1438WQa94stcZ1ZuS+/J4/WXhl5NJYy7nFltD+GXVpsl4owLSmtm36
-         mpP4MaUWVhsyIvei1aRNMbFtX8bishmT/B+1zV5LGxIhmcBZfXOk2ClOH0N9skyCOEX1
-         u8k72XPm7HX2gpnc+he11ZT2pVvvOaxU+L/cBW2ivcQG8B4E1+t5KAs4NoH0TahPfJV+
-         mRZ/v+ISB1S1X3pq2nNJeBk1VleX/dSiTA0sPHRmvDdSbLpGrGlm4gqztAjcXgAaCBeM
-         fyiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YPlRuudRvswXk7E3B3ka8rl3JZvCvqQzeFmVZcMQuPI=;
-        b=XvUGhU/Kke6tqUykg2vuqWA2eOBJZGI1UHRwbwv1IY4sKO5lRuFyvZO13eHnmOzXHn
-         YD7aRsMptdKM5hwnT/Auc83dtOxLsLQf1ZEUEp9tyXXqYbYld2qGPRnEAP6Ij3TNfyVw
-         Yq6rCoxdOvAIj0mGZtEwS4z6FHQFcd7MPttVvEXacS20fYiSj4vnRDG8b93S1N5o7zem
-         BOivaelSdgxh9amXENuC0iqG62bbG4Vz4+OtKS6t6KZ2uoSNErJuvJdcCegtDdv711Qr
-         6lIlsWXdOMMLIlypNBUE/lwkjM4Dde9JD3GNOYspg98oh4mzvdhBfAnRKKv4s7xnsq80
-         PipA==
-X-Gm-Message-State: AOAM531QXhDHsMU1KJZ5vjUsSPaNPwZxNH5sBomXrzh3lrwQ3ePhSRRs
-        3BRjpJk8wGZMuTDFAFIR9Kth6YHATtPdW8hu2WCNUw==
-X-Google-Smtp-Source: ABdhPJw/j8i7NsUhJpP541ghCDtcejh2n/V3NAQ2aIDQ/IaiHSEP1CSrecXGtsu9g9a1Jnij8KhB2DTYkqQgtLhLabw=
-X-Received: by 2002:a63:9042:: with SMTP id a63mr7505878pge.369.1635537873674;
- Fri, 29 Oct 2021 13:04:33 -0700 (PDT)
+        id S230525AbhJ2UI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 16:08:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39250 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229458AbhJ2UI1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 16:08:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D224A6101E;
+        Fri, 29 Oct 2021 20:05:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635537958;
+        bh=s7w+tMlthGfQT7o+0MSkSXq2ov58k7Q9neTioNtBumU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Rnz4HHvuOiVVmeEfYk86APkPEjs653rmGz/ORALvhSNX8zUFq8KWJzrHOrYL/gQZm
+         xIEU6N2dWVYCtSXrOwQl9QoJlZ+RnrLl6xSmGj6inq0gAO+u0FvIL8p6soXNJwrOBy
+         NHSCfvE1NqMs3DY0KSEkIc6GZJ3ywDCnXk0S2Rrw+7odZKZgslgucqIM06VA3w75SR
+         2yJ1baazaPr/g0lPRKEwAU9QTzL/ykw+rgLkSz8oPfpshKLAgDz8ifxSOl3wP2koxr
+         /Esu2oyYghIgti3CHP5CKuOWzFmsSlrG6FB/oClBYo4jv4fx4yZdBSIWzG97D9Ld83
+         H8/EuNcK7rJVQ==
+Date:   Fri, 29 Oct 2021 22:05:55 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     mans@mansr.com, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] i2c: xlr: Fix a resource leak in the error handling path
+ of 'xlr_i2c_probe()'
+Message-ID: <YXxUIw02XJqVvus3@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>, mans@mansr.com,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+References: <e928fd285b37599e1f6648d0b963de8ed7773166.1629405992.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-References: <20211028205854.830200-1-almasrymina@google.com> <2fede4d2-9d82-eac9-002b-9a7246b2c3f8@redhat.com>
-In-Reply-To: <2fede4d2-9d82-eac9-002b-9a7246b2c3f8@redhat.com>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Fri, 29 Oct 2021 13:04:22 -0700
-Message-ID: <CAHS8izMckg03uLB0vrTGv2g-_xmTh1LPRc2P8sfnmL-FK5A8hg@mail.gmail.com>
-Subject: Re: [PATCH v1] mm: Add /proc/$PID/pageflags
-To:     David Hildenbrand <david@redhat.com>, Nathan Lewis <npl@google.com>
-Cc:     Yu Zhao <yuzhao@google.com>,
-        "Paul E . McKenney" <paulmckrcu@fb.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Xu <peterx@redhat.com>,
-        Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
-        Florian Schmidt <florian.schmidt@nutanix.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Y1W4jpuRes0sIcvE"
+Content-Disposition: inline
+In-Reply-To: <e928fd285b37599e1f6648d0b963de8ed7773166.1629405992.git.christophe.jaillet@wanadoo.fr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 12:11 AM David Hildenbrand <david@redhat.com> wrote:
->
-> On 28.10.21 22:58, Mina Almasry wrote:
-> > From: Yu Zhao <yuzhao@google.com>
-> >
-> > This file lets a userspace process know the page flags of each of its virtual
-> > pages.  It contains a 64-bit set of flags for each virtual page, containing
-> > data identical to that emitted by /proc/kpageflags.  This allows the user-space
-> > task can learn the kpageflags for the pages backing its address-space by
-> > consulting one file, without needing to be root.
-> >
-> > Example use case is a performance sensitive user-space process querying the
-> > hugepage backing of its own memory without the root access required to access
-> > /proc/kpageflags, and without accessing /proc/self/smaps_rollup which can be
-> > slow and needs to hold mmap_lock.
->
-> Can you elaborate on
->
-> a) The target use case. Are you primarily interested to see if a page
-> given base page is head or tail?
->
 
-Not quite. Generally some userspace process (most notably our network
-service) has a region of performance critical memory and would like to
-know if this memory is backed by hugepages or not. It uses
-/proc/self/pageflags to inspect the pageflags of the pages backing
-this region, and counts how many ranges are backed by hugepages and
-how many are not. Generally we export this data to metrics, and if the
-hugepage backing drops or is insufficient we look into the issue
-postmortem.
+--Y1W4jpuRes0sIcvE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> b) Your mmap_lock comment. pagemap_read() needs to hold the mmap lock in
-> read mode while walking process page tables via walk_page_range().
->
+On Thu, Aug 19, 2021 at 10:48:08PM +0200, Christophe JAILLET wrote:
+> A successful 'clk_prepare()' call should be balanced by a corresponding
+> 'clk_unprepare()' call in the error handling path of the probe, as already
+> done in the remove function.
+>=20
+> More specifically, 'clk_prepare_enable()' is used, but 'clk_disable()' is
+> also already called. So just the unprepare step has still to be done.
+>=20
+> Update the error handling path accordingly.
+>=20
+> Fixes: 75d31c2372e4 ("i2c: xlr: add support for Sigma Designs controller =
+variant")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-Gah, I'm _very_ sorry for the misinformation. I was (very incorrectly)
-under the impression that /proc/self/smaps_rollup required holding the
-mmap lock but /proc/self/pageflags didn't. I'll remove the comment
-about the mmap lock from the commit message in V2.
+Applied to for-next, thanks!
 
-> Also, do you have a rough performance comparison?
->
 
-So from my tests with simple processes querying smaps/pageflags I
-don't see any performance difference, but I suspect it's due to my
-test cases not mapping much memory or regions.
+--Y1W4jpuRes0sIcvE
+Content-Type: application/pgp-signature; name="signature.asc"
 
-I've CC'd Nathan who works on our network service and has run into
-performance issues with smaps. Nathan, do you have a rough performance
-comparison? If so please do share.
+-----BEGIN PGP SIGNATURE-----
 
-> >
-> > Similar to /proc/kpageflags, the flags printed out by the kernel for
-> > each page are provided by stable_page_flags(), which exports flag bits
-> > that are user visible and stable over time.
->
-> It exports flags (documented for pageflags_read()) that are not
-> applicable to processes, like OFFLINE. BUDDY, SLAB, PGTABLE ... and can
-> never happen. Some of these kpageflags are not even page->flags, they
-> include abstracted types we use for physical memory pages based on other
-> struct page members (OFFLINE, BUDDY, MMAP, PGTABLE, ...). This feels wrong.
->
-> Also, to me it feels like we are exposing too much internal information
-> to the user, essentially making it ABI that user space processes will
-> rely on.
->
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmF8VB8ACgkQFA3kzBSg
+KbZRUA//XzsKKdmLWxE49+livXOqAA2C/3fsrZGauf5siAjOyd90xO6EYz9OpOjL
+CLFgsDWGLizuQZ07lpUSShpYIR6cv5m8U5qXvfx6oGw1qgfNhjbNY+T7GR6K3XYD
+y5eFANkeFN5cb7j5bogMZ/INoU1dl5Bxqqwjzl9dtXy9dMa/fCtc1+nB6HEyrkyJ
+T1tCtcAjXhil9trbDcuZT5+iTxKl8eSEMmMFXOJaqrTqgaRPCfT6P2q+g+3ipqrW
+b19Av4MZm95RB4o+Es6Z+dmyMo/VNS0l7dg9xeiVIXIWgwlRSqbFWLINqRVgc0m/
+wEo0Vjjrr/Jhkm+/D1rBJplg8p0IjB4Bontl9218mSGK8MXZrdViBLqnSeGy9+g0
+OOFRGjy6n+bl8POD74fmODABAIYjlTnoJJ7mGcSs3l2Jg0aFV7fzl8gbhJMkwQBM
+iDyacaZ562WyOmygz4neGgBDx0v7om+Z75qLPAF1NRWiANXVci7UnT/II4rA5psT
+D6gZvA0x3OuiIn+wDZohde7meDKq/mLaM29PAj1gBeRI7i1eTNpvsntyR8XOIgu5
+C30hh7Z2KIle6fCcEKCI3G+Cc66prywcJxpTjLnf12TaucgS+zgJj9kqxy/wx6d/
+c/iZ7BCorUHwJVviRU72WF0YaSXNV5NVOpTuPEircopGY09fU/A=
+=xhNM
+-----END PGP SIGNATURE-----
 
-I'm honestly a bit surprised by this comment because AFAIU (sorry if
-wrong) we are already exporting this information via /proc/kpageflags
-and therefore it's already somewhat part of an ABI, and the
-stable_page_flags() output already needs to be stable and backwards
-compatible due to potential root users being affected by any
-non-backwards compatible changes. I am yes extending access to this
-information to non-root users.
-
-> Did you investigate
->
-> a) Reducing the flags we expose to a bare minimum necessary for your use
-> case (and actually applicable to mmaped pages).
->
-
-To be honest I haven't, but this is something that's certainly doable.
-I'm not sure it's easier for processes to understand or the kernel to
-maintain. My thinking:
-1. Processes parsing /proc/kpageflags can also easily parse
-/proc/self/pageflags and re-use code/implementations between them.
-2. Userspace code can extract the flags they need and ignore the ones
-they don't need or are not applicable.
-3. For kernel it's maybe easier to maintain 1 set of
-stable_page_flags() and keep that list backwards compatible. To
-address your comment I'd need to create a subset,
-stable_ps_page_flags(), and both lists now need to be backwards
-compatible.
-
-But I hear you, and if you feel strongly about this I'm more than
-happy to oblige. Please confirm if this is something you would like to
-see in V2.
-
-> b) Extending pagemap output instead.
->
-
-No I have not until you mentioned it, but even now AFAIU (and again
-sorry if wrong, please correct) all the bits exposed by pagemap as
-documented in pagemap.rst are in use, and it's a non-starter for me to
-modify how pagemap works because it'd break backwards compatibility.
-But if you see a way I'm happy to oblige :-)
-
-Thanks for your review!
-
-> You seem to be interested in the "hugepage backing", which smells like
-> "what is mapped" as in "pagemap".
->
->
-> --
-> Thanks,
->
-> David / dhildenb
->
+--Y1W4jpuRes0sIcvE--
