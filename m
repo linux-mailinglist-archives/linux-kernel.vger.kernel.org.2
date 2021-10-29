@@ -2,511 +2,601 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C9C143FBC6
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 13:50:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9EC943FBC3
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 13:50:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231546AbhJ2Lw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 07:52:28 -0400
-Received: from ixit.cz ([94.230.151.217]:51154 "EHLO ixit.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231365AbhJ2LwW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 07:52:22 -0400
-Received: from localhost.localdomain (ip-89-176-96-70.net.upcbroadband.cz [89.176.96.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        id S231131AbhJ2LwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 07:52:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36854 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229556AbhJ2LwU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 07:52:20 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79261C061570;
+        Fri, 29 Oct 2021 04:49:51 -0700 (PDT)
+Received: from [IPv6:2a02:810a:880:f54:6141:93b5:19a6:af87] (unknown [IPv6:2a02:810a:880:f54:6141:93b5:19a6:af87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id 1B4DA20064;
-        Fri, 29 Oct 2021 13:49:51 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-        t=1635508191;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=5TAxT8QqPg2vPjMA7fQLWn10ftyx07EDwMeGrhzT5tk=;
-        b=j+wQYdeM6RItz8izsKl6yZMMF0piWPDm5P17OMIlAlGxPvUTXikUBY5zcC4wlA2pcYrkwt
-        xWKnuEdXoL33PofvAxwemhdN3obCcBKsXcp3SgU8Zt0FieHTb+Fm8DCq4Q/JySWxeJGe3I
-        +eQ/smbucPEZ1nMAY+8Id+Vv6bIVKzw=
-From:   David Heidelberg <david@ixit.cz>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        (Authenticated sender: dafna)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 0712C1F4578C;
+        Fri, 29 Oct 2021 12:49:48 +0100 (BST)
+Subject: Re: [PATCH v8, 07/17] dt-bindings: media: mtk-vcodec: Separate video
+ encoder and decoder dt-bindings
+To:     Yunfei Dong <yunfei.dong@mediatek.com>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>
-Cc:     ~okias/devicetree@lists.sr.ht, phone-devel@vger.kernel.org,
-        David Heidelberg <david@ixit.cz>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: [PATCH v2 1/3] ARM: dts: make dts use gpio-fan matrix instead of array
-Date:   Fri, 29 Oct 2021 13:49:44 +0200
-Message-Id: <20211029114948.41841-1-david@ixit.cz>
-X-Mailer: git-send-email 2.33.0
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Tomasz Figa <tfiga@google.com>
+Cc:     Hsin-Yi Wang <hsinyi@chromium.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Irui Wang <irui.wang@mediatek.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Rob Herring <robh@kernel.org>,
+        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        Collabora Kernel ML <kernel@collabora.com>
+References: <20211029035527.454-1-yunfei.dong@mediatek.com>
+ <20211029035527.454-8-yunfei.dong@mediatek.com>
+From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Message-ID: <cbda45ed-b4a2-2f33-6e98-8120aa56b2f2@collabora.com>
+Date:   Fri, 29 Oct 2021 13:49:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211029035527.454-8-yunfei.dong@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No functional changes.
 
-Adjust to comply with dt-schema requirements
-and make possible to validate values.
 
-Signed-off-by: David Heidelberg <david@ixit.cz>
----
- arch/arm/boot/dts/armada-370-rd.dts           |   2 +-
- .../boot/dts/armada-370-seagate-nas-2bay.dts  |   8 +-
- .../boot/dts/armada-370-seagate-nas-4bay.dts  |   8 +-
- .../boot/dts/armada-370-synology-ds213j.dts   |  16 +--
- .../boot/dts/armada-385-synology-ds116.dts    |  16 +--
- arch/arm/boot/dts/armada-388-gp.dts           |   4 +-
- arch/arm/boot/dts/kirkwood-dnskw.dtsi         |   6 +-
- .../boot/dts/kirkwood-linkstation-6282.dtsi   |   9 +-
- .../boot/dts/kirkwood-linkstation-lswxl.dts   |   9 +-
- arch/arm/boot/dts/kirkwood-lsxl.dtsi          |   9 +-
- arch/arm/boot/dts/kirkwood-ns2max.dts         |  18 ++--
- arch/arm/boot/dts/kirkwood-ns2mini.dts        |  18 ++--
- arch/arm/boot/dts/kirkwood-synology.dtsi      | 102 +++++++++---------
- arch/arm/boot/dts/mvebu-linkstation-fan.dtsi  |   8 +-
- arch/arm/boot/dts/tegra30-ouya.dts            |   4 +-
- 15 files changed, 123 insertions(+), 114 deletions(-)
+On 29.10.21 05:55, Yunfei Dong wrote:
+> Decoder will use component framework to manage hardware, it is big
+> difference with encoder.
+> 
+> Reviewed-by: Rob Herring<robh@kernel.org>
+> Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
+> ---
+>   .../media/mediatek,vcodec-decoder.yaml        | 176 +++++++++++++++++
+>   .../media/mediatek,vcodec-encoder.yaml        | 187 ++++++++++++++++++
+>   .../bindings/media/mediatek-vcodec.txt        | 131 ------------
+>   3 files changed, 363 insertions(+), 131 deletions(-)
+>   create mode 100644 Documentation/devicetree/bindings/media/mediatek,vcodec-decoder.yaml
+>   create mode 100644 Documentation/devicetree/bindings/media/mediatek,vcodec-encoder.yaml
+>   delete mode 100644 Documentation/devicetree/bindings/media/mediatek-vcodec.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/media/mediatek,vcodec-decoder.yaml b/Documentation/devicetree/bindings/media/mediatek,vcodec-decoder.yaml
+> new file mode 100644
+> index 000000000000..5de37065fbce
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/media/mediatek,vcodec-decoder.yaml
+> @@ -0,0 +1,176 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/media/mediatek,vcodec-decoder.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Mediatek Video Decode Accelerator With Component
+> +
+> +maintainers:
+> +  - Yunfei Dong <yunfei.dong@mediatek.com>
+> +
+> +description: |+
+> +  Mediatek Video Decode is the video decode hardware present in Mediatek
+> +  SoCs which supports high resolution decoding functionalities.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - mediatek,mt8173-vcodec-dec
+> +      - mediatek,mt8183-vcodec-dec
+> +
+> +  reg:
+> +    maxItems: 12
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 8
+> +
+> +  clock-names:
+> +    items:
+> +      - const: vcodecpll
+> +      - const: univpll_d2
+> +      - const: clk_cci400_sel
+> +      - const: vdec_sel
+> +      - const: vdecpll
+> +      - const: vencpll
+> +      - const: venc_lt_sel
+> +      - const: vdec_bus_clk_src
+> +
+> +  assigned-clocks: true
+> +
+> +  assigned-clock-parents: true
+> +
+> +  assigned-clock-rates: true
+> +
+> +  power-domains:
+> +    maxItems: 1
+> +
+> +  iommus:
+> +    minItems: 1
+> +    maxItems: 32
+> +    description: |
+> +      List of the hardware port in respective IOMMU block for current Socs.
+> +      Refer to bindings/iommu/mediatek,iommu.yaml.
+> +
+> +  dma-ranges:
+> +    maxItems: 1
+> +    description: |
+> +      Describes the physical address space of IOMMU maps to memory.
+> +
+> +  mediatek,larb:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    maxItems: 1
+> +    description: |
+> +      Must contain the local arbiters in the current Socs.
+> +
+> +  mediatek,vpu:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    maxItems: 1
+> +    description:
+> +      Describes point to vpu.
+> +
+> +  mediatek,scp:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    maxItems: 1
+> +    description:
+> +      Describes point to scp.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - clocks
+> +  - clock-names
+> +  - iommus
+> +  - assigned-clocks
+> +  - assigned-clock-parents
+> +
+> +allOf:
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - mediatek,mt8183-vcodec-dec
+> +
+> +    then:
+> +      required:
+> +        - mediatek,scp
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - mediatek,mt8173-vcodec-dec
+> +
+> +    then:
+> +      required:
+> +        - mediatek,vpu
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/clock/mt8173-clk.h>
+> +    #include <dt-bindings/memory/mt8173-larb-port.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    #include <dt-bindings/power/mt8173-power.h>
+> +
+> +    vcodec_dec: vcodec@16000000 {
+> +      compatible = "mediatek,mt8173-vcodec-dec";
+> +      reg = <0x16000000 0x100>,   /*VDEC_SYS*/
+> +          <0x16020000 0x1000>,  /*VDEC_MISC*/
+> +          <0x16021000 0x800>,   /*VDEC_LD*/
+> +          <0x16021800 0x800>,   /*VDEC_TOP*/
+> +          <0x16022000 0x1000>,  /*VDEC_CM*/
+> +          <0x16023000 0x1000>,  /*VDEC_AD*/
+> +          <0x16024000 0x1000>,  /*VDEC_AV*/
+> +          <0x16025000 0x1000>,  /*VDEC_PP*/
+> +          <0x16026800 0x800>,   /*VP8_VD*/
+> +          <0x16027000 0x800>,   /*VP6_VD*/
+> +          <0x16027800 0x800>,   /*VP8_VL*/
+> +          <0x16028400 0x400>;   /*VP9_VD*/
+> +      interrupts = <GIC_SPI 204 IRQ_TYPE_LEVEL_LOW>;
+> +      mediatek,larb = <&larb1>;
+> +      iommus = <&iommu M4U_PORT_HW_VDEC_MC_EXT>,
+> +             <&iommu M4U_PORT_HW_VDEC_PP_EXT>,
+> +             <&iommu M4U_PORT_HW_VDEC_AVC_MV_EXT>,
+> +             <&iommu M4U_PORT_HW_VDEC_PRED_RD_EXT>,
+> +             <&iommu M4U_PORT_HW_VDEC_PRED_WR_EXT>,
+> +             <&iommu M4U_PORT_HW_VDEC_UFO_EXT>,
+> +             <&iommu M4U_PORT_HW_VDEC_VLD_EXT>,
+> +             <&iommu M4U_PORT_HW_VDEC_VLD2_EXT>;
+> +      mediatek,vpu = <&vpu>;
+> +      power-domains = <&scpsys MT8173_POWER_DOMAIN_VDEC>;
+> +      clocks = <&apmixedsys CLK_APMIXED_VCODECPLL>,
+> +             <&topckgen CLK_TOP_UNIVPLL_D2>,
+> +             <&topckgen CLK_TOP_CCI400_SEL>,
+> +             <&topckgen CLK_TOP_VDEC_SEL>,
+> +             <&topckgen CLK_TOP_VCODECPLL>,
+> +             <&apmixedsys CLK_APMIXED_VENCPLL>,
+> +             <&topckgen CLK_TOP_VENC_LT_SEL>,
+> +             <&topckgen CLK_TOP_VCODECPLL_370P5>;
+> +      clock-names = "vcodecpll",
+> +                  "univpll_d2",
+> +                  "clk_cci400_sel",
+> +                  "vdec_sel",
+> +                  "vdecpll",
+> +                  "vencpll",
+> +                  "venc_lt_sel",
+> +                  "vdec_bus_clk_src";
+> +      assigned-clocks = <&topckgen CLK_TOP_VENC_LT_SEL>,
+> +                      <&topckgen CLK_TOP_CCI400_SEL>,
+> +                      <&topckgen CLK_TOP_VDEC_SEL>,
+> +                      <&apmixedsys CLK_APMIXED_VCODECPLL>,
+> +                      <&apmixedsys CLK_APMIXED_VENCPLL>;
+> +      assigned-clock-parents = <&topckgen CLK_TOP_VCODECPLL_370P5>,
+> +                             <&topckgen CLK_TOP_UNIVPLL_D2>,
+> +                             <&topckgen CLK_TOP_VCODECPLL>;
+> +      assigned-clock-rates = <0>, <0>, <0>, <1482000000>, <800000000>;
+> +    };
+> diff --git a/Documentation/devicetree/bindings/media/mediatek,vcodec-encoder.yaml b/Documentation/devicetree/bindings/media/mediatek,vcodec-encoder.yaml
+> new file mode 100644
+> index 000000000000..94d67d40548c
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/media/mediatek,vcodec-encoder.yaml
+> @@ -0,0 +1,187 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/media/mediatek,vcodec-encoder.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Mediatek Video Encode Accelerator With Component
 
-diff --git a/arch/arm/boot/dts/armada-370-rd.dts b/arch/arm/boot/dts/armada-370-rd.dts
-index c910d157a686..041c99b99921 100644
---- a/arch/arm/boot/dts/armada-370-rd.dts
-+++ b/arch/arm/boot/dts/armada-370-rd.dts
-@@ -96,7 +96,7 @@ button {
- 			gpio-fan {
- 				compatible = "gpio-fan";
- 				gpios = <&gpio0 8 GPIO_ACTIVE_HIGH>;
--				gpio-fan,speed-map = <0 0 3000 1>;
-+				gpio-fan,speed-map = <0 0>, <3000 1>;
- 				pinctrl-0 = <&fan_pins>;
- 				pinctrl-names = "default";
- 			};
-diff --git a/arch/arm/boot/dts/armada-370-seagate-nas-2bay.dts b/arch/arm/boot/dts/armada-370-seagate-nas-2bay.dts
-index 8dd242e668e6..6ec3dd3337f4 100644
---- a/arch/arm/boot/dts/armada-370-seagate-nas-2bay.dts
-+++ b/arch/arm/boot/dts/armada-370-seagate-nas-2bay.dts
-@@ -25,9 +25,9 @@ / {
- 
- 	gpio-fan {
- 		gpio-fan,speed-map =
--			<   0 3
--			  950 2
--			 1400 1
--			 1800 0>;
-+			<   0 3>,
-+			< 950 2>,
-+			<1400 1>,
-+			<1800 0>;
- 	};
- };
-diff --git a/arch/arm/boot/dts/armada-370-seagate-nas-4bay.dts b/arch/arm/boot/dts/armada-370-seagate-nas-4bay.dts
-index 3cf70c72c5ca..d62e32e9ddb5 100644
---- a/arch/arm/boot/dts/armada-370-seagate-nas-4bay.dts
-+++ b/arch/arm/boot/dts/armada-370-seagate-nas-4bay.dts
-@@ -109,10 +109,10 @@ NS_V2_LED_ON   1 0
- 
- 	gpio-fan {
- 		gpio-fan,speed-map =
--			<   0 3
--			  800 2
--			  1050 1
--			  1300 0>;
-+			<   0 3>,
-+			< 800 2>,
-+			<1050 1>,
-+			<1300 0>;
- 	};
- };
- 
-diff --git a/arch/arm/boot/dts/armada-370-synology-ds213j.dts b/arch/arm/boot/dts/armada-370-synology-ds213j.dts
-index 64f2ce254fb6..88aa2b7c4962 100644
---- a/arch/arm/boot/dts/armada-370-synology-ds213j.dts
-+++ b/arch/arm/boot/dts/armada-370-synology-ds213j.dts
-@@ -113,14 +113,14 @@ gpio-fan-32-38 {
- 			 &gpio2  0 GPIO_ACTIVE_HIGH
- 			 &gpio2  1 GPIO_ACTIVE_HIGH>;
- 		alarm-gpios = <&gpio1 6 GPIO_ACTIVE_HIGH>;
--		gpio-fan,speed-map = <    0 0
--				       1000 1
--				       1150 2
--				       1350 4
--				       1500 3
--				       1650 5
--				       1750 6
--				       1900 7 >;
-+		gpio-fan,speed-map = <   0 0>,
-+				     <1000 1>,
-+				     <1150 2>,
-+				     <1350 4>,
-+				     <1500 3>,
-+				     <1650 5>,
-+				     <1750 6>,
-+				     <1900 7>;
- 	};
- 
- 	gpio-leds {
-diff --git a/arch/arm/boot/dts/armada-385-synology-ds116.dts b/arch/arm/boot/dts/armada-385-synology-ds116.dts
-index d8769956cbfc..26c6ef47354c 100644
---- a/arch/arm/boot/dts/armada-385-synology-ds116.dts
-+++ b/arch/arm/boot/dts/armada-385-synology-ds116.dts
-@@ -131,14 +131,14 @@ gpio-fan {
- 			gpios = <&gpio1 18 GPIO_ACTIVE_HIGH>,
- 				<&gpio1 17 GPIO_ACTIVE_HIGH>,
- 				<&gpio1 16 GPIO_ACTIVE_HIGH>;
--			gpio-fan,speed-map = <   0 0
--					      1500 1
--					      2500 2
--					      3000 3
--					      3400 4
--					      3700 5
--					      3900 6
--					      4000 7>;
-+			gpio-fan,speed-map = <   0 0>,
-+					     <1500 1>,
-+					     <2500 2>,
-+					     <3000 3>,
-+					     <3400 4>,
-+					     <3700 5>,
-+					     <3900 6>,
-+					     <4000 7>;
- 			#cooling-cells = <2>;
- 		};
- 
-diff --git a/arch/arm/boot/dts/armada-388-gp.dts b/arch/arm/boot/dts/armada-388-gp.dts
-index 9d873257ac45..9f8d7ab2c897 100644
---- a/arch/arm/boot/dts/armada-388-gp.dts
-+++ b/arch/arm/boot/dts/armada-388-gp.dts
-@@ -237,8 +237,8 @@ pcie@3,0 {
- 		gpio-fan {
- 			compatible = "gpio-fan";
- 			gpios = <&expander1 3 GPIO_ACTIVE_HIGH>;
--			gpio-fan,speed-map = <	 0 0
--					      3000 1>;
-+			gpio-fan,speed-map = <	 0 0>,
-+					     <3000 1>;
- 		};
- 	};
- 
-diff --git a/arch/arm/boot/dts/kirkwood-dnskw.dtsi b/arch/arm/boot/dts/kirkwood-dnskw.dtsi
-index eb917462b219..0738eb679fcd 100644
---- a/arch/arm/boot/dts/kirkwood-dnskw.dtsi
-+++ b/arch/arm/boot/dts/kirkwood-dnskw.dtsi
-@@ -38,9 +38,9 @@ gpio_fan {
- 		pinctrl-names = "default";
- 		gpios = <&gpio1 14 GPIO_ACTIVE_HIGH
- 			 &gpio1 13 GPIO_ACTIVE_HIGH>;
--		gpio-fan,speed-map = <0    0
--				      3000 1
--				      6000 2>;
-+		gpio-fan,speed-map = <0    0>,
-+				     <3000 1>,
-+				     <6000 2>;
- 	};
- 
- 	gpio_poweroff {
-diff --git a/arch/arm/boot/dts/kirkwood-linkstation-6282.dtsi b/arch/arm/boot/dts/kirkwood-linkstation-6282.dtsi
-index 377b6e970259..dfac2045a1eb 100644
---- a/arch/arm/boot/dts/kirkwood-linkstation-6282.dtsi
-+++ b/arch/arm/boot/dts/kirkwood-linkstation-6282.dtsi
-@@ -118,10 +118,11 @@ gpio_fan {
- 		gpios = <&gpio0 17 GPIO_ACTIVE_LOW
- 			 &gpio0 16 GPIO_ACTIVE_LOW>;
- 
--		gpio-fan,speed-map = <0 3
--				1500 2
--				3250 1
--				5000 0>;
-+		gpio-fan,speed-map =
-+				<   0 3>,
-+				<1500 2>,
-+				<3250 1>,
-+				<5000 0>;
- 
- 		alarm-gpios = <&gpio1 11 GPIO_ACTIVE_HIGH>;
- 	};
-diff --git a/arch/arm/boot/dts/kirkwood-linkstation-lswxl.dts b/arch/arm/boot/dts/kirkwood-linkstation-lswxl.dts
-index c6024b569423..0425df8cb91c 100644
---- a/arch/arm/boot/dts/kirkwood-linkstation-lswxl.dts
-+++ b/arch/arm/boot/dts/kirkwood-linkstation-lswxl.dts
-@@ -69,10 +69,11 @@ gpio_fan {
- 		gpios = <&gpio1 16 GPIO_ACTIVE_LOW
- 			 &gpio1 15 GPIO_ACTIVE_LOW>;
- 
--		gpio-fan,speed-map = <0 3
--				1500 2
--				3250 1
--				5000 0>;
-+		gpio-fan,speed-map =
-+				<   0 3>,
-+				<1500 2>,
-+				<3250 1>,
-+				<5000 0>;
- 
- 		alarm-gpios = <&gpio1 8 GPIO_ACTIVE_HIGH>;
- 	};
-diff --git a/arch/arm/boot/dts/kirkwood-lsxl.dtsi b/arch/arm/boot/dts/kirkwood-lsxl.dtsi
-index 7b151acb9984..74009ed9e423 100644
---- a/arch/arm/boot/dts/kirkwood-lsxl.dtsi
-+++ b/arch/arm/boot/dts/kirkwood-lsxl.dtsi
-@@ -167,10 +167,11 @@ gpio_fan {
- 		pinctrl-names = "default";
- 		gpios = <&gpio0 19 GPIO_ACTIVE_LOW
- 		         &gpio0 18 GPIO_ACTIVE_LOW>;
--		gpio-fan,speed-map = <0    3
--		                      1500 2
--		                      3250 1
--		                      5000 0>;
-+		gpio-fan,speed-map =
-+				<0    3>,
-+				<1500 2>,
-+				<3250 1>,
-+				<5000 0>;
- 		alarm-gpios = <&gpio1 8 GPIO_ACTIVE_HIGH>;
- 	};
- 
-diff --git a/arch/arm/boot/dts/kirkwood-ns2max.dts b/arch/arm/boot/dts/kirkwood-ns2max.dts
-index c0a087e77408..044958bc55da 100644
---- a/arch/arm/boot/dts/kirkwood-ns2max.dts
-+++ b/arch/arm/boot/dts/kirkwood-ns2max.dts
-@@ -29,15 +29,15 @@ &gpio0  7 GPIO_ACTIVE_LOW
- 			 &gpio1  1 GPIO_ACTIVE_LOW
- 			 &gpio0 23 GPIO_ACTIVE_LOW>;
- 		gpio-fan,speed-map =
--			<   0  0
--			 1500 15
--			 1700 14
--			 1800 13
--			 2100 12
--			 3100 11
--			 3300 10
--			 4300  9
--			 5500  8>;
-+			<   0  0>,
-+			<1500 15>,
-+			<1700 14>,
-+			<1800 13>,
-+			<2100 12>,
-+			<3100 11>,
-+			<3300 10>,
-+			<4300  9>,
-+			<5500  8>;
- 		alarm-gpios = <&gpio0 25 GPIO_ACTIVE_LOW>;
- 	};
- 
-diff --git a/arch/arm/boot/dts/kirkwood-ns2mini.dts b/arch/arm/boot/dts/kirkwood-ns2mini.dts
-index 5b9fa14b6428..3fbe008f9141 100644
---- a/arch/arm/boot/dts/kirkwood-ns2mini.dts
-+++ b/arch/arm/boot/dts/kirkwood-ns2mini.dts
-@@ -30,15 +30,15 @@ &gpio0  7 GPIO_ACTIVE_LOW
- 			 &gpio1  1 GPIO_ACTIVE_LOW
- 			 &gpio0 23 GPIO_ACTIVE_LOW>;
- 		gpio-fan,speed-map =
--			<   0  0
--			 3000 15
--			 3180 14
--			 4140 13
--			 4570 12
--			 6760 11
--			 7140 10
--			 7980  9
--			 9200  8>;
-+			<   0  0>,
-+			<3000 15>,
-+			<3180 14>,
-+			<4140 13>,
-+			<4570 12>,
-+			<6760 11>,
-+			<7140 10>,
-+			<7980  9>,
-+			<9200  8>;
- 		alarm-gpios = <&gpio0 25 GPIO_ACTIVE_LOW>;
- 	};
- 
-diff --git a/arch/arm/boot/dts/kirkwood-synology.dtsi b/arch/arm/boot/dts/kirkwood-synology.dtsi
-index 217bd374e52b..00adca68ae95 100644
---- a/arch/arm/boot/dts/kirkwood-synology.dtsi
-+++ b/arch/arm/boot/dts/kirkwood-synology.dtsi
-@@ -286,14 +286,15 @@ gpio-fan-150-32-35 {
- 		gpios = <&gpio1 0 GPIO_ACTIVE_HIGH
- 			 &gpio1 1 GPIO_ACTIVE_HIGH
- 			 &gpio1 2 GPIO_ACTIVE_HIGH>;
--		gpio-fan,speed-map = <    0 0
--				       2200 1
--				       2500 2
--				       3000 4
--				       3300 3
--				       3700 5
--				       3800 6
--				       4200 7 >;
-+		gpio-fan,speed-map =
-+				<   0 0>,
-+				<2200 1>,
-+				<2500 2>,
-+				<3000 4>,
-+				<3300 3>,
-+				<3700 5>,
-+				<3800 6>,
-+				<4200 7>;
- 	};
- 
- 	gpio-fan-150-15-18 {
-@@ -306,14 +307,15 @@ gpio-fan-150-15-18 {
- 			 &gpio0 16 GPIO_ACTIVE_HIGH
- 			 &gpio0 17 GPIO_ACTIVE_HIGH>;
- 		alarm-gpios = <&gpio0 18 GPIO_ACTIVE_HIGH>;
--		gpio-fan,speed-map = <    0 0
--				       2200 1
--				       2500 2
--				       3000 4
--				       3300 3
--				       3700 5
--				       3800 6
--				       4200 7 >;
-+		gpio-fan,speed-map =
-+				<   0 0>,
-+				<2200 1>,
-+				<2500 2>,
-+				<3000 4>,
-+				<3300 3>,
-+				<3700 5>,
-+				<3800 6>,
-+				<4200 7>;
- 	};
- 
- 	gpio-fan-100-32-35 {
-@@ -326,14 +328,15 @@ gpio-fan-100-32-35 {
- 			 &gpio1 1 GPIO_ACTIVE_HIGH
- 			 &gpio1 2 GPIO_ACTIVE_HIGH>;
- 		alarm-gpios = <&gpio1 3 GPIO_ACTIVE_HIGH>;
--		gpio-fan,speed-map = <    0 0
--				       2500 1
--				       3100 2
--				       3800 3
--				       4600 4
--				       4800 5
--				       4900 6
--				       5000 7 >;
-+		gpio-fan,speed-map =
-+				<   0 0>,
-+				<2500 1>,
-+				<3100 2>,
-+				<3800 3>,
-+				<4600 4>,
-+				<4800 5>,
-+				<4900 6>,
-+				<5000 7>;
- 	};
- 
- 	gpio-fan-100-15-18 {
-@@ -346,14 +349,15 @@ gpio-fan-100-15-18 {
- 			 &gpio0 16 GPIO_ACTIVE_HIGH
- 			 &gpio0 17 GPIO_ACTIVE_HIGH>;
- 		alarm-gpios = <&gpio0 18 GPIO_ACTIVE_HIGH>;
--		gpio-fan,speed-map = <    0 0
--				       2500 1
--				       3100 2
--				       3800 3
--				       4600 4
--				       4800 5
--				       4900 6
--				       5000 7 >;
-+		gpio-fan,speed-map =
-+				<   0 0>,
-+				<2500 1>,
-+				<3100 2>,
-+				<3800 3>,
-+				<4600 4>,
-+				<4800 5>,
-+				<4900 6>,
-+				<5000 7>;
- 	};
- 
- 	gpio-fan-100-15-35-1 {
-@@ -366,14 +370,15 @@ gpio-fan-100-15-35-1 {
- 			 &gpio0 16 GPIO_ACTIVE_HIGH
- 			 &gpio0 17 GPIO_ACTIVE_HIGH>;
- 		alarm-gpios = <&gpio1 3 GPIO_ACTIVE_HIGH>;
--		gpio-fan,speed-map = <    0 0
--				       2500 1
--				       3100 2
--				       3800 3
--				       4600 4
--				       4800 5
--				       4900 6
--				       5000 7 >;
-+		gpio-fan,speed-map =
-+				<   0 0>,
-+				<2500 1>,
-+				<3100 2>,
-+				<3800 3>,
-+				<4600 4>,
-+				<4800 5>,
-+				<4900 6>,
-+				<5000 7>;
- 	};
- 
- 	gpio-fan-100-15-35-3 {
-@@ -388,14 +393,15 @@ &gpio0 16 GPIO_ACTIVE_HIGH
- 		alarm-gpios = <&gpio1 3 GPIO_ACTIVE_HIGH
- 			       &gpio1 12 GPIO_ACTIVE_HIGH
- 			       &gpio1 13 GPIO_ACTIVE_HIGH>;
--		gpio-fan,speed-map = <    0 0
--				       2500 1
--				       3100 2
--				       3800 3
--				       4600 4
--				       4800 5
--				       4900 6
--				       5000 7 >;
-+		gpio-fan,speed-map =
-+				<   0 0>,
-+				<2500 1>,
-+				<3100 2>,
-+				<3800 3>,
-+				<4600 4>,
-+				<4800 5>,
-+				<4900 6>,
-+				<5000 7>;
- 	};
- 
- 	gpio-leds-alarm-12 {
-diff --git a/arch/arm/boot/dts/mvebu-linkstation-fan.dtsi b/arch/arm/boot/dts/mvebu-linkstation-fan.dtsi
-index e172029a0c4d..a260c42dbda3 100644
---- a/arch/arm/boot/dts/mvebu-linkstation-fan.dtsi
-+++ b/arch/arm/boot/dts/mvebu-linkstation-fan.dtsi
-@@ -50,10 +50,10 @@ gpio_fan {
- 		pinctrl-names = "default";
- 
- 		gpio-fan,speed-map =
--			<0		3
--			1500	2
--			3250	1
--			5000	0>;
-+			<   0 3>,
-+			<1500 2>,
-+			<3250 1>,
-+			<5000 0>;
- 	};
- };
- 
-diff --git a/arch/arm/boot/dts/tegra30-ouya.dts b/arch/arm/boot/dts/tegra30-ouya.dts
-index a93bc452d315..19aa9c2169fd 100644
---- a/arch/arm/boot/dts/tegra30-ouya.dts
-+++ b/arch/arm/boot/dts/tegra30-ouya.dts
-@@ -426,8 +426,8 @@ trusted-foundations {
- 	fan: gpio_fan {
- 		compatible = "gpio-fan";
- 		gpios = <&gpio TEGRA_GPIO(J, 2) GPIO_ACTIVE_HIGH>;
--		gpio-fan,speed-map = <0    0
--				      4500 1>;
-+		gpio-fan,speed-map = <0    0>,
-+				     <4500 1>;
- 		#cooling-cells = <2>;
- 	};
- 
--- 
-2.33.0
 
+why is it "With Component" ?
+I guess it should be removed
+
+Thanks,
+Dafna
+
+> +
+> +maintainers:
+> +  - Yunfei Dong <yunfei.dong@mediatek.com>
+> +
+> +description: |+
+> +  Mediatek Video Encode is the video encode hardware present in Mediatek
+> +  SoCs which supports high resolution encoding functionalities.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - mediatek,mt8173-vcodec-enc-vp8
+> +      - mediatek,mt8173-vcodec-enc
+> +      - mediatek,mt8183-vcodec-enc
+> +      - mediatek,mt8192-vcodec-enc
+> +      - mediatek,mt8195-vcodec-enc
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    minItems: 1
+> +    maxItems: 5
+> +
+> +  clock-names:
+> +    minItems: 1
+> +    maxItems: 5
+> +
+> +  assigned-clocks: true
+> +
+> +  assigned-clock-parents: true
+> +
+> +  iommus:
+> +    minItems: 1
+> +    maxItems: 32
+> +    description: |
+> +      List of the hardware port in respective IOMMU block for current Socs.
+> +      Refer to bindings/iommu/mediatek,iommu.yaml.
+> +
+> +  dma-ranges:
+> +    maxItems: 1
+> +    description: |
+> +      Describes the physical address space of IOMMU maps to memory.
+> +
+> +  mediatek,larb:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    maxItems: 1
+> +    description: |
+> +      Must contain the local arbiters in the current Socs.
+> +
+> +  mediatek,vpu:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    maxItems: 1
+> +    description:
+> +      Describes point to vpu.
+> +
+> +  mediatek,scp:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    maxItems: 1
+> +    description:
+> +      Describes point to scp.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - clocks
+> +  - clock-names
+> +  - iommus
+> +  - assigned-clocks
+> +  - assigned-clock-parents
+> +
+> +allOf:
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - mediatek,mt8183-vcodec-enc
+> +              - mediatek,mt8192-vcodec-enc
+> +
+> +    then:
+> +      required:
+> +        - mediatek,scp
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - mediatek,mt8173-vcodec-enc-vp8
+> +              - mediatek,mt8173-vcodec-enc
+> +
+> +    then:
+> +      required:
+> +        - mediatek,vpu
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          enum:
+> +            - mediatek,mt8173-vcodec-enc
+> +            - mediatek,mt8192-vcodec-enc
+> +            - mediatek,mt8173-vcodec-enc
+> +
+> +    then:
+> +      properties:
+> +        clock:
+> +          items:
+> +            minItems: 1
+> +            maxItems: 1
+> +        clock-names:
+> +          items:
+> +            - const: venc_sel
+> +    else:  # for vp8 hw decoder
+> +      properties:
+> +        clock:
+> +          items:
+> +            minItems: 1
+> +            maxItems: 1
+> +        clock-names:
+> +          items:
+> +            - const: venc_lt_sel
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/clock/mt8173-clk.h>
+> +    #include <dt-bindings/memory/mt8173-larb-port.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +
+> +    vcodec_enc_avc: vcodec@18002000 {
+> +      compatible = "mediatek,mt8173-vcodec-enc";
+> +      reg = <0x18002000 0x1000>;
+> +      interrupts = <GIC_SPI 198 IRQ_TYPE_LEVEL_LOW>;
+> +      iommus = <&iommu M4U_PORT_VENC_RCPU>,
+> +             <&iommu M4U_PORT_VENC_REC>,
+> +             <&iommu M4U_PORT_VENC_BSDMA>,
+> +             <&iommu M4U_PORT_VENC_SV_COMV>,
+> +             <&iommu M4U_PORT_VENC_RD_COMV>,
+> +             <&iommu M4U_PORT_VENC_CUR_LUMA>,
+> +             <&iommu M4U_PORT_VENC_CUR_CHROMA>,
+> +             <&iommu M4U_PORT_VENC_REF_LUMA>,
+> +             <&iommu M4U_PORT_VENC_REF_CHROMA>,
+> +             <&iommu M4U_PORT_VENC_NBM_RDMA>,
+> +             <&iommu M4U_PORT_VENC_NBM_WDMA>;
+> +      mediatek,larb = <&larb3>;
+> +      mediatek,vpu = <&vpu>;
+> +      clocks = <&topckgen CLK_TOP_VENC_SEL>;
+> +      clock-names = "venc_sel";
+> +      assigned-clocks = <&topckgen CLK_TOP_VENC_SEL>;
+> +      assigned-clock-parents = <&topckgen CLK_TOP_VCODECPLL>;
+> +    };
+> +
+> +    vcodec_enc_vp8: vcodec@19002000 {
+> +      compatible = "mediatek,mt8173-vcodec-enc-vp8";
+> +      reg =  <0x19002000 0x1000>;	/* VENC_LT_SYS */
+> +      interrupts = <GIC_SPI 202 IRQ_TYPE_LEVEL_LOW>;
+> +      iommus = <&iommu M4U_PORT_VENC_RCPU_SET2>,
+> +             <&iommu M4U_PORT_VENC_REC_FRM_SET2>,
+> +             <&iommu M4U_PORT_VENC_BSDMA_SET2>,
+> +             <&iommu M4U_PORT_VENC_SV_COMA_SET2>,
+> +             <&iommu M4U_PORT_VENC_RD_COMA_SET2>,
+> +             <&iommu M4U_PORT_VENC_CUR_LUMA_SET2>,
+> +             <&iommu M4U_PORT_VENC_CUR_CHROMA_SET2>,
+> +             <&iommu M4U_PORT_VENC_REF_LUMA_SET2>,
+> +             <&iommu M4U_PORT_VENC_REC_CHROMA_SET2>;
+> +      mediatek,larb = <&larb5>;
+> +      mediatek,vpu = <&vpu>;
+> +      clocks = <&topckgen CLK_TOP_VENC_LT_SEL>;
+> +      clock-names = "venc_lt_sel";
+> +      assigned-clocks = <&topckgen CLK_TOP_VENC_LT_SEL>;
+> +      assigned-clock-parents = <&topckgen CLK_TOP_VCODECPLL_370P5>;
+> +    };
+> diff --git a/Documentation/devicetree/bindings/media/mediatek-vcodec.txt b/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
+> deleted file mode 100644
+> index 665a9508708e..000000000000
+> --- a/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
+> +++ /dev/null
+> @@ -1,131 +0,0 @@
+> -Mediatek Video Codec
+> -
+> -Mediatek Video Codec is the video codec hw present in Mediatek SoCs which
+> -supports high resolution encoding and decoding functionalities.
+> -
+> -Required properties:
+> -- compatible : must be one of the following string:
+> -  "mediatek,mt8173-vcodec-enc-vp8" for mt8173 vp8 encoder.
+> -  "mediatek,mt8173-vcodec-enc" for mt8173 avc encoder.
+> -  "mediatek,mt8183-vcodec-enc" for MT8183 encoder.
+> -  "mediatek,mt8173-vcodec-dec" for MT8173 decoder.
+> -  "mediatek,mt8192-vcodec-enc" for MT8192 encoder.
+> -  "mediatek,mt8183-vcodec-dec" for MT8183 decoder.
+> -  "mediatek,mt8195-vcodec-enc" for MT8195 encoder.
+> -- reg : Physical base address of the video codec registers and length of
+> -  memory mapped region.
+> -- interrupts : interrupt number to the cpu.
+> -- mediatek,larb : must contain the local arbiters in the current Socs.
+> -- clocks : list of clock specifiers, corresponding to entries in
+> -  the clock-names property.
+> -- clock-names: avc encoder must contain "venc_sel", vp8 encoder must
+> -  contain "venc_lt_sel", decoder must contain "vcodecpll", "univpll_d2",
+> -  "clk_cci400_sel", "vdec_sel", "vdecpll", "vencpll", "venc_lt_sel",
+> -  "vdec_bus_clk_src".
+> -- iommus : should point to the respective IOMMU block with master port as
+> -  argument, see Documentation/devicetree/bindings/iommu/mediatek,iommu.yaml
+> -  for details.
+> -- dma-ranges : describes the dma address range space that the codec hw access.
+> -One of the two following nodes:
+> -- mediatek,vpu : the node of the video processor unit, if using VPU.
+> -- mediatek,scp : the node of the SCP unit, if using SCP.
+> -
+> -
+> -Example:
+> -
+> -vcodec_dec: vcodec@16000000 {
+> -    compatible = "mediatek,mt8173-vcodec-dec";
+> -    reg = <0 0x16000000 0 0x100>,   /*VDEC_SYS*/
+> -          <0 0x16020000 0 0x1000>,  /*VDEC_MISC*/
+> -          <0 0x16021000 0 0x800>,   /*VDEC_LD*/
+> -          <0 0x16021800 0 0x800>,   /*VDEC_TOP*/
+> -          <0 0x16022000 0 0x1000>,  /*VDEC_CM*/
+> -          <0 0x16023000 0 0x1000>,  /*VDEC_AD*/
+> -          <0 0x16024000 0 0x1000>,  /*VDEC_AV*/
+> -          <0 0x16025000 0 0x1000>,  /*VDEC_PP*/
+> -          <0 0x16026800 0 0x800>,   /*VP8_VD*/
+> -          <0 0x16027000 0 0x800>,   /*VP6_VD*/
+> -          <0 0x16027800 0 0x800>,   /*VP8_VL*/
+> -          <0 0x16028400 0 0x400>;   /*VP9_VD*/
+> -    interrupts = <GIC_SPI 204 IRQ_TYPE_LEVEL_LOW>;
+> -    mediatek,larb = <&larb1>;
+> -    iommus = <&iommu M4U_PORT_HW_VDEC_MC_EXT>,
+> -             <&iommu M4U_PORT_HW_VDEC_PP_EXT>,
+> -             <&iommu M4U_PORT_HW_VDEC_AVC_MV_EXT>,
+> -             <&iommu M4U_PORT_HW_VDEC_PRED_RD_EXT>,
+> -             <&iommu M4U_PORT_HW_VDEC_PRED_WR_EXT>,
+> -             <&iommu M4U_PORT_HW_VDEC_UFO_EXT>,
+> -             <&iommu M4U_PORT_HW_VDEC_VLD_EXT>,
+> -             <&iommu M4U_PORT_HW_VDEC_VLD2_EXT>;
+> -    mediatek,vpu = <&vpu>;
+> -    power-domains = <&scpsys MT8173_POWER_DOMAIN_VDEC>;
+> -    clocks = <&apmixedsys CLK_APMIXED_VCODECPLL>,
+> -             <&topckgen CLK_TOP_UNIVPLL_D2>,
+> -             <&topckgen CLK_TOP_CCI400_SEL>,
+> -             <&topckgen CLK_TOP_VDEC_SEL>,
+> -             <&topckgen CLK_TOP_VCODECPLL>,
+> -             <&apmixedsys CLK_APMIXED_VENCPLL>,
+> -             <&topckgen CLK_TOP_VENC_LT_SEL>,
+> -             <&topckgen CLK_TOP_VCODECPLL_370P5>;
+> -    clock-names = "vcodecpll",
+> -                  "univpll_d2",
+> -                  "clk_cci400_sel",
+> -                  "vdec_sel",
+> -                  "vdecpll",
+> -                  "vencpll",
+> -                  "venc_lt_sel",
+> -                  "vdec_bus_clk_src";
+> -    assigned-clocks = <&topckgen CLK_TOP_VENC_LT_SEL>,
+> -                      <&topckgen CLK_TOP_CCI400_SEL>,
+> -                      <&topckgen CLK_TOP_VDEC_SEL>,
+> -                      <&apmixedsys CLK_APMIXED_VCODECPLL>,
+> -                      <&apmixedsys CLK_APMIXED_VENCPLL>;
+> -    assigned-clock-parents = <&topckgen CLK_TOP_VCODECPLL_370P5>,
+> -                             <&topckgen CLK_TOP_UNIVPLL_D2>,
+> -                             <&topckgen CLK_TOP_VCODECPLL>;
+> -    assigned-clock-rates = <0>, <0>, <0>, <1482000000>, <800000000>;
+> -  };
+> -
+> -vcodec_enc_avc: vcodec@18002000 {
+> -    compatible = "mediatek,mt8173-vcodec-enc";
+> -    reg = <0 0x18002000 0 0x1000>;
+> -    interrupts = <GIC_SPI 198 IRQ_TYPE_LEVEL_LOW>;
+> -    iommus = <&iommu M4U_PORT_VENC_RCPU>,
+> -             <&iommu M4U_PORT_VENC_REC>,
+> -             <&iommu M4U_PORT_VENC_BSDMA>,
+> -             <&iommu M4U_PORT_VENC_SV_COMV>,
+> -             <&iommu M4U_PORT_VENC_RD_COMV>,
+> -             <&iommu M4U_PORT_VENC_CUR_LUMA>,
+> -             <&iommu M4U_PORT_VENC_CUR_CHROMA>,
+> -             <&iommu M4U_PORT_VENC_REF_LUMA>,
+> -             <&iommu M4U_PORT_VENC_REF_CHROMA>,
+> -             <&iommu M4U_PORT_VENC_NBM_RDMA>,
+> -             <&iommu M4U_PORT_VENC_NBM_WDMA>;
+> -    mediatek,larb = <&larb3>;
+> -    mediatek,vpu = <&vpu>;
+> -    clocks = <&topckgen CLK_TOP_VENC_SEL>;
+> -    clock-names = "venc_sel";
+> -    assigned-clocks = <&topckgen CLK_TOP_VENC_SEL>;
+> -    assigned-clock-parents = <&topckgen CLK_TOP_VCODECPLL>;
+> -  };
+> -
+> -vcodec_enc_vp8: vcodec@19002000 {
+> -    compatible = "mediatek,mt8173-vcodec-enc-vp8";
+> -    reg =  <0 0x19002000 0 0x1000>;	/* VENC_LT_SYS */
+> -    interrupts = <GIC_SPI 202 IRQ_TYPE_LEVEL_LOW>;
+> -    iommus = <&iommu M4U_PORT_VENC_RCPU_SET2>,
+> -             <&iommu M4U_PORT_VENC_REC_FRM_SET2>,
+> -             <&iommu M4U_PORT_VENC_BSDMA_SET2>,
+> -             <&iommu M4U_PORT_VENC_SV_COMA_SET2>,
+> -             <&iommu M4U_PORT_VENC_RD_COMA_SET2>,
+> -             <&iommu M4U_PORT_VENC_CUR_LUMA_SET2>,
+> -             <&iommu M4U_PORT_VENC_CUR_CHROMA_SET2>,
+> -             <&iommu M4U_PORT_VENC_REF_LUMA_SET2>,
+> -             <&iommu M4U_PORT_VENC_REC_CHROMA_SET2>;
+> -    mediatek,larb = <&larb5>;
+> -    mediatek,vpu = <&vpu>;
+> -    clocks = <&topckgen CLK_TOP_VENC_LT_SEL>;
+> -    clock-names = "venc_lt_sel";
+> -    assigned-clocks = <&topckgen CLK_TOP_VENC_LT_SEL>;
+> -    assigned-clock-parents = <&topckgen CLK_TOP_VCODECPLL_370P5>;
+> -  };
+> 
