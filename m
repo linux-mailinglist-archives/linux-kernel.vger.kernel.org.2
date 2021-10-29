@@ -2,113 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C0AD4404A9
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 23:09:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B5094404AB
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 23:11:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231546AbhJ2VMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 17:12:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52044 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230215AbhJ2VME (ORCPT
+        id S231591AbhJ2VNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 17:13:39 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:50944 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230215AbhJ2VNh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 17:12:04 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0D09C061570;
-        Fri, 29 Oct 2021 14:09:35 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id y14-20020a17090a2b4e00b001a5824f4918so4708419pjc.4;
-        Fri, 29 Oct 2021 14:09:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tbBP9vlfqwztQAwlUrA3rb3X9bknkbNPCByzkSfvM8o=;
-        b=QD4+2TQnXGt2qx52hkDP3lpei9GWHyuDIUcjvpvUwmfYypY2/l4UFQkk9Ho4mZ1sRx
-         x3K9FCTy8dofXQEpone5fp27e8t5a9rTS/R+YjJ/yeE1J7hgxcf9ovs+qVQMvhq9clHu
-         7I3NNsBumn2RN2OCKeEd3VDKBxsHCd2NVJqEvfVADPwHJek41NXVp6r16lpHVeUac59u
-         VTXm5FRv2kaqwjpQT9NiXOz/7el8jiQQsmcNccLzMpPDVkX5rinD5UuTVQ/CoWgASF9N
-         F/3lP9Ym/cmYkapra5JQNoHOzPPsrFVqbqRIZnLDkl3XI3uQFMt6QdI3Q/TYgwzgWFwM
-         +jvg==
+        Fri, 29 Oct 2021 17:13:37 -0400
+Received: by mail-il1-f200.google.com with SMTP id o6-20020a92a806000000b002590430fa32so6797342ilh.17
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 14:11:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tbBP9vlfqwztQAwlUrA3rb3X9bknkbNPCByzkSfvM8o=;
-        b=X7VYVLnO7NTK1vrafpG+S1uOYhz5NIwedkfOWliGbDvw+UASXEdiJB/B83kgB0kqJ2
-         NKv/IGcgri33YJFLF30euDX8rgy4fALEryBOElK+6eankmbMGzjDHAviU8xq1A8WzcLt
-         OelKeL3PCqOLIPV4WqosHEEUOE7+S2VcNAO9frKjUCA7FhcXRrSvi72ytBkLcZRobX24
-         d5GSGdE8Y2bXjEHSklhLD24q3jAN8eZp0GoA98owNRcNpEzYb6LksWgVdCU8JGgJma6d
-         ns/XLIPWQOoKoc3i68/Zsg4b9eePJgCyhJ8OzqkgrpG1PU7kYGQRPlopEACnl9rat+A0
-         QIHw==
-X-Gm-Message-State: AOAM531YXjnNLSh4jRYD0gIusXUsecJnQeY09GIkHhjRDYpHKf2KaUA7
-        fuuwaGbXdn9TAcJUISoxEa8=
-X-Google-Smtp-Source: ABdhPJwIUGdk4jEwbcTc9PWsUkll4l5mNlE5i1uV8EBi78o4Yl0XRU0yFzupOikAV/yc/JUVEPUIdw==
-X-Received: by 2002:a17:90b:1d04:: with SMTP id on4mr14076174pjb.68.1635541775461;
-        Fri, 29 Oct 2021 14:09:35 -0700 (PDT)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id i184sm6126210pgc.56.2021.10.29.14.09.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Oct 2021 14:09:34 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Jim Quinlan <jim2101024@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
-        DEVICE TREE BINDINGS),
-        bcm-kernel-feedback-list@broadcom.com (open list:BROADCOM
-        BCM2711/BCM2835 ARM ARCHITECTURE),
-        linux-rpi-kernel@lists.infradead.org (moderated list:BROADCOM
-        BCM2711/BCM2835 ARM ARCHITECTURE),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] ARM: dts: bcm2711: Fix PCIe interrupts
-Date:   Fri, 29 Oct 2021 14:09:26 -0700
-Message-Id: <20211029210927.36800-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=Ube9YO8E2J4s/t6BEWtg7056+gSWcIyQPYfWxy9j/A0=;
+        b=Fze2AFg2kVXzHoqfI1fbPhrNnmBBhIw3PM7XKdl3kGJzJrgeDeaZ1RJUmYVDFSX79W
+         1vXxBcmOiSysTIBlgD+ZRVY8SIOEnv9v8Cns7iX/BwXE1uZpnYxuOWyiBQDNkpLcrvSk
+         cWK0b5sbb13kA4WN3PImxDRZOXG0GknfQff41AsOLyDTWJNxULfxL39qiuq/DyfSSg4+
+         OyJhRreKsN8inExfeGLS4U1adI3jgo7V/EAlj52XmFYY7gkzUfhCGBFjScOA3m1kAWbW
+         Q3k9oeND/p1KVPwN3MyQeSuf5Kx8MNNyanNFBjrPEg4pNopm1g7kDLZ1mVX69mHsukdC
+         LsKw==
+X-Gm-Message-State: AOAM531WRCRtiPV2RoHEP45tYpAMbBZpHx9eg3urrD9GEQgA1XibUNez
+        jQHOPXuY8r9J7w+9PZg7OlbtOyJap7oZz06adguZyCMcngXx
+X-Google-Smtp-Source: ABdhPJzYnHs5ysePpw2kpjuQ4CgUKGe8Lhp2JQEBePrLF4wBTKVogqzTk584XPQJPbDBEcOc+CmhU/b89d3Ik/4MKxTheoJJ/hXf
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6602:1214:: with SMTP id y20mr7561508iot.156.1635541868350;
+ Fri, 29 Oct 2021 14:11:08 -0700 (PDT)
+Date:   Fri, 29 Oct 2021 14:11:08 -0700
+In-Reply-To: <949780a1-8768-830f-ff89-f6092037cb58@gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000014107b05cf844445@google.com>
+Subject: Re: [syzbot] KASAN: use-after-free Write in __io_free_req
+From:   syzbot <syzbot+78b76ebc91042904f34e@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The PCIe host bridge has two interrupt lines, one that goes towards it
-PCIE_INTR2 second level interrupt controller and one for its MSI second
-level interrupt controller. The first interrupt line is not currently
-managed by the driver, which is why it was not a functional problem.
+Hello,
 
-The interrupt-map property was also only listing the PCI_INTA interrupts
-when there are also the INTB, C and D.
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-Reported-by: Jim Quinlan <jim2101024@gmail.com>
-Fixes: d5c8dc0d4c88 ("ARM: dts: bcm2711: Enable PCIe controller")
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- arch/arm/boot/dts/bcm2711.dtsi | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+Reported-and-tested-by: syzbot+78b76ebc91042904f34e@syzkaller.appspotmail.com
 
-diff --git a/arch/arm/boot/dts/bcm2711.dtsi b/arch/arm/boot/dts/bcm2711.dtsi
-index 3b60297af7f6..9e01dbca4a01 100644
---- a/arch/arm/boot/dts/bcm2711.dtsi
-+++ b/arch/arm/boot/dts/bcm2711.dtsi
-@@ -506,11 +506,17 @@ pcie0: pcie@7d500000 {
- 			#address-cells = <3>;
- 			#interrupt-cells = <1>;
- 			#size-cells = <2>;
--			interrupts = <GIC_SPI 148 IRQ_TYPE_LEVEL_HIGH>,
-+			interrupts = <GIC_SPI 147 IRQ_TYPE_LEVEL_HIGH>,
- 				     <GIC_SPI 148 IRQ_TYPE_LEVEL_HIGH>;
- 			interrupt-names = "pcie", "msi";
- 			interrupt-map-mask = <0x0 0x0 0x0 0x7>;
- 			interrupt-map = <0 0 0 1 &gicv2 GIC_SPI 143
-+							IRQ_TYPE_LEVEL_HIGH>,
-+					<0 0 0 2 &gicv2 GIC_SPI 144
-+							IRQ_TYPE_LEVEL_HIGH>,
-+					<0 0 0 3 &gicv2 GIC_SPI 145
-+							IRQ_TYPE_LEVEL_HIGH>,
-+					<0 0 0 4 &gicv2 GIC_SPI 146
- 							IRQ_TYPE_LEVEL_HIGH>;
- 			msi-controller;
- 			msi-parent = <&pcie0>;
--- 
-2.25.1
+Tested on:
 
+commit:         3884b83d io_uring: don't assign write hint in the read..
+git tree:       git://git.kernel.dk/linux-block
+kernel config:  https://syzkaller.appspot.com/x/.config?x=10c050a45aafafcc
+dashboard link: https://syzkaller.appspot.com/bug?extid=78b76ebc91042904f34e
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+
+Note: testing is done by a robot and is best-effort only.
