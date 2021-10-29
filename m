@@ -2,202 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0347543F8AB
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 10:18:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5374743F8AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 10:19:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232412AbhJ2IUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 04:20:41 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:53388
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232310AbhJ2IUj (ORCPT
+        id S232427AbhJ2IVe convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 29 Oct 2021 04:21:34 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:45037 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232351AbhJ2IVa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 04:20:39 -0400
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com [209.85.208.198])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id D97EB3F1A1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 08:18:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1635495490;
-        bh=zyRvUcKW3mXZmS7QM4f7on74S8k/05bCH8SfKBR7/BI=;
-        h=To:Cc:References:From:Subject:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=YC7wUYBHQg79HQ1selPhQRMJTIqXRrC9cOafQOu4r/jOW9HLPmBORy4XMzlq4fTwJ
-         xsO8sXfzNpcpG5U/G4yWQkESTjfUM55Uxo4Tcl2+nebD6yjlv2Fn2vVag+v8Fpsm+X
-         K8VmrK8S5fip4+5XTwSC+EACdJzhl5yu8WErA476SpMgcQz1jyKMD6MfMYEniiQmUX
-         JEQgWCNK6xeZhUoIsWf+TPN7zbMDTJBDo/7xxgCLUfOVOCuylYj3rB0mHpZR3JOuF+
-         fME11aDEJLmeVAobwSfXS1PRyjJOUYGbNGgPokSEwZwERpI4olnUEpFTZd8Ocs4G0W
-         EQjAOFiSU+SGg==
-Received: by mail-lj1-f198.google.com with SMTP id b8-20020a05651c028800b00211cc108922so2663608ljo.15
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 01:18:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zyRvUcKW3mXZmS7QM4f7on74S8k/05bCH8SfKBR7/BI=;
-        b=LOpPdmo1OdTT/iCoYzTiBsONbEsXSXh9uEqer3YKniOPwoz+GFLkKiITNto/s5dVrI
-         ZIirQvp9bGV1WPdBmPqD3QFR6FUUYMpXolXVTFZF9QLhC8HDq2/aGM5SH8ZDz3hWwtK2
-         N6aZtUKe/NcVgWyR4vI5+y0tA7CGpmPre/wU998V/C2Hbvydvn2YG3llS8d7U8Bx/pqF
-         u2tPQp8xXcFU6eNHrTCo6pW4pkb8CP7y+ALiL+khHZkfQslL7GGXII++sskvIk0LvSL2
-         eL6Z4Rfdz7AmSmho6udsyHjaECZUv2JUb5NWw2Gk7SeZazvyuQ+JdJ0R8Z20Rfk3dhnA
-         3CUw==
-X-Gm-Message-State: AOAM533uN6xbTtKS+m5v9RsTLYTvTVHlFfGrzbuI9s2IdIiT7W9iI7KG
-        qfYXFv58i7rUYw9wTZryp2IC2bPs1l85o9YbKetWTrtunkVcJL3q/H4CuGCUTBdbVYxW5JzjTrU
-        MV8IOx9ql4YWhy7HWa791L6/d2jIcWj21Q+InAnTu1Q==
-X-Received: by 2002:ac2:5c5e:: with SMTP id s30mr9014289lfp.445.1635495490237;
-        Fri, 29 Oct 2021 01:18:10 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx6YJOSgvrhcAkF9ySor+WPU5G2sf0l/f3dcJJttX6j56ToSz4XIxICo5Px5kxJ4LCDtj4aFg==
-X-Received: by 2002:ac2:5c5e:: with SMTP id s30mr9014267lfp.445.1635495490026;
-        Fri, 29 Oct 2021 01:18:10 -0700 (PDT)
-Received: from [192.168.3.161] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id b21sm539025lfv.212.2021.10.29.01.18.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Oct 2021 01:18:09 -0700 (PDT)
-To:     Sam Protsenko <semen.protsenko@linaro.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-References: <20211028183527.3050-1-semen.protsenko@linaro.org>
- <20211028183527.3050-6-semen.protsenko@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: Re: [PATCH 5/7] watchdog: s3c2410: Introduce separate source clock
-Message-ID: <76ca9492-3829-6d3b-580c-983bc8409b1f@canonical.com>
-Date:   Fri, 29 Oct 2021 10:18:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <20211028183527.3050-6-semen.protsenko@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Fri, 29 Oct 2021 04:21:30 -0400
+Received: from smtpclient.apple (p4ff9fd51.dip0.t-ipconnect.de [79.249.253.81])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 503B3CED10;
+        Fri, 29 Oct 2021 10:18:58 +0200 (CEST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 15.0 \(3693.20.0.1.32\))
+Subject: Re: [PATCH] Bluetooth: Limit duration of Remote Name Resolve
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <CAJQfnxH=hN7ZzqNzyKqzb=wSCNktUiSnMeh77fghsudvzJyVvg@mail.gmail.com>
+Date:   Fri, 29 Oct 2021 10:18:57 +0200
+Cc:     Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Archie Pusaka <apusaka@chromium.org>,
+        Miao-chen Chou <mcchou@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <E68EB205-8B05-4A44-933A-06C5955F561A@holtmann.org>
+References: <20211028191805.1.I35b7f3a496f834de6b43a32f94b6160cb1467c94@changeid>
+ <180B4F43-B60A-4326-A463-327645BA8F1B@holtmann.org>
+ <CABBYNZKpcXGD6=RrVRGiAtHM+cfKEOL=-_tER1ow_VPrm6fFhQ@mail.gmail.com>
+ <CAJQfnxH=hN7ZzqNzyKqzb=wSCNktUiSnMeh77fghsudvzJyVvg@mail.gmail.com>
+To:     Archie Pusaka <apusaka@google.com>
+X-Mailer: Apple Mail (2.3693.20.0.1.32)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/10/2021 20:35, Sam Protsenko wrote:
-> Some Exynos chips (like Exynos850) have dedicated source clock. That
-> clock is provided from device tree as "watchdog_src" clock. In such
-> case, "watchdog" clock is just a peripheral clock used for register
-> interface. If "watchdog_src" is present, use its rate instead of
-> "watchdog" for all timer related calculations.
+Hi Archie,
 
-Please explain what is this source clock and remove the reference to
-devicetree. Instead describe rather real HW. It's confusing now to have
-one clock called watchdog and one watchdog source.
-
-The source clock is the actual clock driving watchdog and it's counter,
-right? Then let's document it and rename the variables to match reality
-- one is pclk (or apb?) and second is counter or source?
-
+>>>> When doing remote name request, we cannot scan. In the normal case it's
+>>>> OK since we can expect it to finish within a short amount of time.
+>>>> However, there is a possibility to scan lots of devices that
+>>>> (1) requires Remote Name Resolve
+>>>> (2) is unresponsive to Remote Name Resolve
+>>>> When this happens, we are stuck to do Remote Name Resolve until all is
+>>>> done before continue scanning.
+>>>> 
+>>>> This patch adds a time limit to stop us spending too long on remote
+>>>> name request. The limit is increased for every iteration where we fail
+>>>> to complete the RNR in order to eventually solve all names.
+>>>> 
+>>>> Signed-off-by: Archie Pusaka <apusaka@chromium.org>
+>>>> Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
+>>>> 
+>>>> ---
+>>>> Hi maintainers, we found one instance where a test device spends ~90
+>>>> seconds to do Remote Name Resolving, hence this patch.
+>>>> I think it's better if we reset the time limit to the default value
+>>>> at some point, but I don't have a good proposal where to do that, so
+>>>> in the end I didn't.
+>>> 
+>>> do you have a btmon trace for this as well?
+>>> 
+> Yes, but only from the scanning device side. It's all lined up with
+> your expectation (e.g. receiving Page Timeout in RNR Complete event).
 > 
-> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> ---
->  drivers/watchdog/s3c2410_wdt.c | 33 +++++++++++++++++++++++++++------
->  1 file changed, 27 insertions(+), 6 deletions(-)
+>>> The HCI Remote Name Request is essentially a paging procedure and then a few LMP messages. It is fundamentally a connection request inside BR/EDR and if you have a remote device that has page scan disabled, but inquiry scan enabled, then you get into this funky situation. Sadly, the BR/EDR parts don’t give you any hint on this weird combination. You can't configure BlueZ that way since it is really stupid setup and I remember that GAP doesn’t have this case either, but it can happen. So we might want to check if that is what happens. And of course it needs to be a Bluetooth 2.0 device or a device that doesn’t support Secure Simple Pairing. There is a chance of really bad radio interference, but that is then just bad luck and is only going to happen every once in a blue moon.
+>> 
+> It might be the case. I don't know the peer device, but it looks like
+> the user has a lot of these exact peer devices sitting in the same
+> room.
+> Or another possibility would be the user just turned bluetooth off for
+> these devices just after we scan them, such that they don't answer the
+> RNR.
 > 
-> diff --git a/drivers/watchdog/s3c2410_wdt.c b/drivers/watchdog/s3c2410_wdt.c
-> index a5ef7171a90e..bfc5872ca497 100644
-> --- a/drivers/watchdog/s3c2410_wdt.c
-> +++ b/drivers/watchdog/s3c2410_wdt.c
-> @@ -126,6 +126,8 @@ struct s3c2410_wdt_variant {
->  struct s3c2410_wdt {
->  	struct device		*dev;
->  	struct clk		*clock;
-> +	struct clk		*clock_src;
-> +	unsigned long		freq_src;
->  	void __iomem		*reg_base;
->  	unsigned int		count;
->  	spinlock_t		lock;
-> @@ -213,10 +215,8 @@ MODULE_DEVICE_TABLE(platform, s3c2410_wdt_ids);
->  
->  /* functions */
->  
-> -static inline unsigned int s3c2410wdt_max_timeout(struct clk *clock)
-> +static inline unsigned int s3c2410wdt_max_timeout(unsigned long freq)
->  {
-> -	unsigned long freq = clk_get_rate(clock);
-> -
->  	return S3C2410_WTCNT_MAXCNT / (freq / (S3C2410_WTCON_PRESCALE_MAX + 1)
->  				       / S3C2410_WTCON_MAXDIV);
->  }
-> @@ -364,7 +364,7 @@ static int s3c2410wdt_set_heartbeat(struct watchdog_device *wdd,
->  				    unsigned int timeout)
->  {
->  	struct s3c2410_wdt *wdt = watchdog_get_drvdata(wdd);
-> -	unsigned long freq = clk_get_rate(wdt->clock);
-> +	unsigned long freq = wdt->freq_src;
+>> I wonder what does the remote sets as Page_Scan_Repetition_Mode in the
+>> Inquiry Result, it seems quite weird that the specs allows such stage
+>> but it doesn't have a value to represent in the inquiry result, anyway
+>> I guess changing that now wouldn't really make any different given
+>> such device is probably never gonna update.
+>> 
+> The page scan repetition mode is R1
 
-This does not look good. You are using fixed frequency (from probe).
+not sure if this actually matters if your clock drifted too much apart.
 
->  	unsigned int count;
->  	unsigned int divisor = 1;
->  	unsigned long wtcon;
-> @@ -627,13 +627,27 @@ static int s3c2410wdt_probe(struct platform_device *pdev)
->  		return ret;
->  	}
->  
-> +	/* "watchdog_src" clock is optional; if it's not present -- just skip */
-> +	wdt->clock_src = devm_clk_get(dev, "watchdog_src");
-> +	if (!IS_ERR(wdt->clock_src)) {
-> +		ret = clk_prepare_enable(wdt->clock_src);
-> +		if (ret < 0) {
-> +			dev_err(dev, "failed to enable source clock\n");
-> +			ret = PTR_ERR(wdt->clock_src);
-> +			goto err_clk;
-> +		}
-> +		wdt->freq_src = clk_get_rate(wdt->clock_src);
-> +	} else {
-> +		wdt->freq_src = clk_get_rate(wdt->clock);
-> +	}
-> +
->  	wdt->wdt_device.min_timeout = 1;
-> -	wdt->wdt_device.max_timeout = s3c2410wdt_max_timeout(wdt->clock);
-> +	wdt->wdt_device.max_timeout = s3c2410wdt_max_timeout(wdt->freq_src);
->  
->  	ret = s3c2410wdt_cpufreq_register(wdt);
->  	if (ret < 0) {
->  		dev_err(dev, "failed to register cpufreq\n");
-> -		goto err_clk;
-> +		goto err_clk_src;
->  	}
->  
->  	watchdog_set_drvdata(&wdt->wdt_device, wdt);
-> @@ -707,6 +721,10 @@ static int s3c2410wdt_probe(struct platform_device *pdev)
->   err_cpufreq:
->  	s3c2410wdt_cpufreq_deregister(wdt);
->  
-> + err_clk_src:
-> +	if (!IS_ERR(wdt->clock_src))
-> +		clk_disable_unprepare(wdt->clock_src);
+>>> That said, you should receive a Page Timeout in the Remote Name Request Complete event for what you describe. Or you just use HCI Remote Name Request Cancel to abort the paging. If I remember correctly then the setting for Page Timeout is also applied to Remote Name resolving procedure. So we could tweak that value. Actually once we get the “sync” work merged, we could configure different Page Timeout for connection requests and name resolving if that would help. Not sure if this is worth it, since we could as simple just cancel the request.
+>> 
+>> If I recall this correctly we used to have something like that back in
+>> the days the daemon had control over the discovery, the logic was that
+>> each round of discovery including the name resolving had a fixed time
+>> e.g. 10 sec, so if not all device found had their name resolved we
+>> would stop and proceed to the next round that way we avoid this
+>> problem of devices not resolving and nothing being discovered either.
+>> Luckily today there might not be many devices around without EIR
+>> including their names but still I think it would be better to limit
+>> the amount time we spend resolving names, also it looks like it sets
+>> NAME_NOT_KNOWN when RNR fails and it never proceeds to request the
+>> name again so I wonder why would it be waiting ~90 seconds, we don't
+>> seem to change the page timeout so it should be using the default
+>> which is 5.12s so I think there is something else at play.
+>> 
+> Yeah, we received the Page Timeout after 5s, but then we proceed to
+> continue RNR the next device, which takes another 5s, and so on.
+> A couple of these devices can push waiting time over 90s.
+> Looking at this, I don't think cancelling RNR would help much.
+> This patch would like to reintroduce the time limit, but I decided to
+> make the time limit grow, otherwise the bad RNR might take the whole
+> time limit and we can't resolve any names.
 
-No. Errors in getting source clock should not be ignored, so you should
-never store here ERR. You could store NULL. If() is anyway not needed in
-both cases.
+I am wondering if we should add a new flag to Device Found that will indicate Name Resolving Failed after the first Page Timeout and then bluetoothd can decide via Confirm Name mgmt command to trigger the resolving or not. We can even add a 0x02 for Don’t Care About The Name.
 
-You can simplify all this and take pclk twice if src clock is missing.
-Or assign src=pclk...
+The one thing that I have a bit of a problem with is what time value we are going to pick for the resolving stage. Lets say we actually limit the time we spent there, then sure lets do that and pick a time. I wouldn’t be bothering with increasing it based on faulty devices. Just pick a time and that is what the kernel is allowed to spent on this. And it will abort. So we should be using a timer for this. That is just the fair thing to do and then you get an expected behavior every time. If we do the above extensions of mgmt, then bluetoothd can put a device back into the list if it really feels the kernel should keep trying to resolve the name.
 
-> +
->   err_clk:
->  	clk_disable_unprepare(wdt->clock);
->  
-> @@ -727,6 +745,9 @@ static int s3c2410wdt_remove(struct platform_device *dev)
->  
->  	s3c2410wdt_cpufreq_deregister(wdt);
->  
-> +	if (!IS_ERR(wdt->clock_src))
-> +		clk_disable_unprepare(wdt->clock_src);
-> +
->  	clk_disable_unprepare(wdt->clock);
->  
->  	return 0;
+>> Or perhaps it is finally time to drop legacy name resolution? At this
+>> point they should be very rare and those keeping some ancient device
+>> around will just have to deal with the address directly so we can get
+>> rid of paging devices while discovery which is quite a big burden I'd
+>> say.
+
+I rather not do that. There are still 2.0 device out there.
+
+>>>> include/net/bluetooth/hci_core.h |  5 +++++
+>>>> net/bluetooth/hci_event.c        | 12 ++++++++++++
+>>>> 2 files changed, 17 insertions(+)
+>>>> 
+>>>> diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
+>>>> index dd8840e70e25..df9ffedf1d29 100644
+>>>> --- a/include/net/bluetooth/hci_core.h
+>>>> +++ b/include/net/bluetooth/hci_core.h
+>>>> @@ -87,6 +87,8 @@ struct discovery_state {
+>>>>      u8                      (*uuids)[16];
+>>>>      unsigned long           scan_start;
+>>>>      unsigned long           scan_duration;
+>>>> +     unsigned long           name_resolve_timeout;
+>>>> +     unsigned long           name_resolve_duration;
+>>>> };
+>>>> 
+>>>> #define SUSPEND_NOTIFIER_TIMEOUT      msecs_to_jiffies(2000) /* 2 seconds */
+>>>> @@ -805,6 +807,8 @@ static inline void sco_recv_scodata(struct hci_conn *hcon, struct sk_buff *skb)
+>>>> #define INQUIRY_CACHE_AGE_MAX   (HZ*30)   /* 30 seconds */
+>>>> #define INQUIRY_ENTRY_AGE_MAX   (HZ*60)   /* 60 seconds */
+>>>> 
+>>>> +#define NAME_RESOLVE_INIT_DURATION   5120    /* msec */
+>>>> +
+>>>> static inline void discovery_init(struct hci_dev *hdev)
+>>>> {
+>>>>      hdev->discovery.state = DISCOVERY_STOPPED;
+>>>> @@ -813,6 +817,7 @@ static inline void discovery_init(struct hci_dev *hdev)
+>>>>      INIT_LIST_HEAD(&hdev->discovery.resolve);
+>>>>      hdev->discovery.report_invalid_rssi = true;
+>>>>      hdev->discovery.rssi = HCI_RSSI_INVALID;
+>>>> +     hdev->discovery.name_resolve_duration = NAME_RESOLVE_INIT_DURATION;
+>>>> }
+>>>> 
+>>>> static inline void hci_discovery_filter_clear(struct hci_dev *hdev)
+>>>> diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+>>>> index 3cba2bbefcd6..104a1308f454 100644
+>>>> --- a/net/bluetooth/hci_event.c
+>>>> +++ b/net/bluetooth/hci_event.c
+>>>> @@ -2086,6 +2086,15 @@ static bool hci_resolve_next_name(struct hci_dev *hdev)
+>>>>      if (list_empty(&discov->resolve))
+>>>>              return false;
+>>>> 
+>>>> +     /* We should stop if we already spent too much time resolving names.
+>>>> +      * However, double the name resolve duration for the next iterations.
+>>>> +      */
+>>>> +     if (time_after(jiffies, discov->name_resolve_timeout)) {
+>>>> +             bt_dev_dbg(hdev, "Name resolve takes too long, stopping.");
+>>>> +             discov->name_resolve_duration *= 2;
+>>>> +             return false;
+>>>> +     }
+>>>> +
+>>>>      e = hci_inquiry_cache_lookup_resolve(hdev, BDADDR_ANY, NAME_NEEDED);
+>>>>      if (!e)
+>>>>              return false;
+>>>> @@ -2634,6 +2643,9 @@ static void hci_inquiry_complete_evt(struct hci_dev *hdev, struct sk_buff *skb)
+>>>>      if (e && hci_resolve_name(hdev, e) == 0) {
+>>>>              e->name_state = NAME_PENDING;
+>>>>              hci_discovery_set_state(hdev, DISCOVERY_RESOLVING);
+>>>> +
+>>>> +             discov->name_resolve_timeout = jiffies +
+>>>> +                             msecs_to_jiffies(discov->name_resolve_duration);
+>>> 
+>>> So if this is really caused by a device with page scan disabled and inquiry scan enabled, then this fix is just a paper over hole approach. If you have more devices requiring name resolving, you end up penalizing them and make the discovery procedure worse up to the extend that no names are resolved. So I wouldn’t be in favor of this.
+>>> 
+> I agree this could potentially penalize good devices that require name
+> resolving. However, this wouldn't worsen the procedure to the extent
+> where no names are resolved, since the time limit is growing, so at
+> some point all names (from good devices) are bound to be resolved.
+> Also, I expect the user would bring the target peer devices closer,
+> therefore hopefully increasing the RSSI and making them appear sooner
+> in the next iteration of RNR, since we order the requests by RSSI.
+> So, this change might also reward good devices by giving them a chance
+> to 'cut the RNR queue'.
 > 
+>>> What LE scan window/interval is actually working against what configured BR/EDR page timeout here? The discovery procedure is something that a user triggers so we always had that one take higher priority since the user is expecting results. This means any tweaking needs to be considered carefully since it is an immediate user impact if the name is missing.
+>>> 
+>>> Is this a LE background scan you are worried about or an LE active scan that runs in parallel during discovery?
+>>> 
+> This doesn't need to be related to LE. I believe what the user experienced is:
+> (1) The user activates scanning on the host device
+> (2) The host device scans lots of bad peers. After 10 seconds, the
+> host device stop scanning and begin RNR.
+> (3) The user put the target peer device into discoverable mode
+> (4) The host device spends 90 seconds doing RNR, before eventually
+> successfully discovering the target peer device.
+> 
+> Of course, step (3) could be performed earlier but by luck the host
+> fails to discover the target peer in 10 seconds.
 
+I agree that the 90 seconds is just insane. Keep in mind that this code is roughly running in devices since 2015. So it couldn’t have been all that bad. Nevertheless, you encountered a case where this needs improvement.
 
-Best regards,
-Krzysztof
+Regards
+
+Marcel
+
