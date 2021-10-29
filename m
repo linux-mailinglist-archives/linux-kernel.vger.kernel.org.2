@@ -2,383 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC10D43F496
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 03:50:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E08143F49D
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 03:50:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231388AbhJ2Bwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 21:52:40 -0400
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:37759 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229950AbhJ2Bwi (ORCPT
+        id S231490AbhJ2BxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 21:53:10 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:16177 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231470AbhJ2BxH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 21:52:38 -0400
-Received: by mail-ot1-f45.google.com with SMTP id v40-20020a056830092800b0055591caa9c6so3127029ott.4;
-        Thu, 28 Oct 2021 18:50:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=H3UM1yNKAMv5+ROxM01H3Les+3KYJBWUhYXsGVz9HXI=;
-        b=UHx6KF66XSPd6MSmppFeDTNBFjvzb1HKkNUW62AZcvCUxViLyI8IUYSzr/cLw+5e5N
-         rG2yHINzBC+IaOaqEe1R03IVWI6u/XXynXL3Hu0t3bdg/4tnphv03PjKyQDRhyWBmYMs
-         oROeLQIhJ5yQCQUE9t0WOSIlJa+2sk0zlGIazb2kVi48NUfhxR58aoIOJaWlcunURXWV
-         e0eUISbojFGbkp2AKnCb+yXQtpZpchCrcn43kqALkZ2mCb20xmzefLrcxhM+eT1nPzOA
-         nmyv2fv0sR/NiAsS19gJRsxXFd3p8gWcE3Ur++8622YF+i1evpeMpGpDHLcNBxqvSgMn
-         3lDQ==
-X-Gm-Message-State: AOAM533JO91rRAn94ntW7P8gHOJOiYk3ydpD2/Q+QcGunvc32HNmMIPP
-        V1cTFPXM///XbCNuPX7gag==
-X-Google-Smtp-Source: ABdhPJzeqA4H7YRYKsGQX2iZPlbOJOxccklzl4S8ZEB0QiJVnICczvJHMmJHSe64OxJzbHZY4doVzw==
-X-Received: by 2002:a9d:20ea:: with SMTP id x97mr643726ota.152.1635472210373;
-        Thu, 28 Oct 2021 18:50:10 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id q2sm1459725ooe.12.2021.10.28.18.50.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 18:50:09 -0700 (PDT)
-Received: (nullmailer pid 987313 invoked by uid 1000);
-        Fri, 29 Oct 2021 01:50:08 -0000
-Date:   Thu, 28 Oct 2021 20:50:08 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Emil Renner Berthing <kernel@esmil.dk>
-Cc:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-serial@vger.kernel.org, Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Sagar Kadam <sagar.kadam@sifive.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michael Zhu <michael.zhu@starfivetech.com>,
-        Fu Wei <tekkamanninja@gmail.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Matteo Croce <mcroce@microsoft.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 11/16] dt-bindings: pinctrl: Add StarFive JH7100
- bindings
-Message-ID: <YXtTUGC5P41JtvoR@robh.at.kernel.org>
-References: <20211021174223.43310-1-kernel@esmil.dk>
- <20211021174223.43310-12-kernel@esmil.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211021174223.43310-12-kernel@esmil.dk>
+        Thu, 28 Oct 2021 21:53:07 -0400
+Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20211029015037epoutp03d3e5b7ef4f408d8dd9c0a40350f7906e~yXVXFfvLi0971509715epoutp03A
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 01:50:37 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20211029015037epoutp03d3e5b7ef4f408d8dd9c0a40350f7906e~yXVXFfvLi0971509715epoutp03A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1635472237;
+        bh=eHo6lGrsCqsaUiVhVVo8v2uZ3Ts+zCHxdun5/3sbIJI=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=OQVhQGozV0nowhULdSLT/HGDlXjpVn2W1Ys18qVxJVnIVUTGwusVqfDC57GBTdOR5
+         OCH67Br9l22kHikqa6KVxCrApw08NpHZ9xZv6qA1Ek3EvK8CK8GzBy/hwC8RB8Rgob
+         AQm8zWgG0ZV8qgAqRaGWSMXaCzA6WJ3x09X3wJO8=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
+        20211029015037epcas2p1d3cc31a2d575ac538786ece9bc9fe47b~yXVWhWd4n1145311453epcas2p1c;
+        Fri, 29 Oct 2021 01:50:37 +0000 (GMT)
+Received: from epsmges2p2.samsung.com (unknown [182.195.36.88]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4HgQNs4w6kz4x9Qp; Fri, 29 Oct
+        2021 01:50:21 +0000 (GMT)
+X-AuditID: b6c32a46-a25ff70000002722-50-617b53587643
+Received: from epcas2p2.samsung.com ( [182.195.41.54]) by
+        epsmges2p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        68.97.10018.8535B716; Fri, 29 Oct 2021 10:50:16 +0900 (KST)
+Mime-Version: 1.0
+Subject: RE: [PATCH] scsi: ufs: Fix proper API to send HPB pre-request
+Reply-To: daejun7.park@samsung.com
+Sender: Daejun Park <daejun7.park@samsung.com>
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Ming Lei <ming.lei@redhat.com>,
+        Daejun Park <daejun7.park@samsung.com>
+CC:     ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "huobean@gmail.com" <huobean@gmail.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        Keoseong Park <keosung.park@samsung.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <YXtPNIDzeln8zBCn@T590>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20211029015015epcms2p3a46e0779e43ab84c00388d99abf3b867@epcms2p3>
+Date:   Fri, 29 Oct 2021 10:50:15 +0900
+X-CMS-MailID: 20211029015015epcms2p3a46e0779e43ab84c00388d99abf3b867
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+CMS-TYPE: 102P
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrDJsWRmVeSWpSXmKPExsWy7bCmmW5EcHWiwZ8twhYP5m1js3j58yqb
+        xbQPP5ktXh7StFj1INxiztkGJotFN7YxWRw/+Y7R4vKuOWwW3dd3sFksP/6PyeLQ5GYmBx6P
+        y1e8PXbOusvuMWHRAUaPj09vsXi833eVzaNvyypGj8+b5DzaD3QzBXBEZdtkpCampBYppOYl
+        56dk5qXbKnkHxzvHm5oZGOoaWlqYKynkJeam2iq5+AToumXmAN2qpFCWmFMKFApILC5W0rez
+        KcovLUlVyMgvLrFVSi1IySkwL9ArTswtLs1L18tLLbEyNDAwMgUqTMjOmHCghbXgp3DFhreH
+        GBsYT/F3MXJySAiYSOyasZWti5GLQ0hgB6PEhp8vgRwODl4BQYm/O4RBaoQF3CSWr5rECGIL
+        CShJrL84ix0iridx6+EasDibgI7E9BP3weIiAl4SG56tZASZySxwgFni+Nw3bBDLeCVmtD9l
+        gbClJbYv3wrWzCmgIjH38nRmiLiGxI9lvVC2qMTN1W/ZYez3x+YzQtgiEq33zkLVCEo8+Lkb
+        Ki4pcWz3ByYIu15i651fYEdICPQwShzeeYsVIqEvca1jI9gRvAK+EvM2PANrYBFQlXje/x3q
+        OBeJdR+eg9nMAvIS29/OYQYFCrOApsT6XfogpoSAssSRWywwbzVs/M2OzmYW4JPoOPwXLr5j
+        3hOo09Qk1v1czzSBUXkWIqRnIdk1C2HXAkbmVYxiqQXFuempxUYFRvDITc7P3cQITrZabjsY
+        p7z9oHeIkYmD8RCjBAezkgjv5XnliUK8KYmVValF+fFFpTmpxYcYTYG+nMgsJZqcD0z3eSXx
+        hiaWBiZmZobmRqYG5krivJai2YlCAumJJanZqakFqUUwfUwcnFINTDsfLvyp2pKofXbe+X+q
+        sm21h/Iz40+/iN7yj6HYsXiK17MTj3XSZdZpie9d7mhpWyHA9MzOa5Xhr59fajbZ/9K1ebXz
+        ziu3k8IMJ/gqfyT2L/zQ9Y9XlLs5TCzo5Je87blbRN/fmO9w9tR/0d9cf9oWX5nw4S23oYea
+        67dj/s8jkxzy4g37Hlg/DJTWPngssTdKb8NCx69chbeKHlpnPtm3zKvN8PXeHYk8/c57Nv5k
+        rWbIK6kteXTHZseJ9wf/nv6Ufu1jSb342bVdDl+PpJ5Sm6AXci1+t2pk8OIM3x71xNT0J7N0
+        DIuKmHd/+xG2Rsnc86zl0VPbEu+9zmeYvqxg8YkGpbS/z99O67HhNVZiKc5INNRiLipOBAAx
+        TnyZPwQAAA==
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20211027223619epcms2p60bbc74c9ba9757c58709a99acd0892ff
+References: <YXtPNIDzeln8zBCn@T590>
+        <20211027223619epcms2p60bbc74c9ba9757c58709a99acd0892ff@epcms2p6>
+        <CGME20211027223619epcms2p60bbc74c9ba9757c58709a99acd0892ff@epcms2p3>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 07:42:18PM +0200, Emil Renner Berthing wrote:
-> Add bindings for the StarFive JH7100 GPIO/pin controller.
-> 
-> Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
-> ---
->  .../pinctrl/starfive,jh7100-pinctrl.yaml      | 274 ++++++++++++++++++
->  1 file changed, 274 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pinctrl/starfive,jh7100-pinctrl.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/pinctrl/starfive,jh7100-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/starfive,jh7100-pinctrl.yaml
-> new file mode 100644
-> index 000000000000..342ecd91a3b0
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/pinctrl/starfive,jh7100-pinctrl.yaml
-> @@ -0,0 +1,274 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/pinctrl/starfive,jh7100-pinctrl.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: StarFive JH7100 Pin Controller Device Tree Bindings
-> +
-> +maintainers:
-> +  - Emil Renner Berthing <kernel@esmil.dk>
-> +  - Drew Fustini <drew@beagleboard.org>
-> +
-> +properties:
-> +  compatible:
-> +    const: starfive,jh7100-pinctrl
-> +
-> +  reg:
-> +    minItems: 2
-> +    maxItems: 2
-> +
-> +  reg-names:
-> +    items:
-> +      - const: "gpio"
-> +      - const: "padctl"
+> On Thu, Oct 28, 2021 at 07:36:19AM +0900, Daejun Park wrote:
+> > This patch addresses the issue of using the wrong API to create a
+> > pre_request for HPB READ.
+> > HPB READ candidate that require a pre-request will try to allocate a
+> > pre-request only during request_timeout_ms (default: 0). Otherwise, it is
+>  
+> Can you explain about 'only during request_timeout_ms'?
+>  
+> From the following code in ufshpb_prep(), the pre-request is allocated
+> for each READ IO in case of (!ufshpb_is_legacy(hba) && ufshpb_is_required_wb(hpb,
+> transfer_len)).
+>  
+>    if (!ufshpb_is_legacy(hba) &&
+>             ufshpb_is_required_wb(hpb, transfer_len)) {
+>                 err = ufshpb_issue_pre_req(hpb, cmd, &read_id);
+>  
+> > passed as normal READ, so deadlock problem can be resolved.
+> > 
+> > Signed-off-by: Daejun Park <daejun7.park@samsung.com>
+> > ---
+> >  drivers/scsi/ufs/ufshpb.c | 11 +++++------
+> >  drivers/scsi/ufs/ufshpb.h |  1 +
+> >  2 files changed, 6 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
+> > index 02fb51ae8b25..3117bd47d762 100644
+> > --- a/drivers/scsi/ufs/ufshpb.c
+> > +++ b/drivers/scsi/ufs/ufshpb.c
+> > @@ -548,8 +548,7 @@ static int ufshpb_execute_pre_req(struct ufshpb_lu *hpb, struct scsi_cmnd *cmd,
+> >                                   read_id);
+> >          rq->cmd_len = scsi_command_size(rq->cmd);
+> >  
+> > -        if (blk_insert_cloned_request(q, req) != BLK_STS_OK)
+> > -                return -EAGAIN;
+> > +        blk_execute_rq_nowait(NULL, req, true, ufshpb_pre_req_compl_fn);
+>  
+> Be care with above change, blk_insert_cloned_request() allocates
+> driver tag and issues the request to LLD directly, then returns the
+> result. If anything fails in the code path, -EAGAIN is returned.
+>  
+> But blk_execute_rq_nowait() simply queued the request in block layer,
+> and run hw queue. It doesn't allocate driver tag, and doesn't issue it
+> to LLD.
+>  
+> So ufshpb_execute_pre_req() may think the pre-request is issued to LLD
+> successfully, but actually not, maybe never. What will happen after the
+> READ IO is issued to device, but the pre-request(write buffer) isn't
+> sent to device?
 
-Don't need quotes.
+In that case, the HPB READ cannot get benefit from pre-request. But it is not
+common case.
 
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  resets:
-> +    maxItems: 1
-> +
-> +  gpio-controller: true
-> +
-> +  "#gpio-cells":
-> +    const: 2
-> +    description: |
-> +      Number of cells in GPIO specifier. Since the generic GPIO
-> +      binding is used, the amount of cells must be specified as 2.
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +    description: The GPIO parent interrupt.
-> +
-> +  interrupt-controller: true
-> +
-> +  "#interrupt-cells":
-> +    const: 2
-> +
-> +  starfive,signal-group:
-> +    description: |
-> +      The SoC has a global setting selecting one of 7 different pinmux
-> +      configurations of the pads named GPIO[0:63] and FUNC_SHARE[0:141]. After
-> +      this global setting is chosen only the 64 "GPIO" pins can be further
-> +      muxed by configuring them to be controlled by certain peripherals rather
-> +      than software.
-> +      Note that in configuration 0 none of GPIOs are routed to pads, and only
-> +      in configuration 1 are the GPIOs routed to the pads named GPIO[0:63].
-> +      If this property is not set it defaults to the configuration already
-> +      chosen by the earlier boot stages.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    enum: [0, 1, 2, 3, 4, 5, 6]
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - reg-names
-> +  - clocks
-> +  - gpio-controller
-> +  - "#gpio-cells"
-> +  - interrupts
-> +  - interrupt-controller
-> +  - "#interrupt-cells"
-> +
-> +patternProperties:
-> +  '-[0-9]*$':
+> Can you explain how this change solves the deadlock?
 
-Can you make this more specific. As-is, '-' and 'foo-' are valid.
+The deadlock is happen when the READ waiting allocation of pre-request. But
+the timeout code makes to stop waiting after given time later.
 
-> +    type: object
-> +    patternProperties:
-> +      '-pins*$':
-
-So foo-pinsssssss is okay? Drop the '*' or use ? if you intend to 
-support 'foo-pin'.
-
-> +        type: object
-> +        description: |
-> +          A pinctrl node should contain at least one subnode representing the
-> +          pinctrl groups available on the machine. Each subnode will list the
-> +          pins it needs, and how they should be configured, with regard to
-> +          muxer configuration, bias, input enable/disable, input schmitt
-> +          trigger enable/disable, slew-rate and drive strength.
-> +        $ref: "/schemas/pinctrl/pincfg-node.yaml"
-> +
-> +        properties:
-> +          pins:
-> +            description: |
-> +              The list of pin identifiers that properties in the node apply to.
-> +              This should be set using either the PAD_GPIO or PAD_FUNC_SHARE
-> +              macro. Either this or "pinmux" has to be specified.
-> +
-> +          pinmux:
-> +            description: |
-> +              The list of GPIO identifiers and their mux settings that
-> +              properties in the node apply to. This should be set using the
-> +              GPIOMUX macro. Either this or "pins" has to be specified.
-> +
-> +          bias-disable: true
-> +
-> +          bias-pull-up:
-> +            type: boolean
-
-Already has a type. Need to reference the common schema.
-
-> +
-> +          bias-pull-down:
-> +            type: boolean
-> +
-> +          drive-strength:
-> +            enum: [ 14, 21, 28, 35, 42, 49, 56, 63 ]
-> +
-> +          input-enable: true
-> +
-> +          input-disable: true
-> +
-> +          input-schmitt-enable: true
-> +
-> +          input-schmitt-disable: true
-> +
-> +          slew-rate:
-> +            maximum: 7
-> +
-> +          starfive,strong-pull-up:
-> +            description: enable strong pull-up.
-> +            type: boolean
-> +
-> +        additionalProperties: false
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/starfive-jh7100.h>
-> +    #include <dt-bindings/reset/starfive-jh7100.h>
-> +    #include <dt-bindings/pinctrl/pinctrl-starfive.h>
-> +
-> +    soc {
-> +        #address-cells = <2>;
-> +        #size-cells = <2>;
-> +
-> +        gpio: pinctrl@11910000 {
-> +            compatible = "starfive,jh7100-pinctrl";
-> +            reg = <0x0 0x11910000 0x0 0x10000>,
-> +                  <0x0 0x11858000 0x0 0x1000>;
-> +            reg-names = "gpio", "padctl";
-> +            clocks = <&clkgen JH7100_CLK_GPIO_APB>;
-> +            resets = <&clkgen JH7100_RSTN_GPIO_APB>;
-> +            interrupts = <32>;
-> +            gpio-controller;
-> +            #gpio-cells = <2>;
-> +            interrupt-controller;
-> +            #interrupt-cells = <2>;
-> +            starfive,signal-group = <6>;
-> +
-> +            gmac_pins_default: gmac-0 {
-> +                gtxclk-pins {
-> +                    pins = <PAD_FUNC_SHARE(115)>;
-> +                    bias-pull-up;
-> +                    drive-strength = <35>;
-> +                    input-enable;
-> +                    input-schmitt-enable;
-> +                    slew-rate = <0>;
-> +                };
-> +                miitxclk-pins {
-> +                    pins = <PAD_FUNC_SHARE(116)>;
-> +                    bias-pull-up;
-> +                    drive-strength = <14>;
-> +                    input-enable;
-> +                    input-schmitt-disable;
-> +                    slew-rate = <0>;
-> +                };
-> +                tx-pins {
-> +                    pins = <PAD_FUNC_SHARE(117)>,
-> +                           <PAD_FUNC_SHARE(119)>,
-> +                           <PAD_FUNC_SHARE(120)>,
-> +                           <PAD_FUNC_SHARE(121)>,
-> +                           <PAD_FUNC_SHARE(122)>,
-> +                           <PAD_FUNC_SHARE(123)>,
-> +                           <PAD_FUNC_SHARE(124)>,
-> +                           <PAD_FUNC_SHARE(125)>,
-> +                           <PAD_FUNC_SHARE(126)>;
-> +                    bias-disable;
-> +                    drive-strength = <35>;
-> +                    input-disable;
-> +                    input-schmitt-disable;
-> +                    slew-rate = <0>;
-> +                };
-> +                rxclk-pins {
-> +                    pins = <PAD_FUNC_SHARE(127)>;
-> +                    bias-pull-up;
-> +                    drive-strength = <14>;
-> +                    input-enable;
-> +                    input-schmitt-disable;
-> +                    slew-rate = <6>;
-> +                };
-> +                rxer-pins {
-> +                    pins = <PAD_FUNC_SHARE(129)>;
-> +                    bias-pull-up;
-> +                    drive-strength = <14>;
-> +                    input-enable;
-> +                    input-schmitt-disable;
-> +                    slew-rate = <0>;
-> +                };
-> +                rx-pins {
-> +                    pins = <PAD_FUNC_SHARE(128)>,
-> +                           <PAD_FUNC_SHARE(130)>,
-> +                           <PAD_FUNC_SHARE(131)>,
-> +                           <PAD_FUNC_SHARE(132)>,
-> +                           <PAD_FUNC_SHARE(133)>,
-> +                           <PAD_FUNC_SHARE(134)>,
-> +                           <PAD_FUNC_SHARE(135)>,
-> +                           <PAD_FUNC_SHARE(136)>,
-> +                           <PAD_FUNC_SHARE(137)>,
-> +                           <PAD_FUNC_SHARE(138)>,
-> +                           <PAD_FUNC_SHARE(139)>,
-> +                           <PAD_FUNC_SHARE(140)>,
-> +                           <PAD_FUNC_SHARE(141)>;
-> +                    bias-pull-up;
-> +                    drive-strength = <14>;
-> +                    input-enable;
-> +                    input-schmitt-enable;
-> +                    slew-rate = <0>;
-> +                };
-> +            };
-> +
-> +            i2c0_pins_default: i2c0-0 {
-> +                i2c-pins {
-> +                    pinmux = <GPIOMUX(62, GPO_LOW,
-> +                              GPO_I2C0_PAD_SCK_OEN,
-> +                              GPI_I2C0_PAD_SCK_IN)>,
-> +                             <GPIOMUX(61, GPO_LOW,
-> +                              GPO_I2C0_PAD_SDA_OEN,
-> +                              GPI_I2C0_PAD_SDA_IN)>;
-> +                    bias-disable; /* external pull-up */
-> +                    input-enable;
-> +                    input-schmitt-enable;
-> +                };
-> +            };
-> +
-> +            uart3_pins_default: uart3-0 {
-> +                rx-pin {
-> +                    pinmux = <GPIOMUX(13, GPO_LOW, GPO_DISABLE,
-> +                              GPI_UART3_PAD_SIN)>;
-> +                    bias-pull-up;
-> +                    input-enable;
-> +                    input-schmitt-enable;
-> +                };
-> +                tx-pin {
-> +                    pinmux = <GPIOMUX(14, GPO_UART3_PAD_SOUT,
-> +                              GPO_ENABLE, GPI_NONE)>;
-> +                    bias-disable;
-> +                    input-disable;
-> +                    input-schmitt-disable;
-> +                };
-> +            };
-> +        };
-> +
-> +        gmac {
-> +            pinctrl-0 = <&gmac_pins_default>;
-> +            pinctrl-names = "default";
-> +        };
-> +
-> +        i2c0 {
-> +            pinctrl-0 = <&i2c0_pins_default>;
-> +            pinctrl-names = "default";
-> +        };
-> +
-> +        uart3 {
-> +            pinctrl-0 = <&uart3_pins_default>;
-> +            pinctrl-names = "default";
-> +        };
-> +    };
-> +
-> +...
-> -- 
-> 2.33.1
-> 
-> 
+Thanks,
+Daejun
