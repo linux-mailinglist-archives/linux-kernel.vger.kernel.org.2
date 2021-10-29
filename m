@@ -2,96 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B4AD43F915
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 10:42:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1833A43F918
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 10:42:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232516AbhJ2Ioz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 04:44:55 -0400
-Received: from outbound-smtp37.blacknight.com ([46.22.139.220]:57087 "EHLO
-        outbound-smtp37.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232504AbhJ2Iou (ORCPT
+        id S232528AbhJ2IpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 04:45:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51030 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232492AbhJ2IpF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 04:44:50 -0400
-Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
-        by outbound-smtp37.blacknight.com (Postfix) with ESMTPS id 1F46717FB
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 09:42:21 +0100 (IST)
-Received: (qmail 7036 invoked from network); 29 Oct 2021 08:42:20 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 29 Oct 2021 08:42:20 -0000
-Date:   Fri, 29 Oct 2021 09:42:19 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Tao Zhou <tao.zhou@linux.dev>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Mike Galbraith <efault@gmx.de>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] sched/fair: Couple wakee flips with heavy wakers
-Message-ID: <20211029084219.GV3959@techsingularity.net>
-References: <20211028094834.1312-1-mgorman@techsingularity.net>
- <20211028094834.1312-2-mgorman@techsingularity.net>
- <YXrNfHcfhp2LutiL@geo.homenetwork>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <YXrNfHcfhp2LutiL@geo.homenetwork>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Fri, 29 Oct 2021 04:45:05 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B940C061570;
+        Fri, 29 Oct 2021 01:42:37 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id t11so6360845plq.11;
+        Fri, 29 Oct 2021 01:42:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=YUKn1ogiGUUPet0SlrPCeqQwsaI/lAIcv7mQESFrswU=;
+        b=KHZ9tSM/6FrUtHundLMRPoZNDRF99RaPChTPxWrs5AGwoSpbs3BRtKLtbFHWIjNmk4
+         uYcaEB5ZjYVAr6OQ2+MK5ciwwxsg96V/EAHI3pv1uynQGriCFH6xlQumpD8dZY+c0Moh
+         gGquU4YytcQa7mvXD0uz1u76doWKGv+Nnh1kff3SxjScfwae6jZY6dH3g/PXoQK/KAmO
+         87HtcjDFRMWZ41SYpLHR99nT/WxUVWmvlSzIWJwydtD1LtYBUaP+rcIoqToQTGq1B4ZY
+         TCrhad0OZ4IXsw7eo6L5a+Q9j4yGqGbucq9RQY3lc362wMUbPQvmpIfMVICJyTDgudkY
+         64iQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=YUKn1ogiGUUPet0SlrPCeqQwsaI/lAIcv7mQESFrswU=;
+        b=Jk+oUFqmpuoKpAaG1BVtu5duRhf9wC+sdBiVDaXORULFxje2Cy+PNF0bmwS4PPLzk3
+         0D2YkZ+ZYIHowyvB4U9ykmk6WIM/pvqS0jzh+RseyiTGz5ojsrWc9RM/fOlaowTJqhMx
+         LECmQ6Mgyb7yS0xF/G9vWH/WWeAmMcPlIwJ2B/Ngh3LqjTEO3abDlFp3Ub4tuwl//h8y
+         fKyZ6zvEeEhoXjNm4zI0lvNflDUMoYvqLu7wwV+T456kIBoYzgV1gJTU7dg4CxLbw78q
+         XPkynJIIRuoZ9fzX2kuINL9CHnF41fpJlu+7cwrMHJoHUDHihJzEVRMP7ctEuIsg9enW
+         PyRQ==
+X-Gm-Message-State: AOAM531tIo2P/WAbOEDHXryk2wL6Ru1s6cAe/rQYj3NUZoxgoxcMXeLn
+        1sTjKr1d1PnJfrD3Gi7TrHI=
+X-Google-Smtp-Source: ABdhPJxQfheZOYpdw+3YgK1VyTxx93SUIR990hRVvPoZbma6XjXu7NBQbV1xOv/YHyjjRg7zOm9WWQ==
+X-Received: by 2002:a17:90a:4801:: with SMTP id a1mr18298354pjh.156.1635496956380;
+        Fri, 29 Oct 2021 01:42:36 -0700 (PDT)
+Received: from scdiu3.sunplus.com ([113.196.136.192])
+        by smtp.googlemail.com with ESMTPSA id ml14sm1471424pjb.43.2021.10.29.01.42.34
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 29 Oct 2021 01:42:36 -0700 (PDT)
+From:   "LH.Kuo" <lhjeff911@gmail.com>
+X-Google-Original-From: "LH.Kuo" <lh.kuo@sunplus.com>
+To:     p.zabel@pengutronix.de, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
+        devicetree@vger.kernel.org
+Cc:     dvorkin@tibbo.com, qinjian@cqplus1.com, wells.lu@sunplus.com,
+        "LH.Kuo" <lh.kuo@sunplus.com>
+Subject: [PATCH 0/2] This is a patch series for I2C driver for Sunplus SP7021 SoC.
+Date:   Fri, 29 Oct 2021 16:42:33 +0800
+Message-Id: <1635496955-13985-1-git-send-email-lh.kuo@sunplus.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 12:19:48AM +0800, Tao Zhou wrote:
-> Hi Mel,
-> 
-> On Thu, Oct 28, 2021 at 10:48:33AM +0100, Mel Gorman wrote:
-> 
-> > @@ -5865,6 +5865,14 @@ static void record_wakee(struct task_struct *p)
-> >  	}
-> >  
-> >  	if (current->last_wakee != p) {
-> > +		int min = __this_cpu_read(sd_llc_size) << 1;
-> > +		/*
-> > +		 * Couple the wakee flips to the waker for the case where it
-> > +		 * doesn't accrue flips, taking care to not push the wakee
-> > +		 * high enough that the wake_wide() heuristic fails.
-> > +		 */
-> > +		if (current->wakee_flips > p->wakee_flips * min)
-> > +			p->wakee_flips++;
-> >  		current->last_wakee = p;
-> >  		current->wakee_flips++;
-> >  	}
-> > @@ -5895,7 +5903,7 @@ static int wake_wide(struct task_struct *p)
-> >  
-> >  	if (master < slave)
-> >  		swap(master, slave);
-> > -	if (slave < factor || master < slave * factor)
-> > +	if ((slave < factor && master < (factor>>1)*factor) || master < slave * factor)
-> 
-> So, the check like this include the above range:
-> 
->   if ((slave < factor && master < slave * factor) ||
->        master < slave * factor)
-> 
-> That "factor>>1" filter some.
-> 
-> If "slave < factor" is true and "master < (factor>>1)*factor" is false,
-> then we check "master < slave * factor".(This is one path added by the
-> check "&&  master < (factor>>1)*factor").
-> In the latter check "slave < factor" must be true, the result of this
-> check depend on slave in the range [factor, factor>>1] if there is possibility
-> that "master < slave * factor". If slave in [factor>>1, 0], the check of
-> "master < slave * factor" is absolutly false and this can be filtered if
-> we use a variable to load the result of master < (factor>>1)*factor.
-> 
-> My random random inputs and continue confusing to move on.
-> 
+Sunplus SP7021 is an ARM Cortex A7 (4 cores) based SoC. It integrates
+many peripherals (ex: UART, I2C, SPI, SDIO, eMMC, USB, SD card and
+etc.) into a single chip. It is designed for industrial control.
 
-I'm not sure what point you're trying to make.
+Refer to:
+https://sunplus-tibbo.atlassian.net/wiki/spaces/doc/overview
+https://tibbo.com/store/plus1.html
+
+LH.Kuo (2):
+  I2C: Add I2C driver for Sunplus SP7021
+  devicetree bindings I2C Add bindings doc for Sunplus SP7021
+
+ .../devicetree/bindings/i2c/i2c-sunplus.yaml       |   82 +
+ MAINTAINERS                                        |   39 +-
+ drivers/i2c/busses/Kconfig                         |   10 +
+ drivers/i2c/busses/Makefile                        |    1 +
+ drivers/i2c/busses/i2c-sunplus.c                   | 1936 ++++++++++++++++++++
+ 5 files changed, 2052 insertions(+), 16 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/i2c/i2c-sunplus.yaml
+ create mode 100644 drivers/i2c/busses/i2c-sunplus.c
 
 -- 
-Mel Gorman
-SUSE Labs
+2.7.4
+
