@@ -2,106 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBC6943F90F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 10:39:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A3FF43F92D
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 10:45:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232513AbhJ2ImV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 04:42:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232313AbhJ2ImU (ORCPT
+        id S232541AbhJ2IsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 04:48:07 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:4038 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232574AbhJ2Irz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 04:42:20 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5742CC061570
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 01:39:52 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id l7so9884366iln.8
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 01:39:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=N+B4Aqq4CeoUMbrpwWnK7z1NkNQ/HQ1RQ4+lttaMrVE=;
-        b=E2OH5s6oaV8JbG0GC/o67pIflxIyTxIwSSHrcxCuaizfTH6lGHBmW8d0MM+mzSSSN7
-         PnB4LbtLtSE7vhJuxFybszv+L3Iah5D2J+kMLf+MGFfrFGIELkPcCAIXdGEZ89Wx897G
-         /8A2lWct1zXyd6KJ2Xym2GrsEtRurVMbSRlgUe8DpzNnI2i/DAzYD0DyIW4rKVD01yPi
-         296vdDQ/AIR8lTVa+jsR88mEeAR537DGEdusQ0GQVBKfymhIi/AUjPnBOgOJHCca6k6M
-         5o1iYQMsh7srNWKB0kMzn5vJsStxa8L9ZmcG5LlaLX7R4+5BnhJSz8APXVB5zxq3P/Na
-         Qd4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=N+B4Aqq4CeoUMbrpwWnK7z1NkNQ/HQ1RQ4+lttaMrVE=;
-        b=nUdThD596ha03dRS+1KA9B9pCwhA3Yvgj8XWRhgExyRIsobpYHrFUGPFk+446xFyTC
-         8N9AWZBfHETv7f17EsnqYcT4bV0pn2Kc3mPnAu1FDieBr0yUf4x8tRxLfBmSBHwE5PRe
-         zkSdCsxAHLLynPr1LMq0kCMTkD8MlblkbFOLpkjLQTISejfFFX8TsaPUyCVLIrmvz+pB
-         U8kwnW+nfEAe+ch0c4ACXhkx401/0tNRHnoarcThBXHpG9vWrG3dw8xdzSLOo8uFbfuJ
-         HiubYHBB1bk6OzwqzWbdIOqCktRko8ZovjMx+upF2het3L0QJQTQQJpcIh7quz+WgBhI
-         AnVw==
-X-Gm-Message-State: AOAM531nz6IokVHFXoM3I5CnyjFU2Ot59Z/vsQ+c7zs6yTZxL5SzA1us
-        P3z0gCC4I0UF7ie+A0CdsllPo3cnZ7d2H7HgREw=
-X-Google-Smtp-Source: ABdhPJzULsJfJ8m4XMSmQvG+VBj94iD00pQqabodEmu4nH+DAFSQAvURUmKmgNmsH/jRu+WVTMZ22bHcgSXMtzV+ziU=
-X-Received: by 2002:a05:6e02:1c89:: with SMTP id w9mr6750533ill.189.1635496791692;
- Fri, 29 Oct 2021 01:39:51 -0700 (PDT)
+        Fri, 29 Oct 2021 04:47:55 -0400
+Received: from fraeml738-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HgbVD6Hn0z67n1D;
+        Fri, 29 Oct 2021 16:40:36 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml738-chm.china.huawei.com (10.206.15.219) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Fri, 29 Oct 2021 10:45:18 +0200
+Received: from localhost.localdomain (10.69.192.58) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Fri, 29 Oct 2021 09:45:16 +0100
+From:   John Garry <john.garry@huawei.com>
+To:     <axboe@kernel.dk>
+CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <ming.lei@redhat.com>, John Garry <john.garry@huawei.com>
+Subject: [PATCH] blk-mq-debugfs: Show active requests per queue for shared tags
+Date:   Fri, 29 Oct 2021 16:40:23 +0800
+Message-ID: <1635496823-33515-1-git-send-email-john.garry@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Sender: georgewilson18245@gmail.com
-Received: by 2002:a05:6e02:d90:0:0:0:0 with HTTP; Fri, 29 Oct 2021 01:39:51
- -0700 (PDT)
-From:   Alicia Collins <aliciacollins634@gmail.com>
-Date:   Fri, 29 Oct 2021 00:39:51 -0800
-X-Google-Sender-Auth: 4FxwbknDZmlCSOpLMyDI49vEIHM
-Message-ID: <CAHv29jsUb=RF9Htr1wmru6Eu5f+2fX4UmypvG8nfo53o59Ty_A@mail.gmail.com>
-Subject: Hello
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Dear,
+Currently we show the hctx.active value for the per-hctx "active" file.
 
-With due respect to your person and much sincerity of purpose I wish
-to write to you today, seeking for your urgent assistance in this
-humanitarian social investment project to be establish in your country
-for the mutual benefit of the orphans and the less privileged ones,
-haven't known each other or met before, I know that everything is
-controlled by God as there is nothing impossible to him. I believe
-that you and I can cooperate together in the service of the Lord,
-please open your heart to assist me in carrying out this benevolent
-project in your country/position. I am Mrs.Alicia. Collins, a dying
-widow hospitalized undergoing treatment for brain tumor disease, I
-believe that you will not expose or betray this trust and confidence
-that I am about to entrust to you for the mutual benefit of the
-orphans and the less privileged ones. My late husband made a
-substantial deposit with the Bank which I have decided to hand over
-and entrust the sum of ($ 12,500,000.00 Dollars) in the account under
-your custody for you to invest it into any social charitable project
-in your location or your country. Based on my present health status I
-am permanently indisposed to handle finances or any financial related
-project.
+However this is not maintained for shared tags, and we instead keep a
+record of the number active requests per request queue - see commit
+f1b49fdc1c64 ("blk-mq: Record active_queues_shared_sbitmap per tag_set for
+when using shared sbitmap).
 
- This is the reason why I decided to contact you for your support and
-help to stand as my rightful beneficiary and claim the money for
-humanitarian purposes for the mutual benefits of the less privileged
-ones. Because If the money remains unclaimed with the bank after my
-death, those greedy bank executives will place the money as an
-unclaimed Fund and share it for their selfish and worthless ventures.
-However I need your sincerity and ability to carry out this
-transaction and fulfill my final wish in implementing the charitable
-investment project in your country as it requires absolute trust and
-devotion without any failure. Meanwhile It will be my pleasure to
-compensate you with part of the total money as my Investment
-manager/partner for your effort in handling the transaction, while the
-remaining amount shall be invested into any charity project of your
-choice there in your country.
+Change for the case of shared tags to show the active requests per request
+queue by using __blk_mq_active_requests() helper.
 
-Your early response will be appreciated to enable me to send you
-further details and the bank contact details where the fund has been
-deposited for you to contact the Bank for immediate release and
-transfer of the fund into your bank account as my rightful
-beneficiary.
-Thank you very much for your kind consideration and I wish you well
-and God enlighten you in this social humanitarian project.
+Signed-off-by: John Garry <john.garry@huawei.com>
 
-Best regards and God bless you.
-Sincerely Mrs.Alicia. Collins.
+diff --git a/block/blk-mq-debugfs.c b/block/blk-mq-debugfs.c
+index 68ca5d21cda7..0f8c60e9c719 100644
+--- a/block/blk-mq-debugfs.c
++++ b/block/blk-mq-debugfs.c
+@@ -550,7 +550,7 @@ static int hctx_active_show(void *data, struct seq_file *m)
+ {
+ 	struct blk_mq_hw_ctx *hctx = data;
+ 
+-	seq_printf(m, "%d\n", atomic_read(&hctx->nr_active));
++	seq_printf(m, "%d\n", __blk_mq_active_requests(hctx));
+ 	return 0;
+ }
+ 
+-- 
+2.17.1
+
