@@ -2,56 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6462440277
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 20:49:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C8DD440279
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 20:49:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230370AbhJ2SwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 14:52:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46466 "EHLO mail.kernel.org"
+        id S230419AbhJ2SwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 14:52:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46484 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230024AbhJ2SwC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 14:52:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 2C1B760ED3;
-        Fri, 29 Oct 2021 18:49:33 +0000 (UTC)
+        id S230325AbhJ2SwD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 14:52:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 2AC9760F4B;
+        Fri, 29 Oct 2021 18:49:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635533373;
-        bh=xKjj5TUOX7+7DgXitp6eG/MdSyD3aU2l4IhFJfI2Kes=;
+        s=k20201202; t=1635533374;
+        bh=dUa5okgW+5K5TjZQub9JUubnjey4B5GhNsqS+9vAB2I=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=gOrP+TQ3N+Azv+CfmtnhgDU0KiGS+K5t5HPkeOSCufPo5+nJazfR+tKHj7Jn4lOY2
-         qaayHuhjEv1hGz2S+yBXDDXU5HRW5k2AbtuMV05WwT6QUM+7RxJChhIEPmd0qtxeq6
-         abBaOy2xDlBUZsgEJwrZ/RoxlfAcHulAvIrbDF2IKjo/+XO2OV9/Glc4jF/nGxPxKK
-         glvvLSa516SiH0RaYxUT4yWJ/Jd1K8S3OVFeTSQ5sRz17zeeljI5FUFxmDiaC87w/e
-         Jf7OllwjjZ0dmr1TGdVnjGywbHJXcNHvMXGy2s6pB3uKB/8HLMyv6deyZSXdAio7Am
-         g50RS7xRw+SYQ==
+        b=lJDRmnl2azRz/dvcy+xz2ltuItHgUn1/OZW20hQXRv5Xd5Qt3DPQYvqKN8lv/OI7n
+         gq0WnB/uoh9rZZBJpEveEl4IMph1chCBS0+zH27PkYLUcVFWL3Vsu0zD4KWsX4GI43
+         AL8WeRpoRdkdhE7sweKQysfP2JQH7kwVJ7XokBC0UyX3ZRJ8cO+vFqjg1hN4DGfSQH
+         PGAYYJSEUkFWKfdkgXYqyLSuZOfc72SoVasFcdI3vocf7NHfWhKAVtL3DqNr5mCpI4
+         gnz2vhOKEE1OIgVYSiA1vDZib0DdV7yiauwvO3sI8+kA2qJY630JbWiitmH3zR1nw4
+         xIZ81DXgxOsag==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 24EF260A17;
-        Fri, 29 Oct 2021 18:49:33 +0000 (UTC)
-Subject: Re: [GIT PULL] Btrfs fixes for 5.15-rc8
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2364260987;
+        Fri, 29 Oct 2021 18:49:34 +0000 (UTC)
+Subject: Re: [GIT PULL] Crypto Fixes for 5.15
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1635506911.git.dsterba@suse.com>
-References: <cover.1635506911.git.dsterba@suse.com>
-X-PR-Tracked-List-Id: <linux-btrfs.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1635506911.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.15-rc7-tag
-X-PR-Tracked-Commit-Id: ccaa66c8dd277ac02f96914168bb7177f7ea8117
+In-Reply-To: <20211029041408.GA3192@gondor.apana.org.au>
+References: <20200803044024.GA6429@gondor.apana.org.au>
+ <20200830223304.GA16882@gondor.apana.org.au>
+ <20201026011159.GA2428@gondor.apana.org.au>
+ <20201227113221.GA28744@gondor.apana.org.au>
+ <20210108035450.GA6191@gondor.apana.org.au>
+ <20210708030913.GA32097@gondor.apana.org.au>
+ <20210817013601.GA14148@gondor.apana.org.au>
+ <20210929023843.GA28594@gondor.apana.org.au> <20211029041408.GA3192@gondor.apana.org.au>
+X-PR-Tracked-List-Id: <linux-crypto.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20211029041408.GA3192@gondor.apana.org.au>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git linus
+X-PR-Tracked-Commit-Id: f8690a4b5a1b64f74ae5c4f7c4ea880d8a8e1a0d
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: fd919bbd334f22486ee2e9c16ceefe833bb9e32f
-Message-Id: <163553337314.6387.16781699699043718675.pr-tracker-bot@kernel.org>
-Date:   Fri, 29 Oct 2021 18:49:33 +0000
-To:     David Sterba <dsterba@suse.com>
-Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+X-PR-Merge-Commit-Id: 75c7a6c1ca63131875fe869cbfd404c94d0e1944
+Message-Id: <163553337413.6387.6763795889603013861.pr-tracker-bot@kernel.org>
+Date:   Fri, 29 Oct 2021 18:49:34 +0000
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 29 Oct 2021 14:17:55 +0200:
+The pull request you sent on Fri, 29 Oct 2021 12:14:09 +0800:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.15-rc7-tag
+> git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git linus
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/fd919bbd334f22486ee2e9c16ceefe833bb9e32f
+https://git.kernel.org/torvalds/c/75c7a6c1ca63131875fe869cbfd404c94d0e1944
 
 Thank you!
 
