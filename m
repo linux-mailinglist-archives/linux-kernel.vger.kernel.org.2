@@ -2,77 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92BA9440031
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 18:17:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D3B6440039
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 18:20:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229900AbhJ2QTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 12:19:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42010 "EHLO
+        id S229811AbhJ2QW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 12:22:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229645AbhJ2QTg (ORCPT
+        with ESMTP id S229607AbhJ2QW0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 12:19:36 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3075C061570
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 09:17:07 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id y14-20020a17090a2b4e00b001a5824f4918so4163647pjc.4
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 09:17:07 -0700 (PDT)
+        Fri, 29 Oct 2021 12:22:26 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AA67C061570
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 09:19:57 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id b12so12509729wrh.4
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 09:19:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=N5jdmMZr1H8BuG2Q5I/rRl6BjTobqSwjIrzpsZFZ2TI=;
-        b=cPZwShGA0xZ9inajZzZAbw7RlJu2/Z0umBp+VD/JJPEu/F9muAYP769W/OIMPa09f7
-         97WawzO7hmG6r4rKNv+7Y2xDfOiJOpjVM3uTnFXqU6L4w5zSZwPCJjmnwyHtau0rLHFH
-         dx2WfrgXGdIeVVr7csqoJUrvIDbQRwZccjKZty+REblD757ltpUCNByVfn7XiOU07XiY
-         ro1OnQs1eqk5m+E60qWTKX9RzN/rQu6ECGFWdcX9bd87QVmkUz+he0xsAtXbaKdyoi0Z
-         7uVzu8YOwDPWZOiDBIEYjKrl0BdFJq9tGkUCXosM2kevGXRykJLooMVb8Axy7c+Z7fjc
-         RZ6w==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ikgahne8KsmeRHB0JuMt+hCjE+vDKAl9WiAJzz6l2C4=;
+        b=yTNK5OyhTtsrJYojdFQbqgaD5Lw4ruZTav9ekBbwBHX9h657sM0VcG/V7AeKm0fl/l
+         qv5aZKAbHHnJdbpH4+6HwLgfU4cPMG+4oyTiuemnPEt5MbikJ1hcv7y9g+icvZMiv5kQ
+         lej0aEJ97x1tabCM3EI1zJQ6yL4KO1bS4gRM2cl3g646f1EafnrDhcNrZ1QOlaZ3zHfE
+         1q1otLK4zLVc7kKCSaBYV3PjyncWUpl4/yzzrptxrMDMB+QM0lSwR8T+avlb6iJVnDM4
+         oTq9zDK6kz3cyJ8e89xDQtDJcN4MBMXRIxoM68NJtqcbN/G4IU3bl29UQ9UPawnduUT5
+         D4bQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=N5jdmMZr1H8BuG2Q5I/rRl6BjTobqSwjIrzpsZFZ2TI=;
-        b=svs6R6wSRgdStXDzyLlSOxhQ/f8Heeg8Ayav1LPbTRYX5GQEYFtDshjaQxg+f7M3Uk
-         qWC+HkzhTLL31Ox4/KnPXvdPI1MqtZZ/TN8bqULXsoKXPAEccFF8RSAidZA/YyhYVz5n
-         MdbFF+FRbWfXsg0NgG/zsHx7lQtzNDiZjEEVkuxGioEUHiy4bSxO9YVVgab9HzCzLn4e
-         UD8iIx6z46UQ8EdqirzceN+8G6eihzJ6NxvUnOMoF+kag3rFTkOHK9saH1C+0JjW4QPN
-         Lpit3DAELnsUF9H0lcBY5LKtvGMfdLfd74dUBa2RIqHf68m8Tb/rLPTs/X3P5TCJtdG6
-         Upfg==
-X-Gm-Message-State: AOAM532rUAXZsTh2N9A6bZl7uQWg50aln5G9fgMky5u+bC/Vuh71U9zZ
-        XDYuBmnDsBu8IrVMy49YX4bIHCeX1pnNqQkhSpY=
-X-Google-Smtp-Source: ABdhPJznAqWtPdm3L4MmDX6bfcmvZ6FbMo2y6eWWzyKnGrBZ7eiUz4kW/or91A8KHGz2qcJSqzN4ZKc6OH8p8df1/5o=
-X-Received: by 2002:a17:902:9a04:b0:13a:1b2d:8a5c with SMTP id
- v4-20020a1709029a0400b0013a1b2d8a5cmr10688963plp.47.1635524227360; Fri, 29
- Oct 2021 09:17:07 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ikgahne8KsmeRHB0JuMt+hCjE+vDKAl9WiAJzz6l2C4=;
+        b=ueRfpHTfrI7mpHyJimbJ0tuyPLOtczCHp8IJjNBIWpe49uCs4qv4kMveFoy3BDoYoI
+         4MZsgAnAjUufHwEhdDl1bqI6nNp98T7qci9U2orYK42qbV+bXWp8kvNFftzJrFMGkyPh
+         Iq1J75jQlgX2z+dwxLUS6vrGt+lmJwqSlcIeDnTQ62m+/EE7qd99wJ9DHrPEAwrvsRC9
+         3vFpv5pjgXzMSPuzekVCbDLsB0t6wmVo9ZFPoBCG7np7iqZlL/ZOsNBvwJIw6a0o1Fdm
+         AxZ1cFam1jLJUFOFY6WdggAYcG6NkZGWTcSFrs4kLzoYglCV0WwMo19jHAajOHhzEIuC
+         0zHA==
+X-Gm-Message-State: AOAM533w1ryNfKCrSwyRl4MeiWUL1GCXR5HPA1Fv/eZr+ijDZNgcPcjS
+        +3/whfvuyZXQ9tHKCAoX70TUWu9xZcB2+qLg
+X-Google-Smtp-Source: ABdhPJwQTTfPOMqLfiUtj/Hw5Y2Z3mJ4qcKrUU+eQDR3bfPY1QdIkAR6ZxQGOh95l4OIHTzjiAG1BQ==
+X-Received: by 2002:adf:d1ce:: with SMTP id b14mr15920082wrd.42.1635524395515;
+        Fri, 29 Oct 2021 09:19:55 -0700 (PDT)
+Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id l6sm5320315wmq.17.2021.10.29.09.19.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Oct 2021 09:19:55 -0700 (PDT)
+Date:   Fri, 29 Oct 2021 17:19:52 +0100
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Qian Cai <quic_qiancai@quicinc.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] configs: Introduce debug.config for CI-like setup
+Message-ID: <20211029161952.u4g7vutcz3qd57lo@maple.lan>
+References: <20211029034434.24553-1-quic_qiancai@quicinc.com>
+ <20211029093115.6ychbe56pnebzi43@maple.lan>
+ <e0301a5f-a2c7-eedb-90b1-1d6d631fcc47@quicinc.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6a10:c581:0:0:0:0 with HTTP; Fri, 29 Oct 2021 09:17:06
- -0700 (PDT)
-From:   Garuba Isu <isugaruba56@gmail.com>
-Date:   Fri, 29 Oct 2021 09:17:06 -0700
-Message-ID: <CAJ+dGcXaELFX3BjrxiM2nVnbgXpmzMuy=bSp5YNyE-pBkY6bWA@mail.gmail.com>
-Subject: Treat as urgent
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e0301a5f-a2c7-eedb-90b1-1d6d631fcc47@quicinc.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend
+On Fri, Oct 29, 2021 at 09:57:31AM -0400, Qian Cai wrote:
+> On 10/29/21 5:31 AM, Daniel Thompson wrote:
+> > Does this config need comments at the top of the file describing its 
+> > "mission"?  Put another way, the comments in the description about
+> > where these config options come from seem too important leave buried
+> > in the git history. They are important to understanding what it is
+> > for.
+> > 
+> > I know this the other configs do not have big header comments. However
+> > the existing configs are closer to self-describing. debug.config simply does not explain what the file does in the way xen.config can! People
+> > will surely want to add their "favourite" debug options[1] and those
+> > contributors would benefit from clues on what the configs here are
+> > intended for.
+> 
+> Daniel, (small world, isn't it? Enjoyed your OpenEmbedded lessons in the
+> past.), That's a good point. I personally got used to "git log". I'll
+> add some comments there.
 
-How are you with your family? I hope fine. I'm happy to inform you
-about my success in getting those funds transferred under the
-cooperation of a new partner from India, Presently I=E2=80=99m in India,
-meanwhile I didn't forget your past efforts to assist me in
-transferring those funds despite that it failed us some how. Now
-contact my secretary in Benin Republic West Africa through her e-mail
-id ( lucynnani@hotmail.com ) ask her to send you the ATM CARD worth=E2=80=
-=99s
-sum of ($750,000.00 US Dollars) which I kept for your compensation for
-all the past efforts and attempts to assist me in this transaction. So
-feel free and get in touch with my secretary Ms.Lucy Nnani she will
-send the ATM CARD to you.
+Hello again.
 
-Regards
-Mr. Garuba Isu
+In this case the small world comes about because "debug" is of the
+keywords I use to filter LKML ;-)
+
+
+> >> +# Keep alphabetically sorted.
+> > 
+> > This results in 119 line file that is more-or-less impossible to
+> > comment. It alphabetic really the best way to maintain something
+> > containing so much subjective judgement?
+> 
+> I thought about ordering those in different subject groups, but then
+> realized it might be an overkill for an only one-hundred line file. Most
+> of the options would have a prefix like _LOCKDEP_, _KMEMLEAK_ etc, so
+> they are subject-related close together even sorted alphabetically.
+
+My feedback came about because, in alphabetic form, it is not easy to
+see which ftrace tracers are enabled (because they are named
+CONFIG_<feature>_TRACER they appear all over the place).
+
+
+> I don't really have a strong option on this matter though. We could
+> organize it like in Kconfig sections if people like that way better
+> although it could have a potential overhead to sync with future
+> Kconfig.debug in the future as their places and names change from time
+> to time.
+> 
+> # printk and dmesg options
+> # Compile-time checks and compiler options
+> # Generic Kernel Debugging Instruments
+> # Memory Debugging
+> # Scheduler Debugging
+> # Lock Debugging (spinlocks, mutexes, etc...)
+> # Debug kernel data structures
+> # RCU Debugging
+
+Personally I'd favour this. It really depends on how often it is
+read/changed by uesrs rather than just consumed by the build system.
+Personally I think this will be read quite often.
+
+
+Daniel.
