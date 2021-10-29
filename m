@@ -2,103 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16E8543FC04
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 14:06:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4986543FC07
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 14:07:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231539AbhJ2MJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 08:09:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33442 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231510AbhJ2MJR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 08:09:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 99B5261167
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 12:06:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635509208;
-        bh=wHSN4gzbMNlP3cL0uOMD0Bz+CpMAiXAmVJsjYeOYTuY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=BqxXoqRchGkK6bbVqSvH6vrUMYS6QQNRuZLuHTaEwKjyesVVYW0M1R9xUyPPVBq/b
-         Fdea7iZFhFgpqUeLPEnikp4auVRHTVZ6HsBgNJ9tVCXmRGjBtpowc5ra9WHKtd8yMs
-         YnSeEwUk5p5XqZDY6LHNj4zVsV6VygKxVbIpTAFlPdDKR+iVPJo7M5gihmWgTLWa3m
-         RwjDuf8KYntAKGwcMzWzt+36lC0HDhifSLL4qM84mnFq2EAb1YzMwcR3ltwpvOdGKG
-         B9FDoUGyoMzoK9qogHhyPDZxWwb84e+trtmAoNNXN3M5Ajp+uRaiZXKT5tELtyfD5t
-         mplXexvNHCfhA==
-Received: by mail-wr1-f54.google.com with SMTP id k7so15767425wrd.13
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 05:06:48 -0700 (PDT)
-X-Gm-Message-State: AOAM5335fG3RA336gOYWcZbi/Qkm5usyg3DIM6/Qq4SGNVs7pUuaOiPj
-        +dYi+uWC6X75IyooMjnvDwZlzcOJS6VA6adeRJQ=
-X-Google-Smtp-Source: ABdhPJyuj/QVAPGVv6P9H50bSyp8g+Y5gAbxa7PrEH9Io/M+TBSmkz99ozucgwXHa/I3Q6KEGbXDDmRLxgKXyg6skhU=
-X-Received: by 2002:adf:e292:: with SMTP id v18mr13328237wri.369.1635509207143;
- Fri, 29 Oct 2021 05:06:47 -0700 (PDT)
+        id S231546AbhJ2MJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 08:09:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230475AbhJ2MJk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 08:09:40 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E0B9C061570
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 05:07:12 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 17so13364026ljq.0
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 05:07:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1eirQQDFGLnuOBylNysB2OPO3DM0CiT5s5esxUOxGBw=;
+        b=lqTKm2lv4z205Qp89xJiLSTdgPD7+cbtM+/QE+QRN/gUlp1OmplLRredwuByu6Al/P
+         Wo71Zho7LNfYeOnoSlPX4hcM+Jdyel5sH2cgJGFzOK5hYaNr2nVqMIlRwDS5sRKEtZDy
+         xmwTJsedlGE/cJ36KHirqKd4wL6gw2f9OVCwev+yOE/G9PbN7tTn3HLFFn4gQuXPCtkl
+         W6/Td2LmBPjYvT3DBBUixDzG75AyTHYhO5CWTObXim/QTV3EO213oaxYhzsV87B53aVA
+         skdLHHpMsmstX9qKt4wIeZckp+rfRga7dYhR57l1DidaRpt9OmXSz0tyMhgWwcEW+x+g
+         YliQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1eirQQDFGLnuOBylNysB2OPO3DM0CiT5s5esxUOxGBw=;
+        b=iAGOV1w1h1LscFUQ/+G7VdXzc/xEJmDKQ1EchRLEiBYaWJWgYvEh5B62T6p8GqZkRB
+         sNPMyzFyNWBfjaFauQBRNWCqj2LaW8FOrUo+jWFQXSTcEHfc7X/054ofAAUyD3BmXtQz
+         jz5OXXTpE2OisqLay3aCsNWSnFtVRGnrlTf4BGuBW9y8l4W22q+nZYYkR+DSsHPV0Y0z
+         Bv8hX94LLcSisI5W1IntPJGKfwWdaosThc0NyxXfShexD//ZLNWHwVnwa1dmuoqqnJHe
+         RjynHzZvTraHR3DZYfvpXWFf+eV1qtXFFpw0otM1vuTOkk2gFuuIkaEJ0FDdMkaJm2Cq
+         MZ+Q==
+X-Gm-Message-State: AOAM530M2CLDFzpvnP/0DuAIXHH+TQyEytwXaHwERTBaMnfmmax+kMGa
+        g72AE+fAbFXYLouGEjEoFS4eMA==
+X-Google-Smtp-Source: ABdhPJyzLo62tQdRTxyLQ9J4EAJXL52ZopoxaBT7MrOT9ts4P2uBgR1n0cJbehD4Tklkq/Bp6bPmgA==
+X-Received: by 2002:a2e:5344:: with SMTP id t4mr11017960ljd.294.1635509230709;
+        Fri, 29 Oct 2021 05:07:10 -0700 (PDT)
+Received: from localhost.localdomain (h-155-4-129-146.NA.cust.bahnhof.se. [155.4.129.146])
+        by smtp.gmail.com with ESMTPSA id m3sm303935lfr.203.2021.10.29.05.07.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Oct 2021 05:07:09 -0700 (PDT)
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+To:     Linus <torvalds@linux-foundation.org>, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [GIT PULL] MMC fixes for v5.15-rc8
+Date:   Fri, 29 Oct 2021 14:07:09 +0200
+Message-Id: <20211029120709.79366-1-ulf.hansson@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210927142816.2069269-1-arnd@kernel.org> <202109270923.97AFDE89DB@keescook>
- <YVXJLE8UqgcUNIKl@phenom.ffwll.local> <878ryeit9i.fsf@intel.com>
- <CAK8P3a0EG_C6OvG00Dg8SQacirNztLFjVonb5t2xQj9aFZ47Vg@mail.gmail.com>
- <ca11cd15-3877-468b-c6b7-9022b6b11824@redhat.com> <YXrAm6d6ALx0aciQ@phenom.ffwll.local>
-In-Reply-To: <YXrAm6d6ALx0aciQ@phenom.ffwll.local>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 29 Oct 2021 14:06:31 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1i5=Z59=zL6MFL3oN-Wj9kbV8xsgoZG-rAn8NekZz9Og@mail.gmail.com>
-Message-ID: <CAK8P3a1i5=Z59=zL6MFL3oN-Wj9kbV8xsgoZG-rAn8NekZz9Og@mail.gmail.com>
-Subject: Re: [PATCH] [RESEND] drm: fb_helper: fix CONFIG_FB dependency
-To:     Javier Martinez Canillas <javierm@redhat.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>, Arnd Bergmann <arnd@arndb.de>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc:     Daniel Vetter <daniel@ffwll.ch>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 5:24 PM Daniel Vetter <daniel@ffwll.ch> wrote:
->
-> On Wed, Oct 27, 2021 at 03:19:34PM +0200, Javier Martinez Canillas wrote:
-> > On 10/27/21 14:18, Arnd Bergmann wrote:
-> >
-> > [snip]
-> >
-> > > Right, how about this change on top?
-> > >
-> > > --- a/drivers/gpu/drm/Kconfig
-> > > +++ b/drivers/gpu/drm/Kconfig
-> > > @@ -117,9 +117,8 @@ config DRM_DEBUG_MODESET_LOCK
-> > >
-> > >  config DRM_FBDEV_EMULATION
-> > >         bool "Enable legacy fbdev support for your modesetting driver"
-> > > -       depends on DRM
-> > > -       depends on FB=y || FB=DRM
-> > > -       select DRM_KMS_HELPER
-> > > +       depends on DRM_KMS_HELPER
-> > > +       depends on FB=y || FB=DRM_KMS_HELPER
-> > >         select FB_CFB_FILLRECT
-> > >         select FB_CFB_COPYAREA
-> > >         select FB_CFB_IMAGEBLIT
-> > >
-> > > That would probably make it work for DRM=y, FB=m, DRM_KMS_HELPER=m,
-> > > but it needs more randconfig testing, which I can help with.
-> >
-> > Looks good to me as well.
-> >
-> > Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
->
-> Is the mess I created sorted now, or something for me to do? I'm terribly
-> burried in stuff :-/
+Hi Linus,
 
-I have done a few days worth of build testing with that patch applied, and
-did not see any other problems. I've written a proper description and
-submitted it as
-https://lore.kernel.org/all/20211029120307.1407047-1-arnd@kernel.org/T
+Here's a PR with a couple of MMC fixes intended for v5.15-rc8. Details about the
+highlights are as usual found in the signed tag.
 
-The version you have in linux-next works correctly, but this patch on top
-is an improvement.
+Please pull this in!
 
-        Arnd
+Kind regards
+Ulf Hansson
+
+
+The following changes since commit 64570fbc14f8d7cb3fe3995f20e26bc25ce4b2cc:
+
+  Linux 5.15-rc5 (2021-10-10 17:01:59 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git tags/mmc-v5.15-rc5
+
+for you to fetch changes up to 90935eb303e0d12f3d3d0383262e65290321f5f6:
+
+  mmc: tmio: reenable card irqs after the reset callback (2021-10-28 23:19:32 +0200)
+
+----------------------------------------------------------------
+MMC host:
+ - tmio: Re-enable card irqs after a reset
+ - mtk-sd: Fixup probing of cqhci for crypto
+ - cqhci: Fix support for suspend/resume
+ - vub300: Fix control-message timeouts
+ - dw_mmc-exynos: Fix support for tuning
+ - winbond: Silences build errors on M68K
+ - sdhci-esdhc-imx: Fix support for tuning
+ - sdhci-pci: Read card detect from ACPI for Intel Merrifield
+ - sdhci: Fix eMMC support for Thundercomm TurboX CM2290
+
+----------------------------------------------------------------
+Andy Shevchenko (1):
+      mmc: sdhci-pci: Read card detect from ACPI for Intel Merrifield
+
+Haibo Chen (1):
+      mmc: sdhci-esdhc-imx: clear the buffer_read_ready to reset standard tuning circuit
+
+Jaehoon Chung (1):
+      mmc: dw_mmc: exynos: fix the finding clock sample value
+
+Johan Hovold (1):
+      mmc: vub300: fix control-message timeouts
+
+Randy Dunlap (1):
+      mmc: winbond: don't build on M68K
+
+Shawn Guo (1):
+      mmc: sdhci: Map more voltage level to SDHCI_POWER_330
+
+Wenbin Mei (2):
+      mmc: cqhci: clear HALT state after CQE enable
+      mmc: mediatek: Move cqhci init behind ungate clock
+
+Wolfram Sang (1):
+      mmc: tmio: reenable card irqs after the reset callback
+
+ drivers/mmc/host/Kconfig           |  2 +-
+ drivers/mmc/host/cqhci-core.c      |  3 +++
+ drivers/mmc/host/dw_mmc-exynos.c   | 14 ++++++++++++++
+ drivers/mmc/host/mtk-sd.c          | 38 +++++++++++++++++++-------------------
+ drivers/mmc/host/sdhci-esdhc-imx.c | 16 ++++++++++++++++
+ drivers/mmc/host/sdhci-pci-core.c  | 29 ++++++++++++++++++++++++-----
+ drivers/mmc/host/sdhci.c           |  6 ++++++
+ drivers/mmc/host/tmio_mmc_core.c   | 17 ++++++++++++-----
+ drivers/mmc/host/vub300.c          | 18 +++++++++---------
+ 9 files changed, 104 insertions(+), 39 deletions(-)
