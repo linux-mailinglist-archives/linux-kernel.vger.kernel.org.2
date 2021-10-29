@@ -2,94 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 913EA44022B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 20:39:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E829244025B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 20:45:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230119AbhJ2Sm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 14:42:26 -0400
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:45811 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229489AbhJ2SmX (ORCPT
+        id S231260AbhJ2Srw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 14:47:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47252 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230044AbhJ2Sri (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 14:42:23 -0400
-Received: by mail-ot1-f53.google.com with SMTP id l16-20020a9d6a90000000b0054e7ab56f27so14764895otq.12;
-        Fri, 29 Oct 2021 11:39:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZbJJ3sirvGO1Q5qzFIR+Qcm5nvITBleUPONekunq9do=;
-        b=FPP9oLtujVqmUWWVn8s4bQ+1chwHt7/d0CuFHFKZVC5ldkNpNcWrn4CYL4hUK5liJx
-         KAo7IYHTdqQXnPjZUlRei26k2+PfDTokieFRl2OhHTNxAmKD+EP+JuXb1UiehJjOkqWg
-         te8hK0Y31PAYGUSXexM4JhA3EgV8xM62gGqU9gC76V5bpUuxeLEe9NTksnuIoOu5Dr89
-         /GyxAl8+k9wjJSBMK8mOXf690txd44+aymZgXMBTD82V7VzHdcLAtsr9laSmrYm+05Jh
-         1k8KMQbVu7xUOcAKgG/ZzSd5Jjy9gIqlzULStbtQkHmqAuZ9UAzrGZrLiJ657epbOg6k
-         wezg==
-X-Gm-Message-State: AOAM532Nmr2c+jWUkD0DNzsdfR6s4OnxCGIh6fCwlVvv/6/9ieyO3Rop
-        CQTdw/W8sGJx3cLTlEYm61UChq2Vfnc+BjdcpaU=
-X-Google-Smtp-Source: ABdhPJzzT6cB8eCDJmpVcRiVJH/HJQE931S3wWY6YLrIMln0JVWc33duNyd4uacmLGMUV1B0MfAnmK1v5Cm4HHKIGks=
-X-Received: by 2002:a05:6830:90b:: with SMTP id v11mr9843423ott.254.1635532794570;
- Fri, 29 Oct 2021 11:39:54 -0700 (PDT)
+        Fri, 29 Oct 2021 14:47:38 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C0DCC061766;
+        Fri, 29 Oct 2021 11:45:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=eiqoJ/sT9tSkAQMOpJ5WDTuQjnGh8Wt2Zkw+2oSs1CA=; b=um+YvmgtYbJVDArMu18M/ab5/3
+        /HHXWIshZWdnhLpeVdILVapOVlGFL8kNlJjD3DbllVL1fIucru3dDk2A4KYvfuYX1FldHCX+G+Q9V
+        Z0Bx2XtzXJ5jJ2BTIMy371wj6EQzlfPmzUrWJ/k+YFZow6ZYh4X6uJ5rawUuAZcN93CJdBnkGji6f
+        k2jQ3HwMuUoETLKCZh2PSIqAt2SZQ46LxV3uFZpwbkJANgBuFHhM8GgMX7zDPD92PRN8mepSQwlNM
+        9i4GGeyKay/H6hFS2l+F3AuDpZDoTH8Xr1CcqNd4pHffLeQ//JN8cQrP4/NDWTHhMc3oR9f6gQV0f
+        tnKHSqjw==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mgWsA-00Bq0K-16; Fri, 29 Oct 2021 18:45:02 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     tj@kernel.org, gregkh@linuxfoundation.org,
+        akpm@linux-foundation.org, jeyu@kernel.org, shuah@kernel.org
+Cc:     bvanassche@acm.org, dan.j.williams@intel.com, joe@perches.com,
+        tglx@linutronix.de, mcgrof@kernel.org, keescook@chromium.org,
+        rostedt@goodmis.org, minchan@kernel.org,
+        linux-spdx@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v9 0/6] test_sysfs: add new selftest for sysfs
+Date:   Fri, 29 Oct 2021 11:44:54 -0700
+Message-Id: <20211029184500.2821444-1-mcgrof@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20211018202542.584115-1-tony.luck@intel.com> <20211026220050.697075-1-tony.luck@intel.com>
- <20211026220050.697075-8-tony.luck@intel.com>
-In-Reply-To: <20211026220050.697075-8-tony.luck@intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 29 Oct 2021 20:39:43 +0200
-Message-ID: <CAJZ5v0gAuqf6RWhgiKvZ5W30p3+cZxnROPP_CzDDNY8ufyFGYw@mail.gmail.com>
-Subject: Re: [PATCH v11 7/7] x86/sgx: Add check for SGX pages to ghes_do_memory_failure()
-To:     Tony Luck <tony.luck@intel.com>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Cathy Zhang <cathy.zhang@intel.com>, linux-sgx@vger.kernel.org,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Reinette Chatre <reinette.chatre@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 12:01 AM Tony Luck <tony.luck@intel.com> wrote:
->
-> SGX EPC pages do not have a "struct page" associated with them so the
-> pfn_valid() sanity check fails and results in a warning message to
-> the console.
->
-> Add an additional check to skip the warning if the address of the error
-> is in an SGX EPC page.
->
-> Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-> Tested-by: Reinette Chatre <reinette.chatre@intel.com>
-> Signed-off-by: Tony Luck <tony.luck@intel.com>
+On this v9 I've dropped the generic sysfs deadlock fix given Ming Lei
+has provided alternative fixes for the zram driver without incurring
+a generic lock *and* we don't yet have full assessment of how wide
+spread the deadlock case might be in the kernel. A full assessment
+effort is still underway using Coccinelle with iteration support,
+however that effort will take a bit more time to complete. We can
+re-evaluate the value of a generic fix later after the assessment
+is complete.
 
-Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+This series now just adds the test_sysfs selftest and failure injection
+support for it on kernfs. The most valuable tests are those which
+confirm that once a kernfs active reference is obtained with
+kernfs_get_active() the pointers used there are still valid, and so
+using sysfs ops *are* safe if we race against module removal. Likewise
+it also confirms how module removal will *wait* for these ops to
+complete if a kernfs node is already active.
 
-> ---
->  drivers/acpi/apei/ghes.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
-> index 0c8330ed1ffd..0c5c9acc6254 100644
-> --- a/drivers/acpi/apei/ghes.c
-> +++ b/drivers/acpi/apei/ghes.c
-> @@ -449,7 +449,7 @@ static bool ghes_do_memory_failure(u64 physical_addr, int flags)
->                 return false;
->
->         pfn = PHYS_PFN(physical_addr);
-> -       if (!pfn_valid(pfn)) {
-> +       if (!pfn_valid(pfn) && !arch_is_platform_page(physical_addr)) {
->                 pr_warn_ratelimited(FW_WARN GHES_PFX
->                 "Invalid address in generic error data: %#llx\n",
->                 physical_addr);
-> --
-> 2.31.1
->
+This v9 series also addresses feedback mostly provided by Kees Cook and Greg.
+I also made a few changes to the test_sysfs driver to account for changes in
+the block layer. I also improved the kernfs failure injection tests with
+documentation of how they work and to account for the real expected return
+value of a write before the kernfs active reference is obtained. Upstream
+commit 8e141f9eb803e ("block: drain file system I/O on del_gendisk") has
+revealed that small minor induced delays on del_gendisk() can make a few
+writes succeed if the delays used are small. So we clarify the logic of why
+writes could either fail or succeed before the kernfs active reference is taken.
+
+These changes also availble on this tree:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git/log/?h=20211029-test-sysfs-v2
+
+v9:
+  * rebased onto linux-next tag next-20211029
+  * add Reviewed-by tags for the SPDX change, and the drivers which
+    get the tag for it
+  * drop the generic sysfs deadlock fix for now as the scope of how
+    wide spread the issue is still needs to be assessed
+  * drop the zram patches as they are replaced by Ming Lei's fixes
+  * drop already merged patches
+  * try_module_get() docs: enhanced using feedback from Kees Cook. I
+    extended the documention to make it clear that if proper care is not
+    taken the use of this routine could crash the kernel.
+  * kernfs: move failure injection knobs under /sys/kernel/debug/fail_kernfs
+    as suggested by Kees Cook
+  * kernfs: rename failure injection file to fault_inject.c as suggested
+    by Kees Cook
+  * kernfs: split up documentation of failure injection knobs as
+    suggested by Kees Cook
+  * kernfs: move the wait into debug call, and use a simple one liner
+    may_wait() calls to make the changes much less intrusive and more
+    readable  as suggested by Kees Cook 
+  * kernfs: drop __func__ uses as suggested by Kees Cook
+  * test_sysfs: use sizeof() instead of open coded 16 as suggested by
+    Kees Cook
+  * test_sysfs: use sysfs_emit as suggested by Kees Cook
+  * test_sysfs: drop boiler place license as suggested by Greg KH
+  * test_sysfs: use depends instead of select as suggested by Kees Cook
+  * test_sysfs: drop #ifdefery as suggested by Kees Cook
+  * test_sysfs: clarified that the use of a lock on rmmod which causes
+    a deadlock is something drivers should avoid, and its why we leave
+    the test disabled.
+  * test_sysfs: now that device_add_disk() returns an error, use the
+    new error return code, otherwise this is going to prevent us from
+    eventually embracing __must_check() on that call on the block layer.
+  * test_syfs: testdev_submit_bio() needed to change data types as now
+    it returns void.
+  * test_sysfs: enhance kernfs failure injection tests with documenation
+    and correct the expected return value for writes
+
+Luis Chamberlain (6):
+  LICENSES: Add the copyleft-next-0.3.1 license
+  testing: use the copyleft-next-0.3.1 SPDX tag
+  selftests: add tests_sysfs module
+  kernfs: add initial failure injection support
+  test_sysfs: add support to use kernfs failure injection
+  kernel/module: add documentation for try_module_get()
+
+ .../fault-injection/fault-injection.rst       |   50 +
+ LICENSES/dual/copyleft-next-0.3.1             |  237 +++
+ MAINTAINERS                                   |    9 +-
+ fs/kernfs/Makefile                            |    1 +
+ fs/kernfs/fault_inject.c                      |   93 ++
+ fs/kernfs/file.c                              |    9 +
+ fs/kernfs/kernfs-internal.h                   |   70 +
+ include/linux/kernfs.h                        |    5 +
+ include/linux/module.h                        |   37 +-
+ lib/Kconfig.debug                             |   23 +
+ lib/Makefile                                  |    1 +
+ lib/test_kmod.c                               |   12 +-
+ lib/test_sysctl.c                             |   12 +-
+ lib/test_sysfs.c                              |  913 +++++++++++
+ tools/testing/selftests/kmod/kmod.sh          |   13 +-
+ tools/testing/selftests/sysctl/sysctl.sh      |   12 +-
+ tools/testing/selftests/sysfs/Makefile        |   12 +
+ tools/testing/selftests/sysfs/config          |    5 +
+ tools/testing/selftests/sysfs/settings        |    1 +
+ tools/testing/selftests/sysfs/sysfs.sh        | 1411 +++++++++++++++++
+ 20 files changed, 2878 insertions(+), 48 deletions(-)
+ create mode 100644 LICENSES/dual/copyleft-next-0.3.1
+ create mode 100644 fs/kernfs/fault_inject.c
+ create mode 100644 lib/test_sysfs.c
+ create mode 100644 tools/testing/selftests/sysfs/Makefile
+ create mode 100644 tools/testing/selftests/sysfs/config
+ create mode 100644 tools/testing/selftests/sysfs/settings
+ create mode 100755 tools/testing/selftests/sysfs/sysfs.sh
+
+-- 
+2.30.2
+
