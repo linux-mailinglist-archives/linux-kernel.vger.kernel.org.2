@@ -2,98 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC8F943FE9A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 16:41:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AF2343FE9F
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 16:44:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229641AbhJ2OoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 10:44:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229511AbhJ2OoP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 10:44:15 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29E9AC061570
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 07:41:47 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id o12so24842682ybk.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 07:41:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=NWKMZ//AyFWFbpFk6FF66OtPadVuan7a1ybZS8hGNR8=;
-        b=MKETgg8TbLibza8/nA8sbUC5M+zq2jx0NGdLIkKtkILQSgvTmqBD74MvWqIjfMBTAp
-         9+ckPAMgAubFGwQ9Wja7n6Tg79nmAHwyUpqNNHVDIH3KYzJIiQ8FeauyQeDB5Xet+6bV
-         PKLhC4AucgHiM/9FXmkxbMBx2KF7LC9LdYlQOxwRLX/JYmwYLjDfU/rcHKHRtHMnhhiC
-         m5cdHUTGgaDeL4rF1WZsBxwKD5MRou42IdkoStcWgyjztUlal20kAEzxx8NSHiMXMCMG
-         gNpHRiI96Kbl2tTg9W5cmyOBMXEmrLMS7J8FeDzjlRcmNiby/2YJGIlGvd7QpE5pVYuM
-         fvyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=NWKMZ//AyFWFbpFk6FF66OtPadVuan7a1ybZS8hGNR8=;
-        b=rmHAiOw6vZjeMA4RXy5gpDyLwrcEtWLivw5v0zDUCT8TkcfMMf9To/qndsSnDGbH6q
-         3BP6C9EdQKtpHDvSkGHHOBZ9BAaRD0sZW879OlyvPC6RkZhFj3Wyms/sgmbFeSQ4CDOq
-         u45whG4vmBAaa5NUx0wnAXvPIYOAGgNSJKjp9ZzzwKXyPZU6dnHC56X3WMC/WvrkMzhR
-         TO75mhcP0fFALCLlH29ZoGSGtL1jPyXkdcv1v9ZQxASe8UDCMr/uby8reFy/dicm2HDX
-         6zksUvg7tzLs0gMXmryQdfXA27ga7iEqj2wJbI77+qJrOMHzpHpigwKhCj2YTBfBZLpU
-         8IPg==
-X-Gm-Message-State: AOAM533RHtxXDnrHSEuRf8vuPLMKNrM7xbkKieptBMkFY5egowiCOreG
-        CBDPwGN80eESvzJNlVpAndjyV7HFa2b/IkZ4PAk=
-X-Google-Smtp-Source: ABdhPJwlz9Cy19xfD52gtnmBjMaG0dxo2FThrZ1yTFJOfVIB3e//WHaMQZEoZNdlcYCVEkeNXZBxRWtvVERJmrEYN7o=
-X-Received: by 2002:a25:ba0f:: with SMTP id t15mr12857218ybg.62.1635518506293;
- Fri, 29 Oct 2021 07:41:46 -0700 (PDT)
+        id S229652AbhJ2OrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 10:47:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45970 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229511AbhJ2OrM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 10:47:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C884611CB;
+        Fri, 29 Oct 2021 14:44:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635518684;
+        bh=JXq063lxP5NdObYVfsylEOeDpQ9heda2NljDpPAKCVY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=pwIj0TbCChJdPc7ZRljY9/z91EdKF/FwQJvaAalrsJxPz7mrgEECL8PcZXoM9vSl5
+         tYKW3kl6h1zRV+580CPZdqJwcC0mw6W+o+ZZbRd830NMSOkU1TV7zkeLsL5WBoGhlP
+         sp0xydfFgSaSocdQEPLvSMWwVvpCSw3hNHIBuviafOjJna+lSAZPCTKJiA7EbsrCLN
+         4aQedFp+HHqccwyRw2wWrHtYFaQ5I8JOF0SO2x3v6j8PTmaIB40QXYSwTqRqG6VcQn
+         dFvDh1pEMaJDqJQT0hcxcLWp7wCQvTtXSOiELuxnprUksK+wuAPSnMeVggopNPf6vZ
+         rRKI5ksr0b0xg==
+Received: by mail-ed1-f45.google.com with SMTP id w15so39627795edc.9;
+        Fri, 29 Oct 2021 07:44:44 -0700 (PDT)
+X-Gm-Message-State: AOAM531mNebXHUeGaT/+cJQTCkynfd2/TieWRN2b3OfY/h/on8j8yzfG
+        TpjMPzJyL3tiO8qwmI3DCXhClAk1HRhRKzKaeg==
+X-Google-Smtp-Source: ABdhPJzgKku5UI29pWp+EBd22f3zuolB3qfN6dXWo83KbECOM1/m8h0OEK7iECxDyOFCsyGMYpk0WwXYpKdvn2KU2O0=
+X-Received: by 2002:a17:906:d553:: with SMTP id cr19mr13689318ejc.128.1635518682351;
+ Fri, 29 Oct 2021 07:44:42 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a05:7110:700c:b0:fa:6b8d:fe70 with HTTP; Fri, 29 Oct 2021
- 07:41:45 -0700 (PDT)
-Reply-To: uchennailobitenone@gmail.com
-From:   uhenna <tochiuju11@gmail.com>
-Date:   Fri, 29 Oct 2021 07:41:45 -0700
-Message-ID: <CA+6axKtzZweDpC2m0ECn_Epy5xOKRroM-eJn7rcEZL+j2eBzYQ@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
+References: <20211021174223.43310-1-kernel@esmil.dk> <20211021174223.43310-12-kernel@esmil.dk>
+ <YXtTUGC5P41JtvoR@robh.at.kernel.org> <CANBLGcx3L1DmqjzqRAb+vEYWZTTxeGNUVx=BUfDuw=h3q5Nkgg@mail.gmail.com>
+In-Reply-To: <CANBLGcx3L1DmqjzqRAb+vEYWZTTxeGNUVx=BUfDuw=h3q5Nkgg@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Fri, 29 Oct 2021 09:44:30 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqLBZV6ADY-B+3HCkxT1KpBJ5s3kcUfewSYf_rJ8HTu9Mw@mail.gmail.com>
+Message-ID: <CAL_JsqLBZV6ADY-B+3HCkxT1KpBJ5s3kcUfewSYf_rJ8HTu9Mw@mail.gmail.com>
+Subject: Re: [PATCH v2 11/16] dt-bindings: pinctrl: Add StarFive JH7100 bindings
+To:     Emil Renner Berthing <kernel@esmil.dk>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Sagar Kadam <sagar.kadam@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michael Zhu <michael.zhu@starfivetech.com>,
+        Fu Wei <tekkamanninja@gmail.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Attention Please,
+On Fri, Oct 29, 2021 at 8:00 AM Emil Renner Berthing <kernel@esmil.dk> wrote:
+>
+> On Fri, 29 Oct 2021 at 03:50, Rob Herring <robh@kernel.org> wrote:
+> > On Thu, Oct 21, 2021 at 07:42:18PM +0200, Emil Renner Berthing wrote:
+> > > +patternProperties:
+> > > +  '-[0-9]*$':
+> >
+> > Can you make this more specific. As-is, '-' and 'foo-' are valid.
+> >
+> > > +    type: object
+> > > +    patternProperties:
+> > > +      '-pins*$':
+> >
+> > So foo-pinsssssss is okay? Drop the '*' or use ? if you intend to
+> > support 'foo-pin'.
+>
+> Ah, thanks. Both this and the pattern above was taken from
+> pinctrl/mediatek,mt6779-pinctrl.yaml if anyone feels like fixing that
+> too. I see now that '-[0-9]+$' and '-pins$' is more common. I'll just
+> use that.
+>
+> > > +        type: object
+> > > +        description: |
+> > > +          A pinctrl node should contain at least one subnode representing the
+> > > +          pinctrl groups available on the machine. Each subnode will list the
+> > > +          pins it needs, and how they should be configured, with regard to
+> > > +          muxer configuration, bias, input enable/disable, input schmitt
+> > > +          trigger enable/disable, slew-rate and drive strength.
+> > > +        $ref: "/schemas/pinctrl/pincfg-node.yaml"
+> > > +
+> > > +        properties:
+> > > +          pins:
+> > > +            description: |
+> > > +              The list of pin identifiers that properties in the node apply to.
+> > > +              This should be set using either the PAD_GPIO or PAD_FUNC_SHARE
+> > > +              macro. Either this or "pinmux" has to be specified.
+> > > +
+> > > +          pinmux:
+> > > +            description: |
+> > > +              The list of GPIO identifiers and their mux settings that
+> > > +              properties in the node apply to. This should be set using the
+> > > +              GPIOMUX macro. Either this or "pins" has to be specified.
+> > > +
+> > > +          bias-disable: true
+> > > +
+> > > +          bias-pull-up:
+> > > +            type: boolean
+> >
+> > Already has a type. Need to reference the common schema.
+>
+> Right, but the common schema specifies one of boolean or uint32. Is
+> there a way to reference that, but still say that this binding
+> supports only the boolean version?
 
-I am Bar. uchenna ilobi ,  How are you, I hope you are fine and
-healthy? This is to inform you that i have concluded the transaction
-successfully with the help of a new partner from Venezuela and now the
-fund has been transferred to Venezuela into the bank account of the
-new partner.
+Okay, then keep this.
 
-Meanwhile, I have decided to compensate you with the sum of
-US$350,000.00 (thiree Hundred and Fifty Thousand United States
-Dollars) due to your past effort, though you disappointed me along the
-line. But nevertheless I am very happy for the successful ending of
-the transaction without any problem and that is the reason why i have
-decided to compensate you with the sum of US$350,000.00 so that you
-will share the joy with me.
-
-I advise you to contact my secretary for Atm Card of US$350.000.00,
-which I kept for you. Contact him now without any delay.
-
-Name: solomon brandy
-
-Email:solomonbrandyfiveone@gmail.com
-
-Kindly reconfirm to him the following below information:
-
-Your full name_________________________
-Your address__________________________
-Your country___________________________
-Your age______________________________
-Your occupation________________________
-Your cell Phone number______________________
-
-Note that if you did not send him the above information complete, he
-will not release the Atm card to you because he has to be sure that it
-is you. Ask him to send you the total sum of ($350.000.00 ) Atm card,
-which I kept for you.
-
-Best regards,
-
-Mr. uchenna ilobi
+Rob
