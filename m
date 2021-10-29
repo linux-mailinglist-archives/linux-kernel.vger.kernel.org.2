@@ -2,119 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDBB943FFDE
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 17:51:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E16143FFE1
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 17:55:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230010AbhJ2PyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 11:54:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229662AbhJ2PyO (ORCPT
+        id S229826AbhJ2P5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 11:57:51 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:38662 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229607AbhJ2P5u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 11:54:14 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAF54C061714;
-        Fri, 29 Oct 2021 08:51:45 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id s1so40256164edd.3;
-        Fri, 29 Oct 2021 08:51:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NESlwwMORorwSWYzWjNc0O70aEVgaVjtuvkdZI1/8es=;
-        b=KtJDps6dyol74mgZwTFC89lUznMWMTflRjyEGBQg8fGTIHN4eS84jauTuUjHSkxHST
-         dg466nqGzuri8/DlWUUN8zd2NaCCz0U8kvOGxHCqjTMGdZ6iMDYunWvuGt2cOtXkcv/e
-         Ue2xn0HPWcE13DrP2OOnzAVehZzgf7sonec4sRhiS1xjKpw6AHFzBdaM06bbQlJ7Ja6j
-         DqvSlb2Et8rx+kql0yC4WX+v7blifYbbw8XxCxbiTrhkRNvvRa2UjvXED5+77b1wlOPY
-         lBS+nUPNJn2q/KU3a4esLsUmSIB7aVNfjuXrsKyw+tg80XBA+VjpMSYDL8e2U0sAf4mG
-         8W+Q==
+        Fri, 29 Oct 2021 11:57:50 -0400
+Received: by mail-il1-f197.google.com with SMTP id r13-20020a92440d000000b002498d6b85c1so6276791ila.5
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 08:55:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NESlwwMORorwSWYzWjNc0O70aEVgaVjtuvkdZI1/8es=;
-        b=IL3WJ5eAgcGwVVL69Y8FLZVE3zcGbUKQ/yzWZyy+Q8uu9RV8i2Ro2GZWqFz6DnlAMp
-         ankvuDDSM+lAHUj/Gwtwm06bYSQGxvoqlAEdfToDAScoRjcbn9ulyzYSkKPuWwzC323x
-         qJzbRENJky/4iqUhePkcCutt2ESqhFJnH6j9bIHMJjthColtEmKK05lP9H0kEVyb/1Tp
-         8UkrQvF54Xhc7Wwtcmt+1dUfgSL58IXb2QFOmOQFcQQoDZguc2EM82xJ7ksr4Nil9dxR
-         zOpWG822uXhTbisrDi2BCLq42uLYaGUah0jxjZGzybFU0Wi4wcmScaDK1gjNoeUtmpc0
-         QkBA==
-X-Gm-Message-State: AOAM530/+CbR+RScdKX4btlx+OjU2X+KAxSMQW0OCxDxwQ1TIqlooTy9
-        CyjvUQgMevWwyU42kUasL1hCpiDqYUExXei0wmU=
-X-Google-Smtp-Source: ABdhPJwaZoIDWVCGaHYKcnttqgtKxA/h8msb9rhToLx+whKahsfVfCWinU7ltf1BsXNc6XsBxJ1fumjug1/uaYuC90g=
-X-Received: by 2002:a05:6402:274f:: with SMTP id z15mr16361253edd.306.1635522704379;
- Fri, 29 Oct 2021 08:51:44 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=SezFMDowmogmw/7L1HjVF8g+PwUa//5LR2/njSIe2SA=;
+        b=olEIIwNFadg4XROPRacSqTH8NcmZoP6SUr/0hXWzWdXvU5H3TTXXoJp7wMCctW7U/e
+         AsdHzK9C6U9Kt2XRFPLvn9Sq0fUNWih1LGjjEyHwPRp0fNoh74EQNDlgfCrQqJEBrVAV
+         7Fz72SIgYKfHPT/Ukey89DrNrEPkedXbRV0STQnzY/fp/NBJHfPdBaGV5b7o27srzsk7
+         Gj5j5G0B5hvHLP/WtiEJWpSDmZmmUhaXcwRFoO+oeZGWiTtyddvQK4g8RLBqkjPFei3u
+         IyCOcb66yNem8KVpW7HhRyGuh2sIVxM4u5B+DtqNsmkt9BnKFun5I557VYt6uCcJ3NQA
+         lyqg==
+X-Gm-Message-State: AOAM530m9bvdfF4MB82C6qWglkSIi354YomVPjMPJhJJlLJcpx94OcRl
+        hPwHl8lDmMaFfBTCisJpqBFAliQIo7lUMs9OOHjAogbQEYLT
+X-Google-Smtp-Source: ABdhPJxOIvBvRRrG/zQChCYkBsnt4hHatJMgoOg4cu9KvOJdUPSS5U4PDrGP/yS236umiHofUXnOU1j2ZeJip73X9Sg8ZrxWAeGA
 MIME-Version: 1.0
-References: <CAOuPNLhh_LkLQ8mSA4eoUDLCLzHo5zHXsiQZXUB_-T_F1_v6-g@mail.gmail.com>
- <alpine.LRH.2.02.2107211300520.10897@file01.intranet.prod.int.rdu2.redhat.com>
- <CAOuPNLi-xz_4P+v45CHLx00ztbSwU3_maf4tuuyso5RHyeOytg@mail.gmail.com>
- <CAOuPNLg0m-Q7Vhp4srbQrjXHsxVhOr-K2dvnNqzdR6Dr4kioqA@mail.gmail.com>
- <20210830185541.715f6a39@windsurf> <CAOuPNLhTidgLNWUbtUgdESYcKcE1C4SOdzKeQVhFGQvEoc0QEg@mail.gmail.com>
- <20210830211224.76391708@windsurf> <CAOuPNLgMd0AThhmSknbmKqp3_P8PFhBGr-jW0Mqjb6K6NchEMg@mail.gmail.com>
- <CAOuPNLiW10-E6F_Ndte7U9NPBKa9Y_UuLhgdwAYTc0eYMk5Mqg@mail.gmail.com>
- <CAOuPNLj2Xmx52Gtzx5oEKif4Qz-Tz=vaxhRvHQG-5emO7ewRhg@mail.gmail.com> <YTinqiH9h+Q9bYsr@kroah.com>
-In-Reply-To: <YTinqiH9h+Q9bYsr@kroah.com>
-From:   Pintu Agarwal <pintu.ping@gmail.com>
-Date:   Fri, 29 Oct 2021 21:21:33 +0530
-Message-ID: <CAOuPNLhzfGDoQsEZB5eH30WvH2w9hyMEU8Bt81SzK-scaAwgwA@mail.gmail.com>
-Subject: Re: Kernel 4.14: Using dm-verity with squashfs rootfs - mounting issue
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Sami Tolvanen <samitolvanen@google.com>, snitzer@redhat.com,
-        Kernelnewbies <kernelnewbies@kernelnewbies.org>,
-        open list <linux-kernel@vger.kernel.org>, dm-devel@redhat.com,
-        Mikulas Patocka <mpatocka@redhat.com>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Phillip Lougher <phillip@squashfs.org.uk>, agk@redhat.com
+X-Received: by 2002:a05:6602:29c2:: with SMTP id z2mr8701578ioq.73.1635522921601;
+ Fri, 29 Oct 2021 08:55:21 -0700 (PDT)
+Date:   Fri, 29 Oct 2021 08:55:21 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c3a2af05cf7fda31@google.com>
+Subject: [syzbot] general protection fault in fq_codel_enqueue (3)
+From:   syzbot <syzbot+7a12909485b94426aceb@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, jhs@mojatatu.com, jiri@resnulli.us,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        xiyou.wangcong@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+Hello,
 
-On Wed, 8 Sept 2021 at 17:38, Greg KH <gregkh@linuxfoundation.org> wrote:
+syzbot found the following issue on:
 
-> > > > > No, but you can backport it easily. Back at
-> > > > > http://lists.infradead.org/pipermail/openwrt-devel/2019-November/025967.html
-> > > > > I provided backports of this feature to OpenWrt, for the 4.14 and 4.19
-> > > > > kernels.
-> >
-> > Can you please let me know where to get the below patches for
-> > backporting to our kernel:
-> >  create mode 100644
-> > target/linux/generic/backport-4.14/390-dm-add-support-to-directly-boot-to-a-mapped-device.patch
-> >  create mode 100644
-> > target/linux/generic/backport-4.14/391-dm-init-fix-max-devices-targets-checks.patch
-> >  create mode 100644
-> > target/linux/generic/backport-4.14/392-dm-ioctl-fix-hang-in-early-create-error-condition.patch
-> >  create mode 100644
-> > target/linux/generic/backport-4.14/393-Documentation-dm-init-fix-multi-device-example.patch
->
-> If you are stuck on an older kernel version, then you need to get
-> support from the vendor that is forcing you to be on that kernel
-> version, as you are already paying them for support.  Please take
-> advantage of that, as no one knows what is really in "your kernel".
->
+HEAD commit:    1fc596a56b33 Merge tag 'trace-v5.15-rc6' of git://git.kern..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1453dc04b00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b160d0631c7a8f26
+dashboard link: https://syzkaller.appspot.com/bug?extid=7a12909485b94426aceb
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=154a0b64b00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=177eec86b00000
 
-This is to update this thread that now I am able to successfully
-bring-up dm-verity with NAND+ubiblock+squashfs on our 4.14 kernel
-itself without backporting the patches.
-Now, I am able to boot dm-verity using both initramfs and bootloader approach.
-The initramfs booting issue was our internal issue which was related
-to Kernel size configuration in UEFI.
-The bootloader approach issue was related to system image size issue,
-where we need to pass the exact image size to find the verity-metadata
-offset at the end of system image.
+Bisection is inconclusive: the issue happens on the oldest tested release.
 
-However, I felt that dm-verity documentation still needs to be
-enhanced further with a better example.
-With the 5.4 Kernel, I may further explore the option of using
-dm-mod.create option, then I might get more clarity on how best to use
-it.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=154fc86ab00000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=174fc86ab00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=134fc86ab00000
 
-Thank you all for your help and support!
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+7a12909485b94426aceb@syzkaller.appspotmail.com
 
-Regards,
-Pintu
+general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+CPU: 1 PID: 6542 Comm: syz-executor965 Not tainted 5.15.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:dequeue_head net/sched/sch_fq_codel.c:120 [inline]
+RIP: 0010:fq_codel_drop net/sched/sch_fq_codel.c:168 [inline]
+RIP: 0010:fq_codel_enqueue+0x83e/0x10c0 net/sched/sch_fq_codel.c:230
+Code: f8 e2 25 fa 45 39 ec 0f 83 cb 00 00 00 e8 1a dc 25 fa 48 8b 44 24 10 80 38 00 0f 85 9a 06 00 00 49 8b 07 48 89 c2 48 c1 ea 03 <42> 80 3c 32 00 0f 85 6e 06 00 00 48 8b 10 48 8d 78 28 49 89 17 48
+RSP: 0018:ffffc90001187310 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: ffffffff87504776 RDI: 0000000000000003
+RBP: ffffc900011874e0 R08: 0000000000000400 R09: 0000000000000001
+R10: ffffffff875046d6 R11: 0000000000000000 R12: 0000000000000400
+R13: 0000000000000000 R14: dffffc0000000000 R15: ffff888071660000
+FS:  0000555556b21300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f9c09885040 CR3: 0000000021c77000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ dev_qdisc_enqueue+0x40/0x300 net/core/dev.c:3771
+ __dev_xmit_skb net/core/dev.c:3855 [inline]
+ __dev_queue_xmit+0x1f0e/0x36e0 net/core/dev.c:4170
+ __bpf_tx_skb net/core/filter.c:2114 [inline]
+ __bpf_redirect_no_mac net/core/filter.c:2139 [inline]
+ __bpf_redirect+0x5ba/0xd20 net/core/filter.c:2162
+ ____bpf_clone_redirect net/core/filter.c:2429 [inline]
+ bpf_clone_redirect+0x2ae/0x420 net/core/filter.c:2401
+ ___bpf_prog_run+0x3592/0x77d0 kernel/bpf/core.c:1548
+ __bpf_prog_run512+0x91/0xd0 kernel/bpf/core.c:1776
+ bpf_dispatcher_nop_func include/linux/bpf.h:718 [inline]
+ __bpf_prog_run include/linux/filter.h:624 [inline]
+ bpf_prog_run include/linux/filter.h:631 [inline]
+ bpf_test_run+0x37c/0xa20 net/bpf/test_run.c:119
+ bpf_prog_test_run_skb+0xa7c/0x1cb0 net/bpf/test_run.c:662
+ bpf_prog_test_run kernel/bpf/syscall.c:3307 [inline]
+ __sys_bpf+0x2137/0x5df0 kernel/bpf/syscall.c:4605
+ __do_sys_bpf kernel/bpf/syscall.c:4691 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:4689 [inline]
+ __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:4689
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7fef7c1e24d9
+Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffc95c98158 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fef7c1e24d9
+RDX: 0000000000000048 RSI: 0000000020000140 RDI: 000000000000000a
+RBP: 00007fef7c1a64c0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007fef7c1a6550
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+Modules linked in:
+---[ end trace 0597f54336b28fa4 ]---
+RIP: 0010:dequeue_head net/sched/sch_fq_codel.c:120 [inline]
+RIP: 0010:fq_codel_drop net/sched/sch_fq_codel.c:168 [inline]
+RIP: 0010:fq_codel_enqueue+0x83e/0x10c0 net/sched/sch_fq_codel.c:230
+Code: f8 e2 25 fa 45 39 ec 0f 83 cb 00 00 00 e8 1a dc 25 fa 48 8b 44 24 10 80 38 00 0f 85 9a 06 00 00 49 8b 07 48 89 c2 48 c1 ea 03 <42> 80 3c 32 00 0f 85 6e 06 00 00 48 8b 10 48 8d 78 28 49 89 17 48
+RSP: 0018:ffffc90001187310 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: ffffffff87504776 RDI: 0000000000000003
+RBP: ffffc900011874e0 R08: 0000000000000400 R09: 0000000000000001
+R10: ffffffff875046d6 R11: 0000000000000000 R12: 0000000000000400
+R13: 0000000000000000 R14: dffffc0000000000 R15: ffff888071660000
+FS:  0000555556b21300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f9c09885040 CR3: 0000000021c77000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	f8                   	clc
+   1:	e2 25                	loop   0x28
+   3:	fa                   	cli
+   4:	45 39 ec             	cmp    %r13d,%r12d
+   7:	0f 83 cb 00 00 00    	jae    0xd8
+   d:	e8 1a dc 25 fa       	callq  0xfa25dc2c
+  12:	48 8b 44 24 10       	mov    0x10(%rsp),%rax
+  17:	80 38 00             	cmpb   $0x0,(%rax)
+  1a:	0f 85 9a 06 00 00    	jne    0x6ba
+  20:	49 8b 07             	mov    (%r15),%rax
+  23:	48 89 c2             	mov    %rax,%rdx
+  26:	48 c1 ea 03          	shr    $0x3,%rdx
+* 2a:	42 80 3c 32 00       	cmpb   $0x0,(%rdx,%r14,1) <-- trapping instruction
+  2f:	0f 85 6e 06 00 00    	jne    0x6a3
+  35:	48 8b 10             	mov    (%rax),%rdx
+  38:	48 8d 78 28          	lea    0x28(%rax),%rdi
+  3c:	49 89 17             	mov    %rdx,(%r15)
+  3f:	48                   	rex.W
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
