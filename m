@@ -2,80 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E80D43FCDC
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 15:00:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A232543FCDE
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 15:01:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231612AbhJ2NDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 09:03:04 -0400
-Received: from foss.arm.com ([217.140.110.172]:38060 "EHLO foss.arm.com"
+        id S231589AbhJ2NEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 09:04:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231622AbhJ2NCx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 09:02:53 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 805A9ED1;
-        Fri, 29 Oct 2021 06:00:23 -0700 (PDT)
-Received: from [10.57.25.71] (unknown [10.57.25.71])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CA00D3F73D;
-        Fri, 29 Oct 2021 06:00:21 -0700 (PDT)
-Subject: Re: [PATCH v5 09/15] coresight: trbe: Add infrastructure for Errata
- handling
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>, Marc Zyngier <maz@kernel.org>,
-        coresight@lists.linaro.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20211014223125.2605031-1-suzuki.poulose@arm.com>
- <20211014223125.2605031-10-suzuki.poulose@arm.com>
- <CAK8P3a0=GC26FBuyoj2Q02VXdfkOd4k0DiDfp+0KF3C6tNO3XQ@mail.gmail.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <d56183ca-7592-a81c-9404-a07b364cc13c@arm.com>
-Date:   Fri, 29 Oct 2021 14:00:20 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        id S231418AbhJ2NEP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 09:04:15 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EB22B60F93;
+        Fri, 29 Oct 2021 13:01:45 +0000 (UTC)
+Date:   Fri, 29 Oct 2021 09:01:44 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Daniel Bristot de Oliveira <bristot@kernel.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        John Kacur <jkacur@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V7 8/9] trace/osnoise: Remove STACKTRACE ifdefs from
+ inside functions
+Message-ID: <20211029090144.49f43936@gandalf.local.home>
+In-Reply-To: <b2c51cb7-1561-a23b-bba2-d8a8c5d27691@kernel.org>
+References: <cover.1635452903.git.bristot@kernel.org>
+        <2cab388e4faaf3fc3496a1c18ec09a8bc7c36c3f.1635452903.git.bristot@kernel.org>
+        <b2c51cb7-1561-a23b-bba2-d8a8c5d27691@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a0=GC26FBuyoj2Q02VXdfkOd4k0DiDfp+0KF3C6tNO3XQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd
+On Fri, 29 Oct 2021 14:31:27 +0200
+Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
 
-Thanks for the report.
-
-On 29/10/2021 11:31, Arnd Bergmann wrote:
-> On Fri, Oct 15, 2021 at 12:31 AM Suzuki K Poulose
-> <suzuki.poulose@arm.com> wrote:
->>
->> +static void trbe_check_errata(struct trbe_cpudata *cpudata)
->> +{
->> +       int i;
->> +
->> +       for (i = 0; i < TRBE_ERRATA_MAX; i++) {
->> +               int cap = trbe_errata_cpucaps[i];
->> +
->> +               if (WARN_ON_ONCE(cap < 0))
->> +                       return;
->> +               if (this_cpu_has_cap(cap))
->> +                       set_bit(i, cpudata->errata);
->> +       }
->> +}
+> > +	/*
+> > +	 * 0 is disabled, so it will never be > than latency.
+> > +	 */
+> > +	if (osnoise_data.print_stack > latency)
+> > +		return;  
 > 
-> this_cpu_has_cap() is private to arch/arm64 and not exported, so this causes
-> a build failure when used from a loadable module:
+> Oops, I placed the comment, but forgot to place the check. This if should be:
 > 
-> ERROR: modpost: "this_cpu_has_cap"
-> [drivers/hwtracing/coresight/coresight-trbe.ko] undefined!
-> 
-> Should this symbol be exported or do we need a different workaround?
+> if (!osnoise_data.print_stack || osnoise_data.print_stack > latency)
+> 	return;
 
-This should be exported. I can send in a patch.
+Or I could've had a V8!
 
-Suzuki
+  https://www.youtube.com/watch?v=qYo0lVVH2wU
+
+-- Steve
