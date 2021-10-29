@@ -2,80 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87BB043F4E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 04:14:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EEB943F4E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 04:15:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231533AbhJ2CRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 22:17:08 -0400
-Received: from mail-oo1-f43.google.com ([209.85.161.43]:37622 "EHLO
-        mail-oo1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231348AbhJ2CRH (ORCPT
+        id S231555AbhJ2CSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 22:18:07 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:49988 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231356AbhJ2CSG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 22:17:07 -0400
-Received: by mail-oo1-f43.google.com with SMTP id j6-20020a4aab46000000b002bb88bfb594so206702oon.4;
-        Thu, 28 Oct 2021 19:14:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FbMoOA+srpZECEM4zFCkGJJsPbPqalqoHRgY7gpc/TM=;
-        b=rmLePVLLM02fwmiJ9TMxhmFILL1lLDRzTrILPQlq0gIzkyMU6+1FFpJd3IQsrLZ+Z3
-         8sLu5o8zIyKyazk1Ujmjj72JLJKTm9VGAXiqFdkGBawz2aPIAjIWRdr44o0KuH2Ui11K
-         E36/xYOpL1w+4ETnzgLdABiG7rHelYStp8GLXH/z6UfL89oaCaDC6A6QFVO+Uu9i/1yK
-         ON60yWVetLA5t29Au32mtoqJHxJ32WeTyyBU9Act3W+zY5nDpF5JcDx9awda53WqVdpl
-         YfObpCZZZMm5+9ETEljrTXGv5evGrh+WxTfINiTmX0wmhQNWukKZySxP2buV0yFdpkvd
-         zuWw==
-X-Gm-Message-State: AOAM532QPuSDOphYdg8syHk+mGfwF7DpLAuXHGWzmTs1wpkNXZyzMy16
-        TwvJvDgC2GCA+lOeuEMN/A==
-X-Google-Smtp-Source: ABdhPJwIaM15lT2fjoQ9/qmb7TUSUgveYFzB+ldBfIF6tbmQXlGPNxR1fi85bhNN2CmhWxtISK0NaQ==
-X-Received: by 2002:a4a:819a:: with SMTP id c26mr1232978oog.51.1635473679339;
-        Thu, 28 Oct 2021 19:14:39 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id s9sm1492018oic.14.2021.10.28.19.14.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 19:14:38 -0700 (PDT)
-Received: (nullmailer pid 1023892 invoked by uid 1000);
-        Fri, 29 Oct 2021 02:14:37 -0000
-Date:   Thu, 28 Oct 2021 21:14:37 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Sascha Silbe <x-linux@se-silbe.de>
-Cc:     NXP Linux Team <linux-imx@nxp.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        devicetree@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: imx8mq: add defines for IOMUXC_SW_PAD_CTL
- register values
-Message-ID: <YXtZDelpt8fJhU/V@robh.at.kernel.org>
-References: <20211024152832.649738-1-x-linux@se-silbe.de>
+        Thu, 28 Oct 2021 22:18:06 -0400
+X-UUID: 3dbb02fceea44252b69af4643ae51e22-20211029
+X-UUID: 3dbb02fceea44252b69af4643ae51e22-20211029
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <guangming.cao@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 180424326; Fri, 29 Oct 2021 10:15:35 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.792.15; Fri, 29 Oct 2021 10:15:33 +0800
+Received: from mszswglt01.gcn.mediatek.inc (10.16.20.20) by
+ mtkcas11.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.0.1497.2 via Frontend Transport; Fri, 29 Oct 2021 10:15:33 +0800
+From:   <guangming.cao@mediatek.com>
+To:     <christian.koenig@amd.com>
+CC:     <dri-devel@lists.freedesktop.org>, <guangming.cao@mediatek.com>,
+        <linaro-mm-sig@lists.linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <matthias.bgg@gmail.com>,
+        <sumit.semwal@linaro.org>, <wsd_upstream@mediatek.com>,
+        Guangming Cao <Guangming.Cao@mediatek.com>
+Subject: Re: [PATCH v2] dma-buf: acquire name lock before read/write dma_buf.name
+Date:   Fri, 29 Oct 2021 10:15:41 +0800
+Message-ID: <20211029021541.101157-1-guangming.cao@mediatek.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <169957a7-302b-1de9-39b0-415c4675743a@amd.com>
+References: <169957a7-302b-1de9-39b0-415c4675743a@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211024152832.649738-1-x-linux@se-silbe.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 24 Oct 2021 17:28:32 +0200, Sascha Silbe wrote:
-> The IOMUXC_SW_PAD_CTL_* registers on i.MX8M Dual/QuadLite/Quad all
-> have the same basic structure. Add defines for a common subset
-> supported by most of the registers. They can be used in Device Tree
-> source files instead of magic values, making the sources a lot more
-> readable and easier to write as well.
-> 
-> Signed-off-by: Sascha Silbe <x-linux@se-silbe.de>
-> ---
->  .../arm64/boot/dts/freescale/imx8mq-pinfunc.h | 28 +++++++++++++++++++
->  1 file changed, 28 insertions(+)
-> 
-> The board I'm using this for is an out-of-tree prototype. If there's
-> interest I can convert the in-tree DTS files. I have don't have any of
-> those boards but comparing the built DTBs before vs. after the change
-> should be sufficient.
-> 
-> 
+From: Guangming Cao <Guangming.Cao@mediatek.com>
 
-Acked-by: Rob Herring <robh@kernel.org>
+On Fri, 2021-10-08 at 12:24 +0200, Christian König wrote:
+> Am 08.10.21 um 09:54 schrieb guangming.cao@mediatek.com:
+> > From: Guangming Cao <Guangming.Cao@mediatek.com>
+> > 
+> > Because dma-buf.name can be freed in func: "dma_buf_set_name",
+> > so, we need to acquire lock first before we read/write dma_buf.name
+> > to prevent Use After Free(UAF) issue.
+> > 
+> > Signed-off-by: Guangming Cao <Guangming.Cao@mediatek.com>
+> 
+> Reviewed-by: Christian König <christian.koenig@amd.com>
+> 
+> Going to push that upstream if nobody else objects.
+> 
+> Thanks,
+> Christian.
+
+Just a gentle ping for this patch, please kindly let me know how is it going.
+
+> 
+> > ---
+> >   drivers/dma-buf/dma-buf.c | 3 +++
+> >   1 file changed, 3 insertions(+)
+> > 
+> > diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+> > index 511fe0d217a0..a7f6fd13a635 100644
+> > --- a/drivers/dma-buf/dma-buf.c
+> > +++ b/drivers/dma-buf/dma-buf.c
+> > @@ -1372,6 +1372,8 @@ static int dma_buf_debug_show(struct seq_file
+> > *s, void *unused)
+> >   		if (ret)
+> >   			goto error_unlock;
+> >   
+> > +
+> > +		spin_lock(&buf_obj->name_lock);
+> >   		seq_printf(s,
+> > "%08zu\t%08x\t%08x\t%08ld\t%s\t%08lu\t%s\n",
+> >   				buf_obj->size,
+> >   				buf_obj->file->f_flags, buf_obj->file-
+> > >f_mode,
+> > @@ -1379,6 +1381,7 @@ static int dma_buf_debug_show(struct seq_file
+> > *s, void *unused)
+> >   				buf_obj->exp_name,
+> >   				file_inode(buf_obj->file)->i_ino,
+> >   				buf_obj->name ?: "");
+> > +		spin_unlock(&buf_obj->name_lock);
+> >   
+> >   		robj = buf_obj->resv;
+> >   		fence = dma_resv_excl_fence(robj);
+> 
+> 
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
