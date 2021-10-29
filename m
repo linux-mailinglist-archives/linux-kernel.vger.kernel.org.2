@@ -2,160 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D072443FB96
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 13:41:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D487B43FB9A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 13:42:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232052AbhJ2Lng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 07:43:36 -0400
-Received: from ixit.cz ([94.230.151.217]:51092 "EHLO ixit.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231926AbhJ2Lnf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 07:43:35 -0400
-Received: from localhost.localdomain (ip-89-176-96-70.net.upcbroadband.cz [89.176.96.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        id S231977AbhJ2Los (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 07:44:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35084 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231807AbhJ2Loq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 07:44:46 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F910C061570;
+        Fri, 29 Oct 2021 04:42:18 -0700 (PDT)
+Received: from [IPv6:2a02:810a:880:f54:6141:93b5:19a6:af87] (unknown [IPv6:2a02:810a:880:f54:6141:93b5:19a6:af87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id 15ED220064;
-        Fri, 29 Oct 2021 13:41:05 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-        t=1635507665;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=JVovMsGgjFRk/Bmjox2YczakbZiYn8efZOf5TyMV8cs=;
-        b=dDarri+tU/27QxuJZLADRt1tp4mduZ+CVkB6JQFy43SBQ0PlU2EtCLKqo4iyOpxqGVP/CN
-        d1lkI9gOAkgA+n7/DbBCVl0MChOLS766Fpnos/pXreqePfATwMJ/7/J0v9EfE7vFKYLC7d
-        ZVkuWZCkHOVIccuc8NpobZUmmMNrHcs=
-From:   David Heidelberg <david@ixit.cz>
-To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>
-Cc:     ~okias/devicetree@lists.sr.ht, phone-devel@vger.kernel.org,
-        David Heidelberg <david@ixit.cz>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: imx8mq: fix the schema check errors for fsl,tmu-calibration
-Date:   Fri, 29 Oct 2021 13:40:49 +0200
-Message-Id: <20211029114050.39520-1-david@ixit.cz>
-X-Mailer: git-send-email 2.33.0
+        (Authenticated sender: dafna)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 7CB8E1F45953;
+        Fri, 29 Oct 2021 12:42:16 +0100 (BST)
+Subject: Re: [PATCH v8, 04/17] media: mtk-vcodec: Build decoder pm file as
+ module
+To:     Yunfei Dong <yunfei.dong@mediatek.com>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Tomasz Figa <tfiga@google.com>
+Cc:     Hsin-Yi Wang <hsinyi@chromium.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Irui Wang <irui.wang@mediatek.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        Collabora Kernel ML <kernel@collabora.com>
+References: <20211029035527.454-1-yunfei.dong@mediatek.com>
+ <20211029035527.454-5-yunfei.dong@mediatek.com>
+From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Message-ID: <367efd7e-667c-6c0f-a36e-0eff6d323f48@collabora.com>
+Date:   Fri, 29 Oct 2021 13:42:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211029035527.454-5-yunfei.dong@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fsl,tmu-calibration is in u32-matrix. Use matching property syntax.
-No functional changes. Fixes warnings as:
-$ make dtbs_check
-...
-arch/arm64/boot/dts/freescale/imx8mq-librem5-r3.dt.yaml: tmu@30260000: fsl,tmu-calibration:0: Additional items are not allowed (1, 41, 2, 47, 3, 53, 4, 61, 5, 67, 6, 75, 7, 81, 8, 87, 9, 95, 10, 103, 11, 111, 65536, 27, 65537, 35, 65538, 43, 65539, 51, 65540, 59, 65541, 67, 65542, 75, 65543, 85, 65544, 93, 65545, 103, 65546, 112, 131072, 23, 131073, 35, 131074, 45, 131075, 55, 131076, 65, 131077, 75, 131078, 87, 131079, 99, 131080, 111, 196608, 21, 196609, 33, 196610, 45, 196611, 57, 196612, 69, 196613, 83, 196614, 95, 196615, 113 were unexpected)
-        From schema: /home/ubuntu/projects_remote/linux/Documentation/devicetree/bindings/thermal/qoriq-thermal.yaml
-...
 
-Signed-off-by: David Heidelberg <david@ixit.cz>
----
- arch/arm64/boot/dts/freescale/imx8mq.dtsi | 87 ++++++++++++-----------
- 1 file changed, 44 insertions(+), 43 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-index 972766b67a15..50088b110ad4 100644
---- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-@@ -429,49 +429,50 @@ tmu: tmu@30260000 {
- 				clocks = <&clk IMX8MQ_CLK_TMU_ROOT>;
- 				little-endian;
- 				fsl,tmu-range = <0xb0000 0xa0026 0x80048 0x70061>;
--				fsl,tmu-calibration = <0x00000000 0x00000023
--						       0x00000001 0x00000029
--						       0x00000002 0x0000002f
--						       0x00000003 0x00000035
--						       0x00000004 0x0000003d
--						       0x00000005 0x00000043
--						       0x00000006 0x0000004b
--						       0x00000007 0x00000051
--						       0x00000008 0x00000057
--						       0x00000009 0x0000005f
--						       0x0000000a 0x00000067
--						       0x0000000b 0x0000006f
--
--						       0x00010000 0x0000001b
--						       0x00010001 0x00000023
--						       0x00010002 0x0000002b
--						       0x00010003 0x00000033
--						       0x00010004 0x0000003b
--						       0x00010005 0x00000043
--						       0x00010006 0x0000004b
--						       0x00010007 0x00000055
--						       0x00010008 0x0000005d
--						       0x00010009 0x00000067
--						       0x0001000a 0x00000070
--
--						       0x00020000 0x00000017
--						       0x00020001 0x00000023
--						       0x00020002 0x0000002d
--						       0x00020003 0x00000037
--						       0x00020004 0x00000041
--						       0x00020005 0x0000004b
--						       0x00020006 0x00000057
--						       0x00020007 0x00000063
--						       0x00020008 0x0000006f
--
--						       0x00030000 0x00000015
--						       0x00030001 0x00000021
--						       0x00030002 0x0000002d
--						       0x00030003 0x00000039
--						       0x00030004 0x00000045
--						       0x00030005 0x00000053
--						       0x00030006 0x0000005f
--						       0x00030007 0x00000071>;
-+				fsl,tmu-calibration =
-+						<0x00000000 0x00000023>,
-+						<0x00000001 0x00000029>,
-+						<0x00000002 0x0000002f>,
-+						<0x00000003 0x00000035>,
-+						<0x00000004 0x0000003d>,
-+						<0x00000005 0x00000043>,
-+						<0x00000006 0x0000004b>,
-+						<0x00000007 0x00000051>,
-+						<0x00000008 0x00000057>,
-+						<0x00000009 0x0000005f>,
-+						<0x0000000a 0x00000067>,
-+						<0x0000000b 0x0000006f>,
-+
-+						<0x00010000 0x0000001b>,
-+						<0x00010001 0x00000023>,
-+						<0x00010002 0x0000002b>,
-+						<0x00010003 0x00000033>,
-+						<0x00010004 0x0000003b>,
-+						<0x00010005 0x00000043>,
-+						<0x00010006 0x0000004b>,
-+						<0x00010007 0x00000055>,
-+						<0x00010008 0x0000005d>,
-+						<0x00010009 0x00000067>,
-+						<0x0001000a 0x00000070>,
-+
-+						<0x00020000 0x00000017>,
-+						<0x00020001 0x00000023>,
-+						<0x00020002 0x0000002d>,
-+						<0x00020003 0x00000037>,
-+						<0x00020004 0x00000041>,
-+						<0x00020005 0x0000004b>,
-+						<0x00020006 0x00000057>,
-+						<0x00020007 0x00000063>,
-+						<0x00020008 0x0000006f>,
-+
-+						<0x00030000 0x00000015>,
-+						<0x00030001 0x00000021>,
-+						<0x00030002 0x0000002d>,
-+						<0x00030003 0x00000039>,
-+						<0x00030004 0x00000045>,
-+						<0x00030005 0x00000053>,
-+						<0x00030006 0x0000005f>,
-+						<0x00030007 0x00000071>;
- 				#thermal-sensor-cells =  <1>;
- 			};
- 
--- 
-2.33.0
+On 29.10.21 05:55, Yunfei Dong wrote:
+> Need to build decoder pm file as module for master and comp
+> use the same pm interface.
 
+Do you still use the component framework in this patchset?
+In the cover letter you write: "- Use of_platform_populate to manage multi hardware, not component framework for patch 4/15"
+If that frameworks is not used anymore you should also change the commit log, and maybe this patch is not needed anymore?
+
+Thanks,
+Dafna
+> 
+> Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
+> ---
+> v8: add new patch to build pm file as module
+> ---
+>   drivers/media/platform/mtk-vcodec/Makefile            | 6 ++++--
+>   drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_pm.c | 9 +++++++++
+>   2 files changed, 13 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/media/platform/mtk-vcodec/Makefile b/drivers/media/platform/mtk-vcodec/Makefile
+> index ca8e9e7a9c4e..5d36e05535d7 100644
+> --- a/drivers/media/platform/mtk-vcodec/Makefile
+> +++ b/drivers/media/platform/mtk-vcodec/Makefile
+> @@ -2,7 +2,8 @@
+>   
+>   obj-$(CONFIG_VIDEO_MEDIATEK_VCODEC) += mtk-vcodec-dec.o \
+>   				       mtk-vcodec-enc.o \
+> -				       mtk-vcodec-common.o
+> +				       mtk-vcodec-common.o \
+> +				       mtk-vcodec-dec-common.o
+>   
+>   mtk-vcodec-dec-y := vdec/vdec_h264_if.o \
+>   		vdec/vdec_vp8_if.o \
+> @@ -14,7 +15,8 @@ mtk-vcodec-dec-y := vdec/vdec_h264_if.o \
+>   		mtk_vcodec_dec.o \
+>   		mtk_vcodec_dec_stateful.o \
+>   		mtk_vcodec_dec_stateless.o \
+> -		mtk_vcodec_dec_pm.o \
+> +
+> +mtk-vcodec-dec-common-y := mtk_vcodec_dec_pm.o
+>   
+>   mtk-vcodec-enc-y := venc/venc_vp8_if.o \
+>   		venc/venc_h264_if.o \
+> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_pm.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_pm.c
+> index 20bd157a855c..09a281e3065a 100644
+> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_pm.c
+> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_pm.c
+> @@ -77,12 +77,14 @@ int mtk_vcodec_init_dec_pm(struct platform_device *pdev,
+>   	put_device(pm->larbvdec);
+>   	return ret;
+>   }
+> +EXPORT_SYMBOL_GPL(mtk_vcodec_init_dec_pm);
+>   
+>   void mtk_vcodec_release_dec_pm(struct mtk_vcodec_pm *pm)
+>   {
+>   	pm_runtime_disable(pm->dev);
+>   	put_device(pm->larbvdec);
+>   }
+> +EXPORT_SYMBOL_GPL(mtk_vcodec_release_dec_pm);
+>   
+>   int mtk_vcodec_dec_pw_on(struct mtk_vcodec_pm *pm)
+>   {
+> @@ -94,6 +96,7 @@ int mtk_vcodec_dec_pw_on(struct mtk_vcodec_pm *pm)
+>   
+>   	return ret;
+>   }
+> +EXPORT_SYMBOL_GPL(mtk_vcodec_dec_pw_on);
+>   
+>   void mtk_vcodec_dec_pw_off(struct mtk_vcodec_pm *pm)
+>   {
+> @@ -103,6 +106,7 @@ void mtk_vcodec_dec_pw_off(struct mtk_vcodec_pm *pm)
+>   	if (ret)
+>   		mtk_v4l2_err("pm_runtime_put_sync fail %d", ret);
+>   }
+> +EXPORT_SYMBOL_GPL(mtk_vcodec_dec_pw_off);
+>   
+>   void mtk_vcodec_dec_clock_on(struct mtk_vcodec_pm *pm)
+>   {
+> @@ -129,6 +133,7 @@ void mtk_vcodec_dec_clock_on(struct mtk_vcodec_pm *pm)
+>   	for (i -= 1; i >= 0; i--)
+>   		clk_disable_unprepare(dec_clk->clk_info[i].vcodec_clk);
+>   }
+> +EXPORT_SYMBOL_GPL(mtk_vcodec_dec_clock_on);
+>   
+>   void mtk_vcodec_dec_clock_off(struct mtk_vcodec_pm *pm)
+>   {
+> @@ -139,3 +144,7 @@ void mtk_vcodec_dec_clock_off(struct mtk_vcodec_pm *pm)
+>   	for (i = dec_clk->clk_num - 1; i >= 0; i--)
+>   		clk_disable_unprepare(dec_clk->clk_info[i].vcodec_clk);
+>   }
+> +EXPORT_SYMBOL_GPL(mtk_vcodec_dec_clock_off);
+> +
+> +MODULE_LICENSE("GPL v2");
+> +MODULE_DESCRIPTION("Mediatek video decoder driver");
+> 
