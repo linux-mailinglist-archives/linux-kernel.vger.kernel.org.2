@@ -2,96 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00A9C4404A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 23:06:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C0AD4404A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 23:09:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231315AbhJ2VJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 17:09:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51368 "EHLO
+        id S231546AbhJ2VMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 17:12:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230215AbhJ2VJD (ORCPT
+        with ESMTP id S230215AbhJ2VME (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 17:09:03 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39BE7C061570;
-        Fri, 29 Oct 2021 14:06:34 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id k2-20020a17090ac50200b001a218b956aaso8179956pjt.2;
-        Fri, 29 Oct 2021 14:06:34 -0700 (PDT)
+        Fri, 29 Oct 2021 17:12:04 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0D09C061570;
+        Fri, 29 Oct 2021 14:09:35 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id y14-20020a17090a2b4e00b001a5824f4918so4708419pjc.4;
+        Fri, 29 Oct 2021 14:09:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=H4LjgedCQrSzDrKUcs+hHmsFFJ7P9Vd1VmkFO2vQoiU=;
-        b=pg69LCnmdeQm5g1/gZYfnsWc9m0bQiWW+tI6D17boy8N0FPlQ5NsU/CdEI2Ty5oDNH
-         ZblgvX4CAWjTKcZ2vaZqQHPCypNHHk+ztY9fvIjPWez/WcfAcqTS+HCVLcbhdZgLOAiv
-         UZ+tInoe6y0HVzrLfMn39BXsEFwcsGUhUY5wxcb+U62Wu2g1SMg0K4bIEax0TrX495AG
-         d+ML9vOPVw3WArZ1SG7HI7lSEqXipBjQIjsj/3UYOQjD4aS9620rvGwCzs9UFeJg/pF9
-         JIxedfsthz1WEjIYH+NmgbkCrUSb53Ei22HahkAf2m8O2xaZgj1zwCjOusCbBu+3U71f
-         uXaA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tbBP9vlfqwztQAwlUrA3rb3X9bknkbNPCByzkSfvM8o=;
+        b=QD4+2TQnXGt2qx52hkDP3lpei9GWHyuDIUcjvpvUwmfYypY2/l4UFQkk9Ho4mZ1sRx
+         x3K9FCTy8dofXQEpone5fp27e8t5a9rTS/R+YjJ/yeE1J7hgxcf9ovs+qVQMvhq9clHu
+         7I3NNsBumn2RN2OCKeEd3VDKBxsHCd2NVJqEvfVADPwHJek41NXVp6r16lpHVeUac59u
+         VTXm5FRv2kaqwjpQT9NiXOz/7el8jiQQsmcNccLzMpPDVkX5rinD5UuTVQ/CoWgASF9N
+         F/3lP9Ym/cmYkapra5JQNoHOzPPsrFVqbqRIZnLDkl3XI3uQFMt6QdI3Q/TYgwzgWFwM
+         +jvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=H4LjgedCQrSzDrKUcs+hHmsFFJ7P9Vd1VmkFO2vQoiU=;
-        b=R1Zf9yEnNXjb8j4b0witYUOYjXOo8YlNseRgHVAg/cz/Pdstn7FU4avDDpOU2Ov1m1
-         VxW/GIux4DNJrLUQBBq0jC8tN+hZW22JrNqcj7vVjV7BdIRGF0Ei/l23aJH45iFgjWWS
-         hLBWg6bhYCsqmhW1wC35MTjAPyve+uSIJBmNEyssDtA0IRsGf8ar3oOCuUAt8GgPOEq2
-         WPyYniTiVHS1BeMH1m7WD4pHoRmbCUUAU1qSeTTDro51ktUGxmfxX83sbkUXZQMOqpo6
-         mvrUsnv/eWsGbuF7BbU3UHvPXhxfKoz3j901KX6lcQpHgFaYcrrkKz2MkjvvEb4mz6VR
-         usXQ==
-X-Gm-Message-State: AOAM532lsw4Ws7mqhnSj1F8tHGBnZKMow/HzBGsDzHInbOfge/V47TBQ
-        x4yoP73H95I29dH9XycYuUvYI3094BA=
-X-Google-Smtp-Source: ABdhPJybo1twgGsYP2HA2civOxjzbVo1O5huUSG6y20RhnbwJMKzxUUGW+E5big97stN2ZqDJhrMMA==
-X-Received: by 2002:a17:90a:917:: with SMTP id n23mr15253801pjn.131.1635541593178;
-        Fri, 29 Oct 2021 14:06:33 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id f11sm8465753pfe.172.2021.10.29.14.06.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Oct 2021 14:06:32 -0700 (PDT)
-Subject: Re: [PATCH v6 1/9] dt-bindings: PCI: correct brcmstb interrupts,
- interrupt-map.
-To:     Jim Quinlan <jim2101024@gmail.com>, linux-pci@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Saenz Julienne <nsaenzjulienne@suse.de>,
-        "moderated list:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20211029200319.23475-1-jim2101024@gmail.com>
- <20211029200319.23475-2-jim2101024@gmail.com>
+        bh=tbBP9vlfqwztQAwlUrA3rb3X9bknkbNPCByzkSfvM8o=;
+        b=X7VYVLnO7NTK1vrafpG+S1uOYhz5NIwedkfOWliGbDvw+UASXEdiJB/B83kgB0kqJ2
+         NKv/IGcgri33YJFLF30euDX8rgy4fALEryBOElK+6eankmbMGzjDHAviU8xq1A8WzcLt
+         OelKeL3PCqOLIPV4WqosHEEUOE7+S2VcNAO9frKjUCA7FhcXRrSvi72ytBkLcZRobX24
+         d5GSGdE8Y2bXjEHSklhLD24q3jAN8eZp0GoA98owNRcNpEzYb6LksWgVdCU8JGgJma6d
+         ns/XLIPWQOoKoc3i68/Zsg4b9eePJgCyhJ8OzqkgrpG1PU7kYGQRPlopEACnl9rat+A0
+         QIHw==
+X-Gm-Message-State: AOAM531YXjnNLSh4jRYD0gIusXUsecJnQeY09GIkHhjRDYpHKf2KaUA7
+        fuuwaGbXdn9TAcJUISoxEa8=
+X-Google-Smtp-Source: ABdhPJwIUGdk4jEwbcTc9PWsUkll4l5mNlE5i1uV8EBi78o4Yl0XRU0yFzupOikAV/yc/JUVEPUIdw==
+X-Received: by 2002:a17:90b:1d04:: with SMTP id on4mr14076174pjb.68.1635541775461;
+        Fri, 29 Oct 2021 14:09:35 -0700 (PDT)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id i184sm6126210pgc.56.2021.10.29.14.09.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Oct 2021 14:09:34 -0700 (PDT)
 From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <cead3cd7-67c6-56da-860e-7b9a2415959e@gmail.com>
-Date:   Fri, 29 Oct 2021 14:06:30 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Jim Quinlan <jim2101024@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS),
+        bcm-kernel-feedback-list@broadcom.com (open list:BROADCOM
+        BCM2711/BCM2835 ARM ARCHITECTURE),
+        linux-rpi-kernel@lists.infradead.org (moderated list:BROADCOM
+        BCM2711/BCM2835 ARM ARCHITECTURE),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] ARM: dts: bcm2711: Fix PCIe interrupts
+Date:   Fri, 29 Oct 2021 14:09:26 -0700
+Message-Id: <20211029210927.36800-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20211029200319.23475-2-jim2101024@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/29/21 1:03 PM, Jim Quinlan wrote:
-> The "pcie" and "msi" interrupts were given the same interrupt when they are
-> actually different.  Interrupt-map only had the INTA entry; the INTB, INTC,
-> and INTD entries are added.
-> 
-> Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
+The PCIe host bridge has two interrupt lines, one that goes towards it
+PCIE_INTR2 second level interrupt controller and one for its MSI second
+level interrupt controller. The first interrupt line is not currently
+managed by the driver, which is why it was not a functional problem.
 
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+The interrupt-map property was also only listing the PCI_INTA interrupts
+when there are also the INTB, C and D.
 
-I will submit a fix for arch/arm/boot/dts/bcm2711.dtsi shortly, since it
-has the same issues as the example you are fixing, thanks!
+Reported-by: Jim Quinlan <jim2101024@gmail.com>
+Fixes: d5c8dc0d4c88 ("ARM: dts: bcm2711: Enable PCIe controller")
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+ arch/arm/boot/dts/bcm2711.dtsi | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm/boot/dts/bcm2711.dtsi b/arch/arm/boot/dts/bcm2711.dtsi
+index 3b60297af7f6..9e01dbca4a01 100644
+--- a/arch/arm/boot/dts/bcm2711.dtsi
++++ b/arch/arm/boot/dts/bcm2711.dtsi
+@@ -506,11 +506,17 @@ pcie0: pcie@7d500000 {
+ 			#address-cells = <3>;
+ 			#interrupt-cells = <1>;
+ 			#size-cells = <2>;
+-			interrupts = <GIC_SPI 148 IRQ_TYPE_LEVEL_HIGH>,
++			interrupts = <GIC_SPI 147 IRQ_TYPE_LEVEL_HIGH>,
+ 				     <GIC_SPI 148 IRQ_TYPE_LEVEL_HIGH>;
+ 			interrupt-names = "pcie", "msi";
+ 			interrupt-map-mask = <0x0 0x0 0x0 0x7>;
+ 			interrupt-map = <0 0 0 1 &gicv2 GIC_SPI 143
++							IRQ_TYPE_LEVEL_HIGH>,
++					<0 0 0 2 &gicv2 GIC_SPI 144
++							IRQ_TYPE_LEVEL_HIGH>,
++					<0 0 0 3 &gicv2 GIC_SPI 145
++							IRQ_TYPE_LEVEL_HIGH>,
++					<0 0 0 4 &gicv2 GIC_SPI 146
+ 							IRQ_TYPE_LEVEL_HIGH>;
+ 			msi-controller;
+ 			msi-parent = <&pcie0>;
 -- 
-Florian
+2.25.1
+
