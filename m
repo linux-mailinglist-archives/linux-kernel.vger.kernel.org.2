@@ -2,119 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAE2A43F51F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 05:00:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C570243F528
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 05:04:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231578AbhJ2DCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 23:02:32 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:58081 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231348AbhJ2DCb (ORCPT
+        id S231620AbhJ2DGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 23:06:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231558AbhJ2DGf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 23:02:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1635476403; x=1667012403;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=pOvyD5ApA1t7pbEAwfbWK5m/uaNPWxsDErnCMa5mOLg=;
-  b=jsCaIlP115DtW919EAoymFyOnD+ImYrlfaov175vmXZ/Wz5liQtl6/Pi
-   oklY0s9Lq3VTIwhKzNiccLbFJLyX2MaiOP4l9NlN+ItrXYsaCDrxoZqib
-   bV53rDCrauQH6Fkltt0uazu+UZnyU6YLJqXjOqqKTIfIWJGE/wnfDjOjV
-   /Pc9yPlD0LOSYVFMoT1rxW1439X9I3OqwA+DZxni0xxoHsjASOhSDS1ud
-   /DAmraKMDcfa1pDOWOA22nwiB/d7b+MaqpiPop0S3bQNk5CIjU6bdQOCj
-   Yp6qBg64dDHD8dNRn7zJhR59jPkehsFa/9lmjsAH4doyWErlfsw0NOkk1
-   w==;
-IronPort-SDR: qzlQmKSc7gPYjbQUP1dA620HI13VXsra79GvhrQnL9DYQRFxW0+tT3JtzJpRq5MTwKYSzEwLr6
- 09hP1ZB5VKXcINioMuEHmh5/1Eo2FKdbL4bpYxRRL1ereeigBa2f0OUIDLl1C/dT0EyPqiI0TT
- HJeCaDx3A4rdo/R9Rdm8cck6PZChMxmIBqNrH3WY0TfhDQOqF+iB+39PCbH3KFPwlaocFZMGN9
- BYnMIUAXsBM7MfPucKwHrieHYtS/tvwUzMRnJ8HJ232Bw0QG1ExaSW5jMiIIkzUjSsfuRFNcIY
- 07cW/eXUyDfWZ0xm4Jovv9XP
-X-IronPort-AV: E=Sophos;i="5.87,191,1631602800"; 
-   d="scan'208";a="149979124"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 28 Oct 2021 20:00:02 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Thu, 28 Oct 2021 20:00:02 -0700
-Received: from CHE-LT-I21427LX.microchip.com (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Thu, 28 Oct 2021 19:59:51 -0700
-Message-ID: <b3c069c8bc9b2f68d4705c04fb010cb4aaa0b29b.camel@microchip.com>
-Subject: Re: [PATCH v5 net-next 06/10] net: dsa: microchip: add support for
- phylink management
-From:   Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-CC:     <andrew@lunn.ch>, <netdev@vger.kernel.org>, <olteanv@gmail.com>,
-        <robh+dt@kernel.org>, <UNGLinuxDriver@microchip.com>,
-        <Woojung.Huh@microchip.com>, <hkallweit1@gmail.com>,
-        <davem@davemloft.net>, <kuba@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <vivien.didelot@gmail.com>,
-        <f.fainelli@gmail.com>, <devicetree@vger.kernel.org>
-Date:   Fri, 29 Oct 2021 08:29:49 +0530
-In-Reply-To: <YXrYYL7+NRgUtvN3@shell.armlinux.org.uk>
-References: <20211028164111.521039-1-prasanna.vengateshan@microchip.com>
-         <20211028164111.521039-7-prasanna.vengateshan@microchip.com>
-         <YXrYYL7+NRgUtvN3@shell.armlinux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.1-1 
+        Thu, 28 Oct 2021 23:06:35 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04F55C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 20:04:07 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id j9so18025479lfu.7
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 20:04:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sz/ywpybSJaNoGZvXE51S8svzpVWcQnnlH6Pn9KYkKs=;
+        b=ZmEiiWHwwmH9sspvNf9mrhJ2ObRJ3h0nMIjxiw96VyoUUf9YSApSJZfqOXVvoxC9o2
+         2nNTRvI+hOfArkWqypwmgKHyrVVKMwWTM00K9H7hhtbiIoc8SL9+33+ElDW6nyEssJBo
+         JBmzSYJX96qhj2o4D4Ul/QQM756ARdbZUdL8Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sz/ywpybSJaNoGZvXE51S8svzpVWcQnnlH6Pn9KYkKs=;
+        b=DTza7/KoA/yMCbMNMKoqZSfnI+lQq/MEfS8WyAAo5WM9C2fe+GhngfepE0ft9ThnE0
+         0ZndC3cwP1f8or4Tr3DPTz62WGbjrs8Sk7cxuYZ8HDqPGFIcNuAUtwMqRITJfTg0FvWQ
+         lyyanlzvJlUbdPZ6by2y/LpomOfWnI+YhWXxo25E3VV6ZL2s3ZaKAv2iiHnBgX1PNgUE
+         9bnKR4tckJDOl0bAjw1UU4dP1RIPavIxAMp1i9BRvL0gn0g51gZoa6LOTf9Yg8XaexNq
+         TDNMpeHH7VUDVLPL9ox4el5tURPn5WjgOUQowwoA/W5f1QKNQEwkmUWt99bEMdrCqSpB
+         uabQ==
+X-Gm-Message-State: AOAM532jPnM5GRFVnfekZg7hUrHASE/XBtczphgNXLgL3PL1nv0mBhFM
+        ZlmCTwkLZvcrOfMjRSZ2AQHwpGKFygNy1Sw4n6e3CqAI8Rc=
+X-Google-Smtp-Source: ABdhPJxC0NS1t4ZTrK/U/w98ca7x/r/R5fRiRRC7PwYozOenIJEgQ0sp7JZwf/0TjkDGytKndTNOyCau++3Cm6xcZng=
+X-Received: by 2002:a19:c1c2:: with SMTP id r185mr7493994lff.275.1635476645375;
+ Thu, 28 Oct 2021 20:04:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211026192104.1860504-1-markyacoub@chromium.org> <20211029004220.GA10475@art_vandelay>
+In-Reply-To: <20211029004220.GA10475@art_vandelay>
+From:   Mark Yacoub <markyacoub@chromium.org>
+Date:   Thu, 28 Oct 2021 23:03:54 -0400
+Message-ID: <CAJUqKUpop4JodJjT+HBR7ayq2=G_8UdJatLFhty5XZTZ7xL8QQ@mail.gmail.com>
+Subject: Re: [Intel-gfx] [PATCH v3 1/3] drm: Rename lut check functions to lut
+ channel checks
+To:     Sean Paul <sean@poorly.run>
+Cc:     seanpaul@chromium.org, pmenzel@molgen.mpg.de,
+        Mark Yacoub <markyacoub@google.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-10-28 at 18:05 +0100, Russell King (Oracle) wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you know the
-> content is safe
-> 
-> On Thu, Oct 28, 2021 at 10:11:07PM +0530, Prasanna Vengateshan wrote:
-> > Support for phylink_validate() and reused KSZ commmon API for
-> > phylink_mac_link_down() operation
-> > 
-> > lan937x_phylink_mac_config configures the interface using
-> > lan937x_mac_config and lan937x_phylink_mac_link_up configures
-> > the speed/duplex/flow control.
-> > 
-> > Currently SGMII & in-band neg are not supported & it will be
-> > added later.
-> > 
-> > Signed-off-by: Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
-> 
-> Hi,
-> 
-> I've just sent "net: dsa: populate supported_interfaces member"
-> which adds a hook to allow DSA to populate the newly introduced
-> supported_interfaces member of phylink_config. Once this patch is
-> merged, it would be great to see any new drivers setting this
-> member.
-> 
-> Essentially, the phylink_get_interfaces method is called with the
-> DSA switch and port number, and a pointer to the supported_interfaces
-> member - which is a bitmap of PHY_INTERFACE_MODEs that are supported
-> by this port.
-> 
-> When you have set any bit in the supported interfaces, phylink's
-> behaviour when calling your lan937x_phylink_validate changes - it will
-> no longer call it with PHY_INTERFACE_MODE_NA, but will instead do a
-> bitwalk over the bitmap, and call it for each supported interface type
-> instead.
-> 
-> When phylink has a specific interface mode, it will continue to make a
-> single call - but only if the interface mode is indicated as supported
-> in the supported interfaces bitmap.
-> 
-> Please keep an eye on "net: dsa: populate supported_interfaces member"
-> and if you need to respin this series after that patch has been merged,
-> please update in regards of this.
+On Thu, Oct 28, 2021 at 8:42 PM Sean Paul <sean@poorly.run> wrote:
+>
+> On Tue, Oct 26, 2021 at 03:21:00PM -0400, Mark Yacoub wrote:
+> > From: Mark Yacoub <markyacoub@google.com>
+> >
+> > [Why]
+> > This function and enum do not do generic checking on the luts but they
+> > test color channels in the LUTs.
+>
+> I'm not sure there's anything inherently specific to channels, it seems like
+> one could add a new test to reflect a HW limitation and it would fit pretty well
+> in the lut check function. I wonder if it would be better to expose the types of
+> tests required by the crtc such that the atomic_check could also do the test?
+>
+So the tests of the color are pretty unique to intel devices, no other
+device is using it so I didn't think it adds a lot of benefit adding
+it to the lut check. However, it's still in DRM because technically it
+can be supported by any driver. But once it is, the driver will have
+to expose the tests it wants so we can check it in atomic_check. but
+given that no one does expose any test but intel, i just left it only
+used by them.
 
-Sure, i will watch out for this series and add to my new driver. Do the 
-new drivers need to still return all supported modes if state->interface
-is set to %PHY_INTERFACE_MODE_NA as per phylink documentation? I 
-understand that supported_interfaces will not be empty if
-phylink_get_interfaces() is handled. But i just wanted to double check
-with you.
-
-
-
+> Sean
+>
+> > Keeping the name explicit as more generic LUT checks will follow.
+> >
+> > Tested on Eldrid ChromeOS (TGL).
+> >
+> > Signed-off-by: Mark Yacoub <markyacoub@chromium.org>
+> > ---
+> >  drivers/gpu/drm/drm_color_mgmt.c           | 12 ++++++------
+> >  drivers/gpu/drm/i915/display/intel_color.c | 10 +++++-----
+> >  include/drm/drm_color_mgmt.h               |  7 ++++---
+> >  3 files changed, 15 insertions(+), 14 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/drm_color_mgmt.c b/drivers/gpu/drm/drm_color_mgmt.c
+> > index bb14f488c8f6c..6f4e04746d90f 100644
+> > --- a/drivers/gpu/drm/drm_color_mgmt.c
+> > +++ b/drivers/gpu/drm/drm_color_mgmt.c
+> > @@ -585,17 +585,17 @@ int drm_plane_create_color_properties(struct drm_plane *plane,
+> >  EXPORT_SYMBOL(drm_plane_create_color_properties);
+> >
+> >  /**
+> > - * drm_color_lut_check - check validity of lookup table
+> > + * drm_color_lut_channels_check - check validity of the channels in the lookup table
+> >   * @lut: property blob containing LUT to check
+> >   * @tests: bitmask of tests to run
+> >   *
+> > - * Helper to check whether a userspace-provided lookup table is valid and
+> > - * satisfies hardware requirements.  Drivers pass a bitmask indicating which of
+> > - * the tests in &drm_color_lut_tests should be performed.
+> > + * Helper to check whether each color channel of userspace-provided lookup table is valid and
+> > + * satisfies hardware requirements. Drivers pass a bitmask indicating which of in
+> > + * &drm_color_lut_channels_tests should be performed.
+> >   *
+> >   * Returns 0 on success, -EINVAL on failure.
+> >   */
+> > -int drm_color_lut_check(const struct drm_property_blob *lut, u32 tests)
+> > +int drm_color_lut_channels_check(const struct drm_property_blob *lut, u32 tests)
+> >  {
+> >       const struct drm_color_lut *entry;
+> >       int i;
+> > @@ -625,4 +625,4 @@ int drm_color_lut_check(const struct drm_property_blob *lut, u32 tests)
+> >
+> >       return 0;
+> >  }
+> > -EXPORT_SYMBOL(drm_color_lut_check);
+> > +EXPORT_SYMBOL(drm_color_lut_channels_check);
+> > diff --git a/drivers/gpu/drm/i915/display/intel_color.c b/drivers/gpu/drm/i915/display/intel_color.c
+> > index dab892d2251ba..4bb1bc76c4de9 100644
+> > --- a/drivers/gpu/drm/i915/display/intel_color.c
+> > +++ b/drivers/gpu/drm/i915/display/intel_color.c
+> > @@ -1285,7 +1285,7 @@ static int check_luts(const struct intel_crtc_state *crtc_state)
+> >       const struct drm_property_blob *gamma_lut = crtc_state->hw.gamma_lut;
+> >       const struct drm_property_blob *degamma_lut = crtc_state->hw.degamma_lut;
+> >       int gamma_length, degamma_length;
+> > -     u32 gamma_tests, degamma_tests;
+> > +     u32 gamma_channels_tests, degamma_channels_tests;
+> >
+> >       /* Always allow legacy gamma LUT with no further checking. */
+> >       if (crtc_state_is_legacy_gamma(crtc_state))
+> > @@ -1300,15 +1300,15 @@ static int check_luts(const struct intel_crtc_state *crtc_state)
+> >
+> >       degamma_length = INTEL_INFO(dev_priv)->color.degamma_lut_size;
+> >       gamma_length = INTEL_INFO(dev_priv)->color.gamma_lut_size;
+> > -     degamma_tests = INTEL_INFO(dev_priv)->color.degamma_lut_tests;
+> > -     gamma_tests = INTEL_INFO(dev_priv)->color.gamma_lut_tests;
+> > +     degamma_channels_tests = INTEL_INFO(dev_priv)->color.degamma_lut_tests;
+> > +     gamma_channels_tests = INTEL_INFO(dev_priv)->color.gamma_lut_tests;
+> >
+> >       if (check_lut_size(degamma_lut, degamma_length) ||
+> >           check_lut_size(gamma_lut, gamma_length))
+> >               return -EINVAL;
+> >
+> > -     if (drm_color_lut_check(degamma_lut, degamma_tests) ||
+> > -         drm_color_lut_check(gamma_lut, gamma_tests))
+> > +     if (drm_color_lut_channels_check(degamma_lut, degamma_channels_tests) ||
+> > +         drm_color_lut_channels_check(gamma_lut, gamma_channels_tests))
+> >               return -EINVAL;
+> >
+> >       return 0;
+> > diff --git a/include/drm/drm_color_mgmt.h b/include/drm/drm_color_mgmt.h
+> > index 81c298488b0c8..cb1bf361ad3e3 100644
+> > --- a/include/drm/drm_color_mgmt.h
+> > +++ b/include/drm/drm_color_mgmt.h
+> > @@ -94,12 +94,12 @@ int drm_plane_create_color_properties(struct drm_plane *plane,
+> >                                     enum drm_color_range default_range);
+> >
+> >  /**
+> > - * enum drm_color_lut_tests - hw-specific LUT tests to perform
+> > + * enum drm_color_lut_channels_tests - hw-specific LUT tests to perform
+> >   *
+> >   * The drm_color_lut_check() function takes a bitmask of the values here to
+> >   * determine which tests to apply to a userspace-provided LUT.
+> >   */
+> > -enum drm_color_lut_tests {
+> > +enum drm_color_lut_channels_tests {
+> >       /**
+> >        * @DRM_COLOR_LUT_EQUAL_CHANNELS:
+> >        *
+> > @@ -119,5 +119,6 @@ enum drm_color_lut_tests {
+> >       DRM_COLOR_LUT_NON_DECREASING = BIT(1),
+> >  };
+> >
+> > -int drm_color_lut_check(const struct drm_property_blob *lut, u32 tests);
+> > +int drm_color_lut_channels_check(const struct drm_property_blob *lut,
+> > +                              u32 tests);
+> >  #endif
+> > --
+> > 2.33.0.1079.g6e70778dc9-goog
+> >
+>
+> --
+> Sean Paul, Software Engineer, Google / Chromium OS
