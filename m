@@ -2,97 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D22D043FB6E
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 13:34:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1750743FB08
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 12:46:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231910AbhJ2Lg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 07:36:29 -0400
-Received: from ixit.cz ([94.230.151.217]:51026 "EHLO ixit.cz"
+        id S231797AbhJ2KtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 06:49:03 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:48065 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230492AbhJ2Lg2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 07:36:28 -0400
-Received: from localhost.localdomain (ip-89-176-96-70.net.upcbroadband.cz [89.176.96.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        id S231770AbhJ2Ks7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 06:48:59 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1635504391; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: Date: Subject: In-Reply-To: References: Cc:
+ To: From: Sender; bh=rFU43CZFSHt8yp8kFqVcfqXL2hfgxXG01x0my4/WQE8=; b=mTvPr9uIhPBRO3vHQNXxlLb9WpZONqo8f9YS50c4vyUQBiq8qtmjgNozhm9gEwR0pihAP1w1
+ KP8NEqORaZCs0scRRKzNBjwFTbzuHhuEVID1eW6Oad2kaBu0MCnPhk1lW6nqmXJGTmV87HBb
+ NVAKrLXCIDCGGLXy0BV6sqr+xA0=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 617bd0f5f6a3eeacf9a3114c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 29 Oct 2021 10:46:13
+ GMT
+Sender: pillair=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BCA14C4338F; Fri, 29 Oct 2021 10:46:12 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from PILLAIR1 (unknown [49.205.244.232])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id 9D31520064;
-        Fri, 29 Oct 2021 13:33:57 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-        t=1635507237;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=0zOiZ5/PZ6rpeSK//w83AB0zdgKq32SgEHSychPRids=;
-        b=is241A8cmQkmzKEYnMFzkGG+fdbR9rL3wCQlBRjrc2phDqx5oZjXpTylS5zy57qFw3NPav
-        6D4MkMKGFt2d0tiuyn6px9vVWJC+MTdje374ePQL9RnutVbHiXnX+gjNFrDQnhPKLVoSVo
-        Zr/XfQpW0ERoykS1CY6YwRI7zhMiXbw=
-From:   David Heidelberg <david@ixit.cz>
-To:     Wei Xu <xuwei5@hisilicon.com>, Rob Herring <robh+dt@kernel.org>
-Cc:     ~okias/devicetree@lists.sr.ht, David Heidelberg <david@ixit.cz>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: hisilicon: update deprecated property name
-Date:   Fri, 29 Oct 2021 12:42:12 +0200
-Message-Id: <20211029104211.29079-1-david@ixit.cz>
-X-Mailer: git-send-email 2.33.0
+        (Authenticated sender: pillair)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 493C6C4338F;
+        Fri, 29 Oct 2021 10:46:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 493C6C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   <pillair@codeaurora.org>
+To:     "'Stephen Boyd'" <swboyd@chromium.org>, <agross@kernel.org>,
+        <bjorn.andersson@linaro.org>, <mathieu.poirier@linaro.org>,
+        <ohad@wizery.com>, <p.zabel@pengutronix.de>, <robh+dt@kernel.org>
+Cc:     <linux-arm-msm@vger.kernel.org>,
+        <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <sibis@codeaurora.org>,
+        <mpubbise@codeaurora.org>, <kuabhs@chromium.org>
+References: <1635408817-14426-1-git-send-email-pillair@codeaurora.org> <1635408817-14426-3-git-send-email-pillair@codeaurora.org> <CAE-0n50z=h-avn+K-weZnZFVN7nsR=fLAtge7jFZ0JLx2JvP2w@mail.gmail.com>
+In-Reply-To: <CAE-0n50z=h-avn+K-weZnZFVN7nsR=fLAtge7jFZ0JLx2JvP2w@mail.gmail.com>
+Subject: RE: [PATCH v7 2/3] dt-bindings: remoteproc: qcom: Add SC7280 WPSS support
+Date:   Fri, 29 Oct 2021 16:16:03 +0530
+Message-ID: <000201d7ccb2$300dba50$90292ef0$@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+        charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQJgH59fIqV+fNPJ+TYlgPfT9cxLcAIxEhLJAenqyY+quEywIA==
+Content-Language: en-us
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hisi,rst-syscon property name is deprecated, use hisilicon,rst-syscon
 
-Signed-off-by: David Heidelberg <david@ixit.cz>
----
- arch/arm64/boot/dts/hisilicon/hi3660.dtsi | 4 ++--
- arch/arm64/boot/dts/hisilicon/hi3670.dtsi | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
-index 8bd6d7e8a474..3fd80f1f7c1e 100644
---- a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
-+++ b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
-@@ -345,7 +345,7 @@ crg_ctrl: crg_ctrl@fff35000 {
- 		crg_rst: crg_rst_controller {
- 			compatible = "hisilicon,hi3660-reset";
- 			#reset-cells = <2>;
--			hisi,rst-syscon = <&crg_ctrl>;
-+			hisilicon,rst-syscon = <&crg_ctrl>;
- 		};
- 
- 
-@@ -376,7 +376,7 @@ iomcu: iomcu@ffd7e000 {
- 
- 		iomcu_rst: reset {
- 			compatible = "hisilicon,hi3660-reset";
--			hisi,rst-syscon = <&iomcu>;
-+			hisilicon,rst-syscon = <&iomcu>;
- 			#reset-cells = <2>;
- 		};
- 
-diff --git a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
-index 636c8817df7e..9eac9a339654 100644
---- a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
-+++ b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
-@@ -155,7 +155,7 @@ crg_rst: crg_rst_controller {
- 			compatible = "hisilicon,hi3670-reset",
- 				     "hisilicon,hi3660-reset";
- 			#reset-cells = <2>;
--			hisi,rst-syscon = <&crg_ctrl>;
-+			hisilicon,rst-syscon = <&crg_ctrl>;
- 		};
- 
- 		pctrl: pctrl@e8a09000 {
-@@ -196,7 +196,7 @@ media2_crg: media2_crgctrl@e8900000 {
- 
- 		iomcu_rst: reset {
- 			compatible = "hisilicon,hi3660-reset";
--			hisi,rst-syscon = <&iomcu>;
-+			hisilicon,rst-syscon = <&iomcu>;
- 			#reset-cells = <2>;
- 		};
- 
--- 
-2.33.0
+> -----Original Message-----
+> From: Stephen Boyd <swboyd@chromium.org>
+> Sent: Friday, October 29, 2021 3:38 AM
+> To: Rakesh Pillai <pillair@codeaurora.org>; agross@kernel.org;
+> bjorn.andersson@linaro.org; mathieu.poirier@linaro.org; =
+ohad@wizery.com;
+> p.zabel@pengutronix.de; robh+dt@kernel.org
+> Cc: linux-arm-msm@vger.kernel.org; linux-remoteproc@vger.kernel.org;
+> devicetree@vger.kernel.org; linux-kernel@vger.kernel.org;
+> sibis@codeaurora.org; mpubbise@codeaurora.org; kuabhs@chromium.org
+> Subject: Re: [PATCH v7 2/3] dt-bindings: remoteproc: qcom: Add SC7280
+> WPSS support
+>
+> > +
+> > +        glink-edge {
+> > +            interrupts-extended =3D <&ipcc IPCC_CLIENT_WPSS
+> > +                                         =
+IPCC_MPROC_SIGNAL_GLINK_QMP
+> > +                                         IRQ_TYPE_EDGE_RISING>;
+> > +            mboxes =3D <&ipcc IPCC_CLIENT_WPSS
+> > +                            IPCC_MPROC_SIGNAL_GLINK_QMP>;
+> > +
+> > +            label =3D "wpss";
+> > +            qcom,remote-pid =3D <13>;
+>=20
+> There are a few properties here that don't seem to be required. Is =
+that
+> intentional?
+
+Hi Stephen,
+All the properties in the example are listed as required (except for =
+status, which will be removed in the subsequent patchset).
+Do you mean the glink-edge node properties ?
+
+Thanks,
+Rakesh Pillai.
 
