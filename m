@@ -2,83 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8463243F75F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 08:39:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4688B43F765
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 08:42:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232149AbhJ2Glr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 02:41:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51558 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232145AbhJ2Gl2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 02:41:28 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E21EC061767
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 23:39:00 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id o4so11979953oia.10
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 23:39:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=KV7XOEXb1RIfBt4WHiGPrT2FFPH43MntF1OOVLSp5Go=;
-        b=LrhtdRayKEjccI2+9x3/+JijppVNU7TeHrgJ6xNsYtw2/psP28cRXcIaCr0EVDoNd4
-         2YNcbu9zT6JTNx1UrzPtNmOhWraQ7N7m5V1ehAg3oAplLDPFiYWfVojhmSJBlMNslaaW
-         f6+iLI3v0kQKXOadDYlpfLO/bOZk8GFdKG+ZM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=KV7XOEXb1RIfBt4WHiGPrT2FFPH43MntF1OOVLSp5Go=;
-        b=wrzANfHqCqoL1vwTcqtimolBI466/EkdYaSnt2DQAkO2Gbr5NDFavxCsSmKBh3sOlc
-         4l6Q+G9oxmDYitM0kZBQUZJWPQ5nJ1ugTm32JG7yPHKzXG2HzCaDZZQbSkNX4Kk9Z1Vj
-         tShx0kSpdhqnmMOlmZLsz3eeE/NhxMDcHo3I5++8hyKkYRFSzWwbHptY0laDPe/NoxPR
-         ANo9TcYzXGOIUQ1UquRQRucw5uRLw/gxLiME8mS5Yq0tqEIj6frhw40DNsnabbzDDH5p
-         3QGXZjI9btwhd11perF3dSQxLkXQu2I8SRJSN2DZjCQPh6AdnAh6fProWGXsxmayF5mW
-         CY/Q==
-X-Gm-Message-State: AOAM531SheRYYqwpx7TobMqmh6R0+LyHEHFWanX00469qJ0kdpAqO2Of
-        05P9Hed2lGNAb8EyKg8DTMSUvRXlMRGG/iCARdMeMnIBjcA=
-X-Google-Smtp-Source: ABdhPJxQXyxkgAXORFmXL5dl+M9QXG5g9npSoDDd9GA9g7yu5BIliAVvrA3Mp8wuWTPuqhQbVxXEYENB8Kff6Two/I4=
-X-Received: by 2002:a05:6808:2128:: with SMTP id r40mr4885842oiw.164.1635489539883;
- Thu, 28 Oct 2021 23:38:59 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 28 Oct 2021 23:38:59 -0700
+        id S232051AbhJ2Go2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 02:44:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56052 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230252AbhJ2Go1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 02:44:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 50FB0610E8;
+        Fri, 29 Oct 2021 06:41:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635489719;
+        bh=RqcDgWOw64d0pQuH853Ovh8UGaEQ5JIaYpuoL87dGGY=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=M3uw2Y/Pb9Zd9tzeK/vEm4A3hEUCUptjov3lifcwStDhm0MoUnLJ+WyFXOaG3pXSQ
+         d5caAP+YahWE5x+mlLhguArmyPlcMbZtpdUJqGn3AC3KpdJ8hbB+GpRsToQu+FRtnd
+         SC9rLAHfF92MxUXmuv+fJKQUbzxAQ32BFQs7gip/xp8/0xtFMU1cYSNW0hJ6dPG5oT
+         YgGdDSI16xq3liZlTmBiAW678BVWMZkfWeJm3CaRXtyUFQxB/V6sa6KE6Ao+QRLkXa
+         7D/Auf7ZIITbLDFLd94vJyr4EbWUkDJ13kxMxsKzYSw99Fw1M32/uLUqDo29sV6QTd
+         ggPZYDaVWVWdw==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20211028174015.v2.3.If7aaa8e36f1269acae5488035bd62ce543756bf8@changeid>
-References: <20211028174015.v2.1.Ie17e51ad3eb91d72826ce651ca2786534a360210@changeid>
- <20211028174015.v2.3.If7aaa8e36f1269acae5488035bd62ce543756bf8@changeid>
-From:   Stephen Boyd <swboyd@chromium.org>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20211019084449.1411060-4-horatiu.vultur@microchip.com>
+References: <20211019084449.1411060-1-horatiu.vultur@microchip.com> <20211019084449.1411060-4-horatiu.vultur@microchip.com>
+Subject: Re: [RFC PATCH 3/3] clk: lan966x: Extend lan966x clock driver for clock gating support
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     nicolas.ferre@microchip.com, kavyasree.kotagiri@microchip.com,
+        eugen.hristev@microchip.com, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     Horatiu Vultur <horatiu.vultur@microchip.com>,
+        mturquette@baylibre.com, robh+dt@kernel.org
+Date:   Thu, 28 Oct 2021 23:41:57 -0700
+Message-ID: <163548971798.15791.952778566228263608@swboyd.mtv.corp.google.com>
 User-Agent: alot/0.9.1
-Date:   Thu, 28 Oct 2021 23:38:59 -0700
-Message-ID: <CAE-0n51qNoFtDNxbCQgxKDQfZ1_jmDChV=-+LHfQR4F7Kjss0Q@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] arm64: dts: sc7180: Support Homestar rev4
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Philip Chen <philipchen@chromium.org>
-Cc:     dianders@chromium.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Philip Chen (2021-10-28 17:41:17)
-> Support Homestar rev4 board where Parade ps8640 is added as the
-> second source edp bridge.
->
-> Support different edp bridge chips in different board revisions,
-> now we move the #incldue line of the edp bridge dts fragment (e.g.
-> sc7180-trogdor-ti-sn65dsi86.dtsi) from "sc7180-trogdor-homestar.dtsi"
-> to per-board-rev dts files.
->
-> Since the edp bridge dts fragment overrides 'dsi0_out', which is
-> defined in "sc7180.dtsi", move the #incldue line of "sc7180.dtsi" from
-> "sc7180-trogdor-homestar.dtsi" to per-board-rev dts files too, before
-> the #include line of the edp bridge dts fragment.
->
-> Signed-off-by: Philip Chen <philipchen@chromium.org>
-> Reviewed-by: Douglas Anderson <dianders@chromium.org>
-> ---
+Quoting Horatiu Vultur (2021-10-19 01:44:49)
+> diff --git a/drivers/clk/clk-lan966x.c b/drivers/clk/clk-lan966x.c
+> index 19bec94e1551..40be47092a31 100644
+> --- a/drivers/clk/clk-lan966x.c
+> +++ b/drivers/clk/clk-lan966x.c
+> @@ -188,26 +202,64 @@ static struct clk_hw *lan966x_gck_clk_register(stru=
+ct device *dev, int i)
+>         return &priv->hw;
+>  };
+> =20
+> +static int lan966x_gate_clk_register(struct device *dev,
+> +                                    struct clk_hw_onecell_data *hw_data,
+> +                                    void __iomem *gate_base)
+> +{
+> +       int i;
+> +
+> +       for (i =3D GCK_GATE_UHPHS; i < N_CLOCKS; ++i) {
+> +               int idx =3D i - GCK_GATE_UHPHS;
+> +
+> +               hw_data->hws[i] =3D
+> +                       clk_hw_register_gate(dev, clk_gate_desc[idx].name,
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Use devm?
+
+> +                                            "lan966x", 0, base,
+> +                                            clk_gate_desc[idx].bit_idx,
+> +                                            0, &clk_gate_lock);
+> +
+> +               if (IS_ERR(hw_data->hws[i]))
+> +                       return dev_err_probe(dev, PTR_ERR(hw_data->hws[i]=
+),
+> +                                            "failed to register %s clock=
+\n",
+> +                                            clk_gate_desc[idx].name);
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static void lan966x_gate_clk_unregister(struct clk_hw_onecell_data *hw_d=
+ata)
+> +{
+> +       int i;
+> +
+> +       for (i =3D GCK_GATE_UHPHS; i < N_CLOCKS; ++i)
+
+for (int i =3D=20
+
+should suffice
+
+> +               if (!IS_ERR(hw_data->hws[i]))
+> +                       clk_hw_unregister(hw_data->hws[i]);
+> +}
+> +
