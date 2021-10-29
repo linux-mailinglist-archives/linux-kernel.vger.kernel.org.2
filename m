@@ -2,136 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30F0943FDAB
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 15:56:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37AEB43FC03
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 14:06:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231635AbhJ2N7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 09:59:17 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:43806 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231506AbhJ2N7N (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 09:59:13 -0400
-X-UUID: 7eaa6856c3e8495a8355e0c256e75812-20211029
-X-UUID: 7eaa6856c3e8495a8355e0c256e75812-20211029
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw01.mediatek.com
-        (envelope-from <hector.yuan@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 707469765; Fri, 29 Oct 2021 21:56:40 +0800
-Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.792.3;
- Fri, 29 Oct 2021 21:56:39 +0800
-Received: from mtkswgap22.mediatek.inc (172.21.77.33) by
- mtkmbs10n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.792.3 via Frontend Transport; Fri, 29 Oct 2021 21:56:39 +0800
-From:   Hector Yuan <hector.yuan@mediatek.com>
-To:     <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-pm@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-CC:     <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>,
-        <hector.yuan@mediatek.com>
-Subject: [PATCH v1 1/1] cpufreq: mediatek-hw: Fix double devm_remap in hotplug case
-Date:   Fri, 29 Oct 2021 19:42:23 +0800
-Message-ID: <1635507743-17919-2-git-send-email-hector.yuan@mediatek.com>
-X-Mailer: git-send-email 1.7.9.5
-In-Reply-To: <1635507743-17919-1-git-send-email-hector.yuan@mediatek.com>
-References: <1635507743-17919-1-git-send-email-hector.yuan@mediatek.com>
+        id S231506AbhJ2MJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 08:09:10 -0400
+Received: from mail.wangsu.com ([123.103.51.227]:36553 "EHLO wangsu.com"
+        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230273AbhJ2MJJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 08:09:09 -0400
+X-Greylist: delayed 399 seconds by postgrey-1.27 at vger.kernel.org; Fri, 29 Oct 2021 08:09:08 EDT
+Received: from fedora33.wangsu.com (unknown [59.61.78.138])
+        by app2 (Coremail) with SMTP id 4zNnewDX3i434nthxgcDAA--.1504S2;
+        Fri, 29 Oct 2021 19:59:56 +0800 (CST)
+From:   Lin Feng <linf@wangsu.com>
+To:     colyli@suse.de, ent.overstreet@gmail.com
+Cc:     linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linf@wangsu.com
+Subject: [PATCH] bcache: remove unused struct member in cache_stats
+Date:   Fri, 29 Oct 2021 19:59:39 +0800
+Message-Id: <20211029115939.92309-1-linf@wangsu.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: 4zNnewDX3i434nthxgcDAA--.1504S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7JFy3GF47WFW8GFWkWrWrGrg_yoW3Zwc_Z3
+        W0qF1xWr4YqrsIg3W3Xry3X3y0qa4DZFyv93Z2qr1SvryfZryxWF1Fgw17Ary5Zr4Yk3W2
+        vryfX34rCw10kjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJ3UbIYCTnIWIevJa73UjIFyTuYvj4RJUUUUUUUU
+X-CM-SenderInfo: holqwq5zdqw23xof0z/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Hector.Yuan" <hector.yuan@mediatek.com>
+Commit 1616a4c2ab1a80893b6890ae93da40a2b1d0c691
+("bcache: remove bcache device self-defined readahead")
+remove stuffs for bcache self-defined readahead, but
+cache_readaheads field in cache_stats is leftout, remove it.
 
-When hotpluging policy cpu, cpu policy init will be called multiple times.
-Unplug CPU7 -> CPU6 -> CPU5 -> CPU4, then plug CPU4 again.
-In this case, devm_remap will double remap and resource allocate fail.
-So replace devm_remap to ioremap and release resources in cpu policy exit.
-
-Signed-off-by: Hector.Yuan <hector.yuan@mediatek.com>
+Signed-off-by: Lin Feng <linf@wangsu.com>
 ---
- drivers/cpufreq/mediatek-cpufreq-hw.c |   33 ++++++++++++++++++++++++++++++---
- 1 file changed, 30 insertions(+), 3 deletions(-)
+ drivers/md/bcache/stats.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/cpufreq/mediatek-cpufreq-hw.c b/drivers/cpufreq/mediatek-cpufreq-hw.c
-index 0cf18dd..25317d7 100644
---- a/drivers/cpufreq/mediatek-cpufreq-hw.c
-+++ b/drivers/cpufreq/mediatek-cpufreq-hw.c
-@@ -36,6 +36,8 @@ enum {
- struct mtk_cpufreq_data {
- 	struct cpufreq_frequency_table *table;
- 	void __iomem *reg_bases[REG_ARRAY_SIZE];
-+	struct resource *res;
-+	void __iomem *base;
- 	int nr_opp;
- };
+diff --git a/drivers/md/bcache/stats.h b/drivers/md/bcache/stats.h
+index ca4f435f7216..b6bfea66c01f 100644
+--- a/drivers/md/bcache/stats.h
++++ b/drivers/md/bcache/stats.h
+@@ -18,7 +18,6 @@ struct cache_stats {
+ 	unsigned long cache_misses;
+ 	unsigned long cache_bypass_hits;
+ 	unsigned long cache_bypass_misses;
+-	unsigned long cache_readaheads;
+ 	unsigned long cache_miss_collisions;
+ 	unsigned long sectors_bypassed;
  
-@@ -156,6 +158,7 @@ static int mtk_cpu_resources_init(struct platform_device *pdev,
- {
- 	struct mtk_cpufreq_data *data;
- 	struct device *dev = &pdev->dev;
-+	struct resource *res;
- 	void __iomem *base;
- 	int ret, i;
- 	int index;
-@@ -170,9 +173,26 @@ static int mtk_cpu_resources_init(struct platform_device *pdev,
- 	if (index < 0)
- 		return index;
- 
--	base = devm_platform_ioremap_resource(pdev, index);
--	if (IS_ERR(base))
--		return PTR_ERR(base);
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, index);
-+	if (!res) {
-+		dev_err(dev, "failed to get mem resource %d\n", index);
-+		return -ENODEV;
-+	}
-+
-+	if (!request_mem_region(res->start, resource_size(res), res->name)) {
-+		dev_err(dev, "failed to request resource %pR\n", res);
-+		return -EBUSY;
-+	}
-+
-+	base = ioremap(res->start, resource_size(res));
-+	if (!base) {
-+		dev_err(dev, "failed to map resource %pR\n", res);
-+		ret = -ENOMEM;
-+		goto release_region;
-+	}
-+
-+	data->base = base;
-+	data->res = res;
- 
- 	for (i = REG_FREQ_LUT_TABLE; i < REG_ARRAY_SIZE; i++)
- 		data->reg_bases[i] = base + offsets[i];
-@@ -187,6 +207,9 @@ static int mtk_cpu_resources_init(struct platform_device *pdev,
- 	policy->driver_data = data;
- 
- 	return 0;
-+release_region:
-+	release_mem_region(res->start, resource_size(res));
-+	return ret;
- }
- 
- static int mtk_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
-@@ -233,9 +256,13 @@ static int mtk_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
- static int mtk_cpufreq_hw_cpu_exit(struct cpufreq_policy *policy)
- {
- 	struct mtk_cpufreq_data *data = policy->driver_data;
-+	struct resource *res = data->res;
-+	void __iomem *base = data->base;
- 
- 	/* HW should be in paused state now */
- 	writel_relaxed(0x0, data->reg_bases[REG_FREQ_ENABLE]);
-+	iounmap(base);
-+	release_mem_region(res->start, resource_size(res));
- 
- 	return 0;
- }
 -- 
-1.7.9.5
+2.31.1
 
