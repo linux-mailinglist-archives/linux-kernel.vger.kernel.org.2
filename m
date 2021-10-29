@@ -2,149 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52C4843F8B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 10:20:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ED8143F8B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 10:21:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232373AbhJ2IXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 04:23:17 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:40634
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232371AbhJ2IXQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 04:23:16 -0400
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com [209.85.167.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 956F03F1A2
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 08:20:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1635495647;
-        bh=Bi4B10tf1+rkfIAVbvMvJJMvuw7D9Q/GbwyuK5RC4pI=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=Nei5+d6iVMa0BT2o0faBi8F3sYbZGwmmlcLjm/5qwhfphIKzmQGBG5fBgp2Uh4SX+
-         MMtTabl+jJknKE6V2QDts+bFcZuFlBeMiR21xPJbYyZcfYP2V1WDgo9s8OfWTAwWLq
-         ZgBV8eUtw2elsYH7COJOVZrnr4k7C/WXmz9wG6/BzkX+sONYJQgBXcZFUcgd5vTLHT
-         IR+cOwAHcU3vydgJGEDwtfQwfcWm4xlcvgRk8BpsQnTvuq5GzpqGdQ3bnxiZq9Df4N
-         NwfOQo7UeIGNzHLDEJf+bZlLPNGDE7IBlKKMqkwBpb3V/ePdzEhGYkScM+nY2evwpP
-         MLVZXvEY9LDnw==
-Received: by mail-lf1-f72.google.com with SMTP id i40-20020a0565123e2800b003ffceb8e679so3807936lfv.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 01:20:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Bi4B10tf1+rkfIAVbvMvJJMvuw7D9Q/GbwyuK5RC4pI=;
-        b=U2mAUu+qWi7eB8gyEW6WSziLRXhf2LAhq7b0FoRWIkfUVpoN++EAzLLYd053BaJWsf
-         vh2NFIfnmM/yOFc3XyfS36Wbkk0ZpvkP6RxSIltqcbbwPkt/mh+fXG7ZrKffk6xq7i2u
-         rawxHdnBYJ8TDbDyncdftqDOvi76gApBV3exd490sN89y37PjaI9J4EzlRtwcyPCh5Zx
-         DwuoWIaCGq8w8QM1EYPSSgDsNWNXcYJ5ERTHD3Rm8xjc5YSJiSxD6HtfaRtPfv6l25rZ
-         ws3iR9Kg9s0Rp0cfi87u/KWY3UgUlAz/smVf+NrAo/QJflHGBj9w6Jxw2m7k99irHl6J
-         5y3w==
-X-Gm-Message-State: AOAM5332qGnFGp+rlR1ksert8wR0MnX7Z7xycrKRAxH4gBmdiX90zZEn
-        cm9naiU8HREXr7GHZ2eRKSpjrgWMDYOiNr/eZiHNnAlaIP4Fv0fLwkyZuacHXaR2ai8ZWPgdG00
-        gN/ky90fwb6ucqwdb/FE5LlhcuqnyrLdBG0MZ8PgPNQ==
-X-Received: by 2002:a05:651c:54d:: with SMTP id q13mr10390614ljp.239.1635495646945;
-        Fri, 29 Oct 2021 01:20:46 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx4pINxrptGOxH7NZYI5h0TvkcQmSgqzXl/LkvLtKkn6a+VY6u+tAk14SEoQws3XyvoryNK7g==
-X-Received: by 2002:a05:651c:54d:: with SMTP id q13mr10390598ljp.239.1635495646778;
-        Fri, 29 Oct 2021 01:20:46 -0700 (PDT)
-Received: from [192.168.3.161] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id 2sm263837lfq.239.2021.10.29.01.20.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Oct 2021 01:20:46 -0700 (PDT)
-Subject: Re: [PATCH 7/7] watchdog: s3c2410: Let kernel kick watchdog
-To:     Sam Protsenko <semen.protsenko@linaro.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-References: <20211028183527.3050-1-semen.protsenko@linaro.org>
- <20211028183527.3050-8-semen.protsenko@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <94e19dfb-5283-8826-c421-0ff140a370ab@canonical.com>
-Date:   Fri, 29 Oct 2021 10:20:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S232438AbhJ2IX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 04:23:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41486 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232305AbhJ2IX1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 04:23:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C06B761157;
+        Fri, 29 Oct 2021 08:20:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635495659;
+        bh=fvrMNV1slEZNVac6lk/nzzkxbd31MWmFEKKCXvb069E=;
+        h=Date:From:To:Cc:Subject:From;
+        b=mSc//ZXRflCu6pNz2JhCJUAExzFKmHKR/2gsz9ZRosW+D87MSssJDyVYoHRZF/f50
+         ywKa7lS/aJ63J8FWxAEMdbIJDkf6doyzjJdd2Qpy3SNRwcIf8UyTdAM0Ll7dc/70Hb
+         Efx2/QbOn0eGFPJQuXJZ2T5QYlo8x+eGwe95TbzEHWbLVAux8C/2a8Uxyaob/bzdzR
+         vYz3aBR4rmrHN8kPrI4ZMRGJtHVxrROv58BB4DcKVw9/z4cXup2UrjTZDrluKy6MbS
+         F2oylzmirajSi36WCXFOGlvmNUAWETnflIJcAAEfjLOXoxaieSLCnGngSwXIKmLR20
+         ioKWaSD/YxcYw==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1mgN8D-0007Po-SM; Fri, 29 Oct 2021 10:20:57 +0200
+Date:   Fri, 29 Oct 2021 10:20:57 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] USB-serial updates for 5.16-rc1
+Message-ID: <YXuu6YrDdp1E6Tpr@hovoldconsulting.com>
 MIME-Version: 1.0
-In-Reply-To: <20211028183527.3050-8-semen.protsenko@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/10/2021 20:35, Sam Protsenko wrote:
-> When "tmr_atboot" module param is set, the watchdog is started in
-> driver's probe. In that case, also set WDOG_HW_RUNNING bit to let
-> watchdog core driver know it's running. This way wathcdog core can kick
+The following changes since commit e4e737bb5c170df6135a127739a9e6148ee3da82:
 
-s/wathcdog/watchdog/
+  Linux 5.15-rc2 (2021-09-19 17:28:22 -0700)
 
-> the watchdog for us (if CONFIG_WATCHDOG_HANDLE_BOOT_ENABLED option is
-> enabled), until user space takes control.
+are available in the Git repository at:
 
-This does not explain why you move the code around. I guess you miss
-here information that we should start the watchdog before registering
-it? If so please explain why.
+  https://git.kernel.org/pub/scm/linux/kernel/git/johan/usb-serial.git tags/usb-serial-5.16-rc1
 
-> 
-> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> ---
->  drivers/watchdog/s3c2410_wdt.c | 26 +++++++++++++++-----------
->  1 file changed, 15 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/watchdog/s3c2410_wdt.c b/drivers/watchdog/s3c2410_wdt.c
-> index ca082b1226e3..9af014ff1468 100644
-> --- a/drivers/watchdog/s3c2410_wdt.c
-> +++ b/drivers/watchdog/s3c2410_wdt.c
-> @@ -732,6 +732,21 @@ static int s3c2410wdt_probe(struct platform_device *pdev)
->  	wdt->wdt_device.bootstatus = s3c2410wdt_get_bootstatus(wdt);
->  	wdt->wdt_device.parent = dev;
->  
-> +	/*
-> +	 * If "tmr_atboot" param is non-zero, start the watchdog right now. Also
-> +	 * set WDOG_HW_RUNNING bit, so that watchdog core can kick the watchdog.
-> +	 *
-> +	 * If we're not enabling the watchdog, then ensure it is disabled if it
-> +	 * has been left running from the bootloader or other source.
-> +	 */
-> +	if (tmr_atboot && started == 0) {
-> +		dev_info(dev, "starting watchdog timer\n");
-> +		s3c2410wdt_start(&wdt->wdt_device);
-> +		set_bit(WDOG_HW_RUNNING, &wdt->wdt_device.status);
-> +	} else if (!tmr_atboot) {
-> +		s3c2410wdt_stop(&wdt->wdt_device);
-> +	}
-> +
->  	ret = watchdog_register_device(&wdt->wdt_device);
->  	if (ret)
->  		goto err_cpufreq;
-> @@ -740,17 +755,6 @@ static int s3c2410wdt_probe(struct platform_device *pdev)
->  	if (ret < 0)
->  		goto err_unregister;
->  
-> -	if (tmr_atboot && started == 0) {
-> -		dev_info(dev, "starting watchdog timer\n");
-> -		s3c2410wdt_start(&wdt->wdt_device);
-> -	} else if (!tmr_atboot) {
-> -		/* if we're not enabling the watchdog, then ensure it is
-> -		 * disabled if it has been left running from the bootloader
-> -		 * or other source */
-> -
-> -		s3c2410wdt_stop(&wdt->wdt_device);
-> -	}
-> -
->  	platform_set_drvdata(pdev, wdt);
->  
->  	/* print out a statement of readiness */
-> 
+for you to fetch changes up to 910c996335c37552ee30fcb837375b808bb4f33b:
 
+  USB: serial: keyspan: fix memleak on probe errors (2021-10-27 15:18:59 +0200)
 
-Best regards,
-Krzysztof
+----------------------------------------------------------------
+USB-serial updates for 5.16-rc1
+
+Here are the USB-serial updates for 5.16-rc1, including:
+
+ - conversions of usb_control_msg() calls to use the new wrappers where
+   appropriate
+ - fix of the keyspan probe error handling after a low-order allocation
+   failure (e.g. due to fault injection)
+ - allow hung up ports to be runtime suspended
+
+Included are also some related clean ups.
+
+All have been in linux-next with no reported issues.
+
+----------------------------------------------------------------
+Himadri Pandya (6):
+      USB: serial: f81232: use usb_control_msg_recv() and usb_control_msg_send()
+      USB: serial: ftdi_sio: use usb_control_msg_recv()
+      USB: serial: keyspan_pda: use usb_control_msg_recv()
+      USB: serial: kl5kusb105: use usb_control_msg_recv() and usb_control_msg_send()
+      USB: serial: ch314: use usb_control_msg_recv()
+      USB: serial: cp210x: use usb_control_msg_recv() and usb_control_msg_send()
+
+Johan Hovold (5):
+      USB: serial: clean up core error labels
+      USB: serial: allow hung up ports to be suspended
+      USB: serial: kl5kusb105: clean up line-status handling
+      USB: serial: kl5kusb105: simplify line-status handling
+      USB: serial: kl5kusb105: drop line-status helper
+
+Wang Hai (1):
+      USB: serial: keyspan: fix memleak on probe errors
+
+ drivers/usb/serial/ch341.c       |  85 +++++++++--------------------
+ drivers/usb/serial/cp210x.c      | 109 +++++++++++--------------------------
+ drivers/usb/serial/f81232.c      |  96 ++++++++++++--------------------
+ drivers/usb/serial/ftdi_sio.c    |  53 +++++-------------
+ drivers/usb/serial/keyspan.c     |  15 +++--
+ drivers/usb/serial/keyspan_pda.c |  67 ++++++++++-------------
+ drivers/usb/serial/kl5kusb105.c  | 115 +++++++++++++++------------------------
+ drivers/usb/serial/usb-serial.c  |  59 ++++++++++----------
+ 8 files changed, 215 insertions(+), 384 deletions(-)
