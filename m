@@ -2,194 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7544A44033D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 21:28:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E00FF44032A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 21:26:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231938AbhJ2Tar convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 29 Oct 2021 15:30:47 -0400
-Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:57684 "EHLO
-        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231929AbhJ2TaU (ORCPT
+        id S231270AbhJ2T3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 15:29:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230381AbhJ2T3O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 15:30:20 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-124-bK-tclYAMOOxvyp-N7cBRw-1; Fri, 29 Oct 2021 15:27:47 -0400
-X-MC-Unique: bK-tclYAMOOxvyp-N7cBRw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 008318066F4;
-        Fri, 29 Oct 2021 19:27:46 +0000 (UTC)
-Received: from x1.com (unknown [10.22.10.230])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B008B26E49;
-        Fri, 29 Oct 2021 19:27:39 +0000 (UTC)
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Tao Zhou <tao.zhou@linux.dev>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        John Kacur <jkacur@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V7 14/14] rtla: Add rtla timerlat hist documentation
-Date:   Fri, 29 Oct 2021 21:26:17 +0200
-Message-Id: <ef0520789c9afa825100e4c0e3d8fffb8bfbeae0.1635535309.git.bristot@kernel.org>
-In-Reply-To: <cover.1635535309.git.bristot@kernel.org>
-References: <cover.1635535309.git.bristot@kernel.org>
+        Fri, 29 Oct 2021 15:29:14 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B1B1C061570
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 12:26:45 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id iq11so919892pjb.3
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 12:26:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=W0F/ULHmaZ6yiKdcrFiyrI98oNqQ2Wlj0UyZO4mnwig=;
+        b=F47FKuzCq49W4X+gP6en7fn4kYhmztJOYUcBSV26Z8eok7j07w09fLc+8XItP5aMYe
+         Z/RfI//diXfKeNL4X/3Qnb0hzZOXA9nXpn55U5d6hKHllYKNVk7OPOFHUVmO1ItFZoMg
+         azPecgxZus3DPs7bqOdXvPMy77BDMDdrvWES2qgOJp6q5/yA+6f3lw9uuB/EO5lMDoI/
+         kD/IrulQy3tQRv5PYfqc0kY5Qp0c2ylbex2KFRJocKKo0xsTSWTPTj2i0dXzXxO+Swp8
+         3rk/odoV1H2LP0hv7GbojKNqT5GU2d13Jyx1MECfsVJy6NkAClfkGVsipB4LvasW47PR
+         skTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=W0F/ULHmaZ6yiKdcrFiyrI98oNqQ2Wlj0UyZO4mnwig=;
+        b=wOTuMbcmaLmGrGx90pE41q3JSimDjhk9aX5IXTUw90DLkrpc+Ardtf3aXFPyYKOWzq
+         6I2gl3gnc5WA4tLxrE55Oa0+8OrttD1posn35eLxChIeKARtYznxfNnX3cXU7Y+BnJIc
+         GZhEAakNhv58MLhBWhWSetue2TaZEQLEjk9FDHGA07OWWQt0udmPfOYATPw+orL0Y4qV
+         /RdSwfKX44HwultCMHJY5YBrYbC83U/b3B0pLfKh70YztgZSjpziRV5x0RbDIP37s1sJ
+         w/jYVKUGwuUR49mPP8K8AisEU2SodGEa/73T5Ciw4zS0n95+U2H5xgBOW7KlxJ/M0mb9
+         RJqQ==
+X-Gm-Message-State: AOAM530iDA0TGJB2SaNFet1a7zgRw6GyiMrIf+h3ITKS1ilgcb0ziKlY
+        75j9BueugfqXxrewj1sihM4WtA==
+X-Google-Smtp-Source: ABdhPJwW8BXMaJw7SFj0kyzLqqWfj6DzD2/RqEruvPjTrn6wlXc1lGIxiYDfcNVKF5ztZtzeCxQu7g==
+X-Received: by 2002:a17:902:bf02:b0:13f:cfdd:804e with SMTP id bi2-20020a170902bf0200b0013fcfdd804emr11296417plb.1.1635535604654;
+        Fri, 29 Oct 2021 12:26:44 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id 17sm6670375pgr.10.2021.10.29.12.26.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Oct 2021 12:26:44 -0700 (PDT)
+Date:   Fri, 29 Oct 2021 19:26:40 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        llvm@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Ajay Garg <ajaygargnsit@gmail.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [PATCH] KVM: x86: Shove vp_bitmap handling down into
+ sparse_set_to_vcpu_mask()
+Message-ID: <YXxK8CcIk2MiVw2p@google.com>
+References: <20211028213408.2883933-1-seanjc@google.com>
+ <87pmrokn16.fsf@vitty.brq.redhat.com>
+ <YXwF+jSnDq9ONTQJ@google.com>
+ <YXxGO5/xO8KWfnKj@google.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=bristot@kernel.org
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=WINDOWS-1252
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YXxGO5/xO8KWfnKj@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Man page for rtla timerlat hist mode.
+On Fri, Oct 29, 2021, Sean Christopherson wrote:
+> On Fri, Oct 29, 2021, Sean Christopherson wrote:
+> > On Fri, Oct 29, 2021, Vitaly Kuznetsov wrote:
+> > > > +	/* If vp_index == vcpu_idx for all vCPUs, fill vcpu_mask directly. */
+> > > > +	if (likely(!has_mismatch))
+> > > > +		bitmap = (u64 *)vcpu_mask;
+> > > > +
+> > > > +	memset(bitmap, 0, sizeof(vp_bitmap));
+> > > 
+> > > ... but in the unlikely case has_mismatch == true 'bitmap' is still
+> > > uninitialized here, right? How doesn't it crash?
+> > 
+> > I'm sure it does crash.  I'll hack the guest to actually test this.
+> 
+> Crash confirmed.  But I don't feel too bad about my one-line goof because the
+> existing code botches sparse VP_SET, i.e. _EX flows.  The spec requires the guest
+> to explicit specify the number of QWORDS in the variable header[*], e.g. VP_SET
+> in this case, but KVM ignores that and does a harebrained calculation to "count"
+> the number of sparse banks.  It does this by counting the number of bits set in
+> valid_bank_mask, which is comically broken because (a) the whole "sparse" thing
+> should be a clue that they banks are not packed together, (b) the spec clearly
+> states that "bank = VPindex / 64", (c) the sparse_bank madness makes this waaaay
+> more complicated than it needs to be, and (d) the massive sparse_bank allocation
+> on the stack is completely unnecessary because KVM simply ignores everything that
+> wouldn't fit in vp_bitmap.
+> 
+> To reproduce, stuff vp_index in descending order starting from KVM_MAX_VCPUS - 1.
+> 
+> 	hv_vcpu->vp_index = KVM_MAX_VCPUS - vcpu->vcpu_idx - 1;
+> 
+> E.g. with an 8 vCPU guest, KVM will calculate sparse_banks_len=1, read zeros, and
+> do nothing, hanging the guest because it never sends IPIs.
+ 
+Ugh, I can't read.  The example[*] clarifies that the "sparse" VP_SET packs things
+into BankContents.  I don't think I imagined my guest hanging though, so something
+is awry.  Back to debugging...
 
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Tom Zanussi <zanussi@kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Clark Williams <williams@redhat.com>
-Cc: John Kacur <jkacur@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc: linux-rt-users@vger.kernel.org
-Cc: linux-trace-devel@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
----
- .../tools/rtla/rtla-timerlat-hist.rst         | 106 ++++++++++++++++++
- 1 file changed, 106 insertions(+)
- create mode 100644 Documentation/tools/rtla/rtla-timerlat-hist.rst
+[*] https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/tlfs/datatypes/hv_vp_set#processor-set-example
 
-diff --git a/Documentation/tools/rtla/rtla-timerlat-hist.rst b/Documentation/tools/rtla/rtla-timerlat-hist.rst
-new file mode 100644
-index 000000000000..e12eae1f3301
---- /dev/null
-+++ b/Documentation/tools/rtla/rtla-timerlat-hist.rst
-@@ -0,0 +1,106 @@
-+=====================
-+rtla-timerlat-hist
-+=====================
-+------------------------------------------------
-+Histograms of the operating system timer latency
-+------------------------------------------------
-+
-+:Manual section: 1
-+
-+SYNOPSIS
-+========
-+**rtla timerlat hist** [*OPTIONS*] ...
-+
-+DESCRIPTION
-+===========
-+
-+.. include:: common_timerlat_description.rst
-+
-+The **rtla timerlat hist** displays a histogram of each tracer event
-+occurrence. This tool uses the periodic information, and the
-+**osnoise:** tracepoints are enabled when using the **-T** option.
-+
-+OPTIONS
-+=======
-+
-+.. include:: common_timerlat_options.rst
-+
-+.. include:: common_hist_options.rst
-+
-+.. include:: common_options.rst
-+
-+EXAMPLE
-+=======
-+In the example below, **rtla timerlat hist** is set to run for *10* minutes,
-+in the cpus *0-4*, *skipping zero* only lines. Moreover, **rtla timerlat
-+hist** will change the priority of the *timelat* threads to run under
-+*SCHED_DEADLINE* priority, with a *10us* runtime every *1ms* period. The
-+*1ms* period is also passed to the *timerlat* tracer::
-+
-+  [root@alien ~]# timerlat hist -d 10m -c 0-4 -P d:100us:1ms -p 1ms
-+  # RTLA timerlat histogram
-+  # Time unit is microseconds (us)
-+  # Duration:   0 00:10:00
-+  Index   IRQ-000   Thr-000   IRQ-001   Thr-001   IRQ-002   Thr-002   IRQ-003   Thr-003   IRQ-004   Thr-004
-+  0        276489         0    206089         0    466018         0    481102         0    205546         0
-+  1        318327     35487    388149     30024     94531     48382     83082     71078    388026     55730
-+  2          3282    122584      4019    126527     28231    109012     23311     89309      4568     98739
-+  3           940     11815       837      9863      6209     16227      6895     17196       910      9780
-+  4           444     17287       424     11574      2097     38443      2169     36736       462     13476
-+  5           206     43291       255     25581      1223    101908      1304    101137       236     28913
-+  6           132    101501        96     64584       635    213774       757    215471        99     73453
-+  7            74    169347        65    124758       350     57466       441     53639        69    148573
-+  8            53     85183        31    156751       229      9052       306      9026        39    139907
-+  9            22     10387        12     42762       161      2554       225      2689        19     26192
-+  10           13      1898         8      5770       114      1247       128      1405        13      3772
-+  11            9       560         9       924        71       686        76       765         8       713
-+  12            4       256         2       360        50       411        64       474         3       278
-+  13            2       167         2       172        43       256        53       350         4       180
-+  14            1        88         1       116        15       198        42       223         0       115
-+  15            2        63         3        94        11       139        20       150         0        58
-+  16            2        37         0        56         5        78        10       102         0        39
-+  17            0        18         0        28         4        57         8        80         0        15
-+  18            0         8         0        17         2        50         6        56         0        12
-+  19            0         9         0         5         0        19         0        48         0        18
-+  20            0         4         0         8         0        11         2        27         0         4
-+  21            0         2         0         3         1         9         1        18         0         6
-+  22            0         1         0         3         1         7         0         3         0         5
-+  23            0         2         0         4         0         2         0         7         0         2
-+  24            0         2         0         2         1         3         0         3         0         5
-+  25            0         0         0         1         0         1         0         1         0         3
-+  26            0         1         0         0         0         2         0         2         0         0
-+  27            0         0         0         3         0         1         0         0         0         1
-+  28            0         0         0         3         0         0         0         1         0         0
-+  29            0         0         0         2         0         2         0         1         0         3
-+  30            0         1         0         0         0         0         0         0         0         0
-+  31            0         1         0         0         0         0         0         2         0         2
-+  32            0         0         0         1         0         2         0         0         0         0
-+  33            0         0         0         2         0         0         0         0         0         1
-+  34            0         0         0         0         0         0         0         0         0         2
-+  35            0         1         0         1         0         0         0         0         0         1
-+  36            0         1         0         0         0         1         0         1         0         0
-+  37            0         0         0         1         0         0         0         0         0         0
-+  40            0         0         0         0         0         1         0         1         0         0
-+  41            0         0         0         0         0         0         0         0         0         1
-+  42            0         0         0         0         0         0         0         0         0         1
-+  44            0         0         0         0         0         1         0         0         0         0
-+  46            0         0         0         0         0         0         0         1         0         0
-+  47            0         0         0         0         0         0         0         0         0         1
-+  50            0         0         0         0         0         0         0         0         0         1
-+  54            0         0         0         1         0         0         0         0         0         0
-+  58            0         0         0         1         0         0         0         0         0         0
-+  over:         0         0         0         0         0         0         0         0         0         0
-+  count:   600002    600002    600002    600002    600002    600002    600002    600002    600002    600002
-+  min:          0         1         0         1         0         1         0         1         0         1
-+  avg:          0         5         0         5         0         4         0         4         0         5
-+  max:         16        36        15        58        24        44        21        46        13        50
-+
-+SEE ALSO
-+========
-+**rtla-timerlat**\(1), **rtla-timerlat-top**\(1)
-+
-+*timerlat* tracer documentation: <https://www.kernel.org/doc/html/latest/trace/timerlat-tracer.html>
-+
-+AUTHOR
-+======
-+Written by Daniel Bristot de Oliveira <bristot@kernel.org>
--- 
-2.31.1
-
+> So v2 will be completely different because the "fix" for the KASAN issue is to
+> get rid of sparse_banks entirely.
+> 
+> [1] https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/tlfs/hypercall-interface#variable-sized-hypercall-input-headers
+> [2] https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/tlfs/datatypes/hv_vp_set#sparse-virtual-processor-set
