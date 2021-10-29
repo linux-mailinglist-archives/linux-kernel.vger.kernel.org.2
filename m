@@ -2,98 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40F6243F7C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 09:22:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D237143F7CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 09:24:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232197AbhJ2HY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 03:24:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36366 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232169AbhJ2HYz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 03:24:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BD9260238;
-        Fri, 29 Oct 2021 07:22:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635492146;
-        bh=t8ppdzxFsp5v6Zb0J/RKUojmjtwxmCEGZi+MQ8JGgOQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:From;
-        b=kswy1uGbZzYi1OJpZnZFuB0Dvsd1IRbA77F9rQLFZ+HRpAIJUNPfoZrNZYvr9Cu68
-         HvoSd8nkmPd0SvlwB0x3LgFSYmQ7MiqAra+1b+cB32fGM2+jUfUaZN6XbkHuKAsSTb
-         tFUmzlUje84/OMP31t7V19xB+bBHAsEsoNDkSJfWY5QkNHOBr5cse2Z/fQFO1U0TId
-         tfsec9b0NZIZw7mK/Z9esrCY0004bJmmFcOH7iN4J1BDXFatw3ZlySoe8v+CivzmTc
-         Fs+rHS+SrUpyvfJzuKGksX/Gj5tb50MdfuN1llGbQKkWD+6orW5yMgOhBmTDfOxVgh
-         /mlwXMLKcUxEQ==
-From:   SeongJae Park <sj@kernel.org>
-To:     Changbin Du <changbin.du@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        SeongJae Park <sj@kernel.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/damon: remove return value from before_terminate callback
-Date:   Fri, 29 Oct 2021 07:22:18 +0000
-Message-Id: <20211029072218.16880-1-sj@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211029005023.8895-1-changbin.du@gmail.com>
+        id S232198AbhJ2H1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 03:27:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52871 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229464AbhJ2H1N (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 03:27:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635492284;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=m2M2Xvi4xU573wLggrm/ueEHI68FY/6gBxFejbXAvI8=;
+        b=GrZgvI3G1A3jXpaLo+RnXshFag755PlCPwgcluwTq8W8X4dgX0lT8TGowBxhh/txZjkEqN
+        Mjt2a73EVPQsuZEYS/mrcXsIH1A14QTy/gHrHenwT2ny+VtTFlhBluu+0Rwhdb+gcS0GXE
+        y/tM6LZo1qRnkORYzWAFxB5YqVfVcvU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-590-iHCuhfqmMkWIhwvGK_Hidg-1; Fri, 29 Oct 2021 03:24:43 -0400
+X-MC-Unique: iHCuhfqmMkWIhwvGK_Hidg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 37B83362FB;
+        Fri, 29 Oct 2021 07:24:42 +0000 (UTC)
+Received: from MiWiFi-R3L-srv.redhat.com (ovpn-12-171.pek2.redhat.com [10.72.12.171])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4F5F43A08;
+        Fri, 29 Oct 2021 07:24:35 +0000 (UTC)
+From:   Baoquan He <bhe@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     kexec@lists.infradead.org, dyoung@redhat.com,
+        akpm@linux-foundation.org, Baoquan He <bhe@redhat.com>
+Subject: [PATCH 0/3] x86/kexec: fix memory leak of elf header buffer
+Date:   Fri, 29 Oct 2021 15:24:21 +0800
+Message-Id: <20211029072424.9109-1-bhe@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Oct 2021 08:50:23 +0800 Changbin Du <changbin.du@gmail.com> wrote:
+The memory leak is reported by kmemleak detector, has been existing
+for very long time. It could casue much memory loss on large machine
+with huge memory hotplug which will trigger kdump kernel reloading
+many times, with kexec_file_load interface.
 
-> Since the return value of 'before_terminate' callback is never used,
-> we make it have no return value.
-> 
-> Signed-off-by: Changbin Du <changbin.du@gmail.com>
+And in patch 2, 3, clean up is done to remove unnecessary elf header
+buffer freeing and unneeded arch_kexec_kernel_image_load().
 
-Thank you for this patch!
+Baoquan He (3):
+  x86/kexec: fix memory leak of elf header buffer
+  x86/kexec: remove incorrect elf header buffer freeing
+  kexec_file: clean up arch_kexec_kernel_image_load
 
-Reviewed-by: SeongJae Park <sj@kernel.org>
+ arch/x86/kernel/machine_kexec_64.c | 23 +++++++++--------------
+ include/linux/kexec.h              |  1 -
+ kernel/kexec_file.c                |  9 ++-------
+ 3 files changed, 11 insertions(+), 22 deletions(-)
 
+-- 
+2.17.2
 
-Thanks,
-SJ
-
-> ---
->  include/linux/damon.h | 2 +-
->  mm/damon/dbgfs.c      | 5 ++---
->  2 files changed, 3 insertions(+), 4 deletions(-)
-> 
-> diff --git a/include/linux/damon.h b/include/linux/damon.h
-> index 50c6eb0dee1f..041966786270 100644
-> --- a/include/linux/damon.h
-> +++ b/include/linux/damon.h
-> @@ -322,7 +322,7 @@ struct damon_callback {
->  	int (*before_start)(struct damon_ctx *context);
->  	int (*after_sampling)(struct damon_ctx *context);
->  	int (*after_aggregation)(struct damon_ctx *context);
-> -	int (*before_terminate)(struct damon_ctx *context);
-> +	void (*before_terminate)(struct damon_ctx *context);
->  };
->  
->  /**
-> diff --git a/mm/damon/dbgfs.c b/mm/damon/dbgfs.c
-> index befb27a29aab..eccc14b34901 100644
-> --- a/mm/damon/dbgfs.c
-> +++ b/mm/damon/dbgfs.c
-> @@ -645,18 +645,17 @@ static void dbgfs_fill_ctx_dir(struct dentry *dir, struct damon_ctx *ctx)
->  		debugfs_create_file(file_names[i], 0600, dir, ctx, fops[i]);
->  }
->  
-> -static int dbgfs_before_terminate(struct damon_ctx *ctx)
-> +static void dbgfs_before_terminate(struct damon_ctx *ctx)
->  {
->  	struct damon_target *t, *next;
->  
->  	if (!targetid_is_pid(ctx))
-> -		return 0;
-> +		return;
->  
->  	damon_for_each_target_safe(t, next, ctx) {
->  		put_pid((struct pid *)t->id);
->  		damon_destroy_target(t);
->  	}
-> -	return 0;
->  }
->  
->  static struct damon_ctx *dbgfs_new_ctx(void)
-> -- 
-> 2.32.0
