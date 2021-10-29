@@ -2,80 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93E4743F5DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 05:59:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8A7243F5F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 06:23:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231135AbhJ2EBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 00:01:52 -0400
-Received: from mail-pl1-f182.google.com ([209.85.214.182]:44784 "EHLO
-        mail-pl1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbhJ2EBu (ORCPT
+        id S231704AbhJ2EZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 00:25:27 -0400
+Received: from mswedge2.sunplus.com ([60.248.182.106]:47484 "EHLO
+        mg.sunplus.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229504AbhJ2EZY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 00:01:50 -0400
-Received: by mail-pl1-f182.google.com with SMTP id t11so5927658plq.11;
-        Thu, 28 Oct 2021 20:59:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=fRsqMyqFA/Ida725QXt6PG10Z1CmiaMzp5jYp0DjGUQ=;
-        b=Yft7I9yesiZVV9bd6Kv0lWMyLepfD4ass9DGbIYkzpYczXLeYYgrSGfPidp6YmBxsy
-         R3IvfDTpQfH+SEOuh9H1XHH6zRCysPbs41vv7IkxZZqwkokM12/pYeCAz9XZtCYyhZMo
-         CbPlhZEzaHrRFIZPr0++K9KvEQ7OoC5FTcaiuvVHfAIvonZJOMmjlb8ABen4+OS/3fRs
-         b09s4dTOp21ygBtaCEvz1VEY2sUTvWbbTIGrjld8N0WBTKlAHiuY9m2UDPlD13Fq38rf
-         FNHUb9r+zk0dh/KQWORecPkheIbOG+qVSlLXH44vB0SsyOfGeq53P3NMUPgz0FWB2a9q
-         AJdQ==
-X-Gm-Message-State: AOAM533g+83jzpg+P1SOp9V7XhtzbE2Syh7ICk/lsiBhI5CM7IEgbXvk
-        +KLJL5Hmu9mmTOxC6NvfGEY=
-X-Google-Smtp-Source: ABdhPJyzp8/GBpwxAO5nZ7fUu+tWNNNqjNHsvW9hR4QVN/6JSKuYgEuqjdPLBYCEZbGh9Ff8kcrSFA==
-X-Received: by 2002:a17:90b:1bd2:: with SMTP id oa18mr17070282pjb.164.1635479962233;
-        Thu, 28 Oct 2021 20:59:22 -0700 (PDT)
-Received: from ?IPV6:2601:647:4000:d7:ec77:6dc4:1736:618f? ([2601:647:4000:d7:ec77:6dc4:1736:618f])
-        by smtp.gmail.com with ESMTPSA id o13sm5642340pfu.90.2021.10.28.20.59.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Oct 2021 20:59:21 -0700 (PDT)
-Message-ID: <8288a615-1cca-9c24-f38c-549478ba55ad@acm.org>
-Date:   Thu, 28 Oct 2021 20:59:19 -0700
+        Fri, 29 Oct 2021 00:25:24 -0400
+X-Greylist: delayed 2556 seconds by postgrey-1.27 at vger.kernel.org; Fri, 29 Oct 2021 00:25:23 EDT
+X-MailGates: (compute_score:DELIVER,40,3)
+Received: from 172.17.9.112
+        by mg02.sunplus.com with MailGates ESMTP Server V5.0(64987:0:AUTH_RELAY)
+        (envelope-from <wells.lu@sunplus.com>); Fri, 29 Oct 2021 11:40:05 +0800 (CST)
+Received: from sphcmbx02.sunplus.com.tw (172.17.9.112) by
+ sphcmbx02.sunplus.com.tw (172.17.9.112) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Fri, 29 Oct 2021 11:40:00 +0800
+Received: from sphcmbx02.sunplus.com.tw ([::1]) by sphcmbx02.sunplus.com.tw
+ ([fe80::f8bb:bd77:a854:5b9e%14]) with mapi id 15.00.1497.023; Fri, 29 Oct
+ 2021 11:40:00 +0800
+From:   =?utf-8?B?V2VsbHMgTHUg5ZGC6Iqz6aiw?= <wells.lu@sunplus.com>
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Wells Lu <wellslutw@gmail.com>,
+        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+CC:     "qinjian@cqplus1.com" <qinjian@cqplus1.com>,
+        "dvorkin@tibbo.com" <dvorkin@tibbo.com>
+Subject: RE: [PATCH 1/3] pinctrl: Add driver for Sunplus SP7021
+Thread-Topic: [PATCH 1/3] pinctrl: Add driver for Sunplus SP7021
+Thread-Index: AQHXyxB2JVFfQiM840ywI8+A3Cqbqavm4xsAgAJpvBA=
+Date:   Fri, 29 Oct 2021 03:40:00 +0000
+Message-ID: <930472fa25b7462aa49e33d694e4d759@sphcmbx02.sunplus.com.tw>
+References: <1635324926-22319-1-git-send-email-wells.lu@sunplus.com>
+ <1635324926-22319-2-git-send-email-wells.lu@sunplus.com>
+ <3ed37bf9-d698-2a03-60e7-9b357e3abfb4@infradead.org>
+In-Reply-To: <3ed37bf9-d698-2a03-60e7-9b357e3abfb4@infradead.org>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [172.25.108.39]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH] scsi: ufs: fix unmet dependency on RESET_CONTROLLER for
- RESET_TI_SYSCON
-Content-Language: en-US
-To:     Julian Braha <julianbraha@gmail.com>, alim.akhtar@samsung.com,
-        avri.altman@wdc.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, beanhuo@micron.com,
-        rdunlap@infradead.org, daejun7.park@samsung.com
-Cc:     fazilyildiran@gmail.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211028203535.7771-1-julianbraha@gmail.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20211028203535.7771-1-julianbraha@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/28/21 13:35, Julian Braha wrote:
-> diff --git a/drivers/scsi/ufs/Kconfig b/drivers/scsi/ufs/Kconfig
-> index b2521b830be7..0427f8277a5d 100644
-> --- a/drivers/scsi/ufs/Kconfig
-> +++ b/drivers/scsi/ufs/Kconfig
-> @@ -115,6 +115,7 @@ config SCSI_UFS_MEDIATEK
->   	tristate "Mediatek specific hooks to UFS controller platform driver"
->   	depends on SCSI_UFSHCD_PLATFORM && ARCH_MEDIATEK
->   	select PHY_MTK_UFS
-> +  select RESET_CONTROLLER
->   	select RESET_TI_SYSCON
->   	help
->   	  This selects the Mediatek specific additions to UFSHCD platform driver.
-
-Please keep the indentation consistent.
-
-Thanks,
-
-Bart.
-
-
+SGkgU2lyLA0KDQpUaGFuayB5b3UgZm9yIHlvdXIgcmV2aWV3Lg0KDQpJIG1vZGlmaWVkIGVycm9y
+cyBpbiBLY29uZmlnIHlvdSBwb2ludGVkIG91dC4NCg0KQ291bGQgeW91IHBsZWFzZSB0ZWFjaCBt
+ZSB3aGF0IGlzIHRoZSBuZXh0IHN0ZXAgSSBuZWVkIHRvIGRvDQooVGhpcyBpcyBteSBmaXJzdCBz
+dWJtaXNzaW9uIHRvIExpbnV4IGtlcm5lbCBtYWluLWxpbmUpPw0KDQoxLiBTaG91bGQgSSBtYWtl
+IGEgcGF0Y2ggW1BBVEhDIDEvMyB2Ml0gZm9yIEtjb25maWcgYW5kIHN1Ym1pdCANCiAgYWdhaW4/
+DQoyLiBPciB3YWl0IGZvciBvdGhlciBmaWxlcyBvZiB0aGUgcGF0Y2ggW1BBVENIIDEvM10gYmVp
+bmcgDQogIHJldmlld2VkIGFuZCB0aGVuIHN1Ym1pdCBwYXRjaCBhZ2Fpbi4NCjMuIEF0IGZpcnN0
+IHBhdGNoLCBJIHVzZWQgJ2dpdCBzZW5kLWVtYWlsJyBjb21tYW5kIHRvIHNlbmQgYSANCiAgcGF0
+Y2ggc2VyaWVzLiBUaGUgY29tbWFuZCBpczoNCiAgZ2l0IHNlbmQtZW1haWwgXA0KICAtLXRvIGxp
+bnVzLndhbGxlaWpAbGluYXJvLm9yZyBcDQogIC0tdG8gbGludXgtZ3Bpb0B2Z2VyLmtlcm5lbC5v
+cmcgXA0KICAtLXRvIGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcgXA0KICAtLXRvIHJvYmgr
+ZHRAa2VybmVsLm9yZyBcDQogIC0tdG8gZGV2aWNldHJlZUB2Z2VyLmtlcm5lbC5vcmcgXA0KICAt
+LWNjIGR2b3JraW5AdGliYm8uY29tIFwNCiAgLS1jYyBxaW5qaWFuQGNxcGx1czEuY29tIFwNCiAg
+LS10aHJlYWQgMDAwKi5wYXRjaA0KICBQbGVhc2UgdGVhY2ggbWUgd2hhdCBjb21tYW5kIG9wdGlv
+bnMgb2YgJ2dpdCBzZW5kLWVtYWlsJyANCiAgSSBzaG91bGQgdXNlIHRvIHNlbmQgdGhlIHZlcnNp
+b24gMiBwYXRjaC4NCjQuIElmIHRoaXMgaXMgbm90IGEgY29ycmVjdCB3YXkgdG8gcmVwbHkgeW91
+ciBlbWFpbCwgcGxlYXNlIHRlYWNoIA0KICBtZSBob3cgdG8gcmVwbHkgbWFpbnRhaW5lcnMnIGVt
+YWlsLg0KDQoNCkJlc3QgcmVnYXJkcywNCg0KV2VsbHMgTHUNCg0K
