@@ -2,226 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 426F543FE90
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 16:38:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B17A343FE92
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 16:39:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229571AbhJ2Okz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 10:40:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47640 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbhJ2Oky (ORCPT
+        id S229621AbhJ2Ol5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 10:41:57 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:37660 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229486AbhJ2Ol4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 10:40:54 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28B55C061714
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 07:38:26 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id r2so7971385qtw.12
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 07:38:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=FjdraEHcUKO50MDnAo25BSOWI5FEJ1ZaYZ590cMzyAs=;
-        b=S7vuW4s1rbWE0JASTqugT0IKIeXWTgxtS3+n51gJOEg5dflocWvOsnen2qrhGW83Za
-         HsbwerJHgrJG9ghjOHrn/VsG4LUEQC9Ox4tGl+6zMQQ9dQocj6oryG8FJGsMmFOEgmZ9
-         4XIlXKova8G6ehBW5BwKo/CMF5uF7xaV997yCsTLr6+Eb83U+Ux9lyAiP1ghufVMNxr0
-         uGO6Tng1D3ai+kfXqI973T0KnkQKN1MsxZWLxCu0VDn4sbeu2e+GNkEu3eM1QD1GJ9V2
-         htUNIWLnJMak99sWondvGGQHc4VvVf2Y2lF8gPQtkZ8IhjIiCvZpdQQ3NHGg4uL0h9PQ
-         kfHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FjdraEHcUKO50MDnAo25BSOWI5FEJ1ZaYZ590cMzyAs=;
-        b=QL+/7yydRFhiwYq9pEkIIZMy2bsnSg5YatFa3PP5oyNiDFKbw8MkqLpxX7+s6yBbx6
-         9SsZUNh9qqctk5P/sRnjZgunlHDoyboRt3fx4wyFSvxwU9gOk3R7XCBBbBFVzPFDSX4Y
-         dJmncbgl/xd0cyu84qLTUGTcd1mRq9rskWeTdfWACdXyExnkE2IN7nzVxmwPdXk3j1h+
-         24Q566J8GuuKwlY4zbO8XTgJxVSnicNKnwLZ+A2Id13ETbGG4/jpGIg20leVM5Qa8pNX
-         ebUbvgaf6cvLw1FadlMjJLdokAZR2s8j0CSvaYcAT+amsIlrOe0a7Ivm4k8jdW0U2Cv5
-         Xq3g==
-X-Gm-Message-State: AOAM532Xx2sZBJ9VZ1ttQDCznNVZ2B274eEZjWh82ugQysi8VZPPv469
-        bFFyEPo6HUri1v5QSJ+yLDtIfQ==
-X-Google-Smtp-Source: ABdhPJwZavYklqnkY5A7Id+6Y6Pq7XG12cjSbT3K7irZUBFT9CvtQK6YLL5ZtR5UxJHyvQhlp6HeNA==
-X-Received: by 2002:ac8:5cc5:: with SMTP id s5mr12212229qta.256.1635518305006;
-        Fri, 29 Oct 2021 07:38:25 -0700 (PDT)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id u16sm1434073qkp.116.2021.10.29.07.38.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Oct 2021 07:38:24 -0700 (PDT)
-Date:   Fri, 29 Oct 2021 10:38:23 -0400
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     Ye Bin <yebin10@huawei.com>
-Cc:     axboe@kernel.dk, linux-block@vger.kernel.org, nbd@other.debian.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next v3 2/2] nbd: Fix hungtask when nbd_config_put
-Message-ID: <YXwHXxl135ZR5W9p@localhost.localdomain>
-References: <20211029094228.1853434-1-yebin10@huawei.com>
- <20211029094228.1853434-3-yebin10@huawei.com>
+        Fri, 29 Oct 2021 10:41:56 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 7A54821965;
+        Fri, 29 Oct 2021 14:39:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1635518366; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EMl6XMWQU8PSi/h0g3mYu4dbu43K75wkrTIz7kMuvTc=;
+        b=AU8z2m/uf+cGXki+h7Z7wV6RYo9eOp7IrHxJ/DVsd9GQyFRY/q9O7dHK1zfWfEjnMZ/J0r
+        hYK83M6LWfXo0ANJKJurMTCime56igr7ypPGNRnTaRYSwqlxCD1dmn8kNCpA5kRUg3yqmu
+        XhLHqLKBEFQJG/4EbvHAOct2LI71PZ8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1635518366;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EMl6XMWQU8PSi/h0g3mYu4dbu43K75wkrTIz7kMuvTc=;
+        b=3llfTrrHSYKAXP7Vn4qn3OxG7skZpS/qI2gUPu8IHOZx7xvSFMBmNhiz0F3vTewvT+e3OQ
+        9gH65grZBBgIR8DQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6413A13F6F;
+        Fri, 29 Oct 2021 14:39:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id LsZmGJ4HfGHLOgAAMHmgww
+        (envelope-from <bp@suse.de>); Fri, 29 Oct 2021 14:39:26 +0000
+Date:   Fri, 29 Oct 2021 16:39:23 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     Huang Rui <ray.huang@amd.com>
+Cc:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Giovanni Gherdovich <ggherdovich@suse.cz>,
+        linux-pm@vger.kernel.org, Deepak Sharma <deepak.sharma@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Steven Noonan <steven@valvesoftware.com>,
+        Nathan Fontenot <nathan.fontenot@amd.com>,
+        Jinzhou Su <Jinzhou.Su@amd.com>,
+        Xiaojian Du <Xiaojian.Du@amd.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v3 01/21] x86/cpufreatures: add AMD Collaborative
+ Processor Performance Control feature flag
+Message-ID: <YXwHm84HYnIGm0hx@zn.tnic>
+References: <20211029130241.1984459-1-ray.huang@amd.com>
+ <20211029130241.1984459-2-ray.huang@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211029094228.1853434-3-yebin10@huawei.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211029130241.1984459-2-ray.huang@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 05:42:28PM +0800, Ye Bin wrote:
-> I got follow issue:
-> [  247.381177] INFO: task kworker/u10:0:47 blocked for more than 120 seconds.
-> [  247.382644]       Not tainted 4.19.90-dirty #140
-> [  247.383502] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> [  247.385027] Call Trace:
-> [  247.388384]  schedule+0xb8/0x3c0
-> [  247.388966]  schedule_timeout+0x2b4/0x380
-> [  247.392815]  wait_for_completion+0x367/0x510
-> [  247.397713]  flush_workqueue+0x32b/0x1340
-> [  247.402700]  drain_workqueue+0xda/0x3c0
-> [  247.403442]  destroy_workqueue+0x7b/0x690
-> [  247.405014]  nbd_config_put.cold+0x2f9/0x5b6
-> [  247.405823]  recv_work+0x1fd/0x2b0
-> [  247.406485]  process_one_work+0x70b/0x1610
-> [  247.407262]  worker_thread+0x5a9/0x1060
-> [  247.408699]  kthread+0x35e/0x430
-> [  247.410918]  ret_from_fork+0x1f/0x30
+On Fri, Oct 29, 2021 at 09:02:21PM +0800, Huang Rui wrote:
+> Add Collaborative Processor Performance Control feature flag for AMD
+> processors.
 > 
-> We can reprodeuce issue as follows:
-
-"reproduce"
-
-> 1. Inject memory fault in nbd_start_device
-> -1244,10 +1248,18 @@ static int nbd_start_device(struct nbd_device *nbd)
->         nbd_dev_dbg_init(nbd);
->         for (i = 0; i < num_connections; i++) {
->                 struct recv_thread_args *args;
-> -
-> -               args = kzalloc(sizeof(*args), GFP_KERNEL);
-> +
-> +               if (i == 1) {
-> +                       args = NULL;
-> +                       printk("%s: inject malloc error\n", __func__);
-> +               }
-> +               else
-> +                       args = kzalloc(sizeof(*args), GFP_KERNEL);
-> 2. Inject delay in recv_work
-> -757,6 +760,8 @@ static void recv_work(struct work_struct *work)
+> This feature flag will be used on the following amd-pstate driver. The
+> amd-pstate driver has two approaches to implement the frequency control
+> behavior. That depends on the CPU hardware implementation. One is "Full
+> MSR Support" and another is "Shared Memory Support". The feature flag
+> indicates the current processors with "Full MSR Support".
 > 
->                 blk_mq_complete_request(blk_mq_rq_from_pdu(cmd));
->         }
-> +       printk("%s: comm=%s pid=%d\n", __func__, current->comm, current->pid);
-> +       mdelay(5 * 1000);
->         nbd_config_put(nbd);
->         atomic_dec(&config->recv_threads);
->         wake_up(&config->recv_wq);
-> 3. Create nbd server
-> nbd-server 8000 /tmp/disk
-> 4. Create nbd client
-> nbd-client localhost 8000 /dev/nbd1
-> Then will trigger above issue.
-> 
-> Reason is when add delay in recv_work, lead to relase the last reference
-
-"release"
-
-> of 'nbd->config_refs'. nbd_config_put will call flush_workqueue to make
-> all work finish. Obviously, it will lead to deadloop.
-> To solve this issue, according to Josef's suggestion move 'recv_work'
-> init from start device to nbd_dev_add, then destory 'recv_work'when
-
-"destroy"
-
-> nbd device teardown.
-> 
-> Signed-off-by: Ye Bin <yebin10@huawei.com>
+> Signed-off-by: Huang Rui <ray.huang@amd.com>
 > ---
->  drivers/block/nbd.c | 30 ++++++++++++++----------------
->  1 file changed, 14 insertions(+), 16 deletions(-)
+>  arch/x86/include/asm/cpufeatures.h | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-> index 096883ab9b76..c9a65a260668 100644
-> --- a/drivers/block/nbd.c
-> +++ b/drivers/block/nbd.c
-> @@ -1314,10 +1314,6 @@ static void nbd_config_put(struct nbd_device *nbd)
->  		kfree(nbd->config);
->  		nbd->config = NULL;
+> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+> index d0ce5cfd3ac1..f23dc1abd485 100644
+> --- a/arch/x86/include/asm/cpufeatures.h
+> +++ b/arch/x86/include/asm/cpufeatures.h
+> @@ -313,6 +313,7 @@
+>  #define X86_FEATURE_AMD_SSBD		(13*32+24) /* "" Speculative Store Bypass Disable */
+>  #define X86_FEATURE_VIRT_SSBD		(13*32+25) /* Virtualized Speculative Store Bypass Disable */
+>  #define X86_FEATURE_AMD_SSB_NO		(13*32+26) /* "" Speculative Store Bypass is fixed in hardware. */
+> +#define X86_FEATURE_AMD_CPPC		(13*32+27) /* Collaborative Processor Performance Control */
 >  
-> -		if (nbd->recv_workq)
-> -			destroy_workqueue(nbd->recv_workq);
-> -		nbd->recv_workq = NULL;
-> -
->  		nbd->tag_set.timeout = 0;
->  		nbd->disk->queue->limits.discard_granularity = 0;
->  		nbd->disk->queue->limits.discard_alignment = 0;
-> @@ -1346,14 +1342,6 @@ static int nbd_start_device(struct nbd_device *nbd)
->  		return -EINVAL;
->  	}
->  
-> -	nbd->recv_workq = alloc_workqueue("knbd%d-recv",
-> -					  WQ_MEM_RECLAIM | WQ_HIGHPRI |
-> -					  WQ_UNBOUND, 0, nbd->index);
-> -	if (!nbd->recv_workq) {
-> -		dev_err(disk_to_dev(nbd->disk), "Could not allocate knbd recv work queue.\n");
-> -		return -ENOMEM;
-> -	}
-> -
->  	blk_mq_update_nr_hw_queues(&nbd->tag_set, config->num_connections);
->  	nbd->pid = task_pid_nr(current);
->  
-> @@ -1779,6 +1767,15 @@ static struct nbd_device *nbd_dev_add(int index, unsigned int refs)
->  	}
->  	nbd->disk = disk;
->  
-> +	nbd->recv_workq = alloc_workqueue("nbd%d-recv",
-> +					  WQ_MEM_RECLAIM | WQ_HIGHPRI |
-> +					  WQ_UNBOUND, 0, nbd->index);
-> +	if (!nbd->recv_workq) {
-> +		dev_err(disk_to_dev(nbd->disk), "Could not allocate knbd recv work queue.\n");
-> +		err = -ENOMEM;
-> +		goto out_err_disk;
-> +	}
-> +
+>  /* Thermal and Power Management Leaf, CPUID level 0x00000006 (EAX), word 14 */
+>  #define X86_FEATURE_DTHERM		(14*32+ 0) /* Digital Thermal Sensor */
+> -- 
 
-You never free this up, you need to add a destroy_workqueue(nbd->rsv_workq) to
-nbd_dev_remove().
+Acked-by: Borislav Petkov <bp@suse.de>
 
->  	/*
->  	 * Tell the block layer that we are not a rotational device
->  	 */
-> @@ -1809,7 +1806,7 @@ static struct nbd_device *nbd_dev_add(int index, unsigned int refs)
->  	disk->first_minor = index << part_shift;
->  	if (disk->first_minor > 0xff) {
->  		err = -EINVAL;
-> -		goto out_err_disk;
-> +		goto out_free_work;
->  	}
->  
->  	disk->minors = 1 << part_shift;
-> @@ -1818,7 +1815,7 @@ static struct nbd_device *nbd_dev_add(int index, unsigned int refs)
->  	sprintf(disk->disk_name, "nbd%d", index);
->  	err = add_disk(disk);
->  	if (err)
-> -		goto out_err_disk;
-> +		goto out_free_work;
->  
->  	/*
->  	 * Now publish the device.
-> @@ -1827,6 +1824,8 @@ static struct nbd_device *nbd_dev_add(int index, unsigned int refs)
->  	nbd_total_devices++;
->  	return nbd;
->  
-> +out_free_work:
-> +	destroy_workqueue(nbd->recv_workq);
->  out_err_disk:
->  	blk_cleanup_disk(disk);
->  out_free_idr:
-> @@ -2087,8 +2086,7 @@ static void nbd_disconnect_and_put(struct nbd_device *nbd)
->  	 * queue. And this also ensure that we can safely call nbd_clear_que()
->  	 * to cancel the inflight I/Os.
->  	 */
-> -	if (nbd->recv_workq)
-> -		flush_workqueue(nbd->recv_workq);
-> +	flush_workqueue(nbd->recv_workq);
+-- 
+Regards/Gruss,
+    Boris.
 
-The comment above this part needs to be updated, as we no longer have this
-problem.  Thanks,
-
-Josef
+SUSE Software Solutions Germany GmbH, GF: Ivo Totev, HRB 36809, AG Nürnberg
