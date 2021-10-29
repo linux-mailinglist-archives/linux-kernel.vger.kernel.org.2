@@ -2,114 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1A9A4402BA
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 21:02:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 815DB4402B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 21:01:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230163AbhJ2TEq convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 29 Oct 2021 15:04:46 -0400
-Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:52185 "EHLO
-        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231548AbhJ2TEb (ORCPT
+        id S231273AbhJ2TEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 15:04:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231262AbhJ2TEJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 15:04:31 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-571-aUBgWNA2NE6rT4Pea9eR-A-1; Fri, 29 Oct 2021 15:01:56 -0400
-X-MC-Unique: aUBgWNA2NE6rT4Pea9eR-A-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D6E5D8066F6;
-        Fri, 29 Oct 2021 19:01:54 +0000 (UTC)
-Received: from x1.com (unknown [10.22.10.230])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F137E5D9CA;
-        Fri, 29 Oct 2021 19:01:49 +0000 (UTC)
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        John Kacur <jkacur@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V8 9/9] tracing/osnoise: Remove PREEMPT_RT ifdefs from inside functions
-Date:   Fri, 29 Oct 2021 21:00:35 +0200
-Message-Id: <8e32bd96c85b691e606a545158815853581d0663.1635533292.git.bristot@kernel.org>
-In-Reply-To: <cover.1635533292.git.bristot@kernel.org>
-References: <cover.1635533292.git.bristot@kernel.org>
+        Fri, 29 Oct 2021 15:04:09 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 103AFC0613F5
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 12:01:41 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id q124so14710674oig.3
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 12:01:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=TVdi6Fl/MB/KZRsgDzQbukqjgZZAtYkijpdGcF4lmLs=;
+        b=MzXdmS/4QiP7cYNzBGEEG80o+PYN5LU/WzOdNbM7Wmsq/moQK7lgMJNg2Lg+WE6JVB
+         DmmMtuKqDZP9s6K4K6Wb48SjzZ1WpFD69doHDWGMe2Oi2McGvNwu7A5Kr2Wbze9/wVzp
+         tWo8uMFP7Docoe5tO62X0zga0xREye+jI222Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=TVdi6Fl/MB/KZRsgDzQbukqjgZZAtYkijpdGcF4lmLs=;
+        b=XA6Q2fC6GFiQeFUygk3RG/GXK1UMfF2zmc6TEwIxTTiMrJY0kRN5VbcNa+KxPA57zp
+         XR6NRY1jaJGiPYrCuDZxuXWWeqGlu2adp/Lsv2Wn5+sHAY3Jsfw/yeG73cQkbeIXHxkp
+         GdOmkxkGrh0ESR/1T/YvBspH4GifjiPMvczCF+Ru0ILH/MGCtfFu//t8M9X5+GP5AUEc
+         p6OJtdm3oKPpUBtl0meRAblb37JGcSBax9OBu4pIMPqno2ugcZ1obY/2Qg4QykuqurMW
+         Ew0uTSV3v4SEtja1jrXqC7UdM025aezOR1QJfX7Bb2RridKeP927km2jT5aYkJ6uaKHY
+         2Uww==
+X-Gm-Message-State: AOAM533xLsHV2foqqYlLYYlYwZ5DeS5ERXohjyHO5iTGxSExWy0SyIZt
+        n/v0d/Q0LqhvxR5AEvPAvEnoDkvPoWpcNVpIbqobnviL7Oo=
+X-Google-Smtp-Source: ABdhPJwQlGvsBPbd7Afpn6FwkrBTZ1o9iZWKjlIZ/CCM3AABnc3sMrHfvoL9Q2sTgQvJLiS+2ORNuI2alq53l5/KmWw=
+X-Received: by 2002:a05:6808:2307:: with SMTP id bn7mr1203456oib.32.1635534100470;
+ Fri, 29 Oct 2021 12:01:40 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Fri, 29 Oct 2021 14:01:39 -0500
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=bristot@kernel.org
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=WINDOWS-1252
+In-Reply-To: <1635507893-25490-3-git-send-email-quic_c_skakit@quicinc.com>
+References: <1635507893-25490-1-git-send-email-quic_c_skakit@quicinc.com> <1635507893-25490-3-git-send-email-quic_c_skakit@quicinc.com>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Fri, 29 Oct 2021 14:01:39 -0500
+Message-ID: <CAE-0n50MZAYkQs4=wmq0oBb3KxFGa9pKevEEtkOtjZ=35PV15Q@mail.gmail.com>
+Subject: Re: [PATCH V3 2/4] leds: Add pm8350c support to Qualcomm LPG driver
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        Satya Priya <quic_c_skakit@quicinc.com>
+Cc:     mka@chromium.org, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, satya priya <skakit@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove CONFIG_PREEMPT_RT from inside functions, avoiding
-compilation problems in the future.
+Quoting Satya Priya (2021-10-29 04:44:51)
+> From: satya priya <skakit@codeaurora.org>
+>
+> Add pm8350c compatible and lpg_data to the driver.
+>
+> Signed-off-by: satya priya <skakit@codeaurora.org>
+> Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+> ---
 
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Tom Zanussi <zanussi@kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Clark Williams <williams@redhat.com>
-Cc: John Kacur <jkacur@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc: linux-rt-users@vger.kernel.org
-Cc: linux-trace-devel@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Suggested-by: Steven Rostedt <rostedt@goodmis.org>
-Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
----
- kernel/trace/trace_osnoise.c | 13 ++++---------
- 1 file changed, 4 insertions(+), 9 deletions(-)
-
-diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
-index 2594193aa30e..7a8d1b631d75 100644
---- a/kernel/trace/trace_osnoise.c
-+++ b/kernel/trace/trace_osnoise.c
-@@ -1517,9 +1517,11 @@ static enum hrtimer_restart timerlat_irq(struct hrtimer *timer)
- 	 * running, the thread needs to receive the softirq delta_start. The
- 	 * reason being is that the softirq will be the last to be unfolded,
- 	 * resseting the thread delay to zero.
-+	 *
-+	 * The PREEMPT_RT is a special case, though. As softirqs run as threads
-+	 * on RT, moving the thread is enough.
- 	 */
--#ifndef CONFIG_PREEMPT_RT
--	if (osn_var->softirq.delta_start) {
-+	if (!IS_ENABLED(CONFIG_PREEMPT_RT) && osn_var->softirq.delta_start) {
- 		copy_int_safe_time(osn_var, &osn_var->thread.delta_start,
- 				   &osn_var->softirq.delta_start);
- 
-@@ -1529,13 +1531,6 @@ static enum hrtimer_restart timerlat_irq(struct hrtimer *timer)
- 		copy_int_safe_time(osn_var, &osn_var->thread.delta_start,
- 				    &osn_var->irq.delta_start);
- 	}
--#else /* CONFIG_PREEMPT_RT */
--	/*
--	 * The sofirqs run as threads on RT, so there is not need
--	 * to keep track of it.
--	 */
--	copy_int_safe_time(osn_var, &osn_var->thread.delta_start, &osn_var->irq.delta_start);
--#endif /* CONFIG_PREEMPT_RT */
- 
- 	/*
- 	 * Compute the current time with the expected time.
--- 
-2.31.1
-
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
