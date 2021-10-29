@@ -2,102 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 372BE43FF6D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 17:26:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 910E243FF62
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 17:22:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229826AbhJ2P2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 11:28:50 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:40700 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229527AbhJ2P2t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 11:28:49 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19TDDFCP001362;
-        Fri, 29 Oct 2021 17:21:37 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=date : from : to :
- cc : subject : in-reply-to : message-id : references : mime-version :
- content-type; s=selector1;
- bh=tlJPjaHr3bopdMN69Mr2F3ZcC3w0YkJhjYgUllbtTzk=;
- b=pPsh8uZN+ePssNyktStyh7o0Dg/jk9WMjY2jihqFmYkCghCj1EQOXga0aNjz3D3DpUEL
- Mw74NxKPI/F8330np5Ii9uggT+7oyLNubEwC3gxK7ZHh7CpSZ0aA3rt4meILPcRQEdVN
- ip5BTO/7rS03ZyzdYOFuYsTEWRL/qyL0BRdveISBgj4N9DRYbPU229QqV5fNF/qspnNr
- xCUHSOlhP50GVDd6PtxZ1Rr6yyKRdCbYMcSEz+vXjpLNETaTMUbV25vq/KQz3Zl9tFj+
- eVuTBMm5Ho5NDupycvI8/Bz6LwDzgS1KO+7RZggca6Lgw9JBhgdKqVrv2p+N20Aoa/aV zQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3c07xgm36t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 29 Oct 2021 17:21:37 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4DD1C10002A;
-        Fri, 29 Oct 2021 17:21:36 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 14B87240741;
-        Fri, 29 Oct 2021 17:21:36 +0200 (CEST)
-Received: from gnbcxd0088.gnb.st.com (10.75.127.48) by SFHDAG2NODE2.st.com
- (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Fri, 29 Oct
- 2021 17:21:35 +0200
-Date:   Fri, 29 Oct 2021 17:21:24 +0200
-From:   Nicolas Toromanoff <nicolas.toromanoff@foss.st.com>
-X-X-Sender: toromano@gnbcxd0088.gnb.st.com
-To:     Marek Vasut <marex@denx.de>
-CC:     Nicolas Toromanoff <nicolas.toromanoff@foss.st.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        <linux-crypto@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 4/8] crypto: stm32/cryp - fix race condition
-In-Reply-To: <1ec60d9c-1ab4-8a92-1c6d-8093232ca039@denx.de>
-Message-ID: <alpine.DEB.2.21.2110291708040.20378@gnbcxd0088.gnb.st.com>
-References: <20211029135454.4383-1-nicolas.toromanoff@foss.st.com> <20211029135454.4383-5-nicolas.toromanoff@foss.st.com> <1ec60d9c-1ab4-8a92-1c6d-8093232ca039@denx.de>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        id S229936AbhJ2PYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 11:24:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43392 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229641AbhJ2PYm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 11:24:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B48B60F55;
+        Fri, 29 Oct 2021 15:22:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635520934;
+        bh=K3N5Az/gCC0BKAsrlVXDoRH6GnWNwjX21xmwxUaiu4k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tBBp5TysnpZ7a3l8x+KecThcE6UPsz1Yy5AaHXezyrazZv6bk1dm0HM47XK1rv/B+
+         R4bGIYF0UGrY0f9OpnZZAKztniaDQ6e51sYkwXAcvLvoL/SDZT8a0bjoXfxK/mZUHn
+         /A/yqMQV2oopFAEAPiesebYEL1DQQIYDTDGKOuabxBbO6lyQqQKge1IHNtDXiPW03o
+         b+pZoU/1o0HdiVIJpJbQox7Hm0jJ0zifortCdbj53jjcdP027cg7Gg+TKQQQckd3pf
+         kF2G3swH+3BcQmsSE+lpjxz9QaM4WIH8RZ0aVOVbq89eKuJBDG5wJkxAq6mp59G4OB
+         edUELgF64F0ug==
+Date:   Fri, 29 Oct 2021 16:22:09 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Sameer Pujar <spujar@nvidia.com>
+Cc:     Jaroslav Kysela <perex@perex.cz>, lgirdwood@gmail.com,
+        tiwai@suse.com, jonathanh@nvidia.com, thierry.reding@gmail.com,
+        alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ASoC: tegra: Add master volume/mute control support
+Message-ID: <YXwRoWPF+ctNJRyp@sirena.org.uk>
+References: <1635159976-17355-1-git-send-email-spujar@nvidia.com>
+ <79541c76-2c2b-fd4b-60c8-67ee6b8ea3fa@perex.cz>
+ <8cb777f9-b73b-136c-f560-de4c31af931e@nvidia.com>
+ <18b61046-ac0b-0fb3-669c-6524a03eecf0@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"; format=flowed
-X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-29_04,2021-10-29_01,2020-04-07_01
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="FzXysqnWhsplUAtn"
+Content-Disposition: inline
+In-Reply-To: <18b61046-ac0b-0fb3-669c-6524a03eecf0@nvidia.com>
+X-Cookie: "Just the facts, Ma'am"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Oct 2021, Marek Vasut wrote:
 
-> On 10/29/21 3:54 PM, Nicolas Toromanoff wrote:
->> Erase key before finalizing request.
->> Fixes: 9e054ec21ef8 ("crypto: stm32 - Support for STM32 CRYP crypto 
->> module")
->
-> Can you be a bit more specific in your commit messages ? That applies to the 
-> entire patchset. It is absolutely impossible to tell what race is fixed here 
-> or why it is fixed by exactly this change. This applies to the entire series.
+--FzXysqnWhsplUAtn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I'll send a v2 with better commit messages.
+On Fri, Oct 29, 2021 at 08:38:54PM +0530, Sameer Pujar wrote:
+> On 10/26/2021 11:53 AM, Sameer Pujar wrote:
+> > On 10/25/2021 6:28 PM, Jaroslav Kysela wrote:
 
-for this specific patch:
-We reset the saved key before the crypto_finalize_*() call. Otherwise a 
-still pending crypto action could be ran with a wrong key = {0};
+> > > It's a bit unrelated comment to this change, but it may be worth to
+> > > verify all
+> > > kcontrol put callbacks in the tegra code. Ensure that value 1 is
+> > > returned only
+> > > when something was really changed in hardware.
 
-> And while I am at it, does the CRYP finally pass at least the most basic 
-> kernel boot time crypto tests or does running those still overwrite kernel 
-> memory and/or completely crash or lock up the machine ?
+> There are cases when the mixer control update is not immediately written to
+> HW, instead the update is ACKed (stored in variable) and writen to HW at a
+> later point of time. Do these cases qualify for "return 1" as well?
 
-All extra tests (finally) pass.
+What matters is the user visible effect.  It doesn't matter when the
+change gets written to the hardware, the important thing is that an
+applicaton will read back a new value and users will observe whatver
+change the control change caused.
 
-With a kernel config :
-   # CONFIG_CRYPTO_MANAGER_DISABLE_TESTS is not set
-   CONFIG_CRYPTO_MANAGER_EXTRA_TESTS=y
-   CONFIG_CRYPTO_DEV_STM32_CRYP=m
+--FzXysqnWhsplUAtn
+Content-Type: application/pgp-signature; name="signature.asc"
 
-while(true) do ; modprobe stm32-cryp && modprobe -r stm32-cryp ; done
+-----BEGIN PGP SIGNATURE-----
 
-ran a whole day without a crash, nor a detected error.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmF8EaAACgkQJNaLcl1U
+h9AF8wf6Au6TOBbNtZfeRJ7HMsQ6sHTIYNis+bR/zS8cVSqlPF4sFhOLkx1Vk921
+mFw6qqrRgTXdq5mJSUXqgQwgl1KFxfFiJyzI2b8j7sz+AEhTzcx51ZFD+teKzejw
+QWoiOHtK6cS7fq9PAXVMaLnq0zA1EPCTU7sMDPb0xaJS1G+sFBULEEXnucT4UFPi
++aoQQ4SY8C1OCdT5MOFjhr79jeH0WTUa6RgkmhE5/mdqUF+6+yg7TTSwVETcaMk9
+3muMn/+qPURk/qT7wZ6KxQVkut5/5hhPHh23MuusFzM+SkAchrIgeho+nvrsKWDZ
+Zb3dE2wfxyWISHnG+Bo0iIepB8PrwA==
+=QxNz
+-----END PGP SIGNATURE-----
 
--- 
-Nicolas.
+--FzXysqnWhsplUAtn--
