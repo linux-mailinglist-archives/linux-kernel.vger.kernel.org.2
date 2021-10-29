@@ -2,80 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B82943F4CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 04:07:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F27643F4CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 04:08:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231510AbhJ2CKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 22:10:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38380 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231348AbhJ2CKR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 22:10:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 68FE860F02;
-        Fri, 29 Oct 2021 02:07:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635473269;
-        bh=UXO2jb8+ezJ2SMUULWwSCcFcl++e/vE5BJFAyMyQ2Aw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ThnLp6yx0xW5I7VY5LlJFd3PKGHYRZe0BWw/1tIAdjTlcCUCE6Y0GulHHnJA9tIv6
-         GCkUSqgt5IaEXV3rvs8N+DmrntWvzc4VpDgVe0RsQxfYDUUGrRZ4L6nZTn5LqoINqJ
-         hLUM+bligfS1MqHMTG/D5UxOp/gsRnPAZmw5f3Xw+jiihAsmPUXG9GtJI/srMZlaQ2
-         MKcrsYhBUwdYZwVArqqOsR1zCpCwBKduCHlXvtG4u73fuGmfTtPhiSTTinR8wv6YCP
-         Vul0eTur+0hekddrdVoYjLjdZTvCyY5VkyMTGKdgQIPf7q+L2oenjpI5ugYK42M9yh
-         QP8z2+gbUVE3A==
-Received: by mail-ed1-f45.google.com with SMTP id z20so33150791edc.13;
-        Thu, 28 Oct 2021 19:07:49 -0700 (PDT)
-X-Gm-Message-State: AOAM531iLJqFYmPxFbPuafEKMEkiI3sY/6XinOTk4wLwcGdy74Gs2llf
-        YUWLRfPdXGVE0yxf0/BZU/gI/v7Hdc+fJ0QVvQ==
-X-Google-Smtp-Source: ABdhPJx/ocNQD9wn9e7w/52aPfNEKWBmdZr077TMGcH/Bt9fSDjCzMLgvaDlX++E853RZ9o/CcAYDsPVn4BZRONPi7Q=
-X-Received: by 2002:a05:6402:206b:: with SMTP id bd11mr11428236edb.145.1635473267940;
- Thu, 28 Oct 2021 19:07:47 -0700 (PDT)
+        id S231511AbhJ2CKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 22:10:51 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:36695 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231448AbhJ2CKt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 22:10:49 -0400
+Received: by mail-il1-f198.google.com with SMTP id w10-20020a056e021a6a00b0025be678c27eso3772756ilv.3
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 19:08:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=AbAsAY+NQim6nqAPnS6cs+YFjX1oysde05Mzx0ubgY0=;
+        b=AlK1yKCIpFu7h7rd5qCW/3CEqKCbGEIbhRGURehcVvyIvTzOtqDxOt8K9MTGQ7dKMV
+         MO9nstf3m7Z/H3PoA7joLmKnmkgb0eip291EThvFbyn1bQxYhVDwSnzpeQ8xOxD6Lwbr
+         izVEIdObDFYtCvc6M6CIibKIuQAVqx+izwJRBv+iqnJerlZcewaaT/tXtIrgjv49muf5
+         A2W7tI2YvX5etsFaqrwMmwur3OFBp+2gmdXmBWJVwmoB3iiByzF8wEFMYl6/k3j1aRi3
+         clJ2kWKBuinuxUb68QUa05/M7ncs9RXKOUIFURdBgyn9qaDbezCZi0zoH2ZSMuz6pLCx
+         GAUA==
+X-Gm-Message-State: AOAM53138aslj2wVnCR+pj6XLk12awgEc9LodSLYjzxEJapgDxJf+3QP
+        gy+OA2pg0ZODbxgzF1SJ0xubD6QEqk+IpvlpKC4NVBirObBj
+X-Google-Smtp-Source: ABdhPJwnrDUnruMJiH1CtZv24KDTZxyBjhRSwbOBzh6IFiy/JQ5XIvUzZTcExPiagsyuFIzIy39NySADIeSGElGqrcPwti71fAnd
 MIME-Version: 1.0
-References: <20211029005802.2047081-1-frowand.list@gmail.com>
-In-Reply-To: <20211029005802.2047081-1-frowand.list@gmail.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Thu, 28 Oct 2021 21:07:36 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqJujq0K9tF+m3qQ5GhC-yo7-vj9HRhF69UmrWA7tZv7DA@mail.gmail.com>
-Message-ID: <CAL_JsqJujq0K9tF+m3qQ5GhC-yo7-vj9HRhF69UmrWA7tZv7DA@mail.gmail.com>
-Subject: Re: [PATCH 1/1] of: unittest: fix dts for interrupt-map provider
- build warning
-To:     Frank Rowand <frowand.list@gmail.com>
-Cc:     devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+X-Received: by 2002:a05:6602:2d92:: with SMTP id k18mr5960862iow.130.1635473301860;
+ Thu, 28 Oct 2021 19:08:21 -0700 (PDT)
+Date:   Thu, 28 Oct 2021 19:08:21 -0700
+In-Reply-To: <000000000000f2771905a46374fe@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000032743205cf744dfa@google.com>
+Subject: Re: [syzbot] possible deadlock in sch_direct_xmit (2)
+From:   syzbot <syzbot+e18ac85757292b7baf96@syzkaller.appspotmail.com>
+To:     administracion@diocesisdeleon.org, davem@davemloft.net,
+        hdanton@sina.com, jhs@mojatatu.com, jiri@resnulli.us,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        xiyou.wangcong@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 7:58 PM <frowand.list@gmail.com> wrote:
->
-> From: Frank Rowand <frank.rowand@sony.com>
->
-> Fix kernel build warning:
-> drivers/of/unittest-data/tests-interrupts.dtsi:32.26-35.6: Warning (interrupt_map): /testcase-data/interrupts/intmap1: Missing '#address-cells' in interrupt-map provider
->
-> A recently implemented dtc compiler warning reported the dts problem.
->
-> Signed-off-by: Frank Rowand <frank.rowand@sony.com>
-> ---
->  drivers/of/unittest-data/tests-interrupts.dtsi | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/of/unittest-data/tests-interrupts.dtsi b/drivers/of/unittest-data/tests-interrupts.dtsi
-> index 9b60a549f502..8c2b91b998aa 100644
-> --- a/drivers/of/unittest-data/tests-interrupts.dtsi
-> +++ b/drivers/of/unittest-data/tests-interrupts.dtsi
-> @@ -31,6 +31,7 @@ test_intmap0: intmap0 {
->
->                         test_intmap1: intmap1 {
->                                 #interrupt-cells = <2>;
-> +                               #address-cells = <1>;
+syzbot has found a reproducer for the following issue on:
 
-Notice that we have 2 nodes with interrupt-map here. One has
-'#address-cells' and one doesn't. Why? Because we need to test that
-the code can handle both cases.
+HEAD commit:    35392da51b1a Revert "net: hns3: fix pause config problem a..
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=108cede2b00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ca74db36f5f0f1c4
+dashboard link: https://syzkaller.appspot.com/bug?extid=e18ac85757292b7baf96
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15d2f204b00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=112f3f6cb00000
 
-The dtc warnings are more what should 'new' users do. I don't know
-what DTs don't have #address-cells, but my guess is ancient ones.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e18ac85757292b7baf96@syzkaller.appspotmail.com
 
-Rob
+============================================
+WARNING: possible recursive locking detected
+5.15.0-rc6-syzkaller #0 Not tainted
+--------------------------------------------
+syz-executor023/6539 is trying to acquire lock:
+ffff88801c693398 (_xmit_ETHER#2){+.-.}-{2:2}, at: spin_lock include/linux/spinlock.h:363 [inline]
+ffff88801c693398 (_xmit_ETHER#2){+.-.}-{2:2}, at: __netif_tx_lock include/linux/netdevice.h:4405 [inline]
+ffff88801c693398 (_xmit_ETHER#2){+.-.}-{2:2}, at: sch_direct_xmit+0x30f/0xbc0 net/sched/sch_generic.c:340
+
+but task is already holding lock:
+ffff88801d04fc98 (_xmit_ETHER#2){+.-.}-{2:2}, at: spin_lock include/linux/spinlock.h:363 [inline]
+ffff88801d04fc98 (_xmit_ETHER#2){+.-.}-{2:2}, at: __netif_tx_lock include/linux/netdevice.h:4405 [inline]
+ffff88801d04fc98 (_xmit_ETHER#2){+.-.}-{2:2}, at: sch_direct_xmit+0x30f/0xbc0 net/sched/sch_generic.c:340
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(_xmit_ETHER#2);
+  lock(_xmit_ETHER#2);
+
+ *** DEADLOCK ***
+
+ May be due to missing lock nesting notation
+
+7 locks held by syz-executor023/6539:
+ #0: ffffffff8b981ac0 (rcu_read_lock_bh){....}-{1:2}, at: lwtunnel_xmit_redirect include/net/lwtunnel.h:95 [inline]
+ #0: ffffffff8b981ac0 (rcu_read_lock_bh){....}-{1:2}, at: ip_finish_output2+0x28b/0x2140 net/ipv4/ip_output.c:207
+ #1: ffffffff8b981ac0 (rcu_read_lock_bh){....}-{1:2}, at: __dev_queue_xmit+0x1d5/0x36e0 net/core/dev.c:4143
+ #2: ffff88801a4f5258 (dev->qdisc_tx_busylock ?: &qdisc_tx_busylock){+...}-{2:2}, at: spin_trylock include/linux/spinlock.h:373 [inline]
+ #2: ffff88801a4f5258 (dev->qdisc_tx_busylock ?: &qdisc_tx_busylock){+...}-{2:2}, at: qdisc_run_begin include/net/sch_generic.h:173 [inline]
+ #2: ffff88801a4f5258 (dev->qdisc_tx_busylock ?: &qdisc_tx_busylock){+...}-{2:2}, at: __dev_xmit_skb net/core/dev.c:3796 [inline]
+ #2: ffff88801a4f5258 (dev->qdisc_tx_busylock ?: &qdisc_tx_busylock){+...}-{2:2}, at: __dev_queue_xmit+0x1222/0x36e0 net/core/dev.c:4177
+ #3: ffff88801d04fc98 (_xmit_ETHER#2){+.-.}-{2:2}, at: spin_lock include/linux/spinlock.h:363 [inline]
+ #3: ffff88801d04fc98 (_xmit_ETHER#2){+.-.}-{2:2}, at: __netif_tx_lock include/linux/netdevice.h:4405 [inline]
+ #3: ffff88801d04fc98 (_xmit_ETHER#2){+.-.}-{2:2}, at: sch_direct_xmit+0x30f/0xbc0 net/sched/sch_generic.c:340
+ #4: ffffffff8b981ac0 (rcu_read_lock_bh){....}-{1:2}, at: lwtunnel_xmit_redirect include/net/lwtunnel.h:95 [inline]
+ #4: ffffffff8b981ac0 (rcu_read_lock_bh){....}-{1:2}, at: ip_finish_output2+0x28b/0x2140 net/ipv4/ip_output.c:207
+ #5: ffffffff8b981ac0 (rcu_read_lock_bh){....}-{1:2}, at: __dev_queue_xmit+0x1d5/0x36e0 net/core/dev.c:4143
+ #6: ffff88807762e258 (dev->qdisc_tx_busylock ?: &qdisc_tx_busylock){+...}-{2:2}, at: spin_trylock include/linux/spinlock.h:373 [inline]
+ #6: ffff88807762e258 (dev->qdisc_tx_busylock ?: &qdisc_tx_busylock){+...}-{2:2}, at: qdisc_run_begin include/net/sch_generic.h:173 [inline]
+ #6: ffff88807762e258 (dev->qdisc_tx_busylock ?: &qdisc_tx_busylock){+...}-{2:2}, at: __dev_xmit_skb net/core/dev.c:3796 [inline]
+ #6: ffff88807762e258 (dev->qdisc_tx_busylock ?: &qdisc_tx_busylock){+...}-{2:2}, at: __dev_queue_xmit+0x1222/0x36e0 net/core/dev.c:4177
+
+stack backtrace:
+CPU: 0 PID: 6539 Comm: syz-executor023 Not tainted 5.15.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ print_deadlock_bug kernel/locking/lockdep.c:2944 [inline]
+ check_deadlock kernel/locking/lockdep.c:2987 [inline]
+ validate_chain kernel/locking/lockdep.c:3776 [inline]
+ __lock_acquire.cold+0x149/0x3ab kernel/locking/lockdep.c:5015
+ lock_acquire kernel/locking/lockdep.c:5625 [inline]
+ lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:154
+ spin_lock include/linux/spinlock.h:363 [inline]
+ __netif_tx_lock include/linux/netdevice.h:4405 [inline]
+ sch_direct_xmit+0x30f/0xbc0 net/sched/sch_generic.c:340
+ __dev_xmit_skb net/core/dev.c:3809 [inline]
+ __dev_queue_xmit+0x1489/0x36e0 net/core/dev.c:4177
+ neigh_resolve_output net/core/neighbour.c:1492 [inline]
+ neigh_resolve_output+0x50e/0x820 net/core/neighbour.c:1472
+ neigh_output include/net/neighbour.h:510 [inline]
+ ip_finish_output2+0x813/0x2140 net/ipv4/ip_output.c:221
+ __ip_finish_output net/ipv4/ip_output.c:299 [inline]
+ __ip_finish_output+0x396/0x640 net/ipv4/ip_output.c:281
+ ip_finish_output+0x32/0x200 net/ipv4/ip_output.c:309
+ NF_HOOK_COND include/linux/netfilter.h:296 [inline]
+ ip_output+0x196/0x310 net/ipv4/ip_output.c:423
+ dst_output include/net/dst.h:450 [inline]
+ ip_local_out+0xaf/0x1a0 net/ipv4/ip_output.c:126
+ iptunnel_xmit+0x628/0xa50 net/ipv4/ip_tunnel_core.c:82
+ ip_tunnel_xmit+0x10a6/0x2b60 net/ipv4/ip_tunnel.c:810
+ erspan_xmit+0x7e2/0x29c0 net/ipv4/ip_gre.c:712
+ __netdev_start_xmit include/linux/netdevice.h:4988 [inline]
+ netdev_start_xmit include/linux/netdevice.h:5002 [inline]
+ xmit_one net/core/dev.c:3582 [inline]
+ dev_hard_start_xmit+0x1eb/0x920 net/core/dev.c:3598
+ sch_direct_xmit+0x19f/0xbc0 net/sched/sch_generic.c:342
+ __dev_xmit_skb net/core/dev.c:3809 [inline]
+ __dev_queue_xmit+0x1489/0x36e0 net/core/dev.c:4177
+ neigh_resolve_output net/core/neighbour.c:1492 [inline]
+ neigh_resolve_output+0x50e/0x820 net/core/neighbour.c:1472
+ neigh_output include/net/neighbour.h:510 [inline]
+ ip_finish_output2+0x813/0x2140 net/ipv4/ip_output.c:221
+ __ip_finish_output net/ipv4/ip_output.c:299 [inline]
+ __ip_finish_output+0x396/0x640 net/ipv4/ip_output.c:281
+ ip_finish_output+0x32/0x200 net/ipv4/ip_output.c:309
+ NF_HOOK_COND include/linux/netfilter.h:296 [inline]
+ ip_output+0x196/0x310 net/ipv4/ip_output.c:423
+ dst_output include/net/dst.h:450 [inline]
+ ip_local_out net/ipv4/ip_output.c:126 [inline]
+ ip_send_skb+0xd4/0x260 net/ipv4/ip_output.c:1555
+ udp_send_skb+0x6cd/0x11a0 net/ipv4/udp.c:967
+ udp_sendmsg+0x1bad/0x2740 net/ipv4/udp.c:1254
+ udpv6_sendmsg+0x14f6/0x2c40 net/ipv6/udp.c:1360
+ inet6_sendmsg+0x99/0xe0 net/ipv6/af_inet6.c:643
+ sock_sendmsg_nosec net/socket.c:704 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:724
+ ____sys_sendmsg+0x331/0x810 net/socket.c:2409
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2463
+ __sys_sendmmsg+0x195/0x470 net/socket.c:2549
+ __do_sys_sendmmsg net/socket.c:2578 [inline]
+ __se_sys_sendmmsg net/socket.c:2575 [inline]
+ __x64_sys_sendmmsg+0x99/0x100 net/socket.c:2575
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f728d0d9aa9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 41 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffda2643b88 EFLAGS: 00000246 ORIG_RAX: 0000000000000133
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f728d0d9aa9
+RDX: 0000000000000001 RSI: 0000000020004d8
+
