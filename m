@@ -2,253 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DC9043F4B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 03:57:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9057B43F4B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 03:58:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231458AbhJ2CAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 22:00:18 -0400
-Received: from mail-oi1-f175.google.com ([209.85.167.175]:36490 "EHLO
-        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229950AbhJ2CAQ (ORCPT
+        id S231502AbhJ2CAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 22:00:48 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:17676 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231460AbhJ2CAo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 22:00:16 -0400
-Received: by mail-oi1-f175.google.com with SMTP id q124so11142256oig.3;
-        Thu, 28 Oct 2021 18:57:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=P+qv4zb1078jX0S7MK3LLDw8EFq8xA9/Akm7u2r5r6Q=;
-        b=Xq1vEQ5QWd0nlDRFoJ/8D/3M7MYIcES7uDUOXjxVyEovK+ve5zKIs+jT0miGpTbTWb
-         KIQih5fU2W1rZWHx4SOZj9SvNSz7H1eURS1YQcBJbr/eliIk85Vq5tIFB8YAfijHZm/G
-         XQmN+nWIQIKk67FzcydPu49PutIgTioNio546dk5d4exds0uw7bY54esY3hWq/C7RnDM
-         cVAIwDRVyCpXAoI/G9X82neusgAycghyBn6LbpyNV65X2YwCRQ62al0f2g7wmQbEakWN
-         JZQWe/xu57MUL/ihCLYEZo89Mz3mn7tmj/Oro9vfXDWrgaU4tV+Gjme0H9KwKX/9Xsx/
-         WqgA==
-X-Gm-Message-State: AOAM533tPn5mbDmA0h0jvp8exaJTSjKq4I9gsCTqPXGkxj+qIIPIluAk
-        38hvx2a56RA38JFkKrdDmA==
-X-Google-Smtp-Source: ABdhPJzqx/kPKLBQVEl9gUQg+7uPZV/cNe0xNMsvmYNh1oEwuL1V+8+k4FOCztKS1siTmJ36bVFhsw==
-X-Received: by 2002:aca:3c8b:: with SMTP id j133mr5907259oia.159.1635472668578;
-        Thu, 28 Oct 2021 18:57:48 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id t12sm117233oiw.39.2021.10.28.18.57.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 18:57:47 -0700 (PDT)
-Received: (nullmailer pid 999202 invoked by uid 1000);
-        Fri, 29 Oct 2021 01:57:46 -0000
-Date:   Thu, 28 Oct 2021 20:57:46 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Eugen Hristev <eugen.hristev@microchip.com>
-Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        jacopo@jmondi.org, laurent.pinchart@ideasonboard.com,
-        sakari.ailus@iki.fi, nicolas.ferre@microchip.com
-Subject: Re: [PATCH 02/21] dt-bindings: media: atmel: csi2dc: add bindings
- for microchip csi2dc
-Message-ID: <YXtVGrG8HcEJ/gLf@robh.at.kernel.org>
-References: <20211022075247.518880-1-eugen.hristev@microchip.com>
- <20211022075247.518880-3-eugen.hristev@microchip.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211022075247.518880-3-eugen.hristev@microchip.com>
+        Thu, 28 Oct 2021 22:00:44 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19T1JENo016532;
+        Fri, 29 Oct 2021 01:58:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=H+A++g3sh16LWEuk04HpfWd6aeStlTzW+K+a9B31kb4=;
+ b=Sxt5P8FycLXnVlFg++czvjjS+0P37g3gzyx7Ukhyd786VXbnKjqJUZDq1RAwNcb22QS3
+ Trf3XLBE3m171ZLQ0Es9N7Gv646Ot1BkCEbUcnkWNcUgO/h0qup9bY+99Os++8+7wCi2
+ VnngRrwXlITvaaAy+5/yZuDHK6XoD/xrXgA6uQowq1kzoifB0bj96ZRxlw2W2p/CDXxO
+ +1yLzGUUQyrrYhA9BhtjgmgANrfs6Yg2TIlUkG3W/pGU4j3zL672al3TYj8RR0JZa8pL
+ hy9RLQhDvam3VTFEOcVk3qoc4uhFCGCCAOsSirHtKM+aN9JBRXLdS9+BtsHloCuhh1u2 NA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3c076a8hh3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 Oct 2021 01:58:04 +0000
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19T1i9cY009590;
+        Fri, 29 Oct 2021 01:58:04 GMT
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3c076a8hgh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 Oct 2021 01:58:04 +0000
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19T1qioS028720;
+        Fri, 29 Oct 2021 01:58:02 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma03ams.nl.ibm.com with ESMTP id 3bx4etpe02-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 Oct 2021 01:58:01 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19T1vxX93539570
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 29 Oct 2021 01:57:59 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 72D53A405C;
+        Fri, 29 Oct 2021 01:57:59 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 799BEA405B;
+        Fri, 29 Oct 2021 01:57:58 +0000 (GMT)
+Received: from sig-9-77-156-188.ibm.com (unknown [9.77.156.188])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 29 Oct 2021 01:57:58 +0000 (GMT)
+Message-ID: <8dfbb3ee3330f8049a124dde62717d5363534922.camel@linux.ibm.com>
+Subject: Re: [PATCH] evm: mark evm_fixmode as __ro_after_init
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Austin Kim <austindh.kim@gmail.com>, jmorris@namei.org,
+        serge@hallyn.com
+Cc:     linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, austin.kim@lge.com
+Date:   Thu, 28 Oct 2021 21:57:57 -0400
+In-Reply-To: <20211028112642.GA1110@raspberrypi>
+References: <20211028112642.GA1110@raspberrypi>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: KuO-akf0hj7-KbYKtpx-C8QodN_X9wRM
+X-Proofpoint-ORIG-GUID: URBpEN-X3r5UDRQWomqt0VUpsnlsVUdQ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-28_06,2021-10-26_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ impostorscore=0 clxscore=1015 malwarescore=0 mlxscore=0 adultscore=0
+ bulkscore=0 spamscore=0 mlxlogscore=781 lowpriorityscore=0 phishscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2110290007
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 10:52:28AM +0300, Eugen Hristev wrote:
-> Add bindings documentation for Microchip CSI2 Demultiplexer controller.
+On Thu, 2021-10-28 at 12:26 +0100, Austin Kim wrote:
+> From: Austin Kim <austin.kim@lge.com>
 > 
-> CSI2DC is a demultiplexer from Synopsys IDI interface specification to
-> parallel interface connection or direct memory access.
+> The evm_fixmode is only configurable by command-line option and it is never
+> modified outside initcalls, so declaring it with __ro_after_init is better.
 > 
-> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
-> ---
-> Changes in this version :
-> - fixed 'sink' name to be actually source.
-> - added dma properties and example with dma
-> 
-> Previous change log:
-> Changes in v5:
-> - modified bindings as per Rob Herring review
-> 
-> Changes in v4:
-> - Removed property for inter-line-delay and for clock continuous/non-continuous
-> - Removed virtual channel by reg for second endpoint
-> 
-> Changes in v3:
-> - Removed some text from description, as it was explained in the schema
-> - fixed other things as per Rob's review
-> - moved some text inside the schema, like the clock description
-> 
-> Changes in v2:
-> - fixed warnings reported by dt_binding_check
-> 
-> 
->  .../bindings/media/microchip,csi2dc.yaml      | 149 ++++++++++++++++++
->  1 file changed, 149 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/microchip,csi2dc.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/media/microchip,csi2dc.yaml b/Documentation/devicetree/bindings/media/microchip,csi2dc.yaml
-> new file mode 100644
-> index 000000000000..d317478908d0
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/media/microchip,csi2dc.yaml
-> @@ -0,0 +1,149 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/media/microchip,csi2dc.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Microchip CSI2 Demux Controller (CSI2DC)
-> +
-> +maintainers:
-> +  - Eugen Hristev <eugen.hristev@microchip.com>
-> +
-> +description:
-> +  CSI2DC - Camera Serial Interface 2 Demux Controller
-> +
-> +  CSI2DC is a hardware block that receives incoming data from an IDI interface
-> +  and filters packets based on their data type and virtual channel identifier,
-> +  then converts the byte stream into a cross clock domain to a pixel stream
-> +  to a parallel interface that can be read by a sensor controller.
-> +  IDI interface is Synopsys proprietary.
-> +
-> +  CSI2DC provides two pipes, one video pipe and one data pipe. Video pipe
-> +  is connected to a sensor controller and the data pipe is accessible
-> +  as a DMA slave port to a DMA controller.
-> +
-> +  CSI2DC supports a single 'port' node as a sink port with Synopsys 32-bit
-> +  IDI interface. The connected endpoint must be a IDI interface compatible
-> +  device , that can provide 32-bit IDI interface connection as source port.
-> +  For graph video endpoints please refer to the bindings defined in
-> +  Documentation/devicetree/bindings/media/video-interfaces.txt.
-> +  This port is mandatory.
-> +
-> +  CSI2DC supports one 'port' node as source port with parallel interface.
-> +  This is called video pipe.
-> +  This port has an 'endpoint' that can be connected to a sink port of another
-> +  controller (next in pipeline).
-> +  Please refer to the bindings defined in
-> +  Documentation/devicetree/bindings/media/video-interfaces.txt.
-> +
-> +  CSI2DC also supports direct access to the data through AHB, via DMA channel,
-> +  called data pipe.
-> +  Because of this, the source 'port' child node (second) is not mandatory.
-> +  If the source 'port' child node is missing, only data pipe is available.
-> +  For data pipe to be available, a dma controller must be referenced.
-> +
-> +properties:
-> +  compatible:
-> +    const: microchip,sama7g5-csi2dc
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 2
-> +
-> +  clock-names:
-> +    description:
-> +      CSI2DC must have two clocks to function correctly. One clock is the
-> +      peripheral clock for the inside functionality of the hardware block.
-> +      This is named 'pclk'. The second clock must be the cross domain clock,
-> +      in which CSI2DC will perform clock crossing. This clock must be fed
-> +      by the next controller in pipeline, which usually is a sensor controller.
-> +      Normally this clock should be given by this sensor controller who
-> +      is also a clock source. This clock is named 'scck', sensor controller clock.
-> +    items:
-> +      - const: pclk
-> +      - const: scck
-> +
-> +  dmas:
-> +    maxItems: 1
-> +
-> +  dma-names:
-> +    const: rx
-> +
-> +  ports:
-> +    type: object
-> +    description:
-> +      List of ports
-> +
-> +    properties:
-> +      port@0:
-> +        type: object
-> +        description:
-> +          Input port node, single endpoint describing the input port.
-> +      port@1:
-> +        type: object
-> +        description:
-> +          Output port node, single endpoint, describing the output port.
+> Signed-off-by: Austin Kim <austin.kim@lge.com>
 
-These need references to graph.yaml schema. See examples in the tree 
-now.
+Thanks, Austin.  This patch set is now applied to the next-integrity
+branch.
 
-> +
-> +additionalProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - clock-names
-> +  - ports
-> +
-> +examples:
-> +  # Example for connecting to a parallel sensor controller block
-> +  - |
-> +    csi2dc@e1404000 {
-> +        compatible = "microchip,sama7g5-csi2dc";
-> +        reg = <0xe1404000 0x500>;
-> +        clocks = <&pclk>, <&scck>;
-> +        clock-names = "pclk", "scck";
-> +
-> +        ports {
-> +               #address-cells = <1>;
-> +               #size-cells = <0>;
-> +               port@0 {
-> +                       reg = <0>; /* must be 0, first child port */
-> +                       csi2dc_in: endpoint { /* input from IDI interface */
-> +                               remote-endpoint = <&csi2host_out>;
-> +                       };
-> +               };
-> +
-> +               port@1 {
-> +                       reg = <1>; /* must be 1, second child port */
-> +                       csi2dc_out: endpoint {
-> +                               remote-endpoint = <&xisc_in>; /* output to sensor controller */
-> +                       };
-> +               };
-> +        };
-> +    };
-> +
-> +  # Example for connecting to a DMA master as an AHB slave
-> +  - |
-> +    #include <dt-bindings/dma/at91.h>
-> +    csi2dc@e1404000 {
-> +        compatible = "microchip,sama7g5-csi2dc";
-> +        reg = <0xe1404000 0x500>;
-> +        clocks = <&pclk>, <&scck>;
-> +        clock-names = "pclk", "scck";
-> +        dmas = <&dma0 AT91_XDMAC_DT_PERID(34)>;
-> +        dma-names = "rx";
-> +
-> +        ports {
-> +               #address-cells = <1>;
-> +               #size-cells = <0>;
-> +               port@0 {
-> +                       reg = <0>; /* must be 0, first child port */
-> +                       csi2dc_input: endpoint { /* input from IDI interface */
-> +                               remote-endpoint = <&csi2host_out>;
-> +                       };
-> +               };
-> +        };
-> +    };
-> +
-> +...
-> -- 
-> 2.25.1
-> 
-> 
+Mimi
+
