@@ -2,91 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFA0043F9C8
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 11:26:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9225243F9D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 11:27:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231485AbhJ2J3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 05:29:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56570 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231449AbhJ2J3L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 05:29:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E3F3160234;
-        Fri, 29 Oct 2021 09:26:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635499602;
-        bh=GUlUEJuXDpOoT/DJiV/i0VAam8meu8O/nvx+5SrZBjI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XaoaCftUUx63NXoSsO/xF8UKC5vteKWbon9JbyxUZLzu3YyyIb9NelaGUj5UJyagD
-         yJsIIhfc37EC6g+FvfepuIOjUz5mwV4xaBx8HCDgZGk3kIv0GGtWUbJZCVIrYha7Lm
-         9LmXtpq9Fu9YKsDfovOCEASHQo26CfIvMviMX30ctNEviQmriF9Lr81Ud8YzqIl/8g
-         YPNtl7HShsl01NcCJLHEPDtTjI/8wAjWBy+HhtRTGuPZa7tjYYwi8f29RcvNkjSW9r
-         EWJVrCNMXsGM2cGlW1yXfxXjkmohc7QMzkkA6/Q1qW+jiISI6JH/5Xw9G2zdc8QXdG
-         yrd8rd0zmh/0Q==
-Date:   Fri, 29 Oct 2021 14:56:19 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Slark Xiao <slark_xiao@163.com>
-Cc:     mani@kernel.org, hemantk@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] bus: mhi: pci_generic: Add new device ID support for
- T99W175
-Message-ID: <20211029092619.GA4945@thinkpad>
-References: <20211028034431.3563-1-slark_xiao@163.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211028034431.3563-1-slark_xiao@163.com>
+        id S231542AbhJ2J3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 05:29:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51326 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231473AbhJ2J3m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 05:29:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635499629;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=+6vi0eHDWo6Pq3LYdOXH5KmfXjlpFUJ7AJEOU/+CWs4=;
+        b=K9ZhMpFUGbgxH73sHtoPk7LAVqih15Kck3aaElPVq4FJr/yjXr4NIcQW5NqLrO09AlXb9V
+        +szV05Ts2DiqtG3LXTKvQT6WugcPaKB8+srWwWqqXP1G7IY6BX5mu0zvjqYG5I8j4TDxOZ
+        bh99mjGtmM8iQmpLxve+6WYGel99sFg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-6-nJVEkji-PUOLBdTy4Rpu-w-1; Fri, 29 Oct 2021 05:27:06 -0400
+X-MC-Unique: nJVEkji-PUOLBdTy4Rpu-w-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4C5CA1006AA7;
+        Fri, 29 Oct 2021 09:27:05 +0000 (UTC)
+Received: from MiWiFi-R3L-srv.redhat.com (ovpn-12-171.pek2.redhat.com [10.72.12.171])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1320D1017CE8;
+        Fri, 29 Oct 2021 09:26:52 +0000 (UTC)
+From:   Baoquan He <bhe@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-s390@vger.kernel.org, kexec@lists.infradead.org,
+        dyoung@redhat.com, akpm@linux-foundation.org,
+        Baoquan He <bhe@redhat.com>
+Subject: [PATCH] s390/kexec: fix memory leak of ipl report buffer
+Date:   Fri, 29 Oct 2021 17:26:35 +0800
+Message-Id: <20211029092635.14804-1-bhe@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+A memory leak is reported by kmemleak scanning:
 
-On Thu, Oct 28, 2021 at 11:44:31AM +0800, Slark Xiao wrote:
-> Add new device ID 0xe0bf for T99W175.
-> 
+unreferenced object 0x38000195000 (size 4096):
+  comm "kexec", pid 8548, jiffies 4294953647 (age 32443.270s)
+  hex dump (first 32 bytes):
+    00 00 00 c8 20 00 00 00 00 00 00 c0 02 80 00 00  .... ...........
+    40 40 40 40 40 40 40 40 00 00 00 00 00 00 00 00  @@@@@@@@........
+  backtrace:
+    [<0000000011a2f199>] __vmalloc_node_range+0xc0/0x140
+    [<0000000081fa2752>] vzalloc+0x5a/0x70
+    [<0000000063a4c92d>] ipl_report_finish+0x2c/0x180
+    [<00000000553304da>] kexec_file_add_ipl_report+0xf4/0x150
+    [<00000000862d033f>] kexec_file_add_components+0x124/0x160
+    [<000000000d2717bb>] arch_kexec_kernel_image_load+0x62/0x90
+    [<000000002e0373b6>] kimage_file_alloc_init+0x1aa/0x2e0
+    [<0000000060f2d14f>] __do_sys_kexec_file_load+0x17c/0x2c0
+    [<000000008c86fe5a>] __s390x_sys_kexec_file_load+0x40/0x50
+    [<000000001fdb9dac>] __do_syscall+0x1bc/0x1f0
+    [<000000003ee4258d>] system_call+0x78/0xa0
 
-Thanks for the patch! Can you share the difference between this modem and the
-one (T99W175) we already have with PID 0xe0ab?
+The ipl report buffer is allocated via vmalloc, while has no chance to free
+if the kexe loading is unloaded. This will cause obvious memory leak
+when kexec/kdump kernel is reloaded, manually, or triggered, e.g by
+memory hotplug.
 
-Please include the product page in description if any.
+Here, add struct kimage_arch to s390 to pass out the ipl report buffer
+address, and introduce arch dependent function
+arch_kimage_file_post_load_cleanup() to free it when unloaded.
 
-Thanks,
-Mani
+Signed-off-by: Baoquan He <bhe@redhat.com>
+---
+ arch/s390/include/asm/kexec.h         | 7 +++++++
+ arch/s390/kernel/machine_kexec_file.c | 9 +++++++++
+ 2 files changed, 16 insertions(+)
 
-> Test evidence as below:
-> root@jbd-ThinkPad-P1-Gen-4:/dev# lspci -nn | grep Foxconn
-> 0000:08:00.0 Wireless controller [0d40]: Foxconn International, Inc. Device [105b:e0bf]
-> root@jbd-ThinkPad-P1-Gen-4:/dev# cat wwan0at0 & echo -ne "ati\r" > wwan0at0
-> [2] 2977
-> root@jbd-ThinkPad-P1-Gen-4:/dev# ati
-> Manufacturer: Qualcomm
-> Model: T99W175
-> Revision: T99W175.F0.6.0.0.6.CC.005  1  [Oct 21 2021 10:00:00]
-> IMEI:
-> +GCAP: +CGSM
-> 
-> OK
-> 
-> Signed-off-by: Slark Xiao <slark_xiao@163.com>
-> ---
->  drivers/bus/mhi/pci_generic.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/bus/mhi/pci_generic.c b/drivers/bus/mhi/pci_generic.c
-> index 59a4896a8030..566483dc15db 100644
-> --- a/drivers/bus/mhi/pci_generic.c
-> +++ b/drivers/bus/mhi/pci_generic.c
-> @@ -423,6 +423,9 @@ static const struct pci_device_id mhi_pci_id_table[] = {
->  	/* DW5930e (sdx55), Non-eSIM, It's also T99W175 */
->  	{ PCI_DEVICE(PCI_VENDOR_ID_FOXCONN, 0xe0b1),
->  		.driver_data = (kernel_ulong_t) &mhi_foxconn_sdx55_info },
-> +	/* T99W175 (sdx55) */
-> +	{ PCI_DEVICE(PCI_VENDOR_ID_FOXCONN, 0xe0bf),
-> +		.driver_data = (kernel_ulong_t) &mhi_foxconn_sdx55_info },
->  	/* MV31-W (Cinterion) */
->  	{ PCI_DEVICE(0x1269, 0x00b3),
->  		.driver_data = (kernel_ulong_t) &mhi_mv31_info },
-> -- 
-> 2.25.1
-> 
+diff --git a/arch/s390/include/asm/kexec.h b/arch/s390/include/asm/kexec.h
+index ea398a05f643..9f16e99fb882 100644
+--- a/arch/s390/include/asm/kexec.h
++++ b/arch/s390/include/asm/kexec.h
+@@ -74,6 +74,13 @@ void *kexec_file_add_components(struct kimage *image,
+ int arch_kexec_do_relocs(int r_type, void *loc, unsigned long val,
+ 			 unsigned long addr);
+ 
++#define ARCH_HAS_KIMAGE_ARCH
++
++struct kimage_arch {
++	void *ipl_buf;
++};
++
++
+ extern const struct kexec_file_ops s390_kexec_image_ops;
+ extern const struct kexec_file_ops s390_kexec_elf_ops;
+ 
+diff --git a/arch/s390/kernel/machine_kexec_file.c b/arch/s390/kernel/machine_kexec_file.c
+index f9e4baa64b67..584c48b631b2 100644
+--- a/arch/s390/kernel/machine_kexec_file.c
++++ b/arch/s390/kernel/machine_kexec_file.c
+@@ -202,6 +202,7 @@ static int kexec_file_add_ipl_report(struct kimage *image,
+ 	buf.buffer = ipl_report_finish(data->report);
+ 	buf.bufsz = data->report->size;
+ 	buf.memsz = buf.bufsz;
++	image->arch.ipl_buf = buf.buffer;
+ 
+ 	data->memsz += buf.memsz;
+ 
+@@ -321,3 +322,11 @@ int arch_kexec_kernel_image_probe(struct kimage *image, void *buf,
+ 
+ 	return kexec_image_probe_default(image, buf, buf_len);
+ }
++
++int arch_kimage_file_post_load_cleanup(struct kimage *image)
++{
++	kvfree(image->arch.ipl_buf);
++	image->arch.ipl_buf = NULL;
++
++	return kexec_image_post_load_cleanup_default(image);
++}
+-- 
+2.17.2
+
