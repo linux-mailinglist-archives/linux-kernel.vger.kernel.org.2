@@ -2,124 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B62744000B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 18:07:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0DB644000C
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 18:07:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229957AbhJ2QKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 12:10:01 -0400
-Received: from mail-oi1-f172.google.com ([209.85.167.172]:41758 "EHLO
-        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229607AbhJ2QJ7 (ORCPT
+        id S229888AbhJ2QKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 12:10:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229971AbhJ2QKL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 12:09:59 -0400
-Received: by mail-oi1-f172.google.com with SMTP id y128so13997363oie.8;
-        Fri, 29 Oct 2021 09:07:31 -0700 (PDT)
+        Fri, 29 Oct 2021 12:10:11 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB2C9C061714
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 09:07:42 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id v138so19922619ybb.8
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 09:07:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YWzMrxI3A0GqZWQ4duWHF4d7CuKb2hbjO4jWM4LNe/g=;
+        b=YhCH7ElFjNrnUa01kXAkeFHVDC5WKKIjd6WJzbJMVg3djovUJnsqqMyROQvrZc7tHn
+         OfquniUmGcmkDmcYDWj1fEdswb7hZs9rmmQ1BEQ0tSLvgzq4dR8ugiC5Gi9c/9XngzJ8
+         MuzZoYgS9aC5D4r4GG2LNFS04knj/h1t/qfeAHlzuWB8ltrJSHqtZ7ExkpEUIyo9FVbZ
+         RW8uVQ8ty/eTvfTFxUfMgjjBIP2yzelqGcMPXaScCUNQS1Nb6/05nD4STVTd1Cy4AkIC
+         K0/QTxU2GJyrmhp4KhcyrmyTAG9fHVpP/8OmmbiU8u9tqfbB+MVw5arFY9uPo+jSJVgZ
+         jYuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=lu7KlDiDD4b+IN0GOyZKFEqg42aag7ye4ODeWU/vdAQ=;
-        b=PrXYCtu+BFF+QJN+asWOiR2YFHkZIsbcMUyKLpUL+QC7zzclyzL5dzw+z8O85DbI+X
-         F3k2O/Z/h6c1UWz/tojbkbsd8W3iyShUJ3Q5pIb/kDBqLhE6FWmHhQdLiKsFlc1D4u8o
-         NVyH+qD3Jl3tztpsHodFIMoTaCxiuIKElff6A+Qen9uedgYcupEd/Lfubfvig+GOKlSd
-         thMtx6cG4RKe/JSgS1DlCTLRm3Wro/xC6hpIoqNBy/zwCNTX9AxeStR3L1bMN/vgohjd
-         oKhJvgany22eMbH6n/vTlfr751bxSqP4O3rL92U7J5xqgY9b43JaRgB6gJpxVJs3olrV
-         RqwQ==
-X-Gm-Message-State: AOAM531MyMxyBz0o1j50OblMgSa3GKQ/xSOT4yKW2htUXfN0snziHLXB
-        FGWA/LHFMatTeqIgrTH/IwP0TUeTiVBd0FzCRHI=
-X-Google-Smtp-Source: ABdhPJwtnN5N6Ip5bwANimooyjfDhNJ07hr/7h7HbCuFbTx7dntx+hag2+5dWh6IP0CHbPF3De7DcywkGiS4YigdzUU=
-X-Received: by 2002:a05:6808:e90:: with SMTP id k16mr8536510oil.166.1635523649047;
- Fri, 29 Oct 2021 09:07:29 -0700 (PDT)
+        bh=YWzMrxI3A0GqZWQ4duWHF4d7CuKb2hbjO4jWM4LNe/g=;
+        b=iR3TQOJiKOB1KCu6++kcsVA+i3m2NGsUPsZO+vrJ5zAsX+ouXNB5aHTEBfG0zrc+Zc
+         kwYThrPMsgzCgWZNrKaoYBF6LIJ3OlrlvfoQrqcSGJ/byFbddCGVg83cPFo0aFRSvIvU
+         HGm4yzuDrR48Am82fr+IFj8Kd9VrLbdU5Wkeah7PYaejMT3TZeijzzGUiWK1yTLikNmm
+         FLAJSf7yNrCXhuF07Qn9WquOcf+ClZo2FaBVF0/qZkvvU8uf+C0puU+CJXOK7WBfY0AQ
+         krQTHhUzRyqb5VqAwfKeDeYaib5a6pJ+2KTG61ull/StkS77RVAvp3kBRXNbHGzleTTk
+         k0ag==
+X-Gm-Message-State: AOAM530/HNX8FUwvVs83sz0VUX/H07p+wL/LrY/sbdVeGZprd32RPhNB
+        e/dZUPpNroV3lRC885ajSh/QcLLbhbWg7kZlM6dhqf/Z1JA=
+X-Google-Smtp-Source: ABdhPJzqugFhWy32Est4ogOIQzgRqxpQaY3Gt4NWt8WmQIOtKJopCulMlORlWAZAPgGJXVwyrX35IAK3ZGpmY6KtTIc=
+X-Received: by 2002:a05:6902:1148:: with SMTP id p8mr14430735ybu.402.1635523662081;
+ Fri, 29 Oct 2021 09:07:42 -0700 (PDT)
 MIME-Version: 1.0
-References: <1635478517-3071352-1-git-send-email-jiasheng@iscas.ac.cn>
-In-Reply-To: <1635478517-3071352-1-git-send-email-jiasheng@iscas.ac.cn>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 29 Oct 2021 18:07:18 +0200
-Message-ID: <CAJZ5v0iRD0pLkVfDE7KgmTfZJJZ2BFquV8owiPoQgFMmC2ZrGA@mail.gmail.com>
-Subject: Re: [PATCH] cpufreq: Fix implicit type conversion
-To:     Jiasheng Jiang <jiasheng@iscas.ac.cn>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20211028094834.1312-1-mgorman@techsingularity.net> <20211028094834.1312-3-mgorman@techsingularity.net>
+In-Reply-To: <20211028094834.1312-3-mgorman@techsingularity.net>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Fri, 29 Oct 2021 18:07:30 +0200
+Message-ID: <CAKfTPtCxu8b0yckYyfbK5FCCSJ5N=a576KKo-4ZwWnPL2dV7ag@mail.gmail.com>
+Subject: Re: [PATCH 2/2] sched/fair: Increase wakeup_gran if current task has
+ not executed the minimum granularity
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Valentin Schneider <Valentin.Schneider@arm.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Mike Galbraith <efault@gmx.de>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 5:51 AM Jiasheng Jiang <jiasheng@iscas.ac.cn> wrote:
+On Thu, 28 Oct 2021 at 11:49, Mel Gorman <mgorman@techsingularity.net> wrote:
 >
-> The variable 'cpu' and 'j' are defined as unsigned int.
-> However in the for_each_cpu, their values are assigned to -1.
-> That doesn't make sense
-
-Yes, it does.
-
-The binary representation of -1 is an all-ones value of the size of
-int.  It is perfectly valid to store that value in an unsigned int
-variable.
-
-> and in the cpumask_next() they are implicitly type conversed to int.
-
-However, the return type of cpumask_next() is unsigned int.
-
-> It is universally accepted that the implicit type conversion is terrible.
-
-I wouldn't say "terrible", but yes, it is risky when dealing with
-variables of different sizes and possible sign-extensions.
-
-In this particular case, I don't see a problem.
-
-> Also, having the good programming custom will set an example for
-> others.
-> Thus, it might be better to change the definition of 'cpu' and 'j'
-> from unsigned int to int.
+> Commit 8a99b6833c88 ("sched: Move SCHED_DEBUG sysctl to debugfs")
+> moved the kernel.sched_wakeup_granularity_ns sysctl under debugfs.
+> One of the reasons why this sysctl may be used may be for "optimising
+> for throughput", particularly when overloaded. The tool TuneD sometimes
+> alters this for two profiles e.g. "mssql" and "throughput-performance". At
+> least version 2.9 does but it changed in master where it also will poke
+> at debugfs instead. This patch aims to reduce the motivation to tweak
+> sysctl_sched_wakeup_granularity by increasing sched_wakeup_granularity
+> if the running task runtime has not exceeded sysctl_sched_min_granularity.
 >
-> Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
+> During task migration or wakeup, a decision is made on whether
+> to preempt the current task or not. To limit over-scheduled,
+> sysctl_sched_wakeup_granularity delays the preemption to allow at least 1ms
+> of runtime before preempting. However, when a domain is heavily overloaded
+> (e.g. hackbench), the degree of over-scheduling is still severe. This is
+> problematic as time is wasted rescheduling tasks that could instead be
+> used by userspace tasks.
+>
+> However, care must be taken. Even if a system is overloaded, there may
+> be high priority threads that must still be able to run. Mike Galbraith
+> explained the constraints as follows;
+>
+>         CFS came about because the O1 scheduler was unfair to the
+>         point it had starvation problems. People pretty much across the
+>         board agreed that a fair scheduler was a much way better way
+>         to go, and CFS was born.  It didn't originally have the sleep
+>         credit business, but had to grow it to become _short term_ fair.
+>         Ingo cut the sleep credit in half because of overscheduling, and
+>         that has worked out pretty well all told.. but now you're pushing
+>         it more in the unfair direction, all the way to extremely unfair
+>         for anything and everything very light.
+>
+>         Fairness isn't the holy grail mind you, and at some point, giving
+>         up on short term fairness certainly isn't crazy, as proven by your
+>         hackbench numbers and other numbers we've seen over the years,
+>         but taking bites out of the 'CF' in the CFS that was born to be a
+>         corner-case killer is.. worrisome.  The other shoe will drop.. it
+>         always does :)
+>
+> This patch increases the wakeup granularity if the current task has not
+> reached its minimum preemption granularity. The current task may still
+> be preempted but the difference in runtime must be higher.
+>
+> hackbench-process-pipes
+>                           5.15.0-rc3             5.15.0-rc3
+>                sched-wakeeflips-v1r1sched-scalewakegran-v3r2
+> Amean     1        0.3890 (   0.00%)      0.3823 (   1.71%)
+> Amean     4        0.5217 (   0.00%)      0.4867 (   6.71%)
+> Amean     7        0.5387 (   0.00%)      0.5053 (   6.19%)
+> Amean     12       0.5443 (   0.00%)      0.5450 (  -0.12%)
+> Amean     21       0.6487 (   0.00%)      0.6807 (  -4.93%)
+> Amean     30       0.8033 (   0.00%)      0.7107 *  11.54%*
+> Amean     48       1.2400 (   0.00%)      1.0447 *  15.75%*
+> Amean     79       1.8200 (   0.00%)      1.6033 *  11.90%*
+> Amean     110      2.5820 (   0.00%)      2.0763 *  19.58%*
+> Amean     141      3.2203 (   0.00%)      2.5313 *  21.40%*
+> Amean     172      3.8200 (   0.00%)      3.1163 *  18.42%*
+> Amean     203      4.3357 (   0.00%)      3.5560 *  17.98%*
+> Amean     234      4.8047 (   0.00%)      3.8913 *  19.01%*
+> Amean     265      5.1243 (   0.00%)      4.2293 *  17.47%*
+> Amean     296      5.5940 (   0.00%)      4.5357 *  18.92%*
+>
+>                   5.15.0-rc3  5.15.0-rc3
+>          sched-wakeeflips-v1r1 sched-scalewakegran-v3r2
+> Duration User        2567.27     2034.17
+> Duration System     21098.79    17137.08
+> Duration Elapsed      136.49      120.2
+>
+> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
 > ---
->  kernel/sched/cpufreq_schedutil.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+>  kernel/sched/fair.c     | 17 +++++++++++++++--
+>  kernel/sched/features.h |  2 ++
+>  2 files changed, 17 insertions(+), 2 deletions(-)
 >
-> diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-> index 4f09afd..4aff4b6 100644
-> --- a/kernel/sched/cpufreq_schedutil.c
-> +++ b/kernel/sched/cpufreq_schedutil.c
-> @@ -409,7 +409,7 @@ static unsigned int sugov_next_freq_shared(struct sugov_cpu *sg_cpu, u64 time)
->         struct sugov_policy *sg_policy = sg_cpu->sg_policy;
->         struct cpufreq_policy *policy = sg_policy->policy;
->         unsigned long util = 0, max = 1;
-> -       unsigned int j;
-> +       int j;
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index d00af3b97d8f..dee108470297 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -7052,10 +7052,23 @@ balance_fair(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+>  }
+>  #endif /* CONFIG_SMP */
 >
->         for_each_cpu(j, policy->cpus) {
->                 struct sugov_cpu *j_sg_cpu = &per_cpu(sugov_cpu, j);
-> @@ -746,7 +746,7 @@ static int sugov_start(struct cpufreq_policy *policy)
+> -static unsigned long wakeup_gran(struct sched_entity *se)
+> +static unsigned long
+> +wakeup_gran(struct sched_entity *curr, struct sched_entity *se)
 >  {
->         struct sugov_policy *sg_policy = policy->governor_data;
->         void (*uu)(struct update_util_data *data, u64 time, unsigned int flags);
-> -       unsigned int cpu;
-> +       int cpu;
+>         unsigned long gran = sysctl_sched_wakeup_granularity;
 >
->         sg_policy->freq_update_delay_ns = sg_policy->tunables->rate_limit_us * NSEC_PER_USEC;
->         sg_policy->last_freq_update_time        = 0;
-> @@ -783,7 +783,7 @@ static int sugov_start(struct cpufreq_policy *policy)
->  static void sugov_stop(struct cpufreq_policy *policy)
->  {
->         struct sugov_policy *sg_policy = policy->governor_data;
-> -       unsigned int cpu;
-> +       int cpu;
+> +       if (sched_feat(SCALE_WAKEUP_GRAN)) {
+> +               unsigned long delta_exec;
+> +
+> +               /*
+> +                * Increase the wakeup granularity if curr's runtime
+> +                * is less than the minimum preemption granularity.
+> +                */
+> +               delta_exec = curr->sum_exec_runtime - curr->prev_sum_exec_runtime;
+> +               if (delta_exec < sysctl_sched_min_granularity)
+> +                       gran += sysctl_sched_min_granularity;
+
+I need to think a bit more about corner cases but this change looks
+much better than the previous one.
+
+> +       }
+> +
+>         /*
+>          * Since its curr running now, convert the gran from real-time
+>          * to virtual-time in his units.
+> @@ -7094,7 +7107,7 @@ wakeup_preempt_entity(struct sched_entity *curr, struct sched_entity *se)
+>         if (vdiff <= 0)
+>                 return -1;
 >
->         for_each_cpu(cpu, policy->cpus)
->                 cpufreq_remove_update_util_hook(cpu);
+> -       gran = wakeup_gran(se);
+> +       gran = wakeup_gran(curr, se);
+>         if (vdiff > gran)
+>                 return 1;
+>
+> diff --git a/kernel/sched/features.h b/kernel/sched/features.h
+> index 7f8dace0964c..611591355ffd 100644
+> --- a/kernel/sched/features.h
+> +++ b/kernel/sched/features.h
+> @@ -95,3 +95,5 @@ SCHED_FEAT(LATENCY_WARN, false)
+>
+>  SCHED_FEAT(ALT_PERIOD, true)
+>  SCHED_FEAT(BASE_SLICE, true)
+> +
+> +SCHED_FEAT(SCALE_WAKEUP_GRAN, true)
 > --
-> 2.7.4
+> 2.31.1
 >
