@@ -2,154 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49BB344026C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 20:47:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3433A440270
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 20:48:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230073AbhJ2SuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 14:50:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229489AbhJ2SuW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 14:50:22 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33B8EC061570
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 11:47:53 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id p16so22861354lfa.2
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 11:47:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uGPiPKSphOUEs2fEDAQ1oyHUSr8W7H4wPzT5A6mID2k=;
-        b=PwcTyiA+l0irgoS20hv3ruCOgqQ9pk+pMaL//cWuIfytOjzpNyUjD0wheL47Rw4p5e
-         XrhsN1D22td0eNyy9FTurkcJuSyIf4PSSbRhWBWg03sYd3a5zne0nY8hIhl5wl5Iiq0/
-         rwXzrUhn5/fXzh2aHHrpyapZm5QCvdomJAv4A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uGPiPKSphOUEs2fEDAQ1oyHUSr8W7H4wPzT5A6mID2k=;
-        b=2IDctzMI7WwbFtcDzRzbEAki1dKtGcd89CIesav35dGcbDloAu978CRV267CmH04hI
-         2OMggRYF16h11Q7YJEKknS6zVnBLJCy9ww2EgL+p5gcXIZvOskhr0mVqIxzdMJP2qJsO
-         KdhoLyK5wttOjHi0JgXdMFozmsFGQh91xnFQaKqpABjV2EIbxUxgkUUKvfN7rIsScy1H
-         rp4l/kHFkrSRkBQQUsrT1POnh0/CZjD/LxjCGrOtO0xRlV+e86tu9LQ3JJkLS17fjcNI
-         0TIyKn/YH/zQ9pRc1nI6Y7vnDFU6V7abB7tEXeC1Lz/RSYFAH5R287Rr/XwZFfsIpzs7
-         XM6g==
-X-Gm-Message-State: AOAM530VPz8GE93e+AjRaGF+bUkllVlrjd5WV0TTjUxIhPsJ/7WRhizZ
-        rKoLoVL33/spyiQGIc7QzlKQfB2oHMQK5MtnwMY=
-X-Google-Smtp-Source: ABdhPJzCZyylQ8duMQgatprCVp3sgj3LYcyyWq6lfXasrxGtDAxfWs89Jx00mD4RuL1A2nLgWe5wXA==
-X-Received: by 2002:a05:6512:12c3:: with SMTP id p3mr9965179lfg.384.1635533270662;
-        Fri, 29 Oct 2021 11:47:50 -0700 (PDT)
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com. [209.85.208.176])
-        by smtp.gmail.com with ESMTPSA id d2sm121227ljo.15.2021.10.29.11.47.49
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Oct 2021 11:47:49 -0700 (PDT)
-Received: by mail-lj1-f176.google.com with SMTP id u5so18302338ljo.8
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 11:47:49 -0700 (PDT)
-X-Received: by 2002:a05:651c:17a6:: with SMTP id bn38mr13088470ljb.56.1635533269069;
- Fri, 29 Oct 2021 11:47:49 -0700 (PDT)
+        id S230228AbhJ2Su3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 14:50:29 -0400
+Received: from mail-mw2nam10on2042.outbound.protection.outlook.com ([40.107.94.42]:42464
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230163AbhJ2SuY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 14:50:24 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AKrQkgupA33FFv/UVWfVI14bfhd6HzDG2Tt4CcY6sUYXW0YU7hJ0IzaTtyo0oYRuOfT/TS0yg9iZZgqN2KY1eVcARo68AKeKr7zPSFXoFy4AXsAuNYq1RXSox9++UTeHsH6m09pkQGK+FF/zi+c6+l/ctjLY5Zg9D0BNZEBNj4511bCHRa9vj8nF2Jae2n9f56T27Ry1C4sC28AfNIcWK+SIbp9AvT/WoAJ0r2OtOShtQ9HSZjNA1NcuhYyt4gs5LF1pJFLGdxcFE78SB+XDj5ox/o3dnc6vaVtcSjrOiPxqUmVs1PdqhkJkNfG9pSvG/Up9nbURYD2gbpZ644m1Vw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Aeh1aAzkPcxz00NfaU/GDPkcXjEgDpbmBgYSk0YpTTM=;
+ b=VU78VFOYPlF2QYBozqAV7Ftt0gmsAvM8/7P/61HWK+ZUSbbB1TgV6D0GSZx/cxFaoduGIiOmKoLbVMJ3N6tC2yBqQrdFxm4lgZD/cmLZ+qs8fAlkMbU8sbU7CWc3tgdP6oUCFKEck8Lz6a1VbvjtM2oo1onXhztc4uj842dI5WWxhTl9khfcT4XpbGC/0rU+t3vcndXn3cJEPPtxOI73RgZySMe9Ckma7OmviS43sElgz9kHXZoroU3ewyM3TADvYcHWEQYuuk5Qa7SvOC3Oxhyp/2emgGgQ+hhO/WRBpXlnvIIVxX/maEqa870+cTz53BDbg2KqtjIoMYlpehHz8Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Aeh1aAzkPcxz00NfaU/GDPkcXjEgDpbmBgYSk0YpTTM=;
+ b=ObHAWOYX8Clxb4x8eqHMbjw8Lmp6dG3FAEzmLEVRsN4ohFj1bCowW0IRtkof0cgBx9cZjJ8XMAv2GW6fNA3UN9apfdQhenAH3PtGMzJEV5pnbUOrQJ0HkV3zqOLVk8HOKCCnZbZKMfezy94QE/EqOlgxHxEGNPzAaYiOMZSEoXIcFL8gw77vid6sEd/pkW1yXqopcsjx1072heSJos4ioYijxtiJHC5SMRNVVW3lWDScWpdIpKpFPVhtI/v/TnCr8nnv5jzmfYpxYBNhMSe+vni6FIjYmXHqL5N+Rxwyvnxux5xG2dLyqN2skcMbrGTJWwB9OXhm76hEGEKuXBBEcg==
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5239.namprd12.prod.outlook.com (2603:10b6:208:315::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.14; Fri, 29 Oct
+ 2021 18:47:54 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4649.015; Fri, 29 Oct 2021
+ 18:47:54 +0000
+Date:   Fri, 29 Oct 2021 15:47:52 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     "Ziyang Xuan (William)" <william.xuanziyang@huawei.com>,
+        davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH net] net: vlan: fix a UAF in vlan_dev_real_dev()
+Message-ID: <20211029184752.GI2744544@nvidia.com>
+References: <20211027121606.3300860-1-william.xuanziyang@huawei.com>
+ <20211027184640.7955767e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20211028114503.GM2744544@nvidia.com>
+ <20211028070050.6ca7893b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <b573b01c-2cc9-4722-6289-f7b9e0a43e19@huawei.com>
+ <20211029121324.GT2744544@nvidia.com>
+ <20211029064610.18daa788@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211029064610.18daa788@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+X-ClientProxiedBy: BLAP220CA0021.NAMP220.PROD.OUTLOOK.COM
+ (2603:10b6:208:32c::26) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-References: <CAHk-=wgP058PNY8eoWW=5uRMox-PuesDMrLsrCWPS+xXhzbQxQ@mail.gmail.com>
- <YXL9tRher7QVmq6N@arm.com> <CAHk-=wg4t2t1AaBDyMfOVhCCOiLLjCB5TFVgZcV4Pr8X2qptJw@mail.gmail.com>
- <CAHc6FU7BEfBJCpm8wC3P+8GTBcXxzDWcp6wAcgzQtuaJLHrqZA@mail.gmail.com>
- <YXhH0sBSyTyz5Eh2@arm.com> <CAHk-=wjWDsB-dDj+x4yr8h8f_VSkyB7MbgGqBzDRMNz125sZxw@mail.gmail.com>
- <YXmkvfL9B+4mQAIo@arm.com> <CAHk-=wjQqi9cw1Guz6a8oBB0xiQNF_jtFzs3gW0k7+fKN-mB1g@mail.gmail.com>
- <YXsUNMWFpmT1eQcX@arm.com> <CAHk-=wgzEKEYKRoR_abQRDO=R8xJX_FK+XC3gNhKfu=KLdxt3g@mail.gmail.com>
- <YXw0a9n+/PLAcObB@arm.com>
-In-Reply-To: <YXw0a9n+/PLAcObB@arm.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 29 Oct 2021 11:47:33 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgNV5Ka0yTssic0JbZEcO3wvoTC65budK88k4D-34v0xA@mail.gmail.com>
-Message-ID: <CAHk-=wgNV5Ka0yTssic0JbZEcO3wvoTC65budK88k4D-34v0xA@mail.gmail.com>
-Subject: Re: [PATCH v8 00/17] gfs2: Fix mmap + page fault deadlocks
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        cluster-devel <cluster-devel@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ocfs2-devel@oss.oracle.com, kvm-ppc@vger.kernel.org,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Andy Lutomirski <luto@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Received: from mlx.ziepe.ca (142.162.113.129) by BLAP220CA0021.NAMP220.PROD.OUTLOOK.COM (2603:10b6:208:32c::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.15 via Frontend Transport; Fri, 29 Oct 2021 18:47:53 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mgWuu-003gMV-Je; Fri, 29 Oct 2021 15:47:52 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9a9b1deb-12ec-42ec-11f0-08d99b0c9db4
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5239:
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5239761D55C7A5E39FD4B666C2879@BL1PR12MB5239.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: muT3yXJ5eV1u64DoGJQXOrJl5B0DQS7Chm7KBOoail5VKbtTiIYf0EFs9xiecS0PUB+oXrOQIYaTotUi25NFl3EamNgdto5rzJTIlE1UOBMNU211RWiyG5LUK0sqDQdruIhlrg2IczDL3+XxMIVkI5fIkVuqg1/IQkgjd+1bS7DaE792Ziz6bxjk9p1+gsRKhVycdTV8yL8jHj2N/NWlVhKWvbOghAYnuXCbD64WMOgWjidwRRWuJ2T01NP/dUuhFKJWRYmNhq8ViOS0HrX7spYCGVgplKUDWk5M0nh/Hf0JqOQ7C5zgi0N/E95WFFFlnfJCQ4+CwklizEQdbpmUJzSVC34UyPaSxlTdvNekkWk+I8aRw45pqTNvY7pYLz3M/VLc8dtSvFlzUgBYxMEIxEIpZjRN6Ai8ZM7HgDp5+Sxs5oRIvjYnBXQ/S7EZXAAc0ROUgWCliWLLAPHsFnQaQXYI3FpO2xSF3wSbt/qD3U3OSAmtJwGWvz6jkwgPsTYN/F0CcZv0N6Tx0ovQhT9HPWjmHDKomylhYISqrLJqo1edME8dRlPY4HkGELkBnen6E31vhGLAgGKRLdhycuCkMtREAu8rOnz5agaoXRgilhBc3oih0G8JDch/Nk5wxYi5iHQCBtTw2l/S5ay5M3hB7Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(33656002)(86362001)(8936002)(316002)(2616005)(9786002)(66556008)(26005)(66476007)(66946007)(36756003)(186003)(9746002)(2906002)(508600001)(4744005)(8676002)(4326008)(426003)(5660300002)(1076003)(6916009)(38100700002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?FVcXnSeJgEWBGizGLY81AFZfwPt6t1DMA1wHRD/GpHztbLnha1DsrOeiPB3l?=
+ =?us-ascii?Q?XT+WAvTt90ZICTFGjQtTBn9PBmTi1yt3TlC4PISrd1ofnCpFi7OnSicpSDQS?=
+ =?us-ascii?Q?P9jQiO5MSmmxZ7iPYwoIJ90vWAHlKwEbCejQmACifodeF0Zhsrk/9p8WhaNM?=
+ =?us-ascii?Q?owg22jmq5q5JeMNd47saLHNiO3TIIvLEw66Ie5jOjvGDQ4LdluO2gLMkxC4u?=
+ =?us-ascii?Q?a2GNGzdvaLHRoixhata9IGTI1faHX9SHYCO4w9LtdUJ0p1XyZXJjaz8G4rdc?=
+ =?us-ascii?Q?oWNmI33/O4xfz5ziB4/sle/VWbYQYifFVPyNO7o8U617+nC4VadU+rzCp1oJ?=
+ =?us-ascii?Q?mIoiPHF7SNEWylsCG+ooWUcdKOH5PPgtMwilO1xzBfuZ9lWUYeSjR3m6YmrY?=
+ =?us-ascii?Q?uAVBUaE+Bgm93Jy4C7zU7ddwUTcCjvjGeNnv8cMMkKES975erhzdYQckoc6W?=
+ =?us-ascii?Q?2dMmYjC8wFx/OqAeOx5CFkbS3ENB81YzXUKCFbevl4SypYvAdh+rkayEVwE7?=
+ =?us-ascii?Q?UCRBvfJ12yUtaVIbU7nLwAoJ3jrKLB3GL34i7NX6ENTQay9tXUCpKFvNmd4b?=
+ =?us-ascii?Q?YkuTrQv2Ts+5/poSvGvgR88hIGvKfs5Trkb8ExkoClASMarhr91Ao2rr/AmP?=
+ =?us-ascii?Q?p2v9ooQDP7jh9xEeO25JBeMokzrA0hWWxGxAMw5+Z0q6J8b7zVPJrn6N7Iee?=
+ =?us-ascii?Q?KEo50MrTI8wDhcvSO/tkePLPrEcxdAlaK6aLkrJf+zpLLoy0xga4tX/lMAcH?=
+ =?us-ascii?Q?pebDBJYkmVlkLEnW2ozY3AlYwjwgDYlQboGrmsLT6bvWxbW/o9IftHcxH5R6?=
+ =?us-ascii?Q?c6xLW4gHXg8Rix5JGI35yqv1mSWOPfdRz0xFotn7Mi0opHR/mjMj6NKyEXiM?=
+ =?us-ascii?Q?eHYUpM/Yjo3xg31EuHO/mUqwZFpZzrMlTkHqHz/0mgKs+TSS6SMbTb3bXADg?=
+ =?us-ascii?Q?oyNn19q4CyyjPonHdpNBz9ESf/sB25Gs/COzchUSwoANfbdYAVtOGLVEWTBQ?=
+ =?us-ascii?Q?nvh0mqKqpAhIXvdOw0xSe7kMQgiCwvMr4PS7+QbeyZHHY4iAbFuhdM9Hcf4e?=
+ =?us-ascii?Q?WUZYLYr4TBSILiV3ZlPbyqL4+zbAcNcxxilxPJPOh7lREStseTTVUt44YOqg?=
+ =?us-ascii?Q?iZfcUaA1nvh9heZf7yWfh9N3q/2XkvJvwg6tFXS9JDEvIG9FyUGI/w/wFisZ?=
+ =?us-ascii?Q?0g/fMFSnvw5jwxnqbJaRRf1BtYw5V4zMKXbRIHKnH2Obsr6wnRpm/qgm1CUZ?=
+ =?us-ascii?Q?DXkEdj/qhp7dQrWewY4QnxMVL9HMv9BDuvSMBTMRPVhGGcYO1f9idbKaYdK7?=
+ =?us-ascii?Q?7lA2j7zTjjFbR81hh6zOCrGXe2EiILun+EyapE/L7nCEmJ2aHUjC10W2fTVl?=
+ =?us-ascii?Q?coV3kHFtWcWn/eDQowbIdpJ3b9raDMW8HfKqDJ8MSJEgPqMkpsUDoY2iJKaO?=
+ =?us-ascii?Q?HEP5a+sVaG+uAKpZw8R1mAE8GpFZhm/xLPm6jQCnCqTZAiNfcczvdZCTBcq8?=
+ =?us-ascii?Q?wQBfRTujIV6kIaeELZnEbw4WVPn8BzmHCCBvDh8DX4Ku3/AdFc5WlqojhI0z?=
+ =?us-ascii?Q?0W25zoyv1f5QM58qN2M=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9a9b1deb-12ec-42ec-11f0-08d99b0c9db4
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Oct 2021 18:47:54.0220
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: MuVahBUW4FYNPKHS29FgsQISlGWfaa1aMQ7EZDF8BmiWWko3EInskMDSx32iQxDf
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5239
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 10:50 AM Catalin Marinas
-<catalin.marinas@arm.com> wrote:
->
-> First of all, a uaccess in interrupt should not force such signal as it
-> had nothing to do with the interrupted context. I guess we can do an
-> in_task() check in the fault handler.
+On Fri, Oct 29, 2021 at 06:46:10AM -0700, Jakub Kicinski wrote:
+> On Fri, 29 Oct 2021 09:13:24 -0300 Jason Gunthorpe wrote:
+> > Jakub's path would be to test vlan_dev->reg_state != NETREG_REGISTERED
+> > in the work queue, but that feels pretty hacky to me as the main point
+> > of the UNREGISTERING state is to keep the object alive enough that
+> > those with outstanding gets can compelte their work and release the
+> > get. Leaving a wrecked object in UNREGISTERING is a bad design.
+> 
+> That or we should investigate if we could hold the ref for real_dev all
+> the way until vlan_dev_free().
 
-Yeah. It ends up being similar to the thread flag in that you still
-end up having to protect against NMI and other users of asynchronous
-page faults.
+The latter is certainly better if it works out, no circular deps, etc.
 
-So the suggestion was more of a "mindset" difference and modified
-version of the task flag rather than anything fundamentally different.
-
-> Second, is there a chance that we enter the fault-in loop with a SIGSEGV
-> already pending? Maybe it's not a problem, we just bail out of the loop
-> early and deliver the signal, though unrelated to the actual uaccess in
-> the loop.
-
-If we ever run in user space with a pending per-thread SIGSEGV, that
-would already be a fairly bad bug. The intent of "force_sig()" is not
-only to make sure you can't block the signal, but also that it targets
-the particular thread that caused the problem: unlike other random
-"send signal to process", a SIGSEGV caused by a bad memory access is
-really local to that _thread_, not the signal thread group.
-
-So somebody else sending a SIGSEGV asynchronsly is actually very
-different - it goes to the thread group (although you can specify
-individual threads too - but once you do that you're already outside
-of POSIX).
-
-That said, the more I look at it, the more I think I was wrong. I
-think the "we have a SIGSEGV pending" could act as the per-thread
-flag, but the complexity of the signal handling is probably an
-argument against it.
-
-Not because a SIGSEGV could already be pending, but because so many
-other situations could be pending.
-
-In particular, the signal code won't send new signals to a thread if
-that thread group is already exiting. So another thread may have
-already started the exit and core dump sequence, and is in the process
-of killing the shared signal threads, and if one of those threads is
-now in the kernel and goes through the copy_from_user() dance, that
-whole "thread group is exiting" will mean that the signal code won't
-add a new SIGSEGV to the queue.
-
-So the signal could conceptually be used as the flag to stop looping,
-but it ends up being such a complicated flag that I think it's
-probably not worth it after all. Even if it semantically would be
-fairly nice to use pre-existing machinery.
-
-Could it be worked around? Sure. That kernel loop probably has to
-check for fatal_signal_pending() anyway, so it would all work even in
-the presense of the above kinds of issues. But just the fact that I
-went and looked at just how exciting the signal code is made me think
-"ok, conceptually nice, but we take a lot of locks and we do a lot of
-special things even in the 'simple' force_sig() case".
-
-> Third is the sigcontext.pc presented to the signal handler. Normally for
-> SIGSEGV it points to the address of a load/store instruction and a
-> handler could disable MTE and restart from that point. With a syscall we
-> don't want it to point to the syscall place as it shouldn't be restarted
-> in case it copied something.
-
-I think this is actually independent of the whole "how to return
-errors". We'll still need to return an error from the system call,
-even if we also have a signal pending.
-
-                  Linus
+Thanks,
+Jason
