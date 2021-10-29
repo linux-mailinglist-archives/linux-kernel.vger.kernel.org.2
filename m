@@ -2,191 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA8C843F517
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 04:50:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAE2A43F51F
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 05:00:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231585AbhJ2Cw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 22:52:58 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:40769 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231523AbhJ2Cwy (ORCPT
+        id S231578AbhJ2DCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 23:02:32 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:58081 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231348AbhJ2DCb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 22:52:54 -0400
-Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20211029025025epoutp017930420592fc45f94f3c70e38696ba72~yYJkGS3Tx2720127201epoutp01d
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 02:50:25 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20211029025025epoutp017930420592fc45f94f3c70e38696ba72~yYJkGS3Tx2720127201epoutp01d
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1635475825;
-        bh=aLvbfxpxREsTn4jyDQjyggqM5hjnqu1ZAt7I9yeQkXA=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=hmM0ftI/MUiztd1J57HkClDYJT8PsluP6ovkciTOGpGv6skmRubTd3wiHA2b5jtyL
-         G+y87OpkPnn4eZVJRuLAycYbYoX9XraAwZ2wR+x9pglnmjrK7sfKMcYt+RBI6myzcd
-         LEaKpgN30VTEAKEKNg8e+Xc+wPXSGl0OMHeOY6wI=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
-        20211029025024epcas2p1f6b117d506aec3b6ed13d0620ee1f033~yYJjczJJ91595015950epcas2p1i;
-        Fri, 29 Oct 2021 02:50:24 +0000 (GMT)
-Received: from epsmges2p1.samsung.com (unknown [182.195.36.102]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4HgRk06yZ1z4x9Py; Fri, 29 Oct
-        2021 02:50:16 +0000 (GMT)
-X-AuditID: b6c32a45-45dff7000000ca37-10-617b6164fe7b
-Received: from epcas2p2.samsung.com ( [182.195.41.54]) by
-        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        6E.3E.51767.4616B716; Fri, 29 Oct 2021 11:50:12 +0900 (KST)
-Mime-Version: 1.0
-Subject: RE: [PATCH] scsi: ufs: Fix proper API to send HPB pre-request
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Ming Lei <ming.lei@redhat.com>,
-        Daejun Park <daejun7.park@samsung.com>
-CC:     ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "huobean@gmail.com" <huobean@gmail.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        Keoseong Park <keosung.park@samsung.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <YXtYME4yW6bFA1Cb@T590>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20211029025012epcms2p429d940cb32f5f31a2ac3fe395538a755@epcms2p4>
-Date:   Fri, 29 Oct 2021 11:50:12 +0900
-X-CMS-MailID: 20211029025012epcms2p429d940cb32f5f31a2ac3fe395538a755
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-CMS-TYPE: 102P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrFJsWRmVeSWpSXmKPExsWy7bCmmW5KYnWiwdYrRhYP5m1js3j58yqb
-        xbQPP5ktXh7StFj1INxiztkGJotFN7YxWRw/+Y7R4vKuOWwW3dd3sFksP/6PyeLQ5GYmBx6P
-        y1e8PXbOusvuMWHRAUaPj09vsXi833eVzaNvyypGj8+b5DzaD3QzBXBEZdtkpCampBYppOYl
-        56dk5qXbKnkHxzvHm5oZGOoaWlqYKynkJeam2iq5+AToumXmAN2qpFCWmFMKFApILC5W0rez
-        KcovLUlVyMgvLrFVSi1IySkwL9ArTswtLs1L18tLLbEyNDAwMgUqTMjO2Plcs+C0bMWXj33s
-        DYx3xboYOTgkBEwkfqwu6mLk4hAS2MEo8XPVL1aQOK+AoMTfHcJdjJwcwgJuEstXTWIEsYUE
-        lCTWX5zFDhHXk7j1cA1YnE1AR2L6iftgcREBL4kNz1YygsxkFjjALHF87hs2kISEAK/EjPan
-        LBC2tMT25VvBmjkFVCTm3/3HChHXkPixrJcZwhaVuLn6LTuM/f7YfEYIW0Si9d5ZqBpBiQc/
-        d0PFJSWO7f7ABGHXS2y98wvsCAmBHkaJwztvQS3Ql7jWsRHsCF4BX4m9c9eB2SwCqhIPd6yA
-        Guoi8eBAL9hQZgF5ie1v5zCDAoVZQFNi/S59SLgpSxy5xQLzVsPG3+zobGYBPomOw3/h4jvm
-        PYE6TU1i3c/1TBMYlWchQnoWkl2zEHYtYGRexSiWWlCcm55abFRgCI/a5PzcTYzgRKvluoNx
-        8tsPeocYmTgYDzFKcDArifBenleeKMSbklhZlVqUH19UmpNafIjRFOjLicxSosn5wFSfVxJv
-        aGJpYGJmZmhuZGpgriTOaymanSgkkJ5YkpqdmlqQWgTTx8TBKdXAJMfmdvCl/b39K/Vd7XR0
-        LF+fPtvbLv1T+ebeBKHLqnLvyy4Hh+kt23W35fv6L2vvKt0yct/2qv7PZb4LXDP/VwWrbfp7
-        v9d9haPku6P7dq7mVnRvuxwkWh0X+IeJK3vHpzc7pk9ha1HYVzzTQOnw/Z/iB0UdS5a9sTgV
-        Gzdl8YztCyOFn3z3ZOZ82PYvkFd3xVJXK44DdTw5nyy0NO1O1Sq/8Y1X+V5W9UE7s1B2Ou9U
-        idT9muL81Tp+U+zvT7U0bLB7nhT3przUVe/++rex8e9u7Xt4bunqnduNtn615RVLujC1e0L8
-        Ie9LUWmxu0onO7Y7LItWW3llGae0+qL2WU3715xuNJmrVpimPe9agRJLcUaioRZzUXEiAIlZ
-        Tck9BAAA
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20211027223619epcms2p60bbc74c9ba9757c58709a99acd0892ff
-References: <YXtYME4yW6bFA1Cb@T590> <YXtPNIDzeln8zBCn@T590>
-        <20211027223619epcms2p60bbc74c9ba9757c58709a99acd0892ff@epcms2p6>
-        <20211029015015epcms2p3a46e0779e43ab84c00388d99abf3b867@epcms2p3>
-        <CGME20211027223619epcms2p60bbc74c9ba9757c58709a99acd0892ff@epcms2p4>
+        Thu, 28 Oct 2021 23:02:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1635476403; x=1667012403;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=pOvyD5ApA1t7pbEAwfbWK5m/uaNPWxsDErnCMa5mOLg=;
+  b=jsCaIlP115DtW919EAoymFyOnD+ImYrlfaov175vmXZ/Wz5liQtl6/Pi
+   oklY0s9Lq3VTIwhKzNiccLbFJLyX2MaiOP4l9NlN+ItrXYsaCDrxoZqib
+   bV53rDCrauQH6Fkltt0uazu+UZnyU6YLJqXjOqqKTIfIWJGE/wnfDjOjV
+   /Pc9yPlD0LOSYVFMoT1rxW1439X9I3OqwA+DZxni0xxoHsjASOhSDS1ud
+   /DAmraKMDcfa1pDOWOA22nwiB/d7b+MaqpiPop0S3bQNk5CIjU6bdQOCj
+   Yp6qBg64dDHD8dNRn7zJhR59jPkehsFa/9lmjsAH4doyWErlfsw0NOkk1
+   w==;
+IronPort-SDR: qzlQmKSc7gPYjbQUP1dA620HI13VXsra79GvhrQnL9DYQRFxW0+tT3JtzJpRq5MTwKYSzEwLr6
+ 09hP1ZB5VKXcINioMuEHmh5/1Eo2FKdbL4bpYxRRL1ereeigBa2f0OUIDLl1C/dT0EyPqiI0TT
+ HJeCaDx3A4rdo/R9Rdm8cck6PZChMxmIBqNrH3WY0TfhDQOqF+iB+39PCbH3KFPwlaocFZMGN9
+ BYnMIUAXsBM7MfPucKwHrieHYtS/tvwUzMRnJ8HJ232Bw0QG1ExaSW5jMiIIkzUjSsfuRFNcIY
+ 07cW/eXUyDfWZ0xm4Jovv9XP
+X-IronPort-AV: E=Sophos;i="5.87,191,1631602800"; 
+   d="scan'208";a="149979124"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 28 Oct 2021 20:00:02 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Thu, 28 Oct 2021 20:00:02 -0700
+Received: from CHE-LT-I21427LX.microchip.com (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Thu, 28 Oct 2021 19:59:51 -0700
+Message-ID: <b3c069c8bc9b2f68d4705c04fb010cb4aaa0b29b.camel@microchip.com>
+Subject: Re: [PATCH v5 net-next 06/10] net: dsa: microchip: add support for
+ phylink management
+From:   Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+CC:     <andrew@lunn.ch>, <netdev@vger.kernel.org>, <olteanv@gmail.com>,
+        <robh+dt@kernel.org>, <UNGLinuxDriver@microchip.com>,
+        <Woojung.Huh@microchip.com>, <hkallweit1@gmail.com>,
+        <davem@davemloft.net>, <kuba@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <vivien.didelot@gmail.com>,
+        <f.fainelli@gmail.com>, <devicetree@vger.kernel.org>
+Date:   Fri, 29 Oct 2021 08:29:49 +0530
+In-Reply-To: <YXrYYL7+NRgUtvN3@shell.armlinux.org.uk>
+References: <20211028164111.521039-1-prasanna.vengateshan@microchip.com>
+         <20211028164111.521039-7-prasanna.vengateshan@microchip.com>
+         <YXrYYL7+NRgUtvN3@shell.armlinux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.1-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Fri, Oct 29, 2021 at 10:50:15AM +0900, Daejun Park wrote:
-> > > On Thu, Oct 28, 2021 at 07:36:19AM +0900, Daejun Park wrote:
-> > > > This patch addresses the issue of using the wrong API to create a
-> > > > pre_request for HPB READ.
-> > > > HPB READ candidate that require a pre-request will try to allocate a
-> > > > pre-request only during request_timeout_ms (default: 0). Otherwise, it is
-> > >  
-> > > Can you explain about 'only during request_timeout_ms'?
-> > >  
-> > > From the following code in ufshpb_prep(), the pre-request is allocated
-> > > for each READ IO in case of (!ufshpb_is_legacy(hba) && ufshpb_is_required_wb(hpb,
-> > > transfer_len)).
-> > >  
-> > >    if (!ufshpb_is_legacy(hba) &&
-> > >             ufshpb_is_required_wb(hpb, transfer_len)) {
-> > >                 err = ufshpb_issue_pre_req(hpb, cmd, &read_id);
-> > >  
-> > > > passed as normal READ, so deadlock problem can be resolved.
-> > > > 
-> > > > Signed-off-by: Daejun Park <daejun7.park@samsung.com>
-> > > > ---
-> > > >  drivers/scsi/ufs/ufshpb.c | 11 +++++------
-> > > >  drivers/scsi/ufs/ufshpb.h |  1 +
-> > > >  2 files changed, 6 insertions(+), 6 deletions(-)
-> > > > 
-> > > > diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
-> > > > index 02fb51ae8b25..3117bd47d762 100644
-> > > > --- a/drivers/scsi/ufs/ufshpb.c
-> > > > +++ b/drivers/scsi/ufs/ufshpb.c
-> > > > @@ -548,8 +548,7 @@ static int ufshpb_execute_pre_req(struct ufshpb_lu *hpb, struct scsi_cmnd *cmd,
-> > > >                                   read_id);
-> > > >          rq->cmd_len = scsi_command_size(rq->cmd);
-> > > >  
-> > > > -        if (blk_insert_cloned_request(q, req) != BLK_STS_OK)
-> > > > -                return -EAGAIN;
-> > > > +        blk_execute_rq_nowait(NULL, req, true, ufshpb_pre_req_compl_fn);
-> > >  
-> > > Be care with above change, blk_insert_cloned_request() allocates
-> > > driver tag and issues the request to LLD directly, then returns the
-> > > result. If anything fails in the code path, -EAGAIN is returned.
-> > >  
-> > > But blk_execute_rq_nowait() simply queued the request in block layer,
-> > > and run hw queue. It doesn't allocate driver tag, and doesn't issue it
-> > > to LLD.
-> > >  
-> > > So ufshpb_execute_pre_req() may think the pre-request is issued to LLD
-> > > successfully, but actually not, maybe never. What will happen after the
-> > > READ IO is issued to device, but the pre-request(write buffer) isn't
-> > > sent to device?
+On Thu, 2021-10-28 at 18:05 +0100, Russell King (Oracle) wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know the
+> content is safe
+> 
+> On Thu, Oct 28, 2021 at 10:11:07PM +0530, Prasanna Vengateshan wrote:
+> > Support for phylink_validate() and reused KSZ commmon API for
+> > phylink_mac_link_down() operation
 > > 
-> > In that case, the HPB READ cannot get benefit from pre-request. But it is not
-> > common case.
->  
-> OK, so the device will ignore the pre-request if it isn't received in
-> time, not sure it is common or not, since blk_execute_rq_nowait()
-> doesn't provide any feedback. Here looks blk_insert_cloned_request()
-> is better.
-
-Yor're right.
-
+> > lan937x_phylink_mac_config configures the interface using
+> > lan937x_mac_config and lan937x_phylink_mac_link_up configures
+> > the speed/duplex/flow control.
 > > 
-> > > Can you explain how this change solves the deadlock?
+> > Currently SGMII & in-band neg are not supported & it will be
+> > added later.
 > > 
-> > The deadlock is happen when the READ waiting allocation of pre-request. But
-> > the timeout code makes to stop waiting after given time later.
->  
-> If you mean blk-mq timeout code will be triggered, I think it won't.
-> Meantime, LLD may see nothing to timeout too.
+> > Signed-off-by: Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
+> 
+> Hi,
+> 
+> I've just sent "net: dsa: populate supported_interfaces member"
+> which adds a hook to allow DSA to populate the newly introduced
+> supported_interfaces member of phylink_config. Once this patch is
+> merged, it would be great to see any new drivers setting this
+> member.
+> 
+> Essentially, the phylink_get_interfaces method is called with the
+> DSA switch and port number, and a pointer to the supported_interfaces
+> member - which is a bitmap of PHY_INTERFACE_MODEs that are supported
+> by this port.
+> 
+> When you have set any bit in the supported interfaces, phylink's
+> behaviour when calling your lan937x_phylink_validate changes - it will
+> no longer call it with PHY_INTERFACE_MODE_NA, but will instead do a
+> bitwalk over the bitmap, and call it for each supported interface type
+> instead.
+> 
+> When phylink has a specific interface mode, it will continue to make a
+> single call - but only if the interface mode is indicated as supported
+> in the supported interfaces bitmap.
+> 
+> Please keep an eye on "net: dsa: populate supported_interfaces member"
+> and if you need to respin this series after that patch has been merged,
+> please update in regards of this.
 
-I mean timeout of the HPB code. Please refer following code:
+Sure, i will watch out for this series and add to my new driver. Do the 
+new drivers need to still return all supported modes if state->interface
+is set to %PHY_INTERFACE_MODE_NA as per phylink documentation? I 
+understand that supported_interfaces will not be empty if
+phylink_get_interfaces() is handled. But i just wanted to double check
+with you.
 
-if (!ufshpb_is_legacy(hba) &&
-	ufshpb_is_required_wb(hpb, transfer_len)) {
-	err = ufshpb_issue_pre_req(hpb, cmd, &read_id);
-	if (err) {
-		unsigned long timeout;
 
-		timeout = cmd->jiffies_at_alloc + msecs_to_jiffies(
-			  hpb->params.requeue_timeout_ms);
 
-		if (time_before(jiffies, timeout))
-			return -EAGAIN;
-
-		hpb->stats.miss_cnt++;
-		return 0;
-	}
-}
-
-Although the return value of ufshpb_issue_pre_req() is -EAGAIN, the code
-ignores the return value and issues READ not HPB READ.
-
-Thanks,
-Daejun
