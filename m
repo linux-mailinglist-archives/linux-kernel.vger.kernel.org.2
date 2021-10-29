@@ -2,209 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AF0443F583
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 05:45:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A882E43F586
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 05:46:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231694AbhJ2Drd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 23:47:33 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:22800 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231611AbhJ2Drc (ORCPT
+        id S231706AbhJ2Dsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 23:48:47 -0400
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:39419 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231611AbhJ2Dsp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 23:47:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1635479105; x=1667015105;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=naRok50L8z+Gq6O3oKapVcQxMNbixW5H72GMSVPA0mI=;
-  b=kAacePV86sCotR0v4m2INtir7HDFH9uYvJKi5dx9fxHEDWlyuVGlwAoY
-   g83bloOPTzJXiA6mFUpd92bAXpU3N1cT5t/KbDsBg6jOB4xBvVHvcZlJY
-   nLr0HIciekXzbjdTX5pURJJFKOjm+Xj3g+MD0p88kkAIkB9+7XthzcD3l
-   8=;
-Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
-  by alexa-out.qualcomm.com with ESMTP; 28 Oct 2021 20:45:04 -0700
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2021 20:45:03 -0700
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Thu, 28 Oct 2021 20:45:03 -0700
-Received: from qian-HP-Z2-SFF-G5-Workstation.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Thu, 28 Oct 2021 20:45:02 -0700
-From:   Qian Cai <quic_qiancai@quicinc.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
-CC:     <linux-kbuild@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Qian Cai <quic_qiancai@quicinc.com>
-Subject: [PATCH v2] configs: Introduce debug.config for CI-like setup
-Date:   Thu, 28 Oct 2021 23:44:34 -0400
-Message-ID: <20211029034434.24553-1-quic_qiancai@quicinc.com>
-X-Mailer: git-send-email 2.30.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Thu, 28 Oct 2021 23:48:45 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.nyi.internal (Postfix) with ESMTP id B08B95C01C2;
+        Thu, 28 Oct 2021 23:46:16 -0400 (EDT)
+Received: from imap43 ([10.202.2.93])
+  by compute2.internal (MEProxy); Thu, 28 Oct 2021 23:46:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm1; bh=4ecynQE/mi8JhloxKEfsAbzg5Np3viO
+        3Lizq0tTL4VY=; b=X2X2PCsmSdbzcEeXZWbW+ZXCPG7jmpVFtvff0XV+5qtXwQY
+        +rymTSK1eEb7us4kdoRhOO45meBl6tUxhn5VGOA9PVMvkVJVLpz7yemP5tibrz5g
+        LeccPkKhAGPB6grIs+vsPeVWAwSEV66B1RtTI9qQ8ZF8xVZaUH+PVFNYT3NJ19iU
+        c5R+WmmytsLvgjm83EMTRqW0aI2ml8xSqeMJQcZZmTqGPNd/qD2xHwb1hSeRNX+N
+        7dDQJNc27WrA25ygdXdtnB1jQT+BFzPRpg8s9E45skQv1kiuLjZs8LMldme51/r+
+        /J8yDGbZXOYhk/shNWsvOpJhPqpKOn07SDFjraA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=4ecynQ
+        E/mi8JhloxKEfsAbzg5Np3viO3Lizq0tTL4VY=; b=PuVcCq+viEy2hxryrBJalc
+        8GpInWN5x6d97JrHckjCLXXsvpNvE2snvQadDk/4kWLlbuUMx+9NrRixpw1RRAuO
+        F/ud8NXOykyOgey9LdBhlmOx5HoPTIyfzVuBf5720h4V+dq7O66r5N+uAbcAgFHw
+        Z2k/bVGeLChB5wF/Q44Oa8H8JGZj8uP3C8NVSzratoIIbKg3776YuW8X8m8lAjwG
+        h1OWNdeKFJ7GATWDLP0+tcFKbKaUhhfdb8NqE0P4i4Wt7X08my6GxraaKMmmSDl6
+        UwUJO360tr+doufy2J6CANys0TyWwzF7eji36GLIibcXiBji7wa0BSp6sqDAuyMw
+        ==
+X-ME-Sender: <xms:hm57YejhuTlnRN1NAZ0MKP_Lhu2xfrzr93qBDeq0Dru7vCWcqT2RLQ>
+    <xme:hm57YfC78U7bBIDe1YJ33k9H4KDGXX1MvETuTGB6Lig_iDQTGt3cJu7D4sf6J1WJW
+    dSJmGvxvEq_LxDWyA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvdeggedgjeduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdetnhgu
+    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
+    grthhtvghrnhephefhfeekgfekudevheffheeihedujeefjeevjeefudfgfeeutdeuvdeh
+    hfevueffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghnughrvgifsegrjhdrihgurdgruh
+X-ME-Proxy: <xmx:hm57YWH9ZiQczwe8vRqUNtLmjS3MBCBW72L2-SSXY1iED6htS_WJJw>
+    <xmx:hm57YXR0zv--y_gmEdJVfBhM4jJKi2ZSOIi5acp8DV6onfiaIWiNAg>
+    <xmx:hm57YbyRu5YjlOIEkJraZ93pT8h0VjDRp1MK0ksGUQXDju_0suz4xg>
+    <xmx:iG57Yb-E3BcvJ1T9CefPUjlYNu9YPgxm-RUcMpe5u6IZuKJFKLVSTw>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 73114AC0DD1; Thu, 28 Oct 2021 23:46:14 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-1369-gd055fb5e7c-fm-20211018.002-gd055fb5e
+Mime-Version: 1.0
+Message-Id: <ad15c868-de54-41c2-8d3c-716c33b7aa8c@www.fastmail.com>
+In-Reply-To: <HK0PR06MB338025A6EC2AE11D25C34998F2B29@HK0PR06MB3380.apcprd06.prod.outlook.com>
+References: <20210925022354.10297-1-ryan_chen@aspeedtech.com>
+ <CACPK8Xct9rWEu40XHWjo_uY9P7dJ=U5LBM+O3KjmjNL+9yD5QQ@mail.gmail.com>
+ <HK0PR06MB338025A6EC2AE11D25C34998F2B29@HK0PR06MB3380.apcprd06.prod.outlook.com>
+Date:   Fri, 29 Oct 2021 14:15:54 +1030
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Ryan Chen" <ryan_chen@aspeedtech.com>,
+        "Joel Stanley" <joel@jms.id.au>
+Cc:     "Michael Turquette" <mturquette@baylibre.com>,
+        "Stephen Boyd" <sboyd@kernel.org>,
+        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCHv3] clk:aspeed:Fix AST2600 hpll calculate formula
 Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some general debugging features like kmemleak, KASAN, lockdep, UBSAN etc
-help fix many viruses like a microscope. On the other hand, those features
-are scatter around and mixed up with more situational debugging options
-making them difficult to consume properly. This cold help amplify the
-general debugging/testing efforts and help establish sensitive default
-values for those options across the broad.
 
-The config is based on years' experiences running daily CI inside the
-largest enterprise Linux distro company to seek regressions on
-linux-next builds on different bare-metal and virtual platforms. This is
-more of some art than science. It can be used for example,
 
-$ make ARCH=arm64 defconfig debug.config
+On Fri, 8 Oct 2021, at 18:02, Ryan Chen wrote:
+>> -----Original Message-----
+>> From: Joel Stanley <joel@jms.id.au>
+>> Sent: Friday, October 8, 2021 12:06 PM
+>> To: Ryan Chen <ryan_chen@aspeedtech.com>
+>> Cc: Michael Turquette <mturquette@baylibre.com>; Stephen Boyd
+>> <sboyd@kernel.org>; Andrew Jeffery <andrew@aj.id.au>;
+>> linux-clk@vger.kernel.org; Linux Kernel Mailing List
+>> <linux-kernel@vger.kernel.org>
+>> Subject: Re: [PATCHv3] clk:aspeed:Fix AST2600 hpll calculate formula
+>> 
+>> On Sat, 25 Sept 2021 at 02:24, Ryan Chen <ryan_chen@aspeedtech.com>
+>> wrote:
+>> >
+>> 
+>> A few notes on process:
+>> 
+>> > v2 -> v3: change else than if to directly else if
+>> > v1 -> v2: add Fixes commit hash
+>> 
+>> As this is normally information for reviewers to know what you've changed
+>> since the last version, we normally put this below the --- in the patch, which
+>> means it is not included in the commit message.
+>> 
+>> Also we put a space between the PATCH and v3 in the subject. If you use the
+>> tools, it will generate this for you:
+>> 
+>> git format-patch -v3 -1 --to=...
+>> 
+>> >
+>> > AST2600 HPLL calculate formula [SCU200] HPLL Numerator(M): have fixed
+>> > value depend on SCU strap.
+>> > M = SCU500[10] ? 0x5F : SCU500[8] ? 0xBF : SCU200[12:0]
+>> 
+>> I recommend adding to the commit message the text from my first review:
+>> 
+>> From the datasheet:
+>> 
+>> CPU frequency selection
+>> 000 1.2GHz
+>> 001 1.6GHz
+>> 010 1.2GHz
+>> 011 1.6GHz
+>> 100 800MHz
+>> 101 800MHz
+>> 110 800MHz
+>> 111 800MHz
+>> 
+>> So when the system is running at 800MHz or 1.6GHz, the value for the
+>> numerator (m) in SCU204 is incorrect, and must be overridden.
+>
+> Yes, SCU204 will be overridden by chip design.
+> Let me clarify m is in SCU200[12:0] not SCU204. SCU204 is NB not 
+> related with freq.
+>
+>> 
+>> >
+>> > if SCU500[10] = 1, M=0x5F.
+>> > else if SCU500[10]=0 & SCU500[8]=1, M=0xBF.
+>> > others (SCU510[10]=0 and SCU510[8]=0)
+>> > depend on SCU200[12:0] (default 0x8F) register setting.
+>> >
+>> > HPLL Denumerator (N) =  SCU200[18:13] (default 0x2)
+>> > HPLL Divider (P)         =      SCU200[22:19] (default 0x0)
+>> >
+>> > Fixes: d3d04f6c330a ("clk: Add support for AST2600 SoC")
+>> > Signed-off-by: Ryan Chen <ryan_chen@aspeedtech.com>
+>> > ---
+>> >  drivers/clk/clk-ast2600.c | 28 +++++++++++++++++++++++++++-
+>> >  1 file changed, 27 insertions(+), 1 deletion(-)
+>> >
+>> > diff --git a/drivers/clk/clk-ast2600.c b/drivers/clk/clk-ast2600.c
+>> > index 085d0a18b2b6..d30188355aaf 100644
+>> > --- a/drivers/clk/clk-ast2600.c
+>> > +++ b/drivers/clk/clk-ast2600.c
+>> > @@ -169,6 +169,32 @@ static const struct clk_div_table
+>> > ast2600_div_table[] = {  };
+>> >
+>> >  /* For hpll/dpll/epll/mpll */
+>> > +static struct clk_hw *ast2600_calc_hpll(const char *name, u32 val) {
+>> > +       unsigned int mult, div;
+>> > +       u32 hwstrap = readl(scu_g6_base + ASPEED_G6_STRAP1);
+>> > +
+>> > +       if (val & BIT(24)) {
+>> > +               /* Pass through mode */
+>> > +               mult = div = 1;
+>> > +       } else {
+>> > +               /* F = 25Mhz * [(M + 2) / (n + 1)] / (p + 1) */
+>> > +               u32 m = val  & 0x1fff;
+>> > +               u32 n = (val >> 13) & 0x3f;
+>> > +               u32 p = (val >> 19) & 0xf;
+>> > +
+>> 
+>> Add a comment:
+>> 
+>> /* If the CPU is running at 800Mhz. */
+>> 
+>> > +               if (hwstrap & BIT(10))
+>> > +                       m = 0x5F;
+>> 
+>> /* If the CPU is running at 1600Mhz. */
+>> 
+>> > +               else if (hwstrap & BIT(8))
+>> > +                       m = 0xBF;
+>> 
+>> 
+>> Or you could copy what I suggested in the first patch, and write it like this,
+>> which I think is clear:
+>> 
+>> ff (hwstrap & BIT(10)) {
+>>     /* CPU running at 800MHz */
+>>    m = 95;
+>> } else if (hwstrap & BIT(10)) {
+>>     /* CPU running at 1.6GHz */
+>>   m  = 191;
+>> } else {
+>>    /* CPU running at 1.2Ghz */
+>>   m = val  & 0x1fff;
+>> }
+>
+> How about following 
+>
+> ff (hwstrap & BIT(10)) {
+>     /* CPU running at 800MHz */
+>     m = 0x5F;
+> } else if (hwstrap & BIT(10)) {
 
-Signed-off-by: Qian Cai <quic_qiancai@quicinc.com>
----
-v2:
-Double the size of CONFIG_DEBUG_KMEMLEAK_MEM_POOL_SIZE due to the most
-of defconfigs used 4KB page instead of 64KB which would consume more early
-kmemleak objects to track early_pgtable_alloc(). Otherwise, we could
-run out of kmemleak early memory pool and disable kmemleak entirely.
+This is the same condition as the `if` above. That doesn't seem right.
 
- kernel/configs/debug.config | 119 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 119 insertions(+)
- create mode 100644 kernel/configs/debug.config
-
-diff --git a/kernel/configs/debug.config b/kernel/configs/debug.config
-new file mode 100644
-index 000000000000..fea127155eb6
---- /dev/null
-+++ b/kernel/configs/debug.config
-@@ -0,0 +1,119 @@
-+# Keep alphabetically sorted.
-+#
-+# CONFIG_BOOTPARAM_HUNG_TASK_PANIC is not set
-+# CONFIG_BOOTPARAM_SOFTLOCKUP_PANIC is not set
-+# CONFIG_DEBUG_KMEMLEAK_DEFAULT_OFF is not set
-+# CONFIG_DEBUG_PAGEALLOC is not set
-+# CONFIG_DEBUG_RODATA_TEST is not set
-+# CONFIG_DEBUG_WX is not set
-+# CONFIG_KFENCE is not set
-+# CONFIG_PAGE_POISONING is not set
-+# CONFIG_PROVE_RAW_LOCK_NESTING is not set
-+# CONFIG_SLUB_STATS is not set
-+# CONFIG_UBSAN_ALIGNMENT is not set
-+# CONFIG_UBSAN_DIV_ZERO is not set
-+# CONFIG_UBSAN_TRAP is not set
-+# CONFIG_WARN_ALL_UNSEEDED_RANDOM is not set
-+CONFIG_BRANCH_PROFILE_NONE=y
-+CONFIG_BUG_ON_DATA_CORRUPTION=y
-+CONFIG_CONTEXT_SWITCH_TRACER=y
-+CONFIG_DEBUG_ATOMIC_SLEEP=y
-+CONFIG_DEBUG_BUGVERBOSE=y
-+CONFIG_DEBUG_FS_ALLOW_ALL=y
-+CONFIG_DEBUG_FS=y
-+CONFIG_DEBUG_INFO=y
-+CONFIG_DEBUG_IRQFLAGS=y
-+CONFIG_DEBUG_KERNEL=y
-+CONFIG_DEBUG_KMEMLEAK_AUTO_SCAN=y
-+CONFIG_DEBUG_KMEMLEAK_MEM_POOL_SIZE=80000
-+CONFIG_DEBUG_KMEMLEAK=y
-+CONFIG_DEBUG_LIST=y
-+CONFIG_DEBUG_LOCK_ALLOC=y
-+CONFIG_DEBUG_MUTEXES=y
-+CONFIG_DEBUG_OBJECTS_ENABLE_DEFAULT=1
-+CONFIG_DEBUG_OBJECTS_FREE=y
-+CONFIG_DEBUG_OBJECTS_PERCPU_COUNTER=y
-+CONFIG_DEBUG_OBJECTS_RCU_HEAD=y
-+CONFIG_DEBUG_OBJECTS_TIMERS=y
-+CONFIG_DEBUG_OBJECTS_WORK=y
-+CONFIG_DEBUG_OBJECTS=y
-+CONFIG_DEBUG_PER_CPU_MAPS=y
-+CONFIG_DEBUG_RT_MUTEXES=y
-+CONFIG_DEBUG_RWSEMS=y
-+CONFIG_DEBUG_SECTION_MISMATCH=y
-+CONFIG_DEBUG_SPINLOCK=y
-+CONFIG_DEBUG_STACK_USAGE=y
-+CONFIG_DEBUG_VIRTUAL=y
-+CONFIG_DEBUG_VM_PGFLAGS=y
-+CONFIG_DEBUG_VM_RB=y
-+CONFIG_DEBUG_VM_VMACACHE=y
-+CONFIG_DEBUG_VM=y
-+CONFIG_DEBUG_WW_MUTEX_SLOWPATH=y
-+CONFIG_DEFAULT_HUNG_TASK_TIMEOUT=120
-+CONFIG_DETECT_HUNG_TASK=y
-+CONFIG_DYNAMIC_DEBUG_CORE=y
-+CONFIG_DYNAMIC_DEBUG=y
-+CONFIG_DYNAMIC_FTRACE_WITH_REGS=y
-+CONFIG_DYNAMIC_FTRACE=y
-+CONFIG_EVENT_TRACING=y
-+CONFIG_FRAME_POINTER=y
-+CONFIG_FRAME_WARN=2048
-+CONFIG_FTRACE_MCOUNT_RECORD=y
-+CONFIG_FTRACE_MCOUNT_USE_PATCHABLE_FUNCTION_ENTRY=y
-+CONFIG_FTRACE=y
-+CONFIG_FUNCTION_TRACER=y
-+CONFIG_GENERIC_PTDUMP=y
-+CONFIG_GENERIC_TRACER=y
-+CONFIG_IO_STRICT_DEVMEM=y
-+CONFIG_KASAN_GENERIC=y
-+CONFIG_KASAN_INLINE=y
-+CONFIG_KASAN_STACK=y
-+CONFIG_KASAN_VMALLOC=y
-+CONFIG_KASAN=y
-+CONFIG_LOCK_DEBUGGING_SUPPORT=y
-+CONFIG_LOCKDEP_BITS=15
-+CONFIG_LOCKDEP_CHAINS_BITS=16
-+CONFIG_LOCKDEP_CIRCULAR_QUEUE_BITS=12
-+CONFIG_LOCKDEP_STACK_TRACE_BITS=19
-+CONFIG_LOCKDEP_STACK_TRACE_HASH_BITS=14
-+CONFIG_LOCKDEP=y
-+CONFIG_LOCKUP_DETECTOR=y
-+CONFIG_MAGIC_SYSRQ_DEFAULT_ENABLE=0x1
-+CONFIG_MAGIC_SYSRQ_SERIAL_SEQUENCE=""
-+CONFIG_MAGIC_SYSRQ_SERIAL=y
-+CONFIG_MAGIC_SYSRQ=y
-+CONFIG_NOP_TRACER=y
-+CONFIG_PAGE_EXTENSION=y
-+CONFIG_PAGE_OWNER=y
-+CONFIG_PANIC_ON_OOPS_VALUE=1
-+CONFIG_PANIC_ON_OOPS=y
-+CONFIG_PANIC_TIMEOUT=0
-+CONFIG_PREEMPTIRQ_TRACEPOINTS=y
-+CONFIG_PRINTK_CALLER=y
-+CONFIG_PRINTK_TIME=y
-+CONFIG_PROVE_LOCKING=y
-+CONFIG_PROVE_RCU_LIST=y
-+CONFIG_PROVE_RCU=y
-+CONFIG_PTDUMP_CORE=y
-+CONFIG_PTDUMP_DEBUGFS=y
-+CONFIG_RCU_CPU_STALL_TIMEOUT=60
-+CONFIG_RING_BUFFER=y
-+CONFIG_SCHED_INFO=y
-+CONFIG_SCHED_STACK_END_CHECK=y
-+CONFIG_SECTION_MISMATCH_WARN_ONLY=y
-+CONFIG_SLUB_DEBUG_ON=y
-+CONFIG_SOFTLOCKUP_DETECTOR=y
-+CONFIG_STACKTRACE=y
-+CONFIG_STRICT_DEVMEM=y
-+CONFIG_SYMBOLIC_ERRNAME=y
-+CONFIG_TRACE_CLOCK=y
-+CONFIG_TRACE_IRQFLAGS=y
-+CONFIG_TRACING_SUPPORT=y
-+CONFIG_TRACING=y
-+CONFIG_UBSAN_BOOL=y
-+CONFIG_UBSAN_BOUNDS=y
-+CONFIG_UBSAN_ENUM=y
-+CONFIG_UBSAN_ONLY_BOUNDS=y
-+CONFIG_UBSAN_SHIFT=y
-+CONFIG_UBSAN_UNREACHABLE=y
-+CONFIG_UBSAN=y
--- 
-2.30.2
-
+>     /* CPU running at 1.6GHz */
+>     m = 0xBF;
+> } else {
+>    /* CPU running at 1.2Ghz */
+>    m = val  & 0x1fff;
+> }
+>
+>> 
