@@ -2,106 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AFC543F422
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 02:48:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 843BF43F41E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 02:48:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231453AbhJ2AvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 20:51:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59746 "EHLO
+        id S231388AbhJ2AvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 20:51:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231463AbhJ2AvT (ORCPT
+        with ESMTP id S230211AbhJ2AvN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 20:51:19 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E05CC061745
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 17:48:50 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id 67so19882173yba.6
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 17:48:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RR10NcdVnk1TXpaY9k+McyemxyXRCAjJsI5p8UJyeEE=;
-        b=je1Q1O+E+IAMH50n6kSYsYBq9DP2BbOqvwHFjhTQwTnTpPDQW/KLax+sy3hh1Ti83A
-         KBvlt0NDKjloxRzR46VYgbrCrj92wJfs3v7xQ4kAwamgXAy8ntZsv90ahoYFtM6FZZdm
-         SjY0gcrVltLksvtwLXhUsPPxvyrEHQalRHfY4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RR10NcdVnk1TXpaY9k+McyemxyXRCAjJsI5p8UJyeEE=;
-        b=ZpNSt6D1Yi1kMSI7DMaPvXcJ1GwVDxQ5DhDlKJUv7vjK3ymmgIoQBSSoTalhn8UWvj
-         r7EyKmEmCx+blu38q8eDkXJ+5gBP4YRgSsGKr+2a9Fw7lh1Nhn35RC+hj7B4KElGk5Ov
-         DHn+6rJK4bZmlmPkdqOeUcSy7MGz8f0vO2tu1Zc7gWjlAFlbkaa6ke/aUmdw9escmn6e
-         N8CPdCpG9WLnrQIX+pS3Bo8KqwdVoOSb7NS/6B0AC/1SZUbgA6/W+i/9z54M+yUTmPZG
-         luxJ7sTx0Hf4tulPwn3W+569AwJYUstxEA6PShp0MQgLzqQaYZhtNKhomhE0crpCyPpR
-         tAiQ==
-X-Gm-Message-State: AOAM5314DA5Unt92Js6ZAhbQpc8YGGmy4qyDzbLNJyDt/0izMXDzZjQ0
-        6hKhLFv4C8r0YoOFG+qWs+AvkTSoETrPc9ZIHgK2NA==
-X-Google-Smtp-Source: ABdhPJzD4b97WCfq3smhAQB1MAvemDvB1d9B3h0Ln65gRGIoRqbA0/LnneC7xpA4e6pDgx19TQrwGNOZjnx7kLhiOxk=
-X-Received: by 2002:a25:bfce:: with SMTP id q14mr4166387ybm.508.1635468529683;
- Thu, 28 Oct 2021 17:48:49 -0700 (PDT)
+        Thu, 28 Oct 2021 20:51:13 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 618C7C061570;
+        Thu, 28 Oct 2021 17:48:45 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HgP1k1nxzz4xcB;
+        Fri, 29 Oct 2021 11:48:41 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1635468524;
+        bh=FCQzWvP+AB7oAHT1PeIYE1IUj7mEzomLovvkTip/16c=;
+        h=Date:From:To:Cc:Subject:From;
+        b=qjxF5xtiyG5blf9o1DtE77u8umPSM+iX33aaZJbtiKCy/tcIhr8Db3Vh95fc5/Okg
+         F1qnyULiZpEHtympzIIL6wgL/xRDQ+3lrkc5lqDtP0If+QdOBJJ2L//ZALjbryBTSf
+         pUpuZ7M7przQgdcGsdOr44epvX2jhHtmSXIdMrOco6F05/ynDfqpQOXglCKazfrP9l
+         3PF5QdZN1KNPjgUdCFbAg2ULbv1mUOsD72ggY2fJ5tlcMXytvLJfCfMZtPAeGxRvUH
+         2ylJe/l1bXxvqa4DP+vxZ9Amg7CJbqPX0IdkigRHaFKj5l+L0c5NehCvkhK0P0B1gf
+         5rNzU6XRXxZkA==
+Date:   Fri, 29 Oct 2021 11:48:40 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     John Harrison <John.C.Harrison@Intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Matthew Brost <matthew.brost@intel.com>
+Subject: linux-next: manual merge of the drm tree with Linus' tree
+Message-ID: <20211029114840.6a3a78bd@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20211028151022.1.Ie56f55924f5c7706fe3194e710bbef6fdb8b5bc6@changeid>
- <CAE-0n50XwcLBmOBaRiF-qW=R-HfanjviteEzmMDbDuPJruX65g@mail.gmail.com>
-In-Reply-To: <CAE-0n50XwcLBmOBaRiF-qW=R-HfanjviteEzmMDbDuPJruX65g@mail.gmail.com>
-From:   Philip Chen <philipchen@chromium.org>
-Date:   Thu, 28 Oct 2021 17:48:39 -0700
-Message-ID: <CA+cxXhnu38eOJtuvHdS0Wyy7LmjmTMn9qjoVOqcNYK3F1xhrmQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] arm64: dts: sc7180: Support Lazor/Limozeen rev9
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, dianders@chromium.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/Xt5z.i2.qZV/j7OqA=Pyt6z";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+--Sig_/Xt5z.i2.qZV/j7OqA=Pyt6z
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Oct 28, 2021 at 4:00 PM Stephen Boyd <swboyd@chromium.org> wrote:
->
-> Quoting Philip Chen (2021-10-28 15:11:31)
-> > diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi
-> > index 8b79fbb75756..69666f92176a 100644
-> > --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi
-> > +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi
-> > @@ -5,13 +5,10 @@
-> >   * Copyright 2020 Google LLC.
-> >   */
-> >
-> > -#include "sc7180.dtsi"
-> > -
-> >  ap_ec_spi: &spi6 {};
-> >  ap_h1_spi: &spi0 {};
->
-> Can we get rid of this node swap now? I think it is only around because
-> early on we swapped the EC and H1 spi interfaces and then we had to swap
-> it every time we made a new board.
->
-> $ git grep ap_ec_spi
-> arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi:ap_ec_spi: &spi6 {};
-> arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi:ap_ec_spi: &spi6 {};
-> arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi:ap_ec_spi: &spi6 {};
-> arch/arm64/boot/dts/qcom/sc7180-trogdor-r1.dts:ap_ec_spi: &spi6 {};
->
-> It feels like we'd be better off leaving that quirk in trogdor-r0, which
-> conveniently isn't upstream, and then relabel the spi nodes in
-> sc7180-trogdor.dtsi now. Otherwise I look at this and have to remember
-> that whenever this dtsi file is included, we've already included the
-> sc7180.dtsi file before it, so that the relabel actually works.
+Hi all,
 
-I agree it'll be great if we can get rid of the node swap.
-It's out of the scope of this patch series though.
-We should probably send a separate patch for this change later?
+Today's linux-next merge of the drm tree got a conflict in:
 
->
-> >
-> >  #include "sc7180-trogdor.dtsi"
-> > -#include "sc7180-trogdor-ti-sn65dsi86.dtsi"
-> >
-> >  &ap_sar_sensor {
-> >         semtech,cs0-ground;
+  drivers/gpu/drm/i915/i915_trace.h
+
+between commit:
+
+  9a4aa3a2f160 ("drm/i915: Revert 'guc_id' from i915_request tracepoint")
+
+from Linus' tree and commit:
+
+  3cb3e3434b9f ("drm/i915/guc: Move fields protected by guc->contexts_lock =
+into sub structure")
+
+from the drm tree.
+
+I fixed it up (I used the former version) and can carry the fix as
+necessary. This is now fixed as far as linux-next is concerned, but any
+non trivial conflicts should be mentioned to your upstream maintainer
+when your tree is submitted for merging.  You may also want to consider
+cooperating with the maintainer of the conflicting tree to minimise any
+particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/Xt5z.i2.qZV/j7OqA=Pyt6z
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF7ROgACgkQAVBC80lX
+0GwDjwf9ES1kV83+eTsl0RucN0MlLoR/a90yvyKRhvhlScgHdKUkuncE1mLzRUUi
+9Vfe6eW0invRkjBkjabzTtQn/zwIArLe6k1Dcfv/IzY0OXWGgD9hsNYM28tSIpo0
+FMYxt37NXrPJ2Zdv32n5UpU6WuZEcKAi3WnFrXCp25VOjducOy3M2fVJJ7/XmTsN
+bUgBH+hyoVv07kVBlniRtMrKR1lczaSLD2v6hgAgGp/H68bK7EmF7EH7QWmUexYc
+FaFukquqfUxbGktJn/e7+7GCDnBlYGZPif4qZ9AVPN+JWjUzQSXhIMSDE5iaWrwS
+x2DjrMOjo3PF6Fbu/f2w4VS/Ho72bw==
+=li/R
+-----END PGP SIGNATURE-----
+
+--Sig_/Xt5z.i2.qZV/j7OqA=Pyt6z--
