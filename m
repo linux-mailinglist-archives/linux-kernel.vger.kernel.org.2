@@ -2,77 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 801AA43F793
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 08:59:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84AE243F78A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 08:54:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232138AbhJ2HB0 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 29 Oct 2021 03:01:26 -0400
-Received: from mga17.intel.com ([192.55.52.151]:55284 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230252AbhJ2HBY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 03:01:24 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10151"; a="211375315"
-X-IronPort-AV: E=Sophos;i="5.87,191,1631602800"; 
-   d="scan'208";a="211375315"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2021 23:52:20 -0700
-X-IronPort-AV: E=Sophos;i="5.87,191,1631602800"; 
-   d="scan'208";a="448274796"
-Received: from shishpan-mobl2.ccr.corp.intel.com (HELO localhost) ([10.249.254.23])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2021 23:52:18 -0700
-Content-Type: text/plain; charset="utf-8"
+        id S232139AbhJ2G5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 02:57:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230252AbhJ2G5V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 02:57:21 -0400
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6973EC061570
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 23:54:53 -0700 (PDT)
+Received: by mail-oi1-x231.google.com with SMTP id t4so12034209oie.5
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 23:54:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=ePIHoriLIVjhSnt0MZ2sr1WXfIYtpmc6bctB4GvfYk4=;
+        b=OmHAJEK0zMenmccOMKcd39WUjZj9QUxY9vCl1ZLJKSHtEpCU2CvRwDbSSrZkPutUU2
+         gX+QqkSxQXFBC5O7dJRy43ietqnteApz22NzV73I/3OSfpy/Qf6R0eZ/pCSM38K865Ay
+         c7ZxdBbTnxPm88SHFEV2cQuHvBbs0iAJNoxVI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=ePIHoriLIVjhSnt0MZ2sr1WXfIYtpmc6bctB4GvfYk4=;
+        b=5kiJ0wrNqGwMjW5AOXZUn6KgIlT0cV3SLNUVEehSdDaUf3DiCp5X4oYQzcpaTk1BNj
+         DPSvgsRtmIXUwgKOE/WhGJFJb9VMf8wILybmWJ7BHbutb7tbhMMzF5Ox7T+uNIPnIuTz
+         6bgKdsrI5MhWVgp8MmqOlA5TW1lwt4eCtO9yssfdRPYFdiUS6DhBEkoYOMZOmk9AS35g
+         Q0rSARdUqPGQ1yYaR5BsX8hDa2Qe1HhM1CEg/Qw5h662XbFZstFMw7QZCGi4IsuevewC
+         vsGMQcCfXxDUlRCTuBj7iSZa/aJBtWRANdvNSMjRwNlI0GfP1KGmd+faAqUY+99o0co1
+         LFiQ==
+X-Gm-Message-State: AOAM5313vPUO0z8cHGnjXtmPKEl0F7/YKc6a9YBFc7mvTyrZm5RcWpcM
+        Jpl2SogRknEq5c+uwTIPDfSNAiQ8Z8F1ZCvT2BnjrDNWgUI=
+X-Google-Smtp-Source: ABdhPJyHUrHkYGLOqR3AfqoEd3h8Vg+Y4D1mydhapVCma/WU0xYA2fXjbJHnOH9sVOH6bK0UdSXOBdl4bzfroyj0XWU=
+X-Received: by 2002:a05:6808:2128:: with SMTP id r40mr4917340oiw.164.1635490492859;
+ Thu, 28 Oct 2021 23:54:52 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Thu, 28 Oct 2021 23:54:52 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20211029114840.6a3a78bd@canb.auug.org.au>
-References: <20211029114840.6a3a78bd@canb.auug.org.au>
-To:     DRI <dri-devel@lists.freedesktop.org>,
-        Dave Airlie <airlied@linux.ie>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     John Harrison <John.C.Harrison@Intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Matthew Brost <matthew.brost@intel.com>
-From:   Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
-Subject: Re: linux-next: manual merge of the drm tree with Linus' tree
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-Message-ID: <163549033603.4317.6416900804800927743@jlahtine-mobl.ger.corp.intel.com>
-User-Agent: alot/0.8.1
-Date:   Fri, 29 Oct 2021 09:52:16 +0300
+In-Reply-To: <1635250056-20274-1-git-send-email-rnayak@codeaurora.org>
+References: <1635250056-20274-1-git-send-email-rnayak@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Thu, 28 Oct 2021 23:54:52 -0700
+Message-ID: <CAE-0n50E2dmQeDaiggEgMgykrkGB3H38sbkTXDX3avR7XtSizw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] pinctrl: qcom: Add egpio feature support
+To:     Rajendra Nayak <rnayak@codeaurora.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, linus.walleij@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, psodagud@codeaurora.org,
+        dianders@chromium.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Stephen Rothwell (2021-10-29 03:48:40)
-> Hi all,
-> 
-> Today's linux-next merge of the drm tree got a conflict in:
-> 
->   drivers/gpu/drm/i915/i915_trace.h
-> 
-> between commit:
-> 
->   9a4aa3a2f160 ("drm/i915: Revert 'guc_id' from i915_request tracepoint")
-> 
-> from Linus' tree and commit:
-> 
->   3cb3e3434b9f ("drm/i915/guc: Move fields protected by guc->contexts_lock into sub structure")
-> 
-> from the drm tree.
-> 
-> I fixed it up (I used the former version) and can carry the fix as
-> necessary.
+Quoting Rajendra Nayak (2021-10-26 05:07:35)
+> From: Prasad Sodagudi <psodagud@codeaurora.org>
+>
+> egpio is a scheme which allows special power Island Domain IOs
+> (LPASS,SSC) to be reused as regular chip GPIOs by muxing regular
+> TLMM functions with Island Domain functions.
+> With this scheme, an IO can be controlled both by the cpu running
+> linux and the Island processor. This provides great flexibility to
+> re-purpose the Island IOs for regular TLMM usecases.
+>
+> 2 new bits are added to ctl_reg, egpio_present is a read only bit
+> which shows if egpio feature is available or not on a given gpio.
+> egpio_enable is the read/write bit and only effective if egpio_present
+> is 1. Once its set, the Island IO is controlled from Chip TLMM.
+> egpio_enable when set to 0 means the GPIO is used as Island Domain IO.
+>
+> To support this we add a new function 'egpio' which can be used to
+> set the egpio_enable to 0, for any other TLMM controlled functions
+> we set the egpio_enable to 1.
+>
+> Signed-off-by: Prasad Sodagudi <psodagud@codeaurora.org>
+> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+> ---
 
-The resolution for the conflict is to drop the guc_id field completely
-in linux-next.
+Does this supersede adding support for lpass pinctrl in this series[1]?
 
-Regards, Joonas
-
-> This is now fixed as far as linux-next is concerned, but any
-> non trivial conflicts should be mentioned to your upstream maintainer
-> when your tree is submitted for merging.  You may also want to consider
-> cooperating with the maintainer of the conflicting tree to minimise any
-> particularly complex conflicts.
-> 
-> -- 
-> Cheers,
-> Stephen Rothwell
+[1] https://lore.kernel.org/r/1635342097-2726-1-git-send-email-srivasam@codeaurora.org
