@@ -2,116 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EA18440172
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 19:49:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EDA2440176
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 19:50:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230108AbhJ2RwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 13:52:24 -0400
-Received: from mga14.intel.com ([192.55.52.115]:59467 "EHLO mga14.intel.com"
+        id S230160AbhJ2RxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 13:53:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58554 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229655AbhJ2RwS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 13:52:18 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10152"; a="230980474"
-X-IronPort-AV: E=Sophos;i="5.87,193,1631602800"; 
-   d="scan'208";a="230980474"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2021 10:49:48 -0700
-X-IronPort-AV: E=Sophos;i="5.87,193,1631602800"; 
-   d="scan'208";a="725022010"
-Received: from rchatre-ws.ostc.intel.com ([10.54.69.144])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2021 10:49:48 -0700
-From:   Reinette Chatre <reinette.chatre@intel.com>
-To:     jarkko@kernel.org, linux-sgx@vger.kernel.org,
-        dave.hansen@linux.intel.com
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] x86/sgx: SGX documentation fixes
-Date:   Fri, 29 Oct 2021 10:49:56 -0700
-Message-Id: <ab99a87368eef69e3fb96f073368becff3eff874.1635529506.git.reinette.chatre@intel.com>
-X-Mailer: git-send-email 2.25.1
+        id S229489AbhJ2RxK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 13:53:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C7CA9610C7;
+        Fri, 29 Oct 2021 17:50:38 +0000 (UTC)
+Date:   Fri, 29 Oct 2021 18:50:35 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ocfs2-devel@oss.oracle.com, kvm-ppc@vger.kernel.org,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Andy Lutomirski <luto@kernel.org>
+Subject: Re: [PATCH v8 00/17] gfs2: Fix mmap + page fault deadlocks
+Message-ID: <YXw0a9n+/PLAcObB@arm.com>
+References: <CAHk-=wgP058PNY8eoWW=5uRMox-PuesDMrLsrCWPS+xXhzbQxQ@mail.gmail.com>
+ <YXL9tRher7QVmq6N@arm.com>
+ <CAHk-=wg4t2t1AaBDyMfOVhCCOiLLjCB5TFVgZcV4Pr8X2qptJw@mail.gmail.com>
+ <CAHc6FU7BEfBJCpm8wC3P+8GTBcXxzDWcp6wAcgzQtuaJLHrqZA@mail.gmail.com>
+ <YXhH0sBSyTyz5Eh2@arm.com>
+ <CAHk-=wjWDsB-dDj+x4yr8h8f_VSkyB7MbgGqBzDRMNz125sZxw@mail.gmail.com>
+ <YXmkvfL9B+4mQAIo@arm.com>
+ <CAHk-=wjQqi9cw1Guz6a8oBB0xiQNF_jtFzs3gW0k7+fKN-mB1g@mail.gmail.com>
+ <YXsUNMWFpmT1eQcX@arm.com>
+ <CAHk-=wgzEKEYKRoR_abQRDO=R8xJX_FK+XC3gNhKfu=KLdxt3g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wgzEKEYKRoR_abQRDO=R8xJX_FK+XC3gNhKfu=KLdxt3g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGX documentation fixes are:
+On Thu, Oct 28, 2021 at 03:32:23PM -0700, Linus Torvalds wrote:
+> The pointer color fault (or whatever some other architecture may do to
+> generate sub-page faults) is not only not recoverable in the sense
+> that we can't fix it up, it also ends up being a forced SIGSEGV (ie it
+> can't be blocked - it has to either be caught or cause the process to
+> be killed).
+> 
+> And the thing is, I think we could just make the rule be that kernel
+> code that has this kind of retry loop with fault_in_pages() would
+> force an EFAULT on a pending SIGSEGV.
+> 
+> IOW, the pending SIGSEGV could effectively be exactly that "thread flag".
+> 
+> And that means that fault_in_xyz() wouldn't need to worry about this
+> situation at all: the regular copy_from_user() (or whatever flavor it
+> is - to/from/iter/whatever) would take the fault. And if it's a
+> regular page fault,. it would act exactly like it does now, so no
+> changes.
+> 
+> If it's a sub-page fault, we'd just make the rule be that we send a
+> SIGSEGV even if the instruction in question has a user exception
+> fixup.
+> 
+> Then we just need to add the logic somewhere that does "if active
+> pending SIGSEGV, return -EFAULT".
+> 
+> Of course, that logic might be in fault_in_xyz(), but it migth also be
+> a separate function entirely.
+> 
+> So this does effectively end up being a thread flag, but it's also
+> slightly more than that - it's that a sub-page fault from kernel mode
+> has semantics that a regular page fault does not.
+> 
+> The whole "kernel access doesn't cause SIGSEGV, but returns -EFAULT
+> instead" has always been an odd and somewhat wrong-headed thing. Of
+> course it should cause a SIGSEGV, but that's not how Unix traditionall
+> worked. We would just say "color faults always raise a signal, even if
+> the color fault was triggered in a system call".
 
- * Remove capitalization from regular words in the middle of a sentence.
- * Remove punctuation found in the middle of a sentence.
- * Fix name of SGX daemon to consistently be ksgxd.
- * Fix typo of SGX instruction: ENIT -> EINIT
+It's doable and, at least for MTE, people have asked for a signal even
+when the fault was caused by a kernel uaccess. But there are some
+potentially confusing aspects to sort out:
 
-Signed-off-by: Reinette Chatre <reinette.chatre@intel.com>
----
- Documentation/x86/sgx.rst | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+First of all, a uaccess in interrupt should not force such signal as it
+had nothing to do with the interrupted context. I guess we can do an
+in_task() check in the fault handler.
 
-diff --git a/Documentation/x86/sgx.rst b/Documentation/x86/sgx.rst
-index dd0ac96ff9ef..0f9300bdd65e 100644
---- a/Documentation/x86/sgx.rst
-+++ b/Documentation/x86/sgx.rst
-@@ -10,7 +10,7 @@ Overview
- Software Guard eXtensions (SGX) hardware enables for user space applications
- to set aside private memory regions of code and data:
- 
--* Privileged (ring-0) ENCLS functions orchestrate the construction of the.
-+* Privileged (ring-0) ENCLS functions orchestrate the construction of the
-   regions.
- * Unprivileged (ring-3) ENCLU functions allow an application to enter and
-   execute inside the regions.
-@@ -91,7 +91,7 @@ In addition to the traditional compiler and linker build process, SGX has a
- separate enclave “build” process.  Enclaves must be built before they can be
- executed (entered). The first step in building an enclave is opening the
- **/dev/sgx_enclave** device.  Since enclave memory is protected from direct
--access, special privileged instructions are Then used to copy data into enclave
-+access, special privileged instructions are then used to copy data into enclave
- pages and establish enclave page permissions.
- 
- .. kernel-doc:: arch/x86/kernel/cpu/sgx/ioctl.c
-@@ -126,13 +126,13 @@ the need to juggle signal handlers.
- ksgxd
- =====
- 
--SGX support includes a kernel thread called *ksgxwapd*.
-+SGX support includes a kernel thread called *ksgxd*.
- 
- EPC sanitization
- ----------------
- 
- ksgxd is started when SGX initializes.  Enclave memory is typically ready
--For use when the processor powers on or resets.  However, if SGX has been in
-+for use when the processor powers on or resets.  However, if SGX has been in
- use since the reset, enclave pages may be in an inconsistent state.  This might
- occur after a crash and kexec() cycle, for instance.  At boot, ksgxd
- reinitializes all enclave pages so that they can be allocated and re-used.
-@@ -147,7 +147,7 @@ Page reclaimer
- 
- Similar to the core kswapd, ksgxd, is responsible for managing the
- overcommitment of enclave memory.  If the system runs out of enclave memory,
--*ksgxwapd* “swaps” enclave memory to normal memory.
-+*ksgxd* “swaps” enclave memory to normal memory.
- 
- Launch Control
- ==============
-@@ -156,7 +156,7 @@ SGX provides a launch control mechanism. After all enclave pages have been
- copied, kernel executes EINIT function, which initializes the enclave. Only after
- this the CPU can execute inside the enclave.
- 
--ENIT function takes an RSA-3072 signature of the enclave measurement.  The function
-+EINIT function takes an RSA-3072 signature of the enclave measurement.  The function
- checks that the measurement is correct and signature is signed with the key
- hashed to the four **IA32_SGXLEPUBKEYHASH{0, 1, 2, 3}** MSRs representing the
- SHA256 of a public key.
-@@ -184,7 +184,7 @@ CPUs starting from Icelake use Total Memory Encryption (TME) in the place of
- MEE. TME-based SGX implementations do not have an integrity Merkle tree, which
- means integrity and replay-attacks are not mitigated.  B, it includes
- additional changes to prevent cipher text from being returned and SW memory
--aliases from being Created.
-+aliases from being created.
- 
- DMA to enclave memory is blocked by range registers on both MEE and TME systems
- (SDM section 41.10).
+Second, is there a chance that we enter the fault-in loop with a SIGSEGV
+already pending? Maybe it's not a problem, we just bail out of the loop
+early and deliver the signal, though unrelated to the actual uaccess in
+the loop.
+
+Third is the sigcontext.pc presented to the signal handler. Normally for
+SIGSEGV it points to the address of a load/store instruction and a
+handler could disable MTE and restart from that point. With a syscall we
+don't want it to point to the syscall place as it shouldn't be restarted
+in case it copied something. Pointing it to the next instruction after
+syscall is backwards-compatible but it may confuse the handler (if it
+does some reporting). I think we need add a new si_code that describes a
+fault in kernel mode to differentiate from the genuine user access.
+
+There was a discussion back in August on infinite loops with hwpoison
+and Tony said that Andy convinced him that the kernel should not send a
+SIGBUS for uaccess:
+
+https://lore.kernel.org/linux-edac/20210823152437.GA1637466@agluck-desk2.amr.corp.intel.com/
+
+I personally like the approach of a SIG{SEGV,BUS} on uaccess and I don't
+think the ABI change is significant but ideally we should have a unified
+approach that's not just for MTE.
+
+Adding Andy and Tony (the background is potentially infinite loops with
+faults at sub-page granularity: arm64 MTE, hwpoison, sparc ADI).
+
+Thanks.
+
 -- 
-2.25.1
-
+Catalin
