@@ -2,151 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62C7043FA5B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 11:59:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9056A43FA62
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 12:01:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231674AbhJ2KBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 06:01:36 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:53590 "EHLO m43-7.mailgun.net"
+        id S231666AbhJ2KDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 06:03:40 -0400
+Received: from foss.arm.com ([217.140.110.172]:36572 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231610AbhJ2KBe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 06:01:34 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1635501545; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=UnsNoYW7wP4F8KSJMq0q8k/qnjr/LOlMEp/wGWG3buI=; b=sFt9yTqRXTegJ8SK23q9Iq9uN4G4TzFPQhMOSLz1B4N38ox25Z65JUY6qx7TYddpkOjVhJ1H
- cGMLPhEWKX+BivIMTK6IZtvqp3cKrz9Cy4XGjqvI/ZezFX6UfJTf+oTWWS0IFNLVSFKq8vvK
- FV2A3WiVfnVjN86HgbCVr08QzZs=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 617bc5da648aeeca5c8222cd (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 29 Oct 2021 09:58:50
- GMT
-Sender: rnayak=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B5593C43460; Fri, 29 Oct 2021 09:58:50 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-5.4 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.1.100] (unknown [49.207.214.117])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DBEDBC4338F;
-        Fri, 29 Oct 2021 09:58:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org DBEDBC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Subject: Re: [PATCH v2 1/2] pinctrl: qcom: Add egpio feature support
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     agross@kernel.org, linus.walleij@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, psodagud@codeaurora.org,
-        dianders@chromium.org
-References: <1635250056-20274-1-git-send-email-rnayak@codeaurora.org>
- <YXsrtTGZW66mUtkU@ripper>
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-Message-ID: <4fda39ce-189e-4873-dd40-3219c0052ffd@codeaurora.org>
-Date:   Fri, 29 Oct 2021 15:28:44 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S231564AbhJ2KDi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 06:03:38 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 482081FB;
+        Fri, 29 Oct 2021 03:01:10 -0700 (PDT)
+Received: from [192.168.154.184] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4C90E3F5A1;
+        Fri, 29 Oct 2021 03:01:08 -0700 (PDT)
+Subject: Re: [PATCH v3 0/5] Improve newidle lb cost tracking and early abort
+To:     Vincent Guittot <vincent.guittot@linaro.org>, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com, rostedt@goodmis.org,
+        bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
+        linux-kernel@vger.kernel.org, tim.c.chen@linux.intel.com
+References: <20211019123537.17146-1-vincent.guittot@linaro.org>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <7e60ab36-aecd-8912-0cda-72dba21268d2@arm.com>
+Date:   Fri, 29 Oct 2021 12:01:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <YXsrtTGZW66mUtkU@ripper>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20211019123537.17146-1-vincent.guittot@linaro.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/29/2021 4:31 AM, Bjorn Andersson wrote:
-> On Tue 26 Oct 05:07 PDT 2021, Rajendra Nayak wrote:
+On 19/10/2021 14:35, Vincent Guittot wrote:
+> This patchset updates newidle lb cost tracking and early abort:
 > 
->> From: Prasad Sodagudi <psodagud@codeaurora.org>
->>
->> egpio is a scheme which allows special power Island Domain IOs
->> (LPASS,SSC) to be reused as regular chip GPIOs by muxing regular
->> TLMM functions with Island Domain functions.
->> With this scheme, an IO can be controlled both by the cpu running
->> linux and the Island processor. This provides great flexibility to
->> re-purpose the Island IOs for regular TLMM usecases.
->>
->> 2 new bits are added to ctl_reg, egpio_present is a read only bit
->> which shows if egpio feature is available or not on a given gpio.
->> egpio_enable is the read/write bit and only effective if egpio_present
->> is 1. Once its set, the Island IO is controlled from Chip TLMM.
->> egpio_enable when set to 0 means the GPIO is used as Island Domain IO.
->>
->> To support this we add a new function 'egpio' which can be used to
->> set the egpio_enable to 0, for any other TLMM controlled functions
->> we set the egpio_enable to 1.
->>
->> Signed-off-by: Prasad Sodagudi <psodagud@codeaurora.org>
->> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
->> ---
->>   drivers/pinctrl/qcom/pinctrl-msm.c | 17 +++++++++++++++--
->>   drivers/pinctrl/qcom/pinctrl-msm.h |  4 ++++
->>   2 files changed, 19 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/pinctrl/qcom/pinctrl-msm.c b/drivers/pinctrl/qcom/pinctrl-msm.c
->> index 8476a8a..bfdba3a 100644
->> --- a/drivers/pinctrl/qcom/pinctrl-msm.c
->> +++ b/drivers/pinctrl/qcom/pinctrl-msm.c
->> @@ -185,6 +185,7 @@ static int msm_pinmux_set_mux(struct pinctrl_dev *pctldev,
->>   	unsigned int irq = irq_find_mapping(gc->irq.domain, group);
->>   	struct irq_data *d = irq_get_irq_data(irq);
->>   	unsigned int gpio_func = pctrl->soc->gpio_func;
->> +	unsigned int egpio_func = pctrl->soc->egpio_func;
->>   	const struct msm_pingroup *g;
->>   	unsigned long flags;
->>   	u32 val, mask;
->> @@ -218,8 +219,20 @@ static int msm_pinmux_set_mux(struct pinctrl_dev *pctldev,
->>   	raw_spin_lock_irqsave(&pctrl->lock, flags);
->>   
->>   	val = msm_readl_ctl(pctrl, g);
->> -	val &= ~mask;
->> -	val |= i << g->mux_bit;
->> +
->> +	if (egpio_func && i == egpio_func) {
->> +		if (val & BIT(g->egpio_present))
->> +			val &= ~BIT(g->egpio_enable);
->> +		else
->> +			return -EINVAL;
+> The time spent running update_blocked_averages is now accounted in the 1st
+> sched_domain level. This time can be significant and move the cost of
+> newidle lb above the avg_idle time.
 > 
-> You're returning here with pctrl->lock held and irqs disabled.
-
-argh, right. I will fix that and repost.
-I wonder if I should just drop that error handling completely,
-we wouldn't end up here unless the platform driver wrongly populates
-a pin which does not support egpio with a egpio function.
-
+> The decay of max_newidle_lb_cost is modified to start only when the field
+> has not been updated for a while. Recent update will not be decayed
+> immediatlybut only after a while.
 > 
->> +	} else {
->> +		val &= ~mask;
->> +		val |= i << g->mux_bit;
->> +		/* Check if egpio present and enable that feature */
+> The condition of an avg_idle lower than sysctl_sched_migration_cost has
+> been removed as the 500us value is quite large and prevent opportunity to
+> pull task on the newly idle CPU for at least 1st domain levels.
 > 
-> I never remember if egpio_enable means apss or lpass, so I think this
-> comment would be better as:
+> Monitoring sd->max_newidle_lb_cost on cpu0 of a Arm64 system
+> THX2 (2 nodes * 28 cores * 4 cpus) during the benchmarks gives the
+> following results:
+>        min    avg   max
+> SMT:   1us   33us  273us - this one includes the update of blocked load
+> MC:    7us   49us  398us
+> NUMA: 10us   45us  158us
 > 
-> 		/* Claim ownership of pin if egpio capable */
-
-:) makes sense
-
 > 
->> +		if (egpio_func && (val & BIT(g->egpio_present)))
+> Some results for hackbench -l $LOOPS -g $group :
+> group      tip/sched/core     + this patchset
+> 1           15.189(+/- 2%)       14.987(+/- 2%)  +1%
+> 4            4.336(+/- 3%)        4.322(+/- 5%)  +0%
+> 16           3.654(+/- 1%)        2.922(+/- 3%) +20%
+> 32           3.209(+/- 1%)        2.919(+/- 3%)  +9%
+> 64           2.965(+/- 1%)        2.826(+/- 1%)  +4%
+> 128          2.954(+/- 1%)        2.993(+/- 8%)  -1%
+> 256          2.951(+/- 1%)        2.894(+/- 1%)  +2%
 > 
-> Can't you drop the parenthesis around the second expression?
+> tbench and reaim have not shown any difference
+> 
+> Change since v2:
+> - Update and decay of sd->last_decay_max_lb_cost are gathered in
+>   update_newidle_cost(). The behavior remains almost the same except that
+>   the decay can happen during newidle_balance now.
+> 
+>   Tests results haven't shown any differences
+>   
+>   I haven't modified rq->max_idle_balance_cost. It acts as the max value
+>   for avg_idle and prevents the latter to reach high value during long
+>   idle phase. Moving on an IIR filter instead, could delay the convergence
+>   of avg_idle to a reasonnable value that reflect current situation.
+> 
+> - Added a minor cleanup of newidle_balance
+> 
+> Change since v1:
+> - account the time spent in update_blocked_averages() in the 1st domain
+> 
+> - reduce number of call of sched_clock_cpu() 
+> 
+> - change the way max_newidle_lb_cost is decayed. Peter suggested to use a
+>   IIR but keeping a track of the current max value gave the best result
+> 
+> - removed the condition (this_rq->avg_idle < sysctl_sched_migration_cost)
+>   as suggested by Peter
+> 
+> Vincent Guittot (5):
+>   sched/fair: Account update_blocked_averages in newidle_balance cost
+>   sched/fair: Skip update_blocked_averages if we are defering load
+>     balance
+>   sched/fair: Wait before decaying max_newidle_lb_cost
+>   sched/fair: Remove sysctl_sched_migration_cost condition
+>   sched/fair: cleanup newidle_balance
+> 
+>  include/linux/sched/topology.h |  2 +-
+>  kernel/sched/fair.c            | 65 ++++++++++++++++++++++------------
+>  kernel/sched/topology.c        |  2 +-
+>  3 files changed, 45 insertions(+), 24 deletions(-)
 
-yes, will do, thanks for the review.
+Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+LGTM, just a couple of questions in 3/5 and 4/5.
+
+
+
