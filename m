@@ -2,86 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C038543FB2B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 13:04:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35BC243FB10
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 12:51:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231863AbhJ2LHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 07:07:07 -0400
-Received: from mail-m975.mail.163.com ([123.126.97.5]:34582 "EHLO
-        mail-m975.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231740AbhJ2LHG (ORCPT
+        id S231872AbhJ2Kx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 06:53:58 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:43568 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231820AbhJ2Kxz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 07:07:06 -0400
-X-Greylist: delayed 906 seconds by postgrey-1.27 at vger.kernel.org; Fri, 29 Oct 2021 07:07:05 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=JYyGR
-        LNKi017QibCH1siUqmU3fuMg/foUal9bxN55gk=; b=PpUuuOtSzUpptyNYH6ZHf
-        pvGyXVrl4tuZ0lze87GSYxj+hsPnvKCxZw9ocsj5y1DsDKbZWZym/hKis2cFErdD
-        ILyUliaZrEhs+VSh5u/6CcSn0tBXBhrQ9Xv33lW0Zj7mQGJ7jrUEj+HeTDNwtw3c
-        HREIX/CcCU8MHPK0UBYKC8=
-Received: from localhost.localdomain (unknown [112.97.56.167])
-        by smtp5 (Coremail) with SMTP id HdxpCgC3xcix0Xth4N8vHg--.5208S2;
-        Fri, 29 Oct 2021 18:49:22 +0800 (CST)
-From:   Slark Xiao <slark_xiao@163.com>
-To:     mani@kernel.org, hemantk@codeaurora.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Slark Xiao <slark_xiao@163.com>
-Subject: [PATCH v2] bus: mhi: pci_generic: Add new device ID support for T99W175
-Date:   Fri, 29 Oct 2021 18:49:18 +0800
-Message-Id: <20211029104918.3976-1-slark_xiao@163.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 29 Oct 2021 06:53:55 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 4DEAD1FD53;
+        Fri, 29 Oct 2021 10:51:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1635504686;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=TyVjdqscO8NIKtfAt2hF9LKJUEv3Q/czSE4LKTRarjc=;
+        b=zZ1zDKWhGmi5teD7umyt5oUZFIlgWwFgnyPYKHvX98GXsx4iBTMwxd9qVhCzpBIqgjS0M4
+        pic5fH4zm9R/bZaEH8GwFhGmszsjyhMMrk07cnOtaddevtzsBGzhXhh2zSQxnibsChrVWG
+        v3El+ftG2E18fFCpzpd3dbcJ2Il214w=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1635504686;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=TyVjdqscO8NIKtfAt2hF9LKJUEv3Q/czSE4LKTRarjc=;
+        b=B05G5e+1Azeb7fWZW21ZJ4WbYU0OQ1qPdtD96mnIxK3oQSMiifPdfYVblT0u+fhwmd0K4V
+        PhXJMZRYnwKo6eDA==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 413F0A3B85;
+        Fri, 29 Oct 2021 10:51:26 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 14300DA7A9; Fri, 29 Oct 2021 12:50:53 +0200 (CEST)
+Date:   Fri, 29 Oct 2021 12:50:52 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: linux-next: build failure after merge of the btrfs tree
+Message-ID: <20211029105052.GW20319@suse.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20211027210924.22ef5881@canb.auug.org.au>
+ <20211029095226.GV20319@suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: HdxpCgC3xcix0Xth4N8vHg--.5208S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7CFWfAry5tF4fXryftr17GFg_yoW8XF4xpF
-        4SgFWakF4kZF15KFykKw4kZFy5ua17Zry3KF17Cw1YgrnrAayFgwn7Gr1fWayUtFZYqF1a
-        qr1jvryjq3WqkaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j8xhdUUUUU=
-X-Originating-IP: [112.97.56.167]
-X-CM-SenderInfo: xvod2y5b0lt0i6rwjhhfrp/xtbBrRI7ZF75cI5TvQAAsX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211029095226.GV20319@suse.cz>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add new device ID 0xe0bf for T99W175.
-This device ID is created because it is using Qualcomm SDX55 new base line.
+On Fri, Oct 29, 2021 at 11:52:26AM +0200, David Sterba wrote:
+> On Wed, Oct 27, 2021 at 09:09:24PM +1100, Stephen Rothwell wrote:
+> > Hi all,
+> > 
+> > [I am not sure why this error only popped up after I merged Andrew's
+> > patch set ...]
+> > 
+> > After merging the btrfs tree, today's linux-next build (x86_64
+> > allmodconfig) failed like this:
+> > 
+> > In file included from include/linux/string.h:253,
+> >                  from include/linux/bitmap.h:11,
+> >                  from include/linux/cpumask.h:12,
+> >                  from arch/x86/include/asm/cpumask.h:5,
+> >                  from arch/x86/include/asm/msr.h:11,
+> >                  from arch/x86/include/asm/processor.h:22,
+> >                  from arch/x86/include/asm/cpufeature.h:5,
+> >                  from arch/x86/include/asm/thread_info.h:53,
+> >                  from include/linux/thread_info.h:60,
+> >                  from arch/x86/include/asm/preempt.h:7,
+> >                  from include/linux/preempt.h:78,
+> >                  from include/linux/spinlock.h:55,
+> >                  from include/linux/wait.h:9,
+> >                  from include/linux/mempool.h:8,
+> >                  from include/linux/bio.h:8,
+> >                  from fs/btrfs/ioctl.c:7:
+> > In function 'memcpy',
+> >     inlined from '_btrfs_ioctl_send' at fs/btrfs/ioctl.c:4846:3:
+> > include/linux/fortify-string.h:219:4: error: call to '__write_overflow' declared with attribute error: detected write beyond size of object (1st parameter)
+> >   219 |    __write_overflow();
+> >       |    ^~~~~~~~~~~~~~~~~~
+> > 
+> > Caused by commit
+> > 
+> >   c8d9cdfc766d ("btrfs: send: prepare for v2 protocol")
+> > 
+> > This changes the "reserved" field of struct btrfs_ioctl_send_args from 4 u64's to 3, but the above memcpy is copying the "reserved" filed from a struct btrfs_ioctl_send_args_32 (4 u64s) into it.
+> 
+> I'll fix it in the next update. There are two structures for the ioctl
+> that need to be in sync but I forgot to do that.
 
-Test evidence as below:
-root@jbd-ThinkPad-P1-Gen-4:/dev# lspci -nn | grep Foxconn
-0000:08:00.0 Wireless controller [0d40]: Foxconn International, Inc. Device [105b:e0bf]
-root@jbd-ThinkPad-P1-Gen-4:/dev# cat wwan0at0 & echo -ne "ati\r" > wwan0at0
-[2] 2977
-root@jbd-ThinkPad-P1-Gen-4:/dev# ati
-Manufacturer: Qualcomm
-Model: T99W175
-Revision: T99W175.F0.6.0.0.6.CC.005  1  [Oct 21 2021 10:00:00]
-IMEI:
-+GCAP: +CGSM
+Now pushed with top commit 764ada31357678.
 
-OK
-
-Signed-off-by: Slark Xiao <slark_xiao@163.com>
----
-
-v2: Add descriptions about the dfiiference between 0xe0ab and 0xeobf.
----
- drivers/bus/mhi/pci_generic.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/bus/mhi/pci_generic.c b/drivers/bus/mhi/pci_generic.c
-index 59a4896a8030..94d8aa9c2eae 100644
---- a/drivers/bus/mhi/pci_generic.c
-+++ b/drivers/bus/mhi/pci_generic.c
-@@ -423,6 +423,9 @@ static const struct pci_device_id mhi_pci_id_table[] = {
- 	/* DW5930e (sdx55), Non-eSIM, It's also T99W175 */
- 	{ PCI_DEVICE(PCI_VENDOR_ID_FOXCONN, 0xe0b1),
- 		.driver_data = (kernel_ulong_t) &mhi_foxconn_sdx55_info },
-+	/* T99W175 (sdx55), Based on Qualcomm new baseline */
-+	{ PCI_DEVICE(PCI_VENDOR_ID_FOXCONN, 0xe0bf),
-+		.driver_data = (kernel_ulong_t) &mhi_foxconn_sdx55_info },
- 	/* MV31-W (Cinterion) */
- 	{ PCI_DEVICE(0x1269, 0x00b3),
- 		.driver_data = (kernel_ulong_t) &mhi_mv31_info },
--- 
-2.25.1
-
+Also I think that next time you can use some older version of the
+for-next branch instead of making the whole subsystem depend on BROKEN.
+This causes much more harm in the testing setups that suddenly can't
+work at all, compared to testing a few days older branch.
