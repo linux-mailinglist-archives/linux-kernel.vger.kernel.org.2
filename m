@@ -2,254 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5DF543FEBB
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 16:53:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B27543FEC3
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 16:55:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229851AbhJ2O4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 10:56:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47854 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229549AbhJ2O4V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 10:56:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CE987610FD;
-        Fri, 29 Oct 2021 14:53:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635519232;
-        bh=5LTp5jc3eDq9xjCbBlddVmUCvBpA1/tGAU/Q0N5abB8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=MvmhyBaiFRNLb4z/SfvPcx/oQQJjYYyLSh+65fEqpTq+RrHdWtDPRp2nyeYmyJ8ZB
-         SV7VqEmEGnG0Pmgn1pRrmkQvQToBsw6OQd3ahsREAu/VPZNNtPSYSKRZr5z2wOBiug
-         59nKPoEjA4FnGFB0SQOjHrTN855in4B0NehrGaT/mEg1K2iAAfCDkeirl6gwmNccDJ
-         EkYarLBlzxs3ivv51S8azwvJNTBAHEKLYfXUlbqQhAsI87mwXCSh70DFjlPGiWPRPk
-         4Ox2O5Pa3B9wPPVjjL09x7fWLFsHJVNE7xFfpSk+PV4RO+YunR+BLSN5UoAMtHlzt6
-         sXlLZz14V8sVg==
-Received: by mail-ed1-f46.google.com with SMTP id w1so20608804edd.0;
-        Fri, 29 Oct 2021 07:53:52 -0700 (PDT)
-X-Gm-Message-State: AOAM5320e2TxI63z9wNJu0F7C9h9a6kj169oUs3iMOoMrdOY2CAvNR+/
-        G1cqlQWko1SQ7TVejXGh325Y9ePpfEkkqZGzGw==
-X-Google-Smtp-Source: ABdhPJzbB0cSGKHpb2uX+fdxvl2megjjmrAVPnRerDGXcV/l0EJOlQTfSNErn+Jvm4BBLgKOHn7ZEq4uDbg/RaSYCLE=
-X-Received: by 2002:a17:907:869e:: with SMTP id qa30mr13992481ejc.320.1635519228586;
- Fri, 29 Oct 2021 07:53:48 -0700 (PDT)
+        id S229662AbhJ2O55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 10:57:57 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:35606 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229549AbhJ2O54 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 10:57:56 -0400
+Received: by mail-io1-f70.google.com with SMTP id g24-20020a056602249800b005db75d2a291so6906886ioe.2
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 07:55:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=Nc6eX6JxrBpodsbbP9rc/IvjwCtF/vxxtgIRwubdq1g=;
+        b=KvBg/BXWY4uwIIkoV6UCHJJF9lZ+T8lR60ah9p/5TbM3YASJn6cNn2CKPI127U2Cx+
+         6UVEJJjymvTbHBFJ4/oHHKQmgBGD6q02rK09RFVqAQLdfncdJMnj0mXyLEhZwt9s4scr
+         b7q0LxF1uM3Ll2QA+MOR1liAFrjD0Aq8AgNdVZR0GDCoGRTTyj8CzbcoGV7uJjz2rguh
+         TIYkIKekWLHoawZFFCVTYO3wlx7DN1a1jtEDMRhWffgJDUGOqUzLYcUP3toUDc10se9t
+         GWUTwB/oebQ0IOFN2y6GuncpsjbgMToyyEJutGxcLIlHruJQRlgPxKDf920DXD5vCKxL
+         0VzQ==
+X-Gm-Message-State: AOAM530fgeZgejQiJrTP8sJThc9epeCL+pCFzpl4qGlrKn/x/tGCGnW3
+        eY1OromZKej7cJxroj6qVvmqC2/JyXcToyzgl6y/TO/gnYZN
+X-Google-Smtp-Source: ABdhPJzr5U/5+ySyD7OcHEbSRzLjiyj5aoj6n/nbMvJctfo85r247GhnxBcu3wCfQstkQ9vGrIF8++emiyBUi4InUhcZhq7lw2iT
 MIME-Version: 1.0
-References: <20211016133322.40771-1-paul@crapouillou.net> <YXiNLZ9ne8D8uv82@robh.at.kernel.org>
- <VCRO1R.FQ8R7TN6NPYP3@crapouillou.net> <CAL_Jsq+wU=R_F3iNRfMaZtKUftQLDR2d-4Mt98QMWgt3HkOvQQ@mail.gmail.com>
- <BQMQ1R.WLWA4YQT423M3@crapouillou.net>
-In-Reply-To: <BQMQ1R.WLWA4YQT423M3@crapouillou.net>
-From:   Rob Herring <robh@kernel.org>
-Date:   Fri, 29 Oct 2021 09:53:36 -0500
-X-Gmail-Original-Message-ID: <CAL_Jsq+wKTZvwT7Xjt_db1ZF+KBgLe5tcRB+mNny0hT=y8h2=g@mail.gmail.com>
-Message-ID: <CAL_Jsq+wKTZvwT7Xjt_db1ZF+KBgLe5tcRB+mNny0hT=y8h2=g@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] dt-bindings: Rename Ingenic CGU headers to ingenic,*.h
-To:     Paul Cercueil <paul@crapouillou.net>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>, list@opendingux.net,
-        linux-clk <linux-clk@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+X-Received: by 2002:a02:cac8:: with SMTP id f8mr8615519jap.65.1635519327045;
+ Fri, 29 Oct 2021 07:55:27 -0700 (PDT)
+Date:   Fri, 29 Oct 2021 07:55:27 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000830d1205cf7f0477@google.com>
+Subject: [syzbot] KASAN: use-after-free Read in LZ4_decompress_safe_partial
+From:   syzbot <syzbot+63d688f1d899c588fb71@syzkaller.appspotmail.com>
+To:     chao@kernel.org, gaoxiang25@huawei.com, gregkh@linuxfoundation.org,
+        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk, xiang@kernel.org, yuchao0@huawei.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 7:01 AM Paul Cercueil <paul@crapouillou.net> wrote:
->
-> Hi Rob,
->
-> Le jeu., oct. 28 2021 at 17:26:54 -0500, Rob Herring <robh@kernel.org>
-> a =C3=A9crit :
-> > On Thu, Oct 28, 2021 at 6:46 AM Paul Cercueil <paul@crapouillou.net>
-> > wrote:
-> >>
-> >>  Hi Rob,
-> >>
-> >>  Le mar., oct. 26 2021 at 18:20:13 -0500, Rob Herring
-> >> <robh@kernel.org>
-> >>  a =C3=A9crit :
-> >>  > On Sat, Oct 16, 2021 at 02:33:21PM +0100, Paul Cercueil wrote:
-> >>  >>  Tidy up a bit the tree, by prefixing all
-> >> include/dt-bindings/clock/
-> >>  >> files
-> >>  >>  related to Ingenic SoCs with 'ingenic,'.
-> >>  >>
-> >>  >>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> >>  >>  ---
-> >>  >>
-> >>  >>  Notes:
-> >>  >>      v2: Fix x1000-cgu.h and x1830-cgu.h incorrectly renamed to
-> >>  >>          x1000.h / x1830.h
-> >>  >>
-> >>  >>   Documentation/devicetree/bindings/clock/ingenic,cgu.yaml
-> >> | 2
-> >>  >> +-
-> >>  >>   Documentation/devicetree/bindings/display/ingenic,ipu.yaml
-> >> | 2
-> >>  >> +-
-> >>  >>   Documentation/devicetree/bindings/display/ingenic,lcd.yaml
-> >> | 4
-> >>  >> ++--
-> >>  >>   Documentation/devicetree/bindings/dma/ingenic,dma.yaml
-> >> | 2
-> >>  >> +-
-> >>  >>   Documentation/devicetree/bindings/i2c/ingenic,i2c.yaml
-> >> | 2
-> >>  >> +-
-> >>  >>   Documentation/devicetree/bindings/iio/adc/ingenic,adc.yaml
-> >> | 2
-> >>  >> +-
-> >>  >>   .../devicetree/bindings/memory-controllers/ingenic,nemc.yaml
-> >> | 2
-> >>  >> +-
-> >>  >>   .../devicetree/bindings/mips/ingenic/ingenic,cpu.yaml
-> >> | 2
-> >>  >> +-
-> >>  >>   Documentation/devicetree/bindings/mmc/ingenic,mmc.yaml
-> >> | 2
-> >>  >> +-
-> >>  >>   Documentation/devicetree/bindings/mtd/ingenic,nand.yaml
-> >> | 2
-> >>  >> +-
-> >>  >>   Documentation/devicetree/bindings/net/ingenic,mac.yaml
-> >> | 2
-> >>  >> +-
-> >>  >>   .../devicetree/bindings/nvmem/ingenic,jz4780-efuse.yaml
-> >> | 2
-> >>  >> +-
-> >>  >>   Documentation/devicetree/bindings/phy/ingenic,phy-usb.yaml
-> >> | 2
-> >>  >> +-
-> >>  >>   Documentation/devicetree/bindings/remoteproc/ingenic,vpu.yaml
-> >> | 2
-> >>  >> +-
-> >>  >>   Documentation/devicetree/bindings/rng/ingenic,trng.yaml
-> >> | 2
-> >>  >> +-
-> >>  >>   Documentation/devicetree/bindings/rtc/ingenic,rtc.yaml
-> >> | 2
-> >>  >> +-
-> >>  >>   Documentation/devicetree/bindings/serial/ingenic,uart.yaml
-> >> | 2
-> >>  >> +-
-> >>  >>   Documentation/devicetree/bindings/sound/ingenic,aic.yaml
-> >> | 2
-> >>  >> +-
-> >>  >>   Documentation/devicetree/bindings/sound/ingenic,codec.yaml
-> >> | 2
-> >>  >> +-
-> >>  >>   Documentation/devicetree/bindings/timer/ingenic,sysost.yaml
-> >> | 2
-> >>  >> +-
-> >>  >>   Documentation/devicetree/bindings/timer/ingenic,tcu.yaml
-> >> | 2
-> >>  >> +-
-> >>  >>   Documentation/devicetree/bindings/usb/ingenic,musb.yaml
-> >> | 2
-> >>  >> +-
-> >>  >>   arch/mips/boot/dts/ingenic/jz4725b.dtsi
-> >> | 2
-> >>  >> +-
-> >>  >>   arch/mips/boot/dts/ingenic/jz4740.dtsi
-> >> | 2
-> >>  >> +-
-> >>  >>   arch/mips/boot/dts/ingenic/jz4770.dtsi
-> >> | 2
-> >>  >> +-
-> >>  >>   arch/mips/boot/dts/ingenic/jz4780.dtsi
-> >> | 2
-> >>  >> +-
-> >>  >>   arch/mips/boot/dts/ingenic/x1000.dtsi
-> >> | 2
-> >>  >> +-
-> >>  >>   arch/mips/boot/dts/ingenic/x1830.dtsi
-> >> | 2
-> >>  >> +-
-> >>  >>   drivers/clk/ingenic/jz4725b-cgu.c
-> >> | 2
-> >>  >> +-
-> >>  >>   drivers/clk/ingenic/jz4740-cgu.c
-> >> | 2
-> >>  >> +-
-> >>  >>   drivers/clk/ingenic/jz4760-cgu.c
-> >> | 2
-> >>  >> +-
-> >>  >>   drivers/clk/ingenic/jz4770-cgu.c
-> >> | 2
-> >>  >> +-
-> >>  >>   drivers/clk/ingenic/jz4780-cgu.c
-> >> | 2
-> >>  >> +-
-> >>  >>   drivers/clk/ingenic/x1000-cgu.c
-> >> | 2
-> >>  >> +-
-> >>  >>   drivers/clk/ingenic/x1830-cgu.c
-> >> | 2
-> >>  >> +-
-> >>  >>   .../clock/{jz4725b-cgu.h =3D> ingenic,jz4725b-cgu.h}
-> >> | 0
-> >>  >>   .../dt-bindings/clock/{jz4740-cgu.h =3D> ingenic,jz4740-cgu.h}
-> >> | 0
-> >>  >>   .../dt-bindings/clock/{jz4760-cgu.h =3D> ingenic,jz4760-cgu.h}
-> >> | 0
-> >>  >>   .../dt-bindings/clock/{jz4770-cgu.h =3D> ingenic,jz4770-cgu.h}
-> >> | 0
-> >>  >>   .../dt-bindings/clock/{jz4780-cgu.h =3D> ingenic,jz4780-cgu.h}
-> >> | 0
-> >>  >>   .../dt-bindings/clock/{x1000-cgu.h =3D> ingenic,x1000-cgu.h}
-> >> | 0
-> >>  >>   .../dt-bindings/clock/{x1830-cgu.h =3D> ingenic,x1830-cgu.h}
-> >> | 0
-> >>  >>   42 files changed, 36 insertions(+), 36 deletions(-)
-> >>  >>   rename include/dt-bindings/clock/{jz4725b-cgu.h =3D>
-> >>  >> ingenic,jz4725b-cgu.h} (100%)
-> >>  >>   rename include/dt-bindings/clock/{jz4740-cgu.h =3D>
-> >>  >> ingenic,jz4740-cgu.h} (100%)
-> >>  >>   rename include/dt-bindings/clock/{jz4760-cgu.h =3D>
-> >>  >> ingenic,jz4760-cgu.h} (100%)
-> >>  >>   rename include/dt-bindings/clock/{jz4770-cgu.h =3D>
-> >>  >> ingenic,jz4770-cgu.h} (100%)
-> >>  >>   rename include/dt-bindings/clock/{jz4780-cgu.h =3D>
-> >>  >> ingenic,jz4780-cgu.h} (100%)
-> >>  >>   rename include/dt-bindings/clock/{x1000-cgu.h =3D>
-> >>  >> ingenic,x1000-cgu.h} (100%)
-> >>  >>   rename include/dt-bindings/clock/{x1830-cgu.h =3D>
-> >>  >> ingenic,x1830-cgu.h} (100%)
-> >>  >
-> >>  > Acked-by: Rob Herring <robh@kernel.org>
-> >>  >
-> >>  > However, this will be a pain to merge if there are any new users
-> >>  > coming
-> >>  > in during the merge window. If not, then Stephen can just take
-> >> this.
-> >>  > If
-> >>  > there are, then at the end of the merge window is the best time.
-> >> For
-> >>  > that to work, you need to track when all dependent changes are
-> >> merged
-> >>  > and we need to agree who will pick this up. I usually have fixes
-> >> from
-> >>  > breakages in the merge window anyways.
-> >>
-> >>  I get Cc'd on all ingenic-related patches, so far I don't see
-> >> anything
-> >>  that will cause a breakage. I think it would be okay to merge it now
-> >>  (we're at -rc7 after all).
-> >
-> > Then can you apply this to linux-next and check it all works there.
-> > Specifically, 'make dt_binding_check dtbs drivers/clk/' needs to work.
-> > Or confirm you already did that.
->
-> I did it on Linus' master branch and it all worked.
->
-> But indeed, it does conflict on linux-next since
-> Documentation/devicetree/bindings/spi/ingenic,spi.yaml was added there.
->
-> Should I rebase the patchset on top of linux-next?
+Hello,
 
-Yes, but no one can apply that until all the dependencies land in
-Linus' tree yet we still want it in -rc1 so that there's not cross
-tree dependencies in the next cycle. Or Mark can provide a stable
-branch to Stephen. Like I said, it's a pain.
+syzbot found the following issue on:
 
-In any case, at this point Stephen needs to comment.
+HEAD commit:    87066fdd2e30 Revert "mm/secretmem: use refcount_t instead ..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=10c2c88cb00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=59f3ef2b4077575
+dashboard link: https://syzkaller.appspot.com/bug?extid=63d688f1d899c588fb71
+compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17032c4ab00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=170f8c3cb00000
 
-Rob
+The issue was bisected to:
+
+commit f86cf25a609107960cf05263e491463feaae1f99
+Author: Gao Xiang <gaoxiang25@huawei.com>
+Date:   Tue Aug 28 03:39:48 2018 +0000
+
+    Revert "staging: erofs: disable compiling temporarile"
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11de0328b00000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=13de0328b00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=15de0328b00000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+63d688f1d899c588fb71@syzkaller.appspotmail.com
+Fixes: f86cf25a6091 ("Revert "staging: erofs: disable compiling temporarile"")
+
+==================================================================
+BUG: KASAN: use-after-free in get_unaligned_le16 include/asm-generic/unaligned.h:27 [inline]
+BUG: KASAN: use-after-free in LZ4_readLE16 lib/lz4/lz4defs.h:132 [inline]
+BUG: KASAN: use-after-free in LZ4_decompress_generic lib/lz4/lz4_decompress.c:285 [inline]
+BUG: KASAN: use-after-free in LZ4_decompress_safe_partial+0xff8/0x1580 lib/lz4/lz4_decompress.c:469
+Read of size 2 at addr ffff88806dd1f000 by task kworker/u5:0/150
+
+CPU: 1 PID: 150 Comm: kworker/u5:0 Not tainted 5.15.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: erofs_unzipd z_erofs_decompressqueue_work
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1dc/0x2d8 lib/dump_stack.c:106
+ print_address_description+0x66/0x3e0 mm/kasan/report.c:256
+ __kasan_report mm/kasan/report.c:442 [inline]
+ kasan_report+0x19a/0x1f0 mm/kasan/report.c:459
+ get_unaligned_le16 include/asm-generic/unaligned.h:27 [inline]
+ LZ4_readLE16 lib/lz4/lz4defs.h:132 [inline]
+ LZ4_decompress_generic lib/lz4/lz4_decompress.c:285 [inline]
+ LZ4_decompress_safe_partial+0xff8/0x1580 lib/lz4/lz4_decompress.c:469
+ z_erofs_lz4_decompress+0x4c3/0x1100 fs/erofs/decompressor.c:226
+ z_erofs_decompress_generic fs/erofs/decompressor.c:354 [inline]
+ z_erofs_decompress+0xa8e/0xe30 fs/erofs/decompressor.c:407
+ z_erofs_decompress_pcluster+0x15e4/0x2550 fs/erofs/zdata.c:977
+ z_erofs_decompress_queue fs/erofs/zdata.c:1055 [inline]
+ z_erofs_decompressqueue_work+0x123/0x1a0 fs/erofs/zdata.c:1066
+ process_one_work+0x853/0x1140 kernel/workqueue.c:2297
+ worker_thread+0xac1/0x1320 kernel/workqueue.c:2444
+ kthread+0x453/0x480 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30
+
+The buggy address belongs to the page:
+page:ffffea0001b747c0 refcount:0 mapcount:0 mapping:0000000000000000 index:0x1 pfn:0x6dd1f
+flags: 0xfff00000000000(node=0|zone=1|lastcpupid=0x7ff)
+raw: 00fff00000000000 ffffea0001b74408 ffffea0001b74ac8 0000000000000000
+raw: 0000000000000001 0000000000000000 00000000ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as freed
+page last allocated via order 0, migratetype Movable, gfp_mask 0x1100dca(GFP_HIGHUSER_MOVABLE|__GFP_ZERO), pid 6527, ts 51734930672, free_ts 51749499849
+ prep_new_page mm/page_alloc.c:2424 [inline]
+ get_page_from_freelist+0x779/0xa30 mm/page_alloc.c:4153
+ __alloc_pages+0x255/0x580 mm/page_alloc.c:5375
+ alloc_pages_vma+0x668/0x1030 mm/mempolicy.c:2152
+ do_anonymous_page+0x31b/0x14b0 mm/memory.c:3768
+ handle_pte_fault mm/memory.c:4557 [inline]
+ __handle_mm_fault mm/memory.c:4694 [inline]
+ handle_mm_fault+0x1860/0x2560 mm/memory.c:4792
+ do_user_addr_fault+0x8ce/0x10c0 arch/x86/mm/fault.c:1397
+ handle_page_fault arch/x86/mm/fault.c:1485 [inline]
+ exc_page_fault+0xa1/0x1e0 arch/x86/mm/fault.c:1541
+ asm_exc_page_fault+0x1e/0x30
+page last free stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1338 [inline]
+ free_pcp_prepare+0xc29/0xd20 mm/page_alloc.c:1389
+ free_unref_page_prepare mm/page_alloc.c:3315 [inline]
+ free_unref_page_list+0x11f/0xa50 mm/page_alloc.c:3431
+ release_pages+0x18cb/0x1b00 mm/swap.c:963
+ tlb_batch_pages_flush mm/mmu_gather.c:49 [inline]
+ tlb_flush_mmu_free mm/mmu_gather.c:242 [inline]
+ tlb_flush_mmu+0x780/0x910 mm/mmu_gather.c:249
+ tlb_finish_mmu+0xcb/0x200 mm/mmu_gather.c:340
+ exit_mmap+0x3dd/0x6f0 mm/mmap.c:3173
+ __mmput+0x111/0x3a0 kernel/fork.c:1115
+ exec_mmap+0x53e/0x640 fs/exec.c:1030
+ begin_new_exec+0x6c9/0x1180 fs/exec.c:1288
+ load_elf_binary+0x836/0x3bc0 fs/binfmt_elf.c:1001
+ search_binary_handler fs/exec.c:1725 [inline]
+ exec_binprm fs/exec.c:1766 [inline]
+ bprm_execve+0x8eb/0x1470 fs/exec.c:1835
+ do_execveat_common+0x44c/0x590 fs/exec.c:1924
+ do_execve fs/exec.c:1992 [inline]
+ __do_sys_execve fs/exec.c:2068 [inline]
+ __se_sys_execve fs/exec.c:2063 [inline]
+ __x64_sys_execve+0x8e/0xa0 fs/exec.c:2063
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Memory state around the buggy address:
+ ffff88806dd1ef00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff88806dd1ef80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffff88806dd1f000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+                   ^
+ ffff88806dd1f080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ ffff88806dd1f100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
