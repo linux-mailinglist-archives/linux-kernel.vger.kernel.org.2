@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D9FA43FB65
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 13:30:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE97C43FB66
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 13:31:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231956AbhJ2Lc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 07:32:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49138 "EHLO mail.kernel.org"
+        id S231975AbhJ2Ldh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 07:33:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231754AbhJ2Lc4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 07:32:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C7926115C;
-        Fri, 29 Oct 2021 11:30:26 +0000 (UTC)
+        id S231754AbhJ2Ldf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 07:33:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 722B76115C;
+        Fri, 29 Oct 2021 11:31:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635507028;
-        bh=cIT0bnNlx5iIGJokoXgfb/yoQCHCSxX07PLQuki70OA=;
+        s=k20201202; t=1635507067;
+        bh=ZibYs1n7SeX+lPdL2kgZFAXJ2QBZdBxW/6A+ShFuqiU=;
         h=From:To:Cc:Subject:Date:From;
-        b=L6KvY7tmqblCDW5SxY8H6iNxB1OceRmAUsy+CmTf8afiQS2RNvPqrlQLfiol8UT0x
-         88aHItvZjoig8dnSCDAQfoKFjZCaZ9LsyFQDhBi7gUHJtQHwAmfpBKEsOkv9tcJX6S
-         ZTRx8+cjbM/CnOrBCVBLu1GG2STAxJKUiQ2utb7/DyIesJIKZdqTIbaC5o7Af58lt4
-         3ufTQE2k4kSK97SjyDSonPsE74Olxzm3ehqFDeuSTtudsU0XPAJyb88az3I3eC1XDO
-         bM1dYglU8DQNv7bdqje1v8M9buBCXOrIZYjPXnr+nnbYg865qEo4ePTQkzvba5uhL3
-         fhRBDd9dUlDiQ==
+        b=EnW6uzMzO1PCn2gXLQEFEEhV9xjlPhVU7pp1ZLMb82lKdh8ke0trZoWn1ndjvVXmi
+         pgJrQlN64XQoR+RPuRTME5Eo7UrZWO0O4VCBuWdSeXZQKIugTykKRPwW017nir4OrP
+         DhohMcMG90XASipNqlXccav7Seocg17th35pXcpeHEtBWwRYX79XMEGmefqqPXhW2n
+         j/8IZF42Cvo6vfL35r07xE3oPCSxhV/Y4togs5Dsvgtw5jH8KbQ4g5qfZjiiG9aTfG
+         a1KWDBOX7o8eUFQtv0V3A5v3EV9rpGApQ1qHkUnPyoJHUs64zI2tF+p+ai5dFykGyD
+         dO3zmcZSlxuaA==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] [RFC] arm64: export this_cpu_has_cap
-Date:   Fri, 29 Oct 2021 13:30:16 +0200
-Message-Id: <20211029113023.760421-1-arnd@kernel.org>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Lukas Wunner <lukas@wunner.de>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Willem de Bruijn <willemb@google.com>,
+        Hui Tang <tanghui20@huawei.com>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Alexander Lobakin <alobakin@pm.me>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] [net-next] ifb: fix building without CONFIG_NET_CLS_ACT
+Date:   Fri, 29 Oct 2021 13:30:51 +0200
+Message-Id: <20211029113102.769823-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -45,31 +46,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-It's now used in a coresight driver that can be a loadable module:
+The driver no longer depends on this option, but it fails to
+build if it's disabled because the skb->tc_skip_classify is
+hidden behind an #ifdef:
 
-ERROR: modpost: "this_cpu_has_cap" [drivers/hwtracing/coresight/coresight-trbe.ko] undefined!
+drivers/net/ifb.c:81:8: error: no member named 'tc_skip_classify' in 'struct sk_buff'
+                skb->tc_skip_classify = 1;
 
-Fixes: 8a1065127d95 ("coresight: trbe: Add infrastructure for Errata handling")
+Use the same #ifdef around the assignment.
+
+Fixes: 046178e726c2 ("ifb: Depend on netfilter alternatively to tc")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
-Not sure if we actually want this to be exported, this is my local
-workaround for the randconfig build bot.
----
- arch/arm64/kernel/cpufeature.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ifb.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-index ecbdff795f5e..beccbcfa7391 100644
---- a/arch/arm64/kernel/cpufeature.c
-+++ b/arch/arm64/kernel/cpufeature.c
-@@ -2864,6 +2864,7 @@ bool this_cpu_has_cap(unsigned int n)
+diff --git a/drivers/net/ifb.c b/drivers/net/ifb.c
+index 2c319dd27f29..31f522b8e54e 100644
+--- a/drivers/net/ifb.c
++++ b/drivers/net/ifb.c
+@@ -78,7 +78,9 @@ static void ifb_ri_tasklet(struct tasklet_struct *t)
+ 	while ((skb = __skb_dequeue(&txp->tq)) != NULL) {
+ 		/* Skip tc and netfilter to prevent redirection loop. */
+ 		skb->redirected = 0;
++#ifdef CONFIG_NET_CLS_ACT
+ 		skb->tc_skip_classify = 1;
++#endif
+ 		nf_skip_egress(skb, true);
  
- 	return false;
- }
-+EXPORT_SYMBOL(this_cpu_has_cap);
- 
- /*
-  * This helper function is used in a narrow window when,
+ 		u64_stats_update_begin(&txp->tsync);
 -- 
 2.29.2
 
