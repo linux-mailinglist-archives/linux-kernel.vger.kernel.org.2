@@ -2,91 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0F7D43F9EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 11:33:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 310A043F9EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 11:31:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231511AbhJ2Jfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 05:35:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23258 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229927AbhJ2Jf3 (ORCPT
+        id S231493AbhJ2Jdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 05:33:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33834 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231460AbhJ2Jdr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 05:35:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635499980;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7tfeb0HKytIhVqT5P55ARF+KxzdK/QUGLHX6976FgLg=;
-        b=S1ElMer5iaJmiwcP+xqlteirYY8o5nkF+OKvCxmGzzBqd5+cGefvL2QCe3L4idrnt5h3Dk
-        LZNZlXRMxjGy1TCL0gZtrOSzEYUTZtJsi+OpWKIO9GMPlKzjk+4a+oRo3aZLZXYD23679j
-        x+lkZA90p8K/Qm+XIlFNdjgoVYqywG4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-4-J4k8dgW0NIG_oTE6dTRRnw-1; Fri, 29 Oct 2021 05:31:22 -0400
-X-MC-Unique: J4k8dgW0NIG_oTE6dTRRnw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F04421023F4D;
-        Fri, 29 Oct 2021 09:31:20 +0000 (UTC)
-Received: from localhost (ovpn-12-171.pek2.redhat.com [10.72.12.171])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E7AC21815D;
-        Fri, 29 Oct 2021 09:31:09 +0000 (UTC)
-Date:   Fri, 29 Oct 2021 17:31:07 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     cgel.zte@gmail.com
-Cc:     dyoung@redhat.com, vgoyal@redhat.com, kexec@lists.infradead.org,
-        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        Changcheng Deng <deng.changcheng@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: Re: [PATCH] crash_dump: fix boolreturn.cocci warning
-Message-ID: <20211029093107.GK27625@MiWiFi-R3L-srv>
-References: <20211020083905.1037952-1-deng.changcheng@zte.com.cn>
+        Fri, 29 Oct 2021 05:33:47 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 035E3C061570
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 02:31:19 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id a20-20020a1c7f14000000b003231d13ee3cso12014497wmd.3
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 02:31:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=p2geQeuyHyqJc4nrCbzk98EKhgtWv8pILv8YFFDOIjI=;
+        b=rCk9OdXPcAXWiGFfjmqyR63rgXSjAixWRsicz4BAT9DOkW8IBdaZAYn+TQwrwHC7WG
+         jMKVopeE8nIkcsZ9nLcaMKioPOoSw2YwZF3iJhPKNffUmaHpqwbZSMUq0uJfzknOgwE9
+         Axi5OiipoKghcLsjPNam0ZRVcN2sczewnOCndSEPrG3JeWqawghZat1gsa3zemD5SA23
+         sX2c23i+teO8z/V023Inx8jh6aW6vn+eCB+1zPstFfSh2gWlD0omWhud7v+0MS3I0cKB
+         kPs/1/10ld5WeHCGYr1ARfsf9Sdcy4dABdTPDV1U5ibBaaL8U8EiE+Z893rtOT46RPMZ
+         dlnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=p2geQeuyHyqJc4nrCbzk98EKhgtWv8pILv8YFFDOIjI=;
+        b=YauSMPLzDRCVh9JZRspZR2bWHjsR//ArICVS4xU9m/HuSullPeZ7Qyl5ts0rsPmT5w
+         qJaq7c0i0cuq6+Y6rzFcuJUBACjO6BjDFIONbsOW7sRebsSkKlX5pN1sXigeTHjVhlkC
+         VIEjovvCgCZ87oyCF7eGQxx4/xdTAz/uOLtohKqFzlQwWqt/TJHRULe+uP4vQRWQXCnP
+         LlduW90hy0s2KjRgJDhhkHh5qI6DqNqNYMHTqD+DtlTtblMm3kOzQc5b3scjRgSrCzic
+         /YVJRQwtZ2hhNUxLkGuKSaPs4JP5KpYp97AdRypDcV1lRV1/kFI0VaiHIihkgbx6Ncfu
+         vrgA==
+X-Gm-Message-State: AOAM533erlP6clTMYGDGRk/h0meW5Gna9kQtTT1KOkLcV2wTJaoIH+R7
+        XeF0rBdWRBOqVKQcrdOVwVyRAQ==
+X-Google-Smtp-Source: ABdhPJw0KxtYQYY53mjK9cdCDLX96ZYlrcrBt7x1LVPKw3suCIo+CepvwyQ7w1qXFo+za9ZbHFpE+w==
+X-Received: by 2002:a7b:cb10:: with SMTP id u16mr18153483wmj.65.1635499877541;
+        Fri, 29 Oct 2021 02:31:17 -0700 (PDT)
+Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id y5sm6819655wrd.75.2021.10.29.02.31.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Oct 2021 02:31:17 -0700 (PDT)
+Date:   Fri, 29 Oct 2021 10:31:15 +0100
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Qian Cai <quic_qiancai@quicinc.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] configs: Introduce debug.config for CI-like setup
+Message-ID: <20211029093115.6ychbe56pnebzi43@maple.lan>
+References: <20211029034434.24553-1-quic_qiancai@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211020083905.1037952-1-deng.changcheng@zte.com.cn>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <20211029034434.24553-1-quic_qiancai@quicinc.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/20/21 at 08:39am, cgel.zte@gmail.com wrote:
-> From: Changcheng Deng <deng.changcheng@zte.com.cn>
+On Thu, Oct 28, 2021 at 11:44:34PM -0400, Qian Cai wrote:
+> Some general debugging features like kmemleak, KASAN, lockdep, UBSAN etc
+> help fix many viruses like a microscope. On the other hand, those features
+> are scatter around and mixed up with more situational debugging options
+> making them difficult to consume properly. This cold help amplify the
+> general debugging/testing efforts and help establish sensitive default
+> values for those options across the broad.
 > 
-> ./include/linux/crash_dump.h: 119: 50-51: WARNING: return of 0/1 in
-> function 'is_kdump_kernel' with return type bool
+> The config is based on years' experiences running daily CI inside the
+> largest enterprise Linux distro company to seek regressions on
+> linux-next builds on different bare-metal and virtual platforms. This is
+> more of some art than science. It can be used for example,
 > 
-> Return statements in functions returning bool should use true/false
-> instead of 1/0.
+> $ make ARCH=arm64 defconfig debug.config
 > 
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
-
-Looks good to me, thanks.
-
-Acked-by: Baoquan He <bhe@redhat.com>
-
+> Signed-off-by: Qian Cai <quic_qiancai@quicinc.com>
 > ---
->  include/linux/crash_dump.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> v2:
+> Double the size of CONFIG_DEBUG_KMEMLEAK_MEM_POOL_SIZE due to the most
+> of defconfigs used 4KB page instead of 64KB which would consume more early
+> kmemleak objects to track early_pgtable_alloc(). Otherwise, we could
+> run out of kmemleak early memory pool and disable kmemleak entirely.
 > 
-> diff --git a/include/linux/crash_dump.h b/include/linux/crash_dump.h
-> index 0c547d866f1e..979c26176c1d 100644
-> --- a/include/linux/crash_dump.h
-> +++ b/include/linux/crash_dump.h
-> @@ -116,7 +116,7 @@ extern void register_vmcore_cb(struct vmcore_cb *cb);
->  extern void unregister_vmcore_cb(struct vmcore_cb *cb);
->  
->  #else /* !CONFIG_CRASH_DUMP */
-> -static inline bool is_kdump_kernel(void) { return 0; }
-> +static inline bool is_kdump_kernel(void) { return false; }
->  #endif /* CONFIG_CRASH_DUMP */
->  
->  /* Device Dump information to be filled by drivers */
-> -- 
-> 2.25.1
+>  kernel/configs/debug.config | 119 ++++++++++++++++++++++++++++++++++++
+>  1 file changed, 119 insertions(+)
+>  create mode 100644 kernel/configs/debug.config
 > 
+> diff --git a/kernel/configs/debug.config b/kernel/configs/debug.config
+> new file mode 100644
+> index 000000000000..fea127155eb6
+> --- /dev/null
+> +++ b/kernel/configs/debug.config
+> @@ -0,0 +1,119 @@
 
+Does this config need comments at the top of the file describing its 
+"mission"?  Put another way, the comments in the description about
+where these config options come from seem too important leave buried
+in the git history. They are important to understanding what it is
+for.
+
+I know this the other configs do not have big header comments. However
+the existing configs are closer to self-describing. debug.config simply
+does not explain what the file does in the way xen.config can! People
+will surely want to add their "favourite" debug options[1] and those
+contributors would benefit from clues on what the configs here are
+intended for.
+
+
+> +# Keep alphabetically sorted.
+
+This results in 119 line file that is more-or-less impossible to
+comment. It alphabetic really the best way to maintain something
+containing so much subjective judgement?
+
+
+Daniel.
+
+
+
+> +#
+> +# CONFIG_BOOTPARAM_HUNG_TASK_PANIC is not set
+> +# CONFIG_BOOTPARAM_SOFTLOCKUP_PANIC is not set
+> +# CONFIG_DEBUG_KMEMLEAK_DEFAULT_OFF is not set
+> +# CONFIG_DEBUG_PAGEALLOC is not set
+> +# CONFIG_DEBUG_RODATA_TEST is not set
+> +# CONFIG_DEBUG_WX is not set
+> +# CONFIG_KFENCE is not set
+> +# CONFIG_PAGE_POISONING is not set
+> +# CONFIG_PROVE_RAW_LOCK_NESTING is not set
+> +# CONFIG_SLUB_STATS is not set
+> +# CONFIG_UBSAN_ALIGNMENT is not set
+> +# CONFIG_UBSAN_DIV_ZERO is not set
+> +# CONFIG_UBSAN_TRAP is not set
+> +# CONFIG_WARN_ALL_UNSEEDED_RANDOM is not set
+> +CONFIG_BRANCH_PROFILE_NONE=y
+> +CONFIG_BUG_ON_DATA_CORRUPTION=y
+> +CONFIG_CONTEXT_SWITCH_TRACER=y
+> +CONFIG_DEBUG_ATOMIC_SLEEP=y
+> +CONFIG_DEBUG_BUGVERBOSE=y
+> +CONFIG_DEBUG_FS_ALLOW_ALL=y
+> +CONFIG_DEBUG_FS=y
+> +CONFIG_DEBUG_INFO=y
+> +CONFIG_DEBUG_IRQFLAGS=y
+> +CONFIG_DEBUG_KERNEL=y
+> +CONFIG_DEBUG_KMEMLEAK_AUTO_SCAN=y
+> +CONFIG_DEBUG_KMEMLEAK_MEM_POOL_SIZE=80000
+> +CONFIG_DEBUG_KMEMLEAK=y
+> +CONFIG_DEBUG_LIST=y
+> +CONFIG_DEBUG_LOCK_ALLOC=y
+> +CONFIG_DEBUG_MUTEXES=y
+> +CONFIG_DEBUG_OBJECTS_ENABLE_DEFAULT=1
+> +CONFIG_DEBUG_OBJECTS_FREE=y
+> +CONFIG_DEBUG_OBJECTS_PERCPU_COUNTER=y
+> +CONFIG_DEBUG_OBJECTS_RCU_HEAD=y
+> +CONFIG_DEBUG_OBJECTS_TIMERS=y
+> +CONFIG_DEBUG_OBJECTS_WORK=y
+> +CONFIG_DEBUG_OBJECTS=y
+> +CONFIG_DEBUG_PER_CPU_MAPS=y
+> +CONFIG_DEBUG_RT_MUTEXES=y
+> +CONFIG_DEBUG_RWSEMS=y
+> +CONFIG_DEBUG_SECTION_MISMATCH=y
+> +CONFIG_DEBUG_SPINLOCK=y
+> +CONFIG_DEBUG_STACK_USAGE=y
+> +CONFIG_DEBUG_VIRTUAL=y
+> +CONFIG_DEBUG_VM_PGFLAGS=y
+> +CONFIG_DEBUG_VM_RB=y
+> +CONFIG_DEBUG_VM_VMACACHE=y
+> +CONFIG_DEBUG_VM=y
+> +CONFIG_DEBUG_WW_MUTEX_SLOWPATH=y
+> +CONFIG_DEFAULT_HUNG_TASK_TIMEOUT=120
+> +CONFIG_DETECT_HUNG_TASK=y
+> +CONFIG_DYNAMIC_DEBUG_CORE=y
+> +CONFIG_DYNAMIC_DEBUG=y
+> +CONFIG_DYNAMIC_FTRACE_WITH_REGS=y
+> +CONFIG_DYNAMIC_FTRACE=y
+> +CONFIG_EVENT_TRACING=y
+> +CONFIG_FRAME_POINTER=y
+> +CONFIG_FRAME_WARN=2048
+> +CONFIG_FTRACE_MCOUNT_RECORD=y
+> +CONFIG_FTRACE_MCOUNT_USE_PATCHABLE_FUNCTION_ENTRY=y
+> +CONFIG_FTRACE=y
+> +CONFIG_FUNCTION_TRACER=y
+> +CONFIG_GENERIC_PTDUMP=y
+> +CONFIG_GENERIC_TRACER=y
+> +CONFIG_IO_STRICT_DEVMEM=y
+> +CONFIG_KASAN_GENERIC=y
+> +CONFIG_KASAN_INLINE=y
+> +CONFIG_KASAN_STACK=y
+> +CONFIG_KASAN_VMALLOC=y
+> +CONFIG_KASAN=y
+> +CONFIG_LOCK_DEBUGGING_SUPPORT=y
+> +CONFIG_LOCKDEP_BITS=15
+> +CONFIG_LOCKDEP_CHAINS_BITS=16
+> +CONFIG_LOCKDEP_CIRCULAR_QUEUE_BITS=12
+> +CONFIG_LOCKDEP_STACK_TRACE_BITS=19
+> +CONFIG_LOCKDEP_STACK_TRACE_HASH_BITS=14
+> +CONFIG_LOCKDEP=y
+> +CONFIG_LOCKUP_DETECTOR=y
+> +CONFIG_MAGIC_SYSRQ_DEFAULT_ENABLE=0x1
+> +CONFIG_MAGIC_SYSRQ_SERIAL_SEQUENCE=""
+> +CONFIG_MAGIC_SYSRQ_SERIAL=y
+> +CONFIG_MAGIC_SYSRQ=y
+> +CONFIG_NOP_TRACER=y
+> +CONFIG_PAGE_EXTENSION=y
+> +CONFIG_PAGE_OWNER=y
+> +CONFIG_PANIC_ON_OOPS_VALUE=1
+> +CONFIG_PANIC_ON_OOPS=y
+> +CONFIG_PANIC_TIMEOUT=0
+> +CONFIG_PREEMPTIRQ_TRACEPOINTS=y
+> +CONFIG_PRINTK_CALLER=y
+> +CONFIG_PRINTK_TIME=y
+> +CONFIG_PROVE_LOCKING=y
+> +CONFIG_PROVE_RCU_LIST=y
+> +CONFIG_PROVE_RCU=y
+> +CONFIG_PTDUMP_CORE=y
+> +CONFIG_PTDUMP_DEBUGFS=y
+> +CONFIG_RCU_CPU_STALL_TIMEOUT=60
+> +CONFIG_RING_BUFFER=y
+> +CONFIG_SCHED_INFO=y
+> +CONFIG_SCHED_STACK_END_CHECK=y
+> +CONFIG_SECTION_MISMATCH_WARN_ONLY=y
+> +CONFIG_SLUB_DEBUG_ON=y
+> +CONFIG_SOFTLOCKUP_DETECTOR=y
+> +CONFIG_STACKTRACE=y
+> +CONFIG_STRICT_DEVMEM=y
+> +CONFIG_SYMBOLIC_ERRNAME=y
+> +CONFIG_TRACE_CLOCK=y
+> +CONFIG_TRACE_IRQFLAGS=y
+> +CONFIG_TRACING_SUPPORT=y
+> +CONFIG_TRACING=y
+> +CONFIG_UBSAN_BOOL=y
+> +CONFIG_UBSAN_BOUNDS=y
+> +CONFIG_UBSAN_ENUM=y
+> +CONFIG_UBSAN_ONLY_BOUNDS=y
+> +CONFIG_UBSAN_SHIFT=y
+> +CONFIG_UBSAN_UNREACHABLE=y
+> +CONFIG_UBSAN=y
+> -- 
+> 2.30.2
+> 
