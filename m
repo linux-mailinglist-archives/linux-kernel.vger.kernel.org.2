@@ -2,94 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 856D343F941
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 10:51:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91D6843F8D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 10:28:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231348AbhJ2IyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 04:54:10 -0400
-Received: from esa9.hc1455-7.c3s2.iphmx.com ([139.138.36.223]:31793 "EHLO
-        esa9.hc1455-7.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229844AbhJ2IyJ (ORCPT
+        id S232440AbhJ2Iah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 04:30:37 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:42775 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232305AbhJ2Iaf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 04:54:09 -0400
-X-Greylist: delayed 430 seconds by postgrey-1.27 at vger.kernel.org; Fri, 29 Oct 2021 04:54:09 EDT
-IronPort-SDR: Al2z8rGmCsGEDN/Rl6+Zv2XmBLQfMJC7MusWZg4QAeJ/r7FNrNbUUglgrBV5eCqTdWRKR+3qUs
- OrCRK7asx5Er3HzlW66wvZW/gpAz7a2H5y6+YtNOvpJIQcxDGz0/t3+kng3AoppOapiqyFkaWs
- 8vpcOyJGH7w+fA39ufxZZ6ul9fmceF6o03IdZ4+NUBo9oL72sxPl6DpbabaoaeERQEZNEsX7B3
- PioKcVTiwYEuVXI6R/biSbQWq/1WAo8UjeoQtCCsvdhIybe5SJGJAY7pf/CxM5VWq8KwW1IKfP
- ykOmcTuZuzzftkLaesfEfLwn
-X-IronPort-AV: E=McAfee;i="6200,9189,10151"; a="38593036"
-X-IronPort-AV: E=Sophos;i="5.87,192,1631545200"; 
-   d="scan'208";a="38593036"
-Received: from unknown (HELO oym-r1.gw.nic.fujitsu.com) ([210.162.30.89])
-  by esa9.hc1455-7.c3s2.iphmx.com with ESMTP; 29 Oct 2021 17:44:28 +0900
-Received: from oym-m3.gw.nic.fujitsu.com (oym-nat-oym-m3.gw.nic.fujitsu.com [192.168.87.60])
-        by oym-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id 73AE7EDC14
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 17:44:27 +0900 (JST)
-Received: from m3051.s.css.fujitsu.com (m3051.s.css.fujitsu.com [10.134.21.209])
-        by oym-m3.gw.nic.fujitsu.com (Postfix) with ESMTP id A8B9DD9609
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 17:44:26 +0900 (JST)
-Received: from localhost.localdomain (unknown [10.125.5.220])
-        by m3051.s.css.fujitsu.com (Postfix) with ESMTP id 7829385;
-        Fri, 29 Oct 2021 17:44:26 +0900 (JST)
-From:   Rei Yamamoto <yamamoto.rei@jp.fujitsu.com>
-To:     tglx@linutronix.de
-Cc:     linux-kernel@vger.kernel.org, yamamoto.rei@jp.fujitsu.com
-Subject: [PATCH] irq: consider cpus on nodes are unbalanced
-Date:   Fri, 29 Oct 2021 17:27:30 +0900
-Message-Id: <20211029082730.6728-1-yamamoto.rei@jp.fujitsu.com>
-X-Mailer: git-send-email 2.27.0
+        Fri, 29 Oct 2021 04:30:35 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HgbCn5VZXz4xbr;
+        Fri, 29 Oct 2021 19:28:05 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1635496086;
+        bh=De9JvA6j/xXrH2FbGRYzoYiV3/7uXWBIoKU7i4Tml3I=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=F5NeP+/AotmCTr8tAY6QT3MfzbrgxqEshvrn3UbJvLHPjgtT9R/yOtjmFOLmEFbjj
+         FbC9VmKErd4GlrGj172vvIbgnku6/sE9Fv99ZWegNbT5z9i8vwwZ85s4pA3jZiYDrS
+         NyGfMbR3/RfJbGGrnf1pa0UQJz/dMbiDr1WJU4A67b3SarcU+Q0rs54tvJ1ZVNSE3Y
+         4e7ldKe36Hg32kbQVNOADQerKhOtP5OlrFGRSwnMtJDW9QQp2Md+9oyKStLR1BJsVb
+         UWyPAHcXe7QuCKVlsTNggdCjVGHWs+gF2jxNluMA45SRlyxaAoehZwuSIHQh6MKStG
+         9c56hKQk6gBuw==
+Date:   Fri, 29 Oct 2021 19:28:04 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Sterba <dsterba@suse.cz>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: linux-next: build failure after merge of the btrfs tree
+Message-ID: <20211029192804.497d7f13@canb.auug.org.au>
+In-Reply-To: <20211027210924.22ef5881@canb.auug.org.au>
+References: <20211027210924.22ef5881@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
+Content-Type: multipart/signed; boundary="Sig_/J/GjfQUJEAm51ij2xXZvKy4";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If cpus on a node are offline at boot time, there are
-difference in the number of nodes between when building affinity
-masks for present cpus and when building affinity masks for possible
-cpus. This patch fixes 2 problems caused by the difference of the
-number of nodes:
+--Sig_/J/GjfQUJEAm51ij2xXZvKy4
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
- - If some unused vectors remain after building masks for present cpus,
-   remained vectors are assigned for building masks for possible cpus.
-   Therefore "numvecs <= nodes" condition must be
-   "vecs_to_assign <= nodes_to_assign". Fix this problem by making this
-   condition appropriate.
+Hi all,
 
- - The routine of "numvecs <= nodes" condition can overwrite bits of
-   masks for present cpus in building masks for possible cpus. Fix this
-   problem by making CPU bits, which is not target, not changing.
+On Wed, 27 Oct 2021 21:09:24 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>=20
+> [I am not sure why this error only popped up after I merged Andrew's
+> patch set ...]
+>=20
+> After merging the btrfs tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
+>=20
+> In file included from include/linux/string.h:253,
+>                  from include/linux/bitmap.h:11,
+>                  from include/linux/cpumask.h:12,
+>                  from arch/x86/include/asm/cpumask.h:5,
+>                  from arch/x86/include/asm/msr.h:11,
+>                  from arch/x86/include/asm/processor.h:22,
+>                  from arch/x86/include/asm/cpufeature.h:5,
+>                  from arch/x86/include/asm/thread_info.h:53,
+>                  from include/linux/thread_info.h:60,
+>                  from arch/x86/include/asm/preempt.h:7,
+>                  from include/linux/preempt.h:78,
+>                  from include/linux/spinlock.h:55,
+>                  from include/linux/wait.h:9,
+>                  from include/linux/mempool.h:8,
+>                  from include/linux/bio.h:8,
+>                  from fs/btrfs/ioctl.c:7:
+> In function 'memcpy',
+>     inlined from '_btrfs_ioctl_send' at fs/btrfs/ioctl.c:4846:3:
+> include/linux/fortify-string.h:219:4: error: call to '__write_overflow' d=
+eclared with attribute error: detected write beyond size of object (1st par=
+ameter)
+>   219 |    __write_overflow();
+>       |    ^~~~~~~~~~~~~~~~~~
+>=20
+> Caused by commit
+>=20
+>   c8d9cdfc766d ("btrfs: send: prepare for v2 protocol")
+>=20
+> This changes the "reserved" field of struct btrfs_ioctl_send_args from 4 =
+u64's to 3, but the above memcpy is copying the "reserved" filed from a str=
+uct btrfs_ioctl_send_args_32 (4 u64s) into it.
+>=20
+> All I could really do at this point was mark BTRFS_FS as BROKEN
+> (TEST_KMOD selects BTRFS_FS):
+>=20
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Wed, 27 Oct 2021 20:53:24 +1100
+> Subject: [PATCH] make btrfs as BROKEN due to an inconsistent API change
+>=20
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> ---
+>  fs/btrfs/Kconfig  | 1 +
+>  lib/Kconfig.debug | 1 +
+>  2 files changed, 2 insertions(+)
+>=20
+> diff --git a/fs/btrfs/Kconfig b/fs/btrfs/Kconfig
+> index 520a0f6a7d9e..f7dd994a88af 100644
+> --- a/fs/btrfs/Kconfig
+> +++ b/fs/btrfs/Kconfig
+> @@ -20,6 +20,7 @@ config BTRFS_FS
+>  	select SRCU
+>  	depends on !PPC_256K_PAGES	# powerpc
+>  	depends on !PAGE_SIZE_256KB	# hexagon
+> +	depends on BROKEN
+> =20
+>  	help
+>  	  Btrfs is a general purpose copy-on-write filesystem with extents,
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index 0104cafd403f..44a6df361016 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -2491,6 +2491,7 @@ config TEST_KMOD
+>  	depends on m
+>  	depends on NETDEVICES && NET_CORE && INET # for TUN
+>  	depends on BLOCK
+> +	depends on BROKEN
+>  	select TEST_LKM
+>  	select XFS_FS
+>  	select TUN
+> --=20
+> 2.33.0
 
-Signed-off-by: Rei Yamamoto <yamamoto.rei@jp.fujitsu.com>
----
- kernel/irq/affinity.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+Ping?
 
-diff --git a/kernel/irq/affinity.c b/kernel/irq/affinity.c
-index f7ff8919dc9b..1cdf89e5e2fb 100644
---- a/kernel/irq/affinity.c
-+++ b/kernel/irq/affinity.c
-@@ -267,10 +267,16 @@ static int __irq_build_affinity_masks(unsigned int startvec,
- 	 * If the number of nodes in the mask is greater than or equal the
- 	 * number of vectors we just spread the vectors across the nodes.
- 	 */
--	if (numvecs <= nodes) {
-+	if (numvecs - (curvec - firstvec) <= nodes) {
- 		for_each_node_mask(n, nodemsk) {
-+			unsigned int ncpus;
-+
-+			cpumask_and(nmsk, cpu_mask, node_to_cpumask[n]);
-+			ncpus = cpumask_weight(nmsk);
-+			if (!ncpus)
-+				continue;
- 			cpumask_or(&masks[curvec].mask, &masks[curvec].mask,
--				   node_to_cpumask[n]);
-+				   nmsk);
- 			if (++curvec == last_affv)
- 				curvec = firstvec;
- 		}
--- 
-2.27.0
+--=20
+Cheers,
+Stephen Rothwell
 
+--Sig_/J/GjfQUJEAm51ij2xXZvKy4
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF7sJQACgkQAVBC80lX
+0GzjBwf+JeoIQIlYmc3K0pAur5M8RLwAUaLbv64JcoXmnlxbBmW8dApO1McsVJ0I
+6GB/CXF6zxWA+Z4xLE1zyoCEc6xZy8hZDHN4HCrGM9z7+VY9KyIqyeAz8vrFjGFs
+LE1vphjv1HSNhVC+N1loMOKOD+8xk+m2IRCX+AWQza5QNrMmuN/aoSNDSXRl6rc7
+KQtGupQIji8WPVgCEorYziElxNRbZu7qZ+KzgKiDBs7bTcTgHH1beAxBlMeUCxvz
+hZjaU0GUzfwEmk5djQVp7+t+wkca1ElbwiLB6uJ9Wpr1x76L0Z/b/wIkVNxFz3Tq
+9K0YbcQX0sJVWmXJxmo2oQTzNV8N0A==
+=ErU+
+-----END PGP SIGNATURE-----
+
+--Sig_/J/GjfQUJEAm51ij2xXZvKy4--
