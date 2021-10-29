@@ -2,125 +2,383 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44FBF43F491
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 03:49:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC10D43F496
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 03:50:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231454AbhJ2Bvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 21:51:42 -0400
-Received: from smtp25.cstnet.cn ([159.226.251.25]:54066 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229950AbhJ2Bvf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 21:51:35 -0400
-Received: from localhost.localdomain (unknown [124.16.138.128])
-        by APP-05 (Coremail) with SMTP id zQCowAAHyPT_UnthcoKTBQ--.39964S2;
-        Fri, 29 Oct 2021 09:48:47 +0800 (CST)
-From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
-To:     andraprs@amazon.com, lexnv@amazon.com, alcioa@amazon.com
-Cc:     linux-kernel@vger.kernel.org, Jiasheng Jiang <jiasheng@iscas.ac.cn>
-Subject: [PATCH v2] nitro_enclaves: Fix implicit type conversion
-Date:   Fri, 29 Oct 2021 01:48:46 +0000
-Message-Id: <1635472126-1822073-1-git-send-email-jiasheng@iscas.ac.cn>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: zQCowAAHyPT_UnthcoKTBQ--.39964S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxGw1kGF4rXFWxAr1fCw4UArb_yoW5Xr4xpF
-        4Yq34UJrW8AasrZayxAr17uF15ZF9xW3y7J3y3Cay8Cry5AFy8ZFWDK3sxJr1UCrWkZFy2
-        y345tw1qgF45C3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkC14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r
-        4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2Wl
-        Yx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbV
-        WUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK
-        6w4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxV
-        WUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI
-        7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r
-        1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8
-        JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfU5kucDU
-        UUU
-X-Originating-IP: [124.16.138.128]
-X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
+        id S231388AbhJ2Bwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 21:52:40 -0400
+Received: from mail-ot1-f45.google.com ([209.85.210.45]:37759 "EHLO
+        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229950AbhJ2Bwi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 21:52:38 -0400
+Received: by mail-ot1-f45.google.com with SMTP id v40-20020a056830092800b0055591caa9c6so3127029ott.4;
+        Thu, 28 Oct 2021 18:50:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=H3UM1yNKAMv5+ROxM01H3Les+3KYJBWUhYXsGVz9HXI=;
+        b=UHx6KF66XSPd6MSmppFeDTNBFjvzb1HKkNUW62AZcvCUxViLyI8IUYSzr/cLw+5e5N
+         rG2yHINzBC+IaOaqEe1R03IVWI6u/XXynXL3Hu0t3bdg/4tnphv03PjKyQDRhyWBmYMs
+         oROeLQIhJ5yQCQUE9t0WOSIlJa+2sk0zlGIazb2kVi48NUfhxR58aoIOJaWlcunURXWV
+         e0eUISbojFGbkp2AKnCb+yXQtpZpchCrcn43kqALkZ2mCb20xmzefLrcxhM+eT1nPzOA
+         nmyv2fv0sR/NiAsS19gJRsxXFd3p8gWcE3Ur++8622YF+i1evpeMpGpDHLcNBxqvSgMn
+         3lDQ==
+X-Gm-Message-State: AOAM533JO91rRAn94ntW7P8gHOJOiYk3ydpD2/Q+QcGunvc32HNmMIPP
+        V1cTFPXM///XbCNuPX7gag==
+X-Google-Smtp-Source: ABdhPJzeqA4H7YRYKsGQX2iZPlbOJOxccklzl4S8ZEB0QiJVnICczvJHMmJHSe64OxJzbHZY4doVzw==
+X-Received: by 2002:a9d:20ea:: with SMTP id x97mr643726ota.152.1635472210373;
+        Thu, 28 Oct 2021 18:50:10 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id q2sm1459725ooe.12.2021.10.28.18.50.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 18:50:09 -0700 (PDT)
+Received: (nullmailer pid 987313 invoked by uid 1000);
+        Fri, 29 Oct 2021 01:50:08 -0000
+Date:   Thu, 28 Oct 2021 20:50:08 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Emil Renner Berthing <kernel@esmil.dk>
+Cc:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-serial@vger.kernel.org, Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Sagar Kadam <sagar.kadam@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michael Zhu <michael.zhu@starfivetech.com>,
+        Fu Wei <tekkamanninja@gmail.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 11/16] dt-bindings: pinctrl: Add StarFive JH7100
+ bindings
+Message-ID: <YXtTUGC5P41JtvoR@robh.at.kernel.org>
+References: <20211021174223.43310-1-kernel@esmil.dk>
+ <20211021174223.43310-12-kernel@esmil.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211021174223.43310-12-kernel@esmil.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The variable 'cpu' and 'cpu_sibling' are defined as unsigned int.
-However in the for_each_cpu, their values are assigned to -1.
-That doesn't make sense and in the cpumask_next() they are implicitly
-type conversed to int.
-It is universally accepted that the implicit type conversion is
-terrible.
-Also, having the good programming custom will set an example for
-others.
-Thus, it might be better to change the definition of 'cpu' and
-'cpu_sibling' from unsigned int to int.
+On Thu, Oct 21, 2021 at 07:42:18PM +0200, Emil Renner Berthing wrote:
+> Add bindings for the StarFive JH7100 GPIO/pin controller.
+> 
+> Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
+> ---
+>  .../pinctrl/starfive,jh7100-pinctrl.yaml      | 274 ++++++++++++++++++
+>  1 file changed, 274 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/starfive,jh7100-pinctrl.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/pinctrl/starfive,jh7100-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/starfive,jh7100-pinctrl.yaml
+> new file mode 100644
+> index 000000000000..342ecd91a3b0
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pinctrl/starfive,jh7100-pinctrl.yaml
+> @@ -0,0 +1,274 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pinctrl/starfive,jh7100-pinctrl.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: StarFive JH7100 Pin Controller Device Tree Bindings
+> +
+> +maintainers:
+> +  - Emil Renner Berthing <kernel@esmil.dk>
+> +  - Drew Fustini <drew@beagleboard.org>
+> +
+> +properties:
+> +  compatible:
+> +    const: starfive,jh7100-pinctrl
+> +
+> +  reg:
+> +    minItems: 2
+> +    maxItems: 2
+> +
+> +  reg-names:
+> +    items:
+> +      - const: "gpio"
+> +      - const: "padctl"
 
-Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
----
- drivers/virt/nitro_enclaves/ne_misc_dev.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+Don't need quotes.
 
-diff --git a/drivers/virt/nitro_enclaves/ne_misc_dev.c b/drivers/virt/nitro_enclaves/ne_misc_dev.c
-index e21e1e8..2d80879 100644
---- a/drivers/virt/nitro_enclaves/ne_misc_dev.c
-+++ b/drivers/virt/nitro_enclaves/ne_misc_dev.c
-@@ -168,9 +168,9 @@ static bool ne_check_enclaves_created(void)
- static int ne_setup_cpu_pool(const char *ne_cpu_list)
- {
- 	int core_id = -1;
--	unsigned int cpu = 0;
-+	int cpu = 0;
- 	cpumask_var_t cpu_pool;
--	unsigned int cpu_sibling = 0;
-+	int cpu_sibling = 0;
- 	unsigned int i = 0;
- 	int numa_node = -1;
- 	int rc = -EINVAL;
-@@ -374,7 +374,7 @@ static int ne_setup_cpu_pool(const char *ne_cpu_list)
-  */
- static void ne_teardown_cpu_pool(void)
- {
--	unsigned int cpu = 0;
-+	int cpu = 0;
- 	unsigned int i = 0;
- 	int rc = -EINVAL;
- 
-@@ -516,7 +516,7 @@ static int ne_get_unused_core_from_cpu_pool(void)
- static int ne_set_enclave_threads_per_core(struct ne_enclave *ne_enclave,
- 					   int core_id, u32 vcpu_id)
- {
--	unsigned int cpu = 0;
-+	int cpu = 0;
- 
- 	if (core_id < 0 && vcpu_id == 0) {
- 		dev_err_ratelimited(ne_misc_dev.this_device,
-@@ -562,7 +562,7 @@ static int ne_set_enclave_threads_per_core(struct ne_enclave *ne_enclave,
- static int ne_get_cpu_from_cpu_pool(struct ne_enclave *ne_enclave, u32 *vcpu_id)
- {
- 	int core_id = -1;
--	unsigned int cpu = 0;
-+	int cpu = 0;
- 	unsigned int i = 0;
- 	int rc = -EINVAL;
- 
-@@ -1017,7 +1017,7 @@ static int ne_start_enclave_ioctl(struct ne_enclave *ne_enclave,
- 	struct ne_enclave_start_info *enclave_start_info)
- {
- 	struct ne_pci_dev_cmd_reply cmd_reply = {};
--	unsigned int cpu = 0;
-+	int cpu = 0;
- 	struct enclave_start_req enclave_start_req = {};
- 	unsigned int i = 0;
- 	struct pci_dev *pdev = ne_devs.ne_pci_dev->pdev;
-@@ -1360,7 +1360,7 @@ static void ne_enclave_remove_all_mem_region_entries(struct ne_enclave *ne_encla
-  */
- static void ne_enclave_remove_all_vcpu_id_entries(struct ne_enclave *ne_enclave)
- {
--	unsigned int cpu = 0;
-+	int cpu = 0;
- 	unsigned int i = 0;
- 
- 	mutex_lock(&ne_cpu_pool.mutex);
--- 
-2.7.4
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  resets:
+> +    maxItems: 1
+> +
+> +  gpio-controller: true
+> +
+> +  "#gpio-cells":
+> +    const: 2
+> +    description: |
+> +      Number of cells in GPIO specifier. Since the generic GPIO
+> +      binding is used, the amount of cells must be specified as 2.
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +    description: The GPIO parent interrupt.
+> +
+> +  interrupt-controller: true
+> +
+> +  "#interrupt-cells":
+> +    const: 2
+> +
+> +  starfive,signal-group:
+> +    description: |
+> +      The SoC has a global setting selecting one of 7 different pinmux
+> +      configurations of the pads named GPIO[0:63] and FUNC_SHARE[0:141]. After
+> +      this global setting is chosen only the 64 "GPIO" pins can be further
+> +      muxed by configuring them to be controlled by certain peripherals rather
+> +      than software.
+> +      Note that in configuration 0 none of GPIOs are routed to pads, and only
+> +      in configuration 1 are the GPIOs routed to the pads named GPIO[0:63].
+> +      If this property is not set it defaults to the configuration already
+> +      chosen by the earlier boot stages.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum: [0, 1, 2, 3, 4, 5, 6]
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reg-names
+> +  - clocks
+> +  - gpio-controller
+> +  - "#gpio-cells"
+> +  - interrupts
+> +  - interrupt-controller
+> +  - "#interrupt-cells"
+> +
+> +patternProperties:
+> +  '-[0-9]*$':
 
+Can you make this more specific. As-is, '-' and 'foo-' are valid.
+
+> +    type: object
+> +    patternProperties:
+> +      '-pins*$':
+
+So foo-pinsssssss is okay? Drop the '*' or use ? if you intend to 
+support 'foo-pin'.
+
+> +        type: object
+> +        description: |
+> +          A pinctrl node should contain at least one subnode representing the
+> +          pinctrl groups available on the machine. Each subnode will list the
+> +          pins it needs, and how they should be configured, with regard to
+> +          muxer configuration, bias, input enable/disable, input schmitt
+> +          trigger enable/disable, slew-rate and drive strength.
+> +        $ref: "/schemas/pinctrl/pincfg-node.yaml"
+> +
+> +        properties:
+> +          pins:
+> +            description: |
+> +              The list of pin identifiers that properties in the node apply to.
+> +              This should be set using either the PAD_GPIO or PAD_FUNC_SHARE
+> +              macro. Either this or "pinmux" has to be specified.
+> +
+> +          pinmux:
+> +            description: |
+> +              The list of GPIO identifiers and their mux settings that
+> +              properties in the node apply to. This should be set using the
+> +              GPIOMUX macro. Either this or "pins" has to be specified.
+> +
+> +          bias-disable: true
+> +
+> +          bias-pull-up:
+> +            type: boolean
+
+Already has a type. Need to reference the common schema.
+
+> +
+> +          bias-pull-down:
+> +            type: boolean
+> +
+> +          drive-strength:
+> +            enum: [ 14, 21, 28, 35, 42, 49, 56, 63 ]
+> +
+> +          input-enable: true
+> +
+> +          input-disable: true
+> +
+> +          input-schmitt-enable: true
+> +
+> +          input-schmitt-disable: true
+> +
+> +          slew-rate:
+> +            maximum: 7
+> +
+> +          starfive,strong-pull-up:
+> +            description: enable strong pull-up.
+> +            type: boolean
+> +
+> +        additionalProperties: false
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/starfive-jh7100.h>
+> +    #include <dt-bindings/reset/starfive-jh7100.h>
+> +    #include <dt-bindings/pinctrl/pinctrl-starfive.h>
+> +
+> +    soc {
+> +        #address-cells = <2>;
+> +        #size-cells = <2>;
+> +
+> +        gpio: pinctrl@11910000 {
+> +            compatible = "starfive,jh7100-pinctrl";
+> +            reg = <0x0 0x11910000 0x0 0x10000>,
+> +                  <0x0 0x11858000 0x0 0x1000>;
+> +            reg-names = "gpio", "padctl";
+> +            clocks = <&clkgen JH7100_CLK_GPIO_APB>;
+> +            resets = <&clkgen JH7100_RSTN_GPIO_APB>;
+> +            interrupts = <32>;
+> +            gpio-controller;
+> +            #gpio-cells = <2>;
+> +            interrupt-controller;
+> +            #interrupt-cells = <2>;
+> +            starfive,signal-group = <6>;
+> +
+> +            gmac_pins_default: gmac-0 {
+> +                gtxclk-pins {
+> +                    pins = <PAD_FUNC_SHARE(115)>;
+> +                    bias-pull-up;
+> +                    drive-strength = <35>;
+> +                    input-enable;
+> +                    input-schmitt-enable;
+> +                    slew-rate = <0>;
+> +                };
+> +                miitxclk-pins {
+> +                    pins = <PAD_FUNC_SHARE(116)>;
+> +                    bias-pull-up;
+> +                    drive-strength = <14>;
+> +                    input-enable;
+> +                    input-schmitt-disable;
+> +                    slew-rate = <0>;
+> +                };
+> +                tx-pins {
+> +                    pins = <PAD_FUNC_SHARE(117)>,
+> +                           <PAD_FUNC_SHARE(119)>,
+> +                           <PAD_FUNC_SHARE(120)>,
+> +                           <PAD_FUNC_SHARE(121)>,
+> +                           <PAD_FUNC_SHARE(122)>,
+> +                           <PAD_FUNC_SHARE(123)>,
+> +                           <PAD_FUNC_SHARE(124)>,
+> +                           <PAD_FUNC_SHARE(125)>,
+> +                           <PAD_FUNC_SHARE(126)>;
+> +                    bias-disable;
+> +                    drive-strength = <35>;
+> +                    input-disable;
+> +                    input-schmitt-disable;
+> +                    slew-rate = <0>;
+> +                };
+> +                rxclk-pins {
+> +                    pins = <PAD_FUNC_SHARE(127)>;
+> +                    bias-pull-up;
+> +                    drive-strength = <14>;
+> +                    input-enable;
+> +                    input-schmitt-disable;
+> +                    slew-rate = <6>;
+> +                };
+> +                rxer-pins {
+> +                    pins = <PAD_FUNC_SHARE(129)>;
+> +                    bias-pull-up;
+> +                    drive-strength = <14>;
+> +                    input-enable;
+> +                    input-schmitt-disable;
+> +                    slew-rate = <0>;
+> +                };
+> +                rx-pins {
+> +                    pins = <PAD_FUNC_SHARE(128)>,
+> +                           <PAD_FUNC_SHARE(130)>,
+> +                           <PAD_FUNC_SHARE(131)>,
+> +                           <PAD_FUNC_SHARE(132)>,
+> +                           <PAD_FUNC_SHARE(133)>,
+> +                           <PAD_FUNC_SHARE(134)>,
+> +                           <PAD_FUNC_SHARE(135)>,
+> +                           <PAD_FUNC_SHARE(136)>,
+> +                           <PAD_FUNC_SHARE(137)>,
+> +                           <PAD_FUNC_SHARE(138)>,
+> +                           <PAD_FUNC_SHARE(139)>,
+> +                           <PAD_FUNC_SHARE(140)>,
+> +                           <PAD_FUNC_SHARE(141)>;
+> +                    bias-pull-up;
+> +                    drive-strength = <14>;
+> +                    input-enable;
+> +                    input-schmitt-enable;
+> +                    slew-rate = <0>;
+> +                };
+> +            };
+> +
+> +            i2c0_pins_default: i2c0-0 {
+> +                i2c-pins {
+> +                    pinmux = <GPIOMUX(62, GPO_LOW,
+> +                              GPO_I2C0_PAD_SCK_OEN,
+> +                              GPI_I2C0_PAD_SCK_IN)>,
+> +                             <GPIOMUX(61, GPO_LOW,
+> +                              GPO_I2C0_PAD_SDA_OEN,
+> +                              GPI_I2C0_PAD_SDA_IN)>;
+> +                    bias-disable; /* external pull-up */
+> +                    input-enable;
+> +                    input-schmitt-enable;
+> +                };
+> +            };
+> +
+> +            uart3_pins_default: uart3-0 {
+> +                rx-pin {
+> +                    pinmux = <GPIOMUX(13, GPO_LOW, GPO_DISABLE,
+> +                              GPI_UART3_PAD_SIN)>;
+> +                    bias-pull-up;
+> +                    input-enable;
+> +                    input-schmitt-enable;
+> +                };
+> +                tx-pin {
+> +                    pinmux = <GPIOMUX(14, GPO_UART3_PAD_SOUT,
+> +                              GPO_ENABLE, GPI_NONE)>;
+> +                    bias-disable;
+> +                    input-disable;
+> +                    input-schmitt-disable;
+> +                };
+> +            };
+> +        };
+> +
+> +        gmac {
+> +            pinctrl-0 = <&gmac_pins_default>;
+> +            pinctrl-names = "default";
+> +        };
+> +
+> +        i2c0 {
+> +            pinctrl-0 = <&i2c0_pins_default>;
+> +            pinctrl-names = "default";
+> +        };
+> +
+> +        uart3 {
+> +            pinctrl-0 = <&uart3_pins_default>;
+> +            pinctrl-names = "default";
+> +        };
+> +    };
+> +
+> +...
+> -- 
+> 2.33.1
+> 
+> 
