@@ -2,92 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E8C443FDA5
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 15:55:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF17143FC6A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 14:39:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231602AbhJ2N6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 09:58:17 -0400
-Received: from 11.mo550.mail-out.ovh.net ([188.165.48.29]:59659 "EHLO
-        11.mo550.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230252AbhJ2N6P (ORCPT
+        id S231561AbhJ2Ml6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 08:41:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230134AbhJ2Ml5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 09:58:15 -0400
-X-Greylist: delayed 3601 seconds by postgrey-1.27 at vger.kernel.org; Fri, 29 Oct 2021 09:58:15 EDT
-Received: from player770.ha.ovh.net (unknown [10.108.20.46])
-        by mo550.mail-out.ovh.net (Postfix) with ESMTP id 0370023424
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 12:38:02 +0000 (UTC)
-Received: from RCM-web10.webmail.mail.ovh.net (ip-194-187-74-233.konfederacka.maverick.com.pl [194.187.74.233])
-        (Authenticated sender: rafal@milecki.pl)
-        by player770.ha.ovh.net (Postfix) with ESMTPSA id 5DEA823DC6CDD;
-        Fri, 29 Oct 2021 12:37:51 +0000 (UTC)
+        Fri, 29 Oct 2021 08:41:57 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7539AC061570
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 05:39:28 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id bq11so20785956lfb.10
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 05:39:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=B2T3v4jXO25JT49qo2reiE0rneUAVuElVzG5JppoEM8=;
+        b=jxD6biwTfe3xu6SqBzLET7VGwK1z+O5kXXr9D9ld+3oXexNknMqaFCW9F2LVUIXD+G
+         ucuVD7vOA4sZwbtUVVm7VzO3veKFGjRJHKI0vsCgqedXMckkcCuS5RX2luse2sdk1Twa
+         WBDj6uMCqZkJ/KYciN73SIqRqEBtCSDSF63zmsvalZsfnmh4tgcEAgjPi9ilrgDdWMVb
+         ZEJT/Qe6glvFD7+mxzhPkUnG56DeqPTqZIJn0EwzCL6fb0mJg+J37Y3J8rVtha2bb88g
+         FhnpS+0RzDdrfPrw09Zk0fIpd8IvICd3VoueJ91jfIvaJiW7UN68emvVY/bbOQyolIXI
+         WutQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=B2T3v4jXO25JT49qo2reiE0rneUAVuElVzG5JppoEM8=;
+        b=pFLwj50qTgRaklnauRXjh6ddOWlZO5HKG0yW5EdD74tSQMcqETwuC3Zlg+souvbQI/
+         FA0DC91xKhsedqBnnBoW0GUtPrKhJ9wjMUZc2IxiaKQJKNbJztDfJ07vLW8ChHcf2b4a
+         JPtLKpOeSf46g7iAnThd+TnepNDuqNTAZE758F4o8VhOZBAes37DYVGsPm8gF+pQd1Cc
+         zw44tdYYld1vDZ1eZsOMnpHdKZsumr/3Y5F0dMeRGhXv64oxmOLxKs7sViRxjaaEIEf5
+         CTqs/cFLOk26LDpoDD6PGuKkRB+2hyBwyRWkm5jb3bqLn9g+4XSSByIaCHD5Na9LyRZF
+         OZBg==
+X-Gm-Message-State: AOAM532UqsGgLuJ394naQRsSM2XPwtm6RAd31D5DOWKb2IRPJ2mcWqqA
+        7m/hwXeytZ/Bc6fwrrbZXwymZw==
+X-Google-Smtp-Source: ABdhPJyTjynt3OjUbfPQGjnjOlAGOKmxPdHzyoRf35p2/vo3MySu4coNCsQpIc9on1MRDnXuPapytw==
+X-Received: by 2002:a05:6512:2309:: with SMTP id o9mr10050460lfu.124.1635511166794;
+        Fri, 29 Oct 2021 05:39:26 -0700 (PDT)
+Received: from localhost.localdomain (h-155-4-129-146.NA.cust.bahnhof.se. [155.4.129.146])
+        by smtp.gmail.com with ESMTPSA id y35sm602528lfa.16.2021.10.29.05.39.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Oct 2021 05:39:25 -0700 (PDT)
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+To:     "Rafael J . Wysocki" <rafael@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-pm@vger.kernel.org
+Cc:     Maulik Shah <mkshah@codeaurora.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Len Brown <len.brown@intel.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] PM: sleep: Fix runtime PM based cpuidle support
+Date:   Fri, 29 Oct 2021 14:38:55 +0200
+Message-Id: <20211029123855.80344-1-ulf.hansson@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Date:   Fri, 29 Oct 2021 14:37:51 +0200
-From:   =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Justin Chen <justinpopo6@gmail.com>,
-        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 5/7] watchdog: bcm7038_wdt: Add platform device id for
- bcm63xx-wdt
-In-Reply-To: <20211028172322.4021440-6-f.fainelli@gmail.com>
-References: <20211028172322.4021440-1-f.fainelli@gmail.com>
- <20211028172322.4021440-6-f.fainelli@gmail.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <02cb3c1a160854c92895d024e59a831b@milecki.pl>
-X-Sender: rafal@milecki.pl
-X-Originating-IP: 194.187.74.233
-X-Webmail-UserID: rafal@milecki.pl
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Ovh-Tracer-Id: 16945356551679290136
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrvdeghedgheduucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepggffhffvufgjfhgfkfigihgtgfesthejjhdttdervdenucfhrhhomheptfgrfhgrlhgpofhilhgvtghkihcuoehrrghfrghlsehmihhlvggtkhhirdhplheqnecuggftrfgrthhtvghrnhepveefvdetjeffueefkeeuuedvgefhgeegjefgvedvgeeiteduueeivdeltedthfetnecukfhppedtrddtrddtrddtpdduleegrddukeejrdejgedrvdeffeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphhouhhtpdhhvghlohepphhlrgihvghrjeejtddrhhgrrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehrrghfrghlsehmihhlvggtkhhirdhplhdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-10-28 19:23, Florian Fainelli wrote:
-> In order to phase out bcm63xx_wdt and use bcm7038_wdt instead, 
-> introduce
-> a platform_device_id table that allows both names to be matched.
-> 
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> ---
->  drivers/watchdog/bcm7038_wdt.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/drivers/watchdog/bcm7038_wdt.c 
-> b/drivers/watchdog/bcm7038_wdt.c
-> index 506cd7ef9c77..2535f450e8a1 100644
-> --- a/drivers/watchdog/bcm7038_wdt.c
-> +++ b/drivers/watchdog/bcm7038_wdt.c
-> @@ -223,6 +223,13 @@ static const struct of_device_id 
-> bcm7038_wdt_match[] = {
->  };
->  MODULE_DEVICE_TABLE(of, bcm7038_wdt_match);
-> 
-> +static const struct platform_device_id bcm7038_wdt_devtype[] = {
-> +	{ .name = "bcm7038-wdt" },
-> +	{ .name = "bcm63xx-wdt" },
-> +	{ /* sentinel */ },
-> +};
-> +MODULE_DEVICE_TABLE(platform, bcm7038_wdt_devtype);
+In the cpuidle-psci case, runtime PM in combination with the generic PM
+domain (genpd), may be used when entering/exiting a shared idlestate. More
+precisely, genpd relies on runtime PM to be enabled for the attached device
+(in this case it belongs to a CPU), to properly manage the reference
+counting of its PM domain.
 
-Do we really want "bcm7038-wdt" here? I don't think it will ever be used
-as apparently BCM7038 uses DT.
+This works fine most of the time, but during system suspend in
+dpm_suspend_late(), the PM core disables runtime PM for all devices. Beyond
+this point, calls to pm_runtime_get_sync() to runtime resume a device may
+fail and therefore it could also mess up the reference counting in genpd.
 
-I'd also prefer to have Rob's comment on mapping blocks vs. mapping
-registers.
+To fix this problem, let's call wake_up_all_idle_cpus() in
+dpm_suspend_late(), prior to disabling runtime PM. In this way a device
+that belongs to a CPU, becomes runtime resumed through cpuidle-psci and
+stays like that, because the runtime PM usage count has been bumped in
+device_prepare().
 
-If we were to map whole hardware blocks, we should have per-SoC
-bindings and handling registers layouts in a driver. Right now
-bcm63xx arch code maps selected part of hardware block that is
-meant to match driver's logic (offsets 0x00 and 0x04).
+Diagnosed-by: Maulik Shah <mkshah@codeaurora.org>
+Suggested-by: Rafael J. Wysocki <rafael@kernel.org>
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+---
+
+Changes in v2:
+	- Moved away from using cpuidle_pause|resume() to solve the problem, but
+	instead just waking up idle CPUs is suffient, due to other recent merged
+	changes.
+
+---
+ drivers/base/power/main.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
+index ac4dde8fdb8b..2fb08d4f1aca 100644
+--- a/drivers/base/power/main.c
++++ b/drivers/base/power/main.c
+@@ -1463,6 +1463,7 @@ int dpm_suspend_late(pm_message_t state)
+ 	int error = 0;
+ 
+ 	trace_suspend_resume(TPS("dpm_suspend_late"), state.event, true);
++	wake_up_all_idle_cpus();
+ 	mutex_lock(&dpm_list_mtx);
+ 	pm_transition = state;
+ 	async_error = 0;
+-- 
+2.25.1
+
