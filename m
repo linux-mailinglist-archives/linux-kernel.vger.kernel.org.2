@@ -2,168 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AC944401B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 20:06:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 768024401B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 20:07:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230202AbhJ2SJY convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 29 Oct 2021 14:09:24 -0400
-Received: from mail-oi1-f175.google.com ([209.85.167.175]:44685 "EHLO
-        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbhJ2SJX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 14:09:23 -0400
-Received: by mail-oi1-f175.google.com with SMTP id y207so14481360oia.11;
-        Fri, 29 Oct 2021 11:06:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=5+xv1sYACq7ekC+Hz2Y0cCbNG5PRGqC0Z37yaKBG5NI=;
-        b=Sr0btJpxeH+8l2WkcJB+nnurmUh8y2agnebQltQWjlijMFsRLzNz+czsHj8whq3qi8
-         cZiMqp+uGs0JoPBR8jHVrueuwF+BzRm+SHV8yjchhh7nPjTAmUMXAG58R8S1B/HrEKXE
-         48Y0+6VLP9FVpQa46Ocu3aTcAmjJfrhoBlRgVWosGkN91c7FWFNGcaTeVpDL7XVgMiQP
-         smv0aKKeOZUdg3iehJN+o5We3B+sLPbWSs/6dtjHM64Zb0CVWyhS+okykTDatxNE0WmA
-         O6pzIleKnJWT/4gMj5HCBy4PdcDBQiA7JeoAUxalNJTEP8tqJlpBM9Xxqp993hdVd1wr
-         IAkg==
-X-Gm-Message-State: AOAM5320jm2lq6Qw2bZiyr9kQobeP33rgUWYXPxHR5UFYFUhMacTdC8R
-        iJtkOsUiGzB8Cl8ARjMRRZcDicgxCqkTxsv3TlJOsL87LJ8=
-X-Google-Smtp-Source: ABdhPJyOQcK/yH8YWrJNxVYGyhhICBtBpU/kmrIuW/r1/0glQukNI66xy0DXMlLLQgevqp7sBswHRDfWJcvpb+2DdN8=
-X-Received: by 2002:a05:6808:128d:: with SMTP id a13mr612592oiw.51.1635530814547;
- Fri, 29 Oct 2021 11:06:54 -0700 (PDT)
+        id S230249AbhJ2SJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 14:09:26 -0400
+Received: from mga18.intel.com ([134.134.136.126]:29591 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229826AbhJ2SJY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 14:09:24 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10152"; a="217632528"
+X-IronPort-AV: E=Sophos;i="5.87,193,1631602800"; 
+   d="scan'208";a="217632528"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2021 11:06:55 -0700
+X-IronPort-AV: E=Sophos;i="5.87,193,1631602800"; 
+   d="scan'208";a="665916788"
+Received: from jongchoi-mobl.amr.corp.intel.com (HELO [10.212.201.61]) ([10.212.201.61])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2021 11:06:54 -0700
+Subject: Re: [PATCH V2 03/15] x86/sgx: Add an attribute for the amount of SGX
+ memory in a NUMA node
+To:     Reinette Chatre <reinette.chatre@intel.com>, jarkko@kernel.org,
+        linux-sgx@vger.kernel.org, shuah@kernel.org,
+        dave.hansen@linux.intel.com
+Cc:     seanjc@google.com, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1635447301.git.reinette.chatre@intel.com>
+ <6df03c54cc8b533de4389b663ec9e4803ced1beb.1635447301.git.reinette.chatre@intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <eb41bbbe-8563-7b6d-3883-61ab43b0b10f@intel.com>
+Date:   Fri, 29 Oct 2021 11:06:52 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20211025224032.21012-1-digetx@gmail.com> <20211025224032.21012-21-digetx@gmail.com>
- <09c05206-c0e5-9a25-8ffa-b9291f6ea5ae@gmail.com> <CAJZ5v0i9OtA1nDiv8UXuF3ASdENFYJFV7+nMWm6Pcu=kw8k1aQ@mail.gmail.com>
- <4dc8a6bd-4072-ccbf-513b-221d286bd6d5@gmail.com>
-In-Reply-To: <4dc8a6bd-4072-ccbf-513b-221d286bd6d5@gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 29 Oct 2021 20:06:43 +0200
-Message-ID: <CAJZ5v0hKQf-xZq2fx1pA5oxMqP_XJV=AG0Rqu7BKRUZGDz6H5Q@mail.gmail.com>
-Subject: Re: [PATCH v14 20/39] pwm: tegra: Add runtime PM and OPP support
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux PWM List <linux-pwm@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        David Heidelberg <david@ixit.cz>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <6df03c54cc8b533de4389b663ec9e4803ced1beb.1635447301.git.reinette.chatre@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 6:29 PM Dmitry Osipenko <digetx@gmail.com> wrote:
->
-> 29.10.2021 18:56, Rafael J. Wysocki пишет:
-> > On Fri, Oct 29, 2021 at 5:20 PM Dmitry Osipenko <digetx@gmail.com> wrote:
-> >>
-> >> 26.10.2021 01:40, Dmitry Osipenko пишет:
-> >>> +     ret = devm_pm_runtime_enable(&pdev->dev);
-> >>> +     if (ret)
-> >>> +             return ret;
-> >>> +
-> >>> +     ret = devm_tegra_core_dev_init_opp_table_common(&pdev->dev);
-> >>> +     if (ret)
-> >>> +             return ret;
-> >>> +
-> >>> +     ret = pm_runtime_resume_and_get(&pdev->dev);
-> >>> +     if (ret)
-> >>> +             return ret;
-> >>> +
-> >>>       /* Set maximum frequency of the IP */
-> >>> -     ret = clk_set_rate(pwm->clk, pwm->soc->max_frequency);
-> >>> +     ret = dev_pm_opp_set_rate(pwm->dev, pwm->soc->max_frequency);
-> >>>       if (ret < 0) {
-> >>>               dev_err(&pdev->dev, "Failed to set max frequency: %d\n", ret);
-> >>> -             return ret;
-> >>> +             goto put_pm;
-> >>>       }
-> >>>
-> >>>       /*
-> >>> @@ -278,7 +294,7 @@ static int tegra_pwm_probe(struct platform_device *pdev)
-> >>>       if (IS_ERR(pwm->rst)) {
-> >>>               ret = PTR_ERR(pwm->rst);
-> >>>               dev_err(&pdev->dev, "Reset control is not found: %d\n", ret);
-> >>> -             return ret;
-> >>> +             goto put_pm;
-> >>>       }
-> >>>
-> >>>       reset_control_deassert(pwm->rst);
-> >>> @@ -291,10 +307,15 @@ static int tegra_pwm_probe(struct platform_device *pdev)
-> >>>       if (ret < 0) {
-> >>>               dev_err(&pdev->dev, "pwmchip_add() failed: %d\n", ret);
-> >>>               reset_control_assert(pwm->rst);
-> >>> -             return ret;
-> >>> +             goto put_pm;
-> >>>       }
-> >>>
-> >>> +     pm_runtime_put(&pdev->dev);
-> >>> +
-> >>>       return 0;
-> >>> +put_pm:
-> >>> +     pm_runtime_put_sync_suspend(&pdev->dev);
-> >>> +     return ret;
-> >>>  }
-> >>>
-> >>>  static int tegra_pwm_remove(struct platform_device *pdev)
-> >>> @@ -305,20 +326,44 @@ static int tegra_pwm_remove(struct platform_device *pdev)
-> >>>
-> >>>       reset_control_assert(pc->rst);
-> >>>
-> >>> +     pm_runtime_force_suspend(&pdev->dev);
-> >>
-> >> I just noticed that RPM core doesn't reset RPM-enable count of a device
-> >> on driver's unbind (pm_runtime_reinit). It was a bad idea to use
-> >> devm_pm_runtime_enable() + pm_runtime_force_suspend() here, since RPM is
-> >> disabled twice on driver's removal, and thus, RPM will never be enabled
-> >> again.
-> >>
-> >> I'll fix it for PWM and other drivers in this series, in v15.
-> >
-> > Well, for the record, IMV using pm_runtime_force_suspend() is
-> > generally a questionable idea.
-> >
->
-> Please clarify why it's a questionable idea.
+On 10/28/21 1:37 PM, Reinette Chatre wrote:
+> The amount of SGX memory on the system is determined by the BIOS and it
+> varies wildly between systems.  It can be from dozens of MB's on desktops
+> or VM's, up to many GB's on servers.  Just like for regular memory, it is
+> sometimes useful to know the amount of usable SGX memory in the system.
+> 
+> Add an attribute for the amount of SGX memory in bytes to each NUMA
+> node. The path is /sys/devices/system/node/node[0-9]*/sgx/size.
+> Calculate these values by summing up EPC section sizes for each node
+> during the driver initalization.
 
-There are a few reasons.
+For now, can we just make the selftests read the SGX CPUID section
+leaves?  It's not as precise as knowing how much the kernel actually
+decided to use, but it's good enough for a selftest.  It also means we
+can merge something without having to worry about long-term ABI.
 
-Generally speaking, it makes assumptions that may not be satisfied.
+This is also why I once suggested that we first make the selftests
+depend on some debugfs file that would be short-lived.  But, if we use
+CPUID, we don't even need to mess with debugfs.
 
-For instance, it assumes that the driver will never have to work with
-the ACPI PM domain, because the ACPI PM domain has a separate set of
-callbacks for system-wide suspend and resume and they are not the same
-as its PM-runtime callbacks, so if the driver is combined with the
-ACPI PM domain, running pm_runtime_force_suspend() may not work as
-expected.
+You can even just steal the code from sgx_page_cache_init() to do it.
 
-Next, it assumes that PM-runtime is actually enabled for the device
-and the RPM_STATUS of it is valid when it is running.
-
-Further, it assumes that the PM-runtime suspend callback of the driver
-will always be suitable for system-wide suspend which may not be the
-case if the device can generate wakeup signals and it is not allowed
-to wake up the system from sleep by user space.
-
-Next, if the driver has to work with a PM domain (other than the ACPI
-one) or bus type that doesn't take the pm_runtime_force_suspend()
-explicitly into account, it may end up running the runtime-suspend
-callback provided by that entity from within its system-wide suspend
-callback which may not work as expected.
-
-I guess I could add a few if I had to.
+Would that work, or am I missing something?
