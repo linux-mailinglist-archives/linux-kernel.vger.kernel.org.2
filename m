@@ -2,355 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDD7343FAED
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 12:39:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D22D043FB6E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 13:34:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232002AbhJ2Kl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 06:41:57 -0400
-Received: from mx.socionext.com ([202.248.49.38]:20369 "EHLO mx.socionext.com"
+        id S231910AbhJ2Lg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 07:36:29 -0400
+Received: from ixit.cz ([94.230.151.217]:51026 "EHLO ixit.cz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231791AbhJ2Klm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 06:41:42 -0400
-Received: from unknown (HELO kinkan2-ex.css.socionext.com) ([172.31.9.52])
-  by mx.socionext.com with ESMTP; 29 Oct 2021 19:39:12 +0900
-Received: from mail.mfilter.local (m-filter-1 [10.213.24.61])
-        by kinkan2-ex.css.socionext.com (Postfix) with ESMTP id 60431203F6D9;
-        Fri, 29 Oct 2021 19:39:12 +0900 (JST)
-Received: from 172.31.9.51 (172.31.9.51) by m-FILTER with ESMTP; Fri, 29 Oct 2021 19:39:12 +0900
-Received: from plum.e01.socionext.com (unknown [10.212.243.119])
-        by kinkan2.css.socionext.com (Postfix) with ESMTP id D9CF5B62AC;
-        Fri, 29 Oct 2021 19:39:11 +0900 (JST)
-From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-To:     Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Subject: [PATCH v3 8/8] phy: uniphier-ahci: Add support for Pro4 SoC
-Date:   Fri, 29 Oct 2021 19:39:07 +0900
-Message-Id: <1635503947-18250-9-git-send-email-hayashi.kunihiko@socionext.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1635503947-18250-1-git-send-email-hayashi.kunihiko@socionext.com>
-References: <1635503947-18250-1-git-send-email-hayashi.kunihiko@socionext.com>
+        id S230492AbhJ2Lg2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 07:36:28 -0400
+Received: from localhost.localdomain (ip-89-176-96-70.net.upcbroadband.cz [89.176.96.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ixit.cz (Postfix) with ESMTPSA id 9D31520064;
+        Fri, 29 Oct 2021 13:33:57 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
+        t=1635507237;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=0zOiZ5/PZ6rpeSK//w83AB0zdgKq32SgEHSychPRids=;
+        b=is241A8cmQkmzKEYnMFzkGG+fdbR9rL3wCQlBRjrc2phDqx5oZjXpTylS5zy57qFw3NPav
+        6D4MkMKGFt2d0tiuyn6px9vVWJC+MTdje374ePQL9RnutVbHiXnX+gjNFrDQnhPKLVoSVo
+        Zr/XfQpW0ERoykS1CY6YwRI7zhMiXbw=
+From:   David Heidelberg <david@ixit.cz>
+To:     Wei Xu <xuwei5@hisilicon.com>, Rob Herring <robh+dt@kernel.org>
+Cc:     ~okias/devicetree@lists.sr.ht, David Heidelberg <david@ixit.cz>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: hisilicon: update deprecated property name
+Date:   Fri, 29 Oct 2021 12:42:12 +0200
+Message-Id: <20211029104211.29079-1-david@ixit.cz>
+X-Mailer: git-send-email 2.33.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for PHY interface built into ahci controller implemented
-in UniPhier Pro4 SoC.
+hisi,rst-syscon property name is deprecated, use hisilicon,rst-syscon
 
-Pro4 SoC distinguishes it from other SoCs as "legacy" SoC, which has GIO
-clock line. And Pro4 AHCI-PHY needs to control additional reset lines
-("pm", "tx", and "rx").
-
-Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Signed-off-by: David Heidelberg <david@ixit.cz>
 ---
- drivers/phy/socionext/Kconfig             |   2 +-
- drivers/phy/socionext/phy-uniphier-ahci.c | 201 +++++++++++++++++++++++++++++-
- 2 files changed, 198 insertions(+), 5 deletions(-)
+ arch/arm64/boot/dts/hisilicon/hi3660.dtsi | 4 ++--
+ arch/arm64/boot/dts/hisilicon/hi3670.dtsi | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/phy/socionext/Kconfig b/drivers/phy/socionext/Kconfig
-index a3970e0f89da..8ae644756352 100644
---- a/drivers/phy/socionext/Kconfig
-+++ b/drivers/phy/socionext/Kconfig
-@@ -43,4 +43,4 @@ config PHY_UNIPHIER_AHCI
- 	select GENERIC_PHY
- 	help
- 	  Enable this to support PHY implemented in AHCI controller
--	  on UniPhier SoCs. This driver supports PXs2 and PXs3 SoCs.
-+	  on UniPhier SoCs. This driver supports Pro4, PXs2 and PXs3 SoCs.
-diff --git a/drivers/phy/socionext/phy-uniphier-ahci.c b/drivers/phy/socionext/phy-uniphier-ahci.c
-index 7427c40bf4ae..28cf3efe0695 100644
---- a/drivers/phy/socionext/phy-uniphier-ahci.c
-+++ b/drivers/phy/socionext/phy-uniphier-ahci.c
-@@ -19,8 +19,9 @@
- struct uniphier_ahciphy_priv {
- 	struct device *dev;
- 	void __iomem  *base;
--	struct clk *clk, *clk_parent;
--	struct reset_control *rst, *rst_parent;
-+	struct clk *clk, *clk_parent, *clk_parent_gio;
-+	struct reset_control *rst, *rst_parent, *rst_parent_gio;
-+	struct reset_control *rst_pm, *rst_tx, *rst_rx;
- 	const struct uniphier_ahciphy_soc_data *data;
- };
+diff --git a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
+index 8bd6d7e8a474..3fd80f1f7c1e 100644
+--- a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
++++ b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
+@@ -345,7 +345,7 @@ crg_ctrl: crg_ctrl@fff35000 {
+ 		crg_rst: crg_rst_controller {
+ 			compatible = "hisilicon,hi3660-reset";
+ 			#reset-cells = <2>;
+-			hisi,rst-syscon = <&crg_ctrl>;
++			hisilicon,rst-syscon = <&crg_ctrl>;
+ 		};
  
-@@ -28,10 +29,30 @@ struct uniphier_ahciphy_soc_data {
- 	int (*init)(struct uniphier_ahciphy_priv *priv);
- 	int (*power_on)(struct uniphier_ahciphy_priv *priv);
- 	int (*power_off)(struct uniphier_ahciphy_priv *priv);
-+	bool is_legacy;
- 	bool is_ready_high;
- 	bool is_phy_clk;
- };
  
-+/* for Pro4 */
-+#define CKCTRL0				0x0
-+#define CKCTRL0_CK_OFF			BIT(9)
-+#define CKCTRL0_NCY_MASK		GENMASK(8, 4)
-+#define CKCTRL0_NCY5_MASK		GENMASK(3, 2)
-+#define CKCTRL0_PRESCALE_MASK		GENMASK(1, 0)
-+#define CKCTRL1				0x4
-+#define CKCTRL1_LOS_LVL_MASK		GENMASK(20, 16)
-+#define CKCTRL1_TX_LVL_MASK		GENMASK(12, 8)
-+#define RXTXCTRL			0x8
-+#define RXTXCTRL_RX_EQ_VALL_MASK	GENMASK(31, 29)
-+#define RXTXCTRL_RX_DPLL_MODE_MASK	GENMASK(28, 26)
-+#define RXTXCTRL_TX_ATTEN_MASK		GENMASK(14, 12)
-+#define RXTXCTRL_TX_BOOST_MASK		GENMASK(11, 8)
-+#define RXTXCTRL_TX_EDGERATE_MASK	GENMASK(3, 2)
-+#define RXTXCTRL_TX_CKO_EN		BIT(0)
-+#define RSTPWR				0x30
-+#define RSTPWR_RX_EN_VAL		BIT(18)
-+
- /* for PXs2/PXs3 */
- #define CKCTRL				0x0
- #define CKCTRL_P0_READY			BIT(15)
-@@ -50,6 +71,128 @@ struct uniphier_ahciphy_soc_data {
- #define RXCTRL_LOS_BIAS_MASK		GENMASK(10, 8)
- #define RXCTRL_RX_EQ_MASK		GENMASK(2, 0)
+@@ -376,7 +376,7 @@ iomcu: iomcu@ffd7e000 {
  
-+static int uniphier_ahciphy_pro4_init(struct uniphier_ahciphy_priv *priv)
-+{
-+	u32 val;
-+
-+	/* set phy MPLL parameters */
-+	val = readl(priv->base + CKCTRL0);
-+	val &= ~CKCTRL0_NCY_MASK;
-+	val |= FIELD_PREP(CKCTRL0_NCY_MASK, 0x6);
-+	val &= ~CKCTRL0_NCY5_MASK;
-+	val |= FIELD_PREP(CKCTRL0_NCY5_MASK, 0x2);
-+	val &= ~CKCTRL0_PRESCALE_MASK;
-+	val |= FIELD_PREP(CKCTRL0_PRESCALE_MASK, 0x1);
-+	writel(val, priv->base + CKCTRL0);
-+
-+	/* setup phy control parameters */
-+	val = readl(priv->base + CKCTRL1);
-+	val &= ~CKCTRL1_LOS_LVL_MASK;
-+	val |= FIELD_PREP(CKCTRL1_LOS_LVL_MASK, 0x10);
-+	val &= ~CKCTRL1_TX_LVL_MASK;
-+	val |= FIELD_PREP(CKCTRL1_TX_LVL_MASK, 0x06);
-+	writel(val, priv->base + CKCTRL1);
-+
-+	val = readl(priv->base + RXTXCTRL);
-+	val &= ~RXTXCTRL_RX_EQ_VALL_MASK;
-+	val |= FIELD_PREP(RXTXCTRL_RX_EQ_VALL_MASK, 0x6);
-+	val &= ~RXTXCTRL_RX_DPLL_MODE_MASK;
-+	val |= FIELD_PREP(RXTXCTRL_RX_DPLL_MODE_MASK, 0x3);
-+	val &= ~RXTXCTRL_TX_ATTEN_MASK;
-+	val |= FIELD_PREP(RXTXCTRL_TX_ATTEN_MASK, 0x3);
-+	val &= ~RXTXCTRL_TX_BOOST_MASK;
-+	val |= FIELD_PREP(RXTXCTRL_TX_BOOST_MASK, 0x5);
-+	val &= ~RXTXCTRL_TX_EDGERATE_MASK;
-+	val |= FIELD_PREP(RXTXCTRL_TX_EDGERATE_MASK, 0x0);
-+	writel(val, priv->base + RXTXCTRL);
-+
-+	return 0;
-+}
-+
-+static int uniphier_ahciphy_pro4_power_on(struct uniphier_ahciphy_priv *priv)
-+{
-+	u32 val;
-+	int ret;
-+
-+	/* enable reference clock for phy */
-+	val = readl(priv->base + CKCTRL0);
-+	val &= ~CKCTRL0_CK_OFF;
-+	writel(val, priv->base + CKCTRL0);
-+
-+	/* enable TX clock */
-+	val = readl(priv->base + RXTXCTRL);
-+	val |= RXTXCTRL_TX_CKO_EN;
-+	writel(val, priv->base + RXTXCTRL);
-+
-+	/* wait until RX is ready */
-+	ret = readl_poll_timeout(priv->base + RSTPWR, val,
-+				 !(val & RSTPWR_RX_EN_VAL), 200, 2000);
-+	if (ret) {
-+		dev_err(priv->dev, "Failed to check whether Rx is ready\n");
-+		goto out_disable_clock;
-+	}
-+
-+	/* release all reset */
-+	ret = reset_control_deassert(priv->rst_pm);
-+	if (ret) {
-+		dev_err(priv->dev, "Failed to release PM reset\n");
-+		goto out_disable_clock;
-+	}
-+
-+	ret = reset_control_deassert(priv->rst_tx);
-+	if (ret) {
-+		dev_err(priv->dev, "Failed to release Tx reset\n");
-+		goto out_reset_pm_assert;
-+	}
-+
-+	ret = reset_control_deassert(priv->rst_rx);
-+	if (ret) {
-+		dev_err(priv->dev, "Failed to release Rx reset\n");
-+		goto out_reset_tx_assert;
-+	}
-+
-+	return 0;
-+
-+out_reset_tx_assert:
-+	reset_control_assert(priv->rst_tx);
-+out_reset_pm_assert:
-+	reset_control_assert(priv->rst_pm);
-+
-+out_disable_clock:
-+	/* disable TX clock */
-+	val = readl(priv->base + RXTXCTRL);
-+	val &= ~RXTXCTRL_TX_CKO_EN;
-+	writel(val, priv->base + RXTXCTRL);
-+
-+	/* disable reference clock for phy */
-+	val = readl(priv->base + CKCTRL0);
-+	val |= CKCTRL0_CK_OFF;
-+	writel(val, priv->base + CKCTRL0);
-+
-+	return ret;
-+}
-+
-+static int uniphier_ahciphy_pro4_power_off(struct uniphier_ahciphy_priv *priv)
-+{
-+	u32 val;
-+
-+	reset_control_assert(priv->rst_rx);
-+	reset_control_assert(priv->rst_tx);
-+	reset_control_assert(priv->rst_pm);
-+
-+	/* disable TX clock */
-+	val = readl(priv->base + RXTXCTRL);
-+	val &= ~RXTXCTRL_TX_CKO_EN;
-+	writel(val, priv->base + RXTXCTRL);
-+
-+	/* disable reference clock for phy */
-+	val = readl(priv->base + CKCTRL0);
-+	val |= CKCTRL0_CK_OFF;
-+	writel(val, priv->base + CKCTRL0);
-+
-+	return 0;
-+}
-+
- static void uniphier_ahciphy_pxs2_enable(struct uniphier_ahciphy_priv *priv,
- 					 bool enable)
- {
-@@ -142,14 +285,22 @@ static int uniphier_ahciphy_init(struct phy *phy)
- 	struct uniphier_ahciphy_priv *priv = phy_get_drvdata(phy);
- 	int ret;
+ 		iomcu_rst: reset {
+ 			compatible = "hisilicon,hi3660-reset";
+-			hisi,rst-syscon = <&iomcu>;
++			hisilicon,rst-syscon = <&iomcu>;
+ 			#reset-cells = <2>;
+ 		};
  
--	ret = clk_prepare_enable(priv->clk_parent);
-+	ret = clk_prepare_enable(priv->clk_parent_gio);
- 	if (ret)
- 		return ret;
+diff --git a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
+index 636c8817df7e..9eac9a339654 100644
+--- a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
++++ b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
+@@ -155,7 +155,7 @@ crg_rst: crg_rst_controller {
+ 			compatible = "hisilicon,hi3670-reset",
+ 				     "hisilicon,hi3660-reset";
+ 			#reset-cells = <2>;
+-			hisi,rst-syscon = <&crg_ctrl>;
++			hisilicon,rst-syscon = <&crg_ctrl>;
+ 		};
  
--	ret = reset_control_deassert(priv->rst_parent);
-+	ret = clk_prepare_enable(priv->clk_parent);
-+	if (ret)
-+		goto out_clk_gio_disable;
-+
-+	ret = reset_control_deassert(priv->rst_parent_gio);
- 	if (ret)
- 		goto out_clk_disable;
+ 		pctrl: pctrl@e8a09000 {
+@@ -196,7 +196,7 @@ media2_crg: media2_crgctrl@e8900000 {
  
-+	ret = reset_control_deassert(priv->rst_parent);
-+	if (ret)
-+		goto out_rst_gio_assert;
-+
- 	if (priv->data->init) {
- 		ret = priv->data->init(priv);
- 		if (ret)
-@@ -160,8 +311,12 @@ static int uniphier_ahciphy_init(struct phy *phy)
+ 		iomcu_rst: reset {
+ 			compatible = "hisilicon,hi3660-reset";
+-			hisi,rst-syscon = <&iomcu>;
++			hisilicon,rst-syscon = <&iomcu>;
+ 			#reset-cells = <2>;
+ 		};
  
- out_rst_assert:
- 	reset_control_assert(priv->rst_parent);
-+out_rst_gio_assert:
-+	reset_control_assert(priv->rst_parent_gio);
- out_clk_disable:
- 	clk_disable_unprepare(priv->clk_parent);
-+out_clk_gio_disable:
-+	clk_disable_unprepare(priv->clk_parent_gio);
- 
- 	return ret;
- }
-@@ -171,7 +326,9 @@ static int uniphier_ahciphy_exit(struct phy *phy)
- 	struct uniphier_ahciphy_priv *priv = phy_get_drvdata(phy);
- 
- 	reset_control_assert(priv->rst_parent);
-+	reset_control_assert(priv->rst_parent_gio);
- 	clk_disable_unprepare(priv->clk_parent);
-+	clk_disable_unprepare(priv->clk_parent_gio);
- 
- 	return 0;
- }
-@@ -265,6 +422,28 @@ static int uniphier_ahciphy_probe(struct platform_device *pdev)
- 	if (IS_ERR(priv->rst))
- 		return PTR_ERR(priv->rst);
- 
-+	if (priv->data->is_legacy) {
-+		priv->clk_parent_gio = devm_clk_get(dev, "gio");
-+		if (IS_ERR(priv->clk_parent_gio))
-+			return PTR_ERR(priv->clk_parent_gio);
-+		priv->rst_parent_gio =
-+			devm_reset_control_get_shared(dev, "gio");
-+		if (IS_ERR(priv->rst_parent_gio))
-+			return PTR_ERR(priv->rst_parent_gio);
-+
-+		priv->rst_pm = devm_reset_control_get_shared(dev, "pm");
-+		if (IS_ERR(priv->rst_pm))
-+			return PTR_ERR(priv->rst_pm);
-+
-+		priv->rst_tx = devm_reset_control_get_shared(dev, "tx");
-+		if (IS_ERR(priv->rst_tx))
-+			return PTR_ERR(priv->rst_tx);
-+
-+		priv->rst_rx = devm_reset_control_get_shared(dev, "rx");
-+		if (IS_ERR(priv->rst_rx))
-+			return PTR_ERR(priv->rst_rx);
-+	}
-+
- 	phy = devm_phy_create(dev, dev->of_node, &uniphier_ahciphy_ops);
- 	if (IS_ERR(phy)) {
- 		dev_err(dev, "failed to create phy\n");
-@@ -279,9 +458,18 @@ static int uniphier_ahciphy_probe(struct platform_device *pdev)
- 	return 0;
- }
- 
-+static const struct uniphier_ahciphy_soc_data uniphier_pro4_data = {
-+	.init = uniphier_ahciphy_pro4_init,
-+	.power_on  = uniphier_ahciphy_pro4_power_on,
-+	.power_off = uniphier_ahciphy_pro4_power_off,
-+	.is_legacy = true,
-+	.is_phy_clk = false,
-+};
-+
- static const struct uniphier_ahciphy_soc_data uniphier_pxs2_data = {
- 	.power_on  = uniphier_ahciphy_pxs2_power_on,
- 	.power_off = uniphier_ahciphy_pxs2_power_off,
-+	.is_legacy = false,
- 	.is_ready_high = false,
- 	.is_phy_clk = false,
- };
-@@ -290,12 +478,17 @@ static const struct uniphier_ahciphy_soc_data uniphier_pxs3_data = {
- 	.init      = uniphier_ahciphy_pxs3_init,
- 	.power_on  = uniphier_ahciphy_pxs2_power_on,
- 	.power_off = uniphier_ahciphy_pxs2_power_off,
-+	.is_legacy = false,
- 	.is_ready_high = true,
- 	.is_phy_clk = true,
- };
- 
- static const struct of_device_id uniphier_ahciphy_match[] = {
- 	{
-+		.compatible = "socionext,uniphier-pro4-ahci-phy",
-+		.data = &uniphier_pro4_data,
-+	},
-+	{
- 		.compatible = "socionext,uniphier-pxs2-ahci-phy",
- 		.data = &uniphier_pxs2_data,
- 	},
 -- 
-2.7.4
+2.33.0
 
