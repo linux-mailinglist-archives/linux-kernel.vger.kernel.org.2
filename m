@@ -2,115 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C32343F533
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 05:07:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9ACF43F534
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 05:08:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231610AbhJ2DJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 23:09:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231558AbhJ2DJv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 23:09:51 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 703E4C061570;
-        Thu, 28 Oct 2021 20:07:23 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id v29so6527625qtc.10;
-        Thu, 28 Oct 2021 20:07:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=JzpSqhfurME8Pq0Oj5kWfxHhRUriyDiyzwnmh7G0kCo=;
-        b=APYTuOapfUYrLTwWxUvlvvWNhQqx8FvllGIngRYNIDU7++9ckmIOU3ZR44uClRjJkZ
-         ZbSKW6rc9MIBk0D14RSS3XBIr3KuxWOlLaIvCzPZ63kil/c+J50mcKtY98KJTy3rok2t
-         hfV28rmS/eG7025BSr1uxT7P2lPw3qRZfdiFCsa40YrNpeWZE3n0+2RhYmEi1aPTKqU7
-         LQuPpbc4ABJDWOaH0Ggtzl8SWwg2NKL2uCRZJp9uiXSaS+pxLNynE4Lan0ZxTDbCGZeY
-         jvSNd5eJrmX7SHWq83a8ZfVQsB0GTwXcm0vYl2D3Skrk4PPOlY0WUsI6mwfJ6IwvODW+
-         Vl7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=JzpSqhfurME8Pq0Oj5kWfxHhRUriyDiyzwnmh7G0kCo=;
-        b=kYE936bsaG9sp/iNQwMRebcQ6+lpt+iSCwy3owhOzDK7z8zSkd2ezgsM34uxdiFpYp
-         kA592XQO0K3UJjLbjgy+6rl+wzpoS/bHFiHGXQObw1X+FjV78cr8N+uQvzYlIAdiFZSN
-         lXvx4VW3qhsT8ROwh4rkXuD91fiJJIGyDNYGRrH59rbS/C6/bOs4yqrYV+xqzU5mgbsf
-         MQK6efML1qRAxC+8BVMotZLQiNnzEdZ5SFkWmlJ+lDAjVMdaV/lpuMSKlfEVJaUYDNHJ
-         Hz1HJqBmAD4gVPr8dF7sW8MRHLGHoulH4yhedoEtkaChIiaVeBVoslpet1toPIZNPNxQ
-         N3QA==
-X-Gm-Message-State: AOAM531GNKAJWt3yCy7PUzNz+8IAZe1qAOsP58H+BoXDyulvrprsXVGJ
-        cLDSgmjBQKILr6QzonjpJSFF/aZr45o=
-X-Google-Smtp-Source: ABdhPJx/OHw1cubR3WX0YUbY/1y+8ExPJySpa76Cs56rMMJTu84RLvUcDwT5R2sXGUWUEulzTAx37w==
-X-Received: by 2002:a05:622a:1209:: with SMTP id y9mr9264405qtx.13.1635476842531;
-        Thu, 28 Oct 2021 20:07:22 -0700 (PDT)
-Received: from [192.168.1.49] (c-67-187-90-124.hsd1.tn.comcast.net. [67.187.90.124])
-        by smtp.gmail.com with ESMTPSA id bq41sm3444283qkb.26.2021.10.28.20.07.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Oct 2021 20:07:22 -0700 (PDT)
-Subject: Re: [PATCH 1/1] of: unittest: fix dts for interrupt-map provider
- build warning
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20211029005802.2047081-1-frowand.list@gmail.com>
- <CAL_JsqJujq0K9tF+m3qQ5GhC-yo7-vj9HRhF69UmrWA7tZv7DA@mail.gmail.com>
-From:   Frank Rowand <frowand.list@gmail.com>
-Message-ID: <e353b41d-48f9-5349-8b89-bafe9ab5101e@gmail.com>
-Date:   Thu, 28 Oct 2021 22:07:21 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <CAL_JsqJujq0K9tF+m3qQ5GhC-yo7-vj9HRhF69UmrWA7tZv7DA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S231631AbhJ2DK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 23:10:26 -0400
+Received: from smtp25.cstnet.cn ([159.226.251.25]:53564 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231558AbhJ2DKZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 23:10:25 -0400
+Received: from localhost.localdomain (unknown [124.16.138.128])
+        by APP-05 (Coremail) with SMTP id zQCowACXnal3ZXthsRuVBQ--.41556S2;
+        Fri, 29 Oct 2021 11:07:35 +0800 (CST)
+From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
+To:     peterz@infradead.org, valentin.schneider@arm.com,
+        bristot@redhat.com
+Cc:     linux-kernel@vger.kernel.org, Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Subject: [PATCH] stop_machine: Fix implicit type conversion
+Date:   Fri, 29 Oct 2021 03:07:33 +0000
+Message-Id: <1635476853-1849088-1-git-send-email-jiasheng@iscas.ac.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: zQCowACXnal3ZXthsRuVBQ--.41556S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrKFy5GFyktFykZw15KFy8Krg_yoWftrc_Cr
+        12qr1vgr1YgrZ2q3W2qr4FqFy8Kw1Yq3Wxt3W8WFZrZa4ktr43Xw1qgr98Xrn7W3yrAFnx
+        Z3s0g3Z8t342gjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbcAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+        Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
+        0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r48
+        MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
+        0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0E
+        wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJV
+        W8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI
+        42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfU84SoDUUUU
+X-Originating-IP: [124.16.138.128]
+X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/28/21 9:07 PM, Rob Herring wrote:
-> On Thu, Oct 28, 2021 at 7:58 PM <frowand.list@gmail.com> wrote:
->>
->> From: Frank Rowand <frank.rowand@sony.com>
->>
->> Fix kernel build warning:
->> drivers/of/unittest-data/tests-interrupts.dtsi:32.26-35.6: Warning (interrupt_map): /testcase-data/interrupts/intmap1: Missing '#address-cells' in interrupt-map provider
->>
->> A recently implemented dtc compiler warning reported the dts problem.
->>
->> Signed-off-by: Frank Rowand <frank.rowand@sony.com>
->> ---
->>  drivers/of/unittest-data/tests-interrupts.dtsi | 1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/drivers/of/unittest-data/tests-interrupts.dtsi b/drivers/of/unittest-data/tests-interrupts.dtsi
->> index 9b60a549f502..8c2b91b998aa 100644
->> --- a/drivers/of/unittest-data/tests-interrupts.dtsi
->> +++ b/drivers/of/unittest-data/tests-interrupts.dtsi
->> @@ -31,6 +31,7 @@ test_intmap0: intmap0 {
->>
->>                         test_intmap1: intmap1 {
->>                                 #interrupt-cells = <2>;
->> +                               #address-cells = <1>;
-> 
-> Notice that we have 2 nodes with interrupt-map here. One has
-> '#address-cells' and one doesn't. Why? Because we need to test that
-> the code can handle both cases.> 
-> The dtc warnings are more what should 'new' users do. I don't know
-> what DTs don't have #address-cells, but my guess is ancient ones.
-> 
-> Rob
-> 
+The variable 'cpu' is defined as unsigned int.
+However in the for_each_cpu, its values is assigned to -1.
+That doesn't make sense and in the cpumask_next() it is implicitly
+type conversed to int.
+It is universally accepted that the implicit type conversion is
+terrible.
+Also, having the good programming custom will set an example for
+others.
+Thus, it might be better to change the definition of 'cpu' from
+unsigned int to int.
 
-I had hoped to build all of the .dts files in the Linux tree, with the
-new dtc, but did not get to that today.  That should flush out any
-cases that would result in build fail from the new approach of treating
-all warnings as errors.  I may get to that tomorrow.
+Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
+---
+ kernel/stop_machine.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-If there any any existing .dts files that will trigger the interrupt
-map warning, will we require that they be fixed so that the build will
-not fail?
+diff --git a/kernel/stop_machine.c b/kernel/stop_machine.c
+index cbc3027..db6ea9f 100644
+--- a/kernel/stop_machine.c
++++ b/kernel/stop_machine.c
+@@ -393,7 +393,7 @@ static bool queue_stop_cpus_work(const struct cpumask *cpumask,
+ 				 struct cpu_stop_done *done)
+ {
+ 	struct cpu_stop_work *work;
+-	unsigned int cpu;
++	int cpu;
+ 	bool queued = false;
+ 
+ 	/*
+-- 
+2.7.4
 
--Frank
