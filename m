@@ -2,100 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDD0343FD45
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 15:16:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6780643FD4A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 15:21:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231691AbhJ2NTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 09:19:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39242 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229603AbhJ2NTH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 09:19:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 03BB961177;
-        Fri, 29 Oct 2021 13:16:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635513399;
-        bh=RiA7v1UBw9bN85yztLRB2RKleXrpK0l0Cd+7QnD9leY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Yarp0kQCNE+EG0rFEoofE1AuKzcmUjWKynudNPh8dKdmbMCfIKy9oydTWhsAvgeVl
-         +lKsutatCom53T0ZvT4SMtsziM3O2XsJeOGN7WkCkO2FbiIfDXN31kwmyuOiW3PiyJ
-         ZkE+ijThFLp35gISDCAwldrkJ3PALUGpcS9WsxMuoz12tqf9eXMxgplodaar0NUtSX
-         NBpVqL4u4JgGnmAGb9qas+iXnzrOqoMTyFGWjBAdXFpGfT8dcwlQbBeBwCOnvz2CAP
-         JWFZt39BO3xR5ZnJaiGscn0r7E9iLkm5/Z59z9ZWH7mxi/phIjqgVwt+X6FIp/vu9z
-         mW7wubYV3CfLA==
-Received: by mail-ed1-f53.google.com with SMTP id w15so38685031edc.9;
-        Fri, 29 Oct 2021 06:16:38 -0700 (PDT)
-X-Gm-Message-State: AOAM5308U27S/+bjV6FeYHtvI+j+CPOmatrW6OM8a7GxHv+5z1iXvk+4
-        X+ACBDwY6FDUtR5SuxMBLD9AIt3pijaiGBqJhQ==
-X-Google-Smtp-Source: ABdhPJyOLH6l45ltb4SfKRRdLuabWqV3OWUGmPX9aWDIzlIp6GcBJWOo0KFheQcnkS09ZjdwlmPQhbLND7TBzXxOGYA=
-X-Received: by 2002:a05:6402:206b:: with SMTP id bd11mr15475405edb.145.1635513397430;
- Fri, 29 Oct 2021 06:16:37 -0700 (PDT)
+        id S231573AbhJ2NYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 09:24:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230213AbhJ2NYC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 09:24:02 -0400
+Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4880CC061570
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 06:21:34 -0700 (PDT)
+Received: by mail-ua1-x935.google.com with SMTP id q13so18108945uaq.2
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 06:21:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=LdZRkb2jjHRwvNCYK2yy30G5/ZwFDQKRdQX+XUuj5lM=;
+        b=DR7MYkr3eIG6SMu54RDrdsjFrr1Q5fg16s26ka73Z297o96fb4gilhi8E3YFXaGSC/
+         shRpLtHv5peEX3upiykuxWlmG4q4alSAVZ2SYijehSWiT2atmp/HwRZfghe8pc8TJx0V
+         o5INT6p342OHqFIX9HiDTji3aPBjQhLs2vqXSByMZG9deAOt0aWPQCcdPlxk/X6FDCRv
+         wW2ibYHKgLqGCHjZf2X3U5T89TUVWTLRVKHPGDN5x+4UkNU0wTcVDbWDLf82RQUN8NbZ
+         NVJP0HIoiLFeSdQ25Z2HesW0vy0rtBFUUTlulplvvoXcHU+a6+unyFAB2BwT97LPdcRi
+         lmOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=LdZRkb2jjHRwvNCYK2yy30G5/ZwFDQKRdQX+XUuj5lM=;
+        b=QMZS8CfWpyz6Mj6yOfstWvPjpn6Pv2xxeW1eVyvumNl5hvDvd2IVhLRgTgkNCEAP17
+         uUX6yX1DGByBygHH6T0GH5BSTV3ScCbk1jPI+gbC5cBi8Jyy5Krf6i1s7/IG7O86XMYs
+         wSelzarMOdUdDwFVo3aVgLKzZyteOHb+vXgwbPfH7lQzgYh0/gN6Ndb0oN91zTYHWbui
+         tEiJ/leNjEYQgbxm88FAp57jQ4CmkFiWFfJOBCwoepzsRhpR8+ioLNnYpRHVMI4fz8vC
+         ZFro1xjDBgyO3axRKDvj4MsFJcX1T+Lueyk8RH4chtrkZKpRX+2/TIh4xtyTJEgD5qnq
+         KakA==
+X-Gm-Message-State: AOAM532ZdInV9bBsTlwHkQtLu6dT3P2OQ1hpL03OFyHCbfDrW6JnorqV
+        yxK1FuDMoRh03ICcRrGiTaruKSmI6deuChs2VsU=
+X-Google-Smtp-Source: ABdhPJyqdIYo9Jod08bcSRqbiqKOtMXB8/dTjtNT9o/n3Z0DvW2dfsFsAe+RJvvcf/8Vfer42WFY71CS4yK8/+6Bqb0=
+X-Received: by 2002:ab0:45a8:: with SMTP id u37mr9269720uau.24.1635513693016;
+ Fri, 29 Oct 2021 06:21:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211029005802.2047081-1-frowand.list@gmail.com>
- <CAL_JsqJujq0K9tF+m3qQ5GhC-yo7-vj9HRhF69UmrWA7tZv7DA@mail.gmail.com> <e353b41d-48f9-5349-8b89-bafe9ab5101e@gmail.com>
-In-Reply-To: <e353b41d-48f9-5349-8b89-bafe9ab5101e@gmail.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Fri, 29 Oct 2021 08:16:24 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqJi8h+DnnZCb-S2apDfMGF6PimQC+ViXB+X0oa4fWPcJg@mail.gmail.com>
-Message-ID: <CAL_JsqJi8h+DnnZCb-S2apDfMGF6PimQC+ViXB+X0oa4fWPcJg@mail.gmail.com>
-Subject: Re: [PATCH 1/1] of: unittest: fix dts for interrupt-map provider
- build warning
-To:     Frank Rowand <frowand.list@gmail.com>
-Cc:     devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Received: by 2002:a59:8e07:0:b0:23d:2f6a:b4ca with HTTP; Fri, 29 Oct 2021
+ 06:21:32 -0700 (PDT)
+Reply-To: barristerkarimdin020@gmail.com
+From:   Din Karim <katiehuggin@gmail.com>
+Date:   Fri, 29 Oct 2021 13:21:32 +0000
+Message-ID: <CABMVJ-Y6oeG=Nxq76WHptrGNehrxn-WeXPKXY77ibHQKHnVNGQ@mail.gmail.com>
+Subject: Hi
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 10:07 PM Frank Rowand <frowand.list@gmail.com> wrote:
->
-> On 10/28/21 9:07 PM, Rob Herring wrote:
-> > On Thu, Oct 28, 2021 at 7:58 PM <frowand.list@gmail.com> wrote:
-> >>
-> >> From: Frank Rowand <frank.rowand@sony.com>
-> >>
-> >> Fix kernel build warning:
-> >> drivers/of/unittest-data/tests-interrupts.dtsi:32.26-35.6: Warning (interrupt_map): /testcase-data/interrupts/intmap1: Missing '#address-cells' in interrupt-map provider
-> >>
-> >> A recently implemented dtc compiler warning reported the dts problem.
-> >>
-> >> Signed-off-by: Frank Rowand <frank.rowand@sony.com>
-> >> ---
-> >>  drivers/of/unittest-data/tests-interrupts.dtsi | 1 +
-> >>  1 file changed, 1 insertion(+)
-> >>
-> >> diff --git a/drivers/of/unittest-data/tests-interrupts.dtsi b/drivers/of/unittest-data/tests-interrupts.dtsi
-> >> index 9b60a549f502..8c2b91b998aa 100644
-> >> --- a/drivers/of/unittest-data/tests-interrupts.dtsi
-> >> +++ b/drivers/of/unittest-data/tests-interrupts.dtsi
-> >> @@ -31,6 +31,7 @@ test_intmap0: intmap0 {
-> >>
-> >>                         test_intmap1: intmap1 {
-> >>                                 #interrupt-cells = <2>;
-> >> +                               #address-cells = <1>;
-> >
-> > Notice that we have 2 nodes with interrupt-map here. One has
-> > '#address-cells' and one doesn't. Why? Because we need to test that
-> > the code can handle both cases.>
-> > The dtc warnings are more what should 'new' users do. I don't know
-> > what DTs don't have #address-cells, but my guess is ancient ones.
-> >
-> > Rob
-> >
->
-> I had hoped to build all of the .dts files in the Linux tree, with the
-> new dtc, but did not get to that today.  That should flush out any
-> cases that would result in build fail from the new approach of treating
-> all warnings as errors.  I may get to that tomorrow.
+Hello dear,
 
-They are still just warnings. You mean the requirement to be warning
-free? That's not new for dts files.
+Please I'm Barr Karim Din.from the Republic of Ghana I wish to
+communicate with you.
 
-> If there any any existing .dts files that will trigger the interrupt
-> map warning, will we require that they be fixed so that the build will
-> not fail?
+I wait for your response.
 
-I already submitted patches for them.
-
-Rob
+Barr Din Karim(Esq)
