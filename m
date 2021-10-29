@@ -2,97 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AA6543FB71
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 13:34:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A532F43FB78
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 13:35:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231968AbhJ2Lgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 07:36:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33236 "EHLO
+        id S231989AbhJ2LiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 07:38:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231948AbhJ2Lgt (ORCPT
+        with ESMTP id S231807AbhJ2LiP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 07:36:49 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A085EC061570
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 04:34:21 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1mgQ9B-0004ym-Nn; Fri, 29 Oct 2021 13:34:09 +0200
-Received: from pengutronix.de (2a03-f580-87bc-d400-e533-710f-3fbf-10c2.ip6.dokom21.de [IPv6:2a03:f580:87bc:d400:e533:710f:3fbf:10c2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 339986A0970;
-        Fri, 29 Oct 2021 11:34:06 +0000 (UTC)
-Date:   Fri, 29 Oct 2021 13:34:05 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Matt Kline <matt@bitbashing.io>,
-        Sean Nyekjaer <sean@geanix.com>,
-        Chandrasekar Ramakrishnan <rcsekar@samsung.com>
-Subject: Re: [RFC PATCH v1] can: m_can: m_can_read_fifo: fix memory leak in
- error branch
-Message-ID: <20211029113405.hbqcu6chf5e3olrm@pengutronix.de>
-References: <20211026180909.1953355-1-mailhol.vincent@wanadoo.fr>
+        Fri, 29 Oct 2021 07:38:15 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8CC9C061570;
+        Fri, 29 Oct 2021 04:35:46 -0700 (PDT)
+Received: from [IPv6:2a02:810a:880:f54:6141:93b5:19a6:af87] (unknown [IPv6:2a02:810a:880:f54:6141:93b5:19a6:af87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: dafna)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 137BD1F45952;
+        Fri, 29 Oct 2021 12:35:42 +0100 (BST)
+Subject: Re: [PATCH v8, 03/17] media: mtk-vcodec: Refactor vcodec pm interface
+To:     Yunfei Dong <yunfei.dong@mediatek.com>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Tomasz Figa <tfiga@google.com>
+Cc:     Hsin-Yi Wang <hsinyi@chromium.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Irui Wang <irui.wang@mediatek.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Tzung-Bi Shih <tzungbi@google.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+References: <20211029035527.454-1-yunfei.dong@mediatek.com>
+ <20211029035527.454-4-yunfei.dong@mediatek.com>
+From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Message-ID: <2a25abdc-691b-9409-15ed-980af460c6c6@collabora.com>
+Date:   Fri, 29 Oct 2021 13:35:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="lmadwv6kox6viphu"
-Content-Disposition: inline
-In-Reply-To: <20211026180909.1953355-1-mailhol.vincent@wanadoo.fr>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20211029035527.454-4-yunfei.dong@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---lmadwv6kox6viphu
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On 27.10.2021 03:09:09, Vincent Mailhol wrote:
-> In m_can_read_fifo(), if the second call to m_can_fifo_read() fails,
-> the function jump to the out_fail label and returns without calling
-> m_can_receive_skb(). This means that the skb previously allocated by
-> alloc_can_skb() is not freed. In other terms, this is a memory leak.
->=20
-> This patch adds a new goto statement: out_receive_skb and do some
-> small code refactoring to fix the issue.
+On 29.10.21 05:55, Yunfei Dong wrote:
+> Using the needed param for pm init/release function and remove unused
+> param mtkdev in 'struct mtk_vcodec_pm'.
+> 
+> Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
+> Reviewed-By: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
 
-This means we pass a skb to the user space, which contains wrong data.
-Probably 0x0, but if the CAN frame doesn't contain 0x0, it's wrong. That
-doesn't look like a good idea. If the CAN frame broke due to a CRC issue
-on the wire it is not received. IMHO it's best to discard the skb and
-return the error.
+Hi,
+I already commented on v7 that since the pm implementation for dec and enc is identical,
+you should better do the same refactor to enc and dec or better remove the code duplication.
 
-Marc
+Thanks,
+Dafna
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---lmadwv6kox6viphu
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmF73CoACgkQqclaivrt
-76lx8Af/dk/tZ39vAPhTsRy6i6hVimJK8nwFFk43d98GcPjGHyb2tqrRO9ePCB2p
-ekFqT90SzuqplPNhMm/Up9t8NnAAHYzymBXgwcldv/tT+Cm61AAz08ku9NH9tpe2
-hX/STgDOwxJYnKSPc2XkDjm4ZQr7Hu9gTeCbZR9RFGIg/mgha2nJvOkYOPyQj+6X
-HdOvSBNCumahuAAQB881jdbVc5FPbC9TIkKdZDy2WPJWDJA2DN5QfXZpzCte6xDU
-9fYwBWQSMX88o9IREvoYfUieuf5uw4g4xKVRCJYHHfAjreyy8g0dS7N6MqeFzVk6
-LK7/lDDNFL+WdGkPGpC4liom4wpe4Q==
-=vVSG
------END PGP SIGNATURE-----
-
---lmadwv6kox6viphu--
+> ---
+>   .../platform/mtk-vcodec/mtk_vcodec_dec_drv.c  |  6 ++---
+>   .../platform/mtk-vcodec/mtk_vcodec_dec_pm.c   | 22 ++++++++-----------
+>   .../platform/mtk-vcodec/mtk_vcodec_dec_pm.h   |  5 +++--
+>   .../platform/mtk-vcodec/mtk_vcodec_drv.h      |  1 -
+>   .../platform/mtk-vcodec/mtk_vcodec_enc_pm.c   |  1 -
+>   5 files changed, 15 insertions(+), 20 deletions(-)
+> 
+> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c
+> index 055d50e52720..3ac4c3935e4e 100644
+> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c
+> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c
+> @@ -249,7 +249,7 @@ static int mtk_vcodec_probe(struct platform_device *pdev)
+>   	if (IS_ERR(dev->fw_handler))
+>   		return PTR_ERR(dev->fw_handler);
+>   
+> -	ret = mtk_vcodec_init_dec_pm(dev);
+> +	ret = mtk_vcodec_init_dec_pm(dev->plat_dev, &dev->pm);
+>   	if (ret < 0) {
+>   		dev_err(&pdev->dev, "Failed to get mt vcodec clock source");
+>   		goto err_dec_pm;
+> @@ -378,7 +378,7 @@ static int mtk_vcodec_probe(struct platform_device *pdev)
+>   err_dec_alloc:
+>   	v4l2_device_unregister(&dev->v4l2_dev);
+>   err_res:
+> -	mtk_vcodec_release_dec_pm(dev);
+> +	mtk_vcodec_release_dec_pm(&dev->pm);
+>   err_dec_pm:
+>   	mtk_vcodec_fw_release(dev->fw_handler);
+>   	return ret;
+> @@ -418,7 +418,7 @@ static int mtk_vcodec_dec_remove(struct platform_device *pdev)
+>   		video_unregister_device(dev->vfd_dec);
+>   
+>   	v4l2_device_unregister(&dev->v4l2_dev);
+> -	mtk_vcodec_release_dec_pm(dev);
+> +	mtk_vcodec_release_dec_pm(&dev->pm);
+>   	mtk_vcodec_fw_release(dev->fw_handler);
+>   	return 0;
+>   }
+> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_pm.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_pm.c
+> index 6038db96f71c..20bd157a855c 100644
+> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_pm.c
+> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_pm.c
+> @@ -13,18 +13,15 @@
+>   #include "mtk_vcodec_dec_pm.h"
+>   #include "mtk_vcodec_util.h"
+>   
+> -int mtk_vcodec_init_dec_pm(struct mtk_vcodec_dev *mtkdev)
+> +int mtk_vcodec_init_dec_pm(struct platform_device *pdev,
+> +	struct mtk_vcodec_pm *pm)
+>   {
+>   	struct device_node *node;
+> -	struct platform_device *pdev;
+> -	struct mtk_vcodec_pm *pm;
+> +	struct platform_device *larb_pdev;
+>   	struct mtk_vcodec_clk *dec_clk;
+>   	struct mtk_vcodec_clk_info *clk_info;
+>   	int i = 0, ret = 0;
+>   
+> -	pdev = mtkdev->plat_dev;
+> -	pm = &mtkdev->pm;
+> -	pm->mtkdev = mtkdev;
+>   	dec_clk = &pm->vdec_clk;
+>   	node = of_parse_phandle(pdev->dev.of_node, "mediatek,larb", 0);
+>   	if (!node) {
+> @@ -32,13 +29,12 @@ int mtk_vcodec_init_dec_pm(struct mtk_vcodec_dev *mtkdev)
+>   		return -1;
+>   	}
+>   
+> -	pdev = of_find_device_by_node(node);
+> +	larb_pdev = of_find_device_by_node(node);
+>   	of_node_put(node);
+> -	if (WARN_ON(!pdev)) {
+> +	if (WARN_ON(!larb_pdev)) {
+>   		return -1;
+>   	}
+> -	pm->larbvdec = &pdev->dev;
+> -	pdev = mtkdev->plat_dev;
+> +	pm->larbvdec = &larb_pdev->dev;
+>   	pm->dev = &pdev->dev;
+>   
+>   	dec_clk->clk_num =
+> @@ -82,10 +78,10 @@ int mtk_vcodec_init_dec_pm(struct mtk_vcodec_dev *mtkdev)
+>   	return ret;
+>   }
+>   
+> -void mtk_vcodec_release_dec_pm(struct mtk_vcodec_dev *dev)
+> +void mtk_vcodec_release_dec_pm(struct mtk_vcodec_pm *pm)
+>   {
+> -	pm_runtime_disable(dev->pm.dev);
+> -	put_device(dev->pm.larbvdec);
+> +	pm_runtime_disable(pm->dev);
+> +	put_device(pm->larbvdec);
+>   }
+>   
+>   int mtk_vcodec_dec_pw_on(struct mtk_vcodec_pm *pm)
+> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_pm.h b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_pm.h
+> index 280aeaefdb65..a3df6aef6cb9 100644
+> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_pm.h
+> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_pm.h
+> @@ -9,8 +9,9 @@
+>   
+>   #include "mtk_vcodec_drv.h"
+>   
+> -int mtk_vcodec_init_dec_pm(struct mtk_vcodec_dev *dev);
+> -void mtk_vcodec_release_dec_pm(struct mtk_vcodec_dev *dev);
+> +int mtk_vcodec_init_dec_pm(struct platform_device *pdev,
+> +	struct mtk_vcodec_pm *pm);
+> +void mtk_vcodec_release_dec_pm(struct mtk_vcodec_pm *pm);
+>   
+>   int mtk_vcodec_dec_pw_on(struct mtk_vcodec_pm *pm);
+>   void mtk_vcodec_dec_pw_off(struct mtk_vcodec_pm *pm);
+> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h b/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
+> index 1d2370608d0d..0fa9d85114b9 100644
+> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
+> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
+> @@ -195,7 +195,6 @@ struct mtk_vcodec_pm {
+>   	struct mtk_vcodec_clk	venc_clk;
+>   	struct device	*larbvenc;
+>   	struct device	*dev;
+> -	struct mtk_vcodec_dev	*mtkdev;
+>   };
+>   
+>   /**
+> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_pm.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_pm.c
+> index 1b2e4930ed27..0c8c8f86788c 100644
+> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_pm.c
+> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_pm.c
+> @@ -26,7 +26,6 @@ int mtk_vcodec_init_enc_pm(struct mtk_vcodec_dev *mtkdev)
+>   	pdev = mtkdev->plat_dev;
+>   	pm = &mtkdev->pm;
+>   	memset(pm, 0, sizeof(struct mtk_vcodec_pm));
+> -	pm->mtkdev = mtkdev;
+>   	pm->dev = &pdev->dev;
+>   	dev = &pdev->dev;
+>   	enc_clk = &pm->venc_clk;
+> 
