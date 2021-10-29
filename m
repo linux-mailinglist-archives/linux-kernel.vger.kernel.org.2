@@ -2,91 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1A4443F9FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 11:35:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3187043F9F9
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 11:34:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231555AbhJ2Jhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 05:37:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229927AbhJ2Jhe (ORCPT
+        id S231559AbhJ2Jgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 05:36:46 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:27563 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231273AbhJ2Jgm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 05:37:34 -0400
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D47E1C061570
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 02:35:05 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id 131so11225918ybc.7
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 02:35:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=j/OujbmrV5NaVPVMIjJKYsD0hIi39AnoQxze7LZ/iC4=;
-        b=AGc90XXmMDsiFWeLaRlU/3og6tJOx04GKr/PWG3JtOfpgwTOujCl+8ArRMD4WJ+TTo
-         NfdiKpP289AndCCSzanBcYZqUlbbYQsivrIpll2ToPg+vbfL+hgt4ulJDVb7tci8cU+D
-         cKkuMON4eGsCCbpaYUHxuDZKSxVGs3xe29savOdQqrkKNiBxnwBAUVs/N/mVAJPRoZQT
-         VlDnso1+uQMDO20JWyc6+8HroHsRqo+5CIu7OMYBvYMryndBFThhoS33yYaMBB8jTMso
-         K2ZM1KsmLhPoYXNLS8ttMb0Sy2BNHUWNQXcCoOPGjgrE2oiWPWExM2ROSrKlwx1rytcu
-         neKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=j/OujbmrV5NaVPVMIjJKYsD0hIi39AnoQxze7LZ/iC4=;
-        b=6hHEngTtYJbEIMi3Kbgf02JwEwzRaIuV0noXVOpyqeGfcJzumCvjGxjY810KU7daHA
-         j542fDQzzJ5RybKp3jNb0SW1XqAeiOx8XhL4U8KVHei8xAqkFumPH/Nwe2MwFRuQ81YU
-         ttsJ41LO85H4LEgRZPXwwiNC64gLlETpeT8W/5yD+fLS91KvyIsBnTWBmgLg7E0HoKJT
-         Zno6qBAufsVf1a2rwNfX4c6VsBa5sHGBUwJI/lbgi12UIetVL2cep/k9CMNFG/VgLRWy
-         lLZF7YrWNZZFVM/lDgCQ2r4J3sXRdv9ytIqGQYL/AN5ZxsVTzZQemBS9RwQsgxknXCda
-         McgA==
-X-Gm-Message-State: AOAM530Ht/UrF7PJSF7YyX7n4CZwRyvd1OXP8/fWA83Ux3PcOK+5zSKn
-        oMNho/CLxIArLGctkiGEJKq6NP1aGkpW6z0LdAQ=
-X-Google-Smtp-Source: ABdhPJwXt8mhZtiVV5h1sAwVFqeYECqz5zbw/Se7RSZHedi6z+W80UlhhNYrT+XQ9soZVCnQ6opnicMtvmhsKwG6AY4=
-X-Received: by 2002:a25:b19f:: with SMTP id h31mr3923827ybj.331.1635500104985;
- Fri, 29 Oct 2021 02:35:04 -0700 (PDT)
+        Fri, 29 Oct 2021 05:36:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1635500053; x=1667036053;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=UA3mT5pGOwCaE2esRTHjdF4YdhrEwD31Y+BDYVHSjPc=;
+  b=LKIuMt/EZRc++R79R19IWHXVXvQ6jIVdABCMRQS6HoEnSJaIF80c2gWj
+   6JpFF0uz1eJofeCO/fQ5Jixb98NO/6jUf+AerMY5df+X9BIzKoMCiHfWe
+   EtKbintIrkpUyK1cf7CbGaUjNp6EpV01lZfPhY+VB99oZIKGvroEMLAyT
+   ugrzJKfo86IlcLL3o1jCYWVe53P33kHzklZZ7Q2kIoZM/eRtno8NbLmwt
+   t3mXRniqba6Qtmh2dMeEIBkv+wDNZkfmx2boyXA8vyvb9SmF8viwKR9sh
+   s5tsq5pbSadUkpfKrFwP0oQBUy5+AlhexL85+r0ZDp6gs7o8Wv4fbcVPg
+   g==;
+IronPort-SDR: Z58UCXVOAmV806wBgMO50/n0HZgZnw7G1JwQKLqIqeVHFwthiQt5BSlTkE6j+OPpzGmOqnYKZE
+ BX3rzmXI32YiQ94NsCkLl+wCZg3vREV+VltPjcEW0v1ZY9m8ziURxvyhSuNMfl4twwOllq0qig
+ w+Y1rn6zTkLBQfHdGfVpGf5rCZe+lPXjJvFUbbcwjGTtFWKcDluyqZm38HWopf88CYuFJEYD9p
+ eQ50GtQnYK2JnwmkgRl1myG7cFYeFBTH05QsT+3r7Vv1YhBLNO0A4n3YB0Eco6CdVDGB/YNtEF
+ V5YTuJ9SlKZjYmeOcgpMZtrZ
+X-IronPort-AV: E=Sophos;i="5.87,192,1631602800"; 
+   d="scan'208";a="134776882"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 29 Oct 2021 02:34:13 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Fri, 29 Oct 2021 02:34:13 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex01.mchp-main.com
+ (10.10.85.143) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
+ Transport; Fri, 29 Oct 2021 02:34:12 -0700
+Date:   Fri, 29 Oct 2021 11:35:56 +0200
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     Stephen Boyd <sboyd@kernel.org>
+CC:     <mturquette@baylibre.com>, <robh+dt@kernel.org>,
+        <nicolas.ferre@microchip.com>, <kavyasree.kotagiri@microchip.com>,
+        <eugen.hristev@microchip.com>, <linux-clk@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH 3/3] clk: lan966x: Extend lan966x clock driver for
+ clock gating support
+Message-ID: <20211029093556.tdvroyommqi5xb6g@soft-dev3-1.localhost>
+References: <20211019084449.1411060-1-horatiu.vultur@microchip.com>
+ <20211019084449.1411060-4-horatiu.vultur@microchip.com>
+ <163548971798.15791.952778566228263608@swboyd.mtv.corp.google.com>
 MIME-Version: 1.0
-Received: by 2002:a05:7010:4acc:b0:1bb:64fa:94ae with HTTP; Fri, 29 Oct 2021
- 02:35:04 -0700 (PDT)
-Reply-To: mrsharrishuzzah@gmail.com
-From:   HARRIS HUZZAH <mrseliselucason@gmail.com>
-Date:   Fri, 29 Oct 2021 02:35:04 -0700
-Message-ID: <CABUmS84T1Ldv7P7+P_SNQ_O5AMbYVLkUrGJphw=95wjovosDOw@mail.gmail.com>
-Subject: My name is Mrs HARRIS HUZZAH from France,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <163548971798.15791.952778566228263608@swboyd.mtv.corp.google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-My name is Mrs HARRIS HUZZAH from France,
+The 10/28/2021 23:41, Stephen Boyd wrote:
 
-I know that this message might come to you as surprise because we
-don't know each other nor have we ever met before but accept it with
-an open and positive mind. I have a Very important request that made
-me to contact you; I was diagnosed with ovarian cancer disease which
-doctors have confirmed and announced to me that i have just few days
-to leave, Now that I=E2=80=99m ending the race like this, without any famil=
-y
-members and no child, I just came across your email contact from my
-personal search.
+Hi Stephen,
 
-I=E2=80=99m a business woman from France dealing with gold exportation here=
- in
-Republic of Burkina Faso. I have decided to hand over the sum of ($4.5
-Million Dollar) in my account to you for the help of orphanage
-homes/the needy once in your location to fulfill my wish on earth. But
-before handing over my data=E2=80=99s to you, kindly assure me that you wil=
-l
-take only 50% of the money and share the rest to orphanage homes/the
-needy once in your country, Return to enable me forward to you the
-bank contact details now that I have access to Internet in the
-hospital to enable you contact the bank, always check your e-mail
-always remember me for doing good.
-Please don't forget to reply me in my Private
-E-mail:(mrsharrishuzzah@gmail.com)
+> 
+> Quoting Horatiu Vultur (2021-10-19 01:44:49)
+> > diff --git a/drivers/clk/clk-lan966x.c b/drivers/clk/clk-lan966x.c
+> > index 19bec94e1551..40be47092a31 100644
+> > --- a/drivers/clk/clk-lan966x.c
+> > +++ b/drivers/clk/clk-lan966x.c
+> > @@ -188,26 +202,64 @@ static struct clk_hw *lan966x_gck_clk_register(struct device *dev, int i)
+> >         return &priv->hw;
+> >  };
+> >
+> > +static int lan966x_gate_clk_register(struct device *dev,
+> > +                                    struct clk_hw_onecell_data *hw_data,
+> > +                                    void __iomem *gate_base)
+> > +{
+> > +       int i;
+> > +
+> > +       for (i = GCK_GATE_UHPHS; i < N_CLOCKS; ++i) {
+> > +               int idx = i - GCK_GATE_UHPHS;
+> > +
+> > +               hw_data->hws[i] =
+> > +                       clk_hw_register_gate(dev, clk_gate_desc[idx].name,
+> 
+> Use devm?
 
-Your early response will be appreciated.
+I couldn't find any devm_clk_hw_register_gate or something similar for
+the gate.
 
-Yours Faithfully,
-Mrs.HARRIS HUZZAH
+> 
+> > +                                            "lan966x", 0, base,
+> > +                                            clk_gate_desc[idx].bit_idx,
+> > +                                            0, &clk_gate_lock);
+> > +
+> > +               if (IS_ERR(hw_data->hws[i]))
+> > +                       return dev_err_probe(dev, PTR_ERR(hw_data->hws[i]),
+> > +                                            "failed to register %s clock\n",
+> > +                                            clk_gate_desc[idx].name);
+> > +       }
+> > +
+> > +       return 0;
+> > +}
+> > +
+> > +static void lan966x_gate_clk_unregister(struct clk_hw_onecell_data *hw_data)
+> > +{
+> > +       int i;
+> > +
+> > +       for (i = GCK_GATE_UHPHS; i < N_CLOCKS; ++i)
+> 
+> for (int i =
+> 
+> should suffice
+
+That would not work. I will get the error:
+error: ‘for’ loop initial declarations are only allowed in C99 or C11 mode
+
+> 
+> > +               if (!IS_ERR(hw_data->hws[i]))
+> > +                       clk_hw_unregister(hw_data->hws[i]);
+> > +}
+> > +
+
+-- 
+/Horatiu
