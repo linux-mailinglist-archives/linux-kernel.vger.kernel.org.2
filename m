@@ -2,236 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C01943FE16
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 16:11:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58AE143FDC5
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 16:01:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232002AbhJ2ONg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 10:13:36 -0400
-Received: from ixit.cz ([94.230.151.217]:52356 "EHLO ixit.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231810AbhJ2ON1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 10:13:27 -0400
-Received: from localhost.localdomain (ip-89-176-96-70.net.upcbroadband.cz [89.176.96.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id BBC6A23D91;
-        Fri, 29 Oct 2021 14:17:47 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-        t=1635509868;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=s8yyxqFVKattkdAGWNseuY/v4m4uzmy/l55j6/y5LeA=;
-        b=YzQegZ9qN5lglFzeFSWB42tjsfLKW3WN/Ho+1q+viXsQuPhI42/ZLa8Q1Av4lgcRot/TMI
-        0qEeQwSr6rddHyGwYkNDuEbfoud/BV6lrUyQbSKftkBz1XBoN+bQGqJRy6Zpa+D9mjFPWn
-        yKREl06TTFlIm5Poz8eo/Rwf/l1Cm2E=
-From:   David Heidelberg <david@ixit.cz>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     ~okias/devicetree@lists.sr.ht, David Heidelberg <david@ixit.cz>,
-        devicetree@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] powerpc/fsl: fix the schema check errors for fsl,tmu-calibration
-Date:   Fri, 29 Oct 2021 14:17:33 +0200
-Message-Id: <20211029121733.46849-1-david@ixit.cz>
-X-Mailer: git-send-email 2.33.0
+        id S231604AbhJ2OEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 10:04:16 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:49642 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231418AbhJ2OEB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 10:04:01 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19TDDN3T001431;
+        Fri, 29 Oct 2021 15:56:49 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=selector1;
+ bh=jsaels+ddUZtfsywBFS4CqwXVBDosXtO8sG+jb6tKR0=;
+ b=DhzfQ8C84cc0Ebr4BjC4FRbOFcGMP1A2zFMsxWgdX0Hrcvvz8+74UUAGR8dqvIDPEjuh
+ ADz8+83ta89pdPNyTTuowAa9kjPjDFjrRPM1cVnEwUx20VGNeBtKMO+FClT2ooiuh9UT
+ FtAs0+uJhPrmbDub2FFHs++wvSWZT1kihDnOf3G1v+xjUKyuoPLiRbG6hq+LUYAusZYg
+ K8mumx4TVUOI+c2z6J7igLUWR6wJ2mKedY3VE6BEf1tjoCyydNeKc3epnrHGAr4BAbFv
+ KPg02iyBbdzolF7Yt5bNV0yoNZ2eQWpT6Hyfa2DSjGh/+7l8nfk5dr/oHzP35k57bbBn xg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3c07xgkpa1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 Oct 2021 15:56:49 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id F0732100034;
+        Fri, 29 Oct 2021 15:56:48 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id E751124C742;
+        Fri, 29 Oct 2021 15:56:48 +0200 (CEST)
+Received: from localhost (10.75.127.50) by SFHDAG2NODE2.st.com (10.75.127.5)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.18; Fri, 29 Oct 2021 15:56:48
+ +0200
+From:   Nicolas Toromanoff <nicolas.toromanoff@foss.st.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+CC:     Marek Vasut <marex@denx.de>,
+        Nicolas Toromanoff <nicolas.toromanoff@foss.st.com>,
+        <linux-crypto@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH 4/8] crypto: stm32/cryp - fix race condition
+Date:   Fri, 29 Oct 2021 15:54:50 +0200
+Message-ID: <20211029135454.4383-5-nicolas.toromanoff@foss.st.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20211029135454.4383-1-nicolas.toromanoff@foss.st.com>
+References: <20211029135454.4383-1-nicolas.toromanoff@foss.st.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.50]
+X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-29_03,2021-10-29_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fsl,tmu-calibration is in u32-matrix format. Use matching property syntax.
-No functional changes. Fixes warnings as:
-$ make dtbs_check
-...
-arch/arm64/boot/dts/freescale/imx8mq-librem5-r3.dt.yaml: tmu@30260000: fsl,tmu-calibration:0: Additional items are not allowed (1, 41, 2, 47, 3, 53, 4, 61, 5, 67, 6, 75, 7, 81, 8, 87, 9, 95, 10, 103, 11, 111
-, 65536, 27, 65537, 35, 65538, 43, 65539, 51, 65540, 59, 65541, 67, 65542, 75, 65543, 85, 65544, 93, 65545, 103, 65546, 112, 131072, 23, 131073, 35, 131074, 45, 131075, 55, 131076, 65, 131077, 75, 131078, 87, 13
-1079, 99, 131080, 111, 196608, 21, 196609, 33, 196610, 45, 196611, 57, 196612, 69, 196613, 83, 196614, 95, 196615, 113 were unexpected)
-        From schema: Documentation/devicetree/bindings/thermal/qoriq-thermal.yaml
-...
+Erase key before finalizing request.
+Fixes: 9e054ec21ef8 ("crypto: stm32 - Support for STM32 CRYP crypto module")
 
-Signed-off-by: David Heidelberg <david@ixit.cz>
+Signed-off-by: Nicolas Toromanoff <nicolas.toromanoff@foss.st.com>
 ---
- arch/powerpc/boot/dts/fsl/t1023si-post.dtsi | 79 +++++++++++----------
- arch/powerpc/boot/dts/fsl/t1040si-post.dtsi | 71 +++++++++---------
- 2 files changed, 76 insertions(+), 74 deletions(-)
+ drivers/crypto/stm32/stm32-cryp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/powerpc/boot/dts/fsl/t1023si-post.dtsi b/arch/powerpc/boot/dts/fsl/t1023si-post.dtsi
-index d552044c5afc..aa5152ca8120 100644
---- a/arch/powerpc/boot/dts/fsl/t1023si-post.dtsi
-+++ b/arch/powerpc/boot/dts/fsl/t1023si-post.dtsi
-@@ -367,45 +367,46 @@ tmu: tmu@f0000 {
- 		reg = <0xf0000 0x1000>;
- 		interrupts = <18 2 0 0>;
- 		fsl,tmu-range = <0xb0000 0xa0026 0x80048 0x30061>;
--		fsl,tmu-calibration = <0x00000000 0x0000000f
--				       0x00000001 0x00000017
--				       0x00000002 0x0000001e
--				       0x00000003 0x00000026
--				       0x00000004 0x0000002e
--				       0x00000005 0x00000035
--				       0x00000006 0x0000003d
--				       0x00000007 0x00000044
--				       0x00000008 0x0000004c
--				       0x00000009 0x00000053
--				       0x0000000a 0x0000005b
--				       0x0000000b 0x00000064
--
--				       0x00010000 0x00000011
--				       0x00010001 0x0000001c
--				       0x00010002 0x00000024
--				       0x00010003 0x0000002b
--				       0x00010004 0x00000034
--				       0x00010005 0x00000039
--				       0x00010006 0x00000042
--				       0x00010007 0x0000004c
--				       0x00010008 0x00000051
--				       0x00010009 0x0000005a
--				       0x0001000a 0x00000063
--
--				       0x00020000 0x00000013
--				       0x00020001 0x00000019
--				       0x00020002 0x00000024
--				       0x00020003 0x0000002c
--				       0x00020004 0x00000035
--				       0x00020005 0x0000003d
--				       0x00020006 0x00000046
--				       0x00020007 0x00000050
--				       0x00020008 0x00000059
--
--				       0x00030000 0x00000002
--				       0x00030001 0x0000000d
--				       0x00030002 0x00000019
--				       0x00030003 0x00000024>;
-+		fsl,tmu-calibration =
-+				<0x00000000 0x0000000f>,
-+				<0x00000001 0x00000017>,
-+				<0x00000002 0x0000001e>,
-+				<0x00000003 0x00000026>,
-+				<0x00000004 0x0000002e>,
-+				<0x00000005 0x00000035>,
-+				<0x00000006 0x0000003d>,
-+				<0x00000007 0x00000044>,
-+				<0x00000008 0x0000004c>,
-+				<0x00000009 0x00000053>,
-+				<0x0000000a 0x0000005b>,
-+				<0x0000000b 0x00000064>,
-+
-+				<0x00010000 0x00000011>,
-+				<0x00010001 0x0000001c>,
-+				<0x00010002 0x00000024>,
-+				<0x00010003 0x0000002b>,
-+				<0x00010004 0x00000034>,
-+				<0x00010005 0x00000039>,
-+				<0x00010006 0x00000042>,
-+				<0x00010007 0x0000004c>,
-+				<0x00010008 0x00000051>,
-+				<0x00010009 0x0000005a>,
-+				<0x0001000a 0x00000063>,
-+
-+				<0x00020000 0x00000013>,
-+				<0x00020001 0x00000019>,
-+				<0x00020002 0x00000024>,
-+				<0x00020003 0x0000002c>,
-+				<0x00020004 0x00000035>,
-+				<0x00020005 0x0000003d>,
-+				<0x00020006 0x00000046>,
-+				<0x00020007 0x00000050>,
-+				<0x00020008 0x00000059>,
-+
-+				<0x00030000 0x00000002>,
-+				<0x00030001 0x0000000d>,
-+				<0x00030002 0x00000019>,
-+				<0x00030003 0x00000024>;
- 		#thermal-sensor-cells = <1>;
- 	};
+diff --git a/drivers/crypto/stm32/stm32-cryp.c b/drivers/crypto/stm32/stm32-cryp.c
+index 6eeeca0d70ce..f97f9ee68d6f 100644
+--- a/drivers/crypto/stm32/stm32-cryp.c
++++ b/drivers/crypto/stm32/stm32-cryp.c
+@@ -666,6 +666,8 @@ static void stm32_cryp_finish_req(struct stm32_cryp *cryp, int err)
+ 		free_pages((unsigned long)buf_out, pages);
+ 	}
  
-diff --git a/arch/powerpc/boot/dts/fsl/t1040si-post.dtsi b/arch/powerpc/boot/dts/fsl/t1040si-post.dtsi
-index f58eb820eb5e..27e6985d8bde 100644
---- a/arch/powerpc/boot/dts/fsl/t1040si-post.dtsi
-+++ b/arch/powerpc/boot/dts/fsl/t1040si-post.dtsi
-@@ -447,41 +447,42 @@ tmu: tmu@f0000 {
- 		reg = <0xf0000 0x1000>;
- 		interrupts = <18 2 0 0>;
- 		fsl,tmu-range = <0xa0000 0x90026 0x8004a 0x1006a>;
--		fsl,tmu-calibration = <0x00000000 0x00000025
--				       0x00000001 0x00000028
--				       0x00000002 0x0000002d
--				       0x00000003 0x00000031
--				       0x00000004 0x00000036
--				       0x00000005 0x0000003a
--				       0x00000006 0x00000040
--				       0x00000007 0x00000044
--				       0x00000008 0x0000004a
--				       0x00000009 0x0000004f
--				       0x0000000a 0x00000054
--
--				       0x00010000 0x0000000d
--				       0x00010001 0x00000013
--				       0x00010002 0x00000019
--				       0x00010003 0x0000001f
--				       0x00010004 0x00000025
--				       0x00010005 0x0000002d
--				       0x00010006 0x00000033
--				       0x00010007 0x00000043
--				       0x00010008 0x0000004b
--				       0x00010009 0x00000053
--
--				       0x00020000 0x00000010
--				       0x00020001 0x00000017
--				       0x00020002 0x0000001f
--				       0x00020003 0x00000029
--				       0x00020004 0x00000031
--				       0x00020005 0x0000003c
--				       0x00020006 0x00000042
--				       0x00020007 0x0000004d
--				       0x00020008 0x00000056
--
--				       0x00030000 0x00000012
--				       0x00030001 0x0000001d>;
-+		fsl,tmu-calibration =
-+				<0x00000000 0x00000025>,
-+				<0x00000001 0x00000028>,
-+				<0x00000002 0x0000002d>,
-+				<0x00000003 0x00000031>,
-+				<0x00000004 0x00000036>,
-+				<0x00000005 0x0000003a>,
-+				<0x00000006 0x00000040>,
-+				<0x00000007 0x00000044>,
-+				<0x00000008 0x0000004a>,
-+				<0x00000009 0x0000004f>,
-+				<0x0000000a 0x00000054>,
++	memset(cryp->ctx->key, 0, sizeof(cryp->ctx->key));
 +
-+				<0x00010000 0x0000000d>,
-+				<0x00010001 0x00000013>,
-+				<0x00010002 0x00000019>,
-+				<0x00010003 0x0000001f>,
-+				<0x00010004 0x00000025>,
-+				<0x00010005 0x0000002d>,
-+				<0x00010006 0x00000033>,
-+				<0x00010007 0x00000043>,
-+				<0x00010008 0x0000004b>,
-+				<0x00010009 0x00000053>,
-+
-+				<0x00020000 0x00000010>,
-+				<0x00020001 0x00000017>,
-+				<0x00020002 0x0000001f>,
-+				<0x00020003 0x00000029>,
-+				<0x00020004 0x00000031>,
-+				<0x00020005 0x0000003c>,
-+				<0x00020006 0x00000042>,
-+				<0x00020007 0x0000004d>,
-+				<0x00020008 0x00000056>,
-+
-+				<0x00030000 0x00000012>,
-+				<0x00030001 0x0000001d>;
- 		#thermal-sensor-cells = <1>;
- 	};
+ 	pm_runtime_mark_last_busy(cryp->dev);
+ 	pm_runtime_put_autosuspend(cryp->dev);
  
+@@ -674,8 +676,6 @@ static void stm32_cryp_finish_req(struct stm32_cryp *cryp, int err)
+ 	else
+ 		crypto_finalize_skcipher_request(cryp->engine, cryp->req,
+ 						   err);
+-
+-	memset(cryp->ctx->key, 0, cryp->ctx->keylen);
+ }
+ 
+ static int stm32_cryp_cpu_start(struct stm32_cryp *cryp)
 -- 
-2.33.0
+2.17.1
 
