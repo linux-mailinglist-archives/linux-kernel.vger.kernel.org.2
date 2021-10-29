@@ -2,111 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 044344402DC
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 21:06:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B3E14402E0
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 21:07:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231177AbhJ2TJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 15:09:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52462 "EHLO
+        id S231147AbhJ2TJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 15:09:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230253AbhJ2TJJ (ORCPT
+        with ESMTP id S230253AbhJ2TJa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 15:09:09 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A028C061570
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 12:06:40 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id m14so10055246pfc.9
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 12:06:40 -0700 (PDT)
+        Fri, 29 Oct 2021 15:09:30 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE079C061766
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 12:07:01 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id m11so9936002oif.13
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 12:07:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Ldj1ddyxFxyQn1P+7U21zE8sjEfcNWeGvgdcMjeN8ow=;
-        b=GpXuydJMaY5WU3GNXnra8fb0QxJ21K1yg/2Yfr+9y9SdyTweeX/PFEXrDKILHAxhHt
-         p6K5FRUHJXAGqi5tOfGlbq3rqnFQCU2R2JiBWlJZtHgQeo8lZksJS8JLuVaKUFln8+UQ
-         QB5PdKrNUElX3lot09fgygBgsJvl3WiOqXY3AzxtQyOGbuiadFHr5lhNGeSbw5ZHhmLs
-         H0LM4w/AkVBucc8LLr9ItQ1HNz4qJIAUROHDyt2qdPFHUZa7n3x55AsaTmHdFJI1KCih
-         uKoXNahx5vdoJcc6I7BJ01DbFRWPY4qTxQsVCnXeB2j8/VlGXuCaFN6C5fzY4NSdp0Ir
-         g0aw==
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to;
+        bh=JIoJB0nrnD/FFJ0kl/mJlxgFsqLGnc24ub0V7Q5LiC0=;
+        b=bJM3Q7f+i/afuWWCMK9Zl6Ay4ZGeoSmIMwgY9LnPih51xxl3kIoujkSsqObWesITLf
+         6UujLqHi2tSvD7sUnjd6EaTZDSz3nEgQYkppvar8Qjp1Xv6DYm169z1MzVoio623ojKw
+         SaXvZd35gNBBe55rjV6qIHWDfnQzq6Z8I73Zs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Ldj1ddyxFxyQn1P+7U21zE8sjEfcNWeGvgdcMjeN8ow=;
-        b=Fpxnx8ub1XnAmEUFHguXf2q92IEQU4U/OBdPj0kuMg3arJC1nAZVVNLZ5oHiM4umb9
-         5ussEGQO5ckmJ7mpOVnvOMkwDaMehIjN0qpxK+AdtFMbRVd/3bcBIZjSphzFI0ALhjVb
-         jAppc5w6wYJTSGnXYplYxsEOVs/d2zrHIp0rCctASZZ+dC6m6lT162ncHae3C0CpmYly
-         PQdKQRb+cYrDMLKlsEKIgNAn5hXcuY+1izqeO5OiW0KYNevsMLs4F8ZkkeshaP5KokhA
-         rKDfUA5kDcXxFYxH1/QhRbHLi2HaWHdu/fBsX7x4s3ie2ZJChHlwyhZw5rc5UfkiZ5Qg
-         sE+Q==
-X-Gm-Message-State: AOAM5323994k4A1hxWcxQ9ySWLfteNi5aZHInFg15qambMwbBj1jhxU1
-        Zmugp0bLBYinJ4LfB4d2hpSgq0ghzt0msQ==
-X-Google-Smtp-Source: ABdhPJze0lQCEEqIKDMf/2e7SXLtpJ3is5kITQ6qUJHlSXMzFeN48xOz6hwg/+xzSFZScLJ2N/rB6g==
-X-Received: by 2002:a63:8aca:: with SMTP id y193mr1486059pgd.362.1635534399609;
-        Fri, 29 Oct 2021 12:06:39 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id m22sm7408458pfo.71.2021.10.29.12.06.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Oct 2021 12:06:39 -0700 (PDT)
-Date:   Fri, 29 Oct 2021 19:06:35 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        llvm@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Ajay Garg <ajaygargnsit@gmail.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [PATCH] KVM: x86: Shove vp_bitmap handling down into
- sparse_set_to_vcpu_mask()
-Message-ID: <YXxGO5/xO8KWfnKj@google.com>
-References: <20211028213408.2883933-1-seanjc@google.com>
- <87pmrokn16.fsf@vitty.brq.redhat.com>
- <YXwF+jSnDq9ONTQJ@google.com>
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to;
+        bh=JIoJB0nrnD/FFJ0kl/mJlxgFsqLGnc24ub0V7Q5LiC0=;
+        b=8D5aBzqKdN0PMJbVLTrM2wPFQHftH3+fsyR4cYLcn28knQ28VF5OLf06bIwMwtt3I+
+         TyDj57JYyoIDN315vHzXGEJXe4KNRVgjknvlNxLWmJyLpWCUKrd3XUvkB7STYqe6qLJe
+         ikBv1eAH3dmmEcWITVXhv9u4C+b0hvkhyyUhGsS9ioSJ+hiYNIl6IjYFfUMWplgb1ybz
+         w3k3UsEV/2UE0mrBWbFbwx7SDRSlfYA594kiF+qCsmkKqhDMRNTuBm31TJMYsLGJ0GZq
+         aJrvWJery+WoZji+ot354UnyPmTJmPDf+tgv8mGQlR5213BWNAQp2y7zx7cYcnZov3iu
+         a74A==
+X-Gm-Message-State: AOAM530Kgr83nW8a2/faf7z2UPvQqxBXGUtydr5poFlBvSvNVqvqoX11
+        H21dG9yAh617acPesenaWt9T4uXHiAdHwBrpiL7wEg==
+X-Google-Smtp-Source: ABdhPJx9DGm5zi/J5DHIHPM2ULFvb0dn5vpJfei1NgjU04Cz6QeqMDgJeGhpiv+KN0Wgad1XtCZqRxBYp0XeOm27aYk=
+X-Received: by 2002:a05:6808:2124:: with SMTP id r36mr9693318oiw.64.1635534421166;
+ Fri, 29 Oct 2021 12:07:01 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Fri, 29 Oct 2021 14:07:00 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YXwF+jSnDq9ONTQJ@google.com>
+In-Reply-To: <1635519876-7112-2-git-send-email-srivasam@codeaurora.org>
+References: <1635519876-7112-1-git-send-email-srivasam@codeaurora.org> <1635519876-7112-2-git-send-email-srivasam@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Fri, 29 Oct 2021 14:07:00 -0500
+Message-ID: <CAE-0n53ok5muZ8nhpsigsw3w_qx_TSxGSdm7pf9nbb+s4K+HiQ@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] ASoC: google: dt-bindings: Add sc7280-herobrine
+ machine bindings
+To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        agross@kernel.org, alsa-devel@alsa-project.org,
+        bgoswami@codeaurora.org, bjorn.andersson@linaro.org,
+        broonie@kernel.org, devicetree@vger.kernel.org,
+        judyhsiao@chromium.org, lgirdwood@gmail.com,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        perex@perex.cz, plai@codeaurora.org, robh+dt@kernel.org,
+        rohitkr@codeaurora.org, srinivas.kandagatla@linaro.org,
+        tiwai@suse.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021, Sean Christopherson wrote:
-> On Fri, Oct 29, 2021, Vitaly Kuznetsov wrote:
-> > > +	/* If vp_index == vcpu_idx for all vCPUs, fill vcpu_mask directly. */
-> > > +	if (likely(!has_mismatch))
-> > > +		bitmap = (u64 *)vcpu_mask;
-> > > +
-> > > +	memset(bitmap, 0, sizeof(vp_bitmap));
-> > 
-> > ... but in the unlikely case has_mismatch == true 'bitmap' is still
-> > uninitialized here, right? How doesn't it crash?
-> 
-> I'm sure it does crash.  I'll hack the guest to actually test this.
+Quoting Srinivasa Rao Mandadapu (2021-10-29 08:04:35)
+> diff --git a/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml b/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml
+> new file mode 100644
+> index 0000000..3a781c8
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml
+> @@ -0,0 +1,170 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/sound/google,sc7280-herobrine.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Google SC7280-Herobrine ASoC sound card driver
+> +
+> +maintainers:
+> +  - Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+> +  - Judy Hsiao <judyhsiao@chromium.org>
+> +
+> +description:
+> +  This binding describes the SC7280 sound card which uses LPASS for audio.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - google,sc7280-herobrine
+> +
+> +  audio-routing:
+> +    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
+> +    description:
+> +      A list of the connections between audio components. Each entry is a
+> +      pair of strings, the first being the connection's sink, the second
+> +      being the connection's source.
+> +
+> +  model:
+> +    $ref: /schemas/types.yaml#/definitions/string
+> +    description: User specified audio sound card name
+> +
+> +  "#address-cells":
+> +    const: 1
+> +
+> +  "#size-cells":
+> +    const: 0
+> +
+> +patternProperties:
+> +  "^dai-link@[0-9a-f]$":
+> +    description:
+> +      Each subnode represents a dai link. Subnodes of each dai links would be
+> +      cpu/codec dais.
+> +
+> +    type: object
+> +
+> +    properties:
+> +      link-name:
+> +        description: Indicates dai-link name and PCM stream name.
+> +        $ref: /schemas/types.yaml#/definitions/string
+> +        maxItems: 1
+> +
+> +      reg:
+> +        maxItems: 1
+> +        description: dai link address.
+> +
+> +      cpu:
+> +        description: Holds subnode which indicates cpu dai.
+> +        type: object
+> +        properties:
+> +          sound-dai: true
 
-Crash confirmed.  But I don't feel too bad about my one-line goof because the
-existing code botches sparse VP_SET, i.e. _EX flows.  The spec requires the guest
-to explicit specify the number of QWORDS in the variable header[*], e.g. VP_SET
-in this case, but KVM ignores that and does a harebrained calculation to "count"
-the number of sparse banks.  It does this by counting the number of bits set in
-valid_bank_mask, which is comically broken because (a) the whole "sparse" thing
-should be a clue that they banks are not packed together, (b) the spec clearly
-states that "bank = VPindex / 64", (c) the sparse_bank madness makes this waaaay
-more complicated than it needs to be, and (d) the massive sparse_bank allocation
-on the stack is completely unnecessary because KVM simply ignores everything that
-wouldn't fit in vp_bitmap.
+Is sound-dai required? And additionalProperties is false? I think we
+need that yet again.
 
-To reproduce, stuff vp_index in descending order starting from KVM_MAX_VCPUS - 1.
+> +
+> +      codec:
+> +        description: Holds subnode which indicates codec dai.
+> +        type: object
+> +        properties:
+> +          sound-dai: true
+> +
 
-	hv_vcpu->vp_index = KVM_MAX_VCPUS - vcpu->vcpu_idx - 1;
+Same here.
 
-E.g. with an 8 vCPU guest, KVM will calculate sparse_banks_len=1, read zeros, and
-do nothing, hanging the guest because it never sends IPIs.
-
-So v2 will be completely different because the "fix" for the KASAN issue is to
-get rid of sparse_banks entirely.
-
-[1] https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/tlfs/hypercall-interface#variable-sized-hypercall-input-headers
-[2] https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/tlfs/datatypes/hv_vp_set#sparse-virtual-processor-set
+> +    required:
+> +      - link-name
+> +      - cpu
+> +      - codec
+> +      - reg
+> +
+> +    additionalProperties: false
+> +
