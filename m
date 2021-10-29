@@ -2,105 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E2CC43F744
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 08:34:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8675F43F749
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 08:35:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232084AbhJ2GhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 02:37:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50516 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232036AbhJ2GhH (ORCPT
+        id S232131AbhJ2GiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 02:38:00 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:35713 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232098AbhJ2Ghs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 02:37:07 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 686AAC061745
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 23:34:39 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id y207so11956279oia.11
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 23:34:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=GQ7Y/cBRSLim6Rx9vEWWjTsJPB80yq9sZIwcvs7gvvg=;
-        b=k3bLbfKh2BZGGq8q1i8iPyVo3TB1kmbTpSuFslveGQrRVY8WJLpAu3MpbNY5TQIqYn
-         F+UzbpGpF46xQ5k52eQhh1SM+a+n/WkgMVExBUwsDZZJSszj+mINu4tXFC9AIQBOLtIs
-         deBLZErlM1mgAA2yTQJDneVP+aNHQsCHRZXLk=
+        Fri, 29 Oct 2021 02:37:48 -0400
+Received: by mail-il1-f200.google.com with SMTP id h12-20020a056e021b8c00b0025aca6d29dfso5439161ili.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 23:35:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=GQ7Y/cBRSLim6Rx9vEWWjTsJPB80yq9sZIwcvs7gvvg=;
-        b=4qdWXqTZzEmX+IJI5OvaEqc3wIN8Rj0USNIOGL6LxMCixc6MQKl85LGZ4zofbgr87v
-         hGRusdmjYmIgsFzO+6If7S6Kdqo3fpIkH4PUOsutyfENPGtQMO8DD7AIoCf2CJDe6SZ8
-         Ow9dg8+4mSclvpmIVibavpQU3YvpVBHXMNBX+trYfMvMRRL/svfdiYn0LI4XzPLHNZch
-         7xgxepVuwAk+lD5T3CZ8yl6w4eHlaHEZZ7IchUypZ1YNIs6YHpIajGVtKB6frMs3WE4L
-         YirxsHPN2Br2f4wHqELwqjPr708q6t1dtQbj7Li+6J8nksMGWALQ8Jdw3YASvl83JStr
-         NsCg==
-X-Gm-Message-State: AOAM5336zx3FB+U/ykNZ2pdikCxPMY6DqQSBHGqreWfIqv1mAtH7xLkz
-        LNbOjAlS3XyTgl+hZ7qU/hN19BY1AiAyqWxSjU0EVw==
-X-Google-Smtp-Source: ABdhPJwm/KO+spYF3fCUYZRIMVRbTzcVCYfzPWRbqmPfNKUDsp9cZJThNvNy9br2eX4E4Vf2AW7jjo0ee5jf117j+q0=
-X-Received: by 2002:a05:6808:2124:: with SMTP id r36mr6747996oiw.64.1635489278381;
- Thu, 28 Oct 2021 23:34:38 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 28 Oct 2021 23:34:38 -0700
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=J5Iak1jbzsXlXScJo28fGKWHSz8PYkl1htafvPcEf8I=;
+        b=iYsDvoHS3e2G3siU9kDoMwSBEpxmo10blHtPWehHyhGZ1ju1EbnEXW0b0IrsQONIiv
+         LlOb7Q1vNTwcDq1hdrzz1YPOqcZbZZUanart+Mw0fUFcKZhZXTfEA4hCYfzkLQA3zK/6
+         8cj7FvWrt+e9dWl0tmJ5SGQi/ZLZlvX07w8rMb3yJLKvNiZcV7/3rw8wNCZV5SFLx4U8
+         qqgUfNn26Ryo5Nual2Ac7ZC376WsmJy0o/o/xgeDn7CxeSYdC6tnKFzeNsdJm0IcbJer
+         jZdaHauoltUaRRqvgSOzuTkq1/Xyeg3aADR7/nvzIuKbJ2XxAHEgTTuTPrtaSwAg4ej7
+         coqw==
+X-Gm-Message-State: AOAM533Q1RmI799JcBCMVI8/NDLp/jwfbi3aZAZbBUSl3LvVLpEpDqHI
+        op/oRruEWIFOzifdYHzL9leMX3P74ZkBuqDyXhazuD5mXteS
+X-Google-Smtp-Source: ABdhPJwzYUNIF+88XIaTqHIhDJWNunmOteoFoXYLDu2GKr0U5jX/3QDj8NPfXuUrl/5cxz0sS4nqjr/7x0IzsCXdyOoNSnO14VCV
 MIME-Version: 1.0
-In-Reply-To: <CA+cxXhnu38eOJtuvHdS0Wyy7LmjmTMn9qjoVOqcNYK3F1xhrmQ@mail.gmail.com>
-References: <20211028151022.1.Ie56f55924f5c7706fe3194e710bbef6fdb8b5bc6@changeid>
- <CAE-0n50XwcLBmOBaRiF-qW=R-HfanjviteEzmMDbDuPJruX65g@mail.gmail.com> <CA+cxXhnu38eOJtuvHdS0Wyy7LmjmTMn9qjoVOqcNYK3F1xhrmQ@mail.gmail.com>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Thu, 28 Oct 2021 23:34:38 -0700
-Message-ID: <CAE-0n52-DTb17sewUiZ2znQWWexkpf5YbFsBaQdd3Z0n+BZqzw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] arm64: dts: sc7180: Support Lazor/Limozeen rev9
-To:     Philip Chen <philipchen@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, dianders@chromium.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
+X-Received: by 2002:a92:d752:: with SMTP id e18mr6445635ilq.31.1635489320130;
+ Thu, 28 Oct 2021 23:35:20 -0700 (PDT)
+Date:   Thu, 28 Oct 2021 23:35:20 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f5dc0805cf7807a7@google.com>
+Subject: [syzbot] KMSAN: uninit-value in hci_conn_request_evt
+From:   syzbot <syzbot+8f84cf3ec5c288e779ef@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, glider@google.com, johan.hedberg@gmail.com,
+        kuba@kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-kernel@vger.kernel.org, luiz.dentz@gmail.com,
+        marcel@holtmann.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Philip Chen (2021-10-28 17:48:39)
-> Hi Stephen,
->
-> On Thu, Oct 28, 2021 at 4:00 PM Stephen Boyd <swboyd@chromium.org> wrote:
-> >
-> > Quoting Philip Chen (2021-10-28 15:11:31)
-> > > diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi
-> > > index 8b79fbb75756..69666f92176a 100644
-> > > --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi
-> > > +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi
-> > > @@ -5,13 +5,10 @@
-> > >   * Copyright 2020 Google LLC.
-> > >   */
-> > >
-> > > -#include "sc7180.dtsi"
-> > > -
-> > >  ap_ec_spi: &spi6 {};
-> > >  ap_h1_spi: &spi0 {};
-> >
-> > Can we get rid of this node swap now? I think it is only around because
-> > early on we swapped the EC and H1 spi interfaces and then we had to swap
-> > it every time we made a new board.
-> >
-> > $ git grep ap_ec_spi
-> > arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi:ap_ec_spi: &spi6 {};
-> > arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi:ap_ec_spi: &spi6 {};
-> > arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi:ap_ec_spi: &spi6 {};
-> > arch/arm64/boot/dts/qcom/sc7180-trogdor-r1.dts:ap_ec_spi: &spi6 {};
-> >
-> > It feels like we'd be better off leaving that quirk in trogdor-r0, which
-> > conveniently isn't upstream, and then relabel the spi nodes in
-> > sc7180-trogdor.dtsi now. Otherwise I look at this and have to remember
-> > that whenever this dtsi file is included, we've already included the
-> > sc7180.dtsi file before it, so that the relabel actually works.
->
-> I agree it'll be great if we can get rid of the node swap.
-> It's out of the scope of this patch series though.
-> We should probably send a separate patch for this change later?
->
+Hello,
 
-Ok.
+syzbot found the following issue on:
+
+HEAD commit:    82e66ad2e586 kmsan: core: better comment
+git tree:       https://github.com/google/kmsan.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=157ae0e2b00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3ea742e10a5398fb
+dashboard link: https://syzkaller.appspot.com/bug?extid=8f84cf3ec5c288e779ef
+compiler:       clang version 14.0.0 (git@github.com:llvm/llvm-project.git 0996585c8e3b3d409494eb5f1cad714b9e1f7fb5), GNU ld (GNU Binutils for Debian) 2.35.2
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+8f84cf3ec5c288e779ef@syzkaller.appspotmail.com
+
+=====================================================
+BUG: KMSAN: uninit-value in hci_proto_connect_ind include/net/bluetooth/hci_core.h:1460 [inline]
+BUG: KMSAN: uninit-value in hci_conn_request_evt+0x220/0x1290 net/bluetooth/hci_event.c:2783
+ hci_proto_connect_ind include/net/bluetooth/hci_core.h:1460 [inline]
+ hci_conn_request_evt+0x220/0x1290 net/bluetooth/hci_event.c:2783
+ hci_event_packet+0x1489/0x22e0 net/bluetooth/hci_event.c:6315
+ hci_rx_work+0x6ae/0xd10 net/bluetooth/hci_core.c:5136
+ process_one_work+0xdc7/0x1760 kernel/workqueue.c:2297
+ worker_thread+0x1101/0x22b0 kernel/workqueue.c:2444
+ kthread+0x66b/0x780 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30
+
+Uninit was created at:
+ slab_alloc_node mm/slub.c:3221 [inline]
+ __kmalloc_node_track_caller+0x8d2/0x1340 mm/slub.c:4955
+ kmalloc_reserve net/core/skbuff.c:355 [inline]
+ __alloc_skb+0x4db/0xe40 net/core/skbuff.c:426
+ alloc_skb include/linux/skbuff.h:1116 [inline]
+ bt_skb_alloc include/net/bluetooth/bluetooth.h:389 [inline]
+ vhci_get_user drivers/bluetooth/hci_vhci.c:165 [inline]
+ vhci_write+0x182/0x8f0 drivers/bluetooth/hci_vhci.c:285
+ call_write_iter include/linux/fs.h:2163 [inline]
+ new_sync_write fs/read_write.c:507 [inline]
+ vfs_write+0x1295/0x1f20 fs/read_write.c:594
+ ksys_write+0x28c/0x520 fs/read_write.c:647
+ __do_sys_write fs/read_write.c:659 [inline]
+ __se_sys_write fs/read_write.c:656 [inline]
+ __x64_sys_write+0xdb/0x120 fs/read_write.c:656
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x54/0xd0 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+=====================================================
+Kernel panic - not syncing: panic_on_kmsan set ...
+CPU: 1 PID: 6390 Comm: kworker/u5:1 Tainted: G    B             5.15.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: hci0 hci_rx_work
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1ff/0x28e lib/dump_stack.c:106
+ dump_stack+0x25/0x28 lib/dump_stack.c:113
+ panic+0x44f/0xdeb kernel/panic.c:232
+ kmsan_report+0x2ee/0x300 mm/kmsan/report.c:168
+ __msan_warning+0xb4/0x100 mm/kmsan/instrumentation.c:199
+ hci_proto_connect_ind include/net/bluetooth/hci_core.h:1460 [inline]
+ hci_conn_request_evt+0x220/0x1290 net/bluetooth/hci_event.c:2783
+ hci_event_packet+0x1489/0x22e0 net/bluetooth/hci_event.c:6315
+ hci_rx_work+0x6ae/0xd10 net/bluetooth/hci_core.c:5136
+ process_one_work+0xdc7/0x1760 kernel/workqueue.c:2297
+ worker_thread+0x1101/0x22b0 kernel/workqueue.c:2444
+ kthread+0x66b/0x780 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
