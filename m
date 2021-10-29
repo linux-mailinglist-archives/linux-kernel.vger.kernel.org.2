@@ -2,198 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0DB644000C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 18:07:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CAE644000E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 18:07:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229888AbhJ2QKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 12:10:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39880 "EHLO
+        id S230044AbhJ2QKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 12:10:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229971AbhJ2QKL (ORCPT
+        with ESMTP id S230064AbhJ2QKU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 12:10:11 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB2C9C061714
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 09:07:42 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id v138so19922619ybb.8
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 09:07:42 -0700 (PDT)
+        Fri, 29 Oct 2021 12:10:20 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16807C061570
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 09:07:51 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id s186so1310902yba.12
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 09:07:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=YWzMrxI3A0GqZWQ4duWHF4d7CuKb2hbjO4jWM4LNe/g=;
-        b=YhCH7ElFjNrnUa01kXAkeFHVDC5WKKIjd6WJzbJMVg3djovUJnsqqMyROQvrZc7tHn
-         OfquniUmGcmkDmcYDWj1fEdswb7hZs9rmmQ1BEQ0tSLvgzq4dR8ugiC5Gi9c/9XngzJ8
-         MuzZoYgS9aC5D4r4GG2LNFS04knj/h1t/qfeAHlzuWB8ltrJSHqtZ7ExkpEUIyo9FVbZ
-         RW8uVQ8ty/eTvfTFxUfMgjjBIP2yzelqGcMPXaScCUNQS1Nb6/05nD4STVTd1Cy4AkIC
-         K0/QTxU2GJyrmhp4KhcyrmyTAG9fHVpP/8OmmbiU8u9tqfbB+MVw5arFY9uPo+jSJVgZ
-         jYuw==
+        bh=ErSQ5CrQeSkmLUbZHQvgt43whunrTwbaNcEcHojj/F0=;
+        b=r13mojvJ6IxO/MNCwqjQIRl2GnGDxLpJDNBQ3Jf8Txoh9BXENinQKzMfyhu2t+R34Q
+         XaYNUIOISw7NVtii3HqpVPoYUstJaeOIWGm4Pj4x05NuuzDT8UGH/25/txTXbu2B8JBj
+         Ypqx9W3CyM3Gs0InNIieqvyefufKQJ8HVmG8kxON7/IT8O4hH/OIyikQnw/X9sXTsfVj
+         ZhhxqXJFk8HyTyk8paxVtgpt1YUowPq1Kf3IwB2JHg42qzYi91mH+vEtZg3DkJOHoVxC
+         Io8KK/VSaIWIT2snrGuPBQXCMo0miHT6J7R9Y6ztme3aNVbIj9g5V5mRx5G1yvcvX0iN
+         Slcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=YWzMrxI3A0GqZWQ4duWHF4d7CuKb2hbjO4jWM4LNe/g=;
-        b=iR3TQOJiKOB1KCu6++kcsVA+i3m2NGsUPsZO+vrJ5zAsX+ouXNB5aHTEBfG0zrc+Zc
-         kwYThrPMsgzCgWZNrKaoYBF6LIJ3OlrlvfoQrqcSGJ/byFbddCGVg83cPFo0aFRSvIvU
-         HGm4yzuDrR48Am82fr+IFj8Kd9VrLbdU5Wkeah7PYaejMT3TZeijzzGUiWK1yTLikNmm
-         FLAJSf7yNrCXhuF07Qn9WquOcf+ClZo2FaBVF0/qZkvvU8uf+C0puU+CJXOK7WBfY0AQ
-         krQTHhUzRyqb5VqAwfKeDeYaib5a6pJ+2KTG61ull/StkS77RVAvp3kBRXNbHGzleTTk
-         k0ag==
-X-Gm-Message-State: AOAM530/HNX8FUwvVs83sz0VUX/H07p+wL/LrY/sbdVeGZprd32RPhNB
-        e/dZUPpNroV3lRC885ajSh/QcLLbhbWg7kZlM6dhqf/Z1JA=
-X-Google-Smtp-Source: ABdhPJzqugFhWy32Est4ogOIQzgRqxpQaY3Gt4NWt8WmQIOtKJopCulMlORlWAZAPgGJXVwyrX35IAK3ZGpmY6KtTIc=
-X-Received: by 2002:a05:6902:1148:: with SMTP id p8mr14430735ybu.402.1635523662081;
- Fri, 29 Oct 2021 09:07:42 -0700 (PDT)
+        bh=ErSQ5CrQeSkmLUbZHQvgt43whunrTwbaNcEcHojj/F0=;
+        b=bKN2EJbHbAwqC9cf0a3pmU2RuCN2ZMO0dldUudbdfFou0MJe+dyXTe6fYPE02GWn+f
+         DzZK3bElVW9I+XFbtAPC8C01PcoeQN+adBfaR+iaAR0tEDJTEnus7b2xh+EtiD+bOtan
+         rvXvR5o9vgRraSUHkX6A9cnputOHLnLdNQ1U5XU3UtS4Tzecr8+NAWn656F83GwTPZec
+         56V2Q6mqqsQEfe5cbuxGNacDXDMLewVYmyZMOVgdngNDkEb8WpjNJQXlFgQTINgb1qTs
+         IZVxMRFFeNqWmimSKj+cIRWPa9Yxkuz9NOObrP9fJH2TpqYrBD9/eDrT2M9N9xPg1qFG
+         KHAg==
+X-Gm-Message-State: AOAM531CiqR6q3/uOczGGZ+lu7ILxMTrn6dl8GGaX149ww0vm8t2Ztdk
+        sOgVDWJXzTcyg9xu4fUo3uQmCa8R7F3S3F9Hp+jlzw==
+X-Google-Smtp-Source: ABdhPJyFooqk3QJhmp9xEqMlJWlYya+dgKhKFj39pBOPgPsVPxI0OQtOdHjIYjwZ9h/nmENxRVtkMKSYNvX1hUyq2xc=
+X-Received: by 2002:a25:b3c7:: with SMTP id x7mr2296339ybf.34.1635523670005;
+ Fri, 29 Oct 2021 09:07:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211028094834.1312-1-mgorman@techsingularity.net> <20211028094834.1312-3-mgorman@techsingularity.net>
-In-Reply-To: <20211028094834.1312-3-mgorman@techsingularity.net>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Fri, 29 Oct 2021 18:07:30 +0200
-Message-ID: <CAKfTPtCxu8b0yckYyfbK5FCCSJ5N=a576KKo-4ZwWnPL2dV7ag@mail.gmail.com>
-Subject: Re: [PATCH 2/2] sched/fair: Increase wakeup_gran if current task has
- not executed the minimum granularity
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Valentin Schneider <Valentin.Schneider@arm.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Mike Galbraith <efault@gmx.de>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20211022014658.263508-1-surenb@google.com> <YXJwUUPjfg9wV6MQ@dhcp22.suse.cz>
+ <CAJuCfpEcSbK8WrufZjDj-7iUxiQtrmVTqHOxFUOvLhYGz6_ttQ@mail.gmail.com>
+ <CAJuCfpFccBJHHqfOKixJvLr7Xta_ojkdHGfGomwTDNKffzziRQ@mail.gmail.com> <YXvxBSzA2YIxbwVC@dhcp22.suse.cz>
+In-Reply-To: <YXvxBSzA2YIxbwVC@dhcp22.suse.cz>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Fri, 29 Oct 2021 09:07:39 -0700
+Message-ID: <CAJuCfpHBoMGPOUvB2ZWQ=TxbFuWBRF++UaKJZDCrQV4mzb5kMA@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mm: prevent a race between process_mrelease and exit_mmap
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Christoph Hellwig <hch@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jann Horn <jannh@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Andrea Arcangeli <aarcange@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 28 Oct 2021 at 11:49, Mel Gorman <mgorman@techsingularity.net> wrote:
+On Fri, Oct 29, 2021 at 6:03 AM Michal Hocko <mhocko@suse.com> wrote:
 >
-> Commit 8a99b6833c88 ("sched: Move SCHED_DEBUG sysctl to debugfs")
-> moved the kernel.sched_wakeup_granularity_ns sysctl under debugfs.
-> One of the reasons why this sysctl may be used may be for "optimising
-> for throughput", particularly when overloaded. The tool TuneD sometimes
-> alters this for two profiles e.g. "mssql" and "throughput-performance". At
-> least version 2.9 does but it changed in master where it also will poke
-> at debugfs instead. This patch aims to reduce the motivation to tweak
-> sysctl_sched_wakeup_granularity by increasing sched_wakeup_granularity
-> if the running task runtime has not exceeded sysctl_sched_min_granularity.
+> On Wed 27-10-21 09:08:21, Suren Baghdasaryan wrote:
+> > On Fri, Oct 22, 2021 at 10:38 AM Suren Baghdasaryan <surenb@google.com> wrote:
+> > >
+> > > On Fri, Oct 22, 2021 at 1:03 AM Michal Hocko <mhocko@suse.com> wrote:
+> > > >
+> > > > On Thu 21-10-21 18:46:58, Suren Baghdasaryan wrote:
+> > > > > Race between process_mrelease and exit_mmap, where free_pgtables is
+> > > > > called while __oom_reap_task_mm is in progress, leads to kernel crash
+> > > > > during pte_offset_map_lock call. oom-reaper avoids this race by setting
+> > > > > MMF_OOM_VICTIM flag and causing exit_mmap to take and release
+> > > > > mmap_write_lock, blocking it until oom-reaper releases mmap_read_lock.
+> > > > > Reusing MMF_OOM_VICTIM for process_mrelease would be the simplest way to
+> > > > > fix this race, however that would be considered a hack. Fix this race
+> > > > > by elevating mm->mm_users and preventing exit_mmap from executing until
+> > > > > process_mrelease is finished. Patch slightly refactors the code to adapt
+> > > > > for a possible mmget_not_zero failure.
+> > > > > This fix has considerable negative impact on process_mrelease performance
+> > > > > and will likely need later optimization.
+> > > >
+> > > > I am not sure there is any promise that process_mrelease will run in
+> > > > parallel with the exiting process. In fact the primary purpose of this
+> > > > syscall is to provide a reliable way to oom kill from user space. If you
+> > > > want to optimize process exit resp. its exit_mmap part then you should
+> > > > be using other means. So I would be careful calling this a regression.
+> > > >
+> > > > I do agree that taking the reference count is the right approach here. I
+> > > > was wrong previously [1] when saying that pinning the mm struct is
+> > > > sufficient. I have completely forgot about the subtle sync in exit_mmap.
+> > > > One way we can approach that would be to take exclusive mmap_sem
+> > > > throughout the exit_mmap unconditionally.
+> > >
+> > > I agree, that would probably be the cleanest way.
+> > >
+> > > > There was a push back against
+> > > > that though so arguments would have to be re-evaluated.
+> > >
+> > > I'll review that discussion to better understand the reasons for the
+> > > push back. Thanks for the link.
+> >
+> > Adding Kirill and Andrea.
+> >
+> > I had some time to dig some more. The latency increase is definitely
+> > coming due to process_mrelease calling the last mmput and exit_aio is
+> > especially problematic. So, currently process_mrelease not only
+> > releases memory but does more, including waiting for io to finish.
 >
-> During task migration or wakeup, a decision is made on whether
-> to preempt the current task or not. To limit over-scheduled,
-> sysctl_sched_wakeup_granularity delays the preemption to allow at least 1ms
-> of runtime before preempting. However, when a domain is heavily overloaded
-> (e.g. hackbench), the degree of over-scheduling is still severe. This is
-> problematic as time is wasted rescheduling tasks that could instead be
-> used by userspace tasks.
->
-> However, care must be taken. Even if a system is overloaded, there may
-> be high priority threads that must still be able to run. Mike Galbraith
-> explained the constraints as follows;
->
->         CFS came about because the O1 scheduler was unfair to the
->         point it had starvation problems. People pretty much across the
->         board agreed that a fair scheduler was a much way better way
->         to go, and CFS was born.  It didn't originally have the sleep
->         credit business, but had to grow it to become _short term_ fair.
->         Ingo cut the sleep credit in half because of overscheduling, and
->         that has worked out pretty well all told.. but now you're pushing
->         it more in the unfair direction, all the way to extremely unfair
->         for anything and everything very light.
->
->         Fairness isn't the holy grail mind you, and at some point, giving
->         up on short term fairness certainly isn't crazy, as proven by your
->         hackbench numbers and other numbers we've seen over the years,
->         but taking bites out of the 'CF' in the CFS that was born to be a
->         corner-case killer is.. worrisome.  The other shoe will drop.. it
->         always does :)
->
-> This patch increases the wakeup granularity if the current task has not
-> reached its minimum preemption granularity. The current task may still
-> be preempted but the difference in runtime must be higher.
->
-> hackbench-process-pipes
->                           5.15.0-rc3             5.15.0-rc3
->                sched-wakeeflips-v1r1sched-scalewakegran-v3r2
-> Amean     1        0.3890 (   0.00%)      0.3823 (   1.71%)
-> Amean     4        0.5217 (   0.00%)      0.4867 (   6.71%)
-> Amean     7        0.5387 (   0.00%)      0.5053 (   6.19%)
-> Amean     12       0.5443 (   0.00%)      0.5450 (  -0.12%)
-> Amean     21       0.6487 (   0.00%)      0.6807 (  -4.93%)
-> Amean     30       0.8033 (   0.00%)      0.7107 *  11.54%*
-> Amean     48       1.2400 (   0.00%)      1.0447 *  15.75%*
-> Amean     79       1.8200 (   0.00%)      1.6033 *  11.90%*
-> Amean     110      2.5820 (   0.00%)      2.0763 *  19.58%*
-> Amean     141      3.2203 (   0.00%)      2.5313 *  21.40%*
-> Amean     172      3.8200 (   0.00%)      3.1163 *  18.42%*
-> Amean     203      4.3357 (   0.00%)      3.5560 *  17.98%*
-> Amean     234      4.8047 (   0.00%)      3.8913 *  19.01%*
-> Amean     265      5.1243 (   0.00%)      4.2293 *  17.47%*
-> Amean     296      5.5940 (   0.00%)      4.5357 *  18.92%*
->
->                   5.15.0-rc3  5.15.0-rc3
->          sched-wakeeflips-v1r1 sched-scalewakegran-v3r2
-> Duration User        2567.27     2034.17
-> Duration System     21098.79    17137.08
-> Duration Elapsed      136.49      120.2
->
-> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
-> ---
->  kernel/sched/fair.c     | 17 +++++++++++++++--
->  kernel/sched/features.h |  2 ++
->  2 files changed, 17 insertions(+), 2 deletions(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index d00af3b97d8f..dee108470297 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -7052,10 +7052,23 @@ balance_fair(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
->  }
->  #endif /* CONFIG_SMP */
->
-> -static unsigned long wakeup_gran(struct sched_entity *se)
-> +static unsigned long
-> +wakeup_gran(struct sched_entity *curr, struct sched_entity *se)
->  {
->         unsigned long gran = sysctl_sched_wakeup_granularity;
->
-> +       if (sched_feat(SCALE_WAKEUP_GRAN)) {
-> +               unsigned long delta_exec;
-> +
-> +               /*
-> +                * Increase the wakeup granularity if curr's runtime
-> +                * is less than the minimum preemption granularity.
-> +                */
-> +               delta_exec = curr->sum_exec_runtime - curr->prev_sum_exec_runtime;
-> +               if (delta_exec < sysctl_sched_min_granularity)
-> +                       gran += sysctl_sched_min_granularity;
+> Well, I still do not see why that is a problem. This syscall is meant to
+> release the address space not to do it fast.
 
-I need to think a bit more about corner cases but this change looks
-much better than the previous one.
+It's the same problem for a userspace memory reaper as for the
+oom-reaper. The goal is to release the memory of the victim and to
+quickly move on to the next one if needed.
 
-> +       }
-> +
->         /*
->          * Since its curr running now, convert the gran from real-time
->          * to virtual-time in his units.
-> @@ -7094,7 +7107,7 @@ wakeup_preempt_entity(struct sched_entity *curr, struct sched_entity *se)
->         if (vdiff <= 0)
->                 return -1;
 >
-> -       gran = wakeup_gran(se);
-> +       gran = wakeup_gran(curr, se);
->         if (vdiff > gran)
->                 return 1;
+> > Unconditional mmap_write_lock around free_pgtables in exit_mmap seems
+> > to me the most semantically correct way forward and the pushback is on
+> > the basis of regressing performance of the exit path. I would like to
+> > measure that regression to confirm this. I don't have access to a big
+> > machine but will ask someone in another Google team to try the test
+> > Michal wrote here
+> > https://lore.kernel.org/all/20170725142626.GJ26723@dhcp22.suse.cz/ on
+> > a server with and without a custom patch.
 >
-> diff --git a/kernel/sched/features.h b/kernel/sched/features.h
-> index 7f8dace0964c..611591355ffd 100644
-> --- a/kernel/sched/features.h
-> +++ b/kernel/sched/features.h
-> @@ -95,3 +95,5 @@ SCHED_FEAT(LATENCY_WARN, false)
+> Well, I do not remember all the details of the discussion but I believe
+> a rather large part of that discussion was a bit misled. The exist
+> path - and the last mmput in particular - shouldn't trigger mmap_sem
+> contention. There are only rare cases where somebody can race and take a
+> lock then (e.g. proc interfaces taking the lock before mmget_notzero).
+> Certainly not something to optimize for and I believe a correct and
+> robust code should have a preference. As we can see a lack of proper
+> synchronization has led to 2 very similar problem nobody revealed during
+> review because the code is just too tricky.
+
+I totally agree that this locking is tricky and mmap_sem contention
+should be very rare in the exit_mmap path and not worth optimizing.
+
 >
->  SCHED_FEAT(ALT_PERIOD, true)
->  SCHED_FEAT(BASE_SLICE, true)
-> +
-> +SCHED_FEAT(SCALE_WAKEUP_GRAN, true)
+> Btw. the above code will not really tell you much on a larger machine
+> unless you manage to trigger mmap_sem contection. Otherwise you are
+> measuring the mmap_sem writelock fast path and that should be really
+> within a noise comparing to the whole address space destruction time. If
+> that is not the case then we have a real problem with the locking...
+
+My understanding of that discussion is that the concern was that even
+taking uncontended mmap_sem writelock would regress the exit path.
+That was what I wanted to confirm. Am I misreading it?
+Thanks,
+Suren.
+
 > --
-> 2.31.1
->
+> Michal Hocko
+> SUSE Labs
