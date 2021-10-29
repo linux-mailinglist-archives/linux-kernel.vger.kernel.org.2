@@ -2,62 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF4FA4404AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 23:12:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEBA54404BA
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 23:15:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231495AbhJ2VOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 17:14:41 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:43712 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230215AbhJ2VOh (ORCPT
+        id S231696AbhJ2VSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 17:18:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231638AbhJ2VSC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 17:14:37 -0400
-Received: by mail-io1-f71.google.com with SMTP id y11-20020a056602164b00b005de32183909so7605073iow.10
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 14:12:08 -0700 (PDT)
+        Fri, 29 Oct 2021 17:18:02 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F4D8C061767;
+        Fri, 29 Oct 2021 14:15:32 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id w1so23809747edd.0;
+        Fri, 29 Oct 2021 14:15:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zB9iTOd6l5xRY5CMg7grYjmtDvYZDiD8fNnJgsxmRRU=;
+        b=ZUVK0iOjP01bBbFRtJazELaaIxANhNBitZ8fQCtTHWI49EV1xOygLc7+WtV7eq+U2K
+         9zgEBG7ELWsWRc4Vkfs8EEmw40GOYfJx0H34sAcDWg+nB4eneRq0a60aWcl/ohVul5j9
+         dxuukyER2DQgzNHfiZ7sQ4595xY7rgWQPF0vlPEBaDlJxw23X4oKGkflSYfza+fbFGuj
+         XnkZrWPhtlOwt7tert1R7g+wxVmBVDkwZcx+P25uy6SucfFMGSvsfAyGv43R9BgpI4d8
+         RMViIoNXYUrcPkOMqR67hj48aOx5SFd4xUH2CPnGTzGKpqYWxJ3IFqDDPrfAE1GUI9c+
+         O7pQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=DZhb+VO37XCGG7f7xVXdqzAOL+vfGSVWBL7jiOZyERA=;
-        b=IyH0mf0eXkCao2NhBdRmPxU5hwiC8aGusrpDgHYPtFAa8EFuUwJuH5QCA9etANk2uD
-         +TcvBSLa95I8PcLzm+Sk430OoCvQKIvy8ym6dZi4/mDO78/ouf53IF/Qb8B4UpbntjsR
-         nTXo9MteXB6K9MRqGfnDzYTnjLWA9BIVFrOhsDcd9WACXnIGV6i+K7aLbFZOgRo6l/Ys
-         SOWI50bBTlxEXCO4BDzkOedl4zc9nQXG4Y85vo/eAxyCXUkbVMlrLxusUCGvHSfM+wve
-         sTWDTx55PddKUhHK/foVez4yqD5jvcNpTzW5SrraTWOYs01GY0epaG0OiV6YRsmls8ED
-         ASwA==
-X-Gm-Message-State: AOAM532bPWG67JTXqiNUATbYtmiz+xNCd5XSHeQ136lX7ym8SoFB53ia
-        TGIUtAwEvhv64NP4AAfNStJ8vNatos+YQStQ0htfKt/pHK6T
-X-Google-Smtp-Source: ABdhPJzPFjEpTzpO7k8nLm2VnYMkJSdJGEwdkl7gMHmQZUrJy9wjQWpdZMv7G1boha9IooJCaMCR3FGsNm+zdpT5U5M1CWgLLEsh
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zB9iTOd6l5xRY5CMg7grYjmtDvYZDiD8fNnJgsxmRRU=;
+        b=4IcCn3S2bNYqSHQJmF22k4V4PRsTIRUFsSciDLANPwBc5STRxKFydOpRn8bLBANJ69
+         1alq9ST9QmTP3+j5PIPiOGL7SS/Z6Is2wXS7XPIhyBwc5V1Nl7RK/YjNXOBp9iuCWyve
+         U75Se2bk+x9FjKl7HGHh1pFlCYOeLb2lmGYhctHULlUfwRsG7zFL2Tm8QRPAwI2CB0KE
+         AG9VayxZxNfq/+wug0mzg9S9zA+JKOojGBy8+pG9GvsOFAiladLl/xZZRGzr6hkAcBZQ
+         Ye3jqynAI2YJ2RBwXzQoh+IN9cUXO8NXGBaa/nLtNozDwnbX4iG6QgGH4g567cTH9r3J
+         Vw7A==
+X-Gm-Message-State: AOAM533s4/G1HW/yhMskljCsuIQD4k0Jzt0piw0IRrCl0rdNrWmtevOE
+        hTq5b2XCAk56WaVn4rJWaI+3UY/+m8l0J8RlhkjFnUU4c3u0JA==
+X-Google-Smtp-Source: ABdhPJx6hAQf0cMI8/q0l37HlNiY5i1PNjSiBeveMPEQBRbZHbggKWBMIxewQ+CETE/rfTiLZgJbs4e4Ml5qiLNJIYk=
+X-Received: by 2002:a05:6402:205a:: with SMTP id bc26mr6340821edb.119.1635542131112;
+ Fri, 29 Oct 2021 14:15:31 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a02:2b08:: with SMTP id h8mr10206922jaa.137.1635541928627;
- Fri, 29 Oct 2021 14:12:08 -0700 (PDT)
-Date:   Fri, 29 Oct 2021 14:12:08 -0700
-In-Reply-To: <ef1ef79b-af92-863a-c5b9-49ea231c5192@gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000abd1dc05cf8447ee@google.com>
-Subject: Re: [syzbot] KASAN: use-after-free Write in __io_free_req
-From:   syzbot <syzbot+78b76ebc91042904f34e@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <20211015164809.22009-1-asmaa@nvidia.com> <CAMRc=McSPG61nnq9sibBunwso1dsO6Juo2M8MtQuEEGZbWqDNw@mail.gmail.com>
+ <CH2PR12MB3895A1C9868F8F0C9CA3FC45D7879@CH2PR12MB3895.namprd12.prod.outlook.com>
+In-Reply-To: <CH2PR12MB3895A1C9868F8F0C9CA3FC45D7879@CH2PR12MB3895.namprd12.prod.outlook.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sat, 30 Oct 2021 00:14:54 +0300
+Message-ID: <CAHp75VcRaumXM5hDEra=UCzAoOAzEP9DGDxVFo3UGvGu8KLqnw@mail.gmail.com>
+Subject: Re: [PATCH v5 0/2] gpio: mlxbf2: Introduce proper interrupt handling
+To:     Asmaa Mnebhi <asmaa@nvidia.com>
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        David Thompson <davthompson@nvidia.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, Oct 29, 2021 at 7:46 PM Asmaa Mnebhi <asmaa@nvidia.com> wrote:
 
-syzbot tried to test the proposed patch but the build/boot failed:
+> > This is a follow up on a discussion regarding proper handling of GPIO
+> > interrupts within the gpio-mlxbf2.c driver.
+> >
+> > Link to discussion:
+> > https://lore.kernel.org/netdev/20210816115953.72533-7-andriy.shevchenk
+> > o@linux.intel.com/T/
+> >
+> > Patch 1 adds support to a GPIO IRQ handler in gpio-mlxbf2.c.
+> > Patch 2 is a follow up removal of custom GPIO IRQ handling from the
+> > mlxbf_gige driver and replacing it with a simple IRQ request. The ACPI
+> > table for the mlxbf_gige driver is responsible for instantiating the
+> > PHY GPIO interrupt via GpioInt.
+> >
+> > Andy Shevchenko, could you please review this patch series.
+> > David Miller, could you please ack the changes in the mlxbf_gige
+> > driver.
 
-failed to checkout kernel repo git://git.kernel.dk/linux-block on commit 3ecd20a9c77c632a5afe4e134781e1629936adab: failed to run ["git" "checkout" "3ecd20a9c77c632a5afe4e134781e1629936adab"]: exit status 128
-fatal: reference is not a tree: 3ecd20a9c77c632a5afe4e134781e1629936adab
+It looks nice! Thank you for fixing this code and making it right!
 
-
-
-Tested on:
-
-commit:         [unknown 
-git tree:       git://git.kernel.dk/linux-block 3ecd20a9c77c632a5afe4e134781e1629936adab
-dashboard link: https://syzkaller.appspot.com/bug?extid=78b76ebc91042904f34e
-compiler:       
-
+-- 
+With Best Regards,
+Andy Shevchenko
