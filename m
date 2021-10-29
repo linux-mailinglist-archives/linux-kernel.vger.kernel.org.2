@@ -2,105 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 660FF43FA99
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 12:18:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94F0843FA9E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 12:19:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231734AbhJ2KUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 06:20:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231666AbhJ2KUh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 06:20:37 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BD64C061745
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 03:18:09 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id j21so14053998edt.11
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 03:18:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=VyoOlx1f4bY9qJ0WEn854eIaH9saJD/psl6FGa9mBmM=;
-        b=mMayptbnXqhUog8SFKvEoIrhCHUqAk9F/Y4BAGnsk1/oTu8wXZFCwt3PK7HbYBfIrN
-         sRJD+9YitSKglx8YNj/8m9lyR1FjdOuGv3EHCMRZRgtiGjGHJZa8Jiu0HgfnhpmDYRan
-         Zs/8gRJ8f/wfl+E8UZt+HgiIvD54mNQztvTeIME6GQ1ZphigaAmNB53l9fbL+HyrvQ90
-         j5pn4w8EhfkSdck9kACU5oyiAvSgGHtesRk9eyYrqufh/j5fu7cQ+D91TwR2nqCWkNRn
-         mvSCsCfAekD9pG6PeWner4wfltoU+/sS1y+SxucNIzIk24PSPgxF6R0QVOsjmxkA6Pcq
-         czUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to:content-transfer-encoding;
-        bh=VyoOlx1f4bY9qJ0WEn854eIaH9saJD/psl6FGa9mBmM=;
-        b=xVRj9/BdKiiriUdgWhyLcf+VefswQC1BOUfyU9ImyS27ysE5J+48uTPKRUsyFlH526
-         JarYcfD00sC7MVqKP1nhWDHPuc/t8zNML/ZOIPpNre8Lqoxc6+lGHKnJUWR49FUpqK1M
-         TTZNjoJpLvh4RMyKVjDbv6gX9A323Ou6aQ2HZ/nk3qmN+Yu/wvYl3c9qL2b8x2j2xjKE
-         8+WhYjSgwVWz7zr/5x+qPa6NJcZGaaDQ8qZp4VS0vo4HyGVZ0wfdSIBOOoxF05K4XZxF
-         8R3mkiTYlzNGra6a2R1P/PvGYITii2CzRlEt3qR2xbbQZ7i6AYccabJ3DVScCaA/JZ2C
-         Ih5Q==
-X-Gm-Message-State: AOAM532geq3TeT+3njTLaRN28YUY5e+8XCQp1LFIdRZ6KSX4UVbHcyVD
-        SAe42DXo+YnWMKLrsraEn9rADEhibS3dE7aKD6Y=
-X-Google-Smtp-Source: ABdhPJxagzV+dlgvvkfgqeBpAAnFple+h5ZPeSMI80a1l6zUbROT9lTD7W6712Dp9JXGUuZsTh61mMvc6J96AZYH3Ec=
-X-Received: by 2002:a05:6402:190f:: with SMTP id e15mr14114852edz.310.1635502687672;
- Fri, 29 Oct 2021 03:18:07 -0700 (PDT)
+        id S231722AbhJ2KWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 06:22:09 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:64403 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231666AbhJ2KWH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 06:22:07 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1635502779; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=fRFHHpvUsFN1nn8W1Rx5ytaxnlA8Vq5UjIPp2pUj+P0=; b=mP0hy+20f5/NJT9rU6wRpIzr061/fMziyNBmwIUKARzTjz6ag7TUsGtgmtiYMHJdSNNJS9K7
+ pHf3jR+fh2WT7YhBNzM4c0EmYKoALv0IC0JAlDTHyhg91+mLWrrTH5jgyKVr9WaoXSWZJZj2
+ hbtyiNCXNEoThpA29bgi9SM7M4c=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 617bca9f900d71ea1e48083f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 29 Oct 2021 10:19:11
+ GMT
+Sender: rnayak=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3AF6DC4360D; Fri, 29 Oct 2021 10:19:10 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-5.4 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.1.100] (unknown [49.207.214.117])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B7575C4338F;
+        Fri, 29 Oct 2021 10:19:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org B7575C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH v2 1/2] pinctrl: qcom: Add egpio feature support
+To:     Stephen Boyd <swboyd@chromium.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, linus.walleij@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, psodagud@codeaurora.org,
+        dianders@chromium.org
+References: <1635250056-20274-1-git-send-email-rnayak@codeaurora.org>
+ <CAE-0n50E2dmQeDaiggEgMgykrkGB3H38sbkTXDX3avR7XtSizw@mail.gmail.com>
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+Message-ID: <40fa13cd-f24c-e3a9-9b49-23ad26507bfe@codeaurora.org>
+Date:   Fri, 29 Oct 2021 15:49:04 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Sender: wilfredmark1056@gmail.com
-Received: by 2002:a17:907:8a03:0:0:0:0 with HTTP; Fri, 29 Oct 2021 03:18:06
- -0700 (PDT)
-From:   DINA MCKENNA <dinamckennahowley@gmail.com>
-Date:   Fri, 29 Oct 2021 10:18:06 +0000
-X-Google-Sender-Auth: OhyqNQxg8hvmV0H4BykeJAz6IUA
-Message-ID: <CAOF4qqge2cy=mG5qqxZFyEu6dGbMi+Mwgrq+B3H1porUg_DSkQ@mail.gmail.com>
-Subject: Hello,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAE-0n50E2dmQeDaiggEgMgykrkGB3H38sbkTXDX3avR7XtSizw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello my dear ,
 
- I sent this mail praying it will get to you in a good condition of
-health, since I myself are in a very critical health condition in
-which I sleep every night without knowing if I may be alive to see the
-next day. I bring peace and love to you. It is by the grace of God, I
-had no choice than to do what is lawful and right in the sight of God
-for eternal life and in the sight of man, for witness of God=E2=80=99s merc=
-y
-and glory upon my life. I am Mrs. Dina Mckenna Howley., a widow. I am
-suffering from a long time brain tumor, It has defiled all forms of
-medical treatment, and right now I have about a few months to leave,
-according to medical experts. The situation has gotten complicated
-recently with my inability to hear proper, am communicating with you
-with the help of the chief nurse herein the hospital, from all
-indication my conditions is really deteriorating and it is quite
-obvious that, according to my doctors they have advised me that I may
-not live too long, Because this illness has gotten to a very bad
-stage. I plead that you will not expose or betray this trust and
-confidence that I am about to repose on you for the mutual benefit of
-the orphans and the less privilege. I have some funds I inherited from
-my late husband, the sum of ($ 11,000,000.00, Eleven Million Dollars).
-Having known my condition, I decided to donate this fund to you
-believing that you will utilize it the way i am going to instruct
-herein. I need you to assist me and reclaim this money and use it for
-Charity works therein your country for orphanages and gives justice
-and help to the poor, needy and widows says The Lord." Jeremiah
-22:15-16.=E2=80=9C and also build schools for less privilege that will be
-named after my late husband if possible and to promote the word of God
-and the effort that the house of God is maintained. I do not want a
-situation where this money will be used in an ungodly manner. That's
-why I'm taking this decision. I'm not afraid of death, so I know where
-I'm going. I accept this decision because I do not have any child who
-will inherit this money after I die. Please I want your sincerely and
-urgent answer to know if you will be able to execute this project for
-the glory of God, and I will give you more information on how the fund
-will be transferred to your bank account. May the grace, peace, love
-and the truth in the Word of God be with you and all those that you
-love and care for.
 
-I'm waiting for your immediate reply..
+On 10/29/2021 12:24 PM, Stephen Boyd wrote:
+> Quoting Rajendra Nayak (2021-10-26 05:07:35)
+>> From: Prasad Sodagudi <psodagud@codeaurora.org>
+>>
+>> egpio is a scheme which allows special power Island Domain IOs
+>> (LPASS,SSC) to be reused as regular chip GPIOs by muxing regular
+>> TLMM functions with Island Domain functions.
+>> With this scheme, an IO can be controlled both by the cpu running
+>> linux and the Island processor. This provides great flexibility to
+>> re-purpose the Island IOs for regular TLMM usecases.
+>>
+>> 2 new bits are added to ctl_reg, egpio_present is a read only bit
+>> which shows if egpio feature is available or not on a given gpio.
+>> egpio_enable is the read/write bit and only effective if egpio_present
+>> is 1. Once its set, the Island IO is controlled from Chip TLMM.
+>> egpio_enable when set to 0 means the GPIO is used as Island Domain IO.
+>>
+>> To support this we add a new function 'egpio' which can be used to
+>> set the egpio_enable to 0, for any other TLMM controlled functions
+>> we set the egpio_enable to 1.
+>>
+>> Signed-off-by: Prasad Sodagudi <psodagud@codeaurora.org>
+>> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+>> ---
+> 
+> Does this supersede adding support for lpass pinctrl in this series[1]?
 
-May God Bless you,
-Mrs. Dina Mckenna..
+No, the driver in [1] actually manages the LPASS TLMM instance, while this patch
+makes it possible for the 'same' pins to be managed by the SoC TLMM instance.
+On sc7280 SoC for instance GPIO144-158 maps to LPI-GPIO-0-14, and GPIO159-174
+maps to SSC-GPIO-0-15.
+
+> [1] https://lore.kernel.org/r/1635342097-2726-1-git-send-email-srivasam@codeaurora.org
+> 
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
