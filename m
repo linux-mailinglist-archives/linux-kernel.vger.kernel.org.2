@@ -2,162 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0A76440EEB
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 15:51:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F002440F8E
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 17:51:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229934AbhJaOxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 10:53:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53905 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229660AbhJaOxt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 10:53:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635691877;
+        id S230097AbhJaQxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 12:53:43 -0400
+Received: from ixit.cz ([94.230.151.217]:41868 "EHLO ixit.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229838AbhJaQxj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Oct 2021 12:53:39 -0400
+Received: from localhost.localdomain (ip-89-176-96-70.net.upcbroadband.cz [89.176.96.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ixit.cz (Postfix) with ESMTPSA id 745DF236BE;
+        Fri, 29 Oct 2021 13:49:56 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
+        t=1635508196;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=JWkqObtzatE8ZqTA7P0n9xOaXL3kRPYh9u09IqRGd+c=;
-        b=YbfpCla095LLS2kGegcZiwxuYq9j+Z+VmuOqAnI8Mptjn005Re/0HVZKW3aNEr70O8U8cZ
-        qKIUvMxna6Y9wQRlXOzzjGvft+QuJrhLwpLuxvA4RkJDlbjz4kMmMAuZj1hxupfKC8KpcP
-        XDNFVySxYhX+kzotQgxq7XXiDbOtweE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-595-hgIuyZhQNzuaYxdMVVu2jQ-1; Sun, 31 Oct 2021 10:51:14 -0400
-X-MC-Unique: hgIuyZhQNzuaYxdMVVu2jQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3C08418D6A25;
-        Sun, 31 Oct 2021 14:51:10 +0000 (UTC)
-Received: from starship (unknown [10.40.194.243])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 885E65F4E9;
-        Sun, 31 Oct 2021 14:50:40 +0000 (UTC)
-Message-ID: <ca017e53bfa81d96dc534e395ff35b6899607fd8.camel@redhat.com>
-Subject: Re: [PATCH v2 36/43] KVM: SVM: Don't bother checking for "running"
- AVIC when kicking for IPIs
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        David Matlack <dmatlack@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Jing Zhang <jingzhangos@google.com>
-Date:   Sun, 31 Oct 2021 16:50:39 +0200
-In-Reply-To: <20211009021236.4122790-37-seanjc@google.com>
-References: <20211009021236.4122790-1-seanjc@google.com>
-         <20211009021236.4122790-37-seanjc@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        bh=5E4M99vMPTvOFmcUC+iHe20MffqlLM2e2yyycVCMrFc=;
+        b=x/6JTSGL7EvLUnu1jDXAHmvK0BgihWBaAzBpLB5VseZ4ZQW7DAFaDLwJIOWrMW6d7EmXJO
+        7rkL/Qe3/FDJH3twa56e+yWRj1QEjVucJD97hW1MV4EYbyy6Xa9USQ2JA75Kblxpjr1mo6
+        Zdk0xio1jfVXFgkgJXwpowKavksrYvs=
+From:   David Heidelberg <david@ixit.cz>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Heiko Stuebner <heiko@sntech.de>
+Cc:     ~okias/devicetree@lists.sr.ht, phone-devel@vger.kernel.org,
+        David Heidelberg <david@ixit.cz>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-rockchip@lists.infradead.org
+Subject: [PATCH v2 2/3] arm64: dts: make dts use gpio-fan matrix instead of array
+Date:   Fri, 29 Oct 2021 13:49:45 +0200
+Message-Id: <20211029114948.41841-2-david@ixit.cz>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20211029114948.41841-1-david@ixit.cz>
+References: <20211029114948.41841-1-david@ixit.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-10-08 at 19:12 -0700, Sean Christopherson wrote:
-> Drop the avic_vcpu_is_running() check when waking vCPUs in response to a
-> VM-Exit due to incomplete IPI delivery.  The check isn't wrong per se, but
-> it's not 100% accurate in the sense that it doesn't guarantee that the vCPU
-> was one of the vCPUs that didn't receive the IPI.
-> 
-> The check isn't required for correctness as blocking == !running in this
-> context.
-> 
-> From a performance perspective, waking a live task is not expensive as the
-> only moderately costly operation is a locked operation to temporarily
-> disable preemption.  And if that is indeed a performance issue,
-> kvm_vcpu_is_blocking() would be a better check than poking into the AVIC.
-> 
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  arch/x86/kvm/svm/avic.c | 15 +++++++++------
->  arch/x86/kvm/svm/svm.h  | 11 -----------
->  2 files changed, 9 insertions(+), 17 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/svm/avic.c b/arch/x86/kvm/svm/avic.c
-> index cbf02e7e20d0..b43b05610ade 100644
-> --- a/arch/x86/kvm/svm/avic.c
-> +++ b/arch/x86/kvm/svm/avic.c
-> @@ -295,13 +295,16 @@ static void avic_kick_target_vcpus(struct kvm *kvm, struct kvm_lapic *source,
->  	struct kvm_vcpu *vcpu;
->  	int i;
->  
-> +	/*
-> +	 * Wake any target vCPUs that are blocking, i.e. waiting for a wake
-> +	 * event.  There's no need to signal doorbells, as hardware has handled
-> +	 * vCPUs that were in guest at the time of the IPI, and vCPUs that have
-> +	 * since entered the guest will have processed pending IRQs at VMRUN.
-> +	 */
->  	kvm_for_each_vcpu(i, vcpu, kvm) {
-> -		bool m = kvm_apic_match_dest(vcpu, source,
-> -					     icrl & APIC_SHORT_MASK,
-> -					     GET_APIC_DEST_FIELD(icrh),
-> -					     icrl & APIC_DEST_MASK);
-> -
-> -		if (m && !avic_vcpu_is_running(vcpu))
-> +		if (kvm_apic_match_dest(vcpu, source, icrl & APIC_SHORT_MASK,
-> +					GET_APIC_DEST_FIELD(icrh),
-> +					icrl & APIC_DEST_MASK))
->  			kvm_vcpu_wake_up(vcpu);
->  	}
->  }
-> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-> index 0d7bbe548ac3..7f5b01bbee29 100644
-> --- a/arch/x86/kvm/svm/svm.h
-> +++ b/arch/x86/kvm/svm/svm.h
-> @@ -509,17 +509,6 @@ extern struct kvm_x86_nested_ops svm_nested_ops;
->  
->  #define VMCB_AVIC_APIC_BAR_MASK		0xFFFFFFFFFF000ULL
->  
-> -static inline bool (struct kvm_vcpu *vcpu)
-> -{
-> -	struct vcpu_svm *svm = to_svm(vcpu);
-> -	u64 *entry = svm->avic_physical_id_cache;
-> -
-> -	if (!entry)
-> -		return false;
-> -
-> -	return (READ_ONCE(*entry) & AVIC_PHYSICAL_ID_ENTRY_IS_RUNNING_MASK);
-> -}
-> -
->  int avic_ga_log_notifier(u32 ga_tag);
->  void avic_vm_destroy(struct kvm *kvm);
->  int avic_vm_init(struct kvm *kvm);
+No functional changes.
 
+Adjust to comply with dt-schema requirements
+and make possible to validate values.
 
-I guess this makes sense to do, to get rid of the avic_vcpu_is_running.
-As you explained in previous patch, waking up a live task isn't that expensive,
-so let it be.
+Signed-off-by: David Heidelberg <david@ixit.cz>
+---
+ arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts | 9 +++++----
+ arch/arm64/boot/dts/freescale/imx8mq-phanbell.dts     | 2 +-
+ arch/arm64/boot/dts/rockchip/rk3399-sapphire.dtsi     | 2 +-
+ arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts    | 5 +++--
+ 4 files changed, 10 insertions(+), 8 deletions(-)
 
-Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
-
-Best regards,
-	Maxim Levitsky 
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
+index 86bdc0baf032..fbbcacf24f2e 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
+@@ -52,10 +52,11 @@ gpio_fan: gpio-fan {
+ 		gpios = <&gpio GPIODV_14 GPIO_ACTIVE_HIGH
+ 			 &gpio GPIODV_15 GPIO_ACTIVE_HIGH>;
+ 		/* Dummy RPM values since fan is optional */
+-		gpio-fan,speed-map = <0 0
+-				      1 1
+-				      2 2
+-				      3 3>;
++		gpio-fan,speed-map =
++				<0 0>,
++				<1 1>,
++				<2 2>,
++				<3 3>;
+ 		#cooling-cells = <2>;
+ 	};
+ 
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq-phanbell.dts b/arch/arm64/boot/dts/freescale/imx8mq-phanbell.dts
+index a3b9d615a3b4..e34045d10a12 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mq-phanbell.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mq-phanbell.dts
+@@ -39,7 +39,7 @@ reg_usdhc2_vmmc: regulator-usdhc2-vmmc {
+ 
+ 	fan: gpio-fan {
+ 		compatible = "gpio-fan";
+-		gpio-fan,speed-map = <0 0 8600 1>;
++		gpio-fan,speed-map = <0 0>, <8600 1>;
+ 		gpios = <&gpio3 5 GPIO_ACTIVE_HIGH>;
+ 		#cooling-cells = <2>;
+ 		pinctrl-names = "default";
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-sapphire.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-sapphire.dtsi
+index 46b0f97a0b1c..4af535866d1f 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-sapphire.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399-sapphire.dtsi
+@@ -44,7 +44,7 @@ dc_12v: dc-12v {
+ 	fan0: gpio-fan {
+ 		#cooling-cells = <2>;
+ 		compatible = "gpio-fan";
+-		gpio-fan,speed-map = <0 0 3000 1>;
++		gpio-fan,speed-map = <0 0>, <3000 1>;
+ 		gpios = <&gpio1 RK_PC2 GPIO_ACTIVE_HIGH>;
+ 		status = "okay";
+ 	};
+diff --git a/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts b/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts
+index 4d4b2a301b1a..8af3763daaba 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts
+@@ -30,8 +30,9 @@ gmac1_clkin: external-gmac1-clock {
+ 	fan: gpio_fan {
+ 		compatible = "gpio-fan";
+ 		gpios = <&gpio0 RK_PD5 GPIO_ACTIVE_HIGH>;
+-		gpio-fan,speed-map = <0    0
+-				      4500 1>;
++		gpio-fan,speed-map =
++				<   0 0>,
++				<4500 1>;
+ 		#cooling-cells = <2>;
+ 	};
+ 
+-- 
+2.33.0
 
