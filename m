@@ -2,224 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3811143FD7A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 15:43:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FCE443FD7D
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 15:44:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231504AbhJ2NqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 09:46:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229998AbhJ2NqG (ORCPT
+        id S231539AbhJ2Nqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 09:46:32 -0400
+Received: from mail-oi1-f177.google.com ([209.85.167.177]:46641 "EHLO
+        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229998AbhJ2Nqb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 09:46:06 -0400
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5789CC061570
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 06:43:37 -0700 (PDT)
-Received: by mail-il1-x12e.google.com with SMTP id b10so1259961ilj.10
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 06:43:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=poorly.run; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=PEHEafI/OVSUWZWJmLC/1n32Us7OBvmPSdp30jn4v98=;
-        b=JNz5WriC9Zso5FwHlIjh/p87HmAgEOz3Svhm1aL7IArn4w6tXFnc68shCuYUbGknRW
-         q42qXP2yAVU8/WxDYdOclks9clzHJUSz9XQfhcz8pUvsKBPS0MxbWxCNcQhsLR+hfnXR
-         XNNCruEBL/f7rFwiNVkAxsWAlrbAiKQOxePprk/1gKf3e16rJMVWwV5q+/GUqHCx+k3+
-         wTUVkalLS6+Ycmx4N2tU2M0qXHLh6IlR/qwSDORTbawoJx4oDeNFZD63ZRmwFRm7ICbQ
-         hFWSNyuPdt7aOMTC0jEFBl8sTTyNnVmzGjwLdWDq5cURkTWFVf0sOL/gz1UGOIbXaRhz
-         benQ==
+        Fri, 29 Oct 2021 09:46:31 -0400
+Received: by mail-oi1-f177.google.com with SMTP id m11so8571090oif.13;
+        Fri, 29 Oct 2021 06:44:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=PEHEafI/OVSUWZWJmLC/1n32Us7OBvmPSdp30jn4v98=;
-        b=d0gLuSnv/QFLPTuapaD1zO4quJ1g6mF7R5uppLtVCXRX9okszs5h6IkjT9CT7LWcwY
-         gizleejJcLClWkabnMOk8prIbIMi5MgtAoRTsxJ+VSPo4DjTj8SScfovzBmI0gkDKGK7
-         BbeGRyshotUimXZXMeBBgswbQmHvWg6B/fgriUMOUn2TRVMCKQzg0ogcEIcgSVEei568
-         sF7iWsbywKkxbuRUqvn4tKVuR2qSbYeQD9mojWk9+aHJNIzcu2+jgaNhbjDGAfIaI5vZ
-         tuevifWHJ3AdDLYWEio24LEYdUvM7n4usMPFxtqSnrYosss0ODf0lyPlJe815GFrIYpY
-         LPeA==
-X-Gm-Message-State: AOAM5308Trsq2cFQ799k0bCJl2bG26PWY3AUYj6uHIxnimBQ6tsKYcqg
-        bvZOvcToypS0Gk92HG2d+XKoOw==
-X-Google-Smtp-Source: ABdhPJxy8ztxJaLMgmUYMRE/mGwL6fNMxPp10Mupl+RMKhTVRc8aZyRi0ZvqmspCM7ng7VSOUQ6wZA==
-X-Received: by 2002:a92:cd84:: with SMTP id r4mr8047671ilb.267.1635515016740;
-        Fri, 29 Oct 2021 06:43:36 -0700 (PDT)
-Received: from localhost ([167.100.64.199])
-        by smtp.gmail.com with ESMTPSA id y11sm3138635ior.4.2021.10.29.06.43.36
+        bh=Q4j8kz+vDYmA/tiJro/01MgX0r2fELTiXn0N7Y88aTA=;
+        b=MSvPEq+3shc1xxE93fSYhI1erm7IZ4EVlmgOqh53s6z++5eSuzEy/h8nf0uuvZp5/f
+         ntQrOlqcIepRQ+rewjX4h37XKafvjRncXdNAHwFW0fe9RryUb1r3f/dk6eFd9GIrNe+s
+         zRk7w5tTsT5Hx15ZaDuMT+e0nznYMcVlByzXL1V0gUFsuUdmpO0J4NVk4uGEP1ektbeI
+         jPGtBAUCTfnuMts2l64ibd+uNuhM7g78VZ2zRgHs2J3yNPXx1krmQGhXLAeRi8EB/lvK
+         DrsWAWv3R/H6dg9GbNBqtsABVFCPy+DYEv7PkXu5qrMPI1uOfvbniYAGH/+ALlPTNQDq
+         l6aA==
+X-Gm-Message-State: AOAM530xE39YztOwVcYcrb619fjsPeaxVrxza/8zIsmP9CEDzAJBVbPK
+        uULPoKzFJy9fY80Au/f7DQ==
+X-Google-Smtp-Source: ABdhPJxXlg3PkICo5KK9L0xBEvGyufxGFE4IcST0wAx/bcQ2X3qjfMkNzhIl5Qv/WmDQdG6kIWuXqw==
+X-Received: by 2002:aca:3455:: with SMTP id b82mr13883274oia.102.1635515042228;
+        Fri, 29 Oct 2021 06:44:02 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id d7sm1871463otl.19.2021.10.29.06.44.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Oct 2021 06:43:36 -0700 (PDT)
-Date:   Fri, 29 Oct 2021 09:43:35 -0400
-From:   Sean Paul <sean@poorly.run>
-To:     Mark Yacoub <markyacoub@chromium.org>
-Cc:     Sean Paul <sean@poorly.run>, seanpaul@chromium.org,
-        pmenzel@molgen.mpg.de, Mark Yacoub <markyacoub@google.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org
-Subject: Re: [Intel-gfx] [PATCH v3 1/3] drm: Rename lut check functions to
- lut channel checks
-Message-ID: <20211029134335.GE10475@art_vandelay>
-References: <20211026192104.1860504-1-markyacoub@chromium.org>
- <20211029004220.GA10475@art_vandelay>
- <CAJUqKUpop4JodJjT+HBR7ayq2=G_8UdJatLFhty5XZTZ7xL8QQ@mail.gmail.com>
+        Fri, 29 Oct 2021 06:44:01 -0700 (PDT)
+Received: (nullmailer pid 2250889 invoked by uid 1000);
+        Fri, 29 Oct 2021 13:44:00 -0000
+Date:   Fri, 29 Oct 2021 08:44:00 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     David Heidelberg <david@ixit.cz>
+Cc:     devicetree@vger.kernel.org, Joerg Roedel <joro@8bytes.org>,
+        Will Deacon <will@kernel.org>, ~okias/devicetree@lists.sr.ht,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        iommu@lists.linux-foundation.org,
+        Robin Murphy <robin.murphy@arm.com>
+Subject: Re: [PATCH] dt-bindings: arm-smmu: Add compatible for the SDX55 SoC
+Message-ID: <YXv6oMe4pw6DgIha@robh.at.kernel.org>
+References: <20211020231701.278846-1-david@ixit.cz>
+ <YXsYnG+H8gQu4Prc@robh.at.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJUqKUpop4JodJjT+HBR7ayq2=G_8UdJatLFhty5XZTZ7xL8QQ@mail.gmail.com>
+In-Reply-To: <YXsYnG+H8gQu4Prc@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 11:03:54PM -0400, Mark Yacoub wrote:
-> On Thu, Oct 28, 2021 at 8:42 PM Sean Paul <sean@poorly.run> wrote:
-> >
-> > On Tue, Oct 26, 2021 at 03:21:00PM -0400, Mark Yacoub wrote:
-> > > From: Mark Yacoub <markyacoub@google.com>
-> > >
-> > > [Why]
-> > > This function and enum do not do generic checking on the luts but they
-> > > test color channels in the LUTs.
-> >
-> > I'm not sure there's anything inherently specific to channels, it seems like
-> > one could add a new test to reflect a HW limitation and it would fit pretty well
-> > in the lut check function. I wonder if it would be better to expose the types of
-> > tests required by the crtc such that the atomic_check could also do the test?
-> >
-> So the tests of the color are pretty unique to intel devices, no other
-> device is using it so I didn't think it adds a lot of benefit adding
-> it to the lut check. However, it's still in DRM because technically it
-> can be supported by any driver. But once it is, the driver will have
-> to expose the tests it wants so we can check it in atomic_check. but
-> given that no one does expose any test but intel, i just left it only
-> used by them.
+On Thu, Oct 28, 2021 at 04:39:40PM -0500, Rob Herring wrote:
+> On Thu, 21 Oct 2021 01:17:00 +0200, David Heidelberg wrote:
+> > Add missing compatible for the SDX55 SoC.
+> > 
+> > Signed-off-by: David Heidelberg <david@ixit.cz>
+> > ---
+> >  Documentation/devicetree/bindings/iommu/arm,smmu.yaml | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
 > 
+> Applied, thanks!
 
-Yeah, understood. Regardless of that, the spirit of the function is not specific
-to the color channels in the LUT, so renaming as channels_check is probably not
-the correct fix. I'd probably lean towards stuffing this in i915 as a
-driver-specific check instead of renaming it.
+Now dropped. This conflicts with Will's tree, so he should take it. 
 
-Sean
-
-> > Sean
-> >
-> > > Keeping the name explicit as more generic LUT checks will follow.
-> > >
-> > > Tested on Eldrid ChromeOS (TGL).
-> > >
-> > > Signed-off-by: Mark Yacoub <markyacoub@chromium.org>
-> > > ---
-> > >  drivers/gpu/drm/drm_color_mgmt.c           | 12 ++++++------
-> > >  drivers/gpu/drm/i915/display/intel_color.c | 10 +++++-----
-> > >  include/drm/drm_color_mgmt.h               |  7 ++++---
-> > >  3 files changed, 15 insertions(+), 14 deletions(-)
-> > >
-> > > diff --git a/drivers/gpu/drm/drm_color_mgmt.c b/drivers/gpu/drm/drm_color_mgmt.c
-> > > index bb14f488c8f6c..6f4e04746d90f 100644
-> > > --- a/drivers/gpu/drm/drm_color_mgmt.c
-> > > +++ b/drivers/gpu/drm/drm_color_mgmt.c
-> > > @@ -585,17 +585,17 @@ int drm_plane_create_color_properties(struct drm_plane *plane,
-> > >  EXPORT_SYMBOL(drm_plane_create_color_properties);
-> > >
-> > >  /**
-> > > - * drm_color_lut_check - check validity of lookup table
-> > > + * drm_color_lut_channels_check - check validity of the channels in the lookup table
-> > >   * @lut: property blob containing LUT to check
-> > >   * @tests: bitmask of tests to run
-> > >   *
-> > > - * Helper to check whether a userspace-provided lookup table is valid and
-> > > - * satisfies hardware requirements.  Drivers pass a bitmask indicating which of
-> > > - * the tests in &drm_color_lut_tests should be performed.
-> > > + * Helper to check whether each color channel of userspace-provided lookup table is valid and
-> > > + * satisfies hardware requirements. Drivers pass a bitmask indicating which of in
-> > > + * &drm_color_lut_channels_tests should be performed.
-> > >   *
-> > >   * Returns 0 on success, -EINVAL on failure.
-> > >   */
-> > > -int drm_color_lut_check(const struct drm_property_blob *lut, u32 tests)
-> > > +int drm_color_lut_channels_check(const struct drm_property_blob *lut, u32 tests)
-> > >  {
-> > >       const struct drm_color_lut *entry;
-> > >       int i;
-> > > @@ -625,4 +625,4 @@ int drm_color_lut_check(const struct drm_property_blob *lut, u32 tests)
-> > >
-> > >       return 0;
-> > >  }
-> > > -EXPORT_SYMBOL(drm_color_lut_check);
-> > > +EXPORT_SYMBOL(drm_color_lut_channels_check);
-> > > diff --git a/drivers/gpu/drm/i915/display/intel_color.c b/drivers/gpu/drm/i915/display/intel_color.c
-> > > index dab892d2251ba..4bb1bc76c4de9 100644
-> > > --- a/drivers/gpu/drm/i915/display/intel_color.c
-> > > +++ b/drivers/gpu/drm/i915/display/intel_color.c
-> > > @@ -1285,7 +1285,7 @@ static int check_luts(const struct intel_crtc_state *crtc_state)
-> > >       const struct drm_property_blob *gamma_lut = crtc_state->hw.gamma_lut;
-> > >       const struct drm_property_blob *degamma_lut = crtc_state->hw.degamma_lut;
-> > >       int gamma_length, degamma_length;
-> > > -     u32 gamma_tests, degamma_tests;
-> > > +     u32 gamma_channels_tests, degamma_channels_tests;
-> > >
-> > >       /* Always allow legacy gamma LUT with no further checking. */
-> > >       if (crtc_state_is_legacy_gamma(crtc_state))
-> > > @@ -1300,15 +1300,15 @@ static int check_luts(const struct intel_crtc_state *crtc_state)
-> > >
-> > >       degamma_length = INTEL_INFO(dev_priv)->color.degamma_lut_size;
-> > >       gamma_length = INTEL_INFO(dev_priv)->color.gamma_lut_size;
-> > > -     degamma_tests = INTEL_INFO(dev_priv)->color.degamma_lut_tests;
-> > > -     gamma_tests = INTEL_INFO(dev_priv)->color.gamma_lut_tests;
-> > > +     degamma_channels_tests = INTEL_INFO(dev_priv)->color.degamma_lut_tests;
-> > > +     gamma_channels_tests = INTEL_INFO(dev_priv)->color.gamma_lut_tests;
-> > >
-> > >       if (check_lut_size(degamma_lut, degamma_length) ||
-> > >           check_lut_size(gamma_lut, gamma_length))
-> > >               return -EINVAL;
-> > >
-> > > -     if (drm_color_lut_check(degamma_lut, degamma_tests) ||
-> > > -         drm_color_lut_check(gamma_lut, gamma_tests))
-> > > +     if (drm_color_lut_channels_check(degamma_lut, degamma_channels_tests) ||
-> > > +         drm_color_lut_channels_check(gamma_lut, gamma_channels_tests))
-> > >               return -EINVAL;
-> > >
-> > >       return 0;
-> > > diff --git a/include/drm/drm_color_mgmt.h b/include/drm/drm_color_mgmt.h
-> > > index 81c298488b0c8..cb1bf361ad3e3 100644
-> > > --- a/include/drm/drm_color_mgmt.h
-> > > +++ b/include/drm/drm_color_mgmt.h
-> > > @@ -94,12 +94,12 @@ int drm_plane_create_color_properties(struct drm_plane *plane,
-> > >                                     enum drm_color_range default_range);
-> > >
-> > >  /**
-> > > - * enum drm_color_lut_tests - hw-specific LUT tests to perform
-> > > + * enum drm_color_lut_channels_tests - hw-specific LUT tests to perform
-> > >   *
-> > >   * The drm_color_lut_check() function takes a bitmask of the values here to
-> > >   * determine which tests to apply to a userspace-provided LUT.
-> > >   */
-> > > -enum drm_color_lut_tests {
-> > > +enum drm_color_lut_channels_tests {
-> > >       /**
-> > >        * @DRM_COLOR_LUT_EQUAL_CHANNELS:
-> > >        *
-> > > @@ -119,5 +119,6 @@ enum drm_color_lut_tests {
-> > >       DRM_COLOR_LUT_NON_DECREASING = BIT(1),
-> > >  };
-> > >
-> > > -int drm_color_lut_check(const struct drm_property_blob *lut, u32 tests);
-> > > +int drm_color_lut_channels_check(const struct drm_property_blob *lut,
-> > > +                              u32 tests);
-> > >  #endif
-> > > --
-> > > 2.33.0.1079.g6e70778dc9-goog
-> > >
-> >
-> > --
-> > Sean Paul, Software Engineer, Google / Chromium OS
-
--- 
-Sean Paul, Software Engineer, Google / Chromium OS
+Rob
