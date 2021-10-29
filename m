@@ -2,93 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E73BE43F702
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 08:11:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD7FF43F707
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 08:12:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231969AbhJ2GNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 02:13:45 -0400
-Received: from mout.kundenserver.de ([212.227.126.135]:55715 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231806AbhJ2GNo (ORCPT
+        id S232002AbhJ2GPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 02:15:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45664 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231977AbhJ2GPE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 02:13:44 -0400
-Received: from mail-wr1-f53.google.com ([209.85.221.53]) by
- mrelayeu.kundenserver.de (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MJnnV-1mMLPv3sQz-00K4cO; Fri, 29 Oct 2021 08:11:14 +0200
-Received: by mail-wr1-f53.google.com with SMTP id r8so1656953wra.7;
-        Thu, 28 Oct 2021 23:11:14 -0700 (PDT)
-X-Gm-Message-State: AOAM531wqyIChk/sxuGZ66JwC5W8IUMBgJ81tRmI+FFZpVar+uOJI9pl
-        FrQtcXk9lT6czsIthMHK58ySvdU5djpyfrKhKZA=
-X-Google-Smtp-Source: ABdhPJwENl0lAWE/EeW7xF7c3aEbO+0aPjV25KNsBdVmMWadlEx46buYfEUwTdiI7NuHBxxiio4Gv7IDn9QC8meFjt0=
-X-Received: by 2002:a05:6000:10cb:: with SMTP id b11mr241910wrx.71.1635487874204;
- Thu, 28 Oct 2021 23:11:14 -0700 (PDT)
+        Fri, 29 Oct 2021 02:15:04 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70CA3C061745
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 23:12:36 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id r5so6174354pls.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 23:12:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=GmBAManK6+5n92cYCAjM0Y2324rUvA8onYfURui5swg=;
+        b=FzRfo54vrj1x+VLw9hZRhsWcpjKLGH17K667QXoIO36SpX9iUX4FFkZJEEPXUpJGsV
+         EtmWWVbnaZKVDy8mKtra/0rlwBqNkvmRWqC00/6xN4ZoC9Fmg2VPISK13AgHJGdZEVLD
+         dp2KqjrXbrOmMPeP1SXzkQSSIjmjMtjiIQmXJ9O/tSdqZKGjRhMplffWWzbbkfLc1aDZ
+         MdoBLJKytMXXpcG2Q10pe40fSIxz/RXnZZXA6zESGj3MoScrAUky4Qbt7DDQoV+wZYEG
+         pBdAf8H4oQ2xhC2jqtcYR9YAfqfZeYZQEhwgn0plZ7GRCU3BPi2QryAOfRpj9Nwrnyi2
+         TthA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=GmBAManK6+5n92cYCAjM0Y2324rUvA8onYfURui5swg=;
+        b=2hChqg7RSjKm99/WNucHfm4gjh2sMmzm6DY7JMRuRIPxzjJhdifMOLvd+DU0C9c24X
+         zhMRuQxCiJo8CQmPhalMz8ClFzuIn2sjmg0HL8Hq/Nvgym4ZNZHAxg472OYtqBpwMTmJ
+         gwmihQJeLSt5RPT/1dgZWGRM53IOmqD7RFUVpEQ4LvIAbgVy7bfdJRbgGgfNxtvLhblo
+         3rWDarjMsgfUtlzek3lF4fFHtE4LzqvoeUQN4P5IGW5ah3yDfQ7dVx5qrarOcHackpjg
+         Xiv6Oa7OQhjJTonNBsJgjIvhye0zYq/IIA1jRcDIoVEDtjOL5RFO3KUdNTsbwJ/DZllt
+         ap1w==
+X-Gm-Message-State: AOAM530KOjRXCA+ikuT1rZl8hTv9hLnnbhPLTcKpuHJp8Z98ZYbi0C3t
+        pFmnFep6qBQenOdqGtNHapmZxQ==
+X-Google-Smtp-Source: ABdhPJztBy0zM++I5AqHWJadlwUlf5T5u9UumL7kPyW5tAyH1YoVZN1zbsrrfFHD91xN+LsQ2NyLjQ==
+X-Received: by 2002:a17:902:f546:b0:141:b70e:1dd with SMTP id h6-20020a170902f54600b00141b70e01ddmr181519plf.30.1635487955947;
+        Thu, 28 Oct 2021 23:12:35 -0700 (PDT)
+Received: from [10.76.43.192] ([61.120.150.76])
+        by smtp.gmail.com with ESMTPSA id h6sm4796507pfi.174.2021.10.28.23.12.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Oct 2021 23:12:35 -0700 (PDT)
+Subject: Re: Re: [PATCH v1] sched/numa: add per-process numa_balancing
+To:     Mel Gorman <mgorman@suse.de>
+Cc:     Jonathan Corbet <corbet@lwn.net>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org
+References: <20211027132633.86653-1-ligang.bdlg@bytedance.com>
+ <20211028153028.GP3891@suse.de>
+From:   Gang Li <ligang.bdlg@bytedance.com>
+Message-ID: <b884ad7d-48d3-fcc8-d199-9e7643552a9a@bytedance.com>
+Date:   Fri, 29 Oct 2021 14:12:28 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20211028141938.3530-1-lukas.bulwahn@gmail.com>
- <20211028141938.3530-2-lukas.bulwahn@gmail.com> <CAK8P3a2UmTj2imJWdeLHX0TTV36Hk-Xx5c3j8cPe+Gk33-3Tyw@mail.gmail.com>
- <CAKXUXMzsEyqKs-OT6j3shTLY1pbS1z7O1GSn36+LxKRLQQPb+g@mail.gmail.com>
-In-Reply-To: <CAKXUXMzsEyqKs-OT6j3shTLY1pbS1z7O1GSn36+LxKRLQQPb+g@mail.gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 29 Oct 2021 08:10:58 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3Wd3Zq2-ufe9zfXrzSGOPe4mXNH+rTAnuL6sSTQF+EDA@mail.gmail.com>
-Message-ID: <CAK8P3a3Wd3Zq2-ufe9zfXrzSGOPe4mXNH+rTAnuL6sSTQF+EDA@mail.gmail.com>
-Subject: Re: [PATCH 01/13] arm: debug: remove obsolete debug code for DEBUG_ZTE_ZX
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Sekhar Nori <nsekhar@ti.com>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Linus Walleij <linusw@kernel.org>,
-        Imre Kaloz <kaloz@openwrt.org>,
-        Krzysztof Halasa <khalasa@piap.pl>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        kernel-janitors <kernel-janitors@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:2Mn50A+/PorcIdgwTtFLhB9qFqaocyL7d4CWoCl81uQCHhm+5ci
- Nz5VGxa4NvZ4buZtWl38Glf6IKczQuTgAqszGJ2TtsAIe09jwVWSO40jPI7KeYeowqBI6cR
- FNu5AQr9ICcv9sCUohj3Pob9PmSFjJUDFk6njGOCUDuUzTmZuPnmmVrS0zrgWRByt3pV8kw
- 4+qaeEzJ2uOC42OHTgKoA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:U5UfpGl+df0=:4+Bg6MQ/6gVimUvDpwlA5L
- f7nLuW5+akQQam+yyxy7li6kpFKW2ykPqtIs/TjHv9vASpcrMo39BqdrhehyhyqsoAaEGxrF7
- 8PyesT/VRRhFSLlq8U0BSEgSrE9sqoU0Mg+OydaPU5P6VUFVkI/ODJSRVRp+Uhf6flCdZDUMz
- /qKP8gyZZhchE/gC3luB2YAovbT8DkZ5kb6toV2yOqfb7m6JT1EZ2i7ItMCMUaBVyB9A9HHIZ
- 7zqRKBsZcNdL8uZo6Cr4hgyfA2XZSfKchXwt9tS2/DEd5F8yhu8EVOR3IRsuDptHrjITQxdpl
- 2CZM5G4diuFVqq3gO/FDWlYG9UyqDiPEChyYsz2pPQ4Ymrj4joP454hRXjY25Nq9TFo/PVvhZ
- zZipFrWP/VupeIUUyJoKxAj2EM5rH3vEKcaO0rQfIeFNluxehX6hz05M2YRxAxb2yQmmyuV33
- t25Tl/vBgfrO+V2R83yci/l4dV4iRh8jOxnr32Yneflb79e7d1wK4ZC4GoFchjkUKJ1iMq62y
- dWhWwZ1U6qLcy+3aEV6c5xaQ4fUdL7WCFAZbhjTd/K6MCJ8S8+GwSm8tr8unDkIXKeGESZrob
- sxBBzW4EmKBCRWr9s7TbidwXgLsulRo3QAGhqc5LioZkxoN7RXpxxtHMvpXsEUr5BXpX4LLeh
- E3+qg9fy4mFAkt74vDlzi40CHlvK4WzEBO3+kjeNqccgHuanqVKAc+c7JbZNeMZ6zGVXdy758
- fqHKX+4E+Y9+TcUuMhNcUavW4HH/bThwXbx98iJlQH9UAPIQHGbR6n2zq7+NRMO2MFQw7sEou
- l0LopkkdILju21vSWgbRmBwWpqKuT3V4Bx71toa0ofENFeXne0=
+In-Reply-To: <20211028153028.GP3891@suse.de>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 7:34 AM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
-> On Thu, Oct 28, 2021 at 4:38 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> >
+On 10/28/21 11:30 PM, Mel Gorman wrote:
+> 
+> That aside though, the configuration space could be better. It's possible
+> to selectively disable NUMA balance but not selectively enable because
+> prctl is disabled if global NUMA balancing is disabled. That could be
+> somewhat achieved by having a default value for mm->numa_balancing based on
+> whether the global numa balancing is disabled via command line or sysctl
+> and enabling the static branch if prctl is used with an informational
+> message. This is not the only potential solution but as it stands,
+> there are odd semantic corner cases. For example, explicit enabling
+> of NUMA balancing by prctl gets silently revoked if numa balancing is
+> disabled via sysctl and prctl(PR_NUMA_BALANCING, PR_SET_NUMA_BALANCING,
+> 1) means nothing.
 >
-> Arnd, did you have something like this---see below---for serial
-> amba-pl011 in mind?
->
-> Then, I would adjust the patch to remove all the zte_zx serial
-> left-over in one commit.
->
+static void task_tick_fair(struct rq *rq, struct task_struct *curr, int 
+queued)
+{
+	...
+	if (static_branch_unlikely(&sched_numa_balancing))
+		task_tick_numa(rq, curr);
+	...
+}
 
-Yes, looks good to me.
+static void task_tick_numa(struct rq *rq, struct task_struct *curr)
+{
+	...
+	if (!READ_ONCE(curr->mm->numa_balancing))
+		return;
+	...
+}
 
-       Arnd
+When global numa_balancing is disabled, mm->numa_balancing is useless. 
+So I think prctl(PR_NUMA_BALANCING, PR_SET_NUMA_BALANCING,0/1) should 
+return error instead of modify mm->numa_balancing.
+
+Is it reasonable that prctl(PR_NUMA_BALANCING,PR_SET_NUMA_BALANCING,0/1)
+can still change the value of mm->numa_balancing when global 
+numa_balancing is disabled?
+
