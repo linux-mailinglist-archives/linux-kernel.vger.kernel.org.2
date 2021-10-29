@@ -2,490 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9472843F8FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 10:34:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9577443F904
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 10:36:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232511AbhJ2Igq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 04:36:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232351AbhJ2Igp (ORCPT
+        id S232493AbhJ2Iif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 04:38:35 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:52575 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232437AbhJ2Iie (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 04:36:45 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9C04C061570;
-        Fri, 29 Oct 2021 01:34:16 -0700 (PDT)
-Date:   Fri, 29 Oct 2021 10:34:14 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1635496455;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=KrDZ+Aps+xKHo4ErpsPNgTu4aBSQbYROD4aTTmD6L3Y=;
-        b=u4h5Nc6wM/YVwMHWvvr7kLmwTWI0jI7wKT2Ug8SMFKNCOBMOkMsr3Y9CGeRCTeSStlvM3Z
-        uMbnCxg8bCpeNxIlFFiKWqtt3qdu2pG19EPzNiOS4/RfJkcFQ/bXBs6jNsRNdEnFTif/uv
-        iaKL8/2JD9lbpSGtAWbze4jU7xSiFcrUUs2AIvqaSZk+U7Y0CgG+P06DC6isWJDoYNcHhd
-        D0EeOgzmYV3I/D4zIu7qw9FRpC09jALaSKqU5y3ki+4QonfHdTDBZITr/7+ZmTwKJGanTP
-        wBFkeR4NrXG0EoxXkw5KTBGW9dyEmLW2sh/4TbTEJOBZqdyu0fbB4uh7Bij0lw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1635496455;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=KrDZ+Aps+xKHo4ErpsPNgTu4aBSQbYROD4aTTmD6L3Y=;
-        b=U6eAfQS/XFRvZ/RgtIDM+vevdX2Xm4Kj8NVHlVkphEnVdBFfAdy7gO3JXcFcPmYuRhzfAc
-        3mOeYCGJ4mse2CAw==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [ANNOUNCE] v5.15-rc7-rt15
-Message-ID: <20211029083414.x5ap5jrwfexfgo7c@linutronix.de>
+        Fri, 29 Oct 2021 04:38:34 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20211029083604euoutp01326e96b0b0ae057ce83f3d118068c778~yc3XbuGOS2655126551euoutp01P
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 08:36:04 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20211029083604euoutp01326e96b0b0ae057ce83f3d118068c778~yc3XbuGOS2655126551euoutp01P
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1635496564;
+        bh=rGQtswDny4qK/UzHiFb+huxqfuzGLP8FOoXL2crr0fA=;
+        h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
+        b=tcwko/MsS7BipXpl0EHdcjbWQhBbNIuA1kjkcdYixpmD0tyPpjWcyFNmTdWthSxEN
+         LkotWK8zO9Gb8VB1zXpfMFtNXtYmyElEy4yIXeC31pv0JCOjnQAznZgvCHy6GVyGAT
+         1y2xx7t4/JZfADf9K0gUxR/mAbDYw/oVXEFimIYs=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20211029083604eucas1p1285bb75781ee522a82d2c225b2e1a2c6~yc3W4Do7c2420724207eucas1p1F;
+        Fri, 29 Oct 2021 08:36:04 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id F5.C8.45756.372BB716; Fri, 29
+        Oct 2021 09:36:03 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20211029083602eucas1p23bcb25ec288181943e83e9e1f1cd31ce~yc3VxKiVD2588125881eucas1p2g;
+        Fri, 29 Oct 2021 08:36:02 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20211029083602eusmtrp20534e587a8c486de19cc3b71c591b132~yc3VuwZfm0992409924eusmtrp22;
+        Fri, 29 Oct 2021 08:36:02 +0000 (GMT)
+X-AuditID: cbfec7f2-7bdff7000002b2bc-2c-617bb273cf56
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 49.D7.31287.272BB716; Fri, 29
+        Oct 2021 09:36:02 +0100 (BST)
+Received: from [106.210.134.192] (unknown [106.210.134.192]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20211029083601eusmtip1e121b0634bb0176f3cb82f735caa032e~yc3UAGYwb2760027600eusmtip1d;
+        Fri, 29 Oct 2021 08:36:00 +0000 (GMT)
+Message-ID: <f62174cf-5786-f9d0-3a3a-3c9919f27b1e@samsung.com>
+Date:   Fri, 29 Oct 2021 10:36:00 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0)
+        Gecko/20100101 Thunderbird/91.2.1
+Subject: Re: [v6,02/21] drm/bridge: adv7511: Register and attach our DSI
+ device at probe
+Content-Language: en-US
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        linux-arm-msm@vger.kernel.org,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Rob Clark <robdclark@gmail.com>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        Chen Feng <puck.chen@hisilicon.com>,
+        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        linux-samsung-soc@vger.kernel.org,
+        Xinliang Liu <xinliang.liu@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        linux-kernel@vger.kernel.org, Inki Dae <inki.dae@samsung.com>,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        Sean Paul <sean@poorly.run>
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+In-Reply-To: <20211029080521.6tmfq4kjngu5slv7@gilmour>
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Se0xTVxzHd+69vfdSV3IpLhzUqKtxMAggEcdZXMzYI16XLEJGopElrJsX
+        NDzUFsTJsgEKgQ4YL11pBVbQgIAwHu2kQ6hEVoi0SAElDa4yuoE8BXQDNugoFzf++/we39/3
+        9zs5NC7+mdxGn45P4GTx0lgJKSR0vyz1+skbk6X7Kv4JQjnmbgxV9tThaODFLImujZkAKrDl
+        EWisrA6gnr/9UPfUIIHGf+0j0OJKmwCZ0qYolJV/nUL57SYK9euvkUjZ24YhzZyWQMrFVYA6
+        ciOQ7apqbYZmEUfzqhEcVS1pAXpceA8gZeFTEi3pSwlUM9lGoeapfAHqbK8WvLuDnR1Kp9hh
+        cy/JtqgeU+xoSQPFqjOLBWxF61OM7cqzYOzww1aS/enPJwK2tDuMtX1rxFij3kqx168Okmxu
+        czVgm+4nswuNO0OZE8J3TnKxp89zsoBDnwlP3e2boM4OiC78/jCFSAElWxTAhYZMECxzjBIK
+        IKTFTBWA32mWBXzwHMBH9gqKDxYAbF0pEryUGJpqSL5QCeAfD4wbXXMAFle9WOuiaRFzCBaO
+        X3AKCGYvXGjLJJwsYtxgd7F9nV9jPoeZM1nr7M6cgCs59ZSTccYDWu1lmJO3rmkHcu7gzvk4
+        Y6ahtiyLdBZIJhAqphXr7MK8BY1XDBgv3gUvadXrAsiYhLCkR4fxa38Anww9Azy7wwljM8Xz
+        Duhocbo5BZcAHDHfovggG8D+NOWG4iAcNi+TztNw5k1Yrw/g0yHQ2rmMO9OQcYVD0278Eq6w
+        QPf9RloEMzPEfPcbUGWs+8/27gMLngckqk3votp0v2rTOar/fX8ARDXw4BLlcdGcPDCeS/KX
+        S+PkifHR/l+ciWsEa//7/qpx/jYomZjz7wAYDToApHHJVtFUUbJULDop/fIiJzsTKUuM5eQd
+        YDtNSDxE1eraSDETLU3gYjjuLCd7WcVol20pmNg0ejlp7njJQEiEpa+/9dh0XWbT+0nns3H1
+        x59oznmWG/RMwIEhPyYy+MdQnQOXlPu6blkwLGVn9B/e7XGz3Nv+Vczz3xxptgPBF1NdDkcd
+        TC6MUFsmYwZ9rC07w728Z+5ouuL2eXUebQkvtRnGHYOGywW+DVEZN8pdQoqOK33nVnLjtu+q
+        ffSXZXnPUc1k5TfPDOFC8auihJkgFEArwma9exuYj1Jq0iNuzo+n6oyyoHTRXrP1yKfuXWjM
+        98b+DwO0DZGKPbXi/dJjXa/4ebY7xpo079nnv37dJ6I+7O0aZXC9W+m93bWpFrXP7ajQIyO0
+        pyvyal/1IbNuyWvOgUgJIT8lDfTBZXLpv/xr/nROBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrEKsWRmVeSWpSXmKPExsVy+t/xu7pFm6oTDW7c1rC4te4cq0XvuZNM
+        FsvPrGO2uPL1PZvFnOdnGS0m3Z/AYvF8/jpGizO/dS1OvrnKYvHi3kUWix9/97FanG16w27R
+        OXEJu8XE/WfZLS7vmsNmMeP8PiaLhR+3sljM+PGP0eJQX7TF/WmzgGYs/MFs8WnWQ2aLFT+3
+        MlrcnXyE0WLG5JdsFj93zWOxWP16H7vFljcTWS2O7l/F6iDr8f5GK7vHnXPn2Tx2zrrL7vF4
+        7kZ2j9kdM1k9Fu95yeRxYsIlJo871/aweWz/9oDVY97JQI/73ceZPI7vusXusWTaVTaPvi2r
+        GD02n672+LxJLkAgSs+mKL+0JFUhI7+4xFYp2tDCSM/Q0kLPyMRSz9DYPNbKyFRJ384mJTUn
+        syy1SN8uQS/j4MVX7AVXeCueXmtgaWCcy93FyMkhIWAicWDzarYuRi4OIYGljBL393WzQiRk
+        JE5Oa4CyhSX+XOuCKnrPKHF86VWWLkYODl4BO4nJLypAalgEVCU+7+tgAbF5BQQlTs58AmaL
+        CiRJbFvwkxHEFhaIkvjbu54dxGYWEJe49WQ+E4gtAtR7pXcvM8h8ZoFLHBI39r1kgVj2llFi
+        U9MkNpAqNgFDia63XWA2p4CZxPGpB5ggJplJdG3tYoSw5SWat85mnsAoNAvJIbOQLJyFpGUW
+        kpYFjCyrGEVSS4tz03OLDfWKE3OLS/PS9ZLzczcxAhPXtmM/N+9gnPfqo94hRiYOxkOMEhzM
+        SiK8b6ZUJwrxpiRWVqUW5ccXleakFh9iNAWGxkRmKdHkfGDqzCuJNzQzMDU0MbM0MLU0M1YS
+        5906d028kEB6YklqdmpqQWoRTB8TB6dUA5NmwZwDsV5p/Rs37ox6377sxd8GN3vl2sSiQyK8
+        k5+JC6v0fTtkd+H3Sfni7o01cpKRkpUGTsJsbfI7ur70ik4O362d1Ph+4qGeYxMTz+9947Fo
+        fdTZw7eLGQ9dL3530+6ZvKRgwbLjYdkueno/A1t0OiOFrHqkTTR8uer4zVMykmYpZ/qVnPtT
+        HZXX+Jan+7XY4uPFnqqGm+Kir/QLfd/5NFp6e5+BQIa9ter+T+uONWqWJ3KdvL/XUS/d4uoq
+        s7nmuWI7tUU1/ONv/r717LHQKkf+bZo7A/WaC0+qS09I+2u8WX7py6YJwfys15j8Zz77Fm3x
+        qCbMltXrw+TlNuHBya9X9kwqjO5TUNqpxFKckWioxVxUnAgAFetmzeUDAAA=
+X-CMS-MailID: 20211029083602eucas1p23bcb25ec288181943e83e9e1f1cd31ce
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20211029062347eucas1p1431402205321b066349e3ccf432d2452
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20211029062347eucas1p1431402205321b066349e3ccf432d2452
+References: <20211025151536.1048186-3-maxime@cerno.tech>
+        <CGME20211029062347eucas1p1431402205321b066349e3ccf432d2452@eucas1p1.samsung.com>
+        <73c13cf5-ca36-f47b-f53a-11d4f015505c@samsung.com>
+        <20211029080521.6tmfq4kjngu5slv7@gilmour>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear RT folks!
+Hi Mexime,
 
-I'm pleased to announce the v5.15-rc7-rt15 patch set. 
+On 29.10.2021 10:05, Maxime Ripard wrote:
+> On Fri, Oct 29, 2021 at 08:23:45AM +0200, Marek Szyprowski wrote:
+>> On 25.10.2021 17:15, Maxime Ripard wrote:
+>>> In order to avoid any probe ordering issue, the best practice is to move
+>>> the secondary MIPI-DSI device registration and attachment to the
+>>> MIPI-DSI host at probe time. Let's do this.
+>>>
+>>> Acked-by: Sam Ravnborg <sam@ravnborg.org>
+>>> Tested-by: John Stultz <john.stultz@linaro.org>
+>>> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+>> This patch landed in linux-next as commit 864c49a31d6b ("drm/bridge:
+>> adv7511: Register and attach our DSI device at probe"). Sadly it causes
+>> endless probe-fail-defer loop on DragonBoard 410c board
+>> (arch/arm64/boot/dts/qcom/apq8016-sbc.dts):
+> I'm sorry to hear that (but would have been surprised if it didn't occur)
+>
+> This is supposed to be fixed by 8f59ee9a570c ("drm/msm/dsi: Adjust probe
+> order"). Do you have that patch applied?
 
-Changes since v5.15-rc7-rt14:
+Yes, I did my test directly on linux next-20211028, which also contains 
+it. What might be important in my case, my DragonBoard 410c doesn't have 
+any display attached.
 
-  - Avoid a sleeping-while-atomic warning in fscache. Reported by Gregor
-    Beck.
+I've also noticed the following error during boot:
 
-  - Redo the synchronisation in fs/namespace and then remove cpu_chill()
-    since it has finally no users.
+[   23.847651] msm_mdp 1a01000.mdp: Adding to iommu group 3
+[   23.866044] msm_mdp 1a01000.mdp: No interconnect support may cause 
+display underflows!
+[   23.957949] irq: no irq domain found for mdss@1a00000 !
+[   23.958014] msm_dsi 1a98000.dsi: failed to request IRQ0: -22
+[   23.962229] msm_dsi: probe of 1a98000.dsi failed with error -22
 
-  - Disable NUMA_BALANCING. It is problematic since it may block a task
-    while moving memory from one NUMA node to another. This has been
-    brought round by Mel Gorman while discussion a different issue.
+The above errors appeared in next-20211028 for the first time. I assume 
+that they are related.
 
-  - Update the i915 patches to v2 which has been posted upstream.
-    Testing on hardware is appreciated.
+Best regards
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
-Known issues
-     - netconsole triggers WARN.
-
-     - The "Memory controller" (CONFIG_MEMCG) has been disabled.
-
-     - Valentin Schneider reported a few splats on ARM64, see
-          https://lkml.kernel.org/r/20210810134127.1394269-1-valentin.schneider@arm.com
-
-The delta patch against v5.15-rc7-rt14 is appended below and can be found here:
- 
-     https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.15/incr/patch-5.15-rc7-rt14-rt15.patch.xz
-
-You can get this release via the git tree at:
-
-    git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git v5.15-rc7-rt15
-
-The RT patch against v5.15-rc7 can be found here:
-
-    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.15/older/patch-5.15-rc7-rt15.patch.xz
-
-The split quilt queue is available at:
-
-    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.15/older/patches-5.15-rc7-rt15.tar.xz
-
-Sebastian
-
-diff --git a/drivers/gpu/drm/i915/gt/intel_context.h b/drivers/gpu/drm/i915/gt/intel_context.h
-index bed60dff93eff..601274ba86e46 100644
---- a/drivers/gpu/drm/i915/gt/intel_context.h
-+++ b/drivers/gpu/drm/i915/gt/intel_context.h
-@@ -161,11 +161,10 @@ static inline void intel_context_enter(struct intel_context *ce)
- 		ce->ops->enter(ce);
- }
- 
--static inline void intel_context_mark_active(struct intel_context *ce,
--					     bool timeline_mutex_needed)
-+static inline void intel_context_mark_active(struct intel_context *ce)
- {
--	if (timeline_mutex_needed)
--		lockdep_assert_held(&ce->timeline->mutex);
-+	lockdep_assert(lockdep_is_held(&ce->timeline->mutex) ||
-+		       test_bit(CONTEXT_IS_PARKED, &ce->flags));
- 	++ce->active_count;
- }
- 
-diff --git a/drivers/gpu/drm/i915/gt/intel_context_types.h b/drivers/gpu/drm/i915/gt/intel_context_types.h
-index e54351a170e2c..1022be795e682 100644
---- a/drivers/gpu/drm/i915/gt/intel_context_types.h
-+++ b/drivers/gpu/drm/i915/gt/intel_context_types.h
-@@ -112,6 +112,7 @@ struct intel_context {
- #define CONTEXT_FORCE_SINGLE_SUBMISSION	7
- #define CONTEXT_NOPREEMPT		8
- #define CONTEXT_LRCA_DIRTY		9
-+#define CONTEXT_IS_PARKED		10
- 
- 	struct {
- 		u64 timeout_us;
-diff --git a/drivers/gpu/drm/i915/gt/intel_engine_heartbeat.c b/drivers/gpu/drm/i915/gt/intel_engine_heartbeat.c
-index 02c0ab9fbb4b8..74775ae961b2b 100644
---- a/drivers/gpu/drm/i915/gt/intel_engine_heartbeat.c
-+++ b/drivers/gpu/drm/i915/gt/intel_engine_heartbeat.c
-@@ -42,7 +42,7 @@ heartbeat_create(struct intel_context *ce, gfp_t gfp)
- 	struct i915_request *rq;
- 
- 	intel_context_enter(ce);
--	rq = __i915_request_create(ce, gfp, true);
-+	rq = __i915_request_create(ce, gfp);
- 	intel_context_exit(ce);
- 
- 	return rq;
-diff --git a/drivers/gpu/drm/i915/gt/intel_engine_pm.c b/drivers/gpu/drm/i915/gt/intel_engine_pm.c
-index d75638d1d561e..e84f03a276d18 100644
---- a/drivers/gpu/drm/i915/gt/intel_engine_pm.c
-+++ b/drivers/gpu/drm/i915/gt/intel_engine_pm.c
-@@ -167,9 +167,10 @@ static bool switch_to_kernel_context(struct intel_engine_cs *engine)
- 	 * engine->wakeref.count, we may see the request completion and retire
- 	 * it causing an underflow of the engine->wakeref.
- 	 */
-+	set_bit(CONTEXT_IS_PARKED, &ce->flags);
- 	GEM_BUG_ON(atomic_read(&ce->timeline->active_count) < 0);
- 
--	rq = __i915_request_create(ce, GFP_NOWAIT, false);
-+	rq = __i915_request_create(ce, GFP_NOWAIT);
- 	if (IS_ERR(rq))
- 		/* Context switch failed, hope for the best! Maybe reset? */
- 		goto out_unlock;
-@@ -198,6 +199,7 @@ static bool switch_to_kernel_context(struct intel_engine_cs *engine)
- 
- 	result = false;
- out_unlock:
-+	clear_bit(CONTEXT_IS_PARKED, &ce->flags);
- 	return result;
- }
- 
-diff --git a/drivers/gpu/drm/i915/i915_request.c b/drivers/gpu/drm/i915/i915_request.c
-index 3bab8f651b4e7..b9dd6100c6d17 100644
---- a/drivers/gpu/drm/i915/i915_request.c
-+++ b/drivers/gpu/drm/i915/i915_request.c
-@@ -833,8 +833,7 @@ static void __i915_request_ctor(void *arg)
- }
- 
- struct i915_request *
--__i915_request_create(struct intel_context *ce, gfp_t gfp,
--		      bool timeline_mutex_needed)
-+__i915_request_create(struct intel_context *ce, gfp_t gfp)
- {
- 	struct intel_timeline *tl = ce->timeline;
- 	struct i915_request *rq;
-@@ -958,7 +957,7 @@ __i915_request_create(struct intel_context *ce, gfp_t gfp,
- 
- 	rq->infix = rq->ring->emit; /* end of header; start of user payload */
- 
--	intel_context_mark_active(ce, timeline_mutex_needed);
-+	intel_context_mark_active(ce);
- 	list_add_tail_rcu(&rq->link, &tl->requests);
- 
- 	return rq;
-@@ -994,7 +993,7 @@ i915_request_create(struct intel_context *ce)
- 		i915_request_retire(rq);
- 
- 	intel_context_enter(ce);
--	rq = __i915_request_create(ce, GFP_KERNEL, true);
-+	rq = __i915_request_create(ce, GFP_KERNEL);
- 	intel_context_exit(ce); /* active reference transferred to request */
- 	if (IS_ERR(rq))
- 		goto err_unlock;
-diff --git a/drivers/gpu/drm/i915/i915_request.h b/drivers/gpu/drm/i915/i915_request.h
-index ba1ced79c8d2c..a2f713b4ac2f9 100644
---- a/drivers/gpu/drm/i915/i915_request.h
-+++ b/drivers/gpu/drm/i915/i915_request.h
-@@ -320,8 +320,7 @@ static inline bool dma_fence_is_i915(const struct dma_fence *fence)
- struct kmem_cache *i915_request_slab_cache(void);
- 
- struct i915_request * __must_check
--__i915_request_create(struct intel_context *ce, gfp_t gfp,
--		      bool timeline_mutex_needed);
-+__i915_request_create(struct intel_context *ce, gfp_t gfp);
- struct i915_request * __must_check
- i915_request_create(struct intel_context *ce);
- 
-@@ -610,7 +609,8 @@ i915_request_timeline(const struct i915_request *rq)
- {
- 	/* Valid only while the request is being constructed (or retired). */
- 	return rcu_dereference_protected(rq->timeline,
--					 lockdep_is_held(&rcu_access_pointer(rq->timeline)->mutex));
-+					 lockdep_is_held(&rcu_access_pointer(rq->timeline)->mutex) ||
-+					 test_bit(CONTEXT_IS_PARKED, &rq->context->flags));
- }
- 
- static inline struct i915_gem_context *
-diff --git a/drivers/gpu/drm/i915/i915_utils.h b/drivers/gpu/drm/i915/i915_utils.h
-index 5259edacde380..b36b27c090496 100644
---- a/drivers/gpu/drm/i915/i915_utils.h
-+++ b/drivers/gpu/drm/i915/i915_utils.h
-@@ -343,7 +343,7 @@ wait_remaining_ms_from_jiffies(unsigned long timestamp_jiffies, int to_wait_ms)
- #define wait_for(COND, MS)		_wait_for((COND), (MS) * 1000, 10, 1000)
- 
- /* If CONFIG_PREEMPT_COUNT is disabled, in_atomic() always reports false. */
--#if defined(CONFIG_DRM_I915_DEBUG) && defined(CONFIG_PREEMPT_COUNT)
-+#if defined(CONFIG_DRM_I915_DEBUG) && defined(CONFIG_PREEMPT_COUNT) && !defined(CONFIG_PREEMPT_RT)
- # define _WAIT_FOR_ATOMIC_CHECK(ATOMIC) WARN_ON_ONCE((ATOMIC) && !in_atomic())
- #else
- # define _WAIT_FOR_ATOMIC_CHECK(ATOMIC) do { } while (0)
-diff --git a/drivers/gpu/drm/selftests/test-drm_damage_helper.c b/drivers/gpu/drm/selftests/test-drm_damage_helper.c
-index 1c19a5d3eefbf..8d8d8e214c283 100644
---- a/drivers/gpu/drm/selftests/test-drm_damage_helper.c
-+++ b/drivers/gpu/drm/selftests/test-drm_damage_helper.c
-@@ -30,6 +30,7 @@ static void mock_setup(struct drm_plane_state *state)
- 	mock_device.driver = &mock_driver;
- 	mock_device.mode_config.prop_fb_damage_clips = &mock_prop;
- 	mock_plane.dev = &mock_device;
-+	mock_obj_props.count = 0;
- 	mock_plane.base.properties = &mock_obj_props;
- 	mock_prop.base.id = 1; /* 0 is an invalid id */
- 	mock_prop.dev = &mock_device;
-diff --git a/fs/fscache/internal.h b/fs/fscache/internal.h
-index c3e4804b8fcbf..9edb87e11680b 100644
---- a/fs/fscache/internal.h
-+++ b/fs/fscache/internal.h
-@@ -81,7 +81,6 @@ extern unsigned fscache_debug;
- extern struct kobject *fscache_root;
- extern struct workqueue_struct *fscache_object_wq;
- extern struct workqueue_struct *fscache_op_wq;
--DECLARE_PER_CPU(wait_queue_head_t, fscache_object_cong_wait);
- 
- extern unsigned int fscache_hash(unsigned int salt, unsigned int *data, unsigned int n);
- 
-diff --git a/fs/fscache/main.c b/fs/fscache/main.c
-index 4207f98e405fd..85f8cf3a323d5 100644
---- a/fs/fscache/main.c
-+++ b/fs/fscache/main.c
-@@ -41,8 +41,6 @@ struct kobject *fscache_root;
- struct workqueue_struct *fscache_object_wq;
- struct workqueue_struct *fscache_op_wq;
- 
--DEFINE_PER_CPU(wait_queue_head_t, fscache_object_cong_wait);
--
- /* these values serve as lower bounds, will be adjusted in fscache_init() */
- static unsigned fscache_object_max_active = 4;
- static unsigned fscache_op_max_active = 2;
-@@ -138,7 +136,6 @@ unsigned int fscache_hash(unsigned int salt, unsigned int *data, unsigned int n)
- static int __init fscache_init(void)
- {
- 	unsigned int nr_cpus = num_possible_cpus();
--	unsigned int cpu;
- 	int ret;
- 
- 	fscache_object_max_active =
-@@ -161,9 +158,6 @@ static int __init fscache_init(void)
- 	if (!fscache_op_wq)
- 		goto error_op_wq;
- 
--	for_each_possible_cpu(cpu)
--		init_waitqueue_head(&per_cpu(fscache_object_cong_wait, cpu));
--
- 	ret = fscache_proc_init();
- 	if (ret < 0)
- 		goto error_proc;
-diff --git a/fs/fscache/object.c b/fs/fscache/object.c
-index 6a675652129b2..78f332f2e98c8 100644
---- a/fs/fscache/object.c
-+++ b/fs/fscache/object.c
-@@ -798,6 +798,8 @@ void fscache_object_destroy(struct fscache_object *object)
- }
- EXPORT_SYMBOL(fscache_object_destroy);
- 
-+static DECLARE_WAIT_QUEUE_HEAD(fscache_object_cong_wait);
-+
- /*
-  * enqueue an object for metadata-type processing
-  */
-@@ -806,12 +808,10 @@ void fscache_enqueue_object(struct fscache_object *object)
- 	_enter("{OBJ%x}", object->debug_id);
- 
- 	if (fscache_get_object(object, fscache_obj_get_queue) >= 0) {
--		wait_queue_head_t *cong_wq =
--			&get_cpu_var(fscache_object_cong_wait);
- 
- 		if (queue_work(fscache_object_wq, &object->work)) {
- 			if (fscache_object_congested())
--				wake_up(cong_wq);
-+				wake_up(&fscache_object_cong_wait);
- 		} else
- 			fscache_put_object(object, fscache_obj_put_queue);
- 
-@@ -833,16 +833,15 @@ void fscache_enqueue_object(struct fscache_object *object)
-  */
- bool fscache_object_sleep_till_congested(signed long *timeoutp)
- {
--	wait_queue_head_t *cong_wq = this_cpu_ptr(&fscache_object_cong_wait);
- 	DEFINE_WAIT(wait);
- 
- 	if (fscache_object_congested())
- 		return true;
- 
--	add_wait_queue_exclusive(cong_wq, &wait);
-+	add_wait_queue_exclusive(&fscache_object_cong_wait, &wait);
- 	if (!fscache_object_congested())
- 		*timeoutp = schedule_timeout(*timeoutp);
--	finish_wait(cong_wq, &wait);
-+	finish_wait(&fscache_object_cong_wait, &wait);
- 
- 	return fscache_object_congested();
- }
-diff --git a/fs/namespace.c b/fs/namespace.c
-index c6e1e24be9408..3ab45b47b2860 100644
---- a/fs/namespace.c
-+++ b/fs/namespace.c
-@@ -14,7 +14,6 @@
- #include <linux/mnt_namespace.h>
- #include <linux/user_namespace.h>
- #include <linux/namei.h>
--#include <linux/hrtimer.h>
- #include <linux/security.h>
- #include <linux/cred.h>
- #include <linux/idr.h>
-@@ -344,10 +343,23 @@ int __mnt_want_write(struct vfsmount *m)
- 	 * incremented count after it has set MNT_WRITE_HOLD.
- 	 */
- 	smp_mb();
-+	might_lock(&mount_lock.lock);
- 	while (READ_ONCE(mnt->mnt.mnt_flags) & MNT_WRITE_HOLD) {
--		preempt_enable();
--		cpu_chill();
--		preempt_disable();
-+		if (!IS_ENABLED(CONFIG_PREEMPT_RT)) {
-+			cpu_relax();
-+		} else {
-+			/*
-+			 * This prevents priority inversion, if the task
-+			 * setting MNT_WRITE_HOLD got preempted on a remote
-+			 * CPU, and it prevents life lock if the task setting
-+			 * MNT_WRITE_HOLD has a lower priority and is bound to
-+			 * the same CPU as the task that is spinning here.
-+			 */
-+			preempt_enable();
-+			lock_mount_hash();
-+			unlock_mount_hash();
-+			preempt_disable();
-+		}
- 	}
- 	/*
- 	 * After the slowpath clears MNT_WRITE_HOLD, mnt_is_readonly will
-diff --git a/include/drm/drm_mode_object.h b/include/drm/drm_mode_object.h
-index 1e5399e47c3a5..c34a3e8030e12 100644
---- a/include/drm/drm_mode_object.h
-+++ b/include/drm/drm_mode_object.h
-@@ -60,7 +60,7 @@ struct drm_mode_object {
- 	void (*free_cb)(struct kref *kref);
- };
- 
--#define DRM_OBJECT_MAX_PROPERTY 42
-+#define DRM_OBJECT_MAX_PROPERTY 24
- /**
-  * struct drm_object_properties - property tracking for &drm_mode_object
-  */
-diff --git a/include/linux/hrtimer.h b/include/linux/hrtimer.h
-index 4a2230e409d2a..0ee140176f102 100644
---- a/include/linux/hrtimer.h
-+++ b/include/linux/hrtimer.h
-@@ -42,7 +42,6 @@ enum hrtimer_mode {
- 	HRTIMER_MODE_PINNED	= 0x02,
- 	HRTIMER_MODE_SOFT	= 0x04,
- 	HRTIMER_MODE_HARD	= 0x08,
--	HRTIMER_MODE_CHILL	= 0x10,
- 
- 	HRTIMER_MODE_ABS_PINNED = HRTIMER_MODE_ABS | HRTIMER_MODE_PINNED,
- 	HRTIMER_MODE_REL_PINNED = HRTIMER_MODE_REL | HRTIMER_MODE_PINNED,
-@@ -125,7 +124,6 @@ struct hrtimer {
- 	u8				is_rel;
- 	u8				is_soft;
- 	u8				is_hard;
--	u8				is_chill;
- };
- 
- /**
-@@ -538,10 +536,4 @@ int hrtimers_dead_cpu(unsigned int cpu);
- #define hrtimers_dead_cpu	NULL
- #endif
- 
--#ifdef CONFIG_PREEMPT_RT
--extern void cpu_chill(void);
--#else
--# define cpu_chill()	cpu_relax()
--#endif
--
- #endif
-diff --git a/init/Kconfig b/init/Kconfig
-index 28fd7b8e8c7d6..0b8a65ae1d72f 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -901,7 +901,7 @@ config NUMA_BALANCING
- 	bool "Memory placement aware NUMA scheduler"
- 	depends on ARCH_SUPPORTS_NUMA_BALANCING
- 	depends on !ARCH_WANT_NUMA_VARIABLE_LOCALITY
--	depends on SMP && NUMA && MIGRATION
-+	depends on SMP && NUMA && MIGRATION && !PREEMPT_RT
- 	help
- 	  This option adds support for automatic NUMA aware memory/task placement.
- 	  The mechanism is quite primitive and is based on migrating memory when
-diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
-index 295e065d27905..0ea8702eb5163 100644
---- a/kernel/time/hrtimer.c
-+++ b/kernel/time/hrtimer.c
-@@ -1570,7 +1570,6 @@ static void __hrtimer_init(struct hrtimer *timer, clockid_t clock_id,
- 	base += hrtimer_clockid_to_base(clock_id);
- 	timer->is_soft = softtimer;
- 	timer->is_hard = !!(mode & HRTIMER_MODE_HARD);
--	timer->is_chill = !!(mode & HRTIMER_MODE_CHILL);
- 	timer->base = &cpu_base->clock_base[base];
- 	timerqueue_init(&timer->node);
- }
-@@ -1937,7 +1936,7 @@ static enum hrtimer_restart hrtimer_wakeup(struct hrtimer *timer)
- 
- 	t->task = NULL;
- 	if (task)
--		wake_up_state(task, timer->is_chill ? TASK_RTLOCK_WAIT : TASK_NORMAL);
-+		wake_up_process(task);
- 
- 	return HRTIMER_NORESTART;
- }
-@@ -2155,34 +2154,6 @@ SYSCALL_DEFINE2(nanosleep_time32, struct old_timespec32 __user *, rqtp,
- }
- #endif
- 
--#ifdef CONFIG_PREEMPT_RT
--/*
-- * Sleep for 1 ms in hope whoever holds what we want will let it go.
-- */
--void cpu_chill(void)
--{
--	unsigned int freeze_flag = current->flags & PF_NOFREEZE;
--	ktime_t chill_time;
--
--	local_irq_disable();
--	current_save_and_set_rtlock_wait_state();
--	local_irq_enable();
--
--	chill_time = ktime_set(0, NSEC_PER_MSEC);
--
--	current->flags |= PF_NOFREEZE;
--	schedule_hrtimeout(&chill_time,
--			   HRTIMER_MODE_REL_HARD| HRTIMER_MODE_CHILL);
--	if (!freeze_flag)
--		current->flags &= ~PF_NOFREEZE;
--
--	local_irq_disable();
--	current_restore_rtlock_saved_state();
--	local_irq_enable();
--}
--EXPORT_SYMBOL(cpu_chill);
--#endif
--
- /*
-  * Functions related to boot-time initialization:
-  */
-diff --git a/localversion-rt b/localversion-rt
-index 08b3e75841adc..18777ec0c27d4 100644
---- a/localversion-rt
-+++ b/localversion-rt
-@@ -1 +1 @@
---rt14
-+-rt15
