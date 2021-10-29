@@ -2,131 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71C574403AF
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 22:01:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAD8E4403B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 22:03:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230397AbhJ2UDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 16:03:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36612 "EHLO
+        id S231162AbhJ2UGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 16:06:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbhJ2UDl (ORCPT
+        with ESMTP id S229458AbhJ2UFx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 16:03:41 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5DF8C061570
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 13:01:12 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id bm39so4474534oib.0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 13:01:12 -0700 (PDT)
+        Fri, 29 Oct 2021 16:05:53 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E65DFC061570;
+        Fri, 29 Oct 2021 13:03:24 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id v1-20020a17090a088100b001a21156830bso11426815pjc.1;
+        Fri, 29 Oct 2021 13:03:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PHumhMIUr438aWWlrs+78cdgsF1iUwE1HgS3gt+l/Ls=;
-        b=qSwRjZWjohXQH7S/AeV/tL1D+waYUomj9nwx2FRu9gr84XTV+znEdx3TbITF/Fc3sz
-         RlulexcGv2ic9dbKiDvM786MBVDSLC0zfCO7j9q5kM8rHP0PDlr3sA0D7kt1hBvRtJd3
-         tHLUoGaCdkk3Q1M2aSeYi8TKIg9RkhTPevPa2equkrz0iPhp+ajmqcZKSZoP6Eg7zy8V
-         IcdlVxBvbpRmqQCZqdP3thsz14hIPaV+lHmidDNU9DKpj6T8vYZHHrppF5PXbUtHPz3O
-         UWyzrfLa19f3BLTKDOPCYrlasARJyQqML7Qi2A7yXi/qyNKiQyXhz7xmx+joEORhFvKW
-         Sgdg==
+        h=from:to:cc:subject:date:message-id;
+        bh=CD0Ppn2nedztgflSM0GT6miv660hCRYTlpvYGrTEVmc=;
+        b=c40Rae/wnHyVhugcgh192ae3Q6rIm71vIlXZyddZ+BApyZvnhsj2KW21ZIoxspIbNB
+         NfIOUjrGjI3T4v6U0yPoUfT9ZEJrWUO5ErGsnx3iu9TbBOWeKtgEXJ+BW2deeO03elW9
+         Sg9QV2srOzOUbmEiP2CuEHjaxcNJE6yiuMTW1jVYKMgNgfMpbsVyYRsKPVlN8C0fyhch
+         lKRk1OoLddxC395H1BiT2gHTncnp6mJtXgVJ9otaG9fChs2jOQ0t0mdeqRH8tOTzkxho
+         Nsgc9WKY55PEqSmEDXNDgyPYYh75S5ipXfkoUoxdvPVy8BljWMePEGCmy/FDzJu2kfWu
+         2Lig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PHumhMIUr438aWWlrs+78cdgsF1iUwE1HgS3gt+l/Ls=;
-        b=dlS66PAE1ovQzrr1nP755h5gErTFGfQoNYwXyQKq/l1+48FZzg/REX3luPXKQX76h4
-         PHwpQNa4d9QdJwgtQQD2ToVk7cgCw3kSOIC0/6I525oOU+pnbc2BCnDS6lJqGp8m3V5z
-         3PTcJt4ARjdfVmdSWm00jSPFzkwZp6HK1H/2G7dPXkrPYTMwgrwGdg9KW1EiznvJUPcQ
-         mFMN71wxZbfea710Ap8m9d9lGTjgmD/IroMfBYhZ80aRDs/C7E+Piw52OKzc4yJGkwu/
-         jq4DwqfFWVLcuMxodqw4ZJqYCu/SsR2jVV+CJ+B90UE9iBbDxqx1oUX7KVuNjzOlgxyQ
-         2EFg==
-X-Gm-Message-State: AOAM5304UlBwW7G/z/F7vcWKxNmb/MNXLVJEl0t3aDSP0zg1npfTLk9K
-        EWLr+u3a++jRcdFKJMiD7XA=
-X-Google-Smtp-Source: ABdhPJzeBQkPFaHl2wBYEVOxaarNNmQ1BtUFuNj4uSlEJXQcPIQL5Evmiu4WHVAMmvGxXGLHJPlR3Q==
-X-Received: by 2002:a05:6808:23ca:: with SMTP id bq10mr9944414oib.6.1635537672112;
-        Fri, 29 Oct 2021 13:01:12 -0700 (PDT)
-Received: from localhost.localdomain ([181.23.79.14])
-        by smtp.gmail.com with ESMTPSA id w5sm2180498otq.46.2021.10.29.13.01.09
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=CD0Ppn2nedztgflSM0GT6miv660hCRYTlpvYGrTEVmc=;
+        b=TPmzCDNh+SokN8rr08pU6vWTk6xpOKgVon095wrBr4VllyTezWYHRVxzZVOPnNVea9
+         lD7dWFTLEfXatZV0r+1CSuGAfglWYwET7lrfEUDhwU6cwTIdXj9CCjVIoCzuMzqgW5En
+         JsYmM1OlsZ+/qg2vERXsoLb7ELzyOcCHGgXKGBpeimxgTEeAcs55bsucqZW+ArC0HSOK
+         NuCU+6gfgQpgOh05c3X4Ek/y+25O8nNqzR8YeD6zUN7kBaZ64gvUFeJSPvxdzu6LKI1v
+         Z+gAHxOzeBs6j4lVdPQbkrkU7NTH8PEHZXtXk25G452TTZGWZnYc0wzTu34rsbkmKuTQ
+         lYtA==
+X-Gm-Message-State: AOAM533yTkyzBRgdrpSPDkwkBdFckriLZGQSUNn8fB4+T6MJJDB3rhuC
+        usonl1u43Jn29qGI5qSShmh0Scel3L/RJA==
+X-Google-Smtp-Source: ABdhPJy/KfEnayPUU1Tvi9Lcz5RXzn6GtjdRqeUCch1RvSVVaIRIZN0uDw8aiq9PZTcYhoO8Aq09Cw==
+X-Received: by 2002:a17:90b:1bd1:: with SMTP id oa17mr13380789pjb.26.1635537804185;
+        Fri, 29 Oct 2021 13:03:24 -0700 (PDT)
+Received: from stbsrv-and-01.and.broadcom.net ([192.19.11.250])
+        by smtp.gmail.com with ESMTPSA id j16sm8775041pfj.16.2021.10.29.13.03.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Oct 2021 13:01:11 -0700 (PDT)
-From:   Gaston Gonzalez <gascoar@gmail.com>
-To:     linux-staging@lists.linux.dev
-Cc:     gregkh@linuxfoundation.org, nsaenz@kernel.org,
-        stefan.wahren@i2se.com, arnd@arndb.de, dan.carpenter@oracle.com,
-        ojaswin98@gmail.com, amarjargal16@gmail.com,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-kernel@vger.kernel.org, gascoar@gmail.com
-Subject: [PATCH v2] staging: vchiq_core: get rid of typedef
-Date:   Fri, 29 Oct 2021 17:00:12 -0300
-Message-Id: <20211029200012.45986-1-gascoar@gmail.com>
-X-Mailer: git-send-email 2.33.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Fri, 29 Oct 2021 13:03:23 -0700 (PDT)
+From:   Jim Quinlan <jim2101024@gmail.com>
+To:     linux-pci@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com, jim2101024@gmail.com,
+        james.quinlan@broadcom.com
+Cc:     devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS),
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM
+        BCM2711/BCM2835 ARM ARCHITECTURE),
+        linux-kernel@vger.kernel.org (open list),
+        linux-rpi-kernel@lists.infradead.org (moderated list:BROADCOM
+        BCM2711/BCM2835 ARM ARCHITECTURE),
+        Saenz Julienne <nsaenzjulienne@suse.de>
+Subject: [PATCH v6 0/9] PCI: brcmstb: have host-bridge turn on sub-device power
+Date:   Fri, 29 Oct 2021 16:03:08 -0400
+Message-Id: <20211029200319.23475-1-jim2101024@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The typedef BITSET_T is acting as a synonym of u32. However, using the type u32
-directly makes the code more readable. Furthermore, typedef should only be used
-in some cases, [1]. Hence, get rid of it.
+v6
+     -- Dropped the idea of a placeholder regulator
+        property (brcm-ep-a-supply). (MarkB)
+     -- device_initialize() now called once.  Two
+        commits were added for this.  (GKH)
+     -- In two cases, separated a single function 
+        into two or more functions (MarkB)
+     -- "(void)foo();" => "foo()".  Note that although
+        foo() returns an int, in this instance it is being
+	invoked within a function returning void, and foo()
+	already executes a dev_err() on error. (MarkB)
+     -- Added a commit to correct PCIe interrupts in YAML.
+     -- Removed "device_type = "pci";" for the EP node
+        in the YAML example.
+     -- Updated the URL related to the voltage regulator
+        names on GitHub.  Note that I added vpciev3v3aux.
 
-[1] Documentation/process/coding-style.rst
+v5 [NOTE: It has been a while since v4.  Sorry]
+     -- See "PCI: allow for callback to prepare nascent subdev"
+        commit message for the cornerstone of this patchset
+        and the reasons behind it.  This is a new commit.
+     -- The RC driver now looks into its DT children and
+        turns on regulators for a sub-device, and this occurs
+	prior to PCIe link as it must.
+     -- Dropped commits not related to the focus of this patchset.
 
-Signed-off-by: Gaston Gonzalez <gascoar@gmail.com>
----
-v1 -> v2: improve changelog specifing which typedef is being removed.
+v4 [NOTE: I'm not sure this fixes RobH and MarkB constraints but I'd
+          like to use this pullreq as a basis for future discussion.]
+   [Commit: Add bindings for ...]
+     -- Fix syntax error in YAML bindings example (RobH)
+     -- {vpcie12v,vpcie3v3}-supply props are back in root complex DT node
+        (I believe RobH said this was okay)
+   [Commit: Add control of ..]
+     -- Do not do global search for regulator; now we look specifically
+        for the property {vpcie12v,vpcie3v3}-supply in the root complex
+	DT node and then call devm_regulator_bulk_get() (MarkB)
+     -- Use devm_regulator_bulk_get() (Bjorn)
+     -- s/EP/slot0 device/ (Bjorn)
+     -- Spelling, capitalization (Bjorn)
+     -- Have brcm_phy_stop() return a void (Bjorn)
+   [Commit: Do not turn off ...]
+     -- Capitalization (Bjorn)
+   [Commit: Check return value ...]
+     -- Commit message content (Bjorn)
+     -- Move 6/6 hunk to 2/6 where it belongs (Bjorn)
+     -- Move the rest of 6/6 before all other commits (Bjorn)
 
- .../staging/vc04_services/interface/vchiq_arm/vchiq_core.c  | 6 +++---
- .../staging/vc04_services/interface/vchiq_arm/vchiq_core.h  | 4 +---
- 2 files changed, 4 insertions(+), 6 deletions(-)
+v3 -- Driver now searches for EP DT subnode for any regulators to turn on.
+      If present, these regulators have the property names
+      "vpcie12v-supply" and "vpcie3v3-supply".  The existence of these
+      regulators in the EP subnode are currently pending as a pullreq
+      in pci-bus.yaml at
+      https://github.com/devicetree-org/dt-schema/pull/54
+      (MarkB, RobH).
+   -- Check return of brcm_set_regulators() (Florian)
+   -- Specify one regulator string per line for easier update (Florian)
+   -- Author/Committer/Signoff email changed from that of V2 from
+      'james.quinlan@broadcom.com' to 'jim2101024@gmail.com'.
 
-diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c
-index ab97a35e63f9..7fe20d4b7ba2 100644
---- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c
-+++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c
-@@ -711,7 +711,7 @@ reserve_space(struct vchiq_state *state, size_t space, int is_blocking)
- }
- 
- static void
--process_free_data_message(struct vchiq_state *state, BITSET_T *service_found,
-+process_free_data_message(struct vchiq_state *state, u32 *service_found,
- 			  struct vchiq_header *header)
- {
- 	int msgid = header->msgid;
-@@ -767,7 +767,7 @@ process_free_data_message(struct vchiq_state *state, BITSET_T *service_found,
- 
- /* Called by the recycle thread. */
- static void
--process_free_queue(struct vchiq_state *state, BITSET_T *service_found,
-+process_free_queue(struct vchiq_state *state, u32 *service_found,
- 		   size_t length)
- {
- 	struct vchiq_shared_state *local = state->local;
-@@ -1981,7 +1981,7 @@ recycle_func(void *v)
- {
- 	struct vchiq_state *state = v;
- 	struct vchiq_shared_state *local = state->local;
--	BITSET_T *found;
-+	u32 *found;
- 	size_t length;
- 
- 	length = sizeof(*found) * BITSET_SIZE(VCHIQ_MAX_SERVICES);
-diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h
-index 3e50910ecba3..53a98949b294 100644
---- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h
-+++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h
-@@ -74,9 +74,7 @@
- 	((fourcc) >>  8) & 0xff, \
- 	(fourcc) & 0xff
- 
--typedef u32 BITSET_T;
--
--static_assert((sizeof(BITSET_T) * 8) == 32);
-+static_assert((sizeof(u32) * 8) == 32);
- 
- #define BITSET_SIZE(b)        ((b + 31) >> 5)
- #define BITSET_WORD(b)        (b >> 5)
+v2 -- Use regulator bulk API rather than multiple calls (MarkB).
+
+v1 -- Bindings are added for fixed regulators that may power the EP device.
+   -- The brcmstb RC driver is modified to control these regulators
+      during probe, suspend, and resume.
+   -- 7216 type SOCs have additional error reporting HW and a
+      panic handler is added to dump its info.
+   -- A missing return value check is added.
+
+Jim Quinlan (9):
+  dt-bindings: PCI: correct brcmstb interrupts, interrupt-map.
+  dt-bindings: PCI: Add bindings for Brcmstb EP voltage regulators
+  PCI: move pci_device_add() call
+  PCI: separate device_initialize() from pci_device_add()
+  PCI: allow for callback to prepare nascent subdev
+  PCI: brcmstb: split brcm_pcie_setup() into two funcs
+  PCI: brcmstb: Add control of subdevice voltage regulators
+  PCI: brcmstb: Do not turn off regulators if EP can wake up
+  PCI: brcmstb: change brcm_phy_stop() to return void
+
+ .../bindings/pci/brcm,stb-pcie.yaml           |  35 ++-
+ drivers/pci/controller/pcie-brcmstb.c         | 243 ++++++++++++++++--
+ drivers/pci/iov.c                             |   1 +
+ drivers/pci/probe.c                           |  61 +++--
+ include/linux/pci.h                           |   4 +
+ 5 files changed, 308 insertions(+), 36 deletions(-)
+
 -- 
-2.33.1
+2.17.1
 
