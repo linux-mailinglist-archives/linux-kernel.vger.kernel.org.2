@@ -2,135 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05FBE43F926
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 10:44:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1867E43F982
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 11:11:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232532AbhJ2Iqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 04:46:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51464 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232492AbhJ2Iqq (ORCPT
+        id S231819AbhJ2JOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 05:14:12 -0400
+Received: from [113.204.237.245] ([113.204.237.245]:55530 "EHLO
+        test.cqplus1.com" rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231453AbhJ2JNE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 04:46:46 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25785C061714
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 01:44:17 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id 131so10932618ybc.7
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 01:44:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ENq4tjivAFtiLBoYaEjwhbRErXjlHM0kRyDue+qYR8s=;
-        b=wRn5p+8tRNX5KLoW5FWn6gbyOOsxcJsU6RD5Ia1CYcJmX4QNemi4NBR1v1FhdoFBWN
-         CxzEwVaSfJD7rqFooBD/Xk8DgteDg2OUUabV1EX8aimjdrJa6wA1aCjfKcW7drJbuph9
-         LpCWC5/xpF1SQ2oZ2hTFijmDbGaaRKaAbbKuEPD5WjY1TlU66NyhY7lV9voUwhJnMK0B
-         VEYBn+ZvcEMzCajC4hlEkqV0gEFFAGHQgIjEsY03dS/B0Hc8vjltNuATxMHLgP5Jy/Qh
-         sJV1y6dl9Y58Bu5jSugY84sgQssseEqzx5/2u+2Crw6wMAsPBg81y0o0xcYh23URjyqC
-         /ykQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ENq4tjivAFtiLBoYaEjwhbRErXjlHM0kRyDue+qYR8s=;
-        b=V7tZ0d2u66OW3gXpVyA88v2QYcoFIJT+3DxX9lFjYWnHcGP4Ud+OZge8jNusWN5N0m
-         4lxSxxSgL27YCWhE/tOOY7wTtqMXWSMN7eCZZ9ERStMfSZwWrUhaAHDTC6duV4lJHlAX
-         JB5cvOTDKGcG1LqnWsIdInQCtyjxhbVsJOnLJbPjl/CoxIGXvKF8VFRzLuH4YwilZuoG
-         ltcHF4gToS50whF4imUfb3VAS4J5SWBU4YE4v9e0qsuOZkFnoK0lTCwHJwKl4uQUxgB4
-         OOWHRNWQcEW95Qm5zkuttm0V3YL3h00zipgzVuL2b35H3zrtb7QY2Y+F2NtarJ59zZIL
-         41Ig==
-X-Gm-Message-State: AOAM530JaBRd0KgkIW1lCf2eaI+9dKXvJC3y5KFjfg/Rgb/qSpeDU9Pf
-        W5uoS0JjfsnD0X6Jny6tAkqxOf69rAQ1Tn9M2goMFA==
-X-Google-Smtp-Source: ABdhPJxyHQR9n5o6twKULKxgFVOpVVXROEmQZR/EKRl6qL52zK8Dzfugbqjb0Ygz5V+6TXY8xU3LBGJ13typbBD3Iro=
-X-Received: by 2002:a25:ad02:: with SMTP id y2mr10484185ybi.141.1635497056643;
- Fri, 29 Oct 2021 01:44:16 -0700 (PDT)
+        Fri, 29 Oct 2021 05:13:04 -0400
+X-MailGates: (compute_score:DELIVER,40,3)
+Received: from 172.28.114.216
+        by cqmailgates with MailGates ESMTP Server V5.0(10981:0:AUTH_RELAY)
+        (envelope-from <qinjian@cqplus1.com>); Fri, 29 Oct 2021 16:45:59 +0800 (CST)
+From:   Qin Jian <qinjian@cqplus1.com>
+To:     robh+dt@kernel.org
+Cc:     mturquette@baylibre.com, sboyd@kernel.org, tglx@linutronix.de,
+        maz@kernel.org, p.zabel@pengutronix.de, broonie@kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        wells.lu@sunplus.com, Qin Jian <qinjian@cqplus1.com>
+Subject: [PATCH v2 0/8] Add Sunplus SP7021 SoC Support
+Date:   Fri, 29 Oct 2021 16:44:26 +0800
+Message-Id: <cover.1635496594.git.qinjian@cqplus1.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-References: <20211029032638.84884-1-songmuchun@bytedance.com> <20211029082620.jlnauplkyqmaz3ze@wittgenstein>
-In-Reply-To: <20211029082620.jlnauplkyqmaz3ze@wittgenstein>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Fri, 29 Oct 2021 16:43:40 +0800
-Message-ID: <CAMZfGtUMLD183qHVt6=8gU4nnQD2pn1gZwZJOjCHFK73wK0=kQ@mail.gmail.com>
-Subject: Re: [PATCH] seq_file: fix passing wrong private data
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     andriy.shevchenko@linux.intel.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>, revest@chromium.org,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 4:26 PM Christian Brauner
-<christian.brauner@ubuntu.com> wrote:
->
-> On Fri, Oct 29, 2021 at 11:26:38AM +0800, Muchun Song wrote:
-> > DEFINE_PROC_SHOW_ATTRIBUTE() is supposed to be used to define a series
-> > of functions and variables to register proc file easily. And the users
-> > can use proc_create_data() to pass their own private data and get it
-> > via seq->private in the callback. Unfortunately, the proc file system
-> > use PDE_DATA() to get private data instead of inode->i_private. So fix
-> > it. Fortunately, there only one user of it which does not pass any
-> > private data, so this bug does not break any in-tree codes.
-> >
-> > Fixes: 97a32539b956 ("proc: convert everything to "struct proc_ops"")
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > ---
-> >  include/linux/seq_file.h | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/include/linux/seq_file.h b/include/linux/seq_file.h
-> > index 103776e18555..72dbb44a4573 100644
-> > --- a/include/linux/seq_file.h
-> > +++ b/include/linux/seq_file.h
-> > @@ -209,7 +209,7 @@ static const struct file_operations __name ## _fops = {                   \
-> >  #define DEFINE_PROC_SHOW_ATTRIBUTE(__name)                           \
-> >  static int __name ## _open(struct inode *inode, struct file *file)   \
-> >  {                                                                    \
-> > -     return single_open(file, __name ## _show, inode->i_private);    \
-> > +     return single_open(file, __name ## _show, PDE_DATA(inode));     \
-> >  }                                                                    \
-> >                                                                       \
-> >  static const struct proc_ops __name ## _proc_ops = {                 \
->
-> Hm, after your change DEFINE_SHOW_ATTRIBUTE() and
-> DEFINE_PROC_SHOW_ATTRIBUTE() macros do exactly the same things, right?:
+This patch series add Sunplus SP7021 SoC support.
 
-Unfortunately, they are not the same. The difference is the
-operation structure, namely "struct file_operations" and
-"struct proc_ops".
+Sunplus SP7021 is an ARM Cortex A7 (4 cores) based SoC. It integrates many
+peripherals (ex: UART, I2C, SPI, SDIO, eMMC, USB, SD card and etc.) into a
+single chip. It is designed for industrial control.
 
-DEFINE_SHOW_ATTRIBUTE() is usually used by
-debugfs while DEFINE_SHOW_ATTRIBUTE() is
-used by procfs.
+SP7021 consists of two chips (dies) in a package. One is called C-chip
+(computing chip). It is a 4-core ARM Cortex A7 CPU. It adopts high-level
+process (22 nm) for high performance computing. The other is called P-
+chip (peripheral chip). It has many peripherals and an ARM A926 added
+especially for real-time control. P-chip is made for customers. It adopts
+low-level process (ex: 0.11 um) to reduce cost.
 
-Thanks.
+Refer to (for documentations):
+https://sunplus-tibbo.atlassian.net/wiki/spaces/doc/overview
 
->
-> #define DEFINE_SHOW_ATTRIBUTE(__name)                                   \
-> static int __name ## _open(struct inode *inode, struct file *file)      \
-> {                                                                       \
->         return single_open(file, __name ## _show, inode->i_private);    \
-> }                                                                       \
->                                                                         \
-> static const struct file_operations __name ## _fops = {                 \
->         .owner          = THIS_MODULE,                                  \
->         .open           = __name ## _open,                              \
->         .read           = seq_read,                                     \
->         .llseek         = seq_lseek,                                    \
->         .release        = single_release,                               \
-> }
->
-> #define DEFINE_PROC_SHOW_ATTRIBUTE(__name)                              \
-> static int __name ## _open(struct inode *inode, struct file *file)      \
-> {                                                                       \
->         return single_open(file, __name ## _show, inode->i_private);    \
-> }                                                                       \
->
-> Can't you just replace the single instance where
-> DEFINE_PROC_SHOW_ATTRIBUTE with DEFINE_SHOW_ATTRIBUTE() and remove
-> DEFINE_PROC_SHOW_ATTRIBUTE completely?
->
-> Christian
+Refer to (applications):
+https://tibbo.com/store/plus1.html
+
+Refer to (applications):
+http://www.sinovoip.com.cn/ecp_view.asp?id=586
+
+Changes in v2:
+- sunplus,sp7021-intc.yaml: add descrption for "#interrupt-cells", interrupts
+- sunplus,sp7021-intc.yaml: drop "ext0-mask"/"ext1-mask" from DT
+- sunplus,sp7021-intc.yaml: fix example.dt too long error
+- irq-sp7021-intc.c: major rewrite
+- all files with dual license
+
+Qin Jian (8):
+  dt-bindings: vendor-prefixes: Add Sunplus
+  dt-bindings: arm: sunplus: Add bindings for Sunplus SP7021 SoC boards
+  dt-bindings: reset: Add bindings for SP7021 reset driver
+  reset: Add Sunplus SP7021 reset driver
+  dt-bindings: clock: Add bindings for SP7021 clock driver
+  clk: Add Sunplus SP7021 clock driver
+  dt-bindings: interrupt-controller: Add bindings for SP7021 interrupt
+    controller
+  irqchip: Add support for Sunplus SP7021 interrupt controller
+
+ .../bindings/arm/sunplus,sp7021.yaml          |  27 +
+ .../bindings/clock/sunplus,sp7021-clkc.yaml   |  38 +
+ .../sunplus,sp7021-intc.yaml                  |  59 ++
+ .../bindings/reset/sunplus,reset.yaml         |  40 +
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ MAINTAINERS                                   |  16 +
+ drivers/clk/Kconfig                           |   8 +
+ drivers/clk/Makefile                          |   1 +
+ drivers/clk/clk-sp7021.c                      | 770 ++++++++++++++++++
+ drivers/irqchip/Kconfig                       |   9 +
+ drivers/irqchip/Makefile                      |   1 +
+ drivers/irqchip/irq-sp7021-intc.c             | 324 ++++++++
+ drivers/reset/Kconfig                         |   9 +
+ drivers/reset/Makefile                        |   1 +
+ drivers/reset/reset-sunplus.c                 | 159 ++++
+ include/dt-bindings/clock/sp-sp7021.h         | 112 +++
+ .../interrupt-controller/sp7021-intc.h        |  24 +
+ include/dt-bindings/reset/sp-sp7021.h         |  99 +++
+ 18 files changed, 1699 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/arm/sunplus,sp7021.yaml
+ create mode 100644 Documentation/devicetree/bindings/clock/sunplus,sp7021-clkc.yaml
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/sunplus,sp7021-intc.yaml
+ create mode 100644 Documentation/devicetree/bindings/reset/sunplus,reset.yaml
+ create mode 100644 drivers/clk/clk-sp7021.c
+ create mode 100644 drivers/irqchip/irq-sp7021-intc.c
+ create mode 100644 drivers/reset/reset-sunplus.c
+ create mode 100644 include/dt-bindings/clock/sp-sp7021.h
+ create mode 100644 include/dt-bindings/interrupt-controller/sp7021-intc.h
+ create mode 100644 include/dt-bindings/reset/sp-sp7021.h
+
+--
+2.33.1
