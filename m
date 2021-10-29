@@ -2,55 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB08243FD8A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 15:46:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 516D343FD8D
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 15:46:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231621AbhJ2Nso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 09:48:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52420 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231589AbhJ2Nsk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 09:48:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BDC0661100;
-        Fri, 29 Oct 2021 13:46:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635515172;
-        bh=3amabRN0J9EI2ey2xTBcHBAuO/FPePPq+Bws3o8xa/E=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=hT/9stuCw2TBWC+WQlNMsEPUyDuT82VSj9AwkcURueLyoJuaYcaA/LjPKa1zwKoDv
-         ix42QS26dAHMtYYOOW+KPlbU4KBHJ4mwNTa4WN43nPQRGSXhBZSUOiiU9gKDwSgKOe
-         +mkIgEDaiAQI3yzkG89/QxYVbGCo4fR25ogeldYBYpjzss0+3muVH0cwlrrR/qedd5
-         b/zUaEdNq7CClthfU5UjrVwT/0SN1WOnu5PP5IfqBFhBIFPdx26R24HnmhsQFUCPWI
-         MN6uLQZuXQhZg7ydYVL8azE932lAQ+DpjxBDFhh0T2QZcy040jjMCMw87UHOWB20XF
-         nUTmGWw3xJ8ig==
-Date:   Fri, 29 Oct 2021 06:46:10 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     "Ziyang Xuan (William)" <william.xuanziyang@huawei.com>,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH net] net: vlan: fix a UAF in vlan_dev_real_dev()
-Message-ID: <20211029064610.18daa788@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20211029121324.GT2744544@nvidia.com>
-References: <20211027121606.3300860-1-william.xuanziyang@huawei.com>
-        <20211027184640.7955767e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <20211028114503.GM2744544@nvidia.com>
-        <20211028070050.6ca7893b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <b573b01c-2cc9-4722-6289-f7b9e0a43e19@huawei.com>
-        <20211029121324.GT2744544@nvidia.com>
+        id S231589AbhJ2NtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 09:49:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35518 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229692AbhJ2NtW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 09:49:22 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2E99C061570;
+        Fri, 29 Oct 2021 06:46:53 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id r12so39059429edt.6;
+        Fri, 29 Oct 2021 06:46:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=j56DM4iboxKhG2Oxwlg3r+3tA18trFPQxcYLMdOnnqQ=;
+        b=hInrWTsGA9vuISyWF3PR2c1XG29OP86W/VxehlPi7PjASQQLHEVD2oU33Y7YcuECx5
+         YpkIyXa1jYtn2EVk5Aer0ieS5CiYIuGkncIcrVnp+RV7WJk4hiPTa/mclx5SKdqFYOCC
+         PHoDR7axzbixYZvGeGoIk1Tx8MeX3/GjJ5WXd/ZdmGwbOWd7P/ODIWTODzBgiVYuw88o
+         ssoTNUkVpzH1/K48qC4SbtgBwIwRB2sDrsplOb2h1l178hRqLSRD/BMQAo5gCyy4CdJt
+         kwltu1IrEKEEMuNWIhT6N2cWfKCk4nd7YRO1goE2Hskc5m9SA0XeNJxAWkyz0Bu8gQO9
+         eHhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=j56DM4iboxKhG2Oxwlg3r+3tA18trFPQxcYLMdOnnqQ=;
+        b=bJ5wkpx27J7QZOxYQSYNf7LYhQd+ungUgVvXHxHgAKVV0KWqB30VG0FS3tQbwFpQ4k
+         kp2OmApHcNAAixmrK8UuxycaZ0ed3ubdtSInMY0yfgpEeCxnzhcoreBO1Gvle22HswpS
+         GH4A4XWlLBa9RSwDh95NIq1rfbgATxK07GmMv3FVfPM1bKjIeK1rVQmVCN5CuBFOxR7u
+         8Wbaf23HsEgNS/FbYxNLoYldosGSzyTceObZWQr3w7KkozE6H6d6BGG++tjGbzNQIonW
+         rvHD0YRw0pn/v0n7EQ+oaF/cFKSEifIK2mif6d8klj+zipld3MbL3nuF0EUDBr3RCURL
+         Lmkg==
+X-Gm-Message-State: AOAM532hFDoc1VOQH8Y801djDSVU1joE2G2lhJ3rWxSq1LbjewFYmcTp
+        Fncr/kffBGIek24x9ABiyVG4eSP9vXrQ+9QtGHVboQY=
+X-Google-Smtp-Source: ABdhPJym2kTp79dc8AuGXzuptUMGgejDwXxqQLzisn35yZ5irMxzJmq0fITPnkLjgkpB/mJ319U67Q4tL+Obh+Cqdbc=
+X-Received: by 2002:a05:6402:348c:: with SMTP id v12mr14746402edc.271.1635515212098;
+ Fri, 29 Oct 2021 06:46:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20211029131854.042d8202@canb.auug.org.au>
+In-Reply-To: <20211029131854.042d8202@canb.auug.org.au>
+From:   Rob Herring <robherring2@gmail.com>
+Date:   Fri, 29 Oct 2021 08:46:38 -0500
+Message-ID: <CAL_JsqLqhZAOJxMcdtxe1bAFpYxG6pjRPSK7fVukUMNp2ucCvA@mail.gmail.com>
+Subject: Re: linux-next: manual merge of the devicetree tree with the iommu tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Will Deacon <will@kernel.org>
+Cc:     Joerg Roedel <joro@8bytes.org>, David Heidelberg <david@ixit.cz>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Oct 2021 09:13:24 -0300 Jason Gunthorpe wrote:
-> Jakub's path would be to test vlan_dev->reg_state != NETREG_REGISTERED
-> in the work queue, but that feels pretty hacky to me as the main point
-> of the UNREGISTERING state is to keep the object alive enough that
-> those with outstanding gets can compelte their work and release the
-> get. Leaving a wrecked object in UNREGISTERING is a bad design.
+On Thu, Oct 28, 2021 at 9:19 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> Today's linux-next merge of the devicetree tree got a conflict in:
+>
+>   Documentation/devicetree/bindings/iommu/arm,smmu.yaml
+>
+> between commit:
+>
+>   e4a40f15b031 ("dt-bindings: arm-smmu: Add compatible for SM6350 SoC")
+>
+> from the iommu tree and commit:
+>
+>   e6b331271d41 ("dt-bindings: arm-smmu: Add compatible for the SDX55 SoC")
+>
+> from the devicetree tree.
 
-That or we should investigate if we could hold the ref for real_dev all
-the way until vlan_dev_free().
+I've dropped it from my tree. Will can pick it up instead.
+
+Rob
