@@ -2,119 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E00FF44032A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 21:26:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40E6A440332
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 21:27:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231270AbhJ2T3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 15:29:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230381AbhJ2T3O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 15:29:14 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B1B1C061570
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 12:26:45 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id iq11so919892pjb.3
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 12:26:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=W0F/ULHmaZ6yiKdcrFiyrI98oNqQ2Wlj0UyZO4mnwig=;
-        b=F47FKuzCq49W4X+gP6en7fn4kYhmztJOYUcBSV26Z8eok7j07w09fLc+8XItP5aMYe
-         Z/RfI//diXfKeNL4X/3Qnb0hzZOXA9nXpn55U5d6hKHllYKNVk7OPOFHUVmO1ItFZoMg
-         azPecgxZus3DPs7bqOdXvPMy77BDMDdrvWES2qgOJp6q5/yA+6f3lw9uuB/EO5lMDoI/
-         kD/IrulQy3tQRv5PYfqc0kY5Qp0c2ylbex2KFRJocKKo0xsTSWTPTj2i0dXzXxO+Swp8
-         3rk/odoV1H2LP0hv7GbojKNqT5GU2d13Jyx1MECfsVJy6NkAClfkGVsipB4LvasW47PR
-         skTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=W0F/ULHmaZ6yiKdcrFiyrI98oNqQ2Wlj0UyZO4mnwig=;
-        b=wOTuMbcmaLmGrGx90pE41q3JSimDjhk9aX5IXTUw90DLkrpc+Ardtf3aXFPyYKOWzq
-         6I2gl3gnc5WA4tLxrE55Oa0+8OrttD1posn35eLxChIeKARtYznxfNnX3cXU7Y+BnJIc
-         GZhEAakNhv58MLhBWhWSetue2TaZEQLEjk9FDHGA07OWWQt0udmPfOYATPw+orL0Y4qV
-         /RdSwfKX44HwultCMHJY5YBrYbC83U/b3B0pLfKh70YztgZSjpziRV5x0RbDIP37s1sJ
-         w/jYVKUGwuUR49mPP8K8AisEU2SodGEa/73T5Ciw4zS0n95+U2H5xgBOW7KlxJ/M0mb9
-         RJqQ==
-X-Gm-Message-State: AOAM530iDA0TGJB2SaNFet1a7zgRw6GyiMrIf+h3ITKS1ilgcb0ziKlY
-        75j9BueugfqXxrewj1sihM4WtA==
-X-Google-Smtp-Source: ABdhPJwW8BXMaJw7SFj0kyzLqqWfj6DzD2/RqEruvPjTrn6wlXc1lGIxiYDfcNVKF5ztZtzeCxQu7g==
-X-Received: by 2002:a17:902:bf02:b0:13f:cfdd:804e with SMTP id bi2-20020a170902bf0200b0013fcfdd804emr11296417plb.1.1635535604654;
-        Fri, 29 Oct 2021 12:26:44 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id 17sm6670375pgr.10.2021.10.29.12.26.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Oct 2021 12:26:44 -0700 (PDT)
-Date:   Fri, 29 Oct 2021 19:26:40 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        llvm@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Ajay Garg <ajaygargnsit@gmail.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [PATCH] KVM: x86: Shove vp_bitmap handling down into
- sparse_set_to_vcpu_mask()
-Message-ID: <YXxK8CcIk2MiVw2p@google.com>
-References: <20211028213408.2883933-1-seanjc@google.com>
- <87pmrokn16.fsf@vitty.brq.redhat.com>
- <YXwF+jSnDq9ONTQJ@google.com>
- <YXxGO5/xO8KWfnKj@google.com>
+        id S231364AbhJ2T37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 15:29:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58370 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231497AbhJ2T3o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 15:29:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 991A560D07;
+        Fri, 29 Oct 2021 19:27:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635535635;
+        bh=wrlLeaQdneJCXxuP2usLUeHJCtlIqSI7Y3L+CH69mxU=;
+        h=Date:From:Cc:Subject:In-Reply-To:References:From;
+        b=jXJ+MEO9tauSPjIXg/9z5IS4SEDkwJbPc4i/XBxCCUOrF2VlDxvo59AETs6OfWLbN
+         03bgkgn1ZwDSwEeu5szeZGJVqIIK4Ln3yu1uJrDyxPpeli74+1iFZf3VuPTyhoNeWO
+         YBmrtEMPi15YxRW7oMQphxzMV0pSEfv9gbeH2MV2KDPGs/OqwbHpSwKowO4cVRlZrd
+         v9JYleR8pTx2wETYLVLORTVdIEfYVEEqRtI+AywcoI78zbnQGpBzy/rD7g21EfOY/V
+         is+B7IXqRFEOFLooZulKzm9TKZ5fQlFa5HxySlXHf/cIFpjc7Gkh04af0eQnDTsKvX
+         s5paGvJEmBBNw==
+Date:   Fri, 29 Oct 2021 20:27:09 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Alan <alan@linux.intel.com>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev
+Subject: Re: [PATCH 2/2] media: atomisp: set default mode
+Message-ID: <20211029202709.755b9a6b@sal.lan>
+In-Reply-To: <543e61dd07c90a7d8577b3a94696edc77953b9d8.1635497370.git.mchehab+huawei@kernel.org>
+References: <750e50daa3ed65a7eb060cb0eb5cfc60dc9386be.1635497370.git.mchehab+huawei@kernel.org>
+        <543e61dd07c90a7d8577b3a94696edc77953b9d8.1635497370.git.mchehab+huawei@kernel.org>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YXxGO5/xO8KWfnKj@google.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021, Sean Christopherson wrote:
-> On Fri, Oct 29, 2021, Sean Christopherson wrote:
-> > On Fri, Oct 29, 2021, Vitaly Kuznetsov wrote:
-> > > > +	/* If vp_index == vcpu_idx for all vCPUs, fill vcpu_mask directly. */
-> > > > +	if (likely(!has_mismatch))
-> > > > +		bitmap = (u64 *)vcpu_mask;
-> > > > +
-> > > > +	memset(bitmap, 0, sizeof(vp_bitmap));
-> > > 
-> > > ... but in the unlikely case has_mismatch == true 'bitmap' is still
-> > > uninitialized here, right? How doesn't it crash?
-> > 
-> > I'm sure it does crash.  I'll hack the guest to actually test this.
-> 
-> Crash confirmed.  But I don't feel too bad about my one-line goof because the
-> existing code botches sparse VP_SET, i.e. _EX flows.  The spec requires the guest
-> to explicit specify the number of QWORDS in the variable header[*], e.g. VP_SET
-> in this case, but KVM ignores that and does a harebrained calculation to "count"
-> the number of sparse banks.  It does this by counting the number of bits set in
-> valid_bank_mask, which is comically broken because (a) the whole "sparse" thing
-> should be a clue that they banks are not packed together, (b) the spec clearly
-> states that "bank = VPindex / 64", (c) the sparse_bank madness makes this waaaay
-> more complicated than it needs to be, and (d) the massive sparse_bank allocation
-> on the stack is completely unnecessary because KVM simply ignores everything that
-> wouldn't fit in vp_bitmap.
-> 
-> To reproduce, stuff vp_index in descending order starting from KVM_MAX_VCPUS - 1.
-> 
-> 	hv_vcpu->vp_index = KVM_MAX_VCPUS - vcpu->vcpu_idx - 1;
-> 
-> E.g. with an 8 vCPU guest, KVM will calculate sparse_banks_len=1, read zeros, and
-> do nothing, hanging the guest because it never sends IPIs.
- 
-Ugh, I can't read.  The example[*] clarifies that the "sparse" VP_SET packs things
-into BankContents.  I don't think I imagined my guest hanging though, so something
-is awry.  Back to debugging...
+Em Fri, 29 Oct 2021 09:49:36 +0100
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
 
-[*] https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/tlfs/datatypes/hv_vp_set#processor-set-example
-
-> So v2 will be completely different because the "fix" for the KASAN issue is to
-> get rid of sparse_banks entirely.
+> Without setting a default mode at open(), applications that
+> don't call VIDIOC_SET_PARM with a custom atomisp parameters
+> won't work, as the pipeline won't be set:
 > 
-> [1] https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/tlfs/hypercall-interface#variable-sized-hypercall-input-headers
-> [2] https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/tlfs/datatypes/hv_vp_set#sparse-virtual-processor-set
+> 	atomisp-isp2 0000:00:03.0: can't create streams
+> 	atomisp-isp2 0000:00:03.0: __get_frame_info 1600x1200 (padded to 0) returned -22
+> 
+> So, as an step to allow generic apps to use this driver, put
+> the device's run_mode in preview after open.
+> 
+> After this patch, using v4l2grab starts to work:
+> 
+> 	$ v4l2grab -D -f 'NV12' -x 1600 -y 1200 -d /dev/video2 -u
+> 	$ nvt/raw2pnm -x1600 -y1200 -f NV12 out017.raw out017.pnm
+> 	$ feh out017.pnm
+
+Added support for YUYV at v4l2grab (at contrib/test, under v4l-utils). 
+The above can now be just:
+
+	$ v4l2grab -f YUYV  -x 1600 -y 1200 -d /dev/video2 -u
+	$ feh out017.pnm
+
+(on a side note, the colorspace conversion from YUYV seems ackward,
+but this can be adjusted later on at the toolset and/or at atomisp)
+
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  drivers/staging/media/atomisp/pci/atomisp_fops.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/drivers/staging/media/atomisp/pci/atomisp_fops.c b/drivers/staging/media/atomisp/pci/atomisp_fops.c
+> index 72cbdce2142a..7df982c80b1a 100644
+> --- a/drivers/staging/media/atomisp/pci/atomisp_fops.c
+> +++ b/drivers/staging/media/atomisp/pci/atomisp_fops.c
+> @@ -893,6 +893,11 @@ static int atomisp_open(struct file *file)
+>  	else
+>  		pipe->users++;
+>  	rt_mutex_unlock(&isp->mutex);
+> +
+> +	/* Ensure that a mode is set */
+> +	if (asd)
+> +		v4l2_ctrl_s_ctrl(asd->run_mode, ATOMISP_RUN_MODE_PREVIEW);
+> +
+>  	return 0;
+>  
+>  css_error:
