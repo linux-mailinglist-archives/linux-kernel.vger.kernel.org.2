@@ -2,148 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0B6243FA53
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 11:57:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62C7043FA5B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 11:59:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231642AbhJ2J7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 05:59:52 -0400
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:55779 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231579AbhJ2J7v (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 05:59:51 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 3B5E95C0220;
-        Fri, 29 Oct 2021 05:57:22 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Fri, 29 Oct 2021 05:57:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=3/Egfh
-        4X+ZdPXzTj4EaqMgbhEWAl0zPu3cQnawCwVO4=; b=kCKWYV9uq+QIfP4Qg3wcFm
-        fELenkkPgPvNOALaIoR2v1v9PE2h0vWPGYl/PKkJu8sdlHc9LXSFTc3ZR2gV/KIk
-        BruKbAMKQ5qO+TXVGFLdA+PnyXT87Xk3/GGeHjbwzJ09Aqc1yThs4ZuQaEwDeBai
-        Iod1ItadzdcoI+cpV5gxJCVOJjIM9mog4bzakYfkY8UjQ3FZ67hBKL7hqJhS5meS
-        qqmUx1SyowR5LF1LOXwwxPFsr+lP2/KCO8q0A16PIRtWHjhtT1yjE1eBPyaRtT8P
-        u12vnRprhMeV8RiMpylj5uF7FrVMFApaYUDtNcGbPmK+N2O+0Gm30J2N73YNaExg
-        ==
-X-ME-Sender: <xms:gsV7YarWpM9MY6o510lBTf4K0-d5szn528oVZFE1MFdPagX9xpjUgA>
-    <xme:gsV7YYo-uhoBOjjBdNY6S-WzLoZRjUtxmI4DQ0dLgCekOQAqDYU7EgPxJ7Hmginhh
-    016Kv2pA5kMsw>
-X-ME-Received: <xmr:gsV7YfP0FACiTRy27rcEo7gqjY0Zu4SRBq-cMnsa6wEAmlJTwUwe9AymhpO6HSxtHatB2SC3DuCLFVH2Ho1STBMWekRQlqho>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvdeghedgudelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttdejnecuhfhrohhmpeforghrvghk
-    ucforghrtgiihihkohifshhkihdqifpkrhgvtghkihcuoehmrghrmhgrrhgvkhesihhnvh
-    hishhisghlvghthhhinhhgshhlrggsrdgtohhmqeenucggtffrrghtthgvrhhnpeehvedv
-    ueevheekhefhvefggffgvedugeetuefgleeivdehgfeuieeugfetteeiffenucffohhmrg
-    hinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghm
-    pehmrghilhhfrhhomhepmhgrrhhmrghrvghksehinhhvihhsihgslhgvthhhihhnghhslh
-    grsgdrtghomh
-X-ME-Proxy: <xmx:gsV7YZ4J5qvDuhzPuhwl4RnOcRfeeSyS43IBvoGw7Jk4pfB3ZjKLbQ>
-    <xmx:gsV7YZ7QgfuWVZN4d_b2jxUZQBEiMvHvf3SaWX9ahoyB17vZ1h-2Aw>
-    <xmx:gsV7YZhjQo79qUec-ty7DQuRGDTPoG069hAEfwx80kQWrHEgWTUx7A>
-    <xmx:gsV7YTmkCkUjV_Pr-NigJ3MjXbO85CG6RQAHYymRQnJCMp1z_KjnCw>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 29 Oct 2021 05:57:20 -0400 (EDT)
-Date:   Fri, 29 Oct 2021 11:57:17 +0200
-From:   Marek =?utf-8?Q?Marczykowski-G=C3=B3recki?= 
-        <marmarek@invisiblethingslab.com>
-To:     Juergen Gross <jgross@suse.com>
-Cc:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] xen/balloon: add late_initcall_sync() for initial
- ballooning done
-Message-ID: <YXvFfRKuD574hulr@mail-itl>
-References: <20211028105952.10011-1-jgross@suse.com>
- <YXsFO2TMRiJTQM2q@mail-itl>
- <27e7619a-a797-5c46-9f9f-015ab488e31c@suse.com>
+        id S231674AbhJ2KBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 06:01:36 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:53590 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231610AbhJ2KBe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 06:01:34 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1635501545; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=UnsNoYW7wP4F8KSJMq0q8k/qnjr/LOlMEp/wGWG3buI=; b=sFt9yTqRXTegJ8SK23q9Iq9uN4G4TzFPQhMOSLz1B4N38ox25Z65JUY6qx7TYddpkOjVhJ1H
+ cGMLPhEWKX+BivIMTK6IZtvqp3cKrz9Cy4XGjqvI/ZezFX6UfJTf+oTWWS0IFNLVSFKq8vvK
+ FV2A3WiVfnVjN86HgbCVr08QzZs=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 617bc5da648aeeca5c8222cd (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 29 Oct 2021 09:58:50
+ GMT
+Sender: rnayak=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B5593C43460; Fri, 29 Oct 2021 09:58:50 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-5.4 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.1.100] (unknown [49.207.214.117])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DBEDBC4338F;
+        Fri, 29 Oct 2021 09:58:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org DBEDBC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH v2 1/2] pinctrl: qcom: Add egpio feature support
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     agross@kernel.org, linus.walleij@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, psodagud@codeaurora.org,
+        dianders@chromium.org
+References: <1635250056-20274-1-git-send-email-rnayak@codeaurora.org>
+ <YXsrtTGZW66mUtkU@ripper>
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+Message-ID: <4fda39ce-189e-4873-dd40-3219c0052ffd@codeaurora.org>
+Date:   Fri, 29 Oct 2021 15:28:44 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="qlvPDcy0Ybnk1Q+S"
-Content-Disposition: inline
-In-Reply-To: <27e7619a-a797-5c46-9f9f-015ab488e31c@suse.com>
+In-Reply-To: <YXsrtTGZW66mUtkU@ripper>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---qlvPDcy0Ybnk1Q+S
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Date: Fri, 29 Oct 2021 11:57:17 +0200
-From: Marek =?utf-8?Q?Marczykowski-G=C3=B3recki?= <marmarek@invisiblethingslab.com>
-To: Juergen Gross <jgross@suse.com>
-Cc: xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-	Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-	Stefano Stabellini <sstabellini@kernel.org>, stable@vger.kernel.org
-Subject: Re: [PATCH] xen/balloon: add late_initcall_sync() for initial
- ballooning done
 
-On Fri, Oct 29, 2021 at 06:48:44AM +0200, Juergen Gross wrote:
-> On 28.10.21 22:16, Marek Marczykowski-G=C3=B3recki wrote:
-> > On Thu, Oct 28, 2021 at 12:59:52PM +0200, Juergen Gross wrote:
-> > > When running as PVH or HVM guest with actual memory < max memory the
-> > > hypervisor is using "populate on demand" in order to allow the guest
-> > > to balloon down from its maximum memory size. For this to work
-> > > correctly the guest must not touch more memory pages than its target
-> > > memory size as otherwise the PoD cache will be exhausted and the guest
-> > > is crashed as a result of that.
-> > >=20
-> > > In extreme cases ballooning down might not be finished today before
-> > > the init process is started, which can consume lots of memory.
-> > >=20
-> > > In order to avoid random boot crashes in such cases, add a late init
-> > > call to wait for ballooning down having finished for PVH/HVM guests.
-> > >=20
-> > > Cc: <stable@vger.kernel.org>
-> > > Reported-by: Marek Marczykowski-G=C3=B3recki <marmarek@invisiblething=
-slab.com>
-> > > Signed-off-by: Juergen Gross <jgross@suse.com>
-> >=20
-> > It may happen that initial balloon down fails (state=3D=3DBP_ECANCELED)=
-=2E In
-> > that case, it waits indefinitely. I think it should rather report a
-> > failure (and panic? it's similar to OOM before PID 1 starts, so rather
-> > hard to recover), instead of hanging.
->=20
-> Okay, I can add something like that. I'm thinking of issuing a failure
-> message in case of credit not having changed for 1 minute and panic()
-> after two more minutes. Is this fine?
+On 10/29/2021 4:31 AM, Bjorn Andersson wrote:
+> On Tue 26 Oct 05:07 PDT 2021, Rajendra Nayak wrote:
+> 
+>> From: Prasad Sodagudi <psodagud@codeaurora.org>
+>>
+>> egpio is a scheme which allows special power Island Domain IOs
+>> (LPASS,SSC) to be reused as regular chip GPIOs by muxing regular
+>> TLMM functions with Island Domain functions.
+>> With this scheme, an IO can be controlled both by the cpu running
+>> linux and the Island processor. This provides great flexibility to
+>> re-purpose the Island IOs for regular TLMM usecases.
+>>
+>> 2 new bits are added to ctl_reg, egpio_present is a read only bit
+>> which shows if egpio feature is available or not on a given gpio.
+>> egpio_enable is the read/write bit and only effective if egpio_present
+>> is 1. Once its set, the Island IO is controlled from Chip TLMM.
+>> egpio_enable when set to 0 means the GPIO is used as Island Domain IO.
+>>
+>> To support this we add a new function 'egpio' which can be used to
+>> set the egpio_enable to 0, for any other TLMM controlled functions
+>> we set the egpio_enable to 1.
+>>
+>> Signed-off-by: Prasad Sodagudi <psodagud@codeaurora.org>
+>> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+>> ---
+>>   drivers/pinctrl/qcom/pinctrl-msm.c | 17 +++++++++++++++--
+>>   drivers/pinctrl/qcom/pinctrl-msm.h |  4 ++++
+>>   2 files changed, 19 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/pinctrl/qcom/pinctrl-msm.c b/drivers/pinctrl/qcom/pinctrl-msm.c
+>> index 8476a8a..bfdba3a 100644
+>> --- a/drivers/pinctrl/qcom/pinctrl-msm.c
+>> +++ b/drivers/pinctrl/qcom/pinctrl-msm.c
+>> @@ -185,6 +185,7 @@ static int msm_pinmux_set_mux(struct pinctrl_dev *pctldev,
+>>   	unsigned int irq = irq_find_mapping(gc->irq.domain, group);
+>>   	struct irq_data *d = irq_get_irq_data(irq);
+>>   	unsigned int gpio_func = pctrl->soc->gpio_func;
+>> +	unsigned int egpio_func = pctrl->soc->egpio_func;
+>>   	const struct msm_pingroup *g;
+>>   	unsigned long flags;
+>>   	u32 val, mask;
+>> @@ -218,8 +219,20 @@ static int msm_pinmux_set_mux(struct pinctrl_dev *pctldev,
+>>   	raw_spin_lock_irqsave(&pctrl->lock, flags);
+>>   
+>>   	val = msm_readl_ctl(pctrl, g);
+>> -	val &= ~mask;
+>> -	val |= i << g->mux_bit;
+>> +
+>> +	if (egpio_func && i == egpio_func) {
+>> +		if (val & BIT(g->egpio_present))
+>> +			val &= ~BIT(g->egpio_enable);
+>> +		else
+>> +			return -EINVAL;
+> 
+> You're returning here with pctrl->lock held and irqs disabled.
 
-Isn't it better to get a state from balloon_thread()? If the balloon
-fails it won't really try anymore (until 3600s timeout), so waiting in
-that state doesn't help. And reporting the failure earlier may be more
-user friendly. Or maybe there is something that could wakeup the thread
-earlier, that I don't see? Hot plugging more RAM is rather unlikely at
-this stage...
-See my patch at [1], although rather hacky (and likely - racy).
+argh, right. I will fix that and repost.
+I wonder if I should just drop that error handling completely,
+we wouldn't end up here unless the platform driver wrongly populates
+a pin which does not support egpio with a egpio function.
 
-[1] https://lore.kernel.org/xen-devel/YXFxKC4shCATB913@mail-itl/
+> 
+>> +	} else {
+>> +		val &= ~mask;
+>> +		val |= i << g->mux_bit;
+>> +		/* Check if egpio present and enable that feature */
+> 
+> I never remember if egpio_enable means apss or lpass, so I think this
+> comment would be better as:
+> 
+> 		/* Claim ownership of pin if egpio capable */
 
---=20
-Best Regards,
-Marek Marczykowski-G=C3=B3recki
-Invisible Things Lab
+:) makes sense
 
---qlvPDcy0Ybnk1Q+S
-Content-Type: application/pgp-signature; name="signature.asc"
+> 
+>> +		if (egpio_func && (val & BIT(g->egpio_present)))
+> 
+> Can't you drop the parenthesis around the second expression?
 
------BEGIN PGP SIGNATURE-----
+yes, will do, thanks for the review.
 
-iQEzBAEBCAAdFiEEhrpukzGPukRmQqkK24/THMrX1ywFAmF7xX0ACgkQ24/THMrX
-1yxoEgf+LmB4JafdHInJTr2vAFi4q6NgWgkLEQ5VU9RFsyxR6E1Y2gFfyQClL8T5
-pbWpH16scP/dnR74YMV9WfZKL5Zvza9vFTM2okm/rKjazkuPacho2xrxIJ9EPQNz
-xL2XQFqi2Ma6j8RN0CePJtunyCIThttE2FFKl6BGAKCPCJKqAmMPxXnSjajQNc+6
-ZKdubeSuvvlm4PKl89eyVyUrNC5QobxUlXCc7IaVRV1PEHFYrxH4pEOtsEAVfjA5
-VIFzSmygyP65qWhRvLvCWHFZ8F740EypyzdNoBuhdpEfc3/O/siyFVsd1dlIdmcV
-Dy823HP72V5ImM2iXpgSYCOgUjiVrQ==
-=tifY
------END PGP SIGNATURE-----
-
---qlvPDcy0Ybnk1Q+S--
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
