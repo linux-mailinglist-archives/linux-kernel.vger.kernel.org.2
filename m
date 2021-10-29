@@ -2,141 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA80E440567
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 00:23:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06504440574
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 00:27:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231599AbhJ2WZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 18:25:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40432 "EHLO
+        id S231569AbhJ2WaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 18:30:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231552AbhJ2WZd (ORCPT
+        with ESMTP id S230325AbhJ2WaS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 18:25:33 -0400
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFAB3C061714
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 15:23:03 -0700 (PDT)
-Received: by mail-il1-x133.google.com with SMTP id j28so5733752ila.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 15:23:03 -0700 (PDT)
+        Fri, 29 Oct 2021 18:30:18 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C013C061714
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 15:27:49 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id k2-20020a17090ac50200b001a218b956aaso8289833pjt.2
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 15:27:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=p7UKH93nqJbnjgzvxtzNJ+VSIOto15SRM0Q3/xyJtUY=;
-        b=UQpUd8XdbcbkVLI6okUt3F/7VRB6A4TEUtSGndWNft3ohARwNu0RfycSz6ymvo7ogl
-         hjmQCJuTukPQZvnajmoOFhB1m9sz43UCNATDW/Vmz8B9QxZmu9th2wzVlV3I+cADgksN
-         QDOP65GK0/77RXP9qoMA3iyaK5SPLtdSWF77I=
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5FiNpbWsQ1AURQ4l0x934XjrZg11DiQc/mByDM5SptY=;
+        b=YKY5vW9oso/yUk/J5kLStrUj/F7QkEJ10L0nXgOVB+n0AfBHbcrPxSRwViZ/uhQEhI
+         Fkqt9HboOiKw36BecKSTetqOAZpc1LzXlZ+hGEMde8vMT5icQk/XkfyQBiaAJMSxOL0g
+         epWK0UJAZ5kwJ+tYxy4Se5szspr0bHfW+7ALE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=p7UKH93nqJbnjgzvxtzNJ+VSIOto15SRM0Q3/xyJtUY=;
-        b=ZV2WrfaY8j8W8+yVXek3Ep6I4KvoKgfcoAPTYIFWusKicX2qnOdO9YV572rHtV4s5I
-         DFKI/lThCsqcz9OzXervU37g69PJsT2laMNAVOx8nhBQ+hif1XefRbDER95VK/QVI1Vg
-         OIUM6/y8qtsRiq9qnwqHS3LXW7ZR6GqBO8t00sdegy1sWUUM4jCv/N3LAxyQdlsC5nIK
-         MODDIiG0DjDSviIwgjtjbn2fSzTa25SSj9WWlfObrYzkrGhbUZnUwWsWnv4tGdWW0/LP
-         9RXBwFG0zjVBUeoYFd8kWT3uHPRPYTBQdg/LxxouU11EHJXojI+my72fL8MVwMA2qRjZ
-         t7dQ==
-X-Gm-Message-State: AOAM532dGwWezz1AfZC1lgHdhDMNg9OxO+Q5rv/iVsV9cei0lxEPbJPr
-        2D7fmakuoMfsjo5L3iVxOZZVrg==
-X-Google-Smtp-Source: ABdhPJx+HOeT+MydkmuJ4CJ7iIG9afL2dqYnp3PVn5b6tu3j8GQvdeJblZHo4tkQzShaw9+xYY72aw==
-X-Received: by 2002:a05:6e02:1aa5:: with SMTP id l5mr8992834ilv.268.1635546182922;
-        Fri, 29 Oct 2021 15:23:02 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id l14sm4354841iow.27.2021.10.29.15.23.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Oct 2021 15:23:02 -0700 (PDT)
-Subject: Re: [PATCH] selftests: kselftest.h: mark functions with 'noreturn'
-To:     Nick Desaulniers <ndesaulniers@google.com>,
-        Anders Roxell <anders.roxell@linaro.org>
-Cc:     shuah@kernel.org, fenghua.yu@intel.com, reinette.chatre@intel.com,
-        john.stultz@linaro.org, tglx@linutronix.de,
-        akpm@linux-foundation.org, nathan@kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-mm@kvack.org, llvm@lists.linux.dev,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20211029114312.1921603-1-anders.roxell@linaro.org>
- <834d18b6-4106-045f-0264-20e54edf47bc@linuxfoundation.org>
- <CAKwvOdk8D5=AxzSpqjvXJc4XXL8CA7O=WY-LW0mZb3eQRK_EWg@mail.gmail.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <0beef0a1-cfa0-b653-fbc6-41ba707c2926@linuxfoundation.org>
-Date:   Fri, 29 Oct 2021 16:23:01 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        bh=5FiNpbWsQ1AURQ4l0x934XjrZg11DiQc/mByDM5SptY=;
+        b=XVt9BULyq70a+i5pAJeiWQPBMIXprMX57Tqcqctx5UbbC3XvC3cfoktKhu3X+e9vgZ
+         aO2iCClPo1T4JeNpGnmVsFmv9RvIvmqYV0wa/iszEx5elfVKfPvrNUKSbS8oqCMLYdeK
+         5BPZOnuamwKDm91zBGlszWLAuIwv9fj0fEWa4I6eXG4SwXrBz8j5/YTrn8pOCSi9DWKt
+         TySTjQkdgODWWqxoPYXpcd1YXTtH+8j2Rtdzo4hbBPZtdDZgiLinebFN7/R9ontZPkwl
+         91mSMz6+GkYhev3LjExhaGO4i0ZcZBnKG+pYBN/u1ZcvtjzjqNC0AZ/0jxmkl3/74eBa
+         QJ7Q==
+X-Gm-Message-State: AOAM531+ksTaGVKlzKnTFSG+QhdzlCr600y7ll8uaw9qYIqxMjlHROht
+        JHqak0EPHCXbQgHy1SPYfx37ziyZZpeDDw==
+X-Google-Smtp-Source: ABdhPJxOUrAr8JIx2irI6EQjMHkdS9XbqnP128y/F33ONCuGC4zmm/ZspZ/svgol1Cl5BxIgFpF2sg==
+X-Received: by 2002:a17:90b:1b11:: with SMTP id nu17mr22487040pjb.129.1635546468388;
+        Fri, 29 Oct 2021 15:27:48 -0700 (PDT)
+Received: from philipchen.mtv.corp.google.com ([2620:15c:202:201:e956:ddc4:6e27:e270])
+        by smtp.gmail.com with ESMTPSA id v14sm7756660pff.199.2021.10.29.15.27.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Oct 2021 15:27:48 -0700 (PDT)
+From:   Philip Chen <philipchen@chromium.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     swboyd@chromium.org, dianders@chromium.org,
+        Philip Chen <philipchen@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: [PATCH v3 1/4] arm64: dts: sc7180: Include gpio.h in edp bridge dts
+Date:   Fri, 29 Oct 2021 15:27:40 -0700
+Message-Id: <20211029152647.v3.1.Ie17e51ad3eb91d72826ce651ca2786534a360210@changeid>
+X-Mailer: git-send-email 2.33.1.1089.g2158813163f-goog
 MIME-Version: 1.0
-In-Reply-To: <CAKwvOdk8D5=AxzSpqjvXJc4XXL8CA7O=WY-LW0mZb3eQRK_EWg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/29/21 4:08 PM, Nick Desaulniers wrote:
-> On Fri, Oct 29, 2021 at 11:19 AM Shuah Khan <skhan@linuxfoundation.org> wrote:
->>
->> On 10/29/21 5:43 AM, Anders Roxell wrote:
->>> When building kselftests/capabilities the following warning shows up:
->>>
->>> clang -O2 -g -std=gnu99 -Wall    test_execve.c -lcap-ng -lrt -ldl -o test_execve
->>> test_execve.c:121:13: warning: variable 'have_outer_privilege' is used uninitialized whenever 'if' condition is false [-Wsometimes-uninitialized]
->>>           } else if (unshare(CLONE_NEWUSER | CLONE_NEWNS) == 0) {
->>>                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>> test_execve.c:136:9: note: uninitialized use occurs here
->>>           return have_outer_privilege;
->>>                  ^~~~~~~~~~~~~~~~~~~~
->>> test_execve.c:121:9: note: remove the 'if' if its condition is always true
->>>           } else if (unshare(CLONE_NEWUSER | CLONE_NEWNS) == 0) {
->>>                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>> test_execve.c:94:27: note: initialize the variable 'have_outer_privilege' to silence this warning
->>>           bool have_outer_privilege;
->>>                                    ^
->>>                                     = false
->>>
->>> Rework so all the ksft_exit_*() functions have attribue
->>> '__attribute__((noreturn))' so the compiler knows that there wont be
->>> any return from the function. That said, without
->>> '__attribute__((noreturn))' the compiler warns about the above issue
->>> since it thinks that it will get back from the ksft_exit_skip()
->>> function, which it wont.
->>> Cleaning up the callers that rely on ksft_exit_*() return code, since
->>> the functions ksft_exit_*() have never returned anything.
->>>
->>> Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
->>
->> Lot of changes to fix this warning. Is this necessary? I would
->> like to explore if there is an easier and localized change that
->> can fix the problem.
-> 
-> via `man 3 exit`:
-> ```
-> The  exit() function causes normal process termination ...
-> ...
-> RETURN VALUE
->         The exit() function does not return.
-> ```
-> so seeing `ksft_exit_pass`, `ksft_exit_fail`, `ksft_exit_fail_msg`,
-> `ksft_exit_xfail`, `ksft_exit_xpass`, and `ksft_exit_skip` all
-> unconditional call `exit` yet return an `int` looks wrong to me on
-> first glance. So on that point this patch and its resulting diffstat
-> LGTM.
-> 
-> That said, there are many changes that explicitly call `ksft_exit`
-> with an expression; are those setting the correct exit code? Note that
-> ksft_exit_pass is calling exit with KSFT_PASS which is 0.  So some of
-> the negations don't look quite correct to me.  For example:
-> 
-> -       return !ksft_get_fail_cnt() ? ksft_exit_pass() : ksft_exit_fail();
-> +       ksft_exit(!ksft_get_fail_cnt());
-> 
-> so if ksft_get_fail_cnt() returns 0, then we were calling
-> ksft_exit_pass() which exited with 0. Now we'd be exiting with 1?
-> 
+The edp bridge dts fragment files use the macros defined in
+'dt-bindings/gpio/gpio.h'.
 
-Right. This is another concern I have that the tests will return
-a different values and the wrapper will interpret them as failures.
+To help us more flexibly order the #include lines of dts files in a
+board-revision-specific dts file, let's include the gpio header in the
+bridge dts fragment files themselves.
 
-So his doesn't look like the right change to fix the problem.
+Signed-off-by: Philip Chen <philipchen@chromium.org>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+---
 
-thanks,
--- Shuah
+(no changes since v1)
+
+ arch/arm64/boot/dts/qcom/sc7180-trogdor-parade-ps8640.dtsi | 2 ++
+ arch/arm64/boot/dts/qcom/sc7180-trogdor-ti-sn65dsi86.dtsi  | 2 ++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-parade-ps8640.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-parade-ps8640.dtsi
+index a3d69540d4e4..6a84fba178d6 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-parade-ps8640.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-parade-ps8640.dtsi
+@@ -5,6 +5,8 @@
+  * Copyright 2021 Google LLC.
+  */
+ 
++#include <dt-bindings/gpio/gpio.h>
++
+ / {
+ 	pp3300_brij_ps8640: pp3300-brij-ps8640 {
+ 		compatible = "regulator-fixed";
+diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-ti-sn65dsi86.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-ti-sn65dsi86.dtsi
+index 97d5e45abd1d..6dbf413e4e5b 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-ti-sn65dsi86.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-ti-sn65dsi86.dtsi
+@@ -5,6 +5,8 @@
+  * Copyright 2021 Google LLC.
+  */
+ 
++#include <dt-bindings/gpio/gpio.h>
++
+ &dsi0_out {
+ 	remote-endpoint = <&sn65dsi86_in>;
+ 	data-lanes = <0 1 2 3>;
+-- 
+2.33.1.1089.g2158813163f-goog
+
