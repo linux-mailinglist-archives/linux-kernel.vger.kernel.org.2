@@ -2,547 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51C5344014A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 19:26:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1960944014C
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 19:28:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229979AbhJ2R2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 13:28:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229772AbhJ2R2x (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 13:28:53 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E4CDC061714
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 10:26:24 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id p16so22473968lfa.2
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 10:26:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=T55KtW7/E5ipM4Zi/9bDhTfScVLdepouDglYdo+SdWE=;
-        b=cB90MpW4/F6TGvbvPUx1iLYlBMP6H4RJhBmY7mzz4M+y2zfPD3dqc/DqVVvisVV8mn
-         OGsWWYJyb3pLDR9UsFUf9AiXCBkb7vh0GMLO2B48WRZeFJ+wsdHgvYWJe9xzg/ozZWty
-         Sw/nfnvBAbnCm9WTtHf099A30uBPp+eEdi2Z193dzXs/hJ0hAROvs4pBY2fra5QEcMh6
-         Qp0RE19FxrUYuuSId3MetYl6OtdDjWVQ0BFa3X9pEShd10uZxk77kwP8pGgzEyFgstwv
-         fWwFualF+lUf4YFbPRL5nBNCFn3ZL3R5OeAn8HBVPAdzqww7Xt3jd9TQe4G+WErwwrJb
-         Jh9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=T55KtW7/E5ipM4Zi/9bDhTfScVLdepouDglYdo+SdWE=;
-        b=jE0kYO3GaLGQxOzN2d0F0huuegN2CTXBmZZHA2EytS+Q3Sj3AYUKFj/4D3EVll487a
-         GkzI48/5drZeUQ25Gfp5lt23C9ZdO4Ge8GmPGWfWWR6Cvd7T2SAgnTZhCTfDrkOei0RK
-         rYz4J5htUVSbm+Pl5QoIhHOjStssznsCzMfMa7MaQorBp5Um7QDwyglNOF6CXbS53esS
-         SlgMpP7/AHt8I2NuGfQcX1vXptpiJVQm0K6Z92fWoxgL4JxkRLRaslMiHqVrIGXdqIZP
-         /7z3Hj6Lbm78yWj96zWodk1/k+3QyUmtgpyzl764PgEanRJFQTt/F/e/I9uQxtVykcMn
-         LnkQ==
-X-Gm-Message-State: AOAM531pboZTVjatYix3qPQhRcx/cZ/ydT6BQpMpEnLtE2NolXeygbhh
-        igfQWTHKut9G7IlFVA512YVkfmcPUlp3nRtZDaxPrQ==
-X-Google-Smtp-Source: ABdhPJxJmde9uTCMw5gZffqhle9Y2REL2MtG6GaKioVdAk067JldJJ4DsKvmoLnUfnQtTRpel4Gr44wdfWFdD6KVRLQ=
-X-Received: by 2002:a19:ad4d:: with SMTP id s13mr12009571lfd.373.1635528382526;
- Fri, 29 Oct 2021 10:26:22 -0700 (PDT)
+        id S230055AbhJ2Rau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 13:30:50 -0400
+Received: from mout.gmx.net ([212.227.15.18]:41847 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229772AbhJ2Rat (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 13:30:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1635528492;
+        bh=wA5vZ50jUUEtjv2u4EvKaku5j2wbU9DZtBi8KMuY5GQ=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=QRkMLdyo1G7kEFmxR9d37Ho97vGOUTs+5HbBLZos9xmg8x4zQgvQm0EV2i8DG3BMz
+         dOO96c5Jv2xf579y5K2q793K4HvKIHGO4yHHfl8LNgj2W0AhUoVazagKOMPlhRLH+9
+         JO5DBeM5w/3MjMk+4HStzWx2Hr2ft9ozp7BKxpq0=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
+ (mrgmx005 [212.227.17.184]) with ESMTPSA (Nemesis) id
+ 1MysVs-1muTtO0TDu-00vsvT; Fri, 29 Oct 2021 19:28:12 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Fei Li <fei1.li@intel.com>
+Cc:     Len Baker <len.baker@gmx.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3][next] virt: acrn: Prefer array_size and struct_size over open coded arithmetic
+Date:   Fri, 29 Oct 2021 19:27:46 +0200
+Message-Id: <20211029172746.7563-1-len.baker@gmx.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20211028175749.1219188-1-pgonda@google.com> <20211028175749.1219188-5-pgonda@google.com>
- <c2076ecf-8b30-c96e-2169-bc1f031d309e@amd.com>
-In-Reply-To: <c2076ecf-8b30-c96e-2169-bc1f031d309e@amd.com>
-From:   Peter Gonda <pgonda@google.com>
-Date:   Fri, 29 Oct 2021 11:26:10 -0600
-Message-ID: <CAMkAt6rKZx=S7tRuNo-dnHw_iJ2uiDp1nzL-WiAgD+uQo+aCyA@mail.gmail.com>
-Subject: Re: [PATCH 4/4] crypto: ccp - Add SEV_INIT_EX support
-To:     Tom Lendacky <Thomas.Lendacky@amd.com>,
-        "Relph, Richard" <Richard.Relph@amd.com>
-Cc:     David Rientjes <rientjes@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Marc Orr <marcorr@google.com>, Joerg Roedel <jroedel@suse.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        John Allen <john.allen@amd.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:FBYfBYOa9vEdjzrjSk0uTej9Gc4j7RFVce62dXXlYz3Q8AWd/8K
+ etMArQnf7ZQoWUxlYmGX8hD9hFOaz5NQyvW1FtjtWIr13+1Dg+ZCIn5t0k+BBBTo0ZRARjs
+ RtaE8oO7L8DinZaZWOQ1eUkDZrgR9sdWtaQ+SCQW7H03J7p8MZ4rBoR7YYMpZQqwNkooDI9
+ Wa+DGVqlzYpj4CZ3oSCkg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:WasQtGQS9lY=:MeN2bjFhN/1OHmz5PnKj2d
+ Wfu6l6LWonWkl5XsSIsmrkXC+pq1wiatw4EyKQSyQlRBloSL79qdNHj3Gmm0B1/MjCxA/y5XX
+ Ygh/uVkiA3rtQDMYRt0YJG0wpTdC31kT0GJE1i3EDaoRMuLYwhqdEhJy7djkAF+U3Cl8+w0OC
+ b+oYX5jLTUfxtIQsllNg8u2h/VRl2XFuF3rmPnpbE5Ld3956i0WzeNKzdgvqxxEsGwNG2WieC
+ GSHwbnsBErG9JqySZOerGkfs/MQ2xGBpilcojv2mf9NjzKaA13r2+i6qUkGTFdMk+B/NdGb88
+ gHxwyFOoavyF8DcGBKJM11NzEEREQbRf4WFHVTgUe9sfz/hMFKHb4HaDUwVAINpiiZ/sxy8g6
+ 73jimmbrceJFOSMCcE0EJXvQ0px38ofjSKdUgJ9OqKlPIHeClzR6z9SQQACHjSvKSWeBn3FGw
+ sFmlHqzPdmpGXb5UhpLfnlp0Z1xt3WQv3a0wdvgFvKLO2mXruW4w15ADT8GN2UGQW++K9p49M
+ Ac43/+kDr45WBO3vCZ2RmUgl2uufnv9MyLF0WI2TPJlOk3p4wFyIop0cvpftBCezsaMtlwI0b
+ WaGhTrkNrfCaa/dUsit7snlK2iNprAG1naThK+y33mcT45Z9pJ2NBQspYpr/+/KHnJEQRwWSv
+ UR3YdXilKHv+K6pH9GpNMZ61W1rNfMltOlKpJjhDa2SUISExs0jsIbM4/b9F+bnAZLAUBPs9C
+ ZzzJNtwYbs1MWwTkozRmD8ew7gI4rt3aMiAui8GDIikRjnazwJOvriAY7nWRKezbKNJzISlxE
+ 1z+mvOE96yH54DV1qrHTc5u4dEjZ9JvFEr3v/+TferLPh1x+s7kTN/lwOKo/lu1XyyUyLgg2N
+ YpjxB9bCsuZkYkxl+JwI7k6HzS1EjR+GWYH6ZtLVWYDuE3+gE8aIdke3XkoY/fwb5b/KOsC0/
+ OqGdGHagoah598TAdKtPXrlBHEV5Lkk9PV1XPMK87B/cBVIlVkQnnN98AwxBFKEJ3M3DAB+G3
+ Fsf6bETqTi9NO7xS3tuDjdNKQBh8btcuTwK2UXM1OmTUoC8uOvvYdxJy0aK1QdCOywPexlbvM
+ 5uCDDYcE6lZJn8=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 8:45 AM Tom Lendacky <thomas.lendacky@amd.com> wrote:
->
-> On 10/28/21 12:57 PM, Peter Gonda wrote:
-> > From: David Rientjes <rientjes@google.com>
-> >
-> > Add new module parameter to allow users to use SEV_INIT_EX instead of
-> > SEV_INIT. This helps users who lock their SPI bus to use the PSP for SEV
-> > functionality. The 'init_ex_path' parameter defaults to NULL which means
-> > the kernel will use SEV_INIT, if a path is specified SEV_INIT_EX will be
-> > used with the data found at the path. On certain PSP commands this
-> > file is written to as the PSP updates the NV memory region. Depending on
-> > file system initialization this file open may fail during module init
-> > but the CCP driver for SEV already has sufficient retries for platform
-> > initialization. During normal operation of PSP system and SEV commands
-> > if the PSP has not been initialized it is at run time.
->
-> IIUC, it looks as though the file has to exist before the very first use,
-> otherwise the initialization will fail. Did you consider checking for the
-> presence of the file first and, if not there, just using a memory area of
-> all f's (as documented in the SEV API)? Then on successful INIT, the
-> memory would be written and the file created.
+As noted in the "Deprecated Interfaces, Language Features, Attributes,
+and Conventions" documentation [1], size calculations (especially
+multiplication) should not be performed in memory allocator (or similar)
+function arguments due to the risk of them overflowing. This could lead
+to values wrapping around and a smaller allocation being made than the
+caller was expecting. Using those allocations could lead to linear
+overflows of heap memory and other misbehaviors.
 
-Thats a great idea. I'll add that functionality.
+So, use the array_size() helper to do the arithmetic instead of the
+argument "count * size" in the vzalloc() function.
 
->
-> Either way, probably worth adding to the commit message. And if you stay
-> with having to pre-allocate the file, it's worth adding to the SEV
-> documentation what is required to be done to initialize the file.
->
-> Although, INIT_EX is probably worth adding to the SEV documentation in
-> general.
+Also, take the opportunity to add a flexible array member of struct
+vm_memory_region_op to the vm_memory_region_batch structure. And then,
+change the code accordingly and use the struct_size() helper to do the
+arithmetic instead of the argument "size + size * count" in the kzalloc
+function.
 
-Is this (https://www.kernel.org/doc/Documentation/virt/kvm/amd-memory-encryption.rst)
-the documentation you were referring too? If so I can add another
-patch before this one to document INIT, then add the INIT_EX
-documentation here. Or were you thinking something else?
+This code was detected with the help of Coccinelle and audited and fixed
+manually.
 
->
-> >
-> > Signed-off-by: David Rientjes <rientjes@google.com>
-> > Co-developed-by: Peter Gonda <pgonda@google.com>
-> > Signed-off-by: Peter Gonda <pgonda@google.com>
-> > Cc: Tom Lendacky <thomas.lendacky@amd.com>
-> > Cc: Brijesh Singh <brijesh.singh@amd.com>
-> > Cc: Marc Orr <marcorr@google.com>
-> > Cc: Joerg Roedel <jroedel@suse.de>
-> > Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> > Cc: David Rientjes <rientjes@google.com>
-> > Cc: John Allen <john.allen@amd.com>
-> > Cc: "David S. Miller" <davem@davemloft.net>
-> > Cc: Paolo Bonzini <pbonzini@redhat.com> (
-> > Cc: linux-crypto@vger.kernel.org
-> > Cc: linux-kernel@vger.kernel.org
-> > ---
-> >   drivers/crypto/ccp/sev-dev.c | 186 ++++++++++++++++++++++++++++++++---
-> >   include/linux/psp-sev.h      |  21 ++++
-> >   2 files changed, 192 insertions(+), 15 deletions(-)
-> >
-> > diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
-> > index b568ae734857..c8718b4cbc93 100644
-> > --- a/drivers/crypto/ccp/sev-dev.c
-> > +++ b/drivers/crypto/ccp/sev-dev.c
-> > @@ -22,6 +22,7 @@
-> >   #include <linux/firmware.h>
-> >   #include <linux/gfp.h>
-> >   #include <linux/cpufeature.h>
-> > +#include <linux/fs.h>
-> >
-> >   #include <asm/smp.h>
-> >
-> > @@ -43,6 +44,10 @@ static int psp_probe_timeout = 5;
-> >   module_param(psp_probe_timeout, int, 0644);
-> >   MODULE_PARM_DESC(psp_probe_timeout, " default timeout value, in seconds, during PSP device probe");
-> >
-> > +static char *init_ex_path;
-> > +module_param(init_ex_path, charp, 0660);
-> > +MODULE_PARM_DESC(init_ex_path, " Path for INIT_EX data; if set try INIT_EX");
-> > +
-> >   MODULE_FIRMWARE("amd/amd_sev_fam17h_model0xh.sbin"); /* 1st gen EPYC */
-> >   MODULE_FIRMWARE("amd/amd_sev_fam17h_model3xh.sbin"); /* 2nd gen EPYC */
-> >   MODULE_FIRMWARE("amd/amd_sev_fam19h_model0xh.sbin"); /* 3rd gen EPYC */
-> > @@ -58,6 +63,14 @@ static int psp_timeout;
-> >   #define SEV_ES_TMR_SIZE             (1024 * 1024)
-> >   static void *sev_es_tmr;
-> >
-> > +/* INIT_EX NV Storage:
-> > + *   The NV Storage is a 32Kb area and must be 4Kb page aligned.  Use the page
-> > + *   allocator to allocate the memory, which will return aligned memory for the
-> > + *   specified allocation order.
-> > + */
-> > +#define NV_LENGTH (32 << 10)
->
-> Just me, but I think '32 * 1024' would be a bit clearer.
+[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#open-co=
+ded-arithmetic-in-allocator-arguments
 
-SGTM and more consistent with SEV_ES_TMR_SIZE.
+Acked-by: Fei Li <fei1.li@intel.com>
+Signed-off-by: Len Baker <len.baker@gmx.com>
+=2D--
+Changelog v1 -> v2
+- Fix the typo "syze -> size" in the subject (Kees Cook).
+- Reduce the number of tabs in the definition of the structure
+  vm_memory_region_batch (Fei Li).
+- Add the "Acked-by" tag.
 
->
-> > +static void *sev_init_ex_nv_address;
-> > +
-> >   static inline bool sev_version_greater_or_equal(u8 maj, u8 min)
-> >   {
-> >       struct sev_device *sev = psp_master->sev_data;
-> > @@ -135,6 +148,7 @@ static int sev_cmd_buffer_len(int cmd)
-> >       case SEV_CMD_GET_ID:                    return sizeof(struct sev_data_get_id);
-> >       case SEV_CMD_ATTESTATION_REPORT:        return sizeof(struct sev_data_attestation_report);
-> >       case SEV_CMD_SEND_CANCEL:                       return sizeof(struct sev_data_send_cancel);
-> > +     case SEV_CMD_INIT_EX:                   return sizeof(struct sev_data_init_ex);
->
-> Maybe move this to just under the SEV_CMD_INIT: case statement?
->
-> >       default:                                return 0;
-> >       }
-> >
-> > @@ -156,6 +170,89 @@ static void *sev_fw_alloc(unsigned long len)
-> >       return page_address(page);
-> >   }
-> >
-> > +static int sev_read_nv_memory(void)
-> > +{
-> > +     struct file *fp;
-> > +     ssize_t nread;
-> > +
-> > +     if (!sev_init_ex_nv_address)
-> > +             return -EOPNOTSUPP;
-> > +
-> > +     fp = filp_open(init_ex_path, O_RDONLY, 0);
-> > +     if (IS_ERR(fp)) {
-> > +             dev_err(psp_master->dev, "sev could not open file for read\n");
-> > +             return PTR_ERR(fp);
-> > +     }
-> > +
-> > +     nread = kernel_read(fp, sev_init_ex_nv_address, NV_LENGTH, 0);
-> > +     dev_dbg(psp_master->dev, "sev NV read %d bytes\n", nread);
-> > +     filp_close(fp, NULL);
->
-> Add a blank line here.
->
-> > +     return 0;
-> > +}
-> > +
-> > +static int sev_write_nv_memory(void)
-> > +{
-> > +     struct sev_device *sev = psp_master->sev_data;
-> > +     struct file *fp;
-> > +     loff_t offset = 0;
-> > +     int ret;
-> > +
-> > +     if (!sev_init_ex_nv_address)
-> > +             return -EOPNOTSUPP;
-> > +
-> > +     fp = filp_open(init_ex_path, O_CREAT | O_WRONLY, 0600);
-> > +     if (IS_ERR(fp)) {
-> > +             dev_err(sev->dev, "sev NV data could not be created\n");
-> > +             return PTR_ERR(fp);
-> > +     }
->
-> Add a blank line here.
->
-> > +     ret = kernel_write(fp, sev_init_ex_nv_address, NV_LENGTH, &offset);
-> > +     vfs_fsync(fp, 0);
-> > +     filp_close(fp, NULL);
-> > +
-> > +     if (ret != NV_LENGTH) {
-> > +             dev_err(sev->dev,
-> > +                     "failed to write %d bytes to non volatile memory area, ret=%lu\n",
-> > +                     NV_LENGTH, ret);
-> > +             if (ret >= 0)
-> > +                     return -EIO;
-> > +             return ret;
-> > +     }
-> > +
-> > +     dev_dbg(sev->dev, "wrote to non volatile memory area\n");
->
-> Add a blank line here.
+Changelog v2 -> v3
+- Use the variable instead of the struct name in the sizeof()
+  function used in the array_size() function.
 
-Added all these blank lines.
+ drivers/virt/acrn/acrn_drv.h | 10 ++++++----
+ drivers/virt/acrn/mm.c       |  9 ++++-----
+ 2 files changed, 10 insertions(+), 9 deletions(-)
 
->
-> > +     return 0;
-> > +}
-> > +
-> > +static void sev_write_nv_memory_if_required(int cmd_id)
-> > +{
-> > +     struct sev_device *sev = psp_master->sev_data;
-> > +     int ret;
-> > +
-> > +     if (!sev_init_ex_nv_address)
-> > +             return;
-> > +
-> > +     /*
-> > +      * Only a few platform commands modify the SPI/NV area,
-> > +      * but none of the non-platform commands do. Only INIT,
->
-> maybe say INIT(_EX)?
+diff --git a/drivers/virt/acrn/acrn_drv.h b/drivers/virt/acrn/acrn_drv.h
+index 1be54efa666c..5663c17ad37c 100644
+=2D-- a/drivers/virt/acrn/acrn_drv.h
++++ b/drivers/virt/acrn/acrn_drv.h
+@@ -48,6 +48,7 @@ struct vm_memory_region_op {
+  * @reserved:		Reserved.
+  * @regions_num:	The number of vm_memory_region_op.
+  * @regions_gpa:	Physical address of a vm_memory_region_op array.
++ * @regions_op:		Flexible array of vm_memory_region_op.
+  *
+  * HC_VM_SET_MEMORY_REGIONS uses this structure to manage EPT mappings of
+  * multiple memory regions of a User VM. A &struct vm_memory_region_batch
+@@ -55,10 +56,11 @@ struct vm_memory_region_op {
+  * ACRN Hypervisor.
+  */
+ struct vm_memory_region_batch {
+-	u16	vmid;
+-	u16	reserved[3];
+-	u32	regions_num;
+-	u64	regions_gpa;
++	u16			   vmid;
++	u16			   reserved[3];
++	u32			   regions_num;
++	u64			   regions_gpa;
++	struct vm_memory_region_op regions_op[];
+ };
 
-Done.
+ /**
+diff --git a/drivers/virt/acrn/mm.c b/drivers/virt/acrn/mm.c
+index c4f2e15c8a2b..ba241a24c48e 100644
+=2D-- a/drivers/virt/acrn/mm.c
++++ b/drivers/virt/acrn/mm.c
+@@ -168,7 +168,7 @@ int acrn_vm_ram_map(struct acrn_vm *vm, struct acrn_vm=
+_memmap *memmap)
 
->
-> > +      * PLATFORM_RESET, PEK_GEN, PEK_CERT_IMPORT, and
-> > +      * PDH_GEN do.
->
-> Does SHUTDOWN modify the SPI/NV area? Otherwise a separate comment about
-> why it is included below.
+ 	/* Get the page number of the map region */
+ 	nr_pages =3D memmap->len >> PAGE_SHIFT;
+-	pages =3D vzalloc(nr_pages * sizeof(struct page *));
++	pages =3D vzalloc(array_size(nr_pages, sizeof(*pages)));
+ 	if (!pages)
+ 		return -ENOMEM;
 
-Double checked the FW doc looks like it does not. Richard can you
-confirm? If it doesn't I'll remove this case.
+@@ -220,16 +220,15 @@ int acrn_vm_ram_map(struct acrn_vm *vm, struct acrn_=
+vm_memmap *memmap)
+ 	}
 
- >
-> > +      */
-> > +     switch (cmd_id) {
-> > +     case SEV_CMD_FACTORY_RESET:
-> > +     case SEV_CMD_INIT_EX:
-> > +     case SEV_CMD_PDH_GEN:
-> > +     case SEV_CMD_PEK_CERT_IMPORT:
-> > +     case SEV_CMD_PEK_GEN:
-> > +     case SEV_CMD_SHUTDOWN:
-> > +             break;
-> > +     default:
-> > +             return;
-> > +     };
-> > +
-> > +     ret = sev_write_nv_memory();
-> > +     if (ret)
-> > +             dev_err(sev->dev, "sev NV write failed %d\n", ret);
->
-> You already have error messages in the sev_write_nv_memory() function,
-> this one probably isn't needed.
+ 	/* Prepare the vm_memory_region_batch */
+-	regions_info =3D kzalloc(sizeof(*regions_info) +
+-			       sizeof(*vm_region) * nr_regions,
+-			       GFP_KERNEL);
++	regions_info =3D kzalloc(struct_size(regions_info, regions_op,
++					   nr_regions), GFP_KERNEL);
+ 	if (!regions_info) {
+ 		ret =3D -ENOMEM;
+ 		goto unmap_kernel_map;
+ 	}
 
-Removed.
+ 	/* Fill each vm_memory_region_op */
+-	vm_region =3D (struct vm_memory_region_op *)(regions_info + 1);
++	vm_region =3D regions_info->regions_op;
+ 	regions_info->vmid =3D vm->vmid;
+ 	regions_info->regions_num =3D nr_regions;
+ 	regions_info->regions_gpa =3D virt_to_phys(vm_region);
+=2D-
+2.25.1
 
->
-> > +}
-> > +
-> >   static int __sev_do_cmd_locked(int cmd, void *data, int *psp_ret)
-> >   {
-> >       struct psp_device *psp = psp_master;
-> > @@ -225,6 +322,8 @@ static int __sev_do_cmd_locked(int cmd, void *data, int *psp_ret)
-> >               dev_dbg(sev->dev, "sev command %#x failed (%#010x)\n",
-> >                       cmd, reg & PSP_CMDRESP_ERR_MASK);
-> >               ret = -EIO;
-> > +     } else {
-> > +             sev_write_nv_memory_if_required(cmd);
-> >       }
-> >
-> >       print_hex_dump_debug("(out): ", DUMP_PREFIX_OFFSET, 16, 2, data,
-> > @@ -251,22 +350,42 @@ static int sev_do_cmd(int cmd, void *data, int *psp_ret)
-> >       return rc;
-> >   }
-> >
-> > -static int __sev_platform_init_locked(int *error)
-> > +static int __sev_init_locked(int *error)
-> >   {
-> > -     struct psp_device *psp = psp_master;
-> >       struct sev_data_init data;
-> > -     struct sev_device *sev;
-> > -     int rc = 0;
-> >
-> > -     if (!psp || !psp->sev_data)
-> > -             return -ENODEV;
-> > +     memset(&data, 0, sizeof(data));
-> > +     if (sev_es_tmr) {
-> > +             u64 tmr_pa;
-> >
-> > -     sev = psp->sev_data;
-> > +             /*
-> > +              * Do not include the encryption mask on the physical
-> > +              * address of the TMR (firmware should clear it anyway).
-> > +              */
-> > +             tmr_pa = __pa(sev_es_tmr);
-> >
-> > -     if (sev->state == SEV_STATE_INIT)
-> > -             return 0;
-> > +             data.flags |= SEV_INIT_FLAGS_SEV_ES;
-> > +             data.tmr_address = tmr_pa;
-> > +             data.tmr_len = SEV_ES_TMR_SIZE;
-> > +     }
-> > +
-> > +     return __sev_do_cmd_locked(SEV_CMD_INIT, &data, error);
-> > +}
-> > +
-> > +static int __sev_init_ex_locked(int *error)
-> > +{
-> > +     struct sev_data_init_ex data;
-> > +     int ret;
-> >
-> >       memset(&data, 0, sizeof(data));
-> > +     data.length = sizeof(data);
-> > +     data.nv_address = __psp_pa(sev_init_ex_nv_address);
-> > +     data.nv_len = NV_LENGTH;
-> > +
-> > +     ret = sev_read_nv_memory();
-> > +     if (ret)
-> > +             return ret;
-> > +
-> >       if (sev_es_tmr) {
-> >               u64 tmr_pa;
-> >
-> > @@ -276,12 +395,30 @@ static int __sev_platform_init_locked(int *error)
-> >                */
-> >               tmr_pa = __pa(sev_es_tmr);
-> >
-> > -             data.flags |= SEV_INIT_FLAGS_SEV_ES;
->
-> Inadvertant deletion?
-
-Oops only testing with SEV guests. Will test with ES too. Fixed.
-
->
-> >               data.tmr_address = tmr_pa;
-> >               data.tmr_len = SEV_ES_TMR_SIZE;
-> >       }
->
-> Add a blank line here.
->
-> > +     return __sev_do_cmd_locked(SEV_CMD_INIT_EX, &data, error);
-> > +}
-> > +
-> > +static int __sev_platform_init_locked(int *error)
-> > +{
-> > +     struct psp_device *psp = psp_master;
-> > +     struct sev_device *sev;
-> > +     int rc;
-> > +     int (*init_function)(int *error) = sev_init_ex_nv_address ?
-> > +                     __sev_init_ex_locked :
-> > +                     __sev_init_locked;
->
-> This seems a bit much in the declaration. How about moving the assignment
-> down to just before the first call?
-
-Done.
-
->
-> > +
-> > +     if (!psp || !psp->sev_data)
-> > +             return -ENODEV;
-> > +
-> > +     sev = psp->sev_data;
-> >
-> > -     rc = __sev_do_cmd_locked(SEV_CMD_INIT, &data, error);
-> > +     if (sev->state == SEV_STATE_INIT)
-> > +             return 0;
-> > +
-> > +     rc = init_function(error);
-> >       if (rc && *error == SEV_RET_SECURE_DATA_INVALID) {
-> >               /*
-> >                * INIT command returned an integrity check failure
-> > @@ -290,8 +427,8 @@ static int __sev_platform_init_locked(int *error)
-> >                * failed and persistent state has been erased.
-> >                * Retrying INIT command here should succeed.
-> >                */
-> > -             dev_dbg(sev->dev, "SEV: retrying INIT command");
-> > -             rc = __sev_do_cmd_locked(SEV_CMD_INIT, &data, error);
-> > +             dev_err(sev->dev, "SEV: retrying INIT command");
->
-> Maybe dev_notice() instead of dev_err()?
-
-Done.,
-
->
-> > +             rc = init_function(error);
-> >       }
-> >
-> >       if (rc)
-> > @@ -307,7 +444,7 @@ static int __sev_platform_init_locked(int *error)
-> >
-> >       dev_dbg(sev->dev, "SEV firmware initialized\n");
-> >
-> > -     return rc;
-> > +     return 0;
-> >   }
-> >
-> >   int sev_platform_init(int *error)
-> > @@ -987,7 +1124,7 @@ static int sev_misc_init(struct sev_device *sev)
-> >
-> >       init_waitqueue_head(&sev->int_queue);
-> >       sev->misc = misc_dev;
-> > -     dev_dbg(dev, "registered SEV device\n");
-> > +     dev_err(dev, "registered SEV device\n");
->
-> Not sure this is a necessary change... but, if you don't want this as a
-> dev_dbg() then it should be a dev_info(), because it is not an error.
-
-Oops this was my debugging. Reverted.
-
->
-> >
-> >       return 0;
-> >   }
-> > @@ -1061,6 +1198,12 @@ static void sev_firmware_shutdown(struct sev_device *sev)
-> >                          get_order(SEV_ES_TMR_SIZE));
-> >               sev_es_tmr = NULL;
-> >       }
-> > +
-> > +     if (sev_init_ex_nv_address) {
-> > +             free_pages((unsigned long)sev_init_ex_nv_address,
-> > +                        get_order(NV_LENGTH));
-> > +             sev_init_ex_nv_address = NULL;
-> > +     }
-> >   }
-> >
-> >   void sev_dev_destroy(struct psp_device *psp)
-> > @@ -1105,6 +1248,19 @@ void sev_pci_init(void)
-> >           sev_update_firmware(sev->dev) == 0)
-> >               sev_get_api_version();
-> >
-> > +     /* If an init_ex_path is provided rely on INIT_EX for PSP initialization
-> > +      * instead of INIT.
-> > +      */
-> > +     if (init_ex_path) {
-> > +             sev_init_ex_nv_address = sev_fw_alloc(NV_LENGTH);
-> > +             if (!sev_init_ex_nv_address) {
-> > +                     dev_warn(
->
-> Shouldn't this be a dev_err(), since you are erroring out?
->
-> > +                             sev->dev,
->
-> Move this up to the previous line, i.e.: dev_err(sev->dev,
->
-> > +                             "SEV: INIT_EX NV storage allocation failed, INIT-EX support unavailable\n");
->
-> Since you're erroring out, probably enough to just have the first part of
-> that message. But if not:
->
-> s/INIT-EX/INIT_EX/
-
-Fixed this log line.
-
->
-> Thanks,
-> Tom
->
-> > +                     goto err;
-> > +             }
-> > +     }
-> > +
-> >       /* Obtain the TMR memory area for SEV-ES use */
-> >       sev_es_tmr = sev_fw_alloc(SEV_ES_TMR_SIZE);
-> >       if (!sev_es_tmr)
-> > diff --git a/include/linux/psp-sev.h b/include/linux/psp-sev.h
-> > index d48a7192e881..1595088c428b 100644
-> > --- a/include/linux/psp-sev.h
-> > +++ b/include/linux/psp-sev.h
-> > @@ -52,6 +52,7 @@ enum sev_cmd {
-> >       SEV_CMD_DF_FLUSH                = 0x00A,
-> >       SEV_CMD_DOWNLOAD_FIRMWARE       = 0x00B,
-> >       SEV_CMD_GET_ID                  = 0x00C,
-> > +     SEV_CMD_INIT_EX                 = 0x00D,
-> >
-> >       /* Guest commands */
-> >       SEV_CMD_DECOMMISSION            = 0x020,
-> > @@ -102,6 +103,26 @@ struct sev_data_init {
-> >       u32 tmr_len;                    /* In */
-> >   } __packed;
-> >
-> > +/**
-> > + * struct sev_data_init_ex - INIT_EX command parameters
-> > + *
-> > + * @length: len of the command buffer read by the PSP
-> > + * @flags: processing flags
-> > + * @tmr_address: system physical address used for SEV-ES
-> > + * @tmr_len: len of tmr_address
-> > + * @nv_address: system physical address used for PSP NV storage
-> > + * @nv_len: len of nv_address
-> > + */
-> > +struct sev_data_init_ex {
-> > +     u32 length;                     /* In */
-> > +     u32 flags;                      /* In */
-> > +     u64 tmr_address;                /* In */
-> > +     u32 tmr_len;                    /* In */
-> > +     u32 reserved;                   /* In */
-> > +     u64 nv_address;                 /* In/Out */
-> > +     u32 nv_len;                     /* In */
-> > +} __packed;
-> > +
-> >   #define SEV_INIT_FLAGS_SEV_ES       0x01
-> >
-> >   /**
-> >
