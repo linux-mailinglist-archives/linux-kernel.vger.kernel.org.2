@@ -2,57 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B69643FA0A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 11:37:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAA6343FA19
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 11:41:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231616AbhJ2Jj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 05:39:58 -0400
-Received: from mga11.intel.com ([192.55.52.93]:64404 "EHLO mga11.intel.com"
+        id S231566AbhJ2JoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 05:44:13 -0400
+Received: from mga04.intel.com ([192.55.52.120]:50887 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231504AbhJ2Jj4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 05:39:56 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10151"; a="228086548"
+        id S231273AbhJ2JoM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 05:44:12 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10151"; a="229359929"
 X-IronPort-AV: E=Sophos;i="5.87,192,1631602800"; 
-   d="scan'208";a="228086548"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2021 02:37:28 -0700
+   d="scan'208";a="229359929"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2021 02:41:38 -0700
 X-IronPort-AV: E=Sophos;i="5.87,192,1631602800"; 
-   d="scan'208";a="598154923"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2021 02:37:26 -0700
-Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
-        by paasikivi.fi.intel.com (Postfix) with ESMTP id DAEF7201A7;
-        Fri, 29 Oct 2021 12:37:24 +0300 (EEST)
-Date:   Fri, 29 Oct 2021 12:37:24 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Niklas =?iso-8859-1?Q?S=F6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>
-Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [sailus-media-tree:master 1/5] max96712.c:undefined reference to
- `v4l2_async_unregister_subdev'
-Message-ID: <YXvA1CiYIMX39LyY@paasikivi.fi.intel.com>
-References: <202110271818.TcGzSbjQ-lkp@intel.com>
- <YXk5uK9eqMT0dPhE@oden.dyn.berto.se>
+   d="scan'208";a="498845412"
+Received: from rdutta-mobl3.gar.corp.intel.com (HELO lkp-bingo.ccr.corp.intel.com) ([10.255.31.247])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2021 02:41:34 -0700
+From:   Li Zhijian <zhijianx.li@intel.com>
+To:     dave@stgolabs.net, joel@joelfernandes.org, josh@joshtriplett.org,
+        mathieu.desnoyers@efficios.com, paulmck@kernel.org,
+        rostedt@goodmis.org, rcu@vger.kernel.org
+Cc:     philip.li@intel.com, lizhijian@cn.fujitsu.com,
+        jiangshanlai@gmail.com, linux-kernel@vger.kernel.org,
+        Li Zhijian <zhijianx.li@intel.com>
+Subject: [PATCH 0/6] minor fixes and cleanups in rcuscale and torture tests
+Date:   Fri, 29 Oct 2021 17:40:23 +0800
+Message-Id: <20211029094029.22501-1-zhijianx.li@intel.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YXk5uK9eqMT0dPhE@oden.dyn.berto.se>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hejssan,
+- we added '\n' to the macros directly like what torture does, see
+include/linux/torture.h
+- SCFTORTOUT is unused any more, remove it
+- follow up https://lkml.org/lkml/2021/10/24/439, covert all other residuals
 
-On Wed, Oct 27, 2021 at 01:36:24PM +0200, Niklas Söderlund wrote:
-> Hi Sakari,
-> 
-> What would be the best fix for this do you think adding 'depends on 
-> VIDEO_DEV' to VIDEO_MAX96712 is the right path? I tested it and it 
-> solves this problem but not sure if it's the correct solution.
 
-I think you need VIDEO_V4L2. That includes controls, for instance.
+Li Zhijian (6):
+  refscale: add missing '\n' to flush message out
+  scftorture: add missing '\n' to flush message out
+  scftorture: Remove unused SCFTORTOUT
+  scftorture: always log error message
+  rcuscale: alwaly log error message
+  locktorture,rcutorture,torture: always log error message
+
+ include/linux/torture.h      |  9 ++-------
+ kernel/locking/locktorture.c |  4 ++--
+ kernel/rcu/rcuscale.c        | 14 +++++++-------
+ kernel/rcu/rcutorture.c      |  8 ++++----
+ kernel/rcu/refscale.c        | 11 +++++++----
+ kernel/scftorture.c          | 16 ++++++----------
+ kernel/torture.c             |  4 ++--
+ 7 files changed, 30 insertions(+), 36 deletions(-)
 
 -- 
-Sakari Ailus
+2.32.0
+
