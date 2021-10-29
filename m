@@ -2,117 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF17143FC6A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 14:39:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EE7C43FC70
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 14:40:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231561AbhJ2Ml6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 08:41:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48182 "EHLO
+        id S231604AbhJ2MnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 08:43:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230134AbhJ2Ml5 (ORCPT
+        with ESMTP id S231519AbhJ2MnE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 08:41:57 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7539AC061570
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 05:39:28 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id bq11so20785956lfb.10
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 05:39:28 -0700 (PDT)
+        Fri, 29 Oct 2021 08:43:04 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 795E0C061570
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 05:40:36 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id l7so10467526iln.8
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 05:40:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=B2T3v4jXO25JT49qo2reiE0rneUAVuElVzG5JppoEM8=;
-        b=jxD6biwTfe3xu6SqBzLET7VGwK1z+O5kXXr9D9ld+3oXexNknMqaFCW9F2LVUIXD+G
-         ucuVD7vOA4sZwbtUVVm7VzO3veKFGjRJHKI0vsCgqedXMckkcCuS5RX2luse2sdk1Twa
-         WBDj6uMCqZkJ/KYciN73SIqRqEBtCSDSF63zmsvalZsfnmh4tgcEAgjPi9ilrgDdWMVb
-         ZEJT/Qe6glvFD7+mxzhPkUnG56DeqPTqZIJn0EwzCL6fb0mJg+J37Y3J8rVtha2bb88g
-         FhnpS+0RzDdrfPrw09Zk0fIpd8IvICd3VoueJ91jfIvaJiW7UN68emvVY/bbOQyolIXI
-         WutQ==
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=YscSIkBLF4wuDWQrJPG8y8OnN+Mj/mesrntFP3HWYQY=;
+        b=XJxcHMNZTn6L9Ghk6y2RwTtj7oo/T1zQoZ1Gcy27JrB458KqhxdTTAD6vHkX7h2iBh
+         yyZ97quXEmook5gmISSxMqtjLAnCPvEdTFR7TrGFmfbThb482VGNHkcTCsNi2lFwAGcz
+         hztXtkGQfyM46WRx2wob8CzQ08yCeJbF/tfRMiy02/83aX+PnDjQDBigP4vJDW2U0kU9
+         41d37PV5WIXyLzb+IqPgsyWtf2ttbo/RwajDfBg0TXL2QXQ9LuabNEAADSxT3aMeqGQx
+         HaRxkekccwY/fatre5HPz83Wfxn6yhF/2TXXMJvzZPUgqBEZkdkRtqZ/v+BsbBCtFOiQ
+         MCqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=B2T3v4jXO25JT49qo2reiE0rneUAVuElVzG5JppoEM8=;
-        b=pFLwj50qTgRaklnauRXjh6ddOWlZO5HKG0yW5EdD74tSQMcqETwuC3Zlg+souvbQI/
-         FA0DC91xKhsedqBnnBoW0GUtPrKhJ9wjMUZc2IxiaKQJKNbJztDfJ07vLW8ChHcf2b4a
-         JPtLKpOeSf46g7iAnThd+TnepNDuqNTAZE758F4o8VhOZBAes37DYVGsPm8gF+pQd1Cc
-         zw44tdYYld1vDZ1eZsOMnpHdKZsumr/3Y5F0dMeRGhXv64oxmOLxKs7sViRxjaaEIEf5
-         CTqs/cFLOk26LDpoDD6PGuKkRB+2hyBwyRWkm5jb3bqLn9g+4XSSByIaCHD5Na9LyRZF
-         OZBg==
-X-Gm-Message-State: AOAM532UqsGgLuJ394naQRsSM2XPwtm6RAd31D5DOWKb2IRPJ2mcWqqA
-        7m/hwXeytZ/Bc6fwrrbZXwymZw==
-X-Google-Smtp-Source: ABdhPJyTjynt3OjUbfPQGjnjOlAGOKmxPdHzyoRf35p2/vo3MySu4coNCsQpIc9on1MRDnXuPapytw==
-X-Received: by 2002:a05:6512:2309:: with SMTP id o9mr10050460lfu.124.1635511166794;
-        Fri, 29 Oct 2021 05:39:26 -0700 (PDT)
-Received: from localhost.localdomain (h-155-4-129-146.NA.cust.bahnhof.se. [155.4.129.146])
-        by smtp.gmail.com with ESMTPSA id y35sm602528lfa.16.2021.10.29.05.39.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Oct 2021 05:39:25 -0700 (PDT)
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-To:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        linux-pm@vger.kernel.org
-Cc:     Maulik Shah <mkshah@codeaurora.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Len Brown <len.brown@intel.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] PM: sleep: Fix runtime PM based cpuidle support
-Date:   Fri, 29 Oct 2021 14:38:55 +0200
-Message-Id: <20211029123855.80344-1-ulf.hansson@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        bh=YscSIkBLF4wuDWQrJPG8y8OnN+Mj/mesrntFP3HWYQY=;
+        b=Tpen7//YVrXf/V22XfjtCcgTky9aNChgwoLCb/Jg/PBygsPUtat/UPhpVVxNM+jTVX
+         K+9TId5ZJdZDHdZXRhxj7K2GqTeJwDT5aEUiyvX0fciqMj+T+36xMxmoI2BTNtnRKs3D
+         KKL93JnhYqoATliEJf/u9/+gU3ZuH5hrU3p22qpna9O5xiVzCkSMWQjLcQovEWtcj+Rc
+         dKzQYkGqk+/1ZpmxA+3P9Rm4Ft4yq7j9fhQ/5WE9BmlrgiLdMtuIphnhDqGASv3KeV/k
+         aDStUmd+f2Rd99xbUPCiaNSo78l34ZChlZ5TYYdAQYcVXlMRk2hESUh5okSEKoGI4t7p
+         gaTg==
+X-Gm-Message-State: AOAM532fFj5CDTFfkpwIVVhA5qkrRD0zMrj4SWqosvWgF8iwtIYTMknn
+        +43+XAoQiXanAymz26b8GPmReN/vBc0XMA==
+X-Google-Smtp-Source: ABdhPJyjP55MLSD+Uq6YI2k2YVpjCl6Y3Ek500BLrmkpz54Al0Gvyiq7xl0yLnlk0rcjrxk33g9N1Q==
+X-Received: by 2002:a92:ca0b:: with SMTP id j11mr7232988ils.289.1635511235653;
+        Fri, 29 Oct 2021 05:40:35 -0700 (PDT)
+Received: from [192.168.1.116] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id v4sm2992092ilq.57.2021.10.29.05.40.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Oct 2021 05:40:35 -0700 (PDT)
+Subject: Re: [BUG] About "io_uring: add more uring info to fdinfo for debug"
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
+        Hao Xu <haoxu@linux.alibaba.com>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <9ac22d4d-c841-651a-fdd5-9fb3a65c57ab@gmail.com>
+ <e72cdd44-c027-e51c-8b57-24f39bf21d87@kernel.dk>
+ <3b7dbb90-7fd5-d30f-cfe0-dd83f2cd4482@kernel.dk>
+ <CANn89iJv6cRbK95Gwj=rrz2+X+Q4KQ7EtEcpz0Md0Vs1_iABPw@mail.gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <30b7018d-f60d-0c57-b3d6-92c1cf0762b9@kernel.dk>
+Date:   Fri, 29 Oct 2021 06:40:33 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CANn89iJv6cRbK95Gwj=rrz2+X+Q4KQ7EtEcpz0Md0Vs1_iABPw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the cpuidle-psci case, runtime PM in combination with the generic PM
-domain (genpd), may be used when entering/exiting a shared idlestate. More
-precisely, genpd relies on runtime PM to be enabled for the attached device
-(in this case it belongs to a CPU), to properly manage the reference
-counting of its PM domain.
+On 10/28/21 6:43 PM, Eric Dumazet wrote:
+> On Thu, Oct 28, 2021 at 5:13 PM Jens Axboe <axboe@kernel.dk> wrote:
+>>
+>> On 10/28/21 3:40 PM, Jens Axboe wrote:
+>>> On 10/28/21 3:24 PM, Eric Dumazet wrote:
+>>>> Hi
+>>>>
+>>>> I was looking at commit 83f84356bc8f2d
+>>>> ("io_uring: add more uring info to fdinfo for debug") after receiving
+>>>> syzbot reports.
+>>>>
+>>>> I suspect that the following :
+>>>>
+>>>> +       for (i = cached_sq_head; i < sq_tail; i++) {
+>>>> +               unsigned int sq_idx = READ_ONCE(ctx->sq_array[i & sq_mask]);
+>>>> +
+>>>> +               if (likely(sq_idx <= sq_mask)) {
+>>>> +                       struct io_uring_sqe *sqe = &ctx->sq_sqes[sq_idx];
+>>>> +
+>>>> +                       seq_printf(m, "%5u: opcode:%d, fd:%d, flags:%x, user_data:%llu\n",
+>>>> +                                  sq_idx, sqe->opcode, sqe->fd, sqe->flags, sqe->user_data);
+>>>> +               }
+>>>> +       }
+>>>>
+>>>>
+>>>> Can loop around ~2^32 times if sq_tail is close to ~0U
+>>>>
+>>>> I see various READ_ONCE(), which are probably not good enough.
+>>>>
+>>>> At very minimum I would handling wrapping...
+>>>
+>>> Thanks for reporting this. I think on top of wrapping, the loop should
+>>> just be capped at sq_entries as well. There's no point dumping more than
+>>> that, ever.
+>>>
+>>> I'll take a stab at this.
+>>
+>> I'd probably do something like this - make sure wrap is sane and that we
+>> always cap at the max number of entries we expect. This doesn't quite
+>> hold true for CQEs, but honestly for debugging purposes, we only really
+>> care about the sq ring side in terms of stalls. Or if we have unreaped
+>> CQEs, which we'll still show.
+>>
+>> This also removes the masking, as it's better to expose the ring indexes
+>> directly. And just dump the raw ring head/tail for sq/cq. We still
+>> include the cached info, but I think dumping the raw contents is saner
+>> and more useful.
+>>
+>>
+>> diff --git a/fs/io_uring.c b/fs/io_uring.c
+>> index 17cb0e1b88f0..babd9950ae9f 100644
+>> --- a/fs/io_uring.c
+>> +++ b/fs/io_uring.c
+>> @@ -10065,12 +10065,11 @@ static __cold void __io_uring_show_fdinfo(struct io_ring_ctx *ctx,
+>>         struct io_overflow_cqe *ocqe;
+>>         struct io_rings *r = ctx->rings;
+>>         unsigned int sq_mask = ctx->sq_entries - 1, cq_mask = ctx->cq_entries - 1;
+>> -       unsigned int cached_sq_head = ctx->cached_sq_head;
+>> -       unsigned int cached_cq_tail = ctx->cached_cq_tail;
+>>         unsigned int sq_head = READ_ONCE(r->sq.head);
+>>         unsigned int sq_tail = READ_ONCE(r->sq.tail);
+>>         unsigned int cq_head = READ_ONCE(r->cq.head);
+>>         unsigned int cq_tail = READ_ONCE(r->cq.tail);
+>> +       unsigned int sq_entries, cq_entries;
+>>         bool has_lock;
+>>         unsigned int i;
+>>
+>> @@ -10080,15 +10079,19 @@ static __cold void __io_uring_show_fdinfo(struct io_ring_ctx *ctx,
+>>          * and sq_tail and cq_head are changed by userspace. But it's ok since
+>>          * we usually use these info when it is stuck.
+>>          */
+>> -       seq_printf(m, "SqHead:\t%u\n", sq_head & sq_mask);
+>> -       seq_printf(m, "SqTail:\t%u\n", sq_tail & sq_mask);
+>> -       seq_printf(m, "CachedSqHead:\t%u\n", cached_sq_head & sq_mask);
+>> -       seq_printf(m, "CqHead:\t%u\n", cq_head & cq_mask);
+>> -       seq_printf(m, "CqTail:\t%u\n", cq_tail & cq_mask);
+>> -       seq_printf(m, "CachedCqTail:\t%u\n", cached_cq_tail & cq_mask);
+>> -       seq_printf(m, "SQEs:\t%u\n", sq_tail - cached_sq_head);
+>> -       for (i = cached_sq_head; i < sq_tail; i++) {
+>> -               unsigned int sq_idx = READ_ONCE(ctx->sq_array[i & sq_mask]);
+>> +       seq_printf(m, "SqMask:\t\t0x%x\n", sq_mask);
+>> +       seq_printf(m, "SqHead:\t%u\n", sq_head);
+>> +       seq_printf(m, "SqTail:\t%u\n", sq_tail);
+>> +       seq_printf(m, "CachedSqHead:\t%u\n", ctx->cached_sq_head);
+>> +       seq_printf(m, "CqMask:\t0x%x\n", cq_mask);
+>> +       seq_printf(m, "CqHead:\t%u\n", cq_head);
+>> +       seq_printf(m, "CqTail:\t%u\n", cq_tail);
+>> +       seq_printf(m, "CachedCqTail:\t%u\n", ctx->cached_cq_tail);
+>> +       seq_printf(m, "SQEs:\t%u\n", sq_tail - ctx->cached_sq_head);
+>> +       sq_entries = min(sq_tail - sq_head, ctx->sq_entries);
+>> +       for (i = 0; i < sq_entries; i++) {
+>> +               unsigned int entry = i + sq_head;
+>> +               unsigned int sq_idx = READ_ONCE(ctx->sq_array[entry & sq_mask]);
+>>
+>>                 if (likely(sq_idx <= sq_mask)) {
+>>                         struct io_uring_sqe *sqe = &ctx->sq_sqes[sq_idx];
+>> @@ -10097,9 +10100,11 @@ static __cold void __io_uring_show_fdinfo(struct io_ring_ctx *ctx,
+>>                                    sq_idx, sqe->opcode, sqe->fd, sqe->flags, sqe->user_data);
+>>                 }
+>>         }
+>> -       seq_printf(m, "CQEs:\t%u\n", cached_cq_tail - cq_head);
+>> -       for (i = cq_head; i < cached_cq_tail; i++) {
+>> -               struct io_uring_cqe *cqe = &r->cqes[i & cq_mask];
+>> +       seq_printf(m, "CQEs:\t%u\n", cq_tail - cq_head);
+>> +       cq_entries = min(cq_tail - cq_head, ctx->cq_entries);
+>> +       for (i = 0; i < cq_entries; i++) {
+>> +               unsigned int entry = i + cq_head;
+>> +               struct io_uring_cqe *cqe = &r->cqes[entry & cq_mask];
+>>
+>>                 seq_printf(m, "%5u: user_data:%llu, res:%d, flag:%x\n",
+>>                            i & cq_mask, cqe->user_data, cqe->res, cqe->flags);
+> 
+> Note : you probably want to replace  (i & cq_mask) to (entry & cq_mask) here
+> 
+> Otherwise, patch looks good to me.
 
-This works fine most of the time, but during system suspend in
-dpm_suspend_late(), the PM core disables runtime PM for all devices. Beyond
-this point, calls to pm_runtime_get_sync() to runtime resume a device may
-fail and therefore it could also mess up the reference counting in genpd.
+Thanks, good catch. I've changed it.
 
-To fix this problem, let's call wake_up_all_idle_cpus() in
-dpm_suspend_late(), prior to disabling runtime PM. In this way a device
-that belongs to a CPU, becomes runtime resumed through cpuidle-psci and
-stays like that, because the runtime PM usage count has been bumped in
-device_prepare().
-
-Diagnosed-by: Maulik Shah <mkshah@codeaurora.org>
-Suggested-by: Rafael J. Wysocki <rafael@kernel.org>
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
----
-
-Changes in v2:
-	- Moved away from using cpuidle_pause|resume() to solve the problem, but
-	instead just waking up idle CPUs is suffient, due to other recent merged
-	changes.
-
----
- drivers/base/power/main.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
-index ac4dde8fdb8b..2fb08d4f1aca 100644
---- a/drivers/base/power/main.c
-+++ b/drivers/base/power/main.c
-@@ -1463,6 +1463,7 @@ int dpm_suspend_late(pm_message_t state)
- 	int error = 0;
- 
- 	trace_suspend_resume(TPS("dpm_suspend_late"), state.event, true);
-+	wake_up_all_idle_cpus();
- 	mutex_lock(&dpm_list_mtx);
- 	pm_transition = state;
- 	async_error = 0;
 -- 
-2.25.1
+Jens Axboe
 
