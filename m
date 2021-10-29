@@ -2,99 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF35143F848
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 09:56:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 493E943F84D
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 09:57:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232297AbhJ2H6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 03:58:33 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:51654
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232281AbhJ2H6c (ORCPT
+        id S232308AbhJ2H7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 03:59:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40700 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232221AbhJ2H7g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 03:58:32 -0400
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com [209.85.208.198])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 6DAF33F198
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 07:56:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1635494161;
-        bh=LyyBRaeBvGMAnLsFN/eJuaykDGWSSKpKnsQjNh6rDIk=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=GyCZ7ZC60+Km16be+ADFcNX4LoEhwUoHYI4LEml4EyWvmRXzWjn/z90KbO04iZJfM
-         lWNILUoqaDGRhWFrZSkSg6ACt5542NM8e6hIPmoW6xybhsUIdsEn8ZjGWs0vEH/tLf
-         ZtiJRPsAPaWkTVOTIkrWqEiFDLb+NOtZcB/kMk4dDK0/4iGlwmLFDRAfE7a1k9hTrz
-         hzKRz8iWtzu1pAjhVoFCxBVvBsc/LwJWOvF1LHG7iRRtZmH4h1Fkgq64Li2tipjaRC
-         Gv0AwR+09QpfxAwMu4jXXeveZsYxfjI8+27yC+r6AQeu9sosve4p/tIlfp1yedTtPc
-         Q0mO1uBbPJ1XQ==
-Received: by mail-lj1-f198.google.com with SMTP id v17-20020a2e7a11000000b002118bb7d585so2784604ljc.4
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 00:56:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LyyBRaeBvGMAnLsFN/eJuaykDGWSSKpKnsQjNh6rDIk=;
-        b=YXOGHgDm9Ddc73ocqQeuewHGfXziJzTIuZ0J6oXoNMMyixjEK6Sl+4r/AfUzNUYPFH
-         XuBCTa+AE+b3o+glfBCQYwYIW24e3cvrqHelTckgdyyBhcGJzC4JScI/Sq/ESfa/i4Qg
-         4bdZMQm9LC87Z8K4UJVi1e7IsG7fCUsmyFFbOTWsXPVR0ioeu/duLeZn0cY3pIfTB0VF
-         KWa0avbdNkaCVzj3eYE+5Xw1u5t/UlTMainA7g9Cn6MaPsN05FEF30gag6kY+MoPSJep
-         VaQnK786fcivMNUuydO5OW1d65DHJhRUurpORuCxzf33XU2xuuB6IJbe3DY/LQTSh1VI
-         AOSQ==
-X-Gm-Message-State: AOAM533ON8c8g/EpUpw2QpNQEqaQkcUZ+tBYpGOsY8hsv2lzdX7/UOyR
-        kL8KJ/pinHa57d8LX/aqCdKFGab1Q1e986ItiXi3nUNFeSByCukVafxQUcr3KiUOQxJZX33JeVF
-        RW6Vdkyo37LEaoKNF9T8v0oMDAW2nXpeEqfl95jL7iw==
-X-Received: by 2002:a05:651c:88d:: with SMTP id d13mr9891252ljq.399.1635494160832;
-        Fri, 29 Oct 2021 00:56:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzjD+ZyZDA5TH1MYDJvmel7PgaO0VMDmzw3+uqvozcCuzMQMxxuuiC2S7FaeIi+F7wLIc61Fw==
-X-Received: by 2002:a05:651c:88d:: with SMTP id d13mr9891235ljq.399.1635494160646;
-        Fri, 29 Oct 2021 00:56:00 -0700 (PDT)
-Received: from [192.168.3.161] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id o1sm533211lfk.159.2021.10.29.00.55.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Oct 2021 00:56:00 -0700 (PDT)
-Subject: Re: [PATCH 1/7] dt-bindings: watchdog: Require samsung,syscon-phandle
- for Exynos7
-To:     Sam Protsenko <semen.protsenko@linaro.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-References: <20211028183527.3050-1-semen.protsenko@linaro.org>
- <20211028183527.3050-2-semen.protsenko@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <99f7e45d-7c27-1ad9-edf5-a5075e8e323b@canonical.com>
-Date:   Fri, 29 Oct 2021 09:55:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Fri, 29 Oct 2021 03:59:36 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9652C061570;
+        Fri, 29 Oct 2021 00:57:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=9SOc3Ajw2THfmYE3949YDw5L3FUbF+ZvQmbfO7gYLi0=; b=RkhhqsOVlYafm8C8D3/JUaGNfo
+        wprONAhMDYdtolBnz4tBefJI2it5q0/C/8+cG6CQppqd8TN1iq2Zwiy9N10t6oRdttX1M4eSu4vSK
+        ip3o6ii4EznhkGOLWy8BrHoRvyLMHPC95j3gs9hW3vqFjxBhnU3CKM2UWvmZjRslilYvQBnPiXORs
+        0w4aj/vQKISXVWLzDQG0C7Qt8jv1+kVFQnJOlm74GIPBK2n+sK8qKht1XoDXXNK1Sn4wR12H0kdEF
+        NcXk8Y86Ts37aBvbVHpWcN+GAEFohneqRdww/stDRR3LkZliZPtikGz5QUYaravBdDG322V0lOK9Z
+        iciL+WEA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55370)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mgMl7-0008M3-MU; Fri, 29 Oct 2021 08:57:05 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mgMl4-0001Rb-Dd; Fri, 29 Oct 2021 08:57:02 +0100
+Date:   Fri, 29 Oct 2021 08:57:02 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
+Cc:     andrew@lunn.ch, netdev@vger.kernel.org, olteanv@gmail.com,
+        robh+dt@kernel.org, UNGLinuxDriver@microchip.com,
+        Woojung.Huh@microchip.com, hkallweit1@gmail.com,
+        davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v5 net-next 06/10] net: dsa: microchip: add support for
+ phylink management
+Message-ID: <YXupTqhiarSjbwaT@shell.armlinux.org.uk>
+References: <20211028164111.521039-1-prasanna.vengateshan@microchip.com>
+ <20211028164111.521039-7-prasanna.vengateshan@microchip.com>
+ <YXrYYL7+NRgUtvN3@shell.armlinux.org.uk>
+ <b3c069c8bc9b2f68d4705c04fb010cb4aaa0b29b.camel@microchip.com>
 MIME-Version: 1.0
-In-Reply-To: <20211028183527.3050-2-semen.protsenko@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b3c069c8bc9b2f68d4705c04fb010cb4aaa0b29b.camel@microchip.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/10/2021 20:35, Sam Protsenko wrote:
-> Exynos7 watchdog driver is clearly indicating that its dts node must
-> define syscon phandle property. That was probably forgotten, so add it.
+On Fri, Oct 29, 2021 at 08:29:49AM +0530, Prasanna Vengateshan wrote:
+> On Thu, 2021-10-28 at 18:05 +0100, Russell King (Oracle) wrote:
+> > Hi,
+> > 
+> > I've just sent "net: dsa: populate supported_interfaces member"
+> > which adds a hook to allow DSA to populate the newly introduced
+> > supported_interfaces member of phylink_config. Once this patch is
+> > merged, it would be great to see any new drivers setting this
+> > member.
+> > 
+> > Essentially, the phylink_get_interfaces method is called with the
+> > DSA switch and port number, and a pointer to the supported_interfaces
+> > member - which is a bitmap of PHY_INTERFACE_MODEs that are supported
+> > by this port.
+> > 
+> > When you have set any bit in the supported interfaces, phylink's
+> > behaviour when calling your lan937x_phylink_validate changes - it will
+> > no longer call it with PHY_INTERFACE_MODE_NA, but will instead do a
+> > bitwalk over the bitmap, and call it for each supported interface type
+> > instead.
+> > 
+> > When phylink has a specific interface mode, it will continue to make a
+> > single call - but only if the interface mode is indicated as supported
+> > in the supported interfaces bitmap.
+> > 
+> > Please keep an eye on "net: dsa: populate supported_interfaces member"
+> > and if you need to respin this series after that patch has been merged,
+> > please update in regards of this.
 > 
-> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> ---
->  Documentation/devicetree/bindings/watchdog/samsung-wdt.yaml | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
+> Sure, i will watch out for this series and add to my new driver. Do the 
+> new drivers need to still return all supported modes if state->interface
+> is set to %PHY_INTERFACE_MODE_NA as per phylink documentation? I 
+> understand that supported_interfaces will not be empty if
+> phylink_get_interfaces() is handled. But i just wanted to double check
+> with you.
 
-Fixes: 2b9366b66967 ("watchdog: s3c2410_wdt: Add support for Watchdog
-device on Exynos7")
+The phylink documentation has already been updated:
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+ * When @config->supported_interfaces has been set, phylink will iterate
+ * over the supported interfaces to determine the full capability of the
+ * MAC. The validation function must not print errors if @state->interface
+ * is set to an unexpected value.
+ *
+ * When @config->supported_interfaces is empty, phylink will call this
+ * function with @state->interface set to %PHY_INTERFACE_MODE_NA, and
+ * expects the MAC driver to return all supported link modes.
 
+As I state in my initial reply, ->validate will never be called with
+PHY_INTERFACE_MODE_NA if supported_interfaces is populated.
 
-Best regards,
-Krzysztof
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
