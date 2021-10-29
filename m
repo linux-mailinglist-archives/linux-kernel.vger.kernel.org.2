@@ -2,121 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 932B94402D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 21:06:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82C884401A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 20:05:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230426AbhJ2TI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 15:08:28 -0400
-Received: from ixit.cz ([94.230.151.217]:54036 "EHLO ixit.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230168AbhJ2TI0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 15:08:26 -0400
-Received: from localhost.localdomain (ip-89-176-96-70.net.upcbroadband.cz [89.176.96.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id 70DA624E6B;
-        Fri, 29 Oct 2021 19:54:28 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-        t=1635530068;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=6ToVB7x10YgE3pIY4Ta3eLJU9jiD1tCEr5Va3QGvfnQ=;
-        b=qfn6ZuqxpF4YDRb8llLEHmOpPPwLVzci3cWhqHwfs2KDNkjbel9iw1O5AvQHuF2uiQenDI
-        R30KSQVOF9al1rSEMj3HA2bNB1ERwbvHuRWrNI3/5DDuxzXqJjNWzTrIXKtVujbbuspgl/
-        BOBkTi9ULCmujOMYzHJx1yVUoDmOJqk=
-From:   David Heidelberg <david@ixit.cz>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, angus@akkea.ca
-Cc:     ~okias/devicetree@lists.sr.ht, David Heidelberg <david@ixit.cz>,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] dt-bindings: sound: gtm601: convert to YAML
-Date:   Fri, 29 Oct 2021 19:54:17 +0200
-Message-Id: <20211029175418.83899-1-david@ixit.cz>
-X-Mailer: git-send-email 2.33.0
+        id S230078AbhJ2SHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 14:07:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38202 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229968AbhJ2SHl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 14:07:41 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3452C061766
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 11:05:12 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id n7so18162968ljp.5
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 11:05:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=K6KCBeD/pNCG9HZQnIVtuH+wCZVkgQgovkR8K6qXsz0=;
+        b=DK+Tp3O/3gtk6Mj6EirsKfvX8mAe0+szIVxVBHJaMcoxLOtuvV48Rqi0Ta0I9gUMTR
+         F0btd8b3EQOXM97fEoJPbO3hLFaaM//stWMVDGe6zk5xsGZmTRz6EQE2YKHKyw7CXr/F
+         N8UoFNI/13+/GBJUOvYX4fRekOCCnOhfYNR30=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=K6KCBeD/pNCG9HZQnIVtuH+wCZVkgQgovkR8K6qXsz0=;
+        b=K28UVlyPf8Mro90f0wTSPcApw/xyFXj3YVPwX4iIH/mrndN4oQkl6l2MPgjqSCRA0w
+         biKnDmXDMrNgJI8XC/OrSmA2eGN+CmmeZ+f5MoyrLtyDkfY1f/eYEb1ajLOG8gv831lt
+         ADwLFzeHGh3Aa2QZ5CfDVnzyWlvxz427vsVsheZcBK2xHaRSd4sui08LAHlLKzC4/K/A
+         5fNTrIEvZueGNSkz0ClcjneDxVqmxTpMxTrXRgQtJF21bKZhQOPrxHqPM+eNwLky+Emm
+         Qy/dpohF+g/XTOrmmj3BnvUYk52JgpZvE1cQ8taCzkBa8YQr/VId274bojQiKgTzvKK4
+         hALQ==
+X-Gm-Message-State: AOAM532CxPV3zK7WrddHzjPuSHzWENyL18TNAeVuSWnR+kI6J+fNzLYO
+        SKI0PAMSPLpp3njl/TofhvzltR5Mr6R8AnSI8eQ=
+X-Google-Smtp-Source: ABdhPJzya/lzrO9DL2ryTlBealZp+01dVqf1iSSw4UOyWtKSyAaSsOW1epXEq6D8vZPo+nM5KeJpRw==
+X-Received: by 2002:a05:651c:1686:: with SMTP id bd6mr13442552ljb.480.1635530710395;
+        Fri, 29 Oct 2021 11:05:10 -0700 (PDT)
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com. [209.85.167.50])
+        by smtp.gmail.com with ESMTPSA id bd19sm680474ljb.28.2021.10.29.11.05.09
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Oct 2021 11:05:10 -0700 (PDT)
+Received: by mail-lf1-f50.google.com with SMTP id f3so14423325lfu.12
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 11:05:09 -0700 (PDT)
+X-Received: by 2002:a05:6512:3993:: with SMTP id j19mr9826124lfu.402.1635530709299;
+ Fri, 29 Oct 2021 11:05:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211029120709.79366-1-ulf.hansson@linaro.org>
+In-Reply-To: <20211029120709.79366-1-ulf.hansson@linaro.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 29 Oct 2021 11:04:53 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgQLtvDh-3zhGNCWNAssubDxgxC+7RdEmHBmK_84rLT2Q@mail.gmail.com>
+Message-ID: <CAHk-=wgQLtvDh-3zhGNCWNAssubDxgxC+7RdEmHBmK_84rLT2Q@mail.gmail.com>
+Subject: Re: [GIT PULL] MMC fixes for v5.15-rc8
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-mmc@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert GTM601 binding to the YAML format.
+On Fri, Oct 29, 2021 at 5:07 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+>
+>  - winbond: Silences build errors on M68K
 
-Signed-off-by: David Heidelberg <david@ixit.cz>
----
- .../devicetree/bindings/sound/gtm601.txt      | 19 -----------
- .../devicetree/bindings/sound/gtm601.yaml     | 33 +++++++++++++++++++
- 2 files changed, 33 insertions(+), 19 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/sound/gtm601.txt
- create mode 100644 Documentation/devicetree/bindings/sound/gtm601.yaml
+I think this one is wrong.
 
-diff --git a/Documentation/devicetree/bindings/sound/gtm601.txt b/Documentation/devicetree/bindings/sound/gtm601.txt
-deleted file mode 100644
-index efa32a486c4a..000000000000
---- a/Documentation/devicetree/bindings/sound/gtm601.txt
-+++ /dev/null
-@@ -1,19 +0,0 @@
--GTM601 UMTS modem audio interface CODEC
--
--This device has no configuration interface. The sample rate and channels are
--based on the compatible string
--	"option,gtm601" = 8kHz mono
--	"broadmobi,bm818" = 48KHz stereo
--
--Required properties:
--
--  - compatible : one of
--	"option,gtm601"
--	"broadmobi,bm818"
--
--
--Example:
--
--codec: gtm601_codec {
--	compatible = "option,gtm601";
--};
-diff --git a/Documentation/devicetree/bindings/sound/gtm601.yaml b/Documentation/devicetree/bindings/sound/gtm601.yaml
-new file mode 100644
-index 000000000000..804402c72798
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/gtm601.yaml
-@@ -0,0 +1,33 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/gtm601.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: GTM601 UMTS modem audio interface CODEC
-+
-+maintainers:
-+  - Angus Ainslie (Purism) <angus@akkea.ca>
-+
-+description: >
-+  This device has no configuration interface. The sample rate and channels are
-+  based on the compatible string
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - items:
-+          - const: broadmobi,bm818
-+          - const: option,gtm601
-+      - items:
-+          - enum:
-+              - broadmobi,bm818  # 48 kHz stereo
-+              - option,gtm601  # 8 kHz mono
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    gtm601_codec {
-+        compatible = "option,gtm601";
-+    };
--- 
-2.33.0
+I think the problem is that m68k declares "claim_dma_lock()" in the
+wrong header file. It's in <asm/floppy.h> instead of <asm/dma.h>
 
+I'm somewhat surprised that this doesn't hit m68k in other places -
+there are other drivers that use that same ISA DMA interface.
+
+I've pulled this, but I hate how random that fix is.
+
+(And on the topic of hate - the merge messages are just auto-munged
+from the commit line - please spend a _bit_ more time on it, ok? Or at
+least make it closer to proper English - things like "Re-enable card
+irqs after a reset in tmio driver" instead of "tmio: Re-enable card
+irqs after a reset")
+
+              Linus
