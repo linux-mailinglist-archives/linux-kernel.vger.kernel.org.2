@@ -2,250 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A91B43FCC6
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 14:56:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 329F443FCCC
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 14:57:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231602AbhJ2M6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 08:58:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60623 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231449AbhJ2M6i (ORCPT
+        id S231575AbhJ2M77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 08:59:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52446 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231367AbhJ2M7z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 08:58:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635512169;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=d0L5NlzkxXwUpiuMJl7fVIMjjxlsJowOl0CPT1kdun0=;
-        b=ZQHPPyL/bqC3JPlm8Pp8CKmTLa0syt/xHZhSzoRAUYXoo9JVqogpzw24Vnmbt24D9rlnZ5
-        s1Re6xCGdg2Z0p5Fe+0Nwh3zb1I345g9kS9aTJnn1spxiabSKEIuLyeFZtsNM3bvq6t39S
-        f5RrDjn0w+yPGkvzmBPxL2Yu6DyOI34=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-317-N5FHGSGJNXS8y_UKN76SHQ-1; Fri, 29 Oct 2021 08:56:08 -0400
-X-MC-Unique: N5FHGSGJNXS8y_UKN76SHQ-1
-Received: by mail-ed1-f69.google.com with SMTP id x13-20020a05640226cd00b003dd4720703bso9130809edd.8
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 05:56:07 -0700 (PDT)
+        Fri, 29 Oct 2021 08:59:55 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0A0FC061570;
+        Fri, 29 Oct 2021 05:57:26 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id g8so38659362edb.2;
+        Fri, 29 Oct 2021 05:57:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YhSN8kedoZeC71/lNKcXSi8I8fonEQD4J4/TeNpr6vw=;
+        b=JBgRi8Xilyx/PG5L52x52MAkiGMkFnYZOttYplJjAn4deDZYEHRWK/reRfubf1FGSt
+         CqOpXj5jfHPegIMK5/A9+IsabK9Uy22s/59ebEEf7BPn78oXRaPN2AYINiTWVEnvW5oP
+         awWrP0Aurn3BFI4TWnx6fDkByE+izf+UjlL3YkigiicGB5tgiLGFGv4+uiIXZXuj2PIi
+         agxIrvB9wkw36fTHez4xQWLD/6uXf9zFb6MYXKeIgFelwl+mvj8wNIrFcruZUbIBopje
+         AqdjO5ydEBGvDAL1YT1ILjd+crk5UzHze0EnNj/QwuTaTaY8qANFbSD3PuPvV7GocDgC
+         Fb+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=d0L5NlzkxXwUpiuMJl7fVIMjjxlsJowOl0CPT1kdun0=;
-        b=A8pjGZjm53cXg7odSk0RThg655BiL303cXVDqg0MEkNpDIv3AefWUrza+Hh3GZ/YIH
-         h0JBw60G2XBhvo5n6qutiQEHaX3bH7nTYg3Y+X6l+6OAjsYXg8cEeKbTlIudPpj8Rjle
-         G8NWz+2Cgb+P1v4ZnTG+6we6VMU5/RDhwyvSmMuhSKP7Zh5JKer7xw18B1Clb/bG43Xc
-         oMNSI0TydaQ1MG/yX7ZDzkgIzTG391X5pjfeuZto2tJ4c6Hz5yIBPQvAt8EzKNkJHPGS
-         fKKaf1IzUH3I2xtQwe1nRoad3xWOOlEHPF+Mheeup5fxnDiZmM7Xj3Hv6Z33w7J4861V
-         Hgzw==
-X-Gm-Message-State: AOAM533tN90tNXAD9ReFl4dVlEhYSaLIxJdmAQP9mLrjXG41GzUXkS0v
-        7RbMkrvNyLwrrTY1Z1RtTFcR15zOpePBeARcPn2Br0Iu7IXSpuNhFiS9siQcoMFTSz5RF84MO08
-        tzRUMOsy2BsarT0oiIv+ZwEs9
-X-Received: by 2002:a17:907:3e19:: with SMTP id hp25mr6777837ejc.72.1635512166878;
-        Fri, 29 Oct 2021 05:56:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz7OP0JFnb/I+DV9ovvS4NRvD8P3XfBnwRLB5GvR+8tmzIzPlvDUB4lPXF2A/ATmGs1ilsBpA==
-X-Received: by 2002:a17:907:3e19:: with SMTP id hp25mr6777798ejc.72.1635512166571;
-        Fri, 29 Oct 2021 05:56:06 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id m3sm3548604edc.36.2021.10.29.05.56.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Oct 2021 05:56:06 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        llvm@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Ajay Garg <ajaygargnsit@gmail.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [PATCH] KVM: x86: Shove vp_bitmap handling down into
- sparse_set_to_vcpu_mask()
-In-Reply-To: <20211028213408.2883933-1-seanjc@google.com>
-References: <20211028213408.2883933-1-seanjc@google.com>
-Date:   Fri, 29 Oct 2021 14:56:05 +0200
-Message-ID: <87pmrokn16.fsf@vitty.brq.redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YhSN8kedoZeC71/lNKcXSi8I8fonEQD4J4/TeNpr6vw=;
+        b=EXvPIdwkfgZ9Tfy9bh6h0frOZa8neI3g3L1rg3tt26pBRTUGIvKMYvBtjMNThzWvhP
+         Sg1ADpN10uY8sOOw7DSxBQgMPGoo+1qWlWLM7fAVWwJ4m19mSUyd2hU6zz4bKCSGP5fu
+         OOARH25uEn8Mpwf5zasoqIVkZ0gFJO8F4TO4aEyPKZ3KPkMNZyfnEHRPt5mc44rbRwyh
+         FdM7l3uMdKEjyquPpG2wodd4+U5yshCUQ92sUOJeCeWfS6TWDew4t6SuNo9jvTvwGv6e
+         a6lB/BvcWTQqcQoocTDQ1NCiLKOwqtvWFLfhGsljZPFfcMEDkln0wExFeUqudCu0nYDi
+         sBGQ==
+X-Gm-Message-State: AOAM531Bqp6kcGzaWe0m9JR8ChHapFaun3kD7HORdxpQ7iq8ZS+Ac5Tc
+        69Z1MD1VyiwsqMoQIHVpHdM7IuwFAFVrbRvfEdY=
+X-Google-Smtp-Source: ABdhPJyCoz8hyGdASer7LPDOoMscdW3QPsfedNxRAZF8N2vYp8OMBEHsLn6ZpInCpxDaGHDgeDjF9Ea8uV7h5T/VWCM=
+X-Received: by 2002:a17:906:2887:: with SMTP id o7mr13200811ejd.425.1635512245127;
+ Fri, 29 Oct 2021 05:57:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20211028211753.573480-1-jaschultzMS@gmail.com>
+ <20211028211753.573480-3-jaschultzMS@gmail.com> <CAHp75Vfq7ZkXytuAFhGOMGuH7_AsXcYf9O=p30e4OUx+a4jMgw@mail.gmail.com>
+ <87fsskqvvc.fsf@kernel.org> <CAHp75VdHpHMp7X=8WcVbSUaT3pfxo-ZOTQ0BwdQqD09bJ2ddKg@mail.gmail.com>
+ <877ddwqaas.fsf@kernel.org>
+In-Reply-To: <877ddwqaas.fsf@kernel.org>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 29 Oct 2021 15:56:33 +0300
+Message-ID: <CAHp75VcwbVh7K=UMgiJ1QpaeB_f_==K4Ewzjt5OwYcOAXqiyUw@mail.gmail.com>
+Subject: Re: [PATCH 2/3] platform: surface: Add surface xbl
+To:     Felipe Balbi <balbi@kernel.org>
+Cc:     Jarrett Schultz <jaschultzms@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jarrett Schultz <jaschultz@microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sean Christopherson <seanjc@google.com> writes:
+On Fri, Oct 29, 2021 at 3:34 PM Felipe Balbi <balbi@kernel.org> wrote:
+> Andy Shevchenko <andy.shevchenko@gmail.com> writes:
+> > On Fri, Oct 29, 2021 at 7:48 AM Felipe Balbi <balbi@kernel.org> wrote:
+> >> Andy Shevchenko <andy.shevchenko@gmail.com> writes:
 
-> Move the vp_bitmap "allocation" that's need to handle mismatched vp_index
-> values down into sparse_set_to_vcpu_mask() and drop __always_inline from
-> said helper.  The vp_bitmap mess is a detail that's specific to the sparse
-> translation and does not need to be exposed to the caller.
+...
+
+> >> > Capital L will be better to read and understand the
+> >> > abbreviation. Actually usually we do something like this:
+> >> >
+> >> > Extensible Boot Loader (EBL)
+> >>
+> >> nah, this is silly Andy. It's just capitalized as eXtensible Boot
+> >> Loader, very much akin to eXtensible Host Controller Interface.
+> >
+> > My point here is to have a full name followed by the abbreviation. and
+> > n(O)t in (F)ancy st(Y)le.
 >
-> The underlying motivation is to fudge around a compilation warning/error
-> when CONFIG_KASAN_STACK=y, which is selected (and can't be unselected) by
-> CONFIG_KASAN=y when compiling with gcc (clang/LLVM is a stack hog in some
-> cases so it's opt-in for clang).  KASAN_STACK adds a redzone around every
-> stack variable, which pushes the Hyper-V functions over the default limit
-> of 1024.  With CONFIG_KVM_WERROR=y, this breaks the build.  Shuffling which
-> function is charged with vp_bitmap gets all functions below the default
-> limit.
+> too bad my patch removing acronyms from the kernel got rejects :-p
 >
-> Regarding the __always_inline, prior to commit f21dd494506a ("KVM: x86:
-> hyperv: optimize sparse VP set processing") the helper, then named
-> hv_vcpu_in_sparse_set(), was a tiny bit of code that effectively boiled
-> down to a handful of bit ops.  The __always_inline was understandable, if
-> not justifiable.  Since the aforementioned change, sparse_set_to_vcpu_mask()
-> is a chunky 350-450+ bytes of code without KASAN=y, and balloons to 1100+
-> with KASAN=y.  In other words, it has no business being forcefully inlined.
+> Seriously, this is pretty pointless. You're vouching for something that
+> will just cause confusion. Every piece of internal documentation refers
+> to xbl and you want this to be renamed to ebl because it looks nicer for
+> you. Thanks, but no thanks.
+
+Maybe I was too unclear. I'm not pushing for EBL, I'm pushing for the form os
+
+"Foo bAr BullSh*t (FABS)" vs. "(F)oo b(a)r (B)ull(s)h*t".
+
+If you have x there to be capitalized, do it like "eXtensible Boot
+Loader (XBL)". Is it too hard?
+
+...
+
+> >> >  +static const struct attribute_group inputs_attr_group = {
+> >> >  +       .attrs = inputs_attrs,
+> >> >  +};
+> >> >  +
+> >> >  +static u8 surface_xbl_readb(void __iomem *base, u32 offset)
+> >> >  +{
+> >> >  +       return readb(base + offset);
+> >> >  +}
+> >> >  +
+> >> >  +static u16 surface_xbl_readw(void __iomem *base, u32 offset)
+> >> >  +{
+> >> >  +       return readw(base + offset);
+> >> >  +}
+> >> >
+> >> > Either use corresponding io accessors in-line, or make first parameter
+> >> > to be sirface_xbl pointer. Otherwise these helpers useless.
+> >>
+> >> I agree with passing surface_xbl point as first parameter, but calling
+> >> the accessors pointless is a bit much. At a minimum, they make it easier
+> >> to ftrace the entire driver by simply ftracing surface_xbl_*
+> >
+> > My point is that the above seems half-baked. It's pointless to have a
+> > func(a,b) { return readl(a + b); }. It doesn't add value.
 >
-> Reported-by: Ajay Garg <ajaygargnsit@gmail.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->
-> Vitaly (and anyone with extensive KVM + Hyper-V knowledge), it would be
-> really helpful to get better coverage in kvm-unit-tests.
+> sure it does. echo surface_xbl_* > ftrace_filter_function (or whatever
+> the filename was) it reason enough IMHO. Not to mention that these
+> little accessors will likely be optimized by the compiler.
 
-I can't agree more. This *is* in my backlog but unfortunately I can't
-give any forcast on when I'll get to it :-(
-
->  There's a smoke
-> test for this in selftests, but it's not really all that interesting.  It
-> took me over an hour and a half just to get a Linux guest to hit the
-> relevant flows.  Most of that was due to QEMU 5.1 bugs (doesn't advertise
-> HYPERCALL MSR by default)
-
-This should be fixed already, right?
-
->  and Linux guest stupidity (silently disables
-> itself if said MSR isn't available), but it was really annoying to have to
-> go digging through QEMU to figure out how to even enable features that are
-> extensive/critical enough to warrant their own tests.
->
-> /wave to the clang folks for the pattern patch on the changelog ;-)
->
->  arch/x86/kvm/hyperv.c | 55 ++++++++++++++++++++++---------------------
->  1 file changed, 28 insertions(+), 27 deletions(-)
->
-> diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
-> index 4f15c0165c05..80018cfab5c7 100644
-> --- a/arch/x86/kvm/hyperv.c
-> +++ b/arch/x86/kvm/hyperv.c
-> @@ -1710,31 +1710,36 @@ int kvm_hv_get_msr_common(struct kvm_vcpu *vcpu, u32 msr, u64 *pdata, bool host)
->  		return kvm_hv_get_msr(vcpu, msr, pdata, host);
->  }
->  
-> -static __always_inline unsigned long *sparse_set_to_vcpu_mask(
-> -	struct kvm *kvm, u64 *sparse_banks, u64 valid_bank_mask,
-> -	u64 *vp_bitmap, unsigned long *vcpu_bitmap)
-> +static void sparse_set_to_vcpu_mask(struct kvm *kvm, u64 *sparse_banks,
-> +				    u64 valid_bank_mask, unsigned long *vcpu_mask)
->  {
->  	struct kvm_hv *hv = to_kvm_hv(kvm);
-> +	bool has_mismatch = atomic_read(&hv->num_mismatched_vp_indexes);
-> +	u64 vp_bitmap[KVM_HV_MAX_SPARSE_VCPU_SET_BITS];
->  	struct kvm_vcpu *vcpu;
->  	int i, bank, sbank = 0;
-> +	u64 *bitmap;
->  
-> -	memset(vp_bitmap, 0,
-> -	       KVM_HV_MAX_SPARSE_VCPU_SET_BITS * sizeof(*vp_bitmap));
-> +	BUILD_BUG_ON(sizeof(vp_bitmap) >
-> +		     sizeof(*vcpu_mask) * BITS_TO_LONGS(KVM_MAX_VCPUS));
-> +
-> +	/* If vp_index == vcpu_idx for all vCPUs, fill vcpu_mask directly. */
-> +	if (likely(!has_mismatch))
-> +		bitmap = (u64 *)vcpu_mask;
-> +
-> +	memset(bitmap, 0, sizeof(vp_bitmap));
-
-... but in the unlikely case has_mismatch == true 'bitmap' is still
-uninitialized here, right? How doesn't it crash?
-
->  	for_each_set_bit(bank, (unsigned long *)&valid_bank_mask,
->  			 KVM_HV_MAX_SPARSE_VCPU_SET_BITS)
-> -		vp_bitmap[bank] = sparse_banks[sbank++];
-> +		bitmap[bank] = sparse_banks[sbank++];
->  
-> -	if (likely(!atomic_read(&hv->num_mismatched_vp_indexes))) {
-> -		/* for all vcpus vp_index == vcpu_idx */
-> -		return (unsigned long *)vp_bitmap;
-> -	}
-> +	if (likely(!has_mismatch))
-> +		return;
->  
-> -	bitmap_zero(vcpu_bitmap, KVM_MAX_VCPUS);
-> +	bitmap_zero(vcpu_mask, KVM_MAX_VCPUS);
->  	kvm_for_each_vcpu(i, vcpu, kvm) {
->  		if (test_bit(kvm_hv_get_vpindex(vcpu), (unsigned long *)vp_bitmap))
-
-'vp_bitmap' also doesn't seem to be assigned to anything, I'm really
-confused :-(
-
-Didn't you accidentally mix up 'vp_bitmap' and 'bitmap'?
-
-> -			__set_bit(i, vcpu_bitmap);
-> +			__set_bit(i, vcpu_mask);
->  	}
-> -	return vcpu_bitmap;
->  }
->  
->  struct kvm_hv_hcall {
-> @@ -1756,9 +1761,7 @@ static u64 kvm_hv_flush_tlb(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *hc, bool
->  	struct kvm *kvm = vcpu->kvm;
->  	struct hv_tlb_flush_ex flush_ex;
->  	struct hv_tlb_flush flush;
-> -	u64 vp_bitmap[KVM_HV_MAX_SPARSE_VCPU_SET_BITS];
-> -	DECLARE_BITMAP(vcpu_bitmap, KVM_MAX_VCPUS);
-> -	unsigned long *vcpu_mask;
-> +	DECLARE_BITMAP(vcpu_mask, KVM_MAX_VCPUS);
->  	u64 valid_bank_mask;
->  	u64 sparse_banks[64];
->  	int sparse_banks_len;
-> @@ -1842,11 +1845,9 @@ static u64 kvm_hv_flush_tlb(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *hc, bool
->  	if (all_cpus) {
->  		kvm_make_all_cpus_request(kvm, KVM_REQ_TLB_FLUSH_GUEST);
->  	} else {
-> -		vcpu_mask = sparse_set_to_vcpu_mask(kvm, sparse_banks, valid_bank_mask,
-> -						    vp_bitmap, vcpu_bitmap);
-> +		sparse_set_to_vcpu_mask(kvm, sparse_banks, valid_bank_mask, vcpu_mask);
->  
-> -		kvm_make_vcpus_request_mask(kvm, KVM_REQ_TLB_FLUSH_GUEST,
-> -					    vcpu_mask);
-> +		kvm_make_vcpus_request_mask(kvm, KVM_REQ_TLB_FLUSH_GUEST, vcpu_mask);
-
-We're not bound by 80-char limit anymore, are we? :-)
-
->  	}
->  
->  ret_success:
-> @@ -1879,9 +1880,7 @@ static u64 kvm_hv_send_ipi(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *hc, bool
->  	struct kvm *kvm = vcpu->kvm;
->  	struct hv_send_ipi_ex send_ipi_ex;
->  	struct hv_send_ipi send_ipi;
-> -	u64 vp_bitmap[KVM_HV_MAX_SPARSE_VCPU_SET_BITS];
-> -	DECLARE_BITMAP(vcpu_bitmap, KVM_MAX_VCPUS);
-> -	unsigned long *vcpu_mask;
-> +	DECLARE_BITMAP(vcpu_mask, KVM_MAX_VCPUS);
->  	unsigned long valid_bank_mask;
->  	u64 sparse_banks[64];
->  	int sparse_banks_len;
-> @@ -1937,11 +1936,13 @@ static u64 kvm_hv_send_ipi(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *hc, bool
->  	if ((vector < HV_IPI_LOW_VECTOR) || (vector > HV_IPI_HIGH_VECTOR))
->  		return HV_STATUS_INVALID_HYPERCALL_INPUT;
->  
-> -	vcpu_mask = all_cpus ? NULL :
-> -		sparse_set_to_vcpu_mask(kvm, sparse_banks, valid_bank_mask,
-> -					vp_bitmap, vcpu_bitmap);
-> +	if (all_cpus) {
-> +		kvm_send_ipi_to_many(kvm, vector, NULL);
-> +	} else {
-> +		sparse_set_to_vcpu_mask(kvm, sparse_banks, valid_bank_mask, vcpu_mask);
->  
-> -	kvm_send_ipi_to_many(kvm, vector, vcpu_mask);
-> +		kvm_send_ipi_to_many(kvm, vector, vcpu_mask);
-> +	}
->  
->  ret_success:
->  	return HV_STATUS_SUCCESS;
+readl() will appear in the traces, no? But yeah I also was thinking
+about the weakness in your argument that the compiler can silently
+inline them anyway.
 
 -- 
-Vitaly
-
+With Best Regards,
+Andy Shevchenko
