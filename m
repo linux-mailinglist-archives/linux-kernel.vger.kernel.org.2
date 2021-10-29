@@ -2,130 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08B104400DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 19:00:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C58A4400DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 19:00:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230010AbhJ2RDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 13:03:08 -0400
-Received: from mga01.intel.com ([192.55.52.88]:45931 "EHLO mga01.intel.com"
+        id S230156AbhJ2RDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 13:03:15 -0400
+Received: from mga06.intel.com ([134.134.136.31]:55654 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229732AbhJ2RDH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 13:03:07 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10152"; a="254290711"
+        id S229732AbhJ2RDO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 13:03:14 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10152"; a="291539941"
 X-IronPort-AV: E=Sophos;i="5.87,193,1631602800"; 
-   d="scan'208";a="254290711"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2021 10:00:38 -0700
+   d="scan'208";a="291539941"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2021 10:00:44 -0700
 X-IronPort-AV: E=Sophos;i="5.87,193,1631602800"; 
-   d="scan'208";a="665895030"
-Received: from jongchoi-mobl.amr.corp.intel.com (HELO [10.212.201.61]) ([10.212.201.61])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2021 10:00:38 -0700
-Subject: Re: [PATCH v9 2/2] x86/sgx: Add an attribute for the amount of SGX
- memory in a NUMA node
-To:     Jarkko Sakkinen <jarkko@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     reinette.chatre@intel.com, tony.luck@intel.com,
-        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org
-References: <20211029121857.477885-1-jarkko@kernel.org>
- <20211029121857.477885-2-jarkko@kernel.org>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
- oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
- 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
- ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
- VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
- iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
- c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
- pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
- ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
- QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzShEYXZpZCBDaHJp
- c3RvcGhlciBIYW5zZW4gPGRhdmVAc3I3MS5uZXQ+wsF7BBMBAgAlAhsDBgsJCAcDAgYVCAIJ
- CgsEFgIDAQIeAQIXgAUCTo3k0QIZAQAKCRBoNZUwcMmSsMO2D/421Xg8pimb9mPzM5N7khT0
- 2MCnaGssU1T59YPE25kYdx2HntwdO0JA27Wn9xx5zYijOe6B21ufrvsyv42auCO85+oFJWfE
- K2R/IpLle09GDx5tcEmMAHX6KSxpHmGuJmUPibHVbfep2aCh9lKaDqQR07gXXWK5/yU1Dx0r
- VVFRaHTasp9fZ9AmY4K9/BSA3VkQ8v3OrxNty3OdsrmTTzO91YszpdbjjEFZK53zXy6tUD2d
- e1i0kBBS6NLAAsqEtneplz88T/v7MpLmpY30N9gQU3QyRC50jJ7LU9RazMjUQY1WohVsR56d
- ORqFxS8ChhyJs7BI34vQusYHDTp6PnZHUppb9WIzjeWlC7Jc8lSBDlEWodmqQQgp5+6AfhTD
- kDv1a+W5+ncq+Uo63WHRiCPuyt4di4/0zo28RVcjtzlGBZtmz2EIC3vUfmoZbO/Gn6EKbYAn
- rzz3iU/JWV8DwQ+sZSGu0HmvYMt6t5SmqWQo/hyHtA7uF5Wxtu1lCgolSQw4t49ZuOyOnQi5
- f8R3nE7lpVCSF1TT+h8kMvFPv3VG7KunyjHr3sEptYxQs4VRxqeirSuyBv1TyxT+LdTm6j4a
- mulOWf+YtFRAgIYyyN5YOepDEBv4LUM8Tz98lZiNMlFyRMNrsLV6Pv6SxhrMxbT6TNVS5D+6
- UorTLotDZKp5+M7BTQRUY85qARAAsgMW71BIXRgxjYNCYQ3Xs8k3TfAvQRbHccky50h99TUY
- sqdULbsb3KhmY29raw1bgmyM0a4DGS1YKN7qazCDsdQlxIJp9t2YYdBKXVRzPCCsfWe1dK/q
- 66UVhRPP8EGZ4CmFYuPTxqGY+dGRInxCeap/xzbKdvmPm01Iw3YFjAE4PQ4hTMr/H76KoDbD
- cq62U50oKC83ca/PRRh2QqEqACvIH4BR7jueAZSPEDnzwxvVgzyeuhwqHY05QRK/wsKuhq7s
- UuYtmN92Fasbxbw2tbVLZfoidklikvZAmotg0dwcFTjSRGEg0Gr3p/xBzJWNavFZZ95Rj7Et
- db0lCt0HDSY5q4GMR+SrFbH+jzUY/ZqfGdZCBqo0cdPPp58krVgtIGR+ja2Mkva6ah94/oQN
- lnCOw3udS+Eb/aRcM6detZr7XOngvxsWolBrhwTQFT9D2NH6ryAuvKd6yyAFt3/e7r+HHtkU
- kOy27D7IpjngqP+b4EumELI/NxPgIqT69PQmo9IZaI/oRaKorYnDaZrMXViqDrFdD37XELwQ
- gmLoSm2VfbOYY7fap/AhPOgOYOSqg3/Nxcapv71yoBzRRxOc4FxmZ65mn+q3rEM27yRztBW9
- AnCKIc66T2i92HqXCw6AgoBJRjBkI3QnEkPgohQkZdAb8o9WGVKpfmZKbYBo4pEAEQEAAcLB
- XwQYAQIACQUCVGPOagIbDAAKCRBoNZUwcMmSsJeCEACCh7P/aaOLKWQxcnw47p4phIVR6pVL
- e4IEdR7Jf7ZL00s3vKSNT+nRqdl1ugJx9Ymsp8kXKMk9GSfmZpuMQB9c6io1qZc6nW/3TtvK
- pNGz7KPPtaDzvKA4S5tfrWPnDr7n15AU5vsIZvgMjU42gkbemkjJwP0B1RkifIK60yQqAAlT
- YZ14P0dIPdIPIlfEPiAWcg5BtLQU4Wg3cNQdpWrCJ1E3m/RIlXy/2Y3YOVVohfSy+4kvvYU3
- lXUdPb04UPw4VWwjcVZPg7cgR7Izion61bGHqVqURgSALt2yvHl7cr68NYoFkzbNsGsye9ft
- M9ozM23JSgMkRylPSXTeh5JIK9pz2+etco3AfLCKtaRVysjvpysukmWMTrx8QnI5Nn5MOlJj
- 1Ov4/50JY9pXzgIDVSrgy6LYSMc4vKZ3QfCY7ipLRORyalFDF3j5AGCMRENJjHPD6O7bl3Xo
- 4DzMID+8eucbXxKiNEbs21IqBZbbKdY1GkcEGTE7AnkA3Y6YB7I/j9mQ3hCgm5muJuhM/2Fr
- OPsw5tV/LmQ5GXH0JQ/TZXWygyRFyyI2FqNTx4WHqUn3yFj8rwTAU1tluRUYyeLy0ayUlKBH
- ybj0N71vWO936MqP6haFERzuPAIpxj2ezwu0xb1GjTk4ynna6h5GjnKgdfOWoRtoWndMZxbA
- z5cecg==
-Message-ID: <3ffafe28-e770-a285-98d0-1379271ba36d@intel.com>
-Date:   Fri, 29 Oct 2021 10:00:35 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+   d="scan'208";a="726234669"
+Received: from schen9-mobl.amr.corp.intel.com ([10.212.248.12])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2021 10:00:42 -0700
+Message-ID: <f21e1c14148039eb5c7d475f53aba1f4a2e0ca43.camel@linux.intel.com>
+Subject: Re: [PATCH v3 0/5] Improve newidle lb cost tracking and early abort
+From:   Tim Chen <tim.c.chen@linux.intel.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, linux-kernel@vger.kernel.org
+Date:   Fri, 29 Oct 2021 10:00:40 -0700
+In-Reply-To: <CAKfTPtAv7vPGYAwUSmGL5wtbY=if8G+3geWMKpHu3vLGqthPfg@mail.gmail.com>
+References: <20211019123537.17146-1-vincent.guittot@linaro.org>
+         <7128695d64e9161637b67315b5beb51c4accdc82.camel@linux.intel.com>
+         <CAKfTPtAv7vPGYAwUSmGL5wtbY=if8G+3geWMKpHu3vLGqthPfg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-In-Reply-To: <20211029121857.477885-2-jarkko@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/29/21 5:18 AM, Jarkko Sakkinen wrote:
-> +What:		/sys/devices/system/node/nodeX/sgx/size
-> +Date:		October 2021
-> +Contact:	Jarkko Sakkinen <jarkko@kernel.org>
+On Wed, 2021-10-27 at 10:49 +0200, Vincent Guittot wrote:
+> 
+> 
+> Few problems still remain in your case if I'm not wrong:
+> There is a patch that ensures that rq->next_balance is never set in
+> the past.
+> 
 
-I don't think we should do something *entirely* SGX-specific here.  The
-only question to me is whether any non-SGX users want something like
-this and who they are.
+Vincent,
 
-Here are some ideas I like more than an "sgx/" directory:
+Were you planning to take the patch to prevent the next_balance to be
+in the past?
 
-	/sys/devices/system/node/nodeX/arch/sgx_size
-	/sys/devices/system/node/nodeX/x86/sgx_size
-	/sys/devices/system/node/nodeX/coco/sgx_size
+Tim
 
-There's somebody else *today* who is trying to do something in the same
-general area: per-node platform-specific memory encryption capabilities:
+---
+From 2a5ebdeabbfdf4584532ef0e27d37ed75ca7dbd3 Mon Sep 17 00:00:00 2001
+From: Tim Chen <tim.c.chen@linux.intel.com>
+Date: Tue, 11 May 2021 09:55:41 -0700
+Subject: [PATCH] sched: sched: Fix rq->next_balance time updated to earlier
+ than current time
+To: hmem@eclists.intel.com
 
-> https://lore.kernel.org/all/20211027195511.207552-6-martin.fernandez@eclypsium.com/
+In traces on newidle_balance(), this_rq->next_balance
+time goes backward and earlier than current time jiffies, e.g.
 
-Also, could we please think through how this will look if we add more
-attributes?  I can imagine wanting both:
+11.602 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb76c jiffies=0x1004fb739
+11.624 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb739
+13.856 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb76c jiffies=0x1004fb73b
+13.910 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73b
+14.637 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb76c jiffies=0x1004fb73c
+14.666 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73c
 
-	* total SGX memory available
-	* total SGX memory present
+It doesn't make sense to have a next_balance in the past.
+Fix newidle_balance() and update_next_balance() so the next
+balance time is at least jiffies+1.
+---
+ kernel/sched/fair.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-But those would be quite hard to differentiate if we have just an
-"sgx_size".
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 1d75af1ecfb4..740a0572cbf1 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -9901,7 +9901,10 @@ update_next_balance(struct sched_domain *sd, unsigned long *next_balance)
+ 
+ 	/* used by idle balance, so cpu_busy = 0 */
+ 	interval = get_sd_balance_interval(sd, 0);
+-	next = sd->last_balance + interval;
++	if (time_after(jiffies+1, sd->last_balance + interval))
++		next = jiffies+1;
++	else
++		next = sd->last_balance + interval;
+ 
+ 	if (time_after(*next_balance, next))
+ 		*next_balance = next;
+@@ -10681,6 +10684,8 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+ 
+ out:
+ 	/* Move the next balance forward */
++	if (time_after(jiffies+1, this_rq->next_balance))
++		this_rq->next_balance = jiffies+1;
+ 	if (time_after(this_rq->next_balance, next_balance))
+ 		this_rq->next_balance = next_balance;
+ 
+-- 
+2.20.1
 
-Wouldn't it be much nicer to name them things like:
 
-	sgx_present_bytes
-	sgx_available_bytes
-
-?
-
-In other words, can we please try to think just a bit into the future on
-this one?  What other SGX things will we want to export like this?
-Outside of SGX, who else wants stuff _like_ this?
