@@ -2,140 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01B9643F45E
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 03:32:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A116543F460
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 03:33:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231482AbhJ2BfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 21:35:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231269AbhJ2BfB (ORCPT
+        id S231299AbhJ2Bf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 21:35:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:20105 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231161AbhJ2Bf2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 21:35:01 -0400
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C67BAC061570;
-        Thu, 28 Oct 2021 18:32:33 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id gh1so5349601qvb.8;
-        Thu, 28 Oct 2021 18:32:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pDbmTFmdUa1vOFovfEjzfndFY1x7Eiw6Kvd3FWDkoxc=;
-        b=VSKovtfAXRDGln/ro6n8sMyFekczXY1eZL1Vs6yQnGCyL/B71u90blTbUPv/Lh9G+E
-         AviMJm3uAkjgGNIvgeWw+wVPDLDaZbLY9MXpn8TmhFp12noEwyJm0Zt4xlXoQuMiLAbx
-         3UhTBSb1Mvk3m/C5RH6av4ecX9wVEF9UWtBUkoYbGiMSRbcafB5u2JVIWtnv4qZ841NK
-         TMzyuCiRa9/S7n0zeTwlyflVN/aeRZMEuP1KcmlxaJqgHPdNyomzts+K0ouTDIKRf3qW
-         mmENiWzEWLXhTKGf9hGv3EZ46Ox0e9s/knwJywRZWk2IchUZB3ZfDuPqHMVuRDdd2GcD
-         1kPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pDbmTFmdUa1vOFovfEjzfndFY1x7Eiw6Kvd3FWDkoxc=;
-        b=NYybBB7oK0K1pXcQlxP91iQp79NrVs02Se2UJJpVuNReibmi6OvwY5v+gN/lCnYvcw
-         nrLLukOG8fChSJvHQhJ8sQwFqIE8YyXmYOWrMiXng073kGZw+VChECqBpySnouJmX8rV
-         97knFtQfjXj8x8m+oC5hnexOSS4Ga06ppJxBu2izRjscbb+aSGITCOTG7QbhuOljUbSi
-         pOox9cWFWz/ZyCTO3+uA9IWN5cFyVpcN7o/p8vdtkT7wowhoi8tHD9YmMcF9Xcof7Pf8
-         tKI7Npz4z51hsCGgpXm52lAU3p+3ssbW6OI6TPDpmBOw9pPHPI9r4nJPHF5IV/684b6L
-         bVrQ==
-X-Gm-Message-State: AOAM532MRUpOSDTikKfsVCwx5wvwXbQQ8YNKz6Mf4tsZ8RqsyvLPmayC
-        Yde1GB1lbZepKD8H+Pp+TAQ=
-X-Google-Smtp-Source: ABdhPJyrHjdj9XEFnRSkldMt/4/bkKu/0E5F2TesyOmk7mzCDa1MO0CC/b/Nxz1xs3dhtFkmkob2LA==
-X-Received: by 2002:a05:6214:300c:: with SMTP id ke12mr7716024qvb.41.1635471152973;
-        Thu, 28 Oct 2021 18:32:32 -0700 (PDT)
-Received: from localhost.localdomain (c-67-187-90-124.hsd1.tn.comcast.net. [67.187.90.124])
-        by smtp.gmail.com with ESMTPSA id az12sm2991612qkb.28.2021.10.28.18.32.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 18:32:32 -0700 (PDT)
-From:   frowand.list@gmail.com
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/1] of: unittest: fix EXPECT text for gpio hog errors
-Date:   Thu, 28 Oct 2021 20:32:25 -0500
-Message-Id: <20211029013225.2048695-1-frowand.list@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 28 Oct 2021 21:35:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635471180;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8oj4fyiyXkG+xWHY3UZohwql1+uMDTmQEs2CRVMjkdw=;
+        b=OttkDeARrogvy0SeCZHjk08m4KvOfcki6S3qtijX7CFoN3k8S5z6kmyyZiVg6cT11a7q1X
+        sJjnWNkIu0GJM93eEavci2PoA0ARLFNM+PrnAtNXhbqLcSZvyuLD86ZKo0Sb9Q8qJ+rtkC
+        EDewJ6Vw7cG3/SptrFd1GOTkejsw6bY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-75-aaIoXy5kP6-7LrAwS6jEmA-1; Thu, 28 Oct 2021 21:32:57 -0400
+X-MC-Unique: aaIoXy5kP6-7LrAwS6jEmA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4F705802B4F;
+        Fri, 29 Oct 2021 01:32:55 +0000 (UTC)
+Received: from T590 (ovpn-8-17.pek2.redhat.com [10.72.8.17])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 08AED60BF1;
+        Fri, 29 Oct 2021 01:32:41 +0000 (UTC)
+Date:   Fri, 29 Oct 2021 09:32:36 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Daejun Park <daejun7.park@samsung.com>
+Cc:     ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "huobean@gmail.com" <huobean@gmail.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        Keoseong Park <keosung.park@samsung.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        ming.lei@redhat.com
+Subject: Re: [PATCH] scsi: ufs: Fix proper API to send HPB pre-request
+Message-ID: <YXtPNIDzeln8zBCn@T590>
+References: <CGME20211027223619epcms2p60bbc74c9ba9757c58709a99acd0892ff@epcms2p6>
+ <20211027223619epcms2p60bbc74c9ba9757c58709a99acd0892ff@epcms2p6>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211027223619epcms2p60bbc74c9ba9757c58709a99acd0892ff@epcms2p6>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frank Rowand <frank.rowand@sony.com>
+On Thu, Oct 28, 2021 at 07:36:19AM +0900, Daejun Park wrote:
+> This patch addresses the issue of using the wrong API to create a
+> pre_request for HPB READ.
+> HPB READ candidate that require a pre-request will try to allocate a
+> pre-request only during request_timeout_ms (default: 0). Otherwise, it is
 
-The console message text for gpio hog errors does not match
-what unittest expects.
+Can you explain about 'only during request_timeout_ms'?
 
-Fixes: f4056e705b2ef ("of: unittest: add overlay gpio test to catch gpio hog problem")
-Signed-off-by: Frank Rowand <frank.rowand@sony.com>
----
- drivers/of/unittest.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+From the following code in ufshpb_prep(), the pre-request is allocated
+for each READ IO in case of (!ufshpb_is_legacy(hba) && ufshpb_is_required_wb(hpb,
+transfer_len)).
 
-diff --git a/drivers/of/unittest.c b/drivers/of/unittest.c
-index 8c056972a6dd..5b85a2a3792a 100644
---- a/drivers/of/unittest.c
-+++ b/drivers/of/unittest.c
-@@ -1688,19 +1688,19 @@ static void __init of_unittest_overlay_gpio(void)
- 	 */
- 
- 	EXPECT_BEGIN(KERN_INFO,
--		     "GPIO line <<int>> (line-B-input) hogged as input\n");
-+		     "gpio-<<int>> (line-B-input): hogged as input\n");
- 
- 	EXPECT_BEGIN(KERN_INFO,
--		     "GPIO line <<int>> (line-A-input) hogged as input\n");
-+		     "gpio-<<int>> (line-A-input): hogged as input\n");
- 
- 	ret = platform_driver_register(&unittest_gpio_driver);
- 	if (unittest(ret == 0, "could not register unittest gpio driver\n"))
- 		return;
- 
- 	EXPECT_END(KERN_INFO,
--		   "GPIO line <<int>> (line-A-input) hogged as input\n");
-+		   "gpio-<<int>> (line-A-input): hogged as input\n");
- 	EXPECT_END(KERN_INFO,
--		   "GPIO line <<int>> (line-B-input) hogged as input\n");
-+		   "gpio-<<int>> (line-B-input): hogged as input\n");
- 
- 	unittest(probe_pass_count + 2 == unittest_gpio_probe_pass_count,
- 		 "unittest_gpio_probe() failed or not called\n");
-@@ -1727,7 +1727,7 @@ static void __init of_unittest_overlay_gpio(void)
- 	chip_request_count = unittest_gpio_chip_request_count;
- 
- 	EXPECT_BEGIN(KERN_INFO,
--		     "GPIO line <<int>> (line-D-input) hogged as input\n");
-+		     "gpio-<<int>> (line-D-input): hogged as input\n");
- 
- 	/* overlay_gpio_03 contains gpio node and child gpio hog node */
- 
-@@ -1735,7 +1735,7 @@ static void __init of_unittest_overlay_gpio(void)
- 		 "Adding overlay 'overlay_gpio_03' failed\n");
- 
- 	EXPECT_END(KERN_INFO,
--		   "GPIO line <<int>> (line-D-input) hogged as input\n");
-+		   "gpio-<<int>> (line-D-input): hogged as input\n");
- 
- 	unittest(probe_pass_count + 1 == unittest_gpio_probe_pass_count,
- 		 "unittest_gpio_probe() failed or not called\n");
-@@ -1774,7 +1774,7 @@ static void __init of_unittest_overlay_gpio(void)
- 	 */
- 
- 	EXPECT_BEGIN(KERN_INFO,
--		     "GPIO line <<int>> (line-C-input) hogged as input\n");
-+		     "gpio-<<int>> (line-C-input): hogged as input\n");
- 
- 	/* overlay_gpio_04b contains child gpio hog node */
- 
-@@ -1782,7 +1782,7 @@ static void __init of_unittest_overlay_gpio(void)
- 		 "Adding overlay 'overlay_gpio_04b' failed\n");
- 
- 	EXPECT_END(KERN_INFO,
--		   "GPIO line <<int>> (line-C-input) hogged as input\n");
-+		   "gpio-<<int>> (line-C-input): hogged as input\n");
- 
- 	unittest(chip_request_count + 1 == unittest_gpio_chip_request_count,
- 		 "unittest_gpio_chip_request() called %d times (expected 1 time)\n",
--- 
-Frank Rowand <frank.rowand@sony.com>
+   if (!ufshpb_is_legacy(hba) &&
+            ufshpb_is_required_wb(hpb, transfer_len)) {
+                err = ufshpb_issue_pre_req(hpb, cmd, &read_id);
+
+> passed as normal READ, so deadlock problem can be resolved.
+> 
+> Signed-off-by: Daejun Park <daejun7.park@samsung.com>
+> ---
+>  drivers/scsi/ufs/ufshpb.c | 11 +++++------
+>  drivers/scsi/ufs/ufshpb.h |  1 +
+>  2 files changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
+> index 02fb51ae8b25..3117bd47d762 100644
+> --- a/drivers/scsi/ufs/ufshpb.c
+> +++ b/drivers/scsi/ufs/ufshpb.c
+> @@ -548,8 +548,7 @@ static int ufshpb_execute_pre_req(struct ufshpb_lu *hpb, struct scsi_cmnd *cmd,
+>  				 read_id);
+>  	rq->cmd_len = scsi_command_size(rq->cmd);
+>  
+> -	if (blk_insert_cloned_request(q, req) != BLK_STS_OK)
+> -		return -EAGAIN;
+> +	blk_execute_rq_nowait(NULL, req, true, ufshpb_pre_req_compl_fn);
+
+Be care with above change, blk_insert_cloned_request() allocates
+driver tag and issues the request to LLD directly, then returns the
+result. If anything fails in the code path, -EAGAIN is returned.
+
+But blk_execute_rq_nowait() simply queued the request in block layer,
+and run hw queue. It doesn't allocate driver tag, and doesn't issue it
+to LLD.
+
+So ufshpb_execute_pre_req() may think the pre-request is issued to LLD
+successfully, but actually not, maybe never. What will happen after the
+READ IO is issued to device, but the pre-request(write buffer) isn't
+sent to device?
+
+>  
+>  	hpb->stats.pre_req_cnt++;
+>  
+> @@ -2315,19 +2314,19 @@ struct attribute_group ufs_sysfs_hpb_param_group = {
+>  static int ufshpb_pre_req_mempool_init(struct ufshpb_lu *hpb)
+>  {
+>  	struct ufshpb_req *pre_req = NULL, *t;
+> -	int qd = hpb->sdev_ufs_lu->queue_depth / 2;
+>  	int i;
+>  
+>  	INIT_LIST_HEAD(&hpb->lh_pre_req_free);
+>  
+> -	hpb->pre_req = kcalloc(qd, sizeof(struct ufshpb_req), GFP_KERNEL);
+> -	hpb->throttle_pre_req = qd;
+> +	hpb->pre_req = kcalloc(HPB_INFLIGHT_PRE_REQ, sizeof(struct ufshpb_req),
+> +			       GFP_KERNEL);
+> +	hpb->throttle_pre_req = HPB_INFLIGHT_PRE_REQ;
+>  	hpb->num_inflight_pre_req = 0;
+>  
+>  	if (!hpb->pre_req)
+>  		goto release_mem;
+>  
+> -	for (i = 0; i < qd; i++) {
+> +	for (i = 0; i < HPB_INFLIGHT_PRE_REQ; i++) {
+>  		pre_req = hpb->pre_req + i;
+>  		INIT_LIST_HEAD(&pre_req->list_req);
+>  		pre_req->req = NULL;
+> diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
+> index a79e07398970..411a6d625f53 100644
+> --- a/drivers/scsi/ufs/ufshpb.h
+> +++ b/drivers/scsi/ufs/ufshpb.h
+> @@ -50,6 +50,7 @@
+>  #define HPB_RESET_REQ_RETRIES			10
+>  #define HPB_MAP_REQ_RETRIES			5
+>  #define HPB_REQUEUE_TIME_MS			0
+> +#define HPB_INFLIGHT_PRE_REQ			4
+
+Can you explain how this change solves the deadlock?
+
+Thanks,
+Ming
 
