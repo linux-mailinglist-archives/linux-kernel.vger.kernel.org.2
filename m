@@ -2,68 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65638440179
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 19:51:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6812344017C
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 19:51:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230174AbhJ2RyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 13:54:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229489AbhJ2RyH (ORCPT
+        id S230204AbhJ2RyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 13:54:19 -0400
+Received: from mail-oi1-f182.google.com ([209.85.167.182]:35669 "EHLO
+        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230195AbhJ2RyS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 13:54:07 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0533C061714
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 10:51:38 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id w8so9842651qts.4
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 10:51:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7nMF1V6BCwjlzSpPh1jKw+VpyNLXokFgQZynS9/OsMg=;
-        b=SZy3iI1x6UqOI0yZ46Lm4kpVmHNb0gTREnWO/KILOdRNn9W1nXXcEskLPaayzv8Dcl
-         fBTJT4nZBAFtWCp+iJNFKPGJ7+ew3ofvWA1/k/uSTBeYsBSCUXY9DqSVbJQO5a0y3RfJ
-         ZKZVWgE5jHAh3kbMiGUbI+8uw6n4E637EuJdo=
+        Fri, 29 Oct 2021 13:54:18 -0400
+Received: by mail-oi1-f182.google.com with SMTP id x8so10162670oix.2;
+        Fri, 29 Oct 2021 10:51:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=7nMF1V6BCwjlzSpPh1jKw+VpyNLXokFgQZynS9/OsMg=;
-        b=T1dALVkcCKWx0Hn73npXyrUrQKZ6dgyqxxLOmMnZceT7Z4myHnGIKmOcrXtLkKbAIT
-         beWfHlmHohIVNyBs75rWBTTuit/pW0AYnewqU2srpvnu3xNAnxKPxiyYU6WiKfo7ggnX
-         MQyqKB2llz5q4IBGJspb94XXTwp+QmUbXbcTXzKSsZyi5hT64hVKnuK9rrKH5WPsBLd4
-         feEgFBpHVBduTQEHhFFcA17vaAZ0/xosJ2r71tLlQsktpgWPtcWcyY18M9Dz7KcrOCZd
-         V7M/tXgdLmar/RWWQZ7RzfPTUEnzoFN57AMg5T6g0IsqVe6zqwmpa4D5iTA8xyTwekGr
-         Cexg==
-X-Gm-Message-State: AOAM530eLNExDla05fbBqDO3bOjh8sFa2Btwv3P/XWw2au5MN2isaiNB
-        l7L7SmVD+T+4Yc2VQpbWMgpx8W7eRdq06OJrD+DS7Q==
-X-Google-Smtp-Source: ABdhPJy/LIk2FlF3YFx6sUj9oMHMPK2rorcoFjhjLsoz/JSfc85V3sjXobjyqNSwBgJwZBwpBEEBcQUWg0sIxVKCktw=
-X-Received: by 2002:a05:622a:4d2:: with SMTP id q18mr13590760qtx.84.1635529897819;
- Fri, 29 Oct 2021 10:51:37 -0700 (PDT)
+        bh=pTzpgEOUBS8sMoWyNwkruiW9zm9JkTMzDcOqujNJPkk=;
+        b=PsFBsNfhONKckqYjnuziH9R0hvqs+2UpSA1HNTpr3t5S5EHCiTLNLxA6n9zMStRhfg
+         VdwRs9R3MkL5DQHN+Y/e+Ru3p0Lj4NWygSGJ6rpA2Mub8Cts++THL60+pl0cUdSApvZ4
+         yzaTrakPW9m7CS2iOrgZylkoWmX6NwDE1vxjO+19cZq2POSV4xowAVs2Z8s2l/ic5wbB
+         t1hPFPcB6VDpdBkJZ4cQviBnqVgSWCZDpBfLWqXwNhQfnAfydhknEZvntQwghW0B3L+X
+         26vwyhiDieIzXdjfCwNdAXX/xjj+SwHlFzFnoUxQrzOzcGyuqvFeDr+7e1/iCNxzVgDs
+         I8zQ==
+X-Gm-Message-State: AOAM5325YJzT0LccPwzg2KO1tS/02Yadf2P+LYDpPpcbT1XRPZ5Nkff+
+        O/slx1gYnoikxRny+QoH7tjX/rfj1cmG69DCD4ag6fMKnjs=
+X-Google-Smtp-Source: ABdhPJy+JH/a/FNH755t1Dh1xCmQQTD//BsHJ/VldL46iyeLGRohdsF/7PO1GEzJz/hqmt35dg8+/ipdm/D4imtPqdA=
+X-Received: by 2002:a05:6808:e90:: with SMTP id k16mr8990625oil.166.1635529909246;
+ Fri, 29 Oct 2021 10:51:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <3a8ea720b28ec4574648012d2a00208f1144eff5.1635527693.git.leonro@nvidia.com>
-In-Reply-To: <3a8ea720b28ec4574648012d2a00208f1144eff5.1635527693.git.leonro@nvidia.com>
-From:   Michael Chan <michael.chan@broadcom.com>
-Date:   Fri, 29 Oct 2021 10:51:27 -0700
-Message-ID: <CACKFLinnFQS3izf=GV1Zxzt3qVRj1nDzz7c5gXnWTRdLFeswOg@mail.gmail.com>
-Subject: Re: [PATCH net-next] bnxt_en: Remove not used other ULP define
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+References: <CAJZ5v0hTtyu981j91vxH_u3bvHWWBho4YSAhd+os9Zn=sbwe2Q@mail.gmail.com>
+ <CAHk-=whCammRsz8PEbrft3M6vGjF506gkxtyGw81uGOUUvD51g@mail.gmail.com>
+In-Reply-To: <CAHk-=whCammRsz8PEbrft3M6vGjF506gkxtyGw81uGOUUvD51g@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 29 Oct 2021 19:51:38 +0200
+Message-ID: <CAJZ5v0jiDR+54S8tuWf1E8Fxaw+JNmK6ERbW5wh9DNV7SbhRJQ@mail.gmail.com>
+Subject: Re: [GIT PULL] ACPI fixes for v5.15-rc7
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 10:18 AM Leon Romanovsky <leon@kernel.org> wrote:
+On Fri, Oct 22, 2021 at 9:13 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
 >
-> From: Leon Romanovsky <leonro@nvidia.com>
+> On Fri, Oct 22, 2021 at 9:01 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> >
+> >  - Fix an ACPI tools build issue introduced recently when the minimal
+> >    stdarg.h was added (Miguel Bernal Marin).
 >
-> There is only one bnxt ULP in the upstream kernel and definition
-> for other ULP can be safely removed.
+> Hmm. ACPI already has that odd ACPI_USE_BUILTIN_STDARG case in
+> acgcc.h, which ends up using _exactly_ the same macros as the
+> <linux/stdarg.h> implementation does, and is basically exactly the
+> same "minimal stdarg".
 >
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-Reviewed-by: Michael Chan <michael.chan@broadcom.com>
+> Ok, so the macro argument names are different, and there are
+> whitespace differences, but semantically identical.
+>
+> So maybe the ACPI code could drop one or the other in favor of the
+> identical macros?
+
+The ACPI_USE_BUILTIN_STDARG check comes from the upstream code
+assuming that whoever doesn't use the "common" stdarg.h will set
+ACPI_USE_BUILTIN_STDARG, but we don't set it and we provide our own
+stdarg.h, so we can make the following change (on top of the -rc7):
+
+---
+ include/acpi/platform/acgcc.h |   13 -------------
+ 1 file changed, 13 deletions(-)
+
+Index: linux-pm/include/acpi/platform/acgcc.h
+===================================================================
+--- linux-pm.orig/include/acpi/platform/acgcc.h
++++ linux-pm/include/acpi/platform/acgcc.h
+@@ -10,25 +10,12 @@
+ #ifndef __ACGCC_H__
+ #define __ACGCC_H__
+
+-/*
+- * Use compiler specific <stdarg.h> is a good practice for even when
+- * -nostdinc is specified (i.e., ACPI_USE_STANDARD_HEADERS undefined.
+- */
+ #ifndef va_arg
+-#ifdef ACPI_USE_BUILTIN_STDARG
+-typedef __builtin_va_list va_list;
+-#define va_start(v, l)          __builtin_va_start(v, l)
+-#define va_end(v)               __builtin_va_end(v)
+-#define va_arg(v, l)            __builtin_va_arg(v, l)
+-#define va_copy(d, s)           __builtin_va_copy(d, s)
+-#else
+ #ifdef __KERNEL__
+ #include <linux/stdarg.h>
+ #else
+-/* Used to build acpi tools */
+ #include <stdarg.h>
+ #endif /* __KERNEL__ */
+-#endif /* ACPI_USE_BUILTIN_STDARG */
+ #endif /* ! va_arg */
+
+ #define ACPI_INLINE             __inline__
