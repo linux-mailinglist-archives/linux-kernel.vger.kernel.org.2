@@ -2,67 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC01043FE65
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 16:23:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00FB043FE68
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 16:24:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231527AbhJ2O0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 10:26:24 -0400
-Received: from phobos.denx.de ([85.214.62.61]:50100 "EHLO phobos.denx.de"
+        id S231548AbhJ2O1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 10:27:17 -0400
+Received: from ixit.cz ([94.230.151.217]:52454 "EHLO ixit.cz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230036AbhJ2O0X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 10:26:23 -0400
-Received: from [IPv6:::1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+        id S230036AbhJ2O1P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 10:27:15 -0400
+Received: from localhost.localdomain (ip-89-176-96-70.net.upcbroadband.cz [89.176.96.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: marex@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id 5D71F835BF;
-        Fri, 29 Oct 2021 16:23:52 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1635517433;
-        bh=ZWEwn6xxH9thjtW69prVFZ20jiDIdEX/mAl5N86y5gs=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=zQ6qmJoFsbPLo4fNjIbKsn7lCU5pFd4Y+8R5ranowo4Nxmas9/BVTJiCfFUc9Vyh3
-         hyAYHqJu5yndLGFMzAldklvksqkCdo4lAuL8oqscb8d/0+j8BQ/EtyaYROLCSOXkU4
-         zmZeeAm8fxHrLRtp8QxPEa1tp2roO99pUmRUBIxpOO6camEULH5Q+SMQASl9l2jB0g
-         gRAnVQ32ftQYow2aLiU4szUBz9eX1n2b4oiau9TeOlvmvRUQ3PIZ+Jp+IxpF8PK7Ev
-         BEyy+eT/r0COf5T/gWGoWQHV0YZu00+3FS6PYaY5XkpUk5JeZUBQkuH9c+CaLuPX36
-         sv5H18B800xYg==
-Subject: Re: [PATCH 4/8] crypto: stm32/cryp - fix race condition
-To:     Nicolas Toromanoff <nicolas.toromanoff@foss.st.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>
-Cc:     linux-crypto@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20211029135454.4383-1-nicolas.toromanoff@foss.st.com>
- <20211029135454.4383-5-nicolas.toromanoff@foss.st.com>
-From:   Marek Vasut <marex@denx.de>
-Message-ID: <1ec60d9c-1ab4-8a92-1c6d-8093232ca039@denx.de>
-Date:   Fri, 29 Oct 2021 16:23:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        by ixit.cz (Postfix) with ESMTPSA id 89DE524E6A;
+        Fri, 29 Oct 2021 16:24:44 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
+        t=1635517484;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=ZihQDNGeVUfBNdMC0gYQ+olf4OatioTG3mWnhlOyNBY=;
+        b=uwAEk4LJbEI40INmmQSf+gxuew37xokCcggJTtnLOe4f3ECBrWxo0DGr1SqVBttULrVA7l
+        09Z3CSCrEZlxHOGTlBBD9v1GrV05LLcT1x8UV7LAjN+NMllYnx2vnOdWaK9TOo3F0wM5B5
+        OVeBw8BqldeMCBMbCQSm63CelKzwjOQ=
+From:   David Heidelberg <david@ixit.cz>
+To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>
+Cc:     ~okias/devicetree@lists.sr.ht, David Heidelberg <david@ixit.cz>,
+        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] dt-bindings: watchdog: sunxi: fix error in schema
+Date:   Fri, 29 Oct 2021 16:24:42 +0200
+Message-Id: <20211029142443.68779-1-david@ixit.cz>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <20211029135454.4383-5-nicolas.toromanoff@foss.st.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
-X-Virus-Status: Clean
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/29/21 3:54 PM, Nicolas Toromanoff wrote:
-> Erase key before finalizing request.
-> Fixes: 9e054ec21ef8 ("crypto: stm32 - Support for STM32 CRYP crypto module")
+"maxItems" is not needed with an "items" list
 
-Can you be a bit more specific in your commit messages ? That applies to 
-the entire patchset. It is absolutely impossible to tell what race is 
-fixed here or why it is fixed by exactly this change. This applies to 
-the entire series.
+Fixes:
+$ DT_SCHEMA_FILES=Documentation/devicetree/bindings/watchdog/allwinner,sun4i-a10-wdt.yaml make dtbs_check
+Documentation/devicetree/bindings/watchdog/allwinner,sun4i-a10-wdt.yaml: properties:clocks: {'required': ['maxItems']} is not allowed for {'minItems': 1, 'maxItems': 2, 'items': [{'description': 'High-frequency oscillator input, divided internally'}, {'description': 'Low-frequency oscillator input, only found on some variants'}]}
+	hint: "maxItems" is not needed with an "items" list
+	from schema $id: http://devicetree.org/meta-schemas/items.yaml#
+...
 
-And while I am at it, does the CRYP finally pass at least the most basic 
-kernel boot time crypto tests or does running those still overwrite 
-kernel memory and/or completely crash or lock up the machine ?
+Signed-off-by: David Heidelberg <david@ixit.cz>
+---
+ .../devicetree/bindings/watchdog/allwinner,sun4i-a10-wdt.yaml   | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/watchdog/allwinner,sun4i-a10-wdt.yaml b/Documentation/devicetree/bindings/watchdog/allwinner,sun4i-a10-wdt.yaml
+index 44cad9427ae6..43afa24513b9 100644
+--- a/Documentation/devicetree/bindings/watchdog/allwinner,sun4i-a10-wdt.yaml
++++ b/Documentation/devicetree/bindings/watchdog/allwinner,sun4i-a10-wdt.yaml
+@@ -40,14 +40,12 @@ properties:
+ 
+   clocks:
+     minItems: 1
+-    maxItems: 2
+     items:
+       - description: High-frequency oscillator input, divided internally
+       - description: Low-frequency oscillator input, only found on some variants
+ 
+   clock-names:
+     minItems: 1
+-    maxItems: 2
+     items:
+       - const: hosc
+       - const: losc
+-- 
+2.33.0
+
