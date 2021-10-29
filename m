@@ -2,110 +2,610 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE32A43FC4F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 14:25:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7E7F43FC53
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 14:29:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231580AbhJ2M2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 08:28:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45098 "EHLO
+        id S231527AbhJ2Mb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 08:31:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231519AbhJ2M2D (ORCPT
+        with ESMTP id S230134AbhJ2Mb0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 08:28:03 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C40CC061570;
-        Fri, 29 Oct 2021 05:25:35 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id bk22so2360561qkb.6;
-        Fri, 29 Oct 2021 05:25:35 -0700 (PDT)
+        Fri, 29 Oct 2021 08:31:26 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49FC0C061570
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 05:28:58 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id x66so9045512pfx.13
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 05:28:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:reply-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VG9TUuOVApoHapxovZ6uli91ugtXAJN9UYyzn6LgSaU=;
-        b=lsW8NKAEQKMDPA3gxlEvxroe1/RNKIIL40hm3Wm3R2K2cFoVNKzVeB95QYNdY9N9Qw
-         Fio3jdxZsA8Yzj/ruay1pi3OlK97oKFUjD3MJ5UDEqrONKFRgMU6mICTy+QFALbTN9+o
-         m2O2Hgm0cUJyqsIttkDtMY3y4bKmsxmCNhhw3t9qRmyqI/6UJ1oTboVHE9FWoV/oNusE
-         t5gYwLYNB/lrD8mymjh30k2ocabdLH63GYmkpMYna4qJoPc/SW3aWatB7lAs3+IBP7VP
-         GOLzDFN9D6EmKBYzS1h9djt2sl/DnqaNtMPdA4479elRWXtDAzJJW61/tAmxL0aNi1PZ
-         9yaw==
+        h=from:to:cc:subject:date:message-id;
+        bh=myqgbJHnLuKkUjjJk39/uy49V+NFfspOW/x3SYJ4yLc=;
+        b=pyvB3TNRXAWDjKVqjfsL3BjqlDVBRtSLwERMApZT/6hZdyNGbh3lZ/SkSgkX2Oz07e
+         2JsYBiCzXFyx7eML+Aa2IxEttXD8xmA2OHEY5LNsx9AJLHnuSEF64THNbNPWCyWuzZkT
+         FgSviJNX5ux6el0ExjUtkJFdT4S1HaCseT2Jnzni/y1BR6kFfzSAKnihgw345R8TXJaY
+         6FkNk76lNseP/0z+Xz663o2Ti9kDa+IeZlvnl6RHXDp3LHWVrN51oR5GGivEFsf0yizz
+         9/j0NWTUKNvwY9wanEnjOfY2uh6AgR96S9gRXnV4Tz5kXJebP5ChIQtM8oDPfIp25QtV
+         sFkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :reply-to:references:mime-version:content-disposition:in-reply-to;
-        bh=VG9TUuOVApoHapxovZ6uli91ugtXAJN9UYyzn6LgSaU=;
-        b=SyK2kEfCWxIoW2EChtCPjIOvqVZxEkIR4ru+0GKMCzYLB6uRD2LtHLlQ6MtqZqx5h0
-         WU9pcwnEDCNFXA4xVeIyhQPGh++DRpa/AIXulkN73l/7/GTZsrgj9O6wBNZDaK97VoOd
-         aDiUOGertJ690mKNay1q2uLXL8D6+J4RtuNnjqVMGF2cx/HFCl/jL7BcvKFWgxXSloJ9
-         RCCvsBCnOlIA9dBhrKwAlHX0pciVuZvQlKLuIzLzTRcbe3N9F+Z+uGG668jfNEhDn+7p
-         pwSx/uhvCzt6hmJbtrkpsd/fV9BAOeMJuGcB79FRlU3bP7qzpWbd8BlZCdHqmba1Xt7B
-         8SJg==
-X-Gm-Message-State: AOAM530CaUGyXB++3MNaXzeg4TkRa5NOq4LzO9Xf2KpeqljyhwPq1YG4
-        FAdV+CbAprnrS3RQlrZx1A==
-X-Google-Smtp-Source: ABdhPJxgHKfyVjwUHaWtg9tbyLdD9b2TT5/jOQN6+2BsmNP9xWjrdfNpls4O4m/cFJ+SnCVf6wsXzw==
-X-Received: by 2002:a37:9345:: with SMTP id v66mr8395650qkd.185.1635510334095;
-        Fri, 29 Oct 2021 05:25:34 -0700 (PDT)
-Received: from serve.minyard.net ([47.184.156.158])
-        by smtp.gmail.com with ESMTPSA id u189sm3710308qkh.14.2021.10.29.05.25.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Oct 2021 05:25:33 -0700 (PDT)
-Sender: Corey Minyard <tcminyard@gmail.com>
-Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:7441:9fa8:649a:f004])
-        by serve.minyard.net (Postfix) with ESMTPSA id AA33D1800B4;
-        Fri, 29 Oct 2021 12:25:32 +0000 (UTC)
-Date:   Fri, 29 Oct 2021 07:25:31 -0500
-From:   Corey Minyard <minyard@acm.org>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     zweiss@equinix.com, andrew@aj.id.au,
-        openipmi-developer@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] ipmi: kcs_bmc: Fix a memory leak in the error handling
- path of 'kcs_bmc_serio_add_device()'
-Message-ID: <20211029122531.GD4667@minyard.net>
-Reply-To: minyard@acm.org
-References: <ecbfa15e94e64f4b878ecab1541ea46c74807670.1631048724.git.christophe.jaillet@wanadoo.fr>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ecbfa15e94e64f4b878ecab1541ea46c74807670.1631048724.git.christophe.jaillet@wanadoo.fr>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=myqgbJHnLuKkUjjJk39/uy49V+NFfspOW/x3SYJ4yLc=;
+        b=icLfTcrD2Ep7KBpI7voSdZYBUBssjsXCvY7yVTFcekTYxoIh4veQ0JCvxKp1TCtKFn
+         ObsoR8x85DCAxcOvbD2Cg7965qTnV3FAJTSZImjcXwUGND3JfQQ/A40JUKFMf3VPJRnn
+         EMlHQUlMyKd6z6CdEs3gSD7x/rm+w2kagkeOG6cifL0ldeo6LNCprr7u9pf9jg0mocyV
+         FurfFKcJ86422E6CbDHHttThR20clRdkM6DLYF0iITaaAMyRV8WKO+77+PHxNb8wHd1x
+         k129a0ketwEyp/q4c4oYG6NmC48Ntpb6X3DwzFv09TtK+ou+KEukWwKz0hgXDDzn2R0I
+         HdbA==
+X-Gm-Message-State: AOAM531fHpe3Lft3opOvVDuNDKqcRHYa+2v0oFelKSKOdu0KdyfqLi29
+        KHK1G4rIj/OKbZfFQAzST4ZTrawbrpbw/A==
+X-Google-Smtp-Source: ABdhPJwL02CjaTmOPgRYlrjMDpvK59xPPBoRO+yZfhh/m81WM7dl0RK/wPZNSyF9iLi7TRqI8tGa/g==
+X-Received: by 2002:a05:6a00:168c:b0:44c:dc5a:7ee0 with SMTP id k12-20020a056a00168c00b0044cdc5a7ee0mr10851141pfc.40.1635510537764;
+        Fri, 29 Oct 2021 05:28:57 -0700 (PDT)
+Received: from bj04871pcu.spreadtrum.com ([117.18.48.102])
+        by smtp.gmail.com with ESMTPSA id g8sm7033143pfv.123.2021.10.29.05.28.54
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 29 Oct 2021 05:28:56 -0700 (PDT)
+From:   Janet Liu <jianhua.ljh@gmail.com>
+To:     catalin.marinas@arm.com, will@kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        orson.zhai@unisoc.com
+Subject: [PATCH v1 1/2] arm64: kprobes: implement optprobes
+Date:   Fri, 29 Oct 2021 20:27:44 +0800
+Message-Id: <1635510465-20469-1-git-send-email-jianhua.ljh@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 07, 2021 at 11:06:32PM +0200, Christophe JAILLET wrote:
-> In the unlikely event where 'devm_kzalloc()' fails and 'kzalloc()'
-> succeeds, 'port' would be leaking.
-> 
-> Test each allocation separately to avoid the leak.
+From: Janet Liu <janet.liu@unisoc.com>
 
-Yeah, looks reasonable.  It's in my queue.
+Limitations:
+  -only support 17(4096/240) kprobes
+   240 is from optprobe_template_end - optprobe_template_entry
+   4096 is from optinsn_slot reserve space size
+  -only support steppable insn to be probed
 
--corey
+This patch replaced the probed instruction with a 'b' instruction,
+ unconditionally branch to a buffer. The buffer contains instructions
+to create an pt_regs on stack, and then calls optimized_callback() which
+call the pre_handle(). After the executing kprobe handler, run the
+replaced instrunction, and branch to PC that probed instruction.
 
-> 
-> Fixes: 3a3d2f6a4c64 ("ipmi: kcs_bmc: Add serio adaptor")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
->  drivers/char/ipmi/kcs_bmc_serio.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/char/ipmi/kcs_bmc_serio.c b/drivers/char/ipmi/kcs_bmc_serio.c
-> index 7948cabde50b..7e2067628a6c 100644
-> --- a/drivers/char/ipmi/kcs_bmc_serio.c
-> +++ b/drivers/char/ipmi/kcs_bmc_serio.c
-> @@ -73,10 +73,12 @@ static int kcs_bmc_serio_add_device(struct kcs_bmc_device *kcs_bmc)
->  	struct serio *port;
->  
->  	priv = devm_kzalloc(kcs_bmc->dev, sizeof(*priv), GFP_KERNEL);
-> +	if (!priv)
-> +		return -ENOMEM;
->  
->  	/* Use kzalloc() as the allocation is cleaned up with kfree() via serio_unregister_port() */
->  	port = kzalloc(sizeof(*port), GFP_KERNEL);
-> -	if (!(priv && port))
-> +	if (!port)
->  		return -ENOMEM;
->  
->  	port->id.type = SERIO_8042;
-> -- 
-> 2.30.2
-> 
+The range of 'b' instruction is +/-128MB, alloc page from buddy is
+probable out of this +/-128MB range, so the buffer is allocated from
+a reserved area. For simple, only 4K is reserved. Futher patch can make
+optimization.
+
+Signed-off-by: Janet Liu <janet.liu@unisoc.com>
+---
+ arch/arm64/Kconfig                            |   1 +
+ arch/arm64/include/asm/probes.h               |  23 +++
+ arch/arm64/kernel/probes/Makefile             |   1 +
+ arch/arm64/kernel/probes/base_regs.h          |  76 ++++++++
+ arch/arm64/kernel/probes/kprobes_trampoline.S |  55 +-----
+ arch/arm64/kernel/probes/opt.c                | 247 ++++++++++++++++++++++++++
+ arch/arm64/kernel/probes/opt_head.S           |  40 +++++
+ 7 files changed, 389 insertions(+), 54 deletions(-)
+ create mode 100644 arch/arm64/kernel/probes/base_regs.h
+ create mode 100644 arch/arm64/kernel/probes/opt.c
+ create mode 100644 arch/arm64/kernel/probes/opt_head.S
+
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index 5c7ae4c..ab07251 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -199,6 +199,7 @@ config ARM64
+ 	select HAVE_STACKPROTECTOR
+ 	select HAVE_SYSCALL_TRACEPOINTS
+ 	select HAVE_KPROBES
++	select HAVE_OPTPROBES
+ 	select HAVE_KRETPROBES
+ 	select HAVE_GENERIC_VDSO
+ 	select IOMMU_DMA if IOMMU_SUPPORT
+diff --git a/arch/arm64/include/asm/probes.h b/arch/arm64/include/asm/probes.h
+index 0069467..3114881 100644
+--- a/arch/arm64/include/asm/probes.h
++++ b/arch/arm64/include/asm/probes.h
+@@ -25,6 +25,29 @@ struct arch_probe_insn {
+ struct arch_specific_insn {
+ 	struct arch_probe_insn api;
+ };
++
++/* optinsn template addresses */
++extern __visible kprobe_opcode_t optinsn_slot;
++extern __visible kprobe_opcode_t optprobe_template_entry;
++extern __visible kprobe_opcode_t optprobe_template_val;
++extern __visible kprobe_opcode_t optprobe_template_call;
++extern __visible kprobe_opcode_t optprobe_template_end;
++extern __visible kprobe_opcode_t optprobe_template_restore_orig_insn;
++extern __visible kprobe_opcode_t optprobe_template_restore_end;
++
++#define MAX_OPTIMIZED_LENGTH    4
++#define MAX_OPTINSN_SIZE                                \
++	((kprobe_opcode_t *)&optprobe_template_end -        \
++	(kprobe_opcode_t *)&optprobe_template_entry)
++
++
++struct arch_optimized_insn {
++	/* copy of the original instructions */
++	kprobe_opcode_t copied_insn[AARCH64_INSN_SIZE];
++	/* detour code buffer */
++	kprobe_opcode_t *insn;
++};
++
+ #endif
+ 
+ #endif
+diff --git a/arch/arm64/kernel/probes/Makefile b/arch/arm64/kernel/probes/Makefile
+index 8e4be92..c77c92a 100644
+--- a/arch/arm64/kernel/probes/Makefile
++++ b/arch/arm64/kernel/probes/Makefile
+@@ -2,5 +2,6 @@
+ obj-$(CONFIG_KPROBES)		+= kprobes.o decode-insn.o	\
+ 				   kprobes_trampoline.o		\
+ 				   simulate-insn.o
++obj-$(CONFIG_OPTPROBES) 	+= opt.o opt_head.o
+ obj-$(CONFIG_UPROBES)		+= uprobes.o decode-insn.o	\
+ 				   simulate-insn.o
+diff --git a/arch/arm64/kernel/probes/base_regs.h b/arch/arm64/kernel/probes/base_regs.h
+new file mode 100644
+index 0000000..45565dc
+--- /dev/null
++++ b/arch/arm64/kernel/probes/base_regs.h
+@@ -0,0 +1,76 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++//
++// Copyright (C) 2021, Unisoc Inc.
++// Author: Janet Liu <janet.liu@unisoc.com>
++
++#include <asm/asm-offsets.h>
++
++	.macro  save_all_base_regs
++
++	sub     sp, sp, #(PT_REGS_SIZE + 16)
++
++	stp x0, x1, [sp, #S_X0]
++	stp x2, x3, [sp, #S_X2]
++	stp x4, x5, [sp, #S_X4]
++	stp x6, x7, [sp, #S_X6]
++	stp x8, x9, [sp, #S_X8]
++	stp x10, x11, [sp, #S_X10]
++	stp x12, x13, [sp, #S_X12]
++	stp x14, x15, [sp, #S_X14]
++	stp x16, x17, [sp, #S_X16]
++	stp x18, x19, [sp, #S_X18]
++	stp x20, x21, [sp, #S_X20]
++	stp x22, x23, [sp, #S_X22]
++	stp x24, x25, [sp, #S_X24]
++	stp x26, x27, [sp, #S_X26]
++	stp x28, x29, [sp, #S_X28]
++	add x0, sp, #(PT_REGS_SIZE + 16)
++	stp lr, x0, [sp, #S_LR]
++
++	stp x29, x30, [sp, #PT_REGS_SIZE]
++	add x29, sp, #PT_REGS_SIZE
++	stp x29, x30, [sp, #S_STACKFRAME]
++	add x29, sp, #S_STACKFRAME
++
++	/*
++	 * Construct a useful saved PSTATE
++	 */
++	mrs x0, nzcv
++	mrs x1, daif
++	orr x0, x0, x1
++	mrs x1, CurrentEL
++	orr x0, x0, x1
++	mrs x1, SPSel
++	orr x0, x0, x1
++	stp xzr, x0, [sp, #S_PC]
++	.endm
++
++	.macro  restore_all_base_regs trampoline = 0
++	.if trampoline == 0
++	ldr x0, [sp, #S_PSTATE]
++	and x0, x0, #(PSR_N_BIT | PSR_Z_BIT | PSR_C_BIT | PSR_V_BIT)
++	msr nzcv, x0
++	.endif
++
++	ldp x0, x1, [sp, #S_X0]
++	ldp x2, x3, [sp, #S_X2]
++	ldp x4, x5, [sp, #S_X4]
++	ldp x6, x7, [sp, #S_X6]
++	ldp x8, x9, [sp, #S_X8]
++	ldp x10, x11, [sp, #S_X10]
++	ldp x12, x13, [sp, #S_X12]
++	ldp x14, x15, [sp, #S_X14]
++	ldp x16, x17, [sp, #S_X16]
++	ldp x18, x19, [sp, #S_X18]
++	ldp x20, x21, [sp, #S_X20]
++	ldp x22, x23, [sp, #S_X22]
++	ldp x24, x25, [sp, #S_X24]
++	ldp x26, x27, [sp, #S_X26]
++	ldp x28, x29, [sp, #S_X28]
++
++	.if \trampoline == 1
++	ldr lr, [sp, #S_LR]
++	.endif
++
++	add     sp, sp, #(PT_REGS_SIZE + 16)
++	.endm
+diff --git a/arch/arm64/kernel/probes/kprobes_trampoline.S b/arch/arm64/kernel/probes/kprobes_trampoline.S
+index 288a84e2..cdc874f 100644
+--- a/arch/arm64/kernel/probes/kprobes_trampoline.S
++++ b/arch/arm64/kernel/probes/kprobes_trampoline.S
+@@ -6,63 +6,11 @@
+ #include <linux/linkage.h>
+ #include <asm/asm-offsets.h>
+ #include <asm/assembler.h>
++#include "base_regs.h"
+ 
+ 	.text
+ 
+-	.macro	save_all_base_regs
+-	stp x0, x1, [sp, #S_X0]
+-	stp x2, x3, [sp, #S_X2]
+-	stp x4, x5, [sp, #S_X4]
+-	stp x6, x7, [sp, #S_X6]
+-	stp x8, x9, [sp, #S_X8]
+-	stp x10, x11, [sp, #S_X10]
+-	stp x12, x13, [sp, #S_X12]
+-	stp x14, x15, [sp, #S_X14]
+-	stp x16, x17, [sp, #S_X16]
+-	stp x18, x19, [sp, #S_X18]
+-	stp x20, x21, [sp, #S_X20]
+-	stp x22, x23, [sp, #S_X22]
+-	stp x24, x25, [sp, #S_X24]
+-	stp x26, x27, [sp, #S_X26]
+-	stp x28, x29, [sp, #S_X28]
+-	add x0, sp, #PT_REGS_SIZE
+-	stp lr, x0, [sp, #S_LR]
+-	/*
+-	 * Construct a useful saved PSTATE
+-	 */
+-	mrs x0, nzcv
+-	mrs x1, daif
+-	orr x0, x0, x1
+-	mrs x1, CurrentEL
+-	orr x0, x0, x1
+-	mrs x1, SPSel
+-	orr x0, x0, x1
+-	stp xzr, x0, [sp, #S_PC]
+-	.endm
+-
+-	.macro	restore_all_base_regs
+-	ldr x0, [sp, #S_PSTATE]
+-	and x0, x0, #(PSR_N_BIT | PSR_Z_BIT | PSR_C_BIT | PSR_V_BIT)
+-	msr nzcv, x0
+-	ldp x0, x1, [sp, #S_X0]
+-	ldp x2, x3, [sp, #S_X2]
+-	ldp x4, x5, [sp, #S_X4]
+-	ldp x6, x7, [sp, #S_X6]
+-	ldp x8, x9, [sp, #S_X8]
+-	ldp x10, x11, [sp, #S_X10]
+-	ldp x12, x13, [sp, #S_X12]
+-	ldp x14, x15, [sp, #S_X14]
+-	ldp x16, x17, [sp, #S_X16]
+-	ldp x18, x19, [sp, #S_X18]
+-	ldp x20, x21, [sp, #S_X20]
+-	ldp x22, x23, [sp, #S_X22]
+-	ldp x24, x25, [sp, #S_X24]
+-	ldp x26, x27, [sp, #S_X26]
+-	ldp x28, x29, [sp, #S_X28]
+-	.endm
+-
+ SYM_CODE_START(kretprobe_trampoline)
+-	sub sp, sp, #PT_REGS_SIZE
+ 
+ 	save_all_base_regs
+ 
+@@ -76,7 +24,6 @@ SYM_CODE_START(kretprobe_trampoline)
+ 
+ 	restore_all_base_regs
+ 
+-	add sp, sp, #PT_REGS_SIZE
+ 	ret
+ 
+ SYM_CODE_END(kretprobe_trampoline)
+diff --git a/arch/arm64/kernel/probes/opt.c b/arch/arm64/kernel/probes/opt.c
+new file mode 100644
+index 0000000..b1f8f0d
+--- /dev/null
++++ b/arch/arm64/kernel/probes/opt.c
+@@ -0,0 +1,247 @@
++// SPDX-License-Identifier: GPL-2.0-only
++//
++// Kernel Probes Jump Optimization (Optprobes)
++//
++// Copyright (C) 2021, Unisoc Inc.
++// Author: Janet Liu <janet.liu@unisoc.com>
++#include <linux/kprobes.h>
++#include <linux/jump_label.h>
++#include <linux/slab.h>
++#include <asm/patching.h>
++#include <asm/ptrace.h>
++#include <asm/kprobes.h>
++#include <asm/cacheflush.h>
++#include <asm/insn.h>
++
++#define TMPL_VAL_IDX \
++	((kprobe_opcode_t *)&optprobe_template_val - (kprobe_opcode_t *)&optprobe_template_entry)
++#define TMPL_CALL_IDX \
++	((kprobe_opcode_t *)&optprobe_template_call - (kprobe_opcode_t *)&optprobe_template_entry)
++#define TMPL_END_IDX \
++	((kprobe_opcode_t *)&optprobe_template_end - (kprobe_opcode_t *)&optprobe_template_entry)
++#define TMPL_RESTORE_ORIGN_INSN \
++	((kprobe_opcode_t *)&optprobe_template_restore_orig_insn \
++	- (kprobe_opcode_t *)&optprobe_template_entry)
++#define TMPL_RESTORE_END \
++	((kprobe_opcode_t *)&optprobe_template_restore_end \
++	- (kprobe_opcode_t *)&optprobe_template_entry)
++
++
++static bool optinsn_page_in_use;
++
++void *alloc_optinsn_page(void)
++{
++	if (optinsn_page_in_use)
++		return NULL;
++	optinsn_page_in_use = true;
++	return &optinsn_slot;
++}
++
++void free_optinsn_page(void *page __maybe_unused)
++{
++	optinsn_page_in_use = false;
++}
++
++int arch_prepared_optinsn(struct arch_optimized_insn *optinsn)
++{
++	return optinsn->insn != NULL;
++}
++
++/*
++ * In ARM64 ISA, kprobe opt always replace one instruction (4 bytes
++ * aligned and 4 bytes long). It is impossible to encounter another
++ * kprobe in the address range. So always return 0.
++ */
++int arch_check_optimized_kprobe(struct optimized_kprobe *op)
++{
++	return 0;
++}
++
++/* only optimize steppable insn */
++static int can_optimize(struct kprobe *kp)
++{
++	if (!kp->ainsn.api.insn)
++		return 0;
++	return 1;
++}
++
++/* Free optimized instruction slot */
++static void
++__arch_remove_optimized_kprobe(struct optimized_kprobe *op, int dirty)
++{
++	if (op->optinsn.insn) {
++		free_optinsn_slot(op->optinsn.insn, dirty);
++		op->optinsn.insn = NULL;
++	}
++}
++
++extern void kprobe_handler(struct pt_regs *regs);
++
++static void
++optimized_callback(struct optimized_kprobe *op, struct pt_regs *regs)
++{
++	unsigned long flags;
++	struct kprobe_ctlblk *kcb;
++
++	if (kprobe_disabled(&op->kp))
++		return;
++
++	/* Save skipped registers */
++	regs->pc = (unsigned long)op->kp.addr;
++	regs->orig_x0 = ~0UL;
++	regs->stackframe[1] = (unsigned long)op->kp.addr + 4;
++
++	local_irq_save(flags);
++	kcb = get_kprobe_ctlblk();
++
++	if (kprobe_running()) {
++		kprobes_inc_nmissed_count(&op->kp);
++	} else {
++		__this_cpu_write(current_kprobe, &op->kp);
++		kcb->kprobe_status = KPROBE_HIT_ACTIVE;
++		opt_pre_handler(&op->kp, regs);
++		__this_cpu_write(current_kprobe, NULL);
++	}
++
++	local_irq_restore(flags);
++}
++NOKPROBE_SYMBOL(optimized_callback)
++
++int arch_prepare_optimized_kprobe(struct optimized_kprobe *op, struct kprobe *orig)
++{
++	kprobe_opcode_t *code;
++	void **addrs;
++	long offset;
++	kprobe_opcode_t final_branch;
++	u32 insns[8];
++	int i;
++
++	if (!can_optimize(orig))
++		return -EILSEQ;
++
++	/* Allocate instruction slot */
++	code = get_optinsn_slot();
++	if (!code)
++		return -ENOMEM;
++
++	/* use a 'b' instruction to branch to optinsn.insn.
++	 * according armv8 manual, branch range is +/-128MB,
++	 * is encoded as "imm26" times 4.
++	 *   31  30      26
++	 *  +---+-----------+----------------+
++	 *  | 0 | 0 0 1 0 1 |      imm26     |
++	 *  +---+-----------+----------------+
++	 */
++	offset = (long)code - (long)orig->addr;
++
++	if (offset > 0x7ffffffL || offset < -0x8000000 || offset & 0x3) {
++
++		free_optinsn_slot(code, 0);
++		return -ERANGE;
++	}
++
++	addrs = kmalloc(MAX_OPTINSN_SIZE * sizeof(kprobe_opcode_t *), GFP_KERNEL);
++	for (i = 0; i < MAX_OPTINSN_SIZE; i++)
++		addrs[i] = &code[i];
++
++	/* Copy arch-dep-instance from template. */
++	aarch64_insn_patch_text(addrs,
++				(kprobe_opcode_t *)&optprobe_template_entry,
++				TMPL_RESTORE_ORIGN_INSN);
++
++	/* Set probe information */
++	*(unsigned long *)&insns[TMPL_VAL_IDX-TMPL_RESTORE_ORIGN_INSN] = (unsigned long)op;
++
++
++	/* Set probe function call */
++	*(unsigned long *)&insns[TMPL_CALL_IDX-TMPL_RESTORE_ORIGN_INSN] = (unsigned long)optimized_callback;
++
++	final_branch = aarch64_insn_gen_branch_imm((unsigned long)(&code[TMPL_RESTORE_END]),
++						   (unsigned long)(op->kp.addr) + 4,
++						   AARCH64_INSN_BRANCH_NOLINK);
++
++	/* The original probed instruction */
++	if (orig->ainsn.api.insn)
++		insns[0] = orig->opcode;
++	else
++		insns[0] = 0xd503201f; /*nop*/
++
++	/* Jump back to next instruction */
++	insns[1] = final_branch;
++
++	aarch64_insn_patch_text(addrs + TMPL_RESTORE_ORIGN_INSN,
++				insns,
++				TMPL_END_IDX - TMPL_RESTORE_ORIGN_INSN);
++
++	flush_icache_range((unsigned long)code, (unsigned long)(&code[TMPL_END_IDX]));
++
++	/* Set op->optinsn.insn means prepared. */
++	op->optinsn.insn = code;
++
++	kfree(addrs);
++
++	return 0;
++}
++
++void __kprobes arch_optimize_kprobes(struct list_head *oplist)
++{
++	struct optimized_kprobe *op, *tmp;
++
++	list_for_each_entry_safe(op, tmp, oplist, list) {
++		unsigned long insn;
++		void *addrs[] = {0};
++		u32 insns[] = {0};
++
++		WARN_ON(kprobe_disabled(&op->kp));
++
++		/*
++		 * Backup instructions which will be replaced
++		 * by jump address
++		 */
++		memcpy(op->optinsn.copied_insn, op->kp.addr,
++				AARCH64_INSN_SIZE);
++
++		insn = aarch64_insn_gen_branch_imm((unsigned long)op->kp.addr,
++						   (unsigned long)op->optinsn.insn,
++						   AARCH64_INSN_BRANCH_NOLINK);
++
++		insns[0] = insn;
++		addrs[0] = op->kp.addr;
++
++		aarch64_insn_patch_text(addrs, insns, 1);
++
++		list_del_init(&op->list);
++	}
++}
++
++void arch_unoptimize_kprobe(struct optimized_kprobe *op)
++{
++	arch_arm_kprobe(&op->kp);
++}
++
++/*
++ * Recover original instructions and breakpoints from relative jumps.
++ * Caller must call with locking kprobe_mutex.
++ */
++void arch_unoptimize_kprobes(struct list_head *oplist,
++			    struct list_head *done_list)
++{
++	struct optimized_kprobe *op, *tmp;
++
++	list_for_each_entry_safe(op, tmp, oplist, list) {
++		arch_unoptimize_kprobe(op);
++		list_move(&op->list, done_list);
++	}
++}
++
++int arch_within_optimized_kprobe(struct optimized_kprobe *op,
++				unsigned long addr)
++{
++	return ((unsigned long)op->kp.addr <= addr &&
++		(unsigned long)op->kp.addr + AARCH64_INSN_SIZE > addr);
++}
++
++void arch_remove_optimized_kprobe(struct optimized_kprobe *op)
++{
++	__arch_remove_optimized_kprobe(op, 1);
++}
+diff --git a/arch/arm64/kernel/probes/opt_head.S b/arch/arm64/kernel/probes/opt_head.S
+new file mode 100644
+index 0000000..0b437c3
+--- /dev/null
++++ b/arch/arm64/kernel/probes/opt_head.S
+@@ -0,0 +1,40 @@
++/* SPDX-License-Identifier: GPL-2.0-only
++ * Copyright 2021 Unisoc Inc.
++ */
++#include <linux/linkage.h>
++#include <asm/asm-offsets.h>
++#include <asm/assembler.h>
++#include "base_regs.h"
++	.align 2
++	.global optinsn_slot
++	optinsn_slot:
++	.space  4096
++	.global optprobe_template_entry
++	optprobe_template_entry:
++
++	save_all_base_regs
++
++	mov	x1, sp
++	ldr	x0, 1f
++	ldr	x2, 2f
++	blr	x2
++	nop
++
++	restore_all_base_regs 1
++
++	.global optprobe_template_restore_orig_insn
++	optprobe_template_restore_orig_insn:
++	nop
++	.global optprobe_template_restore_end
++	optprobe_template_restore_end:
++	nop
++	.align 3
++	.global optprobe_template_val
++	optprobe_template_val:
++1:	.space 8
++	.global optprobe_template_call
++	optprobe_template_call:
++2:	.space 8
++	.global optprobe_template_end
++	optprobe_template_end:
++
+-- 
+1.9.1
+
