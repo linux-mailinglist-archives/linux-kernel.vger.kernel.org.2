@@ -2,122 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F16743F6D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 07:53:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2689543F6E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 07:57:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231872AbhJ2Fz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 01:55:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41400 "EHLO
+        id S231926AbhJ2GAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 02:00:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231774AbhJ2Fz6 (ORCPT
+        with ESMTP id S231774AbhJ2GAH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 01:55:58 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3894C061570;
-        Thu, 28 Oct 2021 22:53:29 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id a6so21469257ybq.9;
-        Thu, 28 Oct 2021 22:53:29 -0700 (PDT)
+        Fri, 29 Oct 2021 02:00:07 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA1AAC061570;
+        Thu, 28 Oct 2021 22:57:38 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id c4so8860136pgv.11;
+        Thu, 28 Oct 2021 22:57:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/vSuXsboymS/IgpBF9knJfz3TVx/mAj7z1ArPgdizjI=;
-        b=YOSdiYDPna3naFx1R6UjtVwYbyaJDrQD0isSgwS7yDBmHs8l0633OLtBLdGZdil/TM
-         6dWhEg7S0NjtqvwZYX7tJ6kmufifUyEsCBZ3T5NR6r+lTFF+4YliqgbNqpSYGLFCPnIc
-         63kQo9ZVCpGhOJjvhO4+XCfmV8oIjS0MhJ7SHonzwa5B91APGzuLAsLw+N10yC/YeEnv
-         JMyp971+Be/WEYtK8PtAvDll0XWvtwa4gwXp0UNxF8c+NEPJIOFSKqKgAOtNeodTVA0U
-         MaGNfijGHoFgsMdltgUJvbJD8HBBdw6PQk5VbLk1vRdZj7p6+jciFWsA8ca+MsMwbuqX
-         ojrQ==
+        h=from:to:cc:subject:date:message-id;
+        bh=/eLfvL2Jbm+xAho2C5JOCgKSfFZCxzezHuhj1zZc88Q=;
+        b=LLAk9V2nrWxEHEbs807OY6TPiCcD/Tj8WY3jL2alrwbmMAUx2QrsJVe3eLHWzqgw03
+         puO+zBu6qlAKFGGuR5IMOPjEQBi0UbEjCjx2hC6dXV7aw+UZgIyDDQ5EWXvbjfzQlEOS
+         CmqvQz3jDoNE1gzBwX4GJng3tZ+lTKWWyRFB7/2QJT8uejlHva2wwGJyy+lakC8BAmzP
+         0mG8qG3BBXfkYmAEh7DDS2Y3TOlbD7ov8Dy0ORTyb2eOyUgoCPdwxnEhRaYJ3xGKXqA5
+         Ir//bbCIJdKzUR9iLqGvoAF0h36b0wDOiA8CdKrVoqqAqUtJ3ypRVNx/lREESTp5aqCz
+         DWtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/vSuXsboymS/IgpBF9knJfz3TVx/mAj7z1ArPgdizjI=;
-        b=souWHQGv+yvpNPJCJcNj64xQxBSJZVbN+Hr7P+TLPrrzDh3st8FXQOwP+uUeWuY7fY
-         GFhf7CL36JKGPj0AGfrcs19Hfa75CT62csPnL34j/w8q410lDM0NpMNoWNVDH5v/G2/0
-         VPaPWjYLpHDXPQDOKesJC6xrSDPlOR7E+1aaemK2PDfloxoX0dNr/cbjaYL3/rUpuiV6
-         cssCWyux9ZcbkmSWbh7Ps411eftIymTr4gKRMgHofo4JFDPeS3G5+RXx9aD9vIpxmnnx
-         5O+VewyKSGXmv0IJFGwbJVWRK3gCktsIBL/MOCrD0EjrWnIVIxNXOvVrhrLjZTTyzLmo
-         tZxA==
-X-Gm-Message-State: AOAM532LVJC42x11KzgbHK42B9OPIfZesOtkd1NSwGfwxkCJ/AjEb1Gv
-        Glm0CUQJ8JYZM47STLKfX9YgDuGxa5e+FugrtuLljPZU
-X-Google-Smtp-Source: ABdhPJyaDlFoQq08g4YGXVSCxLxGN/EmlAplDZR3KAUzA0+ijsxzW6j44WCrZVqFPjLqsiVYlKPnbzBLVnyA+o64mDI=
-X-Received: by 2002:a25:3787:: with SMTP id e129mr9141363yba.91.1635486809154;
- Thu, 28 Oct 2021 22:53:29 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211028141938.3530-1-lukas.bulwahn@gmail.com>
- <20211028141938.3530-5-lukas.bulwahn@gmail.com> <CAK8P3a2LhGWer=GXMW_KT-8=nqBeS0xhu6si7Z57WAF0wE_TUA@mail.gmail.com>
- <YXrDTMLBAy0Ftai/@shell.armlinux.org.uk>
-In-Reply-To: <YXrDTMLBAy0Ftai/@shell.armlinux.org.uk>
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Fri, 29 Oct 2021 07:53:17 +0200
-Message-ID: <CAKXUXMzqqtM02wJrb+ONVdmS3j+YRej4Fd34Pc5M3ex871ONtQ@mail.gmail.com>
-Subject: Re: [PATCH 04/13] arm: drop an obsolete ifdef with the removed config PCI_HOST_ITE8152
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Sekhar Nori <nsekhar@ti.com>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Linus Walleij <linusw@kernel.org>,
-        Imre Kaloz <kaloz@openwrt.org>,
-        Krzysztof Halasa <khalasa@piap.pl>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        kernel-janitors <kernel-janitors@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=/eLfvL2Jbm+xAho2C5JOCgKSfFZCxzezHuhj1zZc88Q=;
+        b=kdO1rGlhDXpjbUr/kv3quBw7U/Q87stK+22XQBiEMOLMFgEgityLiTHW8GbIjUNRwl
+         R2uQtOd3reqDow/V/zp30jt0HCcHcqm2LwYyfqvOtYsihieQH2P4Jpf5WBhcEqXSj/R2
+         eD6pqs7nnKZBHalMlFI3u0yYl3W2PgLJlYLsTW080p4hR4VHCtAT838+meeDERDmxv8P
+         my2jF3W1O5QMQ5zbO5w+6PHjI9Rlzvuu205PCmgC+7wq3aN3e6pypNdkDfzl1XRaXuZi
+         iyYUxO61bKQfWQcZ2jymuezAH5b+M6q51sq0bnAnw6cXkLrPUhwYpXZrI2K7o+D9RcXu
+         i6QA==
+X-Gm-Message-State: AOAM531DP/gDfEozLM76OqFlZrMgms91HS0qxCDGGzvdJcooPnOMbJDE
+        abYLzOaV9M/Ey+YOkOPTqgM=
+X-Google-Smtp-Source: ABdhPJzTUQO8qbsA2CFCz8IzTdSIKbyCJtZZWJ0fbh1FiLa0m612Ix5kY2j1bzUu12S/Zc6YdhOiFQ==
+X-Received: by 2002:a05:6a00:1946:b0:44d:8136:a4a4 with SMTP id s6-20020a056a00194600b0044d8136a4a4mr9011198pfk.46.1635487058167;
+        Thu, 28 Oct 2021 22:57:38 -0700 (PDT)
+Received: from scdiu3.sunplus.com ([113.196.136.192])
+        by smtp.googlemail.com with ESMTPSA id mr2sm3599648pjb.25.2021.10.28.22.57.36
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 28 Oct 2021 22:57:37 -0700 (PDT)
+From:   "LH.Kuo" <lhjeff911@gmail.com>
+X-Google-Original-From: "LH.Kuo" <lh.kuo@sunplus.com>
+To:     ulf.hansson@linaro.org, p.zabel@pengutronix.de, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
+        devicetree@vger.kernel.org
+Cc:     dvorkin@tibbo.com, qinjian@cqplus1.com, wells.lu@sunplus.com,
+        "LH.Kuo" <lh.kuo@sunplus.com>
+Subject: [PATCH 0/2] Add SD/SDIO control driver for Sunplus SP7021 SoC
+Date:   Fri, 29 Oct 2021 13:57:33 +0800
+Message-Id: <1635487055-18494-1-git-send-email-lh.kuo@sunplus.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 5:35 PM Russell King (Oracle)
-<linux@armlinux.org.uk> wrote:
->
-> On Thu, Oct 28, 2021 at 04:46:38PM +0200, Arnd Bergmann wrote:
-> > On Thu, Oct 28, 2021 at 4:19 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
-> > >
-> > > Commit 6da5238fa384 ("ARM: 8993/1: remove it8152 PCI controller driver")
-> > > removes the config PCI_HOST_ITE8152, but left a dangling obsolete ifndef
-> > > in ./arch/arm/kernel/bios32.c.
-> > >
-> > > Hence, ./scripts/checkkconfigsymbols.py warns:
-> > >
-> > > PCI_HOST_ITE8152
-> > > Referencing files: arch/arm/kernel/bios32.c
-> > >
-> > > Remove this obsolete ifndef.
-> > >
-> > > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> >
-> > Reviewed-by: Arnd Bergmann <arnd@arndb.de>
-> >
-> > I wonder if we should just remove this function and use the
-> > (non-empty) default version instead.
-> >
-> > 96c5590058d7 ("PCI: Pull PCI 'latency timer' setup up into the core")
-> > introduced that generic version, and I suspect the arm version
-> > was left out by mistake, but it's not clear from that patch.
->
-> That was because PCI_HOST_ITE8152 needed something different from the
-> "do nothing" default (setting the PCI latency timer to default to 64
-> as the new generic code did.)
->
+Sunplus SP7021 is an ARM Cortex A7 (4 cores) based SoC. It integrates
+many peripherals (ex: UART, I2C, SPI, SDIO, eMMC, USB, SD card and
+etc.) into a single chip. It is designed for industrial control.
 
-So, can we just drop the empty pcibios_set_master() function in
-bios32.c and the pci handling will now (after the removal of
-PCI_HOST_ITE8152) just do The Right Thing(TM)?
+Refer to:														
+https://sunplus-tibbo.atlassian.net/wiki/spaces/doc/overview
+https://tibbo.com/store/plus1.html
 
-If you can confirm that, I will send an updated patch here.
+LH.Kuo (2):
+  mmc: Add SD/SDIO driver for Sunplus SP7021
+  devicetree bindings mmc Add bindings doc for Sunplus SP7021
 
-Thanks,
+ .../devicetree/bindings/mmc/sunplus-sd2.yaml       |   82 ++
+ MAINTAINERS                                        |   41 +-
+ drivers/mmc/host/Kconfig                           |   10 +
+ drivers/mmc/host/Makefile                          |    1 +
+ drivers/mmc/host/sunplus_sd2.c                     | 1069 ++++++++++++++++++++
+ drivers/mmc/host/sunplus_sd2.h                     |  216 ++++
+ 6 files changed, 1403 insertions(+), 16 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mmc/sunplus-sd2.yaml
+ create mode 100644 drivers/mmc/host/sunplus_sd2.c
+ create mode 100644 drivers/mmc/host/sunplus_sd2.h
 
-Lukas
+-- 
+2.7.4
+
