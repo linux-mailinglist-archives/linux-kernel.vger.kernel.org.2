@@ -2,202 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C570243F528
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 05:04:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B0CE43F52C
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 05:04:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231620AbhJ2DGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 23:06:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32882 "EHLO
+        id S231642AbhJ2DGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 23:06:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231558AbhJ2DGf (ORCPT
+        with ESMTP id S231623AbhJ2DGp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 23:06:35 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04F55C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 20:04:07 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id j9so18025479lfu.7
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 20:04:06 -0700 (PDT)
+        Thu, 28 Oct 2021 23:06:45 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 477C2C061745
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 20:04:17 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id s1so33409825edd.3
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 20:04:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sz/ywpybSJaNoGZvXE51S8svzpVWcQnnlH6Pn9KYkKs=;
-        b=ZmEiiWHwwmH9sspvNf9mrhJ2ObRJ3h0nMIjxiw96VyoUUf9YSApSJZfqOXVvoxC9o2
-         2nNTRvI+hOfArkWqypwmgKHyrVVKMwWTM00K9H7hhtbiIoc8SL9+33+ElDW6nyEssJBo
-         JBmzSYJX96qhj2o4D4Ul/QQM756ARdbZUdL8Q=
+         :cc:content-transfer-encoding;
+        bh=21Qna8aedipM9a11qzYqQzHYUISEoYbsTLGZd0C/7I8=;
+        b=UqOna1k5YHr9Ry+R1XJK/tqNlivM+pTC0RiteeptFhhW+oeuMJf2oUonwyIO9ElCfb
+         pSq8R+PH47KbkA9ujxdmbllPec/Y5p3BMpLd4y/66pgbXN5zJy4wtcgvBg4UoG2et8Us
+         VWe/oGbdrWaoQpstwQmpMagEkTGyDHP7lV5jI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sz/ywpybSJaNoGZvXE51S8svzpVWcQnnlH6Pn9KYkKs=;
-        b=DTza7/KoA/yMCbMNMKoqZSfnI+lQq/MEfS8WyAAo5WM9C2fe+GhngfepE0ft9ThnE0
-         0ZndC3cwP1f8or4Tr3DPTz62WGbjrs8Sk7cxuYZ8HDqPGFIcNuAUtwMqRITJfTg0FvWQ
-         lyyanlzvJlUbdPZ6by2y/LpomOfWnI+YhWXxo25E3VV6ZL2s3ZaKAv2iiHnBgX1PNgUE
-         9bnKR4tckJDOl0bAjw1UU4dP1RIPavIxAMp1i9BRvL0gn0g51gZoa6LOTf9Yg8XaexNq
-         TDNMpeHH7VUDVLPL9ox4el5tURPn5WjgOUQowwoA/W5f1QKNQEwkmUWt99bEMdrCqSpB
-         uabQ==
-X-Gm-Message-State: AOAM532jPnM5GRFVnfekZg7hUrHASE/XBtczphgNXLgL3PL1nv0mBhFM
-        ZlmCTwkLZvcrOfMjRSZ2AQHwpGKFygNy1Sw4n6e3CqAI8Rc=
-X-Google-Smtp-Source: ABdhPJxC0NS1t4ZTrK/U/w98ca7x/r/R5fRiRRC7PwYozOenIJEgQ0sp7JZwf/0TjkDGytKndTNOyCau++3Cm6xcZng=
-X-Received: by 2002:a19:c1c2:: with SMTP id r185mr7493994lff.275.1635476645375;
- Thu, 28 Oct 2021 20:04:05 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=21Qna8aedipM9a11qzYqQzHYUISEoYbsTLGZd0C/7I8=;
+        b=a45MifnOm2Q9YSaqeqE3FdaERP3FEpptr6ExwxylYECPdG59lfQTzBOveJRrFuEaTL
+         YFA547FEWZbmpdZESALeX/b4xx7B94SUPllpddDPPMul8xGCkTp7qWAZG7wfJR8bo4bA
+         1m+FOqgo5eDe3qSrKpMGoI3i0HJdVKCxmeKW8qepYR976CXWADCdluNzjUzTa0zz7O8f
+         3v2yoYvfSeI21Fbsf1lxaZ8R2Y+vF36KymldLBD2rTbusoBoj0ZrMLvFd5P5AiJRwhGR
+         bZiNOwdMz4BVf9dVTDf4WBQNlfFrZFS5WCgA1D99fNaxFmhmD+8oWuW/eWQXlCH64hDJ
+         VE/g==
+X-Gm-Message-State: AOAM530RLLmrRp7IZga252jntH2jDV+C0uGfDSfx+lkG9AAvf48UoOle
+        1EGBoAG2JoowHLy6M2HYFsXnNAHtqyNZqg==
+X-Google-Smtp-Source: ABdhPJwaVffor54RxhOQv02uciVizsVALBG0elWjRpU3GXOwRBznLtmW06VxQ/DyT9/IiAmObcycmQ==
+X-Received: by 2002:aa7:c405:: with SMTP id j5mr11592793edq.84.1635476655403;
+        Thu, 28 Oct 2021 20:04:15 -0700 (PDT)
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com. [209.85.221.52])
+        by smtp.gmail.com with ESMTPSA id d2sm2664714edz.49.2021.10.28.20.04.14
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Oct 2021 20:04:14 -0700 (PDT)
+Received: by mail-wr1-f52.google.com with SMTP id s13so6632962wrb.3
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 20:04:14 -0700 (PDT)
+X-Received: by 2002:adf:9bd2:: with SMTP id e18mr10749368wrc.235.1635476653413;
+ Thu, 28 Oct 2021 20:04:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211026192104.1860504-1-markyacoub@chromium.org> <20211029004220.GA10475@art_vandelay>
-In-Reply-To: <20211029004220.GA10475@art_vandelay>
-From:   Mark Yacoub <markyacoub@chromium.org>
-Date:   Thu, 28 Oct 2021 23:03:54 -0400
-Message-ID: <CAJUqKUpop4JodJjT+HBR7ayq2=G_8UdJatLFhty5XZTZ7xL8QQ@mail.gmail.com>
-Subject: Re: [Intel-gfx] [PATCH v3 1/3] drm: Rename lut check functions to lut
- channel checks
-To:     Sean Paul <sean@poorly.run>
-Cc:     seanpaul@chromium.org, pmenzel@molgen.mpg.de,
-        Mark Yacoub <markyacoub@google.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org
+References: <20211018091427.88468-1-acourbot@chromium.org> <9cb4f64e2ec3959df44b71dd69ef95697920dc4b.camel@ndufresne.ca>
+In-Reply-To: <9cb4f64e2ec3959df44b71dd69ef95697920dc4b.camel@ndufresne.ca>
+From:   Tomasz Figa <tfiga@chromium.org>
+Date:   Fri, 29 Oct 2021 12:04:02 +0900
+X-Gmail-Original-Message-ID: <CAAFQd5BzXAO9vTm1xNmZ6iLnjnckfRC4Z2yqgxvuL+NUiHXnsQ@mail.gmail.com>
+Message-ID: <CAAFQd5BzXAO9vTm1xNmZ6iLnjnckfRC4Z2yqgxvuL+NUiHXnsQ@mail.gmail.com>
+Subject: Re: [PATCH] media: docs: dev-decoder: add restrictions about CAPTURE buffers
+To:     Nicolas Dufresne <nicolas@ndufresne.ca>
+Cc:     Alexandre Courbot <acourbot@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 8:42 PM Sean Paul <sean@poorly.run> wrote:
+On Tue, Oct 26, 2021 at 11:12 PM Nicolas Dufresne <nicolas@ndufresne.ca> wr=
+ote:
 >
-> On Tue, Oct 26, 2021 at 03:21:00PM -0400, Mark Yacoub wrote:
-> > From: Mark Yacoub <markyacoub@google.com>
+> Le lundi 18 octobre 2021 =C3=A0 18:14 +0900, Alexandre Courbot a =C3=A9cr=
+it :
+> > CAPTURE buffers might be read by the hardware after they are dequeued,
+> > which goes against the general idea that userspace has full control ove=
+r
+> > dequeued buffers. Explain why and document the restrictions that this
+> > implies for userspace.
 > >
-> > [Why]
-> > This function and enum do not do generic checking on the luts but they
-> > test color channels in the LUTs.
->
-> I'm not sure there's anything inherently specific to channels, it seems like
-> one could add a new test to reflect a HW limitation and it would fit pretty well
-> in the lut check function. I wonder if it would be better to expose the types of
-> tests required by the crtc such that the atomic_check could also do the test?
->
-So the tests of the color are pretty unique to intel devices, no other
-device is using it so I didn't think it adds a lot of benefit adding
-it to the lut check. However, it's still in DRM because technically it
-can be supported by any driver. But once it is, the driver will have
-to expose the tests it wants so we can check it in atomic_check. but
-given that no one does expose any test but intel, i just left it only
-used by them.
-
-> Sean
->
-> > Keeping the name explicit as more generic LUT checks will follow.
-> >
-> > Tested on Eldrid ChromeOS (TGL).
-> >
-> > Signed-off-by: Mark Yacoub <markyacoub@chromium.org>
+> > Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
 > > ---
-> >  drivers/gpu/drm/drm_color_mgmt.c           | 12 ++++++------
-> >  drivers/gpu/drm/i915/display/intel_color.c | 10 +++++-----
-> >  include/drm/drm_color_mgmt.h               |  7 ++++---
-> >  3 files changed, 15 insertions(+), 14 deletions(-)
+> >  .../userspace-api/media/v4l/dev-decoder.rst     | 17 +++++++++++++++++
+> >  1 file changed, 17 insertions(+)
 > >
-> > diff --git a/drivers/gpu/drm/drm_color_mgmt.c b/drivers/gpu/drm/drm_color_mgmt.c
-> > index bb14f488c8f6c..6f4e04746d90f 100644
-> > --- a/drivers/gpu/drm/drm_color_mgmt.c
-> > +++ b/drivers/gpu/drm/drm_color_mgmt.c
-> > @@ -585,17 +585,17 @@ int drm_plane_create_color_properties(struct drm_plane *plane,
-> >  EXPORT_SYMBOL(drm_plane_create_color_properties);
+> > diff --git a/Documentation/userspace-api/media/v4l/dev-decoder.rst b/Do=
+cumentation/userspace-api/media/v4l/dev-decoder.rst
+> > index 5b9b83feeceb..3cf2b496f2d0 100644
+> > --- a/Documentation/userspace-api/media/v4l/dev-decoder.rst
+> > +++ b/Documentation/userspace-api/media/v4l/dev-decoder.rst
+> > @@ -752,6 +752,23 @@ available to dequeue. Specifically:
+> >       buffers are out-of-order compared to the ``OUTPUT`` buffers): ``C=
+APTURE``
+> >       timestamps will not retain the order of ``OUTPUT`` timestamps.
 > >
-> >  /**
-> > - * drm_color_lut_check - check validity of lookup table
-> > + * drm_color_lut_channels_check - check validity of the channels in the lookup table
-> >   * @lut: property blob containing LUT to check
-> >   * @tests: bitmask of tests to run
-> >   *
-> > - * Helper to check whether a userspace-provided lookup table is valid and
-> > - * satisfies hardware requirements.  Drivers pass a bitmask indicating which of
-> > - * the tests in &drm_color_lut_tests should be performed.
-> > + * Helper to check whether each color channel of userspace-provided lookup table is valid and
-> > + * satisfies hardware requirements. Drivers pass a bitmask indicating which of in
-> > + * &drm_color_lut_channels_tests should be performed.
-> >   *
-> >   * Returns 0 on success, -EINVAL on failure.
-> >   */
-> > -int drm_color_lut_check(const struct drm_property_blob *lut, u32 tests)
-> > +int drm_color_lut_channels_check(const struct drm_property_blob *lut, u32 tests)
-> >  {
-> >       const struct drm_color_lut *entry;
-> >       int i;
-> > @@ -625,4 +625,4 @@ int drm_color_lut_check(const struct drm_property_blob *lut, u32 tests)
-> >
-> >       return 0;
-> >  }
-> > -EXPORT_SYMBOL(drm_color_lut_check);
-> > +EXPORT_SYMBOL(drm_color_lut_channels_check);
-> > diff --git a/drivers/gpu/drm/i915/display/intel_color.c b/drivers/gpu/drm/i915/display/intel_color.c
-> > index dab892d2251ba..4bb1bc76c4de9 100644
-> > --- a/drivers/gpu/drm/i915/display/intel_color.c
-> > +++ b/drivers/gpu/drm/i915/display/intel_color.c
-> > @@ -1285,7 +1285,7 @@ static int check_luts(const struct intel_crtc_state *crtc_state)
-> >       const struct drm_property_blob *gamma_lut = crtc_state->hw.gamma_lut;
-> >       const struct drm_property_blob *degamma_lut = crtc_state->hw.degamma_lut;
-> >       int gamma_length, degamma_length;
-> > -     u32 gamma_tests, degamma_tests;
-> > +     u32 gamma_channels_tests, degamma_channels_tests;
-> >
-> >       /* Always allow legacy gamma LUT with no further checking. */
-> >       if (crtc_state_is_legacy_gamma(crtc_state))
-> > @@ -1300,15 +1300,15 @@ static int check_luts(const struct intel_crtc_state *crtc_state)
-> >
-> >       degamma_length = INTEL_INFO(dev_priv)->color.degamma_lut_size;
-> >       gamma_length = INTEL_INFO(dev_priv)->color.gamma_lut_size;
-> > -     degamma_tests = INTEL_INFO(dev_priv)->color.degamma_lut_tests;
-> > -     gamma_tests = INTEL_INFO(dev_priv)->color.gamma_lut_tests;
-> > +     degamma_channels_tests = INTEL_INFO(dev_priv)->color.degamma_lut_tests;
-> > +     gamma_channels_tests = INTEL_INFO(dev_priv)->color.gamma_lut_tests;
-> >
-> >       if (check_lut_size(degamma_lut, degamma_length) ||
-> >           check_lut_size(gamma_lut, gamma_length))
-> >               return -EINVAL;
-> >
-> > -     if (drm_color_lut_check(degamma_lut, degamma_tests) ||
-> > -         drm_color_lut_check(gamma_lut, gamma_tests))
-> > +     if (drm_color_lut_channels_check(degamma_lut, degamma_channels_tests) ||
-> > +         drm_color_lut_channels_check(gamma_lut, gamma_channels_tests))
-> >               return -EINVAL;
-> >
-> >       return 0;
-> > diff --git a/include/drm/drm_color_mgmt.h b/include/drm/drm_color_mgmt.h
-> > index 81c298488b0c8..cb1bf361ad3e3 100644
-> > --- a/include/drm/drm_color_mgmt.h
-> > +++ b/include/drm/drm_color_mgmt.h
-> > @@ -94,12 +94,12 @@ int drm_plane_create_color_properties(struct drm_plane *plane,
-> >                                     enum drm_color_range default_range);
-> >
-> >  /**
-> > - * enum drm_color_lut_tests - hw-specific LUT tests to perform
-> > + * enum drm_color_lut_channels_tests - hw-specific LUT tests to perform
-> >   *
-> >   * The drm_color_lut_check() function takes a bitmask of the values here to
-> >   * determine which tests to apply to a userspace-provided LUT.
-> >   */
-> > -enum drm_color_lut_tests {
-> > +enum drm_color_lut_channels_tests {
-> >       /**
-> >        * @DRM_COLOR_LUT_EQUAL_CHANNELS:
-> >        *
-> > @@ -119,5 +119,6 @@ enum drm_color_lut_tests {
-> >       DRM_COLOR_LUT_NON_DECREASING = BIT(1),
-> >  };
-> >
-> > -int drm_color_lut_check(const struct drm_property_blob *lut, u32 tests);
-> > +int drm_color_lut_channels_check(const struct drm_property_blob *lut,
-> > +                              u32 tests);
-> >  #endif
-> > --
-> > 2.33.0.1079.g6e70778dc9-goog
-> >
+> > +.. note::
+> > +
+> > +   The backing memory of ``CAPTURE`` buffers that are used as referenc=
+e frames
+> > +   by the stream may be read by the hardware even after they are deque=
+ued.
+> > +   Consequently, the client should avoid writing into this memory whil=
+e the
+> > +   ``CAPTURE`` queue is streaming. Failure to observe this may result =
+in
+> > +   corruption of decoded frames.
+> > +
+> > +   Similarly, when using a memory type other than ``V4L2_MEMORY_MMAP``=
+, the
+> > +   client should make sure that each ``CAPTURE`` buffer is always queu=
+ed with
+> > +   the same backing memory for as long as the ``CAPTURE`` queue is str=
+eaming.
+> > +   The reason for this is that V4L2 buffer indices can be used by driv=
+ers to
+> > +   identify frames. Thus, if the backing memory of a reference frame i=
+s
+> > +   submitted under a different buffer ID, the driver may misidentify i=
+t and
+> > +   decode a new frame into it while it is still in use, resulting in c=
+orruption
+> > +   of the following frames.
+> > +
 >
-> --
-> Sean Paul, Software Engineer, Google / Chromium OS
+> I think this is nice addition, but insufficient. We should extend the API=
+ with a
+> flags that let application know if the buffers are reference or secondary=
+. For
+> the context, we have a mix of CODEC that will output usable reference fra=
+mes and
+> needs careful manipulation and many other drivers where the buffers *mayb=
+e*
+> secondary, meaning they may have been post-processed and modifying these =
+in-
+> place may have no impact.
+>
+> The problem is the "may", that will depends on the chosen CAPTURE format.=
+ I
+> believe we should flag this, this flag should be set by the driver, on CA=
+PTURE
+> queue. The information is known after S_FMT, so Format Flag, Reqbufs
+> capabilities or querybuf flags are candidates. I think the buffer flags a=
+re the
+> best named flag, though we don't expect this to differ per buffer. Though=
+,
+> userspace needs to call querybuf for all buf in order to export or map th=
+em.
+>
+> What userspace can do with this is to export the DMABuf as read-only, and=
+ signal
+> this internally in its own context. This is great to avoid any unwanted s=
+ide
+> effect described here.
+
+I agree with the idea of having a way for the kernel to tell the
+userspace the exact state of the buffer, but right now the untold
+expectation of the kernel was as per what this patch adds. If one
+wants their userspace to be portable across different decoders, they
+need to keep the assumption. So the natural way to go here is to stay
+safe by default and have a flag that tells the userspace that the
+buffer can be freely reused.
+
+Best regards,
+Tomasz
