@@ -2,261 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69CDD440990
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 16:35:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 834F8440993
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 16:40:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231200AbhJ3Ohr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Oct 2021 10:37:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39500 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229585AbhJ3Ohq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Oct 2021 10:37:46 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A617A60F58;
-        Sat, 30 Oct 2021 14:35:14 +0000 (UTC)
-Date:   Sat, 30 Oct 2021 15:39:39 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc:     David Lechner <david@lechnology.com>, linux-iio@vger.kernel.org,
-        Robert Nelson <robertcnelson@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 6/8] docs: counter: add latch_mode and latched_count
- sysfs attributes
-Message-ID: <20211030153939.44c8145d@jic23-huawei>
-In-Reply-To: <YXygyba/r/8+h+W3@shinobu>
-References: <20211017013343.3385923-1-david@lechnology.com>
-        <20211017013343.3385923-7-david@lechnology.com>
-        <YXkFzK0TA5zswSrQ@shinobu>
-        <e660e9c5-a116-5450-8afb-1053a1504ab6@lechnology.com>
-        <YXygyba/r/8+h+W3@shinobu>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S230320AbhJ3Omt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Oct 2021 10:42:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53538 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229585AbhJ3Oms (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Oct 2021 10:42:48 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A437C061570;
+        Sat, 30 Oct 2021 07:40:18 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 71so7967872wma.4;
+        Sat, 30 Oct 2021 07:40:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cAZsvYnkWZ2JmgGulEiIGKJLocwLHeQtPmIzuYHgKfs=;
+        b=khXBGXNy+e/HlFq2JN0sgil6Vc2x5AlylRLeviiuxhssnMlLewtlBaNAOgyv8FZzcK
+         4EzMkOUdNry/8vugvg/ad+WhHsUmPNn97zNo29LkhkgG7oUwoeZ/fRDQ7wAalLOUnrIm
+         7/tHSifY6UL/xy0etYH1++CikQPRUcyc8V53TP7kE6mDs2rVNjFgA7uaB1nQWsL8WzsB
+         Vi5XlHB6iwTxDUEoYdC/65i7K6xMsyjlQmodI8YPjPCs1FLFlRZXU/agOmuFol4bpd3q
+         Y9A5tg0kIFqxk5Qr6jZ8ulAxSMGi8vPxHeAdquXHqxYEq5wCbgHNrEnCtuxVBNZqoFaf
+         8SvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cAZsvYnkWZ2JmgGulEiIGKJLocwLHeQtPmIzuYHgKfs=;
+        b=8N135SIENGHk/EU51Q2dzG4YTMrc87TixyRgK4IuxrzH1zOzdCWLFOk2hoAiTdiaLF
+         aRSVFw8xfN01qJnsKDmr2qQNvyIMgYM+fqZVi9ZjeVUi3MTN5B6ctOF4fDFUUjeZFFeC
+         5zQHpaesSuLhTbewhT7ai4HJOUC8a+iF2Swh9RzbbwKmFqLQqHRzuXUzeNyEGqKicwat
+         YFYQIcGnbkydK1pUFTMNpERxNHy2hiWSSqEMyv7BwQ6yYt8FSJUkUj5doCo8K7NDBWlH
+         obiLlIxXGGsw69Mcsgvg/mWYMVYDKlJxoHjHb5lmbhvHjR9PSbjvgGAImu+v+RrzvmYc
+         Tb+g==
+X-Gm-Message-State: AOAM533Ra9OEqDFekBcKUMfmye537ovViAHXY9E13eFueM+rCmemnoBG
+        W2yaMchzpYI1AQyxfEJ1txI=
+X-Google-Smtp-Source: ABdhPJyx2fanuV1S9F+wmc5Y7BQAG6ILSt6BqaL9ztLHGolW4H1qza2M+gGEDUaZjVHH5pWKAam+SQ==
+X-Received: by 2002:a05:600c:2e46:: with SMTP id q6mr8683745wmf.6.1635604816619;
+        Sat, 30 Oct 2021 07:40:16 -0700 (PDT)
+Received: from localhost.localdomain (252.red-83-54-181.dynamicip.rima-tde.net. [83.54.181.252])
+        by smtp.gmail.com with ESMTPSA id u19sm483602wmm.5.2021.10.30.07.40.15
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 30 Oct 2021 07:40:15 -0700 (PDT)
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+To:     sboyd@kernel.org
+Cc:     linux-clk@vger.kernel.org, gregkh@linuxfoundation.org,
+        linux-staging@lists.linux.dev, neil@brown.name,
+        linux-kernel@vger.kernel.org, john@phrozen.org
+Subject: [PATCH v4 0/4] clk: ralink: make system controller a reset provider
+Date:   Sat, 30 Oct 2021 16:40:10 +0200
+Message-Id: <20211030144014.26315-1-sergio.paracuellos@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 30 Oct 2021 10:32:57 +0900
-William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
+Hi all,
 
-> On Wed, Oct 27, 2021 at 12:00:24PM -0500, David Lechner wrote:
-> > On 10/27/21 2:54 AM, William Breathitt Gray wrote:  
-> > > On Sat, Oct 16, 2021 at 08:33:41PM -0500, David Lechner wrote:  
-> > >> @@ -147,6 +150,14 @@ Description:
-> > >>   			updates	the respective count. Quadrature encoding
-> > >>   			determines the direction.
-> > >>   
-> > >> +What:		/sys/bus/counter/devices/counterX/countY/latched_count
-> > >> +KernelVersion:	5.16
-> > >> +Contact:	linux-iio@vger.kernel.org
-> > >> +Description:
-> > >> +		Latched count data of Count Y represented as a string. The value
-> > >> +		is latched in based on the trigger selected by the
-> > >> +		counterX/latch_mode attribute.
-> > >> +  
-> > > 
-> > > Latches are pretty common components of devices, and not simply limited
-> > > to latching the count data. I wonder if it would be better to omit the
-> > > "_count" suffix in order to make this more general. Well, the name
-> > > "latched_count" is suitable for counters so you probably don't need to
-> > > change it, but it's something to think about in the future.
-> > >   
-> > 
-> > I chose the name counterX/countY/latched_count since we already have
-> > counterX/countY/count to read the same (not latched) count. This
-> > indicates that they are the same quantity, just from a different
-> > point in time.
-> > 
-> > Also for consideration, this particular hardware actually has 3
-> > independent latched counts. One is triggered by the selected
-> > latched_mode. One is triggered by the index signal and one is
-> > triggered by the strobe signal.
-> > 
-> > The latter two are not implemented in this series, but if there were a
-> > use for those, I would probably submit attributes index_latched_count
-> > and strobe_latched_count. These are unaffected by the latch_mode.
-> > 
-> > Similarly, the unit timer has a timer latch and a period latch. If we
-> > change the unit timer to be a Count as suggested, then the latched
-> > timer would basically be the same as latched_count. Both of these
-> > are triggered by the selected latch_mode.
-> > 
-> > So, I supposed if we wanted to keep things really generic, we would
-> > want to introduce some sort of "latch trigger" component (synapse?).
-> > There could theoretically be multiple configurable triggers, so
-> > the proposed latch_mode might need to be made indexed or part of
-> > an index component/extension.  
-> 
-> Aside from deriving their latched values from the current and historical
-> count values, these latches don't seem to be related to Counters in an
-> operational sense; i.e. they don't really fit into the Counter subsystem
-> paradigm because they aren't functionally counters, but rather just use
-> the count values here as source data for their own operations. As such,
-> I'm not sure yet if they really belong in the Counter subsystem or
-> somewhere else in the IIO subsystem.
+This patch series add minimal change to provide mt7621 resets properly
+defining them in the 'mediatek,mt7621-sysc' node which is the system
+controller of the SoC and is already providing clocks to the rest of
+the world.
 
-In this particular case I think we are talking about latching counts rather
-than something else?  So one event happens and we latch the count at that
-point.
+There is shared architecture code for all ralink platforms in 'reset.c'
+file located in 'arch/mips/ralink' but the correct thing to do to align
+hardware with software seems to define and add related reset code to the
+already mainlined clock driver.
 
-The IIO equivalent is a trigger event driving data into a buffer.
-There are a few examples of this though it's pretty rare.
-The most general corner case is probably what we see with impact sensors.
-In those cases we have data captured around an event (rather than a single
-latched value).
+After this changes, we can get rid of the useless reset controller node
+in the device tree and use system controller node instead where the property
+'#reset-cells' has been added. Binding documentation for this nodeq has
+been updated with the new property accordly.
 
-They are rather complex beasts but the best we've managed is a special
-trigger used only with that device and some control attributes to say what
-is captured when the trigger fires.  Note this is a stetch in IIO because
-normally triggers are one per sample...
+This series also provide a bindings include header where all related
+reset bits for the MT7621 SoC are defined.
 
-> 
-> >   
-> > >>   What:		/sys/bus/counter/devices/counterX/countY/name
-> > >>   KernelVersion:	5.2
-> > >>   Contact:	linux-iio@vger.kernel.org
-> > >> @@ -209,6 +220,7 @@ What:		/sys/bus/counter/devices/counterX/countY/count_mode_component_id
-> > >>   What:		/sys/bus/counter/devices/counterX/countY/direction_component_id
-> > >>   What:		/sys/bus/counter/devices/counterX/countY/enable_component_id
-> > >>   What:		/sys/bus/counter/devices/counterX/countY/error_noise_component_id
-> > >> +What:		/sys/bus/counter/devices/counterX/countY/latched_count_component_id
-> > >>   What:		/sys/bus/counter/devices/counterX/countY/prescaler_component_id
-> > >>   What:		/sys/bus/counter/devices/counterX/countY/preset_component_id
-> > >>   What:		/sys/bus/counter/devices/counterX/countY/preset_enable_component_id
-> > >> @@ -218,6 +230,7 @@ What:		/sys/bus/counter/devices/counterX/signalY/cable_fault_enable_component_id
-> > >>   What:		/sys/bus/counter/devices/counterX/signalY/filter_clock_prescaler_component_id
-> > >>   What:		/sys/bus/counter/devices/counterX/signalY/index_polarity_component_id
-> > >>   What:		/sys/bus/counter/devices/counterX/signalY/synchronous_mode_component_id
-> > >> +What:		/sys/bus/counter/devices/latch_mode_component_id
-> > >>   What:		/sys/bus/counter/devices/unit_timer_enable_component_id
-> > >>   What:		/sys/bus/counter/devices/unit_timer_period_component_id
-> > >>   What:		/sys/bus/counter/devices/unit_timer_time_component_id  
-> > 
-> > Just noticing here, I missed the counterX in the device-level components.
-> >   
-> > >> @@ -244,6 +257,22 @@ Description:
-> > >>   		counter_event data structures. The number of elements will be
-> > >>   		rounded-up to a power of 2.
-> > >>   
-> > >> +What:		/sys/bus/counter/devices/counterX/latch_mode
-> > >> +KernelVersion:	5.16
-> > >> +Contact:	linux-iio@vger.kernel.org
-> > >> +Description:
-> > >> +		Read/write attribute that selects the trigger for latching
-> > >> +		values. Valid values are device-specific (given by
-> > >> +		latch_mode_available attribute) and may include:
-> > >> +
-> > >> +		"Read count":
-> > >> +			Reading the countY/count attribute latches values.
-> > >> +
-> > >> +		"Unit timeout":
-> > >> +			Unit timer timeout event latches values.
-> > >> +
-> > >> +		The latched values can be read from latched_* attributes.
-> > >> +  
-> > > 
-> > > To make these modes more generic for use in future drivers, I suggest
-> > > removing the "Unit " prefix and just leaving that mode as "Timeout". In
-> > > a similar vein, rewording "Read count" to "Count read" would make this
-> > > mode easier to understand in case a future driver introduces a mode
-> > > called "Signal read" or similar.
-> > >   
-> > 
-> > Continuing my thoughts from above and taking this suggestion into
-> > consideration...
-> > 
-> > Maybe we need a /sys/bus/counter/devices/counterX/latchY component.
-> > This would represent the trigger for a latch. For the TI eQEP in this
-> > series, there are potentially 3 of these (only one implemented for
-> > now).
-> > 
-> > latchY would have a required `trigger` attribute that would describe
-> > what triggers the latch. If the trigger is selectable, there would be
-> > a `triggers_available` attribute that would list the possible triggers,
-> > otherwise the `trigger` attribute would just be read-only. Available
-> > triggers could could be "X read" where X is a fully qualified component
-> > name, e.g. "Count0 count read" or a fully qualified event, e.g.
-> > "Count1 overflow event" (this is unit timer timeout in generic counter
-> > terms). But, there may be potential triggers that don't fit either
-> > of these patterns.
-> > 
-> > Although not currently needed, the triggers for the index and strobe
-> > latches on the eQEP get more interesting. The `triggers_available` for
-> > the index latch are "index rising edge", "index falling edge" and
-> > "software" (this would require a `software_trigger` attribute that
-> > would be written to trigger the latch). The `triggers_available` for
-> > the strobe latch are "strobe rising edge" and "strobe rising edge if
-> > direction is clockwise and strobe falling edge if direction is
-> > counterclockwise".
-> > 
-> > Circling back to the beginning, to read latched registers, there
-> > would be attributes like counterX/countY/latchY_count instead of
-> > the proposed counterX/countY/latched_count. So for the eQEP there
-> > would be counter0/count0/latch0_count (triggered by reading
-> > counter0/count0/count or counter0/count1 overflow event),
-> > counter0/count0/latch1_count (triggered by index signal),
-> > counter0/count0/latch2_count (triggered by strobe signal),
-> > counter0/count1/latch0_count (unit timer latched timer trigger
-> > by same trigger as counter0/count0/latch0_count) and
-> > counter0/count0/latch0_ceiling (unit timer latched period
-> > triggered by same trigger as counter0/count0/latch0_count).  
-> 
-> The complexity of configuration here is a good indication that these
-> latches deserve their own tree structure as you suggest. Furthermore, we
-> see that there at least three of these latches available for this
-> particular device, so just a single "latch_count" or similar will not be
-> sufficient -- enumeration of the form /sys/bus/../latchY or similar
-> would be prudent.
-> 
-> Jonathan, perhaps you have some insight here. From a functional aspect,
-> latches are not unique to counter devices, so I wonder if the IIO
-> subsytem has already encountered similar functionality amongst its
-> drivers. Essentially, a latch is just a memory buffer provided by the
-> device.
+Also, please take a look to this review [0] to understand better motivation
+for this series.
 
-As mentioned above, they exist but are fairly rare, unless you think
-of time triggers as being in this category in which case any data
-ready signal is basically like this.  Ignoring that common case,
-we map them onto a device specific trigger (one that has a
-validate_device callback to check it's being assigned to that right device).
-Another case where we do odd things like this is SoC ADCs that support touch
-screen type functionality.  In those case we are grabbing data only when
-the screen is touched.
+Regarding the way of merging this:
+ - I'd like patches 1 and 4 which are related going through staging tree.
+ - The other two (patches 2 and 3) can perfectly go through the clock tree.
 
+Thanks in advance for your feedback.
 
-> 
-> For the TI eQEP device here, the buffer for each latch provides a single
-> read-only value that is updated by the device; the update behavior can
-> be configured by respective control registers. However, it's not so
-> far-fetched to assume that there a other devices out that that have
-> buffers spanning multiple latched values storing historical data.
+Changes in v4:
+  - I sent wrong patch 3 accidentaly so now include the good version, sorry.
 
-A fifo filled on 'index' event or similar would indeed be a reasonable
-bit of hardware to build.  I've world with PLC code that does this sort
-of things so the requirements are there (tracking products on a conveyor
-belt would be a classic case - you latch the count when a light gate is
-broken).
+Changes in v3:
+  - Collect Rob's Acked-by for patches 1 and 2. 
+  - Rebase on the top of staging-next since there were already many
+    changes there and PATCH 4 of the series didn't apply cleanly.
 
-> 
-> Because a latch can theoretically provide any sort of data, not
-> necessary count values, it seems reasonable that supporting latches
-> would involve their own interface independent of the Counter paradigm.
-> How that interface looks is the question. Should the TI eQEP latches
-> here be exposed through some sort of generic latches interface, or
-> would it be better to have a more abstract representation of what these
-> latches are for; e.g. if these latches are used to measure speed, then
-> some sort of IIO speedometer interface might be appropriate).
+Changes in v2:
+  - Address review comments of Dan Carpenter [1]:
+     + Avoid 'inline' in function definition.
+     + Return proper error codes (-EINVAL) instead of '-1'.
+     + Make use of 'devm_kzalloc' instead of 'kzalloc'.
 
-I'd suggest trying to avoid being too generic about this.  There might
-be some reason to do it in the future but trying to define interfaces
-across subsystems is a pain.  More likely we'll get some bridging
-type drivers to map between different abstractions if they are needed.
+Best regards,
+   Sergio Paracuellos
 
-Jonathan
+Sergio Paracuellos (4):
+  dt-bindings: reset: add dt binding header for Mediatek MT7621 resets
+  dt-bindings: clock: mediatek,mt7621-sysc: add '#reset-cells' property
+  clk: ralink: make system controller node a reset provider
+  staging: mt7621-dts: align resets with binding documentation
 
-> 
-> William Breathitt Gray
+ .../bindings/clock/mediatek,mt7621-sysc.yaml  | 12 +++
+ drivers/clk/ralink/clk-mt7621.c               | 79 +++++++++++++++++++
+ drivers/staging/mt7621-dts/mt7621.dtsi        | 25 +++---
+ include/dt-bindings/reset/mt7621-reset.h      | 37 +++++++++
+ 4 files changed, 139 insertions(+), 14 deletions(-)
+ create mode 100644 include/dt-bindings/reset/mt7621-reset.h
+
+-- 
+2.33.0
 
