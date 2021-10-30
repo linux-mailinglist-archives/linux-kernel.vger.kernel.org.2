@@ -2,87 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B6E8440836
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 11:23:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C90A44083C
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 11:27:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231823AbhJ3JZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Oct 2021 05:25:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41656 "EHLO
+        id S231775AbhJ3JaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Oct 2021 05:30:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231764AbhJ3JZ0 (ORCPT
+        with ESMTP id S231685AbhJ3JaM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Oct 2021 05:25:26 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA69FC061714
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Oct 2021 02:22:56 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id g10so46555512edj.1
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Oct 2021 02:22:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Psy9UUsgDMQIAe07LW7iWSQ2yT8pLhnvw8P2y5aXnxw=;
-        b=GWRmgsNh1EIZROlnilCawgxwOE61yarRmN1eVIOunz6iylExwBE5hAFNpWjgW+aic3
-         BG/c1i+WfRnGkVPoGsdEkuTMLAez8N4MrWH7usgB4BPwtYXDbd0Dlqw5M1yEsKoCVMJQ
-         NGHlaaBcxoTPW8bf6H3eZGaawL6Xml6xp+ejurZCaQN5S0C3a+O8h3JKpnzVi7XASqKr
-         nEdhjIGK5OcqQEuITPFi6zwXaiN97wy9pXNcJZiz87SjLoU4EvuXc+V0l96APlPugul1
-         yNQMNVSQ5uJjmNmcKg9T89rtzeS9i796A1ezygqS9lnJpoubhSQ4mwETAEYuamsUDVib
-         RJUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Psy9UUsgDMQIAe07LW7iWSQ2yT8pLhnvw8P2y5aXnxw=;
-        b=nAkJ2zBxtFMsUlGMNsGn8udhLL5J4RWlTSnaWL2M2tWriSv3YPpzphd132lUJZLq2S
-         8qF8+2tIkddT/Dv1uEx/4W2DgtNL7SaWuBmPUbWg1/n66S1rLKGSijyQSGL/UPYkSO2X
-         FqFjkQOOc+afSP2XArR4cxae6TvZf0rlpfJcatIHuIKDRHAYQHyyEvvIOI4yjCYkujL0
-         EOPE2UkCwWF7HcWSe2lzuonSyo8TQmSOK6LYQgSQy2Dy/pl1WgTzB7rY7YzO9gOLOQQ6
-         /IKYorQ+wErlE/iKmYYXfOegzYz2PpD4xnRjLclaxxfCYcC5loz4ZEa5LRulLsRgt1lE
-         xz6g==
-X-Gm-Message-State: AOAM530MOu9A3CtcclLf+QlBwMj2CK1yTfXeYONfI5u+YSenWhRZcxQJ
-        Xz5qt8ogpP6kq+FqK+RBVnOcY2dLR5+EiWzOoSrM8w==
-X-Google-Smtp-Source: ABdhPJy+ZBCvqCuJX8LKz4Lwt6kopiehkPl3QSDLZ4BUaYiokRbBroTAQ915BNPcHvuo3SWnYE/I+I+gooIRJoDL9Lw=
-X-Received: by 2002:a17:906:4786:: with SMTP id cw6mr19976791ejc.189.1635585775412;
- Sat, 30 Oct 2021 02:22:55 -0700 (PDT)
+        Sat, 30 Oct 2021 05:30:12 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07F60C061714
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Oct 2021 02:27:43 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mgkeJ-0008RA-Kh; Sat, 30 Oct 2021 11:27:39 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mgkeI-00087r-Od; Sat, 30 Oct 2021 11:27:38 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mgkeI-0007Py-Nb; Sat, 30 Oct 2021 11:27:38 +0200
+Date:   Sat, 30 Oct 2021 11:27:36 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Robert Foss <robert.foss@linaro.org>
+Cc:     Steev Klimaszewski <steev@kali.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>, linux-pwm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v7 1/3] pwm: Introduce single-PWM of_xlate function
+Message-ID: <20211030092736.eam4ahzimiew7erg@pengutronix.de>
+References: <20211025170925.3096444-1-bjorn.andersson@linaro.org>
+ <65243a98-61b9-3311-f41d-fa4782448baa@kali.org>
+ <CAG3jFytmcFcA5W3vmcpWTWrc36-YFMPZ1wAB8gAJfiHHLWmaCA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20211024060058.6719-1-rdunlap@infradead.org>
-In-Reply-To: <20211024060058.6719-1-rdunlap@infradead.org>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Sat, 30 Oct 2021 11:22:44 +0200
-Message-ID: <CAMRc=MeWBFM5pUesAimFcbwhA_Wzms5yJ5S4N4a7GTkC2ZJc7g@mail.gmail.com>
-Subject: Re: [PATCH] gpio: clean up Kconfig file
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Sean Young <sean@mess.org>,
-        Bamvor Jian Zhang <bamv2005@gmail.com>,
-        Michael Walle <michael@walle.cc>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="cwmpryyacyfxuvhj"
+Content-Disposition: inline
+In-Reply-To: <CAG3jFytmcFcA5W3vmcpWTWrc36-YFMPZ1wAB8gAJfiHHLWmaCA@mail.gmail.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 24, 2021 at 8:01 AM Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> Fix multiple problems in punctuation, capitalization, grammar,
-> wording, and typos in the GPIO Kconfig file.
->
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Bartosz Golaszewski <brgl@bgdev.pl>
-> Cc: linux-gpio@vger.kernel.org
-> Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
-> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Cc: Geert Uytterhoeven <geert+renesas@glider.be>
-> Cc: Sean Young <sean@mess.org>
-> Cc: Bamvor Jian Zhang <bamv2005@gmail.com>
-> Cc: Michael Walle <michael@walle.cc>
-> ---
 
-Applied for next, thanks.
+--cwmpryyacyfxuvhj
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Bart
+Hello,
+
+On Wed, Oct 27, 2021 at 05:06:02PM +0200, Robert Foss wrote:
+> On Tue, 26 Oct 2021 at 19:21, Steev Klimaszewski <steev@kali.org> wrote:
+> >
+> >
+> > On 10/25/21 12:09 PM, Bjorn Andersson wrote:
+> > > The existing pxa driver and the upcoming addition of PWM support in t=
+he
+> > > TI sn565dsi86 DSI/eDP bridge driver both has a single PWM channel and
+> > > thereby a need for a of_xlate function with the period as its single
+> > > argument.
+> > >
+> > > Introduce a common helper function in the core that can be used as
+> > > of_xlate by such drivers and migrate the pxa driver to use this.
+> > >
+> > > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > > Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+> > > Tested-by: Steev Klimaszewski <steev@kali.org>
+> > > ---
+> > >
+> [...]
+>=20
+> Applied to drm-misc-next.
+
+This is now 3ab7b6ac5d829e60c3b89d415811ff1c9f358c8e in next, the Link:
+added in the commit trailer looks as follows:
+
+	Link: https://patchwork.freedesktop.org/patch/msgid/20211025170925.3096444=
+-1-bjorn.andersson@linaro.org
+
+but this link doesn't work, for me at least. I wonder what's wrong with
+it. If you want to fix it and rewrite the commit, you can also drop the
+duplicated "Tested-by: Steev Klimaszewski <steev@kali.org>".
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--cwmpryyacyfxuvhj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmF9EAQACgkQwfwUeK3K
+7AkmVwf/UC0/COH40s3PAmZkJX3EzO2LlqeXFJDYvZZX4T58leO83achdFzOWtXi
+F9kK3WlNNmggZ32zqDHV1HOE42tnn1wLXc7xqevjiIYWzRrHAlW5bXcRQT1ndDjo
+Tiloo0fTBsi24lmuvWeWPVifk77ZMY4eB/dVovyDilTgvuxo9hf55URQTgnSpD8o
+DVToFokj6ckIESylQgJXCKxiM8vqFSIYQFXSqLFDW/FVYDmA9eVlAeme0bjeHv6p
+3mWJ+rC2A7dNz65qYqPvqM02uy0+2o1tMJ3G/n+idjv16M8areb0Owvh47r1q7/O
+H4TZl0wjy5y8SbZ2l1lo8EaWkVE6pA==
+=KqMO
+-----END PGP SIGNATURE-----
+
+--cwmpryyacyfxuvhj--
