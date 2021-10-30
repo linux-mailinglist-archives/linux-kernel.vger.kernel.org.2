@@ -2,98 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 042654408DE
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 14:59:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A28A4408EB
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 15:04:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230327AbhJ3NCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Oct 2021 09:02:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42978 "EHLO mail.kernel.org"
+        id S231472AbhJ3NGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Oct 2021 09:06:34 -0400
+Received: from foss.arm.com ([217.140.110.172]:45132 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229640AbhJ3NCY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Oct 2021 09:02:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CDC6360EFF;
-        Sat, 30 Oct 2021 12:59:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635598793;
-        bh=oHZNPIIOWVnapw7CjqfF9ZXvF6wdYZNsVtNzLU2Uyw4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ssXoZ0apzp8LX3RfOj5eP7AgLS3A2pKgV3+YF4ljS0YvkiPJcCM/9zI8ajltv7B4j
-         OClbxsNWsJ4hlZ/7siyBZ77EwIH+MYkH9nV6OcFTpkn8h33LybqIeApTLcKwW04dKD
-         nFBe3pUhN/YjXu8r4aF45eQYnjF2c5xzLMrFFZuDNm7sBCjUBgl0d+C8vWX9O3ZmNw
-         onrPaX71kNyt1uCszuaK5qw5Ae5YnQIrXjKylnCv740bnyDA8Rtz9QOcTsrN3DG6tg
-         swpLIoVf2TRpcua5DL+9e1dQCf0N0LPaBKPTNkqVq6RWEjTmIBZ8/kIoexMkQlw2RU
-         2ftuj7v3WmmyQ==
-Received: by pali.im (Postfix)
-        id 89C1C1083; Sat, 30 Oct 2021 14:59:51 +0200 (CEST)
-Date:   Sat, 30 Oct 2021 14:59:51 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Andrew Lunn <andrew@lunn.ch>, linux-doc@vger.kernel.org,
+        id S229758AbhJ3NGd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Oct 2021 09:06:33 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B73B21FB;
+        Sat, 30 Oct 2021 06:04:02 -0700 (PDT)
+Received: from bogus (unknown [10.57.46.68])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7757C3F5A1;
+        Sat, 30 Oct 2021 06:04:01 -0700 (PDT)
+Date:   Sat, 30 Oct 2021 14:03:58 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     kernel test robot <lkp@intel.com>
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] Documentation: arm: marvell: Add some links to
- homepage / product infos
-Message-ID: <20211030125951.q6vo5mkr3ww4s5bv@pali>
-References: <20211008160105.24225-1-pali@kernel.org>
+Subject: Re: [sudeep-holla:v5.15/pcc_type3 15/16]
+ drivers/acpi/pcc_opregion.c:30:2: error: implicit declaration of function
+ 'acpi_ut_status_exit'
+Message-ID: <20211030130358.yvbw5lr5rfw5ysnh@bogus>
+References: <202110300935.QtWwtS7u-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211008160105.24225-1-pali@kernel.org>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <202110300935.QtWwtS7u-lkp@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello! I would like to remind this documentation patch.
+Hi all,
 
-On Friday 08 October 2021 18:01:03 Pali Rohár wrote:
-> Webarchive contains some useful resources like product info or links to
-> other documents.
+On Sat, Oct 30, 2021 at 09:53:44AM +0800, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux.git v5.15/pcc_type3
+> head:   e658e18863fdb31547d280d6446d97b986a66a6a
+> commit: 53fb88f932935375cd221ddbac3d9b7751718005 [15/16] ACPI: Add support for PCC opregion
+> config: i386-randconfig-c001-20211029 (attached as .config)
+> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 5db7568a6a1fcb408eb8988abdaff2a225a8eb72)
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux.git/commit/?id=53fb88f932935375cd221ddbac3d9b7751718005
+>         git remote add sudeep-holla https://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux.git
+>         git fetch --no-tags sudeep-holla v5.15/pcc_type3
+>         git checkout 53fb88f932935375cd221ddbac3d9b7751718005
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=i386 
 > 
-> Signed-off-by: Pali Rohár <pali@kernel.org>
-> ---
->  Documentation/arm/marvell.rst | 7 +++++++
->  1 file changed, 7 insertions(+)
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
 > 
-> diff --git a/Documentation/arm/marvell.rst b/Documentation/arm/marvell.rst
-> index c3d3f27edfbb..d4fe191bb88c 100644
-> --- a/Documentation/arm/marvell.rst
-> +++ b/Documentation/arm/marvell.rst
-> @@ -103,6 +103,8 @@ Discovery family
->  
->                  Not supported by the Linux kernel.
->  
-> +  Homepage:
-> +        https://web.archive.org/web/20110924171043/http://www.marvell.com/embedded-processors/discovery-innovation/
->    Core:
->  	Feroceon 88fr571-vd ARMv5 compatible
->  
-> @@ -119,6 +121,7 @@ EBU Armada family
->          - 88F6707
->          - 88F6W11
->  
-> +    - Product infos:   https://web.archive.org/web/20141002083258/http://www.marvell.com/embedded-processors/armada-370/
->      - Product Brief:   https://web.archive.org/web/20121115063038/http://www.marvell.com/embedded-processors/armada-300/assets/Marvell_ARMADA_370_SoC.pdf
->      - Hardware Spec:   https://web.archive.org/web/20140617183747/http://www.marvell.com/embedded-processors/armada-300/assets/ARMADA370-datasheet.pdf
->      - Functional Spec: https://web.archive.org/web/20140617183701/http://www.marvell.com/embedded-processors/armada-300/assets/ARMADA370-FunctionalSpec-datasheet.pdf
-> @@ -129,6 +132,7 @@ EBU Armada family
->    Armada 375 Flavors:
->  	- 88F6720
->  
-> +    - Product infos: https://web.archive.org/web/20140108032402/http://www.marvell.com/embedded-processors/armada-375/
->      - Product Brief: https://web.archive.org/web/20131216023516/http://www.marvell.com/embedded-processors/armada-300/assets/ARMADA_375_SoC-01_product_brief.pdf
->  
->    Core:
-> @@ -169,6 +173,9 @@ EBU Armada family
->      NOTE:
->  	not to be confused with the non-SMP 78xx0 SoCs
->  
-> +    Product infos:
-> +        https://web.archive.org/web/20150101215721/http://www.marvell.com/embedded-processors/armada-xp/
-> +
->      Product Brief:
->  	https://web.archive.org/web/20121021173528/http://www.marvell.com/embedded-processors/armada-xp/assets/Marvell-ArmadaXP-SoC-product%20brief.pdf
->  
-> -- 
-> 2.20.1
-> 
+> All errors (new ones prefixed by >>):
+>
+
+Please ignore this, a hack got pushed to the git repo by mistake.
+
+-- 
+Regards,
+Sudeep
