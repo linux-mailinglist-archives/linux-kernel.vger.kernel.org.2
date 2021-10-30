@@ -2,71 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7872C4409A4
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 16:44:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E413A4409C3
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 16:58:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231829AbhJ3OrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Oct 2021 10:47:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41342 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229993AbhJ3OrO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Oct 2021 10:47:14 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S231911AbhJ3PBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Oct 2021 11:01:25 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:39976 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229633AbhJ3PBX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Oct 2021 11:01:23 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C5E0660F4B;
-        Sat, 30 Oct 2021 14:44:42 +0000 (UTC)
-Date:   Sat, 30 Oct 2021 15:49:11 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com>
-Cc:     jbhayana@google.com, lars@metafoo.de, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Vasyl.Vavrychuk@opensynergy.com,
-        andy.shevchenko@gmail.com
-Subject: Re: [PATCH v7 0/2] iio/scmi: Add reading "raw" attribute.
-Message-ID: <20211030154911.78f5e6c3@jic23-huawei>
-In-Reply-To: <20211024091627.28031-1-andriy.tryshnivskyy@opensynergy.com>
-References: <20211024091627.28031-1-andriy.tryshnivskyy@opensynergy.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 16FDA1FD36;
+        Sat, 30 Oct 2021 14:58:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1635605932; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jDNP1uU1T2HsrR6XxIFIF9oPRNn3dUAQ9/C5zYbJjGk=;
+        b=U2I72QVEtDEhCp9io7XtmwcKflZnz1hESRmp7UTgGqtd7ND5gsBsKCmwCylAcr7BuZCG8x
+        eC/3Pm4vmCvymfPj7wBpN0Hb6dREc82IA4zim08vTUPRTwmPM0DZYGujGaUaioWD07fqOH
+        9iWTQyIdd5Q9QeqQUge2ZW5DxyReykA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1635605932;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jDNP1uU1T2HsrR6XxIFIF9oPRNn3dUAQ9/C5zYbJjGk=;
+        b=TiC1BWcgHMIhMshyz91bkKVLeWarnQGyK+ATEm1YDpSRHHo6DRgtD081oCgEB89W1cLYNJ
+        GIBMsRcVse+hO0CA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3A785139CF;
+        Sat, 30 Oct 2021 14:58:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id B4aZAatdfWGgUgAAMHmgww
+        (envelope-from <colyli@suse.de>); Sat, 30 Oct 2021 14:58:51 +0000
+Message-ID: <abf21c4f-5bbb-a0bb-534a-3d2758b4a8d6@suse.de>
+Date:   Sat, 30 Oct 2021 22:58:47 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.1
+Subject: Re: [PATCH] bcache: remove unused struct member in cache_stats
+Content-Language: en-US
+To:     Lin Feng <linf@wangsu.com>
+Cc:     linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211029115939.92309-1-linf@wangsu.com>
+From:   Coly Li <colyli@suse.de>
+In-Reply-To: <20211029115939.92309-1-linf@wangsu.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 24 Oct 2021 12:16:25 +0300
-Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com> wrote:
+On 10/29/21 7:59 PM, Lin Feng wrote:
+> Commit 1616a4c2ab1a80893b6890ae93da40a2b1d0c691
+> ("bcache: remove bcache device self-defined readahead")
+> remove stuffs for bcache self-defined readahead, but
+> cache_readaheads field in cache_stats is leftout, remove it.
+>
+> Signed-off-by: Lin Feng <linf@wangsu.com>
 
-> Introduce IIO_VAL_INT_64 to read 64-bit value for
-> channel attribute. Val is used as lower 32 bits.
-> Add IIO_CHAN_INFO_RAW to the mask and implement corresponding
-> reading "raw" attribute in scmi_iio_read_raw.
-> 
-> Patches are based on v5.14.
-> 
-> Any comments are very welcome.
-> 
-> Thanks,
-> Andriy.
-> 
-> Andriy Tryshnivskyy (2):
->   iio: core: Introduce IIO_VAL_INT_64.
->   iio/scmi: Add reading "raw" attribute.
-> 
->  drivers/iio/common/scmi_sensors/scmi_iio.c | 57 +++++++++++++++++++++-
->  drivers/iio/industrialio-core.c            |  3 ++
->  include/linux/iio/types.h                  |  1 +
->  3 files changed, 60 insertions(+), 1 deletion(-)
-> 
-> 
-> base-commit: 7d2a07b769330c34b4deabeed939325c77a7ec2f
+Nice catch. I add it into my testing queue. Thanks.
 
-Applied to the togreg branch of iio.git which is pushed out as testing for
-0-day to poke at it and see what we missed.
+Coly Li
 
-Note this is next cycle material now given merge window is about to open.
-As such I'll be rebasing my tree after rc1.
+> ---
+>   drivers/md/bcache/stats.h | 1 -
+>   1 file changed, 1 deletion(-)
+>
+> diff --git a/drivers/md/bcache/stats.h b/drivers/md/bcache/stats.h
+> index ca4f435f7216..b6bfea66c01f 100644
+> --- a/drivers/md/bcache/stats.h
+> +++ b/drivers/md/bcache/stats.h
+> @@ -18,7 +18,6 @@ struct cache_stats {
+>   	unsigned long cache_misses;
+>   	unsigned long cache_bypass_hits;
+>   	unsigned long cache_bypass_misses;
+> -	unsigned long cache_readaheads;
+>   	unsigned long cache_miss_collisions;
+>   	unsigned long sectors_bypassed;
+>   
 
-Thanks,
-
-Jonathan
