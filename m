@@ -2,104 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8170744070B
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 05:15:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08CDE44070E
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 05:17:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231596AbhJ3DOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 23:14:44 -0400
-Received: from mout.gmx.net ([212.227.15.15]:47147 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229921AbhJ3DOn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 23:14:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1635563494;
-        bh=qjTtp88hW/qAnuLq6PK4CdIotMnR4Kq8WGCR55KIXz4=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=DZrZ4yWa3krIjDRRcNThLwSb/YNITw05M1M8Ou8WriM5OjgzhZVStUbjiMuQKtef+
-         /k4WP6nfi9R8fGWo+UbgIGN5kH5xwV9vwKCEzDAquF1PSXR3tJqPpK2iDTn9ssKUgn
-         hAtZlVYDlWP3Foep62A2Y/+fnSWlU4pYOBP5S8c8=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.221.149.242]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MybGh-1mqkPo3WQf-00yv1o; Sat, 30
- Oct 2021 05:11:33 +0200
-Message-ID: <ab98b05314846102baec5cbb46893675f4ea5cfb.camel@gmx.de>
-Subject: Re: [PATCH 1/2] sched/fair: Couple wakee flips with heavy wakers
-From:   Mike Galbraith <efault@gmx.de>
-To:     Vincent Guittot <vincent.guittot@linaro.org>,
-        Mel Gorman <mgorman@techsingularity.net>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Valentin Schneider <Valentin.Schneider@arm.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Sat, 30 Oct 2021 05:11:30 +0200
-In-Reply-To: <CAKfTPtB-fJ7Pd6eYPDrHB8Ts0o7SCbN7nniAD9PSoF4Pf+xB3w@mail.gmail.com>
-References: <20211028094834.1312-1-mgorman@techsingularity.net>
-         <20211028094834.1312-2-mgorman@techsingularity.net>
-         <CAKfTPtB-fJ7Pd6eYPDrHB8Ts0o7SCbN7nniAD9PSoF4Pf+xB3w@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.0 
+        id S231674AbhJ3DTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 23:19:20 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:14881 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229829AbhJ3DTT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 23:19:19 -0400
+Received: from dggeme706-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Hh4G20D8pz8vfp;
+        Sat, 30 Oct 2021 11:16:42 +0800 (CST)
+Received: from huawei.com (10.67.174.53) by dggeme706-chm.china.huawei.com
+ (10.1.199.102) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.15; Sat, 30
+ Oct 2021 11:16:47 +0800
+From:   Liao Chang <liaochang1@huawei.com>
+To:     <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
+        <aou@eecs.berkeley.edu>, <ebiederm@xmission.com>,
+        <mick@ics.forth.gr>, <jszhang@kernel.org>,
+        <guoren@linux.alibaba.com>, <penberg@kernel.org>,
+        <sunnanyong@huawei.com>, <wangkefeng.wang@huawei.com>,
+        <changbin.du@intel.com>, <alex@ghiti.fr>
+CC:     <liaochang1@huawei.com>, <linux-riscv@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kexec@lists.infradead.org>
+Subject: [PATCH 0/3] riscv: kexec: add kexec_file_load() support
+Date:   Sat, 30 Oct 2021 11:18:29 +0800
+Message-ID: <20211030031832.165457-1-liaochang1@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:chsK/1SSDeIrgUkxsmaKoBd9QuPwC5WEIqIDqhsih6Jde/9dlzc
- OZcys95BQjHlsi7kMnbkbE+5E69qZgxEtxg7suHs305eiuQ7bwXOCRGl1oRTIzrAnfh+vdu
- Shh6LnlUzK0kCcxHZQuzP/ZrTtBxIyZvnBmrOxGg290rnomhcSLnXe60VIuGLEb6q/tRAF+
- HmkVbQKZUW9QT0MgFgYGg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:esvAs1nuxIE=:VMt1UqDNoir4ABskIv+4ij
- glZs0jUXXcK0ri7y0C0PgzSILOw+WaKiKv0hocz7yWX2LDOu4Ba/jeUsb+b4wYA6ZnSkvWlXI
- H+dgfhiwya14zsv+Y5U9UWfPSO/VkjaQnR7YNp5F8WqdK0QizZAxQMXPvMH5S6s6MaWKfDyKt
- 1ln7Q5LczRsTuE/MMa/TsPioAP0Bh4JgcAeUp4pmTCRSeGvXVNai8I+tLe31rF7YrP4NI5AkI
- dqC+n//r1RGBf0mM2Fsuvzi0F+uZjefQbafcRCNMCWHNdBawyQNEIVZcgOPVLPZXm2HQo/vhy
- bIxoL0OM2rwSXOVZyYN5Oo1ptcO6B7WsTEhDeSMk30Cr6b5X7C0cjC9lE0SoxGV+aI3BFwVbw
- v8OmxHpP5ZGdPu/sKWNHPFaQg0sBhYaYH/Sx8hnjZQaDE4xpm4cArjqc1ZaAl8tQc8WQG5sWS
- rCP6Hz6LD2EFWN1AMuJfmMNWD800udqJ6B6jtUCi8JGilAUtGSRsq4WeX0stalrqgce39195p
- lSsEfXt3kUqyc91u2f5nO+tCP8XOArnexfYfBBqvo/gwocyAqkcIX7cTso4DIjy11JxKhgcOP
- tFtOCABuOB/IVuKfFswWqMTQ+Qo+rHNMGgSyzRknLi59tcb4eqZlBaJTJzKD2mhK2x3yNO/j0
- Ni7OT3QkGvTneLJsm3b7ULykqNnbNChkdwh8BGA6xt5UH7U5ufSLFFMrR+MlQ2YMdQcNmWh8n
- mJBNsbWXxJiIdQJYlFUiAQiICzSrRGiTVFxn0r9A4Ew99GCJcUSLBQq3/XbbEAZ1OzV6PNqHW
- VlTZVw0OQ+Sl0H1eefye9Tx7H91fa9Qkv4w6iKVEnFZmDXXROT7/Fs126oxDMaXnly1sJUFob
- VafMBe/fyzYI2q1ywSt4Gkr/nKCf+bBWlO8KQGk5go29T3f85tCJJ13dl45WZungYzkyBMrpG
- zPeLc709Gq7yCzzSXYUENt9lWm5tdPIlKt4Nj838H9UplYtutBaKTORnKQhR9pP/2jR+6k32K
- AXvTRphB8Q+Aox8TfWWf45xedcoNxGrbJf879ZWUxDkt76HPHMRwG5LQoHZq44Mhh9gz4ScAB
- TYwq8DnaKjl6Zo=
+Content-Type: text/plain
+X-Originating-IP: [10.67.174.53]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggeme706-chm.china.huawei.com (10.1.199.102)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-10-29 at 17:17 +0200, Vincent Guittot wrote:
->
-> I have a hard time understanding the rationale behind these changes
-> and the one below. Could you provide more details about why to
-> increase p->wakee_flips here ?
+This patchset implement kexec_file_load() support on riscv, Most of the
+code is based on the kexec-tool-patch repo developed by Nick Kossifids.
 
-The rationale behind it was me discovering wake_affine_weight() use of
-weight averages causing X waking a way too big thread pool to stack the
-entire herd of 21 threads onto the waker's CPU while all other CPUs in
-my little i7 box had one task each.  Preventing stacking is SIS or
-wake_wide(), but because I was test driving a patch I had some fairness
-concerns about, box was kept busy.  I was subsequently asked about
-wake_wide()'s role, and while I don't think it should have one in a
-single LLC box, looked into it, found that while X is a candidate,
-event thread wakees were not. I think to self, what if I loosely couple
-zero flip earning wakees, do so, then allow for a bit of decay wiggle
-room while after watching it do its thing in realtime.
+This patch series enables us to load the riscv vmlinux by specifying
+its file decriptor, instead of user-filled buffer via kexec_file_load()
+syscall.
 
-There you have the rationale.
+Contrary to kexec_load() system call, we reuse the dt blob of the first
+kernel to the 2nd explicitly.
 
-While it did help, it did not eliminate the aforementioned worst case
-because as desktop behavior changes, decay turns off the heuristic,
-stacking follows.  I profiled it with a perf that sums delay (local mod
-I find useful), and found that there was no real benefit to the light
-desktop test load, at which point, no longer having NUMA boxen at my
-disposal where wake_wide() does have a mission, I lost interest.  Mel
-was interested however, fed it to SUSE's test array, and here we are.
+To use kexec_file_load() system call, instead of kexec_load(), at kexec
+command, '-s' options must be specified. The patch for kexec_tools has
+to be apply to riscv architecture source like this:
 
-Executive summary: patchlet is not so lovely mitigation of an even more
-not so lovely scheduler behavior. The two deserve each other ;-)
+int elf_riscv_load(int argc, char **argv, const char *buf, off_t len,
+	...
+	if (info->file_mode) {
+		return prepare_kexec_file_options(info);
+	}
+	...
 
-Kidding aside, way better would be wake_wide() becoming obsolete.
+Add following routine to prepare cmdline_ptr, cmdline_len and initrd_fd
+for syscall kexec_file_load:
 
-	-Mike
+int prepare_kexec_file_options(struct kexec_info *info)
+{
+	int fd;
+	ssize_t result;
+	struct stat stats;
+
+	if (arch_options.cmdline) {
+		info->command_line = (char *)arch_options.cmdline;
+		info->command_line_len = strlen(info->command_line) + 1;
+	}
+
+	if (!arch_options.initrd_path) {
+		info->initrd_fd = -1;
+		return 0;
+	}
+
+	fd = open(arch_options.initrd_path, O_RDONLY | _O_BINARY);
+	if (fd < 0) {
+		fprintf(stderr, "Cannot open `%s': %s\n", arch_options.initrd_path,
+				strerror(errno));
+		return -EINVAL;
+	}
+	result = fstat(fd, &stats);
+	if (result < 0) {
+		close(fd);
+		fprintf(stderr, "Cannot stat: %s: %s\n", arch_options.initrd_path,
+				strerror(errno));
+		return -EINVAL;
+	}
+	info->initrd_fd = fd;
+	return 0;
+}
+
+The basic usage of kexec_file is:
+1) Reload capture kernel image:
+$ kexec -s -l <riscv-vmlinux> --reuse-cmdline
+
+2) Startup capture kernel:
+$ kexec -e
+
+For future work:
+* Support for kdump and purgatory.
+* Support for kernel image verification.
+* Support physical address randomization.
+
+Liao Chang (3):
+  kexec_file: Fix kexec_file.c build error for riscv platform
+  RISC-V: use memcpy for kexec_file mode
+  RISC-V: Add kexec_file support
+
+ arch/riscv/Kconfig                     |  11 ++
+ arch/riscv/include/asm/kexec.h         |   4 +
+ arch/riscv/kernel/Makefile             |   1 +
+ arch/riscv/kernel/elf_kexec.c          | 189 +++++++++++++++++++++++++
+ arch/riscv/kernel/machine_kexec.c      |   5 +-
+ arch/riscv/kernel/machine_kexec_file.c |  14 ++
+ include/linux/kexec.h                  |   2 +-
+ kernel/kexec_file.c                    |   4 +-
+ 8 files changed, 226 insertions(+), 4 deletions(-)
+ create mode 100644 arch/riscv/kernel/elf_kexec.c
+ create mode 100644 arch/riscv/kernel/machine_kexec_file.c
+
+-- 
+2.17.1
+
