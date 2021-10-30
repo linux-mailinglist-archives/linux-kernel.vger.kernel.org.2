@@ -2,162 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 724574406BC
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 03:34:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C432D4406CE
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 03:45:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231442AbhJ3BhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 21:37:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54126 "EHLO
+        id S231286AbhJ3Br7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 21:47:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229694AbhJ3BhM (ORCPT
+        with ESMTP id S229656AbhJ3Br6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 21:37:12 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57BBAC061714;
-        Fri, 29 Oct 2021 18:34:43 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id h81so5908486iof.6;
-        Fri, 29 Oct 2021 18:34:43 -0700 (PDT)
+        Fri, 29 Oct 2021 21:47:58 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C4F6C061570;
+        Fri, 29 Oct 2021 18:45:29 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id bp7so5957873qkb.10;
+        Fri, 29 Oct 2021 18:45:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aM2UIDKlHlRVDNMmLAAR2KZpDgdEIfkzvAwIfORb7XU=;
-        b=MPVLBnNyPG7Q/KThwcQMZpg6zOdy9NX6BGc+y5juZfuTiL76Js8z2ZAWfkHEVtFyge
-         fU0wzrqiqzQ24n1Z04yXrKxyycH6E+67m1ePl4LIU/WQCrCFDhqR+I3bbIsfw+dEg/ZC
-         tmRFAKk7I4rcHZi/TRaoGoApvrJ3Ka+CmeICLJ/6gxQokwq2xMy3zsr2VwluZO/tSGze
-         UGEYnPt2U9zA8jQcolyVcfanknDjldZvpklou6PNia5HAc8IhU7OxvW7ESiSgYhlnW//
-         pcfSSAkSMsAVxVE9Pe9ItQi4kodCoeWCStz4pFbLxBhwbi/Z+Y3Zr2+AS0tWcRQj4Fnb
-         1Q7g==
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=iNQ0++hmy0A6R3WdtnuMuf9ZRK3yKg0+/OsDBDaHLUw=;
+        b=aypbOqafFEourQou7KVhHk7s2A3iyPBWtMWL8dYUtRY1LUJgt+bS+ENIN2tBL7ZrxF
+         GnGgPge5Zadb2aTYhoSANZjzVPKCraUgYPVoovRkXpKS8d/KJeUrX/l034nnUDWsTFDH
+         z4hY+7RhXcIuhVWJa12MiJb3OxSDKOQkHA4AvohJOpmdyxoNGN+v06nSS52NUjFp4HXd
+         H+B06ihPBoNV9uthwRZxosTkK/Aa7dKEght6dfF6DK3zwTPKhN/ItZ3cFF9h4FxDk//H
+         l0vA5Pqv/5QwVjMfBjN+3PG87tSsWBkv0XaDwpBagpDGWqVu5YEnN9SP6Rw69LYhjCWH
+         toUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aM2UIDKlHlRVDNMmLAAR2KZpDgdEIfkzvAwIfORb7XU=;
-        b=IFNzVNKaniiOU8fCPOvcPi2bNWmMp7HhjIx8tDzeX95TIwiUeO1GG/CQ1FoJuC3tq4
-         bNcnbaatKF2/A7CymQCu8W1/paKkxoxTT1BEf9ppbOs7riB1rzjJk67s72+kPwAb/gUf
-         44L3GIEq8RO8j1mGOXZ0HK06Vfyu13goakA7q06+ecHS2Knf9fHrdVHXWtt8O0kcm+vy
-         bms3Sjee3h4h4dabeJnN8GLJqtlraw5FhIA2Hubxll9E9Figi5Y/Y7mBxeJT4ORsmxrv
-         KSw/mvy8cz4pxSTuMvFeHiMYDp/aA+AAFRTETqaGXABsNxkEGEZ00AmvV4FQApufWbCU
-         bQgw==
-X-Gm-Message-State: AOAM5306cder/eblpToqiFYTZrXeRHZaP9FrSrFGh5X32YCrdXlDLM0K
-        BnDEPvAP0Kv4+Ce3tMUnHMz0wFOlJNrW/UB0Gj0=
-X-Google-Smtp-Source: ABdhPJygNNPndHZOPvUvjR+W4LGfsfL++Y/Bsge3qeff8gNMYOQ/wY/+CYxIy80nYNBtjd9zopHt4uY6TX5jpqEN62c=
-X-Received: by 2002:a05:6602:1594:: with SMTP id e20mr10725393iow.14.1635557682679;
- Fri, 29 Oct 2021 18:34:42 -0700 (PDT)
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=iNQ0++hmy0A6R3WdtnuMuf9ZRK3yKg0+/OsDBDaHLUw=;
+        b=I9cINYyUhp4JTcZXUc5qJdS8RAMbn2Q8O8wvvTP+06zMNd3C47jmMuzplaRHWjnsnL
+         P4JVg5nTK1j8Cy8ub13nQr5af/lhaOf2rfwlpuQCNKRvzHSAvGYadlSH3QjXn/nHI89Z
+         fYiHfKItxX+WsPDuC5obXBFTH1LYUokQsjYtFxXuVKPnpXqtcTw0VcUUWRA8HazgxWL+
+         z3QZ7zUDvWqunWafV3PNhM732nk/4fuUhh3xnZqUDcq5lf1F/2FYUTuOu3OthbTSCHkT
+         /A+NicZDMh+N3Or4iFQDiAVElPiRIjx67lQWdgllPA9IiyiuHYkoGu9xnpC+BgUuoADg
+         XADg==
+X-Gm-Message-State: AOAM531rN5MXBI2vk6C+zA2AvJx+v78b5yU4O+FeUmnMb9b2jWL6N32J
+        XpKCNH/gg+Tl30w1hWyZlEs=
+X-Google-Smtp-Source: ABdhPJyqHJXkjHfPFqLXj+W310DuAE7tkqY5CwBlO9pBcSJCtFVkE7f75XNwlHmyolK6IRuRemfHRg==
+X-Received: by 2002:a05:620a:bd6:: with SMTP id s22mr11451090qki.306.1635558328632;
+        Fri, 29 Oct 2021 18:45:28 -0700 (PDT)
+Received: from [192.168.1.49] (c-67-187-90-124.hsd1.ky.comcast.net. [67.187.90.124])
+        by smtp.gmail.com with ESMTPSA id b193sm3098436qkg.3.2021.10.29.18.45.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Oct 2021 18:45:28 -0700 (PDT)
+Subject: Re: [PATCH v2] of/unittest: Disable new dtc
+ node_name_vs_property_name and interrupt_map warnings
+From:   Frank Rowand <frowand.list@gmail.com>
+To:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+References: <20211028130423.4025578-1-robh@kernel.org>
+ <ab53d658-aeec-7606-3089-3b1e8b299138@gmail.com>
+Message-ID: <23f6c4f5-531d-56e1-1d68-305c37c01510@gmail.com>
+Date:   Fri, 29 Oct 2021 20:45:27 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20200320212833.3507-1-sean.j.christopherson@intel.com>
- <20200320212833.3507-24-sean.j.christopherson@intel.com> <CAJhGHyD=S6pVB+OxM7zF0_6LnMUCLqyTfMK4x9GZsdRHZmgN7Q@mail.gmail.com>
- <YXrAM9MNqgLTU6+m@google.com> <CAJhGHyBKVUsuKdvfaART6NWF7Axk5=eFQLidhGrM=mUO2cv2vw@mail.gmail.com>
- <YXwq+Q3+I81jwv7G@google.com>
-In-Reply-To: <YXwq+Q3+I81jwv7G@google.com>
-From:   Lai Jiangshan <jiangshanlai+lkml@gmail.com>
-Date:   Sat, 30 Oct 2021 09:34:31 +0800
-Message-ID: <CAJhGHyBNazRUiwPT5nGC=JNYX96J1dP9Y+KWFz7TeYuT3teYZg@mail.gmail.com>
-Subject: Re: [PATCH v3 23/37] KVM: nVMX: Add helper to handle TLB flushes on
- nested VM-Enter/VM-Exit
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ben Gardon <bgardon@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Liran Alon <liran.alon@oracle.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        John Haxby <john.haxby@oracle.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <ab53d658-aeec-7606-3089-3b1e8b299138@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-/
+On 10/28/21 8:12 PM, Frank Rowand wrote:
+> Hi Rob,
+> 
+> On 10/28/21 8:04 AM, Rob Herring wrote:
+>> The unittest dtbs have various intentional errors which cause warnings.
+>> With the latest dtc sync to v1.6.1-19-g0a3a9d3449c8, we need to disable
+>> some new checks: node_name_vs_property_name and interrupt_map warnings.
+>> These warnings are also generated for static_base_1.dtb, so add
+>> DTC_FLAGS for it.
+>>
+>> Note that the interrupt_map warnings only appear once interrupt_provider
+>> warning is re-enabled globally.
+>>
+>> drivers/of/unittest-data/tests-interrupts.dtsi:32.26-35.6: Warning (interrupt_map): /testcase-data/interrupts/intmap1: Missing '#address-cells' in interrupt-map provider
+>>
+>> Fixes: e76187b9792e ("scripts/dtc: Update to upstream version v1.6.1-19-g0a3a9d3449c8")
+>> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+>> Cc: Frank Rowand <frowand.list@gmail.com>
+>> Signed-off-by: Rob Herring <robh@kernel.org>
+>> ---
+>>  drivers/of/unittest-data/Makefile | 8 +++++++-
+>>  1 file changed, 7 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/of/unittest-data/Makefile b/drivers/of/unittest-data/Makefile
+>> index a5d2d9254b2c..fbded24c608c 100644
+>> --- a/drivers/of/unittest-data/Makefile
+>> +++ b/drivers/of/unittest-data/Makefile
+>> @@ -37,7 +37,9 @@ DTC_FLAGS_overlay_base += -@
+>>  DTC_FLAGS_testcases += -@
+>>  
+>>  # suppress warnings about intentional errors
+>> -DTC_FLAGS_testcases += -Wno-interrupts_property
+>> +DTC_FLAGS_testcases += -Wno-interrupts_property \
+>> +	-Wno-node_name_vs_property_name \
+>> +	-Wno-interrupt_map
+>>  
+>>  # Apply overlays statically with fdtoverlay.  This is a build time test that
+>>  # the overlays can be applied successfully by fdtoverlay.  This does not
+>> @@ -82,6 +84,10 @@ apply_static_overlay_1 := overlay_0.dtbo \
+>>  
+>>  apply_static_overlay_2 := overlay.dtbo
+>>  
+>> +DTC_FLAGS_static_base_1 += -Wno-interrupts_property \
+>> +	-Wno-node_name_vs_property_name \
+>> +	-Wno-interrupt_map
+>> +
+>>  static_test_1-dtbs := static_base_1.dtb $(apply_static_overlay_1)
+>>  static_test_2-dtbs := static_base_2.dtb $(apply_static_overlay_2)
+>>  
+>>
+> 
+> Thanks for splitting the DTC_FLAGS into per file values.
+> 
+> I dug into the unittest code that uses the dts node that causes the
+> interrupt map warning and do not see any reason not to fix the dts
+> so that the warning will not occur, instead of masking it with
+> the DTC_FLAGS.  I just now submitted a patch to fix the .dtsi at
+> 
+>   https://lore.kernel.org/all/20211029005802.2047081-1-frowand.list@gmail.com/
 
-On Sat, Oct 30, 2021 at 1:10 AM Sean Christopherson <seanjc@google.com> wrote:
->
-> TL;DR: I'll work on a proper series next week, there are multiple things that need
-> to be fixed.
->
-> On Fri, Oct 29, 2021, Lai Jiangshan wrote:
-> > On Thu, Oct 28, 2021 at 11:22 PM Sean Christopherson <seanjc@google.com> wrote:
-> > > The fix should simply be:
-> > >
-> > > diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> > > index eedcebf58004..574823370e7a 100644
-> > > --- a/arch/x86/kvm/vmx/nested.c
-> > > +++ b/arch/x86/kvm/vmx/nested.c
-> > > @@ -1202,17 +1202,15 @@ static void nested_vmx_transition_tlb_flush(struct kvm_vcpu *vcpu,
-> > >          *
-> > >          * If a TLB flush isn't required due to any of the above, and vpid12 is
-> > >          * changing then the new "virtual" VPID (vpid12) will reuse the same
-> > > -        * "real" VPID (vpid02), and so needs to be flushed.  There's no direct
-> > > -        * mapping between vpid02 and vpid12, vpid02 is per-vCPU and reused for
-> > > -        * all nested vCPUs.  Remember, a flush on VM-Enter does not invalidate
-> > > -        * guest-physical mappings, so there is no need to sync the nEPT MMU.
-> > > +        * "real" VPID (vpid02), and so needs to be flushed.  Like the !vpid02
-> > > +        * case above, this is a full TLB flush from the guest's perspective.
-> > >          */
-> > >         if (!nested_has_guest_tlb_tag(vcpu)) {
-> > >                 kvm_make_request(KVM_REQ_TLB_FLUSH_CURRENT, vcpu);
-> > >         } else if (is_vmenter &&
-> > >                    vmcs12->virtual_processor_id != vmx->nested.last_vpid) {
-> > >                 vmx->nested.last_vpid = vmcs12->virtual_processor_id;
-> > > -               vpid_sync_context(nested_get_vpid02(vcpu));
-> > > +               kvm_make_request(KVM_REQ_TLB_FLUSH_GUEST, vcpu);
-> >
-> > This change is neat.
->
-> Heh, yeah, but too neat to be right :-)
->
-> > But current KVM_REQ_TLB_FLUSH_GUEST flushes vpid01 only, and it doesn't flush
-> > vpid02.  vmx_flush_tlb_guest() might need to be changed to flush vpid02 too.
->
-> Hmm.  I think vmx_flush_tlb_guest() is straight up broken.  E.g. if EPT is enabled
-> but L1 doesn't use EPT for L2 and doesn't intercept INVPCID, then KVM will handle
-> INVPCID from L2.  That means the recent addition to kvm_invalidate_pcid() (see
-> below) will flush the wrong VPID.  And it's incorrect (well, more than is required
-> by the SDM) to flush both VPIDs because flushes from INVPCID (and flushes from the
-> guest's perspective in general) are scoped to the current VPID, e.g. a "full" TLB
-> flush in the "host" by toggling CR4.PGE flushes only the current VPID:
+That thread ended up deciding that the .dtsi should not be fixed to
+avoid the warning (it was a deliberate error to allow a specific test),
 
-I think KVM_REQ_TLB_FLUSH_GUEST/kvm_vcpu_flush_tlb_guest/vmx_flush_tlb_guest
-was deliberately designed for the L1 guest only.  It can be seen from the code,
-from the history, and from the caller's side.  For example,
-nested_vmx_transition_tlb_flush() knows KVM_REQ_TLB_FLUSH_GUEST flushes
-L1 guest:
+so for the [v2] patch that started this thread:
 
-        /*
-         * If vmcs12 doesn't use VPID, L1 expects linear and combined mappings
-         * for *all* contexts to be flushed on VM-Enter/VM-Exit, i.e. it's a
-         * full TLB flush from the guest's perspective.  This is required even
-         * if VPID is disabled in the host as KVM may need to synchronize the
-         * MMU in response to the guest TLB flush.
-         *
-         * Note, using TLB_FLUSH_GUEST is correct even if nested EPT is in use.
-         * EPT is a special snowflake, as guest-physical mappings aren't
-         * flushed on VPID invalidations, including VM-Enter or VM-Exit with
-         * VPID disabled.  As a result, KVM _never_ needs to sync nEPT
-         * entries on VM-Enter because L1 can't rely on VM-Enter to flush
-         * those mappings.
-         */
-        if (!nested_cpu_has_vpid(vmcs12)) {
-                kvm_make_request(KVM_REQ_TLB_FLUSH_GUEST, vcpu);
-                return;
-        }
+Reviewed-by: Frank Rowand <frowand.list@gmail.com>
+Tested-by: Frank Rowand <frowand.list@gmail.com>
 
-While handle_invvpid() doesn't use KVM_REQ_TLB_FLUSH_GUEST.
+> 
+> -Frank
+> 
 
-So, I don't think KVM_REQ_TLB_FLUSH_GUEST, kvm_vcpu_flush_tlb_guest
-or vmx_flush_tlb_guest is broken since they are for L1 guests.
-What we have to do is to consider is it worth extending them for
-nested guests for the convenience of nested code.
-
-I second that they are extended.
-
-A small comment in your proposal: I found that KVM_REQ_TLB_FLUSH_CURRENT
-and KVM_REQ_TLB_FLUSH_GUEST is to flush "current" vpid only, some special
-work needs to be added when switching mmu from L1 to L2 and vice versa:
-handle the requests before switching.
