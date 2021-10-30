@@ -2,131 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E2EE4407FF
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 10:19:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4330F440803
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 10:36:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231733AbhJ3IVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Oct 2021 04:21:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56156 "EHLO
+        id S231693AbhJ3IiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Oct 2021 04:38:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229546AbhJ3IVe (ORCPT
+        with ESMTP id S229546AbhJ3IiX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Oct 2021 04:21:34 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0628C061570;
-        Sat, 30 Oct 2021 01:19:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=OsAU1X/ym1O2wGNMWXfa64U4N11rGKkMYQvMe3I0gUI=; b=Znk8T7HkbjMxUm+OAnv03Ub4Fs
-        uevcDyelW6+m+1hwPFX+kz/FfOEvcvO/R1s6hxVQr6hbHCyinV2PKAIOphy2XUuGCGYCpBt04olIN
-        Mso9Ny7kq9tx6YRKpydNqUIz/nZyPu/TmdzWyXJmc2eveFDhQ/A/8K06JknYDtlrLcSQf35la5uVq
-        vo6ndIaYmMSzngZxwqKTb4PZPtcN6A5F2Zupxc2jDjn5urpfosjhlmd1J7ctewQBBTR1UFbZ076BY
-        ysTw/pnYu194JxL5IImt8C1uN6BR2MRWMTxtWFYjV1uRrNcXifNZv594C3SlGHNHEaPxq+QRyIhAR
-        DTNWbjLA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mgjXT-002JF8-L4; Sat, 30 Oct 2021 08:16:41 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 10A1B986244; Sat, 30 Oct 2021 10:16:31 +0200 (CEST)
-Date:   Sat, 30 Oct 2021 10:16:31 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>, X86 ML <x86@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-hardening@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        llvm@lists.linux.dev, joao@overdrivepizza.com
-Subject: Re: [PATCH] static_call,x86: Robustify trampoline patching
-Message-ID: <20211030081631.GF174730@worktop.programming.kicks-ass.net>
-References: <20211027120515.GC54628@C02TD0UTHF1T.local>
- <CAMj1kXEx10gC8eH7rV-GbZZj2M3uDue6HYsKb+A5J01zOxm_FA@mail.gmail.com>
- <20211027124852.GK174703@worktop.programming.kicks-ass.net>
- <YXlOd1lyKZKAcJfA@hirez.programming.kicks-ass.net>
- <CAMj1kXHKh7wv6JqusVnoiQDMm7ApFq2ujzbfWmM9AzLKFehhAA@mail.gmail.com>
- <YXlcMluaysPBF92J@hirez.programming.kicks-ass.net>
- <CAMj1kXECTdDLVMk2JduU5mV2TR0Cv=hZ9QOpYRsRM1jfvvNikw@mail.gmail.com>
- <CABCJKufpS4jJxHqk8=bd1JCNbKfmLDKBbjbhjrar2+YQJFiprg@mail.gmail.com>
- <20211029200324.GR174703@worktop.programming.kicks-ass.net>
- <20211030074758.GT174703@worktop.programming.kicks-ass.net>
+        Sat, 30 Oct 2021 04:38:23 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83EC2C061570;
+        Sat, 30 Oct 2021 01:35:53 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id g11so77427pfv.7;
+        Sat, 30 Oct 2021 01:35:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=t9PSPHm2k4QOp5zNTuQ+K1Jl7bhvH3VWIPoK4iT8c/0=;
+        b=ZrsSBl+/MDEpv7Y65Ax1HA1cN9nGpuWzehtcWTU7P05oXwi3we6fd7Qn6om8SwG0OL
+         /+G5lVnsIDQSODKPvQC4yR+tJb/7uJUJ0bZg1oqUxOnnzmvyKrThnEoNsw2UCKnGkz9l
+         pOK1HJyndXleoD6f2db7vXI2dnNFUgH1I5f1PXLFnTsE2EjGO9/+ROWU3oC5t4OSBhe2
+         /tii+NC/qjJylkQLCqVNL/aXD8DaYdelGMQNN85Z1rDHsAysclUD9xaB7KzGvnhzMeiq
+         8jUuMoW37xTojADEoJzuSmgU3CeAvb7wD8ljRVUk4bFiP4Znv0ZNrSjynbXN/jh3oOB6
+         Y7iQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=t9PSPHm2k4QOp5zNTuQ+K1Jl7bhvH3VWIPoK4iT8c/0=;
+        b=PfYk7dzoXNQnqsYIyQvf+Zf1XIglAWBS8e0p/Ot4lbQKpRqDlRjO/3r3TsM/hmThnk
+         ZoOEZTQDFcBOEf7i9U0aYbFd3txquWdz/UTzj4cb4RaphNT2gdzXqE+H9kYdo5a2veu3
+         X0MZbrxjKd4qd6wI/fV3ilS94Eu2AqmloQqfPVHYgz0cgqAtWZUsZ4q3tUFbQ35WnHJM
+         J9RFlCYBMIB32X0drm7/+pNfCIdP5n0rG2aOPL+48Lp7WMPJ7wyoXzB4yh0EfJqIEOWC
+         w569Sj+Hf+CP8nYqcft+3V99orIr6EyO8SQTcZjsZLRW5Wf0XK/p42Hamteh/yoa87pO
+         vKJQ==
+X-Gm-Message-State: AOAM531MyPIzoZxitLfY3MyvjoOE3e8li4m8jmHjVP8HnhfjwWFF8Srk
+        VBAJf1XRwEkDRn+LvzHVEEg=
+X-Google-Smtp-Source: ABdhPJzrRu1u1SWnSFTl7kg5HRhZwrpVnW5XQ3BDk7FzFnB0XYe84W/kSWWGKMXCNHSzL5KbXayqjA==
+X-Received: by 2002:a05:6a00:1794:b0:47b:e4c8:e4f8 with SMTP id s20-20020a056a00179400b0047be4c8e4f8mr16225049pfg.6.1635582952848;
+        Sat, 30 Oct 2021 01:35:52 -0700 (PDT)
+Received: from shinobu (113x37x72x24.ap113.ftth.ucom.ne.jp. [113.37.72.24])
+        by smtp.gmail.com with ESMTPSA id mw9sm1274938pjb.49.2021.10.30.01.35.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 30 Oct 2021 01:35:52 -0700 (PDT)
+Date:   Sat, 30 Oct 2021 17:35:46 +0900
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     David Lechner <david@lechnology.com>
+Cc:     linux-iio@vger.kernel.org, Robert Nelson <robertcnelson@gmail.com>,
+        linux-kernel@vger.kernel.org, jic23@kernel.org
+Subject: Re: [PATCH 3/8] counter/ti-eqep: add support for unit timer
+Message-ID: <YX0D4j5B++G3QTj1@shinobu>
+References: <20211017013343.3385923-1-david@lechnology.com>
+ <20211017013343.3385923-4-david@lechnology.com>
+ <YXZvQSU6bRRaWD89@shinobu>
+ <253916e2-a808-8786-ac72-60a1a62b1531@lechnology.com>
+ <YXpVyjnrrmRbpHJU@shinobu>
+ <f5e40a22-3c7f-4d4d-d160-fe5b5a7dd72e@lechnology.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="iAECRAllJz4Bp4cu"
 Content-Disposition: inline
-In-Reply-To: <20211030074758.GT174703@worktop.programming.kicks-ass.net>
+In-Reply-To: <f5e40a22-3c7f-4d4d-d160-fe5b5a7dd72e@lechnology.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 30, 2021 at 09:47:58AM +0200, Peter Zijlstra wrote:
-> On Fri, Oct 29, 2021 at 10:03:24PM +0200, Peter Zijlstra wrote:
-> 
-> > So I had a bit of a peek at what clang generates:
-> > 
-> >     3fa4:       48 c7 c7 00 00 00 00    mov    $0x0,%rdi        3fa7: R_X86_64_32S      __SCK__x86_pmu_handle_irq
-> >     3fab:       48 c7 c6 00 00 00 00    mov    $0x0,%rsi        3fae: R_X86_64_32S      __SCT__x86_pmu_handle_irq.cfi_jt
-> >     3fb2:       e8 00 00 00 00          call   3fb7 <init_hw_perf_events+0x1dc> 3fb3: R_X86_64_PLT32    __static_call_update-0x4
-> > 
-> > So this then gives the trampoline jump table entry to
-> > __static_call_update(), with the result that it will rewrite the
-> > jump-table entry, not the trampoline!
-> > 
-> > Now it so happens that the trampoline looks *exactly* like the
-> > jump-table entry (one jmp.d32 instruction), so in that regards it'll
-> > again 'work'.
-> > 
-> > But this is all really, as in *really*, wrong. And I'm really sad I'm
-> > the one to have to discover this, even though I've mentioned
-> > static_call()s being tricky in previous reviews.
-> 
-> The below makes the clang-cfi build properly sick:
-> 
-> [    0.000000] trampoline signature fail
-> [    0.000000] ------------[ cut here ]------------
-> [    0.000000] kernel BUG at arch/x86/kernel/static_call.c:65!
 
-So fundamentally I think the whole notion that the address of a function
-is something different than 'the address of that function' is an *utter*
-fail.
+--iAECRAllJz4Bp4cu
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-So things like FineIBT use a scheme where they pass a hash value along
-with the indirect call, which is veryfied at the other end. Can't we
-adjust it like:
+On Thu, Oct 28, 2021 at 08:42:49AM -0500, David Lechner wrote:
+> On 10/28/21 2:48 AM, William Breathitt Gray wrote:
+> > On Wed, Oct 27, 2021 at 10:28:59AM -0500, David Lechner wrote:
+> >> On 10/25/21 3:48 AM, William Breathitt Gray wrote:
+> >>> On Sat, Oct 16, 2021 at 08:33:38PM -0500, David Lechner wrote:
+> >>>> This adds support to the TI eQEP counter driver for the Unit Timer.
+> >>>> The Unit Timer is a device-level extension that provides a timer to =
+be
+> >>>> used for speed calculations. The sysfs interface for the Unit Timer =
+is
+> >>>> new and will be documented in a later commit. It contains a R/W time
+> >>>> attribute for the current time, a R/W period attribute for the timeo=
+ut
+> >>>> period and a R/W enable attribute to start/stop the timer. It also
+> >>>> implements a timeout event on the chrdev interface that is triggered
+> >>>> each time the period timeout is reached.
+> >>>>
+> >>>> Signed-off-by: David Lechner <david@lechnology.com>
+> >>>
+> >>> I'll comment on the sysfs interface in the respective docs patch. Some
+> >>> comments regarding this patch below.
+> >>>
+> >>
+> >> ...
+> >>
+> >>>> +static int ti_eqep_unit_timer_period_write(struct counter_device *c=
+ounter,
+> >>>> +					   u64 value)
+> >>>> +{
+> >>>> +	struct ti_eqep_cnt *priv =3D counter->priv;
+> >>>> +	u32 quprd;
+> >>>> +
+> >>>> +	/* convert nanoseconds to timer ticks */
+> >>>> +	quprd =3D value =3D mul_u64_u32_div(value, priv->sysclkout_rate, N=
+SEC_PER_SEC);
+> >>>> +	if (quprd !=3D value)
+> >>>> +		return -ERANGE;
+> >>>> +
+> >>>> +	/* protect against infinite unit timeout interrupts */
+> >>>> +	if (quprd =3D=3D 0)
+> >>>> +		return -EINVAL;
+> >>>
+> >>> I doubt there's any practical reason for a user to set the timer peri=
+od
+> >>> to 0, but perhaps we should not try to protect users from themselves
+> >>> here. It's very obvious and expected that setting the timer period to=
+ 0
+> >>> results in timeouts as quickly as possible, so really the user should=
+ be
+> >>> left to reap the fruits of their decision regardless of how asinine t=
+hat
+> >>> decision is.
+> >>
+> >> Even if the operating system ceases operation because the interrupt
+> >> handler keeps running because clearing the interrupt has no effect
+> >> in this condition?
+> >=20
+> > I don't disagree with you that configuring the device to repeatedly
+> > timeout without pause would be a waste of system resources. However, it
+> > is more appropriate for this protection to be located in a userspace
+> > application rather than the driver code here.
+> >=20
+> > The purpose of a driver is to expose the functionality of a device in an
+> > understandable and consistent manner. Drivers should not dictate what a
+> > user does with their device, but rather should help facilitate the
+> > user's control so that the device behaves as would be expected given
+> > such an interface.
+> >=20
+> > For this particular case, the device is capable of sending an interrupt
+> > when a timeout events occurs, and the timeout period can be adjusted;
+> > setting the timeout period lower and lower results in less and less time
+> > between timeout events. The behavior and result of setting the timeout
+> > period lower is well-defined and predictable; it is intuitive that
+> > configuring the timeout period to 0, the lowest value possible, results
+> > in the shortest time possible between timeouts: no pause at all.
+> >=20
+> > As long as the functionality of this device is exposed in such an
+> > understandable and consistent manner, the driver succeeds in serving its
+> > purpose. So I believe a timeout period of 0 is a valid configuration
+> > for this driver to allow, albeit a seemingly pointless one for users to
+> > actually choose. To that end, simply set the default value of QUPRD to
+> > non-zero on probe() as you do already in this patch and let the user be
+> > free to adjust if they so decide.
+> >=20
+> > William Breathitt Gray
+> >=20
+>=20
+> I disagree. I consider this a crash. The system becomes completely
+> unusable and you have to pull power to turn it off, potentially
+> leading to data loss and disk corruption.
 
+I hope I'm not being excessively pedantic here -- I'll concede to a
+third opion on this if someone else wants to chime in -- but I want to
+ensure that we are not going outside the scope of what a driver should
+do. Note that any device is capable of flooding the system with
+interrupts (e.g. a counter operating on a high enough frequency
+overflowing a low ceiling), so I don't think that reason alone will pass
+muster. Nevertheless, it is important to define when a driver should
+return an error or not.
 
-foo.cfi:
-	endbr
-	xorl $0xdeadbeef, %r10d
-	jz foo
-	ud2
-	nop	# make it an even 16 bytes
-foo:
-	# actual function text
+Take for example, the period range check right above. If a user requests
+the device do something it cannot, such as counting down from a period
+value that is too high for it to represent internally, then it is
+appropriate to return an error: the device cannot perform the request
+and as such the request is not valid input for the driver.
 
+However, when we apply the same method to the zero value case -- a user
+requests a timeout period of 0 -- the device is capable of performing
+that request: the device is capable of waiting 0 nanoseconds and as such
+the request is a valid input for the driver because it can be performed
+by the device exactly as expected by the user. As long as the behavior
+of a request is well-defined, we must assume the user knows what they
+are doing, and thus should be permitted to request their device perform
+that behavior.
 
-Then have the address of foo, be the address of foo, like any normal
-sane person would expect. Have direct calls to foo, go to foo, again, as
-expected.
+A driver should not speculate on the intent of a user's actions.
+Restricting what a user can do with their device is a matter of
+configuration policy, and configuration policy belongs appropriately in
+userspace. Rather, the scope of a driver should be limited narrowly to
+exposure of a device functionality in a standard and predictable way.
 
-When doing an indirect call (to r11, as clang does), then, and only
-then, do:
+William Breathitt Gray
 
-	movl $0xdeadbeef, %r10d
-	subq $0x10, %r11
-	call *%r11
+--iAECRAllJz4Bp4cu
+Content-Type: application/pgp-signature; name="signature.asc"
 
-	# if the r11 lives, add:
-	addq $0x10, %r11
+-----BEGIN PGP SIGNATURE-----
 
+iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmF9A9QACgkQhvpINdm7
+VJIPyw/+KKWpbFVnxxqNc75d7n80BlKyJDwICE1wa0pCJKB3FiD3L7yFTrX+pjtl
+gwHNdRZ5v1FwUoPxTAiqVzDuPDHZQq44wzCspznvL+jcsOFZPqqos8+qQ5xugEIp
+pbf70AGh0QIru6IAq1RH9NxkR8b0pryiJPTNdIPz/4YTLI7c7q8IV6GqN9GjaVtg
+fJvKemuP8nS5adaTCMzxE60Uu9CHMFjhKQDfs0WMua7XCvZBhH/uus8ghwtmnlHF
+ISFujrnMn6dFInDfL4ZMv0L82l6P6tBh3tUpB14u6Tc3e3b3u/FjVx7VU7pmja5J
+KczI/5Lo0gboX+VfJYkEMmPI3rhZwelNwCprdcFgvz3viHQT9KZgf/jEZdU0PmUg
+uatEmBzV7GWBnXfSdZNRDQcV5ifPBGNLOW7KspIW8vCeIPktFCd/927qYQkkE6Lo
+xojpvS1MVu69qNg57zSwVSxtkwYnrH/3XcjN9qHz26ZqgZSmlntxTnhFmyR0rFhg
+GNj8u6iBlDxbHffbsGnOJBWKLMSRwY53dY079KXCITrGm3MakSOoJO9oJycVihvC
+ZrV2dqnOc8jd86XmbcwRsSQSfwTxmTm6gY6XqF77tfoR0DFT6qAA/s+mlFALTwHU
+sQPwZRHC+FpZfb+pT46Ov+pEkY6AzBaXoMXxrqtL3HbNACOrpfg=
+=KZ1I
+-----END PGP SIGNATURE-----
 
-Then only when caller and callee agree 0xdeadbeef is the password, does
-the indirect call go through.
-
-Why isn't this a suitable CFI scheme even without IBT?
-
+--iAECRAllJz4Bp4cu--
