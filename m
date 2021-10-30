@@ -2,134 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B9C04409D7
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 17:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CAAF4409E2
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 17:14:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231932AbhJ3PMl convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 30 Oct 2021 11:12:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47286 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229993AbhJ3PMj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Oct 2021 11:12:39 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EB0BE60F93;
-        Sat, 30 Oct 2021 15:10:06 +0000 (UTC)
-Date:   Sat, 30 Oct 2021 16:14:35 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     "Sa, Nuno" <Nuno.Sa@analog.com>
-Cc:     "Miclaus, Antoniu" <Antoniu.Miclaus@analog.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v2 1/2] iio: frequency: admv1013: add support for
- ADMV1013
-Message-ID: <20211030161435.6ceaab21@jic23-huawei>
-In-Reply-To: <PH0PR03MB636669F27992B59B8A7B603D99879@PH0PR03MB6366.namprd03.prod.outlook.com>
-References: <20211027092333.5270-1-antoniu.miclaus@analog.com>
-        <20211027184324.51811ef1@jic23-huawei>
-        <CY4PR03MB3399339315289769615E4DCD9B869@CY4PR03MB3399.namprd03.prod.outlook.com>
-        <20211028113101.0587a658@jic23-huawei>
-        <PH0PR03MB636669F27992B59B8A7B603D99879@PH0PR03MB6366.namprd03.prod.outlook.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S231971AbhJ3PRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Oct 2021 11:17:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230086AbhJ3PRV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Oct 2021 11:17:21 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76296C061570;
+        Sat, 30 Oct 2021 08:14:51 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id 107-20020a9d0a74000000b00553bfb53348so18186973otg.0;
+        Sat, 30 Oct 2021 08:14:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=X6RCTCYwm3/SXNaShlhmKrezJJSOLuibckOFv7EdMtA=;
+        b=GBQfmLB9rK8QO11H3/iiL5c3NXlce6ytKdtnTYRjAGMeEILcBUw8SHYm325uGz3yfM
+         Q8biLvfEPreqXrinW8G5Ke/ZGqdXT7WUXa0SvU6JW7I0lHhn6KLFjwGcUITjhEbgcifs
+         rppzEttoU/5sVvVCdvLxCzOJOHxfH6gK7l6Ptu2zy6YseUPAGBOTly/i/nRofn7Ld6bm
+         w1Zqr/2NOXvz8ZFG0wm7Ui1+GHWz2D9zsvXj01cb/hyl55KWfTnyYFMH3cxJgnlPwIj0
+         5yWV6fdOrRZnPJsCFhGguqLOKY4EJs3LnmGf7bKC9TbSaA0/j3m7ozi+gfe3WhsQPBhH
+         52/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=X6RCTCYwm3/SXNaShlhmKrezJJSOLuibckOFv7EdMtA=;
+        b=lcuQiw+HILgv3YMuXvkmwM58Wwx+wJuyTVAORImj6HsR+DcyjVAL9c8m1xVUcQyqRd
+         bN8FQXxFQGKW8nGs02zC5+Edhw6NpjGsAZ+ulzW5wbsoE7HCPa0dXUt13ujJoP1j2c/R
+         XU9FUaXXq4EGgSnDY79sxqeP0AUXZhPMBCMhsztjpKkLyGpmM21r0xwJu6PdIQFCXKwe
+         eLkwwJV5NB1PYOCO9vBVyz1R563/U/YwQVvfpprrXZGDAIIh2mh7msZfq23kbxNSsBl4
+         x9xBY1L84w/jpE/hDgq6VB5pb6U22TazxpNvk+iseIzp0OX3/12JuYR2tUTbj+1vgPE3
+         Quqw==
+X-Gm-Message-State: AOAM531KJL7dIco8Qis9XHz0cA6GrS1gr+uq0rXI3dAixUP8lPZ2shsB
+        6f43LfP/yP2ilWHXQ7LCgAeaeCAoL5Q=
+X-Google-Smtp-Source: ABdhPJziGSHtvRnQ2S6aCq4nTdDzXH4tcMmFr143ujhayW55vTUS4MDiK2VJPaqNmW3abpoa3dvuZg==
+X-Received: by 2002:a05:6830:237a:: with SMTP id r26mr13897513oth.310.1635606890150;
+        Sat, 30 Oct 2021 08:14:50 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id j3sm1806576oig.15.2021.10.30.08.14.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 30 Oct 2021 08:14:49 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH 7/7] watchdog: s3c2410: Let kernel kick watchdog
+To:     Sam Protsenko <semen.protsenko@linaro.org>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        linux-watchdog@vger.kernel.org,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>
+References: <20211028183527.3050-1-semen.protsenko@linaro.org>
+ <20211028183527.3050-8-semen.protsenko@linaro.org>
+ <1ad6b625-4388-bc78-e258-eae0b9357b96@roeck-us.net>
+ <CAPLW+4kphtac24fcpVUENAMUAdHp2fkzJ0N_r_63Soq6R2VZBg@mail.gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <7c9a8dd4-7607-55a2-3d65-a445fa246667@roeck-us.net>
+Date:   Sat, 30 Oct 2021 08:14:47 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <CAPLW+4kphtac24fcpVUENAMUAdHp2fkzJ0N_r_63Soq6R2VZBg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Oct 2021 07:49:41 +0000
-"Sa, Nuno" <Nuno.Sa@analog.com> wrote:
-
-> Hi Jonathan,
+On 10/30/21 7:29 AM, Sam Protsenko wrote:
+> On Fri, 29 Oct 2021 at 03:30, Guenter Roeck <linux@roeck-us.net> wrote:
+>>
+>> On 10/28/21 11:35 AM, Sam Protsenko wrote:
+>>> When "tmr_atboot" module param is set, the watchdog is started in
+>>> driver's probe. In that case, also set WDOG_HW_RUNNING bit to let
+>>> watchdog core driver know it's running. This way wathcdog core can kick
+>>> the watchdog for us (if CONFIG_WATCHDOG_HANDLE_BOOT_ENABLED option is
+>>> enabled), until user space takes control.
+>>>
+>>> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+>>> ---
+>>>    drivers/watchdog/s3c2410_wdt.c | 26 +++++++++++++++-----------
+>>>    1 file changed, 15 insertions(+), 11 deletions(-)
+>>>
+>>> diff --git a/drivers/watchdog/s3c2410_wdt.c b/drivers/watchdog/s3c2410_wdt.c
+>>> index ca082b1226e3..9af014ff1468 100644
+>>> --- a/drivers/watchdog/s3c2410_wdt.c
+>>> +++ b/drivers/watchdog/s3c2410_wdt.c
+>>> @@ -732,6 +732,21 @@ static int s3c2410wdt_probe(struct platform_device *pdev)
+>>>        wdt->wdt_device.bootstatus = s3c2410wdt_get_bootstatus(wdt);
+>>>        wdt->wdt_device.parent = dev;
+>>>
+>>> +     /*
+>>> +      * If "tmr_atboot" param is non-zero, start the watchdog right now. Also
+>>> +      * set WDOG_HW_RUNNING bit, so that watchdog core can kick the watchdog.
+>>> +      *
+>>> +      * If we're not enabling the watchdog, then ensure it is disabled if it
+>>> +      * has been left running from the bootloader or other source.
+>>> +      */
+>>> +     if (tmr_atboot && started == 0) {
+>>> +             dev_info(dev, "starting watchdog timer\n");
+>>> +             s3c2410wdt_start(&wdt->wdt_device);
+>>> +             set_bit(WDOG_HW_RUNNING, &wdt->wdt_device.status);
+>>> +     } else if (!tmr_atboot) {
+>>> +             s3c2410wdt_stop(&wdt->wdt_device);
+>>> +     }
+>>> +
+>>
+>> This doesn't cover the case where the watchdog is already enabled by the BIOS.
+>> In that case, WDOG_HW_RUNNING won't be set, and the watchdog will time out
+>> if the userspace handler is not loaded fast enough. The code should consistently
+>> set WDOG_HW_RUNNING if the watchdog is running.
+>>
 > 
-> > -----Original Message-----
-> > From: Jonathan Cameron <jic23@kernel.org>
-> > Sent: Thursday, October 28, 2021 12:31 PM
-> > To: Miclaus, Antoniu <Antoniu.Miclaus@analog.com>
-> > Cc: robh+dt@kernel.org; linux-iio@vger.kernel.org;
-> > devicetree@vger.kernel.org; linux-kernel@vger.kernel.org; Sa, Nuno
-> > <Nuno.Sa@analog.com>; Lars-Peter Clausen <lars@metafoo.de>
-> > Subject: Re: [PATCH v2 1/2] iio: frequency: admv1013: add support for
-> > ADMV1013
-> > 
-> > On Thu, 28 Oct 2021 10:08:08 +0000
-> > "Miclaus, Antoniu" <Antoniu.Miclaus@analog.com> wrote:
-> >   
-> > > Hello Jonathan,
-> > >
-> > > Thanks for the review!
-> > >
-> > > Regarding the interface for the Mixer Offset adjustments:
-> > > ADMV1013_MIXER_OFF_ADJ_P
-> > > ADMV1013_MIXER_OFF_ADJ_N
-> > >
-> > > These parameters are related to the LO feedthrough offset  
-> > calibration.  
-> > > (LO and sideband suppression)
-> > >
-> > > On this matter, my suggestion would be to add IIO calibration types,  
-> > something like:  
-> > > IIO_CHAN_INFO_CALIBFEEDTROUGH_POS
-> > > IIO_CHAN_INFO_CALIBFEEDTROUGH_NEG  
-> > 
-> > These sound too specific to me - we want an interface that is
-> > potentially useful
-> > in other places.  They are affecting the 'channel' which here is
-> > simply an alt voltage channel, but I'm assuming it's something like
-> > separate analog tweaks to the positive and negative of the differential
-> > pair?  
+> As I understand, in the case when bootloader started the watchdog, the
+> driver just stops it. You can see it in the code you replied to.
 > 
-> That's also my understanding. This kind of calibration seems to be very
-> specific for TX local oscillators...
+>      } else if (!tmr_atboot) {
+>              s3c2410wdt_stop(&wdt->wdt_device);
 > 
-> > Current channel is represented as a single index, but one route to this
-> > would be
-> > to have it as a differential pair.
-> > 
-> > out_altvoltage0-1_phase
-> > for the attribute that applies at the level of the differential pair and
-> > 
-> > out_altvoltage0_calibbias
-> > out_altvoltage1_calibbias
-> > For the P and N signal specific attributes.  
+> In other words, having "tmr_atboot" module param makes it irrelevant
+> whether bootloader enabled WDT or no.
 > 
-> Honestly, I'm not very enthusiastic with having out_altvoltage{0|1} as the
-> this applies to a single channel... Having this with separate indexes feels
-> odd to me. Even though we have the phase with "0-1", this can be a place
-> for misuse and confusion...
-> 
-> I was thinking about modifiers (to kind of represent differential channels)
-> but I don't think it would work out here... What about IIO_CHAN_INFO_CALIBBIAS_P
-> and  IIO_CHAN_INFO_CALIBBIAS_N? Or maybe just something like
-> IIO_CHAN_INFO_CALIBBIAS_DIFF and internally in IIO we would automatically
-> create both P and N sysfs files since I don't think it makes senses in any case to
-> just define one of the calibrations... Anyways, these are my 5 cents :)
 
-Definitely not a modifier.  It's almost arguable that these are different
-characteristics of the channel so I can live with the ABI perhaps, but
-unless this is a very common thing I'm not sure I want to burn 2 chan info
-bits for them. Note we are running very low on those anyway without changing
-how those are handled.  We will need to tackle that anyway, but let's not
-tie that to this driver.
+Sure, but I am concerned about "if (tmr_atboot && started)", which doesn't
+set WDOG_HW_RUNNING with your current code, and I was looking for something
+like
 
-I don't like the idea of adding core magic to spin multiple files from one
-without more usecases.  So for now use extended attributes for these if
-we go this way.
+	if (tmr_atboot) {
+		if (!started) {
+			dev_info(dev, "starting watchdog timer\n");
+			s3c2410wdt_start(&wdt->wdt_device);
+		}
+		set_bit(WDOG_HW_RUNNING, &wdt->wdt_device.status);
+	} else {
+		s3c2410wdt_stop(&wdt->wdt_device);
+	}
 
-I think I still prefer the separate channels approach.  Note this is how
-we deal with devices that are capable of either single ended or differential
-operation.  The channel numbering is reflecting the wire in both cases.
-However, I'm not sure we've ever made it clear the ABI would apply like this.
-We may have devices that use this interface but expect it to not apply to
-the differential case....
-
-Jonathan
-
-> 
-> - Nuno Sá
-
+Guenter
