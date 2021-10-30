@@ -2,123 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D799F4405F9
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 02:00:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A5574405FC
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 02:00:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231548AbhJ3ACa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 20:02:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33360 "EHLO
+        id S231669AbhJ3ADS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 20:03:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231154AbhJ3AC3 (ORCPT
+        with ESMTP id S231154AbhJ3ADP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 20:02:29 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6158C061570
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 16:59:59 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id f3so15892678lfu.12
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 16:59:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5g5uYOpUvbfjxaJiICWjHW49d1Em+rTKi4gF70TOHxg=;
-        b=JggKoMhlfFspzcDUsIkc347dS7xht2N8D6Ij6xACaoNBJdGrQOZmVnkuJlGDgtHdlH
-         IQEGiAZBzfrpI4fRfyb0N6bCAdm9mMfBNujFv89B5lZMaqOKosmVtAyjzKcOTS6ZddY0
-         JrmIYSDglEIKMpO0NF3EX1Pd0uGtkuqHaoc8wOPrNzrnjG+kj3OyiSDqFiLJSxHqymh3
-         KSxdlocXpFcaHiIHyonAZ2FhZGCimyRS7VUSO3QTfLlfa2NGTGo0dw/2cakK8VAzwM1j
-         G6ndx9q5ajcRNwsGaYxj9h09CYjCOocgAHsGMJwR8Dxv2PjajogZG6q7NrCBv2vZ4GUh
-         0jLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5g5uYOpUvbfjxaJiICWjHW49d1Em+rTKi4gF70TOHxg=;
-        b=KwweqXdTBBJ3aBC+3JmyWNDuCLdGfeeEU4USq5lwdqxOxbM3sL1mUitZIfcQR/TdVK
-         QnhNmlafT/P0vA9SP5dXO5t7orT22apUdrIvTEJiQ51w1JnUU5QT7qGbuPGZYwzO0Ece
-         bR4uw2aXcgHFiVcdmplR9QEn4XTA57+KfFRFCq+/h3H+LGlq7RfTt2eD/DCAIu5OvfOI
-         yxNKeug3PQZYV72ATAjRbIiFuyRKVW93pSfponE1/2vdvfoi4S9r1UXx0kovdZIFpYQy
-         b9ODYCSr9V5IijR37UlFXVMOemAyvS5VZPZ0fkzjEqzdGJv4FhJ+w5vqEgbJ+J54Ivyz
-         b05A==
-X-Gm-Message-State: AOAM533cduOptozvNgOndCJh/ZGjZh4F5jEXTzDTTxWZE1kPwYiMspgI
-        ArCH8DgGaWGLrlX7pu61E9q7ufw7znzX+M/uO7HeRw==
-X-Google-Smtp-Source: ABdhPJyk8AjC0EHArvk9GTYuyo2rPBLN0PMmTTayZatTpOwHnZ5+nkxvQHr9DtN0xzXkg5yuUWo07EnzCEyW/nrIIls=
-X-Received: by 2002:a05:6512:2022:: with SMTP id s2mr12509876lfs.661.1635551998004;
- Fri, 29 Oct 2021 16:59:58 -0700 (PDT)
+        Fri, 29 Oct 2021 20:03:15 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC97CC061570;
+        Fri, 29 Oct 2021 17:00:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=9HvbWIqYXdpSwyUKGQ3CDM0n2/o7EJIBAgE5+a7ZpcU=; b=P2x8Ib59Wck6RXFObdalu9UNqs
+        jFacWHmMgzXemdvIlsSxJUns9VjcJ6e7CMEVyB64CY2lfP+wwV70dm8yK1pOYJ0824SvUeUwPtes3
+        qzJbKn3XQdp/vaA7Lr9I2sCYwZnZHSz0vTjf3rhDsREKEXslkGDnNv0FwDbg7hTrnF5iJGvCpWKQJ
+        r1W8QuNAneetTmRooikRgMm0Z+Ep15gNQvTKDYgrZujtS4yTrCG4353M7ISpyQOMXq85Fyk6VGm/3
+        UdjaRXZiWhvqy1DEZ1XvDDx+RD0yUyhpP+/rvxb3PpwJSo5xieO1wKtY3ahql4I24/r0OdKjbmEEH
+        B2w/e7JA==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mgbnW-00CYpd-4I; Sat, 30 Oct 2021 00:00:34 +0000
+Subject: Re: [PATCH 1/2] mmc: Add SD/SDIO driver for Sunplus SP7021
+To:     "LH.Kuo" <lhjeff911@gmail.com>, ulf.hansson@linaro.org,
+        p.zabel@pengutronix.de, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
+        devicetree@vger.kernel.org
+Cc:     dvorkin@tibbo.com, qinjian@cqplus1.com, wells.lu@sunplus.com,
+        "LH.Kuo" <lh.kuo@sunplus.com>
+References: <1635487055-18494-1-git-send-email-lh.kuo@sunplus.com>
+ <1635487055-18494-2-git-send-email-lh.kuo@sunplus.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <1cb5c303-5cba-cd3a-e73d-9e5535e3ab83@infradead.org>
+Date:   Fri, 29 Oct 2021 17:00:33 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20211029214833.2615274-1-tadeusz.struk@linaro.org>
-In-Reply-To: <20211029214833.2615274-1-tadeusz.struk@linaro.org>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Fri, 29 Oct 2021 16:59:46 -0700
-Message-ID: <CALAqxLVJzCUmcWXZo=nQA2GYR_eCbo7R1JX4KVMDRFhMQua6nA@mail.gmail.com>
-Subject: Re: [PATCH v2] media: venus: Synchronize probe() between venus_core
- and enc/dec
-To:     Tadeusz Struk <tadeusz.struk@linaro.org>
-Cc:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1635487055-18494-2-git-send-email-lh.kuo@sunplus.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 2:48 PM Tadeusz Struk <tadeusz.struk@linaro.org> wrote:
->
-> Venus video encode/decode hardware driver consists of three modules.
-> The parent module venus-core, and two sub modules venus-enc and venus-dec.
-> The venus-core module allocates a common structure that is used by the
-> enc/dec modules, loads the firmware, and performs some common hardware
-> initialization. Since the three modules are loaded one after the other,
-> and their probe functions can run in parallel it is possible that
-> the venc_probe and vdec_probe functions can finish before the core
-> venus_probe function, which then can fail when, for example it
-> fails to load the firmware. In this case the subsequent call to venc_open
-> causes an Oops as it tries to dereference already uninitialized structures
-> through dev->parent and the system crashes in __pm_runtime_resume() as in
-> the trace below:
->
-> [   26.064835][  T485] Internal error: Oops: 96000006 [#1] PREEMPT SMP
-> [   26.270914][  T485] Hardware name: Thundercomm Dragonboard 845c (DT)
-> [   26.285019][  T485] pc : __pm_runtime_resume+0x34/0x178
-> [   26.286374][  T213] lt9611 10-003b: hdmi cable connected
-> [   26.290285][  T485] lr : venc_open+0xc0/0x278 [venus_enc]
-> [   26.290326][  T485] Call trace:
-> [   26.290328][  T485]  __pm_runtime_resume+0x34/0x178
-> [   26.290330][  T485]  venc_open+0xc0/0x278 [venus_enc]
-> [   26.290335][  T485]  v4l2_open+0x184/0x294
-> [   26.290340][  T485]  chrdev_open+0x468/0x5c8
-> [   26.290344][  T485]  do_dentry_open+0x260/0x54c
-> [   26.290349][  T485]  path_openat+0xbe8/0xd5c
-> [   26.290352][  T485]  do_filp_open+0xb8/0x168
-> [   26.290354][  T485]  do_sys_openat2+0xa4/0x1e8
-> [   26.290357][  T485]  __arm64_compat_sys_openat+0x70/0x9c
-> [   26.290359][  T485]  invoke_syscall+0x60/0x170
-> [   26.290363][  T485]  el0_svc_common+0xb8/0xf8
-> [   26.290365][  T485]  do_el0_svc_compat+0x20/0x30
-> [   26.290367][  T485]  el0_svc_compat+0x24/0x84
-> [   26.290372][  T485]  el0t_32_sync_handler+0x7c/0xbc
-> [   26.290374][  T485]  el0t_32_sync+0x1b8/0x1bc
-> [   26.290381][  T485] ---[ end trace 04ca7c088b4c1a9c ]---
-> [   26.290383][  T485] Kernel panic - not syncing: Oops: Fatal exception
->
-> This can be fixed by synchronizing the three probe functions and
-> only allowing the venc_probe() and vdec_probe() to pass when venus_probe()
-> returns success.
->
-> Changes in v2:
-> - Change locking from mutex_lock to mutex_trylock
->   in venc_probe and vdec_probe to avoid potential deadlock.
->
-> Signed-off-by: Tadeusz Struk <tadeusz.struk@linaro.org>
+On 10/28/21 10:57 PM, LH.Kuo wrote:
+> diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
+> index 95b3511..6f8bcd6 100644
+> --- a/drivers/mmc/host/Kconfig
+> +++ b/drivers/mmc/host/Kconfig
+> @@ -14,6 +14,16 @@ config MMC_DEBUG
+>   	  added host drivers please don't invent their private macro for
+>   	  debugging.
+>   
+> +config SP_SDV2
+> +	tristate "Sunplus SP7021 SD/SDIO Controller"
+> +	depends on SOC_SP7021
+> +	default m
+> +	help
+> +	  This selects the Sunplus SP7021 SD/SDIO controller.
+> +	  If you have a controller with this interface, say Y or M here..
+> +
+> +	  If unsure, say N.
 
-This works for me, and avoids the deadlock I was hitting with the
-earlier version of the patch!
+Hi,
+Does SOC_SP7021 require this driver to be built in order
+to boot?
+If not, please remove the "default m" line.
 
-Tested-by: John Stultz <john.stultz@linaro.org>
+Also, several of your patches seem to have lots of line
+changes to the MAINTAINERS file, but it looks like they
+should not be part of your patch submission.
 
-thanks so much!
--john
+thanks.
+-- 
+~Randy
