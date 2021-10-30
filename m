@@ -2,60 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3F45440BA6
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 22:47:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1725F440BAA
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 23:08:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231586AbhJ3UuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Oct 2021 16:50:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38338 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231437AbhJ3UuJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Oct 2021 16:50:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 9A1CE60F38;
-        Sat, 30 Oct 2021 20:47:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635626858;
-        bh=Y8WJ2ly3YSyis+TcSKDN1sXLoncu8sSC0xRedEgNf2c=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=LPCLSfhKQ5je0+blyFWnxxPjxBB3CPTReDNv0985N0zoYfaJyzHiquV7fJBg1advf
-         EplUhLJMh4d+IIVMXPm4b1accRg3g/zImlhTKiEtjghl7T9Gcw5AOqZ4y++36npFEK
-         t5/10Eq6mGWNnDPYTNJTbwmY+wAg0m5oB9mly30RsIQJADpPw7T+s4sNCh5JYSCb6v
-         ZEhu5hakNF0jFdHFpPtNQsJKpZGF2a5bOyjXTqERt3pnZxtn4b4OTkFpBYw39nffCG
-         TqSUkYIezQK1qJGVyIkLxKcZZGSrGEXCkrut3FiNUcdYsWL6H2EqHpeMsC6Im0Qwrx
-         cW09uY3YETbyg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7E6CC60A0F;
-        Sat, 30 Oct 2021 20:47:38 +0000 (UTC)
-Subject: Re: [GIT PULL] clk fixes for v5.15-rc7
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20211030024551.2638329-1-sboyd@kernel.org>
-References: <20211030024551.2638329-1-sboyd@kernel.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20211030024551.2638329-1-sboyd@kernel.org>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git tags/clk-fixes-for-linus
-X-PR-Tracked-Commit-Id: 675c496d0f92b481ebe4abf4fb06eadad7789de6
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 3a4347d82efdfcc5465b3ed37616426989182915
-Message-Id: <163562685845.6976.8628880673991238224.pr-tracker-bot@kernel.org>
-Date:   Sat, 30 Oct 2021 20:47:38 +0000
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+        id S231199AbhJ3VHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Oct 2021 17:07:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230338AbhJ3VHB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Oct 2021 17:07:01 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD25AC061570
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Oct 2021 14:04:30 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1635627868;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kYHRUaGb+rhXTEMfmnyryqTuicwbjsEvds4MSkhqu/I=;
+        b=AK4bvcUdadzoGlSMXgtkVdYE7KVQTzuTzvmZIu2r5HW7L1rUAKq2CUvUQG0kewX2BKiOZy
+        ARbWM6BWPh/ikUpPInB+qDJ3rtkcShbCWFH4+O7UNUINhMpwgxwhEyOlFCN5zLlYKYN/Ey
+        l/apEuf6ncm3aJjo2DUtHZg+3g91lfVdWEVkFJKWv0iKfPb+sH3qGXPgepRuRBxJ9It3kY
+        xPPg2y/lOZyCUBTl9JUbnWx2bEBeL2BO+fWzeTX6cUQbiitnqDvMxR4aiZMEqLVD+OHisu
+        SM2Bht99tsm4QM4KjooGcSCvJis9romc/ORXoU1L03nliX0pJ97fBx3qHNPK9Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1635627868;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kYHRUaGb+rhXTEMfmnyryqTuicwbjsEvds4MSkhqu/I=;
+        b=HVqGgSJQgXkQHQ5vHYkht6AH5go1Q3oyYRyyJwMrAkguYPsXjmpohwm8OacGZjJgthC3Sb
+        2B1VMGhMSe+L1hAQ==
+To:     Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] selftests/x86/iopl: Adjust to the faked iopl CLI/STI usage
+In-Reply-To: <20211030083939.13073-1-bp@alien8.de>
+References: <20211030083939.13073-1-bp@alien8.de>
+Date:   Sat, 30 Oct 2021 23:04:27 +0200
+Message-ID: <87a6iqfcmc.ffs@tglx>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 29 Oct 2021 19:45:51 -0700:
+On Sat, Oct 30 2021 at 10:39, Borislav Petkov wrote:
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git tags/clk-fixes-for-linus
+> From: Borislav Petkov <bp@suse.de>
+>
+> Commit in Fixes changed the iopl emulation to not #GP on CLI and STI
+> because it would break some insane luserspace tools which would toggle
+> interrupts.
+>
+> The corresponding selftest would rely on the fact that executing CLI/STI
+> would trigger a #GP and thus detect it this way but since that #GP is
+> not happening anymore, the detection is now wrong too.
+>
+> Extend the test to actually look at the IF flag and whether executing
+> those insns had any effect on it. The STI detection needs to have the
+> fact that interrupts were previously disabled, passed in so do that from
+> the previous CLI test, i.e., STI test needs to follow a previous CLI one
+> for it to make sense.
+>
+> Fixes: b968e84b509d ("x86/iopl: Fake iopl(3) CLI/STI usage")
+> Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+> Signed-off-by: Borislav Petkov <bp@suse.de>
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/3a4347d82efdfcc5465b3ed37616426989182915
+Acked-by: Thomas Gleixner <tglx@linutronix.de>
 
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
