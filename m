@@ -2,126 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4965644063C
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 02:08:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3D6C440630
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 02:07:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231732AbhJ3AKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 20:10:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35356 "EHLO
+        id S231674AbhJ3AKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 20:10:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231548AbhJ3AKo (ORCPT
+        with ESMTP id S229546AbhJ3AKY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 20:10:44 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AF2AC061203
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 17:08:13 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id v20-20020a25fc14000000b005c2109e5ad1so2520959ybd.9
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 17:08:13 -0700 (PDT)
+        Fri, 29 Oct 2021 20:10:24 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52CC0C061570;
+        Fri, 29 Oct 2021 17:07:55 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id s1so9312591qta.13;
+        Fri, 29 Oct 2021 17:07:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=ptn47+BKhy/SHg2Js9P1mPtZhgiXFDoRDpv5JEfjKjI=;
-        b=NP+uIOddDk7SXyU+14tEFMuNbjQwPVQ5Pr596q3FRiq51u5lJ+RDvB9opzu7QTp3Om
-         wTjLdk7znQDz5Sp2LNB+T5IYunFmqFj9yKlCfOTK3RLN+npuhKoCKnWjumz2oZJ/ld9g
-         LliXUJqHWO2O34npQmegkWMajRobeZai2Mah1qkJBKP/3XfndODMZ1DlSnoC8C5uN95L
-         KANTB09+Vi1KpdIjM+nLC4ZHuvWnSRuIgo3xsTvBeen7ez6Li7GlNSS9moadXxthRwVI
-         8YMrrUVNe68t7nOG4wGKE5YNDp5Ljt3Jqy6c9M6+rwnDZ6Vkw7MoXh9a+abHETvfN+7M
-         3z2A==
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=qERu0voFr9suiiWnQnSGc4TpiaTJ1ubRw/T4rhUUEPI=;
+        b=ivGMDFI435kbxGVOiM/mRzp9xBPVeFXNCEaTVAjKfBP2o/363zLH68vJTBu44B4zIF
+         Dbu2/pA4gb8IgfntswVbl6UCARhM8EjTogG7SSxbwGGrAACSTZK/MrgXsJdF1zOONTWd
+         drOVxoilbYwzfhI3wPgbXUKuJoO7P3zZcZL7F5pQOIbmQJVmNxxjjkRHfHULixJCmlBx
+         KNZ95j9XD9BgmqrCuufcZfNPo8P2dAOJ1+YgFSo7CMYSbIOkn5MjF87mEMGXu5XekV05
+         S7e160dMQ+GyfI5FJBSg5Q1RDj2eDjVJdnuPNP/XOfGJqJJ3Uebt03H0pbWAdW2XM2hh
+         ypxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=ptn47+BKhy/SHg2Js9P1mPtZhgiXFDoRDpv5JEfjKjI=;
-        b=osHe8x8JFXCgzJrwLZa4kysl+QeYbEv81T0EoU/B4h3ZNc1jZWSLh85mGtDpHJ1TYc
-         UizLiJFVKwJLSRZMNoQHXTObpAmwfJZUhcEtZVw4ctQaCua3tlNtCDlDBHRiSiVl8XUw
-         BDbZdXYSA+OjvR4uWZU/Lg/J4vgm5t4QXMZPyaRiqLyHOR30oITRBlj6p0MKt+Vwg7NU
-         tjZEe/1EXciqrP8Hj7HPuBldzYzmhtw8MxxGGZprqjroBE8mBFi7lzIFM+ZnB84EcFtI
-         XqZD+6nOmu9tChwTfla42FrauwxA4sTc/niBubKknpY64YKRcxSgXlpbtcZqA+s/7WZI
-         Dbkg==
-X-Gm-Message-State: AOAM532uZGpxOvS+BZh1DsDyYyD1kQouaeVknS5+Y0YibegpZsXeoAhk
-        JopFpGl4IjsWYZ7i+X7R1pTI3aqgC/M=
-X-Google-Smtp-Source: ABdhPJyoPtboi3LyMIegedX4hbA+ehba21GlEj/X02Y8Bdv7WtzqQvjjlfpfSGQoKTlbR1d51HcRp9vr9Mk=
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:ce6:9e5f:4ab5:a0d2])
- (user=seanjc job=sendgmr) by 2002:a25:2e0a:: with SMTP id u10mr14167844ybu.484.1635552492806;
- Fri, 29 Oct 2021 17:08:12 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri, 29 Oct 2021 17:07:53 -0700
-In-Reply-To: <20211030000800.3065132-1-seanjc@google.com>
-Message-Id: <20211030000800.3065132-2-seanjc@google.com>
-Mime-Version: 1.0
-References: <20211030000800.3065132-1-seanjc@google.com>
-X-Mailer: git-send-email 2.33.1.1089.g2158813163f-goog
-Subject: [PATCH v2 1/8] KVM: x86: Ignore sparse banks size for an "all CPUs",
- non-sparse IPI req
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ajay Garg <ajaygargnsit@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qERu0voFr9suiiWnQnSGc4TpiaTJ1ubRw/T4rhUUEPI=;
+        b=KV8a/4qctUZmtvTWWk7+9+zDR/Y/06VgIuBNJqTaAiHzDPe88t2Np0c9xfG6S44crV
+         bIKa1itEPu1qNHJvsgq1OWQJBn9DI2YqJ1CprOhFnc93MdgFl412SLY6cGWhoNWZqS90
+         VfwWVRSvwtwUVKo/qT3eZNJ2KKtbpELpCEGOfWS8Ad5qejUfKroRIKvqr5fhXMGQPNkh
+         mbmnqtujhJMGjDaAfhiTsMR41q8/CqXniFw0mRSVPBK4SoU4S9UsHDRIiUk9ygiW0gMb
+         EokMT1H5Xd10rbaSDE6rpEqFBx21X+Bcn2DAzA6oATFPekQhcD2BeIrghOLR7hmv3FOO
+         UUXw==
+X-Gm-Message-State: AOAM531pdIDPisQ3lyhIssQySx+Iyx0ucJ6DJhLXE7AS5Ck2efTp/pyM
+        xM4uqKTKqmRjLIYhWjKoJxM=
+X-Google-Smtp-Source: ABdhPJz3TVx3XLNS0Gzsr/FLZvzDSL7+0sRDMUf0+A2HSgJc09gW5kHG2q+4Dr1tAVvLmaTrNx1ylw==
+X-Received: by 2002:ac8:10a:: with SMTP id e10mr15181091qtg.406.1635552474549;
+        Fri, 29 Oct 2021 17:07:54 -0700 (PDT)
+Received: from [192.168.1.49] (c-67-187-90-124.hsd1.tn.comcast.net. [67.187.90.124])
+        by smtp.gmail.com with ESMTPSA id g11sm5812614qko.31.2021.10.29.17.07.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Oct 2021 17:07:54 -0700 (PDT)
+Subject: Re: Fwd: [Bug 214867] New: UBSAN: shift-out-of-bounds in
+ drivers/of/unittest.c:1933:36
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Erhard F." <erhard_f@mailbox.org>
+References: <bug-214867-211671@https.bugzilla.kernel.org/>
+ <c474a371-b524-1da8-4a67-e72cf8f2b0f7@gmail.com>
+From:   Frank Rowand <frowand.list@gmail.com>
+Message-ID: <a83c3242-acc9-03da-d559-04e4baba75ca@gmail.com>
+Date:   Fri, 29 Oct 2021 19:07:53 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <c474a371-b524-1da8-4a67-e72cf8f2b0f7@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Do not bail early if there are no bits set in the sparse banks for a
-non-sparse, a.k.a. "all CPUs", IPI request.  Per the Hyper-V spec, it is
-legal to have a variable length of '0', e.g. VP_SET's BankContents in
-this case, if the request can be serviced without the extra info.
+On 10/29/21 6:57 PM, Frank Rowand wrote:
+> 
+> Reported in bugzilla, forwarding to the mail lists and maintainers.
+> 
+> -Frank
+> 
+> 
+> -------- Forwarded Message --------
+> Subject: [Bug 214867] New: UBSAN: shift-out-of-bounds in drivers/of/unittest.c:1933:36
+> Date: Fri, 29 Oct 2021 13:59:02 +0000
+> From: bugzilla-daemon@bugzilla.kernel.org
+> 
+> 
+> https://bugzilla.kernel.org/show_bug.cgi?id=214867
+> 
+>             Bug ID: 214867
+>            Summary: UBSAN: shift-out-of-bounds in
+>                     drivers/of/unittest.c:1933:36
+>            Product: Platform Specific/Hardware
+>            Version: 2.5
+>     Kernel Version: 5.15-rc7
+>           Hardware: PPC-64
+>                 OS: Linux
+>               Tree: Mainline
+>             Status: NEW
+>           Severity: normal
+>           Priority: P1
+>          Component: PPC-64
+>           Assignee: platform_ppc-64@kernel-bugs.osdl.org
+>           Reporter: erhard_f@mailbox.org
+>                 CC: bugzilla.kernel.org@frowand.com
+>         Regression: No
+> 
+> Created attachment 299361
+>   --> https://bugzilla.kernel.org/attachment.cgi?id=299361&action=edit
+> kernel dmesg (kernel 5.15-rc7, Talos II)
+> 
+> UBSAN catches this at boot on my Talos II.
+> 
+> [...]
+> ### dt-test ### EXPECT / : GPIO line <<int>> (line-C-input) hogged as input
+> ================================================================================
+> UBSAN: shift-out-of-bounds in drivers/of/unittest.c:1933:36
+> shift exponent -1 is negative
+> CPU: 2 PID: 1 Comm: swapper/0 Not tainted 5.15.0-rc7-TalosII #1
+> Call Trace:
+> [c000000004163700] [c0000000008ffaa8] .dump_stack_lvl+0xa4/0x100 (unreliable)
+> [c000000004163790] [c0000000008fb46c] .ubsan_epilogue+0x10/0x70
+> [c000000004163800] [c0000000008fb270]
+> .__ubsan_handle_shift_out_of_bounds+0x1f0/0x34c
+> [c000000004163910] [c000000000ad94a0] .of_unittest_untrack_overlay+0x6c/0xe0
+> [c0000000041639a0] [c000000002098ff8] .of_unittest+0x4c50/0x59f8
+> [c000000004163b60] [c000000000011b5c] .do_one_initcall+0x7c/0x4f0
+> [c000000004163c50] [c00000000200300c] .kernel_init_freeable+0x704/0x858
+> [c000000004163d90] [c000000000012730] .kernel_init+0x20/0x190
+> [c000000004163e10] [c00000000000ce78] .ret_from_kernel_thread+0x58/0x60
+> ================================================================================
+> ### dt-test ### EXPECT \ : OF: overlay: WARNING: memory leak will occur if
+> overlay removed, property: /testcase-data-2/substation@100/status
+> [...]
+> 
 
-  It is possible that for a given invocation of a hypercall that does
-  accept variable sized input headers that all the header input fits
-  entirely within the fixed size header. In such cases the variable sized
-  input header is zero-sized and the corresponding bits in the hypercall
-  input should be set to zero.
+Further comment in Bugzilla are:
 
-Bailing early results in KVM failing to send IPIs to all CPUs as expected
-by the guest.
+----------  comment 1:
 
-Fixes: 214ff83d4473 ("KVM: x86: hyperv: implement PV IPI send hypercalls")
-Cc: stable@vger.kernel.org
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/hyperv.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ Erhard F. 2021-10-29 14:00:20 UTC
 
-diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
-index 4f15c0165c05..814d1a1f2cb8 100644
---- a/arch/x86/kvm/hyperv.c
-+++ b/arch/x86/kvm/hyperv.c
-@@ -1922,11 +1922,13 @@ static u64 kvm_hv_send_ipi(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *hc, bool
- 
- 		all_cpus = send_ipi_ex.vp_set.format == HV_GENERIC_SET_ALL;
- 
-+		if (all_cpus)
-+			goto check_and_send_ipi;
-+
- 		if (!sparse_banks_len)
- 			goto ret_success;
- 
--		if (!all_cpus &&
--		    kvm_read_guest(kvm,
-+		if (kvm_read_guest(kvm,
- 				   hc->ingpa + offsetof(struct hv_send_ipi_ex,
- 							vp_set.bank_contents),
- 				   sparse_banks,
-@@ -1934,6 +1936,7 @@ static u64 kvm_hv_send_ipi(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *hc, bool
- 			return HV_STATUS_INVALID_HYPERCALL_INPUT;
- 	}
- 
-+check_and_send_ipi:
- 	if ((vector < HV_IPI_LOW_VECTOR) || (vector > HV_IPI_HIGH_VECTOR))
- 		return HV_STATUS_INVALID_HYPERCALL_INPUT;
- 
--- 
-2.33.1.1089.g2158813163f-goog
+Created attachment 299363 [details]
+kernel .config (kernel 5.15-rc7, Talos II)
 
+ # lspci 
+0000:00:00.0 PCI bridge: IBM POWER9 Host Bridge (PHB4)
+0000:01:00.0 VGA compatible controller: Advanced Micro Devices, Inc. [AMD/ATI] Turks XT [Radeon HD 6670/7670]
+0000:01:00.1 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] Turks HDMI Audio [Radeon HD 6500/6600 / 6700M Series]
+0001:00:00.0 PCI bridge: IBM POWER9 Host Bridge (PHB4)
+0001:01:00.0 Non-Volatile memory controller: Phison Electronics Corporation Device 5008 (rev 01)
+0002:00:00.0 PCI bridge: IBM POWER9 Host Bridge (PHB4)
+0003:00:00.0 PCI bridge: IBM POWER9 Host Bridge (PHB4)
+0003:01:00.0 USB controller: Texas Instruments TUSB73x0 SuperSpeed USB 3.0 xHCI Host Controller (rev 02)
+0004:00:00.0 PCI bridge: IBM POWER9 Host Bridge (PHB4)
+0004:01:00.0 Ethernet controller: Broadcom Inc. and subsidiaries NetXtreme BCM5719 Gigabit Ethernet PCIe (rev 01)
+0004:01:00.1 Ethernet controller: Broadcom Inc. and subsidiaries NetXtreme BCM5719 Gigabit Ethernet PCIe (rev 01)
+0005:00:00.0 PCI bridge: IBM POWER9 Host Bridge (PHB4)
+0005:01:00.0 PCI bridge: ASPEED Technology, Inc. AST1150 PCI-to-PCI Bridge (rev 04)
+0005:02:00.0 VGA compatible controller: ASPEED Technology, Inc. ASPEED Graphics Family (rev 41)
+0030:00:00.0 PCI bridge: IBM POWER9 Host Bridge (PHB4)
+0031:00:00.0 PCI bridge: IBM POWER9 Host Bridge (PHB4)
+0032:00:00.0 PCI bridge: IBM POWER9 Host Bridge (PHB4)
+0033:00:00.0 PCI bridge: IBM POWER9 Host Bridge (PHB4)
+
+
+----------  comment 2:
+
+[reply] [−] Comment 2 Arnd Bergmann 2021-10-29 14:06:48 UTC
+
+This is the function that triggers it:
+
+static void of_unittest_untrack_overlay(int id)
+{
+        if (overlay_first_id < 0)
+                return;
+        id -= overlay_first_id;
+        if (WARN_ON(id >= MAX_UNITTEST_OVERLAYS))
+                return;
+        overlay_id_bits[BIT_WORD(id)] &= ~BIT_MASK(id);
+}
+
+My guess is that 'id' is negative here, which means it fails to tigger the
+WARN_ON() but ends up still being out of range.
+
+Can you try changing it to 'unsigned int id'?
+
+
+----------  More info from me, but I did not comment in bugzilla
+
+line 1933 is the final line of of_unittest_untrack_overlay()
+(see comment 2 for context):
+
+1933         overlay_id_bits[BIT_WORD(id)] &= ~BIT_MASK(id);
