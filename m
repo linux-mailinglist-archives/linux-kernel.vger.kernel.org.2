@@ -2,101 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C51D440703
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 04:56:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9F29440704
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 04:57:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231641AbhJ3C7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 22:59:13 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:26209 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229700AbhJ3C7M (ORCPT
+        id S231673AbhJ3C7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 22:59:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229700AbhJ3C7z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 22:59:12 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Hh3nJ1KlVz8tyl;
-        Sat, 30 Oct 2021 10:55:16 +0800 (CST)
-Received: from kwepemm600003.china.huawei.com (7.193.23.202) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Sat, 30 Oct 2021 10:56:40 +0800
-Received: from [10.67.102.185] (10.67.102.185) by
- kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Sat, 30 Oct 2021 10:56:39 +0800
-To:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-        <linux-scsi@vger.kernel.org>
-CC:     John Garry <john.garry@huawei.com>, <linux-kernel@vger.kernel.org>
-From:   "liuqi (BA)" <liuqi115@huawei.com>
-Subject: [ISSUE] WARNING in base/core.c when executing link reset of remote
- PHY and rmmod SAS driver simultaneously
-Message-ID: <80100e01-0d8e-627d-e1cb-ecf1083359bb@huawei.com>
-Date:   Sat, 30 Oct 2021 10:56:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Fri, 29 Oct 2021 22:59:55 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7C8DC061570
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 19:57:25 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id lx5-20020a17090b4b0500b001a262880e99so8614371pjb.5
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 19:57:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FhCHvaKbTCMh07wP4MgsfXhejEg0lMRt+cVvfPVOPP0=;
+        b=cf6UOmqfTKKO6qIEeeizkq6GiA6CTT4PK4/+0doIF977/32qb1DWKD15jTkcvHDRTi
+         WORJkKTU+R0BfyrAHXufn1A11bEGqdBe4uwFzlIxgFAb5DW0/Otbp2qKxSiYwwiftPuS
+         63gyS5hqLAQq9vv3KWrpIL4atYCbYtkeiILfK/ty1Vq0PL/I74sfDPtnWc2aY8MHt78F
+         aLf2sx1HFyqudaSrk8FpAXaOImCZ9kYNWyEm4ZJ2t314/Sk7qTPc/I7qrC+ECcnoQE8T
+         oHgP5YYHBmuFqc6WAl8FiJ2bvdqk4wpnJMzSjBGf/TLkNyx7l5GSd8KV8UmoFyn+gTrC
+         CFsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FhCHvaKbTCMh07wP4MgsfXhejEg0lMRt+cVvfPVOPP0=;
+        b=bVg1cnYnqFc8B8vc/DZ0vOQYbrTAOwUkOrOSgfQCD/Ci2+z0tafyPY49ORL3mE1uJU
+         UVHrYrf6lK9BSjZ9NBsEt0muscGXOyosYAnU3Qi8QNce4PYyurhCDOrL7K10jqrsWxKF
+         8+0KpD87z29ryTysAiU+kGCIOyBkaZz7i8qsVX8E67Oie+PM9KGbnLBZdS//NL0LgN+v
+         4B321P4TpF+SYMpynp8WiR64DfIkloH2QpYW+3Brle48zudbfw9l+lwO5GS9Qv2k3GFA
+         Re1UMzf9W+84/CRZDiKFnmfMO6ktmZic3zKPjTMDqlaoTHgJO7z8BRab37oEuyrr4mLj
+         CfdA==
+X-Gm-Message-State: AOAM531Y8IudQhL0IIn8aYU/jmEuXvlNzdef651uhy6k6OCpkE+/RTq4
+        rpc7ydFwaZOqBBeB6GuN4MI=
+X-Google-Smtp-Source: ABdhPJzVDCuT6hBMcz1G+6pdzp/m3Wi5Augz7HXZRKSvoCyrpsO6iethyvkOPBBMc3qwi052Lf7q8g==
+X-Received: by 2002:a17:90a:ff81:: with SMTP id hf1mr14206632pjb.157.1635562645271;
+        Fri, 29 Oct 2021 19:57:25 -0700 (PDT)
+Received: from 7YHHR73.igp.broadcom.net ([192.19.161.250])
+        by smtp.gmail.com with ESMTPSA id mr2sm6097749pjb.25.2021.10.29.19.57.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Oct 2021 19:57:24 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Olivier Moysan <olivier.moysan@st.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Stefan Wahren <stefan.wahren@i2se.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 1/2] ARM: multi_v7_defconfig: Enable Broadcom STB USB drivers
+Date:   Fri, 29 Oct 2021 19:57:14 -0700
+Message-Id: <20211030025715.13296-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.185]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm600003.china.huawei.com (7.193.23.202)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+Enable CONFIG_PHY_USB_BRCM (USB PHY driver) and CONFIG_USB_BRCMSTB which
+allows us to enable the Broadcom STB USB drivers (OHCI, EHCI and XHCI).
 
-I met a issue on v5.15-rc6, WARNING is triggered when executing link 
-reset of remote PHY and rmmod SAS driver simultaneously. Here is the 
-WARNING log:
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+ arch/arm/configs/multi_v7_defconfig | 2 ++
+ 1 file changed, 2 insertions(+)
 
-WARNING: CPU: 61 PID: 21818 at drivers/base/core.c:1349 
-__device_links_no_driver+0xb4/0xc0
-  CPU: 61 PID: 21818 Comm: kworker/u256:4 Kdump: loaded Tainted: G 
-  W         5.15.0-rc5+ #25
-  Hardware name: Huawei TaiShan 2280 V2/BC82AMDC, BIOS 2280-V2 CS 
-V5.B170.01 06/30/2021
-  Workqueue: 0000:74:02.0_disco_q sas_revalidate_domain [libsas]
-  pstate: 20400009 (nzCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-  pc : __device_links_no_driver+0xb4/0xc0
-  lr : device_links_driver_cleanup+0xb0/0xfc
-  sp : ffff800049e73b10
-  x29: ffff800049e73b10 x28: 0000000000000000 x27: 0000000000000000
-  x26: ffff00209ecd7428 x25: 0000000000000000 x24: ffff204002bc8000
-  x23: ffff00209ff53190 x22: ffff00209ff53190 x21: 0000000000000001
-  x20: ffff00209ff53230 x19: ffff00209ff53210 x18: 0000000000000030
-  x17: 74796274736f6820 x16: 3a746c7573655220 x15: 3a64656c69616620
-  x14: 2930312865686361 x13: 4b4f5f5245564952 x12: 443d657479627265
-  x11: 7669726420343078 x10: ffff0020913b0640 x9 : ffffccc6d592b514
-  x8 : ffff204002bc8a00 x7 : ffffffff80000000 x6 : 0000000000000000
-  x5 : 0000000000000000 x4 : 0000000000000000 x3 : ffff00209ff53250
-  x2 : 0000000000000003 x1 : 000000000000004c x0 : ffff00209ee60c00
-  Call trace:
-   __device_links_no_driver+0xb4/0xc0
-   device_links_driver_cleanup+0xb0/0xfc
-   __device_release_driver+0x198/0x23c
-   device_release_driver+0x38/0x50
-   bus_remove_device+0x130/0x140
-   device_del+0x184/0x434
-   __scsi_remove_device+0x118/0x150
-   scsi_remove_target+0x1bc/0x240
-   sas_rphy_remove+0x90/0x94
-   sas_rphy_delete+0x24/0x3c
-   sas_destruct_devices+0x64/0xa0 [libsas]
-   sas_revalidate_domain+0xe4/0x150 [libsas]
-   process_one_work+0x1e0/0x46c
-   worker_thread+0x15c/0x464
-   kthread+0x160/0x170
-   ret_from_fork+0x10/0x20
-  ---[ end trace 71e059eb58f85d4a ]---
+diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
+index 33572998dbbe..ae891e3e6a1a 100644
+--- a/arch/arm/configs/multi_v7_defconfig
++++ b/arch/arm/configs/multi_v7_defconfig
+@@ -287,6 +287,7 @@ CONFIG_MICREL_PHY=y
+ CONFIG_AT803X_PHY=y
+ CONFIG_ROCKCHIP_PHY=y
+ CONFIG_SMSC_PHY=y
++CONFIG_USB_BRCMSTB=m
+ CONFIG_USB_PEGASUS=y
+ CONFIG_USB_RTL8152=m
+ CONFIG_USB_LAN78XX=m
+@@ -1105,6 +1106,7 @@ CONFIG_PHY_SUN9I_USB=y
+ CONFIG_PHY_HIX5HD2_SATA=y
+ CONFIG_PHY_BERLIN_SATA=y
+ CONFIG_PHY_BERLIN_USB=y
++CONFIG_PHY_BRCM_USB=m
+ CONFIG_PHY_MMP3_USB=m
+ CONFIG_PHY_CPCAP_USB=m
+ CONFIG_PHY_QCOM_APQ8064_SATA=m
+-- 
+2.25.1
 
-Normally in __device_links_no_driver(), link->status is 
-DL_STATE_SUPPLIER_UNBIND, but in the WARNING scenario, link->status is 
-DL_STATE_ACTIVE.
-
-I'm not sure this warning is caused by libsas, lldd or sas scsi 
-transport code. Does anyone have any ideas?
-
-Thanks,
-Qi
