@@ -2,66 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C03FE4406F6
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 04:46:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C51D440703
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 04:56:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231655AbhJ3CsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 22:48:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60470 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231522AbhJ3CsV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 22:48:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0EFBC6101B;
-        Sat, 30 Oct 2021 02:45:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635561952;
-        bh=3XyjnLv7wU3In1YwsMFvFCQZOMYy3u0PCS7GQiRfS2M=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ko3e62ri+DUk+1EXj69To8inxrqkSWoG2FM0MZQyAA8Rkos4DmG5ZQMWx46/dn1YU
-         2b+EFHXrig5395q/hmXvjWHYurfzOna5DDIRPbFT6SVv2Wq2Fg+Pe4DiQlv66O0wGi
-         zNa3eX2glInyh3U4M0XWFJYL91vbZqnJeUMiGuKk5lxyG6o0l+ZHPeBlPH5J0PAXq6
-         3xzCVn1onnqkESY5MbkXe4fNI3B7QskfB4EuDA6sO+TxUKnEx3t7ruihifsQKjekZe
-         pYNZ9S5ROOfhWJb+FpSC9MisHT0SJHHbOutugcKHfHqheEsSXlBC2OjLiv82n1tiNK
-         0rijxh1L6Ng3A==
-From:   Stephen Boyd <sboyd@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] clk fixes for v5.15-rc7
-Date:   Fri, 29 Oct 2021 19:45:51 -0700
-Message-Id: <20211030024551.2638329-1-sboyd@kernel.org>
-X-Mailer: git-send-email 2.33.1.1089.g2158813163f-goog
+        id S231641AbhJ3C7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 22:59:13 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:26209 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229700AbhJ3C7M (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 22:59:12 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Hh3nJ1KlVz8tyl;
+        Sat, 30 Oct 2021 10:55:16 +0800 (CST)
+Received: from kwepemm600003.china.huawei.com (7.193.23.202) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Sat, 30 Oct 2021 10:56:40 +0800
+Received: from [10.67.102.185] (10.67.102.185) by
+ kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Sat, 30 Oct 2021 10:56:39 +0800
+To:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
+        <linux-scsi@vger.kernel.org>
+CC:     John Garry <john.garry@huawei.com>, <linux-kernel@vger.kernel.org>
+From:   "liuqi (BA)" <liuqi115@huawei.com>
+Subject: [ISSUE] WARNING in base/core.c when executing link reset of remote
+ PHY and rmmod SAS driver simultaneously
+Message-ID: <80100e01-0d8e-627d-e1cb-ecf1083359bb@huawei.com>
+Date:   Sat, 30 Oct 2021 10:56:39 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.102.185]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600003.china.huawei.com (7.193.23.202)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
+Hi all,
 
-  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
+I met a issue on v5.15-rc6, WARNING is triggered when executing link 
+reset of remote PHY and rmmod SAS driver simultaneously. Here is the 
+WARNING log:
 
-are available in the Git repository at:
+WARNING: CPU: 61 PID: 21818 at drivers/base/core.c:1349 
+__device_links_no_driver+0xb4/0xc0
+  CPU: 61 PID: 21818 Comm: kworker/u256:4 Kdump: loaded Tainted: G 
+  W         5.15.0-rc5+ #25
+  Hardware name: Huawei TaiShan 2280 V2/BC82AMDC, BIOS 2280-V2 CS 
+V5.B170.01 06/30/2021
+  Workqueue: 0000:74:02.0_disco_q sas_revalidate_domain [libsas]
+  pstate: 20400009 (nzCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+  pc : __device_links_no_driver+0xb4/0xc0
+  lr : device_links_driver_cleanup+0xb0/0xfc
+  sp : ffff800049e73b10
+  x29: ffff800049e73b10 x28: 0000000000000000 x27: 0000000000000000
+  x26: ffff00209ecd7428 x25: 0000000000000000 x24: ffff204002bc8000
+  x23: ffff00209ff53190 x22: ffff00209ff53190 x21: 0000000000000001
+  x20: ffff00209ff53230 x19: ffff00209ff53210 x18: 0000000000000030
+  x17: 74796274736f6820 x16: 3a746c7573655220 x15: 3a64656c69616620
+  x14: 2930312865686361 x13: 4b4f5f5245564952 x12: 443d657479627265
+  x11: 7669726420343078 x10: ffff0020913b0640 x9 : ffffccc6d592b514
+  x8 : ffff204002bc8a00 x7 : ffffffff80000000 x6 : 0000000000000000
+  x5 : 0000000000000000 x4 : 0000000000000000 x3 : ffff00209ff53250
+  x2 : 0000000000000003 x1 : 000000000000004c x0 : ffff00209ee60c00
+  Call trace:
+   __device_links_no_driver+0xb4/0xc0
+   device_links_driver_cleanup+0xb0/0xfc
+   __device_release_driver+0x198/0x23c
+   device_release_driver+0x38/0x50
+   bus_remove_device+0x130/0x140
+   device_del+0x184/0x434
+   __scsi_remove_device+0x118/0x150
+   scsi_remove_target+0x1bc/0x240
+   sas_rphy_remove+0x90/0x94
+   sas_rphy_delete+0x24/0x3c
+   sas_destruct_devices+0x64/0xa0 [libsas]
+   sas_revalidate_domain+0xe4/0x150 [libsas]
+   process_one_work+0x1e0/0x46c
+   worker_thread+0x15c/0x464
+   kthread+0x160/0x170
+   ret_from_fork+0x10/0x20
+  ---[ end trace 71e059eb58f85d4a ]---
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git tags/clk-fixes-for-linus
+Normally in __device_links_no_driver(), link->status is 
+DL_STATE_SUPPLIER_UNBIND, but in the WARNING scenario, link->status is 
+DL_STATE_ACTIVE.
 
-for you to fetch changes up to 675c496d0f92b481ebe4abf4fb06eadad7789de6:
+I'm not sure this warning is caused by libsas, lldd or sas scsi 
+transport code. Does anyone have any ideas?
 
-  clk: composite: Also consider .determine_rate for rate + mux composites (2021-10-18 12:59:42 -0700)
-
-----------------------------------------------------------------
-One fix for the composite clk that broke when we changed this clk type
-to use the determine_rate instead of round_rate clk op by default. This
-caused lots of problems on Rockchip SoCs because they heavily use
-the composite clk code to model the clk tree.
-
-----------------------------------------------------------------
-Martin Blumenstingl (1):
-      clk: composite: Also consider .determine_rate for rate + mux composites
-
- drivers/clk/clk-composite.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
--- 
-https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/
-https://git.kernel.org/pub/scm/linux/kernel/git/sboyd/spmi.git
+Thanks,
+Qi
