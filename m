@@ -2,239 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7D884407E1
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 09:39:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D49A4407E5
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 09:41:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231706AbhJ3HmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Oct 2021 03:42:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47604 "EHLO
+        id S231707AbhJ3HoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Oct 2021 03:44:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230365AbhJ3HmC (ORCPT
+        with ESMTP id S230365AbhJ3HoH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Oct 2021 03:42:02 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B1C7C061570;
-        Sat, 30 Oct 2021 00:39:32 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id f8so24723848edy.4;
-        Sat, 30 Oct 2021 00:39:32 -0700 (PDT)
+        Sat, 30 Oct 2021 03:44:07 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7001AC061570;
+        Sat, 30 Oct 2021 00:41:36 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id ee16so33326867edb.10;
+        Sat, 30 Oct 2021 00:41:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=WnDflYyo3vnsJsPrmBMpCvW7yx+6ot4PlCCkUYxmJpI=;
-        b=Kzc+uy1+PCn3EvrvI8PrXqlgdfCwC7Tav4/plDfcCM+GWP9TvRR7q+b1cDjhYJzN3N
-         6UA7flRe6Zt33mfuxPjmILgU/854GrFQNYRo3habjmJgiWnP4eP8VB3qYfFc5kyEfayI
-         5r71lZF3XSHM5/sMUV8pgcjqRnE5OWJIVxQpDvTfXDV857mEOcuD6AaqIpVdSbeXjro4
-         5c6/49gQK2NMAei2dLi83ua+I9Q+dlCu8bklkL4tCYriZ5UHtbrt1uPHxBl/5KDMFenI
-         ZzFWRolG+ToY9UbrdaVJzCu5NuQpcMC3mubdlENTxhAzEgoZzku0/I997vxqt7U76Nf+
-         Zfcw==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=MfpE+mQXNVqiAaOXucU731jRfGzTPqiu0EQhTOmfNww=;
+        b=LyPA99chM1u0f54Po7q563FWtx4nIRT28rU9XDbLFhzD+bQK9XxTbd7Qwwfr62T2C8
+         xAb+GuDYj176BGlDyvlF74BULaTdrmdHuPzPHgqp4yaqzAxe/cmlTutqUQMh3RFBjzBI
+         lbPib9UVWanY5jTCg5tPA6dfM5g6PDshlwe45VCsjPZa6Z+Avxjs0wYZfxiDpIK3aHrf
+         z7NO4Z/+82C/Duh8/UN902yC3UUDhyuo1l1l78Sfj8yJT0iJ0qKNdq/bmZZ6zKuBJeRA
+         K99AzZCxeGRnwIXgq7DxWkREjqyMeMnnbgteaZhEKupkVdQiC+Koqzzre94b0IwEO5W8
+         b1Sw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=WnDflYyo3vnsJsPrmBMpCvW7yx+6ot4PlCCkUYxmJpI=;
-        b=FSqq+/SKzp9pk6mLjdmD8sseQcpQf9IzxLxeFFviYvznIJUwPUA96H/jg9TI/DiwI7
-         mF5kIsAoMt4It88UQv+0CFRdnGqKDno0DTpBzmIU+dLpsw7ZBZmDEibcoGggo9sXqBe7
-         wlFRkidR8A+zMsJ6UNH8scwTpIoO7FW3XZ3COHQ/9PRz+DfkEwGkFNMInjG9U83ANTtH
-         /9dV2YbDFZ3VNM+6RAsJEr6eQ9jjq+SvoyeCWiJYC3fQkNzuB1QPpucAhX3p3/mMDnv3
-         K2sYAzi1hPVyvddnbV7s/4WPbae/LlOHqIYYo7tL3+uYz6086NLDRKrYrloIq9vNs+os
-         PTmw==
-X-Gm-Message-State: AOAM530fAAuiylBXjw0IcXj+YdgzrA3cYVuLYpRqVPe2xNgZuv7uWisJ
-        s+A3MzE4YpVK+bc3FP39FPo=
-X-Google-Smtp-Source: ABdhPJz7JfGatjQ7hHHqwrX7DDpASIlPz2talrTheUGX9T6ZDp9zPBd5ZSJIa/UhER9UwE3geNl1eQ==
-X-Received: by 2002:a17:907:1c15:: with SMTP id nc21mr5512560ejc.510.1635579570680;
-        Sat, 30 Oct 2021 00:39:30 -0700 (PDT)
-Received: from [172.16.20.20] ([87.200.95.144])
-        by smtp.gmail.com with ESMTPSA id o22sm3925764ejy.50.2021.10.30.00.39.29
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 30 Oct 2021 00:39:30 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.7\))
-Subject: Re: [PATCH v2] clk: meson: gxbb: Fix the SDM_EN bit for MPLL0 on GXBB
-From:   Christian Hewitt <christianshewitt@gmail.com>
-In-Reply-To: <20211027185326.1653827-1-martin.blumenstingl@googlemail.com>
-Date:   Sat, 30 Oct 2021 11:39:27 +0400
-Cc:     Jerome Brunet <jbrunet@baylibre.com>,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <691BBB53-101E-464F-965A-3CD6EB63F27E@gmail.com>
-References: <20211027185326.1653827-1-martin.blumenstingl@googlemail.com>
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.7)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=MfpE+mQXNVqiAaOXucU731jRfGzTPqiu0EQhTOmfNww=;
+        b=gMOdXUZSNW72c9yQjHhartjIcvCqylZHbWm+UfmSk+Frvb97l3S7chnRIZq1v8kvJ8
+         if744QXhpHpxwz0z7Q7cj/8y/ScW7C4OY4hjmH+UTLKE9PAZuQ7XXhYjPnf4E6nmvEE1
+         HxIHxYN70s1SZ39vcf5T1mlFq51Iaard6+c2FrbBeJ7N0lqg+/9DIdpwsD6V/mTrLp/5
+         so6D2xaHvhMAW+DqKD3HhHGSiE+0H54SmiFIjikwfw0HU0L8Opi+dcwTteIdqvMT9ytd
+         G2fb4bvmNrbjhMGL0bWW9OA6TO/hrWk/s1jNKquQiz69Zgyh0pLE+K1DmdW9hOofZUcU
+         ShnA==
+X-Gm-Message-State: AOAM532URlaUUz8CupOHxdyAtSV+adQz7ikruvrUWcEPxS6LZkxe2WRt
+        JQKSCfX4Tl5rp3IWJgUoukrvKuJbfPklmQ==
+X-Google-Smtp-Source: ABdhPJyhWzSn3b7EHqItRiNwCOe880jo8zlJpSGXwzJC15Yx2bIwY2XkTmzsYxidt/QklAUStGv0Rw==
+X-Received: by 2002:a17:906:6a08:: with SMTP id qw8mr2002536ejc.200.1635579695289;
+        Sat, 30 Oct 2021 00:41:35 -0700 (PDT)
+Received: from eldamar (80-218-24-251.dclient.hispeed.ch. [80.218.24.251])
+        by smtp.gmail.com with ESMTPSA id h7sm4830492edt.37.2021.10.30.00.41.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 30 Oct 2021 00:41:34 -0700 (PDT)
+Sender: Salvatore Bonaccorso <salvatore.bonaccorso@gmail.com>
+Date:   Sat, 30 Oct 2021 09:41:34 +0200
+From:   Salvatore Bonaccorso <carnil@debian.org>
+To:     Sean Young <sean@mess.org>
+Cc:     =?iso-8859-1?Q?Joaqu=EDn_Alberto_Calder=F3n?= Pozo 
+        <kini_calderon@hotmail.com>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "christophe.jaillet@wanadoo.fr" <christophe.jaillet@wanadoo.fr>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: linux-image-5.10.0-8-amd64: Hauppauge WinTV-HVR1110 DVB-T/Hybrid
+ bug 125 ms polling on ir-kbd-i2c.ko bad DEFAULT_POLLING_INTERVAL
+Message-ID: <YXz3Lpqq/x3WGQTQ@eldamar.lan>
+References: <CH2PR04MB6679933D6BEE6C51BE6BEF9889D89@CH2PR04MB6679.namprd04.prod.outlook.com>
+ <20210913072649.GB2393@gofer.mess.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210913072649.GB2393@gofer.mess.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Sean,
 
-> On 27 Oct 2021, at 10:53 pm, Martin Blumenstingl =
-<martin.blumenstingl@googlemail.com> wrote:
->=20
-> There are reports that 48kHz audio does not work on his WeTek Play 2
+On Mon, Sep 13, 2021 at 08:26:49AM +0100, Sean Young wrote:
+> On Sun, Sep 12, 2021 at 10:15:31PM +0000, Joaquín Alberto Calderón Pozo wrote:
+> > Mantainers of the ir-kbd-i2c, althought I sent it to the debian bug report team, I consider to sent you also this patch (if it's the right way) to solve this bug.
+> > 
+> > Thanks
+> > 
+> > Package: src:linux
+> > X-Debbugs-Cc: kini_calderon@hotmail.com
+> > Version: 5.10.46-4
+> > Severity: important
+> > Tags: patch
+> > 
+> > Although I have a very old pci (not express) Hauppauge WinTV-HVR1110 DVB-T/Hybrid TV card with a remote control, I am still using it because has fully support and functionallity and it's hardware capable of play DVB-T HD streams.
+> > 
+> > It has a very strange behaviour:
+> > 
+> > -One is it has a slow response when I push a key, has a delay, and sometimes even no key response, nothing happens, as if never push a key.
+> > -Other is when you hold a key, it start to begin the repeat key (characters like numerical) appears in the test app (kwrite) then, has a pause, stops to write characters, and begin the sequence again, writes some sequence, then stops... and so on. Even I noticed the repeat speed is a bit slow, compared to a keyboard key hold on.
+> > 
+> > So... I began to investigates the causes and after two weeks of research, searchs on the web, I found the module affected and a solution.
+> > 
+> > The module affected is ir-kbd-i2c.ko, this remote (rc5 protocol) uses this module as uinput (devinput) device, in resume as like an attatched keyboard. Resulting investigation in get noticed that this remote with rc5 protocol has 8hz of time frame when receiving the air gap code (rc5 procotol timing).
+> > 
+> > Investigating the sources files in the kernel sources for try and fall, re-compiling the modules, get me to get noticed that the polling ir remote interval is 100ms which is 5hz, forcing this value to 125ms, re-compiling the module causes the remote to work normally as expecte, the response is like a real keyboard and the repeat sequence not only as speedy as a normal keyboard, but also hasn't got a pause in repetition. In resume, the problem is solved.
+> > 
+> > Here is the patch:
+> > 
+> > --- ir-kbd-i2c.original.c       2021-09-08 23:45:23.723210301 +0200
+> > +++ ir-kbd-i2c.hauppauge.patched.c      2021-09-10 03:55:28.003529072 +0200
+> > @@ -742,7 +742,7 @@
+> >                 return -ENOMEM;
+> > 
+> >         ir->c = client;
+> > -       ir->polling_interval = DEFAULT_POLLING_INTERVAL;
+> > +       ir->polling_interval = 125;
+> >         i2c_set_clientdata(client, ir);
+> > 
+> >         switch(addr) {
+> > 
+> > I am a experienced user, but not an experienced developer, also in editing/submitting bugs, I don't know if this is the right way to solve this, If the rest of brand remotes are affected for my solution, but for me, solved my problem in this particular case.
+> > 
+> > I don't know where the value DEFAULT_POLLING_INTERVAL is get stablished or a way when detect a Hauppauge WinTV-HVR1110 DVB-T/Hybrid TV card to stablish 125ms instead of 100ms. As I said, I'm not an expert but experienced user.
+> 
+> This change looks right to me, but it needs some changes:
+> 
+>  - The change needs to be made Hauppauge/Zilog specific by adding a line
+>    under the "case 0x71:" line below which sets the polling interval to 125.
+>  - The patch should be against current media kernel, not 5.10
+>  - Follow https://www.kernel.org/doc/html/latest/process/submitting-patches.html
+>  - Add "Cc: stable@vger.kernel.org" and the patch will trickle down into 
+>    5.10.
+> 
+> Thanks
+> 
+> Sean
+> 
+> > 
+> > I don't know if this is the right package to post this bug. Thanks.
+> > 
+> 
+> > --- ir-kbd-i2c.original.c	2021-09-08 23:45:23.723210301 +0200
+> > +++ ir-kbd-i2c.hauppauge.patched.c	2021-09-10 03:55:28.003529072 +0200
+> > @@ -742,7 +742,7 @@
+> >  		return -ENOMEM;
+> >  
+> >  	ir->c = client;
+> > -	ir->polling_interval = DEFAULT_POLLING_INTERVAL;
+> > +	ir->polling_interval = 125;
+> >  	i2c_set_clientdata(client, ir);
+> >  
+> >  	switch(addr) {
 
-Typo to fixup when applying ^ s/his/the
+My understanding is that Joaquín would need some help to get the patch
+submission as he is unexperienced to make it a proper patch for
+inclusion in mainline, would you have enough time to bring this into
+shape for him? I'm not familiar in this area to propose a proper
+commit message myself. Joaquín confirmed though in
+https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=994050#32 that the
+proposed changes seems to solve his issue.
 
-> (which uses a GXBB SoC), while 44.1kHz audio works fine on the same
-> board. There are also reports of 48kHz audio working fine on GXL and
-> GXM SoCs, which are using an (almost) identical AIU (audio =
-controller).
->=20
-> Experimenting has shown that MPLL0 is causing this problem. In the =
-.dts
-> we have by default:
-> 	assigned-clocks =3D <&clkc CLKID_MPLL0>,
-> 			  <&clkc CLKID_MPLL1>,
-> 			  <&clkc CLKID_MPLL2>;
-> 	assigned-clock-rates =3D <294912000>,
-> 			       <270950400>,
-> 			       <393216000>;
-> The MPLL0 rate is divisible by 48kHz without remainder and the MPLL1
-> rate is divisible by 44.1kHz without remainder. Swapping these two =
-clock
-> rates "fixes" 48kHz audio but breaks 44.1kHz audio.
->=20
-> Everything looks normal when looking at the info provided by the =
-common
-> clock framework while playing 48kHz audio (via I2S with mclk-fs =3D =
-256):
->        mpll_prediv                 1        1        0  2000000000
->           mpll0_div                1        1        0   294909641
->              mpll0                 1        1        0   294909641
->                 cts_amclk_sel       1        1        0   294909641
->                    cts_amclk_div       1        1        0    12287902
->                       cts_amclk       1        1        0    12287902
->=20
-> meson-clk-msr however shows that the actual MPLL0 clock is off by more
-> than 38MHz:
->        mp0_out               333322917    +/-10416Hz
->=20
-> The rate seen by meson-clk-msr is very close to what we would get when
-> SDM (the fractional part) was ignored:
->  (2000000000Hz * 16384) / ((16384 * 6) =3D 333.33MHz
-> If SDM was considered the we should get close to:
->  (2000000000Hz * 16384) / ((16384 * 6) + 12808) =3D 294.9MHz
->=20
-> Further experimenting shows that HHI_MPLL_CNTL7[15] does not have any
-> effect on the rate of MPLL0 as seen my meson-clk-msr (regardless of
-> whether that bit is zero or one the rate is always the same according =
-to
-> meson-clk-msr). Using HHI_MPLL_CNTL[25] on the other hand as SDM_EN
-> results in SDM being considered for the rate output by the hardware. =
-The
-> rate - as seen by meson-clk-msr - matches with what we expect when
-> SDM_EN is enabled (fractional part is being considered, resulting in a
-> 294.9MHz output) or disable (fractional part being ignored, resulting =
-in
-> a 333.33MHz output).
->=20
-> Reported-by: Christian Hewitt <christianshewitt@gmail.com>
-> Signed-off-by: Martin Blumenstingl =
-<martin.blumenstingl@googlemail.com>
-
-Tested on WP2/Odroid C2 (fixed) and VIM1/LePotato (still good), thanks!
-
-Tested-by: Christian Hewitt <christianshewitt@gmail.com>
-
-> ---
-> changes since v1 at [0]:
-> - consider HHI_MPLL_CNTL[25] as SDM_EN bit after Jerome helped me
->  understand the purpose of SDM_EN and gave some explanation why this
->  can't be a spread spectrum bit
->=20
->=20
-> [0] =
-https://patchwork.kernel.org/project/linux-amlogic/patch/20211016145939.15=
-643-1-martin.blumenstingl@googlemail.com/
->=20
->=20
-> drivers/clk/meson/gxbb.c | 44 +++++++++++++++++++++++++++++++++++++---
-> 1 file changed, 41 insertions(+), 3 deletions(-)
->=20
-> diff --git a/drivers/clk/meson/gxbb.c b/drivers/clk/meson/gxbb.c
-> index d6eed760327d..608e0e8ca49a 100644
-> --- a/drivers/clk/meson/gxbb.c
-> +++ b/drivers/clk/meson/gxbb.c
-> @@ -713,6 +713,35 @@ static struct clk_regmap gxbb_mpll_prediv =3D {
-> };
->=20
-> static struct clk_regmap gxbb_mpll0_div =3D {
-> +	.data =3D &(struct meson_clk_mpll_data){
-> +		.sdm =3D {
-> +			.reg_off =3D HHI_MPLL_CNTL7,
-> +			.shift   =3D 0,
-> +			.width   =3D 14,
-> +		},
-> +		.sdm_en =3D {
-> +			.reg_off =3D HHI_MPLL_CNTL,
-> +			.shift   =3D 25,
-> +			.width	 =3D 1,
-> +		},
-> +		.n2 =3D {
-> +			.reg_off =3D HHI_MPLL_CNTL7,
-> +			.shift   =3D 16,
-> +			.width   =3D 9,
-> +		},
-> +		.lock =3D &meson_clk_lock,
-> +	},
-> +	.hw.init =3D &(struct clk_init_data){
-> +		.name =3D "mpll0_div",
-> +		.ops =3D &meson_clk_mpll_ops,
-> +		.parent_hws =3D (const struct clk_hw *[]) {
-> +			&gxbb_mpll_prediv.hw
-> +		},
-> +		.num_parents =3D 1,
-> +	},
-> +};
-> +
-> +static struct clk_regmap gxl_mpll0_div =3D {
-> 	.data =3D &(struct meson_clk_mpll_data){
-> 		.sdm =3D {
-> 			.reg_off =3D HHI_MPLL_CNTL7,
-> @@ -749,7 +778,16 @@ static struct clk_regmap gxbb_mpll0 =3D {
-> 	.hw.init =3D &(struct clk_init_data){
-> 		.name =3D "mpll0",
-> 		.ops =3D &clk_regmap_gate_ops,
-> -		.parent_hws =3D (const struct clk_hw *[]) { =
-&gxbb_mpll0_div.hw },
-> +		.parent_data =3D &(const struct clk_parent_data) {
-> +			/*
-> +			 * Note:
-> +			 * GXL and GXBB have different SDM_EN registers. =
-We
-> +			 * fallback to the global naming string =
-mechanism so
-> +			 * mpll0_div picks up the appropriate one.
-> +			 */
-> +			.name =3D "mpll0_div",
-> +			.index =3D -1,
-> +		},
-> 		.num_parents =3D 1,
-> 		.flags =3D CLK_SET_RATE_PARENT,
-> 	},
-> @@ -3044,7 +3082,7 @@ static struct clk_hw_onecell_data =
-gxl_hw_onecell_data =3D {
-> 		[CLKID_VAPB_1]		    =3D &gxbb_vapb_1.hw,
-> 		[CLKID_VAPB_SEL]	    =3D &gxbb_vapb_sel.hw,
-> 		[CLKID_VAPB]		    =3D &gxbb_vapb.hw,
-> -		[CLKID_MPLL0_DIV]	    =3D &gxbb_mpll0_div.hw,
-> +		[CLKID_MPLL0_DIV]	    =3D &gxl_mpll0_div.hw,
-> 		[CLKID_MPLL1_DIV]	    =3D &gxbb_mpll1_div.hw,
-> 		[CLKID_MPLL2_DIV]	    =3D &gxbb_mpll2_div.hw,
-> 		[CLKID_MPLL_PREDIV]	    =3D &gxbb_mpll_prediv.hw,
-> @@ -3439,7 +3477,7 @@ static struct clk_regmap *const =
-gxl_clk_regmaps[] =3D {
-> 	&gxbb_mpll0,
-> 	&gxbb_mpll1,
-> 	&gxbb_mpll2,
-> -	&gxbb_mpll0_div,
-> +	&gxl_mpll0_div,
-> 	&gxbb_mpll1_div,
-> 	&gxbb_mpll2_div,
-> 	&gxbb_cts_amclk_div,
-> --=20
-> 2.33.1
->=20
->=20
-
+Regards,
+Salvatore
