@@ -2,153 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 372F6440A4E
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 18:59:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1617440A52
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 19:03:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230049AbhJ3RC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Oct 2021 13:02:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55466 "EHLO
+        id S230061AbhJ3RGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Oct 2021 13:06:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229474AbhJ3RCZ (ORCPT
+        with ESMTP id S229694AbhJ3RGR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Oct 2021 13:02:25 -0400
-Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84DD8C061570
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Oct 2021 09:59:55 -0700 (PDT)
-Received: by mail-ua1-x936.google.com with SMTP id x3so24040076uar.13
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Oct 2021 09:59:55 -0700 (PDT)
+        Sat, 30 Oct 2021 13:06:17 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75A3CC061714
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Oct 2021 10:03:47 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id h81so7613383iof.6
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Oct 2021 10:03:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=l/0UUkqf6KFkNkf6dBZ0pEkCS7X6LutBL6LgNXt9kNw=;
-        b=COYcjMZHo2AhOT7Qmebs1O2714sucGcw4oOFWAZd04mujHCpsr49AG3HZtjw7Im4lg
-         ePKoBnjK9WgnzD/v5lNJMx61C/iclRy9VF3dc8XjgNfIEOeaMPRkrQ3RdG7oTsbcL0q9
-         qBJlNogLLIxUKBwUJZw5zUIGd9KoXRjJlKKLKHRVjGetr89QqXKZ6Mz75aHEqIWtSKVP
-         mqvnOV4YEnoasMfw2yTM4pF3va7X9XaC1HbVOM/jn4DaZk7Iqcooo7Io0KcxKU8RbrsD
-         sNLPWVQMO0Yx7KIVpU40dbfdaxXTs0re1gHao8v4RsL/SFjGvnuIw9G/XT4iJngYCfxs
-         h/jg==
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:in-reply-to:references:subject:message-id:date
+         :mime-version:content-transfer-encoding;
+        bh=mxOtNLa1eAMR0wpGD1VMaJkJmBISmLqnmjVIAsRcHvc=;
+        b=TxRznXHiVxPacqnwtNIIT0ht6nYzSE2RDLvhKozr3LBin/ehB9sdFZDpWWjj4OSd+b
+         wNVCVAvLw46JGTiAgUNZvEmvOxN66IADWaxYxM1QrR9lkXlSakotxqRDVZM1H74gZzC3
+         dptCLtGLLsAefANWtuy2n0rGMRlWfacf/IHiKhBgdqwAXaaJe6kpIkKpb32JNyUJDsPQ
+         h2JfNkORS5+nxcLRKrwXOlVNT9+6p7ra3ZV/bu0Di5bdLiqfxKarFy4zEtd9fllr2oYp
+         7Q6VyWuncWNiiodyabAkyjZysJUsC526HyMFP48mdzk4scwMLVB6FI1dgulKgRvL0IOy
+         PuLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=l/0UUkqf6KFkNkf6dBZ0pEkCS7X6LutBL6LgNXt9kNw=;
-        b=4faGQYlxBZjA+kzsR8+ekTf8Zr3+XkDi8qW8PkU4egOKmo/7JwPkBhajJLrxLNT0xh
-         K6IsxNeYLFSTG0PpxCr7EHURh4QM85j4hcxYNduWuEh/58CkCm24eN+fipYysE3/l8Fw
-         Rh08oIldg+vLXb5Ghq+87Zq2hZXVWw3J11UwT/fXXhq9Qkp29YWhsu8PpysN9q0hLOLb
-         TOPp9fztugAA2dI5JSu2DdiWE3ZMYsxfECf8RNnI168V5Giq2+Gc52hKSiAffGZ/95Vw
-         usAV0NcfRD9vyESbaIixm6RstLCO3bPuBpg7d6ZSZMvtflyYtuQH+X9pmgiSw5eplTn1
-         5w2w==
-X-Gm-Message-State: AOAM533GcZiqTIofDosXgUK1j9rNmlq2oUiSGUt7naiNrXiQ95eXhuJ5
-        UwgT8vjdLP7QJU5v1Jglvt91kaSXBnV2Zp6sRNlZNQ==
-X-Google-Smtp-Source: ABdhPJwgB0TnW1VjXBlaMl6cHb/t+9CrkGOL3PBxBmLXFG83NcAttneComJazLR0qQ/0pGpbtjvvvjluJNY70x4qme8=
-X-Received: by 2002:a05:6102:3ece:: with SMTP id n14mr1827009vsv.55.1635613194472;
- Sat, 30 Oct 2021 09:59:54 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject
+         :message-id:date:mime-version:content-transfer-encoding;
+        bh=mxOtNLa1eAMR0wpGD1VMaJkJmBISmLqnmjVIAsRcHvc=;
+        b=wDPMBzBfRuQjUgPjQy00apvInFv8IWVyOTHHL7QEBXia/2RrOFz7SlORcyNNQIKMsX
+         1Zvey9mEKuPBP0gFu8ru3ePeJzxXW+eVMUcNwBZf9uz9hfgMySgaHE3F0+dJ/fC4DTHe
+         q7OQEJy9olyBvUR7Nu82B1WA9zaLpkOF3EaUQiOE8T26o/Xdry6dmIUN5KukEQ1Sr+8H
+         uH2xsF9Qs2HugXvxMJUfMTSROLU2q9Mqdu4uYoXTdylxJVVSXg2qsPasjgd6F7vCGOAL
+         OW9XyrvNTmU1hnN0h1uu4L+aNHQTbQi1L1LrN1H1rIX8GF6spBSvhNPXErdVovDbCzU9
+         54HQ==
+X-Gm-Message-State: AOAM5306agVpS5LBv2c+XDvgsoNSkJi6/2CvYP+JgQiw4Br7rnoZ0y+q
+        B4kpKmojj2Rlvu73z5yT7TqklQ==
+X-Google-Smtp-Source: ABdhPJzMkwx+8CSrFVSVUQuPKJKJNsEs+j3d0vp9XLDv6RRzhAFgLrCeu1vNWGVlfsmYjr2iZBeQpQ==
+X-Received: by 2002:a05:6602:2a44:: with SMTP id k4mr13067137iov.56.1635613426348;
+        Sat, 30 Oct 2021 10:03:46 -0700 (PDT)
+Received: from [127.0.1.1] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id z26sm4948483ioe.9.2021.10.30.10.03.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 30 Oct 2021 10:03:45 -0700 (PDT)
+From:   Jens Axboe <axboe@kernel.dk>
+To:     kbusch@kernel.org, dan.j.williams@intel.com, richard@nod.at,
+        jim@jtan.com, vishal.l.verma@intel.com, dave.jiang@intel.com,
+        miquel.raynal@bootlin.com, vigneshr@ti.com, ngupta@vflare.org,
+        ira.weiny@intel.com, senozhatsky@chromium.org, hch@lst.de,
+        paulus@samba.org, Luis Chamberlain <mcgrof@kernel.org>,
+        sagi@grimberg.me, mpe@ellerman.id.au, minchan@kernel.org,
+        geoff@infradead.org, benh@kernel.crashing.org
+Cc:     linux-mtd@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        nvdimm@lists.linux.dev, linux-block@vger.kernel.org
+In-Reply-To: <20211015235219.2191207-1-mcgrof@kernel.org>
+References: <20211015235219.2191207-1-mcgrof@kernel.org>
+Subject: Re: (subset) [PATCH 00/13] block: add_disk() error handling stragglers
+Message-Id: <163561342513.76453.10042066842818606438.b4-ty@kernel.dk>
+Date:   Sat, 30 Oct 2021 11:03:45 -0600
 MIME-Version: 1.0
-References: <20211028183527.3050-1-semen.protsenko@linaro.org>
- <20211028183527.3050-8-semen.protsenko@linaro.org> <1ad6b625-4388-bc78-e258-eae0b9357b96@roeck-us.net>
- <CAPLW+4kphtac24fcpVUENAMUAdHp2fkzJ0N_r_63Soq6R2VZBg@mail.gmail.com> <7c9a8dd4-7607-55a2-3d65-a445fa246667@roeck-us.net>
-In-Reply-To: <7c9a8dd4-7607-55a2-3d65-a445fa246667@roeck-us.net>
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Sat, 30 Oct 2021 19:59:42 +0300
-Message-ID: <CAPLW+4kTANfSaw5g=rnJUJTMcT_J1Z8ju09kzmAPE70U_8KWDQ@mail.gmail.com>
-Subject: Re: [PATCH 7/7] watchdog: s3c2410: Let kernel kick watchdog
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-watchdog@vger.kernel.org,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 30 Oct 2021 at 18:14, Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On 10/30/21 7:29 AM, Sam Protsenko wrote:
-> > On Fri, 29 Oct 2021 at 03:30, Guenter Roeck <linux@roeck-us.net> wrote:
-> >>
-> >> On 10/28/21 11:35 AM, Sam Protsenko wrote:
-> >>> When "tmr_atboot" module param is set, the watchdog is started in
-> >>> driver's probe. In that case, also set WDOG_HW_RUNNING bit to let
-> >>> watchdog core driver know it's running. This way wathcdog core can kick
-> >>> the watchdog for us (if CONFIG_WATCHDOG_HANDLE_BOOT_ENABLED option is
-> >>> enabled), until user space takes control.
-> >>>
-> >>> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> >>> ---
-> >>>    drivers/watchdog/s3c2410_wdt.c | 26 +++++++++++++++-----------
-> >>>    1 file changed, 15 insertions(+), 11 deletions(-)
-> >>>
-> >>> diff --git a/drivers/watchdog/s3c2410_wdt.c b/drivers/watchdog/s3c2410_wdt.c
-> >>> index ca082b1226e3..9af014ff1468 100644
-> >>> --- a/drivers/watchdog/s3c2410_wdt.c
-> >>> +++ b/drivers/watchdog/s3c2410_wdt.c
-> >>> @@ -732,6 +732,21 @@ static int s3c2410wdt_probe(struct platform_device *pdev)
-> >>>        wdt->wdt_device.bootstatus = s3c2410wdt_get_bootstatus(wdt);
-> >>>        wdt->wdt_device.parent = dev;
-> >>>
-> >>> +     /*
-> >>> +      * If "tmr_atboot" param is non-zero, start the watchdog right now. Also
-> >>> +      * set WDOG_HW_RUNNING bit, so that watchdog core can kick the watchdog.
-> >>> +      *
-> >>> +      * If we're not enabling the watchdog, then ensure it is disabled if it
-> >>> +      * has been left running from the bootloader or other source.
-> >>> +      */
-> >>> +     if (tmr_atboot && started == 0) {
-> >>> +             dev_info(dev, "starting watchdog timer\n");
-> >>> +             s3c2410wdt_start(&wdt->wdt_device);
-> >>> +             set_bit(WDOG_HW_RUNNING, &wdt->wdt_device.status);
-> >>> +     } else if (!tmr_atboot) {
-> >>> +             s3c2410wdt_stop(&wdt->wdt_device);
-> >>> +     }
-> >>> +
-> >>
-> >> This doesn't cover the case where the watchdog is already enabled by the BIOS.
-> >> In that case, WDOG_HW_RUNNING won't be set, and the watchdog will time out
-> >> if the userspace handler is not loaded fast enough. The code should consistently
-> >> set WDOG_HW_RUNNING if the watchdog is running.
-> >>
-> >
-> > As I understand, in the case when bootloader started the watchdog, the
-> > driver just stops it. You can see it in the code you replied to.
-> >
-> >      } else if (!tmr_atboot) {
-> >              s3c2410wdt_stop(&wdt->wdt_device);
-> >
-> > In other words, having "tmr_atboot" module param makes it irrelevant
-> > whether bootloader enabled WDT or no.
-> >
->
-> Sure, but I am concerned about "if (tmr_atboot && started)", which doesn't
-> set WDOG_HW_RUNNING with your current code, and I was looking for something
-> like
->
->         if (tmr_atboot) {
->                 if (!started) {
->                         dev_info(dev, "starting watchdog timer\n");
->                         s3c2410wdt_start(&wdt->wdt_device);
->                 }
->                 set_bit(WDOG_HW_RUNNING, &wdt->wdt_device.status);
->         } else {
->                 s3c2410wdt_stop(&wdt->wdt_device);
->         }
->
+On Fri, 15 Oct 2021 16:52:06 -0700, Luis Chamberlain wrote:
+> This patch set consists of al the straggler drivers for which we have
+> have no patch reviews done for yet. I'd like to ask for folks to please
+> consider chiming in, specially if you're the maintainer for the driver.
+> Additionally if you can specify if you'll take the patch in yourself or
+> if you want Jens to take it, that'd be great too.
+> 
+> Luis Chamberlain (13):
+>   block/brd: add error handling support for add_disk()
+>   nvme-multipath: add error handling support for add_disk()
+>   nvdimm/btt: do not call del_gendisk() if not needed
+>   nvdimm/btt: use goto error labels on btt_blk_init()
+>   nvdimm/btt: add error handling support for add_disk()
+>   nvdimm/blk: avoid calling del_gendisk() on early failures
+>   nvdimm/blk: add error handling support for add_disk()
+>   zram: add error handling support for add_disk()
+>   z2ram: add error handling support for add_disk()
+>   ps3disk: add error handling support for add_disk()
+>   ps3vram: add error handling support for add_disk()
+>   block/sunvdc: add error handling support for add_disk()
+>   mtd/ubi/block: add error handling support for add_disk()
+> 
+> [...]
 
-Wow, I really overlooked that case. Nice catch! Not having '} else {'
-section is vicious...
+Applied, thanks!
 
-Though if started != 0, it means s3c2410wdt_set_heartbeat() failed to
-set wdd->timeout, and without that the watchdog core won't be able to
-calculate correctly ping interval in watchdog_next_keepalive(), and
-WDOG_HW_RUNNING bit won't do much good, right? So I'll probably just
-call s3c2410wdt_stop() in that case, to be on the safe side.
+[08/13] zram: add error handling support for add_disk()
+        commit: 5e2e1cc4131cf4d21629c94331f2351b7dc8b87c
+[10/13] ps3disk: add error handling support for add_disk()
+        commit: ff4cbe0fcf5d749f76040f782f0618656cd23e33
+[11/13] ps3vram: add error handling support for add_disk()
+        commit: 3c30883acab1d20ecbd3c48dc12b147b51548742
 
-Also this 'started' variable name is misleading, I'll convert it to
-"bool timeout_ok" while at it.
+Best regards,
+-- 
+Jens Axboe
 
-> Guenter
+
