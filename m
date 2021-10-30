@@ -2,95 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B58F14407D5
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 09:18:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 178F04407DF
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 09:32:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231696AbhJ3HVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Oct 2021 03:21:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231492AbhJ3HVV (ORCPT
+        id S231712AbhJ3Hev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Oct 2021 03:34:51 -0400
+Received: from mx316.baidu.com ([180.101.52.236]:16904 "EHLO
+        njjs-sys-mailin02.njjs.baidu.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230365AbhJ3Heu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Oct 2021 03:21:21 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7ADDC061570;
-        Sat, 30 Oct 2021 00:18:51 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id z11-20020a1c7e0b000000b0030db7b70b6bso13413396wmc.1;
-        Sat, 30 Oct 2021 00:18:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=oVcNCx2IbAJ0wX8mqH7Uz5fTRfj9jXWXASNFwbc4lx0=;
-        b=KU7L3Ss03GDMunJYmFi8WaDD0j+MButs+kfWEFlcesCOaoo5pbTqia3pGZLy2aBrM6
-         ZRXvBgXkPNQ8Exfsar/s2k8t34YkJLJYyb0OyWR425v3swxoCKRLE611YE89QwD7fkSZ
-         5eX//L16kVspCZSPUhWGLZC3wrVCmWy9ArHFSOnHlJnFK8ZeTWKgS9Z4bvsT46s5Y8/n
-         S4uJrUSWPoU3Yrr87BJL8s4aOjqdUu+KkBpwX7HkEJf76bWMsv0sCSevDSnFMTNxgceJ
-         bEiPZ+tzl2Cio3ez+hukkDbX0dBCNQHCTIdqF3a+5sHT9fHeyg3kJCEfeXbvIm/JnDoY
-         Yobw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=oVcNCx2IbAJ0wX8mqH7Uz5fTRfj9jXWXASNFwbc4lx0=;
-        b=JUO+MRAHHHItdS+2suhF1zVvJg+sxK4tgpJDjclOONLVRh805LehuJA9YdYHgnZ6M2
-         P3RuacZ+Hj5JcK2cYrRirGjmMAeo959/0VcbT/OKpSR2UfjdotXyxaCCF1an+lgt6DVh
-         OCn6MakcZQyiGq1ayj20b5flHbcL7IpooLqwF9vJltsBcSdpy0lrroEMnyLw5l2DI3v8
-         /wS/KKMthj3DZceEt0jrLvTDDokzUn4e2LmqgoN0qCU1wCp3ZDGwwo993anOZFqCHrTt
-         vF2lVpbYLQW77okWZTT973cgDsVkya2bISbnoElXby7P1i/rAV8i3sej20f2XnTOwav1
-         sUOg==
-X-Gm-Message-State: AOAM5314nLceBBHg4hktHg1yG1pIlz5DyjO1HBcNWFJZxJMj9n5I0MfI
-        UwGDTRCwn++fvhmfdYiBdSY=
-X-Google-Smtp-Source: ABdhPJwVMiAS5hNCE9cSf1+mvLG+NkA/S/EMLY/bXbmZtcT0LqnYL8sx9FRH2m0vc+/SREa+K4kCQQ==
-X-Received: by 2002:a1c:a405:: with SMTP id n5mr16388836wme.49.1635578330546;
-        Sat, 30 Oct 2021 00:18:50 -0700 (PDT)
-Received: from p200300e94719c92a81a9947a27df1b21.dip0.t-ipconnect.de (p200300e94719c92a81a9947a27df1b21.dip0.t-ipconnect.de. [2003:e9:4719:c92a:81a9:947a:27df:1b21])
-        by smtp.googlemail.com with ESMTPSA id l20sm12318956wmq.42.2021.10.30.00.18.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Oct 2021 00:18:50 -0700 (PDT)
-Message-ID: <29a3fd17a9a8b369af4adefb2b2b1eaabc56cb8c.camel@gmail.com>
-Subject: Re: [PATCH v2 0/2] Clean UFS HPB 2.0
-From:   Bean Huo <huobean@gmail.com>
-To:     alim.akhtar@samsung.com, avri.altman@wdc.com,
-        asutoshd@codeaurora.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
-        cang@codeaurora.org, daejun7.park@samsung.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Sat, 30 Oct 2021 09:18:49 +0200
-In-Reply-To: <20211029194931.293826-1-huobean@gmail.com>
-References: <20211029194931.293826-1-huobean@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        Sat, 30 Oct 2021 03:34:50 -0400
+X-Greylist: delayed 376 seconds by postgrey-1.27 at vger.kernel.org; Sat, 30 Oct 2021 03:34:49 EDT
+Received: from bjhw-sys-rpm015653cc5.bjhw.baidu.com (bjhw-sys-rpm015653cc5.bjhw.baidu.com [10.227.53.39])
+        by njjs-sys-mailin02.njjs.baidu.com (Postfix) with ESMTP id CEA8916542866;
+        Sat, 30 Oct 2021 15:25:59 +0800 (CST)
+Received: from localhost (localhost [127.0.0.1])
+        by bjhw-sys-rpm015653cc5.bjhw.baidu.com (Postfix) with ESMTP id ACE5CD9932;
+        Sat, 30 Oct 2021 15:25:59 +0800 (CST)
+From:   Yuan ZhaoXiong <yuanzhaoxiong@baidu.com>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] sched/fair: Simplify task_numa_find_cpu()
+Date:   Sat, 30 Oct 2021 15:25:59 +0800
+Message-Id: <1635578759-32343-1-git-send-email-yuanzhaoxiong@baidu.com>
+X-Mailer: git-send-email 1.7.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Combine the 'cpumask_of_node()' with 'env->p->cpus_ptr' and drop the
+cpumask_test_cpu().
 
-Ignore this series of patches, because Avri's latest V3 already
-contains these changes.
+Signed-off-by: Yuan ZhaoXiong <yuanzhaoxiong@baidu.com>
+---
+ kernel/sched/fair.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-
-On Fri, 2021-10-29 at 21:49 +0200, Bean Huo wrote:
-> From: Bean Huo <beanhuo@micron.com>
-> 
-> Hi Martin and  Bart,
-> 
-> These patches are based on Avri's patch "scsi: ufs: ufshpb: Remove
-> HPB2.0 flows",
-> which has been applied to 5.15/scsi-fixes.
-> 
-> v1-v2:
->     fix typoes in the commit message
-> 
-> Bean Huo (2):
->   scsi: core: Ignore the UFSHPB preparation result
->   scsi: ufshpb: Delete ufshpb_set_write_buf_cmd()
-> 
->  drivers/scsi/ufs/ufshcd.c | 11 +++++------
->  drivers/scsi/ufs/ufshpb.c | 14 --------------
->  2 files changed, 5 insertions(+), 20 deletions(-)
-> 
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index f6a05d9..dc064d7 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -1950,11 +1950,7 @@ static void task_numa_find_cpu(struct task_numa_env *env,
+ 		maymove = !load_too_imbalanced(src_load, dst_load, env);
+ 	}
+ 
+-	for_each_cpu(cpu, cpumask_of_node(env->dst_nid)) {
+-		/* Skip this CPU if the source task cannot migrate */
+-		if (!cpumask_test_cpu(cpu, env->p->cpus_ptr))
+-			continue;
+-
++	for_each_cpu_and(cpu, cpumask_of_node(env->dst_nid), env->p->cpus_ptr) {
+ 		env->dst_cpu = cpu;
+ 		if (task_numa_compare(env, taskimp, groupimp, maymove))
+ 			break;
+-- 
+1.8.3.1
 
