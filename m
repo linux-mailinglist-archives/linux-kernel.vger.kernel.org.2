@@ -2,192 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3D6C440630
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 02:07:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECF0B44063E
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 02:08:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231674AbhJ3AKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 20:10:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35258 "EHLO
+        id S231922AbhJ3AKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 20:10:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229546AbhJ3AKY (ORCPT
+        with ESMTP id S231712AbhJ3AKp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 20:10:24 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52CC0C061570;
-        Fri, 29 Oct 2021 17:07:55 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id s1so9312591qta.13;
-        Fri, 29 Oct 2021 17:07:55 -0700 (PDT)
+        Fri, 29 Oct 2021 20:10:45 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAE52C061714
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 17:08:15 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id q7-20020a25b007000000b005c1d1377abdso14098007ybf.23
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 17:08:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qERu0voFr9suiiWnQnSGc4TpiaTJ1ubRw/T4rhUUEPI=;
-        b=ivGMDFI435kbxGVOiM/mRzp9xBPVeFXNCEaTVAjKfBP2o/363zLH68vJTBu44B4zIF
-         Dbu2/pA4gb8IgfntswVbl6UCARhM8EjTogG7SSxbwGGrAACSTZK/MrgXsJdF1zOONTWd
-         drOVxoilbYwzfhI3wPgbXUKuJoO7P3zZcZL7F5pQOIbmQJVmNxxjjkRHfHULixJCmlBx
-         KNZ95j9XD9BgmqrCuufcZfNPo8P2dAOJ1+YgFSo7CMYSbIOkn5MjF87mEMGXu5XekV05
-         S7e160dMQ+GyfI5FJBSg5Q1RDj2eDjVJdnuPNP/XOfGJqJJ3Uebt03H0pbWAdW2XM2hh
-         ypxw==
+        d=google.com; s=20210112;
+        h=reply-to:date:in-reply-to:message-id:mime-version:references
+         :subject:from:to:cc;
+        bh=nZgvEByp7NGBu6ZKjCithSTl6MGwJocQOrlXwlTztss=;
+        b=SwSQxCQjFCFjO1EyF2BMRJLSkAyCsJT3bUjiKuPge9om88vrvED4780IzC/uq8vOk6
+         trnN5ZgqnL9I3ylegVnZjsMiRzQEhSjGFzSgnbZ7EvyPFaTLb+AKu+RyWfz6+i1wGj3Q
+         QzhJun8Tee0L6admV6BWGCS95Ul47ku7WnEo1SFA1Jm9Bh1voenugNcmRhMFxgGFzQd4
+         8Bpe30KeYvraOGSGLisSWeOFiAadbmajcLcDwt1TelTK15dNwCBmVBihcnM/SGeq1Gls
+         s7nHC7Vi074UUv+3Mc40aeFu9GjHf3D/8FmxminQlCY8VVUYF0DkveB86bLpfzb+c/rj
+         JQFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qERu0voFr9suiiWnQnSGc4TpiaTJ1ubRw/T4rhUUEPI=;
-        b=KV8a/4qctUZmtvTWWk7+9+zDR/Y/06VgIuBNJqTaAiHzDPe88t2Np0c9xfG6S44crV
-         bIKa1itEPu1qNHJvsgq1OWQJBn9DI2YqJ1CprOhFnc93MdgFl412SLY6cGWhoNWZqS90
-         VfwWVRSvwtwUVKo/qT3eZNJ2KKtbpELpCEGOfWS8Ad5qejUfKroRIKvqr5fhXMGQPNkh
-         mbmnqtujhJMGjDaAfhiTsMR41q8/CqXniFw0mRSVPBK4SoU4S9UsHDRIiUk9ygiW0gMb
-         EokMT1H5Xd10rbaSDE6rpEqFBx21X+Bcn2DAzA6oATFPekQhcD2BeIrghOLR7hmv3FOO
-         UUXw==
-X-Gm-Message-State: AOAM531pdIDPisQ3lyhIssQySx+Iyx0ucJ6DJhLXE7AS5Ck2efTp/pyM
-        xM4uqKTKqmRjLIYhWjKoJxM=
-X-Google-Smtp-Source: ABdhPJz3TVx3XLNS0Gzsr/FLZvzDSL7+0sRDMUf0+A2HSgJc09gW5kHG2q+4Dr1tAVvLmaTrNx1ylw==
-X-Received: by 2002:ac8:10a:: with SMTP id e10mr15181091qtg.406.1635552474549;
-        Fri, 29 Oct 2021 17:07:54 -0700 (PDT)
-Received: from [192.168.1.49] (c-67-187-90-124.hsd1.tn.comcast.net. [67.187.90.124])
-        by smtp.gmail.com with ESMTPSA id g11sm5812614qko.31.2021.10.29.17.07.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Oct 2021 17:07:54 -0700 (PDT)
-Subject: Re: Fwd: [Bug 214867] New: UBSAN: shift-out-of-bounds in
- drivers/of/unittest.c:1933:36
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Erhard F." <erhard_f@mailbox.org>
-References: <bug-214867-211671@https.bugzilla.kernel.org/>
- <c474a371-b524-1da8-4a67-e72cf8f2b0f7@gmail.com>
-From:   Frank Rowand <frowand.list@gmail.com>
-Message-ID: <a83c3242-acc9-03da-d559-04e4baba75ca@gmail.com>
-Date:   Fri, 29 Oct 2021 19:07:53 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <c474a371-b524-1da8-4a67-e72cf8f2b0f7@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
+         :mime-version:references:subject:from:to:cc;
+        bh=nZgvEByp7NGBu6ZKjCithSTl6MGwJocQOrlXwlTztss=;
+        b=IKJBbnz1CODaREUHL7mm5klHnAiFhuOX2M63jxRElQx56+TYn+/oMD6Y8+qoraiJti
+         EreD0r+kuFqM1P05xtIwdtsuiHpVpPu/yhJaBTQWlpEZqoU95rzBoSymZ5NaUWsGt9xu
+         EMqbDTNVYa3fNRY1CuOpun+S8RJmNihQwe+D0VBqONz5nj/gZhLFQS8xQ5XBJQJrQNh8
+         ln2s98C3/dCn9Hp7qRjc6vzLr3sBgNPvoqDwtWbZYyV3k8Oknx2e+in/A+vmIwxBdSdm
+         9PBLXd3++IrIZ2Pn3M8Ngx4k1PxUtwuTyihTU6lHz/Q7nva4MTOCfeo4E1+QnvPxI4jt
+         Pa/w==
+X-Gm-Message-State: AOAM530ypFUgJ+AR+bJR1Ghw8E+w0VKaegpIfYj9FM0YY5l8LEf2LUt0
+        +kFOLu7mk1pzF76XNhq/bMvbDWrTKkw=
+X-Google-Smtp-Source: ABdhPJzgwITvxkHjIZJNbgNeWiqj+13l8VoV4q1YgxPQlpXEd7kOmcS2UN09ZaM3Hamym5CvzyBYJBs54WA=
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:ce6:9e5f:4ab5:a0d2])
+ (user=seanjc job=sendgmr) by 2002:a25:4008:: with SMTP id n8mr4568390yba.371.1635552495075;
+ Fri, 29 Oct 2021 17:08:15 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Fri, 29 Oct 2021 17:07:54 -0700
+In-Reply-To: <20211030000800.3065132-1-seanjc@google.com>
+Message-Id: <20211030000800.3065132-3-seanjc@google.com>
+Mime-Version: 1.0
+References: <20211030000800.3065132-1-seanjc@google.com>
+X-Mailer: git-send-email 2.33.1.1089.g2158813163f-goog
+Subject: [PATCH v2 2/8] KVM: x86: Get the number of Hyper-V sparse banks from
+ the VARHEAD field
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ajay Garg <ajaygargnsit@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/29/21 6:57 PM, Frank Rowand wrote:
-> 
-> Reported in bugzilla, forwarding to the mail lists and maintainers.
-> 
-> -Frank
-> 
-> 
-> -------- Forwarded Message --------
-> Subject: [Bug 214867] New: UBSAN: shift-out-of-bounds in drivers/of/unittest.c:1933:36
-> Date: Fri, 29 Oct 2021 13:59:02 +0000
-> From: bugzilla-daemon@bugzilla.kernel.org
-> 
-> 
-> https://bugzilla.kernel.org/show_bug.cgi?id=214867
-> 
->             Bug ID: 214867
->            Summary: UBSAN: shift-out-of-bounds in
->                     drivers/of/unittest.c:1933:36
->            Product: Platform Specific/Hardware
->            Version: 2.5
->     Kernel Version: 5.15-rc7
->           Hardware: PPC-64
->                 OS: Linux
->               Tree: Mainline
->             Status: NEW
->           Severity: normal
->           Priority: P1
->          Component: PPC-64
->           Assignee: platform_ppc-64@kernel-bugs.osdl.org
->           Reporter: erhard_f@mailbox.org
->                 CC: bugzilla.kernel.org@frowand.com
->         Regression: No
-> 
-> Created attachment 299361
->   --> https://bugzilla.kernel.org/attachment.cgi?id=299361&action=edit
-> kernel dmesg (kernel 5.15-rc7, Talos II)
-> 
-> UBSAN catches this at boot on my Talos II.
-> 
-> [...]
-> ### dt-test ### EXPECT / : GPIO line <<int>> (line-C-input) hogged as input
-> ================================================================================
-> UBSAN: shift-out-of-bounds in drivers/of/unittest.c:1933:36
-> shift exponent -1 is negative
-> CPU: 2 PID: 1 Comm: swapper/0 Not tainted 5.15.0-rc7-TalosII #1
-> Call Trace:
-> [c000000004163700] [c0000000008ffaa8] .dump_stack_lvl+0xa4/0x100 (unreliable)
-> [c000000004163790] [c0000000008fb46c] .ubsan_epilogue+0x10/0x70
-> [c000000004163800] [c0000000008fb270]
-> .__ubsan_handle_shift_out_of_bounds+0x1f0/0x34c
-> [c000000004163910] [c000000000ad94a0] .of_unittest_untrack_overlay+0x6c/0xe0
-> [c0000000041639a0] [c000000002098ff8] .of_unittest+0x4c50/0x59f8
-> [c000000004163b60] [c000000000011b5c] .do_one_initcall+0x7c/0x4f0
-> [c000000004163c50] [c00000000200300c] .kernel_init_freeable+0x704/0x858
-> [c000000004163d90] [c000000000012730] .kernel_init+0x20/0x190
-> [c000000004163e10] [c00000000000ce78] .ret_from_kernel_thread+0x58/0x60
-> ================================================================================
-> ### dt-test ### EXPECT \ : OF: overlay: WARNING: memory leak will occur if
-> overlay removed, property: /testcase-data-2/substation@100/status
-> [...]
-> 
+Get the number of sparse banks from the VARHEAD field, which the guest is
+required to provide as "The size of a variable header, in QWORDS.", where
+the variable header is:
 
-Further comment in Bugzilla are:
+  Variable Header Bytes = {Total Header Bytes - sizeof(Fixed Header)}
+                          rounded up to nearest multiple of 8
+  Variable HeaderSize = Variable Header Bytes / 8
 
-----------  comment 1:
+In other words, the VARHEAD should match the number of sparse banks.
+Keep the manual count as a sanity check, but otherwise rely on the field
+so as to more closely align with the logic defined in the TLFS and to
+allow for future cleanups.
 
- Erhard F. 2021-10-29 14:00:20 UTC
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+ arch/x86/kvm/hyperv.c             | 35 ++++++++++++++++++-------------
+ arch/x86/kvm/trace.h              | 14 +++++++------
+ include/asm-generic/hyperv-tlfs.h |  1 +
+ 3 files changed, 30 insertions(+), 20 deletions(-)
 
-Created attachment 299363 [details]
-kernel .config (kernel 5.15-rc7, Talos II)
+diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
+index 814d1a1f2cb8..cf18aa1712bf 100644
+--- a/arch/x86/kvm/hyperv.c
++++ b/arch/x86/kvm/hyperv.c
+@@ -1742,6 +1742,7 @@ struct kvm_hv_hcall {
+ 	u64 ingpa;
+ 	u64 outgpa;
+ 	u16 code;
++	u16 var_cnt;
+ 	u16 rep_cnt;
+ 	u16 rep_idx;
+ 	bool fast;
+@@ -1761,7 +1762,6 @@ static u64 kvm_hv_flush_tlb(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *hc, bool
+ 	unsigned long *vcpu_mask;
+ 	u64 valid_bank_mask;
+ 	u64 sparse_banks[64];
+-	int sparse_banks_len;
+ 	bool all_cpus;
+ 
+ 	if (!ex) {
+@@ -1811,24 +1811,28 @@ static u64 kvm_hv_flush_tlb(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *hc, bool
+ 		all_cpus = flush_ex.hv_vp_set.format !=
+ 			HV_GENERIC_SET_SPARSE_4K;
+ 
+-		sparse_banks_len = bitmap_weight((unsigned long *)&valid_bank_mask, 64);
++		if (hc->var_cnt != bitmap_weight((unsigned long *)&valid_bank_mask, 64))
++			return HV_STATUS_INVALID_HYPERCALL_INPUT;
+ 
+-		if (!sparse_banks_len && !all_cpus)
++		if (!hc->var_cnt && !all_cpus)
+ 			goto ret_success;
+ 
+ 		if (!all_cpus) {
+ 			if (hc->fast) {
+-				if (sparse_banks_len > HV_HYPERCALL_MAX_XMM_REGISTERS - 1)
++				if (hc->var_cnt > HV_HYPERCALL_MAX_XMM_REGISTERS - 1)
+ 					return HV_STATUS_INVALID_HYPERCALL_INPUT;
+-				for (i = 0; i < sparse_banks_len; i += 2) {
++				for (i = 0; i < hc->var_cnt; i += 2) {
+ 					sparse_banks[i] = sse128_lo(hc->xmm[i / 2 + 1]);
+ 					sparse_banks[i + 1] = sse128_hi(hc->xmm[i / 2 + 1]);
+ 				}
+ 			} else {
++				if (hc->var_cnt > 64)
++					return HV_STATUS_INVALID_HYPERCALL_INPUT;
++
+ 				gpa = hc->ingpa + offsetof(struct hv_tlb_flush_ex,
+ 							   hv_vp_set.bank_contents);
+ 				if (unlikely(kvm_read_guest(kvm, gpa, sparse_banks,
+-							    sparse_banks_len *
++							    hc->var_cnt *
+ 							    sizeof(sparse_banks[0]))))
+ 					return HV_STATUS_INVALID_HYPERCALL_INPUT;
+ 			}
+@@ -1884,7 +1888,6 @@ static u64 kvm_hv_send_ipi(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *hc, bool
+ 	unsigned long *vcpu_mask;
+ 	unsigned long valid_bank_mask;
+ 	u64 sparse_banks[64];
+-	int sparse_banks_len;
+ 	u32 vector;
+ 	bool all_cpus;
+ 
+@@ -1917,22 +1920,25 @@ static u64 kvm_hv_send_ipi(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *hc, bool
+ 
+ 		vector = send_ipi_ex.vector;
+ 		valid_bank_mask = send_ipi_ex.vp_set.valid_bank_mask;
+-		sparse_banks_len = bitmap_weight(&valid_bank_mask, 64) *
+-			sizeof(sparse_banks[0]);
+-
+ 		all_cpus = send_ipi_ex.vp_set.format == HV_GENERIC_SET_ALL;
+ 
++		if (hc->var_cnt != bitmap_weight(&valid_bank_mask, 64))
++			return HV_STATUS_INVALID_HYPERCALL_INPUT;
++
+ 		if (all_cpus)
+ 			goto check_and_send_ipi;
+ 
+-		if (!sparse_banks_len)
++		if (!hc->var_cnt)
+ 			goto ret_success;
+ 
++		if (hc->var_cnt > 64)
++			return HV_STATUS_INVALID_HYPERCALL_INPUT;
++
+ 		if (kvm_read_guest(kvm,
+ 				   hc->ingpa + offsetof(struct hv_send_ipi_ex,
+ 							vp_set.bank_contents),
+ 				   sparse_banks,
+-				   sparse_banks_len))
++				   hc->var_cnt * sizeof(sparse_banks[0])))
+ 			return HV_STATUS_INVALID_HYPERCALL_INPUT;
+ 	}
+ 
+@@ -2190,13 +2196,14 @@ int kvm_hv_hypercall(struct kvm_vcpu *vcpu)
+ 	}
+ 
+ 	hc.code = hc.param & 0xffff;
++	hc.var_cnt = (hc.param & HV_HYPERCALL_VARHEAD_MASK) >> HV_HYPERCALL_VARHEAD_OFFSET;
+ 	hc.fast = !!(hc.param & HV_HYPERCALL_FAST_BIT);
+ 	hc.rep_cnt = (hc.param >> HV_HYPERCALL_REP_COMP_OFFSET) & 0xfff;
+ 	hc.rep_idx = (hc.param >> HV_HYPERCALL_REP_START_OFFSET) & 0xfff;
+ 	hc.rep = !!(hc.rep_cnt || hc.rep_idx);
+ 
+-	trace_kvm_hv_hypercall(hc.code, hc.fast, hc.rep_cnt, hc.rep_idx,
+-			       hc.ingpa, hc.outgpa);
++	trace_kvm_hv_hypercall(hc.code, hc.fast, hc.var_cnt, hc.rep_cnt,
++			       hc.rep_idx, hc.ingpa, hc.outgpa);
+ 
+ 	if (unlikely(!hv_check_hypercall_access(hv_vcpu, hc.code))) {
+ 		ret = HV_STATUS_ACCESS_DENIED;
+diff --git a/arch/x86/kvm/trace.h b/arch/x86/kvm/trace.h
+index 953b0fcb21ee..f6625cfb686c 100644
+--- a/arch/x86/kvm/trace.h
++++ b/arch/x86/kvm/trace.h
+@@ -64,9 +64,9 @@ TRACE_EVENT(kvm_hypercall,
+  * Tracepoint for hypercall.
+  */
+ TRACE_EVENT(kvm_hv_hypercall,
+-	TP_PROTO(__u16 code, bool fast, __u16 rep_cnt, __u16 rep_idx,
+-		 __u64 ingpa, __u64 outgpa),
+-	TP_ARGS(code, fast, rep_cnt, rep_idx, ingpa, outgpa),
++	TP_PROTO(__u16 code, bool fast,  __u16 var_cnt, __u16 rep_cnt,
++		 __u16 rep_idx, __u64 ingpa, __u64 outgpa),
++	TP_ARGS(code, fast, var_cnt, rep_cnt, rep_idx, ingpa, outgpa),
+ 
+ 	TP_STRUCT__entry(
+ 		__field(	__u16,		rep_cnt		)
+@@ -74,6 +74,7 @@ TRACE_EVENT(kvm_hv_hypercall,
+ 		__field(	__u64,		ingpa		)
+ 		__field(	__u64,		outgpa		)
+ 		__field(	__u16, 		code		)
++		__field(	__u16,		var_cnt		)
+ 		__field(	bool,		fast		)
+ 	),
+ 
+@@ -83,13 +84,14 @@ TRACE_EVENT(kvm_hv_hypercall,
+ 		__entry->ingpa		= ingpa;
+ 		__entry->outgpa		= outgpa;
+ 		__entry->code		= code;
++		__entry->var_cnt	= var_cnt;
+ 		__entry->fast		= fast;
+ 	),
+ 
+-	TP_printk("code 0x%x %s cnt 0x%x idx 0x%x in 0x%llx out 0x%llx",
++	TP_printk("code 0x%x %s var_cnt 0x%x cnt 0x%x idx 0x%x in 0x%llx out 0x%llx",
+ 		  __entry->code, __entry->fast ? "fast" : "slow",
+-		  __entry->rep_cnt, __entry->rep_idx,  __entry->ingpa,
+-		  __entry->outgpa)
++		  __entry->var_cnt, __entry->rep_cnt, __entry->rep_idx,
++		  __entry->ingpa, __entry->outgpa)
+ );
+ 
+ TRACE_EVENT(kvm_hv_hypercall_done,
+diff --git a/include/asm-generic/hyperv-tlfs.h b/include/asm-generic/hyperv-tlfs.h
+index 56348a541c50..1ba8e6da4427 100644
+--- a/include/asm-generic/hyperv-tlfs.h
++++ b/include/asm-generic/hyperv-tlfs.h
+@@ -182,6 +182,7 @@ enum HV_GENERIC_SET_FORMAT {
+ #define HV_HYPERCALL_RESULT_MASK	GENMASK_ULL(15, 0)
+ #define HV_HYPERCALL_FAST_BIT		BIT(16)
+ #define HV_HYPERCALL_VARHEAD_OFFSET	17
++#define HV_HYPERCALL_VARHEAD_MASK	GENMASK_ULL(26, 17)
+ #define HV_HYPERCALL_REP_COMP_OFFSET	32
+ #define HV_HYPERCALL_REP_COMP_1		BIT_ULL(32)
+ #define HV_HYPERCALL_REP_COMP_MASK	GENMASK_ULL(43, 32)
+-- 
+2.33.1.1089.g2158813163f-goog
 
- # lspci 
-0000:00:00.0 PCI bridge: IBM POWER9 Host Bridge (PHB4)
-0000:01:00.0 VGA compatible controller: Advanced Micro Devices, Inc. [AMD/ATI] Turks XT [Radeon HD 6670/7670]
-0000:01:00.1 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] Turks HDMI Audio [Radeon HD 6500/6600 / 6700M Series]
-0001:00:00.0 PCI bridge: IBM POWER9 Host Bridge (PHB4)
-0001:01:00.0 Non-Volatile memory controller: Phison Electronics Corporation Device 5008 (rev 01)
-0002:00:00.0 PCI bridge: IBM POWER9 Host Bridge (PHB4)
-0003:00:00.0 PCI bridge: IBM POWER9 Host Bridge (PHB4)
-0003:01:00.0 USB controller: Texas Instruments TUSB73x0 SuperSpeed USB 3.0 xHCI Host Controller (rev 02)
-0004:00:00.0 PCI bridge: IBM POWER9 Host Bridge (PHB4)
-0004:01:00.0 Ethernet controller: Broadcom Inc. and subsidiaries NetXtreme BCM5719 Gigabit Ethernet PCIe (rev 01)
-0004:01:00.1 Ethernet controller: Broadcom Inc. and subsidiaries NetXtreme BCM5719 Gigabit Ethernet PCIe (rev 01)
-0005:00:00.0 PCI bridge: IBM POWER9 Host Bridge (PHB4)
-0005:01:00.0 PCI bridge: ASPEED Technology, Inc. AST1150 PCI-to-PCI Bridge (rev 04)
-0005:02:00.0 VGA compatible controller: ASPEED Technology, Inc. ASPEED Graphics Family (rev 41)
-0030:00:00.0 PCI bridge: IBM POWER9 Host Bridge (PHB4)
-0031:00:00.0 PCI bridge: IBM POWER9 Host Bridge (PHB4)
-0032:00:00.0 PCI bridge: IBM POWER9 Host Bridge (PHB4)
-0033:00:00.0 PCI bridge: IBM POWER9 Host Bridge (PHB4)
-
-
-----------  comment 2:
-
-[reply] [−] Comment 2 Arnd Bergmann 2021-10-29 14:06:48 UTC
-
-This is the function that triggers it:
-
-static void of_unittest_untrack_overlay(int id)
-{
-        if (overlay_first_id < 0)
-                return;
-        id -= overlay_first_id;
-        if (WARN_ON(id >= MAX_UNITTEST_OVERLAYS))
-                return;
-        overlay_id_bits[BIT_WORD(id)] &= ~BIT_MASK(id);
-}
-
-My guess is that 'id' is negative here, which means it fails to tigger the
-WARN_ON() but ends up still being out of range.
-
-Can you try changing it to 'unsigned int id'?
-
-
-----------  More info from me, but I did not comment in bugzilla
-
-line 1933 is the final line of of_unittest_untrack_overlay()
-(see comment 2 for context):
-
-1933         overlay_id_bits[BIT_WORD(id)] &= ~BIT_MASK(id);
