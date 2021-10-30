@@ -2,177 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90E9B4408C5
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 14:39:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 042654408DE
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 14:59:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231875AbhJ3MmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Oct 2021 08:42:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230089AbhJ3MmG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Oct 2021 08:42:06 -0400
-Received: from mail-vk1-xa2a.google.com (mail-vk1-xa2a.google.com [IPv6:2607:f8b0:4864:20::a2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E038C061714
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Oct 2021 05:39:36 -0700 (PDT)
-Received: by mail-vk1-xa2a.google.com with SMTP id d130so5922088vke.0
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Oct 2021 05:39:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6BWVd5QSBtmNHqdFIHqNMkh8yS32RlgmgzQWHgLjOEU=;
-        b=BIk7S5Jt5fOttx6WIIVZ4XVMO+4ht7jw3rzpyd4mZD3HIIQ4wH0lVisbqbM3rkraxb
-         0adAQWNStbetUIcfOku+EpFTBMsVEmmcy1b9LG5yb4lIzUVuws6f42N8bAuDAEOC7inL
-         3l1fPSPvos+CgQHtAk4yMbCtCoU5f/j9XEUBl26Y+IbRScrzjsbbz2ZLibAcUjddbHJ8
-         qSA5y/wyG/2p/B2QiAr/LlnZCx4iyv2eSbFHQRrUuVxAg6rVKwsIUw3FOekNySMUFSdo
-         /TDJprrbF8h9CDe5e3uE1dVq48gNGcS1MhON9R9tmo9dcDuXfS11SQtJdAL/Z35SjRtV
-         RCQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6BWVd5QSBtmNHqdFIHqNMkh8yS32RlgmgzQWHgLjOEU=;
-        b=e0y+gXHNuA2x9HPyjTIlNkD9l5Uk30lfh7WDFv91qExMJcZ6V7qSCIJYV+argggbhM
-         Ohw52JRYKsfduHIJc9VVFV/3BlF1sz65zqbY+M7aPBbER8hhocpd1Pu7OtQQXNVgHwQv
-         a4f0v3tQTZnWve3rwsdqh94i2vhpEuRRJM8U3uKq3OURdaynBciZ/W7OSCMn/QiK3Zwx
-         X/uwJE+kpS8od5Dz9bWEItrDXQnVLIPca1j85bfovF+X/hrQHoiR61yQQCoMq+Yq+ufV
-         JiWSA1oh5M9SzQdAk16RizgWVAglqKSzIVjxJAYiPIUbpkwT6WQjISXvBeHSVnRWBwOt
-         Nc8g==
-X-Gm-Message-State: AOAM533z1ub8RAmffmXfjppGfJlkzzChNH+P2MvJKR0x8U38ODWKfCgX
-        CkY0YXJPCjTMDLAT7tEDSx485PlLLW7nQCXVW90LqA==
-X-Google-Smtp-Source: ABdhPJz6tsNOjN5h6qxnvEq0t7Wd/uAi4kksAnKEO7rGE848rRZEP/NXJiVLxio4ezKk5aHVO15OqAgSNrAeSen2Pq0=
-X-Received: by 2002:a05:6122:da0:: with SMTP id bc32mr17945585vkb.4.1635597575199;
- Sat, 30 Oct 2021 05:39:35 -0700 (PDT)
+        id S230327AbhJ3NCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Oct 2021 09:02:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42978 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229640AbhJ3NCY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Oct 2021 09:02:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CDC6360EFF;
+        Sat, 30 Oct 2021 12:59:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635598793;
+        bh=oHZNPIIOWVnapw7CjqfF9ZXvF6wdYZNsVtNzLU2Uyw4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ssXoZ0apzp8LX3RfOj5eP7AgLS3A2pKgV3+YF4ljS0YvkiPJcCM/9zI8ajltv7B4j
+         OClbxsNWsJ4hlZ/7siyBZ77EwIH+MYkH9nV6OcFTpkn8h33LybqIeApTLcKwW04dKD
+         nFBe3pUhN/YjXu8r4aF45eQYnjF2c5xzLMrFFZuDNm7sBCjUBgl0d+C8vWX9O3ZmNw
+         onrPaX71kNyt1uCszuaK5qw5Ae5YnQIrXjKylnCv740bnyDA8Rtz9QOcTsrN3DG6tg
+         swpLIoVf2TRpcua5DL+9e1dQCf0N0LPaBKPTNkqVq6RWEjTmIBZ8/kIoexMkQlw2RU
+         2ftuj7v3WmmyQ==
+Received: by pali.im (Postfix)
+        id 89C1C1083; Sat, 30 Oct 2021 14:59:51 +0200 (CEST)
+Date:   Sat, 30 Oct 2021 14:59:51 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Andrew Lunn <andrew@lunn.ch>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] Documentation: arm: marvell: Add some links to
+ homepage / product infos
+Message-ID: <20211030125951.q6vo5mkr3ww4s5bv@pali>
+References: <20211008160105.24225-1-pali@kernel.org>
 MIME-Version: 1.0
-References: <20211028183527.3050-1-semen.protsenko@linaro.org>
- <20211028183527.3050-6-semen.protsenko@linaro.org> <51128b74-de5d-1758-282b-1d4c5250a38d@roeck-us.net>
-In-Reply-To: <51128b74-de5d-1758-282b-1d4c5250a38d@roeck-us.net>
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Sat, 30 Oct 2021 15:39:23 +0300
-Message-ID: <CAPLW+4mnAV0yHdYFtosYfS2jcAUa4qvScvmohBKvqTBHz-5CFQ@mail.gmail.com>
-Subject: Re: [PATCH 5/7] watchdog: s3c2410: Introduce separate source clock
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-watchdog@vger.kernel.org,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211008160105.24225-1-pali@kernel.org>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Oct 2021 at 03:21, Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On 10/28/21 11:35 AM, Sam Protsenko wrote:
-> > Some Exynos chips (like Exynos850) have dedicated source clock. That
-> > clock is provided from device tree as "watchdog_src" clock. In such
-> > case, "watchdog" clock is just a peripheral clock used for register
-> > interface. If "watchdog_src" is present, use its rate instead of
-> > "watchdog" for all timer related calculations.
-> >
->
-> If the "watchdog_src" clock is present, is "watchdog" clock still needed ?
-> Please state that explicitly, since it is kind of unusual.
->
+Hello! I would like to remind this documentation patch.
 
-Done, I've reworded the commit message. Will send v2 soon, thanks.
-
-> Guenter
->
-> > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> > ---
-> >   drivers/watchdog/s3c2410_wdt.c | 33 +++++++++++++++++++++++++++------
-> >   1 file changed, 27 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/drivers/watchdog/s3c2410_wdt.c b/drivers/watchdog/s3c2410_wdt.c
-> > index a5ef7171a90e..bfc5872ca497 100644
-> > --- a/drivers/watchdog/s3c2410_wdt.c
-> > +++ b/drivers/watchdog/s3c2410_wdt.c
-> > @@ -126,6 +126,8 @@ struct s3c2410_wdt_variant {
-> >   struct s3c2410_wdt {
-> >       struct device           *dev;
-> >       struct clk              *clock;
-> > +     struct clk              *clock_src;
-> > +     unsigned long           freq_src;
-> >       void __iomem            *reg_base;
-> >       unsigned int            count;
-> >       spinlock_t              lock;
-> > @@ -213,10 +215,8 @@ MODULE_DEVICE_TABLE(platform, s3c2410_wdt_ids);
-> >
-> >   /* functions */
-> >
-> > -static inline unsigned int s3c2410wdt_max_timeout(struct clk *clock)
-> > +static inline unsigned int s3c2410wdt_max_timeout(unsigned long freq)
-> >   {
-> > -     unsigned long freq = clk_get_rate(clock);
-> > -
-> >       return S3C2410_WTCNT_MAXCNT / (freq / (S3C2410_WTCON_PRESCALE_MAX + 1)
-> >                                      / S3C2410_WTCON_MAXDIV);
-> >   }
-> > @@ -364,7 +364,7 @@ static int s3c2410wdt_set_heartbeat(struct watchdog_device *wdd,
-> >                                   unsigned int timeout)
-> >   {
-> >       struct s3c2410_wdt *wdt = watchdog_get_drvdata(wdd);
-> > -     unsigned long freq = clk_get_rate(wdt->clock);
-> > +     unsigned long freq = wdt->freq_src;
-> >       unsigned int count;
-> >       unsigned int divisor = 1;
-> >       unsigned long wtcon;
-> > @@ -627,13 +627,27 @@ static int s3c2410wdt_probe(struct platform_device *pdev)
-> >               return ret;
-> >       }
-> >
-> > +     /* "watchdog_src" clock is optional; if it's not present -- just skip */
-> > +     wdt->clock_src = devm_clk_get(dev, "watchdog_src");
-> > +     if (!IS_ERR(wdt->clock_src)) {
-> > +             ret = clk_prepare_enable(wdt->clock_src);
-> > +             if (ret < 0) {
-> > +                     dev_err(dev, "failed to enable source clock\n");
-> > +                     ret = PTR_ERR(wdt->clock_src);
-> > +                     goto err_clk;
-> > +             }
-> > +             wdt->freq_src = clk_get_rate(wdt->clock_src);
-> > +     } else {
-> > +             wdt->freq_src = clk_get_rate(wdt->clock);
-> > +     }
-> > +
-> >       wdt->wdt_device.min_timeout = 1;
-> > -     wdt->wdt_device.max_timeout = s3c2410wdt_max_timeout(wdt->clock);
-> > +     wdt->wdt_device.max_timeout = s3c2410wdt_max_timeout(wdt->freq_src);
-> >
-> >       ret = s3c2410wdt_cpufreq_register(wdt);
-> >       if (ret < 0) {
-> >               dev_err(dev, "failed to register cpufreq\n");
-> > -             goto err_clk;
-> > +             goto err_clk_src;
-> >       }
-> >
-> >       watchdog_set_drvdata(&wdt->wdt_device, wdt);
-> > @@ -707,6 +721,10 @@ static int s3c2410wdt_probe(struct platform_device *pdev)
-> >    err_cpufreq:
-> >       s3c2410wdt_cpufreq_deregister(wdt);
-> >
-> > + err_clk_src:
-> > +     if (!IS_ERR(wdt->clock_src))
-> > +             clk_disable_unprepare(wdt->clock_src);
-> > +
-> >    err_clk:
-> >       clk_disable_unprepare(wdt->clock);
-> >
-> > @@ -727,6 +745,9 @@ static int s3c2410wdt_remove(struct platform_device *dev)
-> >
-> >       s3c2410wdt_cpufreq_deregister(wdt);
-> >
-> > +     if (!IS_ERR(wdt->clock_src))
-> > +             clk_disable_unprepare(wdt->clock_src);
-> > +
-> >       clk_disable_unprepare(wdt->clock);
-> >
-> >       return 0;
-> >
->
+On Friday 08 October 2021 18:01:03 Pali Rohár wrote:
+> Webarchive contains some useful resources like product info or links to
+> other documents.
+> 
+> Signed-off-by: Pali Rohár <pali@kernel.org>
+> ---
+>  Documentation/arm/marvell.rst | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/Documentation/arm/marvell.rst b/Documentation/arm/marvell.rst
+> index c3d3f27edfbb..d4fe191bb88c 100644
+> --- a/Documentation/arm/marvell.rst
+> +++ b/Documentation/arm/marvell.rst
+> @@ -103,6 +103,8 @@ Discovery family
+>  
+>                  Not supported by the Linux kernel.
+>  
+> +  Homepage:
+> +        https://web.archive.org/web/20110924171043/http://www.marvell.com/embedded-processors/discovery-innovation/
+>    Core:
+>  	Feroceon 88fr571-vd ARMv5 compatible
+>  
+> @@ -119,6 +121,7 @@ EBU Armada family
+>          - 88F6707
+>          - 88F6W11
+>  
+> +    - Product infos:   https://web.archive.org/web/20141002083258/http://www.marvell.com/embedded-processors/armada-370/
+>      - Product Brief:   https://web.archive.org/web/20121115063038/http://www.marvell.com/embedded-processors/armada-300/assets/Marvell_ARMADA_370_SoC.pdf
+>      - Hardware Spec:   https://web.archive.org/web/20140617183747/http://www.marvell.com/embedded-processors/armada-300/assets/ARMADA370-datasheet.pdf
+>      - Functional Spec: https://web.archive.org/web/20140617183701/http://www.marvell.com/embedded-processors/armada-300/assets/ARMADA370-FunctionalSpec-datasheet.pdf
+> @@ -129,6 +132,7 @@ EBU Armada family
+>    Armada 375 Flavors:
+>  	- 88F6720
+>  
+> +    - Product infos: https://web.archive.org/web/20140108032402/http://www.marvell.com/embedded-processors/armada-375/
+>      - Product Brief: https://web.archive.org/web/20131216023516/http://www.marvell.com/embedded-processors/armada-300/assets/ARMADA_375_SoC-01_product_brief.pdf
+>  
+>    Core:
+> @@ -169,6 +173,9 @@ EBU Armada family
+>      NOTE:
+>  	not to be confused with the non-SMP 78xx0 SoCs
+>  
+> +    Product infos:
+> +        https://web.archive.org/web/20150101215721/http://www.marvell.com/embedded-processors/armada-xp/
+> +
+>      Product Brief:
+>  	https://web.archive.org/web/20121021173528/http://www.marvell.com/embedded-processors/armada-xp/assets/Marvell-ArmadaXP-SoC-product%20brief.pdf
+>  
+> -- 
+> 2.20.1
+> 
