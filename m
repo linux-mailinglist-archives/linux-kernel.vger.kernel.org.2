@@ -2,125 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A189E4408A9
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 14:05:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A2E74408AC
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 14:06:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231863AbhJ3MIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Oct 2021 08:08:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48262 "EHLO
+        id S231921AbhJ3MIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Oct 2021 08:08:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231840AbhJ3MH7 (ORCPT
+        with ESMTP id S231895AbhJ3MIP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Oct 2021 08:07:59 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69684C061570
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Oct 2021 05:05:29 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id f7-20020a1c1f07000000b0032ee11917ceso4954727wmf.0
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Oct 2021 05:05:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :references:cc:from:in-reply-to:content-transfer-encoding;
-        bh=De3SzmRUMwnscDxEBtkqC2nJji6pArhOBilNpE3ydQI=;
-        b=iOSp9G0195vo/kwecCUjIV3KtN8MV8GTRFOChdgh7UOzL10OmC20aIqMTX24uBvuvd
-         hvDDE66nfW+CupcG2HOMGjy+w6dVwzKZ/xN+dkpp+Co/ZYYVICqygVtNrsm9soRfNoOJ
-         2INAbLm+aplN3SSmPDzdkMZJOtonECJxuKEoWKSOg0uZF9M5edPfuSVjtKyOZgLIBrgK
-         7vDQ/s8TnZCDQG9UQBp66tsiN3ALwTTq73OyuHz8SMz6JLZzLx0PBS5+31Ameyjwhc+0
-         gHcbkRKFHcx8A/aYwP47VJ0FieeGYrFnS2g/rKTZ3M1LBWcY67SL0o7HaXMqp09gAiG6
-         iIYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:references:cc:from:in-reply-to
-         :content-transfer-encoding;
-        bh=De3SzmRUMwnscDxEBtkqC2nJji6pArhOBilNpE3ydQI=;
-        b=mzfFtVysrxzEsEI4LD1COyWosKcZT8fGzG0p/IiArAO2ORI7OL5igDQ8s8gCN5Iflb
-         MfYTTMkGDOW7SAMtrQqv38w37J5jE5mYu/vSPYsVEcKtKWBfw/+Fkpbx6iVvCx/27Z4k
-         /wrq+2Y9HgSvVAqYm4sh/hj5uog1lw5BKBPu5MMafl5FV6+cbXCvubiLDUmJabxHvJvr
-         k1gM282qJYGas+N0pQl24Ve8prWueVg9AZelAgzj9iDoJMYm31ggXoWvrLRPbi9WYP9k
-         faUFZVH7lxdKeg1cidU99VjMGB3yGqJftH7vLUwihQuFzMnKPp/GIGZFGB+G5J1d89KL
-         ksHg==
-X-Gm-Message-State: AOAM532UObJFCakJku0fqVkO+zpyziT171kF/fu5sF0M73Lui1G7zLuD
-        Dynj0BqqcvK1OPCmoT6gfl9/ae0fBQw=
-X-Google-Smtp-Source: ABdhPJx0kB7qFH1jGsdKnPz+Av8xQ68ia0ljeygj/0wmzZUARCY0t5bhrzsRaKrlM4rishZ4E44/ow==
-X-Received: by 2002:a05:600c:1550:: with SMTP id f16mr26406402wmg.5.1635595528044;
-        Sat, 30 Oct 2021 05:05:28 -0700 (PDT)
-Received: from [10.8.0.130] ([195.53.121.100])
-        by smtp.gmail.com with ESMTPSA id j9sm7994730wrt.96.2021.10.30.05.05.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 30 Oct 2021 05:05:27 -0700 (PDT)
-Message-ID: <480456b0-5e10-9179-73c0-0a92649f8874@gmail.com>
-Date:   Sat, 30 Oct 2021 14:05:26 +0200
+        Sat, 30 Oct 2021 08:08:15 -0400
+Received: from metanate.com (unknown [IPv6:2001:8b0:1628:5005::111])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 173E9C061570
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Oct 2021 05:05:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=metanate.com; s=stronger; h=In-Reply-To:Content-Type:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description; bh=ZIAjfyluv6n+7SWUoRXNUVKzRvp5Ka/4JBN91H8gIjw=; b=UlL6C
+        y7KWJxvsH0KyRc8dqvUy1qBoz5CKHAOy+he56H/eaRcatnfBl2ntbvYbtPxRjeh1mvkt6QZfvQWgZ
+        lvxGl1NzmJPU3R3V/Ayaxn7V6zZlemg/ZwrKAfTrQuYqToF++CMOgPfuvmpYZVmMTuzdg7jVOcdNV
+        xJ29zirhfWqEb7d308lMuiX+5wHBw85PPBFrbO2NXc9i95Yr++yyLAD8hqqO3H7jqt+nn/k1bt+On
+        wOS4YOogsomdox3as6PPEgk8Hjwu3iPjXux3tqDlfaUQSnGFjrsl6sUriYQLpxrVKcYoS1xCu8bRz
+        2cH0rea8KUuHR8Yd7CPfe9wbdt+Yg==;
+Received: from [81.174.171.191] (helo=donbot)
+        by email.metanate.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <john@metanate.com>)
+        id 1mgn76-0003Ms-BU; Sat, 30 Oct 2021 13:05:32 +0100
+Date:   Sat, 30 Oct 2021 13:05:31 +0100
+From:   John Keeping <john@metanate.com>
+To:     Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     dri-devel@lists.freedesktop.org, Sandy Huang <hjc@rock-chips.com>,
+        Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH] drm/rockchip: use generic fbdev setup
+Message-ID: <YX01C6l93I2YPgku@donbot>
+References: <20211029115014.264084-1-john@metanate.com>
+ <ab7ace79-0148-1efa-ec17-6994bb35fd2f@suse.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [Bug 214873] New: man 2 fsync implies possibility to return early
-Content-Language: en-US
-To:     LKML <linux-kernel@vger.kernel.org>
-References: <bug-214873-216477@https.bugzilla.kernel.org/>
-Cc:     bugzilla-daemon@bugzilla.kernel.org,
-        Christoph Hellwig <hch@lst.de>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        David Howells <dhowells@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>
-From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
-In-Reply-To: <bug-214873-216477@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ab7ace79-0148-1efa-ec17-6994bb35fd2f@suse.de>
+X-Authenticated: YES
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[CC += LKML and a few kernel programmers]
+Hi Thomas,
 
-Hi,
-
-On 10/29/21 23:25, bugzilla-daemon@bugzilla.kernel.org wrote:
-> https://bugzilla.kernel.org/show_bug.cgi?id=214873
+On Fri, Oct 29, 2021 at 09:00:08PM +0200, Thomas Zimmermann wrote:
+> Am 29.10.21 um 13:50 schrieb John Keeping:
+> > The Rockchip fbdev code does not add anything compared to
+> > drm_fbdev_generic_setup(); the one custom function for .fb_mmap does the
+> > same thing as gem_prime_mmap which is called by the helper.
+> > 
+> > Signed-off-by: John Keeping <john@metanate.com>
+> > ---
+> >   drivers/gpu/drm/rockchip/Makefile             |   1 -
+> >   drivers/gpu/drm/rockchip/rockchip_drm_drv.c   |  10 +-
+> >   drivers/gpu/drm/rockchip/rockchip_drm_drv.h   |   2 -
+> >   drivers/gpu/drm/rockchip/rockchip_drm_fbdev.c | 164 ------------------
+> >   drivers/gpu/drm/rockchip/rockchip_drm_fbdev.h |  24 ---
+> >   5 files changed, 2 insertions(+), 199 deletions(-)
+> >   delete mode 100644 drivers/gpu/drm/rockchip/rockchip_drm_fbdev.c
+> >   delete mode 100644 drivers/gpu/drm/rockchip/rockchip_drm_fbdev.h
+> > 
+> > diff --git a/drivers/gpu/drm/rockchip/Makefile b/drivers/gpu/drm/rockchip/Makefile
+> > index 17a9e7eb2130..1a56f696558c 100644
+> > --- a/drivers/gpu/drm/rockchip/Makefile
+> > +++ b/drivers/gpu/drm/rockchip/Makefile
+> > @@ -5,7 +5,6 @@
+> >   rockchipdrm-y := rockchip_drm_drv.o rockchip_drm_fb.o \
+> >   		rockchip_drm_gem.o rockchip_drm_vop.o rockchip_vop_reg.o
+> > -rockchipdrm-$(CONFIG_DRM_FBDEV_EMULATION) += rockchip_drm_fbdev.o
+> >   rockchipdrm-$(CONFIG_ROCKCHIP_ANALOGIX_DP) += analogix_dp-rockchip.o
+> >   rockchipdrm-$(CONFIG_ROCKCHIP_CDN_DP) += cdn-dp-core.o cdn-dp-reg.o
+> > diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_drv.c b/drivers/gpu/drm/rockchip/rockchip_drm_drv.c
+> > index 69c699459dce..20d81ae69828 100644
+> > --- a/drivers/gpu/drm/rockchip/rockchip_drm_drv.c
+> > +++ b/drivers/gpu/drm/rockchip/rockchip_drm_drv.c
+> > @@ -26,7 +26,6 @@
+> >   #include "rockchip_drm_drv.h"
+> >   #include "rockchip_drm_fb.h"
+> > -#include "rockchip_drm_fbdev.h"
+> >   #include "rockchip_drm_gem.h"
+> >   #define DRIVER_NAME	"rockchip"
+> > @@ -159,10 +158,6 @@ static int rockchip_drm_bind(struct device *dev)
+> >   	drm_mode_config_reset(drm_dev);
+> > -	ret = rockchip_drm_fbdev_init(drm_dev);
+> > -	if (ret)
+> > -		goto err_unbind_all;
+> > -
+> >   	/* init kms poll for handling hpd */
+> >   	drm_kms_helper_poll_init(drm_dev);
+> > @@ -170,10 +165,11 @@ static int rockchip_drm_bind(struct device *dev)
+> >   	if (ret)
+> >   		goto err_kms_helper_poll_fini;
+> > +	drm_fbdev_generic_setup(drm_dev, 32);
 > 
->              Bug ID: 214873
->             Summary: man 2 fsync implies possibility to return early
->             Product: Documentation
->             Version: unspecified
->            Hardware: All
->                  OS: Linux
->              Status: NEW
->            Severity: low
->            Priority: P1
->           Component: man-pages
->            Assignee: documentation_man-pages@kernel-bugs.osdl.org
->            Reporter: sworddragon2@gmail.com
->          Regression: No
-> 
-> The manpage for the fsync system call (
-> https://man7.org/linux/man-pages/man2/fsync.2.html ) describes as flushing the
-> related caches to a storage device so that the information can even be
-> retrieved after a crash/reboot. But then it does make the statement "The call
-> blocks until the device reports that the transfer has completed." which causes
-> now some interpretation: What happens if the device reports early completion
-> (e.g. via a bugged firmware) of the transfer while the kernel still sees unsent
-> caches in its context? Does fsync() indeed return then as the last referenced
-> sentence implies or does it continue to send the caches the kernel sees to
-> guarantee data integrity as good as possible as the previous documented part
-> might imply?
-> 
-> I noticed this discrepancy when reporting a bug against dd (
-> https://debbugs.gnu.org/cgi/bugreport.cgi?bug=51345 ) that causes dd to return
-> early when it is used with its fsync capability while the kernel still sees
-> caches and consulting the fsync() manpage made it not clear if such a
-> theoretical possibility from the fsync() system call would be intended or not
-> so eventually this part could be slighty enhanced.
-> 
+> Please pass 0 for the final argument. The fbdev helpers pick 32 by default.
+> Maybe leave a comment if you require 32 here.
 
-I don't know how fsync(2) works.  Could some kernel fs programmer please 
-check if the text matches the implementation, and if that issue reported 
-should be reworded in the manual page?
+I wanted to minimise the changes introduced here - passing 32 matches
+the value passed to drm_fb_helper_initial_config() in the deleted code
+from rockchip_drm_fbdev.c.
 
-Thanks,
-
-Alex
-
--- 
-Alejandro Colomar
-Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
-http://www.alejandro-colomar.es/
+What do you think about changing this to 0 in a follow-up patch?
