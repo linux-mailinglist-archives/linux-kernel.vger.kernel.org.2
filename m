@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9F29440704
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 04:57:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 658BC440705
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 04:57:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231673AbhJ3C7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 22:59:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43744 "EHLO
+        id S231676AbhJ3C76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 22:59:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229700AbhJ3C7z (ORCPT
+        with ESMTP id S229700AbhJ3C75 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 22:59:55 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7C8DC061570
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 19:57:25 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id lx5-20020a17090b4b0500b001a262880e99so8614371pjb.5
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 19:57:25 -0700 (PDT)
+        Fri, 29 Oct 2021 22:59:57 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14F8FC061570
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 19:57:28 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id f8so7993043plo.12
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Oct 2021 19:57:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FhCHvaKbTCMh07wP4MgsfXhejEg0lMRt+cVvfPVOPP0=;
-        b=cf6UOmqfTKKO6qIEeeizkq6GiA6CTT4PK4/+0doIF977/32qb1DWKD15jTkcvHDRTi
-         WORJkKTU+R0BfyrAHXufn1A11bEGqdBe4uwFzlIxgFAb5DW0/Otbp2qKxSiYwwiftPuS
-         63gyS5hqLAQq9vv3KWrpIL4atYCbYtkeiILfK/ty1Vq0PL/I74sfDPtnWc2aY8MHt78F
-         aLf2sx1HFyqudaSrk8FpAXaOImCZ9kYNWyEm4ZJ2t314/Sk7qTPc/I7qrC+ECcnoQE8T
-         oHgP5YYHBmuFqc6WAl8FiJ2bvdqk4wpnJMzSjBGf/TLkNyx7l5GSd8KV8UmoFyn+gTrC
-         CFsw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=bRZRUWkhWxUsoJi+TfDhQOO+QR6RREWrvwlDvSDfAp4=;
+        b=lxcJ+cbNp11RJOx6wKzLlsjsUUS0H2Vma5AtlB/wNaxoD6ICA+CRiF0VZ19IHOpr6r
+         fEDJQASoGp2n8CHc4lbZt7YjW6Tyd+giZzvh+o1A5cPlz9j1HX+f8e0mWjyq5/tQIMJM
+         USkTEPp2yXHy8hogUGYqo8Lb+FRdIavxHfTYvsofvwOmNennVqmI2YgEqM/w1Hkw29cC
+         sxgXl44ybL2R2YjoIOfNOZbOOnRi/XtvyAJgC7w+bMhTlqz/kVGzIkmC9u+mcfjVV4n/
+         Y7MajMi0IYM99jY4Ibh4RLnpGq95Q/6NmJ/Aa9IMV6XN1TuYWjvqxqLQvzMXr4Ph43uC
+         ZuzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FhCHvaKbTCMh07wP4MgsfXhejEg0lMRt+cVvfPVOPP0=;
-        b=bVg1cnYnqFc8B8vc/DZ0vOQYbrTAOwUkOrOSgfQCD/Ci2+z0tafyPY49ORL3mE1uJU
-         UVHrYrf6lK9BSjZ9NBsEt0muscGXOyosYAnU3Qi8QNce4PYyurhCDOrL7K10jqrsWxKF
-         8+0KpD87z29ryTysAiU+kGCIOyBkaZz7i8qsVX8E67Oie+PM9KGbnLBZdS//NL0LgN+v
-         4B321P4TpF+SYMpynp8WiR64DfIkloH2QpYW+3Brle48zudbfw9l+lwO5GS9Qv2k3GFA
-         Re1UMzf9W+84/CRZDiKFnmfMO6ktmZic3zKPjTMDqlaoTHgJO7z8BRab37oEuyrr4mLj
-         CfdA==
-X-Gm-Message-State: AOAM531Y8IudQhL0IIn8aYU/jmEuXvlNzdef651uhy6k6OCpkE+/RTq4
-        rpc7ydFwaZOqBBeB6GuN4MI=
-X-Google-Smtp-Source: ABdhPJzVDCuT6hBMcz1G+6pdzp/m3Wi5Augz7HXZRKSvoCyrpsO6iethyvkOPBBMc3qwi052Lf7q8g==
-X-Received: by 2002:a17:90a:ff81:: with SMTP id hf1mr14206632pjb.157.1635562645271;
-        Fri, 29 Oct 2021 19:57:25 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=bRZRUWkhWxUsoJi+TfDhQOO+QR6RREWrvwlDvSDfAp4=;
+        b=7QrDEpIz+HCpfVS1SWxpn/UYEcWRSDhfBuOb7UHZzxDG/w4p+7KyoRgsGJCkxucI5P
+         Jlxh8y6bdWsxfOti3vTroGmXu3IMKQQmaXrKAJOT3GT6qpN6Xy/1AWojbtWQkmHnlj7u
+         cEFVVpftEhUcKOh9gFcYVn4HmqvNuq+yTAHzXSketXhLDv7/7CoV2Qw9ccGxul6TClw3
+         DfFiZ2td2npW24DnVstpMaJXwHn6pB4NAaD4x4xJO5fX0bQINS2SZV2p2Kuh86wHg/VF
+         KZoVlZ8jTz8vZhdIubuf0Y52cWLS7jtAMny/vMTSofbtixWAd0MSo/vXTvf0lZwDnRoz
+         7QKg==
+X-Gm-Message-State: AOAM533bzdt0wjqjdZ0/NmfefIMGbjZfeSrYmWDB1QRynjyGHWDOZooR
+        KFo0MYWUo2GhCsGm5K/yW29dfki24WQ=
+X-Google-Smtp-Source: ABdhPJzj+RwzbGkQOGcfWDt01KBz5Z3HOhJfycdGXK2OJEqMC4V8mJPZi3KBcsglFKLBxbjL0+g8Qw==
+X-Received: by 2002:a17:90b:4b03:: with SMTP id lx3mr15408997pjb.51.1635562647586;
+        Fri, 29 Oct 2021 19:57:27 -0700 (PDT)
 Received: from 7YHHR73.igp.broadcom.net ([192.19.161.250])
-        by smtp.gmail.com with ESMTPSA id mr2sm6097749pjb.25.2021.10.29.19.57.22
+        by smtp.gmail.com with ESMTPSA id mr2sm6097749pjb.25.2021.10.29.19.57.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Oct 2021 19:57:24 -0700 (PDT)
+        Fri, 29 Oct 2021 19:57:27 -0700 (PDT)
 From:   Florian Fainelli <f.fainelli@gmail.com>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     Florian Fainelli <f.fainelli@gmail.com>,
@@ -66,18 +66,20 @@ Cc:     Florian Fainelli <f.fainelli@gmail.com>,
         Saravana Kannan <saravanak@google.com>,
         Marek Szyprowski <m.szyprowski@samsung.com>,
         linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 1/2] ARM: multi_v7_defconfig: Enable Broadcom STB USB drivers
-Date:   Fri, 29 Oct 2021 19:57:14 -0700
-Message-Id: <20211030025715.13296-1-f.fainelli@gmail.com>
+Subject: [PATCH 2/2] ARM: multi_v7_defconfig: Enable BCM23550 and BCM53573
+Date:   Fri, 29 Oct 2021 19:57:15 -0700
+Message-Id: <20211030025715.13296-2-f.fainelli@gmail.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20211030025715.13296-1-f.fainelli@gmail.com>
+References: <20211030025715.13296-1-f.fainelli@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable CONFIG_PHY_USB_BRCM (USB PHY driver) and CONFIG_USB_BRCMSTB which
-allows us to enable the Broadcom STB USB drivers (OHCI, EHCI and XHCI).
+Enable the BCM23550 and BCM53573 SoCs to have all of the ARM 32-bit SoCs
+enabled.
 
 Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 ---
@@ -85,25 +87,19 @@ Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
  1 file changed, 2 insertions(+)
 
 diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
-index 33572998dbbe..ae891e3e6a1a 100644
+index ae891e3e6a1a..91f21725503a 100644
 --- a/arch/arm/configs/multi_v7_defconfig
 +++ b/arch/arm/configs/multi_v7_defconfig
-@@ -287,6 +287,7 @@ CONFIG_MICREL_PHY=y
- CONFIG_AT803X_PHY=y
- CONFIG_ROCKCHIP_PHY=y
- CONFIG_SMSC_PHY=y
-+CONFIG_USB_BRCMSTB=m
- CONFIG_USB_PEGASUS=y
- CONFIG_USB_RTL8152=m
- CONFIG_USB_LAN78XX=m
-@@ -1105,6 +1106,7 @@ CONFIG_PHY_SUN9I_USB=y
- CONFIG_PHY_HIX5HD2_SATA=y
- CONFIG_PHY_BERLIN_SATA=y
- CONFIG_PHY_BERLIN_USB=y
-+CONFIG_PHY_BRCM_USB=m
- CONFIG_PHY_MMP3_USB=m
- CONFIG_PHY_CPCAP_USB=m
- CONFIG_PHY_QCOM_APQ8064_SATA=m
+@@ -24,7 +24,9 @@ CONFIG_ARCH_BCM_NSP=y
+ CONFIG_ARCH_BCM_5301X=y
+ CONFIG_ARCH_BCM_281XX=y
+ CONFIG_ARCH_BCM_21664=y
++CONFIG_ARCH_BCM_23550=y
+ CONFIG_ARCH_BCM2835=y
++CONFIG_ARCH_BCM_53573=y
+ CONFIG_ARCH_BCM_63XX=y
+ CONFIG_ARCH_BRCMSTB=y
+ CONFIG_ARCH_BERLIN=y
 -- 
 2.25.1
 
