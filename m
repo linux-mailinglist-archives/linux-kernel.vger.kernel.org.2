@@ -2,152 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03B1944067C
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 02:47:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAE9E440682
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 02:54:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231428AbhJ3AuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 20:50:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231203AbhJ3AuE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 20:50:04 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 484EFC061570;
-        Fri, 29 Oct 2021 17:47:35 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id f3so16051883lfu.12;
-        Fri, 29 Oct 2021 17:47:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=f5pSbol+SAUF2G8wYmgreImXVWzxTzfGDNyGdsJ8f10=;
-        b=hJ0sA1OddxEXXgHAtRjweLapPZPGbqdshvcw2Tfy9OFl/PTx0w40U/IrrTLQM/cMTX
-         ox8CQPPki8tD8YoFZF0hsf1jFf6kfVPY2THCC6KnWFI2fdtYLXEB4f1j57YTSjSvqe2c
-         6w1+tIemGa8k9cMzH2dQ+JHG91uTiQQqymTWTYCqL7hOJVbunp9LrEGSBbRqVh1RCpCS
-         3mwh7UtScoB38K50epPcxxthR91tvJN2OAjD8TKbfKQWmM0KOG0avrqe8cV7hi3XH8Cv
-         knJvnQfnsA47a1NCqx/YbL5WwWv3wuR0viZJWkeRq3/RjMWgWYeLHtVAWLwbbahNa1Ix
-         HVGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=f5pSbol+SAUF2G8wYmgreImXVWzxTzfGDNyGdsJ8f10=;
-        b=IvswPj/M2m0pHaZhI4MTKtso+xWMNMIyc9X0cOzjJGZgV5Q03kWI8bbrIBJ+pWishA
-         auj9HTx4XeuW4tsyi1CA26Nix5mioWBpZ6TfsBtU5JHWYNnJ/zPK5qqiKd/KXaFVpIyk
-         GT36ERtRufd85nZr8J0zls+ihfxW5L1cziHRUhX1caHrK1aWKsxxeIbdQpczr+Ig0qnp
-         l3j4QjkXJqwjooxHoSENOcTpL+jil2ni67TRyvMIzaGvpK3afrn9jjczD1yjTfz8MjLN
-         L6MDsbYoRyoklT9Du9nWsfpQmUaApNC4drWFqKMrDNvVlnhDcneLwCP/l/LPVUqMUjXg
-         yw4Q==
-X-Gm-Message-State: AOAM531n8xVzXDZmSX5p62ZeFnGwYmtbVUggQ3aaIXKN4LN0hufBqnqs
-        YTnIbEyohiFqmIlT90812uM=
-X-Google-Smtp-Source: ABdhPJwN0ai6X/I0wUNSQY3SnGxmvAqt4rJcwlbyjjdfP8ZGvjCDVG9DD8cgqM3eMxKr7GwQw3oR3w==
-X-Received: by 2002:ac2:4c9a:: with SMTP id d26mr13421192lfl.344.1635554853534;
-        Fri, 29 Oct 2021 17:47:33 -0700 (PDT)
-Received: from [192.168.2.145] (46-138-44-18.dynamic.spd-mgts.ru. [46.138.44.18])
-        by smtp.googlemail.com with ESMTPSA id d7sm852822ljl.18.2021.10.29.17.47.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Oct 2021 17:47:24 -0700 (PDT)
-Subject: Re: [PATCH v14 20/39] pwm: tegra: Add runtime PM and OPP support
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Nishanth Menon <nm@ti.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux PWM List <linux-pwm@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        David Heidelberg <david@ixit.cz>
-References: <20211025224032.21012-1-digetx@gmail.com>
- <20211025224032.21012-21-digetx@gmail.com>
- <09c05206-c0e5-9a25-8ffa-b9291f6ea5ae@gmail.com>
- <CAJZ5v0i9OtA1nDiv8UXuF3ASdENFYJFV7+nMWm6Pcu=kw8k1aQ@mail.gmail.com>
- <4dc8a6bd-4072-ccbf-513b-221d286bd6d5@gmail.com>
- <CAJZ5v0hKQf-xZq2fx1pA5oxMqP_XJV=AG0Rqu7BKRUZGDz6H5Q@mail.gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <72160e55-6aa5-9541-43f2-fbf025f84ffb@gmail.com>
-Date:   Sat, 30 Oct 2021 03:47:23 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S231481AbhJ3A5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 20:57:03 -0400
+Received: from mail-cusazon11021018.outbound.protection.outlook.com ([52.101.62.18]:30959
+        "EHLO na01-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229734AbhJ3A5B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 20:57:01 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NXIN153+CnetazxE3MYhUxlOxuzC4eJwoo+e6ZuJjOHCPeDFO0drY//B0VmKJlb/Mh/zA8bPToxgDXg22lnkrHIjBkl0wMn/szPZV8r2UxxuLqMntUGEZpjGeSYXGVO1TH8yQ2DBGhJqiODAg5UmDOModRCdQPpOUERDSrO/P3XiLqq3R1FZeuEmV+RKfOUHKgTvPJDOnZdEgo56tepinY1NlZqLEwd94TRw43KTvFVsFBmeay3wSGjUZyFuiGQ0X6R5k/2lSBnjd4Q6LGCUPmyY9SJULijTsWj56OJMKOFqBoXpZ9KPi6rk5ablKdqbD2e7hrsSQ6WhixRtcP0SjA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=zBJB/6xYDlvQ86fms88Rp07Y5azxTXlT9qLIn9pzu/4=;
+ b=Z1y13ktTgsbgsHhgFTHgYkpL2hB/ynLBLFc4Wxd7Jpanm0nKvSRzQxgnRRjyOxCjUXt1UlSFfijTs//fDk9vEMQxdfm5ighpc3J6nvRB0QQ1qdg/fu7CEdyE/osuu5ZBQ+M+3XM9XHakrqQA9Z5/HuOtUfoTkJngPdnH46KaSiIrb3jho3iQFAiVy8j4TLWQy8TeokYA/fyme5Lcwk0OjNfpn3IXsW+QEQpc0gmMDw+NKQEb4AChBiTAtWeS3S/bXatzq/OuAQ6lU8r15+VgF4Sm+Q9WLuohIEIa6xLMjCl59HqEUoRh662VGiSkU6zS8JwTYL1Wba6mXcWs+aMrRQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zBJB/6xYDlvQ86fms88Rp07Y5azxTXlT9qLIn9pzu/4=;
+ b=MB10VZaKXcaDzlrZ7sLwbjEaIkd5gRjfvYqZqDsdYz4/i6Lo2MKn9bwhF/yhTk0qdZt+9OHt+KSEZiNswMPjXxKGtmGGc0v0ReyRH3ozG5+/dW0gRD7376FW5/Lt67cHbbEEOsYNCEr+J3vepEbhjPxvt6uE1R3opG1ARzVHHpA=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+Received: from DM5PR2101MB1095.namprd21.prod.outlook.com (2603:10b6:4:a2::17)
+ by DM6PR21MB1180.namprd21.prod.outlook.com (2603:10b6:5:161::30) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.3; Sat, 30 Oct
+ 2021 00:54:27 +0000
+Received: from DM5PR2101MB1095.namprd21.prod.outlook.com
+ ([fe80::c0b9:3e28:af1e:a828]) by DM5PR2101MB1095.namprd21.prod.outlook.com
+ ([fe80::c0b9:3e28:af1e:a828%4]) with mapi id 15.20.4649.010; Sat, 30 Oct 2021
+ 00:54:27 +0000
+From:   Dexuan Cui <decui@microsoft.com>
+To:     davem@davemloft.net, kuba@kernel.org, gustavoars@kernel.org,
+        haiyangz@microsoft.com, netdev@vger.kernel.org
+Cc:     kys@microsoft.com, stephen@networkplumber.org, wei.liu@kernel.org,
+        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        shacharr@microsoft.com, paulros@microsoft.com, olaf@aepfle.de,
+        vkuznets@redhat.com, Dexuan Cui <decui@microsoft.com>
+Subject: [PATCH net-next 0/4] net: mana: some misc patches
+Date:   Fri, 29 Oct 2021 17:54:04 -0700
+Message-Id: <20211030005408.13932-1-decui@microsoft.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: MWHPR22CA0002.namprd22.prod.outlook.com
+ (2603:10b6:300:ef::12) To DM5PR2101MB1095.namprd21.prod.outlook.com
+ (2603:10b6:4:a2::17)
 MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0hKQf-xZq2fx1pA5oxMqP_XJV=AG0Rqu7BKRUZGDz6H5Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from decui-u1804.corp.microsoft.com (2001:4898:80e8:f:7661:5dff:fe6a:8a2b) by MWHPR22CA0002.namprd22.prod.outlook.com (2603:10b6:300:ef::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.14 via Frontend Transport; Sat, 30 Oct 2021 00:54:26 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1b4e42be-9408-49b8-fa49-08d99b3fd2c3
+X-MS-TrafficTypeDiagnostic: DM6PR21MB1180:
+X-LD-Processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
+X-Microsoft-Antispam-PRVS: <DM6PR21MB118064A05725A3D8F8B87CD3BF889@DM6PR21MB1180.namprd21.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: akwLW677y0tlnfelxHmK3ln1s7iXrER7XJP8aEqQDbvlC3d4v8o190Wt6x/YflTjcAhIsNZY3YeT60vC3MSDKuCozR4FS+WijuuigKTamaHMHin2Ix3exLxmeii/9UgZbExM/B3nfmL9vnO40wBE0klAKRIlMB2aWyK8zjSKZP+ywUel6S88UZ6Y6ixqfu/jMrsgNOWdqSqNCjer3X0yvmDaxRYCGMXlzK/ck5fjHnwA6/bgJleNt3yW1Q8FsG9IgO9KmldWhzJJiuU7ITecRvbpz6q1dFIxfhAi49HE6hEDmZnS7VjfG1dQ9aisknrW1oIf4MgakQZ4urY6e7yPNe8X/fO6mPtPqtacCOTMsIeOO5onB1XmtWV9kJrRQNxofsf1wJs9HNL2z5QaiQMNW45MslofL7CEMqkwzSu8M0eElkT/4cVVcpt3Ovkl7f9XNw+5ap+x75OMJ+M7V6ocC0HGzuHqMCYx89jUU8ogD/KG5A0kx56FTNwUpBavqezURooltY3w4lOYZ7yvqsLufxmuHyUIlhnsoPwAxwFrgKUZmZ+iAGVQAKHS6arkAksy1JkO9XyGpMlgohrjK4/hPvBxWAQ28s9ir9KQ04Ef2uGjQ6fh6o6Mw0WEFXia4DqZ/UpGVK2foscNyo0zoGRIsw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR2101MB1095.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(4326008)(2906002)(1076003)(107886003)(508600001)(10290500003)(66946007)(316002)(186003)(4744005)(86362001)(7696005)(52116002)(8676002)(6486002)(7416002)(36756003)(82950400001)(66556008)(82960400001)(5660300002)(66476007)(38100700002)(8936002)(2616005)(83380400001)(6666004);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?/3W4us5lLDdHyzCz9wZXnUzy3UwH2ccrNgcYiieNMLgEKzugMIu28v8cLfpr?=
+ =?us-ascii?Q?jp3s5BqQrhfjIHujk3aa/cvWKcoUd7jQ1J5GPLrdRBUMPv/Cw+xHeXNZttxx?=
+ =?us-ascii?Q?S475zwp9qyA8sBlDCEHn56kZafT8xZirZhs7sYmNGpYkwDFZ5auIMNsyRmb9?=
+ =?us-ascii?Q?c2HDOEnwWNIfMAsW3pZJ2MDZhyOo71xbX8aMe/ybvDHXFTF58oFLlaxDBy3b?=
+ =?us-ascii?Q?xnlO6fnaDhrzm0CHcNdAHXIfkoQTirVIVShnWCaM58eDjJ6kJzTVh7yj5Eiw?=
+ =?us-ascii?Q?Z61S18eS3j488ECSq9xikz/OUNn3Ej2MooSH42teOTV+YP/M2JlnYVkvHppf?=
+ =?us-ascii?Q?/I5TtTJfiMIvL1tjlY1RiLAK/2NdddHJq/9gg8Ww7qUNxFBxQDY0Q5ohnVs/?=
+ =?us-ascii?Q?Ejk0Qg+PsEuYyE620ML5ctCwMhppnA3z+NFWeDquiDWZ77TXEQ9Dlm3p8QfB?=
+ =?us-ascii?Q?VhS0qVA90LbPP/fFNL+WKtBF+K5GnaeoaYsA+ECkmm5KjqSlq6JttSLfIspK?=
+ =?us-ascii?Q?kUvJD/rwNULj7mXRXKKqhPYitNdNtiSSbbZ/22XlcmGB4sCx2DriEmyinlTh?=
+ =?us-ascii?Q?gm8orPhS9RMc4vtX+//PPKqdilKRUkSOpEKD6F2ehEWRla/DlcSpcCVektPi?=
+ =?us-ascii?Q?1Eo/IpanRAni9oFtlP+IPM2QzZM0cbgRDS2kCvaCRMRDbWw9QNqgYjmbVLDi?=
+ =?us-ascii?Q?ksPfWzwzsbOZ3WS0KYtyqalgGH3xm6PH982yQmk9V84mxfa0KAeWHQazuVz+?=
+ =?us-ascii?Q?VCyR7ZGIJofPzDQOcdLzf3XIS4Hef5+eiZkVIAyqcdBcIdfsyT2T8fDE/oEA?=
+ =?us-ascii?Q?GZf38aVU/i0rCWhDBc1m8jPK6lKnYYA1Jv0TXKzNNtb4KVREj+p8QG5g51NC?=
+ =?us-ascii?Q?eFWW3E+/zlX1Qix031kmeKIVKmKcCKTTp1lS/TXZ+ZWdeJICR3BaTrWoieas?=
+ =?us-ascii?Q?8OXMpYSO3+jIHY87BGiBclLAShUuBIsdRMfa++Egx/wIzWy6uuK6Ua2yV6jp?=
+ =?us-ascii?Q?2tlgBGOcBWLoN72i1gb7HpxTHZAQ7V3QLcimsMQ8ha+FeZWCszBe2qpFJTLp?=
+ =?us-ascii?Q?3yC7Hp0unuC3iVLG0l6/5EOhvu3n9R9fJTfsnijKdxKrgDBl7Qa8HnugrgYc?=
+ =?us-ascii?Q?7AJ9ZW2Y9ARyjjgoqAz5xu0OahOGsVelrU6ywrcB/nNA3TBgeZkoTu2q9fNp?=
+ =?us-ascii?Q?3HLWfllHPurXyjecm4r5eHjIpsl8M9HbSw3Lou7+0F6OI9hem9e2Pxgiyu4k?=
+ =?us-ascii?Q?dR3LwVZu+BVVJnqU+l2qcq3A3XTg4sp3cHiax6ZQv3xsJ+pv7dB5zfXv+IxW?=
+ =?us-ascii?Q?LDZ1VZrppEoey04ib2hQ3vJnLI8yHwhQz/BrOfTPCVpDCqQoIAmqXRiYHGAh?=
+ =?us-ascii?Q?Wg/5nOlD5XHPg2NhoPlm56YNB6OZD++9/3X44BysZL9PsS/0V5nHqUE/1rJf?=
+ =?us-ascii?Q?4wH0DbiXm4HePKZtr4KKBOKOBWXg/JboKtMj48txPLCa9gWI6JQTNLeEcjCS?=
+ =?us-ascii?Q?JauFHQ82SyKeSixJc8x9ImJc3IG0HBI/aFAAr+KQh+SOfMGcCsjGXXmvNOJB?=
+ =?us-ascii?Q?t2uZ/4fD4edMMzZYR3SDgYmB/W/uXJRXJn+Hu7svqSxyCdZz5+Rv4MMZRTmO?=
+ =?us-ascii?Q?MjL9gU0lGpqStlAKCLxMRXPZTK9LVsrQpCEjEt2WNGClLqRDsOxdqMPH0cSb?=
+ =?us-ascii?Q?Jh2IBCBIgRtUhwB9FjLwgBGx9sI=3D?=
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1b4e42be-9408-49b8-fa49-08d99b3fd2c3
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR2101MB1095.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Oct 2021 00:54:27.4197
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: JuZpz3HeqdA2U3edaJWPb1TM4PGic2AGADdqeG5kzhaIuDYveKws0jALsHR+S74l338kz+gPibr47Ze/OkWlrA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR21MB1180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-29.10.2021 21:06, Rafael J. Wysocki пишет:
-...
->>>> I just noticed that RPM core doesn't reset RPM-enable count of a device
->>>> on driver's unbind (pm_runtime_reinit). It was a bad idea to use
->>>> devm_pm_runtime_enable() + pm_runtime_force_suspend() here, since RPM is
->>>> disabled twice on driver's removal, and thus, RPM will never be enabled
->>>> again.
->>>>
->>>> I'll fix it for PWM and other drivers in this series, in v15.
->>>
->>> Well, for the record, IMV using pm_runtime_force_suspend() is
->>> generally a questionable idea.
->>>
->>
->> Please clarify why it's a questionable idea.
-> 
-> There are a few reasons.
-> 
-> Generally speaking, it makes assumptions that may not be satisfied.
-> 
-> For instance, it assumes that the driver will never have to work with
-> the ACPI PM domain, because the ACPI PM domain has a separate set of
-> callbacks for system-wide suspend and resume and they are not the same
-> as its PM-runtime callbacks, so if the driver is combined with the
-> ACPI PM domain, running pm_runtime_force_suspend() may not work as
-> expected.
+Hi all,
 
-ACPI is irrelevant to the drivers touched by this series.
+Patch 1 is a small fix.
 
-This series is about older ARM32 Tegra SoCs which either don't have ACPI
-at all or it's unusable by Linux, like a non-standard ACPI of M$ Surface
-tablets.
+Patch 2 reports OS info to the PF driver.
+Before the patch, the req fields were all zeros.
 
-> Next, it assumes that PM-runtime is actually enabled for the device
-> and the RPM_STATUS of it is valid when it is running.
+Patch 3 fixes and cleans up the error handling of HWC creation failure.
 
-Runtime PM presence is mandatory for Tegra and drivers take care of
-enabling it, should be good here.
+Patch 4 adds the callbacks for hibernation/kexec. It's based on patch 3.
 
-> Further, it assumes that the PM-runtime suspend callback of the driver
-> will always be suitable for system-wide suspend which may not be the
-> case if the device can generate wakeup signals and it is not allowed
-> to wake up the system from sleep by user space.
+Please review. Thanks!
 
-There are no such 'wakeup' drivers in the context of this patchset.
+Thanks,
+Dexuan
 
-> Next, if the driver has to work with a PM domain (other than the ACPI
-> one) or bus type that doesn't take the pm_runtime_force_suspend()
-> explicitly into account, it may end up running the runtime-suspend
-> callback provided by that entity from within its system-wide suspend
-> callback which may not work as expected.
+Dexuan Cui (4):
+  net: mana: Fix the netdev_err()'s vPort argument in mana_init_port()
+  net: mana: Report OS info to the PF driver
+  net: mana: Improve the HWC error handling
+  net: mana: Support hibernation and kexec
 
-Only platform bus and generic power domain are relevant for this patchset.
+ .../net/ethernet/microsoft/mana/gdma_main.c   | 155 +++++++++++++-----
+ .../net/ethernet/microsoft/mana/hw_channel.c  |  71 ++++----
+ drivers/net/ethernet/microsoft/mana/mana.h    |   4 +-
+ drivers/net/ethernet/microsoft/mana/mana_en.c |  75 +++++++--
+ 4 files changed, 208 insertions(+), 97 deletions(-)
 
-> I guess I could add a few if I had to.
-> 
+-- 
+2.17.1
 
-So far I can't see any problems.
-
-If you have a better alternative on yours mind, please share.
