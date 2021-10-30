@@ -2,118 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C90A44083C
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 11:27:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 646E3440839
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 11:23:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231775AbhJ3JaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Oct 2021 05:30:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42686 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231685AbhJ3JaM (ORCPT
+        id S231854AbhJ3JZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Oct 2021 05:25:37 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:26213 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231829AbhJ3JZg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Oct 2021 05:30:12 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07F60C061714
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Oct 2021 02:27:43 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mgkeJ-0008RA-Kh; Sat, 30 Oct 2021 11:27:39 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mgkeI-00087r-Od; Sat, 30 Oct 2021 11:27:38 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mgkeI-0007Py-Nb; Sat, 30 Oct 2021 11:27:38 +0200
-Date:   Sat, 30 Oct 2021 11:27:36 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Robert Foss <robert.foss@linaro.org>
-Cc:     Steev Klimaszewski <steev@kali.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>, linux-pwm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v7 1/3] pwm: Introduce single-PWM of_xlate function
-Message-ID: <20211030092736.eam4ahzimiew7erg@pengutronix.de>
-References: <20211025170925.3096444-1-bjorn.andersson@linaro.org>
- <65243a98-61b9-3311-f41d-fa4782448baa@kali.org>
- <CAG3jFytmcFcA5W3vmcpWTWrc36-YFMPZ1wAB8gAJfiHHLWmaCA@mail.gmail.com>
+        Sat, 30 Oct 2021 05:25:36 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HhDM7049Qz8tjw;
+        Sat, 30 Oct 2021 17:21:39 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Sat, 30 Oct 2021 17:23:03 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Sat, 30 Oct
+ 2021 17:23:03 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
+CC:     <linux-kselftest@vger.kernel.org>, <shuah@kernel.org>,
+        <ast@kernel.org>
+Subject: [PATCH -next] bpf/benchs: Fix return value check of bpf_program__attach()
+Date:   Sat, 30 Oct 2021 17:30:51 +0800
+Message-ID: <20211030093051.2609665-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="cwmpryyacyfxuvhj"
-Content-Disposition: inline
-In-Reply-To: <CAG3jFytmcFcA5W3vmcpWTWrc36-YFMPZ1wAB8gAJfiHHLWmaCA@mail.gmail.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+If bpf_program__attach() fails, it never returns NULL,
+we should use libbpf_get_error() to check the return value.
 
---cwmpryyacyfxuvhj
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+ .../bpf/benchs/bench_bloom_filter_map.c       | 20 ++++++++++++++-----
+ 1 file changed, 15 insertions(+), 5 deletions(-)
 
-Hello,
+diff --git a/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c b/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
+index 6eeeed2913e6..6879340b20c4 100644
+--- a/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
++++ b/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
+@@ -296,6 +296,7 @@ static struct bloom_filter_bench *setup_skeleton(void)
+ static void bloom_lookup_setup(void)
+ {
+ 	struct bpf_link *link;
++	int err;
+ 
+ 	ctx.use_array_map = true;
+ 
+@@ -304,7 +305,8 @@ static void bloom_lookup_setup(void)
+ 	populate_maps();
+ 
+ 	link = bpf_program__attach(ctx.skel->progs.bloom_lookup);
+-	if (!link) {
++	err = libbpf_get_error(link);
++	if (err) {
+ 		fprintf(stderr, "failed to attach program!\n");
+ 		exit(1);
+ 	}
+@@ -313,6 +315,7 @@ static void bloom_lookup_setup(void)
+ static void bloom_update_setup(void)
+ {
+ 	struct bpf_link *link;
++	int err;
+ 
+ 	ctx.use_array_map = true;
+ 
+@@ -321,7 +324,8 @@ static void bloom_update_setup(void)
+ 	populate_maps();
+ 
+ 	link = bpf_program__attach(ctx.skel->progs.bloom_update);
+-	if (!link) {
++	err = libbpf_get_error(link);
++	if (err) {
+ 		fprintf(stderr, "failed to attach program!\n");
+ 		exit(1);
+ 	}
+@@ -330,6 +334,7 @@ static void bloom_update_setup(void)
+ static void false_positive_setup(void)
+ {
+ 	struct bpf_link *link;
++	int err;
+ 
+ 	ctx.use_hashmap = true;
+ 	ctx.hashmap_use_bloom = true;
+@@ -340,7 +345,8 @@ static void false_positive_setup(void)
+ 	populate_maps();
+ 
+ 	link = bpf_program__attach(ctx.skel->progs.bloom_hashmap_lookup);
+-	if (!link) {
++	err = libbpf_get_error(link);
++	if (err) {
+ 		fprintf(stderr, "failed to attach program!\n");
+ 		exit(1);
+ 	}
+@@ -349,6 +355,7 @@ static void false_positive_setup(void)
+ static void hashmap_with_bloom_setup(void)
+ {
+ 	struct bpf_link *link;
++	int err;
+ 
+ 	ctx.use_hashmap = true;
+ 	ctx.hashmap_use_bloom = true;
+@@ -358,7 +365,8 @@ static void hashmap_with_bloom_setup(void)
+ 	populate_maps();
+ 
+ 	link = bpf_program__attach(ctx.skel->progs.bloom_hashmap_lookup);
+-	if (!link) {
++	err = libbpf_get_error(link);
++	if (err) {
+ 		fprintf(stderr, "failed to attach program!\n");
+ 		exit(1);
+ 	}
+@@ -367,6 +375,7 @@ static void hashmap_with_bloom_setup(void)
+ static void hashmap_no_bloom_setup(void)
+ {
+ 	struct bpf_link *link;
++	int err;
+ 
+ 	ctx.use_hashmap = true;
+ 
+@@ -375,7 +384,8 @@ static void hashmap_no_bloom_setup(void)
+ 	populate_maps();
+ 
+ 	link = bpf_program__attach(ctx.skel->progs.bloom_hashmap_lookup);
+-	if (!link) {
++	err = libbpf_get_error(link);
++	if (err) {
+ 		fprintf(stderr, "failed to attach program!\n");
+ 		exit(1);
+ 	}
+-- 
+2.25.1
 
-On Wed, Oct 27, 2021 at 05:06:02PM +0200, Robert Foss wrote:
-> On Tue, 26 Oct 2021 at 19:21, Steev Klimaszewski <steev@kali.org> wrote:
-> >
-> >
-> > On 10/25/21 12:09 PM, Bjorn Andersson wrote:
-> > > The existing pxa driver and the upcoming addition of PWM support in t=
-he
-> > > TI sn565dsi86 DSI/eDP bridge driver both has a single PWM channel and
-> > > thereby a need for a of_xlate function with the period as its single
-> > > argument.
-> > >
-> > > Introduce a common helper function in the core that can be used as
-> > > of_xlate by such drivers and migrate the pxa driver to use this.
-> > >
-> > > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > > Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-> > > Tested-by: Steev Klimaszewski <steev@kali.org>
-> > > ---
-> > >
-> [...]
->=20
-> Applied to drm-misc-next.
-
-This is now 3ab7b6ac5d829e60c3b89d415811ff1c9f358c8e in next, the Link:
-added in the commit trailer looks as follows:
-
-	Link: https://patchwork.freedesktop.org/patch/msgid/20211025170925.3096444=
--1-bjorn.andersson@linaro.org
-
-but this link doesn't work, for me at least. I wonder what's wrong with
-it. If you want to fix it and rewrite the commit, you can also drop the
-duplicated "Tested-by: Steev Klimaszewski <steev@kali.org>".
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---cwmpryyacyfxuvhj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmF9EAQACgkQwfwUeK3K
-7AkmVwf/UC0/COH40s3PAmZkJX3EzO2LlqeXFJDYvZZX4T58leO83achdFzOWtXi
-F9kK3WlNNmggZ32zqDHV1HOE42tnn1wLXc7xqevjiIYWzRrHAlW5bXcRQT1ndDjo
-Tiloo0fTBsi24lmuvWeWPVifk77ZMY4eB/dVovyDilTgvuxo9hf55URQTgnSpD8o
-DVToFokj6ckIESylQgJXCKxiM8vqFSIYQFXSqLFDW/FVYDmA9eVlAeme0bjeHv6p
-3mWJ+rC2A7dNz65qYqPvqM02uy0+2o1tMJ3G/n+idjv16M8areb0Owvh47r1q7/O
-H4TZl0wjy5y8SbZ2l1lo8EaWkVE6pA==
-=KqMO
------END PGP SIGNATURE-----
-
---cwmpryyacyfxuvhj--
