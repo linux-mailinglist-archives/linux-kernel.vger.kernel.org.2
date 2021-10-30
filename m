@@ -2,75 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5F24440A75
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 19:12:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 906FB440A8A
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 19:20:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231147AbhJ3ROV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Oct 2021 13:14:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230232AbhJ3ROU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Oct 2021 13:14:20 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D1F6C061570
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Oct 2021 10:11:50 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id x1-20020a17090a530100b001a1efa4ebe6so9053936pjh.0
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Oct 2021 10:11:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=nR5lL76DE0Y/aGyH6HkrjI/obSsYph5QJFV88d9V4gc=;
-        b=GtHcIOVjqA+Lz2TwVgjxToULLkIEmqAyOJutcuWniBeGp11sZTzTT70MRM055blaRk
-         baT0mGurJStzyg/+p13iAKhLiMGOTUWIvZ0VFa9vrzLscP4oHVPlm9k/06MIktwY5sr9
-         8vK2vtB1rV59vBdXB1E3Kj82dnwZRyxtEz7kZSzhVlc/MF2nAfbbjQHq5QhQFjK7aucC
-         YUccRVB9kbKspGfM2OkeFFkee0EH52qN2wJsh54DAYEQTTlAaZPQjReGZvcXtN0rOJXN
-         +of+X7AAEqueuxz8DxOvlF36Z1QFWOSHh4BT9qvfF5zY5QnZ2KhbqGvoJIcrqOX4HcUn
-         hqow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=nR5lL76DE0Y/aGyH6HkrjI/obSsYph5QJFV88d9V4gc=;
-        b=R4/1xRxpthOEodCpO0bpjMfqMnths2yiYtx0S20FR9M5NEi4VmYdKMiRJlT02Xg3tc
-         gNHr0xma6a0k2mt9P0QJjrc6mQkyeO5J4TWB/jJI2NY+qmGTA5jz9kP2oqP8hNSiVNxM
-         h7zfX0M6UCtKKFEZXHiuotlRXd2mF0FIRDpbilCZZkAYruCC3KRAcL5A6Dsi+9rSYRBZ
-         TIRC5PgsA9kFBwUFhRbqkqGddJhTEiWt6k3K0q+ocup38y0lsG3nfwv3NT2Zxa8xVqAK
-         6cabr4q+YRCqwN7LpZTi2/AH4z9a9FO8aIvHR5P1m8sbmLW4lekDou9Eix34aUmny8g5
-         5fZw==
-X-Gm-Message-State: AOAM530CV/XFV+y3K9rUXBXPuDkJZciy5pK4gkOnT6XZBTPMYB83IuXc
-        W3izdAMVxHbFQC0V5sWAzXtqzyNEM2vs8htjodk=
-X-Google-Smtp-Source: ABdhPJwSujk3fGW8xee9+vWwcfWdjvZwmdDpqvWKXUaIG103I/Dow8Zgx2cd5oRn0IFEcRuzPdIKp2Otlqta58aG88g=
-X-Received: by 2002:a17:902:a70a:b0:140:44f9:6d75 with SMTP id
- w10-20020a170902a70a00b0014044f96d75mr15885305plq.58.1635613909330; Sat, 30
- Oct 2021 10:11:49 -0700 (PDT)
+        id S231126AbhJ3RWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Oct 2021 13:22:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42300 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229474AbhJ3RWg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Oct 2021 13:22:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AFAFE60FC3;
+        Sat, 30 Oct 2021 17:20:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635614405;
+        bh=jisY5HPhWX9iNQ9+wevVVLZjayadNPZuYlW5MoiG98Y=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=VLS2F/hwY4ACE8G5VxNmv/ZcNE4TA3tOCJ0WRP67bfs7a4X2VeNTtQkM7s4AOR0ea
+         Ko2XuDREhsx/cCNW1glbdhgSLHjsbrBnQ51MdsgM4X7kEP670ufn+xyM5jwBtiBVZp
+         v06gsaBb4DaAKNQWRDBhXk1F5ctd39dDC6H4uTrfTHOqGZIbE9WtsVIajxMt7MR8Wu
+         i3gmZtTVDVOYmhEWrxlQMTNvyMkulPPGwB8BHHa9w7FfEFNRHrQpKHvmlVinC30GXW
+         TUVLhGOmmsT0KAf42i2GuxatgrrsrSXdOalstr4fVNjwx7lQsYJgCIQD+CEX9tiidm
+         XnetkDBCG5fFg==
+Received: by mail-oi1-f173.google.com with SMTP id bm39so7767536oib.0;
+        Sat, 30 Oct 2021 10:20:05 -0700 (PDT)
+X-Gm-Message-State: AOAM5301FuB1iL96bCfzVsGOQoAXCXmv5/PKdbYG+s0yzPqLUWGU0NiG
+        3LzXkK8DuOtvvgdKPD4UA+uXXL7gS4kO2t1Ymic=
+X-Google-Smtp-Source: ABdhPJwtZmpRz7pXyzJlCu/rri6Dp4A9lMCXKN4um74twhwjGnzq1+v5jg1jRuWO09pxQ/9qsDQsE4K7HQd9AX55F2E=
+X-Received: by 2002:a05:6808:1805:: with SMTP id bh5mr18589992oib.47.1635614404947;
+ Sat, 30 Oct 2021 10:20:04 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a05:7300:3a0c:b0:41:b2b6:59c7 with HTTP; Sat, 30 Oct 2021
- 10:11:48 -0700 (PDT)
-Reply-To: missmarbellamissmarbella04@gmail.com
-From:   MISS MARBELLA <missmarbellamissmarbella@gmail.com>
-Date:   Sat, 30 Oct 2021 17:11:48 +0000
-Message-ID: <CAMyiKpwKSyUQYppmcfN9rNJWB6zrxNfBfP5yWwf-3Z-5pbzbaA@mail.gmail.com>
-Subject: Will you promise to be sincere with me?
-To:     undisclosed-recipients:;
+References: <20211026201622.GG174703@worktop.programming.kicks-ass.net>
+ <20211027120515.GC54628@C02TD0UTHF1T.local> <CAMj1kXEx10gC8eH7rV-GbZZj2M3uDue6HYsKb+A5J01zOxm_FA@mail.gmail.com>
+ <20211027124852.GK174703@worktop.programming.kicks-ass.net>
+ <YXlOd1lyKZKAcJfA@hirez.programming.kicks-ass.net> <CAMj1kXHKh7wv6JqusVnoiQDMm7ApFq2ujzbfWmM9AzLKFehhAA@mail.gmail.com>
+ <YXlcMluaysPBF92J@hirez.programming.kicks-ass.net> <CAMj1kXECTdDLVMk2JduU5mV2TR0Cv=hZ9QOpYRsRM1jfvvNikw@mail.gmail.com>
+ <CABCJKufpS4jJxHqk8=bd1JCNbKfmLDKBbjbhjrar2+YQJFiprg@mail.gmail.com>
+ <20211029200324.GR174703@worktop.programming.kicks-ass.net> <20211030074758.GT174703@worktop.programming.kicks-ass.net>
+In-Reply-To: <20211030074758.GT174703@worktop.programming.kicks-ass.net>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Sat, 30 Oct 2021 19:19:53 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXEJd5=3A_6Jhd4UU-TBGarnHo5+U76Zxxt7SzXsWp4CcA@mail.gmail.com>
+Message-ID: <CAMj1kXEJd5=3A_6Jhd4UU-TBGarnHo5+U76Zxxt7SzXsWp4CcA@mail.gmail.com>
+Subject: Re: [PATCH] static_call,x86: Robustify trampoline patching
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Mark Rutland <mark.rutland@arm.com>, X86 ML <x86@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-hardening@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Sir/Madam,
+On Sat, 30 Oct 2021 at 09:49, Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Fri, Oct 29, 2021 at 10:03:24PM +0200, Peter Zijlstra wrote:
+>
+> > So I had a bit of a peek at what clang generates:
+> >
+> >     3fa4:       48 c7 c7 00 00 00 00    mov    $0x0,%rdi        3fa7: R_X86_64_32S      __SCK__x86_pmu_handle_irq
+> >     3fab:       48 c7 c6 00 00 00 00    mov    $0x0,%rsi        3fae: R_X86_64_32S      __SCT__x86_pmu_handle_irq.cfi_jt
+> >     3fb2:       e8 00 00 00 00          call   3fb7 <init_hw_perf_events+0x1dc> 3fb3: R_X86_64_PLT32    __static_call_update-0x4
+> >
+> > So this then gives the trampoline jump table entry to
+> > __static_call_update(), with the result that it will rewrite the
+> > jump-table entry, not the trampoline!
+> >
+> > Now it so happens that the trampoline looks *exactly* like the
+> > jump-table entry (one jmp.d32 instruction), so in that regards it'll
+> > again 'work'.
+> >
+> > But this is all really, as in *really*, wrong. And I'm really sad I'm
+> > the one to have to discover this, even though I've mentioned
+> > static_call()s being tricky in previous reviews.
+>
+> The below makes the clang-cfi build properly sick:
+>
+> [    0.000000] trampoline signature fail
+> [    0.000000] ------------[ cut here ]------------
+> [    0.000000] kernel BUG at arch/x86/kernel/static_call.c:65!
+>
+> ---
+> Subject: static_call,x86: Robustify trampoline patching
+>
+> Add a few signature bytes after the static call trampoline and verify
+> those bytes match before patching the trampoline. This avoids patching
+> random other JMPs (such as CFI jump-table entries) instead.
+>
+> These bytes decode as:
+>
+>    d:   53                      push   %rbx
+>    e:   43 54                   rex.XB push %r12
+>
+> And happen to spell "SCT".
+>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-I need your support to relocate and invest in your country. I ask your
-assistance because I don=E2=80=99t have knowledge about business and the ru=
-les
-that guide your country for safe investment.
+I just realized that arm64 has the exact same problem, which is not
+being addressed by my v5 of the static call support patch.
 
-Will you promise to be sincere with me?
-
-Please contact me for more details my email address
-( missmarbellamissmarbella04@gmail.com ).
-
-With best regards,
-Miss Marbella.
+As it turns out, the v11 Clang that I have been testing with is broken
+wrt BTI landing pads, and omits them from the jump table entries.
+Clang 12+ adds them properly, which means that both the jump table
+entry and the static call trampoline may start with BTI C + direct
+branch, and we also need additional checks to disambiguate.
