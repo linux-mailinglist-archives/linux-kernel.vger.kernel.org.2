@@ -2,129 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E29A14407ED
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 09:45:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E69D64407EF
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 09:50:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231734AbhJ3HsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Oct 2021 03:48:23 -0400
-Received: from ink.ssi.bg ([178.16.128.7]:43737 "EHLO ink.ssi.bg"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230365AbhJ3HsW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Oct 2021 03:48:22 -0400
-Received: from ja.ssi.bg (unknown [178.16.129.10])
-        by ink.ssi.bg (Postfix) with ESMTPS id 9941F3C09BA;
-        Sat, 30 Oct 2021 10:45:48 +0300 (EEST)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-        by ja.ssi.bg (8.16.1/8.16.1) with ESMTP id 19U7jhRk009603;
-        Sat, 30 Oct 2021 10:45:44 +0300
-Date:   Sat, 30 Oct 2021 10:45:43 +0300 (EEST)
-From:   Julian Anastasov <ja@ssi.bg>
-To:     yangxingwu <xingwu.yang@gmail.com>
-cc:     Simon Horman <horms@verge.net.au>, pablo@netfilter.org,
-        netdev@vger.kernel.org, lvs-devel@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-doc@vger.kernel.org, Chuanqi Liu <legend050709@qq.com>
-Subject: Re: [PATCH nf-next v4] netfilter: ipvs: Fix reuse connection if RS
- weight is 0
-In-Reply-To: <20211030064049.9992-1-xingwu.yang@gmail.com>
-Message-ID: <e2699ba8-e733-2c71-584a-138746511f4@ssi.bg>
-References: <20211030064049.9992-1-xingwu.yang@gmail.com>
+        id S231669AbhJ3HxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Oct 2021 03:53:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231654AbhJ3HxL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Oct 2021 03:53:11 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47E4EC061570;
+        Sat, 30 Oct 2021 00:50:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=bJjYWtjn/5fwmGiuLlxKjwbWp2U0O7ABgFR/V2MAWLY=; b=fpxxBRgje51u1gz8I/h1bSawIU
+        ptgwfqJ1NKoZFChG85eYCef0TVD0cni+Jo87tykK0tTkXhOzXrIwpsljmXtR6R4FviEwVqDhedqbE
+        ieQPgExB+YA3jpdmQ8oGyofWssOg1Y/c7IoALNuHagL7O5bhqpmKlJvd3QAolemjTpo/EjmcaMtSc
+        SgiwrAEi8wHt+8GAZiYigK4LdJFLub7zJb0sH9DekwVro4h+ybcehoLFvz+wK3oxoFf0BmhevTwb1
+        Opm7rBueBxnB0QnB8bTcqqi4dzPmSHGi0ZOLB3/L9drDgCzMpMX/eUEnLZzSXqThkcR7Ip4LNTALa
+        LQhtmbEg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mgj5q-002ILL-HC; Sat, 30 Oct 2021 07:48:11 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 23EE8986247; Sat, 30 Oct 2021 09:47:58 +0200 (CEST)
+Date:   Sat, 30 Oct 2021 09:47:58 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>, X86 ML <x86@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-hardening@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev
+Subject: [PATCH] static_call,x86: Robustify trampoline patching
+Message-ID: <20211030074758.GT174703@worktop.programming.kicks-ass.net>
+References: <20211026201622.GG174703@worktop.programming.kicks-ass.net>
+ <20211027120515.GC54628@C02TD0UTHF1T.local>
+ <CAMj1kXEx10gC8eH7rV-GbZZj2M3uDue6HYsKb+A5J01zOxm_FA@mail.gmail.com>
+ <20211027124852.GK174703@worktop.programming.kicks-ass.net>
+ <YXlOd1lyKZKAcJfA@hirez.programming.kicks-ass.net>
+ <CAMj1kXHKh7wv6JqusVnoiQDMm7ApFq2ujzbfWmM9AzLKFehhAA@mail.gmail.com>
+ <YXlcMluaysPBF92J@hirez.programming.kicks-ass.net>
+ <CAMj1kXECTdDLVMk2JduU5mV2TR0Cv=hZ9QOpYRsRM1jfvvNikw@mail.gmail.com>
+ <CABCJKufpS4jJxHqk8=bd1JCNbKfmLDKBbjbhjrar2+YQJFiprg@mail.gmail.com>
+ <20211029200324.GR174703@worktop.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211029200324.GR174703@worktop.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Oct 29, 2021 at 10:03:24PM +0200, Peter Zijlstra wrote:
 
-	Hello,
-
-On Sat, 30 Oct 2021, yangxingwu wrote:
-
-> We are changing expire_nodest_conn to work even for reused connections when
-> conn_reuse_mode=0 but without affecting the controlled and persistent
-> connections during the graceful termination period while server is with
-> weight=0.
+> So I had a bit of a peek at what clang generates:
 > 
-> Fixes: d752c3645717 ("ipvs: allow rescheduling of new connections when port
-> reuse is detected")
-> Co-developed-by: Chuanqi Liu <legend050709@qq.com>
-> Signed-off-by: Chuanqi Liu <legend050709@qq.com>
-> Signed-off-by: yangxingwu <xingwu.yang@gmail.com>
-
-	Looks good to me, thanks!
-
-Acked-by: Julian Anastasov <ja@ssi.bg>
-
-	Simon, Pablo, may be you can change Fixes tag to be
-on one line before applying.
-
-> ---
->  Documentation/networking/ipvs-sysctl.rst |  3 +--
->  net/netfilter/ipvs/ip_vs_core.c          | 12 ++++--------
->  2 files changed, 5 insertions(+), 10 deletions(-)
+>     3fa4:       48 c7 c7 00 00 00 00    mov    $0x0,%rdi        3fa7: R_X86_64_32S      __SCK__x86_pmu_handle_irq
+>     3fab:       48 c7 c6 00 00 00 00    mov    $0x0,%rsi        3fae: R_X86_64_32S      __SCT__x86_pmu_handle_irq.cfi_jt
+>     3fb2:       e8 00 00 00 00          call   3fb7 <init_hw_perf_events+0x1dc> 3fb3: R_X86_64_PLT32    __static_call_update-0x4
 > 
-> diff --git a/Documentation/networking/ipvs-sysctl.rst b/Documentation/networking/ipvs-sysctl.rst
-> index 2afccc63856e..1cfbf1add2fc 100644
-> --- a/Documentation/networking/ipvs-sysctl.rst
-> +++ b/Documentation/networking/ipvs-sysctl.rst
-> @@ -37,8 +37,7 @@ conn_reuse_mode - INTEGER
->  
->  	0: disable any special handling on port reuse. The new
->  	connection will be delivered to the same real server that was
-> -	servicing the previous connection. This will effectively
-> -	disable expire_nodest_conn.
-> +	servicing the previous connection.
->  
->  	bit 1: enable rescheduling of new connections when it is safe.
->  	That is, whenever expire_nodest_conn and for TCP sockets, when
-> diff --git a/net/netfilter/ipvs/ip_vs_core.c b/net/netfilter/ipvs/ip_vs_core.c
-> index 128690c512df..ce6ceb55822b 100644
-> --- a/net/netfilter/ipvs/ip_vs_core.c
-> +++ b/net/netfilter/ipvs/ip_vs_core.c
-> @@ -1100,10 +1100,6 @@ static inline bool is_new_conn(const struct sk_buff *skb,
->  static inline bool is_new_conn_expected(const struct ip_vs_conn *cp,
->  					int conn_reuse_mode)
->  {
-> -	/* Controlled (FTP DATA or persistence)? */
-> -	if (cp->control)
-> -		return false;
-> -
->  	switch (cp->protocol) {
->  	case IPPROTO_TCP:
->  		return (cp->state == IP_VS_TCP_S_TIME_WAIT) ||
-> @@ -1964,7 +1960,6 @@ ip_vs_in(struct netns_ipvs *ipvs, unsigned int hooknum, struct sk_buff *skb, int
->  	struct ip_vs_proto_data *pd;
->  	struct ip_vs_conn *cp;
->  	int ret, pkts;
-> -	int conn_reuse_mode;
->  	struct sock *sk;
->  
->  	/* Already marked as IPVS request or reply? */
-> @@ -2041,15 +2036,16 @@ ip_vs_in(struct netns_ipvs *ipvs, unsigned int hooknum, struct sk_buff *skb, int
->  	cp = INDIRECT_CALL_1(pp->conn_in_get, ip_vs_conn_in_get_proto,
->  			     ipvs, af, skb, &iph);
->  
-> -	conn_reuse_mode = sysctl_conn_reuse_mode(ipvs);
-> -	if (conn_reuse_mode && !iph.fragoffs && is_new_conn(skb, &iph) && cp) {
-> +	if (!iph.fragoffs && is_new_conn(skb, &iph) && cp && !cp->control) {
->  		bool old_ct = false, resched = false;
-> +		int conn_reuse_mode = sysctl_conn_reuse_mode(ipvs);
->  
->  		if (unlikely(sysctl_expire_nodest_conn(ipvs)) && cp->dest &&
->  		    unlikely(!atomic_read(&cp->dest->weight))) {
->  			resched = true;
->  			old_ct = ip_vs_conn_uses_old_conntrack(cp, skb);
-> -		} else if (is_new_conn_expected(cp, conn_reuse_mode)) {
-> +		} else if (conn_reuse_mode &&
-> +			   is_new_conn_expected(cp, conn_reuse_mode)) {
->  			old_ct = ip_vs_conn_uses_old_conntrack(cp, skb);
->  			if (!atomic_read(&cp->n_control)) {
->  				resched = true;
-> -- 
-> 2.30.2
+> So this then gives the trampoline jump table entry to
+> __static_call_update(), with the result that it will rewrite the
+> jump-table entry, not the trampoline!
+> 
+> Now it so happens that the trampoline looks *exactly* like the
+> jump-table entry (one jmp.d32 instruction), so in that regards it'll
+> again 'work'.
+> 
+> But this is all really, as in *really*, wrong. And I'm really sad I'm
+> the one to have to discover this, even though I've mentioned
+> static_call()s being tricky in previous reviews.
 
-Regards
+The below makes the clang-cfi build properly sick:
 
---
-Julian Anastasov <ja@ssi.bg>
+[    0.000000] trampoline signature fail
+[    0.000000] ------------[ cut here ]------------
+[    0.000000] kernel BUG at arch/x86/kernel/static_call.c:65!
+
+---
+Subject: static_call,x86: Robustify trampoline patching
+
+Add a few signature bytes after the static call trampoline and verify
+those bytes match before patching the trampoline. This avoids patching
+random other JMPs (such as CFI jump-table entries) instead.
+
+These bytes decode as:
+
+   d:   53                      push   %rbx
+   e:   43 54                   rex.XB push %r12
+
+And happen to spell "SCT".
+
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ arch/x86/include/asm/static_call.h |  1 +
+ arch/x86/kernel/static_call.c      | 14 ++++++++++----
+ tools/objtool/check.c              |  3 +++
+ 3 files changed, 14 insertions(+), 4 deletions(-)
+
+diff --git a/arch/x86/include/asm/static_call.h b/arch/x86/include/asm/static_call.h
+index cbb67b6030f9..39ebe0511869 100644
+--- a/arch/x86/include/asm/static_call.h
++++ b/arch/x86/include/asm/static_call.h
+@@ -27,6 +27,7 @@
+ 	    ".globl " STATIC_CALL_TRAMP_STR(name) "		\n"	\
+ 	    STATIC_CALL_TRAMP_STR(name) ":			\n"	\
+ 	    insns "						\n"	\
++	    ".byte 0x53, 0x43, 0x54				\n"	\
+ 	    ".type " STATIC_CALL_TRAMP_STR(name) ", @function	\n"	\
+ 	    ".size " STATIC_CALL_TRAMP_STR(name) ", . - " STATIC_CALL_TRAMP_STR(name) " \n" \
+ 	    ".popsection					\n")
+diff --git a/arch/x86/kernel/static_call.c b/arch/x86/kernel/static_call.c
+index ea028e736831..9c407a33a774 100644
+--- a/arch/x86/kernel/static_call.c
++++ b/arch/x86/kernel/static_call.c
+@@ -56,10 +56,15 @@ static void __ref __static_call_transform(void *insn, enum insn_type type, void
+ 	text_poke_bp(insn, code, size, emulate);
+ }
+ 
+-static void __static_call_validate(void *insn, bool tail)
++static void __static_call_validate(void *insn, bool tail, bool tramp)
+ {
+ 	u8 opcode = *(u8 *)insn;
+ 
++	if (tramp && memcmp(insn+5, "SCT", 3)) {
++		pr_err("trampoline signature fail");
++		BUG();
++	}
++
+ 	if (tail) {
+ 		if (opcode == JMP32_INSN_OPCODE ||
+ 		    opcode == RET_INSN_OPCODE)
+@@ -74,7 +79,8 @@ static void __static_call_validate(void *insn, bool tail)
+ 	/*
+ 	 * If we ever trigger this, our text is corrupt, we'll probably not live long.
+ 	 */
+-	WARN_ONCE(1, "unexpected static_call insn opcode 0x%x at %pS\n", opcode, insn);
++	pr_err("unexpected static_call insn opcode 0x%x at %pS\n", opcode, insn);
++	BUG();
+ }
+ 
+ static inline enum insn_type __sc_insn(bool null, bool tail)
+@@ -97,12 +103,12 @@ void arch_static_call_transform(void *site, void *tramp, void *func, bool tail)
+ 	mutex_lock(&text_mutex);
+ 
+ 	if (tramp) {
+-		__static_call_validate(tramp, true);
++		__static_call_validate(tramp, true, true);
+ 		__static_call_transform(tramp, __sc_insn(!func, true), func);
+ 	}
+ 
+ 	if (IS_ENABLED(CONFIG_HAVE_STATIC_CALL_INLINE) && site) {
+-		__static_call_validate(site, tail);
++		__static_call_validate(site, tail, false);
+ 		__static_call_transform(site, __sc_insn(!func, tail), func);
+ 	}
+ 
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index fb3f251ea021..6d5951113d53 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -3310,6 +3310,9 @@ static bool ignore_unreachable_insn(struct objtool_file *file, struct instructio
+ 	if (!insn->func)
+ 		return false;
+ 
++	if (insn->func->static_call_tramp)
++		return true;
++
+ 	/*
+ 	 * CONFIG_UBSAN_TRAP inserts a UD2 when it sees
+ 	 * __builtin_unreachable().  The BUG() macro has an unreachable() after
