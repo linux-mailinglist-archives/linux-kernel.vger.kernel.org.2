@@ -2,154 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D56C440BFC
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 23:48:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED4EF440C01
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 23:57:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232138AbhJ3Vua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Oct 2021 17:50:30 -0400
-Received: from mx-out.tlen.pl ([193.222.135.142]:45528 "EHLO mx-out.tlen.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232042AbhJ3VuT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Oct 2021 17:50:19 -0400
-Received: (wp-smtpd smtp.tlen.pl 27089 invoked from network); 30 Oct 2021 23:47:44 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=o2.pl; s=1024a;
-          t=1635630464; bh=6EV3+Db16M1TTmcxm0Ltf+cHXWaK6K5VL+dcc/n0F48=;
-          h=From:To:Cc:Subject;
-          b=nKPWUIuPkOCUlSBwb2L5EbGfTLpPQ6MOYEP0HvfakKWE1yEINnzqE6mNlYqn/qYJ1
-           zrh2TpT6oZfYrcnYoejH9FxRRLwLmwsZ41uB5zpryaR3npQBPJi0cdh0xXRPeS7b9h
-           Qla3oeTO6r3Hxo9OuYCcO585bjjVBcEsi8Tb3q00=
-Received: from ablz112.neoplus.adsl.tpnet.pl (HELO localhost.localdomain) (mat.jonczyk@o2.pl@[83.7.219.112])
-          (envelope-sender <mat.jonczyk@o2.pl>)
-          by smtp.tlen.pl (WP-SMTPD) with SMTP
-          for <linux-rtc@vger.kernel.org>; 30 Oct 2021 23:47:44 +0200
-From:   =?UTF-8?q?Mateusz=20Jo=C5=84czyk?= <mat.jonczyk@o2.pl>
-To:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?Mateusz=20Jo=C5=84czyk?= <mat.jonczyk@o2.pl>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: [DEBUG PATCH v3] rtc-cmos: cmos_read_alarm bug demonstration
-Date:   Sat, 30 Oct 2021 23:46:36 +0200
-Message-Id: <20211030214636.49602-9-mat.jonczyk@o2.pl>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211030214636.49602-1-mat.jonczyk@o2.pl>
-References: <20211030214636.49602-1-mat.jonczyk@o2.pl>
+        id S231895AbhJ3WAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Oct 2021 18:00:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35200 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230338AbhJ3WAI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Oct 2021 18:00:08 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DF6CC061570;
+        Sat, 30 Oct 2021 14:57:37 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id h7so51407751ede.8;
+        Sat, 30 Oct 2021 14:57:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ShCdtHGtTJX3k7s3o60+cmi18j6hz5z0Vi8NYUkIn24=;
+        b=eLQCPdP9OFb/rD9LSPbbiZEZ6TlLA0crMUHK/pdacd7cKTwOhnwpGMMDx1/UEto3CS
+         ykdlyeGtEqye76FGX15ie+KnBVXoFkOV221xzOGK3DjDlv9HvYNyIClwt5BVa76lTtve
+         vLIsZd0yMgWLKh7AjT7duZxrP26N0qColaMHO0oLbcsBrw+X43KJ5r/cmwZFk5v61yOU
+         B0RJUF5kxvUuVHHcrvkT7qIo6yZ/1mSWsEzUU5aAZBv5W/LlkG1voLQdQ4Pl0iq2xS8r
+         +M/hjrgXW/mCkTKIvPg7AzjK/Fnf0061C7ISadeox7KmKfHenHNA2AhJLsvusSnz9Xae
+         3GeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ShCdtHGtTJX3k7s3o60+cmi18j6hz5z0Vi8NYUkIn24=;
+        b=ofa/hJE58WjFMl9WxCy2rWBl/IVaDbOslKd+g2i5h+pjsT9Wr+MGluuPn3F2vzb67Q
+         yw4ex+VNyTFmX8I66h0BZRB5udTa7nEXRPf43o0mhdierDyj4GJFn+M0/KNOpMZ6ck5j
+         kcs0UtoHotsLMNNYm73avZK4W7aTxPQ6hUg1s1mvluGUEeGnNoiwH5XmmzSCrGvR+xJV
+         u/nKKIgg+PBypr3e0n1uvP/S29/LQP1VRX0VBT4UvMTqMOGsgdX52Vv8uwuwFq5D8vT9
+         I3ZvytE04l1nzgBmhlvuCG3vWtZueqDYpzAhC0AAVYEPurGi8YMI7qhu7wbUisR4gfMG
+         9Gpg==
+X-Gm-Message-State: AOAM530jkFJkGxvJm16BQaj9bWOHtzs0wOA14TKyc3OjpVQalbidYnHI
+        Z2rnDqDWKdHlF1DHfFcYPZhMkJnbNvPyJM5F8JE=
+X-Google-Smtp-Source: ABdhPJyFTQHQQVOr3Kd+bpxO4x1Eaxp00pzw/JjszZMHBg9c62WLJ9oDApdRNoEWgGI0qrNxL7G9GWdz1WP8joJYKdg=
+X-Received: by 2002:a17:907:7601:: with SMTP id jx1mr24286203ejc.69.1635631055885;
+ Sat, 30 Oct 2021 14:57:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-WP-MailID: 750861c663260497be442ce509100eed
-X-WP-AV: skaner antywirusowy Poczty o2
-X-WP-SPAM: NO 0000000 [QYOk]                               
+References: <20211030182813.116672-1-hdegoede@redhat.com> <20211030182813.116672-3-hdegoede@redhat.com>
+In-Reply-To: <20211030182813.116672-3-hdegoede@redhat.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sun, 31 Oct 2021 00:56:59 +0300
+Message-ID: <CAHp75VeXJauH1YQZxYvRWucDwsP_RF5T5yiwpMcB-r4O60ZPJQ@mail.gmail.com>
+Subject: Re: [PATCH 02/13] platform/x86: dmi_device_properties: Add setup info
+ for boards with a CHT Whiskey Cove PMIC
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Sebastian Reichel <sre@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Yauhen Kharuzhy <jekhor@gmail.com>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        platform-driver-x86@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-efi@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Before my commit "rtc-cmos: avoid UIP when reading alarm time",
-applying this patch and reading the CMOS time like so:
+On Sat, Oct 30, 2021 at 9:28 PM Hans de Goede <hdegoede@redhat.com> wrote:
+>
+> Add a new "intel,cht-wc-setup" string property to the "INT34D3:00"
+> i2c_client for the Whiskey Cove PMIC found on several Cherry Trail
+> based devices. At least 3 setups are known:
+>
+> 1. The WC PMIC is connected to a TI BQ24292i charger, paired with
+>    a Maxim MAX17047 fuelgauge + a FUSB302 USB Type-C Controller +
+>    a PI3USB30532 USB switch, for a fully functional Type-C port
+>
+> 2. The WC PMIC is connected to a TI BQ25890 charger, paired with
+>    a TI BQ27520 fuelgauge, for a USB-2 only Type-C port without PD
+>
+> 3. The WC PMIC is connected to a TI BQ25890 charger, paired with
+>    a TI BQ27542 fuelgauge, for a micro-USB port
+>
+> Which setup is in use cannot be determined reliably from the ACPI tables
+> and various drivers (extcon-intel-cht-wc.c, i2c-cht-wc.c, ...) need
+> to know which setup they are dealing with.
 
-        while true; do cat /sys/class/rtc/rtc0/time ; sleep 0.5; done
+If it's internal property only, I would rather expect it to start with
+'linux,' as DWC3 does. And it's also USB related.
 
-produces errors in dmesg on my Intel Kaby Lake laptop.
+...
 
-Signed-off-by: Mateusz Jończyk <mat.jonczyk@o2.pl>
-Cc: Alessandro Zummo <a.zummo@towertech.it>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
----
- drivers/rtc/rtc-cmos.c | 61 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 61 insertions(+)
+> +       PROPERTY_ENTRY_STRING("intel,cht-wc-setup", "bq24292i,max17047,fusb302,pi3usb30532"),
 
-diff --git a/drivers/rtc/rtc-cmos.c b/drivers/rtc/rtc-cmos.c
-index b6d7dd3cf066..3de049930745 100644
---- a/drivers/rtc/rtc-cmos.c
-+++ b/drivers/rtc/rtc-cmos.c
-@@ -43,6 +43,9 @@
- #include <linux/dmi.h>
- #endif
- 
-+#include <linux/ktime.h>
-+#include <linux/timekeeping.h>
-+
- /* this is for "generic access to PC-style RTC" using CMOS_READ/CMOS_WRITE */
- #include <linux/mc146818rtc.h>
- 
-@@ -220,6 +223,8 @@ static inline void cmos_write_bank2(unsigned char val, unsigned char addr)
- 
- /*----------------------------------------------------------------*/
- 
-+static void cmos_read_alarm_uip_debugging(struct device *dev);
-+
- static int cmos_read_time(struct device *dev, struct rtc_time *t)
- {
- 	/*
-@@ -230,6 +235,8 @@ static int cmos_read_time(struct device *dev, struct rtc_time *t)
- 		return -EIO;
- 
- 	mc146818_get_time(t);
-+
-+	cmos_read_alarm_uip_debugging(dev);
- 	return 0;
- }
- 
-@@ -338,6 +345,60 @@ static int cmos_read_alarm(struct device *dev, struct rtc_wkalrm *t)
- 	return 0;
- }
- 
-+static void cmos_read_alarm_uip_debugging(struct device *dev)
-+{
-+	unsigned long	flags;
-+	unsigned char	rtc_uip_baseline, rtc_uip;
-+	struct rtc_wkalrm t_baseline, t;
-+	ktime_t time_start, time_end;
-+	int i;
-+
-+	spin_lock_irqsave(&rtc_lock, flags);
-+	rtc_uip_baseline = CMOS_READ(RTC_FREQ_SELECT) & RTC_UIP;
-+	spin_unlock_irqrestore(&rtc_lock, flags);
-+
-+	cmos_read_alarm(dev, &t_baseline);
-+
-+	time_start = ktime_get();
-+
-+	for (i = 0; i < 2000; i++) {
-+		spin_lock_irqsave(&rtc_lock, flags);
-+		rtc_uip = CMOS_READ(RTC_FREQ_SELECT) & RTC_UIP;
-+		spin_unlock_irqrestore(&rtc_lock, flags);
-+
-+		cmos_read_alarm(dev, &t);
-+
-+		if (t_baseline.time.tm_sec != t.time.tm_sec) {
-+			dev_err(dev,
-+				"Inconsistent alarm tm_sec value: %d != %d (RTC_UIP = %d; %d)\n",
-+				t_baseline.time.tm_sec,
-+				t.time.tm_sec,
-+				rtc_uip_baseline, rtc_uip);
-+		}
-+		if (t_baseline.time.tm_min != t.time.tm_min) {
-+			dev_err(dev,
-+				"Inconsistent alarm tm_min value: %d != %d (RTC_UIP = %d; %d)\n",
-+				t_baseline.time.tm_min,
-+				t.time.tm_min,
-+				rtc_uip_baseline, rtc_uip);
-+		}
-+		if (t_baseline.time.tm_hour != t.time.tm_hour) {
-+			dev_err(dev,
-+				"Inconsistent alarm tm_hour value: %d != %d (RTC_UIP = %d; %d)\n",
-+				t_baseline.time.tm_hour,
-+				t.time.tm_hour,
-+				rtc_uip_baseline, rtc_uip);
-+		}
-+
-+	}
-+
-+	time_end = ktime_get();
-+
-+	pr_info_ratelimited("%s: loop executed in %lld ns\n",
-+			__func__, ktime_to_ns(ktime_sub(time_end, time_start)));
-+}
-+
-+
- static void cmos_checkintr(struct cmos_rtc *cmos, unsigned char rtc_control)
- {
- 	unsigned char	rtc_intr;
+> +       PROPERTY_ENTRY_STRING("intel,cht-wc-setup", "bq25890,bq27520"),
+
+ Besides that I'm not sure about the name of the property, maybe
+'linux,cht-wc-usb-chips' or alike? And since it's a list, can we make
+it a string array?
+
 -- 
-2.25.1
-
+With Best Regards,
+Andy Shevchenko
