@@ -2,149 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 646E3440839
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 11:23:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F808440840
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 11:33:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231854AbhJ3JZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Oct 2021 05:25:37 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:26213 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231829AbhJ3JZg (ORCPT
+        id S231761AbhJ3Jfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Oct 2021 05:35:32 -0400
+Received: from mxout03.lancloud.ru ([45.84.86.113]:44048 "EHLO
+        mxout03.lancloud.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230394AbhJ3Jfb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Oct 2021 05:25:36 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HhDM7049Qz8tjw;
-        Sat, 30 Oct 2021 17:21:39 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Sat, 30 Oct 2021 17:23:03 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Sat, 30 Oct
- 2021 17:23:03 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
-CC:     <linux-kselftest@vger.kernel.org>, <shuah@kernel.org>,
-        <ast@kernel.org>
-Subject: [PATCH -next] bpf/benchs: Fix return value check of bpf_program__attach()
-Date:   Sat, 30 Oct 2021 17:30:51 +0800
-Message-ID: <20211030093051.2609665-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Sat, 30 Oct 2021 05:35:31 -0400
+Received: from LanCloud
+DKIM-Filter: OpenDKIM Filter v2.11.0 mxout03.lancloud.ru 85CAD20EBD51
+Received: from LanCloud
+Received: from LanCloud
+Received: from LanCloud
+Message-ID: <ec1960ae-1f81-48ae-f153-46e7fd08f3df@omp.ru>
+Date:   Sat, 30 Oct 2021 12:32:42 +0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH 1/3] Docs: usb: update err() to pr_err() and replace
+ __FILE__
+Content-Language: en-US
+From:   Sergey Shtylyov <s.shtylyov@omp.ru>
+To:     Philipp Hortmann <philipp.g.hortmann@gmail.com>, <corbet@lwn.net>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <linux-usb@vger.kernel.org>
+References: <cover.1635533924.git.philipp.g.hortmann@gmail.com>
+ <e2f2c5c6995a011494105484849776a856af5bcc.1635533924.git.philipp.g.hortmann@gmail.com>
+ <49a766ec-014e-3667-828c-a4fd19c7c9e3@omp.ru>
+Organization: Open Mobile Platform
+In-Reply-To: <49a766ec-014e-3667-828c-a4fd19c7c9e3@omp.ru>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.168.11.198]
+X-ClientProxiedBy: LFEXT02.lancloud.ru (fd00:f066::142) To
+ LFEX1907.lancloud.ru (fd00:f066::207)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If bpf_program__attach() fails, it never returns NULL,
-we should use libbpf_get_error() to check the return value.
+On 29.10.2021 23:33, Sergey Shtylyov wrote:
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- .../bpf/benchs/bench_bloom_filter_map.c       | 20 ++++++++++++++-----
- 1 file changed, 15 insertions(+), 5 deletions(-)
+[...]
+>> update err() to pr_err() and replace __FILE__
+>>
+>> Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
+>> ---
+>>   Documentation/driver-api/usb/writing_usb_driver.rst | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/Documentation/driver-api/usb/writing_usb_driver.rst b/Documentation/driver-api/usb/writing_usb_driver.rst
+>> index 2176297e5765..5c29e5bdbe88 100644
+>> --- a/Documentation/driver-api/usb/writing_usb_driver.rst
+>> +++ b/Documentation/driver-api/usb/writing_usb_driver.rst
+>> @@ -91,8 +91,8 @@ usually in the driver's init function, as shown here::
+>>   	    /* register this driver with the USB subsystem */
+>>   	    result = usb_register(&skel_driver);
+>>   	    if (result < 0) {
+>> -		    err("usb_register failed for the "__FILE__ "driver."
+>> -			"Error number %d", result);
+>> +		    pr_err("usb_register failed for the %s driver. "
+> 
+>     Don't break up the kernel message like this. The current code is a bad example --
+> high time to fix it. :-)
+> 
+>> +			   "Error number %d", skel_driver.name, result);
 
-diff --git a/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c b/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
-index 6eeeed2913e6..6879340b20c4 100644
---- a/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
-+++ b/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
-@@ -296,6 +296,7 @@ static struct bloom_filter_bench *setup_skeleton(void)
- static void bloom_lookup_setup(void)
- {
- 	struct bpf_link *link;
-+	int err;
- 
- 	ctx.use_array_map = true;
- 
-@@ -304,7 +305,8 @@ static void bloom_lookup_setup(void)
- 	populate_maps();
- 
- 	link = bpf_program__attach(ctx.skel->progs.bloom_lookup);
--	if (!link) {
-+	err = libbpf_get_error(link);
-+	if (err) {
- 		fprintf(stderr, "failed to attach program!\n");
- 		exit(1);
- 	}
-@@ -313,6 +315,7 @@ static void bloom_lookup_setup(void)
- static void bloom_update_setup(void)
- {
- 	struct bpf_link *link;
-+	int err;
- 
- 	ctx.use_array_map = true;
- 
-@@ -321,7 +324,8 @@ static void bloom_update_setup(void)
- 	populate_maps();
- 
- 	link = bpf_program__attach(ctx.skel->progs.bloom_update);
--	if (!link) {
-+	err = libbpf_get_error(link);
-+	if (err) {
- 		fprintf(stderr, "failed to attach program!\n");
- 		exit(1);
- 	}
-@@ -330,6 +334,7 @@ static void bloom_update_setup(void)
- static void false_positive_setup(void)
- {
- 	struct bpf_link *link;
-+	int err;
- 
- 	ctx.use_hashmap = true;
- 	ctx.hashmap_use_bloom = true;
-@@ -340,7 +345,8 @@ static void false_positive_setup(void)
- 	populate_maps();
- 
- 	link = bpf_program__attach(ctx.skel->progs.bloom_hashmap_lookup);
--	if (!link) {
-+	err = libbpf_get_error(link);
-+	if (err) {
- 		fprintf(stderr, "failed to attach program!\n");
- 		exit(1);
- 	}
-@@ -349,6 +355,7 @@ static void false_positive_setup(void)
- static void hashmap_with_bloom_setup(void)
- {
- 	struct bpf_link *link;
-+	int err;
- 
- 	ctx.use_hashmap = true;
- 	ctx.hashmap_use_bloom = true;
-@@ -358,7 +365,8 @@ static void hashmap_with_bloom_setup(void)
- 	populate_maps();
- 
- 	link = bpf_program__attach(ctx.skel->progs.bloom_hashmap_lookup);
--	if (!link) {
-+	err = libbpf_get_error(link);
-+	if (err) {
- 		fprintf(stderr, "failed to attach program!\n");
- 		exit(1);
- 	}
-@@ -367,6 +375,7 @@ static void hashmap_with_bloom_setup(void)
- static void hashmap_no_bloom_setup(void)
- {
- 	struct bpf_link *link;
-+	int err;
- 
- 	ctx.use_hashmap = true;
- 
-@@ -375,7 +384,8 @@ static void hashmap_no_bloom_setup(void)
- 	populate_maps();
- 
- 	link = bpf_program__attach(ctx.skel->progs.bloom_hashmap_lookup);
--	if (!link) {
-+	err = libbpf_get_error(link);
-+	if (err) {
- 		fprintf(stderr, "failed to attach program!\n");
- 		exit(1);
- 	}
--- 
-2.25.1
+    Oh, and add `\n' at the end of message.
 
+[...]
+
+MBR, Sergey
