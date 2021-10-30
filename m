@@ -2,79 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BB99440691
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 02:57:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C7BD440699
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 03:04:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231428AbhJ3A7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 20:59:49 -0400
-Received: from mga14.intel.com ([192.55.52.115]:46251 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229839AbhJ3A7s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 20:59:48 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10152"; a="231044899"
-X-IronPort-AV: E=Sophos;i="5.87,194,1631602800"; 
-   d="scan'208";a="231044899"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2021 17:57:18 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,194,1631602800"; 
-   d="scan'208";a="495891831"
-Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
-  by fmsmga007.fm.intel.com with ESMTP; 29 Oct 2021 17:57:17 -0700
-Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mgcgO-0000tP-Qb; Sat, 30 Oct 2021 00:57:16 +0000
-Date:   Sat, 30 Oct 2021 08:56:15 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Kalesh Singh <kaleshsingh@google.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>
-Subject: [PATCH] tracing/histogram: fix semicolon.cocci warnings
-Message-ID: <20211030005615.GA41257@3074f0d39c61>
-References: <202110300854.vlngoEsM-lkp@intel.com>
+        id S229891AbhJ3BG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 21:06:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229508AbhJ3BGz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 21:06:55 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 601AFC061570;
+        Fri, 29 Oct 2021 18:04:26 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id u11so24335403lfs.1;
+        Fri, 29 Oct 2021 18:04:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=jsVDqvtMCjEItY59BjDdXBjqSCj5AFKpqqKBAZC15PM=;
+        b=GpLS5QoeSZiVYuQcyQg/wOKpPbg40IU+2Dfb9FcXU4nYeCmN6KJXjfh49JBd/wKAHD
+         591KA3gQIf1SBvyjgUMmYV8cBXFTC/cdQ4HENj5UhrW8Zc5/6NQVTcbHDpp/uP/CtM/l
+         31doiyyMMYYg0QJkQWOkCsBIMW+mBz8uv2F64Oi2QMKIfsIG/oChYJ9O+QA33jYEsngE
+         FrvXPW+rYpkwao9yDetR1TGipaDBlZx2RObVu97eob6CBZrnUrIsLKwo4+T+zZ5rm6br
+         At5zVemkgnR+a9B35XIsz2qkCf1eXFLUUqLj7BeJp/CwzdGna52h2P/7YR84Xq7I1QPX
+         qHKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=jsVDqvtMCjEItY59BjDdXBjqSCj5AFKpqqKBAZC15PM=;
+        b=qe8072u5/hQ+tBaBzpk1pwFOXVeYbutCY4LdsKiUsziJEEo5IE6xgylW+GN8P8BJ43
+         r9uCIop/x2hxTGzuHeNk1Uaf8XCGDypVzzRHCT0/WW4RIZYabOtztd0Fcvk+lSxoSiv9
+         4q9emTH/EJSIG+7tdubbseXL2ZeBxp92lpQjRh9kX4buQ1eog5YSqoK4hvdy3h0uRzeB
+         Cecq9PczXH8pWO7EHHcQ0iNXmGSFYFe5rNa+fmbmPLKNKa/HsY1bLljxSB7PrR3EntaC
+         Wptwrw2DHEzLUCq0B63ceGqUZ9oen6mrlvLYJ+V1/jGdYyk+mjeeiFSgR67tYEuaJOeD
+         xWLw==
+X-Gm-Message-State: AOAM533mkSvzJiWheVSGHOKwfUIGIVd9KiNm/havnFuUmvSjfElgvHd/
+        AkjZgVA1oNzUQaZoVpKlP8E=
+X-Google-Smtp-Source: ABdhPJx9M756TGAugbnDnJ3XSPzCFgHZzkSWbjRs2ZMvdkgT0v7toK9mxfqBf0H0S0K+YMfr11W+ug==
+X-Received: by 2002:a05:6512:1287:: with SMTP id u7mr9587759lfs.590.1635555864551;
+        Fri, 29 Oct 2021 18:04:24 -0700 (PDT)
+Received: from [192.168.2.145] (46-138-44-18.dynamic.spd-mgts.ru. [46.138.44.18])
+        by smtp.googlemail.com with ESMTPSA id f13sm748072lfv.72.2021.10.29.18.04.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Oct 2021 18:04:24 -0700 (PDT)
+Subject: Re: [PATCH v14 20/39] pwm: tegra: Add runtime PM and OPP support
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Nishanth Menon <nm@ti.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux PWM List <linux-pwm@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        David Heidelberg <david@ixit.cz>
+References: <20211025224032.21012-1-digetx@gmail.com>
+ <20211025224032.21012-21-digetx@gmail.com>
+ <09c05206-c0e5-9a25-8ffa-b9291f6ea5ae@gmail.com>
+ <CAJZ5v0i9OtA1nDiv8UXuF3ASdENFYJFV7+nMWm6Pcu=kw8k1aQ@mail.gmail.com>
+ <4dc8a6bd-4072-ccbf-513b-221d286bd6d5@gmail.com>
+ <CAJZ5v0hKQf-xZq2fx1pA5oxMqP_XJV=AG0Rqu7BKRUZGDz6H5Q@mail.gmail.com>
+ <72160e55-6aa5-9541-43f2-fbf025f84ffb@gmail.com>
+Message-ID: <5469f48f-2137-59ae-5298-6dc68c12a126@gmail.com>
+Date:   Sat, 30 Oct 2021 04:04:23 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202110300854.vlngoEsM-lkp@intel.com>
-X-Patchwork-Hint: ignore
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <72160e55-6aa5-9541-43f2-fbf025f84ffb@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: kernel test robot <lkp@intel.com>
+30.10.2021 03:47, Dmitry Osipenko пишет:
+> 29.10.2021 21:06, Rafael J. Wysocki пишет:
+> ...
+>>>>> I just noticed that RPM core doesn't reset RPM-enable count of a device
+>>>>> on driver's unbind (pm_runtime_reinit). It was a bad idea to use
+>>>>> devm_pm_runtime_enable() + pm_runtime_force_suspend() here, since RPM is
+>>>>> disabled twice on driver's removal, and thus, RPM will never be enabled
+>>>>> again.
+>>>>>
+>>>>> I'll fix it for PWM and other drivers in this series, in v15.
+>>>>
+>>>> Well, for the record, IMV using pm_runtime_force_suspend() is
+>>>> generally a questionable idea.
+>>>>
+>>>
+>>> Please clarify why it's a questionable idea.
+>>
+>> There are a few reasons.
+>>
+>> Generally speaking, it makes assumptions that may not be satisfied.
+>>
+>> For instance, it assumes that the driver will never have to work with
+>> the ACPI PM domain, because the ACPI PM domain has a separate set of
+>> callbacks for system-wide suspend and resume and they are not the same
+>> as its PM-runtime callbacks, so if the driver is combined with the
+>> ACPI PM domain, running pm_runtime_force_suspend() may not work as
+>> expected.
+> 
+> ACPI is irrelevant to the drivers touched by this series.
+> 
+> This series is about older ARM32 Tegra SoCs which either don't have ACPI
+> at all or it's unusable by Linux, like a non-standard ACPI of M$ Surface
+> tablets.
 
-kernel/trace/trace_events_hist.c:6039:2-3: Unneeded semicolon
+Although, there are VIC and NVDEC drivers of newer Tegra SoCs touched by
+this series. Maybe they could get ACPI support in the future, but this
+needs to be clarified. Perhaps Thierry or Mikko could comment on it.
 
+>> Next, it assumes that PM-runtime is actually enabled for the device
+>> and the RPM_STATUS of it is valid when it is running.
+> 
+> Runtime PM presence is mandatory for Tegra and drivers take care of
+> enabling it, should be good here.
+> 
+>> Further, it assumes that the PM-runtime suspend callback of the driver
+>> will always be suitable for system-wide suspend which may not be the
+>> case if the device can generate wakeup signals and it is not allowed
+>> to wake up the system from sleep by user space.
+> 
+> There are no such 'wakeup' drivers in the context of this patchset.
+> 
+>> Next, if the driver has to work with a PM domain (other than the ACPI
+>> one) or bus type that doesn't take the pm_runtime_force_suspend()
+>> explicitly into account, it may end up running the runtime-suspend
+>> callback provided by that entity from within its system-wide suspend
+>> callback which may not work as expected.
+> 
+> Only platform bus and generic power domain are relevant for this patchset.
+> 
+>> I guess I could add a few if I had to.
+>>
+> 
+> So far I can't see any problems.
+> 
+> If you have a better alternative on yours mind, please share.
+> 
 
- Remove unneeded semicolon.
-
-Generated by: scripts/coccinelle/misc/semicolon.cocci
-
-Fixes: c5eac6ee8bc5 ("tracing/histogram: Simplify handling of .sym-offset in expressions")
-CC: Kalesh Singh <kaleshsingh@google.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: kernel test robot <lkp@intel.com>
----
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git for-next
-head:   93d76e4a0e0112b320c4f0e2a3930ad634628c58
-commit: c5eac6ee8bc5d32e48b3845472b547574061f49f [91/100] tracing/histogram: Simplify handling of .sym-offset in expressions
-:::::: branch date: 24 hours ago
-:::::: commit date: 3 days ago
-
- trace_events_hist.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
---- a/kernel/trace/trace_events_hist.c
-+++ b/kernel/trace/trace_events_hist.c
-@@ -6036,7 +6036,7 @@ static int event_hist_trigger_func(struc
- 	while (start) {
- 		*(start + 4) = 'X';
- 		start = strstr(start + 11, ".sym-offset");
--	};
-+	}
- 
- 	attrs = parse_hist_trigger_attrs(file->tr, trigger);
- 	if (IS_ERR(attrs))
