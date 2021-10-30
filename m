@@ -2,105 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C29F5440A49
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 18:52:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 372F6440A4E
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 18:59:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229898AbhJ3QzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Oct 2021 12:55:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53894 "EHLO
+        id S230049AbhJ3RC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Oct 2021 13:02:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229694AbhJ3QzC (ORCPT
+        with ESMTP id S229474AbhJ3RCZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Oct 2021 12:55:02 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EF37C061570
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Oct 2021 09:52:32 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id b10so4553898ilj.10
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Oct 2021 09:52:32 -0700 (PDT)
+        Sat, 30 Oct 2021 13:02:25 -0400
+Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84DD8C061570
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Oct 2021 09:59:55 -0700 (PDT)
+Received: by mail-ua1-x936.google.com with SMTP id x3so24040076uar.13
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Oct 2021 09:59:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=uKmeXVvNm8StHsQLA79AzT8JNuEz/eDwn91O5B3XSkE=;
-        b=ar9OTyzBuJxbi6PIxQQodk9zcx/k4xqxnHogwSHSRBkYiYx1hLWOGGnQwGilXK+Zwq
-         OH5EYRhOGSFz+SspDZvuvpdTgYW/7mU15trdTQgMZsLEdqc+7jNpxA2qG4CjVfwSmH8T
-         tqD09/VgsD8ws2cIiRHlQnZVkusXipKluZVi5Q4FNg/xMsx4XYZRky/pk1OJFGm9WBNf
-         swy56HJp6UdHnY+CbFELByaYUehCkpNxrIyggmZC4Yyhp2XcaIZEl6zWoTImE+mTyL6A
-         uMrgvobZXuGrYACsesZbz341IW4/6fgvBZjvAqRrsakXfaUy9m+GJ1jVAodP9WtP/j3k
-         bBZA==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=l/0UUkqf6KFkNkf6dBZ0pEkCS7X6LutBL6LgNXt9kNw=;
+        b=COYcjMZHo2AhOT7Qmebs1O2714sucGcw4oOFWAZd04mujHCpsr49AG3HZtjw7Im4lg
+         ePKoBnjK9WgnzD/v5lNJMx61C/iclRy9VF3dc8XjgNfIEOeaMPRkrQ3RdG7oTsbcL0q9
+         qBJlNogLLIxUKBwUJZw5zUIGd9KoXRjJlKKLKHRVjGetr89QqXKZ6Mz75aHEqIWtSKVP
+         mqvnOV4YEnoasMfw2yTM4pF3va7X9XaC1HbVOM/jn4DaZk7Iqcooo7Io0KcxKU8RbrsD
+         sNLPWVQMO0Yx7KIVpU40dbfdaxXTs0re1gHao8v4RsL/SFjGvnuIw9G/XT4iJngYCfxs
+         h/jg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=uKmeXVvNm8StHsQLA79AzT8JNuEz/eDwn91O5B3XSkE=;
-        b=YTz75EzisCY42YQjs4PTOY9dcpT50oTDZCTJooQiNgoLQcdN5lMwEXnjQ14j5EB38S
-         UHDi/RSkVC5zusJO085JX24fDrLpm7jMWdXSzWtgm84ajUy48uLY2Bi3XJRfREf4cK9E
-         T1XcdtwGijgaLUmY/3UZWvY4LE6PU3ZWP2F22fjYGF/09VsHn5XOdFphiy/9k2OopqGZ
-         nOm8jtVr3KQLvP5rc6pVvElpqLypN/aHG3xp8DfeC2hqJR5jhlDWHk1Y7OxvDfS5xpV6
-         ENzGje9A6SrpcZ5X7dY3jBr67T6zQHwuKBlUunG9pnSJkpVMziKkx69b5AZ4umYDZk6H
-         3YDg==
-X-Gm-Message-State: AOAM533IP2P3PyOHiFL65fG/V8iWOWthPDyVtST9nRZnAKBbSY8A83JU
-        JTr7sd2tOAEq32vworQYaWbJEisihXDDlg==
-X-Google-Smtp-Source: ABdhPJx0mHeS1DRVQRoNhgzmgPhExhE6GgEzggjZwNXln1JAj+wIhqwoVbf253ExoRhI/3/JPzW6bw==
-X-Received: by 2002:a92:ca0e:: with SMTP id j14mr13052965ils.131.1635612751153;
-        Sat, 30 Oct 2021 09:52:31 -0700 (PDT)
-Received: from [192.168.1.116] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id y6sm1671428ilu.38.2021.10.30.09.52.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 30 Oct 2021 09:52:30 -0700 (PDT)
-Subject: Re: [axboe-block:for-5.16/passthrough-flag 136/159]
- fs/fs-writeback.c:1896:15: error: 'struct task_struct' has no member named
- 'plug'
-To:     kernel test robot <lkp@intel.com>, Christoph Hellwig <hch@lst.de>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-References: <202110310058.oh2LK0CJ-lkp@intel.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <c22aff75-63c7-9fee-44b4-4333dce589ab@kernel.dk>
-Date:   Sat, 30 Oct 2021 10:52:29 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=l/0UUkqf6KFkNkf6dBZ0pEkCS7X6LutBL6LgNXt9kNw=;
+        b=4faGQYlxBZjA+kzsR8+ekTf8Zr3+XkDi8qW8PkU4egOKmo/7JwPkBhajJLrxLNT0xh
+         K6IsxNeYLFSTG0PpxCr7EHURh4QM85j4hcxYNduWuEh/58CkCm24eN+fipYysE3/l8Fw
+         Rh08oIldg+vLXb5Ghq+87Zq2hZXVWw3J11UwT/fXXhq9Qkp29YWhsu8PpysN9q0hLOLb
+         TOPp9fztugAA2dI5JSu2DdiWE3ZMYsxfECf8RNnI168V5Giq2+Gc52hKSiAffGZ/95Vw
+         usAV0NcfRD9vyESbaIixm6RstLCO3bPuBpg7d6ZSZMvtflyYtuQH+X9pmgiSw5eplTn1
+         5w2w==
+X-Gm-Message-State: AOAM533GcZiqTIofDosXgUK1j9rNmlq2oUiSGUt7naiNrXiQ95eXhuJ5
+        UwgT8vjdLP7QJU5v1Jglvt91kaSXBnV2Zp6sRNlZNQ==
+X-Google-Smtp-Source: ABdhPJwgB0TnW1VjXBlaMl6cHb/t+9CrkGOL3PBxBmLXFG83NcAttneComJazLR0qQ/0pGpbtjvvvjluJNY70x4qme8=
+X-Received: by 2002:a05:6102:3ece:: with SMTP id n14mr1827009vsv.55.1635613194472;
+ Sat, 30 Oct 2021 09:59:54 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <202110310058.oh2LK0CJ-lkp@intel.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211028183527.3050-1-semen.protsenko@linaro.org>
+ <20211028183527.3050-8-semen.protsenko@linaro.org> <1ad6b625-4388-bc78-e258-eae0b9357b96@roeck-us.net>
+ <CAPLW+4kphtac24fcpVUENAMUAdHp2fkzJ0N_r_63Soq6R2VZBg@mail.gmail.com> <7c9a8dd4-7607-55a2-3d65-a445fa246667@roeck-us.net>
+In-Reply-To: <7c9a8dd4-7607-55a2-3d65-a445fa246667@roeck-us.net>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Sat, 30 Oct 2021 19:59:42 +0300
+Message-ID: <CAPLW+4kTANfSaw5g=rnJUJTMcT_J1Z8ju09kzmAPE70U_8KWDQ@mail.gmail.com>
+Subject: Re: [PATCH 7/7] watchdog: s3c2410: Let kernel kick watchdog
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        linux-watchdog@vger.kernel.org,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/30/21 10:24 AM, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git for-5.16/passthrough-flag
-> head:   0bf6d96cb8294094ce1e44cbe8cf65b0899d0a3a
-> commit: 008f75a20e7072d0840ec323c39b42206f3fa8a0 [136/159] block: cleanup the flush plug helpers
-> config: x86_64-randconfig-s022-20211028 (attached as .config)
-> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-> reproduce:
->         # apt-get install sparse
->         # sparse version: v0.6.4-dirty
->         # https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git/commit/?id=008f75a20e7072d0840ec323c39b42206f3fa8a0
->         git remote add axboe-block https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git
->         git fetch --no-tags axboe-block for-5.16/passthrough-flag
->         git checkout 008f75a20e7072d0840ec323c39b42206f3fa8a0
->         # save the attached .config to linux build tree
->         make W=1 C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=x86_64 SHELL=/bin/bash
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>):
+On Sat, 30 Oct 2021 at 18:14, Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> On 10/30/21 7:29 AM, Sam Protsenko wrote:
+> > On Fri, 29 Oct 2021 at 03:30, Guenter Roeck <linux@roeck-us.net> wrote:
+> >>
+> >> On 10/28/21 11:35 AM, Sam Protsenko wrote:
+> >>> When "tmr_atboot" module param is set, the watchdog is started in
+> >>> driver's probe. In that case, also set WDOG_HW_RUNNING bit to let
+> >>> watchdog core driver know it's running. This way wathcdog core can kick
+> >>> the watchdog for us (if CONFIG_WATCHDOG_HANDLE_BOOT_ENABLED option is
+> >>> enabled), until user space takes control.
+> >>>
+> >>> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> >>> ---
+> >>>    drivers/watchdog/s3c2410_wdt.c | 26 +++++++++++++++-----------
+> >>>    1 file changed, 15 insertions(+), 11 deletions(-)
+> >>>
+> >>> diff --git a/drivers/watchdog/s3c2410_wdt.c b/drivers/watchdog/s3c2410_wdt.c
+> >>> index ca082b1226e3..9af014ff1468 100644
+> >>> --- a/drivers/watchdog/s3c2410_wdt.c
+> >>> +++ b/drivers/watchdog/s3c2410_wdt.c
+> >>> @@ -732,6 +732,21 @@ static int s3c2410wdt_probe(struct platform_device *pdev)
+> >>>        wdt->wdt_device.bootstatus = s3c2410wdt_get_bootstatus(wdt);
+> >>>        wdt->wdt_device.parent = dev;
+> >>>
+> >>> +     /*
+> >>> +      * If "tmr_atboot" param is non-zero, start the watchdog right now. Also
+> >>> +      * set WDOG_HW_RUNNING bit, so that watchdog core can kick the watchdog.
+> >>> +      *
+> >>> +      * If we're not enabling the watchdog, then ensure it is disabled if it
+> >>> +      * has been left running from the bootloader or other source.
+> >>> +      */
+> >>> +     if (tmr_atboot && started == 0) {
+> >>> +             dev_info(dev, "starting watchdog timer\n");
+> >>> +             s3c2410wdt_start(&wdt->wdt_device);
+> >>> +             set_bit(WDOG_HW_RUNNING, &wdt->wdt_device.status);
+> >>> +     } else if (!tmr_atboot) {
+> >>> +             s3c2410wdt_stop(&wdt->wdt_device);
+> >>> +     }
+> >>> +
+> >>
+> >> This doesn't cover the case where the watchdog is already enabled by the BIOS.
+> >> In that case, WDOG_HW_RUNNING won't be set, and the watchdog will time out
+> >> if the userspace handler is not loaded fast enough. The code should consistently
+> >> set WDOG_HW_RUNNING if the watchdog is running.
+> >>
+> >
+> > As I understand, in the case when bootloader started the watchdog, the
+> > driver just stops it. You can see it in the code you replied to.
+> >
+> >      } else if (!tmr_atboot) {
+> >              s3c2410wdt_stop(&wdt->wdt_device);
+> >
+> > In other words, having "tmr_atboot" module param makes it irrelevant
+> > whether bootloader enabled WDT or no.
+> >
+>
+> Sure, but I am concerned about "if (tmr_atboot && started)", which doesn't
+> set WDOG_HW_RUNNING with your current code, and I was looking for something
+> like
+>
+>         if (tmr_atboot) {
+>                 if (!started) {
+>                         dev_info(dev, "starting watchdog timer\n");
+>                         s3c2410wdt_start(&wdt->wdt_device);
+>                 }
+>                 set_bit(WDOG_HW_RUNNING, &wdt->wdt_device.status);
+>         } else {
+>                 s3c2410wdt_stop(&wdt->wdt_device);
+>         }
+>
 
-This got fixed by:
+Wow, I really overlooked that case. Nice catch! Not having '} else {'
+section is vicious...
 
-commit 599593a82fc57f5e9453c8ef7420df3206934a0c
-Author: Jens Axboe <axboe@kernel.dk>
-Date:   Fri Oct 22 19:35:45 2021 -0600
+Though if started != 0, it means s3c2410wdt_set_heartbeat() failed to
+set wdd->timeout, and without that the watchdog core won't be able to
+calculate correctly ping interval in watchdog_next_keepalive(), and
+WDOG_HW_RUNNING bit won't do much good, right? So I'll probably just
+call s3c2410wdt_stop() in that case, to be on the safe side.
 
-    sched: make task_struct->plug always defined
+Also this 'started' variable name is misleading, I'll convert it to
+"bool timeout_ok" while at it.
 
-it's just that for-5.16/passthrough-flag was forked off before that commit
-ended up in for-5.16/block. This report can be ignored.
-
--- 
-Jens Axboe
-
+> Guenter
