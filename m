@@ -2,212 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6E6C440970
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 16:12:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F1D4440976
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 16:20:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230098AbhJ3OPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Oct 2021 10:15:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47504 "EHLO
+        id S230081AbhJ3OWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Oct 2021 10:22:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229877AbhJ3OPB (ORCPT
+        with ESMTP id S229585AbhJ3OWm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Oct 2021 10:15:01 -0400
-Received: from mail-vk1-xa36.google.com (mail-vk1-xa36.google.com [IPv6:2607:f8b0:4864:20::a36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B40C2C061766
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Oct 2021 07:12:31 -0700 (PDT)
-Received: by mail-vk1-xa36.google.com with SMTP id o64so5979143vke.5
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Oct 2021 07:12:31 -0700 (PDT)
+        Sat, 30 Oct 2021 10:22:42 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 620F7C061570;
+        Sat, 30 Oct 2021 07:20:12 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id v127so10198961wme.5;
+        Sat, 30 Oct 2021 07:20:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kpQ4wcqWDco9KEWxIAvor31Yr5kfqXocG7YvRzlhiR8=;
-        b=DaZwNt1WOaxYkoaqxrYpP8w5dVGsP+iXrZEmlyyBRcZJlqf/aTlVy+WX4FNXNpWgI/
-         6QuTzMa1gJapN2AX3V9XsznBf5MlO5NsSh/X3aNINGiUDzV+eXT7V8Z4O1BjDDp2p/0v
-         NxKglTS6IA3EYESKj2w45Ra+GP+6AbL8jRl+ZivlAczg4mr6+C06XAWXCr7sANZqitI+
-         QSXcV+Ogiajmy3n1mSCn9JXLSi8vHShTJxZztKEMi+Jg21MNmRb6zZWCRGrLqcJ98yIz
-         R6vUSnxGUUWdp7krp3JURfbpksp4peyqRwDbPJt/uuYJZL8K+bDAoc4uOeTthW8Veqs6
-         OT5g==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZFTYT6IC4NLo8CTX3uHADufxZSHsQHANfpdDkatrvm0=;
+        b=hJxH6Ugw++00fYcTpUDu9jMLnXmwJTbIkf95xjTu2Nr8Aq5KxRBgvwvSd0K3Xi2eXn
+         Ahq29tGkixhXxNXNQfJdDhasqP0vQfu/BU3WZM9mqXlsvOpSxXO+UQso12fDw6OwAqh/
+         oxcGiB26rfk6UfdUsMaZON0Ag84rISE72AabU3g33J+cx1HpcNaxEKH+LD8ddJHGP8gD
+         QsTkWqmqAbCIoNDv4E4rFSF0jti+EuaQcEK9eO3lf6v+S4KvwOnu4AeorzQ8W4wO2Tk1
+         5lHoKVwL7L+xvegGFXDGgIo1Zvf01wS28lfitbN1Rl9Wq5Hi52QzkC47lXbUnXKP+IUW
+         tYqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kpQ4wcqWDco9KEWxIAvor31Yr5kfqXocG7YvRzlhiR8=;
-        b=ooCdCTcln37Ow6lbhfvLwkS4HjZxstRoJiDtIIvhmRPgfVkPnpNm9Bz0DlKfFqn7bH
-         XdJyWl9LT+7w35+ggcEBOXThStsLqF5kiAP144VF0CAQUnaxFeT/lxy+hs+xUHjmGMD7
-         HtwK6tWqdbEXQLoa+fxbSUjvlg6V6GMQPQ+6iU6S5br8JMf4ffErCsBG2HhwulkVpbbJ
-         cceaRySK0J3w8YgeXjrdCykzwX6k09YnM3BBPkopNZ9WXyoOpHWbSwR2+AFPn8D0IrbP
-         1C/S6LX7B+aMVZcvZAldBXKp3JFRh4E6pLrLEv8NR+OsZWwMZR9o4jtI7cu/HuY/oiRH
-         GNtw==
-X-Gm-Message-State: AOAM531Fpr4iRZUPHR0YUiRZAjF8SwSlzgZcbKFsIPXUQoklcN0lsJN6
-        41QW2xo8ObdKtgOvsr8MBLhqf8DScH/b5j7oz375JQ==
-X-Google-Smtp-Source: ABdhPJxe/kwW5iZXwvnOZ7nxHWFEiYg6SdeSZCqwpLBJXkvvw7fi7LIEvty1l0+agNc9xw8rdSpGzSLFV2zjpReMnjA=
-X-Received: by 2002:a1f:7246:: with SMTP id n67mr18299671vkc.15.1635603150672;
- Sat, 30 Oct 2021 07:12:30 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZFTYT6IC4NLo8CTX3uHADufxZSHsQHANfpdDkatrvm0=;
+        b=TqWO7sAPf77s+PFpVtzHfu9g9fqMiWRvcUi0KxeHD8nIK+HfPUlxMq9BzC26SP+ybR
+         j/rJAuDNOrPljdEOA7fSw+nZ6lYEFluFhcY54sjFrM+VXzenbKjRxoona1fcBW8PX8kQ
+         jRjrEnTX5sdaaYy4gK7GowUDLe5dDClGsbAk+a9jwGAv4W/WAOYhJ1BDqDS5ErsmFcEL
+         WQ1jMz0WswZmWxj9KZ4z9rPhH7/ainhiVmXh2PZ3o2sRfjbOXLlfZgAgYXonYj5CoA0k
+         Z9eqalOLz4M6K0H5RLKMD79zB+8zvHMCEOJZj9Htf8kGBbJV0Zfgkzlcu9j01pG0I3Wx
+         yzDg==
+X-Gm-Message-State: AOAM532uqNcxBDAqfQ5bMUk9Vyd2XgwBe1ekfg9/DyFe5bgqMmSnvEgf
+        rZN37kXi8EYNn7XFlpTB8mSPotXA3I190w==
+X-Google-Smtp-Source: ABdhPJyLolcJnyhOlakjMd7/G2CYaY63bgSXRgSX++VpQLBOLJU7CiZ8qGTExh8xJ52gMaBhnQ/acg==
+X-Received: by 2002:a05:600c:354d:: with SMTP id i13mr18513917wmq.189.1635603610627;
+        Sat, 30 Oct 2021 07:20:10 -0700 (PDT)
+Received: from localhost.localdomain (252.red-83-54-181.dynamicip.rima-tde.net. [83.54.181.252])
+        by smtp.gmail.com with ESMTPSA id m12sm8208521wrq.69.2021.10.30.07.20.08
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 30 Oct 2021 07:20:09 -0700 (PDT)
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+To:     linux-clk@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, sboyd@kernel.org, john@phrozen.org,
+        linux-staging@lists.linux.dev, gregkh@linuxfoundation.org,
+        neil@brown.name
+Subject: [PATCH v3 0/4] clk: ralink: make system controller a reset provider
+Date:   Sat, 30 Oct 2021 16:20:03 +0200
+Message-Id: <20211030142007.27085-1-sergio.paracuellos@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-References: <20211028183527.3050-1-semen.protsenko@linaro.org>
- <20211028183527.3050-6-semen.protsenko@linaro.org> <76ca9492-3829-6d3b-580c-983bc8409b1f@canonical.com>
-In-Reply-To: <76ca9492-3829-6d3b-580c-983bc8409b1f@canonical.com>
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Sat, 30 Oct 2021 17:12:18 +0300
-Message-ID: <CAPLW+4mxE7MGH3_=xJXC1bh2iDWRLXzTorc8N=jDqG-KHT3O=Q@mail.gmail.com>
-Subject: Re: [PATCH 5/7] watchdog: s3c2410: Introduce separate source clock
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-watchdog@vger.kernel.org,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Oct 2021 at 11:18, Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
->
-> On 28/10/2021 20:35, Sam Protsenko wrote:
-> > Some Exynos chips (like Exynos850) have dedicated source clock. That
-> > clock is provided from device tree as "watchdog_src" clock. In such
-> > case, "watchdog" clock is just a peripheral clock used for register
-> > interface. If "watchdog_src" is present, use its rate instead of
-> > "watchdog" for all timer related calculations.
->
-> Please explain what is this source clock and remove the reference to
-> devicetree. Instead describe rather real HW. It's confusing now to have
-> one clock called watchdog and one watchdog source.
->
-> The source clock is the actual clock driving watchdog and it's counter,
-> right? Then let's document it and rename the variables to match reality
-> - one is pclk (or apb?) and second is counter or source?
->
+Hi all,
 
-Done, will be present in v2.
+This patch series add minimal change to provide mt7621 resets properly
+defining them in the 'mediatek,mt7621-sysc' node which is the system
+controller of the SoC and is already providing clocks to the rest of
+the world.
 
-> >
-> > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> > ---
-> >  drivers/watchdog/s3c2410_wdt.c | 33 +++++++++++++++++++++++++++------
-> >  1 file changed, 27 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/drivers/watchdog/s3c2410_wdt.c b/drivers/watchdog/s3c2410_wdt.c
-> > index a5ef7171a90e..bfc5872ca497 100644
-> > --- a/drivers/watchdog/s3c2410_wdt.c
-> > +++ b/drivers/watchdog/s3c2410_wdt.c
-> > @@ -126,6 +126,8 @@ struct s3c2410_wdt_variant {
-> >  struct s3c2410_wdt {
-> >       struct device           *dev;
-> >       struct clk              *clock;
-> > +     struct clk              *clock_src;
-> > +     unsigned long           freq_src;
-> >       void __iomem            *reg_base;
-> >       unsigned int            count;
-> >       spinlock_t              lock;
-> > @@ -213,10 +215,8 @@ MODULE_DEVICE_TABLE(platform, s3c2410_wdt_ids);
-> >
-> >  /* functions */
-> >
-> > -static inline unsigned int s3c2410wdt_max_timeout(struct clk *clock)
-> > +static inline unsigned int s3c2410wdt_max_timeout(unsigned long freq)
-> >  {
-> > -     unsigned long freq = clk_get_rate(clock);
-> > -
-> >       return S3C2410_WTCNT_MAXCNT / (freq / (S3C2410_WTCON_PRESCALE_MAX + 1)
-> >                                      / S3C2410_WTCON_MAXDIV);
-> >  }
-> > @@ -364,7 +364,7 @@ static int s3c2410wdt_set_heartbeat(struct watchdog_device *wdd,
-> >                                   unsigned int timeout)
-> >  {
-> >       struct s3c2410_wdt *wdt = watchdog_get_drvdata(wdd);
-> > -     unsigned long freq = clk_get_rate(wdt->clock);
-> > +     unsigned long freq = wdt->freq_src;
->
-> This does not look good. You are using fixed frequency (from probe).
->
+There is shared architecture code for all ralink platforms in 'reset.c'
+file located in 'arch/mips/ralink' but the correct thing to do to align
+hardware with software seems to define and add related reset code to the
+already mainlined clock driver.
 
-Ok, will avoid caching this value in v2.
+After this changes, we can get rid of the useless reset controller node
+in the device tree and use system controller node instead where the property
+'#reset-cells' has been added. Binding documentation for this nodeq has
+been updated with the new property accordly.
 
-> >       unsigned int count;
-> >       unsigned int divisor = 1;
-> >       unsigned long wtcon;
-> > @@ -627,13 +627,27 @@ static int s3c2410wdt_probe(struct platform_device *pdev)
-> >               return ret;
-> >       }
-> >
-> > +     /* "watchdog_src" clock is optional; if it's not present -- just skip */
-> > +     wdt->clock_src = devm_clk_get(dev, "watchdog_src");
-> > +     if (!IS_ERR(wdt->clock_src)) {
-> > +             ret = clk_prepare_enable(wdt->clock_src);
-> > +             if (ret < 0) {
-> > +                     dev_err(dev, "failed to enable source clock\n");
-> > +                     ret = PTR_ERR(wdt->clock_src);
-> > +                     goto err_clk;
-> > +             }
-> > +             wdt->freq_src = clk_get_rate(wdt->clock_src);
-> > +     } else {
-> > +             wdt->freq_src = clk_get_rate(wdt->clock);
-> > +     }
-> > +
-> >       wdt->wdt_device.min_timeout = 1;
-> > -     wdt->wdt_device.max_timeout = s3c2410wdt_max_timeout(wdt->clock);
-> > +     wdt->wdt_device.max_timeout = s3c2410wdt_max_timeout(wdt->freq_src);
-> >
-> >       ret = s3c2410wdt_cpufreq_register(wdt);
-> >       if (ret < 0) {
-> >               dev_err(dev, "failed to register cpufreq\n");
-> > -             goto err_clk;
-> > +             goto err_clk_src;
-> >       }
-> >
-> >       watchdog_set_drvdata(&wdt->wdt_device, wdt);
-> > @@ -707,6 +721,10 @@ static int s3c2410wdt_probe(struct platform_device *pdev)
-> >   err_cpufreq:
-> >       s3c2410wdt_cpufreq_deregister(wdt);
-> >
-> > + err_clk_src:
-> > +     if (!IS_ERR(wdt->clock_src))
-> > +             clk_disable_unprepare(wdt->clock_src);
->
-> No. Errors in getting source clock should not be ignored, so you should
-> never store here ERR. You could store NULL. If() is anyway not needed in
-> both cases.
->
-> You can simplify all this and take pclk twice if src clock is missing.
-> Or assign src=pclk...
->
+This series also provide a bindings include header where all related
+reset bits for the MT7621 SoC are defined.
 
-Hmm, I don't want to take the same clock twice. It'll increase its
-refcount twice, which might be confusing in some cases. I guess I'll
-rework it to be like this in v2:
-  - add "has_src_clk" bool field to struct wdt
-  - if "watchdog_src" is provided: set has_src_clk "true"
-  - if "watchdog_src" is not provided: set has_src_clk "false"
-(default BSS val) and assign src=pclk
-  - only enable/disable src clock when has_src_clk is "true"
+Also, please take a look to this review [0] to understand better motivation
+for this series.
 
-That simplifies clock using, fixes stored pointer value, and avoids
-taking the clock twice, all at the same time. Hope that way is fine
-with you.
+Regarding the way of merging this:
+ - I'd like patches 1 and 4 which are related going through staging tree.
+ - The other two (patches 2 and 3) can perfectly go through the clock tree.
 
-> > +
-> >   err_clk:
-> >       clk_disable_unprepare(wdt->clock);
-> >
-> > @@ -727,6 +745,9 @@ static int s3c2410wdt_remove(struct platform_device *dev)
-> >
-> >       s3c2410wdt_cpufreq_deregister(wdt);
-> >
-> > +     if (!IS_ERR(wdt->clock_src))
-> > +             clk_disable_unprepare(wdt->clock_src);
-> > +
-> >       clk_disable_unprepare(wdt->clock);
-> >
-> >       return 0;
-> >
->
->
-> Best regards,
-> Krzysztof
+Thanks in advance for your feedback.
+
+Changes in v3:
+  - Collect Rob's Acked-by for patches 1 and 2. 
+  - Rebase on the top of staging-next since there were already many
+    changes there and PATCH 4 of the series didn't apply cleanly.
+
+Changes in v2:
+  - Address review comments of Dan Carpenter [1]:
+     + Avoid 'inline' in function definition.
+     + Return proper error codes (-EINVAL) instead of '-1'.
+     + Make use of 'devm_kzalloc' instead of 'kzalloc'.
+
+Best regards,
+   Sergio Paracuellos
+
+Sergio Paracuellos (4):
+  dt-bindings: reset: add dt binding header for Mediatek MT7621 resets
+  dt-bindings: clock: mediatek,mt7621-sysc: add '#reset-cells' property
+  clk: ralink: make system controller node a reset provider
+  staging: mt7621-dts: align resets with binding documentation
+
+ .../bindings/clock/mediatek,mt7621-sysc.yaml  | 12 +++
+ drivers/clk/ralink/clk-mt7621.c               | 79 +++++++++++++++++++
+ drivers/staging/mt7621-dts/mt7621.dtsi        | 25 +++---
+ include/dt-bindings/reset/mt7621-reset.h      | 37 +++++++++
+ 4 files changed, 139 insertions(+), 14 deletions(-)
+ create mode 100644 include/dt-bindings/reset/mt7621-reset.h
+
+-- 
+2.33.0
+
