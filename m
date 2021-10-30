@@ -2,185 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61A754408C1
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 14:32:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90E9B4408C5
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 14:39:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231856AbhJ3MfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Oct 2021 08:35:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54134 "EHLO
+        id S231875AbhJ3MmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Oct 2021 08:42:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229808AbhJ3MfK (ORCPT
+        with ESMTP id S230089AbhJ3MmG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Oct 2021 08:35:10 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA0E2C061570
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Oct 2021 05:32:39 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id z20so48200377edc.13
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Oct 2021 05:32:39 -0700 (PDT)
+        Sat, 30 Oct 2021 08:42:06 -0400
+Received: from mail-vk1-xa2a.google.com (mail-vk1-xa2a.google.com [IPv6:2607:f8b0:4864:20::a2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E038C061714
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Oct 2021 05:39:36 -0700 (PDT)
+Received: by mail-vk1-xa2a.google.com with SMTP id d130so5922088vke.0
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Oct 2021 05:39:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=aiYCoD8qvxf9gzy6j6frpewzfpqYT6XMr/kJQ5IHEZI=;
-        b=ZKMVPC48gMKkWxV+tG8Wuv05+0OhsZF5pJd6c7tOMzdQASMWoAh6h55XRmlvugPKYx
-         8zCLC2aP4U06+q1fwQMXf6oupMZWOZNuEFC1SjZEnzqHfOhAt8Ol/9Gqy3NpLdYubJkO
-         TPvkJ5vukOdcOY1LoRims7KYLq3uqlePO91zBirhustHsiYt+eIcrTRzjpp3UuWiyYYB
-         FhwHHnm9piE7RqNYOcA2R9BsnzjCAoxRjwn08lj+i0ns5r7y0mV0DzHxrtGUzWPNU1bD
-         jpFuhiNh/EopZxrYu7FEnqtAPLSKqe8D/GDGy5+spycexRxiYV/agN+CVl2htVfzRezi
-         GfRA==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6BWVd5QSBtmNHqdFIHqNMkh8yS32RlgmgzQWHgLjOEU=;
+        b=BIk7S5Jt5fOttx6WIIVZ4XVMO+4ht7jw3rzpyd4mZD3HIIQ4wH0lVisbqbM3rkraxb
+         0adAQWNStbetUIcfOku+EpFTBMsVEmmcy1b9LG5yb4lIzUVuws6f42N8bAuDAEOC7inL
+         3l1fPSPvos+CgQHtAk4yMbCtCoU5f/j9XEUBl26Y+IbRScrzjsbbz2ZLibAcUjddbHJ8
+         qSA5y/wyG/2p/B2QiAr/LlnZCx4iyv2eSbFHQRrUuVxAg6rVKwsIUw3FOekNySMUFSdo
+         /TDJprrbF8h9CDe5e3uE1dVq48gNGcS1MhON9R9tmo9dcDuXfS11SQtJdAL/Z35SjRtV
+         RCQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=aiYCoD8qvxf9gzy6j6frpewzfpqYT6XMr/kJQ5IHEZI=;
-        b=440R41I3OO7vkiMkweFtyetdPu2t7BO/M0gx89O5Vdnx9CG609qBEijrsC+ajtddSx
-         ETfBpEqWoPRLpihgY9PQexMn4WQHjv9tI0lBZNVPbJ2HEiB/hu8m0MDxgvFEi4upWWg6
-         UPCsbOE3Nxqg+SVCVqSMdTaFg/M6fNlk+KLYw609vA//nK3Jh2Y6+Fx/Fh+XbreFHrAl
-         M19Dv/oIarO/qOyUI1/XSuDet3FtP6Uh7RaKszGEt/jkiJB9YBy6dj8jEvhSOXGKkqyN
-         diFbcQSjwfqjfLvxHBIqK8Cojz4gjiW+9VOUcN7pdR9Z9gd9PYp+dzdCVrHwy2d3ztGL
-         vHMw==
-X-Gm-Message-State: AOAM5332tltM4+qI0wjkbJzDvXD+Iv6sVHslqZK/DqGx8a/E7VO6zKU3
-        9osRAbiQRne2CnOV5gb6ZxNWn/qyk4g=
-X-Google-Smtp-Source: ABdhPJyWF1VGHaeeymtl4JgPXWJeeIFbhcXI7EnhUoVhmki4st6WHFfls1xtRy1InYJfWib3ZqTYRg==
-X-Received: by 2002:a50:d4d1:: with SMTP id e17mr23615038edj.348.1635597158507;
-        Sat, 30 Oct 2021 05:32:38 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:8108:96c0:3b88::9d40])
-        by smtp.gmail.com with ESMTPSA id z4sm6056458edd.46.2021.10.30.05.32.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Oct 2021 05:32:38 -0700 (PDT)
-From:   Michael Straube <straube.linux@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH] staging: r8188eu: remove some set but never used variables
-Date:   Sat, 30 Oct 2021 14:32:28 +0200
-Message-Id: <20211030123228.20500-1-straube.linux@gmail.com>
-X-Mailer: git-send-email 2.33.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6BWVd5QSBtmNHqdFIHqNMkh8yS32RlgmgzQWHgLjOEU=;
+        b=e0y+gXHNuA2x9HPyjTIlNkD9l5Uk30lfh7WDFv91qExMJcZ6V7qSCIJYV+argggbhM
+         Ohw52JRYKsfduHIJc9VVFV/3BlF1sz65zqbY+M7aPBbER8hhocpd1Pu7OtQQXNVgHwQv
+         a4f0v3tQTZnWve3rwsdqh94i2vhpEuRRJM8U3uKq3OURdaynBciZ/W7OSCMn/QiK3Zwx
+         X/uwJE+kpS8od5Dz9bWEItrDXQnVLIPca1j85bfovF+X/hrQHoiR61yQQCoMq+Yq+ufV
+         JiWSA1oh5M9SzQdAk16RizgWVAglqKSzIVjxJAYiPIUbpkwT6WQjISXvBeHSVnRWBwOt
+         Nc8g==
+X-Gm-Message-State: AOAM533z1ub8RAmffmXfjppGfJlkzzChNH+P2MvJKR0x8U38ODWKfCgX
+        CkY0YXJPCjTMDLAT7tEDSx485PlLLW7nQCXVW90LqA==
+X-Google-Smtp-Source: ABdhPJz6tsNOjN5h6qxnvEq0t7Wd/uAi4kksAnKEO7rGE848rRZEP/NXJiVLxio4ezKk5aHVO15OqAgSNrAeSen2Pq0=
+X-Received: by 2002:a05:6122:da0:: with SMTP id bc32mr17945585vkb.4.1635597575199;
+ Sat, 30 Oct 2021 05:39:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211028183527.3050-1-semen.protsenko@linaro.org>
+ <20211028183527.3050-6-semen.protsenko@linaro.org> <51128b74-de5d-1758-282b-1d4c5250a38d@roeck-us.net>
+In-Reply-To: <51128b74-de5d-1758-282b-1d4c5250a38d@roeck-us.net>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Sat, 30 Oct 2021 15:39:23 +0300
+Message-ID: <CAPLW+4mnAV0yHdYFtosYfS2jcAUa4qvScvmohBKvqTBHz-5CFQ@mail.gmail.com>
+Subject: Re: [PATCH 5/7] watchdog: s3c2410: Introduce separate source clock
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        linux-watchdog@vger.kernel.org,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The fields
+On Fri, 29 Oct 2021 at 03:21, Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> On 10/28/21 11:35 AM, Sam Protsenko wrote:
+> > Some Exynos chips (like Exynos850) have dedicated source clock. That
+> > clock is provided from device tree as "watchdog_src" clock. In such
+> > case, "watchdog" clock is just a peripheral clock used for register
+> > interface. If "watchdog_src" is present, use its rate instead of
+> > "watchdog" for all timer related calculations.
+> >
+>
+> If the "watchdog_src" clock is present, is "watchdog" clock still needed ?
+> Please state that explicitly, since it is kind of unusual.
+>
 
-pNumTxBytesUnicast
-pNumRxBytesUnicast
-pSecurity
-pbNet_closed
+Done, I've reworded the commit message. Will send v2 soon, thanks.
 
-of odm_dm_struct are set but never used, remove them.
-
-Signed-off-by: Michael Straube <straube.linux@gmail.com>
----
- drivers/staging/r8188eu/hal/odm.c         | 12 ------------
- drivers/staging/r8188eu/hal/rtl8188e_dm.c |  4 ----
- drivers/staging/r8188eu/include/odm.h     | 11 -----------
- 3 files changed, 27 deletions(-)
-
-diff --git a/drivers/staging/r8188eu/hal/odm.c b/drivers/staging/r8188eu/hal/odm.c
-index 21f115194df8..1e1db5d8d0b3 100644
---- a/drivers/staging/r8188eu/hal/odm.c
-+++ b/drivers/staging/r8188eu/hal/odm.c
-@@ -225,21 +225,12 @@ void ODM_CmnInfoHook(struct odm_dm_struct *pDM_Odm, enum odm_common_info_def Cmn
- 	/*  */
- 	switch	(CmnInfo) {
- 	/*  Dynamic call by reference pointer. */
--	case	ODM_CMNINFO_TX_UNI:
--		pDM_Odm->pNumTxBytesUnicast = (u64 *)pValue;
--		break;
--	case	ODM_CMNINFO_RX_UNI:
--		pDM_Odm->pNumRxBytesUnicast = (u64 *)pValue;
--		break;
- 	case	ODM_CMNINFO_WM_MODE:
- 		pDM_Odm->pWirelessMode = (u8 *)pValue;
- 		break;
- 	case	ODM_CMNINFO_SEC_CHNL_OFFSET:
- 		pDM_Odm->pSecChOffset = (u8 *)pValue;
- 		break;
--	case	ODM_CMNINFO_SEC_MODE:
--		pDM_Odm->pSecurity = (u8 *)pValue;
--		break;
- 	case	ODM_CMNINFO_BW:
- 		pDM_Odm->pBandWidth = (u8 *)pValue;
- 		break;
-@@ -252,9 +243,6 @@ void ODM_CmnInfoHook(struct odm_dm_struct *pDM_Odm, enum odm_common_info_def Cmn
- 	case	ODM_CMNINFO_POWER_SAVING:
- 		pDM_Odm->pbPowerSaving = (bool *)pValue;
- 		break;
--	case	ODM_CMNINFO_NET_CLOSED:
--		pDM_Odm->pbNet_closed = (bool *)pValue;
--		break;
- 	/* To remove the compiler warning, must add an empty default statement to handle the other values. */
- 	default:
- 		/* do nothing */
-diff --git a/drivers/staging/r8188eu/hal/rtl8188e_dm.c b/drivers/staging/r8188eu/hal/rtl8188e_dm.c
-index 5d76f6ea91c4..75b438e1ce78 100644
---- a/drivers/staging/r8188eu/hal/rtl8188e_dm.c
-+++ b/drivers/staging/r8188eu/hal/rtl8188e_dm.c
-@@ -68,14 +68,10 @@ static void Update_ODM_ComInfo_88E(struct adapter *Adapter)
- 
- 	ODM_CmnInfoUpdate(dm_odm, ODM_CMNINFO_ABILITY, pdmpriv->InitODMFlag);
- 
--	ODM_CmnInfoHook(dm_odm, ODM_CMNINFO_TX_UNI, &Adapter->xmitpriv.tx_bytes);
--	ODM_CmnInfoHook(dm_odm, ODM_CMNINFO_RX_UNI, &Adapter->recvpriv.rx_bytes);
- 	ODM_CmnInfoHook(dm_odm, ODM_CMNINFO_WM_MODE, &pmlmeext->cur_wireless_mode);
- 	ODM_CmnInfoHook(dm_odm, ODM_CMNINFO_SEC_CHNL_OFFSET, &hal_data->nCur40MhzPrimeSC);
--	ODM_CmnInfoHook(dm_odm, ODM_CMNINFO_SEC_MODE, &Adapter->securitypriv.dot11PrivacyAlgrthm);
- 	ODM_CmnInfoHook(dm_odm, ODM_CMNINFO_BW, &hal_data->CurrentChannelBW);
- 	ODM_CmnInfoHook(dm_odm, ODM_CMNINFO_CHNL, &hal_data->CurrentChannel);
--	ODM_CmnInfoHook(dm_odm, ODM_CMNINFO_NET_CLOSED, &Adapter->net_closed);
- 	ODM_CmnInfoHook(dm_odm, ODM_CMNINFO_SCAN, &pmlmepriv->bScanInProcess);
- 	ODM_CmnInfoHook(dm_odm, ODM_CMNINFO_POWER_SAVING, &pwrctrlpriv->bpower_saving);
- 	ODM_CmnInfoInit(dm_odm, ODM_CMNINFO_RF_ANTENNA_TYPE, hal_data->TRxAntDivType);
-diff --git a/drivers/staging/r8188eu/include/odm.h b/drivers/staging/r8188eu/include/odm.h
-index f08655208b32..7b644d41ce34 100644
---- a/drivers/staging/r8188eu/include/odm.h
-+++ b/drivers/staging/r8188eu/include/odm.h
-@@ -230,17 +230,13 @@ enum odm_common_info_def {
- 
- 	/*  Dynamic value: */
- /*  POINTER REFERENCE-----------  */
--	ODM_CMNINFO_TX_UNI,
--	ODM_CMNINFO_RX_UNI,
- 	ODM_CMNINFO_WM_MODE,		/*  ODM_WIRELESS_MODE_E */
- 	ODM_CMNINFO_SEC_CHNL_OFFSET,	/*  ODM_SEC_CHNL_OFFSET_E */
--	ODM_CMNINFO_SEC_MODE,		/*  ODM_SECURITY_E */
- 	ODM_CMNINFO_BW,			/*  ODM_BW_E */
- 	ODM_CMNINFO_CHNL,
- 
- 	ODM_CMNINFO_SCAN,
- 	ODM_CMNINFO_POWER_SAVING,
--	ODM_CMNINFO_NET_CLOSED,
- /*  POINTER REFERENCE----------- */
- 
- /* CALL BY VALUE------------- */
-@@ -490,16 +486,10 @@ struct odm_dm_struct {
- 	bool	bool_temp;
- 	struct adapter *adapter_temp;
- 
--	/* TX Unicast byte count */
--	u64	*pNumTxBytesUnicast;
--	/* RX Unicast byte count */
--	u64	*pNumRxBytesUnicast;
- 	/*  Wireless mode B/G/A/N = BIT(0)/BIT(1)/BIT(2)/BIT(3) */
- 	u8	*pWirelessMode; /* ODM_WIRELESS_MODE_E */
- 	/*  Secondary channel offset don't_care/below/above = 0/1/2 */
- 	u8	*pSecChOffset;
--	/*  Security mode Open/WEP/AES/TKIP = 0/1/2/3 */
--	u8	*pSecurity;
- 	/*  BW info 20M/40M/80M = 0/1/2 */
- 	u8	*pBandWidth;
- 	/*  Central channel location Ch1/Ch2/.... */
-@@ -516,7 +506,6 @@ struct odm_dm_struct {
- 	u8	*pOnePathCCA;
- 	/* pMgntInfo->AntennaTest */
- 	u8	*pAntennaTest;
--	bool	*pbNet_closed;
- /*  POINTER REFERENCE----------- */
- 	/*  */
- /* CALL BY VALUE------------- */
--- 
-2.33.1
-
+> Guenter
+>
+> > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> > ---
+> >   drivers/watchdog/s3c2410_wdt.c | 33 +++++++++++++++++++++++++++------
+> >   1 file changed, 27 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/drivers/watchdog/s3c2410_wdt.c b/drivers/watchdog/s3c2410_wdt.c
+> > index a5ef7171a90e..bfc5872ca497 100644
+> > --- a/drivers/watchdog/s3c2410_wdt.c
+> > +++ b/drivers/watchdog/s3c2410_wdt.c
+> > @@ -126,6 +126,8 @@ struct s3c2410_wdt_variant {
+> >   struct s3c2410_wdt {
+> >       struct device           *dev;
+> >       struct clk              *clock;
+> > +     struct clk              *clock_src;
+> > +     unsigned long           freq_src;
+> >       void __iomem            *reg_base;
+> >       unsigned int            count;
+> >       spinlock_t              lock;
+> > @@ -213,10 +215,8 @@ MODULE_DEVICE_TABLE(platform, s3c2410_wdt_ids);
+> >
+> >   /* functions */
+> >
+> > -static inline unsigned int s3c2410wdt_max_timeout(struct clk *clock)
+> > +static inline unsigned int s3c2410wdt_max_timeout(unsigned long freq)
+> >   {
+> > -     unsigned long freq = clk_get_rate(clock);
+> > -
+> >       return S3C2410_WTCNT_MAXCNT / (freq / (S3C2410_WTCON_PRESCALE_MAX + 1)
+> >                                      / S3C2410_WTCON_MAXDIV);
+> >   }
+> > @@ -364,7 +364,7 @@ static int s3c2410wdt_set_heartbeat(struct watchdog_device *wdd,
+> >                                   unsigned int timeout)
+> >   {
+> >       struct s3c2410_wdt *wdt = watchdog_get_drvdata(wdd);
+> > -     unsigned long freq = clk_get_rate(wdt->clock);
+> > +     unsigned long freq = wdt->freq_src;
+> >       unsigned int count;
+> >       unsigned int divisor = 1;
+> >       unsigned long wtcon;
+> > @@ -627,13 +627,27 @@ static int s3c2410wdt_probe(struct platform_device *pdev)
+> >               return ret;
+> >       }
+> >
+> > +     /* "watchdog_src" clock is optional; if it's not present -- just skip */
+> > +     wdt->clock_src = devm_clk_get(dev, "watchdog_src");
+> > +     if (!IS_ERR(wdt->clock_src)) {
+> > +             ret = clk_prepare_enable(wdt->clock_src);
+> > +             if (ret < 0) {
+> > +                     dev_err(dev, "failed to enable source clock\n");
+> > +                     ret = PTR_ERR(wdt->clock_src);
+> > +                     goto err_clk;
+> > +             }
+> > +             wdt->freq_src = clk_get_rate(wdt->clock_src);
+> > +     } else {
+> > +             wdt->freq_src = clk_get_rate(wdt->clock);
+> > +     }
+> > +
+> >       wdt->wdt_device.min_timeout = 1;
+> > -     wdt->wdt_device.max_timeout = s3c2410wdt_max_timeout(wdt->clock);
+> > +     wdt->wdt_device.max_timeout = s3c2410wdt_max_timeout(wdt->freq_src);
+> >
+> >       ret = s3c2410wdt_cpufreq_register(wdt);
+> >       if (ret < 0) {
+> >               dev_err(dev, "failed to register cpufreq\n");
+> > -             goto err_clk;
+> > +             goto err_clk_src;
+> >       }
+> >
+> >       watchdog_set_drvdata(&wdt->wdt_device, wdt);
+> > @@ -707,6 +721,10 @@ static int s3c2410wdt_probe(struct platform_device *pdev)
+> >    err_cpufreq:
+> >       s3c2410wdt_cpufreq_deregister(wdt);
+> >
+> > + err_clk_src:
+> > +     if (!IS_ERR(wdt->clock_src))
+> > +             clk_disable_unprepare(wdt->clock_src);
+> > +
+> >    err_clk:
+> >       clk_disable_unprepare(wdt->clock);
+> >
+> > @@ -727,6 +745,9 @@ static int s3c2410wdt_remove(struct platform_device *dev)
+> >
+> >       s3c2410wdt_cpufreq_deregister(wdt);
+> >
+> > +     if (!IS_ERR(wdt->clock_src))
+> > +             clk_disable_unprepare(wdt->clock_src);
+> > +
+> >       clk_disable_unprepare(wdt->clock);
+> >
+> >       return 0;
+> >
+>
