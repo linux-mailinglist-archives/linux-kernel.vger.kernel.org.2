@@ -2,119 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6690440896
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 13:25:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6916A44089D
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 13:45:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231961AbhJ3L1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Oct 2021 07:27:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39696 "EHLO
+        id S231894AbhJ3Lr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Oct 2021 07:47:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231970AbhJ3L1p (ORCPT
+        with ESMTP id S230327AbhJ3Lr2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Oct 2021 07:27:45 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABF9FC061570;
-        Sat, 30 Oct 2021 04:25:13 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id v127so9980359wme.5;
-        Sat, 30 Oct 2021 04:25:13 -0700 (PDT)
+        Sat, 30 Oct 2021 07:47:28 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D79E6C061570;
+        Sat, 30 Oct 2021 04:44:57 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id j2so26387889lfg.3;
+        Sat, 30 Oct 2021 04:44:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LkR4Z3PEhPzZ6fXtkdmCLF9FtgcVowssMvoeMUKZdHg=;
-        b=KRC/4GrDCneN9Ju8t5PH+uOrQPXYP0LoApSPT55/c4IXBtZ91PoLXtpwrz+L3u4XHL
-         HrAkzG8gy8sN4EH0yVr+TPgIYFk5o1piUS6mOyDHEZqmRTzZyknmHs/6ptStjNBYvvNS
-         QgMT+JbVFqe6kgl7rVHJh7bFIL6r0kzBHdQ++7Eu2m1L+Zyl/D8PXFEYet5SpoYJsFyq
-         tX7H43EHOydeqwwgje//8mNDRtwB+2hnzdA1FVZ7BuF/eFwsZoG6udjq+DsgoNqbkS7F
-         kcEyxZnzpe1I4Z/TY9b1Kr1ZnKPeOz9YMvVeX5JMHIPDvLLbrk1TEuwfbPOrNfXoHFdP
-         sjqA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=z2Zff269gpFMGO4oJzwm2RkZTLLsA1HaBdPOKQxR7ig=;
+        b=mRrYXbHOUsUiNTKM/TxfnpM/qFackavuXxVPk/xVYmh4lqbniwtY+xjN4nuAZ1tOUh
+         04Ka7Vz2N4vkNTo2F21MQY6FHDpFcGb/9aV70z2A/Idv4qLs3hYxU9jBpxDrBg/8t4rE
+         9dTl74zzzTkAoGnCn4eB1EFRVlNgoaJ9d4aevhDtfOlkt4UkqFTgAa0leSlVCpJKxgVW
+         MT33vv1O50I4e6Z7Ld30HtH+dfE4aAHVWO6EKUOBX46t/0zl4ZpGPzf1BlSG7rqTS6Lq
+         GLEqvC/b0XNPweBTS2UaRto8L2RlpnuR7sGrqWuhedtwOZnINHnbMvQhbf37b1nkbtDF
+         c2DQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LkR4Z3PEhPzZ6fXtkdmCLF9FtgcVowssMvoeMUKZdHg=;
-        b=6zoSEfCg/61hPQ+mpDMXcQpRxFFFYBjMQ9A6ZyGEiOqG+D0oiPQUdTicU3vNX8/MQS
-         zVkNU1ORCn+wAxyKV6VAGt4vJvMmBlI9Nfl4saJb9xh5dgSzJ7UhSkWw4AdFXRVAHhSU
-         xc9XaJhweRqOkPlBP52Qvd/DU7/qX3zjPgttvEWuq4Nb+LrVTLCZh3xocK8+0QrUW8F8
-         233qThsNuokh13NRrOfpWpjxP+X/v8tLw14g4JcwRbpcqsz9tBI9O9DVy9dTyHW/wbfg
-         Nd718Ig/Kns/zyOnOMnYJW2t/Enm2nI3zwW4W0aZCSmV5QoLp4F65ed/GcU2Q+32EVIa
-         yMlQ==
-X-Gm-Message-State: AOAM533VxZG9vJ8fzdlDw7nUj6UrblxgneqTKfeGXPZ3z9c9xRFgv9fB
-        UZYzLemIwDh3Uj1sPXZBpMg=
-X-Google-Smtp-Source: ABdhPJwlXO0mfvd0/CXUu9Sq/cBGiwX7nHA5X2uKEty2Qa2TkU4W+Qi6rMUzs4eDNykU9pvZjYkdCA==
-X-Received: by 2002:a05:600c:190a:: with SMTP id j10mr25739240wmq.149.1635593112313;
-        Sat, 30 Oct 2021 04:25:12 -0700 (PDT)
-Received: from matrix-ESPRIMO-P710 (p200300c78f4e069113f7f01122185925.dip0.t-ipconnect.de. [2003:c7:8f4e:691:13f7:f011:2218:5925])
-        by smtp.gmail.com with ESMTPSA id u16sm7994689wrt.97.2021.10.30.04.25.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Oct 2021 04:25:12 -0700 (PDT)
-Date:   Sat, 30 Oct 2021 13:25:10 +0200
-From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
-To:     corbet@lwn.net, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     linux-usb@vger.kernel.org
-Subject: [PATCH v2 3/3] Docs: usb: update writesize, copy_from_user,
- usb_fill_bulk_urb, usb_submit_urb
-Message-ID: <0c581a83dfc1a8c37e97dfa7279d333f367a9787.1635591623.git.philipp.g.hortmann@gmail.com>
-References: <cover.1635591623.git.philipp.g.hortmann@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=z2Zff269gpFMGO4oJzwm2RkZTLLsA1HaBdPOKQxR7ig=;
+        b=QYUBWrkePJyXQCzUOpmk0HjenIaYUASIkzX01dyranCG8fwlZzPSLR8MtAYlC13DUY
+         Z2SqK60anqwGsPdnn20PTc3F9xIb+h+5T8bK5FOAIJ7K8/EkjgWA6uxVi1QwXBhDj4dy
+         H8nLxnbmsR7tMFwdmBLwz4d7R66KH5x4kAcAEAxfK5vMpaAaIHtky3KAxqa+B64+YIfY
+         Irm43x8CNojqHNz2/6wtkTPc+/I3qOKuW6sWV+xgRrZ1IoBmdYFfybDmzh9C948IpZuo
+         weHTz7msAZUybVNYFvoON4g6+x3R9W2+3VnEjLLFjGGjLYGJ4po473YfM6+gD/Vk2Z8s
+         yVtQ==
+X-Gm-Message-State: AOAM531s2jMq1+EqvItV2klm3Y2lHYPBTbFcRyBRA0k753H+AujAenUW
+        LP2EDfMNIE6EH0mBjEFzXxUM+MxizeXM9/m3YCs=
+X-Google-Smtp-Source: ABdhPJwddF4ZU43dJdeF3PbTyMQvTGhrXqALX5yQ2mBaCnQhQ0wNJJnkPUznhx6eLMVnw67xIMSgyO1tlvrOVrcdoXs=
+X-Received: by 2002:a05:6512:260e:: with SMTP id bt14mr16427171lfb.129.1635594294870;
+ Sat, 30 Oct 2021 04:44:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1635591623.git.philipp.g.hortmann@gmail.com>
+References: <20211030091706.25470-1-pauk.denis@gmail.com> <CAHp75Ve_dvc-33y5U3fgN-ZTGibcyO3dO7WxC_ZaPkNSh8kd0w@mail.gmail.com>
+In-Reply-To: <CAHp75Ve_dvc-33y5U3fgN-ZTGibcyO3dO7WxC_ZaPkNSh8kd0w@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sat, 30 Oct 2021 14:44:18 +0300
+Message-ID: <CAHp75VfRY6nS=YcFstW_Bt+_+Zz366vh8=mfjat4kfTOBH0e3w@mail.gmail.com>
+Subject: Re: [PATCH v9 0/2] Update ASUS WMI supported boards
+To:     Denis Pauk <pauk.denis@gmail.com>
+Cc:     Eugene Shalygin <eugene.shalygin@gmail.com>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        thomas@weissschuh.net, Ed Brindley <kernel@maidavale.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
+        Linux Documentation List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-update code examples writesize, copy_from_user, usb_fill_bulk_urb,
-usb_submit_urb in skel_write() according to usb-skeleton.c
+On Sat, Oct 30, 2021 at 2:22 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+> On Sat, Oct 30, 2021 at 12:17 PM Denis Pauk <pauk.denis@gmail.com> wrote:
 
-Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
----
- .../driver-api/usb/writing_usb_driver.rst     | 24 ++++++++++---------
- 1 file changed, 13 insertions(+), 11 deletions(-)
 
-diff --git a/Documentation/driver-api/usb/writing_usb_driver.rst b/Documentation/driver-api/usb/writing_usb_driver.rst
-index 24374cdb677b..9cdd9f923974 100644
---- a/Documentation/driver-api/usb/writing_usb_driver.rst
-+++ b/Documentation/driver-api/usb/writing_usb_driver.rst
-@@ -185,24 +185,26 @@ space, points the urb to the data and submits the urb to the USB
- subsystem. This can be seen in the following code::
- 
-     /* we can only write as much as 1 urb will hold */
--    bytes_written = (count > skel->bulk_out_size) ? skel->bulk_out_size : count;
-+    size_t writesize = min_t(size_t, count, MAX_TRANSFER);
- 
-     /* copy the data from user space into our urb */
--    copy_from_user(skel->write_urb->transfer_buffer, buffer, bytes_written);
-+    copy_from_user(buf, user_buffer, writesize);
- 
-     /* set up our urb */
--    usb_fill_bulk_urb(skel->write_urb,
--		      skel->dev,
--		      usb_sndbulkpipe(skel->dev, skel->bulk_out_endpointAddr),
--		      skel->write_urb->transfer_buffer,
--		      bytes_written,
-+    usb_fill_bulk_urb(urb,
-+		      dev->udev,
-+		      usb_sndbulkpipe(dev->udev, dev->bulk_out_endpointAddr),
-+		      buf,
-+		      writesize,
- 		      skel_write_bulk_callback,
--		      skel);
-+		      dev);
- 
-     /* send the data out the bulk port */
--    result = usb_submit_urb(skel->write_urb);
--    if (result) {
--	    err("Failed submitting write urb, error %d", result);
-+    retval = usb_submit_urb(urb, GFP_KERNEL);
-+    if (retval) {
-+	    dev_err(&dev->interface->dev,
-+                "%s - failed submitting write urb, error %d\n",
-+                __func__, retval);
-     }
- 
- 
+> > Could you please review?
+>
+> I'll look at it later.
+
+I briefly looked into it and found some subtle changes that might be
+incorporated. However, I will send the full review if there will be a
+new version (of the series) for sure. Let Guenter make his comment on
+this first.
+
 -- 
-2.25.1
-
+With Best Regards,
+Andy Shevchenko
