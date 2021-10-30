@@ -2,88 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78337440B65
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 21:03:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE1BB440B6B
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 21:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230250AbhJ3TFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Oct 2021 15:05:39 -0400
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:22528 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229641AbhJ3TFi (ORCPT
+        id S230260AbhJ3TKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Oct 2021 15:10:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229641AbhJ3TKB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Oct 2021 15:05:38 -0400
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 19UJ2fZ7008930;
-        Sun, 31 Oct 2021 04:02:41 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 19UJ2fZ7008930
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1635620562;
-        bh=VHv3+uAVSmOcJ7Q+/oSeDmUgWjj1CdtLJ7CGK6H5By0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=V/XE66sF4dJv0rRN7UWJFEAw5H9YkKa9VsbI8tY1AJymwzcGWZmc9rdl3B1ko3mlq
-         cF/d7FEj5g7+og3FH8V1uqf3CmN4bmvCkFgXTzieKt/wSkOrLI10ntRjv8tS7gZLwu
-         KRuK2LOdXvDb3s98f1hDQQHZz92Tgl2YzOhNHCPqcwkCdIyhKxLOoiFBX+pZHItVT6
-         cM5ikT3yuh1fVsewpnTVIuxQl9+5XA8dCO24KgYQiWC8xLZMciKTkDEuqu9qDm1+E7
-         BC48j5QVMvLLsdO6Piver9MS3cLEmLOUUc0wk9zus/C9wZwl+0mvi5BQO24S35p/U/
-         nyxbiGTQ7VuVw==
-X-Nifty-SrcIP: [209.85.216.53]
-Received: by mail-pj1-f53.google.com with SMTP id nn3-20020a17090b38c300b001a03bb6c4ebso9714081pjb.1;
-        Sat, 30 Oct 2021 12:02:41 -0700 (PDT)
-X-Gm-Message-State: AOAM533JvNin9OPab6cab+uBvQ2rh7Bhw5+elftxrkSR6su6X0h1GWgc
-        FuRhOO19lmSdidc4OtlgaWCLZLjpIUEOAdr1nXM=
-X-Google-Smtp-Source: ABdhPJyqfuvV/CmwUM6JcQlCVNajsUWt4uUkwK4fYHTm/UCMiwLGNuRoDNJPa5q7akhDjTP3ZFUL1MDlmQJLO8zzXJk=
-X-Received: by 2002:a17:90a:ce02:: with SMTP id f2mr15295663pju.77.1635620560734;
- Sat, 30 Oct 2021 12:02:40 -0700 (PDT)
+        Sat, 30 Oct 2021 15:10:01 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE036C061570;
+        Sat, 30 Oct 2021 12:07:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=bmy4IYSKZwvwFVeSRZbDjHhDmJTOl/4idb6IkNEJeuw=; b=tXebt0Ch+iH3QwCdQqe/ybO+jv
+        q9JY/iIPB6mzFo8isjNI+2z/X38joq2un0HRrabrnsfPvqq3JPLKVk62QEWbUtqWvTiB8HMBTzlDT
+        NRQ3KW0PyStFt1msEN5N6s3/+75pHAtgLafXcVQQlGeVn9kJvoAH4oNuPF/9EfYtLm7jEIpKfd8/v
+        gFNoUI2pnCwsU+BY10b8Wwgx5//HUbIQOu7BLgSkJdcwpZ9lHLBX2zopif69bdDZKW8CRN6RVqUeR
+        dB6DTL+V60Ro34a422xHrw6CWdV9J3ktE+k5sY7IEW5GsMd4l88FD8+MMzhQKwPhYflZBQ6OaH49h
+        m7bXiKVQ==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mgthM-00DSqD-Mh; Sat, 30 Oct 2021 19:07:24 +0000
+Subject: Re: [PATCH 01/13] platform/x86: Rename touchscreen_dmi to
+ dmi_device_properties
+To:     Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Sebastian Reichel <sre@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+Cc:     Yauhen Kharuzhy <jekhor@gmail.com>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        platform-driver-x86@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-efi@vger.kernel.org
+References: <20211030182813.116672-1-hdegoede@redhat.com>
+ <20211030182813.116672-2-hdegoede@redhat.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <c01f2bf6-1385-3cf8-d180-9051494fc04e@infradead.org>
+Date:   Sat, 30 Oct 2021 12:07:23 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20211030175604.1716611-1-masahiroy@kernel.org> <20211030185339.GD7074@brightrain.aerifal.cx>
-In-Reply-To: <20211030185339.GD7074@brightrain.aerifal.cx>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sun, 31 Oct 2021 04:02:03 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARyg7t5Dz_bZwnv7CoOrEDiNkY6CVPoxPHSnBT8wARZqQ@mail.gmail.com>
-Message-ID: <CAK7LNARyg7t5Dz_bZwnv7CoOrEDiNkY6CVPoxPHSnBT8wARZqQ@mail.gmail.com>
-Subject: Re: [PATCH] sh: decompressor: do not copy source files while building
-To:     Rich Felker <dalias@libc.org>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        patches@arm.linux.org.uk,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211030182813.116672-2-hdegoede@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 31, 2021 at 3:55 AM Rich Felker <dalias@libc.org> wrote:
->
-> On Sun, Oct 31, 2021 at 02:56:04AM +0900, Masahiro Yamada wrote:
-> > As commit 7ae4a78daacf ("ARM: 8969/1: decompressor: simplify libfdt
-> > builds") stated, copying source files during the build time may not
-> > end up with as clean code as expected.
-> >
-> > Do similar for sh to clean up the Makefile and .gitignore.
-> >
-> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> > ---
->
-> I think this is the same as "sh: boot: avoid unneeded rebuilds under
-> arch/sh/boot/compressed/" in commit 7fe859eef9 in linux-next, which
-> I've had in next but with no pull request sent for embarrassingly
-> long. It will be included in the PR for the new release cycle.
->
-> Sorry about the long delay. Let me know if there's anything else I
-> need to know about it. And thanks for the patch.
->
-> Rich
+Hi--
 
-Oh, I had forgotten it completely.
+On 10/30/21 11:28 AM, Hans de Goede wrote:
+> diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
+> index b110a2e6b8f3..9cb8d33cc6e1 100644
+> --- a/drivers/platform/x86/Kconfig
+> +++ b/drivers/platform/x86/Kconfig
+> @@ -981,17 +981,19 @@ config MLX_PLATFORM
+>   
+>   	  If you have a Mellanox system, say Y or M here.
+>   
+> -config TOUCHSCREEN_DMI
+> -	bool "DMI based touchscreen configuration info"
+> -	depends on ACPI && DMI && I2C=y && TOUCHSCREEN_SILEAD
+> +config DMI_DEVICE_PROPERTIES
+> +	bool "DMI based extra device properties"
 
-That's good to hear you will send a pull req in the next MW.
+	      DMI-based
 
-Thanks.
+> +	depends on ACPI && DMI && I2C=y
+>   	select EFI_EMBEDDED_FIRMWARE if EFI
+>   	help
+> -	  Certain ACPI based tablets with e.g. Silead or Chipone touchscreens
+> -	  do not have enough data in ACPI tables for the touchscreen driver to
+> -	  handle the touchscreen properly, as OEMs expect the data to be baked
+> -	  into the tablet model specific version of the driver shipped with the
+> -	  the OS-image for the device. This option supplies the missing info.
+> -	  Enable this for x86 tablets with Silead or Chipone touchscreens.
+> +	  Sometimes ACPI based x86 devices do not have enough data in their ACPI
 
+	            ACPI-based
 
+> +	  tables to fully describe the hardware. This option enables support for
+> +	  supplying the missing info based on DMI (vendor & model string)
+> +	  matching for devices where this info has been added to the
+> +	  dmi-device-properties code.
+> +
+> +	  This option is often necessary for correct operation of x86 based
+
+	                                                          x86-based
+
+> +	  tablets and 2-in-1 devices. If in doubt, say Y here.
 
 
 -- 
-Best Regards
-Masahiro Yamada
+~Randy
