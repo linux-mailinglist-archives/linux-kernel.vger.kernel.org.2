@@ -2,120 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE39E4408B3
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 14:25:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FB0A4408C0
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 14:31:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231842AbhJ3M0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Oct 2021 08:26:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52200 "EHLO
+        id S231312AbhJ3MeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Oct 2021 08:34:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230320AbhJ3M0U (ORCPT
+        with ESMTP id S229808AbhJ3MeD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Oct 2021 08:26:20 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A608BC061570
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Oct 2021 05:23:50 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id t127so31243876ybf.13
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Oct 2021 05:23:50 -0700 (PDT)
+        Sat, 30 Oct 2021 08:34:03 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A239C061570
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Oct 2021 05:31:33 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id 205so21230737ljf.9
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Oct 2021 05:31:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5YtV6Ot0jonvatdmpLsBTlUfPHWMnjmg4fL8qYE8kh8=;
-        b=HkhxAVHm2ETNFoCcDmD8TAiYQ59p7oUOP/GX/OwevsAZSm7FQdqD50kmazqxzoG/XO
-         dfWM/zD3+m8BiVAop5p9sIkbJd+oy+311HQ8tv7mwhG+m4Kj9/mYdY3BSYvz7efKlmEf
-         ML/9BTCjoJH/v8kQG/7meUYrYS9ImHJwx377dL4yWJes+1SeBaBoJD94C+sKNj6hHRux
-         G2o/tZ41SCY+CR/doKnp/0Cu7MKVEIhR086qgRlS3365ckPaJrvI4Q0Q9lYcorC0i4zX
-         3RPfFv/9IIbQ5nSA1uSN5DiLKuifXt6wQnfCshv+wVUkq81ogKJxnIiqKFawg0C2fOkE
-         eb4Q==
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=RkjMpeIuQ6aVWCs6FPMVIVUmVZwq7aWhwwHDvLPHoTA=;
+        b=ngZMC3psevIld6uZNpRIW6NgQIyTa9yorN59iA+1NDu0+N8++RjcnCVyBlGqqojjGy
+         bVo9xWWJ1Jwsyewy6/ORbKfpfudko5oLH0+ULThYPQ1TzQzCkSrs7u0YjgcB2aklaVCu
+         TIu0sigxzZab3BCosu4Xiwxuo9G4wb9lzVySHyHDgxmmmaztsQl2RcEBFYW9OPlfBY3x
+         acFzvPSJ7tQV9dJDZEJ0CGrAyL5uIASNiIDy8iO5vzeq3eJLDOliUeblAbJx8uwY6I49
+         yQ+Fp37sW0mw3KJ+sufQ00SjG4RDAKSL6E+MOlBLASRs2Qq08wFHG6/865Y4bHmuaqNT
+         soMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5YtV6Ot0jonvatdmpLsBTlUfPHWMnjmg4fL8qYE8kh8=;
-        b=7TQ8cwNd0gk+kAH+4GrVuaRjZqqv88wHTeLoYRn8i6rCcnP1rSlBfjEkV2GSrNQmk/
-         HNioZszYlB2fbw2XjQ4SxoobeoyHV8xni8vS7fRVNDSaFToWKLjDR1oyEP0wdm/OY27D
-         VM6H7ixibWncpOfqV/7MWQVyO7VEm0ZSuNYu9kuyvhQVUKC1sK4IEQm6jKYSiXqApXEx
-         AVkt7/RsGDlMsF9FQxvDHpsOrqVyONiAr6bBW9Y7aSQXCq18Qi/DvuFdEFdlRPdAwWk2
-         QIZ0BDOk/++19g1dBf50tsCYdod0nnOjQHfAw3p4xl65uH3PSE9Ml+w2bSodW1sZA9Op
-         yKsA==
-X-Gm-Message-State: AOAM5329JprA/eNEoiTsbaiMJgYr3xXfzAQABouT57uoyL7Y5tyJwJBR
-        2C/rwIC5ymP+sm6OO/e9aFjLUn3rTGjZv3Hmj+sG6A==
-X-Google-Smtp-Source: ABdhPJygShUOaRjn74sLxEG8tBRi+W3lqvbC+DVaQVq27wuJMONDctszG9FIwEb5qe/XXYIX830gQuAqPt7HgfTed4o=
-X-Received: by 2002:a25:59d5:: with SMTP id n204mr17770867ybb.189.1635596629841;
- Sat, 30 Oct 2021 05:23:49 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=RkjMpeIuQ6aVWCs6FPMVIVUmVZwq7aWhwwHDvLPHoTA=;
+        b=Ns7oklogvYDMTeRfwdyWL+GWtshTHNb2HCBHCI/KkfBru1ItEOERJQOSSVox7pWfCE
+         GYzu1k52gQvr7oHvn+X2PCLQ9gZCqGQFO5YRTDslzgFqJ88PxJbymhqPRPSTKeWon3z+
+         gBX5nSHTzJ0opVNhrLYZE9odJCyA1IAp6l7BH4EbvOav3eqc6KxX/r3phODhpceYPA28
+         i+HUq/W9/7cvjNETR8PHrpkXKq/p1A216elcHGaYYbJ+QW0mMti57Ggx0BUklNK+LuJL
+         vHEeCEHj4FV7DcdaPRCWuSDrwEphAdd6+N+gwEyb0WNeyUtNYiX5kXUFxfq6Wvv5FrSw
+         mqCQ==
+X-Gm-Message-State: AOAM53344bC+N9R69MZAb0umFTQNfk6fu+hWs7iPIrQNkw40crIIohYb
+        J8REOiPqDadNnDtPqA2vCs0xH+s1dPjaQkgcWe4=
+X-Google-Smtp-Source: ABdhPJwavo3LQvdxijAA0cyWu3ekjRofJDQqkRYU9TOf9+1NlEaMO1Jv/osiukriyBsBCZmHzwq8HB/sjo3ZPdXkW3Y=
+X-Received: by 2002:a2e:a5c4:: with SMTP id n4mr17549232ljp.72.1635597091754;
+ Sat, 30 Oct 2021 05:31:31 -0700 (PDT)
 MIME-Version: 1.0
-References: <867f6da4-6d38-6435-3fbb-a2a3744029f1@huawei.com>
-In-Reply-To: <867f6da4-6d38-6435-3fbb-a2a3744029f1@huawei.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Sat, 30 Oct 2021 20:23:12 +0800
-Message-ID: <CAMZfGtU+wyjD6e0Xm7-toqqfA2tsu8nSUQJsZdC=piZzgq76fw@mail.gmail.com>
-Subject: Re: [PATCH] mm, slub: place the trace before freeing memory in kmem_cache_free()
-To:     Yunfeng Ye <yeyunfeng@huawei.com>
-Cc:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, wuxu.wu@huawei.com,
-        Hewenliang <hewenliang4@huawei.com>
+Reply-To: mrsdaniella.kyle@yandex.com
+Sender: clemenmartins5566@gmail.com
+Received: by 2002:a2e:85d3:0:0:0:0:0 with HTTP; Sat, 30 Oct 2021 05:31:31
+ -0700 (PDT)
+From:   mrs daniella kyle <mrsdaniellakyle6@gmail.com>
+Date:   Sat, 30 Oct 2021 05:31:31 -0700
+X-Google-Sender-Auth: 6AgrAV4YvGnp-WSSiyZsuA3luNk
+Message-ID: <CAAcv_7375mtj8GA3fFOn=if7nvCWohWoU_wVmeq_8QBiMerbgw@mail.gmail.com>
+Subject: Re:ATM Visa card compensation, Thanks for your past effort
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 30, 2021 at 6:12 PM Yunfeng Ye <yeyunfeng@huawei.com> wrote:
->
-> After the memory is freed, it may be allocated by other CPUs and has
-> been recorded by trace. So the timing sequence of the memory tracing is
-> inaccurate.
->
-> For example, we expect the following timing sequeuce:
->
->     CPU 0                 CPU 1
->
->   (1) alloc xxxxxx
->   (2) free  xxxxxx
->                          (3) alloc xxxxxx
->                          (4) free  xxxxxx
->
-> However, the following timing sequence may occur:
->
->     CPU 0                 CPU 1
->
->   (1) alloc xxxxxx
->                          (2) alloc xxxxxx
->   (3) free  xxxxxx
->                          (4) free  xxxxxx
->
-> So place the trace before freeing memory in kmem_cache_free().
+Good Day,
 
-Could you tell me what problem you have encountered
-here?
+This message may actually come to you as surprises today, To be very
+honest with you, It is a joyful moment for me and my family right now,
+so therefore am using this opportunity to inform you that have
+successfully move to Vietnam where am currently living with my
+business partner who assisted me to complete the transfer, but due to
+the willingness and acceptance you showed during my pain have decided
+to willingly compensated you and show my gratitude to you with these
+sum of $950,000.00 Nine Hundred and fifty Thousand US Dollars).
 
-Thanks.
+I want you to accept this amount it=E2=80=99s from the bottom of my heart,
+have issued the check and instructed the bank to roll the fund on a
+master card for security reasons, you can use the card to withdraw
+money from any ATM machine worldwide with a maximum of US$10,000 per
+day. My bank account manager said you can receive the card and use it
+anywhere in this global world.
 
->
-> Signed-off-by: Yunfeng Ye <yeyunfeng@huawei.com>
-> ---
->  mm/slub.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 432145d7b4ec..427e62034c3f 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -3526,8 +3526,8 @@ void kmem_cache_free(struct kmem_cache *s, void *x)
->         s = cache_from_obj(s, x);
->         if (!s)
->                 return;
-> -       slab_free(s, virt_to_head_page(x), x, NULL, 1, _RET_IP_);
->         trace_kmem_cache_free(_RET_IP_, x, s->name);
-> +       slab_free(s, virt_to_head_page(x), x, NULL, 1, _RET_IP_);
->  }
->  EXPORT_SYMBOL(kmem_cache_free);
->
-> --
-> 2.27.0
+ Go ahead contact the Global ATM Alliance directly with this below
+information. Email Address:   maastercarddeptme20@yahoo.com
+
+The Company Name: ........... ....... Global Alliance Burkina Faso
+Company Address; ...... 01BP 23 Rue Des Grands Moulins.Ouagadougou, Burkina=
+ Faso
+Email Address: ..... [maastercarddeptme20@yahoo.com]
+Name of Manager In charge: Mrs Zoure Gueratou
+
+Presently, I am very busy here in Vietnam because of the investment
+projects which I and my new partner are having at hand, I have given
+instructions to the ATM Visa card office on your behalf to release the
+ATM card which I gave to you as compensation. Therefore feel free and
+get in touch with her and she will send the card and the pin code to
+you in your location in order for you to start withdrawing the
+compensation money without delay.
+
+Let me know as soon you received the card together with the pin code.
+
+Thank you
+Yours Sincerely
+Daniela Angelo Kyle
