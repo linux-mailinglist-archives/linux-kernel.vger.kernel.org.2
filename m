@@ -2,191 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC1E244097E
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 16:20:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1603F440981
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 16:22:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231952AbhJ3OWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Oct 2021 10:22:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49170 "EHLO
+        id S230088AbhJ3OYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Oct 2021 10:24:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231199AbhJ3OWq (ORCPT
+        with ESMTP id S229585AbhJ3OYq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Oct 2021 10:22:46 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 619C2C061764;
-        Sat, 30 Oct 2021 07:20:16 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id g191-20020a1c9dc8000000b0032fbf912885so4777731wme.4;
-        Sat, 30 Oct 2021 07:20:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=n0RL45OoJsxDqII6WqqJzrCBAIvt4D77cElanpVHtTc=;
-        b=GNeo7I0U8PGWtkl9WICK3ZlFrQ4n2yjQeX+zgUYaUwDmWS+4uYnTXX4e6gswMDbZ1m
-         WH8nWomgiwHqE7Rmv6LCfJqRbk3T2wkNChpmKDpQMk4eTHRvnz5NLDS3mX1bzp8cQ8sE
-         44esKJ0F40hmj9H1OhXUEhnnXd6sd3n5TInbZkbya01ZTATfFzi2UkyMX2kWPPulKuh1
-         W9oebzvO4MK4HMU6jU5x8FIyogDJnkjFS0XBc/9BTOSXiY7yRNOWWP7TXeky0Lc7XBvM
-         DwMWG+7yE73v2eYHSV71ZLqd/1c+oEValxqc7+c2lkGdTCnRFWZi2VqEipkloVErRf1+
-         GO4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=n0RL45OoJsxDqII6WqqJzrCBAIvt4D77cElanpVHtTc=;
-        b=4mGIlBCTViDin2Y90IKV6VaK7s209HjIquAVOjSGC29uMR1U+z8p3RJqwnx2hB2zDz
-         mURa3i5usLx9CGeaXdevnFQEMdxCs0z6DdD0/bOfUndRuPCaf8fbcxNKaKYlGp1pWXNo
-         rQ628oKlyvPT3FruYO2Kq/4UKA50ACTUTGeAHtHRrqWf0KAFOLc5bG7l/9zFHsGeGxvI
-         dxkHCzwJLbrN3urhRwO46MtT9Puyf9JV3VIa1eQmuh4KDb9+O3BHwqfUC5MMVKVPLgRX
-         UW+kEbVS3CAtfChJQRj5woaUZLZkNsr7SZE/WMYAhzeyoYZZwaloirCvPr7OjBdEGpUE
-         srZg==
-X-Gm-Message-State: AOAM5328odwZPHUTw6zruKtLnfzcPU65pYPK6v9HfV+fCH7FMrj7+cBO
-        P51b4KtFYih272EivcriMhocNpv9ei7/dg==
-X-Google-Smtp-Source: ABdhPJy0ZkfweqZlJjFujNSr2CZvexAqhEQkVVUqsOlnPCE3zbzKoRd492AVjqCEKpK5hGO8Eiawxw==
-X-Received: by 2002:a05:600c:4f96:: with SMTP id n22mr19151208wmq.168.1635603614655;
-        Sat, 30 Oct 2021 07:20:14 -0700 (PDT)
-Received: from localhost.localdomain (252.red-83-54-181.dynamicip.rima-tde.net. [83.54.181.252])
-        by smtp.gmail.com with ESMTPSA id m12sm8208521wrq.69.2021.10.30.07.20.13
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 30 Oct 2021 07:20:14 -0700 (PDT)
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-To:     linux-clk@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, sboyd@kernel.org, john@phrozen.org,
-        linux-staging@lists.linux.dev, gregkh@linuxfoundation.org,
-        neil@brown.name
-Subject: [PATCH v3 4/4] staging: mt7621-dts: align resets with binding documentation
-Date:   Sat, 30 Oct 2021 16:20:07 +0200
-Message-Id: <20211030142007.27085-5-sergio.paracuellos@gmail.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211030142007.27085-1-sergio.paracuellos@gmail.com>
-References: <20211030142007.27085-1-sergio.paracuellos@gmail.com>
+        Sat, 30 Oct 2021 10:24:46 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93F13C061570
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Oct 2021 07:22:16 -0700 (PDT)
+Received: from tabernacle.localnet (unknown [IPv6:2001:9e8:95:d100:d350:2f3d:dcb2:9d8])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5F1111EC0328;
+        Sat, 30 Oct 2021 16:22:13 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1635603733;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:
+         content-transfer-encoding:content-transfer-encoding:in-reply-to:
+         references; bh=BAIMRAiKktEDRKNO7KJKIe/lu2Jdwwrdh0cyDNnBrMI=;
+        b=a+ZHTt3cL19cIK98tbZwmJQHIUEF8IrTHthJwZqxZGfQituqPjZ+bbQsbnIetkRuxzBb87
+        zUdoWx2MfAf1i9aHl9Es67mLncLDvFOrzgGTE+QP+AxPSW3OKF8Mj44JCpWTjhPzj88iA7
+        2GCPArw281cb7yGW0qB2tCBqIjHxC74=
+From:   Julian Stecklina <js@alien8.de>
+To:     x86@kernel.org
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, hpa@zytor.com,
+        Julian Stecklina <julian.stecklina@cyberus-technology.de>,
+        Markus Napierkowski <markus.napierkowski@cyberus-technology.de>
+Subject: [PATCH] x86/apic: fix frequency in apic=verbose log output
+Date:   Sat, 30 Oct 2021 16:21:48 +0200
+Message-Id: <20211030142148.143261-1-js@alien8.de>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Binding documentation for compatible 'mediatek,mt7621-sysc' has been updated
-to be used as a reset provider. Align reset related bits and system controller
-node with binding documentation along the dtsi file.
+From: Julian Stecklina <julian.stecklina@cyberus-technology.de>
 
-Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+When apic=verbose is specified, the LAPIC timer calibration prints its
+results to the console. While debugging virtualization code, we
+noticed that the CPU and bus frequencies are printed incorrectly.
+
+Specifically, for a 1.7 GHz CPU with 1 GHz bus frequency and HZ=1000,
+the log includes a superfluous 0 after the period:
+
+..... calibration result: 999978
+..... CPU clock speed is 1696.0783 MHz.
+..... host bus clock speed is 999.0978 MHz.
+
+Looking at the code, this only worked as intended for HZ=100. After
+the fix, we now see the correct frequency in the log:
+
+..... calibration result: 999828
+..... CPU clock speed is 1696.507 MHz.
+..... host bus clock speed is 999.828 MHz.
+
+There is no functional change to the LAPIC calibration here, beyond
+the printf changes.
+
+Suggested-by: Markus Napierkowski <markus.napierkowski@cyberus-technology.de>
+Signed-off-by: Julian Stecklina <julian.stecklina@cyberus-technology.de>
 ---
- drivers/staging/mt7621-dts/mt7621.dtsi | 25 +++++++++++--------------
- 1 file changed, 11 insertions(+), 14 deletions(-)
+ arch/x86/kernel/apic/apic.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/staging/mt7621-dts/mt7621.dtsi b/drivers/staging/mt7621-dts/mt7621.dtsi
-index 6d158e4f4b8c..2bf74468d495 100644
---- a/drivers/staging/mt7621-dts/mt7621.dtsi
-+++ b/drivers/staging/mt7621-dts/mt7621.dtsi
-@@ -2,6 +2,7 @@
- #include <dt-bindings/interrupt-controller/mips-gic.h>
- #include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/clock/mt7621-clk.h>
-+#include <dt-bindings/reset/mt7621-reset.h>
+diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
+index b70344bf6600..925becaac12a 100644
+--- a/arch/x86/kernel/apic/apic.c
++++ b/arch/x86/kernel/apic/apic.c
+@@ -198,6 +198,7 @@ static struct resource lapic_resource = {
+ 	.flags = IORESOURCE_MEM | IORESOURCE_BUSY,
+ };
  
- / {
- 	#address-cells = <1>;
-@@ -67,6 +68,7 @@ sysc: syscon@0 {
- 			compatible = "mediatek,mt7621-sysc", "syscon";
- 			reg = <0x0 0x100>;
- 			#clock-cells = <1>;
-+			#reset-cells = <1>;
- 			ralink,memctl = <&memc>;
- 			clock-output-names = "xtal", "cpu", "bus",
- 					     "50m", "125m", "150m",
-@@ -96,7 +98,7 @@ i2c: i2c@900 {
++/* Measured in ticks per HZ. */
+ unsigned int lapic_timer_period = 0;
  
- 			clocks = <&sysc MT7621_CLK_I2C>;
- 			clock-names = "i2c";
--			resets = <&rstctrl 16>;
-+			resets = <&sysc MT7621_RST_I2C>;
- 			reset-names = "i2c";
+ static void apic_pm_activate(void);
+@@ -835,6 +836,7 @@ static int __init calibrate_APIC_clock(void)
+ 	unsigned long jif_start;
+ 	unsigned long deltaj;
+ 	long delta, deltatsc;
++	long tsc_khz, bus_khz;
+ 	int pm_referenced = 0;
  
- 			#address-cells = <1>;
-@@ -137,7 +139,7 @@ spi0: spi@b00 {
- 			clocks = <&sysc MT7621_CLK_SPI>;
- 			clock-names = "spi";
+ 	if (boot_cpu_has(X86_FEATURE_TSC_DEADLINE_TIMER))
+@@ -937,16 +939,16 @@ static int __init calibrate_APIC_clock(void)
+ 		    lapic_timer_period);
  
--			resets = <&rstctrl 18>;
-+			resets = <&sysc MT7621_RST_SPI>;
- 			reset-names = "spi";
+ 	if (boot_cpu_has(X86_FEATURE_TSC)) {
++		tsc_khz = (deltatsc * HZ) / (1000 * LAPIC_CAL_LOOPS);
+ 		apic_printk(APIC_VERBOSE, "..... CPU clock speed is "
+-			    "%ld.%04ld MHz.\n",
+-			    (deltatsc / LAPIC_CAL_LOOPS) / (1000000 / HZ),
+-			    (deltatsc / LAPIC_CAL_LOOPS) % (1000000 / HZ));
++			    "%ld.%03ld MHz.\n",
++			    tsc_khz / 1000, tsc_khz % 1000);
+ 	}
  
- 			#address-cells = <1>;
-@@ -153,7 +155,7 @@ gdma: gdma@2800 {
++	bus_khz = (long)lapic_timer_period * HZ / 1000;
+ 	apic_printk(APIC_VERBOSE, "..... host bus clock speed is "
+-		    "%u.%04u MHz.\n",
+-		    lapic_timer_period / (1000000 / HZ),
+-		    lapic_timer_period % (1000000 / HZ));
++		    "%ld.%03ld MHz.\n",
++		    bus_khz / 1000, bus_khz % 1000);
  
- 			clocks = <&sysc MT7621_CLK_GDMA>;
- 			clock-names = "gdma";
--			resets = <&rstctrl 14>;
-+			resets = <&sysc MT7621_RST_GDMA>;
- 			reset-names = "dma";
- 
- 			interrupt-parent = <&gic>;
-@@ -172,7 +174,7 @@ hsdma: hsdma@7000 {
- 
- 			clocks = <&sysc MT7621_CLK_HSDMA>;
- 			clock-names = "hsdma";
--			resets = <&rstctrl 5>;
-+			resets = <&sysc MT7621_RST_HSDMA>;
- 			reset-names = "hsdma";
- 
- 			interrupt-parent = <&gic>;
-@@ -272,11 +274,6 @@ pinmux {
- 		};
- 	};
- 
--	rstctrl: rstctrl {
--		compatible = "ralink,rt2880-reset";
--		#reset-cells = <1>;
--	};
--
- 	sdhci: sdhci@1e130000 {
- 		status = "disabled";
- 
-@@ -355,7 +352,7 @@ ethernet: ethernet@1e100000 {
- 		#address-cells = <1>;
- 		#size-cells = <0>;
- 
--		resets = <&rstctrl 6 &rstctrl 23>;
-+		resets = <&sysc MT7621_CLK_FE &sysc MT7621_CLK_ETH>;
- 		reset-names = "fe", "eth";
- 
- 		interrupt-parent = <&gic>;
-@@ -400,7 +397,7 @@ switch0: switch0@0 {
- 				#size-cells = <0>;
- 				reg = <0>;
- 				mediatek,mcm;
--				resets = <&rstctrl 2>;
-+				resets = <&sysc MT7621_RST_MCM>;
- 				reset-names = "mcm";
- 				interrupt-controller;
- 				#interrupt-cells = <1>;
-@@ -486,7 +483,7 @@ pcie@0,0 {
- 			#interrupt-cells = <1>;
- 			interrupt-map-mask = <0 0 0 0>;
- 			interrupt-map = <0 0 0 0 &gic GIC_SHARED 4 IRQ_TYPE_LEVEL_HIGH>;
--			resets = <&rstctrl 24>;
-+			resets = <&sysc MT7621_RST_PCIE0>;
- 			clocks = <&sysc MT7621_CLK_PCIE0>;
- 			phys = <&pcie0_phy 1>;
- 			phy-names = "pcie-phy0";
-@@ -501,7 +498,7 @@ pcie@1,0 {
- 			#interrupt-cells = <1>;
- 			interrupt-map-mask = <0 0 0 0>;
- 			interrupt-map = <0 0 0 0 &gic GIC_SHARED 24 IRQ_TYPE_LEVEL_HIGH>;
--			resets = <&rstctrl 25>;
-+			resets = <&sysc MT7621_RST_PCIE1>;
- 			clocks = <&sysc MT7621_CLK_PCIE1>;
- 			phys = <&pcie0_phy 1>;
- 			phy-names = "pcie-phy1";
-@@ -516,7 +513,7 @@ pcie@2,0 {
- 			#interrupt-cells = <1>;
- 			interrupt-map-mask = <0 0 0 0>;
- 			interrupt-map = <0 0 0 0 &gic GIC_SHARED 25 IRQ_TYPE_LEVEL_HIGH>;
--			resets = <&rstctrl 26>;
-+			resets = <&sysc MT7621_RST_PCIE2>;
- 			clocks = <&sysc MT7621_CLK_PCIE2>;
- 			phys = <&pcie2_phy 0>;
- 			phy-names = "pcie-phy2";
+ 	/*
+ 	 * Do a sanity check on the APIC calibration result
 -- 
-2.33.0
+2.31.1
 
