@@ -2,81 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1FE5440BE9
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 23:46:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 948B6440B90
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 22:03:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231939AbhJ3Vsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Oct 2021 17:48:37 -0400
-Received: from ixit.cz ([94.230.151.217]:35232 "EHLO ixit.cz"
+        id S230497AbhJ3UGM convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 30 Oct 2021 16:06:12 -0400
+Received: from aposti.net ([89.234.176.197]:37756 "EHLO aposti.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231165AbhJ3Vsg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Oct 2021 17:48:36 -0400
-Received: from localhost.localdomain (ip-89-176-96-70.net.upcbroadband.cz [89.176.96.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id 7A1D224E6C;
-        Sat, 30 Oct 2021 12:04:15 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-        t=1635588255;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=+UB7wfj4tXFFiJ/lUcfdPIYlNCDtOzEqf+s3HG7n+mo=;
-        b=KqaG6NjarH6QH0LaJ/HcNJ5wvKLcMSgrZHbxzeIb4X+tmmGm91Q3FbSm6SV83Fit5HD5/Y
-        kGh8anD1w1aTa3QoLS4esiad72WdOGdnkVmmqLiRJpS20Lx7XFM/en8uUeF39RiLGZJZRT
-        vW1kcV3DgC5lSpMEEyM4sdlxcbxCuIU=
-From:   David Heidelberg <david@ixit.cz>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        Vivek Gautam <vivek.gautam@codeaurora.org>
-Cc:     ~okias/devicetree@lists.sr.ht, David Heidelberg <david@ixit.cz>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: msm8996: drop not documented adreno properties
-Date:   Sat, 30 Oct 2021 12:04:12 +0200
-Message-Id: <20211030100413.28370-1-david@ixit.cz>
-X-Mailer: git-send-email 2.33.0
+        id S229782AbhJ3UGL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Oct 2021 16:06:11 -0400
+Date:   Sat, 30 Oct 2021 21:03:30 +0100
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH] gpu/drm: ingenic: Remove bogus register write
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        linux-mips@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        Christophe Branchereau <cbranchereau@gmail.com>,
+        list@opendingux.net, kernel test robot <lkp@intel.com>
+Message-Id: <UP3T1R.6J62YIN55WCQ3@crapouillou.net>
+In-Reply-To: <YX2T0dbyaYkIbUgs@ravnborg.org>
+References: <20211030100032.42066-1-paul@crapouillou.net>
+        <YX2T0dbyaYkIbUgs@ravnborg.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These properties aren't documented nor implemented in the driver.
-Drop them.
+Hi,
 
-Fixes warnings as:
-$ make dtbs_check DT_SCHEMA_FILES=Documentation/devicetree/bindings/display/msm/gpu.yaml
-...
-arch/arm64/boot/dts/qcom/msm8996-mtp.dt.yaml: gpu@b00000: 'qcom,gpu-quirk-fault-detect-mask', 'qcom,gpu-quirk-two-pass-use-wfi' do not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: Documentation/devicetree/bindings/display/msm/gpu.yaml
-...
+Le sam., oct. 30 2021 at 20:49:53 +0200, Sam Ravnborg 
+<sam@ravnborg.org> a écrit :
+> Hi Paul,
+> 
+> On Sat, Oct 30, 2021 at 11:00:32AM +0100, Paul Cercueil wrote:
+>>  Commit 1bdb542da736 ("drm/ingenic: Simplify code by using hwdescs
+>>  array") caused the dma_hwdesc_phys_f{0,1} variables to be used while
+>>  uninitialized in a mmio register write, which most certainly broke 
+>> the
+>>  ingenic-drm driver.
+>> 
+>>  However, the very same patchset also submitted commit 6055466203df
+>>  ("drm/ingenic: Upload palette before frame"), which restored a 
+>> correct
+>>  behaviour by doing the register writes in a different place in the 
+>> code.
+>> 
+>>  What's left of this, is just to remove the bogus register writes in 
+>> the
+>>  probe function.
+>> 
+>>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+>>  Reported-by: kernel test robot <lkp@intel.com>
+> 
+> Thank you lkp...
+> Acked-by: Sam Ravnborg <sam@ravnborg.org>
 
-Fixes: 69cc3114ab0f ("arm64: dts: Add Adreno GPU definitions")
+Pushed to drm-misc-next.
 
-Signed-off-by: David Heidelberg <david@ixit.cz>
----
- arch/arm64/boot/dts/qcom/msm8996.dtsi | 3 ---
- 1 file changed, 3 deletions(-)
+Thanks!
+-Paul
 
-diff --git a/arch/arm64/boot/dts/qcom/msm8996.dtsi b/arch/arm64/boot/dts/qcom/msm8996.dtsi
-index bccc2d0b35a8..1ac78d9909ab 100644
---- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
-@@ -987,9 +987,6 @@ gpu: gpu@b00000 {
- 			nvmem-cells = <&speedbin_efuse>;
- 			nvmem-cell-names = "speed_bin";
- 
--			qcom,gpu-quirk-two-pass-use-wfi;
--			qcom,gpu-quirk-fault-detect-mask;
--
- 			operating-points-v2 = <&gpu_opp_table>;
- 
- 			status = "disabled";
--- 
-2.33.0
 
