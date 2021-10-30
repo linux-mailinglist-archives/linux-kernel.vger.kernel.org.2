@@ -2,150 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6CB9440985
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 16:23:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE36F44098A
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 16:30:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230303AbhJ3OZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Oct 2021 10:25:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49898 "EHLO
+        id S230153AbhJ3Oc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Oct 2021 10:32:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229585AbhJ3OZy (ORCPT
+        with ESMTP id S230025AbhJ3Oc1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Oct 2021 10:25:54 -0400
-Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70B56C061570;
-        Sat, 30 Oct 2021 07:23:24 -0700 (PDT)
-Received: by mail-ua1-x933.google.com with SMTP id i6so9349732uae.6;
-        Sat, 30 Oct 2021 07:23:24 -0700 (PDT)
+        Sat, 30 Oct 2021 10:32:27 -0400
+Received: from mail-vk1-xa35.google.com (mail-vk1-xa35.google.com [IPv6:2607:f8b0:4864:20::a35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAB4FC061764
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Oct 2021 07:29:57 -0700 (PDT)
+Received: by mail-vk1-xa35.google.com with SMTP id e64so5989167vke.4
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Oct 2021 07:29:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=2X5YJfC5EItlH9jFztQTg0PcOzeEO1fDAz5we8++GiY=;
-        b=DTCl4uKh0judLjcX5ts/CnqE0z1+pHIvmxbPrm9qjNWUPUaIpb5juM6IqQpP2tTA3n
-         FDwrPf6WiGmNKHWR1g9aFsqtGiWoylNL4xjCjOab1kJsXmSCl5R9hKG6BYL6vBX8FfCt
-         5HEmn7XEFkhI/nVdX5vpO/8EO/kIRwg6lUMRyuv0rQpEXL2PQczEFo5IPILiUjpwgI1O
-         FxFHOF83Kyg5g2fqu442ApFy/CRd0Jvu9V14J1PAu4P/98c12CJzE7AwLFfy00X0GCwP
-         5r1y3eHR/Hgi1+PECLHcwyMYmM8P4DikrCu+P8gwSqRNHMcF6gTtnNDgRJ6EnfUcnMCh
-         yQVg==
+        bh=VMhKSdU6XagNLXTgt9QjxAYogFasaRabTgH/D5jR5AM=;
+        b=wk4c0Top+HACPm4/cX6Jg9EnZZnbUAD1f7LYK/iZiY50ThuaUqmmSeyOIwmhqsqXG4
+         7xXtrJ55s1G1N/VPfXw7Rlim8Ug0ucHpq751UaXmtKoaHAlm2NS12k02E8C0ao0cK2ig
+         8aOu6Nh7yatfeP1mxj9DshqTTDh5d9hW8Dt5Lc2cpMMEF+2K1IS1beaes+WaBIuV0jq+
+         ZukKhnAmRABQ4iLbTpS6AHmzBYAz8atWqGEjNPnl+oOmtlIrOxD9Y8nEGbZ8XqHe8bxR
+         nwkhuRSNMZTuhbc2b9n7veZyxxE/1IVLxXqbMxhYuuNRy1oiekZlonNLckjYudYC/LpS
+         o/ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=2X5YJfC5EItlH9jFztQTg0PcOzeEO1fDAz5we8++GiY=;
-        b=R5NL2q6CPvfVSSrjarSEMw4VEVMw/AH8RV+2mytNlvtdRcvaXmZar+9BkoxN9c4HaO
-         icGPEw6zrFh7qIiqI7t+sHuRt7A4Fu5slLbIJ5oKrWJMrNpYXaTmA61KOyk76aqV+Gs8
-         1hbpW6oGvI/X8EtMrj8gUzPQGUe2DAQZ0uj0ks5XxPO4PkorVNwcLHxyYD4rrwESpXPy
-         9pRpdJVI5z+U1+mR0tfoxJ+x1O8Y8OxujMpwgpJYLxZk7WV/5ZAEXbdwLymEGHbSc/ib
-         GXSFA0YIOlDhtFn3IP9Kfh6ISqHYbhL6WWayt+YOqP6m1efBve/YyRlsK9TqH0LsADFM
-         LegA==
-X-Gm-Message-State: AOAM530UfBJHOcInh4sE7pguG9rXY82aBcPCXj1oR62cPjj9KevEb5Yc
-        jKvgsvzutzz8wZ4Mes3cP5yXSqe4elDmZiZS6qk=
-X-Google-Smtp-Source: ABdhPJyxHRhDw+BgPFeGayDFg1fzBys5+4RzsLm1jCgvQC3cS74mErFYc6nvXUaE92sjBXof/G8E23ko3XAcQxTh9O0=
-X-Received: by 2002:a67:ec57:: with SMTP id z23mr19405997vso.55.1635603803625;
- Sat, 30 Oct 2021 07:23:23 -0700 (PDT)
+        bh=VMhKSdU6XagNLXTgt9QjxAYogFasaRabTgH/D5jR5AM=;
+        b=gXyHTjtpPmiYH2tZwT8N58iO/6on5Z9ZahegM5zML2HjJWcCOhGD6ZiXA2m4y1nj38
+         bJKTiENod63IXvpW5JSBT7I1+WwIJ9PWKzHvcW2BRk5JvvOnopghRViSvhC7bA9dLAia
+         YH0NhfB++Ip0yBekPvoErWWOJFnxDzEbUC3g9GbvRoe9c1GHBTlMe4Yxxo4cdTZSu47P
+         Q+GDG2cgttk3U5ekd6VZ7U0dnr2gDoxNDfNwAebWeqtjXVbgJAA9K8yTWvzqXRnZsE0v
+         SEmxWHdWZyH+qNm1j14zXEtkgXe4FuSzsTgQUBKR+0cPdsOpi3KSp8/Mx2A8kwkiGGUH
+         qgwA==
+X-Gm-Message-State: AOAM531ueoTDNo6UaOnT1/J1HwsRswPL+0qy46XnOMtWHUorTJ0+gZJ2
+        HcgHCgGQ4ek0fVLhJT+XuL2JOOZuC0lmoUW74+xbxg==
+X-Google-Smtp-Source: ABdhPJxaZ8cFeixxgFJVOy/L0An8U8TaIKGXQZ6pfcVVK7L6np/koDpst87RmD2gtupsxTmqOU30TOwNGydmoikZF6g=
+X-Received: by 2002:a05:6122:130c:: with SMTP id e12mr7364332vkp.12.1635604196137;
+ Sat, 30 Oct 2021 07:29:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211006112306.4691-1-sergio.paracuellos@gmail.com> <CAMhs-H_h9=sj5_p58WcqrYJuT-CGHp38xELwD1jvt=XzfvG2bw@mail.gmail.com>
-In-Reply-To: <CAMhs-H_h9=sj5_p58WcqrYJuT-CGHp38xELwD1jvt=XzfvG2bw@mail.gmail.com>
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Sat, 30 Oct 2021 16:23:12 +0200
-Message-ID: <CAMhs-H8zCdhRUaqo3t6RZ95C2E89YFhvPN52SgDbPBAFtTwO0Q@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] clk: ralink: make system controller a reset provider
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     "open list:COMMON CLK FRAMEWORK" <linux-clk@vger.kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        linux-staging@lists.linux.dev, NeilBrown <neil@brown.name>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        John Crispin <john@phrozen.org>
+References: <20211028183527.3050-1-semen.protsenko@linaro.org>
+ <20211028183527.3050-8-semen.protsenko@linaro.org> <1ad6b625-4388-bc78-e258-eae0b9357b96@roeck-us.net>
+In-Reply-To: <1ad6b625-4388-bc78-e258-eae0b9357b96@roeck-us.net>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Sat, 30 Oct 2021 17:29:44 +0300
+Message-ID: <CAPLW+4kphtac24fcpVUENAMUAdHp2fkzJ0N_r_63Soq6R2VZBg@mail.gmail.com>
+Subject: Re: [PATCH 7/7] watchdog: s3c2410: Let kernel kick watchdog
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        linux-watchdog@vger.kernel.org,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+On Fri, 29 Oct 2021 at 03:30, Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> On 10/28/21 11:35 AM, Sam Protsenko wrote:
+> > When "tmr_atboot" module param is set, the watchdog is started in
+> > driver's probe. In that case, also set WDOG_HW_RUNNING bit to let
+> > watchdog core driver know it's running. This way wathcdog core can kick
+> > the watchdog for us (if CONFIG_WATCHDOG_HANDLE_BOOT_ENABLED option is
+> > enabled), until user space takes control.
+> >
+> > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> > ---
+> >   drivers/watchdog/s3c2410_wdt.c | 26 +++++++++++++++-----------
+> >   1 file changed, 15 insertions(+), 11 deletions(-)
+> >
+> > diff --git a/drivers/watchdog/s3c2410_wdt.c b/drivers/watchdog/s3c2410_wdt.c
+> > index ca082b1226e3..9af014ff1468 100644
+> > --- a/drivers/watchdog/s3c2410_wdt.c
+> > +++ b/drivers/watchdog/s3c2410_wdt.c
+> > @@ -732,6 +732,21 @@ static int s3c2410wdt_probe(struct platform_device *pdev)
+> >       wdt->wdt_device.bootstatus = s3c2410wdt_get_bootstatus(wdt);
+> >       wdt->wdt_device.parent = dev;
+> >
+> > +     /*
+> > +      * If "tmr_atboot" param is non-zero, start the watchdog right now. Also
+> > +      * set WDOG_HW_RUNNING bit, so that watchdog core can kick the watchdog.
+> > +      *
+> > +      * If we're not enabling the watchdog, then ensure it is disabled if it
+> > +      * has been left running from the bootloader or other source.
+> > +      */
+> > +     if (tmr_atboot && started == 0) {
+> > +             dev_info(dev, "starting watchdog timer\n");
+> > +             s3c2410wdt_start(&wdt->wdt_device);
+> > +             set_bit(WDOG_HW_RUNNING, &wdt->wdt_device.status);
+> > +     } else if (!tmr_atboot) {
+> > +             s3c2410wdt_stop(&wdt->wdt_device);
+> > +     }
+> > +
+>
+> This doesn't cover the case where the watchdog is already enabled by the BIOS.
+> In that case, WDOG_HW_RUNNING won't be set, and the watchdog will time out
+> if the userspace handler is not loaded fast enough. The code should consistently
+> set WDOG_HW_RUNNING if the watchdog is running.
+>
 
-On Sun, Oct 17, 2021 at 8:51 AM Sergio Paracuellos
-<sergio.paracuellos@gmail.com> wrote:
->
-> Hi Stephen,
->
-> On Wed, Oct 6, 2021 at 1:23 PM Sergio Paracuellos
-> <sergio.paracuellos@gmail.com> wrote:
-> >
-> > Hi all,
-> >
-> > This patch series add minimal change to provide mt7621 resets properly
-> > defining them in the 'mediatek,mt7621-sysc' node which is the system
-> > controller of the SoC and is already providing clocks to the rest of
-> > the world.
-> >
-> > There is shared architecture code for all ralink platforms in 'reset.c'
-> > file located in 'arch/mips/ralink' but the correct thing to do to align
-> > hardware with software seems to define and add related reset code to the
-> > already mainlined clock driver.
-> >
-> > After this changes, we can get rid of the useless reset controller node
-> > in the device tree and use system controller node instead where the property
-> > '#reset-cells' has been added. Binding documentation for this nodeq has
-> > been updated with the new property accordly.
-> >
-> > This series also provide a bindings include header where all related
-> > reset bits for the MT7621 SoC are defined.
-> >
-> > Also, please take a look to this review [0] to understand better motivation
-> > for this series.
-> >
-> > Thanks in advance for your feedback.
-> >
-> > Changes in v2:
-> >  - Address review comments of Dan Carpenter [1]:
-> >     + Avoid 'inline' in function definition.
-> >     + Return proper error codes (-EINVAL) instead of '-1'.
-> >     + Make use of 'devm_kzalloc' instead of 'kzalloc'.
->
-> Can you please take a look into this series? I'd like them to be added
-> in the next merge window and if something needs to be changed I'd like
-> to have a bit of time to do it :)).
->
-> Regarding how to merge this I guess all of the patches should apply
-> cleanly in any tree but since there are already changes in mt7621-dts
-> maybe patches 1 and 4 which are related can go through the staging
-> tree (if Greg is ok with this) and the bindings doc change and driver
-> changes (patches 2 and 3) can go through your tree.
+As I understand, in the case when bootloader started the watchdog, the
+driver just stops it. You can see it in the code you replied to.
 
-I have just sent v3 since PATCH 4 did not apply cleanly anymore in
-both clock tree and staging tree.
+    } else if (!tmr_atboot) {
+            s3c2410wdt_stop(&wdt->wdt_device);
 
-Best regards,
-     Sergio Paracuellos
+In other words, having "tmr_atboot" module param makes it irrelevant
+whether bootloader enabled WDT or no.
+
+> Guenter
 >
-> Thanks in advance for your time.
+> >       ret = watchdog_register_device(&wdt->wdt_device);
+> >       if (ret)
+> >               goto err_cpufreq;
+> > @@ -740,17 +755,6 @@ static int s3c2410wdt_probe(struct platform_device *pdev)
+> >       if (ret < 0)
+> >               goto err_unregister;
+> >
+> > -     if (tmr_atboot && started == 0) {
+> > -             dev_info(dev, "starting watchdog timer\n");
+> > -             s3c2410wdt_start(&wdt->wdt_device);
+> > -     } else if (!tmr_atboot) {
+> > -             /* if we're not enabling the watchdog, then ensure it is
+> > -              * disabled if it has been left running from the bootloader
+> > -              * or other source */
+> > -
+> > -             s3c2410wdt_stop(&wdt->wdt_device);
+> > -     }
+> > -
+> >       platform_set_drvdata(pdev, wdt);
+> >
+> >       /* print out a statement of readiness */
+> >
 >
-> Best regards,
->     Sergio Paracuellos
->
-> >
-> > Best regards,
-> >     Sergio Paracuellos
-> >
-> > [0]: https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20210926145931.14603-3-sergio.paracuellos@gmail.com/
-> > [1]: https://lkml.org/lkml/2021/10/6/204
-> >
-> > Sergio Paracuellos (4):
-> >   dt-bindings: reset: add dt binding header for Mediatek MT7621 resets
-> >   dt-bindings: clock: mediatek,mt7621-sysc: add '#reset-cells' property
-> >   clk: ralink: make system controller node a reset provider
-> >   staging: mt7621-dts: align resets with binding documentation
-> >
-> >  .../bindings/clock/mediatek,mt7621-sysc.yaml  | 12 +++
-> >  drivers/clk/ralink/clk-mt7621.c               | 79 +++++++++++++++++++
-> >  drivers/staging/mt7621-dts/mt7621.dtsi        | 27 +++----
-> >  include/dt-bindings/reset/mt7621-reset.h      | 37 +++++++++
-> >  4 files changed, 140 insertions(+), 15 deletions(-)
-> >  create mode 100644 include/dt-bindings/reset/mt7621-reset.h
-> >
-> > --
-> > 2.33.0
-> >
