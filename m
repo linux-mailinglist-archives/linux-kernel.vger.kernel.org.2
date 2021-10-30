@@ -2,233 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A85DA44098E
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 16:34:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69CDD440990
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 16:35:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230185AbhJ3OhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Oct 2021 10:37:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52320 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229585AbhJ3OhJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Oct 2021 10:37:09 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97BC2C061570;
-        Sat, 30 Oct 2021 07:34:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ba2xFt3kXSmSTLD8SqkglhCszGSJjIidpOhGBZZRwqs=; b=KxNTFF6MESt7Owjy7Rsimcsszl
-        9FviqkuUnjHAEdEUcpb27yNW2R3RQl4BZ2BpEpgKnVGmCQgS43k8yyDkiEwOmJIXh9ny17Oqy49fk
-        PDzxT4IF3ecJyJ+aS8I9Pl95V3b/lHt+cppYj8q6WWrmZVghxldeDp6c0yugf64yb86maeZhY0XW6
-        M4ELbvaS5q42icbzRDk3cL6+bH2lFgfKSth6aBFEFmuvDPZNSdnDF8V0ZJ41dihgWJ3r1h5l6jHoC
-        2yuB27lUIfCxkj/34CUOzYY9V4KFnELO6o+846IGnZxokUITPIP03oyMWbD8H19o9GstbZWmtYv4X
-        f5ChCmVg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mgpQ1-002TG3-24; Sat, 30 Oct 2021 14:33:22 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id C89129816BA; Sat, 30 Oct 2021 16:33:11 +0200 (CEST)
-Date:   Sat, 30 Oct 2021 16:33:11 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        X86 ML <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH] kbuild: Support clang-$ver builds
-Message-ID: <20211030143311.GH174730@worktop.programming.kicks-ass.net>
-References: <YXqpFHeY26sEbort@hirez.programming.kicks-ass.net>
- <CAK7LNATUpgfKJvjp0+8H6VfMLMio9+BCoyj00mAO8FcaVGCqjg@mail.gmail.com>
- <YXqwZq53WUiTeqI7@hirez.programming.kicks-ass.net>
- <YXqyHhWGJfDkuxjP@hirez.programming.kicks-ass.net>
- <YXq72/yPe76DhDLu@hirez.programming.kicks-ass.net>
- <YXrhZoOgv5dtFMTs@archlinux-ax161>
- <20211028204855.GP174703@worktop.programming.kicks-ass.net>
- <CAKwvOd=x9E=7WcCiieso-CDiiU-wMFcXL4W3V5j8dq7BL5QT+w@mail.gmail.com>
- <YXu2z6FQ6Z7qtjbk@hirez.programming.kicks-ass.net>
+        id S231200AbhJ3Ohr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Oct 2021 10:37:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39500 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229585AbhJ3Ohq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Oct 2021 10:37:46 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A617A60F58;
+        Sat, 30 Oct 2021 14:35:14 +0000 (UTC)
+Date:   Sat, 30 Oct 2021 15:39:39 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc:     David Lechner <david@lechnology.com>, linux-iio@vger.kernel.org,
+        Robert Nelson <robertcnelson@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 6/8] docs: counter: add latch_mode and latched_count
+ sysfs attributes
+Message-ID: <20211030153939.44c8145d@jic23-huawei>
+In-Reply-To: <YXygyba/r/8+h+W3@shinobu>
+References: <20211017013343.3385923-1-david@lechnology.com>
+        <20211017013343.3385923-7-david@lechnology.com>
+        <YXkFzK0TA5zswSrQ@shinobu>
+        <e660e9c5-a116-5450-8afb-1053a1504ab6@lechnology.com>
+        <YXygyba/r/8+h+W3@shinobu>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YXu2z6FQ6Z7qtjbk@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, 30 Oct 2021 10:32:57 +0900
+William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
 
-Latestest greatness... :-)
+> On Wed, Oct 27, 2021 at 12:00:24PM -0500, David Lechner wrote:
+> > On 10/27/21 2:54 AM, William Breathitt Gray wrote:  
+> > > On Sat, Oct 16, 2021 at 08:33:41PM -0500, David Lechner wrote:  
+> > >> @@ -147,6 +150,14 @@ Description:
+> > >>   			updates	the respective count. Quadrature encoding
+> > >>   			determines the direction.
+> > >>   
+> > >> +What:		/sys/bus/counter/devices/counterX/countY/latched_count
+> > >> +KernelVersion:	5.16
+> > >> +Contact:	linux-iio@vger.kernel.org
+> > >> +Description:
+> > >> +		Latched count data of Count Y represented as a string. The value
+> > >> +		is latched in based on the trigger selected by the
+> > >> +		counterX/latch_mode attribute.
+> > >> +  
+> > > 
+> > > Latches are pretty common components of devices, and not simply limited
+> > > to latching the count data. I wonder if it would be better to omit the
+> > > "_count" suffix in order to make this more general. Well, the name
+> > > "latched_count" is suitable for counters so you probably don't need to
+> > > change it, but it's something to think about in the future.
+> > >   
+> > 
+> > I chose the name counterX/countY/latched_count since we already have
+> > counterX/countY/count to read the same (not latched) count. This
+> > indicates that they are the same quantity, just from a different
+> > point in time.
+> > 
+> > Also for consideration, this particular hardware actually has 3
+> > independent latched counts. One is triggered by the selected
+> > latched_mode. One is triggered by the index signal and one is
+> > triggered by the strobe signal.
+> > 
+> > The latter two are not implemented in this series, but if there were a
+> > use for those, I would probably submit attributes index_latched_count
+> > and strobe_latched_count. These are unaffected by the latch_mode.
+> > 
+> > Similarly, the unit timer has a timer latch and a period latch. If we
+> > change the unit timer to be a Count as suggested, then the latched
+> > timer would basically be the same as latched_count. Both of these
+> > are triggered by the selected latch_mode.
+> > 
+> > So, I supposed if we wanted to keep things really generic, we would
+> > want to introduce some sort of "latch trigger" component (synapse?).
+> > There could theoretically be multiple configurable triggers, so
+> > the proposed latch_mode might need to be made indexed or part of
+> > an index component/extension.  
+> 
+> Aside from deriving their latched values from the current and historical
+> count values, these latches don't seem to be related to Counters in an
+> operational sense; i.e. they don't really fit into the Counter subsystem
+> paradigm because they aren't functionally counters, but rather just use
+> the count values here as source data for their own operations. As such,
+> I'm not sure yet if they really belong in the Counter subsystem or
+> somewhere else in the IIO subsystem.
 
----
-Subject: kbuild: Fix clang/llvm build infra
+In this particular case I think we are talking about latching counts rather
+than something else?  So one event happens and we latch the count at that
+point.
 
-Debian (and derived) distros ship their compilers as -$ver suffixed
-binaries. For gcc it is sufficent to use:
+The IIO equivalent is a trigger event driving data into a buffer.
+There are a few examples of this though it's pretty rare.
+The most general corner case is probably what we see with impact sensors.
+In those cases we have data captured around an event (rather than a single
+latched value).
 
- $ make CC=gcc-12
+They are rather complex beasts but the best we've managed is a special
+trigger used only with that device and some control attributes to say what
+is captured when the trigger fires.  Note this is a stetch in IIO because
+normally triggers are one per sample...
 
-However, clang builds (esp. clang-lto) need a whole array of tools to be
-exactly right, leading to unweildy stuff like:
+> 
+> >   
+> > >>   What:		/sys/bus/counter/devices/counterX/countY/name
+> > >>   KernelVersion:	5.2
+> > >>   Contact:	linux-iio@vger.kernel.org
+> > >> @@ -209,6 +220,7 @@ What:		/sys/bus/counter/devices/counterX/countY/count_mode_component_id
+> > >>   What:		/sys/bus/counter/devices/counterX/countY/direction_component_id
+> > >>   What:		/sys/bus/counter/devices/counterX/countY/enable_component_id
+> > >>   What:		/sys/bus/counter/devices/counterX/countY/error_noise_component_id
+> > >> +What:		/sys/bus/counter/devices/counterX/countY/latched_count_component_id
+> > >>   What:		/sys/bus/counter/devices/counterX/countY/prescaler_component_id
+> > >>   What:		/sys/bus/counter/devices/counterX/countY/preset_component_id
+> > >>   What:		/sys/bus/counter/devices/counterX/countY/preset_enable_component_id
+> > >> @@ -218,6 +230,7 @@ What:		/sys/bus/counter/devices/counterX/signalY/cable_fault_enable_component_id
+> > >>   What:		/sys/bus/counter/devices/counterX/signalY/filter_clock_prescaler_component_id
+> > >>   What:		/sys/bus/counter/devices/counterX/signalY/index_polarity_component_id
+> > >>   What:		/sys/bus/counter/devices/counterX/signalY/synchronous_mode_component_id
+> > >> +What:		/sys/bus/counter/devices/latch_mode_component_id
+> > >>   What:		/sys/bus/counter/devices/unit_timer_enable_component_id
+> > >>   What:		/sys/bus/counter/devices/unit_timer_period_component_id
+> > >>   What:		/sys/bus/counter/devices/unit_timer_time_component_id  
+> > 
+> > Just noticing here, I missed the counterX in the device-level components.
+> >   
+> > >> @@ -244,6 +257,22 @@ Description:
+> > >>   		counter_event data structures. The number of elements will be
+> > >>   		rounded-up to a power of 2.
+> > >>   
+> > >> +What:		/sys/bus/counter/devices/counterX/latch_mode
+> > >> +KernelVersion:	5.16
+> > >> +Contact:	linux-iio@vger.kernel.org
+> > >> +Description:
+> > >> +		Read/write attribute that selects the trigger for latching
+> > >> +		values. Valid values are device-specific (given by
+> > >> +		latch_mode_available attribute) and may include:
+> > >> +
+> > >> +		"Read count":
+> > >> +			Reading the countY/count attribute latches values.
+> > >> +
+> > >> +		"Unit timeout":
+> > >> +			Unit timer timeout event latches values.
+> > >> +
+> > >> +		The latched values can be read from latched_* attributes.
+> > >> +  
+> > > 
+> > > To make these modes more generic for use in future drivers, I suggest
+> > > removing the "Unit " prefix and just leaving that mode as "Timeout". In
+> > > a similar vein, rewording "Read count" to "Count read" would make this
+> > > mode easier to understand in case a future driver introduces a mode
+> > > called "Signal read" or similar.
+> > >   
+> > 
+> > Continuing my thoughts from above and taking this suggestion into
+> > consideration...
+> > 
+> > Maybe we need a /sys/bus/counter/devices/counterX/latchY component.
+> > This would represent the trigger for a latch. For the TI eQEP in this
+> > series, there are potentially 3 of these (only one implemented for
+> > now).
+> > 
+> > latchY would have a required `trigger` attribute that would describe
+> > what triggers the latch. If the trigger is selectable, there would be
+> > a `triggers_available` attribute that would list the possible triggers,
+> > otherwise the `trigger` attribute would just be read-only. Available
+> > triggers could could be "X read" where X is a fully qualified component
+> > name, e.g. "Count0 count read" or a fully qualified event, e.g.
+> > "Count1 overflow event" (this is unit timer timeout in generic counter
+> > terms). But, there may be potential triggers that don't fit either
+> > of these patterns.
+> > 
+> > Although not currently needed, the triggers for the index and strobe
+> > latches on the eQEP get more interesting. The `triggers_available` for
+> > the index latch are "index rising edge", "index falling edge" and
+> > "software" (this would require a `software_trigger` attribute that
+> > would be written to trigger the latch). The `triggers_available` for
+> > the strobe latch are "strobe rising edge" and "strobe rising edge if
+> > direction is clockwise and strobe falling edge if direction is
+> > counterclockwise".
+> > 
+> > Circling back to the beginning, to read latched registers, there
+> > would be attributes like counterX/countY/latchY_count instead of
+> > the proposed counterX/countY/latched_count. So for the eQEP there
+> > would be counter0/count0/latch0_count (triggered by reading
+> > counter0/count0/count or counter0/count1 overflow event),
+> > counter0/count0/latch1_count (triggered by index signal),
+> > counter0/count0/latch2_count (triggered by strobe signal),
+> > counter0/count1/latch0_count (unit timer latched timer trigger
+> > by same trigger as counter0/count0/latch0_count) and
+> > counter0/count0/latch0_ceiling (unit timer latched period
+> > triggered by same trigger as counter0/count0/latch0_count).  
+> 
+> The complexity of configuration here is a good indication that these
+> latches deserve their own tree structure as you suggest. Furthermore, we
+> see that there at least three of these latches available for this
+> particular device, so just a single "latch_count" or similar will not be
+> sufficient -- enumeration of the form /sys/bus/../latchY or similar
+> would be prudent.
+> 
+> Jonathan, perhaps you have some insight here. From a functional aspect,
+> latches are not unique to counter devices, so I wonder if the IIO
+> subsytem has already encountered similar functionality amongst its
+> drivers. Essentially, a latch is just a memory buffer provided by the
+> device.
 
- $ make CC=clang-13 LD=ld.lld=14 AR=llvm-ar-13 NM=llvm-nm-13 OBJCOPY=llvm-objcopy-13 OBJDUMP=llvm-objdump-13 READELF=llvm-readelf-13 STRIP=llvm-strip-13 LLVM=1
+As mentioned above, they exist but are fairly rare, unless you think
+of time triggers as being in this category in which case any data
+ready signal is basically like this.  Ignoring that common case,
+we map them onto a device specific trigger (one that has a
+validate_device callback to check it's being assigned to that right device).
+Another case where we do odd things like this is SoC ADCs that support touch
+screen type functionality.  In those case we are grabbing data only when
+the screen is touched.
 
-which is, quite franktly, totally insane and unusable. Instead make
-the CC variable DTRT, enabling one such as myself to use:
 
- $ make CC=clang-13
+> 
+> For the TI eQEP device here, the buffer for each latch provides a single
+> read-only value that is updated by the device; the update behavior can
+> be configured by respective control registers. However, it's not so
+> far-fetched to assume that there a other devices out that that have
+> buffers spanning multiple latched values storing historical data.
 
-This also lets one quickly test different clang versions.
-Additionally, also support path based LLVM suites like:
+A fifo filled on 'index' event or similar would indeed be a reasonable
+bit of hardware to build.  I've world with PLC code that does this sort
+of things so the requirements are there (tracking products on a conveyor
+belt would be a classic case - you latch the count when a light gate is
+broken).
 
- $ make CC=/opt/llvm/bin/clang
+> 
+> Because a latch can theoretically provide any sort of data, not
+> necessary count values, it seems reasonable that supporting latches
+> would involve their own interface independent of the Counter paradigm.
+> How that interface looks is the question. Should the TI eQEP latches
+> here be exposed through some sort of generic latches interface, or
+> would it be better to have a more abstract representation of what these
+> latches are for; e.g. if these latches are used to measure speed, then
+> some sort of IIO speedometer interface might be appropriate).
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- Makefile                       |   45 +++++++++++++++++++++++++++---------
- tools/scripts/Makefile.include |   50 ++++++++++++++++++++++++++++-------------
- 2 files changed, 68 insertions(+), 27 deletions(-)
+I'd suggest trying to avoid being too generic about this.  There might
+be some reason to do it in the future but trying to define interfaces
+across subsystems is a pain.  More likely we'll get some bridging
+type drivers to map between different abstractions if they are needed.
 
---- a/Makefile
-+++ b/Makefile
-@@ -423,9 +423,29 @@ HOST_LFS_CFLAGS := $(shell getconf LFS_C
- HOST_LFS_LDFLAGS := $(shell getconf LFS_LDFLAGS 2>/dev/null)
- HOST_LFS_LIBS := $(shell getconf LFS_LIBS 2>/dev/null)
- 
--ifneq ($(LLVM),)
--HOSTCC	= clang
--HOSTCXX	= clang++
-+# powerpc and s390 don't yet work with LLVM as a whole
-+ifeq ($(ARCH),powerpc)
-+LLVM = 0
-+endif
-+ifeq ($(ARCH),s390)
-+LLVM = 0
-+endif
-+
-+# otherwise, if CC=clang, default to using LLVM to enable LTO
-+CC_BASE := $(shell echo $(CC) | sed 's/.*\///')
-+CC_NAME := $(shell echo $(CC_BASE) | cut -b "1-5")
-+ifeq ($(shell test "$(CC_NAME)" = "clang"; echo $$?),0)
-+LLVM ?= 1
-+LLVM_PFX := $(shell echo $(CC) | sed 's/\(.*\/\)\?.*/\1/')
-+LLVM_SFX := $(shell echo $(CC_BASE) | cut -b "6-")
-+endif
-+
-+# if not set by now, do not use LLVM
-+LLVM ?= 0
-+
-+ifneq ($(LLVM),0)
-+HOSTCC	= $(LLVM_PFX)clang$(LLVM_SFX)
-+HOSTCXX	= $(LLVM_PFX)clang++$(LLVM_SFX)
- else
- HOSTCC	= gcc
- HOSTCXX	= g++
-@@ -442,15 +462,15 @@ KBUILD_HOSTLDLIBS   := $(HOST_LFS_LIBS)
- 
- # Make variables (CC, etc...)
- CPP		= $(CC) -E
--ifneq ($(LLVM),)
--CC		= clang
--LD		= ld.lld
--AR		= llvm-ar
--NM		= llvm-nm
--OBJCOPY		= llvm-objcopy
--OBJDUMP		= llvm-objdump
--READELF		= llvm-readelf
--STRIP		= llvm-strip
-+ifneq ($(LLVM),0)
-+CC		= $(LLVM_PFX)clang$(LLVM_SFX)
-+LD		= $(LLVM_PFX)ld.lld$(LLVM_SFX)
-+AR		= $(LLVM_PFX)llvm-ar$(LLVM_SFX)
-+NM		= $(LLVM_PFX)llvm-nm$(LLVM_SFX)
-+OBJCOPY		= $(LLVM_PFX)llvm-objcopy$(LLVM_SFX)
-+OBJDUMP		= $(LLVM_PFX)llvm-objdump$(LLVM_SFX)
-+READELF		= $(LLVM_PFX)llvm-readelf$(LLVM_SFX)
-+STRIP		= $(LLVM_PFX)llvm-strip$(LLVM_SFX)
- else
- CC		= $(CROSS_COMPILE)gcc
- LD		= $(CROSS_COMPILE)ld
-@@ -461,6 +481,7 @@ OBJDUMP		= $(CROSS_COMPILE)objdump
- READELF		= $(CROSS_COMPILE)readelf
- STRIP		= $(CROSS_COMPILE)strip
- endif
-+
- PAHOLE		= pahole
- RESOLVE_BTFIDS	= $(objtree)/tools/bpf/resolve_btfids/resolve_btfids
- LEX		= flex
---- a/tools/scripts/Makefile.include
-+++ b/tools/scripts/Makefile.include
-@@ -51,12 +51,32 @@ define allow-override
-     $(eval $(1) = $(2)))
- endef
- 
--ifneq ($(LLVM),)
--$(call allow-override,CC,clang)
--$(call allow-override,AR,llvm-ar)
--$(call allow-override,LD,ld.lld)
--$(call allow-override,CXX,clang++)
--$(call allow-override,STRIP,llvm-strip)
-+# powerpc and s390 don't yet work with LLVM as a whole
-+ifeq ($(ARCH),powerpc)
-+LLVM = 0
-+endif
-+ifeq ($(ARCH),s390)
-+LLVM = 0
-+endif
-+
-+# otherwise, if CC=clang, default to using LLVM to enable LTO
-+CC_BASE := $(shell echo $(CC) | sed 's/.*\///')
-+CC_NAME := $(shell echo $(CC_BASE) | cut -b "1-5")
-+ifeq ($(shell test "$(CC_NAME)" = "clang"; echo $$?),0)
-+LLVM ?= 1
-+LLVM_PFX := $(shell echo $(CC) | sed 's/\(.*\/\)\?.*/\1/')
-+LLVM_SFX := $(shell echo $(CC_BASE) | cut -b "6-")
-+endif
-+
-+# if not set by now, do not use LLVM
-+LLVM ?= 0
-+
-+ifneq ($(LLVM),0)
-+$(call allow-override,CC,$(LLVM_PFX)clang$(LLVM_SFX))
-+$(call allow-override,AR,$(LLVM_PFX)llvm-ar$(LLVM_SFX))
-+$(call allow-override,LD,$(LLVM_PFX)ld.lld$(LLVM_SFX))
-+$(call allow-override,CXX,$(LLVM_PFX)clang++$(LLVM_SFX))
-+$(call allow-override,STRIP,$(LLVM_PFX)llvm-strip$(LLVM_SFX))
- else
- # Allow setting various cross-compile vars or setting CROSS_COMPILE as a prefix.
- $(call allow-override,CC,$(CROSS_COMPILE)gcc)
-@@ -68,10 +88,10 @@ endif
- 
- CC_NO_CLANG := $(shell $(CC) -dM -E -x c /dev/null | grep -Fq "__clang__"; echo $$?)
- 
--ifneq ($(LLVM),)
--HOSTAR  ?= llvm-ar
--HOSTCC  ?= clang
--HOSTLD  ?= ld.lld
-+ifneq ($(LLVM),0)
-+HOSTAR  ?= $(LLVM_PFX)llvm-ar$(LLVM_SFX)
-+HOSTCC  ?= $(LLVM_PFX)clang$(LLVM_SFX)
-+HOSTLD  ?= $(LLVM_PFX)ld.lld$(LLVM_SFX)
- else
- HOSTAR  ?= ar
- HOSTCC  ?= gcc
-@@ -79,11 +99,11 @@ HOSTLD  ?= ld
- endif
- 
- # Some tools require Clang, LLC and/or LLVM utils
--CLANG		?= clang
--LLC		?= llc
--LLVM_CONFIG	?= llvm-config
--LLVM_OBJCOPY	?= llvm-objcopy
--LLVM_STRIP	?= llvm-strip
-+CLANG		?= $(LLVM_PFX)clang$(LLVM_SFX)
-+LLC		?= $(LLVM_PFX)llc$(LLVM_SFX)
-+LLVM_CONFIG	?= $(LLVM_PFX)llvm-config$(LLVM_SFX)
-+LLVM_OBJCOPY	?= $(LLVM_PFX)llvm-objcopy$(LLVM_SFX)
-+LLVM_STRIP	?= $(LLVM_PFX)llvm-strip$(LLVM_SFX)
- 
- ifeq ($(CC_NO_CLANG), 1)
- EXTRA_WARNINGS += -Wstrict-aliasing=3
+Jonathan
+
+> 
+> William Breathitt Gray
+
