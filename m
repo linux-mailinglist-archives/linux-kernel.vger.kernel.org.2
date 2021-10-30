@@ -2,84 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 221C2440833
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 11:21:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 670C7440834
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 11:22:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231803AbhJ3JXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Oct 2021 05:23:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231685AbhJ3JXi (ORCPT
+        id S231818AbhJ3JYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Oct 2021 05:24:34 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:42280 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231685AbhJ3JYd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Oct 2021 05:23:38 -0400
-Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5422C061714;
-        Sat, 30 Oct 2021 02:21:08 -0700 (PDT)
-Received: by gofer.mess.org (Postfix, from userid 1000)
-        id 0A5FFC6398; Sat, 30 Oct 2021 10:21:05 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
-        t=1635585666; bh=/XwIbqzaI1ZkAS9A2CztCzPHMUN0TjT18ogjpqMHCZE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ndr3m9V+p3zyw5/EijsnQrn07JdPitxSYikrHJ/QOeI4Pb8kaqKg0quOYWsRRH1Zv
-         Si/DjgKbyOFZ1cugFSHdbwjCu8YNa1MwBsZ91yyxcZZcumtguczrnPNk54ovjjn35X
-         uuq7/d4Ynf/vhL48O13f0Nt2Ei7h011aN3eZs2lMHzHyyhcS4UzMJfm+pRiwgPclj3
-         6bbUq4vKVNfP/HcsQKgIxmltxtkzfra0OKgswZdymPhoetrnIdW6uhjfa3yinmlyEy
-         uMHjGZlJaw2jbezMLAnW/OATK0VWsUOx+qowjTbkIm+mYyWFFQsJGyUzjE+y+1+fVo
-         ENllqxcSphk6w==
-Date:   Sat, 30 Oct 2021 10:21:05 +0100
-From:   Sean Young <sean@mess.org>
-To:     =?iso-8859-1?Q?Ma=EDra?= Canal <maira.canal@usp.br>
-Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        kernel test robot <lkp@intel.com>, mchehab@kernel.org,
-        thierry.reding@gmail.com, Lee Jones <lee.jones@linaro.org>,
-        llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pwm@vger.kernel.org
-Subject: Re: [PATCH v4] media: rc: pwm-ir-tx: Switch to atomic PWM API
-Message-ID: <20211030092105.GA12707@gofer.mess.org>
-References: <YXlxhpZWf2mxJaMi@fedora>
- <20211028064513.guziv6uaivzlk6ki@pengutronix.de>
- <20211028091442.GA16514@gofer.mess.org>
- <20211028111535.x7xgz7domx2lpyfh@pengutronix.de>
- <20211028122610.GA18767@gofer.mess.org>
- <20211028180516.t2tpfbzztm7s6cqm@pengutronix.de>
- <20211029071608.GA28997@gofer.mess.org>
- <20211029110602.uugnbm5vtfpghiwh@pengutronix.de>
- <20211029115412.GA32383@gofer.mess.org>
- <CAH7FV3njgZ7sOnZZF88KZ2C4UwqxoodpUuLsnucvBxYXmaZo1Q@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAH7FV3njgZ7sOnZZF88KZ2C4UwqxoodpUuLsnucvBxYXmaZo1Q@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Sat, 30 Oct 2021 05:24:33 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id A6380218B2;
+        Sat, 30 Oct 2021 09:22:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1635585722; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2IbgnJClChtQ3g+2cQKLme4WpbuPdsjYdHTGDTymMjU=;
+        b=MqfzLBAfN92fErZRejaTVdiuYCE8Flt4JfQ7nAT051r1nsv4ior5Ow2dvNdT0qMzBZHwxR
+        Mrku4CarcjMDupoEhDUO310f7oDApOMJ+BkF+l6JBY+3zr6pbVp3ipcBSm7zn4siNSbMCH
+        vvuyn8iRIyAdG3RXLkKOt4voQxrffPk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1635585722;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2IbgnJClChtQ3g+2cQKLme4WpbuPdsjYdHTGDTymMjU=;
+        b=WjbYhh4Vn++2NAG2uER+UrVXzyPhhA+Tjf91Q6qyUnONt9K7GQtVWjusEOKLzFoNWDsOyy
+        CeCqs1zpm/oSinBw==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id 97C6EA3B84;
+        Sat, 30 Oct 2021 09:22:02 +0000 (UTC)
+Date:   Sat, 30 Oct 2021 11:22:02 +0200
+Message-ID: <s5h7ddusw91.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Jason Ormes <skryking@gmail.com>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] HX-Stomp XL USB_ID.
+In-Reply-To: <20211029183105.28503-1-skryking@gmail.com>
+References: <20211029183105.28503-1-skryking@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 09:08:29AM -0300, Maíra Canal wrote:
-> I would like to thank you guys for the attention and this interesting
-> discussion. I'm looking for some work in the kernel and I would like
-> to know if you guys have any suggestions for beginner tasks in this
-> subsystem. I have solid knowledge in C programming, but I started in
-> the kernel a couple of weeks ago. Anyway, thank you for all the
-> feedback.
+On Fri, 29 Oct 2021 20:31:05 +0200,
+Jason Ormes wrote:
+> 
+> Signed-off-by: Jason Ormes <skryking@gmail.com>
 
-Thank you for your contributions.
-
-rc-core (drivers/media/rc) is in good shape and I don't know of any
-outstanding issues.
-
-There is a ton of work around dvb, but this requires actual dvb hardware
-to test.
-
- - port drivers/media/usb/dvb-usb to drivers/media/usb/dvb-usb-v2
- - Re-write dvb frontend without dvb_attach()
- - Implement dma-buf for dvb
-
-Like I said, you'll need actual hardware to test against, and this is
-probably not beginner tasks.
+Could you give a bit more description?
+e.g. does the device work fully compatibly?
 
 
-Sean
+thanks,
+
+Takashi
+
+> ---
+>  sound/usb/format.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/sound/usb/format.c b/sound/usb/format.c
+> index 50efccbffb8a..e8fc2c350a9f 100644
+> --- a/sound/usb/format.c
+> +++ b/sound/usb/format.c
+> @@ -414,6 +414,7 @@ static int line6_parse_audio_format_rates_quirk(struct snd_usb_audio *chip,
+>  	case USB_ID(0x0e41, 0x4242): /* Line6 Helix Rack */
+>  	case USB_ID(0x0e41, 0x4244): /* Line6 Helix LT */
+>  	case USB_ID(0x0e41, 0x4246): /* Line6 HX-Stomp */
+> +        case USB_ID(0x0e41, 0x4253): /* Line6 HX-Stomp XL*/
+>  	case USB_ID(0x0e41, 0x4247): /* Line6 Pod Go */
+>  	case USB_ID(0x0e41, 0x4248): /* Line6 Helix >= fw 2.82 */
+>  	case USB_ID(0x0e41, 0x4249): /* Line6 Helix Rack >= fw 2.82 */
+> -- 
+> 2.25.1
+> 
