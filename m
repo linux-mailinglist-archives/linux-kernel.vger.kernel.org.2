@@ -2,187 +2,327 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96B3E44086A
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 12:49:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 386A144086E
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 12:56:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231867AbhJ3Kv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Oct 2021 06:51:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52074 "EHLO mail.kernel.org"
+        id S231862AbhJ3K7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Oct 2021 06:59:01 -0400
+Received: from mga05.intel.com ([192.55.52.43]:65390 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231792AbhJ3Kv6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Oct 2021 06:51:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DA9660E8C;
-        Sat, 30 Oct 2021 10:49:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635590968;
-        bh=ZE/o+fUX5RaL/VjvUwFdpZGdN23FV+1R7Ljx1EF+sCw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=NmXin4ZGfDks2/+yfAHEHKPR2CqPCUFGBVBWt+X7llbibQM86ke0psy78z3xirXlW
-         BTIM0DEg+OKRm7ZCqMDlgXu/q6SH9CE1t0Piv3fWgkB5dpU6zNXwCE/+sHkGcGae3r
-         g2TyMvKagYdp4x4yiXP1wJIfXozrDQL9+bbAV4XgE19vdZhfjj+FENetLydg2CZ+iC
-         kk1pS8Oyzj4+mF6rT2BGKou+4gGarAiqu465MQ8vOgPvJ+edJguFzo9V0tCFTVu0iA
-         KVUAKvLIej7fCD73bmi9N3JgxDvS0dSxawuj/tH3qLrSt/sgnXYsjNDCjhxnojWXPa
-         8XPfgJhFS7hbg==
-Date:   Sat, 30 Oct 2021 11:49:23 +0100
-From:   Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     Tsuchiya Yuto <kitakar@gmail.com>
-Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Nable <nable.maininbox@googlemail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Fabio Aiuto <fabioaiuto83@gmail.com>,
-        "andrey.i.trufanov" <andrey.i.trufanov@gmail.com>,
-        Patrik Gfeller <patrik.gfeller@gmail.com>
-Subject: Re: [PATCH 00/17] various fixes for atomisp to make it work
-Message-ID: <20211030114923.4feb5a4d@sal.lan>
-In-Reply-To: <1a1da60c4464bd163e9c401e04db3b58172ae7fc.camel@gmail.com>
-References: <20211017161958.44351-1-kitakar@gmail.com>
-        <00dd9a0286e194696f6cc083a98de47d709b1d9e.camel@gmail.com>
-        <20211028115802.49258990@sal.lan>
-        <1a1da60c4464bd163e9c401e04db3b58172ae7fc.camel@gmail.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S231815AbhJ3K7A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Oct 2021 06:59:00 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10152"; a="317009386"
+X-IronPort-AV: E=Sophos;i="5.87,195,1631602800"; 
+   d="scan'208";a="317009386"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2021 03:56:30 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,195,1631602800"; 
+   d="scan'208";a="448407728"
+Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
+  by orsmga006.jf.intel.com with ESMTP; 30 Oct 2021 03:56:29 -0700
+Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mgm2G-0001IN-Bk; Sat, 30 Oct 2021 10:56:28 +0000
+Date:   Sat, 30 Oct 2021 18:56:14 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars:for-next/kspp-misc-fixes] BUILD SUCCESS
+ 71e4bbca070e84b85ee2f1748caf92f97e091c7b
+Message-ID: <617d24ce.Q4XaGOPJUs1caWF2%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sat, 30 Oct 2021 18:50:14 +0900
-Tsuchiya Yuto <kitakar@gmail.com> escreveu:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git for-next/kspp-misc-fixes
+branch HEAD: 71e4bbca070e84b85ee2f1748caf92f97e091c7b  nouveau/svm: Use kvcalloc() instead of kvzalloc()
 
-> On Thu, 2021-10-28 at 11:58 +0100, Mauro Carvalho Chehab wrote:
-> > Em Thu, 28 Oct 2021 13:32:29 +0900
-> > Tsuchiya Yuto <kitakar@gmail.com> escreveu:
-> >   
-> > > <Fixed Cc list>
-> > > 
-> > > On Mon, 2021-10-18 at 01:19 +0900, Tsuchiya Yuto wrote:  
-> > > > [...]
-> > > >   ## taking a picture with atomisp
-> > > > 
-> > > > Note that to try to take a picture, please also apply at least the
-> > > > this RFC patch ("[BUG][RFC] media: atomisp: pci: assume run_mode is
-> > > > PREVIEW") I'll send as almost a BUG report later.
-> > > > 
-> > > > You need to use firmware version irci_stable_candrpv_0415_20150521_0458,
-> > > > which is available from the intel-aero [1]    
-> > > 
-> > > Just in case, the hash (as well as version) of firmware which I
-> > > downloaded from intel-aero and I use to capture is the following:
-> > > 
-> > >         $ sha256sum /lib/firmware/shisp_2401a0_v21.bin
-> > >         e89359f4e4934c410c83d525e283f34c5fcce9cb5caa75ad8a32d66d3842d95c  /lib/firmware/shisp_2401a0_v21.bin
-> > > 
-> > >         $ strings /lib/firmware/shisp_2401a0_v21.bin | grep 2015
-> > >         irci_stable_candrpv_0415_20150521_0458  
-> 
-> Also note that the firmware file from the intel-aero only supports
-> hw_revision 2401a0_v21 as the filename implies. So, if someone have
-> Bay Trail (ISP2400) device to test, you need to get a firmware file (from
-> somewhere like Android installation/image as the initial commit of atomisp
-> mentions) made for version irci_stable_candrpv_0415_20150521_0458 and
-> hw_revision 2400b0_v21 then place it under /lib/firmware
+elapsed time: 2445m
 
-Yeah, understood.
+configs tested: 265
+configs skipped: 3
 
-> > > > The atomisp (ipu2), like the ipu3, needs userspace support. The libcamera
-> > > > has now decent ipu3 support but does not have atomisp support yet.
-> > > > 
-> > > > I found some userspace tools for atomisp that run on Linux:
-> > > > 
-> > > >   - capturev4l2 from intel-aero/sample-apps
-> > > >     (https://github.com/intel-aero/sample-apps/tree/master/capturev4l2)
-> > > >   - hd-camera from intel-aero/sample-apps
-> > > >     (https://github.com/intel-aero/sample-apps/tree/master/hd-camera)
-> > > >   - intel/nvt
-> > > >     (https://github.com/intel/nvt)
-> > > > 
-> > > > It looks like the nvt is the most feature-rich, like exposure and white
-> > > > balance. Note that current upstreamed atomisp dropped 32-bit support.
-> > > > So, you need to build it with `-m64` (change it in Makefile). Here is
-> > > > the example of usage I use on mipad2:
-> > > > 
-> > > >         $ ./v4l2n -o testimage_@.raw \
-> > > >                 --device /dev/video2 \
-> > > >                 --input 0 \
-> > > >                 --exposure=30000,30000,30000,30000 \
-> > > >                 --parm type=1,capturemode=CI_MODE_PREVIEW \
-> > > >                 --fmt type=1,width=1920,height=1080,pixelformat=NV12 \
-> > > >                 --reqbufs count=2,memory=USERPTR \
-> > > >                 --parameters=wb_config.r=32768,wb_config.gr=21043,wb_config.gb=21043,wb_config.b=30863 \
-> > > >                 --capture=2 \
-> > > > 
-> > > >         ./raw2pnm -x1920 -y1080 -fNV12 testimage_001.raw testimage_001.pnm
-> > > >         feh *.pnm # open the converted image
-> > > >         rm testimage*  
-> > 
-> > Great! that worked for me too on Asus T101HA (CHT). I had to tweak the
-> > resolution, as ov2680 sensor has a max of 1616x1216 30fps. I had
-> > to use a number smaller than that, though (1600x1200).  
-> 
-> Ah, glad to hear that!
-> 
-> > I guess the next step is to make a generic app to also work on it.   
-> 
-> It's great if we can eventually add atomisp support to the libcamera.
-> I think this is the easiest way to support generic apps (I mean, like
-> cheese). Some ipu3 cameras already work on cheese with libcamera.
-> I don't have any knowledge about userspace support though.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-There are a lot more to be done in order to make it ready for libcamera
-(if ever).
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20211028
+powerpc              randconfig-c003-20211028
+mips                        workpad_defconfig
+mips                malta_qemu_32r6_defconfig
+mips                         tb0226_defconfig
+mips                      maltasmvp_defconfig
+s390                       zfcpdump_defconfig
+powerpc                 mpc8272_ads_defconfig
+arc                              alldefconfig
+sh                            shmin_defconfig
+powerpc                 canyonlands_defconfig
+mips                        vocore2_defconfig
+sh                          landisk_defconfig
+um                           x86_64_defconfig
+sh                           se7751_defconfig
+arm                          exynos_defconfig
+m68k                          multi_defconfig
+m68k                            q40_defconfig
+powerpc                          g5_defconfig
+m68k                         amcore_defconfig
+sh                            hp6xx_defconfig
+mips                 decstation_r4k_defconfig
+m68k                             alldefconfig
+arm                          iop32x_defconfig
+mips                       rbtx49xx_defconfig
+sh                           se7721_defconfig
+sh                          lboxre2_defconfig
+powerpc               mpc834x_itxgp_defconfig
+sh                        apsh4ad0a_defconfig
+arm                        magician_defconfig
+mips                   sb1250_swarm_defconfig
+arm                    vt8500_v6_v7_defconfig
+mips                           xway_defconfig
+parisc                generic-64bit_defconfig
+powerpc                     pseries_defconfig
+arm                          ixp4xx_defconfig
+arm                        trizeps4_defconfig
+mips                         rt305x_defconfig
+mips                     cu1830-neo_defconfig
+powerpc                       eiger_defconfig
+arm                            lart_defconfig
+arc                 nsimosci_hs_smp_defconfig
+mips                      loongson3_defconfig
+arm                            mps2_defconfig
+arm                           sama7_defconfig
+powerpc                      ppc64e_defconfig
+arm                            hisi_defconfig
+powerpc                      ppc40x_defconfig
+xtensa                  cadence_csp_defconfig
+arc                                 defconfig
+mips                  decstation_64_defconfig
+sh                        edosk7705_defconfig
+powerpc                 mpc832x_rdb_defconfig
+mips                      malta_kvm_defconfig
+m68k                        mvme16x_defconfig
+sh                             shx3_defconfig
+sh                  sh7785lcr_32bit_defconfig
+arm                       omap2plus_defconfig
+powerpc                     redwood_defconfig
+m68k                          atari_defconfig
+mips                        jmr3927_defconfig
+mips                  maltasmvp_eva_defconfig
+powerpc                 linkstation_defconfig
+sh                     sh7710voipgw_defconfig
+powerpc                 mpc836x_mds_defconfig
+openrisc                         alldefconfig
+arm                         bcm2835_defconfig
+sh                          kfr2r09_defconfig
+parisc                generic-32bit_defconfig
+sh                         apsh4a3a_defconfig
+mips                           rs90_defconfig
+powerpc                     mpc83xx_defconfig
+mips                            gpr_defconfig
+arm                          collie_defconfig
+arm                              alldefconfig
+mips                      fuloong2e_defconfig
+arm                           h3600_defconfig
+arm                         s5pv210_defconfig
+s390                             alldefconfig
+xtensa                         virt_defconfig
+ia64                          tiger_defconfig
+arc                            hsdk_defconfig
+arm                         lubbock_defconfig
+arc                     nsimosci_hs_defconfig
+sh                           se7750_defconfig
+mips                         bigsur_defconfig
+sh                          sdk7786_defconfig
+riscv             nommu_k210_sdcard_defconfig
+riscv                    nommu_k210_defconfig
+m68k                       m5475evb_defconfig
+sh                           se7724_defconfig
+powerpc                    mvme5100_defconfig
+m68k                        mvme147_defconfig
+arm                         socfpga_defconfig
+arm                            pleb_defconfig
+openrisc                    or1ksim_defconfig
+sh                 kfr2r09-romimage_defconfig
+powerpc                mpc7448_hpc2_defconfig
+h8300                            alldefconfig
+powerpc                      pasemi_defconfig
+arc                     haps_hs_smp_defconfig
+riscv                            alldefconfig
+arc                          axs101_defconfig
+powerpc                      pcm030_defconfig
+xtensa                    smp_lx200_defconfig
+powerpc                 mpc836x_rdk_defconfig
+m68k                            mac_defconfig
+um                               alldefconfig
+arm                             pxa_defconfig
+sh                          polaris_defconfig
+mips                          rm200_defconfig
+powerpc                     rainier_defconfig
+arm                             rpc_defconfig
+powerpc                      ppc6xx_defconfig
+arm                         shannon_defconfig
+nios2                         10m50_defconfig
+arm64                            alldefconfig
+powerpc                        warp_defconfig
+mips                          ath25_defconfig
+powerpc                    amigaone_defconfig
+powerpc                 xes_mpc85xx_defconfig
+mips                     decstation_defconfig
+arc                           tb10x_defconfig
+powerpc                     tqm8541_defconfig
+sh                          rsk7269_defconfig
+sh                               j2_defconfig
+arm                        multi_v5_defconfig
+arm                     davinci_all_defconfig
+arm                       aspeed_g5_defconfig
+arm                           omap1_defconfig
+arm                          lpd270_defconfig
+arm                  colibri_pxa300_defconfig
+arm                       cns3420vb_defconfig
+powerpc                 mpc837x_mds_defconfig
+powerpc                     kmeter1_defconfig
+openrisc                  or1klitex_defconfig
+sh                           sh2007_defconfig
+powerpc                  iss476-smp_defconfig
+mips                         tb0219_defconfig
+arm                          ep93xx_defconfig
+powerpc                  mpc885_ads_defconfig
+microblaze                          defconfig
+powerpc                 mpc837x_rdb_defconfig
+mips                         tb0287_defconfig
+arm                       imx_v4_v5_defconfig
+arm                          pcm027_defconfig
+ia64                         bigsur_defconfig
+arm                        mvebu_v5_defconfig
+arm                   milbeaut_m10v_defconfig
+arm                  randconfig-c002-20211028
+arm                  randconfig-c002-20211029
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nds32                             allnoconfig
+arc                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+h8300                            allyesconfig
+xtensa                           allyesconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                                defconfig
+parisc                           allyesconfig
+s390                             allmodconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                              debian-10.3
+i386                             allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a002-20211028
+x86_64               randconfig-a004-20211028
+x86_64               randconfig-a005-20211028
+x86_64               randconfig-a001-20211028
+x86_64               randconfig-a006-20211028
+x86_64               randconfig-a003-20211028
+i386                 randconfig-a004-20211028
+i386                 randconfig-a003-20211028
+i386                 randconfig-a002-20211028
+i386                 randconfig-a006-20211028
+i386                 randconfig-a001-20211028
+i386                 randconfig-a005-20211028
+x86_64               randconfig-a015-20211029
+x86_64               randconfig-a013-20211029
+x86_64               randconfig-a011-20211029
+x86_64               randconfig-a014-20211029
+x86_64               randconfig-a012-20211029
+x86_64               randconfig-a016-20211029
+i386                 randconfig-a012-20211029
+i386                 randconfig-a013-20211029
+i386                 randconfig-a011-20211029
+i386                 randconfig-a015-20211029
+i386                 randconfig-a016-20211029
+i386                 randconfig-a014-20211029
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+riscv                            allyesconfig
+x86_64                    rhel-8.3-kselftests
+um                             i386_defconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                                  kexec
+x86_64                           allyesconfig
 
-See, libcamera assumes that the device exports its internal pipelines
-via the media controller. The atomisp code setups such pipelines
-internally, exposing a "normal" [1] V4L2 interface.
+clang tested configs:
+arm                  randconfig-c002-20211028
+powerpc              randconfig-c003-20211028
+riscv                randconfig-c006-20211028
+x86_64               randconfig-c007-20211028
+mips                 randconfig-c004-20211028
+s390                 randconfig-c005-20211028
+i386                 randconfig-c001-20211028
+arm                  randconfig-c002-20211029
+powerpc              randconfig-c003-20211029
+riscv                randconfig-c006-20211029
+x86_64               randconfig-c007-20211029
+mips                 randconfig-c004-20211029
+s390                 randconfig-c005-20211029
+i386                 randconfig-c001-20211029
+x86_64               randconfig-a005-20211030
+x86_64               randconfig-a004-20211030
+x86_64               randconfig-a002-20211030
+x86_64               randconfig-a003-20211030
+x86_64               randconfig-a001-20211030
+x86_64               randconfig-a006-20211030
+i386                 randconfig-a004-20211029
+i386                 randconfig-a003-20211029
+i386                 randconfig-a002-20211029
+i386                 randconfig-a001-20211029
+i386                 randconfig-a006-20211029
+i386                 randconfig-a005-20211029
+x86_64               randconfig-a015-20211028
+x86_64               randconfig-a013-20211028
+x86_64               randconfig-a011-20211028
+x86_64               randconfig-a014-20211028
+x86_64               randconfig-a012-20211028
+x86_64               randconfig-a016-20211028
+i386                 randconfig-a012-20211028
+i386                 randconfig-a013-20211028
+i386                 randconfig-a011-20211028
+i386                 randconfig-a015-20211028
+i386                 randconfig-a016-20211028
+i386                 randconfig-a014-20211028
+hexagon              randconfig-r045-20211028
+riscv                randconfig-r042-20211028
+s390                 randconfig-r044-20211028
+hexagon              randconfig-r041-20211028
+hexagon              randconfig-r045-20211029
+hexagon              randconfig-r041-20211029
 
-[1] Well, it misses several V4L2 ioctl implementations that currently
-    causes generic applications to fail, and mis-implement others,
-    but the idea behind the driver is to fully control the driver via
-    /dev/video? nodes, without requiring the media controller API.
-
-Converting atomisp into a media-controller driver will require a
-major rework. I suspect that it is a lot easier to make it work with
-normal V4L2 applications by fixing the ioctl implementation than
-to port it to MC.
-
-Yet, in order to be able to move it from staging, we'll need to convert
-it into an MC-controlled driver.
-
-What I'm saying is that, IMHO, we should:
-
-1. Fix the ioctls in order to allow a normal app to use it. I'm
-   already doing some work on this sense. We should ensure that the
-   driver will pass v4l2-compliance tests on this step;
-
-2. remove VIDEO_ATOMISP_ISP2401, making the driver to auto-detect the
-   register address differences between ISP2400 and ISP2401;
-
-3. Cleanup the driver code, removing the abstraction layers inside it;
-
-4. Migrate the sensor drivers out of staging (or re-using existing
-   drivers);
-
-5. Remove the logic which sets up pipelines inside it, moving it to
-   libcamera and implement MC support;
-
-6. Move it out of staging.
-
-This is easily said than done, as steps 2-6 are very complex and will
-require lots of work. Also, both ISP2400 and 2401 should be tested
-while doing some of those major reworks, in order to avoid breakages.
-
-Btw, v4l2grab app (at v4l-utils) already works. This is a very simple
-app, written to allow stream testing. It doesn't do anything fancy,
-like trying to enumerate the formats, and it needs to be set to a
-resolution lower than the one announced by the sensor, probably due
-to some bug at the COPY pipeline settings at atomisp driver.
-
-qv4l2, for instance, causes a driver OOPS when it calls G/S_PRIORITY 
-ioctls.
-
-Regards,
-Mauro
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
