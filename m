@@ -2,320 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B0E8440710
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 05:17:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1A52440713
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 05:19:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231714AbhJ3DTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Oct 2021 23:19:24 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:26210 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229921AbhJ3DTU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Oct 2021 23:19:20 -0400
-Received: from dggeme706-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Hh4DW4DwVz8tbV;
-        Sat, 30 Oct 2021 11:15:23 +0800 (CST)
-Received: from huawei.com (10.67.174.53) by dggeme706-chm.china.huawei.com
- (10.1.199.102) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.15; Sat, 30
- Oct 2021 11:16:47 +0800
-From:   Liao Chang <liaochang1@huawei.com>
-To:     <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
-        <aou@eecs.berkeley.edu>, <ebiederm@xmission.com>,
-        <mick@ics.forth.gr>, <jszhang@kernel.org>,
-        <guoren@linux.alibaba.com>, <penberg@kernel.org>,
-        <sunnanyong@huawei.com>, <wangkefeng.wang@huawei.com>,
-        <changbin.du@intel.com>, <alex@ghiti.fr>
-CC:     <liaochang1@huawei.com>, <linux-riscv@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kexec@lists.infradead.org>
-Subject: [PATCH 3/3] RISC-V: Add kexec_file support
-Date:   Sat, 30 Oct 2021 11:18:32 +0800
-Message-ID: <20211030031832.165457-4-liaochang1@huawei.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211030031832.165457-1-liaochang1@huawei.com>
-References: <20211030031832.165457-1-liaochang1@huawei.com>
+        id S231699AbhJ3DVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Oct 2021 23:21:52 -0400
+Received: from mga02.intel.com ([134.134.136.20]:47951 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230506AbhJ3DVv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Oct 2021 23:21:51 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10152"; a="217976881"
+X-IronPort-AV: E=Sophos;i="5.87,194,1631602800"; 
+   d="scan'208";a="217976881"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2021 20:19:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,194,1631602800"; 
+   d="scan'208";a="499159580"
+Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
+  by orsmga008.jf.intel.com with ESMTP; 29 Oct 2021 20:19:20 -0700
+Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mgetr-0000zo-Qu; Sat, 30 Oct 2021 03:19:19 +0000
+Date:   Sat, 30 Oct 2021 11:19:02 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/apic] BUILD SUCCESS
+ cc95a07fef06a2c7917acd827b3a8322772969eb
+Message-ID: <617cb9a6.cEF8oqZ07ghlXMyz%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.174.53]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggeme706-chm.china.huawei.com (10.1.199.102)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds support for kexec_file on RISC-V. I tested it on riscv64
-QEMU with busybear-linux and single core along with the OpenSBI firmware
-fw_jump.bin for generic platform.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/apic
+branch HEAD: cc95a07fef06a2c7917acd827b3a8322772969eb  x86/apic: Reduce cache line misses in __x2apic_send_IPI_mask()
 
-On SMP system, it depends on CONFIG_{HOTPLUG_CPU, RISCV_SBI} to
-resume/stop hart through OpenSBI firmware, it also needs a OpenSBI that
-support the HSM extension.
+elapsed time: 1146m
 
-Signed-off-by: Liao Chang <liaochang1@huawei.com>
+configs tested: 177
+configs skipped: 120
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20211028
+powerpc              randconfig-c003-20211028
+s390                       zfcpdump_defconfig
+powerpc                 mpc8272_ads_defconfig
+arc                              alldefconfig
+sh                            shmin_defconfig
+powerpc                 canyonlands_defconfig
+mips                        vocore2_defconfig
+powerpc               mpc834x_itxgp_defconfig
+m68k                         amcore_defconfig
+sh                        apsh4ad0a_defconfig
+arm                        magician_defconfig
+mips                   sb1250_swarm_defconfig
+arc                                 defconfig
+mips                  decstation_64_defconfig
+sh                        edosk7705_defconfig
+arm                       omap2plus_defconfig
+powerpc                     redwood_defconfig
+m68k                          atari_defconfig
+mips                        jmr3927_defconfig
+um                           x86_64_defconfig
+mips                      fuloong2e_defconfig
+arm                           h3600_defconfig
+arm                         s5pv210_defconfig
+s390                             alldefconfig
+xtensa                         virt_defconfig
+ia64                          tiger_defconfig
+arc                            hsdk_defconfig
+arm                         lubbock_defconfig
+arc                     nsimosci_hs_defconfig
+powerpc                      obs600_defconfig
+mips                      bmips_stb_defconfig
+arm                             rpc_defconfig
+arm                         socfpga_defconfig
+mips                      malta_kvm_defconfig
+arm                            pleb_defconfig
+openrisc                    or1ksim_defconfig
+sh                 kfr2r09-romimage_defconfig
+sh                         apsh4a3a_defconfig
+powerpc                mpc7448_hpc2_defconfig
+h8300                            alldefconfig
+sh                          lboxre2_defconfig
+arm                             pxa_defconfig
+sh                          polaris_defconfig
+mips                          rm200_defconfig
+mips                malta_qemu_32r6_defconfig
+m68k                        mvme147_defconfig
+arm                         shannon_defconfig
+powerpc                     tqm8541_defconfig
+mips                             allyesconfig
+sh                               j2_defconfig
+arm                        multi_v5_defconfig
+arm                     davinci_all_defconfig
+arm                       aspeed_g5_defconfig
+arm                           omap1_defconfig
+arm                          lpd270_defconfig
+arm                  colibri_pxa300_defconfig
+riscv                            alldefconfig
+arm                       cns3420vb_defconfig
+powerpc                 mpc837x_mds_defconfig
+powerpc                     kmeter1_defconfig
+powerpc                    klondike_defconfig
+powerpc                 mpc8560_ads_defconfig
+arm                           stm32_defconfig
+microblaze                      mmu_defconfig
+mips                         tb0287_defconfig
+arm                       imx_v4_v5_defconfig
+sh                           se7750_defconfig
+arm                          pcm027_defconfig
+ia64                         bigsur_defconfig
+powerpc                    ge_imp3a_defconfig
+powerpc                    socrates_defconfig
+arm64                            alldefconfig
+powerpc                      arches_defconfig
+powerpc                     tqm8548_defconfig
+arm                  randconfig-c002-20211028
+arm                  randconfig-c002-20211029
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                                defconfig
+parisc                           allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                              debian-10.3
+i386                             allyesconfig
+arc                              allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a002-20211028
+x86_64               randconfig-a004-20211028
+x86_64               randconfig-a005-20211028
+x86_64               randconfig-a001-20211028
+x86_64               randconfig-a006-20211028
+x86_64               randconfig-a003-20211028
+i386                 randconfig-a004-20211028
+i386                 randconfig-a003-20211028
+i386                 randconfig-a002-20211028
+i386                 randconfig-a006-20211028
+i386                 randconfig-a001-20211028
+i386                 randconfig-a005-20211028
+x86_64               randconfig-a015-20211029
+x86_64               randconfig-a013-20211029
+x86_64               randconfig-a011-20211029
+x86_64               randconfig-a014-20211029
+x86_64               randconfig-a012-20211029
+x86_64               randconfig-a016-20211029
+i386                 randconfig-a012-20211029
+i386                 randconfig-a013-20211029
+i386                 randconfig-a011-20211029
+i386                 randconfig-a015-20211029
+i386                 randconfig-a016-20211029
+i386                 randconfig-a014-20211029
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+riscv                            allyesconfig
+x86_64                    rhel-8.3-kselftests
+um                             i386_defconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                                  kexec
+x86_64                           allyesconfig
+
+clang tested configs:
+arm                  randconfig-c002-20211028
+powerpc              randconfig-c003-20211028
+riscv                randconfig-c006-20211028
+x86_64               randconfig-c007-20211028
+mips                 randconfig-c004-20211028
+s390                 randconfig-c005-20211028
+i386                 randconfig-c001-20211028
+arm                  randconfig-c002-20211029
+powerpc              randconfig-c003-20211029
+riscv                randconfig-c006-20211029
+x86_64               randconfig-c007-20211029
+mips                 randconfig-c004-20211029
+s390                 randconfig-c005-20211029
+i386                 randconfig-c001-20211029
+x86_64               randconfig-a015-20211028
+x86_64               randconfig-a013-20211028
+x86_64               randconfig-a011-20211028
+x86_64               randconfig-a014-20211028
+x86_64               randconfig-a012-20211028
+x86_64               randconfig-a016-20211028
+i386                 randconfig-a012-20211028
+i386                 randconfig-a013-20211028
+i386                 randconfig-a011-20211028
+i386                 randconfig-a015-20211028
+i386                 randconfig-a016-20211028
+i386                 randconfig-a014-20211028
+hexagon              randconfig-r045-20211029
+hexagon              randconfig-r041-20211029
+hexagon              randconfig-r045-20211028
+riscv                randconfig-r042-20211028
+s390                 randconfig-r044-20211028
+hexagon              randconfig-r041-20211028
+
 ---
- arch/riscv/Kconfig                     |  11 ++
- arch/riscv/include/asm/kexec.h         |   4 +
- arch/riscv/kernel/Makefile             |   1 +
- arch/riscv/kernel/elf_kexec.c          | 180 +++++++++++++++++++++++++
- arch/riscv/kernel/machine_kexec_file.c |  14 ++
- 5 files changed, 210 insertions(+)
- create mode 100644 arch/riscv/kernel/elf_kexec.c
- create mode 100644 arch/riscv/kernel/machine_kexec_file.c
-
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 301a54233c7e..5ebe8272dec7 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -410,6 +410,17 @@ config KEXEC
- 
- 	  The name comes from the similarity to the exec system call.
- 
-+config KEXEC_FILE
-+	bool "kexec file based systmem call"
-+	select KEXEC_CORE
-+	select KEXEC_ELF
-+	select HAVE_IMA_KEXEC if IMA
-+	help
-+	  This is new version of kexec system call. This system call is
-+	  file based and takes file descriptors as system call argument
-+	  for kernel and initramfs as opposed to list of segments as
-+	  accepted by previous system call.
-+
- config CRASH_DUMP
- 	bool "Build kdump crash kernel"
- 	help
-diff --git a/arch/riscv/include/asm/kexec.h b/arch/riscv/include/asm/kexec.h
-index e4e291d40759..206217b23301 100644
---- a/arch/riscv/include/asm/kexec.h
-+++ b/arch/riscv/include/asm/kexec.h
-@@ -53,4 +53,8 @@ typedef void (*riscv_kexec_method)(unsigned long first_ind_entry,
- 
- extern riscv_kexec_method riscv_kexec_norelocate;
- 
-+#ifdef CONFIG_KEXEC_FILE
-+extern const struct kexec_file_ops elf_kexec_ops;
-+#endif
-+
- #endif
-diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
-index 3397ddac1a30..8a27639d512a 100644
---- a/arch/riscv/kernel/Makefile
-+++ b/arch/riscv/kernel/Makefile
-@@ -60,6 +60,7 @@ endif
- obj-$(CONFIG_HOTPLUG_CPU)	+= cpu-hotplug.o
- obj-$(CONFIG_KGDB)		+= kgdb.o
- obj-$(CONFIG_KEXEC)		+= kexec_relocate.o crash_save_regs.o machine_kexec.o
-+obj-$(CONFIG_KEXEC_FILE)	+= elf_kexec.o machine_kexec_file.o
- obj-$(CONFIG_CRASH_DUMP)	+= crash_dump.o
- 
- obj-$(CONFIG_JUMP_LABEL)	+= jump_label.o
-diff --git a/arch/riscv/kernel/elf_kexec.c b/arch/riscv/kernel/elf_kexec.c
-new file mode 100644
-index 000000000000..269be9f9edb8
---- /dev/null
-+++ b/arch/riscv/kernel/elf_kexec.c
-@@ -0,0 +1,180 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Load ELF vmlinux file for the kexec_file_load syscall.
-+ *
-+ * Copyright (C) 2021 Huawei Technologies Co, Ltd.
-+ *
-+ * Author: Liao Chang (liaochang1@huawei.com)
-+ *
-+ * Based on kexec-tools' kexec-elf-riscv.c, heavily modified
-+ * for kernel.
-+ */
-+
-+#define pr_fmt(fmt)	"kexec_image: " fmt
-+
-+#include <linux/elf.h>
-+#include <linux/kexec.h>
-+#include <linux/slab.h>
-+#include <linux/of.h>
-+#include <linux/libfdt.h>
-+#include <linux/types.h>
-+
-+static int riscv_kexec_elf_load(struct kimage *image, struct elfhdr *ehdr,
-+				struct kexec_elf_info *elf_info, unsigned long old_pbase,
-+				unsigned long new_pbase)
-+{
-+	int i;
-+	int ret = 0;
-+	size_t size;
-+	struct kexec_buf kbuf;
-+	const struct elf_phdr *phdr;
-+
-+	kbuf.image = image;
-+
-+	for (i = 0; i < ehdr->e_phnum; i++) {
-+		phdr = &elf_info->proghdrs[i];
-+		if (phdr->p_type != PT_LOAD)
-+			continue;
-+
-+		size = phdr->p_filesz;
-+		if (size > phdr->p_memsz)
-+			size = phdr->p_memsz;
-+
-+		kbuf.buffer = (void *) elf_info->buffer + phdr->p_offset;
-+		kbuf.bufsz = size;
-+		kbuf.buf_align = phdr->p_align;
-+		kbuf.mem = phdr->p_paddr - old_pbase + new_pbase;
-+		kbuf.memsz = phdr->p_memsz;
-+		kbuf.top_down = false;
-+		ret = kexec_add_buffer(&kbuf);
-+		if (ret)
-+			break;
-+	}
-+
-+	return ret;
-+}
-+
-+/*
-+ * Go through the available phsyical memory regions and find one that hold
-+ * an image of the specified size.
-+ */
-+static int elf_find_pbase(struct kimage *image, unsigned long kernel_len,
-+				struct elfhdr *ehdr, struct kexec_elf_info *elf_info,
-+				unsigned long *old_pbase, unsigned long *new_pbase)
-+{
-+	int i;
-+	int ret;
-+	struct kexec_buf kbuf;
-+	const struct elf_phdr *phdr;
-+	unsigned long lowest_paddr = ULONG_MAX;
-+	unsigned long lowest_vaddr = ULONG_MAX;
-+
-+	for (i = 0; i < ehdr->e_phnum; i++) {
-+		phdr = &elf_info->proghdrs[i];
-+		if (phdr->p_type != PT_LOAD)
-+			continue;
-+
-+		if (lowest_paddr > phdr->p_paddr)
-+			lowest_paddr = phdr->p_paddr;
-+
-+		if (lowest_vaddr > phdr->p_vaddr)
-+			lowest_vaddr = phdr->p_vaddr;
-+	}
-+
-+	kbuf.image = image;
-+	kbuf.buf_min = lowest_paddr;
-+	kbuf.buf_max = ULONG_MAX;
-+	kbuf.buf_align = PAGE_SIZE;
-+	kbuf.mem = KEXEC_BUF_MEM_UNKNOWN;
-+	kbuf.memsz = ALIGN(kernel_len, PAGE_SIZE);
-+	kbuf.top_down = false;
-+	ret = arch_kexec_locate_mem_hole(&kbuf);
-+	if (!ret) {
-+		*old_pbase = lowest_paddr;
-+		*new_pbase = kbuf.mem;
-+		image->start = ehdr->e_entry - lowest_vaddr + kbuf.mem;
-+	}
-+	return ret;
-+}
-+
-+static void *elf_kexec_load(struct kimage *image, char *kernel_buf,
-+							unsigned long kernel_len, char *initrd,
-+							unsigned long initrd_len, char *cmdline,
-+							unsigned long cmdline_len)
-+{
-+	int ret;
-+	unsigned long old_kernel_pbase = ULONG_MAX;
-+	unsigned long new_kernel_pbase = 0UL;
-+	unsigned long initrd_pbase = 0UL;
-+	void *fdt;
-+	struct elfhdr ehdr;
-+	struct kexec_buf kbuf;
-+	struct kexec_elf_info elf_info;
-+
-+	ret = kexec_build_elf_info(kernel_buf, kernel_len, &ehdr, &elf_info);
-+	if (ret)
-+		return ERR_PTR(ret);
-+
-+	ret = elf_find_pbase(image, kernel_len, &ehdr, &elf_info,
-+						&old_kernel_pbase, &new_kernel_pbase);
-+	if (ret)
-+		goto out;
-+	pr_notice("The entry point of kernel at 0x%lx\n", image->start);
-+
-+	/* Add the kernel binary to the image */
-+	ret = riscv_kexec_elf_load(image, &ehdr, &elf_info,
-+							old_kernel_pbase, new_kernel_pbase);
-+	if (ret)
-+		goto out;
-+
-+	kbuf.image = image;
-+	kbuf.buf_min = new_kernel_pbase + kernel_len;
-+	kbuf.buf_max = ULONG_MAX;
-+	/* Add the initrd to the image */
-+	if (initrd != NULL) {
-+		kbuf.buffer = initrd;
-+		kbuf.bufsz = kbuf.memsz = initrd_len;
-+		kbuf.buf_align = PAGE_SIZE;
-+		kbuf.top_down = false;
-+		kbuf.mem = KEXEC_BUF_MEM_UNKNOWN;
-+		ret = kexec_add_buffer(&kbuf);
-+		if (ret)
-+			goto out;
-+		initrd_pbase = kbuf.mem;
-+		pr_notice("Loaded initrd at 0x%lx\n", initrd_pbase);
-+	}
-+
-+	/* Add the DTB to the image */
-+	fdt = of_kexec_alloc_and_setup_fdt(image, initrd_pbase,
-+									initrd_len, cmdline, 0);
-+	if (!fdt) {
-+		pr_err("Error setting up the new device tree.\n");
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	fdt_pack(fdt);
-+	kbuf.buffer = fdt;
-+	kbuf.bufsz = kbuf.memsz = fdt_totalsize(fdt);
-+	kbuf.buf_align = PAGE_SIZE;
-+	kbuf.mem = KEXEC_BUF_MEM_UNKNOWN;
-+	kbuf.top_down = true;
-+	ret = kexec_add_buffer(&kbuf);
-+	if (ret) {
-+		pr_err("Error add DTB kbuf ret=%d\n", ret);
-+		goto out_free_fdt;
-+	}
-+	pr_notice("Loaded device tree at 0x%lx\n", kbuf.mem);
-+	goto out;
-+
-+out_free_fdt:
-+	kvfree(fdt);
-+out:
-+	kexec_free_elf_info(&elf_info);
-+	return ret ? ERR_PTR(ret) : NULL;
-+}
-+
-+const struct kexec_file_ops elf_kexec_ops = {
-+	.probe = kexec_elf_probe,
-+	.load  = elf_kexec_load,
-+};
-diff --git a/arch/riscv/kernel/machine_kexec_file.c b/arch/riscv/kernel/machine_kexec_file.c
-new file mode 100644
-index 000000000000..b0bf8c1722c0
---- /dev/null
-+++ b/arch/riscv/kernel/machine_kexec_file.c
-@@ -0,0 +1,14 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * kexec_file for riscv, use vmlinux as the dump-capture kernel image.
-+ *
-+ * Copyright (C) 2021 Huawei Technologies Co, Ltd.
-+ *
-+ * Author: Liao Chang (liaochang1@huawei.com)
-+ */
-+#include <linux/kexec.h>
-+
-+const struct kexec_file_ops * const kexec_file_loaders[] = {
-+	&elf_kexec_ops,
-+	NULL
-+};
--- 
-2.17.1
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
