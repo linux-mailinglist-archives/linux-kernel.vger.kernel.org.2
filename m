@@ -2,145 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE36F44098A
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 16:30:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A85DA44098E
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 16:34:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230153AbhJ3Oc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Oct 2021 10:32:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51306 "EHLO
+        id S230185AbhJ3OhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Oct 2021 10:37:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230025AbhJ3Oc1 (ORCPT
+        with ESMTP id S229585AbhJ3OhJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Oct 2021 10:32:27 -0400
-Received: from mail-vk1-xa35.google.com (mail-vk1-xa35.google.com [IPv6:2607:f8b0:4864:20::a35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAB4FC061764
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Oct 2021 07:29:57 -0700 (PDT)
-Received: by mail-vk1-xa35.google.com with SMTP id e64so5989167vke.4
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Oct 2021 07:29:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VMhKSdU6XagNLXTgt9QjxAYogFasaRabTgH/D5jR5AM=;
-        b=wk4c0Top+HACPm4/cX6Jg9EnZZnbUAD1f7LYK/iZiY50ThuaUqmmSeyOIwmhqsqXG4
-         7xXtrJ55s1G1N/VPfXw7Rlim8Ug0ucHpq751UaXmtKoaHAlm2NS12k02E8C0ao0cK2ig
-         8aOu6Nh7yatfeP1mxj9DshqTTDh5d9hW8Dt5Lc2cpMMEF+2K1IS1beaes+WaBIuV0jq+
-         ZukKhnAmRABQ4iLbTpS6AHmzBYAz8atWqGEjNPnl+oOmtlIrOxD9Y8nEGbZ8XqHe8bxR
-         nwkhuRSNMZTuhbc2b9n7veZyxxE/1IVLxXqbMxhYuuNRy1oiekZlonNLckjYudYC/LpS
-         o/ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VMhKSdU6XagNLXTgt9QjxAYogFasaRabTgH/D5jR5AM=;
-        b=gXyHTjtpPmiYH2tZwT8N58iO/6on5Z9ZahegM5zML2HjJWcCOhGD6ZiXA2m4y1nj38
-         bJKTiENod63IXvpW5JSBT7I1+WwIJ9PWKzHvcW2BRk5JvvOnopghRViSvhC7bA9dLAia
-         YH0NhfB++Ip0yBekPvoErWWOJFnxDzEbUC3g9GbvRoe9c1GHBTlMe4Yxxo4cdTZSu47P
-         Q+GDG2cgttk3U5ekd6VZ7U0dnr2gDoxNDfNwAebWeqtjXVbgJAA9K8yTWvzqXRnZsE0v
-         SEmxWHdWZyH+qNm1j14zXEtkgXe4FuSzsTgQUBKR+0cPdsOpi3KSp8/Mx2A8kwkiGGUH
-         qgwA==
-X-Gm-Message-State: AOAM531ueoTDNo6UaOnT1/J1HwsRswPL+0qy46XnOMtWHUorTJ0+gZJ2
-        HcgHCgGQ4ek0fVLhJT+XuL2JOOZuC0lmoUW74+xbxg==
-X-Google-Smtp-Source: ABdhPJxaZ8cFeixxgFJVOy/L0An8U8TaIKGXQZ6pfcVVK7L6np/koDpst87RmD2gtupsxTmqOU30TOwNGydmoikZF6g=
-X-Received: by 2002:a05:6122:130c:: with SMTP id e12mr7364332vkp.12.1635604196137;
- Sat, 30 Oct 2021 07:29:56 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211028183527.3050-1-semen.protsenko@linaro.org>
- <20211028183527.3050-8-semen.protsenko@linaro.org> <1ad6b625-4388-bc78-e258-eae0b9357b96@roeck-us.net>
-In-Reply-To: <1ad6b625-4388-bc78-e258-eae0b9357b96@roeck-us.net>
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Sat, 30 Oct 2021 17:29:44 +0300
-Message-ID: <CAPLW+4kphtac24fcpVUENAMUAdHp2fkzJ0N_r_63Soq6R2VZBg@mail.gmail.com>
-Subject: Re: [PATCH 7/7] watchdog: s3c2410: Let kernel kick watchdog
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-watchdog@vger.kernel.org,
-        devicetree <devicetree@vger.kernel.org>,
+        Sat, 30 Oct 2021 10:37:09 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97BC2C061570;
+        Sat, 30 Oct 2021 07:34:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ba2xFt3kXSmSTLD8SqkglhCszGSJjIidpOhGBZZRwqs=; b=KxNTFF6MESt7Owjy7Rsimcsszl
+        9FviqkuUnjHAEdEUcpb27yNW2R3RQl4BZ2BpEpgKnVGmCQgS43k8yyDkiEwOmJIXh9ny17Oqy49fk
+        PDzxT4IF3ecJyJ+aS8I9Pl95V3b/lHt+cppYj8q6WWrmZVghxldeDp6c0yugf64yb86maeZhY0XW6
+        M4ELbvaS5q42icbzRDk3cL6+bH2lFgfKSth6aBFEFmuvDPZNSdnDF8V0ZJ41dihgWJ3r1h5l6jHoC
+        2yuB27lUIfCxkj/34CUOzYY9V4KFnELO6o+846IGnZxokUITPIP03oyMWbD8H19o9GstbZWmtYv4X
+        f5ChCmVg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mgpQ1-002TG3-24; Sat, 30 Oct 2021 14:33:22 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C89129816BA; Sat, 30 Oct 2021 16:33:11 +0200 (CEST)
+Date:   Sat, 30 Oct 2021 16:33:11 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        X86 ML <x86@kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH] kbuild: Support clang-$ver builds
+Message-ID: <20211030143311.GH174730@worktop.programming.kicks-ass.net>
+References: <YXqpFHeY26sEbort@hirez.programming.kicks-ass.net>
+ <CAK7LNATUpgfKJvjp0+8H6VfMLMio9+BCoyj00mAO8FcaVGCqjg@mail.gmail.com>
+ <YXqwZq53WUiTeqI7@hirez.programming.kicks-ass.net>
+ <YXqyHhWGJfDkuxjP@hirez.programming.kicks-ass.net>
+ <YXq72/yPe76DhDLu@hirez.programming.kicks-ass.net>
+ <YXrhZoOgv5dtFMTs@archlinux-ax161>
+ <20211028204855.GP174703@worktop.programming.kicks-ass.net>
+ <CAKwvOd=x9E=7WcCiieso-CDiiU-wMFcXL4W3V5j8dq7BL5QT+w@mail.gmail.com>
+ <YXu2z6FQ6Z7qtjbk@hirez.programming.kicks-ass.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YXu2z6FQ6Z7qtjbk@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Oct 2021 at 03:30, Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On 10/28/21 11:35 AM, Sam Protsenko wrote:
-> > When "tmr_atboot" module param is set, the watchdog is started in
-> > driver's probe. In that case, also set WDOG_HW_RUNNING bit to let
-> > watchdog core driver know it's running. This way wathcdog core can kick
-> > the watchdog for us (if CONFIG_WATCHDOG_HANDLE_BOOT_ENABLED option is
-> > enabled), until user space takes control.
-> >
-> > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> > ---
-> >   drivers/watchdog/s3c2410_wdt.c | 26 +++++++++++++++-----------
-> >   1 file changed, 15 insertions(+), 11 deletions(-)
-> >
-> > diff --git a/drivers/watchdog/s3c2410_wdt.c b/drivers/watchdog/s3c2410_wdt.c
-> > index ca082b1226e3..9af014ff1468 100644
-> > --- a/drivers/watchdog/s3c2410_wdt.c
-> > +++ b/drivers/watchdog/s3c2410_wdt.c
-> > @@ -732,6 +732,21 @@ static int s3c2410wdt_probe(struct platform_device *pdev)
-> >       wdt->wdt_device.bootstatus = s3c2410wdt_get_bootstatus(wdt);
-> >       wdt->wdt_device.parent = dev;
-> >
-> > +     /*
-> > +      * If "tmr_atboot" param is non-zero, start the watchdog right now. Also
-> > +      * set WDOG_HW_RUNNING bit, so that watchdog core can kick the watchdog.
-> > +      *
-> > +      * If we're not enabling the watchdog, then ensure it is disabled if it
-> > +      * has been left running from the bootloader or other source.
-> > +      */
-> > +     if (tmr_atboot && started == 0) {
-> > +             dev_info(dev, "starting watchdog timer\n");
-> > +             s3c2410wdt_start(&wdt->wdt_device);
-> > +             set_bit(WDOG_HW_RUNNING, &wdt->wdt_device.status);
-> > +     } else if (!tmr_atboot) {
-> > +             s3c2410wdt_stop(&wdt->wdt_device);
-> > +     }
-> > +
->
-> This doesn't cover the case where the watchdog is already enabled by the BIOS.
-> In that case, WDOG_HW_RUNNING won't be set, and the watchdog will time out
-> if the userspace handler is not loaded fast enough. The code should consistently
-> set WDOG_HW_RUNNING if the watchdog is running.
->
 
-As I understand, in the case when bootloader started the watchdog, the
-driver just stops it. You can see it in the code you replied to.
+Latestest greatness... :-)
 
-    } else if (!tmr_atboot) {
-            s3c2410wdt_stop(&wdt->wdt_device);
+---
+Subject: kbuild: Fix clang/llvm build infra
 
-In other words, having "tmr_atboot" module param makes it irrelevant
-whether bootloader enabled WDT or no.
+Debian (and derived) distros ship their compilers as -$ver suffixed
+binaries. For gcc it is sufficent to use:
 
-> Guenter
->
-> >       ret = watchdog_register_device(&wdt->wdt_device);
-> >       if (ret)
-> >               goto err_cpufreq;
-> > @@ -740,17 +755,6 @@ static int s3c2410wdt_probe(struct platform_device *pdev)
-> >       if (ret < 0)
-> >               goto err_unregister;
-> >
-> > -     if (tmr_atboot && started == 0) {
-> > -             dev_info(dev, "starting watchdog timer\n");
-> > -             s3c2410wdt_start(&wdt->wdt_device);
-> > -     } else if (!tmr_atboot) {
-> > -             /* if we're not enabling the watchdog, then ensure it is
-> > -              * disabled if it has been left running from the bootloader
-> > -              * or other source */
-> > -
-> > -             s3c2410wdt_stop(&wdt->wdt_device);
-> > -     }
-> > -
-> >       platform_set_drvdata(pdev, wdt);
-> >
-> >       /* print out a statement of readiness */
-> >
->
+ $ make CC=gcc-12
+
+However, clang builds (esp. clang-lto) need a whole array of tools to be
+exactly right, leading to unweildy stuff like:
+
+ $ make CC=clang-13 LD=ld.lld=14 AR=llvm-ar-13 NM=llvm-nm-13 OBJCOPY=llvm-objcopy-13 OBJDUMP=llvm-objdump-13 READELF=llvm-readelf-13 STRIP=llvm-strip-13 LLVM=1
+
+which is, quite franktly, totally insane and unusable. Instead make
+the CC variable DTRT, enabling one such as myself to use:
+
+ $ make CC=clang-13
+
+This also lets one quickly test different clang versions.
+Additionally, also support path based LLVM suites like:
+
+ $ make CC=/opt/llvm/bin/clang
+
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ Makefile                       |   45 +++++++++++++++++++++++++++---------
+ tools/scripts/Makefile.include |   50 ++++++++++++++++++++++++++++-------------
+ 2 files changed, 68 insertions(+), 27 deletions(-)
+
+--- a/Makefile
++++ b/Makefile
+@@ -423,9 +423,29 @@ HOST_LFS_CFLAGS := $(shell getconf LFS_C
+ HOST_LFS_LDFLAGS := $(shell getconf LFS_LDFLAGS 2>/dev/null)
+ HOST_LFS_LIBS := $(shell getconf LFS_LIBS 2>/dev/null)
+ 
+-ifneq ($(LLVM),)
+-HOSTCC	= clang
+-HOSTCXX	= clang++
++# powerpc and s390 don't yet work with LLVM as a whole
++ifeq ($(ARCH),powerpc)
++LLVM = 0
++endif
++ifeq ($(ARCH),s390)
++LLVM = 0
++endif
++
++# otherwise, if CC=clang, default to using LLVM to enable LTO
++CC_BASE := $(shell echo $(CC) | sed 's/.*\///')
++CC_NAME := $(shell echo $(CC_BASE) | cut -b "1-5")
++ifeq ($(shell test "$(CC_NAME)" = "clang"; echo $$?),0)
++LLVM ?= 1
++LLVM_PFX := $(shell echo $(CC) | sed 's/\(.*\/\)\?.*/\1/')
++LLVM_SFX := $(shell echo $(CC_BASE) | cut -b "6-")
++endif
++
++# if not set by now, do not use LLVM
++LLVM ?= 0
++
++ifneq ($(LLVM),0)
++HOSTCC	= $(LLVM_PFX)clang$(LLVM_SFX)
++HOSTCXX	= $(LLVM_PFX)clang++$(LLVM_SFX)
+ else
+ HOSTCC	= gcc
+ HOSTCXX	= g++
+@@ -442,15 +462,15 @@ KBUILD_HOSTLDLIBS   := $(HOST_LFS_LIBS)
+ 
+ # Make variables (CC, etc...)
+ CPP		= $(CC) -E
+-ifneq ($(LLVM),)
+-CC		= clang
+-LD		= ld.lld
+-AR		= llvm-ar
+-NM		= llvm-nm
+-OBJCOPY		= llvm-objcopy
+-OBJDUMP		= llvm-objdump
+-READELF		= llvm-readelf
+-STRIP		= llvm-strip
++ifneq ($(LLVM),0)
++CC		= $(LLVM_PFX)clang$(LLVM_SFX)
++LD		= $(LLVM_PFX)ld.lld$(LLVM_SFX)
++AR		= $(LLVM_PFX)llvm-ar$(LLVM_SFX)
++NM		= $(LLVM_PFX)llvm-nm$(LLVM_SFX)
++OBJCOPY		= $(LLVM_PFX)llvm-objcopy$(LLVM_SFX)
++OBJDUMP		= $(LLVM_PFX)llvm-objdump$(LLVM_SFX)
++READELF		= $(LLVM_PFX)llvm-readelf$(LLVM_SFX)
++STRIP		= $(LLVM_PFX)llvm-strip$(LLVM_SFX)
+ else
+ CC		= $(CROSS_COMPILE)gcc
+ LD		= $(CROSS_COMPILE)ld
+@@ -461,6 +481,7 @@ OBJDUMP		= $(CROSS_COMPILE)objdump
+ READELF		= $(CROSS_COMPILE)readelf
+ STRIP		= $(CROSS_COMPILE)strip
+ endif
++
+ PAHOLE		= pahole
+ RESOLVE_BTFIDS	= $(objtree)/tools/bpf/resolve_btfids/resolve_btfids
+ LEX		= flex
+--- a/tools/scripts/Makefile.include
++++ b/tools/scripts/Makefile.include
+@@ -51,12 +51,32 @@ define allow-override
+     $(eval $(1) = $(2)))
+ endef
+ 
+-ifneq ($(LLVM),)
+-$(call allow-override,CC,clang)
+-$(call allow-override,AR,llvm-ar)
+-$(call allow-override,LD,ld.lld)
+-$(call allow-override,CXX,clang++)
+-$(call allow-override,STRIP,llvm-strip)
++# powerpc and s390 don't yet work with LLVM as a whole
++ifeq ($(ARCH),powerpc)
++LLVM = 0
++endif
++ifeq ($(ARCH),s390)
++LLVM = 0
++endif
++
++# otherwise, if CC=clang, default to using LLVM to enable LTO
++CC_BASE := $(shell echo $(CC) | sed 's/.*\///')
++CC_NAME := $(shell echo $(CC_BASE) | cut -b "1-5")
++ifeq ($(shell test "$(CC_NAME)" = "clang"; echo $$?),0)
++LLVM ?= 1
++LLVM_PFX := $(shell echo $(CC) | sed 's/\(.*\/\)\?.*/\1/')
++LLVM_SFX := $(shell echo $(CC_BASE) | cut -b "6-")
++endif
++
++# if not set by now, do not use LLVM
++LLVM ?= 0
++
++ifneq ($(LLVM),0)
++$(call allow-override,CC,$(LLVM_PFX)clang$(LLVM_SFX))
++$(call allow-override,AR,$(LLVM_PFX)llvm-ar$(LLVM_SFX))
++$(call allow-override,LD,$(LLVM_PFX)ld.lld$(LLVM_SFX))
++$(call allow-override,CXX,$(LLVM_PFX)clang++$(LLVM_SFX))
++$(call allow-override,STRIP,$(LLVM_PFX)llvm-strip$(LLVM_SFX))
+ else
+ # Allow setting various cross-compile vars or setting CROSS_COMPILE as a prefix.
+ $(call allow-override,CC,$(CROSS_COMPILE)gcc)
+@@ -68,10 +88,10 @@ endif
+ 
+ CC_NO_CLANG := $(shell $(CC) -dM -E -x c /dev/null | grep -Fq "__clang__"; echo $$?)
+ 
+-ifneq ($(LLVM),)
+-HOSTAR  ?= llvm-ar
+-HOSTCC  ?= clang
+-HOSTLD  ?= ld.lld
++ifneq ($(LLVM),0)
++HOSTAR  ?= $(LLVM_PFX)llvm-ar$(LLVM_SFX)
++HOSTCC  ?= $(LLVM_PFX)clang$(LLVM_SFX)
++HOSTLD  ?= $(LLVM_PFX)ld.lld$(LLVM_SFX)
+ else
+ HOSTAR  ?= ar
+ HOSTCC  ?= gcc
+@@ -79,11 +99,11 @@ HOSTLD  ?= ld
+ endif
+ 
+ # Some tools require Clang, LLC and/or LLVM utils
+-CLANG		?= clang
+-LLC		?= llc
+-LLVM_CONFIG	?= llvm-config
+-LLVM_OBJCOPY	?= llvm-objcopy
+-LLVM_STRIP	?= llvm-strip
++CLANG		?= $(LLVM_PFX)clang$(LLVM_SFX)
++LLC		?= $(LLVM_PFX)llc$(LLVM_SFX)
++LLVM_CONFIG	?= $(LLVM_PFX)llvm-config$(LLVM_SFX)
++LLVM_OBJCOPY	?= $(LLVM_PFX)llvm-objcopy$(LLVM_SFX)
++LLVM_STRIP	?= $(LLVM_PFX)llvm-strip$(LLVM_SFX)
+ 
+ ifeq ($(CC_NO_CLANG), 1)
+ EXTRA_WARNINGS += -Wstrict-aliasing=3
