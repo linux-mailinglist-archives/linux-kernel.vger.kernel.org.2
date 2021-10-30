@@ -2,115 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AD384407F9
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 10:07:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E2EE4407FF
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 10:19:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231749AbhJ3IJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Oct 2021 04:09:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53616 "EHLO
+        id S231733AbhJ3IVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Oct 2021 04:21:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231693AbhJ3IJj (ORCPT
+        with ESMTP id S229546AbhJ3IVe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Oct 2021 04:09:39 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40E46C061570;
-        Sat, 30 Oct 2021 01:07:09 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id g8so46766781edb.2;
-        Sat, 30 Oct 2021 01:07:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=SPF2iTqNQ47jl+38IdpqMTtVV7waJyN5hBA4x+MNlrE=;
-        b=ludYEpet+Ep1tV4g4S8HbbHftD0LZ5wRIQNOYNM9dyhgjfU6ZtijGlJmCu4EyXMKWQ
-         C034Vw16PLjUFBRLVaB3WZC0f1+e1z3lCT2HA39f9siG/w5gYTHhEchxTJbyi59vm1Li
-         ijZY9cDkaK92gnNApFmWVSTZaarKBzlwoF6rr1d6iY7sfC/3Dof6b/bcXXHwk8fhVamr
-         hCCdDBu4gigf+Ger7iouJ2CGESQYerYsmMEoVRGve2GWu1TzSDGnXmursV2KE53zQr4f
-         X0HohI6J0OUXt5HQBexpSXRVVh6f4p8pDI+TZzI1BAqX/63zZ65pLI1eRQZsqtoTU+gX
-         sE3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=SPF2iTqNQ47jl+38IdpqMTtVV7waJyN5hBA4x+MNlrE=;
-        b=bU0FdmZj+ZGO90nU9v997S9O9rUCPvFJKzcTaw8Zq3YJ6S9EosoUpOl5ZtcpeyefdF
-         kXdj5Hem+YN9xmwDXaD0Oy8sxudYhwdP2357UTBmKm+BuNK/VLdf+qU+i6vX5nAmaEjJ
-         44tEoXq4Nkkt6UmXNJAahfEK/VvNtb24+yjBL5k/2NXrQ+el9O6nU0+DSXvOI+ePtfk6
-         1l1TQ6pOQ/pGbe7GrIAkipDuDJEHpBBCusnwbfb9II7bMgAqO/iPFi4ZWI65dJJNSzkL
-         MCcXm6u+MmDffBGGiHz80HAxsT8lDW07SSUJR9iVzYOkZ07PQUAowWQIgvY4h2emM6Qd
-         +qBQ==
-X-Gm-Message-State: AOAM5325A+IpJJdxgIUYnjyyQd8nRpfsReidyPq59sTqEd7TNQOf1kGl
-        4VnFB7vb665cI84s7D7JZGnrTxrAPDWHkQ==
-X-Google-Smtp-Source: ABdhPJwaGdR1vkpUho3wzBr4mnx408BizNqXIG69PctxVd1vbNAY5dsTulGTgh2qyYijXW5kjrZCiw==
-X-Received: by 2002:aa7:cf91:: with SMTP id z17mr768628edx.193.1635581227841;
-        Sat, 30 Oct 2021 01:07:07 -0700 (PDT)
-Received: from eldamar (80-218-24-251.dclient.hispeed.ch. [80.218.24.251])
-        by smtp.gmail.com with ESMTPSA id w18sm5216112edc.4.2021.10.30.01.07.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Oct 2021 01:07:07 -0700 (PDT)
-Sender: Salvatore Bonaccorso <salvatore.bonaccorso@gmail.com>
-Date:   Sat, 30 Oct 2021 10:07:06 +0200
-From:   Salvatore Bonaccorso <carnil@debian.org>
-To:     Sean Young <sean@mess.org>
-Cc:     Salvatore Bonaccorso <carnil@debian.org>,
-        =?iso-8859-1?Q?Joaqu=EDn_Alberto_Calder=F3n?= Pozo 
-        <kini_calderon@hotmail.com>,
-        "mchehab@kernel.org" <mchehab@kernel.org>,
-        "christophe.jaillet@wanadoo.fr" <christophe.jaillet@wanadoo.fr>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: linux-image-5.10.0-8-amd64: Hauppauge WinTV-HVR1110 DVB-T/Hybrid
- bug 125 ms polling on ir-kbd-i2c.ko bad DEFAULT_POLLING_INTERVAL
-Message-ID: <YXz9Kp5bKMWsyYOZ@eldamar.lan>
-References: <CH2PR04MB6679933D6BEE6C51BE6BEF9889D89@CH2PR04MB6679.namprd04.prod.outlook.com>
- <20210913072649.GB2393@gofer.mess.org>
- <YXz3Lpqq/x3WGQTQ@eldamar.lan>
- <20211030075055.GA11395@gofer.mess.org>
+        Sat, 30 Oct 2021 04:21:34 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0628C061570;
+        Sat, 30 Oct 2021 01:19:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=OsAU1X/ym1O2wGNMWXfa64U4N11rGKkMYQvMe3I0gUI=; b=Znk8T7HkbjMxUm+OAnv03Ub4Fs
+        uevcDyelW6+m+1hwPFX+kz/FfOEvcvO/R1s6hxVQr6hbHCyinV2PKAIOphy2XUuGCGYCpBt04olIN
+        Mso9Ny7kq9tx6YRKpydNqUIz/nZyPu/TmdzWyXJmc2eveFDhQ/A/8K06JknYDtlrLcSQf35la5uVq
+        vo6ndIaYmMSzngZxwqKTb4PZPtcN6A5F2Zupxc2jDjn5urpfosjhlmd1J7ctewQBBTR1UFbZ076BY
+        ysTw/pnYu194JxL5IImt8C1uN6BR2MRWMTxtWFYjV1uRrNcXifNZv594C3SlGHNHEaPxq+QRyIhAR
+        DTNWbjLA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mgjXT-002JF8-L4; Sat, 30 Oct 2021 08:16:41 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 10A1B986244; Sat, 30 Oct 2021 10:16:31 +0200 (CEST)
+Date:   Sat, 30 Oct 2021 10:16:31 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>, X86 ML <x86@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-hardening@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev, joao@overdrivepizza.com
+Subject: Re: [PATCH] static_call,x86: Robustify trampoline patching
+Message-ID: <20211030081631.GF174730@worktop.programming.kicks-ass.net>
+References: <20211027120515.GC54628@C02TD0UTHF1T.local>
+ <CAMj1kXEx10gC8eH7rV-GbZZj2M3uDue6HYsKb+A5J01zOxm_FA@mail.gmail.com>
+ <20211027124852.GK174703@worktop.programming.kicks-ass.net>
+ <YXlOd1lyKZKAcJfA@hirez.programming.kicks-ass.net>
+ <CAMj1kXHKh7wv6JqusVnoiQDMm7ApFq2ujzbfWmM9AzLKFehhAA@mail.gmail.com>
+ <YXlcMluaysPBF92J@hirez.programming.kicks-ass.net>
+ <CAMj1kXECTdDLVMk2JduU5mV2TR0Cv=hZ9QOpYRsRM1jfvvNikw@mail.gmail.com>
+ <CABCJKufpS4jJxHqk8=bd1JCNbKfmLDKBbjbhjrar2+YQJFiprg@mail.gmail.com>
+ <20211029200324.GR174703@worktop.programming.kicks-ass.net>
+ <20211030074758.GT174703@worktop.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211030075055.GA11395@gofer.mess.org>
+In-Reply-To: <20211030074758.GT174703@worktop.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sean,
-
-On Sat, Oct 30, 2021 at 08:50:55AM +0100, Sean Young wrote:
-> On Sat, Oct 30, 2021 at 09:41:34AM +0200, Salvatore Bonaccorso wrote:
-> > On Mon, Sep 13, 2021 at 08:26:49AM +0100, Sean Young wrote:
-> > > On Sun, Sep 12, 2021 at 10:15:31PM +0000, Joaquín Alberto Calderón Pozo wrote:
-> > > > --- ir-kbd-i2c.original.c	2021-09-08 23:45:23.723210301 +0200
-> > > > +++ ir-kbd-i2c.hauppauge.patched.c	2021-09-10 03:55:28.003529072 +0200
-> > > > @@ -742,7 +742,7 @@
-> > > >  		return -ENOMEM;
-> > > >  
-> > > >  	ir->c = client;
-> > > > -	ir->polling_interval = DEFAULT_POLLING_INTERVAL;
-> > > > +	ir->polling_interval = 125;
-> > > >  	i2c_set_clientdata(client, ir);
-> > > >  
-> > > >  	switch(addr) {
+On Sat, Oct 30, 2021 at 09:47:58AM +0200, Peter Zijlstra wrote:
+> On Fri, Oct 29, 2021 at 10:03:24PM +0200, Peter Zijlstra wrote:
+> 
+> > So I had a bit of a peek at what clang generates:
 > > 
-> > My understanding is that Joaquín would need some help to get the patch
-> > submission as he is unexperienced to make it a proper patch for
-> > inclusion in mainline, would you have enough time to bring this into
-> > shape for him? I'm not familiar in this area to propose a proper
-> > commit message myself. Joaquín confirmed though in
-> > https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=994050#32 that the
-> > proposed changes seems to solve his issue.
+> >     3fa4:       48 c7 c7 00 00 00 00    mov    $0x0,%rdi        3fa7: R_X86_64_32S      __SCK__x86_pmu_handle_irq
+> >     3fab:       48 c7 c6 00 00 00 00    mov    $0x0,%rsi        3fae: R_X86_64_32S      __SCT__x86_pmu_handle_irq.cfi_jt
+> >     3fb2:       e8 00 00 00 00          call   3fb7 <init_hw_perf_events+0x1dc> 3fb3: R_X86_64_PLT32    __static_call_update-0x4
+> > 
+> > So this then gives the trampoline jump table entry to
+> > __static_call_update(), with the result that it will rewrite the
+> > jump-table entry, not the trampoline!
+> > 
+> > Now it so happens that the trampoline looks *exactly* like the
+> > jump-table entry (one jmp.d32 instruction), so in that regards it'll
+> > again 'work'.
+> > 
+> > But this is all really, as in *really*, wrong. And I'm really sad I'm
+> > the one to have to discover this, even though I've mentioned
+> > static_call()s being tricky in previous reviews.
 > 
-> The change is in media_stage:
+> The below makes the clang-cfi build properly sick:
 > 
-> https://git.linuxtv.org/media_stage.git/commit/?id=c73ba202a851c0b611ef2c25e568fadeff5e667f
-> 
-> This should be merged into Linus' tree during the v5.16 merge window, and
-> then make it into the stable trees from there.
+> [    0.000000] trampoline signature fail
+> [    0.000000] ------------[ cut here ]------------
+> [    0.000000] kernel BUG at arch/x86/kernel/static_call.c:65!
 
-Perfect, many thanks! Going to drop then my draft commit message I was
-trying to write.
+So fundamentally I think the whole notion that the address of a function
+is something different than 'the address of that function' is an *utter*
+fail.
 
-Regards,
-Salvatore
+So things like FineIBT use a scheme where they pass a hash value along
+with the indirect call, which is veryfied at the other end. Can't we
+adjust it like:
+
+
+foo.cfi:
+	endbr
+	xorl $0xdeadbeef, %r10d
+	jz foo
+	ud2
+	nop	# make it an even 16 bytes
+foo:
+	# actual function text
+
+
+Then have the address of foo, be the address of foo, like any normal
+sane person would expect. Have direct calls to foo, go to foo, again, as
+expected.
+
+When doing an indirect call (to r11, as clang does), then, and only
+then, do:
+
+	movl $0xdeadbeef, %r10d
+	subq $0x10, %r11
+	call *%r11
+
+	# if the r11 lives, add:
+	addq $0x10, %r11
+
+
+Then only when caller and callee agree 0xdeadbeef is the password, does
+the indirect call go through.
+
+Why isn't this a suitable CFI scheme even without IBT?
+
