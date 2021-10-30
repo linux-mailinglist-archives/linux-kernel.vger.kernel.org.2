@@ -2,137 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0F3C4409E5
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 17:17:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 383E34409E8
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 17:19:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231979AbhJ3PTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Oct 2021 11:19:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33436 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231766AbhJ3PTr (ORCPT
+        id S231990AbhJ3PVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Oct 2021 11:21:42 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:40178 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231766AbhJ3PVf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Oct 2021 11:19:47 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 491BFC061570
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Oct 2021 08:17:17 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id p204so4551018iod.8
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Oct 2021 08:17:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=XHOmyn9+Jj9reeXZhh7e4vHo+2Fmh7M502bTzbZ0C5c=;
-        b=3HOnwGY1NOGZ7l5bbpP91qoF8OGGeShvNEKZDJeq88oXDMdF333DyitWL2DLyYNYXp
-         BrZjDdu53FGZGem42C3a+lfDzlPpJyj43wQOerxO3n8IYWsC1UvNkCWzsl1lJEKVrv3A
-         hIfEaRVPExh8W+EcWECtXbsN7bD0tx8EjkH6SjIwFoa+exZ7w2W/3cywy82rkq801Hsy
-         cQw/anlITEVXrzIPLhO3mOgbjyNdJdXVj8Y+Y3xXkT5S5iqwFG1zSa+2M7ZOKkkR2D11
-         nrOjD+TzwPvlHHr4k5R8zyEFd8BSupJEYbthTjkIfyrehgLeqVzN5Wvx5SywjCyHfG9O
-         S+PQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XHOmyn9+Jj9reeXZhh7e4vHo+2Fmh7M502bTzbZ0C5c=;
-        b=8JqIne6Soqgs+yz1c4lOLUomAi6YaqTdPYDkpDXrTvYfEF5DTfNw/1fl4x0U6fam5G
-         UKAaJ9aN2nWQN5f0fCLRO5A8+N13fL5X7QuW1PBBr78bMs6P2Rq0CCi7IspmNgWb4Gh3
-         eOgfirB3Wx2P373xwOHezTQzox1tqS40ReJfjfjfY+piPZMsUzyqegGJVaLqqJC+/jlh
-         lMOMxE+3OZsGeob4IKoIWtqvIKqgyqZspYTP8SAqeTRWbNsL5bZ0skB7gIki1tVj+K3p
-         nUoGvxl2B1jsAHBDV5JLNYR2RYC268/Hq0Jqu6wHfSeQusQOwu4Hb6/oCGRb3ZtQHHq3
-         ZqFw==
-X-Gm-Message-State: AOAM532IDANv9DAUQVBul+FI4znr0R4KmVcyzaxYnlimGqB0L2OSmMCI
-        9bqZetKLsbeSRLkC4OkcnWsbPQ==
-X-Google-Smtp-Source: ABdhPJztp1rNsRnbHl9ECJkGA4HBb+19qREgbQ57QFk66Bxa+NR8B+oegioy0Cco/z86492Xy2iJKw==
-X-Received: by 2002:a05:6602:1695:: with SMTP id s21mr2013309iow.10.1635607036541;
-        Sat, 30 Oct 2021 08:17:16 -0700 (PDT)
-Received: from [192.168.1.116] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id a4sm4700308ild.52.2021.10.30.08.17.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 30 Oct 2021 08:17:15 -0700 (PDT)
-Subject: Re: [Bug 214873] New: man 2 fsync implies possibility to return early
-To:     "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     bugzilla-daemon@bugzilla.kernel.org,
-        Christoph Hellwig <hch@lst.de>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        David Howells <dhowells@redhat.com>
-References: <bug-214873-216477@https.bugzilla.kernel.org/>
- <480456b0-5e10-9179-73c0-0a92649f8874@gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <c711ce90-8074-f1de-a7a8-548643a87e38@kernel.dk>
-Date:   Sat, 30 Oct 2021 09:17:12 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sat, 30 Oct 2021 11:21:35 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id AE2CB1FD37;
+        Sat, 30 Oct 2021 15:19:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1635607144; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4XzJOgmOjbK4XpU/7hYdBTgmh5NJ8hIeRuBcTcQsXsQ=;
+        b=HU//TBqBbdYNJ4i+78/JdRm8MKPKhtS9mq8Q++8hrpR/Uw/xl9mxZshmKHdJ8BLhFTQtiG
+        Cr8qfEMbPuO/QH9IXhi9btT+Cjjnr+fkdLGLNyDwCzlXQnKyp1DPyuzxp9t1u6IQbsXU3O
+        61Vj6RF3QKnXOnB8+ovvr78XG0NsDwI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1635607144;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4XzJOgmOjbK4XpU/7hYdBTgmh5NJ8hIeRuBcTcQsXsQ=;
+        b=DWB4y0oJzGI4xhMqOXIXtQ6CAXVXWdNCNx9Ae+fj8wG/X5p/jRQ/SB0sgyUzEVb6m1fLet
+        yBODSEW9LMxgiQCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C277B139CF;
+        Sat, 30 Oct 2021 15:19:03 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 7ONdJGdifWGVVwAAMHmgww
+        (envelope-from <colyli@suse.de>); Sat, 30 Oct 2021 15:19:03 +0000
+Message-ID: <9516418b-27d0-d84b-d9cb-be72d5e8f9ce@suse.de>
+Date:   Sat, 30 Oct 2021 23:19:01 +0800
 MIME-Version: 1.0
-In-Reply-To: <480456b0-5e10-9179-73c0-0a92649f8874@gmail.com>
-Content-Type: text/plain; charset=utf-8
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.1
+Subject: Re: [PATCH] bcache: kill macro MAX_CACHES_PER_SET
 Content-Language: en-US
+To:     Lin Feng <linf@wangsu.com>
+Cc:     linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kent.overstreet@gmail.com
+References: <20211029125958.95298-1-linf@wangsu.com>
+From:   Coly Li <colyli@suse.de>
+In-Reply-To: <20211029125958.95298-1-linf@wangsu.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/30/21 6:05 AM, Alejandro Colomar (man-pages) wrote:
-> [CC += LKML and a few kernel programmers]
-> 
-> Hi,
-> 
-> On 10/29/21 23:25, bugzilla-daemon@bugzilla.kernel.org wrote:
->> https://bugzilla.kernel.org/show_bug.cgi?id=214873
->>
->>              Bug ID: 214873
->>             Summary: man 2 fsync implies possibility to return early
->>             Product: Documentation
->>             Version: unspecified
->>            Hardware: All
->>                  OS: Linux
->>              Status: NEW
->>            Severity: low
->>            Priority: P1
->>           Component: man-pages
->>            Assignee: documentation_man-pages@kernel-bugs.osdl.org
->>            Reporter: sworddragon2@gmail.com
->>          Regression: No
->>
->> The manpage for the fsync system call (
->> https://man7.org/linux/man-pages/man2/fsync.2.html ) describes as flushing the
->> related caches to a storage device so that the information can even be
->> retrieved after a crash/reboot. But then it does make the statement "The call
->> blocks until the device reports that the transfer has completed." which causes
->> now some interpretation: What happens if the device reports early completion
->> (e.g. via a bugged firmware) of the transfer while the kernel still sees unsent
->> caches in its context? Does fsync() indeed return then as the last referenced
->> sentence implies or does it continue to send the caches the kernel sees to
->> guarantee data integrity as good as possible as the previous documented part
->> might imply?
->>
->> I noticed this discrepancy when reporting a bug against dd (
->> https://debbugs.gnu.org/cgi/bugreport.cgi?bug=51345 ) that causes dd to return
->> early when it is used with its fsync capability while the kernel still sees
->> caches and consulting the fsync() manpage made it not clear if such a
->> theoretical possibility from the fsync() system call would be intended or not
->> so eventually this part could be slighty enhanced.
->>
-> 
-> I don't know how fsync(2) works.  Could some kernel fs programmer please 
-> check if the text matches the implementation, and if that issue reported 
-> should be reworded in the manual page?
+On 10/29/21 8:59 PM, Lin Feng wrote:
+> Commit 697e23495c94f0380c1ed8b11f830b92b64c99ea
+> ("bcache: explicitly make cache_set only have single cache")
+> explicitly makes a cache_set only have single cache and based on the
+> fact that historily only one cache is ever used in the cache set, so
+> macro defination for MAX_CACHES_PER_SET as 8 is misleading now.
+>
+> In fact it should be redefined to 1 and valid number fo sb.nr_in_set
+> should be 1 and sb.nr_this_dev should always be 0.
+>
+> But jset's disk layout replies on MAX_CACHES_PER_SET(8), so replace it
+> with a hardcoded number 8.
+>
+> Signed-off-by: Lin Feng <linf@wangsu.com>
+> ---
+>   drivers/md/bcache/bcache.h  | 2 +-
+>   drivers/md/bcache/super.c   | 4 +---
+>   include/uapi/linux/bcache.h | 4 ++--
+>   3 files changed, 4 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/md/bcache/bcache.h b/drivers/md/bcache/bcache.h
+> index 5fc989a6d452..a4a410a178c0 100644
+> --- a/drivers/md/bcache/bcache.h
+> +++ b/drivers/md/bcache/bcache.h
+> @@ -833,7 +833,7 @@ static inline uint8_t ptr_stale(struct cache_set *c, const struct bkey *k,
+>   static inline bool ptr_available(struct cache_set *c, const struct bkey *k,
+>   				 unsigned int i)
+>   {
+> -	return (PTR_DEV(k, i) < MAX_CACHES_PER_SET) && c->cache;
+> +	return (PTR_DEV(k, i) == 0) && c->cache;
+>   }
+>   
+>   /* Btree key macros */
+> diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
+> index f2874c77ff79..2253044c9289 100644
+> --- a/drivers/md/bcache/super.c
+> +++ b/drivers/md/bcache/super.c
+> @@ -140,9 +140,7 @@ static const char *read_super_common(struct cache_sb *sb,  struct block_device *
+>   		goto err;
+>   
+>   	err = "Bad cache device number in set";
+> -	if (!sb->nr_in_set ||
+> -	    sb->nr_in_set <= sb->nr_this_dev ||
+> -	    sb->nr_in_set > MAX_CACHES_PER_SET)
+> +	if (sb->nr_in_set != 1 || sb->nr_this_dev != 0)
+>   		goto err;
+>   
+>   	err = "Journal buckets not sequential";
 
-I don't know what the "see caches" mean in a few spots in the above
-text? In simplified terms, fsync will write out dirty data and then
-ensure that it is stable on media. The latter is your cache flush, if
-the underlying device is using some sort of writeback caching. When the
-flush is issued, there is no more dirty kernel cached data.
+Hi Feng,
 
-If the device doesn't honor a cache flush (eg "all writes previously
-acked are now stable"), then there's nothing the kernel can do about it.
-It would not even know. The only way to know is if a powercut comes in
-after a flush, and once power is restored, the media contains stale
-data.
+The above changes are fine to me. But let's keep the below part as what 
+it is at this moment.
 
-There is no issue here. If your storage device is lying to you, buy
-better storage devices.
+Thanks.
 
--- 
-Jens Axboe
+Coly Li
+
+> diff --git a/include/uapi/linux/bcache.h b/include/uapi/linux/bcache.h
+> index cf7399f03b71..4beb3e7826ca 100644
+> --- a/include/uapi/linux/bcache.h
+> +++ b/include/uapi/linux/bcache.h
+> @@ -155,7 +155,6 @@ static inline struct bkey *bkey_idx(const struct bkey *k, unsigned int nr_keys)
+>   #define SB_LABEL_SIZE			32
+>   #define SB_JOURNAL_BUCKETS		256U
+>   /* SB_JOURNAL_BUCKETS must be divisible by BITS_PER_LONG */
+> -#define MAX_CACHES_PER_SET		8
+>   
+>   #define BDEV_DATA_START_DEFAULT		16	/* sectors */
+>   
+> @@ -356,7 +355,8 @@ struct jset {
+>   	__u16			btree_level;
+>   	__u16			pad[3];
+>   
+> -	__u64			prio_bucket[MAX_CACHES_PER_SET];
+> +	/* only a single cache is available */
+> +	__u64			prio_bucket[8];
+>   
+>   	union {
+>   		struct bkey	start[0];
 
