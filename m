@@ -2,150 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71FC744096B
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 16:10:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6E6C440970
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 16:12:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230063AbhJ3OMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Oct 2021 10:12:38 -0400
-Received: from mail-eopbgr1400104.outbound.protection.outlook.com ([40.107.140.104]:6893
-        "EHLO JPN01-TY1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229633AbhJ3OMh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Oct 2021 10:12:37 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=i/ZFoCnFCFjMc7c7CpNHEjuL5nRmUAbs6KErPfR65G1UxGatuLRO++712dg07olLGrsMmhp5gcmB2n10QfN6S8iQx6ZhAf2wph2nuyvtaomyh3mXApcsJS6K4zVogQ5LIs2tCQ7weBTXW1rRxVD3DH3Ndx2zqlZC2osjdqQqC0PysvjL+k09homgH3DhtlnKyxB7ORRgMp4/uuij4zwRh77Xdv+ElQ+QfGrajG2xavZkmyEUEAp2XfsNlip/OvtpuYGwCP1cczteaR0ZCfRM0ZA56sL3SUmKWkRr2ZiiGJy4V5vcCIUZJKZyQb6tOIN5nKdpEdYHFQ1eWpyF5NicMA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=KFV7Y9SgwBqBOB/PpEYqKo8BBsPPFuOc3U72orNQXw8=;
- b=EG2y3BwXLmAAv+yZzO28AdvMwQy8sps5uStBge78iAzYsOEq8EgnrAVMYUrGWsR8CSB3yqdVTBoIiVIw1WuiFjiCwM9R+p4kw9ljz9uNBx+LgsFm8GZVVUtMK23xk4k1Ng0tOl53nhDAhbUyZ2nE1BmLTdo11Bw3GM9qrKeHNnTuNU2StnxQTn5Ynt+v7IhLixBqSaBXt1PvD1oloey+AXgH3huyGWQXJ+fizp0/p3VTt2a8fVJqUJh7dUK+UCwvteSqGQM3s9rGpJxMj38hGGGgMy/lumTVHkpCFzHjVrTBvqv7GI7I4vuY927FgFSoy/XMesE4MhW4xrcufLw6ew==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=connect.ust.hk; dmarc=pass action=none
- header.from=connect.ust.hk; dkim=pass header.d=connect.ust.hk; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=connect.ust.hk;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KFV7Y9SgwBqBOB/PpEYqKo8BBsPPFuOc3U72orNQXw8=;
- b=q6gnj4JtvdYsTfgvYgIGP36Le2rsEP21iOHxKXkm+8tDDC3WIhw8JvG36op8iVmi4ATynWA+HhRnwCplVGMGBSyDQ/TMJkd/lSTcBY/Njty9yztdaD0E2+OMnVAScoHxy5KNdLe6UyfG7rA/DDR2pn4IgsvLlNRBKRPcbjT/CUY=
-Authentication-Results: baylibre.com; dkim=none (message not signed)
- header.d=none;baylibre.com; dmarc=none action=none
- header.from=connect.ust.hk;
-Received: from TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:b7::8) by
- TYYP286MB0985.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:e2::10) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4649.15; Sat, 30 Oct 2021 14:10:06 +0000
-Received: from TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
- ([fe80::c0af:a534:cead:3a04]) by TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
- ([fe80::c0af:a534:cead:3a04%8]) with mapi id 15.20.4649.018; Sat, 30 Oct 2021
- 14:10:06 +0000
-From:   Chengfeng Ye <cyeaa@connect.ust.hk>
-To:     mturquette@baylibre.com, sboyd@kernel.org, matthias.bgg@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Chengfeng Ye <cyeaa@connect.ust.hk>
-Subject: [PATCH] clk/mediatek: fix missing null-check for mt7629
-Date:   Sat, 30 Oct 2021 07:09:56 -0700
-Message-Id: <20211030140956.7442-1-cyeaa@connect.ust.hk>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-ClientProxiedBy: HK2PR03CA0044.apcprd03.prod.outlook.com
- (2603:1096:202:17::14) To TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:400:b7::8)
+        id S230098AbhJ3OPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Oct 2021 10:15:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229877AbhJ3OPB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Oct 2021 10:15:01 -0400
+Received: from mail-vk1-xa36.google.com (mail-vk1-xa36.google.com [IPv6:2607:f8b0:4864:20::a36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B40C2C061766
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Oct 2021 07:12:31 -0700 (PDT)
+Received: by mail-vk1-xa36.google.com with SMTP id o64so5979143vke.5
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Oct 2021 07:12:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kpQ4wcqWDco9KEWxIAvor31Yr5kfqXocG7YvRzlhiR8=;
+        b=DaZwNt1WOaxYkoaqxrYpP8w5dVGsP+iXrZEmlyyBRcZJlqf/aTlVy+WX4FNXNpWgI/
+         6QuTzMa1gJapN2AX3V9XsznBf5MlO5NsSh/X3aNINGiUDzV+eXT7V8Z4O1BjDDp2p/0v
+         NxKglTS6IA3EYESKj2w45Ra+GP+6AbL8jRl+ZivlAczg4mr6+C06XAWXCr7sANZqitI+
+         QSXcV+Ogiajmy3n1mSCn9JXLSi8vHShTJxZztKEMi+Jg21MNmRb6zZWCRGrLqcJ98yIz
+         R6vUSnxGUUWdp7krp3JURfbpksp4peyqRwDbPJt/uuYJZL8K+bDAoc4uOeTthW8Veqs6
+         OT5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kpQ4wcqWDco9KEWxIAvor31Yr5kfqXocG7YvRzlhiR8=;
+        b=ooCdCTcln37Ow6lbhfvLwkS4HjZxstRoJiDtIIvhmRPgfVkPnpNm9Bz0DlKfFqn7bH
+         XdJyWl9LT+7w35+ggcEBOXThStsLqF5kiAP144VF0CAQUnaxFeT/lxy+hs+xUHjmGMD7
+         HtwK6tWqdbEXQLoa+fxbSUjvlg6V6GMQPQ+6iU6S5br8JMf4ffErCsBG2HhwulkVpbbJ
+         cceaRySK0J3w8YgeXjrdCykzwX6k09YnM3BBPkopNZ9WXyoOpHWbSwR2+AFPn8D0IrbP
+         1C/S6LX7B+aMVZcvZAldBXKp3JFRh4E6pLrLEv8NR+OsZWwMZR9o4jtI7cu/HuY/oiRH
+         GNtw==
+X-Gm-Message-State: AOAM531Fpr4iRZUPHR0YUiRZAjF8SwSlzgZcbKFsIPXUQoklcN0lsJN6
+        41QW2xo8ObdKtgOvsr8MBLhqf8DScH/b5j7oz375JQ==
+X-Google-Smtp-Source: ABdhPJxe/kwW5iZXwvnOZ7nxHWFEiYg6SdeSZCqwpLBJXkvvw7fi7LIEvty1l0+agNc9xw8rdSpGzSLFV2zjpReMnjA=
+X-Received: by 2002:a1f:7246:: with SMTP id n67mr18299671vkc.15.1635603150672;
+ Sat, 30 Oct 2021 07:12:30 -0700 (PDT)
 MIME-Version: 1.0
-Received: from ubuntu.localdomain (175.159.124.155) by HK2PR03CA0044.apcprd03.prod.outlook.com (2603:1096:202:17::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.4 via Frontend Transport; Sat, 30 Oct 2021 14:10:05 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9bf82892-58df-421d-69d8-08d99baef94a
-X-MS-TrafficTypeDiagnostic: TYYP286MB0985:
-X-Microsoft-Antispam-PRVS: <TYYP286MB0985BFB739CC9145F8302C7C8A889@TYYP286MB0985.JPNP286.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: P1QjSt367lqk1VK80vMEr/exCXeQOLrutV0wMNcSW0GlGydyV3dQoLuKjgtbrdqon7J1mlvi5DbYZFh71Fw5kUkKFK4BuSnlExXcJisnI37TF+gnc2OoGUrPihEDppReDNSncmWzjGxC86wUA2cSuG1LvqZ8TWI/uTXl/e4JLRk6ZXd4XY5g6IuIpWqoUDm0Gl+uND2W2IyxhUwTLLytogyqhjghFhwEohTOxqgcAdn1d3Rp9760NmFqLR1RS+A589DOyvVLxPEpnE3Cge7KYl8lKepRjUQzjlQvtzVlM2hElBDgsooKTJCeFHNRxKHWOHgWzj8w+hWq0Oze8nSatP+lrqAuKvKpADIfar5KJ25qC+D8JZjCt2zIpMbSKC+BLUItfrQdKMFNwzS+Y18rgdWjWbxxhD3EGHlQKhgToOO87wBp691McO4qjjJAOajfkG44Slncwcg9KforCEdy0ci2G8lK3h5BaDIC7n62HtwxoYFO4A4G3NSQS6GSIs2/IcEwYGfjTED5c+jVQeZZVKtjL+0OnzgoO+k/jyxBtQv0Atz+LuVUwywlNt8ZiDxwh5V+x6+/aeMPzXftfi7TWnBq3hXERcnUDu6LsclbKmK0qDh8FeDzHIDSEG45Mq+ywQ9xapVsyuVFso77/1NS/f1dqTCB3VqtwCDmuxQr7rR7Bx6msNKGwqi0R7TLYeb/P0AVLZ5+nqbJ6dH7oQ0jFQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(366004)(186003)(36756003)(316002)(2906002)(38350700002)(956004)(66946007)(5660300002)(26005)(86362001)(2616005)(38100700002)(6486002)(66556008)(66476007)(786003)(6512007)(8676002)(6506007)(107886003)(52116002)(508600001)(8936002)(6666004)(1076003)(4326008);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?uilCotPkF4a5ylVOu8cJ05O4hOn8WfKcMVRAWPsO8C8cknC+dIle8iMXX5iR?=
- =?us-ascii?Q?pLvuMPDxqn6gJ2XexIpDZwZFZJNmdXplB4Umi9qIld8IcizcOc3xd5YJuOnx?=
- =?us-ascii?Q?mQzvc8RS4YbIVTXa/ullK8IThSqNCEVopTkdyxswtC0313LiObU/mFVlccmW?=
- =?us-ascii?Q?Qc5lgwz6ACac3abBMoaXg3f6DS/FMsU0/EGZIh241Z/kUweUVxO57v64u0NU?=
- =?us-ascii?Q?OkR7kExpVS+mA9IViYFS8cQeBNf9rv41BjRH4BAuS2trTLqkcmbHu3FTGDPe?=
- =?us-ascii?Q?Apk7mOvH0UFF/cHGgNXTIvkjasSkqBWBkZfloRn56JEOtvrBq6jWoxIFR71s?=
- =?us-ascii?Q?azhvG7qJSmi9nln3SKpAUXC/Ui/GDSW2RwLp9Mx6FpvOFzye6klqFAvq/qlu?=
- =?us-ascii?Q?jV5gFDopafMgBNYdovng01J+apB7Y+I1FYIBRSmsUMmTo1SL8VUSfPoRkySX?=
- =?us-ascii?Q?irFdHJ05iIXpsd+vE0L32E1+be2wMqpnul/ocGNVTTCFS517Ds0zXVtOQtjb?=
- =?us-ascii?Q?2fKrTo8zRtzsQ4yGZobxKJDzga80CaM0RQ3J0AT+OoErgrVTaQOREEN1ZtqM?=
- =?us-ascii?Q?0U0yOhocbiizmzAIHniqQDtRnf+y2Ld2z/weeFUQHQinouOvll+erJKkSHkm?=
- =?us-ascii?Q?lsncAKOKXuYY1zG1kylkhyw+DggYh66qPLyVo16eKnlF9VWuVlBI/SUtkVa8?=
- =?us-ascii?Q?GNRvdWJIUJ9X7YoHhT9rhmCE3g5fMCrAMY92Jhx6tg9gv+/M8JNW65wznA+R?=
- =?us-ascii?Q?vJO3c7DNQFD+Li2jMwSkht8mwVfAs8wAUKi3jco95ikPUw2e0WZLyMkIIuhd?=
- =?us-ascii?Q?XAqHKS2mFnIYRIBi23mG/THvNZuf3dXkngScI6MonPx1VL6m1kfArZe2xVBV?=
- =?us-ascii?Q?v2UcigobpMEuJI20R/KI0z4TRR+S0fQoeklkPUaBpkovoVGKXU66mqr9ttvO?=
- =?us-ascii?Q?JN9vvr3N0haHExtsu1y5biAeUVqMrYE8qzTuD9EdB4WLpVtG8QAtx3++cUYS?=
- =?us-ascii?Q?NKNleCUfqNlazCMLopulvPU172rHULydjyfGstfioZ17TihYyAWQNcNSxJLT?=
- =?us-ascii?Q?bwMsxxWxzWixElmXWrgqJ7C4kVsRn05Wk67Z71+XAchxXwP8puaiaAHelM4H?=
- =?us-ascii?Q?E++Rg5crQxZgVUkxPk819e9bfPSIKm0G+7MXoiqWyg6I63V5H1QDd7Z5Lnp7?=
- =?us-ascii?Q?8YxqObRd5RUKeQcJBDJMcS4GAPesr4naU9SjxirsVH9DISjUpl1YPIbPAeo2?=
- =?us-ascii?Q?mh3n5qP8SfL5nE+7i8AMsi2//AjWDw8hKPzjy+eNvs+HY6fq+oVNUOm5Dl9N?=
- =?us-ascii?Q?mU1LsFJdPskcj66PyFklCF6raRQ7GxcAU3njzoajZ96Uwu82BtMRKIu31gdC?=
- =?us-ascii?Q?fFgdGYazQ26uKiUJvKw3BE1xb7bWyop3d67Vyc40RPJsRNUgBnikby+/rLqa?=
- =?us-ascii?Q?gSs5XT5oECErBcBTqYu8ASIisNhmyBnrDMeOHXg6WpEzXXo5J85gLwR3CGdn?=
- =?us-ascii?Q?G+fqm8f/8WOMHQfO2dAzvfKrdeiuwU+vO+9j1wV0dcQJHlG6uns92zNH8vNO?=
- =?us-ascii?Q?1tavjScqoBPe95iSI7/eide8puo2zx3UhQPV+HnJZzir4dNM/4Tmyd+VTFaF?=
- =?us-ascii?Q?7ntJW+Ep37LJAXy/DtqI66g=3D?=
-X-OriginatorOrg: connect.ust.hk
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9bf82892-58df-421d-69d8-08d99baef94a
-X-MS-Exchange-CrossTenant-AuthSource: TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Oct 2021 14:10:05.9739
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 6c1d4152-39d0-44ca-88d9-b8d6ddca0708
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: k/lg78tyndzDxYDhFPqAsoSrylbdv4KGfS27OVIKAsyym1RNq14IHWgWfI3f8BSUqpu+nLNb89WZNmGuckz3+w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYYP286MB0985
+References: <20211028183527.3050-1-semen.protsenko@linaro.org>
+ <20211028183527.3050-6-semen.protsenko@linaro.org> <76ca9492-3829-6d3b-580c-983bc8409b1f@canonical.com>
+In-Reply-To: <76ca9492-3829-6d3b-580c-983bc8409b1f@canonical.com>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Sat, 30 Oct 2021 17:12:18 +0300
+Message-ID: <CAPLW+4mxE7MGH3_=xJXC1bh2iDWRLXzTorc8N=jDqG-KHT3O=Q@mail.gmail.com>
+Subject: Re: [PATCH 5/7] watchdog: s3c2410: Introduce separate source clock
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-watchdog@vger.kernel.org,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The return pointer of mtk_alloc_clk_data could
-be null, adding null check for all the call sites.
+On Fri, 29 Oct 2021 at 11:18, Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
+>
+> On 28/10/2021 20:35, Sam Protsenko wrote:
+> > Some Exynos chips (like Exynos850) have dedicated source clock. That
+> > clock is provided from device tree as "watchdog_src" clock. In such
+> > case, "watchdog" clock is just a peripheral clock used for register
+> > interface. If "watchdog_src" is present, use its rate instead of
+> > "watchdog" for all timer related calculations.
+>
+> Please explain what is this source clock and remove the reference to
+> devicetree. Instead describe rather real HW. It's confusing now to have
+> one clock called watchdog and one watchdog source.
+>
+> The source clock is the actual clock driving watchdog and it's counter,
+> right? Then let's document it and rename the variables to match reality
+> - one is pclk (or apb?) and second is counter or source?
+>
 
-Signed-off-by: Chengfeng Ye <cyeaa@connect.ust.hk>
----
- drivers/clk/mediatek/clk-mt7629.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+Done, will be present in v2.
 
-diff --git a/drivers/clk/mediatek/clk-mt7629.c b/drivers/clk/mediatek/clk-mt7629.c
-index a0ee079670c7..f791e53b812a 100644
---- a/drivers/clk/mediatek/clk-mt7629.c
-+++ b/drivers/clk/mediatek/clk-mt7629.c
-@@ -580,6 +580,8 @@ static int mtk_topckgen_init(struct platform_device *pdev)
- 		return PTR_ERR(base);
- 
- 	clk_data = mtk_alloc_clk_data(CLK_TOP_NR_CLK);
-+	if (!clk_data)
-+		return -ENOMEM;
- 
- 	mtk_clk_register_fixed_clks(top_fixed_clks, ARRAY_SIZE(top_fixed_clks),
- 				    clk_data);
-@@ -603,6 +605,8 @@ static int mtk_infrasys_init(struct platform_device *pdev)
- 	struct clk_onecell_data *clk_data;
- 
- 	clk_data = mtk_alloc_clk_data(CLK_INFRA_NR_CLK);
-+	if (!clk_data)
-+		return -ENOMEM;
- 
- 	mtk_clk_register_gates(node, infra_clks, ARRAY_SIZE(infra_clks),
- 			       clk_data);
-@@ -626,6 +630,8 @@ static int mtk_pericfg_init(struct platform_device *pdev)
- 		return PTR_ERR(base);
- 
- 	clk_data = mtk_alloc_clk_data(CLK_PERI_NR_CLK);
-+	if (!clk_data)
-+		return -ENOMEM;
- 
- 	mtk_clk_register_gates(node, peri_clks, ARRAY_SIZE(peri_clks),
- 			       clk_data);
--- 
-2.17.1
+> >
+> > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> > ---
+> >  drivers/watchdog/s3c2410_wdt.c | 33 +++++++++++++++++++++++++++------
+> >  1 file changed, 27 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/drivers/watchdog/s3c2410_wdt.c b/drivers/watchdog/s3c2410_wdt.c
+> > index a5ef7171a90e..bfc5872ca497 100644
+> > --- a/drivers/watchdog/s3c2410_wdt.c
+> > +++ b/drivers/watchdog/s3c2410_wdt.c
+> > @@ -126,6 +126,8 @@ struct s3c2410_wdt_variant {
+> >  struct s3c2410_wdt {
+> >       struct device           *dev;
+> >       struct clk              *clock;
+> > +     struct clk              *clock_src;
+> > +     unsigned long           freq_src;
+> >       void __iomem            *reg_base;
+> >       unsigned int            count;
+> >       spinlock_t              lock;
+> > @@ -213,10 +215,8 @@ MODULE_DEVICE_TABLE(platform, s3c2410_wdt_ids);
+> >
+> >  /* functions */
+> >
+> > -static inline unsigned int s3c2410wdt_max_timeout(struct clk *clock)
+> > +static inline unsigned int s3c2410wdt_max_timeout(unsigned long freq)
+> >  {
+> > -     unsigned long freq = clk_get_rate(clock);
+> > -
+> >       return S3C2410_WTCNT_MAXCNT / (freq / (S3C2410_WTCON_PRESCALE_MAX + 1)
+> >                                      / S3C2410_WTCON_MAXDIV);
+> >  }
+> > @@ -364,7 +364,7 @@ static int s3c2410wdt_set_heartbeat(struct watchdog_device *wdd,
+> >                                   unsigned int timeout)
+> >  {
+> >       struct s3c2410_wdt *wdt = watchdog_get_drvdata(wdd);
+> > -     unsigned long freq = clk_get_rate(wdt->clock);
+> > +     unsigned long freq = wdt->freq_src;
+>
+> This does not look good. You are using fixed frequency (from probe).
+>
 
+Ok, will avoid caching this value in v2.
+
+> >       unsigned int count;
+> >       unsigned int divisor = 1;
+> >       unsigned long wtcon;
+> > @@ -627,13 +627,27 @@ static int s3c2410wdt_probe(struct platform_device *pdev)
+> >               return ret;
+> >       }
+> >
+> > +     /* "watchdog_src" clock is optional; if it's not present -- just skip */
+> > +     wdt->clock_src = devm_clk_get(dev, "watchdog_src");
+> > +     if (!IS_ERR(wdt->clock_src)) {
+> > +             ret = clk_prepare_enable(wdt->clock_src);
+> > +             if (ret < 0) {
+> > +                     dev_err(dev, "failed to enable source clock\n");
+> > +                     ret = PTR_ERR(wdt->clock_src);
+> > +                     goto err_clk;
+> > +             }
+> > +             wdt->freq_src = clk_get_rate(wdt->clock_src);
+> > +     } else {
+> > +             wdt->freq_src = clk_get_rate(wdt->clock);
+> > +     }
+> > +
+> >       wdt->wdt_device.min_timeout = 1;
+> > -     wdt->wdt_device.max_timeout = s3c2410wdt_max_timeout(wdt->clock);
+> > +     wdt->wdt_device.max_timeout = s3c2410wdt_max_timeout(wdt->freq_src);
+> >
+> >       ret = s3c2410wdt_cpufreq_register(wdt);
+> >       if (ret < 0) {
+> >               dev_err(dev, "failed to register cpufreq\n");
+> > -             goto err_clk;
+> > +             goto err_clk_src;
+> >       }
+> >
+> >       watchdog_set_drvdata(&wdt->wdt_device, wdt);
+> > @@ -707,6 +721,10 @@ static int s3c2410wdt_probe(struct platform_device *pdev)
+> >   err_cpufreq:
+> >       s3c2410wdt_cpufreq_deregister(wdt);
+> >
+> > + err_clk_src:
+> > +     if (!IS_ERR(wdt->clock_src))
+> > +             clk_disable_unprepare(wdt->clock_src);
+>
+> No. Errors in getting source clock should not be ignored, so you should
+> never store here ERR. You could store NULL. If() is anyway not needed in
+> both cases.
+>
+> You can simplify all this and take pclk twice if src clock is missing.
+> Or assign src=pclk...
+>
+
+Hmm, I don't want to take the same clock twice. It'll increase its
+refcount twice, which might be confusing in some cases. I guess I'll
+rework it to be like this in v2:
+  - add "has_src_clk" bool field to struct wdt
+  - if "watchdog_src" is provided: set has_src_clk "true"
+  - if "watchdog_src" is not provided: set has_src_clk "false"
+(default BSS val) and assign src=pclk
+  - only enable/disable src clock when has_src_clk is "true"
+
+That simplifies clock using, fixes stored pointer value, and avoids
+taking the clock twice, all at the same time. Hope that way is fine
+with you.
+
+> > +
+> >   err_clk:
+> >       clk_disable_unprepare(wdt->clock);
+> >
+> > @@ -727,6 +745,9 @@ static int s3c2410wdt_remove(struct platform_device *dev)
+> >
+> >       s3c2410wdt_cpufreq_deregister(wdt);
+> >
+> > +     if (!IS_ERR(wdt->clock_src))
+> > +             clk_disable_unprepare(wdt->clock_src);
+> > +
+> >       clk_disable_unprepare(wdt->clock);
+> >
+> >       return 0;
+> >
+>
+>
+> Best regards,
+> Krzysztof
