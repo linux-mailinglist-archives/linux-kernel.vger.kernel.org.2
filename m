@@ -2,81 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19A89440ADD
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 20:03:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF3F9440B09
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Oct 2021 20:30:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230184AbhJ3SFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Oct 2021 14:05:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229474AbhJ3SFq (ORCPT
+        id S231768AbhJ3SbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Oct 2021 14:31:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26640 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230512AbhJ3SbA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Oct 2021 14:05:46 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09522C061570;
-        Sat, 30 Oct 2021 11:03:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=oOr5b74ov6pX5O7+DCjQEMYj0/uvSmNv3j5bSHbVk/Y=; b=Q0jrwA1BtOPvifDot7sLVzALrr
-        5w2Kylbc2r22f7iEsNXzEX6AT/3HxBNm0LMqEAJAOEmr7uRJrYXcORSVEDA/E1lXBf9hWjsvkUlmC
-        5v6AVq5S177j7kg3fnYFrMKxKCIecEtrHL7yKLXtOGo1wZ1lWzWd612sBpcH56zc1ztPNmRvg+vIS
-        jS5A74DKguVtKjuW9C73c2SAXrw7K707NJCSMtfjFt8Bt9qPC2tONdKD6jGraG2aZnTIZpSeZARjH
-        eHbS3R9gisuI0wuUFhDcN2AKZa7NWkBlLHR0quvnofl9phNbrCqW0sbYEhktRy5gY1PGAB1gPqyrG
-        MDBAEd8A==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mgsgt-00DGXT-TK; Sat, 30 Oct 2021 18:02:52 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id DB2EB9816BA; Sat, 30 Oct 2021 20:02:49 +0200 (CEST)
-Date:   Sat, 30 Oct 2021 20:02:49 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        Mark Rutland <mark.rutland@arm.com>, X86 ML <x86@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-hardening@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH] static_call,x86: Robustify trampoline patching
-Message-ID: <20211030180249.GU174703@worktop.programming.kicks-ass.net>
-References: <CAMj1kXEx10gC8eH7rV-GbZZj2M3uDue6HYsKb+A5J01zOxm_FA@mail.gmail.com>
- <20211027124852.GK174703@worktop.programming.kicks-ass.net>
- <YXlOd1lyKZKAcJfA@hirez.programming.kicks-ass.net>
- <CAMj1kXHKh7wv6JqusVnoiQDMm7ApFq2ujzbfWmM9AzLKFehhAA@mail.gmail.com>
- <YXlcMluaysPBF92J@hirez.programming.kicks-ass.net>
- <CAMj1kXECTdDLVMk2JduU5mV2TR0Cv=hZ9QOpYRsRM1jfvvNikw@mail.gmail.com>
- <CABCJKufpS4jJxHqk8=bd1JCNbKfmLDKBbjbhjrar2+YQJFiprg@mail.gmail.com>
- <20211029200324.GR174703@worktop.programming.kicks-ass.net>
- <20211030074758.GT174703@worktop.programming.kicks-ass.net>
- <CAMj1kXEJd5=3A_6Jhd4UU-TBGarnHo5+U76Zxxt7SzXsWp4CcA@mail.gmail.com>
+        Sat, 30 Oct 2021 14:31:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635618510;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=tVvWAEyocSYIBR9AcGsLALyZb02ytJh04fxwsOMZ8rM=;
+        b=S1Ld+2IhrqWtHmeFEHkBGBKS5ovuA3bU9p5QzJtraKuw70n6AM4SVIRGad7CQyOkNh5bMU
+        2jQkO5pIlYyBseXgeeMOFA4aBFzKxe5hSqj8JdoKheN51BE77GskkCLZAtYuoI0+68LjH+
+        lg0oVbrMh4lrC9UblX+5nlyj40qjTEY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-549-bnSJrRByMw68x3MMRsWsFw-1; Sat, 30 Oct 2021 14:28:19 -0400
+X-MC-Unique: bnSJrRByMw68x3MMRsWsFw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A1DCD1808319;
+        Sat, 30 Oct 2021 18:28:17 +0000 (UTC)
+Received: from x1.localdomain (unknown [10.39.192.75])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D26425F4E9;
+        Sat, 30 Oct 2021 18:28:14 +0000 (UTC)
+From:   Hans de Goede <hdegoede@redhat.com>
+To:     Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Sebastian Reichel <sre@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Yauhen Kharuzhy <jekhor@gmail.com>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        platform-driver-x86@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-efi@vger.kernel.org
+Subject: [PATCH 00/13] power-suppy/i2c/extcon: Add support for cht-wc PMIC without USB-PD support
+Date:   Sat, 30 Oct 2021 20:28:00 +0200
+Message-Id: <20211030182813.116672-1-hdegoede@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXEJd5=3A_6Jhd4UU-TBGarnHo5+U76Zxxt7SzXsWp4CcA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 30, 2021 at 07:19:53PM +0200, Ard Biesheuvel wrote:
-> I just realized that arm64 has the exact same problem, which is not
-> being addressed by my v5 of the static call support patch.
+On many X86 devices with a Cherry Trail SoC the PMIC / battery charger
+support is not fully handled by ACPI. Instead we need to load native
+drivers for the PMIC and various chips surrounding the PMIC like the
+charger IC. So far we mostly support the AXP288 PMIC this way, as well
+as the Intel Whiskey Cove PMIC with a FUSB302 Type-C controller + other
+ICs for a USB-PD, USB-3 (superspeed) and DP-altmode capable Type-C
+connector, as found on the GPD win and GPD pocket mini laptops.
 
-Yeah, it would.
+On the Xiaomi Mi Pad 2 tablet the Whiskey Cove PMIC is used in
+a different setup then on the GPD devices, supporting only USB-2 with
+BC1.2 spec charger detection on its USB connector.
 
-> As it turns out, the v11 Clang that I have been testing with is broken
-> wrt BTI landing pads, and omits them from the jump table entries.
-> Clang 12+ adds them properly, which means that both the jump table
-> entry and the static call trampoline may start with BTI C + direct
-> branch, and we also need additional checks to disambiguate.
+This series adds support for the charger IC in this setup and for having
+the extcon-intel-cht-wc code control the 5V Vbus boost converter and
+the USB role-switch, which is done by the FUSB302 Type-C controller driver
+in the GPD case.
 
-I'm not sure, why would the static_call trampoline need a BTI C ? The
-whole point of static_call() is to be a direct call, we should never
-have an indirect call to the trampoline, that would defeat the whole
-purpose.
+This fixes the tablet not charging under Linux, host-mode only working
+when booted in host-mode, as well as device-mode not working. Note
+device-mode still does not work when plugged into a CDP port. I have
+identified the cause for this and I plan to submit a fix later.
+
+This series consists of the following parts:
+
+Patch 1 + 2: Add a "intel,cht-wc-setup" device property to the Whiskey Cove
+i2c-client so that various WC drivers can use this to identify which setup
+they are dealing with.
+
+Patch 3 + 4: bq25890 psy driver bug-fixes
+
+Patch 5 - 8: bq25890 psy support for non-devicetree devices
+
+Patch 9 + 10: bq25890 psy support for registering the builtin Vbus boost
+converter as a regulator
+
+Patch 11: Add support to the i2c-cht-wc I2C-controller driver to
+instantiate an i2c-client for the attached bq25890 charger
+
+Patch 12 + 13: extcon-intel-cht-wc add support for the USB-2 only with
+BC1.2 charger detection setup
+
+Assuming everybody is ok with this series, we need to talk about how
+to merge this.
+
+Patch 1 makes some very small changes (just a rename) to
+drivers/firmware/efi code, I would like to merging this + patch 2 through
+the pdx86 tree (where the real changes are). Ard, can I have your ack
+for this please ?
+
+Patch 11 depends on a header file added by patch 10, since the
+i2c-cht-wc.c code otherwise sees very little changes I believe it makes
+sense for patch 11 to be merged into linux-power-supply.git/for-next
+together with patches 3-10. Wolfram can we have you ack for this?
+
+Patch 12 + 13 can be merged through the extcon tree, these have no
+(compile time) dependencies on the other patches.
+
+This is all 5.17 material, and I will make sure the pdx86 patches
+adding the new property will land in 5.17-rc1, hopefully the rest
+will land then too, but if other bits land later that is fine too,
+as long as the new property is there behavior won't change on the
+GPD win/pocket and we won't get any regressions.
+
+Regards,
+
+Hans
+
+p.s.
+
+Patch 3 and 4 are pure bq25890 bugfixes and should probably be picked up
+right away independent of the rest of the series.
+
+
+Hans de Goede (13):
+  platform/x86: Rename touchscreen_dmi to dmi_device_properties
+  platform/x86: dmi_device_properties: Add setup info for boards with a
+    CHT Whiskey Cove PMIC
+  power: supply: bq25890: Fix race causing oops at boot
+  power: supply: bq25890: Fix initial setting of the F_CONV_RATE field
+  power: supply: bq25890: Add a bq25890_rw_init_data() helper
+  power: supply: bq25890: Add support for skipping initialization
+  power: supply: bq25890: Enable charging on boards where we skip reset
+  power: supply: bq25890: Drop dev->platform_data == NULL check
+  power: supply: bq25890: Add bq25890_set_otg_cfg() helper
+  power: supply: bq25890: Add support for registering the Vbus boost
+    converter as a regulator
+  i2c: cht-wc: Add support for devices using a bq25890 charger
+  extcon: intel-cht-wc: Check new "intel,cht-wc-setup" device-property
+  extcon: intel-cht-wc: Add support for devices with an USB-micro-B
+    connector
+
+ MAINTAINERS                                   |   2 +-
+ drivers/extcon/extcon-intel-cht-wc.c          | 119 ++++++++--
+ drivers/firmware/efi/embedded-firmware.c      |   4 +-
+ drivers/i2c/busses/i2c-cht-wc.c               |  77 ++++--
+ drivers/platform/x86/Kconfig                  |  20 +-
+ drivers/platform/x86/Makefile                 |   2 +-
+ ...chscreen_dmi.c => dmi_device_properties.c} |  54 ++++-
+ drivers/power/supply/bq25890_charger.c        | 223 ++++++++++++------
+ include/linux/efi_embedded_fw.h               |   2 +-
+ include/linux/power/bq25890_charger.h         |  15 ++
+ 10 files changed, 400 insertions(+), 118 deletions(-)
+ rename drivers/platform/x86/{touchscreen_dmi.c => dmi_device_properties.c} (96%)
+ create mode 100644 include/linux/power/bq25890_charger.h
+
+-- 
+2.31.1
+
