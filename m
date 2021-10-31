@@ -2,72 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C016441083
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 20:41:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C15144108B
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 20:42:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230152AbhJaTnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 15:43:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33298 "EHLO
+        id S231186AbhJaToh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 15:44:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231205AbhJaTnj (ORCPT
+        with ESMTP id S230064AbhJaTog (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 15:43:39 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0330FC061714
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 12:41:07 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id l7so16402418iln.8
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 12:41:06 -0700 (PDT)
+        Sun, 31 Oct 2021 15:44:36 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55C30C061714
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 12:42:04 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id f9so19046128ioo.11
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 12:42:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=tUREh5LHd66l0OLGq8t2Df8ogS/efOJa+e+gKKpOSzs=;
-        b=YVQ8ATqPbzx3r236TDe5h8S8/hbELrCy0eejyBnDtPxDG8pKzxSXlyfVsk7CNTk3mJ
-         VzpqzghhPrqlUJK/ejvnrVg4vjmRJ5PWCNyzEfwYSsf/Lk2ALHnm0W3L4H4kWBX+2VpK
-         3CIid+BM4MG7vmLpMWg98z856wq3Yxx4OVXB9hLqRaGxCdgzW2U/qjmEBP/d4CGZpAWt
-         Kjght+EK+YImwpSgO85XX2pU4jwbrOg9kM2ytWfD7frmDoIXGebpJ2ukWzYSA2MoUSur
-         LNkjiIJxQnFfbzuun5Q0oc1JMDVXXNczcAxkozgFwgt4vBEa5mJYv977JwCk++kMN5bX
-         mHjw==
+        h=from:subject:to:cc:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=UJAmDNZ/jLwCgDF6rb5hn4XMoc5AuRYESmnLTqSBO4c=;
+        b=dz/frPgGDmB/3DWfGPM4LKFtz3N/tM6zkABNYq4rCSaGaQTi9RWXTvFFfDzAdQhtf1
+         NcHdssiLxh3W/Af5SYJ0yLLKf/5ImNDtu8RLh5GAv/n0S+gJ+gIMjzJLg2r8o38Qwtpa
+         fMFtD30o6WC+dr/Z8Tr61CZYrDm+HrYh66GI9WA9r62jmVT4WhAeYdbXSSdeuUeozttl
+         R5xu+kq1t41pNKK2l4qNVuej0OP1BE1USwqH/XkPDLWBSaSwyV95AZ5vt+jB1dox+dZh
+         YHE1zj1zOyj0J8rQGm6LKrOm/1EDlG/qlue0tWxB3KtM/+3vQ9nWpUAEGFnqCJzxhRhf
+         0CpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tUREh5LHd66l0OLGq8t2Df8ogS/efOJa+e+gKKpOSzs=;
-        b=hzq4JssAkzlsp5zGj+Jf19hBADrvOV2yHAjpWj63XX0ZxR9TuaHeKht62URxsZxeLs
-         IWo1diJWdkDuyevE9jjVxICWL95DxTZGjyWVkVTwEl6XUWLa0CuH99m5CwTDaKAdlmZ5
-         fXCAA1Os2u4NoKGnSHVDFJ5xUIoxeiBf6iBLjWquJStHFA3tZ1lB8+Hf7gKEL6GprX3y
-         4ncEVTD3cTZGOMpo0y8AecILXnDjg3WjgOK+tCqSe6EuK9r2FUjYT4BTr3MdzC05nyfn
-         CG1KQDAz870imShEM85JROOPjRcagFDiojaIci5nRCplgfMmWcoAbw8lCGRnOYgtk2X8
-         pQ+A==
-X-Gm-Message-State: AOAM531j1FUoxBELOLR4+7ce6F4O0Z20j6zjigEf07gj9S9z+bQEGFqn
-        GB0gIW++evbW1cfYvuGf+8JYuQ==
-X-Google-Smtp-Source: ABdhPJy7kO9AYFBRAJ1fgLQ4Fc5NqLK2w2cnUbQ5IfYE3VUCGF/k9+9Fv/6TW82wDVqy4Erqr9Sx9Q==
-X-Received: by 2002:a05:6e02:1c8a:: with SMTP id w10mr17322578ill.193.1635709266435;
-        Sun, 31 Oct 2021 12:41:06 -0700 (PDT)
+        h=x-gm-message-state:from:subject:to:cc:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=UJAmDNZ/jLwCgDF6rb5hn4XMoc5AuRYESmnLTqSBO4c=;
+        b=8OJw0CZV6LzalAHJobX01qGBQTX7e3CFTTvYUnLJPXLLn7e74q0j7YOtEkBVQmVUiR
+         vIl1Fb+GeCrvx2C03TtlfzQWmpY5LL5d/OgaGowAh4iGcs7j21C9JBKuJD01yK1uyGID
+         rWz2iy9+mCUCLWBiLXqvkGNjZFlxBlDycY513d3Qz5/9AMrTFcbxyOEj0LOTKKAfnX/y
+         eEHZskwoTsyjHBMXgwC8kj3wxrljHn5vEkESgRd4ogk7sPUGykRy0wrCSaA7DchvhjWF
+         XPVty2yXOdpIrOd73o9iAl6Q7zBcuQib7z2RUllNGrTamavcaYaf67FJMSPrXNuIFuDj
+         uFgg==
+X-Gm-Message-State: AOAM532rYOu3fBr9vufeRAuRmUvB66zIgwqIsRdlIBj8pgQyHcik+mkh
+        4u9A/YWMH4c6Sac6chA8UYpsh+fuGKNHiA==
+X-Google-Smtp-Source: ABdhPJxQh+wSlhg4vMDFQEYKrPyz6bD2Zi9o2tkvOq21dtiCnTn8vZNuYMmfcLDuEq1gnefnZ5P2Tg==
+X-Received: by 2002:a05:6638:2b5:: with SMTP id d21mr18606439jaq.133.1635709323576;
+        Sun, 31 Oct 2021 12:42:03 -0700 (PDT)
 Received: from [192.168.1.116] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id a20sm6906987ila.22.2021.10.31.12.41.05
+        by smtp.gmail.com with ESMTPSA id i16sm6792077ioh.54.2021.10.31.12.42.03
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 31 Oct 2021 12:41:06 -0700 (PDT)
-Subject: Re: [syzbot] WARNING: ODEBUG bug in __put_task_struct
-To:     syzbot <syzbot+30a60157d4ef222fd5e2@syzkaller.appspotmail.com>,
-        akpm@linux-foundation.org, andrii@kernel.org,
-        asml.silence@gmail.com, ast@kernel.org, bpf@vger.kernel.org,
-        christian@brauner.io, daniel@iogearbox.net, david@redhat.com,
-        ebiederm@xmission.com, io-uring@vger.kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        npiggin@gmail.com, peterz@infradead.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, xiaoguang.wang@linux.alibaba.com,
-        yhs@fb.com
-References: <000000000000bb843a05cfa99111@google.com>
+        Sun, 31 Oct 2021 12:42:03 -0700 (PDT)
 From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <bd03422b-4a19-c518-f550-13cd7be243fc@kernel.dk>
-Date:   Sun, 31 Oct 2021 13:41:04 -0600
+Subject: [GIT PULL] CDROM updates for 5.16-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Phillip Potter <phil@philpotter.co.uk>,
+        LKML <linux-kernel@vger.kernel.org>
+Message-ID: <9170ad88-1150-1a34-9979-669054d6d2f9@kernel.dk>
+Date:   Sun, 31 Oct 2021 13:42:02 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <000000000000bb843a05cfa99111@google.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -75,30 +65,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/31/21 11:41 AM, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    bdcc9f6a5682 Add linux-next specific files for 20211029
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1413226ab00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=cea91ee10b0cd274
-> dashboard link: https://syzkaller.appspot.com/bug?extid=30a60157d4ef222fd5e2
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=121ba3e2b00000
-> 
-> The issue was bisected to:
-> 
-> commit 34ced75ca1f63fac6148497971212583aa0f7a87
-> Author: Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
-> Date:   Mon Oct 25 05:38:48 2021 +0000
-> 
->     io_uring: reduce frequent add_wait_queue() overhead for multi-shot poll request
+Hi Linus,
 
-This was dropped from the tree last week:
+On behalf of Phillip, here are the CDROM updates for the 5.16-rc1 merge
+window:
 
-#syz invalid
+- Add ioctl for improved media change detection (Lukas)
+
+- Reformat some documentation (Phillip)
+
+- Redundant variable removal (luo)
+
+Please pull!
+
+
+The following changes since commit 316346243be6df12799c0b64b788e06bad97c30b:
+
+  Merge branch 'gcc-min-version-5.1' (make gcc-5.1 the minimum version) (2021-09-13 10:43:04 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.dk/linux-block.git tags/for-5.16/cdrom-2021-10-29
+
+for you to fetch changes up to bbc3925cf696422492ebdaba386e61450fa2294c:
+
+  cdrom: Remove redundant variable and its assignment (2021-10-21 08:23:09 -0600)
+
+----------------------------------------------------------------
+for-5.16/cdrom-2021-10-29
+
+----------------------------------------------------------------
+Lukas Prediger (1):
+      drivers/cdrom: improved ioctl for media change detection
+
+Phillip Potter (1):
+      cdrom: docs: reformat table in Documentation/userspace-api/ioctl/cdrom.rst
+
+luo penghao (1):
+      cdrom: Remove redundant variable and its assignment
+
+ Documentation/cdrom/cdrom-standard.rst      |  11 +++
+ Documentation/userspace-api/ioctl/cdrom.rst | 113 ++++++++++++++--------------
+ drivers/cdrom/cdrom.c                       |  63 ++++++++++++++--
+ include/linux/cdrom.h                       |   1 +
+ include/uapi/linux/cdrom.h                  |  19 +++++
+ 5 files changed, 146 insertions(+), 61 deletions(-)
 
 -- 
 Jens Axboe
