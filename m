@@ -2,97 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CAF5440E85
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 14:04:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D10E440E8A
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 14:06:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230246AbhJaNGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 09:06:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60100 "EHLO
+        id S231684AbhJaNJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 09:09:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229662AbhJaNGt (ORCPT
+        with ESMTP id S229626AbhJaNJO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 09:06:49 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FCDEC061570;
-        Sun, 31 Oct 2021 06:04:17 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id k24so5565496ljg.3;
-        Sun, 31 Oct 2021 06:04:17 -0700 (PDT)
+        Sun, 31 Oct 2021 09:09:14 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E30DC061570;
+        Sun, 31 Oct 2021 06:06:42 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id u21so31047045lff.8;
+        Sun, 31 Oct 2021 06:06:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=EMe2Z2587AVutQZvLwNBuhISbQ8pHURWp8p6vvRjrlc=;
-        b=a2iKCDA/nqe1HltLr9hVTTfl2+nGyDu2Z3sl5WvHKWffYUTP1PzdUqf468l1TtR5bK
-         KmOlJqV58zjINjRK+rB6IcQNIZR/GvPvBHBAxGJat4OVhs4SjudzbaHCVdf8yvrfeTKh
-         dn9SKK/iqD0p9ax7zF/mmifUJJ3Oq8mJw8pLMt00GX0O+idlBo+dcyUEFhac7YAUZlB5
-         vwQJhhZ77ixkgVrjKdlZryIabUtNaUjBfFcjb7+wgDy0beWPQSUzm+TkF2VWj42jgqSr
-         hR1Qic+nb+yJNXQKOW2qo8b0pttbT1IEJCGSNWaC/wimitqp0hmK6oE9fMoVJLbmNO/t
-         0SvA==
+        bh=HnA4agtvoe5bY8VDS5ihdFhbJWN6EIjsWlUJf/KpvEg=;
+        b=CmaQHx6bEFgb0QO4CmJHd/SgHy+uYvlYGANFpzXePelKTbEdOMj9dxnaTIXbb4w4ly
+         +KEsckeR2tebik7NiuQtUcq0kBK9VOQF9VbU1KhgoKr4HXDvrNUSeCoB0prE2BUCRXF3
+         Wf3M94WdTNZdQpaoJu/HF2oNrVJ0l7ZhX0V77B0sNQiFFWAjdxQYJLuTe4j5Z8XCOObq
+         bnPrFfyt0OnqjyQiecblcjKF8PTWaiOsfGJDDpCgIb8ZhS9efRuol12zcDM5Q/I6z3uA
+         mr5BhOtIocvA4LVOu9YaHaGOg7m5JvJuGD0Bl0TRDLQP1Dm/A8cri2IH+8L/6tYB4uxc
+         r2NQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=EMe2Z2587AVutQZvLwNBuhISbQ8pHURWp8p6vvRjrlc=;
-        b=RRNbYLjjX3Nqxh4RpqAfdfNSEwYrd8DjUcs7hHJqwDvc0SWU749CZnl3TUKmypK3O2
-         Y8a1m5D15z6c0J35HkhqVgN569LSQNI66F+nDQWDmn0tx4oPXyWNQU2aoPK9OvPXIYTx
-         geac94HnFL2W/HR3ZV7ylQRlLQtan7fP5LGTz5ptWKbtM11NusCRuDV1NcDMWFwNrZho
-         E3ItK/mQ5XaMUQtogJ/7ynuwkAVfa+3K9cbvQ4GY12X5XWJMsF/wBIUZt52wDKYdpJlD
-         NjcXIXsOxBcUYbR6wnAn0h+upUPsB5XwNFaylMpzepz9DXNHeANVEv4pnR7bNr9r2ICZ
-         5XNw==
-X-Gm-Message-State: AOAM5319r7eCjSGda/IYVDRleJnyXXBoOs2oH1DqOo5YkxB5EF5SZSiW
-        dce1sHuD5FHGGUI4G46GHLlJ9yfubILJonByxvk=
-X-Google-Smtp-Source: ABdhPJwu7xlJgXcDLfBtqzUnE3+rerLqH1wzhSdAeqWlQfbNF5Kythz68RK7/JMcva/SffISoH67p1nJGkwCfHQG3eY=
-X-Received: by 2002:a2e:81c8:: with SMTP id s8mr18128016ljg.407.1635685455484;
- Sun, 31 Oct 2021 06:04:15 -0700 (PDT)
+        bh=HnA4agtvoe5bY8VDS5ihdFhbJWN6EIjsWlUJf/KpvEg=;
+        b=ui+PwBWfwBITTdHFwos5BHxcuntYWU5Tat2ItzCu0wvXqA8N3Xg6tg99aaXMCaYgyx
+         HluFojxe4bNf1L0cekqK5tVC3FbkujCm3gzIE7NTqc9ZWGxMfPApfUmACq5luG4I+P2m
+         VED2XQnAaREdC0fzbKzrXxjGFoqmR7sEQSIeZ5BO+y00V3xUcqW6ZZTtZ4N7iqyKJNPm
+         6pXDuTPoR81bbgxg+/xMfQcLi7/9HxwIcnWqb91qPN1f4jkp9hli06wV2kmUWOxAj0Wi
+         VIZEYmsZMNZ0ZIL+/XsHSn3yTq5lleRjFahN7VutjuV7g2eNsDJJnoWnOilib/6lyTNl
+         4Rug==
+X-Gm-Message-State: AOAM532+cdd1dWL/pcN0WCb9zxYLSsziqywfOlEOkPK/OQAiQlXCEmxz
+        ZIJ1gBGMZTHPtnjNMGZE8A5oRYmeNux5NUVbZZmeKQqTB9c=
+X-Google-Smtp-Source: ABdhPJye681stA1OkK1J5HPFPb/3HDU+gJAlfKObEtPg9qAInOF1LWCXpQyhtpk28xb7ryeb6q65WrH5U+kKilaUpF4=
+X-Received: by 2002:a05:6512:260e:: with SMTP id bt14mr22723388lfb.129.1635685601025;
+ Sun, 31 Oct 2021 06:06:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <dc24ab2a6c9bb0831e1bb732d3377529fb0ead87.1635679495.git.mchehab+huawei@kernel.org>
- <b561275a4b10949ac06ff834e27243ec6ad6d546.1635679495.git.mchehab+huawei@kernel.org>
-In-Reply-To: <b561275a4b10949ac06ff834e27243ec6ad6d546.1635679495.git.mchehab+huawei@kernel.org>
+References: <cover.1635412162.git.matti.vaittinen@fi.rohmeurope.com>
+In-Reply-To: <cover.1635412162.git.matti.vaittinen@fi.rohmeurope.com>
 From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sun, 31 Oct 2021 15:03:39 +0200
-Message-ID: <CAHp75VcaWqeY2=13WE+ObQzjA1q83QPU4NGJnPR0H12m68uzVQ@mail.gmail.com>
-Subject: Re: [PATCH 3/3] media: atomisp: comment-out JPEG format
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linuxarm <linuxarm@huawei.com>, mauro.chehab@huawei.com,
-        Alex Dewar <alex.dewar90@gmail.com>,
-        Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Kaixu Xia <kaixuxia@tencent.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
+Date:   Sun, 31 Oct 2021 15:06:05 +0200
+Message-ID: <CAHp75Vf12Lx=demULkNhgP=YpnfdH15Y9T5C7PUA4uo=0J15ZQ@mail.gmail.com>
+Subject: Re: [RESEND PATCH 0/4] Drop ROHM BD70528 support
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     Matti Vaittinen <mazziesaccount@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        devicetree <devicetree@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-staging@lists.linux.dev
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-power <linux-power@fi.rohmeurope.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 31, 2021 at 1:30 PM Mauro Carvalho Chehab
-<mchehab+huawei@kernel.org> wrote:
+On Thu, Oct 28, 2021 at 12:18 PM Matti Vaittinen
+<matti.vaittinen@fi.rohmeurope.com> wrote:
 >
-> This is already disabled on some parts of the code, and trying
-> to use it with current firmware causes an error:
->
-> [   53.799946] atomisp-isp2 0000:00:03.0: can't create streams
-> [   53.799962] atomisp-isp2 0000:00:03.0: __get_frame_info 1600x900 (padded to 0) returned -22
->
-> So, completely disable reporting it.
+> Drop ROHM BD70528 support
 
-
-Can't we simply remove all these pieces altogether?
-The rationale:
- - code is still kept in the index of the Git
- - avoid robots and humans of sending patches against dead code
- - leaving dead code (even in staging) is not what we want in the long term
+I am always for the code removal, but the Q here is do you think there
+won't be similar chips that may utilize the code and avoid duplication
+in the future?
 
 -- 
 With Best Regards,
