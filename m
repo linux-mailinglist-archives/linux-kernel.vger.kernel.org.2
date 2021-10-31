@@ -2,105 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB478440FEE
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 18:51:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9FEE440FF3
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 18:54:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230222AbhJaRxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 13:53:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37580 "EHLO
+        id S230097AbhJaR5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 13:57:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229732AbhJaRxu (ORCPT
+        with ESMTP id S229732AbhJaR47 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 13:53:50 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A3DAC061714
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 10:51:19 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id s136so15130627pgs.4
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 10:51:19 -0700 (PDT)
+        Sun, 31 Oct 2021 13:56:59 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09E20C061570;
+        Sun, 31 Oct 2021 10:54:27 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id s1so56969830edd.3;
+        Sun, 31 Oct 2021 10:54:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=f8mR+D/eH/dZNNjPVwCwixw0JTq5UBSJUqcsN3WCTdc=;
-        b=MvRLH8wCuHLDGU5wWh67k3cqC1Fdd3cZizRDNMF6VwG3BIGVykQrXQ5XqN/SFH4gF0
-         aMNjx/sd3ls8H4qnD1YxCP5l5GJAAEpAG/Esp4V6LKux9NYOWi96TwUZ/pFb3TcmZBWP
-         zVBzvEL+MVUnbMk9GV0AJMQQu68lxnATIX9jNgOg6W2MrQQWyRvUFoiusZtaNgUAPfI1
-         AxT4pyI0WF/pD617rNm69wlS3SI/GAt5yD+1ZKqpLA3r9I/GOI56o8ePSp4PP7gIIGX3
-         ZjKHBLE0TTaieZDjpKAQiXOrBhNCxqkLUX94RtN1Jp6OGXuvi8GYPomwsciSqBwOSwmF
-         zWpw==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1iAI21X6r8lOvu6IMD//lyW5AueJtXMjsVhWS1XSI7s=;
+        b=P4Y6pGdY1kCCdlxUfYxN4cn+cnbp2EYtYyUMaR2fdI75Z75I9xWLEJ4FDu4XdYYT1i
+         jRrI/ejB/z63ubbA9ix8MIE89eI8uT9gL82T209mZPz41PN66FytsLO7oGCwjF0g83PM
+         zW1HDrmtCqG/6mGXi24wZsSdg7Up4BXcHjUZq3ULU5a+s2zegFYtd2+6SP+5F5lvYaDy
+         0vDclfWVbMUSiGX8RXUL3S5loIZlrrxtFv30w9k9B9BzpRs8S3Vq6yPHNP7731HVKsAF
+         pawyKegtCn4fifBbquCZSMj+OxsJTdH78jMv4sOyKRVWyJq1G7abmS+vGhaYSRXsj7my
+         7Y+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=f8mR+D/eH/dZNNjPVwCwixw0JTq5UBSJUqcsN3WCTdc=;
-        b=hfMo/t82SfSOWmmSbMVxEk2mqggt4zMFcU0VGsiKbcQez7KO0PsrQKBW1cVP3a5MsF
-         O45JZXuBQU6uVUuM+Kd5lXzFo02KWVQvZJwYntMXBbbY2tHpknMYYnyW1nxqGBWN+Iph
-         YS69MEU1KYOLPK9/OvDuKgME/KhWNHULx/lWicNnW0bYknNjO0hQx9jdPDATmtqQBsSz
-         o8SvGknIpuecBzgENTZi8eScZpVlMoon0xMuI4iglD7jjiBVJLsJOdhYfuiIuJ6pAc1Z
-         qOkWRuYZEjqh70tcI484UjaKZBAyw+hE2B5n7vdOkX3ate7cYqrQ8lSMaYeOtbKL3gv0
-         UBeQ==
-X-Gm-Message-State: AOAM531xjHHLSylIg4UnEzg85AgtAdxCC4mpETIiJz1H2YgaaKHqFNAc
-        3n9kejodQbV4K2Fm8nlo5a1rxAbGRJWbowRMviyrkg==
-X-Google-Smtp-Source: ABdhPJwgKG5Mr66Ui8RTcSTuDFaX+/IepWZB1EHkIZ09RxQEUmJyKltynz0/5/JNtOiXpRzef+xr6SruizxyjaU9z7s=
-X-Received: by 2002:a63:6bc2:: with SMTP id g185mr17997770pgc.356.1635702678641;
- Sun, 31 Oct 2021 10:51:18 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1iAI21X6r8lOvu6IMD//lyW5AueJtXMjsVhWS1XSI7s=;
+        b=kWr9p/Sd0oKj5JmFYnNQiD+6uQpGd/5qjJEPVcPueD+PVZeFHkzSfsJy15i5dxSFUc
+         4YJCqqr75QcLeEd/8x01JkrqqHjaAWx9yLHgXjy2dGYn/BMsmpqJnrRTRMFGXRTLWJZt
+         5vK+TQ0yEPY7+jpBfy2HZb6iD/tCTHSc/5lGnq3J6YdO+pD35vdqKQTHE1Xct8+GMJYv
+         3iuyzTtZm8E0REBxNRfgYKWknw0olvjZie3NOT1+XvvOV9QesqVXvkw2EE3KPS8Kao5U
+         xqLbFo6GJXZGmixLcYxMptkMezR6OD8QGVHQtf0MyPNcXHuk8ApIC8SvKiADhyf9HdQR
+         u54g==
+X-Gm-Message-State: AOAM532rRMdetHaNVpWHBACL7XH14DDdsY60xcu4BR4GAVJkS1OZFTZm
+        Dvd8rUlAAWzBrwleVAHkdc1Mc1VduEeJJ50NxM0=
+X-Google-Smtp-Source: ABdhPJylON3W+t6x4QKpdZ1ZTKyzua3+6/PDrTQvrCkk2dZZqhzaTZFX2SoHaqZQj7/vIbACptW/+g==
+X-Received: by 2002:a50:d8cf:: with SMTP id y15mr34414191edj.66.1635702865644;
+        Sun, 31 Oct 2021 10:54:25 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:ab88:368f:2080:eab:126a:947d:3008])
+        by smtp.googlemail.com with ESMTPSA id r26sm5986917ejd.85.2021.10.31.10.54.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 31 Oct 2021 10:54:25 -0700 (PDT)
+From:   David Virag <virag.david003@gmail.com>
+Cc:     David Virag <virag.david003@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] samsung: exynos-chipid: add Exynos7885 SoC support
+Date:   Sun, 31 Oct 2021 18:53:29 +0100
+Message-Id: <20211031175329.27843-1-virag.david003@gmail.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-References: <20211015235219.2191207-1-mcgrof@kernel.org> <20211015235219.2191207-5-mcgrof@kernel.org>
-In-Reply-To: <20211015235219.2191207-5-mcgrof@kernel.org>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Sun, 31 Oct 2021 10:51:08 -0700
-Message-ID: <CAPcyv4g98Dk4HFvgzEeCfCNjF-vjfpEhjGjsPDazGPg-BqMr8A@mail.gmail.com>
-Subject: Re: [PATCH 04/13] nvdimm/btt: use goto error labels on btt_blk_init()
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Jens Axboe <axboe@kernel.dk>, Geoff Levand <geoff@infradead.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, Jim Paris <jim@jtan.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Nitin Gupta <ngupta@vflare.org>, senozhatsky@chromium.org,
-        Richard Weinberger <richard@nod.at>, miquel.raynal@bootlin.com,
-        vigneshr@ti.com, Vishal L Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        "Weiny, Ira" <ira.weiny@intel.com>,
-        Keith Busch <kbusch@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>, linux-block@vger.kernel.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-mtd@lists.infradead.org,
-        Linux NVDIMM <nvdimm@lists.linux.dev>,
-        linux-nvme@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 4:53 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
->
-> This will make it easier to share common error paths.
->
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-> ---
->  drivers/nvdimm/btt.c | 19 ++++++++++++-------
->  1 file changed, 12 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/nvdimm/btt.c b/drivers/nvdimm/btt.c
-> index 29cc7325e890..23ee8c005db5 100644
-> --- a/drivers/nvdimm/btt.c
-> +++ b/drivers/nvdimm/btt.c
-> @@ -1520,10 +1520,11 @@ static int btt_blk_init(struct btt *btt)
->  {
->         struct nd_btt *nd_btt = btt->nd_btt;
->         struct nd_namespace_common *ndns = nd_btt->ndns;
-> +       int rc = -ENOMEM;
->
->         btt->btt_disk = blk_alloc_disk(NUMA_NO_NODE);
->         if (!btt->btt_disk)
-> -               return -ENOMEM;
-> +               goto out;
+Exynos 7885 has product id "0xE7885000". Add this id to the ids with
+the name.
 
-I tend to not use a goto when there is nothing to unwind.
+The downstream driver sets sub_rev to 2 if we are on Exynos 7885, we
+detected sub_rev 1 and the 27th bit of the revision register is set.
+This is presumably because Samsung might have set the wrong bits on
+rev2 of the SoC in the chipid, but we may never know as we have no
+manual.
 
-The rest looks good to me. After dropping "goto out;" you can add:
+Both the SM-A530F/jackpotlte with Exynos7885 and the SM-M305/m30lte
+with Exynos7904 (rebranded Exynos7885 with lower clock speeds) seem
+to have this bit set to 1 and have a sub_rev of 1 otherwise, but the
+downstream driver corrects it to 2.
+Let's replicate this behaviour in upstream too!
 
-Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+Signed-off-by: David Virag <virag.david003@gmail.com>
+---
+ drivers/soc/samsung/exynos-chipid.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/drivers/soc/samsung/exynos-chipid.c b/drivers/soc/samsung/exynos-chipid.c
+index a28053ec7e6a..ec8c76275aec 100644
+--- a/drivers/soc/samsung/exynos-chipid.c
++++ b/drivers/soc/samsung/exynos-chipid.c
+@@ -55,6 +55,7 @@ static const struct exynos_soc_id {
+ 	{ "EXYNOS5440", 0xE5440000 },
+ 	{ "EXYNOS5800", 0xE5422000 },
+ 	{ "EXYNOS7420", 0xE7420000 },
++	{ "EXYNOS7885", 0xE7885000 },
+ 	{ "EXYNOS850", 0xE3830000 },
+ 	{ "EXYNOSAUTOV9", 0xAAA80000 },
+ };
+@@ -88,6 +89,14 @@ static int exynos_chipid_get_chipid_info(struct regmap *regmap,
+ 	}
+ 	main_rev = (val >> data->main_rev_shift) & EXYNOS_REV_PART_MASK;
+ 	sub_rev = (val >> data->sub_rev_shift) & EXYNOS_REV_PART_MASK;
++
++	//Exynos 7885 revision 2 apparently has the 27th bit set instead of having
++	//a sub_rev of 2. Correct for this!
++	if (soc_info->product_id == 0xE7885000) {
++		if ((sub_rev == 1) && (val & 0x04000000))
++			sub_rev = 2;
++	}
++
+ 	soc_info->revision = (main_rev << EXYNOS_REV_PART_SHIFT) | sub_rev;
+ 
+ 	return 0;
+-- 
+2.33.1
+
