@@ -2,179 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A71CD441004
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 19:09:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADAA6441006
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 19:10:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230248AbhJaSMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 14:12:14 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:42404 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229993AbhJaSMN (ORCPT
+        id S230262AbhJaSNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 14:13:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229853AbhJaSM7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 14:12:13 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id A955D1F770;
-        Sun, 31 Oct 2021 18:09:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1635703780; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zTqvJIRVz+IJNaKULRHWkBFfeKqgj42o1KcagqhmWY4=;
-        b=PejakCDq5Xx0sBmwKQ/Ew7Q9IYRGWEOD+T/TAZSqa1kcQ9DwLLBV932bDz4vwMkXB0O/OO
-        Kmku1mh+bykrW1Kb0gYrhXar/58G4dd7kCQ1uW9t6lil9s8MDcKTYGaBkLFKVZI+qeMmpZ
-        aOCOf3q27YOYgJu/QoqnW48CEfYncdc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1635703780;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zTqvJIRVz+IJNaKULRHWkBFfeKqgj42o1KcagqhmWY4=;
-        b=2cbT/0Zz5sO/ILj6A/0jCWqa/JudYD+Gd64+CRV5W2cpppUXpcK99L+GBBKsKp+M49LmOS
-        h/I7+zbSJEa6M8Ag==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6D1C91323E;
-        Sun, 31 Oct 2021 18:09:40 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id EiQSGeTbfmHXVAAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Sun, 31 Oct 2021 18:09:40 +0000
-Message-ID: <6e69f9bb-5a1e-7b79-38e8-d2860e5ee615@suse.de>
-Date:   Sun, 31 Oct 2021 19:09:39 +0100
+        Sun, 31 Oct 2021 14:12:59 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47FE4C061570
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 11:10:27 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id e65so15174640pgc.5
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 11:10:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=Yly+G2tQYc5jWH+dF3AkB+ki7+SZGT9TzfTXC0w8qwA=;
+        b=ejXmkOq1FXvj2pqqc9Yjib4gl0az8LlfxSR82cemZEM+YuJAoW5qKXyNdMz6Iu7Z52
+         MfNbXwpI+IK3Ayl7+Ajq7TaWnMeZdbHD/B1ye24gKeWChVdLK78i+56RbyuODiDUvmPJ
+         QraEJkwfBN0+U9ZVldtcJNmhEpkycYHjl4uRLIr/zZdB09esuCPoR7Tg5/fr0DCZdK8D
+         0GAUR+LTlaZrLckuxfeAf9YwhUBhsDBoFPWobvSyg3Ar4z1wyy+y9QVZto7jI28kFvM3
+         t+mci3umufQcPIYx5psPScufPeszDRIjsjljui5FODZQIPU5TLxLIuTo4ylJ1gq2j4md
+         cYsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=Yly+G2tQYc5jWH+dF3AkB+ki7+SZGT9TzfTXC0w8qwA=;
+        b=pRdD+qXnWsbwV07xx5ibJ/9GIhxjSNtbfdBiHrsfctd2nTpakvpeNmzU3iHrlorHFx
+         tnwZlMWodED1UCgyHhYNoBMeozGV31EJzih10NBgkDjyyV35aBKWYMe1ZukqXVAvjaDi
+         pitUnMjy7InagucTdc8rUiyp0SNzJ3at0kLTvjaKWmP7Ep674lqybyVKB3jQPF/BPFAW
+         eAP6aLY4ESHfieLCplVbpD+28Scu98xtp/LSyVZ3Fnq37emjbwjy7h6x2soJ8sy/caSh
+         NZNFiUNkfA+YvtIjSpNmZfKostmCJq3LVs3k8lDiFCA3xLSNX0fbkXhaTc3uMW7KT+ne
+         fXVg==
+X-Gm-Message-State: AOAM533Rdt6fhBuRlmJgOB1MUWoOXOAHCX9lp0PoxaMEmMChdtmwEvMh
+        cQGJye9435SCt9Cw6SY2Agg=
+X-Google-Smtp-Source: ABdhPJwmJNiy7GWDga0g/NuzWU+G5Ss3MET5W4vRInso9d2T5pvOErULeGK3kbhmsAt9LwPZfuDYPQ==
+X-Received: by 2002:a63:1d58:: with SMTP id d24mr18472516pgm.316.1635703826772;
+        Sun, 31 Oct 2021 11:10:26 -0700 (PDT)
+Received: from Sauravs-MacBook-Air.local ([59.95.84.6])
+        by smtp.gmail.com with ESMTPSA id t11sm10837514pgi.73.2021.10.31.11.10.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 31 Oct 2021 11:10:26 -0700 (PDT)
+Date:   Sun, 31 Oct 2021 23:40:18 +0530
+From:   Saurav Girepunje <saurav.girepunje@gmail.com>
+To:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        gregkh@linuxfoundation.org, straube.linux@gmail.com,
+        martin@kaiser.cx, saurav.girepunje@gmail.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     saurav.girepunje@hotmail.com
+Subject: [PATCH] staging: r8188eu: os_dep: remove the goto statement
+Message-ID: <YX7cCtVss2RWOJ/a@Sauravs-MacBook-Air.local>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH] drm/rockchip: use generic fbdev setup
-Content-Language: en-US
-To:     John Keeping <john@metanate.com>
-Cc:     dri-devel@lists.freedesktop.org, Sandy Huang <hjc@rock-chips.com>,
-        =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org
-References: <20211029115014.264084-1-john@metanate.com>
- <ab7ace79-0148-1efa-ec17-6994bb35fd2f@suse.de> <YX01C6l93I2YPgku@donbot>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-In-Reply-To: <YX01C6l93I2YPgku@donbot>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------qv0emOEtdJF4vygXj03v61OU"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------qv0emOEtdJF4vygXj03v61OU
-Content-Type: multipart/mixed; boundary="------------0glOOvkbn2FeyB0F4Gj3rKnM";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: John Keeping <john@metanate.com>
-Cc: dri-devel@lists.freedesktop.org, Sandy Huang <hjc@rock-chips.com>,
- =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>,
- David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-rockchip@lists.infradead.org
-Message-ID: <6e69f9bb-5a1e-7b79-38e8-d2860e5ee615@suse.de>
-Subject: Re: [PATCH] drm/rockchip: use generic fbdev setup
-References: <20211029115014.264084-1-john@metanate.com>
- <ab7ace79-0148-1efa-ec17-6994bb35fd2f@suse.de> <YX01C6l93I2YPgku@donbot>
-In-Reply-To: <YX01C6l93I2YPgku@donbot>
+Remove the goto statement from rtw_init_drv_sw(). In this function goto
+can be replace by return statement. As on goto label exit, function
+only return it is not performing any cleanup. Avoiding goto will
+improve the function readability.
 
---------------0glOOvkbn2FeyB0F4Gj3rKnM
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+---
+ drivers/staging/r8188eu/os_dep/os_intfs.c | 39 +++++++----------------
+ 1 file changed, 12 insertions(+), 27 deletions(-)
 
-SGkNCg0KQW0gMzAuMTAuMjEgdW0gMTQ6MDUgc2NocmllYiBKb2huIEtlZXBpbmc6DQo+IEhp
-IFRob21hcywNCj4gDQo+IE9uIEZyaSwgT2N0IDI5LCAyMDIxIGF0IDA5OjAwOjA4UE0gKzAy
-MDAsIFRob21hcyBaaW1tZXJtYW5uIHdyb3RlOg0KPj4gQW0gMjkuMTAuMjEgdW0gMTM6NTAg
-c2NocmllYiBKb2huIEtlZXBpbmc6DQo+Pj4gVGhlIFJvY2tjaGlwIGZiZGV2IGNvZGUgZG9l
-cyBub3QgYWRkIGFueXRoaW5nIGNvbXBhcmVkIHRvDQo+Pj4gZHJtX2ZiZGV2X2dlbmVyaWNf
-c2V0dXAoKTsgdGhlIG9uZSBjdXN0b20gZnVuY3Rpb24gZm9yIC5mYl9tbWFwIGRvZXMgdGhl
-DQo+Pj4gc2FtZSB0aGluZyBhcyBnZW1fcHJpbWVfbW1hcCB3aGljaCBpcyBjYWxsZWQgYnkg
-dGhlIGhlbHBlci4NCj4+Pg0KPj4+IFNpZ25lZC1vZmYtYnk6IEpvaG4gS2VlcGluZyA8am9o
-bkBtZXRhbmF0ZS5jb20+DQo+Pj4gLS0tDQo+Pj4gICAgZHJpdmVycy9ncHUvZHJtL3JvY2tj
-aGlwL01ha2VmaWxlICAgICAgICAgICAgIHwgICAxIC0NCj4+PiAgICBkcml2ZXJzL2dwdS9k
-cm0vcm9ja2NoaXAvcm9ja2NoaXBfZHJtX2Rydi5jICAgfCAgMTAgKy0NCj4+PiAgICBkcml2
-ZXJzL2dwdS9kcm0vcm9ja2NoaXAvcm9ja2NoaXBfZHJtX2Rydi5oICAgfCAgIDIgLQ0KPj4+
-ICAgIGRyaXZlcnMvZ3B1L2RybS9yb2NrY2hpcC9yb2NrY2hpcF9kcm1fZmJkZXYuYyB8IDE2
-NCAtLS0tLS0tLS0tLS0tLS0tLS0NCj4+PiAgICBkcml2ZXJzL2dwdS9kcm0vcm9ja2NoaXAv
-cm9ja2NoaXBfZHJtX2ZiZGV2LmggfCAgMjQgLS0tDQo+Pj4gICAgNSBmaWxlcyBjaGFuZ2Vk
-LCAyIGluc2VydGlvbnMoKyksIDE5OSBkZWxldGlvbnMoLSkNCj4+PiAgICBkZWxldGUgbW9k
-ZSAxMDA2NDQgZHJpdmVycy9ncHUvZHJtL3JvY2tjaGlwL3JvY2tjaGlwX2RybV9mYmRldi5j
-DQo+Pj4gICAgZGVsZXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvZ3B1L2RybS9yb2NrY2hpcC9y
-b2NrY2hpcF9kcm1fZmJkZXYuaA0KPj4+DQo+Pj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1
-L2RybS9yb2NrY2hpcC9NYWtlZmlsZSBiL2RyaXZlcnMvZ3B1L2RybS9yb2NrY2hpcC9NYWtl
-ZmlsZQ0KPj4+IGluZGV4IDE3YTllN2ViMjEzMC4uMWE1NmY2OTY1NThjIDEwMDY0NA0KPj4+
-IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9yb2NrY2hpcC9NYWtlZmlsZQ0KPj4+ICsrKyBiL2Ry
-aXZlcnMvZ3B1L2RybS9yb2NrY2hpcC9NYWtlZmlsZQ0KPj4+IEBAIC01LDcgKzUsNiBAQA0K
-Pj4+ICAgIHJvY2tjaGlwZHJtLXkgOj0gcm9ja2NoaXBfZHJtX2Rydi5vIHJvY2tjaGlwX2Ry
-bV9mYi5vIFwNCj4+PiAgICAJCXJvY2tjaGlwX2RybV9nZW0ubyByb2NrY2hpcF9kcm1fdm9w
-Lm8gcm9ja2NoaXBfdm9wX3JlZy5vDQo+Pj4gLXJvY2tjaGlwZHJtLSQoQ09ORklHX0RSTV9G
-QkRFVl9FTVVMQVRJT04pICs9IHJvY2tjaGlwX2RybV9mYmRldi5vDQo+Pj4gICAgcm9ja2No
-aXBkcm0tJChDT05GSUdfUk9DS0NISVBfQU5BTE9HSVhfRFApICs9IGFuYWxvZ2l4X2RwLXJv
-Y2tjaGlwLm8NCj4+PiAgICByb2NrY2hpcGRybS0kKENPTkZJR19ST0NLQ0hJUF9DRE5fRFAp
-ICs9IGNkbi1kcC1jb3JlLm8gY2RuLWRwLXJlZy5vDQo+Pj4gZGlmZiAtLWdpdCBhL2RyaXZl
-cnMvZ3B1L2RybS9yb2NrY2hpcC9yb2NrY2hpcF9kcm1fZHJ2LmMgYi9kcml2ZXJzL2dwdS9k
-cm0vcm9ja2NoaXAvcm9ja2NoaXBfZHJtX2Rydi5jDQo+Pj4gaW5kZXggNjljNjk5NDU5ZGNl
-Li4yMGQ4MWFlNjk4MjggMTAwNjQ0DQo+Pj4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL3JvY2tj
-aGlwL3JvY2tjaGlwX2RybV9kcnYuYw0KPj4+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9yb2Nr
-Y2hpcC9yb2NrY2hpcF9kcm1fZHJ2LmMNCj4+PiBAQCAtMjYsNyArMjYsNiBAQA0KPj4+ICAg
-ICNpbmNsdWRlICJyb2NrY2hpcF9kcm1fZHJ2LmgiDQo+Pj4gICAgI2luY2x1ZGUgInJvY2tj
-aGlwX2RybV9mYi5oIg0KPj4+IC0jaW5jbHVkZSAicm9ja2NoaXBfZHJtX2ZiZGV2LmgiDQo+
-Pj4gICAgI2luY2x1ZGUgInJvY2tjaGlwX2RybV9nZW0uaCINCj4+PiAgICAjZGVmaW5lIERS
-SVZFUl9OQU1FCSJyb2NrY2hpcCINCj4+PiBAQCAtMTU5LDEwICsxNTgsNiBAQCBzdGF0aWMg
-aW50IHJvY2tjaGlwX2RybV9iaW5kKHN0cnVjdCBkZXZpY2UgKmRldikNCj4+PiAgICAJZHJt
-X21vZGVfY29uZmlnX3Jlc2V0KGRybV9kZXYpOw0KPj4+IC0JcmV0ID0gcm9ja2NoaXBfZHJt
-X2ZiZGV2X2luaXQoZHJtX2Rldik7DQo+Pj4gLQlpZiAocmV0KQ0KPj4+IC0JCWdvdG8gZXJy
-X3VuYmluZF9hbGw7DQo+Pj4gLQ0KPj4+ICAgIAkvKiBpbml0IGttcyBwb2xsIGZvciBoYW5k
-bGluZyBocGQgKi8NCj4+PiAgICAJZHJtX2ttc19oZWxwZXJfcG9sbF9pbml0KGRybV9kZXYp
-Ow0KPj4+IEBAIC0xNzAsMTAgKzE2NSwxMSBAQCBzdGF0aWMgaW50IHJvY2tjaGlwX2RybV9i
-aW5kKHN0cnVjdCBkZXZpY2UgKmRldikNCj4+PiAgICAJaWYgKHJldCkNCj4+PiAgICAJCWdv
-dG8gZXJyX2ttc19oZWxwZXJfcG9sbF9maW5pOw0KPj4+ICsJZHJtX2ZiZGV2X2dlbmVyaWNf
-c2V0dXAoZHJtX2RldiwgMzIpOw0KPj4NCj4+IFBsZWFzZSBwYXNzIDAgZm9yIHRoZSBmaW5h
-bCBhcmd1bWVudC4gVGhlIGZiZGV2IGhlbHBlcnMgcGljayAzMiBieSBkZWZhdWx0Lg0KPj4g
-TWF5YmUgbGVhdmUgYSBjb21tZW50IGlmIHlvdSByZXF1aXJlIDMyIGhlcmUuDQo+IA0KPiBJ
-IHdhbnRlZCB0byBtaW5pbWlzZSB0aGUgY2hhbmdlcyBpbnRyb2R1Y2VkIGhlcmUgLSBwYXNz
-aW5nIDMyIG1hdGNoZXMNCj4gdGhlIHZhbHVlIHBhc3NlZCB0byBkcm1fZmJfaGVscGVyX2lu
-aXRpYWxfY29uZmlnKCkgaW4gdGhlIGRlbGV0ZWQgY29kZQ0KPiBmcm9tIHJvY2tjaGlwX2Ry
-bV9mYmRldi5jLg0KDQpJbiB0aGF0IGNhc2UNCg0KQWNrZWQtYnk6IFRob21hcyBaaW1tZXJt
-YW5uIDx0emltbWVybWFubkBzdXNlLmRlPg0KDQo+IA0KPiBXaGF0IGRvIHlvdSB0aGluayBh
-Ym91dCBjaGFuZ2luZyB0aGlzIHRvIDAgaW4gYSBmb2xsb3ctdXAgcGF0Y2g/DQo+IA0KDQpZ
-ZXMuIElmIHBvc3NpYmxlLCBwbGVhc2UgcHJvdmlkZSBhIGZvbGxvdy11cCBwYXRjaCBmb3Ig
-dGhpcyBhbmQgc2V0IA0KbW9kZWNvbmZpZy5wcmVmZXJlZF9kZXB0aCB0byAyNC4NCg0KQmVz
-dCByZWdhcmRzDQpUaG9tYXMNCg0KDQotLSANClRob21hcyBaaW1tZXJtYW5uDQpHcmFwaGlj
-cyBEcml2ZXIgRGV2ZWxvcGVyDQpTVVNFIFNvZnR3YXJlIFNvbHV0aW9ucyBHZXJtYW55IEdt
-YkgNCk1heGZlbGRzdHIuIDUsIDkwNDA5IE7DvHJuYmVyZywgR2VybWFueQ0KKEhSQiAzNjgw
-OSwgQUcgTsO8cm5iZXJnKQ0KR2VzY2jDpGZ0c2bDvGhyZXI6IEZlbGl4IEltZW5kw7ZyZmZl
-cg0K
+diff --git a/drivers/staging/r8188eu/os_dep/os_intfs.c b/drivers/staging/r8188eu/os_dep/os_intfs.c
+index 1418c9c4916c..4b409479108e 100644
+--- a/drivers/staging/r8188eu/os_dep/os_intfs.c
++++ b/drivers/staging/r8188eu/os_dep/os_intfs.c
+@@ -480,48 +480,34 @@ u8 rtw_init_drv_sw(struct adapter *padapter)
+ {
+ 	u8	ret8 = _SUCCESS;
 
---------------0glOOvkbn2FeyB0F4Gj3rKnM--
+-	if ((rtw_init_cmd_priv(&padapter->cmdpriv)) == _FAIL) {
+-		ret8 = _FAIL;
+-		goto exit;
+-	}
++	if (!rtw_init_cmd_priv(&padapter->cmdpriv))
++		return _FAIL;
 
---------------qv0emOEtdJF4vygXj03v61OU
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+ 	padapter->cmdpriv.padapter = padapter;
 
------BEGIN PGP SIGNATURE-----
+-	if ((rtw_init_evt_priv(&padapter->evtpriv)) == _FAIL) {
+-		ret8 = _FAIL;
+-		goto exit;
+-	}
+-
+-	if (rtw_init_mlme_priv(padapter) == _FAIL) {
+-		ret8 = _FAIL;
+-		goto exit;
+-	}
++	if (!rtw_init_evt_priv(&padapter->evtpriv) || !rtw_init_mlme_priv(padapter))
++		return _FAIL;
 
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmF+2+MFAwAAAAAACgkQlh/E3EQov+DH
-eA/+NrOz2Db7B97Bma1+KljnCw5VmiU5/TQeM0bCXL8lxCbwTACpu2UWrNab0Knb0wlIA+LtGnHh
-yghYGwZEpqpcXYn83H/GeZih9U/CtevVM3uXPTxSAHg/AZYKt0AGNRHkGO/rZ6jZgkDTBJKJCTgH
-V9tyCXiOzjcakCUCqLQmvIQ6pfdP7golKJ1YBWqZ5BKXRQaDk5116Om9NUrNojqBQ9X8vTS7rZaZ
-goX9RgqYq/f9hc4KtIdo8ULiYab4qpuABfzcaLVGK1+sfPwB6RBB7zcdGLhehucctImoNLhGj/28
-TX6DLqhV6tSdsJGXSdITKswxx2e5CKdOZrdJcS+A5j8BhO3xLQqHwRiTtLmNnWBxt0Z1MZlGUAF3
-h0y/Uhh9NUuB5wOjqOf3jvesEVHU7/nXc3k5G1PGU0H6ERP1sypEYlzITPkOLSbLR62JATAFpgxS
-Ci31qfQ8dNEOYjg700kDF+IsF0mRcm5mCVHYUNSWcDxnurZmvWZWJTM2GuLx1okT12HyD7AP2I3b
-6m1AO+0dFrgjrv4lyuS6+iB4nwGl4xmSuWgAAEQtPCmF2sIAcCO4CsHe0MZDVUHnQo3H4Gj8OdL0
-+3osN8v3FvDzbWyeqI/HiVXyaS0wUNtd/x5kq13LuopnvOoQGtOOLdwkjD1k/VmiJpZSzl/zheg5
-0C4=
-=XT9P
------END PGP SIGNATURE-----
+ 	rtw_init_wifidirect_timers(padapter);
+ 	init_wifidirect_info(padapter, P2P_ROLE_DISABLE);
+ 	reset_global_wifidirect_info(padapter);
 
---------------qv0emOEtdJF4vygXj03v61OU--
+-	if (init_mlme_ext_priv(padapter) == _FAIL) {
+-		ret8 = _FAIL;
+-		goto exit;
+-	}
++	if (!init_mlme_ext_priv(padapter))
++		return _FAIL;
+
+-	if (_rtw_init_xmit_priv(&padapter->xmitpriv, padapter) == _FAIL) {
++	if (!_rtw_init_xmit_priv(&padapter->xmitpriv, padapter)) {
+ 		DBG_88E("Can't _rtw_init_xmit_priv\n");
+-		ret8 = _FAIL;
+-		goto exit;
++		return _FAIL;
+ 	}
+
+-	if (_rtw_init_recv_priv(&padapter->recvpriv, padapter) == _FAIL) {
++	if (!_rtw_init_recv_priv(&padapter->recvpriv, padapter)) {
+ 		DBG_88E("Can't _rtw_init_recv_priv\n");
+-		ret8 = _FAIL;
+-		goto exit;
++		return _FAIL;
+ 	}
+
+-	if (_rtw_init_sta_priv(&padapter->stapriv) == _FAIL) {
++	if (!_rtw_init_sta_priv(&padapter->stapriv)) {
+ 		DBG_88E("Can't _rtw_init_sta_priv\n");
+-		ret8 = _FAIL;
+-		goto exit;
++		return _FAIL;
+ 	}
+
+ 	padapter->stapriv.padapter = padapter;
+@@ -539,7 +525,6 @@ u8 rtw_init_drv_sw(struct adapter *padapter)
+
+ 	spin_lock_init(&padapter->br_ext_lock);
+
+-exit:
+ 	return ret8;
+ }
+
+--
+2.33.0
+
