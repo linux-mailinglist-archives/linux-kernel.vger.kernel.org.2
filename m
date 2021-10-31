@@ -2,204 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 988D5440CBA
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 05:37:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AFB4440CC3
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 06:03:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229681AbhJaEjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 00:39:40 -0400
-Received: from mga03.intel.com ([134.134.136.65]:48286 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229580AbhJaEjj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 00:39:39 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10153"; a="230809883"
-X-IronPort-AV: E=Sophos;i="5.87,196,1631602800"; 
-   d="scan'208";a="230809883"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2021 21:37:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,196,1631602800"; 
-   d="scan'208";a="488175483"
-Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 30 Oct 2021 21:37:06 -0700
-Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mh2af-00026w-Uz; Sun, 31 Oct 2021 04:37:05 +0000
-Date:   Sun, 31 Oct 2021 12:36:24 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:irq/core] BUILD SUCCESS
- 2258a6fc33d56227a981a45069fc651d85a0076f
-Message-ID: <617e1d48.RLiBWodPs5jQvVqa%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S229744AbhJaFCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 01:02:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40754 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229638AbhJaFCk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Oct 2021 01:02:40 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F98BC061570
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Oct 2021 22:00:09 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id u11so29692883lfs.1
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Oct 2021 22:00:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=daynix-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lVy/fH24QPthS6HWBiNCLxZd58wLIhBCTESTMr1diy8=;
+        b=GIqiP/e/0airkBt7AVVY9zwAqH+XFDnesnpw99ouddGWsttfIktj4aAfI9gEGXK9Mf
+         IjUUcCwzBLka6YrTwoDQwnX+Sv4M5h86v4FbXS4pyxv7OW5d2c0MB+usBFsCg2VKoFFf
+         a0IoU76Nm1UoIBaNYnjUN6hBfnNC9DAZldpovLf/WvQ1TPARBxfejVE+ogZJ8DcrCQg/
+         ZDqLVhXkzk9SWmyB0eWrxcAqdDpz6iBZ61N1XUkXnDU/vGfpmtIckAaF7GuM8wjoM9US
+         3pJLpff//y9JOx4cmV9NlSGe2Hhfu6m6I1h9kulySyK5GLhqixFRduT6YIGeh9+nmYGL
+         BTEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lVy/fH24QPthS6HWBiNCLxZd58wLIhBCTESTMr1diy8=;
+        b=SoUCbXnKnYJcmGHVzi/kYPf72ElzMMZVsb/+6TRhZfNMtvMIbXUCkFGDD2X+WuUKKl
+         QDxdj2O0BU8bsu4Wz7rhMy107Wsn9l6ogFXmoHNbWvxO5D5F38zafeqUvNrJJZ8G98K0
+         9JJIMSPaCpGcKhhiK5S9GKtv/QRGE0rfVMmQ9wYWBsUgwDF4iKoBM0+9lvFkd/SbPAX2
+         LJM2FJvrFooxrj+KIk6QoNk+eBzM29pR+ClHtUnmO1/aYArbpRtFBiYiWVaMdp9ZOE8V
+         Hes8zBceh2wQk8K+lCKV93dnSpPuB9Mp1FI2MgjiNF5I3R1jq9dzX/5E09SvpefZhswg
+         fnBg==
+X-Gm-Message-State: AOAM53283uvUyW01AcmYsQn2pRe91bNTkl0CTiTRa0vNIC7oAHFgiXmB
+        g2ZPxULEOwbeNgxqCKFz2tiBzA==
+X-Google-Smtp-Source: ABdhPJyKTkZQH3l/LPlaLkLV/r+BpuZCIeqJk+kdJFxDS+cI9MUR+ouY31Lbxo7K5bbon3ujFVQhIg==
+X-Received: by 2002:a05:6512:260e:: with SMTP id bt14mr20820988lfb.129.1635656407162;
+        Sat, 30 Oct 2021 22:00:07 -0700 (PDT)
+Received: from navi.cosmonova.net.ua ([95.67.24.131])
+        by smtp.gmail.com with ESMTPSA id v26sm444766lfo.125.2021.10.30.22.00.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 30 Oct 2021 22:00:06 -0700 (PDT)
+From:   Andrew Melnychenko <andrew@daynix.com>
+To:     mst@redhat.com, jasowang@redhat.com, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yuri.benditovich@daynix.com,
+        yan@daynix.com
+Subject: [RFC PATCH 0/4] Added RSS support.
+Date:   Sun, 31 Oct 2021 06:59:55 +0200
+Message-Id: <20211031045959.143001-1-andrew@daynix.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/core
-branch HEAD: 2258a6fc33d56227a981a45069fc651d85a0076f  Merge tag 'irqchip-5.16' into irq/core
+This series of RFC patches for comments and additional proposals.
 
-elapsed time: 2495m
+Virtio-net supports "hardware" RSS with toeplitz key.
+Also, it allows receiving calculated hash in vheader
+that may be used with RPS.
+Added ethtools callbacks to manipulate RSS.
 
-configs tested: 143
-configs skipped: 3
+Technically hash calculation may be set only for
+SRC+DST and SRC+DST+PORTSRC+PORTDST hashflows.
+The completely disabling hash calculation for TCP or UDP
+would disable hash calculation for IP.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+RSS/RXHASH is disabled by default.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20211028
-s390                       zfcpdump_defconfig
-powerpc                 mpc8272_ads_defconfig
-arc                              alldefconfig
-sh                            shmin_defconfig
-powerpc                 canyonlands_defconfig
-mips                        vocore2_defconfig
-arm                            lart_defconfig
-arc                 nsimosci_hs_smp_defconfig
-mips                      loongson3_defconfig
-arm                            mps2_defconfig
-mips                   sb1250_swarm_defconfig
-arm                       omap2plus_defconfig
-powerpc                     redwood_defconfig
-um                           x86_64_defconfig
-m68k                          atari_defconfig
-mips                        jmr3927_defconfig
-mips                      fuloong2e_defconfig
-arm                           h3600_defconfig
-arm                         s5pv210_defconfig
-s390                             alldefconfig
-powerpc                 mpc836x_rdk_defconfig
-m68k                            mac_defconfig
-um                               alldefconfig
-arm                             pxa_defconfig
-sh                          polaris_defconfig
-mips                          rm200_defconfig
-mips                malta_qemu_32r6_defconfig
-m68k                        mvme147_defconfig
-arm                         shannon_defconfig
-nios2                         10m50_defconfig
-arm64                            alldefconfig
-powerpc                        warp_defconfig
-mips                          ath25_defconfig
-sh                             shx3_defconfig
-arm                  randconfig-c002-20211028
-arm                  randconfig-c002-20211029
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nds32                             allnoconfig
-nds32                               defconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-nios2                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-arc                              allyesconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-parisc                              defconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                              debian-10.3
-i386                             allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a004-20211028
-i386                 randconfig-a003-20211028
-i386                 randconfig-a002-20211028
-i386                 randconfig-a006-20211028
-i386                 randconfig-a001-20211028
-i386                 randconfig-a005-20211028
-x86_64               randconfig-a015-20211029
-x86_64               randconfig-a013-20211029
-x86_64               randconfig-a011-20211029
-x86_64               randconfig-a014-20211029
-x86_64               randconfig-a012-20211029
-x86_64               randconfig-a016-20211029
-i386                 randconfig-a012-20211029
-i386                 randconfig-a013-20211029
-i386                 randconfig-a011-20211029
-i386                 randconfig-a015-20211029
-i386                 randconfig-a016-20211029
-i386                 randconfig-a014-20211029
-x86_64               randconfig-a002-20211028
-x86_64               randconfig-a004-20211028
-x86_64               randconfig-a005-20211028
-x86_64               randconfig-a001-20211028
-x86_64               randconfig-a006-20211028
-x86_64               randconfig-a003-20211028
-arc                  randconfig-r043-20211028
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allyesconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                             i386_defconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
-x86_64                                  kexec
-x86_64                           allyesconfig
+Changes since rfc:
+* code refactored
+* patches reformatted
+* added feature validation
 
-clang tested configs:
-arm                  randconfig-c002-20211029
-powerpc              randconfig-c003-20211029
-riscv                randconfig-c006-20211029
-x86_64               randconfig-c007-20211029
-mips                 randconfig-c004-20211029
-s390                 randconfig-c005-20211029
-i386                 randconfig-c001-20211029
-arm                  randconfig-c002-20211028
-powerpc              randconfig-c003-20211028
-riscv                randconfig-c006-20211028
-x86_64               randconfig-c007-20211028
-mips                 randconfig-c004-20211028
-s390                 randconfig-c005-20211028
-i386                 randconfig-c001-20211028
-x86_64               randconfig-a005-20211030
-x86_64               randconfig-a004-20211030
-x86_64               randconfig-a002-20211030
-x86_64               randconfig-a003-20211030
-x86_64               randconfig-a001-20211030
-x86_64               randconfig-a006-20211030
-x86_64               randconfig-a015-20211028
-x86_64               randconfig-a013-20211028
-x86_64               randconfig-a011-20211028
-x86_64               randconfig-a014-20211028
-x86_64               randconfig-a012-20211028
-x86_64               randconfig-a016-20211028
-hexagon              randconfig-r045-20211029
-hexagon              randconfig-r041-20211029
-hexagon              randconfig-r045-20211028
-riscv                randconfig-r042-20211028
-s390                 randconfig-r044-20211028
-hexagon              randconfig-r041-20211028
+Andrew Melnychenko (4):
+  drivers/net/virtio_net: Fixed vheader to use v1.
+  drivers/net/virtio_net: Changed mergeable buffer length calculation.
+  drivers/net/virtio_net: Added basic RSS support.
+  drivers/net/virtio_net: Added RSS hash report control.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ drivers/net/virtio_net.c | 405 +++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 390 insertions(+), 15 deletions(-)
+
+-- 
+2.33.1
+
