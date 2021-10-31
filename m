@@ -2,125 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53E55440FF6
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 18:58:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D135440FF7
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 19:06:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230184AbhJaSB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 14:01:29 -0400
-Received: from sauhun.de ([88.99.104.3]:34022 "EHLO pokefinder.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229838AbhJaSB1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 14:01:27 -0400
-Received: from localhost (p5de04e1e.dip0.t-ipconnect.de [93.224.78.30])
-        by pokefinder.org (Postfix) with ESMTPSA id B2A1D2C0093;
-        Sun, 31 Oct 2021 18:58:40 +0100 (CET)
-Date:   Sun, 31 Oct 2021 18:58:37 +0100
-From:   Wolfram Sang <wsa@the-dreams.de>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Yauhen Kharuzhy <jekhor@gmail.com>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        platform-driver-x86@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-efi@vger.kernel.org
-Subject: Re: [PATCH 11/13] i2c: cht-wc: Add support for devices using a
- bq25890 charger
-Message-ID: <YX7ZTXbD0F+n3M36@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@the-dreams.de>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Yauhen Kharuzhy <jekhor@gmail.com>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        platform-driver-x86@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-efi@vger.kernel.org
-References: <20211030182813.116672-1-hdegoede@redhat.com>
- <20211030182813.116672-12-hdegoede@redhat.com>
+        id S230219AbhJaSIb convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 31 Oct 2021 14:08:31 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:58771 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229993AbhJaSIX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Oct 2021 14:08:23 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-464-YBd8Nh9iNNmaU2yXrp3MhQ-1; Sun, 31 Oct 2021 14:05:48 -0400
+X-MC-Unique: YBd8Nh9iNNmaU2yXrp3MhQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 95EE018D6A2A;
+        Sun, 31 Oct 2021 18:05:46 +0000 (UTC)
+Received: from x1.com (unknown [10.22.8.92])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 846C860CC4;
+        Sun, 31 Oct 2021 18:05:08 +0000 (UTC)
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        John Kacur <jkacur@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V9 0/9] osnoise: Support multiple instances (for RTLA)
+Date:   Sun, 31 Oct 2021 19:04:55 +0100
+Message-Id: <cover.1635702894.git.bristot@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="HlSTOP0HHK83WUVH"
-Content-Disposition: inline
-In-Reply-To: <20211030182813.116672-12-hdegoede@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=bristot@kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Currently, osnoise and timerlat run only on a single instance. To reduce
+this limitation, this series adds support for parallel instances of the
+same tracer. That is, it is possible to run two instances of osnoise
+tracer with different trace configurations. For example, one for the
+tracer output only and another for the tracer and a set of tracepoints.
 
---HlSTOP0HHK83WUVH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This patchset is the kernel dependencies for RTLA. This patchset was
+being sent along with RTLA [1], but we split the kernel and
+user-space patch sets.
 
-On Sat, Oct 30, 2021 at 08:28:11PM +0200, Hans de Goede wrote:
-> The i2c-controller on the Cherry Trail - Whiskey Cove PMIC is special
-> in that it is always connected to the I2C charger IC of the board on
-> which the PMIC is used; and the charger IC is not described in ACPI,
-> so the i2c-cht-wc code needs to instantiate an i2c-client for it itself.
->=20
-> So far there has been a rudimentary check to make sure the ACPI tables
-> are at least somewhat as expected by checking for the presence of an
-> INT33FE device and sofar the code has assumed that if this INT33FE
-> device is present that the used charger then is a bq24290i.
->=20
-> But some boards with an INT33FE device in their ACPI tables use a
-> different charger IC and some boards don't have an INT33FE device at all.
->=20
-> Since the information about the used charger + fuel-gauge + other chips is
-> necessary in other places too, the kernel now adds a "intel,cht-wc-setup"
-> string property to the Whiskey Cove PMIC i2c-client based on DMI matching,
-> which reliably describes the board's setup of the PMIC.
->=20
-> Switch to using the "intel,cht-wc-setup" property and add support for
-> instantiating an i2c-client for either a bq24292i or a bq25890 charger.
->=20
-> This has been tested on a GPD pocket (which uses the old bq24292i setup)
-> and on a Xiaomi Mi Pad 2 with a bq25890 charger.
->=20
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Steve, feel free to drop the last two if they break anything.
 
-In general, fine with me from the I2C side:
+[1] RTLA: An interface for osnoise/timerlat tracers:
+    https://lore.kernel.org/lkml/cover.1635284863.git.bristot@kernel.org/
 
-Acked-by: Wolfram Sang <wsa@kernel.org>
+Changes from v8:
+  - rebase on top of linux-next
+  - Make notify_new_max_latency static (kernel test robot <lkp@intel.com>)
+Changes from v7:
+  - Fix check for print_stack disabled
+  - Fix thread/sofitrq filter when TIMERLAT ifdef is enabled
+    Both fixes for the patches added in the v6.
+Changes from v6:
+  - Fix compilation problems for the case in which osnoise
+    enabled, but timerlat disabled (Steven)
+  - Remove ifdefs from inside functions (Steven)
 
+Changes that happened while in the RTLA patchset:
+  - Fix comment on start_per_cpu_kthreads() (Steven)
+  - Fix msg log on patch 1
+  - Add comments about the barrier need for trace_nmi_enter/exit
+  - Fix RCU usage in osnoise_unregister_instance() (Steven/Paul)
+  - Add lockdep checks in osnoise_unregister/unregister_instance()
+    (Steven/Paul)
+  - Improve the explanation about the multi instances support (Steven)
 
-> +	else if (!strcmp(str, "bq24292i,max17047,fusb302,pi3usb30532"))
-> +		board_info =3D &bq24190_board_info;
-> +	else if (!strcmp(str, "bq25890,bq27520"))
-> +		board_info =3D &bq25890_board_info;
+Daniel Bristot de Oliveira (9):
+  tracing/osnoise: Do not follow tracing_cpumask
+  tracing/osnoise: Improve comments about barrier need for NMI callbacks
+  tracing/osnoise: Split workload start from the tracer start
+  tracing/osnoise: Use start/stop_per_cpu_kthreads() on
+    osnoise_cpus_write()
+  tracing/osnoise: Support a list of trace_array *tr
+  tracing/osnoise: Remove TIMERLAT ifdefs from inside functions
+  tracing/osnoise: Allow multiple instances of the same tracer
+  tracing/osnoise: Remove STACKTRACE ifdefs from inside functions
+  tracing/osnoise: Remove PREEMPT_RT ifdefs from inside functions
 
-Very minor nit: I prefer 'strcmp() =3D=3D 0' because the above could be read
-as 'if not strcmp()' which is sadly misleading. But I am not strict with
-it.
+ kernel/trace/trace_osnoise.c | 615 ++++++++++++++++++++++++-----------
+ 1 file changed, 434 insertions(+), 181 deletions(-)
 
+-- 
+2.31.1
 
---HlSTOP0HHK83WUVH
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmF+2UgACgkQFA3kzBSg
-KbYmyg//ZFQBxYsRGPbdXLc7APBbxDE5qYmiiYJcZJnDc5S6/lKyh4ZoaOOeTGPv
-LNw6jEPZQmjtHbZD72e4PfDY4FHmHCcj/6jZjmj3ftWzqS3wzQdzqXjC4qvkEHsd
-ZHTa0BbSdb7sXWMo32Uf2ouTAeuMluVsbkEcwrFDvSKC39o/G1FsyTw4CHKphkOw
-EmtFTRPnNhpvUKEA3PBVLojCtAIeg8d1j8t1KR7+1A/V7m82WNTRWh4MKZgCqTd9
-0AqGamhOvc9DLok/cnzFxUICbaTpohBY5jDgP3WXlZBUGgpwOAVtvl4d7hMFhPhm
-D9BJtASdC8H98ARoM8ELyrDjeVvZzxPxipyg+3oX77XAUePQUGV41ml2NKvQ5dCm
-/iQWM/8Whrp+0lOMixkgZM3OtCjCWrH/p52WxAMk6Hyx4JqHTeTB7TNJjJTb8C25
-2eYFXuC5P9gfW+FeMwt1LJ5QypNcG75JkYCO1AhoHz2eXdirSM5B2FFxUVZ4mMs9
-rawpBnTG8EYUlP7HK6cNrkfCZC9azuYJ/ODNlYL/AE7Fb0TrPjYnXSMgYvD06pkC
-Mh7NUZiz5KbXdRpgTm+IWDpevccXjslMtCmEatbmnr2tBObepvjy2qWIeZKY0jma
-0RQbCFmpAWVziKgzozj1KJ78Psuv9vTdl0MpvTPN0uSWdc1SKjM=
-=f7kV
------END PGP SIGNATURE-----
-
---HlSTOP0HHK83WUVH--
