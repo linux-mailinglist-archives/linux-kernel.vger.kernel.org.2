@@ -2,115 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9FEE440FF3
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 18:54:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53E55440FF6
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 18:58:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230097AbhJaR5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 13:57:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229732AbhJaR47 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 13:56:59 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09E20C061570;
-        Sun, 31 Oct 2021 10:54:27 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id s1so56969830edd.3;
-        Sun, 31 Oct 2021 10:54:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1iAI21X6r8lOvu6IMD//lyW5AueJtXMjsVhWS1XSI7s=;
-        b=P4Y6pGdY1kCCdlxUfYxN4cn+cnbp2EYtYyUMaR2fdI75Z75I9xWLEJ4FDu4XdYYT1i
-         jRrI/ejB/z63ubbA9ix8MIE89eI8uT9gL82T209mZPz41PN66FytsLO7oGCwjF0g83PM
-         zW1HDrmtCqG/6mGXi24wZsSdg7Up4BXcHjUZq3ULU5a+s2zegFYtd2+6SP+5F5lvYaDy
-         0vDclfWVbMUSiGX8RXUL3S5loIZlrrxtFv30w9k9B9BzpRs8S3Vq6yPHNP7731HVKsAF
-         pawyKegtCn4fifBbquCZSMj+OxsJTdH78jMv4sOyKRVWyJq1G7abmS+vGhaYSRXsj7my
-         7Y+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1iAI21X6r8lOvu6IMD//lyW5AueJtXMjsVhWS1XSI7s=;
-        b=kWr9p/Sd0oKj5JmFYnNQiD+6uQpGd/5qjJEPVcPueD+PVZeFHkzSfsJy15i5dxSFUc
-         4YJCqqr75QcLeEd/8x01JkrqqHjaAWx9yLHgXjy2dGYn/BMsmpqJnrRTRMFGXRTLWJZt
-         5vK+TQ0yEPY7+jpBfy2HZb6iD/tCTHSc/5lGnq3J6YdO+pD35vdqKQTHE1Xct8+GMJYv
-         3iuyzTtZm8E0REBxNRfgYKWknw0olvjZie3NOT1+XvvOV9QesqVXvkw2EE3KPS8Kao5U
-         xqLbFo6GJXZGmixLcYxMptkMezR6OD8QGVHQtf0MyPNcXHuk8ApIC8SvKiADhyf9HdQR
-         u54g==
-X-Gm-Message-State: AOAM532rRMdetHaNVpWHBACL7XH14DDdsY60xcu4BR4GAVJkS1OZFTZm
-        Dvd8rUlAAWzBrwleVAHkdc1Mc1VduEeJJ50NxM0=
-X-Google-Smtp-Source: ABdhPJylON3W+t6x4QKpdZ1ZTKyzua3+6/PDrTQvrCkk2dZZqhzaTZFX2SoHaqZQj7/vIbACptW/+g==
-X-Received: by 2002:a50:d8cf:: with SMTP id y15mr34414191edj.66.1635702865644;
-        Sun, 31 Oct 2021 10:54:25 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:ab88:368f:2080:eab:126a:947d:3008])
-        by smtp.googlemail.com with ESMTPSA id r26sm5986917ejd.85.2021.10.31.10.54.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 31 Oct 2021 10:54:25 -0700 (PDT)
-From:   David Virag <virag.david003@gmail.com>
-Cc:     David Virag <virag.david003@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] samsung: exynos-chipid: add Exynos7885 SoC support
-Date:   Sun, 31 Oct 2021 18:53:29 +0100
-Message-Id: <20211031175329.27843-1-virag.david003@gmail.com>
-X-Mailer: git-send-email 2.33.1
+        id S230184AbhJaSB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 14:01:29 -0400
+Received: from sauhun.de ([88.99.104.3]:34022 "EHLO pokefinder.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229838AbhJaSB1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Oct 2021 14:01:27 -0400
+Received: from localhost (p5de04e1e.dip0.t-ipconnect.de [93.224.78.30])
+        by pokefinder.org (Postfix) with ESMTPSA id B2A1D2C0093;
+        Sun, 31 Oct 2021 18:58:40 +0100 (CET)
+Date:   Sun, 31 Oct 2021 18:58:37 +0100
+From:   Wolfram Sang <wsa@the-dreams.de>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Yauhen Kharuzhy <jekhor@gmail.com>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        platform-driver-x86@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-efi@vger.kernel.org
+Subject: Re: [PATCH 11/13] i2c: cht-wc: Add support for devices using a
+ bq25890 charger
+Message-ID: <YX7ZTXbD0F+n3M36@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@the-dreams.de>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Yauhen Kharuzhy <jekhor@gmail.com>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        platform-driver-x86@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-efi@vger.kernel.org
+References: <20211030182813.116672-1-hdegoede@redhat.com>
+ <20211030182813.116672-12-hdegoede@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="HlSTOP0HHK83WUVH"
+Content-Disposition: inline
+In-Reply-To: <20211030182813.116672-12-hdegoede@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Exynos 7885 has product id "0xE7885000". Add this id to the ids with
-the name.
 
-The downstream driver sets sub_rev to 2 if we are on Exynos 7885, we
-detected sub_rev 1 and the 27th bit of the revision register is set.
-This is presumably because Samsung might have set the wrong bits on
-rev2 of the SoC in the chipid, but we may never know as we have no
-manual.
+--HlSTOP0HHK83WUVH
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Both the SM-A530F/jackpotlte with Exynos7885 and the SM-M305/m30lte
-with Exynos7904 (rebranded Exynos7885 with lower clock speeds) seem
-to have this bit set to 1 and have a sub_rev of 1 otherwise, but the
-downstream driver corrects it to 2.
-Let's replicate this behaviour in upstream too!
+On Sat, Oct 30, 2021 at 08:28:11PM +0200, Hans de Goede wrote:
+> The i2c-controller on the Cherry Trail - Whiskey Cove PMIC is special
+> in that it is always connected to the I2C charger IC of the board on
+> which the PMIC is used; and the charger IC is not described in ACPI,
+> so the i2c-cht-wc code needs to instantiate an i2c-client for it itself.
+>=20
+> So far there has been a rudimentary check to make sure the ACPI tables
+> are at least somewhat as expected by checking for the presence of an
+> INT33FE device and sofar the code has assumed that if this INT33FE
+> device is present that the used charger then is a bq24290i.
+>=20
+> But some boards with an INT33FE device in their ACPI tables use a
+> different charger IC and some boards don't have an INT33FE device at all.
+>=20
+> Since the information about the used charger + fuel-gauge + other chips is
+> necessary in other places too, the kernel now adds a "intel,cht-wc-setup"
+> string property to the Whiskey Cove PMIC i2c-client based on DMI matching,
+> which reliably describes the board's setup of the PMIC.
+>=20
+> Switch to using the "intel,cht-wc-setup" property and add support for
+> instantiating an i2c-client for either a bq24292i or a bq25890 charger.
+>=20
+> This has been tested on a GPD pocket (which uses the old bq24292i setup)
+> and on a Xiaomi Mi Pad 2 with a bq25890 charger.
+>=20
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 
-Signed-off-by: David Virag <virag.david003@gmail.com>
----
- drivers/soc/samsung/exynos-chipid.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+In general, fine with me from the I2C side:
 
-diff --git a/drivers/soc/samsung/exynos-chipid.c b/drivers/soc/samsung/exynos-chipid.c
-index a28053ec7e6a..ec8c76275aec 100644
---- a/drivers/soc/samsung/exynos-chipid.c
-+++ b/drivers/soc/samsung/exynos-chipid.c
-@@ -55,6 +55,7 @@ static const struct exynos_soc_id {
- 	{ "EXYNOS5440", 0xE5440000 },
- 	{ "EXYNOS5800", 0xE5422000 },
- 	{ "EXYNOS7420", 0xE7420000 },
-+	{ "EXYNOS7885", 0xE7885000 },
- 	{ "EXYNOS850", 0xE3830000 },
- 	{ "EXYNOSAUTOV9", 0xAAA80000 },
- };
-@@ -88,6 +89,14 @@ static int exynos_chipid_get_chipid_info(struct regmap *regmap,
- 	}
- 	main_rev = (val >> data->main_rev_shift) & EXYNOS_REV_PART_MASK;
- 	sub_rev = (val >> data->sub_rev_shift) & EXYNOS_REV_PART_MASK;
-+
-+	//Exynos 7885 revision 2 apparently has the 27th bit set instead of having
-+	//a sub_rev of 2. Correct for this!
-+	if (soc_info->product_id == 0xE7885000) {
-+		if ((sub_rev == 1) && (val & 0x04000000))
-+			sub_rev = 2;
-+	}
-+
- 	soc_info->revision = (main_rev << EXYNOS_REV_PART_SHIFT) | sub_rev;
- 
- 	return 0;
--- 
-2.33.1
+Acked-by: Wolfram Sang <wsa@kernel.org>
 
+
+> +	else if (!strcmp(str, "bq24292i,max17047,fusb302,pi3usb30532"))
+> +		board_info =3D &bq24190_board_info;
+> +	else if (!strcmp(str, "bq25890,bq27520"))
+> +		board_info =3D &bq25890_board_info;
+
+Very minor nit: I prefer 'strcmp() =3D=3D 0' because the above could be read
+as 'if not strcmp()' which is sadly misleading. But I am not strict with
+it.
+
+
+--HlSTOP0HHK83WUVH
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmF+2UgACgkQFA3kzBSg
+KbYmyg//ZFQBxYsRGPbdXLc7APBbxDE5qYmiiYJcZJnDc5S6/lKyh4ZoaOOeTGPv
+LNw6jEPZQmjtHbZD72e4PfDY4FHmHCcj/6jZjmj3ftWzqS3wzQdzqXjC4qvkEHsd
+ZHTa0BbSdb7sXWMo32Uf2ouTAeuMluVsbkEcwrFDvSKC39o/G1FsyTw4CHKphkOw
+EmtFTRPnNhpvUKEA3PBVLojCtAIeg8d1j8t1KR7+1A/V7m82WNTRWh4MKZgCqTd9
+0AqGamhOvc9DLok/cnzFxUICbaTpohBY5jDgP3WXlZBUGgpwOAVtvl4d7hMFhPhm
+D9BJtASdC8H98ARoM8ELyrDjeVvZzxPxipyg+3oX77XAUePQUGV41ml2NKvQ5dCm
+/iQWM/8Whrp+0lOMixkgZM3OtCjCWrH/p52WxAMk6Hyx4JqHTeTB7TNJjJTb8C25
+2eYFXuC5P9gfW+FeMwt1LJ5QypNcG75JkYCO1AhoHz2eXdirSM5B2FFxUVZ4mMs9
+rawpBnTG8EYUlP7HK6cNrkfCZC9azuYJ/ODNlYL/AE7Fb0TrPjYnXSMgYvD06pkC
+Mh7NUZiz5KbXdRpgTm+IWDpevccXjslMtCmEatbmnr2tBObepvjy2qWIeZKY0jma
+0RQbCFmpAWVziKgzozj1KJ78Psuv9vTdl0MpvTPN0uSWdc1SKjM=
+=f7kV
+-----END PGP SIGNATURE-----
+
+--HlSTOP0HHK83WUVH--
