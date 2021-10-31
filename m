@@ -2,100 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3EA0440DA5
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 10:35:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 829A8440DB4
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 10:54:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230462AbhJaJh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 05:37:59 -0400
-Received: from ip-15.mailobj.net ([213.182.54.15]:39994 "EHLO msg-4.mailo.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230289AbhJaJhy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 05:37:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailoo.org; s=mailo;
-        t=1635672917; bh=vJl6wad1L8/qQsHFiM4x6jV7Ba+rQVM5va0SBcOMf20=;
-        h=X-EA-Auth:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
-         References:Content-Type:MIME-Version:Content-Transfer-Encoding;
-        b=LzxmPc/r6zetKg6txq7wv8VVsphGY7Op2zZIYzlWtTyAHkyvmx+4XEhbEKwB71+IY
-         xoavisHzSRMTP8qxoYTgfYN24arihCi/PgkKLzudF2DyGzWZxk/ZYE0yo5wwpIJJtm
-         0EfvpdBGGmlBkLQEFR5XELFZgErhUsazWaW94gCQ=
-Received: by b-6.in.mailobj.net [192.168.90.16] with ESMTP
-        via proxy.mailoo.org [213.182.55.207]
-        Sun, 31 Oct 2021 10:35:17 +0100 (CET)
-X-EA-Auth: G/xCF6IFwpi4luFdXUamameEVAkt81gKAIbtu5Egt8p0gvNt1SPUyLj91+xiitzXK6u5pr4rxNuIK+Zi5dCB7bwmSewjjv/Bi+qA5GH7yRo=
-Message-ID: <a2f4bcd22b896f05ec3f33809f577cf9e889f270.camel@mailoo.org>
-Subject: Re: [PATCH v1 3/4] ASoC: dt-bindings: nxp, tfa989x: Add rcv-gpios
- property for tfa9897
-From:   Vincent Knecht <vincent.knecht@mailoo.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
-        stephan@gerhold.net, linux-kernel@vger.kernel.org, tiwai@suse.com,
-        lgirdwood@gmail.com, broonie@kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht
-Date:   Sun, 31 Oct 2021 10:35:15 +0100
-In-Reply-To: <YXtYtsPCeh937oF6@robh.at.kernel.org>
-References: <20211024085840.1536438-1-vincent.knecht@mailoo.org>
-         <20211024085840.1536438-4-vincent.knecht@mailoo.org>
-         <YXtYtsPCeh937oF6@robh.at.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 (3.40.4-2.fc34) 
+        id S230234AbhJaJ4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 05:56:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47262 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229660AbhJaJ43 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Oct 2021 05:56:29 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17FACC061570
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 02:53:58 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id g8so16763814iob.10
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 02:53:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sargun.me; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JGqPbm7tO1VICGqBd/Inpku02T8Zpei3T3QkIwLq8SM=;
+        b=NFDharSlF3D7NuTEJXRJ8w1Nw3SZHAaCzfkcDT5CT6rfiXYtDzilMrsQgn011HIyU7
+         SBn4ifDKNfvIZKJnFskWTEKWZoHV958/U3+Ke8Q4NOi+fXSfab4ycifxdCvZSDTmxxiz
+         +2UTEMDRiOsegVhCHVAQrNmalAfQD3BpeOtDo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JGqPbm7tO1VICGqBd/Inpku02T8Zpei3T3QkIwLq8SM=;
+        b=Xg9IWtCamOfZcvXU3ItA5taUOg69CgA1tHvlppa1QI8Sfs+5PUnjxWXcrUZXhlomrt
+         WO6ezrnuj3okRBe5HrEJwoWBvyd8uMyaAFqS4N4J0CriroJ0+7BmQKGy9IvE4eYs+5E4
+         W+IpYuu07bH8tjMh6yFNSnYTlL4ODooILR53aOXPZLFZVL51LmhjD72nmEfx7fklRUFk
+         PWx3+vIohR5TKwWgmLRa1NKyztSoCuL14NvzAI/aYcy4Y8DRpSh3BbdE8rmMy4ukNVQ5
+         34OVOxKkRQL4yfokwO0tBjnNH64sgMqPYcPLFgvex8yvGAbDoKHPP1zK3sdZrq2Lc3KC
+         0cXA==
+X-Gm-Message-State: AOAM532CNWYTRkZZGdEpr2kEqAaMRFgbIoMDsNDLty4+TE2meKd8vXh1
+        WWlJ8zjiQlLCnHgVEnTICrTq82evni35pQ==
+X-Google-Smtp-Source: ABdhPJyd9nJTh/xtnuU20jE0Eo7UMVdEDWKaC6h7c/trM5RBR3EgdftWHrZXdAyUnYqkQC7ZilG0uA==
+X-Received: by 2002:a5e:8911:: with SMTP id k17mr14660691ioj.63.1635674037235;
+        Sun, 31 Oct 2021 02:53:57 -0700 (PDT)
+Received: from ircssh-3.c.rugged-nimbus-611.internal (80.60.198.104.bc.googleusercontent.com. [104.198.60.80])
+        by smtp.gmail.com with ESMTPSA id w6sm6628345ilv.63.2021.10.31.02.53.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 31 Oct 2021 02:53:56 -0700 (PDT)
+Date:   Sun, 31 Oct 2021 09:53:55 +0000
+From:   Sargun Dhillon <sargun@sargun.me>
+To:     Eric Wong <e@80x24.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        willy@infradead.org, arnd@kernel.org,
+        Willem de Bruijn <willemb@google.com>
+Subject: Re: epoll may leak events on dup
+Message-ID: <20211031095355.GA15963@ircssh-3.c.rugged-nimbus-611.internal>
+References: <20211030100319.GA11526@ircssh-3.c.rugged-nimbus-611.internal>
+ <20211031073923.M174137@dcvr>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211031073923.M174137@dcvr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le jeudi 28 octobre 2021 =C3=A0 21:13 -0500, Rob Herring a =C3=A9crit=C2=A0=
-:
-> On Sun, Oct 24, 2021 at 10:58:39AM +0200, Vincent Knecht wrote:
-> > Add optional rcv-gpios property specific to tfa9897 receiver mode.
-> >=20
-> > Signed-off-by: Vincent Knecht <vincent.knecht@mailoo.org>
-> > ---
-> > =C2=A0.../devicetree/bindings/sound/nxp,tfa989x.yaml=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 10 ++++++++++
-> > =C2=A01 file changed, 10 insertions(+)
-> >=20
-> > diff --git a/Documentation/devicetree/bindings/sound/nxp,tfa989x.yaml
-> > b/Documentation/devicetree/bindings/sound/nxp,tfa989x.yaml
-> > index 7667471be1e4..a9e15baedafd 100644
-> > --- a/Documentation/devicetree/bindings/sound/nxp,tfa989x.yaml
-> > +++ b/Documentation/devicetree/bindings/sound/nxp,tfa989x.yaml
-> > @@ -12,6 +12,16 @@ maintainers:
-> > =C2=A0allOf:
-> > =C2=A0=C2=A0 - $ref: name-prefix.yaml#
-> > =C2=A0
-> > +=C2=A0 - if:
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 properties:
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 compatible:
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 contains:
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 con=
-st: nxp,tfa9897
-> > +=C2=A0=C2=A0=C2=A0 then:
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 properties:
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 rcv-gpios:
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 description: op=
-tional GPIO to be asserted when receiver mode is enabled.
->=20
-> Did you test this works?=20
->=20
-> You have to define the property outside the if/then schema at the top=20
-> level. Then use an if/then schema to restrict it (rcv-gpios: false).
+On Sun, Oct 31, 2021 at 07:39:23AM +0000, Eric Wong wrote:
+> Sargun Dhillon <sargun@sargun.me> wrote:
+> > I discovered an interesting behaviour in epoll today. If I register the same 
+> > file twice, under two different file descriptor numbers, and then I close one of 
+> > the two file descriptors, epoll "leaks" the first event. This is fine, because 
+> > one would think I could just go ahead and remove the event, but alas, that isn't 
+> > the case. Some example python code follows to show the issue at hand.
+> >
+> > I'm not sure if this is really considered a "bug" or just "interesting epoll
+> > behaviour", but in my opinion this is kind of a bug, especially because leaks
+> > may happen by accident -- especially if files are not immediately freed.
+> 
+> "Interesting epoll behavior" combined with a quirk with the
+> Python wrapper for epoll.  It passes the FD as epoll_event.data
+> (.data could also be any void *ptr, a u64, or u32).
+> 
+> Not knowing Python myself (but knowing Ruby and Perl5 well); I
+> assume Python developers chose the safest route in passing an
+> integer FD for .data.  Passing a pointer to an arbitrary
+> Perl/Ruby object would cause tricky lifetime issues with the
+> automatic memory management of those languages; I expect Python
+> would have the same problem.
+> 
 
-Sorry, I only tested validation with dt_binding_check.
+Python was just chosen as a way to have some inline code to explain the problem. 
+Python has a bunch of libraries that will properly manage epoll under the hood, 
+but the point was to describe the "leak" behaviour, where you cannot (easily) 
+free up the registered epoll_event.
 
-I'll send another version later today with
-if:
-  not:
-    properties:
-      compatible:
-        const: nxp,tfa9897
-then:
-  properties:
-    rcv-gpios: false
-and a tfa9897 example section, which passes the check and fails
-if rcv-gpio is added to tfa9895.
+It was shorter inline code than C. :).
 
-Thank you
+> > I'm also not sure why epoll events are registered by file, and not just fd.
+> > Is the expectation that you can share a single epoll amongst multiple
+> > "users" and register different files that have the same file descriptor
+> 
+> No, the other way around.  Different FDs for the same file.
+> 
+> Having registration keyed by [file+fd] allows users to pass
+> different pointers for different events to the same file;
+> which could have its uses.
+> 
+> Registering by FD alone isn't enough; since the epoll FD itself
+> can be shared across fork (which is of limited usefulness[1]).
+> Originaly iterations of epoll were keyed only by the file;
+> with the FD being added later.
+> 
+> > number (at least for purposes other than CRIU). Maybe someone can shed
+> > light on the behaviour.
+> 
+> CRIU?  Checkpoint/Restore In Userspace?
+> 
+Right, in CRIU, epoll is restored by manually cloning the FDs to the
+right spot, and re-installing the events into epoll. This requires:
+0. Getting the original epoll FD
+1. Fetching / recreating the original FD
+2. dup2'ing it to right spot (and avoiding overwriting the original epoll FD)
+3. EPOLL_CTL_ADD'ing the FD back in.
+
+> 
+> [1] In contrast, kqueue has a unique close-on-fork behavior
+>     which greatly simplifies usage from C code (but less so
+>     for high-level runtimes which auto-close FDs).
+
+Perhaps a question for epoll developers and maintains, how would you feel about 
+the idea of adding a new set of commands that allow the user to add / mod / del 
+by arbitrary key. For example, EPOLL_CTL_ADD_BY_KEY, EPOLL_CTL_MOD_BY_KEY, 
+EPOLL_CTL_DEL_BY_KEY, and instead the fd argument would be an arbitrary key, and 
+the object for add would be:
 
 
+struct epoll_event_with_fd {
+	uint32_t	fd;	
+	epoll_data_t	data;
+}
 
+EPOLL_CTL_MOD_BY_KEY and EPOLL_CTL_DEL_BY_KEY would just treat the fd argument 
+as a key. In order for this not to be horrible (IMHO), we would have to make
+epoll run in a mode where only one event can be registered for a given key.
+
+Then the rb_tree key, instead of being:
+struct epoll_filefd {
+	struct file *file;
+	int fd;
+} __packed;
+
+would be:
+struct epoll_filefd {
+	struct file *file;
+	union {
+		int fd;
+		int key;
+	}
+} __packed;
+
+Perhaps this is rambly, and code / patches are required for better articulation,
+but I guess the whole idea "fd is the key" for entries in epoll seems weird to
+me, and I'm wondering if people would be open to changing the API at this point
+in time.
