@@ -2,67 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15B6744107F
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 20:40:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C016441083
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 20:41:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231192AbhJaTnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 15:43:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33224 "EHLO
+        id S230152AbhJaTnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 15:43:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230064AbhJaTnW (ORCPT
+        with ESMTP id S231205AbhJaTnj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 15:43:22 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E343FC061714
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 12:40:50 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id n11so5964653iod.9
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 12:40:50 -0700 (PDT)
+        Sun, 31 Oct 2021 15:43:39 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0330FC061714
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 12:41:07 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id l7so16402418iln.8
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 12:41:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=kernel-dk.20210112.gappssmtp.com; s=20210112;
         h=subject:to:references:from:message-id:date:user-agent:mime-version
          :in-reply-to:content-language:content-transfer-encoding;
-        bh=MzDrzuzpYnbYB0j0l2jWAFKlpNw8zKCZIf59AYFBfkU=;
-        b=VtzIBg9nH2TBJO7RLbVEorGZy2ztmplRMgsK4PAELDA8/WNUpDxGXwzfcjxcFuJSAF
-         SAVOFqg+Gv+pW4X4Qvelr8sPUs5DSADDCw3AHIhBFUBOUubMS5NV4LL2DO8J3H8vjJ7O
-         G2JljQOzoqIgVZ2oxw99zctxez8hhod2UUmW0YBvSEVISKBokwoVWs189hSxEcUfUhc3
-         /W0+rhwwF24IyC8ogtuc+pxL+/BSQtSThe8WyuNfpLltMG9MJonvlMRz3Kh4fnwDU6IR
-         0sNkxz/348J/0rygxvs1w5800+gIyXOWkpZJZSC90NInTtBkiR7OKW6AVOo1kh7DF7Ir
-         UtYw==
+        bh=tUREh5LHd66l0OLGq8t2Df8ogS/efOJa+e+gKKpOSzs=;
+        b=YVQ8ATqPbzx3r236TDe5h8S8/hbELrCy0eejyBnDtPxDG8pKzxSXlyfVsk7CNTk3mJ
+         VzpqzghhPrqlUJK/ejvnrVg4vjmRJ5PWCNyzEfwYSsf/Lk2ALHnm0W3L4H4kWBX+2VpK
+         3CIid+BM4MG7vmLpMWg98z856wq3Yxx4OVXB9hLqRaGxCdgzW2U/qjmEBP/d4CGZpAWt
+         Kjght+EK+YImwpSgO85XX2pU4jwbrOg9kM2ytWfD7frmDoIXGebpJ2ukWzYSA2MoUSur
+         LNkjiIJxQnFfbzuun5Q0oc1JMDVXXNczcAxkozgFwgt4vBEa5mJYv977JwCk++kMN5bX
+         mHjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=MzDrzuzpYnbYB0j0l2jWAFKlpNw8zKCZIf59AYFBfkU=;
-        b=2V2QgewTIJ0aSYV8x4HTmvFd3cDltsCB43vpQgribvtN3PC1OH7Uk9HlZczL6ppscL
-         +1if7DrWBp1XUyKnfNWPVxa3iRYsXph8IV+KxZeVJiAhdhWpN2UTMux5QX/C9/ZPsV/K
-         ZdBehm+KZN0wRmo+Hn1S3HrAW+t/v6TLk96TXOJrrZH2lqoimKXKvZcCKj3QF2hfMxgX
-         MxqbcOBQ+w4Smqi6fo/93X7t+BTUWrGpUsikR1Uk4e9ixzAv1dB9KCsPHVu1tTgiOIDh
-         0Iksal0e8DfWH9cwxsqeLgtT4M7BlDBy/47tdfS9uB6mZBg/HnucZirAirL5PWnW6iDF
-         qgIg==
-X-Gm-Message-State: AOAM533H6fzYRiuhgR9rTQZe8UOiyn3VB3z24Kz9WRN06F/kC/MIoBvd
-        anv/aK0yrUg0KTA1d8AhuKj1rg==
-X-Google-Smtp-Source: ABdhPJxavGrskLJZx7SWqJM9Byj7QN7LjpAqwfFYPCVd8hoT/PR190/kiFfcZa8ew5N4xoLvuadPUg==
-X-Received: by 2002:a02:9701:: with SMTP id x1mr17981931jai.97.1635709250298;
-        Sun, 31 Oct 2021 12:40:50 -0700 (PDT)
+        bh=tUREh5LHd66l0OLGq8t2Df8ogS/efOJa+e+gKKpOSzs=;
+        b=hzq4JssAkzlsp5zGj+Jf19hBADrvOV2yHAjpWj63XX0ZxR9TuaHeKht62URxsZxeLs
+         IWo1diJWdkDuyevE9jjVxICWL95DxTZGjyWVkVTwEl6XUWLa0CuH99m5CwTDaKAdlmZ5
+         fXCAA1Os2u4NoKGnSHVDFJ5xUIoxeiBf6iBLjWquJStHFA3tZ1lB8+Hf7gKEL6GprX3y
+         4ncEVTD3cTZGOMpo0y8AecILXnDjg3WjgOK+tCqSe6EuK9r2FUjYT4BTr3MdzC05nyfn
+         CG1KQDAz870imShEM85JROOPjRcagFDiojaIci5nRCplgfMmWcoAbw8lCGRnOYgtk2X8
+         pQ+A==
+X-Gm-Message-State: AOAM531j1FUoxBELOLR4+7ce6F4O0Z20j6zjigEf07gj9S9z+bQEGFqn
+        GB0gIW++evbW1cfYvuGf+8JYuQ==
+X-Google-Smtp-Source: ABdhPJy7kO9AYFBRAJ1fgLQ4Fc5NqLK2w2cnUbQ5IfYE3VUCGF/k9+9Fv/6TW82wDVqy4Erqr9Sx9Q==
+X-Received: by 2002:a05:6e02:1c8a:: with SMTP id w10mr17322578ill.193.1635709266435;
+        Sun, 31 Oct 2021 12:41:06 -0700 (PDT)
 Received: from [192.168.1.116] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id s12sm2429782iol.30.2021.10.31.12.40.49
+        by smtp.gmail.com with ESMTPSA id a20sm6906987ila.22.2021.10.31.12.41.05
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 31 Oct 2021 12:40:49 -0700 (PDT)
-Subject: Re: [syzbot] INFO: rcu detected stall in tctx_task_work
-To:     syzbot <syzbot+e4f5deeeccdd5a4873fe@syzkaller.appspotmail.com>,
-        asml.silence@gmail.com, fweisbec@gmail.com,
-        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mingo@kernel.org, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de, xiaoguang.wang@linux.alibaba.com
-References: <00000000000030c35005cfa98ed5@google.com>
+        Sun, 31 Oct 2021 12:41:06 -0700 (PDT)
+Subject: Re: [syzbot] WARNING: ODEBUG bug in __put_task_struct
+To:     syzbot <syzbot+30a60157d4ef222fd5e2@syzkaller.appspotmail.com>,
+        akpm@linux-foundation.org, andrii@kernel.org,
+        asml.silence@gmail.com, ast@kernel.org, bpf@vger.kernel.org,
+        christian@brauner.io, daniel@iogearbox.net, david@redhat.com,
+        ebiederm@xmission.com, io-uring@vger.kernel.org,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        npiggin@gmail.com, peterz@infradead.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, xiaoguang.wang@linux.alibaba.com,
+        yhs@fb.com
+References: <000000000000bb843a05cfa99111@google.com>
 From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <13c4d07e-0e4c-ee55-c3be-1b42125f248d@kernel.dk>
-Date:   Sun, 31 Oct 2021 13:40:48 -0600
+Message-ID: <bd03422b-4a19-c518-f550-13cd7be243fc@kernel.dk>
+Date:   Sun, 31 Oct 2021 13:41:04 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <00000000000030c35005cfa98ed5@google.com>
+In-Reply-To: <000000000000bb843a05cfa99111@google.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -70,19 +75,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/31/21 11:40 AM, syzbot wrote:
+On 10/31/21 11:41 AM, syzbot wrote:
 > Hello,
 > 
 > syzbot found the following issue on:
 > 
 > HEAD commit:    bdcc9f6a5682 Add linux-next specific files for 20211029
 > git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=10be38f4b00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=4b504bcb4c507265
-> dashboard link: https://syzkaller.appspot.com/bug?extid=e4f5deeeccdd5a4873fe
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1413226ab00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=cea91ee10b0cd274
+> dashboard link: https://syzkaller.appspot.com/bug?extid=30a60157d4ef222fd5e2
 > compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10b915d4b00000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1395f3e2b00000
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=121ba3e2b00000
 > 
 > The issue was bisected to:
 > 
