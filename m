@@ -2,120 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F286440E68
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 13:29:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D5C9440E6C
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 13:33:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231351AbhJaMbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 08:31:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33606 "EHLO mail.kernel.org"
+        id S231449AbhJaMgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 08:36:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35064 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229798AbhJaMbm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 08:31:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F0EEA61039;
-        Sun, 31 Oct 2021 12:29:10 +0000 (UTC)
+        id S229798AbhJaMgS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Oct 2021 08:36:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 83CF360FD9;
+        Sun, 31 Oct 2021 12:33:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635683351;
-        bh=ph3gBE0UwLAlyx3ipLRKhIarn/rc9a7pyxJUqyXnYE8=;
+        s=k20201202; t=1635683626;
+        bh=NRhO6hzo10XWUP2bFt6QNKXuMxBJ25uRfWxqDqY/+8M=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=AlSTPonwsVQTS7e6538bAhrsoddx69iTXWdkrXr6iSt+XpMXlvezHzTCflXQ39yZr
-         OXas2DnW6jbe82k53YFTnhcdR/Dfe1W5dbrmkZWe2AKWyXi39EJd7gs99EG0zrJ4YA
-         Xpev1Vw3s09aDXg61qEWMTVAKFL7NeeehC2vd6sAmYng5egDyFv+BArjzaYVH4JvhM
-         L6tmAnOfiZVT0OSCNoMhPNbUslsbB5DWX/ZZjBNvxpUd/y3ZDgzxu6h22cW/guM3q/
-         vk0rVuybrU/inRfOTAJWpW1Cv2g71dvomxt7Jtv2+PxHX8V1cAiAPNufDxnzzmHZuJ
-         KPWUD7xnP/ECQ==
-Received: by mail-ot1-f42.google.com with SMTP id l16-20020a9d6a90000000b0054e7ab56f27so21208322otq.12;
-        Sun, 31 Oct 2021 05:29:10 -0700 (PDT)
-X-Gm-Message-State: AOAM531Pbo9CzJYU1hAabTxmni2exjSYt4Lo4VA2ewAdEA1daORAheir
-        6TKV5pJHDd77w2XVjpNyYTLkjMR4okkHb6/DpdY=
-X-Google-Smtp-Source: ABdhPJwgPIx5Ajj0S1T2KjyV/1WG7VBWyhFaagI5h0bGfEPDwtYo8G+a8GQ77xOCXiUmzae1g2e9z77AEw4JstfixnE=
-X-Received: by 2002:a05:6830:1d6e:: with SMTP id l14mr16396459oti.147.1635683350134;
- Sun, 31 Oct 2021 05:29:10 -0700 (PDT)
+        b=Jv5eTWcVA2z5JT5Ug7EiUMbH52+8dNpb/VkCf+EPr30fedYWXUmNZFRJMIHIC3j+r
+         6T25N7FKIwciqwuAaqDfxutRyRRXKahzZpE5vN2Z3xenC7srxDMSnGZJTwZfoPxgg3
+         LFv5mOcXmWURzDBG8n2REorEsFWZtw7e9T/edFX1WZ6y4gNT/vLog7Y45vDUt23c+l
+         afQMNXZ7/dK9gKdCxdTSmyXwBPFB76JE7z0dBOEmLYYERrazqEPj1lz5+vsSI2FMsn
+         jWMcTKZFeojo3DC/wA5FUoQEAD8AXA5WIEJnUGNIxzFy0Z9eVvHITxn2lsNKrXh0dg
+         gD7bmlVX1nChg==
+Received: by mail-oo1-f50.google.com with SMTP id m37-20020a4a9528000000b002b83955f771so5247282ooi.7;
+        Sun, 31 Oct 2021 05:33:46 -0700 (PDT)
+X-Gm-Message-State: AOAM530AcGtmbNf9FcxCs6h74fxU5euTx4BNfwxcevcRwh+3+XEL1CEV
+        urVfV43fqww3foh298vIB2Rms63eCeDTEEvNpDY=
+X-Google-Smtp-Source: ABdhPJzRyhFZSvvjXFfXlEbz9eE+P8RVY2MhVsjkKOk/v+Ogtl4XZxBwYW17JwmZzmZkY6SmoAfsZrsnF22NHXBzwEI=
+X-Received: by 2002:a4a:e93d:: with SMTP id a29mr15115163ooe.63.1635683625840;
+ Sun, 31 Oct 2021 05:33:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211029135454.4383-1-nicolas.toromanoff@foss.st.com> <20211029135454.4383-4-nicolas.toromanoff@foss.st.com>
-In-Reply-To: <20211029135454.4383-4-nicolas.toromanoff@foss.st.com>
+References: <20211012082708.121931-1-iivanov@suse.de> <YWVKAk4h5bsUA3b6@light.dominikbrodowski.net>
+ <YX44DCaIg/qGOrtE@light.dominikbrodowski.net>
+In-Reply-To: <YX44DCaIg/qGOrtE@light.dominikbrodowski.net>
 From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Sun, 31 Oct 2021 13:28:58 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXF5_2AnQH8pjgzbeq63iSkdkUVq3wZM_NURotoHj0sJMw@mail.gmail.com>
-Message-ID: <CAMj1kXF5_2AnQH8pjgzbeq63iSkdkUVq3wZM_NURotoHj0sJMw@mail.gmail.com>
-Subject: Re: [PATCH 3/8] crypto: stm32/cryp - fix CTR counter carry
-To:     Nicolas Toromanoff <nicolas.toromanoff@foss.st.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Marek Vasut <marex@denx.de>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+Date:   Sun, 31 Oct 2021 13:33:34 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXEeCwhADMEwfE8SaG=1+J8Lzrck72DixSdxOP3cAK_Uzg@mail.gmail.com>
+Message-ID: <CAMj1kXEeCwhADMEwfE8SaG=1+J8Lzrck72DixSdxOP3cAK_Uzg@mail.gmail.com>
+Subject: Re: [PATCH] random: fix crash on multiple early calls to add_bootloader_randomness()
+To:     Dominik Brodowski <linux@dominikbrodowski.net>
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        "Ivan T. Ivanov" <iivanov@suse.de>,
+        Bhupesh Sharma <bhsharma@redhat.com>,
+        linux-efi <linux-efi@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Oct 2021 at 16:01, Nicolas Toromanoff
-<nicolas.toromanoff@foss.st.com> wrote:
+On Sun, 31 Oct 2021 at 07:31, Dominik Brodowski
+<linux@dominikbrodowski.net> wrote:
 >
-> Fix issue in CTR counter overflow, the carry-over is now properly
-> managed.
-> Fixes: bbb2832620ac ("crypto: stm32 - Fix sparse warnings")
+> If add_bootloader_randomness() or add_hwgenerator_randomness() is
+> called for the first time during early boot, crng_init equals 0. Then,
+> crng_fast_load() gets called -- which is safe to do even if the input
+> pool is not yet properly set up.
 >
-> Signed-off-by: Nicolas Toromanoff <nicolas.toromanoff@foss.st.com>
-> ---
->  drivers/crypto/stm32/stm32-cryp.c | 19 ++++++++++---------
->  1 file changed, 10 insertions(+), 9 deletions(-)
->
-> diff --git a/drivers/crypto/stm32/stm32-cryp.c b/drivers/crypto/stm32/stm32-cryp.c
-> index 7b55ad6d2f1a..6eeeca0d70ce 100644
-> --- a/drivers/crypto/stm32/stm32-cryp.c
-> +++ b/drivers/crypto/stm32/stm32-cryp.c
-> @@ -163,7 +163,7 @@ struct stm32_cryp {
->         struct scatter_walk     in_walk;
->         struct scatter_walk     out_walk;
->
-> -       u32                     last_ctr[4];
-> +       __be32                  last_ctr[4];
->         u32                     gcm_ctr;
->  };
->
-> @@ -1219,25 +1219,26 @@ static void stm32_cryp_check_ctr_counter(struct stm32_cryp *cryp)
->
->         if (unlikely(cryp->last_ctr[3] == 0xFFFFFFFF)) {
->                 cryp->last_ctr[3] = 0;
-> -               cryp->last_ctr[2]++;
-> +               cryp->last_ctr[2] = cpu_to_be32(be32_to_cpu(cryp->last_ctr[2]) + 1);
->                 if (!cryp->last_ctr[2]) {
-> -                       cryp->last_ctr[1]++;
-> +                       cryp->last_ctr[1] = cpu_to_be32(be32_to_cpu(cryp->last_ctr[1]) + 1);
->                         if (!cryp->last_ctr[1])
-> -                               cryp->last_ctr[0]++;
-> +                               cryp->last_ctr[0] = cpu_to_be32(be32_to_cpu(cryp->last_ctr[0]) + 1);
->                 }
+> If the added entropy suffices to increase crng_init to 1, future calls
+> to add_bootloader_randomness() or add_hwgenerator_randomness() used to
+> progress to credit_entropy_bits(). However, if the input pool is not yet
+> properly set up, the cmpxchg call within that function can lead to an
+> infinite recursion. This is not only a hypothetical problem, as qemu
+> on x86 may provide bootloader entropy via EFI and via devicetree.
 >
 
-crypto_inc() ??
+arm64 not x86
 
->                 cr = stm32_cryp_read(cryp, CRYP_CR);
->                 stm32_cryp_write(cryp, CRYP_CR, cr & ~CR_CRYPEN);
+> As crng_global_init_time is set to != 0 once the input pool is properly
+> set up, check (also) for this condition to determine which branch to take.
 >
-> -               stm32_cryp_hw_write_iv(cryp, (__be32 *)cryp->last_ctr);
-> +               stm32_cryp_hw_write_iv(cryp, cryp->last_ctr);
+> Calls to crng_fast_load() do not modify the input pool; therefore, the
+> entropy_count for the input pool must not be modified at that early
+> stage.
 >
->                 stm32_cryp_write(cryp, CRYP_CR, cr);
->         }
+> Reported-and-tested-by: Ivan T. Ivanov <iivanov@suse.de>
+
+Nit: fancy tags like this are more difficult to grep for
+
+Better to use separate Reported-by and Tested-by tags
+
+> Fixes: 18b915ac6b0a ("efi/random: Treat EFI_RNG_PROTOCOL output as bootloader randomness")
+> Signed-off-by: Dominik Brodowski <linux@dominikbrodowski.net>
 >
-> -       cryp->last_ctr[0] = stm32_cryp_read(cryp, CRYP_IV0LR);
-> -       cryp->last_ctr[1] = stm32_cryp_read(cryp, CRYP_IV0RR);
-> -       cryp->last_ctr[2] = stm32_cryp_read(cryp, CRYP_IV1LR);
-> -       cryp->last_ctr[3] = stm32_cryp_read(cryp, CRYP_IV1RR);
-> +       /* The IV registers are BE  */
-> +       cryp->last_ctr[0] = cpu_to_be32(stm32_cryp_read(cryp, CRYP_IV0LR));
-> +       cryp->last_ctr[1] = cpu_to_be32(stm32_cryp_read(cryp, CRYP_IV0RR));
-> +       cryp->last_ctr[2] = cpu_to_be32(stm32_cryp_read(cryp, CRYP_IV1LR));
-> +       cryp->last_ctr[3] = cpu_to_be32(stm32_cryp_read(cryp, CRYP_IV1RR));
+
+Please don't drop the diffstat. Are you using git format-patch?
+
+
+> diff --git a/drivers/char/random.c b/drivers/char/random.c
+> index 605969ed0f96..4211ff3092f9 100644
+> --- a/drivers/char/random.c
+> +++ b/drivers/char/random.c
+> @@ -1763,8 +1763,8 @@ static void __init init_std_data(struct entropy_store *r)
 >  }
 >
->  static bool stm32_cryp_irq_read_data(struct stm32_cryp *cryp)
-> --
-> 2.17.1
+>  /*
+> - * Note that setup_arch() may call add_device_randomness()
+> - * long before we get here. This allows seeding of the pools
+> + * add_device_randomness() or add_bootloader_randomness() may be
+> + * called long before we get here. This allows seeding of the pools
+>   * with some platform dependent data very early in the boot
+>   * process. But it limits our options here. We must use
+>   * statically allocated structures that already have all
+> @@ -2274,7 +2274,12 @@ void add_hwgenerator_randomness(const char *buffer, size_t count,
+>  {
+>         struct entropy_store *poolp = &input_pool;
 >
+> -       if (unlikely(crng_init == 0)) {
+> +       /* We cannot do much with the input pool until it is set up in
+> +        * rand_initalize(); therefore just mix into the crng state.
+> +        * As this does not affect the input pool, we cannot credit
+> +        * entropy for this.
+> +        */
+> +       if (unlikely(crng_init == 0) || unlikely(crng_global_init_time == 0)) {
+
+Can we just drop the unlikely()s here?
+
+>                 crng_fast_load(buffer, count);
+>                 return;
+>         }
