@@ -2,85 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 613C94410DD
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 21:55:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 898354410DF
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 21:56:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230098AbhJaU6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 16:58:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56000 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229974AbhJaU6C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 16:58:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E4D360F4C;
-        Sun, 31 Oct 2021 20:55:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635713730;
-        bh=oeU9m32KyPvFqKwG3qk6If06NKojmbJC+GcvF27icTs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=R0OlfTtr4h9Ic9fubr4O7eXo+/0zyom8N0wI7bhtBx2ggB7AYxEGYepcPp6CgVSVr
-         ReYxvucliRZaAfo1Euib4ragEZvz98FrriA7B9XkatsOzrevcrEx8mWzT6hYNCfT3Q
-         18Al0FrsJhYTw3Jl/wXdPEPu49T7lnTgtBHMtvKx/00kEX6sD/l6dLHS2Ha1/rJQ5k
-         IohxXLEL758TI1ks5og3KpyLaBDGSyRjNRb7sSNiJovYPjmYnBiDtwPBITNDxPp4tg
-         1M9YpzUZhDYdysq18KIJQTIaV8fTPINGtZbLWmcM8ABlFOqOyjd/VEtSSj1B616SBq
-         7XzVXRDzPA+3w==
-Received: by pali.im (Postfix)
-        id 94322E5D; Sun, 31 Oct 2021 21:55:27 +0100 (CET)
-Date:   Sun, 31 Oct 2021 21:55:27 +0100
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, linuxarm@huawei.com,
-        mauro.chehab@huawei.com,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh@kernel.org>,
-        Xiaowei Song <songxiaowei@hisilicon.com>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH v15 13/13] PCI: kirin: Allow removing the driver
-Message-ID: <20211031205527.ochhi72dfu4uidii@pali>
-References: <cover.1634812676.git.mchehab+huawei@kernel.org>
- <53b40494252444a9b830827922c4e3a301b8f863.1634812676.git.mchehab+huawei@kernel.org>
+        id S229946AbhJaU6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 16:58:37 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:48790
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230121AbhJaU6g (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Oct 2021 16:58:36 -0400
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com [209.85.208.200])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 4B4023F16F
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 20:56:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1635713763;
+        bh=7KiWIckEg5DsudTTcPUNNjrowRj4bFQWmsKz8u+RWuU=;
+        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+         In-Reply-To:Content-Type;
+        b=AEYOECt/0sECea+eC9L8DNRA5KL7TtLlJ0Hz1NQcCkVoeppDy2d5griuaKrFks1kK
+         btd43w9KtNRRJf3CsdHt9duN2RZ6fqMX97WgY11Js/PSEU06Lt2mucdmnohdFo42Sm
+         q0tNAtAyNpkXTUb8xA6kZbwgM12bZANQxbWVQbbmGdsfGu7PqkFq5r6q+XybXDxHRc
+         D3rp3LhMA2bXJOwryNDCew7r9jgCBeAu98rHaNskE7ubQBJyubvJw4y6n3Lc37pfex
+         5+Yg4CwQLkFTCBvk7QK1VzKeUby1p2KenWhlsen4XIpw93qCG1oQkpDQiP+pXqRX74
+         MsSSthfEqfkPQ==
+Received: by mail-lj1-f200.google.com with SMTP id s17-20020a2e2c11000000b002119b8e1336so5090774ljs.23
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 13:56:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=7KiWIckEg5DsudTTcPUNNjrowRj4bFQWmsKz8u+RWuU=;
+        b=ii04P3A7a8nYQaP4O+jYYBfr3Uw2Q9KOQFv7dByUHKngQ8o6LOm270wM7T30uR5M1w
+         Qc1ZAZI2Bdp3Jd96kUXWqI3A4CD8b4ajcfTYylhR21iz/EJ8pBRN1riMqDBbi4rJCIOT
+         5E4gk5Aj0MOmvO15pHjQ/zlVK3L0TVNC79o/6ToYysY8Kv4dJsPVRN7IMIzc3Ydtxdx5
+         e6DdbNqgRYdyipQNPcAbAyXqt9XuhOpspWkqU41cxBE9vdaGOCv4F4zscIcnU8cExWEv
+         hcaVXylNSMLJUNefBosUxwXIVk/BWMciGALtUnO2NMyaf91ZqFTBZ4QpCXr6n/EwEpfn
+         wmKQ==
+X-Gm-Message-State: AOAM531I9/wlcgCl+ioboLpJ/lic4BkgECTcYM36m+msdOBS6bDjJ8xm
+        2TDHK+h442yuKIft7nh9SB7eVCdjAy1CaY6HjUWBDNuUzcAUw4s+QLjLQipb2HF1DRn7tTpwLcR
+        LrhR9OqKVVf1bTUCTWsZzMDd10Spu46IAlvwPuZ1Giw==
+X-Received: by 2002:ac2:5f58:: with SMTP id 24mr3812068lfz.22.1635713762472;
+        Sun, 31 Oct 2021 13:56:02 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwVrLKox/SzOP9upXtJKX4Xfl9XaYuC1R/evXsizpdmPbzB02lJcKZ/kQkSGdlIiYlNlO1ehw==
+X-Received: by 2002:ac2:5f58:: with SMTP id 24mr3812057lfz.22.1635713762279;
+        Sun, 31 Oct 2021 13:56:02 -0700 (PDT)
+Received: from [192.168.3.67] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id 185sm978769ljj.23.2021.10.31.13.56.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 31 Oct 2021 13:56:01 -0700 (PDT)
+Message-ID: <e1555f6c-63e2-60c8-9a7d-808545de01e0@canonical.com>
+Date:   Sun, 31 Oct 2021 21:56:01 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <53b40494252444a9b830827922c4e3a301b8f863.1634812676.git.mchehab+huawei@kernel.org>
-User-Agent: NeoMutt/20180716
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Subject: Re: [PATCH] samsung: exynos-chipid: add Exynos7885 SoC support
+Content-Language: en-US
+To:     David Virag <virag.david003@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211031175329.27843-1-virag.david003@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20211031175329.27843-1-virag.david003@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 21 October 2021 11:45:20 Mauro Carvalho Chehab wrote:
-> Now that everything is in place at the poweroff sequence,
-> this driver can use module_platform_driver(), which allows
-> it to be removed.
+On 31/10/2021 18:53, David Virag wrote:
+> Exynos 7885 has product id "0xE7885000". Add this id to the ids with
+> the name.
 > 
-> Acked-by: Xiaowei Song <songxiaowei@hisilicon.com>
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+
+Thanks for the patch!
+
+> The downstream driver sets sub_rev to 2 if we are on Exynos 7885, we
+> detected sub_rev 1 and the 27th bit of the revision register is set.
+
+There is no revision register in older Exynos boards, so it seems you
+speak about new version, but please mention it explicitly.
+
+> This is presumably because Samsung might have set the wrong bits on
+> rev2 of the SoC in the chipid, but we may never know as we have no
+> manual.
+> 
+> Both the SM-A530F/jackpotlte with Exynos7885 and the SM-M305/m30lte
+> with Exynos7904 (rebranded Exynos7885 with lower clock speeds) seem
+> to have this bit set to 1 and have a sub_rev of 1 otherwise, but the
+> downstream driver corrects it to 2.
+> Let's replicate this behaviour in upstream too!
+
+No, let's don't replicate weird vendor behavior without understanding
+it, unless there is reason to. Please describe the reason or drop it.
+
+> 
+> Signed-off-by: David Virag <virag.david003@gmail.com>
 > ---
+>  drivers/soc/samsung/exynos-chipid.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
 > 
-> To mailbombing on a large number of people, only mailing lists were C/C on the cover.
-> See [PATCH v15 00/13] at: https://lore.kernel.org/all/cover.1634812676.git.mchehab+huawei@kernel.org/
-> 
->  drivers/pci/controller/dwc/pcie-kirin.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-kirin.c b/drivers/pci/controller/dwc/pcie-kirin.c
-> index fea4d717fff3..cdf568ea0f68 100644
-> --- a/drivers/pci/controller/dwc/pcie-kirin.c
-> +++ b/drivers/pci/controller/dwc/pcie-kirin.c
-> @@ -827,7 +827,7 @@ static struct platform_driver kirin_pcie_driver = {
->  		.suppress_bind_attrs	= true,
+> diff --git a/drivers/soc/samsung/exynos-chipid.c b/drivers/soc/samsung/exynos-chipid.c
+> index a28053ec7e6a..ec8c76275aec 100644
+> --- a/drivers/soc/samsung/exynos-chipid.c
+> +++ b/drivers/soc/samsung/exynos-chipid.c
+> @@ -55,6 +55,7 @@ static const struct exynos_soc_id {
+>  	{ "EXYNOS5440", 0xE5440000 },
+>  	{ "EXYNOS5800", 0xE5422000 },
+>  	{ "EXYNOS7420", 0xE7420000 },
+> +	{ "EXYNOS7885", 0xE7885000 },
 
-Hello Mauro! I think that you should not set ".suppress_bind_attrs" to
-"true" if you want to bind and unbind driver at runtime.
+This looks good, but please rebase on:
+https://lore.kernel.org/linux-samsung-soc/20211031205212.59505-1-krzysztof.kozlowski@canonical.com/T/#u
+because we use one compatible for entire family and I would like to have
+it documented which family is this here.
 
->  	},
+>  	{ "EXYNOS850", 0xE3830000 },
+>  	{ "EXYNOSAUTOV9", 0xAAA80000 },
 >  };
-> -builtin_platform_driver(kirin_pcie_driver);
-> +module_platform_driver(kirin_pcie_driver);
+> @@ -88,6 +89,14 @@ static int exynos_chipid_get_chipid_info(struct regmap *regmap,
+>  	}
+>  	main_rev = (val >> data->main_rev_shift) & EXYNOS_REV_PART_MASK;
+>  	sub_rev = (val >> data->sub_rev_shift) & EXYNOS_REV_PART_MASK;
+> +
+> +	//Exynos 7885 revision 2 apparently has the 27th bit set instead of having
+> +	//a sub_rev of 2. Correct for this!
+
+Not a Linux kernel comment. This will go away anyway, but please read
+the coding style and use scripts/checkpatch.pl for future patches.
+
+> +	if (soc_info->product_id == 0xE7885000) {
+> +		if ((sub_rev == 1) && (val & 0x04000000))
+> +			sub_rev = 2;
+> +	}
+> +
+>  	soc_info->revision = (main_rev << EXYNOS_REV_PART_SHIFT) | sub_rev;
 >  
->  MODULE_DEVICE_TABLE(of, kirin_pcie_match);
->  MODULE_DESCRIPTION("PCIe host controller driver for Kirin Phone SoCs");
-> -- 
-> 2.31.1
+>  	return 0;
 > 
+
+
+Best regards,
+Krzysztof
