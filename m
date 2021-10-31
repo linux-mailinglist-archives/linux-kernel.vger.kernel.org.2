@@ -2,101 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B505440EE3
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 15:43:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0A76440EEB
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 15:51:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230121AbhJaOpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 10:45:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230131AbhJaOpS (ORCPT
+        id S229934AbhJaOxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 10:53:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53905 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229660AbhJaOxt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 10:45:18 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B00D3C061570
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 07:42:46 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id f5so14802059pgc.12
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 07:42:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=dPTMEqL3NYtc2Q3PnJ9nazYoyjO4/ce4FmSNrOKpptk=;
-        b=fvlc7+A6nqrzxoPKKUIvAefVAfll9mNtvEKZ6O3SGUNMcKV63hHgX0xMJlTH8cJK6+
-         mvffOvszw/VC3IR49oLmoCEA1r2zARnOcQaJiofKWb8x5qkcu5Bb/vBizCjq8cFIxZ/g
-         wO3+mPkOOJPtrS5HfLSP/26nEaBL+d94OvX+L5ixHb/QDgFfd9CKWi5lmMkyMdkvKttj
-         Rb+k04JYYqbhmooL9EmZYDdBXyFXeNam1MkaZGjYLMDCnKu6pb1pDUXP8eeSplYaT8fY
-         ZBIUIpHqWg1yqOgEMG4z0fZhFxx9FcGmVGpinXaUNE9PPRN6fmJBbW3NiW7Fz9+4zu8w
-         sv4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=dPTMEqL3NYtc2Q3PnJ9nazYoyjO4/ce4FmSNrOKpptk=;
-        b=dAjcAzmD1aBXlcg91oG0EacEQ0VI5aGnefy1UPIknnQVtUep78POuJSMRbohNmh3md
-         8OyoCU4yDlaTA3WOEPa029bq9HTYEdt70ln0EknLtW44cRGb0Qba33Sy/ud9/Z+YyNWO
-         m+3rrgOg2J2doduEkik/ktZJvui+65znrdW3oOHRMpFb1Lgh6XChg0OU7CjO5vTuavj/
-         YQ7kPdjV0NTUZsfVFTzT0OMR/cmQCUiJzwqvcA8exrlx/FNI3Ndjk1qoFVB7rG8ia3ej
-         YuR6y1K1VrY3b3pHXT+/2pVuhKRnTNUyTxuqgcqTKpiJSpK5FJGyVq2aZB3JBnJZhP2s
-         B5VQ==
-X-Gm-Message-State: AOAM533L7Mw5OkyeBdotUY5wpM2WlqdvR1dWJs7Hq8h/KKkA8B/UShyr
-        V8uDsIHD4zDB2AxmuCzotUbpnw==
-X-Google-Smtp-Source: ABdhPJwXduf3AOks9pU8yn43VO7xAPmYmLRcctvjxyNmzFodti8wWEVQIEw7JUcym45Ic3DlaybJBQ==
-X-Received: by 2002:a05:6a00:1309:b0:44d:4d1e:c930 with SMTP id j9-20020a056a00130900b0044d4d1ec930mr22820405pfu.65.1635691366224;
-        Sun, 31 Oct 2021 07:42:46 -0700 (PDT)
-Received: from localhost ([134.195.101.46])
-        by smtp.gmail.com with ESMTPSA id w13sm4088839pgm.3.2021.10.31.07.42.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 31 Oct 2021 07:42:45 -0700 (PDT)
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Sun, 31 Oct 2021 10:53:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635691877;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JWkqObtzatE8ZqTA7P0n9xOaXL3kRPYh9u09IqRGd+c=;
+        b=YbfpCla095LLS2kGegcZiwxuYq9j+Z+VmuOqAnI8Mptjn005Re/0HVZKW3aNEr70O8U8cZ
+        qKIUvMxna6Y9wQRlXOzzjGvft+QuJrhLwpLuxvA4RkJDlbjz4kMmMAuZj1hxupfKC8KpcP
+        XDNFVySxYhX+kzotQgxq7XXiDbOtweE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-595-hgIuyZhQNzuaYxdMVVu2jQ-1; Sun, 31 Oct 2021 10:51:14 -0400
+X-MC-Unique: hgIuyZhQNzuaYxdMVVu2jQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3C08418D6A25;
+        Sun, 31 Oct 2021 14:51:10 +0000 (UTC)
+Received: from starship (unknown [10.40.194.243])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 885E65F4E9;
+        Sun, 31 Oct 2021 14:50:40 +0000 (UTC)
+Message-ID: <ca017e53bfa81d96dc534e395ff35b6899607fd8.camel@redhat.com>
+Subject: Re: [PATCH v2 36/43] KVM: SVM: Don't bother checking for "running"
+ AVIC when kicking for IPIs
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
         Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        James Clark <james.clark@arm.com>, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v1 4/4] coresight: etm3x: Don't trace contextID for non-root namespace in perf mode
-Date:   Sun, 31 Oct 2021 22:42:14 +0800
-Message-Id: <20211031144214.237879-5-leo.yan@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211031144214.237879-1-leo.yan@linaro.org>
-References: <20211031144214.237879-1-leo.yan@linaro.org>
+        Atish Patra <atish.patra@wdc.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        David Matlack <dmatlack@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Jing Zhang <jingzhangos@google.com>
+Date:   Sun, 31 Oct 2021 16:50:39 +0200
+In-Reply-To: <20211009021236.4122790-37-seanjc@google.com>
+References: <20211009021236.4122790-1-seanjc@google.com>
+         <20211009021236.4122790-37-seanjc@google.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ETMv3 driver doesn't handle the case when programs run in non-root PID
-namespace, so it allows the contextID tracing by directly using perf
-config.
+On Fri, 2021-10-08 at 19:12 -0700, Sean Christopherson wrote:
+> Drop the avic_vcpu_is_running() check when waking vCPUs in response to a
+> VM-Exit due to incomplete IPI delivery.  The check isn't wrong per se, but
+> it's not 100% accurate in the sense that it doesn't guarantee that the vCPU
+> was one of the vCPUs that didn't receive the IPI.
+> 
+> The check isn't required for correctness as blocking == !running in this
+> context.
+> 
+> From a performance perspective, waking a live task is not expensive as the
+> only moderately costly operation is a locked operation to temporarily
+> disable preemption.  And if that is indeed a performance issue,
+> kvm_vcpu_is_blocking() would be a better check than poking into the AVIC.
+> 
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  arch/x86/kvm/svm/avic.c | 15 +++++++++------
+>  arch/x86/kvm/svm/svm.h  | 11 -----------
+>  2 files changed, 9 insertions(+), 17 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/svm/avic.c b/arch/x86/kvm/svm/avic.c
+> index cbf02e7e20d0..b43b05610ade 100644
+> --- a/arch/x86/kvm/svm/avic.c
+> +++ b/arch/x86/kvm/svm/avic.c
+> @@ -295,13 +295,16 @@ static void avic_kick_target_vcpus(struct kvm *kvm, struct kvm_lapic *source,
+>  	struct kvm_vcpu *vcpu;
+>  	int i;
+>  
+> +	/*
+> +	 * Wake any target vCPUs that are blocking, i.e. waiting for a wake
+> +	 * event.  There's no need to signal doorbells, as hardware has handled
+> +	 * vCPUs that were in guest at the time of the IPI, and vCPUs that have
+> +	 * since entered the guest will have processed pending IRQs at VMRUN.
+> +	 */
+>  	kvm_for_each_vcpu(i, vcpu, kvm) {
+> -		bool m = kvm_apic_match_dest(vcpu, source,
+> -					     icrl & APIC_SHORT_MASK,
+> -					     GET_APIC_DEST_FIELD(icrh),
+> -					     icrl & APIC_DEST_MASK);
+> -
+> -		if (m && !avic_vcpu_is_running(vcpu))
+> +		if (kvm_apic_match_dest(vcpu, source, icrl & APIC_SHORT_MASK,
+> +					GET_APIC_DEST_FIELD(icrh),
+> +					icrl & APIC_DEST_MASK))
+>  			kvm_vcpu_wake_up(vcpu);
+>  	}
+>  }
+> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
+> index 0d7bbe548ac3..7f5b01bbee29 100644
+> --- a/arch/x86/kvm/svm/svm.h
+> +++ b/arch/x86/kvm/svm/svm.h
+> @@ -509,17 +509,6 @@ extern struct kvm_x86_nested_ops svm_nested_ops;
+>  
+>  #define VMCB_AVIC_APIC_BAR_MASK		0xFFFFFFFFFF000ULL
+>  
+> -static inline bool (struct kvm_vcpu *vcpu)
+> -{
+> -	struct vcpu_svm *svm = to_svm(vcpu);
+> -	u64 *entry = svm->avic_physical_id_cache;
+> -
+> -	if (!entry)
+> -		return false;
+> -
+> -	return (READ_ONCE(*entry) & AVIC_PHYSICAL_ID_ENTRY_IS_RUNNING_MASK);
+> -}
+> -
+>  int avic_ga_log_notifier(u32 ga_tag);
+>  void avic_vm_destroy(struct kvm *kvm);
+>  int avic_vm_init(struct kvm *kvm);
 
-This patch changes to only enable contextID tracing for root PID
-namespace.  Note, the hardware supports VMID tracing from ETMv3.5, but
-the driver never enables VMID trace, so this patch doesn't handle VMID
-trace (bit 30 in ETMCR register) particularly.
 
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
----
- drivers/hwtracing/coresight/coresight-etm3x-core.c | 4 ++++
- 1 file changed, 4 insertions(+)
+I guess this makes sense to do, to get rid of the avic_vcpu_is_running.
+As you explained in previous patch, waking up a live task isn't that expensive,
+so let it be.
 
-diff --git a/drivers/hwtracing/coresight/coresight-etm3x-core.c b/drivers/hwtracing/coresight/coresight-etm3x-core.c
-index cf64ce73a741..0621ab0c71d9 100644
---- a/drivers/hwtracing/coresight/coresight-etm3x-core.c
-+++ b/drivers/hwtracing/coresight/coresight-etm3x-core.c
-@@ -340,6 +340,10 @@ static int etm_parse_event_config(struct etm_drvdata *drvdata,
- 
- 	config->ctrl = attr->config;
- 
-+	/* Don't trace contextID when runs in non-root PID namespace */
-+	if (task_active_pid_ns(current) != &init_pid_ns)
-+		config->ctrl &= ~ETMCR_CTXID_SIZE;
-+
- 	/*
- 	 * Possible to have cores with PTM (supports ret stack) and ETM
- 	 * (never has ret stack) on the same SoC. So if we have a request
--- 
-2.25.1
+Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+
+Best regards,
+	Maxim Levitsky 
 
