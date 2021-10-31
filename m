@@ -2,93 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F413F4410A4
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 20:59:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 828104410AA
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 21:00:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230088AbhJaUCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 16:02:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37410 "EHLO
+        id S230152AbhJaUCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 16:02:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229936AbhJaUCT (ORCPT
+        with ESMTP id S229936AbhJaUCj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 16:02:19 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9BE6C061570;
-        Sun, 31 Oct 2021 12:59:46 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id c28so32309590lfv.13;
-        Sun, 31 Oct 2021 12:59:46 -0700 (PDT)
+        Sun, 31 Oct 2021 16:02:39 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AC2EC061570;
+        Sun, 31 Oct 2021 13:00:07 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id k7so25170860wrd.13;
+        Sun, 31 Oct 2021 13:00:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=I6UvgRuI7XbNqIfqNVOEWY23ExzCc8UbZzMD6rauIp0=;
-        b=iLlP/alnjyy+ylWPHTD3OpMQe7A3UGPOJdV319qLPjhMvt0Ok89KsjMHmI7VYahqMu
-         9/8SqlgJcs/6k4L+Cicm8i/FLb7NyWi7dD6aGZmgBafgsfWbrOyMltCGK7Ld86Xh8GJ7
-         QojeNWtJYQDfbZBSmT6CAAkekqBR+ycdJYjtUXyUNR3lzN+M/+k/dTZzFL4wWbXHhGdC
-         C+tj8RNzFboEtTGXLz7qqfuSG6Hd93ECR1BoOVhi1Wf4Wt88rHPKfnbLjsw3WmwqNsHt
-         Sg4BXHTZ635JFNVlADzDSzNbDcCG3SOUC0zcsEEJ7UdXYieN4Xgb50K8Q68DBTG9+pEl
-         p87w==
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=SpNxCIMxVQjiaNSaue5Hm6sDwGlTxu2qu8st3i8XD8U=;
+        b=dZl8R3/s/TLmzkj1xajyLiAgS/Lfywl3PuNCNFTrWL5+626RLhYZXRA2imaeCWzfrh
+         RW52Pz8p7UfhVeQixHUo1Wotedm86s/iNIMIHcSf8iR6symoFoeN+fLgqKvl4cxlBHB5
+         MqtHkBEbw2aBRlesoaJCI/ZFMrR+jelgR6AKzFDjPHVEdZ1CajOSq6/Qkplfgan7eGrl
+         EXgKWD+YP8RsPQfvbRBIYb2k4GR3e4ZB06vFmRCHeUZlfPlZgNkzmo1e3w2BvIDu8mqi
+         E7KkxLzDreRUYvlyMZPUw5QY8zvBfYA5vLwjyI3zBkoVbuo0BFz9BBt7dW+NgWqPw/+/
+         JhxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=I6UvgRuI7XbNqIfqNVOEWY23ExzCc8UbZzMD6rauIp0=;
-        b=V2l6q666lbILeWUWKS2Vh4qpZfVt0zls45CDZxFtbLwqMy4oR45M/eWZKrWnZm3nmU
-         yIQIJ5Hs6GQk+oYYbAk/Z6fbxAEfow3jPSnf3PpU49RxlvHUMG4itgFhcNap7JI0vh0H
-         F3jBamHp/WsVNK1bpAVj5yc0IOka0Tvqd3p5bdKbd1KWuKwCOKz3yTYHUeBHBY5MPiKm
-         Kj39R+8WkwUHyaaRuw+9a03QYDLETuvlC1y7Fm5wa2JJXfG4/okFAZssKIpLIOLuhAb3
-         N/rnDypg5t4Tms5PNLjTIBEbw5xGNNuRvf62Wnkq9QOzR48/Jju+5gf19+dUa1Z6W23U
-         bJAA==
-X-Gm-Message-State: AOAM532JreI9ck0p8ww5v9T3Ep9ZQXuDXCNYH7ZY3hW5VoPC+p02W4uR
-        ChQWBXQwZ3Cwngd080uhnrEXyo/7V5QH9iYPvD4=
-X-Google-Smtp-Source: ABdhPJxBUn/T91pzFAlv4rXV7y8MqwzF8mye5VRmZZMPel/Wb75yuN0PRzJzHPETPyz2UxpSutUqPtK8McolL57Omxg=
-X-Received: by 2002:a05:6512:acd:: with SMTP id n13mr23317747lfu.60.1635710385010;
- Sun, 31 Oct 2021 12:59:45 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=SpNxCIMxVQjiaNSaue5Hm6sDwGlTxu2qu8st3i8XD8U=;
+        b=7Jm71j+IBfLUe222pNLEEaPzcLpmHWE5wl56SB4oEhulXF/etNPRv0vY7w91765v1b
+         evR3Xs5nGDvRBwcXg/Uhap807nl/awkEsOMmHzwP/r0WiFNrkdtfBzSHmUibf7IAn40X
+         R9tSAiVUJjQh91FbNLJadkPB4JKwkgNBpz6FEQ3kMlbob8l5lc/PiTQjWUurf1CkAvY1
+         EkVd11Ua8+UdBYIpCeYgCc7zesLmYEWvpX4Sl/M0j+DDjtNiW0ByooTt86PiRaBJ61nT
+         qJ3t6MuGz6js4/CZR6hw6/2AqeqBMtxbla2ov14rjqIZcqwpjmv+6sMmeBmXjzaGzHIY
+         cYoQ==
+X-Gm-Message-State: AOAM533nFzqm7jkpzyr+x/OXTtUaVJXXaS2x5IIQn35ZuzFof/+fNszN
+        fBBIXsB2heDTlfGfx/SeEio=
+X-Google-Smtp-Source: ABdhPJzG3HcAqMcAnxuq03WjObeieaffNLOpo8ZNGAPQAShrMmPp+jytEm+DBbgxZjkXCutTmyFl2g==
+X-Received: by 2002:a5d:64a6:: with SMTP id m6mr32782014wrp.100.1635710405617;
+        Sun, 31 Oct 2021 13:00:05 -0700 (PDT)
+Received: from penguin.lxd ([94.179.15.8])
+        by smtp.gmail.com with ESMTPSA id p3sm11582127wrs.10.2021.10.31.13.00.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 31 Oct 2021 13:00:05 -0700 (PDT)
+Date:   Sun, 31 Oct 2021 21:59:54 +0200
+From:   Denis Pauk <pauk.denis@gmail.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     eugene.shalygin@gmail.com, andy.shevchenko@gmail.com,
+        platform-driver-x86@vger.kernel.org, thomas@weissschuh.net,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Tor Vic <torvic9@mailbox.org>,
+        Oleksandr Natalenko <oleksandr@natalenko.name>,
+        Jean Delvare <jdelvare@suse.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v9 1/2] hwmon: (asus_wmi_ec_sensors) Support B550 Asus
+ WMI.
+Message-ID: <20211031215954.7be1aaa5@penguin.lxd>
+In-Reply-To: <20211030153424.GA3972535@roeck-us.net>
+References: <20211030153424.GA3972535@roeck-us.net>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; aarch64-unknown-linux-gnu)
 MIME-Version: 1.0
-References: <20211031162428.22368-1-hdegoede@redhat.com> <20211031162428.22368-4-hdegoede@redhat.com>
-In-Reply-To: <20211031162428.22368-4-hdegoede@redhat.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sun, 31 Oct 2021 21:59:08 +0200
-Message-ID: <CAHp75Vf-EOfF_XfqfWFQZNLp3B03o79xHf4bUrf9x9D9pTrvgw@mail.gmail.com>
-Subject: Re: [RFC 3/5] gpiolib: acpi: Add a new "ignore" module option
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Sebastian Reichel <sre@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Yauhen Kharuzhy <jekhor@gmail.com>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 31, 2021 at 6:25 PM Hans de Goede <hdegoede@redhat.com> wrote:
->
-> Add a new "ignore" module option to completely ignore controller@pin combos
-> from _AEI lists.
->
-> And add a DMI quirk to ignore the interrupt of the BQ27520 fuel-gauge IC
-> on the Xiaomi Mi Pad 2. On this device we use native charger + fuel-gauge
-> drivers because of issues with the ACPI battery implementation. The _AEI
-> listing of the fuel-gauge IRQ is intended for use with the unused ACPI
-> battery implementation and is blocking the bq27xxx fuel-gauge driver
-> from binding.
+Hi Guenter,
 
-I'm wondering if the idea behind this is something relative to
-https://elixir.bootlin.com/linux/latest/source/drivers/acpi/sysfs.c
+On Sat, 30 Oct 2021 08:34:24 -0700
+Guenter Roeck <linux@roeck-us.net> wrote:
 
--- 
-With Best Regards,
-Andy Shevchenko
+> On Sat, Oct 30, 2021 at 12:17:04PM +0300, Denis Pauk wrote:
+> ...
+> > a/drivers/hwmon/asus_wmi_ec_sensors.c
+> > b/drivers/hwmon/asus_wmi_ec_sensors.c new file mode 100644 index
+> > 000000000000..9d02023e0c61 --- /dev/null
+> > +++ b/drivers/hwmon/asus_wmi_ec_sensors.c
+> > @@ -0,0 +1,612 @@
+> > +// SPDX-License-Identifier: GPL-2.0-or-later
+> ...
+> > +#include <linux/nls.h>  
+> 
+> Why is this include needed ?
+> 
+Its required for usage of utf8s_to_utf16s.
+
+Best regards,
+            Denis.
