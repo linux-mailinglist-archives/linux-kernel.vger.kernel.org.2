@@ -2,89 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 748354410C1
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 21:12:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB6A14410C5
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 21:16:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230061AbhJaUOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 16:14:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40104 "EHLO
+        id S230169AbhJaUSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 16:18:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229939AbhJaUOt (ORCPT
+        with ESMTP id S229939AbhJaUSs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 16:14:49 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0654C061570;
-        Sun, 31 Oct 2021 13:12:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=OW5ANKTELS4/Aqv77rAWcip0XRuLRuzAugVfabAVKQc=; b=eNFWK3G4bwmB14XaQrXIvSMW1f
-        PdSYpdhYYUuAc84UDg5jz3ejRlnl1XNm8wfgH4eT8vgg/f736jKT8ghTEodQXsj0TLEuCTYvCgOPG
-        +bnnwxP9zYkrUheSfcKwtKZFRhrTb2FbR77abGWs1QSa8Nnef0cnGx7d5BnlKw86ohUudlPwTrtF1
-        Evmcz7DRAUvFkWB3Lm0TRX+ljtIuHxLH4CB5KdLiJciuCEUwDnj7CQUCNTUocE2uOOTPcuB48RNJA
-        zgS4tg7oJ+T62KeegFL34bkODuNiPuiqD04eSkhfGpyOvwApV6BFHR51QjsIgcL0taMyu9Smqkvh7
-        BN3597nA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mhH9I-003HDw-Cz; Sun, 31 Oct 2021 20:10:04 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 712FA300243;
-        Sun, 31 Oct 2021 21:09:46 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5250625F3BD9C; Sun, 31 Oct 2021 21:09:46 +0100 (CET)
-Date:   Sun, 31 Oct 2021 21:09:46 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        Mark Rutland <mark.rutland@arm.com>, X86 ML <x86@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-hardening@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH] static_call,x86: Robustify trampoline patching
-Message-ID: <YX74Ch9/DtvYxzh/@hirez.programming.kicks-ass.net>
-References: <CAMj1kXECTdDLVMk2JduU5mV2TR0Cv=hZ9QOpYRsRM1jfvvNikw@mail.gmail.com>
- <CABCJKufpS4jJxHqk8=bd1JCNbKfmLDKBbjbhjrar2+YQJFiprg@mail.gmail.com>
- <20211029200324.GR174703@worktop.programming.kicks-ass.net>
- <20211030074758.GT174703@worktop.programming.kicks-ass.net>
- <CAMj1kXEJd5=3A_6Jhd4UU-TBGarnHo5+U76Zxxt7SzXsWp4CcA@mail.gmail.com>
- <20211030180249.GU174703@worktop.programming.kicks-ass.net>
- <CAMj1kXF4ZNAvdC8tP_H=v1Dn_Zcv=La11Ok43ceQOyb1Xo1jXQ@mail.gmail.com>
- <CAMj1kXEvemVOWf4M_0vsduN_kiCsGVmM92cE7KPMoNKViKp=RQ@mail.gmail.com>
- <20211031163920.GV174703@worktop.programming.kicks-ass.net>
- <CAMj1kXHk5vbrT49yRCivX3phrEkN6Xbb+g8WEmavL_d1iE0OxQ@mail.gmail.com>
+        Sun, 31 Oct 2021 16:18:48 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FE7CC061570;
+        Sun, 31 Oct 2021 13:16:16 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id k13so26100549ljj.12;
+        Sun, 31 Oct 2021 13:16:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :references:from:in-reply-to;
+        bh=lKxvlWC3ChNGIziUsunH7azTCso8Biwy2rrv88iSo4M=;
+        b=RwI6CF+hgc6m3XF4pRsGtPnwHyNHHy9R+GVlFQ2seypV1PbWoKZ1HIIEkySwqJVrGP
+         6CcCW4dzGm6VgM+LlGIkn7wxkdBVOwUM79QqbvcNMB3zWiC7t+vCgodDcfTtjaoT3vVe
+         olTZi9PwUFn8VF9IBYw7j/Mmo7IgxB1eAAcSCcsZg7mZ4QNnGYG+ITkQPpaojhd/5SzJ
+         OJhYSvZXz93nT31ERSHZTS3qyjKxb4o5B8sXTbMca8cRm5X3awHOY1P/NnrcMSFokpqD
+         nFoAd9tytF/ScneeuMqNvXamOwJnFKlGzUhkR4mFaOabBvrmecOAkxqG+LyVL7vP7IV5
+         JI6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:references:from:in-reply-to;
+        bh=lKxvlWC3ChNGIziUsunH7azTCso8Biwy2rrv88iSo4M=;
+        b=kKMlwS/uKs6CQv4I6gwOBBVYZ7ZkE77UYNOl/ERQQjmDyBVf3wei/M4FbEKAS8MO8n
+         Xc36XMUdwZoXvfVJbR6R9hm4SYxSnBI4O7TNqdQA88zobYY00hjM4wisGPfyHFxfRdDa
+         SHrCyCBk+ZmPt+gF6A5cZTd6IbkYjxuyC/Fi/TjE4OmHMBzaTJL3SWepHgThyb8LvGHu
+         Kq3m5LGpH+016Tq/dZjQW7hCpp7IUafZDm7y8+QFQoe2VMc8dlP/8F83Ey0oeIzCfW11
+         arJZn+QGqwSbFOr4eSYZ7xzyIR2oF92ghrTBbA811HacV7MKqs9ww6oOtAfstkriwvD8
+         S2iQ==
+X-Gm-Message-State: AOAM532G/o2U9fDgxZDDavg8B93jI7B7krZEhmfj6mp3eez5tE9v+Yz0
+        76W6wleWaMVKwSHoQzGe5ZsK2wX1qMvH/A==
+X-Google-Smtp-Source: ABdhPJxk6nHMr461mBuXT6XhZdocynQGf4bM8Z7MkBzvY0ciyF2gEyicAs1iMEfrVof0Sl3K19EMkA==
+X-Received: by 2002:a2e:9d05:: with SMTP id t5mr5729698lji.433.1635711374582;
+        Sun, 31 Oct 2021 13:16:14 -0700 (PDT)
+Received: from [192.168.1.11] ([94.103.235.8])
+        by smtp.gmail.com with ESMTPSA id e11sm19827ljj.99.2021.10.31.13.16.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 31 Oct 2021 13:16:13 -0700 (PDT)
+Content-Type: multipart/mixed; boundary="------------SfNDH39slPPO9sbrxHVe2Rgq"
+Message-ID: <4b2b9c55-e2e0-a149-7dfe-ca36244d2245@gmail.com>
+Date:   Sun, 31 Oct 2021 23:16:12 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXHk5vbrT49yRCivX3phrEkN6Xbb+g8WEmavL_d1iE0OxQ@mail.gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [syzbot] KASAN: slab-out-of-bounds Read in hci_le_meta_evt (2)
+Content-Language: en-US
+To:     syzbot <syzbot+e3fcb9c4f3c2a931dc40@syzkaller.appspotmail.com>,
+        davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        luiz.dentz@gmail.com, marcel@holtmann.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+References: <0000000000002ba17d05cfaa8446@google.com>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+In-Reply-To: <0000000000002ba17d05cfaa8446@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 31, 2021 at 05:44:04PM +0100, Ard Biesheuvel wrote:
+This is a multi-part message in MIME format.
+--------------SfNDH39slPPO9sbrxHVe2Rgq
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> > Is is also a terriblly gross hack. I really want the clang-cfi stuff to
-> > improve, not add layers of hacks on top of it.
+On 10/31/21 21:49, syzbot wrote:
+> Hello,
 > 
-> I'm just as annoyed as you are about the apparent need for this.
-> However, emitting an alias at build time is far better IMHO than
-> adding a magic byte sequence and having to check it at runtime.
+> syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+> 
+> Reported-and-tested-by: syzbot+e3fcb9c4f3c2a931dc40@syzkaller.appspotmail.com
+> 
+> Tested on:
+> 
+> commit:         180eca54 Merge tag 'scsi-fixes' of git://git.kernel.or..
+> git tree:       upstream
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=6362530af157355b
+> dashboard link: https://syzkaller.appspot.com/bug?extid=e3fcb9c4f3c2a931dc40
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> patch:          https://syzkaller.appspot.com/x/patch.diff?x=1295a186b00000
+> 
+> Note: testing is done by a robot and is best-effort only.
+> 
 
-Oh, I'm keeping that magic sequence :-) That's hardening in general, and
-I don't want to ever want to debug a wrong poke like that again.
+Ok, let's check more corner cases. Looks like nothing checks them.
 
-Adding an extra label fixes this thing, but there's still the other
-cases where we need/want/desire a *real* function pointer.
+#syz test
+git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 
-I'm very close to saying that anything that mucks up function pointers
-like this is a complete non-starter. Let's start re-start this whole CFI
-endeavour from the start.
+
+
+
+With regards,
+Pavel Skripkin
+--------------SfNDH39slPPO9sbrxHVe2Rgq
+Content-Type: text/plain; charset=UTF-8; name="ph"
+Content-Disposition: attachment; filename="ph"
+Content-Transfer-Encoding: base64
+
+ZGlmZiAtLWdpdCBhL25ldC9ibHVldG9vdGgvaGNpX2V2ZW50LmMgYi9uZXQvYmx1ZXRvb3Ro
+L2hjaV9ldmVudC5jCmluZGV4IDBiY2EwMzViZjJkYy4uNTBkMWQ2MmMxNWVjIDEwMDY0NAot
+LS0gYS9uZXQvYmx1ZXRvb3RoL2hjaV9ldmVudC5jCisrKyBiL25ldC9ibHVldG9vdGgvaGNp
+X2V2ZW50LmMKQEAgLTU3ODAsNyArNTc4MCw4IEBAIHN0YXRpYyB2b2lkIGhjaV9sZV9hZHZf
+cmVwb3J0X2V2dChzdHJ1Y3QgaGNpX2RldiAqaGRldiwgc3RydWN0IHNrX2J1ZmYgKnNrYikK
+IAkJc3RydWN0IGhjaV9ldl9sZV9hZHZlcnRpc2luZ19pbmZvICpldiA9IHB0cjsKIAkJczgg
+cnNzaTsKIAotCQlpZiAoZXYtPmxlbmd0aCA8PSBIQ0lfTUFYX0FEX0xFTkdUSCkgeworCQlp
+ZiAoZXYtPmxlbmd0aCA8PSBIQ0lfTUFYX0FEX0xFTkdUSCAmJgorCQkgICAgZXYtPmRhdGEg
+KyBldi0+bGVuZ3RoIDw9IHNrYl90YWlsX3BvaW50ZXIoc2tiKSkgewogCQkJcnNzaSA9IGV2
+LT5kYXRhW2V2LT5sZW5ndGhdOwogCQkJcHJvY2Vzc19hZHZfcmVwb3J0KGhkZXYsIGV2LT5l
+dnRfdHlwZSwgJmV2LT5iZGFkZHIsCiAJCQkJCSAgIGV2LT5iZGFkZHJfdHlwZSwgTlVMTCwg
+MCwgcnNzaSwKQEAgLTU3OTAsNiArNTc5MSwxMSBAQCBzdGF0aWMgdm9pZCBoY2lfbGVfYWR2
+X3JlcG9ydF9ldnQoc3RydWN0IGhjaV9kZXYgKmhkZXYsIHN0cnVjdCBza19idWZmICpza2Ip
+CiAJCX0KIAogCQlwdHIgKz0gc2l6ZW9mKCpldikgKyBldi0+bGVuZ3RoICsgMTsKKworCQlp
+ZiAocHRyID4gKHZvaWQgKikgc2tiX3RhaWxfcG9pbnRlcihza2IpIC0gc2l6ZW9mKCpldikp
+IHsKKwkJCWJ0X2Rldl9lcnIoaGRldiwgIk1hbGljaW91cyBhZHZlcnRpc2luZyBkYXRhLiBT
+dG9wcGluZyBwcm9jZXNzaW5nIik7CisJCQlicmVhazsKKwkJfQogCX0KIAogCWhjaV9kZXZf
+dW5sb2NrKGhkZXYpOwo=
+--------------SfNDH39slPPO9sbrxHVe2Rgq--
+
