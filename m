@@ -2,70 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1BF944114C
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 23:51:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7A8D441150
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 23:52:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230511AbhJaWx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 18:53:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46206 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230316AbhJaWx4 (ORCPT
+        id S231176AbhJaWyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 18:54:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23041 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230316AbhJaWyg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 18:53:56 -0400
-Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9906C061714;
-        Sun, 31 Oct 2021 15:51:23 -0700 (PDT)
-Received: by mail-ua1-x931.google.com with SMTP id az37so431138uab.13;
-        Sun, 31 Oct 2021 15:51:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bPFwVr5kk0vqZjJlI+7yEVQ4/r8h3+RsMnwNH7XHCsM=;
-        b=Z4T+Z3vARLXA535mSg7xlLU+HWKaVfg594r5Dq5kpAbBdu8l/+Pt6nXuWIeLv1uEVs
-         4vm/bx/Lv1Y3phpO632wFvT8GhpLFS2GJBfUhCAgZ1F0dNKI4/kkTEvAVJg0Xbzw9zng
-         +ARDMyojIfbhYUSw/canZQEAPQwNKD1NiuaJYgzI5J8ZwUwlgZUZyk9dsTIo2Rak/TCb
-         IsxgyK7HMtf+6VbWsdlue60gaEFB092l77v/GX06jcleYwpCcZJGPne5CmfnqzA6KDfp
-         +Q0GzEUM7SZ3KPbR0WZ9xsnT4lrjF1G+fjUyTcSlBL/qe8A8k3IBQiGYcmesrHN13Eii
-         1k8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bPFwVr5kk0vqZjJlI+7yEVQ4/r8h3+RsMnwNH7XHCsM=;
-        b=vJAgl7kRx7iP5G9FbYLg2UhP8CBuP6Sc7EvysKlOkg2P4Ou8prH+ePhF1oR6DNRsRa
-         BO+RpCAlud3edSRkrDjsTY/pZwbNdR6cKeLGqEvqx2OWRjZtkLsR/gPbr5NNyA66Qhh7
-         eTAhNSh+SkUWQqDVp6kzWPYA+kEDGXJZZasL0H9rdE5hVU/D/DMzu6ATSl/g7fl4sb8Q
-         xHkkPrZxRvxCC1nGadP1GX+vQ9ww5L/ISSBWejX7GATYN+XEX6J3qhZlkzJ5ygMMq6bO
-         PynWhIqIs2Fd1B57YVWBAH7uGObJF/Bn7/lkJrntAMSY39TqptIFvssvDqqtzOQxmp8v
-         IANA==
-X-Gm-Message-State: AOAM533UEzgKpbtuIsmbCaAlC78zzXLlWHVWOwIbTnB8131lXUikKUZ7
-        oE8y8KiP9/WRDmoYRG3U7UdwK0clFcQIadlH715AnQ0=
-X-Google-Smtp-Source: ABdhPJxC+Ljs59vrx7a82ou1aFtq+enfXhEtw9OOVkKStyHZVDeYe9nq0nJEPBDjXZNVwKWw7HDKpXsm0VZ/ze93Ygk=
-X-Received: by 2002:a05:6102:941:: with SMTP id a1mr4005440vsi.0.1635720682818;
- Sun, 31 Oct 2021 15:51:22 -0700 (PDT)
-MIME-Version: 1.0
-References: <CALjTZvbzYfBuLB+H=fj2J+9=DxjQ2Uqcy0if_PvmJ-nU-qEgkg@mail.gmail.com>
- <b023adf9-e21c-59ac-de49-57915c8cede8@oderland.se> <87fst6pjcu.wl-maz@kernel.org>
- <ae50cd31-6b5d-3dc4-4ba7-d628a74dc722@oderland.se>
-In-Reply-To: <ae50cd31-6b5d-3dc4-4ba7-d628a74dc722@oderland.se>
-From:   Rui Salvaterra <rsalvaterra@gmail.com>
-Date:   Sun, 31 Oct 2021 22:51:11 +0000
-Message-ID: <CALjTZvaE-u0cGRdDD=m8iXCMZvM65v_8wBQq3-vPN0+_3SgU0g@mail.gmail.com>
-Subject: Re: [REGRESSION][BISECTED] 5.15-rc1: Broken AHCI on NVIDIA ION (MCP79)
-To:     Josef Johansson <josef@oderland.se>
-Cc:     Marc Zyngier <maz@kernel.org>, tglx@linutronix.de,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+        Sun, 31 Oct 2021 18:54:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635720723;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dQzBTZB2neuQYMfndsZa2+3/XGXbUkUJliSXmv07Tbg=;
+        b=TewOPruTUwM2k0xjQHDskCDRHUq6yLeFDZgV2emtnflNAZlnNeuc5bGcI/vCBBu54IWtgk
+        0CPU8en6ErBnXCC8c5UKQh/v7MG+VS6RIJm1AdmtqOHYJLFugS15F2BPrORuJTuQ8zz7RA
+        8lyAGEpBKLMBoK9J2g2HJUp5tu2TSQg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-479-8bdx3_mDPHG0BFe5kWTFcQ-1; Sun, 31 Oct 2021 18:52:00 -0400
+X-MC-Unique: 8bdx3_mDPHG0BFe5kWTFcQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BE91391272;
+        Sun, 31 Oct 2021 22:51:56 +0000 (UTC)
+Received: from starship (unknown [10.40.194.243])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9DE0810023AB;
+        Sun, 31 Oct 2021 22:51:41 +0000 (UTC)
+Message-ID: <432666f36add6647283631770f1b140656c67c62.camel@redhat.com>
+Subject: Re: [PATCH v2 27/43] KVM: VMX: Move Posted Interrupt ndst
+ computation out of write loop
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        David Matlack <dmatlack@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Jing Zhang <jingzhangos@google.com>
+Date:   Mon, 01 Nov 2021 00:51:39 +0200
+In-Reply-To: <YXrL1EuzZtTR4J1Q@google.com>
+References: <20211009021236.4122790-1-seanjc@google.com>
+         <20211009021236.4122790-28-seanjc@google.com>
+         <643d9c249b5863f04290a6f047ea1a2d98bd75f9.camel@redhat.com>
+         <YXrL1EuzZtTR4J1Q@google.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Marc,
+On Thu, 2021-10-28 at 16:12 +0000, Sean Christopherson wrote:
+> On Thu, Oct 28, 2021, Maxim Levitsky wrote:
+> > On Fri, 2021-10-08 at 19:12 -0700, Sean Christopherson wrote:
+> > > Hoist the CPU => APIC ID conversion for the Posted Interrupt descriptor
+> > > out of the loop to write the descriptor, preemption is disabled so the
+> > > CPU won't change, and if the APIC ID changes KVM has bigger problems.
+> > > 
+> > > No functional change intended.
+> > 
+> > Is preemption always disabled in vmx_vcpu_pi_load? vmx_vcpu_pi_load is called
+> > from vmx_vcpu_load, which is called indirectly from vcpu_load which is called
+> > from many ioctls, which userspace does. In these places I don't think that
+> > preemption is disabled.
+> 
+> Preemption is disabled in vcpu_load() by the get_cpu().  The "cpu" param that's
+> passed around the vcpu_load() stack is also why I think it's ok to _not_ assert
+> that preemption is disabled in vmx_vcpu_pi_load(); if preemption is enabled,
+> "cpu" is unstable and thus the entire "load" operation is busted.
 
-Linux 5.15 has just been tagged, and this fix isn't included (I
-personally don't mind, since I'm carrying it in my tree). Any specific
-reason for it?
+Yes, I even knew about the get_cpu() behavier which indeed has to disable preemption.
+But I didn't notice call to it, when I wrote this mail! Later I did notice it but it was
+too late. Sometimes sending all the review mails at once at the end does make sense after all,
+I guess.
 
-Thanks,
-Rui
+Best regards,
+	Maxim Levitsky
+
+> 
+> 
+> #define get_cpu()		({ preempt_disable(); __smp_processor_id(); })
+> #define put_cpu()		preempt_enable()
+> 
+> 
+> void vcpu_load(struct kvm_vcpu *vcpu)
+> {
+> 	int cpu = get_cpu();
+> 
+> 	__this_cpu_write(kvm_running_vcpu, vcpu);
+> 	preempt_notifier_register(&vcpu->preempt_notifier);
+> 	kvm_arch_vcpu_load(vcpu, cpu);
+> 	put_cpu();
+> }
+> EXPORT_SYMBOL_GPL(vcpu_load);
+> 
+
+
