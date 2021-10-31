@@ -2,68 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FD4E441156
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 23:59:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED90B441159
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 00:01:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230303AbhJaXBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 19:01:40 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:55078 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229982AbhJaXBi (ORCPT
+        id S230326AbhJaXEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 19:04:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48508 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229982AbhJaXEU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 19:01:38 -0400
-Received: by mail-io1-f70.google.com with SMTP id i8-20020a0566022c8800b005e187639aceso3032000iow.21
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 15:59:06 -0700 (PDT)
+        Sun, 31 Oct 2021 19:04:20 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEE83C061714
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 16:01:48 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id s24so10436193plp.0
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 16:01:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :in-reply-to;
+        bh=sXsy59nkm+x4I8q82QAi5Hn9Gi9Qo/W9vpXNqJNq07M=;
+        b=oK0tXIllB8ObEtv1NKcDvw106h2ZMxTTsVvGAW3ZLJYG9JmE8X7EeKTN+82Riy9Akw
+         a2pV1wEWCVBmdiqpllGjkB7KrImxKmgGQ6dKZO/yvWvPbh+FKsf2BPz02LbHrZtBzlgb
+         lqMh4Gg/EYOhSu5bHoROq6kkhjoGDLvTKETaLE1mrxjWfe/VMUwlE6YK43avYCTMSmtT
+         TeSUqdj/o8i9Qp3gCg4VLt86ShX8MQeNqrTgB0loikvLxgvMotg0cIBFN8QZ+jIBbwOa
+         KQ9T3Oofu0FnYfODnJNqMdsgj8d0cXU+4dUqrcsu6h1vLZlfijIyTOypLOT2nmjtvqZr
+         520g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=zmKZGqzh8fouPbLaed+gBxcWLHzsUh8p7n964ZC6uwc=;
-        b=SnrqIrlNZC3Q8GzYiTEuca4LoZOkHtFKBHvppDouZB7AybDQvntgTWdL7X/6iUREUJ
-         OpiBkJJU1XYJI7MkmLYPu4eMDtAcyGxrY8LSfyichyNlMdbnpC+j0r7iId3DXzqbG0u7
-         TzrQWtc9jm3Rw9EgwB76OEmFpzcDexFfoJ+uOd/lskJdS8EjMN497i3e1/PADF3lgFiC
-         5+GPqc2vWkF4IPdgiPcIyJJwRxSYJsCHUHFcghNpCch9wScrKxgPqLr34GzfmGUoTBSZ
-         UmRwjOOFRA7/4QlrfsAvFgrW0CBgieAPYx2f/vYdfKv0oxznMoRXB1v4i19Mj4yo1pPj
-         ZS6A==
-X-Gm-Message-State: AOAM532jLPuvHak/IHYxJ0DYcjZrPRa6TjRRbABg+f+KAM3tbEHs3o4S
-        PHtQk0ZF0wofg601lg7nQKWnP4eBe8ilnbpLZraUZLksnSg7
-X-Google-Smtp-Source: ABdhPJywbfOpwWGX+8twysh9JnZdNyAmjt8vM3QTfSudoVwDDOBb7qmmPAVA7hKN+so8+5aTSnSyrEftThdLX7EqHh1cLqN9uIid
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:in-reply-to;
+        bh=sXsy59nkm+x4I8q82QAi5Hn9Gi9Qo/W9vpXNqJNq07M=;
+        b=2KiSCzSbnRL7M/xxO0XBpzDhdr1n7sE9Ned6GluEp1mllkC8ITGFYFukJEr+96s/XU
+         2xL5gAY3orzWxVANeUQA3QUDHBr7/ThrUO1lsMr9KsVgQ6UH1A3TjmKtBYHk8al0/G6Z
+         iilb55+u/zAl0LxYE0v4+z+jp8Olj4N1EfzAnpeml9tnswzm5CMIW7C7z1oOGjrHbaJA
+         XRhnY/7RHBmM8rK51Aa5vivakds+DLmdkP57Cmf408j4Oig5u5kzHU9NtNOHWjyYxMa0
+         7MDGJARheJPytiLYQrYxc2yNxJoHieW7mksuXqduO+oRaoyCO4fGRx33/SFlKHUi0F+D
+         fLCg==
+X-Gm-Message-State: AOAM532qB4Z1oEjSNIQ2pHrJj8RaRLiyoITrWV+/5jIb3v1DJNSKwE7o
+        PfYmJqRDfA2NtjC6mUz/b3VLrH4ydHCLbQ==
+X-Google-Smtp-Source: ABdhPJzCHjDKqSe+qvt0n5PrJPNqJsS6EyGJMsCLP/lMxMiemzSL9927FZ/uN4nKc6sojRB8jgz90Q==
+X-Received: by 2002:a17:902:d4cf:b0:141:d36c:78f6 with SMTP id o15-20020a170902d4cf00b00141d36c78f6mr7342851plg.56.1635721307486;
+        Sun, 31 Oct 2021 16:01:47 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:6f5c:6c4e:1798:d0cf])
+        by smtp.gmail.com with ESMTPSA id s25sm12818279pfm.138.2021.10.31.16.01.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 31 Oct 2021 16:01:46 -0700 (PDT)
+Date:   Sun, 31 Oct 2021 16:01:41 -0700
+From:   Benson Leung <bleung@google.com>
+To:     linux-kernel@vger.kernel.org,
+        Prashant Malani <pmalani@chromium.org>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH 1/2] platform/chrome: cros_ec_proto: Use EC struct for
+ features
+Message-ID: <163572120352.2079946.6960520137860452667.b4-ty@chromium.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:d53:: with SMTP id d19mr18923597jak.123.1635721146351;
- Sun, 31 Oct 2021 15:59:06 -0700 (PDT)
-Date:   Sun, 31 Oct 2021 15:59:06 -0700
-In-Reply-To: <000000000000fba7bd05cf7eb8f5@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e143c505cfae0138@google.com>
-Subject: Re: [syzbot] KASAN: use-after-free Write in __io_free_req
-From:   syzbot <syzbot+78b76ebc91042904f34e@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        xiaoguang.wang@linux.alibaba.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="twKEpGLg3YemdzOe"
+Content-Disposition: inline
+In-Reply-To: <20211004170716.86601-1-pmalani@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
 
-commit 34ced75ca1f63fac6148497971212583aa0f7a87
-Author: Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
-Date:   Mon Oct 25 05:38:48 2021 +0000
+--twKEpGLg3YemdzOe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-    io_uring: reduce frequent add_wait_queue() overhead for multi-shot poll request
+Hi Prashant,
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14f83bbab00000
-start commit:   bdcc9f6a5682 Add linux-next specific files for 20211029
-git tree:       linux-next
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=16f83bbab00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=12f83bbab00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=cea91ee10b0cd274
-dashboard link: https://syzkaller.appspot.com/bug?extid=78b76ebc91042904f34e
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10cf03e2b00000
+On Mon, 4 Oct 2021 10:07:09 -0700, Prashant Malani wrote:
+> The Chrome EC's features are returned through an
+> ec_response_get_features struct, but they are stored in an independent
+> array. Although the two are effectively the same at present (2 unsigned
+> 32 bit ints), there is the possibility that they could go out of sync.
+> Avoid this by only using the EC struct to store the features.
 
-Reported-by: syzbot+78b76ebc91042904f34e@syzkaller.appspotmail.com
-Fixes: 34ced75ca1f6 ("io_uring: reduce frequent add_wait_queue() overhead for multi-shot poll request")
+Applied, thanks!
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+[1/2] platform/chrome: cros_ec_proto: Use EC struct for features
+      commit: 7ff22787ba49c2e66dcec92f3e2b79ef6b6a0d71
+[2/2] platform/chrome: cros_ec_proto: Use ec_command for check_features
+      commit: 297d34e73d491a3edbd6e8c31d33ec90447a908b
+
+Best regards,
+
+--=20
+Benson Leung
+Staff Software Engineer
+Chrome OS Kernel
+Google Inc.
+bleung@google.com
+Chromium OS Project
+bleung@chromium.org
+
+--twKEpGLg3YemdzOe
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQQCtZK6p/AktxXfkOlzbaomhzOwwgUCYX8gVQAKCRBzbaomhzOw
+wliEAQCbb1oSHT+l35Dit0ZNiukuRBSXXnhtUrnBh3Fh8dY5OAD/cwuYeDrbDXIF
+mRnfNRYQz9GLjp7HGIUd8XcR1f/X8wo=
+=8WoH
+-----END PGP SIGNATURE-----
+
+--twKEpGLg3YemdzOe--
