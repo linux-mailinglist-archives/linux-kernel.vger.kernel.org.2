@@ -2,126 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA55E440C8E
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 03:43:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4038440C91
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 04:10:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231958AbhJaCp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Oct 2021 22:45:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229752AbhJaCp0 (ORCPT
+        id S232057AbhJaDDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Oct 2021 23:03:44 -0400
+Received: from smtpq1.tb.ukmail.iss.as9143.net ([212.54.57.96]:59586 "EHLO
+        smtpq1.tb.ukmail.iss.as9143.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229887AbhJaDDm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Oct 2021 22:45:26 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0706DC061570;
-        Sat, 30 Oct 2021 19:42:55 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id t40so12916202qtc.6;
-        Sat, 30 Oct 2021 19:42:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=4pTpNp+ctrU1VcOo9RHb5FHn9UkMoYaGEFwbc7czNlw=;
-        b=HI2oJgy7m5eV+XVozD3/C005/TKCpmoqYD90457YhJWPYqG4yxZOjMOHFjoeKPFmqC
-         XAlf1bQtsxs9YakyjiarZSgI/gJpbY9A95wjfpVZP60vR2z9EHB3C/7dU5uD1YeIJ7ax
-         WnU/EmOUPGg6EF5+c1SW3/q+NEIleSppP9tnUlqir6x3ljUnRz670+1ieKI3jv2pQKOv
-         jF2wfY++7sNeVcOVo+28L0FNlQ/AVzPpzfHmrJXYIlK16KEuvRJU8MTWRf09muFurjyg
-         813NbrzbI/SoNJLjkg9BVihrQTzvDT20id+OdmqD6K0vu/QDdQN6lSQpFguBavfPREgN
-         zABQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=4pTpNp+ctrU1VcOo9RHb5FHn9UkMoYaGEFwbc7czNlw=;
-        b=3cu4PbUWmZha1Rf2+Fs1adszd2VwWH7QulnHDH+GDs72iXFRvuef4mGvStILlkMn73
-         pVPeWra9NbxkFU8LBHA85zXp9yVuGqc2h9tdaphRjd//eyUkcrNIE1pKmFAkWkA0ak1X
-         oaC9SmWRgCXr+NXJDwVdpZWPLruBD7L3oYbxsj5sj5e+QZJCoblhRTrie1uXnzsPjRJU
-         4lbBTt25VMdCFiw6xkUbQ1DQ8ZqzT5HC6V1Wd5Hjugu5J/DU0+wdnb8YbiImas4fF0OI
-         jcN+I1W+bNNKUeCO1q7aHgfTlr+XcdnmZ+VQQDB7xs8u6ZTdpeB/sEw9ja7u6ihqgPdX
-         NoLQ==
-X-Gm-Message-State: AOAM532+pq5ySIUIS9wKNe2cjxrjpZYXMJ+ADeS3xNDVFzfmwtcPKNPC
-        45/Iu0fHnz+YJ63C18UXnVk=
-X-Google-Smtp-Source: ABdhPJxetHAF/mKwh0e6XS/DQKI2r+ozbBPRlT3Sd2LEbpSrdmeBVMlbAgPHhvmsXm39F3v0zN2Bcw==
-X-Received: by 2002:ac8:5990:: with SMTP id e16mr21171559qte.38.1635648173944;
-        Sat, 30 Oct 2021 19:42:53 -0700 (PDT)
-Received: from Zekuns-MBP-16.fios-router.home (cpe-74-73-56-100.nyc.res.rr.com. [74.73.56.100])
-        by smtp.gmail.com with ESMTPSA id i12sm4116907qtx.1.2021.10.30.19.42.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Oct 2021 19:42:53 -0700 (PDT)
-Date:   Sat, 30 Oct 2021 22:42:50 -0400
-From:   Zekun Shen <bruceshenzk@gmail.com>
-To:     bruceshenzk@gmail.com
-Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Sharvari Harisangam <sharvari.harisangam@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, brendandg@nyu.edu
-Subject: [PATCH] mwifiex_usb: Fix skb_over_panic in mwifiex_usb_recv
-Message-ID: <YX4CqjfRcTa6bVL+@Zekuns-MBP-16.fios-router.home>
+        Sat, 30 Oct 2021 23:03:42 -0400
+Received: from [212.54.57.110] (helo=csmtp6.tb.ukmail.iss.as9143.net)
+        by smtpq1.tb.ukmail.iss.as9143.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.90_1)
+        (envelope-from <zarniwhoop@ntlworld.com>)
+        id 1mh15q-0006yG-8f
+        for linux-kernel@vger.kernel.org; Sun, 31 Oct 2021 04:01:10 +0100
+Received: from llamedos.mydomain ([81.97.236.130])
+        by cmsmtp with ESMTPA
+        id h15pm8NKE24zoh15pmofcb; Sun, 31 Oct 2021 04:01:09 +0100
+X-Originating-IP: [81.97.236.130]
+X-Authenticated-Sender: zarniwhoop@ntlworld.com
+X-Spam: 0
+X-Authority: v=2.4 cv=K8YxogaI c=1 sm=1 tr=0 ts=617e06f5 cx=a_exe
+ a=OGiDJHazYrvzwCbh7ZIPzQ==:117 a=OGiDJHazYrvzwCbh7ZIPzQ==:17
+ a=IkcTkHD0fZMA:10 a=8gfv0ekSlNoA:10 a=zd2uoN0lAAAA:8 a=1mUNueIcj1jfD_gS2Y8A:9
+ a=QEXdDO2ut3YA:10
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ntlworld.com;
+        s=meg.feb2017; t=1635649269;
+        bh=nzrHVr9ePpgkU1Jcj27TkiVxAjRumcJcZOa7DN1zh6w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=G3c6xQhdFOOJElsRZsXonQnuQdpV0W0caGduKcr+yQOOE6i0s6rRMNalcVmR0NbkZ
+         TJgUrESPWns1W7nKmewmesBcZwt4CZXCrA9rfxlZEBs++XW+z4byPJPAYG3V/ClZyr
+         DuFNQdxIaeMtyTbMUQ7qc+PIH/ffYre5Awc2IfxZN6WKZUzk5cvIW59KwyovKeloxR
+         KLUfhPvjzI1XuIo2AftQTtZoa6xLShYNkA/5O3IDS955fDVNlVLv1co6uVUVOCs8Pj
+         aFAy+kq071ethYQWUJp7OQ6FUvVC04kWGN3bk1qUdRtOAwMhfWlcIHQY3ROK3ynzLn
+         YW7R8zYWoCxPQ==
+Received: by llamedos.mydomain (Postfix, from userid 1000)
+        id 3C90260C5B; Sun, 31 Oct 2021 03:01:09 +0000 (GMT)
+Date:   Sun, 31 Oct 2021 03:01:09 +0000
+From:   Ken Moffat <zarniwhoop@ntlworld.com>
+To:     Alex Deucher <alexander.deucher@amd.com>,
+        Yifan Zhang <yifan1.zhang@amd.com>,
+        James Zhu <James.Zhu@amd.com>
+Cc:     Felix Kuehling <Felix.Kuehling@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: amdgpu hang on picasso
+Message-ID: <YX4G9YVhw65ps3gC@llamedos.localdomain>
+References: <YX2UbO4jlKZqUBWd@llamedos.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+X-Clacks-Overhead: GNU Terry Pratchett
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YX2UbO4jlKZqUBWd@llamedos.localdomain>
+User-Agent: Mutt/2.1.3 (2021-09-10)
+X-CMAE-Envelope: MS4xfJX4FJamZwh+mr4p3aC+yxBq1fCJUuMebk578YsemcwkIaKYWo+uyNiLC1FLxppFSQWqQMxm9UzPqqZh3AAEe8yq/+q82MLmLQgnFWKpvT1Ru7YBfvT1
+ mnHqEcjbMjijy0N7dX12HW6fKXx05rYrbmRU8tVC5VS/iNVBDw5spKicw54gjWqXmuBfF4KvUwZeYLrsv7BvI7PKkkcpXhh7nzUXG+8SvnTOu8PfSxsIoTj1
+ aDVaCi54ScbMyiNwGSF5RZ/MN3g2sBJw9Z7DKClEiyHhYb2G/QteZdJfQVuvWE8bjPkqZ8ue3i9yVFhenJxI8mRd4yD2NyKdbEIyY0Zbl/k=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, with an unknown recv_type, mwifiex_usb_recv
-just return -1 without restoring the skb. Next time
-mwifiex_usb_rx_complete is invoked with the same skb,
-calling skb_put causes skb_over_panic.
+On Sat, Oct 30, 2021 at 07:52:28PM +0100, Ken Moffat wrote:
+> When I tried 5.15-rc7 on my picasso APU (Ryzen 5 3400G), trying to
+> run 'startx' (I'm using X11 and logging in to a tty) the output
+> messages from X11 stopped after a few lines (normally, the desktop
+> shows before I can read anything) and keyboard/mouse were
+> inoperative - had to use Magic SysRQ to sync and reboot.
+> 
+> The log showed
+> Oct 28 03:02:21 deluxe klogd: [   31.347235] amdgpu 0000:09:00.0: amdgpu: failed to write reg 28b4 wait reg 28c6
+> Oct 28 03:02:34 deluxe klogd: [   44.280185] amdgpu 0000:09:00.0: amdgpu: failed to write reg 1a6f4 wait reg 1a706
+> 
+> I started bisecting after confireming that linus' tree with head at
+> f25a5481af12 still showed the problem.  That identified the
+> following commit, which reverts cleanly and allows Xorg to start:
+> 
+> commit 714d9e4574d54596973ee3b0624ee4a16264d700
+> Author: Yifan Zhang <yifan1.zhang@amd.com>
+> Date:   Tue Sep 28 15:42:35 2021 +0800
+> 
+>     drm/amdgpu: init iommu after amdkfd device init
+>     
+>     This patch is to fix clinfo failure in Raven/Picasso:
+>     
+>     Number of platforms: 1
+>       Platform Profile: FULL_PROFILE
+>       Platform Version: OpenCL 2.2 AMD-APP (3364.0)
+>       Platform Name: AMD Accelerated Parallel Processing
+>       Platform Vendor: Advanced Micro Devices, Inc.
+>       Platform Extensions: cl_khr_icd cl_amd_event_callback
+>     
+>       Platform Name: AMD Accelerated Parallel Processing Number of devices: 0
+>     
+>     Signed-off-by: Yifan Zhang <yifan1.zhang@amd.com>
+>     Reviewed-by: James Zhu <James.Zhu@amd.com>
+>     Tested-by: James Zhu <James.Zhu@amd.com>
+>     Acked-by: Felix Kuehling <Felix.Kuehling@amd.com>
+>     Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+> 
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> I've got a laptop with raven, I'll try to find time to test it that
+> also shows he problem in the next few days.
+> 
+The laptop (AMD Ryzen 5 2500U with Radeon Vega Mobile Gfx) works
+fine without reverting that patch, only the picasso has the problem.
 
-The bug is triggerable with a compromised/malfunctioning
-usb device. After applying the patch, skb_over_panic
-no longer shows up with the same input.
-
-Attached is the panic report from fuzzing.
-skbuff: skb_over_panic: text:000000003bf1b5fa
- len:2048 put:4 head:00000000dd6a115b data:000000000a9445d8
- tail:0x844 end:0x840 dev:<NULL>
-kernel BUG at net/core/skbuff.c:109!
-invalid opcode: 0000 [#1] SMP KASAN NOPTI
-CPU: 0 PID: 198 Comm: in:imklog Not tainted 5.6.0 #60
-RIP: 0010:skb_panic+0x15f/0x161
-Call Trace:
- <IRQ>
- ? mwifiex_usb_rx_complete+0x26b/0xfcd [mwifiex_usb]
- skb_put.cold+0x24/0x24
- mwifiex_usb_rx_complete+0x26b/0xfcd [mwifiex_usb]
- __usb_hcd_giveback_urb+0x1e4/0x380
- usb_giveback_urb_bh+0x241/0x4f0
- ? __hrtimer_run_queues+0x316/0x740
- ? __usb_hcd_giveback_urb+0x380/0x380
- tasklet_action_common.isra.0+0x135/0x330
- __do_softirq+0x18c/0x634
- irq_exit+0x114/0x140
- smp_apic_timer_interrupt+0xde/0x380
- apic_timer_interrupt+0xf/0x20
- </IRQ>
-
-Reported-by: Zekun Shen <bruceshenzk@gmail.com>
-Reported-by: Brendan Dolan-Gavitt <brendandg@nyu.edu>
-Signed-off-by: Zekun Shen <bruceshenzk@gmail.com>
----
- drivers/net/wireless/marvell/mwifiex/usb.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/marvell/mwifiex/usb.c b/drivers/net/wireless/marvell/mwifiex/usb.c
-index 426e39d4c..6d81e8786 100644
---- a/drivers/net/wireless/marvell/mwifiex/usb.c
-+++ b/drivers/net/wireless/marvell/mwifiex/usb.c
-@@ -130,7 +130,8 @@ static int mwifiex_usb_recv(struct mwifiex_adapter *adapter,
- 		default:
- 			mwifiex_dbg(adapter, ERROR,
- 				    "unknown recv_type %#x\n", recv_type);
--			return -1;
-+			ret = -1;
-+			goto exit_restore_skb;
- 		}
- 		break;
- 	case MWIFIEX_USB_EP_DATA:
+ĸen
 -- 
-2.25.1
-
+ A capitalist society is one where individuals own and acquire
+property, at least for a few months until cooler objects come out.
+                                    -- Late Night Mash
