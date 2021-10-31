@@ -2,89 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48F924410B1
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 21:02:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 748354410C1
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 21:12:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230121AbhJaUFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 16:05:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38032 "EHLO
+        id S230061AbhJaUOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 16:14:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229939AbhJaUFG (ORCPT
+        with ESMTP id S229939AbhJaUOt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 16:05:06 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31D67C061570;
-        Sun, 31 Oct 2021 13:02:34 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id w1so3679568edd.10;
-        Sun, 31 Oct 2021 13:02:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zfUaTO+JtpEhn8e4kj/WNJyyw6O24RYn0R5mAg+QdhM=;
-        b=j6yxrxbDE14KoLZW7mKUm9ai+b0gD2eNXHdKpe13a9Q1L9XfF1lf/SNxtTIiQ1mpeH
-         zzfPPYgAqNvB7eY54qFYk4ym006xjZlWOlfjDI1W1IThs35MT7BNn2oMvkUlJ73iBc8m
-         Iz6MHWPjpEozS6gyb6UfTrWAo3CyDVHWC2OLpKTDFruOaZpGMg+QyJq+WzgKOs3+MAti
-         ziZgcnJg+caLAPjNLmrfwwSTkkw1N7+eXuweRy9CVXh9XyMaT52UGPueaOCV9LMV6SP5
-         eNQZ1pH8od0FleHRKIlU+vxIiVVf89P46D1R5BRD4UPgjhEVSByFN8S3XVPwWqeojpps
-         /5KA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zfUaTO+JtpEhn8e4kj/WNJyyw6O24RYn0R5mAg+QdhM=;
-        b=lwznTYzpPypjSOwe0qbl6MRuZVO9V9JwEqauwfC1pJ1kcPNVvf12UFuMqTBCZBFwLt
-         HH1vmtK0nMYv2XtNyTXL1YajxvPuNoXUDAA3nrYbsOgqP0i2ZoukfD6EhHcBz7AtrYGT
-         0eY2bwxwgZ7pYLwiHUfyr7jKhhEs074uT9T6691oMT4cKdV2Sy/gaWbz5HpZGZU4z/PM
-         +6JSTPgczWYh0GdtPfEkC8ClyZrXy2NNtSl5mBqEy/924PkM5x9oqH/+08rYD8hWLCuk
-         80Y4IFCKDQ/Pmb8w01V9BULNRcY3onsu3yByzu+mV8CNaOXhQPn5u0X7v9MMf2YYBupq
-         Hqfw==
-X-Gm-Message-State: AOAM530ayWPM9j/WLg5zonxob3fPAN0sIMJYpLQ+LKKEk3M6AzCu1aL1
-        VHvee0ytLqq50EKtCIVU1ts9eTkKMQgDeI2dIF8=
-X-Google-Smtp-Source: ABdhPJwQcLdE22O0BD2/YnkE/eji2qmfxqA//Hdb2+Oq/NgFgzZ7imVt7Rxdj9HTRsd98Aq8oJdclTKupG7J+V1oe/M=
-X-Received: by 2002:a05:6402:10da:: with SMTP id p26mr34696434edu.283.1635710552671;
- Sun, 31 Oct 2021 13:02:32 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211031162428.22368-1-hdegoede@redhat.com> <20211031162428.22368-4-hdegoede@redhat.com>
- <CAHp75Vf-EOfF_XfqfWFQZNLp3B03o79xHf4bUrf9x9D9pTrvgw@mail.gmail.com>
-In-Reply-To: <CAHp75Vf-EOfF_XfqfWFQZNLp3B03o79xHf4bUrf9x9D9pTrvgw@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sun, 31 Oct 2021 22:01:56 +0200
-Message-ID: <CAHp75Ve-WAQM0aLbhRzyT5KQ-tej17=nczNSY9hG5zXztmRVWQ@mail.gmail.com>
-Subject: Re: [RFC 3/5] gpiolib: acpi: Add a new "ignore" module option
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Sebastian Reichel <sre@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Yauhen Kharuzhy <jekhor@gmail.com>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
+        Sun, 31 Oct 2021 16:14:49 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0654C061570;
+        Sun, 31 Oct 2021 13:12:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=OW5ANKTELS4/Aqv77rAWcip0XRuLRuzAugVfabAVKQc=; b=eNFWK3G4bwmB14XaQrXIvSMW1f
+        PdSYpdhYYUuAc84UDg5jz3ejRlnl1XNm8wfgH4eT8vgg/f736jKT8ghTEodQXsj0TLEuCTYvCgOPG
+        +bnnwxP9zYkrUheSfcKwtKZFRhrTb2FbR77abGWs1QSa8Nnef0cnGx7d5BnlKw86ohUudlPwTrtF1
+        Evmcz7DRAUvFkWB3Lm0TRX+ljtIuHxLH4CB5KdLiJciuCEUwDnj7CQUCNTUocE2uOOTPcuB48RNJA
+        zgS4tg7oJ+T62KeegFL34bkODuNiPuiqD04eSkhfGpyOvwApV6BFHR51QjsIgcL0taMyu9Smqkvh7
+        BN3597nA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mhH9I-003HDw-Cz; Sun, 31 Oct 2021 20:10:04 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 712FA300243;
+        Sun, 31 Oct 2021 21:09:46 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5250625F3BD9C; Sun, 31 Oct 2021 21:09:46 +0100 (CET)
+Date:   Sun, 31 Oct 2021 21:09:46 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Mark Rutland <mark.rutland@arm.com>, X86 ML <x86@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-hardening@vger.kernel.org,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        llvm@lists.linux.dev
+Subject: Re: [PATCH] static_call,x86: Robustify trampoline patching
+Message-ID: <YX74Ch9/DtvYxzh/@hirez.programming.kicks-ass.net>
+References: <CAMj1kXECTdDLVMk2JduU5mV2TR0Cv=hZ9QOpYRsRM1jfvvNikw@mail.gmail.com>
+ <CABCJKufpS4jJxHqk8=bd1JCNbKfmLDKBbjbhjrar2+YQJFiprg@mail.gmail.com>
+ <20211029200324.GR174703@worktop.programming.kicks-ass.net>
+ <20211030074758.GT174703@worktop.programming.kicks-ass.net>
+ <CAMj1kXEJd5=3A_6Jhd4UU-TBGarnHo5+U76Zxxt7SzXsWp4CcA@mail.gmail.com>
+ <20211030180249.GU174703@worktop.programming.kicks-ass.net>
+ <CAMj1kXF4ZNAvdC8tP_H=v1Dn_Zcv=La11Ok43ceQOyb1Xo1jXQ@mail.gmail.com>
+ <CAMj1kXEvemVOWf4M_0vsduN_kiCsGVmM92cE7KPMoNKViKp=RQ@mail.gmail.com>
+ <20211031163920.GV174703@worktop.programming.kicks-ass.net>
+ <CAMj1kXHk5vbrT49yRCivX3phrEkN6Xbb+g8WEmavL_d1iE0OxQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXHk5vbrT49yRCivX3phrEkN6Xbb+g8WEmavL_d1iE0OxQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 31, 2021 at 9:59 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
-> On Sun, Oct 31, 2021 at 6:25 PM Hans de Goede <hdegoede@redhat.com> wrote:
+On Sun, Oct 31, 2021 at 05:44:04PM +0100, Ard Biesheuvel wrote:
 
-> I'm wondering if the idea behind this is something relative to
-> https://elixir.bootlin.com/linux/latest/source/drivers/acpi/sysfs.c
+> > Is is also a terriblly gross hack. I really want the clang-cfi stuff to
+> > improve, not add layers of hacks on top of it.
+> 
+> I'm just as annoyed as you are about the apparent need for this.
+> However, emitting an alias at build time is far better IMHO than
+> adding a magic byte sequence and having to check it at runtime.
 
-Missed line:
-https://elixir.bootlin.com/linux/latest/source/drivers/acpi/sysfs.c#L792
+Oh, I'm keeping that magic sequence :-) That's hardening in general, and
+I don't want to ever want to debug a wrong poke like that again.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Adding an extra label fixes this thing, but there's still the other
+cases where we need/want/desire a *real* function pointer.
+
+I'm very close to saying that anything that mucks up function pointers
+like this is a complete non-starter. Let's start re-start this whole CFI
+endeavour from the start.
