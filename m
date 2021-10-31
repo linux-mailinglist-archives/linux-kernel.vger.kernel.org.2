@@ -2,52 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3102440E66
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 13:25:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F286440E68
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 13:29:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230505AbhJaM20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 08:28:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60932 "EHLO mail.kernel.org"
+        id S231351AbhJaMbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 08:31:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33606 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229798AbhJaM2Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 08:28:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B62360FC1
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 12:25:54 +0000 (UTC)
+        id S229798AbhJaMbm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Oct 2021 08:31:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F0EEA61039;
+        Sun, 31 Oct 2021 12:29:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635683154;
-        bh=nkgv+EKvnqTzv1dwMoIWYog82u0og4ytb4jtBgoI1O8=;
+        s=k20201202; t=1635683351;
+        bh=ph3gBE0UwLAlyx3ipLRKhIarn/rc9a7pyxJUqyXnYE8=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=KidqRsyay24vaA00k0pgaaXq1Dbys+mZari5FTvfynX9jQVbo+kW5luky8SYB6LCT
-         Nde7aVVJ7VE4/VUG0qA1PU0sKX9fWHeWPGkTAXrcPOdSO33ovhp1ByHZ1XikQDAkI7
-         TvB/3+M0kgPZEcFZlJ9GrCe8LZdmo0r8xGdH8A9pWaewPoogeaE5aWbWqUPyCYz+OZ
-         0T/RPXsLtXbzegx/6bwe7Bd1m+bdkPeQ06AeSxRX1qMNXvwPSadhpCMhN45CnEOhm+
-         tXOenWotEVKcJUbDd78elXo739SSyta0pUBMPM7Nv4kPClAu9lprMnVwbM4EriWvDb
-         exnQrAVBtUrig==
-Received: by mail-oi1-f180.google.com with SMTP id w193so20933188oie.1
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 05:25:54 -0700 (PDT)
-X-Gm-Message-State: AOAM531ZKi8q7TM8/EF6BMNTVTsNJfEHhRzQHWE5y6rJv94joB6W5qLs
-        s8ob5lycEz5CtFHZuTxWR6KpoHwxyxFTI2Q5wss=
-X-Google-Smtp-Source: ABdhPJweqivRLp599eXWrFHYU3iTyc3SQ2IgU/Lu43BfXW/lirAZtZp27sSAHu+ELOFl6ZfjbJQHgULEilOLm9gwwhg=
-X-Received: by 2002:a05:6808:4d9:: with SMTP id a25mr15669997oie.33.1635683153473;
- Sun, 31 Oct 2021 05:25:53 -0700 (PDT)
+        b=AlSTPonwsVQTS7e6538bAhrsoddx69iTXWdkrXr6iSt+XpMXlvezHzTCflXQ39yZr
+         OXas2DnW6jbe82k53YFTnhcdR/Dfe1W5dbrmkZWe2AKWyXi39EJd7gs99EG0zrJ4YA
+         Xpev1Vw3s09aDXg61qEWMTVAKFL7NeeehC2vd6sAmYng5egDyFv+BArjzaYVH4JvhM
+         L6tmAnOfiZVT0OSCNoMhPNbUslsbB5DWX/ZZjBNvxpUd/y3ZDgzxu6h22cW/guM3q/
+         vk0rVuybrU/inRfOTAJWpW1Cv2g71dvomxt7Jtv2+PxHX8V1cAiAPNufDxnzzmHZuJ
+         KPWUD7xnP/ECQ==
+Received: by mail-ot1-f42.google.com with SMTP id l16-20020a9d6a90000000b0054e7ab56f27so21208322otq.12;
+        Sun, 31 Oct 2021 05:29:10 -0700 (PDT)
+X-Gm-Message-State: AOAM531Pbo9CzJYU1hAabTxmni2exjSYt4Lo4VA2ewAdEA1daORAheir
+        6TKV5pJHDd77w2XVjpNyYTLkjMR4okkHb6/DpdY=
+X-Google-Smtp-Source: ABdhPJwgPIx5Ajj0S1T2KjyV/1WG7VBWyhFaagI5h0bGfEPDwtYo8G+a8GQ77xOCXiUmzae1g2e9z77AEw4JstfixnE=
+X-Received: by 2002:a05:6830:1d6e:: with SMTP id l14mr16396459oti.147.1635683350134;
+ Sun, 31 Oct 2021 05:29:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211030183200.51295-1-rongwei.wang@linux.alibaba.com> <20211030183200.51295-2-rongwei.wang@linux.alibaba.com>
-In-Reply-To: <20211030183200.51295-2-rongwei.wang@linux.alibaba.com>
+References: <20211029135454.4383-1-nicolas.toromanoff@foss.st.com> <20211029135454.4383-4-nicolas.toromanoff@foss.st.com>
+In-Reply-To: <20211029135454.4383-4-nicolas.toromanoff@foss.st.com>
 From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Sun, 31 Oct 2021 13:25:41 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXHnhnyyL4_WnUFdjJhk7Rcz8hLG8d13y3nRkV5xvBoPKg@mail.gmail.com>
-Message-ID: <CAMj1kXHnhnyyL4_WnUFdjJhk7Rcz8hLG8d13y3nRkV5xvBoPKg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] arm64: trans_pgd: fix incorrect use of
- pmd_populate_kernel in copy_pte()
-To:     Rongwei Wang <rongwei.wang@linux.alibaba.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Fuad Tabba <tabba@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
+Date:   Sun, 31 Oct 2021 13:28:58 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXF5_2AnQH8pjgzbeq63iSkdkUVq3wZM_NURotoHj0sJMw@mail.gmail.com>
+Message-ID: <CAMj1kXF5_2AnQH8pjgzbeq63iSkdkUVq3wZM_NURotoHj0sJMw@mail.gmail.com>
+Subject: Re: [PATCH 3/8] crypto: stm32/cryp - fix CTR counter carry
+To:     Nicolas Toromanoff <nicolas.toromanoff@foss.st.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Marek Vasut <marex@denx.de>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
         Linux ARM <linux-arm-kernel@lists.infradead.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
@@ -55,105 +53,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 30 Oct 2021 at 20:32, Rongwei Wang
-<rongwei.wang@linux.alibaba.com> wrote:
+On Fri, 29 Oct 2021 at 16:01, Nicolas Toromanoff
+<nicolas.toromanoff@foss.st.com> wrote:
 >
-> In commit 5de59884ac0e ("arm64: trans_pgd: pass NULL instead
-> of init_mm to *_populate functions"), simply replace init_mm
-> with NULL for pmd_populate_kernel. But in commit 59511cfd08f3
-> ("arm64: mm: use XN table mapping attributes for user/kernel
-> mappings"), adding the check of mm context in
-> pmd_populate_kernel. And these changes will cause a crash when
-> executing copy_pte/trans_pgd.c, as follows:
+> Fix issue in CTR counter overflow, the carry-over is now properly
+> managed.
+> Fixes: bbb2832620ac ("crypto: stm32 - Fix sparse warnings")
 >
-> kernel BUG at arch/arm64/include/asm/pgalloc.h:79!
-> Internal error: Oops - BUG: 0 [#1] SMP
-> Modules linked in: rfkill(E) aes_ce_blk(E) aes_ce_cipher(E) ...
-> CPU: 21 PID: 1617 Comm: a.out Kdump: loaded Tainted: ... 5.15.0-rc7-mm1+ #8
-> Hardware name: ECS, BIOS 0.0.0 02/06/2015
-> pstate: 40400005 (nZcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> pc : trans_pgd_create_copy+0x4ac/0x4f0
-> lr : trans_pgd_create_copy+0x34c/0x4f0
-> sp : ffff80001bf2bc50
-> x29: ffff80001bf2bc50 x28: ffff0010067f1000 x27: ffff800011072000
-> x26: ffff001fffff8000 x25: ffff008000000000 x24: 0040000000000041
-> x23: 0040000000000001 x22: ffff80001bf2bd68 x21: ffff80001188ded8
-> x20: ffff800000000000 x19: ffff000000000000 x18: 0000000000000000
-> x17: 0000000000000000 x16: 0000000000000000 x15: 00000000200004c0
-> x14: ffff00003fffffff x13: ffff007fffffffff x12: ffff800010f882a8
-> x11: 0000000000face57 x10: 0000000000000001 x9 : 0000000000000000
-> x8 : ffff00100cece000 x7 : ffff001001c9f000 x6 : ffff00100ae40000
-> x5 : 0000000000000040 x4 : 0000000000000000 x3 : ffff001fffff7000
-> x2 : ffff000000200000 x1 : ffff000040000000 x0 : ffff00100cecd000
-> Call trace:
->  trans_pgd_create_copy+0x4ac/0x4f0
->  machine_kexec_post_load+0x94/0x3bc
->  do_kexec_load+0x11c/0x2e0
->  __arm64_sys_kexec_load+0xa8/0xf4
->  invoke_syscall+0x50/0x120
->  el0_svc_common.constprop.0+0x58/0x190
->  do_el0_svc+0x2c/0x90
->  el0_svc+0x28/0xe0
->  el0t_64_sync_handler+0xb0/0xb4
->  el0t_64_sync+0x180/0x184
-> Code: f90000c0 d5033a9f d5033fdf 17ffff7b (d4210000)
-> ---[ end trace cc5461ffe1a085db ]---
-> Kernel panic - not syncing: Oops - BUG: Fatal exception
->
-> This bug can be reproduced by a user case:
->
-> void execute_kexec_load(void)
-> {
->         syscall(__NR_mmap, 0x1ffff000ul, 0x1000ul, 0ul, 0x32ul, -1, 0ul);
->         syscall(__NR_mmap, 0x20000000ul, 0x1000000ul, 7ul, 0x32ul, -1, 0ul);
->         syscall(__NR_mmap, 0x21000000ul, 0x1000ul, 0ul, 0x32ul, -1, 0ul);
->
->         *(uint64_t*)0x200004c0 = 0;
->         *(uint64_t*)0x200004c8 = 0;
->         *(uint64_t*)0x200004d0 = 0;
->         *(uint64_t*)0x200004d8 = 0;
->         syscall(__NR_kexec_load, 0ul, 1ul, 0x200004c0ul, 0ul);
-> }
->
-> And this patch just make some simple changes, and including
-> replace pmd_populate_kernel with pmd_populate.
->
-> Fixes: 59511cfd08f3 ("arm64: mm: use XN table mapping attributes for user/kernel mappings")
-> Reported-by: Abaci <abaci@linux.alibaba.com>
-> Signed-off-by: Rongwei Wang <rongwei.wang@linux.alibaba.com>
+> Signed-off-by: Nicolas Toromanoff <nicolas.toromanoff@foss.st.com>
 > ---
->  arch/arm64/mm/trans_pgd.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
+>  drivers/crypto/stm32/stm32-cryp.c | 19 ++++++++++---------
+>  1 file changed, 10 insertions(+), 9 deletions(-)
 >
-> diff --git a/arch/arm64/mm/trans_pgd.c b/arch/arm64/mm/trans_pgd.c
-> index d7da8ca40d2e..3f1fc6cb9c9d 100644
-> --- a/arch/arm64/mm/trans_pgd.c
-> +++ b/arch/arm64/mm/trans_pgd.c
-> @@ -62,12 +62,13 @@ static int copy_pte(struct trans_pgd_info *info, pmd_t *dst_pmdp,
->  {
->         pte_t *src_ptep;
->         pte_t *dst_ptep;
-> +       struct page *page;
->         unsigned long addr = start;
+> diff --git a/drivers/crypto/stm32/stm32-cryp.c b/drivers/crypto/stm32/stm32-cryp.c
+> index 7b55ad6d2f1a..6eeeca0d70ce 100644
+> --- a/drivers/crypto/stm32/stm32-cryp.c
+> +++ b/drivers/crypto/stm32/stm32-cryp.c
+> @@ -163,7 +163,7 @@ struct stm32_cryp {
+>         struct scatter_walk     in_walk;
+>         struct scatter_walk     out_walk;
 >
-> -       dst_ptep = trans_alloc(info);
-> -       if (!dst_ptep)
-> +       page = virt_to_page(trans_alloc(info));
-> +       if (!page)
->                 return -ENOMEM;
-> -       pmd_populate_kernel(NULL, dst_pmdp, dst_ptep);
-> +       pmd_populate(NULL, dst_pmdp, page);
-
-Are you sure this truly fixes the underlying issue rather than the symptom?
-
-pmd_populate() will create a table entry with the PXN attribute set,
-which means nothing below it will be executable by the kernel,
-regardless of the executable permissions at the PTE level.
-
-
->         dst_ptep = pte_offset_kernel(dst_pmdp, start);
+> -       u32                     last_ctr[4];
+> +       __be32                  last_ctr[4];
+>         u32                     gcm_ctr;
+>  };
 >
->         src_ptep = pte_offset_kernel(src_pmdp, start);
+> @@ -1219,25 +1219,26 @@ static void stm32_cryp_check_ctr_counter(struct stm32_cryp *cryp)
+>
+>         if (unlikely(cryp->last_ctr[3] == 0xFFFFFFFF)) {
+>                 cryp->last_ctr[3] = 0;
+> -               cryp->last_ctr[2]++;
+> +               cryp->last_ctr[2] = cpu_to_be32(be32_to_cpu(cryp->last_ctr[2]) + 1);
+>                 if (!cryp->last_ctr[2]) {
+> -                       cryp->last_ctr[1]++;
+> +                       cryp->last_ctr[1] = cpu_to_be32(be32_to_cpu(cryp->last_ctr[1]) + 1);
+>                         if (!cryp->last_ctr[1])
+> -                               cryp->last_ctr[0]++;
+> +                               cryp->last_ctr[0] = cpu_to_be32(be32_to_cpu(cryp->last_ctr[0]) + 1);
+>                 }
+>
+
+crypto_inc() ??
+
+>                 cr = stm32_cryp_read(cryp, CRYP_CR);
+>                 stm32_cryp_write(cryp, CRYP_CR, cr & ~CR_CRYPEN);
+>
+> -               stm32_cryp_hw_write_iv(cryp, (__be32 *)cryp->last_ctr);
+> +               stm32_cryp_hw_write_iv(cryp, cryp->last_ctr);
+>
+>                 stm32_cryp_write(cryp, CRYP_CR, cr);
+>         }
+>
+> -       cryp->last_ctr[0] = stm32_cryp_read(cryp, CRYP_IV0LR);
+> -       cryp->last_ctr[1] = stm32_cryp_read(cryp, CRYP_IV0RR);
+> -       cryp->last_ctr[2] = stm32_cryp_read(cryp, CRYP_IV1LR);
+> -       cryp->last_ctr[3] = stm32_cryp_read(cryp, CRYP_IV1RR);
+> +       /* The IV registers are BE  */
+> +       cryp->last_ctr[0] = cpu_to_be32(stm32_cryp_read(cryp, CRYP_IV0LR));
+> +       cryp->last_ctr[1] = cpu_to_be32(stm32_cryp_read(cryp, CRYP_IV0RR));
+> +       cryp->last_ctr[2] = cpu_to_be32(stm32_cryp_read(cryp, CRYP_IV1LR));
+> +       cryp->last_ctr[3] = cpu_to_be32(stm32_cryp_read(cryp, CRYP_IV1RR));
+>  }
+>
+>  static bool stm32_cryp_irq_read_data(struct stm32_cryp *cryp)
 > --
-> 2.27.0
+> 2.17.1
 >
