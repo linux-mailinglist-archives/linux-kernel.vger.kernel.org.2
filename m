@@ -2,161 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9D3E440E6E
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 13:37:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08839440E70
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 13:38:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231720AbhJaMji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 08:39:38 -0400
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:61936 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229798AbhJaMjh (ORCPT
+        id S231840AbhJaMkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 08:40:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229798AbhJaMkv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 08:39:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1635683825; x=1667219825;
-  h=from:to:cc:subject:date:message-id;
-  bh=WST+ZJjjkk2uWz+yUQQEmMKVyNSyU9zWN6oFNekvMxg=;
-  b=fkB1LiC/XHnbqM0KL0U/brqoNHQKkn9pwucNH7Z2X+XNAwqiaUOlcJoS
-   vWCh8wRgHPN07NWzF52TOOmB4V6t0I492q/7Q+TW1OT9z0QeHxexTJ/Ea
-   P3L9+MZ47wqovM5/vGygElK1azZ9XAXcRV/q14h0Hn2lPIypN8drre4Q2
-   8Cwf9Akyh+EnUd+cluLQmxeOG6oZvzGFl9Zgfq2wLg2p/MlaCYNun5DqR
-   tWLxF/loxaINrFihgsH5clC/EsZ51+LJFvsT99qthvL7XGB2VVhBHUElg
-   BZOtHqFxPbJ4D9icWU2V0xgazMqFSj+UQQHERgYWZfZ/FkQE7rhGlizXU
-   g==;
-X-IronPort-AV: E=Sophos;i="5.87,197,1631548800"; 
-   d="scan'208";a="189075297"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 31 Oct 2021 20:37:05 +0800
-IronPort-SDR: D51smixvpYaM31vCRujN/izq09Z++JMMFdCRvqfcIczaImlPMosbW6k8iZKOowM5D7F7X7gzTt
- BTg2gg/UYqtXvsnaVi/3o3uAmVrpQgSgGigA0DpbUvz3Zk+buBzXrCrNr0Kj3GCt66ci/pzMsh
- BOiS6u3GhKrHEMFu2Z5k7JcarDkEqdEl7loUIke1NE4sgt59vQRvnIhrHqCXJ+oi/wIIdHZX3Q
- Bueh8XeHiUsVlwXLYxDxO3elZjdjrSJimwzo2EPYREYjlHyC0k2QORIfdBJpg4mNXIzglJVarf
- t9rZNgejlQJIdaL6faqhz/gu
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2021 05:12:28 -0700
-IronPort-SDR: q0L7WEqtrUkZMxhlfWVjGZBIZxDXL7gWBYbQD8yCov5C1cccCC/e1q5pDlgmKrKAUhtcAGV9F8
- CfsiGIcKvfU/+ZfG1roIznCmTWjQADtulWhxDZVPZZwz0mAKl79JOjUH3RcQi5JDXNxK5aPmuE
- ffnNqhvWdI98ilCRYy6uZNuvC4czi4WEUBQS9N0NFg4ovkJfdO1mR+pERoVDqQONX9xNRjc7X8
- YL+vTCITUGSK83cLtlaC9v8NUFlacODOFBkXko6colGeQZkAIsrYRZAxCOLyrU9RN/LXR+6oI7
- iKQ=
-WDCIronportException: Internal
-Received: from bxygm33.ad.shared ([10.45.30.255])
-  by uls-op-cesaip02.wdc.com with ESMTP; 31 Oct 2021 05:37:02 -0700
-From:   Avri Altman <avri.altman@wdc.com>
-To:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bart Van Assche <bvanassche@acm.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>
-Subject: [PATCH] scsi: ufshpb: Properly handle max-single-cmd
-Date:   Sun, 31 Oct 2021 14:36:54 +0200
-Message-Id: <20211031123654.17719-1-avri.altman@wdc.com>
-X-Mailer: git-send-email 2.17.1
+        Sun, 31 Oct 2021 08:40:51 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D72EC061570;
+        Sun, 31 Oct 2021 05:38:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=lB3SIW23abBtuALywBPxVOTIYwGSheKJFWf5p+84tX8=; b=WPBMqihvv4pLk4emK09OVXBWRC
+        pentfIRPIE5qmfrKS0AmTqor18AZ94gYBRvr2a+lTz8GVx0bnybLPdIaTG2YNrhPuIDJ9CsN2YDsm
+        bFdJVvv74+i4DgKl6pevZVLuUwoPZ+JlLzyIoedMuojRVKeM9tob5NzGr2bM6fwIn/BfmeddfiS2s
+        L0RKibOLT/wcio67N8z18cRurtuIAC+G54nbP4b9EoT7bzI2CxyMBI/9Nf/DsTxndiynavrdV0cZT
+        FfpgLT9KSBFmqFWeYi1MyV/g15JzMaU5bEbq/nFF3bjkzsRbGaJ/1olyi3OtklFLgKxz8b2YBXDYB
+        KQ8jwEWA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mhA6D-00DOaJ-NH; Sun, 31 Oct 2021 12:38:09 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5F07430022C;
+        Sun, 31 Oct 2021 13:38:08 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 3B4832058F615; Sun, 31 Oct 2021 13:38:08 +0100 (CET)
+Date:   Sun, 31 Oct 2021 13:38:08 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sedat Dilek <sedat.dilek@gmail.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        X86 ML <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH] kbuild: Support clang-$ver builds
+Message-ID: <YX6OMKPlV/pFvIpT@hirez.programming.kicks-ass.net>
+References: <CAK7LNATUpgfKJvjp0+8H6VfMLMio9+BCoyj00mAO8FcaVGCqjg@mail.gmail.com>
+ <YXqwZq53WUiTeqI7@hirez.programming.kicks-ass.net>
+ <YXqyHhWGJfDkuxjP@hirez.programming.kicks-ass.net>
+ <YXq72/yPe76DhDLu@hirez.programming.kicks-ass.net>
+ <YXrhZoOgv5dtFMTs@archlinux-ax161>
+ <20211028204855.GP174703@worktop.programming.kicks-ass.net>
+ <CAKwvOd=x9E=7WcCiieso-CDiiU-wMFcXL4W3V5j8dq7BL5QT+w@mail.gmail.com>
+ <YXu2z6FQ6Z7qtjbk@hirez.programming.kicks-ass.net>
+ <20211030143311.GH174730@worktop.programming.kicks-ass.net>
+ <CA+icZUUU53OwtCDC-4FPfcCenYQeZo7b8b=wszbvrHSYBqbYOA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+icZUUU53OwtCDC-4FPfcCenYQeZo7b8b=wszbvrHSYBqbYOA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The spec recommends that for transfer length larger than the
-max-single-cmd attribute (bMAX_ DATA_SIZE_FOR_HPB_SINGLE_CMD) it is
-possible to couple pre-reqs with the HPB-READ command.  Being a
-recommendation, using pre-reqs can be perceived merely as a mean of
-optimization.  A common practice was to send pre-reqs for chunks within
-some interval, and leave the READ10 untouched if larger.
+On Sun, Oct 31, 2021 at 02:18:01AM +0100, Sedat Dilek wrote:
+> On Sat, Oct 30, 2021 at 4:34 PM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> >
+> > Latestest greatness... :-)
+> >
+> > ---
+> > Subject: kbuild: Fix clang/llvm build infra
+> >
+> > Debian (and derived) distros ship their compilers as -$ver suffixed
+> > binaries. For gcc it is sufficent to use:
+> >
+> >  $ make CC=gcc-12
+> >
+> > However, clang builds (esp. clang-lto) need a whole array of tools to be
+> > exactly right, leading to unweildy stuff like:
+> >
+> >  $ make CC=clang-13 LD=ld.lld=14 AR=llvm-ar-13 NM=llvm-nm-13 OBJCOPY=llvm-objcopy-13 OBJDUMP=llvm-objdump-13 READELF=llvm-readelf-13 STRIP=llvm-strip-13 LLVM=1
+> >
+> > which is, quite franktly, totally insane and unusable. Instead make
+> > the CC variable DTRT, enabling one such as myself to use:
+> >
+> >  $ make CC=clang-13
+> >
+> > This also lets one quickly test different clang versions.
+> > Additionally, also support path based LLVM suites like:
+> >
+> >  $ make CC=/opt/llvm/bin/clang
+> >
+> 
+> Hi Peter,
+> 
+> Thanks for bringing this up again.
+> 
+> Your issue is not new for Debianist and Linux-LLVM/Clang folks.
+> 
+> But let me comment.
+> 
+> I agree, it is preferable or should be treated the same way in using
+> clang-$ver like gcc-$ver.
+> 
+> Background:
 
-Anyway, now that the pre-reqs flows have been opt-out, all the commands
-are single commands.  So properly handle this attribute and do not send
-HPB-READ for transfer lengths larger than max-single-cmd.
+Right, I know that.
 
-Fixes: 09d9e4d04187 (scsi: ufs: ufshpb: Remove HPB2.0 flows)
+> As a compromise I use in my build_linux-llvm-toolchain.sh script
 
-Signed-off-by: Avri Altman <avri.altman@wdc.com>
----
- drivers/scsi/ufs/ufshpb.c | 29 +++++++++++++++--------------
- drivers/scsi/ufs/ufshpb.h |  1 -
- 2 files changed, 15 insertions(+), 15 deletions(-)
+> But...
+> 
+> ...for several new features like Clang-LTO we need the LLVM full "eco system".
+> LLVM eco system means compiler, linker and binutils.
+> In several talks at LPC 2021 talkers used the term "LLVM/binutils"
+> like for GNU/binutils.
+> The LLVM/Clang kernel-docs talk about "LLVM util(itie)s" which is set
+> by LLVM=1 or not (LLVM=0).
+> 
+> Link: https://www.kernel.org/doc/html/latest/kbuild/llvm.html#llvm-utilities
+> 
+> AFAICS your patch has a primary focus to fix the LLVM/Clang
+> infrastructure when CONFIG_LTO_CLANG=y, right?
+> Can you massage the commit message to reflect this?
 
-diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
-index 026a133149dc..40e62d9e2c89 100644
---- a/drivers/scsi/ufs/ufshpb.c
-+++ b/drivers/scsi/ufs/ufshpb.c
-@@ -394,8 +394,6 @@ int ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
- 	if (!ufshpb_is_supported_chunk(hpb, transfer_len))
- 		return 0;
- 
--	WARN_ON_ONCE(transfer_len > HPB_MULTI_CHUNK_HIGH);
--
- 	if (hpb->is_hcm) {
- 		/*
- 		 * in host control mode, reads are the main source for
-@@ -1572,7 +1570,7 @@ static void ufshpb_lu_parameter_init(struct ufs_hba *hba,
- 	if (ufshpb_is_legacy(hba))
- 		hpb->pre_req_max_tr_len = HPB_LEGACY_CHUNK_HIGH;
- 	else
--		hpb->pre_req_max_tr_len = HPB_MULTI_CHUNK_HIGH;
-+		hpb->pre_req_max_tr_len = hpb_dev_info->max_hpb_single_cmd;
- 
- 	hpb->lu_pinned_start = hpb_lu_info->pinned_start;
- 	hpb->lu_pinned_end = hpb_lu_info->num_pinned ?
-@@ -2582,7 +2580,7 @@ void ufshpb_get_dev_info(struct ufs_hba *hba, u8 *desc_buf)
- {
- 	struct ufshpb_dev_info *hpb_dev_info = &hba->ufshpb_dev;
- 	int version, ret;
--	u32 max_hpb_single_cmd = HPB_MULTI_CHUNK_LOW;
-+	int max_single_cmd;
- 
- 	hpb_dev_info->control_mode = desc_buf[DEVICE_DESC_PARAM_HPB_CONTROL];
- 
-@@ -2598,21 +2596,24 @@ void ufshpb_get_dev_info(struct ufs_hba *hba, u8 *desc_buf)
- 	if (version == HPB_SUPPORT_LEGACY_VERSION)
- 		hpb_dev_info->is_legacy = true;
- 
--	pm_runtime_get_sync(hba->dev);
--	ret = ufshcd_query_attr_retry(hba, UPIU_QUERY_OPCODE_READ_ATTR,
--		QUERY_ATTR_IDN_MAX_HPB_SINGLE_CMD, 0, 0, &max_hpb_single_cmd);
--	pm_runtime_put_sync(hba->dev);
--
--	if (ret)
--		dev_err(hba->dev, "%s: idn: read max size of single hpb cmd query request failed",
--			__func__);
--	hpb_dev_info->max_hpb_single_cmd = max_hpb_single_cmd;
--
- 	/*
- 	 * Get the number of user logical unit to check whether all
- 	 * scsi_device finish initialization
- 	 */
- 	hpb_dev_info->num_lu = desc_buf[DEVICE_DESC_PARAM_NUM_LU];
-+
-+	if (hpb_dev_info->is_legacy)
-+		return;
-+
-+	pm_runtime_get_sync(hba->dev);
-+	ret = ufshcd_query_attr_retry(hba, UPIU_QUERY_OPCODE_READ_ATTR,
-+		QUERY_ATTR_IDN_MAX_HPB_SINGLE_CMD, 0, 0, &max_single_cmd);
-+	pm_runtime_put_sync(hba->dev);
-+
-+	if (ret)
-+		hpb_dev_info->max_hpb_single_cmd = HPB_LEGACY_CHUNK_HIGH;
-+	else
-+		hpb_dev_info->max_hpb_single_cmd = min(max_single_cmd + 1, HPB_MULTI_CHUNK_HIGH);
- }
- 
- void ufshpb_init(struct ufs_hba *hba)
-diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
-index f15d8fdbce2e..b475dbd78988 100644
---- a/drivers/scsi/ufs/ufshpb.h
-+++ b/drivers/scsi/ufs/ufshpb.h
-@@ -31,7 +31,6 @@
- 
- /* hpb support chunk size */
- #define HPB_LEGACY_CHUNK_HIGH			1
--#define HPB_MULTI_CHUNK_LOW			7
- #define HPB_MULTI_CHUNK_HIGH			255
- 
- /* hpb vender defined opcode */
--- 
-2.17.1
+It already does :-) Also, it's a little bit more complicated, you can't
+actually select CONFIG_LTO *unless* you've configured your toolchain
+just right.
 
+> IMHO your patch can be improved to check for CONFIG_LTO_CLANG=y where
+> LLVM=1 is mandatory and IIRC LLVM_IAS=1, too.
+> ( The default to use LLVM/Clang-IAS (Integrated ASsembler) was changed
+> recently for some combinations arches + Clang-LTO? )
+
+Egg, meet chicken :-)
+
+> Before I forgot:
+> Can you add a comment for the PPC and S390 situation in the commit message.
+
+Sure.
+
+> Please remember people also want to use combinations like gcc-$ver and
+> LLVM/binutils like ld.lld-$ver.
+
+make CC=gcc LLVM=1
+make CC=clang LLVM=0
+
+are still valid combinations that work, I just don't think they ought to
+be the default.
+
+> GCC-10 + LLD-$VER was the fastest combination to build a Linux Debian
+> package here on my Intel SandyBridge CPU system.
+> ( There exists overrides like LD=... STRIP=... and I use
+> XXX_FOR_BUILD=... (see my attached build-script). )
+
+Right, that's what overrides are for, non-default setups. I just, quite
+strongly, feel that our defaults are completely insane.
+
+~ Peter
