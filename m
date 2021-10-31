@@ -2,212 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16E6F440E64
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 13:23:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3102440E66
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 13:25:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232289AbhJaMZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 08:25:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232236AbhJaMZK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 08:25:10 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B83FC06120A
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 05:22:38 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id m17so53702178edc.12
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 05:22:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3iEY6GQYQz83dpV+fT6R+J5oU7g9/XFul1oWQ/m49lI=;
-        b=paMNXcWgNsqVxxXLElooVUCI5zgF9Hx8RgxZ2SqhdtT64USC0+p7vplys9LI42Uk+1
-         XcU4l37vhiQcoRIWt5azDuYrnmh5IDKVqJc2xo/tk8KjqUUnlgSmmo4z9NkvrcU3SSX5
-         QoN4cEBdqEFK6lU+VVqu6DYrBL1qV2xiY1ny52WZRRYLeQpL/MYhO+j/03383iBqwu8P
-         RmzESNsirHGqn4jcwi801Dial2eRQkEliy84+LkWS1TprmKj0oHbrNH75HxsPQuJlhEl
-         SX9IMToBjQAihJR4aIzFvGGKsjBCXpjLOVv2nMhhF/Rn7p+nTy2kDV30CrexMJ0fbxfK
-         B+YQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3iEY6GQYQz83dpV+fT6R+J5oU7g9/XFul1oWQ/m49lI=;
-        b=pmkDUE+tDWyqIyketnADAa+GTG+eiqDFt/hp/e9hKIt4ROJV65EvdL4n8yeYV0FuFL
-         RYcP+lD17lsIeZQXybu5+pwhZKsLo6WTX4yG8cCZVLf/4Y4RYs4wMsC6ko94Hs6c8TuP
-         FwI/PpVf0UwThTCAGo29Oc9Kaak/74ndraMIgCkmaxzLJmfb0FZXDYVGHsPN4W2BNF5T
-         UWbDNnb89UhAyWeuXPN/+SJjSisHX9A4l1+bAiXUm4BmuFWdj98ODaPJm39hG+E10cJy
-         wbRFqRJobJ/jVfhEPszEfnkaarcnRVsKmF74o7EzokRj/xgzqRxsvS6warWWK35w+eM0
-         zKEg==
-X-Gm-Message-State: AOAM532k9o10kJJ9tqspsu5XuZNc0sgLaCSC37llWCF0gCicy4Z08jTA
-        Bc2rp3AMhS3ra7yRcWrfpbBZ7A==
-X-Google-Smtp-Source: ABdhPJxPnAd54K37gzIe2vTLOeK3l83domUTd7RNcjPhHCG0f0Gc1/AJpu51uIXA6chLbUgrUG730g==
-X-Received: by 2002:aa7:da10:: with SMTP id r16mr9332682eds.56.1635682956847;
-        Sun, 31 Oct 2021 05:22:36 -0700 (PDT)
-Received: from localhost ([31.134.121.151])
-        by smtp.gmail.com with ESMTPSA id eg33sm4316607edb.77.2021.10.31.05.22.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 31 Oct 2021 05:22:36 -0700 (PDT)
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-Subject: [PATCH v2 12/12] watchdog: s3c2410: Add Exynos850 support
-Date:   Sun, 31 Oct 2021 14:22:16 +0200
-Message-Id: <20211031122216.30212-13-semen.protsenko@linaro.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211031122216.30212-1-semen.protsenko@linaro.org>
-References: <20211031122216.30212-1-semen.protsenko@linaro.org>
+        id S230505AbhJaM20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 08:28:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60932 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229798AbhJaM2Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Oct 2021 08:28:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B62360FC1
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 12:25:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635683154;
+        bh=nkgv+EKvnqTzv1dwMoIWYog82u0og4ytb4jtBgoI1O8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=KidqRsyay24vaA00k0pgaaXq1Dbys+mZari5FTvfynX9jQVbo+kW5luky8SYB6LCT
+         Nde7aVVJ7VE4/VUG0qA1PU0sKX9fWHeWPGkTAXrcPOdSO33ovhp1ByHZ1XikQDAkI7
+         TvB/3+M0kgPZEcFZlJ9GrCe8LZdmo0r8xGdH8A9pWaewPoogeaE5aWbWqUPyCYz+OZ
+         0T/RPXsLtXbzegx/6bwe7Bd1m+bdkPeQ06AeSxRX1qMNXvwPSadhpCMhN45CnEOhm+
+         tXOenWotEVKcJUbDd78elXo739SSyta0pUBMPM7Nv4kPClAu9lprMnVwbM4EriWvDb
+         exnQrAVBtUrig==
+Received: by mail-oi1-f180.google.com with SMTP id w193so20933188oie.1
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 05:25:54 -0700 (PDT)
+X-Gm-Message-State: AOAM531ZKi8q7TM8/EF6BMNTVTsNJfEHhRzQHWE5y6rJv94joB6W5qLs
+        s8ob5lycEz5CtFHZuTxWR6KpoHwxyxFTI2Q5wss=
+X-Google-Smtp-Source: ABdhPJweqivRLp599eXWrFHYU3iTyc3SQ2IgU/Lu43BfXW/lirAZtZp27sSAHu+ELOFl6ZfjbJQHgULEilOLm9gwwhg=
+X-Received: by 2002:a05:6808:4d9:: with SMTP id a25mr15669997oie.33.1635683153473;
+ Sun, 31 Oct 2021 05:25:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211030183200.51295-1-rongwei.wang@linux.alibaba.com> <20211030183200.51295-2-rongwei.wang@linux.alibaba.com>
+In-Reply-To: <20211030183200.51295-2-rongwei.wang@linux.alibaba.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Sun, 31 Oct 2021 13:25:41 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXHnhnyyL4_WnUFdjJhk7Rcz8hLG8d13y3nRkV5xvBoPKg@mail.gmail.com>
+Message-ID: <CAMj1kXHnhnyyL4_WnUFdjJhk7Rcz8hLG8d13y3nRkV5xvBoPKg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] arm64: trans_pgd: fix incorrect use of
+ pmd_populate_kernel in copy_pte()
+To:     Rongwei Wang <rongwei.wang@linux.alibaba.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Fuad Tabba <tabba@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Exynos850 is a bit different from SoCs already supported in WDT driver:
-  - AUTOMATIC_WDT_RESET_DISABLE register is removed, so its value is
-    always 0; .disable_auto_reset callback is not set for that reason
-  - MASK_WDT_RESET_REQUEST register is replaced with
-    CLUSTERx_NONCPU_IN_EN register; instead of masking (disabling) WDT
-    reset interrupt it's now enabled with the same value; .mask_reset
-    callback is reused for that functionality though
-  - To make WDT functional, WDT counter needs to be enabled in
-    CLUSTERx_NONCPU_OUT register; it's done using .enable_counter
-    callback
+On Sat, 30 Oct 2021 at 20:32, Rongwei Wang
+<rongwei.wang@linux.alibaba.com> wrote:
+>
+> In commit 5de59884ac0e ("arm64: trans_pgd: pass NULL instead
+> of init_mm to *_populate functions"), simply replace init_mm
+> with NULL for pmd_populate_kernel. But in commit 59511cfd08f3
+> ("arm64: mm: use XN table mapping attributes for user/kernel
+> mappings"), adding the check of mm context in
+> pmd_populate_kernel. And these changes will cause a crash when
+> executing copy_pte/trans_pgd.c, as follows:
+>
+> kernel BUG at arch/arm64/include/asm/pgalloc.h:79!
+> Internal error: Oops - BUG: 0 [#1] SMP
+> Modules linked in: rfkill(E) aes_ce_blk(E) aes_ce_cipher(E) ...
+> CPU: 21 PID: 1617 Comm: a.out Kdump: loaded Tainted: ... 5.15.0-rc7-mm1+ #8
+> Hardware name: ECS, BIOS 0.0.0 02/06/2015
+> pstate: 40400005 (nZcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+> pc : trans_pgd_create_copy+0x4ac/0x4f0
+> lr : trans_pgd_create_copy+0x34c/0x4f0
+> sp : ffff80001bf2bc50
+> x29: ffff80001bf2bc50 x28: ffff0010067f1000 x27: ffff800011072000
+> x26: ffff001fffff8000 x25: ffff008000000000 x24: 0040000000000041
+> x23: 0040000000000001 x22: ffff80001bf2bd68 x21: ffff80001188ded8
+> x20: ffff800000000000 x19: ffff000000000000 x18: 0000000000000000
+> x17: 0000000000000000 x16: 0000000000000000 x15: 00000000200004c0
+> x14: ffff00003fffffff x13: ffff007fffffffff x12: ffff800010f882a8
+> x11: 0000000000face57 x10: 0000000000000001 x9 : 0000000000000000
+> x8 : ffff00100cece000 x7 : ffff001001c9f000 x6 : ffff00100ae40000
+> x5 : 0000000000000040 x4 : 0000000000000000 x3 : ffff001fffff7000
+> x2 : ffff000000200000 x1 : ffff000040000000 x0 : ffff00100cecd000
+> Call trace:
+>  trans_pgd_create_copy+0x4ac/0x4f0
+>  machine_kexec_post_load+0x94/0x3bc
+>  do_kexec_load+0x11c/0x2e0
+>  __arm64_sys_kexec_load+0xa8/0xf4
+>  invoke_syscall+0x50/0x120
+>  el0_svc_common.constprop.0+0x58/0x190
+>  do_el0_svc+0x2c/0x90
+>  el0_svc+0x28/0xe0
+>  el0t_64_sync_handler+0xb0/0xb4
+>  el0t_64_sync+0x180/0x184
+> Code: f90000c0 d5033a9f d5033fdf 17ffff7b (d4210000)
+> ---[ end trace cc5461ffe1a085db ]---
+> Kernel panic - not syncing: Oops - BUG: Fatal exception
+>
+> This bug can be reproduced by a user case:
+>
+> void execute_kexec_load(void)
+> {
+>         syscall(__NR_mmap, 0x1ffff000ul, 0x1000ul, 0ul, 0x32ul, -1, 0ul);
+>         syscall(__NR_mmap, 0x20000000ul, 0x1000000ul, 7ul, 0x32ul, -1, 0ul);
+>         syscall(__NR_mmap, 0x21000000ul, 0x1000ul, 0ul, 0x32ul, -1, 0ul);
+>
+>         *(uint64_t*)0x200004c0 = 0;
+>         *(uint64_t*)0x200004c8 = 0;
+>         *(uint64_t*)0x200004d0 = 0;
+>         *(uint64_t*)0x200004d8 = 0;
+>         syscall(__NR_kexec_load, 0ul, 1ul, 0x200004c0ul, 0ul);
+> }
+>
+> And this patch just make some simple changes, and including
+> replace pmd_populate_kernel with pmd_populate.
+>
+> Fixes: 59511cfd08f3 ("arm64: mm: use XN table mapping attributes for user/kernel mappings")
+> Reported-by: Abaci <abaci@linux.alibaba.com>
+> Signed-off-by: Rongwei Wang <rongwei.wang@linux.alibaba.com>
+> ---
+>  arch/arm64/mm/trans_pgd.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/arm64/mm/trans_pgd.c b/arch/arm64/mm/trans_pgd.c
+> index d7da8ca40d2e..3f1fc6cb9c9d 100644
+> --- a/arch/arm64/mm/trans_pgd.c
+> +++ b/arch/arm64/mm/trans_pgd.c
+> @@ -62,12 +62,13 @@ static int copy_pte(struct trans_pgd_info *info, pmd_t *dst_pmdp,
+>  {
+>         pte_t *src_ptep;
+>         pte_t *dst_ptep;
+> +       struct page *page;
+>         unsigned long addr = start;
+>
+> -       dst_ptep = trans_alloc(info);
+> -       if (!dst_ptep)
+> +       page = virt_to_page(trans_alloc(info));
+> +       if (!page)
+>                 return -ENOMEM;
+> -       pmd_populate_kernel(NULL, dst_pmdp, dst_ptep);
+> +       pmd_populate(NULL, dst_pmdp, page);
 
-Also Exynos850 has two CPU clusters, each has its own dedicated WDT
-instance. Different PMU registers and bits are used for each cluster. So
-driver data is now modified in probe, adding needed info depending on
-cluster index passed from device tree.
+Are you sure this truly fixes the underlying issue rather than the symptom?
 
-Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
----
-Changes in v2:
-  - Used single compatible for Exynos850, populating missing driver data in
-    probe
-  - Added "index" property to specify CPU cluster index
+pmd_populate() will create a table entry with the PXN attribute set,
+which means nothing below it will be executable by the kernel,
+regardless of the executable permissions at the PTE level.
 
- drivers/watchdog/s3c2410_wdt.c | 68 +++++++++++++++++++++++++++++++++-
- 1 file changed, 66 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/watchdog/s3c2410_wdt.c b/drivers/watchdog/s3c2410_wdt.c
-index 8fdda2ede1c3..457b725c30ac 100644
---- a/drivers/watchdog/s3c2410_wdt.c
-+++ b/drivers/watchdog/s3c2410_wdt.c
-@@ -56,6 +56,14 @@
- #define EXYNOS5_RST_STAT_REG_OFFSET		0x0404
- #define EXYNOS5_WDT_DISABLE_REG_OFFSET		0x0408
- #define EXYNOS5_WDT_MASK_RESET_REG_OFFSET	0x040c
-+#define EXYNOS850_CLUSTER0_NONCPU_OUT		0x1220
-+#define EXYNOS850_CLUSTER0_NONCPU_INT_EN	0x1244
-+#define EXYNOS850_CLUSTER1_NONCPU_OUT		0x1620
-+#define EXYNOS850_CLUSTER1_NONCPU_INT_EN	0x1644
-+
-+#define EXYNOS850_CLUSTER0_WDTRESET_BIT		24
-+#define EXYNOS850_CLUSTER1_WDTRESET_BIT		23
-+
- #define QUIRK_HAS_WTCLRINT_REG			(1 << 0)
- #define QUIRK_HAS_PMU_MASK_RESET		(1 << 1)
- #define QUIRK_HAS_PMU_RST_STAT			(1 << 2)
-@@ -171,6 +179,21 @@ static const struct s3c2410_wdt_variant drv_data_exynos7 = {
- 		  QUIRK_HAS_PMU_RST_STAT | QUIRK_HAS_PMU_AUTO_DISABLE,
- };
- 
-+static const struct s3c2410_wdt_variant drv_data_exynos850 = {
-+	/*
-+	 * Next fields will be set in probe(), based on cluster index:
-+	 *   - .mask_reset_reg
-+	 *   - .rst_stat_bit
-+	 *   - .cnt_en_reg
-+	 */
-+	.mask_reset_inv = true,
-+	.mask_bit = 2,
-+	.rst_stat_reg = EXYNOS5_RST_STAT_REG_OFFSET,
-+	.cnt_en_bit = 7,
-+	.quirks = QUIRK_HAS_WTCLRINT_REG | QUIRK_HAS_PMU_MASK_RESET | \
-+		  QUIRK_HAS_PMU_RST_STAT | QUIRK_HAS_PMU_CNT_EN,
-+};
-+
- static const struct of_device_id s3c2410_wdt_match[] = {
- 	{ .compatible = "samsung,s3c2410-wdt",
- 	  .data = &drv_data_s3c2410 },
-@@ -182,6 +205,8 @@ static const struct of_device_id s3c2410_wdt_match[] = {
- 	  .data = &drv_data_exynos5420 },
- 	{ .compatible = "samsung,exynos7-wdt",
- 	  .data = &drv_data_exynos7 },
-+	{ .compatible = "samsung,exynos850-wdt",
-+	  .data = &drv_data_exynos850 },
- 	{},
- };
- MODULE_DEVICE_TABLE(of, s3c2410_wdt_match);
-@@ -548,15 +573,51 @@ static inline const struct s3c2410_wdt_variant *
- s3c2410_get_wdt_drv_data(struct platform_device *pdev)
- {
- 	const struct s3c2410_wdt_variant *variant;
-+	struct s3c2410_wdt_variant *data;
-+	struct device *dev = &pdev->dev;
- 
--	variant = of_device_get_match_data(&pdev->dev);
-+	variant = of_device_get_match_data(dev);
- 	if (!variant) {
- 		/* Device matched by platform_device_id */
- 		variant = (struct s3c2410_wdt_variant *)
- 			   platform_get_device_id(pdev)->driver_data;
- 	}
- 
--	return variant;
-+	/* Have to copy driver data over to keep its const qualifier intact */
-+	data = devm_kmemdup(dev, variant, sizeof(*variant), GFP_KERNEL);
-+	if (!data)
-+		return NULL;
-+
-+	/* Populate missing fields for Exynos850 w.r.t. cluster index */
-+	if (variant == &drv_data_exynos850) {
-+		u32 index;
-+		int err;
-+
-+		err = of_property_read_u32(dev->of_node, "samsung,index",
-+					   &index);
-+		if (err) {
-+			dev_err(dev, "failed to get cluster index\n");
-+			return NULL;
-+		}
-+
-+		switch (index) {
-+		case 0:
-+			data->mask_reset_reg = EXYNOS850_CLUSTER0_NONCPU_INT_EN;
-+			data->rst_stat_bit = EXYNOS850_CLUSTER0_WDTRESET_BIT;
-+			data->cnt_en_reg = EXYNOS850_CLUSTER0_NONCPU_OUT;
-+			break;
-+		case 1:
-+			data->mask_reset_reg = EXYNOS850_CLUSTER1_NONCPU_INT_EN;
-+			data->rst_stat_bit = EXYNOS850_CLUSTER1_WDTRESET_BIT;
-+			data->cnt_en_reg = EXYNOS850_CLUSTER1_NONCPU_OUT;
-+			break;
-+		default:
-+			dev_err(dev, "wrong cluster index: %u\n", index);
-+			return NULL;
-+		}
-+	}
-+
-+	return data;
- }
- 
- static int s3c2410wdt_probe(struct platform_device *pdev)
-@@ -576,6 +637,9 @@ static int s3c2410wdt_probe(struct platform_device *pdev)
- 	wdt->wdt_device = s3c2410_wdd;
- 
- 	wdt->drv_data = s3c2410_get_wdt_drv_data(pdev);
-+	if (!wdt->drv_data)
-+		return -EINVAL;
-+
- 	if (wdt->drv_data->quirks & QUIRKS_HAVE_PMUREG) {
- 		wdt->pmureg = syscon_regmap_lookup_by_phandle(dev->of_node,
- 						"samsung,syscon-phandle");
--- 
-2.30.2
-
+>         dst_ptep = pte_offset_kernel(dst_pmdp, start);
+>
+>         src_ptep = pte_offset_kernel(src_pmdp, start);
+> --
+> 2.27.0
+>
