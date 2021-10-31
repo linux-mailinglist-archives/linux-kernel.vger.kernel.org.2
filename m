@@ -2,77 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE417441076
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 20:30:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 110B244107D
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 20:39:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231195AbhJaTdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 15:33:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39884 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229978AbhJaTdB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 15:33:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A057860FBF;
-        Sun, 31 Oct 2021 19:30:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635708629;
-        bh=BF+Om5U+kwL7q9fToTe3AKKRtcGj4GK6C3df1fUvWfw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eh8bYyqHgTVyh6FySzhcZH8m6PqgWMppRzRxl83dxm3je4h4RpX2RhodDGmJjDlHH
-         W6Tdap7dEBWCvVTbHabXF1e7rcn26FZzI2b2zetVe9Brc5Sb3Ll4iIzlukU5Q9QiPa
-         pjpS2Z7kpg1fymQQbhoyitS1AC5l1sDZxO18AO4I=
-Date:   Sun, 31 Oct 2021 20:30:19 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>, reinette.chatre@intel.com,
-        tony.luck@intel.com, linux-kernel@vger.kernel.org,
-        linux-sgx@vger.kernel.org
-Subject: Re: [PATCH v9 2/2] x86/sgx: Add an attribute for the amount of SGX
- memory in a NUMA node
-Message-ID: <YX7uy3tZwBFQmAiR@kroah.com>
-References: <20211029121857.477885-1-jarkko@kernel.org>
- <20211029121857.477885-2-jarkko@kernel.org>
- <YXwK7Wdi1VUK+1LS@kroah.com>
- <f0dc181d435cde51a9b81a70a0f47ff866d8cb91.camel@kernel.org>
+        id S230508AbhJaTmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 15:42:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230041AbhJaTmY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Oct 2021 15:42:24 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAB68C061570;
+        Sun, 31 Oct 2021 12:39:51 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id w1so3568358edd.10;
+        Sun, 31 Oct 2021 12:39:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=L7Um4mUV79LuOrqozwijQdh04ZeZMr8lNOl1Ry7Klkc=;
+        b=JBmPnOGFYpfbPwmjvMZ4yx4s6/ckgRAi2dKY5isYV+ClnaBBViS5BJ29bmz7iPqdbO
+         DnUd+xlIjWZvYCE5Bv67PU5hRIo2ulTAMJ/8Azo6A17TKXd6Wpvq6mrqGT2mPNemm/T3
+         Afl/zmDHNsHjBWTRCSC0C7MjR+fo2JyKgb9SG8y8oDYDa0YNUEQt0Sp8xJSIT4jJz63+
+         8Khlw0kMKmCtka19DRKq/2Fld0194KQQk2MaRZfSYydEyiikr21CQvyG7gRaPnWirnHe
+         PMYFs+xBe1mbUvhrYKI3VJvDQ9jUbRO6OXVjxgLk3GyBhpGyC2u5iqOFeKVswbjgpKer
+         1r4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=L7Um4mUV79LuOrqozwijQdh04ZeZMr8lNOl1Ry7Klkc=;
+        b=wz17Xf6SNfLbVlwTrVn1A4Qxtsfs4u3bJJrlzTY6BVrUhwJap6tpq//Wu85fKK3abd
+         RVGXT61qYySEMqKzFWIhhdc0zc0h/l/VcdsVSxVw0QcQhyKGKpg0i8L7EefRCszUWdQS
+         By0q2BmZ/SrvvXa/l9p2/eI/eLNmi8n9l6javfml4kRG39a0ER/up12r0y1QyN8ALqDL
+         al9izd4pWNWyrPn3JnJ/qM2dU4EYO6XUSkeFuG9UABXLm8ZuZzhuzdy9M1fuQkXYgYYV
+         /YXdk0Kfg3t/UgbFFS11F+NDVPeUm03NslzGQRssGlQSrN0JQ03kk6GaIoRDzh1xJMpc
+         SRkQ==
+X-Gm-Message-State: AOAM530ClRRb4ygM0+f4xBPOEeselKWI8RRbXCtoj3u/K1QtWHa+uq+C
+        LVQtxAUBMa8TyLMXYg5/F62xSPnkaUHRwWoT94s=
+X-Google-Smtp-Source: ABdhPJzZRpzEZC58TA6BZt5J3AJla2LE886DnrZUGf+xPMtbZrcWc5+cvzmXAdYOLXVy5P3t9lPPq4NCKMpEhMPm0dk=
+X-Received: by 2002:a50:da0a:: with SMTP id z10mr33926433edj.298.1635709190027;
+ Sun, 31 Oct 2021 12:39:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f0dc181d435cde51a9b81a70a0f47ff866d8cb91.camel@kernel.org>
+References: <20211029114948.41841-1-david@ixit.cz> <20211029114948.41841-2-david@ixit.cz>
+In-Reply-To: <20211029114948.41841-2-david@ixit.cz>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Sun, 31 Oct 2021 20:39:39 +0100
+Message-ID: <CAFBinCBVXNYG62jKABhJJt0m61+vQKqEyC4Mk5Ljg7htN-brTA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] arm64: dts: make dts use gpio-fan matrix instead
+ of array
+To:     David Heidelberg <david@ixit.cz>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        ~okias/devicetree@lists.sr.ht, phone-devel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-rockchip@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 31, 2021 at 07:39:32PM +0200, Jarkko Sakkinen wrote:
-> > > +static ssize_t size_show(struct device *dev, struct device_attribute *attr, char *buf)
-> > > +{
-> > > +       unsigned long size = 0;
-> > > +       int nid;
-> > > +
-> > > +       for (nid = 0; nid < num_possible_nodes(); nid++) {
-> > > +               if (dev == sgx_numa_nodes[nid].dev) {
-> > > +                       size = sgx_numa_nodes[nid].size;
-> > > +                       break;
-> > > +               }
-> > > +       }
-> > > +
-> > > +       return sysfs_emit(buf, "%lu\n", size);
-> > > +}
-> > > +DEVICE_ATTR_RO(size);
-> > 
-> > static?
-> 
-> The named ("sgx") attribute group is exported:
-> 
-> extern const struct attribute_group sgx_node_group;
-
-That's fine, I am objecting to the fact that you now have added a global
-symbol called device_attr_size.  Please make that static as that is a
-VERY generic name.
-
-thanks,
-
-greg k-h
+On Sun, Oct 31, 2021 at 5:51 PM David Heidelberg <david@ixit.cz> wrote:
+>
+> No functional changes.
+>
+> Adjust to comply with dt-schema requirements
+> and make possible to validate values.
+>
+> Signed-off-by: David Heidelberg <david@ixit.cz>
+> ---
+>  arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts | 9 +++++----
+for meson-gxm-khadas-vim2.dts:
+Acked-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
