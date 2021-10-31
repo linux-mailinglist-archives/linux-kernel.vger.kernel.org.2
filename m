@@ -2,163 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 829A8440DB4
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 10:54:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DCF5440DC3
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 11:16:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230234AbhJaJ4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 05:56:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47262 "EHLO
+        id S230312AbhJaKTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 06:19:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbhJaJ43 (ORCPT
+        with ESMTP id S229660AbhJaKS7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 05:56:29 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17FACC061570
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 02:53:58 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id g8so16763814iob.10
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 02:53:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sargun.me; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JGqPbm7tO1VICGqBd/Inpku02T8Zpei3T3QkIwLq8SM=;
-        b=NFDharSlF3D7NuTEJXRJ8w1Nw3SZHAaCzfkcDT5CT6rfiXYtDzilMrsQgn011HIyU7
-         SBn4ifDKNfvIZKJnFskWTEKWZoHV958/U3+Ke8Q4NOi+fXSfab4ycifxdCvZSDTmxxiz
-         +2UTEMDRiOsegVhCHVAQrNmalAfQD3BpeOtDo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JGqPbm7tO1VICGqBd/Inpku02T8Zpei3T3QkIwLq8SM=;
-        b=Xg9IWtCamOfZcvXU3ItA5taUOg69CgA1tHvlppa1QI8Sfs+5PUnjxWXcrUZXhlomrt
-         WO6ezrnuj3okRBe5HrEJwoWBvyd8uMyaAFqS4N4J0CriroJ0+7BmQKGy9IvE4eYs+5E4
-         W+IpYuu07bH8tjMh6yFNSnYTlL4ODooILR53aOXPZLFZVL51LmhjD72nmEfx7fklRUFk
-         PWx3+vIohR5TKwWgmLRa1NKyztSoCuL14NvzAI/aYcy4Y8DRpSh3BbdE8rmMy4ukNVQ5
-         34OVOxKkRQL4yfokwO0tBjnNH64sgMqPYcPLFgvex8yvGAbDoKHPP1zK3sdZrq2Lc3KC
-         0cXA==
-X-Gm-Message-State: AOAM532CNWYTRkZZGdEpr2kEqAaMRFgbIoMDsNDLty4+TE2meKd8vXh1
-        WWlJ8zjiQlLCnHgVEnTICrTq82evni35pQ==
-X-Google-Smtp-Source: ABdhPJyd9nJTh/xtnuU20jE0Eo7UMVdEDWKaC6h7c/trM5RBR3EgdftWHrZXdAyUnYqkQC7ZilG0uA==
-X-Received: by 2002:a5e:8911:: with SMTP id k17mr14660691ioj.63.1635674037235;
-        Sun, 31 Oct 2021 02:53:57 -0700 (PDT)
-Received: from ircssh-3.c.rugged-nimbus-611.internal (80.60.198.104.bc.googleusercontent.com. [104.198.60.80])
-        by smtp.gmail.com with ESMTPSA id w6sm6628345ilv.63.2021.10.31.02.53.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 31 Oct 2021 02:53:56 -0700 (PDT)
-Date:   Sun, 31 Oct 2021 09:53:55 +0000
-From:   Sargun Dhillon <sargun@sargun.me>
-To:     Eric Wong <e@80x24.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        willy@infradead.org, arnd@kernel.org,
-        Willem de Bruijn <willemb@google.com>
-Subject: Re: epoll may leak events on dup
-Message-ID: <20211031095355.GA15963@ircssh-3.c.rugged-nimbus-611.internal>
-References: <20211030100319.GA11526@ircssh-3.c.rugged-nimbus-611.internal>
- <20211031073923.M174137@dcvr>
+        Sun, 31 Oct 2021 06:18:59 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81149C061714;
+        Sun, 31 Oct 2021 03:16:27 -0700 (PDT)
+Date:   Sun, 31 Oct 2021 10:16:23 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1635675385;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7ZLpN3sHVB4W40wqrPn0vVBgzb8YZ4HVDFiUeXMVVh4=;
+        b=Zk3JvXiMqln8G8roUGM5rQ9TcdX69IdXTyR41jgYL5zaOoNAxg91ODO1Bn7VhNI9g3Sy8q
+        jNwas8F0GPRMS/VWtc7gMI0iqNjP7KMFyJCeAZSkoZWVkmT0elsU/unYEZ3Xvibn4OG5Gr
+        LwrJ3CoaoRZvxsT7ovUNAWXgUbsf9codrR9OlPvxg+Axyc52JyKfggKd+LZ6YS+y8Pe45W
+        AmLvCLcT87PoUwU82zkaEviupQ3wBD4hds9KBwep/o2fSZz8KeSvzzlbIHWEvLXjdnSi1F
+        ZmojOdb9Pckg6syqP/jcx8Fp0JLjKWbHG/dqsOrr48IPkE2K6dIXKMxKDnAWDA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1635675385;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7ZLpN3sHVB4W40wqrPn0vVBgzb8YZ4HVDFiUeXMVVh4=;
+        b=t9JN2r8IdyTC6BX9qTI0+xNArY+Jh56ojnsTwF+4NPfuIr06+hwlFGwgxzGETjnJKmaBzj
+        uJRLUbWecC6f8EAg==
+From:   "tip-bot2 for Vincent Guittot" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/core] sched/fair: Cleanup newidle_balance
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Mel Gorman <mgorman@suse.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20211019123537.17146-6-vincent.guittot@linaro.org>
+References: <20211019123537.17146-6-vincent.guittot@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211031073923.M174137@dcvr>
+Message-ID: <163567538377.626.7918130057155925733.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 31, 2021 at 07:39:23AM +0000, Eric Wong wrote:
-> Sargun Dhillon <sargun@sargun.me> wrote:
-> > I discovered an interesting behaviour in epoll today. If I register the same 
-> > file twice, under two different file descriptor numbers, and then I close one of 
-> > the two file descriptors, epoll "leaks" the first event. This is fine, because 
-> > one would think I could just go ahead and remove the event, but alas, that isn't 
-> > the case. Some example python code follows to show the issue at hand.
-> >
-> > I'm not sure if this is really considered a "bug" or just "interesting epoll
-> > behaviour", but in my opinion this is kind of a bug, especially because leaks
-> > may happen by accident -- especially if files are not immediately freed.
-> 
-> "Interesting epoll behavior" combined with a quirk with the
-> Python wrapper for epoll.  It passes the FD as epoll_event.data
-> (.data could also be any void *ptr, a u64, or u32).
-> 
-> Not knowing Python myself (but knowing Ruby and Perl5 well); I
-> assume Python developers chose the safest route in passing an
-> integer FD for .data.  Passing a pointer to an arbitrary
-> Perl/Ruby object would cause tricky lifetime issues with the
-> automatic memory management of those languages; I expect Python
-> would have the same problem.
-> 
+The following commit has been merged into the sched/core branch of tip:
 
-Python was just chosen as a way to have some inline code to explain the problem. 
-Python has a bunch of libraries that will properly manage epoll under the hood, 
-but the point was to describe the "leak" behaviour, where you cannot (easily) 
-free up the registered epoll_event.
+Commit-ID:     8ea9183db4ad8afbcb7089a77c23eaf965b0cacd
+Gitweb:        https://git.kernel.org/tip/8ea9183db4ad8afbcb7089a77c23eaf965b0cacd
+Author:        Vincent Guittot <vincent.guittot@linaro.org>
+AuthorDate:    Tue, 19 Oct 2021 14:35:37 +02:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Sun, 31 Oct 2021 11:11:38 +01:00
 
-It was shorter inline code than C. :).
+sched/fair: Cleanup newidle_balance
 
-> > I'm also not sure why epoll events are registered by file, and not just fd.
-> > Is the expectation that you can share a single epoll amongst multiple
-> > "users" and register different files that have the same file descriptor
-> 
-> No, the other way around.  Different FDs for the same file.
-> 
-> Having registration keyed by [file+fd] allows users to pass
-> different pointers for different events to the same file;
-> which could have its uses.
-> 
-> Registering by FD alone isn't enough; since the epoll FD itself
-> can be shared across fork (which is of limited usefulness[1]).
-> Originaly iterations of epoll were keyed only by the file;
-> with the FD being added later.
-> 
-> > number (at least for purposes other than CRIU). Maybe someone can shed
-> > light on the behaviour.
-> 
-> CRIU?  Checkpoint/Restore In Userspace?
-> 
-Right, in CRIU, epoll is restored by manually cloning the FDs to the
-right spot, and re-installing the events into epoll. This requires:
-0. Getting the original epoll FD
-1. Fetching / recreating the original FD
-2. dup2'ing it to right spot (and avoiding overwriting the original epoll FD)
-3. EPOLL_CTL_ADD'ing the FD back in.
+update_next_balance() uses sd->last_balance which is not modified by
+load_balance() so we can merge the 2 calls in one place.
 
-> 
-> [1] In contrast, kqueue has a unique close-on-fork behavior
->     which greatly simplifies usage from C code (but less so
->     for high-level runtimes which auto-close FDs).
+No functional change
 
-Perhaps a question for epoll developers and maintains, how would you feel about 
-the idea of adding a new set of commands that allow the user to add / mod / del 
-by arbitrary key. For example, EPOLL_CTL_ADD_BY_KEY, EPOLL_CTL_MOD_BY_KEY, 
-EPOLL_CTL_DEL_BY_KEY, and instead the fd argument would be an arbitrary key, and 
-the object for add would be:
+Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Acked-by: Mel Gorman <mgorman@suse.de>
+Link: https://lore.kernel.org/r/20211019123537.17146-6-vincent.guittot@linaro.org
+---
+ kernel/sched/fair.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-
-struct epoll_event_with_fd {
-	uint32_t	fd;	
-	epoll_data_t	data;
-}
-
-EPOLL_CTL_MOD_BY_KEY and EPOLL_CTL_DEL_BY_KEY would just treat the fd argument 
-as a key. In order for this not to be horrible (IMHO), we would have to make
-epoll run in a mode where only one event can be registered for a given key.
-
-Then the rb_tree key, instead of being:
-struct epoll_filefd {
-	struct file *file;
-	int fd;
-} __packed;
-
-would be:
-struct epoll_filefd {
-	struct file *file;
-	union {
-		int fd;
-		int key;
-	}
-} __packed;
-
-Perhaps this is rambly, and code / patches are required for better articulation,
-but I guess the whole idea "fd is the key" for entries in epoll seems weird to
-me, and I'm wondering if people would be open to changing the API at this point
-in time.
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 57eae0e..13950be 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -10916,10 +10916,10 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+ 		int continue_balancing = 1;
+ 		u64 domain_cost;
+ 
+-		if (this_rq->avg_idle < curr_cost + sd->max_newidle_lb_cost) {
+-			update_next_balance(sd, &next_balance);
++		update_next_balance(sd, &next_balance);
++
++		if (this_rq->avg_idle < curr_cost + sd->max_newidle_lb_cost)
+ 			break;
+-		}
+ 
+ 		if (sd->flags & SD_BALANCE_NEWIDLE) {
+ 
+@@ -10935,8 +10935,6 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+ 			t0 = t1;
+ 		}
+ 
+-		update_next_balance(sd, &next_balance);
+-
+ 		/*
+ 		 * Stop searching for tasks to pull if there are
+ 		 * now runnable tasks on this rq.
