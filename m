@@ -2,123 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2931E440E77
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 13:52:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D5B6440E7A
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 13:57:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232003AbhJaMzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 08:55:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57620 "EHLO
+        id S232030AbhJaM7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 08:59:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229798AbhJaMzV (ORCPT
+        with ESMTP id S229798AbhJaM7Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 08:55:21 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6269DC061570;
-        Sun, 31 Oct 2021 05:52:49 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id bu18so13856717lfb.0;
-        Sun, 31 Oct 2021 05:52:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KsU6C8DCbzTsNFFfktVF1wri/7sdYIU4HQYUbAWLagc=;
-        b=PhslQAKvrpeIN7feHYjaT5Px4ASWnFZP1fd1o0IpUunKpikQj842qisdh07HLB74Iy
-         +4tGrRWCvDG2rV5CDp5eA6bZ310HUXb6vtZfp98kFUnTEPlRpTL24qpi6l/iaMlg+jWZ
-         DjYjQUy0//T74C8jPP0cr9BffYT8HwbznZ5ccT+pW7pJPRVsq0ia1QN4pwDxTNz5dcHr
-         vrV95BTa2gZym8+wBR222hBgJBK0bLKgGlyqgpA5zpQxL8hhbxh6s01/1//ouL9Ju57H
-         1zgshTF8xcfZwKSepeqn5E1uvYMaMedTR4Ukvrx3WrWHOaGB3Cvg3tzIcjafR9eQdWfB
-         iKyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KsU6C8DCbzTsNFFfktVF1wri/7sdYIU4HQYUbAWLagc=;
-        b=O13/7zCjlVGlzoL/1OIedA0cKiFs3zHozZyVs0yBRnyRd2vDOmjDaXqcAGgJFrkI1+
-         7hvTzJ7bs43JZ55PdOxxLosAPZg4iXXAA9w3eIHl5IKkxhFz6haj2sVxDJHsrOzRHt5C
-         HRnhhJjtHepQ1BA3FaqqRLs3zIvCuiLj/24RBZ52RppJk5SVOwjoUHch4XK/umP7z1nD
-         kIeEgHHjb41BLjZe1fDQBAIY3DvX7q3fJt5/qWXZ2+FE8LFXO+fBtsn05y36FaKfSwim
-         PcOC6epQXSHnQRUPJIXq8d73LzE0BpHPuDTwe9Eq+f6uEPRFnIKMjcQ3Xyb9yAZj3RxS
-         jWGQ==
-X-Gm-Message-State: AOAM532ZyzNI1CpqU4Tz/2aUzdZylQsknOrPiA8vjwAFVDygvxW2LwL6
-        aOXqeqsdQ5JTQKc3MweA/0eRsl81fIBrAjznjHM=
-X-Google-Smtp-Source: ABdhPJzKIgyiS9xupKWX+ht1y8HzbkQ9S2BGp5QpsvkwXuwzgDgydBnU1hAMgz/1QNnxMJSFj38Hdmd26EuI/eqD7VE=
-X-Received: by 2002:a05:6512:acd:: with SMTP id n13mr21685799lfu.60.1635684767624;
- Sun, 31 Oct 2021 05:52:47 -0700 (PDT)
+        Sun, 31 Oct 2021 08:59:24 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94019C061570
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 05:56:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=vksooUceYy57ZAFzmLNWbTzWlOTs21ncEuVv2N8+e0A=; b=cfZJ6MCQh/tPCHcS/7woXDyzzj
+        aNjFNcRUb/iwdafRWYFJuGNt2R1XhqmKAiY307ilxLGtGagE9+cOq58xle6DPSZ8hJeZgzpwPOzFr
+        cCqnkaYpmbr8/auXfGbKwgKy+UFTI+4OsewNHzxJMZ5IqM+sNGAOllUiT1wBp9rtpTBgMwb/lknvd
+        3PEjIhFAzv9X8U2LetFnRYZT7XcQzoU2Qa3YjvqiTbNn+J6//FvUHEsi461in00AxqgT2GowECJwb
+        Ga9usZOjcap/EhQxVoAOrKHRFo+bq1yTg+i4Ovjk+smIS7zddL75HYVjcxL4uf8oaqQn+8gXvdmGT
+        B5BjOk+w==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mhALc-0032gK-HX; Sun, 31 Oct 2021 12:54:20 +0000
+Date:   Sun, 31 Oct 2021 12:54:04 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Yunfeng Ye <yeyunfeng@huawei.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, wuxu.wu@huawei.com,
+        Hewenliang <hewenliang4@huawei.com>
+Subject: Re: [PATCH] mm, slub: place the trace before freeing memory in
+ kmem_cache_free()
+Message-ID: <YX6R7EUdxok8phma@casper.infradead.org>
+References: <867f6da4-6d38-6435-3fbb-a2a3744029f1@huawei.com>
+ <CAMZfGtU+wyjD6e0Xm7-toqqfA2tsu8nSUQJsZdC=piZzgq76fw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20211030182813.116672-1-hdegoede@redhat.com> <20211030182813.116672-14-hdegoede@redhat.com>
-In-Reply-To: <20211030182813.116672-14-hdegoede@redhat.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sun, 31 Oct 2021 14:52:11 +0200
-Message-ID: <CAHp75VfRALjbGaY8rdt5HCte3_NPuwpdkr+GNZV7qMWBK1idWg@mail.gmail.com>
-Subject: Re: [PATCH 13/13] extcon: intel-cht-wc: Add support for devices with
- an USB-micro-B connector
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Sebastian Reichel <sre@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Yauhen Kharuzhy <jekhor@gmail.com>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMZfGtU+wyjD6e0Xm7-toqqfA2tsu8nSUQJsZdC=piZzgq76fw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 30, 2021 at 9:29 PM Hans de Goede <hdegoede@redhat.com> wrote:
->
-> So far the extcon-intel-cht-wc code has only been tested on devices with
-> a Type-C connector with USB-PD, USB3 (superspeed) and DP-altmode support
-> through a FUSB302 Type-C controller.
->
-> Some devices with the intel-cht-wc PMIC however come with an USB-micro-B
-> connector, or an USB-2 only Type-C connector without USB-PD.
->
-> These device are identified by "intel,cht-wc-setup" = "bq25890,bq27520",
-> since there is no Type-C controller on these devices the extcon code must
-> control the Vbus 5V boost converter and the USB role switch depending on
-> the detected cable-type.
+On Sat, Oct 30, 2021 at 08:23:12PM +0800, Muchun Song wrote:
+> On Sat, Oct 30, 2021 at 6:12 PM Yunfeng Ye <yeyunfeng@huawei.com> wrote:
+> >
+> > After the memory is freed, it may be allocated by other CPUs and has
+> > been recorded by trace. So the timing sequence of the memory tracing is
+> > inaccurate.
+> >
+> > For example, we expect the following timing sequeuce:
+> >
+> >     CPU 0                 CPU 1
+> >
+> >   (1) alloc xxxxxx
+> >   (2) free  xxxxxx
+> >                          (3) alloc xxxxxx
+> >                          (4) free  xxxxxx
+> >
+> > However, the following timing sequence may occur:
+> >
+> >     CPU 0                 CPU 1
+> >
+> >   (1) alloc xxxxxx
+> >                          (2) alloc xxxxxx
+> >   (3) free  xxxxxx
+> >                          (4) free  xxxxxx
+> >
+> > So place the trace before freeing memory in kmem_cache_free().
+> 
+> Could you tell me what problem you have encountered
+> here?
 
-...
+It's confusing to see the memory allocated before it's freed.  If you're
+unaware of this problem, you might think it was being used after free
+because (1) happened a long time ago, so you see (2) immediately followed
+by (3) and then see the memory being used.
 
-> +       if (ext->vbus_boost && ext->vbus_boost_enabled != enable) {
-> +               if (enable)
-> +                       ret = regulator_enable(ext->vbus_boost);
-> +               else
-> +                       ret = regulator_disable(ext->vbus_boost);
-
-> +               if (ret == 0)
-> +                       ext->vbus_boost_enabled = enable;
-> +               else
-> +                       dev_err(ext->dev, "Error updating Vbus boost regulator: %d\n", ret);
-
-if (ret)
- dev_err()
-else
- ...
-
-?
-
-> +       }
-
-...
-
-
-> +               /*
-> +                * Classic micro USB-B setup, this requires controling
-
-controlling
-
-> +                * the role-sw and vbus based on the id-pin.
-> +                */
-
--- 
-With Best Regards,
-Andy Shevchenko
+The patch makes sense to me.
