@@ -2,121 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D5C9440E6C
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 13:33:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9D3E440E6E
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 13:37:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231449AbhJaMgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 08:36:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35064 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229798AbhJaMgS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 08:36:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 83CF360FD9;
-        Sun, 31 Oct 2021 12:33:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635683626;
-        bh=NRhO6hzo10XWUP2bFt6QNKXuMxBJ25uRfWxqDqY/+8M=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Jv5eTWcVA2z5JT5Ug7EiUMbH52+8dNpb/VkCf+EPr30fedYWXUmNZFRJMIHIC3j+r
-         6T25N7FKIwciqwuAaqDfxutRyRRXKahzZpE5vN2Z3xenC7srxDMSnGZJTwZfoPxgg3
-         LFv5mOcXmWURzDBG8n2REorEsFWZtw7e9T/edFX1WZ6y4gNT/vLog7Y45vDUt23c+l
-         afQMNXZ7/dK9gKdCxdTSmyXwBPFB76JE7z0dBOEmLYYERrazqEPj1lz5+vsSI2FMsn
-         jWMcTKZFeojo3DC/wA5FUoQEAD8AXA5WIEJnUGNIxzFy0Z9eVvHITxn2lsNKrXh0dg
-         gD7bmlVX1nChg==
-Received: by mail-oo1-f50.google.com with SMTP id m37-20020a4a9528000000b002b83955f771so5247282ooi.7;
-        Sun, 31 Oct 2021 05:33:46 -0700 (PDT)
-X-Gm-Message-State: AOAM530AcGtmbNf9FcxCs6h74fxU5euTx4BNfwxcevcRwh+3+XEL1CEV
-        urVfV43fqww3foh298vIB2Rms63eCeDTEEvNpDY=
-X-Google-Smtp-Source: ABdhPJzRyhFZSvvjXFfXlEbz9eE+P8RVY2MhVsjkKOk/v+Ogtl4XZxBwYW17JwmZzmZkY6SmoAfsZrsnF22NHXBzwEI=
-X-Received: by 2002:a4a:e93d:: with SMTP id a29mr15115163ooe.63.1635683625840;
- Sun, 31 Oct 2021 05:33:45 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211012082708.121931-1-iivanov@suse.de> <YWVKAk4h5bsUA3b6@light.dominikbrodowski.net>
- <YX44DCaIg/qGOrtE@light.dominikbrodowski.net>
-In-Reply-To: <YX44DCaIg/qGOrtE@light.dominikbrodowski.net>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Sun, 31 Oct 2021 13:33:34 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXEeCwhADMEwfE8SaG=1+J8Lzrck72DixSdxOP3cAK_Uzg@mail.gmail.com>
-Message-ID: <CAMj1kXEeCwhADMEwfE8SaG=1+J8Lzrck72DixSdxOP3cAK_Uzg@mail.gmail.com>
-Subject: Re: [PATCH] random: fix crash on multiple early calls to add_bootloader_randomness()
-To:     Dominik Brodowski <linux@dominikbrodowski.net>
-Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
-        "Ivan T. Ivanov" <iivanov@suse.de>,
-        Bhupesh Sharma <bhsharma@redhat.com>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S231720AbhJaMji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 08:39:38 -0400
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:61936 "EHLO
+        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229798AbhJaMjh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Oct 2021 08:39:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1635683825; x=1667219825;
+  h=from:to:cc:subject:date:message-id;
+  bh=WST+ZJjjkk2uWz+yUQQEmMKVyNSyU9zWN6oFNekvMxg=;
+  b=fkB1LiC/XHnbqM0KL0U/brqoNHQKkn9pwucNH7Z2X+XNAwqiaUOlcJoS
+   vWCh8wRgHPN07NWzF52TOOmB4V6t0I492q/7Q+TW1OT9z0QeHxexTJ/Ea
+   P3L9+MZ47wqovM5/vGygElK1azZ9XAXcRV/q14h0Hn2lPIypN8drre4Q2
+   8Cwf9Akyh+EnUd+cluLQmxeOG6oZvzGFl9Zgfq2wLg2p/MlaCYNun5DqR
+   tWLxF/loxaINrFihgsH5clC/EsZ51+LJFvsT99qthvL7XGB2VVhBHUElg
+   BZOtHqFxPbJ4D9icWU2V0xgazMqFSj+UQQHERgYWZfZ/FkQE7rhGlizXU
+   g==;
+X-IronPort-AV: E=Sophos;i="5.87,197,1631548800"; 
+   d="scan'208";a="189075297"
+Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 31 Oct 2021 20:37:05 +0800
+IronPort-SDR: D51smixvpYaM31vCRujN/izq09Z++JMMFdCRvqfcIczaImlPMosbW6k8iZKOowM5D7F7X7gzTt
+ BTg2gg/UYqtXvsnaVi/3o3uAmVrpQgSgGigA0DpbUvz3Zk+buBzXrCrNr0Kj3GCt66ci/pzMsh
+ BOiS6u3GhKrHEMFu2Z5k7JcarDkEqdEl7loUIke1NE4sgt59vQRvnIhrHqCXJ+oi/wIIdHZX3Q
+ Bueh8XeHiUsVlwXLYxDxO3elZjdjrSJimwzo2EPYREYjlHyC0k2QORIfdBJpg4mNXIzglJVarf
+ t9rZNgejlQJIdaL6faqhz/gu
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2021 05:12:28 -0700
+IronPort-SDR: q0L7WEqtrUkZMxhlfWVjGZBIZxDXL7gWBYbQD8yCov5C1cccCC/e1q5pDlgmKrKAUhtcAGV9F8
+ CfsiGIcKvfU/+ZfG1roIznCmTWjQADtulWhxDZVPZZwz0mAKl79JOjUH3RcQi5JDXNxK5aPmuE
+ ffnNqhvWdI98ilCRYy6uZNuvC4czi4WEUBQS9N0NFg4ovkJfdO1mR+pERoVDqQONX9xNRjc7X8
+ YL+vTCITUGSK83cLtlaC9v8NUFlacODOFBkXko6colGeQZkAIsrYRZAxCOLyrU9RN/LXR+6oI7
+ iKQ=
+WDCIronportException: Internal
+Received: from bxygm33.ad.shared ([10.45.30.255])
+  by uls-op-cesaip02.wdc.com with ESMTP; 31 Oct 2021 05:37:02 -0700
+From:   Avri Altman <avri.altman@wdc.com>
+To:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bart Van Assche <bvanassche@acm.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>
+Subject: [PATCH] scsi: ufshpb: Properly handle max-single-cmd
+Date:   Sun, 31 Oct 2021 14:36:54 +0200
+Message-Id: <20211031123654.17719-1-avri.altman@wdc.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 31 Oct 2021 at 07:31, Dominik Brodowski
-<linux@dominikbrodowski.net> wrote:
->
-> If add_bootloader_randomness() or add_hwgenerator_randomness() is
-> called for the first time during early boot, crng_init equals 0. Then,
-> crng_fast_load() gets called -- which is safe to do even if the input
-> pool is not yet properly set up.
->
-> If the added entropy suffices to increase crng_init to 1, future calls
-> to add_bootloader_randomness() or add_hwgenerator_randomness() used to
-> progress to credit_entropy_bits(). However, if the input pool is not yet
-> properly set up, the cmpxchg call within that function can lead to an
-> infinite recursion. This is not only a hypothetical problem, as qemu
-> on x86 may provide bootloader entropy via EFI and via devicetree.
->
+The spec recommends that for transfer length larger than the
+max-single-cmd attribute (bMAX_ DATA_SIZE_FOR_HPB_SINGLE_CMD) it is
+possible to couple pre-reqs with the HPB-READ command.  Being a
+recommendation, using pre-reqs can be perceived merely as a mean of
+optimization.  A common practice was to send pre-reqs for chunks within
+some interval, and leave the READ10 untouched if larger.
 
-arm64 not x86
+Anyway, now that the pre-reqs flows have been opt-out, all the commands
+are single commands.  So properly handle this attribute and do not send
+HPB-READ for transfer lengths larger than max-single-cmd.
 
-> As crng_global_init_time is set to != 0 once the input pool is properly
-> set up, check (also) for this condition to determine which branch to take.
->
-> Calls to crng_fast_load() do not modify the input pool; therefore, the
-> entropy_count for the input pool must not be modified at that early
-> stage.
->
-> Reported-and-tested-by: Ivan T. Ivanov <iivanov@suse.de>
+Fixes: 09d9e4d04187 (scsi: ufs: ufshpb: Remove HPB2.0 flows)
 
-Nit: fancy tags like this are more difficult to grep for
+Signed-off-by: Avri Altman <avri.altman@wdc.com>
+---
+ drivers/scsi/ufs/ufshpb.c | 29 +++++++++++++++--------------
+ drivers/scsi/ufs/ufshpb.h |  1 -
+ 2 files changed, 15 insertions(+), 15 deletions(-)
 
-Better to use separate Reported-by and Tested-by tags
+diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
+index 026a133149dc..40e62d9e2c89 100644
+--- a/drivers/scsi/ufs/ufshpb.c
++++ b/drivers/scsi/ufs/ufshpb.c
+@@ -394,8 +394,6 @@ int ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
+ 	if (!ufshpb_is_supported_chunk(hpb, transfer_len))
+ 		return 0;
+ 
+-	WARN_ON_ONCE(transfer_len > HPB_MULTI_CHUNK_HIGH);
+-
+ 	if (hpb->is_hcm) {
+ 		/*
+ 		 * in host control mode, reads are the main source for
+@@ -1572,7 +1570,7 @@ static void ufshpb_lu_parameter_init(struct ufs_hba *hba,
+ 	if (ufshpb_is_legacy(hba))
+ 		hpb->pre_req_max_tr_len = HPB_LEGACY_CHUNK_HIGH;
+ 	else
+-		hpb->pre_req_max_tr_len = HPB_MULTI_CHUNK_HIGH;
++		hpb->pre_req_max_tr_len = hpb_dev_info->max_hpb_single_cmd;
+ 
+ 	hpb->lu_pinned_start = hpb_lu_info->pinned_start;
+ 	hpb->lu_pinned_end = hpb_lu_info->num_pinned ?
+@@ -2582,7 +2580,7 @@ void ufshpb_get_dev_info(struct ufs_hba *hba, u8 *desc_buf)
+ {
+ 	struct ufshpb_dev_info *hpb_dev_info = &hba->ufshpb_dev;
+ 	int version, ret;
+-	u32 max_hpb_single_cmd = HPB_MULTI_CHUNK_LOW;
++	int max_single_cmd;
+ 
+ 	hpb_dev_info->control_mode = desc_buf[DEVICE_DESC_PARAM_HPB_CONTROL];
+ 
+@@ -2598,21 +2596,24 @@ void ufshpb_get_dev_info(struct ufs_hba *hba, u8 *desc_buf)
+ 	if (version == HPB_SUPPORT_LEGACY_VERSION)
+ 		hpb_dev_info->is_legacy = true;
+ 
+-	pm_runtime_get_sync(hba->dev);
+-	ret = ufshcd_query_attr_retry(hba, UPIU_QUERY_OPCODE_READ_ATTR,
+-		QUERY_ATTR_IDN_MAX_HPB_SINGLE_CMD, 0, 0, &max_hpb_single_cmd);
+-	pm_runtime_put_sync(hba->dev);
+-
+-	if (ret)
+-		dev_err(hba->dev, "%s: idn: read max size of single hpb cmd query request failed",
+-			__func__);
+-	hpb_dev_info->max_hpb_single_cmd = max_hpb_single_cmd;
+-
+ 	/*
+ 	 * Get the number of user logical unit to check whether all
+ 	 * scsi_device finish initialization
+ 	 */
+ 	hpb_dev_info->num_lu = desc_buf[DEVICE_DESC_PARAM_NUM_LU];
++
++	if (hpb_dev_info->is_legacy)
++		return;
++
++	pm_runtime_get_sync(hba->dev);
++	ret = ufshcd_query_attr_retry(hba, UPIU_QUERY_OPCODE_READ_ATTR,
++		QUERY_ATTR_IDN_MAX_HPB_SINGLE_CMD, 0, 0, &max_single_cmd);
++	pm_runtime_put_sync(hba->dev);
++
++	if (ret)
++		hpb_dev_info->max_hpb_single_cmd = HPB_LEGACY_CHUNK_HIGH;
++	else
++		hpb_dev_info->max_hpb_single_cmd = min(max_single_cmd + 1, HPB_MULTI_CHUNK_HIGH);
+ }
+ 
+ void ufshpb_init(struct ufs_hba *hba)
+diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
+index f15d8fdbce2e..b475dbd78988 100644
+--- a/drivers/scsi/ufs/ufshpb.h
++++ b/drivers/scsi/ufs/ufshpb.h
+@@ -31,7 +31,6 @@
+ 
+ /* hpb support chunk size */
+ #define HPB_LEGACY_CHUNK_HIGH			1
+-#define HPB_MULTI_CHUNK_LOW			7
+ #define HPB_MULTI_CHUNK_HIGH			255
+ 
+ /* hpb vender defined opcode */
+-- 
+2.17.1
 
-> Fixes: 18b915ac6b0a ("efi/random: Treat EFI_RNG_PROTOCOL output as bootloader randomness")
-> Signed-off-by: Dominik Brodowski <linux@dominikbrodowski.net>
->
-
-Please don't drop the diffstat. Are you using git format-patch?
-
-
-> diff --git a/drivers/char/random.c b/drivers/char/random.c
-> index 605969ed0f96..4211ff3092f9 100644
-> --- a/drivers/char/random.c
-> +++ b/drivers/char/random.c
-> @@ -1763,8 +1763,8 @@ static void __init init_std_data(struct entropy_store *r)
->  }
->
->  /*
-> - * Note that setup_arch() may call add_device_randomness()
-> - * long before we get here. This allows seeding of the pools
-> + * add_device_randomness() or add_bootloader_randomness() may be
-> + * called long before we get here. This allows seeding of the pools
->   * with some platform dependent data very early in the boot
->   * process. But it limits our options here. We must use
->   * statically allocated structures that already have all
-> @@ -2274,7 +2274,12 @@ void add_hwgenerator_randomness(const char *buffer, size_t count,
->  {
->         struct entropy_store *poolp = &input_pool;
->
-> -       if (unlikely(crng_init == 0)) {
-> +       /* We cannot do much with the input pool until it is set up in
-> +        * rand_initalize(); therefore just mix into the crng state.
-> +        * As this does not affect the input pool, we cannot credit
-> +        * entropy for this.
-> +        */
-> +       if (unlikely(crng_init == 0) || unlikely(crng_global_init_time == 0)) {
-
-Can we just drop the unlikely()s here?
-
->                 crng_fast_load(buffer, count);
->                 return;
->         }
