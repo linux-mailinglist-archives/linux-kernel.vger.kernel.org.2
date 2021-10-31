@@ -2,118 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2AE9440C88
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 03:22:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 610FA440C8B
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 03:34:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231940AbhJaCYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Oct 2021 22:24:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35218 "EHLO
+        id S232063AbhJaCem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Oct 2021 22:34:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229752AbhJaCYg (ORCPT
+        with ESMTP id S229752AbhJaCel (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Oct 2021 22:24:36 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49E4FC061570;
-        Sat, 30 Oct 2021 19:22:05 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hhg0P3lyqz4xZ1;
-        Sun, 31 Oct 2021 13:21:57 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1635646923;
-        bh=DUO9TOyM77Bq9mupg3Q1Mb7ti0F3HKcOqB/TwJSBtS4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=lpJmMXvZ3/rXvokfTgJlBRpbu0I2XmKDaJdfnt1n1id4WLANBhA6oaWgtPdChQzLG
-         fAU9Rzrp6OZv3lZ88E9Trj7I4w5yMPtB0isrSKWWjHTfsMn4Gm16izveTCRdW/WMRh
-         marTOmz51e9GCkdOOEJqEz+9JJb8qTmMvBuPuj4LdbK1UvAQ4rxkHvc3N0ykt7qd4I
-         eZ9nfUgv2QwJ/n0e4rJfgVYCkUY1+z4OvSzKcBq543GxY9XRHdVBVQGkfPy8xGex2W
-         yV/q5VkReU6//CMUimBk1LzcrJW49CUi7VO4lHYjfbUAX2Rfg4FUIHt/38qwtQ/5PQ
-         UpXOBX1DKr59g==
-Date:   Sun, 31 Oct 2021 13:21:55 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Thomas Zimmermann <tzimmermann@suse.de>, Greg KH <greg@kroah.com>
-Cc:     Marcel Ziswiler <marcel@ziswiler.com>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        dri-devel@lists.freedesktop.org,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
-        Linux Kernel Functional Testing <lkft@linaro.org>
-Subject: Re: [PATCH v2] drm: import DMA_BUF module namespace
-Message-ID: <20211031132155.7dc972e8@canb.auug.org.au>
-In-Reply-To: <2312b5c3-ffc9-b54e-a08b-2548e3837d83@suse.de>
-References: <20211027212506.3418521-1-marcel@ziswiler.com>
-        <2312b5c3-ffc9-b54e-a08b-2548e3837d83@suse.de>
+        Sat, 30 Oct 2021 22:34:41 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 499C5C061570;
+        Sat, 30 Oct 2021 19:32:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=YdEhdcEX2r4TtLJMXFuodi5EJcFx7uX9qTnwsGSmkFc=; b=Js+H5NBNANgCRDVhQvqX7o9WBJ
+        tJiGk78fRMliMjwpZYRG+H4LIkaXtpMHRWVCd4hI2uYlLCswVBiUIAyocU0K3mpGwQV1u9bf68ewq
+        NauIaae2zwunD264xCR5WaKInAQQo6+SHKgkMT0YS6bmBBVnnFe5qYpkAICpY8cBmOkUEdw3E8jC+
+        Ch0SIHEvPhQGaOdwSH5/1RS1YU0yfr2LGvXcU/NxZ8Yhv1xI2cXF6OPzsbcMUxWXgFkp7e/XRYzwI
+        i1wJGufjNl9ue1IlIJAbYn2y/bBroKKQZwBy3XMf2yiAvhqV8a3eyr3Yse5Dle2mgN40nX+qxmjUa
+        5QMHuZBQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mh0ae-002neL-Qn; Sun, 31 Oct 2021 02:29:25 +0000
+Date:   Sun, 31 Oct 2021 02:28:56 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Mina Almasry <almasrymina@google.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Nathan Lewis <npl@google.com>, Yu Zhao <yuzhao@google.com>,
+        "Paul E . McKenney" <paulmckrcu@fb.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Xu <peterx@redhat.com>,
+        Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
+        Florian Schmidt <florian.schmidt@nutanix.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH v1] mm: Add /proc/$PID/pageflags
+Message-ID: <YX3/aAYxsOey4FBS@casper.infradead.org>
+References: <20211028205854.830200-1-almasrymina@google.com>
+ <2fede4d2-9d82-eac9-002b-9a7246b2c3f8@redhat.com>
+ <CAHS8izMckg03uLB0vrTGv2g-_xmTh1LPRc2P8sfnmL-FK5A8hg@mail.gmail.com>
+ <e02b1a75-58ab-2b8a-1e21-5199e3e3c5e9@redhat.com>
+ <CAHS8izOkvuZ2pEGZXaYb0mfwC3xwpvXSgc9S+u_R-0zLWjzznQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/tw5wYLogO=aZ9rmUAiMowQ4";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHS8izOkvuZ2pEGZXaYb0mfwC3xwpvXSgc9S+u_R-0zLWjzznQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/tw5wYLogO=aZ9rmUAiMowQ4
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Sat, Oct 30, 2021 at 03:06:31PM -0700, Mina Almasry wrote:
+> Not quite sufficient, no. The process may have lots of non performance
+> critical memory. The network service cares about specific memory
+> ranges and wants to know if those are backed by hugepages.
 
-Hi Thomas,
+Would it make sense to extend mincore() instead?  We have 7 remaining
+bits per byte.
 
-On Fri, 29 Oct 2021 20:51:52 +0200 Thomas Zimmermann <tzimmermann@suse.de> =
-wrote:
->
-> Am 27.10.21 um 23:25 schrieb Marcel Ziswiler:
-> > From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
-> >=20
-> > Today's -next fails building arm64 defconfig as follows:
-> >=20
-> > ERROR: modpost: module drm_cma_helper uses symbol dma_buf_vunmap from
-> >   namespace DMA_BUF, but does not import it.
-> > ERROR: modpost: module drm_cma_helper uses symbol dma_buf_vmap from
-> >   namespace DMA_BUF, but does not import it.
-> >=20
-> > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> > Fixes: commit 4b2b5e142ff4 ("drm: Move GEM memory managers into modules=
-")
-> > Signed-off-by: Marcel Ziswiler <marcel.ziswiler@toradex.com> =20
->=20
-> I added this fix into drm-misc-next. Thanks!
->=20
-> However, I had to import linux-next while doing so. 'Git am' did a
-> 3-way merge, which may result in a conflict when the fix reaches
-> linux-next again. I also updated the commit description.
+But my question is, what information do you really want?  Do you want
+to know if the memory range is backed by huge pages, or do you want to
+know if PMDs are being used to map the backing memory?
 
-You cannot merge linux-next into any tree, sorry.  It rebases every day
-(and so do several of the included trees).
+What information would you want to see if, say, 64kB entries are being
+used on a 4kB ARM system where there's hardware support for those.
+Other architectures also have support for TLB entries that are
+intermediate between PTE and PMD sizes.
 
-Your fix patch should be sent to Greg KH and Arnd as the build failure
-is introduced in the char-misc tree.
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/tw5wYLogO=aZ9rmUAiMowQ4
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF9/cMACgkQAVBC80lX
-0Gx7VAf/doFfX4Te328O/6riL+zHiG+zdqagH9eFcsnoNyguGQvM2KXmYLwErGC2
-/uKyTlihOeaU2o3bZmNhoEYxzeV/5s+owf4n+KNNy5NWQrtOy+dWBX70rkyhLbGU
-+DOyfN6slXSkB4S7WkbbP83TMDkGWIaypa4OcOq5wq7Chc6lxwzk93XSVILxgrJO
-2dNbhL72lzpj+ug6hwzJM6cLdk7Vqm3JWHZuHJwxAkJBUfF6wX/WIyIy2NP6gb/l
-i7H7GLohSFcV5BC8rpxG5Mq06FHhrl+Jl97tr3Do+8vu4Eq4nZFGefaGdIELSeX5
-Pz3x2dv4AncEN2lIwoQDnkWYfbmxkg==
-=4Zmp
------END PGP SIGNATURE-----
-
---Sig_/tw5wYLogO=aZ9rmUAiMowQ4--
