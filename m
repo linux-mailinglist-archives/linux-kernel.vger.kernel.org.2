@@ -2,114 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED90B441159
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 00:01:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 733FC441164
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 00:15:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230326AbhJaXEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 19:04:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48508 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229982AbhJaXEU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 19:04:20 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEE83C061714
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 16:01:48 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id s24so10436193plp.0
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 16:01:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :in-reply-to;
-        bh=sXsy59nkm+x4I8q82QAi5Hn9Gi9Qo/W9vpXNqJNq07M=;
-        b=oK0tXIllB8ObEtv1NKcDvw106h2ZMxTTsVvGAW3ZLJYG9JmE8X7EeKTN+82Riy9Akw
-         a2pV1wEWCVBmdiqpllGjkB7KrImxKmgGQ6dKZO/yvWvPbh+FKsf2BPz02LbHrZtBzlgb
-         lqMh4Gg/EYOhSu5bHoROq6kkhjoGDLvTKETaLE1mrxjWfe/VMUwlE6YK43avYCTMSmtT
-         TeSUqdj/o8i9Qp3gCg4VLt86ShX8MQeNqrTgB0loikvLxgvMotg0cIBFN8QZ+jIBbwOa
-         KQ9T3Oofu0FnYfODnJNqMdsgj8d0cXU+4dUqrcsu6h1vLZlfijIyTOypLOT2nmjtvqZr
-         520g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:in-reply-to;
-        bh=sXsy59nkm+x4I8q82QAi5Hn9Gi9Qo/W9vpXNqJNq07M=;
-        b=2KiSCzSbnRL7M/xxO0XBpzDhdr1n7sE9Ned6GluEp1mllkC8ITGFYFukJEr+96s/XU
-         2xL5gAY3orzWxVANeUQA3QUDHBr7/ThrUO1lsMr9KsVgQ6UH1A3TjmKtBYHk8al0/G6Z
-         iilb55+u/zAl0LxYE0v4+z+jp8Olj4N1EfzAnpeml9tnswzm5CMIW7C7z1oOGjrHbaJA
-         XRhnY/7RHBmM8rK51Aa5vivakds+DLmdkP57Cmf408j4Oig5u5kzHU9NtNOHWjyYxMa0
-         7MDGJARheJPytiLYQrYxc2yNxJoHieW7mksuXqduO+oRaoyCO4fGRx33/SFlKHUi0F+D
-         fLCg==
-X-Gm-Message-State: AOAM532qB4Z1oEjSNIQ2pHrJj8RaRLiyoITrWV+/5jIb3v1DJNSKwE7o
-        PfYmJqRDfA2NtjC6mUz/b3VLrH4ydHCLbQ==
-X-Google-Smtp-Source: ABdhPJzCHjDKqSe+qvt0n5PrJPNqJsS6EyGJMsCLP/lMxMiemzSL9927FZ/uN4nKc6sojRB8jgz90Q==
-X-Received: by 2002:a17:902:d4cf:b0:141:d36c:78f6 with SMTP id o15-20020a170902d4cf00b00141d36c78f6mr7342851plg.56.1635721307486;
-        Sun, 31 Oct 2021 16:01:47 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:6f5c:6c4e:1798:d0cf])
-        by smtp.gmail.com with ESMTPSA id s25sm12818279pfm.138.2021.10.31.16.01.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 31 Oct 2021 16:01:46 -0700 (PDT)
-Date:   Sun, 31 Oct 2021 16:01:41 -0700
-From:   Benson Leung <bleung@google.com>
-To:     linux-kernel@vger.kernel.org,
-        Prashant Malani <pmalani@chromium.org>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH 1/2] platform/chrome: cros_ec_proto: Use EC struct for
- features
-Message-ID: <163572120352.2079946.6960520137860452667.b4-ty@chromium.org>
+        id S230246AbhJaXRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 19:17:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51370 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230098AbhJaXRh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Oct 2021 19:17:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6632F60E98;
+        Sun, 31 Oct 2021 23:15:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635722104;
+        bh=suxkNGmue9aghjYNtvFMsxbmCggQU/mTEGgyuyM6yEo=;
+        h=Date:From:To:Cc:Subject:From;
+        b=fpGO32U+MsTNZbHohxpPwvg1Uq/nPjwDaBlA9NFDdb8JtWAGK6sTrbB+lu3yBYkyF
+         C912kGL8/qX6nG76cT0WwM6WPK707JMNhvnTL1WWkGh2M5LK7Tqxpqo/tLnDABJkLt
+         KquLGV9Z/3RgrdBlXFR2D/SFGhuDx+DdXnJHPEKL4noPzfIGweLhwzdWt36jzXblFS
+         M9bf+mET+ZIt9lAOOjbeyet8ziREuNph58SvdfojegO9FZiaaJKNICUKkzQspjqpEz
+         Ig8eS55+3Rs5M0buwjx5/KDMVkSANT3fdnOoTLsW761BJyErEqIFMlRRFT2g6yS1Yk
+         gJbeRw++6EQtQ==
+Date:   Sun, 31 Oct 2021 16:15:02 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: [GIT PULL] fscrypt updates for 5.16
+Message-ID: <YX8jdp73zUDwlB5E@sol.localdomain>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="twKEpGLg3YemdzOe"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211004170716.86601-1-pmalani@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following changes since commit e4e737bb5c170df6135a127739a9e6148ee3da82:
 
---twKEpGLg3YemdzOe
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+  Linux 5.15-rc2 (2021-09-19 17:28:22 -0700)
 
-Hi Prashant,
+are available in the Git repository at:
 
-On Mon, 4 Oct 2021 10:07:09 -0700, Prashant Malani wrote:
-> The Chrome EC's features are returned through an
-> ec_response_get_features struct, but they are stored in an independent
-> array. Although the two are effectively the same at present (2 unsigned
-> 32 bit ints), there is the possibility that they could go out of sync.
-> Avoid this by only using the EC struct to store the features.
+  https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
 
-Applied, thanks!
+for you to fetch changes up to b7e072f9b77f4c516df96e0c22ec09f8b2e76ba1:
 
-[1/2] platform/chrome: cros_ec_proto: Use EC struct for features
-      commit: 7ff22787ba49c2e66dcec92f3e2b79ef6b6a0d71
-[2/2] platform/chrome: cros_ec_proto: Use ec_command for check_features
-      commit: 297d34e73d491a3edbd6e8c31d33ec90447a908b
+  fscrypt: improve a few comments (2021-10-25 19:11:50 -0700)
 
-Best regards,
+----------------------------------------------------------------
 
---=20
-Benson Leung
-Staff Software Engineer
-Chrome OS Kernel
-Google Inc.
-bleung@google.com
-Chromium OS Project
-bleung@chromium.org
+Some cleanups for fs/crypto/:
 
---twKEpGLg3YemdzOe
-Content-Type: application/pgp-signature; name="signature.asc"
+- Allow 256-bit master keys with AES-256-XTS
 
------BEGIN PGP SIGNATURE-----
+- Improve documentation and comments
 
-iHUEABYKAB0WIQQCtZK6p/AktxXfkOlzbaomhzOwwgUCYX8gVQAKCRBzbaomhzOw
-wliEAQCbb1oSHT+l35Dit0ZNiukuRBSXXnhtUrnBh3Fh8dY5OAD/cwuYeDrbDXIF
-mRnfNRYQz9GLjp7HGIUd8XcR1f/X8wo=
-=8WoH
------END PGP SIGNATURE-----
+- Remove unneeded field fscrypt_operations::max_namelen
 
---twKEpGLg3YemdzOe--
+----------------------------------------------------------------
+Eric Biggers (5):
+      fscrypt: remove fscrypt_operations::max_namelen
+      fscrypt: clean up comments in bio.c
+      fscrypt: improve documentation for inline encryption
+      fscrypt: allow 256-bit master keys with AES-256-XTS
+      fscrypt: improve a few comments
+
+ Documentation/block/inline-encryption.rst |  2 +
+ Documentation/filesystems/fscrypt.rst     | 83 +++++++++++++++++++++++--------
+ fs/crypto/bio.c                           | 32 ++++++------
+ fs/crypto/fname.c                         |  3 +-
+ fs/crypto/fscrypt_private.h               | 16 ++++--
+ fs/crypto/hkdf.c                          | 11 ++--
+ fs/crypto/keysetup.c                      | 62 +++++++++++++++++------
+ fs/ext4/super.c                           |  1 -
+ fs/f2fs/super.c                           |  1 -
+ fs/ubifs/crypto.c                         |  1 -
+ include/linux/fscrypt.h                   |  3 --
+ 11 files changed, 150 insertions(+), 65 deletions(-)
