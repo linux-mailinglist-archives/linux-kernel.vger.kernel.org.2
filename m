@@ -2,43 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8427D440FCD
+	by mail.lfdr.de (Postfix) with ESMTP id BC463440FCE
 	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 18:40:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230320AbhJaRnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 13:43:06 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:33777 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229838AbhJaRnA (ORCPT
+        id S230169AbhJaRnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 13:43:03 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:37744 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230178AbhJaRnA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 31 Oct 2021 13:43:00 -0400
-Received: by mail-il1-f198.google.com with SMTP id m7-20020a056e021c2700b00259bf1e38b1so8747254ilh.0
+Received: by mail-io1-f70.google.com with SMTP id w8-20020a0566022c0800b005dc06acea8dso11110811iov.4
         for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 10:40:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=7M1VeV5Puogy1Aa38S5xLZtrD8M6xbycaErzb+ZqLJk=;
-        b=uCj/HRP9uSPE3sI0r67d1gCnYfbLGRvTz7SfGOhI85xcY0BvxXNsCfqI8B44PuneGD
-         zg1pSNNQ+AtemXYLbFz2Blnscx+f4NHBH0cOYhtYL4zJ/QuSLo6Hzg0hfMusjlyvcB4X
-         BpcXJN8e/OcgpVSo+6TmAu6VX3+NWrJ7JBwkdDpCIFMD0KHL3LCBZZ/Y+zlsDI/0Fv87
-         g7gv0b3gsVybJEIpMUQbxb+QurWJatITg1QeA44ywXkE2/PIA7jsT0VBy3lEQgtRr+k6
-         DFk9t6KZrDHsDYFPeTbrWeundDX3Slyf3ZJ21v/vRql9KglYNk5P8oyT+uC7ZeenH0MB
-         3U7A==
-X-Gm-Message-State: AOAM531q12sIL0J5KJ10ZZToBeRttoD9M5amaNqasfO8jqOyjr1qPEPI
-        zNgLgrJZ5gJd+ypgLkkPCp39ERrxq90bw8BUv/lFSnOjVcDo
-X-Google-Smtp-Source: ABdhPJxl9h4UvTixmRZjoZ4XRQXq8YzoiNVLBOoyjHr4IJkAOBDsUCqLLrO70nd8cxZTyidaqz7J8lqO/6HYRQB6zWVb6MrwRB+c
+        bh=FaKcqRHzMLbH5u8NNeIw2kJUUFiOkDyVZdvGBGaubq0=;
+        b=Vd5784frLE65pdaDVpydBaA2jHgNhVOZd4orqaPGj2PiKIEJZ8XBeCOG8z7oGy2hBZ
+         xHiP6C7+4csK+PijJy2u7dGGCIx8ePbOjV/YpxMV1HOHT4z9Hk7dFRXTd3sgQbF9IC9Z
+         Y8MKFMJxr7lPjndUrqThUtFtqOPd18Q5YmqBAWcYmBNKTQSaE6i4df9dEMnn56k0rbmt
+         06UerUzp/WbXEm5s+99FSUPemV9Skged/YMs0Ml826Q5jNs/0Dye/rP2iJpaewrm6y2W
+         ZZeGH8/SdR3beGE3rjZFgwihTnZg4u8HWLMs36Dw7j/MSHg7OmWX1MQ0UCXpkmxhZB7S
+         Wycw==
+X-Gm-Message-State: AOAM531t3HOLX3Q5w+RQUvxFK+/RUxRr2GlV+LBiE5yR/c9jHZ/1TXhl
+        F62ms/PBpgUaKpIYcMOtVse9QE4CRB29vXtQLbpL+XeyqcbL
+X-Google-Smtp-Source: ABdhPJw9LjiP8AhyRWBPFnMRi1wV941Kz+m2k0gsY6tBs4Iia/YW76hgoTsMJIQIZWXqENXO9ZyTg/f+qB16ei98Ny8T1qvZWeuJ
 MIME-Version: 1.0
-X-Received: by 2002:a92:cb4e:: with SMTP id f14mr15507720ilq.109.1635702025869;
+X-Received: by 2002:a02:620b:: with SMTP id d11mr17851905jac.69.1635702025705;
  Sun, 31 Oct 2021 10:40:25 -0700 (PDT)
 Date:   Sun, 31 Oct 2021 10:40:25 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000035de5905cfa98e03@google.com>
-Subject: [syzbot] KASAN: slab-out-of-bounds Read in hci_le_meta_evt (2)
-From:   syzbot <syzbot+e3fcb9c4f3c2a931dc40@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        luiz.dentz@gmail.com, marcel@holtmann.org, netdev@vger.kernel.org,
+Message-ID: <000000000000335eea05cfa98e32@google.com>
+Subject: [syzbot] KASAN: use-after-free Read in unmap_page_range (2)
+From:   syzbot <syzbot+11210d36738191856de4@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, christian@brauner.io,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
@@ -49,142 +48,91 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    119c85055d86 Merge tag 'powerpc-5.15-6' of git://git.kerne..
+HEAD commit:    1fc596a56b33 Merge tag 'trace-v5.15-rc6' of git://git.kern..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1453e1f4b00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6362530af157355b
-dashboard link: https://syzkaller.appspot.com/bug?extid=e3fcb9c4f3c2a931dc40
+console output: https://syzkaller.appspot.com/x/log.txt?x=1173759ab00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=9646ff3aa1daf1a8
+dashboard link: https://syzkaller.appspot.com/bug?extid=11210d36738191856de4
 compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1128465cb00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1431dfe2b00000
-
-Bisection is inconclusive: the issue happens on the oldest tested release.
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10f27096b00000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=12f27096b00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=14f27096b00000
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15d15ad4b00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=142a0b64b00000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e3fcb9c4f3c2a931dc40@syzkaller.appspotmail.com
+Reported-by: syzbot+11210d36738191856de4@syzkaller.appspotmail.com
 
-Bluetooth: hci0: unknown advertising packet type: 0x90
-Bluetooth: hci0: Dropping invalid advertising data
-==================================================================
-BUG: KASAN: slab-out-of-bounds in hci_le_adv_report_evt net/bluetooth/hci_event.c:5783 [inline]
-BUG: KASAN: slab-out-of-bounds in hci_le_meta_evt+0x3e27/0x46d0 net/bluetooth/hci_event.c:6104
-Read of size 1 at addr ffff888079314e03 by task kworker/u5:2/6459
-
-CPU: 1 PID: 6459 Comm: kworker/u5:2 Not tainted 5.15.0-rc7-syzkaller #0
+general protection fault, probably for non-canonical address 0xdffffc0000000003: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000018-0x000000000000001f]
+CPU: 1 PID: 8652 Comm: syz-executor811 Not tainted 5.15.0-rc7-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: hci0 hci_rx_work
+RIP: 0010:__lock_acquire+0xd7d/0x54a0 kernel/locking/lockdep.c:4885
+Code: e9 0d 41 be 01 00 00 00 0f 86 c8 00 00 00 89 05 f9 0b e9 0d e9 bd 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 da 48 c1 ea 03 <80> 3c 02 00 0f 85 f3 2f 00 00 48 81 3b 00 35 f0 8e 0f 84 52 f3 ff
+RSP: 0018:ffffc9000562f970 EFLAGS: 00010006
+RAX: dffffc0000000000 RBX: 0000000000000018 RCX: 0000000000000000
+RDX: 0000000000000003 RSI: 0000000000000000 RDI: 0000000000000001
+RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: ffff888077151c80 R14: 0000000000000000 R15: 0000000000000000
+FS:  0000555555f75300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffdc1e38c38 CR3: 00000000780df000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- print_address_description.constprop.0.cold+0x6c/0x2d6 mm/kasan/report.c:256
- __kasan_report mm/kasan/report.c:442 [inline]
- kasan_report.cold+0x83/0xdf mm/kasan/report.c:459
- hci_le_adv_report_evt net/bluetooth/hci_event.c:5783 [inline]
- hci_le_meta_evt+0x3e27/0x46d0 net/bluetooth/hci_event.c:6104
- hci_event_packet+0x5d9/0x7cf0 net/bluetooth/hci_event.c:6445
- hci_rx_work+0x4fa/0xd30 net/bluetooth/hci_core.c:5136
- process_one_work+0x9bf/0x16b0 kernel/workqueue.c:2297
- worker_thread+0x658/0x11f0 kernel/workqueue.c:2444
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-
-Allocated by task 6453:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track mm/kasan/common.c:46 [inline]
- set_alloc_info mm/kasan/common.c:434 [inline]
- ____kasan_kmalloc mm/kasan/common.c:513 [inline]
- ____kasan_kmalloc mm/kasan/common.c:472 [inline]
- __kasan_kmalloc+0xa1/0xd0 mm/kasan/common.c:522
- kmalloc_reserve net/core/skbuff.c:356 [inline]
- __alloc_skb+0xde/0x340 net/core/skbuff.c:427
- alloc_skb include/linux/skbuff.h:1116 [inline]
- bt_skb_alloc include/net/bluetooth/bluetooth.h:389 [inline]
- vhci_get_user drivers/bluetooth/hci_vhci.c:165 [inline]
- vhci_write+0xbd/0x450 drivers/bluetooth/hci_vhci.c:285
- call_write_iter include/linux/fs.h:2163 [inline]
- new_sync_write+0x429/0x660 fs/read_write.c:507
- vfs_write+0x7cf/0xae0 fs/read_write.c:594
- ksys_write+0x12d/0x250 fs/read_write.c:647
+ lock_acquire kernel/locking/lockdep.c:5625 [inline]
+ lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:154
+ spin_lock include/linux/spinlock.h:363 [inline]
+ zap_pte_range mm/memory.c:1320 [inline]
+ zap_pmd_range mm/memory.c:1481 [inline]
+ zap_pud_range mm/memory.c:1510 [inline]
+ zap_p4d_range mm/memory.c:1531 [inline]
+ unmap_page_range+0x87b/0x2a10 mm/memory.c:1552
+ __oom_reap_task_mm+0x22d/0x400 mm/oom_kill.c:555
+ __do_sys_process_mrelease+0x32a/0x400 mm/oom_kill.c:1199
  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
  entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-The buggy address belongs to the object at ffff888079314c00
- which belongs to the cache kmalloc-512 of size 512
-The buggy address is located 3 bytes to the right of
- 512-byte region [ffff888079314c00, ffff888079314e00)
-The buggy address belongs to the page:
-page:ffffea0001e4c500 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x79314
-flags: 0xfff00000000200(slab|node=0|zone=1|lastcpupid=0x7ff)
-raw: 00fff00000000200 ffffea00005ef948 ffffea0000768f08 ffff888010c40600
-raw: 0000000000000000 ffff888079314000 0000000100000004 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 0, migratetype Unmovable, gfp_mask 0x2420c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_COMP|__GFP_THISNODE), pid 1, ts 20947704734, free_ts 20947079890
- prep_new_page mm/page_alloc.c:2426 [inline]
- get_page_from_freelist+0xa72/0x2f80 mm/page_alloc.c:4155
- __alloc_pages+0x1b2/0x500 mm/page_alloc.c:5381
- __alloc_pages_node include/linux/gfp.h:570 [inline]
- kmem_getpages mm/slab.c:1377 [inline]
- cache_grow_begin+0x75/0x460 mm/slab.c:2593
- cache_alloc_refill+0x27f/0x380 mm/slab.c:2965
- ____cache_alloc mm/slab.c:3048 [inline]
- ____cache_alloc mm/slab.c:3031 [inline]
- __do_cache_alloc mm/slab.c:3275 [inline]
- slab_alloc mm/slab.c:3316 [inline]
- kmem_cache_alloc_trace+0x38c/0x480 mm/slab.c:3573
- kmalloc include/linux/slab.h:591 [inline]
- kzalloc include/linux/slab.h:721 [inline]
- kernfs_fop_open+0x2c5/0xd40 fs/kernfs/file.c:628
- do_dentry_open+0x4c8/0x11d0 fs/open.c:822
- do_open fs/namei.c:3428 [inline]
- path_openat+0x1c9a/0x2740 fs/namei.c:3561
- do_filp_open+0x1aa/0x400 fs/namei.c:3588
- do_sys_openat2+0x16d/0x4d0 fs/open.c:1200
- do_sys_open fs/open.c:1216 [inline]
- __do_sys_open fs/open.c:1224 [inline]
- __se_sys_open fs/open.c:1220 [inline]
- __x64_sys_open+0x119/0x1c0 fs/open.c:1220
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-page last free stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1340 [inline]
- free_pcp_prepare+0x2c5/0x780 mm/page_alloc.c:1391
- free_unref_page_prepare mm/page_alloc.c:3317 [inline]
- free_unref_page+0x19/0x690 mm/page_alloc.c:3396
- selinux_genfs_get_sid security/selinux/hooks.c:1378 [inline]
- inode_doinit_with_dentry+0x868/0x12e0 security/selinux/hooks.c:1573
- selinux_d_instantiate+0x23/0x30 security/selinux/hooks.c:6448
- security_d_instantiate+0x50/0xe0 security/security.c:2039
- d_splice_alias+0x8c/0xc60 fs/dcache.c:3064
- kernfs_iop_lookup+0x22d/0x2c0 fs/kernfs/dir.c:1137
- lookup_open.isra.0+0x69f/0x13d0 fs/namei.c:3260
- open_last_lookups fs/namei.c:3352 [inline]
- path_openat+0x9a5/0x2740 fs/namei.c:3558
- do_filp_open+0x1aa/0x400 fs/namei.c:3588
- do_sys_openat2+0x16d/0x4d0 fs/open.c:1200
- do_sys_open fs/open.c:1216 [inline]
- __do_sys_open fs/open.c:1224 [inline]
- __se_sys_open fs/open.c:1220 [inline]
- __x64_sys_open+0x119/0x1c0 fs/open.c:1220
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Memory state around the buggy address:
- ffff888079314d00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffff888079314d80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->ffff888079314e00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-                   ^
- ffff888079314e80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff888079314f00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-==================================================================
+RIP: 0033:0x7faa3e405d29
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 b1 14 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffdc1e38c38 EFLAGS: 00000246 ORIG_RAX: 00000000000001c0
+RAX: ffffffffffffffda RBX: 0000000000011d9b RCX: 00007faa3e405d29
+RDX: 00007faa3e405d29 RSI: 0000000000000000 RDI: 0000000000000003
+RBP: 0000000000000000 R08: 00007ffdc1e38dd8 R09: 00007ffdc1e38dd8
+R10: 00007ffdc1e38dd8 R11: 0000000000000246 R12: 00007ffdc1e38c4c
+R13: 431bde82d7b634db R14: 0000000000000000 R15: 0000000000000000
+Modules linked in:
+---[ end trace 281cbdc141c02a9c ]---
+RIP: 0010:__lock_acquire+0xd7d/0x54a0 kernel/locking/lockdep.c:4885
+Code: e9 0d 41 be 01 00 00 00 0f 86 c8 00 00 00 89 05 f9 0b e9 0d e9 bd 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 da 48 c1 ea 03 <80> 3c 02 00 0f 85 f3 2f 00 00 48 81 3b 00 35 f0 8e 0f 84 52 f3 ff
+RSP: 0018:ffffc9000562f970 EFLAGS: 00010006
+RAX: dffffc0000000000 RBX: 0000000000000018 RCX: 0000000000000000
+RDX: 0000000000000003 RSI: 0000000000000000 RDI: 0000000000000001
+RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: ffff888077151c80 R14: 0000000000000000 R15: 0000000000000000
+FS:  0000555555f75300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffdc1e38c38 CR3: 00000000780df000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess), 1 bytes skipped:
+   0:	0d 41 be 01 00       	or     $0x1be41,%eax
+   5:	00 00                	add    %al,(%rax)
+   7:	0f 86 c8 00 00 00    	jbe    0xd5
+   d:	89 05 f9 0b e9 0d    	mov    %eax,0xde90bf9(%rip)        # 0xde90c0c
+  13:	e9 bd 00 00 00       	jmpq   0xd5
+  18:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  1f:	fc ff df
+  22:	48 89 da             	mov    %rbx,%rdx
+  25:	48 c1 ea 03          	shr    $0x3,%rdx
+* 29:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
+  2d:	0f 85 f3 2f 00 00    	jne    0x3026
+  33:	48 81 3b 00 35 f0 8e 	cmpq   $0xffffffff8ef03500,(%rbx)
+  3a:	0f                   	.byte 0xf
+  3b:	84 52 f3             	test   %dl,-0xd(%rdx)
+  3e:	ff                   	.byte 0xff
 
 
 ---
@@ -194,6 +142,5 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 syzbot can test patches for this issue, for details see:
 https://goo.gl/tpsmEJ#testing-patches
