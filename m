@@ -2,77 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 927F6440F7A
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 17:39:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C3F6440F7B
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 17:39:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229898AbhJaQln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 12:41:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50024 "EHLO
+        id S229993AbhJaQmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 12:42:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229579AbhJaQlk (ORCPT
+        with ESMTP id S229579AbhJaQmS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 12:41:40 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0405CC061570
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 09:39:08 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id e144so18848197iof.3
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 09:39:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HuyhslhAk1Pp7puf3EU8lOlEEWbwv/ka8qF3oPU6dZs=;
-        b=Vou91/NsTERRgFjIEMMJYijC6WjqDEzuxRVCM/RmxzkfXLyFccHPYzx7vAw0QVKVLQ
-         /OZVAw+IfFehYNdZeie5/EcuNUlQXfAEBI6sAOZ17LJoQwWvOSHInZ0aZEni4vTM8ezd
-         /SwCT0yckmvmqHUUUoENOlOmDJF/W3x4VqPzWF1kl7OGfnWq2KOXG+Vs7cBPQE86U36W
-         6+kQ22eDtvhf6YKq2Fpl5mjVudYwSgTI9wRch1W6U+LXvLGNpCczXL1pgu+q/Q76mS2u
-         KbYSQK9wHJsRIv9PKQf57zLVgTka1U3SNgbuKp/k7BL8tFrVesAXalEyyKs6/obNaYe7
-         NHSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HuyhslhAk1Pp7puf3EU8lOlEEWbwv/ka8qF3oPU6dZs=;
-        b=4xXyczH9AjrCmyvnWjZBsSZoQnHRN1lmcyEA8dE0wbbm0wmjqeWnU3WDNJZcFe4QGQ
-         OMa9mhg3yP9oN5ge/LvWJACfodmWMySWGLXLYtsADOETb0ymOE9hY2eHZBNCl2ueO00G
-         HkX5jAZsmkyrNLna/hv25/FHQoeMhpuVIPZnvTnVG/DjSKtv1QNrcYXsv42cRIzCyZ6t
-         +AXdRmWp93ptGIz1fEnKH3jqUVPGUAI2XNcezhMPLU3rTFbO27hJ1P2xWsOkCMquFm5M
-         OaIjFYz3F/7YgWyb7TCIHwrBSt5GQ4vFdj+CfszXEjDmD+NrXYaxWCG+nBKCF2LX4ClI
-         MGTg==
-X-Gm-Message-State: AOAM531ykls6io0ydNh2r3PNjWSPwKpebnrq9h60arkjmCkmN+PYrbqf
-        sy4ok95gDLIGdHAkGloVQpN11PdP1iUwkrywbQ/5mAJMOlo=
-X-Google-Smtp-Source: ABdhPJwqGv6gqpPoGZe1MtPv8GGrap1s8oktElCK9G83ZG64N9XZXjHENjNBryOeiWr3/Tqj1TI/GrskG013jO9+obk=
-X-Received: by 2002:a5d:8903:: with SMTP id b3mr17683659ion.44.1635698347506;
- Sun, 31 Oct 2021 09:39:07 -0700 (PDT)
+        Sun, 31 Oct 2021 12:42:18 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 168B7C061570;
+        Sun, 31 Oct 2021 09:39:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Rp8yNDT9JB3LRMzfJfNEleH+RHkEoWlw4lzlXDzKQ2Q=; b=UNp+S5lm+9UO/WwnKsquJL5VaW
+        o1wjfKIigJwTbq/CJO1kPGEPcQq7Xr0g78T8w2aRUazqhwlewYudyFJRQiZRBRsnCD7Ff5YtQA0fH
+        LmMXzNjOq0Erd2Fon1jLSDE0y+J8Vh1c/xwFsI1dKIQeBCRNcieZfM/hqH+OwoE6uv3Pt8ASQGlpt
+        UwAkeHrXcpydWkCB4CQr3MN9uQX70AhHfNqM2nWJjck7DfndNX/LfLg/4heeY1phv/k6vSiskfpni
+        QAIfQydKMvg5+E3b1rqEKrIs7/J0OT0gEUNa2znRPqFIPhrFE+VSHp7P6wbFw9OclAE6unWdwaT3W
+        motZbuxQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mhDre-00DQF6-8i; Sun, 31 Oct 2021 16:39:22 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id F1476984CD2; Sun, 31 Oct 2021 17:39:20 +0100 (CET)
+Date:   Sun, 31 Oct 2021 17:39:20 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Mark Rutland <mark.rutland@arm.com>, X86 ML <x86@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-hardening@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH] static_call,x86: Robustify trampoline patching
+Message-ID: <20211031163920.GV174703@worktop.programming.kicks-ass.net>
+References: <CAMj1kXHKh7wv6JqusVnoiQDMm7ApFq2ujzbfWmM9AzLKFehhAA@mail.gmail.com>
+ <YXlcMluaysPBF92J@hirez.programming.kicks-ass.net>
+ <CAMj1kXECTdDLVMk2JduU5mV2TR0Cv=hZ9QOpYRsRM1jfvvNikw@mail.gmail.com>
+ <CABCJKufpS4jJxHqk8=bd1JCNbKfmLDKBbjbhjrar2+YQJFiprg@mail.gmail.com>
+ <20211029200324.GR174703@worktop.programming.kicks-ass.net>
+ <20211030074758.GT174703@worktop.programming.kicks-ass.net>
+ <CAMj1kXEJd5=3A_6Jhd4UU-TBGarnHo5+U76Zxxt7SzXsWp4CcA@mail.gmail.com>
+ <20211030180249.GU174703@worktop.programming.kicks-ass.net>
+ <CAMj1kXF4ZNAvdC8tP_H=v1Dn_Zcv=La11Ok43ceQOyb1Xo1jXQ@mail.gmail.com>
+ <CAMj1kXEvemVOWf4M_0vsduN_kiCsGVmM92cE7KPMoNKViKp=RQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20211029215516.801593-1-cmirabil@redhat.com>
-In-Reply-To: <20211029215516.801593-1-cmirabil@redhat.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Sun, 31 Oct 2021 17:38:56 +0100
-Message-ID: <CANiq72=cp+LTQhGMMmtWHLAk+AE81HOVB+2f06kQ9DXtBz+NyA@mail.gmail.com>
-Subject: Re: [PATCH 0/5] Raspberry Pi Sense HAT driver
-To:     Charles Mirabile <cmirabil@redhat.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Serge Schneider <serge@raspberrypi.org>,
-        Stefan Wahren <stefan.wahren@i2se.com>,
-        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
-        linux-rpi-kernel@lists.infradead.org, fedora-rpi@googlegroups.com,
-        Mwesigwa Guma <mguma@redhat.com>,
-        Joel Savitz <jsavitz@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXEvemVOWf4M_0vsduN_kiCsGVmM92cE7KPMoNKViKp=RQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 11:58 PM Charles Mirabile <cmirabil@redhat.com> wrote:
->
-> Signed-off-by: Charles Mirabile <cmirabil@redhat.com>
-> Signed-off-by: Mwesigwa Guma <mguma@redhat.com>
-> Signed-off-by: Joel Savitz <jsavitz@redhat.com>
+On Sun, Oct 31, 2021 at 05:24:13PM +0100, Ard Biesheuvel wrote:
+> On Sat, 30 Oct 2021 at 20:55, Ard Biesheuvel <ardb@kernel.org> wrote:
+> >
+> > On Sat, 30 Oct 2021 at 20:03, Peter Zijlstra <peterz@infradead.org> wrote:
+> > >
+> > > On Sat, Oct 30, 2021 at 07:19:53PM +0200, Ard Biesheuvel wrote:
+> > > > I just realized that arm64 has the exact same problem, which is not
+> > > > being addressed by my v5 of the static call support patch.
+> > >
+> > > Yeah, it would.
+> > >
+> > > > As it turns out, the v11 Clang that I have been testing with is broken
+> > > > wrt BTI landing pads, and omits them from the jump table entries.
+> > > > Clang 12+ adds them properly, which means that both the jump table
+> > > > entry and the static call trampoline may start with BTI C + direct
+> > > > branch, and we also need additional checks to disambiguate.
+> > >
+> > > I'm not sure, why would the static_call trampoline need a BTI C ? The
+> > > whole point of static_call() is to be a direct call, we should never
+> > > have an indirect call to the trampoline, that would defeat the whole
+> > > purpose.
+> >
+> > This might happen when the distance between the caller and the
+> > trampoline is more than 128 MB, in which case we emit a veneer that
+> > uses an indirect call as well. So we definitely need the landing pad
+> > in the trampoline.
+> 
+> Something like the below seems to work to prevent getting the wrong
+> trampoline address into arch_static_call_transform:
 
-Please note that you need to write `Co-developed-by: ...` (see
-`Documentation/process/submitting-patches.rst`); otherwise, it looks
-as if this was sent through several layers.
-
-Cheers,
-Miguel
+Is is also a terriblly gross hack. I really want the clang-cfi stuff to
+improve, not add layers of hacks on top of it.
