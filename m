@@ -2,96 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCEA3440D58
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 07:31:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89B0F440D5B
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 07:33:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229960AbhJaGeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 02:34:10 -0400
-Received: from isilmar-4.linta.de ([136.243.71.142]:49048 "EHLO
-        isilmar-4.linta.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229638AbhJaGeI (ORCPT
+        id S229754AbhJaGf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 02:35:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229638AbhJaGfz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 02:34:08 -0400
-X-isilmar-external: YES
-X-isilmar-external: YES
-X-isilmar-external: YES
-X-isilmar-external: YES
-X-isilmar-external: YES
-X-isilmar-external: YES
-Received: from light.dominikbrodowski.net (brodo.linta [10.2.0.102])
-        by isilmar-4.linta.de (Postfix) with ESMTPSA id 19BA0201306;
-        Sun, 31 Oct 2021 06:31:36 +0000 (UTC)
-Received: by light.dominikbrodowski.net (Postfix, from userid 1000)
-        id AB13520157; Sun, 31 Oct 2021 07:30:36 +0100 (CET)
-Date:   Sun, 31 Oct 2021 07:30:36 +0100
-From:   Dominik Brodowski <linux@dominikbrodowski.net>
-To:     tytso@mit.edu
-Cc:     "Ivan T. Ivanov" <iivanov@suse.de>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Bhupesh Sharma <bhsharma@redhat.com>,
-        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] random: fix crash on multiple early calls to
- add_bootloader_randomness()
-Message-ID: <YX44DCaIg/qGOrtE@light.dominikbrodowski.net>
-References: <20211012082708.121931-1-iivanov@suse.de>
- <YWVKAk4h5bsUA3b6@light.dominikbrodowski.net>
+        Sun, 31 Oct 2021 02:35:55 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A479DC061570;
+        Sat, 30 Oct 2021 23:33:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=5UQCkPFBQN2ny5fsoShcXhE1TmXwRaGEXGfIKwPR5nM=; b=MG81UmGaKWP24T5hF+ZepKdrPh
+        A5ht6gORJ04D939dN/dyzD3IQL4zZiJLHVu8p7FKb/fhxRvegbRvKFtEyc3QTJ5CNPUvQYbTtkb/n
+        OMoXWCWyYS79v+0D/NeGE5ssnixRf5cJFpbI4dHuG7FtLe5Bhamj+yRUVh6ciKxPtZ/8qiBf18pVz
+        s2Qcq3oi2CYrEavdVGNQaQFu85bTevjId+w6mMWOL27shht1BesT5HgaYrw+ugvv2yR6WMQ1i/bi1
+        ntVqNU5eRWtNunZIgUEfqzeeJ/lUJub6IyGGopmQxSorMtMtWn9lQbB22K0wW5n1vUCDzQCWfwybi
+        yPrGgg/Q==;
+Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mh4PD-00DiU7-9P; Sun, 31 Oct 2021 06:33:23 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kbuild@vger.kernel.org, Andi Kleen <ak@linux.intel.com>
+Subject: [PATCH] scripts/config: allow "O=config-dir" option
+Date:   Sat, 30 Oct 2021 23:33:22 -0700
+Message-Id: <20211031063322.20486-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YWVKAk4h5bsUA3b6@light.dominikbrodowski.net>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If add_bootloader_randomness() or add_hwgenerator_randomness() is
-called for the first time during early boot, crng_init equals 0. Then,
-crng_fast_load() gets called -- which is safe to do even if the input
-pool is not yet properly set up.
+Support "O=config-dir" as the location of the .config file
+like (some) other kernel build (make) tools do.
 
-If the added entropy suffices to increase crng_init to 1, future calls
-to add_bootloader_randomness() or add_hwgenerator_randomness() used to
-progress to credit_entropy_bits(). However, if the input pool is not yet
-properly set up, the cmpxchg call within that function can lead to an
-infinite recursion. This is not only a hypothetical problem, as qemu
-on x86 may provide bootloader entropy via EFI and via devicetree.
+Someone asked for this "feature" a few months ago but I don't
+recall who it was.
 
-As crng_global_init_time is set to != 0 once the input pool is properly
-set up, check (also) for this condition to determine which branch to take.
+Also check for the existence of the config-dir/config-file
+and report if there is no such file instead of letting grep
+report that there is no such file.
 
-Calls to crng_fast_load() do not modify the input pool; therefore, the
-entropy_count for the input pool must not be modified at that early
-stage.
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: linux-kbuild@vger.kernel.org
+Cc: Andi Kleen <ak@linux.intel.com>
+---
+ scripts/config |   44 +++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 39 insertions(+), 5 deletions(-)
 
-Reported-and-tested-by: Ivan T. Ivanov <iivanov@suse.de>
-Fixes: 18b915ac6b0a ("efi/random: Treat EFI_RNG_PROTOCOL output as bootloader randomness")
-Signed-off-by: Dominik Brodowski <linux@dominikbrodowski.net>
-
-diff --git a/drivers/char/random.c b/drivers/char/random.c
-index 605969ed0f96..4211ff3092f9 100644
---- a/drivers/char/random.c
-+++ b/drivers/char/random.c
-@@ -1763,8 +1763,8 @@ static void __init init_std_data(struct entropy_store *r)
+--- linux-next-20211029.orig/scripts/config
++++ linux-next-20211029/scripts/config
+@@ -37,6 +37,7 @@ commands:
+ 
+ options:
+ 	--file config-file   .config file to change (default .config)
++	O=config-dir         Specify the directory location of the config-file
+ 	--keep-case|-k       Keep next symbols' case (dont' upper-case it)
+ 
+ $myname doesn't check the validity of the .config file. This is done at next
+@@ -124,15 +125,48 @@ undef_var() {
+ 	txt_delete "^# $name is not set" "$FN"
  }
  
- /*
-- * Note that setup_arch() may call add_device_randomness()
-- * long before we get here. This allows seeding of the pools
-+ * add_device_randomness() or add_bootloader_randomness() may be
-+ * called long before we get here. This allows seeding of the pools
-  * with some platform dependent data very early in the boot
-  * process. But it limits our options here. We must use
-  * statically allocated structures that already have all
-@@ -2274,7 +2274,12 @@ void add_hwgenerator_randomness(const char *buffer, size_t count,
- {
- 	struct entropy_store *poolp = &input_pool;
+-if [ "$1" = "--file" ]; then
+-	FN="$2"
+-	if [ "$FN" = "" ] ; then
++DIR=
++FN=
++
++while [ "$DIR" = "" -o "$FN" = "" ]; do
++
++	if [ "$1" = "" ] ; then
+ 		usage
+ 	fi
+-	shift 2
+-else
++	if [ "$1" = "--file" ]; then
++		FN="$2"
++		if [ "$FN" = "" ] ; then
++			usage
++		fi
++		shift 2
++		continue
++	fi
++
++	optn=$1
++	optnlen=${#optn}
++	if [ $optnlen -gt 1 ] && [ ${optn:0:2} = "O=" ]; then
++		DIR=${optn:2}
++		shift
++		if [ "$DIR" = "" ]; then
++			usage
++		fi
++		continue
++	fi
++	break	# something other than --file or O=dir
++done
++
++if [ "$FN" = "" ]; then
+ 	FN=.config
+ fi
++if [ "$DIR" != "" ]; then
++	DIR=$DIR"/"
++fi
++FN="$DIR""$FN"
++
++if [ ! -r $FN ]; then
++	echo "No such config file: $FN"
++	exit
++fi
  
--	if (unlikely(crng_init == 0)) {
-+	/* We cannot do much with the input pool until it is set up in
-+	 * rand_initalize(); therefore just mix into the crng state.
-+	 * As this does not affect the input pool, we cannot credit
-+	 * entropy for this.
-+	 */
-+	if (unlikely(crng_init == 0) || unlikely(crng_global_init_time == 0)) {
- 		crng_fast_load(buffer, count);
- 		return;
- 	}
+ if [ "$1" = "" ] ; then
+ 	usage
