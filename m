@@ -2,65 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FC5D440F2B
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 16:35:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75076440F32
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 16:38:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230063AbhJaPh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 11:37:27 -0400
-Received: from smtprelay0027.hostedemail.com ([216.40.44.27]:34218 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229734AbhJaPh0 (ORCPT
+        id S229960AbhJaPlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 11:41:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229734AbhJaPlB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 11:37:26 -0400
-Received: from omf01.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id B3D52837F24D;
-        Sun, 31 Oct 2021 15:34:53 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf01.hostedemail.com (Postfix) with ESMTPA id CDAEE17277;
-        Sun, 31 Oct 2021 15:34:51 +0000 (UTC)
-Message-ID: <b42482be11d04963fed0903ce1bd983742efc5c6.camel@perches.com>
-Subject: Re: [PATCH] drivers: tty: replace snprintf in show functions with
- sysfs_emit
-From:   Joe Perches <joe@perches.com>
-To:     Greg KH <gregkh@linuxfoundation.org>, cgel.zte@gmail.com
-Cc:     jirislaby@kernel.org, johan@kernel.org, macro@orcam.me.uk,
-        fancer.lancer@gmail.com, andrew@aj.id.au, pali@kernel.org,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jing Yao <yao.jing2@zte.com.cn>, Zeal Robot <zealci@zte.com.cn>
-Date:   Sun, 31 Oct 2021 08:34:50 -0700
-In-Reply-To: <YXuKMo14CCM1iHMG@kroah.com>
-References: <20211028101350.14172-1-yao.jing2@zte.com.cn>
-         <YXuKMo14CCM1iHMG@kroah.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.4-1 
+        Sun, 31 Oct 2021 11:41:01 -0400
+Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41244C061714
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 08:38:29 -0700 (PDT)
+Received: by mail-ua1-x92a.google.com with SMTP id b17so17459031uas.0
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 08:38:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/DMyohOWdXPyhg1wQ6EXkgg16+mKidkiCYKLquXwk3o=;
+        b=iOSJ3zT4CzRoNn5efFa/M784mUmjitd1sxBCleHNmGY1VnNmg8MRCjTel14ollf2+c
+         aJE14EtUsvImlxR/QznTnF2DxiQkaz2TEwlD/WHF2uP69spnzHiJGPv7NGbqTsjktQDT
+         0U4Rm3t1t56p9fx5UM94ifmlhvnewPasV3fbi0iiWklDQ4XHzlnOHpiKlXYeb7vt0571
+         6LkGX2b/AxV49vp5TBxp8DJZa8fwLxvQIgfyTSNl11PESGgAnDUGUiaynA9vF9ytcLKH
+         2qTK5XvcC7u185IyKcMEJceJPmxppBTZcRUSnk8yEQKPfLrrmHzgWgASlD45wvOjoQJ/
+         L1hQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/DMyohOWdXPyhg1wQ6EXkgg16+mKidkiCYKLquXwk3o=;
+        b=dimqAAF5B3TgWtzkvpTYNLZTIRl7Eyrwq7ucFC9SFO9XbqtqVFht2+b/IUorpovBMi
+         0FyO+VoQ37siFHApgue11wmYBrBJUZZc52YIqvBdWVemXbdDIzzJ1mGdZPkL+pL5VjvA
+         iJlzw/UaiLDbH57EqnIqE4d19nsQSAgB8ogyGUnLs404ODVEcwtrEfM+sXOLa6GTJihr
+         7Y3LQOftdFNFqtYhEb4zKD7omqN5CN/a9f5RTkNZl5GDxctbKfovtWg+rbnyTlgXVWqN
+         mS01kKS5FRCZleRcnEqKX15PNZt4Feqzd/iFbKQTolqSC/tE3JmbiRdekQIhKfD66Tqr
+         9r0A==
+X-Gm-Message-State: AOAM533Wdjl+sP2s+xr2CJRqWyaMR3vYzyGAc1WXyH5Zw9s8SFNiNYCU
+        OuUf7/ZOlMbOQUm95UN4C8EkPyTNVDY=
+X-Google-Smtp-Source: ABdhPJxGV4+70WAoqUDwaz9n4zUUfrUY53rUfDdxfkZXEKhTJoxEEbNhPdVIx3na8eClDjXRyF5sgw==
+X-Received: by 2002:a67:f50a:: with SMTP id u10mr3929655vsn.56.1635694708265;
+        Sun, 31 Oct 2021 08:38:28 -0700 (PDT)
+Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com. [209.85.222.46])
+        by smtp.gmail.com with ESMTPSA id t76sm1870367vkt.0.2021.10.31.08.38.27
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 31 Oct 2021 08:38:27 -0700 (PDT)
+Received: by mail-ua1-f46.google.com with SMTP id x3so27523095uar.13
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 08:38:27 -0700 (PDT)
+X-Received: by 2002:a67:facc:: with SMTP id g12mr2351426vsq.22.1635694707053;
+ Sun, 31 Oct 2021 08:38:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Server: rspamout05
-X-Rspamd-Queue-Id: CDAEE17277
-X-Spam-Status: No, score=-2.84
-X-Stat-Signature: f6n4d7pczgg7tem16s3y5qwpawx7q89o
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX18pLsj/JxrLBiU0vma/+p4e2qR0q4Co738=
-X-HE-Tag: 1635694491-566448
+References: <20211031045959.143001-1-andrew@daynix.com> <20211031045959.143001-4-andrew@daynix.com>
+ <CA+FuTScq-B9tXjV8qO5oBpFGObhGGZDSXC+iRMxwH89TvEhexw@mail.gmail.com>
+In-Reply-To: <CA+FuTScq-B9tXjV8qO5oBpFGObhGGZDSXC+iRMxwH89TvEhexw@mail.gmail.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Sun, 31 Oct 2021 11:37:51 -0400
+X-Gmail-Original-Message-ID: <CA+FuTScP-LcRO5PXjohzDS8NXmF6j6u5nxprtnj89q6Cucmgbw@mail.gmail.com>
+Message-ID: <CA+FuTScP-LcRO5PXjohzDS8NXmF6j6u5nxprtnj89q6Cucmgbw@mail.gmail.com>
+Subject: Re: [RFC PATCH 3/4] drivers/net/virtio_net: Added basic RSS support.
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc:     Andrew Melnychenko <andrew@daynix.com>, mst@redhat.com,
+        jasowang@redhat.com, davem@davemloft.net, kuba@kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yuri.benditovich@daynix.com,
+        yan@daynix.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-10-29 at 07:44 +0200, Greg KH wrote:
-> On Thu, Oct 28, 2021 at 10:13:50AM +0000, cgel.zte@gmail.com wrote:
-> > From: Jing Yao <yao.jing2@zte.com.cn>
-> > 
-> > Reported-by: Zeal Robot <zealci@zte.com.cn>
-> 
-> Please fix your broken "robot" before submitting any more patches to the
-> Linux kernel project.
+> > +               hdr_hash = (struct virtio_net_hdr_v1_hash *)(hdr);
+> > +
+> > +               switch (hdr_hash->hash_report) {
+> > +               case VIRTIO_NET_HASH_REPORT_TCPv4:
+> > +               case VIRTIO_NET_HASH_REPORT_UDPv4:
+> > +               case VIRTIO_NET_HASH_REPORT_TCPv6:
+> > +               case VIRTIO_NET_HASH_REPORT_UDPv6:
+> > +               case VIRTIO_NET_HASH_REPORT_TCPv6_EX:
+> > +               case VIRTIO_NET_HASH_REPORT_UDPv6_EX:
+> > +                       rss_hash_type = PKT_HASH_TYPE_L4;
+> > +                       break;
+> > +               case VIRTIO_NET_HASH_REPORT_IPv4:
+> > +               case VIRTIO_NET_HASH_REPORT_IPv6:
+> > +               case VIRTIO_NET_HASH_REPORT_IPv6_EX:
+> > +                       rss_hash_type = PKT_HASH_TYPE_L3;
+> > +                       break;
+> > +               case VIRTIO_NET_HASH_REPORT_NONE:
+> > +               default:
+> > +                       rss_hash_type = PKT_HASH_TYPE_NONE;
+> > +               }
+>
+> Is this detailed protocol typing necessary? Most devices only pass a bit is_l4.
+> > +static void virtnet_init_default_rss(struct virtnet_info *vi)
+> > +{
+> > +       u32 indir_val = 0;
+> > +       int i = 0;
+> > +
+> > +       vi->ctrl->rss.table_info.hash_types = vi->rss_hash_types_supported;
+>
+> Similar to above, and related to the next patch: is this very detailed
+> specification of supported hash types needed? When is this useful? It
+> is not customary to specify RSS to that degree.
 
-There's no indication the robot and the patch author/submitter are
-the same.
-
-I think the "robot" _reporting_ the issue is reasonable, but not the
-patch author/submitter.
-
-Though whatever the "Zeal Robot" is should likely be public otherwise
-the Reported-by: reference isn't useful.
-
-
+My bad. This is also implemented by bnxt, for one. I was unaware of
+this feature.
