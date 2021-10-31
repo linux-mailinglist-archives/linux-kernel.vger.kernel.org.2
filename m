@@ -2,141 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE6A1440DCB
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 11:17:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A436440DCE
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 11:18:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231838AbhJaKTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 06:19:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52070 "EHLO
+        id S230080AbhJaKUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 06:20:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230426AbhJaKTA (ORCPT
+        with ESMTP id S229863AbhJaKUs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 06:19:00 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47869C061570;
-        Sun, 31 Oct 2021 03:16:29 -0700 (PDT)
-Date:   Sun, 31 Oct 2021 10:16:27 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1635675387;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OjADXqmyOVWvfdpc7LfCdHWZSHlCAZUfg6bYVb8JAfk=;
-        b=mo55E2fAg+4j5T/ZZMPPYFovJC1t+a68cAqIXQNAmdkRDG68xuobG4VF6TMF8gvM3YW5aM
-        SQ3Rb/fG09THEYLs5+T/qk1lBFlKpCz1oc3Sh7z8Tzop/cbvzv+KH9gTJfzZxXEsPlDkrW
-        X1HVGVcRh57oJKSWr5ADvHP0ROkVU4+tZS+nn3ClX8Ln1lpla4fXCh95eNjOXR3Usg802c
-        yj64Z7H7ZkUlneTo9UisdX7J45ubDgKtpboXOGVeDyA95OItjIsGorA5WrVJV6brc8pa8w
-        C0cRye69G0n9z2MOgKKKA63wYbqra7tFXU6sxJk2AUgBK0nIq59iEva0zMJQjw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1635675388;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OjADXqmyOVWvfdpc7LfCdHWZSHlCAZUfg6bYVb8JAfk=;
-        b=DW9Voe4XaFF3+kjEosd9JlL77yPZxdsh8EjAyRoDtdiats9qKh63VmGYe6WUDlnoCahq8X
-        B8ajXs7rCqDnKBDw==
-From:   "tip-bot2 for Vincent Guittot" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/fair: Account update_blocked_averages in
- newidle_balance cost
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Mel Gorman <mgorman@suse.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20211019123537.17146-2-vincent.guittot@linaro.org>
-References: <20211019123537.17146-2-vincent.guittot@linaro.org>
+        Sun, 31 Oct 2021 06:20:48 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DBF5C061570
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 03:18:17 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id a129so23858199yba.10
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 03:18:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LMVI1kpqvvyiP3Olw3uywPocXg6WxoMUFeIKvUYY17I=;
+        b=LJfWLP1GRusAODbhA/S1ZDFw18z+WmxHOYF7IJnikHj6R/HZo351kZgtzEBx0+pwBh
+         ESLQaIxvr7hpOdeTRcnh0OrWr/1IwuwS6e5lVAb2+jF9eYXdL+1VhHLvgP6XTqELHoB7
+         W0RL8qmRguf50UOIlARwYdRDxlWsChnxM1ZuQFjcXHp6htcX/yAWtaFpXa8GUTCXMUqv
+         wyP3frpYdGX0B3pPzciGSgZEwRupYwiYRHuiZ8SCEuXbjQ+pcZS8+krrqSsGsqtAmHYs
+         eBEiPrjo+WC0Of2uaIx0ZUJc27R3oTWlIrc9wjjZVn3i3D9DHJh5Y1+pqczg/Tt5Zsk4
+         Ve3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LMVI1kpqvvyiP3Olw3uywPocXg6WxoMUFeIKvUYY17I=;
+        b=EwYMVO39yC/GSjKfJwhQD4uEmXzFipnZFTxktPTR+Gy0dLXojZeqZlgbcOz+P+34dv
+         i9CJvnoZqVXvU8vETOqblt0dccVJ3SpvUGMPVZs/DrjDuMAy1FddO+qzG3O4z6CYabFB
+         vjKrHKWpFnsCGPLmGJFXcQqmqpxLUD1vI7iB9uAzozo6M4fcgPGa/EV+l/n7SthWO+Qj
+         RtAWSgtPHkTsKvY14AOjllKNZZbICr2Xy/Oo5lwc8Ln4MZ7HdYmLLpNyxGesUeEDxPAv
+         t/doBA90+p7VM+9G9uZ217vy5fWWgXvTsI+N8tbll/oydlwXbT7vrgdKHBsu/sVfwUqB
+         lr4g==
+X-Gm-Message-State: AOAM5319FfLt+g3hsEC7O0raCzK2CQQhn+axXsfIGLPEuG0UZk0b3D8d
+        L+yf4x5pZWi3cRHdyYDGVtrh1PS9exKAlQyUvdbcVQ==
+X-Google-Smtp-Source: ABdhPJwqdHjzz/qrOvohvsPmNT4PqonDfVpaca+xA7AjcHuLu/87i3Ivx7ZwjPx6QojRmKSb65+SNk8arn6pJRsojT8=
+X-Received: by 2002:a25:44c5:: with SMTP id r188mr17615327yba.191.1635675496310;
+ Sun, 31 Oct 2021 03:18:16 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <163567538702.626.3632817965971500674.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20211019123537.17146-1-vincent.guittot@linaro.org>
+ <7128695d64e9161637b67315b5beb51c4accdc82.camel@linux.intel.com>
+ <CAKfTPtAv7vPGYAwUSmGL5wtbY=if8G+3geWMKpHu3vLGqthPfg@mail.gmail.com> <f21e1c14148039eb5c7d475f53aba1f4a2e0ca43.camel@linux.intel.com>
+In-Reply-To: <f21e1c14148039eb5c7d475f53aba1f4a2e0ca43.camel@linux.intel.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Sun, 31 Oct 2021 11:18:04 +0100
+Message-ID: <CAKfTPtDc4V9sV=K68zer__3THkbbTpwC7v8t36Z88oVx4-Z-wg@mail.gmail.com>
+Subject: Re: [PATCH v3 0/5] Improve newidle lb cost tracking and early abort
+To:     Tim Chen <tim.c.chen@linux.intel.com>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/core branch of tip:
+On Fri, 29 Oct 2021 at 19:00, Tim Chen <tim.c.chen@linux.intel.com> wrote:
+>
+> On Wed, 2021-10-27 at 10:49 +0200, Vincent Guittot wrote:
+> >
+> >
+> > Few problems still remain in your case if I'm not wrong:
+> > There is a patch that ensures that rq->next_balance is never set in
+> > the past.
+> >
+>
+> Vincent,
+>
+> Were you planning to take the patch to prevent the next_balance to be
+> in the past?
 
-Commit-ID:     9e9af819db5dbe4bf99101628955a26e2a41a1a5
-Gitweb:        https://git.kernel.org/tip/9e9af819db5dbe4bf99101628955a26e2a41a1a5
-Author:        Vincent Guittot <vincent.guittot@linaro.org>
-AuthorDate:    Tue, 19 Oct 2021 14:35:33 +02:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Sun, 31 Oct 2021 11:11:37 +01:00
+I can add it to this serie
 
-sched/fair: Account update_blocked_averages in newidle_balance cost
 
-The time spent to update the blocked load can be significant depending of
-the complexity fo the cgroup hierarchy. Take this time into account in
-the cost of the 1st load balance of a newly idle cpu.
-
-Also reduce the number of call to sched_clock_cpu() and track more actual
-work.
-
-Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Acked-by: Mel Gorman <mgorman@suse.de>
-Link: https://lore.kernel.org/r/20211019123537.17146-2-vincent.guittot@linaro.org
----
- kernel/sched/fair.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 87db481..c014567 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -10840,9 +10840,9 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
- {
- 	unsigned long next_balance = jiffies + HZ;
- 	int this_cpu = this_rq->cpu;
-+	u64 t0, t1, curr_cost = 0;
- 	struct sched_domain *sd;
- 	int pulled_task = 0;
--	u64 curr_cost = 0;
- 
- 	update_misfit_status(NULL, this_rq);
- 
-@@ -10887,11 +10887,13 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
- 
- 	raw_spin_rq_unlock(this_rq);
- 
-+	t0 = sched_clock_cpu(this_cpu);
- 	update_blocked_averages(this_cpu);
-+
- 	rcu_read_lock();
- 	for_each_domain(this_cpu, sd) {
- 		int continue_balancing = 1;
--		u64 t0, domain_cost;
-+		u64 domain_cost;
- 
- 		if (this_rq->avg_idle < curr_cost + sd->max_newidle_lb_cost) {
- 			update_next_balance(sd, &next_balance);
-@@ -10899,17 +10901,18 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
- 		}
- 
- 		if (sd->flags & SD_BALANCE_NEWIDLE) {
--			t0 = sched_clock_cpu(this_cpu);
- 
- 			pulled_task = load_balance(this_cpu, this_rq,
- 						   sd, CPU_NEWLY_IDLE,
- 						   &continue_balancing);
- 
--			domain_cost = sched_clock_cpu(this_cpu) - t0;
-+			t1 = sched_clock_cpu(this_cpu);
-+			domain_cost = t1 - t0;
- 			if (domain_cost > sd->max_newidle_lb_cost)
- 				sd->max_newidle_lb_cost = domain_cost;
- 
- 			curr_cost += domain_cost;
-+			t0 = t1;
- 		}
- 
- 		update_next_balance(sd, &next_balance);
+>
+> Tim
+>
+> ---
+> From 2a5ebdeabbfdf4584532ef0e27d37ed75ca7dbd3 Mon Sep 17 00:00:00 2001
+> From: Tim Chen <tim.c.chen@linux.intel.com>
+> Date: Tue, 11 May 2021 09:55:41 -0700
+> Subject: [PATCH] sched: sched: Fix rq->next_balance time updated to earlier
+>  than current time
+> To: hmem@eclists.intel.com
+>
+> In traces on newidle_balance(), this_rq->next_balance
+> time goes backward and earlier than current time jiffies, e.g.
+>
+> 11.602 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb76c jiffies=0x1004fb739
+> 11.624 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb739
+> 13.856 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb76c jiffies=0x1004fb73b
+> 13.910 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73b
+> 14.637 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb76c jiffies=0x1004fb73c
+> 14.666 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73c
+>
+> It doesn't make sense to have a next_balance in the past.
+> Fix newidle_balance() and update_next_balance() so the next
+> balance time is at least jiffies+1.
+> ---
+>  kernel/sched/fair.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 1d75af1ecfb4..740a0572cbf1 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -9901,7 +9901,10 @@ update_next_balance(struct sched_domain *sd, unsigned long *next_balance)
+>
+>         /* used by idle balance, so cpu_busy = 0 */
+>         interval = get_sd_balance_interval(sd, 0);
+> -       next = sd->last_balance + interval;
+> +       if (time_after(jiffies+1, sd->last_balance + interval))
+> +               next = jiffies+1;
+> +       else
+> +               next = sd->last_balance + interval;
+>
+>         if (time_after(*next_balance, next))
+>                 *next_balance = next;
+> @@ -10681,6 +10684,8 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+>
+>  out:
+>         /* Move the next balance forward */
+> +       if (time_after(jiffies+1, this_rq->next_balance))
+> +               this_rq->next_balance = jiffies+1;
+>         if (time_after(this_rq->next_balance, next_balance))
+>                 this_rq->next_balance = next_balance;
+>
+> --
+> 2.20.1
+>
+>
