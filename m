@@ -2,98 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB265441039
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 19:36:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A982244103F
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 19:44:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230303AbhJaSia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 14:38:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47388 "EHLO
+        id S230291AbhJaSqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 14:46:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230041AbhJaSi3 (ORCPT
+        with ESMTP id S229732AbhJaSqd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 14:38:29 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A05F8C061570
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 11:35:57 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id p18so6865606plf.13
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 11:35:57 -0700 (PDT)
+        Sun, 31 Oct 2021 14:46:33 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ACE2C061570
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 11:44:01 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 205so25851493ljf.9
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 11:44:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=FqJ1bvNTk5XEClTe8nnRDg3TVpytraonloSvcp2T6IA=;
-        b=eaxZwSdkRuRpn4adOVGygVJzWpGamHn4/HCmwlK8u1El8RbIy7ZnRezkMuubWBPpcz
-         akpkE4asMZXM6NFrHA0QAzGB57nD61w5rcZhDj0S+OBFUDF/9wNSweSMSwwIxr4k+gd8
-         f3ZTLPHLggPBPIyyUjnqFsnc6xTYAB22Na+ElJ1Rt4aHge/Exe9uVVqpbAD7h2xoJ1GA
-         nCnhNGoPHEZnZKjrQVstKVKX/lFtc+/UzC5Xs+MUjO7U1nJ88KCEpO83hVZ3F8VT27v1
-         rbCAQ4pumocJeo9SrIMD8y7exFiYCnw8aRNqDOJFVtXPtdJYMt5Tan+bHBpFS62mMOYh
-         2QaA==
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=8aTAAkMuUs0RdOXiLwf4tJufUX7GuELy7Kv75supmqg=;
+        b=NzO9RbuDXUygHVtFmWZvfzoqrqwUuA4ZL4Nhh6EAP9yK8mx8dDS+mC2iRIe1w/Rld8
+         cdOw6sMP7+w7Fl5SHcprEiPsPEc7JadQT+mpuAS0FoFJvyJSCfyymR/UpIBJs43AS4Q0
+         bH3iombTNg++WzPjXmJVBVaVAqDbHya2Kdy0eLG/H8f+shW4mHfBBnkzkuDtEZBVhFQU
+         cYP/WOZIeTAphqymIpXycWHcTqmaYJ3APT7q44dv9gm+mTcVEFixIej95bZ1Yuv8NkG/
+         U73UgmH1yMq2TRUV4tTApyuhhsa+SCf8cEPCbrHi8v9DcOg3143q+frsRv1ddznSoJS+
+         s1jg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=FqJ1bvNTk5XEClTe8nnRDg3TVpytraonloSvcp2T6IA=;
-        b=uYUbCHdbs/7zd8ztq2erscEAc7sY718JHQbxRszMRiFC2b/UCENV3mreOU+sDo4yzZ
-         WqcVVxQsyBYN4ZpLIlNQSvSrQgM+44EliwoaRDtNG2Fkn/3R/xwIAUbaDwyzOrrUXr3z
-         vk5RwDkP2RPnviMCrb2XpZyLR3nPEcYIpcosC4+k4de3oGYPAFMs5ZFILYLswdbzAACL
-         rqJI5IJCG3j8rl6GkNK+QW0ocetrSuoe3TMkozBnNdmev7RCA4zSdIPx7O+CxRxd3Nsu
-         zGiFgmORysYSllqLBD6AvihwSyHjhuS6Ts53o9y5N0pjUhr4x0vP9iTMmhGm2WjMtDHN
-         VoXQ==
-X-Gm-Message-State: AOAM5323jiBY3pEYUPufoBG4YipYJ2yE5HP3+I2p/mx6DxxIyIdUAOLp
-        pF2LEdDhYbRsWiUnmQUpY18=
-X-Google-Smtp-Source: ABdhPJz0oWDcvGvA5XmoLJmdkm15GEd5oPPdgXt4+y6Gj2HMPJpApIV2RAKhHOC71bfTanNaoITMag==
-X-Received: by 2002:a17:90b:4b06:: with SMTP id lx6mr32683665pjb.220.1635705357040;
-        Sun, 31 Oct 2021 11:35:57 -0700 (PDT)
-Received: from Sauravs-MacBook-Air.local ([59.95.84.6])
-        by smtp.gmail.com with ESMTPSA id mg12sm391506pjb.10.2021.10.31.11.35.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 31 Oct 2021 11:35:56 -0700 (PDT)
-Date:   Mon, 1 Nov 2021 00:05:50 +0530
-From:   Saurav Girepunje <saurav.girepunje@gmail.com>
-To:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=8aTAAkMuUs0RdOXiLwf4tJufUX7GuELy7Kv75supmqg=;
+        b=FB0K4aCUPdr8XjPu1P/5llQ+nJbJ4nGDsNyZL/nrdaZOfNcDyQN1vGBLo2MFtvgNT6
+         Bl2/xUyjsnkMpEkPumcVfzs0Fu+AwS1cutGpJLdjgRyuiFey/WkIpKB42ZnwQErA25TL
+         MHOsTkq+kIWQ6pkvXGgukU6YKFGVkGlVIn47q9Ao19R/UBK8XuTTh4QjlEhnDL9vN9UY
+         GwYkvdVKWDdzZpt+KEgcFWDLxwee3kT1Aj0LPQGWUmImQDa/ItRT8s/qhkrkad1FJAZ/
+         7LSl8nMA2q78o4J8oRdaEztjETVEz5f3dG2uiqm0QOTCxO7QAIek50jwgDbv2ttFrTr/
+         iDuA==
+X-Gm-Message-State: AOAM531AB1xAZtx9nc3y9bRVzv7JkXwxiEzC0bsLZWXiYlLJByyRqJ78
+        V2KRYaAX97k39vWkMBDgG98=
+X-Google-Smtp-Source: ABdhPJxb7BEnnQRjcvQ1pw4Ug6ET4I1VThcTZvtnIpt3EgCITH57Nuk9wbPJh8Iqghw9kwW6zFJcPw==
+X-Received: by 2002:a05:651c:10a:: with SMTP id a10mr12059502ljb.335.1635705839276;
+        Sun, 31 Oct 2021 11:43:59 -0700 (PDT)
+Received: from [192.168.1.11] ([94.103.235.8])
+        by smtp.gmail.com with ESMTPSA id z12sm1213298lfs.101.2021.10.31.11.43.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 31 Oct 2021 11:43:58 -0700 (PDT)
+Message-ID: <f26b4aec-c0a1-8c93-b34e-8b1a36ac81b3@gmail.com>
+Date:   Sun, 31 Oct 2021 21:43:57 +0300
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH] staging: r8188eu: os_dep: remove the goto statement
+Content-Language: en-US
+To:     Saurav Girepunje <saurav.girepunje@gmail.com>,
+        Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
         gregkh@linuxfoundation.org, straube.linux@gmail.com,
         martin@kaiser.cx, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org
 Cc:     saurav.girepunje@hotmail.com
-Subject: [PATCH] staging: r8188eu: hal: else is not useful after a return
-Message-ID: <YX7iBmKKNZfj8Gca@Sauravs-MacBook-Air.local>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <YX7cCtVss2RWOJ/a@Sauravs-MacBook-Air.local>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+In-Reply-To: <YX7cCtVss2RWOJ/a@Sauravs-MacBook-Air.local>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the function rtl8188eu_hal_init() else after the return statement
-of the if section is not useful. As if condition is true function will
-return from if section, On the other case if condition is false
-function will not return and statement after the if section will
-execute, So there is no need to have else in this case. Remove the
-else after a return statement of the if section.
+On 10/31/21 21:10, Saurav Girepunje wrote:
+> Remove the goto statement from rtw_init_drv_sw(). In this function goto
+> can be replace by return statement. As on goto label exit, function
+> only return it is not performing any cleanup. Avoiding goto will
+> improve the function readability.
+> 
+> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+> ---
+>   drivers/staging/r8188eu/os_dep/os_intfs.c | 39 +++++++----------------
+>   1 file changed, 12 insertions(+), 27 deletions(-)
+> 
+> diff --git a/drivers/staging/r8188eu/os_dep/os_intfs.c b/drivers/staging/r8188eu/os_dep/os_intfs.c
+> index 1418c9c4916c..4b409479108e 100644
+> --- a/drivers/staging/r8188eu/os_dep/os_intfs.c
+> +++ b/drivers/staging/r8188eu/os_dep/os_intfs.c
+> @@ -480,48 +480,34 @@ u8 rtw_init_drv_sw(struct adapter *padapter)
+>   {
+>   	u8	ret8 = _SUCCESS;
+> 
 
-Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
----
- drivers/staging/r8188eu/hal/usb_halinit.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/staging/r8188eu/hal/usb_halinit.c b/drivers/staging/r8188eu/hal/usb_halinit.c
-index 94a2b3e32fe7..bea5d147b2a1 100644
---- a/drivers/staging/r8188eu/hal/usb_halinit.c
-+++ b/drivers/staging/r8188eu/hal/usb_halinit.c
-@@ -687,10 +687,11 @@ u32 rtl8188eu_hal_init(struct adapter *Adapter)
- 		Adapter->bFWReady = false;
- 		haldata->fw_ractrl = false;
- 		return status;
--	} else {
--		Adapter->bFWReady = true;
--		haldata->fw_ractrl = false;
- 	}
-+
-+	Adapter->bFWReady = true;
-+	haldata->fw_ractrl = false;
-+
- 	rtl8188e_InitializeFirmwareVars(Adapter);
+Btw, this variable can be removed completely then. It's used only for:
 
- 	HAL_INIT_PROFILE_TAG(HAL_INIT_STAGES_MAC);
---
-2.33.0
+ret8 = rtw_init_default_value(padapter);
 
+with your patch applied, but rtw_init_default_value() always returns 
+_SUCCESS.
+
+
+> -exit:
+>  	return ret8;
+>  }
+
+
+And just `return _SUCCESS;` here.
+
+
+
+With regards,
+Pavel Skripkin
