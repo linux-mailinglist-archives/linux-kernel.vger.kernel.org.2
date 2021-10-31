@@ -2,68 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B6A944106E
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 20:24:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 088FA441070
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 20:24:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231186AbhJaT1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 15:27:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39054 "EHLO mail.kernel.org"
+        id S231286AbhJaT1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 15:27:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39086 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230291AbhJaT1Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230262AbhJaT1Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 31 Oct 2021 15:27:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id B70E960EB8;
-        Sun, 31 Oct 2021 19:24:37 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPS id F3E3860F0F;
+        Sun, 31 Oct 2021 19:24:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635708277;
-        bh=MuXIfCp3C6UdWx3sS05cqVSn7TkInpkw5aQXku6+aCs=;
+        s=k20201202; t=1635708279;
+        bh=B4JQ/G/C0682OSRB6eJLx1VBdxV+Zedlp5L5IKs/IPw=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=e9PmpQREAoiuipawsVn3JXmNcxavSXmPwGsQP/6l/Nr2tp26TAoFiFjUA2a0vfM9f
-         Nq0ReugTj7vZ0uwdIAP05iqOoMTOxMeZUT+GpmpVYp7H1+GFXqfMAEmIC+NZsBCrir
-         NHOqsgwa+x72/bDzaM322lLxRGJipxKBXzF9SWb8D22OtOJ/kQpsEXzxlDJORU3Nbk
-         RRkoijZ7a8guE1F0dLCsjx1dArqZ2OA6dUvl9lyCl+YbZJWKI4B3+O5TnUAAtbsdqx
-         XBOqFLhE52WaFYIoV4FGt7Ht+Sv0st2wgDjAsDNN+KC9H/sbcpplqA+mufhabK7z4R
-         pZN8PNzxMPhqQ==
+        b=mpwjHNKYcGLqX6gTjgDmE03E7q6tcAIJ2PMp3GwI51WP66y0s5Q6xCogF3fp2HXif
+         IUGjIWUTiDMISGnsOesBqsWu2ITDvFCJyd3vTrydsIlLYF12GBgQ5HJvV1pQB83fJ1
+         e/ZpIvqiv4CGWBovXlEdaAHb2u4iRzWbFm6gu+wMvnwMvB/wSvZ5zPWbKd3C+vYrmH
+         RIF9jFjGII/f4dml5QiXXEZToMzsI01gM4B9hoNCmq4hg2fc+WfDbX8i51ZjOHS/6F
+         DM7DgkvQGmhQBGQl7uge1lUCfLW3vDox/RcLhuMqYRStmQg3lXyXM9AFT3EFi4rwzD
+         9rTFuF8q1+rsQ==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A25B260A25;
-        Sun, 31 Oct 2021 19:24:37 +0000 (UTC)
-Subject: Re: [GIT PULL] perf tools fixes for v5.15: 5th batch
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id EDCD760A25;
+        Sun, 31 Oct 2021 19:24:38 +0000 (UTC)
+Subject: Re: [GIT PULL] KVM fixes for Linux 5.15 (rc8 or final)
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20211031172234.1028822-1-acme@kernel.org>
-References: <20211031172234.1028822-1-acme@kernel.org>
-X-PR-Tracked-List-Id: <linux-perf-users.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20211031172234.1028822-1-acme@kernel.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git tags/perf-tools-fixes-for-v5.15-2021-10-31
-X-PR-Tracked-Commit-Id: 27730c8cd60d1574d8337276e7a9d7d2ca92e0d1
+In-Reply-To: <20211031063520.4090094-1-pbonzini@redhat.com>
+References: <20211031063520.4090094-1-pbonzini@redhat.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20211031063520.4090094-1-pbonzini@redhat.com>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+X-PR-Tracked-Commit-Id: f3d1436d4bf8ced1c9a62a045d193a65567e1fcc
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 75fcbd38608c3ce9f4dc784f2ac8916add64c9a8
-Message-Id: <163570827760.30704.9340964593469438546.pr-tracker-bot@kernel.org>
-Date:   Sun, 31 Oct 2021 19:24:37 +0000
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Clark Williams <williams@redhat.com>,
-        Kate Carcia <kcarcia@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Joe Mario <jmario@redhat.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Song Liu <songliubraving@fb.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
+X-PR-Merge-Commit-Id: ca5e83eddc8bc85db5698ef702b610ee64243459
+Message-Id: <163570827896.30704.10889967667019099329.pr-tracker-bot@kernel.org>
+Date:   Sun, 31 Oct 2021 19:24:38 +0000
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 31 Oct 2021 14:22:34 -0300:
+The pull request you sent on Sun, 31 Oct 2021 02:35:20 -0400:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git tags/perf-tools-fixes-for-v5.15-2021-10-31
+> https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/75fcbd38608c3ce9f4dc784f2ac8916add64c9a8
+https://git.kernel.org/torvalds/c/ca5e83eddc8bc85db5698ef702b610ee64243459
 
 Thank you!
 
