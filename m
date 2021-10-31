@@ -2,129 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C29E440FDB
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 18:41:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCB1E440FDE
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 18:44:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230501AbhJaRoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 13:44:02 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:45686 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230409AbhJaRn5 (ORCPT
+        id S230041AbhJaRqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 13:46:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35930 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229732AbhJaRq1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 13:43:57 -0400
-Received: by mail-il1-f197.google.com with SMTP id q14-20020a92750e000000b002589d954013so8642561ilc.12
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 10:41:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=xn2VPDHyczbj/6eKQO8PUyqqrb+LWwudCU/o8kfDPBk=;
-        b=xEyo5b+pyd211BdwUGpgnOEK6k7sR0iM76kEbf/4C4RGxnzM9MOzFbLU7BxX0zUO8E
-         3LXMXAl/qkxGCABk9RQZz69PHt3h02kT+5iHg378QjcGkhoyPYRTti19I1M51fI8HaOu
-         vz8XkeK4Bs8LsbKSWa88WPos4e9TeKoF/hijvavbekfq/xB73NSnl2sO/u89aFclIxyw
-         G+aU4kNNoOgXjMLNBPBO+n3va0yLANXiUVD0UuMSEEH169+RBf+zTqmw+eVNzTD5jC+2
-         DVjhFzzHpj7XilwYFANpSzWkIznXrZCYjzSr6Vg/typL1Rop+xYsnMmLHUZmAvuMp10K
-         R2hA==
-X-Gm-Message-State: AOAM533bxNoKJJnvCLy9C52q6qiU55HWLFEn7KG3s24pfm8+jJdyaQ7E
-        lF+KMM2UR/fol8XPsUJUH2EvnyGBKNOvyQrlbjrUl3SZu9Qk
-X-Google-Smtp-Source: ABdhPJxzQ2/toHlxMzf91rZ11FY4t4Ldv56Gktj2rsE+yPXKuvRJLqItCNXBMFIe7y99njaaRL8IkQJ4qY1jSne6PrAIvE367T4s
+        Sun, 31 Oct 2021 13:46:27 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01F99C061570
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 10:43:56 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mhEs2-00089B-TK; Sun, 31 Oct 2021 18:43:50 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mhEs2-0003ZC-3I; Sun, 31 Oct 2021 18:43:50 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mhEs2-0005Qm-1n; Sun, 31 Oct 2021 18:43:50 +0100
+Date:   Sun, 31 Oct 2021 18:43:47 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     =?utf-8?B?TWHDrXJh?= Canal <maira.canal@usp.br>
+Cc:     linux-pwm@vger.kernel.org, Sean Young <sean@mess.org>,
+        linux-kernel@vger.kernel.org, thierry.reding@gmail.com,
+        kernel@pengutronix.de, mchehab@kernel.org,
+        Lee Jones <lee.jones@linaro.org>, linux-media@vger.kernel.org
+Subject: Re: [PATCH] media: ir-rx51: Switch to atomic PWM API
+Message-ID: <20211031174347.57rnaimaagj43u2q@pengutronix.de>
+References: <YXqv339PJTHcGxJg@fedora>
+ <20211029111232.soknq7mu3r65laar@pengutronix.de>
+ <CAH7FV3md_SBTHu9sTp-hLtLd0ERBdXx8HzM=W9hF79X5V=twQA@mail.gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a92:c74a:: with SMTP id y10mr9962613ilp.122.1635702084959;
- Sun, 31 Oct 2021 10:41:24 -0700 (PDT)
-Date:   Sun, 31 Oct 2021 10:41:24 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000bb843a05cfa99111@google.com>
-Subject: [syzbot] WARNING: ODEBUG bug in __put_task_struct
-From:   syzbot <syzbot+30a60157d4ef222fd5e2@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, andrii@kernel.org,
-        asml.silence@gmail.com, ast@kernel.org, axboe@kernel.dk,
-        bpf@vger.kernel.org, christian@brauner.io, daniel@iogearbox.net,
-        david@redhat.com, ebiederm@xmission.com, io-uring@vger.kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        npiggin@gmail.com, peterz@infradead.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, xiaoguang.wang@linux.alibaba.com,
-        yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="krrunpn66tkvy3ou"
+Content-Disposition: inline
+In-Reply-To: <CAH7FV3md_SBTHu9sTp-hLtLd0ERBdXx8HzM=W9hF79X5V=twQA@mail.gmail.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-syzbot found the following issue on:
+--krrunpn66tkvy3ou
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-HEAD commit:    bdcc9f6a5682 Add linux-next specific files for 20211029
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1413226ab00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=cea91ee10b0cd274
-dashboard link: https://syzkaller.appspot.com/bug?extid=30a60157d4ef222fd5e2
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=121ba3e2b00000
+On Sat, Oct 30, 2021 at 08:20:50AM -0300, Ma=EDra Canal wrote:
+> Hello Uwe,
+>=20
+> > Doing this here introduces a change in behaviour. Better do this after
+> > pwm_get().
+>=20
+> I didn't really get this feedback. Isn't pwm_init_state after pwm_get?
+> Or should it be before the error treatment of pwm_get?
 
-The issue was bisected to:
+It is, but it might be repeated resetting the pwm settings when the
+device is reopened.
 
-commit 34ced75ca1f63fac6148497971212583aa0f7a87
-Author: Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
-Date:   Mon Oct 25 05:38:48 2021 +0000
+Best regards
+Uwe
 
-    io_uring: reduce frequent add_wait_queue() overhead for multi-shot poll request
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11d8286ab00000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=13d8286ab00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=15d8286ab00000
+--krrunpn66tkvy3ou
+Content-Type: application/pgp-signature; name="signature.asc"
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+30a60157d4ef222fd5e2@syzkaller.appspotmail.com
-Fixes: 34ced75ca1f6 ("io_uring: reduce frequent add_wait_queue() overhead for multi-shot poll request")
+-----BEGIN PGP SIGNATURE-----
 
-------------[ cut here ]------------
-ODEBUG: free active (active state 1) object type: rcu_head hint: 0x0
-WARNING: CPU: 0 PID: 6915 at lib/debugobjects.c:505 debug_print_object+0x16e/0x250 lib/debugobjects.c:505
-Modules linked in:
-CPU: 0 PID: 6915 Comm: kworker/0:1 Not tainted 5.15.0-rc7-next-20211029-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: events io_fallback_req_func
-RIP: 0010:debug_print_object+0x16e/0x250 lib/debugobjects.c:505
-Code: ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 af 00 00 00 48 8b 14 dd 00 4f bf 89 4c 89 ee 48 c7 c7 00 43 bf 89 e8 88 45 2e 05 <0f> 0b 83 05 05 c1 9f 09 01 48 83 c4 18 5b 5d 41 5c 41 5d 41 5e c3
-RSP: 0018:ffffc900033a7a98 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: 0000000000000003 RCX: 0000000000000000
-RDX: ffff88801a799d40 RSI: ffffffff815f3788 RDI: fffff52000674f45
-RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff815ed55e R11: 0000000000000000 R12: ffffffff896d62a0
-R13: ffffffff89bf4940 R14: 0000000000000000 R15: dffffc0000000000
-FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fff9fb60898 CR3: 000000000b48e000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- __debug_check_no_obj_freed lib/debugobjects.c:992 [inline]
- debug_check_no_obj_freed+0x301/0x420 lib/debugobjects.c:1023
- slab_free_hook mm/slub.c:1698 [inline]
- slab_free_freelist_hook+0xeb/0x1c0 mm/slub.c:1749
- slab_free mm/slub.c:3513 [inline]
- kmem_cache_free+0x92/0x5e0 mm/slub.c:3529
- __put_task_struct+0x277/0x400 kernel/fork.c:810
- put_task_struct_many include/linux/sched/task.h:120 [inline]
- io_put_task fs/io_uring.c:1773 [inline]
- __io_free_req+0x2a3/0x3c5 fs/io_uring.c:2037
- io_fallback_req_func+0xf9/0x1ae fs/io_uring.c:1335
- process_one_work+0x9b2/0x1690 kernel/workqueue.c:2298
- worker_thread+0x658/0x11f0 kernel/workqueue.c:2445
- kthread+0x405/0x4f0 kernel/kthread.c:327
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
- </TASK>
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmF+1c8ACgkQwfwUeK3K
+7AlXGwf/c6JRDXVbOv1soUqXtj9+sMF+3H4FEBWoAfTyAn848wn4B8OsoeP/dBqy
+GzDvq8PY22cHUSchUCgTN06oybctgiV/ilIfXRAJiJb4a0c9ZYJ3AnhcHZJYyX/x
+nA0PpR6V7YMnY0B+82FAj/Y+V6Q3gHpthTXKRt/s2AZd9XPWvwFO9zHziW46v0fb
+csMS0R/PX26EhXMsx+sEMY4fbTG+64crD48E9ZJLMhoax1TYOHahysQptZJCrumX
+Md1i284kXoeNjv7QrglumKG+zJuQjTtMRJbrO3T9oCZM+RoysECbrYT73C4Vm8ea
+EzCOu17iq8rZikeIzwLjW/c1dZBB1g==
+=aM7g
+-----END PGP SIGNATURE-----
 
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+--krrunpn66tkvy3ou--
