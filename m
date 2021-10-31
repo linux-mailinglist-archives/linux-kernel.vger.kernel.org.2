@@ -2,112 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90CB04410EF
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 22:10:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F08CB4410FB
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 22:25:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230197AbhJaVNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 17:13:14 -0400
-Received: from msg-1.mailo.com ([213.182.54.11]:53022 "EHLO msg-1.mailo.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229946AbhJaVNM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 17:13:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailoo.org; s=mailo;
-        t=1635714614; bh=5M2J6VLtolkff8vbL1cmeU25yPVsQnA4hle2/XFfcb4=;
-        h=X-EA-Auth:From:To:Cc:Subject:Date:Message-Id:X-Mailer:In-Reply-To:
-         References:MIME-Version:Content-Transfer-Encoding;
-        b=ksglUMhlfW/6R1rCq5s/sNSSDMVQiW1A6cgKo8vTmzABYpO5PJOU/HLr2iVV8cN6M
-         I0+QykUU/9pTks3sUCyxOmpTsUJf6SXOqp2nVY2RbOnFB3szi/pnRECXXBS2SQtU8m
-         Vu3BGO+Jq1WBeKhYGMxhPJEtud290n6982Itd7jE=
-Received: by b-6.in.mailobj.net [192.168.90.16] with ESMTP
-        via proxy.mailoo.org [213.182.55.207]
-        Sun, 31 Oct 2021 22:10:14 +0100 (CET)
-X-EA-Auth: gZo/ybajlv073f448wFjPx4WQIIaL02CzThx5GBwARSXnxDwCW7LmmdLvTSg00uCynT4RpDnULaV49m5odBlDHk+qSdLmCea/QRcIWb3kUc=
-From:   Vincent Knecht <vincent.knecht@mailoo.org>
-To:     stephan@gerhold.net, lgirdwood@gmail.com, broonie@kernel.org,
-        robh+dt@kernel.org, perex@perex.cz, tiwai@suse.com
-Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Vincent Knecht <vincent.knecht@mailoo.org>
-Subject: [PATCH 2/2] ASoC: codecs: tfa989x: Add support for tfa9897 optional rcv-gpios
-Date:   Sun, 31 Oct 2021 22:09:56 +0100
-Message-Id: <20211031210956.812101-3-vincent.knecht@mailoo.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211031210956.812101-1-vincent.knecht@mailoo.org>
-References: <20211031210956.812101-1-vincent.knecht@mailoo.org>
+        id S230169AbhJaV2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 17:28:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55928 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229982AbhJaV23 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Oct 2021 17:28:29 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E55D5C061714;
+        Sun, 31 Oct 2021 14:25:56 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hj8N85v3Xz4xYy;
+        Mon,  1 Nov 2021 08:25:44 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1635715549;
+        bh=29/n4S1lCpq8aIe/UfjH9Gh6Zn+qa8XvDJO8nPA2Peo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=SUFXXx7JWuQlN5kZheBMIoPSexQKSDSHq67nwR/ihoQ3nhg3kSPRaZJaNex9NVSUU
+         hKLoLCNw89gyRc0LaKC7Fl3VPDYw3cmC+oMGjjYCvUSai65BQk2skZXcK5tKqT6Plv
+         PwNZ0UCnGnKeUpPaMbMhmrQ0LAfv54AFYF3FZD9VAD1wIv2g1JJLCx+kSfiWzsNyUT
+         8NmrTbOB8KouQA26z3NS0idOAbjXtc/oUNjVNsSiEaacv+Ir5qmZ3V7D/gR9Wz/qc8
+         zKc4u5WHMh+pEvV43kGmV0pmRXrqY7YiDJMraSJ47wowLAPhKPzDCeQruv6qDcb1mN
+         I6nzGQ2ZjPueQ==
+Date:   Mon, 1 Nov 2021 08:25:43 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     Greg KH <greg@kroah.com>, Marcel Ziswiler <marcel@ziswiler.com>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        dri-devel@lists.freedesktop.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+        Linux Kernel Functional Testing <lkft@linaro.org>
+Subject: Re: [PATCH v2] drm: import DMA_BUF module namespace
+Message-ID: <20211101082543.0e47af76@canb.auug.org.au>
+In-Reply-To: <eadfa89d-1c39-be25-abaf-4150396e1024@suse.de>
+References: <20211027212506.3418521-1-marcel@ziswiler.com>
+        <2312b5c3-ffc9-b54e-a08b-2548e3837d83@suse.de>
+        <20211031132155.7dc972e8@canb.auug.org.au>
+        <eadfa89d-1c39-be25-abaf-4150396e1024@suse.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/qFhkQBvHJ49rDmUV+uLT8Xa";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some OEM use a GPIO in addition to the tfa9897 RCV bit to
-switch between loudspeaker and earpiece/receiver mode.
+--Sig_/qFhkQBvHJ49rDmUV+uLT8Xa
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Add support for the GPIO switching by specifying rcv-gpios in DT.
+Hi Thomas,
 
-Signed-off-by: Vincent Knecht <vincent.knecht@mailoo.org>
----
- sound/soc/codecs/tfa989x.c | 20 +++++++++++++++++++-
- 1 file changed, 19 insertions(+), 1 deletion(-)
+On Sun, 31 Oct 2021 19:13:17 +0100 Thomas Zimmermann <tzimmermann@suse.de> =
+wrote:
+>
+> No no, don't worry. I meant 'import' as in 'git remote add
+> linux-next'. I was actually complaining that the provided fix was not
+> against a DRM tree.
 
-diff --git a/sound/soc/codecs/tfa989x.c b/sound/soc/codecs/tfa989x.c
-index eb2a7870148d..dc86852752c5 100644
---- a/sound/soc/codecs/tfa989x.c
-+++ b/sound/soc/codecs/tfa989x.c
-@@ -7,6 +7,7 @@
-  * Copyright (C) 2013 Sony Mobile Communications Inc.
-  */
- 
-+#include <linux/gpio/consumer.h>
- #include <linux/i2c.h>
- #include <linux/module.h>
- #include <linux/regmap.h>
-@@ -56,6 +57,7 @@ struct tfa989x_rev {
- struct tfa989x {
- 	const struct tfa989x_rev *rev;
- 	struct regulator *vddd_supply;
-+	struct gpio_desc *rcv_gpiod;
- };
- 
- static bool tfa989x_writeable_reg(struct device *dev, unsigned int reg)
-@@ -99,10 +101,20 @@ static const struct snd_soc_dapm_route tfa989x_dapm_routes[] = {
- 	{"Amp Input", "Right", "AIFINR"},
- };
- 
-+static int tfa989x_put_mode(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	struct tfa989x *tfa989x = snd_soc_component_get_drvdata(component);
-+
-+	gpiod_set_value_cansleep(tfa989x->rcv_gpiod, ucontrol->value.enumerated.item[0]);
-+
-+	return snd_soc_put_enum_double(kcontrol, ucontrol);
-+}
-+
- static const char * const mode_text[] = { "Speaker", "Receiver" };
- static SOC_ENUM_SINGLE_DECL(mode_enum, TFA989X_I2SREG, TFA989X_I2SREG_RCV, mode_text);
- static const struct snd_kcontrol_new tfa989x_mode_controls[] = {
--	SOC_ENUM("Mode", mode_enum),
-+	SOC_ENUM_EXT("Mode", mode_enum, snd_soc_get_enum_double, tfa989x_put_mode),
- };
- 
- static int tfa989x_probe(struct snd_soc_component *component)
-@@ -301,6 +313,12 @@ static int tfa989x_i2c_probe(struct i2c_client *i2c)
- 		return dev_err_probe(dev, PTR_ERR(tfa989x->vddd_supply),
- 				     "Failed to get vddd regulator\n");
- 
-+	if (tfa989x->rev->rev == TFA9897_REVISION) {
-+		tfa989x->rcv_gpiod = devm_gpiod_get_optional(dev, "rcv", GPIOD_OUT_LOW);
-+		if (IS_ERR(tfa989x->rcv_gpiod))
-+			return PTR_ERR(tfa989x->rcv_gpiod);
-+	}
-+
- 	regmap = devm_regmap_init_i2c(i2c, &tfa989x_regmap);
- 	if (IS_ERR(regmap))
- 		return PTR_ERR(regmap);
--- 
-2.31.1
+Phew! :-)
 
+--=20
+Cheers,
+Stephen Rothwell
 
+--Sig_/qFhkQBvHJ49rDmUV+uLT8Xa
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF/CdcACgkQAVBC80lX
+0GzCsQf/a/a4o4Jih7Y4aDsuEcP2wONrjr+odbhbs5/+T1//dL5OoPFnKjouJoHa
+OQCon9tpppjsBtwwDqgszZUBY+WvNVjQQOOY2ak8aKALIY2bhodZedj8+ZN+VsHH
+S89v0nUJGfjyZ/1ZINF0aS0cshjuBv3VQNZxLJ57l3jLFHXLUl/H0iJ4nuOULE3+
+qYR2qFiBWnhOSafWLc6ssegR2l8wQ4YHcoy7imlIV2bUIn4e6Gn+FxKjQdTngDe6
+Tc57o0mr3NcfNBKR5JFqyQSKFkz+WVPHwK5cbXXrPihocy9Di9Q/y6ABKCcnBatI
+w401pfOxY3BDlGOm8bjuzHZ36seJIQ==
+=J2ow
+-----END PGP SIGNATURE-----
+
+--Sig_/qFhkQBvHJ49rDmUV+uLT8Xa--
