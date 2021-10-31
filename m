@@ -2,100 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C8D1440F8C
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 17:49:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAADD440FB8
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 18:19:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230080AbhJaQwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 12:52:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52354 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230041AbhJaQwY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 12:52:24 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2660C061746
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 09:49:52 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id b10so6720811ilj.10
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 09:49:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BMVjxcd/zzRQYq1WTivnwAIgAwOjNTLkhJ5Ulnu2Uk8=;
-        b=PTto3LGR+d204eIOomzPjb4LyuBs4qAuiWVdDPgZ28UxvJnZmtOqSyp4cjuduOqPaZ
-         8zo/BbOnT1gckvw4o7BBChlql2ZdUdpbFF79ZyXx7WlGiy+TRzqQfTWH80hUSRdYCYqo
-         MsP5D3BFfcRMQGGTZKRb11Qa104OzHDn7iFzE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BMVjxcd/zzRQYq1WTivnwAIgAwOjNTLkhJ5Ulnu2Uk8=;
-        b=NzH2UJw2wZDhHoB1wbeG+YlOr7oA0u+pttLXmHRxEVLLa9yEbMhMkSgqNDfSaK8Asg
-         XHYi7Yh93KGvukR/fjvBx6pboK9w0eVRFUMCmkYNVSv5BqylS8ABPyDSrE95gTHFcSZ3
-         OaRhiWqy9ClxLHK4aPaIUJYCwpoUD97SwMSoA9dHo96e4BXxok4aDl++Pxd9rEGL3DIp
-         sQZMaTx1eWRquP1pwcyB/Q+V9C4jyHMLDZa0O4+YuTlB2yZbeAeOWa4/HzIkZHhmfT9b
-         GU0xn1O2+D5wZS7B3Xm89H7fx9Lkx6YvBU+louvR/jjo7pwLE0Ef/6U+pZ/KfycNPlqp
-         zLgg==
-X-Gm-Message-State: AOAM531PwJ5Y4Lr+ZNPDmASxIzXQpFJ6kNhZOS/Af105/vsYSRd+Cen8
-        FPn8kfnaDa7gI9mfmCE5COlLGAtMUg8gUUdAsEoofQ==
-X-Google-Smtp-Source: ABdhPJw/fWI4yBIyNitNSOkjyAfBNm7ZNia/c9sL3FDDYXh1FB6HiazF1EN89RoDXLaaWcyo1HYKuzu3zB4MFn/nry4=
-X-Received: by 2002:a05:6e02:148b:: with SMTP id n11mr16126184ilk.230.1635698992204;
- Sun, 31 Oct 2021 09:49:52 -0700 (PDT)
+        id S230192AbhJaRVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 13:21:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48676 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230125AbhJaRVj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Oct 2021 13:21:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C54B260C40;
+        Sun, 31 Oct 2021 17:19:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635700747;
+        bh=9sYg4aDWb/w8z++cQ57cIVHanMnN9aD4ngZr04yN2Lw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=pkgFh27eJvn16VaiGT+/BykGdJFAlx9JGV2q82cyTR+AuAeYO/+tUxthWdGdJFHD7
+         oB38+TX/E4xTv0lYb4JHrC0JK2SrUZdP4wcZsDfUXuYa9i5ADJx7nbzAaAYJeze1Pt
+         00HNILbJa6c4WTkbeR9Z1/3Dx/GdQLsvxBhwQZTpNKiwuhHu81WHwV0UcscM+P0kzw
+         P0mc1A/GwLqI3cOzWYGWz8ix8YatJTs+kROGsbNf9+fHY36xIvd/c2iucT0/1AK+QP
+         zQ8NBXW7Xk7Il/TcNiegxewYJdPn7NQZrLXcbKBQF/jir6xqwdlAHx/EF2/3Ky2Z9h
+         8BainmFO42Nyw==
+From:   Oded Gabbay <ogabbay@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Yuri Nudelman <ynudelman@habana.ai>
+Subject: [PATCH 1/4] habanalabs: add enum mmu_op_flags
+Date:   Sun, 31 Oct 2021 19:18:59 +0200
+Message-Id: <20211031171902.220708-1-ogabbay@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210926073028.11045-1-hui.liu@mediatek.com> <20210926073028.11045-2-hui.liu@mediatek.com>
- <20210926123022.1b76eaae@jic23-huawei>
-In-Reply-To: <20210926123022.1b76eaae@jic23-huawei>
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-Date:   Mon, 1 Nov 2021 00:49:26 +0800
-Message-ID: <CAJMQK-hDN3xOTU0gcmDWaOKRwPk_h0E7=6nok45mrU3RvgbcHw@mail.gmail.com>
-Subject: Re: [PATCH v4 1/1] iio: mtk-auxadc: fix case IIO_CHAN_INFO_PROCESSED
-To:     Hui-Liu Liu <hui.liu@mediatek.com>
-Cc:     robh+dt@kernel.org, lars@metafoo.de, pmeerw@pmeerw.net,
-        srv_heupstream@mediatek.com, zhiyong.tao@mediatek.com,
-        chun-hung.wu@mediatek.com, yingjoe.chen@mediatek.com,
-        seiya.wang@mediatek.com, ben.tseng@mediatek.com,
-        matthias.bgg@gmail.com, s.hauer@pengutronix.de,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        Jonathan Cameron <jic23@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 26, 2021 at 7:26 PM Jonathan Cameron <jic23@kernel.org> wrote:
->
-> On Sun, 26 Sep 2021 15:30:28 +0800
-> Hui-Liu Liu <hui.liu@mediatek.com> wrote:
->
-> > From: Hui Liu <hui.liu@mediatek.com>
-> >
-> > The previous driver does't apply the necessary scaling to take the
-> > voltage range into account.
-> > We change readback value from raw data to input voltage to fix case
-> > IIO_CHAN_INFO_PROCESSED.
-> >
-> > Fixes: ace4cdfe67be ("iio: adc: mt2701: Add Mediatek auxadc driver for mt2701.")
-> > Signed-off-by: Hui Liu <hui.liu@mediatek.com>
->
-Hi Hui Liu,
+From: Yuri Nudelman <ynudelman@habana.ai>
 
-After this patch, mt8183 tboard thermal sensor[1] is getting incorrect value:
-Before the patch:
-/sys/class/thermal/thermal_zone0/temp:41488 (cpu)
-/sys/class/thermal/thermal_zone7/temp:35433 (tboard)
-/sys/class/thermal/thermal_zone8/temp:33709 (tboard)
+The enum vm_type was abused, used once as a value (indication
+memory type for map) and once as a flag (for cache invalidation).
+This makes it hard to add new and still keep it meaningful, hence it
+is better to split into one enum for values and one for flags.
 
-After the patch:
-/sys/class/thermal/thermal_zone0/temp:40365 (cpu)
-/sys/class/thermal/thermal_zone7/temp:69781 (tboard)
-/sys/class/thermal/thermal_zone8/temp:69014 (tboard)
+Signed-off-by: Yuri Nudelman <ynudelman@habana.ai>
+Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
+Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+---
+ drivers/misc/habanalabs/common/command_buffer.c |  6 +++---
+ drivers/misc/habanalabs/common/habanalabs.h     | 11 +++++++++++
+ drivers/misc/habanalabs/common/memory.c         |  4 ++--
+ drivers/misc/habanalabs/gaudi/gaudi.c           |  4 ++--
+ drivers/misc/habanalabs/goya/goya.c             |  2 +-
+ 5 files changed, 19 insertions(+), 8 deletions(-)
 
-[1] https://elixir.bootlin.com/linux/v5.15-rc7/source/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi#L862
+diff --git a/drivers/misc/habanalabs/common/command_buffer.c b/drivers/misc/habanalabs/common/command_buffer.c
+index 41a12bcd26e5..fab499d252d4 100644
+--- a/drivers/misc/habanalabs/common/command_buffer.c
++++ b/drivers/misc/habanalabs/common/command_buffer.c
+@@ -80,7 +80,7 @@ static int cb_map_mem(struct hl_ctx *ctx, struct hl_cb *cb)
+ 		offset += va_block->size;
+ 	}
+ 
+-	hdev->asic_funcs->mmu_invalidate_cache(hdev, false, VM_TYPE_USERPTR);
++	hdev->asic_funcs->mmu_invalidate_cache(hdev, false, MMU_OP_USERPTR);
+ 
+ 	mutex_unlock(&ctx->mmu_lock);
+ 
+@@ -97,7 +97,7 @@ static int cb_map_mem(struct hl_ctx *ctx, struct hl_cb *cb)
+ 		offset -= va_block->size;
+ 	}
+ 
+-	hdev->asic_funcs->mmu_invalidate_cache(hdev, true, VM_TYPE_USERPTR);
++	hdev->asic_funcs->mmu_invalidate_cache(hdev, true, MMU_OP_USERPTR);
+ 
+ 	mutex_unlock(&ctx->mmu_lock);
+ 
+@@ -126,7 +126,7 @@ static void cb_unmap_mem(struct hl_ctx *ctx, struct hl_cb *cb)
+ 					"Failed to unmap CB's va 0x%llx\n",
+ 					va_block->start);
+ 
+-	hdev->asic_funcs->mmu_invalidate_cache(hdev, true, VM_TYPE_USERPTR);
++	hdev->asic_funcs->mmu_invalidate_cache(hdev, true, MMU_OP_USERPTR);
+ 
+ 	mutex_unlock(&ctx->mmu_lock);
+ 
+diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/misc/habanalabs/common/habanalabs.h
+index 6dd7d9ee7a44..202c7f7948f5 100644
+--- a/drivers/misc/habanalabs/common/habanalabs.h
++++ b/drivers/misc/habanalabs/common/habanalabs.h
+@@ -352,6 +352,17 @@ enum vm_type {
+ 	VM_TYPE_PHYS_PACK = 0x2
+ };
+ 
++/**
++ * enum mmu_op_flags - mmu operation relevant information.
++ * @MMU_OP_USERPTR: operation on user memory (host resident).
++ * @MMU_OP_PHYS_PACK: operation on DRAM (device resident).
++ */
++enum mmu_op_flags {
++	MMU_OP_USERPTR = 0x1,
++	MMU_OP_PHYS_PACK = 0x2
++};
++
++
+ /**
+  * enum hl_device_hw_state - H/W device state. use this to understand whether
+  *                           to do reset before hw_init or not
+diff --git a/drivers/misc/habanalabs/common/memory.c b/drivers/misc/habanalabs/common/memory.c
+index 1185f9aec989..40f2197388fe 100644
+--- a/drivers/misc/habanalabs/common/memory.c
++++ b/drivers/misc/habanalabs/common/memory.c
+@@ -2639,8 +2639,8 @@ void hl_vm_ctx_fini(struct hl_ctx *ctx)
+ 	mutex_lock(&ctx->mmu_lock);
+ 
+ 	/* invalidate the cache once after the unmapping loop */
+-	hdev->asic_funcs->mmu_invalidate_cache(hdev, true, VM_TYPE_USERPTR);
+-	hdev->asic_funcs->mmu_invalidate_cache(hdev, true, VM_TYPE_PHYS_PACK);
++	hdev->asic_funcs->mmu_invalidate_cache(hdev, true, MMU_OP_USERPTR);
++	hdev->asic_funcs->mmu_invalidate_cache(hdev, true, MMU_OP_PHYS_PACK);
+ 
+ 	mutex_unlock(&ctx->mmu_lock);
+ 
+diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
+index 52fffd76f5cf..2e39514ee102 100644
+--- a/drivers/misc/habanalabs/gaudi/gaudi.c
++++ b/drivers/misc/habanalabs/gaudi/gaudi.c
+@@ -8688,7 +8688,7 @@ static int gaudi_internal_cb_pool_init(struct hl_device *hdev,
+ 			hdev->internal_cb_pool_dma_addr,
+ 			HOST_SPACE_INTERNAL_CB_SZ);
+ 
+-	hdev->asic_funcs->mmu_invalidate_cache(hdev, false, VM_TYPE_USERPTR);
++	hdev->asic_funcs->mmu_invalidate_cache(hdev, false, MMU_OP_USERPTR);
+ 	mutex_unlock(&ctx->mmu_lock);
+ 
+ 	if (rc)
+@@ -8723,7 +8723,7 @@ static void gaudi_internal_cb_pool_fini(struct hl_device *hdev,
+ 			HOST_SPACE_INTERNAL_CB_SZ);
+ 	hl_unreserve_va_block(hdev, ctx, hdev->internal_cb_va_base,
+ 			HOST_SPACE_INTERNAL_CB_SZ);
+-	hdev->asic_funcs->mmu_invalidate_cache(hdev, true, VM_TYPE_USERPTR);
++	hdev->asic_funcs->mmu_invalidate_cache(hdev, true, MMU_OP_USERPTR);
+ 	mutex_unlock(&ctx->mmu_lock);
+ 
+ 	gen_pool_destroy(hdev->internal_cb_pool);
+diff --git a/drivers/misc/habanalabs/goya/goya.c b/drivers/misc/habanalabs/goya/goya.c
+index 59bb12fcc935..6ee6d5b915a1 100644
+--- a/drivers/misc/habanalabs/goya/goya.c
++++ b/drivers/misc/habanalabs/goya/goya.c
+@@ -2621,7 +2621,7 @@ int goya_mmu_init(struct hl_device *hdev)
+ 			(~STLB_STLB_FEATURE_EN_FOLLOWER_EN_MASK));
+ 
+ 	hdev->asic_funcs->mmu_invalidate_cache(hdev, true,
+-					VM_TYPE_USERPTR | VM_TYPE_PHYS_PACK);
++					MMU_OP_USERPTR | MMU_OP_PHYS_PACK);
+ 
+ 	WREG32(mmMMU_MMU_ENABLE, 1);
+ 	WREG32(mmMMU_SPI_MASK, 0xF);
+-- 
+2.25.1
 
->
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
