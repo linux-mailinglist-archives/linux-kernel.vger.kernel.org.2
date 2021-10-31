@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B45F440FBA
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 18:19:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33CED440FBB
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 18:19:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230258AbhJaRVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 13:21:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48738 "EHLO mail.kernel.org"
+        id S230400AbhJaRVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 13:21:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230209AbhJaRVm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 13:21:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 69BE960F58;
-        Sun, 31 Oct 2021 17:19:09 +0000 (UTC)
+        id S230225AbhJaRVn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Oct 2021 13:21:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B4A0A60C40;
+        Sun, 31 Oct 2021 17:19:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635700750;
-        bh=xA77m81fyMxh3zwph1KZekEvERMWOszJWOKbRAfOKGE=;
+        s=k20201202; t=1635700751;
+        bh=1MFB14TFqZlfxW4c7UjP0wZAxPEsYjGn62jzDwHFrpI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lmBa6HPIkoCV0EfcgSGl/HMmyZehS1U4j0u/9Zg23eOCKfpprI09gxORYPy2smRag
-         QRrmB2t/FJHAeGt4PpkxLofsochb2K4nHesvxLguLbEHPyA/rhwjqcUfcqoygi+J5Y
-         NuRNUNSdgg6Rt0ffxF9ExIGlrWm6PZ6Zj37rpRVdgW3JyclVE+1W4hMhu9VchnZM70
-         MkYsbXH56GWeOHS+D+nhSEvJhRlKlgn0anNmOcYonkRUzPYb8uWYX6c4KiR5q6VqsE
-         VN2Viia1RTRnTJdjWrAT7K0Xkk5aNSv02ohx3sVyG5uSLREw3K5+2V3rMygahrWjDk
-         CI15zcfqiTvSg==
+        b=Gc3r6HULptVYnI9YBbwAio7Hs+FSNG5l3sW+YXrVUMcit3GYMuQRJlgkKM/7LSeRG
+         Wn9m4nr0JyEdijFofj51UYn2sRTVJ3kJJyjGLJ34lGcZkE94vhtLOrVWAEPVAN7Mqy
+         9Wfvevs5VCLly0umUUfTSQrb0jndsrMQQ96CrwJcJWZHnSyvIYamqi8IuFtVJ29Bx8
+         jRaq62+l9bKV7V5FsfgpeauI3bBlY5r9imXrmAfTDFnuMXK6OjVqzfNq62xOUvMbaS
+         zTN21HAmHvYRq40wlrleIHXYLn4fuEe0M3GLMlqwleDhhg5FRsTqTquC26OengWBX7
+         BuLDXLags8c9A==
 From:   Oded Gabbay <ogabbay@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ohad Sharabi <osharabi@habana.ai>
-Subject: [PATCH 3/4] habanalabs: adding indication of boot fit loaded
-Date:   Sun, 31 Oct 2021 19:19:01 +0200
-Message-Id: <20211031171902.220708-3-ogabbay@kernel.org>
+Subject: [PATCH 4/4] habanalabs: use variable poll interval for fw loading
+Date:   Sun, 31 Oct 2021 19:19:02 +0200
+Message-Id: <20211031171902.220708-4-ogabbay@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211031171902.220708-1-ogabbay@kernel.org>
 References: <20211031171902.220708-1-ogabbay@kernel.org>
@@ -40,142 +40,187 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Ohad Sharabi <osharabi@habana.ai>
 
-Up until now the driver stored indication if Linux was loaded on the
-device CPU. This was needed in order to coordinate some tasks that are
-performed by the Linux.
-
-In future ASICs, many of those tasks will be performed by the boot
-fit, so now we need the same indication of boot fit load status.
+Using a variable poll interval for fw loading allows us to support
+much slower environments (emulation) while changing only a single
+line in the code, instead of choosing a different interval in each
+function that polls.
 
 Signed-off-by: Ohad Sharabi <osharabi@habana.ai>
 Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
 Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
 ---
- drivers/misc/habanalabs/common/device.c      | 4 ++--
- drivers/misc/habanalabs/common/firmware_if.c | 4 +++-
- drivers/misc/habanalabs/common/habanalabs.h  | 7 +++++--
- drivers/misc/habanalabs/gaudi/gaudi.c        | 4 ++--
- drivers/misc/habanalabs/goya/goya.c          | 2 +-
- 5 files changed, 13 insertions(+), 8 deletions(-)
+ drivers/misc/habanalabs/common/firmware_if.c  | 35 ++++++++++---------
+ drivers/misc/habanalabs/common/habanalabs.h   |  5 +++
+ .../misc/habanalabs/common/habanalabs_drv.c   |  3 ++
+ 3 files changed, 27 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/misc/habanalabs/common/device.c b/drivers/misc/habanalabs/common/device.c
-index 2022e5d7b3ad..9674e2520532 100644
---- a/drivers/misc/habanalabs/common/device.c
-+++ b/drivers/misc/habanalabs/common/device.c
-@@ -1138,7 +1138,7 @@ int hl_device_reset(struct hl_device *hdev, u32 flags)
- 	hdev->asic_funcs->hw_fini(hdev, hard_reset, fw_reset);
- 
- 	if (hard_reset) {
--		hdev->fw_loader.linux_loaded = false;
-+		hdev->fw_loader.fw_comp_loaded = FW_TYPE_NONE;
- 
- 		/* Release kernel context */
- 		if (hdev->kernel_ctx && hl_ctx_put(hdev->kernel_ctx) == 1)
-@@ -1692,7 +1692,7 @@ void hl_device_fini(struct hl_device *hdev)
- 	/* Reset the H/W. It will be in idle state after this returns */
- 	hdev->asic_funcs->hw_fini(hdev, true, false);
- 
--	hdev->fw_loader.linux_loaded = false;
-+	hdev->fw_loader.fw_comp_loaded = FW_TYPE_NONE;
- 
- 	/* Release kernel context */
- 	if ((hdev->kernel_ctx) && (hl_ctx_put(hdev->kernel_ctx) != 1))
 diff --git a/drivers/misc/habanalabs/common/firmware_if.c b/drivers/misc/habanalabs/common/firmware_if.c
-index 482bed152c39..8cbec10cddb1 100644
+index 8cbec10cddb1..c68ad4d7b1bb 100644
 --- a/drivers/misc/habanalabs/common/firmware_if.c
 +++ b/drivers/misc/habanalabs/common/firmware_if.c
-@@ -1919,6 +1919,8 @@ static void hl_fw_boot_fit_update_state(struct hl_device *hdev,
- {
- 	struct asic_fixed_properties *prop = &hdev->asic_prop;
+@@ -15,8 +15,6 @@
  
-+	hdev->fw_loader.fw_comp_loaded |= FW_TYPE_BOOT_CPU;
+ #define FW_FILE_MAX_SIZE		0x1400000 /* maximum size of 20MB */
+ 
+-#define FW_CPU_STATUS_POLL_INTERVAL_USEC	10000
+-
+ static char *extract_fw_ver_from_str(const char *fw_str)
+ {
+ 	char *str, *fw_ver, *whitespace;
+@@ -1102,7 +1100,7 @@ static int hl_fw_read_preboot_caps(struct hl_device *hdev,
+ 		(status == CPU_BOOT_STATUS_NIC_FW_RDY) ||
+ 		(status == CPU_BOOT_STATUS_READY_TO_BOOT) ||
+ 		(status == CPU_BOOT_STATUS_WAITING_FOR_BOOT_FIT),
+-		FW_CPU_STATUS_POLL_INTERVAL_USEC,
++		hdev->fw_poll_interval_usec,
+ 		timeout);
+ 
+ 	if (rc) {
+@@ -1286,11 +1284,7 @@ int hl_fw_read_preboot_status(struct hl_device *hdev, u32 cpu_boot_status_reg,
+ {
+ 	int rc;
+ 
+-	/* pldm was added for cases in which we use preboot on pldm and want
+-	 * to load boot fit, but we can't wait for preboot because it runs
+-	 * very slowly
+-	 */
+-	if (!(hdev->fw_components & FW_TYPE_PREBOOT_CPU) || hdev->pldm)
++	if (!(hdev->fw_components & FW_TYPE_PREBOOT_CPU))
+ 		return 0;
+ 
+ 	/*
+@@ -1436,7 +1430,7 @@ static int hl_fw_dynamic_wait_for_status(struct hl_device *hdev,
+ 		le32_to_cpu(dyn_regs->cpu_cmd_status_to_host),
+ 		status,
+ 		FIELD_GET(COMMS_STATUS_STATUS_MASK, status) == expected_status,
+-		FW_CPU_STATUS_POLL_INTERVAL_USEC,
++		hdev->fw_poll_interval_usec,
+ 		timeout);
+ 
+ 	if (rc) {
+@@ -2070,7 +2064,7 @@ static int hl_fw_dynamic_wait_for_boot_fit_active(struct hl_device *hdev,
+ 		status,
+ 		(status == CPU_BOOT_STATUS_READY_TO_BOOT) ||
+ 		(status == CPU_BOOT_STATUS_SRAM_AVAIL),
+-		FW_CPU_STATUS_POLL_INTERVAL_USEC,
++		hdev->fw_poll_interval_usec,
+ 		dyn_loader->wait_for_bl_timeout);
+ 	if (rc) {
+ 		dev_err(hdev->dev, "failed to wait for boot\n");
+@@ -2097,7 +2091,7 @@ static int hl_fw_dynamic_wait_for_linux_active(struct hl_device *hdev,
+ 		le32_to_cpu(dyn_loader->comm_desc.cpu_dyn_regs.cpu_boot_status),
+ 		status,
+ 		(status == CPU_BOOT_STATUS_SRAM_AVAIL),
+-		FW_CPU_STATUS_POLL_INTERVAL_USEC,
++		hdev->fw_poll_interval_usec,
+ 		fw_loader->cpu_timeout);
+ 	if (rc) {
+ 		dev_err(hdev->dev, "failed to wait for Linux\n");
+@@ -2296,6 +2290,15 @@ static int hl_fw_dynamic_init_cpu(struct hl_device *hdev,
+ 		goto protocol_err;
+ 	}
+ 
++	/*
++	 * when testing FW load (without Linux) on PLDM we don't want to
++	 * wait until boot fit is active as it may take several hours.
++	 * instead, we load the bootfit and let it do all initializations in
++	 * the background.
++	 */
++	if (hdev->pldm && !(hdev->fw_components & FW_TYPE_LINUX))
++		return 0;
 +
- 	/* Clear reset status since we need to read it again from boot CPU */
- 	prop->hard_reset_done_by_fw = false;
+ 	rc = hl_fw_dynamic_wait_for_boot_fit_active(hdev, fw_loader);
+ 	if (rc)
+ 		goto protocol_err;
+@@ -2388,7 +2391,7 @@ static int hl_fw_static_init_cpu(struct hl_device *hdev,
+ 		cpu_boot_status_reg,
+ 		status,
+ 		status == CPU_BOOT_STATUS_WAITING_FOR_BOOT_FIT,
+-		FW_CPU_STATUS_POLL_INTERVAL_USEC,
++		hdev->fw_poll_interval_usec,
+ 		fw_loader->boot_fit_timeout);
  
-@@ -2127,7 +2129,7 @@ static void hl_fw_linux_update_state(struct hl_device *hdev,
- {
- 	struct asic_fixed_properties *prop = &hdev->asic_prop;
+ 	if (rc) {
+@@ -2411,7 +2414,7 @@ static int hl_fw_static_init_cpu(struct hl_device *hdev,
+ 			cpu_msg_status_reg,
+ 			status,
+ 			status == CPU_MSG_OK,
+-			FW_CPU_STATUS_POLL_INTERVAL_USEC,
++			hdev->fw_poll_interval_usec,
+ 			fw_loader->boot_fit_timeout);
  
--	hdev->fw_loader.linux_loaded = true;
-+	hdev->fw_loader.fw_comp_loaded |= FW_TYPE_LINUX;
+ 		if (rc) {
+@@ -2440,7 +2443,7 @@ static int hl_fw_static_init_cpu(struct hl_device *hdev,
+ 		(status == CPU_BOOT_STATUS_NIC_FW_RDY) ||
+ 		(status == CPU_BOOT_STATUS_READY_TO_BOOT) ||
+ 		(status == CPU_BOOT_STATUS_SRAM_AVAIL),
+-		FW_CPU_STATUS_POLL_INTERVAL_USEC,
++		hdev->fw_poll_interval_usec,
+ 		cpu_timeout);
  
- 	/* Clear reset status since we need to read again from app */
- 	prop->hard_reset_done_by_fw = false;
+ 	dev_dbg(hdev->dev, "uboot status = %d\n", status);
+@@ -2489,7 +2492,7 @@ static int hl_fw_static_init_cpu(struct hl_device *hdev,
+ 			cpu_boot_status_reg,
+ 			status,
+ 			(status == CPU_BOOT_STATUS_BMC_WAITING_SKIPPED),
+-			FW_CPU_STATUS_POLL_INTERVAL_USEC,
++			hdev->fw_poll_interval_usec,
+ 			cpu_timeout);
+ 
+ 		if (rc) {
+@@ -2509,7 +2512,7 @@ static int hl_fw_static_init_cpu(struct hl_device *hdev,
+ 		cpu_boot_status_reg,
+ 		status,
+ 		(status == CPU_BOOT_STATUS_SRAM_AVAIL),
+-		FW_CPU_STATUS_POLL_INTERVAL_USEC,
++		hdev->fw_poll_interval_usec,
+ 		cpu_timeout);
+ 
+ 	/* Clear message */
 diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/misc/habanalabs/common/habanalabs.h
-index aac73c8d2e1d..b3c6b660c7aa 100644
+index b3c6b660c7aa..5fc9cfd892e8 100644
 --- a/drivers/misc/habanalabs/common/habanalabs.h
 +++ b/drivers/misc/habanalabs/common/habanalabs.h
-@@ -219,6 +219,7 @@ enum hl_fw_component {
+@@ -61,6 +61,9 @@
+ #define HL_CPUCP_INFO_TIMEOUT_USEC	10000000 /* 10s */
+ #define HL_CPUCP_EEPROM_TIMEOUT_USEC	10000000 /* 10s */
  
- /**
-  * enum hl_fw_types - F/W types present in the system
-+ * @FW_TYPE_NONE: no FW component indication
-  * @FW_TYPE_LINUX: Linux image for device CPU
-  * @FW_TYPE_BOOT_CPU: Boot image for device CPU
-  * @FW_TYPE_PREBOOT_CPU: Indicates pre-loaded CPUs are present in the system
-@@ -226,6 +227,7 @@ enum hl_fw_component {
-  * @FW_TYPE_ALL_TYPES: Mask for all types
-  */
- enum hl_fw_types {
-+	FW_TYPE_NONE = 0x0,
- 	FW_TYPE_LINUX = 0x1,
- 	FW_TYPE_BOOT_CPU = 0x2,
- 	FW_TYPE_PREBOOT_CPU = 0x4,
-@@ -1059,7 +1061,8 @@ struct fw_image_props {
-  * @skip_bmc: should BMC be skipped
-  * @sram_bar_id: SRAM bar ID
-  * @dram_bar_id: DRAM bar ID
-- * @linux_loaded: true if linux was loaded so far
-+ * @fw_comp_loaded: bitmask of loaded FW components. set bit meaning loaded
-+ *                  component. values are set according to enum hl_fw_types.
-  */
- struct fw_load_mgr {
- 	union {
-@@ -1073,7 +1076,7 @@ struct fw_load_mgr {
- 	u8 skip_bmc;
- 	u8 sram_bar_id;
- 	u8 dram_bar_id;
--	u8 linux_loaded;
-+	u8 fw_comp_loaded;
- };
++#define HL_FW_STATUS_POLL_INTERVAL_USEC		10000 /* 10ms */
++#define HL_FW_STATUS_PLDM_POLL_INTERVAL_USEC	300000000 /* 300s */
++
+ #define HL_PCI_ELBI_TIMEOUT_MSEC	10 /* 10ms */
  
- /**
-diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-index 2e39514ee102..1dcce1bc976f 100644
---- a/drivers/misc/habanalabs/gaudi/gaudi.c
-+++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-@@ -4007,7 +4007,7 @@ static void gaudi_init_firmware_loader(struct hl_device *hdev)
- 	struct fw_load_mgr *fw_loader = &hdev->fw_loader;
+ #define HL_SIM_MAX_TIMEOUT_US		10000000 /* 10s */
+@@ -2459,6 +2462,7 @@ struct multi_cs_data {
+  * @last_open_session_duration_jif: duration (jiffies) of the last device open
+  *                                  session.
+  * @open_counter: number of successful device open operations.
++ * @fw_poll_interval_usec: FW status poll interval in usec.
+  * @in_reset: is device in reset flow.
+  * @curr_pll_profile: current PLL profile.
+  * @card_type: Various ASICs have several card types. This indicates the card
+@@ -2607,6 +2611,7 @@ struct hl_device {
+ 	u64				last_successful_open_jif;
+ 	u64				last_open_session_duration_jif;
+ 	u64				open_counter;
++	u64				fw_poll_interval_usec;
+ 	atomic_t			in_reset;
+ 	enum hl_pll_frequency		curr_pll_profile;
+ 	enum cpucp_card_types		card_type;
+diff --git a/drivers/misc/habanalabs/common/habanalabs_drv.c b/drivers/misc/habanalabs/common/habanalabs_drv.c
+index 949d1b5c5c41..5989826701bc 100644
+--- a/drivers/misc/habanalabs/common/habanalabs_drv.c
++++ b/drivers/misc/habanalabs/common/habanalabs_drv.c
+@@ -345,6 +345,9 @@ int create_hdev(struct hl_device **dev, struct pci_dev *pdev,
  
- 	/* fill common fields */
--	fw_loader->linux_loaded = false;
-+	fw_loader->fw_comp_loaded = FW_TYPE_NONE;
- 	fw_loader->boot_fit_img.image_name = GAUDI_BOOT_FIT_FILE;
- 	fw_loader->linux_img.image_name = GAUDI_LINUX_FW_FILE;
- 	fw_loader->cpu_timeout = GAUDI_CPU_TIMEOUT_USEC;
-@@ -4290,7 +4290,7 @@ static void gaudi_hw_fini(struct hl_device *hdev, bool hard_reset, bool fw_reset
- 	 * via the GIC. Otherwise, we need to use COMMS or the MSG_TO_CPU
- 	 * registers in case of old F/Ws
- 	 */
--	if (hdev->fw_loader.linux_loaded) {
-+	if (hdev->fw_loader.fw_comp_loaded & FW_TYPE_LINUX) {
- 		irq_handler_offset = hdev->asic_prop.gic_interrupts_enable ?
- 				mmGIC_DISTRIBUTOR__5_GICD_SETSPI_NSR :
- 				le32_to_cpu(dyn_regs->gic_host_halt_irq);
-diff --git a/drivers/misc/habanalabs/goya/goya.c b/drivers/misc/habanalabs/goya/goya.c
-index 6ee6d5b915a1..ce06103292a0 100644
---- a/drivers/misc/habanalabs/goya/goya.c
-+++ b/drivers/misc/habanalabs/goya/goya.c
-@@ -2504,7 +2504,7 @@ static void goya_init_firmware_loader(struct hl_device *hdev)
- 	struct fw_load_mgr *fw_loader = &hdev->fw_loader;
+ 	set_driver_behavior_per_device(hdev);
  
- 	/* fill common fields */
--	fw_loader->linux_loaded = false;
-+	fw_loader->fw_comp_loaded = FW_TYPE_NONE;
- 	fw_loader->boot_fit_img.image_name = GOYA_BOOT_FIT_FILE;
- 	fw_loader->linux_img.image_name = GOYA_LINUX_FW_FILE;
- 	fw_loader->cpu_timeout = GOYA_CPU_TIMEOUT_USEC;
++	hdev->fw_poll_interval_usec = hdev->pldm ? HL_FW_STATUS_PLDM_POLL_INTERVAL_USEC :
++							HL_FW_STATUS_POLL_INTERVAL_USEC;
++
+ 	hdev->curr_reset_cause = HL_RESET_CAUSE_UNKNOWN;
+ 	hdev->prev_reset_trigger = HL_RESET_TRIGGER_DEFAULT;
+ 
 -- 
 2.25.1
 
