@@ -2,142 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D5F044116F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 00:19:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCEB8441174
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 00:32:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230232AbhJaXVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 19:21:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230125AbhJaXVu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 19:21:50 -0400
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 565D1C061746
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 16:19:18 -0700 (PDT)
-Received: by mail-qv1-xf36.google.com with SMTP id d6so10201161qvb.3
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 16:19:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lucidpixels.com; s=google;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding:thread-index:content-language;
-        bh=PUwVOgF3iqhh9XXg1Q2T+QedNlG9uGi/p8Zh/U78VhE=;
-        b=PNiFaGo4/HmrFjb1nTJerGH8lnv2vus3yVTZ2sCWLCK3fDYtsKm4onFb6+QIgDBDTg
-         rng9AxTIhp3itrm57B5erOUMYTCUuzJxA2IyNi/ac0qkvhLtDhlbyi+mlmK5f05jODln
-         +anYtIm8cJb48oWEtHzj2Qao0Cys8l+hhZfKc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding:thread-index:content-language;
-        bh=PUwVOgF3iqhh9XXg1Q2T+QedNlG9uGi/p8Zh/U78VhE=;
-        b=C6sftA6T8L7XoMSHdCJYKxdfluNdnRnF+bgHGMNx5a9tpKjfcEl0r+8L+QU89e255g
-         lYgMzsJrDf7vUK9jqlAMmMMHiXE8mKtWsyRsNd4VeG8j85VpsmTGBIL3OtyXM69meIU4
-         aXR6IlioMfIsX4CEmaZAzrHo1hFdfxnpo6hT69DibxsrNKdxEFAEUP5e6ritcU33fS05
-         QHutlgx8vQI5CCUwEogBKnkBbtKw8w4kBEiDsMHLxNay+sEIgQdzue6ibQiniRqlCRBc
-         01e9YMfxZVIJIUaaXIaWMd/0F+BJFSJqLK+2IubTJBAJZC+14j8W6uEFp7A7TmqZuKSs
-         FTaA==
-X-Gm-Message-State: AOAM530fcRVC3vV7AH7GKROcudbhePpJD9BBJ+3EVJlVKQI1csbtbhMp
-        DhsTQrt8IBzhlaVcFjnY13DxJv9zFppxQmbU
-X-Google-Smtp-Source: ABdhPJz5GDIyL5jZ59zB5o5j8dA4Ud0wCFkGak9gGxRV56KcnE3LosqRxDNsaRnidStN59StC8whtw==
-X-Received: by 2002:ad4:5e8d:: with SMTP id jl13mr24922062qvb.61.1635722356729;
-        Sun, 31 Oct 2021 16:19:16 -0700 (PDT)
-Received: from WARPC (pool-70-106-225-116.clppva.fios.verizon.net. [70.106.225.116])
-        by smtp.gmail.com with ESMTPSA id t4sm9592177qkp.42.2021.10.31.16.19.16
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 31 Oct 2021 16:19:16 -0700 (PDT)
-From:   "Justin Piszcz" <jpiszcz@lucidpixels.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-scsi@vger.kernel.org>
-Subject: kernel 5.15 does not boot with 3ware card (never had this issue <= 5.14) - scsi 0:0:0:0: WARNING: (0x06:0x002C) : Command (0x12) timed out, resetting card
-Date:   Sun, 31 Oct 2021 19:19:12 -0400
-Message-ID: <006a01d7cead$b9262d70$2b728850$@lucidpixels.com>
+        id S230197AbhJaXaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 19:30:13 -0400
+Received: from mga18.intel.com ([134.134.136.126]:3074 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230098AbhJaXaM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Oct 2021 19:30:12 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10154"; a="217832651"
+X-IronPort-AV: E=Sophos;i="5.87,198,1631602800"; 
+   d="scan'208";a="217832651"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2021 16:27:40 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,198,1631602800"; 
+   d="scan'208";a="598852905"
+Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 31 Oct 2021 16:27:38 -0700
+Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mhKEk-0002s4-6K; Sun, 31 Oct 2021 23:27:38 +0000
+Date:   Mon, 01 Nov 2021 07:27:13 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:sched/core] BUILD SUCCESS
+ 8ea9183db4ad8afbcb7089a77c23eaf965b0cacd
+Message-ID: <617f2651.1pfEb+F5F425/xbb%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AdfOrHtQ7dw+5hwzQUSCiXXnGDbBmA==
-Content-Language: en-us
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
+branch HEAD: 8ea9183db4ad8afbcb7089a77c23eaf965b0cacd  sched/fair: Cleanup newidle_balance
 
-Issue: 5.15 hangs at boot (hangs when trying to initialize the 3ware card,
-have not had this issue with any prior 5.x kernel 5.(0-14).
+elapsed time: 774m
 
-Arch: x86_64
-Kernel: 5.15
-Distribution: Debian testing
-Note: Upgraded from 5.14.8 to 5.15, the diff between the two .config's is
-posted below, thoughts?
+configs tested: 128
+configs skipped: 3
 
-dmesg snippet:
--------------------------------
-[8.0574191 loop: module loaded
-[8.0575251 the cryptoloop driver has been deprecated and will be removed in
-in Linux 5.16
-[8.057809] LSI 3uare SAS/SATA-RAID Controller device driver for Linux
-v3.26.02.000.
-[8.3369831 tc: Refined TC clocksource calibration: 3699.999 MHz
-[8.3371911 clocksource: tsc: mask: Oxffffffffffffffff max_cycles:
-Ox6aaaa900000, max_idle_ns: 881590498719 ns
-[8.3375551 clocksource: Switched to clocksource tsc
-( ... )
-[9.097964] 3u-sas: scsiO: AEN: INFO (0x04:0x0053): Battery capacity test is
-overdue:.
-[9.201986] scsi host: 3w-sas
-[9.305954] 3u-sas: scsi0: Found an LSI 3ware 9750-2414e Controller at
-Oxfb760000, IRQ: 45.
-[9.6179701 3u-sas: scsi0: Firmuare FH9X 5.12.00.016, BIOS BE9X 5.11.00.007,
-Phys: 28.
-[30.498007] scsi 0:0:0:0: WARNING: (0x06:0x002C) : Command (0x12) timed out,
-resetting card
-[71.4419581 scsi 0:0:0:0: WARNING: (0x06: 0x002C): Command (0x0) timed out,
-resetting card.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
---
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                         ps3_defconfig
+h8300                     edosk2674_defconfig
+sh                           se7206_defconfig
+sh                          polaris_defconfig
+arm                         at91_dt_defconfig
+mips                        maltaup_defconfig
+arm                    vt8500_v6_v7_defconfig
+mips                  cavium_octeon_defconfig
+powerpc                 mpc8313_rdb_defconfig
+arm                             ezx_defconfig
+xtensa                  cadence_csp_defconfig
+sh                   secureedge5410_defconfig
+arm                            mps2_defconfig
+arm                       omap2plus_defconfig
+m68k                          atari_defconfig
+arm                         palmz72_defconfig
+mips                           ip32_defconfig
+powerpc                     ppa8548_defconfig
+xtensa                  nommu_kc705_defconfig
+arm                            mmp2_defconfig
+sh                        apsh4ad0a_defconfig
+powerpc                         wii_defconfig
+arm                      integrator_defconfig
+mips                         rt305x_defconfig
+arm                         s3c6400_defconfig
+sh                ecovec24-romimage_defconfig
+ia64                      gensparse_defconfig
+arm                      jornada720_defconfig
+powerpc                     redwood_defconfig
+arm                        shmobile_defconfig
+powerpc                     tqm5200_defconfig
+sh                        edosk7760_defconfig
+arm                           tegra_defconfig
+powerpc                     mpc512x_defconfig
+arm                        mvebu_v5_defconfig
+mips                             allmodconfig
+riscv             nommu_k210_sdcard_defconfig
+mips                  decstation_64_defconfig
+m68k                         apollo_defconfig
+sh                            titan_defconfig
+arm                          iop32x_defconfig
+mips                   sb1250_swarm_defconfig
+mips                             allyesconfig
+arm                             rpc_defconfig
+sh                        sh7757lcr_defconfig
+arm                  randconfig-c002-20211031
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+arc                              allyesconfig
+nios2                            allyesconfig
+nds32                               defconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+xtensa                           allyesconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                                defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                              debian-10.3
+i386                             allyesconfig
+nios2                               defconfig
+nds32                             allnoconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a005-20211031
+x86_64               randconfig-a004-20211031
+x86_64               randconfig-a002-20211031
+x86_64               randconfig-a003-20211031
+x86_64               randconfig-a001-20211031
+x86_64               randconfig-a006-20211031
+i386                 randconfig-a003-20211031
+i386                 randconfig-a006-20211031
+i386                 randconfig-a002-20211031
+i386                 randconfig-a005-20211031
+i386                 randconfig-a001-20211031
+i386                 randconfig-a004-20211031
+arc                  randconfig-r043-20211031
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allyesconfig
+riscv                            allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                                  kexec
+x86_64                           allyesconfig
 
-Full configs:
-https://installkernel.tripod.com/5.14.txt
-https://installkernel.tripod.com/5.15.txt
+clang tested configs:
+powerpc              randconfig-c003-20211031
+riscv                randconfig-c006-20211031
+x86_64               randconfig-c007-20211031
+mips                 randconfig-c004-20211031
+s390                 randconfig-c005-20211031
+arm                  randconfig-c002-20211031
+i386                 randconfig-c001-20211031
+x86_64               randconfig-a013-20211031
+x86_64               randconfig-a015-20211031
+x86_64               randconfig-a014-20211031
+x86_64               randconfig-a011-20211031
+x86_64               randconfig-a016-20211031
+x86_64               randconfig-a012-20211031
+i386                 randconfig-a013-20211031
+i386                 randconfig-a012-20211031
+i386                 randconfig-a014-20211031
+i386                 randconfig-a015-20211031
+i386                 randconfig-a011-20211031
+i386                 randconfig-a016-20211031
 
-Diff between 5.14 and 5.15 .config files-- could it be something to do with
-CONFIG_IOMMU_DEFAULT_DMA_LAZY=y?
-
--CONFIG_PRINTK_NMI=y
-+CONFIG_ARCH_NR_GPIO=1024
--CONFIG_X86_SYSFB=y
--CONFIG_FIRMWARE_MEMMAP=y
--CONFIG_DMIID=y
--CONFIG_DMI_SYSFS=y
--CONFIG_DMI_SCAN_MACHINE_NON_EFI_FALLBACK=y
-+CONFIG_TRACE_IRQFLAGS_SUPPORT=y
-+CONFIG_ARCH_HAS_PARANOID_L1D_FLUSH=y
--CONFIG_BLK_SCSI_REQUEST=y
--CONFIG_BLK_DEV_BSG=y
-+CONFIG_BLK_DEV_BSG_COMMON=y
-+CONFIG_BLOCK_HOLDER_DEPRECATED=y
-+CONFIG_AF_UNIX_OOB=y
-+CONFIG_FIRMWARE_MEMMAP=y
-+CONFIG_DMIID=y
-+CONFIG_DMI_SYSFS=y
-+CONFIG_DMI_SCAN_MACHINE_NON_EFI_FALLBACK=y
-+CONFIG_SYSFB=y
-+CONFIG_SCSI_COMMON=y
-+CONFIG_BLK_DEV_BSG=y
-+CONFIG_PTP_1588_CLOCK_OPTIONAL=y
-+CONFIG_IOMMU_DEFAULT_DMA_LAZY=y
--CONFIG_MANDATORY_FILE_LOCKING=y
-+CONFIG_NETFS_STATS=y
-+CONFIG_NTFS3_FS=y
-+CONFIG_NTFS3_LZX_XPRESS=y
-+CONFIG_SMB_SERVER=y
-+CONFIG_SMB_SERVER_CHECK_CAP_NET_ADMIN=y
-+CONFIG_SMBFS_COMMON=y
--CONFIG_TRACE_IRQFLAGS_SUPPORT=y
-
-Thanks,
-
-Justin.
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
