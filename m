@@ -2,144 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 134F6441136
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 23:25:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E11C441138
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 23:30:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230312AbhJaW2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 18:28:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24897 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230025AbhJaW2X (ORCPT
+        id S230333AbhJaWci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 18:32:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230025AbhJaWch (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 18:28:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635719150;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SbOGjXYHIaVWWvxDmyY/7NrfjCgFCeLG7KQq/v0+M1g=;
-        b=LFX9W4Orb+uJ6iG3CoroROdTkqnHSqiIs7Z3bXZNjXabTY6WrT3eKlaT+CGEORIB5c6t0A
-        5/otLuEz+DzX1BFuRQNrTbgu4ANQYHyvusWUzhEHmmDcMpyvoh7xvZR8GuVa6EnE0ilQQp
-        sn7ZeS92W0j2QQDrl7HurhgwyGOIFDI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-559-CLsFAk3fN5iz-7DE45UL9g-1; Sun, 31 Oct 2021 18:25:47 -0400
-X-MC-Unique: CLsFAk3fN5iz-7DE45UL9g-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 058441006AA2;
-        Sun, 31 Oct 2021 22:25:44 +0000 (UTC)
-Received: from starship (unknown [10.40.194.243])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E30CC5DD68;
-        Sun, 31 Oct 2021 22:25:26 +0000 (UTC)
-Message-ID: <0e6e3ed2831a01f5dad9f51b83f3bd1a3c318847.camel@redhat.com>
-Subject: Re: [PATCH v2 41/43] KVM: VMX: Pass desired vector instead of bool
- for triggering posted IRQ
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        David Matlack <dmatlack@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Jing Zhang <jingzhangos@google.com>
-Date:   Mon, 01 Nov 2021 00:25:25 +0200
-In-Reply-To: <20211009021236.4122790-42-seanjc@google.com>
-References: <20211009021236.4122790-1-seanjc@google.com>
-         <20211009021236.4122790-42-seanjc@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Sun, 31 Oct 2021 18:32:37 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE8FEC061714;
+        Sun, 31 Oct 2021 15:30:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=BxpB33/UYztYD2qwFHBciLJVh+wt0BVXxu7eaiDjGSU=; b=i/V6FAbnUCJVHJFXOofkn/GgYH
+        sjG//+Z1TgwvQjG7Mcj90yJvOVXf+bEhbccx6tYrHEvB7MiiOgR6GZM6DnosZt9Co0rVfvEncbttK
+        mGYmZvj/RhoxmBlkjtogKhKlK1OQrXXKyFIcoI1FmVpvS2AKsbMgZzDVwvQHMoMu0wqPDPWSVP/H0
+        3UDZZqOZLT/JpWjMJWyJDRrUfKhVZYbtnG0Xm2tB5J80PV/w2R+Dy0djSg9ViOBcfd0TXk0E/8RzO
+        Dp/co8dmYmb5vUmcf8sOc+aPcSa0LobrHnXJ9oB6XvCCdcXWIgjjCG9dLKRLHW3IHhfQPIx2gdsZp
+        A+RWVq8Q==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mhJL1-00Ep3S-Ly; Sun, 31 Oct 2021 22:30:03 +0000
+Subject: Re: [PATCH] certs: system_keyring.c: clean up kernel-doc
+To:     Mimi Zohar <zohar@linux.ibm.com>, linux-kernel@vger.kernel.org
+Cc:     David Howells <dhowells@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>, keyrings@vger.kernel.org
+References: <20211025003813.5164-1-rdunlap@infradead.org>
+ <2ed333a24e8a3009acd4ef406ff8c2c39e95e2cf.camel@linux.ibm.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <b7936a1c-6f7a-f7ed-6d46-a5affef770a5@infradead.org>
+Date:   Sun, 31 Oct 2021 15:30:03 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <2ed333a24e8a3009acd4ef406ff8c2c39e95e2cf.camel@linux.ibm.com>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-10-08 at 19:12 -0700, Sean Christopherson wrote:
-> Refactor the posted interrupt helper to take the desired notification
-> vector instead of a bool so that the callers are self-documenting.
+On 10/27/21 5:12 PM, Mimi Zohar wrote:
+> Hi Randy,
 > 
-> No functional change intended.
+> On Sun, 2021-10-24 at 17:38 -0700, Randy Dunlap wrote:
+>> Fix some kernel-doc warnings in system_keyring.c:
+>>
+>> system_keyring.c:43: warning: expecting prototype for restrict_link_to_builtin_trusted(). Prototype was for restrict_link_by_builtin_trusted() instead
+>> system_keyring.c:77: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+>>   * Allocate a struct key_restriction for the "builtin and secondary trust"
+>> system_keyring.c:77: warning: missing initial short description on line:
+>>   * Allocate a struct key_restriction for the "builtin and secondary trust"
+>>
+>> Fix the warnings above and then see & fix these:
+>>
+>> system_keyring.c:43: warning: No description found for return value of 'restrict_link_by_builtin_trusted'
+>> system_keyring.c:62: warning: No description found for return value of 'restrict_link_by_builtin_and_secondary_trusted'
+>> system_keyring.c:190: warning: No description found for return value of 'verify_pkcs7_message_sig'
+>> system_keyring.c:275: warning: No description found for return value of 'verify_pkcs7_signature'
+>>
+>> This still leaves non-exported two functions that do not have their
+>> functions parameters documented: restrict_link_by_builtin_trusted() and
+>> restrict_link_by_builtin_and_secondary_trusted().
+>>
+>> Use '%' preceding constants in kernel-doc notation.
+>>
+>> Use "builtin" consistently instead of "built in" or "built-in".
+>>
+>> Don't use "/**" to begin a comment that is not in kernel-doc format.
+>>
+>> Document the use of VERIFY_USE_SECONDARY_KEYRING and
+>> VERIFY_USE_PLATFORM_KEYRING.
+>>
 > 
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  arch/x86/kvm/vmx/vmx.c | 8 +++-----
->  1 file changed, 3 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 78c8bc7f1b3b..f505fee3cf5c 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -3928,11 +3928,9 @@ static void vmx_msr_filter_changed(struct kvm_vcpu *vcpu)
->  }
->  
->  static inline bool kvm_vcpu_trigger_posted_interrupt(struct kvm_vcpu *vcpu,
-> -						     bool nested)
-> +						     int pi_vec)
->  {
->  #ifdef CONFIG_SMP
-> -	int pi_vec = nested ? POSTED_INTR_NESTED_VECTOR : POSTED_INTR_VECTOR;
-> -
->  	if (vcpu->mode == IN_GUEST_MODE) {
->  		/*
->  		 * The vector of interrupt to be delivered to vcpu had
-> @@ -3986,7 +3984,7 @@ static int vmx_deliver_nested_posted_interrupt(struct kvm_vcpu *vcpu,
->  		 */
->  		kvm_make_request(KVM_REQ_EVENT, vcpu);
->  		/* the PIR and ON have been set by L1. */
-> -		if (!kvm_vcpu_trigger_posted_interrupt(vcpu, true))
-> +		if (!kvm_vcpu_trigger_posted_interrupt(vcpu, POSTED_INTR_NESTED_VECTOR))
->  			kvm_vcpu_wake_up(vcpu);
->  		return 0;
->  	}
-> @@ -4024,7 +4022,7 @@ static int vmx_deliver_posted_interrupt(struct kvm_vcpu *vcpu, int vector)
->  	 * guaranteed to see PID.ON=1 and sync the PIR to IRR if triggering a
->  	 * posted interrupt "fails" because vcpu->mode != IN_GUEST_MODE.
->  	 */
-> -	if (!kvm_vcpu_trigger_posted_interrupt(vcpu, false))
-> +	if (!kvm_vcpu_trigger_posted_interrupt(vcpu, POSTED_INTR_VECTOR))
->  		kvm_vcpu_wake_up(vcpu);
->  
->  	return 0;
+> Thanks, Randy.  Even after these changes there are additional kernel
+> doc warnings.   Missing are the parameter definitions for
+> restrict_link_by_builtin_trusted() and
+> restrict_link_by_builtin_and_secondary_trusted().   The first three are
+> exactly the same as for restrict_link_by_signature().  The fourth parm
+> needs to be tweaked.
 
-I both like and don't like this patch.
+Ah, thanks for the info. I'll update the patch...
 
-It is indeed a bit more more self documented, but then it allows caller to
-pass anything other than POSTED_INTR_NESTED_VECTOR/POSTED_INTR_VECTOR which
-would fail.
-
-Maybe addd an assert?
-
-I won't do bikesheddding about this though, so
-
-Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
-
-Best regards,
-	Maxim Levitsky
-
+-- 
+~Randy
