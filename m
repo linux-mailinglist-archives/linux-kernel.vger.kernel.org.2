@@ -2,54 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0072F44117B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 00:41:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F68A44117E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 00:42:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230327AbhJaXo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 19:44:28 -0400
-Received: from aposti.net ([89.234.176.197]:36378 "EHLO aposti.net"
+        id S230487AbhJaXof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 19:44:35 -0400
+Received: from aposti.net ([89.234.176.197]:36410 "EHLO aposti.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230232AbhJaXo1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 19:44:27 -0400
+        id S229982AbhJaXoe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Oct 2021 19:44:34 -0400
 From:   Paul Cercueil <paul@crapouillou.net>
 To:     Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Paul Cercueil <paul@crapouillou.net>, stable@vger.kernel.org
-Subject: [PATCH v2 1/2] ARM: dts: exynos/i9100: Fix BCM4330 Bluetooth reset polarity
-Date:   Sun, 31 Oct 2021 23:41:36 +0000
-Message-Id: <20211031234137.87070-1-paul@crapouillou.net>
+        Paul Cercueil <paul@crapouillou.net>
+Subject: [PATCH v2 2/2] ARM: dts: exynos/i9100: Use interrupt for BCM4330 host wakeup
+Date:   Sun, 31 Oct 2021 23:41:37 +0000
+Message-Id: <20211031234137.87070-2-paul@crapouillou.net>
+In-Reply-To: <20211031234137.87070-1-paul@crapouillou.net>
+References: <20211031234137.87070-1-paul@crapouillou.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The reset GPIO was marked active-high, which is against what's specified
-in the documentation. Mark the reset GPIO as active-low. With this
-change, Bluetooth can now be used on the i9100.
+Switch away from using the deprecated 'host-wakeup-gpios' property,
+and use a 'host-wakeup' interrupt instead, as suggested by the binding
+documentation.
 
-Fixes: 8620cc2f99b7 ("ARM: dts: exynos: Add devicetree file for the Galaxy S2")
-Cc: stable@vger.kernel.org
 Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 ---
- arch/arm/boot/dts/exynos4210-i9100.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/exynos4210-i9100.dts | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/arch/arm/boot/dts/exynos4210-i9100.dts b/arch/arm/boot/dts/exynos4210-i9100.dts
-index 55922176807e..5f5d9b135736 100644
+index 5f5d9b135736..76b1017e05e8 100644
 --- a/arch/arm/boot/dts/exynos4210-i9100.dts
 +++ b/arch/arm/boot/dts/exynos4210-i9100.dts
-@@ -827,7 +827,7 @@ bluetooth {
- 		compatible = "brcm,bcm4330-bt";
- 
+@@ -829,7 +829,10 @@ bluetooth {
  		shutdown-gpios = <&gpl0 4 GPIO_ACTIVE_HIGH>;
--		reset-gpios = <&gpl1 0 GPIO_ACTIVE_HIGH>;
-+		reset-gpios = <&gpl1 0 GPIO_ACTIVE_LOW>;
+ 		reset-gpios = <&gpl1 0 GPIO_ACTIVE_LOW>;
  		device-wakeup-gpios = <&gpx3 1 GPIO_ACTIVE_HIGH>;
- 		host-wakeup-gpios = <&gpx2 6 GPIO_ACTIVE_HIGH>;
+-		host-wakeup-gpios = <&gpx2 6 GPIO_ACTIVE_HIGH>;
++
++		interrupt-parent = <&gpx2>;
++		interrupts = <6 IRQ_TYPE_EDGE_FALLING>;
++		interrupt-names = "host-wakeup";
  	};
+ };
+ 
 -- 
 2.33.0
 
