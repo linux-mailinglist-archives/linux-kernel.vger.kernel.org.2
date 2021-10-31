@@ -2,173 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E2D1440FD5
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 18:41:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E40D440FD8
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 18:41:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230234AbhJaRnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 13:43:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230219AbhJaRnm (ORCPT
+        id S230407AbhJaRoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 13:44:00 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:33424 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230384AbhJaRn4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 13:43:42 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E64FC061714
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 10:41:09 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mhEpK-0007sQ-7P; Sun, 31 Oct 2021 18:41:02 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mhEpI-0003Yq-4G; Sun, 31 Oct 2021 18:41:00 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mhEpI-0005Po-2b; Sun, 31 Oct 2021 18:41:00 +0100
-Date:   Sun, 31 Oct 2021 18:40:57 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Sean Young <sean@mess.org>
-Cc:     =?utf-8?B?TWHDrXJh?= Canal <maira.canal@usp.br>,
-        mchehab@kernel.org, thierry.reding@gmail.com, lee.jones@linaro.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pwm@vger.kernel.org
-Subject: Re: [PATCH v4] media: rc: pwm-ir-tx: Switch to atomic PWM API
-Message-ID: <20211031174057.rizqg6rw47devq5o@pengutronix.de>
-References: <YXlxhpZWf2mxJaMi@fedora>
- <20211028064513.guziv6uaivzlk6ki@pengutronix.de>
- <20211028091442.GA16514@gofer.mess.org>
- <20211028111535.x7xgz7domx2lpyfh@pengutronix.de>
- <20211031103933.GA28316@gofer.mess.org>
+        Sun, 31 Oct 2021 13:43:56 -0400
+Received: by mail-il1-f199.google.com with SMTP id m7-20020a056e021c2700b00259bf1e38b1so8748221ilh.0
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 10:41:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=XZIexutBcQl4+tfwI5ceaURTk9hVCO5nBeCW0ejq1+c=;
+        b=P1X0U2Puk+oi/HR1qBemqQQ5Uu1iVfaEAAnsu83fbSyt/12wnvw57kyCtb/Yivy64P
+         BV5KZA1MX6RuXF4cQshOv+TARlLYgtBWwlbr1WQ7Y4aj89dkxnIXlk7it/A/7tvKCwoD
+         N8N5mgrKzGKEPdJTHfxa0OwHb4ettsshl35roAiynda7e+Vsa6z7dsW1uAJaYsH/5BGm
+         GplxbwpbWSeaoLOB7ZJrgY1xzQJ8fqJdM9xU1/D8ICCJR7358yqugG4AmvhTAGVFauI4
+         60N2oNLZLsR+miQnRezYkODgXnEWI7NL9VHzbKEGmehl1cYAmX5h3xvHb0i6WXx3G/D4
+         oSfg==
+X-Gm-Message-State: AOAM531bnT0JXxOhO240n5NIs3gaOc15Q30ceLc+0SDEuMnT7YyuPOTr
+        9ZpoHX4o1XWUksEEBcdgy4ctyAEF4Nd22sYAyRvih6w+7lye
+X-Google-Smtp-Source: ABdhPJwPz9+jO4xrI2cjDlEWJ666m9x8lq5Dmb+29JHkXh493otH1nbQ8sRlcpFYnfdkGmCOtV2TjYgMqTnv7WbBVgl0dH+wnUUG
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="dz53yxaxk2uaah4j"
-Content-Disposition: inline
-In-Reply-To: <20211031103933.GA28316@gofer.mess.org>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Received: by 2002:a02:b807:: with SMTP id o7mr5718395jam.43.1635702084795;
+ Sun, 31 Oct 2021 10:41:24 -0700 (PDT)
+Date:   Sun, 31 Oct 2021 10:41:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b902e505cfa99115@google.com>
+Subject: [syzbot] WARNING in carl9170_usb_init_device/usb_submit_urb
+From:   syzbot <syzbot+e394db78ae0b0032cb4d@syzkaller.appspotmail.com>
+To:     chunkeey@googlemail.com, davem@davemloft.net, kuba@kernel.org,
+        kvalo@codeaurora.org, linux-kernel@vger.kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
---dz53yxaxk2uaah4j
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+syzbot found the following issue on:
 
-On Sun, Oct 31, 2021 at 10:39:34AM +0000, Sean Young wrote:
-> Hi Uwe,
->=20
-> On Thu, Oct 28, 2021 at 01:15:35PM +0200, Uwe Kleine-K=F6nig wrote:
-> > On Thu, Oct 28, 2021 at 10:14:42AM +0100, Sean Young wrote:
-> > > We still have the problem that the pwm drivers calculate the period
-> > > incorrectly by rounding down (except pwm-bcm2835). So the period is n=
-ot
-> > > as good as it could be in most cases, but this driver can't do anythi=
-ng
-> > > about that.
-> >=20
-> > Yeah, some time ago I started coding a round_state function
-> > (wip at
-> > https://git.pengutronix.de/cgit/ukl/linux/commit/?h=3Dpwm-wip&id=3Dae34=
-8eb6a55d6526f30ef4a49819197d9616391e)
-> > but this was pushed down on my todo-list by more important stuff.
-> >=20
-> > If you want to experiment with that ...
->=20
-> I was thinking about this problem this morning.=20
->=20
-> - The pwm-ir-tx driver gets a carrier set in Hz, which it has to convert =
-to
->   a period (1e9 / carrier). There is loss of accuracy there.
+HEAD commit:    1fc596a56b33 Merge tag 'trace-v5.15-rc6' of git://git.kern..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=100b3d64b00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e24661dcff16e3ec
+dashboard link: https://syzkaller.appspot.com/bug?extid=e394db78ae0b0032cb4d
+compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=152ebd9ab00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=170d4408b00000
 
-Ack, and the loss is known.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e394db78ae0b0032cb4d@syzkaller.appspotmail.com
 
-> - When it gets to the pwm driver, the period is converted into the format
->   the pwm hardware expects. For example the pwm-bcm2835 driver converts
->   it into clock cycles (1e9 / 8e8).
->=20
-> Both calculations involve loss of accuracy because of integer representat=
-ion.
->=20
-> Would it make more sense for the pwm interface to use numer/denom rational
-> numbers?
+usb 1-1: device descriptor read/64, error -71
+usb 1-1: reset high-speed USB device number 2 using dummy_hcd
+usb 1-1: Using ep0 maxpacket: 8
+usb 1-1: driver   API: 1.9.9 2016-02-15 [1-1]
+usb 1-1: firmware API: 1.9.6 2012-07-07
+------------[ cut here ]------------
+usb 1-1: BOGUS urb xfer, pipe 1 != type 3
+WARNING: CPU: 0 PID: 1053 at drivers/usb/core/urb.c:503 usb_submit_urb+0xcd2/0x1970 drivers/usb/core/urb.c:502
+Modules linked in:
+CPU: 0 PID: 1053 Comm: kworker/0:2 Not tainted 5.15.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: events request_firmware_work_func
+RIP: 0010:usb_submit_urb+0xcd2/0x1970 drivers/usb/core/urb.c:502
+Code: d8 48 c1 e8 03 42 8a 04 20 84 c0 0f 85 89 09 00 00 44 8b 03 48 c7 c7 c0 2c 04 8b 4c 89 fe 4c 89 f2 89 e9 31 c0 e8 5e c7 6f fb <0f> 0b 4c 8b 7c 24 10 4c 8b 64 24 38 8b 5c 24 28 45 89 e6 4c 89 f7
+RSP: 0018:ffffc900045bfa20 EFLAGS: 00010246
+RAX: c0488d4b2013c100 RBX: ffffffff8b042a08 RCX: ffff88801c0eb900
+RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
+RBP: 0000000000000001 R08: ffffffff81695fe2 R09: ffffed10173857a8
+R10: ffffed10173857a8 R11: 0000000000000000 R12: dffffc0000000000
+R13: ffff888014de4400 R14: ffff888012bb16b8 R15: ffffffff8b04cc80
+FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fffa69fe690 CR3: 0000000071447000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ carl9170_usb_send_rx_irq_urb drivers/net/wireless/ath/carl9170/usb.c:504 [inline]
+ carl9170_usb_init_device+0x243/0x880 drivers/net/wireless/ath/carl9170/usb.c:939
+ carl9170_usb_firmware_finish drivers/net/wireless/ath/carl9170/usb.c:999 [inline]
+ carl9170_usb_firmware_step2+0xa5/0x260 drivers/net/wireless/ath/carl9170/usb.c:1028
+ request_firmware_work_func+0x19b/0x270 drivers/base/firmware_loader/main.c:1081
+ process_one_work+0x853/0x1140 kernel/workqueue.c:2297
+ worker_thread+0xac1/0x1320 kernel/workqueue.c:2444
+ kthread+0x453/0x480 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30
 
-This is quite a complication because then all lowlevel driver needs to
-do fractal math. I don't want to open that can of worms.
 
-> struct rational {
-> 	u64 numer;
-> 	u64 denom;
-> };
->=20
-> If pwm-ir-tx would like to set the carrier, it could it like so:
->=20
-> 	struct rational period =3D {
-> 		.numer =3D NUSEC_PER_SEC,
-> 		.denom =3D carrier,
-> 	};
->=20
-> 	pwm_set_period(&period);
->=20
-> Now pwm-bcm2835 could do it like so:
->=20
-> 	int bcm2835_set_period(struct rational *period)
-> 	{
-> 		struct rational rate =3D {
-> 			.numer =3D NUSEC_PER_SEC,
-> 			.denum =3D clk_get_rate(clk),
-> 		};
->=20
-> 		rational_div(&rate, period);
->=20
-> 		int step =3D rational_to_u64(&rate);
-> 	}
->=20
-> Alternatively, since most of the pwm hardware is doing scaling based on t=
-he
-> clock (I think), would not make more sense for the pwm driver interface to
-> take a frequency rather than a period? Then the integer calculations can =
-be
-> simpler: just divide the clock rate by the required frequency and you have
-> the period.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-I think the rounding approach is easier and gives you the optimal
-setting, too. With a carrier of say 455 KHz you want a period of
-1e9 / (455 kHz) =3D 2197.802197802198 ns. Now assuming a pwm clk of 10 MHz
-the pwm-bcm2835 driver can offer you 2100 ns and 2200 ns and the
-pwm-ir-tx driver can pick the one it prefers. (OK, this works so nicely
-because the pwm-bcm2835 driver has a nice clk rate, but also if it were
-say 66666000 Hz, it would offer you 2191 ns and 2206 ns and you could
-pick your favourite. (In this case there is a rounding error because the
-actual periods are 2190.021900219002 ns and 2205.022050220502 ns, but I
-would expect that this doesn't influence the choice and to improve here
-we probably would have to change the unit of clk_get_rate, too.)
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---dz53yxaxk2uaah4j
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmF+1SYACgkQwfwUeK3K
-7AkS4ggAgTu6+YUzCPjg9cyzjbo1cS6UhhdPI7CxPJg6zl6JsQ4rIwzdmO2tEAO7
-S+K+LKzZYTChxSrPgPstRCvJPkzHFt9fvmRb5lfZzuigzzx54saIJeETdPJdTmuX
-nZWQpLMJF0qBh0UTy2KgVyIlQXWUmyUaiKC/qjiwxbU+UAvLpy7jqHG1vYvtfaOr
-jE9qhNUnY3LMjKN9aczA4yoSIelg/xC6jaW/gqfN53ECq81nq5uKOcTJAPz9R3nt
-UF2q/G+YMq4iZQ25Ns+Gu2rwfqvLmE8bVvzqCKXxQOF3784KyW6FlCWNbrDRkNG1
-pEjfo3j9G6IVRKNAtCnO2WzCtysjmg==
-=QDfF
------END PGP SIGNATURE-----
-
---dz53yxaxk2uaah4j--
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
