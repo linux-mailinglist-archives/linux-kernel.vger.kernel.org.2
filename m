@@ -2,228 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57D37441115
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 22:52:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B214441119
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 22:59:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230191AbhJaVzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 17:55:12 -0400
-Received: from mga12.intel.com ([192.55.52.136]:19005 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230025AbhJaVzL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 17:55:11 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10154"; a="210971193"
-X-IronPort-AV: E=Sophos;i="5.87,198,1631602800"; 
-   d="scan'208";a="210971193"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2021 14:52:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,198,1631602800"; 
-   d="scan'208";a="598834623"
-Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 31 Oct 2021 14:52:35 -0700
-Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mhIkl-0002pa-3W; Sun, 31 Oct 2021 21:52:35 +0000
-Date:   Mon, 01 Nov 2021 05:52:14 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/core] BUILD SUCCESS
- a72fdfd21e01c626273ddcf5ab740d4caef4be54
-Message-ID: <617f100e.2fP65zZlaYIrEUN5%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S230233AbhJaWCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 18:02:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230025AbhJaWCU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Oct 2021 18:02:20 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2FB0C061714;
+        Sun, 31 Oct 2021 14:59:47 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id z20so58525818edc.13;
+        Sun, 31 Oct 2021 14:59:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=09tEUv5Pi4zmLS18Hb1uKDpyMm0U+qPl49dllrip6RQ=;
+        b=NCaENn9MM8pVshKjZ3XkwgH1nJLaF7wVaIqe83GIw3IcBzaTo8QlodYGYjzCO/H66K
+         JcuLMmPQteF2Tgs79MnSAefh7nRqHgSXdcdVIeuVmlNNMNyqTV71RrXRct9cJBL2Pu6K
+         ERORJIn3gsuWRezs/1AJPeu0T4GW7VwhUU6pNKdmXgs/ixMScmml9QuRH+Ex2rZ3kO8y
+         1TR4T+O+jjO7j1gu/y+W6EV5cY/YnA0qnsJdV8NVguDTOC3FfjGaKAJqXAB8KzCCJH9G
+         kiXVedYmkdKHk9h0pcJH1GS3bjYA4ADsmANSeiwslzLfjqCyIE8/vx29j5cZ+Lk+DyG3
+         KoIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=09tEUv5Pi4zmLS18Hb1uKDpyMm0U+qPl49dllrip6RQ=;
+        b=hTnODSperS5iNk+sP1izSvrvXfD9fLikHN1u9o2kfJiGIpjmJf+Voyk19Skp9ODRWm
+         qiKFHidkWt2bvzdaO8dKM23+xdMNZWHUACmJQAywOilY2EPXB0MVVDYbYL3PvvYl+I8U
+         MtvzI+R4igkEsLtH1xwKLMm5C0ruliAuQWwtFJ3Wgl01b4kmOBNPghOnBQjEIouzfXV4
+         nQjhNP7GXPGt12l7Kzh9gjJkIYORCVOnakkdnrN9+qr6sq9XgKII4dv+nabPhf9H4AO7
+         Vz8pYs+42GhERKZDMVPLUG3FZyWftc0u9todP+cvFB6zZxMgZQRNQHvixGOVoV3wopF2
+         ADNQ==
+X-Gm-Message-State: AOAM533Bocc2fEBPrkK+Yrh+fm3zKexYrYnlm+5OO5t5r6lX7r9eWXdL
+        O7GFY6xs2o1IXjVa+VjurEc=
+X-Google-Smtp-Source: ABdhPJyxGAZwDuU/sGXUZ7wuLLoOLXRibhHMwUNBUNeuP/UMhvIcym3JFe6v0ISzHeTRSn1i1iJSJg==
+X-Received: by 2002:aa7:df8f:: with SMTP id b15mr23157253edy.202.1635717586307;
+        Sun, 31 Oct 2021 14:59:46 -0700 (PDT)
+Received: from ArchLaptop ([2a02:ab88:368f:2080:eab:126a:947d:3008])
+        by smtp.gmail.com with ESMTPSA id lb12sm6038887ejc.28.2021.10.31.14.59.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 31 Oct 2021 14:59:45 -0700 (PDT)
+Date:   Sun, 31 Oct 2021 22:59:46 +0100
+From:   David Virag <virag.david003@gmail.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] samsung: exynos-chipid: add Exynos7885 SoC support
+Message-ID: <YX8R0t66PC5h3jiF@ArchLaptop>
+References: <20211031175329.27843-1-virag.david003@gmail.com>
+ <e1555f6c-63e2-60c8-9a7d-808545de01e0@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <e1555f6c-63e2-60c8-9a7d-808545de01e0@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/core
-branch HEAD: a72fdfd21e01c626273ddcf5ab740d4caef4be54  selftests/x86/iopl: Adjust to the faked iopl CLI/STI usage
+On Sun, Oct 31, 2021 at 09:56:01PM +0100, Krzysztof Kozlowski wrote:
+> On 31/10/2021 18:53, David Virag wrote:
+> > Exynos 7885 has product id "0xE7885000". Add this id to the ids with
+> > the name.
+> > 
+> 
+> Thanks for the patch!
+> 
+> > The downstream driver sets sub_rev to 2 if we are on Exynos 7885, we
+> > detected sub_rev 1 and the 27th bit of the revision register is set.
+> 
+> There is no revision register in older Exynos boards, so it seems you
+> speak about new version, but please mention it explicitly.
+> 
 
-elapsed time: 1419m
+Yes, the 7885 has the new version with seperate registers, that can be
+used with the 850 compatible.
 
-configs tested: 169
-configs skipped: 4
+> > This is presumably because Samsung might have set the wrong bits on
+> > rev2 of the SoC in the chipid, but we may never know as we have no
+> > manual.
+> > 
+> > Both the SM-A530F/jackpotlte with Exynos7885 and the SM-M305/m30lte
+> > with Exynos7904 (rebranded Exynos7885 with lower clock speeds) seem
+> > to have this bit set to 1 and have a sub_rev of 1 otherwise, but the
+> > downstream driver corrects it to 2.
+> > Let's replicate this behaviour in upstream too!
+> 
+> No, let's don't replicate weird vendor behavior without understanding
+> it, unless there is reason to. Please describe the reason or drop it.
+> 
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Fair enough, I included it because as I understand Samsung made a
+mistake in this revision's chipid regs and set a wrong bit, so if that
+bit is set we should report revision 2 as it is actually rev2 just with
+a broken chipid. At least this is what I think has happened but we'll
+probably never know. Will remove in v2 then.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-mips                         tb0287_defconfig
-powerpc                 mpc8540_ads_defconfig
-m68k                        m5407c3_defconfig
-arc                        nsimosci_defconfig
-sh                           se7721_defconfig
-arm                           corgi_defconfig
-arm                     am200epdkit_defconfig
-powerpc                     mpc83xx_defconfig
-xtensa                  cadence_csp_defconfig
-arm                         axm55xx_defconfig
-sparc                       sparc64_defconfig
-sh                   sh7770_generic_defconfig
-xtensa                           alldefconfig
-arm                          pxa168_defconfig
-mips                           ci20_defconfig
-arm                    vt8500_v6_v7_defconfig
-mips                  cavium_octeon_defconfig
-powerpc                 mpc8313_rdb_defconfig
-arm                             ezx_defconfig
-sh                   secureedge5410_defconfig
-arm                            mps2_defconfig
-sh                      rts7751r2d1_defconfig
-sh                           se7206_defconfig
-i386                                defconfig
-powerpc                     mpc512x_defconfig
-riscv                          rv32_defconfig
-sh                           se7780_defconfig
-sh                           se7750_defconfig
-mips                        workpad_defconfig
-powerpc                      ppc64e_defconfig
-arm                        keystone_defconfig
-mips                        vocore2_defconfig
-mips                      maltasmvp_defconfig
-xtensa                generic_kc705_defconfig
-sh                          rsk7269_defconfig
-m68k                       m5208evb_defconfig
-sh                        edosk7760_defconfig
-s390                             alldefconfig
-arm                       omap2plus_defconfig
-m68k                          atari_defconfig
-arm                         palmz72_defconfig
-mips                           ip32_defconfig
-powerpc                     ppa8548_defconfig
-xtensa                  nommu_kc705_defconfig
-h8300                     edosk2674_defconfig
-powerpc                   lite5200b_defconfig
-riscv                    nommu_virt_defconfig
-xtensa                              defconfig
-arm                         hackkit_defconfig
-um                             i386_defconfig
-arm                           omap1_defconfig
-alpha                            allyesconfig
-mips                         rt305x_defconfig
-arm                         s3c6400_defconfig
-sh                ecovec24-romimage_defconfig
-ia64                      gensparse_defconfig
-arm                      jornada720_defconfig
-xtensa                    xip_kc705_defconfig
-mips                         bigsur_defconfig
-riscv             nommu_k210_sdcard_defconfig
-powerpc                    socrates_defconfig
-powerpc                     rainier_defconfig
-sh                           se7619_defconfig
-csky                                defconfig
-powerpc                     redwood_defconfig
-arm                        shmobile_defconfig
-powerpc                     tqm5200_defconfig
-arm                           tegra_defconfig
-arm                        mvebu_v5_defconfig
-mips                             allmodconfig
-mips                  decstation_64_defconfig
-powerpc                      arches_defconfig
-xtensa                    smp_lx200_defconfig
-powerpc                      katmai_defconfig
-powerpc                        warp_defconfig
-arm                        oxnas_v6_defconfig
-mips                         db1xxx_defconfig
-sh                          r7785rp_defconfig
-arm                        multi_v5_defconfig
-ia64                             alldefconfig
-m68k                         apollo_defconfig
-sh                            titan_defconfig
-mips                        maltaup_defconfig
-arm                          iop32x_defconfig
-mips                   sb1250_swarm_defconfig
-mips                             allyesconfig
-arm                             rpc_defconfig
-sh                        sh7757lcr_defconfig
-arm                  randconfig-c002-20211031
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-alpha                               defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-xtensa                           allyesconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-parisc                              defconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                              debian-10.3
-i386                             allyesconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a003-20211031
-i386                 randconfig-a006-20211031
-i386                 randconfig-a002-20211031
-i386                 randconfig-a005-20211031
-i386                 randconfig-a001-20211031
-i386                 randconfig-a004-20211031
-x86_64               randconfig-a005-20211031
-x86_64               randconfig-a004-20211031
-x86_64               randconfig-a002-20211031
-x86_64               randconfig-a003-20211031
-x86_64               randconfig-a001-20211031
-x86_64               randconfig-a006-20211031
-arc                  randconfig-r043-20211031
-riscv                    nommu_k210_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allyesconfig
-riscv                            allmodconfig
-um                           x86_64_defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
-x86_64                                  kexec
-x86_64                           allyesconfig
+> > 
+> > Signed-off-by: David Virag <virag.david003@gmail.com>
+> > ---
+> >  drivers/soc/samsung/exynos-chipid.c | 9 +++++++++
+> >  1 file changed, 9 insertions(+)
+> > 
+> > diff --git a/drivers/soc/samsung/exynos-chipid.c b/drivers/soc/samsung/exynos-chipid.c
+> > index a28053ec7e6a..ec8c76275aec 100644
+> > --- a/drivers/soc/samsung/exynos-chipid.c
+> > +++ b/drivers/soc/samsung/exynos-chipid.c
+> > @@ -55,6 +55,7 @@ static const struct exynos_soc_id {
+> >  	{ "EXYNOS5440", 0xE5440000 },
+> >  	{ "EXYNOS5800", 0xE5422000 },
+> >  	{ "EXYNOS7420", 0xE7420000 },
+> > +	{ "EXYNOS7885", 0xE7885000 },
+> 
+> This looks good, but please rebase on:
+> https://lore.kernel.org/linux-samsung-soc/20211031205212.59505-1-krzysztof.kozlowski@canonical.com/T/#u
+> because we use one compatible for entire family and I would like to have
+> it documented which family is this here.
+> 
 
-clang tested configs:
-powerpc              randconfig-c003-20211031
-riscv                randconfig-c006-20211031
-x86_64               randconfig-c007-20211031
-mips                 randconfig-c004-20211031
-s390                 randconfig-c005-20211031
-arm                  randconfig-c002-20211031
-i386                 randconfig-c001-20211031
-x86_64               randconfig-a013-20211031
-x86_64               randconfig-a015-20211031
-x86_64               randconfig-a014-20211031
-x86_64               randconfig-a011-20211031
-x86_64               randconfig-a016-20211031
-x86_64               randconfig-a012-20211031
-i386                 randconfig-a013-20211031
-i386                 randconfig-a012-20211031
-i386                 randconfig-a014-20211031
-i386                 randconfig-a015-20211031
-i386                 randconfig-a011-20211031
-i386                 randconfig-a016-20211031
-riscv                randconfig-r042-20211031
-s390                 randconfig-r044-20211031
-hexagon              randconfig-r045-20211031
-hexagon              randconfig-r041-20211031
+Sure.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> >  	{ "EXYNOS850", 0xE3830000 },
+> >  	{ "EXYNOSAUTOV9", 0xAAA80000 },
+> >  };
+> > @@ -88,6 +89,14 @@ static int exynos_chipid_get_chipid_info(struct regmap *regmap,
+> >  	}
+> >  	main_rev = (val >> data->main_rev_shift) & EXYNOS_REV_PART_MASK;
+> >  	sub_rev = (val >> data->sub_rev_shift) & EXYNOS_REV_PART_MASK;
+> > +
+> > +	//Exynos 7885 revision 2 apparently has the 27th bit set instead of having
+> > +	//a sub_rev of 2. Correct for this!
+> 
+> Not a Linux kernel comment. This will go away anyway, but please read
+> the coding style and use scripts/checkpatch.pl for future patches.
+> 
+
+I did run checkpatch on it and it said nothing but yeah I forgot about
+that. My bad!
+
+> > +	if (soc_info->product_id == 0xE7885000) {
+> > +		if ((sub_rev == 1) && (val & 0x04000000))
+> > +			sub_rev = 2;
+> > +	}
+> > +
+> >  	soc_info->revision = (main_rev << EXYNOS_REV_PART_SHIFT) | sub_rev;
+> >  
+> >  	return 0;
+> > 
+> 
+> 
+> Best regards,
+> Krzysztof
+
+Best regards,
+David
