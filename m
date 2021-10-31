@@ -2,102 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EAD1440F7D
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 17:44:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 336AC440F89
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 17:49:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229946AbhJaQqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 12:46:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37994 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229579AbhJaQqs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 12:46:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8519860F9E;
-        Sun, 31 Oct 2021 16:44:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635698656;
-        bh=KqBG5a72r0SwoJh6oXNmY014kyMvBMiK1GbA0SDqhtU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=rrx3JAFte+bnvxLfREs8Zp20Ei3Bb1lLKJrtUB9esdLJCRgWdCgoHc+CGNMids0KG
-         qnZAEUIuC8q4WXIK7jKkSrvCvHUVd3Bzk5eLs15cudtrXG4QgkPi1Hl/wcsLepl1RI
-         Pti3Zv5ihR+DtzhZveeLN7XABULJ0VQtAog6jUrOKJup6Ix2Bx9i4/WIREjInGBeDD
-         iX++m3Qql9J3u5vGjy+5PsNYR6GUJKxP5L5SfFh636t/wznOK9ttikuBaEV2SfcXVA
-         RlaNSAJ4dEALQQlsrpU57OYGErMVpszXE8OqqEB2DdRQNGFCNoVShgeuRwmyCf2YFk
-         txlOtPEE/WeGg==
-Received: by mail-oi1-f181.google.com with SMTP id n11so13416060oig.6;
-        Sun, 31 Oct 2021 09:44:16 -0700 (PDT)
-X-Gm-Message-State: AOAM530ixAjzu4NgLNG0/5v+e9npOr9dRUXMbICWWjlsAKGYqxGgA0pg
-        rY/Un144zCF8E31NJvgbR6Szux6SLjidFuImMak=
-X-Google-Smtp-Source: ABdhPJxKU2EGRHrAToCd0HlO2UumUt4CUFcQUJowbmnFLPnafpbFSx3tFuxcW5bZyH55Sp1P1HD0Ik2UzfxEmtF0TmM=
-X-Received: by 2002:a05:6808:4d9:: with SMTP id a25mr16521518oie.33.1635698655833;
- Sun, 31 Oct 2021 09:44:15 -0700 (PDT)
+        id S229974AbhJaQv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 12:51:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52238 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229579AbhJaQv5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Oct 2021 12:51:57 -0400
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2FB0C061570;
+        Sun, 31 Oct 2021 09:49:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=aVTDOe/YUeynXWH5Tc1lXgdCvtmKqzq8Qx0YAnSIre4=; b=JeI0M0wZWD8dEyRi1G2qGd8xbf
+        4yiV4avZV68IsLtYNYKAjcgjhvG+Qe2aHnJ8btzfMkBrObb53Du4HDin8qF6twtE7zbk+2QERtk7B
+        E5DQozCkp/RcQqVAyNezBM7iE0vrLtJIMTl3zqU9ExiJf6Je9IF/fhzEULixiFCZGBb4=;
+Received: from p200300ccff0896001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff08:9600:1a3d:a2ff:febf:d33a] helo=aktux)
+        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <andreas@kemnade.info>)
+        id 1mhE1G-0004Kw-9u; Sun, 31 Oct 2021 17:49:18 +0100
+Date:   Sun, 31 Oct 2021 17:49:17 +0100
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     Alistair Francis <alistair@alistair23.me>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        alistair23@gmail.com, dmitry.torokhov@gmail.com,
+        linus.walleij@linaro.org, robh+dt@kernel.org, rydberg@bitmath.org,
+        mylene.josserand@free-electrons.com
+Subject: Re: [PATCH 2/4] Documentation: DT: bindings: input: Add
+ documentation for cyttsp5
+Message-ID: <20211031174917.289ef018@aktux>
+In-Reply-To: <20211025114214.44617-3-alistair@alistair23.me>
+References: <20211025114214.44617-1-alistair@alistair23.me>
+        <20211025114214.44617-3-alistair@alistair23.me>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <CAMj1kXHKh7wv6JqusVnoiQDMm7ApFq2ujzbfWmM9AzLKFehhAA@mail.gmail.com>
- <YXlcMluaysPBF92J@hirez.programming.kicks-ass.net> <CAMj1kXECTdDLVMk2JduU5mV2TR0Cv=hZ9QOpYRsRM1jfvvNikw@mail.gmail.com>
- <CABCJKufpS4jJxHqk8=bd1JCNbKfmLDKBbjbhjrar2+YQJFiprg@mail.gmail.com>
- <20211029200324.GR174703@worktop.programming.kicks-ass.net>
- <20211030074758.GT174703@worktop.programming.kicks-ass.net>
- <CAMj1kXEJd5=3A_6Jhd4UU-TBGarnHo5+U76Zxxt7SzXsWp4CcA@mail.gmail.com>
- <20211030180249.GU174703@worktop.programming.kicks-ass.net>
- <CAMj1kXF4ZNAvdC8tP_H=v1Dn_Zcv=La11Ok43ceQOyb1Xo1jXQ@mail.gmail.com>
- <CAMj1kXEvemVOWf4M_0vsduN_kiCsGVmM92cE7KPMoNKViKp=RQ@mail.gmail.com> <20211031163920.GV174703@worktop.programming.kicks-ass.net>
-In-Reply-To: <20211031163920.GV174703@worktop.programming.kicks-ass.net>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Sun, 31 Oct 2021 17:44:04 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXHk5vbrT49yRCivX3phrEkN6Xbb+g8WEmavL_d1iE0OxQ@mail.gmail.com>
-Message-ID: <CAMj1kXHk5vbrT49yRCivX3phrEkN6Xbb+g8WEmavL_d1iE0OxQ@mail.gmail.com>
-Subject: Re: [PATCH] static_call,x86: Robustify trampoline patching
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        Mark Rutland <mark.rutland@arm.com>, X86 ML <x86@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-hardening@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Score: -1.0 (-)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 31 Oct 2021 at 17:39, Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Sun, Oct 31, 2021 at 05:24:13PM +0100, Ard Biesheuvel wrote:
-> > On Sat, 30 Oct 2021 at 20:55, Ard Biesheuvel <ardb@kernel.org> wrote:
-> > >
-> > > On Sat, 30 Oct 2021 at 20:03, Peter Zijlstra <peterz@infradead.org> wrote:
-> > > >
-> > > > On Sat, Oct 30, 2021 at 07:19:53PM +0200, Ard Biesheuvel wrote:
-> > > > > I just realized that arm64 has the exact same problem, which is not
-> > > > > being addressed by my v5 of the static call support patch.
-> > > >
-> > > > Yeah, it would.
-> > > >
-> > > > > As it turns out, the v11 Clang that I have been testing with is broken
-> > > > > wrt BTI landing pads, and omits them from the jump table entries.
-> > > > > Clang 12+ adds them properly, which means that both the jump table
-> > > > > entry and the static call trampoline may start with BTI C + direct
-> > > > > branch, and we also need additional checks to disambiguate.
-> > > >
-> > > > I'm not sure, why would the static_call trampoline need a BTI C ? The
-> > > > whole point of static_call() is to be a direct call, we should never
-> > > > have an indirect call to the trampoline, that would defeat the whole
-> > > > purpose.
-> > >
-> > > This might happen when the distance between the caller and the
-> > > trampoline is more than 128 MB, in which case we emit a veneer that
-> > > uses an indirect call as well. So we definitely need the landing pad
-> > > in the trampoline.
-> >
-> > Something like the below seems to work to prevent getting the wrong
-> > trampoline address into arch_static_call_transform:
->
-> Is is also a terriblly gross hack. I really want the clang-cfi stuff to
-> improve, not add layers of hacks on top of it.
+Hi,
 
-I'm just as annoyed as you are about the apparent need for this.
-However, emitting an alias at build time is far better IMHO than
-adding a magic byte sequence and having to check it at runtime.
+On Mon, 25 Oct 2021 21:42:12 +1000
+Alistair Francis <alistair@alistair23.me> wrote:
+
+> From: Myl=C3=A8ne Josserand <mylene.josserand@free-electrons.com>
+>=20
+> Add the Cypress TrueTouch Generation 5 touchscreen device tree bindings
+> documentation. It can use I2C or SPI bus.
+> This touchscreen can handle some defined zone that are designed and
+> sent as button. To be able to customize the keycode sent, the
+> "linux,code" property in a "button" sub-node can be used.
+>=20
+> Signed-off-by: Myl=C3=A8ne Josserand <mylene.josserand@free-electrons.com>
+> Message-Id: <20170529144538.29187-3-mylene.josserand@free-electrons.com>
+> Signed-off-by: Alistair Francis <alistair@alistair23.me>
+> ---
+>  .../input/touchscreen/cypress,cyttsp5.yaml    | 72 +++++++++++++++++++
+>  1 file changed, 72 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/c=
+ypress,cyttsp5.yaml
+>=20
+> diff --git a/Documentation/devicetree/bindings/input/touchscreen/cypress,=
+cyttsp5.yaml b/Documentation/devicetree/bindings/input/touchscreen/cypress,=
+cyttsp5.yaml
+> new file mode 100644
+> index 000000000000..0bddbd76a0c3
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/input/touchscreen/cypress,cyttsp5=
+.yaml
+> @@ -0,0 +1,72 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/input/touchscreen/cypress,cyttsp5.yam=
+l#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Cypress cyttsp touchscreen controller, generation 5
+> +
+> +maintainers:
+> +  - Alistair Francis <alistair@alistair23.me>
+> +
+> +allOf:
+> +  - $ref: touchscreen.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    const: cypress,cyttsp5
+> +
+
+you use buttons later, so it should be specified somewhere here.
+
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  vdd-supply:
+> +    description: Regulator for voltage.
+> +
+> +  reset-gpios:
+> +    maxItems: 1
+> +
+> +  linux,code:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: EV_ABS specific event code generated by the axis.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - vdd-supply
+> +
+> +additionalProperties: false
+If you want to allow things from touchscreen.yaml, you should use
+unevaluatedProperties: false.
+> +
+> +examples:
+> +  - |
+
+some includes are missing for the constants below here.
+> +    i2c {
+
+Regards,
+Andreas
