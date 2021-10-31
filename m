@@ -2,195 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13AD744114A
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 23:48:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1BF944114C
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 23:51:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230462AbhJaWvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 18:51:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34742 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230316AbhJaWvN (ORCPT
+        id S230511AbhJaWx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 18:53:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46206 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230316AbhJaWx4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 18:51:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635720520;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IAXDzBRARqGuWFKHNo+aw3J6+tC4cDZIOgfc+O9TnKM=;
-        b=KXf8KnsELmuZ68+O4xGbHDKP39F/ob3GelkkJxFi755vN7e9wqF+ePCZhqxdPO6sBszYU9
-        hT+52st9P5rDrHcPtgu3+ehl9/g5cVvarto9lr4UZCE0O0wM6sQaXgUJBO+pU9WCgoxHVU
-        UEUE/6OfNKltvSic9RP5pxmurnoDBog=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-182-DA7Ib6_UPm-Qx5l3Quy1qw-1; Sun, 31 Oct 2021 18:48:35 -0400
-X-MC-Unique: DA7Ib6_UPm-Qx5l3Quy1qw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 95B171006AA2;
-        Sun, 31 Oct 2021 22:48:31 +0000 (UTC)
-Received: from starship (unknown [10.40.194.243])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 03B4019C79;
-        Sun, 31 Oct 2021 22:48:18 +0000 (UTC)
-Message-ID: <20a17d75855dfb9bd496466fcd9f14baab0b2bda.camel@redhat.com>
-Subject: Re: [PATCH v2 26/43] KVM: VMX: Read Posted Interrupt "control"
- exactly once per loop iteration
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        David Matlack <dmatlack@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Jing Zhang <jingzhangos@google.com>
-Date:   Mon, 01 Nov 2021 00:48:17 +0200
-In-Reply-To: <YXrH/ZZBOHrWHz4j@google.com>
-References: <20211009021236.4122790-1-seanjc@google.com>
-         <20211009021236.4122790-27-seanjc@google.com>
-         <b078cce30f86672d7d8f8eaa0adc47d24def24e2.camel@redhat.com>
-         <YXrH/ZZBOHrWHz4j@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Sun, 31 Oct 2021 18:53:56 -0400
+Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9906C061714;
+        Sun, 31 Oct 2021 15:51:23 -0700 (PDT)
+Received: by mail-ua1-x931.google.com with SMTP id az37so431138uab.13;
+        Sun, 31 Oct 2021 15:51:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bPFwVr5kk0vqZjJlI+7yEVQ4/r8h3+RsMnwNH7XHCsM=;
+        b=Z4T+Z3vARLXA535mSg7xlLU+HWKaVfg594r5Dq5kpAbBdu8l/+Pt6nXuWIeLv1uEVs
+         4vm/bx/Lv1Y3phpO632wFvT8GhpLFS2GJBfUhCAgZ1F0dNKI4/kkTEvAVJg0Xbzw9zng
+         +ARDMyojIfbhYUSw/canZQEAPQwNKD1NiuaJYgzI5J8ZwUwlgZUZyk9dsTIo2Rak/TCb
+         IsxgyK7HMtf+6VbWsdlue60gaEFB092l77v/GX06jcleYwpCcZJGPne5CmfnqzA6KDfp
+         +Q0GzEUM7SZ3KPbR0WZ9xsnT4lrjF1G+fjUyTcSlBL/qe8A8k3IBQiGYcmesrHN13Eii
+         1k8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bPFwVr5kk0vqZjJlI+7yEVQ4/r8h3+RsMnwNH7XHCsM=;
+        b=vJAgl7kRx7iP5G9FbYLg2UhP8CBuP6Sc7EvysKlOkg2P4Ou8prH+ePhF1oR6DNRsRa
+         BO+RpCAlud3edSRkrDjsTY/pZwbNdR6cKeLGqEvqx2OWRjZtkLsR/gPbr5NNyA66Qhh7
+         eTAhNSh+SkUWQqDVp6kzWPYA+kEDGXJZZasL0H9rdE5hVU/D/DMzu6ATSl/g7fl4sb8Q
+         xHkkPrZxRvxCC1nGadP1GX+vQ9ww5L/ISSBWejX7GATYN+XEX6J3qhZlkzJ5ygMMq6bO
+         PynWhIqIs2Fd1B57YVWBAH7uGObJF/Bn7/lkJrntAMSY39TqptIFvssvDqqtzOQxmp8v
+         IANA==
+X-Gm-Message-State: AOAM533UEzgKpbtuIsmbCaAlC78zzXLlWHVWOwIbTnB8131lXUikKUZ7
+        oE8y8KiP9/WRDmoYRG3U7UdwK0clFcQIadlH715AnQ0=
+X-Google-Smtp-Source: ABdhPJxC+Ljs59vrx7a82ou1aFtq+enfXhEtw9OOVkKStyHZVDeYe9nq0nJEPBDjXZNVwKWw7HDKpXsm0VZ/ze93Ygk=
+X-Received: by 2002:a05:6102:941:: with SMTP id a1mr4005440vsi.0.1635720682818;
+ Sun, 31 Oct 2021 15:51:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <CALjTZvbzYfBuLB+H=fj2J+9=DxjQ2Uqcy0if_PvmJ-nU-qEgkg@mail.gmail.com>
+ <b023adf9-e21c-59ac-de49-57915c8cede8@oderland.se> <87fst6pjcu.wl-maz@kernel.org>
+ <ae50cd31-6b5d-3dc4-4ba7-d628a74dc722@oderland.se>
+In-Reply-To: <ae50cd31-6b5d-3dc4-4ba7-d628a74dc722@oderland.se>
+From:   Rui Salvaterra <rsalvaterra@gmail.com>
+Date:   Sun, 31 Oct 2021 22:51:11 +0000
+Message-ID: <CALjTZvaE-u0cGRdDD=m8iXCMZvM65v_8wBQq3-vPN0+_3SgU0g@mail.gmail.com>
+Subject: Re: [REGRESSION][BISECTED] 5.15-rc1: Broken AHCI on NVIDIA ION (MCP79)
+To:     Josef Johansson <josef@oderland.se>
+Cc:     Marc Zyngier <maz@kernel.org>, tglx@linutronix.de,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-10-28 at 15:55 +0000, Sean Christopherson wrote:
-> On Thu, Oct 28, 2021, Maxim Levitsky wrote:
-> > On Fri, 2021-10-08 at 19:12 -0700, Sean Christopherson wrote:
-> > > Use READ_ONCE() when loading the posted interrupt descriptor control
-> > > field to ensure "old" and "new" have the same base value.  If the
-> > > compiler emits separate loads, and loads into "new" before "old", KVM
-> > > could theoretically drop the ON bit if it were set between the loads.
-> > > 
-> > > Fixes: 28b835d60fcc ("KVM: Update Posted-Interrupts Descriptor when vCPU is preempted")
-> > > Signed-off-by: Sean Christopherson <seanjc@google.com>
-> > > ---
-> > >  arch/x86/kvm/vmx/posted_intr.c | 6 +++---
-> > >  1 file changed, 3 insertions(+), 3 deletions(-)
-> > > 
-> > > diff --git a/arch/x86/kvm/vmx/posted_intr.c b/arch/x86/kvm/vmx/posted_intr.c
-> > > index 414ea6972b5c..fea343dcc011 100644
-> > > --- a/arch/x86/kvm/vmx/posted_intr.c
-> > > +++ b/arch/x86/kvm/vmx/posted_intr.c
-> > > @@ -53,7 +53,7 @@ void vmx_vcpu_pi_load(struct kvm_vcpu *vcpu, int cpu)
-> > >  
-> > >  	/* The full case.  */
-> > >  	do {
-> > > -		old.control = new.control = pi_desc->control;
-> > > +		old.control = new.control = READ_ONCE(pi_desc->control);
-> > >  
-> > >  		dest = cpu_physical_id(cpu);
-> > >  
-> > > @@ -104,7 +104,7 @@ static void __pi_post_block(struct kvm_vcpu *vcpu)
-> > >  	     "Wakeup handler not enabled while the vCPU was blocking");
-> > >  
-> > >  	do {
-> > > -		old.control = new.control = pi_desc->control;
-> > > +		old.control = new.control = READ_ONCE(pi_desc->control);
-> > >  
-> > >  		dest = cpu_physical_id(vcpu->cpu);
-> > >  
-> > > @@ -160,7 +160,7 @@ int pi_pre_block(struct kvm_vcpu *vcpu)
-> > >  	     "Posted Interrupt Suppress Notification set before blocking");
-> > >  
-> > >  	do {
-> > > -		old.control = new.control = pi_desc->control;
-> > > +		old.control = new.control = READ_ONCE(pi_desc->control);
-> > >  
-> > >  		/* set 'NV' to 'wakeup vector' */
-> > >  		new.nv = POSTED_INTR_WAKEUP_VECTOR;
-> > 
-> > I wish there was a way to mark fields in a struct, as requiring 'READ_ONCE' on them
-> > so that compiler would complain if this isn't done, or automatically use 'READ_ONCE'
-> > logic.
-> 
-> Hmm, I think you could make an argument that ON and thus the whole "control"
-> word should be volatile.  AFAICT, tagging just "on" as volatile actually works.
-> There's even in a clause in Documentation/process/volatile-considered-harmful.rst
-> that calls this out as a (potentially) legitimate use case.
-> 
->   - Pointers to data structures in coherent memory which might be modified
->     by I/O devices can, sometimes, legitimately be volatile.
-> 
-> That said, I think I actually prefer forcing the use of READ_ONCE.  The descriptor
-> requires more protections than what volatile provides, namely that all writes need
-> to be atomic.  So given that volatile alone isn't sufficient, I'd prefer to have
-> the code itself be more self-documenting.
+Hi, Marc,
 
-I took a look at how READ_ONCE/WRITE_ONCE is implemented and indeed they use volatile
-(the comment above __READ_ONCE is worth gold...), so there is a bit of contradiction:
+Linux 5.15 has just been tagged, and this fix isn't included (I
+personally don't mind, since I'm carrying it in my tree). Any specific
+reason for it?
 
-volatile-considered-harmful.rst states not to mark struct members volatile since
-you usually need more that than (very true often) and yet, I also heard that
-READ_ONCE/WRITE_ONCE is very encouraged to be used to fields that are used in lockless
-algorithms, even when not strictly needed,
-so why not to just mark the field and then use it normally? I guess that
-explicit READ_ONCE/WRITE_ONCE is much more readable/visible that a volatile in some header file.
-
-Anyway this isn't something I am going to argue about or push to be changed,
-just something I thought about.
-
-Best regards,
-	Maxim Levitsky
-
-
-
-> 
-> E.g. this compiles and does mess up the expected size.
-> 
-> diff --git a/arch/x86/kvm/vmx/posted_intr.h b/arch/x86/kvm/vmx/posted_intr.h
-> index 7f7b2326caf5..149df3b18789 100644
-> --- a/arch/x86/kvm/vmx/posted_intr.h
-> +++ b/arch/x86/kvm/vmx/posted_intr.h
-> @@ -11,9 +11,9 @@ struct pi_desc {
->         union {
->                 struct {
->                                 /* bit 256 - Outstanding Notification */
-> -                       u16     on      : 1,
-> +                       volatile u16    on      : 1;
->                                 /* bit 257 - Suppress Notification */
-> -                               sn      : 1,
-> +                       u16     sn      : 1,
->                                 /* bit 271:258 - Reserved */
->                                 rsvd_1  : 14;
->                                 /* bit 279:272 - Notification Vector */
-> @@ -23,7 +23,7 @@ struct pi_desc {
->                                 /* bit 319:288 - Notification Destination */
->                         u32     ndst;
->                 };
-> -               u64 control;
-> +               volatile u64 control;
->         };
->         u32 rsvd[6];
->  } __aligned(64);
-> 
-
-
+Thanks,
+Rui
