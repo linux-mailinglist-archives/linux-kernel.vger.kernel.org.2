@@ -2,148 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 898354410DF
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 21:56:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 409544410E5
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 22:00:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229946AbhJaU6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 16:58:37 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:48790
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230121AbhJaU6g (ORCPT
+        id S230125AbhJaVC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 17:02:58 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:34988
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229982AbhJaVC5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 16:58:36 -0400
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com [209.85.208.200])
+        Sun, 31 Oct 2021 17:02:57 -0400
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com [209.85.208.197])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 4B4023F16F
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 20:56:03 +0000 (UTC)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 6CAF73F176
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 21:00:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1635713763;
-        bh=7KiWIckEg5DsudTTcPUNNjrowRj4bFQWmsKz8u+RWuU=;
+        s=20210705; t=1635714024;
+        bh=zheIVMutPuHbjBVIRXc38wY0mKtLk1cbTYGUFxhZUio=;
         h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
          In-Reply-To:Content-Type;
-        b=AEYOECt/0sECea+eC9L8DNRA5KL7TtLlJ0Hz1NQcCkVoeppDy2d5griuaKrFks1kK
-         btd43w9KtNRRJf3CsdHt9duN2RZ6fqMX97WgY11Js/PSEU06Lt2mucdmnohdFo42Sm
-         q0tNAtAyNpkXTUb8xA6kZbwgM12bZANQxbWVQbbmGdsfGu7PqkFq5r6q+XybXDxHRc
-         D3rp3LhMA2bXJOwryNDCew7r9jgCBeAu98rHaNskE7ubQBJyubvJw4y6n3Lc37pfex
-         5+Yg4CwQLkFTCBvk7QK1VzKeUby1p2KenWhlsen4XIpw93qCG1oQkpDQiP+pXqRX74
-         MsSSthfEqfkPQ==
-Received: by mail-lj1-f200.google.com with SMTP id s17-20020a2e2c11000000b002119b8e1336so5090774ljs.23
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 13:56:03 -0700 (PDT)
+        b=EnU26aWJ3YKrLzLPqbyEuoqajF6nLOWIrcCulFPghloBigJu0oinsn73/r5wyJuXb
+         0VzZyUCk8BZ9sz7g4N378hpjHcPkSNJ96HzZahUNQL19BrRoBQzRvKHIc5EuJNaQnQ
+         9UjU3tyBuOZ7YhQbDEkmKIaA72h8y8gWG6iuNOM8VdYzwQxNB9/xFA3nrBhladCZDd
+         5VBdeBBE4AHnC90K08FygOFGeVsR/LIRhdz728Iibdc9udRbzFq9kBFvg1jJwT+HrE
+         m76pT9OeTswlfDo/1cGKfvcdXTrGg0lkZWAc7QuhwEu33FTZYCPr6UvjcGAln1Xit3
+         oHqHAgTq+zOSA==
+Received: by mail-lj1-f197.google.com with SMTP id p19-20020a2e8053000000b002119ff434a2so5102215ljg.11
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 14:00:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
          :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=7KiWIckEg5DsudTTcPUNNjrowRj4bFQWmsKz8u+RWuU=;
-        b=ii04P3A7a8nYQaP4O+jYYBfr3Uw2Q9KOQFv7dByUHKngQ8o6LOm270wM7T30uR5M1w
-         Qc1ZAZI2Bdp3Jd96kUXWqI3A4CD8b4ajcfTYylhR21iz/EJ8pBRN1riMqDBbi4rJCIOT
-         5E4gk5Aj0MOmvO15pHjQ/zlVK3L0TVNC79o/6ToYysY8Kv4dJsPVRN7IMIzc3Ydtxdx5
-         e6DdbNqgRYdyipQNPcAbAyXqt9XuhOpspWkqU41cxBE9vdaGOCv4F4zscIcnU8cExWEv
-         hcaVXylNSMLJUNefBosUxwXIVk/BWMciGALtUnO2NMyaf91ZqFTBZ4QpCXr6n/EwEpfn
-         wmKQ==
-X-Gm-Message-State: AOAM531I9/wlcgCl+ioboLpJ/lic4BkgECTcYM36m+msdOBS6bDjJ8xm
-        2TDHK+h442yuKIft7nh9SB7eVCdjAy1CaY6HjUWBDNuUzcAUw4s+QLjLQipb2HF1DRn7tTpwLcR
-        LrhR9OqKVVf1bTUCTWsZzMDd10Spu46IAlvwPuZ1Giw==
-X-Received: by 2002:ac2:5f58:: with SMTP id 24mr3812068lfz.22.1635713762472;
-        Sun, 31 Oct 2021 13:56:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwVrLKox/SzOP9upXtJKX4Xfl9XaYuC1R/evXsizpdmPbzB02lJcKZ/kQkSGdlIiYlNlO1ehw==
-X-Received: by 2002:ac2:5f58:: with SMTP id 24mr3812057lfz.22.1635713762279;
-        Sun, 31 Oct 2021 13:56:02 -0700 (PDT)
+        bh=zheIVMutPuHbjBVIRXc38wY0mKtLk1cbTYGUFxhZUio=;
+        b=KeFK4eMRprZT6+yN9ZA/Gy8Ux0Jvfyqukttb1HCBORJMSb8daC4VBUwWgyU8qGi3h1
+         jpEwHIVn+Zf6UKCKf5q2dMyAd8Jrw5FvAEdxzMDUHVTj9UYLAFPK69ofAZq9H+/KhKkY
+         tvqA1MtG5JIka3hOqVzXGT5/zm3OGXP7+UesOhLgNglSka+QBzbfqztCvkusDrSxIYoR
+         ZR+UBmRN6iLwPWQYR2BQgB6VMSJ6/E9pi3wtlWTprI07aetc4EWRZ+b6hM3NBF6zT+9K
+         N8qyIIi1GaGIpKmtqMwPpkZEWhuSVzJ4LQKE6TK0jUSLwusOihayC0g8HBofHndXazgy
+         TgQQ==
+X-Gm-Message-State: AOAM53085+LxwvJ27S97A+X9gngnBt+2Q/d3iuYhrEmoenmI3BtXPquF
+        B/Ke4LTOj0YublVncqaeqJslRkha8sZyQiX22Ogrrb56LxEQQ12yfC+HOv/3ZpezLQP5sIRFxlp
+        swL0AlmxSe8gDaPbpxSySUgPmX3wV8gv1N1GQNA9DRA==
+X-Received: by 2002:a2e:9f4a:: with SMTP id v10mr26023903ljk.395.1635714023800;
+        Sun, 31 Oct 2021 14:00:23 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzQgxaVccPsVk2p8N4zrDSCPgDRB8wGv/7lN8lCli8P2SYaBslAbu1btY9ELLw0aOnw0CsyMw==
+X-Received: by 2002:a2e:9f4a:: with SMTP id v10mr26023889ljk.395.1635714023661;
+        Sun, 31 Oct 2021 14:00:23 -0700 (PDT)
 Received: from [192.168.3.67] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id 185sm978769ljj.23.2021.10.31.13.56.01
+        by smtp.gmail.com with ESMTPSA id c20sm307723lfr.149.2021.10.31.14.00.22
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 31 Oct 2021 13:56:01 -0700 (PDT)
-Message-ID: <e1555f6c-63e2-60c8-9a7d-808545de01e0@canonical.com>
-Date:   Sun, 31 Oct 2021 21:56:01 +0100
+        Sun, 31 Oct 2021 14:00:23 -0700 (PDT)
+Message-ID: <1eb3e513-8795-6544-8ff6-964197a87eaf@canonical.com>
+Date:   Sun, 31 Oct 2021 22:00:22 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.1.2
-Subject: Re: [PATCH] samsung: exynos-chipid: add Exynos7885 SoC support
+Subject: Re: [PATCH 2/2] pinctrl: samsung: Add Exynos7885 SoC specific data
 Content-Language: en-US
 To:     David Virag <virag.david003@gmail.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20211031175329.27843-1-virag.david003@gmail.com>
+Cc:     Tomasz Figa <tomasz.figa@gmail.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211031154851.20103-1-virag.david003@gmail.com>
+ <20211031155102.20225-1-virag.david003@gmail.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20211031175329.27843-1-virag.david003@gmail.com>
+In-Reply-To: <20211031155102.20225-1-virag.david003@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31/10/2021 18:53, David Virag wrote:
-> Exynos 7885 has product id "0xE7885000". Add this id to the ids with
-> the name.
-> 
-
-Thanks for the patch!
-
-> The downstream driver sets sub_rev to 2 if we are on Exynos 7885, we
-> detected sub_rev 1 and the 27th bit of the revision register is set.
-
-There is no revision register in older Exynos boards, so it seems you
-speak about new version, but please mention it explicitly.
-
-> This is presumably because Samsung might have set the wrong bits on
-> rev2 of the SoC in the chipid, but we may never know as we have no
-> manual.
-> 
-> Both the SM-A530F/jackpotlte with Exynos7885 and the SM-M305/m30lte
-> with Exynos7904 (rebranded Exynos7885 with lower clock speeds) seem
-> to have this bit set to 1 and have a sub_rev of 1 otherwise, but the
-> downstream driver corrects it to 2.
-> Let's replicate this behaviour in upstream too!
-
-No, let's don't replicate weird vendor behavior without understanding
-it, unless there is reason to. Please describe the reason or drop it.
-
+On 31/10/2021 16:51, David Virag wrote:
+> Add Samsung Exynos7885 SoC specific data to enable pinctrl support for
+> all platforms based on Exynos7885.
 > 
 > Signed-off-by: David Virag <virag.david003@gmail.com>
 > ---
->  drivers/soc/samsung/exynos-chipid.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
+>  .../pinctrl/samsung/pinctrl-exynos-arm64.c    | 81 +++++++++++++++++++
+>  drivers/pinctrl/samsung/pinctrl-samsung.c     |  2 +
+>  drivers/pinctrl/samsung/pinctrl-samsung.h     |  1 +
+>  3 files changed, 84 insertions(+)
 > 
-> diff --git a/drivers/soc/samsung/exynos-chipid.c b/drivers/soc/samsung/exynos-chipid.c
-> index a28053ec7e6a..ec8c76275aec 100644
-> --- a/drivers/soc/samsung/exynos-chipid.c
-> +++ b/drivers/soc/samsung/exynos-chipid.c
-> @@ -55,6 +55,7 @@ static const struct exynos_soc_id {
->  	{ "EXYNOS5440", 0xE5440000 },
->  	{ "EXYNOS5800", 0xE5422000 },
->  	{ "EXYNOS7420", 0xE7420000 },
-> +	{ "EXYNOS7885", 0xE7885000 },
-
-This looks good, but please rebase on:
-https://lore.kernel.org/linux-samsung-soc/20211031205212.59505-1-krzysztof.kozlowski@canonical.com/T/#u
-because we use one compatible for entire family and I would like to have
-it documented which family is this here.
-
->  	{ "EXYNOS850", 0xE3830000 },
->  	{ "EXYNOSAUTOV9", 0xAAA80000 },
+> diff --git a/drivers/pinctrl/samsung/pinctrl-exynos-arm64.c b/drivers/pinctrl/samsung/pinctrl-exynos-arm64.c
+> index 6b77fd24571e..8bad82e709d3 100644
+> --- a/drivers/pinctrl/samsung/pinctrl-exynos-arm64.c
+> +++ b/drivers/pinctrl/samsung/pinctrl-exynos-arm64.c
+> @@ -441,6 +441,87 @@ const struct samsung_pinctrl_of_match_data exynos7_of_data __initconst = {
+>  	.num_ctrl	= ARRAY_SIZE(exynos7_pin_ctrl),
 >  };
-> @@ -88,6 +89,14 @@ static int exynos_chipid_get_chipid_info(struct regmap *regmap,
->  	}
->  	main_rev = (val >> data->main_rev_shift) & EXYNOS_REV_PART_MASK;
->  	sub_rev = (val >> data->sub_rev_shift) & EXYNOS_REV_PART_MASK;
-> +
-> +	//Exynos 7885 revision 2 apparently has the 27th bit set instead of having
-> +	//a sub_rev of 2. Correct for this!
-
-Not a Linux kernel comment. This will go away anyway, but please read
-the coding style and use scripts/checkpatch.pl for future patches.
-
-> +	if (soc_info->product_id == 0xE7885000) {
-> +		if ((sub_rev == 1) && (val & 0x04000000))
-> +			sub_rev = 2;
-> +	}
-> +
->  	soc_info->revision = (main_rev << EXYNOS_REV_PART_SHIFT) | sub_rev;
 >  
->  	return 0;
-> 
+> +/* pin banks of exynos7885  pin-controller 0 (ALIVE) */
+> +static const struct samsung_pin_bank_data exynos7885_pin_banks0[] = {
+
+Please take existing code as an example. You missed here and all other
+places the initconst.
 
 
 Best regards,
