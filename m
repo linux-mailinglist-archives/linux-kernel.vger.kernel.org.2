@@ -2,187 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCEB8441174
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 00:32:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61B7B441176
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 00:39:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230197AbhJaXaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 19:30:13 -0400
-Received: from mga18.intel.com ([134.134.136.126]:3074 "EHLO mga18.intel.com"
+        id S230281AbhJaXjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 19:39:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53492 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230098AbhJaXaM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 19:30:12 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10154"; a="217832651"
-X-IronPort-AV: E=Sophos;i="5.87,198,1631602800"; 
-   d="scan'208";a="217832651"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2021 16:27:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,198,1631602800"; 
-   d="scan'208";a="598852905"
-Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 31 Oct 2021 16:27:38 -0700
-Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mhKEk-0002s4-6K; Sun, 31 Oct 2021 23:27:38 +0000
-Date:   Mon, 01 Nov 2021 07:27:13 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:sched/core] BUILD SUCCESS
- 8ea9183db4ad8afbcb7089a77c23eaf965b0cacd
-Message-ID: <617f2651.1pfEb+F5F425/xbb%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S230232AbhJaXjD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Oct 2021 19:39:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9534360F58;
+        Sun, 31 Oct 2021 23:36:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635723390;
+        bh=g0TKIn1SOhrkVD8q2CMYalRegdqbG3lBrJQqv31LIkY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=fzUgvHNWX0djoMW5fRqQMgZtWXqn42cvF3D45sF2MG+afqYNmEyihOqMFDRsldVw/
+         GO7FaopjSWMqSpx0fLsjNGyzOXiAmnZ3gaZe0gnkyMxVYzRngQ6h6gYnBpx+B5KsPf
+         T055rJTxO8q3kTE4BjZ3Si7to6UKU8pdmJ8wgJHEhTHRHoo063wjWm+RW1P+xq2d7Q
+         FDuM79Uv2rX+XptPAiav2tvNlPcI4640ug/BvDDzkXHRTmRB/kZE6Tyw8ByEBCDHzA
+         Dfe+/0cooB3nwiaX35baoMJ2KPLqENuDCdSqpDX6iExXWrDKQkmuw31g60PDTU5Eq8
+         mqmD6d6x0p/Dw==
+Received: by mail-ot1-f42.google.com with SMTP id o10-20020a9d718a000000b00554a0fe7ba0so17064465otj.11;
+        Sun, 31 Oct 2021 16:36:30 -0700 (PDT)
+X-Gm-Message-State: AOAM532Aw+B45EABdBRYY9tlq99cubbmLR75TgmckzytYbkYceO4z8qf
+        Pha1ospTsC0HCxrp7cF/Q0ujyE1j0FS3kQprBY8=
+X-Google-Smtp-Source: ABdhPJxGnHoazV1OCaq9GHBZpXQkOPgaDA13tUdZb5rhSKeMAD8IAPYGPWgkGNJoRtkSh8skEujKT9dldjMFiIzPp/c=
+X-Received: by 2002:a9d:6e8:: with SMTP id 95mr12669686otx.112.1635723389889;
+ Sun, 31 Oct 2021 16:36:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20211029200324.GR174703@worktop.programming.kicks-ass.net>
+ <20211030074758.GT174703@worktop.programming.kicks-ass.net>
+ <CAMj1kXEJd5=3A_6Jhd4UU-TBGarnHo5+U76Zxxt7SzXsWp4CcA@mail.gmail.com>
+ <20211030180249.GU174703@worktop.programming.kicks-ass.net>
+ <CAMj1kXF4ZNAvdC8tP_H=v1Dn_Zcv=La11Ok43ceQOyb1Xo1jXQ@mail.gmail.com>
+ <CAMj1kXEvemVOWf4M_0vsduN_kiCsGVmM92cE7KPMoNKViKp=RQ@mail.gmail.com>
+ <20211031163920.GV174703@worktop.programming.kicks-ass.net>
+ <CAMj1kXHk5vbrT49yRCivX3phrEkN6Xbb+g8WEmavL_d1iE0OxQ@mail.gmail.com>
+ <YX74Ch9/DtvYxzh/@hirez.programming.kicks-ass.net> <CAMj1kXG+MuGaG3BHk8pnE1MKVmRf5E+nRNoFMHxOA1y84eGikg@mail.gmail.com>
+ <YX8AQJqyB+H3PF1d@hirez.programming.kicks-ass.net>
+In-Reply-To: <YX8AQJqyB+H3PF1d@hirez.programming.kicks-ass.net>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 1 Nov 2021 00:36:18 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXF3n-oQ1WP8=asb60K6UjSYOtz5RVhrcoCoNq3v7mZdQg@mail.gmail.com>
+Message-ID: <CAMj1kXF3n-oQ1WP8=asb60K6UjSYOtz5RVhrcoCoNq3v7mZdQg@mail.gmail.com>
+Subject: Re: [PATCH] static_call,x86: Robustify trampoline patching
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Mark Rutland <mark.rutland@arm.com>, X86 ML <x86@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-hardening@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
-branch HEAD: 8ea9183db4ad8afbcb7089a77c23eaf965b0cacd  sched/fair: Cleanup newidle_balance
+On Sun, 31 Oct 2021 at 21:45, Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Sun, Oct 31, 2021 at 09:21:56PM +0100, Ard Biesheuvel wrote:
+>
+> > That means we can support static calls on arm64 now without breaking
+> > Clang CFI, and work on a solution for the redundant jumps on a more
+> > relaxed schedule.
+>
+> Yes, arm64 has a 'problem' with having already merged the clang-cfi
+> stuff :/
+>
+> I'm hoping the x86 solution can be an alternative CFI scheme, I'm
+> starting to really hate this one. And I'm not at all convinced the
+> proposed scheme is the best possible scheme given the constraints of
+> kernel code. AFAICT it's a compromise made in userspace.
 
-elapsed time: 774m
-
-configs tested: 128
-configs skipped: 3
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                         ps3_defconfig
-h8300                     edosk2674_defconfig
-sh                           se7206_defconfig
-sh                          polaris_defconfig
-arm                         at91_dt_defconfig
-mips                        maltaup_defconfig
-arm                    vt8500_v6_v7_defconfig
-mips                  cavium_octeon_defconfig
-powerpc                 mpc8313_rdb_defconfig
-arm                             ezx_defconfig
-xtensa                  cadence_csp_defconfig
-sh                   secureedge5410_defconfig
-arm                            mps2_defconfig
-arm                       omap2plus_defconfig
-m68k                          atari_defconfig
-arm                         palmz72_defconfig
-mips                           ip32_defconfig
-powerpc                     ppa8548_defconfig
-xtensa                  nommu_kc705_defconfig
-arm                            mmp2_defconfig
-sh                        apsh4ad0a_defconfig
-powerpc                         wii_defconfig
-arm                      integrator_defconfig
-mips                         rt305x_defconfig
-arm                         s3c6400_defconfig
-sh                ecovec24-romimage_defconfig
-ia64                      gensparse_defconfig
-arm                      jornada720_defconfig
-powerpc                     redwood_defconfig
-arm                        shmobile_defconfig
-powerpc                     tqm5200_defconfig
-sh                        edosk7760_defconfig
-arm                           tegra_defconfig
-powerpc                     mpc512x_defconfig
-arm                        mvebu_v5_defconfig
-mips                             allmodconfig
-riscv             nommu_k210_sdcard_defconfig
-mips                  decstation_64_defconfig
-m68k                         apollo_defconfig
-sh                            titan_defconfig
-arm                          iop32x_defconfig
-mips                   sb1250_swarm_defconfig
-mips                             allyesconfig
-arm                             rpc_defconfig
-sh                        sh7757lcr_defconfig
-arm                  randconfig-c002-20211031
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                                defconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-arc                              allyesconfig
-nios2                            allyesconfig
-nds32                               defconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-xtensa                           allyesconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                                defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                              debian-10.3
-i386                             allyesconfig
-nios2                               defconfig
-nds32                             allnoconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a005-20211031
-x86_64               randconfig-a004-20211031
-x86_64               randconfig-a002-20211031
-x86_64               randconfig-a003-20211031
-x86_64               randconfig-a001-20211031
-x86_64               randconfig-a006-20211031
-i386                 randconfig-a003-20211031
-i386                 randconfig-a006-20211031
-i386                 randconfig-a002-20211031
-i386                 randconfig-a005-20211031
-i386                 randconfig-a001-20211031
-i386                 randconfig-a004-20211031
-arc                  randconfig-r043-20211031
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allyesconfig
-riscv                            allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
-x86_64                                  kexec
-x86_64                           allyesconfig
-
-clang tested configs:
-powerpc              randconfig-c003-20211031
-riscv                randconfig-c006-20211031
-x86_64               randconfig-c007-20211031
-mips                 randconfig-c004-20211031
-s390                 randconfig-c005-20211031
-arm                  randconfig-c002-20211031
-i386                 randconfig-c001-20211031
-x86_64               randconfig-a013-20211031
-x86_64               randconfig-a015-20211031
-x86_64               randconfig-a014-20211031
-x86_64               randconfig-a011-20211031
-x86_64               randconfig-a016-20211031
-x86_64               randconfig-a012-20211031
-i386                 randconfig-a013-20211031
-i386                 randconfig-a012-20211031
-i386                 randconfig-a014-20211031
-i386                 randconfig-a015-20211031
-i386                 randconfig-a011-20211031
-i386                 randconfig-a016-20211031
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Your scheme only works with IBT: the value of %r11 is under the
+adversary's control so it could just point it at 'foo+0x10' if it
+wants to call foo indirectly, and circumvent the check. So without IBT
+(or BTI), I think the check fundamentally belongs in the caller, not
+in the callee.
