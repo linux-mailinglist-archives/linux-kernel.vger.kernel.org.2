@@ -2,151 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BC5C440F4B
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 17:24:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D3DE440F4F
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 17:24:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229972AbhJaQ07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 12:26:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34730 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229579AbhJaQ06 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 12:26:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F07C60FC1;
-        Sun, 31 Oct 2021 16:24:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635697466;
-        bh=jpYWVVXaXaqn2deTdXgq4vDHJddb9QdR0vfJzy/9xX0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=NoB5v3ayLk1+zKhjY4jXxLc9RwN9Xm4D7CsoFLntTApdwIv3LPAQ2MCpsi/fMBlme
-         3+WyFfSsZ7UCo7OiBW5fmecnIk04VfjS+h98w3F37r3GaQWMIkcWUMTAn9lc6QbtJJ
-         LWxhI+Nlo7Sz8Gt6mvI0wGMcoC8VNzw8EpnQFSjVEeMf9T9DeqIhzaqz0X2DSPpJlD
-         +jr7qOGKK4tLozHT+yDvnalAnrloxbFqoei6Y5AHPGtvS1zl8Vk/6sehh+haEg2pAE
-         QB7zr0afomR0pPW/KSTNxLQl5RJ+p9WygIciPfJUlwpFbCSnQ6DT7XGivHfP21zfJT
-         ceq73t+gEMRdg==
-Received: by mail-oo1-f53.google.com with SMTP id t7-20020a4aadc7000000b002b8733ab498so5422914oon.3;
-        Sun, 31 Oct 2021 09:24:26 -0700 (PDT)
-X-Gm-Message-State: AOAM531NEmlVaoY/SJe18mzplICptYeyv0jXWdcDEjTPt/M8Pp39sO1Z
-        xiaZ6ehf4YhCWqwHgjBE3EQv/1uxPiKVF3IuGnc=
-X-Google-Smtp-Source: ABdhPJzEWcHVPu4UaWRx6YJt3C/BPIQIBQE6UW6SFL+z3NSkhA576P5O8eRYUm3qt8BTe6xt4bCqowZMhXwZi+oLuNI=
-X-Received: by 2002:a4a:e1a3:: with SMTP id 3mr10141000ooy.32.1635697465245;
- Sun, 31 Oct 2021 09:24:25 -0700 (PDT)
+        id S230080AbhJaQ1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 12:27:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58869 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229951AbhJaQ1M (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Oct 2021 12:27:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635697479;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=u5C+Qf6IU8slVoGKJPdCjLHtDa3yJhcLurHHBUByHR0=;
+        b=cIJeOrhXW2xpa4iSFmDhIYpYCQLXK81n3HSkulYRWrOOEbr+jK81G/lxL1+6IHP66bMFQA
+        VqwTwfkIkWeiqhhS1SoM4+yRtJx2KEfF7hSQG3DSkrO8IPMdPtHzVvTMKTwc9Xp9EWAFJs
+        /XPVSWXZHGropwT5Bwn16S2PH8b0w5M=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-347-FPctjynDNqW61vfpULqtww-1; Sun, 31 Oct 2021 12:24:36 -0400
+X-MC-Unique: FPctjynDNqW61vfpULqtww-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 59476362F9;
+        Sun, 31 Oct 2021 16:24:33 +0000 (UTC)
+Received: from x1.localdomain.com (unknown [10.39.192.35])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A4A0B100763D;
+        Sun, 31 Oct 2021 16:24:29 +0000 (UTC)
+From:   Hans de Goede <hdegoede@redhat.com>
+To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Sebastian Reichel <sre@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+Cc:     Hans de Goede <hdegoede@redhat.com>, Len Brown <lenb@kernel.org>,
+        linux-acpi@vger.kernel.org, Yauhen Kharuzhy <jekhor@gmail.com>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        platform-driver-x86@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-efi@vger.kernel.org
+Subject: [RFC 0/5] ACPI/power-suppy add fuel-gauge support on cht-wc PMIC without USB-PD support devs
+Date:   Sun, 31 Oct 2021 17:24:23 +0100
+Message-Id: <20211031162428.22368-1-hdegoede@redhat.com>
 MIME-Version: 1.0
-References: <CAMj1kXEx10gC8eH7rV-GbZZj2M3uDue6HYsKb+A5J01zOxm_FA@mail.gmail.com>
- <20211027124852.GK174703@worktop.programming.kicks-ass.net>
- <YXlOd1lyKZKAcJfA@hirez.programming.kicks-ass.net> <CAMj1kXHKh7wv6JqusVnoiQDMm7ApFq2ujzbfWmM9AzLKFehhAA@mail.gmail.com>
- <YXlcMluaysPBF92J@hirez.programming.kicks-ass.net> <CAMj1kXECTdDLVMk2JduU5mV2TR0Cv=hZ9QOpYRsRM1jfvvNikw@mail.gmail.com>
- <CABCJKufpS4jJxHqk8=bd1JCNbKfmLDKBbjbhjrar2+YQJFiprg@mail.gmail.com>
- <20211029200324.GR174703@worktop.programming.kicks-ass.net>
- <20211030074758.GT174703@worktop.programming.kicks-ass.net>
- <CAMj1kXEJd5=3A_6Jhd4UU-TBGarnHo5+U76Zxxt7SzXsWp4CcA@mail.gmail.com>
- <20211030180249.GU174703@worktop.programming.kicks-ass.net> <CAMj1kXF4ZNAvdC8tP_H=v1Dn_Zcv=La11Ok43ceQOyb1Xo1jXQ@mail.gmail.com>
-In-Reply-To: <CAMj1kXF4ZNAvdC8tP_H=v1Dn_Zcv=La11Ok43ceQOyb1Xo1jXQ@mail.gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Sun, 31 Oct 2021 17:24:13 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXEvemVOWf4M_0vsduN_kiCsGVmM92cE7KPMoNKViKp=RQ@mail.gmail.com>
-Message-ID: <CAMj1kXEvemVOWf4M_0vsduN_kiCsGVmM92cE7KPMoNKViKp=RQ@mail.gmail.com>
-Subject: Re: [PATCH] static_call,x86: Robustify trampoline patching
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        Mark Rutland <mark.rutland@arm.com>, X86 ML <x86@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-hardening@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 30 Oct 2021 at 20:55, Ard Biesheuvel <ardb@kernel.org> wrote:
->
-> On Sat, 30 Oct 2021 at 20:03, Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > On Sat, Oct 30, 2021 at 07:19:53PM +0200, Ard Biesheuvel wrote:
-> > > I just realized that arm64 has the exact same problem, which is not
-> > > being addressed by my v5 of the static call support patch.
-> >
-> > Yeah, it would.
-> >
-> > > As it turns out, the v11 Clang that I have been testing with is broken
-> > > wrt BTI landing pads, and omits them from the jump table entries.
-> > > Clang 12+ adds them properly, which means that both the jump table
-> > > entry and the static call trampoline may start with BTI C + direct
-> > > branch, and we also need additional checks to disambiguate.
-> >
-> > I'm not sure, why would the static_call trampoline need a BTI C ? The
-> > whole point of static_call() is to be a direct call, we should never
-> > have an indirect call to the trampoline, that would defeat the whole
-> > purpose.
->
-> This might happen when the distance between the caller and the
-> trampoline is more than 128 MB, in which case we emit a veneer that
-> uses an indirect call as well. So we definitely need the landing pad
-> in the trampoline.
+Hi All,
 
-Something like the below seems to work to prevent getting the wrong
-trampoline address into arch_static_call_transform:
+Together with my earlier series to hookup the charger, Vbus boost converter
+and USB role-switching:
+https://lore.kernel.org/platform-driver-x86/20211030182813.116672-1-hdegoede@redhat.com/T/#t
 
-diff --git a/arch/x86/include/asm/static_call.h
-b/arch/x86/include/asm/static_call.h
-index cbb67b6030f9..c3704ea21bee 100644
---- a/arch/x86/include/asm/static_call.h
-+++ b/arch/x86/include/asm/static_call.h
-@@ -25,7 +25,9 @@
-        asm(".pushsection .static_call.text, \"ax\"             \n"     \
-            ".align 4                                           \n"     \
-            ".globl " STATIC_CALL_TRAMP_STR(name) "             \n"     \
-+           ".globl " STATIC_CALL_TRAMP_P_STR(name) "           \n"     \
-            STATIC_CALL_TRAMP_STR(name) ":                      \n"     \
-+           STATIC_CALL_TRAMP_P_STR(name) ":                    \n"     \
-            insns "                                             \n"     \
-            ".type " STATIC_CALL_TRAMP_STR(name) ", @function   \n"     \
-            ".size " STATIC_CALL_TRAMP_STR(name) ", . - "
-STATIC_CALL_TRAMP_STR(name) " \n" \
-diff --git a/include/linux/static_call.h b/include/linux/static_call.h
-index 19dc210214c0..46777a3395d3 100644
---- a/include/linux/static_call.h
-+++ b/include/linux/static_call.h
-@@ -143,7 +143,7 @@
-  */
- extern void arch_static_call_transform(void *site, void *tramp, void
-*func, bool tail);
+This series also adds battery-monitoring support on the Xiaomi Mi Pad 2
+and the generic parts of it should also be usable on other devices with
+the same PMIC setup.
 
--#define STATIC_CALL_TRAMP_ADDR(name) &STATIC_CALL_TRAMP(name)
-+#define STATIC_CALL_TRAMP_ADDR(name) &STATIC_CALL_TRAMP_P(name)
+I've marked this series as a RFC because I'm not happy about the amount of
+DMI quirks this series requires. The 3 separate quirks in
+drivers/acpi/x86/utils.c are a bit much, but esp. when combined with also
+the changes needed in drivers/gpio/gpiolib-acpi.c it all becomes a bit too
+much special casing for just a single device.
 
- #else
- #define STATIC_CALL_TRAMP_ADDR(name) NULL
-diff --git a/include/linux/static_call_types.h
-b/include/linux/static_call_types.h
-index 5a00b8b2cf9f..98a448f5ae45 100644
---- a/include/linux/static_call_types.h
-+++ b/include/linux/static_call_types.h
-@@ -18,6 +18,8 @@
- #define STATIC_CALL_TRAMP(name)
-__PASTE(STATIC_CALL_TRAMP_PREFIX, name)
- #define STATIC_CALL_TRAMP_STR(name)    __stringify(STATIC_CALL_TRAMP(name))
+So I've been thinking about alternatives for this and I've come up with
+3 ways to deal with this:
 
-+#define STATIC_CALL_TRAMP_P(name)      __PASTE(STATIC_CALL_TRAMP(name), _p)
-+#define STATIC_CALL_TRAMP_P_STR(name)  __stringify(STATIC_CALL_TRAMP_P(name))
- /*
-  * Flags in the low bits of static_call_site::key.
-  */
-@@ -36,7 +38,8 @@ struct static_call_site {
+1. This patch set.
 
- #define DECLARE_STATIC_CALL(name, func)
-         \
-        extern struct static_call_key STATIC_CALL_KEY(name);            \
--       extern typeof(func) STATIC_CALL_TRAMP(name);
-+       extern typeof(func) STATIC_CALL_TRAMP(name);                    \
-+       extern u8 STATIC_CALL_TRAMP_P(name);
+2. Instead of the quirks in drivers/acpi/x86/utils.c, write an old-fashioned
+"board" .c file/module which autoloads based on a DMI match and manually
+instantiates i2c-clients for the BQ27520 fuel-gauge and the KTD20260 LED ctrlr.
+Combined with not giving an IRQ to the fuel-gauge i2c-client (i), this allows
+completely dropping the gpiolib-acpi.c changes and only requires 1 quirk for
+the 2nd PWM controller in drivers/acpi/x86/utils.c. As an added bonus this
+approach will also removes the need to add ACPI enumeration support to the
+bq27xxx_battery code.
 
- #ifdef CONFIG_HAVE_STATIC_CALL
+3. While working on this I noticed that the Mi Pad 2 DSDT actually has
+full ac and battery ACPI code in its DSDT, which Linux was not trying to
+use because of the Whiskey Cove PMIC ACPI HID in acpi_ac_blacklist[] in
+drivers/apci/ac.c, resp. a missing _DEP for the ACPI battery.
 
-That leaves the 'func' argument, which ideally should not go through
-the jump table either, but at least it is not terminally broken there.
+With the native drivers disabled (the default in 5.15-rc7 without patches),
+both those things fixed and a fix to intel_pmic_regs_handler() in
+drivers/acpi/pmic/intel_pmic.c, battery monitoring actually starts working
+somwhat!
+
+I say somewhat because changes are not detected until userspace polls
+the power_supply and switching from charge/device to host mode and
+back does not work at all. This is due to the AML code for this relying
+on _AEI ACPI events on virtual GPIOs on the PMIC :|  This means that we
+would need to reverse engineer which events these virtual GPIO interrupts
+represent; and then somehow rework the whole MFD + child driver setup
+to deliver, e.g. extcon/pwrsrc events to a to-be-written GPIO driver
+which supports these virtual GPIOs, while at the same time also keeping
+normal native driver support since boards which USB-PD support need the
+native drivers...  So OTOH this option has the promise of solving this
+in a generic way which may work on more boards, OTOH it is a big mess
+and we lack documentation for it.  Interestingly enough the ACPI
+battery/ac code also takes ownership of the notification LED, downgrading
+it from a full RGB led to a green charging LED, which is both a pre
+and a con at the same time (since we would loose full RGB function).
+
+###
+
+Although I started out with implementing option 1, I now think I
+Would personally prefer option 2. This isolates most of the code
+needed to support some of these special boards into a single
+(per board) file which can be build as a module which can be
+autoloaded, rather then growing vmlinuz by adding quirks there.
+
+The downside would be this sorta re-introduces the old ARM model
+of one board file per (special-case) board, but there are only
+1 or 2 more x86 tablets (ii) that I know about which may also
+need such a board file. Which I think is managable and should
+not run into the original objections against the original ARM
+approach where there were way too many board files in the end.
+
+Option 3 IMHO is a no go unless someone at Intel manages to
+come up with documentation on all the virtual GPIOs which the
+Windows PMIC drivers implement as method of communicating
+between the PMIC driver and the AML code in the DSDT.
+
+I'm a bit in dubio about how to progress with this, so I would
+love to hear what others think about this. I would esp. appreciate
+Rafael's and Mika's input on this since most of the added ugliness
+in this RFC is in the ACPI code.
+
+Regards,
+
+Hans
+
+
+i) This means that the _AEI ACPI handler for the fuel-gauge will run on
+FG interrupts. This is fine it does a single I2C read and a couple of
+ACPI notifies which will get ignored. Note the interrupts are "something
+changed" pulses which don't need IRQ clearing.
+
+ii) There are not that many CHT boards with a Whiskey Cove PMIC, other
+then the GPD win/pocket with full USB-PD support and the Xiaomi Mi Pad 2
+I'm only aware of one other, the Lenovo Yoga Book YB1-X91L/F . Since this
+whole saga has gotten me quite curious and I already have the other
+2 devices I've decided to spend some money on this and bought a 2nd hand
+Lenovo Yoga Book YB1-X91L, whose setup is similar to the Mi Pad 2.
+I should have this in about a week. I'll post a reply to this thread
+with info no how the DSDT looks on the Lenovo Yoga Book and if e.g.
+using the standard ACPI battery interface seems to be an option there.
+
+iii) Note the "power: supply: bq27xxx: Add dev helper variable to
+bq27xxx_battery_i2c_probe()" patch applies on top of the
+"power: supply: bq27xxx: Fix kernel crash on IRQ handler register error"
+bug-fix which I send out earlier.
+
+
+Hans de Goede (5):
+  ACPI / x86: Add 3 devices on the Xiaomi Mi Pad 2 to the always_present
+    list
+  gpiolib: acpi: Make acpi_gpio_in_ignore_list() more generic
+  gpiolib: acpi: Add a new "ignore" module option
+  power: supply: bq27xxx: Add dev helper variable to
+    bq27xxx_battery_i2c_probe()
+  power: supply: bq27xxx: Add support for ACPI enumeration
+
+ drivers/acpi/x86/utils.c                   | 27 +++++++++++-
+ drivers/gpio/gpiolib-acpi.c                | 40 +++++++++++++++---
+ drivers/power/supply/bq27xxx_battery_i2c.c | 48 +++++++++++++++++-----
+ 3 files changed, 97 insertions(+), 18 deletions(-)
+
+-- 
+2.31.1
+
