@@ -2,140 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 336AC440F89
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 17:49:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C8D1440F8C
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Oct 2021 17:49:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229974AbhJaQv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 12:51:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52238 "EHLO
+        id S230080AbhJaQwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 12:52:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229579AbhJaQv5 (ORCPT
+        with ESMTP id S230041AbhJaQwY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 12:51:57 -0400
-Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2FB0C061570;
-        Sun, 31 Oct 2021 09:49:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=aVTDOe/YUeynXWH5Tc1lXgdCvtmKqzq8Qx0YAnSIre4=; b=JeI0M0wZWD8dEyRi1G2qGd8xbf
-        4yiV4avZV68IsLtYNYKAjcgjhvG+Qe2aHnJ8btzfMkBrObb53Du4HDin8qF6twtE7zbk+2QERtk7B
-        E5DQozCkp/RcQqVAyNezBM7iE0vrLtJIMTl3zqU9ExiJf6Je9IF/fhzEULixiFCZGBb4=;
-Received: from p200300ccff0896001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff08:9600:1a3d:a2ff:febf:d33a] helo=aktux)
-        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <andreas@kemnade.info>)
-        id 1mhE1G-0004Kw-9u; Sun, 31 Oct 2021 17:49:18 +0100
-Date:   Sun, 31 Oct 2021 17:49:17 +0100
-From:   Andreas Kemnade <andreas@kemnade.info>
-To:     Alistair Francis <alistair@alistair23.me>
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        alistair23@gmail.com, dmitry.torokhov@gmail.com,
-        linus.walleij@linaro.org, robh+dt@kernel.org, rydberg@bitmath.org,
-        mylene.josserand@free-electrons.com
-Subject: Re: [PATCH 2/4] Documentation: DT: bindings: input: Add
- documentation for cyttsp5
-Message-ID: <20211031174917.289ef018@aktux>
-In-Reply-To: <20211025114214.44617-3-alistair@alistair23.me>
-References: <20211025114214.44617-1-alistair@alistair23.me>
-        <20211025114214.44617-3-alistair@alistair23.me>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Sun, 31 Oct 2021 12:52:24 -0400
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2660C061746
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 09:49:52 -0700 (PDT)
+Received: by mail-il1-x12b.google.com with SMTP id b10so6720811ilj.10
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 09:49:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BMVjxcd/zzRQYq1WTivnwAIgAwOjNTLkhJ5Ulnu2Uk8=;
+        b=PTto3LGR+d204eIOomzPjb4LyuBs4qAuiWVdDPgZ28UxvJnZmtOqSyp4cjuduOqPaZ
+         8zo/BbOnT1gckvw4o7BBChlql2ZdUdpbFF79ZyXx7WlGiy+TRzqQfTWH80hUSRdYCYqo
+         MsP5D3BFfcRMQGGTZKRb11Qa104OzHDn7iFzE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BMVjxcd/zzRQYq1WTivnwAIgAwOjNTLkhJ5Ulnu2Uk8=;
+        b=NzH2UJw2wZDhHoB1wbeG+YlOr7oA0u+pttLXmHRxEVLLa9yEbMhMkSgqNDfSaK8Asg
+         XHYi7Yh93KGvukR/fjvBx6pboK9w0eVRFUMCmkYNVSv5BqylS8ABPyDSrE95gTHFcSZ3
+         OaRhiWqy9ClxLHK4aPaIUJYCwpoUD97SwMSoA9dHo96e4BXxok4aDl++Pxd9rEGL3DIp
+         sQZMaTx1eWRquP1pwcyB/Q+V9C4jyHMLDZa0O4+YuTlB2yZbeAeOWa4/HzIkZHhmfT9b
+         GU0xn1O2+D5wZS7B3Xm89H7fx9Lkx6YvBU+louvR/jjo7pwLE0Ef/6U+pZ/KfycNPlqp
+         zLgg==
+X-Gm-Message-State: AOAM531PwJ5Y4Lr+ZNPDmASxIzXQpFJ6kNhZOS/Af105/vsYSRd+Cen8
+        FPn8kfnaDa7gI9mfmCE5COlLGAtMUg8gUUdAsEoofQ==
+X-Google-Smtp-Source: ABdhPJw/fWI4yBIyNitNSOkjyAfBNm7ZNia/c9sL3FDDYXh1FB6HiazF1EN89RoDXLaaWcyo1HYKuzu3zB4MFn/nry4=
+X-Received: by 2002:a05:6e02:148b:: with SMTP id n11mr16126184ilk.230.1635698992204;
+ Sun, 31 Oct 2021 09:49:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Score: -1.0 (-)
+References: <20210926073028.11045-1-hui.liu@mediatek.com> <20210926073028.11045-2-hui.liu@mediatek.com>
+ <20210926123022.1b76eaae@jic23-huawei>
+In-Reply-To: <20210926123022.1b76eaae@jic23-huawei>
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+Date:   Mon, 1 Nov 2021 00:49:26 +0800
+Message-ID: <CAJMQK-hDN3xOTU0gcmDWaOKRwPk_h0E7=6nok45mrU3RvgbcHw@mail.gmail.com>
+Subject: Re: [PATCH v4 1/1] iio: mtk-auxadc: fix case IIO_CHAN_INFO_PROCESSED
+To:     Hui-Liu Liu <hui.liu@mediatek.com>
+Cc:     robh+dt@kernel.org, lars@metafoo.de, pmeerw@pmeerw.net,
+        srv_heupstream@mediatek.com, zhiyong.tao@mediatek.com,
+        chun-hung.wu@mediatek.com, yingjoe.chen@mediatek.com,
+        seiya.wang@mediatek.com, ben.tseng@mediatek.com,
+        matthias.bgg@gmail.com, s.hauer@pengutronix.de,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        Jonathan Cameron <jic23@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Sun, Sep 26, 2021 at 7:26 PM Jonathan Cameron <jic23@kernel.org> wrote:
+>
+> On Sun, 26 Sep 2021 15:30:28 +0800
+> Hui-Liu Liu <hui.liu@mediatek.com> wrote:
+>
+> > From: Hui Liu <hui.liu@mediatek.com>
+> >
+> > The previous driver does't apply the necessary scaling to take the
+> > voltage range into account.
+> > We change readback value from raw data to input voltage to fix case
+> > IIO_CHAN_INFO_PROCESSED.
+> >
+> > Fixes: ace4cdfe67be ("iio: adc: mt2701: Add Mediatek auxadc driver for mt2701.")
+> > Signed-off-by: Hui Liu <hui.liu@mediatek.com>
+>
+Hi Hui Liu,
 
-On Mon, 25 Oct 2021 21:42:12 +1000
-Alistair Francis <alistair@alistair23.me> wrote:
+After this patch, mt8183 tboard thermal sensor[1] is getting incorrect value:
+Before the patch:
+/sys/class/thermal/thermal_zone0/temp:41488 (cpu)
+/sys/class/thermal/thermal_zone7/temp:35433 (tboard)
+/sys/class/thermal/thermal_zone8/temp:33709 (tboard)
 
-> From: Myl=C3=A8ne Josserand <mylene.josserand@free-electrons.com>
->=20
-> Add the Cypress TrueTouch Generation 5 touchscreen device tree bindings
-> documentation. It can use I2C or SPI bus.
-> This touchscreen can handle some defined zone that are designed and
-> sent as button. To be able to customize the keycode sent, the
-> "linux,code" property in a "button" sub-node can be used.
->=20
-> Signed-off-by: Myl=C3=A8ne Josserand <mylene.josserand@free-electrons.com>
-> Message-Id: <20170529144538.29187-3-mylene.josserand@free-electrons.com>
-> Signed-off-by: Alistair Francis <alistair@alistair23.me>
-> ---
->  .../input/touchscreen/cypress,cyttsp5.yaml    | 72 +++++++++++++++++++
->  1 file changed, 72 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/c=
-ypress,cyttsp5.yaml
->=20
-> diff --git a/Documentation/devicetree/bindings/input/touchscreen/cypress,=
-cyttsp5.yaml b/Documentation/devicetree/bindings/input/touchscreen/cypress,=
-cyttsp5.yaml
-> new file mode 100644
-> index 000000000000..0bddbd76a0c3
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/input/touchscreen/cypress,cyttsp5=
-.yaml
-> @@ -0,0 +1,72 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/input/touchscreen/cypress,cyttsp5.yam=
-l#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Cypress cyttsp touchscreen controller, generation 5
-> +
-> +maintainers:
-> +  - Alistair Francis <alistair@alistair23.me>
-> +
-> +allOf:
-> +  - $ref: touchscreen.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    const: cypress,cyttsp5
-> +
+After the patch:
+/sys/class/thermal/thermal_zone0/temp:40365 (cpu)
+/sys/class/thermal/thermal_zone7/temp:69781 (tboard)
+/sys/class/thermal/thermal_zone8/temp:69014 (tboard)
 
-you use buttons later, so it should be specified somewhere here.
+[1] https://elixir.bootlin.com/linux/v5.15-rc7/source/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi#L862
 
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  vdd-supply:
-> +    description: Regulator for voltage.
-> +
-> +  reset-gpios:
-> +    maxItems: 1
-> +
-> +  linux,code:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description: EV_ABS specific event code generated by the axis.
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - vdd-supply
-> +
-> +additionalProperties: false
-If you want to allow things from touchscreen.yaml, you should use
-unevaluatedProperties: false.
-> +
-> +examples:
-> +  - |
-
-some includes are missing for the constants below here.
-> +    i2c {
-
-Regards,
-Andreas
+>
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
