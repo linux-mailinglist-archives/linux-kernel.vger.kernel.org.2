@@ -2,99 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8415C441CD0
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 15:45:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96617441CD2
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 15:45:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231867AbhKAOrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 10:47:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60324 "EHLO
+        id S232027AbhKAOsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 10:48:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230261AbhKAOra (ORCPT
+        with ESMTP id S230204AbhKAOsP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 10:47:30 -0400
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CBFDC061714
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 07:44:57 -0700 (PDT)
-Received: by mail-il1-x12f.google.com with SMTP id h2so18643470ili.11
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 07:44:57 -0700 (PDT)
+        Mon, 1 Nov 2021 10:48:15 -0400
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1AA0C061714
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 07:45:41 -0700 (PDT)
+Received: by mail-qv1-xf34.google.com with SMTP id b17so7858425qvl.9
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 07:45:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=usp.br; s=usp-google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=nTgNimfUoPCIrDoKeVyIYbRT+tZhs8KL4QGLyrkvSyA=;
-        b=HUIod4TGIvbg2CAZjR6JNNaCMdnX5/bkqP4kNIF0LVxCuVID9ki4COu7zCxwssTtTy
-         VBNfkoQMyU/3BGKPEVQK1LBad1U8IGk7KqBOqnvZVLjrPg4EZeSWl7JxKKpZtWE2Afc+
-         qqNC5zGw0uhf74khGk8+FYKmSpRv7gekc2Nxp5aXZL635PtmeYgpiMCWv+G/+XMu7wOG
-         e/WhZu466u1PGtEs9tLkd5z1eAakwRYLu4FGsJxTbVk5lcVPw45bBRLWO7L92r63oYu4
-         4rE0NFJ9llVksLpFqeEfJMf57pbkGFOnEardVRmFbMyJpv8d3/rVxMiulQqPsgN7fjfN
-         TVHw==
+        d=ndufresne-ca.20210112.gappssmtp.com; s=20210112;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=NtOIHopbUlvm30a4x39XtxN50M+iVFDMrnlSbgrZxb0=;
+        b=x03Z067ZF8NJ4PWxc4K3oxjQHWh8XPicOCJCHUqm3v/X7LENLTiFaDGIZssb41KTBI
+         E5eMTBOaKsNtXqn4wL8yzFjoio7I7nnqjsf7AYFpcliG2oTXKLQtw/4/UvkNq0OHkWig
+         CYR8ZB8Qd/PkPXm3fFw1QG8UuQXif+QHp7zFbkCy1ogArWPdnurpdavRerw3JsZ3oENC
+         862zt7HcbrF02UCvIt4zoMIKiPaEkydMWslAhB4JFp3CmMULX1NDxqdZ68KlnPrfvRoO
+         R0wl2ghecYBjHGq3JbIvAHDDUwWVfHg3j19gpoZW/V3j9VAHPbZBRiu6pj63IBN7fdwk
+         LaVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=nTgNimfUoPCIrDoKeVyIYbRT+tZhs8KL4QGLyrkvSyA=;
-        b=hHfyInHHVrmmvd3v/cmkmnixWn3ttelCru5qyXUqQGWflkd8q31KlMz6rZ2fxhw55p
-         zzXRHiZ0U8POcUxv8BGYx/onPbDk07cLqkfiUMqepjcs2b8zIlcALYicziZdPtYGwfJs
-         CyXeZQMgFosGVOneXZEvTR1v7qiQ6CV7lJ/iGd1P8Y44X6lnXo/n+qN/fbX89bS7bZBP
-         5x89Py5NX2lV3SA+9dO2LR2TfUvlFxLcO5W4SL1wvVaKaUIswes1bOO9ZoMyQCmjFdOQ
-         2yCHcxgjTnLdXKG5do596ihF/zLjibC1s7D8gTPhhilVstgAf+Hg7M0/We0u5wxjD5d5
-         SMYg==
-X-Gm-Message-State: AOAM531JsCCqgdaVymU5TfHmyBpwcLCIMQLqOMbGeT8JK/efaFM92ljf
-        ia4QFNNy9L3NLFjsae6Z8PJAVbzcGEfbnttdWXSJeQ==
-X-Google-Smtp-Source: ABdhPJxzLpaPTvNyx3YNoBE/B8Ej6xYGtp2QXo+2idhrHDksvJl08AvaMK3spnFwjy5jIbCdefktgsljwLFVyba7NvA=
-X-Received: by 2002:a05:6e02:1bcb:: with SMTP id x11mr16355301ilv.94.1635777896880;
- Mon, 01 Nov 2021 07:44:56 -0700 (PDT)
-MIME-Version: 1.0
-References: <YX/zlRqmxbLRnTqT@fedora> <4f1b60bab451b219c7139e2204eb5b9f462ee4e0.camel@pengutronix.de>
-In-Reply-To: <4f1b60bab451b219c7139e2204eb5b9f462ee4e0.camel@pengutronix.de>
-From:   =?UTF-8?B?TWHDrXJhIENhbmFs?= <maira.canal@usp.br>
-Date:   Mon, 1 Nov 2021 11:44:45 -0300
-Message-ID: <CAH7FV3nyyLndqTdJYN8HDxU4C7pW0-DLu6ZSOLof2=tEEHbHxQ@mail.gmail.com>
-Subject: Re: [PATCH v2 RESEND] PCI: imx6: Replace legacy gpio interface for
- gpiod interface
-To:     Lucas Stach <l.stach@pengutronix.de>
-Cc:     hongxing.zhu@nxp.com, lorenzo.pieralisi@arm.com, robh@kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bjorn Helgaas <helgaas@kernel.org>, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, linux-imx@nxp.com,
-        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=NtOIHopbUlvm30a4x39XtxN50M+iVFDMrnlSbgrZxb0=;
+        b=yv1hpnHvlK/8yOOpei6ZwnKBx0JNPgbjQsCr5pEH8SROtr/B4MmbjuTq8uN4g0bt35
+         NPy6FWO9jWgGWdqJZVvsKsyfANVsx5xPrsSEydVJzffemri/OFdyWkEr9gfISzZhotiD
+         cjKP7Y9CqFFtRW+stOf89dUhB07U8N08Dx6n93NNpFTEeBVMfzekbHV5GYfRQ35Ci6f9
+         LpXXKAjXmclvk2aTkVoAcnmD0OUA10aSfOzq0kNj7v6dcBwilXExOcwIhX59BZ98+6kP
+         OMYrewJGo1icun4wHxGFw6iu1J+YEguA7Q+MsW5dcpExkyqJJFvuQpzcwBP5wBOVaLLg
+         IVOQ==
+X-Gm-Message-State: AOAM532cz9bWfcjEDPPwWe2uMo/EZ1cP8id80ndCfXJzHtpSyXEMTa4s
+        KTRAuaW3z0Fg/oWDvQJxMSgiRQ==
+X-Google-Smtp-Source: ABdhPJypIyhxKRGyjCPUFMLFuQ9SY8D6ZiOQ+iqDULrYWCxg3WDM/Aou7bOHDtFp14lulB5DL7NlXw==
+X-Received: by 2002:a05:6214:246f:: with SMTP id im15mr28932347qvb.50.1635777940980;
+        Mon, 01 Nov 2021 07:45:40 -0700 (PDT)
+Received: from nicolas-tpx395.localdomain (mtl.collabora.ca. [66.171.169.34])
+        by smtp.gmail.com with ESMTPSA id b5sm375977qtb.1.2021.11.01.07.45.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Nov 2021 07:45:40 -0700 (PDT)
+Message-ID: <41a88606889de8f5fc8bc085e383ad43d439c45a.camel@ndufresne.ca>
+Subject: Re: [PATCH] media: docs: dev-decoder: add restrictions about
+ CAPTURE buffers
+From:   Nicolas Dufresne <nicolas@ndufresne.ca>
+To:     Tomasz Figa <tfiga@chromium.org>
+Cc:     Alexandre Courbot <acourbot@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 01 Nov 2021 10:45:38 -0400
+In-Reply-To: <CAAFQd5BzXAO9vTm1xNmZ6iLnjnckfRC4Z2yqgxvuL+NUiHXnsQ@mail.gmail.com>
+References: <20211018091427.88468-1-acourbot@chromium.org>
+         <9cb4f64e2ec3959df44b71dd69ef95697920dc4b.camel@ndufresne.ca>
+         <CAAFQd5BzXAO9vTm1xNmZ6iLnjnckfRC4Z2yqgxvuL+NUiHXnsQ@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.40.4 (3.40.4-2.fc34) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-?
-> >       /* Some boards don't have PCIe reset GPIO. */
-> > -     if (gpio_is_valid(imx6_pcie->reset_gpio)) {
-> > -             gpio_set_value_cansleep(imx6_pcie->reset_gpio,
-> > +     if (imx6_pcie->reset_gpio) {
-> > +             gpiod_set_value_cansleep(imx6_pcie->reset_gpio,
-> >                                       imx6_pcie->gpio_active_high);
-> >               msleep(100);
-> > -             gpio_set_value_cansleep(imx6_pcie->reset_gpio,
-> > +             gpiod_set_value_cansleep(imx6_pcie->reset_gpio,
-> >                                       !imx6_pcie->gpio_active_high);
->
-> I don't think this is correct. gpiod_set_value sets the logical line
-> state, so if the GPIO is specified as active-low in the DT, the real
-> line state will be negated. The only reason why the reset-gpio-active-
-> high property even exists is that old DTs might specify the wrong GPIO
-> polarity in the reset-gpio DT description. I think you need to use to
-> gpiod_set_raw_value API here to get the expected real line state even
-> with a broken DT description.
->
-> Regards,
-> Lucas
->
+Le vendredi 29 octobre 2021 à 12:04 +0900, Tomasz Figa a écrit :
+> On Tue, Oct 26, 2021 at 11:12 PM Nicolas Dufresne <nicolas@ndufresne.ca> wrote:
+> > 
+> > Le lundi 18 octobre 2021 à 18:14 +0900, Alexandre Courbot a écrit :
+> > > CAPTURE buffers might be read by the hardware after they are dequeued,
+> > > which goes against the general idea that userspace has full control over
+> > > dequeued buffers. Explain why and document the restrictions that this
+> > > implies for userspace.
+> > > 
+> > > Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
+> > > ---
+> > >  .../userspace-api/media/v4l/dev-decoder.rst     | 17 +++++++++++++++++
+> > >  1 file changed, 17 insertions(+)
+> > > 
+> > > diff --git a/Documentation/userspace-api/media/v4l/dev-decoder.rst b/Documentation/userspace-api/media/v4l/dev-decoder.rst
+> > > index 5b9b83feeceb..3cf2b496f2d0 100644
+> > > --- a/Documentation/userspace-api/media/v4l/dev-decoder.rst
+> > > +++ b/Documentation/userspace-api/media/v4l/dev-decoder.rst
+> > > @@ -752,6 +752,23 @@ available to dequeue. Specifically:
+> > >       buffers are out-of-order compared to the ``OUTPUT`` buffers): ``CAPTURE``
+> > >       timestamps will not retain the order of ``OUTPUT`` timestamps.
+> > > 
+> > > +.. note::
+> > > +
+> > > +   The backing memory of ``CAPTURE`` buffers that are used as reference frames
+> > > +   by the stream may be read by the hardware even after they are dequeued.
+> > > +   Consequently, the client should avoid writing into this memory while the
+> > > +   ``CAPTURE`` queue is streaming. Failure to observe this may result in
+> > > +   corruption of decoded frames.
+> > > +
+> > > +   Similarly, when using a memory type other than ``V4L2_MEMORY_MMAP``, the
+> > > +   client should make sure that each ``CAPTURE`` buffer is always queued with
+> > > +   the same backing memory for as long as the ``CAPTURE`` queue is streaming.
+> > > +   The reason for this is that V4L2 buffer indices can be used by drivers to
+> > > +   identify frames. Thus, if the backing memory of a reference frame is
+> > > +   submitted under a different buffer ID, the driver may misidentify it and
+> > > +   decode a new frame into it while it is still in use, resulting in corruption
+> > > +   of the following frames.
+> > > +
+> > 
+> > I think this is nice addition, but insufficient. We should extend the API with a
+> > flags that let application know if the buffers are reference or secondary. For
+> > the context, we have a mix of CODEC that will output usable reference frames and
+> > needs careful manipulation and many other drivers where the buffers *maybe*
+> > secondary, meaning they may have been post-processed and modifying these in-
+> > place may have no impact.
+> > 
+> > The problem is the "may", that will depends on the chosen CAPTURE format. I
+> > believe we should flag this, this flag should be set by the driver, on CAPTURE
+> > queue. The information is known after S_FMT, so Format Flag, Reqbufs
+> > capabilities or querybuf flags are candidates. I think the buffer flags are the
+> > best named flag, though we don't expect this to differ per buffer. Though,
+> > userspace needs to call querybuf for all buf in order to export or map them.
+> > 
+> > What userspace can do with this is to export the DMABuf as read-only, and signal
+> > this internally in its own context. This is great to avoid any unwanted side
+> > effect described here.
+> 
+> I agree with the idea of having a way for the kernel to tell the
+> userspace the exact state of the buffer, but right now the untold
+> expectation of the kernel was as per what this patch adds. If one
+> wants their userspace to be portable across different decoders, they
+> need to keep the assumption. So the natural way to go here is to stay
+> safe by default and have a flag that tells the userspace that the
+> buffer can be freely reused.
 
-I'm a beginner in kernel development, so I'm sorry for the question.
-If I change gpiod_set_value_cansleep for gpiod_set_raw_value, wouldn't
-I change the behavior of the driver? I replaced
-gpio_set_value_cansleep for gpiod_set_value_cansleep because they have
-the same behavior and I didn't change the logic states. Thank you for
-the feedback!
+On the V4L2 side, this is what I am asking, a flag to signal that the buffer can
+be freely reused (or secondary). The last part was an example of what userland
+that cares about robustness can do with it.
 
-Regards,
-Ma=C3=ADra
+> 
+> Best regards,
+> Tomasz
+
+
