@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD57C441857
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:43:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A467F441751
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:33:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233219AbhKAJqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:46:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47858 "EHLO mail.kernel.org"
+        id S232815AbhKAJfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:35:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37170 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234015AbhKAJoA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:44:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F6DC6139F;
-        Mon,  1 Nov 2021 09:28:59 +0000 (UTC)
+        id S232809AbhKAJcX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:32:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E645A6124A;
+        Mon,  1 Nov 2021 09:24:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758940;
-        bh=4Ln4VDjJlDohGDuX+2ASHjZo2PK2pOWTErkwhRE6sOM=;
+        s=korg; t=1635758679;
+        bh=3Wz2oQ5ODzrXuaXYIO4ceHW9s5XR2RXg5ILDM9NdOuU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PnuGGljdnU7GRoHsmdI5bsmCZxuz25a4DALq32wK3Crk9ZcpD+B3G/RPnz8x1Czzs
-         lh4Hw8dIu6Vs4go6zZyPsRIjhGDTNfPNZpEd6LryWXB2kRBSmrQJDJW0OzfR9B627g
-         hCZWWJFC4whZFoZZS1oe4+3ipjXPMySKdGgazkUE=
+        b=qhmoJW4veK64UwKqwPrHnfJaGWgQER3g6a9gA1jBKR/mB3S6gVdEvXUJdBFKw9IOM
+         EGqcpzhQuW0WxaSSiLXYXC0osapjrNph1D2uM2bskRoIZL9nvJM2Av6Df8FLN8roZ9
+         xh+mgeEoMecT4GvADCiFJ7RqTGgmS+Ps5/fG0E2o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Patrik Jakobsson <pjakobsson@suse.de>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.14 047/125] drm/amdgpu: Fix even more out of bound writes from debugfs
-Date:   Mon,  1 Nov 2021 10:17:00 +0100
-Message-Id: <20211101082542.084293596@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH 5.10 13/77] Revert "pinctrl: bcm: ns: support updated DT binding as syscon subnode"
+Date:   Mon,  1 Nov 2021 10:17:01 +0100
+Message-Id: <20211101082514.663803497@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082533.618411490@linuxfoundation.org>
-References: <20211101082533.618411490@linuxfoundation.org>
+In-Reply-To: <20211101082511.254155853@linuxfoundation.org>
+References: <20211101082511.254155853@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,116 +40,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
+From: Rafał Miłecki <rafal@milecki.pl>
 
-commit 3f4e54bd312d3dafb59daf2b97ffa08abebe60f5 upstream.
+commit 6dba4bdfd7a30e77b848a45404b224588bf989e5 upstream.
 
-CVE-2021-42327 was fixed by:
+This reverts commit a49d784d5a8272d0f63c448fe8dc69e589db006e.
 
-commit f23750b5b3d98653b31d4469592935ef6364ad67
-Author: Thelford Williams <tdwilliamsiv@gmail.com>
-Date:   Wed Oct 13 16:04:13 2021 -0400
+The updated binding was wrong / invalid and has been reverted. There
+isn't any upstream kernel DTS using it and Broadcom isn't known to use
+it neither. There is close to zero chance this will cause regression for
+anyone.
 
-    drm/amdgpu: fix out of bounds write
+Actually in-kernel bcm5301x.dtsi still uses the old good binding and so
+it's broken since the driver update. This revert fixes it.
 
-but amdgpu_dm_debugfs.c contains more of the same issue so fix the
-remaining ones.
-
-v2:
-	* Add missing fix in dp_max_bpc_write (Harry Wentland)
-
-Fixes: 918698d5c2b5 ("drm/amd/display: Return the number of bytes parsed than allocated")
-Signed-off-by: Patrik Jakobsson <pjakobsson@suse.de>
-Reviewed-by: Harry Wentland <harry.wentland@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
+Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+Link: https://lore.kernel.org/r/20211008205938.29925-3-zajec5@gmail.com
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c |   18 +++++++-------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ drivers/pinctrl/bcm/pinctrl-ns.c |   29 ++++++++++-------------------
+ 1 file changed, 10 insertions(+), 19 deletions(-)
 
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
-@@ -487,7 +487,7 @@ static ssize_t dp_phy_settings_write(str
- 	if (!wr_buf)
- 		return -ENOSPC;
+--- a/drivers/pinctrl/bcm/pinctrl-ns.c
++++ b/drivers/pinctrl/bcm/pinctrl-ns.c
+@@ -5,7 +5,6 @@
  
--	if (parse_write_buffer_into_params(wr_buf, size,
-+	if (parse_write_buffer_into_params(wr_buf, wr_buf_size,
- 					   (long *)param, buf,
- 					   max_param_num,
- 					   &param_nums)) {
-@@ -639,7 +639,7 @@ static ssize_t dp_phy_test_pattern_debug
- 	if (!wr_buf)
- 		return -ENOSPC;
+ #include <linux/err.h>
+ #include <linux/io.h>
+-#include <linux/mfd/syscon.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+ #include <linux/of_device.h>
+@@ -13,7 +12,6 @@
+ #include <linux/pinctrl/pinctrl.h>
+ #include <linux/pinctrl/pinmux.h>
+ #include <linux/platform_device.h>
+-#include <linux/regmap.h>
+ #include <linux/slab.h>
  
--	if (parse_write_buffer_into_params(wr_buf, size,
-+	if (parse_write_buffer_into_params(wr_buf, wr_buf_size,
- 					   (long *)param, buf,
- 					   max_param_num,
- 					   &param_nums)) {
-@@ -914,7 +914,7 @@ static ssize_t dp_dsc_passthrough_set(st
- 		return -ENOSPC;
+ #define FLAG_BCM4708		BIT(1)
+@@ -24,8 +22,7 @@ struct ns_pinctrl {
+ 	struct device *dev;
+ 	unsigned int chipset_flag;
+ 	struct pinctrl_dev *pctldev;
+-	struct regmap *regmap;
+-	u32 offset;
++	void __iomem *base;
+ 
+ 	struct pinctrl_desc pctldesc;
+ 	struct ns_pinctrl_group *groups;
+@@ -232,9 +229,9 @@ static int ns_pinctrl_set_mux(struct pin
+ 		unset |= BIT(pin_number);
  	}
  
--	if (parse_write_buffer_into_params(wr_buf, size,
-+	if (parse_write_buffer_into_params(wr_buf, wr_buf_size,
- 					   &param, buf,
- 					   max_param_num,
- 					   &param_nums)) {
-@@ -1211,7 +1211,7 @@ static ssize_t trigger_hotplug(struct fi
- 		return -ENOSPC;
+-	regmap_read(ns_pinctrl->regmap, ns_pinctrl->offset, &tmp);
++	tmp = readl(ns_pinctrl->base);
+ 	tmp &= ~unset;
+-	regmap_write(ns_pinctrl->regmap, ns_pinctrl->offset, tmp);
++	writel(tmp, ns_pinctrl->base);
+ 
+ 	return 0;
+ }
+@@ -266,13 +263,13 @@ static const struct of_device_id ns_pinc
+ static int ns_pinctrl_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+-	struct device_node *np = dev->of_node;
+ 	const struct of_device_id *of_id;
+ 	struct ns_pinctrl *ns_pinctrl;
+ 	struct pinctrl_desc *pctldesc;
+ 	struct pinctrl_pin_desc *pin;
+ 	struct ns_pinctrl_group *group;
+ 	struct ns_pinctrl_function *function;
++	struct resource *res;
+ 	int i;
+ 
+ 	ns_pinctrl = devm_kzalloc(dev, sizeof(*ns_pinctrl), GFP_KERNEL);
+@@ -290,18 +287,12 @@ static int ns_pinctrl_probe(struct platf
+ 		return -EINVAL;
+ 	ns_pinctrl->chipset_flag = (uintptr_t)of_id->data;
+ 
+-	ns_pinctrl->regmap = syscon_node_to_regmap(of_get_parent(np));
+-	if (IS_ERR(ns_pinctrl->regmap)) {
+-		int err = PTR_ERR(ns_pinctrl->regmap);
+-
+-		dev_err(dev, "Failed to map pinctrl regs: %d\n", err);
+-
+-		return err;
+-	}
+-
+-	if (of_property_read_u32(np, "offset", &ns_pinctrl->offset)) {
+-		dev_err(dev, "Failed to get register offset\n");
+-		return -ENOENT;
++	res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
++					   "cru_gpio_control");
++	ns_pinctrl->base = devm_ioremap_resource(dev, res);
++	if (IS_ERR(ns_pinctrl->base)) {
++		dev_err(dev, "Failed to map pinctrl regs\n");
++		return PTR_ERR(ns_pinctrl->base);
  	}
  
--	if (parse_write_buffer_into_params(wr_buf, size,
-+	if (parse_write_buffer_into_params(wr_buf, wr_buf_size,
- 						(long *)param, buf,
- 						max_param_num,
- 						&param_nums)) {
-@@ -1396,7 +1396,7 @@ static ssize_t dp_dsc_clock_en_write(str
- 		return -ENOSPC;
- 	}
- 
--	if (parse_write_buffer_into_params(wr_buf, size,
-+	if (parse_write_buffer_into_params(wr_buf, wr_buf_size,
- 					    (long *)param, buf,
- 					    max_param_num,
- 					    &param_nums)) {
-@@ -1581,7 +1581,7 @@ static ssize_t dp_dsc_slice_width_write(
- 		return -ENOSPC;
- 	}
- 
--	if (parse_write_buffer_into_params(wr_buf, size,
-+	if (parse_write_buffer_into_params(wr_buf, wr_buf_size,
- 					    (long *)param, buf,
- 					    max_param_num,
- 					    &param_nums)) {
-@@ -1766,7 +1766,7 @@ static ssize_t dp_dsc_slice_height_write
- 		return -ENOSPC;
- 	}
- 
--	if (parse_write_buffer_into_params(wr_buf, size,
-+	if (parse_write_buffer_into_params(wr_buf, wr_buf_size,
- 					    (long *)param, buf,
- 					    max_param_num,
- 					    &param_nums)) {
-@@ -1944,7 +1944,7 @@ static ssize_t dp_dsc_bits_per_pixel_wri
- 		return -ENOSPC;
- 	}
- 
--	if (parse_write_buffer_into_params(wr_buf, size,
-+	if (parse_write_buffer_into_params(wr_buf, wr_buf_size,
- 					    (long *)param, buf,
- 					    max_param_num,
- 					    &param_nums)) {
-@@ -2382,7 +2382,7 @@ static ssize_t dp_max_bpc_write(struct f
- 		return -ENOSPC;
- 	}
- 
--	if (parse_write_buffer_into_params(wr_buf, size,
-+	if (parse_write_buffer_into_params(wr_buf, wr_buf_size,
- 					   (long *)param, buf,
- 					   max_param_num,
- 					   &param_nums)) {
+ 	memcpy(pctldesc, &ns_pinctrl_desc, sizeof(*pctldesc));
 
 
