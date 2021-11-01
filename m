@@ -2,97 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D12E441BA3
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 14:20:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E4F9441BA6
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 14:20:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232507AbhKANWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 09:22:46 -0400
-Received: from mail-ot1-f46.google.com ([209.85.210.46]:33787 "EHLO
-        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231794AbhKANWo (ORCPT
+        id S232414AbhKANXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 09:23:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41054 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231794AbhKANXG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 09:22:44 -0400
-Received: by mail-ot1-f46.google.com with SMTP id 107-20020a9d0a74000000b00553bfb53348so25326345otg.0;
-        Mon, 01 Nov 2021 06:20:11 -0700 (PDT)
+        Mon, 1 Nov 2021 09:23:06 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88C01C061714
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 06:20:33 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id g14so2256180edz.2
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 06:20:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KxiC8TOCDYGZGvzRqJnkq0LwxmwjLEv2v/sIODiLxJc=;
+        b=wdIdVhPNOzx5jnUpsM3GCx+83Yp9a+mAZg+BSUg4BVZTw+MBvJnq9bBEOfYUcSRNP6
+         4Zl7V6Yss3Erb4jFTCwZOXmWVi+J3gMiYzK+g5RyLgcegrwhI11YQheWUb8U0ZahWD+3
+         +Dlto0wjcj3wiIA+be1d4QIdBIxFmEmdAnS2ZQuhcYZr1r/G3ofMMBIfrboU19sMXyBH
+         nTIcr+xNtmjm+oBmoyuJeN5zgCKo0cUX1WAHtELHPy44TPdm1/4PgasIsOHCGaDAa5u/
+         gZOeqAK83aPzVWHG3YWhREbYPeMIq3PZWUj17zD/es0jH7OTapW5GRldzEqCrMfERPP2
+         kWwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=NQsXgN1/B5gwjOVAAacfDLhfdCYF4Dwe+DAjivz+Nyc=;
-        b=kaDXexlIPEfQISaVbZXCafx1c5ElYiRWmllHY65SZTvEqJ8U89znHlYyNRfE5vXzlq
-         HTsBUcRfsK9JIk5g64oc5/vfr6lkeYwNFZWFzS0JxAD15QQwFz6m4meHR7i4TuYhlK8A
-         /Z3H1xoLdWeyOMH12x02rhaovVdsN9FhoxmJNXu/PyZlMKjX41JRTl3ZR6zfYt6z5t7D
-         V+G9WPPKbYQ3ttZqq01roSm6EiZP+vt4Jt+moe0O2OC58fuz0XHMKxUM3vfwsXcRx7ng
-         CWKVaIirJ6ARro9qeZSADxvCNYTnQeJVvHA3+ADX21zDI5XrVjGI5f10CN6ESwC5jESS
-         8uuQ==
-X-Gm-Message-State: AOAM5328t/rG4VrCYTSciZctzgwvSkMu1FkIUIsaYMZJ9Seh0f+zEbX+
-        2nvAJRqmKWuz5ImVrgXqxGUCScKAmA==
-X-Google-Smtp-Source: ABdhPJyzU4cxvEcItOGfrwaiiIz8T6WXPuadFqxeg4zVhDDGAM4Y5N64HkjfJRt7VwCNAaxicAaTwA==
-X-Received: by 2002:a9d:a64:: with SMTP id 91mr13798795otg.198.1635772810834;
-        Mon, 01 Nov 2021 06:20:10 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id x28sm4236076ote.24.2021.11.01.06.20.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 06:20:09 -0700 (PDT)
-Received: (nullmailer pid 278147 invoked by uid 1000);
-        Mon, 01 Nov 2021 13:20:09 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     "hammer.hsieh" <hammerh0314@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        "hammer.hsieh" <hammer.hsieh@sunplus.com>,
-        devicetree@vger.kernel.org, gregkh@linuxfoundation.org,
-        p.zabel@pengutronix.de, wells.lu@sunplus.com,
-        tony.huang@sunplus.com, jirislaby@kernel.org
-In-Reply-To: <1635752903-14968-2-git-send-email-hammer.hsieh@sunplus.com>
-References: <1635752903-14968-1-git-send-email-hammer.hsieh@sunplus.com> <1635752903-14968-2-git-send-email-hammer.hsieh@sunplus.com>
-Subject: Re: [PATCH 1/2] dt-bindings:serial:Add bindings doc for Sunplus SoC UART Driver
-Date:   Mon, 01 Nov 2021 08:20:09 -0500
-Message-Id: <1635772809.026695.278146.nullmailer@robh.at.kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KxiC8TOCDYGZGvzRqJnkq0LwxmwjLEv2v/sIODiLxJc=;
+        b=jaykoF1gMF0aLfUagrLEbPwCUM1n+fuK9sDhwCNvb1/4gJA1Z4QOypgh1weU5HRWWd
+         Um1/355LHKpgerDAhLMxwWOu3rtkXBuRocHTp4v+X3dTtRWt6vBVH313CPSnwMtLrtKd
+         +kO1RvU+5w+GKy/gAT+SS6UTItg5IeXXWUjmUVMKHdYEPsfxnaxcObxX6vlLEQv5KgKP
+         gCVc2Q8hlBMSW7tVY4FGWvN5WxQVukC1AK3S5O/E8n31y0ZE+qoVuzgN9O4grul9vGaL
+         Bs++bw2m9f2/JxDyWLbNQO7l17982PP4AETPuCvZuu0bwoPKAbqTHQKjSCrIy1mpeUme
+         mX+w==
+X-Gm-Message-State: AOAM532c3i+yCL0PIA78nX7xKE5Hqwrek4JUk3JEEVxJaACzbsbJj8TC
+        oryQJDRwMSMtz1jSKK6y32Jk86DTjrjGslLx/tecBA==
+X-Google-Smtp-Source: ABdhPJyJQqeGbufX4I+U4qbdDbwM8MR69cxMk6BiNOWW7zXqiwCalLSYDDuw+wdQdZflvS6F5WohciNSyvkn0xthNf8=
+X-Received: by 2002:a17:906:9f21:: with SMTP id fy33mr36364553ejc.567.1635772832049;
+ Mon, 01 Nov 2021 06:20:32 -0700 (PDT)
+MIME-Version: 1.0
+References: <CA+G9fYso1sBLRAMpc0bdPiim8GvMhmwuRDaEZ0xbP1TZz864ZA@mail.gmail.com>
+ <CAK8P3a1mP_ZvigBj5+pRSSf-OsvX70BSJByGfqcDjE5pXLD9Yw@mail.gmail.com>
+In-Reply-To: <CAK8P3a1mP_ZvigBj5+pRSSf-OsvX70BSJByGfqcDjE5pXLD9Yw@mail.gmail.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Mon, 1 Nov 2021 18:50:20 +0530
+Message-ID: <CA+G9fYt3EjUTF+C26x8sCRc+4R8raCDUOF03qmcwP820QEKgbg@mail.gmail.com>
+Subject: Re: [next] Error: selected processor does not support `isb ' in ARM mode
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Juerg Haefliger <juergh@canonical.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 01 Nov 2021 15:48:22 +0800, hammer.hsieh wrote:
-> Add bindings doc for Sunplus SoC UART Driver
-> 
-> Signed-off-by: hammer.hsieh <hammer.hsieh@sunplus.com>
-> ---
->  .../devicetree/bindings/serial/sunplus,uart.yaml   | 116 +++++++++++++++++++++
->  MAINTAINERS                                        |   5 +
->  2 files changed, 121 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/serial/sunplus,uart.yaml
-> 
+Hi Arnd,
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+On Mon, 1 Nov 2021 at 18:44, Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> On Mon, Nov 1, 2021 at 2:00 PM Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+> >
+> > [Please ignore this email report if it is already reported]
+> >
+> > Regression found on arm gcc-11 built with following config
+> > Following build warnings / errors reported on linux next-20211101.
+> >
+> > metadata:
+> >     git_describe: next-20211101
+> >     git_repo: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+> >     git_short_log: 9febf1194306 (\"Add linux-next specific files for 20211101\")
+> >     target_arch: arm
+> >     toolchain: gcc-11
+>
+> Is this a Debian gcc? If so, this one should fix it, I need to send
+> that to Russell's
+> patch tracker:
+>
+> https://lore.kernel.org/linux-arm-kernel/20211018140735.3714254-1-arnd@kernel.org/
+>
 
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/serial/sunplus,uart.yaml:36:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
-./Documentation/devicetree/bindings/serial/sunplus,uart.yaml:39:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
-./Documentation/devicetree/bindings/serial/sunplus,uart.yaml:42:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
-./Documentation/devicetree/bindings/serial/sunplus,uart.yaml:45:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
+Yes.
+This is Debian gcc-11
 
-dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/serial/sunplus,uart.example.dts:20:18: fatal error: dt-bindings/clock/sp-sp7021.h: No such file or directory
-   20 |         #include <dt-bindings/clock/sp-sp7021.h>
-      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-compilation terminated.
-make[1]: *** [scripts/Makefile.lib:385: Documentation/devicetree/bindings/serial/sunplus,uart.example.dt.yaml] Error 1
-make[1]: *** Waiting for unfinished jobs....
-make: *** [Makefile:1441: dt_binding_check] Error 2
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/patch/1548996
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+- Naresh
