@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CFB0441691
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:24:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99BDB4416FA
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:30:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232660AbhKAJ0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:26:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58246 "EHLO mail.kernel.org"
+        id S233156AbhKAJbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:31:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37074 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232274AbhKAJWi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:22:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 885D661101;
-        Mon,  1 Nov 2021 09:19:40 +0000 (UTC)
+        id S233029AbhKAJ2Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:28:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 98B2B61207;
+        Mon,  1 Nov 2021 09:23:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758381;
-        bh=M4PgJ8Bfn8C+fG6wR8p9pIDnyvVddvMRdsypmjOq1+E=;
+        s=korg; t=1635758581;
+        bh=DPZRoibiMdTyqf3nZR0mvk1QD6AlHTeK37w5mGaUqZA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XIDcxpLbo3VPzSWbvFbRO554w3VuRv3ZGNhcICVXatxRiqjR4WETsiSq5BnyO7W2w
-         ektVmbyj1Vt+f2ID1BRM8M+8OewbwSMeRrG+hckIjCsTZWbESp4RfHQI+1tmp/u9f3
-         4G+0SiDIxpy7zyRAryXBcPK+XhGK2ECrd66NhwrU=
+        b=wnXyjh5lKVtk7H1LmVRzECPlmUFCplCYW56nZ2MOvrRnubmxalBHpaMh0fxVw6d/F
+         AuotavHPeE5qg1BxaGbkp/UFpGyZ1kbRQql1laHIkZUx1MefK+ni9NPgoYeEt/PC8c
+         2ureejf7ygMRzFKgSqjMSg8J6ZjHsNgbRBHzwF2E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
-Subject: [PATCH 4.9 02/20] ARM: 9134/1: remove duplicate memcpy() definition
-Date:   Mon,  1 Nov 2021 10:17:11 +0100
-Message-Id: <20211101082444.650245644@linuxfoundation.org>
+        stable@vger.kernel.org, Oliver Neukum <oneukum@suse.com>,
+        syzbot+76bb1d34ffa0adc03baa@syzkaller.appspotmail.com,
+        Johan Hovold <johan@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.4 08/51] usbnet: sanity check for maxpacket
+Date:   Mon,  1 Nov 2021 10:17:12 +0100
+Message-Id: <20211101082501.951024169@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082444.133899096@linuxfoundation.org>
-References: <20211101082444.133899096@linuxfoundation.org>
+In-Reply-To: <20211101082500.203657870@linuxfoundation.org>
+References: <20211101082500.203657870@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,56 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Oliver Neukum <oneukum@suse.com>
 
-commit eaf6cc7165c9c5aa3c2f9faa03a98598123d0afb upstream.
+commit 397430b50a363d8b7bdda00522123f82df6adc5e upstream.
 
-Both the decompressor code and the kasan logic try to override
-the memcpy() and memmove()  definitions, which leading to a clash
-in a KASAN-enabled kernel with XZ decompression:
+maxpacket of 0 makes no sense and oopses as we need to divide
+by it. Give up.
 
-arch/arm/boot/compressed/decompress.c:50:9: error: 'memmove' macro redefined [-Werror,-Wmacro-redefined]
- #define memmove memmove
-        ^
-arch/arm/include/asm/string.h:59:9: note: previous definition is here
- #define memmove(dst, src, len) __memmove(dst, src, len)
-        ^
-arch/arm/boot/compressed/decompress.c:51:9: error: 'memcpy' macro redefined [-Werror,-Wmacro-redefined]
- #define memcpy memcpy
-        ^
-arch/arm/include/asm/string.h:58:9: note: previous definition is here
- #define memcpy(dst, src, len) __memcpy(dst, src, len)
-        ^
+V2: fixed typo in log and stylistic issues
 
-Here we want the set of functions from the decompressor, so undefine
-the other macros before the override.
-
-Link: https://lore.kernel.org/linux-arm-kernel/CACRpkdZYJogU_SN3H9oeVq=zJkRgRT1gDz3xp59gdqWXxw-B=w@mail.gmail.com/
-Link: https://lore.kernel.org/lkml/202105091112.F5rmd4By-lkp@intel.com/
-
-Fixes: d6d51a96c7d6 ("ARM: 9014/2: Replace string mem* functions for KASan")
-Fixes: a7f464f3db93 ("ARM: 7001/2: Wire up support for the XZ decompressor")
-Reported-by: kernel test robot <lkp@intel.com>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Oliver Neukum <oneukum@suse.com>
+Reported-by: syzbot+76bb1d34ffa0adc03baa@syzkaller.appspotmail.com
+Reviewed-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20211021122944.21816-1-oneukum@suse.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm/boot/compressed/decompress.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/net/usb/usbnet.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/arch/arm/boot/compressed/decompress.c
-+++ b/arch/arm/boot/compressed/decompress.c
-@@ -46,7 +46,10 @@ extern char * strstr(const char * s1, co
- #endif
+--- a/drivers/net/usb/usbnet.c
++++ b/drivers/net/usb/usbnet.c
+@@ -1773,6 +1773,10 @@ usbnet_probe (struct usb_interface *udev
+ 	if (!dev->rx_urb_size)
+ 		dev->rx_urb_size = dev->hard_mtu;
+ 	dev->maxpacket = usb_maxpacket (dev->udev, dev->out, 1);
++	if (dev->maxpacket == 0) {
++		/* that is a broken device */
++		goto out4;
++	}
  
- #ifdef CONFIG_KERNEL_XZ
-+/* Prevent KASAN override of string helpers in decompressor */
-+#undef memmove
- #define memmove memmove
-+#undef memcpy
- #define memcpy memcpy
- #include "../../../../lib/decompress_unxz.c"
- #endif
+ 	/* let userspace know we have a random address */
+ 	if (ether_addr_equal(net->dev_addr, node_id))
 
 
