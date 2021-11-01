@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 901C1441651
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:22:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E351441606
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:19:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232600AbhKAJYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:24:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59022 "EHLO mail.kernel.org"
+        id S231842AbhKAJVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:21:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57358 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232286AbhKAJWi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:22:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A3CEF61167;
-        Mon,  1 Nov 2021 09:19:56 +0000 (UTC)
+        id S231805AbhKAJVR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:21:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4297D60C41;
+        Mon,  1 Nov 2021 09:18:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758397;
-        bh=kApMBtplrYEmFvcFXyx9aO6SMwJEaX86FxI5TNcr8SE=;
+        s=korg; t=1635758324;
+        bh=TcWYGCOlpki0C81uZqZVH0QLWUlmqDkCh/gp6pjsezQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hRqjqUH75OtZyFn6BbhA4FPBDXChI0Y9kVotf9LKR2f/ByHIdvkXZsjh945XzDT8x
-         dHOK+wuzRVELwkoVAPUjlvlLALBPpzC3sBCfF7aMEhjKHng1l/H+IsnaAJHiw1axn3
-         DAMbrK6d1DC/ECX9FcNO9yO8qlVkhwIDIBMAWQt4=
+        b=qdcvDu0wvDNlR8KGucCHGoIhP5kKRNIJZIkqGqulHvhM4Wm0NVc1/sO7I4RAbpixT
+         2Jg8YjjXSuwZPOrlI9G4VU0c3nznS8eSe6yUxeX0xzKhq137ouPRcwgpnbuuZHr4ZD
+         5KgxxMkDTr0ysnr0oDDZasShlc9/NgvCRmVcOHt8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
-        Damien Le Moal <damien.lemoal@opensource.wdc.com>
-Subject: [PATCH 4.9 08/20] ata: sata_mv: Fix the error handling of mv_chip_id()
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 4.4 14/17] regmap: Fix possible double-free in regcache_rbtree_exit()
 Date:   Mon,  1 Nov 2021 10:17:17 +0100
-Message-Id: <20211101082445.967120970@linuxfoundation.org>
+Message-Id: <20211101082443.894653384@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082444.133899096@linuxfoundation.org>
-References: <20211101082444.133899096@linuxfoundation.org>
+In-Reply-To: <20211101082440.664392327@linuxfoundation.org>
+References: <20211101082440.664392327@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,38 +40,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zheyu Ma <zheyuma97@gmail.com>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-commit a0023bb9dd9bc439d44604eeec62426a990054cd upstream.
+commit 55e6d8037805b3400096d621091dfbf713f97e83 upstream.
 
-mv_init_host() propagates the value returned by mv_chip_id() which in turn
-gets propagated by mv_pci_init_one() and hits local_pci_probe().
+In regcache_rbtree_insert_to_block(), when 'present' realloc failed,
+the 'blk' which is supposed to assign to 'rbnode->block' will be freed,
+so 'rbnode->block' points a freed memory, in the error handling path of
+regcache_rbtree_init(), 'rbnode->block' will be freed again in
+regcache_rbtree_exit(), KASAN will report double-free as follows:
 
-During the process of driver probing, the probe function should return < 0
-for failure, otherwise, the kernel will treat value > 0 as success.
+BUG: KASAN: double-free or invalid-free in kfree+0xce/0x390
+Call Trace:
+ slab_free_freelist_hook+0x10d/0x240
+ kfree+0xce/0x390
+ regcache_rbtree_exit+0x15d/0x1a0
+ regcache_rbtree_init+0x224/0x2c0
+ regcache_init+0x88d/0x1310
+ __regmap_init+0x3151/0x4a80
+ __devm_regmap_init+0x7d/0x100
+ madera_spi_probe+0x10f/0x333 [madera_spi]
+ spi_probe+0x183/0x210
+ really_probe+0x285/0xc30
 
-Since this is a bug rather than a recoverable runtime error we should
-use dev_alert() instead of dev_err().
+To fix this, moving up the assignment of rbnode->block to immediately after
+the reallocation has succeeded so that the data structure stays valid even
+if the second reallocation fails.
 
-Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
-Signed-off-by: Damien Le Moal <damien.lemoal@opensource.wdc.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Fixes: 3f4ff561bc88b ("regmap: rbtree: Make cache_present bitmap per node")
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Link: https://lore.kernel.org/r/20211012023735.1632786-1-yangyingliang@huawei.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/ata/sata_mv.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/base/regmap/regcache-rbtree.c |    7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
---- a/drivers/ata/sata_mv.c
-+++ b/drivers/ata/sata_mv.c
-@@ -3907,8 +3907,8 @@ static int mv_chip_id(struct ata_host *h
- 		break;
+--- a/drivers/base/regmap/regcache-rbtree.c
++++ b/drivers/base/regmap/regcache-rbtree.c
+@@ -296,14 +296,14 @@ static int regcache_rbtree_insert_to_blo
+ 	if (!blk)
+ 		return -ENOMEM;
  
- 	default:
--		dev_err(host->dev, "BUG: invalid board index %u\n", board_idx);
--		return 1;
-+		dev_alert(host->dev, "BUG: invalid board index %u\n", board_idx);
-+		return -EINVAL;
++	rbnode->block = blk;
++
+ 	if (BITS_TO_LONGS(blklen) > BITS_TO_LONGS(rbnode->blklen)) {
+ 		present = krealloc(rbnode->cache_present,
+ 				   BITS_TO_LONGS(blklen) * sizeof(*present),
+ 				   GFP_KERNEL);
+-		if (!present) {
+-			kfree(blk);
++		if (!present)
+ 			return -ENOMEM;
+-		}
+ 
+ 		memset(present + BITS_TO_LONGS(rbnode->blklen), 0,
+ 		       (BITS_TO_LONGS(blklen) - BITS_TO_LONGS(rbnode->blklen))
+@@ -320,7 +320,6 @@ static int regcache_rbtree_insert_to_blo
  	}
  
- 	hpriv->hp_flags = hp_flags;
+ 	/* update the rbnode block, its size and the base register */
+-	rbnode->block = blk;
+ 	rbnode->blklen = blklen;
+ 	rbnode->base_reg = base_reg;
+ 	rbnode->cache_present = present;
 
 
