@@ -2,237 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48F0F441AFB
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 13:06:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E43A4441AFE
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 13:08:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232271AbhKAMIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 08:08:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52046 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231485AbhKAMIh (ORCPT
+        id S232363AbhKAMKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 08:10:35 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:43936 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231673AbhKAMKc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 08:08:37 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB71CC061714;
-        Mon,  1 Nov 2021 05:06:03 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id x66so16107074pfx.13;
-        Mon, 01 Nov 2021 05:06:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=/4lV8dXREEDTKjadq2AlC/ht+JUEqVf4ehoa9s9n110=;
-        b=MMBknp7hqQRp2J0DnaKuUC3wqZX1+V/CKZA/AcX3F8azcoytMQd/dTqwMIftsCeMBa
-         oWgGR8HYwl+UIHCfoEVhZNhd6C8MUJTiZz2Ahw1F+lD+VIhZyTWp5wpkhIARM+yEMaY0
-         3bfALpuLwDjh++Q7pg35vOTfk73il7E0WISNNS8VC1gJW7VI299Wh7OMb8OphsY3KaV+
-         Tf6Rs6eK30TF39Kw+Vq4ZClDtuy6z627m5mQlYB2HT++Mpy/PoCbGIJW9WhG5HzAB4bX
-         UF2e5OSVGcuSUpnv0302eBpWNoqFBOI2NsDuGDzyM7VZqnIcwb2ZI7vXkfL+6NtGgQVB
-         f8Ag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=/4lV8dXREEDTKjadq2AlC/ht+JUEqVf4ehoa9s9n110=;
-        b=pdclBF6NJNoApD1+54h3sNTEbZGP7SlXQnaMPDQ5MRWm79EFqmTy8Uq0FxsGWw83t8
-         P/Rk1B1r9uqtz4RuexSw/Gm8iaA4O47wBEx0NR7Aoanf+HHulOd05eetSRgB3H/WRRBM
-         CA1mVe3beWc7/Hhq4jSqU5Y/bVW+ZZVmKEofXn054hyJ1VMXrk3Gt+8UfNtK/W2Ox7kn
-         SPtpIeMmG2Td1mR7MlQGLMefrdr/llYJFhW6fKTxdEzfrtweQEIVOIUHWWeH+Ule6MOs
-         i2zbO2MCNaYhUAPi2++d67Qy8Khgwh7VkWLpm2YJVGDJTivdpfWIafUbeh931A0kkcoS
-         YAnQ==
-X-Gm-Message-State: AOAM533Ygb4yqAAx9ZxFGgzxaSQWDheM1wRSgXJG7Ne3setavwVlG04t
-        yCBzK0WBEBVWoa7lOcOikfB0PDSgIHSJaTqkkV8=
-X-Google-Smtp-Source: ABdhPJzFdonX2WyPMlZCEDCCeGdFvZUMkPByGrf71dhpS4JF8mhN/f40eW8/Ef19l2PRZ+VAwroxicnyDIXaJ5Aopns=
-X-Received: by 2002:a05:6a00:801:b0:47d:9dc8:5751 with SMTP id
- m1-20020a056a00080100b0047d9dc85751mr28460629pfk.32.1635768363292; Mon, 01
- Nov 2021 05:06:03 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211101092134.3357661-1-bigunclemax@gmail.com> <717f9769-aac5-d005-e15a-a6a2ff61bb69@ti.com>
-In-Reply-To: <717f9769-aac5-d005-e15a-a6a2ff61bb69@ti.com>
-From:   Maxim Kiselev <bigunclemax@gmail.com>
-Date:   Mon, 1 Nov 2021 15:05:23 +0300
-Message-ID: <CALHCpMg1fHjZFfkEnFmUUrvDLFweQ-4aLX4k2hy24hRm2KiAYA@mail.gmail.com>
-Subject: Re: [PATCH] net: davinci_emac: Fix interrupt pacing disable
-To:     Grygorii Strashko <grygorii.strashko@ti.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Yufeng Mo <moyufeng@huawei.com>,
-        Michael Walle <michael@walle.cc>, Sriram <srk@ti.com>,
-        linux-omap@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        Mon, 1 Nov 2021 08:10:32 -0400
+X-UUID: 96666a0304944cc38cc087434f5944a7-20211101
+X-UUID: 96666a0304944cc38cc087434f5944a7-20211101
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
+        (envelope-from <walter-zh.wu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 909134349; Mon, 01 Nov 2021 20:07:56 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
+ Mon, 1 Nov 2021 20:07:54 +0800
+Received: from mtksdccf07 (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 1 Nov 2021 20:07:54 +0800
+Message-ID: <73d900564ce9b0d773c801efe8b8689946bef150.camel@mediatek.com>
+Subject: Re: [PATCH] dma-direct: fix DMA_ATTR_NO_KERNEL_MAPPING
+From:   Walter Wu <walter-zh.wu@mediatek.com>
+To:     Robin Murphy <robin.murphy@arm.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        <linux-mediatek@lists.infradead.org>,
+        "Andrew Morton" <akpm@linux-foundation.org>
+Date:   Mon, 1 Nov 2021 20:07:54 +0800
+In-Reply-To: <0316e4f0-b0ad-c702-676f-36347b4ebcb1@arm.com>
+References: <20211101031558.7184-1-walter-zh.wu@mediatek.com>
+         <0316e4f0-b0ad-c702-676f-36347b4ebcb1@arm.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yes, I can write 0 to INTCTRL for ` case EMAC_VERSION_2` but we also
-need to handle `default case`
+Hi Robin,
 
-=D0=BF=D0=BD, 1 =D0=BD=D0=BE=D1=8F=D0=B1. 2021 =D0=B3. =D0=B2 14:54, Grygor=
-ii Strashko <grygorii.strashko@ti.com>:
->
->
->
-> On 01/11/2021 11:21, Maxim Kiselev wrote:
-> > This patch allows to use 0 for `coal->rx_coalesce_usecs` param to
-> > disable rx irq coalescing.
-> >
-> > Previously we could enable rx irq coalescing via ethtool
-> > (For ex: `ethtool -C eth0 rx-usecs 2000`) but we couldn't disable
-> > it because this part rejects 0 value:
-> >
-> >         if (!coal->rx_coalesce_usecs)
-> >                 return -EINVAL;
-> >
-> > Fixes: 84da2658a619 ("TI DaVinci EMAC : Implement interrupt pacing
-> > functionality.")
-> >
-> > Signed-off-by: Maxim Kiselev <bigunclemax@gmail.com>
+On Mon, 2021-11-01 at 10:29 +0000, Robin Murphy wrote:
+> On 2021-11-01 03:15, Walter Wu wrote:
+> > DMA_ATTR_NO_KERNEL_MAPPING is to avoid creating a kernel mapping
+> > for the allocated buffer, but current implementation is that
+> > PTE of allocated buffer in kernel page table is valid. So we
+> > should set invalid for PTE of allocate buffer so that there are
+> > no kernel mapping for the allocated buffer.
+> 
+> No, the semantic of NO_KERNEL_MAPPING is an indication that the
+> *caller* 
+> does not need a mapping, such that the DMA API implementation may
+> choose 
+> to optimise for that internally. It has never given any guarantee of
+> any 
+> particular behaviour - like most attributes it is only a hint.
+> 
+> > In some cases, we don't hope the allocated buffer to be read
+> > by cpu or speculative execution, so we use
+> > DMA_ATTR_NO_KERNEL_MAPPING
+> > to get no kernel mapping in order to achieve this goal.
+> 
+> If it's important that no CPU accesses to this memory can happen,
+> then I 
+> think the only way to absolutely guarantee that is to exclude it
+> from 
+> the kernel's memory map in the first place, e.g. as a DT reserved-
+> memory 
+> region with the "no-map" property.
+> 
+
+Yes, this is our previous implementation, but we hope to use kernel
+memory to fix it.
+
+Thanks for your suggestion.
+
+Walter
+
+> Robin.
+> 
+> > Signed-off-by: Walter Wu <walter-zh.wu@mediatek.com>
+> > Cc: Christoph Hellwig <hch@lst.de>
+> > Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+> > Cc: Robin Murphy <robin.murphy@arm.com>
+> > Cc: Matthias Brugger <matthias.bgg@gmail.com>
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
 > > ---
-> >   drivers/net/ethernet/ti/davinci_emac.c | 77 ++++++++++++++-----------=
--
-> >   1 file changed, 41 insertions(+), 36 deletions(-)
-> >
-> > diff --git a/drivers/net/ethernet/ti/davinci_emac.c b/drivers/net/ether=
-net/ti/davinci_emac.c
-> > index e8291d8488391..a3a02c4e5eb68 100644
-> > --- a/drivers/net/ethernet/ti/davinci_emac.c
-> > +++ b/drivers/net/ethernet/ti/davinci_emac.c
-> > @@ -417,46 +417,47 @@ static int emac_set_coalesce(struct net_device *n=
-dev,
-> >                            struct netlink_ext_ack *extack)
-> >   {
-> >       struct emac_priv *priv =3D netdev_priv(ndev);
-> > -     u32 int_ctrl, num_interrupts =3D 0;
-> > +     u32 int_ctrl =3D 0, num_interrupts =3D 0;
-> >       u32 prescale =3D 0, addnl_dvdr =3D 1, coal_intvl =3D 0;
-> >
-> > -     if (!coal->rx_coalesce_usecs)
-> > -             return -EINVAL;
-> > -
-> >       coal_intvl =3D coal->rx_coalesce_usecs;
->
-> Wouldn't be more simple if you just handle !coal->rx_coalesce_usecs here =
-and exit?
-> it seems you can just write 0 t0 INTCTRL.
->
-> >
-> >       switch (priv->version) {
-> >       case EMAC_VERSION_2:
-> > -             int_ctrl =3D  emac_ctrl_read(EMAC_DM646X_CMINTCTRL);
-> > -             prescale =3D priv->bus_freq_mhz * 4;
-> > -
-> > -             if (coal_intvl < EMAC_DM646X_CMINTMIN_INTVL)
-> > -                     coal_intvl =3D EMAC_DM646X_CMINTMIN_INTVL;
-> > -
-> > -             if (coal_intvl > EMAC_DM646X_CMINTMAX_INTVL) {
-> > -                     /*
-> > -                      * Interrupt pacer works with 4us Pulse, we can
-> > -                      * throttle further by dilating the 4us pulse.
-> > -                      */
-> > -                     addnl_dvdr =3D EMAC_DM646X_INTPRESCALE_MASK / pre=
-scale;
-> > -
-> > -                     if (addnl_dvdr > 1) {
-> > -                             prescale *=3D addnl_dvdr;
-> > -                             if (coal_intvl > (EMAC_DM646X_CMINTMAX_IN=
-TVL
-> > -                                                     * addnl_dvdr))
-> > -                                     coal_intvl =3D (EMAC_DM646X_CMINT=
-MAX_INTVL
-> > -                                                     * addnl_dvdr);
-> > -                     } else {
-> > -                             addnl_dvdr =3D 1;
-> > -                             coal_intvl =3D EMAC_DM646X_CMINTMAX_INTVL=
-;
-> > +             if (coal->rx_coalesce_usecs) {
-> > +                     int_ctrl =3D  emac_ctrl_read(EMAC_DM646X_CMINTCTR=
-L);
-> > +                     prescale =3D priv->bus_freq_mhz * 4;
-> > +
-> > +                     if (coal_intvl < EMAC_DM646X_CMINTMIN_INTVL)
-> > +                             coal_intvl =3D EMAC_DM646X_CMINTMIN_INTVL=
-;
-> > +
-> > +                     if (coal_intvl > EMAC_DM646X_CMINTMAX_INTVL) {
-> > +                             /*
-> > +                              * Interrupt pacer works with 4us Pulse, =
-we can
-> > +                              * throttle further by dilating the 4us p=
-ulse.
-> > +                              */
-> > +                             addnl_dvdr =3D
-> > +                                     EMAC_DM646X_INTPRESCALE_MASK / pr=
-escale;
-> > +
-> > +                             if (addnl_dvdr > 1) {
-> > +                                     prescale *=3D addnl_dvdr;
-> > +                                     if (coal_intvl > (EMAC_DM646X_CMI=
-NTMAX_INTVL
-> > +                                                             * addnl_d=
-vdr))
-> > +                                             coal_intvl =3D (EMAC_DM64=
-6X_CMINTMAX_INTVL
-> > +                                                             * addnl_d=
-vdr);
-> > +                             } else {
-> > +                                     addnl_dvdr =3D 1;
-> > +                                     coal_intvl =3D EMAC_DM646X_CMINTM=
-AX_INTVL;
-> > +                             }
-> >                       }
-> > -             }
-> >
-> > -             num_interrupts =3D (1000 * addnl_dvdr) / coal_intvl;
-> > +                     num_interrupts =3D (1000 * addnl_dvdr) / coal_int=
-vl;
-> > +
-> > +                     int_ctrl |=3D EMAC_DM646X_INTPACEEN;
-> > +                     int_ctrl &=3D (~EMAC_DM646X_INTPRESCALE_MASK);
-> > +                     int_ctrl |=3D (prescale & EMAC_DM646X_INTPRESCALE=
-_MASK);
-> > +             }
-> >
-> > -             int_ctrl |=3D EMAC_DM646X_INTPACEEN;
-> > -             int_ctrl &=3D (~EMAC_DM646X_INTPRESCALE_MASK);
-> > -             int_ctrl |=3D (prescale & EMAC_DM646X_INTPRESCALE_MASK);
-> >               emac_ctrl_write(EMAC_DM646X_CMINTCTRL, int_ctrl);
-> >
-> >               emac_ctrl_write(EMAC_DM646X_CMRXINTMAX, num_interrupts);
-> > @@ -466,17 +467,21 @@ static int emac_set_coalesce(struct net_device *n=
-dev,
-> >       default:
-> >               int_ctrl =3D emac_ctrl_read(EMAC_CTRL_EWINTTCNT);
-> >               int_ctrl &=3D (~EMAC_DM644X_EWINTCNT_MASK);
-> > -             prescale =3D coal_intvl * priv->bus_freq_mhz;
-> > -             if (prescale > EMAC_DM644X_EWINTCNT_MASK) {
-> > -                     prescale =3D EMAC_DM644X_EWINTCNT_MASK;
-> > -                     coal_intvl =3D prescale / priv->bus_freq_mhz;
-> > +
-> > +             if (coal->rx_coalesce_usecs) {
-> > +                     prescale =3D coal_intvl * priv->bus_freq_mhz;
-> > +                     if (prescale > EMAC_DM644X_EWINTCNT_MASK) {
-> > +                             prescale =3D EMAC_DM644X_EWINTCNT_MASK;
-> > +                             coal_intvl =3D prescale / priv->bus_freq_=
-mhz;
-> > +                     }
-> >               }
-> > +
-> >               emac_ctrl_write(EMAC_CTRL_EWINTTCNT, (int_ctrl | prescale=
-));
-> >
-> >               break;
-> >       }
-> >
-> > -     printk(KERN_INFO"Set coalesce to %d usecs.\n", coal_intvl);
-> > +     netdev_info(ndev, "Set coalesce to %d usecs.\n", coal_intvl);
-> >       priv->coal_intvl =3D coal_intvl;
-> >
-> >       return 0;
-> >
->
-> --
-> Best regards,
-> grygorii
+> >   kernel/dma/direct.c | 8 ++++++++
+> >   1 file changed, 8 insertions(+)
+> > 
+> > diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
+> > index 4c6c5e0635e3..aa10b4c5d762 100644
+> > --- a/kernel/dma/direct.c
+> > +++ b/kernel/dma/direct.c
+> > @@ -13,6 +13,7 @@
+> >   #include <linux/vmalloc.h>
+> >   #include <linux/set_memory.h>
+> >   #include <linux/slab.h>
+> > +#include <asm/cacheflush.h>
+> >   #include "direct.h"
+> >   
+> >   /*
+> > @@ -169,6 +170,9 @@ void *dma_direct_alloc(struct device *dev,
+> > size_t size,
+> >   		if (!PageHighMem(page))
+> >   			arch_dma_prep_coherent(page, size);
+> >   		*dma_handle = phys_to_dma_direct(dev,
+> > page_to_phys(page));
+> > +		/* remove kernel mapping for pages */
+> > +		set_memory_valid((unsigned
+> > long)phys_to_virt(dma_to_phys(dev, *dma_handle)),
+> > +				size >> PAGE_SHIFT, 0);
+> >   		/* return the page pointer as the opaque cookie */
+> >   		return page;
+> >   	}
+> > @@ -278,6 +282,10 @@ void dma_direct_free(struct device *dev,
+> > size_t size,
+> >   
+> >   	if ((attrs & DMA_ATTR_NO_KERNEL_MAPPING) &&
+> >   	    !force_dma_unencrypted(dev) && !is_swiotlb_for_alloc(dev))
+> > {
+> > +		size = PAGE_ALIGN(size);
+> > +		/* create kernel mapping for pages */
+> > +		set_memory_valid((unsigned
+> > long)phys_to_virt(dma_to_phys(dev, dma_addr)),
+> > +				size >> PAGE_SHIFT, 1);
+> >   		/* cpu_addr is a struct page cookie, not a kernel
+> > address */
+> >   		dma_free_contiguous(dev, cpu_addr, size);
+> >   		return;
+> > 
+
