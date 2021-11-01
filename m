@@ -2,108 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29F7D441913
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:54:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 694224415F8
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:18:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233657AbhKAJyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:54:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54296 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234431AbhKAJut (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:50:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 79E9361506;
-        Mon,  1 Nov 2021 09:32:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635759124;
-        bh=DLU0hoLPn9aOJSaWhDSMMKarff5wLgOVFaMK8lio7N8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NTKqX+Ek1SCkDwKUlknBZvpIIGpZeCzq+/uuLCXgRqnjR7pRNqAVwuD9OqZRuIPFV
-         jH8vlUL8rQVgM+ivI+Bc6XSNuNtvva6s7H/Aujd/X211biF8aUGF1f2kcMV3hosbnZ
-         a2xiol/3yqeRx/H/1qbKnvvahw8zyiWvJGEi8KRE=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Woodhouse <dwmw@amazon.co.uk>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.14 125/125] KVM: x86: Take srcu lock in post_kvm_run_save()
-Date:   Mon,  1 Nov 2021 10:18:18 +0100
-Message-Id: <20211101082556.682702250@linuxfoundation.org>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082533.618411490@linuxfoundation.org>
-References: <20211101082533.618411490@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S231803AbhKAJVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:21:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42916 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231420AbhKAJVE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:21:04 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B34C8C061714;
+        Mon,  1 Nov 2021 02:18:31 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id bi29so15879341qkb.5;
+        Mon, 01 Nov 2021 02:18:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Zp2Tl/CjuwQMl4Hw6vIct+XQzOdHpUX1ecIrs5lSgyA=;
+        b=mJh9H/O8ofpSvEbcqwpthDWpBErOHclwMbcXANgaPCRUXuM3Pq5U/LPsX2ImMnzZhe
+         JYirP5lAl62fFKD3OQ/MH1JpF/SwH4aCPAKM2loCY7oKq+aCzhOJn91dWPo2ICIGXLqh
+         x0WO6ULFBB6FLCVcDtK9/lxLkBpFaAH8o8AQScXjMW1PYNKXG+d/dVfa2QpllLdPyTmi
+         VmPsfzRkvCe1BN8nl+RSVyVkeVEEXubxlQaE3VOhNxoyx55rYYx7/JDPR9W9CJm8mTr1
+         givT5JGRqavleI0HG6VDD2KwcoximLp61dt2dDs1ARVwq0TDU9jvdZ4SJnp07UwJImKq
+         J9jQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Zp2Tl/CjuwQMl4Hw6vIct+XQzOdHpUX1ecIrs5lSgyA=;
+        b=YBfA+RuMxRW+nRGEQjrLwAdlIRSkirbRmFuukoS5MOHWYOOPJYPbP+v6v5Jnmj3d0J
+         kXJ7z0jTb1qDrYI4dq//fSrWqIJ8gjYC3WdcT63bA6R/WZvCfn5Ib3/NqiogpCBqoyFW
+         Cww6buVm/EXv2I1RXLttmD5i6CMzhWBv4te1Y7pNQP2D4jRKMC/UfeuArp1aW89R8wFy
+         z9eNhr8c0x1jFlwbB31RTNqgM37AwFD1ObP67kKxDPK94nU3P5JA2d5t3tqq7AUkq2ql
+         LW8YQK++Sh3/853AYEezXbiQiLTmlZXXH/8oQVwRdgLwnuK5EyHBYz3BysmDwlG3+0/Q
+         FExQ==
+X-Gm-Message-State: AOAM530zq4Kk1LPZ6GZXvqz2pe7rY921rrdMKcRpL3n1ARdZ8k4u7UNz
+        F38OZRCRt+wjzXDS5I2ZCWw=
+X-Google-Smtp-Source: ABdhPJzEJFOA4NCjhDPwB4K6TQXPQtaic/9JzDn6Q09j0DkaBMQ+/vl8g1jyEG9krZf2CeIT+5eCdA==
+X-Received: by 2002:a05:620a:17a3:: with SMTP id ay35mr9929121qkb.476.1635758310981;
+        Mon, 01 Nov 2021 02:18:30 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id c3sm10390575qkp.47.2021.11.01.02.18.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Nov 2021 02:18:30 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: zhang.mingyu@zte.com.cn
+To:     jejb@linux.ibm.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Zhang Mingyu <zhang.mingyu@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] scsi:qlogicpti:Remove unneeded semicolon
+Date:   Mon,  1 Nov 2021 09:18:19 +0000
+Message-Id: <20211101091819.37517-1-zhang.mingyu@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Woodhouse <dwmw@amazon.co.uk>
+From: Zhang Mingyu <zhang.mingyu@zte.com.cn>
 
-commit f3d1436d4bf8ced1c9a62a045d193a65567e1fcc upstream.
+Eliminate the following coccinelle check warning:
+drivers/scsi/qlogicpti.c:1152:3-4
 
-The Xen interrupt injection for event channels relies on accessing the
-guest's vcpu_info structure in __kvm_xen_has_interrupt(), through a
-gfn_to_hva_cache.
-
-This requires the srcu lock to be held, which is mostly the case except
-for this code path:
-
-[   11.822877] WARNING: suspicious RCU usage
-[   11.822965] -----------------------------
-[   11.823013] include/linux/kvm_host.h:664 suspicious rcu_dereference_check() usage!
-[   11.823131]
-[   11.823131] other info that might help us debug this:
-[   11.823131]
-[   11.823196]
-[   11.823196] rcu_scheduler_active = 2, debug_locks = 1
-[   11.823253] 1 lock held by dom:0/90:
-[   11.823292]  #0: ffff998956ec8118 (&vcpu->mutex){+.+.}, at: kvm_vcpu_ioctl+0x85/0x680
-[   11.823379]
-[   11.823379] stack backtrace:
-[   11.823428] CPU: 2 PID: 90 Comm: dom:0 Kdump: loaded Not tainted 5.4.34+ #5
-[   11.823496] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.1-0-ga5cab58e9a3f-prebuilt.qemu.org 04/01/2014
-[   11.823612] Call Trace:
-[   11.823645]  dump_stack+0x7a/0xa5
-[   11.823681]  lockdep_rcu_suspicious+0xc5/0x100
-[   11.823726]  __kvm_xen_has_interrupt+0x179/0x190
-[   11.823773]  kvm_cpu_has_extint+0x6d/0x90
-[   11.823813]  kvm_cpu_accept_dm_intr+0xd/0x40
-[   11.823853]  kvm_vcpu_ready_for_interrupt_injection+0x20/0x30
-              < post_kvm_run_save() inlined here >
-[   11.823906]  kvm_arch_vcpu_ioctl_run+0x135/0x6a0
-[   11.823947]  kvm_vcpu_ioctl+0x263/0x680
-
-Fixes: 40da8ccd724f ("KVM: x86/xen: Add event channel interrupt vector upcall")
-Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
-Cc: stable@vger.kernel.org
-Message-Id: <606aaaf29fca3850a63aa4499826104e77a72346.camel@infradead.org>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Zhang Mingyu <zhang.mingyu@zte.com.cn>
 ---
- arch/x86/kvm/x86.c |    8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/scsi/qlogicpti.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -8799,9 +8799,17 @@ static void post_kvm_run_save(struct kvm
+diff --git a/drivers/scsi/qlogicpti.c b/drivers/scsi/qlogicpti.c
+index 57f2f4135a06..59c82d740139 100644
+--- a/drivers/scsi/qlogicpti.c
++++ b/drivers/scsi/qlogicpti.c
+@@ -1149,7 +1149,7 @@ static struct scsi_cmnd *qlogicpti_intr_handler(struct qlogicpti *qpti)
+ 		case COMMAND_ERROR:
+ 		case COMMAND_PARAM_ERROR:
+ 			break;
+-		};
++		}
+ 		sbus_writew(0, qpti->qregs + SBUS_SEMAPHORE);
+ 	}
  
- 	kvm_run->cr8 = kvm_get_cr8(vcpu);
- 	kvm_run->apic_base = kvm_get_apic_base(vcpu);
-+
-+	/*
-+	 * The call to kvm_ready_for_interrupt_injection() may end up in
-+	 * kvm_xen_has_interrupt() which may require the srcu lock to be
-+	 * held, to protect against changes in the vcpu_info address.
-+	 */
-+	vcpu->srcu_idx = srcu_read_lock(&vcpu->kvm->srcu);
- 	kvm_run->ready_for_interrupt_injection =
- 		pic_in_kernel(vcpu->kvm) ||
- 		kvm_vcpu_ready_for_interrupt_injection(vcpu);
-+	srcu_read_unlock(&vcpu->kvm->srcu, vcpu->srcu_idx);
- 
- 	if (is_smm(vcpu))
- 		kvm_run->flags |= KVM_RUN_X86_SMM;
-
+-- 
+2.25.1
 
