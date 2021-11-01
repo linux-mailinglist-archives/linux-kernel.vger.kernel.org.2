@@ -2,83 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB589441ADE
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 12:46:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53913441AE3
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 12:51:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232258AbhKALtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 07:49:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231485AbhKALtH (ORCPT
+        id S231873AbhKALxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 07:53:33 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:44130 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231485AbhKALxc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 07:49:07 -0400
-Received: from metanate.com (unknown [IPv6:2001:8b0:1628:5005::111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E39ADC061714
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 04:46:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=metanate.com; s=stronger; h=Content-Transfer-Encoding:Message-Id:Date:
-        Subject:Cc:To:From:Content-Type:Reply-To:Content-ID:Content-Description:
-        In-Reply-To:References; bh=kuLy/8jiUbD+nZ5OSmtZpAkZEkowU/+2O9rn5AK/AIQ=; b=Pv
-        wwrJWqEA66dBac0YPxQHvqCPR5NMWbuE+zWGv94t2awG4N7lfHMyQxxYYjxRg8mIX9U0tzZ7kfPz8
-        qNfKf/nzg77GRRPgtMQO8LfvEVazaqSGYzbEDSi9JliOZ5CLFZyGyq/bq1jpavOKOGrLqlNX2mW9+
-        fPSuHzQshH97AcuwUVBtIFgboXsaHNM5AVcyIXQ7bO6frNlT0Kva5tfJNFAVvIZMv2cTr2LBycwYt
-        HQ3qnkzaW5ECx2w7+ueUKnRL6ax0GIWiE5FWOnd2tQ+yJ7VXD9MZF/3cbi7OIfdPEje3X09sFwxY1
-        QbN57r3v1rfNZ4vn15+hOb2O94Rm5/RA==;
-Received: from [81.174.171.191] (helo=donbot.metanate.com)
-        by email.metanate.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <john@metanate.com>)
-        id 1mhVlk-0007Ay-01; Mon, 01 Nov 2021 11:46:28 +0000
-From:   John Keeping <john@metanate.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     John Keeping <john@metanate.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Sandy Huang <hjc@rock-chips.com>,
-        =?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/rockchip: pass 0 to drm_fbdev_generic_setup()
-Date:   Mon,  1 Nov 2021 11:46:22 +0000
-Message-Id: <20211101114622.813536-1-john@metanate.com>
-X-Mailer: git-send-email 2.33.1
+        Mon, 1 Nov 2021 07:53:32 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 952A91FD3B;
+        Mon,  1 Nov 2021 11:50:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1635767458; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fI/7zBLNASK1SbusA4CGgEhNkrv5qrtkIuO6C83IXWQ=;
+        b=kyZdwYqusc2DtXNAALClR+GBhMS1A7IGBqZ1NK6Q7/3qt02Dqqi3rNs2FMc/3TOGDi2u44
+        ayMhygt4C09SRSwNDSHZRM7EtAxFzBza9Y2/DMXIte7lU62V8jUP55L4zlzY8qFLvhptq9
+        J8ocnKjhtLcwWhImjGHkko3aJpduxto=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1635767458;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fI/7zBLNASK1SbusA4CGgEhNkrv5qrtkIuO6C83IXWQ=;
+        b=OKWYy5mY6KFxyPtuRxTQi9YwxcrYBiJHFITQ87baJT64TLJ8LLaxqekX1xtq6JMLxRNh/r
+        rLTnaxPpdgpNLDBA==
+Received: from quack2.suse.cz (unknown [10.163.28.18])
+        by relay2.suse.de (Postfix) with ESMTP id 84F63A3B81;
+        Mon,  1 Nov 2021 11:50:58 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 5000D1E0922; Mon,  1 Nov 2021 12:50:58 +0100 (CET)
+Date:   Mon, 1 Nov 2021 12:50:58 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Jan Kara <jack@suse.cz>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the ext3 tree
+Message-ID: <20211101115058.GC21679@quack2.suse.cz>
+References: <20211028211053.0c504d48@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated: YES
+Content-Type: multipart/mixed; boundary="zhXaljGHf11kAtnf"
+Content-Disposition: inline
+In-Reply-To: <20211028211053.0c504d48@canb.auug.org.au>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow drm_fbdev_generic_setup() to pick the default bpp value for the
-framebuffer.
 
-This has no functional impact because the default is 32, given that
-mode_config.preferred_depth is not set for Rockchip.
+--zhXaljGHf11kAtnf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Suggested-by: Thomas Zimmermann <tzimmermann@suse.de>
-Signed-off-by: John Keeping <john@metanate.com>
----
-This needs [1] to be applied first.
+On Thu 28-10-21 21:10:53, Stephen Rothwell wrote:
+> Hi all,
+> 
+> After merging the ext3 tree, today's linux-next build (powerpc
+> allyesconfig) produced this warning:
+> 
+> samples/fanotify/fs-monitor.c: In function 'handle_notifications':
+> samples/fanotify/fs-monitor.c:68:36: warning: format '%llx' expects argument of type 'long long unsigned int', but argument 2 has type '__u64' {aka 'long unsigned int'} [-Wformat=]
+>    68 |    printf("unexpected FAN MARK: %llx\n", event->mask);
+>       |                                 ~~~^     ~~~~~~~~~~~
+>       |                                    |          |
+>       |                                    |          __u64 {aka long unsigned int}
+>       |                                    long long unsigned int
+>       |                                 %lx
+> 
+> Introduced by commit
+> 
+>   5451093081db ("samples: Add fs error monitoring example")
 
-[1] https://lore.kernel.org/all/20211029115014.264084-1-john@metanate.com
+Thanks for report Stephen. I've added attached patch to my tree to fix it
+up.
 
- drivers/gpu/drm/rockchip/rockchip_drm_drv.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_drv.c b/drivers/gpu/drm/rockchip/rockchip_drm_drv.c
-index 1481181445fd..e37e74998fa9 100644
---- a/drivers/gpu/drm/rockchip/rockchip_drm_drv.c
-+++ b/drivers/gpu/drm/rockchip/rockchip_drm_drv.c
-@@ -165,7 +165,7 @@ static int rockchip_drm_bind(struct device *dev)
- 	if (ret)
- 		goto err_kms_helper_poll_fini;
- 
--	drm_fbdev_generic_setup(drm_dev, 32);
-+	drm_fbdev_generic_setup(drm_dev, 0);
- 
- 	return 0;
- err_kms_helper_poll_fini:
+									Honza
 -- 
-2.33.1
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
+--zhXaljGHf11kAtnf
+Content-Type: text/x-patch; charset=us-ascii
+Content-Disposition: attachment; filename="0001-samples-Fix-warning-in-fsnotify-sample.patch"
+
+From b7eccf75c28e5469bb4685a03310dbb66ee323f9 Mon Sep 17 00:00:00 2001
+From: Jan Kara <jack@suse.cz>
+Date: Mon, 1 Nov 2021 12:47:32 +0100
+Subject: [PATCH] samples: Fix warning in fsnotify sample
+
+The fsnotify sample code generates the following warning on powerpc:
+
+samples/fanotify/fs-monitor.c: In function 'handle_notifications':
+samples/fanotify/fs-monitor.c:68:36: warning: format '%llx' expects argument of type 'long long unsigned int', but argument 2 has type '__u64' {aka 'long unsigned int'} [-Wformat=]
+   68 |    printf("unexpected FAN MARK: %llx\n", event->mask);
+      |                                 ~~~^     ~~~~~~~~~~~
+      |                                    |          |
+      |                                    |          __u64 {aka long unsigned int}
+      |                                    long long unsigned int
+      |                                 %lx
+
+Fix the problem by explicitely typing the argument to proper type.
+
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Jan Kara <jack@suse.cz>
+---
+ samples/fanotify/fs-monitor.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/samples/fanotify/fs-monitor.c b/samples/fanotify/fs-monitor.c
+index a0e44cd31e6f..2e08a1807db7 100644
+--- a/samples/fanotify/fs-monitor.c
++++ b/samples/fanotify/fs-monitor.c
+@@ -65,7 +65,8 @@ static void handle_notifications(char *buffer, int len)
+ 	for (; FAN_EVENT_OK(event, len); event = FAN_EVENT_NEXT(event, len)) {
+ 
+ 		if (event->mask != FAN_FS_ERROR) {
+-			printf("unexpected FAN MARK: %llx\n", event->mask);
++			printf("unexpected FAN MARK: %llx\n",
++							(unsigned long long)event->mask);
+ 			goto next_event;
+ 		}
+ 
+-- 
+2.26.2
+
+
+--zhXaljGHf11kAtnf--
