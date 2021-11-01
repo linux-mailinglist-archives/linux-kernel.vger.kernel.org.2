@@ -2,79 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5E4E441D77
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 16:36:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFB5D441D78
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 16:37:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232587AbhKAPjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 11:39:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56200 "EHLO mail.kernel.org"
+        id S232272AbhKAPjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 11:39:33 -0400
+Received: from foss.arm.com ([217.140.110.172]:42254 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230261AbhKAPjN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 11:39:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A464D60F56;
-        Mon,  1 Nov 2021 15:36:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635780999;
-        bh=KD8dXGIgMAq6degzFf4Q3Y1ZSbzbId9yWYU7Ix02i+w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KVA1LU/HARUi6XzLplgiP2qCqmN+fW1p/SNSd9VeK9rwnRL7ddfahy+ZQzacPBgsd
-         51a7NAiYnBz1twGsfUwpgCp+TfzzGxo2+J6w/J8Vsb7Yk3p3ijWYiatV291LWC9Ycv
-         gO0zej7hgmiZ4e38n/tHsPSKOk9QclGluk3qjkQqqfgnxfDaBGs13InZgmPMbv4f2F
-         jq2VQNox9lAKbNO9lxcUwwk0/4LdG/ZHUrZUyGRNuub3IskfgCOT+kPkikx8GPYH+9
-         QhisQe3dxa+9JKdlZ3MqsICG/Wkf86SpoSCDJU4HGfi3Eyh6QVHGdGhtQAyQz3pJJh
-         fgq0GJlxbdp4g==
-Date:   Mon, 1 Nov 2021 15:36:34 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Richard Zhu <hongxing.zhu@nxp.com>
-Cc:     l.stach@pengutronix.de, bhelgaas@google.com,
-        lorenzo.pieralisi@arm.com, jingoohan1@gmail.com,
-        linux-pci@vger.kernel.org, linux-imx@nxp.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: Re: [PATCH v4 5/6] PCI: imx6: Fix the regulator dump when link never
- came up
-Message-ID: <YYAJglJlR6bVbQ/L@sirena.org.uk>
-References: <1635747478-25562-1-git-send-email-hongxing.zhu@nxp.com>
- <1635747478-25562-6-git-send-email-hongxing.zhu@nxp.com>
+        id S229897AbhKAPjc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 11:39:32 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4CDE013A1;
+        Mon,  1 Nov 2021 08:36:57 -0700 (PDT)
+Received: from [10.1.33.137] (e127744.cambridge.arm.com [10.1.33.137])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 99B6C3F5A1;
+        Mon,  1 Nov 2021 08:36:54 -0700 (PDT)
+Subject: Re: [RFC] perf arm-spe: Track task context switch for cpu-mode events
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Namhyung Kim <namhyung@kernel.org>,
+        James Clark <james.clark@arm.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+References: <CAM9d7cghXgUbAqUUJjyKAea+9=jxei7RDScgV5Fd_i9bXyXkKA@mail.gmail.com>
+ <be937a2e-311b-2a8b-1094-39c203c6d9f3@arm.com>
+ <CAM9d7cho2hN+NDWd9-P-AQAf3D8WfPgCpEDe7cD6hk5FoA_c8Q@mail.gmail.com>
+ <87dad53f-a9a5-cd36-7348-ee10f4edd8fb@arm.com>
+ <20211011142940.GB37383@leoy-ThinkPad-X240s>
+ <8a1eafe3-d19e-40d6-f659-de0e9daa5877@arm.com>
+ <eae1a617-2624-dc1f-1ddb-ba9f5600819d@arm.com>
+ <20211018132328.GG130233@leoy-ThinkPad-X240s>
+ <cd354485-5267-0e07-eb18-ddd0d002ecc3@arm.com>
+ <354d76da-5402-5c24-516f-c1f7e58590fc@arm.com>
+ <20211101151101.GA375622@leoy-ThinkPad-X240s>
+From:   German Gomez <german.gomez@arm.com>
+Message-ID: <70967300-4854-30d5-7ab4-5e2601052036@arm.com>
+Date:   Mon, 1 Nov 2021 15:36:52 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="UhufA6iKSde21dpx"
-Content-Disposition: inline
-In-Reply-To: <1635747478-25562-6-git-send-email-hongxing.zhu@nxp.com>
-X-Cookie: Don't Worry, Be Happy.
+In-Reply-To: <20211101151101.GA375622@leoy-ThinkPad-X240s>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Leo,
 
---UhufA6iKSde21dpx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On 01/11/2021 15:11, Leo Yan wrote:
+> Hi German,
+>
+> On Fri, Oct 29, 2021 at 11:51:16AM +0100, German Gomez wrote:
+> [...]
+> Have one concern: if cannot find the context packet, will the decoder
+> drop the SPE packets until it find the first context packet?  If this
+> is the case, I am concern the decoder will run out for all packets
+> and doesn't generate any samples if the SPE trace data doesn't contain
+> any context packet.
 
-On Mon, Nov 01, 2021 at 02:17:57PM +0800, Richard Zhu wrote:
+Not really. It will only peek at the first decoded packet without
+dropping it. I couldn't think of a corner case where the decoder might
+miss a context packet for the first records (I also haven't seen any -1
+values so far).
 
-> When PCIe PHY link never came up and vpcie regulator is present, there
-> would be following dump when try to put the regulator.
-> Add a new host_exit() callback for i.MX PCIe driver to disable this
-> regulator and fix this dump when link never came up.
+>> ï¿½ï¿½ï¿½ if (!spe->use_ctx_pkt_for_pid &&
+>> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (event->header.type == PERF_RECORD_SWITCH_CPU_WIDE ||
+>> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ event->header.type == PERF_RECORD_SWITCH))
+>> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ err = arm_spe_context_switch(spe, event, sample);
+>>
+>> Then we could apply patch [1] which wasn't fully merged in the end,
+>> including similar `if (spe->use_ctx_pkt_for_pid)` to collect the pid/tid
+>> from the context packets.
+>>
+>> What do you think?
+> Except the above concern, the solution looks good to me.
 
-This looks like a good improvement, though it still looks like there are
-issues given the checks for the regulator being NULL.  This might be
-better fixed as a separate patch though.
+I realized I cannot use the heap for it will not work in timeless
+decoding. We can still use the queues though. By the way, is this return
+statement in the arm_spe__setup_queue() function misplaced?
 
---UhufA6iKSde21dpx
-Content-Type: application/pgp-signature; name="signature.asc"
+    if (spe->timeless_decoding)
+            return 0;
 
------BEGIN PGP SIGNATURE-----
+Judging by the long comment in the arm_spe_run_decoder() function, it
+seems like it should be placed somewhere below the call to "ret =
+arm_spe_decode(...)", otherwise arm_spe_run_decoder() will begin with an
+uninitialized record?
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGACYEACgkQJNaLcl1U
-h9B7NAf9GgzzucQ+0irq/DERGpVAY0vuLGY5/KSlf63hKoxBO6EtbGqhcDRlV4z5
-HIDjTO6iiPfo0dUbRBjpwbmTN2Y9i2k/VnW8Lm1tfgub5/139tYPQv6Aw0FKS+Ql
-KPOGD+OOOvrdQ9ZLhJ0dd7sIqvEJGef9CP9B6RHdh+K3LZWNBN8JlUWlQHAgQQAz
-nk8RLGTHHpsEY4C8tqFGB+ugf6aQJCQltHJD6PO+eX4JByiDo9g9qUlDtvTn+Y5t
-bFzFVisrPBxbZMS75nxQNDNNW4LkDulyiIC5AauzL69d/c1HawWddlVtDGrlVNEU
-qyDWkDcEgPv5TcXnQ6smRfpARv7R7w==
-=lWlW
------END PGP SIGNATURE-----
+Thanks,
+German
 
---UhufA6iKSde21dpx--
+>
+> Thanks,
+> Leo
