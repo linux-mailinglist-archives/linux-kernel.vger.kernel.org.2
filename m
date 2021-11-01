@@ -2,169 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 001F3441B5C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 13:51:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC655441B5E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 13:53:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232571AbhKAMxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 08:53:54 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:56251 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232405AbhKAMxx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 08:53:53 -0400
-Received: by mail-il1-f198.google.com with SMTP id d14-20020a056e02214e00b0026cd53452f7so1071572ilv.22
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 05:51:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=dBJ5vpuI59e0eOOVakkB2wOHLyYhGbssOGUlgrE1X/4=;
-        b=fbo3GkVGOcS5tYEjC9UiSvOKqYHDzBDNqo/diVkj7uuPle30k10jdrr+XJA/Qt9gge
-         mYU3gQwekPCgD3APfFQKoPpjW+y77ivgSZE+E9AqOsNoQbKEXlaRoHBwE0jVMehVaTyI
-         UbDx1zVvRPzM408WePMwmQM53LjeSbev5E+0hR1MDXBj4X9BDiI44z/2riAG5em1AR1M
-         yPq41gOXpkbpHD7zV5+y9+fWDshbjGInfEdUbESzJ7VpIOBbqt9qlZkekXn1xyLU81hG
-         yjmNwypuPaon5WTBIgp4jhqSgtTJQ4KSpCSkBgCch1vMAIyK5LVA3+2xEdoWu2u8V+ZJ
-         PwPQ==
-X-Gm-Message-State: AOAM533eXAAJBlI+DH0YmMi09mbakwDzBOcLlIYJdv1eAvEv5po20LwK
-        pBTzy6QsNYFVh/7RFx9u6VeGj1RHYE3XXTDwEjYg4mWuqXNi
-X-Google-Smtp-Source: ABdhPJz2YzbP9SqEU1b77ZAvs4wyT43tJHGgCUpdmjppg1zXhxbgtQZUbcr4sryblfjgDmF80+yiTtvuyrsg8eSIRZSH5jsXr0DV
+        id S232405AbhKAMzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 08:55:35 -0400
+Received: from mail-bo1ind01olkn0182.outbound.protection.outlook.com ([104.47.101.182]:43542
+        "EHLO IND01-BO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231892AbhKAMzd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 08:55:33 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Qn9TP/tgg8NZq0Oc38amhk4v7Byb30a9bVb72/mFRJ5VZgUCCqFaLTPB+iKdXVvHJyT2dxHzFFPl78I9RFgqjWK9MQpUjlBZdZ9qO7QrUcke2Pwl8BklRPP2xuKRayg4y9mGexJYEpiSH+76LwbS0sX0hwLS6fZhEZGTBuuugZb9A22pNN9YbnI5MrZaqoifreRgeBmJbR2yJ93aQ0OL/oi0XM4u6mDTE0uAB4stpUnC1so0igKMYXN/XI/MUaNjcx2y/+gsyCmguZho2zgx2EWFSemOSk4KZE+3aiTl7QKeTE1HzUUvkIXcJmmtSMWcDSZog7UKXxrqgYEc6OIjJg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=tGW/sHw0kSGjA/DGql+Vl8q/APgC2eLnFxdG1yQH4Ew=;
+ b=c1LJW/KV+t/fCrgREz70+wexN8EVrM2nUTh7PRIiW6GhaE17EM0pfphGL3ooRNJnzIbXIEyQgPELPxGdeabFT9qZ7p91bqP/pyO9BwBMPyHk06IiGChU2X/jFiLEyiGSQvxEQv7qp2i8L0Lt05LKOVVZgVpTyLtjDsznStpNGtF9RIP/fiUz2ImTab53YQxhD6EWIICjwSpitJMqynf3AgK44B4WHu+4q0wc5NvPrXANiJtbhczfZJ1M8h3l2ngYbD0hYYlcScPRRnUTSia+XUiIM6w2eJmNAJtxqV7iWNtqNTbRnMsccilC7cwae1KfTaHa+buc7gYWpJ6y/Fv3hA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=live.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tGW/sHw0kSGjA/DGql+Vl8q/APgC2eLnFxdG1yQH4Ew=;
+ b=XNAWVoMNHnt606abzWM5N/BIE7UXyqe3GbD4vLjIfrX+G2AnsmMNWv9mn9eDvV+aJiWejvcyLZKzqRpiVFP9KPzy5aJPi0qjC43IMZywz8DYtBo6SbbHLaJVEZnk5SwX5qRaff7fLKGFj2TcUPbpyyYti4GNwInrf7Yh6SR/t9YFZ8WakA1YjsKtPt8oRuGLpWwH5+XF21JbhjyQnhj8ClcMcmEqLSnux0gU/4OUYhjjUU+I4icCeXzzvZyfVHdwjHnQpTt+H29Rwv63uTLD2ZFcSPt2p/Bb5TdqyOH7q/0NeuYQaqvIcq4oEHmtb1OG3giM0yF1Mk/bu/enagCvWQ==
+Received: from PNZPR01MB4415.INDPRD01.PROD.OUTLOOK.COM (2603:1096:c01:1b::13)
+ by PN3PR01MB5965.INDPRD01.PROD.OUTLOOK.COM (2603:1096:c01:7d::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.15; Mon, 1 Nov
+ 2021 12:52:56 +0000
+Received: from PNZPR01MB4415.INDPRD01.PROD.OUTLOOK.COM
+ ([fe80::cdc4:def5:dc73:28f7]) by PNZPR01MB4415.INDPRD01.PROD.OUTLOOK.COM
+ ([fe80::cdc4:def5:dc73:28f7%6]) with mapi id 15.20.4649.019; Mon, 1 Nov 2021
+ 12:52:56 +0000
+From:   Aditya Garg <gargaditya08@live.com>
+To:     "andriy.shevchenko@linux.intel.com" 
+        <andriy.shevchenko@linux.intel.com>,
+        "mika.westerberg@linux.intel.com" <mika.westerberg@linux.intel.com>,
+        Lee Jones <lee.jones@linaro.org>
+CC:     Orlando Chamberlain <redecorating@protonmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [REGRESSION] Kernel 5.15 fails to boot on Apple Macs with T2
+ chip.
+Thread-Topic: [REGRESSION] Kernel 5.15 fails to boot on Apple Macs with T2
+ chip.
+Thread-Index: AQHXzx4xdN6jyZo2R0iZHJfrQ78gcKvuoIkA
+Date:   Mon, 1 Nov 2021 12:52:56 +0000
+Message-ID: <7A40981F-AA9A-462E-81D2-CE1FFA5174CA@live.com>
+References: <F94B8FCA-E736-4E87-BFAC-D668A481B5C4@live.com>
+In-Reply-To: <F94B8FCA-E736-4E87-BFAC-D668A481B5C4@live.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-tmn:  [jl9xOAbexM5yLgnASgxfITr51PFcmhCdpDCgx/hXedumKJsIoBeAjfXZGDzF69l0]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 66bbc168-ab7a-4b93-470b-08d99d3686d3
+x-ms-traffictypediagnostic: PN3PR01MB5965:
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: hA1UtJuU6q7Lzzd2YG9DrWRTv2IsuTpcKZk/yrjc9U5akKWS/yqE7SPAMXM3y7mGCO2dTB8HuY0irE1uzJ3VimGPlFG6YZiqfW+fhtHrA2rrKoek9Sxo5iPIKnrpKdiB3f2aBNnO/Al5my0cKd3Hf4wB6KZxXY2kNcYLSO4L/5FKswCB1qAExNldisQrrGfQBwZctkzH97U99fxtBYYlgnN5EcssGw0tGnmBp2oQ5AroA9iyLApnbyBDuaI94nZ37813Xq6Of9PvbuP5OFU+S+hh+zGZBb35wpCaUwdsaDn+yJBRG7VBi2+th7DkDRc4Fjy6dzEoOch31bcdWEqxGUnWLBwQcZWPR6T5MO7AOi0LyQlYqLrMPbYvNpdOUGVGwhdv8TOF572KVeXkM59q5AN5pbASNYjV2r8XMx+C9Rn1wyLNaVZw5Sy/wFuJr0+nUuvXsjhHi7WeUJTM5KU73O2PPvZmjsgSKnYhvMVo4zmXdIx3vxhu8mYoXXZZxDWYYXDQG6tuAFfKeZMNcqYI8HEyAVd4rNNhtWaId7GW9Ps=
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: 8JewvF/GmyTSrPSPRzJTiqh5QyLieAG9tzBUWkV5hwT4u36IYf+1jDlzyaCcVmfLJm5+eaYlXQjdEGSyU7aaq3jfmyw2IVFPWVIKJuwmcAY4oJ52LcIJDbhBEt2eX6duIo88Ia7PQ3/R6RspMTmAI0sOHv4rhazjyI/ARL/HNRSOvmQq23vneVPOlSYmupA9iK+wLUxuh0E0TE5aSGSHbm/FiY98/kQQeYbDg4kB3vmHPJNOs8D/+qOhwzJEebard5oo/nLk4toXNUyK1BaeTzq5J81N0dq+ySmoYAeIKJ6+wEdm6uj+Ew/ptBtP52emz5bENvZtX5aUqmkGvekEsIdv3WN7pWud3bh/HGismR8u2lNoKOOcqeh59UnCpPuhGDrlr/ibRrCJlJNxl3F/zPJtUlVjL4gN7JZwr66bNWD7+vgu0fC2dl4meCMrkR5ojDco1Df9/xNltJ2p0kLhn4/df+/nRu5y9+NXYC7WTy0WSK2uxpL9GvZ8iAfHvqxcGNis3AHuPNkLwt81IYMVlzWOAPoBszLd4Bo59R3yBkdt5/z0E/ps/ZLXXQJ+Z4NnvDdrtndIwke/HkwCphjR2238rOKSUciaSMXXW73HekUCEM6CC/+AwIO75qk2wQuEk9S9YYud9DpbqODyw4VEr3pjcRrCGXk3giRunWOlvEFrCtM8hEck6wEfMejZDqsJE+2j/rYU0vsX1p9VhJYY345srLVLcGIYfHH2wGRQX8q2xRbK64GJXRc1gUFf6PUaxkL6AELubwTHW0WuoaaLVQ==
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <911325C4AA980B41A6EC11FD5800FAD6@INDPRD01.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:280a:: with SMTP id d10mr20112678ioe.216.1635771080032;
- Mon, 01 Nov 2021 05:51:20 -0700 (PDT)
-Date:   Mon, 01 Nov 2021 05:51:20 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000028c58805cfb9a28f@google.com>
-Subject: [syzbot] BUG: unable to handle kernel paging request in __blk_mq_alloc_requests
-From:   syzbot <syzbot+cd20829ac44b92bf6ed0@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: sct-15-20-3174-20-msonline-outlook-a1a1a.templateTenant
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PNZPR01MB4415.INDPRD01.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: 66bbc168-ab7a-4b93-470b-08d99d3686d3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Nov 2021 12:52:56.4736
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PN3PR01MB5965
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    503f375baa99 Add linux-next specific files for 20211028
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=14688302b00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=aa50dda6b6975803
-dashboard link: https://syzkaller.appspot.com/bug?extid=cd20829ac44b92bf6ed0
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1385446ab00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10fc8c6ab00000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+cd20829ac44b92bf6ed0@syzkaller.appspotmail.com
-
-loop0: detected capacity change from 0 to 1
-BUG: unable to handle page fault for address: ffffed101e501750
-#PF: supervisor read access in kernel mode
-#PF: error_code(0x0000) - not-present page
-PGD 23ffee067 P4D 23ffee067 PUD 13fff5067 PMD 0 
-Oops: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 6523 Comm: syz-executor279 Not tainted 5.15.0-rc7-next-20211028-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:__blk_mq_alloc_requests_batch block/blk-mq.c:408 [inline]
-RIP: 0010:__blk_mq_alloc_requests+0x4a7/0xb00 block/blk-mq.c:457
-Code: e8 fd 48 8b 44 24 10 80 38 00 0f 85 a6 04 00 00 48 8b 44 24 08 45 89 ed 48 8b b0 88 00 00 00 4a 8d 1c ee 48 89 d8 48 c1 e8 03 <42> 80 3c 30 00 0f 85 6c 04 00 00 44 8b ac 24 a0 00 00 00 48 8b 03
-RSP: 0018:ffffc900027fea90 EFLAGS: 00010a06
-RAX: 1ffff1101e501750 RBX: ffff8880f280ba80 RCX: 0000000000000000
-RDX: ffff888017bd1d40 RSI: ffff888019f43000 RDI: 0000000000000003
-RBP: 00000000ffffffff R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff838f31a1 R11: 0000000000000000 R12: 0000000000000000
-R13: 000000001b119150 R14: dffffc0000000000 R15: ffffc900027fec28
-FS:  00005555573e63c0(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffed101e501750 CR3: 0000000021651000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- blk_mq_submit_bio+0xdac/0x1b40 block/blk-mq.c:2526
- __submit_bio+0x794/0x8e0 block/blk-core.c:894
- __submit_bio_noacct_mq block/blk-core.c:972 [inline]
- submit_bio_noacct block/blk-core.c:998 [inline]
- submit_bio_noacct+0x6c9/0x8a0 block/blk-core.c:987
- submit_bio block/blk-core.c:1059 [inline]
- submit_bio+0x1ea/0x430 block/blk-core.c:1017
- mpage_bio_submit fs/mpage.c:66 [inline]
- mpage_readahead+0x589/0x750 fs/mpage.c:393
- read_pages+0x1e4/0xfa0 mm/readahead.c:129
- page_cache_ra_unbounded+0x64b/0x940 mm/readahead.c:238
- do_page_cache_ra mm/readahead.c:268 [inline]
- ondemand_readahead+0x594/0x1090 mm/readahead.c:551
- page_cache_sync_ra+0x1cb/0x200 mm/readahead.c:579
- page_cache_sync_readahead include/linux/pagemap.h:980 [inline]
- filemap_get_pages+0x2b2/0x1be0 mm/filemap.c:2556
- filemap_read+0x315/0xeb0 mm/filemap.c:2642
- generic_file_read_iter+0x3b6/0x5a0 mm/filemap.c:2792
- blkdev_read_iter+0x117/0x200 block/fops.c:583
- call_read_iter include/linux/fs.h:2156 [inline]
- io_iter_do_read fs/io_uring.c:3462 [inline]
- io_read+0x33c/0xff0 fs/io_uring.c:3519
- io_issue_sqe+0x800/0x7010 fs/io_uring.c:6628
- __io_queue_sqe fs/io_uring.c:6978 [inline]
- io_queue_sqe fs/io_uring.c:7020 [inline]
- io_submit_sqe fs/io_uring.c:7223 [inline]
- io_submit_sqes+0x1bca/0x8a20 fs/io_uring.c:7329
- __do_sys_io_uring_enter+0xf6e/0x1f50 fs/io_uring.c:10043
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7f8a945379c9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c4 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffea64277e8 EFLAGS: 00000246 ORIG_RAX: 00000000000001aa
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f8a945379c9
-RDX: 0000000000000000 RSI: 00000000000002ff RDI: 0000000000000003
-RBP: 00007ffea6427800 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
- </TASK>
-Modules linked in:
-CR2: ffffed101e501750
----[ end trace dde64fe0ea4dcb18 ]---
-RIP: 0010:__blk_mq_alloc_requests_batch block/blk-mq.c:408 [inline]
-RIP: 0010:__blk_mq_alloc_requests+0x4a7/0xb00 block/blk-mq.c:457
-Code: e8 fd 48 8b 44 24 10 80 38 00 0f 85 a6 04 00 00 48 8b 44 24 08 45 89 ed 48 8b b0 88 00 00 00 4a 8d 1c ee 48 89 d8 48 c1 e8 03 <42> 80 3c 30 00 0f 85 6c 04 00 00 44 8b ac 24 a0 00 00 00 48 8b 03
-RSP: 0018:ffffc900027fea90 EFLAGS: 00010a06
-RAX: 1ffff1101e501750 RBX: ffff8880f280ba80 RCX: 0000000000000000
-RDX: ffff888017bd1d40 RSI: ffff888019f43000 RDI: 0000000000000003
-RBP: 00000000ffffffff R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff838f31a1 R11: 0000000000000000 R12: 0000000000000000
-R13: 000000001b119150 R14: dffffc0000000000 R15: ffffc900027fec28
-FS:  00005555573e63c0(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffed101e501750 CR3: 0000000021651000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	e8 fd 48 8b 44       	callq  0x448b4902
-   5:	24 10                	and    $0x10,%al
-   7:	80 38 00             	cmpb   $0x0,(%rax)
-   a:	0f 85 a6 04 00 00    	jne    0x4b6
-  10:	48 8b 44 24 08       	mov    0x8(%rsp),%rax
-  15:	45 89 ed             	mov    %r13d,%r13d
-  18:	48 8b b0 88 00 00 00 	mov    0x88(%rax),%rsi
-  1f:	4a 8d 1c ee          	lea    (%rsi,%r13,8),%rbx
-  23:	48 89 d8             	mov    %rbx,%rax
-  26:	48 c1 e8 03          	shr    $0x3,%rax
-* 2a:	42 80 3c 30 00       	cmpb   $0x0,(%rax,%r14,1) <-- trapping instruction
-  2f:	0f 85 6c 04 00 00    	jne    0x4a1
-  35:	44 8b ac 24 a0 00 00 	mov    0xa0(%rsp),%r13d
-  3c:	00
-  3d:	48 8b 03             	mov    (%rbx),%rax
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+SSByZW1lbWJlciBmYWNpbmcgdGhpcyBpc3N1ZSBvbiA1LjE1LXJjMyBhbHNvLiBUaG91Z2ggSSBh
+bSBub3Qgc3VyZSBhYm91dCByYzIgYW5kIHJjMS4NCg0KPiBPbiAwMS1Ob3YtMjAyMSwgYXQgNjox
+NCBQTSwgQWRpdHlhIEdhcmcgPGdhcmdhZGl0eWEwOEBsaXZlLmNvbT4gd3JvdGU6DQo+IA0KPiBE
+dWUgdG8gc29tZSBpc3N1ZSBpbiBpbnRlbC1scHNzLWFjcGksIGtlcm5lbCA1LjE1IGZhaWxzIHRv
+IGJvb3Qgb24gQXBwbGUgTWFjcyB3aXRoIFQyIGNoaXAgaW4gNS4xNS4gQXMgYSB0ZW1wb3Jhcnkg
+d29ya2Fyb3VuZCwgIiMgQ09ORklHX01GRF9JTlRFTF9MUFNTX0FDUEkgaXMgbm90IHNldOKAnSBo
+YXMgYmVlbiBzZXQgaW4gdGhlIGtlcm5lbCBjb25maWd1cmF0aW9uIHNvIHRoYXQgaXQgZG9lcyBu
+b3QgaW50ZXJmZXJlLiBZb3UgYXJlIHJlcXVlc3RlZCB0byBmaXggdGhpcyBpc3N1ZS4NCg0K
