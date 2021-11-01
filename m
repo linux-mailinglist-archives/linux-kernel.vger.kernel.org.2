@@ -2,157 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93960442156
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 21:05:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4601744214D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 21:04:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231145AbhKAUHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 16:07:21 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:25416 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229962AbhKAUHQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 16:07:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1635797082; x=1667333082;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=WdrwZn4ky8KCT9Yu6bhsOCixKbTKsCZbSgQPCcKL9eg=;
-  b=zOIgKMN4oS5+E2u8AanqHbrE2SABHELr2j0koZzcA62ezIqSEOwhzJa8
-   cRh0NjVIAN40JSC8mdt22qAMSyO9ERm6HXSpk2zfVYNwSx6tBZrBZCeiR
-   S8HYO/Y6uQYuYvY6hwLNUDAXYeur08IrbBdPHOd7Nkb7HjgtS5G6t3e5d
-   E=;
-Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
-  by alexa-out.qualcomm.com with ESMTP; 01 Nov 2021 13:04:42 -0700
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2021 13:04:41 -0700
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Mon, 1 Nov 2021 13:04:41 -0700
-Received: from qian-HP-Z2-SFF-G5-Workstation.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Mon, 1 Nov 2021 13:04:39 -0700
-From:   Qian Cai <quic_qiancai@quicinc.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-CC:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        id S229896AbhKAUGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 16:06:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49060 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230497AbhKAUG0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 16:06:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 370D060D07;
+        Mon,  1 Nov 2021 20:03:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635797032;
+        bh=FNSqWHeSbc+RKp1TCaiPwYrAlW+agdhIaJXCGYyR0V4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=G4qEwKDcMpSS62iuy2+n+i+D8beWX0sMi33NmjcwXmrKWG17LdVT3VC5o38gzmQbb
+         zzE53Wp6mea/zycfsqYjkvSa+DaWsWkhEL+CmEGBkpWS93GWGrIMc8Anzl8S/OHPGA
+         7jVpZeP9/CkRaBa/M4122F/0+74fCphmFX/WPU3elmoSYma9++gX/YYKMBxGpgntHi
+         GO3IxKigGytDtb6vSbXoVMjuPx0tYJmSXOkP4+TFz8MDmA/awz/QJMcgOVh1pC0osc
+         L3a6rtOqJhSN0kp2SMj5sE3dcHz/AqueA2I43gNg6ytRXC8+a9TyITWuB7JpGWB/XY
+         d8zU1hPMcMpxw==
+Date:   Mon, 1 Nov 2021 20:03:47 +0000
+From:   Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Tsuchiya Yuto <kitakar@gmail.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Qian Cai <quic_qiancai@quicinc.com>
-Subject: [RFC PATCH] software node: Skip duplicated software_node sysfs
-Date:   Mon, 1 Nov 2021 16:03:46 -0400
-Message-ID: <20211101200346.16466-1-quic_qiancai@quicinc.com>
-X-Mailer: git-send-email 2.30.2
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Nable <nable.maininbox@googlemail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Fabio Aiuto <fabioaiuto83@gmail.com>,
+        "andrey.i.trufanov" <andrey.i.trufanov@gmail.com>,
+        Patrik Gfeller <patrik.gfeller@gmail.com>
+Subject: Re: [PATCH 04/17] media: atomisp: pci: do not use err var when
+ checking port validity for ISP2400
+Message-ID: <20211101200347.2910cbc7@sal.lan>
+In-Reply-To: <2b81ca7e-fcaa-5449-5662-4eb72e746b02@redhat.com>
+References: <20211017161958.44351-1-kitakar@gmail.com>
+        <20211017161958.44351-5-kitakar@gmail.com>
+        <20211026092637.196447aa@sal.lan>
+        <1a295721fd1f1e512cd54a659a250aef162bfb6f.camel@gmail.com>
+        <20211028123944.66c212c1@sal.lan>
+        <af7cdf9de020171567c2e75b713deb2ed073e4e3.camel@gmail.com>
+        <20211101141058.36ea2c8e@sal.lan>
+        <2b81ca7e-fcaa-5449-5662-4eb72e746b02@redhat.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A recent commit allowed device_create_managed_software_node() to call
-software_node_notify() which could generate duplicated "software_node"
-sysfs files. For example,
+Em Mon, 1 Nov 2021 20:06:52 +0100
+Hans de Goede <hdegoede@redhat.com> escreveu:
 
-"/devices/platform/808622B7:01/xhci-hcd.3.auto/software_node"
+> Hi,
+> 
+> On 11/1/21 15:10, Mauro Carvalho Chehab wrote:
+> 
+> <snip>
+> 
+> >>> Did you test on Baytrail (ISP2400), and with the compile-time option
+> >>> enabled/disabled?    
+> >>
+> >> Sorry, I should have clarified on the cover later. For ISP2400, I did
+> >> compile test only (CONFIG_VIDEO_ATOMISP_ISP2401 enabled/disabled).  
+> > 
+> > Maybe Hans could help us on that. I guess he has an Asus T100 device, 
+> > which is BYT based.
+> > 
+> > Hans, if you're willing to do the tests, you could either use nvt
+> > or v4l2grab to test it.
+> > 
+> > It seems that BYT has an additional issue, though: the ISP seems to
+> > require 12 non-visible lines/columns (in addition to 16 ones required
+> > by CHT?) for it to work.
+> > 
+> > So, you may need to tweak the resolution a bit, as otherwise the
+> > driver will return an -EINVAL.
+> > 
+> > See:
+> > 
+> > 	https://git.linuxtv.org/media_stage.git/commit/?id=dcbc4f570495dbd490975979471687cbe2246f99
+> > 
+> > For the workaround I had to add for CHT to properly report the
+> > visible resolution.  
+> 
+> Testing BYT support definitely is on my radar. Note that BYT
+> also has the additional issue that the atomisp2 on BYT can be
+> enumerated as either a PCI dev (which may work) or an ACPI/platform
+> dev which is unsupported in the original atomisp2 code-drop and
+> seems non trivial (because of pci config space writes) to get to
+> work.
+> 
+> On the T100TA the device is actually enumerated as an ACPI/platform
+> device and the BIOS option to change this is hidden. In the mean
+> time I've gained quite a lot of experience with changing hidden
+> BIOS options though, so I can easily put it in PCI mode for
+> testing. But eventually we also need to tackle ACPI enumeration
+> support...
+> 
+> Anyways I've let me self get distracted (hobby time wise) by
+> looking into PMIC/charger/fuel-gauge issues on the Xiaomi Mi Pad 2.
+> I've made a list of 3 (small-ish) loose ends which I want to
+> tie up there and then I plan to start looking into atomisp2
+> support in my hobby time. ATM my plan is:
+> 
+>    -Test on T101HA to reproduce Mauro's work
 
-Since it was created earlier from another path,
+Yeah, it would be great to have a second test on it. I suspect that it
+should work just fine with USERPTR (with v4l2grab or nvt).
 
-  sysfs_create_link
-  software_node_notify
-  device_add
-  platform_device_add
-  dwc3_host_init
-  dwc3_probe
-  platform_probe
-  really_probe.part.0
-  really_probe
-  __driver_probe_device
-  driver_probe_device
-  __driver_attach
-  bus_for_each_dev
-  driver_attach
-  bus_add_driver
-  driver_register
-  __platform_driver_register
-  dwc3_driver_init at drivers/usb/dwc3/core.c:2072
-  do_one_initcall
+>    -Try to get things to work on the T116
 
-Fixed it by using sysfs_create_link_nowarn() in software_node_notify() to
-avoid those bad messages during booting,
+Didn't test it here either, but won't be able to do in the next
+couple of weeks.
 
-sysfs: cannot create duplicate filename '/devices/platform/808622B7:01/xhci-hcd.3.auto/software_node'
- Call trace:
-  dump_backtrace
-  show_stack
-  dump_stack_lvl
-  dump_stack
-  sysfs_warn_dup
-  sysfs_do_create_link_sd.isra.0
-  sysfs_create_link
-  software_node_notify
-  device_create_managed_software_node
-  iort_named_component_init
-  iort_iommu_configure_id
-  acpi_dma_configure_id
-  platform_dma_configure
-  really_probe.part.0
-  really_probe
-  __driver_probe_device
-  driver_probe_device
-  __driver_attach
-  bus_for_each_dev
-  driver_attach
-  bus_add_driver
-  driver_register
-  __platform_driver_register
-  xhci_plat_init
-  do_one_initcall
-  kernel_init_freeable
-  kernel_init
-  ret_from_fork
+>    -Patch to not load atomisp_foo sensor drivers on !BYT && !CHT
 
-Fixes: 5aeb05b27f81 ("software node: balance refcount for managed software nodes")
-Signed-off-by: Qian Cai <quic_qiancai@quicinc.com>
----
- drivers/base/swnode.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+Not sure if it is worth doing it, as there are a lot more to be
+done before being able to use a generic sensor driver.
 
-diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
-index 4debcea4fb12..0a266c312aa3 100644
---- a/drivers/base/swnode.c
-+++ b/drivers/base/swnode.c
-@@ -1126,17 +1126,15 @@ void software_node_notify(struct device *dev)
- 	if (!swnode)
- 		return;
- 
--	ret = sysfs_create_link(&dev->kobj, &swnode->kobj, "software_node");
--	if (ret)
-+	ret = sysfs_create_link_nowarn(&dev->kobj, &swnode->kobj,
-+				       "software_node");
-+	if (ret && ret != -EEXIST)
- 		return;
- 
--	ret = sysfs_create_link(&swnode->kobj, &dev->kobj, dev_name(dev));
--	if (ret) {
-+	if (!sysfs_create_link(&swnode->kobj, &dev->kobj, dev_name(dev)))
-+		kobject_get(&swnode->kobj);
-+	else if (!ret)
- 		sysfs_remove_link(&dev->kobj, "software_node");
--		return;
--	}
--
--	kobject_get(&swnode->kobj);
- }
- 
- void software_node_notify_remove(struct device *dev)
--- 
-2.30.2
+> And I've just added:
+> 
+>    -Try out BYT support 
 
+Thanks!
+
+> 
+> As 4th item. Eventually I want to look into writing a proper
+> regulator driver for the PMICs
+
+Yeah, a proper regulator driver would be a lot better than the
+PMIC ones.
+
+> and then try to make the atomisp2
+> code work with the non "atomisp_xxx" versions of the sensor drivers.
+
+With a regulator driver, part of the problem will be solved. However, 
+as the ISP driver "eats" 16 lines and 16 columns. It means that the sensor 
+needs to be adjusted for it to provide those extra data. So, the atomisp 
+sensor resolutions are (X + 16) x (Y + 16), e. g. in the case of
+ov2680, it is set to 1616x1216, while the upstream one is 1600x1200.
+
+Not sure if the selection API currently allows changing that to
+satisfy atomisp, or if something else would be needed.
+
+Regards,
+Mauro
