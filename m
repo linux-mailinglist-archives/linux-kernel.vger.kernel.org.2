@@ -2,349 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFE11441EF3
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 18:02:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4318F441EFB
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 18:07:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232764AbhKARE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 13:04:29 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:41498 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232422AbhKAREX (ORCPT
+        id S232305AbhKARKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 13:10:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231303AbhKARKL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 13:04:23 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1A1H1gw6020803;
-        Mon, 1 Nov 2021 12:01:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1635786102;
-        bh=2m8UtgDpuq4u4SgX1ET4vzFLFQ2SyLZSQfW5XQKRKEg=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=Jko/ZnRnlns6yqGdHb+Q28YweAu/YH8dqqllhbcx5uHgRd7CXKq9knnpPVCzzw15u
-         9y5CReiDNe4aH/bgYext1YPKPJlDiaqc8bBk54zjKen8ku6BbjRtYBAxbKVPmygdKe
-         IR8tTBk6mPFxppnBTAR1d5BN6ZBWTS3eL1gxfrwU=
-Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1A1H1geC050512
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 1 Nov 2021 12:01:42 -0500
-Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 1
- Nov 2021 12:01:42 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Mon, 1 Nov 2021 12:01:42 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1A1H1fFU052789;
-        Mon, 1 Nov 2021 12:01:41 -0500
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-To:     "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        <linux-omap@vger.kernel.org>, Tony Lindgren <tony@atomide.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
-Subject: [PATCH net-next v2 3/3] net: ethernet: ti: cpsw_new: enable bc/mc storm prevention support
-Date:   Mon, 1 Nov 2021 19:01:22 +0200
-Message-ID: <20211101170122.19160-4-grygorii.strashko@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211101170122.19160-1-grygorii.strashko@ti.com>
-References: <20211101170122.19160-1-grygorii.strashko@ti.com>
+        Mon, 1 Nov 2021 13:10:11 -0400
+Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A942C061764
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 10:07:38 -0700 (PDT)
+Received: by mail-oo1-xc2b.google.com with SMTP id x135-20020a4a418d000000b002b961605657so5792859ooa.10
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 10:07:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xVH7dLm0NAiqoLAhT9eKibAtQ2bOK8bGBgP1Bfreb6M=;
+        b=Y7LiKl4nLyrRiuKlSgX4TjQcpM/ylW9QAivpFGHp+nQJ7zxIUjCOFhD+kzh5McY4h1
+         +H1aixASX0mry5G6V/Z0qoRU9xckH2ocSJbO1nov8xtJiLSBnuVOvHAcpkpVc0/QuJlc
+         gt/1aRb65eLVQoawG2wD0dwRxsUWxd+lSG6O5CbCBs9rsafy0Sqv5ieJBA7VHeYC3D1f
+         HBbgiInO7WuUKG0rHO/+B1cizGFwUnR4/ITkJm09EfHyBrGWpzEHQ7mwM2X+SUyPAOQu
+         eiL4SeE047ZrL2edy1cf4J3NpIE65OJJtCZZLBIe1E1pejg6te0ixt7CCaPwMQBHyq8+
+         RlJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xVH7dLm0NAiqoLAhT9eKibAtQ2bOK8bGBgP1Bfreb6M=;
+        b=7foF7/dqjc1y5wyL0sKGrlcf2uxReh32Mw431Oi0f+IvRf1KdPdsR8On4A8C8qIUo2
+         b0kD5jCqUIu7vwfDDTVOlOjJtKL09FlWotMQNHbNFMWZDWL6H62Ykk9svApu4UEc+wy8
+         jfHdK34NFi474d0Ej1QDzoOY9oBIEuknGV92jYbLn8uao96znUKoZ0Oc3FLGyzLYhhjh
+         1/bYtKv1A+LS7q2zAgeG28ag7I3qUJ+Y3UtXA8krdVRzVy55Ljx7SMdNk4YQ6Kco4bgw
+         uUUJdF/ZExrredsRCcUkqvQq7NBTuugaqdFAMWO/HnqrczSKJS3tbxN2H9mkZOwxybQF
+         WMQQ==
+X-Gm-Message-State: AOAM533o03TlYHSpAEVjRPCFVaSMigGzQ5xtJVcyfHNJsh+bGbqkkWf1
+        wIUrdy8pqe4fgWsp2Q9XncrtBg==
+X-Google-Smtp-Source: ABdhPJwfISfjV4+0OloX272RAvaTJ2ui4IC0YqQHQJCAITahYdUIwlTQExuPan7NMGj5ayWP5r+ERA==
+X-Received: by 2002:a4a:958b:: with SMTP id o11mr20251516ooi.35.1635786457450;
+        Mon, 01 Nov 2021 10:07:37 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id x65sm4187270oix.43.2021.11.01.10.07.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Nov 2021 10:07:36 -0700 (PDT)
+Date:   Mon, 1 Nov 2021 12:07:34 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com, julien.massot@iot.bzh
+Subject: Re: [PATCH v6 03/10] rpmsg: Move the rpmsg control device from
+ rpmsg_char to rpmsg_ctrl
+Message-ID: <YYAe1tUR+aCZ8cw0@builder.lan>
+References: <20211022125426.2579-1-arnaud.pouliquen@foss.st.com>
+ <20211022125426.2579-4-arnaud.pouliquen@foss.st.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211022125426.2579-4-arnaud.pouliquen@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch enables support for ingress broadcast(BC)/multicast(MC) packets
-rate limiting in TI CPSW switchdev driver (the corresponding ALE support
-was added in previous patch) by implementing HW offload for simple
-tc-flower with policer action with matches on dst_mac:
- - ff:ff:ff:ff:ff:ff has to be used for BC packets rate limiting (exact
-   match)
- - 01:00:00:00:00:00 fixed value has to be used for MC packets rate
-   limiting (exact match)
+On Fri 22 Oct 07:54 CDT 2021, Arnaud Pouliquen wrote:
 
-The CPSW supports MC/BC packets rate limiting in packets/sec and affects
-all ingress MC/BC packets and serves as BC/MC storm prevention feature.
+> Create the rpmsg_ctrl.c module and move the code related to the
+> rpmsg_ctrldev device in this new module.
+> 
+> Add the dependency between rpmsg_char and rpmsg_ctrl in the
+> kconfig file.
+> 
+> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> 
+> ---
+> update vs previous version:
+> - set the ctrl device class with new rpmsg_get_class API for legacy support
+> ---
+>  drivers/rpmsg/Kconfig      |   9 ++
+>  drivers/rpmsg/Makefile     |   1 +
+>  drivers/rpmsg/rpmsg_char.c | 169 +----------------------------
+>  drivers/rpmsg/rpmsg_char.h |   2 +
+>  drivers/rpmsg/rpmsg_ctrl.c | 216 +++++++++++++++++++++++++++++++++++++
+>  5 files changed, 230 insertions(+), 167 deletions(-)
+>  create mode 100644 drivers/rpmsg/rpmsg_ctrl.c
+> 
+> diff --git a/drivers/rpmsg/Kconfig b/drivers/rpmsg/Kconfig
+> index 0b4407abdf13..d822ec9ec692 100644
+> --- a/drivers/rpmsg/Kconfig
+> +++ b/drivers/rpmsg/Kconfig
+> @@ -10,11 +10,20 @@ config RPMSG_CHAR
+>  	tristate "RPMSG device interface"
+>  	depends on RPMSG
+>  	depends on NET
+> +	select RPMSG_CTRL
 
-Examples:
-- BC rate limit to 1000pps:
-  tc qdisc add dev eth0 clsact
-  tc filter add dev eth0 ingress flower skip_sw dst_mac ff:ff:ff:ff:ff:ff \
-  action police pkts_rate 1000 pkts_burst 1
+We don't want select of user selectable config options.
 
-- MC rate limit to 20000pps:
-  tc qdisc add dev eth0 clsact
-  tc filter add dev eth0 ingress flower skip_sw dst_mac 01:00:00:00:00:00 \
-  action police pkts_rate 10000 pkts_burst 1
+>  	help
+>  	  Say Y here to export rpmsg endpoints as device files, usually found
+>  	  in /dev. They make it possible for user-space programs to send and
+>  	  receive rpmsg packets.
+>  
+> +config RPMSG_CTRL
 
-  pkts_burst - not used.
+I still don't like the introduction of more Kconfig options - search the
+list for the number of patches that has corrected Kconfig dependency
+issues.
 
-Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
----
- drivers/net/ethernet/ti/cpsw_new.c  |   4 +-
- drivers/net/ethernet/ti/cpsw_priv.c | 170 ++++++++++++++++++++++++++++
- drivers/net/ethernet/ti/cpsw_priv.h |   8 ++
- 3 files changed, 181 insertions(+), 1 deletion(-)
+That said, if you get it right...
 
-diff --git a/drivers/net/ethernet/ti/cpsw_new.c b/drivers/net/ethernet/ti/cpsw_new.c
-index 279e261e4720..662c46d568f9 100644
---- a/drivers/net/ethernet/ti/cpsw_new.c
-+++ b/drivers/net/ethernet/ti/cpsw_new.c
-@@ -498,6 +498,8 @@ static void cpsw_restore(struct cpsw_priv *priv)
- 
- 	/* restore CBS offload */
- 	cpsw_cbs_resume(&cpsw->slaves[priv->emac_port - 1], priv);
-+
-+	cpsw_qos_clsflower_resume(priv);
- }
- 
- static void cpsw_init_stp_ale_entry(struct cpsw_common *cpsw)
-@@ -1407,7 +1409,7 @@ static int cpsw_create_ports(struct cpsw_common *cpsw)
- 		cpsw->slaves[i].ndev = ndev;
- 
- 		ndev->features |= NETIF_F_HW_VLAN_CTAG_FILTER |
--				  NETIF_F_HW_VLAN_CTAG_RX | NETIF_F_NETNS_LOCAL;
-+				  NETIF_F_HW_VLAN_CTAG_RX | NETIF_F_NETNS_LOCAL | NETIF_F_HW_TC;
- 
- 		ndev->netdev_ops = &cpsw_netdev_ops;
- 		ndev->ethtool_ops = &cpsw_ethtool_ops;
-diff --git a/drivers/net/ethernet/ti/cpsw_priv.c b/drivers/net/ethernet/ti/cpsw_priv.c
-index ecc2a6b7e28f..aea79a18e976 100644
---- a/drivers/net/ethernet/ti/cpsw_priv.c
-+++ b/drivers/net/ethernet/ti/cpsw_priv.c
-@@ -502,6 +502,7 @@ int cpsw_init_common(struct cpsw_common *cpsw, void __iomem *ss_regs,
- 	ale_params.ale_ageout		= ale_ageout;
- 	ale_params.ale_ports		= CPSW_ALE_PORTS_NUM;
- 	ale_params.dev_id		= "cpsw";
-+	ale_params.bus_freq		= cpsw->bus_freq_mhz * 1000000;
- 
- 	cpsw->ale = cpsw_ale_create(&ale_params);
- 	if (IS_ERR(cpsw->ale)) {
-@@ -1046,6 +1047,8 @@ static int cpsw_set_mqprio(struct net_device *ndev, void *type_data)
- 	return 0;
- }
- 
-+static int cpsw_qos_setup_tc_block(struct net_device *ndev, struct flow_block_offload *f);
-+
- int cpsw_ndo_setup_tc(struct net_device *ndev, enum tc_setup_type type,
- 		      void *type_data)
- {
-@@ -1056,6 +1059,9 @@ int cpsw_ndo_setup_tc(struct net_device *ndev, enum tc_setup_type type,
- 	case TC_SETUP_QDISC_MQPRIO:
- 		return cpsw_set_mqprio(ndev, type_data);
- 
-+	case TC_SETUP_BLOCK:
-+		return cpsw_qos_setup_tc_block(ndev, type_data);
-+
- 	default:
- 		return -EOPNOTSUPP;
- 	}
-@@ -1379,3 +1385,167 @@ int cpsw_run_xdp(struct cpsw_priv *priv, int ch, struct xdp_buff *xdp,
- 	page_pool_recycle_direct(cpsw->page_pool[ch], page);
- 	return ret;
- }
-+
-+static int cpsw_qos_clsflower_add_policer(struct cpsw_priv *priv,
-+					  struct netlink_ext_ack *extack,
-+					  struct flow_cls_offload *cls,
-+					  u64 rate_pkt_ps)
-+{
-+	struct flow_rule *rule = flow_cls_offload_flow_rule(cls);
-+	struct flow_dissector *dissector = rule->match.dissector;
-+	u8 mc_mac[] = {0x01, 0x00, 0x00, 0x00, 0x00, 0x00};
-+	struct flow_match_eth_addrs match;
-+	u32 port_id;
-+	int ret;
-+
-+	if (dissector->used_keys &
-+	    ~(BIT(FLOW_DISSECTOR_KEY_BASIC) |
-+	      BIT(FLOW_DISSECTOR_KEY_CONTROL) |
-+	      BIT(FLOW_DISSECTOR_KEY_ETH_ADDRS))) {
-+		NL_SET_ERR_MSG_MOD(extack,
-+				   "Unsupported keys used");
-+		return -EOPNOTSUPP;
-+	}
-+
-+	if (!flow_rule_match_key(rule, FLOW_DISSECTOR_KEY_ETH_ADDRS)) {
-+		NL_SET_ERR_MSG_MOD(extack, "Not matching on eth address");
-+		return -EOPNOTSUPP;
-+	}
-+
-+	flow_rule_match_eth_addrs(rule, &match);
-+
-+	if (!is_zero_ether_addr(match.key->src)) {
-+		NL_SET_ERR_MSG_MOD(extack,
-+				   "Matching on source MAC not supported");
-+		return -EOPNOTSUPP;
-+	}
-+
-+	port_id = cpsw_slave_index(priv->cpsw, priv) + 1;
-+
-+	if (is_broadcast_ether_addr(match.key->dst)) {
-+		ret = cpsw_ale_rx_ratelimit_bc(priv->cpsw->ale, port_id, rate_pkt_ps);
-+		if (ret)
-+			return ret;
-+
-+		priv->ale_bc_ratelimit.cookie = cls->cookie;
-+		priv->ale_bc_ratelimit.rate_packet_ps = rate_pkt_ps;
-+	}
-+
-+	if (ether_addr_equal(match.key->dst, mc_mac)) {
-+		ret = cpsw_ale_rx_ratelimit_mc(priv->cpsw->ale, port_id, rate_pkt_ps);
-+		if (ret)
-+			return ret;
-+
-+		priv->ale_mc_ratelimit.cookie = cls->cookie;
-+		priv->ale_mc_ratelimit.rate_packet_ps = rate_pkt_ps;
-+	}
-+
-+	return 0;
-+}
-+
-+static int cpsw_qos_configure_clsflower(struct cpsw_priv *priv, struct flow_cls_offload *cls)
-+{
-+	struct flow_rule *rule = flow_cls_offload_flow_rule(cls);
-+	struct netlink_ext_ack *extack = cls->common.extack;
-+	const struct flow_action_entry *act;
-+	int i;
-+
-+	flow_action_for_each(i, act, &rule->action) {
-+		switch (act->id) {
-+		case FLOW_ACTION_POLICE:
-+			if (act->police.rate_bytes_ps) {
-+				NL_SET_ERR_MSG_MOD(extack,
-+						   "QoS offload not support bytes per second");
-+				return -EOPNOTSUPP;
-+			}
-+
-+			return cpsw_qos_clsflower_add_policer(priv, extack, cls,
-+							      act->police.rate_pkt_ps);
-+		default:
-+			NL_SET_ERR_MSG_MOD(extack, "Action not supported");
-+			return -EOPNOTSUPP;
-+		}
-+	}
-+	return -EOPNOTSUPP;
-+}
-+
-+static int cpsw_qos_delete_clsflower(struct cpsw_priv *priv, struct flow_cls_offload *cls)
-+{
-+	u32 port_id = cpsw_slave_index(priv->cpsw, priv) + 1;
-+
-+	if (cls->cookie == priv->ale_bc_ratelimit.cookie) {
-+		priv->ale_bc_ratelimit.cookie = 0;
-+		priv->ale_bc_ratelimit.rate_packet_ps = 0;
-+		cpsw_ale_rx_ratelimit_bc(priv->cpsw->ale, port_id, 0);
-+	}
-+
-+	if (cls->cookie == priv->ale_mc_ratelimit.cookie) {
-+		priv->ale_mc_ratelimit.cookie = 0;
-+		priv->ale_mc_ratelimit.rate_packet_ps = 0;
-+		cpsw_ale_rx_ratelimit_mc(priv->cpsw->ale, port_id, 0);
-+	}
-+
-+	return 0;
-+}
-+
-+static int cpsw_qos_setup_tc_clsflower(struct cpsw_priv *priv, struct flow_cls_offload *cls_flower)
-+{
-+	switch (cls_flower->command) {
-+	case FLOW_CLS_REPLACE:
-+		return cpsw_qos_configure_clsflower(priv, cls_flower);
-+	case FLOW_CLS_DESTROY:
-+		return cpsw_qos_delete_clsflower(priv, cls_flower);
-+	default:
-+		return -EOPNOTSUPP;
-+	}
-+}
-+
-+static int cpsw_qos_setup_tc_block_cb(enum tc_setup_type type, void *type_data, void *cb_priv)
-+{
-+	struct cpsw_priv *priv = cb_priv;
-+	int ret;
-+
-+	if (!tc_cls_can_offload_and_chain0(priv->ndev, type_data))
-+		return -EOPNOTSUPP;
-+
-+	ret = pm_runtime_get_sync(priv->dev);
-+	if (ret < 0) {
-+		pm_runtime_put_noidle(priv->dev);
-+		return ret;
-+	}
-+
-+	switch (type) {
-+	case TC_SETUP_CLSFLOWER:
-+		ret = cpsw_qos_setup_tc_clsflower(priv, type_data);
-+		break;
-+	default:
-+		ret = -EOPNOTSUPP;
-+	}
-+
-+	pm_runtime_put(priv->dev);
-+	return ret;
-+}
-+
-+static LIST_HEAD(cpsw_qos_block_cb_list);
-+
-+static int cpsw_qos_setup_tc_block(struct net_device *ndev, struct flow_block_offload *f)
-+{
-+	struct cpsw_priv *priv = netdev_priv(ndev);
-+
-+	return flow_block_cb_setup_simple(f, &cpsw_qos_block_cb_list,
-+					  cpsw_qos_setup_tc_block_cb,
-+					  priv, priv, true);
-+}
-+
-+void cpsw_qos_clsflower_resume(struct cpsw_priv *priv)
-+{
-+	u32 port_id = cpsw_slave_index(priv->cpsw, priv) + 1;
-+
-+	if (priv->ale_bc_ratelimit.cookie)
-+		cpsw_ale_rx_ratelimit_bc(priv->cpsw->ale, port_id,
-+					 priv->ale_bc_ratelimit.rate_packet_ps);
-+
-+	if (priv->ale_mc_ratelimit.cookie)
-+		cpsw_ale_rx_ratelimit_mc(priv->cpsw->ale, port_id,
-+					 priv->ale_mc_ratelimit.rate_packet_ps);
-+}
-diff --git a/drivers/net/ethernet/ti/cpsw_priv.h b/drivers/net/ethernet/ti/cpsw_priv.h
-index 435668ee542d..595a5e97af69 100644
---- a/drivers/net/ethernet/ti/cpsw_priv.h
-+++ b/drivers/net/ethernet/ti/cpsw_priv.h
-@@ -362,6 +362,11 @@ struct cpsw_common {
- 	u8 base_mac[ETH_ALEN];
- };
- 
-+struct cpsw_ale_ratelimit {
-+	unsigned long cookie;
-+	u64 rate_packet_ps;
-+};
-+
- struct cpsw_priv {
- 	struct net_device		*ndev;
- 	struct device			*dev;
-@@ -382,6 +387,8 @@ struct cpsw_priv {
- 	struct cpsw_common *cpsw;
- 	int offload_fwd_mark;
- 	u32 tx_packet_min;
-+	struct cpsw_ale_ratelimit ale_bc_ratelimit;
-+	struct cpsw_ale_ratelimit ale_mc_ratelimit;
- };
- 
- #define ndev_to_cpsw(ndev) (((struct cpsw_priv *)netdev_priv(ndev))->cpsw)
-@@ -460,6 +467,7 @@ int cpsw_ndo_setup_tc(struct net_device *ndev, enum tc_setup_type type,
- bool cpsw_shp_is_off(struct cpsw_priv *priv);
- void cpsw_cbs_resume(struct cpsw_slave *slave, struct cpsw_priv *priv);
- void cpsw_mqprio_resume(struct cpsw_slave *slave, struct cpsw_priv *priv);
-+void cpsw_qos_clsflower_resume(struct cpsw_priv *priv);
- 
- /* ethtool */
- u32 cpsw_get_msglevel(struct net_device *ndev);
--- 
-2.17.1
+> +	tristate "RPMSG control interface"
+> +	depends on RPMSG
+> +	help
+> +	  Say Y here to enable the support of the /dev/rpmsg_ctrlX API. This API
+> +	  allows user-space programs to create endpoints with specific service name,
+> +	  source and destination addresses.
+> +
+>  config RPMSG_NS
+>  	tristate "RPMSG name service announcement"
+>  	depends on RPMSG
+[..]
+> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
+[..]
+> diff --git a/drivers/rpmsg/rpmsg_char.h b/drivers/rpmsg/rpmsg_char.h
+> index 109c2c43005f..ff1acc42628a 100644
+> --- a/drivers/rpmsg/rpmsg_char.h
+> +++ b/drivers/rpmsg/rpmsg_char.h
+> @@ -12,6 +12,8 @@
+>   * In such case a kernel warning is printed to help develloper to fix the issue.
+>   */
+>  
+> +#define RPMSG_DEV_MAX	(MINORMASK + 1)
 
+This was used to define the minors of the rpmsg chdev, now you're
+splitting that range in one for the ctrl and one for the char.
+
+Moving this define to a common place gives an impression that there's a
+relationship between the two, but I don't see any. So I think you should
+duplicate this in the two files - just like the other stuff.
+
+> +
+>  #if IS_REACHABLE(CONFIG_RPMSG_CHAR)
+>  /**
+>   * rpmsg_chrdev_eptdev_create() - register char device based on an endpoint
+> diff --git a/drivers/rpmsg/rpmsg_ctrl.c b/drivers/rpmsg/rpmsg_ctrl.c
+> new file mode 100644
+> index 000000000000..1d3c12e5cdcf
+> --- /dev/null
+> +++ b/drivers/rpmsg/rpmsg_ctrl.c
+> @@ -0,0 +1,216 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2021, STMicroelectronics
+
+Did you actually change anything that warrant the explicit copyright
+claim?
+
+> + * Copyright (c) 2016, Linaro Ltd.
+> + * Copyright (c) 2012, Michal Simek <monstr@monstr.eu>
+> + * Copyright (c) 2012, PetaLogix
+> + * Copyright (c) 2011, Texas Instruments, Inc.
+> + * Copyright (c) 2011, Google, Inc.
+> + *
+> + * Based on rpmsg performance statistics driver by Michal Simek, which in turn
+> + * was based on TI & Google OMX rpmsg driver.
+> + */
+[..]
+> +static int rpmsg_ctrldev_probe(struct rpmsg_device *rpdev)
+> +{
+> +	struct rpmsg_ctrldev *ctrldev;
+> +	struct device *dev;
+> +	int ret;
+> +
+> +	ctrldev = kzalloc(sizeof(*ctrldev), GFP_KERNEL);
+> +	if (!ctrldev)
+> +		return -ENOMEM;
+> +
+> +	ctrldev->rpdev = rpdev;
+> +
+> +	dev = &ctrldev->dev;
+> +	device_initialize(dev);
+> +	dev->parent = &rpdev->dev;
+> +	dev->class = rpmsg_get_class();
+
+Thank you.
+
+Regards,
+Bjorn
