@@ -2,94 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DD4C4422E0
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 22:41:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40A864422CE
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 22:39:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231978AbhKAVoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 17:44:02 -0400
-Received: from mail-oi1-f177.google.com ([209.85.167.177]:46829 "EHLO
-        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231126AbhKAVoA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 17:44:00 -0400
-Received: by mail-oi1-f177.google.com with SMTP id bd30so7227788oib.13;
-        Mon, 01 Nov 2021 14:41:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=A6FxAXBsKZP0yj/RpBLDVTK9cKXs6Qez6TJZQFcJ8oQ=;
-        b=1T9qQbSXSrf+mfuszihUIWgUkgdHlkIWfhc2sKWm6aZBOAKDTPYn7s1hJLNoulbA90
-         CkA5UArl3EKqShrwHJOxll7tPbb4mWdGMPTx1hd3hpbO0w33suUcgtuWePSK9/EGCWjJ
-         DvO07FmO0Rz/9p+CVY2fMJBAIK51C9Cpq9om4FXWIUV3TL6cbLG1ChLfB279XdIab+c3
-         hPEppRj/rLFCwyhDjzPb/bNvVO0ijsVoP3tle4u/y/Sm89r8T/I1nHW+84WqW2vrCO+4
-         QL1ZctEgCvveX1JaBM4v1b3+tkuAvfRaozEXHsbNIIkwqSdYxYT9jFBi/vOIFN/kDSal
-         ewoQ==
-X-Gm-Message-State: AOAM532P1LUBLT2cSdlVtlztR8+8eiAfrz9uZUvhCXnwwrwTpAaTy7Zt
-        P5tv4yYPelW1rkxGqqiEug==
-X-Google-Smtp-Source: ABdhPJxh3uBAXCXUynE5eHGoL97bZpj7QVPk/IqAMdi9E7+iRjtcVWi3uuMxehReUu8yHtVJ2uMqMg==
-X-Received: by 2002:a54:4f0d:: with SMTP id e13mr1433818oiy.110.1635802886245;
-        Mon, 01 Nov 2021 14:41:26 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id j3sm3479888oig.15.2021.11.01.14.41.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 14:41:25 -0700 (PDT)
-Received: (nullmailer pid 1117584 invoked by uid 1000);
-        Mon, 01 Nov 2021 21:41:24 -0000
-Date:   Mon, 1 Nov 2021 16:41:24 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Nikita Travkin <nikita@trvn.ru>
-Cc:     dmitry.torokhov@gmail.com, Michael.Srba@seznam.cz,
-        linus.walleij@linaro.org, broonie@kernel.org,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        phone-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht
-Subject: Re: [PATCH 5/6] dt-bindings: input: zinitix: Document touch-keys
- support
-Message-ID: <YYBfBHGgKkGFhD50@robh.at.kernel.org>
-References: <20211027181350.91630-1-nikita@trvn.ru>
- <20211027181350.91630-6-nikita@trvn.ru>
+        id S232168AbhKAVlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 17:41:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59738 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231775AbhKAVld (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 17:41:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4960160F36;
+        Mon,  1 Nov 2021 21:38:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635802740;
+        bh=o9BhX1v0G8aG5VLLIt4ACVxhyMumDqgiXaDLy9mafQo=;
+        h=Date:From:To:Cc:Subject:From;
+        b=IcTpUsKNJv/Otokzezyy+ehIwPwwGdmmZ82qqltirtsH5u3fioCqOK03JuV9UZhUD
+         1b79Rk5SgMscrEqEnlYvINzBh472t/vGQk3AUtTEvgvlPK7R67jz1ft1ZxSLr+Zs8L
+         Nox0nZmwh7V5R3JgxGw4NpDJL/NjjC7VQNm63yYJiIHIwhrIWqAV4BgkY0yD5lcppl
+         1WL0A0Zr8NkrFgZ48Up2rs/GAyQeLM6I05TehyDGeI5sn2hIFFdHGSJ7GozPlsvqns
+         SCBE8ea6TuT5FhuqvnwDBG2RNggoKysMkqgmGVl+k1MoC1n8EbWd3sxMudV4jiMxXE
+         kL6e3Lc9uzTGg==
+Date:   Mon, 1 Nov 2021 16:43:41 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Oscar Carter <oscar.carter@gmx.com>,
+        jing yangyang <cgel.zte@gmail.com>,
+        Len Baker <len.baker@gmx.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Various hardening fixes and cleanups for 5.16-rc1
+Message-ID: <20211101214341.GA29478@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211027181350.91630-6-nikita@trvn.ru>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 11:13:49PM +0500, Nikita Travkin wrote:
-> In some configrations the touch controller can support the touch-keys.
-> Doucument the linux,keycodes property that enables those keys and
-> specifies the keycodes that should be used to report the key events.
-> 
-> Signed-off-by: Nikita Travkin <nikita@trvn.ru>
-> ---
->  .../bindings/input/touchscreen/zinitix,bt400.yaml         | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/input/touchscreen/zinitix,bt400.yaml b/Documentation/devicetree/bindings/input/touchscreen/zinitix,bt400.yaml
-> index b4e5ba7c0b49..40b243c07fd4 100644
-> --- a/Documentation/devicetree/bindings/input/touchscreen/zinitix,bt400.yaml
-> +++ b/Documentation/devicetree/bindings/input/touchscreen/zinitix,bt400.yaml
-> @@ -79,6 +79,14 @@ properties:
->      $ref: /schemas/types.yaml#/definitions/uint32
->      enum: [1, 2]
->  
-> +  linux,keycodes:
-> +    description: |
-> +      This property specifies an array of keycodes assigned to the
-> +      touch-keys that can be present in some touchscreen configurations.
-> +    $ref: /schemas/input/input.yaml#/properties/linux,keycodes
+The following changes since commit e4e737bb5c170df6135a127739a9e6148ee3da82:
 
-Instead, reference input.yaml at the top-level.
+  Linux 5.15-rc2 (2021-09-19 17:28:22 -0700)
 
-> +    minItems: 1
-> +    maxItems: 8
-> +
->    touchscreen-size-x: true
->    touchscreen-size-y: true
->    touchscreen-fuzz-x: true
-> -- 
-> 2.30.2
-> 
-> 
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git tags/kspp-misc-fixes-5.16-rc1
+
+for you to fetch changes up to ebe4560ed5c8cbfe3759f16c23ca5a6df090c6b5:
+
+  firewire: Remove function callback casts (2021-11-01 13:44:26 -0500)
+
+----------------------------------------------------------------
+Various hardening fixes and cleanups for 5.16-rc1
+
+Hi Linus,
+
+Please, pull the following hardening fixes and cleanups that I've
+been collecting during the last development cycle. All of them have
+been baking in linux-next.
+
+Fix -Wcast-function-type error:
+
+- firewire: Remove function callback casts (Oscar Carter)
+
+Fix application of sizeof operator:
+
+- firmware/psci: fix application of sizeof to pointer (jing yangyang)
+
+Replace open coded instances with size_t saturating arithmetic helpers:
+
+- assoc_array: Avoid open coded arithmetic in allocator arguments (Len Baker)
+- writeback: prefer struct_size over open coded arithmetic (Len Baker)
+- aio: Prefer struct_size over open coded arithmetic (Len Baker)
+- dmaengine: pxa_dma: Prefer struct_size over open coded arithmetic (Len Baker)
+
+Flexible array transformation:
+
+- KVM: PPC: Replace zero-length array with flexible array member (Len Baker)
+
+Use 2-factor argument multiplication form:
+
+- nouveau/svm: Use kvcalloc() instead of kvzalloc() (Gustavo A. R. Silva)
+- xfs: Use kvcalloc() instead of kvzalloc() (Gustavo A. R. Silva)
+
+Thanks
+--
+Gustavo
+
+----------------------------------------------------------------
+Gustavo A. R. Silva (2):
+      xfs: Use kvcalloc() instead of kvzalloc()
+      nouveau/svm: Use kvcalloc() instead of kvzalloc()
+
+Len Baker (5):
+      assoc_array: Avoid open coded arithmetic in allocator arguments
+      writeback: prefer struct_size over open coded arithmetic
+      aio: Prefer struct_size over open coded arithmetic
+      KVM: PPC: Replace zero-length array with flexible array member
+      dmaengine: pxa_dma: Prefer struct_size over open coded arithmetic
+
+Oscar Carter (1):
+      firewire: Remove function callback casts
+
+jing yangyang (1):
+      firmware/psci: fix application of sizeof to pointer
+
+ arch/powerpc/include/asm/kvm_host.h   |  2 +-
+ arch/powerpc/kvm/book3s_64_vio.c      |  3 +--
+ drivers/dma/pxa_dma.c                 |  3 +--
+ drivers/firewire/core-cdev.c          | 32 ++++++++++++++++++++++++++------
+ drivers/firmware/psci/psci_checker.c  |  2 +-
+ drivers/gpu/drm/nouveau/nouveau_svm.c |  2 +-
+ fs/aio.c                              |  3 +--
+ fs/fs-writeback.c                     |  6 +++---
+ fs/xfs/xfs_ioctl.c                    |  6 +++---
+ include/linux/firewire.h              | 11 +++++++----
+ lib/assoc_array.c                     | 22 ++++++++++------------
+ 11 files changed, 55 insertions(+), 37 deletions(-)
