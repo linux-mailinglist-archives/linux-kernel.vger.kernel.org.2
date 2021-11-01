@@ -2,199 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C67EF442395
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 23:48:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7221D44239F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 23:58:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232366AbhKAWvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 18:51:25 -0400
-Received: from relay6-d.mail.gandi.net ([217.70.183.198]:45181 "EHLO
-        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231701AbhKAWvX (ORCPT
+        id S232296AbhKAXBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 19:01:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59262 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229842AbhKAXBF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 18:51:23 -0400
-Received: (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 40799C000A;
-        Mon,  1 Nov 2021 22:48:46 +0000 (UTC)
-Date:   Mon, 1 Nov 2021 23:48:46 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Dominique Martinet <dominique.martinet@atmark-techno.com>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>, linux-rtc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Marek Vasut <marex@denx.de>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH 2/2] rv8803: add irq-gpio optional dts attribute
-Message-ID: <YYBuzqZD8/uK3d6Z@piout.net>
-References: <20211101013400.325855-1-dominique.martinet@atmark-techno.com>
- <20211101013400.325855-2-dominique.martinet@atmark-techno.com>
+        Mon, 1 Nov 2021 19:01:05 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6B61C061714;
+        Mon,  1 Nov 2021 15:58:31 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 5so68389078edw.7;
+        Mon, 01 Nov 2021 15:58:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jZ9LOwzZ3P8QcHNJCOuEJw++blcCddHe1Pn0IJjCj6o=;
+        b=LJPT46Bf/d6iZrm2CLPmbX29KWiXzDDlgAjjSY9ajlH6grzuqSR+qwzBV52z+zDze2
+         opoYDD22jFsH/HYRAgshAr5f186FCKLzE8EwMzRmIwaCKKUyr1pWDfL3xrXwqBpBCZUV
+         tqRt2waMiCCddQI3D9w/tUCdjzrwGRqsrimWFwFbRXEsM4qweAtOGl0vNVg7HRnzs0d6
+         CDqRtMMsjUECxN7iHg2bgS3UI4rDhNZ8cZ+N3cvYHtMjWZf6EOfY0AW7AXK1QBX+Uj3v
+         NA/989sk5X9rwOHv180+6jMkPwu77ZwGshiSe4rGcsQvVUOIE2Yb0mth0GPwmCctVgfJ
+         WtfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jZ9LOwzZ3P8QcHNJCOuEJw++blcCddHe1Pn0IJjCj6o=;
+        b=hZkF+VtjJKJX1+2d3VXu/WDPsf4crsLyrhLVCk85H8PtHskSVAdDXrP9r5VP9lFaiN
+         ZLa7MmAhdryKuSrkPo57JveTFjVsfWUTSyZz6D057GrZeCoH4QMcPsAiqAwfad4bsR+9
+         kBgIM7mBHtsQ/pTg/Ni8X+VsatqQ2QcrFRkSnLuvX54rZtED5nkrut/Cn0gI8lMKiZ/O
+         xF441vdMJ9nf9HpD+ej1WSTpn1QR/OlkhCcYmQiHkgPqnJ6xiwF1Lh9EdVW16CqGaF+H
+         ZSRC2Thv+jbRBFnNMRbrcYsGZdOF46nJggrlVs/xt9/vZvMJx+ZNawlLB28Iu8UGBZXA
+         qYtA==
+X-Gm-Message-State: AOAM531y8DC+PFxqwZu1stW2GEaSne0lEiydWvJLvWwbFzaRQqtJ0MEd
+        f/1H2Vs2t3TuO7CCIl2mV7M=
+X-Google-Smtp-Source: ABdhPJwcRG0ef+5apgQqvFYVa9abYfLIGt4MhDq3CfIAjIQaUosJZTBseiEBU8hcYsX6qiD5XXHyvg==
+X-Received: by 2002:a05:6402:402:: with SMTP id q2mr45339719edv.248.1635807510530;
+        Mon, 01 Nov 2021 15:58:30 -0700 (PDT)
+Received: from tom-desktop (net-188-153-110-208.cust.vodafonedsl.it. [188.153.110.208])
+        by smtp.gmail.com with ESMTPSA id t16sm18007edd.18.2021.11.01.15.58.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Nov 2021 15:58:30 -0700 (PDT)
+Date:   Mon, 1 Nov 2021 23:58:27 +0100
+From:   Tommaso Merciai <tomm.merciai@gmail.com>
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        Peng Fan <peng.fan@nxp.com>, Alice Guo <alice.guo@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Adam Ford <aford173@gmail.com>,
+        Lucas Stach <l.stach@pengutronix.de>
+Subject: Re: [PATCH] arm64: dts: imx8m: add syscon node for display_blk_ctrl
+ module regs
+Message-ID: <20211101225827.GA9208@tom-desktop>
+References: <20211101222857.6940-1-tomm.merciai@gmail.com>
+ <c04d4af6-8c7b-da23-d562-78324948ac35@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211101013400.325855-2-dominique.martinet@atmark-techno.com>
+In-Reply-To: <c04d4af6-8c7b-da23-d562-78324948ac35@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/11/2021 10:34:00+0900, Dominique Martinet wrote:
-> Some device cannot be woken up from i2c signal.
-> Add a new irq-gpio attribute for devices which have a gpio connected to
-> the rv8803 INT line so the rtc can be used for suspend to mem
+On Mon, Nov 01, 2021 at 11:35:49PM +0100, Ahmad Fatoum wrote:
+> Hello Tommaso,
 > 
+> On 01.11.21 23:28, Tommaso Merciai wrote:
+> > Add system controller node for registers of module Display Block Control
+> > (DISPLAY_BLK_CTRL, base address: 0x32e28000).
+> > The DISPLAY_BLK_CTRL module contains general purpose registers (GPRs),
+> > which control varied features of the associated peripherals.
+> > Reference: IMX8MMRM Rev. 3, 11/2020, p 3897
+> > ---
+> >  arch/arm64/boot/dts/freescale/imx8mm.dtsi | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> > 
+> > diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+> > index 2f632e8ca388..3e496b457e1a 100644
+> > --- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+> > +++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+> > @@ -961,6 +961,11 @@ aips4: bus@32c00000 {
+> >  			#size-cells = <1>;
+> >  			ranges = <0x32c00000 0x32c00000 0x400000>;
+> >  
+> > +			dispmix_gpr: display-gpr@32e28000 {
+> > +				compatible = "fsl, imx8mm-iomuxc-gpr", "syscon";
+> 
+> Please read vendor patches before submitting them. The space
+> is out-of-place in the compatible and the compatible is wrong:
+> This doesn't look like a i.MX8MM pin controller.
+> 
+> Cheers,
+> Ahmad
 
-I don't think this is right, the interrupts property of the rtc node can
-point to a gpio and this is expected to be the one connected on INT. You
-don't need another property.
+  Hi Ahmad,
+  Thanks for your review. Do you think this is correct?
 
-> Signed-off-by: Dominique Martinet <dominique.martinet@atmark-techno.com>
-> ---
+  compatible = "fsl,imx8mm-dispmix-gpr", "syscon";
+
+  Let me know.
+
+  Thanks,
+  Tommaso
+
 > 
-> Our board does not have an upstream dts so I cannot provide a real
-> example for it, but I've tested this on something close to the
-> imx8mp-evk.
+> > +				reg = <0x32e28000 0x100>;
+> > +			};
+> > +
+> >  			usbotg1: usb@32e40000 {
+> >  				compatible = "fsl,imx8mm-usb", "fsl,imx7d-usb";
+> >  				reg = <0x32e40000 0x200>;
+> > 
 > 
-> It should not break anything for people having no alarm at all or using
-> the i2c irq.
 > 
->  .../devicetree/bindings/rtc/epson,rx8900.yaml |  5 ++
->  drivers/rtc/rtc-rv8803.c                      | 73 +++++++++++++++++--
->  2 files changed, 73 insertions(+), 5 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/rtc/epson,rx8900.yaml b/Documentation/devicetree/bindings/rtc/epson,rx8900.yaml
-> index 29fe39bb08ad..0d7912b984c7 100644
-> --- a/Documentation/devicetree/bindings/rtc/epson,rx8900.yaml
-> +++ b/Documentation/devicetree/bindings/rtc/epson,rx8900.yaml
-> @@ -28,6 +28,10 @@ properties:
->  
->    trickle-diode-disable: true
->  
-> +  irq-gpio:
-> +    description: |
-> +      gpio for INT signal. Set up gpio for irq and device wakeup.
-> +
->  required:
->    - compatible
->    - reg
-> @@ -45,5 +49,6 @@ examples:
->              reg = <0x32>;
->              epson,vdet-disable;
->              trickle-diode-disable;
-> +            irq-gpio = <&gpio1 11 GPIO_ACTIVE_LOW>;
->          };
->      };
-> diff --git a/drivers/rtc/rtc-rv8803.c b/drivers/rtc/rtc-rv8803.c
-> index 0d5ed38bf60c..1c4b96bc110e 100644
-> --- a/drivers/rtc/rtc-rv8803.c
-> +++ b/drivers/rtc/rtc-rv8803.c
-> @@ -16,6 +16,7 @@
->  #include <linux/module.h>
->  #include <linux/of_device.h>
->  #include <linux/rtc.h>
-> +#include <linux/pm_wakeirq.h>
->  
->  #define RV8803_I2C_TRY_COUNT		4
->  
-> @@ -509,6 +510,61 @@ static int rx8900_trickle_charger_init(struct rv8803_data *rv8803)
->  					 flags);
->  }
->  
-> +static int rv8803_setup_gpio_irq(struct i2c_client *client)
-> +{
-> +	struct device *dev = &client->dev;
-> +	int err;
-> +	int irq;
-> +	unsigned long irqflags;
-> +	struct gpio_desc *gpiod;
-> +
-> +
-> +	gpiod = devm_gpiod_get_from_of_node(dev, dev->of_node, "irq-gpio",
-> +					    0, GPIOD_IN, "RTC irq pin");
-> +	if (!gpiod || IS_ERR(gpiod)) {
-> +		dev_dbg(dev, "no gpio for rtc: skipping\n");
-> +		return -ENOENT;
-> +	}
-> +
-> +	irq = gpiod_to_irq(gpiod);
-> +	if (irq < 0) {
-> +		dev_err(dev, "gpio found but no irq\n");
-> +		err = irq;
-> +		goto error_gpio;
-> +	}
-> +
-> +	irqflags = IRQF_ONESHOT;
-> +	irqflags |= gpiod_is_active_low(gpiod) ?
-> +		    IRQF_TRIGGER_FALLING : IRQF_TRIGGER_RISING;
-> +
-> +	err = devm_request_threaded_irq(dev, irq, NULL, rv8803_handle_irq,
-> +					irqflags, "rtc-rv8803-gpio", client);
-> +	if (err) {
-> +		dev_warn(dev, "unable to request IRQ\n");
-> +		goto error_gpio;
-> +	}
-> +
-> +	err = device_init_wakeup(dev, true);
-> +	if (err) {
-> +		dev_warn(dev, "unable to set as wakeup source\n");
-> +		goto error_irq;
-> +	}
-> +
-> +	err = dev_pm_set_wake_irq(dev, irq);
-> +	if (err) {
-> +		dev_warn(dev, "unable to set wake irq\n");
-> +		goto error_irq;
-> +	}
-> +
-> +	return 0;
-> +
-> +error_irq:
-> +	devm_free_irq(dev, irq, client);
-> +error_gpio:
-> +	devm_gpiod_put(dev, gpiod);
-> +	return err;
-> +}
-> +
->  static int rv8803_probe(struct i2c_client *client,
->  			const struct i2c_device_id *id)
->  {
-> @@ -524,6 +580,7 @@ static int rv8803_probe(struct i2c_client *client,
->  		.reg_write = rv8803_nvram_write,
->  		.priv = client,
->  	};
-> +	bool irq_setup = false;
->  
->  	if (!i2c_check_functionality(adapter, I2C_FUNC_SMBUS_BYTE_DATA |
->  				     I2C_FUNC_SMBUS_I2C_BLOCK)) {
-> @@ -562,17 +619,23 @@ static int rv8803_probe(struct i2c_client *client,
->  	if (IS_ERR(rv8803->rtc))
->  		return PTR_ERR(rv8803->rtc);
->  
-> -	if (client->irq > 0) {
-> +	if (client->dev.of_node) {
-> +		err = rv8803_setup_gpio_irq(client);
-> +		if (!err)
-> +			irq_setup = true;
-> +	}
-> +
-> +	if (!irq_setup && client->irq > 0) {
->  		err = devm_request_threaded_irq(&client->dev, client->irq,
->  						NULL, rv8803_handle_irq,
->  						IRQF_TRIGGER_LOW | IRQF_ONESHOT,
->  						"rv8803", client);
-> -		if (err) {
-> +		if (err)
->  			dev_warn(&client->dev, "unable to request IRQ, alarms disabled\n");
-> -			client->irq = 0;
-> -		}
-> +		else
-> +			irq_setup = true;
->  	}
-> -	if (!client->irq)
-> +	if (!irq_setup)
->  		clear_bit(RTC_FEATURE_ALARM, rv8803->rtc->features);
->  
->  	err = rv8803_write_reg(rv8803->client, RV8803_EXT, RV8803_EXT_WADA);
 > -- 
-> 2.30.2
-> 
-
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+> Pengutronix e.K.                           |                             |
+> Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+> 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
