@@ -2,294 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD181441BFC
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 14:54:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E55E7441C00
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 14:55:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231992AbhKAN5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 09:57:19 -0400
-Received: from mail-eopbgr70094.outbound.protection.outlook.com ([40.107.7.94]:18083
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231366AbhKAN5S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 09:57:18 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EWaaLkV0ifssK8a9Pl1wUPteZLIK/hxjG3AHIVELlCjYn9KYcNHu+kBdH7tc9MJTukz00T5iiTdWxqf00QFYkCHSayCit/F3CUwlxxkIp0/+vUvr6KwDYhLN8uZae5FcYDGE+Hnaap9fy/RIRxbRekkTURFA22dP6twY5EPvSTZxKTYIkTWrZI/A9MCUGgvwpvTrH3pZWnvujP/FpqspiloPD8W5/GdITIOGX9M596K8TTwtVifwTx8+NVV1opziruuAUclxlA6vtxMKixthBWqi+NrYGK5DLnxmCw6hlhjdZmXyFBQ95VIaR0/8GDI7fNKS0G0D9DRlkUY+0lPr2w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pGvKhIVTXvKILjxoYciukpVL3RrTXcxBz2msenCHhkI=;
- b=KVBDiLGis5+NsO3gR9zy9nqUcoiXzEUAfXChMzAS9wCDYYg33or+djp8PZbmmWQrRuYQ+PNqhYWZWeda9pEru6hY5aR0e1KnyjKF27JhqJQzBTwfCAij3Stu0q+vBK/9nJqiY65jIgWIVTcS0UV0p5FkDrzPcIdO+2lZKQKM0n+OM801QucuFe5/R05OD6AUTo/xY+x7M1wZ7VmJtnAqF4HxlwYWPoVfQJkY98kjRltbvZ2JXjjTujPl6uz4iE7fHkbCV6j8btOu7XVoCgkzmbkzmG8QKTY8QOo+RGLkO3XWDZh4hd0Fmg0HK0CneSMSHNYP6I7VMcxsISYxKPhRAg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=opensynergy.com; dmarc=pass action=none
- header.from=opensynergy.com; dkim=pass header.d=opensynergy.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opensynergy.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pGvKhIVTXvKILjxoYciukpVL3RrTXcxBz2msenCHhkI=;
- b=cqMStia09u9eSIVJIVueOm4aXP0z2wznmc9Ch7rEHXJ1eel+f6O86isRXc7uDXcJS61z5h/NE7kss88lcZThqbcLHtugk4pC2QxalSYEbTsafKsSGnixdkwZn/Jic/Pz9RX/E4zJo9mEoGWsidquNgH7M1wAnddr0451zAs/5X4=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=opensynergy.com;
-Message-ID: <4b53b3da-38b5-5c22-60bc-9f0731d6550c@opensynergy.com>
-Date:   Mon, 1 Nov 2021 15:54:37 +0200
-Subject: Re: [PATCH v7 1/2] iio: core: Introduce IIO_VAL_INT_64.
-Content-Language: en-US
-From:   Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com>
-To:     Jonathan Cameron <jic23@kernel.org>, linux-kernel@vger.kernel.org
-Cc:     jbhayana@google.com, lars@metafoo.de, linux-iio@vger.kernel.org,
-        Vasyl.Vavrychuk@opensynergy.com, andy.shevchenko@gmail.com
-References: <20211024091627.28031-1-andriy.tryshnivskyy@opensynergy.com>
- <20211024091627.28031-2-andriy.tryshnivskyy@opensynergy.com>
- <20211024171015.3b6b46e5@jic23-huawei>
- <20912d4e-8417-73d6-a42f-ceaada6e3cf3@opensynergy.com>
- <20211030154759.63be7331@jic23-huawei>
- <7efacdde-0c3a-36e0-bfc7-ef30c14cbf13@opensynergy.com>
-In-Reply-To: <7efacdde-0c3a-36e0-bfc7-ef30c14cbf13@opensynergy.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: AS9PR06CA0408.eurprd06.prod.outlook.com
- (2603:10a6:20b:461::31) To AM6PR04MB6359.eurprd04.prod.outlook.com
- (2603:10a6:20b:fc::16)
+        id S232116AbhKAN6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 09:58:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231366AbhKAN6D (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 09:58:03 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68D0FC061714;
+        Mon,  1 Nov 2021 06:55:30 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0cfa00550d50f28aca2b2a.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:fa00:550d:50f2:8aca:2b2a])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D02BC1EC0372;
+        Mon,  1 Nov 2021 14:55:28 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1635774928;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GcU1HWR5qISsDwTHBiKEg0sBai14OP3L0fM0QZX4Ol4=;
+        b=g/e5Vr8DDlHPO8e9O2574sKCmZupwyOws8NUFT0VlaThZsQVTgTc6DxawEV0bEDjFpwO2i
+        5QAX5PlDEluAbZmTZRvvsdYy6wp7ZreqlKJSFYR1zdIPDeYaJgDKjGbrJczKAQGNh2hrNK
+        6rheWjYP3HBic0N8dgpxodhEE6OyWpo=
+Date:   Mon, 1 Nov 2021 14:55:26 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Xuesong Chen <xuesong.chen@linux.alibaba.com>
+Cc:     Will Deacon <will@kernel.org>, helgaas@kernel.org,
+        catalin.marinas@arm.com, lorenzo.pieralisi@arm.com,
+        james.morse@arm.com, rafael@kernel.org, tony.luck@intel.com,
+        mingo@kernel.org, bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 0/4] PCI MCFG consolidation and APEI resource filtering
+Message-ID: <YX/xzjsoSVgHl1vz@zn.tnic>
+References: <YW5OTMz+x8zrsqkF@Dennis-MBP.local>
+ <20211027081035.53370-1-xuesong.chen@linux.alibaba.com>
+ <e387413f-dbe8-e0f1-257b-141362d74e3a@linux.alibaba.com>
+ <20211101093618.GA27400@willie-the-truck>
+ <286ac625-e712-d7e9-2f5d-923f1572b5d1@linux.alibaba.com>
+ <YX/cIhZDgUGI3FKd@zn.tnic>
+ <19fde29a-5a63-3fe7-2e83-307a974c80ad@linux.alibaba.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 659ef256-f332-4e57-6686-08d99d3f25df
-X-MS-TrafficTypeDiagnostic: AM6PR04MB4822:
-X-Microsoft-Antispam-PRVS: <AM6PR04MB4822E8BE426CEA00FF7B5056E68A9@AM6PR04MB4822.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: brLpcqjJnr/NFnX4x3xM4QtRo3A60pttiYlHd7niM6a8y51+7ch51bxz+x6+IZ5ZoE3BvUzjgX63g3aoGdid1O5blKUP9R3JXbIwKt98nPGy4+lJQWUb+N5wtErdJgC80KEVp1Q9+r0/Mwv9AkKcQampAIVHFFqk+8ACZ/o0/vhoqbvw7RssbQtR39++WyRb+D1hrElDpF+Mvai+FH9guU62bZAQ9y8O6mIQxat8uYaKXudQ2xOlI3DvtyEJLyxjqt5J4SkYqCRY+ydzrYc2rPj0GMzeJvC+q9OTBlgzP11LGMGbivjyzYqObIq34tpleOQ//ltcO9ILIIOuRfhEE5MShkCnvPbW091pLMqmXBrcRWmuP0BzkkdOq/KxPhWt7b5L8mMiRxE9toHBZXD7Ei2EM6moY8ZluFg8BQNEgaUmSX0j47YKHTl/RilvvVFctqXBoI5hfVv5yk0Jn7XUWTpDU3gOKb89EvvVmRBvYmBalOqcX5l4+76IX0mDDWqsPx+iqUR7+rPun+vU2dDWnlH1cibaOmqHoWu10ieUgkHgF2e+33MEqbR2iNjoLCNGXauE7hf4qqUaxXltNki1AjmRrREpAzaAsRNnuUYia3ri0gEhNX0PkTWeDGTkBIs6rduK/P7eKXKSeJeVEuK/lg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB6359.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(376002)(346002)(39840400004)(136003)(396003)(44832011)(8936002)(8676002)(508600001)(4326008)(5660300002)(26005)(53546011)(55236004)(186003)(36756003)(2616005)(31686004)(66946007)(31696002)(66476007)(316002)(66556008)(42186006)(38100700002)(2906002)(86362001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eGVZa3FjUVkxWDc0RDBLa1E0a1B3bDAzWjlwOU85S3BpOVVQd1Z1V0NuVXJC?=
- =?utf-8?B?YzZuRHJRdnVPakpkOEdKTGlnQzlGMlVOMHlZRmFLZmkyK0I1SmhTcVA1Z0x2?=
- =?utf-8?B?cWRXLzdrRWk4cDVydGhMWEpnQldFRTMwVEhsL3Q1bVVHMXkzWTF1WVcyV2k4?=
- =?utf-8?B?V3NqREhWeThYVDlYOXVVMUczd25NY1NSZ2pGUXErZWlkUWxLU1p5eThSVmdt?=
- =?utf-8?B?QnpNcHJzODZMOW1UUjFlVlRJMXJyTUd0Nko3NUpCUUxsZ2RDbkJXV1RkN1Rv?=
- =?utf-8?B?TncvTVduR0J2TjB0eXJMeEdwUDNYMFlmMW9jdGZ5SjdibTFzTlVQYVh3cHhP?=
- =?utf-8?B?b2oweDZTQnlUOVdxQlJ3SXJPZHkvejR0NUE0bG5ZSTQrVENvRHZMZXJxdU1t?=
- =?utf-8?B?QjdwcEtmdThSZU5Jb0lOcVdzSnJ3YjhlQUVDYk43aHpqeC9MaUZmamQ0cWY1?=
- =?utf-8?B?MlBpakFNV2JNQzFVNmwwNU4ySG1USm40cEdHQnpWWGJaR05zVjBycFBlc29P?=
- =?utf-8?B?OThaODY3VG5IMTgrVVRJVW8rR3JZOVluK1V2R01tRFhONFNWbUtBK1JqdkdX?=
- =?utf-8?B?WDFFTE1Ra3Y5bUFBN2hsNWR3YWI2dHg3dTRFWVNkUW11THo5QSt4bWY3ZXg1?=
- =?utf-8?B?Z0lRbi95c0t5eHZLNjJEZ0VGVXVraUlDRGFDbHh4WkNNckJEQTVTVmRTR0Ra?=
- =?utf-8?B?WWhkaUVNMzAwY0hadFVIQ3hQTlFzTGdYWktpTTNrVGFjcEtuU0x4RzNxd1ZU?=
- =?utf-8?B?cG5PaUlEVTNtcFoyTVYwRE9YcERPa2VHUDRnTHhsbTZxOFpJckQwVCtRVnlM?=
- =?utf-8?B?WjA4THJ3Vkp4SHliVyt6WEF3NDVIaUcwMnpqT0JpN0dPdEdraktLeXRta2dp?=
- =?utf-8?B?WHk4cGZvVzFqeVBxdlQ4QWVTV1VlTkJTd0E0WTZXL0hCN1FBSndmbFgzZE5V?=
- =?utf-8?B?ditCV3FlR1ZGOU5KU0FKaHcxQ3EyUGNrZGxLSHFiSEI2bm1IdmR3L2FhS0pz?=
- =?utf-8?B?TFhkeXBSTlVQVTFUOGFEY0ptWWZjQXFOV2lvR21OZ2ZwWnE5bVNwa3VSRENM?=
- =?utf-8?B?cFFtUm5IMXhyOU9XNjNEMWhVdStvN3Q5Tkt3Q2pHY2h5MWxFbkRFaUhjUTVG?=
- =?utf-8?B?Y2ZXNG9IUVVMTGJySjROOFhKNjhuVy95VjcvdTI5dzZVYis1aDV1WDNZK3Rm?=
- =?utf-8?B?SThla0t3NU1OSjl1YjhtZHppc0F4MHYxUjRNMDhVZ2h2a2I2UHhNWnR2dk9u?=
- =?utf-8?B?a3dMOU0xTW5uK1pHZWxxc08zYWpEckcrenRKdHNVdUlRQVcvUzIwUmY3dHVw?=
- =?utf-8?B?R0MwblUyMkp2YWliVVhHc1MzNXAvamNYUG1aaWxCcURoeG1YM2NtcG1BRG83?=
- =?utf-8?B?TkFYMWNwU2VkaXRSQVY5Tlh6Uzh2OTc4bTIyb1pYcm5yZ1ltQXJkNzJJLzBF?=
- =?utf-8?B?ZXowaUZlOEk2SXU3bWNKOXJtQVZTWFNKZnorZTI4ZTJJTlBiMWJlYSsva1JZ?=
- =?utf-8?B?MmNHSlloQzFGcmxvSHkzQlhtQWVRa0RyNEhTMU9YQlV5N2xoTzVIMElQNzJr?=
- =?utf-8?B?eTNpZS92d1pXUzUwaVRxR3NWdzFsT1lKUklYNXdGNlg1TzVockJ6OGU1cWZJ?=
- =?utf-8?B?MkIvUXJyeTVJU3ZrVEYzTGtMeSthZzBXZG0xa3M2OXJNbThuZFU3Ujl4VTh6?=
- =?utf-8?B?ajB4Um93YTBZZlh5bmNQOUVSZzgyak9jekpieUVidkpHSnEyd1MxZitKWm5D?=
- =?utf-8?B?Y3hkYVBNNDBxUWs0SEtsUCtqdlF3VHdGdVJwSlJIR3ZsdmN4L0xBWjkzdGdt?=
- =?utf-8?B?dzkvZ09nTGd1bmhpK0Q1ZjFXQXF6R2ZzSmxkemo3d2l3UEtYeDVUYzNrTzgw?=
- =?utf-8?B?TzY0M1FDeG1EZldaRkZxSVptem9kQVpWTjZ0dGV3RndKQlpaaUZzQTExVEJL?=
- =?utf-8?B?N05wekxOdjE0bUc5S3Y0OVViZ3JzeHJqTlIxcWs5TVZLY2F2N2VaUkk5LzVF?=
- =?utf-8?B?QUFlSVZ3V0d2cHZRanlTUGtKN0lXVGlCeVQ1Qm5xVk0yeWVOcWpqbzNSN2hM?=
- =?utf-8?B?dStTdlk4b1M5WjFVTmlwdG9nM2N5S1BtY29MNjUrSlJpMDZVN3dqdjlwVEtM?=
- =?utf-8?B?bkNkTG8wZE1tdmtzZFVPQmV5cjBDRVJQejF2bnpDNlptM3JhMWdXRlNBalht?=
- =?utf-8?Q?8L3yfwLLZo8IIsoydQ+3Bgo=3D?=
-X-OriginatorOrg: opensynergy.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 659ef256-f332-4e57-6686-08d99d3f25df
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB6359.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Nov 2021 13:54:40.1009
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 800fae25-9b1b-4edc-993d-c939c4e84a64
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: OJRt7FiQr2A1aLZbAVgvH4OxBoF3s5kq6VraGT4hvkr2fbCykDXt8wUkoVGmziHtgSvxHnNjLCCsM2lf8pxVKw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB4822
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <19fde29a-5a63-3fe7-2e83-307a974c80ad@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- From 6e6a3661785584c6cc88370f78578810e67cb0e5 Mon Sep 17 00:00:00 2001
-From: Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com>
-Date: Mon, 1 Nov 2021 15:44:31 +0200
-Subject: [PATCH] iio: test: Add test for IIO_VAL_INT_64.
+On Mon, Nov 01, 2021 at 09:32:31PM +0800, Xuesong Chen wrote:
+> Actually that's my original intention
 
-Signed-off-by: Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com>
----
-  drivers/iio/test/iio-test-format.c | 51 ++++++++++++++++++++++++++++++
-  1 file changed, 51 insertions(+)
+There's a misunderstanding here - I don't think your original intention
+is to get ignored indefinitely.
 
-diff --git a/drivers/iio/test/iio-test-format.c 
-b/drivers/iio/test/iio-test-format.c
-index f1e951eddb43..f07945c2cf28 100644
---- a/drivers/iio/test/iio-test-format.c
-+++ b/drivers/iio/test/iio-test-format.c
-@@ -182,12 +182,63 @@ static void 
-iio_test_iio_format_value_multiple(struct kunit *test)
-      IIO_TEST_FORMAT_EXPECT_EQ(test, buf, ret, "1 -2 3 -4 5 \n");
-  }
+> especially when you take lots of serious effors to rework it round by
+> round, but no one say YES or NO, which is really frustrating.
 
-+static void iio_test_iio_format_value_integer_64(struct kunit *test)
-+{
-+    char *buf = kunit_kmalloc(test, PAGE_SIZE, GFP_KERNEL);
-+    s64 value;
-+    int values[2];
-+    int ret;
-+
-+    value = 24;
-+    values[0] = lower_32_bits(value);
-+    values[1] = upper_32_bits(value);
-+    ret = iio_format_value(buf, IIO_VAL_INT_64, 2, values);
-+    IIO_TEST_FORMAT_EXPECT_EQ(test, buf, ret, "24\n");
-+
-+    value = -24;
-+    values[0] = lower_32_bits(value);
-+    values[1] = upper_32_bits(value);
-+    ret = iio_format_value(buf, IIO_VAL_INT_64, 2, values);
-+    IIO_TEST_FORMAT_EXPECT_EQ(test, buf, ret, "-24\n");
-+
-+    value = 0;
-+    values[0] = lower_32_bits(value);
-+    values[1] = upper_32_bits(value);
-+    ret = iio_format_value(buf, IIO_VAL_INT_64, 2, values);
-+    IIO_TEST_FORMAT_EXPECT_EQ(test, buf, ret, "0\n");
-+
-+    value = 4294967295;
-+    values[0] = lower_32_bits(value);
-+    values[1] = upper_32_bits(value);
-+    ret = iio_format_value(buf, IIO_VAL_INT_64, 2, values);
-+    IIO_TEST_FORMAT_EXPECT_EQ(test, buf, ret, "4294967295\n");
-+
-+    value = -4294967295;
-+    values[0] = lower_32_bits(value);
-+    values[1] = upper_32_bits(value);
-+    ret = iio_format_value(buf, IIO_VAL_INT_64, 2, values);
-+    IIO_TEST_FORMAT_EXPECT_EQ(test, buf, ret, "-4294967295\n");
-+
-+    value = LLONG_MAX;
-+    values[0] = lower_32_bits(value);
-+    values[1] = upper_32_bits(value);
-+    ret = iio_format_value(buf, IIO_VAL_INT_64, 2, values);
-+    IIO_TEST_FORMAT_EXPECT_EQ(test, buf, ret, "9223372036854775807\n");
-+
-+    value = LLONG_MIN;
-+    values[0] = lower_32_bits(value);
-+    values[1] = upper_32_bits(value);
-+    ret = iio_format_value(buf, IIO_VAL_INT_64, 2, values);
-+    IIO_TEST_FORMAT_EXPECT_EQ(test, buf, ret, "-9223372036854775808\n");
-+}
-+
-  static struct kunit_case iio_format_test_cases[] = {
-          KUNIT_CASE(iio_test_iio_format_value_integer),
-          KUNIT_CASE(iio_test_iio_format_value_fixedpoint),
-          KUNIT_CASE(iio_test_iio_format_value_fractional),
-          KUNIT_CASE(iio_test_iio_format_value_fractional_log2),
-          KUNIT_CASE(iio_test_iio_format_value_multiple),
-+        KUNIT_CASE(iio_test_iio_format_value_integer_64),
-          {}
-  };
+Well, try to put yourself in the maintainer's shoes, maybe that would
+answer some of that frustration:
+
+- Most of the maintainers are overworked and backlogged until forever.
+
+- If you rework something and you don't get an answer, maybe the
+maintainer is not sure yet and is thinking about the pros and cons of
+taking that patch.
+
+Greg has formulated this particular issue of the maintainers very
+nicely:
+
+"Seriously. It's easier for the maintainer to not accept your code at
+all. To accept it, it takes time to review it, apply it, send it on up
+the development chain, handle any problems that might happen with the
+patch, accept responsibility for the patch, possibly fix any problems
+that happen later on when you disappear, and maintain it for the next 20
+years.
+
+That's a lot of work that you are asking someone else to do on your
+behalf…
+
+So your goal is, when sending a patch, to give me no excuse to not
+accept it. To make it such that if I ignore it, or reject it, I am the
+one that is the problem here, not you."
+
+And this thing is not really clear to all submitters - once their
+patch(es) is applied, they're done. But maintainers have to deal with
+that code forever.
+
+So before you send your patchset, try to think as a maintainer and
+think whether your change makes sense for the *whole* tree and whether
+maintaining it forward would be easy.
+
+- Did I say that maintainers are overworked?
+
+Submitters don't see the amount of work maintainers do in the
+background, testing everything and fixing build issues and bugs. Because
+most of the time, submitters submit and the cleanups and bugs get mopped
+after them by the maintainers - not the submitters.
+
+Look at how some trees resort to maintainer *groups* because a single
+maintainer simply doesn't scale, at the risk of a burnout or whatever
+nasty.
+
+And those maintainer groups have *all* their hands full.
+
+> Hopefully the newbies can also be treated fairly in the community.
+
+Newbies are treated fairly in the community - especially those who come
+prepared and try to understand why the maintainers say things they way
+they do and listen to feedback.
+
+If there are examples against that, we would all like to know about
+them.
+
+I sincerely hope that explains the situation and hope that it'll help
+you see it from the maintainers' POV too and maybe help you deal with
+future submissions a lot better.
+
+Thx.
 
 -- 
-2.17.1
+Regards/Gruss,
+    Boris.
 
-
-
-
-On 01.11.21 09:28, Andriy Tryshnivskyy wrote:
->
-> On 30.10.21 17:47, Jonathan Cameron wrote:
->> CAUTION: This email originated from outside of the organization.
->> Do not click links or open attachments unless you recognize the 
->> sender and know the content is safe.
->>
->>
->> On Sun, 24 Oct 2021 19:58:52 +0300
->> Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com> wrote:
->>
->>> On 24.10.21 19:10, Jonathan Cameron wrote:
->>>
->>>> CAUTION: This email originated from outside of the organization.
->>>> Do not click links or open attachments unless you recognize the 
->>>> sender and know the content is safe.
->> Ah. One thing I forgot.  Value formatting is the only bit of IIO where
->> we have self tests.
->>
->> Would you mind writing some test cases in
->> drivers/iio/tests/iio-test-format.c ?
->>
->> I'll pick this up in the meantime but definitely want to make
->> sure we don't forget the tests!
->>
->> Jonathan
->
-> Sure. I will add some tests.
->
-> Regards,
-> Andriy.
->
->
->>
->>>>
->>>> On Sun, 24 Oct 2021 12:16:26 +0300
->>>> Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com> wrote:
->>>>
->>>>> Introduce IIO_VAL_INT_64 to read 64-bit value for
->>>>> channel attribute. Val is used as lower 32 bits.
->>>>>
->>>>> Signed-off-by: Andriy Tryshnivskyy 
->>>>> <andriy.tryshnivskyy@opensynergy.com>
->>>>> ---
->>>>>    drivers/iio/industrialio-core.c | 3 +++
->>>>>    include/linux/iio/types.h       | 1 +
->>>>>    2 files changed, 4 insertions(+)
->>>>>
->>>>> diff --git a/drivers/iio/industrialio-core.c 
->>>>> b/drivers/iio/industrialio-core.c
->>>>> index 6d2175eb7af2..49e42d04ea16 100644
->>>>> --- a/drivers/iio/industrialio-core.c
->>>>> +++ b/drivers/iio/industrialio-core.c
->>>>> @@ -702,6 +702,9 @@ static ssize_t __iio_format_value(char *buf, 
->>>>> size_t offset, unsigned int type,
->>>>>         }
->>>>>         case IIO_VAL_CHAR:
->>>>>                 return sysfs_emit_at(buf, offset, "%c", 
->>>>> (char)vals[0]);
->>>>> +     case IIO_VAL_INT_64:
->>>>> +             tmp2 = (s64)((((u64)vals[1]) << 32) | (u32)vals[0]);
->>>>> +             return sysfs_emit_at(buf, offset, "%lld", tmp2);
->>>>>         default:
->>>>>                 return 0;
->>>>>         }
->>>>> diff --git a/include/linux/iio/types.h b/include/linux/iio/types.h
->>>>> index 84b3f8175cc6..bb6578a5ee28 100644
->>>>> --- a/include/linux/iio/types.h
->>>>> +++ b/include/linux/iio/types.h
->>>>> @@ -24,6 +24,7 @@ enum iio_event_info {
->>>>>    #define IIO_VAL_INT_PLUS_NANO 3
->>>>>    #define IIO_VAL_INT_PLUS_MICRO_DB 4
->>>>>    #define IIO_VAL_INT_MULTIPLE 5
->>>>> +#define IIO_VAL_INT_64 6 /* 64-bit data, val is lower 32 bits) */
->>>> I'm guessing the closing bracket is left over of some editing?
->>>>
->>>> Otherwise fine and I can tidy that up whilst applying.
->>> Yes, it's a typo. Please remove it while applying. Thanks!
->>>
->>>> Note that this is almost certainly too late for this cycle (we are
->>>> about a week away from merge window subject to whatever Linus says
->>>> for rc7 and new stuff needs some time to soak in next), but I'll
->>>> plan to get it queued up early in the next one.
->>>>
->>> Noted. Thanks a lot!
->>>
->>>>>    #define IIO_VAL_FRACTIONAL 10
->>>>>    #define IIO_VAL_FRACTIONAL_LOG2 11
->>>>>    #define IIO_VAL_CHAR 12
->>> Best regards,
->>> Andriy.
->>>
->>>
->>
+https://people.kernel.org/tglx/notes-about-netiquette
