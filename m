@@ -2,149 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5680441464
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 08:50:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6E28441469
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 08:51:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231213AbhKAHwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 03:52:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229933AbhKAHwo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 03:52:44 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 119C6C061714;
-        Mon,  1 Nov 2021 00:50:11 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id c28so34622824lfv.13;
-        Mon, 01 Nov 2021 00:50:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to;
-        bh=IRCKDSoPPRLsc7H2Z6nQPWP4iVyUPXubmxyvNEA5rI0=;
-        b=dsqZN4PBWJyxFEaXn7FXgekAJ1DOQNyxupzkaah3dt8huwovccjrdycge6QLYpmAAq
-         fsYtWxmEsQclncmM7MC/geFbQXlYqTs1cRpSnF/EaukNypAI32n207ePuKc+t1kOxeYZ
-         e5Xh52V2FwYkc4gyy/nruHf1CTOGYEjUjtny6As1xPr+AKvKvcsQNukSQc7sFA22MTvO
-         VuH4ZWbb+omBHwN4fIzL1Pfbrgo6SAYrV+WhcZa4aZXWuXKDvs402nKwCcExSiJDHXUl
-         NnC97rSdL4HCQ+9CptNQE5J07xfB3ICRMBP+hnBIWQU8kT2sGlVzQU4oGLPQsJoBWxdJ
-         Vc1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to;
-        bh=IRCKDSoPPRLsc7H2Z6nQPWP4iVyUPXubmxyvNEA5rI0=;
-        b=37nZXzb7FtgQjJ1WCjHkIa+2mdOyjgx42SnFyq7RY5ROmJNdKJik7ELtoUW0daLCuY
-         GPP64Cj/TO9XKIGeZh8k6T+ASjMCMC0WKpwFaoc9pB3zPLibrE9nTLuthhMs2ZUcKfkj
-         vP6uD9r1BQoBJot+mzLANh4RVFdtFcVxhObX5zgtkuR7xuniPBVEvLxDC96p26UUaRwD
-         iy1uP6KtzFpnz/1AF/hAOXAjIO2U585wvNhGXUstVDVi5trIL/7yQQmvrbylOhw8wCli
-         3sX2V8hLsjIhinoJHepbKKlaoOI/yfGudUFXILPxQck9WAH4vsTCyu45ODYc1xlbcmDE
-         b4dg==
-X-Gm-Message-State: AOAM532tp3xW/1LAcG7a2gfjGkZphc8ZHENcJMa/g5empwsHW4p4Zehk
-        btzJronnIWDsnbjjUxulzpM=
-X-Google-Smtp-Source: ABdhPJyvV/fV5urnhVITHAZ6sJYe9H0BUB5MKg0fKDsWD8zDEH8bdaAix3RULXiznhFNXCW8sURQMQ==
-X-Received: by 2002:a05:6512:3e14:: with SMTP id i20mr15810620lfv.374.1635753009385;
-        Mon, 01 Nov 2021 00:50:09 -0700 (PDT)
-Received: from [192.168.1.11] ([94.103.235.8])
-        by smtp.gmail.com with ESMTPSA id z9sm1332856lfb.252.2021.11.01.00.50.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Nov 2021 00:50:08 -0700 (PDT)
-Content-Type: multipart/mixed; boundary="------------3qYvw9nx8IfEJ0aqiIMk0026"
-Message-ID: <55f04cb1-18ac-085b-3d35-7a01716fbcbe@gmail.com>
-Date:   Mon, 1 Nov 2021 10:50:07 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: Need help in debugging "memory leak in em28xx_init_dev"
-Content-Language: en-US
-To:     Dongliang Mu <mudongliangabcd@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-References: <CAD-N9QXsUcczurqq9LdaVjXFZMBSbStynwFJyu0UayDazGe=nw@mail.gmail.com>
-From:   Pavel Skripkin <paskripkin@gmail.com>
-In-Reply-To: <CAD-N9QXsUcczurqq9LdaVjXFZMBSbStynwFJyu0UayDazGe=nw@mail.gmail.com>
+        id S231181AbhKAHxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 03:53:52 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:60024 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231133AbhKAHxi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 03:53:38 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1635753065; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=GmzcMYsd0e4TNLGroTL3Y93GiSpZvjUfFRe6uyJXVgE=; b=mXnEMf7sPqWKRgGN8SF1zzg01v15M+hTlshZWQw0S3B5Rcvtbu6ynf0xLvG+duHbv8LZTkRq
+ V+5wpp26HdcQ2FjYoKlPzIaFonUKOO4Lra7eKRsXeajhve3Tn0mIYmj/r5RRC+OfBTHmXNnF
+ PikQm9KT//wsME8nvmxPOX+3Y4I=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 617f9c62900d71ea1ec63265 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 01 Nov 2021 07:50:58
+ GMT
+Sender: zijuhu=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 748FDC4360C; Mon,  1 Nov 2021 07:50:57 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from zijuhu-gv.qualcomm.com (unknown [180.166.53.21])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: zijuhu)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7BFBDC4338F;
+        Mon,  1 Nov 2021 07:50:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 7BFBDC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Zijun Hu <zijuhu@codeaurora.org>
+To:     robh@kernel.org, gregkh@linuxfoundation.org, jirislaby@kernel.org
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-bluetooth@vger.kernel.org, zijuhu@codeaurora.org,
+        Zijun Hu <quic_zijuhu@quicinc.com>
+Subject: [PATCH v1] serdev: Add interface serdev_device_ioctl
+Date:   Mon,  1 Nov 2021 15:50:48 +0800
+Message-Id: <1635753048-5289-1-git-send-email-zijuhu@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------3qYvw9nx8IfEJ0aqiIMk0026
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Zijun Hu <quic_zijuhu@quicinc.com>
 
-On 11/1/21 06:02, Dongliang Mu wrote:
-> Hi all,
-> 
-> My local syzkaller instance found one bug named "memory leak in
-> em28xx_init_dev" in 5.14-rc5. Kernel configuration and PoC file are
-> attached(I don't check if the latest kernel is vulnerable, but it
-> should be). The trace from memleak is as follows:
-> 
-> backtrace:
->      [<ffffffff842cc66d>] kmalloc include/linux/slab.h:591 [inline]
->      [<ffffffff842cc66d>] kzalloc include/linux/slab.h:721 [inline]
->      [<ffffffff842cc66d>] em28xx_media_device_init
-> drivers/media/usb/em28xx/em28xx-cards.c:3444 [inline]
->      [<ffffffff842cc66d>] em28xx_init_dev.isra.0+0x366/0x9bf
-> drivers/media/usb/em28xx/em28xx-cards.c:3624
->      [<ffffffff842cd1bd>] em28xx_usb_probe.cold+0x4f7/0xf95
-> drivers/media/usb/em28xx/em28xx-cards.c:3979
->      [<ffffffff82bf0815>] usb_probe_interface+0x185/0x350
-> drivers/usb/core/driver.c:396
-> 
+For serdev_device which is mounted at virtual tty port, tty ioctl()
+maybe be used to make serdev_device ready to talk with tty port, so
+add interface serdev_device_ioctl().
 
+Signed-off-by: Zijun Hu <quic_zijuhu@quicinc.com>
+---
+ drivers/tty/serdev/core.c           | 11 +++++++++++
+ drivers/tty/serdev/serdev-ttyport.c | 12 ++++++++++++
+ include/linux/serdev.h              |  9 +++++++++
+ 3 files changed, 32 insertions(+)
 
-Looks like missing clean up on error handling path.
-
-->probe()
-     em28xx_init_dev()
-       em28xx_media_device_init() <- dev->media_dev allocated
-       *error somewhere in em28xx_init_dev()*
-
-
-And then nothing unwinds em28xx_media_device_init() call, since 
-disconnect won't be called in case of failure in ->probe()
-
-
-Just build tested, but, I guess, something like this should work.
-
-
-
-With regards,
-Pavel Skripkin
-
-
-
-
---------------3qYvw9nx8IfEJ0aqiIMk0026
-Content-Type: text/plain; charset=UTF-8; name="ph"
-Content-Disposition: attachment; filename="ph"
-Content-Transfer-Encoding: base64
-
-ZGlmZiAtLWdpdCBhL2RyaXZlcnMvbWVkaWEvdXNiL2VtMjh4eC9lbTI4eHgtY2FyZHMuYyBi
-L2RyaXZlcnMvbWVkaWEvdXNiL2VtMjh4eC9lbTI4eHgtY2FyZHMuYwppbmRleCBjMWUwZGNj
-Yjc0MDguLmYyMmU1Y2EyZDFiMyAxMDA2NDQKLS0tIGEvZHJpdmVycy9tZWRpYS91c2IvZW0y
-OHh4L2VtMjh4eC1jYXJkcy5jCisrKyBiL2RyaXZlcnMvbWVkaWEvdXNiL2VtMjh4eC9lbTI4
-eHgtY2FyZHMuYwpAQCAtMzYyNiw3ICszNjI2LDcgQEAgc3RhdGljIGludCBlbTI4eHhfaW5p
-dF9kZXYoc3RydWN0IGVtMjh4eCAqZGV2LCBzdHJ1Y3QgdXNiX2RldmljZSAqdWRldiwKIAlp
-ZiAoZGV2LT5pc19hdWRpb19vbmx5KSB7CiAJCXJldHZhbCA9IGVtMjh4eF9hdWRpb19zZXR1
-cChkZXYpOwogCQlpZiAocmV0dmFsKQotCQkJcmV0dXJuIC1FTk9ERVY7CisJCQlnb3RvIGRl
-aW5pdF9tZWRpYTsKIAkJZW0yOHh4X2luaXRfZXh0ZW5zaW9uKGRldik7CiAKIAkJcmV0dXJu
-IDA7CkBAIC0zNjQ1LDcgKzM2NDUsNyBAQCBzdGF0aWMgaW50IGVtMjh4eF9pbml0X2Rldihz
-dHJ1Y3QgZW0yOHh4ICpkZXYsIHN0cnVjdCB1c2JfZGV2aWNlICp1ZGV2LAogCQlkZXZfZXJy
-KCZkZXYtPmludGYtPmRldiwKIAkJCSIlczogZW0yOHh4X2kyY19yZWdpc3RlciBidXMgMCAt
-IGVycm9yIFslZF0hXG4iLAogCQkgICAgICAgX19mdW5jX18sIHJldHZhbCk7Ci0JCXJldHVy
-biByZXR2YWw7CisJCWdvdG8gZGVpbml0X21lZGlhOwogCX0KIAogCS8qIHJlZ2lzdGVyIGky
-YyBidXMgMSAqLwpAQCAtMzY2Myw3ICszNjYzLDcgQEAgc3RhdGljIGludCBlbTI4eHhfaW5p
-dF9kZXYoc3RydWN0IGVtMjh4eCAqZGV2LCBzdHJ1Y3QgdXNiX2RldmljZSAqdWRldiwKIAog
-CQkJZW0yOHh4X2kyY191bnJlZ2lzdGVyKGRldiwgMCk7CiAKLQkJCXJldHVybiByZXR2YWw7
-CisJCQlnb3RvIGRlaW5pdF9tZWRpYTsKIAkJfQogCX0KIApAQCAtMzY3MSw2ICszNjcxLDEw
-IEBAIHN0YXRpYyBpbnQgZW0yOHh4X2luaXRfZGV2KHN0cnVjdCBlbTI4eHggKmRldiwgc3Ry
-dWN0IHVzYl9kZXZpY2UgKnVkZXYsCiAJZW0yOHh4X2NhcmRfc2V0dXAoZGV2KTsKIAogCXJl
-dHVybiAwOworCitkZWluaXRfbWVkaWE6CisJZW0yOHh4X3VucmVnaXN0ZXJfbWVkaWFfZGV2
-aWNlKGRldik7CisJcmV0dXJuIHJldHZhbDsKIH0KIAogc3RhdGljIGludCBlbTI4eHhfZHVw
-bGljYXRlX2RldihzdHJ1Y3QgZW0yOHh4ICpkZXYpCg==
---------------3qYvw9nx8IfEJ0aqiIMk0026--
+diff --git a/drivers/tty/serdev/core.c b/drivers/tty/serdev/core.c
+index f1324fe99378..c0f6cd64716b 100644
+--- a/drivers/tty/serdev/core.c
++++ b/drivers/tty/serdev/core.c
+@@ -405,6 +405,17 @@ int serdev_device_set_tiocm(struct serdev_device *serdev, int set, int clear)
+ }
+ EXPORT_SYMBOL_GPL(serdev_device_set_tiocm);
+ 
++int serdev_device_ioctl(struct serdev_device *serdev, unsigned int cmd, unsigned long arg)
++{
++	struct serdev_controller *ctrl = serdev->ctrl;
++
++	if (!ctrl || !ctrl->ops->ioctl)
++		return -EOPNOTSUPP;
++
++	return ctrl->ops->ioctl(ctrl, cmd, arg);
++}
++EXPORT_SYMBOL_GPL(serdev_device_ioctl);
++
+ static int serdev_drv_probe(struct device *dev)
+ {
+ 	const struct serdev_device_driver *sdrv = to_serdev_device_driver(dev->driver);
+diff --git a/drivers/tty/serdev/serdev-ttyport.c b/drivers/tty/serdev/serdev-ttyport.c
+index d367803e2044..fc6797b26b30 100644
+--- a/drivers/tty/serdev/serdev-ttyport.c
++++ b/drivers/tty/serdev/serdev-ttyport.c
+@@ -247,6 +247,17 @@ static int ttyport_set_tiocm(struct serdev_controller *ctrl, unsigned int set, u
+ 	return tty->ops->tiocmset(tty, set, clear);
+ }
+ 
++static int ttyport_ioctl(struct serdev_controller *ctrl, unsigned int cmd, unsigned long arg)
++{
++	struct serport *serport = serdev_controller_get_drvdata(ctrl);
++	struct tty_struct *tty = serport->tty;
++
++	if (!tty->ops->ioctl)
++		return -EOPNOTSUPP;
++
++	return tty->ops->ioctl(tty, cmd, arg);
++}
++
+ static const struct serdev_controller_ops ctrl_ops = {
+ 	.write_buf = ttyport_write_buf,
+ 	.write_flush = ttyport_write_flush,
+@@ -259,6 +270,7 @@ static const struct serdev_controller_ops ctrl_ops = {
+ 	.wait_until_sent = ttyport_wait_until_sent,
+ 	.get_tiocm = ttyport_get_tiocm,
+ 	.set_tiocm = ttyport_set_tiocm,
++	.ioctl = ttyport_ioctl,
+ };
+ 
+ struct device *serdev_tty_port_register(struct tty_port *port,
+diff --git a/include/linux/serdev.h b/include/linux/serdev.h
+index 3368c261ab62..3b37bbb187c2 100644
+--- a/include/linux/serdev.h
++++ b/include/linux/serdev.h
+@@ -91,6 +91,7 @@ struct serdev_controller_ops {
+ 	void (*wait_until_sent)(struct serdev_controller *, long);
+ 	int (*get_tiocm)(struct serdev_controller *);
+ 	int (*set_tiocm)(struct serdev_controller *, unsigned int, unsigned int);
++	int (*ioctl)(struct serdev_controller *ctrl, unsigned int cmd, unsigned long arg);
+ };
+ 
+ /**
+@@ -201,6 +202,7 @@ int serdev_device_write_buf(struct serdev_device *, const unsigned char *, size_
+ void serdev_device_wait_until_sent(struct serdev_device *, long);
+ int serdev_device_get_tiocm(struct serdev_device *);
+ int serdev_device_set_tiocm(struct serdev_device *, int, int);
++int serdev_device_ioctl(struct serdev_device *serdev, unsigned int cmd, unsigned long arg);
+ void serdev_device_write_wakeup(struct serdev_device *);
+ int serdev_device_write(struct serdev_device *, const unsigned char *, size_t, long);
+ void serdev_device_write_flush(struct serdev_device *);
+@@ -254,6 +256,13 @@ static inline int serdev_device_set_tiocm(struct serdev_device *serdev, int set,
+ {
+ 	return -ENOTSUPP;
+ }
++
++static inline int serdev_device_ioctl(struct serdev_device *serdev,
++				      unsigned int cmd, unsigned long arg)
++{
++	return -EOPNOTSUPP;
++}
++
+ static inline int serdev_device_write(struct serdev_device *sdev, const unsigned char *buf,
+ 				      size_t count, unsigned long timeout)
+ {
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
 
