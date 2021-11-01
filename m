@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A4C1441675
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:22:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 308E04417A6
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:37:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232101AbhKAJZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:25:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58246 "EHLO mail.kernel.org"
+        id S233319AbhKAJiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:38:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43566 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232408AbhKAJXQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:23:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B4016610FC;
-        Mon,  1 Nov 2021 09:20:26 +0000 (UTC)
+        id S232958AbhKAJfp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:35:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B93E161165;
+        Mon,  1 Nov 2021 09:25:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758427;
-        bh=maQ4MxNKY5L3TnTiUTYt57su3TfHoFW3ctaqN1+9/BA=;
+        s=korg; t=1635758749;
+        bh=oP70mvvBFpm42lYoA/4Wu789MTu/AJSU+1ote24pc8g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=meibomFm0YYA+v8qgU8qblV/V7OfNMb5IeF+Q1zC/KnwxgtImNGPhjlXDiLU901CK
-         leM+sKvMac2urVHU+EeOapF00cAHl+CAAvBDpOx91ys4EVXOgLPL7RiDoHIsa6Y2gA
-         BEnWP6Yo5h1ynezAB4FYlpeVtTL1bS9LUn0MY2ZM=
+        b=1Tp55feM08uiZBjyuwyasQuaYAXw3eyhScY87Jm4+8v+tcfwghpvD6cX+tzP6B7b7
+         qbBiLFGzxPgK25mP53XHDRr4maDj9PnrmNJ7tsrKha//By9toYo95En9uwY3ukoIiS
+         D5pQWfzkPAWE8Ud1RNMtekQhqddsWr+GplVuPfcg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dinh Nguyen <dinguyen@kernel.org>
-Subject: [PATCH 4.14 19/25] nios2: Make NIOS2_DTB_SOURCE_BOOL depend on !COMPILE_TEST
+        stable@vger.kernel.org, Varun Prakash <varun@chelsio.com>,
+        Keith Busch <kbusch@kernel.org>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Christoph Hellwig <hch@lst.de>
+Subject: [PATCH 5.10 43/77] nvme-tcp: fix possible req->offset corruption
 Date:   Mon,  1 Nov 2021 10:17:31 +0100
-Message-Id: <20211101082451.563840643@linuxfoundation.org>
+Message-Id: <20211101082520.940326703@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082447.070493993@linuxfoundation.org>
-References: <20211101082447.070493993@linuxfoundation.org>
+In-Reply-To: <20211101082511.254155853@linuxfoundation.org>
+References: <20211101082511.254155853@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +41,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guenter Roeck <linux@roeck-us.net>
+From: Varun Prakash <varun@chelsio.com>
 
-commit 4a089e95b4d6bb625044d47aed0c442a8f7bd093 upstream.
+commit ce7723e9cdae4eb3030da082876580f4b2dc0861 upstream.
 
-nios2:allmodconfig builds fail with
+With commit db5ad6b7f8cd ("nvme-tcp: try to send request in queue_rq
+context") r2t and response PDU can get processed while send function
+is executing.
 
-make[1]: *** No rule to make target 'arch/nios2/boot/dts/""',
-	needed by 'arch/nios2/boot/dts/built-in.a'.  Stop.
-make: [Makefile:1868: arch/nios2/boot/dts] Error 2 (ignored)
+Current data digest send code uses req->offset after kernel_sendmsg(),
+this creates a race condition where req->offset gets reset before it
+is used in send function.
 
-This is seen with compile tests since those enable NIOS2_DTB_SOURCE_BOOL,
-which in turn enables NIOS2_DTB_SOURCE. This causes the build error
-because the default value for NIOS2_DTB_SOURCE is an empty string.
-Disable NIOS2_DTB_SOURCE_BOOL for compile tests to avoid the error.
+This can happen in two cases -
+1. Target sends r2t PDU which resets req->offset.
+2. Target send response PDU which completes the req and then req is
+   used for a new command, nvme_tcp_setup_cmd_pdu() resets req->offset.
 
-Fixes: 2fc8483fdcde ("nios2: Build infrastructure")
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
+Fix this by storing req->offset in a local variable and using
+this local variable after kernel_sendmsg().
+
+Fixes: db5ad6b7f8cd ("nvme-tcp: try to send request in queue_rq context")
+Signed-off-by: Varun Prakash <varun@chelsio.com>
+Reviewed-by: Keith Busch <kbusch@kernel.org>
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/nios2/platform/Kconfig.platform |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/nvme/host/tcp.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/arch/nios2/platform/Kconfig.platform
-+++ b/arch/nios2/platform/Kconfig.platform
-@@ -37,6 +37,7 @@ config NIOS2_DTB_PHYS_ADDR
+--- a/drivers/nvme/host/tcp.c
++++ b/drivers/nvme/host/tcp.c
+@@ -1037,6 +1037,7 @@ static int nvme_tcp_try_send_data_pdu(st
+ static int nvme_tcp_try_send_ddgst(struct nvme_tcp_request *req)
+ {
+ 	struct nvme_tcp_queue *queue = req->queue;
++	size_t offset = req->offset;
+ 	int ret;
+ 	struct msghdr msg = { .msg_flags = MSG_DONTWAIT };
+ 	struct kvec iov = {
+@@ -1053,7 +1054,7 @@ static int nvme_tcp_try_send_ddgst(struc
+ 	if (unlikely(ret <= 0))
+ 		return ret;
  
- config NIOS2_DTB_SOURCE_BOOL
- 	bool "Compile and link device tree into kernel image"
-+	depends on !COMPILE_TEST
- 	default n
- 	help
- 	  This allows you to specify a dts (device tree source) file
+-	if (req->offset + ret == NVME_TCP_DIGEST_LENGTH) {
++	if (offset + ret == NVME_TCP_DIGEST_LENGTH) {
+ 		nvme_tcp_done_send_req(queue);
+ 		return 1;
+ 	}
 
 
