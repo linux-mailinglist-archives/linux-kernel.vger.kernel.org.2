@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 607F044143D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 08:38:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5C6C44144B
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 08:41:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230468AbhKAHlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 03:41:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47668 "EHLO
+        id S231219AbhKAHnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 03:43:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229933AbhKAHlL (ORCPT
+        with ESMTP id S230289AbhKAHnn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 03:41:11 -0400
+        Mon, 1 Nov 2021 03:43:43 -0400
 Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BD6AC061714
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 00:38:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08F64C061714
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 00:41:08 -0700 (PDT)
 Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
         (Authenticated sender: bbrezillon)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 19EDD1F438BB;
-        Mon,  1 Nov 2021 07:38:33 +0000 (GMT)
-Date:   Mon, 1 Nov 2021 08:38:24 +0100
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 8FA071F42B21;
+        Mon,  1 Nov 2021 07:41:06 +0000 (GMT)
+Date:   Mon, 1 Nov 2021 08:40:59 +0100
 From:   Boris Brezillon <boris.brezillon@collabora.com>
 To:     Sean Nyekjaer <sean@geanix.com>
 Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -29,12 +29,12 @@ Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
         Vignesh Raghavendra <vigneshr@ti.com>,
         Boris Brezillon <bbrezillon@kernel.org>,
         linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/4] mtd: rawnand: nand_bbt: hide suspend/resume
- hooks while scanning bbt
-Message-ID: <20211101083824.236b9983@collabora.com>
-In-Reply-To: <20211026055551.3053598-2-sean@geanix.com>
+Subject: Re: [PATCH v4 3/4] mtd: core: protect access to MTD devices while
+ in suspend
+Message-ID: <20211101084059.5b703b8b@collabora.com>
+In-Reply-To: <20211026055551.3053598-4-sean@geanix.com>
 References: <20211026055551.3053598-1-sean@geanix.com>
-        <20211026055551.3053598-2-sean@geanix.com>
+        <20211026055551.3053598-4-sean@geanix.com>
 Organization: Collabora
 X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
@@ -44,73 +44,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Oct 2021 07:55:48 +0200
+On Tue, 26 Oct 2021 07:55:50 +0200
 Sean Nyekjaer <sean@geanix.com> wrote:
 
-> From: Boris Brezillon <boris.brezillon@collabora.com>
-> 
-> The BBT scan logic use the MTD helpers before the MTD layer had a
-> chance to initialize the device, and that leads to issues when
-> accessing the uninitialized suspend lock. Let's temporarily set the
-> suspend/resume hooks to NULL to skip the lock acquire/release step.
-> 
-> Fixes: 013e6292aaf5 ("mtd: rawnand: Simplify the locking")
-
-I think I already mentioned this Fixes tag should not be there.
-
-> Tested-by: Sean Nyekjaer <sean@geanix.com>
-> Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
-> Signed-off-by: Sean Nyekjaer <sean@geanix.com>
-> ---
->  drivers/mtd/nand/raw/nand_bbt.c | 28 +++++++++++++++++++++++++++-
->  1 file changed, 27 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/nand_bbt.c b/drivers/mtd/nand/raw/nand_bbt.c
-> index b7ad030225f8..93d385703469 100644
-> --- a/drivers/mtd/nand/raw/nand_bbt.c
-> +++ b/drivers/mtd/nand/raw/nand_bbt.c
-> @@ -1397,8 +1397,28 @@ static int nand_create_badblock_pattern(struct nand_chip *this)
->   */
->  int nand_create_bbt(struct nand_chip *this)
+> @@ -1406,6 +1423,7 @@ int mtd_panic_write(struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen,
+>  		    const u_char *buf)
 >  {
-> +	struct mtd_info *mtd = nand_to_mtd(this);
-> +	int (*suspend) (struct mtd_info *) = mtd->_suspend;
-> +	void (*resume) (struct mtd_info *) = mtd->_resume;
->  	int ret;
+>  	struct mtd_info *master = mtd_get_master(mtd);
+> +	int ret;
 >  
-> +	/*
-> +	 * The BBT scan logic use the MTD helpers before the MTD layer had a
-> +	 * chance to initialize the device, and that leads to issues when
-> +	 * accessing the uninitialized suspend lock. Let's temporarily set the
-> +	 * suspend/resume hooks to NULL to skip the lock acquire/release step.
-> +	 *
-> +	 * FIXME: This is an ugly hack, so please don't copy this pattern to
-> +	 * other MTD implementations. The proper fix would be to implement a
-> +	 * generic BBT scan logic at the NAND level that's not using any of the
-> +	 * MTD helpers to access pages. We also might consider doing a two
-> +	 * step initialization at the MTD level (mtd_device_init() +
-> +	 * mtd_device_register()) so some of the fields are initialized
-> +	 * early.
-> +	 */
-> +	mtd->_suspend = NULL;
-> +	mtd->_resume = NULL;
-> +
->  	/* Is a flash based bad block table requested? */
->  	if (this->bbt_options & NAND_BBT_USE_FLASH) {
->  		/* Use the default pattern descriptors */
-> @@ -1422,7 +1442,13 @@ int nand_create_bbt(struct nand_chip *this)
->  			return ret;
->  	}
+>  	*retlen = 0;
+>  	if (!master->_panic_write)
+> @@ -1419,8 +1437,12 @@ int mtd_panic_write(struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen,
+>  	if (!master->oops_panic_write)
+>  		master->oops_panic_write = true;
 >  
-> -	return nand_scan_bbt(this, this->badblock_pattern);
-> +	ret = nand_scan_bbt(this, this->badblock_pattern);
-> +
-> +	/* Restore the suspend/resume hooks. */
-> +	mtd->_suspend = suspend;
-> +	mtd->_resume = resume;
+> -	return master->_panic_write(master, mtd_get_master_ofs(mtd, to), len,
+> -				    retlen, buf);
+> +	mtd_start_access(master);
+> +	ret = master->_panic_write(master, mtd_get_master_ofs(mtd, to), len,
+> +				   retlen, buf);
+> +	mtd_end_access(master);
 > +
 > +	return ret;
 >  }
->  EXPORT_SYMBOL(nand_create_bbt);
->  
 
+I suspect panic_write should be an exception, otherwise a panic in the
+suspend path would never be able to write its data to the flash.
