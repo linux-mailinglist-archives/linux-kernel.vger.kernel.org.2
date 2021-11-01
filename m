@@ -2,109 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0370C441B7C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 14:06:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 539E3441B88
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 14:12:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231665AbhKANJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 09:09:17 -0400
-Received: from mga14.intel.com ([192.55.52.115]:49947 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230144AbhKANJP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 09:09:15 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10154"; a="231271754"
-X-IronPort-AV: E=Sophos;i="5.87,199,1631602800"; 
-   d="scan'208";a="231271754"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2021 06:06:42 -0700
-X-IronPort-AV: E=Sophos;i="5.87,199,1631602800"; 
-   d="scan'208";a="500032544"
-Received: from mvtammin-mobl.ger.corp.intel.com (HELO localhost) ([10.251.214.228])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2021 06:06:38 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Perry Yuan <Perry.Yuan@amd.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     Perry.Yuan@amd.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Xinmei.Huang@amd.com,
-        Ray.Huang@amd.com
-Subject: Re: [PATCH v2] drm/dp: Fix aux->transfer NULL pointer dereference on drm_dp_dpcd_access
-In-Reply-To: <20211101061053.38173-1-Perry.Yuan@amd.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20211101061053.38173-1-Perry.Yuan@amd.com>
-Date:   Mon, 01 Nov 2021 15:06:36 +0200
-Message-ID: <87a6iodnz7.fsf@intel.com>
+        id S232097AbhKANP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 09:15:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39258 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230438AbhKANPZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 09:15:25 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08752C061714;
+        Mon,  1 Nov 2021 06:12:52 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id p204so9815768iod.8;
+        Mon, 01 Nov 2021 06:12:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LRGh6td70WGdmcMGRp1Cc0ENwiVhacG+3GURE37PQRY=;
+        b=D1c3niaA50bwFpxIVPXswFp23Ns+FjPYl1hMI22JykdorR1b/ucEkfMwwKSD4aZg98
+         dn3sayONdJC9VFmOi1EL/PVGFWgDLBFFxT+zWBe/d7JIZUKyfad70zLSk7V6Imkeaa3u
+         zIIUfXU46UUcIlDJ6vj5XCl72FecPOv5raXwtIEpFGjmP5NNIkbJsqLsS618/p/qxuE+
+         /x59PrEi0ypVfSfy+W/ZShyD2MIr4zqA/jaOBpltB81M8CaV8U2KgiqHuv8H/0unfN/h
+         GG7/LLA8an1EIAjyfciAhAklGV3xdulIwie9XNx8+2UZqQee6lB+0fa9FU0bSrR40OQd
+         toww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LRGh6td70WGdmcMGRp1Cc0ENwiVhacG+3GURE37PQRY=;
+        b=mMGM+iZ2tGKPjPHMdEGz8jxIy7t9krvqzee5DSU3y9LsfNoz1tOIMUKAHhtHHFTEnL
+         ybJK3bPxnsX+59vcKUdKeCUgNWUQZZ/HMJUI4S2jtmQcOAp9JRol/yHnkv7IQOIFXir2
+         YzHrRSup2LErXATWAxfUmlXCAM9BVZJpUdO9SizfAna38O+taDKKsk90qDRXU8hK4tuZ
+         21I1pOGNaWfvZ1LaML+qXLkdAFY+tfWss9purhUiUqY3TvLhQid0HvSvMI8ortaIK3pL
+         QG9u5iKUb5PkHKP7J+TfSNIOt2LCqkxqBFNdo94FzaBTagw9LHJRxNXc86iW2VbRjQR0
+         WnuQ==
+X-Gm-Message-State: AOAM5307y6p4t6UlnZ8WnBGr7538axVsJQ0dgmfkZxAX2yNVrWBWT5gQ
+        HSlWc5LXaubOovQs8X6vA9bxlf18zt2WNmfJR9fI+npaTzQKbCkO
+X-Google-Smtp-Source: ABdhPJyIQzixlwZawM13KFKv+/9Vrhh6ZnO8DyH1IQEASFpfh82lPE9sWf9iZMZFsPo6igJmpnwc9DB1NFy4l16FgZI=
+X-Received: by 2002:a05:6602:164b:: with SMTP id y11mr6027737iow.9.1635772371384;
+ Mon, 01 Nov 2021 06:12:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20211101060419.4682-1-laoar.shao@gmail.com> <YX/hS6nRisiiFiBD@casper.infradead.org>
+In-Reply-To: <YX/hS6nRisiiFiBD@casper.infradead.org>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Mon, 1 Nov 2021 21:12:15 +0800
+Message-ID: <CALOAHbB5Dhiep5DhpzQ2RsJee88MuADQ=-FMwmBCLDJ21by2dw@mail.gmail.com>
+Subject: Re: [PATCH v7 00/11] extend task comm from 16 to 24
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qiang Zhang <qiang.zhang@windriver.com>,
+        robdclark <robdclark@chromium.org>,
+        christian <christian@brauner.io>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        dennis.dalessandro@cornelisnetworks.com,
+        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
+        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        kbuild test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 01 Nov 2021, Perry Yuan <Perry.Yuan@amd.com> wrote:
-> Fix below crash by adding a check in the drm_dp_dpcd_access which
-> ensures that aux->transfer was actually initialized earlier.
-
-Gut feeling says this is papering over a real usage issue somewhere
-else. Why is the aux being used for transfers before ->transfer has been
-set? Why should the dp helper be defensive against all kinds of
-misprogramming?
-
-
-BR,
-Jani.
-
-
+On Mon, Nov 1, 2021 at 8:46 PM Matthew Wilcox <willy@infradead.org> wrote:
 >
-> BUG: kernel NULL pointer dereference, address: 0000000000000000
-> PGD 0 P4D 0
-> Oops: 0010 [#1] SMP NOPTI
-> RIP: 0010:0x0
-> Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
-> RSP: 0018:ffffa8d64225bab8 EFLAGS: 00010246
-> RAX: 0000000000000000 RBX: 0000000000000020 RCX: ffffa8d64225bb5e
-> RDX: ffff93151d921880 RSI: ffffa8d64225bac8 RDI: ffff931511a1a9d8
-> RBP: ffffa8d64225bb10 R08: 0000000000000001 R09: ffffa8d64225ba60
-> R10: 0000000000000002 R11: 000000000000000d R12: 0000000000000001
-> R13: 0000000000000000 R14: ffffa8d64225bb5e R15: ffff931511a1a9d8
-> FS: 00007ff8ea7fa9c0(0000) GS:ffff9317fe6c0000(0000) knlGS:0000000000000000
-> CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: ffffffffffffffd6 CR3: 000000010d5a4000 CR4: 0000000000750ee0
-> PKRU: 55555554
-> Call Trace:
-> drm_dp_dpcd_access+0x72/0x110 [drm_kms_helper]
-> drm_dp_dpcd_read+0xb7/0xf0 [drm_kms_helper]
-> drm_dp_start_crc+0x38/0xb0 [drm_kms_helper]
-> amdgpu_dm_crtc_set_crc_source+0x1ae/0x3e0 [amdgpu]
-> crtc_crc_open+0x174/0x220 [drm]
-> full_proxy_open+0x168/0x1f0
-> ? open_proxy_open+0x100/0x100
-> do_dentry_open+0x156/0x370
-> vfs_open+0x2d/0x30
+> On Mon, Nov 01, 2021 at 06:04:08AM +0000, Yafang Shao wrote:
+> > There're many truncated kthreads in the kernel, which may make trouble
+> > for the user, for example, the user can't get detailed device
+> > information from the task comm.
+> >
+> > This patchset tries to improve this problem fundamentally by extending
+> > the task comm size from 16 to 24, which is a very simple way.
 >
-> v2: fix some typo
+> It can't be that simple if we're on v7 and at 11 patches!
 >
-> Signed-off-by: Perry Yuan <Perry.Yuan@amd.com>
-> ---
->  drivers/gpu/drm/drm_dp_helper.c | 4 ++++
->  1 file changed, 4 insertions(+)
+
+Most of the changes are because of hard-coded 16 that can't be easily grepped.
+In these 11 patches, patch #1, #2, #4, #5, #6, #7 and #9 are cleanups,
+which can be a different patchset.
+
+The core changes of these patchset are patch #3, #8 and #10.
+
+#11 can also be a seperate patch.
+
+> It would be helpful if you included links to earlier postings.  I can
+> only find v5 and v6 in my inbox, so I fear I'm going to re-ask some
+> questions which were already answered.
 >
-> diff --git a/drivers/gpu/drm/drm_dp_helper.c b/drivers/gpu/drm/drm_dp_helper.c
-> index 6d0f2c447f3b..76b28396001a 100644
-> --- a/drivers/gpu/drm/drm_dp_helper.c
-> +++ b/drivers/gpu/drm/drm_dp_helper.c
-> @@ -260,6 +260,10 @@ static int drm_dp_dpcd_access(struct drm_dp_aux *aux, u8 request,
->  	msg.buffer = buffer;
->  	msg.size = size;
->  
-> +	/* No transfer function is set, so not an available DP connector */
-> +	if (!aux->transfer)
-> +		return -EINVAL;
-> +
->  	mutex_lock(&aux->hw_mutex);
->  
->  	/*
+
+v1: https://lore.kernel.org/lkml/20210929115036.4851-1-laoar.shao@gmail.com/
+v2: https://lore.kernel.org/lkml/20211007120752.5195-1-laoar.shao@gmail.com/
+v3: https://lore.kernel.org/lkml/20211010102429.99577-1-laoar.shao@gmail.com/
+v4: https://lore.kernel.org/lkml/20211013102346.179642-1-laoar.shao@gmail.com/
+v5: https://lore.kernel.org/lkml/20211021034516.4400-1-laoar.shao@gmail.com/
+v6: https://lore.kernel.org/lkml/20211025083315.4752-1-laoar.shao@gmail.com/
+
+
+> Why can't we shorten the names of these kthreads?  You didn't
+> give any examples, so I can't suggest any possibilities.
+>
+
+Take 'jbd2/nvme0n1p2-' for example, that's a nice name, which gives a
+good description via the name.
+And I don't think it is a good idea to shorten its name.
 
 -- 
-Jani Nikula, Intel Open Source Graphics Center
+Thanks
+Yafang
