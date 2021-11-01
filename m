@@ -2,70 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BA0F4415E4
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:12:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D01B44180E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:42:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231663AbhKAJP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:15:27 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:25332 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231223AbhKAJPZ (ORCPT
+        id S232336AbhKAJmf convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 1 Nov 2021 05:42:35 -0400
+Received: from slot0.vaultxpro.com ([185.219.83.21]:41276 "EHLO
+        slot0.vaultxpro.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S233493AbhKAJkB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:15:25 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HjRyb5T44zbcwY;
-        Mon,  1 Nov 2021 17:08:07 +0800 (CST)
-Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Mon, 1 Nov 2021 17:12:50 +0800
-Received: from huawei.com (10.175.127.227) by kwepemm600009.china.huawei.com
- (7.193.23.164) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Mon, 1 Nov
- 2021 17:12:49 +0800
-From:   Yu Kuai <yukuai3@huawei.com>
-To:     <josef@toxicpanda.com>, <axboe@kernel.dk>
-CC:     <linux-block@vger.kernel.org>, <nbd@other.debian.org>,
-        <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
-        <yi.zhang@huawei.com>
-Subject: [PATCH] nbd: error out if socket index doesn't match in nbd_handle_reply()
-Date:   Mon, 1 Nov 2021 17:25:38 +0800
-Message-ID: <20211101092538.1155842-1-yukuai3@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        Mon, 1 Nov 2021 05:40:01 -0400
+X-Greylist: delayed 604 seconds by postgrey-1.27 at vger.kernel.org; Mon, 01 Nov 2021 05:40:01 EDT
+Reply-To: kelvinlee11@mail.ru
+From:   "Lee " <kelvinlee11@mail.ru>
+To:     linux-kernel@vger.kernel.org
+Subject: inquiry
+Date:   1 Nov 2021 02:26:52 -0700
+Message-ID: <20211101001439.B05D2DB23E0EC94F@mail.ru>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm600009.china.huawei.com (7.193.23.164)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit fcf3d633d8e1 ("nbd: check sock index in nbd_read_stat()") just
-add error message when socket index doesn't match. Since the request
-and reply must be transmitted over the same socket, it's ok to error
-out in such situation.
 
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
- drivers/block/nbd.c | 2 ++
- 1 file changed, 2 insertions(+)
+Hello, greetings from Kelvin lee.
 
-diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-index b47b2a87ae8f..18da6385645c 100644
---- a/drivers/block/nbd.c
-+++ b/drivers/block/nbd.c
-@@ -755,6 +755,8 @@ static struct nbd_cmd *nbd_handle_reply(struct nbd_device *nbd, int index,
- 	if (cmd->index != index) {
- 		dev_err(disk_to_dev(nbd->disk), "Unexpected reply %d from different sock %d (expected %d)",
- 			tag, index, cmd->index);
-+		ret = -ENOENT;
-+		goto out;
- 	}
- 	if (cmd->cmd_cookie != nbd_handle_to_cookie(handle)) {
- 		dev_err(disk_to_dev(nbd->disk), "Double reply on req %p, cmd_cookie %u, handle cookie %u\n",
--- 
-2.31.1
+I am Kelvin, i have been importing into Russia for the past 
+5years, due to covid 19 that i can't travel as much, i am chasing 
+suppliers and manufacturers of products to enable us meet our 
+customer demand
+we have gone through your website, we are interested in your 
+product,
+therefore we request the price list and quotations
+ 
+Your urgent response will be appreciated
 
+Best Regard
+
+Kelvin Lee
