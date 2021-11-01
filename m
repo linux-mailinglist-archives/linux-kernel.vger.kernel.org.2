@@ -2,72 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BEC4441A9E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 12:23:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77B14441AA0
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 12:26:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231841AbhKAL0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 07:26:17 -0400
-Received: from mga18.intel.com ([134.134.136.126]:33939 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230520AbhKAL0P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 07:26:15 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10154"; a="217907045"
-X-IronPort-AV: E=Sophos;i="5.87,199,1631602800"; 
-   d="scan'208";a="217907045"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2021 04:23:42 -0700
-X-IronPort-AV: E=Sophos;i="5.87,199,1631602800"; 
-   d="scan'208";a="467274191"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2021 04:23:39 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1mhVPP-002eAm-4K;
-        Mon, 01 Nov 2021 13:23:23 +0200
-Date:   Mon, 1 Nov 2021 13:23:22 +0200
-From:   Andy Shevchenko <andriy.shevchenko@intel.com>
-To:     Chen Yu <yu.c.chen@intel.com>
-Cc:     linux-acpi@vger.kernel.org,
+        id S231969AbhKAL2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 07:28:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47784 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231437AbhKAL2i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 07:28:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635765964;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=KnETWn4ATxLuSMGRTYpAvY2hoOsYqW2nRmiZQxMBcXc=;
+        b=NMYCeP8RkOS2b65v9uoYZgyYkl7jH3Qn5oYvKXhOwYYfq9abBV+4gQnSkX7dmM8Z9Gc8EH
+        xQ9+gdTp+CzN2L/+I+NDszaTK53zOlqUKwJigbkmtiNoS7r4ROqa6wLGA+TYNlZ8aZ07qI
+        wTHgyzIqGtjP2ARj4wPt6wkaMtx7NYE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-60-PbsYymxrN6iKvl-3Zjrifg-1; Mon, 01 Nov 2021 07:26:03 -0400
+X-MC-Unique: PbsYymxrN6iKvl-3Zjrifg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 46356802682;
+        Mon,  1 Nov 2021 11:26:02 +0000 (UTC)
+Received: from localhost (ovpn-8-37.pek2.redhat.com [10.72.8.37])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8389B6091B;
+        Mon,  1 Nov 2021 11:25:55 +0000 (UTC)
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>, live-patching@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Aubrey Li <aubrey.li@intel.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 3/4] drivers/acpi: Introduce Platform Firmware Runtime
- Update Telemetry
-Message-ID: <YX/OKs8j1weqwomr@smile.fi.intel.com>
-References: <cover.1635317102.git.yu.c.chen@intel.com>
- <b37584e515c36882990295097386e783da29110e.1635317102.git.yu.c.chen@intel.com>
- <YXktrG1LhK5tj2uF@smile.fi.intel.com>
- <20211101101641.GA20219@chenyu5-mobl1>
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Ming Lei <ming.lei@redhat.com>
+Subject: [PATCH V3 0/3] livepatch: cleanup kpl_patch kobject release
+Date:   Mon,  1 Nov 2021 19:25:45 +0800
+Message-Id: <20211101112548.3364086-1-ming.lei@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211101101641.GA20219@chenyu5-mobl1>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 01, 2021 at 06:16:41PM +0800, Chen Yu wrote:
-> On Wed, Oct 27, 2021 at 01:45:00PM +0300, Andy Shevchenko wrote:
-> > On Wed, Oct 27, 2021 at 03:08:05PM +0800, Chen Yu wrote:
+Hello,
 
-...
+The 1st patch moves module_put() to release handler of klp_patch
+kobject.
 
-> > Looking into the code I have feelings of déjà-vu. Has it really had
-> > nothing in common with the previous patch?
-> > 
-> They both invokes _DSM to trigger the low level actions. However the input
-> parameters and return ACPI package as well as the functions are different
-> and hard to extract the common code between them.
+The 2nd patch changes to free klp_patch and other kobjects without
+klp_mutex.
 
-So, please amend commit message(s) to elaborate this.
+The 3rd patch switches to synchronous kobject release for klp_patch.
+
+
+V3:
+	- one line fix on check of list_empty() in enabled_store(), 3/3
+
+V2:
+	- remove enabled attribute before deleting this klp_patch kobject,
+	for avoiding deadlock in deleting me
+
+
+Ming Lei (3):
+  livepatch: remove 'struct completion finish' from klp_patch
+  livepatch: free klp_patch object without holding klp_mutex
+  livepatch: free klp_patch object synchronously
+
+ include/linux/livepatch.h     |  2 --
+ kernel/livepatch/core.c       | 67 ++++++++++++++++-------------------
+ kernel/livepatch/core.h       |  3 +-
+ kernel/livepatch/transition.c | 23 ++++++++----
+ kernel/livepatch/transition.h |  2 +-
+ 5 files changed, 50 insertions(+), 47 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.31.1
 
