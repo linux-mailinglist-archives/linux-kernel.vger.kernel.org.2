@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B230E4416D0
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:27:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26E93441629
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:21:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232122AbhKAJaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:30:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59000 "EHLO mail.kernel.org"
+        id S232388AbhKAJXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:23:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58580 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232642AbhKAJ03 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:26:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 18CD9610EA;
-        Mon,  1 Nov 2021 09:22:08 +0000 (UTC)
+        id S232070AbhKAJWQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:22:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D74EB610CA;
+        Mon,  1 Nov 2021 09:19:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758529;
-        bh=QYMc2LetiSPB3y38kct58ltgqYH0gw+xj3NsO2ewOMg=;
+        s=korg; t=1635758369;
+        bh=TcWYGCOlpki0C81uZqZVH0QLWUlmqDkCh/gp6pjsezQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Yr8oUInXBDMqGHGCKFOXjDww+o0d/hEzhsOZ8/wPzg5gP4Mw0Hp+aeuUbxENiFg+0
-         lb1frfK00W4XYSXEeU+yndu0Cd8BdXkJpWjeEdCyyzZsU8u+4iBZQZNL5NGTbHRBQ1
-         NjiF9Nvg2n+EcPrIN1/5kp0gRN1RAKyRubip0rZo=
+        b=XZbB8QDXuN4xWqOWi5yoB/4AS0pLwdUrw+Dphb1SCHHdOv0C6Efu2N7aNTOmNsR8L
+         fzDYXxUvhlJ1LUWnpM5eVLDjKnIAWHeisuYrhWwtfD+0iubHgKA2JBQqXB24np365A
+         N5LpUSGbW35uVY7x1iaR7i51WDpPQZy/nuGMFRwU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yanfei Xu <yanfei.xu@windriver.com>,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 12/35] Revert "net: mdiobus: Fix memory leak in __mdiobus_register"
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 4.9 15/20] regmap: Fix possible double-free in regcache_rbtree_exit()
 Date:   Mon,  1 Nov 2021 10:17:24 +0100
-Message-Id: <20211101082454.457105377@linuxfoundation.org>
+Message-Id: <20211101082447.383804619@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082451.430720900@linuxfoundation.org>
-References: <20211101082451.430720900@linuxfoundation.org>
+In-Reply-To: <20211101082444.133899096@linuxfoundation.org>
+References: <20211101082444.133899096@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,44 +40,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-commit 10eff1f5788b6ffac212c254e2f3666219576889 upstream.
+commit 55e6d8037805b3400096d621091dfbf713f97e83 upstream.
 
-This reverts commit ab609f25d19858513919369ff3d9a63c02cd9e2e.
+In regcache_rbtree_insert_to_block(), when 'present' realloc failed,
+the 'blk' which is supposed to assign to 'rbnode->block' will be freed,
+so 'rbnode->block' points a freed memory, in the error handling path of
+regcache_rbtree_init(), 'rbnode->block' will be freed again in
+regcache_rbtree_exit(), KASAN will report double-free as follows:
 
-This patch is correct in the sense that we _should_ call device_put() in
-case of device_register() failure, but the problem in this code is more
-vast.
+BUG: KASAN: double-free or invalid-free in kfree+0xce/0x390
+Call Trace:
+ slab_free_freelist_hook+0x10d/0x240
+ kfree+0xce/0x390
+ regcache_rbtree_exit+0x15d/0x1a0
+ regcache_rbtree_init+0x224/0x2c0
+ regcache_init+0x88d/0x1310
+ __regmap_init+0x3151/0x4a80
+ __devm_regmap_init+0x7d/0x100
+ madera_spi_probe+0x10f/0x333 [madera_spi]
+ spi_probe+0x183/0x210
+ really_probe+0x285/0xc30
 
-We need to set bus->state to UNMDIOBUS_REGISTERED before calling
-device_register() to correctly release the device in mdiobus_free().
-This patch prevents us from doing it, since in case of device_register()
-failure put_device() will be called 2 times and it will cause UAF or
-something else.
+To fix this, moving up the assignment of rbnode->block to immediately after
+the reallocation has succeeded so that the data structure stays valid even
+if the second reallocation fails.
 
-Also, Reported-by: tag in revered commit was wrong, since syzbot
-reported different leak in same function.
-
-Link: https://lore.kernel.org/netdev/20210928092657.GI2048@kadam/
-Acked-by: Yanfei Xu <yanfei.xu@windriver.com>
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Link: https://lore.kernel.org/r/f12fb1faa4eccf0f355788225335eb4309ff2599.1633024062.git.paskripkin@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Fixes: 3f4ff561bc88b ("regmap: rbtree: Make cache_present bitmap per node")
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Link: https://lore.kernel.org/r/20211012023735.1632786-1-yangyingliang@huawei.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/phy/mdio_bus.c |    1 -
- 1 file changed, 1 deletion(-)
+ drivers/base/regmap/regcache-rbtree.c |    7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
---- a/drivers/net/phy/mdio_bus.c
-+++ b/drivers/net/phy/mdio_bus.c
-@@ -388,7 +388,6 @@ int __mdiobus_register(struct mii_bus *b
- 	err = device_register(&bus->dev);
- 	if (err) {
- 		pr_err("mii_bus %s failed to register\n", bus->id);
--		put_device(&bus->dev);
- 		return -EINVAL;
+--- a/drivers/base/regmap/regcache-rbtree.c
++++ b/drivers/base/regmap/regcache-rbtree.c
+@@ -296,14 +296,14 @@ static int regcache_rbtree_insert_to_blo
+ 	if (!blk)
+ 		return -ENOMEM;
+ 
++	rbnode->block = blk;
++
+ 	if (BITS_TO_LONGS(blklen) > BITS_TO_LONGS(rbnode->blklen)) {
+ 		present = krealloc(rbnode->cache_present,
+ 				   BITS_TO_LONGS(blklen) * sizeof(*present),
+ 				   GFP_KERNEL);
+-		if (!present) {
+-			kfree(blk);
++		if (!present)
+ 			return -ENOMEM;
+-		}
+ 
+ 		memset(present + BITS_TO_LONGS(rbnode->blklen), 0,
+ 		       (BITS_TO_LONGS(blklen) - BITS_TO_LONGS(rbnode->blklen))
+@@ -320,7 +320,6 @@ static int regcache_rbtree_insert_to_blo
  	}
  
+ 	/* update the rbnode block, its size and the base register */
+-	rbnode->block = blk;
+ 	rbnode->blklen = blklen;
+ 	rbnode->base_reg = base_reg;
+ 	rbnode->cache_present = present;
 
 
