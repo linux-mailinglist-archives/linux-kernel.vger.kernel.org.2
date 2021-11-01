@@ -2,91 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC655441B5E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 13:53:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E950441B61
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 13:54:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232405AbhKAMzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 08:55:35 -0400
-Received: from mail-bo1ind01olkn0182.outbound.protection.outlook.com ([104.47.101.182]:43542
-        "EHLO IND01-BO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231892AbhKAMzd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 08:55:33 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Qn9TP/tgg8NZq0Oc38amhk4v7Byb30a9bVb72/mFRJ5VZgUCCqFaLTPB+iKdXVvHJyT2dxHzFFPl78I9RFgqjWK9MQpUjlBZdZ9qO7QrUcke2Pwl8BklRPP2xuKRayg4y9mGexJYEpiSH+76LwbS0sX0hwLS6fZhEZGTBuuugZb9A22pNN9YbnI5MrZaqoifreRgeBmJbR2yJ93aQ0OL/oi0XM4u6mDTE0uAB4stpUnC1so0igKMYXN/XI/MUaNjcx2y/+gsyCmguZho2zgx2EWFSemOSk4KZE+3aiTl7QKeTE1HzUUvkIXcJmmtSMWcDSZog7UKXxrqgYEc6OIjJg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tGW/sHw0kSGjA/DGql+Vl8q/APgC2eLnFxdG1yQH4Ew=;
- b=c1LJW/KV+t/fCrgREz70+wexN8EVrM2nUTh7PRIiW6GhaE17EM0pfphGL3ooRNJnzIbXIEyQgPELPxGdeabFT9qZ7p91bqP/pyO9BwBMPyHk06IiGChU2X/jFiLEyiGSQvxEQv7qp2i8L0Lt05LKOVVZgVpTyLtjDsznStpNGtF9RIP/fiUz2ImTab53YQxhD6EWIICjwSpitJMqynf3AgK44B4WHu+4q0wc5NvPrXANiJtbhczfZJ1M8h3l2ngYbD0hYYlcScPRRnUTSia+XUiIM6w2eJmNAJtxqV7iWNtqNTbRnMsccilC7cwae1KfTaHa+buc7gYWpJ6y/Fv3hA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=live.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tGW/sHw0kSGjA/DGql+Vl8q/APgC2eLnFxdG1yQH4Ew=;
- b=XNAWVoMNHnt606abzWM5N/BIE7UXyqe3GbD4vLjIfrX+G2AnsmMNWv9mn9eDvV+aJiWejvcyLZKzqRpiVFP9KPzy5aJPi0qjC43IMZywz8DYtBo6SbbHLaJVEZnk5SwX5qRaff7fLKGFj2TcUPbpyyYti4GNwInrf7Yh6SR/t9YFZ8WakA1YjsKtPt8oRuGLpWwH5+XF21JbhjyQnhj8ClcMcmEqLSnux0gU/4OUYhjjUU+I4icCeXzzvZyfVHdwjHnQpTt+H29Rwv63uTLD2ZFcSPt2p/Bb5TdqyOH7q/0NeuYQaqvIcq4oEHmtb1OG3giM0yF1Mk/bu/enagCvWQ==
-Received: from PNZPR01MB4415.INDPRD01.PROD.OUTLOOK.COM (2603:1096:c01:1b::13)
- by PN3PR01MB5965.INDPRD01.PROD.OUTLOOK.COM (2603:1096:c01:7d::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.15; Mon, 1 Nov
- 2021 12:52:56 +0000
-Received: from PNZPR01MB4415.INDPRD01.PROD.OUTLOOK.COM
- ([fe80::cdc4:def5:dc73:28f7]) by PNZPR01MB4415.INDPRD01.PROD.OUTLOOK.COM
- ([fe80::cdc4:def5:dc73:28f7%6]) with mapi id 15.20.4649.019; Mon, 1 Nov 2021
- 12:52:56 +0000
-From:   Aditya Garg <gargaditya08@live.com>
-To:     "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>,
-        "mika.westerberg@linux.intel.com" <mika.westerberg@linux.intel.com>,
-        Lee Jones <lee.jones@linaro.org>
-CC:     Orlando Chamberlain <redecorating@protonmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [REGRESSION] Kernel 5.15 fails to boot on Apple Macs with T2
- chip.
-Thread-Topic: [REGRESSION] Kernel 5.15 fails to boot on Apple Macs with T2
- chip.
-Thread-Index: AQHXzx4xdN6jyZo2R0iZHJfrQ78gcKvuoIkA
-Date:   Mon, 1 Nov 2021 12:52:56 +0000
-Message-ID: <7A40981F-AA9A-462E-81D2-CE1FFA5174CA@live.com>
-References: <F94B8FCA-E736-4E87-BFAC-D668A481B5C4@live.com>
-In-Reply-To: <F94B8FCA-E736-4E87-BFAC-D668A481B5C4@live.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-tmn:  [jl9xOAbexM5yLgnASgxfITr51PFcmhCdpDCgx/hXedumKJsIoBeAjfXZGDzF69l0]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 66bbc168-ab7a-4b93-470b-08d99d3686d3
-x-ms-traffictypediagnostic: PN3PR01MB5965:
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: hA1UtJuU6q7Lzzd2YG9DrWRTv2IsuTpcKZk/yrjc9U5akKWS/yqE7SPAMXM3y7mGCO2dTB8HuY0irE1uzJ3VimGPlFG6YZiqfW+fhtHrA2rrKoek9Sxo5iPIKnrpKdiB3f2aBNnO/Al5my0cKd3Hf4wB6KZxXY2kNcYLSO4L/5FKswCB1qAExNldisQrrGfQBwZctkzH97U99fxtBYYlgnN5EcssGw0tGnmBp2oQ5AroA9iyLApnbyBDuaI94nZ37813Xq6Of9PvbuP5OFU+S+hh+zGZBb35wpCaUwdsaDn+yJBRG7VBi2+th7DkDRc4Fjy6dzEoOch31bcdWEqxGUnWLBwQcZWPR6T5MO7AOi0LyQlYqLrMPbYvNpdOUGVGwhdv8TOF572KVeXkM59q5AN5pbASNYjV2r8XMx+C9Rn1wyLNaVZw5Sy/wFuJr0+nUuvXsjhHi7WeUJTM5KU73O2PPvZmjsgSKnYhvMVo4zmXdIx3vxhu8mYoXXZZxDWYYXDQG6tuAFfKeZMNcqYI8HEyAVd4rNNhtWaId7GW9Ps=
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: 8JewvF/GmyTSrPSPRzJTiqh5QyLieAG9tzBUWkV5hwT4u36IYf+1jDlzyaCcVmfLJm5+eaYlXQjdEGSyU7aaq3jfmyw2IVFPWVIKJuwmcAY4oJ52LcIJDbhBEt2eX6duIo88Ia7PQ3/R6RspMTmAI0sOHv4rhazjyI/ARL/HNRSOvmQq23vneVPOlSYmupA9iK+wLUxuh0E0TE5aSGSHbm/FiY98/kQQeYbDg4kB3vmHPJNOs8D/+qOhwzJEebard5oo/nLk4toXNUyK1BaeTzq5J81N0dq+ySmoYAeIKJ6+wEdm6uj+Ew/ptBtP52emz5bENvZtX5aUqmkGvekEsIdv3WN7pWud3bh/HGismR8u2lNoKOOcqeh59UnCpPuhGDrlr/ibRrCJlJNxl3F/zPJtUlVjL4gN7JZwr66bNWD7+vgu0fC2dl4meCMrkR5ojDco1Df9/xNltJ2p0kLhn4/df+/nRu5y9+NXYC7WTy0WSK2uxpL9GvZ8iAfHvqxcGNis3AHuPNkLwt81IYMVlzWOAPoBszLd4Bo59R3yBkdt5/z0E/ps/ZLXXQJ+Z4NnvDdrtndIwke/HkwCphjR2238rOKSUciaSMXXW73HekUCEM6CC/+AwIO75qk2wQuEk9S9YYud9DpbqODyw4VEr3pjcRrCGXk3giRunWOlvEFrCtM8hEck6wEfMejZDqsJE+2j/rYU0vsX1p9VhJYY345srLVLcGIYfHH2wGRQX8q2xRbK64GJXRc1gUFf6PUaxkL6AELubwTHW0WuoaaLVQ==
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <911325C4AA980B41A6EC11FD5800FAD6@INDPRD01.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+        id S232518AbhKAM4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 08:56:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39300 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231892AbhKAM4i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 08:56:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BE40610A8;
+        Mon,  1 Nov 2021 12:54:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635771245;
+        bh=hfzr1W1/xR2QxeAac/v+nVxOrTn9v56q7DmcGPc9+hg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=JyF3OQQKpe0IVxPMA8jW8Npwe9zoKdWOP7gWYNnNLx3pa7ibboEx/zc9aNuAjFuyD
+         d+eeImhrqaN34rSyM3gp4pGRPGFfIX+QLPqHOThPTrhHwFtQ9x50pVYebMoaA8R8jw
+         aXi8OIziSswNW2P0swO1GTZOgtlxrx4ea3/1n/MDTpG8xOYHh7Mou58DuIW4gRaG3W
+         hU0QyO5AoKC8+UoK5fi1x9undzdujmcr/P/fI8PXQwRf+KsgIqkg2zlpiKICSXXvvQ
+         //S32PDRqB9dGEh9YrFH4b5xxrMV7duhZf4gd6ILyL8SCZoPGaqrGeqkdVXLOBMhSC
+         hCkjIUzJLSVyA==
+Received: by mail-ed1-f52.google.com with SMTP id r12so64277431edt.6;
+        Mon, 01 Nov 2021 05:54:05 -0700 (PDT)
+X-Gm-Message-State: AOAM5310CLMlu2GcpWn8KPfett42wZnQeOlkXJRjrDHSY7vJI84PEhre
+        QuEFwwxqfp4pBYzcXt9znoUIdhQhv3IxPNs94g==
+X-Google-Smtp-Source: ABdhPJyjMTDw9t58QpQtxtKylM7emYM+C5K1eTBnydfOO+GGZtkWVApPkMX5Bdn/cjMxI7MznVU0jEI21XYTs7nduX4=
+X-Received: by 2002:a17:907:3f24:: with SMTP id hq36mr21344386ejc.390.1635771243743;
+ Mon, 01 Nov 2021 05:54:03 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: sct-15-20-3174-20-msonline-outlook-a1a1a.templateTenant
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PNZPR01MB4415.INDPRD01.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: 66bbc168-ab7a-4b93-470b-08d99d3686d3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Nov 2021 12:52:56.4736
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PN3PR01MB5965
+References: <20211101013400.325855-1-dominique.martinet@atmark-techno.com> <20211101013400.325855-2-dominique.martinet@atmark-techno.com>
+In-Reply-To: <20211101013400.325855-2-dominique.martinet@atmark-techno.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Mon, 1 Nov 2021 07:53:52 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJmUDj42r=1n2+JoOS+1dAJgq4Ujv8EYb07ZzPEbLgS8Q@mail.gmail.com>
+Message-ID: <CAL_JsqJmUDj42r=1n2+JoOS+1dAJgq4Ujv8EYb07ZzPEbLgS8Q@mail.gmail.com>
+Subject: Re: [PATCH 2/2] rv8803: add irq-gpio optional dts attribute
+To:     Dominique Martinet <dominique.martinet@atmark-techno.com>
+Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
+        <linux-rtc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Marek Vasut <marex@denx.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SSByZW1lbWJlciBmYWNpbmcgdGhpcyBpc3N1ZSBvbiA1LjE1LXJjMyBhbHNvLiBUaG91Z2ggSSBh
-bSBub3Qgc3VyZSBhYm91dCByYzIgYW5kIHJjMS4NCg0KPiBPbiAwMS1Ob3YtMjAyMSwgYXQgNjox
-NCBQTSwgQWRpdHlhIEdhcmcgPGdhcmdhZGl0eWEwOEBsaXZlLmNvbT4gd3JvdGU6DQo+IA0KPiBE
-dWUgdG8gc29tZSBpc3N1ZSBpbiBpbnRlbC1scHNzLWFjcGksIGtlcm5lbCA1LjE1IGZhaWxzIHRv
-IGJvb3Qgb24gQXBwbGUgTWFjcyB3aXRoIFQyIGNoaXAgaW4gNS4xNS4gQXMgYSB0ZW1wb3Jhcnkg
-d29ya2Fyb3VuZCwgIiMgQ09ORklHX01GRF9JTlRFTF9MUFNTX0FDUEkgaXMgbm90IHNldOKAnSBo
-YXMgYmVlbiBzZXQgaW4gdGhlIGtlcm5lbCBjb25maWd1cmF0aW9uIHNvIHRoYXQgaXQgZG9lcyBu
-b3QgaW50ZXJmZXJlLiBZb3UgYXJlIHJlcXVlc3RlZCB0byBmaXggdGhpcyBpc3N1ZS4NCg0K
+On Sun, Oct 31, 2021 at 8:40 PM Dominique Martinet
+<dominique.martinet@atmark-techno.com> wrote:
+>
+> Some device cannot be woken up from i2c signal.
+> Add a new irq-gpio attribute for devices which have a gpio connected to
+> the rv8803 INT line so the rtc can be used for suspend to mem
+
+Please send DT patches to the DT list.
+
+Binding changes should be a separate patch.
+
+>
+> Signed-off-by: Dominique Martinet <dominique.martinet@atmark-techno.com>
+> ---
+>
+> Our board does not have an upstream dts so I cannot provide a real
+> example for it, but I've tested this on something close to the
+> imx8mp-evk.
+>
+> It should not break anything for people having no alarm at all or using
+> the i2c irq.
+>
+>  .../devicetree/bindings/rtc/epson,rx8900.yaml |  5 ++
+>  drivers/rtc/rtc-rv8803.c                      | 73 +++++++++++++++++--
+>  2 files changed, 73 insertions(+), 5 deletions(-)
+>
+> diff --git a/Documentation/devicetree/bindings/rtc/epson,rx8900.yaml b/Documentation/devicetree/bindings/rtc/epson,rx8900.yaml
+> index 29fe39bb08ad..0d7912b984c7 100644
+> --- a/Documentation/devicetree/bindings/rtc/epson,rx8900.yaml
+> +++ b/Documentation/devicetree/bindings/rtc/epson,rx8900.yaml
+> @@ -28,6 +28,10 @@ properties:
+>
+>    trickle-diode-disable: true
+>
+> +  irq-gpio:
+> +    description: |
+> +      gpio for INT signal. Set up gpio for irq and device wakeup.
+
+No, use 'interrupts' as interrupt capable GPIO controllers are also an
+interrupt provider.
+
+> +
+>  required:
+>    - compatible
+>    - reg
+> @@ -45,5 +49,6 @@ examples:
+>              reg = <0x32>;
+>              epson,vdet-disable;
+>              trickle-diode-disable;
+> +            irq-gpio = <&gpio1 11 GPIO_ACTIVE_LOW>;
+>          };
+>      };
+> diff --git a/drivers/rtc/rtc-rv8803.c b/drivers/rtc/rtc-rv8803.c
+> index 0d5ed38bf60c..1c4b96bc110e 100644
+> --- a/drivers/rtc/rtc-rv8803.c
+> +++ b/drivers/rtc/rtc-rv8803.c
+> @@ -16,6 +16,7 @@
+>  #include <linux/module.h>
+>  #include <linux/of_device.h>
+>  #include <linux/rtc.h>
+> +#include <linux/pm_wakeirq.h>
+>
+>  #define RV8803_I2C_TRY_COUNT           4
+>
+> @@ -509,6 +510,61 @@ static int rx8900_trickle_charger_init(struct rv8803_data *rv8803)
+>                                          flags);
+>  }
+>
+> +static int rv8803_setup_gpio_irq(struct i2c_client *client)
+> +{
+> +       struct device *dev = &client->dev;
+> +       int err;
+> +       int irq;
+> +       unsigned long irqflags;
+> +       struct gpio_desc *gpiod;
+> +
+> +
+> +       gpiod = devm_gpiod_get_from_of_node(dev, dev->of_node, "irq-gpio",
+> +                                           0, GPIOD_IN, "RTC irq pin");
+> +       if (!gpiod || IS_ERR(gpiod)) {
+> +               dev_dbg(dev, "no gpio for rtc: skipping\n");
+> +               return -ENOENT;
+> +       }
+> +
+> +       irq = gpiod_to_irq(gpiod);
+> +       if (irq < 0) {
+> +               dev_err(dev, "gpio found but no irq\n");
+> +               err = irq;
+> +               goto error_gpio;
+> +       }
+> +
+> +       irqflags = IRQF_ONESHOT;
+> +       irqflags |= gpiod_is_active_low(gpiod) ?
+> +                   IRQF_TRIGGER_FALLING : IRQF_TRIGGER_RISING;
+> +
+> +       err = devm_request_threaded_irq(dev, irq, NULL, rv8803_handle_irq,
+> +                                       irqflags, "rtc-rv8803-gpio", client);
+> +       if (err) {
+> +               dev_warn(dev, "unable to request IRQ\n");
+> +               goto error_gpio;
+> +       }
+> +
+> +       err = device_init_wakeup(dev, true);
+> +       if (err) {
+> +               dev_warn(dev, "unable to set as wakeup source\n");
+> +               goto error_irq;
+> +       }
+> +
+> +       err = dev_pm_set_wake_irq(dev, irq);
+> +       if (err) {
+> +               dev_warn(dev, "unable to set wake irq\n");
+> +               goto error_irq;
+> +       }
+> +
+> +       return 0;
+> +
+> +error_irq:
+> +       devm_free_irq(dev, irq, client);
+> +error_gpio:
+> +       devm_gpiod_put(dev, gpiod);
+> +       return err;
+> +}
+> +
+>  static int rv8803_probe(struct i2c_client *client,
+>                         const struct i2c_device_id *id)
+>  {
+> @@ -524,6 +580,7 @@ static int rv8803_probe(struct i2c_client *client,
+>                 .reg_write = rv8803_nvram_write,
+>                 .priv = client,
+>         };
+> +       bool irq_setup = false;
+>
+>         if (!i2c_check_functionality(adapter, I2C_FUNC_SMBUS_BYTE_DATA |
+>                                      I2C_FUNC_SMBUS_I2C_BLOCK)) {
+> @@ -562,17 +619,23 @@ static int rv8803_probe(struct i2c_client *client,
+>         if (IS_ERR(rv8803->rtc))
+>                 return PTR_ERR(rv8803->rtc);
+>
+> -       if (client->irq > 0) {
+> +       if (client->dev.of_node) {
+> +               err = rv8803_setup_gpio_irq(client);
+> +               if (!err)
+> +                       irq_setup = true;
+> +       }
+> +
+> +       if (!irq_setup && client->irq > 0) {
+>                 err = devm_request_threaded_irq(&client->dev, client->irq,
+>                                                 NULL, rv8803_handle_irq,
+>                                                 IRQF_TRIGGER_LOW | IRQF_ONESHOT,
+>                                                 "rv8803", client);
+> -               if (err) {
+> +               if (err)
+>                         dev_warn(&client->dev, "unable to request IRQ, alarms disabled\n");
+> -                       client->irq = 0;
+> -               }
+> +               else
+> +                       irq_setup = true;
+>         }
+> -       if (!client->irq)
+> +       if (!irq_setup)
+>                 clear_bit(RTC_FEATURE_ALARM, rv8803->rtc->features);
+>
+>         err = rv8803_write_reg(rv8803->client, RV8803_EXT, RV8803_EXT_WADA);
+> --
+> 2.30.2
+>
