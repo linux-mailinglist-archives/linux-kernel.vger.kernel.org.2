@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DCB0441889
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:48:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA01A44177F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:36:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233142AbhKAJtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:49:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47848 "EHLO mail.kernel.org"
+        id S233192AbhKAJhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:37:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43582 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234414AbhKAJom (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:44:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 72B9F613B5;
-        Mon,  1 Nov 2021 09:29:39 +0000 (UTC)
+        id S233610AbhKAJdp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:33:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E6DBF61252;
+        Mon,  1 Nov 2021 09:25:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758979;
-        bh=agtaoqWLsHM3xqWPLgQ/Ek0GDJt1yWaYGKvZFLRRQXw=;
+        s=korg; t=1635758714;
+        bh=uiPdhiCH8grdiL6+r+cIEZsH16EmT6QcgcHteYY1duw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0/GjwWTVPAYhA34mrMXxUy3bBBxqXXoAru+/2G0xwKebINkGpLcPa2mdPeozS+Sdl
-         8gYe9Tc9rw4W5SX/vOagUwVhUNrpK5zUAPxtCcCtYb1gX0ucE/mvjfFsyS2KYVO9Vq
-         /3M2wafYP9xAJ7FwZaUpsvVJb2Hp/JoyUKgUw8yM=
+        b=zGipAKIMvwECzitWH4F4o9vM8vpJeKtf7EAB9LeRn9LaPKgTGX6ezRvit7ihRYSIp
+         DYMjOiCzAOMU+oaSHLntdJvj3zDTWwImUMyHNVUOJ7tWsWNA8vv16f6OsXU1kg9rmF
+         UpsQqAvGobIspmXZU7t0oBGTyZEM45EqDg9yD26c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xu Kuohai <xukuohai@huawei.com>,
-        Alexei Starovoitov <ast@kernel.org>
-Subject: [PATCH 5.14 062/125] bpf: Fix error usage of map_fd and fdget() in generic_map_update_batch()
+        stable@vger.kernel.org, Keith Busch <kbusch@kernel.org>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Christoph Hellwig <hch@lst.de>
+Subject: [PATCH 5.10 27/77] nvme-tcp: fix H2CData PDU send accounting (again)
 Date:   Mon,  1 Nov 2021 10:17:15 +0100
-Message-Id: <20211101082544.930255516@linuxfoundation.org>
+Message-Id: <20211101082517.613392908@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082533.618411490@linuxfoundation.org>
-References: <20211101082533.618411490@linuxfoundation.org>
+In-Reply-To: <20211101082511.254155853@linuxfoundation.org>
+References: <20211101082511.254155853@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,53 +40,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xu Kuohai <xukuohai@huawei.com>
+From: Sagi Grimberg <sagi@grimberg.me>
 
-commit fda7a38714f40b635f5502ec4855602c6b33dad2 upstream.
+commit 25e1f67eda4a19c91dc05c84d6d413c53efb447b upstream.
 
-1. The ufd in generic_map_update_batch() should be read from batch.map_fd;
-2. A call to fdget() should be followed by a symmetric call to fdput().
+We should not access request members after the last send, even to
+determine if indeed it was the last data payload send. The reason is
+that a completion could have arrived and trigger a new execution of the
+request which overridden these members. This was fixed by commit
+825619b09ad3 ("nvme-tcp: fix possible use-after-completion").
 
-Fixes: aa2e93b8e58e ("bpf: Add generic support for update and delete batch ops")
-Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Link: https://lore.kernel.org/bpf/20211019032934.1210517-1-xukuohai@huawei.com
+Commit e371af033c56 broke that assumption again to address cases where
+multiple r2t pdus are sent per request. To fix it, we need to record the
+request data_sent and data_len and after the payload network send we
+reference these counters to determine weather we should advance the
+request iterator.
+
+Fixes: e371af033c56 ("nvme-tcp: fix incorrect h2cdata pdu offset accounting")
+Reported-by: Keith Busch <kbusch@kernel.org>
+Cc: stable@vger.kernel.org # 5.10+
+Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
+Reviewed-by: Keith Busch <kbusch@kernel.org>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/bpf/syscall.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/nvme/host/tcp.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -1333,12 +1333,11 @@ int generic_map_update_batch(struct bpf_
- 	void __user *values = u64_to_user_ptr(attr->batch.values);
- 	void __user *keys = u64_to_user_ptr(attr->batch.keys);
- 	u32 value_size, cp, max_count;
--	int ufd = attr->map_fd;
-+	int ufd = attr->batch.map_fd;
- 	void *key, *value;
- 	struct fd f;
- 	int err = 0;
+--- a/drivers/nvme/host/tcp.c
++++ b/drivers/nvme/host/tcp.c
+@@ -910,12 +910,14 @@ static void nvme_tcp_fail_request(struct
+ static int nvme_tcp_try_send_data(struct nvme_tcp_request *req)
+ {
+ 	struct nvme_tcp_queue *queue = req->queue;
++	int req_data_len = req->data_len;
  
--	f = fdget(ufd);
- 	if (attr->batch.elem_flags & ~BPF_F_LOCK)
- 		return -EINVAL;
+ 	while (true) {
+ 		struct page *page = nvme_tcp_req_cur_page(req);
+ 		size_t offset = nvme_tcp_req_cur_offset(req);
+ 		size_t len = nvme_tcp_req_cur_length(req);
+ 		bool last = nvme_tcp_pdu_last_send(req, len);
++		int req_data_sent = req->data_sent;
+ 		int ret, flags = MSG_DONTWAIT;
  
-@@ -1363,6 +1362,7 @@ int generic_map_update_batch(struct bpf_
- 		return -ENOMEM;
- 	}
+ 		if (last && !queue->data_digest && !nvme_tcp_queue_more(queue))
+@@ -942,7 +944,7 @@ static int nvme_tcp_try_send_data(struct
+ 		 * in the request where we don't want to modify it as we may
+ 		 * compete with the RX path completing the request.
+ 		 */
+-		if (req->data_sent + ret < req->data_len)
++		if (req_data_sent + ret < req_data_len)
+ 			nvme_tcp_advance_req(req, ret);
  
-+	f = fdget(ufd); /* bpf_map_do_batch() guarantees ufd is valid */
- 	for (cp = 0; cp < max_count; cp++) {
- 		err = -EFAULT;
- 		if (copy_from_user(key, keys + cp * map->key_size,
-@@ -1382,6 +1382,7 @@ int generic_map_update_batch(struct bpf_
- 
- 	kfree(value);
- 	kfree(key);
-+	fdput(f);
- 	return err;
- }
- 
+ 		/* fully successful last send in current PDU */
 
 
