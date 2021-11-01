@@ -2,136 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 539E3441B88
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 14:12:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C76E441B8D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 14:14:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232097AbhKANP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 09:15:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39258 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230438AbhKANPZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 09:15:25 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08752C061714;
-        Mon,  1 Nov 2021 06:12:52 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id p204so9815768iod.8;
-        Mon, 01 Nov 2021 06:12:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LRGh6td70WGdmcMGRp1Cc0ENwiVhacG+3GURE37PQRY=;
-        b=D1c3niaA50bwFpxIVPXswFp23Ns+FjPYl1hMI22JykdorR1b/ucEkfMwwKSD4aZg98
-         dn3sayONdJC9VFmOi1EL/PVGFWgDLBFFxT+zWBe/d7JIZUKyfad70zLSk7V6Imkeaa3u
-         zIIUfXU46UUcIlDJ6vj5XCl72FecPOv5raXwtIEpFGjmP5NNIkbJsqLsS618/p/qxuE+
-         /x59PrEi0ypVfSfy+W/ZShyD2MIr4zqA/jaOBpltB81M8CaV8U2KgiqHuv8H/0unfN/h
-         GG7/LLA8an1EIAjyfciAhAklGV3xdulIwie9XNx8+2UZqQee6lB+0fa9FU0bSrR40OQd
-         toww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LRGh6td70WGdmcMGRp1Cc0ENwiVhacG+3GURE37PQRY=;
-        b=mMGM+iZ2tGKPjPHMdEGz8jxIy7t9krvqzee5DSU3y9LsfNoz1tOIMUKAHhtHHFTEnL
-         ybJK3bPxnsX+59vcKUdKeCUgNWUQZZ/HMJUI4S2jtmQcOAp9JRol/yHnkv7IQOIFXir2
-         YzHrRSup2LErXATWAxfUmlXCAM9BVZJpUdO9SizfAna38O+taDKKsk90qDRXU8hK4tuZ
-         21I1pOGNaWfvZ1LaML+qXLkdAFY+tfWss9purhUiUqY3TvLhQid0HvSvMI8ortaIK3pL
-         QG9u5iKUb5PkHKP7J+TfSNIOt2LCqkxqBFNdo94FzaBTagw9LHJRxNXc86iW2VbRjQR0
-         WnuQ==
-X-Gm-Message-State: AOAM5307y6p4t6UlnZ8WnBGr7538axVsJQ0dgmfkZxAX2yNVrWBWT5gQ
-        HSlWc5LXaubOovQs8X6vA9bxlf18zt2WNmfJR9fI+npaTzQKbCkO
-X-Google-Smtp-Source: ABdhPJyIQzixlwZawM13KFKv+/9Vrhh6ZnO8DyH1IQEASFpfh82lPE9sWf9iZMZFsPo6igJmpnwc9DB1NFy4l16FgZI=
-X-Received: by 2002:a05:6602:164b:: with SMTP id y11mr6027737iow.9.1635772371384;
- Mon, 01 Nov 2021 06:12:51 -0700 (PDT)
+        id S232017AbhKANRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 09:17:18 -0400
+Received: from mga06.intel.com ([134.134.136.31]:60652 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230417AbhKANRQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 09:17:16 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10154"; a="291848434"
+X-IronPort-AV: E=Sophos;i="5.87,199,1631602800"; 
+   d="scan'208";a="291848434"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2021 06:14:43 -0700
+X-IronPort-AV: E=Sophos;i="5.87,199,1631602800"; 
+   d="scan'208";a="500034763"
+Received: from yingze1x-mobl.ccr.corp.intel.com (HELO chenyu5-mobl1) ([10.255.28.120])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2021 06:14:39 -0700
+Date:   Mon, 1 Nov 2021 21:14:34 +0800
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc:     linux-acpi@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Aubrey Li <aubrey.li@intel.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 2/4] drivers/acpi: Introduce Platform Firmware Runtime
+ Update device driver
+Message-ID: <20211101131434.GA32880@chenyu5-mobl1>
+References: <cover.1635317102.git.yu.c.chen@intel.com>
+ <a318e4edc13e5a3ff95b901871b8929746535715.1635317102.git.yu.c.chen@intel.com>
+ <YXkn8aBvAVEXxgdp@smile.fi.intel.com>
+ <20211101093320.GA18982@chenyu5-mobl1>
+ <YX/NwEdw26wzKFvQ@smile.fi.intel.com>
 MIME-Version: 1.0
-References: <20211101060419.4682-1-laoar.shao@gmail.com> <YX/hS6nRisiiFiBD@casper.infradead.org>
-In-Reply-To: <YX/hS6nRisiiFiBD@casper.infradead.org>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Mon, 1 Nov 2021 21:12:15 +0800
-Message-ID: <CALOAHbB5Dhiep5DhpzQ2RsJee88MuADQ=-FMwmBCLDJ21by2dw@mail.gmail.com>
-Subject: Re: [PATCH v7 00/11] extend task comm from 16 to 24
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qiang Zhang <qiang.zhang@windriver.com>,
-        robdclark <robdclark@chromium.org>,
-        christian <christian@brauner.io>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        dennis.dalessandro@cornelisnetworks.com,
-        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
-        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        kbuild test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YX/NwEdw26wzKFvQ@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 1, 2021 at 8:46 PM Matthew Wilcox <willy@infradead.org> wrote:
+On Mon, Nov 01, 2021 at 01:21:36PM +0200, Andy Shevchenko wrote:
+> On Mon, Nov 01, 2021 at 05:33:20PM +0800, Chen Yu wrote:
+> > On Wed, Oct 27, 2021 at 01:20:33PM +0300, Andy Shevchenko wrote:
+> > > On Wed, Oct 27, 2021 at 03:07:51PM +0800, Chen Yu wrote:
+> 
+> ...
+> 
+> > > > +	guid_t *image_type_id = &img_hdr->image_type_id;
+> > > 
+> > > efi_guid_t ?
+> > >
+> > efi_guid_t is a 32-bit aligned guid_t, which is for the case when
+> > efi_guid_t* arguments are 32-bit aligned. And it is for 32-bit ARM.
+> > Since this code injection is only for 64-bit, the guid is not required
+> > to be strictly 32-bit aligned I suppose?
+> 
+> But the type of that member may not be guid_t. So, I expect not to see guid_t
+> at all here or as a internal member with the export/import GUID API in place.
 >
-> On Mon, Nov 01, 2021 at 06:04:08AM +0000, Yafang Shao wrote:
-> > There're many truncated kthreads in the kernel, which may make trouble
-> > for the user, for example, the user can't get detailed device
-> > information from the task comm.
-> >
-> > This patchset tries to improve this problem fundamentally by extending
-> > the task comm size from 16 to 24, which is a very simple way.
+> See, for example
+> d1c6e08e7503 ("libnvdimm/labels: Add uuid helpers")
 >
-> It can't be that simple if we're on v7 and at 11 patches!
->
+8b03aa0e0e5a ("libnvdimm/labels: Add type-guid helpers") I suppose. Do you
+mean, since the label is not delcared as uuid type, then need to treat the
+data region as a uuid. But it is actually not a formal 'uuid' type, so uuid_t
+is not applicable here. And this also applys to the case in this patch?
+> ...
+> 
+> > > > +	ret = guid_parse(PFRU_UUID, &pfru_dev->uuid);
+> 
+> > > > +	ret = guid_parse(PFRU_CODE_INJ_UUID, &pfru_dev->code_uuid);
+> 
+> > > > +	ret = guid_parse(PFRU_DRV_UPDATE_UUID, &pfru_dev->drv_uuid);
+> 
+> > > Why do you need to keep zillions of copies of the data which seems
+> > > is not going to be changed? Three global variables should be enough,
+> > > no?
+> > >
+> > The guid information is embedded in each pfru_dev and only calculated
+> > once during probe. I thought people try to avoid using global variables
+> > if possible?
+> 
+> Use your common sense. You might have a lot of data duplication,
+> and this data is definitely not something that needs any kind of
+> serialization / personification / etc.
+> 
+Ok, I'll switch to global variables in next version.
 
-Most of the changes are because of hard-coded 16 that can't be easily grepped.
-In these 11 patches, patch #1, #2, #4, #5, #6, #7 and #9 are cleanups,
-which can be a different patchset.
-
-The core changes of these patchset are patch #3, #8 and #10.
-
-#11 can also be a seperate patch.
-
-> It would be helpful if you included links to earlier postings.  I can
-> only find v5 and v6 in my inbox, so I fear I'm going to re-ask some
-> questions which were already answered.
->
-
-v1: https://lore.kernel.org/lkml/20210929115036.4851-1-laoar.shao@gmail.com/
-v2: https://lore.kernel.org/lkml/20211007120752.5195-1-laoar.shao@gmail.com/
-v3: https://lore.kernel.org/lkml/20211010102429.99577-1-laoar.shao@gmail.com/
-v4: https://lore.kernel.org/lkml/20211013102346.179642-1-laoar.shao@gmail.com/
-v5: https://lore.kernel.org/lkml/20211021034516.4400-1-laoar.shao@gmail.com/
-v6: https://lore.kernel.org/lkml/20211025083315.4752-1-laoar.shao@gmail.com/
-
-
-> Why can't we shorten the names of these kthreads?  You didn't
-> give any examples, so I can't suggest any possibilities.
->
-
-Take 'jbd2/nvme0n1p2-' for example, that's a nice name, which gives a
-good description via the name.
-And I don't think it is a good idea to shorten its name.
-
--- 
-Thanks
-Yafang
+thanks,
+Chenyu
+> -- 
+> With Best Regards,
+> Andy Shevchenko
+> 
+> 
