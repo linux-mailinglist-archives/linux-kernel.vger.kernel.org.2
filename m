@@ -2,110 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2563441C47
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 15:10:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A8F8441C42
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 15:09:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232346AbhKAONT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 10:13:19 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:41699 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231892AbhKAONO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 10:13:14 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1635775841; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=r/vD9nDcJRJEJFPS9hrIRfMxd0yRef0RBWbVCTlCfco=; b=aWGs1AUSj4Vbo0JUOnMVO31k2/jspOj0z7G+C3EI9iNLJ6uYa1kNlA1Rwwj4CLZrGrzVSXKZ
- /+IdRN4m1vqExlIrkFu+8wHtv/4vy2eBTCRsr8hi5CjD/OVSe84FD1TDEeOXbBKIn03kh0Jp
- f2pXvqXKjxq1Dw2T7HC4FQH75E8=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 617ff4c5c8c1b282a5dea741 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 01 Nov 2021 14:08:05
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4012FC43619; Mon,  1 Nov 2021 14:08:05 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from tykki (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 23272C4338F;
-        Mon,  1 Nov 2021 14:08:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 23272C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Zekun Shen <bruceshenzk@gmail.com>
-Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Sharvari Harisangam <sharvari.harisangam@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, brendandg@nyu.edu
-Subject: Re: [PATCH] mwifiex_usb: Fix skb_over_panic in mwifiex_usb_recv
-References: <YX4CqjfRcTa6bVL+@Zekuns-MBP-16.fios-router.home>
-Date:   Mon, 01 Nov 2021 16:07:59 +0200
-In-Reply-To: <YX4CqjfRcTa6bVL+@Zekuns-MBP-16.fios-router.home> (Zekun Shen's
-        message of "Sat, 30 Oct 2021 22:42:50 -0400")
-Message-ID: <87pmrk0y0w.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S232139AbhKAOLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 10:11:36 -0400
+Received: from mga17.intel.com ([192.55.52.151]:46573 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229826AbhKAOLf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 10:11:35 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10154"; a="211786115"
+X-IronPort-AV: E=Sophos;i="5.87,199,1631602800"; 
+   d="scan'208";a="211786115"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2021 07:08:28 -0700
+X-IronPort-AV: E=Sophos;i="5.87,199,1631602800"; 
+   d="scan'208";a="449268058"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2021 07:08:25 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1mhXyr-002gvb-6F;
+        Mon, 01 Nov 2021 16:08:09 +0200
+Date:   Mon, 1 Nov 2021 16:08:08 +0200
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Chen Yu <yu.c.chen@intel.com>, linux-acpi@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Aubrey Li <aubrey.li@intel.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 2/4] drivers/acpi: Introduce Platform Firmware Runtime
+ Update device driver
+Message-ID: <YX/0yCUlGM35vEXS@smile.fi.intel.com>
+References: <cover.1635317102.git.yu.c.chen@intel.com>
+ <a318e4edc13e5a3ff95b901871b8929746535715.1635317102.git.yu.c.chen@intel.com>
+ <YXkn8aBvAVEXxgdp@smile.fi.intel.com>
+ <20211101093320.GA18982@chenyu5-mobl1>
+ <YX/NwEdw26wzKFvQ@smile.fi.intel.com>
+ <20211101131434.GA32880@chenyu5-mobl1>
+ <YX/ouT/hi5ccaxsz@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YX/ouT/hi5ccaxsz@kroah.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Zekun Shen <bruceshenzk@gmail.com> writes:
+On Mon, Nov 01, 2021 at 02:16:41PM +0100, Greg Kroah-Hartman wrote:
+> On Mon, Nov 01, 2021 at 09:14:34PM +0800, Chen Yu wrote:
+> > On Mon, Nov 01, 2021 at 01:21:36PM +0200, Andy Shevchenko wrote:
 
-> Currently, with an unknown recv_type, mwifiex_usb_recv
-> just return -1 without restoring the skb. Next time
-> mwifiex_usb_rx_complete is invoked with the same skb,
-> calling skb_put causes skb_over_panic.
->
-> The bug is triggerable with a compromised/malfunctioning
-> usb device. After applying the patch, skb_over_panic
-> no longer shows up with the same input.
->
-> Attached is the panic report from fuzzing.
-> skbuff: skb_over_panic: text:000000003bf1b5fa
->  len:2048 put:4 head:00000000dd6a115b data:000000000a9445d8
->  tail:0x844 end:0x840 dev:<NULL>
-> kernel BUG at net/core/skbuff.c:109!
-> invalid opcode: 0000 [#1] SMP KASAN NOPTI
-> CPU: 0 PID: 198 Comm: in:imklog Not tainted 5.6.0 #60
-> RIP: 0010:skb_panic+0x15f/0x161
-> Call Trace:
->  <IRQ>
->  ? mwifiex_usb_rx_complete+0x26b/0xfcd [mwifiex_usb]
->  skb_put.cold+0x24/0x24
->  mwifiex_usb_rx_complete+0x26b/0xfcd [mwifiex_usb]
->  __usb_hcd_giveback_urb+0x1e4/0x380
->  usb_giveback_urb_bh+0x241/0x4f0
->  ? __hrtimer_run_queues+0x316/0x740
->  ? __usb_hcd_giveback_urb+0x380/0x380
->  tasklet_action_common.isra.0+0x135/0x330
->  __do_softirq+0x18c/0x634
->  irq_exit+0x114/0x140
->  smp_apic_timer_interrupt+0xde/0x380
->  apic_timer_interrupt+0xf/0x20
->  </IRQ>
->
-> Reported-by: Zekun Shen <bruceshenzk@gmail.com>
+...
 
-You are the author, no need to have your name in Reported-by.
+> > Ok, I'll switch to global variables in next version.
+> 
+> Wait, no, why?
+
+But why should we have a duplication of basically static data?
+
+> Keep them per-device unless you can somehow be
+> guaranteed there will never be more than one of these ACPI devices in a
+> system.
+
+I guess you missed my point. These definitions are _always_ the same.
+It does not matter how many devices in the system.
+
+Chen, is my perception correct?
+If no, then do what Greg says.
+
+> It's simpler this way, no need to worry about global state at
+> all.
+
+Actually I have no idea why we even have strings in  and not raw buffers.
+Moreover, I haven't got why even we have them in uAPI.
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+With Best Regards,
+Andy Shevchenko
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
