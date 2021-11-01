@@ -2,91 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 285294415B9
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 09:56:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CF364415BD
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:01:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231708AbhKAI7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 04:59:13 -0400
-Received: from outbound-smtp35.blacknight.com ([46.22.139.218]:58977 "EHLO
-        outbound-smtp35.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231663AbhKAI7K (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 04:59:10 -0400
-Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
-        by outbound-smtp35.blacknight.com (Postfix) with ESMTPS id 1A1D027ED
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 08:56:35 +0000 (GMT)
-Received: (qmail 19541 invoked from network); 1 Nov 2021 08:56:34 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 1 Nov 2021 08:56:34 -0000
-Date:   Mon, 1 Nov 2021 08:56:33 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Valentin Schneider <Valentin.Schneider@arm.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Mike Galbraith <efault@gmx.de>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] sched/fair: Couple wakee flips with heavy wakers
-Message-ID: <20211101085633.GW3959@techsingularity.net>
-References: <20211028094834.1312-1-mgorman@techsingularity.net>
- <20211028094834.1312-2-mgorman@techsingularity.net>
- <CAKfTPtB-fJ7Pd6eYPDrHB8Ts0o7SCbN7nniAD9PSoF4Pf+xB3w@mail.gmail.com>
+        id S231371AbhKAJEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:04:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53658 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230520AbhKAJEW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:04:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A36D960F36;
+        Mon,  1 Nov 2021 09:01:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635757309;
+        bh=l7HaZsOf0inuUkFmNCqzqHcB4dS2C93Ciex8mXy6UPA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cgH/76ARewnijYGJDipqNTzX9kG+pGG3OP9wOnXKswhFX1ofUD6x4pdu8jADvqOK6
+         2vCrn/H5Io79U7DvaYn1vHiXe81PExUysDmZm1TjydiHZjlcU+37NkDorvXqF1pINQ
+         XRVDg+su98u6TUpHBP7EJ0lmfA/35FJ7LzK5KicrhYORVRxRk1JTLbtXmb/vH2eRLb
+         idX/jFc+oa0/ve8HJOFhF9ol1D2xjew/88Q1jwhWYFeBseZiMFSi+3BOi+xBjbRSpa
+         z78PK5mO241DrO4kqd0fZT9wTYu1ZgeL5chCozc6w7RYeCeuAnSU+womooLCtCPUUa
+         7yYecgXoapG4g==
+Date:   Mon, 1 Nov 2021 09:01:44 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Brazdil <dbrazdil@google.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] [RFC] arm64: export this_cpu_has_cap
+Message-ID: <20211101090143.GA27181@willie-the-truck>
+References: <20211029113023.760421-1-arnd@kernel.org>
+ <9d4e09b4-47dc-ed3c-2b6d-e0d1a081e592@arm.com>
+ <YXw4H2BNx85KnLDh@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKfTPtB-fJ7Pd6eYPDrHB8Ts0o7SCbN7nniAD9PSoF4Pf+xB3w@mail.gmail.com>
+In-Reply-To: <YXw4H2BNx85KnLDh@arm.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 05:17:38PM +0200, Vincent Guittot wrote:
-> > index ff69f245b939..d00af3b97d8f 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -5865,6 +5865,14 @@ static void record_wakee(struct task_struct *p)
-> >         }
-> >
-> >         if (current->last_wakee != p) {
-> > +               int min = __this_cpu_read(sd_llc_size) << 1;
-> > +               /*
-> > +                * Couple the wakee flips to the waker for the case where it
-> > +                * doesn't accrue flips, taking care to not push the wakee
-> > +                * high enough that the wake_wide() heuristic fails.
-> > +                */
-> > +               if (current->wakee_flips > p->wakee_flips * min)
-> > +                       p->wakee_flips++;
+On Fri, Oct 29, 2021 at 07:06:23PM +0100, Catalin Marinas wrote:
+> On Fri, Oct 29, 2021 at 02:31:23PM +0100, Suzuki K Poulose wrote:
+> > On 29/10/2021 12:30, Arnd Bergmann wrote:
+> > > From: Arnd Bergmann <arnd@arndb.de>
+> > > 
+> > > It's now used in a coresight driver that can be a loadable module:
+> > > 
+> > > ERROR: modpost: "this_cpu_has_cap" [drivers/hwtracing/coresight/coresight-trbe.ko] undefined!
+> > > 
+> > > Fixes: 8a1065127d95 ("coresight: trbe: Add infrastructure for Errata handling")
+> > 
+> > Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> > Tested-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> > 
+> > Will, Catalin, Mathieu,
+> > 
+> > Do you have a preference on how this fix can be pulled in ? This may
+> > be safe to go via coresight tree if it is not too late. Otherwise,
+> > it could go via the arm64 tree.
 > 
-> I have a hard time understanding the rationale behind these changes
-> and the one below. Could you provide more details about why to
-> increase p->wakee_flips here ? Also would be good to add such
-> explanation in the commit message
+> I think Will already closed/tagged the arm64 tree for the upcoming
+> merging window, though he could take it as a fix afterwards.
+> 
+> If it doesn't conflict with the arm64 for-next/core, it's fine by me to
+> go through the coresight tree.
+> 
+> > > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> > > ---
+> > > Not sure if we actually want this to be exported, this is my local
+> > > workaround for the randconfig build bot.
+> > > ---
+> > >   arch/arm64/kernel/cpufeature.c | 1 +
+> > >   1 file changed, 1 insertion(+)
+> > > 
+> > > diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+> > > index ecbdff795f5e..beccbcfa7391 100644
+> > > --- a/arch/arm64/kernel/cpufeature.c
+> > > +++ b/arch/arm64/kernel/cpufeature.c
+> > > @@ -2864,6 +2864,7 @@ bool this_cpu_has_cap(unsigned int n)
+> > >   	return false;
+> > >   }
+> > > +EXPORT_SYMBOL(this_cpu_has_cap);
+> 
+> EXPORT_SYMBOL_GPL? I think this_cpu_has_cap() is a bit more more
+> specialised than cpus_have_const_cap().
+> 
+> With that:
+> 
+> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
 
+Yes, at this stage I think it's best for this to go via the Coresight tree.
+So with the _GPL export:
 
-The changelog covers it in the first two paragraphs but would the
-following be better as a comment?
+Acked-by: Will Deacon <will@kernel.org>
 
-/*
- * Couple the wakee flips to the waker for the case where the
- * wakee doesn't accrue any flips during a short interval where
- * there are many wakeups without cpu load average being updated.
- * Otherwise, it is possible for wake_wide to not trigger followed
- * by an affine wake stacking multiple tasks on the same CPU due
- * to a stale cpu_load() value checked in wake_affine_weight.
- * This heuristic reduces excessive stacking of tasks while taking
- * care to not push the wakee high enough that the wake_wide
- * heuristic fails differently.
- */
+If that doesn't work for some reason, I can take it next week after the
+initial arm64 queue has been merged. Please just let me know.
 
-Is that any better? I know this is a heuristic that is a bit on the
-fuzzy side as it's trying to clamp the worst of a corner case. Ideally
-"wake_wide" would be replaced with a more straight-forward heuristic but
-I'm not aware of any alternatives being proposed (and I don't have one
-of my own).
-
--- 
-Mel Gorman
-SUSE Labs
+Will
