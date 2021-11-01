@@ -2,130 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 777CC442211
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 21:54:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07AB1442229
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 21:58:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231419AbhKAU51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 16:57:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59176 "EHLO
+        id S231159AbhKAVB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 17:01:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbhKAU5Y (ORCPT
+        with ESMTP id S229501AbhKAVBZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 16:57:24 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04D97C061764;
-        Mon,  1 Nov 2021 13:54:50 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id b4so11184112pgh.10;
-        Mon, 01 Nov 2021 13:54:50 -0700 (PDT)
+        Mon, 1 Nov 2021 17:01:25 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 346C3C061714;
+        Mon,  1 Nov 2021 13:58:51 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id r12so68846111edt.6;
+        Mon, 01 Nov 2021 13:58:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=pZqr5rTlcaug9563wNJYd77L6h7Hk2gF965+CXNB47w=;
-        b=Ni5w9wTyiPsaYcO7fKFpzBdoI1bm1lqTRPi/F3tDeEc9LRFV4vfZj0qxXTCUmeCbLA
-         X5/63FZkBpzBJWmg+ArJLti1r/FFv1BawCzOKfDmg5CgkL9mm0/sL61K1UJBa32+u/v3
-         HMifwPe2araTOCO8kjvrX1A/FhYW0AlqfwaqmXEKn23xVf+k41Ty+TKhXuN1N2ATRoqh
-         gODj2DgLpz6M2pO0REWlcfr6KahTMab1YX67/x7OWsZxZzZPBrJNYbKcdsJ8sTxnUW5Z
-         O2s2z8E13iE0kN/1SAc1xgFjPfVjj5T/Z5NOkAl+E1dszJzBkuMoRxYOceOfnJQayiq7
-         1iaw==
+        d=googlemail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EGrnx62pvPj+VVQAfPPd1GnNOPN1pj0iHtDg0nowNo8=;
+        b=q3GESUarDqCYNc90NbDWg2y3hKsM5xAcvaH0+c/nTpxXi9xX+vtNSAq5QXtOW9vINj
+         k8QeuJm365Op4btcuXlNR710bSaEFrxcG2vc3hzH0XZarwPYaJ4it1MoqWZf7PbxMkQk
+         Rmb0UQbtexTZKK+qQ+uKn7ThW7Adnw7NwrCVHf7VyL2riX9QA701emD586D9DYQ087hC
+         dbSyI55CSWvmr60sEzVHTKNixvrvxtl7vExMUYMytF3X3mjkefnYbpmgwO2pY8ZJ6kDJ
+         X1uhVsYnfNc8JfFMDbESC1HvedCHBReLuKM/OFhMsnN5NAhjEFd0ISNGugMifGXS/tKE
+         PL9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=pZqr5rTlcaug9563wNJYd77L6h7Hk2gF965+CXNB47w=;
-        b=UG1f2sR3yDmq+ptw1IeoFzVpronyGmxiU31HvKs5LKkhsyZYWsPSBf+CD9P9quMNVl
-         vt0++5Nx2Gl0AVmuxdbmNsSqKSTFzwdRSplMo+Ac+RGFeSgQJq41swQHQ65k8EaD08I/
-         VCLZS6VRK51EWdYwmzSGdMSSfLCFuZd0rWoN/1KH60otO/psdQPfD7ApLG0SKfs0myO5
-         wuV6RkJYJpMcMUgmtTNJ7BsZEtHX4gVFmTI/mkvjEBesIhPzMXfcbKwCmYv9E4AZcJze
-         E52cxBKT7YSJxXYb4Oo9KjrAglWF2uX8so5JTjQ0OIDMYgDiITngXrexT9xMeS2XmL/4
-         X0bg==
-X-Gm-Message-State: AOAM530bmg6kshv8aKfQCSoJ+icLhWmoIKjV1eCelsKQxLxhQ0kGw2Xj
-        KT3pMTvJCJuR+Zoed1qoUwa30UuWrqc=
-X-Google-Smtp-Source: ABdhPJyRqX1y8LIgmxGmLlN6ZqygsWwwckwgCo2+I1Hp5UFPHWWYdV0jTemV/m/Gw5TCgObqByhAQw==
-X-Received: by 2002:a05:6a00:244e:b0:47b:7dbf:e23d with SMTP id d14-20020a056a00244e00b0047b7dbfe23dmr31701851pfj.34.1635800089195;
-        Mon, 01 Nov 2021 13:54:49 -0700 (PDT)
-Received: from [192.168.86.235] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
-        by smtp.gmail.com with ESMTPSA id o19sm11358069pfu.56.2021.11.01.13.54.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Nov 2021 13:54:48 -0700 (PDT)
-Subject: Re: [PATCH v2 11/25] tcp: authopt: Implement Sequence Number
- Extension
-To:     Leonard Crestez <cdleonard@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Eric Dumazet <edumazet@google.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Yuchung Cheng <ycheng@google.com>,
-        Francesco Ruggeri <fruggeri@arista.com>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Christoph Paasch <cpaasch@apple.com>,
-        Ivan Delalande <colona@arista.com>,
-        Priyaranjan Jha <priyarjha@google.com>, netdev@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1635784253.git.cdleonard@gmail.com>
- <6097ec24d87efc55962a1bfac9441132f0fc4206.1635784253.git.cdleonard@gmail.com>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <07987e29-87a0-9a09-bdf0-b5e385d9c55f@gmail.com>
-Date:   Mon, 1 Nov 2021 13:54:46 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EGrnx62pvPj+VVQAfPPd1GnNOPN1pj0iHtDg0nowNo8=;
+        b=bjsT4Tei9vHo2m86UZaGN8RiMNJrP/Y50U0X4Hz9eooM93PWuvcASruMqzwedxpOjo
+         ZaOfU36ZYNogYPBM22Vg5D2h/69Ubrrz/CLPqutb2/JMC+SMHvkWiO5Yyu5zHy+uFSOw
+         45ibmGyqiHcd0gIGKL6KZfLGZq05Saome5n1Yd3lEwwx806LJ62gFpRGCVzOtLNZbzEm
+         mn65fHu1CHH4h4G5oqW/Rpf6QoqwGq1LitAe4ay3vhoULsSCjY7ZjZKYNSZP3X7XOz9j
+         yEJflMY2spHbSjB9eXympFXUPIfkO2DHOv1tqkHbFQDX+nmJTZHdoGa0zfQNvPCd82zw
+         ckWw==
+X-Gm-Message-State: AOAM533mF2M+6NVNDz+PZFFrZ6Rm8NL4wvISWD9KI4v7Qth5sOiMyJbf
+        RgZzc6faMyDUYXkSF+Ngz4zXqUQJ6i1T76edWuo=
+X-Google-Smtp-Source: ABdhPJwwoLB13ORBh1xxEUOZTPzBdJGO+FhxArWjC/UixC1ei6acQGnNpe+SrjyIb2lUB86fM1ikB5zdayO5Nt/NP3A=
+X-Received: by 2002:a05:6402:2815:: with SMTP id h21mr45121875ede.45.1635800329724;
+ Mon, 01 Nov 2021 13:58:49 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <6097ec24d87efc55962a1bfac9441132f0fc4206.1635784253.git.cdleonard@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <163425193558.1688384.15520943968787313145@swboyd.mtv.corp.google.com>
+ <20211015120559.3515645-1-martin.blumenstingl@googlemail.com> <04a58d50-634b-fa20-95b4-eb6831f77e85@collabora.com>
+In-Reply-To: <04a58d50-634b-fa20-95b4-eb6831f77e85@collabora.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Mon, 1 Nov 2021 21:58:38 +0100
+Message-ID: <CAFBinCAEt9_EfLYWZEzTBK6iN97+Wacho7pNd2LYDPX3+goMzg@mail.gmail.com>
+Subject: Re: [PATCH] clk: composite: Also consider .determine_rate for rate +
+ mux composites
+To:     Guillaume Tucker <guillaume.tucker@collabora.com>
+Cc:     sboyd@kernel.org, heiko@sntech.de, knaerzche@gmail.com,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        "kernelci@groups.io" <kernelci@groups.io>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Chen-Yu Tsai <wens@csie.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Guillaume,
 
-
-On 11/1/21 9:34 AM, Leonard Crestez wrote:
-> Add a compute_sne function which finds the value of SNE for a certain
-> SEQ given an already known "recent" SNE/SEQ. This is implemented using
-> the standard tcp before/after macro and will work for SEQ values that
-> are without 2^31 of the SEQ for which we know the SNE.
-
->  }
-> +void __tcp_authopt_update_rcv_sne(struct tcp_sock *tp, struct tcp_authopt_info *info, u32 seq);
-> +static inline void tcp_authopt_update_rcv_sne(struct tcp_sock *tp, u32 seq)
-> +{
-> +	struct tcp_authopt_info *info;
-> +
-> +	if (static_branch_unlikely(&tcp_authopt_needed)) {
-> +		rcu_read_lock();
-> +		info = rcu_dereference(tp->authopt_info);
-> +		if (info)
-> +			__tcp_authopt_update_rcv_sne(tp, info, seq);
-> +		rcu_read_unlock();
-> +	}
-> +}
-> +void __tcp_authopt_update_snd_sne(struct tcp_sock *tp, struct tcp_authopt_info *info, u32 seq);
-> +static inline void tcp_authopt_update_snd_sne(struct tcp_sock *tp, u32 seq)
-> +{
-> +	struct tcp_authopt_info *info;
-> +
-> +	if (static_branch_unlikely(&tcp_authopt_needed)) {
-> +		rcu_read_lock();
-> +		info = rcu_dereference(tp->authopt_info);
-> +		if (info)
-> +			__tcp_authopt_update_snd_sne(tp, info, seq);
-> +		rcu_read_unlock();
-> +	}
-> +}
+On Mon, Nov 1, 2021 at 9:19 PM Guillaume Tucker
+<guillaume.tucker@collabora.com> wrote:
 >
+> Hi Martin,
+>
+> Please see the bisection report below about a boot failure on
+> rk3328-rock64.
+>
+> Reports aren't automatically sent to the public while we're
+> trialing new bisection features on kernelci.org but this one
+> looks valid.
+>
+> Some more details can be found here:
+>
+>   https://linux.kernelci.org/test/case/id/617f11f5c157b666fb3358e6/
+>
+> Here's what appears to be the cause of the problem:
+>
+> [    0.033465] CPU: CPUs started in inconsistent modes
+> [    0.033557] Unexpected kernel BRK exception at EL1
+> [    0.034432] Internal error: BRK handler: f2000800 [#1] PREEMPT SMP
+>
+> There doesn't appear to be any other platform in KernelCI showing
+> the same issue.
+That's a strange error for the changes from my patch.
+At first glance I don't see any relation to clk-composite code:
+- the call trace doesn't have any references to CCF or rockchip clock drivers
+- clk-rk3328.c uses drivers/clk/rockchip/clk-cpu.c to register the CPU
+clock which does not use clk-composite
 
-I would think callers of these helpers own socket lock,
-so no rcu_read_lock()/unlock() should be needed.
+Chen-Yu has tested this patch (plus [0]) on RK3399 and didn't observe
+any problems.
+So maybe this is a RK3328 specific issue?
+Anyways, I am interested in fixing this issue because reverting is
+becoming more and more complex (since I think we're at eight commits
+which would need to be reverted in total).
 
-Perhaps instead
-rcu_dereference_protected(tp->authopt_info, lockdep_sock_is_held(sk)); 
+> Please let us know if you need help debugging the issue or if you
+> have a fix to try.
+Could you please try [0] which is the second patch in the series which
+finally made it upstream.
+This second patch is not in 5.15 because I believed that it's only
+something to make the code in clk-composite.c more future-proof. It's
+not a condition that I am aware of.
+
+I don't have any Rockchip boards myself.
+So I am thankful for any help I can get.
 
 
+Best regards,
+Martin
+
+
+[0] https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/commit/?h=clk-next&id=6594988fd625ff0d9a8f90f1788e16185358a3e6
