@@ -2,107 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09257441CCE
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 15:43:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8415C441CD0
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 15:45:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232250AbhKAOpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 10:45:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45612 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229826AbhKAOpe (ORCPT
+        id S231867AbhKAOrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 10:47:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230261AbhKAOra (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 10:45:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635777781;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IimbsDmXt9JsV+5Ud+vfycacdBceMoawbI0yusPjM6Y=;
-        b=O5CCm+KorB/Iv4PMIJAZX5QhgggEHp1jfknQlTF4ThCRIYdV4jEsLzcQsN5F7X5wlc7FKb
-        ihyZObXBuEbw6aOQQqrxXYVYHgs40pU0GLnmpEjQJ4vsluhP2SMfZjhqJ1y+WkkFJUjQh0
-        IpCAEfTYfRtvNLCFYTG7AYstV7FA1YQ=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-558-ddygt6B7NOaKaLJ2ZkD2lQ-1; Mon, 01 Nov 2021 10:43:00 -0400
-X-MC-Unique: ddygt6B7NOaKaLJ2ZkD2lQ-1
-Received: by mail-ed1-f71.google.com with SMTP id q6-20020a056402518600b003e28d92bb85so2369395edd.7
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 07:43:00 -0700 (PDT)
+        Mon, 1 Nov 2021 10:47:30 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CBFDC061714
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 07:44:57 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id h2so18643470ili.11
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 07:44:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=usp.br; s=usp-google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=nTgNimfUoPCIrDoKeVyIYbRT+tZhs8KL4QGLyrkvSyA=;
+        b=HUIod4TGIvbg2CAZjR6JNNaCMdnX5/bkqP4kNIF0LVxCuVID9ki4COu7zCxwssTtTy
+         VBNfkoQMyU/3BGKPEVQK1LBad1U8IGk7KqBOqnvZVLjrPg4EZeSWl7JxKKpZtWE2Afc+
+         qqNC5zGw0uhf74khGk8+FYKmSpRv7gekc2Nxp5aXZL635PtmeYgpiMCWv+G/+XMu7wOG
+         e/WhZu466u1PGtEs9tLkd5z1eAakwRYLu4FGsJxTbVk5lcVPw45bBRLWO7L92r63oYu4
+         4rE0NFJ9llVksLpFqeEfJMf57pbkGFOnEardVRmFbMyJpv8d3/rVxMiulQqPsgN7fjfN
+         TVHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IimbsDmXt9JsV+5Ud+vfycacdBceMoawbI0yusPjM6Y=;
-        b=BD3ox2chTW6rGQmms1RpqrH/xcr2U0OOul5C/IIWmNa6KxNToIoqys1OrbO8IJCJh8
-         yOAAp7ao0igIwbwsqDTFnTRa6kTkmljnOJqQ7SNM+15IYmvOuKSXqMXCYjUwMGBGHU8Z
-         iqVmMYeuh4D4AwGR7uLRJdkp/oyuYvg2xzU8mnsm3wb+zWZ6CaHx5DppL0+Vpjtz53ui
-         ssv7SMeLBzE3Ea6IhugHLHbhArlHbJxKZ2veQMEK6y+6QgiFZiArHSgHW5NTnBjXA6zD
-         sKtGb1iL748bNN1qyHVnQ1qnoSnqE6SWXkyuqyCR1Hd8YYKrE7O/Wxct2c5kKhhyTWpV
-         L3pg==
-X-Gm-Message-State: AOAM532GldczmgQ4D5a8iyW+bwsW+IXMawxHlTCyWb5gdpB8LsWUnUVg
-        N5eTnLvwouucOUM097EXrREkeUX4fxxhfUxoOgBjqfT9yifCZWKjDONemS5sIlvr2vxEEyw4Ph/
-        a7eCpLeET4mHF8w0i46n5x/CJ
-X-Received: by 2002:a17:906:3a0e:: with SMTP id z14mr29262258eje.111.1635777778918;
-        Mon, 01 Nov 2021 07:42:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwRv9BSqyeHZrkxI8HXDbJCrd6XZ9M6Vw0A2RLC8buZnu/68zqF4CSsKMaEqkwHGddkFeAclw==
-X-Received: by 2002:a17:906:3a0e:: with SMTP id z14mr29262231eje.111.1635777778709;
-        Mon, 01 Nov 2021 07:42:58 -0700 (PDT)
-Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
-        by smtp.gmail.com with ESMTPSA id gs19sm3110772ejc.117.2021.11.01.07.42.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 07:42:58 -0700 (PDT)
-Date:   Mon, 1 Nov 2021 15:42:57 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     kernel test robot <lkp@intel.com>, llvm@lists.linux.dev,
-        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-Subject: Re: [rostedt-trace:for-next 58/100]
- samples/ftrace/ftrace-direct-multi.c:8:6: warning: no previous prototype for
- function 'my_direct_func'
-Message-ID: <YX/88QsleYGkt7PG@krava>
-References: <202111010507.F9ud1mUL-lkp@intel.com>
- <YX/thIXtDzfhljX7@krava>
- <20211101102434.47e84754@gandalf.local.home>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=nTgNimfUoPCIrDoKeVyIYbRT+tZhs8KL4QGLyrkvSyA=;
+        b=hHfyInHHVrmmvd3v/cmkmnixWn3ttelCru5qyXUqQGWflkd8q31KlMz6rZ2fxhw55p
+         zzXRHiZ0U8POcUxv8BGYx/onPbDk07cLqkfiUMqepjcs2b8zIlcALYicziZdPtYGwfJs
+         CyXeZQMgFosGVOneXZEvTR1v7qiQ6CV7lJ/iGd1P8Y44X6lnXo/n+qN/fbX89bS7bZBP
+         5x89Py5NX2lV3SA+9dO2LR2TfUvlFxLcO5W4SL1wvVaKaUIswes1bOO9ZoMyQCmjFdOQ
+         2yCHcxgjTnLdXKG5do596ihF/zLjibC1s7D8gTPhhilVstgAf+Hg7M0/We0u5wxjD5d5
+         SMYg==
+X-Gm-Message-State: AOAM531JsCCqgdaVymU5TfHmyBpwcLCIMQLqOMbGeT8JK/efaFM92ljf
+        ia4QFNNy9L3NLFjsae6Z8PJAVbzcGEfbnttdWXSJeQ==
+X-Google-Smtp-Source: ABdhPJxzLpaPTvNyx3YNoBE/B8Ej6xYGtp2QXo+2idhrHDksvJl08AvaMK3spnFwjy5jIbCdefktgsljwLFVyba7NvA=
+X-Received: by 2002:a05:6e02:1bcb:: with SMTP id x11mr16355301ilv.94.1635777896880;
+ Mon, 01 Nov 2021 07:44:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211101102434.47e84754@gandalf.local.home>
+References: <YX/zlRqmxbLRnTqT@fedora> <4f1b60bab451b219c7139e2204eb5b9f462ee4e0.camel@pengutronix.de>
+In-Reply-To: <4f1b60bab451b219c7139e2204eb5b9f462ee4e0.camel@pengutronix.de>
+From:   =?UTF-8?B?TWHDrXJhIENhbmFs?= <maira.canal@usp.br>
+Date:   Mon, 1 Nov 2021 11:44:45 -0300
+Message-ID: <CAH7FV3nyyLndqTdJYN8HDxU4C7pW0-DLu6ZSOLof2=tEEHbHxQ@mail.gmail.com>
+Subject: Re: [PATCH v2 RESEND] PCI: imx6: Replace legacy gpio interface for
+ gpiod interface
+To:     Lucas Stach <l.stach@pengutronix.de>
+Cc:     hongxing.zhu@nxp.com, lorenzo.pieralisi@arm.com, robh@kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <helgaas@kernel.org>, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, linux-imx@nxp.com,
+        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 01, 2021 at 10:24:34AM -0400, Steven Rostedt wrote:
-> On Mon, 1 Nov 2021 14:37:08 +0100
-> Jiri Olsa <jolsa@redhat.com> wrote:
-> 
-> > > If you fix the issue, kindly add following tag as appropriate
-> > > Reported-by: kernel test robot <lkp@intel.com>
-> > > 
-> > > All warnings (new ones prefixed by >>):
-> > >   
-> > > >> samples/ftrace/ftrace-direct-multi.c:8:6: warning: no previous prototype for function 'my_direct_func' [-Wmissing-prototypes]  
-> > >    void my_direct_func(unsigned long ip)
-> > >         ^
-> > >    samples/ftrace/ftrace-direct-multi.c:8:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-> > >    void my_direct_func(unsigned long ip)  
-> > 
-> > hum, that can actually be static.. I'll check
-> > 
-> 
-> I'm not sure it can, because you call it from inline assembly, and the
-> symbol may not be passed to the assembler.
+?
+> >       /* Some boards don't have PCIe reset GPIO. */
+> > -     if (gpio_is_valid(imx6_pcie->reset_gpio)) {
+> > -             gpio_set_value_cansleep(imx6_pcie->reset_gpio,
+> > +     if (imx6_pcie->reset_gpio) {
+> > +             gpiod_set_value_cansleep(imx6_pcie->reset_gpio,
+> >                                       imx6_pcie->gpio_active_high);
+> >               msleep(100);
+> > -             gpio_set_value_cansleep(imx6_pcie->reset_gpio,
+> > +             gpiod_set_value_cansleep(imx6_pcie->reset_gpio,
+> >                                       !imx6_pcie->gpio_active_high);
+>
+> I don't think this is correct. gpiod_set_value sets the logical line
+> state, so if the GPIO is specified as active-low in the DT, the real
+> line state will be negated. The only reason why the reset-gpio-active-
+> high property even exists is that old DTs might specify the wrong GPIO
+> polarity in the reset-gpio DT description. I think you need to use to
+> gpiod_set_raw_value API here to get the expected real line state even
+> with a broken DT description.
+>
+> Regards,
+> Lucas
+>
 
-yes, I just found that.. I actually could not add any input/output
-arguments to asm, got a compilation error.. I think it's because
-it's used outside any function
+I'm a beginner in kernel development, so I'm sorry for the question.
+If I change gpiod_set_value_cansleep for gpiod_set_raw_value, wouldn't
+I change the behavior of the driver? I replaced
+gpio_set_value_cansleep for gpiod_set_value_cansleep because they have
+the same behavior and I didn't change the logic states. Thank you for
+the feedback!
 
-> 
-> It may work with some options, but may not for all.
-> 
-> I think the best thing to do is just create a prototype to quiet the
-> warning (with a comment).
-
-ok, I'll send it.. should be on top of you for-next branch?
-
-thanks,
-jirka
-
+Regards,
+Ma=C3=ADra
