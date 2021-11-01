@@ -2,107 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD37F441455
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 08:47:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45B13441459
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 08:47:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231228AbhKAHth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 03:49:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49556 "EHLO
+        id S229984AbhKAHuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 03:50:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230312AbhKAHte (ORCPT
+        with ESMTP id S230289AbhKAHuH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 03:49:34 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9109DC061714
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 00:47:01 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 1AEFA1F4369A;
-        Mon,  1 Nov 2021 07:47:00 +0000 (GMT)
-Date:   Mon, 1 Nov 2021 08:46:52 +0100
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Sean Nyekjaer <sean@geanix.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 0/4] mtd: core: protect access to mtd devices while
- in suspend
-Message-ID: <20211101084652.0fe6272f@collabora.com>
-In-Reply-To: <20211026055551.3053598-1-sean@geanix.com>
-References: <20211026055551.3053598-1-sean@geanix.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        Mon, 1 Nov 2021 03:50:07 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE975C061714;
+        Mon,  1 Nov 2021 00:47:34 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id b203so5182543iof.1;
+        Mon, 01 Nov 2021 00:47:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Kd4BPRZ9sK8kBGUMQbngZukIs4D7nqGTCYCtGM0fwOI=;
+        b=bOZ0dic5fwcUJXFHUmdbvSk/pbMnkfTPeiGDm+DOCeEkUVj9G6WlynL8SW158B4mEO
+         lg7Pz7/I8PRT5KWSbIt85/E8HQ/D5G5yRN4mRKwk23YAQRsaBOw0NOrpKSh8Cl0Aa5A+
+         OdccJvvdShMJDra7JqjXDV2kTM+uwcibd4Lsq6AjYI1+c2ufO3qQx8MkPlMgBz/mXFpP
+         lDbvi/z2V4x8tIFMl4XXZpusgdQvhPErV7zG8VgqTQ6fEYkCHSi3G1kuNXDfI7mGIvjr
+         fzuoG2U9FPJ7nO6Sz0ViaGDO1mgmEsazmgDk2rhw4Q7Cic/C7X6kwYJgKmy3lWy1WGOL
+         Mq6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Kd4BPRZ9sK8kBGUMQbngZukIs4D7nqGTCYCtGM0fwOI=;
+        b=GwRJgjUP9VKwg7qXZPJXEjnntpir4KHz52eeyPZZjMakYhqHGEv8/EwC+9lOEOUoUH
+         i3ypGEC7EpVV8rhzwxXxfdBvCnuOkDCEDbJDw+TiK+G6cv1hSO+9+kfW8AoEPhE88tv2
+         BxYKZPUI9oEjcQiVg1gWbLHSdNtirtXW+L2B2EglGWHFyiTt99Cc+9LOb6E0o/19cOrA
+         TO9KgfyehkU35x0zhPLQypS3IaavWX0n9m8VeULlIoUhayLA3aaDRP4TiZqZUXVuqDGU
+         9Hb2eptX2d/0X6KbL5fbb+bK7GnXj9JVP78rR2U0rnzY4pgQuDk3kIB480SuIJZCGaWU
+         pRtA==
+X-Gm-Message-State: AOAM533cxEPxvI6lsIjh31IBz0LpqMl2CmLY9NwpC8IM65ynGSBeULO7
+        Ma+uMpjtbUKvZE7QYJ95UCg5syazYG4uXnt7Pj3Tcd62NvI=
+X-Google-Smtp-Source: ABdhPJw61V19t70ObGqdAvRgYku+E/mnmBvyCooUjoLscT2KnaQ+lulIdqj1uuhxyXeSR8/aeQ1io+e4N1jQks8x6Q8=
+X-Received: by 2002:a02:cb42:: with SMTP id k2mr6471995jap.25.1635752854406;
+ Mon, 01 Nov 2021 00:47:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <cover.1634630485.git.mchehab+huawei@kernel.org>
+ <b22b772c23f531708a9bc025d56c0312a53bd6c9.1634630486.git.mchehab+huawei@kernel.org>
+ <878ryosocf.fsf@meer.lwn.net> <f0269915-4863-9ed6-dedd-592f2e308f46@redhat.com>
+In-Reply-To: <f0269915-4863-9ed6-dedd-592f2e308f46@redhat.com>
+From:   Alex Shi <seakeel@gmail.com>
+Date:   Mon, 1 Nov 2021 15:46:58 +0800
+Message-ID: <CAJy-AmnHht4=sNyQ5r78MwfOpMF8dRqrct8fasVX-ULadfMNvg@mail.gmail.com>
+Subject: Re: [PATCH v3 16/23] docs: translations: zh_CN: memory-hotplug.rst:
+ fix a typo
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Alex Shi <alexs@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Wu XiangCheng <bobwxc@email.cn>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Oct 2021 07:55:47 +0200
-Sean Nyekjaer <sean@geanix.com> wrote:
+On Wed, Oct 20, 2021 at 3:08 PM David Hildenbrand <david@redhat.com> wrote:
+>
+> Dumb question that probably has been asked a couple of times already:
+> why do we even maintain a translated doc in-tree?
+>
+> Every time I do an update on the original doc, I for sure can only guess
+> which translated parts need updating. And I really can only update when
+> "deleting", not when rewording/adding. So we'll be left with stale doc
+> that will have to be updated manually by $whoever.
 
-> Follow-up on discussion in:
-> https://lkml.org/lkml/2021/10/4/41
-> https://lkml.org/lkml/2021/10/11/435
-> 
-> Changes since v3:
->  - edited commit msg and author for mtdconcat patch
-> 
-> Changes since v2:
->  - added signoff's to patch from Boris
->  - removed accidential line break
->  - kept tests consistent: master->master.suspended == 0 -> !master->master.suspended
->  - added comments to mtdconcat patch
->  - moved mtdconcat before ('mtd: core: protect access to MTD devices while in suspend')
-> 
-> Changes since v1:
->  - removed __mtd_suspend/__mtd_resume functions as they are not used by
->    mtdconcat anymore.
->  - only master mtd_info is used for mtd_{start,end}_access(). Warn if we
->    got mtd's.
->  - added Boris patch for using uninitialized _suspend/_resume hooks when
->    bbt scanning
->  - mtdconcat uses device _suspend/_resume hooks
->  - I don't really like the macro proposal from Boris
->    mtd_no_suspend_void_call()/mtd_no_suspend_ret_call() I think they
->    make the code complex to read and the macro's doesn't fit every
->    where anyway...
-> 
-> Changes since from rfc v1/v2:
->  - added access protection for all device access hooks in mtd_info.
->  - added Suggested-by to [1/3] patch.
->  - removed refereces to commit ef347c0cfd61 ("mtd: rawnand: gpmi: Implement exec_op")
->    from commit msg as commit 013e6292aaf5 ("mtd: rawnand: Simplify the locking") is 
->    to be blamed.
->  - tested on a kernel with LOCKDEP enabled.
-> 
-> Boris Brezillon (2):
->   mtd: rawnand: nand_bbt: hide suspend/resume hooks while scanning bbt
->   mtd: mtdconcat: don't use mtd_{suspend,resume}()
-> 
-> Sean Nyekjaer (2):
->   mtd: core: protect access to MTD devices while in suspend
->   mtd: rawnand: remove suspended check
+cc to the translation maintainers and translator would be helpful?
 
-Looks good overall (after fixing the minor things I pointed out, of
-course), but I'd recommend applying this series to mtd-next just after
--rc1 is out so you get a chance to detect regressions before it's
-merged in Linus' tree. I fear this unconditional blocking on suspended
-device will lead to unexpected deadlocks (see my comment on panic
-writes)...
+> I don't feel very
+> confident about this. No translated doc is better than outdated
+> translated doc.
 
-> 
->  drivers/mtd/mtdconcat.c          |  15 +++-
->  drivers/mtd/mtdcore.c            | 124 +++++++++++++++++++++++++++----
->  drivers/mtd/nand/raw/nand_base.c |  52 ++++---------
->  drivers/mtd/nand/raw/nand_bbt.c  |  28 ++++++-
->  include/linux/mtd/mtd.h          |  81 ++++++++++++++++----
->  include/linux/mtd/rawnand.h      |   5 +-
->  6 files changed, 230 insertions(+), 75 deletions(-)
-> 
+Uh, I don't know other languages, but in Chinese, 15 years before
+translated books are still selling well in China. :)
+https://item.jd.com/1075130482.html  ->  Linux device driver
+https://item.jd.com/10100237.html  -> Understanding linux kernel
 
+Thanks
+Alex
+
+>
+> This feels like something that should be maintained out of tree. My 2 cents.
+>
+> --
+> Thanks,
+>
+> David / dhildenb
+>
