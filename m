@@ -2,75 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9DA9441A6E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 12:02:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AD34441A71
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 12:06:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232342AbhKALE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 07:04:58 -0400
-Received: from mout.gmx.net ([212.227.17.20]:48419 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232191AbhKALEt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 07:04:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1635764533;
-        bh=6BnVRDqnhVQAfvZaew0wzOzHXs7hYC/8rBJZUhkNBxQ=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=JMalodGx+ps/3rCvm0TGbk9jOBWER9uKf/jwvokRAaTfVWW9F9Qp1UokywLZPKctj
-         Rh3PWwXE7VQ8cPDTVL107nqpB/P8d+BBp3nGNNrnGxGiwVfSqoXQPd6bLNMwzV21RV
-         IInw6iXH/486jmhclf3JCF8phyPDTHO1po0en2P0=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.20.60] ([92.116.177.231]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MWici-1mATcL0iFc-00X0h4; Mon, 01
- Nov 2021 12:02:13 +0100
-Message-ID: <38022e9f-4b1b-2fac-2098-acf45f2f59c0@gmx.de>
-Date:   Mon, 1 Nov 2021 12:01:48 +0100
+        id S231822AbhKALJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 07:09:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38864 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230520AbhKALJT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 07:09:19 -0400
+Received: from mail-vk1-xa2a.google.com (mail-vk1-xa2a.google.com [IPv6:2607:f8b0:4864:20::a2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2659C061714;
+        Mon,  1 Nov 2021 04:06:45 -0700 (PDT)
+Received: by mail-vk1-xa2a.google.com with SMTP id b125so6995677vkb.9;
+        Mon, 01 Nov 2021 04:06:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=h9lEWYw0ODM1CY9TwJxkbfjlxmTuIfq2TV/XYiIwAR8=;
+        b=Nv9COaWmfclDyZUdfO1OBmVklZorlT1iH+h+/PZVG7fd5gTVOKVw5s5srOtRt0Weiv
+         74jKgU1aUxhdyiEB5JEwAgiF6m/1eRsPuC6/O0aOcXfJXAIs9haB6SuANbKwQpLxvNNq
+         QHfZvOUDgXjQUT6gZlyKd14CDXgNno5fHR5HOWp0ZGJGtQDGe2vEiYGoTBMqvCHcLknU
+         aYPe/zVpK5B8Tpp37l73jvrfXQ7pAB3Ku0jA1FEWuB982No/jbnElCQ4UKWHT1VgWAdt
+         +izFugwrLwSHN9ilJL7203mI7P1sc++D74OWkMm1k7sfdyEVhrxuNqTzwBUnMOJYeLxD
+         dWig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=h9lEWYw0ODM1CY9TwJxkbfjlxmTuIfq2TV/XYiIwAR8=;
+        b=ElW/vtycf1aCmgWzWWVuBhpjK+iUG9RMgBpwqjVyfd+8A5hqjTZ4Am/vUNVlH9UhhY
+         fiL5uUeVJ2i9eUV4uRsUXvlwjkSIQZGHiem5twgYXewduEPvzyjC21uq6fhbbentR16r
+         M+PUWHbmaW3ARRtRPDtSpY7jtKdMZLw4+mF/HRRFBBFGD9b+sdggSm1opX9oIZaQnr/B
+         KoIynNI1CnkuqKDIDy/SnZ+jvuIJuZ2YxKUaIJkd5WTYh3932UdEPzjXhGRL1CCFPhzv
+         Uqn1ffARBi6Wd6r+Un1zqN0ouT+e/HARvcSPtirZzUHjmNihEECZ42AJLZJ1su+CU3uD
+         8MpA==
+X-Gm-Message-State: AOAM531pzTkj6yadTL/PgDvTTYnKJdaJvChnHzR98XcpwTXEH2urcsoq
+        l3Y99gNkU5H6v1P8Wsglj8DmcTQuUCH4tZYGpNDBn8s=
+X-Google-Smtp-Source: ABdhPJyLpTVg+jIUTmLU+va9EzLPaqYonLHJRHLennaysumGFFSIagF0ifwGiwH1hbg+66ViAzips7KWFMv07w9e7h0=
+X-Received: by 2002:a05:6122:98a:: with SMTP id g10mr26797675vkd.17.1635764805154;
+ Mon, 01 Nov 2021 04:06:45 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: linux-next: Signed-off-by missing for commit in the parisc-hd
- tree
-Content-Language: en-US
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Parisc List <linux-parisc@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20211101214403.47d36f6c@canb.auug.org.au>
-From:   Helge Deller <deller@gmx.de>
-In-Reply-To: <20211101214403.47d36f6c@canb.auug.org.au>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:fq1Hn7mjIU603CMi1AFS6ksT5GSU++YfUXwRQ2hTgdThLOp+VJT
- qUMK04lde6yEbh+beiFq7KJBq/HognEm7iYrlz4FuOQFdbmTl5o2lCv2hj0hXOky2oFLI8t
- BJ4hbPQRGgTca+Eqfbzt1vHGc2p+zUOkadEx/+pE4PvFHW9XUGJQvKNGMnEnJkt8FMoSV0t
- rP+7wPSY3uva9cYqsC8OQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:COJ7QdyaPIM=:QVaX88KqLcS1jDTX+AiYtX
- +9bZ0diNFx/Wj+lmPOFCaVaBmtXdyfUC+S2BllwT1YcjsFJLFgbzWazHpE46Z0JseMQj02onS
- P06U625oBOGPiHJsm8IEhEB5yeYtFnwfipS54kVOorc+gy77bEExXqO4Fm7tg4okNxwNWDZ8B
- dQ52qgvv8XZtgi4VHSRSpYFpcgSI6XLtfQtB5UAQUF8JEn2VI1OQGaUvyT13pg16UjESOeRUf
- OzojmpkGs+g732OE4xbT1O9bXXvMFqXeamD+wXVo1kW4CfXAObFT+O6CbWrcfY3Ql7f2g6Yfj
- XkWdxJpEwn+irVgukNgoRl5hh9qadde/K4kR0/FUOBLxCbKIuOOcGziFE3jGs4jbLSwPZ23Rk
- Qr+lZ4nCrkfXvs4AZPIlH2YrmEhbE3QJennHUY8/tDzxYTceUaRUbzw3hVjfwo+rGSEoSpYcx
- ifFqZaZXwCOv/bJr6EDya+IhjzWGcJXdaoIrMPVjYZMY7koVCkbXd/Fxaizuewgd7WSVSqlNW
- QoD+0qwICEKUDr2otOxlJIpXyKltSKdK48NAwee7uCvYXz0YeV22Bfq7m2W17QI8ZXvXSxIpH
- Sfl0xqubW6Arw2jhT5ZyIlQDEN9Og9zAUd9tHb7B7SIw8I7fEvhraR9pgvbWjsMQbLLBn9pJh
- o4aKb0Ki7ucMl2gYSWsL0WvHZw3DjKNENEmHtjxyWmaReCxcYdSHMQGvQhXFPBsF3mLkyp1JR
- xvmbwPpVRk2smso79haadU+DNYy8lzpBQmuj+qYpE8T8qVHmwkrX04s/gP9b8uK76iKA0Jt8O
- RlBG8sdpPIMeft78Ir4RSLo8YBxLJwMmDXuCDQyYc+coV4mNHHZUFgT3dV/8jC8qbQTENEtTN
- 20vzb61CrsTq5pfTTtgR6Yfj9nY9dfNx51drmFzBEPflmv7CVu5w8GH54NWqbm9hYF6SMLfnj
- sw75ud8HuIhVeI0DGfwslNumF+SVZklfeLvfNM7LJqpD3YT91sqf/KLsm1r/06GpTyaqQXYXD
- rLdBobHvDx0L0EKjtMV6B5g4u7e3WoyKQHuM+D6Zbe54bFqUsQebS6Y5VAaqiJPBbCbkrbyue
- W9fO0sR2651qfY=
+References: <1374495046.4164334.1635737050153@localhost>
+In-Reply-To: <1374495046.4164334.1635737050153@localhost>
+From:   Rui Salvaterra <rsalvaterra@gmail.com>
+Date:   Mon, 1 Nov 2021 11:06:34 +0000
+Message-ID: <CALjTZvaddYDMqHgsnxd29EZodbXTiq8i3nycPp4KmrPv+kMvJg@mail.gmail.com>
+Subject: Re: [REGRESSION][BISECTED] 5.15-rc1: Broken AHCI on NVIDIA ION (MCP79)
+To:     Josef Per Johansson <josef@oderland.se>
+Cc:     Marc Zyngier <maz@kernel.org>, tglx@linutronix.de,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/1/21 11:44, Stephen Rothwell wrote:
-> Commit
->   cad7eadf2afb ("parisc: Use swap() to swap values in setup_bootmem()")
-> is missing a Signed-off-by from its committer.
+Hi, Josef,
 
-Thanks, fixed now.
+On Mon, 1 Nov 2021 at 03:24, Josef Per Johansson <josef@oderland.se> wrote:
+>
+> To be clear, which patch are you carrying? The latest by thomas is https://lore.kernel.org/linux-pci/89d6c2f4-4d00-972f-e434-cb1839e78598@oderland.se/
 
-Helge
+Please keep the discussion public.
 
+The patch I'm carrying is the one Marc authored, in order to fix the
+MCP79 regression I've bisected.
+
+Thanks,
+Rui
