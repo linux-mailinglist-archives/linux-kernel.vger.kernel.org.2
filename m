@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4159B441698
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:26:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B2574416E7
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:28:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232521AbhKAJ1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:27:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58176 "EHLO mail.kernel.org"
+        id S232975AbhKAJaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:30:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59164 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232316AbhKAJYV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:24:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A702610CF;
-        Mon,  1 Nov 2021 09:21:08 +0000 (UTC)
+        id S232454AbhKAJ06 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:26:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 88BB5611BF;
+        Mon,  1 Nov 2021 09:22:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758468;
-        bh=8ym8icEbe0TWcYBfEC1xv2eAzAiHRWX+N1JPLzRgYX8=;
+        s=korg; t=1635758553;
+        bh=YjSIW8xYew536ToGDQ3XeXEtgw9a/xeQzl1KwDE6mE4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v8j4A0a6vPLNgdPSJ/S/QeJ9JKOFVuCBHPFi0Uf0PU8ClYF5ExuLboGX/RuIebAmB
-         vQXSplVoi1YhBkVoubq7ZaoUhtEZ43lYs6lHggaAPzPDlW8LvzdM3ZW/wybi95e5eC
-         +Mm9fI37Qir9VJNZpclnJKav+PAxd0JyhrFAUmL4=
+        b=ge4szWAbsZ7Y/kWXu1KOBGybicdG4/HefhrBv4lkwPQ/QUgayNJHiQCMWXfSM7uPR
+         DKrnlt70PD7MPkkv4UIFLY7uMQfxeu0uocg/BX++RXhD6ymYpa8VGiIeXFrxMeOeCB
+         yQ8Y3PpFjjaPWJ9xnJM2mNFaw0nEOwlnBMZm9MXw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
-Subject: [PATCH 4.19 03/35] ARM: 9139/1: kprobes: fix arch_init_kprobes() prototype
+        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>
+Subject: [PATCH 5.4 11/51] ata: sata_mv: Fix the error handling of mv_chip_id()
 Date:   Mon,  1 Nov 2021 10:17:15 +0100
-Message-Id: <20211101082452.320240097@linuxfoundation.org>
+Message-Id: <20211101082503.231402527@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082451.430720900@linuxfoundation.org>
-References: <20211101082451.430720900@linuxfoundation.org>
+In-Reply-To: <20211101082500.203657870@linuxfoundation.org>
+References: <20211101082500.203657870@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,38 +39,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Zheyu Ma <zheyuma97@gmail.com>
 
-commit 1f323127cab086e4fd618981b1e5edc396eaf0f4 upstream.
+commit a0023bb9dd9bc439d44604eeec62426a990054cd upstream.
 
-With extra warnings enabled, gcc complains about this function
-definition:
+mv_init_host() propagates the value returned by mv_chip_id() which in turn
+gets propagated by mv_pci_init_one() and hits local_pci_probe().
 
-arch/arm/probes/kprobes/core.c: In function 'arch_init_kprobes':
-arch/arm/probes/kprobes/core.c:465:12: warning: old-style function definition [-Wold-style-definition]
-  465 | int __init arch_init_kprobes()
+During the process of driver probing, the probe function should return < 0
+for failure, otherwise, the kernel will treat value > 0 as success.
 
-Link: https://lore.kernel.org/all/20201027093057.c685a14b386acacb3c449e3d@kernel.org/
+Since this is a bug rather than a recoverable runtime error we should
+use dev_alert() instead of dev_err().
 
-Fixes: 24ba613c9d6c ("ARM kprobes: core code")
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+Signed-off-by: Damien Le Moal <damien.lemoal@opensource.wdc.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm/probes/kprobes/core.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/ata/sata_mv.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/arch/arm/probes/kprobes/core.c
-+++ b/arch/arm/probes/kprobes/core.c
-@@ -542,7 +542,7 @@ static struct undef_hook kprobes_arm_bre
+--- a/drivers/ata/sata_mv.c
++++ b/drivers/ata/sata_mv.c
+@@ -3892,8 +3892,8 @@ static int mv_chip_id(struct ata_host *h
+ 		break;
  
- #endif /* !CONFIG_THUMB2_KERNEL */
+ 	default:
+-		dev_err(host->dev, "BUG: invalid board index %u\n", board_idx);
+-		return 1;
++		dev_alert(host->dev, "BUG: invalid board index %u\n", board_idx);
++		return -EINVAL;
+ 	}
  
--int __init arch_init_kprobes()
-+int __init arch_init_kprobes(void)
- {
- 	arm_probes_decode_init();
- #ifdef CONFIG_THUMB2_KERNEL
+ 	hpriv->hp_flags = hp_flags;
 
 
