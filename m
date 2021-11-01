@@ -2,67 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAFBA4415AC
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 09:53:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 953524415AD
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 09:54:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231576AbhKAIzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 04:55:51 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:4042 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230520AbhKAIzu (ORCPT
+        id S231475AbhKAI4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 04:56:46 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:49738 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230520AbhKAI4p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 04:55:50 -0400
-Received: from fraeml701-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HjRXM6CpYz67kSQ;
-        Mon,  1 Nov 2021 16:48:51 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml701-chm.china.huawei.com (10.206.15.50) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.15; Mon, 1 Nov 2021 09:53:14 +0100
-Received: from [10.202.227.179] (10.202.227.179) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Mon, 1 Nov 2021 08:53:14 +0000
-Subject: Re: kernel 5.15 does not boot with 3ware card (never had this issue
- <= 5.14) - scsi 0:0:0:0: WARNING: (0x06:0x002C) : Command (0x12) timed out,
- resetting card
-To:     Bart Van Assche <bvanassche@acm.org>,
-        Justin Piszcz <jpiszcz@lucidpixels.com>,
-        <linux-kernel@vger.kernel.org>, <linux-scsi@vger.kernel.org>
-References: <006a01d7cead$b9262d70$2b728850$@lucidpixels.com>
- <a4a88807-8f52-ef9a-c58e-0ff454da5ade@acm.org>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <0d9db49d-84c2-4fda-3c7d-0286cdff8cf6@huawei.com>
-Date:   Mon, 1 Nov 2021 08:53:13 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        Mon, 1 Nov 2021 04:56:45 -0400
+Received: by mail-il1-f197.google.com with SMTP id e10-20020a92194a000000b00258acd999afso9633208ilm.16
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 01:54:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=caNXgt7Kc1qn8nnLpDYnPHU93otN4N3yrFwscbLo5q0=;
+        b=VYvknEME7araRHGT6sgzIB0iMRejKunSNK1wzUNvanbI3RdGt/Y3c1m4FKLDzvwQdF
+         jiN8GROH19A8CTCs3PJrYmNfP1G16D1xbb3fDyPF89hsSe/pC+JlWrcoX8vGxEJlJdOk
+         UgO8JG6Qurmo2ip4B3/I6fl5lj+8ZNAHuDiWrlRX7eyuTZ1aC6gdpYe90xPpK4tRCLGq
+         E01+FqNJHfOei0xpIypHbUgCY8YCLm3SPsgx+LTmZH7xF/NmyOD/l5auFCtXBskH6ol+
+         dQEvAWDIBkJLKZ2/Q9O+YtZVUj6xhgCuQgTrG5SyY+rMTNZWxEw+gfwjdQMIj7aPpzP+
+         gaTw==
+X-Gm-Message-State: AOAM533VtEQNyj4Otw1xVBv1nYt5aqQCc7JiU7k2a5A3oidhZzHItWy+
+        00dYO14acuwWrvr1GUvCU9k/qQ2xyqAof7+7XNH8+EMyYtWz
+X-Google-Smtp-Source: ABdhPJwJnLVFdxIsT5DFIZuJgKYh0xI/0gCd9f3p4kkpCj491wpUEzR0T1McGTLEQHmLtIs8Y3m3f0kfi6SO7QW5O+MmpP4JGKC+
 MIME-Version: 1.0
-In-Reply-To: <a4a88807-8f52-ef9a-c58e-0ff454da5ade@acm.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.179]
-X-ClientProxiedBy: lhreml719-chm.china.huawei.com (10.201.108.70) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+X-Received: by 2002:a6b:f614:: with SMTP id n20mr20187633ioh.134.1635756852197;
+ Mon, 01 Nov 2021 01:54:12 -0700 (PDT)
+Date:   Mon, 01 Nov 2021 01:54:12 -0700
+In-Reply-To: <000000000000b4786c05cfa94612@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001d3d6905cfb652d5@google.com>
+Subject: Re: [syzbot] INFO: rcu detected stall in snd_seq_write (2)
+From:   syzbot <syzbot+bb950e68b400ab4f65f8@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, bigeasy@linutronix.de,
+        fweisbec@gmail.com, linux-kernel@vger.kernel.org, mingo@kernel.org,
+        peterz@infradead.org, pmladek@suse.com,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+        valentin.schneider@arm.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31/10/2021 23:52, Bart Van Assche wrote:
-> On 10/31/21 16:19, Justin Piszcz wrote:
->> Diff between 5.14 and 5.15 .config files-- could it be something to do 
->> with
->> CONFIG_IOMMU_DEFAULT_DMA_LAZY=y?
+syzbot has bisected this issue to:
 
-On x86 (intel or amd) iommu we were using lazy mode previously, but just 
-did not have a config option, so should not make a difference.
+commit 1a7243ca4074beed97b68d7235a6e34862fc2cd6
+Author: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Date:   Tue Nov 10 11:38:47 2020 +0000
 
+    kthread: Move prio/affinite change into the newly created thread
 
-> 
-> That's hard to say. Is CONFIG_MAGIC_SYSRQ enabled? If not, please enable 
-> it and hit Alt-Printscreen-t (dump task list; see also 
-> Documentation/admin-guide/sysrq.rst) and share the contents of the 
-> kernel log. If that would not be convenient, please try to bisect this 
-> issue.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10b30e6ab00000
+start commit:   bdcc9f6a5682 Add linux-next specific files for 20211029
+git tree:       linux-next
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=12b30e6ab00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=14b30e6ab00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4b504bcb4c507265
+dashboard link: https://syzkaller.appspot.com/bug?extid=bb950e68b400ab4f65f8
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16e913bab00000
 
+Reported-by: syzbot+bb950e68b400ab4f65f8@syzkaller.appspotmail.com
+Fixes: 1a7243ca4074 ("kthread: Move prio/affinite change into the newly created thread")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
