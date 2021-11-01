@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E152B44173E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:32:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F1FC4417E4
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:39:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232991AbhKAJef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:34:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37296 "EHLO mail.kernel.org"
+        id S233418AbhKAJk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:40:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43580 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232952AbhKAJa2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:30:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D3EFD61179;
-        Mon,  1 Nov 2021 09:24:03 +0000 (UTC)
+        id S233647AbhKAJhr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:37:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 90C8161351;
+        Mon,  1 Nov 2021 09:26:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758644;
-        bh=J6Ul1GG2oFWylQa5cKyso2gWWBiwTYvIvAB8/b66bRE=;
+        s=korg; t=1635758805;
+        bh=RC6JetzLfBNEde2KfJFt1UuHBRjs8PXp+JrE2f97nKI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uUxU9dyF2KblsiPJAZiB828SWKamlfQUv9/53kqHs3w6z9ZeCYkAtsLrB8lQqub3V
-         zKXvf9xjNyRTjskhS3o61FHQ8xPdR7+qyDPufbjgADBku4x2JiFbEu1wyrVdVe0L1K
-         pBTYqkKcgoYRZ8SGpSB7JVG5TYy0p5CJSbv7ovu0=
+        b=tsA+aBiWOCtK11BL+NGWwDdew32Sb/mmPJoqgiIbJMB8XZAbgEpBtHeBGfMBp8pV4
+         zkcFjg4WiOQuqkAAmYeobTUFxDh3MeGUovpq56Jv6fmBAtRKnbz/FFEva2W23vmPtX
+         Uz9CVFoB48vxKu1e+I8urS0IYytAoLKq2KOkHTDY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Janusz Dziedzic <janusz.dziedzic@gmail.com>,
-        Johannes Berg <johannes.berg@intel.com>,
+        stable@vger.kernel.org, Xin Long <lucien.xin@gmail.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 48/51] cfg80211: correct bridge/4addr mode check
-Date:   Mon,  1 Nov 2021 10:17:52 +0100
-Message-Id: <20211101082511.714058673@linuxfoundation.org>
+Subject: [PATCH 5.10 65/77] sctp: use init_tag from inithdr for ABORT chunk
+Date:   Mon,  1 Nov 2021 10:17:53 +0100
+Message-Id: <20211101082525.252345963@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082500.203657870@linuxfoundation.org>
-References: <20211101082500.203657870@linuxfoundation.org>
+In-Reply-To: <20211101082511.254155853@linuxfoundation.org>
+References: <20211101082511.254155853@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,55 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Janusz Dziedzic <janusz.dziedzic@gmail.com>
+From: Xin Long <lucien.xin@gmail.com>
 
-[ Upstream commit 689a0a9f505f7bffdefe6f17fddb41c8ab6344f6 ]
+[ Upstream commit 4f7019c7eb33967eb87766e0e4602b5576873680 ]
 
-Without the patch we fail:
+Currently Linux SCTP uses the verification tag of the existing SCTP
+asoc when failing to process and sending the packet with the ABORT
+chunk. This will result in the peer accepting the ABORT chunk and
+removing the SCTP asoc. One could exploit this to terminate a SCTP
+asoc.
 
-$ sudo brctl addbr br0
-$ sudo brctl addif br0 wlp1s0
-$ sudo iw wlp1s0 set 4addr on
-command failed: Device or resource busy (-16)
+This patch is to fix it by always using the initiate tag of the
+received INIT chunk for the ABORT chunk to be sent.
 
-Last command failed but iface was already in 4addr mode.
-
-Fixes: ad4bb6f8883a ("cfg80211: disallow bridging managed/adhoc interfaces")
-Signed-off-by: Janusz Dziedzic <janusz.dziedzic@gmail.com>
-Link: https://lore.kernel.org/r/20211024201546.614379-1-janusz.dziedzic@gmail.com
-[add fixes tag, fix indentation, edit commit log]
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Xin Long <lucien.xin@gmail.com>
+Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/wireless/util.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ net/sctp/sm_statefuns.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/net/wireless/util.c b/net/wireless/util.c
-index 82b3baed2c7d..aaefaf3422a1 100644
---- a/net/wireless/util.c
-+++ b/net/wireless/util.c
-@@ -975,14 +975,14 @@ int cfg80211_change_iface(struct cfg80211_registered_device *rdev,
- 	    !(rdev->wiphy.interface_modes & (1 << ntype)))
- 		return -EOPNOTSUPP;
- 
--	/* if it's part of a bridge, reject changing type to station/ibss */
--	if (netif_is_bridge_port(dev) &&
--	    (ntype == NL80211_IFTYPE_ADHOC ||
--	     ntype == NL80211_IFTYPE_STATION ||
--	     ntype == NL80211_IFTYPE_P2P_CLIENT))
--		return -EBUSY;
--
- 	if (ntype != otype) {
-+		/* if it's part of a bridge, reject changing type to station/ibss */
-+		if (netif_is_bridge_port(dev) &&
-+		    (ntype == NL80211_IFTYPE_ADHOC ||
-+		     ntype == NL80211_IFTYPE_STATION ||
-+		     ntype == NL80211_IFTYPE_P2P_CLIENT))
-+			return -EBUSY;
-+
- 		dev->ieee80211_ptr->use_4addr = false;
- 		dev->ieee80211_ptr->mesh_id_up_len = 0;
- 		wdev_lock(dev->ieee80211_ptr);
+diff --git a/net/sctp/sm_statefuns.c b/net/sctp/sm_statefuns.c
+index b65bdaa84228..89a86728184d 100644
+--- a/net/sctp/sm_statefuns.c
++++ b/net/sctp/sm_statefuns.c
+@@ -6248,6 +6248,7 @@ static struct sctp_packet *sctp_ootb_pkt_new(
+ 		 * yet.
+ 		 */
+ 		switch (chunk->chunk_hdr->type) {
++		case SCTP_CID_INIT:
+ 		case SCTP_CID_INIT_ACK:
+ 		{
+ 			struct sctp_initack_chunk *initack;
 -- 
 2.33.0
 
