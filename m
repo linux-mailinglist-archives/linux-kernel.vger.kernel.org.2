@@ -2,84 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5BC8441ED2
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 17:50:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7602F441ED7
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 17:52:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232746AbhKAQxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 12:53:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60408 "EHLO
+        id S231671AbhKAQzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 12:55:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231303AbhKAQw7 (ORCPT
+        with ESMTP id S229744AbhKAQzP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 12:52:59 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0379C061714;
-        Mon,  1 Nov 2021 09:50:25 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id y1so11914866plk.10;
-        Mon, 01 Nov 2021 09:50:25 -0700 (PDT)
+        Mon, 1 Nov 2021 12:55:15 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16D0CC061764
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 09:52:42 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id h81so13519988iof.6
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 09:52:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1lQPvAS9D0YptMbqbx4CESL2hczonDYMGmutZeU63Qs=;
-        b=Eu2gvCSrbOfvqQrgUNJpA4aXVLITzo0Rr5s2KHm4lkO4g+GGoqlRJzULM6xhsZVatz
-         /Ytrzcvgy0GStGdUWlFk2Dwqpmh5BeztdMWD3Min37Qb4AvvzT1Nx2GAqaFZYhfubv4u
-         GJzMqLVblF+R1GsAgMoj8pCPSE/Y+mVLDpNicX7YilRhxzm7+p5AzbjZvSge/1T8zUy/
-         /JCxUj30QQeKvTc+VanMVi7ZLme1zOy061siPLUb+FrOJWo2gbyUiuBZl6yUIJvXU8y5
-         +kPewJ1v5DxcEKS8vPINbiOyJb9+BrVNTs71KtbSmjb525fEdrSBOSkwAeQIDFtjx7gV
-         hzgQ==
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=LjD4GxWdc2zr8/9EZOl5q2FS3VyqZrhxuRWYjSCst2U=;
+        b=KiSk8LZhR7EZ/6Y/XeCSQZEjR7gPdV1w/ihpXQJrwiIBFMuPhCVhIFeiQYWo8CYa1z
+         Df7GWUMVZkI3hloAM9BQvv3bkbNMij0XMwazsTY8oHQdeOvNzVB96famhHLiW9AGecDM
+         nZHhwuzvLgGIp1JqYojKJyYDWTJlUNK/54Vdeygvt+B6ds8+KAmvLvUfMhsJFII+kv+G
+         VIFaN68qihLLN53lLk/R0TQJZxCO1qStepUqEyJ2hs4MG7+kYIafTRbZvGAZw0PaNxnG
+         lavTjPsXn+2suPlGogjD3moJmOFQACURdndJBOGmcDzAQXfJZ1pRPYYrPe69ClDZiNRk
+         5RuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=1lQPvAS9D0YptMbqbx4CESL2hczonDYMGmutZeU63Qs=;
-        b=uLoFDvkmltRaK2uxcbst81yZWtkTl0FMe4/LqPPR0+tEaVIguL7z1Sl2LLyuROQ+QD
-         pseiPCfS5xsDTxt9C5ctoEZxblNLlMEGzmGmDhnTUhU9faP8fWxddHiQPk12Mejgn3EB
-         d1kZcT0TDbzS9f9whR6Xph9/QSXis0r0B34gyohW3nu+Nvsd2PGTQ1acV3R/PVqR+YUk
-         mNroNWOe/SZpF1DZKfIlUVTE6FX+160jIgaEB95q2sKde00TUQ5bgCkESEzb9gHEBHbn
-         VzU0ScT505oqGVq+AFEg8eFU9dHnoRu5a/J3CRmfNK1UCLEzpFYxPEoKz739ppS2e1KH
-         kufA==
-X-Gm-Message-State: AOAM532Y3Cu6P7o9w3FNuQdTjXlSmWCLZh2hGUdA0iJPpjkw7QoeOBgE
-        rcjDWbSrZdDbitwYQPcTDRQ=
-X-Google-Smtp-Source: ABdhPJzOFIXwyz1spdxhYekeL/kTuOGhGHIxyu0jnfLkamhe22EuvazRViEA5ERRi3n99SzkXCPjfg==
-X-Received: by 2002:a17:902:7c94:b0:13b:8d10:cc4f with SMTP id y20-20020a1709027c9400b0013b8d10cc4fmr26227558pll.54.1635785425347;
-        Mon, 01 Nov 2021 09:50:25 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id v16sm16532953pfu.208.2021.11.01.09.50.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 09:50:24 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 1 Nov 2021 06:50:23 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     He Fengqing <hefengqing@huawei.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        lizefan.x@bytedance.com, hannes@cmpxchg.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        netdev@vger.kernel.org, kafai@fb.com, songliubraving@fb.com,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org
-Subject: Re: [PATCH] cgroup: bpf: Move wrapper for __cgroup_bpf_*() to
- kernel/bpf/cgroup.c
-Message-ID: <YYAaz469VgwskHAq@slm.duckdns.org>
-References: <20211029023906.245294-1-hefengqing@huawei.com>
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=LjD4GxWdc2zr8/9EZOl5q2FS3VyqZrhxuRWYjSCst2U=;
+        b=nFDV/ru1PHZTA65yjWrYGX8gts2BgIbbF1TPhi2dhK+eorPdJdqk36gFs8J/fpJxfH
+         NWMg6XVyTrmkUma2PSt7GXoKmcGcf/7gziVq4Pzv2mNomLYCCZnXYwc32X4s5DxasMPC
+         rirZ82a0H183nhDctrar0VJDK6DD/XLQpehgjMjf60jH3i/XYRaPUvw7la0hmel8mqVQ
+         3EVfzdY320y7xUpXU5aI58q6uciKJspfal80EvJEjMd+LvhIBLBX7ounP8sKYryP4DwV
+         fAusE2uoTULbOybTZMeayVDC2UA+fO+QpGQxBKRYuHXGJFFqXH5x3sEk6RieWJSCj1Gl
+         hhqw==
+X-Gm-Message-State: AOAM531nqHjWOCRT2aYrHB+F4IVxm084dpGdBoh2VIS1Cmoqzkj5+Pxq
+        00DHPnSHh48PG7l7jL9oucNa9I52/1EcvZ6Fu4E=
+X-Google-Smtp-Source: ABdhPJyJawcz7J3D3BhTKOOSV5gD20ZECyj0S5nLNNDsEKYR56W4l7eyyzYWS0luko/WegN6zPQS90X2lc3hLZwF7BQ=
+X-Received: by 2002:a02:7047:: with SMTP id f68mr9473228jac.109.1635785561397;
+ Mon, 01 Nov 2021 09:52:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211029023906.245294-1-hefengqing@huawei.com>
+Sender: readsghfrdfrsafxgf@gmail.com
+Received: by 2002:a05:6e02:1bee:0:0:0:0 with HTTP; Mon, 1 Nov 2021 09:52:41
+ -0700 (PDT)
+From:   Mrs Carlsen monika <carlsen.monika@gmail.com>
+Date:   Mon, 1 Nov 2021 17:52:41 +0100
+X-Google-Sender-Auth: D9QI990OBmKiogm5tZnMWTUO9YM
+Message-ID: <CAAbfOQwdBV60-k=B_-MyrH-mKBBi5KD0Juf1sxg3SZrrLJeBjg@mail.gmail.com>
+Subject: Hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 02:39:06AM +0000, He Fengqing wrote:
-> In commit 324bda9e6c5a("bpf: multi program support for cgroup+bpf")
-> cgroup_bpf_*() called from kernel/bpf/syscall.c, but now they are only
-> used in kernel/bpf/cgroup.c, so move these function to
-> kernel/bpf/cgroup.c, like cgroup_bpf_replace().
-> 
-> Signed-off-by: He Fengqing <hefengqing@huawei.com>
+ I sent this mail praying it will found you in a good condition of
+health, since I myself are in a very critical health condition in
+which I sleep every night without knowing if I may be alive to see the
+next day.I'm Mrs.Monika John Carlsen, wife of late Mr John Carlsen, a
+widow suffering from long time illness.i have some funds i inherited
+from my late husband, the sum of (elevenmilliondollars) my Doctor told
+me recently that I have serious sickness which is cancer problem. What
+disturbs me most is my stroke sickness.Having known my condition,I
+decided to donate this fund to a good person that will utilize it the
+way i am going to instruct herein.I need a very honest and God fearing
+person who can claim this money and use it for Charity works,for
+orphanages,widows and also build schools for less privileges that will
+be named after my late husband if possible and to promote the word of
+God and the effort that the house of God is maintained.
 
-Applied to cgroup/for-5.16.
+I do not want a situation where this money will be used in an ungodly
+manner.That's why I'm taking this decision. I'm not afraid of death so
+I know where I'm going.I accept this decision because I do not have
+any child who will inherit this money after I die. Please I want your
+sincerely and urgent answer to know if you will be able to execute
+this project, and I will give you more information on how the fund
+will be transferred to your bank account.I'm waiting for your reply.
 
-Thanks.
-
--- 
-tejun
+Best Regards,
+Mrs. Monika John Carlsen
