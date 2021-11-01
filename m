@@ -2,97 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C01E2441ED8
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 17:54:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87E80441EDC
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 17:55:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231927AbhKAQ43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 12:56:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33636 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229811AbhKAQ42 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 12:56:28 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E6ED9611C9;
-        Mon,  1 Nov 2021 16:53:54 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <maz@kernel.org>)
-        id 1mhaZE-002tcG-Mj; Mon, 01 Nov 2021 16:53:52 +0000
+        id S232383AbhKAQ5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 12:57:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229811AbhKAQ5x (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 12:57:53 -0400
+Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6C33C061764
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 09:55:19 -0700 (PDT)
+Received: by mail-oo1-xc31.google.com with SMTP id a17-20020a4a6851000000b002b59bfbf669so6457395oof.9
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 09:55:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qP1fwMJNosXJd3rY2TpXHvvGAtJzDNx2SXl6ExsviMQ=;
+        b=V26PIPyLm35UREkwxhLpAU+D65ctfhQKrXnJ961B6wix6dROih5QkSCsWjXSjM8pGq
+         yJL4Qds1l9N0bdjBpa1TZBQ11d7i5qGLrACTVJmZfWLkdBSf4xjxVdFOiCCI7eM/IcyH
+         ledvGpvb37tBnv4Ak0khzYIxuE6brSCAvDpBcezaYMfYiqMoF5xWjBrS1P6FFAWzagqs
+         Cnztu2xTcXjJzGPH0rbVlBw4wwPAowAJv17YCWePwHIBHjIijQplYcJwaxF0BdwtQaJ7
+         K/x102TIxMOe0khCM3o9Wj0B2+hfoXwBeCvV3VtisxVNb8sLH1VhGQ62+6ciDSe4WUBF
+         y2fA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qP1fwMJNosXJd3rY2TpXHvvGAtJzDNx2SXl6ExsviMQ=;
+        b=tQ3hOzm0aRnqqBhSSRGVwGZnyOa5FKimfaBHejZb3qF209DF6Qf6BOxdX2SlKaKnXz
+         1EOKx4USYxeUEo0J8wf5OnmfXMqZQKwZHI9xsSBO5gkSmSqY8HY0CCFMn8UrXYdovl+F
+         ILblWCaUSSicFDxPZgObGBUI4X7S6YzirjwnSuNikh/Ui2HA0Z1TETU1596Z14NK7GIG
+         IdnH2bk+AJo14ILq9LhCSeUOTSmO/cbb75aKH1PbnIF43UyG1J1n7PvBUhtNruiXOnjJ
+         Bf6KU27lgXgjj3Mg1h9vioEKAy6E8/T9gRduRnMOUr+0I7WKkCuOXiqh4g+K1ji2zG17
+         zq5A==
+X-Gm-Message-State: AOAM530tRJWvSNNdviMDt/irAX3Cg6qa5KSTFxhIgpxm1zOpFBpoQKGg
+        jJkgFulGpR/zXYCSt1SFQENT8A==
+X-Google-Smtp-Source: ABdhPJzyatrL8icCuZ1UH6H9Rc0J67z4dYWfR0vBUgdEwdCBZ+DelLuSV4T6yBK3Ph3+NiSGw8db/Q==
+X-Received: by 2002:a4a:d785:: with SMTP id c5mr11753757oou.2.1635785719235;
+        Mon, 01 Nov 2021 09:55:19 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id 91sm4119820otx.12.2021.11.01.09.55.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Nov 2021 09:55:17 -0700 (PDT)
+Date:   Mon, 1 Nov 2021 11:55:12 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com, julien.massot@iot.bzh
+Subject: Re: [PATCH v6 01/10] rpmsg: char: Export eptdev create an destroy
+ functions
+Message-ID: <YYAb8P1Exqf4emQ3@builder.lan>
+References: <20211022125426.2579-1-arnaud.pouliquen@foss.st.com>
+ <20211022125426.2579-2-arnaud.pouliquen@foss.st.com>
 MIME-Version: 1.0
-Date:   Mon, 01 Nov 2021 16:53:52 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Zhaoyu Liu <zackary.liu.pro@gmail.com>
-Cc:     masahiroy@kernel.org, ripxorip@gmail.com,
-        gregkh@linuxfoundation.org, matthieu.baerts@tessares.net,
-        mpe@ellerman.id.au, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] tags: add a space regex to DECLARE_BITMAP
-In-Reply-To: <20211101155948.GA10424@pc>
-References: <20211101155948.GA10424@pc>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <17bd93d6d81cf267e7d0c63b533cc23f@kernel.org>
-X-Sender: maz@kernel.org
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: zackary.liu.pro@gmail.com, masahiroy@kernel.org, ripxorip@gmail.com, gregkh@linuxfoundation.org, matthieu.baerts@tessares.net, mpe@ellerman.id.au, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211022125426.2579-2-arnaud.pouliquen@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-11-01 15:59, Zhaoyu Liu wrote:
-> When "make tags", it prompts a warning:
-> 
->     ctags: Warning: drivers/pci/controller/pcie-apple.c:150:
->     null expansion of name pattern "\1"
-> 
-> The reason is that there is an indentation beside arguments of
-> DECLARE_BITMAP, but it can parsed normally by gtags. It's also
-> allowed in C.
-> 
-> So fix this regex temporarily, and wait for better solutions
-> applied to other regexs.
-> 
-> Reviewed-by: Marc Zyngier <maz@kernel.org>
+On Fri 22 Oct 07:54 CDT 2021, Arnaud Pouliquen wrote:
 
-No, please! I never reviewed this patch. I *suggested*i it [1]
-as a potential avenue for improvement.
-
-You cannot put this tag on a patch unless someone explicitly
-grants it.
-
-> Signed-off-by: Zhaoyu Liu <zackary.liu.pro@gmail.com>
+> To prepare the split of the code related to the control (ctrldev)
+> and the endpoint (eptdev) devices in 2 separate files:
+> 
+> - Rename and export the functions in rpmsg_char.h.
+> 
+> - Suppress the dependency with the rpmsg_ctrldev struct in the
+>   rpmsg_eptdev_create function.
+> 
+> Suggested-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
 > ---
->  scripts/tags.sh | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  update vs previous revision:
+>   - add comment to explain the IS_REACHABLE usage
+>   - remove Mathieu Poirier reviewed-by as patch updated
+> ---
+>  drivers/rpmsg/rpmsg_char.c | 18 +++++++-----
+>  drivers/rpmsg/rpmsg_char.h | 57 ++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 68 insertions(+), 7 deletions(-)
+>  create mode 100644 drivers/rpmsg/rpmsg_char.h
 > 
-> diff --git a/scripts/tags.sh b/scripts/tags.sh
-> index b24bfaec6290..7e5f19391f20 100755
-> --- a/scripts/tags.sh
-> +++ b/scripts/tags.sh
-> @@ -186,7 +186,7 @@ regex_c=(
+> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
+> index b5907b80727c..941c5c54dd72 100644
+> --- a/drivers/rpmsg/rpmsg_char.c
+> +++ b/drivers/rpmsg/rpmsg_char.c
+> @@ -1,5 +1,6 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  /*
+> + * Copyright (C) 2021, STMicroelectronics
+>   * Copyright (c) 2016, Linaro Ltd.
+>   * Copyright (c) 2012, Michal Simek <monstr@monstr.eu>
+>   * Copyright (c) 2012, PetaLogix
+> @@ -22,6 +23,8 @@
+>  #include <linux/uaccess.h>
+>  #include <uapi/linux/rpmsg.h>
 >  
-> 	'/\<DEFINE_\(RT_MUTEX\|MUTEX\|SEMAPHORE\|SPINLOCK\)(\([[:alnum:]_]*\)/\2/v/'
->  	'/\<DEFINE_\(RAW_SPINLOCK\|RWLOCK\|SEQLOCK\)(\([[:alnum:]_]*\)/\2/v/'
->  	'/\<DECLARE_\(RWSEM\|COMPLETION\)(\([[:alnum:]_]\+\)/\2/v/'
-> -	'/\<DECLARE_BITMAP(\([[:alnum:]_]*\)/\1/v/'
-> +	'/\<DECLARE_BITMAP([[:space:]]*\([[:alnum:]_]*\)/\1/v/'
->  	'/\(^\|\s\)\(\|L\|H\)LIST_HEAD(\([[:alnum:]_]*\)/\3/v/'
->  	'/\(^\|\s\)RADIX_TREE(\([[:alnum:]_]*\)/\2/v/'
->  	'/\<DEFINE_PER_CPU([^,]*, *\([[:alnum:]_]*\)/\1/v/'
+> +#include "rpmsg_char.h"
+> +
+>  #define RPMSG_DEV_MAX	(MINORMASK + 1)
+>  
+>  static dev_t rpmsg_major;
+> @@ -76,7 +79,7 @@ struct rpmsg_eptdev {
+>  	wait_queue_head_t readq;
+>  };
+>  
+> -static int rpmsg_eptdev_destroy(struct device *dev, void *data)
+> +int rpmsg_chrdev_eptdev_destroy(struct device *dev, void *data)
+>  {
+>  	struct rpmsg_eptdev *eptdev = dev_to_eptdev(dev);
+>  
+> @@ -95,6 +98,7 @@ static int rpmsg_eptdev_destroy(struct device *dev, void *data)
+>  
+>  	return 0;
+>  }
+> +EXPORT_SYMBOL(rpmsg_chrdev_eptdev_destroy);
+>  
+>  static int rpmsg_ept_cb(struct rpmsg_device *rpdev, void *buf, int len,
+>  			void *priv, u32 addr)
+> @@ -278,7 +282,7 @@ static long rpmsg_eptdev_ioctl(struct file *fp, unsigned int cmd,
+>  	if (cmd != RPMSG_DESTROY_EPT_IOCTL)
+>  		return -EINVAL;
+>  
+> -	return rpmsg_eptdev_destroy(&eptdev->dev, NULL);
+> +	return rpmsg_chrdev_eptdev_destroy(&eptdev->dev, NULL);
+>  }
+>  
+>  static const struct file_operations rpmsg_eptdev_fops = {
+> @@ -337,10 +341,9 @@ static void rpmsg_eptdev_release_device(struct device *dev)
+>  	kfree(eptdev);
+>  }
+>  
+> -static int rpmsg_eptdev_create(struct rpmsg_ctrldev *ctrldev,
+> +int rpmsg_chrdev_eptdev_create(struct rpmsg_device *rpdev, struct device *parent,
+>  			       struct rpmsg_channel_info chinfo)
+>  {
+> -	struct rpmsg_device *rpdev = ctrldev->rpdev;
+>  	struct rpmsg_eptdev *eptdev;
+>  	struct device *dev;
+>  	int ret;
+> @@ -360,7 +363,7 @@ static int rpmsg_eptdev_create(struct rpmsg_ctrldev *ctrldev,
+>  
+>  	device_initialize(dev);
+>  	dev->class = rpmsg_class;
+> -	dev->parent = &ctrldev->dev;
+> +	dev->parent = parent;
+>  	dev->groups = rpmsg_eptdev_groups;
+>  	dev_set_drvdata(dev, eptdev);
+>  
+> @@ -403,6 +406,7 @@ static int rpmsg_eptdev_create(struct rpmsg_ctrldev *ctrldev,
+>  
+>  	return ret;
+>  }
+> +EXPORT_SYMBOL(rpmsg_chrdev_eptdev_create);
+>  
+>  static int rpmsg_ctrldev_open(struct inode *inode, struct file *filp)
+>  {
+> @@ -442,7 +446,7 @@ static long rpmsg_ctrldev_ioctl(struct file *fp, unsigned int cmd,
+>  	chinfo.src = eptinfo.src;
+>  	chinfo.dst = eptinfo.dst;
+>  
+> -	return rpmsg_eptdev_create(ctrldev, chinfo);
+> +	return rpmsg_chrdev_eptdev_create(ctrldev->rpdev, &ctrldev->dev, chinfo);
+>  };
+>  
+>  static const struct file_operations rpmsg_ctrldev_fops = {
+> @@ -528,7 +532,7 @@ static void rpmsg_chrdev_remove(struct rpmsg_device *rpdev)
+>  	int ret;
+>  
+>  	/* Destroy all endpoints */
+> -	ret = device_for_each_child(&ctrldev->dev, NULL, rpmsg_eptdev_destroy);
+> +	ret = device_for_each_child(&ctrldev->dev, NULL, rpmsg_chrdev_eptdev_destroy);
+>  	if (ret)
+>  		dev_warn(&rpdev->dev, "failed to nuke endpoints: %d\n", ret);
+>  
+> diff --git a/drivers/rpmsg/rpmsg_char.h b/drivers/rpmsg/rpmsg_char.h
+> new file mode 100644
+> index 000000000000..109c2c43005f
+> --- /dev/null
+> +++ b/drivers/rpmsg/rpmsg_char.h
+> @@ -0,0 +1,57 @@
+> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+> +/*
+> + * Copyright (C) STMicroelectronics 2021.
+> + */
+> +
+> +#ifndef __RPMSG_CHRDEV_H__
+> +#define __RPMSG_CHRDEV_H__
+> +
+> +/*
+> + * The IS_REACHABLE macro is used here to prevent unresolved symbol error during link,
+> + * building with RPMSG_CHAR=m and RPMSG_CTRL=y configuration.
+> + * In such case a kernel warning is printed to help develloper to fix the issue.
+> + */
 
-More importantly, and assuming this is the correct approach,
-why should we limit this to DECLARE_BITMAP()?
+I think we concluded that RPMSG_CHAR=n, RPMSG_CTRL=y is a valid
+combination. If so I presume you don't want the user to get the kernel
+log spammed by the WARN_ON()?
 
-Thanks,
+Afaict this should only ever be invoked by rpmsg_ctrl and with
+RPMSG_CHAR disabled the related ioctls should just fail nicely.
 
-         M.
 
-[1] https://lore.kernel.org/r/878ry89nfp.wl-maz@kernel.org
--- 
-Jazz is not dead. It just smells funny...
+As such. I think this should be #if IS_ENABLED() and we should put:
+
+	depends on RPMSG_CHAR || RPMSG_CHAR=n
+
+in the RPMSG_CTRL Kconfig.
+
+Regards,
+Bjorn
+
+> +
+> +#if IS_REACHABLE(CONFIG_RPMSG_CHAR)
+> +/**
+> + * rpmsg_chrdev_eptdev_create() - register char device based on an endpoint
+> + * @rpdev:  prepared rpdev to be used for creating endpoints
+> + * @parent: parent device
+> + * @chinfo: associated endpoint channel information.
+> + *
+> + * This function create a new rpmsg char endpoint device to instantiate a new
+> + * endpoint based on chinfo information.
+> + */
+> +int rpmsg_chrdev_eptdev_create(struct rpmsg_device *rpdev, struct device *parent,
+> +			       struct rpmsg_channel_info chinfo);
+> +
+> +/**
+> + * rpmsg_chrdev_eptdev_destroy() - destroy created char device endpoint.
+> + * @data: private data associated to the endpoint device
+> + *
+> + * This function destroys a rpmsg char endpoint device created by the RPMSG_DESTROY_EPT_IOCTL
+> + * control.
+> + */
+> +int rpmsg_chrdev_eptdev_destroy(struct device *dev, void *data);
+> +
+> +#else  /*IS_REACHABLE(CONFIG_RPMSG_CHAR) */
+> +
+> +static inline int rpmsg_chrdev_eptdev_create(struct rpmsg_device *rpdev, struct device *parent,
+> +					     struct rpmsg_channel_info chinfo)
+> +{
+> +	/* This shouldn't be possible */
+> +	WARN_ON(1);
+> +	return -EINVAL;
+> +}
+> +
+> +static inline int rpmsg_chrdev_eptdev_destroy(struct device *dev, void *data)
+> +{
+> +	/* This shouldn't be possible */
+> +	WARN_ON(1);
+> +
+> +	return 0;
+> +}
+> +
+> +#endif /*IS_REACHABLE(CONFIG_RPMSG_CHAR) */
+> +
+> +#endif /*__RPMSG_CHRDEV_H__ */
+> -- 
+> 2.17.1
+> 
