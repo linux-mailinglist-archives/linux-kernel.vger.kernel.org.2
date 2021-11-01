@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 543074418A0
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:48:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5F1A441789
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:36:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233427AbhKAJtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:49:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51404 "EHLO mail.kernel.org"
+        id S232809AbhKAJhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:37:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43676 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233957AbhKAJpU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:45:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F60C61100;
-        Mon,  1 Nov 2021 09:29:57 +0000 (UTC)
+        id S233691AbhKAJd4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:33:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B50A61262;
+        Mon,  1 Nov 2021 09:25:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758998;
-        bh=TyqDyT68/IFEjqBVz9kGc6sjcogYGLHexDIL88CdGcU=;
+        s=korg; t=1635758730;
+        bh=k2eGiVVxwD39n41vR/c4fTPEKDZTYQD6mLzB1gQBcJ4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oyHcdstVMiQuVK7m8Bu5+OI96F1qSYCq/3AiwMemAsTpztpNOGnohYcLFVcQp79ZK
-         RY+fBLCFPX+XxTJxIoyLlIbCdPXsyTP6oHT+Df+gLyYOf99ONdqzHQtESUF2SbIoRM
-         +nrHg+ILVnbi+0GN5xS2gEMDuzSX8HneLYiAl620=
+        b=Eilcv77V5geXX3s5qghe0mr6uTh22vvyF65uUBl76xHgypprgdJGNQbxMKMhZTxPo
+         UIrDiw0NncIbDwuFh4rQxxMY/nDIO0xJ2P9V8X0k1c8J9Cw6N68F0XeKOjln1vDBr+
+         wk0kpH1uBgGIgxSgVs6p7m4JkXmouBym1sufc5oc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Shawn Guo <shawnguo@kernel.org>
-Subject: [PATCH 5.14 039/125] arm64: dts: imx8mm-kontron: Fix connection type for VSC8531 RGMII PHY
-Date:   Mon,  1 Nov 2021 10:16:52 +0100
-Message-Id: <20211101082540.572376676@linuxfoundation.org>
+        stable@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
+Subject: [PATCH 5.10 05/77] ARM: 9139/1: kprobes: fix arch_init_kprobes() prototype
+Date:   Mon,  1 Nov 2021 10:16:53 +0100
+Message-Id: <20211101082512.307250395@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082533.618411490@linuxfoundation.org>
-References: <20211101082533.618411490@linuxfoundation.org>
+In-Reply-To: <20211101082511.254155853@linuxfoundation.org>
+References: <20211101082511.254155853@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frieder Schrempf <frieder.schrempf@kontron.de>
+From: Arnd Bergmann <arnd@arndb.de>
 
-commit 0b28c41e3c951ea3d4f012cfa9da5ebd6512cf6e upstream.
+commit 1f323127cab086e4fd618981b1e5edc396eaf0f4 upstream.
 
-Previously we falsely relied on the PHY driver to unconditionally
-enable the internal RX delay. Since the following fix for the PHY
-driver this is not the case anymore:
+With extra warnings enabled, gcc complains about this function
+definition:
 
-commit 7b005a1742be ("net: phy: mscc: configure both RX and TX internal
-delays for RGMII")
+arch/arm/probes/kprobes/core.c: In function 'arch_init_kprobes':
+arch/arm/probes/kprobes/core.c:465:12: warning: old-style function definition [-Wold-style-definition]
+  465 | int __init arch_init_kprobes()
 
-In order to enable the delay we need to set the connection type to
-"rgmii-rxid". Without the RX delay the ethernet is not functional at
-all.
+Link: https://lore.kernel.org/all/20201027093057.c685a14b386acacb3c449e3d@kernel.org/
 
-Fixes: 8668d8b2e67f ("arm64: dts: Add the Kontron i.MX8M Mini SoMs and baseboards")
-Cc: stable@vger.kernel.org
-Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+Fixes: 24ba613c9d6c ("ARM kprobes: core code")
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-s.dts |    2 +-
+ arch/arm/probes/kprobes/core.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-s.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-s.dts
-@@ -113,7 +113,7 @@
- &fec1 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_enet>;
--	phy-connection-type = "rgmii";
-+	phy-connection-type = "rgmii-rxid";
- 	phy-handle = <&ethphy>;
- 	status = "okay";
+--- a/arch/arm/probes/kprobes/core.c
++++ b/arch/arm/probes/kprobes/core.c
+@@ -462,7 +462,7 @@ static struct undef_hook kprobes_arm_bre
  
+ #endif /* !CONFIG_THUMB2_KERNEL */
+ 
+-int __init arch_init_kprobes()
++int __init arch_init_kprobes(void)
+ {
+ 	arm_probes_decode_init();
+ #ifdef CONFIG_THUMB2_KERNEL
 
 
