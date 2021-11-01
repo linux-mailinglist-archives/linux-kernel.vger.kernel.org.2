@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 621FA44172B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:31:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 547224417C0
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:37:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232269AbhKAJeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:34:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37170 "EHLO mail.kernel.org"
+        id S233466AbhKAJjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:39:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43530 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232824AbhKAJaX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:30:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C5755610CF;
-        Mon,  1 Nov 2021 09:23:49 +0000 (UTC)
+        id S233629AbhKAJho (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:37:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5218461352;
+        Mon,  1 Nov 2021 09:26:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758630;
-        bh=nb4W6rpvlwnBtQmWNsvT+tBNSfraqz74zKDUZ2J1/DE=;
+        s=korg; t=1635758788;
+        bh=NWtY/yBNxkcnnGKSfGyzyg6bWegWiIGZz37uhmBi0/4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NhXLmmiJi10hrgwPk/9O2RcfR5bw7IC3NW+w3XieT7Us1uSsWibKzIPa+aOhQBKbk
-         /cZzJ2y2UFrHZYted7cwu1oY+t3BLqNclBxYp1K/KxRFnW6rhCbKHpKvNEuMaPWMEL
-         jXNeaIsU7FsLj2XbZPWYGwBJtQUFooIDGEACTEOY=
+        b=S4yyVAfK6qGGWexuRjf7jtOQUe2Mxq4Q2Rkhts1bs99cVlNSHETTN53TPl87QB7Gs
+         BdrMJvx4igyLWwRNU3ranuYFMDeNNCBxIeIxZnHQmBEOx5G9TlSaMwGMpQs6i4AG8M
+         zz9jI4TByH3t5THqAMYG8mDttQUarFrsbl1eoSvs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xin Long <lucien.xin@gmail.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 43/51] sctp: fix the processing for COOKIE_ECHO chunk
+        stable@vger.kernel.org, Trevor Woerner <twoerner@gmail.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.10 59/77] net: nxp: lpc_eth.c: avoid hang when bringing interface down
 Date:   Mon,  1 Nov 2021 10:17:47 +0100
-Message-Id: <20211101082510.757130560@linuxfoundation.org>
+Message-Id: <20211101082524.058311014@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082500.203657870@linuxfoundation.org>
-References: <20211101082500.203657870@linuxfoundation.org>
+In-Reply-To: <20211101082511.254155853@linuxfoundation.org>
+References: <20211101082511.254155853@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,75 +40,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Trevor Woerner <twoerner@gmail.com>
 
-[ Upstream commit a64b341b8695e1c744dd972b39868371b4f68f83 ]
+commit ace19b992436a257d9a793672e57abc28fe83e2e upstream.
 
-1. In closed state: in sctp_sf_do_5_1D_ce():
-
-  When asoc is NULL, making packet for abort will use chunk's vtag
-  in sctp_ootb_pkt_new(). But when asoc exists, vtag from the chunk
-  should be verified before using peer.i.init_tag to make packet
-  for abort in sctp_ootb_pkt_new(), and just discard it if vtag is
-  not correct.
-
-2. In the other states: in sctp_sf_do_5_2_4_dupcook():
-
-  asoc always exists, but duplicate cookie_echo's vtag will be
-  handled by sctp_tietags_compare() and then take actions, so before
-  that we only verify the vtag for the abort sent for invalid chunk
-  length.
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+A hard hang is observed whenever the ethernet interface is brought
+down. If the PHY is stopped before the LPC core block is reset,
+the SoC will hang. Comparing lpc_eth_close() and lpc_eth_open() I
+re-arranged the ordering of the functions calls in lpc_eth_close() to
+reset the hardware before stopping the PHY.
+Fixes: b7370112f519 ("lpc32xx: Added ethernet driver")
+Signed-off-by: Trevor Woerner <twoerner@gmail.com>
+Acked-by: Vladimir Zapolskiy <vz@mleia.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/sctp/sm_statefuns.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/nxp/lpc_eth.c |    5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/net/sctp/sm_statefuns.c b/net/sctp/sm_statefuns.c
-index 80e19f5d1738..1e3f6be5bab9 100644
---- a/net/sctp/sm_statefuns.c
-+++ b/net/sctp/sm_statefuns.c
-@@ -697,6 +697,9 @@ enum sctp_disposition sctp_sf_do_5_1D_ce(struct net *net,
- 	struct sock *sk;
- 	int error = 0;
+--- a/drivers/net/ethernet/nxp/lpc_eth.c
++++ b/drivers/net/ethernet/nxp/lpc_eth.c
+@@ -1015,9 +1015,6 @@ static int lpc_eth_close(struct net_devi
+ 	napi_disable(&pldat->napi);
+ 	netif_stop_queue(ndev);
  
-+	if (asoc && !sctp_vtag_verify(chunk, asoc))
-+		return sctp_sf_pdiscard(net, ep, asoc, type, arg, commands);
-+
- 	/* If the packet is an OOTB packet which is temporarily on the
- 	 * control endpoint, respond with an ABORT.
- 	 */
-@@ -711,7 +714,8 @@ enum sctp_disposition sctp_sf_do_5_1D_ce(struct net *net,
- 	 * in sctp_unpack_cookie().
- 	 */
- 	if (!sctp_chunk_length_valid(chunk, sizeof(struct sctp_chunkhdr)))
--		return sctp_sf_pdiscard(net, ep, asoc, type, arg, commands);
-+		return sctp_sf_violation_chunklen(net, ep, asoc, type, arg,
-+						  commands);
+-	if (ndev->phydev)
+-		phy_stop(ndev->phydev);
+-
+ 	spin_lock_irqsave(&pldat->lock, flags);
+ 	__lpc_eth_reset(pldat);
+ 	netif_carrier_off(ndev);
+@@ -1025,6 +1022,8 @@ static int lpc_eth_close(struct net_devi
+ 	writel(0, LPC_ENET_MAC2(pldat->net_base));
+ 	spin_unlock_irqrestore(&pldat->lock, flags);
  
- 	/* If the endpoint is not listening or if the number of associations
- 	 * on the TCP-style socket exceed the max backlog, respond with an
-@@ -2141,9 +2145,11 @@ enum sctp_disposition sctp_sf_do_5_2_4_dupcook(
- 	 * enough for the chunk header.  Cookie length verification is
- 	 * done later.
- 	 */
--	if (!sctp_chunk_length_valid(chunk, sizeof(struct sctp_chunkhdr)))
--		return sctp_sf_violation_chunklen(net, ep, asoc, type, arg,
--						  commands);
-+	if (!sctp_chunk_length_valid(chunk, sizeof(struct sctp_chunkhdr))) {
-+		if (!sctp_vtag_verify(chunk, asoc))
-+			asoc = NULL;
-+		return sctp_sf_violation_chunklen(net, ep, asoc, type, arg, commands);
-+	}
++	if (ndev->phydev)
++		phy_stop(ndev->phydev);
+ 	clk_disable_unprepare(pldat->clk);
  
- 	/* "Decode" the chunk.  We have no optional parameters so we
- 	 * are in good shape.
--- 
-2.33.0
-
+ 	return 0;
 
 
