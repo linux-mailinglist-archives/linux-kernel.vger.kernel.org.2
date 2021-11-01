@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A58E4418E2
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:51:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 586AB441741
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:32:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234749AbhKAJwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:52:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52158 "EHLO mail.kernel.org"
+        id S233099AbhKAJes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:34:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37498 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234593AbhKAJs2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:48:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7FC7D61425;
-        Mon,  1 Nov 2021 09:31:08 +0000 (UTC)
+        id S233023AbhKAJad (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:30:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8200161154;
+        Mon,  1 Nov 2021 09:24:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635759069;
-        bh=bLrRK8D1NOsptmNzlhEsLRLABi1BV2evn6836s9rJYM=;
+        s=korg; t=1635758649;
+        bh=dxk7TbGopJyzyNO3eRiRqncp7nU/TcTaKlKJOAs5gZ8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qxwR5SmW0Ybr5iDZ2z73JKhDNEKSHpJXh9cArOi3ZHDZsZrhxwq0UNwDj5OPMBd4Q
-         09m3luVLZHQeTruaeDceUrg51LA/H7Y+dZEPFo+lORU4jrwAOGN7c0SObWAB3EFoqH
-         syfK9yJnWWO9CJjFdcAhIvYvw9wdi8aCGe2S7+lM=
+        b=C6CHNAQqqHrmYwtbKTnEzWidgDBMQtiyJ+Ghv/bsse7M9leb5RoJvKtTgyQEP/kPW
+         WLsipTcqFoMPTU3+i7M+UVOgpfAaDbusOECec6AjhHfG8sp2KjbOnpRnqXp5ndAI1G
+         dqsA/pW0BqFKhNIjcCIplCJjGz1/nOktpk0WXW50=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xin Long <lucien.xin@gmail.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Halil Pasic <pasic@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Michael Mueller <mimu@linux.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 100/125] sctp: fix the processing for INIT chunk
-Date:   Mon,  1 Nov 2021 10:17:53 +0100
-Message-Id: <20211101082552.063765531@linuxfoundation.org>
+Subject: [PATCH 5.4 50/51] KVM: s390: preserve deliverable_mask in __airqs_kick_single_vcpu
+Date:   Mon,  1 Nov 2021 10:17:54 +0100
+Message-Id: <20211101082512.103567222@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082533.618411490@linuxfoundation.org>
-References: <20211101082533.618411490@linuxfoundation.org>
+In-Reply-To: <20211101082500.203657870@linuxfoundation.org>
+References: <20211101082500.203657870@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,164 +42,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Halil Pasic <pasic@linux.ibm.com>
 
-[ Upstream commit eae5783908042a762c24e1bd11876edb91d314b1 ]
+[ Upstream commit 0e9ff65f455dfd0a8aea5e7843678ab6fe097e21 ]
 
-This patch fixes the problems below:
+Changing the deliverable mask in __airqs_kick_single_vcpu() is a bug. If
+one idle vcpu can't take the interrupts we want to deliver, we should
+look for another vcpu that can, instead of saying that we don't want
+to deliver these interrupts by clearing the bits from the
+deliverable_mask.
 
-1. In non-shutdown_ack_sent states: in sctp_sf_do_5_1B_init() and
-   sctp_sf_do_5_2_2_dupinit():
-
-  chunk length check should be done before any checks that may cause
-  to send abort, as making packet for abort will access the init_tag
-  from init_hdr in sctp_ootb_pkt_new().
-
-2. In shutdown_ack_sent state: in sctp_sf_do_9_2_reshutack():
-
-  The same checks as does in sctp_sf_do_5_2_2_dupinit() is needed
-  for sctp_sf_do_9_2_reshutack().
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: 9f30f6216378 ("KVM: s390: add gib_alert_irq_handler()")
+Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
+Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
+Reviewed-by: Michael Mueller <mimu@linux.ibm.com>
+Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+Link: https://lore.kernel.org/r/20211019175401.3757927-3-pasic@linux.ibm.com
+Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sctp/sm_statefuns.c | 72 ++++++++++++++++++++++++++---------------
- 1 file changed, 46 insertions(+), 26 deletions(-)
+ arch/s390/kvm/interrupt.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/net/sctp/sm_statefuns.c b/net/sctp/sm_statefuns.c
-index 7f8306968c39..9bfa8cca9974 100644
---- a/net/sctp/sm_statefuns.c
-+++ b/net/sctp/sm_statefuns.c
-@@ -156,6 +156,12 @@ static enum sctp_disposition __sctp_sf_do_9_1_abort(
- 					void *arg,
- 					struct sctp_cmd_seq *commands);
+diff --git a/arch/s390/kvm/interrupt.c b/arch/s390/kvm/interrupt.c
+index fa9483aa4f57..fd73a8aa89d2 100644
+--- a/arch/s390/kvm/interrupt.c
++++ b/arch/s390/kvm/interrupt.c
+@@ -2987,13 +2987,14 @@ static void __airqs_kick_single_vcpu(struct kvm *kvm, u8 deliverable_mask)
+ 	int vcpu_idx, online_vcpus = atomic_read(&kvm->online_vcpus);
+ 	struct kvm_s390_gisa_interrupt *gi = &kvm->arch.gisa_int;
+ 	struct kvm_vcpu *vcpu;
++	u8 vcpu_isc_mask;
  
-+static enum sctp_disposition
-+__sctp_sf_do_9_2_reshutack(struct net *net, const struct sctp_endpoint *ep,
-+			   const struct sctp_association *asoc,
-+			   const union sctp_subtype type, void *arg,
-+			   struct sctp_cmd_seq *commands);
-+
- /* Small helper function that checks if the chunk length
-  * is of the appropriate length.  The 'required_length' argument
-  * is set to be the size of a specific chunk we are testing.
-@@ -337,6 +343,14 @@ enum sctp_disposition sctp_sf_do_5_1B_init(struct net *net,
- 	if (!chunk->singleton)
- 		return sctp_sf_pdiscard(net, ep, asoc, type, arg, commands);
- 
-+	/* Make sure that the INIT chunk has a valid length.
-+	 * Normally, this would cause an ABORT with a Protocol Violation
-+	 * error, but since we don't have an association, we'll
-+	 * just discard the packet.
-+	 */
-+	if (!sctp_chunk_length_valid(chunk, sizeof(struct sctp_init_chunk)))
-+		return sctp_sf_pdiscard(net, ep, asoc, type, arg, commands);
-+
- 	/* If the packet is an OOTB packet which is temporarily on the
- 	 * control endpoint, respond with an ABORT.
- 	 */
-@@ -351,14 +365,6 @@ enum sctp_disposition sctp_sf_do_5_1B_init(struct net *net,
- 	if (chunk->sctp_hdr->vtag != 0)
- 		return sctp_sf_tabort_8_4_8(net, ep, asoc, type, arg, commands);
- 
--	/* Make sure that the INIT chunk has a valid length.
--	 * Normally, this would cause an ABORT with a Protocol Violation
--	 * error, but since we don't have an association, we'll
--	 * just discard the packet.
--	 */
--	if (!sctp_chunk_length_valid(chunk, sizeof(struct sctp_init_chunk)))
--		return sctp_sf_pdiscard(net, ep, asoc, type, arg, commands);
--
- 	/* If the INIT is coming toward a closing socket, we'll send back
- 	 * and ABORT.  Essentially, this catches the race of INIT being
- 	 * backloged to the socket at the same time as the user issues close().
-@@ -1524,20 +1530,16 @@ static enum sctp_disposition sctp_sf_do_unexpected_init(
- 	if (!chunk->singleton)
- 		return sctp_sf_pdiscard(net, ep, asoc, type, arg, commands);
- 
-+	/* Make sure that the INIT chunk has a valid length. */
-+	if (!sctp_chunk_length_valid(chunk, sizeof(struct sctp_init_chunk)))
-+		return sctp_sf_pdiscard(net, ep, asoc, type, arg, commands);
-+
- 	/* 3.1 A packet containing an INIT chunk MUST have a zero Verification
- 	 * Tag.
- 	 */
- 	if (chunk->sctp_hdr->vtag != 0)
- 		return sctp_sf_tabort_8_4_8(net, ep, asoc, type, arg, commands);
- 
--	/* Make sure that the INIT chunk has a valid length.
--	 * In this case, we generate a protocol violation since we have
--	 * an association established.
--	 */
--	if (!sctp_chunk_length_valid(chunk, sizeof(struct sctp_init_chunk)))
--		return sctp_sf_violation_chunklen(net, ep, asoc, type, arg,
--						  commands);
--
- 	if (SCTP_INPUT_CB(chunk->skb)->encap_port != chunk->transport->encap_port)
- 		return sctp_sf_new_encap_port(net, ep, asoc, type, arg, commands);
- 
-@@ -1882,9 +1884,9 @@ static enum sctp_disposition sctp_sf_do_dupcook_a(
- 	 * its peer.
- 	*/
- 	if (sctp_state(asoc, SHUTDOWN_ACK_SENT)) {
--		disposition = sctp_sf_do_9_2_reshutack(net, ep, asoc,
--				SCTP_ST_CHUNK(chunk->chunk_hdr->type),
--				chunk, commands);
-+		disposition = __sctp_sf_do_9_2_reshutack(net, ep, asoc,
-+							 SCTP_ST_CHUNK(chunk->chunk_hdr->type),
-+							 chunk, commands);
- 		if (SCTP_DISPOSITION_NOMEM == disposition)
- 			goto nomem;
- 
-@@ -2970,13 +2972,11 @@ enum sctp_disposition sctp_sf_do_9_2_shut_ctsn(
-  * that belong to this association, it should discard the INIT chunk and
-  * retransmit the SHUTDOWN ACK chunk.
-  */
--enum sctp_disposition sctp_sf_do_9_2_reshutack(
--					struct net *net,
--					const struct sctp_endpoint *ep,
--					const struct sctp_association *asoc,
--					const union sctp_subtype type,
--					void *arg,
--					struct sctp_cmd_seq *commands)
-+static enum sctp_disposition
-+__sctp_sf_do_9_2_reshutack(struct net *net, const struct sctp_endpoint *ep,
-+			   const struct sctp_association *asoc,
-+			   const union sctp_subtype type, void *arg,
-+			   struct sctp_cmd_seq *commands)
- {
- 	struct sctp_chunk *chunk = arg;
- 	struct sctp_chunk *reply;
-@@ -3010,6 +3010,26 @@ nomem:
- 	return SCTP_DISPOSITION_NOMEM;
- }
- 
-+enum sctp_disposition
-+sctp_sf_do_9_2_reshutack(struct net *net, const struct sctp_endpoint *ep,
-+			 const struct sctp_association *asoc,
-+			 const union sctp_subtype type, void *arg,
-+			 struct sctp_cmd_seq *commands)
-+{
-+	struct sctp_chunk *chunk = arg;
-+
-+	if (!chunk->singleton)
-+		return sctp_sf_pdiscard(net, ep, asoc, type, arg, commands);
-+
-+	if (!sctp_chunk_length_valid(chunk, sizeof(struct sctp_init_chunk)))
-+		return sctp_sf_pdiscard(net, ep, asoc, type, arg, commands);
-+
-+	if (chunk->sctp_hdr->vtag != 0)
-+		return sctp_sf_tabort_8_4_8(net, ep, asoc, type, arg, commands);
-+
-+	return __sctp_sf_do_9_2_reshutack(net, ep, asoc, type, arg, commands);
-+}
-+
- /*
-  * sctp_sf_do_ecn_cwr
-  *
+ 	for_each_set_bit(vcpu_idx, kvm->arch.idle_mask, online_vcpus) {
+ 		vcpu = kvm_get_vcpu(kvm, vcpu_idx);
+ 		if (psw_ioint_disabled(vcpu))
+ 			continue;
+-		deliverable_mask &= (u8)(vcpu->arch.sie_block->gcr[6] >> 24);
+-		if (deliverable_mask) {
++		vcpu_isc_mask = (u8)(vcpu->arch.sie_block->gcr[6] >> 24);
++		if (deliverable_mask & vcpu_isc_mask) {
+ 			/* lately kicked but not yet running */
+ 			if (test_and_set_bit(vcpu_idx, gi->kicked_mask))
+ 				return;
 -- 
 2.33.0
 
