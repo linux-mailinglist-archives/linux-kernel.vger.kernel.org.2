@@ -2,101 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C6FC441D44
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 16:20:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ECB6441D53
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 16:21:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232519AbhKAPWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 11:22:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32138 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229826AbhKAPWj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 11:22:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635780006;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=dAeRfr4dbthi/ovcb+Eba3V5YcBnIIBucSkoTXHdeuY=;
-        b=PilItmKM9KOdPMyH/dbzENKir8YCLuurDzwiC7yuS+31yrVkp2ySwNRTjWqiiEdZ3HIFud
-        MndSOSGft+2gACDzhf1b76k2e3zOkFPOVCa12KK/XeDchpZupiNNRaMxzZQnh6j6l38D2b
-        /8W72bkNFuN7xSgobJxegxrHZavWdh8=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-407-tECkm5QiNiu5z0t8vECAyQ-1; Mon, 01 Nov 2021 11:20:04 -0400
-X-MC-Unique: tECkm5QiNiu5z0t8vECAyQ-1
-Received: by mail-ed1-f71.google.com with SMTP id w11-20020a05640234cb00b003e0cd525777so11174428edc.12
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 08:20:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dAeRfr4dbthi/ovcb+Eba3V5YcBnIIBucSkoTXHdeuY=;
-        b=IQEry7CFUvbqdJKICfkQm1ZODewzH1McfoG3Ll4qTUhTyM137zbRV3rWXHjb+8OAD/
-         kUELSQlvoLe/bt9CSz6My107ppy2CpdUg1eCS3qMIE/n4Gjt5AY66gNvqAyDOXSGnxAA
-         ruLtwFOLBwf/oBg/75aMesnxpLlZ9tbWEU9pBccKjgfh1ZqLSh8OjgiTI5A4A5Eq1d6g
-         YTLj03TRJzBQHsIligTIKBLbFoo5+u1F2NqGJW7DPMVMYKoEhE1De6pHDulESHkYdbsX
-         i4myjPeI1EBs+76tNTtXfy7hcBSxq3gsj4peirot8Lwn6Fpv0U3SnB4sSPvOp49SpEz6
-         QEZg==
-X-Gm-Message-State: AOAM533UsOsuvrB9YuN/DakkhHWIkPNYBCelIU141sxZSPs6p9J+yso1
-        UK82qN427zTyb4/5m7XjM/tHsW0QbUSGuD2bk8zxEFTiEnhTXdhM0j9PLJIBpC6UEdshHdmThVu
-        Y7bj3dqACYisvMp78nXJSn9Se
-X-Received: by 2002:a17:906:11c5:: with SMTP id o5mr30891451eja.42.1635780003750;
-        Mon, 01 Nov 2021 08:20:03 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwEkfUSYKO7B+kM9IsLNrusJknNNOkQPPdxURtD13309uhjWycsHTyizdfh68asfG5BaBIpBA==
-X-Received: by 2002:a17:906:11c5:: with SMTP id o5mr30891414eja.42.1635780003492;
-        Mon, 01 Nov 2021 08:20:03 -0700 (PDT)
-Received: from krava.redhat.com (nat-pool-brq-u.redhat.com. [213.175.37.12])
-        by smtp.gmail.com with ESMTPSA id gb2sm6930903ejc.52.2021.11.01.08.20.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 08:20:03 -0700 (PDT)
-From:   Jiri Olsa <jolsa@redhat.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>
-Cc:     kernel test robot <lkp@intel.com>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: [PATCH] ftrace/samples: Add missing prototype for my_direct_func
-Date:   Mon,  1 Nov 2021 16:20:02 +0100
-Message-Id: <20211101152002.376369-1-jolsa@kernel.org>
-X-Mailer: git-send-email 2.31.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S232541AbhKAPXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 11:23:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46330 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229826AbhKAPXa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 11:23:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D92F610F7;
+        Mon,  1 Nov 2021 15:20:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635780057;
+        bh=P1VMWFkPkfEfuseYg31v97wgYAz2FD4nva+swFyUK9c=;
+        h=From:To:Cc:Subject:Date:From;
+        b=MO58kC3q6VJeM1dO8nl/diMG6/6ekheZbpJgtsqaQqVwzpA4QfJrhQ7sDDa+bVkHk
+         wy9RZ+h6d8yjXYV2dvypdFcoTf/dOZw7xrfc1aH+SoZ+QjlCTH9sXesgT3+gcfrefP
+         VvjJoUca10E59pi/r790g+8WYccpliXB6a2M49bhHZSCRnghIZpo/bfB4jXwQmX2jN
+         yzUdM9o2hpedL3cQ6NMkfz1f4RnJJPm1RKFw7sIkNFoLQNVgvM+iG59gX5XwO4JUoA
+         g+CRQcTGKBybZRUn85bZc53hxFxvtB0VHfaiOMG1N2sP5A+fMcBHB+ia+Olgzos893
+         pB/CkmWw6iD1A==
+From:   Mark Brown <broonie@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+Subject: [GIT PULL] regmap updates for v5.16
+Date:   Mon, 01 Nov 2021 15:20:43 +0000
+Message-Id: <20211101152057.0D92F610F7@mail.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There's compilation fail reported kernel test robot for W=1 build:
+The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
 
-  >> samples/ftrace/ftrace-direct-multi.c:8:6: warning: no previous
-  prototype for function 'my_direct_func' [-Wmissing-prototypes]
-     void my_direct_func(unsigned long ip)
+  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
 
-The inlined assembly is used outside function, so we can't make
-my_direct_func static and pass it as asm input argument.
+are available in the Git repository at:
 
-However my_tramp is already extern so I think there's no problem
-keeping my_direct_func extern as well and just add its prototype.
+  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git tags/regmap-v5.16
 
-Reported-by: kernel test robot <lkp@intel.com>
-Fixes: 5fae941b9a6f ("ftrace/samples: Add multi direct interface test module")
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- samples/ftrace/ftrace-direct-multi.c | 1 +
- 1 file changed, 1 insertion(+)
+for you to fetch changes up to f231ff38b7b23197013b437128d196710fe282da:
 
-diff --git a/samples/ftrace/ftrace-direct-multi.c b/samples/ftrace/ftrace-direct-multi.c
-index 2a5b1fb7ac14..e0ccf43da0c9 100644
---- a/samples/ftrace/ftrace-direct-multi.c
-+++ b/samples/ftrace/ftrace-direct-multi.c
-@@ -10,6 +10,7 @@ void my_direct_func(unsigned long ip)
- 	trace_printk("ip %lx\n", ip);
- }
- 
-+extern void my_direct_func(unsigned long ip);
- extern void my_tramp(void *);
- 
- asm (
--- 
-2.32.0
+  regmap: spi: Set regmap max raw r/w from max_transfer_size (2021-10-23 19:55:03 +0100)
 
+----------------------------------------------------------------
+regmap: Update for v5.16
+
+This update has a single change which will use the maximum transfer and
+message sizes advertised by SPI controllers to configure limits within
+the regmap core, ensuring better interoperation.
+
+----------------------------------------------------------------
+Lucas Tanure (1):
+      regmap: spi: Set regmap max raw r/w from max_transfer_size
+
+ drivers/base/regmap/regmap-spi.c | 36 ++++++++++++++++++++++++++++++++----
+ 1 file changed, 32 insertions(+), 4 deletions(-)
