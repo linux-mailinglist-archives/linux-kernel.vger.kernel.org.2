@@ -2,99 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3779C441219
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 03:18:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E741C44121B
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 03:20:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230417AbhKACVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 22:21:11 -0400
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:51190 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230233AbhKACVK (ORCPT
+        id S230393AbhKACWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 22:22:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34828 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230222AbhKACWb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 22:21:10 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=xuesong.chen@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0UuPi-hG_1635733115;
-Received: from 30.225.212.104(mailfrom:xuesong.chen@linux.alibaba.com fp:SMTPD_---0UuPi-hG_1635733115)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 01 Nov 2021 10:18:36 +0800
-Message-ID: <e387413f-dbe8-e0f1-257b-141362d74e3a@linux.alibaba.com>
-Date:   Mon, 1 Nov 2021 10:18:35 +0800
+        Sun, 31 Oct 2021 22:22:31 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45B71C061714;
+        Sun, 31 Oct 2021 19:19:59 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id br39so2126861qkb.8;
+        Sun, 31 Oct 2021 19:19:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=apo1O/u7x4ygIzIjs1+32Zs5mIdmvskQIGsrlrv3jIM=;
+        b=MvgA2rL3j+obJa0oiLSETqU9HjLHkgDSJ4mfgmVxnBwOAKZ7hzkHdWQjB5U5MwO+pM
+         oAWp1Zldu9vfVt3LgePYZArY+GwTOz3orPKafLENJqPeU5IT1e8ru9AYripseK9gCfh7
+         imElCpwoP7NmWur3/jDTKs/qCNh/bQW6xGb5mWwTRkE7tMIPSKH3ulWvkLN9jnXa9n2J
+         c3fsW0gCVaHuUGJ3KfPkuYfo425LXgBgH6mEbmsQXVR1NkeoOKnQ4JolFcZUPVz1g/R+
+         wux29HDM2dWp95S8970xOqaP2zcZ+XWXR1kJ9EQ2BwOa9kjMeynp1IL2A1l+k0I7dvbf
+         +7xw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=apo1O/u7x4ygIzIjs1+32Zs5mIdmvskQIGsrlrv3jIM=;
+        b=77rWt7lie0tKy+pS+pTeFAA/I8/UrU7Vx+64G/0KQwjw18Ded2teiZ9EuuugaIzIps
+         wqEmbALd4cfpMShnwn3IsfZmM8Q43oUSp2zhVdu16/MJciPapwfAS1Xo72qAzZT1a2bL
+         daQh+bT3EXiEdkqpX92rGspFPcJCthXOB2XHBcQ+XwdnRoup9u0nzvLMdgDbU1O7RMv0
+         YkF1QcLIvkRmtfvRwBJC653xergkO1l6hkiMWzhNKWM4DvABedmqtXgKwKczlxXIS8Gt
+         opoua9PDR7bGBOscIMjTV/100TY+OCXXc3PJuGw4Bxm+I/WL0gxNuj7kY96mun2JhOzJ
+         EXKQ==
+X-Gm-Message-State: AOAM531VSH1DehV3VC8jfvaALe65UUfvRR6asLxaLkNLvyOgZEPrdR+B
+        NZnO710PN0d6LVlAuki/5jU=
+X-Google-Smtp-Source: ABdhPJynPAPcFb/y63CzxPiJ/4rzD4iznUAB7ay6xOQniYLEJwEpfwx5w6zO1igWqZUnXVCQ+EDtjQ==
+X-Received: by 2002:a37:88c2:: with SMTP id k185mr20983364qkd.227.1635733197396;
+        Sun, 31 Oct 2021 19:19:57 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id a3sm10149002qta.58.2021.10.31.19.19.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 31 Oct 2021 19:19:56 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: chi.minghao@zte.com.cn
+To:     jejb@linux.ibm.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, chi minghao <chi.minghao@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] scsi: fixup coccinelle warnings
+Date:   Mon,  1 Nov 2021 02:19:05 +0000
+Message-Id: <20211101021905.34659-1-chi.minghao@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.1
-Subject: Re: [PATCH v4 0/4] PCI MCFG consolidation and APEI resource filtering
-To:     helgaas@kernel.org
-Cc:     catalin.marinas@arm.com, lorenzo.pieralisi@arm.com,
-        james.morse@arm.com, will@kernel.org, rafael@kernel.org,
-        tony.luck@intel.com, bp@alien8.de, mingo@kernel.org,
-        bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <YW5OTMz+x8zrsqkF@Dennis-MBP.local>
- <20211027081035.53370-1-xuesong.chen@linux.alibaba.com>
-From:   Xuesong Chen <xuesong.chen@linux.alibaba.com>
-In-Reply-To: <20211027081035.53370-1-xuesong.chen@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-How about the status of this series, it's really bad, bad and still bad... to wait long
-time for the final judgement, especially you take extremely serious to rework it round
-by round, finaly you receive nothing. Everyone's work should be repected!
+From: chi minghao <chi.minghao@zte.com.cn>
 
-Technically, I don't think it's very hard to say yes or no (what's your concerns) for
-the patch set. If you give your objections and convince me, then I will drop it, that's
-nothing. Hopefully our maintainers can take the responsibility that they should take,
-I totally understand that our maintainers are very busy and will face tens of thousands
-of mails. But, YOU ARE THE MAINTAINER! 
+Use sysfs_emit instead of scnprintf or sprintf makes more sense.
 
-Responsiblity!Responsiblity!! Still TMD f*cking FucResponsiblity!!!
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: chi minghao <chi.minghao@zte.com.cn>
+---
+ drivers/scsi/ncr53c8xx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On 27/10/2021 16:10, Xuesong Chen wrote:
-> The issue of commit d91525eb8ee6 ("ACPI, EINJ: Enhance error injection tolerance
-> level") on x86 is also happened on our own ARM64 platform. We sent a patch[1]
-> trying to fix this issue in an arch-specific way as x86 does at first, but
-> according to the suggestion from Lorenzo Pieralisi and Catalin Marinas, we can
-> consolidate the PCI MCFG part then fix it in a more common way, that's why this
-> patch series comes.
-> 
-> [1] https://marc.info/?l=linux-arm-kernel&m=163108478627166&w=2
-> 
-> ---
-> Change from v3 to v4:
->   - Add a new patch (patch #3) to address the quirk ECAM access issue. Because
->     the normal ECAM config space can be accessed in a lockless way, so we don't
->     need the mutual exclusion with the EINJ action. But those quirks maybe break
->     this rule and corrupt the configuration access, reserve its MCFG address
->     regions in this case to avoid that happens. 
->   
->   - Add another patch (patch #4) to log the PCI MCFG entry parse message per
->     the suggestion from Bjorn Helgaas. The output on ARM64 as:
->     ACPI: MCFG entry for domain 0000 [bus 00-0f] at [mem 0x50000000-0x50ffffff] (base 0x50000000)
->   
->   - Commit message updated with more details of patch #2
-> 
-> Change from v2 to v3:
->   - Address the comments of Lorenzo Pieralisi about the CONFIG_PCI
->     dependence issue in APEI module (patch #2)
-> 
-> Change from v1 to v2:
->   - Fix the "undefined reference to `pci_mmcfg_list'" build error in case
->     of PCI_CONFIG=n, reported by the kernel test robot
-> 
-> Xuesong Chen (4):
->   PCI: MCFG: Consolidate the separate PCI MCFG table entry list
->   ACPI: APEI: Filter the PCI MCFG address with an arch-agnostic method
->   ACPI: APEI: Reserve the MCFG address for quirk ECAM implementation
->   PCI: MCFG: Add the MCFG entry parse log message
-> 
->  arch/x86/include/asm/pci_x86.h | 17 +----------
->  arch/x86/pci/mmconfig-shared.c | 30 -------------------
->  drivers/acpi/apei/apei-base.c  | 68 ++++++++++++++++++++++++++++++++----------
->  drivers/acpi/pci_mcfg.c        | 46 +++++++++++++++-------------
->  drivers/pci/pci.c              |  2 ++
->  drivers/pci/quirks.c           |  2 ++
->  include/linux/pci.h            | 18 +++++++++++
->  7 files changed, 101 insertions(+), 82 deletions(-)
-> 
+diff --git a/drivers/scsi/ncr53c8xx.c b/drivers/scsi/ncr53c8xx.c
+index fc8abe05fa8f..135a0a112dbb 100644
+--- a/drivers/scsi/ncr53c8xx.c
++++ b/drivers/scsi/ncr53c8xx.c
+@@ -8031,7 +8031,7 @@ static ssize_t show_ncr53c8xx_revision(struct device *dev,
+ 	struct Scsi_Host *host = class_to_shost(dev);
+ 	struct host_data *host_data = (struct host_data *)host->hostdata;
+ 
+-	return snprintf(buf, 20, "0x%x\n", host_data->ncb->revision_id);
++	return sysfs_emit(buf, "0x%x\n", host_data->ncb->revision_id);
+ }
+ 
+ static struct device_attribute ncr53c8xx_revision_attr = {
+-- 
+2.25.1
+
