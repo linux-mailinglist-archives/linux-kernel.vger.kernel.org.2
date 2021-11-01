@@ -2,208 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B447D441357
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 06:59:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85C43441359
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 07:03:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230222AbhKAGCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 02:02:11 -0400
-Received: from mail-cusazon11021027.outbound.protection.outlook.com ([52.101.62.27]:36565
-        "EHLO na01-obe.outbound.protection.outlook.com"
+        id S229964AbhKAGFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 02:05:41 -0400
+Received: from mail-mw2nam12on2081.outbound.protection.outlook.com ([40.107.244.81]:22435
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229528AbhKAGCK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 02:02:10 -0400
+        id S229528AbhKAGFj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 02:05:39 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ISwJA4UYqX/SzVF1rDkxUYwkJJPdPJK/N5kDZZiARqdRLgBOOMuW8sPc58t5ZIXhiMdNcpK6TBQTVqWmcs+Yb7PoKLV7zBfcgiqlhvo9Ejjh0jwWGakkZRFMZed28IxvIann+voC9C8x5zQ1QGrBDbTIfJWMBYSS7MCDIJjmgmlA7CyTuo0viTeSoxOTfHmhGWyfy9mqXiZK0RJ/MKEXKPRtZMnCW4f7s4bJxYeEKI0iBEXPEtR1BCvC8OV6Cz0TDX82RV+2xT6hQBEeXsmS8GYsib01GcEnz7gt7cXkG+RepPdzXTwoUu06BDFyLinO/7q2dEL9PkkKrEMGeuKhRA==
+ b=CC0ONc+SJm3crqU48hcgpxw6+MsTG9bfsw1nZAmBCk0GgpNhIbIx8xBo7PqmszZ7FS/hNrAc9OOSfAfMZt6vJQhdY/0do+ht284JwLWTOBvWpgacLUWOdcyYDqRE91u3j5Zxgffy1zFX4OiBP/ROujv7MxWq+PWn+KlVH6F+JpDyfcCNHnq3vw+Uv0gzY2N3DyKNjXnJwQO1QgHVgPyIgaVgSesEA5W8M120XAIrPznOiYgTHMJXWqhlceAzVN0P40c2DNmVci1rwO7VBAlsYQNaiuekS5v4Py1B4v9U6R23YS9QQNAuOB9WuXR7+YuWVmLSBd/FvJmVPBrXhCX66A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YyoiKahtcHMuo7UotiduiKZ/L170nLG7JsE6stfOpwI=;
- b=my65velyxOt7zcVbxl+8dWiwR5EsDccPskVVEi9Q9bacOwd9CH6wpNjum2ZVEjofFDLaiHd9s2Vg5CTDYbsJgHpib8vyT11jSxfq7pA0oSCtBaI1h/uvHp91BDDcPS2xptNIematA+4v5Ta4/F5fBNxETmXtWzyNWe/j/BFt+5n6PMBnQjxV7WSADxLaZk6WuSphkBGdePQopaNoZJ5+ndRDFRkgzgtqkkebZijduVX0W3J0Kos+29a5XktwYrvaEvo4NgawLgH0fzVQ4Rwlu8DMynmmys9mlD+wm0FpZh4WQX2MhjcTDYXGvYKXFj2ZkC2u0GZ69+LcF+Au/zsInQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
+ bh=aOXfWFVO2hup5zE3zl50c/fwD7g3YpBwR6DdXb7mEeA=;
+ b=VmPLvRtlHPnvtHlsHmwZCw9MIc7l2JzKZlmsvnH5rojHsPjXuSAlWYhvfiBStK8WwrTnbvoavY9eHvKSjh9VeafSwG/gmQ+ivT7s4eDtJHgQ3G7h6yfEhFMDtfZvEmYpg33pk9e5owV5AZvO3K0xWFieSkXwe7buxlKkj7FeflGFmNLHvUAn2kHsukU/ObUHuWmJM8Ecja/FJ2O55TYzU9HfcF0CnCrczjpnZcP5HuV0mQOtN2O06IgUxMcV2Xkj4fiKSwWm7y2FxNmdakfgW+wLZCApcMYqVZ1V1/aYZ9ZDkk+jyIN+xuSe0gsoDRnS38+YirL2By8w971eSpwm6A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=lists.freedesktop.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YyoiKahtcHMuo7UotiduiKZ/L170nLG7JsE6stfOpwI=;
- b=IEMPkEFdcuyFQY8isNA2GWEJ/qa3RBABokvg2foGwYRhOxLLtVSqQ7/oUbh1T66Q+Bm00MNBIto7HOyMfrJqUHEFKC3qKMu1nP4mwKhCyjGAIEY24WAF7yQhZ/dBRmnA1JkizG4CX9rx6gvj8+nwkUNyDwFkFO15OiVUip/5TOw=
-Received: from BYAPR21MB1270.namprd21.prod.outlook.com (2603:10b6:a03:105::15)
- by BYAPR21MB1333.namprd21.prod.outlook.com (2603:10b6:a03:115::15) with
+ bh=aOXfWFVO2hup5zE3zl50c/fwD7g3YpBwR6DdXb7mEeA=;
+ b=1+tUqsOLo4zRzTX48BQQK/LUsZiv3OOim+fLbhBve2h9PML6qT+RgaQCSOcWRBSqmP2iNVkVq/VSOikcWYrOvS3ymK66EOR0r89iy/JlR9YGlisMa77lJo+mR6QYnCWtbDfIt6Jnb5YWLQFxO/zTO7SNQmbEWaIU1Z0Sah3qfXI=
+Received: from MWHPR20CA0027.namprd20.prod.outlook.com (2603:10b6:300:ed::13)
+ by BL0PR12MB4724.namprd12.prod.outlook.com (2603:10b6:208:87::23) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.2; Mon, 1 Nov
- 2021 05:59:31 +0000
-Received: from BYAPR21MB1270.namprd21.prod.outlook.com
- ([fe80::9c8a:6cab:68a6:ceb1]) by BYAPR21MB1270.namprd21.prod.outlook.com
- ([fe80::9c8a:6cab:68a6:ceb1%6]) with mapi id 15.20.4690.002; Mon, 1 Nov 2021
- 05:59:31 +0000
-From:   Dexuan Cui <decui@microsoft.com>
-To:     Stephen Hemminger <stephen@networkplumber.org>
-CC:     "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "gustavoars@kernel.org" <gustavoars@kernel.org>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        Shachar Raindel <shacharr@microsoft.com>,
-        Paul Rosswurm <paulros@microsoft.com>,
-        "olaf@aepfle.de" <olaf@aepfle.de>, vkuznets <vkuznets@redhat.com>
-Subject: RE: [PATCH net-next 1/4] net: mana: Fix the netdev_err()'s vPort
- argument in mana_init_port()
-Thread-Topic: [PATCH net-next 1/4] net: mana: Fix the netdev_err()'s vPort
- argument in mana_init_port()
-Thread-Index: AQHXzcnDfY7vTYX8HE6DzgmGfa6sg6vuKBmQ
-Date:   Mon, 1 Nov 2021 05:59:31 +0000
-Message-ID: <BYAPR21MB1270500F9F47E805A19E2C00BF8A9@BYAPR21MB1270.namprd21.prod.outlook.com>
-References: <20211030005408.13932-1-decui@microsoft.com>
-        <20211030005408.13932-2-decui@microsoft.com>
- <20211030130718.3471728c@hermes.local>
-In-Reply-To: <20211030130718.3471728c@hermes.local>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=a10573c8-7a5f-40c0-b8c6-19b8c8630206;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-11-01T05:32:19Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 3a92c697-94ec-4e8a-b141-08d99cfcc5b5
-x-ms-traffictypediagnostic: BYAPR21MB1333:
-x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
-x-microsoft-antispam-prvs: <BYAPR21MB1333EB3431030FC876541B21BF8A9@BYAPR21MB1333.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: d3YOaUX47p1/QTAFJxk3KeatADlfn23bkvc8WPbvPzthrjvSGuS+9YLuBrX2heB+wequ4YqojopiP0w+K/4lyLR3l797iVnCJAb1gZQPLwqrMmA35IlN3a3b61JgmEsZMjk+3YkPleqlFntOBWvAjcyqqfTOyax4W+h5YoPDNJpU6Bz3U3RXUBpMa5fQj+DdUnJP7dvrUTob6EBRmxc0D73CJuGRoHfpOTTPAMoUUW4E4AFZOfA4k9pQkwFRxI+FusAzgPXILwKmlZe/i1XiFr2g+uXFUBw28h10XKPDmVtiN4wT3nLRGZLu7eBiowTnYJ5spelkexQb64wHjCezOYOHvjqs1fjrCg6Y/Gkv0oFCkHLEkm1ACm1BfYtlABez+C5moVVXiq9wE/+tpiUd4CtRu6LPE/p/4Q4MjOBtFf4xrygIDtSbZTmiAlXtOF8XDtVjT5+w+biF+oGhPG5Qxz2BdO/WpxtII3Hl2ZOzG13YdntLK9Cp+mgQ82GX2QEssW1KbEgbBCs+9cxYQ/YB8V7TfdzbwbO/S/7A50AyfCVLPcfN1yDisZbUazU+m0BNIajSd81HSLHtvTSP8oGVvxveg0U9N/947ZrBy2/ki+/OQz/0+QeOgd5AoZrSBbRN4Yx2t75hcYOmmuty3lEUcfDBYUFXEqZTgBDqawyfsNIGqrOMygm0Hx2A5IvpEqdcdC3rn/TWlt0xMDf/pLtTjg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR21MB1270.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8936002)(5660300002)(7696005)(38070700005)(82960400001)(82950400001)(6916009)(508600001)(4326008)(10290500003)(8990500004)(66446008)(86362001)(66556008)(66946007)(54906003)(76116006)(64756008)(9686003)(66476007)(55016002)(186003)(6506007)(122000001)(33656002)(38100700002)(52536014)(316002)(7416002)(8676002)(71200400001)(26005)(2906002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?uYL3jqwStSxltrqVl/QJyBElBtNV7vA4zX4Sn+W3J7w5hUvMnQVmO0WL6/xw?=
- =?us-ascii?Q?mOHYb1qXNooMiiel6Un8ysuehR8s829/ucz5Avh2A01HZjK42HMWg6XxQouY?=
- =?us-ascii?Q?CSAoWstuJR6TUAK5oGnNbd0wvWfEJHWj3iBqSc3nR4v3FoWiYCuQvY0C0TAB?=
- =?us-ascii?Q?ddcpugTLxgp7a5+GIBBnTdhCmMauutmTYDCiYvopuwjGFrbkcBs+BM0GIIk0?=
- =?us-ascii?Q?/enqENwfGYTi0C6E4+Ayj3hg405kag84KfL6iF5BfRO/391mmhLboHJr6KL3?=
- =?us-ascii?Q?5d4cSDIx8DpizsdFeCQPG0Z1H3k05x4XBKS99l2gELMh9/WoWJ+xHG6s0Fx5?=
- =?us-ascii?Q?PSxCfQrPaoesd+TvWkyeIjMpMe+qV55L3kXEc358/bkMOtIt+WwKW7C372k8?=
- =?us-ascii?Q?eFW8ouHpwV3kJSqsuV84xNdKFBrac2EKzQHjQSVo3OIgz2NbhxfZsqEu0TGv?=
- =?us-ascii?Q?1FF/kxsBus5vR51YAUlYebV7jhSzRnS41pAh/Gz9ga5qgPr9bz1TuewIqCf8?=
- =?us-ascii?Q?u7D3m8vVOftUM/Q0A26GpnOvd61R4WfsuB4uN0FLYf1k/DiWZ+eaNGdzPevf?=
- =?us-ascii?Q?Qo/4vMxE41PqmbDHcrlnTK8oigTYhlToLMSDjmzw5wa4jeA38WjkaCMpHsf/?=
- =?us-ascii?Q?tkm6Ew0hYV/k0q9+KovjeMrHEW5x+fo6LMH+O+BFGIRQKJ+ujatBq08NxPjl?=
- =?us-ascii?Q?lmruiylcGRDepfO9PIeIm7In3BS6HWZ++fitnP9AfGvGQEkmeA48flIb1O+m?=
- =?us-ascii?Q?gA2YuD1jBN1F7kv/U6HbOvn/LZuj7H+Q/AbVx6I/LHaRTifZzJIOsgv4shwh?=
- =?us-ascii?Q?HsqehIERprNby7Zhr1q8TxASpGSAfpFyUL0PMpGoPjWpHVtfFt/9K//EA1lL?=
- =?us-ascii?Q?QRxR0p06ZMhHmzqd2auQ9dUvQPJdgfPVw1OXAR4tNNapA9JqEYoi6G5kmKpO?=
- =?us-ascii?Q?7H4D7nJSDgR38Q9cBtjhcMs+SLMn7P1640KFpgv8OUdMetRjvMpZtaYaEH8u?=
- =?us-ascii?Q?YZOeDwjC6xu2lu4v91oo9E0Ef48cMhfNQ4kkIAW0O15QA3RlVF9P1z0dy0iH?=
- =?us-ascii?Q?iNXWAgkmL/o85SZ4cAOVT3juKyxFFkRk+tGfQjrnvwJdLot/FKzFwFTAGeVK?=
- =?us-ascii?Q?baq5Mki/FoMTTKc0b70zo3W/1ttJDZ7I91P1MzH92dRra91mIrXjmrOHDZQJ?=
- =?us-ascii?Q?3uDQQAksfdbigZkssjqPCFBeEGXjjl7xx2QfCgE+Ep5WNptsxRA17ybF/wMj?=
- =?us-ascii?Q?Sv9Qyid+U4KHO+vA4YPXBab/H+e1CZQmI2FzRvaL/YuJBPfHJuI+NiMr9lAY?=
- =?us-ascii?Q?QcLc4SafT7z6x8qeqqqMADrcoVl7V18/1BoaYot2B1DpYr5KouDTkVWmI8Tb?=
- =?us-ascii?Q?qx8raUIp18pCtNDnNawhxTF8bGu0RoLzNZOhd9WAnrmLsMfzs0062EZuDXJN?=
- =?us-ascii?Q?6zWTxn+lcowQnC64rkdf4jqzVAwOliRgkOkKXrkzQaQEhhjwEoBAEpjFz5Oq?=
- =?us-ascii?Q?HK7YbRNeCe3nPMBtqwvppqvDCLpNuhP0oyPHQLyb/V9vaMsk8n4ubBtKl4rq?=
- =?us-ascii?Q?Iky2qnQtAAk15HjZvFEorBHd2mx87og1O4U7poSm1Odo7F+RRsQXLK6k4qxu?=
- =?us-ascii?Q?JesoYfnubhSHQYWcUZPJ1HM=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.14; Mon, 1 Nov
+ 2021 06:03:04 +0000
+Received: from CO1NAM11FT061.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:300:ed:cafe::4d) by MWHPR20CA0027.outlook.office365.com
+ (2603:10b6:300:ed::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.14 via Frontend
+ Transport; Mon, 1 Nov 2021 06:03:04 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; lists.freedesktop.org; dkim=none (message not signed)
+ header.d=none;lists.freedesktop.org; dmarc=pass action=none
+ header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CO1NAM11FT061.mail.protection.outlook.com (10.13.175.200) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4649.14 via Frontend Transport; Mon, 1 Nov 2021 06:03:03 +0000
+Received: from pyuan-desktop.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Mon, 1 Nov
+ 2021 01:02:59 -0500
+From:   Perry Yuan <Perry.Yuan@amd.com>
+To:     <dri-devel@lists.freedesktop.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+CC:     <Ray.Huang@amd.com>, <Mario.Limonciello@amd.com>,
+        <Harry.Wentland@amd.com>, <Xinmei.Huang@amd.com>,
+        <Perry.Yuan@amd.com>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] drm/dp: Fix aux->transfer NULL pointer dereference on drm_dp_dpcd_access
+Date:   Mon, 1 Nov 2021 02:02:49 -0400
+Message-ID: <20211101060249.35041-1-Perry.Yuan@amd.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR21MB1270.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3a92c697-94ec-4e8a-b141-08d99cfcc5b5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Nov 2021 05:59:31.0987
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: eca9585c-a3dc-4c13-7cf7-08d99cfd4488
+X-MS-TrafficTypeDiagnostic: BL0PR12MB4724:
+X-Microsoft-Antispam-PRVS: <BL0PR12MB4724D0B073B56A3AD738C3169C8A9@BL0PR12MB4724.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: LEh8lK1oq3xu1qosByZor+GNNJDY13YG8GiHDEJSYveWwDhLxCb6MXM7qxTA9wL43zMJ5L/s/WbgJQZwbiyGyxwcnnU9nH4GS1cUSOdiXufEi/S+yfiStwTi9FqjA14pWd9jMTIDos9b6MM9SqhPTBmsJ7N1I5Xr2YCgqCz8xY2La4ppvM+4KePzThWwqKUPQ8H7lYlFAwbeGmlZqgI8ctYVM9NQ+cJPZtsXURboGFLWYK8jMs3bUtxvSJNVIDymuIOCBeI4MrzmM3tzJ8Uk2jQU+SHjoKNY/B7zVNQR5cOvU29kbL/vM06TY9dKSRdNGTh2VX6vIKGe/YjV5iyZEfLJXTda3eP66mTPJNiVCza7enXm11XtcAL9Pjt2vNdEVMLlbHbfhr/CCnEQlhfJNYgn9Lkb3q3qDESHIfwDEo5mhmeoa3Lqy7rzjOZHzMjLRX5OpX3v4u/j4euBy5eUlh6onr3XHHVvHPUJvw/yHqwKccbUVqMmiJPXMoTg3UYQMaMjGDSb2mQd3PVEu63i+1RiBDPoPU1QfhYDgCztu5P1jGY94Cr41pALOJvThKWCTZrg9UucD0iRYXo8DgPHtYmjzaiLLuogmd3yGgMwqZ1Wcyah/8mrA5hTObriZiOufIIasqkS5ddZ3urw1KFq7Mki6/fa/zl5igh2t7PFvwWZPo0tiQNxq0AXDkHGOijNv9XvdYPnmo61Fpff0a6Evu2ExDSIu+FAtfc0WVRfr6w=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(70586007)(70206006)(54906003)(110136005)(2616005)(86362001)(82310400003)(36860700001)(47076005)(426003)(336012)(2906002)(6666004)(36756003)(26005)(186003)(1076003)(16526019)(8676002)(4326008)(356005)(83380400001)(508600001)(7696005)(81166007)(5660300002)(316002)(8936002)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Nov 2021 06:03:03.8361
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: oeZ7f7z6M8dsgxpf2HyA3gIs0x3zQ/llSl+Jv7cfOlJ2VgCb21FcLvYtfQYsFfJM5xen0ixrT1oD59tVH3ohXw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR21MB1333
+X-MS-Exchange-CrossTenant-Network-Message-Id: eca9585c-a3dc-4c13-7cf7-08d99cfd4488
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT061.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB4724
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Stephen Hemminger <stephen@networkplumber.org>
-> Sent: Saturday, October 30, 2021 1:07 PM
->=20
-> On Fri, 29 Oct 2021 17:54:05 -0700
-> Dexuan Cui <decui@microsoft.com> wrote:
->=20
-> > diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c
-> b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> > index 1417d1e72b7b..4ff5a1fc506f 100644
-> > --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-> > +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> > @@ -1599,7 +1599,8 @@ static int mana_init_port(struct net_device *ndev=
-)
-> >  	err =3D mana_query_vport_cfg(apc, port_idx, &max_txq, &max_rxq,
-> >  				   &num_indirect_entries);
-> >  	if (err) {
-> > -		netdev_err(ndev, "Failed to query info for vPort 0\n");
-> > +		netdev_err(ndev, "Failed to query info for vPort %d\n",
-> > +			   port_idx);
->=20
-> Shouldn't port_idx have been unsigned or u16?
-> It is u16 in mana_port_context.
+Fix below crash by adding a check in the drm_dp_dpcd_access which
+ensures that aux->transfer was actually initialized earlier.
 
-Thanks! I'll use "u32" and "%u" here.
+BUG: kernel NULL pointer dereference, address: 0000000000000000
+PGD 0 P4D 0
+Oops: 0010 [#1] SMP NOPTI
+RIP: 0010:0x0
+Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
+RSP: 0018:ffffa8d64225bab8 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 0000000000000020 RCX: ffffa8d64225bb5e
+RDX: ffff93151d921880 RSI: ffffa8d64225bac8 RDI: ffff931511a1a9d8
+RBP: ffffa8d64225bb10 R08: 0000000000000001 R09: ffffa8d64225ba60
+R10: 0000000000000002 R11: 000000000000000d R12: 0000000000000001
+R13: 0000000000000000 R14: ffffa8d64225bb5e R15: ffff931511a1a9d8
+FS: 00007ff8ea7fa9c0(0000) GS:ffff9317fe6c0000(0000) knlGS:0000000000000000
+CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffffffffffd6 CR3: 000000010d5a4000 CR4: 0000000000750ee0
+PKRU: 55555554
+Call Trace:
+drm_dp_dpcd_access+0x72/0x110 [drm_kms_helper]
+drm_dp_dpcd_read+0xb7/0xf0 [drm_kms_helper]
+drm_dp_start_crc+0x38/0xb0 [drm_kms_helper]
+amdgpu_dm_crtc_set_crc_source+0x1ae/0x3e0 [amdgpu]
+crtc_crc_open+0x174/0x220 [drm]
+full_proxy_open+0x168/0x1f0
+? open_proxy_open+0x100/0x100
+do_dentry_open+0x156/0x370
+vfs_open+0x2d/0x30
 
-I'll post v2 like the below. Please let me know if any further change is ne=
-eded.
+v2: fix some typo
 
-diff --git a/drivers/net/ethernet/microsoft/mana/mana.h b/drivers/net/ether=
-net/microsoft/mana/mana.h
-index fc98a5ba5ed0..0a4246646447 100644
---- a/drivers/net/ethernet/microsoft/mana/mana.h
-+++ b/drivers/net/ethernet/microsoft/mana/mana.h
-@@ -359,6 +359,9 @@ struct mana_port_context {
+Signed-off-by: Perry Yuan <Perry.Yuan@amd.com>
+---
+ drivers/gpu/drm/drm_dp_helper.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-        mana_handle_t port_handle;
-
-+       /* This doesn't have to be u32, because the max_num_vports is u16:
-+        * see mana_query_device_cfg().
-+        */
-        u16 port_idx;
-
-        bool port_is_up;
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/et=
-hernet/microsoft/mana/mana_en.c
-index 1417d1e72b7b..b495e9a20324 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-@@ -479,6 +479,9 @@ static int mana_query_device_cfg(struct mana_context *a=
-c, u32 proto_major_ver,
-        return 0;
- }
-
-+/* The range of the 'vport_index' parameter is actually only u16, but sinc=
-e
-+ * the PF driver defines req.vport_index as u32, we also use u32 here.
-+ */
- static int mana_query_vport_cfg(struct mana_port_context *apc, u32 vport_i=
-ndex,
-                                u32 *max_sq, u32 *max_rq, u32 *num_indir_en=
-try)
- {
-@@ -1588,7 +1591,7 @@ static int mana_init_port(struct net_device *ndev)
- {
-        struct mana_port_context *apc =3D netdev_priv(ndev);
-        u32 max_txq, max_rxq, max_queues;
--       int port_idx =3D apc->port_idx;
-+       u32 port_idx =3D apc->port_idx;
-        u32 num_indirect_entries;
-        int err;
-
-@@ -1599,7 +1602,8 @@ static int mana_init_port(struct net_device *ndev)
-        err =3D mana_query_vport_cfg(apc, port_idx, &max_txq, &max_rxq,
-                                   &num_indirect_entries);
-        if (err) {
--               netdev_err(ndev, "Failed to query info for vPort 0\n");
-+               netdev_err(ndev, "Failed to query info for vPort %u\n",
-+                          port_idx);
-                goto reset_apc;
-        }
+diff --git a/drivers/gpu/drm/drm_dp_helper.c b/drivers/gpu/drm/drm_dp_helper.c
+index 6d0f2c447f3b..76b28396001a 100644
+--- a/drivers/gpu/drm/drm_dp_helper.c
++++ b/drivers/gpu/drm/drm_dp_helper.c
+@@ -260,6 +260,10 @@ static int drm_dp_dpcd_access(struct drm_dp_aux *aux, u8 request,
+ 	msg.buffer = buffer;
+ 	msg.size = size;
+ 
++	/* No transfer function is set, so not an available DP connector */
++	if (!aux->transfer)
++		return -EINVAL;
++
+ 	mutex_lock(&aux->hw_mutex);
+ 
+ 	/*
+-- 
+2.25.1
 
