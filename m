@@ -2,151 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24B974412CF
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 05:50:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCD554412D6
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 06:00:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229617AbhKAEwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 00:52:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbhKAEwg (ORCPT
+        id S229834AbhKAFCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 01:02:53 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:52044 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229468AbhKAFCw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 00:52:36 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95537C061714
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 21:50:03 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id h81so11288296iof.6
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 21:50:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8IpLs+mUXRqXhfPFCU91C+C1ZEBIPtuAhTb26JScwZo=;
-        b=IaaO5lcT6OHYWCp0dVua4XAdPezrMHbkkAkWynIWWt9vfFKcux7CrEy3vrc4HBCJm/
-         7L7fP3lPQLgMVt5JnJgp3la6IuP9DNow1SnAK4/zEnwt60nRK4CHGkf97AsGMW/yoCbH
-         MNatbpwb3fIqATFeg8modHs7+cc/2CLD2e3AyeW0emEV+qVRZMVmbAuy8YG+eWOxSbsl
-         E5R92lrJzEmkbcaaUa6Lg8ogqIGWeVfIpIOSFmy9kXhVEuPEdWez86P1SUTolwbJjxd3
-         NamizB5cmB6jlzCOZBSgS8ULh/0VGe3W9HCnPhe1p7wMHPT3/X1uGGRJP53poQ5vNiiY
-         luJw==
+        Mon, 1 Nov 2021 01:02:52 -0400
+Received: by mail-il1-f199.google.com with SMTP id a14-20020a927f0e000000b002597075cb35so9283086ild.18
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 22:00:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8IpLs+mUXRqXhfPFCU91C+C1ZEBIPtuAhTb26JScwZo=;
-        b=iMvRoZV4XYFnPRnuTgvcFaRVINWYZqafaYI6229ZORfSnf5Mz2nYnvrJdw1uNDNFBh
-         UniWXzKTAzFa04wJRk5xKCWz9qxVjva61b/ehVtOngSTJ/8I5l4T1EuZTjjxRr/zOtOG
-         dzyvIxlw3+q1sWcd6lOKst/vERv3PTQlYyeUwqEmtMHKPFzbdeYjrF4pLpK1eh0vvnxK
-         ENHtz7BkM+gVc707bzOR+6U4ZfrTvmnPc3Jiiuph8OWtWYw2ThWlbVDayZELkkM2lxOv
-         V7g17mYHDxGu+ywt2I7lKqwpjZv8ZQa9N95NN+Hz4e+zZvw9qGHhroZK7B/N5QwRJL3T
-         xQOg==
-X-Gm-Message-State: AOAM532VWDRWD0YAeFkgbuC0TmLrx1KkiOGIVU8OwYCuw+nS58LXre/K
-        NNXpg+Z4noUkcoHfGrTrB7s=
-X-Google-Smtp-Source: ABdhPJzZF/wzzjjIHkVz/4/R8pjgb7FBUMHHlNSP/GiIRqz5I2pfebWyG23jk2fbsJJLAf0wTJvAzQ==
-X-Received: by 2002:a02:cddd:: with SMTP id m29mr20377261jap.113.1635742203043;
-        Sun, 31 Oct 2021 21:50:03 -0700 (PDT)
-Received: from localhost.localdomain (node-17-161.flex.volo.net. [76.191.17.161])
-        by smtp.googlemail.com with ESMTPSA id d4sm4088107ilq.76.2021.10.31.21.50.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 31 Oct 2021 21:50:02 -0700 (PDT)
-From:   Noah Goldstein <goldstein.w.n@gmail.com>
-Cc:     goldstein.w.n@gmail.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com, luto@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v1] arch/x86: Improve 'rep movs{b|q}' usage in memmove_64.S
-Date:   Sun, 31 Oct 2021 23:49:55 -0500
-Message-Id: <20211101044955.2295495-1-goldstein.w.n@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=8kbiHxOD2R5Kq+0WAmJMkHoocjtefmqjMs5G+/Y1aAA=;
+        b=0XbTH9ZVA85ApYLit+CSh6UScVt35lOZQib+gE47cYjaZ/up5Q86JRhyRFUu8gtnYf
+         WbMkAFsFCu6+/DmMdpOrSh7xNwopsE8VHFUjYsk1oL8b0MICoU+UyakokkPKs8RwRbsX
+         sSZ/zbSa2TKCFK1m/kM5nWycHIHsxe+/LN2cJfszijVh8nNWNlYGdtyZ8Gb4NbGEv/Pa
+         +LBtVDCKCUWv4TFWDxH5Jd0hnnIySDz1+v1hg8aouFPn2Jio9VmbNQBNN/Z6NXKMT9z2
+         losBhv1srD6DXG4DkQvtk7fpnTcccsclSGkFx3FYiYxdFIpI5LDOVk212RRG45DLAzSs
+         JJGQ==
+X-Gm-Message-State: AOAM531dbNvxcTGFZ3I13h3g6/b5Y6tzgwR2ECfKLV9jz6u4iYfElG2+
+        YPtQ2u6bHebGJf0lbSox4HJcY3GXTKp+ATsQpExvOH9Dz/5w
+X-Google-Smtp-Source: ABdhPJyWZCUoBUEwmt0F5ibRDQL3QZG8mGbbVoHRLj5BWXhBbWPu/W5Hf3le/6CuHAd8Au/fs+ACLBcCPTpom4yOF9WfjYewpKRc
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+X-Received: by 2002:a05:6e02:df1:: with SMTP id m17mr17705480ilj.125.1635742819571;
+ Sun, 31 Oct 2021 22:00:19 -0700 (PDT)
+Date:   Sun, 31 Oct 2021 22:00:19 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b45deb05cfb30d1c@google.com>
+Subject: [syzbot] INFO: trying to register non-static key in
+ hci_uart_send_frame (3)
+From:   syzbot <syzbot+944c82cd12dd1db5b05f@syzkaller.appspotmail.com>
+To:     johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org,
+        linux-kernel@vger.kernel.org, luiz.dentz@gmail.com,
+        marcel@holtmann.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add check for "short distance movsb" for forwards FSRM usage and
-entirely remove backwards 'rep movsq'. Both of these usages hit "slow
-modes" that are an order of magnitude slower than usual.
+Hello,
 
-'rep movsb' has some noticeable VERY slow modes that the current
-implementation is either 1) not checking for or 2) intentionally
-using.
+syzbot found the following issue on:
 
-All times are in cycles and measuring the throughput of copying 1024
-bytes.
+HEAD commit:    1fc596a56b33 Merge tag 'trace-v5.15-rc6' of git://git.kern..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=12b58364b00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b160d0631c7a8f26
+dashboard link: https://syzkaller.appspot.com/bug?extid=944c82cd12dd1db5b05f
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
-1. For FSRM, when 'dst - src' is in (1, 63] or (4GB, 4GB + 63] it is
-   an order of magnitude slower than normal and much slower than a 4x
-   'movq' loop.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-    FSRM forward (dst - src == 32)   -> 1113.156
-    FSRM forward (dst - src == 64)   -> 120.669
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+944c82cd12dd1db5b05f@syzkaller.appspotmail.com
 
-    ERMS forward (dst - src == 32)   -> 209.326
-    ERMS forward (dst - src == 64)   -> 118.22
+INFO: trying to register non-static key.
+The code is fine but needs lockdep annotation, or maybe
+you didn't initialize this object before use?
+turning off the locking correctness validator.
+CPU: 1 PID: 150 Comm: kworker/u5:0 Not tainted 5.15.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: hci7 hci_cmd_work
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ assign_lock_key kernel/locking/lockdep.c:939 [inline]
+ register_lock_class+0xf79/0x10c0 kernel/locking/lockdep.c:1251
+ __lock_acquire+0x105/0x54a0 kernel/locking/lockdep.c:4894
+ lock_acquire kernel/locking/lockdep.c:5625 [inline]
+ lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
+ percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
+ hci_uart_send_frame+0x8e/0x6c0 drivers/bluetooth/hci_ldisc.c:279
+ hci_send_frame+0x1c0/0x380 net/bluetooth/hci_core.c:4244
+ hci_cmd_work+0x202/0x390 net/bluetooth/hci_core.c:5177
+ process_one_work+0x9bf/0x16b0 kernel/workqueue.c:2297
+ worker_thread+0x658/0x11f0 kernel/workqueue.c:2444
+ kthread+0x3e5/0x4d0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+Bluetooth: hci6: sending frame failed (-49)
+Bluetooth: hci6: sending frame failed (-49)
 
-2. For both FSRM and ERMS backwards 'rep movsb' is always slow. Both
-   of the times below are with dst % 256 == src % 256 which mirrors
-   the usage of the previous implementation.
 
-    FSRM backward                    -> 1196.039
-    ERMS backward                    -> 1191.873
-
-As a reference this is how a 4x 'movq' performances:
-
-    4x Forward (dst - src == 32)     -> 128.273
-    4x Backward                      -> 130.183
-
-Signed-off-by: Noah Goldstein <goldstein.w.n@gmail.com>
 ---
- arch/x86/lib/memmove_64.S | 28 ++++++++++------------------
- 1 file changed, 10 insertions(+), 18 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/arch/x86/lib/memmove_64.S b/arch/x86/lib/memmove_64.S
-index 64801010d312..9d5f3ec4db04 100644
---- a/arch/x86/lib/memmove_64.S
-+++ b/arch/x86/lib/memmove_64.S
-@@ -39,7 +39,16 @@ SYM_FUNC_START(__memmove)
- 
- 	/* FSRM implies ERMS => no length checks, do the copy directly */
- .Lmemmove_begin_forward:
--	ALTERNATIVE "cmp $0x20, %rdx; jb 1f", "", X86_FEATURE_FSRM
-+	/*
-+	 * Don't use FSRM 'rep movsb' if 'dst - src' in (0, 63] or (4GB, 4GB +
-+	 * 63]. It hits a slow case which is an order of magnitude slower.
-+	 */
-+	ALTERNATIVE "cmp $0x20, %rdx;"
-+				"jb 1f;"
-+				"mov %edi, %ecx;"
-+				"sub %esi, %ecx;"
-+				"cmp $63, %ecx;"
-+				"jb 3f;", "", X86_FEATURE_FSRM
- 	ALTERNATIVE "", "movq %rdx, %rcx; rep movsb; retq", X86_FEATURE_ERMS
- 
- 	/*
-@@ -89,23 +98,6 @@ SYM_FUNC_START(__memmove)
- 	jmp 13f
- .Lmemmove_end_forward:
- 
--	/*
--	 * Handle data backward by movsq.
--	 */
--	.p2align 4
--7:
--	movq %rdx, %rcx
--	movq (%rsi), %r11
--	movq %rdi, %r10
--	leaq -8(%rsi, %rdx), %rsi
--	leaq -8(%rdi, %rdx), %rdi
--	shrq $3, %rcx
--	std
--	rep movsq
--	cld
--	movq %r11, (%r10)
--	jmp 13f
--
- 	/*
- 	 * Start to prepare for backward copy.
- 	 */
--- 
-2.25.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
