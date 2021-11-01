@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFC60441723
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:31:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D99C54416B4
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:26:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232311AbhKAJc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:32:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37006 "EHLO mail.kernel.org"
+        id S233185AbhKAJ2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:28:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58178 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232583AbhKAJaM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:30:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D3F961214;
-        Mon,  1 Nov 2021 09:23:33 +0000 (UTC)
+        id S232587AbhKAJ0I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:26:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 581BF61165;
+        Mon,  1 Nov 2021 09:21:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758613;
-        bh=eCQRd3ZL0WHiRsKpA6Ixl+nEBE0TOxsOBsLvd7cc/Fo=;
+        s=korg; t=1635758510;
+        bh=j16t0ctCD5BX5QKAYLGDPEG43aYiyhjPdluF9usODhM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AojKr87mMsrdnWCb+9qAtbTOURHEuXhjSZzNaGYQiLOzMtLpXvpTkFtnnJaV260+H
-         l1GTGheZwOiGZWDXzfBEZyUp928o27CdQyUyCuQrEqFtCY2jBQ94F+NiYZHL3DjMt2
-         onjt8WwGNeSUWmwYYWMfk1esWE7Jl593HQ6kgIOE=
+        b=EWfA0MMPP5h/ryRk8w0FXxzIH3k1m3ro+0Bi/Da8CaPDxhVGPlqZyCtSeQpNbGTay
+         QrKpYWh8yr/kMisBcFIM2YPGRUJqWFVljmN8h9ZL3AN1jRgZk6ioiD4jJv8DG5niy3
+         G1C28wG1F0R/kdR6Qt+JNCCMqZ/cElxRiBqskWkg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Haibo Chen <haibo.chen@nxp.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 5.4 19/51] mmc: sdhci-esdhc-imx: clear the buffer_read_ready to reset standard tuning circuit
+        stable@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 11/35] nfc: port100: fix using -ERRNO as command type mask
 Date:   Mon,  1 Nov 2021 10:17:23 +0100
-Message-Id: <20211101082504.980349230@linuxfoundation.org>
+Message-Id: <20211101082454.236937648@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082500.203657870@linuxfoundation.org>
-References: <20211101082500.203657870@linuxfoundation.org>
+In-Reply-To: <20211101082451.430720900@linuxfoundation.org>
+References: <20211101082451.430720900@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,68 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Haibo Chen <haibo.chen@nxp.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-commit 9af372dc70e9fdcbb70939dac75365e7b88580b4 upstream.
+commit 2195f2062e4cc93870da8e71c318ef98a1c51cef upstream.
 
-To reset standard tuning circuit completely, after clear ESDHC_MIX_CTRL_EXE_TUNE,
-also need to clear bit buffer_read_ready, this operation will finally clear the
-USDHC IP internal logic flag execute_tuning_with_clr_buf, make sure the following
-normal data transfer will not be impacted by standard tuning logic used before.
+During probing, the driver tries to get a list (mask) of supported
+command types in port100_get_command_type_mask() function.  The value
+is u64 and 0 is treated as invalid mask (no commands supported).  The
+function however returns also -ERRNO as u64 which will be interpret as
+valid command mask.
 
-Find this issue when do quick SD card insert/remove stress test. During standard
-tuning prodedure, if remove SD card, USDHC standard tuning logic can't clear the
-internal flag execute_tuning_with_clr_buf. Next time when insert SD card, all
-data related commands can't get any data related interrupts, include data transfer
-complete interrupt, data timeout interrupt, data CRC interrupt, data end bit interrupt.
-Always trigger software timeout issue. Even reset the USDHC through bits in register
-SYS_CTRL (0x2C, bit28 reset tuning, bit26 reset data, bit 25 reset command, bit 24
-reset all) can't recover this. From the user's point of view, USDHC stuck, SD can't
-be recognized any more.
+Return 0 on every error case of port100_get_command_type_mask(), so the
+probing will stop.
 
-Fixes: d9370424c948 ("mmc: sdhci-esdhc-imx: reset tuning circuit when power on mmc card")
-Signed-off-by: Haibo Chen <haibo.chen@nxp.com>
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/1634263236-6111-1-git-send-email-haibo.chen@nxp.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Cc: <stable@vger.kernel.org>
+Fixes: 0347a6ab300a ("NFC: port100: Commands mechanism implementation")
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/mmc/host/sdhci-esdhc-imx.c |   16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ drivers/nfc/port100.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/mmc/host/sdhci-esdhc-imx.c
-+++ b/drivers/mmc/host/sdhci-esdhc-imx.c
-@@ -1022,6 +1022,7 @@ static void esdhc_reset_tuning(struct sd
- 	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
- 	struct pltfm_imx_data *imx_data = sdhci_pltfm_priv(pltfm_host);
- 	u32 ctrl;
-+	int ret;
+--- a/drivers/nfc/port100.c
++++ b/drivers/nfc/port100.c
+@@ -1012,11 +1012,11 @@ static u64 port100_get_command_type_mask
  
- 	/* Reset the tuning circuit */
- 	if (esdhc_is_usdhc(imx_data)) {
-@@ -1034,7 +1035,22 @@ static void esdhc_reset_tuning(struct sd
- 		} else if (imx_data->socdata->flags & ESDHC_FLAG_STD_TUNING) {
- 			ctrl = readl(host->ioaddr + SDHCI_AUTO_CMD_STATUS);
- 			ctrl &= ~ESDHC_MIX_CTRL_SMPCLK_SEL;
-+			ctrl &= ~ESDHC_MIX_CTRL_EXE_TUNE;
- 			writel(ctrl, host->ioaddr + SDHCI_AUTO_CMD_STATUS);
-+			/* Make sure ESDHC_MIX_CTRL_EXE_TUNE cleared */
-+			ret = readl_poll_timeout(host->ioaddr + SDHCI_AUTO_CMD_STATUS,
-+				ctrl, !(ctrl & ESDHC_MIX_CTRL_EXE_TUNE), 1, 50);
-+			if (ret == -ETIMEDOUT)
-+				dev_warn(mmc_dev(host->mmc),
-+				 "Warning! clear execute tuning bit failed\n");
-+			/*
-+			 * SDHCI_INT_DATA_AVAIL is W1C bit, set this bit will clear the
-+			 * usdhc IP internal logic flag execute_tuning_with_clr_buf, which
-+			 * will finally make sure the normal data transfer logic correct.
-+			 */
-+			ctrl = readl(host->ioaddr + SDHCI_INT_STATUS);
-+			ctrl |= SDHCI_INT_DATA_AVAIL;
-+			writel(ctrl, host->ioaddr + SDHCI_INT_STATUS);
- 		}
- 	}
- }
+ 	skb = port100_alloc_skb(dev, 0);
+ 	if (!skb)
+-		return -ENOMEM;
++		return 0;
+ 
+ 	resp = port100_send_cmd_sync(dev, PORT100_CMD_GET_COMMAND_TYPE, skb);
+ 	if (IS_ERR(resp))
+-		return PTR_ERR(resp);
++		return 0;
+ 
+ 	if (resp->len < 8)
+ 		mask = 0;
 
 
