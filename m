@@ -2,95 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C399441D1C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 16:05:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B700E441D1F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 16:05:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232439AbhKAPHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 11:07:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36612 "EHLO
+        id S232461AbhKAPIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 11:08:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229826AbhKAPHj (ORCPT
+        with ESMTP id S231304AbhKAPIW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 11:07:39 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 904AAC061714;
-        Mon,  1 Nov 2021 08:05:06 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id gt5so4036292pjb.1;
-        Mon, 01 Nov 2021 08:05:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7JvI1APfJ2Z4YO1WwA6tzvkiNOy9PkeWYVBi4ViBASk=;
-        b=oHNFfNSHgrgr76VMdo3rwU2/yhbyDUkn2ljNaENac/0Xn6Yx8jDCKQ0eP/niTZs0Wz
-         s3T2Q+sX4knJ2mcPr1xGjURlq7eP2VcwaQ5EdeaLZ5yoGYuuY2pOlnd8HmhuE2tnlzXE
-         8nSD1sZp7oTqUn0L5aDPG1Xg+EaiH4/yQ+H9iNcu79/vTarrdu1KeG5UYHNCmTdUOXIh
-         m07EllhUruAW33ZUTloTTeqciTw4FAUGVMLvp1KOi1n1HNMDAateEWTJAKUGkIeWIaEP
-         s0gw4e2oOCw8tc3Bb8Jis2B966bVyEMxBluvx6T3I3sl4aiZwne/JMLdr0eN1dWU1tUc
-         K8Zg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7JvI1APfJ2Z4YO1WwA6tzvkiNOy9PkeWYVBi4ViBASk=;
-        b=s99Ck0ufjP9UEVOsKl7UtsJKGR8AiAsb4xApvWHHc8z3wpEVz5sg3MMH0ZO6qxlaLW
-         SfGl582KXgb9mC7Zyj+KUQM8Qyf6i9+U9ZeTrJs5oNID6iG9DIzW6emP3hDBawwbW+kR
-         rBhVMjhR3rs1J+DVqf60hClOkdMtVMJV9KfSHAUQx+V9voJYnISfION7mX7Ox4uvp+0m
-         j1tpgWaJeOESJvQoz2DsTvHkYHbNCVx9C5YwYFFGgTBpEBY0WwF5CBGNAjdy6NUq/W3v
-         hL4xisisqn4/OPye7QGE5tMzLsaNWi3RewzW4xm+6Efu2o6ocXoy4VepRwZkPLNSeXQ7
-         viWw==
-X-Gm-Message-State: AOAM531B3fjXbqWKWZHusQ9iWo3VZ6uhFQ4kBwoXVM5RooFVP0hiIVNo
-        UpLAtlbxoz1YeKQuuBZBuxqNjGqBxSk=
-X-Google-Smtp-Source: ABdhPJw3ke8rzLYkmaUBtBdN6z/bUY4XAgZAovOT2+dm/gRwMmGOgyGgn8yBY2hlvYw7ufZQO/MEpw==
-X-Received: by 2002:a17:903:2348:b0:141:d60b:ee90 with SMTP id c8-20020a170903234800b00141d60bee90mr10443684plh.15.1635779106040;
-        Mon, 01 Nov 2021 08:05:06 -0700 (PDT)
-Received: from localhost ([14.116.71.218])
-        by smtp.gmail.com with ESMTPSA id p6sm4257941pfo.96.2021.11.01.08.05.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 08:05:05 -0700 (PDT)
-From:   Kelly Devilliv <kelly.devilliv@gmail.com>
-To:     guoren@kernel.org
-Cc:     linux-csky@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kelly Devilliv <kelly.devilliv@gmail.com>
-Subject: [PATCH] csky: fix typo of fpu config macro
-Date:   Mon,  1 Nov 2021 23:05:02 +0800
-Message-Id: <20211101150502.222969-1-kelly.devilliv@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 1 Nov 2021 11:08:22 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CD83C061714;
+        Mon,  1 Nov 2021 08:05:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=KEjSiPeQus1e5C5m4glvQm9hY/OA1aKif95A7YiVQtI=; b=2LGb6RpYGmcP87QrowtsGlb1CG
+        MlNNkNVp7zrosbZMXSGbqsff+zVFddtxYJ0AwM45FBd0nEfPgeMcoZerqRhfkQKcsmvSqBtVRXYTI
+        9F4kFpo3TJ1bR9YTKfIQ89iDY7ZYn9EX+qCOq8wvNergjFgNicLNKOIRjnxS3M1RU/uMtMIM5G3yi
+        wvbeBtSXV214nJSnbJ9eHPHivKJDfjo7kipr+RUoApfqqu5X9Ng5AmLIhYmKYuABk3KeXQAlIYccf
+        dufg8fg4bQWGA5deqm/TxMoiq49lywFjfdzog9V3YHefDkCBn0RHPFbCtYOi2/lAlx0VTEM3u4rPX
+        473BS/HQ==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mhYse-00GdmR-PV; Mon, 01 Nov 2021 15:05:48 +0000
+Subject: Re: Need help in debugging "memory leak in em28xx_init_dev"
+To:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Dongliang Mu <mudongliangabcd@gmail.com>
+Cc:     Pavel Skripkin <paskripkin@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>
+References: <CAD-N9QXsUcczurqq9LdaVjXFZMBSbStynwFJyu0UayDazGe=nw@mail.gmail.com>
+ <55f04cb1-18ac-085b-3d35-7a01716fbcbe@gmail.com>
+ <CAD-N9QVN7cepUpRu3d-xtr1L3DG90-nLS4gmkjerDZO21F_ejQ@mail.gmail.com>
+ <f622f569-25d5-f38e-e9fb-7f07e12c4b7e@gmail.com>
+ <CAD-N9QWeGOZdnuRuHVVNzZHWeP3eSHg=tsm+Qn3tqGqACSNbhg@mail.gmail.com>
+ <ffbaeb72-0f76-fb1e-dde5-6e6bdcce1301@gmail.com>
+ <CAD-N9QWQkivwR0mWwiaW_pLE6J_b03x4dP8RyxbmuKYRkcRhoQ@mail.gmail.com>
+ <20211101143004.GD2914@kadam>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <c0e25c48-84cc-6ad1-8312-1957f459148d@infradead.org>
+Date:   Mon, 1 Nov 2021 08:05:47 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211101143004.GD2914@kadam>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix typo which will cause fpe and privilege exception error.
+On 11/1/21 7:30 AM, Dan Carpenter wrote:
+> On Mon, Nov 01, 2021 at 05:58:56PM +0800, Dongliang Mu wrote:
+>> On Mon, Nov 1, 2021 at 5:43 PM Pavel Skripkin <paskripkin@gmail.com> wrote:
+>>>
+>>> On 11/1/21 12:41, Dongliang Mu wrote:
+>>>>> Hi, Dongliang,
+>>>>>
+>>>>> Did patch attached to my previous email pass syzbot's reproducer test?
+>>>>> Unfortunately, I am not able to test rn :(
+>>>>
+>>>> Yes, it works. The memory leak does not occur anymore.
+>>>>
+>>>> But I am crafting another patch based on yours as there is a small
+>>>> issue in the retval and I would like to make the error handling code
+>>>> uniform.
+>>>>
+>>>
+>>> Cool! Thank you for confirmation.
+>>
+>> Hi Pavel,
+>>
+>> Thanks for your advice. I have sent the patch and you are on the CC
+>> list. Can you please take a look at and review my patch?
+>>
+> 
+> What's the Message-ID of your patch so I can b4 it.
 
-Signed-off-by: Kelly Devilliv <kelly.devilliv@gmail.com>
----
- arch/csky/kernel/traps.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+<20211101095539.423246-1-mudongliangabcd@gmail.com>
 
-diff --git a/arch/csky/kernel/traps.c b/arch/csky/kernel/traps.c
-index e5fbf8653a21..2020af88b636 100644
---- a/arch/csky/kernel/traps.c
-+++ b/arch/csky/kernel/traps.c
-@@ -209,7 +209,7 @@ asmlinkage void do_trap_illinsn(struct pt_regs *regs)
- 
- asmlinkage void do_trap_fpe(struct pt_regs *regs)
- {
--#ifdef CONFIG_CPU_HAS_FP
-+#ifdef CONFIG_CPU_HAS_FPU
- 	return fpu_fpe(regs);
- #else
- 	do_trap_error(regs, SIGILL, ILL_ILLOPC, regs->pc,
-@@ -219,7 +219,7 @@ asmlinkage void do_trap_fpe(struct pt_regs *regs)
- 
- asmlinkage void do_trap_priv(struct pt_regs *regs)
- {
--#ifdef CONFIG_CPU_HAS_FP
-+#ifdef CONFIG_CPU_HAS_FPU
- 	if (user_mode(regs) && fpu_libc_helper(regs))
- 		return;
- #endif
+> This whole thread has no patches.  I don't know why I'm CC'd when the
+> only part I'm interested in is not included...  :/  Hashtag Grumble.
+> 
+> regards,
+> dan carpenter
+> 
+
+
 -- 
-2.25.1
-
+~Randy
