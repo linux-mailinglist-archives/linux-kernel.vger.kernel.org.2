@@ -2,125 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36A7D4421E0
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 21:46:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7EBF4421D7
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 21:45:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231138AbhKAUtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 16:49:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57278 "EHLO
+        id S230322AbhKAUri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 16:47:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229896AbhKAUtX (ORCPT
+        with ESMTP id S229897AbhKAUrc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 16:49:23 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9975C061714
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 13:46:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ryZuy65dlIe4cvCN4a2FYofG6Kwun01n04uoix87XZ0=; b=HnN7OHfFI7zr8D01JpCXHxZKGP
-        7M5+QmccwelXqHNuzrv3e93vvEYZLAp54na89ZXpM8v0aQB7eb5S3R21ZqAqZiSOpKygoILyHlQ1X
-        TcdIOWmJoHzY+kCtoAHChAg65yIS5mgwtfp4flTcaIoybA5yXrYKxGsMUDMde1olCLU++OcW4HL/6
-        x/YpvavbJm3h3JXzbusgP4mHr9Jp/d4Nr8jMt6GxKX1VSGvCC1SKn3DI0Yv5kkcbyrrTVJPKBH79z
-        daxWwGDIiVJPWpP/28Rnx2wS8ZoFXPsRZOOoF6ShRLd3IRvjYByIh7i1ydyt/XS9rZ1ot2+gSxTbN
-        IvlFbHlA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mhe9Y-0040Vl-G5; Mon, 01 Nov 2021 20:43:57 +0000
-Date:   Mon, 1 Nov 2021 20:43:36 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        naresh.kamboju@linaro.org, kirill.shutemov@linux.intel.com,
-        naoya.horiguchi@nec.com, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: page-flags: fix build failure due to missing
- parameter for HasHWPoisoned flag
-Message-ID: <YYBRePv3w9cfCpHC@casper.infradead.org>
-References: <20211101194336.305546-1-shy828301@gmail.com>
+        Mon, 1 Nov 2021 16:47:32 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75DDCC061714
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 13:44:58 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id bu18so21522772lfb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 13:44:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4dtHoduNR/2xORhNqbNCHn1xtKRvr6GuXfcOktVL7Bo=;
+        b=dqJf7ae/2MynopZB3QoE8WNMW+9Q8wobMYgadbrjVHr74FifxrLxJtNTcnEknk+txc
+         wLPUUOjyxyvXkv5x593cQFzjhqMuBANU6eoLBSADxhJB07a7N2t8VmzZWSXLKUGRZ+4t
+         RMTBwLTcOcz2t/z6PoXjHSlxSKI+WoICo7Efc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4dtHoduNR/2xORhNqbNCHn1xtKRvr6GuXfcOktVL7Bo=;
+        b=nSrTLRLU7lGYpu0SEEY5Hroze6SkACnVXbHnxY3iruF/McaHZBLXyTXhFk9ITFRklv
+         a7VOeKWc3alyeE2AHSoU0LBG3ySV6Tn6rWPys5xY9/Q6/R6jX9tCiVrJzeozglyYgtW2
+         KYCxzY8ENg/4qXD/MFBFymDdLs1o8OaPrUjaVLdcsshPowwWpqewWV+2SniO3VMYRTpo
+         Dx6VCRh7qJjAnlWVIi5rjrnpaNw2uOJ86qpkaSvvFxHaG3FAQ9IU6tT+wkcSjZkNoZNU
+         TIxpKYfUhWFMPwRJF8pOCTt2jT6IwaRfssU0sI7Rbs2SR63oilSWfXc0ZdmrdYnBvZFi
+         e9CQ==
+X-Gm-Message-State: AOAM5332n829sKDDXOqCXFU7OlN2gSwEGqLvIgXBJCH27UBbn4Rcyogm
+        X8IxbkthnQxx8jlDW5obJdsVElvRG9qEflgQ
+X-Google-Smtp-Source: ABdhPJyZ0+ZBpBEunAqqxVJXFC+i3UbUg9hurkBzD73ozWnAr30+kTmFJB5Xj8UMBh9SNTnZTTr/bw==
+X-Received: by 2002:a05:6512:b83:: with SMTP id b3mr29887851lfv.654.1635799496367;
+        Mon, 01 Nov 2021 13:44:56 -0700 (PDT)
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
+        by smtp.gmail.com with ESMTPSA id v14sm661872lfo.124.2021.11.01.13.44.55
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Nov 2021 13:44:55 -0700 (PDT)
+Received: by mail-lf1-f46.google.com with SMTP id x27so38699952lfu.5
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 13:44:55 -0700 (PDT)
+X-Received: by 2002:a05:6512:10c3:: with SMTP id k3mr30766094lfg.150.1635799495032;
+ Mon, 01 Nov 2021 13:44:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211101194336.305546-1-shy828301@gmail.com>
+References: <163572864256.3357115.931779940195622047.tglx@xen13> <163572864563.3357115.8793939214537874196.tglx@xen13>
+In-Reply-To: <163572864563.3357115.8793939214537874196.tglx@xen13>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 1 Nov 2021 13:44:39 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgNzL3AaVNruwLv=kcGXi1EbJN9CZC6GoRY66t6WFcfGg@mail.gmail.com>
+Message-ID: <CAHk-=wgNzL3AaVNruwLv=kcGXi1EbJN9CZC6GoRY66t6WFcfGg@mail.gmail.com>
+Subject: Re: [GIT pull] objtool/core for v5.16-rc1
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Should probbaly cc Linus, and also note that Stephen noticed & fixed
-this problem already.
-https://lore.kernel.org/lkml/20211101174846.2b1097d7@canb.auug.org.au/
+On Sun, Oct 31, 2021 at 6:16 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+> please pull the latest objtool/core branch from:
 
-I didn't know about it at the time I sent the pull request because it
-hadn't been merged at that point.
+Hmm. I've pulled this, but I'm not happy about the new warnings it
+generates with an allmodconfig build:
 
-On Mon, Nov 01, 2021 at 12:43:36PM -0700, Yang Shi wrote:
-> The below build failure when !CONFIG_MEMORY_FAILURE was reported for
-> v5.16 merge window:
-> In file included from include/linux/mmzone.h:22,
->                  from include/linux/gfp.h:6,
->                  from include/linux/slab.h:15,
->                  from include/linux/crypto.h:20,
->                  from arch/x86/kernel/asm-offsets.c:9:
-> include/linux/page-flags.h:806:29: error: macro "PAGEFLAG_FALSE"
-> requires 2 arguments, but only 1 given
->   806 | PAGEFLAG_FALSE(HasHWPoisoned)
->       |                             ^
-> include/linux/page-flags.h:411: note: macro "PAGEFLAG_FALSE" defined here
->   411 | #define PAGEFLAG_FALSE(uname, lname) TESTPAGEFLAG_FALSE(uname, lname)   \
->       |
-> include/linux/page-flags.h:807:39: error: macro "TESTSCFLAG_FALSE"
-> requires 2 arguments, but only 1 given
->   807 |         TESTSCFLAG_FALSE(HasHWPoisoned)
->       |                                       ^
-> include/linux/page-flags.h:414: note: macro "TESTSCFLAG_FALSE" defined here
->   414 | #define TESTSCFLAG_FALSE(uname, lname)
->          \
->       |
-> include/linux/page-flags.h:806:1: error: unknown type name 'PAGEFLAG_FALSE'
->   806 | PAGEFLAG_FALSE(HasHWPoisoned)
->       | ^~~~~~~~~~~~~~
-> include/linux/page-flags.h:807:25: error: expected ';' before 'static'
->   807 |         TESTSCFLAG_FALSE(HasHWPoisoned)
->       |                         ^
->       |                         ;
-> ......
->   815 | static inline bool is_page_hwpoison(struct page *page)
->       | ~~~~~~
-> make[2]: *** [scripts/Makefile.build:121: arch/x86/kernel/asm-offsets.s] Error 1
-> 
-> The commit d389a4a81155 ("mm: Add folio flag manipulation functions")
-> changed the definition of PAGEFLAG macros, this caused the build failure
-> for HasHWPoisoned flag.  The new flag was introduced by commit
-> eac96c3efdb5 ("mm: filemap: check if THP has hwpoisoned subpage for PMD
-> page fault") in v5.15-rc7.  But the folio series pull request was
-> prepared before v5.15, so this new flag was missed.
-> 
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> Cc: Naresh Kamboju <naresh.kamboju@linaro.org>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
-> Signed-off-by: Yang Shi <shy828301@gmail.com>
-> ---
->  include/linux/page-flags.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
-> index d8623d6e1141..981341a3c3c4 100644
-> --- a/include/linux/page-flags.h
-> +++ b/include/linux/page-flags.h
-> @@ -803,8 +803,8 @@ PAGEFLAG_FALSE(DoubleMap, double_map)
->  PAGEFLAG(HasHWPoisoned, has_hwpoisoned, PF_SECOND)
->  	TESTSCFLAG(HasHWPoisoned, has_hwpoisoned, PF_SECOND)
->  #else
-> -PAGEFLAG_FALSE(HasHWPoisoned)
-> -	TESTSCFLAG_FALSE(HasHWPoisoned)
-> +PAGEFLAG_FALSE(HasHWPoisoned, has_hwpoisoned)
-> +	TESTSCFLAG_FALSE(HasHWPoisoned, has_hwpoisoned)
->  #endif
->  
->  /*
-> -- 
-> 2.26.2
-> 
-> 
+  vmlinux.o: warning: objtool: __do_fast_syscall_32()+0xa: call to
+stackleak_track_stack() leaves .noinstr.text section
+   ..
+    do_syscall_64()+0x9: call to stackleak_track_stack ...
+    do_int80_syscall_32()+0x9: call to stackleak_track_stack ...
+    exc_general_protection()+0x22: call to stackleak_track_stack ...
+    fixup_bad_iret()+0x20: call to stackleak_track_stack ...
+    mce_setup()+0x18: call to memset ...
+    do_machine_check()+0x27: call to stackleak_track_stack ...
+    rcu_dynticks_eqs_enter()+0x0: call to rcu_dynticks_task_trace_enter ...
+    rcu_dynticks_eqs_exit()+0xe: call to rcu_dynticks_task_trace_exit ...
+    rcu_nmi_enter()+0x36: call to __kasan_check_read ...
+    .entry.text+0x10e6: call to stackleak_erase ...
+    .entry.text+0x143: call to stackleak_erase ...
+    .entry.text+0x17d9: call to stackleak_erase ...
+
+most seem to be about the stackleak thing, but there's a memset in
+there too, and rcu_dynticks_task_trace_enter/exit and
+__kasan_check_read..
+
+It may be compiler-dependent, this is with F34 and gcc 11.2.1 20210728.
+
+With my actual normal config (and clang), I don't see any of these,
+but that's not only a different compiler, it's a much smaller config
+that has no kasan/stackleak etc.
+
+                  Linus
