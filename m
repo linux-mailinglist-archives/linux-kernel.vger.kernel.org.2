@@ -2,69 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F11F4415F2
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:17:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 452E84415F1
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:17:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231787AbhKAJTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:19:55 -0400
-Received: from mga17.intel.com ([192.55.52.151]:27777 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231284AbhKAJTt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:19:49 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10154"; a="211745161"
-X-IronPort-AV: E=Sophos;i="5.87,198,1631602800"; 
-   d="scan'208";a="211745161"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2021 02:17:16 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,198,1631602800"; 
-   d="scan'208";a="637726765"
-Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.199]) ([10.237.72.199])
-  by fmsmga001.fm.intel.com with ESMTP; 01 Nov 2021 02:17:14 -0700
-To:     Yinbo Zhu <zhuyinbo@loongson.cn>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1635751025-25906-1-git-send-email-zhuyinbo@loongson.cn>
-From:   Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: Re: [PATCH v1] usb: xhci: add LPM quirk for ensuring uPD720201 into
- D3 state after S5
-Message-ID: <f7cfa6bc-a0f6-aaa6-aafa-b4fe2714ca40@linux.intel.com>
-Date:   Mon, 1 Nov 2021 11:18:39 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.8.1
+        id S231731AbhKAJTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:19:51 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:13994 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230520AbhKAJTs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:19:48 -0400
+Received: from dggeme762-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HjS6j0DpXzZcKP;
+        Mon,  1 Nov 2021 17:15:09 +0800 (CST)
+Received: from ubuntu1804.huawei.com (10.67.174.44) by
+ dggeme762-chm.china.huawei.com (10.3.19.108) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.15; Mon, 1 Nov 2021 17:17:11 +0800
+From:   Gaosheng Cui <cuigaosheng1@huawei.com>
+To:     <ardb@kernel.org>, <cuigaosheng1@huawei.com>
+CC:     <linux-efi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <wangweiyang2@huawei.com>
+Subject: [PATCH -next] efi/libstub: arm32: Use "align" for the size alignment
+Date:   Mon, 1 Nov 2021 17:18:54 +0800
+Message-ID: <20211101091854.190982-1-cuigaosheng1@huawei.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-In-Reply-To: <1635751025-25906-1-git-send-email-zhuyinbo@loongson.cn>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.174.44]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggeme762-chm.china.huawei.com (10.3.19.108)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+We are doing page-based allocations, and both the address
+and size must meet alignment constraints, so using "align"
+for the size alignment is a better choice.
 
-On 1.11.2021 9.17, Yinbo Zhu wrote:
-> After S5, any pci device should into D3 state that if supported, but the
-> uPD720201 was not and it may be the cause of xhci firmware and cause
-> OSPM power consumption is more higher that S5 than S4. I think xhci HCD
-> can add a quirk ensure it into D3 state after S5 that is appropriate
-> and this patch was to add LPM quirk and set PCI_D3hot to uPD720201 pmsc
-> register in xhci_pci_shutdown to fix xhci power consumption issue.
-> 
-> Signed-off-by: Yinbo Zhu <zhuyinbo@loongson.cn>
+Signed-off-by: Gaosheng Cui <cuigaosheng1@huawei.com>
+---
+ drivers/firmware/efi/libstub/relocate.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I think we need a better understanding of the underlying issue before
-adding a quirk like this.
+diff --git a/drivers/firmware/efi/libstub/relocate.c b/drivers/firmware/efi/libstub/relocate.c
+index 8ee9eb2b9039..d6d27e8c23f8 100644
+--- a/drivers/firmware/efi/libstub/relocate.c
++++ b/drivers/firmware/efi/libstub/relocate.c
+@@ -50,7 +50,7 @@ efi_status_t efi_low_alloc_above(unsigned long size, unsigned long align,
+ 	if (align < EFI_ALLOC_ALIGN)
+ 		align = EFI_ALLOC_ALIGN;
+ 
+-	size = round_up(size, EFI_ALLOC_ALIGN);
++	size = round_up(size, align);
+ 	nr_pages = size / EFI_PAGE_SIZE;
+ 	for (i = 0; i < map_size / desc_size; i++) {
+ 		efi_memory_desc_t *desc;
+-- 
+2.30.0
 
-Is this a known issue with the uPD720201 controller firmware? or is it
-an issue with ACPI table entries not supporting the proper D state in BIOS
-on the tested platform, or something completely different?
-
-Also, LPM usually refers to "Link Power Management" in the xHCI spec.
-This is about the U1 and U2 link states for the connected USB device.
-
-If we end up needing a new xhci quirk it will need a new name.
-
-Thanks
--Mathias
