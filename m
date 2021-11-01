@@ -2,113 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29BCD441CE5
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 15:53:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCD6C441CFA
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 15:57:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232176AbhKAO43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 10:56:29 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:58762
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230261AbhKAO41 (ORCPT
+        id S232003AbhKAPAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 11:00:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230261AbhKAPAI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 10:56:27 -0400
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com [209.85.128.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 0FEB13F1AB
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 14:53:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1635778432;
-        bh=rmAXyW8JKxDq9r0r+1Hiw1y/OwyI9OGQCKHICCyfzlQ=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=k517EJmtWC2QNtixCLe84eqeLQgT6gpjIi13UuC1e/j4ks8G1fXVnu2ldBEsQRbwY
-         HBVI4f5SfbN/RDaQGHaiK04ETOvgTKttA0eqRKjv8YqAn5MwCKoeV0tmiWfzDmYqQm
-         81zOFIo7yMiQq+ScEyMMD30ut4y/+mj7ONSaVMmyl5W5JX7DqHgUzjHItr5nCNyTSK
-         tl6F2IO9mKEK5jLef8+NsPUyw4cXI/weL3sW0OXZCNmqtgxV8QKNopO5fQKEPweTYh
-         XiWHcETPS7jQ667FfK+yyU54iLQF7rS2JPlhPsMYkDGfsdMp4+gigO628CpD9m22lF
-         kpm9+Aoh3noEw==
-Received: by mail-wm1-f70.google.com with SMTP id j25-20020a05600c1c1900b00332372c252dso45752wms.1
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 07:53:52 -0700 (PDT)
+        Mon, 1 Nov 2021 11:00:08 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97A28C061714;
+        Mon,  1 Nov 2021 07:57:35 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id n13-20020a9d710d000000b005558709b70fso19193628otj.10;
+        Mon, 01 Nov 2021 07:57:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ZoWUChLrSkcmoiG2opWpA+k/rTmSsnlHqI6Ys9fdYFQ=;
+        b=YD8Fs32WPQSObOB1EMMjztceewOji595D/by2Rf3Hy9vWfEchilncMgTk30b++xVa2
+         eFpkfZL/0hN8UO8u8Xo92Y5ul4hjbYjuIj0jRnYW//6YzcVD5bC79M823HNr/scbDnAk
+         nVe2t4HdzurIDlC2625xiEap0NPGHIyVXn8ggqxNUZdYQGFGijHj/gMQn5pKiEYuX6Iz
+         ZwMsgHQ/5HUOgecViuxZeUutEKmYzUdy0BuFPFL8CaST3QFscdXjeJbxeVnvwJgJz2EI
+         HcmsH6otTWevP3/qG+q6WW+03Km7KCafSpacdolp8SX++9Tlda6f5aGcTOUK6OYKw4V7
+         xPIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=rmAXyW8JKxDq9r0r+1Hiw1y/OwyI9OGQCKHICCyfzlQ=;
-        b=VELpVvoy1Xw7+dXQqbxvRPdFdosbYP5L3irbHzkAwvFw5HgM3zAHOlFlNz5YGrB57N
-         nHsATGSBd55ys2CDW5pNNsXdeniDfqxaxsSEPd1oJ1SIMYaHIkrY7X/C80IafpeI8d9A
-         jKhKs3FXYLrVsAwTsgjdKghonLRcGB/s698j6BK32CBdzT1G4HD2N62DcnAkLGVkPywz
-         BXM0JivEnRiHHL4r3aY04zFAYL7ZxbghQ/MnmaYvn5FlJdscq0uAg6C2grlJVkilgFUp
-         bt8iLcxBYH0KLROWcamfZ7DfCGijSHEFfRarpGBA27LgslAFUfDvjI5oF6vnobRRrhoR
-         QuSg==
-X-Gm-Message-State: AOAM530dFeTshlwg0/QjuHGKoecreY4Ymkk6m7DENXkF2KIj+I9Bf5Vf
-        91ZYJl5tk6xTp2ctERNfISABgO3jbX0frqBSDxLWA01Nwg2Fb9jCJl22F4Wgc8vhyFK0/X6QCxz
-        o9pcCXKq6CWoAvdGDAb5QRNOA/iOaTYHJ8lGd5tcz0g==
-X-Received: by 2002:a1c:29c6:: with SMTP id p189mr10765638wmp.129.1635778431803;
-        Mon, 01 Nov 2021 07:53:51 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzGiGBfWozkCP/mfa2+E7javYRR+SMfA/sCvASq0mdQDoSV2wdr7K7fwnlORgW5vU0HOn1y6g==
-X-Received: by 2002:a1c:29c6:: with SMTP id p189mr10765618wmp.129.1635778431616;
-        Mon, 01 Nov 2021 07:53:51 -0700 (PDT)
-Received: from localhost.localdomain (p579d859a.dip0.t-ipconnect.de. [87.157.133.154])
-        by smtp.gmail.com with ESMTPSA id x13sm10461694wrr.47.2021.11.01.07.53.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 07:53:51 -0700 (PDT)
-From:   Kleber Sacilotto de Souza <kleber.souza@canonical.com>
-To:     netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Shuah Khan <shuah@kernel.org>, Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH] selftests: net: reuseport_bpf_numa: skip nodes not available
-Date:   Mon,  1 Nov 2021 15:53:17 +0100
-Message-Id: <20211101145317.286118-1-kleber.souza@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        bh=ZoWUChLrSkcmoiG2opWpA+k/rTmSsnlHqI6Ys9fdYFQ=;
+        b=SyyYOdLrlURUM4cd0uIGJnUoZubYBS91yjdEDm4CY+5YSuRgpXUGKOLcMRD2tNhGjW
+         rHZEre7N+dCPQ22g4rI9DBpKCIwJXYhhCvz9zd91fR9NOLTuOu7BRH85iWwESEHvHhLT
+         +ZsgP0GW79UfMaGnVQFfaz6hT52gymJSYH4Whm26Xv+ZYKfEhYZPbxD8P2HxUWmP2Kgj
+         zCpmRoHuU05nOo5cOhmTrG+BJOmjPrEyxhAmcBfL6xctm6I4rLsklWLoZDHeT1h46M0i
+         9xvNCjlO8cW6BBrEYUzHl297t5Fj61TK6KgpC+/qSJ1lZWHL0waEVWCw6ILdIn8RNg4k
+         WM4g==
+X-Gm-Message-State: AOAM5310FD6wlrJcz0Qm/8XBZv7NnNTKEGDlVa8P8zAhPvIt91G7urST
+        BpzEYW0KNCFeD4X2GDAHvFvIJe3RfnI=
+X-Google-Smtp-Source: ABdhPJyaB53F07+sWCX8irAOTSGg96G6xPWDKZVp1NjxQGUw+Rept/0xa1fKk7G6I0rbtmxfbtnaVA==
+X-Received: by 2002:a05:6830:4033:: with SMTP id i19mr20894327ots.320.1635778654812;
+        Mon, 01 Nov 2021 07:57:34 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id q11sm1117459ota.54.2021.11.01.07.57.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Nov 2021 07:57:33 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH v3 3/3] hwmon: Driver for Texas Instruments INA238
+To:     Nathan Rossi <nathan@nathanrossi.com>
+Cc:     linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Nathan Rossi <nathan.rossi@digi.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Jonathan Corbet <corbet@lwn.net>
+References: <20211028081030.719265-0-nathan@nathanrossi.com>
+ <20211028081030.719265-3-nathan@nathanrossi.com>
+ <7b6764bf-4978-60ec-b1e6-8d59077c3023@roeck-us.net>
+ <CA+aJhH1aGJXwYSCU8RC275G5=qGLyZRK94g9ic24wxKuRGCwEA@mail.gmail.com>
+ <43c17bba-d4bd-1f9d-5034-1f5a9279d751@roeck-us.net>
+ <CA+aJhH0EBUjQhjQhxj-kfJzmpqGN6ZMNn_M-pAae_V9yPQhs3A@mail.gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <5569b2b8-ac67-757b-f7cb-302c9f663e80@roeck-us.net>
+Date:   Mon, 1 Nov 2021 07:57:31 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+aJhH0EBUjQhjQhxj-kfJzmpqGN6ZMNn_M-pAae_V9yPQhs3A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In some platforms the numa node numbers are not necessarily consecutive,
-meaning that not all nodes from 0 to the value returned by
-numa_max_node() are available on the system. Using node numbers which
-are not available results on errors from libnuma such as:
+On 10/31/21 10:55 PM, Nathan Rossi wrote:
+> On Mon, 1 Nov 2021 at 13:48, Guenter Roeck <linux@roeck-us.net> wrote:
+>>
+>> On 10/31/21 7:20 PM, Nathan Rossi wrote:
+>> [ ... ]
+>>>>> +
+>>>>> +     if (attr != hwmon_in_max && attr != hwmon_in_min)
+>>>>> +             return -EOPNOTSUPP;
+>>>>> +
+>>>>> +     /* convert decimal to register value */
+>>>>> +     switch (channel) {
+>>>>> +     case 0:
+>>>>> +             /* signed value, clamp to max range +/-163 mV */
+>>>>> +             regval = clamp_val(val, -163, 163);
+>>>>> +             regval = (regval * 1000L * (4 - (int)data->gain + 1)) /
+>>>>
+>>>> nit: The typecast "(int)" is not needed here.
+>>>
+>>> Due to the unsigned type of gain, it causes promotion of regval (and
+>>> the rest of the numerator) to unsigned long which causes issues with
+>>> negative numbers on the divide. It makes more sense for gain to be an
+>>> int to begin with, I will change it to int to avoid the need for type
+>>> casting.
+>>>
+>>
+>> Are you sure ? I initially thought that as well and wrote a little test
+>> program with that expression, but it didn't do the promotion to unsigned.
+>>
+> 
+> It definitely calculates incorrectly at run time (on an arm 32-bit
+> platform), looking at the gcc output from -fdump-tree-original reveals
+> some more insight. Which is that the promotion to long overrides the
+> unsigned (from the 1000L) on long=64 but not on long=32.
+> 
+> Where regval is int, and gain is unsigned int (u32).
+> 
+> regval = (regval * 1000L * (4 - gain + 1)) / 5;
+> -> armv7-a (invalid)
+> regval = (int) ((((long unsigned int) regval * (long unsigned int) (5
+> - gain)) * 1000) / 5);
+> -> x86-64 (valid result)
+> regval = (int) ((unsigned int) (gain * 4294967096 + 1000) * (unsigned
+> int) regval);
+> 
+> note: 4294967096 is -800, 1000 * (4 - gain + 1) => (-800 * gain) + 1000
+> 
+> Slight variation without the 1000 being long.
+> 
+> regval = (regval * 1000 * (4 - gain + 1)) / 5;
+> -> armv7-a (invalid)
+> regval = (int) ((((unsigned int) regval * (5 - gain)) * 1000) / 5);
+> -> x86-64 (invalid)
+> regval = (int) ((((unsigned int) regval * (5 - gain)) * 1000) / 5);
+> 
+> regval = (regval * 1000LL * (4 - gain + 1)) / 5;
+> -> armv7-a (valid)
+> regval = (int) ((unsigned int) (gain * 4294967096 + 1000) * (unsigned
+> int) regval);
+> -> x86-64 (valid)
+> regval = (int) ((unsigned int) (gain * 4294967096 + 1000) * (unsigned
+> int) regval);
+> 
+> I think it still makes sense to change gain to be int, and avoid the
+> unsigned type issues.
+> 
 
----- IPv4 UDP ----
-send node 0, receive socket 0
-libnuma: Warning: Cannot read node cpumask from sysfs
-./reuseport_bpf_numa: failed to pin to node: No such file or directory
+Thanks for the details. I agree, changing gain to int makes sense.
 
-Fix it by checking if the node number bit is set on numa_nodes_ptr,
-which is defined on libnuma as "Set with all nodes the kernel has
-exposed to userspace".
-
-Signed-off-by: Kleber Sacilotto de Souza <kleber.souza@canonical.com>
----
- tools/testing/selftests/net/reuseport_bpf_numa.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/tools/testing/selftests/net/reuseport_bpf_numa.c b/tools/testing/selftests/net/reuseport_bpf_numa.c
-index c9f478b40996..b2eebf669b8c 100644
---- a/tools/testing/selftests/net/reuseport_bpf_numa.c
-+++ b/tools/testing/selftests/net/reuseport_bpf_numa.c
-@@ -211,12 +211,16 @@ static void test(int *rcv_fd, int len, int family, int proto)
- 
- 	/* Forward iterate */
- 	for (node = 0; node < len; ++node) {
-+		if (!numa_bitmask_isbitset(numa_nodes_ptr, node))
-+			continue;
- 		send_from_node(node, family, proto);
- 		receive_on_node(rcv_fd, len, epfd, node, proto);
- 	}
- 
- 	/* Reverse iterate */
- 	for (node = len - 1; node >= 0; --node) {
-+		if (!numa_bitmask_isbitset(numa_nodes_ptr, node))
-+			continue;
- 		send_from_node(node, family, proto);
- 		receive_on_node(rcv_fd, len, epfd, node, proto);
- 	}
--- 
-2.30.2
-
+Thanks,
+Guenter
