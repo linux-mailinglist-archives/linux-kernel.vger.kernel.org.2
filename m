@@ -2,145 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC0454421A1
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 21:24:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C33974421AE
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 21:30:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230484AbhKAU0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 16:26:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43786 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229560AbhKAU0a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 16:26:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D00E61058;
-        Mon,  1 Nov 2021 20:23:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635798237;
-        bh=feSTcRc2actU+HHo2pcgOZswEK9+Krw1YkXnHhxgUtc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=k6/BV6czCRnhMubWyz+TvKRLAdfLuZ6hVCq4/8MWd4wluVUqTYwxezxQIkHpVGLCi
-         9qekMnUAVBMJ9vDxkS2TRXfI/zIhh1o1L2vKlETOW8wbwXlwNKhND0P3W8rIokSQir
-         MndHf7pqpC8YM377htnlXMhggAH9KgPFAfJouRRXl3nM3w7wOWhKtxX8wb8Vwlfp7w
-         0A2HCfyDkFV/nNR4STfwHOOTFQ3ZKZxvqAiK4PsNvkqWJ1mg2Gzaoq7BQ8MH+9CSgC
-         rl8dYgsQwa3OKzx9P2ojjTcr/aV9svuFi509I/vCr5XiU0Zx1EZkwouGCOcCUlQ0Ad
-         xkLHGtHEuIUgg==
-Received: by mail-ed1-f43.google.com with SMTP id w1so14389714edd.10;
-        Mon, 01 Nov 2021 13:23:56 -0700 (PDT)
-X-Gm-Message-State: AOAM531U4l0NOB7TqC2TawJCuTIDv9zsA0DJmsBwdCNcIf4wH2wthEFV
-        Y7Bm/4KSjrGGAQ+dlQzN33Znu82Hr1hzTYHsqQ==
-X-Google-Smtp-Source: ABdhPJxerSbOAL+RQjUEcSRK11YYr4XJkk1k3y92Df/MixrQUqwOf/jtSj37gCjipDXUeK8l900VtO/oHXaq6BA8PhM=
-X-Received: by 2002:aa7:dc13:: with SMTP id b19mr28817292edu.145.1635798235443;
- Mon, 01 Nov 2021 13:23:55 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211024180628.2992108-1-piyush.mehta@xilinx.com> <20211024180628.2992108-2-piyush.mehta@xilinx.com>
-In-Reply-To: <20211024180628.2992108-2-piyush.mehta@xilinx.com>
+        id S230451AbhKAUc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 16:32:58 -0400
+Received: from mail-ot1-f46.google.com ([209.85.210.46]:36588 "EHLO
+        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229560AbhKAUc5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 16:32:57 -0400
+Received: by mail-ot1-f46.google.com with SMTP id s23-20020a056830125700b00553e2ca2dccso22117152otp.3;
+        Mon, 01 Nov 2021 13:30:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9oMNIEQqaxWU/IM8w/Ndcf39QnufPi4/bgw6wk3mzDM=;
+        b=FLgTNWCwLwqX12LgsgEp/g+f4Bq7cwubuexTbXmM4pjSXcS+53MxiHGzRW7U6mx4p+
+         Lfo1tASHMrzRFJ0m46yr5pn96Ig6sX/YaKmXgrwQYywME7M45fYo+ihUMxolkc7dSP6a
+         wLhF87aqq8DH5qnLWR1pkbeKkCpG/chj/mLYvCeh23yE9HSe7h6xw0c0oHjN+7DbTKIq
+         SPhuC2KGyUD+Gwv4mf/Zp1XFsNGpALCIvLwKf13rKgmZii+JwRbW3TkXe5nbEhYUEUiK
+         XxB0T9ip8+J8U4nMMr+alxtQedAhsB0+iww+Be+sca0xIIZtKuHGTFxENVY6dh5TafZA
+         y9hg==
+X-Gm-Message-State: AOAM531A9v5aT9ZGuFCA0xzFi0yLkI63LgDzDsbpL26ut6svqIGVn1As
+        CerqCSm+jiMAEEXQHj1q4LrL46GKlg==
+X-Google-Smtp-Source: ABdhPJxilCIZwx40TtnakWQ8SW39n1QYxPshJu8evRs0rwDYLiu4hNz73SRyoQkM9wZ1pDoCkZReTg==
+X-Received: by 2002:a9d:774b:: with SMTP id t11mr15106055otl.7.1635798622949;
+        Mon, 01 Nov 2021 13:30:22 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id r184sm4299132oia.38.2021.11.01.13.30.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Nov 2021 13:30:22 -0700 (PDT)
+Received: (nullmailer pid 992011 invoked by uid 1000);
+        Mon, 01 Nov 2021 20:30:21 -0000
+Date:   Mon, 1 Nov 2021 15:30:21 -0500
 From:   Rob Herring <robh@kernel.org>
-Date:   Mon, 1 Nov 2021 15:23:44 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqKu6vr3iCz1G7MtK6gyqAvn4s4mpuLOwPzJDEmyZeROig@mail.gmail.com>
-Message-ID: <CAL_JsqKu6vr3iCz1G7MtK6gyqAvn4s4mpuLOwPzJDEmyZeROig@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: usb: misc: Add binding for Microchip
- usb2244 Controller
-To:     Piyush Mehta <piyush.mehta@xilinx.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        --to=robh+dt@kernel.org, Matthias Kaehlcke <mka@chromium.org>,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Al Cooper <alcooperx@gmail.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        git <git@xilinx.com>, Srinivas Goud <sgoud@xilinx.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+To:     Robert Foss <robert.foss@linaro.org>
+Cc:     todor.too@gmail.com, agross@kernel.org, bjorn.andersson@linaro.org,
+        mchehab@kernel.org, angelogioacchino.delregno@somainline.org,
+        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Andrey Konovalov <andrey.konovalov@linaro.org>
+Subject: Re: [PATCH v1 2/2] media: dt-bindings: media: camss: Document
+ clock-lanes property
+Message-ID: <YYBOXQOXM8USks0G@robh.at.kernel.org>
+References: <20211025103322.160913-1-robert.foss@linaro.org>
+ <20211025103322.160913-2-robert.foss@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211025103322.160913-2-robert.foss@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 24, 2021 at 1:06 PM Piyush Mehta <piyush.mehta@xilinx.com> wrot=
-e:
->
-
-Your email is somewhat corrupted. Lore has a warning:
-
-[-- Warning: decoded text below may be mangled, UTF-8 assumed --]
-[-- Attachment #1: Type: text/plain; charset=3D"y", Size: 2065 bytes --]
-
-Maybe it's the '--to=3Drobh+dt@kernel.org' email...
-
-> Microchip's USB224x family of Hi-Speed USB 2.0 flash media card controlle=
-rs
-> provides an ultra-fast interface between a USB host controller and flash
-> media cards.
->
-> Add dt-bindings documentation for Microchip's usb2244 Controller.
-> USB224x is a USB 2.0 compliant ultra fast USB 2.0 multi-format,
-> SD/MMC, and MS Flash Media Controllers.
->
-> Signed-off-by: Piyush Mehta <piyush.mehta@xilinx.com>
+On Mon, Oct 25, 2021 at 12:33:22PM +0200, Robert Foss wrote:
+> The clock-lanes property corresponds to a hardware register field
+> that is required to be set, in order to enable the CSI clock signal.
+> 
+> The physical lane of the clock signal is not programmable, but only
+> togglable On or Off, which what BIT(7) of the
+> CSIPHY_3PH_CMN_CSI_COMMON_CTRLn(5) register controls.
+> 
+> Signed-off-by: Robert Foss <robert.foss@linaro.org>
 > ---
->  .../devicetree/bindings/usb/microchip,usb2244.yaml | 43 ++++++++++++++++=
-++++++
->  1 file changed, 43 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/usb/microchip,usb22=
-44.yaml
->
-> diff --git a/Documentation/devicetree/bindings/usb/microchip,usb2244.yaml=
- b/Documentation/devicetree/bindings/usb/microchip,usb2244.yaml
-> new file mode 100644
-> index 0000000..ecab0cb
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/usb/microchip,usb2244.yaml
-> @@ -0,0 +1,43 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/usb/microchip,usb2244.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +
-> +title: Bindings for the Microchip USB2244 Ultra Fast USB-SD Controller
-> +
-> +description:
-> +  Microchip=E2=80=99s USB224x is a USB 2.0 compliant, Hi-Speed bulk only=
- mass
-> +  storage class peripheral controller intended for reading and writing
-> +  to popular flash media from the xDPicture Card=E2=84=A2, Memory Stick=
-=C2=AE (MS),
-> +  Secure Digital (SD), and MultiMediaCard=E2=84=A2 (MMC) families.
-> +
-> +  USB224x is a flash media card reader solution fully compliant with the
-> +  USB 2.0 specification
-> +
-> +maintainers:
-> +  - Piyush Mehta <piyush.mehta@xilinx.com>
-> +
-> +properties:
-> +  compatible:
-> +    const: microchip,usb2244
-> +
-> +  reset-gpios:
-> +    maxItems: 1
-> +    description:
-> +      The phandle and specifier for the GPIO that controls the RESET lin=
-e of
-> +      flash media controller.
-> +
-> +required:
-> +  - compatible
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/gpio/gpio.h>
-> +
-> +    usb {
-> +       compatible =3D "microchip,usb2244";
+>  .../devicetree/bindings/media/qcom,msm8996-camss.yaml        | 5 +++++
+>  .../devicetree/bindings/media/qcom,sdm660-camss.yaml         | 5 +++++
+>  .../devicetree/bindings/media/qcom,sdm845-camss.yaml         | 5 +++++
+>  3 files changed, 15 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/media/qcom,msm8996-camss.yaml b/Documentation/devicetree/bindings/media/qcom,msm8996-camss.yaml
+> index 38be41e932f0..d4da1fad12cf 100644
+> --- a/Documentation/devicetree/bindings/media/qcom,msm8996-camss.yaml
+> +++ b/Documentation/devicetree/bindings/media/qcom,msm8996-camss.yaml
+> @@ -106,6 +106,11 @@ properties:
+>  
+>              properties:
+>                clock-lanes:
+> +                description:
+> +                  The index of the clock-lane is not programmable by
+> +                  the hardware, but is required to define a CSI port.
+> +                  Lane 7 reflects the hardware register field that enables
+> +                  the clock lane.
 
-This needs to be a USB device under a USB controller node. See usb-device.y=
-aml.
+If it is fixed, then it should not be required. Fix the required part.
 
-> +       reset-gpios =3D <&gpio 2 GPIO_ACTIVE_HIGH>;
-> +    };
-> --
-> 2.7.4
->
+>                  items:
+>                    - const: 7
+
+I don't know how we let that in, but this should be the lane number. 
+Each binding can't be making up its own interpretation.
+
+Rob
