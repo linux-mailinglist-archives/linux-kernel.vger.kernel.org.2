@@ -2,135 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53913441AE3
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 12:51:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2D78441AED
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 12:54:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231873AbhKALxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 07:53:33 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:44130 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231485AbhKALxc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 07:53:32 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 952A91FD3B;
-        Mon,  1 Nov 2021 11:50:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1635767458; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fI/7zBLNASK1SbusA4CGgEhNkrv5qrtkIuO6C83IXWQ=;
-        b=kyZdwYqusc2DtXNAALClR+GBhMS1A7IGBqZ1NK6Q7/3qt02Dqqi3rNs2FMc/3TOGDi2u44
-        ayMhygt4C09SRSwNDSHZRM7EtAxFzBza9Y2/DMXIte7lU62V8jUP55L4zlzY8qFLvhptq9
-        J8ocnKjhtLcwWhImjGHkko3aJpduxto=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1635767458;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fI/7zBLNASK1SbusA4CGgEhNkrv5qrtkIuO6C83IXWQ=;
-        b=OKWYy5mY6KFxyPtuRxTQi9YwxcrYBiJHFITQ87baJT64TLJ8LLaxqekX1xtq6JMLxRNh/r
-        rLTnaxPpdgpNLDBA==
-Received: from quack2.suse.cz (unknown [10.163.28.18])
-        by relay2.suse.de (Postfix) with ESMTP id 84F63A3B81;
-        Mon,  1 Nov 2021 11:50:58 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 5000D1E0922; Mon,  1 Nov 2021 12:50:58 +0100 (CET)
-Date:   Mon, 1 Nov 2021 12:50:58 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Jan Kara <jack@suse.cz>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        id S232308AbhKAL4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 07:56:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49894 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232198AbhKAL4r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 07:56:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 584CD610A8;
+        Mon,  1 Nov 2021 11:54:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1635767654;
+        bh=5GVpmTGqcSsozn4hY6lZg7D/j5U9J7/08+1Wzgsqao8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MLQ3SrtEIi2la5eXWvUi0kkcZ9qUd0Topxa1AwkjaKMzCQJ4JB2Asyh+C1FJ/I1oN
+         YEkUfMUlx5m4LR82D4ptWO0xRXO/8NeCqkRs07DTXtAADshNBgfB+8kZuiYQZyVg7y
+         stsk9Us51S2fYznoRJWyS25EHxkyQDFLc5tC2aNg=
+Date:   Mon, 1 Nov 2021 12:54:09 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Marcel Holtmann <marcel@holtmann.org>
+Cc:     Zijun Hu <zijuhu@codeaurora.org>, robh@kernel.org,
+        jirislaby@kernel.org, linux-serial@vger.kernel.org,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the ext3 tree
-Message-ID: <20211101115058.GC21679@quack2.suse.cz>
-References: <20211028211053.0c504d48@canb.auug.org.au>
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        Zijun Hu <quic_zijuhu@quicinc.com>
+Subject: Re: [PATCH v1] serdev: Add interface serdev_device_ioctl
+Message-ID: <YX/VYUC3ngOf5bX5@kroah.com>
+References: <1635753048-5289-1-git-send-email-zijuhu@codeaurora.org>
+ <YX+eRgCrUs2Y5iaX@kroah.com>
+ <fe5a8bec-b186-c719-5f02-a0a67eb8862f@codeaurora.org>
+ <YX+mDGr8tDzVT4Hr@kroah.com>
+ <573d3640-2e8b-9266-4205-755ac0951abd@codeaurora.org>
+ <YX/M/MZL8jbu7p7I@kroah.com>
+ <DC399B43-DB1E-42AC-8A31-3A2C9407EE6D@holtmann.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="zhXaljGHf11kAtnf"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211028211053.0c504d48@canb.auug.org.au>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <DC399B43-DB1E-42AC-8A31-3A2C9407EE6D@holtmann.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---zhXaljGHf11kAtnf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu 28-10-21 21:10:53, Stephen Rothwell wrote:
-> Hi all,
+On Mon, Nov 01, 2021 at 12:45:36PM +0100, Marcel Holtmann wrote:
+> Hi Greg,
 > 
-> After merging the ext3 tree, today's linux-next build (powerpc
-> allyesconfig) produced this warning:
+> >>>>>> For serdev_device which is mounted at virtual tty port, tty ioctl()
+> >>>>>> maybe be used to make serdev_device ready to talk with tty port, so
+> >>>>>> add interface serdev_device_ioctl().
+> >>>>>> 
+> >>>>>> Signed-off-by: Zijun Hu <quic_zijuhu@quicinc.com>
+> >>>>>> ---
+> >>>>>> drivers/tty/serdev/core.c           | 11 +++++++++++
+> >>>>>> drivers/tty/serdev/serdev-ttyport.c | 12 ++++++++++++
+> >>>>>> include/linux/serdev.h              |  9 +++++++++
+> >>>>>> 3 files changed, 32 insertions(+)
+> >>>>>> 
+> >>>>>> diff --git a/drivers/tty/serdev/core.c b/drivers/tty/serdev/core.c
+> >>>>>> index f1324fe99378..c0f6cd64716b 100644
+> >>>>>> --- a/drivers/tty/serdev/core.c
+> >>>>>> +++ b/drivers/tty/serdev/core.c
+> >>>>>> @@ -405,6 +405,17 @@ int serdev_device_set_tiocm(struct serdev_device *serdev, int set, int clear)
+> >>>>>> }
+> >>>>>> EXPORT_SYMBOL_GPL(serdev_device_set_tiocm);
+> >>>>>> 
+> >>>>>> +int serdev_device_ioctl(struct serdev_device *serdev, unsigned int cmd, unsigned long arg)
+> >>>>>> +{
+> >>>>>> +	struct serdev_controller *ctrl = serdev->ctrl;
+> >>>>>> +
+> >>>>>> +	if (!ctrl || !ctrl->ops->ioctl)
+> >>>>>> +		return -EOPNOTSUPP;
+> >>>>> 
+> >>>>> Wrong error for returning that an ioctl is not handled :(
+> >>>> checkpatch.pl always reports below WARNING when i use ENOTSUPP as present interfaces
+> >>>> do. so i change error code to EOPNOTSUPP.
+> >>>> 
+> >>>> #28: FILE: drivers/tty/serdev/core.c:412:
+> >>>> +               return -ENOTSUPP;
+> >>>> 
+> >>>> WARNING: ENOTSUPP is not a SUSV4 error code, prefer EOPNOTSUPP
+> >>> 
+> >>> Both of them are not the correct error to return when an ioctl is not
+> >>> supported.
+> >>> 
+> >> is ENODEV okay?
+> > 
+> > No, -ENOTTY is the correct one as per the documentation, right?
+> > 
+> >>>>> Anyway, what in-tree driver needs this functionality?  Why does serdev
+> >>>>> need any ioctl commands?
+> >>>>> 
+> >>>> i am developing driver for a special bluetooth controller which is integrated within SOC,
+> >>>> and it does not connect with the BT HOST with UART as normal controller do, but it has very
+> >>>> similar features as the BT controller with UART I/F. it is mounted on a virtual serial port
+> >>>> driven by a tty driver developed. but it need to call tty ioctl to make the 
+> >>>> special BT controller ready to talk with tty port. so i add this interface.
+> >>> 
+> >>> Please submit this change when you submit your driver that uses it at
+> >>> the same time so we can review them all at once.  We do not add apis
+> >>> that are not used in the kernel tree.
+> >>> 
+> >> okay
+> >>>> as you known, the main purpose of ioctl is to achieve MISC and irregular control. so it is useful
+> >>>> for these irregular devices.
+> >>> 
+> >>> For tty devices, "custom" ioctls are not ok, use the standard tty
+> >>> commands and you should be fine for everything you need to do.
+> >>> 
+> >>> If not, then perhaps your design is incorrect?
+> >>> 
+> >> i just want to refer bt_ioctl within https://source.codeaurora.org/quic/qsdk/oss/kernel/linux-ipq-5.4/tree/drivers/soc/qcom/bt_tty.c?h=NHSS.QSDK.11.5.0.5.r2
+> >> by serdev. so add this interface.
+> > 
+> > The 5.4 kernel is not relevant here, so I do not understand.
+> > 
+> >> are there any other good solution to advise?
+> > 
+> > Why not work with the bluetooth developers on this?
 > 
-> samples/fanotify/fs-monitor.c: In function 'handle_notifications':
-> samples/fanotify/fs-monitor.c:68:36: warning: format '%llx' expects argument of type 'long long unsigned int', but argument 2 has type '__u64' {aka 'long unsigned int'} [-Wformat=]
->    68 |    printf("unexpected FAN MARK: %llx\n", event->mask);
->       |                                 ~~~^     ~~~~~~~~~~~
->       |                                    |          |
->       |                                    |          __u64 {aka long unsigned int}
->       |                                    long long unsigned int
->       |                                 %lx
-> 
-> Introduced by commit
-> 
->   5451093081db ("samples: Add fs error monitoring example")
+> if this is just to have some hackish Bluetooth driver, then NAK from my side. Since we have serdev, we have no need for, or requirements for any ioctl anymore. If such thing is needed, it is a bad design.
 
-Thanks for report Stephen. I've added attached patch to my tree to fix it
-up.
+Thanks for the confirmation, seems sane to me!
 
-									Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Zijun, please fix up your driver and submit it to be merged and all
+should be fine, no need for any custom ioctls.
 
---zhXaljGHf11kAtnf
-Content-Type: text/x-patch; charset=us-ascii
-Content-Disposition: attachment; filename="0001-samples-Fix-warning-in-fsnotify-sample.patch"
+thanks,
 
-From b7eccf75c28e5469bb4685a03310dbb66ee323f9 Mon Sep 17 00:00:00 2001
-From: Jan Kara <jack@suse.cz>
-Date: Mon, 1 Nov 2021 12:47:32 +0100
-Subject: [PATCH] samples: Fix warning in fsnotify sample
-
-The fsnotify sample code generates the following warning on powerpc:
-
-samples/fanotify/fs-monitor.c: In function 'handle_notifications':
-samples/fanotify/fs-monitor.c:68:36: warning: format '%llx' expects argument of type 'long long unsigned int', but argument 2 has type '__u64' {aka 'long unsigned int'} [-Wformat=]
-   68 |    printf("unexpected FAN MARK: %llx\n", event->mask);
-      |                                 ~~~^     ~~~~~~~~~~~
-      |                                    |          |
-      |                                    |          __u64 {aka long unsigned int}
-      |                                    long long unsigned int
-      |                                 %lx
-
-Fix the problem by explicitely typing the argument to proper type.
-
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- samples/fanotify/fs-monitor.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/samples/fanotify/fs-monitor.c b/samples/fanotify/fs-monitor.c
-index a0e44cd31e6f..2e08a1807db7 100644
---- a/samples/fanotify/fs-monitor.c
-+++ b/samples/fanotify/fs-monitor.c
-@@ -65,7 +65,8 @@ static void handle_notifications(char *buffer, int len)
- 	for (; FAN_EVENT_OK(event, len); event = FAN_EVENT_NEXT(event, len)) {
- 
- 		if (event->mask != FAN_FS_ERROR) {
--			printf("unexpected FAN MARK: %llx\n", event->mask);
-+			printf("unexpected FAN MARK: %llx\n",
-+							(unsigned long long)event->mask);
- 			goto next_event;
- 		}
- 
--- 
-2.26.2
-
-
---zhXaljGHf11kAtnf--
+greg k-h
