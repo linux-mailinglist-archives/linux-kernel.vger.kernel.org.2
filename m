@@ -2,123 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C839D4420DA
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 20:28:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 375924420F5
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 20:36:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232633AbhKATbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 15:31:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232549AbhKATbP (ORCPT
+        id S230519AbhKATiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 15:38:52 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:28556 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229727AbhKATiv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 15:31:15 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14C01C061714;
-        Mon,  1 Nov 2021 12:28:41 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id f3so30148050lfu.12;
-        Mon, 01 Nov 2021 12:28:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=oUizDfgwFNYdL5n8t93Z0CbMWx8hyiTVK1QWUlqRL/Q=;
-        b=qEH27vzYm2AHnn13IP3Acl+1k1FWd9og+36OEIHAjo56EAjTLsxZCzmKFXgN5OiAa2
-         YuX133+pK9Mv1ns/UlG4c3B7NTZygGaUtRdql/VDVdteJpxHfN5YiBnQNNiwZVges9bd
-         hjk3tzfVS7VE82RrIcilaXM2do42n8Dz5WwsR6CUa/tm1wxVCZaLyyscDsf7q7gYn3Kn
-         slUHUH0SLxTkE4c39BHF4w5ifXcikuXG0tn3evuL/Da4YLJHUXn00uh/0aHl1Z8cqxgs
-         ZXQnWA/jcrzxsLdesDXLf0N6wGGu2Vi93TrAjs+Sm5o20JgrSDSMKhs8bL9xZouBzERX
-         Ti8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=oUizDfgwFNYdL5n8t93Z0CbMWx8hyiTVK1QWUlqRL/Q=;
-        b=1aOQziBn0YrBz6PbY5Oht1ZJwavaEOBBb8iijO0vLlot8E/iMkerdExm7RxyPK145p
-         O5Q/hS9cKt02sRFzrarCWkeiExI0a6XvI4dITFGhIptf8UmUriL51tEAn6fkW0W1moG7
-         nqStTusWSFoI56jazGGUVopDb5EKnUCGl3QmHFEzSkr3K15I43xvK847cooc709dB9o0
-         34WNiW8DfB+44bUIZpKZqvL5AjLfZ0w5Y3O7nrcAHpF3tlSafLFBbXwZ1cd266Zt9tVS
-         FZbsWGSlyxoj1v/rGrF3l7ryZ697tMqwFbLo3a5kUxsxfpZpB2gzFzjJNSswPvRN5Bj5
-         2MJQ==
-X-Gm-Message-State: AOAM533RkIOUz/Ww8z8cJ/0YfjhhvG+XLtnVqb7DbJnSFcMr/yNJA0WC
-        1LtjhxABqoPLZ1H2ETaUTbw=
-X-Google-Smtp-Source: ABdhPJx4PduTsZO++oiInqWsTNhdAevMfOOiT7uK/gx2Q0I8LxiEf88BoZeKfktj3dRaXwDnpM1/8Q==
-X-Received: by 2002:ac2:5d2d:: with SMTP id i13mr29160344lfb.175.1635794919383;
-        Mon, 01 Nov 2021 12:28:39 -0700 (PDT)
-Received: from [192.168.1.11] ([94.103.235.8])
-        by smtp.gmail.com with ESMTPSA id w24sm1486579lfu.24.2021.11.01.12.28.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Nov 2021 12:28:38 -0700 (PDT)
-Message-ID: <76e1264b-87d3-c7cb-c9d5-bcf461fbb2bf@gmail.com>
-Date:   Mon, 1 Nov 2021 22:28:37 +0300
+        Mon, 1 Nov 2021 15:38:51 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1A1H08gA006473;
+        Mon, 1 Nov 2021 19:35:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=kXePD+qqqYTgoF8z1fx/eiS4ZCl18A8ptJ5MKVYftE0=;
+ b=Nu7mN6fVUx34eNDoJgvHqY1BeAqTq2xGcqudAaeoCvnu5lRzffN8kOOOubclR7UyicEa
+ gCRFmBHIXOUCcWvSiDvPwoGxi1U+MFuK8jyWAQh5oRwRAKUuVkRydyzg1A30vw9X0+qV
+ 9l4dcB0ZvDqt6dbCkkDpb/TtjCe0+O2LxID92w3nYRM3OELYMBg05nRriCnlC9p4nd7G
+ Rn0i6MN80T46Gs7Oy5oPG2WUsWefFj3sAxIeAwRouH8TUki0FFDfbC4bkLIwPpKKrwvE
+ n+44LkGkUgEOqlbpVw7ouc5WIBIyf5gaE0mAbTvZ2h0eRT7fD1RWJUo6hOBh0o6UdQbF QQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3c2ht3pcug-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Nov 2021 19:35:50 +0000
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1A1JVadf005819;
+        Mon, 1 Nov 2021 19:35:49 GMT
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3c2ht3pcta-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Nov 2021 19:35:49 +0000
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1A1JMeXh010962;
+        Mon, 1 Nov 2021 19:30:46 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma01fra.de.ibm.com with ESMTP id 3c0wp9m3hx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Nov 2021 19:30:46 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1A1JOP0m63635914
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 1 Nov 2021 19:24:25 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 65FD352054;
+        Mon,  1 Nov 2021 19:30:44 +0000 (GMT)
+Received: from [9.171.58.152] (unknown [9.171.58.152])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 3BC9B5204E;
+        Mon,  1 Nov 2021 19:30:43 +0000 (GMT)
+Message-ID: <d6cd47b1-3b46-fc44-3a8d-b2444af527e6@linux.ibm.com>
+Date:   Mon, 1 Nov 2021 20:30:42 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.2.0
-Subject: Re: [PATCH] media: em28xx: fix memory leak in em28xx_init_dev
+Subject: Re: [PATCH -next] bonding: Fix a use-after-free problem when
+ bond_sysfs_slave_add() failed
 Content-Language: en-US
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Dongliang Mu <mudongliangabcd@gmail.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        syzbot <syzkaller@googlegroups.com>, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211101095539.423246-1-mudongliangabcd@gmail.com>
- <20211101183249.GA28019@kili>
-From:   Pavel Skripkin <paskripkin@gmail.com>
-In-Reply-To: <20211101183249.GA28019@kili>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Huang Guobin <huangguobin4@huawei.com>, j.vosburgh@gmail.com,
+        vfalico@gmail.com, andy@greyhouse.net, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1635777273-46028-1-git-send-email-huangguobin4@huawei.com>
+From:   Julian Wiedmann <jwi@linux.ibm.com>
+In-Reply-To: <1635777273-46028-1-git-send-email-huangguobin4@huawei.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: rwpKu5KL9-f1RaFHV_KnVsb53ENLew8u
+X-Proofpoint-GUID: r7mjF3b7DU9HfBwWvSSov86N6XVq2qWN
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-01_07,2021-11-01_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ priorityscore=1501 mlxscore=0 lowpriorityscore=0 malwarescore=0
+ adultscore=0 phishscore=0 bulkscore=0 spamscore=0 suspectscore=0
+ mlxlogscore=999 clxscore=1011 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2110150000 definitions=main-2111010104
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/1/21 21:32, Dan Carpenter wrote:
-> On Mon, Nov 01, 2021 at 05:55:39PM +0800, Dongliang Mu wrote:
->> In the em28xx_init_rev, if em28xx_audio_setup fails, this function fails
->> to deallocate the media_dev allocated in the em28xx_media_device_init.
->> 
->> Fix this by adding em28xx_unregister_media_device to free media_dev.
->> 
->> BTW, this patch is tested in my local syzkaller instance, and it can
->> prevent the memory leak from occurring again.
->> 
->> CC: Pavel Skripkin <paskripkin@gmail.com>
->> Fixes: 37ecc7b1278f ("[media] em28xx: add media controller support")
->> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
->> Reported-by: syzbot <syzkaller@googlegroups.com>
-> 
-> Is this really a syzbot warning?  If so it should be in the format:
-> 
-> Reported-by: syzbot+4c4ffd1e1094dae61035@syzkaller.appspotmail.com
-> 
-> Syzbot is different from syzkaller.  Syzkaller is the fuzzer and syzbot
-> is the program which reports syzkaller bugs.
+On 01.11.21 15:34, Huang Guobin wrote:
+> When I do fuzz test for bonding device interface, I got the following
+> use-after-free Calltrace:
 > 
 
-Bug report is from his local instance. He just wants to give credit to 
-syzbot for finding it
+[...]
 
->> ---
->>  drivers/media/usb/em28xx/em28xx-cards.c | 19 +++++++++++++------
->>  1 file changed, 13 insertions(+), 6 deletions(-)
->> 
->> diff --git a/drivers/media/usb/em28xx/em28xx-cards.c b/drivers/media/usb/em28xx/em28xx-cards.c
->> index c1e0dccb7408..fca68939ca50 100644
->> --- a/drivers/media/usb/em28xx/em28xx-cards.c
->> +++ b/drivers/media/usb/em28xx/em28xx-cards.c
->> @@ -3625,8 +3625,10 @@ static int em28xx_init_dev(struct em28xx *dev, struct usb_device *udev,
->>  
+> Fixes: 7afcaec49696 (bonding: use kobject_put instead of _del after kobject_add)
+> Signed-off-by: Huang Guobin <huangguobin4@huawei.com>
+> ---
+>  drivers/net/bonding/bond_sysfs_slave.c | 11 ++++++++---
+>  1 file changed, 8 insertions(+), 3 deletions(-)
 > 
-> There is no check to see if the em28xx_media_device_init() fails.  I
+> diff --git a/drivers/net/bonding/bond_sysfs_slave.c b/drivers/net/bonding/bond_sysfs_slave.c
+> index fd07561..d1a5b3f 100644
+> --- a/drivers/net/bonding/bond_sysfs_slave.c
+> +++ b/drivers/net/bonding/bond_sysfs_slave.c
+> @@ -137,18 +137,23 @@ static ssize_t slave_show(struct kobject *kobj,
+>  
+>  int bond_sysfs_slave_add(struct slave *slave)
+>  {
+> -	const struct slave_attribute **a;
+> +	const struct slave_attribute **a, **b;
+>  	int err;
+>  
+>  	for (a = slave_attrs; *a; ++a) {
+>  		err = sysfs_create_file(&slave->kobj, &((*a)->attr));
+>  		if (err) {
+> -			kobject_put(&slave->kobj);
+> -			return err;
+> +			goto err_remove_file;
+>  		}
+>  	}
+>  
+>  	return 0;
+> +
+> +err_remove_file:
+> +	for (b = slave_attrs; b < a; ++b)
+> +		sysfs_remove_file(&slave->kobj, &((*b)->attr));
+> +
+> +	return err;
+>  }
+>  
 
-I guess, it should work, since there a lot of checks to see if this 
-pointer is valid, i.e driver can work even without this pointer, AFAIK
+This looks like a candidate for sysfs_create_files(), no?
 
-> don't love that we call unregister() to undo the init() but it seems
-> like it should work...
+>  void bond_sysfs_slave_del(struct slave *slave)
+> 
 
-Same here, but it is out of scope of this patch :)
-
-
-
-With regards,
-Pavel Skripkin
