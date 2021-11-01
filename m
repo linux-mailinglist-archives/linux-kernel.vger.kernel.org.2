@@ -2,73 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5AAA441B35
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 13:33:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26085441B36
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 13:33:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232488AbhKAMfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 08:35:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58168 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232467AbhKAMfY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 08:35:24 -0400
-Received: from mail-vk1-xa2e.google.com (mail-vk1-xa2e.google.com [IPv6:2607:f8b0:4864:20::a2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB548C061714
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 05:32:50 -0700 (PDT)
-Received: by mail-vk1-xa2e.google.com with SMTP id t127so7916636vke.13
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 05:32:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=HIfydDL9urxuFuRHChKNwgDGNZExxDugcZdeFKfwZbE=;
-        b=P1NPzWOtYbGBXHVniw2G6l/kLW0UPLC0dLR6qbvcKAFwZYQeakOEnarKPLJgUbzwky
-         hpyCzKOuDYZ6pSkDTeisUY0+MKNYTww5s8CcuhvpviuJX8eyytlR/NGnNAM2N2IBWmgo
-         AMuStM2mo2ZlkJdo6fuvM6YkdBxtQr3jeakJrziMOcMdCg25snSgx7S74ZipMeM0XbpF
-         oCh55pDkj2ThcN4QP20xeLItSE8w5y89ai7OsFYo4bkagw3F4cIof5RqQ0LULcftfYwX
-         Dien9Z7JXZN1OJSJZaP7f6jbHMAUFTbkLoUst6E0JKdHGeMety11XScNxYz/hW5GSrJl
-         YDzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=HIfydDL9urxuFuRHChKNwgDGNZExxDugcZdeFKfwZbE=;
-        b=NBlaVtw7Y+fwOO8cBv1SezY+kLqGOkpWUfIo9Vu/kCbtKAuQ+3BAJGhtvkW3aGGlUl
-         VYBYlzlyed92LN8/Th1FB0UBjcb8QyyfT1UrHe/Zp79eNDV5qHgwZTsONI0ag0MEqc3A
-         9HbrPHp8GD3+Xa3ANnOly3lNeNTlnYcvwEC2f4MoGnnCj1fUBydT70DdnXA/hovXegqB
-         USaUAE/gkNgzzFhEfEhVBXzqRsnryqxvT1ZbO/X3zJ/fScRF6oy2V3qASnV+emm+/VlJ
-         g4kwI7NKLAunwkfkZfCZTYyjtluTFP8uGnq6etyXzDyAumQAOoIFflEBg//XKZx+BVrh
-         2AIA==
-X-Gm-Message-State: AOAM533/+Q15XI8T/dN/nBwTNt8QNI+5DREtB74TQc4bdU8Yl04pfmLd
-        1MvnZbs0E0mDqDFdOEPhjLM8JlTLnScS1T/kkC4=
-X-Google-Smtp-Source: ABdhPJyJhBY0R4YFQh8qZISF/9KTdnT/4Nphzs02mg9TlmQsk1UvWYHPowwH3kSHV/krQSXJcwftx1iDNdsOXCGfHUQ=
-X-Received: by 2002:a05:6122:1815:: with SMTP id ay21mr2680012vkb.24.1635769970106;
- Mon, 01 Nov 2021 05:32:50 -0700 (PDT)
+        id S232489AbhKAMgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 08:36:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58320 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232244AbhKAMf7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 08:35:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2544260FE8;
+        Mon,  1 Nov 2021 12:33:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1635770004;
+        bh=fJ2N7Af1US9AFx5AK8u3NxNtMAAXOEMwCQULc8BkPqw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NqVf1c/rg5CHuIWR0TiSZIlQ3bU47uVRxiuiX8fbmiw6BHHPR/UQisMXa861Q2mSZ
+         WJS8CCIK3HWgPGeQ+FrPn/TRP+791ENzEANWXhgN9+9z6aBG0nQKTtgsONvCjqU235
+         U082HuKBBJLxeijE7AcwS8AUjU0Zg4VsSUt+GCs4=
+Date:   Mon, 1 Nov 2021 13:33:20 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Thorsten Leemhuis <regressions@leemhuis.info>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "regressions@lists.linux.dev" <regressions@lists.linux.dev>
+Subject: Re: Thorsten is tracking regression again and could need a little
+ help (was: Re: Linux 5.15)
+Message-ID: <YX/ekB+9F9xvHCB7@kroah.com>
+References: <CAHk-=wjfbfQobW2jygMvgfJXKmzZNB=UTzBrFs2vTEzVpBXA4Q@mail.gmail.com>
+ <a365ffb9-a4d2-b1d7-7cd7-dd9d7039e04e@leemhuis.info>
 MIME-Version: 1.0
-Received: by 2002:a05:612c:1192:b0:232:2e76:603a with HTTP; Mon, 1 Nov 2021
- 05:32:49 -0700 (PDT)
-Reply-To: donaldmrschantal01un@gmail.com
-From:   "Mrs.Chantal Donald" <omeunurehi.andrew00226@gmail.com>
-Date:   Mon, 1 Nov 2021 05:32:49 -0700
-Message-ID: <CAKRsz=Mj9G4y_K0+dS0LKrwARWmxeW59NAvajJYLwRe739pS2w@mail.gmail.com>
-Subject: You have been compensated by United Nations (UN) Governments!
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a365ffb9-a4d2-b1d7-7cd7-dd9d7039e04e@leemhuis.info>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Atten:
+On Mon, Nov 01, 2021 at 05:49:40AM +0100, Thorsten Leemhuis wrote:
+> example by simply forwarding the mail to regressions@leemhuis.info or
+> CCing that address on a reply. I'll handle everything else then and tell
+> regzbot about it. But if you feel adventurous, you can also skip me as
+> the man-in-the-middle and tell the bot directly. To do that, just send a
+> reply to the report to the regressions mailing list
+> (regressions@lists.linux.dev) either directly or by CCing it on a reply
+> you would have written anyway; when doing so, place something like
+> '#regzbot ^introduced v5.15..' (separated by blank lines) somewhere in
+> the text, as outlined in regzbot's 'getting started guide' or its
+> reference documentation:
+> https://gitlab.com/knurd42/regzbot/-/blob/main/docs/getting_started.md
+> https://gitlab.com/knurd42/regzbot/-/blob/main/docs/reference.md
+> 
+> That's it, regzbot then on its next run will add the report to the list
+> of tracked regression. I'll keep an eye on things and try to fix any
+> problems I notice, as there likely will be a few. But then doesn't need
+> to bother you.
+> 
+> There is one thing that would really help: if one or two subsystem
+> maintainers could give regzbot a shot for all the regression reports
+> they get, even for easy fixes, as the bot really needs something to chew
+> on. Any volunteers?
 
-The United Nations Compensation Commissioner Payment Unit Office: Has
-compensated you with the sum of USD$10.5 Million Dollars, And the
-Compensation will be Issue into Atm Visa Card and send it to you from
-the Bank, So therefore you are properly advise to send us your full
-information address, Along with your Passport Or, Id Copy and your
-WhatsApp Number :
+I'll try it for the USB subsystem this merge cycle.  Do you want a bug
+report email redirected to that address or will a simple forward work
+well enough?
 
-Via E-mail Address: donaldmrschantal01un@gmail.com
+thanks,
 
-Looking forward to your quick cooperation response!
-
-Yours sincerely In American.
-Mrs. Chantal Donald
+greg k-h
