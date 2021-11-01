@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF525441603
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:18:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D842F441648
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:21:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231974AbhKAJVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:21:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57304 "EHLO mail.kernel.org"
+        id S232359AbhKAJXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:23:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58248 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231882AbhKAJVP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:21:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E22C5610A8;
-        Mon,  1 Nov 2021 09:18:41 +0000 (UTC)
+        id S232284AbhKAJWi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:22:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C67761179;
+        Mon,  1 Nov 2021 09:19:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758322;
-        bh=51ta6WGyBpUJSQvS01ISrVRQRPfj46ODhDABFHt73Hw=;
+        s=korg; t=1635758394;
+        bh=Sal7EXgUueWRxWeko37X1V1bBDOT8ItcE49Zb/dJ8sg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Zpt0/YoiRnmprrJixMCIbo/MwltwP5Ku393pmiwFzoIR0uW3eqhrpkt+EnAm1UFqP
-         TNUbkdNzSxZDPA9nt2T8udJQVpX3e/guL7hjWSlePw7tOLjXVeLU3/HUe4+hiIcSXC
-         /Bdyvm28qfkyO8/SGpWXoRR82hN2a8Him8Oi0qk4=
+        b=lLKmrwo1/nHv02prLgBtSspb6uEKHojfcTkr1mE+kM7V5CxUSoC0sH5oZDnR2CPyK
+         EH48EShMifa2xvZvmw9vkXibuNGzHrIfLFO7dFLCfS1sQ4dR7UHx05UsL0zi0bCpKN
+         jxok8TyLtLH9sIoXr1QvPMlR+G5Uczwo/UVaSKXw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Woojung.Huh@microchip.com" <Woojung.Huh@microchip.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wang Hai <wanghai38@huawei.com>,
         Johan Hovold <johan@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.4 13/17] net: lan78xx: fix division by zero in send path
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.9 07/20] usbnet: fix error return code in usbnet_probe()
 Date:   Mon,  1 Nov 2021 10:17:16 +0100
-Message-Id: <20211101082443.660446060@linuxfoundation.org>
+Message-Id: <20211101082445.753125621@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082440.664392327@linuxfoundation.org>
-References: <20211101082440.664392327@linuxfoundation.org>
+In-Reply-To: <20211101082444.133899096@linuxfoundation.org>
+References: <20211101082444.133899096@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,43 +41,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Wang Hai <wanghai38@huawei.com>
 
-commit db6c3c064f5d55fa9969f33eafca3cdbefbb3541 upstream.
+commit 6f7c88691191e6c52ef2543d6f1da8d360b27a24 upstream.
 
-Add the missing endpoint max-packet sanity check to probe() to avoid
-division by zero in lan78xx_tx_bh() in case a malicious device has
-broken descriptors (or when doing descriptor fuzz testing).
+Return error code if usb_maxpacket() returns 0 in usbnet_probe()
 
-Note that USB core will reject URBs submitted for endpoints with zero
-wMaxPacketSize but that drivers doing packet-size calculations still
-need to handle this (cf. commit 2548288b4fb0 ("USB: Fix: Don't skip
-endpoint descriptors with maxpacket=0")).
-
-Fixes: 55d7de9de6c3 ("Microchip's LAN7800 family USB 2/3 to 10/100/1000 Ethernet device driver")
-Cc: stable@vger.kernel.org      # 4.3
-Cc: Woojung.Huh@microchip.com <Woojung.Huh@microchip.com>
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 397430b50a36 ("usbnet: sanity check for maxpacket")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Reviewed-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20211026124015.3025136-1-wanghai38@huawei.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/usb/lan78xx.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/net/usb/usbnet.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/net/usb/lan78xx.c
-+++ b/drivers/net/usb/lan78xx.c
-@@ -2956,6 +2956,12 @@ static int lan78xx_probe(struct usb_inte
- 
- 	dev->maxpacket = usb_maxpacket(dev->udev, dev->pipe_out, 1);
- 
-+	/* Reject broken descriptors. */
-+	if (dev->maxpacket == 0) {
-+		ret = -ENODEV;
-+		goto out3;
-+	}
-+
- 	/* driver requires remote-wakeup capability during autosuspend. */
- 	intf->needs_remote_wakeup = 1;
+--- a/drivers/net/usb/usbnet.c
++++ b/drivers/net/usb/usbnet.c
+@@ -1742,6 +1742,7 @@ usbnet_probe (struct usb_interface *udev
+ 	dev->maxpacket = usb_maxpacket (dev->udev, dev->out, 1);
+ 	if (dev->maxpacket == 0) {
+ 		/* that is a broken device */
++		status = -ENODEV;
+ 		goto out4;
+ 	}
  
 
 
