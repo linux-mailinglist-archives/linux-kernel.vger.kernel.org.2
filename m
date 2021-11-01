@@ -2,83 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E1FF441B49
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 13:44:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 311D4441B58
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 13:50:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232446AbhKAMqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 08:46:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60706 "EHLO
+        id S232554AbhKAMxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 08:53:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231807AbhKAMqi (ORCPT
+        with ESMTP id S232507AbhKAMxW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 08:46:38 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EACCFC061714
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 05:44:04 -0700 (PDT)
-Received: from [77.23.61.74] (helo=[192.168.66.200]); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1mhWfR-0002on-Rk; Mon, 01 Nov 2021 13:44:01 +0100
-Message-ID: <da21322a-95e8-40f9-a718-fa1e56eb203f@leemhuis.info>
-Date:   Mon, 1 Nov 2021 13:44:01 +0100
+        Mon, 1 Nov 2021 08:53:22 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24FEBC061714;
+        Mon,  1 Nov 2021 05:50:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=RL3hnt8gJU6frPUOEVXfNSSid9qg9EK1F0andJuRsYo=; b=PklqNkLpc8XThjjoH0WQp5PHjp
+        2P0kfCnLEMG73lnHd2wpZacv9Z0T6gd9jcv1KHpBh55JQBxZy3WKjvaSKGVRxPm7lxpw1wmTifrLF
+        WeubHfJwD7K1qzjPZ0h2/0cKQ8A93IceSwN4QnBJdLlQOWOgO7nru9NYqtVE/OI9PV42yGYYMmLdq
+        tO+2Rz8um+32jqjtFqQSnsk97MMI97giaV/eAmi2Ioe0uhmHAaFoO2pzBHvIBc+R8yWFzr5kMr+KE
+        mY2g9prbvDtsYBHabFLAxx5w2GljEq6zAZE8SEv3DSLtCFDfW/zXix/UnxIcHi1L3i1zlPg/LOLG9
+        ZtD9luvA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mhWgN-003lwE-9H; Mon, 01 Nov 2021 12:45:15 +0000
+Date:   Mon, 1 Nov 2021 12:44:59 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     akpm@linux-foundation.org, keescook@chromium.org,
+        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+        arnaldo.melo@gmail.com, pmladek@suse.com, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, valentin.schneider@arm.com,
+        qiang.zhang@windriver.com, robdclark@chromium.org,
+        christian@brauner.io, dietmar.eggemann@arm.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, dennis.dalessandro@cornelisnetworks.com,
+        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
+        jgg@ziepe.ca, linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, oliver.sang@intel.com, lkp@intel.com
+Subject: Re: [PATCH v7 00/11] extend task comm from 16 to 24
+Message-ID: <YX/hS6nRisiiFiBD@casper.infradead.org>
+References: <20211101060419.4682-1-laoar.shao@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: Thorsten is tracking regression again and could need a little
- help (was: Re: Linux 5.15)
-Content-Language: en-BS
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "regressions@lists.linux.dev" <regressions@lists.linux.dev>
-References: <CAHk-=wjfbfQobW2jygMvgfJXKmzZNB=UTzBrFs2vTEzVpBXA4Q@mail.gmail.com>
- <a365ffb9-a4d2-b1d7-7cd7-dd9d7039e04e@leemhuis.info>
- <YX/ekB+9F9xvHCB7@kroah.com>
-From:   Thorsten Leemhuis <regressions@leemhuis.info>
-In-Reply-To: <YX/ekB+9F9xvHCB7@kroah.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1635770645;4751c31d;
-X-HE-SMSGID: 1mhWfR-0002on-Rk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211101060419.4682-1-laoar.shao@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01.11.21 13:33, Greg KH wrote:
-> On Mon, Nov 01, 2021 at 05:49:40AM +0100, Thorsten Leemhuis wrote:
->> example by simply forwarding the mail to regressions@leemhuis.info or
->> CCing that address on a reply. I'll handle everything else then and tell
->> regzbot about it. But if you feel adventurous, you can also skip me as
->> the man-in-the-middle and tell the bot directly. To do that, just send a
->> reply to the report to the regressions mailing list
->> (regressions@lists.linux.dev) either directly or by CCing it on a reply
->> you would have written anyway; when doing so, place something like
->> '#regzbot ^introduced v5.15..' (separated by blank lines) somewhere in
->> the text, as outlined in regzbot's 'getting started guide' or its
->> reference documentation:
->> https://gitlab.com/knurd42/regzbot/-/blob/main/docs/getting_started.md
->> https://gitlab.com/knurd42/regzbot/-/blob/main/docs/reference.md
->>
->> That's it, regzbot then on its next run will add the report to the list
->> of tracked regression. I'll keep an eye on things and try to fix any
->> problems I notice, as there likely will be a few. But then doesn't need
->> to bother you.
->>
->> There is one thing that would really help: if one or two subsystem
->> maintainers could give regzbot a shot for all the regression reports
->> they get, even for easy fixes, as the bot really needs something to chew
->> on. Any volunteers?
+On Mon, Nov 01, 2021 at 06:04:08AM +0000, Yafang Shao wrote:
+> There're many truncated kthreads in the kernel, which may make trouble
+> for the user, for example, the user can't get detailed device
+> information from the task comm.
 > 
-> I'll try it for the USB subsystem this merge cycle. 
+> This patchset tries to improve this problem fundamentally by extending
+> the task comm size from 16 to 24, which is a very simple way. 
 
-That will be a great help, many thx.
+It can't be that simple if we're on v7 and at 11 patches!
 
-> Do you want a bug
-> report email redirected to that address or will a simple forward work
-> well enough?
+It would be helpful if you included links to earlier postings.  I can
+only find v5 and v6 in my inbox, so I fear I'm going to re-ask some
+questions which were already answered.
 
-Redirecting will make it a little easier for me, but a simple forward is
-fine, too.
+Why can't we shorten the names of these kthreads?  You didn't
+give any examples, so I can't suggest any possibilities.
 
-thx!
-
-Ciao, Thorsten
