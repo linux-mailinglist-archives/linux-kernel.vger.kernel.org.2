@@ -2,193 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E35254411B3
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 01:32:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D23234411B4
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 01:35:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230487AbhKAAeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 20:34:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30797 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230326AbhKAAep (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 20:34:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635726732;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lcBd93Vaa+XnjO4hmcWry9EBeOmFpttU+ugEWFm4FG8=;
-        b=G0TDOLiBSVKMMyXAikCk57RWQsjoKaz+EC9n+LQ/QWcImc3dRBcFITI43MolcladIROxL6
-        GwajNMlFZJ6TEQSc+Ie+F6LA+sYHWHXoOXFdpByteH/gVAUt9qoP0/IDfh6tlHE5ShETUd
-        DlbB3jcqmV8l06xQQl2xcHcuPw9b84E=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-578-ncif1-e4PBuqT1aqr2TreA-1; Sun, 31 Oct 2021 20:32:08 -0400
-X-MC-Unique: ncif1-e4PBuqT1aqr2TreA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 920B48030B7;
-        Mon,  1 Nov 2021 00:32:07 +0000 (UTC)
-Received: from localhost (ovpn-8-17.pek2.redhat.com [10.72.8.17])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7CEDF60C0F;
-        Mon,  1 Nov 2021 00:31:58 +0000 (UTC)
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>, live-patching@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Ming Lei <ming.lei@redhat.com>
-Subject: [PATCH V2 3/3] livepatch: free klp_patch object synchronously
-Date:   Mon,  1 Nov 2021 08:31:32 +0800
-Message-Id: <20211101003132.3336497-4-ming.lei@redhat.com>
-In-Reply-To: <20211101003132.3336497-1-ming.lei@redhat.com>
-References: <20211101003132.3336497-1-ming.lei@redhat.com>
+        id S230237AbhKAAi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 20:38:27 -0400
+Received: from mga01.intel.com ([192.55.52.88]:60952 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229982AbhKAAi0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Oct 2021 20:38:26 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10154"; a="254526265"
+X-IronPort-AV: E=Sophos;i="5.87,198,1631602800"; 
+   d="scan'208";a="254526265"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2021 17:35:41 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,198,1631602800"; 
+   d="scan'208";a="449090055"
+Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 31 Oct 2021 17:35:39 -0700
+Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mhLIY-0002tO-NJ; Mon, 01 Nov 2021 00:35:38 +0000
+Date:   Mon, 01 Nov 2021 08:34:41 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ 5989725f40fa65ac00fc0f7d884ddcfc3f8d8e99
+Message-ID: <617f3621.g5P8qs/yHnEENWVB%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-klp_mutex isn't acquired before calling kobject_put(klp_patch), so it is
-fine to free klp_patch object synchronously.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+branch HEAD: 5989725f40fa65ac00fc0f7d884ddcfc3f8d8e99  Merge x86/core into tip/master
 
-One issue is that enabled store() method, in which the klp_patch kobject
-itself is deleted & released. However, sysfs has provided APIs for dealing
-with this corner case, so use sysfs_break_active_protection() and
-sysfs_unbreak_active_protection() for releasing klp_patch kobject from
-enabled_store(), meantime the enabled attribute has to be removed
-before deleting the klp_patch kobject.
+elapsed time: 843m
 
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
+configs tested: 87
+configs skipped: 3
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+sh                 kfr2r09-romimage_defconfig
+mips                  maltasmvp_eva_defconfig
+mips                            ar7_defconfig
+mips                           ci20_defconfig
+m68k                          multi_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nios2                            allyesconfig
+nds32                               defconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                              debian-10.3
+nios2                               defconfig
+nds32                             allnoconfig
+arc                              allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a005-20211031
+x86_64               randconfig-a004-20211031
+x86_64               randconfig-a002-20211031
+x86_64               randconfig-a003-20211031
+x86_64               randconfig-a001-20211031
+x86_64               randconfig-a006-20211031
+i386                 randconfig-a003-20211031
+i386                 randconfig-a006-20211031
+i386                 randconfig-a002-20211031
+i386                 randconfig-a005-20211031
+i386                 randconfig-a001-20211031
+i386                 randconfig-a004-20211031
+arc                  randconfig-r043-20211031
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+riscv                          rv32_defconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a013-20211031
+x86_64               randconfig-a015-20211031
+x86_64               randconfig-a014-20211031
+x86_64               randconfig-a011-20211031
+x86_64               randconfig-a016-20211031
+x86_64               randconfig-a012-20211031
+i386                 randconfig-a013-20211031
+i386                 randconfig-a012-20211031
+i386                 randconfig-a014-20211031
+i386                 randconfig-a015-20211031
+i386                 randconfig-a011-20211031
+i386                 randconfig-a016-20211031
+riscv                randconfig-r042-20211031
+s390                 randconfig-r044-20211031
+hexagon              randconfig-r045-20211031
+hexagon              randconfig-r041-20211031
+
 ---
- include/linux/livepatch.h     |  1 -
- kernel/livepatch/core.c       | 35 +++++++++++++++--------------------
- kernel/livepatch/core.h       |  2 +-
- kernel/livepatch/transition.c |  2 +-
- 4 files changed, 17 insertions(+), 23 deletions(-)
-
-diff --git a/include/linux/livepatch.h b/include/linux/livepatch.h
-index 9712818997c5..4dcebf52fac5 100644
---- a/include/linux/livepatch.h
-+++ b/include/linux/livepatch.h
-@@ -169,7 +169,6 @@ struct klp_patch {
- 	struct list_head obj_list;
- 	bool enabled;
- 	bool forced;
--	struct work_struct free_work;
- };
- 
- #define klp_for_each_object_static(patch, obj) \
-diff --git a/kernel/livepatch/core.c b/kernel/livepatch/core.c
-index 9ede093d699a..c2fbdcdb6626 100644
---- a/kernel/livepatch/core.c
-+++ b/kernel/livepatch/core.c
-@@ -337,6 +337,7 @@ static ssize_t enabled_store(struct kobject *kobj, struct kobj_attribute *attr,
- 	int ret;
- 	bool enabled;
- 	LIST_HEAD(to_free);
-+	struct kernfs_node *kn = NULL;
- 
- 	ret = kstrtobool(buf, &enabled);
- 	if (ret)
-@@ -369,10 +370,18 @@ static ssize_t enabled_store(struct kobject *kobj, struct kobj_attribute *attr,
- out:
- 	mutex_unlock(&klp_mutex);
- 
--	klp_free_patches_async(&to_free);
--
- 	if (ret)
- 		return ret;
-+
-+	if (list_empty(&to_free)) {
-+		kn = sysfs_break_active_protection(kobj, &attr->attr);
-+		WARN_ON_ONCE(!kn);
-+		sysfs_remove_file(kobj, &attr->attr);
-+		klp_free_patches(&to_free);
-+		if (kn)
-+			sysfs_unbreak_active_protection(kn);
-+	}
-+
- 	return count;
- }
- 
-@@ -684,32 +693,19 @@ static void klp_free_patch_finish(struct klp_patch *patch)
- 	kobject_put(&patch->kobj);
- }
- 
--/*
-- * The livepatch might be freed from sysfs interface created by the patch.
-- * This work allows to wait until the interface is destroyed in a separate
-- * context.
-- */
--static void klp_free_patch_work_fn(struct work_struct *work)
--{
--	struct klp_patch *patch =
--		container_of(work, struct klp_patch, free_work);
--
--	klp_free_patch_finish(patch);
--}
--
--static void klp_free_patch_async(struct klp_patch *patch)
-+static void klp_free_patch(struct klp_patch *patch)
- {
- 	klp_free_patch_start(patch);
--	schedule_work(&patch->free_work);
-+	klp_free_patch_finish(patch);
- }
- 
--void klp_free_patches_async(struct list_head *to_free)
-+void klp_free_patches(struct list_head *to_free)
- {
- 	struct klp_patch *patch, *tmp_patch;
- 
- 	list_for_each_entry_safe(patch, tmp_patch, to_free, list) {
- 		list_del_init(&patch->list);
--		klp_free_patch_async(patch);
-+		klp_free_patch(patch);
- 	}
- }
- 
-@@ -873,7 +869,6 @@ static int klp_init_patch_early(struct klp_patch *patch)
- 	kobject_init(&patch->kobj, &klp_ktype_patch);
- 	patch->enabled = false;
- 	patch->forced = false;
--	INIT_WORK(&patch->free_work, klp_free_patch_work_fn);
- 
- 	klp_for_each_object_static(patch, obj) {
- 		if (!obj->funcs)
-diff --git a/kernel/livepatch/core.h b/kernel/livepatch/core.h
-index 8ff97745ba40..ea593f370049 100644
---- a/kernel/livepatch/core.h
-+++ b/kernel/livepatch/core.h
-@@ -13,7 +13,7 @@ extern struct list_head klp_patches;
- #define klp_for_each_patch(patch)	\
- 	list_for_each_entry(patch, &klp_patches, list)
- 
--void klp_free_patches_async(struct list_head *to_free);
-+void klp_free_patches(struct list_head *to_free);
- void klp_unpatch_replaced_patches(struct klp_patch *new_patch);
- void klp_discard_nops(struct klp_patch *new_patch);
- 
-diff --git a/kernel/livepatch/transition.c b/kernel/livepatch/transition.c
-index a9ebc9c5db02..3eff5fc0deee 100644
---- a/kernel/livepatch/transition.c
-+++ b/kernel/livepatch/transition.c
-@@ -41,7 +41,7 @@ static void klp_transition_work_fn(struct work_struct *work)
- 
- 	mutex_unlock(&klp_mutex);
- 
--	klp_free_patches_async(&to_free);
-+	klp_free_patches(&to_free);
- }
- static DECLARE_DELAYED_WORK(klp_transition_work, klp_transition_work_fn);
- 
--- 
-2.31.1
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
