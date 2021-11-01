@@ -2,143 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88E4B4423EC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 00:22:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E61D4423F1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 00:26:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232420AbhKAXYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 19:24:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36340 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232447AbhKAXYj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 19:24:39 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 397DEC061767
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 16:22:05 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id s24so13127385plp.0
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 16:22:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1DmJsDZOreKd3PODnjVspgGOYDJOtOgJGhWnyk3NAL0=;
-        b=OfmV25Rs/0KiayRA/5l31wf4/dncjDlC4EW7XyT/JaAibTlnL2JNY/ecf8e2UaDk05
-         iOYiB9DfDtj0/JtL7xe04CFY9ouJkYJD3naY0EQtJD4g568ULoL9hz9kZJeF5gcWijSS
-         4bOkM2qD66dp8biPKFIXT7qklrAu+SMLTH5oburqr0KLsvvha2M/XjKvX2HvKFeFXSdy
-         tVRBtRhI6PVl+Y0OdhxTPF4jRo293v0V7zpP+SDuYg+DXlrcfogephCtXDhJqCsVvMAN
-         7TbA7jr4cLKnbN+utfdCImhH/tZ1gVIPvOAircJ3WPMTTghZqN0cYTRr+BogRDa4/78l
-         6vbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1DmJsDZOreKd3PODnjVspgGOYDJOtOgJGhWnyk3NAL0=;
-        b=cHA+HlC1Hr5GWM8E7i4NXdx209C0GotXtogMS25N4aPEo5U9OzSFEUVJWZFB5440tY
-         nCnhL+95DpvEtLkUiZTmH1Pn8gYU/E5PdFrUk+k/9TtyTAW9+/t0qwoP2iRM19Z+bxgU
-         zm545uJ/5X7rhYXPabUEKJwCCKgpKgzt8sewkWoHUCEHXo/nqDpavJJzZMmXJUzT3ErZ
-         aAwkGcFYEbCsxzaSiOqbyOO0/dikjSVBzAIX9QjBb4tSxuU8mwcBPJ4XEyU2mJzYUlF4
-         DM1APiKMTL8HolhTGKV4o4H8sGN8oLy2xJ3r5ZlXlMmjqhaEXSY2TIHVhWyxImdSeMji
-         IJpQ==
-X-Gm-Message-State: AOAM5327/n13dJ0i3vmewq49b2p5Kv5VTzMwBFmxVTqTAUA4Wq7OOCUT
-        QZ/pNeYSHXaxB4sPJVHyv4z6fA==
-X-Google-Smtp-Source: ABdhPJwKAbW9or9w/+9imMlYoFGpzkavS1OdIzsCCdVPPYYMFOIxBIv+rSbAKoBh06Z2wGBlsMa0MA==
-X-Received: by 2002:a17:903:228c:b0:141:f600:c161 with SMTP id b12-20020a170903228c00b00141f600c161mr6273421plh.10.1635808924335;
-        Mon, 01 Nov 2021 16:22:04 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id f11sm6040491pfv.191.2021.11.01.16.22.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 16:22:03 -0700 (PDT)
-Date:   Mon, 1 Nov 2021 23:21:59 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        Kieran Bingham <kbingham@kernel.org>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jessica Yu <jeyu@kernel.org>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Yang Weijiang <weijiang.yang@intel.com>,
-        linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v3 6/6] KVM: selftests: test KVM_GUESTDBG_BLOCKIRQ
-Message-ID: <YYB2l9bzFhKzobZB@google.com>
-References: <20210811122927.900604-1-mlevitsk@redhat.com>
- <20210811122927.900604-7-mlevitsk@redhat.com>
- <137f2dcc-75d2-9d71-e259-dd66d43ad377@redhat.com>
- <87sfwfkhk5.fsf@vitty.brq.redhat.com>
- <b48210a35b3bc6d63beeb33c19b609b3014191dd.camel@redhat.com>
+        id S230384AbhKAX14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 19:27:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38266 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229501AbhKAX1y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 19:27:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D2E96052B;
+        Mon,  1 Nov 2021 23:25:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635809120;
+        bh=clP3yqJcSXQ6ame+5rr8ly27eeKVg3wmuJgS67JA07Q=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=ZdJD5wR91PVyzEX6xmWe1Bh3YPcG9nuuWxYcSSAqAM8khYLoCbIVwJllwwAloAVDI
+         k648MWl512GZOn4EjVUv3mbGAP63LsFFin+NTykl9czkeJpWxxtBnS4MzXWvhAvXli
+         MWFhRMSLu+pHtjd34g1SzWHWalRtndu1+33f/YPer6HpHpX5o+G6nXo3lgL7NdF3CL
+         Ywns7c2gVKj+rt8QPuWIFjfsy/LK9uBHXEIZpVQidoRgujS937ZiyV346/VmvtziDa
+         4ikInym9x4867VoxuoOFrT1rvZ/mBN6uLsKNYnajMYPugKrUooe0GzGEL+zmCpIvK2
+         X0fi1IGxFYnhg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id D6FA25C06BA; Mon,  1 Nov 2021 16:25:19 -0700 (PDT)
+Date:   Mon, 1 Nov 2021 16:25:19 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     torvalds@linux-foundation.org
+Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        rcu@vger.kernel.org, kernel-team@fb.com, juri.lelli@redhat.com,
+        longman@redhat.com, neeraju@codeaurora.org, peterz@infradead.org,
+        swood@redhat.com, zhouzhouyi@gmail.com
+Subject: [GIT PULL] RCU changes for v5.16
+Message-ID: <20211101232519.GA508858@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b48210a35b3bc6d63beeb33c19b609b3014191dd.camel@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 01, 2021, Maxim Levitsky wrote:
-> On Mon, 2021-11-01 at 16:43 +0100, Vitaly Kuznetsov wrote:
-> > Paolo Bonzini <pbonzini@redhat.com> writes:
-> > 
-> > > On 11/08/21 14:29, Maxim Levitsky wrote:
-> > > > Modify debug_regs test to create a pending interrupt
-> > > > and see that it is blocked when single stepping is done
-> > > > with KVM_GUESTDBG_BLOCKIRQ
-> > > > 
-> > > > Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-> > > > ---
-> > > >   .../testing/selftests/kvm/x86_64/debug_regs.c | 24 ++++++++++++++++---
-> > > >   1 file changed, 21 insertions(+), 3 deletions(-)
-> > > 
-> > > I haven't looked very much at this, but the test fails.
-> > > 
-> > 
-> > Same here,
-> > 
-> > the test passes on AMD but fails consistently on Intel:
-> > 
-> > # ./x86_64/debug_regs 
-> > ==== Test Assertion Failure ====
-> >   x86_64/debug_regs.c:179: run->exit_reason == KVM_EXIT_DEBUG && run->debug.arch.exception == DB_VECTOR && run->debug.arch.pc == target_rip && run->debug.arch.dr6 == target_dr6
-> >   pid=13434 tid=13434 errno=0 - Success
-> >      1	0x00000000004027c6: main at debug_regs.c:179
-> >      2	0x00007f65344cf554: ?? ??:0
-> >      3	0x000000000040294a: _start at ??:?
-> >   SINGLE_STEP[1]: exit 8 exception 1 rip 0x402a25 (should be 0x402a27) dr6 0xffff4ff0 (should be 0xffff4ff0)
-> > 
-> > (I know I'm late to the party).
-> 
-> Well that is strange. It passes on my intel laptop. Just tested 
-> (kvm/queue + qemu master, compiled today) :-(
-> 
-> It fails on iteration 1 (and there is iteration 0) which I think means that we
-> start with RIP on sti, and get #DB on start of xor instruction first (correctly), 
-> and then we get #DB again on start of xor instruction again?
-> 
-> Something very strange. My laptop has i7-7600U.
+Hello, Linus,
 
-I haven't verified on hardware, but my guess is that this code in vmx_vcpu_run()
+Please pull the latest RCU git tree from:
 
-	/* When single-stepping over STI and MOV SS, we must clear the
-	 * corresponding interruptibility bits in the guest state. Otherwise
-	 * vmentry fails as it then expects bit 14 (BS) in pending debug
-	 * exceptions being set, but that's not correct for the guest debugging
-	 * case. */
-	if (vcpu->guest_debug & KVM_GUESTDBG_SINGLESTEP)
-		vmx_set_interrupt_shadow(vcpu, 0);
+  git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git tags/rcu.2021.11.01a
+  # HEAD: dd1277d2ad95e7f0de1b79c70fdfe635d9df0f80 Merge branches 'fixes.2021.10.07a', 'scftorture.2021.09.16a', 'tasks.2021.09.15a', 'torture.2021.09.13b' and 'torturescript.2021.09.16a' into HEAD
 
-interacts badly with APICv=1.  It will kill the STI shadow and cause the IRQ in
-vmcs.GUEST_RVI to be recognized when it (micro-)architecturally should not.  My
-head is going in circles trying to sort out what would actually happen.  Maybe
-comment out that and/or disable APICv to see if either one makes the test pass?
+RCU changes for this cycle were:
+
+o	Miscellaneous fixes.
+
+o	Torture-test updates for smp_call_function(), most notably
+	improved checking of module parameters.
+
+o	Tasks-trace RCU updates that fix a number of rare but important
+	race-condition bugs.
+
+o	Other torture-test updates, most notably better checking of
+	module parameters.  In addition, rcutorture may once again be
+	run on CONFIG_PREEMPT_RT kernels.
+
+o	Torture-test scripting updates, most notably specifying the new
+	CONFIG_KCSAN_STRICT kconfig option rather than maintaining an
+	ever-changing list of individual KCSAN kconfig options.
+
+As noted by Stephen Rothwell, this pull request conflicts with commit
+9b3c4ab3045e ("sched,rcu: Rework try_invoke_on_locked_down_task()")
+from the -tip tree, which is now in mainline.  Stephen's suggested
+conflict-resolution patch [1] works and has been heavily tested.
+An example merge commit based on his approach (lightly tested, but
+with identical diffs) may be found at branch rcu-merge.2021.11.01a in
+the -rcu tree.
+
+							Thanx, Paul
+
+[1] https://lore.kernel.org/all/20211012154828.312f870f@canb.auug.org.au/
+
+----------------------------------------------------------------
+Juri Lelli (2):
+      rcu: Make rcu_normal_after_boot writable again
+      rcu: Make rcu update module parameters world-readable
+
+Neeraj Upadhyay (7):
+      rcu: Fix existing exp request check in sync_sched_exp_online_cleanup()
+      rcu-tasks: Fix s/rcu_add_holdout/trc_add_holdout/ typo in comment
+      rcu-tasks: Correct firstreport usage in check_all_holdout_tasks_trace
+      rcu-tasks: Correct comparisons for CPU numbers in show_stalled_task_trace
+      rcu-tasks: Clarify read side section info for rcu_tasks_rude GP primitives
+      rcu-tasks: Fix read-side primitives comment for call_rcu_tasks_trace
+      rcu-tasks: Fix IPI failure handling in trc_wait_for_one_reader
+
+Paul E. McKenney (33):
+      torture: Apply CONFIG_KCSAN_STRICT to kvm.sh --kcsan argument
+      rcu: Mark accesses to rcu_state.n_force_qs
+      rcu-nocb: Fix a couple of tree_nocb code-style nits
+      rcu: Eliminate rcu_implicit_dynticks_qs() local variable rnhqp
+      rcu: Eliminate rcu_implicit_dynticks_qs() local variable ruqp
+      doc: Add another stall-warning root cause in stallwarn.rst
+      rcu: Comment rcu_gp_init() code waiting for CPU-hotplug operations
+      rcu: Move rcu_dynticks_eqs_online() to rcu_cpu_starting()
+      rcu: Simplify rcu_report_dead() call to rcu_report_exp_rdp()
+      rcu: Make rcutree_dying_cpu() use its "cpu" parameter
+      rcu-tasks: Wait for trc_read_check_handler() IPIs
+      rcutorture: Suppressing read-exit testing is not an error
+      rcutorture: Warn on individual rcu_torture_init() error conditions
+      locktorture: Warn on individual lock_torture_init() error conditions
+      refscale: Warn on individual ref_scale_init() error conditions
+      rcuscale: Warn on individual rcu_scale_init() error conditions
+      rcutorture: Don't cpuhp_remove_state() if cpuhp_setup_state() failed
+      torture: Make torture.sh print the number of files to be compressed
+      rcu-tasks: Simplify trc_read_check_handler() atomic operations
+      rcu-tasks: Add trc_inspect_reader() checks for exiting critical section
+      rcu-tasks: Remove second argument of rcu_read_unlock_trace_special()
+      rcu-tasks: Fix s/instruction/instructions/ typo in comment
+      rcu-tasks: Move RTGS_WAIT_CBS to beginning of rcu_tasks_kthread() loop
+      rcu-tasks: Update comments to cond_resched_tasks_rcu_qs()
+      scftorture: Allow zero weight to exclude an smp_call_function*() category
+      scftorture: Shut down if nonsensical arguments given
+      scftorture: Account for weight_resched when checking for all zeroes
+      scftorture: Count reschedule IPIs
+      scftorture: Warn on individual scf_torture_init() error conditions
+      tools/rcu: Add an extract-stall script
+      torture: Allot 1G of memory for scftorture runs
+      torture: Make kvm-remote.sh print size of downloaded tarball
+      Merge branches 'fixes.2021.10.07a', 'scftorture.2021.09.16a', 'tasks.2021.09.15a', 'torture.2021.09.13b' and 'torturescript.2021.09.16a' into HEAD
+
+Peter Zijlstra (2):
+      rcu: Always inline rcu_dynticks_task*_{enter,exit}()
+      rcu: Fix rcu_dynticks_curr_cpu_in_eqs() vs noinstr
+
+Scott Wood (1):
+      rcutorture: Avoid problematic critical section nesting on PREEMPT_RT
+
+Waiman Long (1):
+      rcu: Avoid unneeded function call in rcu_read_unlock()
+
+Zhouyi Zhou (1):
+      rcu: Fix undefined Kconfig macros
+
+ .../Memory-Ordering/Tree-RCU-Memory-Ordering.rst   |  69 ++++++-------
+ Documentation/RCU/stallwarn.rst                    |  10 ++
+ arch/sh/configs/sdk7786_defconfig                  |   1 -
+ arch/xtensa/configs/nommu_kc705_defconfig          |   1 -
+ include/linux/rcupdate.h                           |   3 +-
+ include/linux/rcupdate_trace.h                     |   5 +-
+ include/linux/torture.h                            |   8 ++
+ kernel/locking/locktorture.c                       |  14 +--
+ kernel/rcu/rcuscale.c                              |  10 +-
+ kernel/rcu/rcutorture.c                            |  86 ++++++++++------
+ kernel/rcu/refscale.c                              |   6 +-
+ kernel/rcu/tasks.h                                 | 109 ++++++++++-----------
+ kernel/rcu/tree.c                                  |  36 +++----
+ kernel/rcu/tree_exp.h                              |   3 +-
+ kernel/rcu/tree_nocb.h                             |   2 +-
+ kernel/rcu/tree_plugin.h                           |  11 +--
+ kernel/rcu/update.c                                |   8 +-
+ kernel/scftorture.c                                |  43 ++++----
+ tools/rcu/extract-stall.sh                         |  34 +++++++
+ .../testing/selftests/rcutorture/bin/kvm-remote.sh |   1 +
+ tools/testing/selftests/rcutorture/bin/kvm.sh      |   2 +-
+ tools/testing/selftests/rcutorture/bin/torture.sh  |  11 ++-
+ 22 files changed, 273 insertions(+), 200 deletions(-)
+ create mode 100644 tools/rcu/extract-stall.sh
