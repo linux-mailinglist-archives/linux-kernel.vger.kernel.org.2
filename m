@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73F984416AD
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:26:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29608441720
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:30:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232842AbhKAJ2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:28:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58580 "EHLO mail.kernel.org"
+        id S231979AbhKAJcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:32:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232495AbhKAJY5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:24:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E27D610CA;
-        Mon,  1 Nov 2021 09:21:40 +0000 (UTC)
+        id S232233AbhKAJaE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:30:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 07A4F61213;
+        Mon,  1 Nov 2021 09:23:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758501;
-        bh=SP74w0ryfqBcEO9itRXp1UqYs3RvzlLqsKqZAgOoe1s=;
+        s=korg; t=1635758604;
+        bh=+gNXVsX/M598wnh5q65Qgkc5hLjGX5+sZacANQINnBc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pqf4om66XeteNiowGGgD1nW8Q5liP6q/Sc5epqiBNDSlL4DzaUwwzJhx0SmqRIguJ
-         Tv0yXbeiiRs44Ud8dIa2Jq55ZgMq/BQtPpbrpbxI7jSfyG3yohPJXZupOP6egLxFVP
-         BhQbXDeKHXps9TmkejmBTmGBInfM8i5C8wQz89us=
+        b=i30zbin7uUk0dJ8OWi+Lg1r727cPnOsaj64isDMgFwBP1rr3dnU2kF544zvU4gSdz
+         IzDSOamGd4fUFRNqb77BmZtWrRL0jbetIbCwNYV6VcZ1HW3X1Sq7U/blv/2gn6PoJT
+         XnmfUZz2ywaIIPTdXbkDidvZ24pqReKZ8chnPeY0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
-        Sven Eckelmann <sven@narfation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        syzbot+28b0702ada0bf7381f58@syzkaller.appspotmail.com
-Subject: [PATCH 4.19 25/35] net: batman-adv: fix error handling
+        stable@vger.kernel.org, Mark Zhang <markzhang@nvidia.com>,
+        Mark Bloch <mbloch@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Subject: [PATCH 5.4 33/51] RDMA/sa_query: Use strscpy_pad instead of memcpy to copy a string
 Date:   Mon,  1 Nov 2021 10:17:37 +0100
-Message-Id: <20211101082457.480477773@linuxfoundation.org>
+Message-Id: <20211101082508.403919573@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082451.430720900@linuxfoundation.org>
-References: <20211101082451.430720900@linuxfoundation.org>
+In-Reply-To: <20211101082500.203657870@linuxfoundation.org>
+References: <20211101082500.203657870@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,173 +41,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Mark Zhang <markzhang@nvidia.com>
 
-commit 6f68cd634856f8ca93bafd623ba5357e0f648c68 upstream.
+commit 64733956ebba7cc629856f4a6ee35a52bc9c023f upstream.
 
-Syzbot reported ODEBUG warning in batadv_nc_mesh_free(). The problem was
-in wrong error handling in batadv_mesh_init().
+When copying the device name, the length of the data memcpy copied exceeds
+the length of the source buffer, which cause the KASAN issue below.  Use
+strscpy_pad() instead.
 
-Before this patch batadv_mesh_init() was calling batadv_mesh_free() in case
-of any batadv_*_init() calls failure. This approach may work well, when
-there is some kind of indicator, which can tell which parts of batadv are
-initialized; but there isn't any.
+ BUG: KASAN: slab-out-of-bounds in ib_nl_set_path_rec_attrs+0x136/0x320 [ib_core]
+ Read of size 64 at addr ffff88811a10f5e0 by task rping/140263
+ CPU: 3 PID: 140263 Comm: rping Not tainted 5.15.0-rc1+ #1
+ Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
+ Call Trace:
+  dump_stack_lvl+0x57/0x7d
+  print_address_description.constprop.0+0x1d/0xa0
+  kasan_report+0xcb/0x110
+  kasan_check_range+0x13d/0x180
+  memcpy+0x20/0x60
+  ib_nl_set_path_rec_attrs+0x136/0x320 [ib_core]
+  ib_nl_make_request+0x1c6/0x380 [ib_core]
+  send_mad+0x20a/0x220 [ib_core]
+  ib_sa_path_rec_get+0x3e3/0x800 [ib_core]
+  cma_query_ib_route+0x29b/0x390 [rdma_cm]
+  rdma_resolve_route+0x308/0x3e0 [rdma_cm]
+  ucma_resolve_route+0xe1/0x150 [rdma_ucm]
+  ucma_write+0x17b/0x1f0 [rdma_ucm]
+  vfs_write+0x142/0x4d0
+  ksys_write+0x133/0x160
+  do_syscall_64+0x43/0x90
+  entry_SYSCALL_64_after_hwframe+0x44/0xae
+ RIP: 0033:0x7f26499aa90f
+ Code: 89 54 24 18 48 89 74 24 10 89 7c 24 08 e8 29 fd ff ff 48 8b 54 24 18 48 8b 74 24 10 41 89 c0 8b 7c 24 08 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 31 44 89 c7 48 89 44 24 08 e8 5c fd ff ff 48
+ RSP: 002b:00007f26495f2dc0 EFLAGS: 00000293 ORIG_RAX: 0000000000000001
+ RAX: ffffffffffffffda RBX: 00000000000007d0 RCX: 00007f26499aa90f
+ RDX: 0000000000000010 RSI: 00007f26495f2e00 RDI: 0000000000000003
+ RBP: 00005632a8315440 R08: 0000000000000000 R09: 0000000000000001
+ R10: 0000000000000000 R11: 0000000000000293 R12: 00007f26495f2e00
+ R13: 00005632a83154e0 R14: 00005632a8315440 R15: 00005632a830a810
 
-All written above lead to cleaning up uninitialized fields. Even if we hide
-ODEBUG warning by initializing bat_priv->nc.work, syzbot was able to hit
-GPF in batadv_nc_purge_paths(), because hash pointer in still NULL. [1]
+ Allocated by task 131419:
+  kasan_save_stack+0x1b/0x40
+  __kasan_kmalloc+0x7c/0x90
+  proc_self_get_link+0x8b/0x100
+  pick_link+0x4f1/0x5c0
+  step_into+0x2eb/0x3d0
+  walk_component+0xc8/0x2c0
+  link_path_walk+0x3b8/0x580
+  path_openat+0x101/0x230
+  do_filp_open+0x12e/0x240
+  do_sys_openat2+0x115/0x280
+  __x64_sys_openat+0xce/0x140
+  do_syscall_64+0x43/0x90
+  entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-To fix these bugs we can unwind batadv_*_init() calls one by one.
-It is good approach for 2 reasons: 1) It fixes bugs on error handling
-path 2) It improves the performance, since we won't call unneeded
-batadv_*_free() functions.
-
-So, this patch makes all batadv_*_init() clean up all allocated memory
-before returning with an error to no call correspoing batadv_*_free()
-and open-codes batadv_mesh_free() with proper order to avoid touching
-uninitialized fields.
-
-Link: https://lore.kernel.org/netdev/000000000000c87fbd05cef6bcb0@google.com/ [1]
-Reported-and-tested-by: syzbot+28b0702ada0bf7381f58@syzkaller.appspotmail.com
-Fixes: c6c8fea29769 ("net: Add batman-adv meshing protocol")
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Acked-by: Sven Eckelmann <sven@narfation.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 2ca546b92a02 ("IB/sa: Route SA pathrecord query through netlink")
+Link: https://lore.kernel.org/r/72ede0f6dab61f7f23df9ac7a70666e07ef314b0.1635055496.git.leonro@nvidia.com
+Signed-off-by: Mark Zhang <markzhang@nvidia.com>
+Reviewed-by: Mark Bloch <mbloch@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/batman-adv/bridge_loop_avoidance.c |    8 +++-
- net/batman-adv/main.c                  |   56 +++++++++++++++++++++++----------
- net/batman-adv/network-coding.c        |    4 +-
- net/batman-adv/translation-table.c     |    4 +-
- 4 files changed, 52 insertions(+), 20 deletions(-)
+ drivers/infiniband/core/sa_query.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/net/batman-adv/bridge_loop_avoidance.c
-+++ b/net/batman-adv/bridge_loop_avoidance.c
-@@ -1574,10 +1574,14 @@ int batadv_bla_init(struct batadv_priv *
- 		return 0;
+--- a/drivers/infiniband/core/sa_query.c
++++ b/drivers/infiniband/core/sa_query.c
+@@ -760,8 +760,9 @@ static void ib_nl_set_path_rec_attrs(str
  
- 	bat_priv->bla.claim_hash = batadv_hash_new(128);
--	bat_priv->bla.backbone_hash = batadv_hash_new(32);
-+	if (!bat_priv->bla.claim_hash)
-+		return -ENOMEM;
+ 	/* Construct the family header first */
+ 	header = skb_put(skb, NLMSG_ALIGN(sizeof(*header)));
+-	memcpy(header->device_name, dev_name(&query->port->agent->device->dev),
+-	       LS_DEVICE_NAME_MAX);
++	strscpy_pad(header->device_name,
++		    dev_name(&query->port->agent->device->dev),
++		    LS_DEVICE_NAME_MAX);
+ 	header->port_num = query->port->port_num;
  
--	if (!bat_priv->bla.claim_hash || !bat_priv->bla.backbone_hash)
-+	bat_priv->bla.backbone_hash = batadv_hash_new(32);
-+	if (!bat_priv->bla.backbone_hash) {
-+		batadv_hash_destroy(bat_priv->bla.claim_hash);
- 		return -ENOMEM;
-+	}
- 
- 	batadv_hash_set_lock_class(bat_priv->bla.claim_hash,
- 				   &batadv_claim_hash_lock_class_key);
---- a/net/batman-adv/main.c
-+++ b/net/batman-adv/main.c
-@@ -187,29 +187,41 @@ int batadv_mesh_init(struct net_device *
- 	INIT_HLIST_HEAD(&bat_priv->softif_vlan_list);
- 	INIT_HLIST_HEAD(&bat_priv->tp_list);
- 
--	ret = batadv_v_mesh_init(bat_priv);
--	if (ret < 0)
--		goto err;
--
- 	ret = batadv_originator_init(bat_priv);
--	if (ret < 0)
--		goto err;
-+	if (ret < 0) {
-+		atomic_set(&bat_priv->mesh_state, BATADV_MESH_DEACTIVATING);
-+		goto err_orig;
-+	}
- 
- 	ret = batadv_tt_init(bat_priv);
--	if (ret < 0)
--		goto err;
-+	if (ret < 0) {
-+		atomic_set(&bat_priv->mesh_state, BATADV_MESH_DEACTIVATING);
-+		goto err_tt;
-+	}
-+
-+	ret = batadv_v_mesh_init(bat_priv);
-+	if (ret < 0) {
-+		atomic_set(&bat_priv->mesh_state, BATADV_MESH_DEACTIVATING);
-+		goto err_v;
-+	}
- 
- 	ret = batadv_bla_init(bat_priv);
--	if (ret < 0)
--		goto err;
-+	if (ret < 0) {
-+		atomic_set(&bat_priv->mesh_state, BATADV_MESH_DEACTIVATING);
-+		goto err_bla;
-+	}
- 
- 	ret = batadv_dat_init(bat_priv);
--	if (ret < 0)
--		goto err;
-+	if (ret < 0) {
-+		atomic_set(&bat_priv->mesh_state, BATADV_MESH_DEACTIVATING);
-+		goto err_dat;
-+	}
- 
- 	ret = batadv_nc_mesh_init(bat_priv);
--	if (ret < 0)
--		goto err;
-+	if (ret < 0) {
-+		atomic_set(&bat_priv->mesh_state, BATADV_MESH_DEACTIVATING);
-+		goto err_nc;
-+	}
- 
- 	batadv_gw_init(bat_priv);
- 	batadv_mcast_init(bat_priv);
-@@ -219,8 +231,20 @@ int batadv_mesh_init(struct net_device *
- 
- 	return 0;
- 
--err:
--	batadv_mesh_free(soft_iface);
-+err_nc:
-+	batadv_dat_free(bat_priv);
-+err_dat:
-+	batadv_bla_free(bat_priv);
-+err_bla:
-+	batadv_v_mesh_free(bat_priv);
-+err_v:
-+	batadv_tt_free(bat_priv);
-+err_tt:
-+	batadv_originator_free(bat_priv);
-+err_orig:
-+	batadv_purge_outstanding_packets(bat_priv, NULL);
-+	atomic_set(&bat_priv->mesh_state, BATADV_MESH_INACTIVE);
-+
- 	return ret;
- }
- 
---- a/net/batman-adv/network-coding.c
-+++ b/net/batman-adv/network-coding.c
-@@ -167,8 +167,10 @@ int batadv_nc_mesh_init(struct batadv_pr
- 				   &batadv_nc_coding_hash_lock_class_key);
- 
- 	bat_priv->nc.decoding_hash = batadv_hash_new(128);
--	if (!bat_priv->nc.decoding_hash)
-+	if (!bat_priv->nc.decoding_hash) {
-+		batadv_hash_destroy(bat_priv->nc.coding_hash);
- 		goto err;
-+	}
- 
- 	batadv_hash_set_lock_class(bat_priv->nc.decoding_hash,
- 				   &batadv_nc_decoding_hash_lock_class_key);
---- a/net/batman-adv/translation-table.c
-+++ b/net/batman-adv/translation-table.c
-@@ -4413,8 +4413,10 @@ int batadv_tt_init(struct batadv_priv *b
- 		return ret;
- 
- 	ret = batadv_tt_global_init(bat_priv);
--	if (ret < 0)
-+	if (ret < 0) {
-+		batadv_tt_local_table_free(bat_priv);
- 		return ret;
-+	}
- 
- 	batadv_tvlv_handler_register(bat_priv, batadv_tt_tvlv_ogm_handler_v1,
- 				     batadv_tt_tvlv_unicast_handler_v1,
+ 	if ((comp_mask & IB_SA_PATH_REC_REVERSIBLE) &&
 
 
