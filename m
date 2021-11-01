@@ -2,163 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA845441652
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:22:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D86E34416F8
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:29:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232614AbhKAJYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:24:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58556 "EHLO mail.kernel.org"
+        id S232227AbhKAJbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:31:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37024 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232316AbhKAJWp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:22:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 27D62611AD;
-        Mon,  1 Nov 2021 09:20:01 +0000 (UTC)
+        id S232930AbhKAJ2N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:28:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8398C611EF;
+        Mon,  1 Nov 2021 09:22:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758401;
-        bh=lHpNhNxPiGdL77iG/RG+HgqI7wwiSPgq94ks62tNaUQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=aAY6qwssSU6FfSksbMaBrt9sCygkIChU+G2AuKTjNEAc9z23BVoaItsW0GBcBg33J
-         4IZ2Jp34CkI8ldP5oEUEvsaDoscCoGacmeWPJmQm5SU6pv4gAgYhnMO0c1nGKQmm6H
-         3xm5jv2LOh1fBuzYcOV7tF+KPT5XjuhC5snBEAuk=
+        s=korg; t=1635758574;
+        bh=4yqB9YHR8bnPz0C8RDlW61FFOby+kLLkAAa+KLEcMLI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=FnwVGj6EYAARN4qX/KX4gTob8JTth6/L76iSOQ8yXXVZ2hxPs4DykG5wUwI2QWTTn
+         xXFhk4TmMvw9qLja2LA1Og5qVsGxCavCyk7G+ucmPqAgCS4lH0HIwX16qtFYKSyjIu
+         rfwYcEy/tBMZGDaxhfl2yzJTF8cyJw3UXKSN5JOw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: [PATCH 4.9 00/20] 4.9.289-rc1 review
+        stable@vger.kernel.org,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Song Liu <songliubraving@fb.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+Subject: [PATCH 5.4 05/51] powerpc/bpf: Fix BPF_MOD when imm == 1
 Date:   Mon,  1 Nov 2021 10:17:09 +0100
-Message-Id: <20211101082444.133899096@linuxfoundation.org>
+Message-Id: <20211101082501.377411610@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-MIME-Version: 1.0
+In-Reply-To: <20211101082500.203657870@linuxfoundation.org>
+References: <20211101082500.203657870@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.289-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-4.9.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 4.9.289-rc1
-X-KernelTest-Deadline: 2021-11-03T08:24+00:00
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the start of the stable review cycle for the 4.9.289 release.
-There are 20 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
+From: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
 
-Responses should be made by Wed, 03 Nov 2021 08:24:20 +0000.
-Anything received after that time might be too late.
+commit 8bbc9d822421d9ac8ff9ed26a3713c9afc69d6c8 upstream.
 
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.289-rc1.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
-and the diffstat can be found below.
+Only ignore the operation if dividing by 1.
 
-thanks,
+Fixes: 156d0e290e969c ("powerpc/ebpf/jit: Implement JIT compiler for extended BPF")
+Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+Tested-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Acked-by: Song Liu <songliubraving@fb.com>
+Acked-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/c674ca18c3046885602caebb326213731c675d06.1633464148.git.naveen.n.rao@linux.vnet.ibm.com
+[cascardo: use PPC_LI instead of EMIT(PPC_RAW_LI)]
+Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ arch/powerpc/net/bpf_jit_comp64.c |   10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-greg k-h
-
--------------
-Pseudo-Shortlog of commits:
-
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 4.9.289-rc1
-
-Xin Long <lucien.xin@gmail.com>
-    sctp: add vtag check in sctp_sf_violation
-
-Xin Long <lucien.xin@gmail.com>
-    sctp: use init_tag from inithdr for ABORT chunk
-
-Trevor Woerner <twoerner@gmail.com>
-    net: nxp: lpc_eth.c: avoid hang when bringing interface down
-
-Guenter Roeck <linux@roeck-us.net>
-    nios2: Make NIOS2_DTB_SOURCE_BOOL depend on !COMPILE_TEST
-
-Pavel Skripkin <paskripkin@gmail.com>
-    net: batman-adv: fix error handling
-
-Yang Yingliang <yangyingliang@huawei.com>
-    regmap: Fix possible double-free in regcache_rbtree_exit()
-
-Johan Hovold <johan@kernel.org>
-    net: lan78xx: fix division by zero in send path
-
-Shawn Guo <shawn.guo@linaro.org>
-    mmc: sdhci: Map more voltage level to SDHCI_POWER_330
-
-Jaehoon Chung <jh80.chung@samsung.com>
-    mmc: dw_mmc: exynos: fix the finding clock sample value
-
-Johan Hovold <johan@kernel.org>
-    mmc: vub300: fix control-message timeouts
-
-Pavel Skripkin <paskripkin@gmail.com>
-    Revert "net: mdiobus: Fix memory leak in __mdiobus_register"
-
-Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-    nfc: port100: fix using -ERRNO as command type mask
-
-Zheyu Ma <zheyuma97@gmail.com>
-    ata: sata_mv: Fix the error handling of mv_chip_id()
-
-Wang Hai <wanghai38@huawei.com>
-    usbnet: fix error return code in usbnet_probe()
-
-Oliver Neukum <oneukum@suse.com>
-    usbnet: sanity check for maxpacket
-
-Nathan Chancellor <natechancellor@gmail.com>
-    ARM: 8819/1: Remove '-p' from LDFLAGS
-
-Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
-    powerpc/bpf: Fix BPF_MOD when imm == 1
-
-Arnd Bergmann <arnd@arndb.de>
-    ARM: 9139/1: kprobes: fix arch_init_kprobes() prototype
-
-Arnd Bergmann <arnd@arndb.de>
-    ARM: 9134/1: remove duplicate memcpy() definition
-
-Nick Desaulniers <ndesaulniers@google.com>
-    ARM: 9133/1: mm: proc-macros: ensure *_tlb_fns are 4B aligned
-
-
--------------
-
-Diffstat:
-
- Makefile                               |  4 +--
- arch/arm/Makefile                      |  2 +-
- arch/arm/boot/bootp/Makefile           |  2 +-
- arch/arm/boot/compressed/Makefile      |  2 --
- arch/arm/boot/compressed/decompress.c  |  3 ++
- arch/arm/mm/proc-macros.S              |  1 +
- arch/arm/probes/kprobes/core.c         |  2 +-
- arch/nios2/platform/Kconfig.platform   |  1 +
- arch/powerpc/net/bpf_jit_comp64.c      | 10 ++++--
- drivers/ata/sata_mv.c                  |  4 +--
- drivers/base/regmap/regcache-rbtree.c  |  7 ++---
- drivers/mmc/host/dw_mmc-exynos.c       | 14 +++++++++
- drivers/mmc/host/sdhci.c               |  6 ++++
- drivers/mmc/host/vub300.c              | 18 +++++------
- drivers/net/ethernet/nxp/lpc_eth.c     |  5 ++-
- drivers/net/phy/mdio_bus.c             |  1 -
- drivers/net/usb/lan78xx.c              |  6 ++++
- drivers/net/usb/usbnet.c               |  5 +++
- drivers/nfc/port100.c                  |  4 +--
- net/batman-adv/bridge_loop_avoidance.c |  8 +++--
- net/batman-adv/main.c                  | 56 ++++++++++++++++++++++++----------
- net/batman-adv/network-coding.c        |  4 ++-
- net/batman-adv/translation-table.c     |  4 ++-
- net/sctp/sm_statefuns.c                |  4 +++
- 24 files changed, 123 insertions(+), 50 deletions(-)
+--- a/arch/powerpc/net/bpf_jit_comp64.c
++++ b/arch/powerpc/net/bpf_jit_comp64.c
+@@ -408,8 +408,14 @@ static int bpf_jit_build_body(struct bpf
+ 		case BPF_ALU64 | BPF_DIV | BPF_K: /* dst /= imm */
+ 			if (imm == 0)
+ 				return -EINVAL;
+-			else if (imm == 1)
+-				goto bpf_alu32_trunc;
++			if (imm == 1) {
++				if (BPF_OP(code) == BPF_DIV) {
++					goto bpf_alu32_trunc;
++				} else {
++					PPC_LI(dst_reg, 0);
++					break;
++				}
++			}
+ 
+ 			PPC_LI32(b2p[TMP_REG_1], imm);
+ 			switch (BPF_CLASS(code)) {
 
 
