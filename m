@@ -2,76 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 231A5441916
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:54:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31FC34417E8
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:39:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234291AbhKAJyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:54:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54504 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233289AbhKAJvG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:51:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DB5F60F70;
-        Mon,  1 Nov 2021 09:36:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635759384;
-        bh=T88RiQbxwaGniFcc+rnbVb40RHNPCR76NdrF/7VPCME=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FrWCB0phomgItdYzJVkmmdiLPWPL348dT5ZdLdhW7AKlMoQpbsJ5bWeDgyFdfwH9F
-         GOO3//OVGmgPo9Dnj5Hh2IZ4xqYQdPILUNMqEOVWk/wS4arRk1bHgyUKADImZrIOYS
-         oTUNhuUivfnG4Rq6q/lIH9qbvwL/iGyXLgLH715/EmkP2KqBP8pr6WPYBzN10c41nR
-         0Uu1lH1D1RpZ6cII5Tg5Y4/tdfMlPex9cBhs+dpn+Jv4TQ4pEBTFoHAygK69FTLAAw
-         dZ9V04UsEuRPvoX8BjLPLUeMskhABJylRYRzktUCkHWtFFZQ1d2eKaeg8cFAiShu2K
-         o/sg0wjYkxBgw==
-Date:   Mon, 1 Nov 2021 09:36:18 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Xuesong Chen <xuesong.chen@linux.alibaba.com>
-Cc:     helgaas@kernel.org, catalin.marinas@arm.com,
-        lorenzo.pieralisi@arm.com, james.morse@arm.com, rafael@kernel.org,
-        tony.luck@intel.com, bp@alien8.de, mingo@kernel.org,
-        bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 0/4] PCI MCFG consolidation and APEI resource filtering
-Message-ID: <20211101093618.GA27400@willie-the-truck>
-References: <YW5OTMz+x8zrsqkF@Dennis-MBP.local>
- <20211027081035.53370-1-xuesong.chen@linux.alibaba.com>
- <e387413f-dbe8-e0f1-257b-141362d74e3a@linux.alibaba.com>
+        id S232598AbhKAJlR convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 1 Nov 2021 05:41:17 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:60072 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231830AbhKAJjO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:39:14 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-234-XozaET42MpedHXy8zfaPCg-1; Mon, 01 Nov 2021 09:36:34 +0000
+X-MC-Unique: XozaET42MpedHXy8zfaPCg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.24; Mon, 1 Nov 2021 09:36:32 +0000
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.024; Mon, 1 Nov 2021 09:36:32 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Peter Zijlstra' <peterz@infradead.org>,
+        Ard Biesheuvel <ardb@kernel.org>
+CC:     Sami Tolvanen <samitolvanen@google.com>,
+        Mark Rutland <mark.rutland@arm.com>, X86 ML <x86@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        "Nathan Chancellor" <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        "llvm@lists.linux.dev" <llvm@lists.linux.dev>
+Subject: RE: [PATCH] static_call,x86: Robustify trampoline patching
+Thread-Topic: [PATCH] static_call,x86: Robustify trampoline patching
+Thread-Index: AQHXzv/P+Rz8ZcLBT06sRWcPs/oqcKvuZWlw
+Date:   Mon, 1 Nov 2021 09:36:32 +0000
+Message-ID: <c0585e76887f4778b453f1bfc28ec50d@AcuMS.aculab.com>
+References: <CAMj1kXEJd5=3A_6Jhd4UU-TBGarnHo5+U76Zxxt7SzXsWp4CcA@mail.gmail.com>
+ <20211030180249.GU174703@worktop.programming.kicks-ass.net>
+ <CAMj1kXF4ZNAvdC8tP_H=v1Dn_Zcv=La11Ok43ceQOyb1Xo1jXQ@mail.gmail.com>
+ <CAMj1kXEvemVOWf4M_0vsduN_kiCsGVmM92cE7KPMoNKViKp=RQ@mail.gmail.com>
+ <20211031163920.GV174703@worktop.programming.kicks-ass.net>
+ <CAMj1kXHk5vbrT49yRCivX3phrEkN6Xbb+g8WEmavL_d1iE0OxQ@mail.gmail.com>
+ <YX74Ch9/DtvYxzh/@hirez.programming.kicks-ass.net>
+ <CAMj1kXG+MuGaG3BHk8pnE1MKVmRf5E+nRNoFMHxOA1y84eGikg@mail.gmail.com>
+ <YX8AQJqyB+H3PF1d@hirez.programming.kicks-ass.net>
+ <CAMj1kXF3n-oQ1WP8=asb60K6UjSYOtz5RVhrcoCoNq3v7mZdQg@mail.gmail.com>
+ <20211101090155.GW174703@worktop.programming.kicks-ass.net>
+In-Reply-To: <20211101090155.GW174703@worktop.programming.kicks-ass.net>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e387413f-dbe8-e0f1-257b-141362d74e3a@linux.alibaba.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Peter Zijlstra
+> Sent: 01 November 2021 09:02
+..
+> In any case, I really want the discussion to start at square one, and
+> show/explain why any chosen CFI scheme is actually good for the kernel.
+> Just because clang happened to have implemented it, doesn't make it the
+> most suitable scheme for the kernel.
 
-On Mon, Nov 01, 2021 at 10:18:35AM +0800, Xuesong Chen wrote:
-> How about the status of this series, it's really bad, bad and still bad... to wait long
-> time for the final judgement, especially you take extremely serious to rework it round
-> by round, finaly you receive nothing. Everyone's work should be repected!
+How much overhead does it add to write("/dev/null", "", 1) ?
+You've two large jump tables.
+One for the syscall entry - (all the syscalls have the
+same prototype), and a second for selecting the correct
+device driver's 'write' entry point.
 
-I've trimmed the rest of your response as it wasn't especially constructive.
-Please can you try to keep things civil, even when you're frustrated? It's
-not very pleasant being on the end of a rant.
+You really don't want to be doing any kind of search.
 
-One likely explanation for you not getting a reply on your patches is that
-I've discovered many of your emails have ended up in my spam, for some
-reason. I'm using gmail for my inbox so, if Bjorn is doing that as well,
-then there's a good chance he hasn't seen them either.
+Hardware that supported a (say) 16-bit constant in both the
+'landing pad' and call indirect instruction and trapped if
+they differed would be useful - but I doubt any hardware
+that checks landing pads is anywhere near that useful.
 
-The other thing to keep in mind is that the 5.16 merge window opened today
-and you posted the latest version of your patches on Wednesday. That doesn't
-really leave enough time for the patches to be reviewed (noting that patch 3
-is new in this version and the kernel build robot was still complaining on
-Friday), queued and put into linux-next, so I would suspect that this series
-is looking more like 5.17 material and therefore not a priority for
-maintainers at the moment.
+	David.
 
-Your best is probably to post a v5, with the kbuild warnings addressed,
-when -rc1 is released in a couple of weeks. I'm not sure how to fix the
-spam issue though :(
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
-Will
