@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A10524417D0
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:39:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 272DD44173A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:32:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233287AbhKAJkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:40:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43604 "EHLO mail.kernel.org"
+        id S232735AbhKAJe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:34:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37292 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232620AbhKAJhs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:37:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F5D96128A;
-        Mon,  1 Nov 2021 09:26:49 +0000 (UTC)
+        id S232942AbhKAJa0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:30:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BEE1610D2;
+        Mon,  1 Nov 2021 09:23:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758809;
-        bh=RRqlQEZ47fdGBwq+opIEfcwMmp66tYLJ3Yj1NnoxAe0=;
+        s=korg; t=1635758639;
+        bh=sEOdmsuzoGP6wtd5/Ft4943gT169+eqDJrfi3Jc685g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IAzUG9fxCZOGpW12Nqoetg2tJ69Uk/0GIgtGtu3DkQH+uWgO5UtuYoPFTCsX05P1G
-         PggK9cMp0VUcAgcyX7v5rZvej26qyJ8c9+dRY1RMwoYsQW0uVzY5xDZHkxNrPDVbro
-         rUKBH+i7v9faAOh8/83UST0FfjdM1LIYZ6aHB3SQ=
+        b=BV31vpHCU2UbGEmWMS4pxbNVf986fPkLQbM6jYKzc6cgii7ZfcWsi/EWjYrwJbIpf
+         UcsjwL0M4C33O5sZXBvqAvqaE+vQpNq2YwOB5rupITrb/WfPY1cAxgQUEDlVufs+ir
+         XMfOGogBlix8UKSY/TXNiQ6V4xssZ/xw4TsQgaCo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Liu Jian <liujian56@huawei.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>
-Subject: [PATCH 5.10 36/77] tcp_bpf: Fix one concurrency problem in the tcp_bpf_send_verdict function
+        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH 5.4 20/51] cfg80211: scan: fix RCU in cfg80211_add_nontrans_list()
 Date:   Mon,  1 Nov 2021 10:17:24 +0100
-Message-Id: <20211101082519.419310564@linuxfoundation.org>
+Message-Id: <20211101082505.200852489@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082511.254155853@linuxfoundation.org>
-References: <20211101082511.254155853@linuxfoundation.org>
+In-Reply-To: <20211101082500.203657870@linuxfoundation.org>
+References: <20211101082500.203657870@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,82 +38,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liu Jian <liujian56@huawei.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-commit cd9733f5d75c94a32544d6ce5be47e14194cf137 upstream.
+commit a2083eeb119fb9307258baea9b7c243ca9a2e0b6 upstream.
 
-With two Msgs, msgA and msgB and a user doing nonblocking sendmsg calls (or
-multiple cores) on a single socket 'sk' we could get the following flow.
+The SSID pointer is pointing to RCU protected data, so we
+need to have it under rcu_read_lock() for the entire use.
+Fix this.
 
- msgA, sk                               msgB, sk
- -----------                            ---------------
- tcp_bpf_sendmsg()
- lock(sk)
- psock = sk->psock
-                                        tcp_bpf_sendmsg()
-                                        lock(sk) ... blocking
-tcp_bpf_send_verdict
-if (psock->eval == NONE)
-   psock->eval = sk_psock_msg_verdict
- ..
- < handle SK_REDIRECT case >
-   release_sock(sk)                     < lock dropped so grab here >
-   ret = tcp_bpf_sendmsg_redir
-                                        psock = sk->psock
-                                        tcp_bpf_send_verdict
- lock_sock(sk) ... blocking on B
-                                        if (psock->eval == NONE) <- boom.
-                                         psock->eval will have msgA state
-
-The problem here is we dropped the lock on msgA and grabbed it with msgB.
-Now we have old state in psock and importantly psock->eval has not been
-cleared. So msgB will run whatever action was done on A and the verdict
-program may never see it.
-
-Fixes: 604326b41a6fb ("bpf, sockmap: convert to generic sk_msg interface")
-Signed-off-by: Liu Jian <liujian56@huawei.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Acked-by: John Fastabend <john.fastabend@gmail.com>
-Link: https://lore.kernel.org/bpf/20211012052019.184398-1-liujian56@huawei.com
+Cc: stable@vger.kernel.org
+Fixes: 0b8fb8235be8 ("cfg80211: Parsing of Multiple BSSID information in scanning")
+Link: https://lore.kernel.org/r/20210930131120.6ddfc603aa1d.I2137344c4e2426525b1a8e4ce5fca82f8ecbfe7e@changeid
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv4/tcp_bpf.c |   12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ net/wireless/scan.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
---- a/net/ipv4/tcp_bpf.c
-+++ b/net/ipv4/tcp_bpf.c
-@@ -317,6 +317,7 @@ static int tcp_bpf_send_verdict(struct s
- 	bool cork = false, enospc = sk_msg_full(msg);
- 	struct sock *sk_redir;
- 	u32 tosend, delta = 0;
-+	u32 eval = __SK_NONE;
- 	int ret;
+--- a/net/wireless/scan.c
++++ b/net/wireless/scan.c
+@@ -379,14 +379,17 @@ cfg80211_add_nontrans_list(struct cfg802
+ 	}
+ 	ssid_len = ssid[1];
+ 	ssid = ssid + 2;
+-	rcu_read_unlock();
  
- more_data:
-@@ -360,13 +361,24 @@ more_data:
- 	case __SK_REDIRECT:
- 		sk_redir = psock->sk_redir;
- 		sk_msg_apply_bytes(psock, tosend);
-+		if (!psock->apply_bytes) {
-+			/* Clean up before releasing the sock lock. */
-+			eval = psock->eval;
-+			psock->eval = __SK_NONE;
-+			psock->sk_redir = NULL;
+ 	/* check if nontrans_bss is in the list */
+ 	list_for_each_entry(bss, &trans_bss->nontrans_list, nontrans_list) {
+-		if (is_bss(bss, nontrans_bss->bssid, ssid, ssid_len))
++		if (is_bss(bss, nontrans_bss->bssid, ssid, ssid_len)) {
++			rcu_read_unlock();
+ 			return 0;
 +		}
- 		if (psock->cork) {
- 			cork = true;
- 			psock->cork = NULL;
- 		}
- 		sk_msg_return(sk, msg, tosend);
- 		release_sock(sk);
+ 	}
+ 
++	rcu_read_unlock();
 +
- 		ret = tcp_bpf_sendmsg_redir(sk_redir, msg, tosend, flags);
-+
-+		if (eval == __SK_REDIRECT)
-+			sock_put(sk_redir);
-+
- 		lock_sock(sk);
- 		if (unlikely(ret < 0)) {
- 			int free = sk_msg_free_nocharge(sk, msg);
+ 	/* add to the list */
+ 	list_add_tail(&nontrans_bss->nontrans_list, &trans_bss->nontrans_list);
+ 	return 0;
 
 
