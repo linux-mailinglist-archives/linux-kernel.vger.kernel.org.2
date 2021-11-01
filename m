@@ -2,148 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DD73441A7B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 12:12:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABFDE441A82
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 12:12:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231898AbhKALOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 07:14:41 -0400
-Received: from mail-dm6nam11on2058.outbound.protection.outlook.com ([40.107.223.58]:30336
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231485AbhKALOi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 07:14:38 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Fpmyyk4NkyiyRatNDj6PxdffwwoexHrRgDR04Tl0k/eGhqNVkPUHlTI1Wq8t0TosWfbSAY1OfpArD3GebzDUhwj7JT17LOQBmELP77PH3s3lBWYALUeB3YmyAYY/s6r/9wXCcwbWjVAASa2+hrVGoqClFpB8SQt/szCniNpNeJFcScVel1pAWkTxK4M4bDnzqtPTuFvJmMX0mDrUVOs2CxKjAQvRlZeuC56qCwkOzd/0bmrMSymcJ4hFRQ2k+9Fe2uSB2hCOyuADuHWfNMAsAd2Mr07huv1nwGu9pnQn/kmUtWe2oVZanR31HE+4rkQlR0WQpBNiGnMHBnEY6aDvmA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=MwX6yy5dM1YRAM+bD/S9CUzXBnzfK2/fCVmBMGgB/vI=;
- b=cFnF/GCWgMTt3PgBbS2YDUcgss+004lKAbZV+0i/P02cF0zjBcJTX2S3KnBgE2co97EknP1zGuH+LohdbU+Mnmyz2BAPCVf8W6Zp8cCrXVsor522YgiFaEAOMP5rxLS+4WRxSx6VeBgl8eEdJH6m2PJWG4UcvxO9CzDXNAGF+WWSQvDxy0FFei//aJTpC+5wPejr4I+DKK5dWALYNO130F5MX8cdsZzgdt1lXL1vRIphGUruU7fI8UhGR2iTsYO2zM7n2AYDpD7XqKqWkz62GXpCVbs7FXsu/gE5LP9az19ndCKzdXOTqASezcrvLwYUd2vn/9BLBxcjJPW4JagEJQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MwX6yy5dM1YRAM+bD/S9CUzXBnzfK2/fCVmBMGgB/vI=;
- b=Xefbtuwfndx901AOmTRFTH4A/CP8mG1swacRmzjt6PhZFGM+l0W0m1U/bz4yq/blRvhFIa/40ouiJP9GAysh56KZBwPUrKkgLZhst5/PpFWH4S4Iu0fvdORgOr1taA7OMNn6MpLQscyIX0wLxhRxBYZgvgKUqWUNIxgFIsJ7lckB2Pxh0Aky7t5iNJQT3TeX8gpXxmC+NDx7E7pavCzeOHb0u7gNbw3Fa8plWMsXEAV36ge/HVSIDCseG1SiFBeGC8TfF75PoylBROvJ6FPGcYGctQRdLM0WCEV12a61ZTenB5XSGjK6FlxSlMl+AfxGOekB0HA1bUnypK1hLfd/Vg==
-Received: from CO2PR04CA0139.namprd04.prod.outlook.com (2603:10b6:104::17) by
- DM6PR12MB2844.namprd12.prod.outlook.com (2603:10b6:5:45::32) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4649.15; Mon, 1 Nov 2021 11:12:03 +0000
-Received: from CO1NAM11FT015.eop-nam11.prod.protection.outlook.com
- (2603:10b6:104:0:cafe::23) by CO2PR04CA0139.outlook.office365.com
- (2603:10b6:104::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.14 via Frontend
- Transport; Mon, 1 Nov 2021 11:12:03 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- CO1NAM11FT015.mail.protection.outlook.com (10.13.175.130) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4649.14 via Frontend Transport; Mon, 1 Nov 2021 11:12:02 +0000
-Received: from [10.26.49.14] (172.20.187.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 1 Nov
- 2021 11:12:00 +0000
-Subject: Re: [PATCH 5.4 00/51] 5.4.157-rc1 review
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     <linux-kernel@vger.kernel.org>, <shuah@kernel.org>,
-        <f.fainelli@gmail.com>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <stable@vger.kernel.org>,
-        <pavel@denx.de>, <akpm@linux-foundation.org>,
-        <torvalds@linux-foundation.org>, <linux@roeck-us.net>
-References: <20211101082500.203657870@linuxfoundation.org>
- <CA+G9fYs6FbiP=o=4ACyQ6Lp9YgUpOr9Xtn+ZhHdZm2Z+rhBJZw@mail.gmail.com>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <9091c526-1a9c-2648-1b6b-146d2b911b5b@nvidia.com>
-Date:   Mon, 1 Nov 2021 11:11:58 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S232167AbhKALPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 07:15:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21057 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232136AbhKALPA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 07:15:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635765146;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6ZFhVEO+We6qm43UDAioY1QSBCdYaZIxbYcL8uvY64Y=;
+        b=TSSXdCMgx8ouWeYKEMRiwsYC4zZCgXeqWiAY2kLLh9OYgNc2lVNtxG2OLTL6w6lwphzLbt
+        An845XCbiCFRtdKSRGLkXGGOAzHIUG4B3bDJYGTmmmhnxGeryHkL+60TdJvGl1yY+hNM5G
+        NpP5EvFC7p90xQVzDANvAEWuBlBdyiU=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-98-EQMgtpmZOJ6W0x2UbeEv3w-1; Mon, 01 Nov 2021 07:12:24 -0400
+X-MC-Unique: EQMgtpmZOJ6W0x2UbeEv3w-1
+Received: by mail-wm1-f69.google.com with SMTP id a186-20020a1c7fc3000000b00332f1a308e7so1044700wmd.3
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 04:12:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6ZFhVEO+We6qm43UDAioY1QSBCdYaZIxbYcL8uvY64Y=;
+        b=PODsmBSW+jrV3lEHr5i8IKAe+oSQo5EESiRkEVO56cGHLlliUV741s1AWsHfyV1WgT
+         lEdAHfXU89t5bTNLTR0ERDFwHxy7vykabgHp7rNu3LFS496Ty5hYL3+FJDNmHV4yITxR
+         JTd/EBPAKplMGIAl40OuRW7TzHIWFvw1AiiN3LZBL1gjCKoiYsXfjQK7M2bQqV9ze25A
+         tvOO+HGUh91Fj0NCtyyY95JO4ew+bGzG5sLQiwAWe6IT4QmHXCEVN7DC09m39r9JiFvj
+         0krFW2cMNMORoJdAosklmOH9ZmgpL0uIgav66uQQ1w0ZeSviLzAgI4AlhjRVh97tSm5O
+         xCRA==
+X-Gm-Message-State: AOAM533FUgzU/3fWFzNCriJleocqnIex573R2xJDrk7+TBL3pD4FZQ70
+        CP3z19aXGO8r2wDvmrtuSxubdtZyVdnnIeffbQebygyTZYRGXsIYNuARyhP0t/RRgqCvGWC2Yh1
+        n8I6nTRQ51f1DtVMjhD7+rbJ8
+X-Received: by 2002:a1c:8090:: with SMTP id b138mr16426507wmd.25.1635765143636;
+        Mon, 01 Nov 2021 04:12:23 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwisKVtWLf4fD5NwZ4Am8fKpj39xISIcWYMZ4VZQyVX9L141g3kzyjbm8B0Xz0WdH5R58pfqw==
+X-Received: by 2002:a1c:8090:: with SMTP id b138mr16426488wmd.25.1635765143448;
+        Mon, 01 Nov 2021 04:12:23 -0700 (PDT)
+Received: from redhat.com ([2a03:c5c0:107f:7087:907d:ff12:1534:78b7])
+        by smtp.gmail.com with ESMTPSA id v3sm14122663wrg.23.2021.11.01.04.12.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Nov 2021 04:12:22 -0700 (PDT)
+Date:   Mon, 1 Nov 2021 07:12:17 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Wu Zongyong <wuzongyong@linux.alibaba.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        wei.yang1@linux.alibaba.com
+Subject: Re: [PATCH v7 0/9] vDPA driver for Alibaba ENI
+Message-ID: <20211101071140-mutt-send-email-mst@kernel.org>
+References: <cover.1634870456.git.wuzongyong@linux.alibaba.com>
+ <cover.1635493219.git.wuzongyong@linux.alibaba.com>
+ <CACGkMEv8+1YMhXfS31CoyFuwJ-toCLXd12ny7b=Ge+3fXWNYUw@mail.gmail.com>
+ <20211101062250.GA29814@L-PF27918B-1352.localdomain>
+ <CACGkMEvZkdEgAFpSo1Oen5JWthSowZ7NHqnp_X5AhNt+jxuiZg@mail.gmail.com>
+ <20211101081159.GA4341@L-PF27918B-1352.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <CA+G9fYs6FbiP=o=4ACyQ6Lp9YgUpOr9Xtn+ZhHdZm2Z+rhBJZw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.187.5]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: cea511c7-e9eb-4988-263c-08d99d286eb0
-X-MS-TrafficTypeDiagnostic: DM6PR12MB2844:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB2844EFC93D4258211BBF3722D98A9@DM6PR12MB2844.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 46Py2aEBIWUAQ/fYIlYBhEy/n6z7furuwkT79iAhfLb7d/RK0ITo9KNB2Ex1OSZfxvM1dfQW8+gSpqifTEiUph67HV+yYFglkZxfsQfxl1olMENKV5S6g47ENGwX4cRk9SaSI/ojsWCPn1gM8s6RtBP0NUfzQOdoxVJQD2xR1JGMDVBwg1tQ1H7/j+nclsOZyM3iNlNu8sNfemtInUmRCbUENQlrP4mYB5TMzLjkP11QBuxYx5YBVeDkG2l9HEMonSaT+8bTbztMhSkn5YncO82OjfzlvF8wjnuO/YYli+8PDM/a1giAML/Y/S/PO4IV2EO7x7X1gsGeQg+ZxJ7fI9o7KafLTio9IIfOpamxIbj14BtB5fltMs6+NEnQB/OntE1Uf5/tHhqNAxoPn1mVeYTId2bsc/zOWlX9Y7Nf/uSzpfqc4HSZfjp/yrRyej5pyo0rBP1c2scThzUDIPTqhFmrqVGSvbz6eNto9r7iH/YhavHQwubtn/9x/gjTNzWP8dXQi9QQXJxpP7xMBeY+AESQBHpRkAkTmu7RFQA+//g+VrwFK/hNZ1gOhtkMTm9NVCO6ASFiM7cLVY+h5CtiweLF21j/X8h+3S8UX1j9ZKqA+8g+I5n5gB6mG6CS4JygnZzcNlx5uN1ERlwTRH3D7fqxyp+QCD4Una/I5CvwtMMUdlP2ayPp41RxmrfQ7XthyZ9o0lqN8uuYGyPCfpnTfvoLgQO0T7QtlEPQEJ/FmtBLNLd9QM+yUtKf16H63vsSdq6TPHOkinpVUD9Di+mT7vLn3Cdt2pRuCH9jzi2sMVuzKs9+3wYZ/zHRMnbjan/W
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(8936002)(82310400003)(426003)(508600001)(36756003)(83380400001)(47076005)(336012)(2616005)(31696002)(8676002)(110136005)(31686004)(966005)(7416002)(70586007)(186003)(86362001)(26005)(356005)(36860700001)(5660300002)(7636003)(70206006)(36906005)(54906003)(2906002)(316002)(16526019)(53546011)(4326008)(16576012)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Nov 2021 11:12:02.9787
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: cea511c7-e9eb-4988-263c-08d99d286eb0
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT015.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2844
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211101081159.GA4341@L-PF27918B-1352.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 01/11/2021 11:09, Naresh Kamboju wrote:
-> On Mon, 1 Nov 2021 at 14:53, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
->>
->> This is the start of the stable review cycle for the 5.4.157 release.
->> There are 51 patches in this series, all will be posted as a response
->> to this one.  If anyone has any issues with these being applied, please
->> let me know.
->>
->> Responses should be made by Wed, 03 Nov 2021 08:24:20 +0000.
->> Anything received after that time might be too late.
->>
->> The whole patch series can be found in one patch at:
->>          https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.157-rc1.gz
->> or in the git tree and branch at:
->>          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
->> and the diffstat can be found below.
->>
->> thanks,
->>
->> greg k-h
+On Mon, Nov 01, 2021 at 04:11:59PM +0800, Wu Zongyong wrote:
+> On Mon, Nov 01, 2021 at 03:02:52PM +0800, Jason Wang wrote:
+> > On Mon, Nov 1, 2021 at 2:23 PM Wu Zongyong <wuzongyong@linux.alibaba.com> wrote:
+> > >
+> > > On Mon, Nov 01, 2021 at 11:31:15AM +0800, Jason Wang wrote:
+> > > > On Fri, Oct 29, 2021 at 5:15 PM Wu Zongyong
+> > > > <wuzongyong@linux.alibaba.com> wrote:
+> > > > >
+> > > > > This series implements the vDPA driver for Alibaba ENI (Elastic Network
+> > > > > Interface) which is built based on virtio-pci 0.9.5 specification.
+> > > >
+> > > > It looks to me Michael has applied the patches, if this is the case,
+> > > > we probably need to send patches on top.
+> > >
+> > > What do you mean by saying "send patches on top"?
+> > > Sorry, I'm a newbie to contribute for kernel, could you please explain
+> > > it in detail?
+> > 
+> > I meant you probably need to send incremental patch on top of:
+> > 
+> > git://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git linux-next.
 > 
+> Get it.
 > 
-> Regression found on arm and arm64 builds
-> Following build warnings / errors reported on stable-rc 5.4.
-> 
->> Haibo Chen <haibo.chen@nxp.com>
->>      mmc: sdhci-esdhc-imx: clear the buffer_read_ready to reset standard tuning circuit
-> 
-> 
-> build error :
-> --------------
-> drivers/mmc/host/sdhci-esdhc-imx.c: In function 'esdhc_reset_tuning':
-> drivers/mmc/host/sdhci-esdhc-imx.c:1041:10: error: implicit
-> declaration of function 'readl_poll_timeout'; did you mean
-> 'key_set_timeout'? [-Werror=implicit-function-declaration]
->       ret = readl_poll_timeout(host->ioaddr + SDHCI_AUTO_CMD_STATUS,
->             ^~~~~~~~~~~~~~~~~~
->             key_set_timeoutcc1: some warnings being treated as errors
+> Thanks
 
+No need, I rebased.
 
-I am seeing the same. I am also seeing this on v4.14 and v4.19 branches 
-as well.
+> > 
+> > Thanks
+> > 
+> > 
+> > >
+> > > Thanks
+> > > > Thanks
+> > > >
+> > > > >
+> > > > > Changes since V6:
+> > > > > - set default min vq size to 1 intead of 0
+> > > > > - enable eni vdpa driver only on X86 hosts
+> > > > > - fix some typos
+> > > > >
+> > > > > Changes since V5:
+> > > > > - remove unused codes
+> > > > >
+> > > > > Changes since V4:
+> > > > > - check return values of get_vq_num_{max,min} when probing devices
+> > > > > - disable the driver on BE host via Kconfig
+> > > > > - add missing commit message
+> > > > >
+> > > > > Changes since V3:
+> > > > > - validate VIRTIO_NET_F_MRG_RXBUF when negotiate features
+> > > > > - present F_ORDER_PLATFORM in get_features
+> > > > > - remove endian check since ENI always use litter endian
+> > > > >
+> > > > > Changes since V2:
+> > > > > - add new attribute VDPA_ATTR_DEV_MIN_VQ_SIZE instead
+> > > > >   VDPA_ATTR_DEV_F_VERSION_1 to guide users to choose correct virtqueue
+> > > > >   size as suggested by Jason Wang
+> > > > > - present ACCESS_PLATFORM in get_features callback as suggested by Jason
+> > > > >   Wang
+> > > > > - disable this driver on Big Endian host as suggested by Jason Wang
+> > > > > - fix a typo
+> > > > >
+> > > > > Changes since V1:
+> > > > > - add new vdpa attribute VDPA_ATTR_DEV_F_VERSION_1 to indicate whether
+> > > > >   the vdpa device is legacy
+> > > > > - implement dedicated driver for Alibaba ENI instead a legacy virtio-pci
+> > > > >   driver as suggested by Jason Wang
+> > > > > - some bugs fixed
+> > > > >
+> > > > > Wu Zongyong (9):
+> > > > >   virtio-pci: introduce legacy device module
+> > > > >   vdpa: fix typo
+> > > > >   vp_vdpa: add vq irq offloading support
+> > > > >   vdpa: add new callback get_vq_num_min in vdpa_config_ops
+> > > > >   vdpa: min vq num of vdpa device cannot be greater than max vq num
+> > > > >   virtio_vdpa: setup correct vq size with callbacks get_vq_num_{max,min}
+> > > > >   vdpa: add new attribute VDPA_ATTR_DEV_MIN_VQ_SIZE
+> > > > >   eni_vdpa: add vDPA driver for Alibaba ENI
+> > > > >   eni_vdpa: alibaba: fix Kconfig typo
+> > > > >
+> > > > >  drivers/vdpa/Kconfig                   |   8 +
+> > > > >  drivers/vdpa/Makefile                  |   1 +
+> > > > >  drivers/vdpa/alibaba/Makefile          |   3 +
+> > > > >  drivers/vdpa/alibaba/eni_vdpa.c        | 553 +++++++++++++++++++++++++
+> > > > >  drivers/vdpa/vdpa.c                    |  13 +
+> > > > >  drivers/vdpa/virtio_pci/vp_vdpa.c      |  12 +
+> > > > >  drivers/virtio/Kconfig                 |  10 +
+> > > > >  drivers/virtio/Makefile                |   1 +
+> > > > >  drivers/virtio/virtio_pci_common.c     |  10 +-
+> > > > >  drivers/virtio/virtio_pci_common.h     |   9 +-
+> > > > >  drivers/virtio/virtio_pci_legacy.c     | 101 ++---
+> > > > >  drivers/virtio/virtio_pci_legacy_dev.c | 220 ++++++++++
+> > > > >  drivers/virtio/virtio_vdpa.c           |  16 +-
+> > > > >  include/linux/vdpa.h                   |   6 +-
+> > > > >  include/linux/virtio_pci_legacy.h      |  42 ++
+> > > > >  include/uapi/linux/vdpa.h              |   1 +
+> > > > >  16 files changed, 917 insertions(+), 89 deletions(-)
+> > > > >  create mode 100644 drivers/vdpa/alibaba/Makefile
+> > > > >  create mode 100644 drivers/vdpa/alibaba/eni_vdpa.c
+> > > > >  create mode 100644 drivers/virtio/virtio_pci_legacy_dev.c
+> > > > >  create mode 100644 include/linux/virtio_pci_legacy.h
+> > > > >
+> > > > > --
+> > > > > 2.31.1
+> > > > >
+> > >
 
-Jon
-
--- 
-nvpublic
