@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89F64441662
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:22:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 281414416A4
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:26:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231699AbhKAJYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:24:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59154 "EHLO mail.kernel.org"
+        id S232013AbhKAJ1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:27:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59012 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232329AbhKAJWp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:22:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C0683610D2;
-        Mon,  1 Nov 2021 09:20:05 +0000 (UTC)
+        id S232695AbhKAJY3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:24:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AF361611C3;
+        Mon,  1 Nov 2021 09:21:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758406;
-        bh=KWLZ198wCx5EPHjJSx32Ieau92M15KuKnZkKEnZNU6M=;
+        s=korg; t=1635758485;
+        bh=PxT3P/1GWZV5y+OBZFeo7AiK/tT5JhpmtqDJQKyf3lQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Goo7HoXUJxhyVd/jn76nYcMQGaXY7kjB4jZGcWvZThPhAgXAS2pe99vG87D0gZ+Ic
-         PW7QNMIYoEzl4V8b2m5P5n3JX9BT5rFoUmfEevNlkl1L9amG/ONlVwcxeH+yLoh5eH
-         9+ipv0AD0VTG8YnIH2Hl1gUtLAwMsxidPVoAdwZ0=
+        b=LtRS+MKNVVFrCRszvFCIdEgBX9xr+QiCXkUwQtIvwpzmtFzVq8v+rUnN0fMMfFJ9M
+         dF+Z8RkQugLfAa11R7jbtbHDD8QwTXk0Tov+A9r04ZBnYLBBsEfJOpT8zx79Hrq7gJ
+         P33EL+qOvJL9znJ4TAKn5BreynMHQ1tntVm/xBms=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yanfei Xu <yanfei.xu@windriver.com>,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.14 10/25] Revert "net: mdiobus: Fix memory leak in __mdiobus_register"
+        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>
+Subject: [PATCH 4.19 10/35] ata: sata_mv: Fix the error handling of mv_chip_id()
 Date:   Mon,  1 Nov 2021 10:17:22 +0100
-Message-Id: <20211101082449.464714831@linuxfoundation.org>
+Message-Id: <20211101082454.010259907@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082447.070493993@linuxfoundation.org>
-References: <20211101082447.070493993@linuxfoundation.org>
+In-Reply-To: <20211101082451.430720900@linuxfoundation.org>
+References: <20211101082451.430720900@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,44 +39,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Zheyu Ma <zheyuma97@gmail.com>
 
-commit 10eff1f5788b6ffac212c254e2f3666219576889 upstream.
+commit a0023bb9dd9bc439d44604eeec62426a990054cd upstream.
 
-This reverts commit ab609f25d19858513919369ff3d9a63c02cd9e2e.
+mv_init_host() propagates the value returned by mv_chip_id() which in turn
+gets propagated by mv_pci_init_one() and hits local_pci_probe().
 
-This patch is correct in the sense that we _should_ call device_put() in
-case of device_register() failure, but the problem in this code is more
-vast.
+During the process of driver probing, the probe function should return < 0
+for failure, otherwise, the kernel will treat value > 0 as success.
 
-We need to set bus->state to UNMDIOBUS_REGISTERED before calling
-device_register() to correctly release the device in mdiobus_free().
-This patch prevents us from doing it, since in case of device_register()
-failure put_device() will be called 2 times and it will cause UAF or
-something else.
+Since this is a bug rather than a recoverable runtime error we should
+use dev_alert() instead of dev_err().
 
-Also, Reported-by: tag in revered commit was wrong, since syzbot
-reported different leak in same function.
-
-Link: https://lore.kernel.org/netdev/20210928092657.GI2048@kadam/
-Acked-by: Yanfei Xu <yanfei.xu@windriver.com>
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Link: https://lore.kernel.org/r/f12fb1faa4eccf0f355788225335eb4309ff2599.1633024062.git.paskripkin@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+Signed-off-by: Damien Le Moal <damien.lemoal@opensource.wdc.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/phy/mdio_bus.c |    1 -
- 1 file changed, 1 deletion(-)
+ drivers/ata/sata_mv.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/net/phy/mdio_bus.c
-+++ b/drivers/net/phy/mdio_bus.c
-@@ -354,7 +354,6 @@ int __mdiobus_register(struct mii_bus *b
- 	err = device_register(&bus->dev);
- 	if (err) {
- 		pr_err("mii_bus %s failed to register\n", bus->id);
--		put_device(&bus->dev);
- 		return -EINVAL;
+--- a/drivers/ata/sata_mv.c
++++ b/drivers/ata/sata_mv.c
+@@ -3905,8 +3905,8 @@ static int mv_chip_id(struct ata_host *h
+ 		break;
+ 
+ 	default:
+-		dev_err(host->dev, "BUG: invalid board index %u\n", board_idx);
+-		return 1;
++		dev_alert(host->dev, "BUG: invalid board index %u\n", board_idx);
++		return -EINVAL;
  	}
  
+ 	hpriv->hp_flags = hp_flags;
 
 
