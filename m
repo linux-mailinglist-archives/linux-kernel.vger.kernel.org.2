@@ -2,146 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96617441CD2
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 15:45:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AF0F441CD3
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 15:47:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232027AbhKAOsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 10:48:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60492 "EHLO
+        id S231874AbhKAOt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 10:49:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230204AbhKAOsP (ORCPT
+        with ESMTP id S229826AbhKAOtz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 10:48:15 -0400
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1AA0C061714
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 07:45:41 -0700 (PDT)
-Received: by mail-qv1-xf34.google.com with SMTP id b17so7858425qvl.9
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 07:45:41 -0700 (PDT)
+        Mon, 1 Nov 2021 10:49:55 -0400
+Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com [IPv6:2607:f8b0:4864:20::941])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1E4EC061714
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 07:47:21 -0700 (PDT)
+Received: by mail-ua1-x941.google.com with SMTP id v3so32185147uam.10
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 07:47:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20210112.gappssmtp.com; s=20210112;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=NtOIHopbUlvm30a4x39XtxN50M+iVFDMrnlSbgrZxb0=;
-        b=x03Z067ZF8NJ4PWxc4K3oxjQHWh8XPicOCJCHUqm3v/X7LENLTiFaDGIZssb41KTBI
-         E5eMTBOaKsNtXqn4wL8yzFjoio7I7nnqjsf7AYFpcliG2oTXKLQtw/4/UvkNq0OHkWig
-         CYR8ZB8Qd/PkPXm3fFw1QG8UuQXif+QHp7zFbkCy1ogArWPdnurpdavRerw3JsZ3oENC
-         862zt7HcbrF02UCvIt4zoMIKiPaEkydMWslAhB4JFp3CmMULX1NDxqdZ68KlnPrfvRoO
-         R0wl2ghecYBjHGq3JbIvAHDDUwWVfHg3j19gpoZW/V3j9VAHPbZBRiu6pj63IBN7fdwk
-         LaVw==
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=P9StmYYSXgcADxpzMUKuUVZOlD2zS0awZ26SoLcx+2g=;
+        b=nQidfPforAFfekiWD2d1llyRGsMqqQUcvkDLz9pxvuhOTDcZnk2HhuVMIFUgPH8PHB
+         tRGoHjggFT8dN8pLjWR6LmzztYz2vTQYZb9zcyGTkltK7ckts5Ll2OssBEoqEKZQ4NN6
+         IoU1hMWMwzqnMyfU06XI+ibuvpBhBbOPLaPfH/GiZaXE3gIjTMDkY+bFpGUgQCEjMX6O
+         lx9QEmbP8IKcd+PV6UpPUM+lq8eKuCrRCrJBvbtExfD7qqsM3bgmubT6ss+BeilMtGvJ
+         sWRLfr5S2ElV/E1RdhNSCbmedIESv0wTbMqqX7uboAJZduaHDrK3E7b4TbvV0H52yjx0
+         0ItQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=NtOIHopbUlvm30a4x39XtxN50M+iVFDMrnlSbgrZxb0=;
-        b=yv1hpnHvlK/8yOOpei6ZwnKBx0JNPgbjQsCr5pEH8SROtr/B4MmbjuTq8uN4g0bt35
-         NPy6FWO9jWgGWdqJZVvsKsyfANVsx5xPrsSEydVJzffemri/OFdyWkEr9gfISzZhotiD
-         cjKP7Y9CqFFtRW+stOf89dUhB07U8N08Dx6n93NNpFTEeBVMfzekbHV5GYfRQ35Ci6f9
-         LpXXKAjXmclvk2aTkVoAcnmD0OUA10aSfOzq0kNj7v6dcBwilXExOcwIhX59BZ98+6kP
-         OMYrewJGo1icun4wHxGFw6iu1J+YEguA7Q+MsW5dcpExkyqJJFvuQpzcwBP5wBOVaLLg
-         IVOQ==
-X-Gm-Message-State: AOAM532cz9bWfcjEDPPwWe2uMo/EZ1cP8id80ndCfXJzHtpSyXEMTa4s
-        KTRAuaW3z0Fg/oWDvQJxMSgiRQ==
-X-Google-Smtp-Source: ABdhPJypIyhxKRGyjCPUFMLFuQ9SY8D6ZiOQ+iqDULrYWCxg3WDM/Aou7bOHDtFp14lulB5DL7NlXw==
-X-Received: by 2002:a05:6214:246f:: with SMTP id im15mr28932347qvb.50.1635777940980;
-        Mon, 01 Nov 2021 07:45:40 -0700 (PDT)
-Received: from nicolas-tpx395.localdomain (mtl.collabora.ca. [66.171.169.34])
-        by smtp.gmail.com with ESMTPSA id b5sm375977qtb.1.2021.11.01.07.45.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 07:45:40 -0700 (PDT)
-Message-ID: <41a88606889de8f5fc8bc085e383ad43d439c45a.camel@ndufresne.ca>
-Subject: Re: [PATCH] media: docs: dev-decoder: add restrictions about
- CAPTURE buffers
-From:   Nicolas Dufresne <nicolas@ndufresne.ca>
-To:     Tomasz Figa <tfiga@chromium.org>
-Cc:     Alexandre Courbot <acourbot@chromium.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Mon, 01 Nov 2021 10:45:38 -0400
-In-Reply-To: <CAAFQd5BzXAO9vTm1xNmZ6iLnjnckfRC4Z2yqgxvuL+NUiHXnsQ@mail.gmail.com>
-References: <20211018091427.88468-1-acourbot@chromium.org>
-         <9cb4f64e2ec3959df44b71dd69ef95697920dc4b.camel@ndufresne.ca>
-         <CAAFQd5BzXAO9vTm1xNmZ6iLnjnckfRC4Z2yqgxvuL+NUiHXnsQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 (3.40.4-2.fc34) 
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=P9StmYYSXgcADxpzMUKuUVZOlD2zS0awZ26SoLcx+2g=;
+        b=0vrMlR32VFhp2Z5Y9JLzsv+W11bshG8skoo+4KjqJuOgtkjIqrHTQK5QM8gZEFke9R
+         A8H9CF2Qwp/0/vuzRMRdqpMQaUr4LF/2fw84w7n3MP2qF1ToDpO+aDNpH30wBMM8vOrq
+         UgU3K0Ir0wGLeK/oYZNHJ3O/CdcdHLx0EiYrGtobaJWcPCkTdvEBzZJh8WUFjqw7nauc
+         gnl6FTEf6DKtSQ34u0BfZCKa7VmhK+xZBUkZ/IxZUcnfJCiJ8AjSA6J56lXh0+usHQZS
+         fbRlA4VRev1uSj6z9rxon0Q+nQKzA+WRRJzHZeBU8QGjYSnBDh2xO4xUfhfb6DTp4M+F
+         KW0g==
+X-Gm-Message-State: AOAM530kIiE5BZArgEpCRGnu86C189nJz5Mlfft5MGStMnn/EPP7+STh
+        MeJv0wLeI2AujvkzydKvNQh2pSYIpXbVc90enqY=
+X-Google-Smtp-Source: ABdhPJyUmLjH8N8XMBzQV+YL7v/Aerxyb1vOGcWbLw5iFDvnRN0AvWdTUhn1z25NTU+ofY1bBUdhWErV0ZxfZHZDL0I=
+X-Received: by 2002:ab0:2a4c:: with SMTP id p12mr28405553uar.43.1635778040950;
+ Mon, 01 Nov 2021 07:47:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a59:c228:0:b0:238:194b:252a with HTTP; Mon, 1 Nov 2021
+ 07:47:20 -0700 (PDT)
+Reply-To: judekane2007@gmail.com
+From:   Jude Kane <ahokake95@gmail.com>
+Date:   Mon, 1 Nov 2021 14:47:20 +0000
+Message-ID: <CAKULmmh3_SN5O4wDPmc7oVgb_wEY8mNAU1orR+53B1SVU=xK6g@mail.gmail.com>
+Subject: Dear .
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le vendredi 29 octobre 2021 à 12:04 +0900, Tomasz Figa a écrit :
-> On Tue, Oct 26, 2021 at 11:12 PM Nicolas Dufresne <nicolas@ndufresne.ca> wrote:
-> > 
-> > Le lundi 18 octobre 2021 à 18:14 +0900, Alexandre Courbot a écrit :
-> > > CAPTURE buffers might be read by the hardware after they are dequeued,
-> > > which goes against the general idea that userspace has full control over
-> > > dequeued buffers. Explain why and document the restrictions that this
-> > > implies for userspace.
-> > > 
-> > > Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
-> > > ---
-> > >  .../userspace-api/media/v4l/dev-decoder.rst     | 17 +++++++++++++++++
-> > >  1 file changed, 17 insertions(+)
-> > > 
-> > > diff --git a/Documentation/userspace-api/media/v4l/dev-decoder.rst b/Documentation/userspace-api/media/v4l/dev-decoder.rst
-> > > index 5b9b83feeceb..3cf2b496f2d0 100644
-> > > --- a/Documentation/userspace-api/media/v4l/dev-decoder.rst
-> > > +++ b/Documentation/userspace-api/media/v4l/dev-decoder.rst
-> > > @@ -752,6 +752,23 @@ available to dequeue. Specifically:
-> > >       buffers are out-of-order compared to the ``OUTPUT`` buffers): ``CAPTURE``
-> > >       timestamps will not retain the order of ``OUTPUT`` timestamps.
-> > > 
-> > > +.. note::
-> > > +
-> > > +   The backing memory of ``CAPTURE`` buffers that are used as reference frames
-> > > +   by the stream may be read by the hardware even after they are dequeued.
-> > > +   Consequently, the client should avoid writing into this memory while the
-> > > +   ``CAPTURE`` queue is streaming. Failure to observe this may result in
-> > > +   corruption of decoded frames.
-> > > +
-> > > +   Similarly, when using a memory type other than ``V4L2_MEMORY_MMAP``, the
-> > > +   client should make sure that each ``CAPTURE`` buffer is always queued with
-> > > +   the same backing memory for as long as the ``CAPTURE`` queue is streaming.
-> > > +   The reason for this is that V4L2 buffer indices can be used by drivers to
-> > > +   identify frames. Thus, if the backing memory of a reference frame is
-> > > +   submitted under a different buffer ID, the driver may misidentify it and
-> > > +   decode a new frame into it while it is still in use, resulting in corruption
-> > > +   of the following frames.
-> > > +
-> > 
-> > I think this is nice addition, but insufficient. We should extend the API with a
-> > flags that let application know if the buffers are reference or secondary. For
-> > the context, we have a mix of CODEC that will output usable reference frames and
-> > needs careful manipulation and many other drivers where the buffers *maybe*
-> > secondary, meaning they may have been post-processed and modifying these in-
-> > place may have no impact.
-> > 
-> > The problem is the "may", that will depends on the chosen CAPTURE format. I
-> > believe we should flag this, this flag should be set by the driver, on CAPTURE
-> > queue. The information is known after S_FMT, so Format Flag, Reqbufs
-> > capabilities or querybuf flags are candidates. I think the buffer flags are the
-> > best named flag, though we don't expect this to differ per buffer. Though,
-> > userspace needs to call querybuf for all buf in order to export or map them.
-> > 
-> > What userspace can do with this is to export the DMABuf as read-only, and signal
-> > this internally in its own context. This is great to avoid any unwanted side
-> > effect described here.
-> 
-> I agree with the idea of having a way for the kernel to tell the
-> userspace the exact state of the buffer, but right now the untold
-> expectation of the kernel was as per what this patch adds. If one
-> wants their userspace to be portable across different decoders, they
-> need to keep the assumption. So the natural way to go here is to stay
-> safe by default and have a flag that tells the userspace that the
-> buffer can be freely reused.
+Dear .
 
-On the V4L2 side, this is what I am asking, a flag to signal that the buffer can
-be freely reused (or secondary). The last part was an example of what userland
-that cares about robustness can do with it.
+Please I am a solicitor at law and personal attorney to your late relative, a
+national of your country. Who died here in the year 2018, with his
+wife and their
+only daughter. I have contacted you as the beneficiary/next of kin to his
+estate fund valued at Twenty Million Five Hundred Thousand United States
+Dollars ($20,500.000) However he deposited the fund before his death. Your
+immediate/urgent attention is highly needed and don't fail to call me now.
 
-> 
-> Best regards,
-> Tomasz
+Call me for more information and directive. You are also advised to provide the
+listed information below.
 
+First and last name:
+Address:
+City:
+Country:
+Phone number:
+Occupation:
+Age:
+Email:
 
+Contact me on this email: judekane2007@gmail.com
+
+I look forward to hearing from you asap.
+
+With Kind Regards,
+
+Jude Kane ESQ
+74 Rue du Segbe
+Lome, Togo
+Telephone:. +22897508769
