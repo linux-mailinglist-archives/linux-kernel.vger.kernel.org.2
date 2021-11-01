@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B586A4418AF
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:49:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C892944168D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:24:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234349AbhKAJua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:50:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52162 "EHLO mail.kernel.org"
+        id S233006AbhKAJ0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:26:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59164 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234057AbhKAJqc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:46:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 28FCF613DA;
-        Mon,  1 Nov 2021 09:30:26 +0000 (UTC)
+        id S232517AbhKAJXl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:23:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E23C6112D;
+        Mon,  1 Nov 2021 09:20:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635759026;
-        bh=VLomoyISlxt7mbL5s4Mq6Ws5nrMJYxSc9uy2OC+2vnU=;
+        s=korg; t=1635758459;
+        bh=2FyAA1emBPFsWZyv0yG1zZ5cu6TdM9tdSoyBIptZams=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SeyPjWm09bHI0wULFKiL0qqrgfLB+nPtWUbVKOjM0isy3I9Pm+OEhFlDV9HvMUhKx
-         msSyHkExpQ2Zn4BIqWPhWIojxfCckzJ7U7zIdWoAdlgmeBj8kwZsXFGyAuz1BkYdD9
-         X/G3XODn4jci1ePkGR4mVB4Mkp1lEcEP3FIcniK8=
+        b=isqY/c/3y3YrEsaHNVuSVf+7nNne+PSMgzwbElTr7BvQfyyirTSKbMWB/XXovCYz/
+         GYHdmw16bDVkvIoEwMDWejUs0FpDSh0O0JffqY9RIpYUvIbUDrpDigOTW3gOgeP93R
+         D8uYqTFDm0av++B8nuIr1CqQ0MMlQzGq96nAXzY0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ido Schimmel <idosch@nvidia.com>,
-        Petr Machata <petrm@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.14 084/125] mlxsw: pci: Recycle received packet upon allocation failure
+        stable@vger.kernel.org, Xin Long <lucien.xin@gmail.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 25/25] sctp: add vtag check in sctp_sf_ootb
 Date:   Mon,  1 Nov 2021 10:17:37 +0100
-Message-Id: <20211101082549.167684794@linuxfoundation.org>
+Message-Id: <20211101082452.984281181@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082533.618411490@linuxfoundation.org>
-References: <20211101082533.618411490@linuxfoundation.org>
+In-Reply-To: <20211101082447.070493993@linuxfoundation.org>
+References: <20211101082447.070493993@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,134 +41,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ido Schimmel <idosch@nvidia.com>
+From: Xin Long <lucien.xin@gmail.com>
 
-commit 759635760a804b0d8ad0cc677b650f1544cae22f upstream.
+[ Upstream commit 9d02831e517aa36ee6bdb453a0eb47bd49923fe3 ]
 
-When the driver fails to allocate a new Rx buffer, it passes an empty Rx
-descriptor (contains zero address and size) to the device and marks it
-as invalid by setting the skb pointer in the descriptor's metadata to
-NULL.
+sctp_sf_ootb() is called when processing DATA chunk in closed state,
+and many other places are also using it.
 
-After processing enough Rx descriptors, the driver will try to process
-the invalid descriptor, but will return immediately seeing that the skb
-pointer is NULL. Since the driver no longer passes new Rx descriptors to
-the device, the Rx queue will eventually become full and the device will
-start to drop packets.
+The vtag in the chunk's sctphdr should be verified, otherwise, as
+later in chunk length check, it may send abort with the existent
+asoc's vtag, which can be exploited by one to cook a malicious
+chunk to terminate a SCTP asoc.
 
-Fix this by recycling the received packet if allocation of the new
-packet failed. This means that allocation is no longer performed at the
-end of the Rx routine, but at the start, before tearing down the DMA
-mapping of the received packet.
+When fails to verify the vtag from the chunk, this patch sets asoc
+to NULL, so that the abort will be made with the vtag from the
+received chunk later.
 
-Remove the comment about the descriptor being zeroed as it is no longer
-correct. This is OK because we either use the descriptor as-is (when
-recycling) or overwrite its address and size fields with that of the
-newly allocated Rx buffer.
-
-The issue was discovered when a process ("perf") consumed too much
-memory and put the system under memory pressure. It can be reproduced by
-injecting slab allocation failures [1]. After the fix, the Rx queue no
-longer comes to a halt.
-
-[1]
- # echo 10 > /sys/kernel/debug/failslab/times
- # echo 1000 > /sys/kernel/debug/failslab/interval
- # echo 100 > /sys/kernel/debug/failslab/probability
-
- FAULT_INJECTION: forcing a failure.
- name failslab, interval 1000, probability 100, space 0, times 8
- [...]
- Call Trace:
-  <IRQ>
-  dump_stack_lvl+0x34/0x44
-  should_fail.cold+0x32/0x37
-  should_failslab+0x5/0x10
-  kmem_cache_alloc_node+0x23/0x190
-  __alloc_skb+0x1f9/0x280
-  __netdev_alloc_skb+0x3a/0x150
-  mlxsw_pci_rdq_skb_alloc+0x24/0x90
-  mlxsw_pci_cq_tasklet+0x3dc/0x1200
-  tasklet_action_common.constprop.0+0x9f/0x100
-  __do_softirq+0xb5/0x252
-  irq_exit_rcu+0x7a/0xa0
-  common_interrupt+0x83/0xa0
-  </IRQ>
-  asm_common_interrupt+0x1e/0x40
- RIP: 0010:cpuidle_enter_state+0xc8/0x340
- [...]
- mlxsw_spectrum2 0000:06:00.0: Failed to alloc skb for RDQ
-
-Fixes: eda6500a987a ("mlxsw: Add PCI bus implementation")
-Signed-off-by: Ido Schimmel <idosch@nvidia.com>
-Reviewed-by: Petr Machata <petrm@nvidia.com>
-Link: https://lore.kernel.org/r/20211024064014.1060919-1-idosch@idosch.org
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Xin Long <lucien.xin@gmail.com>
+Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlxsw/pci.c |   25 ++++++++++++-------------
- 1 file changed, 12 insertions(+), 13 deletions(-)
+ net/sctp/sm_statefuns.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/net/ethernet/mellanox/mlxsw/pci.c
-+++ b/drivers/net/ethernet/mellanox/mlxsw/pci.c
-@@ -353,13 +353,10 @@ static int mlxsw_pci_rdq_skb_alloc(struc
- 	struct sk_buff *skb;
- 	int err;
+diff --git a/net/sctp/sm_statefuns.c b/net/sctp/sm_statefuns.c
+index c3cb0ae7df2b..b26067798dbf 100644
+--- a/net/sctp/sm_statefuns.c
++++ b/net/sctp/sm_statefuns.c
+@@ -3498,6 +3498,9 @@ enum sctp_disposition sctp_sf_ootb(struct net *net,
  
--	elem_info->u.rdq.skb = NULL;
- 	skb = netdev_alloc_skb_ip_align(NULL, buf_len);
- 	if (!skb)
- 		return -ENOMEM;
+ 	SCTP_INC_STATS(net, SCTP_MIB_OUTOFBLUES);
  
--	/* Assume that wqe was previously zeroed. */
--
- 	err = mlxsw_pci_wqe_frag_map(mlxsw_pci, wqe, 0, skb->data,
- 				     buf_len, DMA_FROM_DEVICE);
- 	if (err)
-@@ -597,21 +594,26 @@ static void mlxsw_pci_cqe_rdq_handle(str
- 	struct pci_dev *pdev = mlxsw_pci->pdev;
- 	struct mlxsw_pci_queue_elem_info *elem_info;
- 	struct mlxsw_rx_info rx_info = {};
--	char *wqe;
-+	char wqe[MLXSW_PCI_WQE_SIZE];
- 	struct sk_buff *skb;
- 	u16 byte_count;
- 	int err;
- 
- 	elem_info = mlxsw_pci_queue_elem_info_consumer_get(q);
--	skb = elem_info->u.sdq.skb;
--	if (!skb)
--		return;
--	wqe = elem_info->elem;
--	mlxsw_pci_wqe_frag_unmap(mlxsw_pci, wqe, 0, DMA_FROM_DEVICE);
-+	skb = elem_info->u.rdq.skb;
-+	memcpy(wqe, elem_info->elem, MLXSW_PCI_WQE_SIZE);
- 
- 	if (q->consumer_counter++ != consumer_counter_limit)
- 		dev_dbg_ratelimited(&pdev->dev, "Consumer counter does not match limit in RDQ\n");
- 
-+	err = mlxsw_pci_rdq_skb_alloc(mlxsw_pci, elem_info);
-+	if (err) {
-+		dev_err_ratelimited(&pdev->dev, "Failed to alloc skb for RDQ\n");
-+		goto out;
-+	}
++	if (asoc && !sctp_vtag_verify(chunk, asoc))
++		asoc = NULL;
 +
-+	mlxsw_pci_wqe_frag_unmap(mlxsw_pci, wqe, 0, DMA_FROM_DEVICE);
-+
- 	if (mlxsw_pci_cqe_lag_get(cqe_v, cqe)) {
- 		rx_info.is_lag = true;
- 		rx_info.u.lag_id = mlxsw_pci_cqe_lag_id_get(cqe_v, cqe);
-@@ -647,10 +649,7 @@ static void mlxsw_pci_cqe_rdq_handle(str
- 	skb_put(skb, byte_count);
- 	mlxsw_core_skb_receive(mlxsw_pci->core, skb, &rx_info);
- 
--	memset(wqe, 0, q->elem_size);
--	err = mlxsw_pci_rdq_skb_alloc(mlxsw_pci, elem_info);
--	if (err)
--		dev_dbg_ratelimited(&pdev->dev, "Failed to alloc skb for RDQ\n");
-+out:
- 	/* Everything is set up, ring doorbell to pass elem to HW */
- 	q->producer_counter++;
- 	mlxsw_pci_queue_doorbell_producer_ring(mlxsw_pci, q);
+ 	ch = (struct sctp_chunkhdr *)chunk->chunk_hdr;
+ 	do {
+ 		/* Report violation if the chunk is less then minimal */
+-- 
+2.33.0
+
 
 
