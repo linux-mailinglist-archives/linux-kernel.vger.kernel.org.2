@@ -2,112 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB599441C9A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 15:27:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35AAA441C9D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 15:29:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231906AbhKAOaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 10:30:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56270 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229826AbhKAOaS (ORCPT
+        id S231880AbhKAOcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 10:32:01 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:59395 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229826AbhKAOcA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 10:30:18 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0609AC061714
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 07:27:45 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id z20so65332671edc.13
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 07:27:44 -0700 (PDT)
+        Mon, 1 Nov 2021 10:32:00 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uPf+iT4fwzI/SoUUxDbRDAYvExd9vocMw0cUgy57Zcc=;
-        b=Wp8btRtmJM41T7dOmTx8He6zSn3nMOtBeF3JbWpmcL42yQw/swcdCgwidUoGPdHpe7
-         uKR6AvYQI3w0ovKn0yGrzy/8UFn6TVtxnISkktWKB73KTQjsZLYmjUUpFjNvQR0qIwXR
-         a8wVwu2Pow7/t0bFDdfTAzjd5Xz9icOYGcnccE7tSfGua2sp9CvwE2qpo9rRPglur53Z
-         3S9Oh4O6P4DAlw0gZvrIaJvvBajkCRkFcHmZz8SFWLg5HAffR6gfWs4xbaeMC9Z6W3Wg
-         RZqqztClYP6uIPJfKMI9WrOwPhPvAtbIuoZkUpYnQGM6XI90HPIn/PuzEfb60TWxEOpP
-         u+Cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uPf+iT4fwzI/SoUUxDbRDAYvExd9vocMw0cUgy57Zcc=;
-        b=CBnuuM30tAu1lRkCsi8fRiPvav9ccSZaaxBTJMHxPkIWlGC8JHYu+d1BBx6/qJYsSs
-         lnOxRLc+ndqzWsw2t/rCaDCEhcRvi8iEZtRe9HT6RNT73TjFTEBnrOkUYqYzp7goBO9x
-         ITk2uB3Vsr/Q078AQ7huZ7GX9zeA3CgPdHxhFrdoPAtuACN0Q3sNI012RDXqrscgzTBP
-         1pul2QTMwGdReNO6Z4TGYGwpl5H8ozhVUu3/VH8fz4/kmyb3GpXZhl/n+/NtLbF8N5gO
-         XYArwl3GRsSwQa+hwCoJfC2wx1v1LSSnhVAvv2YPahm5UQtgtEDMxCwaiquxlKZ3rYxX
-         ICYg==
-X-Gm-Message-State: AOAM532X5gQVEXPaevYsjsyQs+UvD3tZ3dP5RBhwa2o7sQgAG444ubud
-        lLk0E0lwlVktYRm8AR0GAq0=
-X-Google-Smtp-Source: ABdhPJxgGsMjLYNHKTuzcpEvtW+OHHT5HqunzXh7mRoLUv4Il0LoTlbmmcQU7TDdKh4/N+lJmYo7ag==
-X-Received: by 2002:a17:906:a84a:: with SMTP id dx10mr17697421ejb.569.1635776863508;
-        Mon, 01 Nov 2021 07:27:43 -0700 (PDT)
-Received: from localhost.localdomain (host-79-56-54-101.retail.telecomitalia.it. [79.56.54.101])
-        by smtp.gmail.com with ESMTPSA id d3sm4133836edr.0.2021.11.01.07.27.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 07:27:43 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: [PATCH v2] staging: r8188eu: Use kzalloc() with GFP_ATOMIC in  atomic context
-Date:   Mon,  1 Nov 2021 15:27:32 +0100
-Message-Id: <20211101142732.5638-1-fmdefrancesco@gmail.com>
-X-Mailer: git-send-email 2.33.1
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1635776967; x=1667312967;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=B5fKvlYLxZV/WKO9MT5POqMifapp4RX+wc2bjemrwtc=;
+  b=U9Uvq69xjKLMBZOhsDtbmz84s+YoBikQpVzeeVHqeKFqKizCv/Lh4deg
+   9lweQRv4glqb9/mZwSQFXtGRBrcplhzGCSItiBGri3PzP+B8DGM/drxSf
+   3Pcx2/aCpwYmPdBo6O9T4FdN7FcAWoZnPWH7N1jAMjjFFbHuTYFq/oaA3
+   U=;
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 01 Nov 2021 07:29:27 -0700
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2021 07:29:27 -0700
+Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
+ Mon, 1 Nov 2021 07:29:26 -0700
+Received: from qian-HP-Z2-SFF-G5-Workstation.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
+ Mon, 1 Nov 2021 07:29:25 -0700
+From:   Qian Cai <quic_qiancai@quicinc.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>
+CC:     <linux-kbuild@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Qian Cai <quic_qiancai@quicinc.com>
+Subject: [PATCH v3] configs: Introduce debug.config for CI-like setup
+Date:   Mon, 1 Nov 2021 10:28:58 -0400
+Message-ID: <20211101142858.8267-1-quic_qiancai@quicinc.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the GFP_ATOMIC flag of kzalloc() with two memory allocation in
-report_del_sta_event(). This function is called while holding spinlocks,
-therefore it is not allowed to sleep. With the GFP_ATOMIC type flag, the
-allocation is high priority and must not sleep.
+Some general debugging features like kmemleak, KASAN, lockdep, UBSAN etc
+help fix many viruses like a microscope. On the other hand, those features
+are scatter around and mixed up with more situational debugging options
+making them difficult to consume properly. This cold help amplify the
+general debugging/testing efforts and help establish sensitive default
+values for those options across the broad.
 
-This issue is detected by Smatch which emits the following warning:
-"drivers/staging/r8188eu/core/rtw_mlme_ext.c:6848 report_del_sta_event()
-warn: sleeping in atomic context".
+The config is based on years' experiences running daily CI inside the
+largest enterprise Linux distro company to seek regressions on
+linux-next builds on different bare-metal and virtual platforms. This is
+more of some art than science. It can be used for example,
 
-After the change, the post-commit hook output the following message:
-"CHECK: Prefer kzalloc(sizeof(*pcmd_obj)...) over
-kzalloc(sizeof(struct cmd_obj)...)".
+$ make ARCH=arm64 defconfig debug.config
 
-According to the above "CHECK", use the preferred style in the first
-kzalloc().
-
-Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+Signed-off-by: Qian Cai <quic_qiancai@quicinc.com>
 ---
+v3:
+- Reorganize options into different sections.
+- Remove options that not user-visible.
+- Add a comment header to debug.config.
 
-v1->v2: Fix an overlooked error due to an incorrect copy-paste
-	of the sizeof() operator.
+ kernel/configs/debug.config | 107 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 107 insertions(+)
+ create mode 100644 kernel/configs/debug.config
 
- drivers/staging/r8188eu/core/rtw_mlme_ext.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/staging/r8188eu/core/rtw_mlme_ext.c b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
-index 55c3d4a6faeb..315902682292 100644
---- a/drivers/staging/r8188eu/core/rtw_mlme_ext.c
-+++ b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
-@@ -6845,12 +6845,12 @@ void report_del_sta_event(struct adapter *padapter, unsigned char *MacAddr, unsi
- 	struct mlme_ext_priv		*pmlmeext = &padapter->mlmeextpriv;
- 	struct cmd_priv *pcmdpriv = &padapter->cmdpriv;
- 
--	pcmd_obj = kzalloc(sizeof(struct cmd_obj), GFP_KERNEL);
-+	pcmd_obj = kzalloc(sizeof(*pcmd_obj), GFP_ATOMIC);
- 	if (!pcmd_obj)
- 		return;
- 
- 	cmdsz = (sizeof(struct stadel_event) + sizeof(struct C2HEvent_Header));
--	pevtcmd = kzalloc(cmdsz, GFP_KERNEL);
-+	pevtcmd = kzalloc(cmdsz, GFP_ATOMIC);
- 	if (!pevtcmd) {
- 		kfree(pcmd_obj);
- 		return;
+diff --git a/kernel/configs/debug.config b/kernel/configs/debug.config
+new file mode 100644
+index 000000000000..b4002ba696a7
+--- /dev/null
++++ b/kernel/configs/debug.config
+@@ -0,0 +1,107 @@
++# The config is based on running daily CI for enterprise Linux distros to
++# seek regressions on linux-next builds on different bare-metal and virtual
++# platforms. It can be used for example,
++#
++# $ make ARCH=arm64 defconfig debug.config
++#
++# Keep alphabetically sorted inside each section.
++#
++# printk and dmesg options
++#
++CONFIG_DEBUG_BUGVERBOSE=y
++CONFIG_DYNAMIC_DEBUG=y
++CONFIG_PRINTK_CALLER=y
++CONFIG_PRINTK_TIME=y
++CONFIG_SYMBOLIC_ERRNAME=y
++#
++# Compile-time checks and compiler options
++#
++CONFIG_DEBUG_INFO=y
++CONFIG_DEBUG_SECTION_MISMATCH=y
++CONFIG_FRAME_WARN=2048
++CONFIG_SECTION_MISMATCH_WARN_ONLY=y
++#
++# Generic Kernel Debugging Instruments
++#
++# CONFIG_UBSAN_ALIGNMENT is not set
++# CONFIG_UBSAN_DIV_ZERO is not set
++# CONFIG_UBSAN_TRAP is not set
++# CONFIG_WARN_ALL_UNSEEDED_RANDOM is not set
++CONFIG_DEBUG_FS=y
++CONFIG_DEBUG_FS_ALLOW_ALL=y
++CONFIG_DEBUG_IRQFLAGS=y
++CONFIG_UBSAN=y
++CONFIG_UBSAN_BOOL=y
++CONFIG_UBSAN_BOUNDS=y
++CONFIG_UBSAN_ENUM=y
++CONFIG_UBSAN_SHIFT=y
++CONFIG_UBSAN_UNREACHABLE=y
++#
++# Memory Debugging
++#
++# CONFIG_DEBUG_PAGEALLOC is not set
++# CONFIG_DEBUG_KMEMLEAK_DEFAULT_OFF is not set
++# CONFIG_DEBUG_RODATA_TEST is not set
++# CONFIG_DEBUG_WX is not set
++# CONFIG_KFENCE is not set
++# CONFIG_PAGE_POISONING is not set
++# CONFIG_SLUB_STATS is not set
++CONFIG_PAGE_EXTENSION=y
++CONFIG_PAGE_OWNER=y
++CONFIG_DEBUG_KMEMLEAK=y
++CONFIG_DEBUG_KMEMLEAK_AUTO_SCAN=y
++CONFIG_DEBUG_KMEMLEAK_MEM_POOL_SIZE=80000
++CONFIG_DEBUG_OBJECTS=y
++CONFIG_DEBUG_OBJECTS_ENABLE_DEFAULT=1
++CONFIG_DEBUG_OBJECTS_FREE=y
++CONFIG_DEBUG_OBJECTS_PERCPU_COUNTER=y
++CONFIG_DEBUG_OBJECTS_RCU_HEAD=y
++CONFIG_DEBUG_OBJECTS_TIMERS=y
++CONFIG_DEBUG_OBJECTS_WORK=y
++CONFIG_DEBUG_PER_CPU_MAPS=y
++CONFIG_DEBUG_STACK_USAGE=y
++CONFIG_DEBUG_VIRTUAL=y
++CONFIG_DEBUG_VM=y
++CONFIG_DEBUG_VM_PGFLAGS=y
++CONFIG_DEBUG_VM_RB=y
++CONFIG_DEBUG_VM_VMACACHE=y
++CONFIG_GENERIC_PTDUMP=y
++CONFIG_KASAN=y
++CONFIG_KASAN_GENERIC=y
++CONFIG_KASAN_INLINE=y
++CONFIG_KASAN_VMALLOC=y
++CONFIG_PTDUMP_DEBUGFS=y
++CONFIG_SCHED_STACK_END_CHECK=y
++CONFIG_SLUB_DEBUG_ON=y
++#
++# Debug Oops, Lockups and Hangs
++#
++# CONFIG_BOOTPARAM_HUNG_TASK_PANIC is not set
++# CONFIG_BOOTPARAM_SOFTLOCKUP_PANIC is not set
++CONFIG_DEBUG_ATOMIC_SLEEP=y
++CONFIG_DETECT_HUNG_TASK=y
++CONFIG_PANIC_ON_OOPS=y
++CONFIG_PANIC_TIMEOUT=0
++CONFIG_SOFTLOCKUP_DETECTOR=y
++#
++# Lock Debugging (spinlocks, mutexes, etc...)
++#
++# CONFIG_PROVE_RAW_LOCK_NESTING is not set
++CONFIG_PROVE_LOCKING=y
++#
++# Debug kernel data structures
++#
++CONFIG_BUG_ON_DATA_CORRUPTION=y
++#
++# RCU Debugging
++#
++CONFIG_PROVE_RCU=y
++CONFIG_PROVE_RCU_LIST=y
++CONFIG_RCU_CPU_STALL_TIMEOUT=60
++#
++# Tracers
++#
++CONFIG_BRANCH_PROFILE_NONE=y
++CONFIG_DYNAMIC_FTRACE=y
++CONFIG_FTRACE=y
++CONFIG_FUNCTION_TRACER=y
 -- 
-2.33.1
+2.30.2
 
