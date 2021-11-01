@@ -2,194 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED0B6441AA7
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 12:26:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A75FB441AAA
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 12:27:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232259AbhKAL3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 07:29:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55785 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232020AbhKAL3U (ORCPT
+        id S232284AbhKALaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 07:30:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231512AbhKALaK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 07:29:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635766007;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=diMlF4ymvVo+fRRnu1Vo4shY5UcYz8rKwBfQSyhGFkg=;
-        b=hsS9zOxgFtBCUTvv+x0ytsyZST899oj127SDkt+z46yOJwEcEzW0C1grBMV7z9FsPZcpy8
-        ymIWzf1E0B8QfNKS6UhEYUEBnZM6Y8az2B9y16dsCssHHa7sPzpM26R3eCBzgHyuPsNUJ5
-        /UfE3qL5d6l+irBEn2qZvEaF7UQRs8A=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-520--NqO0E00OiqTBc1ximDUng-1; Mon, 01 Nov 2021 07:26:44 -0400
-X-MC-Unique: -NqO0E00OiqTBc1ximDUng-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 63DD88030AF;
-        Mon,  1 Nov 2021 11:26:43 +0000 (UTC)
-Received: from localhost (ovpn-8-37.pek2.redhat.com [10.72.8.37])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 16B2760C0F;
-        Mon,  1 Nov 2021 11:26:34 +0000 (UTC)
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>, live-patching@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Ming Lei <ming.lei@redhat.com>
-Subject: [PATCH V3 3/3] livepatch: free klp_patch object synchronously
-Date:   Mon,  1 Nov 2021 19:25:48 +0800
-Message-Id: <20211101112548.3364086-4-ming.lei@redhat.com>
-In-Reply-To: <20211101112548.3364086-1-ming.lei@redhat.com>
-References: <20211101112548.3364086-1-ming.lei@redhat.com>
+        Mon, 1 Nov 2021 07:30:10 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FA4BC061714
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 04:27:37 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id x27so35706728lfu.5
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 04:27:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qeotrPS3rdBX1USKb/5NtMVDZOi8KqGLEiVDrgkTmHs=;
+        b=i9DBa5gmpRzrYjNr1CnN1aBx39kYOuADV0kZ2vV6y/6IbimKemr96yXkNztEudHZrq
+         2E7g3bRHzv7QDlyZQQG32ZZl3li/oHhfdyQ35IisSwuXbtWEVY+63FPjtfIQ2KNWH0de
+         5yjZA2VaZQqNuKOacCLfyaKsQ0bee6aA/RLrFe8hx/40a8WcnCpRiEAnh+vrWDNtJgRp
+         RwBE3vMZPYcBLhnh4lkivsK2xJiPdFDFUDPsNalHTWN1q1olDigSvIU/SU3LQ6WFYOPq
+         uUqvjhKwwxHd7M1KroqFk0zXNsrAF8MYOiAGXryD6P5gzHHNc0fmVKkMiu6zYK6aniG6
+         jm8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qeotrPS3rdBX1USKb/5NtMVDZOi8KqGLEiVDrgkTmHs=;
+        b=dSe681QE+c0dpmHS/5F6O6aIsgg6nA4717DwkVwJmV9mjfBzQo1Uiz1oo4FRjjLjdK
+         h5VRNk1ucPRt7Knqc5abeJ3LCxtpYI1b6kMAv8iTdOaa0wQoT4rZv2mooTOFTXYOgRY4
+         mN/4F/J1T567ZDeQVjEXJ+5RYDYOvXjasX+ntmtO+6zcgM54LcfB7w5vMal9WAMIb8lm
+         S1bQ6MfSrGiTUW2bLtF1JVl2qz8iOm0UaoQ6m9Rqzpivd+EULYz52ciSz28prXCK3tdY
+         +OSUuEoGouwxHOvOgQYFyrLLCAz+oc5u+zUq0n3POAi1iTCCpgH/fzOSz/GA04rhyMe7
+         A+Wg==
+X-Gm-Message-State: AOAM531tTRksOcWP/+rDd9ZUsZB0KslHsT1Y4uNBtPW9gnE3CFiORfhT
+        /SMtb/I8GTYLKaJlkbI8Xw301A==
+X-Google-Smtp-Source: ABdhPJxWw5aWzHchnUw4XvZ6BPzKNxkc1v8lhLPiAOb/BJ4jWVhG/dZw+hI+ZYBTp3erlP8WYjr6ig==
+X-Received: by 2002:a05:6512:1594:: with SMTP id bp20mr9441231lfb.145.1635766055458;
+        Mon, 01 Nov 2021 04:27:35 -0700 (PDT)
+Received: from localhost.localdomain (h-155-4-129-146.NA.cust.bahnhof.se. [155.4.129.146])
+        by smtp.gmail.com with ESMTPSA id bt11sm1388335lfb.208.2021.11.01.04.27.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Nov 2021 04:27:34 -0700 (PDT)
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+To:     Linus <torvalds@linux-foundation.org>, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [GIT PULL] MMC and MEMSTICK updates for v5.16
+Date:   Mon,  1 Nov 2021 12:27:34 +0100
+Message-Id: <20211101112734.9239-1-ulf.hansson@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-klp_mutex isn't acquired before calling kobject_put(klp_patch), so it is
-fine to free klp_patch object synchronously.
+Hi Linus,
 
-One issue is that enabled store() method, in which the klp_patch kobject
-itself is deleted & released. However, sysfs has provided APIs for dealing
-with this corner case, so use sysfs_break_active_protection() and
-sysfs_unbreak_active_protection() for releasing klp_patch kobject from
-enabled_store(), meantime the enabled attribute has to be removed
-before deleting the klp_patch kobject.
+Here's the PR with updates for MMC and MEMSTICK for v5.16. Details about the
+highlights are as usual found in the signed tag.
 
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
----
- include/linux/livepatch.h     |  1 -
- kernel/livepatch/core.c       | 35 +++++++++++++++--------------------
- kernel/livepatch/core.h       |  2 +-
- kernel/livepatch/transition.c |  2 +-
- 4 files changed, 17 insertions(+), 23 deletions(-)
+Please pull this in!
 
-diff --git a/include/linux/livepatch.h b/include/linux/livepatch.h
-index 9712818997c5..4dcebf52fac5 100644
---- a/include/linux/livepatch.h
-+++ b/include/linux/livepatch.h
-@@ -169,7 +169,6 @@ struct klp_patch {
- 	struct list_head obj_list;
- 	bool enabled;
- 	bool forced;
--	struct work_struct free_work;
- };
- 
- #define klp_for_each_object_static(patch, obj) \
-diff --git a/kernel/livepatch/core.c b/kernel/livepatch/core.c
-index 9ede093d699a..bb573abecb90 100644
---- a/kernel/livepatch/core.c
-+++ b/kernel/livepatch/core.c
-@@ -337,6 +337,7 @@ static ssize_t enabled_store(struct kobject *kobj, struct kobj_attribute *attr,
- 	int ret;
- 	bool enabled;
- 	LIST_HEAD(to_free);
-+	struct kernfs_node *kn = NULL;
- 
- 	ret = kstrtobool(buf, &enabled);
- 	if (ret)
-@@ -369,10 +370,18 @@ static ssize_t enabled_store(struct kobject *kobj, struct kobj_attribute *attr,
- out:
- 	mutex_unlock(&klp_mutex);
- 
--	klp_free_patches_async(&to_free);
--
- 	if (ret)
- 		return ret;
-+
-+	if (!list_empty(&to_free)) {
-+		kn = sysfs_break_active_protection(kobj, &attr->attr);
-+		WARN_ON_ONCE(!kn);
-+		sysfs_remove_file(kobj, &attr->attr);
-+		klp_free_patches(&to_free);
-+		if (kn)
-+			sysfs_unbreak_active_protection(kn);
-+	}
-+
- 	return count;
- }
- 
-@@ -684,32 +693,19 @@ static void klp_free_patch_finish(struct klp_patch *patch)
- 	kobject_put(&patch->kobj);
- }
- 
--/*
-- * The livepatch might be freed from sysfs interface created by the patch.
-- * This work allows to wait until the interface is destroyed in a separate
-- * context.
-- */
--static void klp_free_patch_work_fn(struct work_struct *work)
--{
--	struct klp_patch *patch =
--		container_of(work, struct klp_patch, free_work);
--
--	klp_free_patch_finish(patch);
--}
--
--static void klp_free_patch_async(struct klp_patch *patch)
-+static void klp_free_patch(struct klp_patch *patch)
- {
- 	klp_free_patch_start(patch);
--	schedule_work(&patch->free_work);
-+	klp_free_patch_finish(patch);
- }
- 
--void klp_free_patches_async(struct list_head *to_free)
-+void klp_free_patches(struct list_head *to_free)
- {
- 	struct klp_patch *patch, *tmp_patch;
- 
- 	list_for_each_entry_safe(patch, tmp_patch, to_free, list) {
- 		list_del_init(&patch->list);
--		klp_free_patch_async(patch);
-+		klp_free_patch(patch);
- 	}
- }
- 
-@@ -873,7 +869,6 @@ static int klp_init_patch_early(struct klp_patch *patch)
- 	kobject_init(&patch->kobj, &klp_ktype_patch);
- 	patch->enabled = false;
- 	patch->forced = false;
--	INIT_WORK(&patch->free_work, klp_free_patch_work_fn);
- 
- 	klp_for_each_object_static(patch, obj) {
- 		if (!obj->funcs)
-diff --git a/kernel/livepatch/core.h b/kernel/livepatch/core.h
-index 8ff97745ba40..ea593f370049 100644
---- a/kernel/livepatch/core.h
-+++ b/kernel/livepatch/core.h
-@@ -13,7 +13,7 @@ extern struct list_head klp_patches;
- #define klp_for_each_patch(patch)	\
- 	list_for_each_entry(patch, &klp_patches, list)
- 
--void klp_free_patches_async(struct list_head *to_free);
-+void klp_free_patches(struct list_head *to_free);
- void klp_unpatch_replaced_patches(struct klp_patch *new_patch);
- void klp_discard_nops(struct klp_patch *new_patch);
- 
-diff --git a/kernel/livepatch/transition.c b/kernel/livepatch/transition.c
-index a9ebc9c5db02..3eff5fc0deee 100644
---- a/kernel/livepatch/transition.c
-+++ b/kernel/livepatch/transition.c
-@@ -41,7 +41,7 @@ static void klp_transition_work_fn(struct work_struct *work)
- 
- 	mutex_unlock(&klp_mutex);
- 
--	klp_free_patches_async(&to_free);
-+	klp_free_patches(&to_free);
- }
- static DECLARE_DELAYED_WORK(klp_transition_work, klp_transition_work_fn);
- 
--- 
-2.31.1
+Kind regards
+Ulf Hansson
 
+
+The following changes since commit 90935eb303e0d12f3d3d0383262e65290321f5f6:
+
+  mmc: tmio: reenable card irqs after the reset callback (2021-10-28 23:19:32 +0200)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git tags/mmc-v5.16
+
+for you to fetch changes up to 348ecd61770f6aca0d060fea2bb538e749775638:
+
+  Merge branch 'fixes' into next (2021-10-28 23:20:27 +0200)
+
+----------------------------------------------------------------
+MMC core:
+ - Update maintainer and URL for the mmc-utils
+ - Set default label for slot-gpio in case of no con-id
+ - Convert MMC card DT bindings to a schema
+ - Add optional host specific tuning support for eMMC HS400
+ - Add error handling of add_disk()
+
+MMC host:
+ - mtk-sd: Add host specific tuning support for eMMC HS400
+ - mtk-sd: Make DMA handling more robust
+ - dw_mmc: Prevent hangs for some data writes
+ - dw_mmc: Move away from using the ->init_card() callback
+ - mxs-mmc: Manage the regulator in the error path and in ->remove()
+ - sdhci-cadence: Add support for the Microchip MPFS variant
+ - sdhci-esdhc-imx: Add support for the NXP S32G2 variant
+ - sdhci-of-arasan: Add support for the Intel Thunder Bay variant
+ - sdhci-omap: Prepare to support more SoCs
+ - sdhci-omap: Add support for omap3 and omap4 variants
+ - sdhci-omap: Add support for power management
+ - sdhci-omap: Add support for system wakeups
+ - sdhci-msm: Add support for the msm8226 variant
+ - sdhci-sprd: Verify that the DLL locks according to spec
+
+MEMSTICK:
+ - Add error handling of add_disk()
+ - A couple of small fixes and improvements
+
+----------------------------------------------------------------
+Andy Isaacson (1):
+      docs: mmc: update maintainer name and URL
+
+Andy Shevchenko (7):
+      mmc: slot-gpio: Refactor mmc_gpio_alloc()
+      mmc: slot-gpio: Update default label when no con_id provided
+      mmc: sdhci: Deduplicate sdhci_get_cd_nogpio()
+      mmc: sdhci: Remove unused prototype declaration in the header
+      mmc: sdhci-pci: Remove dead code (struct sdhci_pci_data et al)
+      mmc: sdhci-pci: Remove dead code (cd_gpio, cd_irq et al)
+      mmc: sdhci-pci: Remove dead code (rst_n_gpio et al)
+
+Arnd Bergmann (1):
+      memstick: avoid out-of-range warning
+
+Bean Huo (2):
+      mmc: cqhci: Print out qcnt in case of timeout
+      mmc: sdhci: Return true only when timeout exceeds capacity of the HW timer
+
+Cai Huoqing (1):
+      mmc: omap_hsmmc: Make use of the helper macro SET_RUNTIME_PM_OPS()
+
+ChanWoo Lee (3):
+      mmc: sdhci: Change the code to check auto_cmd23
+      mmc: mtk-sd: Remove unused parameters(mrq)
+      mmc: mtk-sd: Remove unused parameters
+
+Chester Lin (2):
+      dt-bindings: mmc: fsl-imx-esdhc: add NXP S32G2 support
+      mmc: sdhci-esdhc-imx: add NXP S32G2 support
+
+Christian Löhle (1):
+      mmc: dw_mmc: Dont wait for DRTO on Write RSP error
+
+Christophe JAILLET (1):
+      mmc: mxs-mmc: disable regulator on error and in the remove function
+
+Colin Ian King (3):
+      mmc: sdhci-pci-o2micro: Fix spelling mistake "unsupport" -> "unsupported"
+      mmc: moxart: Fix null pointer dereference on pointer host
+      mmc: dw_mmc: exynos: Fix spelling mistake "candiates" -> candidates
+
+Dan Carpenter (1):
+      memstick: jmb38x_ms: use appropriate free function in jmb38x_ms_alloc_host()
+
+Derong Liu (1):
+      mmc: mtk-sd: Add wait dma stop done flow
+
+Geert Uytterhoeven (1):
+      mmc: sdhci-omap: Remove forward declaration of sdhci_omap_context_save()
+
+Krzysztof Kozlowski (4):
+      mmc: sdhci-s3c: drop unneeded MODULE_ALIAS
+      mmc: sdhci-s3c: Describe driver in KConfig
+      dt-bindings: mmc: cdns: document Microchip MPFS MMC/SDHCI controller
+      dt-bindings: mmc: arasan,sdci: Drop clock-output-names from dependencies
+
+Len Baker (1):
+      memstick: jmb38x_ms: Prefer struct_size over open coded arithmetic
+
+Linus Walleij (1):
+      mmc: mmci: Add small comment about reset thread
+
+Luca Weiss (1):
+      dt-bindings: mmc: sdhci-msm: Add compatible string for msm8226
+
+Luis Chamberlain (3):
+      mmc: block: Add error handling support for add_disk()
+      memstick: ms_block: Add error handling support for add_disk()
+      memstick: mspro_block: Add error handling support for add_disk()
+
+Lukas Bulwahn (1):
+      MAINTAINERS: drop obsolete file pattern in SDHCI DRIVER section
+
+Mauro Carvalho Chehab (1):
+      dt-bindings: mmc: update mmc-card.yaml reference
+
+Maxime Ripard (1):
+      dt-bindings: mmc: Convert MMC Card binding to a schema
+
+Rashmi A (2):
+      dt-bindings: mmc: Add bindings for Intel Thunder Bay SoC
+      mmc: sdhci-of-arasan: Add intel Thunder Bay SOC support to the arasan eMMC driver
+
+Tony Lindgren (13):
+      mmc: sdhci-omap: Fix NULL pointer exception if regulator is not configured
+      mmc: sdhci-omap: Fix context restore
+      mmc: sdhci-omap: Restore sysconfig after reset
+      mmc: sdhci-omap: Parse legacy ti,non-removable property
+      mmc: sdhci-omap: Check MMCHS_HL_HWINFO register for ADMA
+      dt-bindings: sdhci-omap: Document ti,non-removable property as deprecated
+      dt-bindings: sdhci-omap: Update binding for legacy SoCs
+      mmc: sdhci-omap: Handle voltages to add support omap4
+      mmc: sdhci-omap: Add omap_offset to support omap3 and earlier
+      mmc: sdhci-omap: Implement PM runtime functions
+      mmc: sdhci-omap: Allow SDIO card power off and enable aggressive PM
+      mmc: sdhci-omap: Configure optional wakeirq
+      mmc: sdhci-omap: Fix build if CONFIG_PM_SLEEP is not set
+
+Ulf Hansson (7):
+      Merge branch 'fixes' into next
+      Merge branch 'fixes' into next
+      Merge branch 'fixes' into next
+      mmc: dw_mmc: Drop use of ->init_card() callback
+      Merge branch 'fixes' into next
+      Merge branch 'fixes' into next
+      Merge branch 'fixes' into next
+
+Wenbin Mei (3):
+      dt-bindings: mmc: mtk-sd: Add hs400 dly3 setting
+      mmc: core: Add host specific tuning support for eMMC HS400 mode
+      mmc: mtk-sd: Add HS400 online tuning support
+
+Xin Xiong (1):
+      mmc: moxart: Fix reference count leaks in moxart_probe
+
+Zhenxiong Lai (1):
+      mmc: sdhci-sprd: Wait until DLL locked after being configured
+
+Zheyu Ma (1):
+      memstick: r592: Fix a UAF bug when removing the driver
+
+ .../devicetree/bindings/mmc/arasan,sdhci.yaml      |  26 +-
+ .../devicetree/bindings/mmc/cdns,sdhci.yaml        |   1 +
+ .../devicetree/bindings/mmc/fsl-imx-esdhc.yaml     |   1 +
+ Documentation/devicetree/bindings/mmc/mmc-card.txt |  30 --
+ .../devicetree/bindings/mmc/mmc-card.yaml          |  48 +++
+ .../devicetree/bindings/mmc/mmc-controller.yaml    |   6 -
+ Documentation/devicetree/bindings/mmc/mtk-sd.yaml  |  12 +
+ .../devicetree/bindings/mmc/sdhci-msm.txt          |   1 +
+ .../devicetree/bindings/mmc/sdhci-omap.txt         |   9 +-
+ Documentation/driver-api/mmc/mmc-tools.rst         |   4 +-
+ MAINTAINERS                                        |   1 -
+ drivers/memstick/core/ms_block.c                   |   8 +-
+ drivers/memstick/core/mspro_block.c                |   6 +-
+ drivers/memstick/host/jmb38x_ms.c                  |   5 +-
+ drivers/memstick/host/r592.c                       |   8 +-
+ drivers/mmc/core/block.c                           |   7 +-
+ drivers/mmc/core/mmc.c                             |   8 +
+ drivers/mmc/core/mmc_ops.h                         |   1 -
+ drivers/mmc/core/slot-gpio.c                       |  42 +--
+ drivers/mmc/host/Kconfig                           |   8 +-
+ drivers/mmc/host/Makefile                          |   1 -
+ drivers/mmc/host/cqhci-core.c                      |   4 +-
+ drivers/mmc/host/dw_mmc-exynos.c                   |  20 +-
+ drivers/mmc/host/dw_mmc.c                          |  42 ++-
+ drivers/mmc/host/mmci.c                            |   4 +
+ drivers/mmc/host/moxart-mmc.c                      |  29 +-
+ drivers/mmc/host/mtk-sd.c                          |  99 ++++++-
+ drivers/mmc/host/mxs-mmc.c                         |  10 +
+ drivers/mmc/host/omap_hsmmc.c                      |  12 +-
+ drivers/mmc/host/sdhci-acpi.c                      |  14 +-
+ drivers/mmc/host/sdhci-esdhc-imx.c                 |  17 +-
+ drivers/mmc/host/sdhci-of-arasan.c                 |  29 +-
+ drivers/mmc/host/sdhci-omap.c                      | 322 ++++++++++++++++-----
+ drivers/mmc/host/sdhci-pci-core.c                  | 152 +---------
+ drivers/mmc/host/sdhci-pci-data.c                  |   6 -
+ drivers/mmc/host/sdhci-pci-o2micro.c               |   2 +-
+ drivers/mmc/host/sdhci-pci.h                       |   5 -
+ drivers/mmc/host/sdhci-s3c.c                       |   1 -
+ drivers/mmc/host/sdhci-sprd.c                      |  13 +
+ drivers/mmc/host/sdhci.c                           |  42 ++-
+ drivers/mmc/host/sdhci.h                           |   2 +-
+ include/linux/mmc/host.h                           |   4 +
+ include/linux/mmc/sdhci-pci-data.h                 |  18 --
+ 43 files changed, 670 insertions(+), 410 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/mmc/mmc-card.txt
+ create mode 100644 Documentation/devicetree/bindings/mmc/mmc-card.yaml
+ delete mode 100644 drivers/mmc/host/sdhci-pci-data.c
+ delete mode 100644 include/linux/mmc/sdhci-pci-data.h
