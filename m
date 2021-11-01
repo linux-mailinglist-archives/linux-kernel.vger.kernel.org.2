@@ -2,104 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A202844213F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 21:01:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32E80442141
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 21:02:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230317AbhKAUEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 16:04:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229712AbhKAUES (ORCPT
+        id S230384AbhKAUEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 16:04:33 -0400
+Received: from mail-oi1-f178.google.com ([209.85.167.178]:34668 "EHLO
+        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229560AbhKAUEb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 16:04:18 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21E5FC061764
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 13:01:44 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id t11so12378015plq.11
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 13:01:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language
-         :from:to:cc:references:in-reply-to:content-transfer-encoding;
-        bh=//qLyozC7UQaBdURgH8zYX1NEvcJQYYYqxcLEEiD/C0=;
-        b=peBqNdpy1901jw2VuRMcFADsSNPGF2oy8Kr3JTH5yjMnOZlkZ7FUSw2c+AbfaWojkL
-         u1kye+XZNhbFlI5FANhCGhNvqQHCaD9wlL60y6neZNgZ/aE7uJjVYizEhfyP6ZywkXtd
-         VSlfE1AYfiWuUjtlNT8xjq+tksH6x+z3jhxKPvjYXr1KWwMFrJmFKVkxzcAS6n7gLy3E
-         oI2RURVtjxWVv2m6FeAnrJhrHm9UQQMiNHUIMbsCd8Pngg7Kg9l3w5subPAqC9lA2D3C
-         eIoQThPd3PQcZcDEC9f7/1QFI5rMb1H1J0rxWNXhl8LkFxqbRFuzEvySsq6t/MVzOznT
-         usaA==
+        Mon, 1 Nov 2021 16:04:31 -0400
+Received: by mail-oi1-f178.google.com with SMTP id w193so26633858oie.1;
+        Mon, 01 Nov 2021 13:01:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:from:to:cc:references:in-reply-to
-         :content-transfer-encoding;
-        bh=//qLyozC7UQaBdURgH8zYX1NEvcJQYYYqxcLEEiD/C0=;
-        b=qoZyhzhiNKr7XMcB/97HFaVVlIwYIuz+0/WK9isXIZF+VJfdExFcK/bkR0/s9dgyxR
-         iJGZ6GXCqiQG6V9kjFEo+I5FYgiLKhOS/VzLDiV5zfNX1pyemzeUj2at1qkbi0qXM5Fi
-         Y5tz+T3rhjTU5LdsoQsa7j+iPX5W6VCpQNSpd6Pf7fQpnXcnciA9LIFZzt3LtOjFJxiL
-         a5zD4JdcYK8BcWqAINZOR4ceKzc2+6QZo+QbhdRslw6wxDCsVOGe1in7MVQXbW8slD9L
-         3ooe0iFUC2lHX/xkiPRVPQgKElvdo/K+23bQw397uQhraXP6yF2vJIYxA8H0KFtpU4iW
-         pgug==
-X-Gm-Message-State: AOAM532KxBFodtBM82ZZDUfcF0Pd2iRr/mqX3jH0dWAZYg5XCWifVHYB
-        JhByEWWMO4hdyeVkYLi2znBhTxvtjuKxTLOy
-X-Google-Smtp-Source: ABdhPJzxz3cnVsLDaAL1jCkkJjFC5U9ToZGS8xlNZ6wLOTkNhl62tXI+5y13i4LrDg7zVvr5wX7rbA==
-X-Received: by 2002:a17:902:c407:b0:13f:68f:6753 with SMTP id k7-20020a170902c40700b0013f068f6753mr26985851plk.39.1635796903499;
-        Mon, 01 Nov 2021 13:01:43 -0700 (PDT)
-Received: from [192.168.254.17] ([50.39.160.154])
-        by smtp.gmail.com with ESMTPSA id mr2sm258610pjb.25.2021.11.01.13.01.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Nov 2021 13:01:43 -0700 (PDT)
-Message-ID: <2bf04f26-4e82-a822-90ce-4c28e2c0e407@linaro.org>
-Date:   Mon, 1 Nov 2021 13:01:42 -0700
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vKbU3K+WrEp4o3QSdl7uJ5u0m9E6kBLDNmgHPy+kDDM=;
+        b=u7ot7sA50uXMPix8B+B1TXNVaK0O9tjeMgI2RlSJSYpIny15K7NKzNv4hq3GqqA3nd
+         EzpCcMMSz7PyGoci7XvAW2pzZaGas+Atu1DwCOn7rMPENEAHkYR8UDCfSkZw2kef/IJC
+         p4SKd1GxeWDND2htcLzRN0+XG2tbnKzBNyNmTlVnJ1GIm4I2krwcbmeY3wub7CtEhxaN
+         qKxK+FEwWB3PY5R6/xMDb5R8T5AX4byG91LH6imUHO3dnMkfygRgkKOq5SnjxfFFlVgt
+         0tAnz10Y5YwJxDZpscMSDOeNp9ArwYaBvLG6c+nabkBk8CXfTsDKuKDacuw2TC+vHugZ
+         VTcg==
+X-Gm-Message-State: AOAM53317AZDxMIypndxoWJBBvrggEUhc4hPZwhb0TbfAUfldAiKbXVP
+        avXb+PIkdcOfJnxvzIA9NA==
+X-Google-Smtp-Source: ABdhPJzu9huACWQR3JSRs6TW0bAUKDyIXz9rtmEFdctQS4TyLEu9YE4GVHGZhVUykEvaSkqL5HdO7w==
+X-Received: by 2002:a05:6808:2201:: with SMTP id bd1mr1004520oib.73.1635796917384;
+        Mon, 01 Nov 2021 13:01:57 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id g15sm4551923oiy.8.2021.11.01.13.01.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Nov 2021 13:01:56 -0700 (PDT)
+Received: (nullmailer pid 943361 invoked by uid 1000);
+        Mon, 01 Nov 2021 20:01:55 -0000
+Date:   Mon, 1 Nov 2021 15:01:55 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     tommy-huang <tommy_huang@aspeedtech.com>
+Cc:     dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, daniel@ffwll.ch,
+        BMC-SW@aspeedtech.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org, joel@jms.id.au,
+        andrew@aj.id.au, airlied@linux.ie
+Subject: Re: [PATCH 4/4] dt-bindings: gpu: Add ASPEED GFX bindings document
+Message-ID: <YYBHsy3Ed3Ss9281@robh.at.kernel.org>
+References: <20211101110107.29010-1-tommy_huang@aspeedtech.com>
+ <20211101110107.29010-5-tommy_huang@aspeedtech.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: general protection fault in del_gendisk
-Content-Language: en-US
-From:   Tadeusz Struk <tadeusz.struk@linaro.org>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <7468db5d-55b4-07c9-628a-9a60419d9121@linaro.org>
-In-Reply-To: <7468db5d-55b4-07c9-628a-9a60419d9121@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211101110107.29010-5-tommy_huang@aspeedtech.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/29/21 12:13, Tadeusz Struk wrote:
-> Hi,
-> I'm looking at a bug found by the syzkaller robot [1], and I just wanted
-> to confirm that my understanding is correct, and the issue can be closed.
-> First, the kernel is configured with some fault injections enabled:
+On Mon, 01 Nov 2021 19:01:07 +0800, tommy-huang wrote:
+> Add ast2600-gfx description for gfx driver.
 > 
-> CONFIG_FAULT_INJECTION=y
-> CONFIG_FAILSLAB=y
-> CONFIG_FAIL_PAGE_ALLOC=y
+> Signed-off-by: tommy-huang <tommy_huang@aspeedtech.com>
+> ---
+>  Documentation/devicetree/bindings/gpu/aspeed-gfx.txt | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> The test adds loop devices, which causes some entries in sysfs to be created.
-> It does some magic with ioctls, which calls:
-> __device_add_disk() -> register_disk()
-> which eventually triggers sysfs_create_files() and it crashes there,
-> in line 627 [2], because the fault injector logic triggers it.
-> That can be seen in the trace [3]:
-> [   34.089707][ T1813] FAULT_INJECTION: forcing a failure.
-> 
-> Sysfs code returns a -ENOMEM error, but because the __device_add_disk()
-> implementation mostly uses void function, and doesn't return on errors [4]
-> it goes farther, hits some warnings, like:
-> disk_add_events() -> sysfs_create_files() -> sysfs_create_file_ns() - > WARN()
-> and eventually triggers general protection fault in sysfs code, and panics there.
-> 
-> I think for this to recover and return an error to the caller via ioctl()
-> the __device_add_disk() code would need be reworked to handle errors,
-> and return errors to the caller.
-> My question is: is it implemented like this by design? Are there any plans
-> to make it fail more gracefully?
 
-Hi,
-Any comments on this one?
 
--- 
-Thanks,
-Tadeusz
+Please add Acked-by/Reviewed-by tags when posting new versions. However,
+there's no need to repost patches *only* to add the tags. The upstream
+maintainer will do that for acks received on the version they apply.
+
+If a tag was not added on purpose, please state why and what changed.
+
