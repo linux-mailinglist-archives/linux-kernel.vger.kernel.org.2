@@ -2,116 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF00E441FF3
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 19:22:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3890E441FF9
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 19:23:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231978AbhKASYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 14:24:37 -0400
-Received: from ink.ssi.bg ([178.16.128.7]:37455 "EHLO ink.ssi.bg"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231916AbhKASYe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 14:24:34 -0400
-Received: from ja.ssi.bg (unknown [178.16.129.10])
-        by ink.ssi.bg (Postfix) with ESMTPS id 8B0DA3C0332;
-        Mon,  1 Nov 2021 20:21:56 +0200 (EET)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-        by ja.ssi.bg (8.16.1/8.16.1) with ESMTP id 1A1ILsOa006822;
-        Mon, 1 Nov 2021 20:21:54 +0200
-Date:   Mon, 1 Nov 2021 20:21:54 +0200 (EET)
-From:   Julian Anastasov <ja@ssi.bg>
-To:     yangxingwu <xingwu.yang@gmail.com>
-cc:     Simon Horman <horms@verge.net.au>, pablo@netfilter.org,
-        netdev@vger.kernel.org, lvs-devel@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-doc@vger.kernel.org, Chuanqi Liu <legend050709@qq.com>
-Subject: Re: [PATCH nf-next v5] netfilter: ipvs: Fix reuse connection if RS
- weight is 0
-In-Reply-To: <20211101020416.31402-1-xingwu.yang@gmail.com>
-Message-ID: <ae67eb7b-a25f-57d3-195f-cdbd9247ef5b@ssi.bg>
-References: <20211101020416.31402-1-xingwu.yang@gmail.com>
+        id S231803AbhKASZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 14:25:55 -0400
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:45027 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231533AbhKASZy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 14:25:54 -0400
+Received: (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 7F356240009;
+        Mon,  1 Nov 2021 18:23:13 +0000 (UTC)
+Date:   Mon, 1 Nov 2021 19:23:13 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Pavel Modilaynen <pavelmn@axis.com>
+Cc:     Pavel Modilaynen <Pavel.Modilaynen@axis.com>,
+        "a.zummo@towertech.it" <a.zummo@towertech.it>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "lkml@axis.com" <lkml@axis.com>, kernel <kernel@axis.com>
+Subject: Re: [PATCH 1/2] rtc: rs5c372: Add support for trim configuration
+Message-ID: <YYAwkZ0RmhyfSewe@piout.net>
+References: <20211030225054.32114-1-pavel.modilaynen@axis.com>
+ <20211030225054.32114-2-pavel.modilaynen@axis.com>
+ <YX3N9b6P4w1kSGfp@piout.net>
+ <6cc22970-fa11-ccb4-c155-62396a7e3890@axis.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6cc22970-fa11-ccb4-c155-62396a7e3890@axis.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-	Hello,
-
-On Mon, 1 Nov 2021, yangxingwu wrote:
-
-> We are changing expire_nodest_conn to work even for reused connections when
-> conn_reuse_mode=0, just as what was done with commit dc7b3eb900aa ("ipvs:
-> Fix reuse connection if real server is dead").
+On 31/10/2021 11:29:12+0100, Pavel Modilaynen wrote:
+> On 10/31/21 12:57 AM, Alexandre Belloni wrote:
+> > Hello,
+> > 
+> > Please use the proper RTC interface by implementing .set_offset and
+> > .read_offset.
 > 
-> For controlled and persistent connections, the new connection will get the
-> needed real server depending on the rules in ip_vs_check_template().
+> I am not sure about .set/read_offset. It looks as runtime adjustment
+> interface,
+> however this Xtal trimming parameter is based on schematics and Xtal
+> capacitance (datasheet parameter).
+> It is found by calibration procedure based on RTC clock output (the
+> procedure and calculation of trimming parameter is described in datasheets).
+> So, I would like to say that this parameter is functionally close to
+> "quartz-load-femtofarads" for rtc-pcf8523/pcf85063.
 > 
-> Fixes: d752c3645717 ("ipvs: allow rescheduling of new connections when port reuse is detected")
-> Co-developed-by: Chuanqi Liu <legend050709@qq.com>
-> Signed-off-by: Chuanqi Liu <legend050709@qq.com>
-> Signed-off-by: yangxingwu <xingwu.yang@gmail.com>
 
-	Looks good to me, thanks!
+quartz-load-femtofarads is for analog trimming which this RTC doesn't
+have, both CD and CG are set to 10pF. .set/read_offset are for digital
+trimming which is what you are configuring here. You definitively want
+to be able to do that at runtime as you need to adjust for temperature
+and ageing of the crystal (datasheet, page 14: "For those systems that
+have temperature detection precision of clock function may be increased
+by correcting clock error according to temperature fluctuations.")
 
-Acked-by: Julian Anastasov <ja@ssi.bg>
+> > 
+> > On 31/10/2021 00:50:53+0200, Pavel Modilaynen wrote:
+> > > From: Pavel Modilaynen <pavelmn@axis.com>
+> > > 
+> > > Add support for oscillation adjustment register RS5C372_REG_TRIM
+> > > setting that is needed to accommodate for effective crystal
+> > > capacitance.
+> > > 
+> > > Use optional property ricoh,trim that should contain
+> > > raw value to setup this register. According to
+> > > datasheets for RS5C372, R2025S/D, RV5C38[67] and R222[13]
+> > > the value will be converted to a number of ticks that
+> > > is to be subtracted or added when the second digits read
+> > > 00, 20 or 40 seconds.
+> > > 
+> > > Signed-off-by: Pavel Modilaynen <pavelmn@axis.com>
+> > > ---
+> > >   drivers/rtc/rtc-rs5c372.c | 18 +++++++++++++++++-
+> > >   1 file changed, 17 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/drivers/rtc/rtc-rs5c372.c b/drivers/rtc/rtc-rs5c372.c
+> > > index 80980414890c..3a2db0326669 100644
+> > > --- a/drivers/rtc/rtc-rs5c372.c
+> > > +++ b/drivers/rtc/rtc-rs5c372.c
+> > > @@ -13,6 +13,7 @@
+> > >   #include <linux/slab.h>
+> > >   #include <linux/module.h>
+> > >   #include <linux/of_device.h>
+> > > +#include <linux/of.h>
+> > >   /*
+> > >    * Ricoh has a family of I2C based RTCs, which differ only slightly from
+> > > @@ -560,6 +561,8 @@ static int rs5c_oscillator_setup(struct rs5c372 *rs5c372)
+> > >   {
+> > >         unsigned char buf[2];
+> > >         int addr, i, ret = 0;
+> > > +     struct i2c_client *client = rs5c372->client;
+> > > +     u8 trim = 0;
+> > >         addr   = RS5C_ADDR(RS5C_REG_CTRL1);
+> > >         buf[0] = rs5c372->regs[RS5C_REG_CTRL1];
+> > > @@ -599,9 +602,22 @@ static int rs5c_oscillator_setup(struct rs5c372 *rs5c372)
+> > >                 break;
+> > >         }
+> > > +     /* optional setup of xtal trimming */
+> > > +     if (!of_property_read_u8(client->dev.of_node, "ricoh,trim", &trim)) {
+> > > +             if (rs5c372->type != rtc_r2221tl && (trim & ~RS5C372_TRIM_MASK)) {
+> > > +                     dev_warn(&client->dev, "Erroneous setting for ricoh,trim in devicetree\n");
+> > > +             } else {
+> > > +                     int addr = RS5C_ADDR(RS5C372_REG_TRIM);
+> > > +                     int ret = i2c_smbus_write_byte_data(client, addr, trim);
+> > > +
+> > > +                     if (unlikely(ret < 0))
+> > > +                             return ret;
+> > > +             }
+> > > +     }
+> > > +
+> > >         for (i = 0; i < sizeof(buf); i++) {
+> > >                 addr = RS5C_ADDR(RS5C_REG_CTRL1 + i);
+> > > -             ret = i2c_smbus_write_byte_data(rs5c372->client, addr, buf[i]);
+> > > +             ret = i2c_smbus_write_byte_data(client, addr, buf[i]);
+> > >                 if (unlikely(ret < 0))
+> > >                         return ret;
+> > >         }
+> > > -- 
+> > > 2.20.1
+> > > 
+> > 
+> > -- 
+> > Alexandre Belloni, co-owner and COO, Bootlin
+> > Embedded Linux and Kernel engineering
+> > https://bootlin.com <https://bootlin.com>
 
-> ---
->  Documentation/networking/ipvs-sysctl.rst | 3 +--
->  net/netfilter/ipvs/ip_vs_core.c          | 8 ++++----
->  2 files changed, 5 insertions(+), 6 deletions(-)
-> 
-> diff --git a/Documentation/networking/ipvs-sysctl.rst b/Documentation/networking/ipvs-sysctl.rst
-> index 2afccc63856e..1cfbf1add2fc 100644
-> --- a/Documentation/networking/ipvs-sysctl.rst
-> +++ b/Documentation/networking/ipvs-sysctl.rst
-> @@ -37,8 +37,7 @@ conn_reuse_mode - INTEGER
->  
->  	0: disable any special handling on port reuse. The new
->  	connection will be delivered to the same real server that was
-> -	servicing the previous connection. This will effectively
-> -	disable expire_nodest_conn.
-> +	servicing the previous connection.
->  
->  	bit 1: enable rescheduling of new connections when it is safe.
->  	That is, whenever expire_nodest_conn and for TCP sockets, when
-> diff --git a/net/netfilter/ipvs/ip_vs_core.c b/net/netfilter/ipvs/ip_vs_core.c
-> index 128690c512df..f9d65d2c8da8 100644
-> --- a/net/netfilter/ipvs/ip_vs_core.c
-> +++ b/net/netfilter/ipvs/ip_vs_core.c
-> @@ -1964,7 +1964,6 @@ ip_vs_in(struct netns_ipvs *ipvs, unsigned int hooknum, struct sk_buff *skb, int
->  	struct ip_vs_proto_data *pd;
->  	struct ip_vs_conn *cp;
->  	int ret, pkts;
-> -	int conn_reuse_mode;
->  	struct sock *sk;
->  
->  	/* Already marked as IPVS request or reply? */
-> @@ -2041,15 +2040,16 @@ ip_vs_in(struct netns_ipvs *ipvs, unsigned int hooknum, struct sk_buff *skb, int
->  	cp = INDIRECT_CALL_1(pp->conn_in_get, ip_vs_conn_in_get_proto,
->  			     ipvs, af, skb, &iph);
->  
-> -	conn_reuse_mode = sysctl_conn_reuse_mode(ipvs);
-> -	if (conn_reuse_mode && !iph.fragoffs && is_new_conn(skb, &iph) && cp) {
-> +	if (!iph.fragoffs && is_new_conn(skb, &iph) && cp) {
->  		bool old_ct = false, resched = false;
-> +		int conn_reuse_mode = sysctl_conn_reuse_mode(ipvs);
->  
->  		if (unlikely(sysctl_expire_nodest_conn(ipvs)) && cp->dest &&
->  		    unlikely(!atomic_read(&cp->dest->weight))) {
->  			resched = true;
->  			old_ct = ip_vs_conn_uses_old_conntrack(cp, skb);
-> -		} else if (is_new_conn_expected(cp, conn_reuse_mode)) {
-> +		} else if (conn_reuse_mode &&
-> +			   is_new_conn_expected(cp, conn_reuse_mode)) {
->  			old_ct = ip_vs_conn_uses_old_conntrack(cp, skb);
->  			if (!atomic_read(&cp->n_control)) {
->  				resched = true;
-> -- 
-> 2.30.2
-
-Regards
-
---
-Julian Anastasov <ja@ssi.bg>
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
