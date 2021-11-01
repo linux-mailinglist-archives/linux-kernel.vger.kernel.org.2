@@ -2,94 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F926441CB0
+	by mail.lfdr.de (Postfix) with ESMTP id 67CD3441CB1
 	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 15:33:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232583AbhKAOfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 10:35:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232324AbhKAOfG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 10:35:06 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB8C8C061714
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 07:32:32 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id z200so12602369wmc.1
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 07:32:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=eQqahKTGy/MjzWPjPgHv9G3Dq9AQliR92JEsevc2x1Y=;
-        b=nE28LLhF3UnGHnDj48x/XzJJMVEJCxwyGRf2cmDGJqjSnuRt7grKqgiOnoqF8n0Fpq
-         oA/BHmbaCPyX0CCRmfZ9Ce8C0xY7GH9diteX7/7Ok1fYP/WkxdSy+lXx2ePqR64O8N86
-         ArX8bvlVZYKx/Gsq+8gzKS0z6Td3X6Nl0aiZk2pdHzsXYKisVP7dY12N8FdGq8fY2Ib1
-         HoPYQO33UwPCgJDkU3EdiM33zQ7H5J3pnkh1BN5EyqMoWVFZhUU3ZDwe7PEYBiWtbg/Y
-         BRpiKyJ/9jBQ9Cf17VJCcTlIb6UPxhWU+Q74Ka9nSzukmaXhrdqDgR8mPLa+Yt7S24ZU
-         4twg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=eQqahKTGy/MjzWPjPgHv9G3Dq9AQliR92JEsevc2x1Y=;
-        b=yT3OEU+zr7u4p4AFdtHg9o5efK3tpWOAAxXTGGr9u8g4Db7SSE5YW2vEsNT6lzwwX8
-         WGFcUya0No01foWt3xoCbJoPI4EhdlLLeY+Jlg8C49bxINZw16c/7GKT9lwRHlXoeGdO
-         PJDq8iMCFUod0qLs6he9vA1tDCmRSKIK1f1UmINNjqSDACoKqVCCJF4b/GZX0XZIFjBM
-         1gZx26ytANMS6KrpSBwlf4LoCT6MclWRm0sepaQzu5Y8qxY7joCwhqYKLW7XinO9EwRH
-         PVqbRdvJfs/AxIMoeMcEguOSB6JLfwDr7dUkZ8Cp0KtU2FoYHf1slIMVJFPKPKB4+sZO
-         g47A==
-X-Gm-Message-State: AOAM532XJg/HKdkS8N3J6mWjkLpdfBa70OpC3hQjivZG7LA+JoHvEe/S
-        iN/7gf8TjN5+6hU2+ylTofvur4ri8MqxEg==
-X-Google-Smtp-Source: ABdhPJxqeOqeGYw1A4CrmHtKB2njReHmBW3FSIK1wmeKnNAwvVTzoJmPb0kWReVK5R60Em5CavuS6Q==
-X-Received: by 2002:a7b:ce16:: with SMTP id m22mr9092639wmc.39.1635777151495;
-        Mon, 01 Nov 2021 07:32:31 -0700 (PDT)
-Received: from localhost.localdomain ([2a01:4b00:f411:e700:e085:8cb7:7bf6:5d62])
-        by smtp.gmail.com with ESMTPSA id l8sm17157721wry.43.2021.11.01.07.32.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 07:32:31 -0700 (PDT)
-From:   Karolina Drobnik <karolinadrobnik@gmail.com>
-To:     outreachy-kernel@googlegroups.com
-Cc:     gregkh@linuxfoundation.org, forest@alittletooquiet.net,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Karolina Drobnik <karolinadrobnik@gmail.com>,
-        Mike Rapoport <mike.rapoport@gmail.com>
-Subject: [PATCH v2 8/8] staging: vt6655: Delete bogus check for `init_count` in AL7230
-Date:   Mon,  1 Nov 2021 14:32:06 +0000
-Message-Id: <ef1cc739e6b3e00c0ff138f25d1b9eb4d27e7763.1635773681.git.karolinadrobnik@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <cover.1635773679.git.karolinadrobnik@gmail.com>
-References: <cover.1635773679.git.karolinadrobnik@gmail.com>
+        id S232523AbhKAOfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 10:35:20 -0400
+Received: from mail-eopbgr10131.outbound.protection.outlook.com ([40.107.1.131]:36769
+        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231889AbhKAOfI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 10:35:08 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kDqnJ41mxTrGBEGf2W2GpHYw4FYqPuuSw0Ewl8qCGFq3lVfhvHwkGSKgktmTX2iLdtk9/EMQUUQg9n0JvTXVUJAlFROS9nGUq6iOIy/eTtKXP9hYTySrXG6ZeKf4u11jlctH0HI1OzsZstefR1Xu0yOZLSxqD0Gnivc6X3q7pPRmSFlfsUGxqMYBOa79qhoFWODhx6YMxsPFfwzeKWHjevaRTJL8R3Wgu/PGGSWqqBf0Ntw1S8YuBzGWQ9Do4gi2umkpIz5xsIAhbUPXTKLBYe5pNiw2FhtxECAXC8AStpD3Q0fu8PIACwQoCyvT3UzwwUUBzWZmH2q7f5po4mfVsQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=AvUq8KZddBE//Ye4uc/TjJlFFod/Lg8FuK+SdgOz0E8=;
+ b=Mj6AQUbxZQOSuDw+JUYWd1TVtgXegCN8ShdZoqkNRzVdhYYlV/kWilJ/U43jAh80EiWRq33wOr4K5OzzsztoKH5L1FVwEIQ4OeJ3u/a3BbE2Mp4jJIkkhny5hV2kglcozrpGgdUu+2jVshurCuiH+Kt6F6oekZjOUlJOWqUiU7hfTFIUev6Xdk77lG83M3IpBosJJBLQGuNze06jKXvBcaKU0kst0t8DR2u5Xv1TQgjPcIf8JCLP2e+RWM7IDBNhHc4H4qR7IHiHdZSQI2U5eAtG0GF0xXp+LdH5NgpMLj47aBM2gqiVNAjQS5E8Abuh2kPxa4PwYrkT7fb3R2LWRg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=axentia.se; dmarc=pass action=none header.from=axentia.se;
+ dkim=pass header.d=axentia.se; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axentia.se;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AvUq8KZddBE//Ye4uc/TjJlFFod/Lg8FuK+SdgOz0E8=;
+ b=WbLRoxZ+1hXkyky5jKtmVEF8+nc24cEynmgUtPM7lw1bCxm7763F6i9pVGIxkVZ1AIEUBmSqmMf+GWPfsGj0RaVLmNevkdvxQDUJyfX7Oepz7f/RmEDjmEzVPnqnmrd/Hr3QbPyPqFr1yLPCx6bKSIyRf5Wx49PwUqrpcGGeEkE=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=axentia.se;
+Received: from DB8PR02MB5482.eurprd02.prod.outlook.com (2603:10a6:10:eb::29)
+ by DB6PR0201MB2294.eurprd02.prod.outlook.com (2603:10a6:4:33::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.18; Mon, 1 Nov
+ 2021 14:32:32 +0000
+Received: from DB8PR02MB5482.eurprd02.prod.outlook.com
+ ([fe80::b1d6:d448:8d63:5683]) by DB8PR02MB5482.eurprd02.prod.outlook.com
+ ([fe80::b1d6:d448:8d63:5683%6]) with mapi id 15.20.4649.019; Mon, 1 Nov 2021
+ 14:32:32 +0000
+Message-ID: <fb0ca91d-f5fa-5977-7574-8926d8d0e3bb@axentia.se>
+Date:   Mon, 1 Nov 2021 15:32:29 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v3 1/2] dt-bindings: i2c-mux: Add property for settle time
+Content-Language: en-US
+To:     Horatiu Vultur <horatiu.vultur@microchip.com>, robh+dt@kernel.org,
+        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211101122545.3417624-1-horatiu.vultur@microchip.com>
+ <20211101122545.3417624-2-horatiu.vultur@microchip.com>
+From:   Peter Rosin <peda@axentia.se>
+Organization: Axentia Technologies AB
+In-Reply-To: <20211101122545.3417624-2-horatiu.vultur@microchip.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: OL1P279CA0004.NORP279.PROD.OUTLOOK.COM
+ (2603:10a6:e10:12::9) To DB8PR02MB5482.eurprd02.prod.outlook.com
+ (2603:10a6:10:eb::29)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: from [192.168.13.3] (185.178.140.238) by OL1P279CA0004.NORP279.PROD.OUTLOOK.COM (2603:10a6:e10:12::9) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.15 via Frontend Transport; Mon, 1 Nov 2021 14:32:31 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a25c54ad-ef9d-4d2f-8c63-08d99d44706a
+X-MS-TrafficTypeDiagnostic: DB6PR0201MB2294:
+X-Microsoft-Antispam-PRVS: <DB6PR0201MB2294FF84F738D0FCDD064F2FBC8A9@DB6PR0201MB2294.eurprd02.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: LWBnEXQk2zs0mxX4xEbzNaghUkqwYTyxZVnqiXnVjz+6L/KEeqFifPabSl1KO33XPWFf0OFUN01mUpr5MRc3Pw2McOGW0UKZMG+hz4FJAdbgn2sVw6DYIqlumxNaHXXgH+4902jNyk40r8aiKcP2evW1KQiAiVtZPckVIY0M25WgC7D7GZYgL+VraqngnuTlV5s037j68EtCrQhfZUw/DoMafqDuC/TuBUJ/q4HJAQVr43w8aa5W/y3jL38cAHMvn6dqK90nTRbzzPS8A74hCVU5JWVbkFVMyxtuA/Eb8dGReVTQFtDtiqzfStGG9f9RJ7K1RoQSc6v8z8T7SGJBPVz2ajGIOSGs2XuNSoCfpNzQOqpnSU5SXh/aZZZOZcv9mI7N8aT3sx0fsVN1QWnlj59+ZyGnsodqOeCsbwQhDD+ldWnhgDih2ynG2hDkB1zW9wxf28Ojv6Ez3nwht5wLrOxXRIhth7pU/7wu95an2Z7Dmhho10vdu/aRNLz7icSL4GpujtF8zZBoYtZDRtT/xzMslEAl2Q9K0g5E+PLGYCbwiwmp5A3iXvcKb/ax95F/chwo2dIhEoxWxSoFCPt0qgP/R0G+BDCKOVVwj65ZpS15DhgHX3KOE29VYSH6rd0E7cbnfGQ77JOwHXxMwdW2WeCdfazifQp7jf/7sVQYqzpJV4EbWhj/KkVPkJvrM37pn5UC+J8VhpCF+2cBjHyiOfhOHsVuOn0UGd83hNDSF9o=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR02MB5482.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(366004)(396003)(376002)(39840400004)(346002)(31696002)(26005)(53546011)(86362001)(186003)(31686004)(36756003)(36916002)(38100700002)(16576012)(83380400001)(316002)(2616005)(956004)(8936002)(8676002)(66476007)(66556008)(66946007)(5660300002)(2906002)(6486002)(508600001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eUFzWGl3MW9udDdSWjJ4MHZ5cTBvYVpYajJ3WGwzYlNBUjRHVXJYbE56Wlow?=
+ =?utf-8?B?Y3lOT21QbHlOeUlEcHpiQWViRHNSOVFQYVVUQktyalllZXVNOE9vRVNVblFi?=
+ =?utf-8?B?czI4dzFPeUxDODFaZldiVDJYbWFmTWJPbWZnd3lhUWJiN0h4clZuSWtxYnVk?=
+ =?utf-8?B?NmdWZTh0SzY0ZlRTdFJ6VThLZkk3RGRzUTFGQURpdGdqc2RMZndKeW03NzVJ?=
+ =?utf-8?B?aFRaNDVNTU90TlNORzNYQlVwbXk1VlVDS2hvM2ZWM296REkzYlo1ZkJ1TTZE?=
+ =?utf-8?B?VjkxU3d3a1ZZbU1Yd01HWlhXM2hKV0NpaWx0L0JYWnZ0b2VnZU0yT2c1SVJq?=
+ =?utf-8?B?Z0V6U2NxcWxudXd1ak9STTJTV0VlNFRXMWZ5a1cxYkhaZ1Fib0NkWUQxa2Zp?=
+ =?utf-8?B?SWREYXdiejZhWjkwaDRtTlY1dy9QT1Fjd2R3TDBodlVYaWdGTllhQU9iVTg5?=
+ =?utf-8?B?S1NHWTREOWRFNlZsRmFNZm9HYTBqRlJHV0lxakhCenY1UzM3U2NnMlVrcllU?=
+ =?utf-8?B?MlJPQlUxbHBOSGl4eG83TGxWSzUwNlIwMjVQaTgySlhENGxzcEQvdU5SU3BN?=
+ =?utf-8?B?MnRDN2M5T0d6UkF3cllQbTVCUzVnM2VTLzVBenhtOUZZcEJvbmVUUE13R1lv?=
+ =?utf-8?B?aVZzVWlZYlQ4elVwdWZDNm9xUGdTMVhWTGplaU1ZakxHWEE2elBxU3NBejJQ?=
+ =?utf-8?B?bklIR3ZKMzFKOVlvSkZaZzdreDA2a01jdFgreXJiRXNiazJ0cUZ2VEJKVmlt?=
+ =?utf-8?B?TnRpTnA1YVI1enRCdUFyaTlrRnR3THoyNnp6U0tLcmhveHBjc21CdDYwMnJs?=
+ =?utf-8?B?Y1lCWTNwQWZsOWhlQTUwZnVVTTM2Q084Yk1oZ0N4cGRXQTRkQnlBSWttWDdR?=
+ =?utf-8?B?RkFSbFZoaXN2ai8yTkhrNVlxd0RkZUNYeHU2cUNFRjBJYmU1MmREa0hNNDNJ?=
+ =?utf-8?B?NTJNaHpZMWh4OEw2OVd5NkpBamV6dmxDeW5iZk96TnJQQkpqZTBTY091d0tt?=
+ =?utf-8?B?Snk5aGNUZ2Y2M2VWZjJwYnlzdHNidkpyMllISzdWYkNHdE05SGFuTGZFS3FW?=
+ =?utf-8?B?Z0lSd3BpYXNzandDNnhVVDBodnVmNTZWT21HQkFURXJnUUcySkFyb2RyaVI2?=
+ =?utf-8?B?VjUzMGoycHNuTDZpK3VhM2ZGN3J2ZVlWV0crNE5odkFYbzUvVW5mbU1lbVE0?=
+ =?utf-8?B?a003cENncFR0S0M5bStNYnM5TVVKMndYSTVFYm8yS3hIak9OOW43R2NSeWRm?=
+ =?utf-8?B?OHczRTRQTlVoSlVZV2pUSDJZV0JOWEJ5VjFnS1U4U1g4eGltcHRZeHNEdEs4?=
+ =?utf-8?B?Wk8zcEp6dm9lbU1hQW9PYkxtRG1VOGF3czkzM0dQd0NUejJHaWNwcVJaSEoy?=
+ =?utf-8?B?ZzdqcVduN2tNQTkxc21hS3hEMHVRekVtaHgvb1hEbklEMVljVll6YVBZeklj?=
+ =?utf-8?B?RTByZHpOaWJXdGdCMDd6MG9KMGdtYkRiaEZnbDFJOTVrc0pLbXlxM092dFlM?=
+ =?utf-8?B?eFNJUHkwRUdmVUgwSmdiSE0yVkZ5RUp4aGFua1RMS210SmhyaC9nNVBBQ1pT?=
+ =?utf-8?B?KzhybzFmNVJZSHE1RDB2MDNoNjFUOER0YjBqbDkrdW1XdGlUTGlXQUp1YWl1?=
+ =?utf-8?B?OTJ3cFp3T0tEK0Fhb2pJcGJEa3dHa3ZiWEgxRFJjRmFlT2kzWTJHS1E4WmMr?=
+ =?utf-8?B?K01sREF0UW45cTFUT2piTGZwVkREVWpVWWZ5TnRBaXFGelNZNnA5eU9qVGcv?=
+ =?utf-8?B?clE1QXhKc0dxVkJDSi8rNEV6MnNzL2VOS3FLSTFPcGo4eVFpN0QwZDBDaWNx?=
+ =?utf-8?B?RVdSODhJV01HSndqVVdQZC9FSWxEWTNZaElYSU5tamZWZmpxbkI3eHp1bmdV?=
+ =?utf-8?B?RVZrODBIRHJmMWFWNlBHU2c5OXdjdFhvUzFTT296eXlySWIxUis3MXdEcDlO?=
+ =?utf-8?B?TXlybnNlbXVhSS9YTW5ja1IwN0FaVFR1SzUwb0VUNzdjTXpEMEtHRTA4ck50?=
+ =?utf-8?B?TmJKaFovYmhwU1k2V3JtQVhpaFFyK3d5Q1orbFRwbTAvaTVrSHU0K1RTUExp?=
+ =?utf-8?B?bnpCWHRYTDVNSmZHUWRranlzN3F0YTVMbnNubktkcnUvTmVJUmw5YTl6MmlT?=
+ =?utf-8?Q?X+bM=3D?=
+X-OriginatorOrg: axentia.se
+X-MS-Exchange-CrossTenant-Network-Message-Id: a25c54ad-ef9d-4d2f-8c63-08d99d44706a
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR02MB5482.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Nov 2021 14:32:32.1272
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4ee68585-03e1-4785-942a-df9c1871a234
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: SiXIcaXOJK6VMWSBzNFREkw2Vsc+UEnAVPhML6btZOB7rE1l8RvwBNQaXeXYUcEH
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0201MB2294
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove an unnecessary check in `rf_write_wake_prog_syn` in `RF_AIROHA7230`
-switch case. This `if` conditional will never be true as `init_count` is
-equal to 19 and can't be bigger than `MISCFIFO_SYNDATASIZE - 0`, which
-is equal to 21.
+On 2021-11-01 13:25, Horatiu Vultur wrote:
+> Some HW requires some time for the signals to settle after the muxing is
+> changed. Allow this time to be specified in device tree.
+> 
+> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+> ---
+>  Documentation/devicetree/bindings/i2c/i2c-mux.yaml | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/i2c/i2c-mux.yaml b/Documentation/devicetree/bindings/i2c/i2c-mux.yaml
+> index 24cac36037f5..4628ff6340c1 100644
+> --- a/Documentation/devicetree/bindings/i2c/i2c-mux.yaml
+> +++ b/Documentation/devicetree/bindings/i2c/i2c-mux.yaml
+> @@ -29,6 +29,12 @@ properties:
+>    '#size-cells':
+>      const: 0
+>  
+> +  settle-time-us:
+> +    default: 0
+> +    description:
+> +      The time required for the signals to settle. Currently only the
+> +      i2c-mux-gpmux driver supports this optional binding.
 
-Suggested-by: Mike Rapoport <mike.rapoport@gmail.com>
-Signed-off-by: Karolina Drobnik <karolinadrobnik@gmail.com>
----
- drivers/staging/vt6655/rf.c | 2 --
- 1 file changed, 2 deletions(-)
+The information about how i2c-mux-gpmux is special is bound to go stale,
+and I don't think we should mention such specific details in the binding.
+What I meant was a generic warnings about optional bindings perhaps not
+being supported by all drivers, along the lines of this from i2c.txt:
 
-diff --git a/drivers/staging/vt6655/rf.c b/drivers/staging/vt6655/rf.c
-index a150f1df3824..653f72c7ce5b 100644
---- a/drivers/staging/vt6655/rf.c
-+++ b/drivers/staging/vt6655/rf.c
-@@ -710,8 +710,6 @@ bool rf_write_wake_prog_syn(struct vnt_private *priv, unsigned char rf_type,
- 		 /* Init Reg + Channel Reg (3) */
- 		init_count = CB_AL7230_INIT_SEQ + 3;
- 		sleep_count = 0;
--		if (init_count > (MISCFIFO_SYNDATASIZE - sleep_count))
--			return false;
- 
- 		init_table = (channel <= CB_MAX_CHANNEL_24G) ?
- 			al7230_init_table : al7230_init_table_a_mode;
--- 
-2.30.2
+"These properties may not be supported by all drivers. However, if a driver
+ wants to support one of the below features, it should adapt these bindings."
 
+However, I now notice that this sentence makes no sense. It looks like it
+should be s/adapt/adopt/.
+
+And, in the i2c-mux.yaml case it can simply say "Optional properties"
+instead of "These properites" (which refers to a subset of properties
+immediately below the text) since with a yaml binding it is always
+clear which properties are optional and which are required. Lastly, I
+guess this warning belongs in the description.
+
+> +
+>  patternProperties:
+>    '^i2c@[0-9a-f]+$':
+>      $ref: /schemas/i2c/i2c-controller.yaml
+> 
+
+Since this is the first optional property, you now need to specify what
+properties are required, which is everything but settle-time-us. If you
+don't, all properties are required. Which is not what we want...
+
+Something like this should do it, I think:
+
+required:
+  - compatible
+  - '#address-cells'
+  - '#size-cells'
+
+Cheers,
+Peter
