@@ -2,123 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06AC0441B98
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 14:18:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F4FD441B97
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 14:17:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232298AbhKANUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 09:20:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48888 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232191AbhKANU3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 09:20:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E0E3D60EE9;
-        Mon,  1 Nov 2021 13:17:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635772675;
-        bh=FhR1P06NTpzsKAAOjSZbOsnmE+WyM4ZC/stVrFCPX60=;
-        h=From:To:Cc:Subject:Date:From;
-        b=gcBoHXYmqHxUY3X6NU88XUt7i9BTTwDjL5thZ6UB/ZcYsiyZSOV8+ZfJcZZxE9HfA
-         /wRJ2y9uuX35TuEdD7D8K8OlU5/yM0DgVb/ZdMWQAvphuspls2flJ4qSLmPniOcY30
-         6L81jgTIewje4qiYp2o5DuMxs+lV9ZIRKsIblYbRhtNqgzHiF/MhT+2TC7JBgsfF2v
-         bV6Lv3vBSPGcEgbVrcbhMLKW18jc5u8Hm1RlZWTVwDlSW4N+A3fZUyCEnSB3IDav3S
-         /HKCKuxTb5yo6m6dTsJOk+rwafELwA2OVHt6hHHVOKugqdtqaX8NH7MPYyz3gtRfKM
-         5pdTi6QAdVVlg==
-From:   guoren@kernel.org
-To:     guoren@kernel.org, anup@brainfault.org, atish.patra@wdc.com,
-        maz@kernel.org, tglx@linutronix.de, palmer@dabbelt.com
-Cc:     linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Vincent Pelletier <plr.vincent@gmail.com>,
-        Nikita Shubin <nikita.shubin@maquefel.me>
-Subject: [PATCH V6] irqchip/sifive-plic: Fixup EOI failed when masked
-Date:   Mon,  1 Nov 2021 21:17:36 +0800
-Message-Id: <20211101131736.3800114-1-guoren@kernel.org>
-X-Mailer: git-send-email 2.25.1
+        id S231886AbhKANUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 09:20:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230177AbhKANUT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 09:20:19 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1347C061714;
+        Mon,  1 Nov 2021 06:17:46 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id g11so4941286pfv.7;
+        Mon, 01 Nov 2021 06:17:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=ElXLGUufMIfi7saztQ05KyMJtRkBVmLZk3K8RMUcE/g=;
+        b=pbWrcOS/E/Gkv13GNp//Zd/onyhqaNcNq2Rdu9GxPxMXEDnfiBU933SbOH0wbi0FJC
+         obvfAJ/lnAXDu938R6NR9nSq2GaJpxSmgiSW48lj5dE/iknMmNjPY7afACSmTivHY6NS
+         y03ZdwmxJmriBiBTtPYs9SVLnMg1Ho7E4e5DESub/+DGM8HwLFFo9tff2ENNEKE+ae+G
+         0zU4uHj/N4RTMuV7Fg5ejyKTvLwtcBIarPnAHOTH5CGgCJL/O8KtCf/3baCwl6E/H3wQ
+         wbxN1xEHKnirwvrIiL94fxx/ULwhEJwO/fGj2u4aPwtmVpoSSg4piz4zOTfHbIEiwv/4
+         6Wcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=ElXLGUufMIfi7saztQ05KyMJtRkBVmLZk3K8RMUcE/g=;
+        b=cx6kKTjNk/ihbNjt8w/uk/n16/EpvLFRbcJToKfPjoG/jaj3lVmglYlfApSJIVxNF5
+         KAqtLij9B3R5OZ24Ec1PEUsGiJc8w91d6unUInjenov+0K8cXc2dk5DZYFXJ0gHKtOIl
+         4sx0gb0Um4TBQOz5YAoDRVQpd8pIWVi5ECWRDRM8aN+R0bRKRzJsJszO6kLBjH5nk3nm
+         MI/OpEHJEJbqbP5vnMuNF2SfKXr7uBS1g1/L2fUd6obgl+M9N/jo5h+ujNKD5qyEzp4p
+         rvEKyaqRw1r6GyIUqA/cStQuz4F+K4NrS20RHR6qWVcQzLi4daKWyy+TvfKKN5oOXHtV
+         8V5Q==
+X-Gm-Message-State: AOAM530359Hn1uL8hA4ucQwcaVx4u2asOn0jWgWiTYkVyg1AKZ//vTBC
+        dlOyYXUnNLWLZXMZIlWcW8A=
+X-Google-Smtp-Source: ABdhPJxZtOo8xG7N0PRsh2O8ZZhFc5wI/xd3rxFZqqMP3xc3A++hez5iW7ovtZl1hKAhrmG1ZwjX5A==
+X-Received: by 2002:aa7:90d0:0:b0:44d:b8a:8837 with SMTP id k16-20020aa790d0000000b0044d0b8a8837mr28905418pfk.47.1635772666050;
+        Mon, 01 Nov 2021 06:17:46 -0700 (PDT)
+Received: from [192.168.255.10] ([203.205.141.115])
+        by smtp.gmail.com with ESMTPSA id q18sm16897419pfj.46.2021.11.01.06.17.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Nov 2021 06:17:45 -0700 (PDT)
+Message-ID: <204584e8-7817-f445-1e73-b23552f54c2f@gmail.com>
+Date:   Mon, 1 Nov 2021 21:17:42 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.0
+Subject: Re: [PATCH bpf-next] bpf: Allow bpf_d_path in perf_event_mmap
+Content-Language: en-US
+To:     Florent Revest <revest@chromium.org>,
+        Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kpsingh@kernel.org, jackmanb@google.com,
+        linux-kernel@vger.kernel.org
+References: <20211028164357.1439102-1-revest@chromium.org>
+ <20211028224653.qhuwkp75fridkzpw@kafai-mbp.dhcp.thefacebook.com>
+ <CABRcYmLWAp6kYJBA2g+DvNQcg-5NaAz7u51ucBMPfW0dGykZAg@mail.gmail.com>
+From:   Hengqi Chen <hengqi.chen@gmail.com>
+In-Reply-To: <CABRcYmLWAp6kYJBA2g+DvNQcg-5NaAz7u51ucBMPfW0dGykZAg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guo Ren <guoren@linux.alibaba.com>
+Hi,
 
-When using "devm_request_threaded_irq(,,,,IRQF_ONESHOT,,)" in the driver,
-only the first interrupt could be handled, and continue irq is blocked by
-hw. Because the riscv plic couldn't complete masked irq source which has
-been disabled in enable register. The bug was firstly reported in [1].
 
-Here is the description of Interrupt Completion in PLIC spec [2]:
+On 2021/10/30 1:02 AM, Florent Revest wrote:
+> On Fri, Oct 29, 2021 at 12:47 AM Martin KaFai Lau <kafai@fb.com> wrote:
+>>
+>> On Thu, Oct 28, 2021 at 06:43:57PM +0200, Florent Revest wrote:
+>>> Allow the helper to be called from the perf_event_mmap hook. This is
+>>> convenient to lookup vma->vm_file and implement a similar logic as
+>>> perf_event_mmap_event in BPF.
+>> From struct vm_area_struct:
+>>         struct file * vm_file;          /* File we map to (can be NULL). */
+>>
+>> Under perf_event_mmap, vm_file won't be NULL or bpf_d_path can handle it?
+> 
+> Thanks Martin, this is a very good point. :) Yes, vm_file can be NULL
+> in perf_event_mmap.
+> I wonder what would happen (and what we could do about it? :|).
+> bpf_d_path is called on &vma->vm_file->f_path So without NULL checks
+> (of vm_file) in BPF, the helper wouldn't be called with a NULL pointer
+> but rather with an address that is offsetof(struct file, f_path).
+> 
 
-The PLIC signals it has completed executing an interrupt handler by
-writing the interrupt ID it received from the claim to the claim/complete
-register. The PLIC does not check whether the completion ID is the same
-as the last claim ID for that target. If the completion ID does not match
-an interrupt source that is currently enabled for the target, the
-                         ^^ ^^^^^^^^^ ^^^^^^^
-completion is silently ignored.
+I tested this patch with the following BCC script:
 
-[1] http://lists.infradead.org/pipermail/linux-riscv/2021-July/007441.html
-[2] https://github.com/riscv/riscv-plic-spec/blob/8bc15a35d07c9edf7b5d23fec9728302595ffc4d/riscv-plic.adoc
+    bpf_text = '''
+    #include <linux/mm_types.h>
 
-Reported-by: Vincent Pelletier <plr.vincent@gmail.com>
-Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-Cc: Anup Patel <anup@brainfault.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>
-Cc: Atish Patra <atish.patra@wdc.com>
-Cc: Nikita Shubin <nikita.shubin@maquefel.me>
-Cc: incent Pelletier <plr.vincent@gmail.com>
+    KFUNC_PROBE(perf_event_mmap, struct vm_area_struct *vma)
+    {
+        char path[256] = {};
 
----
+        bpf_d_path(&vma->vm_file->f_path, path, sizeof(path));
+        bpf_trace_printk("perf_event_mmap %s", path);
+        return 0;
+    }
+    '''
 
-Changes since V6:
- - Propagate to plic_irq_eoi for all riscv,plic by Nikita Shubin
- - Remove thead related codes
+    b = BPF(text=bpf_text)
+    print("BPF program loaded")
+    b.trace_print()
 
-Changes since V5:
- - Move back to mask/unmask
- - Fixup the problem in eoi callback
- - Remove allwinner,sun20i-d1 IRQCHIP_DECLARE
- - Rewrite comment log
-
-Changes since V4:
- - Update comment by Anup
-
-Changes since V3:
- - Rename "c9xx" to "c900"
- - Add sifive_plic_chip and thead_plic_chip for difference
-
-Changes since V2:
- - Add a separate compatible string "thead,c9xx-plic"
- - set irq_mask/unmask of "plic_chip" to NULL and point
-   irq_enable/disable of "plic_chip" to plic_irq_mask/unmask
- - Add a detailed comment block in plic_init() about the
-   differences in Claim/Completion process of RISC-V PLIC and C9xx
-   PLIC.
----
- drivers/irqchip/irq-sifive-plic.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
-index cf74cfa82045..259065d271ef 100644
---- a/drivers/irqchip/irq-sifive-plic.c
-+++ b/drivers/irqchip/irq-sifive-plic.c
-@@ -163,7 +163,13 @@ static void plic_irq_eoi(struct irq_data *d)
- {
- 	struct plic_handler *handler = this_cpu_ptr(&plic_handlers);
- 
--	writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM);
-+	if (irqd_irq_masked(d)) {
-+		plic_irq_unmask(d);
-+		writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM);
-+		plic_irq_mask(d);
-+	} else {
-+		writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM);
-+	}
- }
- 
- static struct irq_chip plic_chip = {
--- 
-2.25.1
-
+This change causes kernel panic. I think it's because of this NULL pointer.
