@@ -2,144 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B463441C88
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 15:22:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB2FE441C8E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 15:23:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232153AbhKAOYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 10:24:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54920 "EHLO
+        id S232332AbhKAOZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 10:25:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231366AbhKAOYa (ORCPT
+        with ESMTP id S231857AbhKAOZy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 10:24:30 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 931D3C061714
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 07:21:57 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <l.stach@pengutronix.de>)
-        id 1mhYC2-0001s4-WA; Mon, 01 Nov 2021 15:21:47 +0100
-Message-ID: <4f1b60bab451b219c7139e2204eb5b9f462ee4e0.camel@pengutronix.de>
-Subject: Re: [PATCH v2 RESEND] PCI: imx6: Replace legacy gpio interface for
- gpiod interface
-From:   Lucas Stach <l.stach@pengutronix.de>
-To:     =?ISO-8859-1?Q?Ma=EDra?= Canal <maira.canal@usp.br>,
-        hongxing.zhu@nxp.com, lorenzo.pieralisi@arm.com, robh@kernel.org,
-        bhelgaas@google.com, helgaas@kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de
-Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
-        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Date:   Mon, 01 Nov 2021 15:21:44 +0100
-In-Reply-To: <YX/zlRqmxbLRnTqT@fedora>
-References: <YX/zlRqmxbLRnTqT@fedora>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
+        Mon, 1 Nov 2021 10:25:54 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85AE8C061714
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 07:23:20 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id d23so28332470ljj.10
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 07:23:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lDzQzAKmrO4cE12pbgUF6sOtfYcuXG+MDS8ZFstUnZs=;
+        b=A8I+yiJOK6RGvfYlNHU859Gr6ZKPAJIavCw93TUSQA/psdn1XnKFa1ouGoJ1WSawOt
+         NEuLktnHURzeQafTm4cn87bl3HoJNfpJLwCLS24aCcQZjSrTxkBHaNWKZHiO5xdKdcsq
+         KPBzvs7/MVNl4Z4Z60n5M05PRhYHlxin56Fy6vW5SpUkSRVQ1RnCEVByU+HoxkVPakMk
+         TEEhAJLE/PPgLTo0i7NaL43ZZlXwjggucMSw5pFgLHfsU7wnm7FsELBd4EiStLZ0d8/e
+         EbtjN+COC37/C75r4Tfl2mTJAUgvE3fDGomiZAU8gkiCm6eNg94FYN8I/I4DSPRQDC2q
+         zOWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lDzQzAKmrO4cE12pbgUF6sOtfYcuXG+MDS8ZFstUnZs=;
+        b=WfccaarWDxhWody9xkvv7m2m4Il2WdGuDTOc6M/lPvQkDafW0AzLea9t/Ip5cQYe+Y
+         ru6MrkIHYHJzpC2ImL5N/cdiAak7qzpYZPB05TDHMBExvknD+kG3GrK3ENet50cExCLC
+         UiPlIiyUIzjfeTddmCC9sUIVuOs3T33H6r3aumGbkf7TGmtKXeCFlvFq56DIFYZwN8P8
+         1xsx/fsJs6RN5KSQEi9e+d7JSHvH/6XzzymD+H5Jesv6f4fTvoQOrRX+YdeXJzL9NrJk
+         hG8O3aDD1SXf4bGYpn94v63yrXrCpJrBVOfwxxC0rqSimKGu9UDAA7oqzCxIQeL6jVhh
+         jPCA==
+X-Gm-Message-State: AOAM5334reHz7xqddrzby7ycYwhzjFnsJDipng2dMRWafE3gypn1D9nX
+        WJRSAMCXfTs57kVaMnnYo5J53lrSMkzZHjXW2IqJ6A==
+X-Google-Smtp-Source: ABdhPJw2SDdjdrCAgvF2ObKwyMwAY8ht9SsxgV39b77Et+zkpNgad6QMEQngm1Q75lk8lMfydQmMHUB46JiVHGbLEAA=
+X-Received: by 2002:a05:651c:104b:: with SMTP id x11mr28045714ljm.422.1635776598895;
+ Mon, 01 Nov 2021 07:23:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: l.stach@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20211026173822.502506-1-pasha.tatashin@soleen.com>
+ <20211026173822.502506-4-pasha.tatashin@soleen.com> <7b131cb1-68d8-6746-f9c1-2b01d4838869@nvidia.com>
+ <CA+CK2bD6x01PevPqshzYqkO3aokjP2jBbt_4e5H5U3DVEdcJ5Q@mail.gmail.com>
+ <b346cafd-d8b8-57a4-c7b9-6574b256a400@nvidia.com> <CA+CK2bBiomTe-vOuxM_R+0CMAippyrfZ6AgpXQGqps3ZFQCtRA@mail.gmail.com>
+ <19d16b40-355f-3f79-dcba-e1d8d2216d33@nvidia.com>
+In-Reply-To: <19d16b40-355f-3f79-dcba-e1d8d2216d33@nvidia.com>
+From:   Pasha Tatashin <pasha.tatashin@soleen.com>
+Date:   Mon, 1 Nov 2021 10:22:43 -0400
+Message-ID: <CA+CK2bBn81pz5NqCvS9jz+DvXbGG6d52Q=xTySJvJuqNRmFkkg@mail.gmail.com>
+Subject: Re: [RFC 3/8] mm: Avoid using set_page_count() in set_page_recounted()
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        linux-m68k@lists.linux-m68k.org,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        william.kucharski@oracle.com,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        schmitzmic@gmail.com, Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>,
+        Muchun Song <songmuchun@bytedance.com>, weixugc@google.com,
+        Greg Thelen <gthelen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Montag, dem 01.11.2021 um 11:03 -0300 schrieb Maíra Canal:
-> Considering the current transition of the GPIO subsystem, remove all
-> dependencies of the legacy GPIO interface (linux/gpio.h and linux
-> /of_gpio.h) and replace it with the descriptor-based GPIO approach.
-> 
-> Signed-off-by: Maíra Canal <maira.canal@usp.br>
-> ---
-> V1 -> V2: Rewrite commit log and subject line to match PCI subsystem standard
-> ---
->  drivers/pci/controller/dwc/pci-imx6.c | 30 +++++++++------------------
->  1 file changed, 10 insertions(+), 20 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-> index 80fc98acf097..589cbd600d17 100644
-> --- a/drivers/pci/controller/dwc/pci-imx6.c
-> +++ b/drivers/pci/controller/dwc/pci-imx6.c
-> @@ -11,13 +11,12 @@
->  #include <linux/bitfield.h>
->  #include <linux/clk.h>
->  #include <linux/delay.h>
-> -#include <linux/gpio.h>
-> +#include <linux/gpio/consumer.h>
->  #include <linux/kernel.h>
->  #include <linux/mfd/syscon.h>
->  #include <linux/mfd/syscon/imx6q-iomuxc-gpr.h>
->  #include <linux/mfd/syscon/imx7-iomuxc-gpr.h>
->  #include <linux/module.h>
-> -#include <linux/of_gpio.h>
->  #include <linux/of_device.h>
->  #include <linux/of_address.h>
->  #include <linux/pci.h>
-> @@ -63,7 +62,7 @@ struct imx6_pcie_drvdata {
->  
->  struct imx6_pcie {
->  	struct dw_pcie		*pci;
-> -	int			reset_gpio;
-> +	struct gpio_desc	*reset_gpio;
->  	bool			gpio_active_high;
->  	struct clk		*pcie_bus;
->  	struct clk		*pcie_phy;
-> @@ -526,11 +525,11 @@ static void imx6_pcie_deassert_core_reset(struct imx6_pcie *imx6_pcie)
->  	usleep_range(200, 500);
->  
->  	/* Some boards don't have PCIe reset GPIO. */
-> -	if (gpio_is_valid(imx6_pcie->reset_gpio)) {
-> -		gpio_set_value_cansleep(imx6_pcie->reset_gpio,
-> +	if (imx6_pcie->reset_gpio) {
-> +		gpiod_set_value_cansleep(imx6_pcie->reset_gpio,
->  					imx6_pcie->gpio_active_high);
->  		msleep(100);
-> -		gpio_set_value_cansleep(imx6_pcie->reset_gpio,
-> +		gpiod_set_value_cansleep(imx6_pcie->reset_gpio,
->  					!imx6_pcie->gpio_active_high);
+> >> Yes, you are just repeating what the diffs say.
+> >>
+> >> But it's still not good to have this function name doing something completely
+> >> different than its name indicates.
+> >
+> > I see, I can rename it to: 'set_page_recounted/get_page_recounted' ?
+> >
+>
+> What? No, that's not where I was going at all. The function is already
+> named set_page_refcounted(), and one of the problems I see is that your
+> changes turn it into something that most certainly does not
+> set_page_refounted(). Instead, this patch *increments* the refcount.
+> That is not the same thing.
+>
+> And then it uses a .config-sensitive assertion to "prevent" problems.
+> And by that I mean, the wording throughout this series seems to equate
+> VM_BUG_ON_PAGE() assertions with real assertions. They are only active,
+> however, in CONFIG_DEBUG_VM configurations, and provide no protection at
+> all for normal (most distros) users. That's something that the wording,
+> comments, and even design should be tweaked to account for.
 
-I don't think this is correct. gpiod_set_value sets the logical line
-state, so if the GPIO is specified as active-low in the DT, the real
-line state will be negated. The only reason why the reset-gpio-active-
-high property even exists is that old DTs might specify the wrong GPIO
-polarity in the reset-gpio DT description. I think you need to use to
-gpiod_set_raw_value API here to get the expected real line state even
-with a broken DT description.
+VM_BUG_ON and BUG_ON should be treated the same. Yes, they are config
+sensitive, but in both cases *BUG_ON() means that there is an
+unrecoverable problem that occured. The only difference between the
+two is that VM_BUG_ON() is not enabled when distros decide to reduce
+the size of their kernel and improve runtime performance by skipping
+some extra checking.
 
-Regards,
-Lucas
+There is no logical separation between VM_BUG_ON and BUG_ON, there is
+been a lengthy discussion about this:
 
->  	}
->  
-> @@ -1025,22 +1024,13 @@ static int imx6_pcie_probe(struct platform_device *pdev)
->  		return PTR_ERR(pci->dbi_base);
->  
->  	/* Fetch GPIOs */
-> -	imx6_pcie->reset_gpio = of_get_named_gpio(node, "reset-gpio", 0);
->  	imx6_pcie->gpio_active_high = of_property_read_bool(node,
->  						"reset-gpio-active-high");
-> -	if (gpio_is_valid(imx6_pcie->reset_gpio)) {
-> -		ret = devm_gpio_request_one(dev, imx6_pcie->reset_gpio,
-> -				imx6_pcie->gpio_active_high ?
-> -					GPIOF_OUT_INIT_HIGH :
-> -					GPIOF_OUT_INIT_LOW,
-> -				"PCIe reset");
-> -		if (ret) {
-> -			dev_err(dev, "unable to get reset gpio\n");
-> -			return ret;
-> -		}
-> -	} else if (imx6_pcie->reset_gpio == -EPROBE_DEFER) {
-> -		return imx6_pcie->reset_gpio;
-> -	}
-> +	imx6_pcie->reset_gpio = devm_gpiod_get_optional(dev, "reset",
-> +			imx6_pcie->gpio_active_high ?  GPIOD_OUT_HIGH : GPIOD_OUT_LOW);
-> +	if (IS_ERR(imx6_pcie->reset_gpio))
-> +		return dev_err_probe(dev, PTR_ERR(imx6_pcie->reset_gpio),
-> +				"unable to get reset gpio\n");
->  
->  	/* Fetch clocks */
->  	imx6_pcie->pcie_phy = devm_clk_get(dev, "pcie_phy");
+https://lore.kernel.org/lkml/CA+55aFy6a8BVWtqgeJKZuhU-CZFVZ3X90SdQ5z+NTDDsEOnpJA@mail.gmail.com/
+"so *no*. VM_BUG_ON() is no less deadly than a regular BUG_ON(). It
+just allows some people to build smaller kernels, but apparently
+distro people would rather have debugging than save a few kB of RAM."
 
+Losing control of ref_count is an unrecoverable problem because it
+leads to security sensitive memory corruptions. It is better to crash
+the kernel when that happens instead of ending up with some pages
+mapped into the wrong address space.
 
+The races are tricky to spot, but set_page_count() is inherently
+dangerous, so I am removing it entirely and replacing it with safer
+operations which do the same thing.
+
+One example is this:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?h=7118fc29
+
+> >>>> I understand where this patchset is going, but this intermediate step is
+> >>>> not a good move.
+> >>>>
+> >>>> Also, for the overall series, if you want to change from
+> >>>> "set_page_count()" to "inc_and_verify_val_equals_one()", then the way to
+> >>>> do that is *not* to depend solely on VM_BUG*() to verify. Instead,
+> >>>> return something like -EBUSY if incrementing the value results in a
+> >>>> surprise, and let the caller decide how to handle it.
+
+In set_page_refcounted() we already have:
+
+VM_BUG_ON_PAGE(page_ref_count(page), page);
+set_page_count(page, 1);
+
+I am pointing out that above code is racy:
+
+Between the check VM_BUG_ON_PAGE() check and unconditional set to 1
+the value of page->_refcount can change.
+
+I am replacing it with an identical version of code that is not racy.
+There is no need to complicate the code by introducing new -EBUSY
+returns here, as it would reduce the fragility of this could even
+farther.
+
+> >>> Actually, -EBUSY would be OK if the problems were because we failed to
+
+I am not sure -EBUSY would be OK here, it means we had a race which we
+were not aware about, and which could have led to memory corruptions.
+
+> >>> modify refcount for some reason, but if we modified refcount and got
+> >>> an unexpected value (i.e underflow/overflow) we better report it right
+> >>> away instead of waiting for memory corruption to happen.
+> >>>
+> >>
+> >> Having the caller do the BUG() or VM_BUG*() is not a significant delay.
+
+I agree, however, helper functions exist to remove code duplications.
+If we must verify the assumption of set_page_refcounted() that non
+counted page is turned into a counted page, it is better to do it in
+one place than at every call site. We do it today in thus helper
+function, I do not see why we would change that.
