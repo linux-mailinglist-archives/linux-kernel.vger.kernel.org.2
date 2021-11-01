@@ -2,107 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74496441A05
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 11:37:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48A10441A08
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 11:37:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232134AbhKAKjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 06:39:46 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:41062 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231358AbhKAKjk (ORCPT
+        id S232204AbhKAKkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 06:40:12 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:45762 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232161AbhKAKkK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 06:39:40 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 4449E1FD6F;
-        Mon,  1 Nov 2021 10:37:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1635763026; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=khloEd1E0p2VCXEZP8kotWXJ5MACj0u6IEn97Bssqqw=;
-        b=s9hVey2O284pRTD9ATmpa9uKlcjP+zAgr680PRtHoa+esmmcN+NvRr04CndOuNG3e2KNw9
-        QYI4BBeqXnwkQZD8XDNQulErnclcdQRQjuMf/ltRMlAu/kL5XCQQn9Kntn8Qxd30nGwOWy
-        PI4F9x5jMjiuKzMkC3VkCRu8lfR0jYo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1635763026;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=khloEd1E0p2VCXEZP8kotWXJ5MACj0u6IEn97Bssqqw=;
-        b=EoLa/qTXXqECFESaQaueM1wH/mHIOGBa6hWnxsaEMOH/ylXbfudKVy32NhRBYYUhJeUMsR
-        kk0ki56ndSms3WCg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 26E4F13AA8;
-        Mon,  1 Nov 2021 10:37:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id gjz4CFLDf2FUUQAAMHmgww
-        (envelope-from <bp@suse.de>); Mon, 01 Nov 2021 10:37:06 +0000
-Date:   Mon, 1 Nov 2021 11:37:07 +0100
-From:   Borislav Petkov <bp@suse.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] x86/misc for v5.16
-Message-ID: <YX/DU1kH6/cRrgxR@zn.tnic>
+        Mon, 1 Nov 2021 06:40:10 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id B2DE71C0B76; Mon,  1 Nov 2021 11:37:36 +0100 (CET)
+Date:   Mon, 1 Nov 2021 11:37:32 +0100
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.19 00/35] 4.19.215-rc1 review
+Message-ID: <20211101103732.GA24359@duo.ucw.cz>
+References: <20211101082451.430720900@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="ew6BAiZeqk4r7MaW"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211101082451.430720900@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
 
-please pull the x86/misc updates which do not fit into any other bucket,
-for v5.16.
+--ew6BAiZeqk4r7MaW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thx.
+Hi!
 
----
+> This is the start of the stable review cycle for the 4.19.215 release.
+> There are 35 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 
-The following changes since commit 9e1ff307c779ce1f0f810c7ecce3d95bbae40896:
+I'm getting some failures on 4.19.215-rc1, and at least this one is real:
 
-  Linux 5.15-rc4 (2021-10-03 14:08:47 -0700)
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/jobs/173461=
+4739
 
-are available in the Git repository at:
+  CC      drivers/mtd/nand/raw/nand_samsung.o
+3313drivers/mmc/host/sdhci-esdhc-imx.c: In function 'esdhc_reset_tuning':
+3314drivers/mmc/host/sdhci-esdhc-imx.c:966:10: error: implicit declaration =
+of function 'readl_poll_timeout'; did you mean 'key_set_timeout'? [-Werror=
+=3Dimplicit-function-declaration]
+3315    ret =3D readl_poll_timeout(host->ioaddr + SDHCI_AUTO_CMD_STATUS,
+3316          ^~~~~~~~~~~~~~~~~~
+3317          key_set_timeout
+3318  AR      drivers/pci/controller/dwc/built-in.a
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_misc_for_v5.16_rc1
+Best regards,
+							Pavel
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
 
-for you to fetch changes up to f96b4675839b66168f5a07bf964dde6c2f1c4885:
+--ew6BAiZeqk4r7MaW
+Content-Type: application/pgp-signature; name="signature.asc"
 
-  x86/insn: Use get_unaligned() instead of memcpy() (2021-10-06 11:56:37 +0200)
+-----BEGIN PGP SIGNATURE-----
 
-----------------------------------------------------------------
-- Use the proper interface for the job: get_unaligned() instead of
-memcpy() in the insn decoder
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYX/DbAAKCRAw5/Bqldv6
+8jUCAJ9Ovld54o3fxbvqQycsgR6J3FcH+wCfYJqdEQUqYXmrBD01Est7sa1Q41Q=
+=WL7X
+-----END PGP SIGNATURE-----
 
-- A randconfig build fix
-
-----------------------------------------------------------------
-Borislav Petkov (1):
-      x86/insn: Use get_unaligned() instead of memcpy()
-
-Randy Dunlap (1):
-      x86/Kconfig: Fix an unused variable error in dell-smm-hwmon
-
- arch/x86/Kconfig                       |  3 ++-
- arch/x86/lib/insn.c                    |  5 +++--
- tools/arch/x86/lib/insn.c              |  5 +++--
- tools/include/asm-generic/unaligned.h  | 23 +++++++++++++++++++++++
- tools/perf/util/intel-pt-decoder/Build |  2 ++
- 5 files changed, 33 insertions(+), 5 deletions(-)
- create mode 100644 tools/include/asm-generic/unaligned.h
-
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Ivo Totev, HRB 36809, AG Nürnberg
+--ew6BAiZeqk4r7MaW--
