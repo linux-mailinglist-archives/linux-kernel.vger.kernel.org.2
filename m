@@ -2,99 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97531441DA1
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 17:00:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B20F441DAE
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 17:02:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232605AbhKAQCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 12:02:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48926 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230517AbhKAQCf (ORCPT
+        id S232632AbhKAQEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 12:04:52 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:52004 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230517AbhKAQEt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 12:02:35 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F21FC061714
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 09:00:02 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id y20so6000706pfi.4
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 09:00:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=511cDB4kjcE6bGhGi5t+CjoXKqM9/xDCH785zltyM00=;
-        b=EwsJE5vULSX8wZ0e2C5h9Vj3wM3xEJpQgj0Rdw6dRUtebKelZKwtUzg/Dmp/rt+8z3
-         Nv3ZHA3PkxaFMutJ7OPFxf8Kr0pAV/SI8k5AWYsoZXDvqSHMRojBx1g3/+NDhQDDwWb5
-         Dwl1X0AwHBdpoJ9JnWPxWOzfxE/+Uw6UzfiYxMwpeCjFZsmcQLfzkjFa8lizzXHYFjp5
-         BJSIdge2GywokJch9AugbtlzVok+KV6C5w/jCcVp7cK8rHQuqxJD+FsnjWgjaOH4j07N
-         O25nGL4chWdSXT/ry1GNhXjN9d+sWqWT0f5rpYijYm0o4DqbvbwskSzuAvcrKQQOJste
-         K8TQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=511cDB4kjcE6bGhGi5t+CjoXKqM9/xDCH785zltyM00=;
-        b=njaKwzvT7cgGK7jpAsX+mHbr73bIGb9f7oH1XwKVhaynacRWIwgkz8q3wN/TU8MDc2
-         fw7IpFuvPtF7/mC6+Pgd2ZidNzRkXn2jjI5LtENmdlefDd5pcPSZFvGutH58Noeqz9LQ
-         ELpZd+7HXXyUeVoZeTtK2lOP/KeMmozxsrAWd89sYMqXZ9pPrwy3aqMG9W+pV2Kaz/6h
-         oipZ7yvqmp9fCqZi+dJk0XmSjDAU93zHieBPQThAGXI7OMNKHDOUtNRSWWtByhjEdh7A
-         yptMRtPMdwzrH3lWlvAJr64aNFOCFQQCTzoXQyyAWW/Tl2I9aaUz+VWbqTuBUdgPWvq8
-         ESxQ==
-X-Gm-Message-State: AOAM531E6ehLWNQ/RkbYoW8KYPbcqbJRylHG0MYEMBr6tS45U79Rz3pR
-        zKto6j3vi1Y2xYf+3nh057M=
-X-Google-Smtp-Source: ABdhPJwvZKMf5iJdHX/WQC6zfq3emJe6qWs247HQU+UQXEzULhN2Uw/7v8cJcMVqGVTC8LUCqsXoTQ==
-X-Received: by 2002:a63:b145:: with SMTP id g5mr22405621pgp.355.1635782402025;
-        Mon, 01 Nov 2021 09:00:02 -0700 (PDT)
-Received: from pc ([223.197.3.99])
-        by smtp.gmail.com with ESMTPSA id h11sm13097112pfc.131.2021.11.01.08.59.58
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 01 Nov 2021 09:00:01 -0700 (PDT)
-Date:   Mon, 1 Nov 2021 23:59:53 +0800
-From:   Zhaoyu Liu <zackary.liu.pro@gmail.com>
-To:     masahiroy@kernel.org, ripxorip@gmail.com,
-        gregkh@linuxfoundation.org, matthieu.baerts@tessares.net,
-        mpe@ellerman.id.au
-Cc:     maz@kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] tags: add a space regex to DECLARE_BITMAP
-Message-ID: <20211101155948.GA10424@pc>
+        Mon, 1 Nov 2021 12:04:49 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id C0B9C1FD45;
+        Mon,  1 Nov 2021 16:02:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1635782533; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=aLrUd5dODKPXxykk4s6tizUbvYQTGhjxi6BtMoFjlTo=;
+        b=Beevnq+qOaI1o8vAFTJnn8T7IFm7qLnloDGyiPfYe4vrCcoyPKxWo6ep01e49GK59NfvoX
+        +bEHTUgedYzQjUYKPU1fpfRUATdJAEjtTZkGXPdTZ3uwV1FDC1eBMmw2L68O1azd6nWWp6
+        eoQVLuwjkf65E74QTWOktMKXogqLGT0=
+Received: from suse.cz (unknown [10.100.224.162])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id B79CCA3B94;
+        Mon,  1 Nov 2021 16:02:12 +0000 (UTC)
+Date:   Mon, 1 Nov 2021 17:02:12 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qiang Zhang <qiang.zhang@windriver.com>,
+        robdclark <robdclark@chromium.org>,
+        christian <christian@brauner.io>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        dennis.dalessandro@cornelisnetworks.com,
+        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
+        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        kbuild test robot <lkp@intel.com>
+Subject: Re: [PATCH v7 00/11] extend task comm from 16 to 24
+Message-ID: <YYAPhE9uX7OYTlpv@alley>
+References: <20211101060419.4682-1-laoar.shao@gmail.com>
+ <YX/0h7j/nDwoBA+J@alley>
+ <CALOAHbA61RyGVzG8SVcNG=0rdqnUCt4AxCKmtuxRnbS_SH=+MQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CALOAHbA61RyGVzG8SVcNG=0rdqnUCt4AxCKmtuxRnbS_SH=+MQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When "make tags", it prompts a warning:
+On Mon 2021-11-01 22:34:30, Yafang Shao wrote:
+> On Mon, Nov 1, 2021 at 10:07 PM Petr Mladek <pmladek@suse.com> wrote:
+> > On Mon 2021-11-01 06:04:08, Yafang Shao wrote:
+> > > 4. Print a warning if the kthread comm is still truncated.
+> > >
+> > > 5. What will happen to the out-of-tree tools after this change?
+> > >    If the tool get task comm through kernel API, for example prctl(2),
+> > >    bpf_get_current_comm() and etc, then it doesn't matter how large the
+> > >    user buffer is, because it will always get a string with a nul
+> > >    terminator. While if it gets the task comm through direct string copy,
+> > >    the user tool must make sure the copied string has a nul terminator
+> > >    itself. As TASK_COMM_LEN is not exposed to userspace, there's no
+> > >    reason that it must require a fixed-size task comm.
+> >
+> > The amount of code that has to be updated is really high. I am pretty
+> > sure that there are more potential buffer overflows left.
+> >
+> > You did not commented on the concerns in the thread
+> > https://lore.kernel.org/all/CAADnVQKm0Ljj-w5PbkAu1ugLFnZRRPt-Vk-J7AhXxDD5xVompA@mail.gmail.com/
+> >
+> I thought Steven[1] and  Kees[2] have already clearly explained why we
+> do it like that, so I didn't give any more words on it.
+> 
+> [1]. https://lore.kernel.org/all/20211025170503.59830a43@gandalf.local.home/
 
-    ctags: Warning: drivers/pci/controller/pcie-apple.c:150:
-    null expansion of name pattern "\1"
+Steven was against switching task->comm[16] into a dynamically
+allocated pointer. But he was not against storing longer names
+separately.
 
-The reason is that there is an indentation beside arguments of
-DECLARE_BITMAP, but it can parsed normally by gtags. It's also
-allowed in C.
+> [2]. https://lore.kernel.org/all/202110251406.56F87A3522@keescook/
 
-So fix this regex temporarily, and wait for better solutions
-applied to other regexs.
+Honestly, I am a bit confused by Kees' answer. IMHO, he agreed that
+switching task->comm[16] into a pointer was not worth it.
 
-Reviewed-by: Marc Zyngier <maz@kernel.org>
-Signed-off-by: Zhaoyu Liu <zackary.liu.pro@gmail.com>
----
- scripts/tags.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+But I am not sure what he meant by "Agreed -- this is a small change
+for what is already an "uncommon" corner case."
 
-diff --git a/scripts/tags.sh b/scripts/tags.sh
-index b24bfaec6290..7e5f19391f20 100755
---- a/scripts/tags.sh
-+++ b/scripts/tags.sh
-@@ -186,7 +186,7 @@ regex_c=(
- 	'/\<DEFINE_\(RT_MUTEX\|MUTEX\|SEMAPHORE\|SPINLOCK\)(\([[:alnum:]_]*\)/\2/v/'
- 	'/\<DEFINE_\(RAW_SPINLOCK\|RWLOCK\|SEQLOCK\)(\([[:alnum:]_]*\)/\2/v/'
- 	'/\<DECLARE_\(RWSEM\|COMPLETION\)(\([[:alnum:]_]\+\)/\2/v/'
--	'/\<DECLARE_BITMAP(\([[:alnum:]_]*\)/\1/v/'
-+	'/\<DECLARE_BITMAP([[:space:]]*\([[:alnum:]_]*\)/\1/v/'
- 	'/\(^\|\s\)\(\|L\|H\)LIST_HEAD(\([[:alnum:]_]*\)/\3/v/'
- 	'/\(^\|\s\)RADIX_TREE(\([[:alnum:]_]*\)/\2/v/'
- 	'/\<DEFINE_PER_CPU([^,]*, *\([[:alnum:]_]*\)/\1/v/'
--- 
-2.17.1
 
+> > Several people suggested to use a more conservative approach.
+> 
+> Yes, they are Al[3] and Alexei[4].
+> 
+> [3]. https://lore.kernel.org/lkml/YVkmaSUxbg%2FJtBHb@zeniv-ca.linux.org.uk/
+
+IMHO, Al suggested to store the long name separately and return it
+by proc_task_name() when available.
+
+
+> [4]. https://lore.kernel.org/all/CAADnVQKm0Ljj-w5PbkAu1ugLFnZRRPt-Vk-J7AhXxDD5xVompA@mail.gmail.com/
+
+Alexei used dentry->d_iname as an exaxmple. struct dentry uses
+d_iname[DNAME_INLINE_LEN] for short names. And dynamically
+allocated d_name for long names, see *__d_alloc() implementation.
+
+> > I mean
+> > to keep comm[16] as is and add a new pointer to the full name. The buffer
+> > for the long name might be dynamically allocated only when needed.
+> >
+> 
+> That would add a new allocation in the fork() for the threads with a long name.
+> I'm not sure if it is worth it.
+
+The allocation will be done only when needed. IMHO, the performance is
+important only for userspace processes. I am not aware of any kernel
+subsystem that would heavily create and destroy kthreads.
+
+
+> > The pointer might be either in task_struct or struct kthread. It might
+> > be used the same way as the full name stored by workqueue kthreads.
+> >
+> 
+> If we decide to do it like that, I think we'd better add it in
+> task_struct, then it will work for all tasks.
+
+Is it really needed for userspace processes? For example, ps shows
+the information from /proc/*/cmdline instead.
+
+
+> > The advantage of the separate pointer:
+> >
+> >    + would work for names longer than 32
+> >    + will not open security holes in code
+> >
+> 
+> Yes, those are the advantages.  And the disadvantage of it is:
+> 
+>  - new allocation in fork()
+
+It should not be a problem if we do it only when necessary and only
+for kthreads.
+
+Best Regards,
+Petr
