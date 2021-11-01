@@ -2,143 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB6E544193B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:57:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42158441941
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:59:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232705AbhKAKAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 06:00:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:48791 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233139AbhKAJ7R (ORCPT
+        id S232911AbhKAKBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 06:01:47 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:46312 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233783AbhKAKBJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:59:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635760604;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vnNLP3pxCj5kK+Y7vBpKll8NWXd7vahWcRAymdcHOXU=;
-        b=XMxIYR6Ct4LAlKOU6HWX70OX7h6tOys4BaqEVdiM8JApgs6qvrpxFTi5SpPIs/QnEH0rUz
-        sE3m/CRr0ZLWd9I/6XCuX5xNomIW7nwM+Vns8qyQO7ozIOWYuq9dV2ln9HR1ghEgpWBf7B
-        oSTqMFEdOqA/UDYzpNI3tz32XOO79zo=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-107-H071VeTrPDCXqgTerVheXw-1; Mon, 01 Nov 2021 05:56:43 -0400
-X-MC-Unique: H071VeTrPDCXqgTerVheXw-1
-Received: by mail-ed1-f71.google.com with SMTP id y12-20020a056402270c00b003e28de6e995so1594904edd.11
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 02:56:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=vnNLP3pxCj5kK+Y7vBpKll8NWXd7vahWcRAymdcHOXU=;
-        b=MCIGR9KRHkSCk6fAudgaHqnFyC74LymfSiOLP71z4yvycovJUZUICqQyELjKmlzCUS
-         jfjDregbXsdJOzVCyA3bCx5ZPaJb+TzadXopofOTHivzS8Ry5I8Tc7piw0Sti/lVM7HG
-         h9MfbGgYzKxFK94pVyD/m3YHDC2wRGZFfBlCz5OqpSkD8KY9jNeUskDOTnUtDQk/McrD
-         qAMHdDb3n1j22X4l/28NOmY14WLRYPLU+qku6x2TS3xlBpir7icKY8HbOsh//NSy3lc5
-         BItWMhUZl2pchtPkPckbKTE1i4vKCzWEaOQe/34QC7mzMYqn1b6E0bRCqisnhuZfiFfP
-         8NrQ==
-X-Gm-Message-State: AOAM532YhdIKgtxnWjMZF7IN2da3p6qxc4eGbctBVyVpvG4/7zyhJE4q
-        cFpYDE6FfMzywEdXbQqUrkH9pyWceZ3OAH8LvHbhg4+jn0/0Ew7RESXToEdW/pnoWQi1fpAso0z
-        nrDxfMbnjz0g82mROlSeNT/1I
-X-Received: by 2002:a17:907:72c3:: with SMTP id du3mr34940716ejc.536.1635760601916;
-        Mon, 01 Nov 2021 02:56:41 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxDvKiU7RqegUNMLj+l6RYZc7y2j4L+5bcqrSsjwNjl0uODitZefSFLpVVKu1zw5CeLeXrwIA==
-X-Received: by 2002:a17:907:72c3:: with SMTP id du3mr34940693ejc.536.1635760601753;
-        Mon, 01 Nov 2021 02:56:41 -0700 (PDT)
-Received: from [10.40.1.223] ([81.30.35.201])
-        by smtp.gmail.com with ESMTPSA id bm1sm6701834ejb.38.2021.11.01.02.56.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Nov 2021 02:56:40 -0700 (PDT)
-Message-ID: <883db585-c9bb-5255-4ddd-f093616af1a1@redhat.com>
-Date:   Mon, 1 Nov 2021 10:56:40 +0100
+        Mon, 1 Nov 2021 06:01:09 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 9DF42218D5;
+        Mon,  1 Nov 2021 09:58:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1635760715; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=5ua4OgqdoBrN57IJZHFVT0uXihBHkSJ/HcI0SWh/3v8=;
+        b=kVDluEwI+pKgWw+A+3u8jl15fuZtWF3yxe+0x7grD/yfoRSzwZTW1HdfPpji5KFIwMu6fU
+        phjeIZ8IndKi7/LuCfoSJl8+VMvsiOWAWMi1QGWlrAMjEhvA/zcbQ/epVtecZPzbwQUGdG
+        0m43nGaYWTfz8T8GLIf3HXEsGdiJgxs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1635760715;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=5ua4OgqdoBrN57IJZHFVT0uXihBHkSJ/HcI0SWh/3v8=;
+        b=yEP+9wL0/Fgl0WY6SrQHrHoPbSoUd5G50MBMd1vkXVKy8Rx8oZd64AmOSJIYotUfpouz60
+        N5dmuqekjMG4tPAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8BD4913AA9;
+        Mon,  1 Nov 2021 09:58:35 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id P/L3IEu6f2G6QwAAMHmgww
+        (envelope-from <bp@suse.de>); Mon, 01 Nov 2021 09:58:35 +0000
+Date:   Mon, 1 Nov 2021 10:58:36 +0100
+From:   Borislav Petkov <bp@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] x86/cleanups for v5.16
+Message-ID: <YX+6TDV7B8USNUji@zn.tnic>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 0/6] MODULE_DEVICE_TABLE() support for the ISHTP bus
-Content-Language: en-US
-To:     =?UTF-8?Q?Thomas_Wei=c3=9fschuh?= <linux@weissschuh.net>,
-        linux-input@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Mark Gross <markgross@kernel.org>,
-        Rushikesh S Kadam <rushikesh.s.kadam@intel.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Benson Leung <bleung@chromium.org>,
-        platform-driver-x86@vger.kernel.org, linux-kbuild@vger.kernel.org
-References: <20211029152901.297939-1-linux@weissschuh.net>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20211029152901.297939-1-linux@weissschuh.net>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Linus,
 
-On 10/29/21 17:28, Thomas Weißschuh wrote:
-> Currently as soon as any ISHTP device appears all available ISHTP device
-> drivers are loaded automatically.
-> This series extends the MODULE_DEVICE_TABLE() functionality to properly handle
-> the ishtp bus and switches the drivers over to use it.
-> 
-> Patch 1 adds the infrastructure to handle ishtp devices via MODULE_DEVICE_TABLE()
-> Patch 2 replaces some inlined constants with ones now defined by mod_devicetable.h
-> Patches 3-6 migrate all ishtp drivers to MODULE_DEVICE_TABLE()
-> 
-> Note: This patchset is based on the pdx86/for-next tree because that contains
-> one of the drivers that is not yet in the other trees.
+please pull the usual pile of x86/cleanups for v5.16.
 
-Since most of the changes here are under drivers/hid and since the latter
-patches depend on 1/6, I believe it would be best to merge the entire series
-through the HID tree, here is my ack for this:
+Thx.
 
-Acked-by: Hans de Goede <hdegoede@redhat.com>
+---
 
-Regards,
+The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
 
-Hans
+  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
 
+are available in the Git repository at:
 
-> 
-> Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> Cc: Mark Gross <markgross@kernel.org>
-> Cc: Hans de Goede <hdegoede@redhat.com>
-> Cc: Rushikesh S Kadam <rushikesh.s.kadam@intel.com>
-> Cc: Jiri Kosina <jikos@kernel.org>
-> Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-> Cc: Guenter Roeck <groeck@chromium.org>
-> Cc: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> Cc: Benson Leung <bleung@chromium.org>
-> 
-> Cc: platform-driver-x86@vger.kernel.org
-> Cc: linux-kbuild@vger.kernel.org
-> 
-> Thomas Weißschuh (6):
->   HID: intel-ish-hid: add support for MODULE_DEVICE_TABLE()
->   HID: intel-ish-hid: use constants for modaliases
->   HID: intel-ish-hid: fw-loader: only load for matching devices
->   HID: intel-ish-hid: hid-client: only load for matching devices
->   platform/chrome: chros_ec_ishtp: only load for matching devices
->   platform/x86: isthp_eclite: only load for matching devices
-> 
->  drivers/hid/intel-ish-hid/ishtp-fw-loader.c  |  7 +++++-
->  drivers/hid/intel-ish-hid/ishtp-hid-client.c |  7 +++++-
->  drivers/hid/intel-ish-hid/ishtp/bus.c        |  4 ++--
->  drivers/platform/chrome/cros_ec_ishtp.c      |  7 +++++-
->  drivers/platform/x86/intel/ishtp_eclite.c    |  7 +++++-
->  include/linux/mod_devicetable.h              | 13 +++++++++++
->  scripts/mod/devicetable-offsets.c            |  3 +++
->  scripts/mod/file2alias.c                     | 24 ++++++++++++++++++++
->  8 files changed, 66 insertions(+), 6 deletions(-)
-> 
-> 
-> base-commit: 85303db36b6e170917a7bc6aae4898c31a5272a0
-> 
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_cleanups_for_v5.16_rc1
 
+for you to fetch changes up to a757ac555ce1dafca848aa090b66cd04b5ce40e7:
+
+  x86/Makefile: Remove unneeded whitespaces before tabs (2021-10-28 20:19:13 +0200)
+
+----------------------------------------------------------------
+The usual round of random minor fixes and cleanups all over the place.
+
+----------------------------------------------------------------
+Elyes HAOUAS (1):
+      x86/Makefile: Remove unneeded whitespaces before tabs
+
+Lukas Bulwahn (2):
+      x86/Kconfig: Remove references to obsolete Kconfig symbols
+      x86: Fix misspelled Kconfig symbols
+
+Rob Herring (1):
+      x86/of: Kill unused early_init_dt_scan_chosen_arch()
+
+Tim Gardner (1):
+      x86/smp: Remove unnecessary assignment to local var freq_scale
+
+ arch/x86/Kconfig                 | 2 --
+ arch/x86/Makefile                | 2 +-
+ arch/x86/include/asm/ia32.h      | 2 +-
+ arch/x86/include/asm/irq_stack.h | 2 +-
+ arch/x86/include/asm/page_32.h   | 2 +-
+ arch/x86/include/asm/uaccess.h   | 2 +-
+ arch/x86/kernel/devicetree.c     | 5 -----
+ arch/x86/kernel/smpboot.c        | 2 +-
+ include/linux/of_fdt.h           | 1 -
+ 9 files changed, 6 insertions(+), 14 deletions(-)
+
+-- 
+Regards/Gruss,
+    Boris.
+
+SUSE Software Solutions Germany GmbH, GF: Ivo Totev, HRB 36809, AG Nürnberg
