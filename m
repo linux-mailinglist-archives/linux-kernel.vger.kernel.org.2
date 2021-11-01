@@ -2,95 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B803B44191D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:54:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41159441924
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:54:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234635AbhKAJzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:55:19 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:39300 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234586AbhKAJwe (ORCPT
+        id S232077AbhKAJ4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:56:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38476 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234234AbhKAJyp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:52:34 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 0CF311FD72;
-        Mon,  1 Nov 2021 09:50:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1635760200; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=pPWz0IZcIYAAGw7mv4IEsSvl712O5VEW9gJs5fBFzZA=;
-        b=edtQPo0C9jhiimTdAsMpqf/swoiKuenExAfwd9HY4xFyauFCCCevMBskzVjPvmtDCraqCn
-        7SAeUSnSc2AvRUkIs0AMvz6aAZ1ZQicDkwh/8kFkIepEm3EHePBp7TGKWT6OpE/aqz5xZG
-        wSIe+P5CPc+Ut2xZdGLStqu0FIc/yUs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1635760200;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=pPWz0IZcIYAAGw7mv4IEsSvl712O5VEW9gJs5fBFzZA=;
-        b=1zcqB2jkY3t9nPKBf1P1V44leijjc3Zew2OPCwaRjp2CUQmTVMw7ubnwKlQi/wAik3VC7R
-        NXRZmlRjMbD49ZCg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E8E0213AB7;
-        Mon,  1 Nov 2021 09:49:59 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 3fbWOEe4f2GHQAAAMHmgww
-        (envelope-from <bp@suse.de>); Mon, 01 Nov 2021 09:49:59 +0000
-Date:   Mon, 1 Nov 2021 10:49:57 +0100
-From:   Borislav Petkov <bp@suse.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] x86/build for v5.16
-Message-ID: <YX+4RQjpxHyEa1KU@zn.tnic>
+        Mon, 1 Nov 2021 05:54:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635760331;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hTNjHa1TMEqRPhvFHuXK6XSXRxTvytm/OlBhth0P8ak=;
+        b=Ou8QNeHiSvch1Cw6St+aqBm2KpUaPDC3dG6NVY8uYUMWoRCpz7falf+yCEfEh5ziWQ/IUe
+        8ewjPXaeWPUWuY0Lmngsjny9HKbf1CQqT1I9hVz1RP4BsCBChlybPfivNSo5OloCaKF4M7
+        hgLsTLO89YizVU0OeguYZ8nAjkMD8HY=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-556-8d95Fy2QM7SCEdnwN2QHzg-1; Mon, 01 Nov 2021 05:52:10 -0400
+X-MC-Unique: 8d95Fy2QM7SCEdnwN2QHzg-1
+Received: by mail-ed1-f72.google.com with SMTP id r25-20020a05640216d900b003dca3501ab4so14979250edx.15
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 02:52:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=hTNjHa1TMEqRPhvFHuXK6XSXRxTvytm/OlBhth0P8ak=;
+        b=T0IOY64uvC8Fh03YTMw/fKE5gIAJCSRw6BwfntM3SED9MsOu2dAuoTJOFK/e/BUE0T
+         XATVTRVpkCytxD1KvbMteTM6c6xRO7gHwebOcoE1IlrzVQN91Orv5Xcak9rU7fd5s+qG
+         1QbiwBCbgSkgLe8EdnqtCxD+AVWA9V9adXjwiA16DoM5AqoKlEbx4sSXaiocgTd4IHCG
+         O8cFovd/HLIOJxAzRl04MQNBFVBwrFjOyCb7P7H0G6zo2MZbLx5JZ1ECpRgSEo6d1eM1
+         v4376q5MDDz+h87uqdKbhCaM47rZh91mQl2eUNHrGFwLFMrUSaTmql36IkuuVTG6KQZX
+         LoCA==
+X-Gm-Message-State: AOAM531q7Bl7z9gR92SFgpi7JT1xdn/a2ycUagK11/2Zv3f+NTk+MN/i
+        qijRN61kGvT5kCEwzz4pCeFe6fHfjGlRPmdiDCFniLKrP2fQtJQAGSI14hNcD0+eAAKmmyEm89c
+        Tzji5rruTFUG/9yWHLH7Egkm0
+X-Received: by 2002:a05:6402:17c6:: with SMTP id s6mr23826590edy.11.1635760329730;
+        Mon, 01 Nov 2021 02:52:09 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw+4wcfkcjbb+BJKXbX8UJhqQo0tsMPIRflgFbUhB0LTkA3bEecXam4YFslJKUNisDfYWgBOQ==
+X-Received: by 2002:a05:6402:17c6:: with SMTP id s6mr23826545edy.11.1635760329469;
+        Mon, 01 Nov 2021 02:52:09 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id j11sm6624691ejt.114.2021.11.01.02.52.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Nov 2021 02:52:08 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ajay Garg <ajaygargnsit@gmail.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v2 2/8] KVM: x86: Get the number of Hyper-V sparse banks
+ from the VARHEAD field
+In-Reply-To: <20211030000800.3065132-3-seanjc@google.com>
+References: <20211030000800.3065132-1-seanjc@google.com>
+ <20211030000800.3065132-3-seanjc@google.com>
+Date:   Mon, 01 Nov 2021 10:52:07 +0100
+Message-ID: <87a6iokxtk.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Sean Christopherson <seanjc@google.com> writes:
 
-please pull a single x86/build fix for v5.16.
+> Get the number of sparse banks from the VARHEAD field, which the guest is
+> required to provide as "The size of a variable header, in QWORDS.", where
+> the variable header is:
+>
+>   Variable Header Bytes = {Total Header Bytes - sizeof(Fixed Header)}
+>                           rounded up to nearest multiple of 8
+>   Variable HeaderSize = Variable Header Bytes / 8
+>
+> In other words, the VARHEAD should match the number of sparse banks.
+> Keep the manual count as a sanity check, but otherwise rely on the field
+> so as to more closely align with the logic defined in the TLFS and to
+> allow for future cleanups.
+>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  arch/x86/kvm/hyperv.c             | 35 ++++++++++++++++++-------------
+>  arch/x86/kvm/trace.h              | 14 +++++++------
+>  include/asm-generic/hyperv-tlfs.h |  1 +
+>  3 files changed, 30 insertions(+), 20 deletions(-)
+>
+> diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
+> index 814d1a1f2cb8..cf18aa1712bf 100644
+> --- a/arch/x86/kvm/hyperv.c
+> +++ b/arch/x86/kvm/hyperv.c
+> @@ -1742,6 +1742,7 @@ struct kvm_hv_hcall {
+>  	u64 ingpa;
+>  	u64 outgpa;
+>  	u16 code;
+> +	u16 var_cnt;
+>  	u16 rep_cnt;
+>  	u16 rep_idx;
+>  	bool fast;
+> @@ -1761,7 +1762,6 @@ static u64 kvm_hv_flush_tlb(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *hc, bool
+>  	unsigned long *vcpu_mask;
+>  	u64 valid_bank_mask;
+>  	u64 sparse_banks[64];
+> -	int sparse_banks_len;
+>  	bool all_cpus;
+>  
+>  	if (!ex) {
+> @@ -1811,24 +1811,28 @@ static u64 kvm_hv_flush_tlb(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *hc, bool
+>  		all_cpus = flush_ex.hv_vp_set.format !=
+>  			HV_GENERIC_SET_SPARSE_4K;
+>  
+> -		sparse_banks_len = bitmap_weight((unsigned long *)&valid_bank_mask, 64);
+> +		if (hc->var_cnt != bitmap_weight((unsigned long *)&valid_bank_mask, 64))
+> +			return HV_STATUS_INVALID_HYPERCALL_INPUT;
 
-Thx.
+Let's hope Windows doesn't break this ruls when vp_set.format != HV_GENERIC_SET_SPARSE_4K
 
----
+>  
+> -		if (!sparse_banks_len && !all_cpus)
+> +		if (!hc->var_cnt && !all_cpus)
+>  			goto ret_success;
+>  
+>  		if (!all_cpus) {
+>  			if (hc->fast) {
+> -				if (sparse_banks_len > HV_HYPERCALL_MAX_XMM_REGISTERS - 1)
+> +				if (hc->var_cnt > HV_HYPERCALL_MAX_XMM_REGISTERS - 1)
+>  					return HV_STATUS_INVALID_HYPERCALL_INPUT;
+> -				for (i = 0; i < sparse_banks_len; i += 2) {
+> +				for (i = 0; i < hc->var_cnt; i += 2) {
+>  					sparse_banks[i] = sse128_lo(hc->xmm[i / 2 + 1]);
+>  					sparse_banks[i + 1] = sse128_hi(hc->xmm[i / 2 + 1]);
+>  				}
+>  			} else {
+> +				if (hc->var_cnt > 64)
+> +					return HV_STATUS_INVALID_HYPERCALL_INPUT;
+> +
+>  				gpa = hc->ingpa + offsetof(struct hv_tlb_flush_ex,
+>  							   hv_vp_set.bank_contents);
+>  				if (unlikely(kvm_read_guest(kvm, gpa, sparse_banks,
+> -							    sparse_banks_len *
+> +							    hc->var_cnt *
+>  							    sizeof(sparse_banks[0]))))
+>  					return HV_STATUS_INVALID_HYPERCALL_INPUT;
+>  			}
+> @@ -1884,7 +1888,6 @@ static u64 kvm_hv_send_ipi(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *hc, bool
+>  	unsigned long *vcpu_mask;
+>  	unsigned long valid_bank_mask;
+>  	u64 sparse_banks[64];
+> -	int sparse_banks_len;
+>  	u32 vector;
+>  	bool all_cpus;
+>  
+> @@ -1917,22 +1920,25 @@ static u64 kvm_hv_send_ipi(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *hc, bool
+>  
+>  		vector = send_ipi_ex.vector;
+>  		valid_bank_mask = send_ipi_ex.vp_set.valid_bank_mask;
+> -		sparse_banks_len = bitmap_weight(&valid_bank_mask, 64) *
+> -			sizeof(sparse_banks[0]);
+> -
+>  		all_cpus = send_ipi_ex.vp_set.format == HV_GENERIC_SET_ALL;
+>  
+> +		if (hc->var_cnt != bitmap_weight(&valid_bank_mask, 64))
+> +			return HV_STATUS_INVALID_HYPERCALL_INPUT;
+> +
+>  		if (all_cpus)
+>  			goto check_and_send_ipi;
+>  
+> -		if (!sparse_banks_len)
+> +		if (!hc->var_cnt)
+>  			goto ret_success;
+>  
+> +		if (hc->var_cnt > 64)
+> +			return HV_STATUS_INVALID_HYPERCALL_INPUT;
+> +
+>  		if (kvm_read_guest(kvm,
+>  				   hc->ingpa + offsetof(struct hv_send_ipi_ex,
+>  							vp_set.bank_contents),
+>  				   sparse_banks,
+> -				   sparse_banks_len))
+> +				   hc->var_cnt * sizeof(sparse_banks[0])))
+>  			return HV_STATUS_INVALID_HYPERCALL_INPUT;
+>  	}
+>  
+> @@ -2190,13 +2196,14 @@ int kvm_hv_hypercall(struct kvm_vcpu *vcpu)
+>  	}
+>  
+>  	hc.code = hc.param & 0xffff;
+> +	hc.var_cnt = (hc.param & HV_HYPERCALL_VARHEAD_MASK) >> HV_HYPERCALL_VARHEAD_OFFSET;
+>  	hc.fast = !!(hc.param & HV_HYPERCALL_FAST_BIT);
+>  	hc.rep_cnt = (hc.param >> HV_HYPERCALL_REP_COMP_OFFSET) & 0xfff;
+>  	hc.rep_idx = (hc.param >> HV_HYPERCALL_REP_START_OFFSET) & 0xfff;
+>  	hc.rep = !!(hc.rep_cnt || hc.rep_idx);
+>  
+> -	trace_kvm_hv_hypercall(hc.code, hc.fast, hc.rep_cnt, hc.rep_idx,
+> -			       hc.ingpa, hc.outgpa);
+> +	trace_kvm_hv_hypercall(hc.code, hc.fast, hc.var_cnt, hc.rep_cnt,
+> +			       hc.rep_idx, hc.ingpa, hc.outgpa);
+>  
+>  	if (unlikely(!hv_check_hypercall_access(hv_vcpu, hc.code))) {
+>  		ret = HV_STATUS_ACCESS_DENIED;
+> diff --git a/arch/x86/kvm/trace.h b/arch/x86/kvm/trace.h
+> index 953b0fcb21ee..f6625cfb686c 100644
+> --- a/arch/x86/kvm/trace.h
+> +++ b/arch/x86/kvm/trace.h
+> @@ -64,9 +64,9 @@ TRACE_EVENT(kvm_hypercall,
+>   * Tracepoint for hypercall.
+>   */
+>  TRACE_EVENT(kvm_hv_hypercall,
+> -	TP_PROTO(__u16 code, bool fast, __u16 rep_cnt, __u16 rep_idx,
+> -		 __u64 ingpa, __u64 outgpa),
+> -	TP_ARGS(code, fast, rep_cnt, rep_idx, ingpa, outgpa),
+> +	TP_PROTO(__u16 code, bool fast,  __u16 var_cnt, __u16 rep_cnt,
+> +		 __u16 rep_idx, __u64 ingpa, __u64 outgpa),
+> +	TP_ARGS(code, fast, var_cnt, rep_cnt, rep_idx, ingpa, outgpa),
+>  
+>  	TP_STRUCT__entry(
+>  		__field(	__u16,		rep_cnt		)
+> @@ -74,6 +74,7 @@ TRACE_EVENT(kvm_hv_hypercall,
+>  		__field(	__u64,		ingpa		)
+>  		__field(	__u64,		outgpa		)
+>  		__field(	__u16, 		code		)
+> +		__field(	__u16,		var_cnt		)
+>  		__field(	bool,		fast		)
+>  	),
+>  
+> @@ -83,13 +84,14 @@ TRACE_EVENT(kvm_hv_hypercall,
+>  		__entry->ingpa		= ingpa;
+>  		__entry->outgpa		= outgpa;
+>  		__entry->code		= code;
+> +		__entry->var_cnt	= var_cnt;
+>  		__entry->fast		= fast;
+>  	),
+>  
+> -	TP_printk("code 0x%x %s cnt 0x%x idx 0x%x in 0x%llx out 0x%llx",
+> +	TP_printk("code 0x%x %s var_cnt 0x%x cnt 0x%x idx 0x%x in 0x%llx out 0x%llx",
 
-The following changes since commit 5816b3e6577eaa676ceb00a848f0fd65fe2adc29:
+Nit: 'cnt' is (and was) a bit ambiguous, I'd suggest to explicitly say
+'rep_cnt' (and probably 'rep_idx') instead.
 
-  Linux 5.15-rc3 (2021-09-26 14:08:19 -0700)
+>  		  __entry->code, __entry->fast ? "fast" : "slow",
+> -		  __entry->rep_cnt, __entry->rep_idx,  __entry->ingpa,
+> -		  __entry->outgpa)
+> +		  __entry->var_cnt, __entry->rep_cnt, __entry->rep_idx,
+> +		  __entry->ingpa, __entry->outgpa)
+>  );
+>  
+>  TRACE_EVENT(kvm_hv_hypercall_done,
+> diff --git a/include/asm-generic/hyperv-tlfs.h b/include/asm-generic/hyperv-tlfs.h
+> index 56348a541c50..1ba8e6da4427 100644
+> --- a/include/asm-generic/hyperv-tlfs.h
+> +++ b/include/asm-generic/hyperv-tlfs.h
+> @@ -182,6 +182,7 @@ enum HV_GENERIC_SET_FORMAT {
+>  #define HV_HYPERCALL_RESULT_MASK	GENMASK_ULL(15, 0)
+>  #define HV_HYPERCALL_FAST_BIT		BIT(16)
+>  #define HV_HYPERCALL_VARHEAD_OFFSET	17
+> +#define HV_HYPERCALL_VARHEAD_MASK	GENMASK_ULL(26, 17)
+>  #define HV_HYPERCALL_REP_COMP_OFFSET	32
+>  #define HV_HYPERCALL_REP_COMP_1		BIT_ULL(32)
+>  #define HV_HYPERCALL_REP_COMP_MASK	GENMASK_ULL(43, 32)
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_build_for_v5.16_rc1
-
-for you to fetch changes up to 067595d728179219c120dd50b4dc711e92f1eb16:
-
-  x86/boot: Fix make hdimage with older versions of mtools (2021-09-29 11:06:47 +0200)
-
-----------------------------------------------------------------
-- A single fix to hdimage when using older versions of mtools
-
-----------------------------------------------------------------
-H. Peter Anvin (Intel) (1):
-      x86/boot: Fix make hdimage with older versions of mtools
-
- arch/x86/boot/genimage.sh    | 15 ++++++++-------
- arch/x86/boot/mtools.conf.in |  5 +++--
- 2 files changed, 11 insertions(+), 9 deletions(-)
+Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
 
 -- 
-Regards/Gruss,
-    Boris.
+Vitaly
 
-SUSE Software Solutions Germany GmbH, GF: Ivo Totev, HRB 36809, AG Nürnberg
