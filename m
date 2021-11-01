@@ -2,106 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F325B441BC7
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 14:34:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 598C7441BDE
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 14:42:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232001AbhKANg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 09:36:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44134 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231741AbhKANg4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 09:36:56 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9692C061714
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 06:34:23 -0700 (PDT)
-Received: from ip4d173d4a.dynamic.kabel-deutschland.de ([77.23.61.74] helo=[192.168.66.200]); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1mhXSA-0002hd-AR; Mon, 01 Nov 2021 14:34:22 +0100
-Message-ID: <d757b7c0-9d6d-a3ad-8bd0-748396db5861@leemhuis.info>
-Date:   Mon, 1 Nov 2021 14:34:21 +0100
+        id S231926AbhKANoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 09:44:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55902 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231693AbhKANoh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 09:44:37 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6B9AF60FE8;
+        Mon,  1 Nov 2021 13:35:04 +0000 (UTC)
+Date:   Mon, 1 Nov 2021 09:35:02 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     cgel.zte@gmail.com
+Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org,
+        Zhang Mingyu <zhang.mingyu@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: Re: [PATCH] tracing:Remove unneeded semicolon
+Message-ID: <20211101093502.37de73c0@gandalf.local.home>
+In-Reply-To: <20211101055602.35167-1-zhang.mingyu@zte.com.cn>
+References: <20211101055602.35167-1-zhang.mingyu@zte.com.cn>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: Thorsten is tracking regression again and could need a little
- help (was: Re: Linux 5.15)
-Content-Language: en-BS
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "regressions@lists.linux.dev" <regressions@lists.linux.dev>
-References: <CAHk-=wjfbfQobW2jygMvgfJXKmzZNB=UTzBrFs2vTEzVpBXA4Q@mail.gmail.com>
- <a365ffb9-a4d2-b1d7-7cd7-dd9d7039e04e@leemhuis.info>
- <YX/ekB+9F9xvHCB7@kroah.com>
- <da21322a-95e8-40f9-a718-fa1e56eb203f@leemhuis.info>
- <YX/lnI5gX4TAF5Ea@kroah.com>
-From:   Thorsten Leemhuis <regressions@leemhuis.info>
-In-Reply-To: <YX/lnI5gX4TAF5Ea@kroah.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1635773663;d3256abc;
-X-HE-SMSGID: 1mhXSA-0002hd-AR
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01.11.21 14:03, Greg KH wrote:
-> On Mon, Nov 01, 2021 at 01:44:01PM +0100, Thorsten Leemhuis wrote:
->> On 01.11.21 13:33, Greg KH wrote:
->>> On Mon, Nov 01, 2021 at 05:49:40AM +0100, Thorsten Leemhuis wrote:
->>>> example by simply forwarding the mail to regressions@leemhuis.info or
->>>> CCing that address on a reply. I'll handle everything else then and tell
->>>> regzbot about it. But if you feel adventurous, you can also skip me as
->>>> the man-in-the-middle and tell the bot directly. To do that, just send a
->>>> reply to the report to the regressions mailing list
->>>> (regressions@lists.linux.dev) either directly or by CCing it on a reply
->>>> you would have written anyway; when doing so, place something like
->>>> '#regzbot ^introduced v5.15..' (separated by blank lines) somewhere in
->>>> the text, as outlined in regzbot's 'getting started guide' or its
->>>> reference documentation:
->>>> https://gitlab.com/knurd42/regzbot/-/blob/main/docs/getting_started.md
->>>> https://gitlab.com/knurd42/regzbot/-/blob/main/docs/reference.md
->>>>
->>>> That's it, regzbot then on its next run will add the report to the list
->>>> of tracked regression. I'll keep an eye on things and try to fix any
->>>> problems I notice, as there likely will be a few. But then doesn't need
->>>> to bother you.
->>>>
->>>> There is one thing that would really help: if one or two subsystem
->>>> maintainers could give regzbot a shot for all the regression reports
->>>> they get, even for easy fixes, as the bot really needs something to chew
->>>> on. Any volunteers?
->>>
->>> I'll try it for the USB subsystem this merge cycle. 
->>
->> That will be a great help, many thx.
->>
->>> Do you want a bug
->>> report email redirected to that address or will a simple forward work
->>> well enough?
->>
->> Redirecting will make it a little easier for me, but a simple forward is
->> fine, too.
+On Mon,  1 Nov 2021 05:56:02 +0000
+cgel.zte@gmail.com wrote:
+
+> From: Zhang Mingyu <zhang.mingyu@zte.com.cn>
 > 
-> Ok, I did that now for a USB bug report, hopefully that worked.  If not,
-> I can forward it on.
+> Eliminate the following coccinelle check warning:
+> kernel/trace/trace_events_hist.c:6087:2-3
 
-Got it, but I could need some advice on it if you have a minute.
+Thanks, but a fix (by a robot) was already added to my queue.
 
-Does that report really look like a regression from your point of view?
-The part "The code has been this way in the kernel for a very long time,
-which suggests that it has been working, [...]" sounds like it is, but
-OTOH it's quite vague.
+https://lore.kernel.org/all/20211030005615.GA41257@3074f0d39c61/
 
-I'm asking, because with my regression tracking work and regzbot I focus
-on regressions and ignore things that were always broken, as I (at least
-for now) don't want it to become yet another bug tracker (and I guess I
-would quickly drown in bugs as well).
+-- Steve
 
-But if you think this case looks like a regression, I'll add it. Guess I
-just need to be creative then how to tell regzbot when it got
-introduced. Guess I'll settle on v2.6.13..v5.15", that should indicate
-there is something strange here. It's a use-case I hadn't expected. But
-well, that's why I wanted to something for testing. :-D
 
-Ciao, Thorsten
+> 
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: Zhang Mingyu <zhang.mingyu@zte.com.cn>
+> ---
+>  kernel/trace/trace_events_hist.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
+> index cddf6bf165a0..61586f16a853 100644
+> --- a/kernel/trace/trace_events_hist.c
+> +++ b/kernel/trace/trace_events_hist.c
+> @@ -6084,7 +6084,7 @@ static int event_hist_trigger_func(struct event_command *cmd_ops,
+>  	while (start) {
+>  		*(start + 4) = 'X';
+>  		start = strstr(start + 11, ".sym-offset");
+> -	};
+> +	}
+>  
+>  	attrs = parse_hist_trigger_attrs(file->tr, trigger);
+>  	if (IS_ERR(attrs))
+
