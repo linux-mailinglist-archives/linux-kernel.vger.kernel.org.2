@@ -2,573 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32431441556
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 09:32:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9114A44155D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 09:35:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231651AbhKAIfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 04:35:17 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:51390 "EHLO m43-7.mailgun.net"
+        id S231496AbhKAIhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 04:37:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231430AbhKAIfQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 04:35:16 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1635755563; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=SDF4LzrH987GR+TaIzlW9UXqA34zyaQlAw5bVL1xVvA=;
- b=kexbRaqHWO133i6DPdazv+9yiN+3TY2kasvqPHX7WKAJ7nHa0g1+zHaXsP1apcDP8ZMcxpoD
- ha9NtfDWt0mngeFUiFMbmIytyE32HCMhUQWMzK1Z/GtDnREtv+uOa0F4kI69F+aqGEUa73zM
- ldUHs+lJd4I/dxNDBPzUWeAviTQ=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 617fa61df6a3eeacf95d1cfb (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 01 Nov 2021 08:32:29
- GMT
-Sender: tjiang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 36F92C43616; Mon,  1 Nov 2021 08:32:29 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: tjiang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id F2276C4338F;
-        Mon,  1 Nov 2021 08:32:25 +0000 (UTC)
+        id S231320AbhKAIh2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 04:37:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B27A3610A2
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 08:34:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635755695;
+        bh=obeo4arX2BcSuRDdS9k9PamPIZJFgpOtT0SeoVp8Vtg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=UFIwWTzawtcc6PC1NEffH3E+HJQucMTcYfc9JzH6RVIkYZb+rJQkasPbW6qu9m8MJ
+         mPLG2n/rxnrgZ+rQdM9GzYRdYMQEOSI22G1i04I6R0KEJDlB9Pzy9kGSv5H8j0y5xi
+         zY+/083SME90EYoQQDb5teZHpmWIOQctHoLm3SPochR1kMZIml2NtWepojNHL8gAKl
+         9xPNfy4tYedrmP4uwxSnOlzfvHHd6SlMnStCQ1OmnaunVp0juYfsOwzrFaSOXqNgfT
+         SUHTYRDclf7O/64NTfRP2Rkb/LI17TTMCzFtqe0uMJ3mOsuMoIpTW/kKoGuWAr4cYD
+         b0MVQph+yoprw==
+Received: by mail-oi1-f169.google.com with SMTP id bm39so13463426oib.0
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 01:34:55 -0700 (PDT)
+X-Gm-Message-State: AOAM530GgZ60KY08jCHYHN+CtAgmzaS7DSs+h9YN4+vSEhyvUw3+m2jC
+        zqf33yWzSw13ZDShGp21sjb5zN1nP/+LiVCj2HI=
+X-Google-Smtp-Source: ABdhPJw9u4sF3GagDkzYyWDjJxayAqxSo5SlRgNq8NAwK5VHTPb+bEN/WnF/aGaG9yS3U1m8w4dyOlys5a7lQf9P8zk=
+X-Received: by 2002:aca:3cc1:: with SMTP id j184mr12787185oia.174.1635755694924;
+ Mon, 01 Nov 2021 01:34:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 01 Nov 2021 16:32:25 +0800
-From:   tjiang@codeaurora.org
-To:     Marcel Holtmann <marcel@holtmann.org>
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+References: <20211101031558.7184-1-walter-zh.wu@mediatek.com>
+In-Reply-To: <20211101031558.7184-1-walter-zh.wu@mediatek.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 1 Nov 2021 09:34:43 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXGqOzHM+J30TXR3-uZPkjHBCXB4CMkzZjHbbmptyU5W9w@mail.gmail.com>
+Message-ID: <CAMj1kXGqOzHM+J30TXR3-uZPkjHBCXB4CMkzZjHbbmptyU5W9w@mail.gmail.com>
+Subject: Re: [PATCH] dma-direct: fix DMA_ATTR_NO_KERNEL_MAPPING
+To:     Walter Wu <walter-zh.wu@mediatek.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Linux IOMMU <iommu@lists.linux-foundation.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
-        c-hbandi@codeaurora.org, hemantg@codeaurora.org, mka@chromium.org,
-        rjliao@codeaurora.org, zijuhu@codeaurora.org
-Subject: Re: [PATCH v2] Bluetooth: btusb: Add the new support IDs for WCN6855
-In-Reply-To: <412f59a8f505fce364a2a93bc54f96bc@codeaurora.org>
-References: <0f45bb361c49a2000508d6efa4d185f8@codeaurora.org>
- <B9C317D2-8ACB-4E69-9E41-8256F3F3B606@holtmann.org>
- <412f59a8f505fce364a2a93bc54f96bc@codeaurora.org>
-Message-ID: <0ce5a54881f72766e845ec72b4db0752@codeaurora.org>
-X-Sender: tjiang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        linux-mediatek@lists.infradead.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marcel:
-   could you help check my query ? and could you also share the code for 
-"what we have done for the Intel
->> unification of its hardware"?  thank you.
+On Mon, 1 Nov 2021 at 04:17, Walter Wu <walter-zh.wu@mediatek.com> wrote:
+>
+> DMA_ATTR_NO_KERNEL_MAPPING is to avoid creating a kernel mapping
+> for the allocated buffer, but current implementation is that
+> PTE of allocated buffer in kernel page table is valid. So we
+> should set invalid for PTE of allocate buffer so that there are
+> no kernel mapping for the allocated buffer.
+>
+> In some cases, we don't hope the allocated buffer to be read
+> by cpu or speculative execution, so we use DMA_ATTR_NO_KERNEL_MAPPING
+> to get no kernel mapping in order to achieve this goal.
+>
+> Signed-off-by: Walter Wu <walter-zh.wu@mediatek.com>
+> Cc: Christoph Hellwig <hch@lst.de>
+> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+> Cc: Robin Murphy <robin.murphy@arm.com>
+> Cc: Matthias Brugger <matthias.bgg@gmail.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> ---
+>  kernel/dma/direct.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+>
+> diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
+> index 4c6c5e0635e3..aa10b4c5d762 100644
+> --- a/kernel/dma/direct.c
+> +++ b/kernel/dma/direct.c
+> @@ -13,6 +13,7 @@
+>  #include <linux/vmalloc.h>
+>  #include <linux/set_memory.h>
+>  #include <linux/slab.h>
+> +#include <asm/cacheflush.h>
+>  #include "direct.h"
+>
+>  /*
+> @@ -169,6 +170,9 @@ void *dma_direct_alloc(struct device *dev, size_t size,
+>                 if (!PageHighMem(page))
+>                         arch_dma_prep_coherent(page, size);
+>                 *dma_handle = phys_to_dma_direct(dev, page_to_phys(page));
+> +               /* remove kernel mapping for pages */
+> +               set_memory_valid((unsigned long)phys_to_virt(dma_to_phys(dev, *dma_handle)),
+> +                               size >> PAGE_SHIFT, 0);
 
-regards.
-tim
+This only works if the memory is mapped at page granularity in the
+linear region, and you cannot rely on that. Many architectures prefer
+block mappings for the linear region, and arm64 will only use page
+mappings if rodata=full is set (which is set by default but can be
+overridden on the kernel command line)
 
-On 2021-10-26 18:30, tjiang@codeaurora.org wrote:
-> Hi Marcel:
->   please see inline comments.
-> 
-> regards.
-> tim
-> 
-> On 2021-10-25 21:29, Marcel Holtmann wrote:
->> Hi
->> 
->>> On Oct 21, 2021, at 10:50, tjiang@codeaurora.org wrote:
->>> 
->>> Add the more IDs to usb_device_id table for WCN6855.
->>> 
->>> -Device(0489:e0cc) from /sys/kernel/debug/usb/devices
->>> T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  2 Spd=12   MxCh= 0
->>> D:  Ver= 1.10 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
->>> P:  Vendor=0489 ProdID=e0cc Rev= 0.01
->>> C:* #Ifs= 2 Cfg#= 1 Atr=e0 MxPwr=100mA
->>> I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
->>> E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
->>> E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
->>> I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
->>> I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
->>> I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
->>> I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
->>> I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
->>> I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
->>> I:  If#= 1 Alt= 6 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  63 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  63 Ivl=1ms
->>> I:  If#= 1 Alt= 7 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  65 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  65 Ivl=1ms
->>> 
->>> -Device(0489:e0c9) from /sys/kernel/debug/usb/devices
->>> T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  2 Spd=12   MxCh= 0
->>> D:  Ver= 1.10 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
->>> P:  Vendor=0489 ProdID=e0c9 Rev= 0.01
->>> C:* #Ifs= 2 Cfg#= 1 Atr=e0 MxPwr=100mA
->>> I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
->>> E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
->>> E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
->>> I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
->>> I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
->>> I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
->>> I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
->>> I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
->>> I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
->>> I:  If#= 1 Alt= 6 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  63 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  63 Ivl=1ms
->>> I:  If#= 1 Alt= 7 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  65 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  65 Ivl=1ms
->>> 
->>> -Device(0489:e0d6) from /sys/kernel/debug/usb/devices
->>> T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  2 Spd=12   MxCh= 0
->>> D:  Ver= 1.10 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
->>> P:  Vendor=0489 ProdID=e0d6 Rev= 0.01
->>> C:* #Ifs= 2 Cfg#= 1 Atr=e0 MxPwr=100mA
->>> I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
->>> E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
->>> E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
->>> I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
->>> I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
->>> I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
->>> I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
->>> I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
->>> I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
->>> I:  If#= 1 Alt= 6 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  63 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  63 Ivl=1ms
->>> I:  If#= 1 Alt= 7 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  65 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  65 Ivl=1ms
->>> 
->>> -Device(0489:e0e3) from /sys/kernel/debug/usb/devices
->>> T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  2 Spd=12   MxCh= 0
->>> D:  Ver= 1.10 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
->>> P:  Vendor=0489 ProdID=e0e3 Rev= 0.01
->>> C:* #Ifs= 2 Cfg#= 1 Atr=e0 MxPwr=100mA
->>> I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
->>> E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
->>> E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
->>> I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
->>> I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
->>> I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
->>> I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
->>> I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
->>> I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
->>> I:  If#= 1 Alt= 6 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  63 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  63 Ivl=1ms
->>> I:  If#= 1 Alt= 7 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  65 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  65 Ivl=1ms
->>> 
->>> -Device(0489:e0d0) from /sys/kernel/debug/usb/devices
->>> T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  2 Spd=12   MxCh= 0
->>> D:  Ver= 1.10 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
->>> P:  Vendor=0489 ProdID=e0d0 Rev= 0.01
->>> C:* #Ifs= 2 Cfg#= 1 Atr=e0 MxPwr=100mA
->>> I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
->>> E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
->>> E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
->>> I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
->>> I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
->>> I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
->>> I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
->>> I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
->>> I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
->>> I:  If#= 1 Alt= 6 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  63 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  63 Ivl=1ms
->>> I:  If#= 1 Alt= 7 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  65 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  65 Ivl=1ms
->>> 
->>> -Device(0489:e0df) from /sys/kernel/debug/usb/devices
->>> T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  2 Spd=12   MxCh= 0
->>> D:  Ver= 1.10 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
->>> P:  Vendor=0489 ProdID=e0df Rev= 0.01
->>> C:* #Ifs= 2 Cfg#= 1 Atr=e0 MxPwr=100mA
->>> I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
->>> E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
->>> E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
->>> I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
->>> I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
->>> I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
->>> I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
->>> I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
->>> I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
->>> I:  If#= 1 Alt= 6 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  63 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  63 Ivl=1ms
->>> I:  If#= 1 Alt= 7 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  65 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  65 Ivl=1ms
->>> 
->>> -Device(0489:e0e1) from /sys/kernel/debug/usb/devices
->>> T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  2 Spd=12   MxCh= 0
->>> D:  Ver= 1.10 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
->>> P:  Vendor=0489 ProdID=e0e1 Rev= 0.01
->>> C:* #Ifs= 2 Cfg#= 1 Atr=e0 MxPwr=100mA
->>> I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
->>> E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
->>> E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
->>> I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
->>> I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
->>> I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
->>> I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
->>> I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
->>> I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
->>> I:  If#= 1 Alt= 6 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  63 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  63 Ivl=1ms
->>> I:  If#= 1 Alt= 7 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  65 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  65 Ivl=1ms
->>> 
->>> -Device(04ca:3025) from /sys/kernel/debug/usb/devices
->>> T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  2 Spd=12   MxCh= 0
->>> D:  Ver= 1.10 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
->>> P:  Vendor=04ca ProdID=3025 Rev= 0.01
->>> C:* #Ifs= 2 Cfg#= 1 Atr=e0 MxPwr=100mA
->>> I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
->>> E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
->>> E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
->>> I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
->>> I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
->>> I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
->>> I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
->>> I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
->>> I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
->>> I:  If#= 1 Alt= 6 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  63 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  63 Ivl=1ms
->>> I:  If#= 1 Alt= 7 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  65 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  65 Ivl=1ms
->>> 
->>> -Device(10ab:9608) from /sys/kernel/debug/usb/devices
->>> T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  2 Spd=12   MxCh= 0
->>> D:  Ver= 1.10 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
->>> P:  Vendor=10ab ProdID=9608 Rev= 0.01
->>> C:* #Ifs= 2 Cfg#= 1 Atr=e0 MxPwr=100mA
->>> I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
->>> E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
->>> E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
->>> I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
->>> I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
->>> I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
->>> I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
->>> I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
->>> I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
->>> I:  If#= 1 Alt= 6 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  63 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  63 Ivl=1ms
->>> I:  If#= 1 Alt= 7 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  65 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  65 Ivl=1ms
->>> 
->>> -Device(10ab:9609) from /sys/kernel/debug/usb/devices
->>> T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  2 Spd=12   MxCh= 0
->>> D:  Ver= 1.10 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
->>> P:  Vendor=10ab ProdID=9609 Rev= 0.01
->>> C:* #Ifs= 2 Cfg#= 1 Atr=e0 MxPwr=100mA
->>> I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
->>> E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
->>> E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
->>> I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
->>> I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
->>> I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
->>> I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
->>> I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
->>> I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
->>> I:  If#= 1 Alt= 6 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  63 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  63 Ivl=1ms
->>> I:  If#= 1 Alt= 7 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  65 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  65 Ivl=1ms
->>> 
->>> -Device(10ab:9308) from /sys/kernel/debug/usb/devices
->>> T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  2 Spd=12   MxCh= 0
->>> D:  Ver= 1.10 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
->>> P:  Vendor=10ab ProdID=9308 Rev= 0.01
->>> C:* #Ifs= 2 Cfg#= 1 Atr=e0 MxPwr=100mA
->>> I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
->>> E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
->>> E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
->>> I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
->>> I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
->>> I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
->>> I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
->>> I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
->>> I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
->>> I:  If#= 1 Alt= 6 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  63 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  63 Ivl=1ms
->>> I:  If#= 1 Alt= 7 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  65 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  65 Ivl=1ms
->>> 
->>> -Device(10ab:9309) from /sys/kernel/debug/usb/devices
->>> T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  2 Spd=12   MxCh= 0
->>> D:  Ver= 1.10 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
->>> P:  Vendor=10ab ProdID=9309 Rev= 0.01
->>> C:* #Ifs= 2 Cfg#= 1 Atr=e0 MxPwr=100mA
->>> I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
->>> E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
->>> E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
->>> I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
->>> I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
->>> I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
->>> I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
->>> I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
->>> I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
->>> I:  If#= 1 Alt= 6 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  63 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  63 Ivl=1ms
->>> I:  If#= 1 Alt= 7 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>> E:  Ad=83(I) Atr=01(Isoc) MxPS=  65 Ivl=1ms
->>> E:  Ad=03(O) Atr=01(Isoc) MxPS=  65 Ivl=1ms
->>> 
->>> Signed-off-by: Tim Jiang <tjiang@codeaurora.org>
->>> ---
->>> drivers/bluetooth/btusb.c | 37 +++++++++++++++++++++++++++++++++++++
->>> 1 file changed, 37 insertions(+)
->>> 
->>> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
->>> index 87b71740fad8..dd138e54aaab 100644
->>> --- a/drivers/bluetooth/btusb.c
->>> +++ b/drivers/bluetooth/btusb.c
->>> @@ -295,6 +295,43 @@ static const struct usb_device_id 
->>> blacklist_table[] = {
->>> 	{ USB_DEVICE(0x0cf3, 0xe600), .driver_info = BTUSB_QCA_WCN6855 |
->>> 						     BTUSB_WIDEBAND_SPEECH |
->>> 						     BTUSB_VALID_LE_STATES },
->>> +	{ USB_DEVICE(0x0489, 0xe0cc), .driver_info = BTUSB_QCA_WCN6855 |
->>> +						     BTUSB_WIDEBAND_SPEECH |
->>> +						     BTUSB_VALID_LE_STATES },
->>> +	{ USB_DEVICE(0x0489, 0xe0c9), .driver_info = BTUSB_QCA_WCN6855 |
->>> +						     BTUSB_WIDEBAND_SPEECH |
->>> +						     BTUSB_VALID_LE_STATES },
->>> +	{ USB_DEVICE(0x0489, 0xe0d6), .driver_info = BTUSB_QCA_WCN6855 |
->>> +						     BTUSB_WIDEBAND_SPEECH |
->>> +						     BTUSB_VALID_LE_STATES },
->>> +	{ USB_DEVICE(0x0489, 0xe0e3), .driver_info = BTUSB_QCA_WCN6855 |
->>> +						     BTUSB_WIDEBAND_SPEECH |
->>> +						     BTUSB_VALID_LE_STATES },
->>> +	{ USB_DEVICE(0x0489, 0xe0d0), .driver_info = BTUSB_QCA_WCN6855 |
->>> +						     BTUSB_WIDEBAND_SPEECH |
->>> +						     BTUSB_VALID_LE_STATES },
->>> +	{ USB_DEVICE(0x0489, 0xe0df), .driver_info = BTUSB_QCA_WCN6855 |
->>> +						     BTUSB_WIDEBAND_SPEECH |
->>> +						     BTUSB_VALID_LE_STATES },
->>> +	{ USB_DEVICE(0x0489, 0xe0e1), .driver_info = BTUSB_QCA_WCN6855 |
->>> +						     BTUSB_WIDEBAND_SPEECH |
->>> +						     BTUSB_VALID_LE_STATES },
->>> +	{ USB_DEVICE(0x04ca, 0x3025), .driver_info = BTUSB_QCA_WCN6855 |
->>> +						     BTUSB_WIDEBAND_SPEECH |
->>> +						     BTUSB_VALID_LE_STATES },
->>> +	{ USB_DEVICE(0x10ab, 0x9608), .driver_info = BTUSB_QCA_WCN6855 |
->>> +						     BTUSB_WIDEBAND_SPEECH |
->>> +						     BTUSB_VALID_LE_STATES },
->>> +	{ USB_DEVICE(0x10ab, 0x9609), .driver_info = BTUSB_QCA_WCN6855 |
->>> +						     BTUSB_WIDEBAND_SPEECH |
->>> +						     BTUSB_VALID_LE_STATES },
->>> +	{ USB_DEVICE(0x10ab, 0x9308), .driver_info = BTUSB_QCA_WCN6855 |
->>> +						     BTUSB_WIDEBAND_SPEECH |
->>> +						     BTUSB_VALID_LE_STATES },
->>> +	{ USB_DEVICE(0x10ab, 0x9309), .driver_info = BTUSB_QCA_WCN6855 |
->>> +						     BTUSB_WIDEBAND_SPEECH |
->>> +						     BTUSB_VALID_LE_STATES },
->>> +
->> 
->> why is this not using USB_VENDOR_AND_INTERFACE_INFO and a Qualcomm
->> specific hdev->setup routine is figuring out works features are
->> support or quirks are needed.
->> 
->> The USB blacklist should really only be used if the driver can not
->> figure it out by itself. See what we have done for the Intel
->> unification of its hardware.
-> [Tim] Hi Marcel: I see the vendorID is 0x0489 and 0x04ca have been
-> used by BRCM, the code as following:
-> 
->  132     /* Foxconn - Hon Hai */
->  133     { USB_VENDOR_AND_INTERFACE_INFO(0x0489, 0xff, 0x01, 0x01),
->  134       .driver_info = BTUSB_BCM_PATCHRAM },
->  135
->  136     /* Lite-On Technology - Broadcom based */
->  137     { USB_VENDOR_AND_INTERFACE_INFO(0x04ca, 0xff, 0x01, 0x01),
->  138       .driver_info = BTUSB_BCM_PATCHRAM },
-> 
-> how to handle this case ? thank you.
-> 
->> 
->> Regards
->> 
->> Marcel
+
+>                 /* return the page pointer as the opaque cookie */
+>                 return page;
+>         }
+> @@ -278,6 +282,10 @@ void dma_direct_free(struct device *dev, size_t size,
+>
+>         if ((attrs & DMA_ATTR_NO_KERNEL_MAPPING) &&
+>             !force_dma_unencrypted(dev) && !is_swiotlb_for_alloc(dev)) {
+> +               size = PAGE_ALIGN(size);
+> +               /* create kernel mapping for pages */
+> +               set_memory_valid((unsigned long)phys_to_virt(dma_to_phys(dev, dma_addr)),
+> +                               size >> PAGE_SHIFT, 1);
+>                 /* cpu_addr is a struct page cookie, not a kernel address */
+>                 dma_free_contiguous(dev, cpu_addr, size);
+>                 return;
+> --
+> 2.18.0
+>
+>
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
