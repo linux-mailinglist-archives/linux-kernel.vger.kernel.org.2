@@ -2,199 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D1AD44196A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 11:05:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CBA7441971
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 11:06:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232313AbhKAKHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 06:07:46 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:39248 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232416AbhKAKHN (ORCPT
+        id S231982AbhKAKJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 06:09:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56432 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231777AbhKAKIw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 06:07:13 -0400
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1A19U5RF014923;
-        Mon, 1 Nov 2021 06:04:39 -0400
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3c2dnkr4k1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 01 Nov 2021 06:04:39 -0400
-Received: from SCSQMBX10.ad.analog.com (SCSQMBX10.ad.analog.com [10.77.17.5])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 1A1A4bre029199
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 1 Nov 2021 06:04:38 -0400
-Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
- SCSQMBX10.ad.analog.com (10.77.17.5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5;
- Mon, 1 Nov 2021 03:04:36 -0700
-Received: from zeus.spd.analog.com (10.66.68.11) by scsqmbx11.ad.analog.com
- (10.77.17.10) with Microsoft SMTP Server id 15.2.858.5 via Frontend
- Transport; Mon, 1 Nov 2021 03:04:36 -0700
-Received: from amiclaus-VirtualBox.ad.analog.com (AMICLAUS-L02.ad.analog.com [10.48.65.121])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 1A1A4R6o012768;
-        Mon, 1 Nov 2021 06:04:30 -0400
-From:   Antoniu Miclaus <antoniu.miclaus@analog.com>
-To:     <jic23@kernel.org>, <robh+dt@kernel.org>,
-        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <nuno.sa@analog.com>, Antoniu Miclaus <antoniu.miclaus@analog.com>
-Subject: [PATCH v3 2/2] dt-bindings: iio: frequency: add admv1013 doc
-Date:   Mon, 1 Nov 2021 12:04:20 +0200
-Message-ID: <20211101100420.70304-2-antoniu.miclaus@analog.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101100420.70304-1-antoniu.miclaus@analog.com>
-References: <20211101100420.70304-1-antoniu.miclaus@analog.com>
+        Mon, 1 Nov 2021 06:08:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635761178;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=18QPYxfT1WT9tgdoVj5TAKWgZjx+KE5glP+g0+mRzAM=;
+        b=Rhw52BH2z7xaBdI0HKrMYbWgZDzGqvVefRTwVYLepfv/wMMcfXHqb6556a3lspy1G2GfyF
+        BqgdPWIw/GafBZa+77mHDD9S35uKmcsDh3u3rjpAckowL1F2WF01Dsq7S3MivXncMkTckX
+        fXzcgN1tS1J/PWWIoCTEcyOOOvCRgDw=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-308-Bp-FYMzhNX6Q37Bpgv3r3w-1; Mon, 01 Nov 2021 06:06:17 -0400
+X-MC-Unique: Bp-FYMzhNX6Q37Bpgv3r3w-1
+Received: by mail-ed1-f70.google.com with SMTP id s18-20020a056402521200b003dd5902f4f3so15027790edd.23
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 03:06:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=18QPYxfT1WT9tgdoVj5TAKWgZjx+KE5glP+g0+mRzAM=;
+        b=TlZ8vVxm0IHJobss6LLPrGnCMu8OKopvwumP3UeZgFrKJJlvbO38lUcjwNZ1wBW+I0
+         6CWy4oe9+F42rc1KE70Nvcx1+o0blqTErx6yYW6SlmtynJOdXJL+ZRYaCnxeQqtveaeq
+         7wqTNHSit96/PAP/9GnFuzKcJlO0iWbqoDaqqFGCvHNKMgfysFt6dBLmw+cWKghPOelJ
+         cc/eNBybog/GijWrtw1g8sW+BnXxR5mB9erRKmMpmsAxAWfo+dIm+vdHAxUdZm7U+goJ
+         ORPq5U70D1GOUx/Vru4dkAl1+Ltv3crXf9G9Y0uP/RgE/zvVb1HZRjO7wDGfX1zeXXk1
+         GOeQ==
+X-Gm-Message-State: AOAM533DwyXsxqCVFY3KnAIl03sFO6WX5Wrq77tnjM1qMho503pmhddM
+        J38GpE6lSK/EVW4GMa6gsA3ARA5Ch2PtmEsiz8PNf9msct28lMJq/APdsNfaNJICYRJnIx0RhJT
+        kdsjH9/Y0ilXmuk3ajZwdQcEE
+X-Received: by 2002:a17:906:dc94:: with SMTP id cs20mr33549420ejc.367.1635761176701;
+        Mon, 01 Nov 2021 03:06:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzfN2G8/Ae5z/aTn7JJ5WbBJnJbURvnf+kEMvCoI+qwOW7Aq4eOHk1iVqP0JVsYDT7DUBHS1g==
+X-Received: by 2002:a17:906:dc94:: with SMTP id cs20mr33549397ejc.367.1635761176541;
+        Mon, 01 Nov 2021 03:06:16 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id t18sm9057560edd.18.2021.11.01.03.06.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Nov 2021 03:06:16 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ajay Garg <ajaygargnsit@gmail.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v2 4/8] KVM: x86: Add a helper to get the sparse VP_SET
+ for IPIs and TLB flushes
+In-Reply-To: <20211030000800.3065132-5-seanjc@google.com>
+References: <20211030000800.3065132-1-seanjc@google.com>
+ <20211030000800.3065132-5-seanjc@google.com>
+Date:   Mon, 01 Nov 2021 11:06:14 +0100
+Message-ID: <874k8wkx61.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-ORIG-GUID: q4FNfCxV9o4Ht-4qMh0GxzZnntmtHtx6
-X-Proofpoint-GUID: q4FNfCxV9o4Ht-4qMh0GxzZnntmtHtx6
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-01_04,2021-10-29_03,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
- priorityscore=1501 adultscore=0 suspectscore=0 impostorscore=0
- lowpriorityscore=0 mlxlogscore=999 malwarescore=0 clxscore=1015
- bulkscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111010057
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add device tree bindings for the ADMV1013 Upconverter.
+Sean Christopherson <seanjc@google.com> writes:
 
-Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
----
- .../bindings/iio/frequency/adi,admv1013.yaml  | 119 ++++++++++++++++++
- 1 file changed, 119 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/iio/frequency/adi,admv1013.yaml
+> Add a helper, kvm_get_sparse_vp_set(), to handle sanity checks related to
+> the VARHEAD field and reading the sparse banks of a VP_SET.  A future
+> commit to reduce the memory footprint of sparse_banks will introduce more
+> common code to the sparse bank retrieval.
+>
+> No functional change intended.
+>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  arch/x86/kvm/hyperv.c | 32 ++++++++++++++++----------------
+>  1 file changed, 16 insertions(+), 16 deletions(-)
+>
+> diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
+> index e68931ed27f6..3d0981163eed 100644
+> --- a/arch/x86/kvm/hyperv.c
+> +++ b/arch/x86/kvm/hyperv.c
+> @@ -1750,10 +1750,19 @@ struct kvm_hv_hcall {
+>  	sse128_t xmm[HV_HYPERCALL_MAX_XMM_REGISTERS];
+>  };
+>  
+> +static u64 kvm_get_sparse_vp_set(struct kvm *kvm, struct kvm_hv_hcall *hc,
+> +				 u64 *sparse_banks, gpa_t offset)
+> +{
+> +	if (hc->var_cnt > 64)
+> +		return -EINVAL;
+> +
+> +	return kvm_read_guest(kvm, hc->ingpa + offset, sparse_banks,
+> +			      hc->var_cnt * sizeof(*sparse_banks));
+> +}
+> +
+>  static u64 kvm_hv_flush_tlb(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *hc, bool ex)
+>  {
+>  	int i;
+> -	gpa_t gpa;
+>  	struct kvm *kvm = vcpu->kvm;
+>  	struct hv_tlb_flush_ex flush_ex;
+>  	struct hv_tlb_flush flush;
+> @@ -1830,13 +1839,9 @@ static u64 kvm_hv_flush_tlb(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *hc, bool
+>  			goto do_flush;
+>  		}
+>  
+> -		if (hc->var_cnt > 64)
+> -			return HV_STATUS_INVALID_HYPERCALL_INPUT;
+> -
+> -		gpa = hc->ingpa + offsetof(struct hv_tlb_flush_ex,
+> -					   hv_vp_set.bank_contents);
+> -		if (unlikely(kvm_read_guest(kvm, gpa, sparse_banks,
+> -					    hc->var_cnt * sizeof(sparse_banks[0]))))
+> +		if (kvm_get_sparse_vp_set(kvm, hc, sparse_banks,
+> +					  offsetof(struct hv_tlb_flush_ex,
+> +						   hv_vp_set.bank_contents)))
+>  			return HV_STATUS_INVALID_HYPERCALL_INPUT;
+>  	}
+>  
+> @@ -1933,14 +1938,9 @@ static u64 kvm_hv_send_ipi(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *hc, bool
+>  		if (!hc->var_cnt)
+>  			goto ret_success;
+>  
+> -		if (hc->var_cnt > 64)
+> -			return HV_STATUS_INVALID_HYPERCALL_INPUT;
+> -
+> -		if (kvm_read_guest(kvm,
+> -				   hc->ingpa + offsetof(struct hv_send_ipi_ex,
+> -							vp_set.bank_contents),
+> -				   sparse_banks,
+> -				   hc->var_cnt * sizeof(sparse_banks[0])))
+> +		if (kvm_get_sparse_vp_set(kvm, hc, sparse_banks,
+> +					  offsetof(struct hv_send_ipi_ex,
+> +						   vp_set.bank_contents)))
+>  			return HV_STATUS_INVALID_HYPERCALL_INPUT;
+>  	}
 
-diff --git a/Documentation/devicetree/bindings/iio/frequency/adi,admv1013.yaml b/Documentation/devicetree/bindings/iio/frequency/adi,admv1013.yaml
-new file mode 100644
-index 000000000000..47993253a586
---- /dev/null
-+++ b/Documentation/devicetree/bindings/iio/frequency/adi,admv1013.yaml
-@@ -0,0 +1,119 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/iio/frequency/adi,admv1013.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: ADMV1013 Microwave Upconverter
-+
-+maintainers:
-+  - Antoniu Miclaus <antoniu.miclaus@analog.com>
-+
-+description: |
-+   Wideband, microwave upconverter optimized for point to point microwave
-+   radio designs operating in the 24 GHz to 44 GHz frequency range.
-+
-+   https://www.analog.com/en/products/admv1013.html
-+
-+properties:
-+  compatible:
-+    enum:
-+      - adi,admv1013
-+
-+  reg:
-+    maxItems: 1
-+
-+  spi-max-frequency:
-+    maximum: 1000000
-+
-+  clocks:
-+    description:
-+      Definition of the external clock.
-+    minItems: 1
-+
-+  clock-names:
-+    items:
-+      - const: lo_in
-+
-+  clock-output-names:
-+    maxItems: 1
-+
-+  vcm-supply:
-+    description:
-+      Analog voltage regulator.
-+
-+  adi,vga-powerdown:
-+    description:
-+      Power Down the Voltage Gain Amplifier Circuit available at
-+      BG_RBIAS2 pin.
-+    type: boolean
-+
-+  adi,mixer-powerdown:
-+    description:
-+      Power Down the Mixer Circuit. Enable to put the block in
-+      a power down state.
-+    type: boolean
-+
-+  adi,quad-powerdown:
-+    description:
-+      Power Down the Quadrupler. Enable to put the block in
-+      a power down state.
-+    type: boolean
-+
-+  adi,bg-powerdown:
-+    description:
-+      Power Down the Transmitter Band Gap. Enable to put the part in
-+      a power down state.
-+    type: boolean
-+
-+  adi,mixer-if-enable:
-+    description:
-+      Enable the Intermediate Frequency Mode. Either IF Mode or I/Q Mode
-+      can be enabled at a time.
-+    type: boolean
-+
-+  adi,detector-enable:
-+    description:
-+      Enable the Envelope Detector available at output pins VENV_P and
-+      VENV_N. Disable to reduce power consumption.
-+    type: boolean
-+
-+  adi,quad-se-mode:
-+    description:
-+      Switch the LO path from differential to single-ended operation.
-+      Set value 6 for Single-Ended Mode, Negative Side Disabled.
-+      Set value 9 for Single-Ended Mode, Positive Side Disabled.
-+      Set value 12 for Differential Mode.
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    enum: [6, 9, 12]
-+
-+  '#clock-cells':
-+    const: 0
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+  - clock-names
-+  - vcm-supply
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    spi {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+      admv1013@0{
-+        compatible = "adi,admv1013";
-+        reg = <0>;
-+        spi-max-frequency = <1000000>;
-+        clocks = <&admv1013_lo>;
-+        clock-names = "lo_in";
-+        vcm-supply = <&vcm>;
-+        adi,quad-se-mode = <12>;
-+        adi,mixer-if-enable;
-+        adi,detector-enable;
-+      };
-+    };
-+...
+Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+
 -- 
-2.33.1
+Vitaly
 
