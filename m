@@ -2,75 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BE7A4422F1
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 22:56:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DDBD442304
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 23:05:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232239AbhKAV7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 17:59:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42026 "EHLO mail.kernel.org"
+        id S232199AbhKAWI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 18:08:26 -0400
+Received: from mga12.intel.com ([192.55.52.136]:3821 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232113AbhKAV7M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 17:59:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 05B9461053;
-        Mon,  1 Nov 2021 21:56:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635803798;
-        bh=1yvbeSAe6FYPXVyBLDYNYxnS3QQk38yTPaCZ9PMZ5Jw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=OeSjcnfgG0/o5JqTZQxvG6rtlILnMsD5gT0EYKz6ePfzy4aq7qYbBk3V9WpDRKAa2
-         5C71MqAl5Nc6OSFdCHUKzLpYIhSYHovgxhJZL/0ZPstYgqAZXi0lhFWVfvUe6yWuBH
-         nHy7Tq3WXHAJqFv4jhjhGlRqDtr5X5Ox9MBr7hBm/og/SDen//8NICa/xjNC0ifVaW
-         QI4+SS2Z/fJ+0yUJO0+sdSqIRUUXJsVIA3WrmWrLeW/a8V0SEmSO1acXlr2KBiXSWm
-         SAcfdLMxRFypE8lYyDjKC1Jv5RBNh5odWqexHJKeFIb4NRkHm5wH5c/91xrVxXhVyc
-         YmfRRAnnOznuA==
-Date:   Mon, 1 Nov 2021 17:01:20 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [GIT PULL] fallthrough fixes for Clang for 5.16-rc1
-Message-ID: <20211101220120.GA30083@embeddedor>
+        id S229677AbhKAWIZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 18:08:25 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10155"; a="211186442"
+X-IronPort-AV: E=Sophos;i="5.87,201,1631602800"; 
+   d="scan'208";a="211186442"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2021 15:04:10 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,201,1631602800"; 
+   d="scan'208";a="449120883"
+Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
+  by orsmga006.jf.intel.com with ESMTP; 01 Nov 2021 15:04:08 -0700
+Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mhfPU-0003in-27; Mon, 01 Nov 2021 22:04:08 +0000
+Date:   Tue, 02 Nov 2021 06:03:36 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ 116241e9c110fd28f40af198871956ac1c1536da
+Message-ID: <61806438.nHTpl/SJD8fpXhjE%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit e4e737bb5c170df6135a127739a9e6148ee3da82:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+branch HEAD: 116241e9c110fd28f40af198871956ac1c1536da  Merge branch 'efi/core'
 
-  Linux 5.15-rc2 (2021-09-19 17:28:22 -0700)
+elapsed time: 740m
 
-are available in the Git repository at:
+configs tested: 102
+configs skipped: 3
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git tags/fallthrough-fixes-clang-5.16-rc1
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-for you to fetch changes up to 02900f428d3c7acd89b77784bec33ddec7b750a4:
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+s390                       zfcpdump_defconfig
+arc                        nsim_700_defconfig
+powerpc                     sequoia_defconfig
+s390                             alldefconfig
+mips                           ip32_defconfig
+powerpc                 mpc837x_mds_defconfig
+arm                          pxa3xx_defconfig
+powerpc                     ep8248e_defconfig
+parisc                generic-64bit_defconfig
+mips                        jmr3927_defconfig
+arm                         palmz72_defconfig
+sh                           sh2007_defconfig
+powerpc                      ppc64e_defconfig
+xtensa                          iss_defconfig
+openrisc                    or1ksim_defconfig
+powerpc                     mpc5200_defconfig
+powerpc                    socrates_defconfig
+mips                          rm200_defconfig
+sparc64                          alldefconfig
+arm                  randconfig-c002-20211031
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                              debian-10.3
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a012-20211101
+x86_64               randconfig-a015-20211101
+x86_64               randconfig-a016-20211101
+x86_64               randconfig-a013-20211101
+x86_64               randconfig-a011-20211101
+x86_64               randconfig-a014-20211101
+i386                 randconfig-a016-20211101
+i386                 randconfig-a014-20211101
+i386                 randconfig-a015-20211101
+i386                 randconfig-a013-20211101
+i386                 randconfig-a011-20211101
+i386                 randconfig-a012-20211101
+arc                  randconfig-r043-20211101
+riscv                randconfig-r042-20211101
+s390                 randconfig-r044-20211101
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                                  kexec
 
-  pcmcia: db1xxx_ss: Fix fall-through warning for Clang (2021-10-13 14:47:48 -0500)
+clang tested configs:
+x86_64               randconfig-a004-20211101
+x86_64               randconfig-a006-20211101
+x86_64               randconfig-a001-20211101
+x86_64               randconfig-a002-20211101
+x86_64               randconfig-a003-20211101
+x86_64               randconfig-a005-20211101
+i386                 randconfig-a005-20211101
+i386                 randconfig-a001-20211101
+i386                 randconfig-a003-20211101
+i386                 randconfig-a004-20211101
+i386                 randconfig-a006-20211101
+i386                 randconfig-a002-20211101
+hexagon              randconfig-r041-20211101
+hexagon              randconfig-r045-20211101
 
-----------------------------------------------------------------
-fallthrough fixes for Clang for 5.16-rc1
-
-Hi Linus,
-
-Please, pull the following patches that fix some fall-through warnings
-when building with Clang and -Wimplicit-fallthrough.
-
-Thanks!
---
-Gustavo
-
-----------------------------------------------------------------
-Gustavo A. R. Silva (3):
-      scsi: st: Fix fall-through warning for Clang
-      MIPS: Fix fall-through warnings for Clang
-      pcmcia: db1xxx_ss: Fix fall-through warning for Clang
-
- arch/mips/alchemy/devboards/db1550.c | 1 +
- arch/mips/kernel/uprobes.c           | 1 +
- drivers/pcmcia/db1xxx_ss.c           | 1 +
- drivers/scsi/st.c                    | 1 +
- 4 files changed, 4 insertions(+)
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
