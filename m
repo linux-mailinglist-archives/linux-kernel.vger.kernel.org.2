@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A87FA4416EA
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:28:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF525441603
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:18:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233015AbhKAJac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:30:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59239 "EHLO mail.kernel.org"
+        id S231974AbhKAJVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:21:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57304 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231979AbhKAJ1N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:27:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E6D0061101;
-        Mon,  1 Nov 2021 09:22:34 +0000 (UTC)
+        id S231882AbhKAJVP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:21:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E22C5610A8;
+        Mon,  1 Nov 2021 09:18:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758555;
-        bh=TrunEkdmAKOzzNzNkO/1rXEfuJn2an1GuGMg5jY4mek=;
+        s=korg; t=1635758322;
+        bh=51ta6WGyBpUJSQvS01ISrVRQRPfj46ODhDABFHt73Hw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WmazCPAQqOj38TUL48MSr3b7rsbwor/62yekEDJtGM4ZMBFLl4ZWjNzrUvOKGP+f7
-         lvgNC2B1MGVc/f5ABKw7Le6t5a9yNubLng6nDWQbYknf6k5W0OpRBXTi+i0Px70ESr
-         ipwEq2/eHyHOCno1U0aT4p9fJPWh8N55LC7bv+/Y=
+        b=Zpt0/YoiRnmprrJixMCIbo/MwltwP5Ku393pmiwFzoIR0uW3eqhrpkt+EnAm1UFqP
+         TNUbkdNzSxZDPA9nt2T8udJQVpX3e/guL7hjWSlePw7tOLjXVeLU3/HUe4+hiIcSXC
+         /Bdyvm28qfkyO8/SGpWXoRR82hN2a8Him8Oi0qk4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        "Woojung.Huh@microchip.com" <Woojung.Huh@microchip.com>,
+        Johan Hovold <johan@kernel.org>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 12/51] nfc: port100: fix using -ERRNO as command type mask
+Subject: [PATCH 4.4 13/17] net: lan78xx: fix division by zero in send path
 Date:   Mon,  1 Nov 2021 10:17:16 +0100
-Message-Id: <20211101082503.473282718@linuxfoundation.org>
+Message-Id: <20211101082443.660446060@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082500.203657870@linuxfoundation.org>
-References: <20211101082500.203657870@linuxfoundation.org>
+In-Reply-To: <20211101082440.664392327@linuxfoundation.org>
+References: <20211101082440.664392327@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,43 +41,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit 2195f2062e4cc93870da8e71c318ef98a1c51cef upstream.
+commit db6c3c064f5d55fa9969f33eafca3cdbefbb3541 upstream.
 
-During probing, the driver tries to get a list (mask) of supported
-command types in port100_get_command_type_mask() function.  The value
-is u64 and 0 is treated as invalid mask (no commands supported).  The
-function however returns also -ERRNO as u64 which will be interpret as
-valid command mask.
+Add the missing endpoint max-packet sanity check to probe() to avoid
+division by zero in lan78xx_tx_bh() in case a malicious device has
+broken descriptors (or when doing descriptor fuzz testing).
 
-Return 0 on every error case of port100_get_command_type_mask(), so the
-probing will stop.
+Note that USB core will reject URBs submitted for endpoints with zero
+wMaxPacketSize but that drivers doing packet-size calculations still
+need to handle this (cf. commit 2548288b4fb0 ("USB: Fix: Don't skip
+endpoint descriptors with maxpacket=0")).
 
-Cc: <stable@vger.kernel.org>
-Fixes: 0347a6ab300a ("NFC: port100: Commands mechanism implementation")
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Fixes: 55d7de9de6c3 ("Microchip's LAN7800 family USB 2/3 to 10/100/1000 Ethernet device driver")
+Cc: stable@vger.kernel.org      # 4.3
+Cc: Woojung.Huh@microchip.com <Woojung.Huh@microchip.com>
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/nfc/port100.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/usb/lan78xx.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/drivers/nfc/port100.c
-+++ b/drivers/nfc/port100.c
-@@ -1003,11 +1003,11 @@ static u64 port100_get_command_type_mask
+--- a/drivers/net/usb/lan78xx.c
++++ b/drivers/net/usb/lan78xx.c
+@@ -2956,6 +2956,12 @@ static int lan78xx_probe(struct usb_inte
  
- 	skb = port100_alloc_skb(dev, 0);
- 	if (!skb)
--		return -ENOMEM;
-+		return 0;
+ 	dev->maxpacket = usb_maxpacket(dev->udev, dev->pipe_out, 1);
  
- 	resp = port100_send_cmd_sync(dev, PORT100_CMD_GET_COMMAND_TYPE, skb);
- 	if (IS_ERR(resp))
--		return PTR_ERR(resp);
-+		return 0;
++	/* Reject broken descriptors. */
++	if (dev->maxpacket == 0) {
++		ret = -ENODEV;
++		goto out3;
++	}
++
+ 	/* driver requires remote-wakeup capability during autosuspend. */
+ 	intf->needs_remote_wakeup = 1;
  
- 	if (resp->len < 8)
- 		mask = 0;
 
 
