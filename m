@@ -2,189 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FE7F442370
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 23:29:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0E6C442373
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 23:30:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232370AbhKAWbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 18:31:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52902 "EHLO
+        id S232328AbhKAWdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 18:33:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232357AbhKAWbp (ORCPT
+        with ESMTP id S230407AbhKAWdQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 18:31:45 -0400
+        Mon, 1 Nov 2021 18:33:16 -0400
 Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18054C061764
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 15:29:11 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id u17so3788499plg.9
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 15:29:11 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A2F6C061714;
+        Mon,  1 Nov 2021 15:30:43 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id n8so2278168plf.4;
+        Mon, 01 Nov 2021 15:30:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RrU1MJ/4uTu6+T3pfv3zx2EhdvwG5+grtllrLBzle4M=;
-        b=AUeK79xZFdmdz+B6CkAt+NHLg98ZBphv0hzwKyzSt2AUOswoZQMqHBGJzpzBo/VOhP
-         Q2BxGvSzmBHCKBTfFJQ7PlZK1QBY/Pv2hVx1bzGtv5nkxczXoMP5kSZjGpYMRsRTvFa7
-         Ml5dMTuo8aFWHd9y8hHn9d5DdNccH9O46J1YE+2ptWvQwcW4jux48GrYDqv2TCdeFsj2
-         r0EfDFT2g4AChRGZy8K082hvpbbSZG/Eb5nehm8AKYvRcv3DAR5Bfa9cYeQq+qSnwSRk
-         kU1JDVbmQDvlcxqERU4tK9mmPMfTKrpA1mSgMK3uSRUXXEofWwoM+iWZMuLJ2elJqn8E
-         xCgw==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VRrO5EGa6gdgx8iaVIWAkfDm2sXFhoGpRVfHTpWiTSY=;
+        b=opbZ5BZODCqrm5+tcV2j4pqGXufFb6qhNlpTaQb2o+yV8MU4lOH7oVnMK79GUPtt07
+         qc39vG+pCkP583D7Aq37brysFtNv+lV3B6wONBQ0RRq7U6Lag9u2n24MAuyZF2Z0+YX2
+         ArrAvWkX4Zy67OOwJAs/3HGjinTVorHDVf65fzGXypIPcqWUPtUztujtoi0EYNDqO462
+         YnTYaT+iiKRra3Hb9Jqpv49vrVwS+lpAU/P1DmrtUK/brTHwrhjIoJA7JNEKlKOd29wD
+         4bfhgPwrvcOz94QEvEL8X1aN7C1YJ9ylV7V5Hs2JGI/r2sXla4arOKbTFQJv76RZUvmZ
+         L+PA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RrU1MJ/4uTu6+T3pfv3zx2EhdvwG5+grtllrLBzle4M=;
-        b=IG46GR6voRzYWxbJ6Y2C2Y3HstqiQwerpiNSR16Wo1y83AwkcsPOrc370CQf8kdhRI
-         DDTOKCJdFW2mztajNFDJSnwhCS6BGDiB/0UASzUTSrODjAyguhltsk7yvgZj+xMglvlQ
-         r/G855QjSA+zqgCszN7n7ZrtODC01/xRecAlNjhgxu6zHQzmpGA0gzcYqdx7kymcw3B4
-         cnmV4GrFMzWiPIQn62F4XQvRow41gIba+/7XEerNteC+cXc88j28OTJgtDUD4IXDFSM+
-         cV9Fn6sgf7o68Er79S9MRJTbbkDexax4LIvrQKRlcjYwgIVY1KzjsxoIKPn8vtpr4M0Q
-         hWew==
-X-Gm-Message-State: AOAM533BPR2sHMn7qCqt2x+xHQDTWQEEC9gTxusmGfSNIhl2QALBmyBL
-        5+iimtlgmKoVYZQlyElz8wJBZQ==
-X-Google-Smtp-Source: ABdhPJwWOAavFsgRVBIr8Oy0QFnvzRUVFNT585YkHtLNIJzBlgOrcYPsCeJXblrSZiJZc+cYROvb0g==
-X-Received: by 2002:a17:90a:ae18:: with SMTP id t24mr1997276pjq.92.1635805750337;
-        Mon, 01 Nov 2021 15:29:10 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id g4sm5404655pfj.67.2021.11.01.15.29.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 15:29:09 -0700 (PDT)
-Date:   Mon, 1 Nov 2021 22:29:06 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Igor Mammedov <imammedo@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 01/13] KVM: x86: Cache total page count to avoid
- traversing the memslot array
-Message-ID: <YYBqMipZT9qcwDMt@google.com>
-References: <cover.1632171478.git.maciej.szmigiero@oracle.com>
- <d07f07cdd545ab1a495a9a0da06e43ad97c069a2.1632171479.git.maciej.szmigiero@oracle.com>
- <YW9Fi128rYxiF1v3@google.com>
- <e618edce-b310-6d9a-3860-d7f4d8c0d98f@maciej.szmigiero.name>
- <YXBnn6ZaXbaqKvOo@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VRrO5EGa6gdgx8iaVIWAkfDm2sXFhoGpRVfHTpWiTSY=;
+        b=68LJ1YQYPkUxWe9Om3mSuO3fJagSOw27YHnpcD5Q0wTJY/e+EWvTx0LgmZ0vIKUm3B
+         yfhpL+h1Z15ty3QySYUSkQ+LWBoRUPfubiUxlFKWBOFX6CVrUBNh3cFlGZGO7CWhOgSh
+         UMPTZzqqb0yCaATYgT1E2jd8kLVBZq0ASCegcfeS0yocwKGFUeN0wg2SJnWLQUNDBc4D
+         mRUxF6PWNmAvErlrK8ay9fCsRhPSRQqqsuIHytED17DF7dEn+ew50bTy3ZiHdp8Q0Fpj
+         jsOq0GVdK6F1r1LSKFdmtNoUVv9hYBqOT9mI9qEfLGLSKDBZsJjTpS8ITEWHX6rMCRZ0
+         MSWA==
+X-Gm-Message-State: AOAM533+CzrQehRT/YV4v8OCxN35bXLJSj3BPDqZ/l/ejtsoIQVbiNcf
+        tNqW4R3Gie0pDtwxgtxqHXBajG9KZ3HQ9IXoTXM=
+X-Google-Smtp-Source: ABdhPJz+L8IoYIJ71wwqO6IX+4Z7mJ9xU8r2f8nTJk1G+Vt6yIiqvlfC3Zh8karFboiZirB6GmBCaDFRmTN5pS6ZFf4=
+X-Received: by 2002:a17:902:f542:b0:141:fa0e:1590 with SMTP id
+ h2-20020a170902f54200b00141fa0e1590mr4881822plf.20.1635805842627; Mon, 01 Nov
+ 2021 15:30:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YXBnn6ZaXbaqKvOo@google.com>
+References: <20211101124310.3947887-1-yangyingliang@huawei.com>
+ <CAADnVQJS_2St=iaqHU+zasy_0A0bidJN=STnkHrNcSNL5vO1Dg@mail.gmail.com> <90518c5d-36ea-ec97-9f14-0687fdd6074f@fb.com>
+In-Reply-To: <90518c5d-36ea-ec97-9f14-0687fdd6074f@fb.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Mon, 1 Nov 2021 15:30:31 -0700
+Message-ID: <CAADnVQ+aeAnBEN=dp92q0RBXT+Um1ha4_F=sQ7fr08Sa3qauLQ@mail.gmail.com>
+Subject: Re: [PATCH -next v2] bpf/benchs: Fix return value check of bpf_program__attach()
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Yang Yingliang <yangyingliang@huawei.com>,
+        Joanne Koong <joannekoong@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021, Sean Christopherson wrote:
-> On Wed, Oct 20, 2021, Maciej S. Szmigiero wrote:
-> > On 20.10.2021 00:24, Sean Christopherson wrote:
-> > > E.g. the whole thing can be
-> > > 
-> > > 	if (!kvm->arch.n_requested_mmu_pages &&
-> > > 	    (change == KVM_MR_CREATE || change == KVM_MR_DELETE)) {
-> > > 		unsigned long nr_mmu_pages;
-> > > 
-> > > 		if (change == KVM_MR_CREATE) {
-> > > 			kvm->arch.n_memslots_pages += new->npages;
-> > > 		} else {
-> > > 			WARN_ON(kvm->arch.n_memslots_pages < old->npages);
-> > > 			kvm->arch.n_memslots_pages -= old->npages;
-> > > 		}
-> > > 
-> > > 		nr_mmu_pages = (unsigned long)kvm->arch.n_memslots_pages;
-> > > 		nr_mmu_pages *= (KVM_PERMILLE_MMU_PAGES / 1000);
-> > 
-> > The above line will set nr_mmu_pages to zero since KVM_PERMILLE_MMU_PAGES
-> > is 20, so when integer-divided by 1000 will result in a multiplication
-> > coefficient of zero.
-> 
-> Ugh, math.  And thus do_div() to avoid the whole 64-bit divide issue on 32-bit KVM.
-> Bummer.
+On Mon, Nov 1, 2021 at 3:21 PM Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 11/1/21 3:00 PM, Alexei Starovoitov wrote:
+> > On Mon, Nov 1, 2021 at 5:35 AM Yang Yingliang <yangyingliang@huawei.com> wrote:
+> >>
+> >> If bpf_program__attach() fails, it never returns NULL,
+> >> we should use libbpf_get_error() to check the return value.
+> >>
+> >> Reported-by: Hulk Robot <hulkci@huawei.com>
+> >> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> >> Acked-by: Yonghong Song <yhs@fb.com>
+> >> ---
+> >> v2:
+> >>    don't use 'int err'
+> >> ---
+> >>   .../selftests/bpf/benchs/bench_bloom_filter_map.c      | 10 +++++-----
+> >>   1 file changed, 5 insertions(+), 5 deletions(-)
+> >>
+> >> diff --git a/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c b/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
+> >> index 6eeeed2913e6..4afaa4adb327 100644
+> >> --- a/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
+> >> +++ b/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
+> >> @@ -304,7 +304,7 @@ static void bloom_lookup_setup(void)
+> >>          populate_maps();
+> >>
+> >>          link = bpf_program__attach(ctx.skel->progs.bloom_lookup);
+> >> -       if (!link) {
+> >> +       if (libbpf_get_error(link)) {
+> >
+> > Please use ASSERT_OK_PTR() instead.
+> > See how other tests are doing it.
+>
+> I actually looked at this. ASSERT_OK_PTR() is defined in test_progs.h
+> and test_progs.h is ONLY included in files which eventually linked to
+> test_progs. That is why I didn't recommend to use ASSERT_OK_PTR().
+>
+> Maybe it is okay to include test_progs.h in benchs/*.c. Or we may
+> want to refactor to a separate header file to contain these macros
+> which can be used for test_progs.h and other applications.
 
-I was revisiting this today because (a) simply making n_memslots_pages a u64 doesn't
-cleanly handle the case where the resulting nr_mmu_pages would wrap, (b) any fix
-in that are should really go in a separate patch to fix
-kvm_mmu_calculate_default_mmu_pages() and then carry that behavior forward
+hmm.
+Looks like bench_ringbufs.c has the same issue doing:
+if (!link)
+and bench_rename.c too.
 
-But as I dove deeper (and deeper), I came to the conclusion that supporting a
-total number of memslot pages that doesn't fit in an unsigned long is a waste of
-our time.  With a 32-bit kernel, userspace can at most address 3gb of virtual
-memory, whereas wrapping the total number of pages would require 4tb+ of guest
-physical memory.  Even with x86's second address space for SMM, that means userspace
-would need to alias all of guest memory more than one _thousand_ times.  And on
-older hardware with MAXPHYADDR < 43, the guest couldn't actually access any of those
-aliases even if userspace lied about guest.MAXPHYADDR.
+Probably would be good to fix in all bench-s.
 
-So unless I'm missing something, or PPC or MIPS has some crazy way for a 32-bit
-host to support 4TB of guest memory, my vote would be to explicitly disallow
-creating more memslot pages than can fit in an unsigned long.  Then x86 KVM could
-reuse the cache nr_memslot_pages and x86's MMU wouldn't have to update a big pile
-of code to support a scenario that practically speaking is useless.
-
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index 72b329e82089..acabdbdef5cf 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -552,6 +552,7 @@ struct kvm {
-         */
-        struct mutex slots_arch_lock;
-        struct mm_struct *mm; /* userspace tied to this vm */
-+       unsigned long nr_memslot_pages;
-        struct kvm_memslots __rcu *memslots[KVM_ADDRESS_SPACE_NUM];
-        struct kvm_vcpu *vcpus[KVM_MAX_VCPUS];
-
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 8bf4b89cfa03..c63fc5c05322 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -1567,6 +1567,15 @@ static void kvm_commit_memory_region(struct kvm *kvm,
-                                     const struct kvm_memory_slot *new,
-                                     enum kvm_mr_change change)
- {
-+       /*
-+        * Update the total number of memslot pages before calling the arch
-+        * hook so that architectures can consume the result directly.
-+        */
-+       if (change == KVM_MR_DELETE)
-+               kvm->nr_memslot_pages -= old->npages;
-+       else if (change == KVM_MR_CREATE)
-+               kvm->nr_memslot_pages += new->npages;
-+
-        kvm_arch_commit_memory_region(kvm, old, new, change);
-
-        /*
-@@ -1738,6 +1747,9 @@ int __kvm_set_memory_region(struct kvm *kvm,
-                if (!old || !old->npages)
-                        return -EINVAL;
-
-+               if (WARN_ON_ONCE(kvm->nr_memslot_pages < old->npages))
-+                       return -EIO;
-+
-                memset(&new, 0, sizeof(new));
-                new.id = id;
-                new.as_id = as_id;
-@@ -1756,6 +1768,13 @@ int __kvm_set_memory_region(struct kvm *kvm,
-
-        if (!old || !old->npages) {
-                change = KVM_MR_CREATE;
-+
-+               /*
-+                * To simplify KVM internals, the total number of pages across
-+                * all memslots must fit in an unsigned long.
-+                */
-+               if ((kvm->nr_memslot_pages + new.npages) < kvm->nr_memslot_pages)
-+                       return -EINVAL;
-        } else { /* Modify an existing slot. */
-                if ((new.userspace_addr != old->userspace_addr) ||
-                    (new.npages != old->npages) ||
+If test_progs.h cannot be included directly
+copy-pasting ASSERT_OK_PTR in a reduced form into bench.h
+is probably cleaner than open coding libbpf_get_error.
