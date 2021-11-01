@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95F3044174F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:33:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 625BE4416ED
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:28:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232384AbhKAJfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:35:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37002 "EHLO mail.kernel.org"
+        id S233058AbhKAJae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:30:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232484AbhKAJcM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:32:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8696C6117A;
-        Mon,  1 Nov 2021 09:24:15 +0000 (UTC)
+        id S232996AbhKAJ0h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:26:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 266D3611C1;
+        Mon,  1 Nov 2021 09:22:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758656;
-        bh=lcL9YykhwXtIsauYrMsyAo6kj0FnmWrgRJn4Pn/ASck=;
+        s=korg; t=1635758536;
+        bh=ykljXRY80sLg1sF+0dIm8Lcob+czv2Dt683jmkUv/J8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CzfyAZ+VYpLQDe6U0E4kKkmYsoluc8GkdCtA4takG8EyEHTspne1p84u0ACQ+rNlb
-         Jqs1nywaqITlbaK+J6ccy2kfO9RtZzm7OSSPfw/Ec/jpEbCTaewFuZ68cA2QOoQ0z4
-         tzMZBoGU37bWHfoSWJRpGnEcTg29DBTKwp0CYPBQ=
+        b=At4hjNpGejwBiLqAokhmWiYCjLojecvUJNw8YydznyvKtz5MxLIuswzlWZGy7OcIo
+         FQ0bp6YkuZbG3xdWGz3lZ1Y7N9UZioOhgOnqgn6iWPSDBn6ussmIRnkL4T0o2JNaRU
+         ouhD9nP5PzNTbm86ixz0bGYBu5c1QBNmf3duoRaQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Erhard F." <erhard_f@mailbox.org>, Huang Rui <ray.huang@amd.com>
-Subject: [PATCH 5.4 22/51] drm/ttm: fix memleak in ttm_transfered_destroy
-Date:   Mon,  1 Nov 2021 10:17:26 +0100
-Message-Id: <20211101082505.681517249@linuxfoundation.org>
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Keyu Man <kman001@ucr.edu>, Wei Wang <weiwan@google.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        David Ahern <dsahern@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Ovidiu Panait <ovidiu.panait@windriver.com>
+Subject: [PATCH 4.19 15/35] ipv6: make exception cache less predictible
+Date:   Mon,  1 Nov 2021 10:17:27 +0100
+Message-Id: <20211101082455.124162667@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082500.203657870@linuxfoundation.org>
-References: <20211101082500.203657870@linuxfoundation.org>
+In-Reply-To: <20211101082451.430720900@linuxfoundation.org>
+References: <20211101082451.430720900@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,34 +43,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christian König <christian.koenig@amd.com>
+From: Eric Dumazet <edumazet@google.com>
 
-commit 0db55f9a1bafbe3dac750ea669de9134922389b5 upstream.
+commit a00df2caffed3883c341d5685f830434312e4a43 upstream.
 
-We need to cleanup the fences for ghost objects as well.
+Even after commit 4785305c05b2 ("ipv6: use siphash in rt6_exception_hash()"),
+an attacker can still use brute force to learn some secrets from a victim
+linux host.
 
-Signed-off-by: Christian König <christian.koenig@amd.com>
-Reported-by: Erhard F. <erhard_f@mailbox.org>
-Tested-by: Erhard F. <erhard_f@mailbox.org>
-Reviewed-by: Huang Rui <ray.huang@amd.com>
-Bug: https://bugzilla.kernel.org/show_bug.cgi?id=214029
-Bug: https://bugzilla.kernel.org/show_bug.cgi?id=214447
-CC: <stable@vger.kernel.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20211020173211.2247-1-christian.koenig@amd.com
+One way to defeat these attacks is to make the max depth of the hash
+table bucket a random value.
+
+Before this patch, each bucket of the hash table used to store exceptions
+could contain 6 items under attack.
+
+After the patch, each bucket would contains a random number of items,
+between 6 and 10. The attacker can no longer infer secrets.
+
+This is slightly increasing memory size used by the hash table,
+we do not expect this to be a problem.
+
+Following patch is dealing with the same issue in IPv4.
+
+Fixes: 35732d01fe31 ("ipv6: introduce a hash table to store dst cache")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Reported-by: Keyu Man <kman001@ucr.edu>
+Cc: Wei Wang <weiwan@google.com>
+Cc: Martin KaFai Lau <kafai@fb.com>
+Reviewed-by: David Ahern <dsahern@kernel.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+[OP: adjusted context for 4.19 stable]
+Signed-off-by: Ovidiu Panait <ovidiu.panait@windriver.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/ttm/ttm_bo_util.c |    1 +
- 1 file changed, 1 insertion(+)
+ net/ipv6/route.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/ttm/ttm_bo_util.c
-+++ b/drivers/gpu/drm/ttm/ttm_bo_util.c
-@@ -463,6 +463,7 @@ static void ttm_transfered_destroy(struc
- 	struct ttm_transfer_obj *fbo;
+--- a/net/ipv6/route.c
++++ b/net/ipv6/route.c
+@@ -1454,6 +1454,7 @@ static int rt6_insert_exception(struct r
+ 	struct rt6_exception_bucket *bucket;
+ 	struct in6_addr *src_key = NULL;
+ 	struct rt6_exception *rt6_ex;
++	int max_depth;
+ 	int err = 0;
  
- 	fbo = container_of(bo, struct ttm_transfer_obj, base);
-+	dma_resv_fini(&fbo->base.base._resv);
- 	ttm_bo_put(fbo->bo);
- 	kfree(fbo);
- }
+ 	spin_lock_bh(&rt6_exception_lock);
+@@ -1515,7 +1516,9 @@ static int rt6_insert_exception(struct r
+ 	bucket->depth++;
+ 	net->ipv6.rt6_stats->fib_rt_cache++;
+ 
+-	if (bucket->depth > FIB6_MAX_DEPTH)
++	/* Randomize max depth to avoid some side channels attacks. */
++	max_depth = FIB6_MAX_DEPTH + prandom_u32_max(FIB6_MAX_DEPTH);
++	while (bucket->depth > max_depth)
+ 		rt6_exception_remove_oldest(bucket);
+ 
+ out:
 
 
