@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0D1F44177E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:36:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A120441620
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:20:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232181AbhKAJhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:37:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43566 "EHLO mail.kernel.org"
+        id S232335AbhKAJWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:22:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58178 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233595AbhKAJdo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:33:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0653061267;
-        Mon,  1 Nov 2021 09:25:06 +0000 (UTC)
+        id S232136AbhKAJV4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:21:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A044610D2;
+        Mon,  1 Nov 2021 09:19:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758707;
-        bh=py8xuWTKYMvk3k+vkx7b+oP82axoW7pps6jUOz/ZEnQ=;
+        s=korg; t=1635758350;
+        bh=0CmTjJxR13ZvrJ+IvrfdOXjISYTycTnh7MP30n7QvrM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=obLItYTICSATE5danr1oUYzoAFK8YGVzf05NMOJ4s81tLM9fm3Ysh1IN1tIOhuV/d
-         DYZmN/+mTTkdNyHpiENgGAGHyF1gd9NpKdDnM3gcYaMgN8wMoC/CIem9uD418laC+W
-         tU+NjibUIPN9Pa4bWoL9U0XawZFptpmkcHQSINNg=
+        b=dv6/a8wuejsSH1BUl3kHCWrCU7WPQ4U9f9nS/32nDGM5OYsW3IUJ85SS03AoXRn59
+         1VqY6rhXMYLSl5HyOiCL29DU0/wymi6QIvhJQVhmNtPw/GtxGOld6GBWARtAR4Luwd
+         Oq2BwHAl28Eo0YGW0g8B5bs4W/1Kf/EhKZOwOMjQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shawn Guo <shawn.guo@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 5.10 24/77] mmc: sdhci: Map more voltage level to SDHCI_POWER_330
+        stable@vger.kernel.org, Yanfei Xu <yanfei.xu@windriver.com>,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.4 09/17] Revert "net: mdiobus: Fix memory leak in __mdiobus_register"
 Date:   Mon,  1 Nov 2021 10:17:12 +0100
-Message-Id: <20211101082517.007174832@linuxfoundation.org>
+Message-Id: <20211101082442.644515254@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082511.254155853@linuxfoundation.org>
-References: <20211101082511.254155853@linuxfoundation.org>
+In-Reply-To: <20211101082440.664392327@linuxfoundation.org>
+References: <20211101082440.664392327@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,84 +40,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shawn Guo <shawn.guo@linaro.org>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-commit 4217d07b9fb328751f877d3bd9550122014860a2 upstream.
+commit 10eff1f5788b6ffac212c254e2f3666219576889 upstream.
 
-On Thundercomm TurboX CM2290, the eMMC OCR reports vdd = 23 (3.5 ~ 3.6 V),
-which is being treated as an invalid value by sdhci_set_power_noreg().
-And thus eMMC is totally broken on the platform.
+This reverts commit ab609f25d19858513919369ff3d9a63c02cd9e2e.
 
-[    1.436599] ------------[ cut here ]------------
-[    1.436606] mmc0: Invalid vdd 0x17
-[    1.436640] WARNING: CPU: 2 PID: 69 at drivers/mmc/host/sdhci.c:2048 sdhci_set_power_noreg+0x168/0x2b4
-[    1.436655] Modules linked in:
-[    1.436662] CPU: 2 PID: 69 Comm: kworker/u8:1 Tainted: G        W         5.15.0-rc1+ #137
-[    1.436669] Hardware name: Thundercomm TurboX CM2290 (DT)
-[    1.436674] Workqueue: events_unbound async_run_entry_fn
-[    1.436685] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-[    1.436692] pc : sdhci_set_power_noreg+0x168/0x2b4
-[    1.436698] lr : sdhci_set_power_noreg+0x168/0x2b4
-[    1.436703] sp : ffff800010803a60
-[    1.436705] x29: ffff800010803a60 x28: ffff6a9102465f00 x27: ffff6a9101720a70
-[    1.436715] x26: ffff6a91014de1c0 x25: ffff6a91014de010 x24: ffff6a91016af280
-[    1.436724] x23: ffffaf7b1b276640 x22: 0000000000000000 x21: ffff6a9101720000
-[    1.436733] x20: ffff6a9101720370 x19: ffff6a9101720580 x18: 0000000000000020
-[    1.436743] x17: 0000000000000000 x16: 0000000000000004 x15: ffffffffffffffff
-[    1.436751] x14: 0000000000000000 x13: 00000000fffffffd x12: ffffaf7b1b84b0bc
-[    1.436760] x11: ffffaf7b1b720d10 x10: 000000000000000a x9 : ffff800010803a60
-[    1.436769] x8 : 000000000000000a x7 : 000000000000000f x6 : 00000000fffff159
-[    1.436778] x5 : 0000000000000000 x4 : 0000000000000000 x3 : 00000000ffffffff
-[    1.436787] x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff6a9101718d80
-[    1.436797] Call trace:
-[    1.436800]  sdhci_set_power_noreg+0x168/0x2b4
-[    1.436805]  sdhci_set_ios+0xa0/0x7fc
-[    1.436811]  mmc_power_up.part.0+0xc4/0x164
-[    1.436818]  mmc_start_host+0xa0/0xb0
-[    1.436824]  mmc_add_host+0x60/0x90
-[    1.436830]  __sdhci_add_host+0x174/0x330
-[    1.436836]  sdhci_msm_probe+0x7c0/0x920
-[    1.436842]  platform_probe+0x68/0xe0
-[    1.436850]  really_probe.part.0+0x9c/0x31c
-[    1.436857]  __driver_probe_device+0x98/0x144
-[    1.436863]  driver_probe_device+0xc8/0x15c
-[    1.436869]  __device_attach_driver+0xb4/0x120
-[    1.436875]  bus_for_each_drv+0x78/0xd0
-[    1.436881]  __device_attach_async_helper+0xac/0xd0
-[    1.436888]  async_run_entry_fn+0x34/0x110
-[    1.436895]  process_one_work+0x1d0/0x354
-[    1.436903]  worker_thread+0x13c/0x470
-[    1.436910]  kthread+0x150/0x160
-[    1.436915]  ret_from_fork+0x10/0x20
-[    1.436923] ---[ end trace fcfac44cb045c3a8 ]---
+This patch is correct in the sense that we _should_ call device_put() in
+case of device_register() failure, but the problem in this code is more
+vast.
 
-Fix the issue by mapping MMC_VDD_35_36 (and MMC_VDD_34_35) to
-SDHCI_POWER_330 as well.
+We need to set bus->state to UNMDIOBUS_REGISTERED before calling
+device_register() to correctly release the device in mdiobus_free().
+This patch prevents us from doing it, since in case of device_register()
+failure put_device() will be called 2 times and it will cause UAF or
+something else.
 
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20211004024935.15326-1-shawn.guo@linaro.org
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Also, Reported-by: tag in revered commit was wrong, since syzbot
+reported different leak in same function.
+
+Link: https://lore.kernel.org/netdev/20210928092657.GI2048@kadam/
+Acked-by: Yanfei Xu <yanfei.xu@windriver.com>
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Link: https://lore.kernel.org/r/f12fb1faa4eccf0f355788225335eb4309ff2599.1633024062.git.paskripkin@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/mmc/host/sdhci.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/net/phy/mdio_bus.c |    1 -
+ 1 file changed, 1 deletion(-)
 
---- a/drivers/mmc/host/sdhci.c
-+++ b/drivers/mmc/host/sdhci.c
-@@ -2043,6 +2043,12 @@ void sdhci_set_power_noreg(struct sdhci_
- 			break;
- 		case MMC_VDD_32_33:
- 		case MMC_VDD_33_34:
-+		/*
-+		 * 3.4 ~ 3.6V are valid only for those platforms where it's
-+		 * known that the voltage range is supported by hardware.
-+		 */
-+		case MMC_VDD_34_35:
-+		case MMC_VDD_35_36:
- 			pwr = SDHCI_POWER_330;
- 			break;
- 		default:
+--- a/drivers/net/phy/mdio_bus.c
++++ b/drivers/net/phy/mdio_bus.c
+@@ -274,7 +274,6 @@ int __mdiobus_register(struct mii_bus *b
+ 	err = device_register(&bus->dev);
+ 	if (err) {
+ 		pr_err("mii_bus %s failed to register\n", bus->id);
+-		put_device(&bus->dev);
+ 		return -EINVAL;
+ 	}
+ 
 
 
