@@ -2,102 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C76E441B8D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 14:14:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED403441B8F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 14:14:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232017AbhKANRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 09:17:18 -0400
-Received: from mga06.intel.com ([134.134.136.31]:60652 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230417AbhKANRQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 09:17:16 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10154"; a="291848434"
-X-IronPort-AV: E=Sophos;i="5.87,199,1631602800"; 
-   d="scan'208";a="291848434"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2021 06:14:43 -0700
-X-IronPort-AV: E=Sophos;i="5.87,199,1631602800"; 
-   d="scan'208";a="500034763"
-Received: from yingze1x-mobl.ccr.corp.intel.com (HELO chenyu5-mobl1) ([10.255.28.120])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2021 06:14:39 -0700
-Date:   Mon, 1 Nov 2021 21:14:34 +0800
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc:     linux-acpi@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Aubrey Li <aubrey.li@intel.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 2/4] drivers/acpi: Introduce Platform Firmware Runtime
- Update device driver
-Message-ID: <20211101131434.GA32880@chenyu5-mobl1>
-References: <cover.1635317102.git.yu.c.chen@intel.com>
- <a318e4edc13e5a3ff95b901871b8929746535715.1635317102.git.yu.c.chen@intel.com>
- <YXkn8aBvAVEXxgdp@smile.fi.intel.com>
- <20211101093320.GA18982@chenyu5-mobl1>
- <YX/NwEdw26wzKFvQ@smile.fi.intel.com>
+        id S232163AbhKANR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 09:17:29 -0400
+Received: from mout.kundenserver.de ([212.227.126.187]:39195 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230417AbhKANR2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 09:17:28 -0400
+Received: from mail-wr1-f48.google.com ([209.85.221.48]) by
+ mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MwQKr-1mxYb23BRd-00sJks; Mon, 01 Nov 2021 14:14:53 +0100
+Received: by mail-wr1-f48.google.com with SMTP id d27so10135796wrb.6;
+        Mon, 01 Nov 2021 06:14:53 -0700 (PDT)
+X-Gm-Message-State: AOAM533s8k7ZqV0t+c2ST+ZwfGd4vykT5FZqfEjWvl+SZb62E2kiYBzx
+        qvSLaU3BCrtjRUFF5hvDJ1I9q2afBek67fLqJ54=
+X-Google-Smtp-Source: ABdhPJzpWFbBs5LReHmsOSHL59O2Hg/a7/rcTD5GBdw1L11HPapnNtLhdT5ZhBcP7gH509L4NF9tl/a3TPa1TKlMZa0=
+X-Received: by 2002:a05:6000:10cb:: with SMTP id b11mr25906015wrx.71.1635772493438;
+ Mon, 01 Nov 2021 06:14:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YX/NwEdw26wzKFvQ@smile.fi.intel.com>
+References: <CA+G9fYso1sBLRAMpc0bdPiim8GvMhmwuRDaEZ0xbP1TZz864ZA@mail.gmail.com>
+In-Reply-To: <CA+G9fYso1sBLRAMpc0bdPiim8GvMhmwuRDaEZ0xbP1TZz864ZA@mail.gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 1 Nov 2021 14:14:37 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1mP_ZvigBj5+pRSSf-OsvX70BSJByGfqcDjE5pXLD9Yw@mail.gmail.com>
+Message-ID: <CAK8P3a1mP_ZvigBj5+pRSSf-OsvX70BSJByGfqcDjE5pXLD9Yw@mail.gmail.com>
+Subject: Re: [next] Error: selected processor does not support `isb ' in ARM mode
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Juerg Haefliger <juergh@canonical.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:VI/Q0NhC8heL2WTD69kFySv3l1/sxFQZr5ZTYegOabDg4O7T3Hd
+ V52c/JVaecaEoL3z0XJWRWtqo4dH86T7My3buMCxMzmO9CJk3bXg9n+j1/UEAKiJ2PAU2yi
+ LWyyLXLrGiFQQASw1fR3hRavsUaY6IQGxbVaodqKSAWipTjR/13wJG+k50QV17Xr+4FkQQA
+ knkwjVTStWV1ZpQ7URfGQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:QpzV7X+lIzg=:xe9wWKIzs+cV6kKrhoVKUd
+ bA3v5YA8Ifz1qmKnb0cMJrjG04q64cKWbbnbcIfv2EjT9LPqiuVCNMYXTYXPcbx2V302D5jYj
+ Zz5UKGFc++nhhE8fmHhD/w89XwNF1hoO4SNMAeKbKYZv92CuCeVXE93OYRvrwpzwyg/pusmZ/
+ NeEUgHNJhHSvRgu6ebIq6PNjOvA0ErqnzL6rfPz8h8ONVfZGzEdpLSeJeHV+dg/2/JZtBGHji
+ uPY7i89O0oqyAzT5ZpYgUWmEK7GFxjbbEqJk8h895f5S3ERKuqVNxhcPIw62UFSLcHlpiTXub
+ 2+fqSJpnpjUGiE8FW+fHlbs8/MpyXMUCeoP+AOu1mzE7YoHwf/dxktGxhD2soMGZ72ysN8aZR
+ J0RRMHIC/1Um6ZVvyFFq1zCbl3G5fG/Zl0qGGr6qFrbZTdWob2l4i5zZMHWKJ8Qz8QMyL1a3W
+ Tlrm0Gm/x3vcZYXNsUET3pBHzejyt6i3oFVKrNaKSOScpvhNWbVhrLzkmvjAwsZ1Lan7NVvui
+ 1wIlalaMkydpQ84gHRQDVAjg3an9CzXC4S+k4Z8F3uAjeXIS0hf6e27uLvg6xt5uyLwRwM7MD
+ adfKFo8+ydfo0YqIhirtsiurhAGzIPFyXOWneHVpIdY9n4o9RX/L+H88lnCh34mnGufPyFbRq
+ jvfT7GQ8jfKSt/S7pkd/Uv6Zz6szdFvtZUqQcE1J8cwnJtWJ0KvEN488heh/7iWlkzI4=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 01, 2021 at 01:21:36PM +0200, Andy Shevchenko wrote:
-> On Mon, Nov 01, 2021 at 05:33:20PM +0800, Chen Yu wrote:
-> > On Wed, Oct 27, 2021 at 01:20:33PM +0300, Andy Shevchenko wrote:
-> > > On Wed, Oct 27, 2021 at 03:07:51PM +0800, Chen Yu wrote:
-> 
-> ...
-> 
-> > > > +	guid_t *image_type_id = &img_hdr->image_type_id;
-> > > 
-> > > efi_guid_t ?
-> > >
-> > efi_guid_t is a 32-bit aligned guid_t, which is for the case when
-> > efi_guid_t* arguments are 32-bit aligned. And it is for 32-bit ARM.
-> > Since this code injection is only for 64-bit, the guid is not required
-> > to be strictly 32-bit aligned I suppose?
-> 
-> But the type of that member may not be guid_t. So, I expect not to see guid_t
-> at all here or as a internal member with the export/import GUID API in place.
+On Mon, Nov 1, 2021 at 2:00 PM Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
 >
-> See, for example
-> d1c6e08e7503 ("libnvdimm/labels: Add uuid helpers")
+> [Please ignore this email report if it is already reported]
 >
-8b03aa0e0e5a ("libnvdimm/labels: Add type-guid helpers") I suppose. Do you
-mean, since the label is not delcared as uuid type, then need to treat the
-data region as a uuid. But it is actually not a formal 'uuid' type, so uuid_t
-is not applicable here. And this also applys to the case in this patch?
-> ...
-> 
-> > > > +	ret = guid_parse(PFRU_UUID, &pfru_dev->uuid);
-> 
-> > > > +	ret = guid_parse(PFRU_CODE_INJ_UUID, &pfru_dev->code_uuid);
-> 
-> > > > +	ret = guid_parse(PFRU_DRV_UPDATE_UUID, &pfru_dev->drv_uuid);
-> 
-> > > Why do you need to keep zillions of copies of the data which seems
-> > > is not going to be changed? Three global variables should be enough,
-> > > no?
-> > >
-> > The guid information is embedded in each pfru_dev and only calculated
-> > once during probe. I thought people try to avoid using global variables
-> > if possible?
-> 
-> Use your common sense. You might have a lot of data duplication,
-> and this data is definitely not something that needs any kind of
-> serialization / personification / etc.
-> 
-Ok, I'll switch to global variables in next version.
+> Regression found on arm gcc-11 built with following config
+> Following build warnings / errors reported on linux next-20211101.
+>
+> metadata:
+>     git_describe: next-20211101
+>     git_repo: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+>     git_short_log: 9febf1194306 (\"Add linux-next specific files for 20211101\")
+>     target_arch: arm
+>     toolchain: gcc-11
 
-thanks,
-Chenyu
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
-> 
+Is this a Debian gcc? If so, this one should fix it, I need to send
+that to Russell's
+patch tracker:
+
+https://lore.kernel.org/linux-arm-kernel/20211018140735.3714254-1-arnd@kernel.org/
+
+      Arnd
