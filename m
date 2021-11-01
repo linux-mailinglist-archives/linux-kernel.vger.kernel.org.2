@@ -2,79 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC564441FDD
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 19:17:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8512441FE4
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 19:19:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231877AbhKASQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 14:16:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49938 "EHLO
+        id S231582AbhKASVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 14:21:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231702AbhKASMC (ORCPT
+        with ESMTP id S229727AbhKASVn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 14:12:02 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F08EC061203
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 11:09:18 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id bm39so15653160oib.0
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 11:09:18 -0700 (PDT)
+        Mon, 1 Nov 2021 14:21:43 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ED0FC061764
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 11:10:23 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id q124so26102887oig.3
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 11:10:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=mime-version:in-reply-to:references:from:user-agent:date:message-id
          :subject:to:cc;
-        bh=mlsLWn4QteWR40recRx3hWCecR9gEXUZdp7/7df9bIo=;
-        b=A/4z5fo46vhQ5Hkb/Wy9EPf/5pJZ0U8dAIxClUfuW5GsfGrytQmBIyfHwchVB0ybGZ
-         hzXY9J5pFm+I3Mfq2197ZC8Evf4fnlrH+6f6gDnFnk5pjbXA4b0/X8hRqurMFAkqNJQV
-         ab8Yn/y7M+3a2L8R5hQSP76Mg3gtwSnzZBVt0=
+        bh=RTpcjCaKMjk8wOfkGg+XhDUUHXGzz0r5LuC/nlABn74=;
+        b=Hms4n8EsBYjDqEWRwfdorGPR19Sl0b3GXGDHqXv7432wT6aufk+qulIlNLvHRxWc7Y
+         6GqpCN/WAvrnAbLSSgUR8ItaRk4yqFg2tqM2BQjivbc736Aqte31NKEF7KwCFIxJWVEp
+         h49MfXiHYM8ZfKMRwLGJRHnF18Z+2mV7PY2yQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:in-reply-to:references:from
          :user-agent:date:message-id:subject:to:cc;
-        bh=mlsLWn4QteWR40recRx3hWCecR9gEXUZdp7/7df9bIo=;
-        b=VECNKnaOnYtZ+bBddfSWYx6SXGCHba3hPNXrIem+qy78IeC1zQTh/EjguCT/H3aecB
-         TEV9BGj7I3AWDX+M2UgCk8OLIbnSr+zS4Hz61RPGkmI1Guixv1WiJ8wxb8uYf0MF+vpZ
-         fS8zmio17Y/pMqii7N5PPAjPyDkvf49hIxndgb17mbyomlfKUhDI3ZGWFP5UtLKH98iX
-         Xng+9ahX69LDrPkeUo52QXtEKZXiIJtHEqUzFcA9mEPK+Uo8qsgSAnoT4hc0WNfvGDrn
-         6QgmnFSc99CVW7h9Koda70ZWxzNpoFFFSbUNPND08dC6C2B6dmCMjyMf+oGMRyHZSHv1
-         6gcg==
-X-Gm-Message-State: AOAM530sPF4YSZVh95bq4wuHjDel1KAN4/jHboBeILgs7umywKbwfamj
-        BfrR9NFAVKlPWvzghsHj2qTkLF3BMTLUg7y9ZUvIK5QG5zk=
-X-Google-Smtp-Source: ABdhPJz1nch1C9Dgcj03VOq9v6mht+eM76hhFXho+wpq3189/6eqvs+lbyRe8IftqdsNXVfg8NBjt0SMznulc+2ZVRI=
-X-Received: by 2002:a05:6808:4e:: with SMTP id v14mr471586oic.164.1635790157677;
- Mon, 01 Nov 2021 11:09:17 -0700 (PDT)
+        bh=RTpcjCaKMjk8wOfkGg+XhDUUHXGzz0r5LuC/nlABn74=;
+        b=iW0VBvH359X/3jLH4zw4lWn/RWsok+htQlD4UUtVRGuus01cIw/VeUMbnL+emLC4Uh
+         ILWQxE80e+pDtiIPj0fsb/I/9XdAoc7exKmaMR6QkX3pnk+JeTWTRxZe+IUbhpZGp2/T
+         xRJgU5fY8PTLslzx1CaQG47KjlfQd/Bt0bE8mUP02W5LdIQMJ/YhXnOZarTxFKjHeyRT
+         P300u5RQQpHrdPpEZLVaxFuJzuHI4vF37mDSZbGSLXbilDgHUKuQTnb6vOw0Ifxk9MBB
+         CosigeI3qsGXGznpvkMpETddMDLJGh8N2S6dV6XJxDJQ3unFZJ373BuVzRrCEX18WFfj
+         3IIA==
+X-Gm-Message-State: AOAM5309lHs8fZGSir7ygWZo+ipVNaD4iPxNtI61uysHP9UwH1RmuqDc
+        dtqPLYdVwo21hG/9H4Oe0negIpZdEvVQ56/8i2vsbc8Ey44=
+X-Google-Smtp-Source: ABdhPJzgFmKoi4uMfFK3RymVte6R4WSjg8lMx4INzmZ1qraDiHERExAQVxP6DSOAOu0WpWxcuwqOAr8FQwmKA+sd1BU=
+X-Received: by 2002:a05:6808:2307:: with SMTP id bn7mr519321oib.32.1635790222358;
+ Mon, 01 Nov 2021 11:10:22 -0700 (PDT)
 Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Mon, 1 Nov 2021 11:09:17 -0700
+ HTTPREST; Mon, 1 Nov 2021 11:10:21 -0700
 MIME-Version: 1.0
-In-Reply-To: <20211029152647.v3.2.If23c83a786fc4d318a1986f43803f22b4b1d82cd@changeid>
-References: <20211029152647.v3.1.Ie17e51ad3eb91d72826ce651ca2786534a360210@changeid>
- <20211029152647.v3.2.If23c83a786fc4d318a1986f43803f22b4b1d82cd@changeid>
+In-Reply-To: <20211030100812.1.I6cd9af36b723fed277d34539d3b2ba4ca233ad2d@changeid>
+References: <20211030100812.1.I6cd9af36b723fed277d34539d3b2ba4ca233ad2d@changeid>
 From:   Stephen Boyd <swboyd@chromium.org>
 User-Agent: alot/0.9.1
-Date:   Mon, 1 Nov 2021 11:09:17 -0700
-Message-ID: <CAE-0n50URE_tgBxXx0PRL9AoC7knU+BtiGk9BHOtQRLUxWxUag@mail.gmail.com>
-Subject: Re: [PATCH v3 2/4] arm64: dts: sc7180: Specify "data-lanes" for DSI
- host output
+Date:   Mon, 1 Nov 2021 11:10:21 -0700
+Message-ID: <CAE-0n529Nfp7rOA4a4dtvh83rPxjVQ2VK0uDORgzOWmSsDa6rA@mail.gmail.com>
+Subject: Re: [PATCH] drm/msm/dsi: set default num_data_lanes
 To:     LKML <linux-kernel@vger.kernel.org>,
         Philip Chen <philipchen@chromium.org>
-Cc:     dianders@chromium.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+Cc:     dianders@chromium.org, robdclark@chromium.org,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Bernard Zhao <bernard@vivo.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
         linux-arm-msm@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Philip Chen (2021-10-29 15:27:41)
-> MSM DSI host driver actually parses "data-lanes" in DT and compare
-> it with the number of DSI lanes the bridge driver sets for
-> mipi_dsi_device. So we need to always specify "data-lanes" for the
-> DSI host output. As of now, "data-lanes" is added to ti-sn65dsi86 dts
-> fragment, but missing in parade-ps8640 dts fragment, which requires
-> a fixup.
+Quoting Philip Chen (2021-10-30 10:08:50)
+> If "data_lanes" property of the dsi output endpoint is missing in
+> the DT, num_data_lanes would be 0 by default, which could cause
+> dsi_host_attach() to fail if dsi->lanes is set to a non-zero value
+> by the bridge driver.
 >
-> Since we'll do 4-lane DSI regardless of which bridge chip is used,
-> instead of adding "data-lanes" to parade-ps8640 dts fragment, let's
-> just move "data-lanes" from the bridge dts to sc7180-trogdor.dtsi.
+> According to the binding document of msm dsi controller, the
+> input/output endpoint of the controller is expected to have 4 lanes.
+> So let's set num_data_lanes to 4 by default.
 >
 > Signed-off-by: Philip Chen <philipchen@chromium.org>
 > ---
