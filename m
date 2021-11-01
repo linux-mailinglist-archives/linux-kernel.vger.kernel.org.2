@@ -2,90 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 697E0442199
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 21:20:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC0454421A1
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 21:24:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230450AbhKAUW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 16:22:56 -0400
-Received: from mail-pl1-f179.google.com ([209.85.214.179]:44677 "EHLO
-        mail-pl1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229560AbhKAUWz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 16:22:55 -0400
-Received: by mail-pl1-f179.google.com with SMTP id t11so12453552plq.11;
-        Mon, 01 Nov 2021 13:20:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=j1U5qGsWwCMuBW5qFzTSEwVzbsSHV/ZSRfO6rUZPjqU=;
-        b=NyTzmNh5F0C6gF6SRn8FDLZuBzi2WL5ZG+A2DG75+BhMVvmOoKFqgcea0GgJalvyTd
-         JjRBNuHNtncR347FkkWMObzKUNBeuN1DMNtRMtC9e4rr7veKOF+QrdPOZ2pDYC5h3sfB
-         NuUn1ckqcgjL/U83v46oKbSurHuKKyZWPNrLyu+s8zMt0OWjPpNmB5EXIdF8YfpwH7Zy
-         007uOWbqHUHL/uyOvsTZwPjAxD7y0bdWGdxsI5gcd2giKgDQO/IYMLHvk4VoBMRCeUv/
-         agggT7bydafZwmSGZZivl8N+HMr46QOnJQN0fwTeXxd64zyjE5Bmt1eBpF1rrxMbFjCU
-         R9fA==
-X-Gm-Message-State: AOAM533U/87/QmObRUCW9rALWBOzB6ULZB0YRsJwQGgOUcagNbfOverc
-        14rS3JcmNRkvQwkkV41xG8Qcp0gzMSsnSQ==
-X-Google-Smtp-Source: ABdhPJywCa6uSFJnDDsbcvia0CHaouYjt9eQNYm2xU3c/adP4Mauo2dX+VEjABRokXvNGNBDNk7ZLA==
-X-Received: by 2002:a17:90a:d0f:: with SMTP id t15mr1264025pja.7.1635798021083;
-        Mon, 01 Nov 2021 13:20:21 -0700 (PDT)
-Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:201:45ec:8a15:a0bc:b1ed])
-        by smtp.gmail.com with ESMTPSA id s17sm13773403pge.50.2021.11.01.13.20.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Nov 2021 13:20:20 -0700 (PDT)
-Subject: Re: [PATCH] scsi: core: initialize cmd->cmnd before it is used
-To:     Tadeusz Struk <tadeusz.struk@linaro.org>,
-        linux-scsi@vger.kernel.org
-Cc:     Christoph Hellwig <hch@lst.de>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        syzbot+5516b30f5401d4dcbcae@syzkaller.appspotmail.com,
-        Doug Gilbert <dgilbert@interlog.com>
-References: <20211101192417.324799-1-tadeusz.struk@linaro.org>
- <4cfa4049-aae5-51db-4ad2-b4c9db996525@acm.org>
- <0024e0e1-589c-e2cd-2468-f4af8ec1cb95@linaro.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <da8d3418-b95c-203d-16c3-8c4086ceaf73@acm.org>
-Date:   Mon, 1 Nov 2021 13:20:19 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S230484AbhKAU0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 16:26:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43786 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229560AbhKAU0a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 16:26:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D00E61058;
+        Mon,  1 Nov 2021 20:23:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635798237;
+        bh=feSTcRc2actU+HHo2pcgOZswEK9+Krw1YkXnHhxgUtc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=k6/BV6czCRnhMubWyz+TvKRLAdfLuZ6hVCq4/8MWd4wluVUqTYwxezxQIkHpVGLCi
+         9qekMnUAVBMJ9vDxkS2TRXfI/zIhh1o1L2vKlETOW8wbwXlwNKhND0P3W8rIokSQir
+         MndHf7pqpC8YM377htnlXMhggAH9KgPFAfJouRRXl3nM3w7wOWhKtxX8wb8Vwlfp7w
+         0A2HCfyDkFV/nNR4STfwHOOTFQ3ZKZxvqAiK4PsNvkqWJ1mg2Gzaoq7BQ8MH+9CSgC
+         rl8dYgsQwa3OKzx9P2ojjTcr/aV9svuFi509I/vCr5XiU0Zx1EZkwouGCOcCUlQ0Ad
+         xkLHGtHEuIUgg==
+Received: by mail-ed1-f43.google.com with SMTP id w1so14389714edd.10;
+        Mon, 01 Nov 2021 13:23:56 -0700 (PDT)
+X-Gm-Message-State: AOAM531U4l0NOB7TqC2TawJCuTIDv9zsA0DJmsBwdCNcIf4wH2wthEFV
+        Y7Bm/4KSjrGGAQ+dlQzN33Znu82Hr1hzTYHsqQ==
+X-Google-Smtp-Source: ABdhPJxerSbOAL+RQjUEcSRK11YYr4XJkk1k3y92Df/MixrQUqwOf/jtSj37gCjipDXUeK8l900VtO/oHXaq6BA8PhM=
+X-Received: by 2002:aa7:dc13:: with SMTP id b19mr28817292edu.145.1635798235443;
+ Mon, 01 Nov 2021 13:23:55 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <0024e0e1-589c-e2cd-2468-f4af8ec1cb95@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20211024180628.2992108-1-piyush.mehta@xilinx.com> <20211024180628.2992108-2-piyush.mehta@xilinx.com>
+In-Reply-To: <20211024180628.2992108-2-piyush.mehta@xilinx.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Mon, 1 Nov 2021 15:23:44 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqKu6vr3iCz1G7MtK6gyqAvn4s4mpuLOwPzJDEmyZeROig@mail.gmail.com>
+Message-ID: <CAL_JsqKu6vr3iCz1G7MtK6gyqAvn4s4mpuLOwPzJDEmyZeROig@mail.gmail.com>
+Subject: Re: [PATCH 1/2] dt-bindings: usb: misc: Add binding for Microchip
+ usb2244 Controller
+To:     Piyush Mehta <piyush.mehta@xilinx.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        --to=robh+dt@kernel.org, Matthias Kaehlcke <mka@chromium.org>,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Al Cooper <alcooperx@gmail.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        git <git@xilinx.com>, Srinivas Goud <sgoud@xilinx.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/1/21 1:13 PM, Tadeusz Struk wrote:
-> On 11/1/21 13:06, Bart Van Assche wrote:
->> This patch is a duplicate and has been posted before.
->>
->> Please take a look at https://lore.kernel.org/linux-scsi/20210904064534.1919476-1-qiulaibin@huawei.com/.
->>  From the replies to that email:
->> "> Thinking further about this: is there any code left that depends on
->>  > scsi_setup_scsi_cmnd() setting cmd->cmd_len? Can the cmd->cmd_len
->>  > assignment be removed from scsi_setup_scsi_cmnd()?
->>
->> cmd_len should never be 0 now, so I think we can remove it."
-> 
-> Thanks for quick response, but I'm not sure if statement
-> "cmd_len should never be 0 now" is correct, because the cmd_len is
-> in fact equal to 0 here and this BUG can be triggered on mainline, 5.14,
-> and 5.10 stable kernels.
+On Sun, Oct 24, 2021 at 1:06 PM Piyush Mehta <piyush.mehta@xilinx.com> wrot=
+e:
+>
 
-(+Doug Gilbert)
+Your email is somewhat corrupted. Lore has a warning:
 
-One of the functions in the call stack in the first message of this email
-thread is sg_io(). I am not aware of any documentation that specifies whether
-it is valid to set cmd_len in the sg_io header to zero. My opinion is that
-the SG_IO implementation should either reject cmd_len == 0 or set cmd_len
-to a valid value if it is zero.
+[-- Warning: decoded text below may be mangled, UTF-8 assumed --]
+[-- Attachment #1: Type: text/plain; charset=3D"y", Size: 2065 bytes --]
 
-Bart.
+Maybe it's the '--to=3Drobh+dt@kernel.org' email...
 
+> Microchip's USB224x family of Hi-Speed USB 2.0 flash media card controlle=
+rs
+> provides an ultra-fast interface between a USB host controller and flash
+> media cards.
+>
+> Add dt-bindings documentation for Microchip's usb2244 Controller.
+> USB224x is a USB 2.0 compliant ultra fast USB 2.0 multi-format,
+> SD/MMC, and MS Flash Media Controllers.
+>
+> Signed-off-by: Piyush Mehta <piyush.mehta@xilinx.com>
+> ---
+>  .../devicetree/bindings/usb/microchip,usb2244.yaml | 43 ++++++++++++++++=
+++++++
+>  1 file changed, 43 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/usb/microchip,usb22=
+44.yaml
+>
+> diff --git a/Documentation/devicetree/bindings/usb/microchip,usb2244.yaml=
+ b/Documentation/devicetree/bindings/usb/microchip,usb2244.yaml
+> new file mode 100644
+> index 0000000..ecab0cb
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/usb/microchip,usb2244.yaml
+> @@ -0,0 +1,43 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/usb/microchip,usb2244.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: Bindings for the Microchip USB2244 Ultra Fast USB-SD Controller
+> +
+> +description:
+> +  Microchip=E2=80=99s USB224x is a USB 2.0 compliant, Hi-Speed bulk only=
+ mass
+> +  storage class peripheral controller intended for reading and writing
+> +  to popular flash media from the xDPicture Card=E2=84=A2, Memory Stick=
+=C2=AE (MS),
+> +  Secure Digital (SD), and MultiMediaCard=E2=84=A2 (MMC) families.
+> +
+> +  USB224x is a flash media card reader solution fully compliant with the
+> +  USB 2.0 specification
+> +
+> +maintainers:
+> +  - Piyush Mehta <piyush.mehta@xilinx.com>
+> +
+> +properties:
+> +  compatible:
+> +    const: microchip,usb2244
+> +
+> +  reset-gpios:
+> +    maxItems: 1
+> +    description:
+> +      The phandle and specifier for the GPIO that controls the RESET lin=
+e of
+> +      flash media controller.
+> +
+> +required:
+> +  - compatible
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +
+> +    usb {
+> +       compatible =3D "microchip,usb2244";
 
+This needs to be a USB device under a USB controller node. See usb-device.y=
+aml.
+
+> +       reset-gpios =3D <&gpio 2 GPIO_ACTIVE_HIGH>;
+> +    };
+> --
+> 2.7.4
+>
