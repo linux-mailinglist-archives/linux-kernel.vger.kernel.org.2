@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D8AD441773
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:34:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A06C4416FC
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:30:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229933AbhKAJgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:36:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37302 "EHLO mail.kernel.org"
+        id S233176AbhKAJbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:31:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37008 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233306AbhKAJc1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:32:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E3CF661250;
-        Mon,  1 Nov 2021 09:24:52 +0000 (UTC)
+        id S232918AbhKAJ2M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:28:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D8FD4611EE;
+        Mon,  1 Nov 2021 09:22:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758693;
-        bh=wfjS+jLbdVLuoI0eex6VRYBpKo1PnXEvuMfnY+ULJqI=;
+        s=korg; t=1635758569;
+        bh=DBXK1lyNkVJA3ueLlEz5rxuF6jGB8hchI4d7Kvn7UAA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m5G+rNVPS8pxhIych6pfIGOq+hdyiwCjDPvjT5MlydjXSzDR//f5uszj/s1iXnbYU
-         m+zfiWdPs0GmuMEDzwipnrjA9mFybDl37PCpZ53QIvLDXNFJKql8dvjly7EtxQfdyH
-         EiT0oL2Iu8cIdacx23UTd5ZBW4YzenZco3VlX5gs=
+        b=F9ZJJxpQS3NZvC3wbV6/Z6vNPzXpF74n2jY9uEhGMLuuXblYR4mfyWqC4Yotyvzcn
+         4Y3b6GYk1u5OW24DDKsjIH1Qy5eRLEni9rEe6DcXjnJn/Qzppkou0HI7TiUIZ0DFG9
+         y5rLCOveJkl0QjWtd2egvVLyci+MYxL5pSFFz1cY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+b187b77c8474f9648fae@syzkaller.appspotmail.com,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 19/77] net/tls: Fix flipped sign in tls_err_abort() calls
+        stable@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
+Subject: [PATCH 5.4 03/51] ARM: 9139/1: kprobes: fix arch_init_kprobes() prototype
 Date:   Mon,  1 Nov 2021 10:17:07 +0100
-Message-Id: <20211101082515.920356490@linuxfoundation.org>
+Message-Id: <20211101082500.943697408@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082511.254155853@linuxfoundation.org>
-References: <20211101082511.254155853@linuxfoundation.org>
+In-Reply-To: <20211101082500.203657870@linuxfoundation.org>
+References: <20211101082500.203657870@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,140 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Jordan <daniel.m.jordan@oracle.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-commit da353fac65fede6b8b4cfe207f0d9408e3121105 upstream.
+commit 1f323127cab086e4fd618981b1e5edc396eaf0f4 upstream.
 
-sk->sk_err appears to expect a positive value, a convention that ktls
-doesn't always follow and that leads to memory corruption in other code.
-For instance,
+With extra warnings enabled, gcc complains about this function
+definition:
 
-    [kworker]
-    tls_encrypt_done(..., err=<negative error from crypto request>)
-      tls_err_abort(.., err)
-        sk->sk_err = err;
+arch/arm/probes/kprobes/core.c: In function 'arch_init_kprobes':
+arch/arm/probes/kprobes/core.c:465:12: warning: old-style function definition [-Wold-style-definition]
+  465 | int __init arch_init_kprobes()
 
-    [task]
-    splice_from_pipe_feed
-      ...
-        tls_sw_do_sendpage
-          if (sk->sk_err) {
-            ret = -sk->sk_err;  // ret is positive
+Link: https://lore.kernel.org/all/20201027093057.c685a14b386acacb3c449e3d@kernel.org/
 
-    splice_from_pipe_feed (continued)
-      ret = actor(...)  // ret is still positive and interpreted as bytes
-                        // written, resulting in underflow of buf->len and
-                        // sd->len, leading to huge buf->offset and bogus
-                        // addresses computed in later calls to actor()
-
-Fix all tls_err_abort() callers to pass a negative error code
-consistently and centralize the error-prone sign flip there, throwing in
-a warning to catch future misuse and uninlining the function so it
-really does only warn once.
-
-Cc: stable@vger.kernel.org
-Fixes: c46234ebb4d1e ("tls: RX path for ktls")
-Reported-by: syzbot+b187b77c8474f9648fae@syzkaller.appspotmail.com
-Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 24ba613c9d6c ("ARM kprobes: core code")
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/net/tls.h |    9 ++-------
- net/tls/tls_sw.c  |   17 +++++++++++++----
- 2 files changed, 15 insertions(+), 11 deletions(-)
+ arch/arm/probes/kprobes/core.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/include/net/tls.h
-+++ b/include/net/tls.h
-@@ -359,6 +359,7 @@ int tls_sk_query(struct sock *sk, int op
- 		int __user *optlen);
- int tls_sk_attach(struct sock *sk, int optname, char __user *optval,
- 		  unsigned int optlen);
-+void tls_err_abort(struct sock *sk, int err);
+--- a/arch/arm/probes/kprobes/core.c
++++ b/arch/arm/probes/kprobes/core.c
+@@ -534,7 +534,7 @@ static struct undef_hook kprobes_arm_bre
  
- int tls_set_sw_offload(struct sock *sk, struct tls_context *ctx, int tx);
- void tls_sw_strparser_arm(struct sock *sk, struct tls_context *ctx);
-@@ -467,12 +468,6 @@ static inline bool tls_is_sk_tx_device_o
- #endif
- }
+ #endif /* !CONFIG_THUMB2_KERNEL */
  
--static inline void tls_err_abort(struct sock *sk, int err)
--{
--	sk->sk_err = err;
--	sk->sk_error_report(sk);
--}
--
- static inline bool tls_bigint_increment(unsigned char *seq, int len)
+-int __init arch_init_kprobes()
++int __init arch_init_kprobes(void)
  {
- 	int i;
-@@ -513,7 +508,7 @@ static inline void tls_advance_record_sn
- 					 struct cipher_context *ctx)
- {
- 	if (tls_bigint_increment(ctx->rec_seq, prot->rec_seq_size))
--		tls_err_abort(sk, EBADMSG);
-+		tls_err_abort(sk, -EBADMSG);
- 
- 	if (prot->version != TLS_1_3_VERSION)
- 		tls_bigint_increment(ctx->iv + TLS_CIPHER_AES_GCM_128_SALT_SIZE,
---- a/net/tls/tls_sw.c
-+++ b/net/tls/tls_sw.c
-@@ -35,6 +35,7 @@
-  * SOFTWARE.
-  */
- 
-+#include <linux/bug.h>
- #include <linux/sched/signal.h>
- #include <linux/module.h>
- #include <linux/splice.h>
-@@ -43,6 +44,14 @@
- #include <net/strparser.h>
- #include <net/tls.h>
- 
-+noinline void tls_err_abort(struct sock *sk, int err)
-+{
-+	WARN_ON_ONCE(err >= 0);
-+	/* sk->sk_err should contain a positive error code. */
-+	sk->sk_err = -err;
-+	sk->sk_error_report(sk);
-+}
-+
- static int __skb_nsg(struct sk_buff *skb, int offset, int len,
-                      unsigned int recursion_level)
- {
-@@ -419,7 +428,7 @@ int tls_tx_records(struct sock *sk, int
- 
- tx_err:
- 	if (rc < 0 && rc != -EAGAIN)
--		tls_err_abort(sk, EBADMSG);
-+		tls_err_abort(sk, -EBADMSG);
- 
- 	return rc;
- }
-@@ -764,7 +773,7 @@ static int tls_push_record(struct sock *
- 			       msg_pl->sg.size + prot->tail_size, i);
- 	if (rc < 0) {
- 		if (rc != -EINPROGRESS) {
--			tls_err_abort(sk, EBADMSG);
-+			tls_err_abort(sk, -EBADMSG);
- 			if (split) {
- 				tls_ctx->pending_open_record_frags = true;
- 				tls_merge_open_record(sk, rec, tmp, orig_end);
-@@ -1828,7 +1837,7 @@ int tls_sw_recvmsg(struct sock *sk,
- 		err = decrypt_skb_update(sk, skb, &msg->msg_iter,
- 					 &chunk, &zc, async_capable);
- 		if (err < 0 && err != -EINPROGRESS) {
--			tls_err_abort(sk, EBADMSG);
-+			tls_err_abort(sk, -EBADMSG);
- 			goto recv_end;
- 		}
- 
-@@ -2008,7 +2017,7 @@ ssize_t tls_sw_splice_read(struct socket
- 		}
- 
- 		if (err < 0) {
--			tls_err_abort(sk, EBADMSG);
-+			tls_err_abort(sk, -EBADMSG);
- 			goto splice_read_end;
- 		}
- 		ctx->decrypted = 1;
+ 	arm_probes_decode_init();
+ #ifdef CONFIG_THUMB2_KERNEL
 
 
