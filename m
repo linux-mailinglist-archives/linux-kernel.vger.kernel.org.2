@@ -2,61 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67F9E441C15
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 15:00:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25EF8441BF3
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 14:49:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232215AbhKAODX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 10:03:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232185AbhKAODW (ORCPT
+        id S232362AbhKANvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 09:51:49 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:26218 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231906AbhKANvb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 10:03:22 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDD26C061764
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 07:00:48 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id a129so31764207yba.10
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 07:00:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=+mcTZ2eqc3eLQRfLqaTPyOtzxWrRbXuCUvN2Q5tWSyo=;
-        b=V2NXgItPTm/OrLHuGMISs/nrxEVVq0+2zPAxfKLB7kIuCMw1Ez5CxcCi8BOXNRE7sZ
-         11oJIHsfSitmZ4V1HzickVs/OcppA4O1mqh55z59M4+1mRmqAgjcqp5fjO0mU5l3vk+Y
-         iuKuWmClVacbou75vqNLA2THlPLztul93N16+aiAjMmF7aqzK/vzvfsOzLsFTHhqOGKw
-         15ae8LnLC+GOEvCErQcO3VeTIoYPS+Ab9axwNpHcvMnBNrukWlbtHccI/65liq80rpaa
-         bUJuvlU/MJC1lBeMspALiLcNZNLLOrbJ9LOz9Uck5yOI3PKC4C595mNybCGzPePIVy/x
-         m5WQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=+mcTZ2eqc3eLQRfLqaTPyOtzxWrRbXuCUvN2Q5tWSyo=;
-        b=66iO3iat8y1aWEjsxOKKFWRKmMGjafi1ORTx6CsM6ZHXbqTKhu+5+tkDHTkRl+vmGT
-         W+s+4MEtrMhN0+Hya9n11kRO4EmDhGF7MU/XCzIEt5hA8jhfDAIwHqtVIepJpPQNZCUI
-         THLLbggewh6vhR/DDh+jojPzCv+9RX1rna2hOOzzOthKa4SgRte2n8SRsw3HKMaWN8Lm
-         TjcYJTiGGF7wivDyoGmrszMlW6v5H3is0umuFFFK9O7BSd0pRURO3sl5ednDRPSX9m/x
-         0a/LDEQucpzMR8QsyP1D/2Nrq/q6mmJQ2FO24Kl++mQSBbwuzzCBPARI7yVZ7ny8CXlL
-         r5aQ==
-X-Gm-Message-State: AOAM532nGy9AchqCO+XmKL4ZhxEuvAWUyyjZGVSpoCtx8RPTX7c9jSif
-        qpFcWFCz0pf7JpiDvUEaveeRu0BsQqWRrvuOUX4=
-X-Google-Smtp-Source: ABdhPJxDrrMjkeIhlAkahZQjmYOmllFV97CXQaTp/AN50DcpQq6wK7MIoh0PGxDTmkmn4QKqjK63FimATpK905CNcqg=
-X-Received: by 2002:a5b:783:: with SMTP id b3mr29389115ybq.328.1635775247652;
- Mon, 01 Nov 2021 07:00:47 -0700 (PDT)
+        Mon, 1 Nov 2021 09:51:31 -0400
+Received: from dggeml709-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HjZ8w3QvHz8v7Q;
+        Mon,  1 Nov 2021 21:47:28 +0800 (CST)
+Received: from localhost.localdomain (10.175.102.38) by
+ dggeml709-chm.china.huawei.com (10.3.17.139) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.15; Mon, 1 Nov 2021 21:48:55 +0800
+From:   Wei Yongjun <weiyongjun1@huawei.com>
+To:     <weiyongjun1@huawei.com>, Peng Fan <peng.fan@nxp.com>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
+        Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH -next] mailbox: imx: Fix return value check in imx_mu_probe()
+Date:   Mon, 1 Nov 2021 14:02:34 +0000
+Message-ID: <20211101140234.777272-1-weiyongjun1@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Received: by 2002:a25:51c5:0:0:0:0:0 with HTTP; Mon, 1 Nov 2021 07:00:47 -0700 (PDT)
-Reply-To: michellegoodman035@gmail.com
-From:   Shayma <shaymamarwan08@gmail.com>
-Date:   Mon, 1 Nov 2021 14:00:47 +0000
-Message-ID: <CA+HOoT3d8T-LZFVFAVKeNZxGWcUixG5ACLdyesNz0JjekSwCGg@mail.gmail.com>
-Subject: Hello
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+Content-Type:   text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+X-Originating-IP: [10.175.102.38]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggeml709-chm.china.huawei.com (10.3.17.139)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-TWVyaGFiYSB1bWFyxLFtIG1lc2FqxLFtxLEgYWxtxLHFn3PEsW7EsXpkxLFyLg0KaMSxemzEsSB0
-ZXBraWxlcmUgaWh0aXlhY8SxbSB2YXINCg0KVGXFn2Vra8O8cmxlci4NCk1pY2hlbGxlDQo=
+In case of error, the function devm_kzalloc() returns NULL
+pointer not ERR_PTR(). The IS_ERR() test in the return value
+check should be replaced with NULL test.
+
+Fixes: 97961f78e8bc ("mailbox: imx: support i.MX8ULP S4 MU")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+---
+ drivers/mailbox/imx-mailbox.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mailbox/imx-mailbox.c b/drivers/mailbox/imx-mailbox.c
+index ffe36a6bef9e..544de2db6453 100644
+--- a/drivers/mailbox/imx-mailbox.c
++++ b/drivers/mailbox/imx-mailbox.c
+@@ -563,8 +563,8 @@ static int imx_mu_probe(struct platform_device *pdev)
+ 		size = sizeof(struct imx_sc_rpc_msg_max);
+ 
+ 	priv->msg = devm_kzalloc(dev, size, GFP_KERNEL);
+-	if (IS_ERR(priv->msg))
+-		return PTR_ERR(priv->msg);
++	if (!priv->msg)
++		return -ENOMEM;
+ 
+ 	priv->clk = devm_clk_get(dev, NULL);
+ 	if (IS_ERR(priv->clk)) {
+
