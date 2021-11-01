@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 900094418F2
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:51:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF1744417D5
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:39:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234990AbhKAJxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:53:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51404 "EHLO mail.kernel.org"
+        id S233231AbhKAJkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:40:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43770 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234771AbhKAJtC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:49:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BDAE3611C9;
-        Mon,  1 Nov 2021 09:31:31 +0000 (UTC)
+        id S232033AbhKAJiB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:38:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EF43260F4F;
+        Mon,  1 Nov 2021 09:27:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635759092;
-        bh=I6hRXO/d5I2HczES4M/gAfl+H7Wg+ADNMP2/U84gHNY=;
+        s=korg; t=1635758828;
+        bh=CDMlvG5duSBUuvRV8fQFE52vESjelhXLk01PF/XH+Hc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1FdAskFtOJZxxM6rOjfCPAZKCX28SyYXr0AULOat6l55Raqlx8/DrvOoVUga+bSv2
-         9gpT07TuKndQ0/u4pukIwPTnrSjVIQKDtb3Ytk20K/kqF8VV6YZarb+KGFj1bmpiIa
-         DTfBCwGLyjW0JQR8Cm02+EiyNxSY07VCQ/Bu9+J0=
+        b=YPu5L9M4i1CyS8BZB4/cD35z0sUOrQ85hr0lpwj98wQRQBx+zXjiJlh7VXxUgRIhc
+         KmVMPYJYcgdzL9CF0REHU9jsv1dAulgHWh+EMMhGXJumPFnd93M7ugVh2Li4mV97UQ
+         WvCBLVKdOdqCCzacUiTTxyqPIp5PZ0ArfuhWgfVQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Subbaraya Sundeep <sbhatta@marvell.com>,
-        Rakesh Babu <rsaladi2@marvell.com>,
-        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 112/125] octeontx2-af: Check whether ipolicers exists
+        stable@vger.kernel.org, Song Liu <songliubraving@fb.com>,
+        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [PATCH 5.10 77/77] perf script: Check session->header.env.arch before using it
 Date:   Mon,  1 Nov 2021 10:18:05 +0100
-Message-Id: <20211101082554.297590859@linuxfoundation.org>
+Message-Id: <20211101082527.560848483@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082533.618411490@linuxfoundation.org>
-References: <20211101082533.618411490@linuxfoundation.org>
+In-Reply-To: <20211101082511.254155853@linuxfoundation.org>
+References: <20211101082511.254155853@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,53 +40,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Subbaraya Sundeep <sbhatta@marvell.com>
+From: Song Liu <songliubraving@fb.com>
 
-[ Upstream commit cc45b96e2de7ada26520f101dada0abafa4ba997 ]
+commit 29c77550eef31b0d72a45b49eeab03b8963264e8 upstream.
 
-While displaying ingress policers information in
-debugfs check whether ingress policers exist in
-the hardware or not because some platforms(CN9XXX)
-do not have this feature.
+When perf.data is not written cleanly, we would like to process existing
+data as much as possible (please see f_header.data.size == 0 condition
+in perf_session__read_header). However, perf.data with partial data may
+crash perf. Specifically, we see crash in 'perf script' for NULL
+session->header.env.arch.
 
-Fixes: e7d8971763f3 ("octeontx2-af: cn10k: Debugfs support for bandwidth")
-Signed-off-by: Subbaraya Sundeep <sbhatta@marvell.com>
-Signed-off-by: Rakesh Babu <rsaladi2@marvell.com>
-Signed-off-by: Sunil Kovvuri Goutham <sgoutham@marvell.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fix this by checking session->header.env.arch before using it to determine
+native_arch. Also split the if condition so it is easier to read.
+
+Committer notes:
+
+If it is a pipe, we already assume is a native arch, so no need to check
+session->header.env.arch.
+
+Signed-off-by: Song Liu <songliubraving@fb.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: kernel-team@fb.com
+Cc: stable@vger.kernel.org
+Link: http://lore.kernel.org/lkml/20211004053238.514936-1-songliubraving@fb.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ tools/perf/builtin-script.c |   12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
-index 75794c8590c4..a606de56678d 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
-@@ -1796,6 +1796,10 @@ static int rvu_dbg_nix_band_prof_ctx_display(struct seq_file *m, void *unused)
- 	u16 pcifunc;
- 	char *str;
+--- a/tools/perf/builtin-script.c
++++ b/tools/perf/builtin-script.c
+@@ -3820,11 +3820,15 @@ int cmd_script(int argc, const char **ar
+ 		goto out_delete;
  
-+	/* Ingress policers do not exist on all platforms */
-+	if (!nix_hw->ipolicer)
-+		return 0;
-+
- 	for (layer = 0; layer < BAND_PROF_NUM_LAYERS; layer++) {
- 		if (layer == BAND_PROF_INVAL_LAYER)
- 			continue;
-@@ -1845,6 +1849,10 @@ static int rvu_dbg_nix_band_prof_rsrc_display(struct seq_file *m, void *unused)
- 	int layer;
- 	char *str;
+ 	uname(&uts);
+-	if (data.is_pipe ||  /* assume pipe_mode indicates native_arch */
+-	    !strcmp(uts.machine, session->header.env.arch) ||
+-	    (!strcmp(uts.machine, "x86_64") &&
+-	     !strcmp(session->header.env.arch, "i386")))
++	if (data.is_pipe) { /* Assume pipe_mode indicates native_arch */
+ 		native_arch = true;
++	} else if (session->header.env.arch) {
++		if (!strcmp(uts.machine, session->header.env.arch))
++			native_arch = true;
++		else if (!strcmp(uts.machine, "x86_64") &&
++			 !strcmp(session->header.env.arch, "i386"))
++			native_arch = true;
++	}
  
-+	/* Ingress policers do not exist on all platforms */
-+	if (!nix_hw->ipolicer)
-+		return 0;
-+
- 	seq_puts(m, "\nBandwidth profile resource free count\n");
- 	seq_puts(m, "=====================================\n");
- 	for (layer = 0; layer < BAND_PROF_NUM_LAYERS; layer++) {
--- 
-2.33.0
-
+ 	script.session = session;
+ 	script__setup_sample_type(&script);
 
 
