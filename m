@@ -2,77 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9049F44224C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 22:05:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58B6C442253
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 22:06:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231431AbhKAVIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 17:08:10 -0400
-Received: from mail-ot1-f43.google.com ([209.85.210.43]:44710 "EHLO
-        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231347AbhKAVIC (ORCPT
+        id S231443AbhKAVIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 17:08:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43897 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229990AbhKAVIu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 17:08:02 -0400
-Received: by mail-ot1-f43.google.com with SMTP id o10-20020a9d718a000000b00554a0fe7ba0so21244291otj.11;
-        Mon, 01 Nov 2021 14:05:29 -0700 (PDT)
+        Mon, 1 Nov 2021 17:08:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635800776;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TQgvJe1cepFDe4icXoTKdCQ9OFnmjUFubPLtiHuzRwE=;
+        b=Rb7OZhLqhJAmx9jyCC4UUlbkOkHKek53g9VmcM2i0lK9Zt/CDgji1DGA4IYURPi7qIQqOv
+        J5XBdScdOPWWJd9WWEqPDEUoWdF9sRyhp3r67SJStN3ZfViYOJmCNX66daZLuK1CqFKSxQ
+        ZuH9dyYmCO3uqA4A6CohnsysYd0IrlA=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-214-TF7VvtfsO96b9Qn3lNAVKQ-1; Mon, 01 Nov 2021 17:06:15 -0400
+X-MC-Unique: TF7VvtfsO96b9Qn3lNAVKQ-1
+Received: by mail-ed1-f71.google.com with SMTP id i22-20020a05640242d600b003e28aecc0afso4209050edc.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 14:06:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hF0gq7OZT/2n7lqQ8ZeIkQEJq8W0bUDrLpwtT9xTHAs=;
-        b=XpajehX+ccT3ki4D41GAQVQ2zQwrvgh59U2/Cllg97/NQnqyi88x6XYI31Lv0wPCK+
-         BHYZpC9zXpt6lJWwEj8WoW1A6zGPKUOw7okwjeIbgnduaAjz0NN4keyw1G1di9tj3bDx
-         Xu4l0i/l09MteeLLQKm5xMK+ajb8dep9YmW+2B2SJiTGF2npoQQEXObhcMKOWmu93SWu
-         bV8TQD6CnOLt7rYf0It3Jd9kDws8Y5jOvvzqGi2dAT/fRLTMheddqw7tLtSeBFH3BdZk
-         dVTP3pj9r3PS7bEK1lUpsQ32sOmZp/J8OIyLzUBK2Q1Pyi+sX5voPB7FWzzSxmuGRbOj
-         Wd6A==
-X-Gm-Message-State: AOAM531iAEgrVeYmIYHFs0opGhTxv8zItyCLncZPgp22MA7VDXFMzKie
-        f0orfHEatTi8USQtfF2uenycO7wK/g==
-X-Google-Smtp-Source: ABdhPJzebc4mSKfiSbZ+OzwIzY6vJhGjC2sRd3/DsCnEvgX4/XYs7katMtMQ4C/Jr3FLOWKe45zeTg==
-X-Received: by 2002:a05:6830:448e:: with SMTP id r14mr11514551otv.171.1635800728728;
-        Mon, 01 Nov 2021 14:05:28 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id q5sm4375431otc.79.2021.11.01.14.05.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 14:05:27 -0700 (PDT)
-Received: (nullmailer pid 1056273 invoked by uid 1000);
-        Mon, 01 Nov 2021 21:05:26 -0000
-Date:   Mon, 1 Nov 2021 16:05:26 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     rashmi.a@intel.com
-Cc:     mallikarjunappa.sangannavar@intel.com, linux-mmc@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org,
-        kris.pan@linux.intel.com, furong.zhou@intel.com,
-        linux-kernel@vger.kernel.org, mahesh.r.vaidya@intel.com,
-        michal.simek@xilinx.com, adrian.hunter@intel.com,
-        andriy.shevchenko@linux.intel.com, kishon@ti.com,
-        linux-phy@lists.infradead.org, mgross@linux.intel.com,
-        linux-arm-kernel@lists.infradead.org, nandhini.srikandan@intel.com,
-        ulf.hansson@linaro.org, vkoul@kernel.org
-Subject: Re: [RESEND PATCH v2 3/4] dt-bindings: phy: intel: Add Thunder Bay
- eMMC PHY bindings
-Message-ID: <YYBWllS8/J9P24uI@robh.at.kernel.org>
-References: <20211027115516.4475-1-rashmi.a@intel.com>
- <20211027115516.4475-4-rashmi.a@intel.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=TQgvJe1cepFDe4icXoTKdCQ9OFnmjUFubPLtiHuzRwE=;
+        b=sk539WiuZNd7gsE+kBA2f0PWLzNUOQQ0oHZ5FR5I5qiyosb+cIx0fFIjd0v/W2sYuM
+         IWZmYdTxVLzcOzpZ3dVuWriX80zCwYYI47848sm7jMidzzdfBCB85xxFKb6I5QhA4Fsl
+         s34rm5frSfV5M+yQzum+trgih10NH59SxgW7xTB5iM6XU7siABON/fkJXgmQZb5oCmop
+         HMp+LcMbOWKYC2p7pptjoiZojtOgB5kqMIvWIaO6tTIGRjeig5xJCoZWjxbA/3wU3xOo
+         +YbOrsKzHtAKYm03C8MjCSBRWTrUX6TbBrxbBiB77mY6e+DrPbKHRD4e1SEeVbq1cTKk
+         1cNA==
+X-Gm-Message-State: AOAM530DRgZZFKWLBOZHIPkr5BHsD5Z6ZzzqhzPhBZSMqCRB8qp6RKHZ
+        8MPS7/JfwfhY7FpkxB2hf0xwSZLKOEJIqzt8Zj1JLz0FtLM4SOlEwSkYPSBpofWfXHkoh/snrwl
+        /OOIOu7Lnhz0I6Xiqpxhs3QtH
+X-Received: by 2002:a17:907:16ac:: with SMTP id hc44mr16796039ejc.363.1635800774202;
+        Mon, 01 Nov 2021 14:06:14 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy7B3F/WuXivDXcMsQVHWmnjOpyhs30E4Vl20y17n1wnE9ef345TKyurGX36aGs8GVxBRd/rA==
+X-Received: by 2002:a17:907:16ac:: with SMTP id hc44mr16796004ejc.363.1635800773984;
+        Mon, 01 Nov 2021 14:06:13 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id gn16sm3917022ejc.90.2021.11.01.14.06.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Nov 2021 14:06:13 -0700 (PDT)
+Message-ID: <8b81025d-a35d-da91-b059-eab1108013e8@redhat.com>
+Date:   Mon, 1 Nov 2021 22:06:12 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211027115516.4475-4-rashmi.a@intel.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 04/17] media: atomisp: pci: do not use err var when
+ checking port validity for ISP2400
+Content-Language: en-US
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Tsuchiya Yuto <kitakar@gmail.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Nable <nable.maininbox@googlemail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Fabio Aiuto <fabioaiuto83@gmail.com>,
+        "andrey.i.trufanov" <andrey.i.trufanov@gmail.com>,
+        Patrik Gfeller <patrik.gfeller@gmail.com>
+References: <20211017161958.44351-1-kitakar@gmail.com>
+ <20211017161958.44351-5-kitakar@gmail.com> <20211026092637.196447aa@sal.lan>
+ <1a295721fd1f1e512cd54a659a250aef162bfb6f.camel@gmail.com>
+ <20211028123944.66c212c1@sal.lan>
+ <af7cdf9de020171567c2e75b713deb2ed073e4e3.camel@gmail.com>
+ <20211101141058.36ea2c8e@sal.lan>
+ <2b81ca7e-fcaa-5449-5662-4eb72e746b02@redhat.com>
+ <20211101200347.2910cbc7@sal.lan>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20211101200347.2910cbc7@sal.lan>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Oct 2021 17:25:15 +0530, rashmi.a@intel.com wrote:
-> From: Rashmi A <rashmi.a@intel.com>
-> 
-> Binding description for Intel Thunder Bay eMMC PHY.
-> Added the newly introduced files into MAINTAINERS file-list
-> 
-> Signed-off-by: Rashmi A <rashmi.a@intel.com>
-> ---
->  .../phy/intel,phy-thunderbay-emmc.yaml        | 46 +++++++++++++++++++
->  MAINTAINERS                                   |  7 +++
->  2 files changed, 53 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/phy/intel,phy-thunderbay-emmc.yaml
-> 
+Hi,
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+On 11/1/21 21:03, Mauro Carvalho Chehab wrote:
+> Em Mon, 1 Nov 2021 20:06:52 +0100
+> Hans de Goede <hdegoede@redhat.com> escreveu:
+
+<snip>
+
+>>    -Patch to not load atomisp_foo sensor drivers on !BYT && !CHT
+> 
+> Not sure if it is worth doing it, as there are a lot more to be
+> done before being able to use a generic sensor driver.
+
+As you may know, I'm also working on IPU3 support for $dayjob atm
+actually :)
+
+So the drivers for e.g. the ov5693 sensor conflict, by adding
+a small (one line) check to atomisp_ov5693.c to not register
+the driver at all when not on BYT/CHT we can avoid the conflict
+on most devices for now. And when actually on BYT/CHT the user
+will need to blacklist the non atomisp sensor-modules which, well
+sucks, but atomisp is in staging for a reason ...
+
+So the idea here is that with some small added ugliness to the
+atomisp_foo.c sensor drivers we can make the 2 drivers co-exist
+a bit more, allowing e.g. generic distro kernels to (maybe) enable
+the atomisp2 stuff without regressing the IPU3 support.
+
+###
+
+Since we are discussing this now anyways, the atomisp_foo.c
+patches would look like this:
+
+#include <linux/platform_data/x86/soc.h>
+
+        if (!soc_intel_is_byt() && !soc_intel_is_cht())
+                return -ENODEV;
+
+In the probe() function and change driver.name from
+e.g. "ov5693" to "atom_ov5693".
+
+Before I spend time on writing patches for this, would patches doing
+this for conflicting drivers be acceptable ?
+
+Regards,
+
+Hans
+
