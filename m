@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D333B44187C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:48:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 441F4441616
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:20:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234421AbhKAJsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:48:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47952 "EHLO mail.kernel.org"
+        id S232208AbhKAJW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:22:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57752 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234072AbhKAJoD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:44:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 519DC613A7;
-        Mon,  1 Nov 2021 09:29:23 +0000 (UTC)
+        id S231994AbhKAJVg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:21:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DFB9E60FC4;
+        Mon,  1 Nov 2021 09:19:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758963;
-        bh=xVN+tuD72jEaxUbrrSNkVumd7VGK1bDnzJPn6ufC6Ng=;
+        s=korg; t=1635758343;
+        bh=INNpM2ETFrOv7yS1YHWaSEDkFPOEjzXDOu6pPCCn3jg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=at7aOPxtj90FCH6v3XlgfucvaIzYjg11A8P3c3SwFqJb+odmTyInQoscjqKF1L+JX
-         5Ym4HOV0NBywcJvxBc0eQz2la/wclN5e+2c3MpizHBf+/ktnIbBx0nMBueaezMadOJ
-         0jNsvq2bH7+xfDuolJi92i6Yrys7+IVzMmJ6Ia48=
+        b=2uCQsPunuFI5ahlm0wbC/Tlm4l4/JZc1WpZoyk7/qjbZbQrVo/rLR94/3JmaVVj3g
+         CQJxt+90N397EBYmPVFxfmIPMUkzzjN3ofqxpkXspGwM6zh+V6r0DsdcVNuol9ejG2
+         KJ3ldBx1vWI1+2O/5uKOA3L0IuFnhBWgEBQ9qD7w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
-        Aric Cyr <aric.cyr@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.14 056/125] drm/amd/display: Fix deadlock when falling back to v2 from v3
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wang Hai <wanghai38@huawei.com>,
+        Johan Hovold <johan@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.4 06/17] usbnet: fix error return code in usbnet_probe()
 Date:   Mon,  1 Nov 2021 10:17:09 +0100
-Message-Id: <20211101082543.773829070@linuxfoundation.org>
+Message-Id: <20211101082442.030153014@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082533.618411490@linuxfoundation.org>
-References: <20211101082533.618411490@linuxfoundation.org>
+In-Reply-To: <20211101082440.664392327@linuxfoundation.org>
+References: <20211101082440.664392327@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,66 +41,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
+From: Wang Hai <wanghai38@huawei.com>
 
-commit ad76744b041d8c87ef1c9adbb04fb7eaa20a179e upstream.
+commit 6f7c88691191e6c52ef2543d6f1da8d360b27a24 upstream.
 
-[Why]
-A deadlock in the kernel occurs when we fallback from the V3 to V2
-add_topology_to_display or remove_topology_to_display because they
-both try to acquire the dtm_mutex but recursive locking isn't
-supported on mutex_lock().
+Return error code if usb_maxpacket() returns 0 in usbnet_probe()
 
-[How]
-Make the mutex_lock/unlock more fine grained and move them up such that
-they're only required for the psp invocation itself.
-
-Fixes: bf62221e9d0e ("drm/amd/display: Add DCN3.1 HDCP support")
-
-Signed-off-by: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
-Reviewed-by: Aric Cyr <aric.cyr@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
+Fixes: 397430b50a36 ("usbnet: sanity check for maxpacket")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Reviewed-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20211026124015.3025136-1-wanghai38@huawei.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/amd/display/modules/hdcp/hdcp_psp.c |    6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/net/usb/usbnet.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/gpu/drm/amd/display/modules/hdcp/hdcp_psp.c
-+++ b/drivers/gpu/drm/amd/display/modules/hdcp/hdcp_psp.c
-@@ -105,6 +105,7 @@ static enum mod_hdcp_status mod_hdcp_rem
- 	dtm_cmd->dtm_status = TA_DTM_STATUS__GENERIC_FAILURE;
- 
- 	psp_dtm_invoke(psp, dtm_cmd->cmd_id);
-+	mutex_unlock(&psp->dtm_context.mutex);
- 
- 	if (dtm_cmd->dtm_status != TA_DTM_STATUS__SUCCESS) {
- 		status = mod_hdcp_remove_display_from_topology_v2(hdcp, index);
-@@ -115,8 +116,6 @@ static enum mod_hdcp_status mod_hdcp_rem
- 		HDCP_TOP_REMOVE_DISPLAY_TRACE(hdcp, display->index);
+--- a/drivers/net/usb/usbnet.c
++++ b/drivers/net/usb/usbnet.c
+@@ -1732,6 +1732,7 @@ usbnet_probe (struct usb_interface *udev
+ 	dev->maxpacket = usb_maxpacket (dev->udev, dev->out, 1);
+ 	if (dev->maxpacket == 0) {
+ 		/* that is a broken device */
++		status = -ENODEV;
+ 		goto out4;
  	}
- 
--	mutex_unlock(&psp->dtm_context.mutex);
--
- 	return status;
- }
- 
-@@ -218,6 +217,7 @@ static enum mod_hdcp_status mod_hdcp_add
- 	dtm_cmd->dtm_in_message.topology_update_v3.link_hdcp_cap = link->hdcp_supported_informational;
- 
- 	psp_dtm_invoke(psp, dtm_cmd->cmd_id);
-+	mutex_unlock(&psp->dtm_context.mutex);
- 
- 	if (dtm_cmd->dtm_status != TA_DTM_STATUS__SUCCESS) {
- 		status = mod_hdcp_add_display_to_topology_v2(hdcp, display);
-@@ -227,8 +227,6 @@ static enum mod_hdcp_status mod_hdcp_add
- 		HDCP_TOP_ADD_DISPLAY_TRACE(hdcp, display->index);
- 	}
- 
--	mutex_unlock(&psp->dtm_context.mutex);
--
- 	return status;
- }
  
 
 
