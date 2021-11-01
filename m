@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39A8144169E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:26:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9E3A4416F3
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:28:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232410AbhKAJ1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:27:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58250 "EHLO mail.kernel.org"
+        id S232546AbhKAJbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:31:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232649AbhKAJYY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:24:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F8D360C41;
-        Mon,  1 Nov 2021 09:21:15 +0000 (UTC)
+        id S232836AbhKAJ2D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:28:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9040661167;
+        Mon,  1 Nov 2021 09:22:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758476;
-        bh=/PP40bfOoNscls4zJOclm14j9CllvYQYtKEMaLuPfsA=;
+        s=korg; t=1635758560;
+        bh=2cybuqC6d8IWv2/TAWzQQHVLDcpqRg6KvUfIRgfDyJM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ug01yaAi00yHXy8CaX5vXflX8gfuC0I6K1x8ePjZHTqtC2ZTG8vizST+BrVrpWqnr
-         0xTLm18sy/NepfKBPFpc21tT4ZE0/DY4J9LyV9FWJWWWb7vhZML33ji3+BrR0W0r0Z
-         nUoPVAI+Tb38oSxlFfgQOajcOOokmBzrSRN0hKu0=
+        b=lCHYtc3a8oaYTWsF1lcV23fMaGyKpxgUPxIYv4QqUh6sOlQ1qxgnFPJ8CGo9uSDRg
+         yUmHbwn+GLFtSuUuTDLHbdYJecdLTPnZqG44nYZFwBnvsiJA13MEurBHMEWUR1sccW
+         LrVroRMJQvXKFgi1LlEN1eD3GjOQVWxDY4BVS9Y4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chen Huang <chenhuang5@huawei.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Will Deacon <will@kernel.org>
-Subject: [PATCH 4.19 06/35] arm64: Avoid premature usercopy failure
+        stable@vger.kernel.org,
+        syzbot+b187b77c8474f9648fae@syzkaller.appspotmail.com,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 14/51] net/tls: Fix flipped sign in tls_err_abort() calls
 Date:   Mon,  1 Nov 2021 10:17:18 +0100
-Message-Id: <20211101082453.101156122@linuxfoundation.org>
+Message-Id: <20211101082503.950349367@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082451.430720900@linuxfoundation.org>
-References: <20211101082451.430720900@linuxfoundation.org>
+In-Reply-To: <20211101082500.203657870@linuxfoundation.org>
+References: <20211101082500.203657870@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,203 +41,140 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Robin Murphy <robin.murphy@arm.com>
+From: Daniel Jordan <daniel.m.jordan@oracle.com>
 
-commit 295cf156231ca3f9e3a66bde7fab5e09c41835e0 upstream.
+commit da353fac65fede6b8b4cfe207f0d9408e3121105 upstream.
 
-Al reminds us that the usercopy API must only return complete failure
-if absolutely nothing could be copied. Currently, if userspace does
-something silly like giving us an unaligned pointer to Device memory,
-or a size which overruns MTE tag bounds, we may fail to honour that
-requirement when faulting on a multi-byte access even though a smaller
-access could have succeeded.
+sk->sk_err appears to expect a positive value, a convention that ktls
+doesn't always follow and that leads to memory corruption in other code.
+For instance,
 
-Add a mitigation to the fixup routines to fall back to a single-byte
-copy if we faulted on a larger access before anything has been written
-to the destination, to guarantee making *some* forward progress. We
-needn't be too concerned about the overall performance since this should
-only occur when callers are doing something a bit dodgy in the first
-place. Particularly broken userspace might still be able to trick
-generic_perform_write() into an infinite loop by targeting write() at
-an mmap() of some read-only device register where the fault-in load
-succeeds but any store synchronously aborts such that copy_to_user() is
-genuinely unable to make progress, but, well, don't do that...
+    [kworker]
+    tls_encrypt_done(..., err=<negative error from crypto request>)
+      tls_err_abort(.., err)
+        sk->sk_err = err;
 
-CC: stable@vger.kernel.org
-Reported-by: Chen Huang <chenhuang5@huawei.com>
-Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-Signed-off-by: Robin Murphy <robin.murphy@arm.com>
-Link: https://lore.kernel.org/r/dc03d5c675731a1f24a62417dba5429ad744234e.1626098433.git.robin.murphy@arm.com
-Signed-off-by: Will Deacon <will@kernel.org>
+    [task]
+    splice_from_pipe_feed
+      ...
+        tls_sw_do_sendpage
+          if (sk->sk_err) {
+            ret = -sk->sk_err;  // ret is positive
+
+    splice_from_pipe_feed (continued)
+      ret = actor(...)  // ret is still positive and interpreted as bytes
+                        // written, resulting in underflow of buf->len and
+                        // sd->len, leading to huge buf->offset and bogus
+                        // addresses computed in later calls to actor()
+
+Fix all tls_err_abort() callers to pass a negative error code
+consistently and centralize the error-prone sign flip there, throwing in
+a warning to catch future misuse and uninlining the function so it
+really does only warn once.
+
+Cc: stable@vger.kernel.org
+Fixes: c46234ebb4d1e ("tls: RX path for ktls")
+Reported-by: syzbot+b187b77c8474f9648fae@syzkaller.appspotmail.com
+Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Chen Huang <chenhuang5@huawei.com>
 ---
- arch/arm64/lib/copy_from_user.S |   13 ++++++++++---
- arch/arm64/lib/copy_in_user.S   |   20 ++++++++++++++------
- arch/arm64/lib/copy_to_user.S   |   14 +++++++++++---
- 3 files changed, 35 insertions(+), 12 deletions(-)
+ include/net/tls.h |    9 ++-------
+ net/tls/tls_sw.c  |   17 +++++++++++++----
+ 2 files changed, 15 insertions(+), 11 deletions(-)
 
---- a/arch/arm64/lib/copy_from_user.S
-+++ b/arch/arm64/lib/copy_from_user.S
-@@ -39,7 +39,7 @@
- 	.endm
+--- a/include/net/tls.h
++++ b/include/net/tls.h
+@@ -360,6 +360,7 @@ int tls_sk_query(struct sock *sk, int op
+ 		int __user *optlen);
+ int tls_sk_attach(struct sock *sk, int optname, char __user *optval,
+ 		  unsigned int optlen);
++void tls_err_abort(struct sock *sk, int err);
  
- 	.macro ldrh1 ptr, regB, val
--	uao_user_alternative 9998f, ldrh, ldtrh, \ptr, \regB, \val
-+	uao_user_alternative 9997f, ldrh, ldtrh, \ptr, \regB, \val
- 	.endm
+ int tls_set_sw_offload(struct sock *sk, struct tls_context *ctx, int tx);
+ void tls_sw_strparser_arm(struct sock *sk, struct tls_context *ctx);
+@@ -465,12 +466,6 @@ static inline bool tls_is_sk_tx_device_o
+ #endif
+ }
  
- 	.macro strh1 ptr, regB, val
-@@ -47,7 +47,7 @@
- 	.endm
+-static inline void tls_err_abort(struct sock *sk, int err)
+-{
+-	sk->sk_err = err;
+-	sk->sk_error_report(sk);
+-}
+-
+ static inline bool tls_bigint_increment(unsigned char *seq, int len)
+ {
+ 	int i;
+@@ -499,7 +494,7 @@ static inline void tls_advance_record_sn
+ 					 struct cipher_context *ctx)
+ {
+ 	if (tls_bigint_increment(ctx->rec_seq, prot->rec_seq_size))
+-		tls_err_abort(sk, EBADMSG);
++		tls_err_abort(sk, -EBADMSG);
  
- 	.macro ldr1 ptr, regB, val
--	uao_user_alternative 9998f, ldr, ldtr, \ptr, \regB, \val
-+	uao_user_alternative 9997f, ldr, ldtr, \ptr, \regB, \val
- 	.endm
+ 	if (prot->version != TLS_1_3_VERSION)
+ 		tls_bigint_increment(ctx->iv + TLS_CIPHER_AES_GCM_128_SALT_SIZE,
+--- a/net/tls/tls_sw.c
++++ b/net/tls/tls_sw.c
+@@ -35,6 +35,7 @@
+  * SOFTWARE.
+  */
  
- 	.macro str1 ptr, regB, val
-@@ -55,7 +55,7 @@
- 	.endm
++#include <linux/bug.h>
+ #include <linux/sched/signal.h>
+ #include <linux/module.h>
+ #include <linux/splice.h>
+@@ -43,6 +44,14 @@
+ #include <net/strparser.h>
+ #include <net/tls.h>
  
- 	.macro ldp1 ptr, regB, regC, val
--	uao_ldp 9998f, \ptr, \regB, \regC, \val
-+	uao_ldp 9997f, \ptr, \regB, \regC, \val
- 	.endm
++noinline void tls_err_abort(struct sock *sk, int err)
++{
++	WARN_ON_ONCE(err >= 0);
++	/* sk->sk_err should contain a positive error code. */
++	sk->sk_err = -err;
++	sk->sk_error_report(sk);
++}
++
+ static int __skb_nsg(struct sk_buff *skb, int offset, int len,
+                      unsigned int recursion_level)
+ {
+@@ -416,7 +425,7 @@ int tls_tx_records(struct sock *sk, int
  
- 	.macro stp1 ptr, regB, regC, val
-@@ -63,9 +63,11 @@
- 	.endm
+ tx_err:
+ 	if (rc < 0 && rc != -EAGAIN)
+-		tls_err_abort(sk, EBADMSG);
++		tls_err_abort(sk, -EBADMSG);
  
- end	.req	x5
-+srcin	.req	x15
- ENTRY(__arch_copy_from_user)
- 	uaccess_enable_not_uao x3, x4, x5
- 	add	end, x0, x2
-+	mov	srcin, x1
- #include "copy_template.S"
- 	uaccess_disable_not_uao x3, x4
- 	mov	x0, #0				// Nothing to copy
-@@ -74,6 +76,11 @@ ENDPROC(__arch_copy_from_user)
+ 	return rc;
+ }
+@@ -761,7 +770,7 @@ static int tls_push_record(struct sock *
+ 			       msg_pl->sg.size + prot->tail_size, i);
+ 	if (rc < 0) {
+ 		if (rc != -EINPROGRESS) {
+-			tls_err_abort(sk, EBADMSG);
++			tls_err_abort(sk, -EBADMSG);
+ 			if (split) {
+ 				tls_ctx->pending_open_record_frags = true;
+ 				tls_merge_open_record(sk, rec, tmp, orig_end);
+@@ -1822,7 +1831,7 @@ int tls_sw_recvmsg(struct sock *sk,
+ 		err = decrypt_skb_update(sk, skb, &msg->msg_iter,
+ 					 &chunk, &zc, async_capable);
+ 		if (err < 0 && err != -EINPROGRESS) {
+-			tls_err_abort(sk, EBADMSG);
++			tls_err_abort(sk, -EBADMSG);
+ 			goto recv_end;
+ 		}
  
- 	.section .fixup,"ax"
- 	.align	2
-+9997:	cmp	dst, dstin
-+	b.ne	9998f
-+	// Before being absolutely sure we couldn't copy anything, try harder
-+USER(9998f, ldtrb tmp1w, [srcin])
-+	strb	tmp1w, [dst], #1
- 9998:	sub	x0, end, dst			// bytes not copied
- 	uaccess_disable_not_uao x3, x4
- 	ret
---- a/arch/arm64/lib/copy_in_user.S
-+++ b/arch/arm64/lib/copy_in_user.S
-@@ -40,34 +40,36 @@
- 	.endm
+@@ -2002,7 +2011,7 @@ ssize_t tls_sw_splice_read(struct socket
+ 		}
  
- 	.macro ldrh1 ptr, regB, val
--	uao_user_alternative 9998f, ldrh, ldtrh, \ptr, \regB, \val
-+	uao_user_alternative 9997f, ldrh, ldtrh, \ptr, \regB, \val
- 	.endm
- 
- 	.macro strh1 ptr, regB, val
--	uao_user_alternative 9998f, strh, sttrh, \ptr, \regB, \val
-+	uao_user_alternative 9997f, strh, sttrh, \ptr, \regB, \val
- 	.endm
- 
- 	.macro ldr1 ptr, regB, val
--	uao_user_alternative 9998f, ldr, ldtr, \ptr, \regB, \val
-+	uao_user_alternative 9997f, ldr, ldtr, \ptr, \regB, \val
- 	.endm
- 
- 	.macro str1 ptr, regB, val
--	uao_user_alternative 9998f, str, sttr, \ptr, \regB, \val
-+	uao_user_alternative 9997f, str, sttr, \ptr, \regB, \val
- 	.endm
- 
- 	.macro ldp1 ptr, regB, regC, val
--	uao_ldp 9998f, \ptr, \regB, \regC, \val
-+	uao_ldp 9997f, \ptr, \regB, \regC, \val
- 	.endm
- 
- 	.macro stp1 ptr, regB, regC, val
--	uao_stp 9998f, \ptr, \regB, \regC, \val
-+	uao_stp 9997f, \ptr, \regB, \regC, \val
- 	.endm
- 
- end	.req	x5
-+srcin	.req	x15
- 
- ENTRY(__arch_copy_in_user)
- 	uaccess_enable_not_uao x3, x4, x5
- 	add	end, x0, x2
-+	mov	srcin, x1
- #include "copy_template.S"
- 	uaccess_disable_not_uao x3, x4
- 	mov	x0, #0
-@@ -76,6 +78,12 @@ ENDPROC(__arch_copy_in_user)
- 
- 	.section .fixup,"ax"
- 	.align	2
-+9997:	cmp	dst, dstin
-+	b.ne	9998f
-+	// Before being absolutely sure we couldn't copy anything, try harder
-+USER(9998f, ldtrb tmp1w, [srcin])
-+USER(9998f, sttrb tmp1w, [dst])
-+	add	dst, dst, #1
- 9998:	sub	x0, end, dst			// bytes not copied
- 	uaccess_disable_not_uao x3, x4
- 	ret
---- a/arch/arm64/lib/copy_to_user.S
-+++ b/arch/arm64/lib/copy_to_user.S
-@@ -42,7 +42,7 @@
- 	.endm
- 
- 	.macro strh1 ptr, regB, val
--	uao_user_alternative 9998f, strh, sttrh, \ptr, \regB, \val
-+	uao_user_alternative 9997f, strh, sttrh, \ptr, \regB, \val
- 	.endm
- 
- 	.macro ldr1 ptr, regB, val
-@@ -50,7 +50,7 @@
- 	.endm
- 
- 	.macro str1 ptr, regB, val
--	uao_user_alternative 9998f, str, sttr, \ptr, \regB, \val
-+	uao_user_alternative 9997f, str, sttr, \ptr, \regB, \val
- 	.endm
- 
- 	.macro ldp1 ptr, regB, regC, val
-@@ -58,13 +58,15 @@
- 	.endm
- 
- 	.macro stp1 ptr, regB, regC, val
--	uao_stp 9998f, \ptr, \regB, \regC, \val
-+	uao_stp 9997f, \ptr, \regB, \regC, \val
- 	.endm
- 
- end	.req	x5
-+srcin	.req	x15
- ENTRY(__arch_copy_to_user)
- 	uaccess_enable_not_uao x3, x4, x5
- 	add	end, x0, x2
-+	mov	srcin, x1
- #include "copy_template.S"
- 	uaccess_disable_not_uao x3, x4
- 	mov	x0, #0
-@@ -73,6 +75,12 @@ ENDPROC(__arch_copy_to_user)
- 
- 	.section .fixup,"ax"
- 	.align	2
-+9997:	cmp	dst, dstin
-+	b.ne	9998f
-+	// Before being absolutely sure we couldn't copy anything, try harder
-+	ldrb	tmp1w, [srcin]
-+USER(9998f, sttrb tmp1w, [dst])
-+	add	dst, dst, #1
- 9998:	sub	x0, end, dst			// bytes not copied
- 	uaccess_disable_not_uao x3, x4
- 	ret
+ 		if (err < 0) {
+-			tls_err_abort(sk, EBADMSG);
++			tls_err_abort(sk, -EBADMSG);
+ 			goto splice_read_end;
+ 		}
+ 		ctx->decrypted = true;
 
 
