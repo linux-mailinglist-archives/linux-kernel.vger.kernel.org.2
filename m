@@ -2,78 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4A0444217C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 21:11:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D79F744217E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 21:11:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231205AbhKAUOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 16:14:02 -0400
-Received: from mail-oi1-f178.google.com ([209.85.167.178]:34456 "EHLO
-        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229896AbhKAUOB (ORCPT
+        id S231138AbhKAUOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 16:14:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49524 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229712AbhKAUOU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 16:14:01 -0400
-Received: by mail-oi1-f178.google.com with SMTP id w193so26671443oie.1;
-        Mon, 01 Nov 2021 13:11:27 -0700 (PDT)
+        Mon, 1 Nov 2021 16:14:20 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD1B9C061714;
+        Mon,  1 Nov 2021 13:11:46 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id j21so45363849edt.11;
+        Mon, 01 Nov 2021 13:11:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=H1dtlr2ttKRw5mcbGdwBwUoqlnFGv0srse18GSEuA/E=;
+        b=lR9c+VPHFth7/wTuGv19MXV7Sh9KrYJqwW0Lu4dmt+zUbOJ7eXYofScd52+sKnxfzY
+         7CtK71KbQNvq34HbjcbVVhq1qeUAxVy2OBdXjVvnyURaomVxYHSEiWNPkjGBO3kqXmnH
+         kbUbs+aUrydQUxo+6ZvE0xEwVfuqrZnqo36Mt1JjWlfTJeZn/SLAGiXYRsAOGlCDkITR
+         5xiG1Rk5ea+qSeASLBhrjplx2BDFcl0jXG+j/LmdCkW5BfDe5Ha/q4z7Bawmt7Ze/w23
+         qTgpH62oR/23zbked23tUsHC8ACOP1+sP4xKBd/1xERFd90/klBc64D4cA+hfM0UQ/Kc
+         aEtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vGBRocmjUuOsxEUXg/PEBsnNgp/Um6j49Jzz6QIa8yc=;
-        b=PjN5ypDWR78zinpskn/dIW2wyiQXEuCql5GxMzCr9NDzM2FPgCdQBIZRtUMCxlTU45
-         i8ZkPA6KYFEY08z6tJDo3jg+2l4fwYXiKV/luba1Uvj/OHULGEAqW1Tq/nXsiwDVv0ZO
-         e+tsXDvlr/zCt8b6Q5CiSXt6Zul7tEm+lTVlHzf0KLvesDheDAGtCQjMWXT5O0bYF12r
-         ZYXBlDHl/MCI65CSsFjka//Ltgqcby9EHCUwircNk0R0P4SD4nkDFpZWpAAO2qT19vJq
-         4qvDUSrXSPiCVm3Ztoa5LzaSyHyjLE0lrxkaXqzj6iyt9S6Le+i5UsQSf4InQTaxiaoc
-         qMtw==
-X-Gm-Message-State: AOAM532aFQdd1xMFWIPzD4W7RZ2LelwgLFTURMS9velR4pdmQgliBd1x
-        FOdlXJBumT2DjTyMFfE9YxQqS5x2zQ==
-X-Google-Smtp-Source: ABdhPJzEJPMEeZlG9eTygjSBuADrt2G2XC6VMZ09gbQ3Fhq8BmnEjm1r4hXQPtt0k157GXvtpoj1Ww==
-X-Received: by 2002:a05:6808:1447:: with SMTP id x7mr1076882oiv.23.1635797487437;
-        Mon, 01 Nov 2021 13:11:27 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id a8sm340241otr.3.2021.11.01.13.11.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 13:11:26 -0700 (PDT)
-Received: (nullmailer pid 959745 invoked by uid 1000);
-        Mon, 01 Nov 2021 20:11:25 -0000
-Date:   Mon, 1 Nov 2021 15:11:25 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Jesse Taube <mr.bossman075@gmail.com>
-Cc:     aisheng.dong@nxp.com, linux-serial@vger.kernel.org,
-        Mr.Bossman075@gmail.com, linux-arm-kernel@lists.infradead.org,
-        linus.walleij@linaro.org, olof@lixom.net, adrian.hunter@intel.com,
-        linux@armlinux.org.uk, linux-kernel@vger.kernel.org,
-        jirislaby@kernel.org, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, sboyd@kernel.org,
-        kernel@pengutronix.de, s.hauer@pengutronix.de,
-        linux-clk@vger.kernel.org, arnd@arndb.de, mturquette@baylibre.com,
-        abel.vesa@nxp.com, giulio.benetti@benettiengineering.com,
-        leonard.crestez@nxp.com, ulf.hansson@linaro.org, stefan@agner.ch,
-        soc@kernel.org, gregkh@linuxfoundation.org, festevam@gmail.com,
-        shawnguo@kernel.org, linux-imx@nxp.com, robh+dt@kernel.org,
-        linux-mmc@vger.kernel.org, fugang.duan@nxp.com,
-        b20788@freescale.com, nobuhiro1.iwamatsu@toshiba.co.jp
-Subject: Re: [PATCH 08/13] dt-bindings: serial: fsl-lpuart: add i.MXRT
- compatible
-Message-ID: <YYBJ7ebwRxidQOrA@robh.at.kernel.org>
-References: <20211024154027.1479261-1-Mr.Bossman075@gmail.com>
- <20211024154027.1479261-9-Mr.Bossman075@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=H1dtlr2ttKRw5mcbGdwBwUoqlnFGv0srse18GSEuA/E=;
+        b=hfN1R8NHaA757rOQ1Q9VgLhrzxdu9PKFJfi6vw+THSDpw8d4saIb/mTVq46tj7FNRQ
+         zuJNSSSSyYoMj1AqO1XE1ljnmA/0/Ig+sMcCfIID2UIr0L6EBiNleaHofU3psBMHpg3D
+         QCyqGhM8fkfUwuHbxJ2SViwsPbn8JC+RvG+hmwB7QBfa1JyzZAhtHaL0NeCvtBIKpPt3
+         glWDAXY4ewTVa4SLV6J9X1POAC/4C/x5hTRb1nKlEjqsXJxy+pcTt68+IHyGc1q0FTwG
+         P1Wbz56lii6012caaboNw7V4RRUm4jRvAK5BeMb4T7PfuimgPcFIuUoNSGIIPltWt3J7
+         ATBw==
+X-Gm-Message-State: AOAM533guo3wxfHhdHGYVbJAAi1a9m3sEWMjonwYl9MOpzVg9/M2xO7r
+        sr9HPzTiufbUj+4oxNbeABkVeoZRnkRyTkz4MDA=
+X-Google-Smtp-Source: ABdhPJxzEafZO0APCZgW5QUTNPh/n1I4XHakLQ9mc8d0LoGJcSYim8KSK74eWHhVtpIV0msHmDj6fm2bWHKeML6kq6E=
+X-Received: by 2002:a17:907:2953:: with SMTP id et19mr2320740ejc.311.1635797505564;
+ Mon, 01 Nov 2021 13:11:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211024154027.1479261-9-Mr.Bossman075@gmail.com>
+References: <CAPcxDJ5rgmyswPN5kL8-Mk2hk7MCjHXVy6pS50i=KQKzUGFHfA@mail.gmail.com>
+In-Reply-To: <CAPcxDJ5rgmyswPN5kL8-Mk2hk7MCjHXVy6pS50i=KQKzUGFHfA@mail.gmail.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Mon, 1 Nov 2021 13:11:33 -0700
+Message-ID: <CAHbLzkp7mN0ePsZiSY4obA_cVqmReSnDd6tF-yxRAmALBzzKAw@mail.gmail.com>
+Subject: Re: [v5 PATCH 6/6] mm: hwpoison: handle non-anonymous THP correctly
+To:     Jue Wang <juew@google.com>
+Cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>, Oscar Salvador <osalvador@suse.de>,
+        Peter Xu <peterx@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 24 Oct 2021 11:40:22 -0400, Jesse Taube wrote:
-> Add i.MXRT documentation for compatible string.
-> 
-> Cc: Giulio Benetti <giulio.benetti@benettiengineering.com>
-> Signed-off-by: Jesse Taube <Mr.Bossman075@gmail.com>
-> ---
->  Documentation/devicetree/bindings/serial/fsl-lpuart.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
+On Mon, Nov 1, 2021 at 12:38 PM Jue Wang <juew@google.com> wrote:
+>
+> A related bug but whose fix may belong to a separate series:
+>
+> split_huge_page fails when invoked concurrently on the same THP page.
+>
+> It's possible that multiple memory errors on the same THP get consumed
+> by multiple threads and come down to split_huge_page path easily.
 
-Acked-by: Rob Herring <robh@kernel.org>
+Yeah, I think it should be a known problem since the very beginning.
+The THP split requires to pin the page and does check if the refcount
+is expected or not and freezes the refcount if it is expected. So if
+two concurrent paths try to split the same THP, one will fail due to
+the pin from the other path, but the other one will succeed.
+
+I don't think of a better way to remediate it other than retrying from
+the very start off the top of my head. We can't simply check if it is
+still a THP or not since THP split will just move the refcount pin to
+the poisoned subpage so the retry path will lose the refcount for its
+poisoned subpage.
+
+Did you run into this problem on any real production environment? Or
+it is just a artificial test case? I'm wondering if the extra
+complexity is worth or not.
+
+>
+> Thanks,
+> -Jue
