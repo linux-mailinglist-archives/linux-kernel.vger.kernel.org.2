@@ -2,136 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16619442273
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 22:16:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D77FD442277
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 22:17:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230487AbhKAVS2 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 1 Nov 2021 17:18:28 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:60078 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbhKAVS1 (ORCPT
+        id S230322AbhKAVTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 17:19:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36024 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229712AbhKAVTR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 17:18:27 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52]:35836)
-        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mheek-007Fck-MN; Mon, 01 Nov 2021 15:15:50 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:34714 helo=email.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mheej-00B5mV-HN; Mon, 01 Nov 2021 15:15:50 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Cc:     Liao Chang <liaochang1@huawei.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Nick Kossifidis <mick@ics.forth.gr>, jszhang@kernel.org,
-        guoren@linux.alibaba.com, Pekka Enberg <penberg@kernel.org>,
-        sunnanyong@huawei.com, wangkefeng.wang@huawei.com,
-        changbin.du@intel.com, Alex Ghiti <alex@ghiti.fr>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>, kexec@lists.infradead.org
-References: <20211030031832.165457-1-liaochang1@huawei.com>
-        <20211030031832.165457-3-liaochang1@huawei.com>
-        <87ee83goju.fsf@disp2133>
-        <CAJ+HfNjaBQrBtOuMvTccbb2K-Ua=T1eZk0+70hp0_aOAc83A-Q@mail.gmail.com>
-Date:   Mon, 01 Nov 2021 16:15:42 -0500
-In-Reply-To: <CAJ+HfNjaBQrBtOuMvTccbb2K-Ua=T1eZk0+70hp0_aOAc83A-Q@mail.gmail.com>
-        (=?utf-8?Q?=22Bj=C3=B6rn_T=C3=B6pel=22's?= message of "Sun, 31 Oct 2021
- 12:14:33 +0100")
-Message-ID: <87a6inbmrl.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Mon, 1 Nov 2021 17:19:17 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 223F0C061714
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 14:16:43 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id c28so38739993lfv.13
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 14:16:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=b8vfSiLQfcV8LSE/0VZN9nVymiWfQcf3HwDo3/s+A28=;
+        b=Nq1P/t/kTMIhHA/oVJQEreCbMYA1lLPseP1YwRnBgkI+rwLrkUnvCwRE5vK8d+UrWb
+         MYWBvzpASJ6sYAnkGmmhJG91PeyumZXs75AUf9oA3+gvZyaIwKzA9V7La+eusnHHoKYm
+         ymfuDesBPwWtB570ovAO0NARSsUWyH+QCYLtw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=b8vfSiLQfcV8LSE/0VZN9nVymiWfQcf3HwDo3/s+A28=;
+        b=S20wzXaDTM4jXqDqpFuKAfyvaFcix/qsxcMkYjV8d9OOy2bX9SZotPFxHJTM9MXuPC
+         4F7Cm864L0A6dh2fuhO39ipO0oKA/QrqCzO5RCrUDpuASZDolbpiFkPqPylckiHaOWwh
+         GTo7o8dEpmXVdJIk52cpy2DheH6DLL4SsGKkTt2GO4qGdgnNd/HWvlX8KR/Yx1TIQj5+
+         kmSVa/9ItiakfQR0WPyaDHi0eVa1DFg0FeE9kEUjvliP5RPt6cbzIrXG1biROuZ194Oo
+         JdGit4H5AuVFQDl1tj0uKnlJF3h2LicmssqVdT7CBtRq+om2pH87PbOR8zovC9DSS2fV
+         CHEg==
+X-Gm-Message-State: AOAM532C33eampPTnOwiIZ8xLVkjyerndMvNCJW6NDymn1nfKJ9EjmOx
+        HmTkfkG4ZEYDO4PfLE9+KBwhjO0/nYYOgKiw
+X-Google-Smtp-Source: ABdhPJzQFfl8ZXrMmLKsBoe0FWt2edwYdkE0Q+9WHPpvtiFejunzQPahTD5mUsmhv79eSJew3qyOKQ==
+X-Received: by 2002:a05:6512:230b:: with SMTP id o11mr32595092lfu.490.1635801401230;
+        Mon, 01 Nov 2021 14:16:41 -0700 (PDT)
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
+        by smtp.gmail.com with ESMTPSA id f4sm1508525lfr.43.2021.11.01.14.16.40
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Nov 2021 14:16:40 -0700 (PDT)
+Received: by mail-lf1-f44.google.com with SMTP id f3so30648871lfu.12
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 14:16:40 -0700 (PDT)
+X-Received: by 2002:a19:ad0c:: with SMTP id t12mr29903941lfc.173.1635801399851;
+ Mon, 01 Nov 2021 14:16:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-XM-SPF: eid=1mheej-00B5mV-HN;;;mid=<87a6inbmrl.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18DBOf1ufm8A1FhY1m4kqu+CrD7jATo5Fs=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
-X-Spam-Level: *
-X-Spam-Status: No, score=1.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
-        T_TooManySym_02,XMNoVowels,XM_B_SpammyWords,XM_B_Unicode
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4361]
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.0 XM_B_Unicode BODY: Testing for specific types of unicode
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa08 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.2 XM_B_SpammyWords One or more commonly used spammy words
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-        *  0.0 T_TooManySym_02 5+ unique symbols in subject
-X-Spam-DCC: XMission; sa08 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: =?ISO-8859-1?Q?*;Bj=c3=b6rn T=c3=b6pel <bjorn.topel@gmail.com>?=
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 566 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 13 (2.3%), b_tie_ro: 11 (2.0%), parse: 0.93
-        (0.2%), extract_message_metadata: 14 (2.5%), get_uri_detail_list: 1.10
-        (0.2%), tests_pri_-1000: 15 (2.6%), tests_pri_-950: 1.42 (0.3%),
-        tests_pri_-900: 1.20 (0.2%), tests_pri_-90: 104 (18.4%), check_bayes:
-        101 (17.8%), b_tokenize: 6 (1.1%), b_tok_get_all: 9 (1.5%),
-        b_comp_prob: 2.5 (0.4%), b_tok_touch_all: 78 (13.7%), b_finish: 1.56
-        (0.3%), tests_pri_0: 402 (71.0%), check_dkim_signature: 0.51 (0.1%),
-        check_dkim_adsp: 5 (0.9%), poll_dns_idle: 0.68 (0.1%), tests_pri_10:
-        2.3 (0.4%), tests_pri_500: 9 (1.6%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH 2/3] RISC-V: use memcpy for kexec_file mode
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+References: <YX/AmFgkQ0AEqDaG@zn.tnic>
+In-Reply-To: <YX/AmFgkQ0AEqDaG@zn.tnic>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 1 Nov 2021 14:16:24 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiNyR-cAxicOD6nkRQNw-q+uzFvB3hpA-s=7asEKom=og@mail.gmail.com>
+Message-ID: <CAHk-=wiNyR-cAxicOD6nkRQNw-q+uzFvB3hpA-s=7asEKom=og@mail.gmail.com>
+Subject: Re: [GIT PULL (not really)] x86/core for v5.16
+To:     Borislav Petkov <bp@suse.de>
+Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Björn Töpel <bjorn.topel@gmail.com> writes:
-
-> On Sat, 30 Oct 2021 at 05:51, Eric W. Biederman <ebiederm@xmission.com> wrote:
->>
->> Liao Chang <liaochang1@huawei.com> writes:
->>
->> > The pointer to buffer loading kernel binaries is in kernel space for
->> > kexec_fil mode, When copy_from_user copies data from pointer to a block
->> > of memory, it checkes that the pointer is in the user space range, on
->> > RISCV-V that is:
->> >
->> > static inline bool __access_ok(unsigned long addr, unsigned long size)
->> > {
->> >       return size <= TASK_SIZE && addr <= TASK_SIZE - size;
->> > }
->> >
->> > and TASK_SIZE is 0x4000000000 for 64-bits, which now causes
->> > copy_from_user to reject the access of the field 'buf' of struct
->> > kexec_segment that is in range [CONFIG_PAGE_OFFSET - VMALLOC_SIZE,
->> > CONFIG_PAGE_OFFSET), is invalid user space pointer.
->> >
->> > This patch fixes this issue by skipping access_ok(), use mempcy() instead.
->>
->> I am a bit confused.
->>
->> Why is machine_kexec ever calling copy_from_user?  That seems wrong in
->> all cases.
->>
+On Mon, Nov 1, 2021 at 3:25 AM Borislav Petkov <bp@suse.de> wrote:
 >
-> It's not machine_kexec -- it's machine_kexec_prepare, which pulls out
-> the FDT from the image. It looks like MIPS does it similarly.
+> so this is not really a pull request but more of a question on the
+> process. I have merged the x86/cc branch into this branch I'm sending to
+> you - x86/core - and when I generate the diffstat with git request-pull,
+> it adds the changes of the merged branch x86/cc too, of course.
 >
-> (Caveat: I might be confused as well! ;-))
+> I can doctor the diffstat and the merge message by doing
+>
+>  git diff --stat ^x86/cc x86_core_for_v5.16_rc1
+>
+> see below, so that the merged branch's changes are not there.
+>
+> But I'm not sure if this is the right thing to do. Especially if you do
+> not merge x86/cc first - then the below diffstat becomes wrong.
 
-True it is machine_kexec_prepare.  But still.  copy_from_user does not
-belong in there.  It is not passed a userspace pointer.
+So other developers do this kind of thing fairly regularly, because
+they have some "core branch" that does the basic core development
+(say, a driver subsystem), and then they have other branches (eg the
+lowlevel drivers themselves etc) that depended on the core work but
+are sent as individual pull requests to keep the conceptual separation
+alive, and make it easier to review.
 
-This looks more like a case for kmap to read a table from the firmware.
+The way to do it tends to be:
 
-Even if it someone made sense it definitely does not make sense to
-make it a conditional copy_from_user.  That way lies madness.
+ (a) make it clear that some pull request depends on a previous one,
+so that I'm aware of it, and don't do them out of order and get
+confused
 
-The entire change is a smell that there is some abstraction that is
-going wrong, and that abstraction needs to get fixed.
+ (b) when you have a series of pull requests that aren't independent,
+create the series of pulls yourself in a temporary tree, and generate
+the pull request from that series, with the previous merge always as
+the "base".
 
-Eric
+The reason for (a) is obvious, and the reason for (b) is that then
+each pull request automatically gets the right shortlog and diffstat.
 
+Of course, if this is the only time you expect to haev this kind of
+dependency, you don't need to have much of a process in place, and a
+hacky manual one-time thing like the above works fine too.
+
+And in general, the more independent the pull request can be, the
+better. But having two or more branches that have some serial
+dependency certainly isn't unheard of or wrong either.  It happens.
+
+             Linus
