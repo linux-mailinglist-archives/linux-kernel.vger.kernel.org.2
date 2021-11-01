@@ -2,91 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7823441B67
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 13:58:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C54AF441B6E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 14:00:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232211AbhKANBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 09:01:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36036 "EHLO
+        id S232512AbhKANDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 09:03:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231892AbhKANBI (ORCPT
+        with ESMTP id S232161AbhKANDB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 09:01:08 -0400
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EE7EC061714
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 05:58:35 -0700 (PDT)
-Received: by mail-il1-x12f.google.com with SMTP id j28so11932062ila.1
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 05:58:35 -0700 (PDT)
+        Mon, 1 Nov 2021 09:03:01 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CCFEC061764
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 06:00:28 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id 5so63098801edw.7
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 06:00:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=0i1TUXds+hETNA9yyCDE97aWcP5kn/b/jmxNhdk+IQY=;
-        b=3L0jadcQs0aH5YVGsm8khtu/wrj/UzkiB4ehQzQfhd4otl+x9riBFmmvWP246RIm4o
-         zkVIdk/sCTG9306kGnchSy++HLylitGTvoQczPT8KqhHBWEwZptWZ8H5e/0AH2YDyAzI
-         +lsq7cALmz9kZZOPQ3yo9Fz3dpaOqQiRptshS5gmgv7oJVRSL/wuR42Xd5dby+Isy2dl
-         dhWYCK9Nj+osK1wWnJj8xXDF/HEt/Gj5TAJAWoj/pQG5eEVKvNI5ZdYcmPFsyl1FD5aQ
-         T/3nnCJuzhpLjDRpCdC6q6JsAJKL9DbtMgSesXezWVAEl0LSV5NQbKSjvyk7QcOwwcm+
-         1tHw==
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=JMrm6iIHu12TX3Le4ZvAmNYNTqandA0I6XEzD8Uf33o=;
+        b=gwjeetL2ktZtLy08R+FARZYDrmM1v4KmXYqLcvKdG+NT0ALJL5NV4SPVOgHHDNbeGg
+         +nkHXAgZiN3NnbiCPdl1pVgCFr2bZZrIQp8Q0wb/iu5Rw0qT+9QUVLfYnlkVrLJ/oPZl
+         345bEJeFjUc+trpYcEyfrevR8bUBQA9EoJGSmquvGxO0jHt+g/ybnQ8SsHjpTkdHJWZT
+         qwPqdFIyzFS+fWXbwXaF4TZKl7imcCwfCaDwlDXKQI5T5KmQpIEkO/4CDMg+7HBiF37H
+         /zYvVH7x8zlgR8yhek6nk9Eyjbdm9Yq8WSdu9gM4Zoml2e4ddRXZv+IDE1E7A4Glart8
+         LvNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0i1TUXds+hETNA9yyCDE97aWcP5kn/b/jmxNhdk+IQY=;
-        b=09PghWUaAjpeMXj4/QghzOXPexxNpWxEzQTUX7dtnuyS4Xh9FEHhGxwgFlG8GBBE2a
-         20VdzFV+RLCkmgNiGIJb+lBPOoLaF2E9tw2rQpqm5wgxc3Z/wpqzDAg2E9AqAyReT6Kg
-         bOW5ZRTCZODfyp1wW9lpa2lwRZ48tJjZCww1yIhwxq51e8DX1NwAx69BQFtWVdSmqCyQ
-         z/wzFcIiBn361KmDL3TOB1M6RFtd0Eh+f3VbqT3rOES0GJQQ+ELgtf7qXB2SI+Ck9dIX
-         gAaDrb0rHBf226McT9PPvbahpl2nE+1T5HBTZBU5WYXJ6VkKHsKmxFhlLPaJ8kZU5At/
-         J4KA==
-X-Gm-Message-State: AOAM533wJ/ruWiYTRirxwud8uhb/uOo+nXipGmSYBxJ/AvcYLBKF+3Fo
-        9xW0f83ViXzeVYhSkEebkXEAHA==
-X-Google-Smtp-Source: ABdhPJzLLVAhR4iCsqJaAh2d8tBpAYhUSQ1AbZIaClzoio8aRGdlDWX3ki0DGo5DLZCeGTa4OM0VaQ==
-X-Received: by 2002:a05:6e02:1c87:: with SMTP id w7mr7846009ill.244.1635771514677;
-        Mon, 01 Nov 2021 05:58:34 -0700 (PDT)
-Received: from [192.168.1.116] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id a14sm8430155ilv.86.2021.11.01.05.58.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Nov 2021 05:58:34 -0700 (PDT)
-Subject: Re: [syzbot] BUG: unable to handle kernel paging request in
- __blk_mq_alloc_requests
-To:     syzbot <syzbot+cd20829ac44b92bf6ed0@syzkaller.appspotmail.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-References: <00000000000028c58805cfb9a28f@google.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <f3de46fd-2159-6843-d2da-9a7a6a46b6c9@kernel.dk>
-Date:   Mon, 1 Nov 2021 06:58:31 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=JMrm6iIHu12TX3Le4ZvAmNYNTqandA0I6XEzD8Uf33o=;
+        b=Rou+4AJAkM8xIOv9TDW4C6m8d2z1X9r5F+50tCBHqlEaoC3oVykZOhNfx0I5aPAcbc
+         AFbOgZqBdmVTKVvHlg8g2zw6INgEsT24B/9FAynCz3aRxr5/mi9TJ/zRoN3cSkaXV+pR
+         H/2dTilMjyIlvgNdmh6YhBq/vO0Hq7Mc2cBK3/KLLWhnxV9wrH6pbPNLNk8KsWhDd1W1
+         yvaatT1w/REgoIqu4GC/O74P1Tpkh9+EyQYpA+h/qX95A/cc21KQ88GjwewYLxZprqLX
+         2LTBoG/SMxudHCqiFP8WZusEHgf0SyHpfNzrI74HI5R8neehaiWuGSqU9SWc42Mudi7S
+         yeDg==
+X-Gm-Message-State: AOAM5326/SwhPh/Hk3j1peHQlquS3rrWJC9XxktWZBvMNbMtljr7Qz6S
+        cQA9s9eNaOXgAKZRYeLJJkoiGyXDwPHV8WyJAbmdXg==
+X-Google-Smtp-Source: ABdhPJwtYyX1GF3y4Z4lMZPNRfYDnfkp8peq6RWPpVFDHcRur2l+TJc6ny5O2tIs5KVvkIZJ429ycZOYfCLz8qWG9mw=
+X-Received: by 2002:a17:907:76b0:: with SMTP id jw16mr12828713ejc.169.1635771626270;
+ Mon, 01 Nov 2021 06:00:26 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <00000000000028c58805cfb9a28f@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Mon, 1 Nov 2021 18:30:15 +0530
+Message-ID: <CA+G9fYso1sBLRAMpc0bdPiim8GvMhmwuRDaEZ0xbP1TZz864ZA@mail.gmail.com>
+Subject: [next] Error: selected processor does not support `isb ' in ARM mode
+To:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Juerg Haefliger <juergh@canonical.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/1/21 6:51 AM, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    503f375baa99 Add linux-next specific files for 20211028
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=14688302b00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=aa50dda6b6975803
-> dashboard link: https://syzkaller.appspot.com/bug?extid=cd20829ac44b92bf6ed0
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1385446ab00000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10fc8c6ab00000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+cd20829ac44b92bf6ed0@syzkaller.appspotmail.com
-#syz test: git://git.kernel.dk/linux-block for-next
+[Please ignore this email report if it is already reported]
 
--- 
-Jens Axboe
+Regression found on arm gcc-11 built with following config
+Following build warnings / errors reported on linux next-20211101.
 
+metadata:
+    git_describe: next-20211101
+    git_repo: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+    git_short_log: 9febf1194306 (\"Add linux-next specific files for 20211101\")
+    target_arch: arm
+    toolchain: gcc-11
+
+build error :
+--------------
+/tmp/ccyCNFmn.s: Assembler messages:
+/tmp/ccyCNFmn.s:1114: Error: selected processor does not support `isb
+' in ARM mode
+/tmp/ccyCNFmn.s:2033: Error: selected processor does not support `isb
+' in ARM mode
+make[3]: *** [/builds/linux/scripts/Makefile.build:288:
+arch/arm/vfp/vfpmodule.o] Error 1
+/tmp/ccy2h2RX.s: Assembler messages:
+/tmp/ccy2h2RX.s:387: Error: selected processor does not support `dsb
+st' in ARM mode
+/tmp/ccy2h2RX.s:466: Error: selected processor does not support `dsb
+st' in ARM mode
+/tmp/ccy2h2RX.s:505: Error: selected processor does not support `dsb
+ishst' in ARM mode
+/tmp/ccy2h2RX.s:509: Error: selected processor does not support `sev'
+in ARM mode
+/tmp/ccy2h2RX.s:524: Error: selected processor does not support `dsb '
+in ARM mode
+/tmp/ccy2h2RX.s:556: Error: selected processor does not support `dsb
+st' in ARM mode
+/tmp/ccy2h2RX.s:599: Error: selected processor does not support `dsb
+st' in ARM mode
+make[2]: *** [/builds/linux/scripts/Makefile.build:288:
+arch/arm/mach-actions/platsmp.o] Error 1
+make[2]: Target '__build' not remade because of errors.
+make[1]: *** [/builds/linux/Makefile:1993: arch/arm/mach-actions] Error 2
+
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+build link:
+-----------
+https://builds.tuxbuild.com/20JSORlPpF83BDZzJEvnIbuof6E/
+
+build config:
+-------------
+https://builds.tuxbuild.com/20JSORlPpF83BDZzJEvnIbuof6E/config
+
+steps to reproduce:
+--------------------
+https://builds.tuxbuild.com/20JSORlPpF83BDZzJEvnIbuof6E/tuxmake_reproducer.sh
+
+--
+Linaro LKFT
+https://lkft.linaro.org
