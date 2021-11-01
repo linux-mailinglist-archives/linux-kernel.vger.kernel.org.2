@@ -2,108 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E34BF441A76
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 12:10:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B7F2441A81
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 12:12:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232068AbhKALMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 07:12:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39574 "EHLO
+        id S231948AbhKALPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 07:15:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231948AbhKALMd (ORCPT
+        with ESMTP id S231485AbhKALO6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 07:12:33 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A64EC061764
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 04:10:00 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id w1so9169246edd.10
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 04:10:00 -0700 (PDT)
+        Mon, 1 Nov 2021 07:14:58 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40BE2C061714;
+        Mon,  1 Nov 2021 04:12:25 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id 5so62117178edw.7;
+        Mon, 01 Nov 2021 04:12:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=GnqQRd6hBaYfWki68lQPDIO80Hq57QzHkXr+8T/A1cg=;
-        b=tGWmTFjDJz7ZHICrb2qpN56/6awLBIMQFdVKur6rqwzwJPCjyI9B+AzA9vu5adS5ju
-         nYMkE6QElGtiy4pzpA7mXc5FKPQJmyfa8KyNRONybbWp1L4yR2tG95RQKZa6pQbXCh1d
-         uc4EFFZv0ab3yZ0VRRYaXj3Z61IhU0HJDjrz+DQkE6hKB6SplYm7AguXedVSsQ/tXDr5
-         Rmu8FSARakgsuXgdHZ2/lO4WrLgcBFjvP0A80Kvnq/VnrUDHpeiFF/In7/3ijMRo9MaR
-         6CBRgDgNq7JBplCJlhhhHwv4gUUw0zW8xGC7QiU9PFp2STulnUeZlKymyC0raoAF3EMa
-         AIng==
+        bh=e/ndeUdloTh5m16qLTmNIXQLVVP3NuiAY5SQEn45NJs=;
+        b=KoLYJwuSR+BEdOEmgwZcfQ3vtQmrATV3wWRolFR1NYwMo1ZDE/GKzeISLXxILeNqQG
+         V5+LmVHypX/XDxgOe0vOyUUUX/ZETvqwDIrzCc9p2rYWI21wfkk6Wq10z8gXJzFqCuhL
+         dimlOz6rgDDxQrPsNByXEytlJh8IRvdFKYKAtKefNkTR8w7Fst0uoZklwV76EgF8+Pfe
+         VEN4P+NK8kbnmZWN72RBlmAUoC2+1CFrviH+ia4kJYLqt3LoFrlcxEC8jmVykMGievye
+         VFTnodxSJs5r6iE3UibpfHleOWUJgNLmtXTsNlmiusfPgFCgjThjAj+0HpJoBJ8Ug2j/
+         mDSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=GnqQRd6hBaYfWki68lQPDIO80Hq57QzHkXr+8T/A1cg=;
-        b=hkvYOHmiQ3FTG8eJDlBXp8ABOBPrSI0/uzRLL1eEHWwUf5KsZnY/bSrjGUnuh6QD+u
-         R43Daw1zYLQqHxOEn2slOcAn1ocdb5rw8Liq3WWihpzEawGRJFOeYwDeuwM43CPws7W5
-         3Mk6Us4V4IQPpXyboBHQ51rHzQ16e1DrNDpN+FkPxggFH0SiYse5peUJkdPyWf+v1wj+
-         xOSB9vNPTljsc0qElfoppwIONNyptS2xlIAVGAbkn9OIeeBCjpZML20M9Ntejbitq90r
-         Mlbd0rBvvvJJkuwOioxFHeq4YiaF9Ybjpm/k4gqbVC1SSk1anXq/p2aNICjYq+gCH3rj
-         7C1Q==
-X-Gm-Message-State: AOAM532j1dJChigs2TV8Jip9ftKwD31Tji3xpVuSjHK2fAMGKzK7tBpR
-        KtZhKKHt4/gFI4Qdn5P9jj6YTUV4eHV9O8Exf8vpwSdhBpKgyw==
-X-Google-Smtp-Source: ABdhPJy7NCj6xQhFYdNxrNVAiKtFdkmV7VaRSAZZf6HeIgPM8n2Xemo4OZDTfhbHBNsu0GMGMFSIzDR835UkqQZqgmE=
-X-Received: by 2002:a17:907:76b0:: with SMTP id jw16mr12118337ejc.169.1635764998419;
- Mon, 01 Nov 2021 04:09:58 -0700 (PDT)
+        bh=e/ndeUdloTh5m16qLTmNIXQLVVP3NuiAY5SQEn45NJs=;
+        b=zEBBY9kp5NZc6ihx0jirZKomm8Bt4gFIzerlZ9hRbWrcgf9H5z8MFA7GgPIb+mr48g
+         zxGq3435mQ5HpGueY6ATkz8a3ok+ht1WsibgkoBLpR2bzNOkhjkXYbqOLsleovaT8foZ
+         rbipZ2G2jPiWPEhU5RbLTyw6dPow210ZgkoMqmPrST2H4uOj8GhL4NirUQ82lqrddi1J
+         NBpa/CnoPoVKKSDXhpIlqExxjaSqmjFFEFLrizRC5okx0yhM9bbu9bUa9CXojfSmyzqA
+         8fcHXy16CHL23R0ZEkOlVNkIzoVdGDH3lsoD1ZXjHpJUM37c8MzrHTltjioeELP4/v4l
+         +jxA==
+X-Gm-Message-State: AOAM532y9skHjeR85J4f3AodGns0WtjpkHg4u5QjEeFzYDQK5E3x2wPW
+        3AhABYsPLmAeHvdZG9G3XbwFX9NaaAzTsri8aWpTgV28xd8=
+X-Google-Smtp-Source: ABdhPJyrc30AQqdRLKr/BXV3DijFsqtCdCNhx9Ovfyd7dJ2Yh9ZNzzWrH6eogusJKDwvCt0KPqPWkG4zkuPEvBLrZjM=
+X-Received: by 2002:a05:6402:1801:: with SMTP id g1mr13385760edy.107.1635765143813;
+ Mon, 01 Nov 2021 04:12:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211101082500.203657870@linuxfoundation.org>
-In-Reply-To: <20211101082500.203657870@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Mon, 1 Nov 2021 16:39:46 +0530
-Message-ID: <CA+G9fYs6FbiP=o=4ACyQ6Lp9YgUpOr9Xtn+ZhHdZm2Z+rhBJZw@mail.gmail.com>
-Subject: Re: [PATCH 5.4 00/51] 5.4.157-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
-        f.fainelli@gmail.com, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, linux@roeck-us.net
+References: <20211025094119.82967-1-hdegoede@redhat.com> <20211025094119.82967-6-hdegoede@redhat.com>
+ <CAHp75VdfwA_3QK2Fo1S34rRZWHCMNzzHug4AKsRfOrKu4CU_YA@mail.gmail.com>
+ <ff8c8418-8e73-f949-3734-c0e2e109f554@redhat.com> <CAHp75VfUq+DZk_u5Wsyr5nnibbe+WrYDyhvCU22=4Pog06DgHg@mail.gmail.com>
+ <4aec04d1-0964-e4c3-2c92-f9cef395494a@redhat.com>
+In-Reply-To: <4aec04d1-0964-e4c3-2c92-f9cef395494a@redhat.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 1 Nov 2021 13:11:33 +0200
+Message-ID: <CAHp75Vf1oZN=HD6apAeJ15tZMuAqJ2y6nKzZdj+8Tz9DHyK09g@mail.gmail.com>
+Subject: Re: [PATCH v4 05/11] clk: Introduce clk-tps68470 driver
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Kate Hsuan <hpa@redhat.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 1 Nov 2021 at 14:53, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Mon, Nov 1, 2021 at 1:00 PM Hans de Goede <hdegoede@redhat.com> wrote:
+> On 11/1/21 11:42, Andy Shevchenko wrote:
+> > On Mon, Nov 1, 2021 at 12:27 PM Hans de Goede <hdegoede@redhat.com> wrote:
+
+...
+
+> > While at it, recently I have learned about util_macros.h. Any use of it here?
+> > Or amending it there and re-using it here?
 >
-> This is the start of the stable review cycle for the 5.4.157 release.
-> There are 51 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 03 Nov 2021 08:24:20 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.157-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+> That only works on straight integer/long/float arrays, not
+> on arrays of structs where we are looking for a specific member of
+> the struct to be closest. And reworking that to also work on
+> structs is really (really really) out of scope for this patch-set.
 
+Consider above as just heads up: a new header (helpers) is in the town.
 
-Regression found on arm and arm64 builds
-Following build warnings / errors reported on stable-rc 5.4.
-
-> Haibo Chen <haibo.chen@nxp.com>
->     mmc: sdhci-esdhc-imx: clear the buffer_read_ready to reset standard tuning circuit
-
-
-build error :
---------------
-drivers/mmc/host/sdhci-esdhc-imx.c: In function 'esdhc_reset_tuning':
-drivers/mmc/host/sdhci-esdhc-imx.c:1041:10: error: implicit
-declaration of function 'readl_poll_timeout'; did you mean
-'key_set_timeout'? [-Werror=implicit-function-declaration]
-     ret = readl_poll_timeout(host->ioaddr + SDHCI_AUTO_CMD_STATUS,
-           ^~~~~~~~~~~~~~~~~~
-           key_set_timeoutcc1: some warnings being treated as errors
-
-
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
---
-Linaro LKFT
-https://lkft.linaro.org
+-- 
+With Best Regards,
+Andy Shevchenko
