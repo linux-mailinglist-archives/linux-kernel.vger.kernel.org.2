@@ -2,95 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0550441E44
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 17:34:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 195E2441D11
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 16:03:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232693AbhKAQgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 12:36:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232659AbhKAQgm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 12:36:42 -0400
-Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FFE9C061766
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 09:34:07 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:5050:fce2:2424:248f])
-        by michel.telenet-ops.be with bizsmtp
-        id D4a42600G0xGf5L064a4Jx; Mon, 01 Nov 2021 17:34:06 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mhZsp-009XTD-2q; Mon, 01 Nov 2021 17:10:03 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mhWuy-00DRAe-U7; Mon, 01 Nov 2021 14:00:04 +0100
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [GIT PULL] m68k updates for v5.16
-Date:   Mon,  1 Nov 2021 14:00:03 +0100
-Message-Id: <20211101130003.3202665-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+        id S232324AbhKAPFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 11:05:30 -0400
+Received: from mga11.intel.com ([192.55.52.93]:49981 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231304AbhKAPF2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 11:05:28 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10154"; a="228483707"
+X-IronPort-AV: E=Sophos;i="5.87,199,1631602800"; 
+   d="scan'208";a="228483707"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2021 08:02:37 -0700
+X-IronPort-AV: E=Sophos;i="5.87,199,1631602800"; 
+   d="scan'208";a="531208440"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2021 08:02:34 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1mhYpF-002heC-Ip;
+        Mon, 01 Nov 2021 17:02:17 +0200
+Date:   Mon, 1 Nov 2021 17:02:17 +0200
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     Chen Yu <yu.c.chen@intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-acpi@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Aubrey Li <aubrey.li@intel.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 2/4] drivers/acpi: Introduce Platform Firmware Runtime
+ Update device driver
+Message-ID: <YYABeZuRdVk8qNgu@smile.fi.intel.com>
+References: <cover.1635317102.git.yu.c.chen@intel.com>
+ <a318e4edc13e5a3ff95b901871b8929746535715.1635317102.git.yu.c.chen@intel.com>
+ <YXkn8aBvAVEXxgdp@smile.fi.intel.com>
+ <20211101093320.GA18982@chenyu5-mobl1>
+ <YX/NwEdw26wzKFvQ@smile.fi.intel.com>
+ <20211101131434.GA32880@chenyu5-mobl1>
+ <YX/ouT/hi5ccaxsz@kroah.com>
+ <YX/0yCUlGM35vEXS@smile.fi.intel.com>
+ <20211101145757.GA35522@chenyu5-mobl1>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211101145757.GA35522@chenyu5-mobl1>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-	Hi Linus,
+On Mon, Nov 01, 2021 at 10:57:57PM +0800, Chen Yu wrote:
+> On Mon, Nov 01, 2021 at 04:08:08PM +0200, Andy Shevchenko wrote:
+> > On Mon, Nov 01, 2021 at 02:16:41PM +0100, Greg Kroah-Hartman wrote:
 
-The following changes since commit 9fde0348640252c79d462c4d29a09a14e8741f5c:
+...
 
-  m68k: Remove set_fs() (2021-09-24 13:35:07 +0200)
+> > Actually I have no idea why we even have strings in  and not raw buffers.
+> > Moreover, I haven't got why even we have them in uAPI.
+> I see. These uuid could be put into the .c and there is no need for the
+> user to be aware of these values.
 
-are available in the Git repository at:
+Right! Because I haven't found any use of UUID in uAPI (even in raw form).
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v5.16-tag1
+-- 
+With Best Regards,
+Andy Shevchenko
 
-for you to fetch changes up to 8a3c0a74ae87473589cb881a3854948d40000b7a:
 
-  m68k: defconfig: Update defconfigs for v5.15-rc1 (2021-10-11 10:34:52 +0200)
-
-----------------------------------------------------------------
-m68k updates for v5.16
-
-  - A small comma vs. semicolon cleanup,
-  - Defconfig updates.
-
-----------------------------------------------------------------
-Geert Uytterhoeven (2):
-      m68k: muldi3: Use semicolon instead of comma
-      m68k: defconfig: Update defconfigs for v5.15-rc1
-
- arch/m68k/configs/amiga_defconfig    | 7 +++++--
- arch/m68k/configs/apollo_defconfig   | 7 +++++--
- arch/m68k/configs/atari_defconfig    | 7 +++++--
- arch/m68k/configs/bvme6000_defconfig | 7 +++++--
- arch/m68k/configs/hp300_defconfig    | 7 +++++--
- arch/m68k/configs/mac_defconfig      | 7 +++++--
- arch/m68k/configs/multi_defconfig    | 7 +++++--
- arch/m68k/configs/mvme147_defconfig  | 7 +++++--
- arch/m68k/configs/mvme16x_defconfig  | 7 +++++--
- arch/m68k/configs/q40_defconfig      | 7 +++++--
- arch/m68k/configs/sun3_defconfig     | 7 +++++--
- arch/m68k/configs/sun3x_defconfig    | 7 +++++--
- arch/m68k/lib/muldi3.c               | 2 +-
- 13 files changed, 61 insertions(+), 25 deletions(-)
-
-Thanks for pulling!
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
