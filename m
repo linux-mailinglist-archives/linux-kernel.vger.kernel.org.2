@@ -2,119 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0E6C442373
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 23:30:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7433944237D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 23:36:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232328AbhKAWdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 18:33:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53252 "EHLO
+        id S232335AbhKAWid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 18:38:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230407AbhKAWdQ (ORCPT
+        with ESMTP id S232260AbhKAWia (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 18:33:16 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A2F6C061714;
-        Mon,  1 Nov 2021 15:30:43 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id n8so2278168plf.4;
-        Mon, 01 Nov 2021 15:30:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VRrO5EGa6gdgx8iaVIWAkfDm2sXFhoGpRVfHTpWiTSY=;
-        b=opbZ5BZODCqrm5+tcV2j4pqGXufFb6qhNlpTaQb2o+yV8MU4lOH7oVnMK79GUPtt07
-         qc39vG+pCkP583D7Aq37brysFtNv+lV3B6wONBQ0RRq7U6Lag9u2n24MAuyZF2Z0+YX2
-         ArrAvWkX4Zy67OOwJAs/3HGjinTVorHDVf65fzGXypIPcqWUPtUztujtoi0EYNDqO462
-         YnTYaT+iiKRra3Hb9Jqpv49vrVwS+lpAU/P1DmrtUK/brTHwrhjIoJA7JNEKlKOd29wD
-         4bfhgPwrvcOz94QEvEL8X1aN7C1YJ9ylV7V5Hs2JGI/r2sXla4arOKbTFQJv76RZUvmZ
-         L+PA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VRrO5EGa6gdgx8iaVIWAkfDm2sXFhoGpRVfHTpWiTSY=;
-        b=68LJ1YQYPkUxWe9Om3mSuO3fJagSOw27YHnpcD5Q0wTJY/e+EWvTx0LgmZ0vIKUm3B
-         yfhpL+h1Z15ty3QySYUSkQ+LWBoRUPfubiUxlFKWBOFX6CVrUBNh3cFlGZGO7CWhOgSh
-         UMPTZzqqb0yCaATYgT1E2jd8kLVBZq0ASCegcfeS0yocwKGFUeN0wg2SJnWLQUNDBc4D
-         mRUxF6PWNmAvErlrK8ay9fCsRhPSRQqqsuIHytED17DF7dEn+ew50bTy3ZiHdp8Q0Fpj
-         jsOq0GVdK6F1r1LSKFdmtNoUVv9hYBqOT9mI9qEfLGLSKDBZsJjTpS8ITEWHX6rMCRZ0
-         MSWA==
-X-Gm-Message-State: AOAM533+CzrQehRT/YV4v8OCxN35bXLJSj3BPDqZ/l/ejtsoIQVbiNcf
-        tNqW4R3Gie0pDtwxgtxqHXBajG9KZ3HQ9IXoTXM=
-X-Google-Smtp-Source: ABdhPJz+L8IoYIJ71wwqO6IX+4Z7mJ9xU8r2f8nTJk1G+Vt6yIiqvlfC3Zh8karFboiZirB6GmBCaDFRmTN5pS6ZFf4=
-X-Received: by 2002:a17:902:f542:b0:141:fa0e:1590 with SMTP id
- h2-20020a170902f54200b00141fa0e1590mr4881822plf.20.1635805842627; Mon, 01 Nov
- 2021 15:30:42 -0700 (PDT)
+        Mon, 1 Nov 2021 18:38:30 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1497C061714
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 15:35:56 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1mhfuB-0001Jc-7E; Mon, 01 Nov 2021 23:35:51 +0100
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Subject: Re: [PATCH] arm64: dts: imx8m: add syscon node for display_blk_ctrl
+ module regs
+To:     Tommaso Merciai <tomm.merciai@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        Peng Fan <peng.fan@nxp.com>, Alice Guo <alice.guo@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Adam Ford <aford173@gmail.com>,
+        Lucas Stach <l.stach@pengutronix.de>
+References: <20211101222857.6940-1-tomm.merciai@gmail.com>
+Message-ID: <c04d4af6-8c7b-da23-d562-78324948ac35@pengutronix.de>
+Date:   Mon, 1 Nov 2021 23:35:49 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20211101124310.3947887-1-yangyingliang@huawei.com>
- <CAADnVQJS_2St=iaqHU+zasy_0A0bidJN=STnkHrNcSNL5vO1Dg@mail.gmail.com> <90518c5d-36ea-ec97-9f14-0687fdd6074f@fb.com>
-In-Reply-To: <90518c5d-36ea-ec97-9f14-0687fdd6074f@fb.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 1 Nov 2021 15:30:31 -0700
-Message-ID: <CAADnVQ+aeAnBEN=dp92q0RBXT+Um1ha4_F=sQ7fr08Sa3qauLQ@mail.gmail.com>
-Subject: Re: [PATCH -next v2] bpf/benchs: Fix return value check of bpf_program__attach()
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Yang Yingliang <yangyingliang@huawei.com>,
-        Joanne Koong <joannekoong@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211101222857.6940-1-tomm.merciai@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 1, 2021 at 3:21 PM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 11/1/21 3:00 PM, Alexei Starovoitov wrote:
-> > On Mon, Nov 1, 2021 at 5:35 AM Yang Yingliang <yangyingliang@huawei.com> wrote:
-> >>
-> >> If bpf_program__attach() fails, it never returns NULL,
-> >> we should use libbpf_get_error() to check the return value.
-> >>
-> >> Reported-by: Hulk Robot <hulkci@huawei.com>
-> >> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-> >> Acked-by: Yonghong Song <yhs@fb.com>
-> >> ---
-> >> v2:
-> >>    don't use 'int err'
-> >> ---
-> >>   .../selftests/bpf/benchs/bench_bloom_filter_map.c      | 10 +++++-----
-> >>   1 file changed, 5 insertions(+), 5 deletions(-)
-> >>
-> >> diff --git a/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c b/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
-> >> index 6eeeed2913e6..4afaa4adb327 100644
-> >> --- a/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
-> >> +++ b/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
-> >> @@ -304,7 +304,7 @@ static void bloom_lookup_setup(void)
-> >>          populate_maps();
-> >>
-> >>          link = bpf_program__attach(ctx.skel->progs.bloom_lookup);
-> >> -       if (!link) {
-> >> +       if (libbpf_get_error(link)) {
-> >
-> > Please use ASSERT_OK_PTR() instead.
-> > See how other tests are doing it.
->
-> I actually looked at this. ASSERT_OK_PTR() is defined in test_progs.h
-> and test_progs.h is ONLY included in files which eventually linked to
-> test_progs. That is why I didn't recommend to use ASSERT_OK_PTR().
->
-> Maybe it is okay to include test_progs.h in benchs/*.c. Or we may
-> want to refactor to a separate header file to contain these macros
-> which can be used for test_progs.h and other applications.
+Hello Tommaso,
 
-hmm.
-Looks like bench_ringbufs.c has the same issue doing:
-if (!link)
-and bench_rename.c too.
+On 01.11.21 23:28, Tommaso Merciai wrote:
+> Add system controller node for registers of module Display Block Control
+> (DISPLAY_BLK_CTRL, base address: 0x32e28000).
+> The DISPLAY_BLK_CTRL module contains general purpose registers (GPRs),
+> which control varied features of the associated peripherals.
+> Reference: IMX8MMRM Rev. 3, 11/2020, p 3897
+> ---
+>  arch/arm64/boot/dts/freescale/imx8mm.dtsi | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+> index 2f632e8ca388..3e496b457e1a 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+> @@ -961,6 +961,11 @@ aips4: bus@32c00000 {
+>  			#size-cells = <1>;
+>  			ranges = <0x32c00000 0x32c00000 0x400000>;
+>  
+> +			dispmix_gpr: display-gpr@32e28000 {
+> +				compatible = "fsl, imx8mm-iomuxc-gpr", "syscon";
 
-Probably would be good to fix in all bench-s.
+Please read vendor patches before submitting them. The space
+is out-of-place in the compatible and the compatible is wrong:
+This doesn't look like a i.MX8MM pin controller.
 
-If test_progs.h cannot be included directly
-copy-pasting ASSERT_OK_PTR in a reduced form into bench.h
-is probably cleaner than open coding libbpf_get_error.
+Cheers,
+Ahmad
+
+> +				reg = <0x32e28000 0x100>;
+> +			};
+> +
+>  			usbotg1: usb@32e40000 {
+>  				compatible = "fsl,imx8mm-usb", "fsl,imx7d-usb";
+>  				reg = <0x32e40000 0x200>;
+> 
+
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
