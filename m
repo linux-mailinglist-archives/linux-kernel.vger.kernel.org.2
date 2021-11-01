@@ -2,74 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32E80442141
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 21:02:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D572C442145
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 21:02:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230384AbhKAUEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 16:04:33 -0400
-Received: from mail-oi1-f178.google.com ([209.85.167.178]:34668 "EHLO
-        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229560AbhKAUEb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 16:04:31 -0400
-Received: by mail-oi1-f178.google.com with SMTP id w193so26633858oie.1;
-        Mon, 01 Nov 2021 13:01:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vKbU3K+WrEp4o3QSdl7uJ5u0m9E6kBLDNmgHPy+kDDM=;
-        b=u7ot7sA50uXMPix8B+B1TXNVaK0O9tjeMgI2RlSJSYpIny15K7NKzNv4hq3GqqA3nd
-         EzpCcMMSz7PyGoci7XvAW2pzZaGas+Atu1DwCOn7rMPENEAHkYR8UDCfSkZw2kef/IJC
-         p4SKd1GxeWDND2htcLzRN0+XG2tbnKzBNyNmTlVnJ1GIm4I2krwcbmeY3wub7CtEhxaN
-         qKxK+FEwWB3PY5R6/xMDb5R8T5AX4byG91LH6imUHO3dnMkfygRgkKOq5SnjxfFFlVgt
-         0tAnz10Y5YwJxDZpscMSDOeNp9ArwYaBvLG6c+nabkBk8CXfTsDKuKDacuw2TC+vHugZ
-         VTcg==
-X-Gm-Message-State: AOAM53317AZDxMIypndxoWJBBvrggEUhc4hPZwhb0TbfAUfldAiKbXVP
-        avXb+PIkdcOfJnxvzIA9NA==
-X-Google-Smtp-Source: ABdhPJzu9huACWQR3JSRs6TW0bAUKDyIXz9rtmEFdctQS4TyLEu9YE4GVHGZhVUykEvaSkqL5HdO7w==
-X-Received: by 2002:a05:6808:2201:: with SMTP id bd1mr1004520oib.73.1635796917384;
-        Mon, 01 Nov 2021 13:01:57 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id g15sm4551923oiy.8.2021.11.01.13.01.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 13:01:56 -0700 (PDT)
-Received: (nullmailer pid 943361 invoked by uid 1000);
-        Mon, 01 Nov 2021 20:01:55 -0000
-Date:   Mon, 1 Nov 2021 15:01:55 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     tommy-huang <tommy_huang@aspeedtech.com>
-Cc:     dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, daniel@ffwll.ch,
-        BMC-SW@aspeedtech.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, robh+dt@kernel.org, joel@jms.id.au,
-        andrew@aj.id.au, airlied@linux.ie
-Subject: Re: [PATCH 4/4] dt-bindings: gpu: Add ASPEED GFX bindings document
-Message-ID: <YYBHsy3Ed3Ss9281@robh.at.kernel.org>
-References: <20211101110107.29010-1-tommy_huang@aspeedtech.com>
- <20211101110107.29010-5-tommy_huang@aspeedtech.com>
+        id S230476AbhKAUFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 16:05:06 -0400
+Received: from mail-sn1anam02on2040.outbound.protection.outlook.com ([40.107.96.40]:3981
+        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229560AbhKAUFA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 16:05:00 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Dyul4BMt+++LVHseSfMO5iaAKrYSF4QbKeinVw10xtuqYGU53ocXkeaUIRhkn7xjZzt06W2kCWzd7tTe/4bZmy5/iE+Wi/fNglN4bY3Rym0pRnkiWKkGMuMOoyLawXQEhcyNBSJK8I1iVsTz5fnzNGNb+/lFJa2z7BKCNsdE58GH6ktTS6bGDqL+PONe9quVvgW390Z8sueQpyyox0OVpcLBVOBAI1oMxccQ2Cydr+84zzP7yNRpKCL/oo3X7ipgpdiciiXiWxfc9pRsE9HXBcR8URkGcHXi+kbT+yFlk312TR98XSycN6/x0wZVsYxPWxfBzWJcaak6papGPlLE9Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=RlXDQftmE13hNCqRZSgFu5ycXh7eWH6vrM0T4I9kYFU=;
+ b=f1apXeeLd/iGy4A2Uey4KLWLAc/tnlcI/fKQoir9CHZzFnPzelaWg4I1LDoxdILov5ULQ/CG9jZBTngwUwxb7TdUDvHhHA2Hq03KvkaI/27OeIQ3bSupwl+zgR8coibKIMt4KRwp3ro67tUBFWEYchh3cIcEBZ5YQfc/oBxQsNLW5y/rNI1/eHckoKpIvKGxFnPE5MinFPEFWHLXoOIBs5+Cdw7/VWTRPaDtaWwN/b/A/CwmWOo030hky80OFlXrYtvNwbdwQ+Euqj+W2VzJMbUSQrMHpV0aSTCWnrAg4AwG7b2SOWg7R6sBMJypjM9J+WtE9QDbV81eybD5FW2VDg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RlXDQftmE13hNCqRZSgFu5ycXh7eWH6vrM0T4I9kYFU=;
+ b=Q8B3oewsrp5mDNiQHS8ygcvPvW9ap+E00CDPuJfe+apviv8J9nCeR20Q0XIOz7OP3ayDvaul1GzMTz+YhTRf3je19fm3C9VKS0Ld3pXKmTOStozuqODkYRKAbR/avwgCDsHYcG5FqQ2wNMjY7LuXy4JYf0opF2ZTvoXDrdVoFNw=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from DM4PR12MB5229.namprd12.prod.outlook.com (2603:10b6:5:398::12)
+ by DM4PR12MB5344.namprd12.prod.outlook.com (2603:10b6:5:39f::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.18; Mon, 1 Nov
+ 2021 20:02:25 +0000
+Received: from DM4PR12MB5229.namprd12.prod.outlook.com
+ ([fe80::a87d:568d:994f:c5f9]) by DM4PR12MB5229.namprd12.prod.outlook.com
+ ([fe80::a87d:568d:994f:c5f9%8]) with mapi id 15.20.4649.019; Mon, 1 Nov 2021
+ 20:02:25 +0000
+Subject: Re: [PATCH V2 4/4] crypto: ccp - Add SEV_INIT_EX support
+To:     Peter Gonda <pgonda@google.com>
+Cc:     David Rientjes <rientjes@google.com>,
+        Marc Orr <marcorr@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        John Allen <john.allen@amd.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211101172127.3060453-1-pgonda@google.com>
+ <20211101172127.3060453-5-pgonda@google.com>
+ <952fa937-d139-bd90-825c-f7dfca8d8cb9@amd.com>
+ <CAMkAt6qdNWP-Ka1N=0d16Q1TrbHPXPEkdLoxC8ndsyid-dqA6Q@mail.gmail.com>
+From:   Tom Lendacky <thomas.lendacky@amd.com>
+Message-ID: <d6fc38fa-1caa-289a-ae92-102a96638560@amd.com>
+Date:   Mon, 1 Nov 2021 15:02:22 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+In-Reply-To: <CAMkAt6qdNWP-Ka1N=0d16Q1TrbHPXPEkdLoxC8ndsyid-dqA6Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MN2PR13CA0030.namprd13.prod.outlook.com
+ (2603:10b6:208:160::43) To DM4PR12MB5229.namprd12.prod.outlook.com
+ (2603:10b6:5:398::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211101110107.29010-5-tommy_huang@aspeedtech.com>
+Received: from [10.236.30.241] (165.204.77.1) by MN2PR13CA0030.namprd13.prod.outlook.com (2603:10b6:208:160::43) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.6 via Frontend Transport; Mon, 1 Nov 2021 20:02:24 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 59cf16ec-8aaa-41af-8033-08d99d728603
+X-MS-TrafficTypeDiagnostic: DM4PR12MB5344:
+X-Microsoft-Antispam-PRVS: <DM4PR12MB53443434E0BDA7089B987B58EC8A9@DM4PR12MB5344.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hdrSOV6GTbDLv5QFU1Z6z0q2KsCtVkicHPDNdaICI2mlgxLdUIi0YDKOmqBEY8jcaqO/fwRuhdJhUTa3lzEBG4U9YriO47ExPQnFKQb6c211l5c1llbhy0vdiLjR3nL6+l2LerJ0eJWV4cVAxAyKPHPhy2/uJoYu1X67JJfh/Q8Ew7p+pULbX4ITQBJEm2DHOD3XUWVwSFMSuH39alFrMY5Q6Ov9L5a65zwHdIJmXJzEVlG0hDLdf1MOvkHTOvC07n6grOEMaq8OJL/tGF8/BV6JCfDnJ8a5Q+r3yc3RUHEmr1/oaV04/VsGKig19FwvyuJq49UDV107FLu3F/i4NCf6BJSKTVBj0EiOv48L2vJiXA9UJ1RaoTQHjvv+yZeBkkp7g80fJKVhSMk4YUxYYbszBCUHC23gND7k0Zd5Q2H+U2JPDtzJC6Td3AV8XiF4j5PuTyGUbtllcFTwmpnYuS6jlcy0yq0BkMGDep5rApeMszvdPNqaE5ZCGlaX+GclVh7JJJZ6vihynbU3K2192ZllEKWI7gcxaCH6BKXP01wDbRHBUptDVKLak3IIZeuAMHxpCllylutCB1N5ORAr9hsbgLijxWAqeiH2oYfLK4LSt1y4HKZc72Ksx2hsPDDhFNIZUJUebv+Ra/7Jtr6V2d64jg/QGKzcZ5hjqpAqT3FOhutijvL12AyIbTt87kH1pPJP3k+x+IeHZTweQiv/bmhFa1xuAImG2v3k6T6R2k/n++P86349s6z1Sum9ZkZ7
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5229.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(5660300002)(54906003)(4744005)(6916009)(186003)(66476007)(66556008)(26005)(508600001)(8676002)(38100700002)(2616005)(6486002)(956004)(83380400001)(4326008)(53546011)(2906002)(86362001)(31696002)(36756003)(66946007)(31686004)(316002)(16576012)(8936002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UExvUHpJdnczTFBhcEsyOHpDOFdMY1Y5QXdRMTU0NGRRbVZtNHRhcmVvTmZ4?=
+ =?utf-8?B?NUVUbmtRaVdjemlGUTFRcWhaWGN2dzEvNXVOWDhJQVNhSExCcUNBbGsvSzhw?=
+ =?utf-8?B?Um82U0VFM2lMb081K0RmcHJGalVoUTRvNUQwb1hCbDhmcWV6VklhVWhET1Np?=
+ =?utf-8?B?YkZOWVZQQi94TXZxd0NwZ2lnM2VzaHUwT1ZiZVFPL25TSkRpSXJjNEZDUTdD?=
+ =?utf-8?B?RFA2SzBiN1pMY1ZIRC9GcFI4cXpvSzBaL210R0x3bmorQ0docmd2WmxKNFZh?=
+ =?utf-8?B?ZDBRS3BiaFYrTVd3WmljK01JcjNaOGVjQWY2azg2Zk1yU3BabVVyclVUN1Ja?=
+ =?utf-8?B?aUVjR0ZydE4zblhsN0ZCYTZ4ZFpqdElGeHJIZzJrTHJNTGFTdXJVbk9wTU10?=
+ =?utf-8?B?ZmRtTksxbTk2RjBjUVRoNmRVNkoyUnpHcm5xVWwrZDBXVkgxam9JOUMrRG0y?=
+ =?utf-8?B?RnVFcE93K2thbHI0Nm9wMkdaZ253UDJDSzdHaE9hbWh1VkpjT2ZWVDYxNjd3?=
+ =?utf-8?B?RFphd3UxOGVZSjRHSzNTUHI1WUhKMDZvRFZ3VHpKZTBycWg4cDRBejJRb3VP?=
+ =?utf-8?B?OG5KT1BINUtYTzdrOVRpdDB5WXR0cFVjR1ZYM3U5R3IzZ3dnSHhoVkdoR01o?=
+ =?utf-8?B?ViszaWd2VkFLRmJSMlp3OTFxajhaWWxpL25PdTIwaDJyZTVIZFhaYUZoa29N?=
+ =?utf-8?B?b2JSRlZ5cTZ1aHM5dHJCYjdLblhEUWV1RVBIbllMbGtSVi9sYVhjUE9qai9z?=
+ =?utf-8?B?a010dzBEa25GVHp5N04zOUlrc0ZwTmFTSzNWbDN1UEtYTitmUWx4aTF6ckR0?=
+ =?utf-8?B?V1JNRFlibitSQVI3MkFqNHhUVTh1bXZYUDkwNGZrUUpMM1NKSW9BaHNFWEJJ?=
+ =?utf-8?B?UkFGTzBFSlRSbmlrTlJTUXZFTm9pVmdDK1FnQzBBc2N1OUdQS25EQkI2VCtn?=
+ =?utf-8?B?bERqN2JRMmF5eVNTWkdvRnl4c1JmZjhBWDJPQTlnbk9EUWpiK2lZTUlDUjZR?=
+ =?utf-8?B?aUVYNHhqWllXQlBkZHlMdE9OeXg0dCszdFNQR082anFwQXM4ZVg4MWlrdmwz?=
+ =?utf-8?B?bllscGtXcmFJTS9aRlROckF0ZlI3ZGdxbzRTQzNRUkVvbGhCWWZqZjdDNGFZ?=
+ =?utf-8?B?NWVzYk90WHZwdDFMWFVEZngrYXZEZEFWaElRR3JEbkV5dEZLNmVYbHJkbE5D?=
+ =?utf-8?B?VTFmSU44NnlTNm1LdnNHU0l5UGxPRm0wUFpxcHlhWHVFbmh4VVR5VmJoL3dC?=
+ =?utf-8?B?NTVER1FEbVk5RTFvR1hCdVVoSmhCd3FDMjFZWUk4R05oTHh0eS84NkpLYXN1?=
+ =?utf-8?B?N0VwTzREQXllR2J5NU1sK04zcUwxK1I5ZGN0ZzFmSU9aVnpXS3A5YzJmbUJP?=
+ =?utf-8?B?SkpzTk5xSWlOeXBTdVJsalhjOVZ1YjVtbkVMUjU1Wm11a2dqSnV2UEg2QVlv?=
+ =?utf-8?B?S3NOdmF5TE0wTEppTlg5MEs4QkJ1TE9rb01xRFd4N0kxY2xnZndIS1JwZmlK?=
+ =?utf-8?B?TW8zeDFPOTBhL1oyVk1zZzA0cmdwemttZ25tYmk5WENvMUJZdzRDaFpieTYw?=
+ =?utf-8?B?V25rSEcza3ViZHQ4bk1DcDNwYmxiYlZSYVlibHZmc2lRUzFZRk5YeXJoMklm?=
+ =?utf-8?B?bk9URFREc25FSWxqeDFlTVhnekpCZDZMSTBlZ3BUM0xlK3JsSkFvNnV2azg3?=
+ =?utf-8?B?aCt1QnZIMGdwaG04VFBwRmU3MkVZKzI3bHVpVkMwWCtRbTB1VXNVWmxpalRN?=
+ =?utf-8?B?VWlUV3NzTCtHditrdVBONThIbHB1ZWc2cmJ4RHF0RjNqS0lkd0R3QlQ0Mzg3?=
+ =?utf-8?B?VXVkbHpUYi9uempCelF2UnVSN1pWdFFrYmdzdFlPajZHbUVFZmdsTS90MEFE?=
+ =?utf-8?B?S0M3QmhMVExCK0ZPei90MXFyZGp1RGtlU3Z5SHBsVFBJSmNUNThVSUFpcWpV?=
+ =?utf-8?B?MmZNbWFJZFgxWURXbFpzUUxOanFQS0IzcjQ2RDNmeU1tRUhXenNQQWRXZXFt?=
+ =?utf-8?B?NlNocysycGxlVW84dmhidFFSTmtyTjQ0U3ZwVXozSjNqUWNOc0pRWVpzR0tj?=
+ =?utf-8?B?OFJVUkhCQzVCcEhMTTY2VkwxbTk4b1kxaUs2cHhHUWhnUmtZU2ZEejJCajBt?=
+ =?utf-8?B?UFFqd2tUTHA1SDJZaFFZR0NOSWZtNWVIZHpDUmJsM2J6YnU2S1RFNFVpS3pE?=
+ =?utf-8?Q?JN8EoFbTjs7aC/6EM3N1Qd0=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 59cf16ec-8aaa-41af-8033-08d99d728603
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5229.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Nov 2021 20:02:25.2104
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: m49tgOqkts7hfIy2Y5Cyvi/Fm7EfrETeGTKZJWf/sx946dy2cIn1ZG/Cupbns1kT7t8pYq52knHKbBgNMKtTcw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5344
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 01 Nov 2021 19:01:07 +0800, tommy-huang wrote:
-> Add ast2600-gfx description for gfx driver.
+On 11/1/21 2:18 PM, Peter Gonda wrote:
+> On Mon, Nov 1, 2021 at 12:41 PM Tom Lendacky <thomas.lendacky@amd.com> wrote:
+>> On 11/1/21 12:21 PM, Peter Gonda wrote:
+
+...
+
+>>> +
+>>> +     fp = filp_open(init_ex_path, O_RDONLY, 0);
+>>> +     if (IS_ERR(fp)) {
+>>> +             const int ret = PTR_ERR(fp);
+>>
+>> I don't think you need the "const" here.
 > 
-> Signed-off-by: tommy-huang <tommy_huang@aspeedtech.com>
-> ---
->  Documentation/devicetree/bindings/gpu/aspeed-gfx.txt | 1 +
->  1 file changed, 1 insertion(+)
+> Sounds good, removed. I normally default to consting a variable if I
+> don't expect/want it to change. What guidance should I be following
+> here?
+
+Heh, I don't know... I guess since its in such a short scope it just read 
+easier to me.  But, you're correct, const is appropriate here, so I guess 
+feel free to leave it in if you want.
+
 > 
+>>
 
+...
 
-Please add Acked-by/Reviewed-by tags when posting new versions. However,
-there's no need to repost patches *only* to add the tags. The upstream
-maintainer will do that for acks received on the version they apply.
+>> "SEV: write successful to NV file\n"
+> 
+> Updated all messages. Should have noted the "SEV: .." format.
 
-If a tag was not added on purpose, please state why and what changed.
+It's not like we were very consistent originally, but it would be nice to 
+have the new messages start to maintain a consistency.
 
+Thanks,
+Tom
+
+> 
