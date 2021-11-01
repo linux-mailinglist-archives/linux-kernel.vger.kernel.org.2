@@ -2,132 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CC9E442267
+	by mail.lfdr.de (Postfix) with ESMTP id 9DD40442268
 	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 22:10:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231367AbhKAVNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 17:13:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42480 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229501AbhKAVNI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 17:13:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3942360E78;
-        Mon,  1 Nov 2021 21:10:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635801034;
-        bh=P1NF/lFoNB/+jYgMl0xZfzYLEkGo904XzG49NcwbE1U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AR7HVZSbGbIz/+8iQw0hdxmN2wiYCpEADAa5l7GbWBhSS8B0SIMkbxkGe+VBLeoXw
-         GUKwNIRlVhaYo+03ZD976mgb8d6cO+8ErNsxyn59xzQm18H7J7t8hbNzN98KKQwJT8
-         PPXvAv7IuA8mI+8HH4fnX2ds6BDScmbdLlfPacm9mrCcsAAyJS10dIyUqrCNrjisGx
-         tBRPl77/gFFSWYwkGchDhdKoD1TF07yW3bG3gWC0o03BsCt47zfeGty7KH0nkvrCvJ
-         Uxi+rfHDPhFxaMTsU+aOCbRSQvMgODjQKPFMH8hWYyMLnxDDbTtboEa455hSDrgW2R
-         8Vw/xGfxwNkJw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 50DA8410A1; Mon,  1 Nov 2021 18:10:32 -0300 (-03)
-Date:   Mon, 1 Nov 2021 18:10:32 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     John Garry <john.garry@huawei.com>
-Cc:     peterz@infradead.org, mingo@redhat.com,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        namhyung@kernel.org, masahiroy@kernel.org, labbott@redhat.com,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        irogers@google.com
-Subject: Re: [PATCH] perf tools: Enable warnings through HOSTCFLAGS
-Message-ID: <YYBXyGKfM2CAjghy@kernel.org>
-References: <1635525041-151876-1-git-send-email-john.garry@huawei.com>
+        id S230281AbhKAVNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 17:13:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229990AbhKAVNS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 17:13:18 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31668C061714
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 14:10:43 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id f8so47112264edy.4
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 14:10:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=EilV/qF1ZDpWiaC5HFpBqy1qd+baH+PeYNkthzJZTu4=;
+        b=VbUfjQje3yjWAbbGVU1ozfWAN5wPZsq7T/RaH1gfOY7uNp3wrhTjKu9SMynh0DAZJb
+         gL7tnJjnLrrljGtwLBhTyHl39uljfOGhHcAck2QqwJVUQJjashGhGA7t+FQxtuwLdFjn
+         89VU2rwvraqLC7X5WBdAun3u5OGQwOW/y4FOe/mypUMRwon2v9u4rk11Wq7p+FMYJOCk
+         88EcGJWEgnkkmR1HWTFwOIVh82/+fqZvxw6DJCeXEkQhXrtVEyd3uSxCJrH2+aAnhV/j
+         dNqOmKvVYs2AQLowZDXAFAE0GQFF4J4myDxuz1D78PN1u1YA6P5tJbCdz6uq4+1XCOZq
+         IWIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=EilV/qF1ZDpWiaC5HFpBqy1qd+baH+PeYNkthzJZTu4=;
+        b=VvFBjaKcXza2U1PMCg7asp3LwpZm1Ms4hfam/p8V7F8Ek6yQ/2wQOLSlROgBJv944o
+         gd8Z2/sfyy86Y5iCUFJIPbWjGPF16VzLwVGLjQkdFjON6APBPRa7d2btDhPag63GwOSr
+         z6rahwHnukwb/i10FDtO9VMivsU6uNRiWixwAc22R51Whfkr/XW5KSf7jOajl2J8fazK
+         9N4NszEJkptiv3rV9zqDS9NsHMQT9RyuSYGDpeZptCbNeKd0jucyu2stA3C3SESaf2Zb
+         JuafIdXbLVw2m7jQrr4JLjFrMejQUtdpuI2DzE8QhznLzK+SYfbaskAnJP5JGAZmQswl
+         vPVA==
+X-Gm-Message-State: AOAM532dP0QtyMpLZ7MkLIVmPgLq9/hTZyTDdAksOX1vgZ0jXb5IG/vu
+        YZF90lPLDA7kVOojuIRFJ0AHfXxkBiSNlVHSmSY=
+X-Google-Smtp-Source: ABdhPJyRK0ylOLhW2nBTVh8adtG70w39qvnHkr82/wkzVHzroRJmwpThnDzkR8m3ZmuON6URsB5wyblLbZ3Jl2Rwf5w=
+X-Received: by 2002:a05:6402:35c5:: with SMTP id z5mr45110846edc.388.1635801041806;
+ Mon, 01 Nov 2021 14:10:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1635525041-151876-1-git-send-email-john.garry@huawei.com>
-X-Url:  http://acmel.wordpress.com
+Received: by 2002:a50:6c8b:0:0:0:0:0 with HTTP; Mon, 1 Nov 2021 14:10:41 -0700 (PDT)
+Reply-To: mmamie_shimirah@yahoo.com
+From:   "Miss.Mmamie Shimirah" <efffbi12@gmail.com>
+Date:   Mon, 1 Nov 2021 14:10:41 -0700
+Message-ID: <CANLFAeTb3ZpQLNqei1CiSdTvG8-C_Ey+1iR7FTrR=9hZ2R0jcw@mail.gmail.com>
+Subject: Regarding Of My Late Father's Fund $10,200,000,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sat, Oct 30, 2021 at 12:30:41AM +0800, John Garry escreveu:
-> The tools build system uses KBUILD_HOSTCFLAGS symbol for obvious purposes.
-> 
-> However this is not set for anything under tools/
-> 
-> As such, host tools apps built have no compiler warnings enabled.
-> 
-> Declare HOSTCFLAGS for perf tools build, and also use that symbol in
-> declaration of host_c_flags. HOSTCFLAGS comes from EXTRA_WARNINGS, which
-> is independent of target platform/arch warning flags.
-> 
-> Suggested-by: Jiri Olsa <jolsa@redhat.com>
-> Signed-off-by: John Garry <john.garry@huawei.com>
+Regarding Of My Late Father's Fund $10,200,000
 
-Jiri, does this implements your suggestion?
+dear,
 
-- Arnaldo
+I got your contact through the internet due to serious searching for a
+reliable personality.
+I am Mmamie Shimirah from Free Town Capital of Sierra Leone. Time of
+opposed to the government of President Ahmad Tejan Kebbah the
+ex-leader.
 
-> --
-> Using HOSTCFLAGS, as opposed to KBUILD_HOSTCFLAGS, is going opposite
-> direction to commit 96f14fe738b6 ("kbuild: Rename HOSTCFLAGS to
-> KBUILD_HOSTCFLAGS"), so would like further opinion from Laura and
-> Masahiro.
-> 
-> diff --git a/tools/build/Build.include b/tools/build/Build.include
-> index 2cf3b1bde86e..c2a95ab47379 100644
-> --- a/tools/build/Build.include
-> +++ b/tools/build/Build.include
-> @@ -99,7 +99,7 @@ cxx_flags = -Wp,-MD,$(depfile) -Wp,-MT,$@ $(CXXFLAGS) -D"BUILD_STR(s)=\#s" $(CXX
->  ###
->  ## HOSTCC C flags
->  
-> -host_c_flags = -Wp,-MD,$(depfile) -Wp,-MT,$@ $(KBUILD_HOSTCFLAGS) -D"BUILD_STR(s)=\#s" $(HOSTCFLAGS_$(basetarget).o) $(HOSTCFLAGS_$(obj))
-> +host_c_flags = -Wp,-MD,$(depfile) -Wp,-MT,$@ $(HOSTCFLAGS) -D"BUILD_STR(s)=\#s" $(HOSTCFLAGS_$(basetarget).o) $(HOSTCFLAGS_$(obj))
->  
->  # output directory for tests below
->  TMPOUT = .tmp_$$$$
-> diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-> index 4a9baed28f2e..9b95ba09657f 100644
-> --- a/tools/perf/Makefile.config
-> +++ b/tools/perf/Makefile.config
-> @@ -17,6 +17,7 @@ detected     = $(shell echo "$(1)=y"       >> $(OUTPUT).config-detected)
->  detected_var = $(shell echo "$(1)=$($(1))" >> $(OUTPUT).config-detected)
->  
->  CFLAGS := $(EXTRA_CFLAGS) $(filter-out -Wnested-externs,$(EXTRA_WARNINGS))
-> +HOSTCFLAGS := $(filter-out -Wnested-externs,$(EXTRA_WARNINGS))
->  
->  include $(srctree)/tools/scripts/Makefile.arch
->  
-> @@ -211,6 +212,7 @@ endif
->  ifneq ($(WERROR),0)
->    CORE_CFLAGS += -Werror
->    CXXFLAGS += -Werror
-> +  HOSTCFLAGS += -Werror
->  endif
->  
->  ifndef DEBUG
-> @@ -292,6 +294,9 @@ CXXFLAGS += -ggdb3
->  CXXFLAGS += -funwind-tables
->  CXXFLAGS += -Wno-strict-aliasing
->  
-> +HOSTCFLAGS += -Wall
-> +HOSTCFLAGS += -Wextra
-> +
->  # Enforce a non-executable stack, as we may regress (again) in the future by
->  # adding assembler files missing the .GNU-stack linker note.
->  LDFLAGS += -Wl,-z,noexecstack
-> diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-> index a3966f290297..8ca656aa8b06 100644
-> --- a/tools/perf/Makefile.perf
-> +++ b/tools/perf/Makefile.perf
-> @@ -226,7 +226,7 @@ else
->  endif
->  
->  export srctree OUTPUT RM CC CXX LD AR CFLAGS CXXFLAGS V BISON FLEX AWK
-> -export HOSTCC HOSTLD HOSTAR
-> +export HOSTCC HOSTLD HOSTAR HOSTCFLAGS
->  
->  include $(srctree)/tools/build/Makefile.include
->  
-> -- 
-> 2.17.1
+Since 21st November, 2005 But I am current residing in Brisban
+Australia due to war of my country, my mother killed on 04/01/2002 for
+Sierra Leone civilian war my father decided to change another
+residence country with me because I am only child for my family bad
+news that my father passed away on 25/11/2018. During the war, My
+father made a lot of money through the illegal sales of Diamonds. To
+the tune of $10,200,000. This money is currently and secretly kept in
+ECOWAS security company here in Australia , but
+because of the political turmoil which still exists here in Africa, I
+can not invest the money by myself, hence am soliciting your help to
+help me take these funds into your custody and also advise me on how
+to invest it.
 
--- 
+And I want to add here that if agreed 35% of the total worth of the
+fund will be yours minus your total expenses incurred during the
+clearing of the fund in
+Porto Novo Benin that 35% is a $3,570,000 I would like to invest on
+heavy duty agricultural equipment and earth moving machines to enable
+me go into a full scale mechanized farming.
 
-- Arnaldo
+While l wait to hear from you soon, my warm regards to you and your family
