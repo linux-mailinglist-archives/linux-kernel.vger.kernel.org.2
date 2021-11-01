@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8900D4417AE
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:37:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD6164416AE
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:26:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233902AbhKAJiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:38:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43606 "EHLO mail.kernel.org"
+        id S232890AbhKAJ2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:28:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58578 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232274AbhKAJfs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:35:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 096A2610F7;
-        Mon,  1 Nov 2021 09:26:04 +0000 (UTC)
+        id S232502AbhKAJY5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:24:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5DBBE611C7;
+        Mon,  1 Nov 2021 09:21:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758765;
-        bh=kCanV9jbpB0i0XOkDrbxtLn7ngkluchTu+lemPaNNBU=;
+        s=korg; t=1635758503;
+        bh=ZK86WI+eOdidgSAEYew7NOQz3EXb8KIE1nGckZK2JQk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2vwyGk+Lmh9vZ6PT/4JCwvgJQWElqu4q7BkMm/4ZhWEKCU8bvlXEZXNwE8viMFHFw
-         2xknDdlOvqyg9DmObBCG5zTEld4AIx9ZCED/6VGo/UY2n6t+xHc0siOMvKOPQF1E91
-         Fpq6nnofVWSIXTuwv6eP4AXH8HRPBSBkeyvqUIvM=
+        b=otQ9HwUfElgN3eizoTGrpyq3L/2NM6JSKFz15aLUqzImFXChjGFmbSx6vYyH3BRrq
+         4XjqFFgcvEee4XowewtnGRqiBj1PawES8bp7njsJkEgqh3kV0jp8e7ZwMp8FyOi3nb
+         nN+IX1AtQVjTQ/ek3EQiC7KUEULYNqqGkYPHr52Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
-        Xin Long <lucien.xin@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
+        stable@vger.kernel.org, Andy Gospodarek <gospo@broadcom.com>,
+        Michael Chan <michael.chan@broadcom.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 50/77] net-sysfs: initialize uid and gid before calling net_ns_get_ownership
+Subject: [PATCH 4.19 26/35] net: Prevent infinite while loop in skb_tx_hash()
 Date:   Mon,  1 Nov 2021 10:17:38 +0100
-Message-Id: <20211101082522.257342068@linuxfoundation.org>
+Message-Id: <20211101082457.871170890@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082511.254155853@linuxfoundation.org>
-References: <20211101082511.254155853@linuxfoundation.org>
+In-Reply-To: <20211101082451.430720900@linuxfoundation.org>
+References: <20211101082451.430720900@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,40 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Michael Chan <michael.chan@broadcom.com>
 
-commit f7a1e76d0f608961cc2fc681f867a834f2746bce upstream.
+commit 0c57eeecc559ca6bc18b8c4e2808bc78dbe769b0 upstream.
 
-Currently in net_ns_get_ownership() it may not be able to set uid or gid
-if make_kuid or make_kgid returns an invalid value, and an uninit-value
-issue can be triggered by this.
+Drivers call netdev_set_num_tc() and then netdev_set_tc_queue()
+to set the queue count and offset for each TC.  So the queue count
+and offset for the TCs may be zero for a short period after dev->num_tc
+has been set.  If a TX packet is being transmitted at this time in the
+code path netdev_pick_tx() -> skb_tx_hash(), skb_tx_hash() may see
+nonzero dev->num_tc but zero qcount for the TC.  The while loop that
+keeps looping while hash >= qcount will not end.
 
-This patch is to fix it by initializing the uid and gid before calling
-net_ns_get_ownership(), as it does in kobject_get_ownership()
+Fix it by checking the TC's qcount to be nonzero before using it.
 
-Fixes: e6dee9f3893c ("net-sysfs: add netdev_change_owner()")
-Reported-by: Paolo Abeni <pabeni@redhat.com>
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+Fixes: eadec877ce9c ("net: Add support for subordinate traffic classes to netdev_pick_tx")
+Reviewed-by: Andy Gospodarek <gospo@broadcom.com>
+Signed-off-by: Michael Chan <michael.chan@broadcom.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/core/net-sysfs.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/core/dev.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/net/core/net-sysfs.c
-+++ b/net/core/net-sysfs.c
-@@ -1957,9 +1957,9 @@ int netdev_register_kobject(struct net_d
- int netdev_change_owner(struct net_device *ndev, const struct net *net_old,
- 			const struct net *net_new)
- {
-+	kuid_t old_uid = GLOBAL_ROOT_UID, new_uid = GLOBAL_ROOT_UID;
-+	kgid_t old_gid = GLOBAL_ROOT_GID, new_gid = GLOBAL_ROOT_GID;
- 	struct device *dev = &ndev->dev;
--	kuid_t old_uid, new_uid;
--	kgid_t old_gid, new_gid;
- 	int error;
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -2846,6 +2846,12 @@ static u16 skb_tx_hash(const struct net_
  
- 	net_ns_get_ownership(net_old, &old_uid, &old_gid);
+ 		qoffset = sb_dev->tc_to_txq[tc].offset;
+ 		qcount = sb_dev->tc_to_txq[tc].count;
++		if (unlikely(!qcount)) {
++			net_warn_ratelimited("%s: invalid qcount, qoffset %u for tc %u\n",
++					     sb_dev->name, qoffset, tc);
++			qoffset = 0;
++			qcount = dev->real_num_tx_queues;
++		}
+ 	}
+ 
+ 	if (skb_rx_queue_recorded(skb)) {
 
 
