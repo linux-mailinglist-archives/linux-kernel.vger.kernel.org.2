@@ -2,174 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E10FB4420CC
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 20:25:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B6354420D1
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 20:26:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232614AbhKAT1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 15:27:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38774 "EHLO
+        id S232621AbhKAT3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 15:29:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231820AbhKAT1g (ORCPT
+        with ESMTP id S231820AbhKAT3G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 15:27:36 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C56B9C061714
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 12:25:02 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id x5so8262280pgk.11
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 12:25:02 -0700 (PDT)
+        Mon, 1 Nov 2021 15:29:06 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED091C061714;
+        Mon,  1 Nov 2021 12:26:30 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id z20so68177252edc.13;
+        Mon, 01 Nov 2021 12:26:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3hhrjcH/r/IAq7pO++t6y2lyd728ESKJ3NLv7pSfec0=;
-        b=zH1vRUj7m2S/6D82siyc7/Fbxbo145OzQIcP5DHuM3UFNm4QTg3P3pePN186sKuUnX
-         6/p5V+BTHhkYh4Y/EMDbjbzsZU9UcQ7EkOMYU+aT+xeOcyDS2hmKLXee9KqeVYKhNxoj
-         OLcEufFwN9Vnub1Qg8cTf706ygXAaT290KUIfVdOkCs88o4OZqlx+rzDIs+ckJc/2Q8N
-         eD4i+9O134OUiXdlq/+wCOdkL5+JH+N3kU39q3BH9ryVazNPudMPIbiev05E49Iox1x3
-         w9KmAkGmEgzz+FKTBl0AN1ugQeT4ZhQtDK3XDO6wc5fz6SXScWkRFejURCIdgYq7v0+z
-         0wtg==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=awRFGVO/gEQLPCvLdPa1TvcfMQKVkjzH/TfPshmvxyI=;
+        b=obLOf3ccUIEXaH3sAXUGYjRIT2RizjEh57JWWlYoEQ2MDiQg/dK0ScmBgCXmvIR2zj
+         OvLBsYIQ7Cb7n39G/MFxKf/nmMpeSswmlwUi0FeufAtgLT8o7WO6cwl7v4yZ0xV3bqEj
+         6v+jgXo0JTVGlU8GCfVi9nedqqLpJv7GW7BQyQrTASf1/PPo1lV36mFyyhHRhLFY4PWO
+         kMtnA6X8D/vqHDRLyy4zAWCAEV0JYScWYAoEYP5mCcWWE8sXPGf7uLtd6yLTlnyV9qRm
+         dj6ZnxuqQH4yKs9vDnG4ZB8N9wTtcy1KxUa7eWv7pVFrEsUa7snwXYjFjrhv1lt6Pexv
+         gc4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3hhrjcH/r/IAq7pO++t6y2lyd728ESKJ3NLv7pSfec0=;
-        b=s1KZ+HbtwIpHFfs0w+VRB/7vxeEvDK3QJWDG9nfK3PB29kBtEJ0sQtkxqVO9ijGoF1
-         tC6jRcQBATBc1+DToBDOTRdPd70Pp68pD14TVnN3WTkaRHvQN3p1qZ07QgbaGSn20Q3+
-         EqceW+zrP8GNeYCgB2iqciR/pCW/Fw/mfAoJy7qaSd2DDXzqpdz1Fcajd8xudFead9nY
-         Bcyv6zSHyruf9il9ogBAkRqlhGcd+0UtYRqPh/fkZiQ/9ZU7Op12TgQ+FhHje+xfCSOd
-         KjIknaFudM/mRGe/26bZxY3T7aHgR/yLvfMG9rvWqg4woSoN1EGtDbyvTieDJ5E1/eO7
-         LzKA==
-X-Gm-Message-State: AOAM531xXFr7saYWTzCYNCeaf/9w2bkAyEk82/Y93W3VwJAQYYc1176/
-        IaNkuZeZtw+w8rdFDXPHMw6vsA==
-X-Google-Smtp-Source: ABdhPJwQpQJFBkN6Rid5AaNLGYp800vKjpHf25eJj8TVn0I2nrK1OLJsUbcojgrAZfPX2BT1hGTEZw==
-X-Received: by 2002:aa7:8d17:0:b0:44d:3593:2c1a with SMTP id j23-20020aa78d17000000b0044d35932c1amr30968845pfe.3.1635794702269;
-        Mon, 01 Nov 2021 12:25:02 -0700 (PDT)
-Received: from localhost.localdomain ([50.39.160.154])
-        by smtp.gmail.com with ESMTPSA id mm22sm222630pjb.28.2021.11.01.12.25.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 12:25:02 -0700 (PDT)
-From:   Tadeusz Struk <tadeusz.struk@linaro.org>
-To:     linux-scsi@vger.kernel.org
-Cc:     Tadeusz Struk <tadeusz.struk@linaro.org>,
-        Christoph Hellwig <hch@lst.de>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        syzbot+5516b30f5401d4dcbcae@syzkaller.appspotmail.com
-Subject: [PATCH] scsi: core: initialize cmd->cmnd before it is used
-Date:   Mon,  1 Nov 2021 12:24:17 -0700
-Message-Id: <20211101192417.324799-1-tadeusz.struk@linaro.org>
-X-Mailer: git-send-email 2.31.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=awRFGVO/gEQLPCvLdPa1TvcfMQKVkjzH/TfPshmvxyI=;
+        b=oCDooY1cvYpTpFCWGqWZQFYE9j7PKE1eYBXJBNZP7drfe/6ZzDUHQfiHAXuiEmHLca
+         kZKLAnZi+9WfYjKr/XVsunXBqBEsHWrnpa8uXvs12YMdifUIp7I1ZV9nD8s/t7ayt1fW
+         UQHW7EUxiErMSbM1cSKByvlejSa88YMX0f+LHV61A0KlSgmC2Lyd252IcHaiAupv3J22
+         VLux3vt1W6W9Yex6oZECKYsYHkHvU2sT5+X22y8ldbeDfj2UHw5LvQ3Qc8yDqrdErm04
+         MOiAKCKNVmfcogXVXv230rQMasifa9OAQS/EEEtb5SmGo0hZ6ZHfbzUZwad3nEB414mi
+         ZI9g==
+X-Gm-Message-State: AOAM531y3EgnazPjYA/LDjADCyw6M4N+Hc6vUzRNHCnI9TdGfrM0Tr/+
+        OrHz/aeFiytB0vsVZ6VF8F8r8HytkDi2Ev0xDuiY180bWBg=
+X-Google-Smtp-Source: ABdhPJycTYNHD7i+MZ1fe0HvWpmtzl4F1t05J0MIBxL8wQ86zQGqWVCKOVdJh8IsyRVnbaJIRmfrCZYEY10uDEIwVoI=
+X-Received: by 2002:a17:907:3f83:: with SMTP id hr3mr38815891ejc.555.1635794789559;
+ Mon, 01 Nov 2021 12:26:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210930215311.240774-1-shy828301@gmail.com> <20210930215311.240774-3-shy828301@gmail.com>
+ <CA+G9fYs__zKSSLKPh4wEPSY5SH8QYkLzgd_3dJpMX72XxTfpdw@mail.gmail.com>
+In-Reply-To: <CA+G9fYs__zKSSLKPh4wEPSY5SH8QYkLzgd_3dJpMX72XxTfpdw@mail.gmail.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Mon, 1 Nov 2021 12:26:17 -0700
+Message-ID: <CAHbLzkp1G1CFywC_=GJWDLN0hprxH3eayL8xxEMFQbFduwSSOQ@mail.gmail.com>
+Subject: Re: [v3 PATCH 2/5] mm: filemap: check if THP has hwpoisoned subpage
+ for PMD page fault
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>, Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Peter Xu <peterx@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        lkft-triage@lists.linaro.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The scsi_setup_scsi_cmnd() function initializes the cmd->cmnd command
-field, but in case the cmd_len is zero the field is used to detect
-the command size before it is initialized. This triggers null-ptr-deref
-as in the trace below. Fix this by setting cmd->cmnd earlier.
+On Mon, Nov 1, 2021 at 12:05 PM Naresh Kamboju
+<naresh.kamboju@linaro.org> wrote:
+>
+> Hi Yang,
+>
+> On Fri, 1 Oct 2021 at 03:23, Yang Shi <shy828301@gmail.com> wrote:
+> >
+> > When handling shmem page fault the THP with corrupted subpage could be PMD
+> > mapped if certain conditions are satisfied.  But kernel is supposed to
+> > send SIGBUS when trying to map hwpoisoned page.
+> >
+> > There are two paths which may do PMD map: fault around and regular fault.
+> >
+> > Before commit f9ce0be71d1f ("mm: Cleanup faultaround and finish_fault() codepaths")
+> > the thing was even worse in fault around path.  The THP could be PMD mapped as
+> > long as the VMA fits regardless what subpage is accessed and corrupted.  After
+> > this commit as long as head page is not corrupted the THP could be PMD mapped.
+> >
+> > In the regular fault path the THP could be PMD mapped as long as the corrupted
+> > page is not accessed and the VMA fits.
+> >
+> > This loophole could be fixed by iterating every subpage to check if any
+> > of them is hwpoisoned or not, but it is somewhat costly in page fault path.
+> >
+> > So introduce a new page flag called HasHWPoisoned on the first tail page.  It
+> > indicates the THP has hwpoisoned subpage(s).  It is set if any subpage of THP
+> > is found hwpoisoned by memory failure and cleared when the THP is freed or
+> > split.
+> >
+> > Fixes: 800d8c63b2e9 ("shmem: add huge pages support")
+> > Cc: <stable@vger.kernel.org>
+> > Suggested-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> > Signed-off-by: Yang Shi <shy828301@gmail.com>
+> > ---
+> >  include/linux/page-flags.h | 19 +++++++++++++++++++
+> >  mm/filemap.c               | 12 ++++++------
+> >  mm/huge_memory.c           |  2 ++
+> >  mm/memory-failure.c        |  6 +++++-
+> >  mm/memory.c                |  9 +++++++++
+> >  mm/page_alloc.c            |  4 +++-
+> >  6 files changed, 44 insertions(+), 8 deletions(-)
+>
+> When CONFIG_MEMORY_FAILURE not set
+> we get these build failures.
 
-[   21.105583][ T1822] KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
-[   21.106749][ T1822] CPU: 0 PID: 1822 Comm: repro Not tainted 5.15.0 #1
-[   21.107678][ T1822] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-4.fc34 04/01/2014
-[   21.109004][ T1822] RIP: 0010:scsi_queue_rq+0xf09/0x2180
-[   21.112499][ T1822] RSP: 0018:ffffc90000d0f098 EFLAGS: 00010246
-[   21.113347][ T1822] RAX: dffffc0000000000 RBX: ffff888107b0d408 RCX: 0000000000000000
-[   21.114448][ T1822] RDX: ffff888107168000 RSI: 0000000000000000 RDI: 0000000000000000
-[   21.115553][ T1822] RBP: ffffc90000d0f150 R08: ffffffff82a96d37 R09: ffff888107b0d410
-[   21.116683][ T1822] R10: ffffed1020f61a85 R11: 0000000000000000 R12: 1ffff11020f61a7f
-[   21.117793][ T1822] R13: 0000000000000000 R14: 0000000000000000 R15: ffff888107b0d3fc
-[   21.118894][ T1822] FS:  00007f5bfac9f640(0000) GS:ffff88811b200000(0000) knlGS:0000000000000000
-[   21.120132][ T1822] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   21.121050][ T1822] CR2: 0000000020001000 CR3: 0000000109acb000 CR4: 0000000000150eb0
-[   21.123125][ T1822] Call Trace:
-[   21.124020][ T1822]  blk_mq_dispatch_rq_list+0x7c7/0x12d0
-[   21.125486][ T1822]  ? __kasan_check_write+0x14/0x20
-[   21.126794][ T1822]  ? do_raw_spin_lock+0x9a/0x230
-[   21.128023][ T1822]  ? blk_mq_get_driver_tag+0x920/0x920
-[   21.129345][ T1822]  __blk_mq_sched_dispatch_requests+0x244/0x380
-[   21.130826][ T1822]  ? blk_mq_sched_dispatch_requests+0x160/0x160
-[   21.132241][ T1822]  ? _find_next_bit+0x1ec/0x210
-[   21.133376][ T1822]  blk_mq_sched_dispatch_requests+0xf0/0x160
-[   21.134724][ T1822]  __blk_mq_run_hw_queue+0xe8/0x160
-[   21.135878][ T1822]  ? __list_splice+0x100/0x100
-[   21.136902][ T1822]  __blk_mq_delay_run_hw_queue+0x252/0x5d0
-[   21.138115][ T1822]  blk_mq_run_hw_queue+0x1dd/0x3b0
-[   21.139184][ T1822]  ? blk_mq_dispatch_rq_list+0x12d0/0x12d0
-[   21.140322][ T1822]  ? _raw_spin_unlock+0x13/0x30
-[   21.141273][ T1822]  ? blk_mq_request_bypass_insert+0xcf/0xe0
-[   21.142414][ T1822]  blk_mq_sched_insert_request+0x1ff/0x3e0
-[   21.143531][ T1822]  ? timekeeping_get_ns+0xb1/0xc0
-[   21.144462][ T1822]  ? blk_mq_sched_try_insert_merge+0x240/0x240
-[   21.145592][ T1822]  ? update_io_ticks+0x17c/0x190
-[   21.146472][ T1822]  ? blk_account_io_start+0x21c/0x260
-[   21.147421][ T1822]  blk_execute_rq_nowait+0x173/0x1e0
-[   21.148356][ T1822]  ? blk_execute_rq+0x540/0x540
-[   21.149247][ T1822]  ? asan.module_ctor+0x10/0x10
-[   21.150066][ T1822]  blk_execute_rq+0x15c/0x540
-[   21.150869][ T1822]  ? cap_capable+0x2ca/0x330
-[   21.151653][ T1822]  ? blk_execute_rq_nowait+0x1e0/0x1e0
-[   21.152539][ T1822]  ? ns_capable_common+0x8f/0xf0
-[   21.153348][ T1822]  ? capable+0x1c/0x20
-[   21.153984][ T1822]  sg_io+0x97c/0x1370
-[   21.154614][ T1822]  ? scsi_ioctl_block_when_processing_errors+0x1e0/0x1e0
-[   21.155712][ T1822]  ? in_compat_syscall+0xd0/0xd0
-[   21.156488][ T1822]  ? futex_wait+0x4fb/0x640
-[   21.157175][ T1822]  scsi_ioctl+0xe16/0x28e0
-[   21.157836][ T1822]  ? __kasan_check_read+0x11/0x20
-[   21.158596][ T1822]  ? get_sg_io_hdr+0x10a0/0x10a0
-[   21.159347][ T1822]  ? __fsnotify_parent+0x4ee/0x710
-[   21.160111][ T1822]  ? do_futex+0x3f2/0x1030
-[   21.160764][ T1822]  ? futex_exit_release+0x70/0x70
-[   21.161494][ T1822]  ? do_vfs_ioctl+0xafa/0x1af0
-[   21.162168][ T1822]  ? scsi_host_in_recovery+0xb9/0x160
-[   21.162921][ T1822]  ? vfs_write+0x397/0x580
-[   21.163547][ T1822]  ? scsi_ioctl_block_when_processing_errors+0xae/0x1e0
-[   21.164521][ T1822]  sd_ioctl+0x134/0x170
-[   21.165087][ T1822]  blkdev_ioctl+0x362/0x6e0
-[   21.165724][ T1822]  ? blkdev_compat_ptr_ioctl+0xf0/0xf0
-[   21.166470][ T1822]  ? fput_many+0x5e/0x1d0
-[   21.167059][ T1822]  ? __restore_fpregs_from_fpstate+0xb5/0x160
-[   21.167873][ T1822]  block_ioctl+0xb0/0xf0
-[   21.168437][ T1822]  vfs_ioctl+0xa7/0xf0
-[   21.168970][ T1822]  __x64_sys_ioctl+0x10d/0x150
-[   21.169602][ T1822]  do_syscall_64+0x3d/0xb0
-[   21.170176][ T1822]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[   21.180158][ T1822] ---[ end trace 8b086e334adef6d2 ]---
-[   21.191043][ T1822] Kernel panic - not syncing: Fatal exception
-[   21.191728][ T1822] Kernel Offset: disabled
+Thanks for catching this. It is because Willy's page folio series
+changed the definition of PAGEFLAG_FALSE macro. But patch was new in
+5.15-rc7, so his series doesn't cover this.
 
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: James E.J. Bottomley <jejb@linux.ibm.com>
-Cc: Martin K. Petersen <martin.petersen@oracle.com>
-Cc: <linux-scsi@vger.kernel.org>
-Cc: <linux-kernel@vger.kernel.org>
-Cc: <stable@vger.kernel.org> # 5.15, 5.14, 5.10
-Fixes: 2ceda20f0a99a74a82b78870f3b3e5fa93087a7f
-Reported-by: syzbot+5516b30f5401d4dcbcae@syzkaller.appspotmail.com
-Signed-off-by: Tadeusz Struk <tadeusz.struk@linaro.org>
----
- drivers/scsi/scsi_lib.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The below patch should be able to fix it:
 
-diff --git a/drivers/scsi/scsi_lib.c b/drivers/scsi/scsi_lib.c
-index 572673873ddf..cd4b57747448 100644
---- a/drivers/scsi/scsi_lib.c
-+++ b/drivers/scsi/scsi_lib.c
-@@ -1173,10 +1173,10 @@ static blk_status_t scsi_setup_scsi_cmnd(struct scsi_device *sdev,
- 		memset(&cmd->sdb, 0, sizeof(cmd->sdb));
- 	}
- 
-+	cmd->cmnd = scsi_req(req)->cmd;
- 	cmd->cmd_len = scsi_req(req)->cmd_len;
- 	if (cmd->cmd_len == 0)
- 		cmd->cmd_len = scsi_command_size(cmd->cmnd);
--	cmd->cmnd = scsi_req(req)->cmd;
- 	cmd->transfersize = blk_rq_bytes(req);
- 	cmd->allowed = scsi_req(req)->retries;
- 	return BLK_STS_OK;
--- 
-2.31.1
+diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
+index d8623d6e1141..981341a3c3c4 100644
+--- a/include/linux/page-flags.h
++++ b/include/linux/page-flags.h
+@@ -803,8 +803,8 @@ PAGEFLAG_FALSE(DoubleMap, double_map)
+ PAGEFLAG(HasHWPoisoned, has_hwpoisoned, PF_SECOND)
+        TESTSCFLAG(HasHWPoisoned, has_hwpoisoned, PF_SECOND)
+ #else
+-PAGEFLAG_FALSE(HasHWPoisoned)
+-       TESTSCFLAG_FALSE(HasHWPoisoned)
++PAGEFLAG_FALSE(HasHWPoisoned, has_hwpoisoned)
++       TESTSCFLAG_FALSE(HasHWPoisoned, has_hwpoisoned)
+ #endif
 
+ /*
+
+I will prepare a formal patch for 5.16.
+
+>
+> Regression found on x86_64 and i386 gcc-11 builds
+> Following build warnings / errors reported on Linux mainline master.
+>
+> metadata:
+>     git_describe: v5.15-559-g19901165d90f
+>     git_repo: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>     git_short_log: 19901165d90f (\"Merge tag
+> 'for-5.16/inode-sync-2021-10-29' of git://git.kernel.dk/linux-block\")
+>     target_arch: x86_64
+>     toolchain: gcc-11
+>
+>
+> In file included from include/linux/mmzone.h:22,
+>                  from include/linux/gfp.h:6,
+>                  from include/linux/slab.h:15,
+>                  from include/linux/crypto.h:20,
+>                  from arch/x86/kernel/asm-offsets.c:9:
+> include/linux/page-flags.h:806:29: error: macro "PAGEFLAG_FALSE"
+> requires 2 arguments, but only 1 given
+>   806 | PAGEFLAG_FALSE(HasHWPoisoned)
+>       |                             ^
+> include/linux/page-flags.h:411: note: macro "PAGEFLAG_FALSE" defined here
+>   411 | #define PAGEFLAG_FALSE(uname, lname) TESTPAGEFLAG_FALSE(uname,
+> lname)   \
+>       |
+> include/linux/page-flags.h:807:39: error: macro "TESTSCFLAG_FALSE"
+> requires 2 arguments, but only 1 given
+>   807 |         TESTSCFLAG_FALSE(HasHWPoisoned)
+>       |                                       ^
+> include/linux/page-flags.h:414: note: macro "TESTSCFLAG_FALSE" defined here
+>   414 | #define TESTSCFLAG_FALSE(uname, lname)
+>          \
+>       |
+> include/linux/page-flags.h:806:1: error: unknown type name 'PAGEFLAG_FALSE'
+>   806 | PAGEFLAG_FALSE(HasHWPoisoned)
+>       | ^~~~~~~~~~~~~~
+> include/linux/page-flags.h:807:25: error: expected ';' before 'static'
+>   807 |         TESTSCFLAG_FALSE(HasHWPoisoned)
+>       |                         ^
+>       |                         ;
+> ......
+>   815 | static inline bool is_page_hwpoison(struct page *page)
+>       | ~~~~~~
+> make[2]: *** [scripts/Makefile.build:121: arch/x86/kernel/asm-offsets.s] Error 1
+>
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+>
+> build link:
+> -----------
+> https://builds.tuxbuild.com/20KPBpXK6K0bKSIKAIKfwlBq7O4/build.log
+>
+> build config:
+> -------------
+> https://builds.tuxbuild.com/20KPBpXK6K0bKSIKAIKfwlBq7O4/config
+>
+> # To install tuxmake on your system globally
+> # sudo pip3 install -U tuxmake
+>
+> tuxmake --runtime podman --target-arch x86_64 --toolchain gcc-11
+> --kconfig defconfig --kconfig-add
+> https://builds.tuxbuild.com/20KPBpXK6K0bKSIKAIKfwlBq7O4/config
+>
+> link:
+> https://builds.tuxbuild.com/20KPBpXK6K0bKSIKAIKfwlBq7O4/tuxmake_reproducer.sh
+>
+> --
+> Linaro LKFT
+> https://lkft.linaro.org
