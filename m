@@ -2,95 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6699544198A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 11:11:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23C85441944
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:59:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232229AbhKAKNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 06:13:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54392 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231913AbhKAKNn (ORCPT
+        id S233055AbhKAKCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 06:02:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20141 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232583AbhKAKBc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 06:13:43 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A617C0AD95D;
-        Mon,  1 Nov 2021 02:59:23 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id h7so63103911ede.8;
-        Mon, 01 Nov 2021 02:59:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CgVIxgXPJqto+1GyJDRV5V4m1lHYgJ03cyDgZVbshDA=;
-        b=HZbhNpdJr/66I7R4/BovtQEpejyFJ9Upf7lK+LjwBNXB06p+v8s783QzPk5eQN3WYB
-         SFvEJ+CkaS9+3QwiebwmS98mx7s9DpLyJ7V5SlfBIto7dSuGmlatr6TIgGaeu/TZcBvT
-         xmRskFToShPXPcflvw9SLQ7g5w1hLAHbPmEBBAsEuxnLHiIikurj2F8hjx5AYMeoF9+r
-         WGI4bRORlCI4VQPpnBaYQa2vaErVUjHiKdfT9hPDSwipRSlgmmGFEz8rmlDwic4gfGyz
-         dDO4aBqo/qHDsneMIgTrNXBg2h6vjLrWyco0BeiiR8DxbC07Q3xp5nMNbbSr5jEdLrQ9
-         QcBQ==
+        Mon, 1 Nov 2021 06:01:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635760739;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6caRVk8CMsSD+h3ZfXjPmUciaKaQW9ki6VuNt64p3I4=;
+        b=dJCjkXxVcYWbStpUL5tUN2S2OfSFktAEboh9QrHBVckVcvtZiUPQXimO5YdpEuztqJwTcz
+        s8iM9yB3Qj9bf1GYD8SZDEwO++TJNs4D+PnCCsbIrDZ/IdawLkAyY0eO/3uJs78NJ8vW7N
+        uu/4W0RbHz7RCVdMl3Px2POuU0X9I/8=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-158-kkiRjZO6M46dztR5Fhs0Tw-1; Mon, 01 Nov 2021 05:58:58 -0400
+X-MC-Unique: kkiRjZO6M46dztR5Fhs0Tw-1
+Received: by mail-ed1-f72.google.com with SMTP id d11-20020a50cd4b000000b003da63711a8aso14990613edj.20
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 02:58:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CgVIxgXPJqto+1GyJDRV5V4m1lHYgJ03cyDgZVbshDA=;
-        b=ZLnVh48HeEYKGvt2BaYA0b56BXWW6PKNXkz/2QG4n+dz7YBKmtDkRZ1sHdUnqsUuwJ
-         zITj/VHxZ72r5/BGOoFeybYCF+noaueKOQl7YGpzCn4cbZNyw8aRINp+l0HrGyoqRNf2
-         HneGxcreAblHwGtnrkYFVaKM7sE5Er5D/9VHXRugCz+mq5/kwSeHFlECQYrIj+j1PLkK
-         1Ir8qS/NmgAM2rRrIqmTrlipAhBTjjut2pltV7L/zrNBRGu63PzankveGoL2S/RbIxDV
-         6q+t3Fd+q4bLJQNWnnXEMKglpjvoKa8IZ2V4ZjrubcaFyCSeT32kjHTE3nqkcF5vkYyp
-         NhRw==
-X-Gm-Message-State: AOAM5320VUqM4gxPB3/BYqk5aT/cQxqwpmYg7nazHKH7avle6PamCRuT
-        22ohl0PP2DY61Ull/wALhC4gzgBreY+2RAihL+k=
-X-Google-Smtp-Source: ABdhPJzgRggZ7bqiDtGi2xeLUvn0fy66w5Qw/bS4IRmvBFVdfXhRK08STLRJY3E9lxwjMNUMNcX0Y0diRJHkdEzsVLM=
-X-Received: by 2002:a17:906:6dd2:: with SMTP id j18mr35162242ejt.468.1635760762098;
- Mon, 01 Nov 2021 02:59:22 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=6caRVk8CMsSD+h3ZfXjPmUciaKaQW9ki6VuNt64p3I4=;
+        b=qsK+B+vMcNYZ2mM1Fee8PD9wZdcwYDVrgAnsmE9pZxhw6EQCG+znok5Pd7qS9tdVOv
+         BLjN/NF6koC/RHh/OomjK3JrYHPqCi5Iy5fxQGf5ic+IIZy8xj4DqVbJBEQ22C4uLTX5
+         8XOScnGn6xdXJp9n1gU5Eibv29LT/uZDuvMXelLF0+PWmYrsdGPkz7kKjF5x6aAV3/To
+         zVm9/Ww9mJvzvfSQGcOtrW8yhXvGlc3RYoinqq2/2RcCLQgEmCYa5ZiTM5yV2WV6riyn
+         La5+1xa3hFFk3SeDJuWVSQ/9aKwY8stAkBrkohZSHuIBRiG64tEXtgrcs8mULFG+UGN/
+         fqkA==
+X-Gm-Message-State: AOAM532IPJtE3enfHbuk7zJqAfdjdBuoGw0cC1MsNLVAEbh8mgvE67Xt
+        JeoC+9ZxV3aRgnOeWg7uft2aVpyY1BbM67E/Euu9pEQpupSR+2mbS8SLzkXCmu+7NFtTHOCtYvG
+        aNtRz/r51hfIfQT3+/Px+N8Ys
+X-Received: by 2002:a05:6402:40c6:: with SMTP id z6mr8288084edb.304.1635760736988;
+        Mon, 01 Nov 2021 02:58:56 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyqPXJ6PYGCriCtuynpl/6EfcOsgDa+TrNrye+hvH/EBNEyhX4X2nt67BIJf0jZlCcKYYLEcQ==
+X-Received: by 2002:a05:6402:40c6:: with SMTP id z6mr8288065edb.304.1635760736808;
+        Mon, 01 Nov 2021 02:58:56 -0700 (PDT)
+Received: from [10.40.1.223] ([81.30.35.201])
+        by smtp.gmail.com with ESMTPSA id x22sm8510583edv.14.2021.11.01.02.58.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Nov 2021 02:58:56 -0700 (PDT)
+Message-ID: <cd712bd7-cce7-58fb-d644-ced4fc0c76b1@redhat.com>
+Date:   Mon, 1 Nov 2021 10:58:56 +0100
 MIME-Version: 1.0
-References: <CAD-N9QXsUcczurqq9LdaVjXFZMBSbStynwFJyu0UayDazGe=nw@mail.gmail.com>
- <55f04cb1-18ac-085b-3d35-7a01716fbcbe@gmail.com> <CAD-N9QVN7cepUpRu3d-xtr1L3DG90-nLS4gmkjerDZO21F_ejQ@mail.gmail.com>
- <f622f569-25d5-f38e-e9fb-7f07e12c4b7e@gmail.com> <CAD-N9QWeGOZdnuRuHVVNzZHWeP3eSHg=tsm+Qn3tqGqACSNbhg@mail.gmail.com>
- <ffbaeb72-0f76-fb1e-dde5-6e6bdcce1301@gmail.com>
-In-Reply-To: <ffbaeb72-0f76-fb1e-dde5-6e6bdcce1301@gmail.com>
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-Date:   Mon, 1 Nov 2021 17:58:56 +0800
-Message-ID: <CAD-N9QWQkivwR0mWwiaW_pLE6J_b03x4dP8RyxbmuKYRkcRhoQ@mail.gmail.com>
-Subject: Re: Need help in debugging "memory leak in em28xx_init_dev"
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 1/6] HID: intel-ish-hid: add support for
+ MODULE_DEVICE_TABLE()
+Content-Language: en-US
+To:     =?UTF-8?Q?Thomas_Wei=c3=9fschuh?= <linux@weissschuh.net>,
+        linux-input@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Jiri Kosina <jkosina@suse.cz>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>
+References: <20211029152901.297939-1-linux@weissschuh.net>
+ <20211029152901.297939-2-linux@weissschuh.net>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20211029152901.297939-2-linux@weissschuh.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 1, 2021 at 5:43 PM Pavel Skripkin <paskripkin@gmail.com> wrote:
->
-> On 11/1/21 12:41, Dongliang Mu wrote:
-> >> Hi, Dongliang,
-> >>
-> >> Did patch attached to my previous email pass syzbot's reproducer test?
-> >> Unfortunately, I am not able to test rn :(
-> >
-> > Yes, it works. The memory leak does not occur anymore.
-> >
-> > But I am crafting another patch based on yours as there is a small
-> > issue in the retval and I would like to make the error handling code
-> > uniform.
-> >
->
-> Cool! Thank you for confirmation.
+Hi,
 
-Hi Pavel,
+On 10/29/21 17:28, Thomas Weißschuh wrote:
+> This allows to selectively autoload drivers for ISH devices.
+> Currently all ISH drivers are loaded for all systems having any ISH
+> device.
+> 
+> Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+> 
+> ---
+> 
+> Cc: linux-kbuild@vger.kernel.org
+> Cc: linux-input@vger.kernel.org
+> Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+> Cc: Jiri Kosina <jkosina@suse.cz>
+> Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+> Cc: Hans de Goede <hdegoede@redhat.com>
+> Cc: Masahiro Yamada <masahiroy@kernel.org>
+> Cc: Michal Marek <michal.lkml@markovi.net>
+> Cc: Nick Desaulniers <ndesaulniers@google.com>
+> ---
+>  include/linux/mod_devicetable.h   | 13 +++++++++++++
+>  scripts/mod/devicetable-offsets.c |  3 +++
+>  scripts/mod/file2alias.c          | 24 ++++++++++++++++++++++++
+>  3 files changed, 40 insertions(+)
+> 
+> diff --git a/include/linux/mod_devicetable.h b/include/linux/mod_devicetable.h
+> index ae2e75d15b21..befbf53c4b7c 100644
+> --- a/include/linux/mod_devicetable.h
+> +++ b/include/linux/mod_devicetable.h
+> @@ -895,4 +895,17 @@ struct dfl_device_id {
+>  	kernel_ulong_t driver_data;
+>  };
+>  
+> +/* ISHTP (Integrated Sensor Hub Transport Protocol) */
+> +
+> +#define ISHTP_MODULE_PREFIX	"ishtp:"
+> +
+> +/**
+> + * struct ishtp_device_id - ISHTP device identifier
+> + * @guid_string: 36 char string of the form fa50ff2b-f2e8-45de-83fa-65417f2f49ba
+> + * @context: pointer to driver specific data
+> + */
+> +struct ishtp_device_id {
+> +	guid_t guid;
 
-Thanks for your advice. I have sent the patch and you are on the CC
-list. Can you please take a look at and review my patch?
+The kdoc comment documents a context pointer, but this is missing from the
+actual struct. Having some sort of driver_data (1) field here would be good IMHO.
 
-It should cover your patch. But I am not sure if I introduce any new
-issue in the patch.
+Regards,
 
->
->
-> With regards,
-> Pavel Skripkin
+Hans
+
+1) "context" is fine, but AFAIK almost all other foo_device_id structs call this
+driver_data, so that would be more consistent IMHO.
+
+
+> +};
+> +
+>  #endif /* LINUX_MOD_DEVICETABLE_H */
+> diff --git a/scripts/mod/devicetable-offsets.c b/scripts/mod/devicetable-offsets.c
+> index cc3625617a0e..c0d3bcb99138 100644
+> --- a/scripts/mod/devicetable-offsets.c
+> +++ b/scripts/mod/devicetable-offsets.c
+> @@ -259,5 +259,8 @@ int main(void)
+>  	DEVID_FIELD(dfl_device_id, type);
+>  	DEVID_FIELD(dfl_device_id, feature_id);
+>  
+> +	DEVID(ishtp_device_id);
+> +	DEVID_FIELD(ishtp_device_id, guid);
+> +
+>  	return 0;
+>  }
+> diff --git a/scripts/mod/file2alias.c b/scripts/mod/file2alias.c
+> index 49aba862073e..5258247d78ac 100644
+> --- a/scripts/mod/file2alias.c
+> +++ b/scripts/mod/file2alias.c
+> @@ -115,6 +115,17 @@ static inline void add_uuid(char *str, uuid_le uuid)
+>  		uuid.b[12], uuid.b[13], uuid.b[14], uuid.b[15]);
+>  }
+>  
+> +static inline void add_guid(char *str, guid_t guid)
+> +{
+> +	int len = strlen(str);
+> +
+> +	sprintf(str + len, "%02X%02X%02X%02X-%02X%02X-%02X%02X-%02X%02X-%02X%02X%02X%02X%02X%02X",
+> +		guid.b[3], guid.b[2], guid.b[1], guid.b[0],
+> +		guid.b[5], guid.b[4], guid.b[7], guid.b[6],
+> +		guid.b[8], guid.b[9], guid.b[10], guid.b[11],
+> +		guid.b[12], guid.b[13], guid.b[14], guid.b[15]);
+> +}
+> +
+>  /**
+>   * Check that sizeof(device_id type) are consistent with size of section
+>   * in .o file. If in-consistent then userspace and kernel does not agree
+> @@ -1380,6 +1391,18 @@ static int do_mhi_entry(const char *filename, void *symval, char *alias)
+>  	return 1;
+>  }
+>  
+> +/* Looks like: ishtp:{guid} */
+> +static int do_ishtp_entry(const char *filename, void *symval, char *alias)
+> +{
+> +	DEF_FIELD(symval, ishtp_device_id, guid);
+> +
+> +	strcpy(alias, ISHTP_MODULE_PREFIX "{");
+> +	add_guid(alias, guid);
+> +	strcat(alias, "}");
+> +
+> +	return 1;
+> +}
+> +
+>  static int do_auxiliary_entry(const char *filename, void *symval, char *alias)
+>  {
+>  	DEF_FIELD_ADDR(symval, auxiliary_device_id, name);
+> @@ -1499,6 +1522,7 @@ static const struct devtable devtable[] = {
+>  	{"auxiliary", SIZE_auxiliary_device_id, do_auxiliary_entry},
+>  	{"ssam", SIZE_ssam_device_id, do_ssam_entry},
+>  	{"dfl", SIZE_dfl_device_id, do_dfl_entry},
+> +	{"ishtp", SIZE_ishtp_device_id, do_ishtp_entry},
+>  };
+>  
+>  /* Create MODULE_ALIAS() statements.
+> 
+
