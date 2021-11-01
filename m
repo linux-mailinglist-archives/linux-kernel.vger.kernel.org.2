@@ -2,82 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30580441A97
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 12:18:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69E8E441A9B
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 12:22:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232136AbhKALVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 07:21:19 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:42594 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230520AbhKALVS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 07:21:18 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 23FF11FD6F;
-        Mon,  1 Nov 2021 11:18:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1635765524; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dm5Oe23ThzgNkO1zplniJYhEpCsmQbBHu8pHbwLx7r0=;
-        b=wRCFCO0ESWvL26fIKwv0yTTob6KsxYryw12Ikk1rDDpbwjHw9vhp0yE9mxkSlcrrn4l5hu
-        3+kOva4y++u9PcJQolFBHkWfR2q6m0QcWpi9nvX8dCAjrB0tYLdLj0tC9Srwh18sUTD7+U
-        j1axe0gZ1pXw/J7SlL+ADIwrfEOGfa8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1635765524;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dm5Oe23ThzgNkO1zplniJYhEpCsmQbBHu8pHbwLx7r0=;
-        b=YBvsOH45hHybu2kPEKcMlp5GoZ5JfK+CLxUfbl/IvZVZmeHjQSl1+XiNl0JIr0WDFts1Oe
-        miKLa539XzVdazDw==
-Received: from suse.de (unknown [10.163.32.246])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 8BA87A3B83;
-        Mon,  1 Nov 2021 11:18:42 +0000 (UTC)
-Date:   Mon, 1 Nov 2021 11:18:40 +0000
-From:   Mel Gorman <mgorman@suse.de>
-To:     Yuan ZhaoXiong <yuanzhaoxiong@baidu.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sched/fair: Simplify task_numa_find_cpu()
-Message-ID: <20211101111840.GT3891@suse.de>
-References: <1635578759-32343-1-git-send-email-yuanzhaoxiong@baidu.com>
+        id S232030AbhKALYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 07:24:32 -0400
+Received: from mga12.intel.com ([192.55.52.136]:37074 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231866AbhKALY3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 07:24:29 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10154"; a="211049399"
+X-IronPort-AV: E=Sophos;i="5.87,199,1631602800"; 
+   d="scan'208";a="211049399"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2021 04:21:56 -0700
+X-IronPort-AV: E=Sophos;i="5.87,199,1631602800"; 
+   d="scan'208";a="449230986"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2021 04:21:53 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1mhVNg-002e9V-R3;
+        Mon, 01 Nov 2021 13:21:36 +0200
+Date:   Mon, 1 Nov 2021 13:21:36 +0200
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     Chen Yu <yu.c.chen@intel.com>
+Cc:     linux-acpi@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Aubrey Li <aubrey.li@intel.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 2/4] drivers/acpi: Introduce Platform Firmware Runtime
+ Update device driver
+Message-ID: <YX/NwEdw26wzKFvQ@smile.fi.intel.com>
+References: <cover.1635317102.git.yu.c.chen@intel.com>
+ <a318e4edc13e5a3ff95b901871b8929746535715.1635317102.git.yu.c.chen@intel.com>
+ <YXkn8aBvAVEXxgdp@smile.fi.intel.com>
+ <20211101093320.GA18982@chenyu5-mobl1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1635578759-32343-1-git-send-email-yuanzhaoxiong@baidu.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20211101093320.GA18982@chenyu5-mobl1>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 30, 2021 at 03:25:59PM +0800, Yuan ZhaoXiong wrote:
-> Combine the 'cpumask_of_node()' with 'env->p->cpus_ptr' and drop the
-> cpumask_test_cpu().
-> 
-> Signed-off-by: Yuan ZhaoXiong <yuanzhaoxiong@baidu.com>
+On Mon, Nov 01, 2021 at 05:33:20PM +0800, Chen Yu wrote:
+> On Wed, Oct 27, 2021 at 01:20:33PM +0300, Andy Shevchenko wrote:
+> > On Wed, Oct 27, 2021 at 03:07:51PM +0800, Chen Yu wrote:
 
-This potentially creates of a temporary cpumask variable as noted in the
-comment for for_each_cpu_and.
+...
 
- * This saves a temporary CPU mask in many places.  It is equivalent to:
- *      struct cpumask tmp;
- *      cpumask_and(&tmp, &mask1, &mask2);
- *      for_each_cpu(cpu, &tmp)
- *              ...
+> > > +	guid_t *image_type_id = &img_hdr->image_type_id;
+> > 
+> > efi_guid_t ?
+> >
+> efi_guid_t is a 32-bit aligned guid_t, which is for the case when
+> efi_guid_t* arguments are 32-bit aligned. And it is for 32-bit ARM.
+> Since this code injection is only for 64-bit, the guid is not required
+> to be strictly 32-bit aligned I suppose?
 
-task_numa_find_cpu() is a relatively deep function. Did you check
-the stack usage to make sure it's not pushing too close to the stack
-boundary? While there are other users of for_each_cpu_and, they are mostly
-shallow although find_energy_efficient_cpu() is a bit questionable and
-probably should have used select_idle_mask.
+But the type of that member may not be guid_t. So, I expect not to see guid_t
+at all here or as a internal member with the export/import GUID API in place.
 
-Does the patch have a noticable performance impact? 
+See, for example
+d1c6e08e7503 ("libnvdimm/labels: Add uuid helpers")
+
+...
+
+> > > +	ret = guid_parse(PFRU_UUID, &pfru_dev->uuid);
+
+> > > +	ret = guid_parse(PFRU_CODE_INJ_UUID, &pfru_dev->code_uuid);
+
+> > > +	ret = guid_parse(PFRU_DRV_UPDATE_UUID, &pfru_dev->drv_uuid);
+
+> > Why do you need to keep zillions of copies of the data which seems
+> > is not going to be changed? Three global variables should be enough,
+> > no?
+> >
+> The guid information is embedded in each pfru_dev and only calculated
+> once during probe. I thought people try to avoid using global variables
+> if possible?
+
+Use your common sense. You might have a lot of data duplication,
+and this data is definitely not something that needs any kind of
+serialization / personification / etc.
 
 -- 
-Mel Gorman
-SUSE Labs
+With Best Regards,
+Andy Shevchenko
+
+
