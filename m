@@ -2,60 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 253CE4421C6
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 21:41:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B9274421CC
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 21:42:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230484AbhKAUn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 16:43:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55812 "EHLO
+        id S230519AbhKAUpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 16:45:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230333AbhKAUnA (ORCPT
+        with ESMTP id S229896AbhKAUpX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 16:43:00 -0400
+        Mon, 1 Nov 2021 16:45:23 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9114AC061714;
-        Mon,  1 Nov 2021 13:40:21 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A163C061714;
+        Mon,  1 Nov 2021 13:42:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=GDo38ocU3pLClKl3wyVO90VvxmLoO3CeEoE5GEzkERk=; b=RyJbRA3f+AsVJo0k56Bz2l/1Sy
-        hrFjNtQEliiW2GQnf+kHW3bKSW85yzuT9LHZ52az81pke0WekzAxASXhQ7RlasjSXl+KkXHnDebAS
-        U02xF4K1cDk5Mdc360fo498yuNvtnmtzMKihBll2bFbQXlzvFRLleNsjipEu1a7NascW/LH5i7e2o
-        0y/dPIhJkV2bfvriOV9Eu+d3U6Wa3Lq5ynVnq1lZgG7hNEAqRAlWF3E+bY6n/GPyRueE0eLm8elg6
-        7pjQJQerALpUp2VCDs9kGix/k56KtzlMH4+hwsFkz4A5r7MOsqNjThluY4iO8HmgTxNBrjZF1ktlO
-        /hdgGrkw==;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=chNWjrMwxLlygvBLJNWRNHDSE0gjni5bIuk9Yy4tZbo=; b=mqHGFzEOS8E9CxQtoKts2Wr12C
+        I1N4Da08CVdnvJ93OJWiJXiQXJmAmmXVRYFDL42Y+9W0tDiPUOCB09Or5yn/TkHqPzjYHdQRJBcRr
+        sk6ywml3gbPH7h552U5YCA4Jjye3g5aMc3eMoo08IJPn6pAKVF9r9ZpaUuzrJ/eO/TzKqOQRwKUyA
+        armn0zRIawNhoW2YPjxD7MUiEL6cvl9MUbLs65pAc8nWT+362aevCP0me4Mn3E8uUrHSGrUMGKiXY
+        GFGmoLtuOy+CxoQGxfTppCfS3NPfXlnOhv7ZmI6oEjb5mDu+qX53EiMCKsfsDzFzb9Qbv6R5a9rjk
+        FLURsvRw==;
 Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mhe4Q-0040Ih-AQ; Mon, 01 Nov 2021 20:38:45 +0000
-Date:   Mon, 1 Nov 2021 20:38:18 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Alexey Makhalov <amakhalov@vmware.com>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] mm: fix panic in __alloc_pages
-Message-ID: <YYBQOiuq6WHMjOYf@casper.infradead.org>
-References: <20211101201312.11589-1-amakhalov@vmware.com>
+        id 1mhe5b-0040Ls-6E; Mon, 01 Nov 2021 20:39:59 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: [PATCH 00/21] iomap/xfs folio patches
+Date:   Mon,  1 Nov 2021 20:39:08 +0000
+Message-Id: <20211101203929.954622-1-willy@infradead.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211101201312.11589-1-amakhalov@vmware.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 01, 2021 at 01:13:12PM -0700, Alexey Makhalov wrote:
-> +++ b/include/linux/gfp.h
-> @@ -551,7 +551,8 @@ alloc_pages_bulk_array(gfp_t gfp, unsigned long nr_pages, struct page **page_arr
->  static inline unsigned long
->  alloc_pages_bulk_array_node(gfp_t gfp, int nid, unsigned long nr_pages, struct page **page_array)
->  {
-> -	if (nid == NUMA_NO_NODE)
-> +	if (nid == NUMA_NO_NODE || (!node_online(nid) &&
-> +					!(gfp & __GFP_THISNODE)))
->  		nid = numa_mem_id();
->  
->  	return __alloc_pages_bulk(gfp, nid, NULL, nr_pages, NULL, page_array);
+This patchset converts XFS & iomap to use folios, and gets them to
+a state where they can handle multi-page folios.  I don't anticipate
+needing to touch XFS again until we're at the point where we want to
+convert the aops to be type-safe.  The patches apply to both current
+Linus head and next-20211101.  It completes an xfstests run with no
+unexpected failures.  Most of these patches have been posted before and
+I've retained acks/reviews where I thought them reasonable.  Some are new.
 
-I don't think it's a great idea to push node_online() and the gfp check
-into the caller.  Can't we put this check in __alloc_pages_bulk() instead?
+I'd really like a better name than 'mapping_set_large_folios()'.
+mapping_set_multi_page_folios() seems a bit long.  mapping_set_mpf()
+is a bit obscure.
+
+Jens, I'd really like your ack on patches 2 & 3; I know we discussed
+them before.
+
+Matthew Wilcox (Oracle) (21):
+  fs: Remove FS_THP_SUPPORT
+  block: Add bio_add_folio()
+  block: Add bio_for_each_folio_all()
+  iomap: Convert to_iomap_page to take a folio
+  iomap: Convert iomap_page_create to take a folio
+  iomap: Convert iomap_page_release to take a folio
+  iomap: Convert iomap_releasepage to use a folio
+  iomap: Add iomap_invalidate_folio
+  iomap: Pass the iomap_page into iomap_set_range_uptodate
+  iomap: Convert bio completions to use folios
+  iomap: Use folio offsets instead of page offsets
+  iomap: Convert iomap_read_inline_data to take a folio
+  iomap: Convert readahead and readpage to use a folio
+  iomap: Convert iomap_page_mkwrite to use a folio
+  iomap: Convert iomap_write_begin and iomap_write_end to folios
+  iomap: Convert iomap_write_end_inline to take a folio
+  iomap,xfs: Convert ->discard_page to ->discard_folio
+  iomap: Convert iomap_add_to_ioend to take a folio
+  iomap: Convert iomap_migrate_page to use folios
+  iomap: Support multi-page folios in invalidatepage
+  xfs: Support multi-page folios
+
+ Documentation/core-api/kernel-api.rst |   1 +
+ block/bio.c                           |  22 ++
+ fs/inode.c                            |   2 -
+ fs/iomap/buffered-io.c                | 499 +++++++++++++-------------
+ fs/xfs/xfs_aops.c                     |  24 +-
+ fs/xfs/xfs_icache.c                   |   2 +
+ include/linux/bio.h                   |  56 ++-
+ include/linux/fs.h                    |   1 -
+ include/linux/iomap.h                 |   3 +-
+ include/linux/pagemap.h               |  16 +
+ mm/shmem.c                            |   3 +-
+ 11 files changed, 366 insertions(+), 263 deletions(-)
+
+-- 
+2.33.0
 
