@@ -2,134 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A50F1441AB7
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 12:32:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98AF8441AB9
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 12:34:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232248AbhKALfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 07:35:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35132 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232199AbhKALfE (ORCPT
+        id S232126AbhKALhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 07:37:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231512AbhKALg7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 07:35:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635766351;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RYc7kj3KhIC57+jtFXvlpfVC9ikhX2Z8kNJ8F2TK81c=;
-        b=Fxu5BRJFoWrYxkbX2c/hJUARld2Nrq0mq/cbUcl430moe376S784qVHPdP/yztXDYyq2nn
-        BIrStXj1M7PETJjrff1mbLCb8LPmYsBXm2cggujUyRZt/xubByNc6JXNhxuh11LifkdXaN
-        50o2VaeWc6866QMCql33EzzKKDrLFEY=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-535-I4jgVMzxPwG3gFphONLOLw-1; Mon, 01 Nov 2021 07:32:00 -0400
-X-MC-Unique: I4jgVMzxPwG3gFphONLOLw-1
-Received: by mail-ed1-f72.google.com with SMTP id y20-20020a056402359400b003e28c9bc02cso2282786edc.9
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 04:32:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=RYc7kj3KhIC57+jtFXvlpfVC9ikhX2Z8kNJ8F2TK81c=;
-        b=xSh7f411CW2sL70+M5as7hiZbQ+zIFuIMofXkTVCd89fynlpIAHnRsdHyjQ5jvCDYI
-         aUPbNtmYXFZPsrxC0getK/3ly9tqVzpPsYHpmmUc7n81zGtLLcjPhCKHXCL9IXVf7znA
-         DPytPh1G1i87t/p4Sp04E4KXwWExoMyqmWxR/ppKtRKkUpb7tObpgbdwipjDpBc07ecz
-         VgmP0dMHRkNM495KlmKR34giWztqhMCBeY274407pqh9h3O8Erzx5pD0ZHmyRfHCNc4N
-         R3ZHnJYJOb1Tqt/jmOeXb/fNIsKanjmusgiiXP7HbDeIWF5JRp5EGKzlST0/vlbocRNR
-         7xuw==
-X-Gm-Message-State: AOAM533jO/I8ojw0SAynxGG3tRiEqUPuTc1AvkflwgJjSQV2pgDWYYPf
-        AR/9+77rM5H2tKHdPxEO2ddtpNx41AjYgt+BDnfcBuM77pY0puBKS/3Uxi4QcUhSV3Wb9v5fKaG
-        Uq4V4PjsuF99lsclmj5OQGJNc
-X-Received: by 2002:a05:6402:2743:: with SMTP id z3mr2848031edd.167.1635766319106;
-        Mon, 01 Nov 2021 04:31:59 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxdzg3VeYKOvszAqY+bqfDsMTo43Ia8gPNjqW9LqNEBZ2jGBaPHdiCf4pqPe8/QslsQIofAZg==
-X-Received: by 2002:a05:6402:2743:: with SMTP id z3mr2848008edd.167.1635766318947;
-        Mon, 01 Nov 2021 04:31:58 -0700 (PDT)
-Received: from [10.40.1.223] ([81.30.35.201])
-        by smtp.gmail.com with ESMTPSA id hb14sm2906657ejc.115.2021.11.01.04.31.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Nov 2021 04:31:58 -0700 (PDT)
-Message-ID: <08a94895-ad57-c8f2-fcb5-ff1c1637dc0d@redhat.com>
-Date:   Mon, 1 Nov 2021 12:31:57 +0100
+        Mon, 1 Nov 2021 07:36:59 -0400
+Received: from metanate.com (unknown [IPv6:2001:8b0:1628:5005::111])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AB0FC061714
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 04:34:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=metanate.com; s=stronger; h=Content-Transfer-Encoding:Content-Type:
+        References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID
+        :Content-Description; bh=A9I0cE/nnKP+AaM3FVQ+7ss2XCPWFrayxinGdUWg/w4=; b=1Vm8
+        feMnTe9gcKLlkTpLM83kWkvoQHg02zTj96kSb2nXQ07lt353zuIa0N7Id6v3LPB5KlA86Ppm816+u
+        1hl9zM0zrNhzkD25H6Fln8nob7b/2IlMg/sqtsOXyLY5Ed32vasv7ka1AZBsfLj7TE1lI/QGOo9Pc
+        X5huFp7rNatFlSTj+N2kmqh79DYs75g4eR7o8HoGTsbYaglGjZDlBnXFz4KpvoVd8aQek6+/gy8qf
+        Ebbc1o5UmIPSnsb77AD50M+AdGnu9KEeiArTfgkWrp0m13TqFrb5yvaWKBUkdLdbrnlgxfZb6XjYk
+        dIcWXO5UmdvEwWN77o+HZsYNVI68/g==;
+Received: from [81.174.171.191] (helo=donbot)
+        by email.metanate.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <john@metanate.com>)
+        id 1mhVZw-00072X-C3; Mon, 01 Nov 2021 11:34:16 +0000
+Date:   Mon, 1 Nov 2021 11:34:15 +0000
+From:   John Keeping <john@metanate.com>
+To:     Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     dri-devel@lists.freedesktop.org, Sandy Huang <hjc@rock-chips.com>,
+        Heiko =?UTF-8?B?U3TDvGJuZXI=?= <heiko@sntech.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH] drm/rockchip: use generic fbdev setup
+Message-ID: <20211101113415.3bed0f62.john@metanate.com>
+In-Reply-To: <6e69f9bb-5a1e-7b79-38e8-d2860e5ee615@suse.de>
+References: <20211029115014.264084-1-john@metanate.com>
+        <ab7ace79-0148-1efa-ec17-6994bb35fd2f@suse.de>
+        <YX01C6l93I2YPgku@donbot>
+        <6e69f9bb-5a1e-7b79-38e8-d2860e5ee615@suse.de>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v4 10/11] platform/x86: int3472: Pass
- tps68470_regulator_platform_data to the tps68470-regulator MFD-cell
-Content-Language: en-US
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Kate Hsuan <hpa@redhat.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>
-References: <20211025094119.82967-1-hdegoede@redhat.com>
- <20211025094119.82967-11-hdegoede@redhat.com>
- <CAHp75VdC8i1YWZh_KXNqz_hHgHFoXQ57cce4-x3e6Ha0ZVPQag@mail.gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <CAHp75VdC8i1YWZh_KXNqz_hHgHFoXQ57cce4-x3e6Ha0ZVPQag@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Authenticated: YES
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 10/25/21 13:38, Andy Shevchenko wrote:
-> On Mon, Oct 25, 2021 at 12:42 PM Hans de Goede <hdegoede@redhat.com> wrote:
->>
->> Pass tps68470_regulator_platform_data to the tps68470-regulator
->> MFD-cell, specifying the voltages of the various regulators and
->> tying the regulators to the sensor supplies so that sensors which use
->> the TPS68470 can find their regulators.
->>
->> Since the voltages and supply connections are board-specific, this
->> introduces a DMI matches int3472_tps68470_board_data struct which
->> contains the necessary per-board info.
->>
->> This per-board info also includes GPIO lookup information for the
->> sensor GPIOs which may be connected to the tps68470 gpios.
+On Sun, 31 Oct 2021 19:09:39 +0100
+Thomas Zimmermann <tzimmermann@suse.de> wrote:
+> Am 30.10.21 um 14:05 schrieb John Keeping:
+> > On Fri, Oct 29, 2021 at 09:00:08PM +0200, Thomas Zimmermann wrote:  
+> >> Am 29.10.21 um 13:50 schrieb John Keeping:  
+> >>> The Rockchip fbdev code does not add anything compared to
+> >>> drm_fbdev_generic_setup(); the one custom function for .fb_mmap does the
+> >>> same thing as gem_prime_mmap which is called by the helper.
+> >>>
+> >>> Signed-off-by: John Keeping <john@metanate.com>
+> >>> ---
+> >>>    drivers/gpu/drm/rockchip/Makefile             |   1 -
+> >>>    drivers/gpu/drm/rockchip/rockchip_drm_drv.c   |  10 +-
+> >>>    drivers/gpu/drm/rockchip/rockchip_drm_drv.h   |   2 -
+> >>>    drivers/gpu/drm/rockchip/rockchip_drm_fbdev.c | 164 ------------------
+> >>>    drivers/gpu/drm/rockchip/rockchip_drm_fbdev.h |  24 ---
+> >>>    5 files changed, 2 insertions(+), 199 deletions(-)
+> >>>    delete mode 100644 drivers/gpu/drm/rockchip/rockchip_drm_fbdev.c
+> >>>    delete mode 100644 drivers/gpu/drm/rockchip/rockchip_drm_fbdev.h
+> >>>
+> >>> diff --git a/drivers/gpu/drm/rockchip/Makefile b/drivers/gpu/drm/rockchip/Makefile
+> >>> index 17a9e7eb2130..1a56f696558c 100644
+> >>> --- a/drivers/gpu/drm/rockchip/Makefile
+> >>> +++ b/drivers/gpu/drm/rockchip/Makefile
+> >>> @@ -5,7 +5,6 @@
+> >>>    rockchipdrm-y := rockchip_drm_drv.o rockchip_drm_fb.o \
+> >>>    		rockchip_drm_gem.o rockchip_drm_vop.o rockchip_vop_reg.o
+> >>> -rockchipdrm-$(CONFIG_DRM_FBDEV_EMULATION) += rockchip_drm_fbdev.o
+> >>>    rockchipdrm-$(CONFIG_ROCKCHIP_ANALOGIX_DP) += analogix_dp-rockchip.o
+> >>>    rockchipdrm-$(CONFIG_ROCKCHIP_CDN_DP) += cdn-dp-core.o cdn-dp-reg.o
+> >>> diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_drv.c b/drivers/gpu/drm/rockchip/rockchip_drm_drv.c
+> >>> index 69c699459dce..20d81ae69828 100644
+> >>> --- a/drivers/gpu/drm/rockchip/rockchip_drm_drv.c
+> >>> +++ b/drivers/gpu/drm/rockchip/rockchip_drm_drv.c
+> >>> @@ -26,7 +26,6 @@
+> >>>    #include "rockchip_drm_drv.h"
+> >>>    #include "rockchip_drm_fb.h"
+> >>> -#include "rockchip_drm_fbdev.h"
+> >>>    #include "rockchip_drm_gem.h"
+> >>>    #define DRIVER_NAME	"rockchip"
+> >>> @@ -159,10 +158,6 @@ static int rockchip_drm_bind(struct device *dev)
+> >>>    	drm_mode_config_reset(drm_dev);
+> >>> -	ret = rockchip_drm_fbdev_init(drm_dev);
+> >>> -	if (ret)
+> >>> -		goto err_unbind_all;
+> >>> -
+> >>>    	/* init kms poll for handling hpd */
+> >>>    	drm_kms_helper_poll_init(drm_dev);
+> >>> @@ -170,10 +165,11 @@ static int rockchip_drm_bind(struct device *dev)
+> >>>    	if (ret)
+> >>>    		goto err_kms_helper_poll_fini;
+> >>> +	drm_fbdev_generic_setup(drm_dev, 32);  
+> >>
+> >> Please pass 0 for the final argument. The fbdev helpers pick 32 by default.
+> >> Maybe leave a comment if you require 32 here.  
+> > 
+> > I wanted to minimise the changes introduced here - passing 32 matches
+> > the value passed to drm_fb_helper_initial_config() in the deleted code
+> > from rockchip_drm_fbdev.c.  
 > 
-> gpios --> GPIO lines
-
-Fixed for v5.
-
-
-> ...
+> In that case
 > 
->> +       board_data = int3472_tps68470_get_board_data(dev_name(&client->dev));
-> 
->> +       if (board_data)
-> 
-> IIRC it's a dup. Below already incorporates this.
-> 
->> +               gpiod_remove_lookup_table(board_data->tps68470_gpio_lookup_table);
+> Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
 
-Not sure what you mean here? This line *dereferences* board_data, so even if
-gpiod_remove_lookup_table() already contains a NULL check for the table pointer,
-we still need the board_data check to avoid dereferencing it to get
-the tps68470_gpio_lookup_table member.
+Thanks!
+
+> > 
+> > What do you think about changing this to 0 in a follow-up patch?
+> >   
+> 
+> Yes. If possible, please provide a follow-up patch for this and set 
+> modeconfig.prefered_depth to 24.
+
+I'll follow up with a patch setting this to zero, but I'm not convinced
+I understand mode_config.prefered_depth well enough to be confident
+setting it to 24 is the right thing to do.
+
+Looking at commits 23d4e55f7eeb ("drm/vkms: Unset preferred_depth") and
+550f17441f53 ("drm/cirrus: flip default from 24bpp to 16bpp") it seems
+that this will have a wider impact beyond fbdev.  32bpp has been used
+since the Rockchip driver was added so I don't see any real need to
+change to 24 now.
+
 
 Regards,
-
-Hans
-
+John
