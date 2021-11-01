@@ -2,88 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 410E8441FB4
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 18:56:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80915441FB7
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 18:57:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231499AbhKAR7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 13:59:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47098 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231970AbhKAR6v (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 13:58:51 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2210FC061767;
-        Mon,  1 Nov 2021 10:56:18 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id a20-20020a1c7f14000000b003231d13ee3cso4356wmd.3;
-        Mon, 01 Nov 2021 10:56:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YZ2A2AWagNpv2J8C8P3tLCVgYhd2un+CUt39jsHUZpc=;
-        b=JsBw+/WDf2+nx6I0RUT1eXgDPCkJk4ykkvyEZ238RYwKJ3qDaKRsJODzA9eJ1SrR6M
-         KR5MYPjaYeQUnH52j2eXrj8I/uz8phJ2Z7uZ+JjusWHJFxfRDYpZ9+sZbyqLjnDzf2P7
-         /Z8TjVHHXrDSqPhsxCSjk/6CL8CJsOc5ZJE78ur0eMGBNcJBrd51DCpeRCyzH7ovKCoh
-         kgE2c64VAfVU0nY6ajuPze5o6VeNElMlXUmUiJ6wKhmfn6Lvdnc1qGAJouGUubToQr1R
-         aIoxZ+m+5GfutNpg8WEN8FS2IfUjXSci/JYQ5IPSRX97WHpmhFJfi//GDhu6nPIvtG9j
-         FK5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YZ2A2AWagNpv2J8C8P3tLCVgYhd2un+CUt39jsHUZpc=;
-        b=Qa/NhH+ykSoewyngHb5tEwflEq3kMGHBuq/qhUMF9rUtSV48h1R4ZIt9moz2aMzV1w
-         iBGQfNm/fGtcLqA5+l9Fss/SW4ehADC1yj9jPA5g3BhPWzYkfQIs6jZu3zzzQjsN3Pqu
-         Ll3XzBZWX3KtpP/DWpvRL6LC1Ug89GMaEUM/MVoT7ZU6VNX64u2WU45GRHrPNZUyHF5e
-         BEXilvRfV3O962M7BPYdiMY/7ltkPZ7LjcVhyQiHr3P4/qblmEPwe9tNMYAibbbrcXgW
-         7frpFSuMk0VKuk3lXKk1GhWqFY8cc1tR1PzkwUMxJy1+6KLyQeVGqCoT1+g5pRjhi/Do
-         kicw==
-X-Gm-Message-State: AOAM531Ap8kyj8FE5wsdMkvOxD7Tp0M8GRn7V8jlb6tJrqXvFZ66vkqy
-        BWuHbO+GSkYFAnw/48Hc+8V/nFnQqmDBKNS+uBQ=
-X-Google-Smtp-Source: ABdhPJw8wKcfyMP3WnvzELw4fAFEeF9Qqe/NMhnO6k7F1oamAM9YgTt8bPddiGlxtH3a7+NJoBGGnIWyIHXYGeKvo1o=
-X-Received: by 2002:a7b:c1d5:: with SMTP id a21mr502663wmj.14.1635789376712;
- Mon, 01 Nov 2021 10:56:16 -0700 (PDT)
+        id S232081AbhKAR7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 13:59:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38238 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231588AbhKAR7Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 13:59:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 18F5761058;
+        Mon,  1 Nov 2021 17:56:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635789412;
+        bh=WiBnBHSIxqp0Vb1O0pxCkDHWFMkUCELEPiehK40+ZKQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aVdP8F7F6fz6jgIKfc2ajaeENARDqkZHRoiVDxh/Ma5cZKhpweZ08+jODd4OkbyJT
+         lRIR5eY2+HEqVrB/ms6puYfjuBXkYh+sSMXLsxoE4z63rSUjH8WwafreXi/rufw4/9
+         MdvM43T7PbJX4Qj7J7yA5RglCBQrSkPqboxSloxJKhi4yZnbD6wWTZueLcHxfni2pg
+         wkznNkOK1o0GQbV9WjeArMtpJDxowkcuCvW7H+UBvi5FUJMEx/37d43ZeXyTQk0SGS
+         PwsIAhkz909BPIvtcZlLSD/b1Lf6+EY9Jb/eKHKE6+bkis9w912NHmcPdqcU6nuI8C
+         4u9mwIIFOGBCw==
+Received: by pali.im (Postfix)
+        id 875FA7E4; Mon,  1 Nov 2021 18:56:49 +0100 (CET)
+Date:   Mon, 1 Nov 2021 18:56:49 +0100
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Russell King <linux@armlinux.org.uk>, Andrew Lunn <andrew@lunn.ch>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: Marvell: Update PCIe fixup
+Message-ID: <20211101175649.q743eg65jpjtk7sd@pali>
+References: <20211101150405.14618-1-pali@kernel.org>
+ <20211101162711.GA2744544@nvidia.com>
 MIME-Version: 1.0
-References: <20211028135737.8625-1-yc.hung@mediatek.com> <20211028135737.8625-2-yc.hung@mediatek.com>
- <YXwoB7FtRw0AzgcD@sirena.org.uk>
-In-Reply-To: <YXwoB7FtRw0AzgcD@sirena.org.uk>
-From:   Daniel Baluta <daniel.baluta@gmail.com>
-Date:   Mon, 1 Nov 2021 19:56:04 +0200
-Message-ID: <CAEnQRZCQHxctG+3L72Xx3083shytF478ONGGpZf0A-6-+nFE=w@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] ASoC: SOF: mediatek: Add mt8195 dsp clock support
-To:     Mark Brown <broonie@kernel.org>
-Cc:     YC Hung <yc.hung@mediatek.com>, Takashi Iwai <tiwai@suse.com>,
-        Rob Herring <robh+dt@kernel.org>, matthias.bgg@gmail.com,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        Daniel Baluta <daniel.baluta@nxp.com>, trevor.wu@mediatek.com,
-        allen-kh.cheng@mediatek.com,
-        angelogioacchino.delregno@collabora.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211101162711.GA2744544@nvidia.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 8:00 PM Mark Brown <broonie@kernel.org> wrote:
->
-> On Thu, Oct 28, 2021 at 09:57:36PM +0800, YC Hung wrote:
-> > Add adsp clock on/off support on mt8195 platform.
-> >
-> > Acked-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> > Signed-off-by: YC Hung <yc.hung@mediatek.com>
-> > ---
-> >  sound/soc/sof/mediatek/adsp_helper.h       |   2 +-
->
-> This doesn't apply against current code, there's no such file upstream.
-> Please check and resend.
+On Monday 01 November 2021 13:27:11 Jason Gunthorpe wrote:
+> On Mon, Nov 01, 2021 at 04:04:05PM +0100, Pali Rohár wrote:
+> > - The code relies on rc_pci_fixup being called, which only happens
+> >   when CONFIG_PCI_QUIRKS is enabled, so add that to Kconfig. Omitting
+> >   this causes a booting failure with a non-obvious cause.
+> > - Update rc_pci_fixup to set the class properly, copying the
+> >   more modern style from other places
+> > - Correct the rc_pci_fixup comment
+> > 
+> > This patch just re-applies commit 1dc831bf53fd ("ARM: Kirkwood: Update
+> > PCI-E fixup") for all other Marvell platforms which use same buggy PCIe
+> > controller.
+> 
+> I wonder if that code is even relevant any more since we started using
+> CONFIG_PCI_MVEBU
+> 
+> ?
 
-This patch was sent only to get an Ack-by for 2/2 from Rob Herring.
-The patch will go first to SOF tree and then I will
-send you a patch based on your for-next branch.
+It is (still) relevant for platforms which do not use CONFIG_PCI_MVEBU
+yet.
 
-YC sorry for not being more explicit. I think the right way was to
-mark this patch series as [RFC PATCH].
+> Really, these broken controllers should not be used "raw" but always
+> via their special host bridge driver that fixes all the config space
+> problems.
+
+I agree.
+
+Long-term goal should be to convert these platforms to use pci-mvebu.c
+driver. And until it happens simple fixes like in commit 1dc831bf53fd is
+needed for all affected Marvell platforms.
+
+Some details how these Marvell PCIe controllers are broken is in email:
+https://lore.kernel.org/linux-pci/20211003120944.3lmwxylnhlp2kfj7@pali/
