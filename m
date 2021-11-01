@@ -2,128 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E7B64419E2
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 11:29:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 009A34419EF
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 11:31:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232048AbhKAKb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 06:31:57 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:47526 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231942AbhKAKb4 (ORCPT
+        id S231987AbhKAKeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 06:34:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36907 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231949AbhKAKeB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 06:31:56 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 2E84A218C8;
-        Mon,  1 Nov 2021 10:29:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1635762563; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=2tAQlkX5dqDNgEhpTucxQpxhwif5yeErWAKq3VlEFSI=;
-        b=uyegI94bhOoN69axtRbTxfGEWVWCZvSI7iPj77RxojuAnTQ65rQXmr39UMTKXDxObfB9k+
-        xreN+bwvya7wr9YCc3ZHk/bnPM8mr9OnLB6a+souN3IFtJ12o9CHfUbX3nA2WWr/7JTQd4
-        kBSViGJefJTHI1Vry3/qWbtdqQowwZ4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1635762563;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=2tAQlkX5dqDNgEhpTucxQpxhwif5yeErWAKq3VlEFSI=;
-        b=NZjjh2PpsnYgfXQDMsDUiV39mMuDO0f4qEMaIOrM2KTROO7vQU2iQaPUe1lj2T/zb4vsOn
-        pSp50jl0KGL43rCw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1C35813AA9;
-        Mon,  1 Nov 2021 10:29:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id OHH5BYPBf2GSTgAAMHmgww
-        (envelope-from <bp@suse.de>); Mon, 01 Nov 2021 10:29:23 +0000
-Date:   Mon, 1 Nov 2021 11:29:24 +0100
-From:   Borislav Petkov <bp@suse.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] x86/cpu for v5.16
-Message-ID: <YX/BhEUBTK4bkQNm@zn.tnic>
+        Mon, 1 Nov 2021 06:34:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635762688;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dp8l/RCsxjlz7Zk0ZyfQ5HSkUFJxSL+4S21cue4eFb8=;
+        b=cpyIiBQbFwj/YIIR5WmHwh4OdbbGUJcV16fS4yXLsb229aUk1ykgh/v4DsiZBc4gFpzRz/
+        AuJjTEBsXsbki1Ub1donz6fkSFMVdRFnVIyN+jIPSYv8N9y05AHks1OhY0wQCySH58+PdF
+        LaMguBOlbUgN1YagJSYz/Y8ip55XIds=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-419-OC_CZ4cnMC-kqhP_hIEuxw-1; Mon, 01 Nov 2021 06:31:27 -0400
+X-MC-Unique: OC_CZ4cnMC-kqhP_hIEuxw-1
+Received: by mail-ed1-f72.google.com with SMTP id w26-20020a056402071a00b003e28a389d04so2837017edx.4
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 03:31:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=dp8l/RCsxjlz7Zk0ZyfQ5HSkUFJxSL+4S21cue4eFb8=;
+        b=jYvn/OfKBVvdmv7pw7AA+JlUFgq2Y1GyZ+wST+tipO2i72LadWRuGVN3xOxgjgiPY6
+         vvhOK/kl79i8Xa8zR00hQKW4dQtpZt+FF+n/SH3OrfDtI09StUYWGUBqGoabaZHPnBeq
+         dM57BXigQsRzqmSDeT8LsOeDB6cXfG8sSWvEQRkzHJFkjqQQAAyFQOsIlN8PoXfirj0y
+         GVKQgZGWqrq8ZfoHxhqFknjeY4EEppIamY/BUriocDUWxphjYmNTTVjzrS2b086UDENq
+         Idwe+SK0cRA1NR7YHbqqj8xIylMEHuHbgWKLrvqoeciWK51wXC4WwDyKfJnjImvNCAHr
+         Z3FQ==
+X-Gm-Message-State: AOAM5313aqwA6ZxqaEdh5c135obrk1UUTtvC96K81LDq071L77kruOqC
+        q6lYSzNOAjedFF5oyv65FGBsd6m1idh6LGTI2f6mqo4wq+NHvpdlKcst/ZUikGnvubTL2TRPeka
+        NoMitVTdO88eHrgL2cmA3Hu82
+X-Received: by 2002:aa7:c158:: with SMTP id r24mr24743080edp.65.1635762686392;
+        Mon, 01 Nov 2021 03:31:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwa7LV21EyQYFUAKgymc9bpXOYimSIdWdyjMthwHi/ngQYC/LDQgfr3s2AHIBJ3JsdSa+W3bQ==
+X-Received: by 2002:aa7:c158:: with SMTP id r24mr24743063edp.65.1635762686258;
+        Mon, 01 Nov 2021 03:31:26 -0700 (PDT)
+Received: from [10.40.1.223] ([81.30.35.201])
+        by smtp.gmail.com with ESMTPSA id dp8sm7011007ejc.83.2021.11.01.03.31.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Nov 2021 03:31:25 -0700 (PDT)
+Message-ID: <8804fa29-d0d9-14a9-e48e-268113a79d07@redhat.com>
+Date:   Mon, 1 Nov 2021 11:31:25 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v4 08/11] platform/x86: int3472: Add
+ get_sensor_adev_and_name() helper
+Content-Language: en-US
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Kate Hsuan <hpa@redhat.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>
+References: <20211025094119.82967-1-hdegoede@redhat.com>
+ <20211025094119.82967-9-hdegoede@redhat.com>
+ <CAHp75VeLAW6ZBQYidnD7PDYfAH3A2bq+oMJTru-9OW_t-XS26g@mail.gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <CAHp75VeLAW6ZBQYidnD7PDYfAH3A2bq+oMJTru-9OW_t-XS26g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi,
 
-please pull x86/cpu updates for v5.16.
+On 10/25/21 13:31, Andy Shevchenko wrote:
+> On Mon, Oct 25, 2021 at 12:42 PM Hans de Goede <hdegoede@redhat.com> wrote:
+>>
+>> The discrete.c code is not the only code which needs to lookup the
+>> acpi_device and device-name for the sensor for which the INT3472
+>> ACPI-device is a GPIO/clk/regulator provider.
+>>
+>> The tps68470.c code also needs this functionality, so factor this
+>> out into a new get_sensor_adev_and_name() helper.
+> 
+> ...
+> 
+>> +int skl_int3472_get_sensor_adev_and_name(struct device *dev,
+>> +                                        struct acpi_device **sensor_adev_ret,
+>> +                                        const char **name_ret)
+>> +{
+>> +       struct acpi_device *adev = ACPI_COMPANION(dev);
+>> +       struct acpi_device *sensor;
+>> +       int ret = 0;
+>> +
+>> +       sensor = acpi_dev_get_first_consumer_dev(adev);
+>> +       if (!sensor) {
+>> +               dev_err(dev, "INT3472 seems to have no dependents.\n");
+>> +               return -ENODEV;
+>> +       }
+>> +
+>> +       *name_ret = devm_kasprintf(dev, GFP_KERNEL, I2C_DEV_NAME_FORMAT,
+>> +                                  acpi_dev_name(sensor));
+>> +       if (!*name_ret)
+>> +               ret = -ENOMEM;
+>> +
+>> +       if (ret == 0 && sensor_adev_ret)
+>> +               *sensor_adev_ret = sensor;
+>> +       else
+>> +               acpi_dev_put(sensor);
+>> +
+>> +       return ret;
+> 
+> The error path is twisted a bit including far staying ret=0 assignment.
+> 
+> Can it be
+> 
+>        int ret;
+>        ...
+>        *name_ret = devm_kasprintf(dev, GFP_KERNEL, I2C_DEV_NAME_FORMAT,
+>                                   acpi_dev_name(sensor));
+>        if (!*name_ret) {
+>                acpi_dev_put(sensor);
+>                return -ENOMEM;
+>        }
+> 
+>        if (sensor_adev_ret)
+>                *sensor_adev_ret = sensor;
+> 
+>        return 0;
+> 
+> ?
 
-Thx.
+That misses an acpi_dev_put(sensor) when sensor_adev_ret == NULL.
 
----
-The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
+Regards,
 
-  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
+Hans
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_cpu_for_v5.16_rc1
-
-for you to fetch changes up to 415de44076640483648d6c0f6d645a9ee61328ad:
-
-  x86/cpu: Fix migration safety with X86_BUG_NULL_SEL (2021-10-21 20:49:16 +0200)
-
-----------------------------------------------------------------
-- Start checking a CPUID bit on AMD Zen3 which states that the CPU
-clears the segment base when a null selector is written. Do the explicit
-detection on older CPUs, zen2 and hygon specifically, which have the
-functionality but do not advertize the CPUID bit. Factor in the presence
-of a hypervisor underneath the kernel and avoid doing the explicit check
-there which the HV might've decided to not advertize for migration
-safety reasons, a.o.
-
-- Add support for a new X86 CPU vendor: VORTEX. Needed for whitelisting
-those CPUs in the hardware vulnerabilities detection
-
-- Force the compiler to use rIP-relative addressing in the fallback path of
-static_cpu_has(), in order to avoid unnecessary register pressure
-
-----------------------------------------------------------------
-Borislav Petkov (1):
-      x86/umip: Downgrade warning messages to debug loglevel
-
-H. Peter Anvin (1):
-      x86/asm: Avoid adding register pressure for the init case in static_cpu_has()
-
-H. Peter Anvin (Intel) (1):
-      x86/asm: Add _ASM_RIP() macro for x86-64 (%rip) suffix
-
-Jane Malalane (1):
-      x86/cpu: Fix migration safety with X86_BUG_NULL_SEL
-
-Marcos Del Sol Vives (1):
-      x86/CPU: Add support for Vortex CPUs
-
- arch/x86/Kconfig.cpu              | 13 +++++++++++
- arch/x86/include/asm/asm.h        |  5 +++++
- arch/x86/include/asm/cpufeature.h | 13 +++++++----
- arch/x86/include/asm/processor.h  |  3 ++-
- arch/x86/kernel/cpu/Makefile      |  1 +
- arch/x86/kernel/cpu/amd.c         |  2 ++
- arch/x86/kernel/cpu/common.c      | 46 +++++++++++++++++++++++++++++++++------
- arch/x86/kernel/cpu/cpu.h         |  1 +
- arch/x86/kernel/cpu/hygon.c       |  2 ++
- arch/x86/kernel/cpu/vortex.c      | 39 +++++++++++++++++++++++++++++++++
- arch/x86/kernel/umip.c            |  8 +++----
- 11 files changed, 117 insertions(+), 16 deletions(-)
- create mode 100644 arch/x86/kernel/cpu/vortex.c
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Ivo Totev, HRB 36809, AG Nürnberg
