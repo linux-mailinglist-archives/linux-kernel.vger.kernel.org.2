@@ -2,102 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B7D6441638
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:21:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF299441655
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:22:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232447AbhKAJXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:23:25 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:37914 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232148AbhKAJWH (ORCPT
+        id S232158AbhKAJYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:24:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232296AbhKAJWj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:22:07 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 099301FD6C;
-        Mon,  1 Nov 2021 09:19:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1635758373; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=IfMfQon1WRlOFatpVNEVVz0ZISffpW/0UytWrwJq5sM=;
-        b=NRCEF6Im4DFnpzCTKEk4F4qzSIsHJuMt1PCLdOiR/BlvV5Eu/fj4jGsI/h6lzMwGxhXSsh
-        bOaOZAKFWGi/LKfezqWKvazdcfZA/lL/Q/B2E7GG1FaCjAbS0weYMe8aqcL3/3wBuAVEf+
-        yzoOWZFqciF8ZmmNKivkhGCoyJudOao=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1635758373;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=IfMfQon1WRlOFatpVNEVVz0ZISffpW/0UytWrwJq5sM=;
-        b=8rj/uY62Xgq8OUqyrR19Tl/PebvEE7wr+XTXEYmCzilA6V5rKjYInYxx1kUKrQp7zD/tim
-        oFQi0ZGKRApiPTCA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E928213AB7;
-        Mon,  1 Nov 2021 09:19:32 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id tyDBOCSxf2HrNAAAMHmgww
-        (envelope-from <bp@suse.de>); Mon, 01 Nov 2021 09:19:32 +0000
-Date:   Mon, 1 Nov 2021 10:19:29 +0100
-From:   Borislav Petkov <bp@suse.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-efi <linux-efi@vger.kernel.org>, x86-ml <x86@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] EFI updates for v5.16
-Message-ID: <YX+xIaS0R2F9HJwr@zn.tnic>
+        Mon, 1 Nov 2021 05:22:39 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAEFCC06120A;
+        Mon,  1 Nov 2021 02:19:48 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id 205so28308892ljf.9;
+        Mon, 01 Nov 2021 02:19:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=omsuco/GDjU8Uw354veydtpi80x8BoUPArMGHXMwgns=;
+        b=eQxsS1nZPpKfBSRdoInfpmAvTA87XoF8w70ievMYBiEoshjHrj1nUzpuFRSDjFKzwz
+         51B/Txkk8lNSQSISjCjzio+PFZsX66Nprd+Qh+H3v1liPbOfqL3MDJiwuwN7kBNFd0wg
+         0YBetwjHpBM+ffDV3n6kWfDeg7IeuXbejfYBjOr1nCl+epwotheMgb6NkXWT7pS8gJNO
+         6lVOE6z7h0/HTKXENXZL58XQgWlsE7D4M9Hyzg/zUgsErbhPs52xksbzafLwG0fwsSz7
+         nwx76g3GkKf80fBDwufGEOYoKW3OtKAAOvB9lsHmwPxYk0GxgWeIM71BftQgbrgF2Dvv
+         Dxag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=omsuco/GDjU8Uw354veydtpi80x8BoUPArMGHXMwgns=;
+        b=FukcS0iWhQRttJoizgzunDVuX4G1/QsXGu5B1Uz4XwFnCOkkAnz7LZYNXifqCyNQVC
+         fM2h3U6MBiBdEeLnTYarwPWZsSleYKOwCMZVIC3hA/f30UsI8PyYIK/zQtmJkFWSS3Cr
+         YzeTqIfCNPP11PkEhlQYD2yHCnRI4ZcfwalUzALAQeB9UZ+DRKTDnokPi6bnxghDoceI
+         JMM7wd0enlycYkoseL98fhDrRhTuCpqwES7+cDpWIad76Eghsm4b2lJ3YO3rl6jiFCsS
+         qdoPErfg7AipbW9sEi8bc4CAfVO+ubPNVgc3g4y9LC3bU5MrsF8CMfHl9kGybY1bsFUk
+         fE9g==
+X-Gm-Message-State: AOAM531EhQnIf+p9fG4ODrgsLztiVjlVn2HJzTwPfi0C/BfM7anKPiIo
+        L4dBung6pznuTDTKAHhsngR54pWsTy7oCw==
+X-Google-Smtp-Source: ABdhPJwDK6CNE8RL68kbEE62RucRI+I+d1hTcAJCbMvShvyv3+rnnGorNwIrBxEpVtowSy1qexCGQg==
+X-Received: by 2002:a2e:9b41:: with SMTP id o1mr27014683ljj.499.1635758386373;
+        Mon, 01 Nov 2021 02:19:46 -0700 (PDT)
+Received: from [192.168.1.11] ([94.103.235.8])
+        by smtp.gmail.com with ESMTPSA id b15sm1480092ljp.95.2021.11.01.02.19.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Nov 2021 02:19:46 -0700 (PDT)
+Message-ID: <f622f569-25d5-f38e-e9fb-7f07e12c4b7e@gmail.com>
+Date:   Mon, 1 Nov 2021 12:19:45 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: Need help in debugging "memory leak in em28xx_init_dev"
+Content-Language: en-US
+To:     Dongliang Mu <mudongliangabcd@gmail.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+References: <CAD-N9QXsUcczurqq9LdaVjXFZMBSbStynwFJyu0UayDazGe=nw@mail.gmail.com>
+ <55f04cb1-18ac-085b-3d35-7a01716fbcbe@gmail.com>
+ <CAD-N9QVN7cepUpRu3d-xtr1L3DG90-nLS4gmkjerDZO21F_ejQ@mail.gmail.com>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+In-Reply-To: <CAD-N9QVN7cepUpRu3d-xtr1L3DG90-nLS4gmkjerDZO21F_ejQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On 11/1/21 11:55, Dongliang Mu wrote:
 
-please pull the last EFI pull request which is forwarded through the tip
-tree, for v5.16. From now on, Ard will be sending stuff directly to you,
-as already stated in the previous urgent pull.
+>>
+>>
+>> Looks like missing clean up on error handling path.
+>>
+>> ->probe()
+>>      em28xx_init_dev()
+>>        em28xx_media_device_init() <- dev->media_dev allocated
+>>        *error somewhere in em28xx_init_dev()*
+>>
+> 
+> Hi Pavel,
+> 
+> you're right. In some error handling code (em28xx_audio_setup fails),
+> em28xx_init_dev fails to deallocated the media_dev field.
+> 
 
-Thx.
+Hi, Dongliang,
 
----
+Did patch attached to my previous email pass syzbot's reproducer test? 
+Unfortunately, I am not able to test rn :(
 
-The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
 
-  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
 
-are available in the Git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/efi-next-for-v5.16
-
-for you to fetch changes up to 720dff78de360ad9742d5f438101cedcdb5dad84:
-
-  efi: Allow efi=runtime (2021-09-28 22:44:15 +0200)
-
-----------------------------------------------------------------
-EFI update for v5.16
-
-Disable EFI runtime services by default on PREEMPT_RT, while adding the
-ability to re-enable them on demand by passing efi=runtime on the
-command line.
-
-----------------------------------------------------------------
-Sebastian Andrzej Siewior (2):
-      efi: Disable runtime services on RT
-      efi: Allow efi=runtime
-
- drivers/firmware/efi/efi.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Ivo Totev, HRB 36809, AG Nürnberg
+With regards,
+Pavel Skripkin
