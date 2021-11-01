@@ -2,266 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54D1B4412B7
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 05:14:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DB374412BB
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 05:28:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229619AbhKAEQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 00:16:37 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:34052 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229457AbhKAEQg (ORCPT
+        id S229541AbhKAEaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 00:30:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34262 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229457AbhKAEah (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 00:16:36 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.1.2/8.16.1.2) with SMTP id 19VLYpAb013124;
-        Sun, 31 Oct 2021 21:13:53 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=8KxcbJlD/nR9R9nL//+LOAhaFdydTM+DoLhsQE08bB4=;
- b=HMN0FfA1n3V4guLrYDW/Gxi8Gipf66wFtdcP9PeDxMHSUBa6Wco6VcaH0TLzNHrldvCP
- Xa3Mt6ec6dmYz2+jpjlsBBQq0tD49g8T+AXbkGMZxg9+OQLrTNyZJYXp4F6JBy3AAK5A
- 8Gq+Ewzo8SudeRPe3tJ8n1z8HMYxlM7jqds= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net with ESMTP id 3c1ns749e6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Sun, 31 Oct 2021 21:13:53 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Sun, 31 Oct 2021 21:13:52 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HI0yLXxj/6ipJd+xVLh0ZTouI1UdcHQZF5Kz8Bp5BO3RLH6fp6p9Mg3LLw70n2djfFaghsYUBjcnKP/T9BklBpdYHWlNJYxq5pi/bFxVZ/J5vthvsb/Xi7iAXshb+iRsWmGYE0dw1a3zM4AEiNnxBNmQWBm7owQWS/7wMVZd4qEZlskVbA0EsVW6p1rVTM4CpdcV89wHJA+YYIbxiEsTwwbJ+wKM6isBi8jkRHY/WZjtkb8FK0ae2IK3kzx0G1hGce+PvCOcsDLX4ivGysTPrOSpRgn7sFzavn/u+wziD+P2VOsZQQypAMSNzNNT8CdhTdG6muc0wKuqGKmhP35mqg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8KxcbJlD/nR9R9nL//+LOAhaFdydTM+DoLhsQE08bB4=;
- b=HLsNboU+VJn8R9BDHDzCpdOj9rGrbUKiMN/eJfxBYP5Ll6HuKbogufqfhRqn/UqhZK6ZuDVnDt/u6V00Z7nGbmfxAF06s5OPUH0j5GbdE7yFNihYsQJP1xdVQ7n9wnzPWJ9p0ij2GDXYARUXtDb8SGYIOPbaSsAWazsCTptLFBRkPivd46bPHqPchvkCoJdrwLQ/NJX/lHXmMh1XL71O89+mUtVGgJ2/3mXWiVG948baGg78Objx+itGm4Hy7F8aQjA54oL/yw5tM8/KS0Zfpg3phe8U52SFkNdae+cU/IxE2oPJg8kRo+svGFX8nJZ3qitGFn6MGZC4Z4AtB/4oGw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=fb.com;
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by SN6PR1501MB4095.namprd15.prod.outlook.com (2603:10b6:805:56::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.17; Mon, 1 Nov
- 2021 04:13:50 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::51ef:4b41:5aea:3f75]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::51ef:4b41:5aea:3f75%6]) with mapi id 15.20.4649.019; Mon, 1 Nov 2021
- 04:13:50 +0000
-Message-ID: <3d7c321e-6099-a7f4-bffe-06d4bf48536d@fb.com>
-Date:   Sun, 31 Oct 2021 21:13:47 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.1
-Subject: Re: [PATCH -next] bpf/benchs: Fix return value check of
- bpf_program__attach()
-Content-Language: en-US
-To:     Yang Yingliang <yangyingliang@huawei.com>,
-        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
-CC:     <linux-kselftest@vger.kernel.org>, <shuah@kernel.org>,
-        <ast@kernel.org>
-References: <20211030093051.2609665-1-yangyingliang@huawei.com>
-From:   Yonghong Song <yhs@fb.com>
-In-Reply-To: <20211030093051.2609665-1-yangyingliang@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4PR04CA0055.namprd04.prod.outlook.com
- (2603:10b6:303:6a::30) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+        Mon, 1 Nov 2021 00:30:37 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36A1BC061714
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 21:28:04 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 77-20020a1c0450000000b0033123de3425so1199976wme.0
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 21:28:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uf+ySBnpt0L81sOA1rQwLjpC6gi+1uIG+41YXpa5cPQ=;
+        b=20p6K6qzy2pNd2PulvXyAfM5NyP61vXLtPCvqBuarxHuRHrewqnz61NqEhWKNpb8x/
+         2ZSeOl1OXWEEglj+WxZsuJ8TyHBYg0WhZuWmcap/N7Q36qPxyWWIP2R7Wc37A+E+hAdR
+         I+kzMpUJ4CRnZu6BYnxhNixKthJWoXgATTH1uNt0tZ3wO1cBlZvXk4h22uDFdTwvQirm
+         LcrDk+5TMCN+VHz+wzriH3ld4WSmZ2Dr9exqUHJvq+jBYsDYBXmivNR+3oXq/mufURN/
+         LsINXyWpkulQr9z49Spjke6Qj7h8f8zemr3h3LlX4bUFS62a3Co2zp60FmOfBpFHsisd
+         T6OQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uf+ySBnpt0L81sOA1rQwLjpC6gi+1uIG+41YXpa5cPQ=;
+        b=cs8S8M6l+mFyXAJUylJv5JNXon4sC8YbAHXpHIiORiSWbc7iVeAGg/ZUuljQG3D5Vg
+         rEc19I7AaI+3An9e1dU95f/MQkJmNrIusrs6wqEevbO98Hsoqk6F8Q2mgpidYx4NX9fE
+         QBccPb08wznp79qgAH5UCasc2Qo3fWRLLl5qVpRxkLQuPeLPQkO9NJp5L5GIs2cPitgL
+         lgbQ5Lyh4cOZxn4s2JPek7KPqHsbhoUrtDVJJBKRrkOSRGBwIW81VnKh8AkjGs6R877T
+         4jepEbs6NbR9E+YVsdgPVZROO/FAlrMs1EAeGvrxyhI9mRS35qtjPVxOvui9GYfdhi66
+         GWww==
+X-Gm-Message-State: AOAM533r5TucB2Zi79ngpPa2ibwJ9qikeVKb3HACS/Jg91NtgCweSF6i
+        zcp1SGroS0nhreUAux2Hp36jgWlG/k23Lk0toJpOHw==
+X-Google-Smtp-Source: ABdhPJzyv+CSLKPPRMzBxp/wdbHDKrNnGQbCY05ShCFU4VpfLfvznUlO0BlVRRWRVzhw5KcgX8aUw6UsEfBxQ+UZDQg=
+X-Received: by 2002:a1c:2057:: with SMTP id g84mr15104450wmg.137.1635740881954;
+ Sun, 31 Oct 2021 21:28:01 -0700 (PDT)
 MIME-Version: 1.0
-Received: from [IPV6:2620:10d:c085:21c1::17cb] (2620:10d:c090:400::5:ee01) by MW4PR04CA0055.namprd04.prod.outlook.com (2603:10b6:303:6a::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.14 via Frontend Transport; Mon, 1 Nov 2021 04:13:49 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 282fee3f-27b4-4227-f24a-08d99cee0223
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB4095:
-X-Microsoft-Antispam-PRVS: <SN6PR1501MB409582BE8190421630EFD40AD38A9@SN6PR1501MB4095.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: BTFw0driQtNC6jhZxVc1Y2QSzEjXY25a1dYXkePr429cVXGxOPqDik6cBguciyeDqz9q8LKue3scbuFAHgKCf1yyS4dsbLS/Xrf+sN3vRHaQikXcNMss3ndjTt7KUvawM+xnqXsW2TnWNBK43Nw+R+TXchUc3MeTS5eunOIc2I8dBcgYkbIWxW8xYzBPMPH/XuC6jr+11yHpq6/OsRYuxj3QVHJdfVP5+Zlz9wpWh12HLN0Q39ChYL0G3jnsrXLz81cX50pd+NsKcWH2mKUN05F+Jwo6IQPBAz8BqdSPi2yXJP0un4RGJLTm2TuoFu4oIpmPXZw5wp8QfxPn6adK8cCZdcaZ0p1HgWozk2eu30ehy1u4SY0bY9zCLGhVLbPykQzBcGInLFbVI2ZynNcU2dtpeFwcM3BMll5y+u3uJSGgrWyd5cOR8/w9rulPGKtFAvSYNMb5pWMYS5laFVF5v0Lo/X+clzEpFvolxblezJKEf7mtkKLzQjajizhH0z4k8DDATp86rGb/XGkQ+8Szfj+oo+0CEWPvN1QnsTh0PcOUkeLWV+Zf/C9L/B9pWCs1kO0wJFyTwr+GXU+Fw7MefkLCBabdnImNv9kc1Gpt4k4B1x1J9E6PMLMLXFkYk5q00oYitQFp2D40ObWhmEfR+B0oJCyefZXjXegVIG9RfkuIaiQoHPExv59wBUHI6lBjCuj1Az4vDdiwOygKXxo/FP2eSj3p5jb4tJ9vsjoZiFb34JkNqXz9ZxkLdKiAY2uLkbeCcOJ3V4jtyHzg5naUyw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(508600001)(53546011)(2906002)(66946007)(4326008)(186003)(8676002)(83380400001)(316002)(5660300002)(52116002)(66476007)(66556008)(31696002)(86362001)(38100700002)(8936002)(31686004)(36756003)(2616005)(6486002)(101420200003)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TzlWWHJPb3FLeEgwY2xnSU45ZTB0VkNCV3dSOE43WnRoN3dmWmE3QUZFNmxW?=
- =?utf-8?B?ekZiSjJHV2IrekhCZktKRWxUTWs4SC9nS2FnTUV2MHJrVXc5V04xYXM3TEx6?=
- =?utf-8?B?Vzd3c3h3Z1czb3dYaFhsMlUxbnFWdlc3TUtxLzdnWTJ0SlNlVFZlQy9SRWpM?=
- =?utf-8?B?bmEzWVRaemlWZlZrTzZUQ2JHd1MrQnBwV3hTNWttaXc5Z2Q5TytiTzkxb3U2?=
- =?utf-8?B?YXF4MzJFWlVNVmtCMG5jb3h4TnJ5UXN5M2Q1aGZMZ0J3S2ZGY1BsQVlCNGUy?=
- =?utf-8?B?bEhvbGtQYW1IWkJtSnV5ODV6VmlzNEl4Y2R2Z280a2dwUk1MYWUxQVpNcE9y?=
- =?utf-8?B?RUMxMVZISmdTVWFBTWRIWTJma2h1MlhzVmd3YVE1ZWR5REQyTEhEQ3c5NTZY?=
- =?utf-8?B?Z0NTeURQWDQ2cHh6NGVieDBCeDdzbzEvaEZDcnFITnpGVHBEZWpXM0M0RGJR?=
- =?utf-8?B?bUozZVBpc0o0WFcyYks5cGRLQlBrc083WWx3VzNiNHJSMlJMZ2xmTzRiU2Z3?=
- =?utf-8?B?YXBONlJNdTY1OUhpOGJCVm9hbVI4WnZpSmYvOUtDUzIzcnJNRlhJaVB4U1pv?=
- =?utf-8?B?ZVVOdGNtSU5Lc3hFeW9IU0xxSVpsU2RtbnFnZkVwSEtKdVpzVGxxcUowODR5?=
- =?utf-8?B?OGpDUjdmSWFuNkhnZkZxV1htNjIrZzdVQ25BZ0E4eEM1d3lPQ3g4WjRxeC9M?=
- =?utf-8?B?ZVE2c1BGLzdwM0c1L1JHUGxqb3VlRzdhM2QxbFZkcE8xNVVibGFLK29ERExj?=
- =?utf-8?B?a2cwc2ZIVjVVd05oOTRmQXFDdC9WVnUxVlc3b1lUeG9iNXljMzk2Vk5yRkps?=
- =?utf-8?B?aUx5MHZQSzVOK2l2US9BKzlTaW9neGRXYXV3Y0lIdVNOcHRSblRraUZiaGVn?=
- =?utf-8?B?UlVUQ0ZsaWRORUFKK292ckh1VHB1dE5yMXJPSGMydG5WcXp2a1BNOW9MTGlC?=
- =?utf-8?B?eTF2eVRPdlNnQzNrYnVCaTF3L1l0WWNVU2RCR0VkaWdSU0dYay8rTXZhMndW?=
- =?utf-8?B?cVRKQlBoTWptRHlsdERxbVE0Vm04T2wxLzVQR3E2UWJaVFp1WnpqYjZXVnRI?=
- =?utf-8?B?THlJL0xEdkRPM3E5THBHWEtVTUVnOUJJcS9ZWWNGZGk0WElHWlkvdE5IeTA4?=
- =?utf-8?B?TC9kdkN5QUlDVUFDSGErcVZsNWlhZWFtM2Jnc1I4dlF6QVZLcUc5VUc5UURG?=
- =?utf-8?B?N3l3U0NxNVNrZlFpRXlXekVxaEgvdGtqeTVqOStCMHRRaVlIZ0FSMGJValE0?=
- =?utf-8?B?Y1dXaU9ldFFXVnJabzBVK2crWUtSMURUbkR0WlozVmZnSG9PaHA1VzVHK0o5?=
- =?utf-8?B?eXhLb044eHh3bytOcXVOUDE3a3NkRUJiRFl0V3VSeGNrdmNCdHBqTTM4ZVVt?=
- =?utf-8?B?M0RKOHplS0FrcXFzOVl2Y2l2RU8xNjBNeHRnWDRWcDBVUEdYZks2bFZHZWw0?=
- =?utf-8?B?aEd5WStjR0NtMk9uYk9aZFI1M1RxS1NWNkliVGNxSzMyOFRDbTRpYkF4ZGtl?=
- =?utf-8?B?elhSVm5UZjNpcytzT1RNNGo5d0FDRC8xQXBpTEc3dFQrbGJqY1oxTjNER1dj?=
- =?utf-8?B?NG5OUGl1SzQyOG1IZkY0MzhJUzMwUmROMHJkZXIwS0FWVWYvWDIyT01PZWJr?=
- =?utf-8?B?a01RdnZ4S2ZaMFd6YlVtY3NVOHJFaHJ6YTUvOGlydSs5NEhCbWtEOFJHZ0x0?=
- =?utf-8?B?SkNrVFgrUk1nd0FzdnUyZytyYmtsNlNNSE9FdnNQVHZKVi9ORUo2OHNMVGxC?=
- =?utf-8?B?dmQ5MEV0d3dIeGpDRUQ3TURhMDl4aUZXZndxTWo0NVk0NjRaV1dYS0NoOWZV?=
- =?utf-8?B?bWRkOVlZZkljSVM4eld0L0QrTXRmYnhVelY5OHI4ZWJtWGtZaEkxMGVUdnZQ?=
- =?utf-8?B?R2FWUmpFQndGSmhtOFlwQkNTeVQ2ODF3R0xpMktEeWRpL04vUmVWekx0QWhj?=
- =?utf-8?B?NWM3eUZnd1pVZkVrWm11eXRaWm8vL0ZDVlY4V3E1SFpvUWxTTzhOUXBTNkVN?=
- =?utf-8?B?ci9ySEwwdDhuRjlabnlnTVBRY2d1THErTUpHTVlnTTBWNFFraU5tUHNkNmRh?=
- =?utf-8?B?U1FOajBqTE4vZmNiOFhSanI5NmgxYTFpeVMxSUpGMGsrN3loZDZFR1V0eGxR?=
- =?utf-8?B?R2hJekcxd20wMnpjTHZBUHNOR003Sm9mZmZvbU1ObUpDaVY0SU9JOW0xSGdC?=
- =?utf-8?B?MXc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 282fee3f-27b4-4227-f24a-08d99cee0223
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Nov 2021 04:13:50.2804
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +hN3zLrC7RO8mYtxIrfYe/he3dwe58TJGZefT5rPuYFQWuQyq+xO/YQ7odMcXx+n
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR1501MB4095
-X-OriginatorOrg: fb.com
-X-Proofpoint-ORIG-GUID: -esCVVy0CDM_5bM7QN6OiCNe_rN6d1kE
-X-Proofpoint-GUID: -esCVVy0CDM_5bM7QN6OiCNe_rN6d1kE
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-01_01,2021-10-29_03,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
- suspectscore=0 malwarescore=0 impostorscore=0 spamscore=0 phishscore=0
- mlxscore=0 priorityscore=1501 lowpriorityscore=0 clxscore=1011
- mlxlogscore=979 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2110150000 definitions=main-2111010024
-X-FB-Internal: deliver
+References: <20211024013303.3499461-1-guoren@kernel.org> <20211024013303.3499461-4-guoren@kernel.org>
+ <87a6ixbcse.wl-maz@kernel.org> <20211028135523.5cf4b66b@redslave.neermore.group>
+ <87sfwl9oxg.wl-maz@kernel.org> <CAJF2gTR3CqtmKZKS3fOQ9mzSLn7_oh7YoSSmWP1YM=ujB_srMw@mail.gmail.com>
+ <CAAhSdy1WrxbMsiWkwOXd_76A6wNAh05C1QQ-oFXoE9U-F0akiA@mail.gmail.com> <CAJF2gTRwi+yH-hQ0SHKDOuUf=OOMfJxQb6Q5m6xRCPjvbYjqaQ@mail.gmail.com>
+In-Reply-To: <CAJF2gTRwi+yH-hQ0SHKDOuUf=OOMfJxQb6Q5m6xRCPjvbYjqaQ@mail.gmail.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Mon, 1 Nov 2021 09:57:50 +0530
+Message-ID: <CAAhSdy3r2oVOq9yd+ZkOs1oCHRH-qvjLDa25Jp3qeD1tSxWEWQ@mail.gmail.com>
+Subject: Re: [PATCH V5 3/3] irqchip/sifive-plic: Fixup thead, c900-plic
+ request_threaded_irq with ONESHOT
+To:     Guo Ren <guoren@kernel.org>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Nikita Shubin <nikita.shubin@maquefel.me>,
+        Atish Patra <atish.patra@wdc.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
+        Rob Herring <robh@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Guo Ren <guoren@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 1, 2021 at 9:27 AM Guo Ren <guoren@kernel.org> wrote:
+>
+> On Mon, Nov 1, 2021 at 10:53 AM Anup Patel <anup@brainfault.org> wrote:
+> >
+> > On Mon, Nov 1, 2021 at 7:50 AM Guo Ren <guoren@kernel.org> wrote:
+> > >
+> > > On Thu, Oct 28, 2021 at 10:58 PM Marc Zyngier <maz@kernel.org> wrote:
+> > > >
+> > > > On Thu, 28 Oct 2021 11:55:23 +0100,
+> > > > Nikita Shubin <nikita.shubin@maquefel.me> wrote:
+> > > > >
+> > > > > Hello Marc and Guo Ren!
+> > > > >
+> > > > > On Mon, 25 Oct 2021 11:48:33 +0100
+> > > > > Marc Zyngier <maz@kernel.org> wrote:
+> > > > >
+> > > > > > On Sun, 24 Oct 2021 02:33:03 +0100,
+> > > > > > guoren@kernel.org wrote:
+> > > > > > >
+> > > > > > > From: Guo Ren <guoren@linux.alibaba.com>
+> > > > > > >
+> > > > > > > When using "devm_request_threaded_irq(,,,,IRQF_ONESHOT,,)" in the
+> > > > > > > driver, only the first interrupt could be handled, and continue irq
+> > > > > > > is blocked by hw. Because the thead,c900-plic couldn't complete
+> > > > > > > masked irq source which has been disabled in enable register. Add
+> > > > > > > thead_plic_chip which fix up c906-plic irq source completion
+> > > > > > > problem by unmask/mask wrapper.
+> > > > > > >
+> > > > > > > Here is the description of Interrupt Completion in PLIC spec [1]:
+> > > > > > >
+> > > > > > > The PLIC signals it has completed executing an interrupt handler by
+> > > > > > > writing the interrupt ID it received from the claim to the
+> > > > > > > claim/complete register. The PLIC does not check whether the
+> > > > > > > completion ID is the same as the last claim ID for that target. If
+> > > > > > > the completion ID does not match an interrupt source that is
+> > > > > > > currently enabled for the target, the ^^ ^^^^^^^^^ ^^^^^^^
+> > > > > > > completion is silently ignored.
+> > > > > >
+> > > > > > Given this bit of the spec...
+> > > > > >
+> > > > > > > +static void plic_thead_irq_eoi(struct irq_data *d)
+> > > > > > > +{
+> > > > > > > + struct plic_handler *handler =
+> > > > > > > this_cpu_ptr(&plic_handlers); +
+> > > > > > > + if (irqd_irq_masked(d)) {
+> > > > > > > +         plic_irq_unmask(d);
+> > > > > > > +         writel(d->hwirq, handler->hart_base +
+> > > > > > > CONTEXT_CLAIM);
+> > > > > > > +         plic_irq_mask(d);
+> > > > > > > + } else {
+> > > > > > > +         writel(d->hwirq, handler->hart_base +
+> > > > > > > CONTEXT_CLAIM);
+> > > > > > > + }
+> > > > > > > +}
+> > > > > > > +
+> > > > > >
+> > > > > > ... it isn't obvious to me why this cannot happen on an SiFive PLIC.
+> > > > >
+> > > > > This indeed happens with SiFive PLIC. I am currently tinkering with
+> > > > > da9063 RTC on SiFive Unmatched, and ALARM irq fires only once. However
+> > > > > with changes proposed by Guo Ren in plic_thead_irq_eoi, everything
+> > > > > begins to work fine.
+> > > > >
+> > > > > May be these change should be propagated to plic_irq_eoi instead of
+> > > > > making a new function ?
+> > > >
+> > > > That's my impression too. I think the T-Head defect is pretty much
+> > > > immaterial when you consider how 'interesting' the PLIC architecture
+> > > > is.
+> > > Which is the "T-Head defect" you mentioned here?
+> > >  1. Auto masking with claim + complete (I don't think it's a defect,
+> > > right? May I add a new patch to utilize the feature to decrease a
+> > > little duplicate mask/unmask operations in the future?)
+> >
+> > This is definitely a defect and non-compliance for T-HEAD because
+> I just agree with non-compliance, but what's the defect of
+> auto-masking? If somebody could explain, I'm very grateful.
+>
+> > no sane interrupt controller would mask interrupt upon claim and this
+> > is not what RISC-V PLIC defines.
+> >
+> > >  2. EOI failed when masked
+> >
+> > This defect exists for both RISC-V PLIC and T-HEAD PLIC
+> > because of the way interrupt completion is defined.
+> >
+> > >
+> > > > Conflating EOI and masking really is a misfeature...
+> > > I think the problem is riscv PLIC reuse enable bit as mask bit. I
+> > > recommend separating them. That means:
+> >
+> > There are no per-interrupt mask bits. We only have per-context
+> > and per-interrupt enable bits which is used to provide mask/unmask
+> > functionality expected by the irqchip framework.
+> >
+> > I don't see how this is a problem for RISC-V PLIC. The only real
+> > issue with RISC-V PLIC is the fact the interrupt completion will be
+> > ignored for a masked interrupt which is what Marc is pointing at.
+> So you are not considering add per-interrupt mask bits to solve the
+> above problem, right?
 
+The RISC-V PLIC has several limitations and also lacks a lot of features
+hence it's marked as deprecated in RISC-V platform specs and will be
+removed eventually from RISC-V platform specs.
 
-On 10/30/21 2:30 AM, Yang Yingliang wrote:
-> If bpf_program__attach() fails, it never returns NULL,
-> we should use libbpf_get_error() to check the return value.
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+The RISC-V AIA will totally replace RISC-V PLIC going forward. In fact,
+RISC-V AIA APLIC addresses all limitations of RISC-V PLIC along with
+new features additions.
 
-Thanks for the fix. LGTM with a nit below.
+>
+> I don't think you would keep below codes in AIA eoi.
+>  +             plic_irq_unmask(d);
+>  +             writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM);
+>  +             plic_irq_mask(d);
 
-Acked-by: Yonghong Song <yhs@fb.com>
+Like I mentioned previously, the AIA APLIC is very different from the
+PLIC so we don't need this mask/unmask dance over there. It has global
+per-interrupt enable bits in AIA APLIC which is different from PLIC.
 
-> ---
->   .../bpf/benchs/bench_bloom_filter_map.c       | 20 ++++++++++++++-----
->   1 file changed, 15 insertions(+), 5 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c b/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
-> index 6eeeed2913e6..6879340b20c4 100644
-> --- a/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
-> +++ b/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
-> @@ -296,6 +296,7 @@ static struct bloom_filter_bench *setup_skeleton(void)
->   static void bloom_lookup_setup(void)
->   {
->   	struct bpf_link *link;
-> +	int err;
->   
->   	ctx.use_array_map = true;
->   
-> @@ -304,7 +305,8 @@ static void bloom_lookup_setup(void)
->   	populate_maps();
->   
->   	link = bpf_program__attach(ctx.skel->progs.bloom_lookup);
-> -	if (!link) {
-> +	err = libbpf_get_error(link);
-> +	if (err) {
+Regards,
+Anup
 
-There is no need to define 'int err', you can just do
-	if (libbpf_get_error(link))
-
-The same for a few 'int err' below.
-
->   		fprintf(stderr, "failed to attach program!\n");
->   		exit(1);
->   	}
-> @@ -313,6 +315,7 @@ static void bloom_lookup_setup(void)
->   static void bloom_update_setup(void)
->   {
->   	struct bpf_link *link;
-> +	int err;
->   
->   	ctx.use_array_map = true;
->   
-> @@ -321,7 +324,8 @@ static void bloom_update_setup(void)
->   	populate_maps();
->   
->   	link = bpf_program__attach(ctx.skel->progs.bloom_update);
-> -	if (!link) {
-> +	err = libbpf_get_error(link);
-> +	if (err) {
->   		fprintf(stderr, "failed to attach program!\n");
->   		exit(1);
->   	}
-> @@ -330,6 +334,7 @@ static void bloom_update_setup(void)
->   static void false_positive_setup(void)
->   {
->   	struct bpf_link *link;
-> +	int err;
->   
->   	ctx.use_hashmap = true;
->   	ctx.hashmap_use_bloom = true;
-> @@ -340,7 +345,8 @@ static void false_positive_setup(void)
->   	populate_maps();
->   
->   	link = bpf_program__attach(ctx.skel->progs.bloom_hashmap_lookup);
-> -	if (!link) {
-> +	err = libbpf_get_error(link);
-> +	if (err) {
->   		fprintf(stderr, "failed to attach program!\n");
->   		exit(1);
->   	}
-> @@ -349,6 +355,7 @@ static void false_positive_setup(void)
->   static void hashmap_with_bloom_setup(void)
->   {
->   	struct bpf_link *link;
-> +	int err;
->   
->   	ctx.use_hashmap = true;
->   	ctx.hashmap_use_bloom = true;
-> @@ -358,7 +365,8 @@ static void hashmap_with_bloom_setup(void)
->   	populate_maps();
->   
->   	link = bpf_program__attach(ctx.skel->progs.bloom_hashmap_lookup);
-> -	if (!link) {
-> +	err = libbpf_get_error(link);
-> +	if (err) {
->   		fprintf(stderr, "failed to attach program!\n");
->   		exit(1);
->   	}
-> @@ -367,6 +375,7 @@ static void hashmap_with_bloom_setup(void)
->   static void hashmap_no_bloom_setup(void)
->   {
->   	struct bpf_link *link;
-> +	int err;
->   
->   	ctx.use_hashmap = true;
->   
-> @@ -375,7 +384,8 @@ static void hashmap_no_bloom_setup(void)
->   	populate_maps();
->   
->   	link = bpf_program__attach(ctx.skel->progs.bloom_hashmap_lookup);
-> -	if (!link) {
-> +	err = libbpf_get_error(link);
-> +	if (err) {
->   		fprintf(stderr, "failed to attach program!\n");
->   		exit(1);
->   	}
-> 
+>
+> >
+> > Regards,
+> > Anup
+> >
+> > >  - EOI still depends on enable bit.
+> > >  - Add mask/unmask bit regs to do the right thing.
+> >
+> >
+> >
+> > >
+> > > >
+> > > >         M.
+> > > >
+> > > > --
+> > > > Without deviation from the norm, progress is not possible.
+> > >
+> > >
+> > >
+> > > --
+> > > Best Regards
+> > >  Guo Ren
+> > >
+> > > ML: https://lore.kernel.org/linux-csky/
+>
+>
+>
+> --
+> Best Regards
+>  Guo Ren
+>
+> ML: https://lore.kernel.org/linux-csky/
