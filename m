@@ -2,91 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EB35441230
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 03:35:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62F4644123A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 03:51:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230321AbhKAChd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 22:37:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38076 "EHLO
+        id S230327AbhKACyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 22:54:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230222AbhKACh3 (ORCPT
+        with ESMTP id S230246AbhKACyR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 22:37:29 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5CEAC061714;
-        Sun, 31 Oct 2021 19:34:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=YVq1DQ33vlTfqQwlUVtldRtum7VTJ4Qf1wo2xOWYsbs=; b=gRMXvXUxYDh5PXfGY5PmoKkYNO
-        XFLFQoynUl1o2KWv51EHkiPEdljCH01lPjc7+M/bKuM+7+9IMZ5jSaJ1MGCpifQEIS4Qcd4dJc1Wa
-        8dO9Kqrf/Di+5EBltPtFcL+YtbwV3OLvk6Xd+aK2ECFw7/Gdg6aHCwAbztH3lXoJa/BeCs6oUo293
-        PDjr1JQ8F7sTCQXgKQMS9nw7lOnA4+04vMjmHw0d21F6Bmw25BeerzvqDabqxyqC/dw8tJs3qOPJ5
-        esyiwcXYwn4sfB97InYFLCCmiTcpnwhbut8Sq53K97IVVQd9qJb66Xm71VeQJPsOdp6iE9VKRW5XR
-        oQBeZ3uw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mhN6c-003SWk-T1; Mon, 01 Nov 2021 02:31:47 +0000
-Date:   Mon, 1 Nov 2021 02:31:26 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Pavel Begunkov <asml.silence@gmail.com>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Jane Chu <jane.chu@oracle.com>,
-        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
-        "vishal.l.verma@intel.com" <vishal.l.verma@intel.com>,
-        "dave.jiang@intel.com" <dave.jiang@intel.com>,
-        "agk@redhat.com" <agk@redhat.com>,
-        "snitzer@redhat.com" <snitzer@redhat.com>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "ira.weiny@intel.com" <ira.weiny@intel.com>,
-        "vgoyal@redhat.com" <vgoyal@redhat.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
-Subject: Re: [dm-devel] [PATCH 0/6] dax poison recovery with
- RWF_RECOVERY_DATA flag
-Message-ID: <YX9RftrcBNwgyCXc@casper.infradead.org>
-References: <YXFPfEGjoUaajjL4@infradead.org>
- <e89a2b17-3f03-a43e-e0b9-5d2693c3b089@oracle.com>
- <YXJN4s1HC/Y+KKg1@infradead.org>
- <2102a2e6-c543-2557-28a2-8b0bdc470855@oracle.com>
- <YXj2lwrxRxHdr4hb@infradead.org>
- <20211028002451.GB2237511@magnolia>
- <20211028225955.GA449541@dread.disaster.area>
- <22255117-52de-4b2d-822e-b4bc50bbc52b@gmail.com>
- <20211029223233.GB449541@dread.disaster.area>
- <1a76314d-9b62-82a3-2787-96e6b83720fc@gmail.com>
+        Sun, 31 Oct 2021 22:54:17 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49098C061714;
+        Sun, 31 Oct 2021 19:51:45 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HjHcB2t0Xz4xbC;
+        Mon,  1 Nov 2021 13:51:38 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1635735102;
+        bh=CcJraMUYFIdN8BoImcFcde7fMSGugo71oB6ZjBy0J6w=;
+        h=Date:From:To:Cc:Subject:From;
+        b=iWY+tXQqHfHK8QF+aaqj/NRdA6bLfHtziGfKGhGQ8LJTWEc6JQRLClXSNFngbEX19
+         o5ZET9YFA0CN/Ufv1lFz8u6B0BRutN/YJUpIxCz88a0xyjjdEfvt/h2nFqPSM+qHv2
+         ul8X/PtPkF17bTVLEvoq1YpdepL8X2TFsvWvqgM+jKb40lfuIxJb/DsQJ8iSjJL18b
+         4k+4qinUCJMQHJ+92VW5iawYdJ0V1O52Cki9+vVUpzgLHQQ8JX/J9ZZTcfj8sXi0ji
+         dLEJTUPz6dhsOST1Xmy2XAcj2K+JCcbHP5QD4WDhwoVl86G4hNWu+sRbbrZhVCuJsu
+         kDvNX40qfCBcQ==
+Date:   Mon, 1 Nov 2021 13:51:35 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jassi Brar <jaswinder.singh@linaro.org>,
+        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        ARM <linux-arm-kernel@lists.infradead.org>,
+        Rob Herring <robherring2@gmail.com>
+Cc:     Hector Martin <marcan@marcan.st>, Joey Gouly <joey.gouly@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Mark Kettenis <kettenis@openbsd.org>,
+        Rob Herring <robh@kernel.org>, Sven Peter <sven@svenpeter.dev>
+Subject: linux-next: manual merge of the mailbox tree with the arm-soc,
+ devicetree trees
+Message-ID: <20211101135135.395b6ad8@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1a76314d-9b62-82a3-2787-96e6b83720fc@gmail.com>
+Content-Type: multipart/signed; boundary="Sig_/tAp1aJTic4WlFnxzexnr/f7";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 31, 2021 at 01:19:48PM +0000, Pavel Begunkov wrote:
-> On 10/29/21 23:32, Dave Chinner wrote:
-> > Yup, you just described RWF_HIPRI! Seriously, Pavel, did you read
-> > past this?  I'll quote what I said again, because I've already
-> > addressed this argument to point out how silly it is:
-> 
-> And you almost got to the initial point in your penult paragraph. A
-> single if for a single flag is not an issue, what is the problem is
-> when there are dozens of them and the overhead for it is not isolated,
-> so the kernel has to jump through dozens of those.
+--Sig_/tAp1aJTic4WlFnxzexnr/f7
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-This argument can be used to reject *ANY* new feature.  For example, by
-using your argument, we should have rejected the addition of IOCB_WAITQ
-because it penalises the vast majority of IOs which do not use it.
+Hi all,
 
-But we didn't.  Because we see that while it may not be of use to US
-today, it's a generally useful feature for Linux to support.  You say
-yourself that this feature doesn't slow down your use case, so why are
-you spending so much time and energy annoying the people who actually
-want to use it?
+Today's linux-next merge of the mailbox tree got a conflict in:
 
-Seriously.  Stop arguing about something you actually don't care about.
-You're just making Linux less fun to work on.
+  MAINTAINERS
+
+between commits:
+
+  a3b539fedc09 ("dt-bindings: pci: Add DT bindings for apple,pcie")
+  e081c53a5ba1 ("MAINTAINERS: add pinctrl-apple-gpio to ARM/APPLE MACHINE")
+
+from the arm-soc, devicetree trees and commit:
+
+  7feea290e9f4 ("MAINTAINERS: Add Apple mailbox files")
+
+from the mailbox tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc MAINTAINERS
+index 244002eb7220,333eff21b8d2..000000000000
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@@ -1730,17 -1728,15 +1736,20 @@@ B:	https://github.com/AsahiLinux/linux/
+  C:	irc://irc.oftc.net/asahi-dev
+  T:	git https://github.com/AsahiLinux/linux.git
+  F:	Documentation/devicetree/bindings/arm/apple.yaml
+ +F:	Documentation/devicetree/bindings/i2c/apple,i2c.yaml
+  F:	Documentation/devicetree/bindings/interrupt-controller/apple,aic.yaml
++ F:	Documentation/devicetree/bindings/mailbox/apple,mailbox.yaml
+ +F:	Documentation/devicetree/bindings/pci/apple,pcie.yaml
+  F:	Documentation/devicetree/bindings/pinctrl/apple,pinctrl.yaml
+  F:	arch/arm64/boot/dts/apple/
+ +F:	drivers/i2c/busses/i2c-pasemi-core.c
+ +F:	drivers/i2c/busses/i2c-pasemi-platform.c
+  F:	drivers/irqchip/irq-apple-aic.c
++ F:	drivers/mailbox/apple-mailbox.c
+ +F:	drivers/pinctrl/pinctrl-apple-gpio.c
+  F:	include/dt-bindings/interrupt-controller/apple-aic.h
+  F:	include/dt-bindings/pinctrl/apple.h
++ F:	include/linux/apple-mailbox.h
+ =20
+  ARM/ARTPEC MACHINE SUPPORT
+  M:	Jesper Nilsson <jesper.nilsson@axis.com>
+
+--Sig_/tAp1aJTic4WlFnxzexnr/f7
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF/VjcACgkQAVBC80lX
+0Gyf8Qf8DvRCvnY6hcC1l+TJA8/3o58EMS2vEr0EkOwShVSt6SY5au/PEMJCVY+s
+rKrf+XwmP+deGKlFqptICAmhpgAFodTB3HOgZATfL99ZerKMpFrV2dndRcHeeNuf
+Qqn6QxSsOfiK+AvHEuk+m2yibDYvdqpEnpxgSOGvl2zCLln04bKHYvo1/TyAV6HO
+FzRXqXJzG5IlofkWlRQRdMhL0RGmVYZC6K2WlkqPhl6a+aCt3kuajNXzkn/SF+C1
+B0z7ARfW7pBPkceVkv1YTxzXa89mGFzfGmxdEKt0YuQV7sYSHhbFBzjW/gWcQBzR
+myeH9eaNWrEOHtKHLqLTLfy1LJVclQ==
+=XDmw
+-----END PGP SIGNATURE-----
+
+--Sig_/tAp1aJTic4WlFnxzexnr/f7--
