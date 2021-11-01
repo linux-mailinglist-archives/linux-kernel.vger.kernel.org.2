@@ -2,104 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05367441C98
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 15:25:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B0F4441CA3
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 15:30:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232029AbhKAO23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 10:28:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55840 "EHLO
+        id S232137AbhKAOdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 10:33:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229826AbhKAO21 (ORCPT
+        with ESMTP id S231964AbhKAOdJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 10:28:27 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBB3EC061714;
-        Mon,  1 Nov 2021 07:25:53 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id f4so6731768edx.12;
-        Mon, 01 Nov 2021 07:25:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=U8dGpHr2LbqeeAeL0rdMryoAEIzzb9ek644l/wYoSc0=;
-        b=qfPfuUyKZZiLcmVeHl4aZMPpfyaRykfYCtocxIUEaKcP1sB2WeHuRpeSenxfRhzVaJ
-         1VToEAmhDVB5dUVFxg4K9ZVhi1cSVQbk/SummxncNmrLuKtvht+NCy73ZODXPf0WpRUC
-         OlsvB2pbLI0s5s2DL5dB9MUj3UxOO05PLIzMGuKr92Wtv+CDEKAvF+UdX2zJ9N+auyUx
-         cdTKbekFXwzb9hHd0RJpv2JbV+fMSvTLlYDQf658hcmLLUWifohDy7PLV1yu3nYzAwVi
-         jS7+wCXEVlP2VUrf350Mk2gwzhAZiT7P9w41C2y47tSEs/7Vbz1lSjdIV3eCwjr4RBQX
-         2APw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=U8dGpHr2LbqeeAeL0rdMryoAEIzzb9ek644l/wYoSc0=;
-        b=yD4D/vX1Wlx/bwizGp1iTt7Tq74zg4QMBnlg90G+nxYIRiw7CbgWAfTq5FdylhpNoX
-         JHuKLUahKvKV5yERDLpcqYdqjQx6EXbqfv8ruQHsBkf9jI1Z9p0cDLHF+7fbSLeuNxD9
-         qMyvqRJxAOmWCzV7rWovsVkEQPb0Fiwe0EjhN4ZbX8u56ASSUGIjjCFcFIlFYxzH66d2
-         x9DED/LZb+N1zjEShIDu9BA6DE71zjjpl4H11b4xPrwhozaRLVhrA9pTgXnMWCpM8bja
-         +DmH8gtgcMmxgrSW6FyQ4zjVXTTo9seywwVIOFPFnb77e2Fs8meCdjUk2DOMCw+6VPFv
-         eRqw==
-X-Gm-Message-State: AOAM530tLeVXc0Cwp/DLy96fJ+dqAwzoKKMd8fVr+KzY5lPO5ciE+LfR
-        oTVMueDUwRJK4BWUPSJBxPlDcuxqEP2GXRWeOMIbtrfXLCk=
-X-Google-Smtp-Source: ABdhPJzWM6VCDa5ZmF2ZKjZ1DdhV+AAGA9EqR2F/VhuTDDoFuYjeq48tl6QyW1NBKDlXUB980wqbufQ1zQVeZg6M+74=
-X-Received: by 2002:aa7:c44b:: with SMTP id n11mr20384013edr.238.1635776752332;
- Mon, 01 Nov 2021 07:25:52 -0700 (PDT)
+        Mon, 1 Nov 2021 10:33:09 -0400
+X-Greylist: delayed 309 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 01 Nov 2021 07:30:35 PDT
+Received: from forward106j.mail.yandex.net (forward106j.mail.yandex.net [IPv6:2a02:6b8:0:801:2::109])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E95FC061714;
+        Mon,  1 Nov 2021 07:30:35 -0700 (PDT)
+Received: from iva8-013f64745ff9.qloud-c.yandex.net (iva8-013f64745ff9.qloud-c.yandex.net [IPv6:2a02:6b8:c0c:9886:0:640:13f:6474])
+        by forward106j.mail.yandex.net (Yandex) with ESMTP id 72789136B660;
+        Mon,  1 Nov 2021 17:25:23 +0300 (MSK)
+Received: from iva8-a4a480c9f089.qloud-c.yandex.net (2a02:6b8:c0c:da5:0:640:a4a4:80c9 [2a02:6b8:c0c:da5:0:640:a4a4:80c9])
+        by iva8-013f64745ff9.qloud-c.yandex.net (mxback/Yandex) with ESMTP id PwIdtPB7jw-PNDirYaW;
+        Mon, 01 Nov 2021 17:25:23 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail; t=1635776723;
+        bh=VAVrk5AtcZPdThMqvCtu4lfkZK3ioKc2UOuIMebKmOw=;
+        h=Date:Subject:To:From:Message-Id:Cc;
+        b=LhhGBafhXrZklHEV29eiv/C1r12YG5wUnh7itPCYtgw0oH7LfpOu/xdmIL1LHK8Bj
+         mfxfxBLbo6er5xGqMzr4h3BRYKd0/yeJX0DgupWDBpkD1iC/PtkNZxJxKJH1e0XNHt
+         Wp0aVPBp99NKPg9pizqWeQdzTBE2Z2OaeiCQCpPc=
+Authentication-Results: iva8-013f64745ff9.qloud-c.yandex.net; dkim=pass header.i=@maquefel.me
+Received: by iva8-a4a480c9f089.qloud-c.yandex.net (smtp/Yandex) with ESMTPS id KnxnNr0c1a-PMuadSjH;
+        Mon, 01 Nov 2021 17:25:22 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+X-Yandex-Fwd: 2
+From:   Nikita Shubin <nikita.shubin@maquefel.me>
+Cc:     Nikita Shubin <nikita.shubin@maquefel.me>,
+        Support Opensource <support.opensource@diasemi.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] rtc: da9063: add as wakeup source
+Date:   Mon,  1 Nov 2021 17:25:04 +0300
+Message-Id: <20211101142504.23706-1-nikita.shubin@maquefel.me>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20211025094119.82967-1-hdegoede@redhat.com> <20211025094119.82967-11-hdegoede@redhat.com>
- <CAHp75VdC8i1YWZh_KXNqz_hHgHFoXQ57cce4-x3e6Ha0ZVPQag@mail.gmail.com> <08a94895-ad57-c8f2-fcb5-ff1c1637dc0d@redhat.com>
-In-Reply-To: <08a94895-ad57-c8f2-fcb5-ff1c1637dc0d@redhat.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 1 Nov 2021 16:25:02 +0200
-Message-ID: <CAHp75VfYMEZKtR5HZTazSSZ1qgz5iV7Nk9JFHgFmtUuWGqQabg@mail.gmail.com>
-Subject: Re: [PATCH v4 10/11] platform/x86: int3472: Pass tps68470_regulator_platform_data
- to the tps68470-regulator MFD-cell
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Kate Hsuan <hpa@redhat.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 1, 2021 at 1:32 PM Hans de Goede <hdegoede@redhat.com> wrote:
-> On 10/25/21 13:38, Andy Shevchenko wrote:
-> > On Mon, Oct 25, 2021 at 12:42 PM Hans de Goede <hdegoede@redhat.com> wrote:
+in case if threaded irq registered successfully - add da9063
+as a wakeup source if "wakeup-source" node present in device tree,
+set as wakeup capable otherwise.
 
-...
+Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+---
+ drivers/rtc/rtc-da9063.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-> >> +       board_data = int3472_tps68470_get_board_data(dev_name(&client->dev));
-> >
-> >> +       if (board_data)
-> >
-> > IIRC it's a dup. Below already incorporates this.
-> >
-> >> +               gpiod_remove_lookup_table(board_data->tps68470_gpio_lookup_table);
->
-> Not sure what you mean here? This line *dereferences* board_data, so even if
-> gpiod_remove_lookup_table() already contains a NULL check for the table pointer,
-> we still need the board_data check to avoid dereferencing it to get
-> the tps68470_gpio_lookup_table member.
-
-Oh, I see now. Nothing needs to be changed here.
-
+diff --git a/drivers/rtc/rtc-da9063.c b/drivers/rtc/rtc-da9063.c
+index d4b72a9fa2ba..1aceb5ba6992 100644
+--- a/drivers/rtc/rtc-da9063.c
++++ b/drivers/rtc/rtc-da9063.c
+@@ -490,7 +490,15 @@ static int da9063_rtc_probe(struct platform_device *pdev)
+ 					da9063_alarm_event,
+ 					IRQF_TRIGGER_LOW | IRQF_ONESHOT,
+ 					"ALARM", rtc);
+-	if (ret)
++	if (!ret) {
++		if (device_property_present(&pdev->dev, "wakeup-source")) {
++			device_init_wakeup(&pdev->dev, true);
++			dev_info(&pdev->dev, "registered as wakeup source.\n");
++		} else {
++			device_set_wakeup_capable(&pdev->dev, true);
++			dev_info(&pdev->dev, "marked as wakeup capable.\n");
++		}
++	} else
+ 		dev_err(&pdev->dev, "Failed to request ALARM IRQ %d: %d\n",
+ 			irq_alarm, ret);
+ 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.31.1
+
