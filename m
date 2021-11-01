@@ -2,146 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D60D5441263
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 04:31:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB88B44126A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 04:33:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230320AbhKADeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 23:34:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46012 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230222AbhKADeD (ORCPT
+        id S230417AbhKADf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 23:35:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50688 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230222AbhKADf4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 23:34:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635737489;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4z+r8vmmaZ/XATkk552nndpk1JEP3wPG2o03Q4EEusg=;
-        b=NvZLcYMg8sgcDdyNf6cVhtlMTYTa5x96IDO3rYpC9rj48MS6TUUVwCC6237Owjhl5FE5JK
-        DVNUMXTI69WmSVXqlG2Hq1aREwZZxgmZHwvLK8AgO9WKifzGLj1j4YMZzi/iYvJgiYJoKF
-        DH4G9cX6ti7fOAZ3TiSdVnFpl/HShSw=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-332-64oEgOptP6Wmeam8S1mm8g-1; Sun, 31 Oct 2021 23:31:28 -0400
-X-MC-Unique: 64oEgOptP6Wmeam8S1mm8g-1
-Received: by mail-lj1-f198.google.com with SMTP id m11-20020a2e97cb000000b00212f89f3888so1898347ljj.21
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 20:31:28 -0700 (PDT)
+        Sun, 31 Oct 2021 23:35:56 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEC34C061714;
+        Sun, 31 Oct 2021 20:33:23 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id 75so16047025pga.3;
+        Sun, 31 Oct 2021 20:33:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:to:cc:references:subject
+         :content-language:from:in-reply-to:content-transfer-encoding;
+        bh=sharXBBWNJQME5ykY3LH+Wuf67MVUTp15Nj0dIthtu4=;
+        b=YNKZPhGxufB1MqdoLMpX2GgiBUoek9Je1+IUYEEe+W4RTQ8dKyjs4HuwkJDE7WItU8
+         5QLRMEeeJeH93IAEB7FtpD189DdiqLNtLPZAPIJ6s3l+Q0Rfoe+gWBbkYk8Y5ik2kbPx
+         vvyC0IhJcKsDZ1NviSWRTTT20o3MBTlqL12HK97h5FLU6FALN1bmMp84dyrOxwUWvPm8
+         Bj2epbaPGN0MvVij0J8ZR79dAqcCEiLSzkPvXz7DcInYAl4IepwXKJ79Gqur4ScbDShR
+         CwUutsvEfXZu9KUyzx7n0eRtUbsR3TnVd/veVNIoq5YArKI8wKpqZJ+ySxlXMVmu7rSu
+         jvgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4z+r8vmmaZ/XATkk552nndpk1JEP3wPG2o03Q4EEusg=;
-        b=OvvsIZLoDfp2NXv4keXxMWPk2Qb7vV2rkEKz+NU3PUjvLRE+dA/83J6KE6mTm0we0p
-         HTBFf+YCWU1pKvdYyOfDhdkJw18WvMPDMRVKb6t3LBTr837bokQRPcqBpgWNqoY0sNog
-         8GsdWGoIO+y17PNfQA8xtknPwyvYEPPACG53nhvuWotUEYhN8Gfl9HgwBfVZ3gMAPOdU
-         //T3JuSALXyI5K1eVwwTOLJpyJeY/YeY0OT5P7qI1BfJXiDLY1Rv2ywMrkslPnZnMhsJ
-         XS/Q/M+exX7BAiP2SRTTTTnTbvERWixFXL+KlFcZj/cG4QBphmRUk08Zzaa1jNlw7zVe
-         AL2w==
-X-Gm-Message-State: AOAM532D12Yw6wlqh9DkNlkygHsWMii0QEYqWYPH+AucAVLkiri4pptq
-        hKcRLx0t3hYH3ERTz3mcXrtDreYIlgYTvNC/LjEO6d9Bmsx6AoBQUBxcH9axhOan84braUwqB6K
-        333K1ZBSqRjXdH8yL374znywGtp/GDtKgNMuJqK+9
-X-Received: by 2002:a05:6512:32c1:: with SMTP id f1mr26163875lfg.498.1635737486291;
-        Sun, 31 Oct 2021 20:31:26 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzZWlYpHrxQKnB/mRgYJvPm5oK6xilCclq1C6WxSTBWhrktLxqFq+3etE8VWgYQ6+O+qG2hnOnZIaIV2E/R9cI=
-X-Received: by 2002:a05:6512:32c1:: with SMTP id f1mr26163867lfg.498.1635737486110;
- Sun, 31 Oct 2021 20:31:26 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:to:cc
+         :references:subject:content-language:from:in-reply-to
+         :content-transfer-encoding;
+        bh=sharXBBWNJQME5ykY3LH+Wuf67MVUTp15Nj0dIthtu4=;
+        b=bs8NVgwCpLUun6ejIcM0hr37GhyQ3+iH6dUuXyH5LT1VrDVHea4bvJ2VoNhptCpCRd
+         GalJxWi7jsIm6cM4QGI+eaXR0kkcNLv9tMlfq9QycUGH/tnBxN0fLlo0MQEEJg6tRy7b
+         qfSfikg04Lh5rguJzIA86VWcBRMG4g81G4fq11T/1o0dqyjDQ6RT8i/B+8Sz4xhcEOd6
+         cRtudhsBPCWO2oiPf4qZStuuQggVdcNuAyvGwLDYeQ9TevTXda9gCSrethgq88/4Qdch
+         99Obta8Xpwa6feA//45WDFIlvvTsp2+9WSNi29q2lbgi1a9dXiBJezRewbq3COUtt8uj
+         mFEg==
+X-Gm-Message-State: AOAM532IkByg2PXF5l/pz4sVXbWpmMl/myO8VsMSDKPbIMMOAYmgbeRX
+        kpP36Q/8780zHgCEamBnyZo=
+X-Google-Smtp-Source: ABdhPJyMvgiysaFFd7vJTxWh3eDoFfSzoDu6orq/3c+qmlVO4XLL+lpJqF+q+5V6CjZ2MHarSBDLDQ==
+X-Received: by 2002:a05:6a00:22cb:b0:47e:5755:7d86 with SMTP id f11-20020a056a0022cb00b0047e57557d86mr23342419pfj.78.1635737603550;
+        Sun, 31 Oct 2021 20:33:23 -0700 (PDT)
+Received: from [192.168.50.189] (67.218.130.61.16clouds.com. [67.218.130.61])
+        by smtp.gmail.com with ESMTPSA id h11sm15364884pfh.162.2021.10.31.20.33.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 31 Oct 2021 20:33:23 -0700 (PDT)
+Message-ID: <c639c965-5231-b745-7b59-476877202e0c@gmail.com>
+Date:   Mon, 1 Nov 2021 11:33:16 +0800
 MIME-Version: 1.0
-References: <cover.1634870456.git.wuzongyong@linux.alibaba.com> <cover.1635493219.git.wuzongyong@linux.alibaba.com>
-In-Reply-To: <cover.1635493219.git.wuzongyong@linux.alibaba.com>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Mon, 1 Nov 2021 11:31:15 +0800
-Message-ID: <CACGkMEv8+1YMhXfS31CoyFuwJ-toCLXd12ny7b=Ge+3fXWNYUw@mail.gmail.com>
-Subject: Re: [PATCH v7 0/9] vDPA driver for Alibaba ENI
-To:     Wu Zongyong <wuzongyong@linux.alibaba.com>
-Cc:     virtualization <virtualization@lists.linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        mst <mst@redhat.com>, wei.yang1@linux.alibaba.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+To:     chunfeng.yun@mediatek.com
+Cc:     eddie.hung@mediatek.com, gregkh@linuxfoundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-usb@vger.kernel.org,
+        matthias.bgg@gmail.com, nishadkamdar@gmail.com,
+        stern@rowland.harvard.edu
+References: <1618017645-12259-1-git-send-email-chunfeng.yun@mediatek.com>
+Subject: Re: [PATCH v2] usb: core: reduce power-on-good delay time of root hub
+Content-Language: en-US
+From:   "Walt Jr. Brake" <mr.yming81@gmail.com>
+In-Reply-To: <1618017645-12259-1-git-send-email-chunfeng.yun@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 5:15 PM Wu Zongyong
-<wuzongyong@linux.alibaba.com> wrote:
->
-> This series implements the vDPA driver for Alibaba ENI (Elastic Network
-> Interface) which is built based on virtio-pci 0.9.5 specification.
+Three month ago, My USB 3.1 device cannot be detected after upgrade 
+kernel from version 5.10.41 to 5.10.42.
 
-It looks to me Michael has applied the patches, if this is the case,
-we probably need to send patches on top.
+And I found some other people ran into the same issue:
 
-Thanks
+https://forum.manjaro.org/t/kernel-5-10-59-doesnt-detect-a-connected-usb-external-disk/79320
 
->
-> Changes since V6:
-> - set default min vq size to 1 intead of 0
-> - enable eni vdpa driver only on X86 hosts
-> - fix some typos
->
-> Changes since V5:
-> - remove unused codes
->
-> Changes since V4:
-> - check return values of get_vq_num_{max,min} when probing devices
-> - disable the driver on BE host via Kconfig
-> - add missing commit message
->
-> Changes since V3:
-> - validate VIRTIO_NET_F_MRG_RXBUF when negotiate features
-> - present F_ORDER_PLATFORM in get_features
-> - remove endian check since ENI always use litter endian
->
-> Changes since V2:
-> - add new attribute VDPA_ATTR_DEV_MIN_VQ_SIZE instead
->   VDPA_ATTR_DEV_F_VERSION_1 to guide users to choose correct virtqueue
->   size as suggested by Jason Wang
-> - present ACCESS_PLATFORM in get_features callback as suggested by Jason
->   Wang
-> - disable this driver on Big Endian host as suggested by Jason Wang
-> - fix a typo
->
-> Changes since V1:
-> - add new vdpa attribute VDPA_ATTR_DEV_F_VERSION_1 to indicate whether
->   the vdpa device is legacy
-> - implement dedicated driver for Alibaba ENI instead a legacy virtio-pci
->   driver as suggested by Jason Wang
-> - some bugs fixed
->
-> Wu Zongyong (9):
->   virtio-pci: introduce legacy device module
->   vdpa: fix typo
->   vp_vdpa: add vq irq offloading support
->   vdpa: add new callback get_vq_num_min in vdpa_config_ops
->   vdpa: min vq num of vdpa device cannot be greater than max vq num
->   virtio_vdpa: setup correct vq size with callbacks get_vq_num_{max,min}
->   vdpa: add new attribute VDPA_ATTR_DEV_MIN_VQ_SIZE
->   eni_vdpa: add vDPA driver for Alibaba ENI
->   eni_vdpa: alibaba: fix Kconfig typo
->
->  drivers/vdpa/Kconfig                   |   8 +
->  drivers/vdpa/Makefile                  |   1 +
->  drivers/vdpa/alibaba/Makefile          |   3 +
->  drivers/vdpa/alibaba/eni_vdpa.c        | 553 +++++++++++++++++++++++++
->  drivers/vdpa/vdpa.c                    |  13 +
->  drivers/vdpa/virtio_pci/vp_vdpa.c      |  12 +
->  drivers/virtio/Kconfig                 |  10 +
->  drivers/virtio/Makefile                |   1 +
->  drivers/virtio/virtio_pci_common.c     |  10 +-
->  drivers/virtio/virtio_pci_common.h     |   9 +-
->  drivers/virtio/virtio_pci_legacy.c     | 101 ++---
->  drivers/virtio/virtio_pci_legacy_dev.c | 220 ++++++++++
->  drivers/virtio/virtio_vdpa.c           |  16 +-
->  include/linux/vdpa.h                   |   6 +-
->  include/linux/virtio_pci_legacy.h      |  42 ++
->  include/uapi/linux/vdpa.h              |   1 +
->  16 files changed, 917 insertions(+), 89 deletions(-)
->  create mode 100644 drivers/vdpa/alibaba/Makefile
->  create mode 100644 drivers/vdpa/alibaba/eni_vdpa.c
->  create mode 100644 drivers/virtio/virtio_pci_legacy_dev.c
->  create mode 100644 include/linux/virtio_pci_legacy.h
->
-> --
-> 2.31.1
->
+https://forum.manjaro.org/t/how-to-make-active-usb-hub-work-in-manjaro/84548
+
+Two days ago, I try to fix the issue myself, and I found out that it was 
+cause by this patch. After revert this patch, my USB 3.1 device can be 
+detect again.
+
+I have already file a bug on here: 
+https://bugzilla.kernel.org/show_bug.cgi?id=214875.
+
 
