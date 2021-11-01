@@ -2,154 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B3AE441200
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 03:00:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE3A3441208
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 03:04:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230289AbhKACDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 22:03:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40392 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230191AbhKACDQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 22:03:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 72809610A8
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 02:00:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635732044;
-        bh=shDWMdR5V2gSq0ntHDz1VoZ/I3FO9yU751bkzZSy4uU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=r/KJGLPJ/bEKLNfFgjopwlGfCSOs1ce1OalxGSb3AD/wINtuVf/u73DIHpJgoIlAs
-         VIpku2Ri8Z81ZDsz9LFS0mxrON1qiVXH5H6eLf2w4OVSx/WVgdDurGlLE/rz+4GpM2
-         LCAbNowRHhDCBxDgrRweDqoF9zEJKlD6LT9liIzyW87HbcUOEHB8EUbkD7U8V69SML
-         rTA1L594a7qguNKO0Wx4H9JFjOrfhvedsPywO0kMXomRUxvN6ZoyWYhB4u9t0EI2Em
-         aDCE9yTJ+uObRgxUvX777AYl3Mt4i2zZ+TOr/3nTiNkexoscnH+lHdBzDCw5GAw4I9
-         j5qncXHFNt/zw==
-Received: by mail-ua1-f41.google.com with SMTP id i6so15002235uae.6
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 19:00:44 -0700 (PDT)
-X-Gm-Message-State: AOAM530K1dYXn3SiPXyAMOzobi4gjYRneQ7M0ivZRgdBQ2ZzIL26Weh2
-        d0L+nGaMro+dEvsnsPeyJWe+hGNGbcp+dRICInU=
-X-Google-Smtp-Source: ABdhPJzFRI/HrKf9T9tRooHhLIs67Rp+m6dvFEoAhFZMESmvoDaPLjdwFFWHOWJhZAPLQ8OQKNSWFvLZZ9pCmvBE+yw=
-X-Received: by 2002:a67:ca1c:: with SMTP id z28mr26599957vsk.11.1635732043483;
- Sun, 31 Oct 2021 19:00:43 -0700 (PDT)
+        id S230327AbhKACHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 22:07:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59668 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230191AbhKACHJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Oct 2021 22:07:09 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4E23C061714;
+        Sun, 31 Oct 2021 19:04:36 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id o14so475297plg.5;
+        Sun, 31 Oct 2021 19:04:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=f50QsgXF5clJv/Hog1ViBB6J+DOPMeugFSp10hvavv0=;
+        b=Hoh5xAKungIThBxu6j2oiGq7W3N0Eq/1S7d7K5m3ZdR3Anspb5HbevIPJBuBQ8jrGv
+         01IumQs8GDCNY4GSRAh8dYWwfLNRhxfkwauOq7ZAvR9qQjUnmeyWZZkN4kpqx8H6sVhs
+         F6damnZOzNzCawHSjRMayB86BiRyRMtZw70taYZOJQjocfmbaVJ6L6H6t9iC44wg5HoT
+         WCiqV5ExZWm19c5q7QWgjQO7Wbf1h43WbajTf55vZxWHVttq/8Qm0uAiN8GMoM0BZjwG
+         P5ryOkSN85magx63Lgy9YNwiim6AkNkmY5DNvNM8OMnTkTOmrSuAcJcpXZ0pH+rLS1KF
+         0fLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=f50QsgXF5clJv/Hog1ViBB6J+DOPMeugFSp10hvavv0=;
+        b=0mFwuaT0J3zsnapUSXs/LCKLP/OIdvp3LzH/aCjHk49ObKhYn6JAzNrYtpionavY5M
+         F+1StCLph2TF4G1xZizFEGmHcnWrc4rB4t29N9yrgxnTtwNzdN5gldyzgx2kN227A8nQ
+         PAVWJG+LTvWO05RApN3zT6l0AX4+w4XyHYTPtNZFtNAHDDOCb2POHJRJC/h1ofqEuTxa
+         klnarOa2GyvWKhvqt5LdgJ2Ja6W9du+bV8SJK5mOHyjqBSLRUKQNQ7ROIpeJPBMrv6aS
+         wBSOuX7rpGjbDeNMvebCOF5SEtpPj0utWwLkM3CyWwif/+6W3/rCRlegKcgwjHavSBDB
+         jU0Q==
+X-Gm-Message-State: AOAM533RzaiCSikyPPfpgGsU3HTprnIZfFcD4+spJawT4NUmmbF9A73t
+        QjJMINzitIx65s6r4i0YcSZnQ1iSHSYOkg==
+X-Google-Smtp-Source: ABdhPJxBa7TkwRx2JBjiSaoJDpcjqsrJPpRm8pQmXQfl6/uUAzNJNkw5HDl8hDPKFArBqqPDUi5S3A==
+X-Received: by 2002:a17:90a:5b0d:: with SMTP id o13mr36196993pji.117.1635732276208;
+        Sun, 31 Oct 2021 19:04:36 -0700 (PDT)
+Received: from ubuntu-hirsute.. ([154.86.159.245])
+        by smtp.gmail.com with ESMTPSA id n7sm12938315pfd.37.2021.10.31.19.04.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 31 Oct 2021 19:04:35 -0700 (PDT)
+From:   yangxingwu <xingwu.yang@gmail.com>
+To:     horms@verge.net.au
+Cc:     ja@ssi.bg, pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, corbet@lwn.net,
+        yangxingwu <xingwu.yang@gmail.com>,
+        Chuanqi Liu <legend050709@qq.com>
+Subject: [PATCH nf-next v5] netfilter: ipvs: Fix reuse connection if RS weight is 0
+Date:   Mon,  1 Nov 2021 10:04:16 +0800
+Message-Id: <20211101020416.31402-1-xingwu.yang@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20211024013303.3499461-1-guoren@kernel.org> <20211024013303.3499461-4-guoren@kernel.org>
- <87a6ixbcse.wl-maz@kernel.org> <20211028135523.5cf4b66b@redslave.neermore.group>
-In-Reply-To: <20211028135523.5cf4b66b@redslave.neermore.group>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Mon, 1 Nov 2021 10:00:32 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTRcVNLxns42u6GK3qhGKoqLb-10H=b2BDGWwuDRi_MPQw@mail.gmail.com>
-Message-ID: <CAJF2gTRcVNLxns42u6GK3qhGKoqLb-10H=b2BDGWwuDRi_MPQw@mail.gmail.com>
-Subject: Re: [PATCH V5 3/3] irqchip/sifive-plic: Fixup thead, c900-plic
- request_threaded_irq with ONESHOT
-To:     Nikita Shubin <nikita.shubin@maquefel.me>
-Cc:     Marc Zyngier <maz@kernel.org>, Anup Patel <anup@brainfault.org>,
-        Atish Patra <atish.patra@wdc.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
-        Rob Herring <robh@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Guo Ren <guoren@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thx Nikita,
+We are changing expire_nodest_conn to work even for reused connections when
+conn_reuse_mode=0, just as what was done with commit dc7b3eb900aa ("ipvs:
+Fix reuse connection if real server is dead").
 
-I would fixup that globally in the plic in next version of patch.
+For controlled and persistent connections, the new connection will get the
+needed real server depending on the rules in ip_vs_check_template().
 
-On Thu, Oct 28, 2021 at 7:01 PM Nikita Shubin <nikita.shubin@maquefel.me> wrote:
->
-> Hello Marc and Guo Ren!
->
-> On Mon, 25 Oct 2021 11:48:33 +0100
-> Marc Zyngier <maz@kernel.org> wrote:
->
-> > On Sun, 24 Oct 2021 02:33:03 +0100,
-> > guoren@kernel.org wrote:
-> > >
-> > > From: Guo Ren <guoren@linux.alibaba.com>
-> > >
-> > > When using "devm_request_threaded_irq(,,,,IRQF_ONESHOT,,)" in the
-> > > driver, only the first interrupt could be handled, and continue irq
-> > > is blocked by hw. Because the thead,c900-plic couldn't complete
-> > > masked irq source which has been disabled in enable register. Add
-> > > thead_plic_chip which fix up c906-plic irq source completion
-> > > problem by unmask/mask wrapper.
-> > >
-> > > Here is the description of Interrupt Completion in PLIC spec [1]:
-> > >
-> > > The PLIC signals it has completed executing an interrupt handler by
-> > > writing the interrupt ID it received from the claim to the
-> > > claim/complete register. The PLIC does not check whether the
-> > > completion ID is the same as the last claim ID for that target. If
-> > > the completion ID does not match an interrupt source that is
-> > > currently enabled for the target, the ^^ ^^^^^^^^^ ^^^^^^^
-> > > completion is silently ignored.
-> >
-> > Given this bit of the spec...
-> >
-> > > +static void plic_thead_irq_eoi(struct irq_data *d)
-> > > +{
-> > > +   struct plic_handler *handler =
-> > > this_cpu_ptr(&plic_handlers); +
-> > > +   if (irqd_irq_masked(d)) {
-> > > +           plic_irq_unmask(d);
-> > > +           writel(d->hwirq, handler->hart_base +
-> > > CONTEXT_CLAIM);
-> > > +           plic_irq_mask(d);
-> > > +   } else {
-> > > +           writel(d->hwirq, handler->hart_base +
-> > > CONTEXT_CLAIM);
-> > > +   }
-> > > +}
-> > > +
-> >
-> > ... it isn't obvious to me why this cannot happen on an SiFive PLIC.
->
-> This indeed happens with SiFive PLIC. I am currently tinkering with
-> da9063 RTC on SiFive Unmatched, and ALARM irq fires only once. However
-> with changes proposed by Guo Ren in plic_thead_irq_eoi, everything
-> begins to work fine.
->
-> May be these change should be propagated to plic_irq_eoi instead of
-> making a new function ?
->
-> >
-> > And it isn't only for threaded interrupts in oneshot mode. Any driver
-> > can mask an interrupt from its handler after having set the
-> > IRQ_DISABLE_UNLAZY flag, and the interrupt would need the exact same
-> > treatment.
-> >
-> >       M.
-> >
->
-> ---
-> diff --git a/drivers/irqchip/irq-sifive-plic.c
-> b/drivers/irqchip/irq-sifive-plic.c index cf74cfa82045..259065d271ef
-> 100644 --- a/drivers/irqchip/irq-sifive-plic.c
-> +++ b/drivers/irqchip/irq-sifive-plic.c
-> @@ -163,7 +163,13 @@ static void plic_irq_eoi(struct irq_data *d)
->  {
->         struct plic_handler *handler = this_cpu_ptr(&plic_handlers);
->
-> -       writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM);
-> +       if (irqd_irq_masked(d)) {
-> +               plic_irq_unmask(d);
-> +               writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM);
-> +               plic_irq_mask(d);
-> +       } else {
-> +               writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM);
-> +       }
->  }
->
->  static struct irq_chip plic_chip = {
+Fixes: d752c3645717 ("ipvs: allow rescheduling of new connections when port reuse is detected")
+Co-developed-by: Chuanqi Liu <legend050709@qq.com>
+Signed-off-by: Chuanqi Liu <legend050709@qq.com>
+Signed-off-by: yangxingwu <xingwu.yang@gmail.com>
+---
+ Documentation/networking/ipvs-sysctl.rst | 3 +--
+ net/netfilter/ipvs/ip_vs_core.c          | 8 ++++----
+ 2 files changed, 5 insertions(+), 6 deletions(-)
 
-
-
+diff --git a/Documentation/networking/ipvs-sysctl.rst b/Documentation/networking/ipvs-sysctl.rst
+index 2afccc63856e..1cfbf1add2fc 100644
+--- a/Documentation/networking/ipvs-sysctl.rst
++++ b/Documentation/networking/ipvs-sysctl.rst
+@@ -37,8 +37,7 @@ conn_reuse_mode - INTEGER
+ 
+ 	0: disable any special handling on port reuse. The new
+ 	connection will be delivered to the same real server that was
+-	servicing the previous connection. This will effectively
+-	disable expire_nodest_conn.
++	servicing the previous connection.
+ 
+ 	bit 1: enable rescheduling of new connections when it is safe.
+ 	That is, whenever expire_nodest_conn and for TCP sockets, when
+diff --git a/net/netfilter/ipvs/ip_vs_core.c b/net/netfilter/ipvs/ip_vs_core.c
+index 128690c512df..f9d65d2c8da8 100644
+--- a/net/netfilter/ipvs/ip_vs_core.c
++++ b/net/netfilter/ipvs/ip_vs_core.c
+@@ -1964,7 +1964,6 @@ ip_vs_in(struct netns_ipvs *ipvs, unsigned int hooknum, struct sk_buff *skb, int
+ 	struct ip_vs_proto_data *pd;
+ 	struct ip_vs_conn *cp;
+ 	int ret, pkts;
+-	int conn_reuse_mode;
+ 	struct sock *sk;
+ 
+ 	/* Already marked as IPVS request or reply? */
+@@ -2041,15 +2040,16 @@ ip_vs_in(struct netns_ipvs *ipvs, unsigned int hooknum, struct sk_buff *skb, int
+ 	cp = INDIRECT_CALL_1(pp->conn_in_get, ip_vs_conn_in_get_proto,
+ 			     ipvs, af, skb, &iph);
+ 
+-	conn_reuse_mode = sysctl_conn_reuse_mode(ipvs);
+-	if (conn_reuse_mode && !iph.fragoffs && is_new_conn(skb, &iph) && cp) {
++	if (!iph.fragoffs && is_new_conn(skb, &iph) && cp) {
+ 		bool old_ct = false, resched = false;
++		int conn_reuse_mode = sysctl_conn_reuse_mode(ipvs);
+ 
+ 		if (unlikely(sysctl_expire_nodest_conn(ipvs)) && cp->dest &&
+ 		    unlikely(!atomic_read(&cp->dest->weight))) {
+ 			resched = true;
+ 			old_ct = ip_vs_conn_uses_old_conntrack(cp, skb);
+-		} else if (is_new_conn_expected(cp, conn_reuse_mode)) {
++		} else if (conn_reuse_mode &&
++			   is_new_conn_expected(cp, conn_reuse_mode)) {
+ 			old_ct = ip_vs_conn_uses_old_conntrack(cp, skb);
+ 			if (!atomic_read(&cp->n_control)) {
+ 				resched = true;
 -- 
-Best Regards
- Guo Ren
+2.30.2
 
-ML: https://lore.kernel.org/linux-csky/
