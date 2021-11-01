@@ -2,195 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B499B442090
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 20:13:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6D0D44209D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 20:16:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232443AbhKATP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 15:15:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:39022 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231509AbhKATPy (ORCPT
+        id S232299AbhKATTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 15:19:03 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:24902 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229549AbhKATTA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 15:15:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635794000;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uNXa8fBKQfy008maSJaxtZ2zCD7vx4uMQOlojPUS7ks=;
-        b=NxSNtaWTo7p1owYn9uLgHa7mZOCjIoSxbKGCkfu9lcycLfN0CXEiGyelAzo6kx73MKNFT+
-        +Zou8J63WW/n4DfJnq1jhHGNpPAVT1xni+eoEo+ajhBRpB81PKD/QbQ4jdC/FdR7uxj9HX
-        i6r/quncxUH1FhrOCJy7gGAml4Oyulc=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-27-Gzbq0_HCPOSd88q48mG-DA-1; Mon, 01 Nov 2021 15:13:19 -0400
-X-MC-Unique: Gzbq0_HCPOSd88q48mG-DA-1
-Received: by mail-ed1-f71.google.com with SMTP id z1-20020a05640235c100b003e28c89743bso3539351edc.22
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 12:13:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=uNXa8fBKQfy008maSJaxtZ2zCD7vx4uMQOlojPUS7ks=;
-        b=Z0ISjnVeDN3DAO3s15u6ZWVBiZHpp8h+ByBe2BGGpQ6ikKZ3tkbGqQXQjJfLMY8bMT
-         IKLIrpyAL0t5n9EgalqlabrhevmU7edl/U+OtZRHaq0Q/bOt+uSRmLGmK4SoqXgdQDx1
-         gjKgsznTfQaNTF0OEiiAyYrHStGdEjkJGIxlKq5u7/mGCVrZH+JUR4rjFoL2MV74CeTf
-         qi4ciJZiP7cytVaovSRiCkp6de+yT9yYNKxq1Q3Cx8q4zBAtRO0OLxkmBog/KPx3Id8O
-         RsALPL4ZLXYZ7x+0FjlTSU5a3634HPG+VairKIWjOAdsqk8oWEB4ifFLBuiBDR/8XN6B
-         ZBlg==
-X-Gm-Message-State: AOAM532HNj6gy/wr8aH/hcVA515rBFZxeEVtzcSJwISTJYHm+p6jt7py
-        Dn5xJ1N94c3zelrnhjsxIBs6+Nn8W67zDplW8/EC5yoe1N/0AW6LIb3aL/nsOvFLVJo1rLJjjI6
-        4yYqs38m/d/CLVWoO2qJ0gpb+
-X-Received: by 2002:a05:6402:27c6:: with SMTP id c6mr10083034ede.152.1635793998491;
-        Mon, 01 Nov 2021 12:13:18 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwDCENu1cSGClGlzjt/UWsaSrQ56enERx4L8r0T465qiI6NxwdjP7/jBAJd8SscFR/+sF2cOA==
-X-Received: by 2002:a05:6402:27c6:: with SMTP id c6mr10083006ede.152.1635793998301;
-        Mon, 01 Nov 2021 12:13:18 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id dp8sm7563082ejc.83.2021.11.01.12.13.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Nov 2021 12:13:17 -0700 (PDT)
-Message-ID: <81e3cf3e-12d9-46fe-23c3-d5fa95462a67@redhat.com>
-Date:   Mon, 1 Nov 2021 20:13:16 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [RFC 0/5] ACPI/power-suppy add fuel-gauge support on cht-wc PMIC
- without USB-PD support devs
+        Mon, 1 Nov 2021 15:19:00 -0400
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1A1Irc84004932;
+        Mon, 1 Nov 2021 19:16:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=b+p51p18uC8N75Q4P4UR48tjCRk+yQ6uaH1p3jPenJs=;
+ b=VV5AVsVbemDri6afqfB0N5NQLIb0S4PsRpTe5ib7mA918TbSc45oMnisXiP21jgqhsxE
+ KusUfLVVPeNK0+Z1vbpNOt2HQ/zhEEnnTcMhGaZ74Npf/fL+ukUsGkkA6Lwn/es5sEzM
+ Zt57UqDn2tFDzkm7bS7wqAa8/Wdw9EqGnnSNX0WLEI0uXlGib1/L3HdbKb2DNaGnyy29
+ krczDusi1u9GwYpzd/QP66N3Plvuc5xiJPzfyVOm4iYjPX/LkZ3Jey6SIqXyFBTx2fle
+ TyqGXYkyh6xCo5kLPgGNCn7Q5M9R6XwmjyqUvLKwNDzDAqyfSWW/2ik8mGCMkexVpwCv Zg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3c28gn3qqt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 01 Nov 2021 19:15:59 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1A1J6DaT020852;
+        Mon, 1 Nov 2021 19:15:58 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2174.outbound.protection.outlook.com [104.47.57.174])
+        by userp3020.oracle.com with ESMTP id 3c1khscrf4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 01 Nov 2021 19:15:58 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Z7/jQZQzTwqm28cTmDxhOL6H1fFYG76xHHGYH8kvbDYjqmK61oUdYuqZzbK/KkoDe0dQqb0LJPIHxjLwPk1MrmJ+1NN0R6eIoHhzSblCvQD6LmtqyYjbbG2aiqpv3/uu9quzieefes6ulViKBAbsMyXFLhi2L1kXZXc3fg67NqPjR4u1pwAsN4t/L2kAEZ8uosPPiLxVrYOG5KLVUY8FESL8+sS6vJSijVcCC1PKVyFE4uj8orHx0thmSPt+Ri6ZqOLb/LSf/mV6mYsEvhPqdDmpc93bgrne9rYZUASwN0d4+y4YwTQC8yu/7yGcJMdOdlZ/4dHn2qvwUEmBtEuEBA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=b+p51p18uC8N75Q4P4UR48tjCRk+yQ6uaH1p3jPenJs=;
+ b=jtzS15uwca2jDDHeKcHKv1wztChbnY2LB3zcDvpt3q1HUkjq6mDT4LLL2iebERKCe4RJ1EGmuNW0Tc2bm4SQ/TUDJ2FPPfoe52RDy+a/X5aG1DYYHTF4rUd+y5LMwbzjuYmjlqIOZiS/lkUWP3VgBRjr3rfOziQ7tassnZleHBHfvZdsuAuN/1sXdKTjSs53oC4uDlBDYWKzfk+HyHXRqqfs7oo61fWwU6tCr5KdUiQfusBe+8OIVdLYufcf1S7isJvR34jUYWrRJhf9IGk44YWePTJTdOxVhyp4vv6whNYTu9MJ3Ls3+PJTVMgR+XCAiFUXKIftpSwUUDbQUaMJIw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=b+p51p18uC8N75Q4P4UR48tjCRk+yQ6uaH1p3jPenJs=;
+ b=YB5TX6MT80raWLRMMVraaQdFyWj02nP6AQcKrDQQkFU1a6cyDs1eXEdmuB+7ZhybEuvI+XKQS7U2TQ7JCRw/fAhCmpc7Y/g4HD+OaPQSRRjJc2+GxXESzC9RR8HLpY6m+M5y4RjzDopJo4WSqm7Pvj/DoHfXrWzbQNhgJAJmziE=
+Authentication-Results: suse.com; dkim=none (message not signed)
+ header.d=none;suse.com; dmarc=none action=none header.from=oracle.com;
+Received: from BLAPR10MB5009.namprd10.prod.outlook.com (2603:10b6:208:321::10)
+ by MN2PR10MB4174.namprd10.prod.outlook.com (2603:10b6:208:1dd::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.15; Mon, 1 Nov
+ 2021 19:15:55 +0000
+Received: from BLAPR10MB5009.namprd10.prod.outlook.com
+ ([fe80::3c49:46aa:83e1:a329]) by BLAPR10MB5009.namprd10.prod.outlook.com
+ ([fe80::3c49:46aa:83e1:a329%6]) with mapi id 15.20.4649.019; Mon, 1 Nov 2021
+ 19:15:55 +0000
+Message-ID: <d672d22e-770d-d37e-b094-29563106511e@oracle.com>
+Date:   Mon, 1 Nov 2021 15:15:42 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.1
+Subject: Re: [PATCH 0/4] xen: do some cleanup
 Content-Language: en-US
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Sebastian Reichel <sre@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Yauhen Kharuzhy <jekhor@gmail.com>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>
-References: <20211031162428.22368-1-hdegoede@redhat.com>
- <CAHp75VdFcfEyEsFWVS_zxr-aehpqELAwN1eBs-KHVkEwxO2e5Q@mail.gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <CAHp75VdFcfEyEsFWVS_zxr-aehpqELAwN1eBs-KHVkEwxO2e5Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+To:     Juergen Gross <jgross@suse.com>, xen-devel@lists.xenproject.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+Cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+References: <20211028081221.2475-1-jgross@suse.com>
+From:   Boris Ostrovsky <boris.ostrovsky@oracle.com>
+In-Reply-To: <20211028081221.2475-1-jgross@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SA0PR11CA0099.namprd11.prod.outlook.com
+ (2603:10b6:806:d1::14) To BLAPR10MB5009.namprd10.prod.outlook.com
+ (2603:10b6:208:321::10)
+MIME-Version: 1.0
+Received: from [10.74.105.65] (138.3.200.1) by SA0PR11CA0099.namprd11.prod.outlook.com (2603:10b6:806:d1::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.14 via Frontend Transport; Mon, 1 Nov 2021 19:15:52 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9cefe525-2d6c-4f77-ace9-08d99d6c071b
+X-MS-TrafficTypeDiagnostic: MN2PR10MB4174:
+X-Microsoft-Antispam-PRVS: <MN2PR10MB4174ED6EE7D4D6DCD3386DA48A8A9@MN2PR10MB4174.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:403;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: o2KK9R5+g8fO34KNpP2lJYK+kEg0ev5PxD7fRTqQsCPM9sjYg6S2Lw1+5v7utljJmrSGiBzaeaTgAWsGPgx4xby7o3JrVxA/ckkBqx4xiLieoNejt9IRntZTp/cIVmMUVp5QqdRRY3/A0iUdeS2kxV4RfVaSEA1TC9+SD2Cp/XE+iqcVNZfpfKN7rfuBhG9KvuoQsPLRBkh0jrEz26vQG1CDzLNmdlt/nN/3yrmEbLsQMqLfEzD1TdZzmabH4hVZaIDY8HStROUM3Q0jyJiRiGR8CLoL3PcUfsnZLei11f2Ci+uTe/Jd6Bwol0acgDvapxsiCtjfbwL9hWX67+6kk24kghMQA7fhiVIMEzZSZqvHyJfEKoSHPrILr3ykZuVFG0cpENglwratQ4/3+lGyD0OXbkY0rP0JbDovBwtSAMa5LLWy304CsVxxHmM/3YZ9lEbc9v5US+o1+hIJsvUaYU6qP75xWYIcPcMTK3MYFShNYXnQjYGP8On7p2pEB6JIIW1FQiRqRrnNhm7eu3QW/pnUnuTIMZ25yPCs+3BIr4A7apnuwqN8ZnYfmoG3oy6ddO3gT8h6XaXmtsmUU5RjNqs0gp8s9YBysNEbymxIJ40H1ASp2K6hxgP+/MmFza9P+GSY7t3vc/bnvWZrAFHIXqKDRpRhy34Y8U2ZqiJd/kJBS8U2z/eNQlCsCOSqLj2ISl48kToVco/OAOB81SKcQ5wyRnesQYnT6kwE99ya6819RLa84+3hQssXv+aVFiVL
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5009.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(4744005)(31686004)(7416002)(186003)(26005)(6486002)(54906003)(316002)(38100700002)(16576012)(2616005)(44832011)(53546011)(956004)(5660300002)(6666004)(2906002)(86362001)(508600001)(8936002)(31696002)(8676002)(4326008)(66946007)(83380400001)(36756003)(66476007)(66556008)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MHh2SS9raytxdW5XL3RhOGtldWRubW9PMTZJYUdJTUZwOUpyOU40d25oa0h1?=
+ =?utf-8?B?V2d6QndyZUZqczNXWk5GVFkzUERBQUE5R0Qzc21VK1QwUzNnUWtHL252YnpN?=
+ =?utf-8?B?Ky9Lby9iRm1SVUF5a2VtOXdrOXlQSjV5THppSEEwbG9jS1RmTkRPYklQbzRR?=
+ =?utf-8?B?dWlod21lUnNUQzZIZWpwaWowcE85SmRCQ01YTGNTaWhDazNPdTQreGd1TjZn?=
+ =?utf-8?B?QTh1VkVBOHVDWkJ0bGVYRWg0ZFV5dzMrZnBPKzFrRStTdVAxZHVMc3RINWJQ?=
+ =?utf-8?B?bzFBb2NCR2NRRFNWM3BCYWJEUFZoRVVHZ0xnREcwWUFQOVpUTzE3a2k0Kzhz?=
+ =?utf-8?B?YVQzY3hjOThZQmpiNGE1dXplV3ZRSXJYcHF6dGFoRnZyK1ZES0pjNTFCaUVO?=
+ =?utf-8?B?UWhEZU1TNHBsenBPVzRPdWx6VmV5ekRhOCs2dXE3d2JvSEF1ejVWdkxrTHNq?=
+ =?utf-8?B?NUlRSWU3OVh2TDl4VUMzTytabmFQTThmek5ENlYvamZreHB6K2lidjJYcHlC?=
+ =?utf-8?B?TExkUTluRmhidnFZeFcrSzRMQmhUNTZTeVpoVmxtVTgwK0xWbkg0cmhCbkNx?=
+ =?utf-8?B?MGQ2ODlEZ2xzWm1rMkh1ZFd6WS9CMzF6NGlGSDFSZnJlSE1xb3pBbEpteHl2?=
+ =?utf-8?B?QkxVdnVDblUwK3NlWHVDUmc4NTNsS2l4Q0FWdENEZEFxQ1FBbEVuMjNoSFo1?=
+ =?utf-8?B?dVBpb3d1bXVmbUdzblh0WHpJZDRQc1Q3dHNHb1MwS1VXUnpzaEt5ZWgvUWxh?=
+ =?utf-8?B?UzQ5YkZKZ05ScU1TaGtNRFhxQXRnd1VaNktuYW5EOVBTOHgvRzVPU0VFN0pP?=
+ =?utf-8?B?S0JGMnh1dnZua2tCQmh0ZFJBS25hT05pcnFpRmRyNXAwYnpQOS93SjB6aklw?=
+ =?utf-8?B?a2w1MWZ6aEUyckhSYndGQmVnNEp0WDBWTGM0NmRzRnJFRFdHSEs4TWw0MjdS?=
+ =?utf-8?B?eXNMRWwzZWdDbUlsVHB6UCtwbTN2SjVXSzNlemxqbVN3d3BvT01paE5nNmsr?=
+ =?utf-8?B?TnlRZUZ6MmdoUzhzUXovQ1Q5MTlOUWR3clZnTENnSW5nQ0ZiTFQxVnRFbFM2?=
+ =?utf-8?B?cVk2LzdteFg3RUxqRVBsR3J3MmdJUUo5ZHZ1K0Nzd0JZL244cTUySW8vZlBQ?=
+ =?utf-8?B?VHlNRUtKVHhJbVdVeEVzU3pBVW4zNC9uVCtiREhoemVJaVJEdEFLaTlUQ0ZL?=
+ =?utf-8?B?Si82VEYyc2FQajlMd2h3WmdOS3ROcUNKZm5zU3dJYVY0c3Y4UHhFSjFiNGlQ?=
+ =?utf-8?B?bnljM3BpNk01SWlSNTBZdjA3WmRNaUlnRi9EV0EzSWtvOWFzYTlpTTFHeGtn?=
+ =?utf-8?B?ZnhsbDhYZ3hLMDdPa3ZSbC9yZ2tTK1hZQWFGOEY4cnlSd0lKbHRaVWp0NGRZ?=
+ =?utf-8?B?ekJXREtxQ29WSWUwTkdFYlVNTTk4elZxSU9maE1nOXRRZXE2U2ZRRmZ2eUZo?=
+ =?utf-8?B?WWVPVDBFU285OGxscXdFN1BsTkw4NW1SWHlid05JMzJLb1JBakwyTkdFaWdN?=
+ =?utf-8?B?NEUrOXJaL0xyalJVZ3Q2Zk1SZktGTTZZZmF6RWNqcHN4citWNFBkejhhVFhO?=
+ =?utf-8?B?T09GalhUNWMxQUQ5ZzVYdytrbzdUc3JnZm1yc05UcTZjZTZpT0VPS2VJL3NS?=
+ =?utf-8?B?cHpYSjdEUThjY0Q0cGFtczZ4aUZ2Nk9YZ2lCSXNKZGtGR2RnQkNMN2F1bmx5?=
+ =?utf-8?B?cWxieHhvaWNzS1VTUW5FQlZpakt5Q2ZFbC85aHg2SFluWHhlbUdzeW1GSWpF?=
+ =?utf-8?B?MlozL2hEdE9wV0pORnpSSkV4U0pFUkJYNDdzMTZmSEpLTXdQeVREUGt5R0pL?=
+ =?utf-8?B?REtxM1FwV0JDNXBzV3dPMWZxcHpPbjlrcTJ1SHgzTUxHK1psNHptRVFnQ2JB?=
+ =?utf-8?B?TUU3bGxVZmlJRWJjMFVicWxldUtxU2YrbXVoZXFOc1N4eTZNVUdRYmVrQlZE?=
+ =?utf-8?B?S0NHVkc2ZG5FcGxXd1BxWkUrYUpHRDFhVGVkcmxqUUdaTmQ1WmY4QlcwUXM1?=
+ =?utf-8?B?aW12cVQySUliOFZ6T2RvZncrc0FYRnNCdjZYVE1mQ0k0T3RqQjZFbXlLKzdH?=
+ =?utf-8?B?MHE3ZVNmWFIwakhLbXNHTVdRZm9IZlZ4UmhadmJBZU9ScGROOVM0ZHF6aDR4?=
+ =?utf-8?B?Vk8xMzJwSjd2TkRPbnRFOWR5ZW1nUnpmbEd0WHl3bFN5NXU1aHhCQ0ZnaGRs?=
+ =?utf-8?B?alg5VmVlMzBOU203cjdkZm8rZmo5SWdUbmEvRnZjMHA5RmZNclN4VkNIRjVW?=
+ =?utf-8?B?M2RlNnJ3VkpQclBiRXJwQllWeWh3PT0=?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9cefe525-2d6c-4f77-ace9-08d99d6c071b
+X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5009.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Nov 2021 19:15:55.2910
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1hTqS8bpimP5XaR2AFNfkyhtKcHlpu+8NRFC7xwOe4bMMy7XIsXsmHsn65CqP3QHyLWoF8gmUZZffC5I4c/mNGCcEudylyRkQbmm01nALcc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4174
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10155 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 phishscore=0 bulkscore=0
+ spamscore=0 adultscore=0 suspectscore=0 mlxlogscore=999 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
+ definitions=main-2111010103
+X-Proofpoint-ORIG-GUID: Kus93CEMdtRgZUrII15VcrwPtMx12G33
+X-Proofpoint-GUID: Kus93CEMdtRgZUrII15VcrwPtMx12G33
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On 10/31/21 20:49, Andy Shevchenko wrote:
-> On Sun, Oct 31, 2021 at 6:25 PM Hans de Goede <hdegoede@redhat.com> wrote:
->>
->> Hi All,
->>
->> Together with my earlier series to hookup the charger, Vbus boost converter
->> and USB role-switching:
->> https://lore.kernel.org/platform-driver-x86/20211030182813.116672-1-hdegoede@redhat.com/T/#t
->>
->> This series also adds battery-monitoring support on the Xiaomi Mi Pad 2
->> and the generic parts of it should also be usable on other devices with
->> the same PMIC setup.
->>
->> I've marked this series as a RFC because I'm not happy about the amount of
->> DMI quirks this series requires. The 3 separate quirks in
->> drivers/acpi/x86/utils.c are a bit much, but esp. when combined with also
->> the changes needed in drivers/gpio/gpiolib-acpi.c it all becomes a bit too
->> much special casing for just a single device.
->>
->> So I've been thinking about alternatives for this and I've come up with
->> 3 ways to deal with this:
->>
->> 1. This patch set.
->>
->> 2. Instead of the quirks in drivers/acpi/x86/utils.c, write an old-fashioned
->> "board" .c file/module which autoloads based on a DMI match and manually
->> instantiates i2c-clients for the BQ27520 fuel-gauge and the KTD20260 LED ctrlr.
->> Combined with not giving an IRQ to the fuel-gauge i2c-client (i), this allows
->> completely dropping the gpiolib-acpi.c changes and only requires 1 quirk for
->> the 2nd PWM controller in drivers/acpi/x86/utils.c. As an added bonus this
->> approach will also removes the need to add ACPI enumeration support to the
->> bq27xxx_battery code.
->>
->> 3. While working on this I noticed that the Mi Pad 2 DSDT actually has
->> full ac and battery ACPI code in its DSDT, which Linux was not trying to
->> use because of the Whiskey Cove PMIC ACPI HID in acpi_ac_blacklist[] in
->> drivers/apci/ac.c, resp. a missing _DEP for the ACPI battery.
->>
->> With the native drivers disabled (the default in 5.15-rc7 without patches),
->> both those things fixed and a fix to intel_pmic_regs_handler() in
->> drivers/acpi/pmic/intel_pmic.c, battery monitoring actually starts working
->> somwhat!
->>
->> I say somewhat because changes are not detected until userspace polls
->> the power_supply and switching from charge/device to host mode and
->> back does not work at all. This is due to the AML code for this relying
->> on _AEI ACPI events on virtual GPIOs on the PMIC :|  This means that we
->> would need to reverse engineer which events these virtual GPIO interrupts
->> represent; and then somehow rework the whole MFD + child driver setup
->> to deliver, e.g. extcon/pwrsrc events to a to-be-written GPIO driver
->> which supports these virtual GPIOs, while at the same time also keeping
->> normal native driver support since boards which USB-PD support need the
->> native drivers...  So OTOH this option has the promise of solving this
->> in a generic way which may work on more boards, OTOH it is a big mess
->> and we lack documentation for it.  Interestingly enough the ACPI
->> battery/ac code also takes ownership of the notification LED, downgrading
->> it from a full RGB led to a green charging LED, which is both a pre
->> and a con at the same time (since we would loose full RGB function).
->>
->> ###
-> 
->> Although I started out with implementing option 1, I now think I
->> Would personally prefer option 2. This isolates most of the code
->> needed to support some of these special boards into a single
->> (per board) file which can be build as a module which can be
->> autoloaded, rather then growing vmlinuz by adding quirks there.
-> 
-> Even before reading this my attention was on option 2 as well.
+On 10/28/21 4:12 AM, Juergen Gross wrote:
+> Some cleanups, mostly related to no longer supporting 32-bit PV mode.
+>
+> Juergen Gross (4):
+>    x86/xen: remove 32-bit pv leftovers
+>    xen: allow pv-only hypercalls only with CONFIG_XEN_PV
+>    xen: remove highmem remnants
+>    x86/xen: remove 32-bit awareness from startup_xen
+>
+>   arch/arm/xen/enlighten.c             |   1 -
+>   arch/arm/xen/hypercall.S             |   1 -
+>   arch/arm64/xen/hypercall.S           |   1 -
+>   arch/x86/include/asm/xen/hypercall.h | 233 ++++++++++++---------------
+>   arch/x86/xen/enlighten_pv.c          |   7 -
+>   arch/x86/xen/mmu_pv.c                |   1 -
+>   arch/x86/xen/xen-head.S              |  12 +-
+>   drivers/xen/mem-reservation.c        |  27 ++--
+>   include/xen/arm/hypercall.h          |  15 --
+>   9 files changed, 118 insertions(+), 180 deletions(-)
 
-Its good to hear that you think this is likely the best option too.
-I hope to send out another RFC patch-series taking this approach
-instead soon.
 
-> However, we might give another round of searching the documentation
-> for the vGPIO lines.
 
-Having those would be good regardless.
-
-> Meanwhile, have you tried to see if Android tree(s) has(ve) the
-> patches related to all this? (I'm a bit sceptical they do the right
-> thing and most probably just fall into board files case)
-
-The Android code takes the native driver path, when the EFI firmware
-sees it is about to exec Xiaomi's Android bootloader (I think it
-checks the signature) it sets OSID = 0x04 which makes all the
-ACPI devices which patch 1/5 of this RFC makes "always_present"
-return 0xf from their _STA method and it disables the troublesome
-_AEI handler too when OSID==4.
-
-So basically it does everything which this RFC series does with
-quirks automatically correct based on the OSID. But we cannot
-influence this ourselves, there is a BIOS option for it, but
-that gets overridden by OS autodetect code at boot.
-
-The fact that the Android on the tablet also goes the use
-native charger + fuel-gauge drivers route does to me is a further
-hint that using native drivers is probably the right thing to do
-(OTOH some of the code in the Android port the device ships with
- is not so great).
-
-Regards,
-
-Hans
+Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
 
