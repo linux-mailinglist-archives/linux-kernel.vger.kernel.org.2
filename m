@@ -2,164 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0414441D8F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 16:45:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5315E441D91
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 16:45:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231425AbhKAPru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 11:47:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45716 "EHLO
+        id S232602AbhKAPsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 11:48:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229658AbhKAPrt (ORCPT
+        with ESMTP id S232641AbhKAPsF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 11:47:49 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BEF1C061714
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 08:45:16 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id j75so17907042ybj.6
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 08:45:16 -0700 (PDT)
+        Mon, 1 Nov 2021 11:48:05 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEF47C061714
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 08:45:27 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id j9so9387773pgh.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 08:45:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZolZYi1Z2qAq+BdRoisdf3B03ivIqQVmB8Zw09nzu/A=;
-        b=QO56lhV56aUSXb5cp5vwYlnjJuQqx0rZxic/SzMXvbF1nWztHVKxodvJXVy1AoROHk
-         Cl3ep7m2UwaJ39Y/IGbfUJ2gor11hX8Ilimaw+ly07DUufwbpsjfOE0K9eD+wGMUU7mJ
-         BXfB52ihVoEKPyX8MuJrHcP6tdepZkqFE9yQY9WAY8t3j5oRhJCWfRVxFF0qRVAAe9gI
-         c/2ht1FMS+3Be+6eun16zvnn5nBp50PwzTMkvfs1yOGGs2QbT9tegBC/KR/rmLis0XMI
-         NJHEuMO9SSgfacSyYAz860rC+vlmp/hG4MkOXligVzYPPz6yYxIarv9WgjmZf52HqW/W
-         zLzw==
+        d=gmail.com; s=20210112;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=IVZ+3X2Rjxc+ixerGwp7ypsajfDVTMwoHCpW87XMd9Q=;
+        b=YZIbU4b61z7pDrPpqweZEq0UqGyo7ETxXPHWJDNP1+FgfC2iDskbORWARv/fI7lOVL
+         NR5yknrkpN4/NBnaFhD3pRWNWuchtY2I4tR2MsYzcaf/CcXJsBb/jt/yYG1PAni0D8hj
+         JGeeB2JJn9rJvjPAQcL5ejfB57MlOz16KjmNLVGhfBn1C46/pTVwpRzmtIaTY1LXP7Bk
+         RieDSgfzQ95Dsi3VJfQ5WC3UdO7N5rzN4qkgqLMqTCJd4GSaFJIzLbCiRB7puq41x0pZ
+         2Vh6D3hRQIsCjzukm/WVbGe98o9dEtqAZ35jaLYTdkyzyU5O3hzJZSv3meH+6jqOxKPG
+         T8Ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZolZYi1Z2qAq+BdRoisdf3B03ivIqQVmB8Zw09nzu/A=;
-        b=r6O8IOO5em7PXJCuL8M2k2AMM2aQgM231tgErkSDMtiCOummwj9+nJGWQRHvgiCiW3
-         sntUdSRPyI4G7cO+4gpmUw3AmPo561Mvoa1etFDnXYrouD4LHzIf3FP9BXCrE+dJk28T
-         6TUjuoT/Vnx0z5C8ec1+vL4CZqY4Dz6z8qWxs+TvDgPjD+l+HhlYB6TKUIG7IrfnIx7p
-         RW1q9sSSjCQo9ByXB4MDFWhAg9AWUnhhUJxut3gjn4Hg1ow691XAr+5hzems/JBmY2sl
-         lvnyrjvTyyiX60CMF2Rk0IkdHksdzkPXeN4fKTP0DJQVXs+ZjGKcj1PXhnlfSEpwv/W/
-         Vw1g==
-X-Gm-Message-State: AOAM533oalnjTi9DM/l7aD+5h5r4BknqhBajjK+kIbd7FSrWseyKPakX
-        ExJPsHM4bcI+xs9CCptR93HXkrlEusUm4jLFDog/Gw==
-X-Google-Smtp-Source: ABdhPJy7Y2xviMqGlKunRSE1bYGIzhMjrRr9qPYvk8vGlzZTFvMRzKzHep+EnxjFd74GwRZBeyfOPrds+hz4ErGZTUE=
-X-Received: by 2002:a25:ae12:: with SMTP id a18mr10895832ybj.412.1635781510066;
- Mon, 01 Nov 2021 08:45:10 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211022014658.263508-1-surenb@google.com> <YXJwUUPjfg9wV6MQ@dhcp22.suse.cz>
- <CAJuCfpEcSbK8WrufZjDj-7iUxiQtrmVTqHOxFUOvLhYGz6_ttQ@mail.gmail.com>
- <CAJuCfpFccBJHHqfOKixJvLr7Xta_ojkdHGfGomwTDNKffzziRQ@mail.gmail.com>
- <YXvxBSzA2YIxbwVC@dhcp22.suse.cz> <CAJuCfpHBoMGPOUvB2ZWQ=TxbFuWBRF++UaKJZDCrQV4mzb5kMA@mail.gmail.com>
- <YX+nYGlZBOAljoeF@dhcp22.suse.cz>
-In-Reply-To: <YX+nYGlZBOAljoeF@dhcp22.suse.cz>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Mon, 1 Nov 2021 08:44:58 -0700
-Message-ID: <CAJuCfpGC9-c9P40x7oy=jy5SphMcd0o0G_6U1-+JAziGKG6dGA@mail.gmail.com>
-Subject: Re: [PATCH 1/1] mm: prevent a race between process_mrelease and exit_mmap
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christian Brauner <christian@brauner.io>,
-        Christoph Hellwig <hch@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jann Horn <jannh@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=IVZ+3X2Rjxc+ixerGwp7ypsajfDVTMwoHCpW87XMd9Q=;
+        b=Vcb2ee10ScpmfJrlucgDqnPcowpJd84fSGkfg1z4plKA/leyU3jfAxT7obmx4HeNQ9
+         TJfSj3ONg1j2S9rVFPGv/iIws5f0CksUl2klPWsmxU1sTnPqs5ysdCjFLLl8sP+wCcP9
+         6ew1pEnIUPEIphNwYIVzPEZk5XRQZtCwJO+22Fqp5ERrDFxfy9vBJLmh9WvzjfVbxO7U
+         8Xg4Kiivb0DieYaWAZj9d+bF1Y0SGSjto6lzt1OTJMYy8VrFF86g6zXmm5bF9UxLJw1k
+         6Pv5da4IlZiMmR0sDgaKiOC6NzLSEy/R0UXKuOr4X4CRs9uqwXM/HyVPSPIDKqrUFKv0
+         hEWQ==
+X-Gm-Message-State: AOAM531QfZgSn7MKxwl0EYXlUun03tGbyC5GQdrJRsyNqFKmRteRWeWw
+        AM6cf+ieHdqcbsYao7+lVmA=
+X-Google-Smtp-Source: ABdhPJwGqDUkx3ky3N5utKupudoUHdzvzb3peFtCfxnm7yrUouJqtUBw1lGwerJKX1PD3tPI/k59SQ==
+X-Received: by 2002:a05:6a00:c81:b029:30e:21bf:4c15 with SMTP id a1-20020a056a000c81b029030e21bf4c15mr29362219pfv.70.1635781527011;
+        Mon, 01 Nov 2021 08:45:27 -0700 (PDT)
+Received: from smtpclient.apple ([66.170.99.1])
+        by smtp.gmail.com with ESMTPSA id n11sm13386812pgm.74.2021.11.01.08.45.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 01 Nov 2021 08:45:26 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
+Subject: Re: [PATCH] mm: use correct VMA flags when freeing page-tables
+From:   Nadav Amit <nadav.amit@gmail.com>
+In-Reply-To: <80283a1e-dfab-c02b-7a6a-424e2f7fda4@google.com>
+Date:   Mon, 1 Nov 2021 08:45:24 -0700
+Cc:     Linux-MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Andy Lutomirski <luto@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Jan Engelhardt <jengelh@inai.de>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Andrea Arcangeli <aarcange@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
+        Nick Piggin <npiggin@gmail.com>, x86@kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <6CAB8AAB-D6E2-47B3-BE00-E3D68310EB2D@gmail.com>
+References: <20211021122322.592822-1-namit@vmware.com>
+ <80283a1e-dfab-c02b-7a6a-424e2f7fda4@google.com>
+To:     Hugh Dickins <hughd@google.com>
+X-Mailer: Apple Mail (2.3654.120.0.1.13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 1, 2021 at 1:37 AM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Fri 29-10-21 09:07:39, Suren Baghdasaryan wrote:
-> > On Fri, Oct 29, 2021 at 6:03 AM Michal Hocko <mhocko@suse.com> wrote:
-> [...]
-> > > Well, I still do not see why that is a problem. This syscall is meant to
-> > > release the address space not to do it fast.
-> >
-> > It's the same problem for a userspace memory reaper as for the
-> > oom-reaper. The goal is to release the memory of the victim and to
-> > quickly move on to the next one if needed.
->
-> The purpose of the oom_reaper is to _guarantee_ a forward progress. It
-> doesn't have to be quick or optimized for speed.
 
-Fair enough. Then the same guarantees should apply to userspace memory
-reapers. I think you clarified that well in your replies in
-https://lore.kernel.org/all/20170725154514.GN26723@dhcp22.suse.cz:
 
-Because there is no _guarantee_ that the final __mmput will release
-the memory in finite time. And we cannot guarantee that longterm.
-...
-__mmput calls into exit_aio and that can wait for completion and there
-is no way to guarantee this will finish in finite time.
+> On Nov 1, 2021, at 12:28 AM, Hugh Dickins <hughd@google.com> wrote:
+>=20
+> On Thu, 21 Oct 2021, Nadav Amit wrote:
+>=20
+>> From: Nadav Amit <namit@vmware.com>
+>>=20
+>> Consistent use of the mmu_gather interface requires a call to
+>> tlb_start_vma() and tlb_end_vma() for each VMA. free_pgtables() does =
+not
+>> follow this pattern.
+>>=20
+>> Certain architectures need tlb_start_vma() to be called in order for
+>> tlb_update_vma_flags() to update the VMA flags (tlb->vma_exec and
+>> tlb->vma_huge), which are later used for the proper TLB flush to be
+>> issued. Since tlb_start_vma() is not called, this can lead to the =
+wrong
+>> VMA flags being used when the flush is performed.
+>>=20
+>> Specifically, the munmap syscall would call unmap_region(), which =
+unmaps
+>> the VMAs and then frees the page-tables. A flush is needed after
+>> the page-tables are removed to prevent page-walk caches from holding
+>> stale entries, but this flush would use the flags of the VMA flags of
+>> the last VMA that was flushed. This does not appear to be right.
+>>=20
+>> Use tlb_start_vma() and tlb_end_vma() to prevent this from happening.
+>> This might lead to unnecessary calls to flush_cache_range() on =
+certain
+>> arch's. If needed, a new flag can be added to mmu_gather to indicate
+>> that the flush is not needed.
+>>=20
+>> Cc: Andrea Arcangeli <aarcange@redhat.com>
+>> Cc: Andrew Cooper <andrew.cooper3@citrix.com>
+>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>> Cc: Andy Lutomirski <luto@kernel.org>
+>> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+>> Cc: Peter Zijlstra <peterz@infradead.org>
+>> Cc: Thomas Gleixner <tglx@linutronix.de>
+>> Cc: Will Deacon <will@kernel.org>
+>> Cc: Yu Zhao <yuzhao@google.com>
+>> Cc: Nick Piggin <npiggin@gmail.com>
+>> Cc: x86@kernel.org
+>> Signed-off-by: Nadav Amit <namit@vmware.com>
+>> ---
+>> mm/memory.c | 4 ++++
+>> 1 file changed, 4 insertions(+)
+>>=20
+>> diff --git a/mm/memory.c b/mm/memory.c
+>> index 12a7b2094434..056fbfdd3c1f 100644
+>> --- a/mm/memory.c
+>> +++ b/mm/memory.c
+>> @@ -412,6 +412,8 @@ void free_pgtables(struct mmu_gather *tlb, struct =
+vm_area_struct *vma,
+>> 		unlink_anon_vmas(vma);
+>> 		unlink_file_vma(vma);
+>>=20
+>> +		tlb_start_vma(tlb, vma);
+>> +
+>> 		if (is_vm_hugetlb_page(vma)) {
+>> 			hugetlb_free_pgd_range(tlb, addr, vma->vm_end,
+>> 				floor, next ? next->vm_start : ceiling);
+>> @@ -429,6 +431,8 @@ void free_pgtables(struct mmu_gather *tlb, struct =
+vm_area_struct *vma,
+>> 			free_pgd_range(tlb, addr, vma->vm_end,
+>> 				floor, next ? next->vm_start : ceiling);
+>> 		}
+>> +
+>> +		tlb_end_vma(tlb, vma);
+>> 		vma =3D next;
+>> 	}
+>> }
+>> --=20
+>> 2.25.1
+>=20
+> No.
+>=20
+> This is an experiment to see whether reviewers look at a wider context
+> than is seen in the patch itself?  Let's take a look:
+>=20
+> 		tlb_start_vma(tlb, vma);
+>=20
+> 		if (is_vm_hugetlb_page(vma)) {
+> 			hugetlb_free_pgd_range(tlb, addr, vma->vm_end,
+> 				floor, next ? next->vm_start : ceiling);
+> 		} else {
+> 			/*
+> 			 * Optimization: gather nearby vmas into one =
+call down
+> 			 */
+> 			while (next && next->vm_start <=3D vma->vm_end + =
+PMD_SIZE
+> 			       && !is_vm_hugetlb_page(next)) {
+> 				vma =3D next;
+> 				next =3D vma->vm_next;
+> 				unlink_anon_vmas(vma);
+> 				unlink_file_vma(vma);
+> 			}
+> 			free_pgd_range(tlb, addr, vma->vm_end,
+> 				floor, next ? next->vm_start : ceiling);
+> 		}
+>=20
+> 		tlb_end_vma(tlb, vma);
+> 		vma =3D next;
+>=20
+> So, the vma may well have changed in between the new tlb_start_vma()
+> and tlb_end_vma(): which defeats the intent of the patch.
 
->
-> [...]
->
-> > > Btw. the above code will not really tell you much on a larger machine
-> > > unless you manage to trigger mmap_sem contection. Otherwise you are
-> > > measuring the mmap_sem writelock fast path and that should be really
-> > > within a noise comparing to the whole address space destruction time. If
-> > > that is not the case then we have a real problem with the locking...
-> >
-> > My understanding of that discussion is that the concern was that even
-> > taking uncontended mmap_sem writelock would regress the exit path.
-> > That was what I wanted to confirm. Am I misreading it?
->
-> No, your reading match my recollection. I just think that code
-> robustness in exchange of a rw semaphore write lock fast path is a
-> reasonable price to pay even if that has some effect on micro
-> benchmarks.
+Indeed, I made a an embarrassing bug. Having said that, I do not
+understand the experiment and whether I conducted it or was the
+object of it.
 
-I'm with you on this one, that's why I wanted to measure the price we
-would pay. Below are the test results:
+>=20
+> And I doubt that optimization should be dropped to suit the patch:
+> you admit to limited understanding of those architectures which need
+> tlb_start_vma(), me too; but they seem to have survived many years
+> without it there in free_pgtables(), and I think that tlb_start_vma()
+> is for when freeing pages, not for when freeing page tables.  Surely
+> all architectures have to accommodate the fact that a single page
+> table can be occupied by many different kinds of vma.
 
-Test: https://lore.kernel.org/all/20170725142626.GJ26723@dhcp22.suse.cz/
-Compiled: gcc -O2 -static test.c -o test
-Test machine: 128 core / 256 thread 2x AMD EPYC 7B12 64-Core Processor
-(family 17h)
+When it comes to TLB flushing, the assumption that if something is
+in the code for many years it must be working is questionable, and
+I have already encountered (and fixed) many such cases before.
 
-baseline (Linus master, f31531e55495ca3746fb895ffdf73586be8259fa)
-p50 (median)   87412
-p95                  168210
-p99                  190058
-average           97843.8
-stdev               29.85%
+Freeing page-tables, as I mentioned before, is needed for the
+invalidation the page-walk caches after the page-tables are dropped,
+if a speculative page-walk takes place. I can post v2 and fix my
+embarrassing bug. I am not going to force this patch - I just
+encountered the issue as I was modifying a different piece of code
+and the behavior seems very inconsistent.
 
-unconditional mmap_write_lock in exit_mmap (last column is the change
-from the baseline)
-p50 (median)   88312     +1.03%
-p95                  170797   +1.54%
-p99                  191813   +0.92%
-average           97659.5  -0.19%
-stdev               32.41%
-
-unconditional mmap_write_lock in exit_mmap + Matthew's patch (last
-column is the change from the baseline)
-p50 (median)   88807      +1.60%
-p95                  167783     -0.25%
-p99                  187853     -1.16%
-average           97491.4    -0.36%
-stdev               30.61%
-
-stdev is quite high in all cases, so the test is very noisy.
-The impact seems quite low IMHO. WDYT?
-
-> --
-> Michal Hocko
-> SUSE Labs
