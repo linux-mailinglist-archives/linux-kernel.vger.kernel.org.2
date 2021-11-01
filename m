@@ -2,73 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0372D4420F8
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 20:38:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83C4E44207A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 20:06:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229985AbhKATkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 15:40:07 -0400
-Received: from mga04.intel.com ([192.55.52.120]:12247 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229636AbhKATkE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 15:40:04 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10155"; a="229818506"
-X-IronPort-AV: E=Sophos;i="5.87,200,1631602800"; 
-   d="scan'208";a="229818506"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2021 12:00:42 -0700
-X-IronPort-AV: E=Sophos;i="5.87,200,1631602800"; 
-   d="scan'208";a="467403485"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2021 12:00:40 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mhcXf-002mmB-VU;
-        Mon, 01 Nov 2021 21:00:23 +0200
-Date:   Mon, 1 Nov 2021 21:00:23 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Aditya Garg <gargaditya08@live.com>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Orlando Chamberlain <redecorating@protonmail.com>
-Subject: Re: [PATCH v1 1/1] mfd: intel-lpss: Fix too early PM enablement in
- the ACPI ->probe()
-Message-ID: <YYA5R6KyIYJJrUkc@smile.fi.intel.com>
-References: <20211101151036.33598-1-andriy.shevchenko@linux.intel.com>
- <E051196A-C49B-4528-B72D-0BBC907AABFD@live.com>
+        id S232220AbhKATI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 15:08:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34342 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232533AbhKATIW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 15:08:22 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E13BDC061764
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 12:05:47 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id 5so66643965edw.7
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 12:05:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Q6V7Gw56j1fbOP3L/JmtSKoHD83KSTcHq7sV63glnuM=;
+        b=V9CryaeGoSXaoWNsE+V00jDIPAmNV1syxOy51AzEYZDOm2hSiu8r86+/rVypbmV17c
+         DIA2RfuwhJjEzuEEH0EdhVwygq0RtJRbjnQ0papVbpbz3wtQ/iQu2f/ZPqrDzZ1KOJKa
+         JRNRsMnlO2JHvR4YOgQQgGsP8sitiDOXQLRdwwn4INumJS44SX3W2Hbrajw6JadDFiuM
+         fHVXYeobtqBPr988Xt53NYAeGAPjtJwOUPtHVuu0/GLCd2vK7JWW73mhzNliL3Tyo3gx
+         izH3YL9RFKHzPb3JeWJcTSScj2W7a3QHPA1ZH9PJiwaKzXEIlrv63jqDfNLmyJrr9eU/
+         fGvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Q6V7Gw56j1fbOP3L/JmtSKoHD83KSTcHq7sV63glnuM=;
+        b=E+PQhXDLnkgytccIXtYvfZCt/ZW2lpU7sGwlqF87mAq9nomELV7KjiO5DMVQenoMtF
+         NTJ0sVXrZzRo3czWWdycIc8JBTWWnLHqCjcGRWsUoBkP9VVboNwEi8ecovbzsTS+VhtA
+         3ShDJ1/WFhnZo+h+QUX4Xa5i9tTPuztnNh7gJys1D3+WPAnEVdrXmQQmhKHKyjnKZD3R
+         /YfIfIgbx3I5zH74QkPlu80OQ+Pumv4O+uoS4wDwtu3cuVvXBSxcXnwCdqv3lOlnqPyv
+         Z9Agwwm2tHuKfz44nBJ5XTG2uGE+dv8avVCPRzGpo1P0345tKoZsUh96zVtsvWtshB2F
+         e/kw==
+X-Gm-Message-State: AOAM532ggGDQlVLOTCed7ZvY1n7Czywmo57Qng0vdmUr5sbPfHVYwFWU
+        dkBShXWlyFDc+0/GGLMVOjGDrwQVUn+J7BUGyP84hA==
+X-Google-Smtp-Source: ABdhPJwm9tqfzMwKrynpgXZqW17xbGvx5x4ZefxF1ARwrFkZgkhlyGDPME39ifBybz9u/RIFdwDlKH/D7dG3hxwvT38=
+X-Received: by 2002:a17:907:76b0:: with SMTP id jw16mr15259982ejc.169.1635793545753;
+ Mon, 01 Nov 2021 12:05:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <E051196A-C49B-4528-B72D-0BBC907AABFD@live.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210930215311.240774-1-shy828301@gmail.com> <20210930215311.240774-3-shy828301@gmail.com>
+In-Reply-To: <20210930215311.240774-3-shy828301@gmail.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 2 Nov 2021 00:35:34 +0530
+Message-ID: <CA+G9fYs__zKSSLKPh4wEPSY5SH8QYkLzgd_3dJpMX72XxTfpdw@mail.gmail.com>
+Subject: Re: [v3 PATCH 2/5] mm: filemap: check if THP has hwpoisoned subpage
+ for PMD page fault
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     naoya.horiguchi@nec.com, hughd@google.com,
+        kirill.shutemov@linux.intel.com, willy@infradead.org,
+        peterx@redhat.com, osalvador@suse.de, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        lkft-triage@lists.linaro.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 01, 2021 at 06:21:51PM +0000, Aditya Garg wrote:
-> > On 01-Nov-2021, at 8:40 PM, Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
-> > 
-> > The runtime PM callback may be called as soon as the runtime PM facility
-> > is enabled and activated. It means that ->suspend() may be called before
-> > we finish probing the device in the ACPI case. Hence, NULL pointer
-> > dereference:
-> > 
-> >  intel-lpss INT34BA:00: IRQ index 0 not found
-> >  BUG: kernel NULL pointer dereference, address: 0000000000000030
-> >  ...
-> >  Workqueue: pm pm_runtime_work
-> >  RIP: 0010:intel_lpss_suspend+0xb/0x40 [intel_lpss]
-> > 
-> > To fix this, first try to register the device and only after that enable
-> > runtime PM facility.
+Hi Yang,
 
-> Following patch fixed the issue for me.
-> Tested-by: Aditya Garg <gargaditya08@live.com>
+On Fri, 1 Oct 2021 at 03:23, Yang Shi <shy828301@gmail.com> wrote:
+>
+> When handling shmem page fault the THP with corrupted subpage could be PMD
+> mapped if certain conditions are satisfied.  But kernel is supposed to
+> send SIGBUS when trying to map hwpoisoned page.
+>
+> There are two paths which may do PMD map: fault around and regular fault.
+>
+> Before commit f9ce0be71d1f ("mm: Cleanup faultaround and finish_fault() codepaths")
+> the thing was even worse in fault around path.  The THP could be PMD mapped as
+> long as the VMA fits regardless what subpage is accessed and corrupted.  After
+> this commit as long as head page is not corrupted the THP could be PMD mapped.
+>
+> In the regular fault path the THP could be PMD mapped as long as the corrupted
+> page is not accessed and the VMA fits.
+>
+> This loophole could be fixed by iterating every subpage to check if any
+> of them is hwpoisoned or not, but it is somewhat costly in page fault path.
+>
+> So introduce a new page flag called HasHWPoisoned on the first tail page.  It
+> indicates the THP has hwpoisoned subpage(s).  It is set if any subpage of THP
+> is found hwpoisoned by memory failure and cleared when the THP is freed or
+> split.
+>
+> Fixes: 800d8c63b2e9 ("shmem: add huge pages support")
+> Cc: <stable@vger.kernel.org>
+> Suggested-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Signed-off-by: Yang Shi <shy828301@gmail.com>
+> ---
+>  include/linux/page-flags.h | 19 +++++++++++++++++++
+>  mm/filemap.c               | 12 ++++++------
+>  mm/huge_memory.c           |  2 ++
+>  mm/memory-failure.c        |  6 +++++-
+>  mm/memory.c                |  9 +++++++++
+>  mm/page_alloc.c            |  4 +++-
+>  6 files changed, 44 insertions(+), 8 deletions(-)
 
-Thanks for testing!
+When CONFIG_MEMORY_FAILURE not set
+we get these build failures.
+
+Regression found on x86_64 and i386 gcc-11 builds
+Following build warnings / errors reported on Linux mainline master.
+
+metadata:
+    git_describe: v5.15-559-g19901165d90f
+    git_repo: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+    git_short_log: 19901165d90f (\"Merge tag
+'for-5.16/inode-sync-2021-10-29' of git://git.kernel.dk/linux-block\")
+    target_arch: x86_64
+    toolchain: gcc-11
 
 
--- 
-With Best Regards,
-Andy Shevchenko
+In file included from include/linux/mmzone.h:22,
+                 from include/linux/gfp.h:6,
+                 from include/linux/slab.h:15,
+                 from include/linux/crypto.h:20,
+                 from arch/x86/kernel/asm-offsets.c:9:
+include/linux/page-flags.h:806:29: error: macro "PAGEFLAG_FALSE"
+requires 2 arguments, but only 1 given
+  806 | PAGEFLAG_FALSE(HasHWPoisoned)
+      |                             ^
+include/linux/page-flags.h:411: note: macro "PAGEFLAG_FALSE" defined here
+  411 | #define PAGEFLAG_FALSE(uname, lname) TESTPAGEFLAG_FALSE(uname,
+lname)   \
+      |
+include/linux/page-flags.h:807:39: error: macro "TESTSCFLAG_FALSE"
+requires 2 arguments, but only 1 given
+  807 |         TESTSCFLAG_FALSE(HasHWPoisoned)
+      |                                       ^
+include/linux/page-flags.h:414: note: macro "TESTSCFLAG_FALSE" defined here
+  414 | #define TESTSCFLAG_FALSE(uname, lname)
+         \
+      |
+include/linux/page-flags.h:806:1: error: unknown type name 'PAGEFLAG_FALSE'
+  806 | PAGEFLAG_FALSE(HasHWPoisoned)
+      | ^~~~~~~~~~~~~~
+include/linux/page-flags.h:807:25: error: expected ';' before 'static'
+  807 |         TESTSCFLAG_FALSE(HasHWPoisoned)
+      |                         ^
+      |                         ;
+......
+  815 | static inline bool is_page_hwpoison(struct page *page)
+      | ~~~~~~
+make[2]: *** [scripts/Makefile.build:121: arch/x86/kernel/asm-offsets.s] Error 1
 
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
+build link:
+-----------
+https://builds.tuxbuild.com/20KPBpXK6K0bKSIKAIKfwlBq7O4/build.log
+
+build config:
+-------------
+https://builds.tuxbuild.com/20KPBpXK6K0bKSIKAIKfwlBq7O4/config
+
+# To install tuxmake on your system globally
+# sudo pip3 install -U tuxmake
+
+tuxmake --runtime podman --target-arch x86_64 --toolchain gcc-11
+--kconfig defconfig --kconfig-add
+https://builds.tuxbuild.com/20KPBpXK6K0bKSIKAIKfwlBq7O4/config
+
+link:
+https://builds.tuxbuild.com/20KPBpXK6K0bKSIKAIKfwlBq7O4/tuxmake_reproducer.sh
+
+--
+Linaro LKFT
+https://lkft.linaro.org
