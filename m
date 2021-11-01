@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA70B44190D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:54:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57F6B44166F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:22:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234845AbhKAJxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:53:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50956 "EHLO mail.kernel.org"
+        id S232799AbhKAJZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:25:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58178 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234731AbhKAJss (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:48:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 21E9A6117A;
-        Mon,  1 Nov 2021 09:31:19 +0000 (UTC)
+        id S232230AbhKAJXO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:23:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B8277610E8;
+        Mon,  1 Nov 2021 09:20:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635759080;
-        bh=neNbb1lS9mPDKJJTeoCw3hvhNrfP6N74eu6k6XZsfNI=;
+        s=korg; t=1635758420;
+        bh=OWoe9ut4MvezTUhqlVNY5lcC0+n5MbCV6mfVfXZwDn8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kfkmfHZu956Qf3etTizVZfGwTZlemKapYA7empkh+PVg77h0xV/EM3NYwRtnj4q45
-         XMudmcdjNjILRYxQCMxSvuM9KuUa5JWzqUfOcVqPhr5itjY+4YaAV805uPY2lAdOQ+
-         3kM+kA/ng77ZQc63ppVfmba8/X1S7+zizZh9NLoM=
+        b=jbHrU7fAwCv4G6UlUyoVJ6hOulaoXSowVkrjONU5DRsLl5mYUyMZIKhAL5oYal++b
+         /A5hxLroNR1TSC4gAI3yv3VHyujt1XF3wyQ2KMGFQ1vuLiKzxuQNtxN77SQzV3tRTL
+         3wsSxmR3sGbtDlwfCOOkR79mGrow6fiFKjIyjZjA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jim Quinlan <jim2101024@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-Subject: [PATCH 5.14 074/125] reset: brcmstb-rescal: fix incorrect polarity of status bit
-Date:   Mon,  1 Nov 2021 10:17:27 +0100
-Message-Id: <20211101082547.226921183@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "Woojung.Huh@microchip.com" <Woojung.Huh@microchip.com>,
+        Johan Hovold <johan@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.14 16/25] net: lan78xx: fix division by zero in send path
+Date:   Mon,  1 Nov 2021 10:17:28 +0100
+Message-Id: <20211101082450.882639596@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082533.618411490@linuxfoundation.org>
-References: <20211101082533.618411490@linuxfoundation.org>
+In-Reply-To: <20211101082447.070493993@linuxfoundation.org>
+References: <20211101082447.070493993@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,33 +41,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jim Quinlan <jim2101024@gmail.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit f33eb7f29c16ba78db3221ee02346fd832274cdd upstream.
+commit db6c3c064f5d55fa9969f33eafca3cdbefbb3541 upstream.
 
-The readl_poll_timeout() should complete when the status bit
-is a 1, not 0.
+Add the missing endpoint max-packet sanity check to probe() to avoid
+division by zero in lan78xx_tx_bh() in case a malicious device has
+broken descriptors (or when doing descriptor fuzz testing).
 
-Fixes: 4cf176e52397 ("reset: Add Broadcom STB RESCAL reset controller")
-Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-Link: https://lore.kernel.org/r/20210914221122.62315-1-f.fainelli@gmail.com
-Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+Note that USB core will reject URBs submitted for endpoints with zero
+wMaxPacketSize but that drivers doing packet-size calculations still
+need to handle this (cf. commit 2548288b4fb0 ("USB: Fix: Don't skip
+endpoint descriptors with maxpacket=0")).
+
+Fixes: 55d7de9de6c3 ("Microchip's LAN7800 family USB 2/3 to 10/100/1000 Ethernet device driver")
+Cc: stable@vger.kernel.org      # 4.3
+Cc: Woojung.Huh@microchip.com <Woojung.Huh@microchip.com>
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/reset/reset-brcmstb-rescal.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/usb/lan78xx.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/drivers/reset/reset-brcmstb-rescal.c
-+++ b/drivers/reset/reset-brcmstb-rescal.c
-@@ -38,7 +38,7 @@ static int brcm_rescal_reset_set(struct
- 	}
+--- a/drivers/net/usb/lan78xx.c
++++ b/drivers/net/usb/lan78xx.c
+@@ -3615,6 +3615,12 @@ static int lan78xx_probe(struct usb_inte
  
- 	ret = readl_poll_timeout(base + BRCM_RESCAL_STATUS, reg,
--				 !(reg & BRCM_RESCAL_STATUS_BIT), 100, 1000);
-+				 (reg & BRCM_RESCAL_STATUS_BIT), 100, 1000);
- 	if (ret) {
- 		dev_err(data->dev, "time out on SATA/PCIe rescal\n");
- 		return ret;
+ 	dev->maxpacket = usb_maxpacket(dev->udev, dev->pipe_out, 1);
+ 
++	/* Reject broken descriptors. */
++	if (dev->maxpacket == 0) {
++		ret = -ENODEV;
++		goto out4;
++	}
++
+ 	/* driver requires remote-wakeup capability during autosuspend. */
+ 	intf->needs_remote_wakeup = 1;
+ 
 
 
