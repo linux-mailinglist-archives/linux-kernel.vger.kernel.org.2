@@ -2,157 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6E28441469
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 08:51:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8105844146B
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 08:52:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231181AbhKAHxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 03:53:52 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:60024 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231133AbhKAHxi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 03:53:38 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1635753065; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=GmzcMYsd0e4TNLGroTL3Y93GiSpZvjUfFRe6uyJXVgE=; b=mXnEMf7sPqWKRgGN8SF1zzg01v15M+hTlshZWQw0S3B5Rcvtbu6ynf0xLvG+duHbv8LZTkRq
- V+5wpp26HdcQ2FjYoKlPzIaFonUKOO4Lra7eKRsXeajhve3Tn0mIYmj/r5RRC+OfBTHmXNnF
- PikQm9KT//wsME8nvmxPOX+3Y4I=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 617f9c62900d71ea1ec63265 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 01 Nov 2021 07:50:58
- GMT
-Sender: zijuhu=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 748FDC4360C; Mon,  1 Nov 2021 07:50:57 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from zijuhu-gv.qualcomm.com (unknown [180.166.53.21])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: zijuhu)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7BFBDC4338F;
-        Mon,  1 Nov 2021 07:50:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 7BFBDC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Zijun Hu <zijuhu@codeaurora.org>
-To:     robh@kernel.org, gregkh@linuxfoundation.org, jirislaby@kernel.org
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-bluetooth@vger.kernel.org, zijuhu@codeaurora.org,
-        Zijun Hu <quic_zijuhu@quicinc.com>
-Subject: [PATCH v1] serdev: Add interface serdev_device_ioctl
-Date:   Mon,  1 Nov 2021 15:50:48 +0800
-Message-Id: <1635753048-5289-1-git-send-email-zijuhu@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S231205AbhKAHyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 03:54:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229933AbhKAHyo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 03:54:44 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7BD1C061714
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 00:52:11 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id o12so4333623qtv.4
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 00:52:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Z8gd5eXoOO0YCcqvOnuBWJhDMDcVyBGcLd9YfvoYxb4=;
+        b=qp6WVVobRiQ4EQb3DNpEpcfgEVFbQ4SZplGxv7MFEAD5AGFLgBecE2efxdIFaLLihN
+         /WVAQZKUS6RpTA9UA5b0RzDamR9Yfy61TvbNlhXsP98SHXYCIC9pt/X5WM/6hhWvg38R
+         FgAt2aAYl8F2eg4+jko+7JUUPGdfZbVwJyPp9nVLB5UINDhuTc7a2lTGEM0P4mBBiH3L
+         hlguPtAFp/8io0sXCTczcccwF2uQFgVzEpTOYrzsARQ6bJ6bUxz8iRbT0VcXZ8nz0zPn
+         rIyAdkSpSF9yiCnbe2G3LxTu9NTsyCb1PZbWdMGIoZ26T8wmisI8e2qymVQPMy5tXeGR
+         MexA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Z8gd5eXoOO0YCcqvOnuBWJhDMDcVyBGcLd9YfvoYxb4=;
+        b=Nk2FjL0N+IbfEtZX6JgvzZDbvxNl4k9iEg7DMpRhNDSjYBgxnrym1SJ1rfh+zvhAyS
+         dT2NzNYTVQdgUEatFvU9DlHmFAjmHpU9tIKDH/aAHjShGW02uBsfj6ytoj14a5zM5195
+         lRnIjgRqW8fIXPpV1+ZuT/43GHbMJjUpYNHWQFHoTsIQWWx/JKLgKnWVeKTVFELsocdJ
+         oI2lZrhteKylm/zYxatC2hyhdlK71JosTly2uDVlrt+lQR8xdgWMXMdQfaV8xqsD7OWR
+         60xdj1Coj71H/j9j5uvRWfTxLV4UxMiTx88dUxGwocsYLCqtty9Zql7Jx0DT0qApRqLx
+         vm8w==
+X-Gm-Message-State: AOAM531+qjxXVm2ba2gCa5eS56c7EkWt86onL9g34zV6tgTPOv/H/dQJ
+        95t14vtOScWTwOCpqc3hgP8=
+X-Google-Smtp-Source: ABdhPJxOx14zvRj0wc5ekFxCXobemjnhLgiQIgWQDCiFLXVU+DUcQf5HgtcXi2a+DRDhRBGbgs7rjw==
+X-Received: by 2002:ac8:7f8f:: with SMTP id z15mr1276467qtj.32.1635753130884;
+        Mon, 01 Nov 2021 00:52:10 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id g1sm4495636qtb.7.2021.11.01.00.52.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Nov 2021 00:52:10 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: zhang.mingyu@zte.com.cn
+To:     jack@suse.cz
+Cc:     zhang.mingyu@zte.com.cn, krisman@collabora.com, amir73il@gmail.com,
+        linux-kernel@vger.kernel.org, Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] samples: remove duplicate include in fs-monitor.c
+Date:   Mon,  1 Nov 2021 07:51:52 +0000
+Message-Id: <20211101075152.35780-1-zhang.mingyu@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zijun Hu <quic_zijuhu@quicinc.com>
+From: Zhang Mingyu <zhang.mingyu@zte.com.cn>
 
-For serdev_device which is mounted at virtual tty port, tty ioctl()
-maybe be used to make serdev_device ready to talk with tty port, so
-add interface serdev_device_ioctl().
+'sys/types.h' included in 'samples/fanotify/fs-monitor.c'
+is duplicated.It is also included on 15 line.
 
-Signed-off-by: Zijun Hu <quic_zijuhu@quicinc.com>
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Zhang Mingyu <zhang.mingyu@zte.com.cn>
 ---
- drivers/tty/serdev/core.c           | 11 +++++++++++
- drivers/tty/serdev/serdev-ttyport.c | 12 ++++++++++++
- include/linux/serdev.h              |  9 +++++++++
- 3 files changed, 32 insertions(+)
+ samples/fanotify/fs-monitor.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/tty/serdev/core.c b/drivers/tty/serdev/core.c
-index f1324fe99378..c0f6cd64716b 100644
---- a/drivers/tty/serdev/core.c
-+++ b/drivers/tty/serdev/core.c
-@@ -405,6 +405,17 @@ int serdev_device_set_tiocm(struct serdev_device *serdev, int set, int clear)
- }
- EXPORT_SYMBOL_GPL(serdev_device_set_tiocm);
+diff --git a/samples/fanotify/fs-monitor.c b/samples/fanotify/fs-monitor.c
+index a0e44cd31e6f..0a5f742a77a8 100644
+--- a/samples/fanotify/fs-monitor.c
++++ b/samples/fanotify/fs-monitor.c
+@@ -12,7 +12,6 @@
+ #include <sys/fanotify.h>
+ #include <sys/types.h>
+ #include <unistd.h>
+-#include <sys/types.h>
  
-+int serdev_device_ioctl(struct serdev_device *serdev, unsigned int cmd, unsigned long arg)
-+{
-+	struct serdev_controller *ctrl = serdev->ctrl;
-+
-+	if (!ctrl || !ctrl->ops->ioctl)
-+		return -EOPNOTSUPP;
-+
-+	return ctrl->ops->ioctl(ctrl, cmd, arg);
-+}
-+EXPORT_SYMBOL_GPL(serdev_device_ioctl);
-+
- static int serdev_drv_probe(struct device *dev)
- {
- 	const struct serdev_device_driver *sdrv = to_serdev_device_driver(dev->driver);
-diff --git a/drivers/tty/serdev/serdev-ttyport.c b/drivers/tty/serdev/serdev-ttyport.c
-index d367803e2044..fc6797b26b30 100644
---- a/drivers/tty/serdev/serdev-ttyport.c
-+++ b/drivers/tty/serdev/serdev-ttyport.c
-@@ -247,6 +247,17 @@ static int ttyport_set_tiocm(struct serdev_controller *ctrl, unsigned int set, u
- 	return tty->ops->tiocmset(tty, set, clear);
- }
- 
-+static int ttyport_ioctl(struct serdev_controller *ctrl, unsigned int cmd, unsigned long arg)
-+{
-+	struct serport *serport = serdev_controller_get_drvdata(ctrl);
-+	struct tty_struct *tty = serport->tty;
-+
-+	if (!tty->ops->ioctl)
-+		return -EOPNOTSUPP;
-+
-+	return tty->ops->ioctl(tty, cmd, arg);
-+}
-+
- static const struct serdev_controller_ops ctrl_ops = {
- 	.write_buf = ttyport_write_buf,
- 	.write_flush = ttyport_write_flush,
-@@ -259,6 +270,7 @@ static const struct serdev_controller_ops ctrl_ops = {
- 	.wait_until_sent = ttyport_wait_until_sent,
- 	.get_tiocm = ttyport_get_tiocm,
- 	.set_tiocm = ttyport_set_tiocm,
-+	.ioctl = ttyport_ioctl,
- };
- 
- struct device *serdev_tty_port_register(struct tty_port *port,
-diff --git a/include/linux/serdev.h b/include/linux/serdev.h
-index 3368c261ab62..3b37bbb187c2 100644
---- a/include/linux/serdev.h
-+++ b/include/linux/serdev.h
-@@ -91,6 +91,7 @@ struct serdev_controller_ops {
- 	void (*wait_until_sent)(struct serdev_controller *, long);
- 	int (*get_tiocm)(struct serdev_controller *);
- 	int (*set_tiocm)(struct serdev_controller *, unsigned int, unsigned int);
-+	int (*ioctl)(struct serdev_controller *ctrl, unsigned int cmd, unsigned long arg);
- };
- 
- /**
-@@ -201,6 +202,7 @@ int serdev_device_write_buf(struct serdev_device *, const unsigned char *, size_
- void serdev_device_wait_until_sent(struct serdev_device *, long);
- int serdev_device_get_tiocm(struct serdev_device *);
- int serdev_device_set_tiocm(struct serdev_device *, int, int);
-+int serdev_device_ioctl(struct serdev_device *serdev, unsigned int cmd, unsigned long arg);
- void serdev_device_write_wakeup(struct serdev_device *);
- int serdev_device_write(struct serdev_device *, const unsigned char *, size_t, long);
- void serdev_device_write_flush(struct serdev_device *);
-@@ -254,6 +256,13 @@ static inline int serdev_device_set_tiocm(struct serdev_device *serdev, int set,
- {
- 	return -ENOTSUPP;
- }
-+
-+static inline int serdev_device_ioctl(struct serdev_device *serdev,
-+				      unsigned int cmd, unsigned long arg)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
- static inline int serdev_device_write(struct serdev_device *sdev, const unsigned char *buf,
- 				      size_t count, unsigned long timeout)
- {
+ #ifndef FAN_FS_ERROR
+ #define FAN_FS_ERROR		0x00008000
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
+2.25.1
 
