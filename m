@@ -2,99 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FBA8441972
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 11:06:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3B4544197D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 11:09:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232274AbhKAKJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 06:09:11 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:39852 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231958AbhKAKI6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 06:08:58 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 4C6491FD29;
-        Mon,  1 Nov 2021 10:06:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1635761184; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WH7VChrDI+e9Uk1fqS2sz7sqWyDarVDdnxdnYZmqXAk=;
-        b=vHTq/U3Id6FrBhLsYrLNIAncwMSC+Auwky48/YfxU80iYDZ/NpKm4Q5X+AK+Mku2Vplu4z
-        62bOyc4rgBXHnlCEvBRRueCkPtt8DAJJX1x5BBP0bCkaH52L6AjLNpzblJdaKjUfUfLWYW
-        JB1ABBbVTMLdFBEMsLncLOHaQxmQKw0=
-Received: from suse.cz (unknown [10.100.224.162])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id C5293A3B83;
-        Mon,  1 Nov 2021 10:06:23 +0000 (UTC)
-Date:   Mon, 1 Nov 2021 11:06:23 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     "chunlei.wang" <Chunlei.wang@mediatek.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] printk: ringbuffer: Improve prb_next_seq() performance
-Message-ID: <YX+8H8ApU/jm2lo9@alley>
-References: <YXlddJxLh77DKfIO@alley>
- <875ytih3j9.fsf@jogness.linutronix.de>
+        id S231862AbhKAKLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 06:11:46 -0400
+Received: from todd.t-8ch.de ([159.69.126.157]:50805 "EHLO todd.t-8ch.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232024AbhKAKLk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 06:11:40 -0400
+Date:   Mon, 1 Nov 2021 11:09:05 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
+        s=mail; t=1635761345;
+        bh=LQZlI/sMH6WQ1R6Ac/PazlDCwM196E6fO967FhmAjMI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=t/eL9dlaWPmjiKHRBTXr7otVbaI5yDHZ+YJW44tZdw06c7uRiCAnxEONBSNGKuAZC
+         fFpL2yD1zVXexKnZ015vg8mko0lmyS3iuYeoV+Eo2EuV7dICDre2lJPhWhQC/8yG/w
+         QJzO9LBLLZvMtef7AxHHhvoGPAASDQIpyRvd/wfg=
+From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Jiri Kosina <jkosina@suse.cz>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [PATCH 1/6] HID: intel-ish-hid: add support for
+ MODULE_DEVICE_TABLE()
+Message-ID: <091a4bb3-0734-4b58-9417-7ef18fcc385b@t-8ch.de>
+References: <20211029152901.297939-1-linux@weissschuh.net>
+ <20211029152901.297939-2-linux@weissschuh.net>
+ <cd712bd7-cce7-58fb-d644-ced4fc0c76b1@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <875ytih3j9.fsf@jogness.linutronix.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <cd712bd7-cce7-58fb-d644-ced4fc0c76b1@redhat.com>
+Jabber-ID: thomas@t-8ch.de
+X-Accept: text/plain, text/html;q=0.2, text/*;q=0.1
+X-Accept-Language: en-us, en;q=0.8, de-de;q=0.7, de;q=0.6
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2021-10-27 17:54:42, John Ogness wrote:
-> On 2021-10-27, Petr Mladek <pmladek@suse.com> wrote:
-> > diff --git a/kernel/printk/printk_ringbuffer.c b/kernel/printk/printk_ringbuffer.c
-> > index 8a7b7362c0dd..24f47fbefbb5 100644
-> > --- a/kernel/printk/printk_ringbuffer.c
-> > +++ b/kernel/printk/printk_ringbuffer.c
-> > @@ -474,8 +474,10 @@ static enum desc_state desc_read(struct prb_desc_ring *desc_ring,
-> >  	 * state has been re-checked. A memcpy() for all of @desc
-> >  	 * cannot be used because of the atomic_t @state_var field.
-> >  	 */
-> > -	memcpy(&desc_out->text_blk_lpos, &desc->text_blk_lpos,
-> > -	       sizeof(desc_out->text_blk_lpos)); /* LMM(desc_read:C) */
-> > +	if (desc_out) {
-> > +		memcpy(&desc_out->text_blk_lpos, &desc->text_blk_lpos,
-> > +		       sizeof(desc_out->text_blk_lpos)); /* LMM(desc_read:C) */
-> > +	}
-> >  	if (seq_out)
-> >  		*seq_out = info->seq; /* also part of desc_read:C */
-> >  	if (caller_id_out)
+On 2021-11-01 10:58+0100, Hans de Goede wrote:
+> On 10/29/21 17:28, Thomas Weißschuh wrote:
+> > This allows to selectively autoload drivers for ISH devices.
+> > Currently all ISH drivers are loaded for all systems having any ISH
+> > device.
+> > 
+> > Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+> > 
+> > ---
+> > 
+> > Cc: linux-kbuild@vger.kernel.org
+> > Cc: linux-input@vger.kernel.org
+> > Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+> > Cc: Jiri Kosina <jkosina@suse.cz>
+> > Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+> > Cc: Hans de Goede <hdegoede@redhat.com>
+> > Cc: Masahiro Yamada <masahiroy@kernel.org>
+> > Cc: Michal Marek <michal.lkml@markovi.net>
+> > Cc: Nick Desaulniers <ndesaulniers@google.com>
+> > ---
+> >  include/linux/mod_devicetable.h   | 13 +++++++++++++
+> >  scripts/mod/devicetable-offsets.c |  3 +++
+> >  scripts/mod/file2alias.c          | 24 ++++++++++++++++++++++++
+> >  3 files changed, 40 insertions(+)
+> > 
+> > diff --git a/include/linux/mod_devicetable.h b/include/linux/mod_devicetable.h
+> > index ae2e75d15b21..befbf53c4b7c 100644
+> > --- a/include/linux/mod_devicetable.h
+> > +++ b/include/linux/mod_devicetable.h
+> > @@ -895,4 +895,17 @@ struct dfl_device_id {
+> >  	kernel_ulong_t driver_data;
+> >  };
+> >  
+> > +/* ISHTP (Integrated Sensor Hub Transport Protocol) */
+> > +
+> > +#define ISHTP_MODULE_PREFIX	"ishtp:"
+> > +
+> > +/**
+> > + * struct ishtp_device_id - ISHTP device identifier
+> > + * @guid_string: 36 char string of the form fa50ff2b-f2e8-45de-83fa-65417f2f49ba
+> > + * @context: pointer to driver specific data
+> > + */
+> > +struct ishtp_device_id {
+> > +	guid_t guid;
 > 
-> You also need this hunk:
+> The kdoc comment documents a context pointer, but this is missing from the
+> actual struct. Having some sort of driver_data (1) field here would be good IMHO.
+
+Fine for me.
+
+I left it out because nothing would be using it at the moment and
+it would have been easy to add when needed.
+
+Do you want me to send a v2 for that or would you add it when merging?
+(Or remove the spurious comment)
+
+> Regards,
 > 
-> @@ -530,7 +530,8 @@ static enum desc_state desc_read(struct prb_desc_ring *desc_ring,
->  	state_val = atomic_long_read(state_var); /* LMM(desc_read:E) */
->  	d_state = get_desc_state(id, state_val);
->  out:
-> -	atomic_long_set(&desc_out->state_var, state_val);
-> +	if (desc_out)
-> +		atomic_long_set(&desc_out->state_var, state_val);
->  	return d_state;
->  }
+> Hans
 > 
-> Sorry, I missed it in my last review. This time I build+boot tested the patch.
+> 1) "context" is fine, but AFAIK almost all other foo_device_id structs call this
+> driver_data, so that would be more consistent IMHO.
 
-Urgh. Great catch! It seems that my testing was not good enough. Or
-that I was just lucky.
-
-> With this hunk added:
-> 
-> Reviewed-by: John Ogness <john.ogness@linutronix.de>
-
-I am going to queue it for 5.17 after the pull request for 5.16 is
-accepted. I do not feel comfortable to rush this into 5.16, especially
-after finding the bug. The merge window has just started...
-
-Anyway, thanks a lot for review and catching the mistake.
-
-Best Regards,
-Petr
+Thomas
