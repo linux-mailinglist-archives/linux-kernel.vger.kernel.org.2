@@ -2,93 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B66BA442440
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 00:41:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B03244244B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 00:47:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231423AbhKAXnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 19:43:45 -0400
-Received: from gw2.atmark-techno.com ([35.74.137.57]:33300 "EHLO
-        gw2.atmark-techno.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbhKAXnm (ORCPT
+        id S231664AbhKAXto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 19:49:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41966 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230396AbhKAXtn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 19:43:42 -0400
-Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com [209.85.210.199])
-        by gw2.atmark-techno.com (Postfix) with ESMTPS id 6097B2003C
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 08:41:06 +0900 (JST)
-Received: by mail-pf1-f199.google.com with SMTP id c140-20020a624e92000000b0044d3de98438so10178184pfb.14
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 16:41:06 -0700 (PDT)
+        Mon, 1 Nov 2021 19:49:43 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 437F0C061714
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 16:47:09 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id f8so13144248plo.12
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 16:47:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=networkplumber-org.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UzYhPRxfN72kUqnxzFAI5MAMDQEz6/F2C3soDyRpS2c=;
+        b=WDl2XKPNursO5FZzbRDwLHcIfpZ+Vu+U11YkFDaM++Viknk/D/DPwMh++Iz/gmRHmr
+         QcxGpNIkzllLtn7PvlIarxOPBy1l0oghI6w21Ikz2uhxfzuHS/hiP6JvrliZiG61jC1B
+         kQBlYSXIfFwfCW3mY3v9YKnqXKpYAYJVGDqrchje54NBVxdrCJDULX07rXV7LNDUtkJJ
+         2y9cT5ACPCuPU/JXUo3uF8avTaaUqeZmrkSkYFQR0d7n7kZxtWdM0ZqTnWEK8WXQhb7k
+         tyZEHtPL7Mw1jbI6fmyy0ShR/Y4RWX9/F8VdH+Oh0g4XqKX1uuf6mD3cLnOqTgzxuKYk
+         iWpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=By2nrQuCIKQf3NwzY9ElfQ1+ViWJvdE8NoIkqa/IBjs=;
-        b=bozSMuxUQnOUSGHBYuIAlJ2bNYu8R7u9tH3rdHTxDa2hYam1hxUJLMpCsObPCjlrLu
-         sbPTdLuSmKbMZcIUEjXHAdSZii67wF9Ieqxkoswv47QplR8bMnDD1KJoMDVU/6iVunwY
-         Xnjoi7mN5V8WO7rTuPHLdz2QnIlQUAc0zFfPSvobiQvTgx5BslE72osheS4qJkdpZu31
-         A1UVMMFchsjkQ7lkefUQ07w10lYC+V/yep90RpSAC0kXrURi9T1+tyciMNJHfwLCTK5y
-         2VxkMi7y/TJlrMheG31KH3+nLm71DB0ne1vxwJ0aQm+pwgVLQTMzzFaBMDg3vsgBORrY
-         2IjQ==
-X-Gm-Message-State: AOAM530up7KLmF5wqHRyI0syKMBLE0U9JiY4g9iEkVtFq6xnqUVlRWP9
-        d1k24Y4BqhGmNpdYiaNVrLmOR9vGtcew3n3v2TRaWjmmp9tAe+csLsekrxbMic2HQAWh6T9QV9V
-        nZ+AesPcyq3JRu0O+X6jgWOSIpw==
-X-Received: by 2002:a17:90a:4fa1:: with SMTP id q30mr2368105pjh.12.1635810065466;
-        Mon, 01 Nov 2021 16:41:05 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwKq07jW36bYZxVDX5xVHL1vEAzZYjXVifD+GkKzqnt6PSGYkqOLdf8EWVUYOJvICQ7EySleQ==
-X-Received: by 2002:a17:90a:4fa1:: with SMTP id q30mr2368072pjh.12.1635810065211;
-        Mon, 01 Nov 2021 16:41:05 -0700 (PDT)
-Received: from pc-0115 (103.131.189.35.bc.googleusercontent.com. [35.189.131.103])
-        by smtp.gmail.com with ESMTPSA id w21sm17737559pfu.68.2021.11.01.16.41.04
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 01 Nov 2021 16:41:04 -0700 (PDT)
-Received: from martinet by pc-0115 with local (Exim 4.94.2)
-        (envelope-from <martinet@pc-0115>)
-        id 1mhgvH-002dX5-LD; Tue, 02 Nov 2021 08:41:03 +0900
-Date:   Tue, 2 Nov 2021 08:40:53 +0900
-From:   Dominique Martinet <dominique.martinet@atmark-techno.com>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>, linux-rtc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Marek Vasut <marex@denx.de>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH 2/2] rv8803: add irq-gpio optional dts attribute
-Message-ID: <YYB7BXuLXWuiWGw6@atmark-techno.com>
-References: <20211101013400.325855-1-dominique.martinet@atmark-techno.com>
- <20211101013400.325855-2-dominique.martinet@atmark-techno.com>
- <YYBuzqZD8/uK3d6Z@piout.net>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UzYhPRxfN72kUqnxzFAI5MAMDQEz6/F2C3soDyRpS2c=;
+        b=qIlk5NpY8fmqBHZCUf82pdT07+E//+dBN9dDvkYIvgFChaKYtCfO89jN+mZvfnuFld
+         Eppq5TWkhfN7PF9kk2cTPTBmjCz1NPWg5GvcO92c9aNAsxZ1ZfNpL1qF+rFBzZeFCgUU
+         cyQ48p/TPS2nJbpxgEqHV5wduQTajGpPUL4GX6MSpLGb3B1dXPcc8JLAC5vPCGALZZO9
+         vP1Yf4OMdRDlTpa6Jg5WBtX24Et8gBzbXC5ykdZwAu9ATcSI+ZBEy/c6juwZ2r5p8NiB
+         8lIT97dD1xtfHJzCqFjDkNcXfPiwjLeVHzM86wqjcBaIyqz3mVCHnw3jfD1O2szgm1Ek
+         Pv9A==
+X-Gm-Message-State: AOAM530RM3u56tuX8fzM4mVrgNuBbpWm+zlPxyDVCa1kvnKIjopzzZ5T
+        3MZt915LI2LAcfyjg8PMbHJSsQ==
+X-Google-Smtp-Source: ABdhPJzGDWpofgaoUfufpelsxEna0/8OrBK0EZ/+wkP7TpMBYCTx6kMQuzbOjv/+xJpb6W5ssdsEQg==
+X-Received: by 2002:a17:90a:5b0d:: with SMTP id o13mr2477894pji.117.1635810428735;
+        Mon, 01 Nov 2021 16:47:08 -0700 (PDT)
+Received: from hermes.local (204-195-33-123.wavecable.com. [204.195.33.123])
+        by smtp.gmail.com with ESMTPSA id b6sm14393429pfv.204.2021.11.01.16.47.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Nov 2021 16:47:08 -0700 (PDT)
+Date:   Mon, 1 Nov 2021 16:47:05 -0700
+From:   Stephen Hemminger <stephen@networkplumber.org>
+To:     netdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [ANNOUNCE] iproute2 5.15
+Message-ID: <20211101164705.6f4f2e41@hermes.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YYBuzqZD8/uK3d6Z@piout.net>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alexandre Belloni wrote on Mon, Nov 01, 2021 at 11:48:46PM +0100:
-> On 01/11/2021 10:34:00+0900, Dominique Martinet wrote:
-> > Some device cannot be woken up from i2c signal.
-> > Add a new irq-gpio attribute for devices which have a gpio connected to
-> > the rv8803 INT line so the rtc can be used for suspend to mem
-> 
-> I don't think this is right, the interrupts property of the rtc node can
-> point to a gpio and this is expected to be the one connected on INT. You
-> don't need another property.
+Iproute2 trick or treat edition. As usual many small bug fixes and
+a few new features such as IOAM.
 
-Oh, why didn't I know about such a useful property.
+As always, it is recommended to always use the latest iproute2.
+The latest code will always run on older kernels (and vice versa);
+this is possible because of the kernel API/ABI guarantees.
+Except for rare cases, iproute2 does not do maintenance releases
+and there is no long term stable version.
 
-I thought I'd have a problem with the device wakeup part but there also
-is another 'wakeup-source' property, so there is really nothing left to
-do for this patch.
-Thank you for the pointer, no code is the best code!
+Download:
+    https://www.kernel.org/pub/linux/utils/net/iproute2/iproute2-5.15.0.tar.gz
 
+Repository for current release
+    https://github.com/shemminger/iproute2.git
+    git://git.kernel.org/pub/scm/network/iproute2/iproute2.git
 
-Rob Herring wrote on Mon, Nov 01, 2021 at 07:53:52AM -0500:
-> Please send DT patches to the DT list.
-> 
-> Binding changes should be a separate patch.
+And future release (net-next):
+    git://git.kernel.org/pub/scm/network/iproute2/iproute2-next.git
 
-Ack, I'll do that for new patches onwards. It looks like a DT change
-will not be required here but I will remember this.
+Contributions:
 
+Andrea Claudi (1):
+      lib: bpf_legacy: fix bpffs mount when /sys/fs/bpf exists
 
-Thanks,
--- 
-Dominique
+Antoine Tenart (4):
+      man: devlink-port: fix the devlink port add synopsis
+      man: devlink-port: fix style
+      man: devlink-port: remove extra .br
+      man: devlink-port: fix pfnum for devlink port add
+
+David Ahern (3):
+      Update kernel headers
+      Import ioam6 uapi headers
+      Update kernel headers
+
+David Marchand (1):
+      iptuntap: fix multi-queue flag display
+
+Davide Caratti (1):
+      mptcp: unbreak JSON endpoint list
+
+Frank Villaro-Dixon (1):
+      cmd: use spaces instead of tabs for usage indentation
+
+Gokul Sivakumar (1):
+      ipneigh: add support to print brief output of neigh cache in tabular format
+
+Hangbin Liu (1):
+      ip/bond: add lacp active support
+
+Ilya Dmitrichenko (1):
+      ip/tunnel: always print all known attributes
+
+Justin Iurman (4):
+      Add, show, link, remove IOAM namespaces and schemas
+      New IOAM6 encap type for routes
+      IOAM man8
+      ipioam6: use print_nl instead of print_null
+
+Luca Boccassi (2):
+      tree-wide: fix some typos found by Lintian
+      configure: restore backward compatibility
+
+Neta Ostrovsky (1):
+      rdma: Fix SRQ resource tracking information json
+
+Nikolay Aleksandrov (1):
+      man: ip-link: remove double of
+
+Paul Chaignon (1):
+      lib/bpf: fix map-in-map creation without prepopulation
+
+Peilin Ye (1):
+      tc/skbmod: Introduce SKBMOD_F_ECN option
+
+Puneet Sharma (1):
+      tc/f_flower: fix port range parsing
+
+Stephen Hemminger (5):
+      uapi: update headers from 5.15 merge
+      ip: remove leftovers from IPX and DECnet
+      uapi: updates from 5.15-rc1
+      uapi: pickup fix for xfrm ABI breakage
+      v5.15.0
+
