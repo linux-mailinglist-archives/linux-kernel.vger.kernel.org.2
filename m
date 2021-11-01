@@ -2,94 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D021441B41
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 13:36:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 314D0441B3F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 13:35:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232500AbhKAMib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 08:38:31 -0400
-Received: from smtpbgsg1.qq.com ([54.254.200.92]:57130 "EHLO smtpbgsg1.qq.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232241AbhKAMia (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 08:38:30 -0400
-X-QQ-GoodBg: 1
-X-QQ-SSF: B0400000000000F0
-X-QQ-FEAT: 3VHFGWe+x7HaR9Nqg2dOJFQauBpP6Fwmq3kD2nKxVbpZY3gIzHs+YvsC2PRf4
-        OfbpA1t6FSu4Wu//FzUBIlhIHn+/Odb667gM1yuJy/deGF/nJOXBnIbtCFIYtjXm4Vz2IVl
-        CY0c7wV1zGvB+HEdtCBzmlyfGQb0LPkhIMOK2t4Ay9Q6EYdz/HjsKYdfDatkKX8jPpTDtBP
-        wVe5Jt1FLJO7sjzqD7zMURft846YNDuyDelJibsVrydbMU7Fir8d/1kE8UZ9gJW6zRqv3u2
-        +MFUrwNFtP4NQsXe6AVn8pNO62MPaCwUn4l2WC/B3Ugp2KCU4YtFLuoGSnrzpv+mpUTEzdn
-        qXaUoeVcKoaPSD03Tk=
-X-QQ-BUSINESS-ORIGIN: 2
-X-Originating-IP: 113.57.13.187
-X-QQ-STYLE: 
-X-QQ-mid: logic531t1635770147t9056710
-From:   "=?utf-8?B?5bi45buJ5b+X?=" <changlianzhi@uniontech.com>
-To:     "=?utf-8?B?bGludXgta2VybmVs?=" <linux-kernel@vger.kernel.org>
-Cc:     "=?utf-8?B?ZG1pdHJ5LnRvcm9raG92?=" <dmitry.torokhov@gmail.com>,
-        "=?utf-8?B?R3JlZyBLSA==?=" <gregkh@linuxfoundation.org>,
-        "=?utf-8?B?amlyaXNsYWJ5?=" <jirislaby@kernel.org>,
-        "=?utf-8?B?QW5keSBTaGV2Y2hlbmtv?=" 
-        <andriy.shevchenko@linux.intel.com>,
-        "=?utf-8?B?MjgyODI3OTYx?=" <282827961@qq.com>
-Subject: Re:[PATCH v9] tty: Fix the keyboard led light display problem
-Mime-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: base64
-Date:   Mon, 1 Nov 2021 20:35:47 +0800
-X-Priority: 3
-Message-ID: <tencent_10C69A8D3BC51F781F21A754@qq.com>
-X-QQ-MIME: TCMime 1.0 by Tencent
-X-Mailer: QQMail 2.x
-X-QQ-Mailer: QQMail 2.x
-X-QQ-SENDSIZE: 520
-Received: from qq.com (unknown [127.0.0.1])
-        by smtp.qq.com (ESMTP) with SMTP
-        id ; Mon, 01 Nov 2021 20:35:48 +0800 (CST)
-Feedback-ID: logic:uniontech.com:qybgforeign:qybgforeign6
-X-QQ-Bgrelay: 1
+        id S232544AbhKAMiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 08:38:14 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:13996 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232051AbhKAMiL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 08:38:11 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HjXWb4WvzzZcj0;
+        Mon,  1 Nov 2021 20:33:31 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Mon, 1 Nov 2021 20:35:27 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Mon, 1 Nov
+ 2021 20:35:27 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
+CC:     <linux-kselftest@vger.kernel.org>, <shuah@kernel.org>,
+        <ast@kernel.org>, <yhs@fb.com>
+Subject: [PATCH -next v2] bpf/benchs: Fix return value check of bpf_program__attach()
+Date:   Mon, 1 Nov 2021 20:43:10 +0800
+Message-ID: <20211101124310.3947887-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBTd2l0Y2hpbmcgZnJvbSB0aGUgZGVza3RvcCBlbnZpcm9ubWVudCB0byB0aGUgdHR5IGVu
-dmlyb25tZW50LA0KPiB0aGUgc3RhdGUgb2YgdGhlIGtleWJvYXJkIGxlZCBsaWdodHMgYW5k
-IHRoZSBzdGF0ZSBvZiB0aGUga2V5Ym9hcmQNCj4gbG9jayBhcmUgaW5jb25zaXN0ZW50LiBU
-aGlzIGlzIGJlY2F1c2UgdGhlIGF0dHJpYnV0ZSBrYi0+a2JkbW9kZQ0KPiBvZiB0aGUgdHR5
-IGJvdW5kIGluIHRoZSBkZXNrdG9wIGVudmlyb25tZW50IChYb3JnKSBpcyBzZXQgdG8NCj4g
-VkNfT0ZGLCB3aGljaCBjYXVzZXMgdGhlIGxlZHN0YXRlIGFuZCBrYi0+bGVkZmxhZ3N0YXRl
-DQo+IHZhbHVlcyBvZiB0aGUgYm91bmQgdHR5IHRvIGFsd2F5cyBiZSAwLCB3aGljaCBjYXVz
-ZXMgdGhlIHN3aXRjaA0KPiBmcm9tIHRoZSBkZXNrdG9wIFdoZW4gdG8gdGhlIHR0eSBlbnZp
-cm9ubWVudCwgdGhlIExFRCBsaWdodA0KPiBzdGF0dXMgaXMgaW5jb25zaXN0ZW50IHdpdGgg
-dGhlIGtleWJvYXJkIGxvY2sgc3RhdHVzLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogbGlhbnpo
-aSBjaGFuZyA8Y2hhbmdsaWFuemhpQHVuaW9udGVjaC5jb20+DQo+IC0tLQ0KPiAgdjctLT52
-ODoNCj4gIE9wdGltaXplIHRoZSBpbXBsZW1lbnRhdGlvbiBvZiBrYmRfdXBkYXRlX2xlZHN0
-YXRlIGZ1bmN0aW9uDQogPiANCj4gIFdoeSBub3QgYWRvcHQgdGhlIG9waW5pb25zIG9mIEdy
-ZWcgS0ggYW5kIEFuZHkgU2hldmNoZW5rbzoNCj4gICgxKSBJbiB0aGUgc3RydWN0dXJlIHN0
-cnVjdCBpbnB1dF9kZXYsIHRoZSBkZWZpbml0aW9uIG9mIGxlZCBpcw0KPiAgbGlrZSB0aGlz
-OiB1bnNpZ25lZCBsb25nIGxlZFtCSVRTX1RPX0xPTkdTKExFRF9DTlQpXTsgSWYgeW91DQo+
-ICBkZWZpbmUgaXQgbGlrZSB0aGlzOiB1bnNpZ25lZCBsb25nIG5ld3N0YXRlID0gKmRldi0+
-bGVkOyBJDQo+ICBhbHdheXMgZmVlbCB0aGF0IHRoZXJlIGlzIHN0aWxsIGJpZyBlbmQgYW5k
-IExpdHRsZSBlbmRpYW4gcHJvYmxlbS4NCj4gICgyKSBUaGUgdGVzdF9iaXQgZnVuY3Rpb24g
-aXMgdXNlZCB0byBhdm9pZCB0aGUgcHJvYmxlbSBvZiBsYXJnZQ0KPiAgYW5kIHNtYWxsIGVu
-ZHMsIGFuZCB0aGUgY3VycmVudCBhbGdvcml0aG0gKHY4KSBhbHNvIGV4aXN0cw0KPiAgZWxz
-ZXdoZXJlIGluIHRoZSBrZXJuZWw6IHRoZSBhdGtiZF9zZXRfbGVkcyBmdW5jdGlvbiAoZHJp
-dmVycy8NCj4gIGlucHV0L2tleWJvYXJkL2F0a2JkLmMpLg0KPiAgKDMpIEluIHRoZSBjdXJy
-ZW50IGtleWJvYXJkLmMgY29kZSwgdGhlIGNvZGUgaXMgYWxyZWFkeSB2ZXJ5IGdvb2QsDQo+
-ICBhbmQgaXQgaXMgYWxyZWFkeSByZWxhdGl2ZWx5IGluZGVwZW5kZW50LiBJZiB5b3UgbW9k
-aWZ5IHRoZSB0eXBlDQo+ICBvZiBsZWRzdGF0ZSB0byB1NjQgb3IgbW9kaWZ5IHRoZSBtYWNy
-byBkZWZpbml0aW9ucyBzdWNoIGFzDQo+ICBWQ19OVU1MT0NLLCBpdCBmZWVscyB0aGF0IGl0
-IGlzIG5vdCB2ZXJ5IG1lYW5pbmdmdWwsIGFuZCB0aGlzIEl0DQo+ICB3aWxsIGFsc28gY2F1
-c2Ugb3RoZXIgcmVsYXRlZCBtb2RpZmljYXRpb25zLiBPZiBjb3Vyc2UsIHRoaXMgaXMNCj4g
-IG9ubHkgbXkgY3VycmVudCBvcGluaW9uLiBJZiBldmVyeW9uZSBzdGlsbCBmZWVscyB0aGF0
-IGl0IGlzDQo+ICBuZWNlc3NhcnkgdG8gbW9kaWZ5LCBJIHdpbGwgZG8gaXQgdGhpcyB3YXku
-IE9mIGNvdXJzZSwgdGhpcw0KPiAgcHJvY2VzcyBtYXkgYmUgYSBiaXQgbG9uZ2VyLCBhbmQg
-SSB0aGluayBpdCBpcyBuZWNlc3NhcnkgdG8NCj4gIGNvbmR1Y3QgbW9yZSB0ZXN0cy4NCj4g
-IA0KPiAgdjk6IENoYW5nZSBkZXNjcmlwdGlvbiBpbmZvcm1hdGlvbjogeG9yZy0tPlhvcmcN
-Cj4g4oCm4oCmDQoNCkhpLCBmcmllbmRzLCBJIHdvdWxkIGxpa2UgdG8gYXNrIHdoZXRoZXIg
-dGhpcyB2ZXJzaW9uIG9mIHBhdGNoIGlzIHBvc3NpYmxlLCBpZiBub3QsDQpJIHdpbGwgdHJ5
-IG15IGJlc3QgdG8gZmluZCBhIHdheSB0byBjb21wbGV0ZSB0aGUgbmV4dCB2ZXJzaW9uIQ0K
-VGhhbmtzLg0KLS0NCmxpYW56aGkgY2hhbmc=
+If bpf_program__attach() fails, it never returns NULL,
+we should use libbpf_get_error() to check the return value.
 
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Acked-by: Yonghong Song <yhs@fb.com>
+---
+v2:
+  don't use 'int err'
+---
+ .../selftests/bpf/benchs/bench_bloom_filter_map.c      | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
+diff --git a/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c b/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
+index 6eeeed2913e6..4afaa4adb327 100644
+--- a/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
++++ b/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
+@@ -304,7 +304,7 @@ static void bloom_lookup_setup(void)
+ 	populate_maps();
+ 
+ 	link = bpf_program__attach(ctx.skel->progs.bloom_lookup);
+-	if (!link) {
++	if (libbpf_get_error(link)) {
+ 		fprintf(stderr, "failed to attach program!\n");
+ 		exit(1);
+ 	}
+@@ -321,7 +321,7 @@ static void bloom_update_setup(void)
+ 	populate_maps();
+ 
+ 	link = bpf_program__attach(ctx.skel->progs.bloom_update);
+-	if (!link) {
++	if (libbpf_get_error(link)) {
+ 		fprintf(stderr, "failed to attach program!\n");
+ 		exit(1);
+ 	}
+@@ -340,7 +340,7 @@ static void false_positive_setup(void)
+ 	populate_maps();
+ 
+ 	link = bpf_program__attach(ctx.skel->progs.bloom_hashmap_lookup);
+-	if (!link) {
++	if (libbpf_get_error(link)) {
+ 		fprintf(stderr, "failed to attach program!\n");
+ 		exit(1);
+ 	}
+@@ -358,7 +358,7 @@ static void hashmap_with_bloom_setup(void)
+ 	populate_maps();
+ 
+ 	link = bpf_program__attach(ctx.skel->progs.bloom_hashmap_lookup);
+-	if (!link) {
++	if (libbpf_get_error(link)) {
+ 		fprintf(stderr, "failed to attach program!\n");
+ 		exit(1);
+ 	}
+@@ -375,7 +375,7 @@ static void hashmap_no_bloom_setup(void)
+ 	populate_maps();
+ 
+ 	link = bpf_program__attach(ctx.skel->progs.bloom_hashmap_lookup);
+-	if (!link) {
++	if (libbpf_get_error(link)) {
+ 		fprintf(stderr, "failed to attach program!\n");
+ 		exit(1);
+ 	}
+-- 
+2.25.1
 
