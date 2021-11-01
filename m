@@ -2,99 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 397C0441BBB
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 14:28:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8511441BCC
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 14:37:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232040AbhKANbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 09:31:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53992 "EHLO mail.kernel.org"
+        id S232147AbhKANjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 09:39:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230417AbhKANbG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 09:31:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A1A3160551;
-        Mon,  1 Nov 2021 13:28:22 +0000 (UTC)
-Date:   Mon, 1 Nov 2021 13:28:19 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
-        Tony Lindgren <tony@atomide.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
-        linux-omap@vger.kernel.org, openbmc@lists.ozlabs.org,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: Re: [PATCH v2 11/45] arm64: Use do_kernel_power_off()
-Message-ID: <YX/rc872EIlC+QGE@arm.com>
-References: <20211027211715.12671-1-digetx@gmail.com>
- <20211027211715.12671-12-digetx@gmail.com>
+        id S231808AbhKANjh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 09:39:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 7832260551;
+        Mon,  1 Nov 2021 13:30:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635773408;
+        bh=pU2uZMzV1TvCBXUD2HwPGw/VKj+D2lRq2c8eBnoIqQI=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=T2rgRJqfFZyYlYdz0lTsiZprOf39I0DPbaBGo8TuMP2pqIxxBuHVXwTCQIaJJZjSC
+         d920+lyfgW4N+jvXecU1Bzi5U2UscAD8DSSeyF0q5kE0Y805M+dIgI6zIcJjgbieFg
+         h8Tq3KJonG9UjVUWkhkMax0ds4xfqLYAbQc89apeEL45dEDpInAJ7ZXV7aSzG08sCK
+         bApLTL+dw/vAfkqZNqkl9Zvmj6BLiryOoPCebCiYnclF6/IQKAZfgaWSmK037UTPMz
+         vzrQ+erIFrqBjQSvl8URj/vV0BWTyiNI2J9aKw2bzW1caoGg/2aRi09A7hfcBjzj2o
+         K+eaSOaxXuZMA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6E1C660A0F;
+        Mon,  1 Nov 2021 13:30:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211027211715.12671-12-digetx@gmail.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next 0/4] net: mana: some misc patches
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163577340844.3113.9934423294901348328.git-patchwork-notify@kernel.org>
+Date:   Mon, 01 Nov 2021 13:30:08 +0000
+References: <20211030005408.13932-1-decui@microsoft.com>
+In-Reply-To: <20211030005408.13932-1-decui@microsoft.com>
+To:     Dexuan Cui <decui@microsoft.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, gustavoars@kernel.org,
+        haiyangz@microsoft.com, netdev@vger.kernel.org, kys@microsoft.com,
+        stephen@networkplumber.org, wei.liu@kernel.org,
+        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        shacharr@microsoft.com, paulros@microsoft.com, olaf@aepfle.de,
+        vkuznets@redhat.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 12:16:41AM +0300, Dmitry Osipenko wrote:
-> Kernel now supports chained power-off handlers. Use do_kernel_power_off()
-> that invokes chained power-off handlers. It also invokes legacy
-> pm_power_off() for now, which will be removed once all drivers will
-> be converted to the new power-off API.
-> 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+Hello:
 
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+This series was applied to netdev/net-next.git (master)
+by David S. Miller <davem@davemloft.net>:
+
+On Fri, 29 Oct 2021 17:54:04 -0700 you wrote:
+> Hi all,
+> 
+> Patch 1 is a small fix.
+> 
+> Patch 2 reports OS info to the PF driver.
+> Before the patch, the req fields were all zeros.
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next,1/4] net: mana: Fix the netdev_err()'s vPort argument in mana_init_port()
+    https://git.kernel.org/netdev/net-next/c/6c7ea69653e4
+  - [net-next,2/4] net: mana: Report OS info to the PF driver
+    https://git.kernel.org/netdev/net-next/c/3c37f3573508
+  - [net-next,3/4] net: mana: Improve the HWC error handling
+    https://git.kernel.org/netdev/net-next/c/62ea8b77ed3b
+  - [net-next,4/4] net: mana: Support hibernation and kexec
+    https://git.kernel.org/netdev/net-next/c/635096a86edb
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
