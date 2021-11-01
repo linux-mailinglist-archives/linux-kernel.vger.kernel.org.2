@@ -2,120 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE275441A2C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 11:47:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3EF2441A2E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 11:48:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232192AbhKAKuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 06:50:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231485AbhKAKuB (ORCPT
+        id S231925AbhKAKui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 06:50:38 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:41644 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231271AbhKAKuh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 06:50:01 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3755BC061714;
-        Mon,  1 Nov 2021 03:47:28 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 5so61906188edw.7;
-        Mon, 01 Nov 2021 03:47:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zg/2TadFIKEh7TRYW+cbcPrXXMeYP+uLlK5UKpxBpLw=;
-        b=cNey6RR/2MQJMRdV1twInABbCQh0fWlFumvTn9ZmvZjapQQ0R6ZZMgVUBVxuPrDjsT
-         CNzD0L5zHXDHvZm02Wg1spSvN5SmmU1gWamirBxIUAjr/2JjLV5RaK00l5GA7dEd2685
-         sRDKiQq3coI7Ho9Y0riGk//V1pA6JNOXNvRpczAW4diQFzdAOW9Una++uCDaRRx80nIb
-         C1TfXP6fNUMojFQgBU+v6nYLXgaOztwr3VGNMfby1a8bp/81/wLdlChIrRJ2HvGE9MB6
-         pz+aCRmBpYdkXsk3QONCcyjaCnqb5DF0yw6hk8933tXxaIk2J2iM9SYGe95mMT/Xf5gT
-         +d3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zg/2TadFIKEh7TRYW+cbcPrXXMeYP+uLlK5UKpxBpLw=;
-        b=k4p4/j4Y2bx8KTuVJb82zHNDqEjkoUXXYzSNDO/YtqylNzZK20lM4OenGT+wARmuKG
-         Ekb7XApX0q/sHtZ9ZdJ+XZptXDpIrgFQoNhvt9JpgtYAkHBii1z6u8Xyav0kdYrf/gyA
-         qHDO3gILZmYMjgSXjCb7wF7ySbPhHYB6ArCdaw0wexQBXygJ/hh+IQ9KmC4y+CGeI8Rq
-         QWW0UdIjycfrkAh+ZsnCWIEyPZf5MU2/f1LEK1J9bN1BRbrriDFHP3TDweJYfMCJkJNU
-         /pI5lzO9pE0Cf7gm0Z95ikwXA8fvnkoG4GmHaaf2IfIbvVJ7b1NLzeKKXm7qFnEBbM4a
-         Sw/Q==
-X-Gm-Message-State: AOAM530iBMJWlaRLC9TFH2NRJI89dJ3dHkGIe56weoqSK5EtGyp9xFBz
-        fBpHlpXb0gMToVoUQPQAMUKY/W/nA8CMJOAtdtg=
-X-Google-Smtp-Source: ABdhPJySaCcDBrU6r8SzLBhTIbJZlf+fF53ZHRxezNfwopiw5Zt9GadJlgc+nytfqMugPh8RZuSg6C9nEq4qwg0wFg0=
-X-Received: by 2002:a05:6402:207c:: with SMTP id bd28mr29631823edb.240.1635763646840;
- Mon, 01 Nov 2021 03:47:26 -0700 (PDT)
+        Mon, 1 Nov 2021 06:50:37 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 6EB8A1FD73;
+        Mon,  1 Nov 2021 10:48:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1635763683; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=cw9ue3nhsP0Gi81qrIByB24WKeFFRUlnZI1BRAVyoBo=;
+        b=nbHV52rcyVCp+OuRTLpq9vbLQbppqi+eyIglSCrHbMVEoP4BY2/xemxzp35l8WuWd40phT
+        N+pBJNlLYfmP2dSJy3j84mtBCzplVJQ27butemmeKTZmMFWKZ51Zwn4yHlam1wK1q//jSl
+        EtGirIktIHH2Dtczu4ah99J3H7xtRBE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1635763683;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=cw9ue3nhsP0Gi81qrIByB24WKeFFRUlnZI1BRAVyoBo=;
+        b=CqbSkHcFoiC4XItF+dTibQzZtzEJYjge66GeA0X6Ai1Dr9lbgnL6ctZ5MhrHdLG4tNtbRj
+        YgzcbNdCBiIx+hCg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 56DB413AA8;
+        Mon,  1 Nov 2021 10:48:03 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id nvujFOPFf2EgVQAAMHmgww
+        (envelope-from <bp@suse.de>); Mon, 01 Nov 2021 10:48:03 +0000
+Date:   Mon, 1 Nov 2021 11:48:00 +0100
+From:   Borislav Petkov <bp@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] x86/sev for v5.16
+Message-ID: <YX/F4ORaVujMtqzG@zn.tnic>
 MIME-Version: 1.0
-References: <20211025094119.82967-1-hdegoede@redhat.com> <20211025094119.82967-9-hdegoede@redhat.com>
- <CAHp75VeLAW6ZBQYidnD7PDYfAH3A2bq+oMJTru-9OW_t-XS26g@mail.gmail.com>
- <8804fa29-d0d9-14a9-e48e-268113a79d07@redhat.com> <CAHp75VcdZV7NLEgQnEbsG951Mo2s_eRwfijgjSConXGF2SaSGA@mail.gmail.com>
-In-Reply-To: <CAHp75VcdZV7NLEgQnEbsG951Mo2s_eRwfijgjSConXGF2SaSGA@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 1 Nov 2021 12:46:37 +0200
-Message-ID: <CAHp75Vd6CNkys7E3P_hKAoZ29hA2dpFEqzFWxrSkS8GbC_ivGw@mail.gmail.com>
-Subject: Re: [PATCH v4 08/11] platform/x86: int3472: Add get_sensor_adev_and_name()
- helper
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Kate Hsuan <hpa@redhat.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 1, 2021 at 12:44 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
-> On Mon, Nov 1, 2021 at 12:31 PM Hans de Goede <hdegoede@redhat.com> wrote:
-> > On 10/25/21 13:31, Andy Shevchenko wrote:
-> > > On Mon, Oct 25, 2021 at 12:42 PM Hans de Goede <hdegoede@redhat.com> wrote:
+Hi Linus,
 
-...
+please pull some SEV improvements and fixes for v5.16.
 
-> > >> +       if (ret == 0 && sensor_adev_ret)
-> > >> +               *sensor_adev_ret = sensor;
-> > >> +       else
-> > >> +               acpi_dev_put(sensor);
-> > >> +
-> > >> +       return ret;
+Thx.
 
-...
+---
 
-> > >        if (sensor_adev_ret)
-> > >                *sensor_adev_ret = sensor;
-> > >
-> > >        return 0;
-> > >
-> > > ?
-> >
-> > That misses an acpi_dev_put(sensor) when sensor_adev_ret == NULL.
->
-> else
->   acpi_dev_put(...);
->
-> ?
+The following changes since commit 64570fbc14f8d7cb3fe3995f20e26bc25ce4b2cc:
 
-Hmm... But then in the original code and with this proposal the
-acpi_dev_put() seems a bit strange to me.
-If we are fine (no error code returned) why would the caller (note
-_er_) go different paths?
+  Linux 5.15-rc5 (2021-10-10 17:01:59 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_sev_for_v5.16_rc1
+
+for you to fetch changes up to 007faec014cb5d26983c1f86fd08c6539b41392e:
+
+  x86/sev: Expose sev_es_ghcb_hv_call() for use by HyperV (2021-10-25 18:11:42 +0200)
+
+----------------------------------------------------------------
+- Export sev_es_ghcb_hv_call() so that HyperV Isolation VMs can use it too
+
+- Non-urgent fixes and cleanups
+
+----------------------------------------------------------------
+Borislav Petkov (1):
+      x86/sev: Carve out HV call's return value verification
+
+Joerg Roedel (2):
+      x86/sev: Fix stack type check in vc_switch_off_ist()
+      x86/sev: Allow #VC exceptions on the VC2 stack
+
+Tianyu Lan (1):
+      x86/sev: Expose sev_es_ghcb_hv_call() for use by HyperV
+
+Tom Lendacky (1):
+      x86/sme: Use #define USE_EARLY_PGTABLE_L5 in mem_encrypt_identity.c
+
+ arch/x86/include/asm/sev.h         |  6 ++++
+ arch/x86/kernel/sev-shared.c       | 68 ++++++++++++++++++++++----------------
+ arch/x86/kernel/sev.c              | 34 +++++++++++++------
+ arch/x86/kernel/traps.c            |  2 +-
+ arch/x86/mm/mem_encrypt_identity.c |  9 +++++
+ 5 files changed, 80 insertions(+), 39 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Regards/Gruss,
+    Boris.
+
+SUSE Software Solutions Germany GmbH, GF: Ivo Totev, HRB 36809, AG Nürnberg
