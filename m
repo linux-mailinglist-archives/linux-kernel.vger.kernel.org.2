@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 550354418B1
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:49:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A7BF4417B2
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:37:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233222AbhKAJud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:50:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51088 "EHLO mail.kernel.org"
+        id S233980AbhKAJib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:38:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43676 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234562AbhKAJrK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:47:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 75E3D613E8;
-        Mon,  1 Nov 2021 09:30:35 +0000 (UTC)
+        id S233277AbhKAJf7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:35:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0391D6115B;
+        Mon,  1 Nov 2021 09:26:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635759035;
-        bh=NWtY/yBNxkcnnGKSfGyzyg6bWegWiIGZz37uhmBi0/4=;
+        s=korg; t=1635758772;
+        bh=I+p1RbHMY/qMyBbrckyFHTOaJRnNI+atK/hm/ghOfA8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xdBF89mC24CtwD7hCW865/DEjMsJZfAkl++wDUI0O+67+H7dmpA7wImosi+P8XCP6
-         3uhhxL9l0xG2hKNdv75af22UhFdb94vdK9X372Xeg8VY9Rrc1kc6qhfJtJLU+gmp5I
-         qONg+aCF1KjniI+FS+8FrZccOeIF79jLoSAeKh2Y=
+        b=aZRf6z6dWIIuL1Wg92L/7rPoeQdZ8MQHjoSwrRNF2jPezc1gw4Y6nf+lF77RBugDm
+         BBTh2OepByKyS+cjWXU5hPGBFSekTPMXP6jcEcMOp8/XqInuGIm0/c6ZNT9Xye4XU3
+         2iucKa6rmRODVqcItYlsy0uoiBowI9IPY19zIyUo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Trevor Woerner <twoerner@gmail.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
+        stable@vger.kernel.org, Andy Gospodarek <gospo@broadcom.com>,
+        Michael Chan <michael.chan@broadcom.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.14 087/125] net: nxp: lpc_eth.c: avoid hang when bringing interface down
+Subject: [PATCH 5.10 52/77] net: Prevent infinite while loop in skb_tx_hash()
 Date:   Mon,  1 Nov 2021 10:17:40 +0100
-Message-Id: <20211101082549.663553273@linuxfoundation.org>
+Message-Id: <20211101082522.634266313@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082533.618411490@linuxfoundation.org>
-References: <20211101082533.618411490@linuxfoundation.org>
+In-Reply-To: <20211101082511.254155853@linuxfoundation.org>
+References: <20211101082511.254155853@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,44 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trevor Woerner <twoerner@gmail.com>
+From: Michael Chan <michael.chan@broadcom.com>
 
-commit ace19b992436a257d9a793672e57abc28fe83e2e upstream.
+commit 0c57eeecc559ca6bc18b8c4e2808bc78dbe769b0 upstream.
 
-A hard hang is observed whenever the ethernet interface is brought
-down. If the PHY is stopped before the LPC core block is reset,
-the SoC will hang. Comparing lpc_eth_close() and lpc_eth_open() I
-re-arranged the ordering of the functions calls in lpc_eth_close() to
-reset the hardware before stopping the PHY.
-Fixes: b7370112f519 ("lpc32xx: Added ethernet driver")
-Signed-off-by: Trevor Woerner <twoerner@gmail.com>
-Acked-by: Vladimir Zapolskiy <vz@mleia.com>
+Drivers call netdev_set_num_tc() and then netdev_set_tc_queue()
+to set the queue count and offset for each TC.  So the queue count
+and offset for the TCs may be zero for a short period after dev->num_tc
+has been set.  If a TX packet is being transmitted at this time in the
+code path netdev_pick_tx() -> skb_tx_hash(), skb_tx_hash() may see
+nonzero dev->num_tc but zero qcount for the TC.  The while loop that
+keeps looping while hash >= qcount will not end.
+
+Fix it by checking the TC's qcount to be nonzero before using it.
+
+Fixes: eadec877ce9c ("net: Add support for subordinate traffic classes to netdev_pick_tx")
+Reviewed-by: Andy Gospodarek <gospo@broadcom.com>
+Signed-off-by: Michael Chan <michael.chan@broadcom.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/nxp/lpc_eth.c |    5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ net/core/dev.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/drivers/net/ethernet/nxp/lpc_eth.c
-+++ b/drivers/net/ethernet/nxp/lpc_eth.c
-@@ -1015,9 +1015,6 @@ static int lpc_eth_close(struct net_devi
- 	napi_disable(&pldat->napi);
- 	netif_stop_queue(ndev);
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -3171,6 +3171,12 @@ static u16 skb_tx_hash(const struct net_
  
--	if (ndev->phydev)
--		phy_stop(ndev->phydev);
--
- 	spin_lock_irqsave(&pldat->lock, flags);
- 	__lpc_eth_reset(pldat);
- 	netif_carrier_off(ndev);
-@@ -1025,6 +1022,8 @@ static int lpc_eth_close(struct net_devi
- 	writel(0, LPC_ENET_MAC2(pldat->net_base));
- 	spin_unlock_irqrestore(&pldat->lock, flags);
+ 		qoffset = sb_dev->tc_to_txq[tc].offset;
+ 		qcount = sb_dev->tc_to_txq[tc].count;
++		if (unlikely(!qcount)) {
++			net_warn_ratelimited("%s: invalid qcount, qoffset %u for tc %u\n",
++					     sb_dev->name, qoffset, tc);
++			qoffset = 0;
++			qcount = dev->real_num_tx_queues;
++		}
+ 	}
  
-+	if (ndev->phydev)
-+		phy_stop(ndev->phydev);
- 	clk_disable_unprepare(pldat->clk);
- 
- 	return 0;
+ 	if (skb_rx_queue_recorded(skb)) {
 
 
