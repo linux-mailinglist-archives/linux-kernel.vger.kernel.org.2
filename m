@@ -2,141 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07D72441947
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:59:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97CE544198D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 11:11:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233203AbhKAKCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 06:02:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45864 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232326AbhKAKBu (ORCPT
+        id S232290AbhKAKN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 06:13:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232033AbhKAKNq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 06:01:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635760756;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hfsAd90+4jizRuGcBnuq4ot5/47tw4BZNKDc8svp9+g=;
-        b=aDwbjOs+bTdkMLGDwSdmX681w6TYveKbDA5xh3P4SPy+CnPQ2OwP9rzJu+adZ0x93+PpG8
-        prLqI7ul+0BI3Sr+Ey32EKMVAt0Wb3DXBXwpL7YGTBhUohrNGDvvYpArek/czyoBfEQd51
-        DBdvu/tvaLNlmIhGrFDnhBMUPqKhpfs=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-508-Z-m5aKZlN8iU6Urypj9HGQ-1; Mon, 01 Nov 2021 05:59:15 -0400
-X-MC-Unique: Z-m5aKZlN8iU6Urypj9HGQ-1
-Received: by mail-ed1-f69.google.com with SMTP id x13-20020a05640226cd00b003dd4720703bso15068451edd.8
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 02:59:15 -0700 (PDT)
+        Mon, 1 Nov 2021 06:13:46 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E42F8C0AD966;
+        Mon,  1 Nov 2021 02:59:32 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id u16so5915579qvk.4;
+        Mon, 01 Nov 2021 02:59:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VS7xJMRLEAL/z5kz7yD3xJ47ipMOu90IemHH26nIVUY=;
+        b=AMnc2V3FeRvAHE1sXug/y3TVGW+ng4/ccaXU1y+d//FhTFw4R4bAg064Glq8DUXAVS
+         kgnHovH7AVK0OPQWAmoo+I24C15PJ2xDJQJ+zx2G7W/kKi3/csAhAxAExB734InCWtYh
+         RCBuryAbUUQAkctLty+juaqhNl0LltEdF6ZvwH4fi6R14d5lVawLG2HycPULP4G8oegd
+         NbNAQMNMhy6ET0g6BtLSqfCrS3imr8KL9pl3LcbgfgYW0hhlEek8aDSC+JElDwXRshnz
+         dsphikNkhPTnBYtAPn2ad8E88f8znAbAvufHY0wb3R79cJe8pK3YVe2jN09q4/K6hhYw
+         bG4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=hfsAd90+4jizRuGcBnuq4ot5/47tw4BZNKDc8svp9+g=;
-        b=Vr+r8re5v4rTLihQsbszr/D0d2prxFOSJ5FNwleTA3UUKG9BZJYyiRvJ5S7APhID31
-         qoSnszjRhLOagt+Mte2SPSNSCJ/qg4dn7MVd5oSO2DDUG4CmHGB83TGl3RGJTwYxUegS
-         u89KLZ/3R/sWSbMnQqJPqnMjRNUO15TeVAw1XAtj4VBoMi1FUq70woHjjGNm9LU2Q4Xo
-         H3JTeOjgHQHMsD+0d9jDkYT32U2XDh6UaQUpIWEZfvOl/Ax7eGe5qS4krZmPm3nAI1Ff
-         qTZLUcqnACj16JoFmAiEodn0ACLyAkgimDG2SVXpZnBt4qopnEna4KhjdKc0pu3I+QQn
-         c/+w==
-X-Gm-Message-State: AOAM530VhTsOgrNT7h/B8diWOTIY1s+y8EbqSttmoi1zcN2QNllUgRlE
-        f7+9iI2Y7KxqIHbrttR3zxCiWjvfiG75skY1Zt4G1qOtFJb/k0qX5hoRIvr6o71y1lRyjP9sdOS
-        M+hjZC3knwN7d5hgIV1ypwHCe
-X-Received: by 2002:aa7:de83:: with SMTP id j3mr40456472edv.312.1635760754585;
-        Mon, 01 Nov 2021 02:59:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJziGpk6WpH6FTsaUWwlnifY+tohOpCDtMhNBv1GE+RVBp3kKeqI+oP5WfFtBjUYpuANxJFQQg==
-X-Received: by 2002:aa7:de83:: with SMTP id j3mr40456447edv.312.1635760754419;
-        Mon, 01 Nov 2021 02:59:14 -0700 (PDT)
-Received: from [10.40.1.223] ([81.30.35.201])
-        by smtp.gmail.com with ESMTPSA id b2sm6772338ejj.124.2021.11.01.02.59.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Nov 2021 02:59:14 -0700 (PDT)
-Message-ID: <63ee77e1-dac9-ee09-6e11-4d8a091193f1@redhat.com>
-Date:   Mon, 1 Nov 2021 10:59:13 +0100
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VS7xJMRLEAL/z5kz7yD3xJ47ipMOu90IemHH26nIVUY=;
+        b=IDIRCaAqA5dngel6jeQmwm7qw8aU0c71WpfpBdoTPhyJwTC/SBKDFNAYjYnPAUlzxM
+         /w3Sad17Lw0vP6XxRFkt8tnFIBBjSULLqr0oCwNRDKtwxHGbb71P3RfwwCN6urHJGnoM
+         cu2fUSHPjOom4rgjXzJxhiLbVAA9KjD9rtNmn66NFPvuU9eqbigL5mp3+LhUu0xMsUBm
+         0ieLvmiz/9qWGZ4RK+A/Oazj4UAx6qEIuWGgE/ZR8gTpfym0kho7r+Ng3sdD91PXxom8
+         Lw18c+24TCLHL6cvlvAIsxOwDNmdYdg8p3wK9q5RstYbmlbZMZPWWGrB2XRNKbj8rjod
+         AtbA==
+X-Gm-Message-State: AOAM531Sc7puLAnLcWHEzAw3iI393fhE91A1VD2dlRyJzQx5dRJauDW9
+        6nHjn0wGWA8NjZPjaAwK4qFrRiLuJVWXf1iTFTSbIv+icK95OQ==
+X-Google-Smtp-Source: ABdhPJz2RLiJ6mLI2Nb7FeGOZsb0DYXITQY3rtfOBL0M2GhDQGAU7koJvbix0AUEpfeTTrU9siESGfSGtOAuTGvKk3M=
+X-Received: by 2002:a0c:c784:: with SMTP id k4mr27185381qvj.43.1635760772105;
+ Mon, 01 Nov 2021 02:59:32 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 6/6] platform/x86: isthp_eclite: only load for matching
- devices
-Content-Language: en-US
-To:     =?UTF-8?Q?Thomas_Wei=c3=9fschuh?= <linux@weissschuh.net>,
-        linux-input@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        K@troy.t-8ch.de, Naduvalath@troy.t-8ch.de,
-        Sumesh <sumesh.k.naduvalath@intel.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        platform-driver-x86@vger.kernel.org
-References: <20211029152901.297939-1-linux@weissschuh.net>
- <20211029152901.297939-2-linux@weissschuh.net>
- <20211029152901.297939-3-linux@weissschuh.net>
- <20211029152901.297939-4-linux@weissschuh.net>
- <20211029152901.297939-5-linux@weissschuh.net>
- <20211029152901.297939-6-linux@weissschuh.net>
- <20211029152901.297939-7-linux@weissschuh.net>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20211029152901.297939-7-linux@weissschuh.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210917135152.5111-1-ubizjak@gmail.com> <YWcyeGk7vOSoQWW4@google.com>
+In-Reply-To: <YWcyeGk7vOSoQWW4@google.com>
+From:   Uros Bizjak <ubizjak@gmail.com>
+Date:   Mon, 1 Nov 2021 10:59:20 +0100
+Message-ID: <CAFULd4YxctGCbLFSJrr4WK1wS4c_-QwkCQ4V77=8_B0URSeFow@mail.gmail.com>
+Subject: Re: [PATCH] KVM: x86: Improve exception safe wrappers in emulate.c
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Oct 13, 2021 at 9:24 PM Sean Christopherson <seanjc@google.com> wrote:
+>
+> On Fri, Sep 17, 2021, Uros Bizjak wrote:
+> > Improve exception safe wrappers in emulate.c by converting them to
+> > ASM GOTO (and ASM GOTO OUTPUT when supported) statements.  Also, convert
+> > wrappers to inline functions to avoid statement as expression
+> > GNU extension and to remove weird requirement where user must know
+> > where the asm argument is being expanded.
+> >
+> > Cc: Paolo Bonzini <pbonzini@redhat.com>
+> > Cc: Sean Christopherson  <seanjc@google.com>
+> > Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+> > ---
+> >  arch/x86/kvm/emulate.c | 80 ++++++++++++++++++++++++++++++------------
+> >  1 file changed, 57 insertions(+), 23 deletions(-)
+> >
+> > diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
+> > index 2837110e66ed..2197a3ecc55b 100644
+> > --- a/arch/x86/kvm/emulate.c
+> > +++ b/arch/x86/kvm/emulate.c
+> > @@ -464,25 +464,59 @@ FOP_FUNC(salc)
+> >  FOP_RET(salc)
+> >  FOP_END;
+> >
+> > -/*
+> > - * XXX: inoutclob user must know where the argument is being expanded.
+>
+> I 100% agree that this is a weird requirement, but I actually like the side
+> effect of forcing the caller to define a name for the input/output.
+>
+> > - *      Relying on CONFIG_CC_HAS_ASM_GOTO would allow us to remove _fault.
+> > - */
+> > -#define asm_safe(insn, inoutclob...) \
+> > -({ \
+> > -     int _fault = 0; \
+> > - \
+> > -     asm volatile("1:" insn "\n" \
+> > -                  "2:\n" \
+> > -                  ".pushsection .fixup, \"ax\"\n" \
+> > -                  "3: movl $1, %[_fault]\n" \
+> > -                  "   jmp  2b\n" \
+> > -                  ".popsection\n" \
+> > -                  _ASM_EXTABLE(1b, 3b) \
+> > -                  : [_fault] "+qm"(_fault) inoutclob ); \
+> > - \
+> > -     _fault ? X86EMUL_UNHANDLEABLE : X86EMUL_CONTINUE; \
+> > -})
+> > +static __always_inline int safe_fwait(void)
+> > +{
+> > +     asm_volatile_goto("1: fwait\n\t"
+> > +                       _ASM_EXTABLE(1b, %l[fault])
+> > +                       : : : : fault);
+> > +     return X86EMUL_CONTINUE;
+> > + fault:
+> > +     return X86EMUL_UNHANDLEABLE;
+> > +}
+>
+> Rather than defining a bunch of safe_() variants, what about providing a generic
+> helper/macro similar to the existing asm_safe()?  Not just for KVM, but for the
+> kernel at large.  Asm with output is problematic due to the CONFIG_CC_HAS_ASM_GOTO
+> dependency, but it wouldn't be the end of the world to state that simply isn't
+> supported until the min compiler version is raised.
+>
+> __wrmsr(), native_write_msr_safe(), cpu_vmxoff(), kvm_cpu_vmxon(), and probably
+> others could use a generic generic asm_safe().  I wouldn't be surprised if there
+> are other places in the kernel that could take advantage of such a helper, e.g.
+> kvm_load_ldt() could use a "safe" variant instead of crashing if the sel is bad.
 
-On 10/29/21 17:29, Thomas Weißschuh wrote:
-> Previously it was loaded for all ISHTP devices.
-> 
-> Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+After 5.16 x86 FPU handling rewrite, kernel_insn_err and even
+fxrstor_safe are now in fpu/legacy.h. Is there a way to share these
+with KVM?
 
-Thanks, patch looks good to me:
-
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-
-Regards,
-
-Hans
-
-
-> 
-> ---
-> 
-> Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> Cc: K Naduvalath, Sumesh <sumesh.k.naduvalath@intel.com>
-> Cc: Jiri Kosina <jikos@kernel.org>
-> Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-> Cc: Hans de Goede <hdegoede@redhat.com>
-> Cc: Mark Gross <markgross@kernel.org>
-> Cc: linux-input@vger.kernel.org
-> Cc: platform-driver-x86@vger.kernel.org
-> ---
->  drivers/platform/x86/intel/ishtp_eclite.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/platform/x86/intel/ishtp_eclite.c b/drivers/platform/x86/intel/ishtp_eclite.c
-> index 12fc98a48657..b9fb8f28fd63 100644
-> --- a/drivers/platform/x86/intel/ishtp_eclite.c
-> +++ b/drivers/platform/x86/intel/ishtp_eclite.c
-> @@ -681,6 +681,12 @@ static struct ishtp_cl_driver ecl_ishtp_cl_driver = {
->  	.driver.pm = &ecl_ishtp_pm_ops,
->  };
->  
-> +static const struct ishtp_device_id ecl_ishtp_id_table[] = {
-> +	{ ecl_ishtp_guid },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(ishtp, ecl_ishtp_id_table);
-> +
->  static int __init ecl_ishtp_init(void)
->  {
->  	return ishtp_cl_driver_register(&ecl_ishtp_cl_driver, THIS_MODULE);
-> @@ -698,4 +704,3 @@ MODULE_DESCRIPTION("ISH ISHTP eclite client opregion driver");
->  MODULE_AUTHOR("K Naduvalath, Sumesh <sumesh.k.naduvalath@intel.com>");
->  
->  MODULE_LICENSE("GPL v2");
-> -MODULE_ALIAS("ishtp:*");
-> 
-
+Uros.
