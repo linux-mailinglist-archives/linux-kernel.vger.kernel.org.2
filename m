@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68C68441914
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:54:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D329844191B
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:54:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234150AbhKAJyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:54:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54304 "EHLO mail.kernel.org"
+        id S234563AbhKAJzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:55:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54486 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232628AbhKAJut (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:50:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 25D1361250;
-        Mon,  1 Nov 2021 09:32:16 +0000 (UTC)
+        id S234550AbhKAJvD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:51:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DB996125F;
+        Mon,  1 Nov 2021 09:32:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635759136;
-        bh=S8Zl3YGuya6BPwQcEh8yn7Kgqhm1xbSXvm1AfuYOwZc=;
+        s=korg; t=1635759138;
+        bh=UU9Vv4WT0O3DZbumFuKm1xnDfeCZMnvFLgjQ0DcbUVQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M5qMtY7E5li+Es7U6hm+cQTuJstj41zX/iAAhYycTBTsL9qTQTASFThA57IpPFXq+
-         9jvh8yinqYKRHfVhC6FQ6XpjXBZwd3SKAPxOO+7mMnu+t7A0bz6HMixDqdOSYhL/+9
-         snR5L1wHj3ciRwN/EbmG8XtFYvNOCdxicQ0//sNE=
+        b=TlEbtOOy2yc1C0mqNgZPxTvhbMAIOOGGL7s87mAvnQhmNmT6kuB0sdFItd3oSPoeE
+         NxQB0Wk7snDmop/paPz+0A0WMN4viBRG8IXU6pE8WjQAP9boe7wHre0Wx8v+3ylHrb
+         YA7IuPjF0wkQuJ2kKSR5i57Bb9NqBqwt3iTEsli8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jie Wang <wangjie125@huawei.com>,
-        Guangbin Huang <huangguangbin2@huawei.com>,
+        stable@vger.kernel.org, Guangbin Huang <huangguangbin2@huawei.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 109/125] net: hns3: add more string spaces for dumping packets number of queue info in debugfs
-Date:   Mon,  1 Nov 2021 10:18:02 +0100
-Message-Id: <20211101082553.738114391@linuxfoundation.org>
+Subject: [PATCH 5.14 110/125] net: hns3: expand buffer len for some debugfs command
+Date:   Mon,  1 Nov 2021 10:18:03 +0100
+Message-Id: <20211101082553.905585529@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211101082533.618411490@linuxfoundation.org>
 References: <20211101082533.618411490@linuxfoundation.org>
@@ -41,45 +40,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jie Wang <wangjie125@huawei.com>
+From: Guangbin Huang <huangguangbin2@huawei.com>
 
-[ Upstream commit 6754614a787cbcbf87bae8a75619c24a33ea6791 ]
+[ Upstream commit c7a6e3978ea952efb107ecf511c095c3bbb2945f ]
 
-As the width of packets number registers is 32 bits, they needs at most
-10 characters for decimal data printing, but now the string spaces is not
-enough, so this patch fixes it.
+The specified buffer length for three debugfs files fd_tcam, uc and tqp
+is not enough for their maximum needs, so this patch fixes them.
 
-Fixes: e44c495d95e ("net: hns3: refactor queue info of debugfs")
-Signed-off-by: Jie Wang <wangjie125@huawei.com>
+Fixes: b5a0b70d77b9 ("net: hns3: refactor dump fd tcam of debugfs")
+Fixes: 1556ea9120ff ("net: hns3: refactor dump mac list of debugfs")
+Fixes: d96b0e59468d ("net: hns3: refactor dump reg of debugfs")
 Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c b/drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c
-index 80461ab0ce9e..ce2fc283fe5c 100644
+index ce2fc283fe5c..b22b8baec54c 100644
 --- a/drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c
 +++ b/drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c
-@@ -463,7 +463,7 @@ static const struct hns3_dbg_item rx_queue_info_items[] = {
- 	{ "TAIL", 2 },
- 	{ "HEAD", 2 },
- 	{ "FBDNUM", 2 },
--	{ "PKTNUM", 2 },
-+	{ "PKTNUM", 5 },
- 	{ "COPYBREAK", 2 },
- 	{ "RING_EN", 2 },
- 	{ "RX_RING_EN", 2 },
-@@ -566,7 +566,7 @@ static const struct hns3_dbg_item tx_queue_info_items[] = {
- 	{ "HEAD", 2 },
- 	{ "FBDNUM", 2 },
- 	{ "OFFSET", 2 },
--	{ "PKTNUM", 2 },
-+	{ "PKTNUM", 5 },
- 	{ "RING_EN", 2 },
- 	{ "TX_RING_EN", 2 },
- 	{ "BASE_ADDR", 10 },
+@@ -138,7 +138,7 @@ static struct hns3_dbg_cmd_info hns3_dbg_cmd[] = {
+ 		.name = "uc",
+ 		.cmd = HNAE3_DBG_CMD_MAC_UC,
+ 		.dentry = HNS3_DBG_DENTRY_MAC,
+-		.buf_len = HNS3_DBG_READ_LEN,
++		.buf_len = HNS3_DBG_READ_LEN_128KB,
+ 		.init = hns3_dbg_common_file_init,
+ 	},
+ 	{
+@@ -257,7 +257,7 @@ static struct hns3_dbg_cmd_info hns3_dbg_cmd[] = {
+ 		.name = "tqp",
+ 		.cmd = HNAE3_DBG_CMD_REG_TQP,
+ 		.dentry = HNS3_DBG_DENTRY_REG,
+-		.buf_len = HNS3_DBG_READ_LEN,
++		.buf_len = HNS3_DBG_READ_LEN_128KB,
+ 		.init = hns3_dbg_common_file_init,
+ 	},
+ 	{
+@@ -299,7 +299,7 @@ static struct hns3_dbg_cmd_info hns3_dbg_cmd[] = {
+ 		.name = "fd_tcam",
+ 		.cmd = HNAE3_DBG_CMD_FD_TCAM,
+ 		.dentry = HNS3_DBG_DENTRY_FD,
+-		.buf_len = HNS3_DBG_READ_LEN,
++		.buf_len = HNS3_DBG_READ_LEN_1MB,
+ 		.init = hns3_dbg_common_file_init,
+ 	},
+ 	{
 -- 
 2.33.0
 
