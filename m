@@ -2,37 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E24644176B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:34:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BB304416F0
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:28:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233384AbhKAJgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:36:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37296 "EHLO mail.kernel.org"
+        id S231931AbhKAJbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:31:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59152 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232932AbhKAJc1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:32:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 412656124C;
-        Mon,  1 Nov 2021 09:24:48 +0000 (UTC)
+        id S232269AbhKAJ05 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:26:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D68E4610CC;
+        Mon,  1 Nov 2021 09:22:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758688;
-        bh=TrunEkdmAKOzzNzNkO/1rXEfuJn2an1GuGMg5jY4mek=;
+        s=korg; t=1635758548;
+        bh=Zu5p4uxDIl5m/X9HW0eQ9FLRaaTlxFkMRAKD9IvQLKw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IysxH4UhwfJdTJlYbHoWHwerDKNHlvDN2OdfL67aC/Vs/xh3NI6/r+/up09jA8r4z
-         r/qI7JXLrQrnwHVEsMeLVio5PhIyUCSpNgTH33WzTpf9+RNVTOKMB47G5ULDQ7xkVP
-         nPBtGCv4tKv6SyK2YqNqLuK4N6QyfxETYTMGrdUA=
+        b=GqAHIvEuIJzL4qcVuu9md7obwFrk8lWF7D60SniZ28IrTPN4zsItW+TntkWa4rmYx
+         4Y4hD/t8Hk/w0QgBBcsUzlEDZ9bkmVMQnCMyNW6DyFziWKJvzupN1gq7gqm58Tsp89
+         AeGed5BleM4BtzFH6sOzomYWuKXARqETG7GnRsM0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 17/77] nfc: port100: fix using -ERRNO as command type mask
+        stable@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        Richard Henderson <richard.henderson@linaro.org>
+Subject: [PATCH 5.4 01/51] ARM: 9133/1: mm: proc-macros: ensure *_tlb_fns are 4B aligned
 Date:   Mon,  1 Nov 2021 10:17:05 +0100
-Message-Id: <20211101082515.460859137@linuxfoundation.org>
+Message-Id: <20211101082500.557292681@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082511.254155853@linuxfoundation.org>
-References: <20211101082511.254155853@linuxfoundation.org>
+In-Reply-To: <20211101082500.203657870@linuxfoundation.org>
+References: <20211101082500.203657870@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -40,43 +44,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+From: Nick Desaulniers <ndesaulniers@google.com>
 
-commit 2195f2062e4cc93870da8e71c318ef98a1c51cef upstream.
+commit e6a0c958bdf9b2e1b57501fc9433a461f0a6aadd upstream.
 
-During probing, the driver tries to get a list (mask) of supported
-command types in port100_get_command_type_mask() function.  The value
-is u64 and 0 is treated as invalid mask (no commands supported).  The
-function however returns also -ERRNO as u64 which will be interpret as
-valid command mask.
+A kernel built with CONFIG_THUMB2_KERNEL=y and using clang as the
+assembler could generate non-naturally-aligned v7wbi_tlb_fns which
+results in a boot failure. The original commit adding the macro missed
+the .align directive on this data.
 
-Return 0 on every error case of port100_get_command_type_mask(), so the
-probing will stop.
+Link: https://github.com/ClangBuiltLinux/linux/issues/1447
+Link: https://lore.kernel.org/all/0699da7b-354f-aecc-a62f-e25693209af4@linaro.org/
+Debugged-by: Ard Biesheuvel <ardb@kernel.org>
+Debugged-by: Nathan Chancellor <nathan@kernel.org>
+Debugged-by: Richard Henderson <richard.henderson@linaro.org>
 
-Cc: <stable@vger.kernel.org>
-Fixes: 0347a6ab300a ("NFC: port100: Commands mechanism implementation")
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 66a625a88174 ("ARM: mm: proc-macros: Add generic proc/cache/tlb struct definition macros")
+Suggested-by: Ard Biesheuvel <ardb@kernel.org>
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+Tested-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/nfc/port100.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm/mm/proc-macros.S |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/nfc/port100.c
-+++ b/drivers/nfc/port100.c
-@@ -1003,11 +1003,11 @@ static u64 port100_get_command_type_mask
+--- a/arch/arm/mm/proc-macros.S
++++ b/arch/arm/mm/proc-macros.S
+@@ -342,6 +342,7 @@ ENTRY(\name\()_cache_fns)
  
- 	skb = port100_alloc_skb(dev, 0);
- 	if (!skb)
--		return -ENOMEM;
-+		return 0;
- 
- 	resp = port100_send_cmd_sync(dev, PORT100_CMD_GET_COMMAND_TYPE, skb);
- 	if (IS_ERR(resp))
--		return PTR_ERR(resp);
-+		return 0;
- 
- 	if (resp->len < 8)
- 		mask = 0;
+ .macro define_tlb_functions name:req, flags_up:req, flags_smp
+ 	.type	\name\()_tlb_fns, #object
++	.align 2
+ ENTRY(\name\()_tlb_fns)
+ 	.long	\name\()_flush_user_tlb_range
+ 	.long	\name\()_flush_kern_tlb_range
 
 
