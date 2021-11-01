@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 246864416BA
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:26:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACBD64417B3
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:37:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232180AbhKAJ2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:28:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58982 "EHLO mail.kernel.org"
+        id S233996AbhKAJid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:38:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43678 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232592AbhKAJ0J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:26:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AA666610A2;
-        Mon,  1 Nov 2021 09:21:52 +0000 (UTC)
+        id S233281AbhKAJf7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:35:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AC8A9611C0;
+        Mon,  1 Nov 2021 09:26:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758513;
-        bh=LRqtuinLVB5HxppHt0sZ9/88DgCxETnT5p4/lOoGQAE=;
+        s=korg; t=1635758777;
+        bh=JA/Hy1hpfPf7wnT5E4+pX4LGsaySt6Qf6WS3/GHh638=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2rO83s80mGGd+cyPwjms3nBFjSSrr2cIwU9kLdWRs2fByoK8wUJkQswl8BtRExQQx
-         RfXJWPZP/E9fB8QkkrOuMi9UswOpSqekIhyKJGeVEu3/sedo8qNCeRg9mtipD+mDe6
-         rOzdnXPLNC/SCF5aiBZJkSYibDvBfWEpCx+Wep1U=
+        b=z8eYl/ai/rZQPwr71Xe2BN2ffl/jDLn8AIXJGlkOrmw4iMxcF7jTtaj9oAGMU1D/8
+         dwH/v0bKBQEutGLDnWTHzdjzv3YqSJHByTvumkLVNm1oTKTM/y/3whkuTVIcCpVfNh
+         /DyAPnGonucCgrrlI04GTtjArH+bKAmqcG8GkNpM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yuiko Oshino <yuiko.oshino@microchip.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 29/35] net: ethernet: microchip: lan743x: Fix dma allocation failure by using dma_set_mask_and_coherent
-Date:   Mon,  1 Nov 2021 10:17:41 +0100
-Message-Id: <20211101082458.523777398@linuxfoundation.org>
+        stable@vger.kernel.org, Jonas Gorski <jonas.gorski@gmail.com>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: [PATCH 5.10 54/77] gpio: xgs-iproc: fix parsing of ngpios property
+Date:   Mon,  1 Nov 2021 10:17:42 +0100
+Message-Id: <20211101082523.035810837@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082451.430720900@linuxfoundation.org>
-References: <20211101082451.430720900@linuxfoundation.org>
+In-Reply-To: <20211101082511.254155853@linuxfoundation.org>
+References: <20211101082511.254155853@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,58 +42,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yuiko Oshino <yuiko.oshino@microchip.com>
+From: Jonas Gorski <jonas.gorski@gmail.com>
 
-commit 95a359c9553342d36d408d35331ff0bfce75272f upstream.
+commit 85fe6415c146d5d42ce300c12f1ecf4d4af47d40 upstream.
 
-The dma failure was reported in the raspberry pi github (issue #4117).
-https://github.com/raspberrypi/linux/issues/4117
-The use of dma_set_mask_and_coherent fixes the issue.
-Tested on 32/64-bit raspberry pi CM4 and 64-bit ubuntu x86 PC with EVB-LAN7430.
+of_property_read_u32 returns 0 on success, not true, so we need to
+invert the check to actually take over the provided ngpio value.
 
-Fixes: 23f0703c125b ("lan743x: Add main source files for new lan743x driver")
-Signed-off-by: Yuiko Oshino <yuiko.oshino@microchip.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 6a41b6c5fc20 ("gpio: Add xgs-iproc driver")
+Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
+Reviewed-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Bartosz Golaszewski <brgl@bgdev.pl>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/microchip/lan743x_main.c |   20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ drivers/gpio/gpio-xgs-iproc.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/microchip/lan743x_main.c
-+++ b/drivers/net/ethernet/microchip/lan743x_main.c
-@@ -1710,6 +1710,16 @@ static int lan743x_tx_ring_init(struct l
- 		ret = -EINVAL;
- 		goto cleanup;
+--- a/drivers/gpio/gpio-xgs-iproc.c
++++ b/drivers/gpio/gpio-xgs-iproc.c
+@@ -224,7 +224,7 @@ static int iproc_gpio_probe(struct platf
  	}
-+	if (dma_set_mask_and_coherent(&tx->adapter->pdev->dev,
-+				      DMA_BIT_MASK(64))) {
-+		if (dma_set_mask_and_coherent(&tx->adapter->pdev->dev,
-+					      DMA_BIT_MASK(32))) {
-+			dev_warn(&tx->adapter->pdev->dev,
-+				 "lan743x_: No suitable DMA available\n");
-+			ret = -ENOMEM;
-+			goto cleanup;
-+		}
-+	}
- 	ring_allocation_size = ALIGN(tx->ring_size *
- 				     sizeof(struct lan743x_tx_descriptor),
- 				     PAGE_SIZE);
-@@ -2258,6 +2268,16 @@ static int lan743x_rx_ring_init(struct l
- 		ret = -EINVAL;
- 		goto cleanup;
- 	}
-+	if (dma_set_mask_and_coherent(&rx->adapter->pdev->dev,
-+				      DMA_BIT_MASK(64))) {
-+		if (dma_set_mask_and_coherent(&rx->adapter->pdev->dev,
-+					      DMA_BIT_MASK(32))) {
-+			dev_warn(&rx->adapter->pdev->dev,
-+				 "lan743x_: No suitable DMA available\n");
-+			ret = -ENOMEM;
-+			goto cleanup;
-+		}
-+	}
- 	ring_allocation_size = ALIGN(rx->ring_size *
- 				     sizeof(struct lan743x_rx_descriptor),
- 				     PAGE_SIZE);
+ 
+ 	chip->gc.label = dev_name(dev);
+-	if (of_property_read_u32(dn, "ngpios", &num_gpios))
++	if (!of_property_read_u32(dn, "ngpios", &num_gpios))
+ 		chip->gc.ngpio = num_gpios;
+ 
+ 	irq = platform_get_irq(pdev, 0);
 
 
