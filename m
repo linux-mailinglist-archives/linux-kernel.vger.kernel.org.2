@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1125F441727
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:31:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDE794417B1
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:37:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232217AbhKAJdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:33:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37010 "EHLO mail.kernel.org"
+        id S233965AbhKAJia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:38:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43674 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232604AbhKAJaM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:30:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B35F56121E;
-        Mon,  1 Nov 2021 09:23:35 +0000 (UTC)
+        id S233278AbhKAJf7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:35:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 58EC861184;
+        Mon,  1 Nov 2021 09:26:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758616;
-        bh=H8JD+zWjHUSSOTM3Ml+7lelKis/CJ4VpKzIIKj9zhqE=;
+        s=korg; t=1635758774;
+        bh=+gNXVsX/M598wnh5q65Qgkc5hLjGX5+sZacANQINnBc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZIJ8lwycwGCmNzFkvGBrU+P5Wlp7QX8F6JETdSt5DQDbPNW7pccmXV8i5SLrMZ7pa
-         yVyaMUjPjeBoU4JKRdwxv6s29IoYS1zW+CpTAGXBY7pZwgXYS783mXFjXgjujcUjQw
-         HFZL+CRTH2K/irvlexJSgGYCo9QMgCabZ7Vqsl+s=
+        b=s5p4ioySK/o+JQ9bB8vqBNgKocJhj/at5ad8dR0vShLQJqxyqFuRGpMVQjhpPqY8n
+         waVhyzdPTHrNogJTMdmlWnxNdML0fVeiwGzOMCcRaq9F/1LFH+y3/D9dQ+9QnbPlK/
+         /9l3d88mcCvAB934AU58vIi+SNjXfI2tXle1A8bM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Trevor Woerner <twoerner@gmail.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 37/51] net: nxp: lpc_eth.c: avoid hang when bringing interface down
+        stable@vger.kernel.org, Mark Zhang <markzhang@nvidia.com>,
+        Mark Bloch <mbloch@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Subject: [PATCH 5.10 53/77] RDMA/sa_query: Use strscpy_pad instead of memcpy to copy a string
 Date:   Mon,  1 Nov 2021 10:17:41 +0100
-Message-Id: <20211101082509.373837197@linuxfoundation.org>
+Message-Id: <20211101082522.807183069@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082500.203657870@linuxfoundation.org>
-References: <20211101082500.203657870@linuxfoundation.org>
+In-Reply-To: <20211101082511.254155853@linuxfoundation.org>
+References: <20211101082511.254155853@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,44 +41,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trevor Woerner <twoerner@gmail.com>
+From: Mark Zhang <markzhang@nvidia.com>
 
-commit ace19b992436a257d9a793672e57abc28fe83e2e upstream.
+commit 64733956ebba7cc629856f4a6ee35a52bc9c023f upstream.
 
-A hard hang is observed whenever the ethernet interface is brought
-down. If the PHY is stopped before the LPC core block is reset,
-the SoC will hang. Comparing lpc_eth_close() and lpc_eth_open() I
-re-arranged the ordering of the functions calls in lpc_eth_close() to
-reset the hardware before stopping the PHY.
-Fixes: b7370112f519 ("lpc32xx: Added ethernet driver")
-Signed-off-by: Trevor Woerner <twoerner@gmail.com>
-Acked-by: Vladimir Zapolskiy <vz@mleia.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+When copying the device name, the length of the data memcpy copied exceeds
+the length of the source buffer, which cause the KASAN issue below.  Use
+strscpy_pad() instead.
+
+ BUG: KASAN: slab-out-of-bounds in ib_nl_set_path_rec_attrs+0x136/0x320 [ib_core]
+ Read of size 64 at addr ffff88811a10f5e0 by task rping/140263
+ CPU: 3 PID: 140263 Comm: rping Not tainted 5.15.0-rc1+ #1
+ Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
+ Call Trace:
+  dump_stack_lvl+0x57/0x7d
+  print_address_description.constprop.0+0x1d/0xa0
+  kasan_report+0xcb/0x110
+  kasan_check_range+0x13d/0x180
+  memcpy+0x20/0x60
+  ib_nl_set_path_rec_attrs+0x136/0x320 [ib_core]
+  ib_nl_make_request+0x1c6/0x380 [ib_core]
+  send_mad+0x20a/0x220 [ib_core]
+  ib_sa_path_rec_get+0x3e3/0x800 [ib_core]
+  cma_query_ib_route+0x29b/0x390 [rdma_cm]
+  rdma_resolve_route+0x308/0x3e0 [rdma_cm]
+  ucma_resolve_route+0xe1/0x150 [rdma_ucm]
+  ucma_write+0x17b/0x1f0 [rdma_ucm]
+  vfs_write+0x142/0x4d0
+  ksys_write+0x133/0x160
+  do_syscall_64+0x43/0x90
+  entry_SYSCALL_64_after_hwframe+0x44/0xae
+ RIP: 0033:0x7f26499aa90f
+ Code: 89 54 24 18 48 89 74 24 10 89 7c 24 08 e8 29 fd ff ff 48 8b 54 24 18 48 8b 74 24 10 41 89 c0 8b 7c 24 08 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 31 44 89 c7 48 89 44 24 08 e8 5c fd ff ff 48
+ RSP: 002b:00007f26495f2dc0 EFLAGS: 00000293 ORIG_RAX: 0000000000000001
+ RAX: ffffffffffffffda RBX: 00000000000007d0 RCX: 00007f26499aa90f
+ RDX: 0000000000000010 RSI: 00007f26495f2e00 RDI: 0000000000000003
+ RBP: 00005632a8315440 R08: 0000000000000000 R09: 0000000000000001
+ R10: 0000000000000000 R11: 0000000000000293 R12: 00007f26495f2e00
+ R13: 00005632a83154e0 R14: 00005632a8315440 R15: 00005632a830a810
+
+ Allocated by task 131419:
+  kasan_save_stack+0x1b/0x40
+  __kasan_kmalloc+0x7c/0x90
+  proc_self_get_link+0x8b/0x100
+  pick_link+0x4f1/0x5c0
+  step_into+0x2eb/0x3d0
+  walk_component+0xc8/0x2c0
+  link_path_walk+0x3b8/0x580
+  path_openat+0x101/0x230
+  do_filp_open+0x12e/0x240
+  do_sys_openat2+0x115/0x280
+  __x64_sys_openat+0xce/0x140
+  do_syscall_64+0x43/0x90
+  entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Fixes: 2ca546b92a02 ("IB/sa: Route SA pathrecord query through netlink")
+Link: https://lore.kernel.org/r/72ede0f6dab61f7f23df9ac7a70666e07ef314b0.1635055496.git.leonro@nvidia.com
+Signed-off-by: Mark Zhang <markzhang@nvidia.com>
+Reviewed-by: Mark Bloch <mbloch@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/nxp/lpc_eth.c |    5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/infiniband/core/sa_query.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/drivers/net/ethernet/nxp/lpc_eth.c
-+++ b/drivers/net/ethernet/nxp/lpc_eth.c
-@@ -1007,9 +1007,6 @@ static int lpc_eth_close(struct net_devi
- 	napi_disable(&pldat->napi);
- 	netif_stop_queue(ndev);
+--- a/drivers/infiniband/core/sa_query.c
++++ b/drivers/infiniband/core/sa_query.c
+@@ -760,8 +760,9 @@ static void ib_nl_set_path_rec_attrs(str
  
--	if (ndev->phydev)
--		phy_stop(ndev->phydev);
--
- 	spin_lock_irqsave(&pldat->lock, flags);
- 	__lpc_eth_reset(pldat);
- 	netif_carrier_off(ndev);
-@@ -1017,6 +1014,8 @@ static int lpc_eth_close(struct net_devi
- 	writel(0, LPC_ENET_MAC2(pldat->net_base));
- 	spin_unlock_irqrestore(&pldat->lock, flags);
+ 	/* Construct the family header first */
+ 	header = skb_put(skb, NLMSG_ALIGN(sizeof(*header)));
+-	memcpy(header->device_name, dev_name(&query->port->agent->device->dev),
+-	       LS_DEVICE_NAME_MAX);
++	strscpy_pad(header->device_name,
++		    dev_name(&query->port->agent->device->dev),
++		    LS_DEVICE_NAME_MAX);
+ 	header->port_num = query->port->port_num;
  
-+	if (ndev->phydev)
-+		phy_stop(ndev->phydev);
- 	clk_disable_unprepare(pldat->clk);
- 
- 	return 0;
+ 	if ((comp_mask & IB_SA_PATH_REC_REVERSIBLE) &&
 
 
