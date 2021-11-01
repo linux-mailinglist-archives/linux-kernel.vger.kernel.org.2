@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6B07441912
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:54:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACB084417F5
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:39:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234061AbhKAJyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:54:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54302 "EHLO mail.kernel.org"
+        id S233111AbhKAJlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:41:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47848 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234436AbhKAJut (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:50:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C734060F58;
-        Mon,  1 Nov 2021 09:32:13 +0000 (UTC)
+        id S233424AbhKAJjp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:39:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F1752611BD;
+        Mon,  1 Nov 2021 09:27:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635759134;
-        bh=0+ocs282GQVwxKxy0MEmmcQiQYYxeOd2a0AHQoqPTkI=;
+        s=korg; t=1635758842;
+        bh=D59Z+iVaZCoJbcR6UEt9nEm6CrTrMjpkANHIpTkw9LM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=txuMTgLMlTI4HFx22ufcukuHN9tHB8aO+Gu+mL6NF8PYEwBokvcZRSfKLhk6s57De
-         QrxCAl/aVnt31u3ckBlMtKibSXolSNsf3XG4R6T2VDMNT/w6HVrjBrdUCUyFnD7G/m
-         R0z37QR/aXoX09xtQk/fJtqttrFa15SyNdL3hQ7w=
+        b=b/eED2h/KBULbpiagFBwBVRrizA5gioPrjN0+jOH9DBeSDmbLCeyj81fJczohzS8J
+         K2Tj3PYoY5cpiRCR5XUQsQn/a80ahVLzNdc3p+3gkFPhlKmnktmLgbQOZz3XAlaAx/
+         AoqZfga0FaoIZYk6dQaT2jeyvJd8TSEzz6krY9MM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Tejun Heo <tj@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
+        stable@vger.kernel.org, Alim Akhtar <alim.akhtar@samsung.com>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Chanho Park <chanho61.park@samsung.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 108/125] bpf: Move BPF_MAP_TYPE for INODE_STORAGE and TASK_STORAGE outside of CONFIG_NET
-Date:   Mon,  1 Nov 2021 10:18:01 +0100
-Message-Id: <20211101082553.560890936@linuxfoundation.org>
+Subject: [PATCH 5.10 74/77] scsi: ufs: ufs-exynos: Correct timeout value setting registers
+Date:   Mon,  1 Nov 2021 10:18:02 +0100
+Message-Id: <20211101082526.983837147@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082533.618411490@linuxfoundation.org>
-References: <20211101082533.618411490@linuxfoundation.org>
+In-Reply-To: <20211101082511.254155853@linuxfoundation.org>
+References: <20211101082511.254155853@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,53 +44,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tejun Heo <tj@kernel.org>
+From: Chanho Park <chanho61.park@samsung.com>
 
-[ Upstream commit 99d0a3831e3500d945162cdb2310e3a5fce90b60 ]
+[ Upstream commit 282da7cef078a87b6d5e8ceba8b17e428cf0e37c ]
 
-bpf_types.h has BPF_MAP_TYPE_INODE_STORAGE and BPF_MAP_TYPE_TASK_STORAGE
-declared inside #ifdef CONFIG_NET although they are built regardless of
-CONFIG_NET. So, when CONFIG_BPF_SYSCALL && !CONFIG_NET, they are built
-without the declarations leading to spurious build failures and not
-registered to bpf_map_types making them unavailable.
+PA_PWRMODEUSERDATA0 -> DL_FC0PROTTIMEOUTVAL
+PA_PWRMODEUSERDATA1 -> DL_TC0REPLAYTIMEOUTVAL
+PA_PWRMODEUSERDATA2 -> DL_AFC0REQTIMEOUTVAL
 
-Fix it by moving the BPF_MAP_TYPE for the two map types outside of
-CONFIG_NET.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Fixes: a10787e6d58c ("bpf: Enable task local storage for tracing programs")
-Signed-off-by: Tejun Heo <tj@kernel.org>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Acked-by: Martin KaFai Lau <kafai@fb.com>
-Link: https://lore.kernel.org/bpf/YXG1cuuSJDqHQfRY@slm.duckdns.org
+Link: https://lore.kernel.org/r/20211018062841.18226-1-chanho61.park@samsung.com
+Fixes: a967ddb22d94 ("scsi: ufs: ufs-exynos: Apply vendor-specific values for three timeouts")
+Cc: Alim Akhtar <alim.akhtar@samsung.com>
+Cc: Kiwoong Kim <kwmad.kim@samsung.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Reviewed-by: Alim Akhtar <alim.akhtar@samsung.com>
+Reviewed-by: Avri Altman <avri.altman@wdc.com>
+Signed-off-by: Chanho Park <chanho61.park@samsung.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/bpf_types.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/scsi/ufs/ufs-exynos.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/bpf_types.h b/include/linux/bpf_types.h
-index ae3ac3a2018c..2eb9c53468e7 100644
---- a/include/linux/bpf_types.h
-+++ b/include/linux/bpf_types.h
-@@ -101,14 +101,14 @@ BPF_MAP_TYPE(BPF_MAP_TYPE_STACK_TRACE, stack_trace_map_ops)
- #endif
- BPF_MAP_TYPE(BPF_MAP_TYPE_ARRAY_OF_MAPS, array_of_maps_map_ops)
- BPF_MAP_TYPE(BPF_MAP_TYPE_HASH_OF_MAPS, htab_of_maps_map_ops)
--#ifdef CONFIG_NET
--BPF_MAP_TYPE(BPF_MAP_TYPE_DEVMAP, dev_map_ops)
--BPF_MAP_TYPE(BPF_MAP_TYPE_DEVMAP_HASH, dev_map_hash_ops)
--BPF_MAP_TYPE(BPF_MAP_TYPE_SK_STORAGE, sk_storage_map_ops)
- #ifdef CONFIG_BPF_LSM
- BPF_MAP_TYPE(BPF_MAP_TYPE_INODE_STORAGE, inode_storage_map_ops)
- #endif
- BPF_MAP_TYPE(BPF_MAP_TYPE_TASK_STORAGE, task_storage_map_ops)
-+#ifdef CONFIG_NET
-+BPF_MAP_TYPE(BPF_MAP_TYPE_DEVMAP, dev_map_ops)
-+BPF_MAP_TYPE(BPF_MAP_TYPE_DEVMAP_HASH, dev_map_hash_ops)
-+BPF_MAP_TYPE(BPF_MAP_TYPE_SK_STORAGE, sk_storage_map_ops)
- BPF_MAP_TYPE(BPF_MAP_TYPE_CPUMAP, cpu_map_ops)
- #if defined(CONFIG_XDP_SOCKETS)
- BPF_MAP_TYPE(BPF_MAP_TYPE_XSKMAP, xsk_map_ops)
+diff --git a/drivers/scsi/ufs/ufs-exynos.c b/drivers/scsi/ufs/ufs-exynos.c
+index 3f4f3d6f48f9..0246ea99df7b 100644
+--- a/drivers/scsi/ufs/ufs-exynos.c
++++ b/drivers/scsi/ufs/ufs-exynos.c
+@@ -654,9 +654,9 @@ static int exynos_ufs_pre_pwr_mode(struct ufs_hba *hba,
+ 	}
+ 
+ 	/* setting for three timeout values for traffic class #0 */
+-	ufshcd_dme_set(hba, UIC_ARG_MIB(PA_PWRMODEUSERDATA0), 8064);
+-	ufshcd_dme_set(hba, UIC_ARG_MIB(PA_PWRMODEUSERDATA1), 28224);
+-	ufshcd_dme_set(hba, UIC_ARG_MIB(PA_PWRMODEUSERDATA2), 20160);
++	ufshcd_dme_set(hba, UIC_ARG_MIB(DL_FC0PROTTIMEOUTVAL), 8064);
++	ufshcd_dme_set(hba, UIC_ARG_MIB(DL_TC0REPLAYTIMEOUTVAL), 28224);
++	ufshcd_dme_set(hba, UIC_ARG_MIB(DL_AFC0REQTIMEOUTVAL), 20160);
+ 
+ 	return 0;
+ out:
 -- 
 2.33.0
 
