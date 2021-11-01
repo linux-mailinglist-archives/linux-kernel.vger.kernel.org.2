@@ -2,125 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DE9E4420BF
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 20:22:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95DC34420C4
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 20:23:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232597AbhKATZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 15:25:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38176 "EHLO
+        id S232602AbhKAT0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 15:26:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232577AbhKATZC (ORCPT
+        with ESMTP id S232557AbhKAT0N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 15:25:02 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED58BC061766
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 12:22:28 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id bp7so12338559qkb.10
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 12:22:28 -0700 (PDT)
+        Mon, 1 Nov 2021 15:26:13 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6A3EC061714
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 12:23:39 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id v20so12224186plo.7
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 12:23:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Cn68F3AcLYrb8nMJ8xSM0TLR9A80m1LXeQBBE0KZNgo=;
-        b=dGTnH6/3QpH80bmiWodCiS0jeBeJ7NTIywierL6ecDg1Zz9sdXSKmOOdB95NkLUK21
-         4flfcpTie3pys4AEg/g1DTWuc2TixYzJA2e27DrbqjVf4e48F4afmUAegjwnUAJa7QCk
-         qqOMxC+n5QXWwdNOM0rN1sSpvdDnHQlK/xPnKRuwY1+hWrHU6OnxFjE/Fq0TxTlbSpqg
-         P3fioCEwJqvosl7eP36fgLJWPcRDhtAXLF/DnJWmmE7IPTLWQ+d2B/9lGrXLetdfYAdh
-         +Yv2NaM9V/VYbmzO3uaWdLNXVjfy178VILbHAba6UVggo0FQsi9lT1SfqeFO/li5RB/4
-         yVtA==
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=bR0N16YD9pFySBhO3WCHcKlYqsCgjFWUHZOc4OZkB9E=;
+        b=O5J573nyl6G+ENM+iMVSjRtWiJgNOdI97EEhG73Z4JmNJtMB7weL5A99X3RfCUVsw0
+         c3lFKS3+xe7ERFqVLkX8PHoavuUbYMXGJZqHelYHdJXDGHjDxUEBz0wyfs6fIGYVHGGy
+         Ph58E9imcqMMt0aecNiQvvhibcehl+tj9/h6HsCNXYQmAvdFVk7ECJdWXQmY1ZBPwi5y
+         LdNGMKLEqla7uIUkBosL3KYSwKwBwbaB0X/pEwuK4BMiHZ3IKj1lpZPTSlPLrroau6Mz
+         2YsHOSyzRFA7krISo4rtXHzWnQ8d9QDb7bgvODyZtU2CN5kqX33U7jSqIWRQyDxW/gND
+         +h5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Cn68F3AcLYrb8nMJ8xSM0TLR9A80m1LXeQBBE0KZNgo=;
-        b=QSSxL0BT+460sciwOc5gojR7+g08+My8bU/zWAgEHtaXklFspJD9eq0NnYIZqr5UGu
-         c2x6LSHzBoIVorkAtwGHYTSg0jtlP2yo9/qwqzhsMXpQh/Oq3JW/bGbA94RbJfimndUR
-         /BSH6BFJKSVwzXIFxDP67kKc9OMCv504/u+cPXfWADLlwoNAB5ppdQWMvZAd5GMzVw4r
-         x4/0kQw2AKSPwj96bUydXok6gdVCViiSBIxwUje45d7Fw7O/U1LvQEesSJR4S0ZZZOxy
-         L3DjgKe4HuxrQJB9CBCUJZk0F6qmfgchktYALtuM5f3VzDYbsrgDeRwcVqYiwQcyKGnL
-         LVOg==
-X-Gm-Message-State: AOAM530qVmgUVKKqfsWbqUrzmV/PoRpPeIb9aI224wL7dqXduMmII48Y
-        4L/Jy4xS2P/sKZBB5S2CgOflPOqwr8F7IT6+1yuyYA==
-X-Google-Smtp-Source: ABdhPJyE7RArczaNdL0D1S1vAPyecuDc91E8gExiBs5AeCrNh8tSBwoegLoi41Fs09DtHsZzljDdRZzMUnILF1z5YGI=
-X-Received: by 2002:a37:b7c6:: with SMTP id h189mr24717038qkf.377.1635794547806;
- Mon, 01 Nov 2021 12:22:27 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=bR0N16YD9pFySBhO3WCHcKlYqsCgjFWUHZOc4OZkB9E=;
+        b=1LedlR4utkLZ5wFFkPrg2SBb/pVAOYXEffKudFUAbdXtrLIeRdnJSkHsW6bxnlE+vi
+         ypGhePmmt3AILDs5UVZ4RNhQipSwU7JxnixnwkRjKYS0NZTZuHuaYFMtJql2IdPuCa4z
+         RFaMt8HFVToS8Z8xdFmZ3Eq+YIffw7xDy/HWYItj9KiXT/Mh+PUtxwbAdsVJ4BEpccY1
+         CBx5OuuV0S80YbXFd3/uvX70GIQf3awNW/MqiCdvyJL7yg4s/F60Us5fis2Clb2FJVWx
+         w5xlFARjCwBIbST0TUDHxPvDut48fc0vFfLaRzSIjUw6tNfcPo+/7Ua/uOJH1OHro2Du
+         kuTQ==
+X-Gm-Message-State: AOAM532M3UdGDorQwFBVyxzCjRyw+MuUCNdQLUDE37hbuWE4SQ9mfinK
+        prxkPBcrgHvzZesxy0y/u4M=
+X-Google-Smtp-Source: ABdhPJy5WlJp8FgWOCQPol5iGyp+S/Q1efBq3hU4sebWunOHNUAhvD6mILb2yAuX93fzXftTPF5iQw==
+X-Received: by 2002:a17:902:8690:b0:13f:ffd6:6c63 with SMTP id g16-20020a170902869000b0013fffd66c63mr26973677plo.23.1635794619261;
+        Mon, 01 Nov 2021 12:23:39 -0700 (PDT)
+Received: from [192.168.1.2] ([59.95.93.69])
+        by smtp.gmail.com with ESMTPSA id e9sm12121255pfv.132.2021.11.01.12.23.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Nov 2021 12:23:38 -0700 (PDT)
+Message-ID: <5013033b-b1f1-aef7-9fb8-a8431e83960b@gmail.com>
+Date:   Tue, 2 Nov 2021 00:53:33 +0530
 MIME-Version: 1.0
-References: <cover.1635784253.git.cdleonard@gmail.com> <6097ec24d87efc55962a1bfac9441132f0fc4206.1635784253.git.cdleonard@gmail.com>
-In-Reply-To: <6097ec24d87efc55962a1bfac9441132f0fc4206.1635784253.git.cdleonard@gmail.com>
-From:   Francesco Ruggeri <fruggeri@arista.com>
-Date:   Mon, 1 Nov 2021 12:22:17 -0700
-Message-ID: <CA+HUmGgMAU235hMtTgucVb1GX_Ru83bngHg8-Jvy2g6BA7djsg@mail.gmail.com>
-Subject: Re: [PATCH v2 11/25] tcp: authopt: Implement Sequence Number Extension
-To:     Leonard Crestez <cdleonard@gmail.com>
-Cc:     David Ahern <dsahern@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Yuchung Cheng <ycheng@google.com>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Christoph Paasch <cpaasch@apple.com>,
-        Ivan Delalande <colona@arista.com>,
-        Priyaranjan Jha <priyarjha@google.com>, netdev@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.1
+Subject: Re: [PATCH] staging: r8188eu: hal: else is not useful after a return
+Content-Language: en-GB
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        straube.linux@gmail.com, martin@kaiser.cx,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        saurav.girepunje@hotmail.com
+References: <YX7iBmKKNZfj8Gca@Sauravs-MacBook-Air.local>
+ <YX/lRMNGsCZMKAV3@kroah.com>
+From:   Saurav Girepunje <saurav.girepunje@gmail.com>
+In-Reply-To: <YX/lRMNGsCZMKAV3@kroah.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +/* Compute SNE for a specific packet (by seq). */
-> +static int compute_packet_sne(struct sock *sk, struct tcp_authopt_info *info,
-> +                             u32 seq, bool input, __be32 *sne)
-> +{
-> +       u32 rcv_nxt, snd_nxt;
-> +
-> +       // We can't use normal SNE computation before reaching TCP_ESTABLISHED
-> +       // For TCP_SYN_SENT the dst_isn field is initialized only after we
-> +       // validate the remote SYN/ACK
-> +       // For TCP_NEW_SYN_RECV there is no tcp_authopt_info at all
-> +       if (sk->sk_state == TCP_SYN_SENT ||
-> +           sk->sk_state == TCP_NEW_SYN_RECV ||
-> +           sk->sk_state == TCP_LISTEN)
-> +               return 0;
-> +
 
-In case of TCP_NEW_SYN_RECV, if our SYNACK had sequence number
-0xffffffff, we will receive an ACK sequence number of 0, which
-should have sne = 1.
 
-In a somewhat similar corner case, when we receive a SYNACK to
-our SYN in tcp_rcv_synsent_state_process, if the SYNACK has
-sequence number 0xffffffff, we set tp->rcv_nxt to 0, and we
-should set sne to 1.
+On 01/11/21 6:31 pm, Greg KH wrote:
+> On Mon, Nov 01, 2021 at 12:05:50AM +0530, Saurav Girepunje wrote:
+>> In the function rtl8188eu_hal_init() else after the return statement
+>> of the if section is not useful. As if condition is true function will
+>> return from if section, On the other case if condition is false
+>> function will not return and statement after the if section will
+>> execute, So there is no need to have else in this case. Remove the
+>> else after a return statement of the if section.
+>>
+>> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+>> ---
+>>  drivers/staging/r8188eu/hal/usb_halinit.c | 7 ++++---
+>>  1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> 
+> Hi,
+> 
+> This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+> a patch that has triggered this response.  He used to manually respond
+> to these common problems, but in order to save his sanity (he kept
+> writing the same thing over and over, yet to different people), I was
+> created.  Hopefully you will not take offence and will fix the problem
+> in your patch and resubmit it so that it can be accepted into the Linux
+> kernel tree.
+> 
+> You are receiving this message because of the following common error(s)
+> as indicated below:
+> 
+> - You sent multiple patches, yet no indication of which ones should be
+>   applied in which order.  Greg could just guess, but if you are
+>   receiving this email, he guessed wrong and the patches didn't apply.
+>   Please read the section entitled "The canonical patch format" in the
+>   kernel file, Documentation/SubmittingPatches for a description of how
+>   to do this so that Greg has a chance to apply these correctly.
+> 
+> If you wish to discuss this problem further, or you have questions about
+> how to resolve this issue, please feel free to respond to this email and
+> Greg will reply once he has dug out from the pending patches received
+> from other developers.
+> 
+> thanks,
+> 
+> greg k-h's patch email bot>
 
-There may be more similar corner cases related to a wraparound
-during the handshake.
+Hi Greg,
 
-Since as you pointed out all we need is "recent" valid <sne, seq>
-pairs as reference, rather than relying on rcv_sne being paired
-with tp->rcv_nxt (and similarly for snd_sne and tp->snd_nxt),
-would it be easier to maintain reference <sne, seq> pairs for send
-and receive in tcp_authopt_info, appropriately handle the different
-handshake cases and initialize the pairs, and only then track them
-in tcp_rcv_nxt_update and tcp_rcv_snd_update?
+I have send only one patch for usb_halinit.c.
+However I have send another patch staging: r8188eu: hal: break after the return not useful
+for another file HalPwrSeqCmd.c both are on same path drivers/staging/r8188eu/hal/ 
 
->  static void tcp_rcv_nxt_update(struct tcp_sock *tp, u32 seq)
->  {
->         u32 delta = seq - tp->rcv_nxt;
->
->         sock_owned_by_me((struct sock *)tp);
-> +       tcp_authopt_update_rcv_sne(tp, seq);
->         tp->bytes_received += delta;
->         WRITE_ONCE(tp->rcv_nxt, seq);
->  }
->
-
-Since rcv_sne and tp->rcv_nxt are not updated atomically, could
-there ever be a case where a reader might use the new sne with
-the old rcv_nxt?
-
-Francesco
+Regards,
+Saurav
+ 
