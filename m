@@ -2,283 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06E15441AD7
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 12:44:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E1E6441ADA
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 12:45:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232408AbhKALqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 07:46:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48496 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231755AbhKALqc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 07:46:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E64F610A8;
-        Mon,  1 Nov 2021 11:43:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635767039;
-        bh=mV0Mpby/YlSPqHVBXtsVJ11Vf5Z8tjfAjkK+fdLokMU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=rvCCEVBKc6rNduC7jaDsrOgLqmJ3/YCh+JMfLJ5YVteLd8k5hUj9bUb9oeSNLZfZO
-         dNA14B+Rv2OqvLaOAnf1XesPyLHCqm8xlruELuqoF6HtRAG5V9tEUMGY1wADIUinPy
-         HqlNiURpgjoz/vV4UXR5Kw9RmbZO5u6/Xz07O4pU=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: [PATCH 5.4 00/51] 5.4.157-rc2 review
-Date:   Mon,  1 Nov 2021 12:43:54 +0100
-Message-Id: <20211101114235.515637019@linuxfoundation.org>
-X-Mailer: git-send-email 2.33.1
-MIME-Version: 1.0
-User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.157-rc2.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-5.4.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 5.4.157-rc2
-X-KernelTest-Deadline: 2021-11-03T11:42+00:00
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        id S232310AbhKALsN convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 1 Nov 2021 07:48:13 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:36742 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231437AbhKALsM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 07:48:12 -0400
+Received: from smtpclient.apple (p4fefc15c.dip0.t-ipconnect.de [79.239.193.92])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 7EFCECECD4;
+        Mon,  1 Nov 2021 12:45:37 +0100 (CET)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 15.0 \(3693.20.0.1.32\))
+Subject: Re: [PATCH v1] serdev: Add interface serdev_device_ioctl
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <YX/M/MZL8jbu7p7I@kroah.com>
+Date:   Mon, 1 Nov 2021 12:45:36 +0100
+Cc:     Zijun Hu <zijuhu@codeaurora.org>, robh@kernel.org,
+        jirislaby@kernel.org, linux-serial@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        Zijun Hu <quic_zijuhu@quicinc.com>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <DC399B43-DB1E-42AC-8A31-3A2C9407EE6D@holtmann.org>
+References: <1635753048-5289-1-git-send-email-zijuhu@codeaurora.org>
+ <YX+eRgCrUs2Y5iaX@kroah.com>
+ <fe5a8bec-b186-c719-5f02-a0a67eb8862f@codeaurora.org>
+ <YX+mDGr8tDzVT4Hr@kroah.com>
+ <573d3640-2e8b-9266-4205-755ac0951abd@codeaurora.org>
+ <YX/M/MZL8jbu7p7I@kroah.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+X-Mailer: Apple Mail (2.3693.20.0.1.32)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the start of the stable review cycle for the 5.4.157 release.
-There are 51 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
+Hi Greg,
 
-Responses should be made by Wed, 03 Nov 2021 11:42:01 +0000.
-Anything received after that time might be too late.
+>>>>>> For serdev_device which is mounted at virtual tty port, tty ioctl()
+>>>>>> maybe be used to make serdev_device ready to talk with tty port, so
+>>>>>> add interface serdev_device_ioctl().
+>>>>>> 
+>>>>>> Signed-off-by: Zijun Hu <quic_zijuhu@quicinc.com>
+>>>>>> ---
+>>>>>> drivers/tty/serdev/core.c           | 11 +++++++++++
+>>>>>> drivers/tty/serdev/serdev-ttyport.c | 12 ++++++++++++
+>>>>>> include/linux/serdev.h              |  9 +++++++++
+>>>>>> 3 files changed, 32 insertions(+)
+>>>>>> 
+>>>>>> diff --git a/drivers/tty/serdev/core.c b/drivers/tty/serdev/core.c
+>>>>>> index f1324fe99378..c0f6cd64716b 100644
+>>>>>> --- a/drivers/tty/serdev/core.c
+>>>>>> +++ b/drivers/tty/serdev/core.c
+>>>>>> @@ -405,6 +405,17 @@ int serdev_device_set_tiocm(struct serdev_device *serdev, int set, int clear)
+>>>>>> }
+>>>>>> EXPORT_SYMBOL_GPL(serdev_device_set_tiocm);
+>>>>>> 
+>>>>>> +int serdev_device_ioctl(struct serdev_device *serdev, unsigned int cmd, unsigned long arg)
+>>>>>> +{
+>>>>>> +	struct serdev_controller *ctrl = serdev->ctrl;
+>>>>>> +
+>>>>>> +	if (!ctrl || !ctrl->ops->ioctl)
+>>>>>> +		return -EOPNOTSUPP;
+>>>>> 
+>>>>> Wrong error for returning that an ioctl is not handled :(
+>>>> checkpatch.pl always reports below WARNING when i use ENOTSUPP as present interfaces
+>>>> do. so i change error code to EOPNOTSUPP.
+>>>> 
+>>>> #28: FILE: drivers/tty/serdev/core.c:412:
+>>>> +               return -ENOTSUPP;
+>>>> 
+>>>> WARNING: ENOTSUPP is not a SUSV4 error code, prefer EOPNOTSUPP
+>>> 
+>>> Both of them are not the correct error to return when an ioctl is not
+>>> supported.
+>>> 
+>> is ENODEV okay?
+> 
+> No, -ENOTTY is the correct one as per the documentation, right?
+> 
+>>>>> Anyway, what in-tree driver needs this functionality?  Why does serdev
+>>>>> need any ioctl commands?
+>>>>> 
+>>>> i am developing driver for a special bluetooth controller which is integrated within SOC,
+>>>> and it does not connect with the BT HOST with UART as normal controller do, but it has very
+>>>> similar features as the BT controller with UART I/F. it is mounted on a virtual serial port
+>>>> driven by a tty driver developed. but it need to call tty ioctl to make the 
+>>>> special BT controller ready to talk with tty port. so i add this interface.
+>>> 
+>>> Please submit this change when you submit your driver that uses it at
+>>> the same time so we can review them all at once.  We do not add apis
+>>> that are not used in the kernel tree.
+>>> 
+>> okay
+>>>> as you known, the main purpose of ioctl is to achieve MISC and irregular control. so it is useful
+>>>> for these irregular devices.
+>>> 
+>>> For tty devices, "custom" ioctls are not ok, use the standard tty
+>>> commands and you should be fine for everything you need to do.
+>>> 
+>>> If not, then perhaps your design is incorrect?
+>>> 
+>> i just want to refer bt_ioctl within https://source.codeaurora.org/quic/qsdk/oss/kernel/linux-ipq-5.4/tree/drivers/soc/qcom/bt_tty.c?h=NHSS.QSDK.11.5.0.5.r2
+>> by serdev. so add this interface.
+> 
+> The 5.4 kernel is not relevant here, so I do not understand.
+> 
+>> are there any other good solution to advise?
+> 
+> Why not work with the bluetooth developers on this?
 
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.157-rc2.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-and the diffstat can be found below.
+if this is just to have some hackish Bluetooth driver, then NAK from my side. Since we have serdev, we have no need for, or requirements for any ioctl anymore. If such thing is needed, it is a bad design.
 
-thanks,
+Regards
 
-greg k-h
-
--------------
-Pseudo-Shortlog of commits:
-
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 5.4.157-rc2
-
-Song Liu <songliubraving@fb.com>
-    perf script: Check session->header.env.arch before using it
-
-Halil Pasic <pasic@linux.ibm.com>
-    KVM: s390: preserve deliverable_mask in __airqs_kick_single_vcpu
-
-Halil Pasic <pasic@linux.ibm.com>
-    KVM: s390: clear kicked_mask before sleeping again
-
-Janusz Dziedzic <janusz.dziedzic@gmail.com>
-    cfg80211: correct bridge/4addr mode check
-
-Julian Wiedmann <jwi@linux.ibm.com>
-    net: use netif_is_bridge_port() to check for IFF_BRIDGE_PORT
-
-Xin Long <lucien.xin@gmail.com>
-    sctp: add vtag check in sctp_sf_ootb
-
-Xin Long <lucien.xin@gmail.com>
-    sctp: add vtag check in sctp_sf_do_8_5_1_E_sa
-
-Xin Long <lucien.xin@gmail.com>
-    sctp: add vtag check in sctp_sf_violation
-
-Xin Long <lucien.xin@gmail.com>
-    sctp: fix the processing for COOKIE_ECHO chunk
-
-Xin Long <lucien.xin@gmail.com>
-    sctp: fix the processing for INIT_ACK chunk
-
-Xin Long <lucien.xin@gmail.com>
-    sctp: use init_tag from inithdr for ABORT chunk
-
-Andrew Lunn <andrew@lunn.ch>
-    phy: phy_start_aneg: Add an unlocked version
-
-Andrew Lunn <andrew@lunn.ch>
-    phy: phy_ethtool_ksettings_get: Lock the phy for consistency
-
-Daniel Jordan <daniel.m.jordan@oracle.com>
-    net/tls: Fix flipped sign in async_wait.err assignment
-
-Trevor Woerner <twoerner@gmail.com>
-    net: nxp: lpc_eth.c: avoid hang when bringing interface down
-
-Yuiko Oshino <yuiko.oshino@microchip.com>
-    net: ethernet: microchip: lan743x: Fix dma allocation failure by using dma_set_mask_and_coherent
-
-Yuiko Oshino <yuiko.oshino@microchip.com>
-    net: ethernet: microchip: lan743x: Fix driver crash when lan743x_pm_resume fails
-
-Guenter Roeck <linux@roeck-us.net>
-    nios2: Make NIOS2_DTB_SOURCE_BOOL depend on !COMPILE_TEST
-
-Mark Zhang <markzhang@nvidia.com>
-    RDMA/sa_query: Use strscpy_pad instead of memcpy to copy a string
-
-Michael Chan <michael.chan@broadcom.com>
-    net: Prevent infinite while loop in skb_tx_hash()
-
-Pavel Skripkin <paskripkin@gmail.com>
-    net: batman-adv: fix error handling
-
-Yang Yingliang <yangyingliang@huawei.com>
-    regmap: Fix possible double-free in regcache_rbtree_exit()
-
-Clément Bœsch <u@pkh.me>
-    arm64: dts: allwinner: h5: NanoPI Neo 2: Fix ethernet node
-
-Patrisious Haddad <phaddad@nvidia.com>
-    RDMA/mlx5: Set user priority for DCT
-
-Varun Prakash <varun@chelsio.com>
-    nvme-tcp: fix data digest pointer calculation
-
-Varun Prakash <varun@chelsio.com>
-    nvmet-tcp: fix data digest pointer calculation
-
-Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
-    IB/hfi1: Fix abba locking issue with sc_disable()
-
-Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
-    IB/qib: Protect from buffer overflow in struct qib_user_sdma_pkt fields
-
-Liu Jian <liujian56@huawei.com>
-    tcp_bpf: Fix one concurrency problem in the tcp_bpf_send_verdict function
-
-Christian König <christian.koenig@amd.com>
-    drm/ttm: fix memleak in ttm_transfered_destroy
-
-Johan Hovold <johan@kernel.org>
-    net: lan78xx: fix division by zero in send path
-
-Johannes Berg <johannes.berg@intel.com>
-    cfg80211: scan: fix RCU in cfg80211_add_nontrans_list()
-
-Haibo Chen <haibo.chen@nxp.com>
-    mmc: sdhci-esdhc-imx: clear the buffer_read_ready to reset standard tuning circuit
-
-Shawn Guo <shawn.guo@linaro.org>
-    mmc: sdhci: Map more voltage level to SDHCI_POWER_330
-
-Jaehoon Chung <jh80.chung@samsung.com>
-    mmc: dw_mmc: exynos: fix the finding clock sample value
-
-Wenbin Mei <wenbin.mei@mediatek.com>
-    mmc: cqhci: clear HALT state after CQE enable
-
-Johan Hovold <johan@kernel.org>
-    mmc: vub300: fix control-message timeouts
-
-Daniel Jordan <daniel.m.jordan@oracle.com>
-    net/tls: Fix flipped sign in tls_err_abort() calls
-
-Pavel Skripkin <paskripkin@gmail.com>
-    Revert "net: mdiobus: Fix memory leak in __mdiobus_register"
-
-Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-    nfc: port100: fix using -ERRNO as command type mask
-
-Zheyu Ma <zheyuma97@gmail.com>
-    ata: sata_mv: Fix the error handling of mv_chip_id()
-
-Rafał Miłecki <rafal@milecki.pl>
-    Revert "pinctrl: bcm: ns: support updated DT binding as syscon subnode"
-
-Wang Hai <wanghai38@huawei.com>
-    usbnet: fix error return code in usbnet_probe()
-
-Oliver Neukum <oneukum@suse.com>
-    usbnet: sanity check for maxpacket
-
-Eric Dumazet <edumazet@google.com>
-    ipv4: use siphash instead of Jenkins in fnhe_hashfun()
-
-Eric Dumazet <edumazet@google.com>
-    ipv6: use siphash in rt6_exception_hash()
-
-Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
-    powerpc/bpf: Fix BPF_MOD when imm == 1
-
-Arnd Bergmann <arnd@arndb.de>
-    ARM: 9141/1: only warn about XIP address when not compile testing
-
-Arnd Bergmann <arnd@arndb.de>
-    ARM: 9139/1: kprobes: fix arch_init_kprobes() prototype
-
-Arnd Bergmann <arnd@arndb.de>
-    ARM: 9134/1: remove duplicate memcpy() definition
-
-Nick Desaulniers <ndesaulniers@google.com>
-    ARM: 9133/1: mm: proc-macros: ensure *_tlb_fns are 4B aligned
-
-
--------------
-
-Diffstat:
-
- Makefile                                           |  4 +-
- arch/arm/boot/compressed/decompress.c              |  3 +
- arch/arm/kernel/vmlinux-xip.lds.S                  |  2 +-
- arch/arm/mm/proc-macros.S                          |  1 +
- arch/arm/probes/kprobes/core.c                     |  2 +-
- .../boot/dts/allwinner/sun50i-h5-nanopi-neo2.dts   |  2 +-
- arch/nios2/platform/Kconfig.platform               |  1 +
- arch/powerpc/net/bpf_jit_comp64.c                  | 10 +++-
- arch/s390/kvm/interrupt.c                          |  5 +-
- arch/s390/kvm/kvm-s390.c                           |  1 +
- drivers/ata/sata_mv.c                              |  4 +-
- drivers/base/regmap/regcache-rbtree.c              |  7 +--
- drivers/gpu/drm/ttm/ttm_bo_util.c                  |  1 +
- drivers/infiniband/core/sa_query.c                 |  5 +-
- drivers/infiniband/hw/hfi1/pio.c                   |  9 ++-
- drivers/infiniband/hw/mlx5/qp.c                    |  2 +
- drivers/infiniband/hw/qib/qib_user_sdma.c          | 33 +++++++----
- drivers/mmc/host/cqhci.c                           |  3 +
- drivers/mmc/host/dw_mmc-exynos.c                   | 14 +++++
- drivers/mmc/host/sdhci-esdhc-imx.c                 | 17 ++++++
- drivers/mmc/host/sdhci.c                           |  6 ++
- drivers/mmc/host/vub300.c                          | 18 +++---
- drivers/net/bonding/bond_main.c                    |  2 +-
- drivers/net/ethernet/micrel/ksz884x.c              |  2 +-
- drivers/net/ethernet/microchip/lan743x_main.c      | 22 +++++++
- drivers/net/ethernet/nxp/lpc_eth.c                 |  5 +-
- drivers/net/phy/mdio_bus.c                         |  1 -
- drivers/net/phy/phy.c                              | 32 +++++++++--
- drivers/net/usb/lan78xx.c                          |  6 ++
- drivers/net/usb/usbnet.c                           |  5 ++
- drivers/nfc/port100.c                              |  4 +-
- drivers/nvme/host/tcp.c                            |  2 +-
- drivers/nvme/target/tcp.c                          |  2 +-
- drivers/pinctrl/bcm/pinctrl-ns.c                   | 29 ++++------
- include/net/tls.h                                  |  9 +--
- net/batman-adv/bridge_loop_avoidance.c             |  8 ++-
- net/batman-adv/main.c                              | 56 ++++++++++++------
- net/batman-adv/network-coding.c                    |  4 +-
- net/batman-adv/translation-table.c                 |  4 +-
- net/core/dev.c                                     |  6 ++
- net/core/rtnetlink.c                               | 12 ++--
- net/ipv4/route.c                                   | 12 ++--
- net/ipv4/tcp_bpf.c                                 | 12 ++++
- net/ipv6/route.c                                   | 20 +++++--
- net/sctp/sm_statefuns.c                            | 67 +++++++++++++---------
- net/tls/tls_sw.c                                   | 19 ++++--
- net/wireless/nl80211.c                             |  2 +-
- net/wireless/scan.c                                |  7 ++-
- net/wireless/util.c                                | 14 ++---
- tools/perf/builtin-script.c                        | 12 ++--
- 50 files changed, 360 insertions(+), 166 deletions(-)
-
+Marcel
 
