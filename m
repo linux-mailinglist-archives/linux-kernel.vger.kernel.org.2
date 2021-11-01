@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 566054417B8
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:37:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C31EA441744
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:33:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232574AbhKAJjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:39:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43770 "EHLO mail.kernel.org"
+        id S233398AbhKAJdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:33:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37040 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233300AbhKAJgC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:36:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 501046127C;
-        Mon,  1 Nov 2021 09:26:21 +0000 (UTC)
+        id S232674AbhKAJaO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:30:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BDE7061175;
+        Mon,  1 Nov 2021 09:23:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758781;
-        bh=jiK+PCob6Sk2ymDtepSMnFrxqelL0ZC47dy5ShLG2ho=;
+        s=korg; t=1635758623;
+        bh=5keLcXaK1HQ2seICZ9bhp3Wolv5XuiRc8ik4f5+7lsA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=L+Iv+ahSkdtE5KiN5fDJZjpfWn4xcFL03F0KyQknWS3jT1OFTrYmkY0ayiXVSDYT3
-         2RIgR6LxjSqZeO3OLInt7EnyDTNk9JRyl/0KpzasOcgju/btJgGSdPvgULsdSHbZtH
-         txPIJz805m6bJa/w75hXPfOlqs8tZOcgMdq8Wskk=
+        b=2tI9jLhouC1y2bTK5s4SlEXPphjwx4fZcf2KxeEP7XK/UVgWfzX9k4WwJYixomWfG
+         VZeTJYvpuitGhSTYezzQJGJskAratv1R/tlQnWcxCkZvZx7UiYfPvQSeGnXy2qX2n+
+         gpdtKlMz1yRkuy0zE3iI9OsY7RsN/e63Vvl0YFdE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ido Schimmel <idosch@nvidia.com>,
-        Petr Machata <petrm@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.10 56/77] mlxsw: pci: Recycle received packet upon allocation failure
+        stable@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 40/51] phy: phy_start_aneg: Add an unlocked version
 Date:   Mon,  1 Nov 2021 10:17:44 +0100
-Message-Id: <20211101082523.466579976@linuxfoundation.org>
+Message-Id: <20211101082510.027977380@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082511.254155853@linuxfoundation.org>
-References: <20211101082511.254155853@linuxfoundation.org>
+In-Reply-To: <20211101082500.203657870@linuxfoundation.org>
+References: <20211101082500.203657870@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,134 +39,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ido Schimmel <idosch@nvidia.com>
+From: Andrew Lunn <andrew@lunn.ch>
 
-commit 759635760a804b0d8ad0cc677b650f1544cae22f upstream.
+commit 707293a56f95f8e7e0cfae008010c7933fb68973 upstream.
 
-When the driver fails to allocate a new Rx buffer, it passes an empty Rx
-descriptor (contains zero address and size) to the device and marks it
-as invalid by setting the skb pointer in the descriptor's metadata to
-NULL.
+Split phy_start_aneg into a wrapper which takes the PHY lock, and a
+helper doing the real work. This will be needed when
+phy_ethtook_ksettings_set takes the lock.
 
-After processing enough Rx descriptors, the driver will try to process
-the invalid descriptor, but will return immediately seeing that the skb
-pointer is NULL. Since the driver no longer passes new Rx descriptors to
-the device, the Rx queue will eventually become full and the device will
-start to drop packets.
-
-Fix this by recycling the received packet if allocation of the new
-packet failed. This means that allocation is no longer performed at the
-end of the Rx routine, but at the start, before tearing down the DMA
-mapping of the received packet.
-
-Remove the comment about the descriptor being zeroed as it is no longer
-correct. This is OK because we either use the descriptor as-is (when
-recycling) or overwrite its address and size fields with that of the
-newly allocated Rx buffer.
-
-The issue was discovered when a process ("perf") consumed too much
-memory and put the system under memory pressure. It can be reproduced by
-injecting slab allocation failures [1]. After the fix, the Rx queue no
-longer comes to a halt.
-
-[1]
- # echo 10 > /sys/kernel/debug/failslab/times
- # echo 1000 > /sys/kernel/debug/failslab/interval
- # echo 100 > /sys/kernel/debug/failslab/probability
-
- FAULT_INJECTION: forcing a failure.
- name failslab, interval 1000, probability 100, space 0, times 8
- [...]
- Call Trace:
-  <IRQ>
-  dump_stack_lvl+0x34/0x44
-  should_fail.cold+0x32/0x37
-  should_failslab+0x5/0x10
-  kmem_cache_alloc_node+0x23/0x190
-  __alloc_skb+0x1f9/0x280
-  __netdev_alloc_skb+0x3a/0x150
-  mlxsw_pci_rdq_skb_alloc+0x24/0x90
-  mlxsw_pci_cq_tasklet+0x3dc/0x1200
-  tasklet_action_common.constprop.0+0x9f/0x100
-  __do_softirq+0xb5/0x252
-  irq_exit_rcu+0x7a/0xa0
-  common_interrupt+0x83/0xa0
-  </IRQ>
-  asm_common_interrupt+0x1e/0x40
- RIP: 0010:cpuidle_enter_state+0xc8/0x340
- [...]
- mlxsw_spectrum2 0000:06:00.0: Failed to alloc skb for RDQ
-
-Fixes: eda6500a987a ("mlxsw: Add PCI bus implementation")
-Signed-off-by: Ido Schimmel <idosch@nvidia.com>
-Reviewed-by: Petr Machata <petrm@nvidia.com>
-Link: https://lore.kernel.org/r/20211024064014.1060919-1-idosch@idosch.org
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: 2d55173e71b0 ("phy: add generic function to support ksetting support")
+Signed-off-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/mellanox/mlxsw/pci.c |   25 ++++++++++++-------------
- 1 file changed, 12 insertions(+), 13 deletions(-)
+ drivers/net/phy/phy.c |   30 ++++++++++++++++++++++++------
+ 1 file changed, 24 insertions(+), 6 deletions(-)
 
---- a/drivers/net/ethernet/mellanox/mlxsw/pci.c
-+++ b/drivers/net/ethernet/mellanox/mlxsw/pci.c
-@@ -353,13 +353,10 @@ static int mlxsw_pci_rdq_skb_alloc(struc
- 	struct sk_buff *skb;
+--- a/drivers/net/phy/phy.c
++++ b/drivers/net/phy/phy.c
+@@ -555,7 +555,7 @@ static int phy_check_link_status(struct
+ }
+ 
+ /**
+- * phy_start_aneg - start auto-negotiation for this PHY device
++ * _phy_start_aneg - start auto-negotiation for this PHY device
+  * @phydev: the phy_device struct
+  *
+  * Description: Sanitizes the settings (if we're not autonegotiating
+@@ -563,25 +563,43 @@ static int phy_check_link_status(struct
+  *   If the PHYCONTROL Layer is operating, we change the state to
+  *   reflect the beginning of Auto-negotiation or forcing.
+  */
+-int phy_start_aneg(struct phy_device *phydev)
++static int _phy_start_aneg(struct phy_device *phydev)
+ {
  	int err;
  
--	elem_info->u.rdq.skb = NULL;
- 	skb = netdev_alloc_skb_ip_align(NULL, buf_len);
- 	if (!skb)
- 		return -ENOMEM;
++	lockdep_assert_held(&phydev->lock);
++
+ 	if (!phydev->drv)
+ 		return -EIO;
  
--	/* Assume that wqe was previously zeroed. */
+-	mutex_lock(&phydev->lock);
 -
- 	err = mlxsw_pci_wqe_frag_map(mlxsw_pci, wqe, 0, skb->data,
- 				     buf_len, DMA_FROM_DEVICE);
- 	if (err)
-@@ -548,21 +545,26 @@ static void mlxsw_pci_cqe_rdq_handle(str
- 	struct pci_dev *pdev = mlxsw_pci->pdev;
- 	struct mlxsw_pci_queue_elem_info *elem_info;
- 	struct mlxsw_rx_info rx_info = {};
--	char *wqe;
-+	char wqe[MLXSW_PCI_WQE_SIZE];
- 	struct sk_buff *skb;
- 	u16 byte_count;
- 	int err;
+ 	if (AUTONEG_DISABLE == phydev->autoneg)
+ 		phy_sanitize_settings(phydev);
  
- 	elem_info = mlxsw_pci_queue_elem_info_consumer_get(q);
--	skb = elem_info->u.sdq.skb;
--	if (!skb)
--		return;
--	wqe = elem_info->elem;
--	mlxsw_pci_wqe_frag_unmap(mlxsw_pci, wqe, 0, DMA_FROM_DEVICE);
-+	skb = elem_info->u.rdq.skb;
-+	memcpy(wqe, elem_info->elem, MLXSW_PCI_WQE_SIZE);
+ 	err = phy_config_aneg(phydev);
+ 	if (err < 0)
+-		goto out_unlock;
++		return err;
  
- 	if (q->consumer_counter++ != consumer_counter_limit)
- 		dev_dbg_ratelimited(&pdev->dev, "Consumer counter does not match limit in RDQ\n");
- 
-+	err = mlxsw_pci_rdq_skb_alloc(mlxsw_pci, elem_info);
-+	if (err) {
-+		dev_err_ratelimited(&pdev->dev, "Failed to alloc skb for RDQ\n");
-+		goto out;
-+	}
+ 	if (phy_is_started(phydev))
+ 		err = phy_check_link_status(phydev);
+-out_unlock:
 +
-+	mlxsw_pci_wqe_frag_unmap(mlxsw_pci, wqe, 0, DMA_FROM_DEVICE);
++	return err;
++}
 +
- 	if (mlxsw_pci_cqe_lag_get(cqe_v, cqe)) {
- 		rx_info.is_lag = true;
- 		rx_info.u.lag_id = mlxsw_pci_cqe_lag_id_get(cqe_v, cqe);
-@@ -594,10 +596,7 @@ static void mlxsw_pci_cqe_rdq_handle(str
- 	skb_put(skb, byte_count);
- 	mlxsw_core_skb_receive(mlxsw_pci->core, skb, &rx_info);
++/**
++ * phy_start_aneg - start auto-negotiation for this PHY device
++ * @phydev: the phy_device struct
++ *
++ * Description: Sanitizes the settings (if we're not autonegotiating
++ *   them), and then calls the driver's config_aneg function.
++ *   If the PHYCONTROL Layer is operating, we change the state to
++ *   reflect the beginning of Auto-negotiation or forcing.
++ */
++int phy_start_aneg(struct phy_device *phydev)
++{
++	int err;
++
++	mutex_lock(&phydev->lock);
++	err = _phy_start_aneg(phydev);
+ 	mutex_unlock(&phydev->lock);
  
--	memset(wqe, 0, q->elem_size);
--	err = mlxsw_pci_rdq_skb_alloc(mlxsw_pci, elem_info);
--	if (err)
--		dev_dbg_ratelimited(&pdev->dev, "Failed to alloc skb for RDQ\n");
-+out:
- 	/* Everything is set up, ring doorbell to pass elem to HW */
- 	q->producer_counter++;
- 	mlxsw_pci_queue_doorbell_producer_ring(mlxsw_pci, q);
+ 	return err;
 
 
