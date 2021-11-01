@@ -2,143 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99AF4441405
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 08:13:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 636C8441408
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 08:15:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231192AbhKAHPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 03:15:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35928 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230096AbhKAHPd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 03:15:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9723E60FE8;
-        Mon,  1 Nov 2021 07:12:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635750780;
-        bh=vHovt+cQzLZT7BElPIMbzumsvBYvSVJ0/rUbXoi52bo=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=lQYnG+YAUYKW1+jNysoNFIybCd4R4j7cLy84azLDo40aZd/T0kuv9Db7SXSGkOrJQ
-         XMFpPiGnAcd4ZEkJZnHuoGRTBG2J2+zi313Z+7x7NKfG9JuoFkOzatfz2yJATrXY0Q
-         9SXlRFz0GgSw+QiMPlQykLsq1HEivcHs64dUK96Q0dfhs9EIH9L+jYe11XS+44MWSR
-         lLwNqoUvtimuEVS2fDUkhN3Lj3gTyfd0+WSqodh79eqZBA9tobzMyC30LDXuj9Db0S
-         hI2vI8yvIUJjuGvwoAXtnsm1Taze4IFtQ5V9rKHdSf/IrQcVIG0KXJjIIm3lwqyocn
-         ZEmnyk8HChPZw==
-Message-ID: <75c52307-7bfd-2408-d067-26d1fca7bb73@kernel.org>
-Date:   Mon, 1 Nov 2021 15:12:57 +0800
+        id S230407AbhKAHSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 03:18:06 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:40726 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229938AbhKAHR7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 03:17:59 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 7425F21940;
+        Mon,  1 Nov 2021 07:15:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1635750925; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=r6FGKgT06Ld/vcSRgRVis8UQzYQ5TV5B4bgVQp9hpX8=;
+        b=qhGGp3wPZn7+Ep+ilDMdn45whwHVpqWRmFJW2ovNCQvapfF6BAI1P9d+ZzVCCmAElQNm/u
+        h+z6UwrFIg2E5KOrgStgwet2+YPo2FB6W/bCLRtMnnOLYJIYnUgeLwgALE2dEtOyMN5Ueu
+        /6JBp/1oZ4k32RLNNU2KxzeTRsriFVA=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 43F7513A6F;
+        Mon,  1 Nov 2021 07:15:25 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id bHgqDw2Uf2EUDwAAMHmgww
+        (envelope-from <jgross@suse.com>); Mon, 01 Nov 2021 07:15:25 +0000
+To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
+Cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        stable@vger.kernel.org,
+        =?UTF-8?Q?Marek_Marczykowski-G=c3=b3recki?= 
+        <marmarek@invisiblethingslab.com>
+References: <20211029142049.25198-1-jgross@suse.com>
+ <11956c14-f1f7-70f0-40a6-aad31a264af6@oracle.com>
+From:   Juergen Gross <jgross@suse.com>
+Subject: Re: [PATCH v3] xen/balloon: add late_initcall_sync() for initial
+ ballooning done
+Message-ID: <c5da2698-b160-c09e-3182-49b398238a3c@suse.com>
+Date:   Mon, 1 Nov 2021 08:15:24 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH] F2FS: invalidate META_MAPPING before IPU/DIO write
-Content-Language: en-US
-To:     Hyeong-Jun Kim <hj514.kim@samsung.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-References: <CGME20211101054217epcas1p3c695f37ab925f47156bd45e3adb5ed94@epcas1p3.samsung.com>
- <20211101054214.24456-1-hj514.kim@samsung.com>
- <d1929b64-15a3-feaf-5401-1552b2eb2461@kernel.org>
- <9a0360922130485f4252970de4bb535667cc26e9.camel@samsung.com>
-From:   Chao Yu <chao@kernel.org>
-In-Reply-To: <9a0360922130485f4252970de4bb535667cc26e9.camel@samsung.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <11956c14-f1f7-70f0-40a6-aad31a264af6@oracle.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="COJXQdpbX4z5ODWfgEmsawsBVBn3I5KzV"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/11/1 15:09, Hyeong-Jun Kim wrote:
-> On Mon, 2021-11-01 at 14:28 +0800, Chao Yu wrote:
->> On 2021/11/1 13:42, Hyeong-Jun Kim wrote:
->>> Encrypted pages during GC are read and cached in META_MAPPING.
->>> However, due to cached pages in META_MAPPING, there is an issue
->>> where
->>> newly written pages are lost by IPU or DIO writes.
->>>
->>> Thread A                              Thread B
->>> - f2fs_gc(): blk 0x10 -> 0x20 (a)
->>>                                         - IPU or DIO write on blk
->>> 0x20 (b)
->>> - f2fs_gc(): blk 0x20 -> 0x30 (c)
->>>
->>> (a) page for blk 0x20 is cached in META_MAPPING and page for blk
->>> 0x10
->>>       is invalidated from META_MAPPING.
->>> (b) write new data to blk 0x200 using IPU or DIO, but outdated data
->>>       still remains in META_MAPPING.
->>> (c) f2fs_gc() try to move blk from 0x20 to 0x30 using cached page
->>> in
->>>       META_MAPPING. In conclusion, the newly written data in (b) is
->>> lost.
->>
->> In c), f2fs_gc() will readahead encrypted block from disk via
->> ra_data_block() anyway,
->> not matter cached encrypted page of meta inode is uptodate or not, so
->> it's safe, right?
-> Right,
-> However, if DIO write is performed between phase 3 and phase 4 of
-> f2fs_gc(),
-> the cached page of meta_mapping will be out-dated, though it read data
-> from
-> disk via ra_data_block() in phase 3.
-> 
-> What do you think?
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--COJXQdpbX4z5ODWfgEmsawsBVBn3I5KzV
+Content-Type: multipart/mixed; boundary="KQiaAYVjRBpi8WygPvJf23tYGusrBX0kf";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+ xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
+Cc: Stefano Stabellini <sstabellini@kernel.org>, stable@vger.kernel.org,
+ =?UTF-8?Q?Marek_Marczykowski-G=c3=b3recki?= <marmarek@invisiblethingslab.com>
+Message-ID: <c5da2698-b160-c09e-3182-49b398238a3c@suse.com>
+Subject: Re: [PATCH v3] xen/balloon: add late_initcall_sync() for initial
+ ballooning done
+References: <20211029142049.25198-1-jgross@suse.com>
+ <11956c14-f1f7-70f0-40a6-aad31a264af6@oracle.com>
+In-Reply-To: <11956c14-f1f7-70f0-40a6-aad31a264af6@oracle.com>
 
-Due to i_gc_rwsem lock coverage, the race condition should not happen right now?
+--KQiaAYVjRBpi8WygPvJf23tYGusrBX0kf
+Content-Type: multipart/mixed;
+ boundary="------------1500FB9D13DDB86F0132D497"
+Content-Language: en-US
 
-Thanks,
+This is a multi-part message in MIME format.
+--------------1500FB9D13DDB86F0132D497
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> Thanks,
->>
->> Am I missing anything?
->>
->> Thanks,
->>
->>> To address this issue, invalidating pages in META_MAPPING before
->>> IPU or
->>> DIO write.
->>>
->>> Signed-off-by: Hyeong-Jun Kim <
->>> hj514.kim@samsung.com
->>>>
->>> ---
->>>    fs/f2fs/data.c    | 2 ++
->>>    fs/f2fs/segment.c | 3 +++
->>>    2 files changed, 5 insertions(+)
->>>
->>> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
->>> index 74e1a350c1d8..9f754aaef558 100644
->>> --- a/fs/f2fs/data.c
->>> +++ b/fs/f2fs/data.c
->>> @@ -1708,6 +1708,8 @@ int f2fs_map_blocks(struct inode *inode,
->>> struct f2fs_map_blocks *map,
->>>    		 */
->>>    		f2fs_wait_on_block_writeback_range(inode,
->>>    						map->m_pblk, map-
->>>> m_len);
->>> +		invalidate_mapping_pages(META_MAPPING(sbi),
->>> +						map->m_pblk, map-
->>>> m_pblk);
->>>    
->>>    		if (map->m_multidev_dio) {
->>>    			block_t blk_addr = map->m_pblk;
->>> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
->>> index 526423fe84ce..f57c55190f9e 100644
->>> --- a/fs/f2fs/segment.c
->>> +++ b/fs/f2fs/segment.c
->>> @@ -3652,6 +3652,9 @@ int f2fs_inplace_write_data(struct
->>> f2fs_io_info *fio)
->>>    		goto drop_bio;
->>>    	}
->>>    
->>> +	invalidate_mapping_pages(META_MAPPING(fio->sbi),
->>> +				fio->new_blkaddr, fio->new_blkaddr);
->>> +
->>>    	stat_inc_inplace_blocks(fio->sbi);
->>>    
->>>    	if (fio->bio && !(SM_I(sbi)->ipu_policy & (1 <<
->>> F2FS_IPU_NOCACHE)))
->>>
->>
->>
-> 
+On 29.10.21 23:46, Boris Ostrovsky wrote:
+>=20
+> On 10/29/21 10:20 AM, Juergen Gross wrote:
+>> --- a/Documentation/ABI/stable/sysfs-devices-system-xen_memory
+>> +++ b/Documentation/ABI/stable/sysfs-devices-system-xen_memory
+>> @@ -84,3 +84,13 @@ Description:
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Control scrubbi=
+ng pages before returning them to Xen for=20
+>> others domains
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 use. Can be set=
+ with xen_scrub_pages cmdline
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 parameter. Defa=
+ult value controlled with=20
+>> CONFIG_XEN_SCRUB_PAGES_DEFAULT.
+>> +
+>> +What:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /sys/devices/system/x=
+en_memory/xen_memory0/boot_timeout
+>> +Date:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 November 2021
+>> +KernelVersion:=C2=A0=C2=A0=C2=A0 5.16
+>> +Contact:=C2=A0=C2=A0=C2=A0 xen-devel@lists.xenproject.org
+>> +Description:
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 The time (in seconds) to w=
+ait before giving up to boot in case
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 initial ballooning fails t=
+o free enough memory. Applies only
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 when running as HVM or PVH=
+ guest and started with less memory
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 configured than allowed at=
+ max.
+>=20
+>=20
+> How is this going to be used? We only need this during boot.
+
+Of course. Will switch to module_param().
+
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 state =3D update_schedule(=
+state);
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 balloon_state =3D update_s=
+chedule(balloon_state);
+>=20
+>=20
+> Now that balloon_state has whole file scope it can probably be updated =
+
+> inside update_schedule().
+
+I can do that.
+
+>> +=C2=A0=C2=A0=C2=A0 while ((credit =3D current_credit()) < 0) {
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (credit !=3D last_credi=
+t) {
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 la=
+st_changed =3D jiffies;
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 la=
+st_credit =3D credit;
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (balloon_state =3D=3D B=
+P_ECANCELED) {
+>=20
+>=20
+> What about other states? We are really waiting for BP_DONE, aren't we?
+
+Nearly. We are waiting for credit not being negative.
+
+And in case of cancelled we know this won't happen without Xen admin
+intervention.
+
+
+Juergen
+
+--------------1500FB9D13DDB86F0132D497
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: OpenPGP public key
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------1500FB9D13DDB86F0132D497--
+
+--KQiaAYVjRBpi8WygPvJf23tYGusrBX0kf--
+
+--COJXQdpbX4z5ODWfgEmsawsBVBn3I5KzV
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmF/lAwFAwAAAAAACgkQsN6d1ii/Ey9Y
+rwgAhVz+7UM3tuK3hUqp0dk1hAujtJ87PkZXQ9MFYWV5KiQfcu/v3cCMKzp+rIBPWST97fLwEcQ1
+F7NcSrp2X6YNPSXIosf7qKphRqzMWWPdzxG7Y0hwqZfd9B/ZAoWwCUpmMsT/+kDddiQek9Z6KBKR
+F5VRIzhCA8NpOFXCQwwmfjsJzNDh5uuhXzmSNG2rVPjohRR/swQdeDJ3tLhyQnil5SN15izOHOrI
+vaku6BtUSTYTfk7n3KIFkvn5wfwKWvGX0Cwto0X1iacmmTx+N+fd6ELx4vMKedqnS2rwry94PbfZ
+0Oiw2bRnmgLaobqXoGymS1wYydL17pMXLhqjs+WqLw==
+=2nKM
+-----END PGP SIGNATURE-----
+
+--COJXQdpbX4z5ODWfgEmsawsBVBn3I5KzV--
