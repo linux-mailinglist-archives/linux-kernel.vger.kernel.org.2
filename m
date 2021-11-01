@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 630F34416E1
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:27:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6037D441775
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:34:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232909AbhKAJaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:30:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58554 "EHLO mail.kernel.org"
+        id S232665AbhKAJg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:36:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37010 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232725AbhKAJ0z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:26:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CC1BD611CA;
-        Mon,  1 Nov 2021 09:22:20 +0000 (UTC)
+        id S233142AbhKAJcM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:32:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 90B9D6124D;
+        Mon,  1 Nov 2021 09:24:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758541;
-        bh=LxuDnZWWd9yFH57MZQERFgqINAjQbKtNKlVc26UJMnM=;
+        s=korg; t=1635758663;
+        bh=YQrqZ+hp/Vwdu7IJKKeZURnxa8c0+4XmeibeupmRxcM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h7acz3qiNX+vUrv3Wz8DPdEa+LWKOCcawSkO0O4oHVQ2xNK83uOx04raY77ih+HW4
-         rjA/1Ml6Ghbvc8tvtC5V0qDbE3djqzYClStx0Q8HZdzT05VTVLUPv+7H+Iiarwvgq0
-         ZLJrtlNMHcqIMt0D9i6Wjll5bt4rGBo4LXShenOA=
+        b=fK+dOQNM5C26hSP2mUTYNq6vl5XIrjbOwsA3VCKapRfk9UqIy1YpOMPraisP0eo5q
+         sSojfZWZ56UrZ+LPpN7belqKbVi5vKz20W2VszwFJhP2swJf7mDOteVU0IjXd+hpF3
+         QZvHvtIsrStRE3ExgNhc5jJnoj0WKwsxzXA/yu8Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wenbin Mei <wenbin.mei@mediatek.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 4.19 17/35] mmc: cqhci: clear HALT state after CQE enable
+        stable@vger.kernel.org,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        TOTE Robot <oslab@tsinghua.edu.cn>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Subject: [PATCH 5.4 25/51] IB/hfi1: Fix abba locking issue with sc_disable()
 Date:   Mon,  1 Nov 2021 10:17:29 +0100
-Message-Id: <20211101082455.604266121@linuxfoundation.org>
+Message-Id: <20211101082506.327581784@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082451.430720900@linuxfoundation.org>
-References: <20211101082451.430720900@linuxfoundation.org>
+In-Reply-To: <20211101082500.203657870@linuxfoundation.org>
+References: <20211101082500.203657870@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,57 +42,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wenbin Mei <wenbin.mei@mediatek.com>
+From: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
 
-commit 92b18252b91de567cd875f2e84722b10ab34ee28 upstream.
+commit 13bac861952a78664907a0f927d3e874e9a59034 upstream.
 
-While mmc0 enter suspend state, we need halt CQE to send legacy cmd(flush
-cache) and disable cqe, for resume back, we enable CQE and not clear HALT
-state.
-In this case MediaTek mmc host controller will keep the value for HALT
-state after CQE disable/enable flow, so the next CQE transfer after resume
-will be timeout due to CQE is in HALT state, the log as below:
-<4>.(4)[318:kworker/4:1H]mmc0: cqhci: timeout for tag 2
-<4>.(4)[318:kworker/4:1H]mmc0: cqhci: ============ CQHCI REGISTER DUMP ===========
-<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Caps:      0x100020b6 | Version:  0x00000510
-<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Config:    0x00001103 | Control:  0x00000001
-<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Int stat:  0x00000000 | Int enab: 0x00000006
-<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Int sig:   0x00000006 | Int Coal: 0x00000000
-<4>.(4)[318:kworker/4:1H]mmc0: cqhci: TDL base:  0xfd05f000 | TDL up32: 0x00000000
-<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Doorbell:  0x8000203c | TCN:      0x00000000
-<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Dev queue: 0x00000000 | Dev Pend: 0x00000000
-<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Task clr:  0x00000000 | SSC1:     0x00001000
-<4>.(4)[318:kworker/4:1H]mmc0: cqhci: SSC2:      0x00000001 | DCMD rsp: 0x00000000
-<4>.(4)[318:kworker/4:1H]mmc0: cqhci: RED mask:  0xfdf9a080 | TERRI:    0x00000000
-<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Resp idx:  0x00000000 | Resp arg: 0x00000000
-<4>.(4)[318:kworker/4:1H]mmc0: cqhci: CRNQP:     0x00000000 | CRNQDUN:  0x00000000
-<4>.(4)[318:kworker/4:1H]mmc0: cqhci: CRNQIS:    0x00000000 | CRNQIE:   0x00000000
+sc_disable() after having disabled the send context wakes up any waiters
+by calling hfi1_qp_wakeup() while holding the waitlock for the sc.
 
-This change check HALT state after CQE enable, if CQE is in HALT state, we
-will clear it.
+This is contrary to the model for all other calls to hfi1_qp_wakeup()
+where the waitlock is dropped and a local is used to drive calls to
+hfi1_qp_wakeup().
 
-Signed-off-by: Wenbin Mei <wenbin.mei@mediatek.com>
-Cc: stable@vger.kernel.org
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-Fixes: a4080225f51d ("mmc: cqhci: support for command queue enabled host")
-Link: https://lore.kernel.org/r/20211026070812.9359-1-wenbin.mei@mediatek.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Fix by moving the sc->piowait into a local list and driving the wakeup
+calls from the list.
+
+Fixes: 099a884ba4c0 ("IB/hfi1: Handle wakeup of orphaned QPs for pio")
+Link: https://lore.kernel.org/r/20211013141852.128104.2682.stgit@awfm-01.cornelisnetworks.com
+Signed-off-by: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/mmc/host/cqhci.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/infiniband/hw/hfi1/pio.c |    9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
---- a/drivers/mmc/host/cqhci.c
-+++ b/drivers/mmc/host/cqhci.c
-@@ -281,6 +281,9 @@ static void __cqhci_enable(struct cqhci_
+--- a/drivers/infiniband/hw/hfi1/pio.c
++++ b/drivers/infiniband/hw/hfi1/pio.c
+@@ -920,6 +920,7 @@ void sc_disable(struct send_context *sc)
+ {
+ 	u64 reg;
+ 	struct pio_buf *pbuf;
++	LIST_HEAD(wake_list);
  
- 	cqhci_writel(cq_host, cqcfg, CQHCI_CFG);
+ 	if (!sc)
+ 		return;
+@@ -954,19 +955,21 @@ void sc_disable(struct send_context *sc)
+ 	spin_unlock(&sc->release_lock);
  
-+	if (cqhci_readl(cq_host, CQHCI_CTL) & CQHCI_HALT)
-+		cqhci_writel(cq_host, 0, CQHCI_CTL);
-+
- 	mmc->cqe_on = true;
+ 	write_seqlock(&sc->waitlock);
+-	while (!list_empty(&sc->piowait)) {
++	if (!list_empty(&sc->piowait))
++		list_move(&sc->piowait, &wake_list);
++	write_sequnlock(&sc->waitlock);
++	while (!list_empty(&wake_list)) {
+ 		struct iowait *wait;
+ 		struct rvt_qp *qp;
+ 		struct hfi1_qp_priv *priv;
  
- 	if (cq_host->ops->enable)
+-		wait = list_first_entry(&sc->piowait, struct iowait, list);
++		wait = list_first_entry(&wake_list, struct iowait, list);
+ 		qp = iowait_to_qp(wait);
+ 		priv = qp->priv;
+ 		list_del_init(&priv->s_iowait.list);
+ 		priv->s_iowait.lock = NULL;
+ 		hfi1_qp_wakeup(qp, RVT_S_WAIT_PIO | HFI1_S_WAIT_PIO_DRAIN);
+ 	}
+-	write_sequnlock(&sc->waitlock);
+ 
+ 	spin_unlock_irq(&sc->alloc_lock);
+ }
 
 
