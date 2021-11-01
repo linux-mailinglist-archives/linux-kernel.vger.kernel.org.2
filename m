@@ -2,131 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89964441925
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:54:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E46744192E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:56:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233361AbhKAJ46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:56:58 -0400
-Received: from foss.arm.com ([217.140.110.172]:36864 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232906AbhKAJzA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:55:00 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 97C4D106F;
-        Mon,  1 Nov 2021 02:52:25 -0700 (PDT)
-Received: from [10.57.47.15] (unknown [10.57.47.15])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BBD0F3F719;
-        Mon,  1 Nov 2021 02:52:23 -0700 (PDT)
-Subject: Re: [PATCH] [RFC] arm64: export this_cpu_has_cap
-To:     Will Deacon <will@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20211029113023.760421-1-arnd@kernel.org>
- <9d4e09b4-47dc-ed3c-2b6d-e0d1a081e592@arm.com> <YXw4H2BNx85KnLDh@arm.com>
- <20211101090143.GA27181@willie-the-truck>
- <db9bb430-4502-0c46-d8d7-ddb236750499@arm.com>
- <20211101094045.GB27400@willie-the-truck>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <55cc7816-cc7a-3161-71cc-0c969ec131a2@arm.com>
-Date:   Mon, 1 Nov 2021 09:52:22 +0000
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        id S232978AbhKAJ6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:58:50 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:3437 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231695AbhKAJ5b (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:57:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1635760498; x=1667296498;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=mSuwzvbFosgXR+t/J5/7W7IMTcUGeCP7rMs5ACbUzzo=;
+  b=SvFYPHhUtaFbwtj+iF2VmE4blSoBErrBHw5BzjSFv38ldexePwenQob1
+   Dc2xhJpRvdTECH2d8oO3KhkkcY2l4ysggd3cLQd86x2mYw7BbzaxJM714
+   DvufcMxZ/6GzVaE2g65lCUFxgx9MhJEyGG57ZxI11mun9J43wG9Jj3bc8
+   PYSTDImHF6ZE35imm0RVd5jmuxg7vzP6fnFVGuo2BvBZiRsY7hIueDJzZ
+   kUvgoyt6xKJP8zY8QZMLlXDKDyZxF0/P8acSjfChJ6tENf+nyGAiJ6Ss3
+   1iB/zQ0yh7dBZI/H+GecR9rcdTAxoxzUXCnC5oOG8rF3e/TBH99cSLVgx
+   g==;
+IronPort-SDR: SX2FJxAMsva8Jy9RyHBd2k0pUMCtDKYCGpM9PAT001hMltTdpldEzqaGatAmZoZL6Qu0RuJXUx
+ sjGDE8XDhgFvD3kialKVm5Sb/jsAo+tR7a0W/F//m8bm5IAJB2aNrlCaqGWrdqZzH8Q18s69oB
+ ubMclwfNAuUFOzCUnU71pRQBCpTs4R6YaY9cG7JVQw2XS2Tt4NG45e3xa0woEN+LZY2mBDWMql
+ W/1ZH4b+i3O6I7ob+QaXcOxh90CASJt2cRLCqsGGHM+SFOC5tP4mQmZ2nzstPar9GcpZD/Iwwl
+ hUaNiCNM+6Yy42+3kaQ4nVXO
+X-IronPort-AV: E=Sophos;i="5.87,198,1631602800"; 
+   d="scan'208";a="74934026"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 01 Nov 2021 02:54:56 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Mon, 1 Nov 2021 02:54:56 -0700
+Received: from kavya-HP-Compaq-6000-Pro-SFF-PC.microchip.com (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Mon, 1 Nov 2021 02:54:53 -0700
+From:   Kavyasree Kotagiri <kavyasree.kotagiri@microchip.com>
+To:     <robh+dt@kernel.org>, <linus.walleij@linaro.org>
+CC:     <linux-gpio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <UNGLinuxDriver@microchip.com>,
+        <Kavyasree.Kotagiri@microchip.com>
+Subject: [PATCH v3 0/2]  Extend pinctrl-ocelot driver for lan966x
+Date:   Mon, 1 Nov 2021 15:24:49 +0530
+Message-ID: <20211101095451.5831-1-kavyasree.kotagiri@microchip.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <20211101094045.GB27400@willie-the-truck>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/11/2021 09:40, Will Deacon wrote:
-> On Mon, Nov 01, 2021 at 09:34:08AM +0000, Suzuki K Poulose wrote:
->> On 01/11/2021 09:01, Will Deacon wrote:
->>> On Fri, Oct 29, 2021 at 07:06:23PM +0100, Catalin Marinas wrote:
->>>> On Fri, Oct 29, 2021 at 02:31:23PM +0100, Suzuki K Poulose wrote:
->>>>> On 29/10/2021 12:30, Arnd Bergmann wrote:
->>>>>> From: Arnd Bergmann <arnd@arndb.de>
->>>>>>
->>>>>> It's now used in a coresight driver that can be a loadable module:
->>>>>>
->>>>>> ERROR: modpost: "this_cpu_has_cap" [drivers/hwtracing/coresight/coresight-trbe.ko] undefined!
->>>>>>
->>>>>> Fixes: 8a1065127d95 ("coresight: trbe: Add infrastructure for Errata handling")
->>>>>
->>>>> Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->>>>> Tested-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->>>>>
->>>>> Will, Catalin, Mathieu,
->>>>>
->>>>> Do you have a preference on how this fix can be pulled in ? This may
->>>>> be safe to go via coresight tree if it is not too late. Otherwise,
->>>>> it could go via the arm64 tree.
->>>>
->>>> I think Will already closed/tagged the arm64 tree for the upcoming
->>>> merging window, though he could take it as a fix afterwards.
->>>>
->>>> If it doesn't conflict with the arm64 for-next/core, it's fine by me to
->>>> go through the coresight tree.
->>>>
->>>>>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->>>>>> ---
->>>>>> Not sure if we actually want this to be exported, this is my local
->>>>>> workaround for the randconfig build bot.
->>>>>> ---
->>>>>>     arch/arm64/kernel/cpufeature.c | 1 +
->>>>>>     1 file changed, 1 insertion(+)
->>>>>>
->>>>>> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
->>>>>> index ecbdff795f5e..beccbcfa7391 100644
->>>>>> --- a/arch/arm64/kernel/cpufeature.c
->>>>>> +++ b/arch/arm64/kernel/cpufeature.c
->>>>>> @@ -2864,6 +2864,7 @@ bool this_cpu_has_cap(unsigned int n)
->>>>>>     	return false;
->>>>>>     }
->>>>>> +EXPORT_SYMBOL(this_cpu_has_cap);
->>>>
->>>> EXPORT_SYMBOL_GPL? I think this_cpu_has_cap() is a bit more more
->>>> specialised than cpus_have_const_cap().
->>>>
->>>> With that:
->>>>
->>>> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
->>>
->>> Yes, at this stage I think it's best for this to go via the Coresight tree.
->>> So with the _GPL export:
->>>
->>> Acked-by: Will Deacon <will@kernel.org>
->>>
->>> If that doesn't work for some reason, I can take it next week after the
->>> initial arm64 queue has been merged. Please just let me know.
->>
->> As I understand correctly, this will now need to go via arm64 tree. The
->> CoreSight tree changes are pulled into Greg's tree and the next it will
->> happen is for the next release. Usually the fixes don't end up there
->> during the -rc cycles. So, I believe it is better if this goes via
->> arm64.
-> 
-> Hmm, are you saying that Coresight drivers don't receive fixes outside of
-> the merge window? That sounds sub-optimal...
+This patch series extends pinctrl-ocelot driver to support lan966x.
 
-Unfortunately thats how it works today. We should fix this.
+v2 -> v3:
+- Removed extra new lines in pinctrl-ocelot.
+- Reverted sparx5_desc changes which are done by mistake.
 
-Mathieu, Greg,
+v1 -> v2:
+- Use consistent name lan966x everywhere.
 
-Do you have any thoughts on how to address this ?
+Kavyasree Kotagiri (2):
+  dt-bindings: pinctrl: ocelot: add lan966x SoC support
+  pinctrl: ocelot: Extend support for lan966x
 
-> 
-> But in any case, I'm happy to take this as long as it can wait until the
-> second half of the merge window.
+ .../bindings/pinctrl/mscc,ocelot-pinctrl.txt  |   3 +-
+ drivers/pinctrl/pinctrl-ocelot.c              | 416 ++++++++++++++++++
+ 2 files changed, 418 insertions(+), 1 deletion(-)
 
-Yes, please. Thats the quickest path to merging this patch.
+-- 
+2.17.1
 
-Suzuki
