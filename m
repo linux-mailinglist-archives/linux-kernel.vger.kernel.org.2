@@ -2,114 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55F584417BB
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:37:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F61244195B
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 11:04:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232700AbhKAJjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:39:17 -0400
-Received: from foss.arm.com ([217.140.110.172]:36112 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232976AbhKAJgq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:36:46 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3B83D101E;
-        Mon,  1 Nov 2021 02:34:12 -0700 (PDT)
-Received: from [192.168.4.86] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 42D553F719;
-        Mon,  1 Nov 2021 02:34:10 -0700 (PDT)
-Subject: Re: [PATCH] [RFC] arm64: export this_cpu_has_cap
-To:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20211029113023.760421-1-arnd@kernel.org>
- <9d4e09b4-47dc-ed3c-2b6d-e0d1a081e592@arm.com> <YXw4H2BNx85KnLDh@arm.com>
- <20211101090143.GA27181@willie-the-truck>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <db9bb430-4502-0c46-d8d7-ddb236750499@arm.com>
-Date:   Mon, 1 Nov 2021 09:34:08 +0000
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        id S231805AbhKAKGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 06:06:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52076 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232029AbhKAKGi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 06:06:38 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E165C06BA36
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 02:38:00 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id r5so11204226pls.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 02:38:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tivwVd0zRaSLDL6pT4dO7HnCUvbN3jMLwZBfbtgKG4I=;
+        b=e07KqjgIDdVf4+PVNrsVVCxPfJn3fg2iUWT02uv/EDLbvOrxZdW98BMGRqCC+whzvK
+         D7/kIjtuTJqUphVIOm7JIb6zVTRyjkBsk15uktYzsCwE6dt51XlcNPwAnTdqY49M8TYA
+         eBaqng7n9rsV27zsga6wvcHEeXEf3WeN9tihkSqo3ohw+aTyxBcsVEP3vAdTRMyQ+Bql
+         uMgTQGoEgb93Ppt5sfZK1DmY+dNvdyq8agrU58CqlcjGLQZMIPXU4CtI+LdurPUY1gKV
+         BG4HhlxQg5pzPX+6DrlNz7Bk2eTvOdgY0hWoQaD3igfGYqbMG0o/88PK7lLezK2YoTAW
+         B7og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tivwVd0zRaSLDL6pT4dO7HnCUvbN3jMLwZBfbtgKG4I=;
+        b=I30yfjLdtwn84cj2XFTHLUvOdKgZkdhU4Eeanvs7j39GJR4LLvHGfKcI0BktPInbQC
+         gaX2iNAlxi062YYDoRns69AEvAx+9tM55WPWBPHL/qFCyIRXsbJVPMMt9NDL+YfE52GS
+         Y0NC0FDtozxWSNZxk3z22JvkY0/+BzCCHI3TDx4Yt7+2MobAHcQkGKkGI7nH3lojKYny
+         +knKYUEWYKHMBGM+VttS1D7bFNhJoWG5LznzZF/Vm9uO1mHuKGSsJl6iaHQr69yb+aNu
+         TJeJJrPKQSAsKnHRlhHvVM2BHw7C3ZcmdthpGaXavCDvo5ulJYtvK5dqB6ch6+RBghhX
+         Vb6w==
+X-Gm-Message-State: AOAM532xYkUA0W1VcSNgSyJxFC4ADbOIvv2L2dABhrPlwYinQ8mstjH6
+        eDL6t4wI99A6D9O0C84glO1sag==
+X-Google-Smtp-Source: ABdhPJx5336aSRwmSU39b7bpTkJK0CP08e63GZmjtH2A242VZk8eGGPuRDk3SvOOZ0Z9wMjjNODdmw==
+X-Received: by 2002:a17:90b:4acd:: with SMTP id mh13mr4616797pjb.230.1635759479803;
+        Mon, 01 Nov 2021 02:37:59 -0700 (PDT)
+Received: from localhost.localdomain ([139.177.225.242])
+        by smtp.gmail.com with ESMTPSA id p16sm15738259pfh.97.2021.11.01.02.37.56
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 01 Nov 2021 02:37:59 -0700 (PDT)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     akpm@linux-foundation.org, adobriyan@gmail.com,
+        gladkov.alexey@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH 0/4] remove PDE_DATA()
+Date:   Mon,  1 Nov 2021 17:35:14 +0800
+Message-Id: <20211101093518.86845-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 MIME-Version: 1.0
-In-Reply-To: <20211101090143.GA27181@willie-the-truck>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Will
+I found a bug [1] some days ago, which is because we want to use
+inode->i_private to pass user private data. However, this is wrong
+on proc fs. We provide a specific function PDE_DATA() to get user
+private data. Actually, we can hide this detail by storing
+PDE()->data into inode->i_private and removing PDE_DATA() completely.
+The user could use inode->i_private to get user private data just
+like debugfs does. This series is trying to remove PDE_DATA().
 
-On 01/11/2021 09:01, Will Deacon wrote:
-> On Fri, Oct 29, 2021 at 07:06:23PM +0100, Catalin Marinas wrote:
->> On Fri, Oct 29, 2021 at 02:31:23PM +0100, Suzuki K Poulose wrote:
->>> On 29/10/2021 12:30, Arnd Bergmann wrote:
->>>> From: Arnd Bergmann <arnd@arndb.de>
->>>>
->>>> It's now used in a coresight driver that can be a loadable module:
->>>>
->>>> ERROR: modpost: "this_cpu_has_cap" [drivers/hwtracing/coresight/coresight-trbe.ko] undefined!
->>>>
->>>> Fixes: 8a1065127d95 ("coresight: trbe: Add infrastructure for Errata handling")
->>>
->>> Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->>> Tested-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->>>
->>> Will, Catalin, Mathieu,
->>>
->>> Do you have a preference on how this fix can be pulled in ? This may
->>> be safe to go via coresight tree if it is not too late. Otherwise,
->>> it could go via the arm64 tree.
->>
->> I think Will already closed/tagged the arm64 tree for the upcoming
->> merging window, though he could take it as a fix afterwards.
->>
->> If it doesn't conflict with the arm64 for-next/core, it's fine by me to
->> go through the coresight tree.
->>
->>>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->>>> ---
->>>> Not sure if we actually want this to be exported, this is my local
->>>> workaround for the randconfig build bot.
->>>> ---
->>>>    arch/arm64/kernel/cpufeature.c | 1 +
->>>>    1 file changed, 1 insertion(+)
->>>>
->>>> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
->>>> index ecbdff795f5e..beccbcfa7391 100644
->>>> --- a/arch/arm64/kernel/cpufeature.c
->>>> +++ b/arch/arm64/kernel/cpufeature.c
->>>> @@ -2864,6 +2864,7 @@ bool this_cpu_has_cap(unsigned int n)
->>>>    	return false;
->>>>    }
->>>> +EXPORT_SYMBOL(this_cpu_has_cap);
->>
->> EXPORT_SYMBOL_GPL? I think this_cpu_has_cap() is a bit more more
->> specialised than cpus_have_const_cap().
->>
->> With that:
->>
->> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-> 
-> Yes, at this stage I think it's best for this to go via the Coresight tree.
-> So with the _GPL export:
-> 
-> Acked-by: Will Deacon <will@kernel.org>
-> 
-> If that doesn't work for some reason, I can take it next week after the
-> initial arm64 queue has been merged. Please just let me know.
+[1] https://lore.kernel.org/lkml/20211029032638.84884-1-songmuchun@bytedance.com/
 
-As I understand correctly, this will now need to go via arm64 tree. The
-CoreSight tree changes are pulled into Greg's tree and the next it will
-happen is for the next release. Usually the fixes don't end up there
-during the -rc cycles. So, I believe it is better if this goes via
-arm64.
+Muchun Song (4):
+  fs: proc: store PDE()->data into inode->i_private
+  fs: proc: replace PDE_DATA(inode) with inode->i_private
+  fs: proc: remove PDE_DATA()
+  fs: proc: use DEFINE_PROC_SHOW_ATTRIBUTE() to simplify the code
 
-Suzuki
+ arch/alpha/kernel/srm_env.c                        |  4 ++--
+ arch/arm/kernel/atags_proc.c                       |  2 +-
+ arch/ia64/kernel/salinfo.c                         | 10 ++++-----
+ arch/powerpc/kernel/proc_powerpc.c                 |  4 ++--
+ arch/sh/mm/alignment.c                             |  2 +-
+ arch/xtensa/platforms/iss/simdisk.c                |  4 ++--
+ drivers/acpi/proc.c                                |  2 +-
+ drivers/hwmon/dell-smm-hwmon.c                     |  4 ++--
+ drivers/net/bonding/bond_procfs.c                  |  8 ++++----
+ drivers/net/wireless/cisco/airo.c                  | 22 ++++++++++----------
+ drivers/net/wireless/intersil/hostap/hostap_ap.c   | 16 +++++++--------
+ .../net/wireless/intersil/hostap/hostap_download.c |  2 +-
+ drivers/net/wireless/intersil/hostap/hostap_proc.c | 24 +++++++++++-----------
+ drivers/net/wireless/ray_cs.c                      |  2 +-
+ drivers/nubus/proc.c                               |  2 +-
+ drivers/parisc/led.c                               |  4 ++--
+ drivers/pci/proc.c                                 | 10 ++++-----
+ drivers/platform/x86/thinkpad_acpi.c               |  4 ++--
+ drivers/platform/x86/toshiba_acpi.c                | 16 +++++++--------
+ drivers/pnp/isapnp/proc.c                          |  2 +-
+ drivers/pnp/pnpbios/proc.c                         |  4 ++--
+ drivers/scsi/scsi_proc.c                           |  4 ++--
+ drivers/usb/gadget/function/rndis.c                |  4 ++--
+ drivers/zorro/proc.c                               |  2 +-
+ fs/afs/proc.c                                      |  6 +++---
+ fs/cifs/cifs_debug.c                               | 17 ++-------------
+ fs/ext4/mballoc.c                                  | 14 ++++++-------
+ fs/jbd2/journal.c                                  |  2 +-
+ fs/nfsd/stats.c                                    | 15 ++------------
+ fs/proc/generic.c                                  |  6 ------
+ fs/proc/inode.c                                    |  1 +
+ fs/proc/internal.h                                 |  5 -----
+ fs/proc/proc_net.c                                 | 12 +++++------
+ include/linux/proc_fs.h                            |  2 --
+ include/linux/seq_file.h                           |  2 +-
+ ipc/util.c                                         |  2 +-
+ kernel/irq/proc.c                                  |  8 ++++----
+ kernel/resource.c                                  |  4 ++--
+ net/atm/proc.c                                     |  4 ++--
+ net/bluetooth/af_bluetooth.c                       |  8 ++++----
+ net/can/bcm.c                                      |  2 +-
+ net/can/proc.c                                     |  2 +-
+ net/core/neighbour.c                               |  6 +++---
+ net/core/pktgen.c                                  |  6 +++---
+ net/ipv4/netfilter/ipt_CLUSTERIP.c                 |  6 +++---
+ net/ipv4/raw.c                                     |  8 ++++----
+ net/ipv4/tcp_ipv4.c                                |  2 +-
+ net/ipv4/udp.c                                     |  6 +++---
+ net/netfilter/x_tables.c                           | 10 ++++-----
+ net/netfilter/xt_hashlimit.c                       | 18 ++++++++--------
+ net/netfilter/xt_recent.c                          |  4 ++--
+ net/sunrpc/auth_gss/svcauth_gss.c                  |  4 ++--
+ net/sunrpc/cache.c                                 | 24 +++++++++++-----------
+ net/sunrpc/stats.c                                 | 15 ++------------
+ sound/core/info.c                                  |  4 ++--
+ 55 files changed, 168 insertions(+), 215 deletions(-)
+
+-- 
+2.11.0
+
