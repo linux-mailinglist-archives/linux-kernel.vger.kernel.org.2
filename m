@@ -2,172 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E489A441B2B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 13:29:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58843441B2F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 13:31:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232286AbhKAMbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 08:31:51 -0400
-Received: from mail-eopbgr1320111.outbound.protection.outlook.com ([40.107.132.111]:55095
-        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232036AbhKAMbu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 08:31:50 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MfATocO76v01M15a3Fb4v+puJKE5moH1hq/XBMXe+D3LDtPBLWUqrMe2zpSwYn+LhcTkWkh6rx0zNDNsPzFQjvlpmQASHfUjmKIdhcC+ZS9SVumLDTrwoEcn1wISBr+KkdvJ/sPk08e//HA1/iLshYeyJSL+J4omehYEACW22T6eG/v9I6f+AKClYAMMt70DktlFCsmbSJLcu9R9q5fwt3iQ+ZNLwFJn94RfA3kx34gSBds3loVlWGyNeVozbEYFuiCw+WkiTjEzsyeNELSdL7I9tIv0yPYp27wZkDEUr/fotlhQ8LY8VAMYs1CVl4updrPoS7mudoNL+iOInLvuDg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Uel3JCFaBSU9u4Hpb/wqAU6pH52TAtqmrlP6A3UjV4k=;
- b=NkuyQZKiYdTLZaUeVAMrFE8eYCayYib84rG5BSorvXJ9VNvxtu95g1ltZ8AOkZkwlh7E790a2BMKZ4ZvoWiuyBrVJimDuESbHOCsfaoMwdibuNSU7jjOLLePgQDY28+EFG8Pjb/ooqfRZSah0vzMgur0FiIK1qUmxxWPnTfaSMVhyn1Qna5Htvht36wUxfD2VWEXVCnRFjCL8sJ32brzVuSpn2WEzmCJVVSbAuNkl5lmek5jNVLl24TL5L5ubuvllzwZUjC990SJtvHFdCVs79yveIVJW+mgII3LePziuMcVKxQH0Pg8IWkJfxOTSVjRys4ju9t2al8YUoIK/ks0hg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
- s=selector2-vivo0-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Uel3JCFaBSU9u4Hpb/wqAU6pH52TAtqmrlP6A3UjV4k=;
- b=deXeKHYMpR5QFZr6Qb7hCRtRka7ntcbyoPvObItu+Subb8Axnl7PwaoApY13F/qFhySE6R7GKnAWn3LKCKLdoUf0AyoU5JuKE9sWq+ZPmevSfM7ah+hZNOVCQ6a+OI9TKOxk/wkt6Y7UXv8k9IIg5JP0UqMawHmRGBTpvWNomq8=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=vivo.com;
-Received: from TYZPR06MB4173.apcprd06.prod.outlook.com (2603:1096:400:26::14)
- by TY2PR06MB2734.apcprd06.prod.outlook.com (2603:1096:404:2f::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.17; Mon, 1 Nov
- 2021 12:29:14 +0000
-Received: from TYZPR06MB4173.apcprd06.prod.outlook.com
- ([fe80::5e:78e1:eba3:7d0e]) by TYZPR06MB4173.apcprd06.prod.outlook.com
- ([fe80::5e:78e1:eba3:7d0e%7]) with mapi id 15.20.4649.018; Mon, 1 Nov 2021
- 12:29:14 +0000
-From:   Yihao Han <hanyihao@vivo.com>
-To:     "Darrick J. Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
-        Dave Chinner <dchinner@redhat.com>,
-        Yihao Han <hanyihao@vivo.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-kernel@vger.kernel.org
-Cc:     kernel@vivo.com
-Subject: [PATCH] xfs:using swap() instead of tmp variable
-Date:   Mon,  1 Nov 2021 05:28:47 -0700
-Message-Id: <20211101122848.27029-1-hanyihao@vivo.com>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-ClientProxiedBy: HK2P15301CA0004.APCP153.PROD.OUTLOOK.COM
- (2603:1096:202:1::14) To TYZPR06MB4173.apcprd06.prod.outlook.com
- (2603:1096:400:26::14)
+        id S232448AbhKAMeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 08:34:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57888 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232029AbhKAMeJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 08:34:09 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A432C061714;
+        Mon,  1 Nov 2021 05:31:36 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id f4so5582226edx.12;
+        Mon, 01 Nov 2021 05:31:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qto1d5JIXD/QqDsIJGSoCTbsHoPtJJlBHj7tkgHwuus=;
+        b=Aj4dfOmh19Kyot7MDw1kYbovj7X49JqrptseqihRmAwB2uv1pvqGNWJD6dJqdzj9Zg
+         XAB3Jl2+/zvaQJphV1fHQfa3+vckdXdys5zxFm7NZ9ETe6xb3TixfFlhMLxalgf2qXXh
+         pDgNrt3C6ybGrQrZgsf38swcqaMnW4vW91fvxjLuMG8DzgIrhxh5z1pvPQxREa1nPii5
+         6kxT7nihcfjb4cQR/CoMUKkGUjZVpMA3eGCP6O86Pdrcr4fk6/RoXIQPtYoFiumVDIZ+
+         EAl6w2PuHYifrIjnSr0A9oxboA0wiq+BZhxIwkEMT6M3tTACJaCZJoPNVotRBKSA0z6t
+         9WKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qto1d5JIXD/QqDsIJGSoCTbsHoPtJJlBHj7tkgHwuus=;
+        b=WGW/ATM0/o1n2ckgoKMxP/deJ6dZ/OPyIBDoleRFXhJoWk2sCEW0NSs2fKphTiFdzQ
+         KBVPTU+yVVnPfZAGK9K2vyXqb32vlS0jbIYSmHWExN1T7hV1YFhvmDkgAcS1yjWx1oVq
+         y72drj36NRJX5TBsGoIBTDLaGJNedAPUMZGw2xYw076Q6Yzt5CMDlHBogkjYsNFQsSwW
+         LfVRj+EsU8RX6C5GwCpoETxKvs7Okxqe69lMblecxPmJ/Vb4RUYJ6xaC3GHzCwB7RAWm
+         N4DNV8u2L85MCW2IlxJg5RuXh608/AGyIs+oZdYdKbO+Jg8Ukwl8Qut08C3Hup5HXV6/
+         hQ3w==
+X-Gm-Message-State: AOAM5306N5lHHaG126dy/4zOXaQzHyVvA/aS1jZa3xSA0WqGN+mJaYoS
+        9MJD2XfoyWBtz2TrR624evlRK/1mSgRKQ3IGzgM=
+X-Google-Smtp-Source: ABdhPJzOd0419V+6gM1oTF3TtGEEChdGS0y+0AmBCD8PFYmtCJhYguMrXOTCReJarv64RxztdyX0ScIyn90QiWhT6ng=
+X-Received: by 2002:a05:6402:b0f:: with SMTP id bm15mr26844026edb.302.1635769894774;
+ Mon, 01 Nov 2021 05:31:34 -0700 (PDT)
 MIME-Version: 1.0
-Received: from ubuntu.localdomain (218.213.202.189) by HK2P15301CA0004.APCP153.PROD.OUTLOOK.COM (2603:1096:202:1::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.1 via Frontend Transport; Mon, 1 Nov 2021 12:29:13 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ede0abcb-f4c1-4e9c-068f-08d99d333755
-X-MS-TrafficTypeDiagnostic: TY2PR06MB2734:
-X-Microsoft-Antispam-PRVS: <TY2PR06MB2734E21023BA24CE3667BA50A28A9@TY2PR06MB2734.apcprd06.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1265;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Dxl0Znfjo9u1ZYv+1vh+FhB+j2bq1sJZW6yhutUPbx31TQ87lAcQAlyvje1JD2+DXKkBdBx0p72GGOwST/rZgR3xn8rRYhJreshr1px/z5JLFe/1JFH7YD4hy6q7aCefLe7+JmgSnyF97pSjnM/SER8spP0ihzAihiT7RTUOK2VcR5DtAu763o3W7va/hnAbSUYU8SrG4bItjqNySOMujBaC1TjYHmoCIdB90LRypp2jk+d6E25VckW+sqY5jhr8pf+kYKL/CMbuSdoansrwB6O63YJwvWzY2TVRMEM+3xtWbN1wvh7lxTr9LLG5Le75e+dpO0WHPQndDLlYPrNGMhO7Mg4bN/njkCDe+ECmk4K7HhVK43q8G+j099Wnrl523OhB6M1APVfihCbkRhoAG5jYsT+DFDQo2egewcSEGUu/wUQMLbqh4Jgzz9DQ3DA0hPj9n+v6CxFC2qmRuZDf2FLzD2uU2a8P14SN5QKF2ODVLbMQd1pU71A5cvEODjYarRzLSvMBuMB/JaC/RX1//8CVV1nKMDbur8505xBhKbm7E9EonyjwcITiC4GoColt/tjiGfOK0E/IbO1HFom6jN/4S56vNxxy8y+Fs4xq8+qDwbi74dqCbSdkhf+DmxmSeKcOvedXdAmqW72WZE+TYZXrUf0CpAfsc5jqVNPWh67iNGa5mfKU7ukaROpgFTSdXl7Ju7mdWQpzb20KziRHnA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR06MB4173.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6666004)(66556008)(26005)(6506007)(316002)(66476007)(186003)(86362001)(36756003)(8676002)(66946007)(6486002)(8936002)(508600001)(5660300002)(1076003)(110136005)(83380400001)(2906002)(107886003)(6512007)(4326008)(38350700002)(38100700002)(2616005)(956004)(52116002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Ks95R+Vx0oFpqlNxzTAu6vJq2bl4/9Cpf/lbFcXItdL86iWMqglbMkGS1+hV?=
- =?us-ascii?Q?ETXuACIPLuCd4bQz0OFKnseKtsV43+tL4MVh/6q90Nixc68xwMksvnLbiDKq?=
- =?us-ascii?Q?zi4ankzwEwU9o5NkJYifiPSBRGpvshrctv29BjuEPtNgQLbCvggfyfubZPYc?=
- =?us-ascii?Q?CcXKRXjYAsIDY0ED7O4KUSGqMKM8VBxDs8mmtwy913xSno3L8rVz6Q7hCq8L?=
- =?us-ascii?Q?JRrtfDvT/0VVc4SFu9Jj7spjj5mrTCWtNylKFhP/87zImAIabPUFKjm5ohWh?=
- =?us-ascii?Q?Lv/N9ezLiM313jHXbEkb99r/eUTScn9HUYnMYbCTUH72FQiivvTvRsGFcDQZ?=
- =?us-ascii?Q?hUtQ4LCOqZES30rQqF4bliJYdRV+riZXm6LKBI8DF23VDhpAzdWLmOKTr33Z?=
- =?us-ascii?Q?/gDHK5yAvxKnw/4ecrfjsfZnjtDqgHsKDTTPfpi3V/WH1TFn7zF5udEN57Rr?=
- =?us-ascii?Q?JqX60VsV9IK7nZqaOK+O+JqoopWp/Q07xPCfVx/yV+qQZZWw2YcG/BctKL3S?=
- =?us-ascii?Q?vGH9pnow60rWFLAPUBC8DhAmPjzKZb3JKGeRaehPAEupoUFraVpcz6pmNZV3?=
- =?us-ascii?Q?JS6jQGagmhsu6kwpxbPL9+0WSlOu+dYVE+yTy7+QyNc5k3YSo9aXKZjCy8yH?=
- =?us-ascii?Q?jSuLZQQQQtSH6t3LCXuei/mUUqkpFkPHds56mKKH3K2UHjMCyHd0tCrrfAAU?=
- =?us-ascii?Q?UCQQ++qY853is9Qet+gHvNDzrLrRfiJxKpsaC2kMchSsle4U20BJX4kctfxT?=
- =?us-ascii?Q?/A503CKS0OIWz2WSK0qYffjtHqFf/vmm4o+8v/cCEAOr47PdFdUNvijMrz89?=
- =?us-ascii?Q?ZTGV80f+rhD8DeXIoO7MxLi22zZy9dJq+KrK11p9dcHs/AxkXkrfEJrE8Zl0?=
- =?us-ascii?Q?wQxw0aGz7eLkPiviw0ie2bQAqv5P0KrA8eSjQJjvcEkMvr9+zgbp9W/jL9SU?=
- =?us-ascii?Q?228KcO8PnlZfiP/RjoQH+WnJq1+nJz0O7TJF8kDvWe5RIZ1QypIE1K2WVlfJ?=
- =?us-ascii?Q?BsQZVuWdjwFepOkxPIssfBj5WW6lLxnw5cuBDgmRL4E/Rl1vF22s4WYlcUZx?=
- =?us-ascii?Q?B1JkHSD1lQCFrhrCUlls9OoGr+E3ExEGgCbNjDbnszwYOk9UE48N6PqxXPaQ?=
- =?us-ascii?Q?lO1DnOh4RRU9z1Wd19pXhz8fVeZ2K9lvHUMFATt2wE3Ttmjbg+fPoP3SfEMz?=
- =?us-ascii?Q?130z8kueLwRb7iFRcORXVWqcOIMkfc0jeXh4KLcJuUkTGJbiq8jKEM/VKH5j?=
- =?us-ascii?Q?sgDQoNa7ssBM61/HI75DfI9VKQedU2nsrxffLivucV7dPNsiECjj6D7Oxeck?=
- =?us-ascii?Q?r7buVFsmZ9qiWIDWpyzTXnYf8bSJBYpdTBiVWfVOZ5MVIndKDcSgm2PZjAJK?=
- =?us-ascii?Q?fBdbulYv87DxHq5k+ieaAPYDDBrY3VI7t4HCDqfk+J3fljhBsIatvSRH8ave?=
- =?us-ascii?Q?GtqZzyDvG9q03sAhlKedwPOKTuTzuh25G7yVQXdwRxa+6yZWAW0gHAW6C93T?=
- =?us-ascii?Q?IDaiyKG+vw9U8DwCQDl03rsneYyKGYGuDWEgu2OhZaJf9bJjgSZCQCZye9F2?=
- =?us-ascii?Q?X1rs2vuZKQU9PIgqKNZBv84SsjONeTAzoRUtCp+0Z/xyh290ikbNxyzm9BOM?=
- =?us-ascii?Q?huvS8WEkSfwut85Vu5TSMRE=3D?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ede0abcb-f4c1-4e9c-068f-08d99d333755
-X-MS-Exchange-CrossTenant-AuthSource: TYZPR06MB4173.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Nov 2021 12:29:14.7923
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Shkp8mAE17oEMTi6+4fXlwEp5s5T+H95EsyZ3ok9GK/OSlKVT0I1twb9xBMzxPWaBWkcJhVrnLrHuOl/fRcHvw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY2PR06MB2734
+References: <CAD-N9QXsUcczurqq9LdaVjXFZMBSbStynwFJyu0UayDazGe=nw@mail.gmail.com>
+ <55f04cb1-18ac-085b-3d35-7a01716fbcbe@gmail.com> <CAD-N9QVN7cepUpRu3d-xtr1L3DG90-nLS4gmkjerDZO21F_ejQ@mail.gmail.com>
+ <f622f569-25d5-f38e-e9fb-7f07e12c4b7e@gmail.com> <CAD-N9QWeGOZdnuRuHVVNzZHWeP3eSHg=tsm+Qn3tqGqACSNbhg@mail.gmail.com>
+ <ffbaeb72-0f76-fb1e-dde5-6e6bdcce1301@gmail.com> <CAD-N9QWQkivwR0mWwiaW_pLE6J_b03x4dP8RyxbmuKYRkcRhoQ@mail.gmail.com>
+ <28a3777a-7941-6ffc-07e5-38456372cfb3@gmail.com> <CAD-N9QUcoKnEWw98XnBJZkas3AkwPonNG0K-PMROOwn8kReT5g@mail.gmail.com>
+ <613828ef-085c-acbb-f54e-7819dc22c769@gmail.com>
+In-Reply-To: <613828ef-085c-acbb-f54e-7819dc22c769@gmail.com>
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+Date:   Mon, 1 Nov 2021 20:31:08 +0800
+Message-ID: <CAD-N9QXHGRZugX9wMygZV=FzKgrKt1ZgDSbh+h9CbWBy5DUWJg@mail.gmail.com>
+Subject: Re: Need help in debugging "memory leak in em28xx_init_dev"
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-swap() was used instead of the tmp variable to swap values
+On Mon, Nov 1, 2021 at 8:26 PM Pavel Skripkin <paskripkin@gmail.com> wrote:
+>
+> On 11/1/21 15:23, Dongliang Mu wrote:
+> > drop? I do see some patches from local syzkaller will attach this tag
+> > to assign credits to syzkaller/syzbot.
+> >
+> > I think this form is good. Thus I copy this tag from them.
+> >
+>
+> Sorry for not being clear :(
+>
+> I mean, I can't send my "Reviewed-by" tag to the patch. Missed that
+> "R-b" can be also decoded as Reported-by
 
-Signed-off-by: Yihao Han <hanyihao@vivo.com>
----
- fs/xfs/libxfs/xfs_da_btree.c |  5 +----
- fs/xfs/xfs_inode.c           | 10 ++--------
- 2 files changed, 3 insertions(+), 12 deletions(-)
+OK. It's fine. Just want to make sure we don't introduce any new
+issues in the patch.
 
-diff --git a/fs/xfs/libxfs/xfs_da_btree.c b/fs/xfs/libxfs/xfs_da_btree.c
-index c062e2c85178..f3608884c076 100644
---- a/fs/xfs/libxfs/xfs_da_btree.c
-+++ b/fs/xfs/libxfs/xfs_da_btree.c
-@@ -864,7 +864,6 @@ xfs_da3_node_rebalance(
- {
- 	struct xfs_da_intnode	*node1;
- 	struct xfs_da_intnode	*node2;
--	struct xfs_da_intnode	*tmpnode;
- 	struct xfs_da_node_entry *btree1;
- 	struct xfs_da_node_entry *btree2;
- 	struct xfs_da_node_entry *btree_s;
-@@ -894,9 +893,7 @@ xfs_da3_node_rebalance(
- 	    ((be32_to_cpu(btree2[0].hashval) < be32_to_cpu(btree1[0].hashval)) ||
- 	     (be32_to_cpu(btree2[nodehdr2.count - 1].hashval) <
- 			be32_to_cpu(btree1[nodehdr1.count - 1].hashval)))) {
--		tmpnode = node1;
--		node1 = node2;
--		node2 = tmpnode;
-+		swap(node1, node2);
- 		xfs_da3_node_hdr_from_disk(dp->i_mount, &nodehdr1, node1);
- 		xfs_da3_node_hdr_from_disk(dp->i_mount, &nodehdr2, node2);
- 		btree1 = nodehdr1.btree;
-diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
-index a4f6f034fb81..518c82bfc80d 100644
---- a/fs/xfs/xfs_inode.c
-+++ b/fs/xfs/xfs_inode.c
-@@ -564,8 +564,6 @@ xfs_lock_two_inodes(
- 	struct xfs_inode	*ip1,
- 	uint			ip1_mode)
- {
--	struct xfs_inode	*temp;
--	uint			mode_temp;
- 	int			attempts = 0;
- 	struct xfs_log_item	*lp;
- 
-@@ -578,12 +576,8 @@ xfs_lock_two_inodes(
- 	ASSERT(ip0->i_ino != ip1->i_ino);
- 
- 	if (ip0->i_ino > ip1->i_ino) {
--		temp = ip0;
--		ip0 = ip1;
--		ip1 = temp;
--		mode_temp = ip0_mode;
--		ip0_mode = ip1_mode;
--		ip1_mode = mode_temp;
-+		swap(ip0, ip1);
-+		swap(ip0_mode, ip1_mode);
- 	}
- 
-  again:
--- 
-2.17.1
-
+>
+>
+> With regards,
+> Pavel Skripkin
