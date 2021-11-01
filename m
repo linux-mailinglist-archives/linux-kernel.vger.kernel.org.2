@@ -2,196 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2992441565
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 09:36:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E89D44156A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 09:37:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231669AbhKAIjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 04:39:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229933AbhKAIjL (ORCPT
+        id S231686AbhKAIk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 04:40:28 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:43170 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231223AbhKAIk1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 04:39:11 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A2D9C061714
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 01:36:38 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id r67-20020a252b46000000b005bea12c4befso24715946ybr.19
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 01:36:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=tW2BwZ/A2idI8vdQ6mfzvJNCFKK49jl6hiLJYBpZXOA=;
-        b=bcAkjB5N/ALnCWb9pY+6F7kgyfg4zg1z7lPbKC1K16po2LQCVt7vxQKW95i0bLemul
-         wW+jkpFAEyUb7GBeVKqqTdB6Szxp7niKWdR/26kmXYX4MW7nk6U4+c6+m99Q59enHQGU
-         28lfykJ/7XvtUZlTR2mbnCl1blZjKxsp4QZGpsRaVIdBJkTT1n3S72iqd0nGdUjeR0wP
-         P1PTa2PNaJ+Dib6spkuN3Ektc64L8lFuXPKmekU5rZ0FMsDtu+/CnP/eI5gyy8Y5eS8D
-         LmzCZ3GheOcqq6fE8NjauNsivJBtUiEkpN8jQMm/A3yKznhpZPs+RDXB5C0F3MXXvYmi
-         Rewg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=tW2BwZ/A2idI8vdQ6mfzvJNCFKK49jl6hiLJYBpZXOA=;
-        b=tMNDL2Ngaoj77DLF2Hd+TL2QQELDgRiBAjPFonata/0Kr8ZksX8YWX8Tr+Osr14/0q
-         yGBWzekjLDmdFI7hIFiquNbDavUZWuwddUWv7AkBWKHBCABQVQ7U8+8cj+tVhcN0ThkB
-         oIQFoR4L5IpyHZicfypsN8VEFHcFpPrGYumkV1Snx3ZJCO724fdXnS17/E2Zh4YB1gRM
-         HfT4YJxsmy5F9F79wWIVVezV7rR7g/VzGyHTXe5gqVHsnIOM1t15SIh2wAHWX301ukog
-         eRKI8VOR6TzzJxdR7/ZjAuAbNkeihDO2ihoZuvTw3tW9BaBWHeMmLiueDHpu1rnHUKkd
-         +MqQ==
-X-Gm-Message-State: AOAM531RrP9HhHjJr2k1nIDoxwRto/YIkTn2IMfCPFVrGgAfGM+XbF5a
-        Zu5o/rwsvj0N3n789MjdPBp1hpC95C64
-X-Google-Smtp-Source: ABdhPJzhDkT/R0C2yWtTPMTHfSUvC2R462znbwsBoJwm+CQCtNQxjPPkm+dP5eLvtpGAnMz6NCFQpJZtUPQj
-X-Received: from tzungbi-z840.tpe.corp.google.com ([2401:fa00:1:10:c50e:bfd4:4c17:a3f9])
- (user=tzungbi job=sendgmr) by 2002:a05:6902:1009:: with SMTP id
- w9mr6640620ybt.120.1635755797396; Mon, 01 Nov 2021 01:36:37 -0700 (PDT)
-Date:   Mon,  1 Nov 2021 16:36:29 +0800
-Message-Id: <20211101083629.101241-1-tzungbi@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.1.1089.g2158813163f-goog
-Subject: [PATCH v2] platform/chrome: cros_ec_debugfs: detach log reader wq
- from devm
-From:   Tzung-Bi Shih <tzungbi@google.com>
-To:     bleung@chromium.org, groeck@chromium.org, bleung@google.com,
-        groeck@google.com
-Cc:     linux-kernel@vger.kernel.org, tzungbi@google.com
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 1 Nov 2021 04:40:27 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 15DA0218B5;
+        Mon,  1 Nov 2021 08:37:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1635755873; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XEk3a5ycM/6Z3eTDoA+OxlibhFeAVcniDJrpsbt1oNM=;
+        b=HzgQDpTbMUYIp/F/gANRfnX40aWO52VT8TZvHHbN13yX3H3yq3DrPcDQ1O6M2rz2036ip4
+        GdFLVrnFW6LNig5oIHXZh7l12VAEn/anqJHpAcdtukUXj6ObtIbZxWSInR2C+UxSxo8SCE
+        z9CwEXS6ybHBykW9sUydxfFIwNpcAVI=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 86EA9A3B88;
+        Mon,  1 Nov 2021 08:37:52 +0000 (UTC)
+Date:   Mon, 1 Nov 2021 09:37:52 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Christoph Hellwig <hch@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jann Horn <jannh@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Andrea Arcangeli <aarcange@redhat.com>
+Subject: Re: [PATCH 1/1] mm: prevent a race between process_mrelease and
+ exit_mmap
+Message-ID: <YX+nYGlZBOAljoeF@dhcp22.suse.cz>
+References: <20211022014658.263508-1-surenb@google.com>
+ <YXJwUUPjfg9wV6MQ@dhcp22.suse.cz>
+ <CAJuCfpEcSbK8WrufZjDj-7iUxiQtrmVTqHOxFUOvLhYGz6_ttQ@mail.gmail.com>
+ <CAJuCfpFccBJHHqfOKixJvLr7Xta_ojkdHGfGomwTDNKffzziRQ@mail.gmail.com>
+ <YXvxBSzA2YIxbwVC@dhcp22.suse.cz>
+ <CAJuCfpHBoMGPOUvB2ZWQ=TxbFuWBRF++UaKJZDCrQV4mzb5kMA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJuCfpHBoMGPOUvB2ZWQ=TxbFuWBRF++UaKJZDCrQV4mzb5kMA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Debugfs console_log uses devm memory (e.g. debug_info in
-cros_ec_console_log_poll()).  However, lifecycles of device and debugfs
-are independent.  An use-after-free issue is observed if userland
-program operates the debugfs after the memory has been freed.
+On Fri 29-10-21 09:07:39, Suren Baghdasaryan wrote:
+> On Fri, Oct 29, 2021 at 6:03 AM Michal Hocko <mhocko@suse.com> wrote:
+[...]
+> > Well, I still do not see why that is a problem. This syscall is meant to
+> > release the address space not to do it fast.
+> 
+> It's the same problem for a userspace memory reaper as for the
+> oom-reaper. The goal is to release the memory of the victim and to
+> quickly move on to the next one if needed.
 
-The call trace:
- do_raw_spin_lock
- _raw_spin_lock_irqsave
- remove_wait_queue
- ep_unregister_pollwait
- ep_remove
- do_epoll_ctl
-
-A Python example to reproduce the issue:
-... import select
-... p = select.epoll()
-... f = open('/sys/kernel/debug/cros_scp/console_log')
-... p.register(f, select.POLLIN)
-... p.poll(1)
-[(4, 1)]                    # 4=fd, 1=select.POLLIN
-
-[ shutdown cros_scp at the point ]
-
-... p.poll(1)
-[(4, 16)]                   # 4=fd, 16=select.POLLHUP
-... p.unregister(f)
-
-An use-after-free issue raises here.  It called epoll_ctl with
-EPOLL_CTL_DEL which in turn to use the workqueue in the devm (i.e.
-log_wq).
-
-Detaches log reader's workqueue from devm to make sure it is persistent
-even if the device has been removed.
-
-Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
----
-As for 2 other related cases I could image:
-
-Case 1. userland program opens the debugfs after the device has been removed
-
-ENOENT.  cros_ec_debugfs_remove() calls debugfs_remove_recursive().
-
-Case 2. userland program is reading when the device is removing
-
-If the userland program is waiting in cros_ec_console_log_read(), the device
-removal will wait for it.
-
-See the calling stack for the case:
- wait_for_completion
- __debugfs_file_removed
- remove_one
- simple_recursive_removal
- debugfs_remove
- cros_ec_debugfs_remove
- platform_drv_remove
- device_release_driver_internal
- device_release_driver
- bus_remove_device
- device_del
- platform_device_del
- platform_device_unregister
-
-Changes from v1:
-- rebase to next-20211029.
-- change the commit messages.
-
- drivers/platform/chrome/cros_ec_debugfs.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/platform/chrome/cros_ec_debugfs.c b/drivers/platform/chrome/cros_ec_debugfs.c
-index 272c89837d74..0dbceee87a4b 100644
---- a/drivers/platform/chrome/cros_ec_debugfs.c
-+++ b/drivers/platform/chrome/cros_ec_debugfs.c
-@@ -25,6 +25,9 @@
+The purpose of the oom_reaper is to _guarantee_ a forward progress. It
+doesn't have to be quick or optimized for speed.
  
- #define CIRC_ADD(idx, size, value)	(((idx) + (value)) & ((size) - 1))
- 
-+/* waitqueue for log readers */
-+static DECLARE_WAIT_QUEUE_HEAD(cros_ec_debugfs_log_wq);
-+
- /**
-  * struct cros_ec_debugfs - EC debugging information.
-  *
-@@ -33,7 +36,6 @@
-  * @log_buffer: circular buffer for console log information
-  * @read_msg: preallocated EC command and buffer to read console log
-  * @log_mutex: mutex to protect circular buffer
-- * @log_wq: waitqueue for log readers
-  * @log_poll_work: recurring task to poll EC for new console log data
-  * @panicinfo_blob: panicinfo debugfs blob
-  */
-@@ -44,7 +46,6 @@ struct cros_ec_debugfs {
- 	struct circ_buf log_buffer;
- 	struct cros_ec_command *read_msg;
- 	struct mutex log_mutex;
--	wait_queue_head_t log_wq;
- 	struct delayed_work log_poll_work;
- 	/* EC panicinfo */
- 	struct debugfs_blob_wrapper panicinfo_blob;
-@@ -107,7 +108,7 @@ static void cros_ec_console_log_work(struct work_struct *__work)
- 			buf_space--;
- 		}
- 
--		wake_up(&debug_info->log_wq);
-+		wake_up(&cros_ec_debugfs_log_wq);
- 	}
- 
- 	mutex_unlock(&debug_info->log_mutex);
-@@ -141,7 +142,7 @@ static ssize_t cros_ec_console_log_read(struct file *file, char __user *buf,
- 
- 		mutex_unlock(&debug_info->log_mutex);
- 
--		ret = wait_event_interruptible(debug_info->log_wq,
-+		ret = wait_event_interruptible(cros_ec_debugfs_log_wq,
- 					CIRC_CNT(cb->head, cb->tail, LOG_SIZE));
- 		if (ret < 0)
- 			return ret;
-@@ -173,7 +174,7 @@ static __poll_t cros_ec_console_log_poll(struct file *file,
- 	struct cros_ec_debugfs *debug_info = file->private_data;
- 	__poll_t mask = 0;
- 
--	poll_wait(file, &debug_info->log_wq, wait);
-+	poll_wait(file, &cros_ec_debugfs_log_wq, wait);
- 
- 	mutex_lock(&debug_info->log_mutex);
- 	if (CIRC_CNT(debug_info->log_buffer.head,
-@@ -377,7 +378,6 @@ static int cros_ec_create_console_log(struct cros_ec_debugfs *debug_info)
- 	debug_info->log_buffer.tail = 0;
- 
- 	mutex_init(&debug_info->log_mutex);
--	init_waitqueue_head(&debug_info->log_wq);
- 
- 	debugfs_create_file("console_log", S_IFREG | 0444, debug_info->dir,
- 			    debug_info, &cros_ec_console_log_fops);
+[...]
+
+> > Btw. the above code will not really tell you much on a larger machine
+> > unless you manage to trigger mmap_sem contection. Otherwise you are
+> > measuring the mmap_sem writelock fast path and that should be really
+> > within a noise comparing to the whole address space destruction time. If
+> > that is not the case then we have a real problem with the locking...
+> 
+> My understanding of that discussion is that the concern was that even
+> taking uncontended mmap_sem writelock would regress the exit path.
+> That was what I wanted to confirm. Am I misreading it?
+
+No, your reading match my recollection. I just think that code
+robustness in exchange of a rw semaphore write lock fast path is a
+reasonable price to pay even if that has some effect on micro
+benchmarks.
 -- 
-2.33.1.1089.g2158813163f-goog
-
+Michal Hocko
+SUSE Labs
