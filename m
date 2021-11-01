@@ -2,94 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0C01441CFC
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 15:58:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C4BE441CFF
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 15:58:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232146AbhKAPAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 11:00:40 -0400
-Received: from mga04.intel.com ([192.55.52.120]:51342 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229826AbhKAPAj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 11:00:39 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10154"; a="229757416"
-X-IronPort-AV: E=Sophos;i="5.87,199,1631602800"; 
-   d="scan'208";a="229757416"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2021 07:58:06 -0700
-X-IronPort-AV: E=Sophos;i="5.87,199,1631602800"; 
-   d="scan'208";a="500067645"
-Received: from yingze1x-mobl.ccr.corp.intel.com (HELO chenyu5-mobl1) ([10.255.28.120])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2021 07:58:01 -0700
-Date:   Mon, 1 Nov 2021 22:57:57 +0800
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-acpi@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Aubrey Li <aubrey.li@intel.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 2/4] drivers/acpi: Introduce Platform Firmware Runtime
- Update device driver
-Message-ID: <20211101145757.GA35522@chenyu5-mobl1>
-References: <cover.1635317102.git.yu.c.chen@intel.com>
- <a318e4edc13e5a3ff95b901871b8929746535715.1635317102.git.yu.c.chen@intel.com>
- <YXkn8aBvAVEXxgdp@smile.fi.intel.com>
- <20211101093320.GA18982@chenyu5-mobl1>
- <YX/NwEdw26wzKFvQ@smile.fi.intel.com>
- <20211101131434.GA32880@chenyu5-mobl1>
- <YX/ouT/hi5ccaxsz@kroah.com>
- <YX/0yCUlGM35vEXS@smile.fi.intel.com>
+        id S232197AbhKAPBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 11:01:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231304AbhKAPBS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 11:01:18 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E704C061714
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 07:58:45 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <l.stach@pengutronix.de>)
+        id 1mhYle-0005LQ-1T; Mon, 01 Nov 2021 15:58:34 +0100
+Message-ID: <557e68ad15634ddb65c98ebf80cd7ef962ac2608.camel@pengutronix.de>
+Subject: Re: [PATCH v2 RESEND] PCI: imx6: Replace legacy gpio interface for
+ gpiod interface
+From:   Lucas Stach <l.stach@pengutronix.de>
+To:     =?ISO-8859-1?Q?Ma=EDra?= Canal <maira.canal@usp.br>
+Cc:     hongxing.zhu@nxp.com, lorenzo.pieralisi@arm.com, robh@kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <helgaas@kernel.org>, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, linux-imx@nxp.com,
+        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Date:   Mon, 01 Nov 2021 15:58:31 +0100
+In-Reply-To: <CAH7FV3nyyLndqTdJYN8HDxU4C7pW0-DLu6ZSOLof2=tEEHbHxQ@mail.gmail.com>
+References: <YX/zlRqmxbLRnTqT@fedora>
+         <4f1b60bab451b219c7139e2204eb5b9f462ee4e0.camel@pengutronix.de>
+         <CAH7FV3nyyLndqTdJYN8HDxU4C7pW0-DLu6ZSOLof2=tEEHbHxQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YX/0yCUlGM35vEXS@smile.fi.intel.com>
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: l.stach@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 01, 2021 at 04:08:08PM +0200, Andy Shevchenko wrote:
-> On Mon, Nov 01, 2021 at 02:16:41PM +0100, Greg Kroah-Hartman wrote:
-> > On Mon, Nov 01, 2021 at 09:14:34PM +0800, Chen Yu wrote:
-> > > On Mon, Nov 01, 2021 at 01:21:36PM +0200, Andy Shevchenko wrote:
-> 
-> ...
-> 
-> > > Ok, I'll switch to global variables in next version.
+Am Montag, dem 01.11.2021 um 11:44 -0300 schrieb Maíra Canal:
+> ?
+> > >       /* Some boards don't have PCIe reset GPIO. */
+> > > -     if (gpio_is_valid(imx6_pcie->reset_gpio)) {
+> > > -             gpio_set_value_cansleep(imx6_pcie->reset_gpio,
+> > > +     if (imx6_pcie->reset_gpio) {
+> > > +             gpiod_set_value_cansleep(imx6_pcie->reset_gpio,
+> > >                                       imx6_pcie->gpio_active_high);
+> > >               msleep(100);
+> > > -             gpio_set_value_cansleep(imx6_pcie->reset_gpio,
+> > > +             gpiod_set_value_cansleep(imx6_pcie->reset_gpio,
+> > >                                       !imx6_pcie->gpio_active_high);
 > > 
-> > Wait, no, why?
+> > I don't think this is correct. gpiod_set_value sets the logical line
+> > state, so if the GPIO is specified as active-low in the DT, the real
+> > line state will be negated. The only reason why the reset-gpio-active-
+> > high property even exists is that old DTs might specify the wrong GPIO
+> > polarity in the reset-gpio DT description. I think you need to use to
+> > gpiod_set_raw_value API here to get the expected real line state even
+> > with a broken DT description.
+> > 
+> > Regards,
+> > Lucas
+> > 
 > 
-> But why should we have a duplication of basically static data?
-> 
-> > Keep them per-device unless you can somehow be
-> > guaranteed there will never be more than one of these ACPI devices in a
-> > system.
-> 
-> I guess you missed my point. These definitions are _always_ the same.
-> It does not matter how many devices in the system.
-> 
-> Chen, is my perception correct?
-> If no, then do what Greg says.
->
-Yes, there would be only one PFRU ACPI object in the system.
-And for PFRU Telemetry ACPI object, I don't know if the specification
-would introduce separate telemetry log using different uuid in the
-future - Currently there are two telemetry log buffers share the same
-uuid). Maybe for scalability reason we can make them per device.
-> > It's simpler this way, no need to worry about global state at
-> > all.
-> 
-> Actually I have no idea why we even have strings in  and not raw buffers.
-> Moreover, I haven't got why even we have them in uAPI.
-I see. These uuid could be put into the .c and there is no need for the
-user to be aware of these values.
+> I'm a beginner in kernel development, so I'm sorry for the question.
+> If I change gpiod_set_value_cansleep for gpiod_set_raw_value, wouldn't
+> I change the behavior of the driver? I replaced
+> gpio_set_value_cansleep for gpiod_set_value_cansleep because they have
+> the same behavior and I didn't change the logic states. Thank you for
+> the feedback!
 
-thanks,
-Chenyu
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
-> 
+Yes, you need to use the _cansleep variant of the API to keep the
+context information. The point I was trying to make was that you
+probably (please double check, that's just an assumption on my side)
+need to use the _raw variant of the gpiod API to keep the current
+behavior of the driver, as we are setting the physical line state
+purely depending on the reset-gpio-active-high property presence, not
+the logical line state, which would take into account the polarity
+specified in the DT gpio descriptor.
+
+I guess the right API call here would be
+gpiod_set_raw_value_cansleep().
+
+Regards,
+Lucas
+
