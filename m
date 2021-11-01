@@ -2,97 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1892A4415F5
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:18:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBAF94417CE
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:38:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231751AbhKAJUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:20:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231443AbhKAJUa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:20:30 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FA59C061714;
-        Mon,  1 Nov 2021 02:17:57 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HjS9v4w2Pz4xbM;
-        Mon,  1 Nov 2021 20:17:55 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1635758276;
-        bh=3PZGj0sci0bcIw2HkwJH0u3E+keMCC3880sW+RDPpLA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Sz8NDmRJfupih7wwXJd+Z+oIWl/sTJIaYi4SfEV/BOmIogtNZiLSOL0OSX/cfTk4A
-         LcUra4B1MNgSrhpstI9NTJ074f+vZ5MN49AzZEIgZ5N/IK6nPq9fmBZareLVWZe888
-         i/lctwsHkNXVLVQSSQb0Pt6u2QojcRa1ucVykkpsOGvPJztdKS198eFFz7X+suQ0f5
-         grkcAPcNq3jvKtDMfecwfbb1y9FwlCBK8Fi2cec4GRUNv9CfPx3uKqMjsRxT0f8IlF
-         tzXMJAsJpoGipTQ9l5xgOIzjs9rBxUh176JQcM1mGhGHhbEhh3ZzpPmyGuGFwVa4ZK
-         Y3gIANeGopJ+w==
-Date:   Mon, 1 Nov 2021 20:17:54 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the drm-misc tree
-Message-ID: <20211101201754.53c6c148@canb.auug.org.au>
-In-Reply-To: <20211005185940.382720e7@canb.auug.org.au>
-References: <20211005185940.382720e7@canb.auug.org.au>
+        id S233773AbhKAJkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:40:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43594 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232556AbhKAJhs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:37:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EE038611CA;
+        Mon,  1 Nov 2021 09:26:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1635758807;
+        bh=uSR3PZPp5qtAhh3J7+ecbG6Ur4HJljEGrS071nObm7E=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=HbZJ72VeeEq7fqdjHp4ZSvTzhhhywlpAUPj6GhSZUg64CM6xbyvs06OLtfPwpAI4t
+         uQFSMS9RIe5JvOaI75C0siIXUPNIhlVJFXxVve8lbgnck/DjkDNcRCAhWVaI/NpkDa
+         odj3hakIt0mS9a8yQb6vvjOLF4f1E2NBHsyxx+bI=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Xin Long <lucien.xin@gmail.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 66/77] sctp: fix the processing for INIT_ACK chunk
+Date:   Mon,  1 Nov 2021 10:17:54 +0100
+Message-Id: <20211101082525.458195463@linuxfoundation.org>
+X-Mailer: git-send-email 2.33.1
+In-Reply-To: <20211101082511.254155853@linuxfoundation.org>
+References: <20211101082511.254155853@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/pPtQHmT5cGItirLOVele=Cw";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/pPtQHmT5cGItirLOVele=Cw
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: Xin Long <lucien.xin@gmail.com>
 
-Hi Stephen,
+[ Upstream commit 438b95a7c98f77d51cbf4db021f41b602d750a3f ]
 
-On Tue, 5 Oct 2021 18:59:40 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
-rote:
->
-> Hi all,
->=20
-> After merging the drm-misc tree, today's linux-next build (htmldocs)
-> produced this warning:
->=20
-> include/linux/dma-buf.h:456: warning: Function parameter or member 'cb_in=
-' not described in 'dma_buf'
-> include/linux/dma-buf.h:456: warning: Function parameter or member 'cb_ou=
-t' not described in 'dma_buf'
->=20
-> Introduced by commit
->=20
->   6b51b02a3a0a ("dma-buf: fix and rework dma_buf_poll v7")
+Currently INIT_ACK chunk in non-cookie_echoed state is processed in
+sctp_sf_discard_chunk() to send an abort with the existent asoc's
+vtag if the chunk length is not valid. But the vtag in the chunk's
+sctphdr is not verified, which may be exploited by one to cook a
+malicious chunk to terminal a SCTP asoc.
 
-This is back again as well :-(
+sctp_sf_discard_chunk() also is called in many other places to send
+an abort, and most of those have this problem. This patch is to fix
+it by sending abort with the existent asoc's vtag only if the vtag
+from the chunk's sctphdr is verified in sctp_sf_discard_chunk().
 
---=20
-Cheers,
-Stephen Rothwell
+Note on sctp_sf_do_9_1_abort() and sctp_sf_shutdown_pending_abort(),
+the chunk length has been verified before sctp_sf_discard_chunk(),
+so replace it with sctp_sf_discard(). On sctp_sf_do_asconf_ack() and
+sctp_sf_do_asconf(), move the sctp_chunk_length_valid check ahead of
+sctp_sf_discard_chunk(), then replace it with sctp_sf_discard().
 
---Sig_/pPtQHmT5cGItirLOVele=Cw
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Xin Long <lucien.xin@gmail.com>
+Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ net/sctp/sm_statefuns.c | 37 +++++++++++++++++++------------------
+ 1 file changed, 19 insertions(+), 18 deletions(-)
 
------BEGIN PGP SIGNATURE-----
+diff --git a/net/sctp/sm_statefuns.c b/net/sctp/sm_statefuns.c
+index 89a86728184d..5063f9884367 100644
+--- a/net/sctp/sm_statefuns.c
++++ b/net/sctp/sm_statefuns.c
+@@ -2280,7 +2280,7 @@ enum sctp_disposition sctp_sf_shutdown_pending_abort(
+ 	 */
+ 	if (SCTP_ADDR_DEL ==
+ 		    sctp_bind_addr_state(&asoc->base.bind_addr, &chunk->dest))
+-		return sctp_sf_discard_chunk(net, ep, asoc, type, arg, commands);
++		return sctp_sf_pdiscard(net, ep, asoc, type, arg, commands);
+ 
+ 	if (!sctp_err_chunk_valid(chunk))
+ 		return sctp_sf_pdiscard(net, ep, asoc, type, arg, commands);
+@@ -2326,7 +2326,7 @@ enum sctp_disposition sctp_sf_shutdown_sent_abort(
+ 	 */
+ 	if (SCTP_ADDR_DEL ==
+ 		    sctp_bind_addr_state(&asoc->base.bind_addr, &chunk->dest))
+-		return sctp_sf_discard_chunk(net, ep, asoc, type, arg, commands);
++		return sctp_sf_pdiscard(net, ep, asoc, type, arg, commands);
+ 
+ 	if (!sctp_err_chunk_valid(chunk))
+ 		return sctp_sf_pdiscard(net, ep, asoc, type, arg, commands);
+@@ -2596,7 +2596,7 @@ enum sctp_disposition sctp_sf_do_9_1_abort(
+ 	 */
+ 	if (SCTP_ADDR_DEL ==
+ 		    sctp_bind_addr_state(&asoc->base.bind_addr, &chunk->dest))
+-		return sctp_sf_discard_chunk(net, ep, asoc, type, arg, commands);
++		return sctp_sf_pdiscard(net, ep, asoc, type, arg, commands);
+ 
+ 	if (!sctp_err_chunk_valid(chunk))
+ 		return sctp_sf_pdiscard(net, ep, asoc, type, arg, commands);
+@@ -3745,6 +3745,11 @@ enum sctp_disposition sctp_sf_do_asconf(struct net *net,
+ 		return sctp_sf_pdiscard(net, ep, asoc, type, arg, commands);
+ 	}
+ 
++	/* Make sure that the ASCONF ADDIP chunk has a valid length.  */
++	if (!sctp_chunk_length_valid(chunk, sizeof(struct sctp_addip_chunk)))
++		return sctp_sf_violation_chunklen(net, ep, asoc, type, arg,
++						  commands);
++
+ 	/* ADD-IP: Section 4.1.1
+ 	 * This chunk MUST be sent in an authenticated way by using
+ 	 * the mechanism defined in [I-D.ietf-tsvwg-sctp-auth]. If this chunk
+@@ -3753,13 +3758,7 @@ enum sctp_disposition sctp_sf_do_asconf(struct net *net,
+ 	 */
+ 	if (!asoc->peer.asconf_capable ||
+ 	    (!net->sctp.addip_noauth && !chunk->auth))
+-		return sctp_sf_discard_chunk(net, ep, asoc, type, arg,
+-					     commands);
+-
+-	/* Make sure that the ASCONF ADDIP chunk has a valid length.  */
+-	if (!sctp_chunk_length_valid(chunk, sizeof(struct sctp_addip_chunk)))
+-		return sctp_sf_violation_chunklen(net, ep, asoc, type, arg,
+-						  commands);
++		return sctp_sf_pdiscard(net, ep, asoc, type, arg, commands);
+ 
+ 	hdr = (struct sctp_addiphdr *)chunk->skb->data;
+ 	serial = ntohl(hdr->serial);
+@@ -3888,6 +3887,12 @@ enum sctp_disposition sctp_sf_do_asconf_ack(struct net *net,
+ 		return sctp_sf_pdiscard(net, ep, asoc, type, arg, commands);
+ 	}
+ 
++	/* Make sure that the ADDIP chunk has a valid length.  */
++	if (!sctp_chunk_length_valid(asconf_ack,
++				     sizeof(struct sctp_addip_chunk)))
++		return sctp_sf_violation_chunklen(net, ep, asoc, type, arg,
++						  commands);
++
+ 	/* ADD-IP, Section 4.1.2:
+ 	 * This chunk MUST be sent in an authenticated way by using
+ 	 * the mechanism defined in [I-D.ietf-tsvwg-sctp-auth]. If this chunk
+@@ -3896,14 +3901,7 @@ enum sctp_disposition sctp_sf_do_asconf_ack(struct net *net,
+ 	 */
+ 	if (!asoc->peer.asconf_capable ||
+ 	    (!net->sctp.addip_noauth && !asconf_ack->auth))
+-		return sctp_sf_discard_chunk(net, ep, asoc, type, arg,
+-					     commands);
+-
+-	/* Make sure that the ADDIP chunk has a valid length.  */
+-	if (!sctp_chunk_length_valid(asconf_ack,
+-				     sizeof(struct sctp_addip_chunk)))
+-		return sctp_sf_violation_chunklen(net, ep, asoc, type, arg,
+-						  commands);
++		return sctp_sf_pdiscard(net, ep, asoc, type, arg, commands);
+ 
+ 	addip_hdr = (struct sctp_addiphdr *)asconf_ack->skb->data;
+ 	rcvd_serial = ntohl(addip_hdr->serial);
+@@ -4475,6 +4473,9 @@ enum sctp_disposition sctp_sf_discard_chunk(struct net *net,
+ {
+ 	struct sctp_chunk *chunk = arg;
+ 
++	if (asoc && !sctp_vtag_verify(chunk, asoc))
++		return sctp_sf_pdiscard(net, ep, asoc, type, arg, commands);
++
+ 	/* Make sure that the chunk has a valid length.
+ 	 * Since we don't know the chunk type, we use a general
+ 	 * chunkhdr structure to make a comparison.
+-- 
+2.33.0
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF/sMIACgkQAVBC80lX
-0GzqjAgAoHMxsBNaMEZw8e0gYsvplWSyRZUsYI9du1Og34jxHCucN+9CRgFHjflb
-sBjS5ZJzVSGYeT+igTiHoq3m/kHtJP2IcxuRPDaUQCT/SVGowUwCLgL8nZAbWunc
-rlB922IvJU14KTCQ8CFhptddX4LE9RwP2mHoHlmd8E6QnZBvR1Im2qWBgCtb4lWr
-YdljQP8dYl/Uw1Kj/XexiLEhVX92yakc/tZuqiC4Fyy07k1IbPehqn4LG7jxfgBY
-FieVWxLHqyPtpcVwWZUPhqCpxYJ6VXZJZ021HYGIr05bYfSZFrRGtZCqBATQBB2X
-/Mzeq3fVoPI3L6NBsUqX/BQCEjh+qQ==
-=wLoe
------END PGP SIGNATURE-----
 
---Sig_/pPtQHmT5cGItirLOVele=Cw--
+
