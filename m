@@ -2,305 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E874441C49
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 15:11:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DAF4441C4F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 15:11:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232449AbhKAONs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 10:13:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38562 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231945AbhKAONk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 10:13:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B0936108F;
-        Mon,  1 Nov 2021 14:11:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635775867;
-        bh=MY0FILvQLIrESFc86P5GSInmYLjTSeCDx7Ly6qGiMpE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Xf3Fp3mo78F1I+XAxhrRc6A6As8nE3bKvaUjy0CEdvVDKvlbWlv7cOo/oqW6UXq46
-         EVDD0qxz7LzQsXf4MA78qL0cpkuF1KPhmV/d6IDC6aodgSoRJKjaDP2S5z+phFfOFl
-         QeBrcfkTF3sg9J5X1Fu2zM6/+uSvXsOcEqZXWFnuDJ+Fm6gX5lTjHf2WgRKTY90CIb
-         bytSEEH27xea3/da74CYkObqYKkrWCFI5Cm1UJ1SAWzYMCKz/RYFCzhookgKCPEp7s
-         VZ/fjP7eUtbt0WSomIdiruYniLSVy38I9VeugIo559ZOeD0DSfBBvZlVUw/ZCF/X9e
-         cb8XoSUePmlCg==
-Date:   Mon, 1 Nov 2021 14:10:58 +0000
-From:   Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     Tsuchiya Yuto <kitakar@gmail.com>
-Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Nable <nable.maininbox@googlemail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Fabio Aiuto <fabioaiuto83@gmail.com>,
-        "andrey.i.trufanov" <andrey.i.trufanov@gmail.com>,
-        Patrik Gfeller <patrik.gfeller@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH 04/17] media: atomisp: pci: do not use err var when
- checking port validity for ISP2400
-Message-ID: <20211101141058.36ea2c8e@sal.lan>
-In-Reply-To: <af7cdf9de020171567c2e75b713deb2ed073e4e3.camel@gmail.com>
-References: <20211017161958.44351-1-kitakar@gmail.com>
-        <20211017161958.44351-5-kitakar@gmail.com>
-        <20211026092637.196447aa@sal.lan>
-        <1a295721fd1f1e512cd54a659a250aef162bfb6f.camel@gmail.com>
-        <20211028123944.66c212c1@sal.lan>
-        <af7cdf9de020171567c2e75b713deb2ed073e4e3.camel@gmail.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S232511AbhKAOOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 10:14:14 -0400
+Received: from mail-mw2nam08on2078.outbound.protection.outlook.com ([40.107.101.78]:19373
+        "EHLO NAM04-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232487AbhKAOOL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 10:14:11 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Wjh5WRVLYV0YmRD4vA051mvgRSmdBgsuJoV5OuA3wIwFSsSEEJna5BhIJV314eZqtLi53Ok4Yz34Ojbpx85n7bQOPDkHFhNEde6rAlGjIkoeF8A4Tci5/ELvKqtQlak/WquWmEbWQEyHYmwI0M3Wl5FK3Ee87gjyE7xgYPws6Uf0tWOXdnBbbzvU8iKAJu3jyv2DXwdcIigO5cTkvVwpeMkklJNTY9zGSYDcCefUobPvYDJ27ejz7DgcB40Jpdp/V5tZK5/SFq9U4RFQf/rt5oo88OEp8oV2eGAMMP4VOw5/rV1rQzVux0xbTrKNpURUXIEQLLkv6vuolxAe6Uio1A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=dIIx1P1taO7wpxY1v8HK+pEl0vZ1v1m1fnd2lJzGstA=;
+ b=kMK2op5Dx1Wqz8iPzlRwso5G0UjNPegZDVCxZDxpb2QMXjhplds05oQPH1/2qe94C/WsISmMhrLsVb/47u4hQkK4Tj1dDKUnBXARUAu9/RRO5WTU03uHirtm6DqEWUta9KlGbZLBeCTQt+Bf+05pwzhwlGzapyzqmeflKvnumpQayaIu4PR/U1KUCHmudECyLUEZ7d4c8nBtx9bfA/9OMKSiVO5s+yt/Tpw0oPcimnF8BZMqkYAIhTB5QNCPbAUYenv7qFVa43RhY8WJu9lvOc8UfN3TOCHkuQ+kL+NLLZpDkqZw+pdry28j3WO8OT6L6uoyTauSZf0IUfBtDjZyEQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dIIx1P1taO7wpxY1v8HK+pEl0vZ1v1m1fnd2lJzGstA=;
+ b=n3lPikvfE+FgGb81cysB8FHTJ4h9OXNf3lVqk6JOEs0t+wiyUISdKejvlPtDCoepWi1PaMEV0AfA70zJ1UmV3V/gYpCss/HWYNksFB+od5MKU9ELcQOi1G/TB5AvAHrfwhhx1tngigTdeKr5+7npvG5JiJDnZzNobyJD+u8D6hC39/j60Xo5I/qpp1AxakD6TgNM4CMlGyJubgRVw7BTkWG9S+ubLDeiQjotW0DEbIUnHNr4lyoMa/dAjZpODim+38Sp++Qx3oQahCJ+fmBABS6WePpk4KvPjY8GerC6Z9wO9IEr2yFxiafxVuUvPCqnoVt4xmpncjvap6HbYdpTtg==
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5285.namprd12.prod.outlook.com (2603:10b6:208:31f::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.14; Mon, 1 Nov
+ 2021 14:11:35 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4649.019; Mon, 1 Nov 2021
+ 14:11:35 +0000
+Date:   Mon, 1 Nov 2021 11:11:33 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     mst@redhat.com, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        maxime.coquelin@redhat.com, cunming.liang@intel.com,
+        zhihong.wang@intel.com, rob.miller@broadcom.com,
+        xiao.w.wang@intel.com, lingshan.zhu@intel.com, eperezma@redhat.com,
+        lulu@redhat.com, parav@mellanox.com, kevin.tian@intel.com,
+        stefanha@redhat.com, rdunlap@infradead.org, hch@infradead.org,
+        aadam@redhat.com, jiri@mellanox.com, shahafs@mellanox.com,
+        hanand@xilinx.com, mhabets@solarflare.com, gdawar@xilinx.com,
+        saugatm@xilinx.com, vmireyno@marvell.com,
+        zhangweining@ruijie.com.cn, Tiwei Bie <tiwei.bie@intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>
+Subject: Re: [PATCH V9 7/9] vhost: introduce vDPA-based backend
+Message-ID: <20211101141133.GA1073864@nvidia.com>
+References: <20200326140125.19794-1-jasowang@redhat.com>
+ <20200326140125.19794-8-jasowang@redhat.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200326140125.19794-8-jasowang@redhat.com>
+X-ClientProxiedBy: MN2PR16CA0002.namprd16.prod.outlook.com
+ (2603:10b6:208:134::15) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from mlx.ziepe.ca (142.162.113.129) by MN2PR16CA0002.namprd16.prod.outlook.com (2603:10b6:208:134::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.15 via Frontend Transport; Mon, 1 Nov 2021 14:11:34 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mhY29-004Vh4-HI; Mon, 01 Nov 2021 11:11:33 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 685db139-32ab-4d73-c148-08d99d4182fe
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5285:
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5285B8D76A64AB2551F1D2A0C28A9@BL1PR12MB5285.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ClL4yZMwnteRcgjFF2G2eq/UHVaW7+/kUAbXR/GUTgweJptXbxi5U4lcZgtvfatMTSVWLgRjxGu9+q1X1DpfqeOQ8Kek6BPRrd3K3Wr3FmdHoeYu6hEoWzG9haCos3scj0GIsCxzKNYe7LUsKyFY//8MHg/nB2H24busktczmr/zSMNB4Jp7/jby8Kl7VvfTfIS8KenKMK+qoBijh4W+dATIE6Fpbtg/YNyWP/9RTdh0e/vvDA1HXTKPI4bwJyo9wDBJCbayque28EVsb1Aa4f3scvpeLXXvwTae+uBCcm+KhMwlUKojmaZrMuWQ9HZcCOXn4Qxn7PA6BR0oORbyfAhFWimdC9CQMszE5fqw/5rGo9g5rhLi9dQa8jGCCL/iDtciOZiFQ8AXlPsaidNXmfQkEcawGymf13BD+RhMkwOYA6AleZQYFmlCdwj+DGmvqpCfPwNSmD6oSa0m+6xuyZFVOtVCFfvMtdWXJBDU0kCxOXPLqsczWpIUqi/1i/FDMw5d3yxt3XCK0TAosOc48K6xlPt4SblDYqjrTNdb/udo4VyIMjYOg6X1JdU6bhrA1dBKtDhpqOqSVHJgS1K2LFmKV8Q9cmjiX5d/oWxS0EDMP0J/8Z4yyuP4dw1ltm9H8vV25dl+CoPVhh0c+peCQQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(9786002)(38100700002)(9746002)(36756003)(4326008)(2906002)(86362001)(6916009)(508600001)(316002)(26005)(2616005)(8936002)(8676002)(33656002)(5660300002)(1076003)(186003)(426003)(7416002)(83380400001)(66946007)(54906003)(66476007)(66556008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?XEdDIz28RaBdwPs43TVJMoPsuZjKCxg12b9GzB1BT8YvJQo4LNQ/SDeT+QPG?=
+ =?us-ascii?Q?YocNhsiH0jE2an9p3syXfRNMp/JB0ThwMGTf+rvlZHcQ6a45nAVKIVLvE3vU?=
+ =?us-ascii?Q?ZyjV+1M+BM0wcQHAen5NPzrPloqk6E2ELCmioIe6SSDIEKfhIW1C2k0CpeTz?=
+ =?us-ascii?Q?cBEiabOEmRZovTB2Ky01Rmr8MkkmSuRdisjj4KeuTH2O/BWoPR4V7PbP+/9o?=
+ =?us-ascii?Q?dw3s7sOJulqr5kouP0Nry1vMULf51DjEC6Pi3FFjQUH99Nh6MyklUr9XiPZN?=
+ =?us-ascii?Q?3MAfAr3Rd8FIC6o6opqHDoKD/xqm+RLbl6dn3Dk8eNUGp68zFnihFCphJThV?=
+ =?us-ascii?Q?9/xHequer0gj6vT6H6QWV9lmhN7vCHEsP8/97fdOs+rFMH/SFLY/55T6T5xt?=
+ =?us-ascii?Q?tdgruXcub03ZpWWms2AHeExr9kqGGFFMPgcglzSg/n2Awi8CYbCm2arp9Z7W?=
+ =?us-ascii?Q?NJuXK6VSgu7+yR8PATC75TA1b7sq6H3i1UFaIrvEzPZ0hwSTbi8+u+va1cj3?=
+ =?us-ascii?Q?D3WI4hTHdyFeMK2qQM+DqNI3N0Aw6i1YyzksYkCljS3SxQnOKlosHkvNumqp?=
+ =?us-ascii?Q?LgLqHSL0R8PIqX/4iCmMEx0HRWPO7rawf1Nkzp8jEr+NTsVWyNT8pU2nP9XK?=
+ =?us-ascii?Q?zLoxW2VTGFxugW9Q0yYtb/24X/jcNUUJeZ0jp0H5Y4I2/SS+hZYFPdaGFce6?=
+ =?us-ascii?Q?pTM9FkdyKRZ2dKCrvQm7YpBpsa6bVSTkefLliPNtlrPT1fdpAXowxKV+4umM?=
+ =?us-ascii?Q?Gj4JPdFbpLeb6okVz4h5tgMDKSZDKpPUlRZO4p5EJ8PeNkpnyUkDWJ3I+LPd?=
+ =?us-ascii?Q?AePpEZQhDpcSSIt7ax6IHvtK2ha7UKFqsQFFcJ9qpsKUGfZ7EtPkXzuEt4/7?=
+ =?us-ascii?Q?bmjT7yBIH//3EBuF9u1Vibd9WgnDVjuyEvPTkFqaBoeeJnm6/rU3lBWr60rH?=
+ =?us-ascii?Q?lCoAvrCO1YUMd5MHca7z2tlWOGy3H36hVXuQQFzrCL6q9UxImabzDUYLJ8Qn?=
+ =?us-ascii?Q?ZzGx6MTdqUsNX2Uh0VfksIm6GUbGd6y4YND3uai2H30cKQf5ATBEud+1mpoX?=
+ =?us-ascii?Q?Pek0L72cGgjYamveu+NNXKoGSd5lHAhfTEGfdFH1fl8HP3raJfliAiUQqIHs?=
+ =?us-ascii?Q?HWjS9LZzYm5A8IMTvKAkPh73vE9NZ2HuEImvirakN6Bs/dnbNqCv0D3sXjfN?=
+ =?us-ascii?Q?yFJKXQHoGTCpuoRDf7k5FHmXadtpaugxlzaF2ynBMl+t69Aqv/wGN2cc+UXE?=
+ =?us-ascii?Q?0dwtQZ4khBoOK8vnr124nngVl+kWaM62WHU+yJ/yg7JCdszo+twnWNtZZwUi?=
+ =?us-ascii?Q?3UkGG/j1KBHXd44ucsVHr8ga4HElURkOYrB5oXJNSheDieRW6kfG0Fk+gDMV?=
+ =?us-ascii?Q?rAK9EfedKcauXgAwLh67ZVSrNUq0pyXzvigy4gN2E9BpoWwc+DxRItecag3H?=
+ =?us-ascii?Q?LdqYZyZ0NIh07Jyw8ATt+mitvtECBKgALV3kz86UvUP5gbLsdBxB5eRuW/WZ?=
+ =?us-ascii?Q?SwYYbfV7RYM08ckfeFmBXtt7XpomaK0ujLSMcJfk6Q6y51w27rHEzAiciZqI?=
+ =?us-ascii?Q?QYxvzazcHpmFqAVNFGM=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 685db139-32ab-4d73-c148-08d99d4182fe
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Nov 2021 14:11:34.9130
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4kKF/JRC2CxCyRE+Tnsv9g8jT4aQJb/TxJJIO94jE7c8pjEDIhqM1ZA0jJS6Vwpl
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5285
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, 01 Nov 2021 22:38:55 +0900
-Tsuchiya Yuto <kitakar@gmail.com> escreveu:
-
-> On Thu, 2021-10-28 at 12:39 +0100, Mauro Carvalho Chehab wrote:
-> > Em Thu, 28 Oct 2021 13:12:45 +0900
-> > Tsuchiya Yuto <kitakar@gmail.com> escreveu:
-> >   
-> > > <Adding back people/list to Cc>
-> > > 
-> > > On Tue, 2021-10-26 at 09:26 +0100, Mauro Carvalho Chehab wrote:  
-> > > > Em Mon, 18 Oct 2021 01:19:44 +0900
-> > > > Tsuchiya Yuto <kitakar@gmail.com> escreveu:
-> > > >     
-> > > > > Currently, the `port >= N_CSI_PORTS || err` checks for ISP2400 are always
-> > > > > evaluated as true because the err variable is set to `-EINVAL` on
-> > > > > declaration but the variable is never used until the evaluation.
-> > > > > 
-> > > > > Looking at the diff of commit 3c0538fbad9f ("media: atomisp: get rid of
-> > > > > most checks for ISP2401 version"), the `port >= N_CSI_PORTS` check is
-> > > > > for ISP2400 and the err variable check is for ISP2401. Fix this issue
-> > > > > by adding ISP version test there accordingly.
-> > > > > 
-> > > > > Yes, there are other better ways to fix this issue, like adding support
-> > > > > for ISP2400 to ia_css_mipi_is_source_port_valid(). In this way, we can
-> > > > > unify the following test:
-> > > > > 
-> > > > > 	if (!IS_ISP2401)
-> > > > > 		port = (unsigned int)pipe->stream->config.source.port.port;
-> > > > > 	else
-> > > > > 		err = ia_css_mipi_is_source_port_valid(pipe, &port);
-> > > > > 
-> > > > > However, the IS_ISP2401 test here (formerly `ifdef ISP2401`) is not
-> > > > > a result of real hardware difference, but just a result of the following
-> > > > > two different versions of driver merged by tools [1]:
-> > > > > 
-> > > > >   - ISP2400: irci_stable_candrpv_0415_20150521_0458
-> > > > >   - ISP2401: irci_ecr-master_20150911_0724    
-> > > > 
-> > > > No.
-> > > > 
-> > > > While I don't have any internal information from the hardware manufacturer,
-> > > > I guess you misinterpreted things here. 2400 and 2401 are different
-> > > > hardware versions. See atomisp_pci_probe() logic.
-> > > > 
-> > > > Basically, Cherrytail and Anniedale comes with 2401. Older Atom CPUs
-> > > > (Merrifield and Baytrail) comes with 2400.    
-> > > 
-> > > Yes, indeed, 2400 and 2401 are different hardware. When they (I mean who
-> > > originally wrote atomisp driver non-upstream) needed to distinguish
-> > > between ISP2400 and ISP2401, they used the ifdefs like the following:
-> > > 
-> > >   - USE_INPUT_SYSTEM_VERSION_2    (for both ISP2400/ISP2401)
-> > >   - USE_INPUT_SYSTEM_VERSION_2401 (for ISP2401)
-> > >   ...
-> > > 
-> > > I think this is a sign that the atomisp driver supports both
-> > > ISP2400/ISP2401 in a single version.  
-> > 
-> > Actually, supporting both on a single version is part of Alan's work.
-> > 
-> > It seems he used the generation tool to produce a version for 2400, and
-> > then re-used it to generate for 2401. It then used some scripting tool
-> > to convert the differences on #ifdef ISP2401. See:
-> > 
-> > 	a49d25364dfb ("staging/atomisp: Add support for the Intel IPU v2")
-> > 
-> > There are things there like:
-> > 
-> > 	+#ifdef ISP2401
-> > 	+
-> > 	+#endif
-> > 
-> > I did a large cleanup work to get rid of those ifdefs, replacing them
-> > by runtime logic.
-> > 
-> > The end goal is to have a single compile-time driver that works for
-> > both 2400 and 2401.
-> > 
-> > This is not possible yet, as there are some registers that are mapped
-> > on different addresses, depending on the hardware version, and making
-> > it generic requires a lot of work and tests. So, for now, we need to 
-> > have a compile-time option to select between both.
-> >   
-> > > Indeed, the upstreamed atomisp uses irci_stable_candrpv_0415_20150521_0458
-> > > for ISP2400 and IIUC it was working on Bay Trail. On the other hand,
-> > > intel-aero is a kernel for Cherry Trail and uses the same version
-> > > irci_stable_candrpv_0415_20150521_0458.
-> > > 
-> > > So, both ISP version ISP2400/ISP2401 can be supported by a single
-> > > driver version.  
-> > 
-> > I See. OK!
-> >   
-> > > > > We should eventually remove (not unify) such tests caused by just a
-> > > > > driver version difference and use just one version of driver. So, for
-> > > > > now, let's avoid further unification.
-> > > > > 
-> > > > > [1] The function ia_css_mipi_is_source_port_valid() and its usage is
-> > > > >     added on updating css version to irci_master_20150701_0213
-> > > > >     https://raw.githubusercontent.com/intel/ProductionKernelQuilts/cht-m1stable-2016_ww31/uefi/cht-m1stable/patches/cam-0439-atomisp2-css2401-and-2401_legacy-irci_master_2015070.patch
-> > > > >     ("atomisp2: css2401 and 2401_legacy-irci_master_20150701_0213")    
-> > > > 
-> > > > What happens is that there is a 2401 and a 2401 "legacy". It sounds
-> > > > that this due to some different software stacks that are reflected both
-> > > > at the firmware and at the driver.    
-> > > 
-> > > Yeah, I'm not sure what the "legacy" is. It might be a reference of
-> > > `ISP2401_NEW_INPUT_SYSTEM` (css_2401_csi2p_system) and
-> > > non-`ISP2401_NEW_INPUT_SYSTEM` (css_2401_system).
-> > >   
-> > > > -
-> > > > 
-> > > > On other words, this patch requires some rework, as otherwise it will break
-> > > > support for Baytrail.    
-> > > 
-> > > You mean "this patch"? then, I intended this patch is rather a fix for
-> > > ISP2400 case! The err variable for ISP2400 case is always true because
-> > > it is not used before the error check:
-> > > 
-> > >         int
-> > >         allocate_mipi_frames(struct ia_css_pipe *pipe,
-> > >         		     struct ia_css_stream_info *info)
-> > >         {
-> > >         	int err = -EINVAL;
-> > > [...]
-> > >         	if (!IS_ISP2401)
-> > >         		port = (unsigned int)pipe->stream->config.source.port.port;
-> > >         	else
-> > >         		err = ia_css_mipi_is_source_port_valid(pipe, &port);
-> > >         
-> > >         	assert(port < N_CSI_PORTS);
-> > >         
-> > >         	if (port >= N_CSI_PORTS || err) {
-> > >         		ia_css_debug_dtrace(IA_CSS_DEBUG_TRACE_PRIVATE,
-> > >         				    "allocate_mipi_frames(%p) exit: error: port is not correct (port=%d).\n",
-> > >         				    pipe, port);
-> > >         		return -EINVAL;
-> > >         	}
-> > > 
-> > > The first usage of err variable is ia_css_mipi_is_source_port_valid()
-> > > for IS_ISP2401 case, but it's not used for ISP2400 case. This causes
-> > > the evaluation `port >= N_CSI_PORTS || err` always true for ISP2400 case,
-> > > meaning it will be always treated as a error.  
-> > 
-> > Ok. Had you test the driver with Baytrail?  
+On Thu, Mar 26, 2020 at 10:01:23PM +0800, Jason Wang wrote:
+> From: Tiwei Bie <tiwei.bie@intel.com>
 > 
-> Unfortunately, no. I don't have a Baytrail device to test (yet?). I
-> noticed this issue anyway when I tried removing `#ifdef ISP2401`.
+> This patch introduces a vDPA-based vhost backend. This backend is
+> built on top of the same interface defined in virtio-vDPA and provides
+> a generic vhost interface for userspace to accelerate the virtio
+> devices in guest.
 > 
-> This is not directly related to this series, but how we should reduce
-> the ifdef usage in the future? Here are my two ideas:
+> This backend is implemented as a vDPA device driver on top of the same
+> ops used in virtio-vDPA. It will create char device entry named
+> vhost-vdpa-$index for userspace to use. Userspace can use vhost ioctls
+> on top of this char device to setup the backend.
 > 
->   1. (my initial idea) remove `#ifdef ISP2401` part and make ISP2401
->      part completely irci_stable_candrpv_0415_20150521_0458
+> Vhost ioctls are extended to make it type agnostic and behave like a
+> virtio device, this help to eliminate type specific API like what
+> vhost_net/scsi/vsock did:
 > 
-> this way does not require (relatively) much human work I think.
+> - VHOST_VDPA_GET_DEVICE_ID: get the virtio device ID which is defined
+>   by virtio specification to differ from different type of devices
+> - VHOST_VDPA_GET_VRING_NUM: get the maximum size of virtqueue
+>   supported by the vDPA device
+> - VHSOT_VDPA_SET/GET_STATUS: set and get virtio status of vDPA device
+> - VHOST_VDPA_SET/GET_CONFIG: access virtio config space
+> - VHOST_VDPA_SET_VRING_ENABLE: enable a specific virtqueue
 > 
-> But as Mauro says, the `#ifdef ISP2401` part (irci_ecr-master_20150911_0724)
-> is basically an improved version.
-
-No. What I said is that the if (ISP2401) and the remaining ifdefs are because
-of BYT x CHT. The worse part of them are related to those files
-(See Makefile):
-
-obj-byt = \
-	pci/css_2400_system/hive/ia_css_isp_configs.o \
-	pci/css_2400_system/hive/ia_css_isp_params.o \
-	pci/css_2400_system/hive/ia_css_isp_states.o \
-
-obj-cht = \
-	pci/css_2401_system/hive/ia_css_isp_configs.o \
-	pci/css_2401_system/hive/ia_css_isp_params.o \
-	pci/css_2401_system/hive/ia_css_isp_states.o \
-	pci/css_2401_system/host/csi_rx.o \
-	pci/css_2401_system/host/ibuf_ctrl.o \
-	pci/css_2401_system/host/isys_dma.o \
-	pci/css_2401_system/host/isys_irq.o \
-	pci/css_2401_system/host/isys_stream2mmio.o
-
-Those define regmaps for 2400 and 2401. I was able to remove a lot
-of things from the old css_2400/css_2401 directories, but the ones
-there at pci/*/css*/ia_css_isp_*.c are a lot more complex, and would
-require some mapping functions to allow the same driver to work with
-both BYT and CHT.
-
-The better would be to test the driver first at BYT, fix issues (if any) and 
-then write the mapping code.
-
-> So, we may also:
+> For memory mapping, IOTLB API is mandated for vhost-vDPA which means
+> userspace drivers are required to use
+> VHOST_IOTLB_UPDATE/VHOST_IOTLB_INVALIDATE to add or remove mapping for
+> a specific userspace memory region.
 > 
->   2. continue unifying `#ifdef ISP2401` and `#ifndef ISP2401` parts
+> The vhost-vDPA API is designed to be type agnostic, but it allows net
+> device only in current stage. Due to the lacking of control virtqueue
+> support, some features were filter out by vhost-vdpa.
 > 
-> but this way needs more human work I think though. And if we go this
-> way, I also need to rewrite this patch as mentioned in the commit
-> message.
+> We will enable more features and devices in the near future.
+
+[..]
+
+> +static int vhost_vdpa_alloc_domain(struct vhost_vdpa *v)
+> +{
+> +	struct vdpa_device *vdpa = v->vdpa;
+> +	const struct vdpa_config_ops *ops = vdpa->config;
+> +	struct device *dma_dev = vdpa_get_dma_dev(vdpa);
+> +	struct bus_type *bus;
+> +	int ret;
+> +
+> +	/* Device want to do DMA by itself */
+> +	if (ops->set_map || ops->dma_map)
+> +		return 0;
+> +
+> +	bus = dma_dev->bus;
+> +	if (!bus)
+> +		return -EFAULT;
+> +
+> +	if (!iommu_capable(bus, IOMMU_CAP_CACHE_COHERENCY))
+> +		return -ENOTSUPP;
+> +
+> +	v->domain = iommu_domain_alloc(bus);
+> +	if (!v->domain)
+> +		return -EIO;
+> +
+> +	ret = iommu_attach_device(v->domain, dma_dev);
+> +	if (ret)
+> +		goto err_attach;
 > 
-> > >   
-> > > > Also, patch 13 should be dropped, as the firmware versions for 2400 are
-> > > > different    
-> > > 
-> > > The firmware version for 2400 on the upstreamed atomisp is
-> > > irci_stable_candrpv_0415_20150521_0458 :-)
-> > > 
-> > >         static const char *isp2400_release_version = STR(irci_stable_candrpv_0415_20150521_0458);
-> > >         static const char *isp2401_release_version = STR(irci_ecr - master_20150911_0724);
-> > > 
-> > > The intention of that patch is rather, it clarifies ISP2401 is now using
-> > > the same driver (css) version as ISP2400.  
-> > 
-> > Ok.
-> >   
-> > > > - and maybe patches 8 to 12 may need more work in order to not
-> > > > touch 2400.    
-> > > 
-> > > Those patches do not break ISP2400, because what they do for ISP2400
-> > > is that, they remove members from `struct`s which were initially inside
-> > > of `ifdef ISP2401`. And because these removed members were initially
-> > > inside of the ifdefs, the usage was also inside the ifdefs.  
-> > 
-> > Did you test on Baytrail (ISP2400), and with the compile-time option
-> > enabled/disabled?  
-> 
-> Sorry, I should have clarified on the cover later. For ISP2400, I did
-> compile test only (CONFIG_VIDEO_ATOMISP_ISP2401 enabled/disabled).
 
-Maybe Hans could help us on that. I guess he has an Asus T100 device, 
-which is BYT based.
+I've been looking at the security of iommu_attach_device() users, and
+I wonder if this is safe?
 
-Hans, if you're willing to do the tests, you could either use nvt
-or v4l2grab to test it.
+The security question is if userspace is able to control the DMA
+address the devices uses? Eg if any of the cpu to device ring's are in
+userspace memory?
 
-It seems that BYT has an additional issue, though: the ISP seems to
-require 12 non-visible lines/columns (in addition to 16 ones required
-by CHT?) for it to work.
+For instance if userspace can tell the device to send a packet from an
+arbitrary user controlled address.
 
-So, you may need to tweak the resolution a bit, as otherwise the
-driver will return an -EINVAL.
-
-See:
-
-	https://git.linuxtv.org/media_stage.git/commit/?id=dcbc4f570495dbd490975979471687cbe2246f99
-
-For the workaround I had to add for CHT to properly report the
-visible resolution.
-
-Regards,
-Mauro
-
-Regards,
-Mauro
+Thanks,
+Jason
