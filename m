@@ -2,129 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD8D4441841
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:43:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5E72441917
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:54:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233744AbhKAJpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:45:24 -0400
-Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.83]:12474 "EHLO
-        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233399AbhKAJmF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:42:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1635759560;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=/pr3oUiSp/AbYNg/y8i1kgJY8VAP2+QSFI6+vf3Alag=;
-    b=XW44j9YGvSDfKStWSJU9Id0QUfLg059QLdbqWx99IfBa3Eja6z0A+Jd0da6zHNA4kn
-    Xgf2e29KXSqxH1zrjsYlz2yqBNTK3gQ8i+XwerL8cABAELTltZm2eZHru81dpaNM9D/z
-    ucXlX8ohsDdqqV9L2CQULpvYbvynv/bxCHggGEnvpNC4coRtFHiKtmaVacYpZFwbbOja
-    BgZRydV17jgl755jtVcdTYYVMupCA/dxeJNznTwsyw9VomI4pHdcrTaM6SsKXHlUD3Yh
-    s09Twt9aj6WnIl7j0Y8eNz9lwjtDMT7jau+AWhQChOc7nn9wi75amAIMFw6AH1NfV4lk
-    efcw==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o1KHeBQyh+ITDDJhD74="
-X-RZG-CLASS-ID: mo00
-Received: from iMac.fritz.box
-    by smtp.strato.de (RZmta 47.34.1 SBL|AUTH)
-    with ESMTPSA id d01d1fxA19dKH5l
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Mon, 1 Nov 2021 10:39:20 +0100 (CET)
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Pouiller?= 
-        <jerome.pouiller@silabs.com>, Avri Altman <avri.altman@wdc.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Tony Lindgren <tony@atomide.com>, Bean Huo <beanhuo@micron.com>
-Cc:     notasas@gmail.com, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org,
-        kernel@pyra-handheld.com,
-        "H. Nikolaus Schaller" <hns@goldelico.com>
-Subject: [RFC v2 2/2] mmc: host: omap_hsmmc: revert special init for wl1251
-Date:   Mon,  1 Nov 2021 10:39:12 +0100
-Message-Id: <f66aee5586f4d0702ee855e477bbce0c54c24623.1635759337.git.hns@goldelico.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <cover.1635759337.git.hns@goldelico.com>
-References: <cover.1635759337.git.hns@goldelico.com>
+        id S234378AbhKAJys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:54:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54508 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234569AbhKAJvG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:51:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A5E3960C40;
+        Mon,  1 Nov 2021 09:40:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635759650;
+        bh=SF7WKY1O6uumm2ECM8NsFAYbMFy4Hkjnwkn8xH3bmHI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=H7UjP2MPnLxj2CKPa7Hrecp+CeBG3PNKKTdGOwRrAkLW3jJ12MCZab1EqVHlhCmif
+         Wo0vNnJFdEt0DntnAingPDUAsuSQmLbgGG+KLagxI/4toDi0O+g/pSzktMM6tXRSPg
+         GnLzgNRovPqCY1EyRQNc72++/h+KsxEj7e5P+Hk8GyJeAiTBgWeKtauaZ3AjyHaUSq
+         xvKVad1AVREdo18u/QkbU0dgHDdrVKjyVdOSr8dUNTbTrA2d+t51JoAlhBgKzPFFmo
+         iEG0huyK02qdBX0k1WQWbM/n3jgf2VxahvbdxseBGMbNn3+VYRbVTikCWCLhdPQoXO
+         ynu1SmKs3ROuA==
+Date:   Mon, 1 Nov 2021 09:40:45 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Brazdil <dbrazdil@google.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] [RFC] arm64: export this_cpu_has_cap
+Message-ID: <20211101094045.GB27400@willie-the-truck>
+References: <20211029113023.760421-1-arnd@kernel.org>
+ <9d4e09b4-47dc-ed3c-2b6d-e0d1a081e592@arm.com>
+ <YXw4H2BNx85KnLDh@arm.com>
+ <20211101090143.GA27181@willie-the-truck>
+ <db9bb430-4502-0c46-d8d7-ddb236750499@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <db9bb430-4502-0c46-d8d7-ddb236750499@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replaces: commit f6498b922e57 ("mmc: host: omap_hsmmc: add code for special init of wl1251 to get rid of pandora_wl1251_init_card")
-Requires: commit ("mmc: core: transplant ti,wl1251 quirks from omap_hsmmc")
+On Mon, Nov 01, 2021 at 09:34:08AM +0000, Suzuki K Poulose wrote:
+> On 01/11/2021 09:01, Will Deacon wrote:
+> > On Fri, Oct 29, 2021 at 07:06:23PM +0100, Catalin Marinas wrote:
+> > > On Fri, Oct 29, 2021 at 02:31:23PM +0100, Suzuki K Poulose wrote:
+> > > > On 29/10/2021 12:30, Arnd Bergmann wrote:
+> > > > > From: Arnd Bergmann <arnd@arndb.de>
+> > > > > 
+> > > > > It's now used in a coresight driver that can be a loadable module:
+> > > > > 
+> > > > > ERROR: modpost: "this_cpu_has_cap" [drivers/hwtracing/coresight/coresight-trbe.ko] undefined!
+> > > > > 
+> > > > > Fixes: 8a1065127d95 ("coresight: trbe: Add infrastructure for Errata handling")
+> > > > 
+> > > > Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> > > > Tested-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> > > > 
+> > > > Will, Catalin, Mathieu,
+> > > > 
+> > > > Do you have a preference on how this fix can be pulled in ? This may
+> > > > be safe to go via coresight tree if it is not too late. Otherwise,
+> > > > it could go via the arm64 tree.
+> > > 
+> > > I think Will already closed/tagged the arm64 tree for the upcoming
+> > > merging window, though he could take it as a fix afterwards.
+> > > 
+> > > If it doesn't conflict with the arm64 for-next/core, it's fine by me to
+> > > go through the coresight tree.
+> > > 
+> > > > > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> > > > > ---
+> > > > > Not sure if we actually want this to be exported, this is my local
+> > > > > workaround for the randconfig build bot.
+> > > > > ---
+> > > > >    arch/arm64/kernel/cpufeature.c | 1 +
+> > > > >    1 file changed, 1 insertion(+)
+> > > > > 
+> > > > > diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+> > > > > index ecbdff795f5e..beccbcfa7391 100644
+> > > > > --- a/arch/arm64/kernel/cpufeature.c
+> > > > > +++ b/arch/arm64/kernel/cpufeature.c
+> > > > > @@ -2864,6 +2864,7 @@ bool this_cpu_has_cap(unsigned int n)
+> > > > >    	return false;
+> > > > >    }
+> > > > > +EXPORT_SYMBOL(this_cpu_has_cap);
+> > > 
+> > > EXPORT_SYMBOL_GPL? I think this_cpu_has_cap() is a bit more more
+> > > specialised than cpus_have_const_cap().
+> > > 
+> > > With that:
+> > > 
+> > > Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+> > 
+> > Yes, at this stage I think it's best for this to go via the Coresight tree.
+> > So with the _GPL export:
+> > 
+> > Acked-by: Will Deacon <will@kernel.org>
+> > 
+> > If that doesn't work for some reason, I can take it next week after the
+> > initial arm64 queue has been merged. Please just let me know.
+> 
+> As I understand correctly, this will now need to go via arm64 tree. The
+> CoreSight tree changes are pulled into Greg's tree and the next it will
+> happen is for the next release. Usually the fixes don't end up there
+> during the -rc cycles. So, I believe it is better if this goes via
+> arm64.
 
-After moving the wl1251 quirks from omap_hsmmc_init_card() to mmc_fixup_device()
-we can remove omap_hsmmc_init_card() which specialized on the combination of
-omap_hsmmc and wl1251.
+Hmm, are you saying that Coresight drivers don't receive fixes outside of
+the merge window? That sounds sub-optimal...
 
-Related-to: commit f6498b922e57 ("mmc: host: omap_hsmmc: add code for special init of wl1251 to get rid of pandora_wl1251_init_card")
-Related-to: commit 2398c41d6432 ("omap: pdata-quirks: remove openpandora quirks for mmc3 and wl1251")
-Related-to: commit f9d50fef4b64 ("ARM: OMAP2+: omap3-pandora: add wifi support")
-Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
----
- drivers/mmc/host/omap_hsmmc.c | 36 -----------------------------------
- 1 file changed, 36 deletions(-)
+But in any case, I'm happy to take this as long as it can wait until the
+second half of the merge window.
 
-diff --git a/drivers/mmc/host/omap_hsmmc.c b/drivers/mmc/host/omap_hsmmc.c
-index 6960e305e0a39..9749639ea8977 100644
---- a/drivers/mmc/host/omap_hsmmc.c
-+++ b/drivers/mmc/host/omap_hsmmc.c
-@@ -1504,41 +1504,6 @@ static void omap_hsmmc_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
- 	omap_hsmmc_set_bus_mode(host);
- }
- 
--static void omap_hsmmc_init_card(struct mmc_host *mmc, struct mmc_card *card)
--{
--	struct omap_hsmmc_host *host = mmc_priv(mmc);
--
--	if (card->type == MMC_TYPE_SDIO || card->type == MMC_TYPE_SD_COMBO) {
--		struct device_node *np = mmc_dev(mmc)->of_node;
--
--		/*
--		 * REVISIT: should be moved to sdio core and made more
--		 * general e.g. by expanding the DT bindings of child nodes
--		 * to provide a mechanism to provide this information:
--		 * Documentation/devicetree/bindings/mmc/mmc-card.txt
--		 */
--
--		np = of_get_compatible_child(np, "ti,wl1251");
--		if (np) {
--			/*
--			 * We have TI wl1251 attached to MMC3. Pass this
--			 * information to the SDIO core because it can't be
--			 * probed by normal methods.
--			 */
--
--			dev_info(host->dev, "found wl1251\n");
--			card->quirks |= MMC_QUIRK_NONSTD_SDIO;
--			card->cccr.wide_bus = 1;
--			card->cis.vendor = 0x104c;
--			card->cis.device = 0x9066;
--			card->cis.blksize = 512;
--			card->cis.max_dtr = 24000000;
--			card->ocr = 0x80;
--			of_node_put(np);
--		}
--	}
--}
--
- static void omap_hsmmc_enable_sdio_irq(struct mmc_host *mmc, int enable)
- {
- 	struct omap_hsmmc_host *host = mmc_priv(mmc);
-@@ -1667,7 +1632,6 @@ static struct mmc_host_ops omap_hsmmc_ops = {
- 	.set_ios = omap_hsmmc_set_ios,
- 	.get_cd = mmc_gpio_get_cd,
- 	.get_ro = mmc_gpio_get_ro,
--	.init_card = omap_hsmmc_init_card,
- 	.enable_sdio_irq = omap_hsmmc_enable_sdio_irq,
- };
- 
--- 
-2.33.0
-
+Will
