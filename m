@@ -2,153 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2447441C1A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 15:03:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DB45441C1E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 15:04:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232185AbhKAOFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 10:05:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231366AbhKAOFm (ORCPT
+        id S231693AbhKAOGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 10:06:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45773 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231857AbhKAOGa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 10:05:42 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD446C061764
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 07:03:08 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id i9so16035896qki.3
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 07:03:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=usp.br; s=usp-google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :content-transfer-encoding;
-        bh=vAqbtjNRsMv6GLJP4TOcGidnTwH9qfmL1MAA54bPcrQ=;
-        b=GNaBm93A51Bbuq8faqsXLGwvbBXFu60JtlT6b5OO00TmxnCP0o4983K3WdJVDo5ZEG
-         QyEmMiedpoBE5li2sgkGAMFos4f9MfsFtwbezAI+ek5YUxYm0kqzV5Yl1OjyY+kUK5zP
-         fqVfN+/efouhK2j4kIgN8GhLRmpmSffR7uxZ39kAEpnTP1zGQH9nNZ0g4tC8oDW29ZB8
-         QjI3H0ZwZmFDqiUdvCi8orv+0s742MpDaT5X9j2EkDZ5tdOwlpQHrLQSKgd3R7ej3eKd
-         R+0UHRy7PX05TjgUdMiOnE0gYjlQSW4K/Zj9Nya9t9S6nEfYJJuf5NEeIpP841bove+D
-         P0aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:content-transfer-encoding;
-        bh=vAqbtjNRsMv6GLJP4TOcGidnTwH9qfmL1MAA54bPcrQ=;
-        b=PcKsAr7Kr35O+AYr85NHnBhfb1ByGjzXw1ayXphQugviDJ7yhX2qGOKPxrWdfdCeqq
-         XBL5XU8hJRUclVe84MSg/bNU0kh516oNdcPJOi7EDKHFUamuojpoDlk5npbP4zuWIWsX
-         CTPrpTEmbUT8nL1xLzFWzMx35WAPbhV65eW5j5AMX6uT3qyOwKRl8/sJq2nB2qjUPN5L
-         iCGmI36jzxCxT857Dym4SJydK+kgyjwGb465KeTX5ZtrArlginM4D+/Qo+tZ5upMEJaZ
-         iAMxaDegAZXQgDn4IiA92iCKc2+P6XfmpB3H9lBjiyq6bIROyZ6LrbaT1XnNVATLyuZv
-         mvoA==
-X-Gm-Message-State: AOAM533/xBBhPgRCfB9aA9U3OPTfanWNrNQFV0nkl0Ty6M086Ax09CP8
-        VsqXX8nydt0tMBt8XOR63SIFjA==
-X-Google-Smtp-Source: ABdhPJwTRMg1a0Lk2Pj6GJ7O5h3tD9vKAJbB1Z5snXpbFRqN9p4JsZnNjdmBTtzWNHtKW6ng0ZEatw==
-X-Received: by 2002:a05:620a:4721:: with SMTP id bs33mr23096566qkb.0.1635775387822;
-        Mon, 01 Nov 2021 07:03:07 -0700 (PDT)
-Received: from fedora ([187.64.134.142])
-        by smtp.gmail.com with ESMTPSA id 18sm2010955qty.42.2021.11.01.07.03.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 07:03:07 -0700 (PDT)
-Date:   Mon, 1 Nov 2021 11:03:01 -0300
-From:   =?iso-8859-1?Q?Ma=EDra?= Canal <maira.canal@usp.br>
-To:     hongxing.zhu@nxp.com, l.stach@pengutronix.de,
-        lorenzo.pieralisi@arm.com, robh@kernel.org, bhelgaas@google.com,
-        helgaas@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de
-Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
-        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 RESEND] PCI: imx6: Replace legacy gpio interface for gpiod
- interface
-Message-ID: <YX/zlRqmxbLRnTqT@fedora>
+        Mon, 1 Nov 2021 10:06:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635775436;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=lHflTYf5NLbENikWzp+YZTdDYwuB7z5GdZSkSzXcqu8=;
+        b=D3ZFw3lFpf/Y4UjvmWXkzbmc8+V4ZAVrq5X5/YiWia7c/WJ99nCzJr675HcPiqoa6sSfKs
+        t/Mr3jP+fGbxZk8kXILqw7DrSuPO1m+wOonxsW8AgqSV2fNLEaEiTZMRP8ySI74k99RusM
+        IbqVxaXSn4xES8HkAbClPvh+hwOEbRQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-478-gEQNqKeLNLKgLtOtHIhZQQ-1; Mon, 01 Nov 2021 10:03:54 -0400
+X-MC-Unique: gEQNqKeLNLKgLtOtHIhZQQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C5BB080DDE0;
+        Mon,  1 Nov 2021 14:03:52 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.40.194.243])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 81AE9101E59B;
+        Mon,  1 Nov 2021 14:03:25 +0000 (UTC)
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     kvm@vger.kernel.org
+Cc:     Shuah Khan <shuah@kernel.org>,
+        linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK),
+        Borislav Petkov <bp@alien8.de>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kernel@vger.kernel.org (open list:X86 ARCHITECTURE (32-BIT AND
+        64-BIT)), Joerg Roedel <joro@8bytes.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Bandan Das <bsd@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Wei Huang <wei.huang2@amd.com>,
+        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
+        Ingo Molnar <mingo@redhat.com>
+Subject: [PATCH v2 0/6] nSVM optional features
+Date:   Mon,  1 Nov 2021 16:03:18 +0200
+Message-Id: <20211101140324.197921-1-mlevitsk@redhat.com>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Considering the current transition of the GPIO subsystem, remove all
-dependencies of the legacy GPIO interface (linux/gpio.h and linux
-/of_gpio.h) and replace it with the descriptor-based GPIO approach.
-
-Signed-off-by: Maíra Canal <maira.canal@usp.br>
----
-V1 -> V2: Rewrite commit log and subject line to match PCI subsystem standard
----
- drivers/pci/controller/dwc/pci-imx6.c | 30 +++++++++------------------
- 1 file changed, 10 insertions(+), 20 deletions(-)
-
-diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-index 80fc98acf097..589cbd600d17 100644
---- a/drivers/pci/controller/dwc/pci-imx6.c
-+++ b/drivers/pci/controller/dwc/pci-imx6.c
-@@ -11,13 +11,12 @@
- #include <linux/bitfield.h>
- #include <linux/clk.h>
- #include <linux/delay.h>
--#include <linux/gpio.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/kernel.h>
- #include <linux/mfd/syscon.h>
- #include <linux/mfd/syscon/imx6q-iomuxc-gpr.h>
- #include <linux/mfd/syscon/imx7-iomuxc-gpr.h>
- #include <linux/module.h>
--#include <linux/of_gpio.h>
- #include <linux/of_device.h>
- #include <linux/of_address.h>
- #include <linux/pci.h>
-@@ -63,7 +62,7 @@ struct imx6_pcie_drvdata {
- 
- struct imx6_pcie {
- 	struct dw_pcie		*pci;
--	int			reset_gpio;
-+	struct gpio_desc	*reset_gpio;
- 	bool			gpio_active_high;
- 	struct clk		*pcie_bus;
- 	struct clk		*pcie_phy;
-@@ -526,11 +525,11 @@ static void imx6_pcie_deassert_core_reset(struct imx6_pcie *imx6_pcie)
- 	usleep_range(200, 500);
- 
- 	/* Some boards don't have PCIe reset GPIO. */
--	if (gpio_is_valid(imx6_pcie->reset_gpio)) {
--		gpio_set_value_cansleep(imx6_pcie->reset_gpio,
-+	if (imx6_pcie->reset_gpio) {
-+		gpiod_set_value_cansleep(imx6_pcie->reset_gpio,
- 					imx6_pcie->gpio_active_high);
- 		msleep(100);
--		gpio_set_value_cansleep(imx6_pcie->reset_gpio,
-+		gpiod_set_value_cansleep(imx6_pcie->reset_gpio,
- 					!imx6_pcie->gpio_active_high);
- 	}
- 
-@@ -1025,22 +1024,13 @@ static int imx6_pcie_probe(struct platform_device *pdev)
- 		return PTR_ERR(pci->dbi_base);
- 
- 	/* Fetch GPIOs */
--	imx6_pcie->reset_gpio = of_get_named_gpio(node, "reset-gpio", 0);
- 	imx6_pcie->gpio_active_high = of_property_read_bool(node,
- 						"reset-gpio-active-high");
--	if (gpio_is_valid(imx6_pcie->reset_gpio)) {
--		ret = devm_gpio_request_one(dev, imx6_pcie->reset_gpio,
--				imx6_pcie->gpio_active_high ?
--					GPIOF_OUT_INIT_HIGH :
--					GPIOF_OUT_INIT_LOW,
--				"PCIe reset");
--		if (ret) {
--			dev_err(dev, "unable to get reset gpio\n");
--			return ret;
--		}
--	} else if (imx6_pcie->reset_gpio == -EPROBE_DEFER) {
--		return imx6_pcie->reset_gpio;
--	}
-+	imx6_pcie->reset_gpio = devm_gpiod_get_optional(dev, "reset",
-+			imx6_pcie->gpio_active_high ?  GPIOD_OUT_HIGH : GPIOD_OUT_LOW);
-+	if (IS_ERR(imx6_pcie->reset_gpio))
-+		return dev_err_probe(dev, PTR_ERR(imx6_pcie->reset_gpio),
-+				"unable to get reset gpio\n");
- 
- 	/* Fetch clocks */
- 	imx6_pcie->pcie_phy = devm_clk_get(dev, "pcie_phy");
--- 
-2.31.1
+This is a resend of a few patches that implement few=0D
+SVM's optional features for nesting.=0D
+=0D
+I was testing these patches during last few weeks with various nested confi=
+gurations=0D
+and I was unable to find any issues.=0D
+=0D
+I also implemented support for nested vGIF in the last patch.=0D
+=0D
+Best regards,=0D
+	Maxim Levitsky=0D
+=0D
+Maxim Levitsky (6):=0D
+  KVM: x86: SVM: add module param to control LBR virtualization=0D
+  KVM: x86: nSVM: correctly virtualize LBR msrs when L2 is running=0D
+  KVM: x86: nSVM: implement nested LBR virtualization=0D
+  KVM: x86: nSVM: implement nested VMLOAD/VMSAVE=0D
+  KVM: x86: nSVM: support PAUSE filter threshold and count when=0D
+    cpu_pm=3Don=0D
+  KVM: x86: SVM: implement nested vGIF=0D
+=0D
+ arch/x86/kvm/svm/nested.c |  86 ++++++++++++++++++++---=0D
+ arch/x86/kvm/svm/svm.c    | 140 ++++++++++++++++++++++++++++++++------=0D
+ arch/x86/kvm/svm/svm.h    |  38 +++++++++--=0D
+ 3 files changed, 228 insertions(+), 36 deletions(-)=0D
+=0D
+-- =0D
+2.26.3=0D
+=0D
 
