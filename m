@@ -2,179 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83C4E44207A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 20:06:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54E6344207D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 20:07:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232220AbhKATI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 15:08:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232533AbhKATIW (ORCPT
+        id S232458AbhKATJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 15:09:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37559 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229549AbhKATJa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 15:08:22 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E13BDC061764
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 12:05:47 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 5so66643965edw.7
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 12:05:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Q6V7Gw56j1fbOP3L/JmtSKoHD83KSTcHq7sV63glnuM=;
-        b=V9CryaeGoSXaoWNsE+V00jDIPAmNV1syxOy51AzEYZDOm2hSiu8r86+/rVypbmV17c
-         DIA2RfuwhJjEzuEEH0EdhVwygq0RtJRbjnQ0papVbpbz3wtQ/iQu2f/ZPqrDzZ1KOJKa
-         JRNRsMnlO2JHvR4YOgQQgGsP8sitiDOXQLRdwwn4INumJS44SX3W2Hbrajw6JadDFiuM
-         fHVXYeobtqBPr988Xt53NYAeGAPjtJwOUPtHVuu0/GLCd2vK7JWW73mhzNliL3Tyo3gx
-         izH3YL9RFKHzPb3JeWJcTSScj2W7a3QHPA1ZH9PJiwaKzXEIlrv63jqDfNLmyJrr9eU/
-         fGvw==
+        Mon, 1 Nov 2021 15:09:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635793616;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bi90UX8d49/Jz6VaT/YCT1/DeafcfQd3kffKdo8pv1M=;
+        b=IuW4yJKxiEiKq3uNxHmQbg73eJQPP3r08RfP/EM6hInrBIpqv4xM6OM4RT6vh7m/cwMgDt
+        d9OETCQr2yH03CN5yrSD6K9UYbZH5T4pVazojhP6dKIsOz9vuxW4IiHEyOce2M9oBySv2u
+        KH2xsNNoaMdgpR7YMovENR5Qc2LfZrA=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-562-HU14ZvvFP7uB1kRnXAcPfA-1; Mon, 01 Nov 2021 15:06:55 -0400
+X-MC-Unique: HU14ZvvFP7uB1kRnXAcPfA-1
+Received: by mail-ed1-f72.google.com with SMTP id m8-20020a056402510800b003e29de5badbso1205552edd.18
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 12:06:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Q6V7Gw56j1fbOP3L/JmtSKoHD83KSTcHq7sV63glnuM=;
-        b=E+PQhXDLnkgytccIXtYvfZCt/ZW2lpU7sGwlqF87mAq9nomELV7KjiO5DMVQenoMtF
-         NTJ0sVXrZzRo3czWWdycIc8JBTWWnLHqCjcGRWsUoBkP9VVboNwEi8ecovbzsTS+VhtA
-         3ShDJ1/WFhnZo+h+QUX4Xa5i9tTPuztnNh7gJys1D3+WPAnEVdrXmQQmhKHKyjnKZD3R
-         /YfIfIgbx3I5zH74QkPlu80OQ+Pumv4O+uoS4wDwtu3cuVvXBSxcXnwCdqv3lOlnqPyv
-         Z9Agwwm2tHuKfz44nBJ5XTG2uGE+dv8avVCPRzGpo1P0345tKoZsUh96zVtsvWtshB2F
-         e/kw==
-X-Gm-Message-State: AOAM532ggGDQlVLOTCed7ZvY1n7Czywmo57Qng0vdmUr5sbPfHVYwFWU
-        dkBShXWlyFDc+0/GGLMVOjGDrwQVUn+J7BUGyP84hA==
-X-Google-Smtp-Source: ABdhPJwm9tqfzMwKrynpgXZqW17xbGvx5x4ZefxF1ARwrFkZgkhlyGDPME39ifBybz9u/RIFdwDlKH/D7dG3hxwvT38=
-X-Received: by 2002:a17:907:76b0:: with SMTP id jw16mr15259982ejc.169.1635793545753;
- Mon, 01 Nov 2021 12:05:45 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=bi90UX8d49/Jz6VaT/YCT1/DeafcfQd3kffKdo8pv1M=;
+        b=2i+UeAtDrT+L8BytlPVX+Z6toi7MWhG2DZbEqCwraBsE7OtRZj7WLbaqmhg2brkM2e
+         al3KgWWe0+i94aHW3C5rbVUaqXJFAtjpjQQJgSB8QGbR+wbl6VudnY6r8YNcgo+M3M/W
+         04xxaqdK9oxTlADWu8jGgVYSJ1fh0m9L2dX6tHopS5YGWQC0cibZOYmG4B4nD0ay4bZM
+         E8tI8vyS8Cb8Ex/OxdRgpGecuDSQRNf5J5eQd0JMmGodB6P8CSC63lYkZ25iV3nJFOPT
+         6VDP+pmumOvMI9BPBo7wuHNJ9MwFMri3l1cM+hLGNUKcZte+Df6HU3sSqIMKsboYKk0V
+         N8Gg==
+X-Gm-Message-State: AOAM533DWeSDSFf0V258GOjjxihReyg+eR5EdggqbvoYZAUOUc8d9Pgu
+        Pg4z9oY+q7W8FONhjj2P+wSzj5Q/59+vBdJ2p1Yon+rqVo2Dq+SBx9q01WwozsqU+rMCPTLEnI2
+        t2kiaiH9jgi9q+p2bynJ1pPyq
+X-Received: by 2002:a17:906:3542:: with SMTP id s2mr39000914eja.379.1635793614375;
+        Mon, 01 Nov 2021 12:06:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxkFHYcCJ7BYV9Qf/ACeB8nPnE2xq5dPY32ips+nJeDfo4W1dQQJfueSCrrdWvG2tzbhez3ng==
+X-Received: by 2002:a17:906:3542:: with SMTP id s2mr39000872eja.379.1635793614136;
+        Mon, 01 Nov 2021 12:06:54 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id h17sm3614189ede.38.2021.11.01.12.06.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Nov 2021 12:06:53 -0700 (PDT)
+Message-ID: <2b81ca7e-fcaa-5449-5662-4eb72e746b02@redhat.com>
+Date:   Mon, 1 Nov 2021 20:06:52 +0100
 MIME-Version: 1.0
-References: <20210930215311.240774-1-shy828301@gmail.com> <20210930215311.240774-3-shy828301@gmail.com>
-In-Reply-To: <20210930215311.240774-3-shy828301@gmail.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 2 Nov 2021 00:35:34 +0530
-Message-ID: <CA+G9fYs__zKSSLKPh4wEPSY5SH8QYkLzgd_3dJpMX72XxTfpdw@mail.gmail.com>
-Subject: Re: [v3 PATCH 2/5] mm: filemap: check if THP has hwpoisoned subpage
- for PMD page fault
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     naoya.horiguchi@nec.com, hughd@google.com,
-        kirill.shutemov@linux.intel.com, willy@infradead.org,
-        peterx@redhat.com, osalvador@suse.de, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 04/17] media: atomisp: pci: do not use err var when
+ checking port validity for ISP2400
+Content-Language: en-US
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tsuchiya Yuto <kitakar@gmail.com>
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        lkft-triage@lists.linaro.org
-Content-Type: text/plain; charset="UTF-8"
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Nable <nable.maininbox@googlemail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Fabio Aiuto <fabioaiuto83@gmail.com>,
+        "andrey.i.trufanov" <andrey.i.trufanov@gmail.com>,
+        Patrik Gfeller <patrik.gfeller@gmail.com>
+References: <20211017161958.44351-1-kitakar@gmail.com>
+ <20211017161958.44351-5-kitakar@gmail.com> <20211026092637.196447aa@sal.lan>
+ <1a295721fd1f1e512cd54a659a250aef162bfb6f.camel@gmail.com>
+ <20211028123944.66c212c1@sal.lan>
+ <af7cdf9de020171567c2e75b713deb2ed073e4e3.camel@gmail.com>
+ <20211101141058.36ea2c8e@sal.lan>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20211101141058.36ea2c8e@sal.lan>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yang,
+Hi,
 
-On Fri, 1 Oct 2021 at 03:23, Yang Shi <shy828301@gmail.com> wrote:
->
-> When handling shmem page fault the THP with corrupted subpage could be PMD
-> mapped if certain conditions are satisfied.  But kernel is supposed to
-> send SIGBUS when trying to map hwpoisoned page.
->
-> There are two paths which may do PMD map: fault around and regular fault.
->
-> Before commit f9ce0be71d1f ("mm: Cleanup faultaround and finish_fault() codepaths")
-> the thing was even worse in fault around path.  The THP could be PMD mapped as
-> long as the VMA fits regardless what subpage is accessed and corrupted.  After
-> this commit as long as head page is not corrupted the THP could be PMD mapped.
->
-> In the regular fault path the THP could be PMD mapped as long as the corrupted
-> page is not accessed and the VMA fits.
->
-> This loophole could be fixed by iterating every subpage to check if any
-> of them is hwpoisoned or not, but it is somewhat costly in page fault path.
->
-> So introduce a new page flag called HasHWPoisoned on the first tail page.  It
-> indicates the THP has hwpoisoned subpage(s).  It is set if any subpage of THP
-> is found hwpoisoned by memory failure and cleared when the THP is freed or
-> split.
->
-> Fixes: 800d8c63b2e9 ("shmem: add huge pages support")
-> Cc: <stable@vger.kernel.org>
-> Suggested-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> Signed-off-by: Yang Shi <shy828301@gmail.com>
-> ---
->  include/linux/page-flags.h | 19 +++++++++++++++++++
->  mm/filemap.c               | 12 ++++++------
->  mm/huge_memory.c           |  2 ++
->  mm/memory-failure.c        |  6 +++++-
->  mm/memory.c                |  9 +++++++++
->  mm/page_alloc.c            |  4 +++-
->  6 files changed, 44 insertions(+), 8 deletions(-)
+On 11/1/21 15:10, Mauro Carvalho Chehab wrote:
 
-When CONFIG_MEMORY_FAILURE not set
-we get these build failures.
+<snip>
 
-Regression found on x86_64 and i386 gcc-11 builds
-Following build warnings / errors reported on Linux mainline master.
+>>> Did you test on Baytrail (ISP2400), and with the compile-time option
+>>> enabled/disabled?  
+>>
+>> Sorry, I should have clarified on the cover later. For ISP2400, I did
+>> compile test only (CONFIG_VIDEO_ATOMISP_ISP2401 enabled/disabled).
+> 
+> Maybe Hans could help us on that. I guess he has an Asus T100 device, 
+> which is BYT based.
+> 
+> Hans, if you're willing to do the tests, you could either use nvt
+> or v4l2grab to test it.
+> 
+> It seems that BYT has an additional issue, though: the ISP seems to
+> require 12 non-visible lines/columns (in addition to 16 ones required
+> by CHT?) for it to work.
+> 
+> So, you may need to tweak the resolution a bit, as otherwise the
+> driver will return an -EINVAL.
+> 
+> See:
+> 
+> 	https://git.linuxtv.org/media_stage.git/commit/?id=dcbc4f570495dbd490975979471687cbe2246f99
+> 
+> For the workaround I had to add for CHT to properly report the
+> visible resolution.
 
-metadata:
-    git_describe: v5.15-559-g19901165d90f
-    git_repo: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-    git_short_log: 19901165d90f (\"Merge tag
-'for-5.16/inode-sync-2021-10-29' of git://git.kernel.dk/linux-block\")
-    target_arch: x86_64
-    toolchain: gcc-11
+Testing BYT support definitely is on my radar. Note that BYT
+also has the additional issue that the atomisp2 on BYT can be
+enumerated as either a PCI dev (which may work) or an ACPI/platform
+dev which is unsupported in the original atomisp2 code-drop and
+seems non trivial (because of pci config space writes) to get to
+work.
+
+On the T100TA the device is actually enumerated as an ACPI/platform
+device and the BIOS option to change this is hidden. In the mean
+time I've gained quite a lot of experience with changing hidden
+BIOS options though, so I can easily put it in PCI mode for
+testing. But eventually we also need to tackle ACPI enumeration
+support...
+
+Anyways I've let me self get distracted (hobby time wise) by
+looking into PMIC/charger/fuel-gauge issues on the Xiaomi Mi Pad 2.
+I've made a list of 3 (small-ish) loose ends which I want to
+tie up there and then I plan to start looking into atomisp2
+support in my hobby time. ATM my plan is:
+
+   -Test on T101HA to reproduce Mauro's work
+   -Try to get things to work on the T116
+   -Patch to not load atomisp_foo sensor drivers on !BYT && !CHT
+   
+And I've just added:
+
+   -Try out BYT support 
+
+As 4th item. Eventually I want to look into writing a proper
+regulator driver for the PMICs and then try to make the atomisp2
+code work with the non "atomisp_xxx" versions of the sensor drivers.
+
+Regards,
+
+Hans
 
 
-In file included from include/linux/mmzone.h:22,
-                 from include/linux/gfp.h:6,
-                 from include/linux/slab.h:15,
-                 from include/linux/crypto.h:20,
-                 from arch/x86/kernel/asm-offsets.c:9:
-include/linux/page-flags.h:806:29: error: macro "PAGEFLAG_FALSE"
-requires 2 arguments, but only 1 given
-  806 | PAGEFLAG_FALSE(HasHWPoisoned)
-      |                             ^
-include/linux/page-flags.h:411: note: macro "PAGEFLAG_FALSE" defined here
-  411 | #define PAGEFLAG_FALSE(uname, lname) TESTPAGEFLAG_FALSE(uname,
-lname)   \
-      |
-include/linux/page-flags.h:807:39: error: macro "TESTSCFLAG_FALSE"
-requires 2 arguments, but only 1 given
-  807 |         TESTSCFLAG_FALSE(HasHWPoisoned)
-      |                                       ^
-include/linux/page-flags.h:414: note: macro "TESTSCFLAG_FALSE" defined here
-  414 | #define TESTSCFLAG_FALSE(uname, lname)
-         \
-      |
-include/linux/page-flags.h:806:1: error: unknown type name 'PAGEFLAG_FALSE'
-  806 | PAGEFLAG_FALSE(HasHWPoisoned)
-      | ^~~~~~~~~~~~~~
-include/linux/page-flags.h:807:25: error: expected ';' before 'static'
-  807 |         TESTSCFLAG_FALSE(HasHWPoisoned)
-      |                         ^
-      |                         ;
-......
-  815 | static inline bool is_page_hwpoison(struct page *page)
-      | ~~~~~~
-make[2]: *** [scripts/Makefile.build:121: arch/x86/kernel/asm-offsets.s] Error 1
-
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-build link:
------------
-https://builds.tuxbuild.com/20KPBpXK6K0bKSIKAIKfwlBq7O4/build.log
-
-build config:
--------------
-https://builds.tuxbuild.com/20KPBpXK6K0bKSIKAIKfwlBq7O4/config
-
-# To install tuxmake on your system globally
-# sudo pip3 install -U tuxmake
-
-tuxmake --runtime podman --target-arch x86_64 --toolchain gcc-11
---kconfig defconfig --kconfig-add
-https://builds.tuxbuild.com/20KPBpXK6K0bKSIKAIKfwlBq7O4/config
-
-link:
-https://builds.tuxbuild.com/20KPBpXK6K0bKSIKAIKfwlBq7O4/tuxmake_reproducer.sh
-
---
-Linaro LKFT
-https://lkft.linaro.org
