@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C1784418AB
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:49:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA4C44417D6
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:39:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234330AbhKAJu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:50:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51088 "EHLO mail.kernel.org"
+        id S233722AbhKAJk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:40:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43678 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232929AbhKAJo6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:44:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C8E876121E;
-        Mon,  1 Nov 2021 09:29:48 +0000 (UTC)
+        id S233236AbhKAJh7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:37:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 577A061362;
+        Mon,  1 Nov 2021 09:27:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758989;
-        bh=mihaGiEok+Hj226MMQ1qfWL5u3i23tWW2o5SAc+iwIU=;
+        s=korg; t=1635758823;
+        bh=Oc7DV+8+K8FyEgu1j+qnv+3akbMOQp0p8JM75XW6WhA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iUwy2Ws7yjewCs6+bQH1aRlddEyXRShX0A93XG99/zE8/qlizLamt6IcIiVmA6O2m
-         x7kuZsH2vMvvkvheDiLXu5Rfx6gJ6MhQW8rnENqy+4t3m4OMtFiB8q8b3zEaiSRYfQ
-         mnVDBvfGz9gdBunCm2JZ4ITadvn8kihaqZSAphkU=
+        b=MrWCr+IIC4GQF0jtzSvmSX6JG36ldNXBUvZgUVRYvqU40goTNoF/SmzaiVFt8B3rZ
+         wZeTD5SZiPFBmCKwda1IBy21ouBdyadqoV5Zm36wB5UriVHKvKqivIlWC+AEG2/ivq
+         CGXlNpOUQlKO+Tb+jJRoui/I9c9ii6SCPdKHINbY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Varun Prakash <varun@chelsio.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 5.14 066/125] nvme-tcp: fix data digest pointer calculation
-Date:   Mon,  1 Nov 2021 10:17:19 +0100
-Message-Id: <20211101082545.650531163@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Erhard F." <erhard_f@mailbox.org>, Huang Rui <ray.huang@amd.com>
+Subject: [PATCH 5.10 32/77] drm/ttm: fix memleak in ttm_transfered_destroy
+Date:   Mon,  1 Nov 2021 10:17:20 +0100
+Message-Id: <20211101082518.624936309@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082533.618411490@linuxfoundation.org>
-References: <20211101082533.618411490@linuxfoundation.org>
+In-Reply-To: <20211101082511.254155853@linuxfoundation.org>
+References: <20211101082511.254155853@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,33 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Varun Prakash <varun@chelsio.com>
+From: Christian König <christian.koenig@amd.com>
 
-commit d89b9f3bbb58e9e378881209756b0723694f22ff upstream.
+commit 0db55f9a1bafbe3dac750ea669de9134922389b5 upstream.
 
-ddgst is of type __le32, &req->ddgst + req->offset
-increases &req->ddgst by 4 * req->offset, fix this by
-type casting &req->ddgst to u8 *.
+We need to cleanup the fences for ghost objects as well.
 
-Fixes: 3f2304f8c6d6 ("nvme-tcp: add NVMe over TCP host driver")
-Signed-off-by: Varun Prakash <varun@chelsio.com>
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Christian König <christian.koenig@amd.com>
+Reported-by: Erhard F. <erhard_f@mailbox.org>
+Tested-by: Erhard F. <erhard_f@mailbox.org>
+Reviewed-by: Huang Rui <ray.huang@amd.com>
+Bug: https://bugzilla.kernel.org/show_bug.cgi?id=214029
+Bug: https://bugzilla.kernel.org/show_bug.cgi?id=214447
+CC: <stable@vger.kernel.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20211020173211.2247-1-christian.koenig@amd.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/nvme/host/tcp.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/ttm/ttm_bo_util.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/nvme/host/tcp.c
-+++ b/drivers/nvme/host/tcp.c
-@@ -1040,7 +1040,7 @@ static int nvme_tcp_try_send_ddgst(struc
- 	int ret;
- 	struct msghdr msg = { .msg_flags = MSG_DONTWAIT };
- 	struct kvec iov = {
--		.iov_base = &req->ddgst + req->offset,
-+		.iov_base = (u8 *)&req->ddgst + req->offset,
- 		.iov_len = NVME_TCP_DIGEST_LENGTH - req->offset
- 	};
+--- a/drivers/gpu/drm/ttm/ttm_bo_util.c
++++ b/drivers/gpu/drm/ttm/ttm_bo_util.c
+@@ -322,6 +322,7 @@ static void ttm_transfered_destroy(struc
+ 	struct ttm_transfer_obj *fbo;
  
+ 	fbo = container_of(bo, struct ttm_transfer_obj, base);
++	dma_resv_fini(&fbo->base.base._resv);
+ 	ttm_bo_put(fbo->bo);
+ 	kfree(fbo);
+ }
 
 
