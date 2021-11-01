@@ -2,96 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8485C44208A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 20:10:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B499B442090
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 20:13:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232491AbhKATNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 15:13:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229900AbhKATM6 (ORCPT
+        id S232443AbhKATP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 15:15:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:39022 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231509AbhKATPy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 15:12:58 -0400
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76390C061714
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 12:10:24 -0700 (PDT)
-Received: by mail-qv1-xf2b.google.com with SMTP id gh1so11869680qvb.8
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 12:10:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9Yh5KAej115BOsmnCnzIqo/9ygAgu2wASV/OBA3KQsg=;
-        b=NqfKD7yCrDyqZTAqLkfFLKlHoQpuxs9uJpelMw1xnHrchWNzWIp/ea8Yze1viJ/TMn
-         KcB+8uaaJPnsstlTcnAZvZsI51p8dFpj8C3mHYQUUGUy8+zNacN16D1Lc6yJuz2Y3xiy
-         wj0qigu7U6IO0fnmq70SneI9wX2FqqDpJevU0=
+        Mon, 1 Nov 2021 15:15:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635794000;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uNXa8fBKQfy008maSJaxtZ2zCD7vx4uMQOlojPUS7ks=;
+        b=NxSNtaWTo7p1owYn9uLgHa7mZOCjIoSxbKGCkfu9lcycLfN0CXEiGyelAzo6kx73MKNFT+
+        +Zou8J63WW/n4DfJnq1jhHGNpPAVT1xni+eoEo+ajhBRpB81PKD/QbQ4jdC/FdR7uxj9HX
+        i6r/quncxUH1FhrOCJy7gGAml4Oyulc=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-27-Gzbq0_HCPOSd88q48mG-DA-1; Mon, 01 Nov 2021 15:13:19 -0400
+X-MC-Unique: Gzbq0_HCPOSd88q48mG-DA-1
+Received: by mail-ed1-f71.google.com with SMTP id z1-20020a05640235c100b003e28c89743bso3539351edc.22
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 12:13:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9Yh5KAej115BOsmnCnzIqo/9ygAgu2wASV/OBA3KQsg=;
-        b=XnLOblzDpQ1mSUoX18n9KUhnK1ST90W5iJzpf7N06qZ41RPojQ2nQcGKLfaUEld3XR
-         q3vJIs2mMqfdHyWZaGpDK2ZuiqvLNeYPr3ADGkC0cxmaVEDmjf0LbybloSXTpXGx2D8R
-         KJkd6ulTpz7hVZWIyrebg0SvDlplelGE2rOhgWrc74JOTerlpiTFDaPyrTdmxZd3ngRl
-         BhA9IiNQmXl2FwZn8pWenYAIzw/x6kR/JmeDivlCTFNiv2W8CIt92ynBFsE7LEsvSHbw
-         b3ozgzVfa1UVaPnIce2pLXauAqq5qTNPDhfnSXARa+6+hKqvwh6XKxKxNfDBmQ5ToOQd
-         QriQ==
-X-Gm-Message-State: AOAM533fyD33yg4wt8TLK6hufEU5+EKnHZn6jNAxn8c46Hjt/tcfGzDE
-        6SA7n5LNJnDd4nggny6vRVbd6g==
-X-Google-Smtp-Source: ABdhPJxpBnWPwguqPFlWIYe36uOS4iP9xRrY7Mw/91d7GMwtvxUCMEDoyWLmmNZNaH8/dQEDvUjhGw==
-X-Received: by 2002:ad4:5b86:: with SMTP id 6mr11153060qvp.25.1635793823542;
-        Mon, 01 Nov 2021 12:10:23 -0700 (PDT)
-Received: from meerkat.local (bras-base-mtrlpq5031w-grc-32-216-209-220-181.dsl.bell.ca. [216.209.220.181])
-        by smtp.gmail.com with ESMTPSA id br17sm10815417qkb.10.2021.11.01.12.10.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 12:10:23 -0700 (PDT)
-Date:   Mon, 1 Nov 2021 15:10:21 -0400
-From:   Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Rich Felker <dalias@libc.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Subject: Re: [PATCH 2/5 v3] sh: add git tree to MAINTAINERS
-Message-ID: <20211101191021.h674kgeuqi4qyhdu@meerkat.local>
-References: <20211005001914.28574-1-rdunlap@infradead.org>
- <20211005001914.28574-3-rdunlap@infradead.org>
- <20211027205431.GX7074@brightrain.aerifal.cx>
- <CAMuHMdWUQkhYxXfrG4MG-Ghi62P_XVxkCMb_6qijP-MMgn-JWg@mail.gmail.com>
- <20211028133049.GY7074@brightrain.aerifal.cx>
- <CAMuHMdUw=6RMF4gEhROMBwQALNmmKJgiKQLYymV4m75EZV+DJQ@mail.gmail.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=uNXa8fBKQfy008maSJaxtZ2zCD7vx4uMQOlojPUS7ks=;
+        b=Z0ISjnVeDN3DAO3s15u6ZWVBiZHpp8h+ByBe2BGGpQ6ikKZ3tkbGqQXQjJfLMY8bMT
+         IKLIrpyAL0t5n9EgalqlabrhevmU7edl/U+OtZRHaq0Q/bOt+uSRmLGmK4SoqXgdQDx1
+         gjKgsznTfQaNTF0OEiiAyYrHStGdEjkJGIxlKq5u7/mGCVrZH+JUR4rjFoL2MV74CeTf
+         qi4ciJZiP7cytVaovSRiCkp6de+yT9yYNKxq1Q3Cx8q4zBAtRO0OLxkmBog/KPx3Id8O
+         RsALPL4ZLXYZ7x+0FjlTSU5a3634HPG+VairKIWjOAdsqk8oWEB4ifFLBuiBDR/8XN6B
+         ZBlg==
+X-Gm-Message-State: AOAM532HNj6gy/wr8aH/hcVA515rBFZxeEVtzcSJwISTJYHm+p6jt7py
+        Dn5xJ1N94c3zelrnhjsxIBs6+Nn8W67zDplW8/EC5yoe1N/0AW6LIb3aL/nsOvFLVJo1rLJjjI6
+        4yYqs38m/d/CLVWoO2qJ0gpb+
+X-Received: by 2002:a05:6402:27c6:: with SMTP id c6mr10083034ede.152.1635793998491;
+        Mon, 01 Nov 2021 12:13:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwDCENu1cSGClGlzjt/UWsaSrQ56enERx4L8r0T465qiI6NxwdjP7/jBAJd8SscFR/+sF2cOA==
+X-Received: by 2002:a05:6402:27c6:: with SMTP id c6mr10083006ede.152.1635793998301;
+        Mon, 01 Nov 2021 12:13:18 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id dp8sm7563082ejc.83.2021.11.01.12.13.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Nov 2021 12:13:17 -0700 (PDT)
+Message-ID: <81e3cf3e-12d9-46fe-23c3-d5fa95462a67@redhat.com>
+Date:   Mon, 1 Nov 2021 20:13:16 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdUw=6RMF4gEhROMBwQALNmmKJgiKQLYymV4m75EZV+DJQ@mail.gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [RFC 0/5] ACPI/power-suppy add fuel-gauge support on cht-wc PMIC
+ without USB-PD support devs
+Content-Language: en-US
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Sebastian Reichel <sre@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Yauhen Kharuzhy <jekhor@gmail.com>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>
+References: <20211031162428.22368-1-hdegoede@redhat.com>
+ <CAHp75VdFcfEyEsFWVS_zxr-aehpqELAwN1eBs-KHVkEwxO2e5Q@mail.gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <CAHp75VdFcfEyEsFWVS_zxr-aehpqELAwN1eBs-KHVkEwxO2e5Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 03:37:47PM +0200, Geert Uytterhoeven wrote:
-> > > > I'm omitting this for now since (as noted on the cgit description)
-> > > > this server is not provisioned adequately for cloning from scratch,
-> > > > and should only be used for fetch into an already-populated mainline
-> > > > repo clone. If that's a problem I can see about getting it moved
-> > > > somewhere more appropriate.
-> > >
-> > > Perhaps you can move it to kernel.org?
-> >
-> > I would love to. This was my hope years ago, but I got bogged down in
-> > the GPG key signing requirements and folks not following through with
-> > signing my key. Has any of that been streamlined since?
+Hi,
+
+On 10/31/21 20:49, Andy Shevchenko wrote:
+> On Sun, Oct 31, 2021 at 6:25 PM Hans de Goede <hdegoede@redhat.com> wrote:
+>>
+>> Hi All,
+>>
+>> Together with my earlier series to hookup the charger, Vbus boost converter
+>> and USB role-switching:
+>> https://lore.kernel.org/platform-driver-x86/20211030182813.116672-1-hdegoede@redhat.com/T/#t
+>>
+>> This series also adds battery-monitoring support on the Xiaomi Mi Pad 2
+>> and the generic parts of it should also be usable on other devices with
+>> the same PMIC setup.
+>>
+>> I've marked this series as a RFC because I'm not happy about the amount of
+>> DMI quirks this series requires. The 3 separate quirks in
+>> drivers/acpi/x86/utils.c are a bit much, but esp. when combined with also
+>> the changes needed in drivers/gpio/gpiolib-acpi.c it all becomes a bit too
+>> much special casing for just a single device.
+>>
+>> So I've been thinking about alternatives for this and I've come up with
+>> 3 ways to deal with this:
+>>
+>> 1. This patch set.
+>>
+>> 2. Instead of the quirks in drivers/acpi/x86/utils.c, write an old-fashioned
+>> "board" .c file/module which autoloads based on a DMI match and manually
+>> instantiates i2c-clients for the BQ27520 fuel-gauge and the KTD20260 LED ctrlr.
+>> Combined with not giving an IRQ to the fuel-gauge i2c-client (i), this allows
+>> completely dropping the gpiolib-acpi.c changes and only requires 1 quirk for
+>> the 2nd PWM controller in drivers/acpi/x86/utils.c. As an added bonus this
+>> approach will also removes the need to add ACPI enumeration support to the
+>> bq27xxx_battery code.
+>>
+>> 3. While working on this I noticed that the Mi Pad 2 DSDT actually has
+>> full ac and battery ACPI code in its DSDT, which Linux was not trying to
+>> use because of the Whiskey Cove PMIC ACPI HID in acpi_ac_blacklist[] in
+>> drivers/apci/ac.c, resp. a missing _DEP for the ACPI battery.
+>>
+>> With the native drivers disabled (the default in 5.15-rc7 without patches),
+>> both those things fixed and a fix to intel_pmic_regs_handler() in
+>> drivers/acpi/pmic/intel_pmic.c, battery monitoring actually starts working
+>> somwhat!
+>>
+>> I say somewhat because changes are not detected until userspace polls
+>> the power_supply and switching from charge/device to host mode and
+>> back does not work at all. This is due to the AML code for this relying
+>> on _AEI ACPI events on virtual GPIOs on the PMIC :|  This means that we
+>> would need to reverse engineer which events these virtual GPIO interrupts
+>> represent; and then somehow rework the whole MFD + child driver setup
+>> to deliver, e.g. extcon/pwrsrc events to a to-be-written GPIO driver
+>> which supports these virtual GPIOs, while at the same time also keeping
+>> normal native driver support since boards which USB-PD support need the
+>> native drivers...  So OTOH this option has the promise of solving this
+>> in a generic way which may work on more boards, OTOH it is a big mess
+>> and we lack documentation for it.  Interestingly enough the ACPI
+>> battery/ac code also takes ownership of the notification LED, downgrading
+>> it from a full RGB led to a green charging LED, which is both a pre
+>> and a con at the same time (since we would loose full RGB function).
+>>
+>> ###
 > 
-> I'll let Konstantin respond...
+>> Although I started out with implementing option 1, I now think I
+>> Would personally prefer option 2. This isolates most of the code
+>> needed to support some of these special boards into a single
+>> (per board) file which can be build as a module which can be
+>> autoloaded, rather then growing vmlinuz by adding quirks there.
+> 
+> Even before reading this my attention was on option 2 as well.
 
-We still require a valid web of trust before we can issue an account, so
-things haven't really changed in that regard. You have to get a PGP signature
-from at least 2 other people who already have an account on kernel.org.
+Its good to hear that you think this is likely the best option too.
+I hope to send out another RFC patch-series taking this approach
+instead soon.
 
-If you just need to host your git tree for hosting and sending pull requests,
-then there's really no lack of options. Any large commercial git forge will
-do just fine, including github, gitlab, gitea, sourcehut, etc. There's nothing
-really special about kernel.org in this regard.
+> However, we might give another round of searching the documentation
+> for the vGPIO lines.
 
--K
+Having those would be good regardless.
+
+> Meanwhile, have you tried to see if Android tree(s) has(ve) the
+> patches related to all this? (I'm a bit sceptical they do the right
+> thing and most probably just fall into board files case)
+
+The Android code takes the native driver path, when the EFI firmware
+sees it is about to exec Xiaomi's Android bootloader (I think it
+checks the signature) it sets OSID = 0x04 which makes all the
+ACPI devices which patch 1/5 of this RFC makes "always_present"
+return 0xf from their _STA method and it disables the troublesome
+_AEI handler too when OSID==4.
+
+So basically it does everything which this RFC series does with
+quirks automatically correct based on the OSID. But we cannot
+influence this ourselves, there is a BIOS option for it, but
+that gets overridden by OS autodetect code at boot.
+
+The fact that the Android on the tablet also goes the use
+native charger + fuel-gauge drivers route does to me is a further
+hint that using native drivers is probably the right thing to do
+(OTOH some of the code in the Android port the device ships with
+ is not so great).
+
+Regards,
+
+Hans
+
