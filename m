@@ -2,160 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C850A44157C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 09:40:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CD2C441585
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 09:42:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231806AbhKAInD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 04:43:03 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:55562 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231664AbhKAInC (ORCPT
+        id S231435AbhKAIpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 04:45:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34154 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230520AbhKAIpC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 04:43:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1635756029; x=1667292029;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=yjGMneWMb2f2E3T9+bukDdyt/pi9YaqXYViNWsE36vI=;
-  b=BjTqiqN38B5srZxqi28UUQBoq96ouLougP6yQXJJlGaUMddopy+DHZQu
-   qYbWaGwkTQlhMiOkNKnm0APTnlLhAstB3M2kSULhtKOA2eSJulrjhhoGF
-   /iIY5U9By2kECfVL/YqHpyqBhBi0SJRoJHawGt7rhnS4T3F+S+pc9JB5U
-   IZ99pvYMG7nLvSLDdpKeuKV1frsUeqcS3U9vt2SCHew7Yq9Y91F/Rxvao
-   JAzXK/gSH03Oez2T9CLFiX+GKeridVEv+RgLMCgzxO5s1kz8/vgZcWEhh
-   Zwv5i4WdnksW8faauJU/zglIoCL9z0iBVNBer5vJxiloEBubY3zqyb63b
-   Q==;
-IronPort-SDR: G/GDa1JeVnm17n+ACytQIPfYq2hWkm97J8AfrfxdGLpErMIzMSdTBrUhb1faDIbjLFs40g0DPD
- tX+WYCzHKtDzEc5FJD+EXaaVaelR1qQVQI3gSY17UwLxFTKKiGgupp1sigyW2acDjGOV07eJK1
- oaSuFfezvnw3/MzE2W8OSA7XG18JQH36IKbD0/8xBtcF3qZyJGvZ9nJUwsSplTts5Y6lJ0SMvK
- /jaAf3K20D8EkyVLIVILF9yzkdCIQfUn/cm77zafI4OauA9XuXUUjD6f0Jla9NCVATAMphkT1S
- +wsoRgtisTbDT3hGfaSsgxve
-X-IronPort-AV: E=Sophos;i="5.87,198,1631602800"; 
-   d="scan'208";a="137563529"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 01 Nov 2021 01:40:29 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Mon, 1 Nov 2021 01:40:28 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex01.mchp-main.com
- (10.10.85.143) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
- Transport; Mon, 1 Nov 2021 01:40:28 -0700
-Date:   Mon, 1 Nov 2021 09:42:13 +0100
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     Kavyasree Kotagiri <kavyasree.kotagiri@microchip.com>
-CC:     <robh+dt@kernel.org>, <linus.walleij@linaro.org>,
-        <linux-gpio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <UNGLinuxDriver@microchip.com>
-Subject: Re: [PATCH v2 2/2] pinctrl: ocelot: Extend support for lan966x
-Message-ID: <20211101084213.r5fgmkscyemjfdcj@soft-dev3-1.localhost>
-References: <20211101064630.32243-1-kavyasree.kotagiri@microchip.com>
- <20211101064630.32243-3-kavyasree.kotagiri@microchip.com>
+        Mon, 1 Nov 2021 04:45:02 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4270DC061714;
+        Mon,  1 Nov 2021 01:42:29 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HjRNx3Hdrz4xbC;
+        Mon,  1 Nov 2021 19:42:24 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1635756147;
+        bh=zeBNRU97MSWpu1D2Ts3/Tp8r/3C233Ohd7glZC2TBJw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=c52KPRl251BVXF489gMOE2VQI7MZgyoDLzJR7/hJJw61N/sIcR+X2cZkA3e9+Od/q
+         83luLwx7TN40+DeG5r6cy3xpqNlsdB7JEC8Haxg/ezWyt3B69aQPAujy1QGIKhnTB6
+         fmhTXJxaLsj5ytHwOIM8EnCDvfrBYzdDRTC+0bphfvdP9LM5bxlAOfOhgwEcZulc18
+         pZxc4s937mKthLXnaZXV/csQ+icDoiAPfVBEiTtiZFI1xAbqHvtKhCv7CABnS7SyAS
+         k79pQEW9a95T8fstx62jFvezS5/CbcdL/1rS0sc+5XA8GaHdBGrqxddI+s5w/4baWV
+         NI4GDm8Me8WbQ==
+Date:   Mon, 1 Nov 2021 19:42:23 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Jani Nikula <jani.nikula@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Subject: Re: linux-next: build failure after merge of the drm-misc tree
+Message-ID: <20211101194223.749197c5@canb.auug.org.au>
+In-Reply-To: <20211015202648.258445ef@canb.auug.org.au>
+References: <20211015202648.258445ef@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <20211101064630.32243-3-kavyasree.kotagiri@microchip.com>
+Content-Type: multipart/signed; boundary="Sig_/AvYxcYE9xVAnbawWvDaH9ME";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kavya,
+--Sig_/AvYxcYE9xVAnbawWvDaH9ME
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-The 11/01/2021 12:16, Kavyasree Kotagiri wrote:
-> This patch extends pinctrl-ocelot driver to support also the
-> lan966x. Register layout is same as ocelot. It has 78 GPIOs.
-> Requires 3 registers ALT0, ALT1, ALT2 to configure ALT mode.
-> 
-> Signed-off-by: Kavyasree Kotagiri <kavyasree.kotagiri@microchip.com>
+Hi all,
+
+On Fri, 15 Oct 2021 20:26:48 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> After merging the drm-misc tree, today's linux-next build (arm
+> multi_v7_defconfig) failed like this:
+>=20
+> drivers/gpu/drm/drm_modeset_lock.c:111:29: error: conflicting types for '=
+__stack_depot_save'
+>   111 | static depot_stack_handle_t __stack_depot_save(void)
+>       |                             ^~~~~~~~~~~~~~~~~~
+> In file included from include/linux/page_ext.h:7,
+>                  from include/linux/mm.h:25,
+>                  from include/linux/kallsyms.h:13,
+>                  from include/linux/bpf.h:20,
+>                  from include/linux/bpf-cgroup.h:5,
+>                  from include/linux/cgroup-defs.h:22,
+>                  from include/linux/cgroup.h:28,
+>                  from include/linux/memcontrol.h:13,
+>                  from include/linux/swap.h:9,
+>                  from include/linux/suspend.h:5,
+>                  from include/linux/regulator/consumer.h:35,
+>                  from include/linux/i2c.h:18,
+>                  from include/drm/drm_crtc.h:28,
+>                  from include/drm/drm_atomic.h:31,
+>                  from drivers/gpu/drm/drm_modeset_lock.c:24:
+> include/linux/stackdepot.h:18:22: note: previous declaration of '__stack_=
+depot_save' was here
+>    18 | depot_stack_handle_t __stack_depot_save(unsigned long *entries,
+>       |                      ^~~~~~~~~~~~~~~~~~
+>=20
+> Caused by commit
+>=20
+>   cd06ab2fd48f ("drm/locking: add backtrace for locking contended locks w=
+ithout backoff")
+>=20
+> This may only have been revealed because of another fix I have had to
+> apply today.
+>=20
+> I have applied the following patch for today.
+>=20
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Fri, 15 Oct 2021 20:17:52 +1100
+> Subject: [PATCH] drm/locking: fix for name conflict
+>=20
+> Fixes: cd06ab2fd48f ("drm/locking: add backtrace for locking contended lo=
+cks without backoff")
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
 > ---
->  drivers/pinctrl/pinctrl-ocelot.c | 416 +++++++++++++++++++++++++++++++
->  1 file changed, 416 insertions(+)
-> 
-> diff --git a/drivers/pinctrl/pinctrl-ocelot.c b/drivers/pinctrl/pinctrl-ocelot.c
-> index 0a36ec8775a3..751eb38f93da 100644
-> --- a/drivers/pinctrl/pinctrl-ocelot.c
-> +++ b/drivers/pinctrl/pinctrl-ocelot.c
-> @@ -57,16 +57,71 @@ enum {
->  #define OCELOT_FUNC_PER_PIN	4
->  
-> +	LAN966X_PIN(68),
-> +	LAN966X_PIN(69),
-> +	LAN966X_PIN(70),
-> +	LAN966X_PIN(71),
-> +	LAN966X_PIN(72),
-> +	LAN966X_PIN(73),
-> +	LAN966X_PIN(74),
-> +	LAN966X_PIN(75),
-> +	LAN966X_PIN(76),
-> +	LAN966X_PIN(77),
-> +};
-> +
-> +
-
-Here is an extra new line.
-
->  static int ocelot_get_functions_count(struct pinctrl_dev *pctldev)
+>  drivers/gpu/drm/drm_modeset_lock.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/drm_modeset_lock.c b/drivers/gpu/drm/drm_mod=
+eset_lock.c
+> index 4d32b61fa1fd..ee36dd20900d 100644
+> --- a/drivers/gpu/drm/drm_modeset_lock.c
+> +++ b/drivers/gpu/drm/drm_modeset_lock.c
+> @@ -79,7 +79,7 @@
+>  static DEFINE_WW_CLASS(crtc_ww_class);
+> =20
+>  #if IS_ENABLED(CONFIG_DRM_DEBUG_MODESET_LOCK)
+> -static noinline depot_stack_handle_t __stack_depot_save(void)
+> +static noinline depot_stack_handle_t __drm_stack_depot_save(void)
 >  {
->  	return ARRAY_SIZE(ocelot_function_names);
-> @@ -709,6 +1056,9 @@ static int ocelot_pin_function_idx(struct ocelot_pinctrl *info,
->  	for (i = 0; i < OCELOT_FUNC_PER_PIN; i++) {
->  		if (function == p->functions[i])
->  			return i;
-> +
-> +		if (function == p->a_functions[i])
-> +			return i + OCELOT_FUNC_PER_PIN;
+>  	unsigned long entries[8];
+>  	unsigned int n;
+> @@ -108,7 +108,7 @@ static void __stack_depot_print(depot_stack_handle_t =
+stack_depot)
+>  	kfree(buf);
+>  }
+>  #else /* CONFIG_DRM_DEBUG_MODESET_LOCK */
+> -static depot_stack_handle_t __stack_depot_save(void)
+> +static depot_stack_handle_t __drm_stack_depot_save(void)
+>  {
+>  	return 0;
+>  }
+> @@ -317,7 +317,7 @@ static inline int modeset_lock(struct drm_modeset_loc=
+k *lock,
+>  		ret =3D 0;
+>  	} else if (ret =3D=3D -EDEADLK) {
+>  		ctx->contended =3D lock;
+> -		ctx->stack_depot =3D __stack_depot_save();
+> +		ctx->stack_depot =3D __drm_stack_depot_save();
 >  	}
->  
->  	return -1;
-> @@ -744,6 +1094,36 @@ static int ocelot_pinmux_set_mux(struct pinctrl_dev *pctldev,
->  	return 0;
->  }
->  
+> =20
+>  	return ret;
+> --=20
+> 2.33.0
 
-> +
->  static int ocelot_pctl_get_groups_count(struct pinctrl_dev *pctldev)
->  {
->  	struct ocelot_pinctrl *info = pinctrl_dev_get_drvdata(pctldev);
-> @@ -1074,6 +1480,14 @@ static struct pinctrl_desc sparx5_desc = {
->  	.npins = ARRAY_SIZE(sparx5_pins),
->  	.pctlops = &ocelot_pctl_ops,
->  	.pmxops = &ocelot_pmx_ops,
-> +};
-> +
-> +static struct pinctrl_desc lan966x_desc = {
-> +	.name = "lan966x-pinctrl",
-> +	.pins = lan966x_pins,
-> +	.npins = ARRAY_SIZE(lan966x_pins),
-> +	.pctlops = &ocelot_pctl_ops,
-> +	.pmxops = &lan966x_pmx_ops,
+This has reappeared today.  I don't know what happened to the drm-misc
+tree over the weeked :-(
 
-This change removes .confops and .owner from sparx5 which is a mistake.
+I have reapplied the above fix.
+--=20
+Cheers,
+Stephen Rothwell
 
->  	.confops = &ocelot_confops,
->  	.owner = THIS_MODULE,
->  };
-> @@ -1114,6 +1528,7 @@ static int ocelot_create_group_func_map(struct device *dev,
->  	return 0;
->  }
->  
-> +
+--Sig_/AvYxcYE9xVAnbawWvDaH9ME
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Here is an extra new line.
+-----BEGIN PGP SIGNATURE-----
 
->  static int ocelot_pinctrl_register(struct platform_device *pdev,
->  				   struct ocelot_pinctrl *info)
->  {
-> @@ -1337,6 +1752,7 @@ static const struct of_device_id ocelot_pinctrl_of_match[] = {
->  	{ .compatible = "mscc,ocelot-pinctrl", .data = &ocelot_desc },
->  	{ .compatible = "mscc,jaguar2-pinctrl", .data = &jaguar2_desc },
->  	{ .compatible = "microchip,sparx5-pinctrl", .data = &sparx5_desc },
-> +	{ .compatible = "microchip,lan966x-pinctrl", .data = &lan966x_desc },
->  	{},
->  };
->  
-> -- 
-> 2.17.1
-> 
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF/qG8ACgkQAVBC80lX
+0GyNiAf+Ms39LuFBShnOv9eD0ADdpHrEZTj45+fbpivngOM/Ezt/r5mrf5QEI2VN
+DW6TpcExT8EnKmA6OmOVwJ8aoGfZagU6iyFOLd7JZ3rjxpJJTxTmzAPn8YQmBRAh
+4Vkgl2CHv73+J6ptIuu+cHeqB75mIRsUJJ3Ig7sjhhdWncF7OQrWWXhLMSE0M6Lm
+WQOzGOQm13QUKhGupADWHq1a5NoRiKpHR+dI6DnmgM0PTgM1PoVxqnfZ3UvGOQmi
+eXsyUZbaK4EHqo5cn/0+p8/K6MpjVCupcrIr+dlJ9JPntducoFS3OzDpIhzgTBJL
+kvN4/iz2JTwrvuMjVbDwdedpmJAi3w==
+=9avb
+-----END PGP SIGNATURE-----
 
--- 
-/Horatiu
+--Sig_/AvYxcYE9xVAnbawWvDaH9ME--
