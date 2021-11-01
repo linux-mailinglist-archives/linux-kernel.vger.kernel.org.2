@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06E47441885
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:48:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DCB0441889
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:48:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232679AbhKAJtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:49:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47842 "EHLO mail.kernel.org"
+        id S233142AbhKAJtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:49:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47848 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234411AbhKAJom (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234414AbhKAJom (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 1 Nov 2021 05:44:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DF8DC613C8;
-        Mon,  1 Nov 2021 09:29:34 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 72B9F613B5;
+        Mon,  1 Nov 2021 09:29:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758975;
-        bh=B7NlcoXBbcEdEpxjA4R1Eluq85rgu6AyqC7x2HEKsC0=;
+        s=korg; t=1635758979;
+        bh=agtaoqWLsHM3xqWPLgQ/Ek0GDJt1yWaYGKvZFLRRQXw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SI7fviDPpA2FOr8OjatzMviGMjm0JV95AVqsaitoR+nCArzt+N5Vj4H2eR1nh0zMW
-         uIJ9zn+m9wtI566ZbLuYpoHw4xEtiJ460tARZlrLaFojS9puxOmBgN6IMiSTucJHzT
-         MD1PDCaX2gLX+Ws8AmHXjzsxmYGZNhG/rD2Gs7EQ=
+        b=0/GjwWTVPAYhA34mrMXxUy3bBBxqXXoAru+/2G0xwKebINkGpLcPa2mdPeozS+Sdl
+         8gYe9Tc9rw4W5SX/vOagUwVhUNrpK5zUAPxtCcCtYb1gX0ucE/mvjfFsyS2KYVO9Vq
+         /3M2wafYP9xAJ7FwZaUpsvVJb2Hp/JoyUKgUw8yM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        stable@vger.kernel.org, Xu Kuohai <xukuohai@huawei.com>,
         Alexei Starovoitov <ast@kernel.org>
-Subject: [PATCH 5.14 061/125] bpf: Fix potential race in tail call compatibility check
-Date:   Mon,  1 Nov 2021 10:17:14 +0100
-Message-Id: <20211101082544.747102496@linuxfoundation.org>
+Subject: [PATCH 5.14 062/125] bpf: Fix error usage of map_fd and fdget() in generic_map_update_batch()
+Date:   Mon,  1 Nov 2021 10:17:15 +0100
+Message-Id: <20211101082544.930255516@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211101082533.618411490@linuxfoundation.org>
 References: <20211101082533.618411490@linuxfoundation.org>
@@ -41,130 +39,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Toke Høiland-Jørgensen <toke@redhat.com>
+From: Xu Kuohai <xukuohai@huawei.com>
 
-commit 54713c85f536048e685258f880bf298a74c3620d upstream.
+commit fda7a38714f40b635f5502ec4855602c6b33dad2 upstream.
 
-Lorenzo noticed that the code testing for program type compatibility of
-tail call maps is potentially racy in that two threads could encounter a
-map with an unset type simultaneously and both return true even though they
-are inserting incompatible programs.
+1. The ufd in generic_map_update_batch() should be read from batch.map_fd;
+2. A call to fdget() should be followed by a symmetric call to fdput().
 
-The race window is quite small, but artificially enlarging it by adding a
-usleep_range() inside the check in bpf_prog_array_compatible() makes it
-trivial to trigger from userspace with a program that does, essentially:
-
-        map_fd = bpf_create_map(BPF_MAP_TYPE_PROG_ARRAY, 4, 4, 2, 0);
-        pid = fork();
-        if (pid) {
-                key = 0;
-                value = xdp_fd;
-        } else {
-                key = 1;
-                value = tc_fd;
-        }
-        err = bpf_map_update_elem(map_fd, &key, &value, 0);
-
-While the race window is small, it has potentially serious ramifications in
-that triggering it would allow a BPF program to tail call to a program of a
-different type. So let's get rid of it by protecting the update with a
-spinlock. The commit in the Fixes tag is the last commit that touches the
-code in question.
-
-v2:
-- Use a spinlock instead of an atomic variable and cmpxchg() (Alexei)
-v3:
-- Put lock and the members it protects into an embedded 'owner' struct (Daniel)
-
-Fixes: 3324b584b6f6 ("ebpf: misc core cleanup")
-Reported-by: Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+Fixes: aa2e93b8e58e ("bpf: Add generic support for update and delete batch ops")
+Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Link: https://lore.kernel.org/bpf/20211026110019.363464-1-toke@redhat.com
+Link: https://lore.kernel.org/bpf/20211019032934.1210517-1-xukuohai@huawei.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/bpf.h   |    7 +++++--
- kernel/bpf/arraymap.c |    1 +
- kernel/bpf/core.c     |   20 +++++++++++++-------
- kernel/bpf/syscall.c  |    6 ++++--
- 4 files changed, 23 insertions(+), 11 deletions(-)
+ kernel/bpf/syscall.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -900,8 +900,11 @@ struct bpf_array_aux {
- 	 * stored in the map to make sure that all callers and callees have
- 	 * the same prog type and JITed flag.
- 	 */
--	enum bpf_prog_type type;
--	bool jited;
-+	struct {
-+		spinlock_t lock;
-+		enum bpf_prog_type type;
-+		bool jited;
-+	} owner;
- 	/* Programs with direct jumps into programs part of this array. */
- 	struct list_head poke_progs;
- 	struct bpf_map *map;
---- a/kernel/bpf/arraymap.c
-+++ b/kernel/bpf/arraymap.c
-@@ -1051,6 +1051,7 @@ static struct bpf_map *prog_array_map_al
- 	INIT_WORK(&aux->work, prog_array_map_clear_deferred);
- 	INIT_LIST_HEAD(&aux->poke_progs);
- 	mutex_init(&aux->poke_mutex);
-+	spin_lock_init(&aux->owner.lock);
- 
- 	map = array_map_alloc(attr);
- 	if (IS_ERR(map)) {
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -1821,20 +1821,26 @@ static unsigned int __bpf_prog_ret0_warn
- bool bpf_prog_array_compatible(struct bpf_array *array,
- 			       const struct bpf_prog *fp)
- {
-+	bool ret;
-+
- 	if (fp->kprobe_override)
- 		return false;
- 
--	if (!array->aux->type) {
-+	spin_lock(&array->aux->owner.lock);
-+
-+	if (!array->aux->owner.type) {
- 		/* There's no owner yet where we could check for
- 		 * compatibility.
- 		 */
--		array->aux->type  = fp->type;
--		array->aux->jited = fp->jited;
--		return true;
-+		array->aux->owner.type  = fp->type;
-+		array->aux->owner.jited = fp->jited;
-+		ret = true;
-+	} else {
-+		ret = array->aux->owner.type  == fp->type &&
-+		      array->aux->owner.jited == fp->jited;
- 	}
--
--	return array->aux->type  == fp->type &&
--	       array->aux->jited == fp->jited;
-+	spin_unlock(&array->aux->owner.lock);
-+	return ret;
- }
- 
- static int bpf_check_tail_call(const struct bpf_prog *fp)
 --- a/kernel/bpf/syscall.c
 +++ b/kernel/bpf/syscall.c
-@@ -543,8 +543,10 @@ static void bpf_map_show_fdinfo(struct s
+@@ -1333,12 +1333,11 @@ int generic_map_update_batch(struct bpf_
+ 	void __user *values = u64_to_user_ptr(attr->batch.values);
+ 	void __user *keys = u64_to_user_ptr(attr->batch.keys);
+ 	u32 value_size, cp, max_count;
+-	int ufd = attr->map_fd;
++	int ufd = attr->batch.map_fd;
+ 	void *key, *value;
+ 	struct fd f;
+ 	int err = 0;
  
- 	if (map->map_type == BPF_MAP_TYPE_PROG_ARRAY) {
- 		array = container_of(map, struct bpf_array, map);
--		type  = array->aux->type;
--		jited = array->aux->jited;
-+		spin_lock(&array->aux->owner.lock);
-+		type  = array->aux->owner.type;
-+		jited = array->aux->owner.jited;
-+		spin_unlock(&array->aux->owner.lock);
+-	f = fdget(ufd);
+ 	if (attr->batch.elem_flags & ~BPF_F_LOCK)
+ 		return -EINVAL;
+ 
+@@ -1363,6 +1362,7 @@ int generic_map_update_batch(struct bpf_
+ 		return -ENOMEM;
  	}
  
- 	seq_printf(m,
++	f = fdget(ufd); /* bpf_map_do_batch() guarantees ufd is valid */
+ 	for (cp = 0; cp < max_count; cp++) {
+ 		err = -EFAULT;
+ 		if (copy_from_user(key, keys + cp * map->key_size,
+@@ -1382,6 +1382,7 @@ int generic_map_update_batch(struct bpf_
+ 
+ 	kfree(value);
+ 	kfree(key);
++	fdput(f);
+ 	return err;
+ }
+ 
 
 
