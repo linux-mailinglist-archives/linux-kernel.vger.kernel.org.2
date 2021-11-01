@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E9BC441643
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:21:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5447744190C
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:54:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232560AbhKAJXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:23:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58176 "EHLO mail.kernel.org"
+        id S234824AbhKAJxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:53:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52288 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232130AbhKAJWg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:22:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 35156610A8;
-        Mon,  1 Nov 2021 09:19:31 +0000 (UTC)
+        id S234732AbhKAJss (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:48:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 79840610E8;
+        Mon,  1 Nov 2021 09:31:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758371;
-        bh=erEI6Q1Vmm1KelPyT4naJfSubPojHIGmCJXmlpPr/uc=;
+        s=korg; t=1635759075;
+        bh=BrOIcfZkfakfLm2U32HmhYXzwiyAaowKAZcqcGPr2uU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2qOwYXu1p0rRx7rMbrC59CHchsOVp9KV4CO506hOZNVekXYMcMyKl9kVJ+FRhb0X4
-         f6ZsU93tWV1rdbRliCQWBvN7qx0I9MnCup+3qDXWmK+VuWHt/+qZLTjAl8WfmeTzLk
-         fb4MXLgXKSUHAA9foI6NCw9TSUZgpSBKiKTaZCIc=
+        b=KgawaKnxC74rlfwCDkK0tsbk+oqDOhSFLZuLwClXTU4IwmFUHd6q9LHltA2n4aO0V
+         0+pM02L32NFS98t5EQz6qeOXQgrT0WGmShylZoz5wdLMND6+9qpLrjQEom/78BFOP7
+         xCdbqKU5PCAuiyvATXUk/ykNldlMSLiToZPMXWfU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
-        Sven Eckelmann <sven@narfation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        syzbot+28b0702ada0bf7381f58@syzkaller.appspotmail.com
-Subject: [PATCH 4.9 16/20] net: batman-adv: fix error handling
+        stable@vger.kernel.org, Yongxin Liu <yongxin.liu@windriver.com>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Gurucharan G <gurucharanx.g@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>
+Subject: [PATCH 5.14 072/125] ice: check whether PTP is initialized in ice_ptp_release()
 Date:   Mon,  1 Nov 2021 10:17:25 +0100
-Message-Id: <20211101082447.557715215@linuxfoundation.org>
+Message-Id: <20211101082546.836982281@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082444.133899096@linuxfoundation.org>
-References: <20211101082444.133899096@linuxfoundation.org>
+In-Reply-To: <20211101082533.618411490@linuxfoundation.org>
+References: <20211101082533.618411490@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,173 +41,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Yongxin Liu <yongxin.liu@windriver.com>
 
-commit 6f68cd634856f8ca93bafd623ba5357e0f648c68 upstream.
+commit fd1b5beb177a8372cea2a0d014835491e4886f77 upstream.
 
-Syzbot reported ODEBUG warning in batadv_nc_mesh_free(). The problem was
-in wrong error handling in batadv_mesh_init().
+PTP is currently only supported on E810 devices, it is checked
+in ice_ptp_init(). However, there is no check in ice_ptp_release().
+For other E800 series devices, ice_ptp_release() will be wrongly executed.
 
-Before this patch batadv_mesh_init() was calling batadv_mesh_free() in case
-of any batadv_*_init() calls failure. This approach may work well, when
-there is some kind of indicator, which can tell which parts of batadv are
-initialized; but there isn't any.
+Fix the following calltrace.
 
-All written above lead to cleaning up uninitialized fields. Even if we hide
-ODEBUG warning by initializing bat_priv->nc.work, syzbot was able to hit
-GPF in batadv_nc_purge_paths(), because hash pointer in still NULL. [1]
+  INFO: trying to register non-static key.
+  The code is fine but needs lockdep annotation, or maybe
+  you didn't initialize this object before use?
+  turning off the locking correctness validator.
+  Workqueue: ice ice_service_task [ice]
+  Call Trace:
+   dump_stack_lvl+0x5b/0x82
+   dump_stack+0x10/0x12
+   register_lock_class+0x495/0x4a0
+   ? find_held_lock+0x3c/0xb0
+   __lock_acquire+0x71/0x1830
+   lock_acquire+0x1e6/0x330
+   ? ice_ptp_release+0x3c/0x1e0 [ice]
+   ? _raw_spin_lock+0x19/0x70
+   ? ice_ptp_release+0x3c/0x1e0 [ice]
+   _raw_spin_lock+0x38/0x70
+   ? ice_ptp_release+0x3c/0x1e0 [ice]
+   ice_ptp_release+0x3c/0x1e0 [ice]
+   ice_prepare_for_reset+0xcb/0xe0 [ice]
+   ice_do_reset+0x38/0x110 [ice]
+   ice_service_task+0x138/0xf10 [ice]
+   ? __this_cpu_preempt_check+0x13/0x20
+   process_one_work+0x26a/0x650
+   worker_thread+0x3f/0x3b0
+   ? __kthread_parkme+0x51/0xb0
+   ? process_one_work+0x650/0x650
+   kthread+0x161/0x190
+   ? set_kthread_struct+0x40/0x40
+   ret_from_fork+0x1f/0x30
 
-To fix these bugs we can unwind batadv_*_init() calls one by one.
-It is good approach for 2 reasons: 1) It fixes bugs on error handling
-path 2) It improves the performance, since we won't call unneeded
-batadv_*_free() functions.
-
-So, this patch makes all batadv_*_init() clean up all allocated memory
-before returning with an error to no call correspoing batadv_*_free()
-and open-codes batadv_mesh_free() with proper order to avoid touching
-uninitialized fields.
-
-Link: https://lore.kernel.org/netdev/000000000000c87fbd05cef6bcb0@google.com/ [1]
-Reported-and-tested-by: syzbot+28b0702ada0bf7381f58@syzkaller.appspotmail.com
-Fixes: c6c8fea29769 ("net: Add batman-adv meshing protocol")
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Acked-by: Sven Eckelmann <sven@narfation.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 4dd0d5c33c3e ("ice: add lock around Tx timestamp tracker flush")
+Signed-off-by: Yongxin Liu <yongxin.liu@windriver.com>
+Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
+Tested-by: Gurucharan G <gurucharanx.g@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/batman-adv/bridge_loop_avoidance.c |    8 +++-
- net/batman-adv/main.c                  |   56 +++++++++++++++++++++++----------
- net/batman-adv/network-coding.c        |    4 +-
- net/batman-adv/translation-table.c     |    4 +-
- 4 files changed, 52 insertions(+), 20 deletions(-)
+ drivers/net/ethernet/intel/ice/ice_ptp.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/net/batman-adv/bridge_loop_avoidance.c
-+++ b/net/batman-adv/bridge_loop_avoidance.c
-@@ -1569,10 +1569,14 @@ int batadv_bla_init(struct batadv_priv *
- 		return 0;
- 
- 	bat_priv->bla.claim_hash = batadv_hash_new(128);
--	bat_priv->bla.backbone_hash = batadv_hash_new(32);
-+	if (!bat_priv->bla.claim_hash)
-+		return -ENOMEM;
- 
--	if (!bat_priv->bla.claim_hash || !bat_priv->bla.backbone_hash)
-+	bat_priv->bla.backbone_hash = batadv_hash_new(32);
-+	if (!bat_priv->bla.backbone_hash) {
-+		batadv_hash_destroy(bat_priv->bla.claim_hash);
- 		return -ENOMEM;
-+	}
- 
- 	batadv_hash_set_lock_class(bat_priv->bla.claim_hash,
- 				   &batadv_claim_hash_lock_class_key);
---- a/net/batman-adv/main.c
-+++ b/net/batman-adv/main.c
-@@ -177,29 +177,41 @@ int batadv_mesh_init(struct net_device *
- 	INIT_HLIST_HEAD(&bat_priv->softif_vlan_list);
- 	INIT_HLIST_HEAD(&bat_priv->tp_list);
- 
--	ret = batadv_v_mesh_init(bat_priv);
--	if (ret < 0)
--		goto err;
--
- 	ret = batadv_originator_init(bat_priv);
--	if (ret < 0)
--		goto err;
-+	if (ret < 0) {
-+		atomic_set(&bat_priv->mesh_state, BATADV_MESH_DEACTIVATING);
-+		goto err_orig;
-+	}
- 
- 	ret = batadv_tt_init(bat_priv);
--	if (ret < 0)
--		goto err;
-+	if (ret < 0) {
-+		atomic_set(&bat_priv->mesh_state, BATADV_MESH_DEACTIVATING);
-+		goto err_tt;
-+	}
+--- a/drivers/net/ethernet/intel/ice/ice_ptp.c
++++ b/drivers/net/ethernet/intel/ice/ice_ptp.c
+@@ -1582,6 +1582,9 @@ err_kworker:
+  */
+ void ice_ptp_release(struct ice_pf *pf)
+ {
++	if (!test_bit(ICE_FLAG_PTP, pf->flags))
++		return;
 +
-+	ret = batadv_v_mesh_init(bat_priv);
-+	if (ret < 0) {
-+		atomic_set(&bat_priv->mesh_state, BATADV_MESH_DEACTIVATING);
-+		goto err_v;
-+	}
+ 	/* Disable timestamping for both Tx and Rx */
+ 	ice_ptp_cfg_timestamp(pf, false);
  
- 	ret = batadv_bla_init(bat_priv);
--	if (ret < 0)
--		goto err;
-+	if (ret < 0) {
-+		atomic_set(&bat_priv->mesh_state, BATADV_MESH_DEACTIVATING);
-+		goto err_bla;
-+	}
- 
- 	ret = batadv_dat_init(bat_priv);
--	if (ret < 0)
--		goto err;
-+	if (ret < 0) {
-+		atomic_set(&bat_priv->mesh_state, BATADV_MESH_DEACTIVATING);
-+		goto err_dat;
-+	}
- 
- 	ret = batadv_nc_mesh_init(bat_priv);
--	if (ret < 0)
--		goto err;
-+	if (ret < 0) {
-+		atomic_set(&bat_priv->mesh_state, BATADV_MESH_DEACTIVATING);
-+		goto err_nc;
-+	}
- 
- 	batadv_gw_init(bat_priv);
- 	batadv_mcast_init(bat_priv);
-@@ -209,8 +221,20 @@ int batadv_mesh_init(struct net_device *
- 
- 	return 0;
- 
--err:
--	batadv_mesh_free(soft_iface);
-+err_nc:
-+	batadv_dat_free(bat_priv);
-+err_dat:
-+	batadv_bla_free(bat_priv);
-+err_bla:
-+	batadv_v_mesh_free(bat_priv);
-+err_v:
-+	batadv_tt_free(bat_priv);
-+err_tt:
-+	batadv_originator_free(bat_priv);
-+err_orig:
-+	batadv_purge_outstanding_packets(bat_priv, NULL);
-+	atomic_set(&bat_priv->mesh_state, BATADV_MESH_INACTIVE);
-+
- 	return ret;
- }
- 
---- a/net/batman-adv/network-coding.c
-+++ b/net/batman-adv/network-coding.c
-@@ -166,8 +166,10 @@ int batadv_nc_mesh_init(struct batadv_pr
- 				   &batadv_nc_coding_hash_lock_class_key);
- 
- 	bat_priv->nc.decoding_hash = batadv_hash_new(128);
--	if (!bat_priv->nc.decoding_hash)
-+	if (!bat_priv->nc.decoding_hash) {
-+		batadv_hash_destroy(bat_priv->nc.coding_hash);
- 		goto err;
-+	}
- 
- 	batadv_hash_set_lock_class(bat_priv->nc.decoding_hash,
- 				   &batadv_nc_decoding_hash_lock_class_key);
---- a/net/batman-adv/translation-table.c
-+++ b/net/batman-adv/translation-table.c
-@@ -4373,8 +4373,10 @@ int batadv_tt_init(struct batadv_priv *b
- 		return ret;
- 
- 	ret = batadv_tt_global_init(bat_priv);
--	if (ret < 0)
-+	if (ret < 0) {
-+		batadv_tt_local_table_free(bat_priv);
- 		return ret;
-+	}
- 
- 	batadv_tvlv_handler_register(bat_priv, batadv_tt_tvlv_ogm_handler_v1,
- 				     batadv_tt_tvlv_unicast_handler_v1,
 
 
