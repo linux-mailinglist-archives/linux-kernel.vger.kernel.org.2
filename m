@@ -2,98 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD0ED44158A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 09:44:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91AD644158B
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 09:44:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231472AbhKAIqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 04:46:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229933AbhKAIqf (ORCPT
+        id S231702AbhKAIqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 04:46:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42273 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231676AbhKAIql (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 04:46:35 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12C44C061714
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 01:44:03 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id a132so14744661qkg.0
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 01:44:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/X9QXRNDdyclz1/TInEobZseXLFJXvPreNFjueMyvDs=;
-        b=LVJdpokNnRoyqlzV500kI7epNfT+ZTRSPnqh2RG08cdynB9em9+fLjbhewLxVncCXa
-         ZxThLfsSxKkyGlpAhIBtR7fHzkAZ1XgIsSeBtwRnYKVsWx7A4yu+PKqhwu77EkL7vRHr
-         rvrJo9ByPY8jxrvD7KXJlUJB9HAN6ercpVNtS4CljZO1eR7QZG6pfbzWtw39t+OE8nKH
-         Ooq7HW5kwSZdfPmOreIM9UWun7+5IAdcxkac2nvoE7iK7GGh+05GoTUNHjc9sgCczbNN
-         1XS+gomUNJ2Pfwb9ToBdl7VjJO4hqJpQqoxFG0vYQY5p+n35ZWM8OVryUmYHM/WXdDWF
-         DTGA==
+        Mon, 1 Nov 2021 04:46:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635756248;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2Ad4v/ujl0t03/UsIys5jLvOTiR3MOz3oTeEO3GUsRw=;
+        b=UdxHmithQu3Z860J0B8MI1vr1m86BAPBmp43ufKVyqUVGkICbWxGZlwLsin8SKjYD9/Sku
+        XFf0QJpRk81zhLDw/2XM6AmkpFX8RfZdSMgMd2u9Magq2o3/pTSboijJZGZmsxpD6Vynw0
+        pN2JdQDPQtGgP5CBl9FEvJ1U5qUWDNs=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-244-yDk5umCFNgWH-YQWD4bZLw-1; Mon, 01 Nov 2021 04:44:07 -0400
+X-MC-Unique: yDk5umCFNgWH-YQWD4bZLw-1
+Received: by mail-ed1-f70.google.com with SMTP id s12-20020a50dacc000000b003dbf7a78e88so14934034edj.2
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 01:44:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/X9QXRNDdyclz1/TInEobZseXLFJXvPreNFjueMyvDs=;
-        b=Ef/1rGjzokYFAhU3ZB3H+O72SKhUyyg+QagXrBvB2mxR25Pq6coIqrmS7abu11kehV
-         ClNIIFQD/OE2rvUI9ZOtLPn3G6uOEg6TU9Uu4WKi4B1HQWvccwE09ZPXyTlZ1zLZWcic
-         C0lbVJFn/UyZKWB/kjdUeGfQrnIJqO+v5O/NUozNPouMfJj7r+Tc4q4TakrXtnaNy7Nm
-         8Mjl2XS6/itcA7MNZi9xpHk97DJempIxdRhYwf2TqwfmyFzrRCdDaFqEA618RDF5Rx3b
-         3XJnSxlqLoG5+oy/DSE6KfW6zRV7UFkGo5/OoOnFy7nhU9Mb/yWrT9XyFGdSzZNg9eDS
-         U6rQ==
-X-Gm-Message-State: AOAM531h/BVuQFqm+iuaCLnS9fmqw1UrhsSrUGbEPKBBEivEAW1n3RkI
-        UDH07oANEq9YJRT+dyJcr7E=
-X-Google-Smtp-Source: ABdhPJzfwMH4NpzJkAlxoVClXk6GTAcN/YIOmZFUoKwcRn0alRR1BvRk6kbt41YFQ6BKBnYbYINKKA==
-X-Received: by 2002:a37:6104:: with SMTP id v4mr94819qkb.201.1635756241852;
-        Mon, 01 Nov 2021 01:44:01 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id br17sm9758248qkb.10.2021.11.01.01.43.57
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2Ad4v/ujl0t03/UsIys5jLvOTiR3MOz3oTeEO3GUsRw=;
+        b=mgN8cygbSkHewPVxStaGvPZtDD+ihjDW167fGixJyr1H2dBAvCxw8NVxiVxwmfoZJX
+         CkG7c0osl5eyiaHsjcqJvUm9nVIzg1uUq9yJC8W0N34bZy2Xy+Y9BcZN1SIEsrGDn+YZ
+         gfw6D3KNmyfyI5xjBHj/73SSI7u0C2m60pphcVaUIEIT7p3NfJCC/o6yw9bt+rCwM44V
+         dcpdENFKa4CwcriXZq7SXtsIFvJOnITwUUXNK8UaaSCwRmbLn30MuyX1rwa1X3EQ7bQH
+         UjVcNNgtQngpUREhImqh9Bkgri5MyuaSrFvsqzh+ehiQww/NIK59L1ADZvcDhMY524HE
+         MOig==
+X-Gm-Message-State: AOAM5315pxcpvFBrmNZASbTI+A3TUQ4iny8uuBQyH7ogBS38b6lGOB10
+        Wb4U7ZnXSME17eZJNh9Nxo3FbNx5riz79Cmu0LGwqX9lqQdmyuqytZd0biGgOSGhhVa9gYk7OPF
+        /minN8mPA128XbZIBrfUwnNZw
+X-Received: by 2002:a17:906:6a08:: with SMTP id qw8mr16861436ejc.200.1635756246077;
+        Mon, 01 Nov 2021 01:44:06 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyd49MFk73UCNOr557C1b0YMN2BJsE8P1scufrL9YzNQZV1E2Ocll2Ydrc/TjafnpwIacvjTA==
+X-Received: by 2002:a17:906:6a08:: with SMTP id qw8mr16861416ejc.200.1635756245941;
+        Mon, 01 Nov 2021 01:44:05 -0700 (PDT)
+Received: from redhat.com ([176.12.204.186])
+        by smtp.gmail.com with ESMTPSA id ho17sm1128483ejc.111.2021.11.01.01.44.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 01:44:01 -0700 (PDT)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: deng.changcheng@zte.com.cn
-To:     mpe@ellerman.id.au
-Cc:     benh@kernel.crashing.org, paulus@samba.org, pmladek@suse.com,
-        christophe.leroy@csgroup.eu, john.ogness@linutronix.de,
-        npiggin@gmail.com, naveen.n.rao@linux.vnet.ibm.com,
-        sxwjean@gmail.com, arnd@arndb.de, clg@kaod.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Changcheng Deng <deng.changcheng@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] powerpc/xmon: replace DEFINE_SIMPLE_ATTRIBUTE with  DEFINE_DEBUGFS_ATTRIBUTE
-Date:   Mon,  1 Nov 2021 08:43:52 +0000
-Message-Id: <20211101084352.36641-1-deng.changcheng@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Mon, 01 Nov 2021 01:44:05 -0700 (PDT)
+Date:   Mon, 1 Nov 2021 04:44:00 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Andrew Melnychenko <andrew@daynix.com>
+Cc:     jasowang@redhat.com, davem@davemloft.net, kuba@kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yuri.benditovich@daynix.com,
+        yan@daynix.com
+Subject: Re: [RFC PATCH 2/4] drivers/net/virtio_net: Changed mergeable buffer
+ length calculation.
+Message-ID: <20211101044051-mutt-send-email-mst@kernel.org>
+References: <20211031045959.143001-1-andrew@daynix.com>
+ <20211031045959.143001-3-andrew@daynix.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211031045959.143001-3-andrew@daynix.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Changcheng Deng <deng.changcheng@zte.com.cn>
+On Sun, Oct 31, 2021 at 06:59:57AM +0200, Andrew Melnychenko wrote:
+> Now minimal virtual header length is may include the entire v1 header
+> if the hash report were populated.
+> 
+> Signed-off-by: Andrew Melnychenko <andrew@daynix.com>
 
-Fix the following coccicheck warning:
+subject isn't really descriptive. changed it how?
 
-./arch/powerpc/xmon/xmon.c: 4064: 0-23: WARNING: xmon_dbgfs_ops should
-be defined with DEFINE_DEBUGFS_ATTRIBUTE
+And I couldn't really decypher what this log entry means either.
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
----
- arch/powerpc/xmon/xmon.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> ---
+>  drivers/net/virtio_net.c | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index b72b21ac8ebd..abca2e93355d 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -393,7 +393,9 @@ static struct sk_buff *page_to_skb(struct virtnet_info *vi,
+>  	hdr_p = p;
+>  
+>  	hdr_len = vi->hdr_len;
+> -	if (vi->mergeable_rx_bufs)
+> +	if (vi->has_rss_hash_report)
+> +		hdr_padded_len = sizeof(struct virtio_net_hdr_v1_hash);
+> +	else if (vi->mergeable_rx_bufs)
+>  		hdr_padded_len = sizeof(*hdr);
+>  	else
+>  		hdr_padded_len = sizeof(struct padded_vnet_hdr);
+> @@ -1252,7 +1254,7 @@ static unsigned int get_mergeable_buf_len(struct receive_queue *rq,
+>  					  struct ewma_pkt_len *avg_pkt_len,
+>  					  unsigned int room)
+>  {
+> -	const size_t hdr_len = sizeof(struct virtio_net_hdr_mrg_rxbuf);
+> +	const size_t hdr_len = ((struct virtnet_info *)(rq->vq->vdev->priv))->hdr_len;
+>  	unsigned int len;
+>  
+>  	if (room)
 
-diff --git a/arch/powerpc/xmon/xmon.c b/arch/powerpc/xmon/xmon.c
-index dd8241c009e5..875241bd216b 100644
---- a/arch/powerpc/xmon/xmon.c
-+++ b/arch/powerpc/xmon/xmon.c
-@@ -4062,7 +4062,7 @@ static int xmon_dbgfs_get(void *data, u64 *val)
- 	return 0;
- }
- 
--DEFINE_SIMPLE_ATTRIBUTE(xmon_dbgfs_ops, xmon_dbgfs_get,
-+DEFINE_DEBUGFS_ATTRIBUTE(xmon_dbgfs_ops, xmon_dbgfs_get,
- 			xmon_dbgfs_set, "%llu\n");
- 
- static int __init setup_xmon_dbgfs(void)
--- 
-2.25.1
+Is this pointer chasing the best we can do?
+
+> @@ -2817,7 +2819,7 @@ static void virtnet_del_vqs(struct virtnet_info *vi)
+>   */
+>  static unsigned int mergeable_min_buf_len(struct virtnet_info *vi, struct virtqueue *vq)
+>  {
+> -	const unsigned int hdr_len = sizeof(struct virtio_net_hdr_mrg_rxbuf);
+> +	const unsigned int hdr_len = vi->hdr_len;
+>  	unsigned int rq_size = virtqueue_get_vring_size(vq);
+>  	unsigned int packet_len = vi->big_packets ? IP_MAX_MTU : vi->dev->max_mtu;
+>  	unsigned int buf_len = hdr_len + ETH_HLEN + VLAN_HLEN + packet_len;
+> -- 
+> 2.33.1
 
