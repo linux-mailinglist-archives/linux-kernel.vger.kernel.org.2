@@ -2,213 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E9DE4412F1
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 06:20:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B11C4441308
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 06:24:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229902AbhKAFWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 01:22:51 -0400
-Received: from smtpbguseast3.qq.com ([54.243.244.52]:49857 "EHLO
-        smtpbguseast3.qq.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229528AbhKAFWu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 01:22:50 -0400
-X-QQ-mid: bizesmtp54t1635743987tg8cjm22
-Received: from localhost.localdomain (unknown [113.200.76.118])
-        by esmtp6.qq.com (ESMTP) with 
-        id ; Mon, 01 Nov 2021 13:19:45 +0800 (CST)
-X-QQ-SSF: 01400000002000C0E000B00A0000000
-X-QQ-FEAT: dpyQmELDBxGghcW+DttWMVmkvGUHNFCiVok9v5PC0wu+zjPy9srNawncTCTB7
-        YXKnTIGarMNClEgVv9KtO8s5O4wjkgEsqPAaPbHzBdz1CJgyOr0mvWqBa03Y/oSyD67NKvl
-        guZg6/fxtoJOk3HKMsMryY1qXXmdIDEWgEKY/XvB8ZGnZKdeRKWKBTbsWLsxAxUcea0Qbsw
-        HfgMEsrDydQ0AQdA2vS6fhtOPgx78H1uJCkx69XCaQPXifmz5pglUc1TOgFxbWOXMgMAKme
-        kp5FyOdb2IdNxh8gWKX3WiRRNauHtT35vT8ZEQ6URqsK0HnkbIlfiyk3KoKw6Ce15fYQWa8
-        QW87crlaITkkTEEx4t5pFz6qZNsiPEnQUMxfnuj00M9YeM197o=
-X-QQ-GoodBg: 2
-From:   Gou Hao <gouhao@uniontech.com>
-To:     viro@zeniv.linux.org.uk
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jiaofenfang@uniontech.com
-Subject: [PATCH] fs: remove fget_many and fput_many interface
-Date:   Mon,  1 Nov 2021 13:19:31 +0800
-Message-Id: <20211101051931.21544-1-gouhao@uniontech.com>
-X-Mailer: git-send-email 2.20.1
+        id S229896AbhKAF0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 01:26:32 -0400
+Received: from mga17.intel.com ([192.55.52.151]:10897 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229502AbhKAF0b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 01:26:31 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10154"; a="211715451"
+X-IronPort-AV: E=Sophos;i="5.87,198,1631602800"; 
+   d="scan'208";a="211715451"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2021 22:23:58 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,198,1631602800"; 
+   d="scan'208";a="449138280"
+Received: from unknown (HELO [10.239.154.43]) ([10.239.154.43])
+  by orsmga003.jf.intel.com with ESMTP; 31 Oct 2021 22:23:55 -0700
+Message-ID: <8592a48d-0131-86bf-586a-d33e7989e523@intel.com>
+Date:   Mon, 1 Nov 2021 13:23:54 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign5
-X-QQ-Bgrelay: 1
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH 1/2] i2c: virtio: disable timeout handling
+Content-Language: en-US
+To:     Vincent Whitchurch <vincent.whitchurch@axis.com>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Wolfram Sang <wsa@kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        kernel <kernel@axis.com>, Conghui Chen <conghui.chen@intel.com>
+References: <20211019143748.wrpqopj2hmpvblh4@vireshk-i7>
+ <YW8LFTcBuN1bB3PD@ninjato> <94aa39ab-4ed6-daee-0402-f58bfed0cadd@intel.com>
+ <YW+q1yQ8MuhHINAs@kroah.com> <8e182ea8-5016-fa78-3d77-eefba7d58612@intel.com>
+ <20211020064128.y2bjsbdmpojn7pjo@vireshk-i7>
+ <01d9c992-28cc-6644-1e82-929fc46f91b4@intel.com>
+ <20211020105554.GB9985@axis.com> <20211020110316.4x7tnxonswjuuoiw@vireshk-i7>
+ <df7e6127-05fb-6aad-3896-fc810f213a54@intel.com>
+ <20211029122450.GB24060@axis.com>
+From:   Jie Deng <jie.deng@intel.com>
+In-Reply-To: <20211029122450.GB24060@axis.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: gouhao <gouhao@uniontech.com>
 
-These two interface were added in 091141a42 commit,
-but now there is no place to call them.
+On 2021/10/29 20:24, Vincent Whitchurch wrote:
+> On Thu, Oct 21, 2021 at 05:30:28AM +0200, Jie Deng wrote:
+>> For this moment, we can solve the problem by using a hardcoded big
+>> value or disabling the timeout.
+> Is that an Acked-by on this patch which does the latter?
 
-And replace atomic_long_sub/add to atomic_long_dec/inc
-can improve performance.
 
-Here are the test results of unixbench:
+Yes, you can add my Acked-by. Let's see if other people still have 
+different opinions.
 
-Cmd: ./Run -c 64 context1
 
-Without patch:
-System Benchmarks Partial Index              BASELINE       RESULT    INDEX
-Pipe-based Context Switching                   4000.0    2798407.0   6996.0
-                                                                   ========
-System Benchmarks Index Score (Partial Only)                         6996.0
+>
+>> Over the long term, I think the backend should provide that timeout
+>> value and guarantee that its processing time should not exceed that
+>> value.
+> If you mean that the spec should be changed to allow the virtio driver
+> to be able to program a certain timeout for I2C transactions in the
+> virtio device, yes, that does sound reasonable.
 
-With patch:
-System Benchmarks Partial Index              BASELINE       RESULT    INDEX
-Pipe-based Context Switching                   4000.0    3486268.8   8715.7
-                                                                   ========
-System Benchmarks Index Score (Partial Only)                         8715.7
 
-Signed-off-by: Gou Hao <gouhao@uniontech.com>
----
- fs/file.c            | 22 ++++++++--------------
- fs/file_table.c      |  9 ++-------
- include/linux/file.h |  2 --
- include/linux/fs.h   |  4 +---
- 4 files changed, 11 insertions(+), 26 deletions(-)
+Due to changes in my work, I will pass my virtio-i2c maintenance to Conghui.
 
-diff --git a/fs/file.c b/fs/file.c
-index 8627dacfc..49fbb6313 100644
---- a/fs/file.c
-+++ b/fs/file.c
-@@ -842,7 +842,7 @@ void do_close_on_exec(struct files_struct *files)
- }
- 
- static struct file *__fget_files(struct files_struct *files, unsigned int fd,
--				 fmode_t mask, unsigned int refs)
-+				 fmode_t mask)
- {
- 	struct file *file;
- 
-@@ -856,7 +856,7 @@ loop:
- 		 */
- 		if (file->f_mode & mask)
- 			file = NULL;
--		else if (!get_file_rcu_many(file, refs))
-+		else if (!get_file_rcu(file))
- 			goto loop;
- 	}
- 	rcu_read_unlock();
-@@ -864,26 +864,20 @@ loop:
- 	return file;
- }
- 
--static inline struct file *__fget(unsigned int fd, fmode_t mask,
--				  unsigned int refs)
-+static inline struct file *__fget(unsigned int fd, fmode_t mask)
- {
--	return __fget_files(current->files, fd, mask, refs);
--}
--
--struct file *fget_many(unsigned int fd, unsigned int refs)
--{
--	return __fget(fd, FMODE_PATH, refs);
-+	return __fget_files(current->files, fd, mask);
- }
- 
- struct file *fget(unsigned int fd)
- {
--	return __fget(fd, FMODE_PATH, 1);
-+	return __fget(fd, FMODE_PATH);
- }
- EXPORT_SYMBOL(fget);
- 
- struct file *fget_raw(unsigned int fd)
- {
--	return __fget(fd, 0, 1);
-+	return __fget(fd, 0);
- }
- EXPORT_SYMBOL(fget_raw);
- 
-@@ -893,7 +887,7 @@ struct file *fget_task(struct task_struct *task, unsigned int fd)
- 
- 	task_lock(task);
- 	if (task->files)
--		file = __fget_files(task->files, fd, 0, 1);
-+		file = __fget_files(task->files, fd, 0);
- 	task_unlock(task);
- 
- 	return file;
-@@ -962,7 +956,7 @@ static unsigned long __fget_light(unsigned int fd, fmode_t mask)
- 			return 0;
- 		return (unsigned long)file;
- 	} else {
--		file = __fget(fd, mask, 1);
-+		file = __fget(fd, mask);
- 		if (!file)
- 			return 0;
- 		return FDPUT_FPUT | (unsigned long)file;
-diff --git a/fs/file_table.c b/fs/file_table.c
-index 45437f8e1..10781a901 100644
---- a/fs/file_table.c
-+++ b/fs/file_table.c
-@@ -331,9 +331,9 @@ EXPORT_SYMBOL_GPL(flush_delayed_fput);
- 
- static DECLARE_DELAYED_WORK(delayed_fput_work, delayed_fput);
- 
--void fput_many(struct file *file, unsigned int refs)
-+void fput(struct file *file)
- {
--	if (atomic_long_sub_and_test(refs, &file->f_count)) {
-+	if (atomic_long_dec_and_test(&file->f_count)) {
- 		struct task_struct *task = current;
- 
- 		if (likely(!in_interrupt() && !(task->flags & PF_KTHREAD))) {
-@@ -352,11 +352,6 @@ void fput_many(struct file *file, unsigned int refs)
- 	}
- }
- 
--void fput(struct file *file)
--{
--	fput_many(file, 1);
--}
--
- /*
-  * synchronous analog of fput(); for kernel threads that might be needed
-  * in some umount() (and thus can't use flush_delayed_fput() without
-diff --git a/include/linux/file.h b/include/linux/file.h
-index 51e830b4f..39704eae8 100644
---- a/include/linux/file.h
-+++ b/include/linux/file.h
-@@ -14,7 +14,6 @@
- struct file;
- 
- extern void fput(struct file *);
--extern void fput_many(struct file *, unsigned int);
- 
- struct file_operations;
- struct task_struct;
-@@ -47,7 +46,6 @@ static inline void fdput(struct fd fd)
- }
- 
- extern struct file *fget(unsigned int fd);
--extern struct file *fget_many(unsigned int fd, unsigned int refs);
- extern struct file *fget_raw(unsigned int fd);
- extern struct file *fget_task(struct task_struct *task, unsigned int fd);
- extern unsigned long __fdget(unsigned int fd);
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index e7a633353..600470c2c 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -1015,9 +1015,7 @@ static inline struct file *get_file(struct file *f)
- 	atomic_long_inc(&f->f_count);
- 	return f;
- }
--#define get_file_rcu_many(x, cnt)	\
--	atomic_long_add_unless(&(x)->f_count, (cnt), 0)
--#define get_file_rcu(x) get_file_rcu_many((x), 1)
-+#define get_file_rcu(x) atomic_long_inc_not_zero(&(x)->f_count)
- #define file_count(x)	atomic_long_read(&(x)->f_count)
- 
- #define	MAX_NON_LFS	((1UL<<31) - 1)
--- 
-2.20.1
-
+She may work on this in the future.
 
 
