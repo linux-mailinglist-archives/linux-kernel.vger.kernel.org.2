@@ -2,83 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67A96441251
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 04:16:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B922441255
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 04:22:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230487AbhKADS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 23:18:57 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:34288 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230222AbhKADSz (ORCPT
+        id S230395AbhKADYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 23:24:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230222AbhKADYd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 23:18:55 -0400
-X-UUID: 48e43b0dd3e4464dbcabdf5578280799-20211101
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=MplEKwNK6OAffXAWeN1ahMfbiWO2NiLp63P/1LmLGmw=;
-        b=GwLjNXSy9y3R8TBI6qDXqnz80ODYYegeSsZ5xWIcRcMN8Yokk0J4LaCQDl0f28JyFayOUTiNri6legOvAlqbuq+DM2RutmdALU+y67KHM1r7/ObUKEvHUem5inSeOtYItalllV8E3F6cjf8ZyXwLtOerYKO5f+7KX5UiPB2r3Gg=;
-X-UUID: 48e43b0dd3e4464dbcabdf5578280799-20211101
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
-        (envelope-from <jitao.shi@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1647572588; Mon, 01 Nov 2021 11:16:17 +0800
-Received: from mtkexhb01.mediatek.inc (172.21.101.102) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 1 Nov 2021 11:16:16 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by mtkexhb01.mediatek.inc
- (172.21.101.102) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 1 Nov
- 2021 11:16:16 +0800
-Received: from mszsdhlt06 (10.16.6.206) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 1 Nov 2021 11:16:15 +0800
-Message-ID: <a16150b6b10dca4bf961b8e02b5e4d940b98468c.camel@mediatek.com>
-Subject: Re: [PATCH v7 3/3] drm/bridge: anx7625: config hs packets end
- aligned to avoid screen shift
-From:   Jitao Shi <jitao.shi@mediatek.com>
-To:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        "Laurent Pinchart" <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Xin Ji <xji@analogixsemi.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        "Philipp Zabel" <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-CC:     <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>, <ck.hu@mediatek.com>,
-        <stonea168@163.com>, <huijuan.xie@mediatek.com>,
-        <rex-bc.chen@mediatek.com>, <shuijing.li@mediatek.com>
-Date:   Mon, 1 Nov 2021 11:16:15 +0800
-In-Reply-To: <20210915223117.7857-4-jitao.shi@mediatek.com>
-References: <20210915223117.7857-1-jitao.shi@mediatek.com>
-         <20210915223117.7857-4-jitao.shi@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Sun, 31 Oct 2021 23:24:33 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44DCFC061714
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 20:22:01 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id 127so15112205pfu.1
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 20:22:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=d7AxA2J6mhv+bht8XixY+W1JQpl37yZ6laI/nXYn3C0=;
+        b=o14HbokIKEgFJ/+kSwtba04ArHM4PbGv5cAfsG+yxQrr3mu9txB/j7YZoacwW0n53U
+         KHXMITwU33aL+BAQAq87pOyYVgfcRPG0pr5p2OBETIciA43aYYuoIdEx1LPa5JmL2zY0
+         uqq6PLZnmevlKP3ExmYaWvviF9UR2W2VBRXpdo/fcljcA24DUe3FijIB0EsPqfGJrHZO
+         pByF79Q52sxz3FLQBpXZp0Xst/4H4qBpiSD8qaJmm2ZMk0q3s15DKZpPAVpGXnxrGGIA
+         PKA8qjJqQAl5tIOlEZFhUQTaL5rY4KLsbqrioOT/wUHGTNlRm+1L+vz/gz6iu8+ahmsJ
+         j7rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=d7AxA2J6mhv+bht8XixY+W1JQpl37yZ6laI/nXYn3C0=;
+        b=1vdOcc8GH0EvwvzX/Fkq5q3Uo1l/IPPO2q5zaVt6wxdxQOHBCk0iU6PZHkJAe+Zm3k
+         NvXYcgQKklBS0Zbd6yFHg35Uhc2d1X3hti/afpWQzgIg6HtohlXYvfXd2nGLXLmwFb9k
+         EZypGBuDTo2qTN2Yjivp9E5Vibci2B568Vd/H1Jp6hVF6Opf5vuT9fxifnLAPZW3bZSM
+         PW2ZGbBLxwL0HX5cEgHTTLe1fj9sA8/cZOKQ3sB2RYytBCvJG6mmeFcvNNzsnvdhTRUm
+         CVcvBBIFG/b8VEZD0wsiVVQw92S6OdOi47FseKEYKMOUEUUGstM3T/vA4Sjh8G9ZfUJh
+         LCcg==
+X-Gm-Message-State: AOAM532+J7dGi9KmQbTVwGx7rwU/UvkrZLCvx7gav9BXKYRruN3FGiVp
+        sfLiQGo5xiW6RIQvPSbZJqfDUg==
+X-Google-Smtp-Source: ABdhPJxQ7X9kJ15+P3zlG5mfTmrbi3cQkgSx9cBXscXk4yAvFdy+Pp9Xdd0rTwUemwu2oHU1LiMDKA==
+X-Received: by 2002:a05:6a00:26c1:b0:481:277:6485 with SMTP id p1-20020a056a0026c100b0048102776485mr5610897pfw.12.1635736920664;
+        Sun, 31 Oct 2021 20:22:00 -0700 (PDT)
+Received: from localhost.localdomain ([139.177.225.242])
+        by smtp.gmail.com with ESMTPSA id f8sm11860963pjq.29.2021.10.31.20.21.53
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 31 Oct 2021 20:22:00 -0700 (PDT)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     mike.kravetz@oracle.com, akpm@linux-foundation.org,
+        osalvador@suse.de, mhocko@suse.com, song.bao.hua@hisilicon.com,
+        david@redhat.com, chenhuang5@huawei.com, bodeddub@amazon.com,
+        corbet@lwn.net, willy@infradead.org, 21cnbao@gmail.com
+Cc:     duanxiongchun@bytedance.com, fam.zheng@bytedance.com,
+        smuchun@gmail.com, zhengqi.arch@bytedance.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH v7 0/5] Free the 2nd vmemmap page associated with each HugeTLB page
+Date:   Mon,  1 Nov 2021 11:16:46 +0800
+Message-Id: <20211101031651.75851-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgWGluLA0KDQpQbGVhc2UgaGVscCB0byByZXZpZXcgdGhlIGNoYW5nZXMgaW4gYW54NzYyNS5j
-DQoNCk9uIFRodSwgMjAyMS0wOS0xNiBhdCAwNjozMSArMDgwMCwgSml0YW8gU2hpIHdyb3RlOg0K
-PiBUaGlzIGRldmljZSByZXF1aXJlcyB0aGUgcGFja2V0cyBvbiBsYW5lcyBhbGlnbmVkIGF0IHRo
-ZSBlbmQgdG8gZml4DQo+IHNjcmVlbiBzaGlmdCBvciBzY3JvbGwuDQo+IA0KPiBTaWduZWQtb2Zm
-LWJ5OiBKaXRhbyBTaGkgPGppdGFvLnNoaUBtZWRpYXRlay5jb20+DQo+IC0tLQ0KPiAgZHJpdmVy
-cy9ncHUvZHJtL2JyaWRnZS9hbmFsb2dpeC9hbng3NjI1LmMgfCAxICsNCj4gIDEgZmlsZSBjaGFu
-Z2VkLCAxIGluc2VydGlvbigrKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9i
-cmlkZ2UvYW5hbG9naXgvYW54NzYyNS5jDQo+IGIvZHJpdmVycy9ncHUvZHJtL2JyaWRnZS9hbmFs
-b2dpeC9hbng3NjI1LmMNCj4gaW5kZXggMTRkNzNmYjFkZDE1Li5kNzZmYjYzZmE5ZjcgMTAwNjQ0
-DQo+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9icmlkZ2UvYW5hbG9naXgvYW54NzYyNS5jDQo+ICsr
-KyBiL2RyaXZlcnMvZ3B1L2RybS9icmlkZ2UvYW5hbG9naXgvYW54NzYyNS5jDQo+IEBAIC0xMzI3
-LDYgKzEzMjcsNyBAQCBzdGF0aWMgaW50IGFueDc2MjVfYXR0YWNoX2RzaShzdHJ1Y3QNCj4gYW54
-NzYyNV9kYXRhICpjdHgpDQo+ICAJCU1JUElfRFNJX01PREVfVklERU9fU1lOQ19QVUxTRQl8DQo+
-ICAJCU1JUElfRFNJX01PREVfTk9fRU9UX1BBQ0tFVAl8DQo+ICAJCU1JUElfRFNJX01PREVfVklE
-RU9fSFNFOw0KPiArCWRzaS0+aHNfcGFja2V0X2VuZF9hbGlnbmVkID0gdHJ1ZTsNCj4gIA0KPiAg
-CWlmIChtaXBpX2RzaV9hdHRhY2goZHNpKSA8IDApIHsNCj4gIAkJRFJNX0RFVl9FUlJPUihkZXYs
-ICJmYWlsIHRvIGF0dGFjaCBkc2kgdG8gaG9zdC5cbiIpOw0K
+This series can minimize the overhead of struct page for 2MB HugeTLB pages
+significantly. It further reduces the overhead of struct page by 12.5% for
+a 2MB HugeTLB compared to the previous approach, which means 2GB per 1TB
+HugeTLB. It is a nice gain. Comments and reviews are welcome. Thanks.
+
+The main implementation and details can refer to the commit log of patch 1.
+In this series, I have changed the following four helpers, the following
+table shows the impact of the overhead of those helpers.
+
+	+------------------+-----------------------+
+	|       APIs       | head page | tail page |
+	+------------------+-----------+-----------+
+	|    PageHead()    |     Y     |     N     |
+	+------------------+-----------+-----------+
+	|    PageTail()    |     Y     |     N     |
+	+------------------+-----------+-----------+
+	|  PageCompound()  |     N     |     N     |
+	+------------------+-----------+-----------+
+	|  compound_head() |     Y     |     N     |
+	+------------------+-----------+-----------+
+
+	Y: Overhead is increased.
+	N: Overhead is _NOT_ increased.
+
+It shows that the overhead of those helpers on a tail page don't change
+between "hugetlb_free_vmemmap=on" and "hugetlb_free_vmemmap=off". But the
+overhead on a head page will be increased when "hugetlb_free_vmemmap=on"
+(except PageCompound()). So I believe that Matthew Wilcox's folio series
+will help with this.
+
+The users of PageHead() and PageTail() are much less than compound_head()
+and most users of PageTail() are VM_BUG_ON(), so I have done some tests
+about the overhead of compound_head() on head pages.
+
+I have tested the overhead of calling compound_head() on a head page, which
+is 2.11ns (Measure the call time of 10 million times compound_head(), and
+then average).
+
+For a head page whose address is not aligned with PAGE_SIZE or a non-compound
+page, the overhead of compound_head() is 2.54ns which is increased by 20%.
+For a head page whose address is aligned with PAGE_SIZE, the overhead of
+compound_head() is 2.97ns which is increased by 40%. Most pages are the former.
+I do not think the overhead is significant since the overhead of compound_head()
+itself is low.
+
+Changlogs in v7:
+  1. Fix a typo (change page_head_if_fake to page_fixed_fake_head) in the
+     commit log of patch 2.
+  2. Move details of implementation from cover letter to the commit log of
+     patch 1.
+  3. Add some overhead numbers to the cover letter.
+
+Changlogs in v6:
+  1. Add test case to tools/testing/selftests/vm/run_vmtests.sh.
+
+Changlogs in v5:
+  1. Move NR_RESET_STRUCT_PAGE to the front of reset_struct_pages().
+  2. Collect Reviewed-by tags.
+
+  Thanks Barry for his suggestions and reviews.
+
+Changlogs in v4:
+  1. Move hugetlb_free_vmemmap_enabled from hugetlb.h to page-flags.h.
+  2. Collect Reviewed-by.
+  3. Add a new patch to move vmemmap functions related to HugeTLB to
+     the scope of the CONFIG_HUGETLB_PAGE_FREE_VMEMMAP.
+
+  Thanks Barry for his suggestions and reviews.
+
+Changlogs in v3:
+  1. Rename page_head_if_fake() to page_fixed_fake_head().
+  2. Introducing a new helper page_is_fake_head() to make code more readable.
+  3. Update commit log of patch 3 to add more judgements.
+  4. Add some comments in check_page_flags() in the patch 4.
+
+  Thanks Barry for his suggestions and reviews.
+
+Changlogs in v2:
+  1. Drop two patches of introducing PAGEFLAGS_MASK from this series.
+  2. Let page_head_if_fake() return page instead of NULL.
+  3. Add a selftest to check if PageHead or PageTail work well.
+
+Muchun Song (5):
+  mm: hugetlb: free the 2nd vmemmap page associated with each HugeTLB
+    page
+  mm: hugetlb: replace hugetlb_free_vmemmap_enabled with a static_key
+  mm: sparsemem: use page table lock to protect kernel pmd operations
+  selftests: vm: add a hugetlb test case
+  mm: sparsemem: move vmemmap related to HugeTLB to
+    CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
+
+ Documentation/admin-guide/kernel-parameters.txt |   2 +-
+ include/linux/hugetlb.h                         |   6 -
+ include/linux/mm.h                              |   2 +
+ include/linux/page-flags.h                      |  90 ++++++++++++++-
+ mm/hugetlb_vmemmap.c                            |  68 ++++++-----
+ mm/memory_hotplug.c                             |   2 +-
+ mm/ptdump.c                                     |  16 ++-
+ mm/sparse-vmemmap.c                             |  70 +++++++++---
+ tools/testing/selftests/vm/.gitignore           |   1 +
+ tools/testing/selftests/vm/Makefile             |   1 +
+ tools/testing/selftests/vm/hugepage-vmemmap.c   | 144 ++++++++++++++++++++++++
+ tools/testing/selftests/vm/run_vmtests.sh       |  11 ++
+ 12 files changed, 350 insertions(+), 63 deletions(-)
+ create mode 100644 tools/testing/selftests/vm/hugepage-vmemmap.c
+
+-- 
+2.11.0
 
