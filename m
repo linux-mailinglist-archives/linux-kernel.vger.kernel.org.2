@@ -2,110 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55FFD441B18
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 13:24:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1385E441B20
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 13:26:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232438AbhKAM0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 08:26:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232029AbhKAM0a (ORCPT
+        id S232458AbhKAM2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 08:28:51 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:51132 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232270AbhKAM2u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 08:26:30 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F182C061714;
-        Mon,  1 Nov 2021 05:23:57 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id g14so1706754edz.2;
-        Mon, 01 Nov 2021 05:23:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=byDMT2KgXrMfovwaSAreY2Cp1u1Q+kqI2ntbv1QgSr0=;
-        b=WCovBYR7ewTEY4L5Yq7VlrzOf++vNA7jZPfEM+HglKj7Hyu4WeEXBuIpbR1NwuRWyW
-         CRxwFHwZL/9KKX2hf9NrCrpMA9dw4VE+dppv2SMDabFafAfyw8v/fuzCqL14YD9eYoUe
-         CngsdbAkXNmk/YAFrtKcdGscFsSQ/PLPijEvIho9IHEHjaLG402Wp40b+IqbQgjieJ00
-         iJ9KPf4UqMSZ5/Ar6q9IY97TqY7pwQgPQnjafguBKpxLNoezsB9xFbedoWvhTYzZSEHn
-         ctjICtNWM3w7q+lurmLoC8EHksk3NHUx8qYPXs10Zv32ijND5pmqmhbMfvVKCE9nl6W6
-         1pYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=byDMT2KgXrMfovwaSAreY2Cp1u1Q+kqI2ntbv1QgSr0=;
-        b=I+KR2fcQBLBeQ3FGhsyToEtdnySRLbNvQtg2qSbgLioaImAteZZ6q7PVfeyaH6gVVY
-         YsLM3iTz+bDeZENfZX3jTqmkE2hOYiPsRrErsCOIeHNgLWUNR3GsCxRpQZrRiCaB0ly2
-         J2DIqT94L2hUaTqJECp3L5SoJ1bSOLud2SnUPCmSFCItHSCO4tBDiY8B5dupzESHjx/Y
-         IZYMxHvIrozSd1wyMJNTzdmIv0ZrFV+M8xPKf2ONxf6D+sAyQGWZ1n6JLh/MZaikHsvL
-         /J51fqX6rMTYCdKPVFKGxV58cUfRwBhScawE3NCQLflMmiS09GZ6/KUtF3ALvDEFFMaO
-         8yag==
-X-Gm-Message-State: AOAM532K9xSse18uJJlbD9UvBJuJx97zBJ9APrVB8FmxUTgnG+BfwC88
-        YAc8g4ywqfmQnVuEzVx8ZTWjNQWOfxMkAuOBpec=
-X-Google-Smtp-Source: ABdhPJyyYPfSyzKu3jVpm0y22TKiaQ3LAK8DGZsbTwJdq2Bq/jToREVoh7kIqz2/C+o8W4evzEBZ6uDJKHCgHHjeXHI=
-X-Received: by 2002:a05:6402:3489:: with SMTP id v9mr17166813edc.80.1635769435960;
- Mon, 01 Nov 2021 05:23:55 -0700 (PDT)
+        Mon, 1 Nov 2021 08:28:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1635769577; x=1667305577;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Y/7N8bUiHr8CwPjEkQfDR5JN+7lyDO9D3cXQladVS/c=;
+  b=G8/ys3c936FbQ7SboaKkBHt4W1ZaGiHF6tSpffCc3N8o4yqzyMU+jDzw
+   O3ig2IpuGVhAUYeu2Xq/StjwvRpS0rgcvawY9g2SHmWqK6DJwfKjtq6RO
+   KC5+O9NFTGFbECpyMQZqaw888DsXK+nhM1ico0kLeeETyemTyGRzBQ/Ur
+   yHmHtmXAYuPoLbpdYfe/AcwIu8cD/SpwGDfbcqiP+HHr8rnKTcYxwc3z2
+   LHd1S9VdFEn8j8Ej9X+XJ6y8kZ1FqvK8UDz/5syc3bB0t21c6F2aldzZG
+   2dxnmwbDCjtpTlMmNfbHuGbHFicAND+HOpUqFjwEvK/5goCV1i8UqNHwe
+   A==;
+IronPort-SDR: /ioR/LEoMV+3YRDMijg1MIgQiboRugbRzEVEUmVhXpSaIv6rivAIUSBSTyKGPlMMWQH846jyen
+ 5qt4RpH/DBIM903AgOZ1ijsj9dupTSiYh1SYU6kZOAP/LRktOiWPbaf008gOrSSpm1Vwh18jON
+ PvIAzRHZik5G7j/xnIbqtb5/xqoJekAvhGw4bHEIzRMgcHMZpc3RKWIOzBlpZ1YDdL3eu+3O8t
+ hH+ewS3U69DVlSLigWqRs+/qk50J53xJn1UXl1kcNUMvV/TN8PEwcs90zH0bspUdkHtPlcLF7R
+ ZQEC4MtKRnQiSsNqDdiiVOd4
+X-IronPort-AV: E=Sophos;i="5.87,199,1631602800"; 
+   d="scan'208";a="137580096"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 01 Nov 2021 05:26:06 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
+ chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Mon, 1 Nov 2021 05:26:05 -0700
+Received: from soft-dev3-1.microsemi.net (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Mon, 1 Nov 2021 05:26:04 -0700
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     <peda@axentia.se>, <robh+dt@kernel.org>,
+        <linux-i2c@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Subject: [PATCH v3 0/2] i2c-mux-gpmux: Support settle-time-us property
+Date:   Mon, 1 Nov 2021 13:25:43 +0100
+Message-ID: <20211101122545.3417624-1-horatiu.vultur@microchip.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-References: <CAD-N9QXsUcczurqq9LdaVjXFZMBSbStynwFJyu0UayDazGe=nw@mail.gmail.com>
- <55f04cb1-18ac-085b-3d35-7a01716fbcbe@gmail.com> <CAD-N9QVN7cepUpRu3d-xtr1L3DG90-nLS4gmkjerDZO21F_ejQ@mail.gmail.com>
- <f622f569-25d5-f38e-e9fb-7f07e12c4b7e@gmail.com> <CAD-N9QWeGOZdnuRuHVVNzZHWeP3eSHg=tsm+Qn3tqGqACSNbhg@mail.gmail.com>
- <ffbaeb72-0f76-fb1e-dde5-6e6bdcce1301@gmail.com> <CAD-N9QWQkivwR0mWwiaW_pLE6J_b03x4dP8RyxbmuKYRkcRhoQ@mail.gmail.com>
- <28a3777a-7941-6ffc-07e5-38456372cfb3@gmail.com>
-In-Reply-To: <28a3777a-7941-6ffc-07e5-38456372cfb3@gmail.com>
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-Date:   Mon, 1 Nov 2021 20:23:29 +0800
-Message-ID: <CAD-N9QUcoKnEWw98XnBJZkas3AkwPonNG0K-PMROOwn8kReT5g@mail.gmail.com>
-Subject: Re: Need help in debugging "memory leak in em28xx_init_dev"
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 1, 2021 at 8:17 PM Pavel Skripkin <paskripkin@gmail.com> wrote:
->
-> On 11/1/21 12:58, Dongliang Mu wrote:
-> > On Mon, Nov 1, 2021 at 5:43 PM Pavel Skripkin <paskripkin@gmail.com> wrote:
-> >>
-> >> On 11/1/21 12:41, Dongliang Mu wrote:
-> >> >> Hi, Dongliang,
-> >> >>
-> >> >> Did patch attached to my previous email pass syzbot's reproducer test?
-> >> >> Unfortunately, I am not able to test rn :(
-> >> >
-> >> > Yes, it works. The memory leak does not occur anymore.
-> >> >
-> >> > But I am crafting another patch based on yours as there is a small
-> >> > issue in the retval and I would like to make the error handling code
-> >> > uniform.
-> >> >
-> >>
-> >> Cool! Thank you for confirmation.
-> >
-> > Hi Pavel,
-> >
-> > Thanks for your advice. I have sent the patch and you are on the CC
-> > list. Can you please take a look at and review my patch?
-> >
-> > It should cover your patch. But I am not sure if I introduce any new
-> > issue in the patch.
-> >
->
-> The patch LGTM, but I can't drop R-b tag, since I am not an expert in
-> this driver. Anyway, there is 100% missing clean up, so, I believe, you
-> don't introduce new bugs
+Add support for settle-time-us property. If this is defined in device
+tree then add this delay to mux APIs.
 
-drop? I do see some patches from local syzkaller will attach this tag
-to assign credits to syzkaller/syzbot.
+v2->v3:
+ - move the binding changes into i2c-mux.yaml
+ - read at a later point the DT property 'settle-time-us'
 
-I think this form is good. Thus I copy this tag from them.
+v1->v2:
+ - add the changes to i2c-mux-gpmux instead of i2c-mux-gpio to be able
+   to use mux_control_select_delay
 
->
->
->
-> With regards,
-> Pavel Skripkin
+Horatiu Vultur (2):
+  dt-bindings: i2c-mux: Add property for settle time
+  i2c-mux-gpmux: Support settle-time-us property
+
+ Documentation/devicetree/bindings/i2c/i2c-mux.yaml | 6 ++++++
+ drivers/i2c/muxes/i2c-mux-gpmux.c                  | 4 +++-
+ 2 files changed, 9 insertions(+), 1 deletion(-)
+
+-- 
+2.33.0
+
