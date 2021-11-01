@@ -2,40 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EA7C4416A1
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:26:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92D6F441609
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:19:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232130AbhKAJ11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:27:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58246 "EHLO mail.kernel.org"
+        id S231904AbhKAJVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:21:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57442 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232648AbhKAJYY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:24:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 28C81610D2;
-        Mon,  1 Nov 2021 09:21:13 +0000 (UTC)
+        id S231857AbhKAJVU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:21:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F241610E5;
+        Mon,  1 Nov 2021 09:18:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758473;
-        bh=euclkW/13m/JaSW1G6bQE73uHv1zFwScbUj/OJP5gyY=;
+        s=korg; t=1635758327;
+        bh=maQ4MxNKY5L3TnTiUTYt57su3TfHoFW3ctaqN1+9/BA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MpUHUaVBffWgzkMjRflaE+k2Mb3MvZGC8zqSUEC0stjTQ2XwzjgP6zbq0JyTVSm14
-         +HSV7ZUbG689SpuTZgeKSDB2XpsI0ZzoTW9vMHGGqpvrIo/W3Mk78NK7kDJuTm9/qm
-         tAQOpN9eFh6kc5g/DQD7vM7t/PIE5HVrFzsH6DDw=
+        b=oEsx29iJPOa9gdbJczPZ+C7ftP3zJxxleAlsn8iQPiu5SYFXM9YkI3smllFSD3APw
+         jxm8gf/L0jjQZugwj/vF21HESCIyUhSgThfK5iqkGGi3M7w4KAH10RLVRVjahyQGE0
+         65S4mP7pi1MqXedr2VHlHcRWnwMW8oE2/l7JH+d4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Song Liu <songliubraving@fb.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-Subject: [PATCH 4.19 05/35] powerpc/bpf: Fix BPF_MOD when imm == 1
-Date:   Mon,  1 Nov 2021 10:17:17 +0100
-Message-Id: <20211101082452.877698203@linuxfoundation.org>
+        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Dinh Nguyen <dinguyen@kernel.org>
+Subject: [PATCH 4.4 15/17] nios2: Make NIOS2_DTB_SOURCE_BOOL depend on !COMPILE_TEST
+Date:   Mon,  1 Nov 2021 10:17:18 +0100
+Message-Id: <20211101082444.100202471@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082451.430720900@linuxfoundation.org>
-References: <20211101082451.430720900@linuxfoundation.org>
+In-Reply-To: <20211101082440.664392327@linuxfoundation.org>
+References: <20211101082440.664392327@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,45 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+From: Guenter Roeck <linux@roeck-us.net>
 
-commit 8bbc9d822421d9ac8ff9ed26a3713c9afc69d6c8 upstream.
+commit 4a089e95b4d6bb625044d47aed0c442a8f7bd093 upstream.
 
-Only ignore the operation if dividing by 1.
+nios2:allmodconfig builds fail with
 
-Fixes: 156d0e290e969c ("powerpc/ebpf/jit: Implement JIT compiler for extended BPF")
-Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
-Tested-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Acked-by: Song Liu <songliubraving@fb.com>
-Acked-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/c674ca18c3046885602caebb326213731c675d06.1633464148.git.naveen.n.rao@linux.vnet.ibm.com
-[cascardo: use PPC_LI instead of EMIT(PPC_RAW_LI)]
-Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+make[1]: *** No rule to make target 'arch/nios2/boot/dts/""',
+	needed by 'arch/nios2/boot/dts/built-in.a'.  Stop.
+make: [Makefile:1868: arch/nios2/boot/dts] Error 2 (ignored)
+
+This is seen with compile tests since those enable NIOS2_DTB_SOURCE_BOOL,
+which in turn enables NIOS2_DTB_SOURCE. This causes the build error
+because the default value for NIOS2_DTB_SOURCE is an empty string.
+Disable NIOS2_DTB_SOURCE_BOOL for compile tests to avoid the error.
+
+Fixes: 2fc8483fdcde ("nios2: Build infrastructure")
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/powerpc/net/bpf_jit_comp64.c |   10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ arch/nios2/platform/Kconfig.platform |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/arch/powerpc/net/bpf_jit_comp64.c
-+++ b/arch/powerpc/net/bpf_jit_comp64.c
-@@ -385,8 +385,14 @@ static int bpf_jit_build_body(struct bpf
- 		case BPF_ALU64 | BPF_DIV | BPF_K: /* dst /= imm */
- 			if (imm == 0)
- 				return -EINVAL;
--			else if (imm == 1)
--				goto bpf_alu32_trunc;
-+			if (imm == 1) {
-+				if (BPF_OP(code) == BPF_DIV) {
-+					goto bpf_alu32_trunc;
-+				} else {
-+					PPC_LI(dst_reg, 0);
-+					break;
-+				}
-+			}
+--- a/arch/nios2/platform/Kconfig.platform
++++ b/arch/nios2/platform/Kconfig.platform
+@@ -37,6 +37,7 @@ config NIOS2_DTB_PHYS_ADDR
  
- 			PPC_LI32(b2p[TMP_REG_1], imm);
- 			switch (BPF_CLASS(code)) {
+ config NIOS2_DTB_SOURCE_BOOL
+ 	bool "Compile and link device tree into kernel image"
++	depends on !COMPILE_TEST
+ 	default n
+ 	help
+ 	  This allows you to specify a dts (device tree source) file
 
 
