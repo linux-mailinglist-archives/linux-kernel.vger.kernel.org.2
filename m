@@ -2,91 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C3F1441CCD
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 15:42:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09257441CCE
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 15:43:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232213AbhKAOpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 10:45:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229826AbhKAOpA (ORCPT
+        id S232250AbhKAOpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 10:45:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45612 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229826AbhKAOpe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 10:45:00 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6E13C061714;
-        Mon,  1 Nov 2021 07:42:27 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id t21so11680755plr.6;
-        Mon, 01 Nov 2021 07:42:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=bTY8exYms3lJwzCaoq+nmco6/S9wmqs0bDwxZbOOVDg=;
-        b=jFlmGgwTowKKoR0DRm3XZtyBMm/XSpDd+aOkJvWw3kCZjnWUB7GyH92vJIeIPvk/2f
-         Ro0k+95jND9IIvfSgPn+ohRWSYGDvZ5cPjzja2uZvRqDnJ3CUq/R601hS+D/ZwMoRtcX
-         5RSN+pAdnPfM6BuKbXlYJcatRxF3jVNwai1m0WeYNFcYbfdjCprfMydpgGf8hWiIFpZ5
-         ygv8Obt2XUeRX+UFHdEQu047Hn0CRu9RXrX6vm59EoSr1P1OBc9YHDYbEN9Mpmauc1E9
-         E/QkjDm1KvqV+jtAoCACns4EkU4L4UBPPAxuBjK9wMaxooPNFYTo/5NYZJ9gWAhn5DOw
-         Scug==
+        Mon, 1 Nov 2021 10:45:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635777781;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IimbsDmXt9JsV+5Ud+vfycacdBceMoawbI0yusPjM6Y=;
+        b=O5CCm+KorB/Iv4PMIJAZX5QhgggEHp1jfknQlTF4ThCRIYdV4jEsLzcQsN5F7X5wlc7FKb
+        ihyZObXBuEbw6aOQQqrxXYVYHgs40pU0GLnmpEjQJ4vsluhP2SMfZjhqJ1y+WkkFJUjQh0
+        IpCAEfTYfRtvNLCFYTG7AYstV7FA1YQ=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-558-ddygt6B7NOaKaLJ2ZkD2lQ-1; Mon, 01 Nov 2021 10:43:00 -0400
+X-MC-Unique: ddygt6B7NOaKaLJ2ZkD2lQ-1
+Received: by mail-ed1-f71.google.com with SMTP id q6-20020a056402518600b003e28d92bb85so2369395edd.7
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 07:43:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=bTY8exYms3lJwzCaoq+nmco6/S9wmqs0bDwxZbOOVDg=;
-        b=nhFBKVtbcb/nlzUi62mw6GRpmlC0H/Y9V0XU4H2ZHzmJwq8s9cwBNfaP19Z4PhbnVX
-         18fcvGyoi/B9pmpLNtVyRzkdk7ZwMzoUiucvlizBM0QLO3Q90rcuvvi9vJHiD6MRH6zG
-         74XyCrhcpD5mxQxkKJYE3+TzfPnG7635S3jE/R4Csd+ZutSUJ8VxPG563t00a3ryjZXZ
-         MBHxLl+GfMM7wuGNR8TDC/YmxVCM3UWTitEt+AkxxfkR8jOCOvoIJRpwraaXFTjoBr54
-         GLxqWFfw5GhO8vuSBS49TGpQ+ESyQdd40CL7Q6ZTasOxh05/4enZ/zizn3FXVjftJ8Jr
-         1A6A==
-X-Gm-Message-State: AOAM530sb2BeQbq3Vz+1ua9cmQz9SJIwvGLPtlUDzqctacH7gjJD7LfF
-        zbaX7e7ls7k1yNbspE7AESbf7wLBrr81xUGDjP8=
-X-Google-Smtp-Source: ABdhPJxeO3hvuhHUzEd/D59/9BJoOlInGjqem1Jy1QdnlMhAHfjYFFZUwpKGDbwJlJBlwSuYWhIc0g==
-X-Received: by 2002:a17:90a:d317:: with SMTP id p23mr15879852pju.196.1635777746451;
-        Mon, 01 Nov 2021 07:42:26 -0700 (PDT)
-Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
-        by smtp.gmail.com with ESMTPSA id f19sm9706731pfc.72.2021.11.01.07.42.24
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IimbsDmXt9JsV+5Ud+vfycacdBceMoawbI0yusPjM6Y=;
+        b=BD3ox2chTW6rGQmms1RpqrH/xcr2U0OOul5C/IIWmNa6KxNToIoqys1OrbO8IJCJh8
+         yOAAp7ao0igIwbwsqDTFnTRa6kTkmljnOJqQ7SNM+15IYmvOuKSXqMXCYjUwMGBGHU8Z
+         iqVmMYeuh4D4AwGR7uLRJdkp/oyuYvg2xzU8mnsm3wb+zWZ6CaHx5DppL0+Vpjtz53ui
+         ssv7SMeLBzE3Ea6IhugHLHbhArlHbJxKZ2veQMEK6y+6QgiFZiArHSgHW5NTnBjXA6zD
+         sKtGb1iL748bNN1qyHVnQ1qnoSnqE6SWXkyuqyCR1Hd8YYKrE7O/Wxct2c5kKhhyTWpV
+         L3pg==
+X-Gm-Message-State: AOAM532GldczmgQ4D5a8iyW+bwsW+IXMawxHlTCyWb5gdpB8LsWUnUVg
+        N5eTnLvwouucOUM097EXrREkeUX4fxxhfUxoOgBjqfT9yifCZWKjDONemS5sIlvr2vxEEyw4Ph/
+        a7eCpLeET4mHF8w0i46n5x/CJ
+X-Received: by 2002:a17:906:3a0e:: with SMTP id z14mr29262258eje.111.1635777778918;
+        Mon, 01 Nov 2021 07:42:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwRv9BSqyeHZrkxI8HXDbJCrd6XZ9M6Vw0A2RLC8buZnu/68zqF4CSsKMaEqkwHGddkFeAclw==
+X-Received: by 2002:a17:906:3a0e:: with SMTP id z14mr29262231eje.111.1635777778709;
+        Mon, 01 Nov 2021 07:42:58 -0700 (PDT)
+Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
+        by smtp.gmail.com with ESMTPSA id gs19sm3110772ejc.117.2021.11.01.07.42.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 07:42:25 -0700 (PDT)
-Message-ID: <617ffcd1.1c69fb81.df46.a43f@mx.google.com>
-Date:   Mon, 01 Nov 2021 07:42:25 -0700 (PDT)
-X-Google-Original-Date: Mon, 01 Nov 2021 14:42:23 GMT
-From:   Fox Chen <foxhlchen@gmail.com>
-In-Reply-To: <20211101082533.618411490@linuxfoundation.org>
-Subject: RE: [PATCH 5.14 000/125] 5.14.16-rc1 review
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Fox Chen <foxhlchen@gmail.com>
-Content-Transfer-Encoding: 7bit
+        Mon, 01 Nov 2021 07:42:58 -0700 (PDT)
+Date:   Mon, 1 Nov 2021 15:42:57 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     kernel test robot <lkp@intel.com>, llvm@lists.linux.dev,
+        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
+Subject: Re: [rostedt-trace:for-next 58/100]
+ samples/ftrace/ftrace-direct-multi.c:8:6: warning: no previous prototype for
+ function 'my_direct_func'
+Message-ID: <YX/88QsleYGkt7PG@krava>
+References: <202111010507.F9ud1mUL-lkp@intel.com>
+ <YX/thIXtDzfhljX7@krava>
+ <20211101102434.47e84754@gandalf.local.home>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211101102434.47e84754@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon,  1 Nov 2021 10:16:13 +0100, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 5.14.16 release.
-> There are 125 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Mon, Nov 01, 2021 at 10:24:34AM -0400, Steven Rostedt wrote:
+> On Mon, 1 Nov 2021 14:37:08 +0100
+> Jiri Olsa <jolsa@redhat.com> wrote:
 > 
-> Responses should be made by Wed, 03 Nov 2021 08:24:20 +0000.
-> Anything received after that time might be too late.
+> > > If you fix the issue, kindly add following tag as appropriate
+> > > Reported-by: kernel test robot <lkp@intel.com>
+> > > 
+> > > All warnings (new ones prefixed by >>):
+> > >   
+> > > >> samples/ftrace/ftrace-direct-multi.c:8:6: warning: no previous prototype for function 'my_direct_func' [-Wmissing-prototypes]  
+> > >    void my_direct_func(unsigned long ip)
+> > >         ^
+> > >    samples/ftrace/ftrace-direct-multi.c:8:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+> > >    void my_direct_func(unsigned long ip)  
+> > 
+> > hum, that can actually be static.. I'll check
+> > 
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.16-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+> I'm not sure it can, because you call it from inline assembly, and the
+> symbol may not be passed to the assembler.
 
-5.14.16-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
-                
-Tested-by: Fox Chen <foxhlchen@gmail.com>
+yes, I just found that.. I actually could not add any input/output
+arguments to asm, got a compilation error.. I think it's because
+it's used outside any function
+
+> 
+> It may work with some options, but may not for all.
+> 
+> I think the best thing to do is just create a prototype to quiet the
+> warning (with a comment).
+
+ok, I'll send it.. should be on top of you for-next branch?
+
+thanks,
+jirka
 
