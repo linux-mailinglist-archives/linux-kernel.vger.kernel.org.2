@@ -2,103 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA7754419B0
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 11:17:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF02D4419B3
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 11:18:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231958AbhKAKUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 06:20:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56128 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231693AbhKAKUK (ORCPT
+        id S231975AbhKAKUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 06:20:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23434 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231868AbhKAKUf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 06:20:10 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26DBDC061714
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 03:17:37 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id t21so11229175plr.6
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 03:17:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oYkYwA/2dIbGzKgJMwo2/gyHeXXzrEzdf/BzDdeRQYA=;
-        b=B/ANsDuh9hFhnDCEr03H/+WltnM+MqPmj6syRy87S7MAMDiRYGF/x3Cu0Q9mh7XLV6
-         9uCCBkB+ICcjo9XV5lBU6QwH+O9orWD4mc3purMHhtulYY4kHTmOm6JA+zs7+3taMrH/
-         Ft0AvCkn6/XlS1wLg+SobkQJ6BJno0ZHJNRGZtFJk7IwEAcPaSyFZCJmqDYgRQZK5NtO
-         QVMve5ualc28/2Dqvj25xqum1C2ZIbU3ot2VJUVlgZFuLpi+tUsp2HBt+17okhBTsgk7
-         LPYuganUngqgRR4UBX6PqLtA+KRA4atrap4PIzjGJf4fTR/c9DSSEo6n15sPXuEs0MrU
-         f3TA==
+        Mon, 1 Nov 2021 06:20:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635761882;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=t8Sm9HXpoY+wnApkw9cdN5nEGyroNsODGV64LEXlImU=;
+        b=T3lglSun6qU5Sa+EzWpTSeaN1lKpw8WeTIQM8oPRqW8DatDIyvXETO8EU6r8yNsfmn4tbM
+        x9zwZrd5o5pxfrRkA8T0MuRyexWRzGnji7H69S06SqmY11iUSf8Dw0u0zOmTcvK261tyIY
+        RTlu+JW/Hs7pdmpuh816I+Ve+xwYniY=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-557-XCgeO1UeOUmGkRoHBILaEw-1; Mon, 01 Nov 2021 06:18:01 -0400
+X-MC-Unique: XCgeO1UeOUmGkRoHBILaEw-1
+Received: by mail-ed1-f69.google.com with SMTP id g3-20020a056402424300b003e2981e1edbso581507edb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 03:18:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=oYkYwA/2dIbGzKgJMwo2/gyHeXXzrEzdf/BzDdeRQYA=;
-        b=7FN+KvUdw7zYzss27pnpaQ6Dkt/oeQ7Equg5pbI1Hu3xhu401DxX7gD/X3NPeiv5Vz
-         GyZQPDpPUyYF7Hl80Ijju4heAa8JMjEDcBvT4IcldL5GBqlN0bPzOnB7ZWhHgGBQdvZ2
-         zPDRARILVgDDKtQ+CYJKH09KA1gU9TDeEusnU4e+yaMBe6UNM3Uu/cDPqks+VBq42/+D
-         ZWnR+c9qIa5z4iqYsGpU36mtIlpfZcKJvanmO6QO9XsLrhSFjtQaQQH0gz7XXf/g0PCu
-         XAjUQMtNxgx4HSJ4zj8EDcdTbhhxKIqX+6BfcwSFY5WM7Pe8AX+sD8uDsAYt6zahqKlI
-         cuOQ==
-X-Gm-Message-State: AOAM530HLrvasn8xEK0ZyfQGUEfleHCn4NUaFiKBBLUWsu6R7nxOV8ET
-        RVsNo1r/V9Wgf2WAHbGNi44=
-X-Google-Smtp-Source: ABdhPJwMDfPd/xfRVQnK0lt7H0nn2UbQze6DOjcxq15tm1YELLEgCQy5+LCMaooWaVfyYg6QMJVq4A==
-X-Received: by 2002:a17:902:d50d:b0:141:ea03:5193 with SMTP id b13-20020a170902d50d00b00141ea035193mr4871880plg.89.1635761856537;
-        Mon, 01 Nov 2021 03:17:36 -0700 (PDT)
-Received: from kushal ([115.96.218.96])
-        by smtp.gmail.com with ESMTPSA id y6sm15891676pfi.154.2021.11.01.03.17.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 03:17:36 -0700 (PDT)
-From:   Kushal Kothari <kushalkothari285@gmail.com>
-To:     rppt@kernel.org, akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, mike.rapoport@gmail.com,
-        kushalkothari2850@gmail.com
-Cc:     Kushal Kothari <kushalkothari285@gmail.com>
-Subject: [PATCH] staging: mm: Fix ERROR:do not initialise statics to 0 or NULL in memblock.c
-Date:   Mon,  1 Nov 2021 15:47:19 +0530
-Message-Id: <20211101101719.22538-1-kushalkothari285@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        bh=t8Sm9HXpoY+wnApkw9cdN5nEGyroNsODGV64LEXlImU=;
+        b=dH5kHVZqj4PGXjHFd8ABi2QZTF2HHCtys1TtUlAOJLgEv8IrZrjaZAWfc1VbQ6piVD
+         bssk66078lGdmbzl9uZA68z0AvoTxX9+T+h4R1WmhxvwlzIesAFi5GyCZ+inpsTLxTo3
+         kJeAbC98dm+Es6078HXzUnXOdr0lUr70EdhicuzmZghSXOsakzT1jndWlqng6FgsfARd
+         dHtGtNeyuqzA7dLkZhTLJYupkeiFfNF8BTtDXH+ZcQHyEKaDFIABGmOVd45ma+DCWAdU
+         hf/delKf0XnmQhTppGMcA9iuGWFEdHRMN8dQKjWsOvWyfftF3EEcItxLt/ElmSERvpHw
+         nvfA==
+X-Gm-Message-State: AOAM533niD3WZUwbwmwuWjDB3WA4RhWs6PpeeGsA0Vuw+JwV025Toyq/
+        RvVOr/wtyviTjaNVI7VfY0imk7qm8z9KIssKiSWvVhgJhow7YHmk6c+25gHkL90S++7CDqe6dSe
+        G3zQprSzWHTNHu5xvM8C4iL79
+X-Received: by 2002:a50:c3cc:: with SMTP id i12mr38896954edf.350.1635761880226;
+        Mon, 01 Nov 2021 03:18:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxLTMXj/xrDkTc55/Af5ghVcv9Wfd3h/yRX5qwExFSuQKoulSOVSq39LvBNgVoIKunuT/+yQg==
+X-Received: by 2002:a50:c3cc:: with SMTP id i12mr38896934edf.350.1635761880093;
+        Mon, 01 Nov 2021 03:18:00 -0700 (PDT)
+Received: from [10.40.1.223] ([81.30.35.201])
+        by smtp.gmail.com with ESMTPSA id gt36sm6751027ejc.13.2021.11.01.03.17.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Nov 2021 03:17:59 -0700 (PDT)
+Message-ID: <85cb78cd-92d9-69ed-9360-f5d6f8f904af@redhat.com>
+Date:   Mon, 1 Nov 2021 11:17:59 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 0/6] MODULE_DEVICE_TABLE() support for the ISHTP bus
+Content-Language: en-US
+To:     =?UTF-8?Q?Thomas_Wei=c3=9fschuh?= <linux@weissschuh.net>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Mark Gross <markgross@kernel.org>,
+        Rushikesh S Kadam <rushikesh.s.kadam@intel.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Benson Leung <bleung@chromium.org>,
+        platform-driver-x86@vger.kernel.org, linux-kbuild@vger.kernel.org
+References: <20211029152901.297939-1-linux@weissschuh.net>
+ <883db585-c9bb-5255-4ddd-f093616af1a1@redhat.com>
+ <1bb82b37-06e4-4937-ba0d-57fd301eaf2e@t-8ch.de>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <1bb82b37-06e4-4937-ba0d-57fd301eaf2e@t-8ch.de>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The default value of static variable is zero and bool is false so
-not need to set it here.
-This patch fixes this ERROR in memblock.c
+Hi,
 
-Signed-off-by: Kushal Kothari <kushalkothari285@gmail.com>
----
- mm/memblock.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+On 11/1/21 11:12, Thomas Weißschuh wrote:
+> On 2021-11-01 10:56+0100, Hans de Goede wrote:
+>> On 10/29/21 17:28, Thomas Weißschuh wrote:
+>>> Currently as soon as any ISHTP device appears all available ISHTP device
+>>> drivers are loaded automatically.
+>>> This series extends the MODULE_DEVICE_TABLE() functionality to properly handle
+>>> the ishtp bus and switches the drivers over to use it.
+>>>
+>>> Patch 1 adds the infrastructure to handle ishtp devices via MODULE_DEVICE_TABLE()
+>>> Patch 2 replaces some inlined constants with ones now defined by mod_devicetable.h
+>>> Patches 3-6 migrate all ishtp drivers to MODULE_DEVICE_TABLE()
+>>>
+>>> Note: This patchset is based on the pdx86/for-next tree because that contains
+>>> one of the drivers that is not yet in the other trees.
+>>
+>> Since most of the changes here are under drivers/hid and since the latter
+>> patches depend on 1/6, I believe it would be best to merge the entire series
+>> through the HID tree, here is my ack for this:
+>>
+>> Acked-by: Hans de Goede <hdegoede@redhat.com>
+> 
+> Please note that patch 6 modifies a driver that is not yet available in the HID
+> and 5.15 trees but only in pdx86/for-next.
 
-diff --git a/mm/memblock.c b/mm/memblock.c
-index 5c3503c98b2f..57b9153b2278 100644
---- a/mm/memblock.c
-+++ b/mm/memblock.c
-@@ -16,7 +16,7 @@
- #include <linux/kmemleak.h>
- #include <linux/seq_file.h>
- #include <linux/memblock.h>
--
-+#include<stdbool.h>
- #include <asm/sections.h>
- #include <linux/io.h>
- 
-@@ -152,10 +152,10 @@ static __refdata struct memblock_type *memblock_memory = &memblock.memory;
- 	} while (0)
- 
- static int memblock_debug __initdata_memblock;
--static bool system_has_some_mirror __initdata_memblock = false;
-+static bool system_has_some_mirror __initdata_memblock;
- static int memblock_can_resize __initdata_memblock;
--static int memblock_memory_in_slab __initdata_memblock = 0;
--static int memblock_reserved_in_slab __initdata_memblock = 0;
-+static int memblock_memory_in_slab __initdata_memblock;
-+static int memblock_reserved_in_slab __initdata_memblock;
- 
- static enum memblock_flags __init_memblock choose_memblock_flags(void)
- {
--- 
-2.25.1
+Right, but given where we are in the cycle this is going to be something to
+merge post 5.16-rc1 anyways which resolves the dependency issue.
+
+I guess it might be good to send this our in a later pull-req as a fix series
+for a later 5.16-rc# though, to avoid the eclite and chrome-ec drivers from
+autoloading on all systems with an ISH, even though they usually will not be
+used there.
+
+Regards,
+
+Hans
 
