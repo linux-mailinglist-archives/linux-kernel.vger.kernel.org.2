@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 252534417E1
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:39:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD3A6441666
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:22:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233947AbhKAJkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:40:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43646 "EHLO mail.kernel.org"
+        id S232266AbhKAJYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:24:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59239 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233709AbhKAJhx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:37:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A7DA6135A;
-        Mon,  1 Nov 2021 09:26:53 +0000 (UTC)
+        id S232093AbhKAJWs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:22:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B2A4610E5;
+        Mon,  1 Nov 2021 09:20:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758814;
-        bh=pCmfhynfVRMTz77d99mvKRVIv+QqsiCuApemwBRjFkE=;
+        s=korg; t=1635758415;
+        bh=tzhIHcOaFXOkeViXplJyN2QI9bsKwcBSHxwrgTAL4q8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qwBcLc4SLMBovlPx4qPx4bCiwfvC4PHE68jxH3FWoIgx312xlfE7/LGHg/fHokbHk
-         AkUBV7B1TOFuBVBZzG4wssL5a7lDlfEgXRX0Sm0emq5XTioz5ETR9YhYaB0/uuieTM
-         qbTzrY17p9YxYjFaDTIl19ZMaH9aagMT39DF+U14=
+        b=N9YCDHMxpK4rpN1P7mLcWTHfQITVkbkDrxnv1NVTKWeltIw4dsLFpGzdQvjReUBn+
+         nbD+GTgPlYPzQYWwpJbjPShvkLEe3ruzG/xtipmzwapTWpOlWIC6R/pOudK/6KyteC
+         5Gby98/fhcEshTi90oKgUtC0fXd0zq2MRgbXpIEc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xu Kuohai <xukuohai@huawei.com>,
-        Alexei Starovoitov <ast@kernel.org>
-Subject: [PATCH 5.10 38/77] bpf: Fix error usage of map_fd and fdget() in generic_map_update_batch()
+        stable@vger.kernel.org, Shawn Guo <shawn.guo@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 4.14 14/25] mmc: sdhci: Map more voltage level to SDHCI_POWER_330
 Date:   Mon,  1 Nov 2021 10:17:26 +0100
-Message-Id: <20211101082519.913605339@linuxfoundation.org>
+Message-Id: <20211101082450.403840056@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082511.254155853@linuxfoundation.org>
-References: <20211101082511.254155853@linuxfoundation.org>
+In-Reply-To: <20211101082447.070493993@linuxfoundation.org>
+References: <20211101082447.070493993@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,53 +40,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xu Kuohai <xukuohai@huawei.com>
+From: Shawn Guo <shawn.guo@linaro.org>
 
-commit fda7a38714f40b635f5502ec4855602c6b33dad2 upstream.
+commit 4217d07b9fb328751f877d3bd9550122014860a2 upstream.
 
-1. The ufd in generic_map_update_batch() should be read from batch.map_fd;
-2. A call to fdget() should be followed by a symmetric call to fdput().
+On Thundercomm TurboX CM2290, the eMMC OCR reports vdd = 23 (3.5 ~ 3.6 V),
+which is being treated as an invalid value by sdhci_set_power_noreg().
+And thus eMMC is totally broken on the platform.
 
-Fixes: aa2e93b8e58e ("bpf: Add generic support for update and delete batch ops")
-Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Link: https://lore.kernel.org/bpf/20211019032934.1210517-1-xukuohai@huawei.com
+[    1.436599] ------------[ cut here ]------------
+[    1.436606] mmc0: Invalid vdd 0x17
+[    1.436640] WARNING: CPU: 2 PID: 69 at drivers/mmc/host/sdhci.c:2048 sdhci_set_power_noreg+0x168/0x2b4
+[    1.436655] Modules linked in:
+[    1.436662] CPU: 2 PID: 69 Comm: kworker/u8:1 Tainted: G        W         5.15.0-rc1+ #137
+[    1.436669] Hardware name: Thundercomm TurboX CM2290 (DT)
+[    1.436674] Workqueue: events_unbound async_run_entry_fn
+[    1.436685] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+[    1.436692] pc : sdhci_set_power_noreg+0x168/0x2b4
+[    1.436698] lr : sdhci_set_power_noreg+0x168/0x2b4
+[    1.436703] sp : ffff800010803a60
+[    1.436705] x29: ffff800010803a60 x28: ffff6a9102465f00 x27: ffff6a9101720a70
+[    1.436715] x26: ffff6a91014de1c0 x25: ffff6a91014de010 x24: ffff6a91016af280
+[    1.436724] x23: ffffaf7b1b276640 x22: 0000000000000000 x21: ffff6a9101720000
+[    1.436733] x20: ffff6a9101720370 x19: ffff6a9101720580 x18: 0000000000000020
+[    1.436743] x17: 0000000000000000 x16: 0000000000000004 x15: ffffffffffffffff
+[    1.436751] x14: 0000000000000000 x13: 00000000fffffffd x12: ffffaf7b1b84b0bc
+[    1.436760] x11: ffffaf7b1b720d10 x10: 000000000000000a x9 : ffff800010803a60
+[    1.436769] x8 : 000000000000000a x7 : 000000000000000f x6 : 00000000fffff159
+[    1.436778] x5 : 0000000000000000 x4 : 0000000000000000 x3 : 00000000ffffffff
+[    1.436787] x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff6a9101718d80
+[    1.436797] Call trace:
+[    1.436800]  sdhci_set_power_noreg+0x168/0x2b4
+[    1.436805]  sdhci_set_ios+0xa0/0x7fc
+[    1.436811]  mmc_power_up.part.0+0xc4/0x164
+[    1.436818]  mmc_start_host+0xa0/0xb0
+[    1.436824]  mmc_add_host+0x60/0x90
+[    1.436830]  __sdhci_add_host+0x174/0x330
+[    1.436836]  sdhci_msm_probe+0x7c0/0x920
+[    1.436842]  platform_probe+0x68/0xe0
+[    1.436850]  really_probe.part.0+0x9c/0x31c
+[    1.436857]  __driver_probe_device+0x98/0x144
+[    1.436863]  driver_probe_device+0xc8/0x15c
+[    1.436869]  __device_attach_driver+0xb4/0x120
+[    1.436875]  bus_for_each_drv+0x78/0xd0
+[    1.436881]  __device_attach_async_helper+0xac/0xd0
+[    1.436888]  async_run_entry_fn+0x34/0x110
+[    1.436895]  process_one_work+0x1d0/0x354
+[    1.436903]  worker_thread+0x13c/0x470
+[    1.436910]  kthread+0x150/0x160
+[    1.436915]  ret_from_fork+0x10/0x20
+[    1.436923] ---[ end trace fcfac44cb045c3a8 ]---
+
+Fix the issue by mapping MMC_VDD_35_36 (and MMC_VDD_34_35) to
+SDHCI_POWER_330 as well.
+
+Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20211004024935.15326-1-shawn.guo@linaro.org
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/bpf/syscall.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/mmc/host/sdhci.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -1309,12 +1309,11 @@ int generic_map_update_batch(struct bpf_
- 	void __user *values = u64_to_user_ptr(attr->batch.values);
- 	void __user *keys = u64_to_user_ptr(attr->batch.keys);
- 	u32 value_size, cp, max_count;
--	int ufd = attr->map_fd;
-+	int ufd = attr->batch.map_fd;
- 	void *key, *value;
- 	struct fd f;
- 	int err = 0;
- 
--	f = fdget(ufd);
- 	if (attr->batch.elem_flags & ~BPF_F_LOCK)
- 		return -EINVAL;
- 
-@@ -1339,6 +1338,7 @@ int generic_map_update_batch(struct bpf_
- 		return -ENOMEM;
- 	}
- 
-+	f = fdget(ufd); /* bpf_map_do_batch() guarantees ufd is valid */
- 	for (cp = 0; cp < max_count; cp++) {
- 		err = -EFAULT;
- 		if (copy_from_user(key, keys + cp * map->key_size,
-@@ -1358,6 +1358,7 @@ int generic_map_update_batch(struct bpf_
- 
- 	kfree(value);
- 	kfree(key);
-+	fdput(f);
- 	return err;
- }
- 
+--- a/drivers/mmc/host/sdhci.c
++++ b/drivers/mmc/host/sdhci.c
+@@ -1500,6 +1500,12 @@ void sdhci_set_power_noreg(struct sdhci_
+ 			break;
+ 		case MMC_VDD_32_33:
+ 		case MMC_VDD_33_34:
++		/*
++		 * 3.4 ~ 3.6V are valid only for those platforms where it's
++		 * known that the voltage range is supported by hardware.
++		 */
++		case MMC_VDD_34_35:
++		case MMC_VDD_35_36:
+ 			pwr = SDHCI_POWER_330;
+ 			break;
+ 		default:
 
 
