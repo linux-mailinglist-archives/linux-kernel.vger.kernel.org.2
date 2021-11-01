@@ -2,163 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 824304419BF
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 11:20:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77D1C4419CB
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 11:25:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231994AbhKAKXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 06:23:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:26410 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231844AbhKAKXE (ORCPT
+        id S231911AbhKAK2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 06:28:06 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:47304 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231673AbhKAK2E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 06:23:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635762031;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6GKVOIqK7nVWtbHe5Lw3RempWLyywE1J9gAebyUeQYo=;
-        b=ilntWRlgoN+VGgRqTA085elgZwMm+Wikrf6apC7rUTRmwA7NRflglD4EijkaljBwi8B2K/
-        QDqAkd8wnBbt8TxZEAgdLObNIxc5gFrkRAjnXvjOAoeiic7BoOhHLJyQi0Q8VefBXr766K
-        nc61mbHy3bQz+MRUrXP+8XdmPcR0XQo=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-191-1vnrdxYZNQm1FvMFKX8MDg-1; Mon, 01 Nov 2021 06:20:30 -0400
-X-MC-Unique: 1vnrdxYZNQm1FvMFKX8MDg-1
-Received: by mail-ed1-f70.google.com with SMTP id g3-20020a056402424300b003e2981e1edbso586665edb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 03:20:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=6GKVOIqK7nVWtbHe5Lw3RempWLyywE1J9gAebyUeQYo=;
-        b=cLaO4zoZpuHn6VcvZGxCk03EB3aa5gnbSitZPsgxFSg2ssauDNddvuadVLClPQ0Q77
-         c491zPpwfVYmOFJBiqQwnGxfmRkA4n+Mn22atWkNf3DBhg8xrnO242KheLyVkLgLmXpT
-         LWqDSWlxmreRQEActbrqfFyedoumYoMUTx+8ZEOIWICgALetFAxBr3W+hL81BO8hS0z9
-         LJPiuY9yU4ssEEjlBmdEkZfpO5FfyEvHNaWFpQcj6FsqmgOXemjLqWfcCG0tVMUrTP7i
-         9NdUeMVDFKiIwV/asqBTkbteXo9moUjkD4tAPNH1q+0+5gqiIOK+O+AWa+AOeDIPVKog
-         Us/Q==
-X-Gm-Message-State: AOAM533G7coXKWC9W5ccdOEj2JtcWUMZuR3NDsmeCb0PtxkjNo+ooKOq
-        04LW70qPj6otf13mLRbvwrStdr0jVVfAXmmmVXbo6iNJNMuGlWdymwB1mQRMY4irXeJMQKMNFPI
-        fOPIcUxRCX3V5aybp7CZr/QcT
-X-Received: by 2002:a17:907:6da4:: with SMTP id sb36mr35639758ejc.490.1635762029176;
-        Mon, 01 Nov 2021 03:20:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxEHfQy0TcctxhEUS7W+qUxUEatSVkMN784xMt2dLb/n/0z432ckOav1RgTwKmh1k2nt3yoIA==
-X-Received: by 2002:a17:907:6da4:: with SMTP id sb36mr35639725ejc.490.1635762028980;
-        Mon, 01 Nov 2021 03:20:28 -0700 (PDT)
-Received: from [10.40.1.223] ([81.30.35.201])
-        by smtp.gmail.com with ESMTPSA id h10sm8869323edk.41.2021.11.01.03.20.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Nov 2021 03:20:28 -0700 (PDT)
-Message-ID: <2c4d2e45-798e-fdc1-82fb-8413d5a9e061@redhat.com>
-Date:   Mon, 1 Nov 2021 11:20:27 +0100
+        Mon, 1 Nov 2021 06:28:04 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 1F76521940;
+        Mon,  1 Nov 2021 10:25:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1635762331; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=DuXHFHGPe4/MdAen38JSA+NW92zbioBFomR9fHA4BhQ=;
+        b=YIbVat9HUSel1LnFJdXJbpCsH2sPfKVa6Ew7e8EmaB+dTKwVCf+hrbeD5smS9lXwNkQK55
+        PwP64+JVfLyFVOKmfBohL3vHYC96kKWcbpdZtKPiziP/rEn3HVOM0Ek6vv+LMdB1C+doUh
+        4vmUsNWPCqW4/MojamDb1ab1dO1ucio=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1635762331;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=DuXHFHGPe4/MdAen38JSA+NW92zbioBFomR9fHA4BhQ=;
+        b=JcWdzA/zCO4kAChykzgfp8vHUGzWdIkyNywUpt1YoiFtQ/oIfxd8YFGFwzlDncJ1BOg46e
+        mlqIox8P+AQcD/DA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0B32513AA9;
+        Mon,  1 Nov 2021 10:25:31 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 63DnAZvAf2FoTQAAMHmgww
+        (envelope-from <bp@suse.de>); Mon, 01 Nov 2021 10:25:31 +0000
+Date:   Mon, 1 Nov 2021 11:25:28 +0100
+From:   Borislav Petkov <bp@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL (not really)] x86/core for v5.16
+Message-ID: <YX/AmFgkQ0AEqDaG@zn.tnic>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v4 04/11] regulator: Introduce tps68470-regulator driver
-Content-Language: en-US
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Kate Hsuan <hpa@redhat.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>
-References: <20211025094119.82967-1-hdegoede@redhat.com>
- <20211025094119.82967-5-hdegoede@redhat.com>
- <CAHp75Ve4nu1WDURaSvUto6+aLoEDM2OfTCVi2Th6x-oagO6a-Q@mail.gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <CAHp75Ve4nu1WDURaSvUto6+aLoEDM2OfTCVi2Th6x-oagO6a-Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Linus,
 
-On 10/25/21 13:11, Andy Shevchenko wrote:
-> On Mon, Oct 25, 2021 at 12:41 PM Hans de Goede <hdegoede@redhat.com> wrote:
->>
->> The TPS68470 PMIC provides Clocks, GPIOs and Regulators. At present in
->> the kernel the Regulators and Clocks are controlled by an OpRegion
->> driver designed to work with power control methods defined in ACPI, but
->> some platforms lack those methods, meaning drivers need to be able to
->> consume the resources of these chips through the usual frameworks.
->>
->> This commit adds a driver for the regulators provided by the tps68470,
->> and is designed to bind to the platform_device registered by the
->> intel_skl_int3472 module.
->>
->> This is based on this out of tree driver written by Intel:
->> https://github.com/intel/linux-intel-lts/blob/4.14/base/drivers/regulator/tps68470-regulator.c
->> with various cleanups added.
-> 
->> +struct tps68470_regulator_data {
->> +       struct clk *clk;
->> +};
-> 
-> ...
-> 
->> +/*
->> + * (1) This register must have same setting as VIOVAL if S_IO LDO is used to
->> + *     power daisy chained IOs in the receive side.
->> + * (2) If there is no I2C daisy chain it can be set freely.
-> 
->> + *
-> 
-> Redundant empty line.
-> 
->> + */
-> 
-> ...
-> 
->> +       struct tps68470_regulator_platform_data *pdata = pdev->dev.platform_data;
-> 
-> dev_get_platdata() ?
-> 
-> ...
-> 
->> +       data->clk = devm_clk_get(&pdev->dev, "tps68470-clk");
->> +       if (IS_ERR(data->clk)) {
->> +               dev_err(&pdev->dev, "Error getting tps68470-clk\n");
->> +               return PTR_ERR(data->clk);
->> +       }
-> 
-> return dev_err_probe(...);
-> 
-> ...
-> 
->> +               rdev = devm_regulator_register(&pdev->dev, &regulators[i], &config);
->> +               if (IS_ERR(rdev)) {
->> +                       dev_err(&pdev->dev, "failed to register %s regulator\n",
->> +                               regulators[i].name);
->> +                       return PTR_ERR(rdev);
->> +               }
-> 
-> Ditto.
+so this is not really a pull request but more of a question on the
+process. I have merged the x86/cc branch into this branch I'm sending to
+you - x86/core - and when I generate the diffstat with git request-pull,
+it adds the changes of the merged branch x86/cc too, of course.
 
-Andy, thank you for all the reviews. I've addressed all your comments in the v5
-of this series which I'm preparing now. This also applies to your comments on
-other patches, except those which I will address in separate emails.
+I can doctor the diffstat and the merge message by doing
 
-Regards,
+ git diff --stat ^x86/cc x86_core_for_v5.16_rc1
 
-Hans
+see below, so that the merged branch's changes are not there.
 
+But I'm not sure if this is the right thing to do. Especially if you do
+not merge x86/cc first - then the below diffstat becomes wrong.
+
+So what I've been doing with cases like that in the past is to wait
+until you merge the dependent branch and then to create the proper
+diffstat and pull message.
+
+And I'm going to do it this way too but thought that maybe I should ask
+if there is an alternative accepted way which I could do in the future
+too, without having to wait.
+
+Thx.
+
+---
+The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
+
+  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_core_for_v5.16_rc1
+
+for you to fetch changes up to a72fdfd21e01c626273ddcf5ab740d4caef4be54:
+
+  selftests/x86/iopl: Adjust to the faked iopl CLI/STI usage (2021-10-30 23:18:04 +0200)
+
+----------------------------------------------------------------
+- Do not #GP on userspace use of CLI/STI but pretend it was a NOP to
+keep old userspace from breaking. Adjust the corresponding iopl selftest
+to that.
+
+- Improve stack overflow warnings to say which stack got overflowed and
+raise the exception stack sizes to 2 pages since overflowing the single
+page of exception stack is very easy to do nowadays with all the tracing
+machinery enabled. With that, rip out the custom mapping of AMD SEV's
+too.
+
+- A bunch of changes in preparation for FGKASLR like supporting more
+than 64K section headers in the relocs tool, correct ORC lookup table
+size to cover the whole kernel .text and other adjustments.
+
+----------------------------------------------------------------
+Borislav Petkov (3):
+      Merge branch x86/cc into x86/core
+      x86/sev: Make the #VC exception stacks part of the default stacks storage
+      selftests/x86/iopl: Adjust to the faked iopl CLI/STI usage
+
+Kees Cook (2):
+      x86/boot: Allow a "silent" kaslr random byte fetch
+      x86/boot/compressed: Avoid duplicate malloc() implementations
+
+Kristen Carlson Accardi (2):
+      x86/tools/relocs: Support >64K section headers
+      vmlinux.lds.h: Have ORC lookup cover entire _etext - _stext
+
+Peter Zijlstra (3):
+      x86/iopl: Fake iopl(3) CLI/STI usage
+      x86/mm/64: Improve stack overflow warnings
+      x86: Increase exception stack sizes
+
+ arch/x86/boot/compressed/kaslr.c      |   4 --
+ arch/x86/boot/compressed/misc.c       |   3 +
+ arch/x86/boot/compressed/misc.h       |   2 +
+ arch/x86/include/asm/cpu_entry_area.h |   8 ++-
+ arch/x86/include/asm/insn-eval.h      |   1 +
+ arch/x86/include/asm/irq_stack.h      |  37 ++++++++----
+ arch/x86/include/asm/page_64_types.h  |   2 +-
+ arch/x86/include/asm/processor.h      |   1 +
+ arch/x86/include/asm/stacktrace.h     |  10 ++++
+ arch/x86/include/asm/traps.h          |   6 +-
+ arch/x86/kernel/dumpstack_64.c        |   6 ++
+ arch/x86/kernel/process.c             |   1 +
+ arch/x86/kernel/sev.c                 |  32 -----------
+ arch/x86/kernel/traps.c               |  58 +++++++++++++++----
+ arch/x86/lib/insn-eval.c              |   2 +-
+ arch/x86/lib/kaslr.c                  |  18 ++++--
+ arch/x86/mm/cpu_entry_area.c          |   7 +++
+ arch/x86/mm/fault.c                   |  20 +++----
+ arch/x86/tools/relocs.c               | 103 +++++++++++++++++++++++++---------
+ include/asm-generic/vmlinux.lds.h     |   3 +-
+ include/linux/decompress/mm.h         |  12 +++-
+ tools/testing/selftests/x86/iopl.c    |  78 ++++++++++++++++++-------
+ 22 files changed, 284 insertions(+), 130 deletions(-)
+
+
+-- 
+Regards/Gruss,
+    Boris.
+
+SUSE Software Solutions Germany GmbH, GF: Ivo Totev, HRB 36809, AG Nürnberg
