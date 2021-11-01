@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93EDC44190F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:54:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10666441674
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:22:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234883AbhKAJxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:53:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51088 "EHLO mail.kernel.org"
+        id S232553AbhKAJZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:25:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58984 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234736AbhKAJss (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:48:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BB2A7611C6;
-        Mon,  1 Nov 2021 09:31:24 +0000 (UTC)
+        id S232244AbhKAJXP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:23:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D95861165;
+        Mon,  1 Nov 2021 09:20:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635759085;
-        bh=ttKA5/Mm0NG8KtpdlrcaFbHDdij2eTNeDdoO59driMo=;
+        s=korg; t=1635758424;
+        bh=HB1HV8LnnfKZdYnPXZzgnEfLRC4Rau5d3HYpaLnKniY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b8jWZakojjiqMc5Py0SPqsnZiHoICzRbYjdD0oG7nZpYMUjDFecThcAWDuj+RVIPa
-         9SbCOoM064TbbL0KJ3/AWe4GJ4jda2zeAEX8swkw+yVcn18v5oWE3RCn0ri+aXrxB9
-         Ja3hf8x70NAY72PLaHURBU2hjHDuJa244U7jtB28=
+        b=fMCO405Bj/TXfb+T0LK2/Qo2W2Bc6Qquzm8sKjoaV7FailF4/8C9UxmDo+nG3i/CZ
+         WWGYFPhcJIefw4jTfeLhoxFZ6uPJDRWeOBJ9Neul/r4ihKkqvvFruvmbQ/+sRgq8iH
+         V4VEJmknn4hhH9Ryeg3Y/sp2jDD5fruQxQVG5X28=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,12 +27,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Sven Eckelmann <sven@narfation.org>,
         "David S. Miller" <davem@davemloft.net>,
         syzbot+28b0702ada0bf7381f58@syzkaller.appspotmail.com
-Subject: [PATCH 5.14 076/125] net: batman-adv: fix error handling
-Date:   Mon,  1 Nov 2021 10:17:29 +0100
-Message-Id: <20211101082547.591771795@linuxfoundation.org>
+Subject: [PATCH 4.14 18/25] net: batman-adv: fix error handling
+Date:   Mon,  1 Nov 2021 10:17:30 +0100
+Message-Id: <20211101082451.344281187@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082533.618411490@linuxfoundation.org>
-References: <20211101082533.618411490@linuxfoundation.org>
+In-Reply-To: <20211101082447.070493993@linuxfoundation.org>
+References: <20211101082447.070493993@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -83,7 +83,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/net/batman-adv/bridge_loop_avoidance.c
 +++ b/net/batman-adv/bridge_loop_avoidance.c
-@@ -1556,10 +1556,14 @@ int batadv_bla_init(struct batadv_priv *
+@@ -1574,10 +1574,14 @@ int batadv_bla_init(struct batadv_priv *
  		return 0;
  
  	bat_priv->bla.claim_hash = batadv_hash_new(128);
@@ -102,9 +102,9 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  				   &batadv_claim_hash_lock_class_key);
 --- a/net/batman-adv/main.c
 +++ b/net/batman-adv/main.c
-@@ -190,29 +190,41 @@ int batadv_mesh_init(struct net_device *
- 
- 	bat_priv->gw.generation = 0;
+@@ -180,29 +180,41 @@ int batadv_mesh_init(struct net_device *
+ 	INIT_HLIST_HEAD(&bat_priv->softif_vlan_list);
+ 	INIT_HLIST_HEAD(&bat_priv->tp_list);
  
 -	ret = batadv_v_mesh_init(bat_priv);
 -	if (ret < 0)
@@ -158,7 +158,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  
  	batadv_gw_init(bat_priv);
  	batadv_mcast_init(bat_priv);
-@@ -222,8 +234,20 @@ int batadv_mesh_init(struct net_device *
+@@ -212,8 +224,20 @@ int batadv_mesh_init(struct net_device *
  
  	return 0;
  
@@ -183,7 +183,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  
 --- a/net/batman-adv/network-coding.c
 +++ b/net/batman-adv/network-coding.c
-@@ -152,8 +152,10 @@ int batadv_nc_mesh_init(struct batadv_pr
+@@ -165,8 +165,10 @@ int batadv_nc_mesh_init(struct batadv_pr
  				   &batadv_nc_coding_hash_lock_class_key);
  
  	bat_priv->nc.decoding_hash = batadv_hash_new(128);
@@ -197,7 +197,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  				   &batadv_nc_decoding_hash_lock_class_key);
 --- a/net/batman-adv/translation-table.c
 +++ b/net/batman-adv/translation-table.c
-@@ -4193,8 +4193,10 @@ int batadv_tt_init(struct batadv_priv *b
+@@ -4373,8 +4373,10 @@ int batadv_tt_init(struct batadv_priv *b
  		return ret;
  
  	ret = batadv_tt_global_init(bat_priv);
