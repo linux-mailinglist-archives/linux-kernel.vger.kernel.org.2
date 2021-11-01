@@ -2,109 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FED6441A89
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 12:14:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB134441A8C
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 12:16:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232144AbhKALQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 07:16:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230520AbhKALQ5 (ORCPT
+        id S231756AbhKALTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 07:19:13 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:26142 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230520AbhKALTM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 07:16:57 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F3DBC061714
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 04:14:24 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id m14so10178715edd.0
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 04:14:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YXDHlbSPugY8V/EpqsO3wPi5bv74fgafM1WOTqLgchc=;
-        b=YOZcYSzJ5/mTPVPh3SbD85G6oNRTA6S1HjmLvdia1Jski5Kxtcs10s8MwFoXa1O+TZ
-         SobS35GBbsNajdQeKJvyWWsXtM8cAUXnV1yeuF2bYWAdEWMjr/to8HX1aBSfeaxIu6TC
-         /EaPCVC1QKe1pbJ3fc0RPefs79YO8RJUjov1jGPXv5EjGTHYp9Y1EmeiKylR/a3Exm1g
-         0SHXuhV6E4mi9pw+fSg4dnLzQvA2ammt/u2Nc98LUJceHmY+JkHs/heaFqImlRuKNG0E
-         +/stYKbQpeu+HWCmK3ObCDe/7zb5eDHZBJvJmVSXkqVDe6/SIH4V6Xb3DHnxQOhgmD7q
-         Kgbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YXDHlbSPugY8V/EpqsO3wPi5bv74fgafM1WOTqLgchc=;
-        b=QqjsYBOm0wSOdns09ugEFcaF5zNm2WuRDItsDlqGxT2UuZsxZ1UaCOe/0Y3oOdBVUU
-         Yk8/0M73CYixku/KU4Qb4g/bJ8Xi6j3QyZ7M6rMY1XTmfK2aSfSo8xEgeLIJmkAdDG1h
-         NjjKajG0TkNa7Q00NPoQnLigiCH5Rs2ljEy/oir89w2TPT5gP5s+Wq0ZfVQpm6Ps2q1X
-         XZTVI7ZEDzuRvQaiTSlbl8cPbzKbSMhUgDgtMrekx0ka3dthwcuJ/Uzbr5I/Ntk5+CNU
-         A8YREqYX1PROo/3ApQ6FqKr/gX43FV8MuhM5VhjpyXCC/VxtVVrkgDp8rdQd7se7CWuk
-         bRaQ==
-X-Gm-Message-State: AOAM530sVaI3CC/Slf7OpL6Mqk4YXICbXUZTpZt3xCOdolMgZqNJN6ZF
-        Y88dLPCEheHJz9VXrPx/vfGM+HSclt/AhgACg+em7g==
-X-Google-Smtp-Source: ABdhPJytJQXxnAo9T7FU9hJ9MrP+7g0Jz+tUEm5IZUmRNaelTgPTkdRVMnQ0qKQZ25Sax0fz5ycDwFWK1e7zpG73RzI=
-X-Received: by 2002:a17:907:7601:: with SMTP id jx1mr35702232ejc.69.1635765262483;
- Mon, 01 Nov 2021 04:14:22 -0700 (PDT)
+        Mon, 1 Nov 2021 07:19:12 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HjVmW2lJmz1DJ5G;
+        Mon,  1 Nov 2021 19:14:35 +0800 (CST)
+Received: from dggpeml500005.china.huawei.com (7.185.36.59) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Mon, 1 Nov 2021 19:16:37 +0800
+Received: from [10.174.178.155] (10.174.178.155) by
+ dggpeml500005.china.huawei.com (7.185.36.59) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.15; Mon, 1 Nov 2021 19:16:37 +0800
+Subject: Re: [QUESTION] oom killed the key system process triggered by a bad
+ process alloc memory with MAP_LOCKED
+To:     Michal Hocko <mhocko@suse.com>
+CC:     <rientjes@google.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>,
+        <penguin-kernel@i-love.sakura.ne.jp>,
+        "Wangkefeng (OS Kernel Lab)" <wangkefeng.wang@huawei.com>
+References: <cc85a520-804c-35cc-c7d7-b9999c0671fe@huawei.com>
+ <YX+kMpr/fvmMW7hy@dhcp22.suse.cz>
+From:   Yongqiang Liu <liuyongqiang13@huawei.com>
+Message-ID: <2f368ad4-6a7f-798d-11c1-369eed757bb0@huawei.com>
+Date:   Mon, 1 Nov 2021 19:16:36 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <20211101082447.070493993@linuxfoundation.org>
-In-Reply-To: <20211101082447.070493993@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Mon, 1 Nov 2021 16:44:10 +0530
-Message-ID: <CA+G9fYvsNtCJ7wT-ONaunmuGDwpPxbyHcZp_u9evtN7d8RwDeA@mail.gmail.com>
-Subject: Re: [PATCH 4.14 00/25] 4.14.254-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Haibo Chen <haibo.chen@nxp.com>
-Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
-        f.fainelli@gmail.com, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, linux@roeck-us.net
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YX+kMpr/fvmMW7hy@dhcp22.suse.cz>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.178.155]
+X-ClientProxiedBy: dggeme706-chm.china.huawei.com (10.1.199.102) To
+ dggpeml500005.china.huawei.com (7.185.36.59)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 1 Nov 2021 at 14:51, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+
+在 2021/11/1 16:24, Michal Hocko 写道:
+> Hi,
 >
-> This is the start of the stable review cycle for the 4.14.254 release.
-> There are 25 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> On Mon 01-11-21 16:05:50, Yongqiang Liu wrote:
+> [...]
+>> And we found that when the oom_reaper is done but the memory is still high:
+>>
+>> [   45.115685] Out of memory: Killed process 2553 (oom) total-vm:953404kB,
+>> anon-rss:947748kB, file-rss:388kB, shmem-rss:0kB, UID:0 pgtables:1896kB
+>> oom_score_adj:1000
+>> [   45.115739] oom_reaper: reaped process 2553 (oom), now anon-rss:947708kB,
+>> file-rss:0kB, shmem-rss:0kB
+>>
+>> This is because the bad proccess which recieved SIGKILL is unlocking the mem
+>> to exit which needs more time. And the next oom is triggered to kill the
+>> other system process.
+> Yes, this is a known limitation of the oom_reaper based OOM killing.
+> __oom_reap_task_mm has to skip over mlocked memory areas because
+> munlocking requires some locking (or at least that was the case when the
+> oom reaper was introduced) and the primary purpose of the oom_reaper is
+> to guarantee a forward progress.
 >
-> Responses should be made by Wed, 03 Nov 2021 08:24:20 +0000.
-> Anything received after that time might be too late.
+> Addressing that limitation would require the munlock operation to not
+> depend on any locking. I am not sure how much work that would be with
+> the current code. Until now this was not a high priority because
+> processes with a high mlock limit should be really trusted with their
+> memory consumption so they shouldn't be really the primary oom killer
+> target.
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.254-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+> Are you seeing this problem happening with a real workload or is this
+> only triggered with some artificial tests? E.g. LTP oom tests are known
+> to trigger this situation but they do not represent any real workload.
 
-
-Regression found on arm builds
-Following build warnings / errors reported on stable-rc 5.4, 4.19 and
-4.14 builds.
-
-> Haibo Chen <haibo.chen@nxp.com>
->     mmc: sdhci-esdhc-imx: clear the buffer_read_ready to reset standard tuning circuit
-
-build error :
---------------
-drivers/mmc/host/sdhci-esdhc-imx.c: In function 'esdhc_reset_tuning':
-drivers/mmc/host/sdhci-esdhc-imx.c:1041:10: error: implicit
-declaration of function 'readl_poll_timeout'; did you mean
-'key_set_timeout'? [-Werror=implicit-function-declaration]
-     ret = readl_poll_timeout(host->ioaddr + SDHCI_AUTO_CMD_STATUS,
-           ^~~~~~~~~~~~~~~~~~
-           key_set_timeoutcc1: some warnings being treated as errors
-
-
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+I haven't found it in real workload yet. It's just a testcase.
 
 --
-Linaro LKFT
-https://lkft.linaro.org
+
+Yongqiang Liu
+
