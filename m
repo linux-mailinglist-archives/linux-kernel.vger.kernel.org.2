@@ -2,75 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75C7B441B2D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 13:29:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A802441B1C
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 13:26:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232470AbhKAMc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 08:32:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57340 "EHLO
+        id S232427AbhKAM2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 08:28:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232036AbhKAMc0 (ORCPT
+        with ESMTP id S232029AbhKAM2h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 08:32:26 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80E9BC061714;
-        Mon,  1 Nov 2021 05:29:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=PkMQ2aJC5jezjXsciOSDQbUm9uMWZMe4Y1Gl5dY5vr0=; b=h1m/EAFtW978XdTXPT9VI3eSSs
-        Rm/LHrexjjf0ZpiaT2BBewklmkA2WYaF71sRT3lVkJ3Tce5PhHw+KnRlLsfOM2OePLeDp4gzblujB
-        ijQ6bGk53HecrdKHmrlS5N1LkWfCQwWqeXogkr5VxiESNCMmbbv8qF3oDu3Tn9wDOPfagv4FupEVS
-        BG4pw5+12Qdw1lnN5q/OFCtkADiFiM1g9hRBxfhG1KLgg2K6kL/RjYXUeJzaC1K1pS+NQ6LooCC05
-        yMTYafz5P7DVpu0rZ8Az8yInteCcEZAG6rHwXwfnum3CBuHVSS4YTgBXir/YvkbDvrH6bTs8D6Kq6
-        nd2R0pxg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mhWNs-003lTn-1h; Mon, 01 Nov 2021 12:26:44 +0000
-Date:   Mon, 1 Nov 2021 12:25:52 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Gou Hao <gouhao@uniontech.com>
-Cc:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jiaofenfang@uniontech.com
-Subject: Re: [PATCH] fs: remove fget_many and fput_many interface
-Message-ID: <YX/c0IKikjZ5DAlG@casper.infradead.org>
-References: <20211101051931.21544-1-gouhao@uniontech.com>
+        Mon, 1 Nov 2021 08:28:37 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18C96C061714;
+        Mon,  1 Nov 2021 05:26:04 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id l13so36011429lfg.6;
+        Mon, 01 Nov 2021 05:26:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=MgNWsP/R7v7mjf3L7eJT8so27sWCSmrE5tGVgmAZM/s=;
+        b=mh6Kg4rpiT6cel2PCCKCeMFtzeUkqIUFlB/OX+ArgMJpSsKguUAULk8rTjAv0qUs8n
+         CnKCM0ssix93e8AsSofd1xQWKKFOhN3T+CtdF6YKCQ6tFairZg67i8xAi+QHDbnK+mwh
+         2QP0r3ug8aiz9BhOKTUiqH8BZSUo8FZLw1WeR4Jz+o/0UsvRro989QUW96xjBQ3Z4XDm
+         E0u3FfykaHRzey6KPxtRh2UcFrztk8krTAfGVyk0tVVXiwFSFYFHo4cl9KhRQjOHBfj2
+         7iK9fiVugHEU//tjXyw9SaGmoL51yfi1OPGF9zb3ydhwlS/6/1HUXaOSl9uHqsLAHwPt
+         muBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=MgNWsP/R7v7mjf3L7eJT8so27sWCSmrE5tGVgmAZM/s=;
+        b=movnGdpoXCPcOi1QTNRsFy10dDUzuyGB76pHNrER78eR488DwfHE6L/jgjGId+CxGm
+         EIm2zS41TCt2/rQ9U2UunMdzCo7y2Mdu9gioW4CYP6Hr/I/w1xMfK4fT1VN5G9P44evT
+         s7jewmjKTa99plD50MYSP+ER/runczQBgQeYqaCIDObs8mtRVx8ZfA9IybO7Pgr7K7xZ
+         pfDndhYiOPCsUm+xYgOg17eSfAiquC83W5l8MfLFnz/rMLZ7f9dny3xXW7a9NArmYX4p
+         aSU5LxCWepfNGkAnEXSKItJgT1Uh1W58tC6RmYYhx/FTjSAaT2CiQvHrwIY83ihSqW+f
+         Hvig==
+X-Gm-Message-State: AOAM531279/B0IwDpk+A0o1libdDzDh4Xuu5BqPTBLJC1THDKA9XwBFA
+        WcNwoA6OpNSk8C3/KrT+0VAH4ZWR+8Y=
+X-Google-Smtp-Source: ABdhPJxoRBbOjlwp+AYa3++MFwNSEOA1FB099CRUgLP42IYfSpf29yp364qpCgSidIU0AM2FakHXMw==
+X-Received: by 2002:a05:6512:2618:: with SMTP id bt24mr26930808lfb.46.1635769562419;
+        Mon, 01 Nov 2021 05:26:02 -0700 (PDT)
+Received: from [192.168.1.11] ([94.103.235.8])
+        by smtp.gmail.com with ESMTPSA id k39sm1395953lfv.284.2021.11.01.05.26.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Nov 2021 05:26:01 -0700 (PDT)
+Message-ID: <613828ef-085c-acbb-f54e-7819dc22c769@gmail.com>
+Date:   Mon, 1 Nov 2021 15:26:01 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211101051931.21544-1-gouhao@uniontech.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: Need help in debugging "memory leak in em28xx_init_dev"
+Content-Language: en-US
+To:     Dongliang Mu <mudongliangabcd@gmail.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+References: <CAD-N9QXsUcczurqq9LdaVjXFZMBSbStynwFJyu0UayDazGe=nw@mail.gmail.com>
+ <55f04cb1-18ac-085b-3d35-7a01716fbcbe@gmail.com>
+ <CAD-N9QVN7cepUpRu3d-xtr1L3DG90-nLS4gmkjerDZO21F_ejQ@mail.gmail.com>
+ <f622f569-25d5-f38e-e9fb-7f07e12c4b7e@gmail.com>
+ <CAD-N9QWeGOZdnuRuHVVNzZHWeP3eSHg=tsm+Qn3tqGqACSNbhg@mail.gmail.com>
+ <ffbaeb72-0f76-fb1e-dde5-6e6bdcce1301@gmail.com>
+ <CAD-N9QWQkivwR0mWwiaW_pLE6J_b03x4dP8RyxbmuKYRkcRhoQ@mail.gmail.com>
+ <28a3777a-7941-6ffc-07e5-38456372cfb3@gmail.com>
+ <CAD-N9QUcoKnEWw98XnBJZkas3AkwPonNG0K-PMROOwn8kReT5g@mail.gmail.com>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+In-Reply-To: <CAD-N9QUcoKnEWw98XnBJZkas3AkwPonNG0K-PMROOwn8kReT5g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 01, 2021 at 01:19:31PM +0800, Gou Hao wrote:
-> From: gouhao <gouhao@uniontech.com>
+On 11/1/21 15:23, Dongliang Mu wrote:
+> drop? I do see some patches from local syzkaller will attach this tag
+> to assign credits to syzkaller/syzbot.
 > 
-> These two interface were added in 091141a42 commit,
-> but now there is no place to call them.
+> I think this form is good. Thus I copy this tag from them.
+> 
 
-For completeness, the only user of these APIs was removed in commit
-62906e89e63b ("io_uring: remove file batch-get optimisation").
-A user of get_file_rcu_many() (which you didn't mention) were also
-removed in f073531070d2 ("init: add an init_dup helper").
+Sorry for not being clear :(
 
-> And replace atomic_long_sub/add to atomic_long_dec/inc
-> can improve performance.
-> 
-> Here are the test results of unixbench:
-> 
-> Cmd: ./Run -c 64 context1
-> 
-> Without patch:
-> System Benchmarks Partial Index              BASELINE       RESULT    INDEX
-> Pipe-based Context Switching                   4000.0    2798407.0   6996.0
->                                                                    ========
-> System Benchmarks Index Score (Partial Only)                         6996.0
-> 
-> With patch:
-> System Benchmarks Partial Index              BASELINE       RESULT    INDEX
-> Pipe-based Context Switching                   4000.0    3486268.8   8715.7
->                                                                    ========
-> System Benchmarks Index Score (Partial Only)                         8715.7
+I mean, I can't send my "Reviewed-by" tag to the patch. Missed that 
+"R-b" can be also decoded as Reported-by
 
-This seems impressive.  What's the stddev of this benchmark?
+
+With regards,
+Pavel Skripkin
