@@ -2,209 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5315E441D91
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 16:45:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7000441D95
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 16:54:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232602AbhKAPsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 11:48:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232641AbhKAPsF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 11:48:05 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEF47C061714
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 08:45:27 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id j9so9387773pgh.1
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 08:45:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=IVZ+3X2Rjxc+ixerGwp7ypsajfDVTMwoHCpW87XMd9Q=;
-        b=YZIbU4b61z7pDrPpqweZEq0UqGyo7ETxXPHWJDNP1+FgfC2iDskbORWARv/fI7lOVL
-         NR5yknrkpN4/NBnaFhD3pRWNWuchtY2I4tR2MsYzcaf/CcXJsBb/jt/yYG1PAni0D8hj
-         JGeeB2JJn9rJvjPAQcL5ejfB57MlOz16KjmNLVGhfBn1C46/pTVwpRzmtIaTY1LXP7Bk
-         RieDSgfzQ95Dsi3VJfQ5WC3UdO7N5rzN4qkgqLMqTCJd4GSaFJIzLbCiRB7puq41x0pZ
-         2Vh6D3hRQIsCjzukm/WVbGe98o9dEtqAZ35jaLYTdkyzyU5O3hzJZSv3meH+6jqOxKPG
-         T8Ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=IVZ+3X2Rjxc+ixerGwp7ypsajfDVTMwoHCpW87XMd9Q=;
-        b=Vcb2ee10ScpmfJrlucgDqnPcowpJd84fSGkfg1z4plKA/leyU3jfAxT7obmx4HeNQ9
-         TJfSj3ONg1j2S9rVFPGv/iIws5f0CksUl2klPWsmxU1sTnPqs5ysdCjFLLl8sP+wCcP9
-         6ew1pEnIUPEIphNwYIVzPEZk5XRQZtCwJO+22Fqp5ERrDFxfy9vBJLmh9WvzjfVbxO7U
-         8Xg4Kiivb0DieYaWAZj9d+bF1Y0SGSjto6lzt1OTJMYy8VrFF86g6zXmm5bF9UxLJw1k
-         6Pv5da4IlZiMmR0sDgaKiOC6NzLSEy/R0UXKuOr4X4CRs9uqwXM/HyVPSPIDKqrUFKv0
-         hEWQ==
-X-Gm-Message-State: AOAM531QfZgSn7MKxwl0EYXlUun03tGbyC5GQdrJRsyNqFKmRteRWeWw
-        AM6cf+ieHdqcbsYao7+lVmA=
-X-Google-Smtp-Source: ABdhPJwGqDUkx3ky3N5utKupudoUHdzvzb3peFtCfxnm7yrUouJqtUBw1lGwerJKX1PD3tPI/k59SQ==
-X-Received: by 2002:a05:6a00:c81:b029:30e:21bf:4c15 with SMTP id a1-20020a056a000c81b029030e21bf4c15mr29362219pfv.70.1635781527011;
-        Mon, 01 Nov 2021 08:45:27 -0700 (PDT)
-Received: from smtpclient.apple ([66.170.99.1])
-        by smtp.gmail.com with ESMTPSA id n11sm13386812pgm.74.2021.11.01.08.45.25
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 01 Nov 2021 08:45:26 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
-Subject: Re: [PATCH] mm: use correct VMA flags when freeing page-tables
-From:   Nadav Amit <nadav.amit@gmail.com>
-In-Reply-To: <80283a1e-dfab-c02b-7a6a-424e2f7fda4@google.com>
-Date:   Mon, 1 Nov 2021 08:45:24 -0700
-Cc:     Linux-MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Nick Piggin <npiggin@gmail.com>, x86@kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <6CAB8AAB-D6E2-47B3-BE00-E3D68310EB2D@gmail.com>
-References: <20211021122322.592822-1-namit@vmware.com>
- <80283a1e-dfab-c02b-7a6a-424e2f7fda4@google.com>
-To:     Hugh Dickins <hughd@google.com>
-X-Mailer: Apple Mail (2.3654.120.0.1.13)
+        id S232295AbhKAP4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 11:56:45 -0400
+Received: from mout.gmx.net ([212.227.17.20]:50887 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230517AbhKAP4o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 11:56:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1635782043;
+        bh=o8O/vojK2NIE9mJpyWbXMCjMOgFZFpA8dCaHEaWp19Y=;
+        h=X-UI-Sender-Class:Date:From:To:Subject;
+        b=R2ZUQSH4s4kOitA0WBg07eDPzOZxXmHf03ADrFi8sbtNMuaYekntqhZiVjBRhe76c
+         B3RN3Qti49fWACOwlEHfB43QjsbJ3KmYmrTr2X2hh473HRpq1FbghpHt4IDFz4XuMc
+         QKOAR3NCSJbI8FdVcIp+gP8UV3cjifSMeYNH/ZUs=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from ls3530 ([92.116.177.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1M9Fnj-1mnucW1bZH-006RYN; Mon, 01
+ Nov 2021 16:54:03 +0100
+Date:   Mon, 1 Nov 2021 16:53:37 +0100
+From:   Helge Deller <deller@gmx.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        John David Anglin <dave.anglin@bell.net>,
+        Sven Schnelle <svens@stackframe.org>
+Subject: [GIT PULL] parisc architecture fixes for kernel v5.16-rc1
+Message-ID: <YYANgdNcYx8KQJUJ@ls3530>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Provags-ID: V03:K1:2ltR8udwH8z6wmjI/1pbZ6eF0wKRadBEyt7a1xQe9YBxMxnxC0L
+ Bg5sDEtjtCO590ZOnTDRbrHxmKtrZruoIDObViKVHJziaW88Js5V3xWV3TQi7P2sM4e0Dor
+ 8UpeRazAcU+J0S/IL66rVpJkc3C4FekavIRW4PGb6bMAh4HUao16R0ZbQHkhsxqnkCqCpvL
+ 10/ZVlkAyoObPcpnpKyxw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:II99DMCnopc=:0VdOqCAukw1/2I8UnDp3vq
+ 5fhjF7EKS3OLpATPctxcSlGjZXn6vwmJDQRPUYNtQLOOIdb6YvGjHssHHvYe95VeuDEqAKGVN
+ BIg0ysf78wcrQg4SJlwDgPyBxCXm7KzQp+cVrgq7WqzP5xkEIBQ86Cz3y0axyajI/JtMMjqRC
+ RmIDn+Rc7HB066oIolLcNsHh+w7zOK7/mON1vIW2pxXjBiNZEYi7Ra/itsMNxVBlO9dW7xSUo
+ M2dXKOMDv8RalyDxHHLUVLD5Z6lxrRGjvcKMo4W1AYLY2YzYGAXQu1y5D27UQS16etl/b6y7Z
+ 2ltWfGda2JZwsYfcPM6H/6H58OinURfzIP410CvRFDUdskmazcp3CV6eSjOjc/VX5v4vViy/Q
+ 7GckScYnWS21cgBHmNce/5w+zq8Hfx4iPNQjGXiIRNOrPzD7ERk1uVpJOq3xD0GBW+QWpcnd7
+ VMhEtNAg1IXfnxiAmDXnM/B3CczukX3UBt4mXVmmWuoBL8jyGZpwhCaAdVt3KA4p/VC9EekLC
+ QHpIyt6dvwiEdXVuAZvtx0GbVZxDJaFMd45dzryF1UZR8YztqLTSOmEP0WHMVt+65Qjx4Iu4K
+ BGTSCTxG/BVYHZaQW3rWxPBKz0Cdgf8Ah0KT21piwOml3WkIn6VTxDM1SC4tyI4A6StoVv+KJ
+ pkTAfMF+1DaEfK5kdCVIvBLPjC7duEv8qJmv3z5Iq+8Ivot4aRfRmy1C3bR86IUA4uZu24PS6
+ L2feL6z53QcDrrWHfHc00khtOEEo3wfyGEkTb6MhTXDzahD+jOyZp1V3S78M/L6iBi24cAPOr
+ oPinv2BZvJpfJaI1XK9Xj8gFRfJM/Js3WGF5xT20lptNc9gPi5/QLK8rca10sbg9CrfMKYY4i
+ TnIS1UXEHSGv8b/wx/Q4IDcRp52RblTYQgzSBWecCKJXUj4ymwZxTEl+/qZCRrx98Tzh4OOb5
+ +eFAYO4DuIROs/p5I2arzDB+PEU1hL2g7g/kgvvWoYdaU8TqlWzBR2I0sprpWIDJPdkldv6Zn
+ /HKkSvM0jQkafXYhXUgf43Pf+QrpJcvR7q2ZJ/pABTaDWedr+D6nb5a3eBkt5hD9KSKOny7C3
+ uUrkHMyWeTUicA=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following changes since commit 3a4347d82efdfcc5465b3ed37616426989182915:
 
+  Merge tag 'clk-fixes-for-linus' of git://git.kernel.org/pub/scm/linux/kernel/git/clk/linux (2021-10-30 09:55:46 -0700)
 
-> On Nov 1, 2021, at 12:28 AM, Hugh Dickins <hughd@google.com> wrote:
->=20
-> On Thu, 21 Oct 2021, Nadav Amit wrote:
->=20
->> From: Nadav Amit <namit@vmware.com>
->>=20
->> Consistent use of the mmu_gather interface requires a call to
->> tlb_start_vma() and tlb_end_vma() for each VMA. free_pgtables() does =
-not
->> follow this pattern.
->>=20
->> Certain architectures need tlb_start_vma() to be called in order for
->> tlb_update_vma_flags() to update the VMA flags (tlb->vma_exec and
->> tlb->vma_huge), which are later used for the proper TLB flush to be
->> issued. Since tlb_start_vma() is not called, this can lead to the =
-wrong
->> VMA flags being used when the flush is performed.
->>=20
->> Specifically, the munmap syscall would call unmap_region(), which =
-unmaps
->> the VMAs and then frees the page-tables. A flush is needed after
->> the page-tables are removed to prevent page-walk caches from holding
->> stale entries, but this flush would use the flags of the VMA flags of
->> the last VMA that was flushed. This does not appear to be right.
->>=20
->> Use tlb_start_vma() and tlb_end_vma() to prevent this from happening.
->> This might lead to unnecessary calls to flush_cache_range() on =
-certain
->> arch's. If needed, a new flag can be added to mmu_gather to indicate
->> that the flush is not needed.
->>=20
->> Cc: Andrea Arcangeli <aarcange@redhat.com>
->> Cc: Andrew Cooper <andrew.cooper3@citrix.com>
->> Cc: Andrew Morton <akpm@linux-foundation.org>
->> Cc: Andy Lutomirski <luto@kernel.org>
->> Cc: Dave Hansen <dave.hansen@linux.intel.com>
->> Cc: Peter Zijlstra <peterz@infradead.org>
->> Cc: Thomas Gleixner <tglx@linutronix.de>
->> Cc: Will Deacon <will@kernel.org>
->> Cc: Yu Zhao <yuzhao@google.com>
->> Cc: Nick Piggin <npiggin@gmail.com>
->> Cc: x86@kernel.org
->> Signed-off-by: Nadav Amit <namit@vmware.com>
->> ---
->> mm/memory.c | 4 ++++
->> 1 file changed, 4 insertions(+)
->>=20
->> diff --git a/mm/memory.c b/mm/memory.c
->> index 12a7b2094434..056fbfdd3c1f 100644
->> --- a/mm/memory.c
->> +++ b/mm/memory.c
->> @@ -412,6 +412,8 @@ void free_pgtables(struct mmu_gather *tlb, struct =
-vm_area_struct *vma,
->> 		unlink_anon_vmas(vma);
->> 		unlink_file_vma(vma);
->>=20
->> +		tlb_start_vma(tlb, vma);
->> +
->> 		if (is_vm_hugetlb_page(vma)) {
->> 			hugetlb_free_pgd_range(tlb, addr, vma->vm_end,
->> 				floor, next ? next->vm_start : ceiling);
->> @@ -429,6 +431,8 @@ void free_pgtables(struct mmu_gather *tlb, struct =
-vm_area_struct *vma,
->> 			free_pgd_range(tlb, addr, vma->vm_end,
->> 				floor, next ? next->vm_start : ceiling);
->> 		}
->> +
->> +		tlb_end_vma(tlb, vma);
->> 		vma =3D next;
->> 	}
->> }
->> --=20
->> 2.25.1
->=20
-> No.
->=20
-> This is an experiment to see whether reviewers look at a wider context
-> than is seen in the patch itself?  Let's take a look:
->=20
-> 		tlb_start_vma(tlb, vma);
->=20
-> 		if (is_vm_hugetlb_page(vma)) {
-> 			hugetlb_free_pgd_range(tlb, addr, vma->vm_end,
-> 				floor, next ? next->vm_start : ceiling);
-> 		} else {
-> 			/*
-> 			 * Optimization: gather nearby vmas into one =
-call down
-> 			 */
-> 			while (next && next->vm_start <=3D vma->vm_end + =
-PMD_SIZE
-> 			       && !is_vm_hugetlb_page(next)) {
-> 				vma =3D next;
-> 				next =3D vma->vm_next;
-> 				unlink_anon_vmas(vma);
-> 				unlink_file_vma(vma);
-> 			}
-> 			free_pgd_range(tlb, addr, vma->vm_end,
-> 				floor, next ? next->vm_start : ceiling);
-> 		}
->=20
-> 		tlb_end_vma(tlb, vma);
-> 		vma =3D next;
->=20
-> So, the vma may well have changed in between the new tlb_start_vma()
-> and tlb_end_vma(): which defeats the intent of the patch.
+are available in the Git repository at:
 
-Indeed, I made a an embarrassing bug. Having said that, I do not
-understand the experiment and whether I conducted it or was the
-object of it.
+  http://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git tags/for-5.16/parisc-1
 
->=20
-> And I doubt that optimization should be dropped to suit the patch:
-> you admit to limited understanding of those architectures which need
-> tlb_start_vma(), me too; but they seem to have survived many years
-> without it there in free_pgtables(), and I think that tlb_start_vma()
-> is for when freeing pages, not for when freeing page tables.  Surely
-> all architectures have to accommodate the fact that a single page
-> table can be occupied by many different kinds of vma.
+for you to fetch changes up to 6e866a462867b60841202e900f10936a0478608c:
 
-When it comes to TLB flushing, the assumption that if something is
-in the code for many years it must be working is questionable, and
-I have already encountered (and fixed) many such cases before.
+  parisc: Fix set_fixmap() on PA1.x CPUs (2021-11-01 12:00:22 +0100)
 
-Freeing page-tables, as I mentioned before, is needed for the
-invalidation the page-walk caches after the page-tables are dropped,
-if a speculative page-walk takes place. I can post v2 and fix my
-embarrassing bug. I am not going to force this patch - I just
-encountered the issue as I was modifying a different piece of code
-and the behavior seems very inconsistent.
+----------------------------------------------------------------
+parisc architecture updates for kernel v5.16-rc1
 
+Lots of new features and fixes:
+* Added TOC (table of content) support, which is a debugging feature which is
+  either initiated by pressing the TOC button or via command in the BMC. If
+  pressed the Linux built-in KDB/KGDB will be called (Sven Schnelle)
+* Fix CONFIG_PREEMPT (Sven)
+* Fix unwinder on 64-bit kernels (Sven)
+* Various kgdb fixes (Sven)
+* Added KFENCE support (me)
+* Switch to ARCH_STACKWALK implementation (me)
+* Fix ptrace check on syscall return (me)
+* Fix kernel crash with fixmaps on PA1.x machines (me)
+* Move thread_info into task struct, aka CONFIG_THREAD_INFO_IN_TASK (me)
+* Updated defconfigs
+* Smaller cleanups, including Makefile cleanups (Masahiro Yamada),
+  use kthread_run() macro (Cai Huoqing), use swap() macro (Yihao Han).
+
+----------------------------------------------------------------
+Cai Huoqing (1):
+      parisc: Make use of the helper macro kthread_run()
+
+Helge Deller (17):
+      parisc: make parisc_acctyp() available outside of faults.c
+      parisc: Switch to ARCH_STACKWALK implementation
+      parisc: Add KFENCE support
+      parisc: Define FRAME_ALIGN and PRIV_USER/PRIV_KERNEL in assembly.h
+      parisc: Allocate task struct with stack frame alignment
+      parisc: Use FRAME_SIZE and FRAME_ALIGN from assembly.h
+      parisc: Use PRIV_USER instead of 3 in entry.S
+      task_stack: Fix end_of_stack() for architectures with upwards-growing stack
+      parisc: Fix ptrace check on syscall return
+      parisc: Move thread_info into task struct
+      parisc: Use PRIV_USER in syscall.S
+      parisc: Use PRIV_USER and PRIV_KERNEL in ptrace.h
+      parisc: Drop ifdef __KERNEL__ from non-uapi kernel headers
+      parisc: enhance warning regarding usage of O_NONBLOCK
+      parisc: Remove unused constants from asm-offsets.c
+      parisc: Update defconfigs
+      parisc: Fix set_fixmap() on PA1.x CPUs
+
+Masahiro Yamada (2):
+      parisc: decompressor: remove repeated depenency of misc.o
+      parisc: decompressor: clean up Makefile
+
+Sven Schnelle (15):
+      parisc/unwind: use copy_from_kernel_nofault()
+      parisc: disable preemption during local tlb flush
+      parisc: deduplicate code in flush_cache_mm() and flush_cache_range()
+      parisc: fix preempt_count() check in entry.S
+      parisc: disable preemption in send_IPI_allbutself()
+      parisc: fix warning in flush_tlb_all
+      parisc/unwind: fix unwinder when CONFIG_64BIT is enabled
+      parisc: move virt_map macro to assembly.h
+      parisc: add PIM TOC data structures
+      parisc/firmware: add functions to retrieve TOC data
+      parisc: add support for TOC (transfer of control)
+      parisc/kgdb: add kgdb_roundup() to make kgdb work with idle polling
+      parisc: mark xchg functions notrace
+      parisc/ftrace: set function trace function
+      parisc/ftrace: use static key to enable/disable function graph tracer
+
+Yihao Han (1):
+      parisc: Use swap() to swap values in setup_bootmem()
+
+ .../core/thread-info-in-task/arch-support.txt      |   2 +-
+ arch/parisc/Kconfig                                |  22 +++-
+ arch/parisc/boot/compressed/Makefile               |   9 +-
+ arch/parisc/configs/generic-32bit_defconfig        |   9 +-
+ arch/parisc/configs/generic-64bit_defconfig        |  21 ++--
+ arch/parisc/include/asm/assembly.h                 |  32 ++++++
+ arch/parisc/include/asm/bitops.h                   |  10 --
+ arch/parisc/include/asm/current.h                  |  19 ++++
+ arch/parisc/include/asm/futex.h                    |   3 -
+ arch/parisc/include/asm/ide.h                      |   4 -
+ arch/parisc/include/asm/kfence.h                   |  44 ++++++++
+ arch/parisc/include/asm/mckinley.h                 |   2 -
+ arch/parisc/include/asm/pdc.h                      |   2 +
+ arch/parisc/include/asm/processor.h                |  11 +-
+ arch/parisc/include/asm/ptrace.h                   |   6 +-
+ arch/parisc/include/asm/runway.h                   |   2 -
+ arch/parisc/include/asm/smp.h                      |  19 +++-
+ arch/parisc/include/asm/thread_info.h              |  12 +--
+ arch/parisc/include/asm/traps.h                    |   1 +
+ arch/parisc/include/asm/unaligned.h                |   2 -
+ arch/parisc/include/uapi/asm/pdc.h                 |  28 +++++-
+ arch/parisc/kernel/Makefile                        |   1 +
+ arch/parisc/kernel/asm-offsets.c                   |  34 ++-----
+ arch/parisc/kernel/cache.c                         |  87 +++++++---------
+ arch/parisc/kernel/entry.S                         |  90 ++++++-----------
+ arch/parisc/kernel/firmware.c                      |  32 ++++++
+ arch/parisc/kernel/ftrace.c                        |  21 ++--
+ arch/parisc/kernel/head.S                          |  40 ++++----
+ arch/parisc/kernel/irq.c                           |   6 +-
+ arch/parisc/kernel/pdt.c                           |   4 +-
+ arch/parisc/kernel/process.c                       |   4 +-
+ arch/parisc/kernel/smp.c                           |  25 ++++-
+ arch/parisc/kernel/stacktrace.c                    |  30 +++---
+ arch/parisc/kernel/sys_parisc.c                    |  10 +-
+ arch/parisc/kernel/syscall.S                       |  26 ++---
+ arch/parisc/kernel/toc.c                           | 111 +++++++++++++++++++++
+ arch/parisc/kernel/toc_asm.S                       |  88 ++++++++++++++++
+ arch/parisc/kernel/traps.c                         |   7 +-
+ arch/parisc/kernel/unwind.c                        |  34 ++++---
+ arch/parisc/lib/bitops.c                           |  12 +--
+ arch/parisc/mm/fault.c                             |   2 +-
+ arch/parisc/mm/fixmap.c                            |   5 +-
+ arch/parisc/mm/init.c                              |  10 +-
+ include/linux/sched/task_stack.h                   |   4 +
+ 44 files changed, 622 insertions(+), 321 deletions(-)
+ create mode 100644 arch/parisc/include/asm/current.h
+ create mode 100644 arch/parisc/include/asm/kfence.h
+ create mode 100644 arch/parisc/kernel/toc.c
+ create mode 100644 arch/parisc/kernel/toc_asm.S
