@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF0114417AC
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:37:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1229D4416AF
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:26:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233842AbhKAJiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:38:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43582 "EHLO mail.kernel.org"
+        id S233028AbhKAJ2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:28:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59152 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233097AbhKAJfq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:35:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 10FF6610A8;
-        Mon,  1 Nov 2021 09:25:57 +0000 (UTC)
+        id S232492AbhKAJY4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:24:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 691B3610E8;
+        Mon,  1 Nov 2021 09:21:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758758;
-        bh=neNbb1lS9mPDKJJTeoCw3hvhNrfP6N74eu6k6XZsfNI=;
+        s=korg; t=1635758496;
+        bh=EyVhYykjNsNJaeHThoyuDdJZpI/45o5n5Mwbt2kBEr4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yj09Bz2bpqbNMY1eOoXJ28znkT2wEWDMhXz1bNN534oMatkrtBj1dyxWOmqOTgyoS
-         At1Leyuqma+0WgGy9fMMn/i/l7SHOlUJ/eeySique+SPqBOYugASzhgkyXH3jRZEG5
-         U8YeeJE/YSyPq3XMlWn6KtLpIzhX2NLYL+CRXfqM=
+        b=WVbXZxVOZJZ+/muDMPADLnGmRhxk3JXjj78+ugby9luMtRIV0COIqZflW+aRKGPAz
+         +BKSHiDUyl0o3RdhvFBgoC0EtlBItQ/ic6o1bi935G8B8tsD/HJ+JueBb5QkyTo7Zj
+         ExSP5GEkqHQwQ2q8HR0slFpLCcgCXSPlQbd53eZY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jim Quinlan <jim2101024@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-Subject: [PATCH 5.10 47/77] reset: brcmstb-rescal: fix incorrect polarity of status bit
+        stable@vger.kernel.org,
+        =?UTF-8?q?Cl=C3=A9ment=20B=C5=93sch?= <u@pkh.me>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>, Maxime Ripard <maxime@cerno.tech>
+Subject: [PATCH 4.19 23/35] arm64: dts: allwinner: h5: NanoPI Neo 2: Fix ethernet node
 Date:   Mon,  1 Nov 2021 10:17:35 +0100
-Message-Id: <20211101082521.697454410@linuxfoundation.org>
+Message-Id: <20211101082457.023981695@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082511.254155853@linuxfoundation.org>
-References: <20211101082511.254155853@linuxfoundation.org>
+In-Reply-To: <20211101082451.430720900@linuxfoundation.org>
+References: <20211101082451.430720900@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,33 +41,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jim Quinlan <jim2101024@gmail.com>
+From: Clément Bœsch <u@pkh.me>
 
-commit f33eb7f29c16ba78db3221ee02346fd832274cdd upstream.
+commit 0764e365dacd0b8f75c1736f9236be280649bd18 upstream.
 
-The readl_poll_timeout() should complete when the status bit
-is a 1, not 0.
+RX and TX delay are provided by ethernet PHY. Reflect that in ethernet
+node.
 
-Fixes: 4cf176e52397 ("reset: Add Broadcom STB RESCAL reset controller")
-Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-Link: https://lore.kernel.org/r/20210914221122.62315-1-f.fainelli@gmail.com
-Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+Fixes: 44a94c7ef989 ("arm64: dts: allwinner: H5: Restore EMAC changes")
+Signed-off-by: Clément Bœsch <u@pkh.me>
+Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Link: https://lore.kernel.org/r/20210905002027.171984-1-u@pkh.me
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/reset/reset-brcmstb-rescal.c |    2 +-
+ arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi-neo2.dts |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/reset/reset-brcmstb-rescal.c
-+++ b/drivers/reset/reset-brcmstb-rescal.c
-@@ -38,7 +38,7 @@ static int brcm_rescal_reset_set(struct
- 	}
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi-neo2.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi-neo2.dts
+@@ -114,7 +114,7 @@
+ 	pinctrl-0 = <&emac_rgmii_pins>;
+ 	phy-supply = <&reg_gmac_3v3>;
+ 	phy-handle = <&ext_rgmii_phy>;
+-	phy-mode = "rgmii";
++	phy-mode = "rgmii-id";
+ 	status = "okay";
+ };
  
- 	ret = readl_poll_timeout(base + BRCM_RESCAL_STATUS, reg,
--				 !(reg & BRCM_RESCAL_STATUS_BIT), 100, 1000);
-+				 (reg & BRCM_RESCAL_STATUS_BIT), 100, 1000);
- 	if (ret) {
- 		dev_err(data->dev, "time out on SATA/PCIe rescal\n");
- 		return ret;
 
 
