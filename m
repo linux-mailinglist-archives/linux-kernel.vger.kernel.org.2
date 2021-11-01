@@ -2,190 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9EEE442241
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 22:04:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC6FE442249
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 22:05:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229896AbhKAVHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 17:07:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33230 "EHLO
+        id S231365AbhKAVID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 17:08:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229738AbhKAVHX (ORCPT
+        with ESMTP id S230317AbhKAVH4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 17:07:23 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61EA6C061764
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 14:04:49 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id s3so19929325ild.0
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 14:04:49 -0700 (PDT)
+        Mon, 1 Nov 2021 17:07:56 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBFCCC061766
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 14:05:21 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id r5so12665782pls.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 14:05:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=65jDPfBpqzh1SVGsQCqxZHrsT33rrJhILf2Fclkb08g=;
-        b=CDgNHzQhfNf1YPq2tYY+/T0WtRXHC1qbzcm3IQ3yj+OmPjRmzY8p1i/x714lGiB0lj
-         3XvAC7XW2LLwLqdemgGnmisO8yX0Z4RyURcFcLMNm940Y7hJBzjTiGyGSLFaFxAzXrWV
-         WZ2IJWLlizZtfqHCSRiKmo/djbib8Qelp+vek=
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=v746gIRw4x6w6whi0eejVKvGEzFDafBMr3o6GGyDCJ0=;
+        b=AWHwBOSzCJlF13ayRM+Lt2V27tz9OejIOGqHJteYh7Z32UaztRaeTSYQFBpDTIPvGi
+         KRReYsQ+U99ElLPrAAfm45NwZiRFK9WtR/F3Oq/8K9UnkkuVCHuRq4A4i89yScV7LJLu
+         mggGwUrlIxQhxsg6wn02H/6zrd8ZAb9Dw9AoY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=65jDPfBpqzh1SVGsQCqxZHrsT33rrJhILf2Fclkb08g=;
-        b=2EhQqmJ++J73/uEDGJcWS+kPQpeBad7n7y6ZfOjhUCqK+LQ0gbuo3/AU7d1VaWWxU7
-         0olBMjex1/kBEubsSwAumkzs9DOm+fEBR3IazGxpC5bzrDW/s/8lgd6XMXUHGskSXpjE
-         NxjTiuEbrhOScXfnaAk/wGr3GIb0GASdEr9BER9ZEaHSd+Esf7jS3YbTImFMKlX117Rf
-         fhkVbHj7PF6GL28Hcqo2PNAwXLsXhLWFZj4R+KxvTHRZcX8HMBQ3XKbvt6ppWJZGyxkW
-         9/d4NrCbPd6cGucljQY3I9H4vbDirwq+zGacH/y3vKEXnKKPJ9bzqnwLgwUE6sqyJMG6
-         8KHg==
-X-Gm-Message-State: AOAM531C670uzsXZxUMx0V7N7rFKOVuvPLZpuLiM7nOtw6PL0cv0zNop
-        PH4B02X2Kpye0ivdR0NT0AJ151rxcjwXsQ==
-X-Google-Smtp-Source: ABdhPJxNsbV9diHvFvuHmQ1BAt5NQblT1hBBjOVdvnqoCPyK8Ygxir3NdUSbv8TmyEh0fZrFo02zsg==
-X-Received: by 2002:a05:6e02:168c:: with SMTP id f12mr2256964ila.171.1635800688318;
-        Mon, 01 Nov 2021 14:04:48 -0700 (PDT)
-Received: from mail-il1-f170.google.com (mail-il1-f170.google.com. [209.85.166.170])
-        by smtp.gmail.com with ESMTPSA id a14sm9113611ilv.86.2021.11.01.14.04.47
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=v746gIRw4x6w6whi0eejVKvGEzFDafBMr3o6GGyDCJ0=;
+        b=bbNVRVZ2N9Hg+P/e3RO+7Yei9nuq3EeeWLdjmCKV6fHAkO3i2tWf75J1aYc/HQylIw
+         jTFQn3alE5fW1o0aWKbsR5hq9CDvw3if6f9dyino8EG8SKAoGx8Yb1UiMMInQPA3EmAJ
+         6VeKechibOP/qtAKr9B8qLYlGu2zaOQTSjP3ChkljvxP9jFAyEyypBjpy/7/91eSvjkw
+         QHUw/eLZ3EEKlRyvwE4dG5zxr+erJhuy4CpjBJD77299FIT+2MgdJzGYI+5baYTgp5+d
+         eyUWbArYI2bPG+xmXclyjbRWuBxBbpr4DCh43INu1/rw+7HxZEAIamLdK3IIvKoyKSeb
+         sbBA==
+X-Gm-Message-State: AOAM530fu5m76aUsVUbgsGPSXaF9JJzNvTW5RxNbiLefoYCgmFxUtEY2
+        XDoRQViwfWbGEEjaXpF5k+NVOQ==
+X-Google-Smtp-Source: ABdhPJxksk3j8H3XPkcNl5tSrZWRHLx2YSenJKmami6yq2fQCYI6CxvKGY6+hZ+UuW2Mw91wGmOESA==
+X-Received: by 2002:a17:90b:1d8f:: with SMTP id pf15mr1532052pjb.70.1635800721350;
+        Mon, 01 Nov 2021 14:05:21 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:6278:520b:a2e1:4ece])
+        by smtp.gmail.com with UTF8SMTPSA id p23sm297902pjg.55.2021.11.01.14.05.20
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Nov 2021 14:04:47 -0700 (PDT)
-Received: by mail-il1-f170.google.com with SMTP id i12so13645133ila.12
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 14:04:47 -0700 (PDT)
-X-Received: by 2002:a05:6e02:1a67:: with SMTP id w7mr15354968ilv.165.1635800686977;
- Mon, 01 Nov 2021 14:04:46 -0700 (PDT)
-MIME-Version: 1.0
-References: <1635250056-20274-1-git-send-email-rnayak@codeaurora.org>
-In-Reply-To: <1635250056-20274-1-git-send-email-rnayak@codeaurora.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Mon, 1 Nov 2021 14:04:34 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=UoTFzZn5h_VNrwrt2E5P2k9WmqZ7nXFLDHyMzUvSzhUA@mail.gmail.com>
-Message-ID: <CAD=FV=UoTFzZn5h_VNrwrt2E5P2k9WmqZ7nXFLDHyMzUvSzhUA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] pinctrl: qcom: Add egpio feature support
-To:     Rajendra Nayak <rnayak@codeaurora.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mon, 01 Nov 2021 14:05:20 -0700 (PDT)
+Date:   Mon, 1 Nov 2021 14:05:19 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Sandeep Maheswaram <quic_c_sanm@quicinc.com>,
         Andy Gross <agross@kernel.org>,
-        LinusW <linus.walleij@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Prasad Sodagudi <psodagud@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, quic_pkondeti@quicinc.com,
+        quic_ppratap@quicinc.com
+Subject: Re: [PATCH v9 1/5] usb: host: xhci: plat: Add suspend quirk for dwc3
+ controller
+Message-ID: <YYBWj7sxLIqlql5M@google.com>
+References: <1635753224-23975-1-git-send-email-quic_c_sanm@quicinc.com>
+ <1635753224-23975-2-git-send-email-quic_c_sanm@quicinc.com>
+ <YYA4/rjSN/QvIM+w@google.com>
+ <YYBTFxU8biWxNeJ5@ripper>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YYBTFxU8biWxNeJ5@ripper>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, Nov 01, 2021 at 01:50:31PM -0700, Bjorn Andersson wrote:
+> On Mon 01 Nov 11:59 PDT 2021, Matthias Kaehlcke wrote:
+> 
+> > Hi Sandeep,
+> > 
+> > On Mon, Nov 01, 2021 at 01:23:40PM +0530, Sandeep Maheswaram wrote:
+> > > During suspend check if any wakeup capable devices are connected to the
+> > > controller (directly or through hubs), and set the wakeup capable property
+> > > for xhci plat device.
+> > > 
+> > > Signed-off-by: Sandeep Maheswaram <quic_c_sanm@quicinc.com>
+> > > ---
+> > >  drivers/usb/host/xhci-plat.c | 12 ++++++++++++
+> > >  1 file changed, 12 insertions(+)
+> > > 
+> > > diff --git a/drivers/usb/host/xhci-plat.c b/drivers/usb/host/xhci-plat.c
+> > > index c1edcc9..7ab272b 100644
+> > > --- a/drivers/usb/host/xhci-plat.c
+> > > +++ b/drivers/usb/host/xhci-plat.c
+> > > @@ -431,6 +431,14 @@ static int xhci_plat_remove(struct platform_device *dev)
+> > >  	return 0;
+> > >  }
+> > >  
+> > > +static void xhci_dwc3_suspend_quirk(struct usb_hcd *hcd, struct device *dev)
+> > > +{
+> > > +	if (usb_wakeup_enabled_descendants(hcd->self.root_hub))
+> > > +		device_set_wakeup_capable(dev, true);
+> > > +	else
+> > > +		device_set_wakeup_capable(dev, false);
+> > 
+> > IIUC wakeup capability is typically a static property that reflects the
+> > actual hardware (or firmware) support for wakeup. In that sense it doesn't
+> > seem a good idea to change it dynamically at suspend time, depending on
+> > what is connected to the bus. I understand though that the odd split
+> > of the dwc3 driver makes it hard to do things properly ...
+> > 
+> > Earlier in this discussion Felipe suggested to add a function like
+> > device_children_wakeup_capable(), to avoid having to call
+> > usb_wakeup_enabled_descendants() from the dwc3 drivers.
+> > 
+> > Below is an initial implementation for device_children_wakeup_capable(),
+> > could you try if calling it from dwc3_suspend/resume_common() and
+> > dwc3_qcom_suspend() would work instead of relying on the wakeup
+> > capability?
+> > 
+> > Thanks
+> > 
+> > Matthias
+> > 
+> > From 97c838334045ed67c3943f8e035ac70acd12b89b Mon Sep 17 00:00:00 2001
+> > From: Matthias Kaehlcke <mka@chromium.org>
+> > Date: Mon, 1 Nov 2021 11:37:19 -0700
+> > Subject: [PATCH] PM / wakeup: Add device_children_wakeup_capable()
+> > 
+> > Add device_children_wakeup_capable() which checks whether the device itself
+> > or one if its descendants is wakeup capable.
+> > 
+> > Change-Id: Ib359eb5ac8650ddf9889c7d1f77707f50777fe99
+> > Suggested-by: Felipe Balbi <balbi@kernel.org>
+> > Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+> 
+> Looks neat and useful.
+> 
+> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-On Tue, Oct 26, 2021 at 5:09 AM Rajendra Nayak <rnayak@codeaurora.org> wrote:
->
-> From: Prasad Sodagudi <psodagud@codeaurora.org>
->
-> egpio is a scheme which allows special power Island Domain IOs
-> (LPASS,SSC) to be reused as regular chip GPIOs by muxing regular
-> TLMM functions with Island Domain functions.
-> With this scheme, an IO can be controlled both by the cpu running
-> linux and the Island processor. This provides great flexibility to
-> re-purpose the Island IOs for regular TLMM usecases.
->
-> 2 new bits are added to ctl_reg, egpio_present is a read only bit
-> which shows if egpio feature is available or not on a given gpio.
-> egpio_enable is the read/write bit and only effective if egpio_present
-> is 1. Once its set, the Island IO is controlled from Chip TLMM.
-> egpio_enable when set to 0 means the GPIO is used as Island Domain IO.
->
-> To support this we add a new function 'egpio' which can be used to
-> set the egpio_enable to 0, for any other TLMM controlled functions
-> we set the egpio_enable to 1.
->
-> Signed-off-by: Prasad Sodagudi <psodagud@codeaurora.org>
-> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
-> ---
->  drivers/pinctrl/qcom/pinctrl-msm.c | 17 +++++++++++++++--
->  drivers/pinctrl/qcom/pinctrl-msm.h |  4 ++++
->  2 files changed, 19 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/pinctrl/qcom/pinctrl-msm.c b/drivers/pinctrl/qcom/pinctrl-msm.c
-> index 8476a8a..bfdba3a 100644
-> --- a/drivers/pinctrl/qcom/pinctrl-msm.c
-> +++ b/drivers/pinctrl/qcom/pinctrl-msm.c
-> @@ -185,6 +185,7 @@ static int msm_pinmux_set_mux(struct pinctrl_dev *pctldev,
->         unsigned int irq = irq_find_mapping(gc->irq.domain, group);
->         struct irq_data *d = irq_get_irq_data(irq);
->         unsigned int gpio_func = pctrl->soc->gpio_func;
-> +       unsigned int egpio_func = pctrl->soc->egpio_func;
->         const struct msm_pingroup *g;
->         unsigned long flags;
->         u32 val, mask;
-> @@ -218,8 +219,20 @@ static int msm_pinmux_set_mux(struct pinctrl_dev *pctldev,
->         raw_spin_lock_irqsave(&pctrl->lock, flags);
->
->         val = msm_readl_ctl(pctrl, g);
-> -       val &= ~mask;
-> -       val |= i << g->mux_bit;
-> +
-> +       if (egpio_func && i == egpio_func) {
-> +               if (val & BIT(g->egpio_present))
-> +                       val &= ~BIT(g->egpio_enable);
-> +               else
-> +                       return -EINVAL;
-> +       } else {
-> +               val &= ~mask;
-> +               val |= i << g->mux_bit;
-> +               /* Check if egpio present and enable that feature */
-> +               if (egpio_func && (val & BIT(g->egpio_present)))
-> +                       val |= BIT(g->egpio_enable);
-> +       }
-> +
->         msm_writel_ctl(val, pctrl, g);
->
->         raw_spin_unlock_irqrestore(&pctrl->lock, flags);
-> diff --git a/drivers/pinctrl/qcom/pinctrl-msm.h b/drivers/pinctrl/qcom/pinctrl-msm.h
-> index e31a516..b7110ac 100644
-> --- a/drivers/pinctrl/qcom/pinctrl-msm.h
-> +++ b/drivers/pinctrl/qcom/pinctrl-msm.h
-> @@ -77,6 +77,8 @@ struct msm_pingroup {
->         unsigned drv_bit:5;
->
->         unsigned od_bit:5;
-> +       unsigned egpio_enable:5;
-> +       unsigned egpio_present:5;
->         unsigned oe_bit:5;
->         unsigned in_bit:5;
->         unsigned out_bit:5;
-> @@ -119,6 +121,7 @@ struct msm_gpio_wakeirq_map {
->   *                            to be aware that their parent can't handle dual
->   *                            edge interrupts.
->   * @gpio_func: Which function number is GPIO (usually 0).
-> + * @egpio_func: Which function number is eGPIO
+Thanks!
 
-nit: in the above, document that this is actually a _virtual_ number.
-In other words it doesn't actually map to any real hardware register
-setting. Also maybe document 0 here means that eGPIO isn't supported
-on this SoC. ...and lastly, all the other entries in this docstring
-end with a ".". Something roughly like this:
+> (Without the Change-Id of course...)
 
- * @egpio_func: If non-zero then this SoC supports eGPIO. Even though in
-                hardware this is a mux 1-level above the TLMM, we'll treat
-                it as if this is just another mux state of the TLMM. Since
-                it doesn't really map to hardware, we'll allocate a virtual
-                function number for eGPIO and any time we see that function
-                number used we'll treat it as a request to mux away from
-                our TLMM towards another owner.
-
-Thinking about this made me look a little closer at your virtual
-function number, though. On sc7280 (in the next patch) you chose
-function "9" as GPIO. Things smell a little strange, though.
-Apparently sc7280 was already setup for a non-virtual "function 9"
-since "nfuncs" was 10. Was this just a fortunate bug that kept you
-from having to touch all the sc7280 PINGROUP definitions in the next
-patch, or is there actually a true "function 9" somewhere in the
-hardware that we might want to someday add to Linux? If so, should we
-pick eGPIO as 10?
-
-...and then, looking further, what would happen if we picked eGPIO 10?
-Should "nfuncs" include this virtual number, or not? If "nfuncs"
-_does_ include this number and it bumps you over to the next
-"order_base_2" then the mask calculated by msm_pinmux_set_mux() will
-be wrong. If "nfuncs" _doesn't_ include this number then we should
-probably document that fact, and (I suppose) change sc7280's "nfuncs"
-down to 9?
-
-
--Doug
+Sure, I usually use patman to send patches upstream, which filters the
+Change-Id if present, forgot to remove it when copying and pasting the
+patch manually.
