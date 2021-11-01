@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60F364418B4
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:49:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E50C3441721
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:31:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232129AbhKAJun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:50:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52284 "EHLO mail.kernel.org"
+        id S233380AbhKAJcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:32:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36830 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234129AbhKAJrK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:47:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 737DA61179;
-        Mon,  1 Nov 2021 09:30:28 +0000 (UTC)
+        id S232229AbhKAJaE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:30:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5922C61208;
+        Mon,  1 Nov 2021 09:23:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635759028;
-        bh=kJHSbuRnKGTdUeKX8rgZGjmFOi20ftVkzzoANQZCGRQ=;
+        s=korg; t=1635758606;
+        bh=cGCxs+1Ry/Qu7CSd/SGrQrCzbmL0By5mcfTNjiE5zdY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gCCqkfezIpUyDwNZaskRsqW2FUCbgPsF8buCJs9neL3l5yNbHnfJ2uyG3weHTVHlz
-         3dH7fnTLSGMvDMevbu4aPeEcsYGQghZJBXruZVi0fY1yCJaohJ49xs5hIO+bKls/Pv
-         Gj/O8RVLatssONDQvpeO4HgFze5WuHME2TJLuOUQ=
+        b=fiaBap415bqB+C8kD5Ba863huJ3zlUlZ3sZ6/J857h5eJHWHP2Jhqsf6pUum5CMQa
+         WC+jB5MmJ34CZ10iqKqB1fFjOzfaN3p0IyVA4cWliMHX5y3zDllz559XrAqUS2GRBQ
+         aKB5yQg2TVjf45r9iYnyLziKDZ/LeygC4DhTJMUQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yuiko Oshino <yuiko.oshino@microchip.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.14 085/125] net: ethernet: microchip: lan743x: Fix driver crash when lan743x_pm_resume fails
+        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Dinh Nguyen <dinguyen@kernel.org>
+Subject: [PATCH 5.4 34/51] nios2: Make NIOS2_DTB_SOURCE_BOOL depend on !COMPILE_TEST
 Date:   Mon,  1 Nov 2021 10:17:38 +0100
-Message-Id: <20211101082549.328144936@linuxfoundation.org>
+Message-Id: <20211101082508.765125670@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082533.618411490@linuxfoundation.org>
-References: <20211101082533.618411490@linuxfoundation.org>
+In-Reply-To: <20211101082500.203657870@linuxfoundation.org>
+References: <20211101082500.203657870@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,30 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yuiko Oshino <yuiko.oshino@microchip.com>
+From: Guenter Roeck <linux@roeck-us.net>
 
-commit d6423d2ec39cce2bfca418c81ef51792891576bc upstream.
+commit 4a089e95b4d6bb625044d47aed0c442a8f7bd093 upstream.
 
-The driver needs to clean up and return when the initialization fails on resume.
+nios2:allmodconfig builds fail with
 
-Fixes: 23f0703c125b ("lan743x: Add main source files for new lan743x driver")
-Signed-off-by: Yuiko Oshino <yuiko.oshino@microchip.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+make[1]: *** No rule to make target 'arch/nios2/boot/dts/""',
+	needed by 'arch/nios2/boot/dts/built-in.a'.  Stop.
+make: [Makefile:1868: arch/nios2/boot/dts] Error 2 (ignored)
+
+This is seen with compile tests since those enable NIOS2_DTB_SOURCE_BOOL,
+which in turn enables NIOS2_DTB_SOURCE. This causes the build error
+because the default value for NIOS2_DTB_SOURCE is an empty string.
+Disable NIOS2_DTB_SOURCE_BOOL for compile tests to avoid the error.
+
+Fixes: 2fc8483fdcde ("nios2: Build infrastructure")
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/microchip/lan743x_main.c |    2 ++
- 1 file changed, 2 insertions(+)
+ arch/nios2/platform/Kconfig.platform |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/net/ethernet/microchip/lan743x_main.c
-+++ b/drivers/net/ethernet/microchip/lan743x_main.c
-@@ -3019,6 +3019,8 @@ static int lan743x_pm_resume(struct devi
- 	if (ret) {
- 		netif_err(adapter, probe, adapter->netdev,
- 			  "lan743x_hardware_init returned %d\n", ret);
-+		lan743x_pci_cleanup(adapter);
-+		return ret;
- 	}
+--- a/arch/nios2/platform/Kconfig.platform
++++ b/arch/nios2/platform/Kconfig.platform
+@@ -37,6 +37,7 @@ config NIOS2_DTB_PHYS_ADDR
  
- 	/* open netdev when netdev is at running state while resume.
+ config NIOS2_DTB_SOURCE_BOOL
+ 	bool "Compile and link device tree into kernel image"
++	depends on !COMPILE_TEST
+ 	help
+ 	  This allows you to specify a dts (device tree source) file
+ 	  which will be compiled and linked into the kernel image.
 
 
