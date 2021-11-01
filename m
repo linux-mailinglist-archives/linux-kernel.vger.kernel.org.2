@@ -2,202 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20CC14417D7
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:39:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89AA2441786
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:36:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233789AbhKAJkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:40:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232511AbhKAJiH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:38:07 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B5B4C0431A9;
-        Mon,  1 Nov 2021 02:22:27 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id k22so6793613ljk.5;
-        Mon, 01 Nov 2021 02:22:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qWSEirly4n64mZ55Ypk7HFX/ooed9xF0zO6hXUeUyg4=;
-        b=SC/QIDLuGFPfgiy3NDa5sleLCWa3tpyd6dJMzvpin43aKorTe1D32C/vlmCfqts9Ky
-         fZmy4gNcQ/29WGa6Suul76Odk/aSv46cbeVi06jdef/qzNmHDlIHzH0vvMyOPdBhvcvt
-         1ZpzgonYBH0q+IPhJsR0ycI9CuxVTpbclpRcRly1hc9T34WrebQFhsucl7tTsCPDaV3a
-         LrAcRBBSBcM2bPqmBEML7sJ7MqEqblv3y4cRX/Ee3Hr2e63eFj2PdVhSKkZthe6qhgVs
-         QWNQevuKa6XJlBqDwZJlvSp5anjU31pbSp39YMkNRwcJgD664Cy6cZ8oZ7huYA1Yncua
-         AFxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qWSEirly4n64mZ55Ypk7HFX/ooed9xF0zO6hXUeUyg4=;
-        b=VueoV9UJm0z3xxG5zueMit7Uf5fyBmscXzbXH89K/YuFm7fioDWRs0IGceLMwwgmkd
-         dXzI/dA6YqR2QuT7S8RH6w0dE8vklAJ5cKeMEE+7JNoqNfrCPe9ZiWauFQElHo1Ixs3E
-         VXwE9vbSBjJcFXYwF9f/M9QxC17urE2Fy+cdagamYi0uJ+64Yd7ras+rQKTrdQOWGc/A
-         t96ekxVAYtizaW47EmFjmcUdAxcO/0KwmbDER8JSzYdaVCpLprAmF2ldeT1admKME+Fe
-         dd9AUbEU7cssB1jqvv4ZmixdfPNn9UKb5qosehyL578wJ7QCtGG+iadga0I5eD77gfuD
-         USQw==
-X-Gm-Message-State: AOAM533BiQ2Bo2BSE3xJIL4PLa73GWfe2PVotUnM3z9jnHqOCs92XxEK
-        1evWtwEKgCszbFQqpeb5Clk=
-X-Google-Smtp-Source: ABdhPJyn8AEyu8HmFDn8qiACtk6rC9fX9Whk3T7aVlj+l0fnlqtJFkO2HVtBT7Nx9oOU14FtOLWV8g==
-X-Received: by 2002:a2e:89c6:: with SMTP id c6mr30980418ljk.25.1635758545791;
-        Mon, 01 Nov 2021 02:22:25 -0700 (PDT)
-Received: from localhost.localdomain (pool-95-83-120-25.ptcomm.ru. [95.83.120.25])
-        by smtp.googlemail.com with ESMTPSA id d19sm1363985lfv.74.2021.11.01.02.22.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 02:22:25 -0700 (PDT)
-From:   Maxim Kiselev <bigunclemax@gmail.com>
-Cc:     Maxim Kiselev <bigunclemax@gmail.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Yufeng Mo <moyufeng@huawei.com>,
-        Michael Walle <michael@walle.cc>, Sriram <srk@ti.com>,
-        linux-omap@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] net: davinci_emac: Fix interrupt pacing disable
-Date:   Mon,  1 Nov 2021 12:21:32 +0300
-Message-Id: <20211101092134.3357661-1-bigunclemax@gmail.com>
-X-Mailer: git-send-email 2.30.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+        id S232832AbhKAJhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:37:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43700 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233701AbhKAJd7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:33:59 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6F42561263;
+        Mon,  1 Nov 2021 09:25:34 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mhTZM-002oth-DA; Mon, 01 Nov 2021 09:25:32 +0000
+Date:   Mon, 01 Nov 2021 09:25:31 +0000
+Message-ID: <87fssg9qic.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Guo Ren <guoren@kernel.org>
+Cc:     Nikita Shubin <nikita.shubin@maquefel.me>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atish.patra@wdc.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Heiko =?UTF-8?B?U3TDvGJuZXI=?= <heiko@sntech.de>,
+        Rob Herring <robh@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Guo Ren <guoren@linux.alibaba.com>
+Subject: Re: [PATCH V5 3/3] irqchip/sifive-plic: Fixup thead, c900-plic request_threaded_irq with ONESHOT
+In-Reply-To: <CAJF2gTR3CqtmKZKS3fOQ9mzSLn7_oh7YoSSmWP1YM=ujB_srMw@mail.gmail.com>
+References: <20211024013303.3499461-1-guoren@kernel.org>
+        <20211024013303.3499461-4-guoren@kernel.org>
+        <87a6ixbcse.wl-maz@kernel.org>
+        <20211028135523.5cf4b66b@redslave.neermore.group>
+        <87sfwl9oxg.wl-maz@kernel.org>
+        <CAJF2gTR3CqtmKZKS3fOQ9mzSLn7_oh7YoSSmWP1YM=ujB_srMw@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: guoren@kernel.org, nikita.shubin@maquefel.me, anup@brainfault.org, atish.patra@wdc.com, tglx@linutronix.de, palmer@dabbelt.com, heiko@sntech.de, robh@kernel.org, linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, guoren@linux.alibaba.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch allows to use 0 for `coal->rx_coalesce_usecs` param to
-disable rx irq coalescing.
+On Mon, 01 Nov 2021 02:20:21 +0000,
+Guo Ren <guoren@kernel.org> wrote:
+> 
+> On Thu, Oct 28, 2021 at 10:58 PM Marc Zyngier <maz@kernel.org> wrote:
+> >
+> > On Thu, 28 Oct 2021 11:55:23 +0100,
+> > Nikita Shubin <nikita.shubin@maquefel.me> wrote:
+> > >
+> > > Hello Marc and Guo Ren!
+> > >
+> > > On Mon, 25 Oct 2021 11:48:33 +0100
+> > > Marc Zyngier <maz@kernel.org> wrote:
+> > >
+> > > > On Sun, 24 Oct 2021 02:33:03 +0100,
+> > > > guoren@kernel.org wrote:
+> > > > >
+> > > > > From: Guo Ren <guoren@linux.alibaba.com>
+> > > > >
+> > > > > When using "devm_request_threaded_irq(,,,,IRQF_ONESHOT,,)" in the
+> > > > > driver, only the first interrupt could be handled, and continue irq
+> > > > > is blocked by hw. Because the thead,c900-plic couldn't complete
+> > > > > masked irq source which has been disabled in enable register. Add
+> > > > > thead_plic_chip which fix up c906-plic irq source completion
+> > > > > problem by unmask/mask wrapper.
+> > > > >
+> > > > > Here is the description of Interrupt Completion in PLIC spec [1]:
+> > > > >
+> > > > > The PLIC signals it has completed executing an interrupt handler by
+> > > > > writing the interrupt ID it received from the claim to the
+> > > > > claim/complete register. The PLIC does not check whether the
+> > > > > completion ID is the same as the last claim ID for that target. If
+> > > > > the completion ID does not match an interrupt source that is
+> > > > > currently enabled for the target, the ^^ ^^^^^^^^^ ^^^^^^^
+> > > > > completion is silently ignored.
+> > > >
+> > > > Given this bit of the spec...
+> > > >
+> > > > > +static void plic_thead_irq_eoi(struct irq_data *d)
+> > > > > +{
+> > > > > + struct plic_handler *handler =
+> > > > > this_cpu_ptr(&plic_handlers); +
+> > > > > + if (irqd_irq_masked(d)) {
+> > > > > +         plic_irq_unmask(d);
+> > > > > +         writel(d->hwirq, handler->hart_base +
+> > > > > CONTEXT_CLAIM);
+> > > > > +         plic_irq_mask(d);
+> > > > > + } else {
+> > > > > +         writel(d->hwirq, handler->hart_base +
+> > > > > CONTEXT_CLAIM);
+> > > > > + }
+> > > > > +}
+> > > > > +
+> > > >
+> > > > ... it isn't obvious to me why this cannot happen on an SiFive PLIC.
+> > >
+> > > This indeed happens with SiFive PLIC. I am currently tinkering with
+> > > da9063 RTC on SiFive Unmatched, and ALARM irq fires only once. However
+> > > with changes proposed by Guo Ren in plic_thead_irq_eoi, everything
+> > > begins to work fine.
+> > >
+> > > May be these change should be propagated to plic_irq_eoi instead of
+> > > making a new function ?
+> >
+> > That's my impression too. I think the T-Head defect is pretty much
+> > immaterial when you consider how 'interesting' the PLIC architecture
+> > is.
+> Which is the "T-Head defect" you mentioned here?
+>  1. Auto masking with claim + complete (I don't think it's a defect,
+> right? May I add a new patch to utilize the feature to decrease a
+> little duplicate mask/unmask operations in the future?)
 
-Previously we could enable rx irq coalescing via ethtool
-(For ex: `ethtool -C eth0 rx-usecs 2000`) but we couldn't disable
-it because this part rejects 0 value:
+That *is* a T-Head defect. It may not be material for Linux, but being
+a departure from the spec, it is a bug, clear and simple. IMHO, either
+you implement the spec to the letter, or you don't. If you deviate,
+this is something else.
 
-       if (!coal->rx_coalesce_usecs)
-               return -EINVAL;
+>  2. EOI failed when masked
 
-Fixes: 84da2658a619 ("TI DaVinci EMAC : Implement interrupt pacing
-functionality.")
+This one is a PLIC architecture defect, which seems to plague everyone.
 
-Signed-off-by: Maxim Kiselev <bigunclemax@gmail.com>
----
- drivers/net/ethernet/ti/davinci_emac.c | 77 ++++++++++++++------------
- 1 file changed, 41 insertions(+), 36 deletions(-)
+> 
+> > Conflating EOI and masking really is a misfeature...
+> I think the problem is riscv PLIC reuse enable bit as mask bit. I
+> recommend separating them. That means:
+>  - EOI still depends on enable bit.
+>  - Add mask/unmask bit regs to do the right thing.
 
-diff --git a/drivers/net/ethernet/ti/davinci_emac.c b/drivers/net/ethernet/ti/davinci_emac.c
-index e8291d8488391..a3a02c4e5eb68 100644
---- a/drivers/net/ethernet/ti/davinci_emac.c
-+++ b/drivers/net/ethernet/ti/davinci_emac.c
-@@ -417,46 +417,47 @@ static int emac_set_coalesce(struct net_device *ndev,
- 			     struct netlink_ext_ack *extack)
- {
- 	struct emac_priv *priv = netdev_priv(ndev);
--	u32 int_ctrl, num_interrupts = 0;
-+	u32 int_ctrl = 0, num_interrupts = 0;
- 	u32 prescale = 0, addnl_dvdr = 1, coal_intvl = 0;
- 
--	if (!coal->rx_coalesce_usecs)
--		return -EINVAL;
--
- 	coal_intvl = coal->rx_coalesce_usecs;
- 
- 	switch (priv->version) {
- 	case EMAC_VERSION_2:
--		int_ctrl =  emac_ctrl_read(EMAC_DM646X_CMINTCTRL);
--		prescale = priv->bus_freq_mhz * 4;
--
--		if (coal_intvl < EMAC_DM646X_CMINTMIN_INTVL)
--			coal_intvl = EMAC_DM646X_CMINTMIN_INTVL;
--
--		if (coal_intvl > EMAC_DM646X_CMINTMAX_INTVL) {
--			/*
--			 * Interrupt pacer works with 4us Pulse, we can
--			 * throttle further by dilating the 4us pulse.
--			 */
--			addnl_dvdr = EMAC_DM646X_INTPRESCALE_MASK / prescale;
--
--			if (addnl_dvdr > 1) {
--				prescale *= addnl_dvdr;
--				if (coal_intvl > (EMAC_DM646X_CMINTMAX_INTVL
--							* addnl_dvdr))
--					coal_intvl = (EMAC_DM646X_CMINTMAX_INTVL
--							* addnl_dvdr);
--			} else {
--				addnl_dvdr = 1;
--				coal_intvl = EMAC_DM646X_CMINTMAX_INTVL;
-+		if (coal->rx_coalesce_usecs) {
-+			int_ctrl =  emac_ctrl_read(EMAC_DM646X_CMINTCTRL);
-+			prescale = priv->bus_freq_mhz * 4;
-+
-+			if (coal_intvl < EMAC_DM646X_CMINTMIN_INTVL)
-+				coal_intvl = EMAC_DM646X_CMINTMIN_INTVL;
-+
-+			if (coal_intvl > EMAC_DM646X_CMINTMAX_INTVL) {
-+				/*
-+				 * Interrupt pacer works with 4us Pulse, we can
-+				 * throttle further by dilating the 4us pulse.
-+				 */
-+				addnl_dvdr =
-+					EMAC_DM646X_INTPRESCALE_MASK / prescale;
-+
-+				if (addnl_dvdr > 1) {
-+					prescale *= addnl_dvdr;
-+					if (coal_intvl > (EMAC_DM646X_CMINTMAX_INTVL
-+								* addnl_dvdr))
-+						coal_intvl = (EMAC_DM646X_CMINTMAX_INTVL
-+								* addnl_dvdr);
-+				} else {
-+					addnl_dvdr = 1;
-+					coal_intvl = EMAC_DM646X_CMINTMAX_INTVL;
-+				}
- 			}
--		}
- 
--		num_interrupts = (1000 * addnl_dvdr) / coal_intvl;
-+			num_interrupts = (1000 * addnl_dvdr) / coal_intvl;
-+
-+			int_ctrl |= EMAC_DM646X_INTPACEEN;
-+			int_ctrl &= (~EMAC_DM646X_INTPRESCALE_MASK);
-+			int_ctrl |= (prescale & EMAC_DM646X_INTPRESCALE_MASK);
-+		}
- 
--		int_ctrl |= EMAC_DM646X_INTPACEEN;
--		int_ctrl &= (~EMAC_DM646X_INTPRESCALE_MASK);
--		int_ctrl |= (prescale & EMAC_DM646X_INTPRESCALE_MASK);
- 		emac_ctrl_write(EMAC_DM646X_CMINTCTRL, int_ctrl);
- 
- 		emac_ctrl_write(EMAC_DM646X_CMRXINTMAX, num_interrupts);
-@@ -466,17 +467,21 @@ static int emac_set_coalesce(struct net_device *ndev,
- 	default:
- 		int_ctrl = emac_ctrl_read(EMAC_CTRL_EWINTTCNT);
- 		int_ctrl &= (~EMAC_DM644X_EWINTCNT_MASK);
--		prescale = coal_intvl * priv->bus_freq_mhz;
--		if (prescale > EMAC_DM644X_EWINTCNT_MASK) {
--			prescale = EMAC_DM644X_EWINTCNT_MASK;
--			coal_intvl = prescale / priv->bus_freq_mhz;
-+
-+		if (coal->rx_coalesce_usecs) {
-+			prescale = coal_intvl * priv->bus_freq_mhz;
-+			if (prescale > EMAC_DM644X_EWINTCNT_MASK) {
-+				prescale = EMAC_DM644X_EWINTCNT_MASK;
-+				coal_intvl = prescale / priv->bus_freq_mhz;
-+			}
- 		}
-+
- 		emac_ctrl_write(EMAC_CTRL_EWINTTCNT, (int_ctrl | prescale));
- 
- 		break;
- 	}
- 
--	printk(KERN_INFO"Set coalesce to %d usecs.\n", coal_intvl);
-+	netdev_info(ndev, "Set coalesce to %d usecs.\n", coal_intvl);
- 	priv->coal_intvl = coal_intvl;
- 
- 	return 0;
+Maybe, but that's not the problem at hand. I suggest you move
+architectural discussions to a separate thread, and keep this thread
+for fixing the mess that plagues existing users.
+
+	M.
+
 -- 
-2.30.2
-
+Without deviation from the norm, progress is not possible.
