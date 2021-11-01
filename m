@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E50C3441721
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:31:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8900D4417AE
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:37:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233380AbhKAJcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:32:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36830 "EHLO mail.kernel.org"
+        id S233902AbhKAJiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:38:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43606 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232229AbhKAJaE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:30:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5922C61208;
-        Mon,  1 Nov 2021 09:23:26 +0000 (UTC)
+        id S232274AbhKAJfs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:35:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 096A2610F7;
+        Mon,  1 Nov 2021 09:26:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758606;
-        bh=cGCxs+1Ry/Qu7CSd/SGrQrCzbmL0By5mcfTNjiE5zdY=;
+        s=korg; t=1635758765;
+        bh=kCanV9jbpB0i0XOkDrbxtLn7ngkluchTu+lemPaNNBU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fiaBap415bqB+C8kD5Ba863huJ3zlUlZ3sZ6/J857h5eJHWHP2Jhqsf6pUum5CMQa
-         WC+jB5MmJ34CZ10iqKqB1fFjOzfaN3p0IyVA4cWliMHX5y3zDllz559XrAqUS2GRBQ
-         aKB5yQg2TVjf45r9iYnyLziKDZ/LeygC4DhTJMUQ=
+        b=2vwyGk+Lmh9vZ6PT/4JCwvgJQWElqu4q7BkMm/4ZhWEKCU8bvlXEZXNwE8viMFHFw
+         2xknDdlOvqyg9DmObBCG5zTEld4AIx9ZCED/6VGo/UY2n6t+xHc0siOMvKOPQF1E91
+         Fpq6nnofVWSIXTuwv6eP4AXH8HRPBSBkeyvqUIvM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dinh Nguyen <dinguyen@kernel.org>
-Subject: [PATCH 5.4 34/51] nios2: Make NIOS2_DTB_SOURCE_BOOL depend on !COMPILE_TEST
+        stable@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
+        Xin Long <lucien.xin@gmail.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.10 50/77] net-sysfs: initialize uid and gid before calling net_ns_get_ownership
 Date:   Mon,  1 Nov 2021 10:17:38 +0100
-Message-Id: <20211101082508.765125670@linuxfoundation.org>
+Message-Id: <20211101082522.257342068@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082500.203657870@linuxfoundation.org>
-References: <20211101082500.203657870@linuxfoundation.org>
+In-Reply-To: <20211101082511.254155853@linuxfoundation.org>
+References: <20211101082511.254155853@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guenter Roeck <linux@roeck-us.net>
+From: Xin Long <lucien.xin@gmail.com>
 
-commit 4a089e95b4d6bb625044d47aed0c442a8f7bd093 upstream.
+commit f7a1e76d0f608961cc2fc681f867a834f2746bce upstream.
 
-nios2:allmodconfig builds fail with
+Currently in net_ns_get_ownership() it may not be able to set uid or gid
+if make_kuid or make_kgid returns an invalid value, and an uninit-value
+issue can be triggered by this.
 
-make[1]: *** No rule to make target 'arch/nios2/boot/dts/""',
-	needed by 'arch/nios2/boot/dts/built-in.a'.  Stop.
-make: [Makefile:1868: arch/nios2/boot/dts] Error 2 (ignored)
+This patch is to fix it by initializing the uid and gid before calling
+net_ns_get_ownership(), as it does in kobject_get_ownership()
 
-This is seen with compile tests since those enable NIOS2_DTB_SOURCE_BOOL,
-which in turn enables NIOS2_DTB_SOURCE. This causes the build error
-because the default value for NIOS2_DTB_SOURCE is an empty string.
-Disable NIOS2_DTB_SOURCE_BOOL for compile tests to avoid the error.
-
-Fixes: 2fc8483fdcde ("nios2: Build infrastructure")
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
+Fixes: e6dee9f3893c ("net-sysfs: add netdev_change_owner()")
+Reported-by: Paolo Abeni <pabeni@redhat.com>
+Signed-off-by: Xin Long <lucien.xin@gmail.com>
+Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/nios2/platform/Kconfig.platform |    1 +
- 1 file changed, 1 insertion(+)
+ net/core/net-sysfs.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/arch/nios2/platform/Kconfig.platform
-+++ b/arch/nios2/platform/Kconfig.platform
-@@ -37,6 +37,7 @@ config NIOS2_DTB_PHYS_ADDR
+--- a/net/core/net-sysfs.c
++++ b/net/core/net-sysfs.c
+@@ -1957,9 +1957,9 @@ int netdev_register_kobject(struct net_d
+ int netdev_change_owner(struct net_device *ndev, const struct net *net_old,
+ 			const struct net *net_new)
+ {
++	kuid_t old_uid = GLOBAL_ROOT_UID, new_uid = GLOBAL_ROOT_UID;
++	kgid_t old_gid = GLOBAL_ROOT_GID, new_gid = GLOBAL_ROOT_GID;
+ 	struct device *dev = &ndev->dev;
+-	kuid_t old_uid, new_uid;
+-	kgid_t old_gid, new_gid;
+ 	int error;
  
- config NIOS2_DTB_SOURCE_BOOL
- 	bool "Compile and link device tree into kernel image"
-+	depends on !COMPILE_TEST
- 	help
- 	  This allows you to specify a dts (device tree source) file
- 	  which will be compiled and linked into the kernel image.
+ 	net_ns_get_ownership(net_old, &old_uid, &old_gid);
 
 
