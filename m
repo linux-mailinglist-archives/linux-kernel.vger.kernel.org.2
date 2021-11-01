@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3194441672
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:22:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 630F34416E1
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:27:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231743AbhKAJZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:25:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58176 "EHLO mail.kernel.org"
+        id S232909AbhKAJaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:30:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58554 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232233AbhKAJXO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:23:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1122B610A2;
-        Mon,  1 Nov 2021 09:20:21 +0000 (UTC)
+        id S232725AbhKAJ0z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:26:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CC1BD611CA;
+        Mon,  1 Nov 2021 09:22:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758422;
-        bh=fn9RVgz7n/ysygwQNjBLNXU8CmZZ8RIfTmVJcrElIEA=;
+        s=korg; t=1635758541;
+        bh=LxuDnZWWd9yFH57MZQERFgqINAjQbKtNKlVc26UJMnM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HXuCW0YKf6S0F3rTjBZjZdnIfqUp1qU37C3yG8hIjEvmocj/zwvBtJ8/CKvf+6CLd
-         o5WNEKrR0/NerPWYdkwYZPEO39hqRLpD/DhiuBMCGMWUD+1ZETjBpZVVMqZCxtb77F
-         C+XP48N958eV9Dk7zJ9VTfF8fzqu8Kk3H396+uL4=
+        b=h7acz3qiNX+vUrv3Wz8DPdEa+LWKOCcawSkO0O4oHVQ2xNK83uOx04raY77ih+HW4
+         rjA/1Ml6Ghbvc8tvtC5V0qDbE3djqzYClStx0Q8HZdzT05VTVLUPv+7H+Iiarwvgq0
+         ZLJrtlNMHcqIMt0D9i6Wjll5bt4rGBo4LXShenOA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 4.14 17/25] regmap: Fix possible double-free in regcache_rbtree_exit()
+        stable@vger.kernel.org, Wenbin Mei <wenbin.mei@mediatek.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 4.19 17/35] mmc: cqhci: clear HALT state after CQE enable
 Date:   Mon,  1 Nov 2021 10:17:29 +0100
-Message-Id: <20211101082451.117867566@linuxfoundation.org>
+Message-Id: <20211101082455.604266121@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082447.070493993@linuxfoundation.org>
-References: <20211101082447.070493993@linuxfoundation.org>
+In-Reply-To: <20211101082451.430720900@linuxfoundation.org>
+References: <20211101082451.430720900@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,70 +40,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Wenbin Mei <wenbin.mei@mediatek.com>
 
-commit 55e6d8037805b3400096d621091dfbf713f97e83 upstream.
+commit 92b18252b91de567cd875f2e84722b10ab34ee28 upstream.
 
-In regcache_rbtree_insert_to_block(), when 'present' realloc failed,
-the 'blk' which is supposed to assign to 'rbnode->block' will be freed,
-so 'rbnode->block' points a freed memory, in the error handling path of
-regcache_rbtree_init(), 'rbnode->block' will be freed again in
-regcache_rbtree_exit(), KASAN will report double-free as follows:
+While mmc0 enter suspend state, we need halt CQE to send legacy cmd(flush
+cache) and disable cqe, for resume back, we enable CQE and not clear HALT
+state.
+In this case MediaTek mmc host controller will keep the value for HALT
+state after CQE disable/enable flow, so the next CQE transfer after resume
+will be timeout due to CQE is in HALT state, the log as below:
+<4>.(4)[318:kworker/4:1H]mmc0: cqhci: timeout for tag 2
+<4>.(4)[318:kworker/4:1H]mmc0: cqhci: ============ CQHCI REGISTER DUMP ===========
+<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Caps:      0x100020b6 | Version:  0x00000510
+<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Config:    0x00001103 | Control:  0x00000001
+<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Int stat:  0x00000000 | Int enab: 0x00000006
+<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Int sig:   0x00000006 | Int Coal: 0x00000000
+<4>.(4)[318:kworker/4:1H]mmc0: cqhci: TDL base:  0xfd05f000 | TDL up32: 0x00000000
+<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Doorbell:  0x8000203c | TCN:      0x00000000
+<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Dev queue: 0x00000000 | Dev Pend: 0x00000000
+<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Task clr:  0x00000000 | SSC1:     0x00001000
+<4>.(4)[318:kworker/4:1H]mmc0: cqhci: SSC2:      0x00000001 | DCMD rsp: 0x00000000
+<4>.(4)[318:kworker/4:1H]mmc0: cqhci: RED mask:  0xfdf9a080 | TERRI:    0x00000000
+<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Resp idx:  0x00000000 | Resp arg: 0x00000000
+<4>.(4)[318:kworker/4:1H]mmc0: cqhci: CRNQP:     0x00000000 | CRNQDUN:  0x00000000
+<4>.(4)[318:kworker/4:1H]mmc0: cqhci: CRNQIS:    0x00000000 | CRNQIE:   0x00000000
 
-BUG: KASAN: double-free or invalid-free in kfree+0xce/0x390
-Call Trace:
- slab_free_freelist_hook+0x10d/0x240
- kfree+0xce/0x390
- regcache_rbtree_exit+0x15d/0x1a0
- regcache_rbtree_init+0x224/0x2c0
- regcache_init+0x88d/0x1310
- __regmap_init+0x3151/0x4a80
- __devm_regmap_init+0x7d/0x100
- madera_spi_probe+0x10f/0x333 [madera_spi]
- spi_probe+0x183/0x210
- really_probe+0x285/0xc30
+This change check HALT state after CQE enable, if CQE is in HALT state, we
+will clear it.
 
-To fix this, moving up the assignment of rbnode->block to immediately after
-the reallocation has succeeded so that the data structure stays valid even
-if the second reallocation fails.
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Fixes: 3f4ff561bc88b ("regmap: rbtree: Make cache_present bitmap per node")
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Link: https://lore.kernel.org/r/20211012023735.1632786-1-yangyingliang@huawei.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Wenbin Mei <wenbin.mei@mediatek.com>
+Cc: stable@vger.kernel.org
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Fixes: a4080225f51d ("mmc: cqhci: support for command queue enabled host")
+Link: https://lore.kernel.org/r/20211026070812.9359-1-wenbin.mei@mediatek.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/base/regmap/regcache-rbtree.c |    7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ drivers/mmc/host/cqhci.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/base/regmap/regcache-rbtree.c
-+++ b/drivers/base/regmap/regcache-rbtree.c
-@@ -295,14 +295,14 @@ static int regcache_rbtree_insert_to_blo
- 	if (!blk)
- 		return -ENOMEM;
+--- a/drivers/mmc/host/cqhci.c
++++ b/drivers/mmc/host/cqhci.c
+@@ -281,6 +281,9 @@ static void __cqhci_enable(struct cqhci_
  
-+	rbnode->block = blk;
+ 	cqhci_writel(cq_host, cqcfg, CQHCI_CFG);
+ 
++	if (cqhci_readl(cq_host, CQHCI_CTL) & CQHCI_HALT)
++		cqhci_writel(cq_host, 0, CQHCI_CTL);
 +
- 	if (BITS_TO_LONGS(blklen) > BITS_TO_LONGS(rbnode->blklen)) {
- 		present = krealloc(rbnode->cache_present,
- 				   BITS_TO_LONGS(blklen) * sizeof(*present),
- 				   GFP_KERNEL);
--		if (!present) {
--			kfree(blk);
-+		if (!present)
- 			return -ENOMEM;
--		}
+ 	mmc->cqe_on = true;
  
- 		memset(present + BITS_TO_LONGS(rbnode->blklen), 0,
- 		       (BITS_TO_LONGS(blklen) - BITS_TO_LONGS(rbnode->blklen))
-@@ -319,7 +319,6 @@ static int regcache_rbtree_insert_to_blo
- 	}
- 
- 	/* update the rbnode block, its size and the base register */
--	rbnode->block = blk;
- 	rbnode->blklen = blklen;
- 	rbnode->base_reg = base_reg;
- 	rbnode->cache_present = present;
+ 	if (cq_host->ops->enable)
 
 
