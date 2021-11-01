@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99BDB4416FA
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:30:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17CE244164B
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:21:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233156AbhKAJbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:31:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37074 "EHLO mail.kernel.org"
+        id S232285AbhKAJYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:24:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59000 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233029AbhKAJ2Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:28:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 98B2B61207;
-        Mon,  1 Nov 2021 09:23:00 +0000 (UTC)
+        id S232280AbhKAJWi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:22:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A65C610CC;
+        Mon,  1 Nov 2021 09:19:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758581;
-        bh=DPZRoibiMdTyqf3nZR0mvk1QD6AlHTeK37w5mGaUqZA=;
+        s=korg; t=1635758385;
+        bh=RMhknKR+MnZX1z2g3wT+ecbzpg5j0QCQpcLX/edj4ZM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wnXyjh5lKVtk7H1LmVRzECPlmUFCplCYW56nZ2MOvrRnubmxalBHpaMh0fxVw6d/F
-         AuotavHPeE5qg1BxaGbkp/UFpGyZ1kbRQql1laHIkZUx1MefK+ni9NPgoYeEt/PC8c
-         2ureejf7ygMRzFKgSqjMSg8J6ZjHsNgbRBHzwF2E=
+        b=q/O/+VPOTo5klUJLZrfRmldgbu1aU5gAtvEP4zyZxJ+g5xWT/pkzHi6qJj0sKtdc6
+         P8s2MmT58YMFcIo2djXVHfiRWymHuLiY9Vs5HxOKyaYuYTCKwJoDeomw988iaxfxdP
+         J4+y2Pqh52HS5yEXbOoGtFIqcIbAUAcYHK93DGEE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Oliver Neukum <oneukum@suse.com>,
-        syzbot+76bb1d34ffa0adc03baa@syzkaller.appspotmail.com,
-        Johan Hovold <johan@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 08/51] usbnet: sanity check for maxpacket
+        stable@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
+Subject: [PATCH 4.9 03/20] ARM: 9139/1: kprobes: fix arch_init_kprobes() prototype
 Date:   Mon,  1 Nov 2021 10:17:12 +0100
-Message-Id: <20211101082501.951024169@linuxfoundation.org>
+Message-Id: <20211101082444.874277091@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082500.203657870@linuxfoundation.org>
-References: <20211101082500.203657870@linuxfoundation.org>
+In-Reply-To: <20211101082444.133899096@linuxfoundation.org>
+References: <20211101082444.133899096@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,37 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oliver Neukum <oneukum@suse.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-commit 397430b50a363d8b7bdda00522123f82df6adc5e upstream.
+commit 1f323127cab086e4fd618981b1e5edc396eaf0f4 upstream.
 
-maxpacket of 0 makes no sense and oopses as we need to divide
-by it. Give up.
+With extra warnings enabled, gcc complains about this function
+definition:
 
-V2: fixed typo in log and stylistic issues
+arch/arm/probes/kprobes/core.c: In function 'arch_init_kprobes':
+arch/arm/probes/kprobes/core.c:465:12: warning: old-style function definition [-Wold-style-definition]
+  465 | int __init arch_init_kprobes()
 
-Signed-off-by: Oliver Neukum <oneukum@suse.com>
-Reported-by: syzbot+76bb1d34ffa0adc03baa@syzkaller.appspotmail.com
-Reviewed-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20211021122944.21816-1-oneukum@suse.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Link: https://lore.kernel.org/all/20201027093057.c685a14b386acacb3c449e3d@kernel.org/
+
+Fixes: 24ba613c9d6c ("ARM kprobes: core code")
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/usb/usbnet.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ arch/arm/probes/kprobes/core.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/usb/usbnet.c
-+++ b/drivers/net/usb/usbnet.c
-@@ -1773,6 +1773,10 @@ usbnet_probe (struct usb_interface *udev
- 	if (!dev->rx_urb_size)
- 		dev->rx_urb_size = dev->hard_mtu;
- 	dev->maxpacket = usb_maxpacket (dev->udev, dev->out, 1);
-+	if (dev->maxpacket == 0) {
-+		/* that is a broken device */
-+		goto out4;
-+	}
+--- a/arch/arm/probes/kprobes/core.c
++++ b/arch/arm/probes/kprobes/core.c
+@@ -666,7 +666,7 @@ static struct undef_hook kprobes_arm_bre
  
- 	/* let userspace know we have a random address */
- 	if (ether_addr_equal(net->dev_addr, node_id))
+ #endif /* !CONFIG_THUMB2_KERNEL */
+ 
+-int __init arch_init_kprobes()
++int __init arch_init_kprobes(void)
+ {
+ 	arm_probes_decode_init();
+ #ifdef CONFIG_THUMB2_KERNEL
 
 
