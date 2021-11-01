@@ -2,118 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF02D4419B3
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 11:18:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 824304419BF
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 11:20:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231975AbhKAKUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 06:20:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23434 "EHLO
+        id S231994AbhKAKXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 06:23:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:26410 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231868AbhKAKUf (ORCPT
+        by vger.kernel.org with ESMTP id S231844AbhKAKXE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 06:20:35 -0400
+        Mon, 1 Nov 2021 06:23:04 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635761882;
+        s=mimecast20190719; t=1635762031;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=t8Sm9HXpoY+wnApkw9cdN5nEGyroNsODGV64LEXlImU=;
-        b=T3lglSun6qU5Sa+EzWpTSeaN1lKpw8WeTIQM8oPRqW8DatDIyvXETO8EU6r8yNsfmn4tbM
-        x9zwZrd5o5pxfrRkA8T0MuRyexWRzGnji7H69S06SqmY11iUSf8Dw0u0zOmTcvK261tyIY
-        RTlu+JW/Hs7pdmpuh816I+Ve+xwYniY=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-557-XCgeO1UeOUmGkRoHBILaEw-1; Mon, 01 Nov 2021 06:18:01 -0400
-X-MC-Unique: XCgeO1UeOUmGkRoHBILaEw-1
-Received: by mail-ed1-f69.google.com with SMTP id g3-20020a056402424300b003e2981e1edbso581507edb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 03:18:01 -0700 (PDT)
+        bh=6GKVOIqK7nVWtbHe5Lw3RempWLyywE1J9gAebyUeQYo=;
+        b=ilntWRlgoN+VGgRqTA085elgZwMm+Wikrf6apC7rUTRmwA7NRflglD4EijkaljBwi8B2K/
+        QDqAkd8wnBbt8TxZEAgdLObNIxc5gFrkRAjnXvjOAoeiic7BoOhHLJyQi0Q8VefBXr766K
+        nc61mbHy3bQz+MRUrXP+8XdmPcR0XQo=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-191-1vnrdxYZNQm1FvMFKX8MDg-1; Mon, 01 Nov 2021 06:20:30 -0400
+X-MC-Unique: 1vnrdxYZNQm1FvMFKX8MDg-1
+Received: by mail-ed1-f70.google.com with SMTP id g3-20020a056402424300b003e2981e1edbso586665edb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 03:20:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
          :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=t8Sm9HXpoY+wnApkw9cdN5nEGyroNsODGV64LEXlImU=;
-        b=dH5kHVZqj4PGXjHFd8ABi2QZTF2HHCtys1TtUlAOJLgEv8IrZrjaZAWfc1VbQ6piVD
-         bssk66078lGdmbzl9uZA68z0AvoTxX9+T+h4R1WmhxvwlzIesAFi5GyCZ+inpsTLxTo3
-         kJeAbC98dm+Es6078HXzUnXOdr0lUr70EdhicuzmZghSXOsakzT1jndWlqng6FgsfARd
-         dHtGtNeyuqzA7dLkZhTLJYupkeiFfNF8BTtDXH+ZcQHyEKaDFIABGmOVd45ma+DCWAdU
-         hf/delKf0XnmQhTppGMcA9iuGWFEdHRMN8dQKjWsOvWyfftF3EEcItxLt/ElmSERvpHw
-         nvfA==
-X-Gm-Message-State: AOAM533niD3WZUwbwmwuWjDB3WA4RhWs6PpeeGsA0Vuw+JwV025Toyq/
-        RvVOr/wtyviTjaNVI7VfY0imk7qm8z9KIssKiSWvVhgJhow7YHmk6c+25gHkL90S++7CDqe6dSe
-        G3zQprSzWHTNHu5xvM8C4iL79
-X-Received: by 2002:a50:c3cc:: with SMTP id i12mr38896954edf.350.1635761880226;
-        Mon, 01 Nov 2021 03:18:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxLTMXj/xrDkTc55/Af5ghVcv9Wfd3h/yRX5qwExFSuQKoulSOVSq39LvBNgVoIKunuT/+yQg==
-X-Received: by 2002:a50:c3cc:: with SMTP id i12mr38896934edf.350.1635761880093;
-        Mon, 01 Nov 2021 03:18:00 -0700 (PDT)
+        bh=6GKVOIqK7nVWtbHe5Lw3RempWLyywE1J9gAebyUeQYo=;
+        b=cLaO4zoZpuHn6VcvZGxCk03EB3aa5gnbSitZPsgxFSg2ssauDNddvuadVLClPQ0Q77
+         c491zPpwfVYmOFJBiqQwnGxfmRkA4n+Mn22atWkNf3DBhg8xrnO242KheLyVkLgLmXpT
+         LWqDSWlxmreRQEActbrqfFyedoumYoMUTx+8ZEOIWICgALetFAxBr3W+hL81BO8hS0z9
+         LJPiuY9yU4ssEEjlBmdEkZfpO5FfyEvHNaWFpQcj6FsqmgOXemjLqWfcCG0tVMUrTP7i
+         9NdUeMVDFKiIwV/asqBTkbteXo9moUjkD4tAPNH1q+0+5gqiIOK+O+AWa+AOeDIPVKog
+         Us/Q==
+X-Gm-Message-State: AOAM533G7coXKWC9W5ccdOEj2JtcWUMZuR3NDsmeCb0PtxkjNo+ooKOq
+        04LW70qPj6otf13mLRbvwrStdr0jVVfAXmmmVXbo6iNJNMuGlWdymwB1mQRMY4irXeJMQKMNFPI
+        fOPIcUxRCX3V5aybp7CZr/QcT
+X-Received: by 2002:a17:907:6da4:: with SMTP id sb36mr35639758ejc.490.1635762029176;
+        Mon, 01 Nov 2021 03:20:29 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxEHfQy0TcctxhEUS7W+qUxUEatSVkMN784xMt2dLb/n/0z432ckOav1RgTwKmh1k2nt3yoIA==
+X-Received: by 2002:a17:907:6da4:: with SMTP id sb36mr35639725ejc.490.1635762028980;
+        Mon, 01 Nov 2021 03:20:28 -0700 (PDT)
 Received: from [10.40.1.223] ([81.30.35.201])
-        by smtp.gmail.com with ESMTPSA id gt36sm6751027ejc.13.2021.11.01.03.17.59
+        by smtp.gmail.com with ESMTPSA id h10sm8869323edk.41.2021.11.01.03.20.28
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Nov 2021 03:17:59 -0700 (PDT)
-Message-ID: <85cb78cd-92d9-69ed-9360-f5d6f8f904af@redhat.com>
-Date:   Mon, 1 Nov 2021 11:17:59 +0100
+        Mon, 01 Nov 2021 03:20:28 -0700 (PDT)
+Message-ID: <2c4d2e45-798e-fdc1-82fb-8413d5a9e061@redhat.com>
+Date:   Mon, 1 Nov 2021 11:20:27 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.2.0
-Subject: Re: [PATCH 0/6] MODULE_DEVICE_TABLE() support for the ISHTP bus
+Subject: Re: [PATCH v4 04/11] regulator: Introduce tps68470-regulator driver
 Content-Language: en-US
-To:     =?UTF-8?Q?Thomas_Wei=c3=9fschuh?= <linux@weissschuh.net>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
         Mark Gross <markgross@kernel.org>,
-        Rushikesh S Kadam <rushikesh.s.kadam@intel.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Benson Leung <bleung@chromium.org>,
-        platform-driver-x86@vger.kernel.org, linux-kbuild@vger.kernel.org
-References: <20211029152901.297939-1-linux@weissschuh.net>
- <883db585-c9bb-5255-4ddd-f093616af1a1@redhat.com>
- <1bb82b37-06e4-4937-ba0d-57fd301eaf2e@t-8ch.de>
+        Andy Shevchenko <andy@infradead.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Kate Hsuan <hpa@redhat.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>
+References: <20211025094119.82967-1-hdegoede@redhat.com>
+ <20211025094119.82967-5-hdegoede@redhat.com>
+ <CAHp75Ve4nu1WDURaSvUto6+aLoEDM2OfTCVi2Th6x-oagO6a-Q@mail.gmail.com>
 From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <1bb82b37-06e4-4937-ba0d-57fd301eaf2e@t-8ch.de>
+In-Reply-To: <CAHp75Ve4nu1WDURaSvUto6+aLoEDM2OfTCVi2Th6x-oagO6a-Q@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi,
 
-On 11/1/21 11:12, Thomas Weißschuh wrote:
-> On 2021-11-01 10:56+0100, Hans de Goede wrote:
->> On 10/29/21 17:28, Thomas Weißschuh wrote:
->>> Currently as soon as any ISHTP device appears all available ISHTP device
->>> drivers are loaded automatically.
->>> This series extends the MODULE_DEVICE_TABLE() functionality to properly handle
->>> the ishtp bus and switches the drivers over to use it.
->>>
->>> Patch 1 adds the infrastructure to handle ishtp devices via MODULE_DEVICE_TABLE()
->>> Patch 2 replaces some inlined constants with ones now defined by mod_devicetable.h
->>> Patches 3-6 migrate all ishtp drivers to MODULE_DEVICE_TABLE()
->>>
->>> Note: This patchset is based on the pdx86/for-next tree because that contains
->>> one of the drivers that is not yet in the other trees.
+On 10/25/21 13:11, Andy Shevchenko wrote:
+> On Mon, Oct 25, 2021 at 12:41 PM Hans de Goede <hdegoede@redhat.com> wrote:
 >>
->> Since most of the changes here are under drivers/hid and since the latter
->> patches depend on 1/6, I believe it would be best to merge the entire series
->> through the HID tree, here is my ack for this:
+>> The TPS68470 PMIC provides Clocks, GPIOs and Regulators. At present in
+>> the kernel the Regulators and Clocks are controlled by an OpRegion
+>> driver designed to work with power control methods defined in ACPI, but
+>> some platforms lack those methods, meaning drivers need to be able to
+>> consume the resources of these chips through the usual frameworks.
 >>
->> Acked-by: Hans de Goede <hdegoede@redhat.com>
+>> This commit adds a driver for the regulators provided by the tps68470,
+>> and is designed to bind to the platform_device registered by the
+>> intel_skl_int3472 module.
+>>
+>> This is based on this out of tree driver written by Intel:
+>> https://github.com/intel/linux-intel-lts/blob/4.14/base/drivers/regulator/tps68470-regulator.c
+>> with various cleanups added.
 > 
-> Please note that patch 6 modifies a driver that is not yet available in the HID
-> and 5.15 trees but only in pdx86/for-next.
+>> +struct tps68470_regulator_data {
+>> +       struct clk *clk;
+>> +};
+> 
+> ...
+> 
+>> +/*
+>> + * (1) This register must have same setting as VIOVAL if S_IO LDO is used to
+>> + *     power daisy chained IOs in the receive side.
+>> + * (2) If there is no I2C daisy chain it can be set freely.
+> 
+>> + *
+> 
+> Redundant empty line.
+> 
+>> + */
+> 
+> ...
+> 
+>> +       struct tps68470_regulator_platform_data *pdata = pdev->dev.platform_data;
+> 
+> dev_get_platdata() ?
+> 
+> ...
+> 
+>> +       data->clk = devm_clk_get(&pdev->dev, "tps68470-clk");
+>> +       if (IS_ERR(data->clk)) {
+>> +               dev_err(&pdev->dev, "Error getting tps68470-clk\n");
+>> +               return PTR_ERR(data->clk);
+>> +       }
+> 
+> return dev_err_probe(...);
+> 
+> ...
+> 
+>> +               rdev = devm_regulator_register(&pdev->dev, &regulators[i], &config);
+>> +               if (IS_ERR(rdev)) {
+>> +                       dev_err(&pdev->dev, "failed to register %s regulator\n",
+>> +                               regulators[i].name);
+>> +                       return PTR_ERR(rdev);
+>> +               }
+> 
+> Ditto.
 
-Right, but given where we are in the cycle this is going to be something to
-merge post 5.16-rc1 anyways which resolves the dependency issue.
-
-I guess it might be good to send this our in a later pull-req as a fix series
-for a later 5.16-rc# though, to avoid the eclite and chrome-ec drivers from
-autoloading on all systems with an ISH, even though they usually will not be
-used there.
+Andy, thank you for all the reviews. I've addressed all your comments in the v5
+of this series which I'm preparing now. This also applies to your comments on
+other patches, except those which I will address in separate emails.
 
 Regards,
 
