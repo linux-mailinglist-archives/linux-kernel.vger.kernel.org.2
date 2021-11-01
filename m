@@ -2,196 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FE1B441B52
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 13:50:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 001F3441B5C
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 13:51:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232526AbhKAMww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 08:52:52 -0400
-Received: from mail-bn8nam08on2054.outbound.protection.outlook.com ([40.107.100.54]:60742
-        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232507AbhKAMwu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 08:52:50 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Qo6X3KnmVM1rSXnPs3Aj0VKmAnLuIQpMvx+GxbgyR6QjHxeB+wdLo8UCtW8XXljJ/qG7LWPOHl2sI4vL7NHNj4FQBbNBMONyaUS7RDHbKoKCZLh5CBLejoWUX9D/2x4p8hM0hxCDb+Wv90I1rNgqdYtQLx9vd4ELqblmph2jGKDVLBfghtH0RXJjf+hsdXzIxcmkty22FpnSitK92PTJKS3xNk3ylUjLCuK0evZ8DMAeHKrtDS6qwMrGbuULt0JOD7G/cMBqclzB9kVpFArD80Dh0Dn2x06QiYMjAoLGzrnMRj3CrGYnN5jYaB3WyggPHivnVz6p8bpmlkjdh/Uqhg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=yt9URuhW/GvLJXp0GNfj+SuBk/2gzRu0efBf2GpG2Jk=;
- b=YVrLymaZSE5wEUiFu126mN3GXi6ouXBETcKoLMNXJk5IF4p33Vr319VgEAlQSvwp1ZKWkCL9RXJWo8nFTtxn32NqK/OaSW4hyHWwnfWG/ABd57+YlmG62sV1mg9YuDwpDAG4sPMT76JwyfTVdPNCW/Uin3ylkxyaXZzNW2tIZeHyudnV8mImpWiaa76Z9H+KM61yKXy4XvxxtoA6QIEornD3sIdjAkOrkMYtzt36pdihl4EUMWH9o0dwYmN2n6Dz0hKWorTw6AU3ER78Ggsd3J+wu/vqke+OHRwE65rv4atjbIN/SSYUkCmBezSq616vFrUZ4ppCrraaDjnJlAGQ1g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yt9URuhW/GvLJXp0GNfj+SuBk/2gzRu0efBf2GpG2Jk=;
- b=J24u4d9pHphFve0ZBSAAMJefiZ5R298+a0/9DEzwQ0iZODrt9cDlpBw57CTFKIYpYveAkJWSPa9XiaJvGtZ7effX/7RzHK6Asb8eGp9dlOf92IGURdKtCxYzQA6nSsRKxrI8KhGGmEPvXT6+99yCqujULE4dmiW6xUs5E9rIcrudz78B6x+5uyOZHji34C54jwbYV/JgaDtVhgPbHeFNferRpqYuJ6NBamVOxb11gSkFfxZpQCgKxMPEmLTwTHqsenHlNQ8dVgUxyK1h7rogVnCOcFzXQhx98ukmuOOg6sSpZiOondkjv749OB1ooOo8IBhq7Lle2XfObV7niW36Wg==
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5127.namprd12.prod.outlook.com (2603:10b6:208:31b::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.15; Mon, 1 Nov
- 2021 12:50:14 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4649.019; Mon, 1 Nov 2021
- 12:50:14 +0000
-Date:   Mon, 1 Nov 2021 09:50:13 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Liu, Yi L" <yi.l.liu@intel.com>
-Cc:     "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "hch@lst.de" <hch@lst.de>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "lkml@metux.net" <lkml@metux.net>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "lushenming@huawei.com" <lushenming@huawei.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
-        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "dwmw2@infradead.org" <dwmw2@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
-Subject: Re: [RFC 02/20] vfio: Add device class for /dev/vfio/devices
-Message-ID: <20211101125013.GL2744544@nvidia.com>
-References: <PH0PR11MB56583D477B3977D92C2C1ADDC3839@PH0PR11MB5658.namprd11.prod.outlook.com>
- <20211025125309.GT2744544@nvidia.com>
- <PH0PR11MB56586D2EC89F282C915AF18DC3879@PH0PR11MB5658.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <PH0PR11MB56586D2EC89F282C915AF18DC3879@PH0PR11MB5658.namprd11.prod.outlook.com>
-X-ClientProxiedBy: BL0PR02CA0119.namprd02.prod.outlook.com
- (2603:10b6:208:35::24) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S232571AbhKAMxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 08:53:54 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:56251 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232405AbhKAMxx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 08:53:53 -0400
+Received: by mail-il1-f198.google.com with SMTP id d14-20020a056e02214e00b0026cd53452f7so1071572ilv.22
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 05:51:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=dBJ5vpuI59e0eOOVakkB2wOHLyYhGbssOGUlgrE1X/4=;
+        b=fbo3GkVGOcS5tYEjC9UiSvOKqYHDzBDNqo/diVkj7uuPle30k10jdrr+XJA/Qt9gge
+         mYU3gQwekPCgD3APfFQKoPpjW+y77ivgSZE+E9AqOsNoQbKEXlaRoHBwE0jVMehVaTyI
+         UbDx1zVvRPzM408WePMwmQM53LjeSbev5E+0hR1MDXBj4X9BDiI44z/2riAG5em1AR1M
+         yPq41gOXpkbpHD7zV5+y9+fWDshbjGInfEdUbESzJ7VpIOBbqt9qlZkekXn1xyLU81hG
+         yjmNwypuPaon5WTBIgp4jhqSgtTJQ4KSpCSkBgCch1vMAIyK5LVA3+2xEdoWu2u8V+ZJ
+         PwPQ==
+X-Gm-Message-State: AOAM533eXAAJBlI+DH0YmMi09mbakwDzBOcLlIYJdv1eAvEv5po20LwK
+        pBTzy6QsNYFVh/7RFx9u6VeGj1RHYE3XXTDwEjYg4mWuqXNi
+X-Google-Smtp-Source: ABdhPJz2YzbP9SqEU1b77ZAvs4wyT43tJHGgCUpdmjppg1zXhxbgtQZUbcr4sryblfjgDmF80+yiTtvuyrsg8eSIRZSH5jsXr0DV
 MIME-Version: 1.0
-Received: from mlx.ziepe.ca (142.162.113.129) by BL0PR02CA0119.namprd02.prod.outlook.com (2603:10b6:208:35::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.14 via Frontend Transport; Mon, 1 Nov 2021 12:50:14 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mhWlR-004UCg-C9; Mon, 01 Nov 2021 09:50:13 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: bef42638-0698-4caf-8fb7-08d99d362617
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5127:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB51277C40C3F8AAC40893664AC28A9@BL1PR12MB5127.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0QuMYZNy1Ici932E9b0mKvPGX8hIP4Y7QgWZlnXMsyC0z3xFliGD3Zp2J0rTN8XSdU9Abq4CrTt53KoRrIcBIfeEXrK9F7mg4eVSRcPuCheEsy7M51gwS5MoldYQbbOg28kBUE1jgBmBAleu51lmu0rp/Yy+FSGIrb4BRVH+tbBs2cmoAtO1tKb9s2yNsaQKmITzt6ExkEKdZkAQy+SCZqI3i1qN9I0e1NOYdbizgQ8iddnfLU0mGH5OAo1XSz+kw7s1SfrCEJ8x/stQ18jF5biR/0l6LJMAP4xB0stYou/57Ajp7HDEJRgD4KH0Y9hHSVX964ollBeZNf+ojATIojzhfgdxTUK+tJffQ3OE4ZFqEUUKk+yL+HthGcy+UHVghrVdqs9Z+aC9vnkMKqWJ/yA6bH7n7Yxg9jqm7PyMsm+qAnQp0iDPMpCVr8aRiWF+NEMXY2aEkYgOQEH6tUZhDUFmTbLXsAU1skGuespPTcUkW2oacDRCigaOxSyd4d63ipJ4s46Vty46u/gnhV2nl6MzJm1Z2zXhO4ei55rN1SbgO3TPwuMu+zsWBeklzK+F4Lm8Zs0n1XfNguwuBbNsfVvM7OgsTz2bmo3pU1SSbiv+Rj8L7c+hX0VUcOah21OzAt4Z0NsIF9Bcvy+C/ddKsg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(33656002)(66476007)(6916009)(66946007)(26005)(54906003)(508600001)(2616005)(316002)(186003)(66556008)(86362001)(2906002)(9746002)(83380400001)(7416002)(107886003)(1076003)(9786002)(8936002)(4326008)(8676002)(38100700002)(426003)(36756003)(5660300002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?rz1sbf37qcHz5M/N1BDUI+Zr2dpe+HEbc9Ho7HGj24WOAH8N3DSopRgVBlei?=
- =?us-ascii?Q?RqH/OiQ3MNPEcO2jkm8UOQGXcLY8RyejdZy9hNoawhVZ1IHAIz7gQ4AaY9sY?=
- =?us-ascii?Q?QrlNbirb0hxZLpD6AVgUoQGkzpE70f4wzNdprSsT9IS5ogQHR8hoHMpX/Afp?=
- =?us-ascii?Q?aSDXwEdinkGr93nSwFX5M8gOD7QTzo0n6bXKXebQ0/xo/zKtVEmS7Rc+Ni9h?=
- =?us-ascii?Q?ZHfvqK5bznM0eZBInWMlXiCneHLaEE8FtofYyukV0UShFrsSLfWFfnfF+har?=
- =?us-ascii?Q?1RLA8FJ+EzXbtXSehwW4nRLyRI4cfZzYnFCKRQqS1y8LA9m3D19hIpT4TBWN?=
- =?us-ascii?Q?R2BsfpYoL546TK4C+JcsX/ggjfFQASUWJgSYplGQhc1v8dCgz34tOpym5dVq?=
- =?us-ascii?Q?VJSf93k44fC4pxA+QW1THAMEV3r5thne7/VLiP1LwzPRpdtRgTpS6jRiJfDx?=
- =?us-ascii?Q?PfxCX7JFpYKqUJHla50iqTvHbmqOZth9Qql9b9+wDZ/ztTge3JSUSXNgHY/p?=
- =?us-ascii?Q?549PG+WECzq0Ew1QalXqovweK9NhQi6Hfbxr/lVDkc/dil/J+XLsLGO6RAUq?=
- =?us-ascii?Q?LfuHRBC78YDAPJ8m1PDWHixTEBzhub1VXE6yqfqgNTjw/u09EfBN9LsICEEH?=
- =?us-ascii?Q?KbAY3rv8+SwWoQS+ALt3sb8qZ8TDWmQSCnbN90mkpAHlFaAWJjW4Owl7uhlk?=
- =?us-ascii?Q?FsjUPWa8tPhfjWaLFSKyrauO9HEw1FLm7gWnKr29rIashcMU4reNn05DGrcm?=
- =?us-ascii?Q?KA2IRUAd55hfTwnhWkjVB5T/VeRKcG3bUbIYLMMNz76f+jdUFmttaPXp8/DL?=
- =?us-ascii?Q?BVspS15TzmkK5kBh+57008yVVVVg88hu9xTXFpfWQ0TK1yMfE/cuoULLltBG?=
- =?us-ascii?Q?RwG94ux/xy0KxX3c5uvWNq72B0QU3LVmsku6Ak9WrlsX4Gf7xXT3Timm+UHp?=
- =?us-ascii?Q?RRigsENLpHKnnLhMlNOgoS3QB2W3a1Y5SZrjzuO/o+rJRmfCNe8TAeDjGbM6?=
- =?us-ascii?Q?RlN3dHwP4RsHyug8TPo92Y3Yq6sgHM9Cjwq9QhmsDMKx9yMFq6R0UVH3icUx?=
- =?us-ascii?Q?S8SpCkHtejXz5SCzRl/BKmTZNUMO5sJ9eocfOg/K7bKUfUIw3hf4fMcskHvH?=
- =?us-ascii?Q?8aOPOwIst+IcTPMBFEzwWbbqXrWEusV11MFzMmWvqMowJiUy4eMFc4sCKVUa?=
- =?us-ascii?Q?ijJyGIYZlaNNXNH58Pw3f8+EymBuW0TwWRU6KD3VU46KhSBo+SqXrJW6f9fx?=
- =?us-ascii?Q?T6KeeeKXYdX25pLxZkjIXcpWr5dv6WQe+46CemKqS4kXuA6mZoxF1x+LONhW?=
- =?us-ascii?Q?AlnROK3lXlGPgu7Y6cOjOZKeORA+vpUQtNCCaZ7MjbmAJ6GXktu+r9hSPJPx?=
- =?us-ascii?Q?m21XP1nds7W7PBqyLQZuC2rxBVHIvk+vH12q7YykgU0uBkb9OiLkH6f7NCqb?=
- =?us-ascii?Q?J8dai7zoz64jOg8p4bge80KCIDqrQ0kCCAt0YVVX+1iGG68Hd8bE6+mipYUJ?=
- =?us-ascii?Q?O7o7hlk1+5vg39qvXJUKkZqPpKxANMv1ri7Rm1qPRHvtwwOGfGDFPemlFS7E?=
- =?us-ascii?Q?pK2f4/gf0HBq+F9P2h8=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bef42638-0698-4caf-8fb7-08d99d362617
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Nov 2021 12:50:14.5436
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3sHB65Cw47XuY6hf5aTGEWdqKp4UhLFi9OiPqOmL+cPtOaFtfSURHKOOt2t1jLvx
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5127
+X-Received: by 2002:a05:6602:280a:: with SMTP id d10mr20112678ioe.216.1635771080032;
+ Mon, 01 Nov 2021 05:51:20 -0700 (PDT)
+Date:   Mon, 01 Nov 2021 05:51:20 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000028c58805cfb9a28f@google.com>
+Subject: [syzbot] BUG: unable to handle kernel paging request in __blk_mq_alloc_requests
+From:   syzbot <syzbot+cd20829ac44b92bf6ed0@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 09:47:27AM +0000, Liu, Yi L wrote:
-> Hi Jason,
-> 
-> > From: Jason Gunthorpe <jgg@nvidia.com>
-> > Sent: Monday, October 25, 2021 8:53 PM
-> > 
-> > On Mon, Oct 25, 2021 at 06:28:09AM +0000, Liu, Yi L wrote:
-> > >    thanks for the guiding. will also refer to your vfio_group_cdev series.
-> > >
-> > >    Need to double confirm here. Not quite following on the kfree. Is
-> > >    this kfree to free the vfio_device structure? But now the
-> > >    vfio_device pointer is provided by callers (e.g. vfio-pci). Do
-> > >    you want to let vfio core allocate the vfio_device struct and
-> > >    return the pointer to callers?
-> > 
-> > There are several common patterns for this problem, two that would be
-> > suitable:
-> > 
-> > - Require each driver to provide a release op inside vfio_device_ops
-> >   that does the kfree. Have the core provide a struct device release
-> >   op that calls this one. Keep the kalloc/kfree in the drivers
-> 
-> this way sees to suit the existing vfio registration manner listed
-> below. right? 
+Hello,
 
-Not really, most drivers are just doing kfree. The need for release
-comes if the drivers are doing more stuff.
+syzbot found the following issue on:
 
-> But device drivers needs to do the kfree in the
-> newly added release op instead of doing it on their own (e.g.
-> doing kfree in remove).
+HEAD commit:    503f375baa99 Add linux-next specific files for 20211028
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=14688302b00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=aa50dda6b6975803
+dashboard link: https://syzkaller.appspot.com/bug?extid=cd20829ac44b92bf6ed0
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1385446ab00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10fc8c6ab00000
 
-Yes
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+cd20829ac44b92bf6ed0@syzkaller.appspotmail.com
 
-> > struct ib_device *_ib_alloc_device(size_t size);
-> > #define ib_alloc_device(drv_struct, member)                                    \
-> >         container_of(_ib_alloc_device(sizeof(struct drv_struct) +              \
-> >                                       BUILD_BUG_ON_ZERO(offsetof(              \
-> >                                               struct drv_struct, member))),    \
-> >                      struct drv_struct, member)
-> > 
-> 
-> thanks for the example. If this way, still requires driver to provide
-> a release op inside vfio_device_ops. right?
+loop0: detected capacity change from 0 to 1
+BUG: unable to handle page fault for address: ffffed101e501750
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD 23ffee067 P4D 23ffee067 PUD 13fff5067 PMD 0 
+Oops: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 6523 Comm: syz-executor279 Not tainted 5.15.0-rc7-next-20211028-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:__blk_mq_alloc_requests_batch block/blk-mq.c:408 [inline]
+RIP: 0010:__blk_mq_alloc_requests+0x4a7/0xb00 block/blk-mq.c:457
+Code: e8 fd 48 8b 44 24 10 80 38 00 0f 85 a6 04 00 00 48 8b 44 24 08 45 89 ed 48 8b b0 88 00 00 00 4a 8d 1c ee 48 89 d8 48 c1 e8 03 <42> 80 3c 30 00 0f 85 6c 04 00 00 44 8b ac 24 a0 00 00 00 48 8b 03
+RSP: 0018:ffffc900027fea90 EFLAGS: 00010a06
+RAX: 1ffff1101e501750 RBX: ffff8880f280ba80 RCX: 0000000000000000
+RDX: ffff888017bd1d40 RSI: ffff888019f43000 RDI: 0000000000000003
+RBP: 00000000ffffffff R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff838f31a1 R11: 0000000000000000 R12: 0000000000000000
+R13: 000000001b119150 R14: dffffc0000000000 R15: ffffc900027fec28
+FS:  00005555573e63c0(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffed101e501750 CR3: 0000000021651000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ blk_mq_submit_bio+0xdac/0x1b40 block/blk-mq.c:2526
+ __submit_bio+0x794/0x8e0 block/blk-core.c:894
+ __submit_bio_noacct_mq block/blk-core.c:972 [inline]
+ submit_bio_noacct block/blk-core.c:998 [inline]
+ submit_bio_noacct+0x6c9/0x8a0 block/blk-core.c:987
+ submit_bio block/blk-core.c:1059 [inline]
+ submit_bio+0x1ea/0x430 block/blk-core.c:1017
+ mpage_bio_submit fs/mpage.c:66 [inline]
+ mpage_readahead+0x589/0x750 fs/mpage.c:393
+ read_pages+0x1e4/0xfa0 mm/readahead.c:129
+ page_cache_ra_unbounded+0x64b/0x940 mm/readahead.c:238
+ do_page_cache_ra mm/readahead.c:268 [inline]
+ ondemand_readahead+0x594/0x1090 mm/readahead.c:551
+ page_cache_sync_ra+0x1cb/0x200 mm/readahead.c:579
+ page_cache_sync_readahead include/linux/pagemap.h:980 [inline]
+ filemap_get_pages+0x2b2/0x1be0 mm/filemap.c:2556
+ filemap_read+0x315/0xeb0 mm/filemap.c:2642
+ generic_file_read_iter+0x3b6/0x5a0 mm/filemap.c:2792
+ blkdev_read_iter+0x117/0x200 block/fops.c:583
+ call_read_iter include/linux/fs.h:2156 [inline]
+ io_iter_do_read fs/io_uring.c:3462 [inline]
+ io_read+0x33c/0xff0 fs/io_uring.c:3519
+ io_issue_sqe+0x800/0x7010 fs/io_uring.c:6628
+ __io_queue_sqe fs/io_uring.c:6978 [inline]
+ io_queue_sqe fs/io_uring.c:7020 [inline]
+ io_submit_sqe fs/io_uring.c:7223 [inline]
+ io_submit_sqes+0x1bca/0x8a20 fs/io_uring.c:7329
+ __do_sys_io_uring_enter+0xf6e/0x1f50 fs/io_uring.c:10043
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f8a945379c9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c4 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffea64277e8 EFLAGS: 00000246 ORIG_RAX: 00000000000001aa
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f8a945379c9
+RDX: 0000000000000000 RSI: 00000000000002ff RDI: 0000000000000003
+RBP: 00007ffea6427800 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
+Modules linked in:
+CR2: ffffed101e501750
+---[ end trace dde64fe0ea4dcb18 ]---
+RIP: 0010:__blk_mq_alloc_requests_batch block/blk-mq.c:408 [inline]
+RIP: 0010:__blk_mq_alloc_requests+0x4a7/0xb00 block/blk-mq.c:457
+Code: e8 fd 48 8b 44 24 10 80 38 00 0f 85 a6 04 00 00 48 8b 44 24 08 45 89 ed 48 8b b0 88 00 00 00 4a 8d 1c ee 48 89 d8 48 c1 e8 03 <42> 80 3c 30 00 0f 85 6c 04 00 00 44 8b ac 24 a0 00 00 00 48 8b 03
+RSP: 0018:ffffc900027fea90 EFLAGS: 00010a06
+RAX: 1ffff1101e501750 RBX: ffff8880f280ba80 RCX: 0000000000000000
+RDX: ffff888017bd1d40 RSI: ffff888019f43000 RDI: 0000000000000003
+RBP: 00000000ffffffff R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff838f31a1 R11: 0000000000000000 R12: 0000000000000000
+R13: 000000001b119150 R14: dffffc0000000000 R15: ffffc900027fec28
+FS:  00005555573e63c0(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffed101e501750 CR3: 0000000021651000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	e8 fd 48 8b 44       	callq  0x448b4902
+   5:	24 10                	and    $0x10,%al
+   7:	80 38 00             	cmpb   $0x0,(%rax)
+   a:	0f 85 a6 04 00 00    	jne    0x4b6
+  10:	48 8b 44 24 08       	mov    0x8(%rsp),%rax
+  15:	45 89 ed             	mov    %r13d,%r13d
+  18:	48 8b b0 88 00 00 00 	mov    0x88(%rax),%rsi
+  1f:	4a 8d 1c ee          	lea    (%rsi,%r13,8),%rbx
+  23:	48 89 d8             	mov    %rbx,%rax
+  26:	48 c1 e8 03          	shr    $0x3,%rax
+* 2a:	42 80 3c 30 00       	cmpb   $0x0,(%rax,%r14,1) <-- trapping instruction
+  2f:	0f 85 6c 04 00 00    	jne    0x4a1
+  35:	44 8b ac 24 a0 00 00 	mov    0xa0(%rsp),%r13d
+  3c:	00
+  3d:	48 8b 03             	mov    (%rbx),%rax
 
-No, it would optional. It would contain the stuff the driver is doing
-before kfree()
 
-For instance mdev looks like the only driver that cares:
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-	vfio_uninit_group_dev(&mdev_state->vdev);
-	kfree(mdev_state->pages);
-	kfree(mdev_state->vconfig);
-	kfree(mdev_state);
-
-pages/vconfig would logically be in a release function
-
-On the other hand ccw needs to rcu free the vfio_device, so that would
-have to be global overhead with this api design.
-
-Jason
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
