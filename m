@@ -2,124 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA02D441D2E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 16:11:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7245441D2F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 16:11:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232505AbhKAPNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 11:13:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38026 "EHLO
+        id S232527AbhKAPOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 11:14:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232536AbhKAPNp (ORCPT
+        with ESMTP id S230261AbhKAPOD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 11:13:45 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A085C061764
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 08:11:12 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id p18so8433904plf.13
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 08:11:12 -0700 (PDT)
+        Mon, 1 Nov 2021 11:14:03 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13673C061714
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 08:11:30 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id q124so25315939oig.3
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 08:11:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=FRxiYUYjjBjManTEC+FRiqOqoYoR9gbJXKuCAylEkiE=;
-        b=NxtPH22PyRO1d+cm4wFFOdty/7D/lkwyQQFIj9ny6rc2j3QUqqnNZRxWKp/JmWgmqd
-         D+wo4mZKmGiQ87MGQFw4KFb2HHQOej1i1tgIGb/VrmFa9RUr58JlRyKiJg4olkbTYWfg
-         jxF/HnUXtBIHnPTKF8KHDpShN0k5hXm3TazDbopmQQCWaRwG/D3OQuCVeph4xDf98mG1
-         ght6UelcbWR/u0amwlRkACGVKs2UlkbBGT0RBcGl0NbbB0dRxN2Gp5mzo9+EhkBB5ddh
-         rWxE6pZFXW8pNmS2iEWXm7xSNj0GUESdgzZc3DVe+QbfNZASVxw4+6NnZ2of7khI/yt4
-         fQlw==
+        d=gmail.com; s=20210112;
+        h=sender:message-id:date:mime-version:user-agent:subject
+         :content-language:to:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=7ywhAg6xLoCp/gjGMKiRoOsRGE2B1fYG2i3QTqd0P5I=;
+        b=W4LXTCoGM/Ls/G2UBWC2HVcS2wU7sGQs3xZAUvr4RG2iHstedbtp0Ze5mIfERCtcYj
+         AejZEbBZIPt5LgFEncLVnxG1aSzQys4czWsu1w+J+tAmj4f0/ZRstjrueQKg3xdS82r6
+         pioQM117fveIbCddpUAJlIk5fJc186EvCiIC7voiVco5miWibhgQ37zTape0HhW+CakD
+         hsu7KrV1XH6b3pOFFtM2TOwMAYyNAsjZCFly3sVn0wCZOuM/DDWx7fGe0PYUrqseb+xU
+         pkjCWyOUtPf+xj+mBxukjGySofBMuw2SP7qP4rrSAcAVm3qhzIhGq5aG3bKZibjoCqsQ
+         IKZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=FRxiYUYjjBjManTEC+FRiqOqoYoR9gbJXKuCAylEkiE=;
-        b=uyUnV7EyISa0vW/453n4h4XqqQRPpyrvR6sdhMGTHXRcsNFHza98h98hI/1YWNHZnE
-         2tUjU8zv1hGI3juf0/JvQXNTMOj04WsI2l46DhqQCSP3EqPIvHRhSQ0Erj9oN66LO3uc
-         EzEvhxdFxCQIbyFcrD6tso3huuIa7HuzofXeBedStQxN6SfgbubeGZ3NibMlc9xsDyrK
-         YNrnWLCuPBg0OlBXiF7ay8EIzY+CB/C+3IYNWryVo+mO8nJH4sJ4QCFuGnils71K9IFR
-         TjSX56A5jT0Z+s+x6PE4iUjYP8/NDAi51iLtVtPypurNrfFrogmHEiA634EwmEC9kzXA
-         scVg==
-X-Gm-Message-State: AOAM530ofnGp4BsKJ8IQGtkgMr0ZDybYsYl3EVouIJcmQzO0qgh3fBNF
-        5Qh8fv20fOuveNperhFXmr3TWg==
-X-Google-Smtp-Source: ABdhPJy0Wb4AWhFD2xMcZPIL/nB57LMoBAK6IARwjrE85gWXg4n3kHdtP2n1jbYVwonG6lHSFv8yQA==
-X-Received: by 2002:a17:90b:1a87:: with SMTP id ng7mr12513098pjb.230.1635779471829;
-        Mon, 01 Nov 2021 08:11:11 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([103.136.124.227])
-        by smtp.gmail.com with ESMTPSA id z22sm15037201pfa.214.2021.11.01.08.11.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 08:11:11 -0700 (PDT)
-Date:   Mon, 1 Nov 2021 23:11:01 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     German Gomez <german.gomez@arm.com>
-Cc:     Namhyung Kim <namhyung@kernel.org>,
-        James Clark <james.clark@arm.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [RFC] perf arm-spe: Track task context switch for cpu-mode events
-Message-ID: <20211101151101.GA375622@leoy-ThinkPad-X240s>
-References: <CAM9d7cghXgUbAqUUJjyKAea+9=jxei7RDScgV5Fd_i9bXyXkKA@mail.gmail.com>
- <be937a2e-311b-2a8b-1094-39c203c6d9f3@arm.com>
- <CAM9d7cho2hN+NDWd9-P-AQAf3D8WfPgCpEDe7cD6hk5FoA_c8Q@mail.gmail.com>
- <87dad53f-a9a5-cd36-7348-ee10f4edd8fb@arm.com>
- <20211011142940.GB37383@leoy-ThinkPad-X240s>
- <8a1eafe3-d19e-40d6-f659-de0e9daa5877@arm.com>
- <eae1a617-2624-dc1f-1ddb-ba9f5600819d@arm.com>
- <20211018132328.GG130233@leoy-ThinkPad-X240s>
- <cd354485-5267-0e07-eb18-ddd0d002ecc3@arm.com>
- <354d76da-5402-5c24-516f-c1f7e58590fc@arm.com>
+        h=x-gm-message-state:sender:message-id:date:mime-version:user-agent
+         :subject:content-language:to:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=7ywhAg6xLoCp/gjGMKiRoOsRGE2B1fYG2i3QTqd0P5I=;
+        b=fKlLCnBu8fM+l3mwBiviSo1GBtHn0EA9Q2M9L0c7U1e61EhK6KxajbcWGEpQ14Zb0B
+         /3sPaMZrGHeG2I3YIKtcogKXI/P/AAKsp+tBv8/6u7ds4X1ZjgHfyPIwDnGnzZzdJz7C
+         EkSl3CxrbzflgKgcEo/aZYReGsCMpvs78B4W+4T2XIiAL6YhMX7S4Wo+WVBxmzAJyVq0
+         88VyPiJ+Ag3J9USPn3rrAh1HO2BW/78aR4ovLm/jQll9N89+4dIL21sSrE5f2Sa3ILpM
+         r24YeBOxNl17ocIIvnJYRAPzXWHTuq1Vy+AmwJXMn9rtup+xJnA0InzU10ZhNuk+lVdH
+         py/A==
+X-Gm-Message-State: AOAM532+oqZnQxAmudk0UyT9q80XvGQJGCWyhy7JY62i/HHpo/hvfeqD
+        Lebw+xJ148gTKl0qQlgp2fNM8Tn9nRKkmMr9
+X-Google-Smtp-Source: ABdhPJxVHi6I+/6D+rCXSiSdFyKljSuLlvKrmnSgzFDwhPrufj+DezwWztEJVr/MujbmEuYaNXK7OA==
+X-Received: by 2002:a54:4186:: with SMTP id 6mr20376189oiy.152.1635779489491;
+        Mon, 01 Nov 2021 08:11:29 -0700 (PDT)
+Received: from ?IPV6:2603:8090:2005:39b3::101e? (2603-8090-2005-39b3-0000-0000-0000-101e.res6.spectrum.com. [2603:8090:2005:39b3::101e])
+        by smtp.gmail.com with ESMTPSA id bi40sm353818oib.51.2021.11.01.08.11.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Nov 2021 08:11:28 -0700 (PDT)
+Sender: Larry Finger <larry.finger@gmail.com>
+Message-ID: <d1a8eb91-adb9-2163-dc3d-9f86ebdc45e3@lwfinger.net>
+Date:   Mon, 1 Nov 2021 10:11:26 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <354d76da-5402-5c24-516f-c1f7e58590fc@arm.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH v2] staging: r8188eu: Use kzalloc() with GFP_ATOMIC in
+ atomic context
+Content-Language: en-US
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20211101142732.5638-1-fmdefrancesco@gmail.com>
+From:   Larry Finger <Larry.Finger@lwfinger.net>
+In-Reply-To: <20211101142732.5638-1-fmdefrancesco@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi German,
+On 11/1/21 09:27, Fabio M. De Francesco wrote:
+> Use the GFP_ATOMIC flag of kzalloc() with two memory allocation in
+> report_del_sta_event(). This function is called while holding spinlocks,
+> therefore it is not allowed to sleep. With the GFP_ATOMIC type flag, the
+> allocation is high priority and must not sleep.
+> 
+> This issue is detected by Smatch which emits the following warning:
+> "drivers/staging/r8188eu/core/rtw_mlme_ext.c:6848 report_del_sta_event()
+> warn: sleeping in atomic context".
+> 
+> After the change, the post-commit hook output the following message:
+> "CHECK: Prefer kzalloc(sizeof(*pcmd_obj)...) over
+> kzalloc(sizeof(struct cmd_obj)...)".
+> 
+> According to the above "CHECK", use the preferred style in the first
+> kzalloc().
+> 
+> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> ---
+> 
+> v1->v2: Fix an overlooked error due to an incorrect copy-paste
+> 	of the sizeof() operator.
 
-On Fri, Oct 29, 2021 at 11:51:16AM +0100, German Gomez wrote:
-> Hi Leo,
-> 
-> The current plan is to define a global flag in the `struct arm_spe` to
-> select the method of pid tracing (context pkt, or switch events):
-> 
->     struct arm_spe {
->        /* ... */
->        u8        use_ctx_pkt_for_pid;
->     }
-> 
-> The method could be determined by peeking at the top element of the
-> `struct auxtrace_heap` at the beginning of the perf-report. If ctx
-> packets have been collected, the first one should have a context_id !=
-> -1. We could then tweak this part of Namhyung patch slightly:
+I am happy that you caught the error before it destroyed every instance of 
+r8188eu. Incidentally, I disagree with checkpatch in that I think that 
+sizeof(struct foo) is more descriptive than sizeof(*bar). If I wanted to check 
+the resulting value of the sizeof(), the second form requires an additional 
+step. It probably does not matter much to the compiler, but when I have to do it 
+manually, the extra effort is not negligible.
 
-Have one concern: if cannot find the context packet, will the decoder
-drop the SPE packets until it find the first context packet?  If this
-is the case, I am concern the decoder will run out for all packets
-and doesn't generate any samples if the SPE trace data doesn't contain
-any context packet.
+Even though I disagree with the philosophy,
+
+Acked-by: Larry Finger <Larry.Finger@lwfinger.net>
 
 > 
->     if (!spe->use_ctx_pkt_for_pid &&
->         (event->header.type == PERF_RECORD_SWITCH_CPU_WIDE ||
->          event->header.type == PERF_RECORD_SWITCH))
->             err = arm_spe_context_switch(spe, event, sample);
+>   drivers/staging/r8188eu/core/rtw_mlme_ext.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> Then we could apply patch [1] which wasn't fully merged in the end,
-> including similar `if (spe->use_ctx_pkt_for_pid)` to collect the pid/tid
-> from the context packets.
+> diff --git a/drivers/staging/r8188eu/core/rtw_mlme_ext.c b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
+> index 55c3d4a6faeb..315902682292 100644
+> --- a/drivers/staging/r8188eu/core/rtw_mlme_ext.c
+> +++ b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
+> @@ -6845,12 +6845,12 @@ void report_del_sta_event(struct adapter *padapter, unsigned char *MacAddr, unsi
+>   	struct mlme_ext_priv		*pmlmeext = &padapter->mlmeextpriv;
+>   	struct cmd_priv *pcmdpriv = &padapter->cmdpriv;
+>   
+> -	pcmd_obj = kzalloc(sizeof(struct cmd_obj), GFP_KERNEL);
+> +	pcmd_obj = kzalloc(sizeof(*pcmd_obj), GFP_ATOMIC);
+>   	if (!pcmd_obj)
+>   		return;
+>   
+>   	cmdsz = (sizeof(struct stadel_event) + sizeof(struct C2HEvent_Header));
+> -	pevtcmd = kzalloc(cmdsz, GFP_KERNEL);
+> +	pevtcmd = kzalloc(cmdsz, GFP_ATOMIC);
+>   	if (!pevtcmd) {
+>   		kfree(pcmd_obj);
+>   		return;
 > 
-> What do you think?
 
-Except the above concern, the solution looks good to me.
-
-Thanks,
-Leo
