@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2AE2441776
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:34:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89F64441662
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:22:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232562AbhKAJgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:36:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37008 "EHLO mail.kernel.org"
+        id S231699AbhKAJYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:24:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59154 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232602AbhKAJcO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:32:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4FF5961183;
-        Mon,  1 Nov 2021 09:24:27 +0000 (UTC)
+        id S232329AbhKAJWp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:22:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C0683610D2;
+        Mon,  1 Nov 2021 09:20:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758667;
-        bh=dfjYiAiul1WSf7fp2Fd7Uh/ZYaLrdVnCda1DhaUDY2c=;
+        s=korg; t=1635758406;
+        bh=KWLZ198wCx5EPHjJSx32Ieau92M15KuKnZkKEnZNU6M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wvGbtDS65yL28R2JblE7YZPLbEX6j8iR878WG3SVrzWdZxh1yXlf6xv56Yesk4u3o
-         gsOvMV/TWu1ZGFs3+E7HejIlPLt3EPne7CJzwr9Mq6KeYhNrkmwF+bepHDyq0PJt5T
-         2HKIi418lhaUwdaEbUkBIs80Vsh8lohYIGU2ZNoc=
+        b=Goo7HoXUJxhyVd/jn76nYcMQGaXY7kjB4jZGcWvZThPhAgXAS2pe99vG87D0gZ+Ic
+         PW7QNMIYoEzl4V8b2m5P5n3JX9BT5rFoUmfEevNlkl1L9amG/ONlVwcxeH+yLoh5eH
+         9+ipv0AD0VTG8YnIH2Hl1gUtLAwMsxidPVoAdwZ0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jaehoon Chung <jh80.chung@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Christian Hewitt <christianshewitt@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 5.4 17/51] mmc: dw_mmc: exynos: fix the finding clock sample value
-Date:   Mon,  1 Nov 2021 10:17:21 +0100
-Message-Id: <20211101082504.553979546@linuxfoundation.org>
+        stable@vger.kernel.org, Yanfei Xu <yanfei.xu@windriver.com>,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.14 10/25] Revert "net: mdiobus: Fix memory leak in __mdiobus_register"
+Date:   Mon,  1 Nov 2021 10:17:22 +0100
+Message-Id: <20211101082449.464714831@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082500.203657870@linuxfoundation.org>
-References: <20211101082500.203657870@linuxfoundation.org>
+In-Reply-To: <20211101082447.070493993@linuxfoundation.org>
+References: <20211101082447.070493993@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,55 +40,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jaehoon Chung <jh80.chung@samsung.com>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-commit 697542bceae51f7620af333b065dd09d213629fb upstream.
+commit 10eff1f5788b6ffac212c254e2f3666219576889 upstream.
 
-Even though there are candiates value if can't find best value, it's
-returned -EIO. It's not proper behavior.
-If there is not best value, use a first candiate value to work eMMC.
+This reverts commit ab609f25d19858513919369ff3d9a63c02cd9e2e.
 
-Signed-off-by: Jaehoon Chung <jh80.chung@samsung.com>
-Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Tested-by: Christian Hewitt <christianshewitt@gmail.com>
-Cc: stable@vger.kernel.org
-Fixes: c537a1c5ff63 ("mmc: dw_mmc: exynos: add variable delay tuning sequence")
-Link: https://lore.kernel.org/r/20211022082106.1557-1-jh80.chung@samsung.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+This patch is correct in the sense that we _should_ call device_put() in
+case of device_register() failure, but the problem in this code is more
+vast.
+
+We need to set bus->state to UNMDIOBUS_REGISTERED before calling
+device_register() to correctly release the device in mdiobus_free().
+This patch prevents us from doing it, since in case of device_register()
+failure put_device() will be called 2 times and it will cause UAF or
+something else.
+
+Also, Reported-by: tag in revered commit was wrong, since syzbot
+reported different leak in same function.
+
+Link: https://lore.kernel.org/netdev/20210928092657.GI2048@kadam/
+Acked-by: Yanfei Xu <yanfei.xu@windriver.com>
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Link: https://lore.kernel.org/r/f12fb1faa4eccf0f355788225335eb4309ff2599.1633024062.git.paskripkin@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/mmc/host/dw_mmc-exynos.c |   14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ drivers/net/phy/mdio_bus.c |    1 -
+ 1 file changed, 1 deletion(-)
 
---- a/drivers/mmc/host/dw_mmc-exynos.c
-+++ b/drivers/mmc/host/dw_mmc-exynos.c
-@@ -462,6 +462,18 @@ static s8 dw_mci_exynos_get_best_clksmpl
- 		}
+--- a/drivers/net/phy/mdio_bus.c
++++ b/drivers/net/phy/mdio_bus.c
+@@ -354,7 +354,6 @@ int __mdiobus_register(struct mii_bus *b
+ 	err = device_register(&bus->dev);
+ 	if (err) {
+ 		pr_err("mii_bus %s failed to register\n", bus->id);
+-		put_device(&bus->dev);
+ 		return -EINVAL;
  	}
  
-+	/*
-+	 * If there is no cadiates value, then it needs to return -EIO.
-+	 * If there are candiates values and don't find bset clk sample value,
-+	 * then use a first candiates clock sample value.
-+	 */
-+	for (i = 0; i < iter; i++) {
-+		__c = ror8(candiates, i);
-+		if ((__c & 0x1) == 0x1) {
-+			loc = i;
-+			goto out;
-+		}
-+	}
- out:
- 	return loc;
- }
-@@ -492,6 +504,8 @@ static int dw_mci_exynos_execute_tuning(
- 		priv->tuned_sample = found;
- 	} else {
- 		ret = -EIO;
-+		dev_warn(&mmc->class_dev,
-+			"There is no candiates value about clksmpl!\n");
- 	}
- 
- 	return ret;
 
 
