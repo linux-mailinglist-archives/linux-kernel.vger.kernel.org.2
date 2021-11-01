@@ -2,112 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93846441DF9
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 17:20:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C1AE441DFA
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 17:20:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232684AbhKAQW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 12:22:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53314 "EHLO
+        id S232696AbhKAQWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 12:22:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232516AbhKAQW0 (ORCPT
+        with ESMTP id S232683AbhKAQW2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 12:22:26 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D63AC061764
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 09:19:53 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id z200so12824068wmc.1
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 09:19:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=GjGM4teGqtDHqaR2B16eUUHA1jOhBf1T+SnFsnnEpAU=;
-        b=Hl6MQ1jaQz1jMur7ZmBQKDuC7Ccoqkja5LIKeqHTJcJRp6EomUbw3hPl6+aK4HZmmY
-         4XJn7a3L1niihW4HvsL2DHIig3BziHa9A1J3KgwFmB3i7SBCjJOoJltRCABG/R1ZDVXC
-         s6tY8E97EpNNYS+D/gMa4HiyOzSwz5xTWcFti+UgJ1J4L5L7ssCq+aadmDJ2QS5T5dQY
-         gYWKLEv5Ofhn64+P4rR3hGR1hFInr5FYng88dnHZ+QCAlBPE8NJZhB7euI7NGoXEwwyb
-         p6ECAYEEMGmnY4NsEBsXgnlegqFK/h7ebOPfdwRIzz+nMcZN2T9BgSAz98jl8ywTN8jp
-         8yGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=GjGM4teGqtDHqaR2B16eUUHA1jOhBf1T+SnFsnnEpAU=;
-        b=ca/7FFAOUTEJ6OMTtEL/3ziCIVG2YnJ62vpGCysJnu5bLG/evo3pRbKdDz0pbfi1/U
-         oFRqq5jDkYN0GJayffUyu0sk1Lb0bxb9iJJeSXMW7vrq3m/t0D6ZFURwnxxn6z6/FbkY
-         PRi0ro7EuNNKxFStJpBF17E1kLzVneU5IKSb2hC+p6/5z1KxoAz1LoBjcx/uvILLVzcr
-         tC0ffZtP/hrfTbSvOmW8ANg0DHyJho+F1fO37d5qKbUhUoGDBp3X8Pxg08YApzZb7qPd
-         Usitxy0eUO7L/XNLmbZ+NgeZRFH6dbLjGplKrq5TmuDPgW23C7SgLRJaxuCf9tti66JI
-         sN+g==
-X-Gm-Message-State: AOAM533W3EmbpTKF3UHf0VnNYtHhOiZWkAGFPlqKrMFeCa94Hj+8QgJy
-        BwyH9i+ZCEbCnlYIdL+HFwabdgpAu9bsSg==
-X-Google-Smtp-Source: ABdhPJzefHJrHdesfKDcmMU6SAYYnAZEs29pZpKXnfk/IADsybI27/Z+IIwiiXstMPvHD8DY7rI78Q==
-X-Received: by 2002:a7b:c097:: with SMTP id r23mr17040806wmh.193.1635783591751;
-        Mon, 01 Nov 2021 09:19:51 -0700 (PDT)
-Received: from google.com ([95.148.6.174])
-        by smtp.gmail.com with ESMTPSA id h27sm8321752wmc.43.2021.11.01.09.19.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 09:19:51 -0700 (PDT)
-Date:   Mon, 1 Nov 2021 16:19:49 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Linux 5.15
-Message-ID: <YYATpRgJHditIHZT@google.com>
-References: <CAHk-=wjfbfQobW2jygMvgfJXKmzZNB=UTzBrFs2vTEzVpBXA4Q@mail.gmail.com>
- <CAHp75Vef8QW3Y0yA702KUqPDHNRLN0kCv06=cgPpgPbUeAb-dw@mail.gmail.com>
+        Mon, 1 Nov 2021 12:22:28 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C74BBC061714
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 09:19:54 -0700 (PDT)
+Received: from ip4d173d4a.dynamic.kabel-deutschland.de ([77.23.61.74] helo=[192.168.66.200]); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1mha2K-0001qw-T3; Mon, 01 Nov 2021 17:19:52 +0100
+Message-ID: <f8711ea3-b58e-d3e1-1ad5-1f831e60998d@leemhuis.info>
+Date:   Mon, 1 Nov 2021 17:19:50 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHp75Vef8QW3Y0yA702KUqPDHNRLN0kCv06=cgPpgPbUeAb-dw@mail.gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: Thorsten is tracking regression again and could need a little
+ help (was: Re: Linux 5.15)
+Content-Language: en-BS
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "regressions@lists.linux.dev" <regressions@lists.linux.dev>
+References: <CAHk-=wjfbfQobW2jygMvgfJXKmzZNB=UTzBrFs2vTEzVpBXA4Q@mail.gmail.com>
+ <a365ffb9-a4d2-b1d7-7cd7-dd9d7039e04e@leemhuis.info>
+ <YX/ekB+9F9xvHCB7@kroah.com>
+ <da21322a-95e8-40f9-a718-fa1e56eb203f@leemhuis.info>
+ <YX/lnI5gX4TAF5Ea@kroah.com>
+ <d757b7c0-9d6d-a3ad-8bd0-748396db5861@leemhuis.info>
+ <YYAHaONs8IOdecOs@kroah.com>
+From:   Thorsten Leemhuis <regressions@leemhuis.info>
+In-Reply-To: <YYAHaONs8IOdecOs@kroah.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1635783594;c3773e77;
+X-HE-SMSGID: 1mha2K-0001qw-T3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 01 Nov 2021, Andy Shevchenko wrote:
 
-> On Sun, Oct 31, 2021 at 11:09 PM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> > It's been calm, and I have no excuse to add an extra rc, so here we
-> > are, with v5.15 pushed out, and the merge window starting tomorrow.
-> >
-> > Which is going to be a bit inconvenient for me, since I also have some
-> > conference travel coming up. But it's only a couple of days and I'll
-> > have my laptop with me. Sometimes the release timing works out, and
-> > sometimes it doesn't..
-> >
-> > Anyway, the last week of 5.15 was mainly networking and gpu fixes,
-> > with some random sprinkling of other things (a few btrfs reverts, some
-> > kvm updates, minor other fixes here and there - a few architecture
-> > fixes, couple of tracing, small driver fixes etc). Full shortlog
-> > appended.
-> >
-> > This release may have started out with some -Werror pain, but it
-> > calmed down fairly quickly and on the whole 5.15 was fair small and
-> > calm. Let's hope for more of the same - without Werror issues this
-> > time - for the upcoming merge window.
+
+On 01.11.21 16:27, Greg KH wrote:
+> On Mon, Nov 01, 2021 at 02:34:21PM +0100, Thorsten Leemhuis wrote:
+>> On 01.11.21 14:03, Greg KH wrote:
+>>> On Mon, Nov 01, 2021 at 01:44:01PM +0100, Thorsten Leemhuis wrote:
+>>>> On 01.11.21 13:33, Greg KH wrote:
+>>>>> On Mon, Nov 01, 2021 at 05:49:40AM +0100, Thorsten Leemhuis wrote:
+>>>>>> example by simply forwarding the mail to regressions@leemhuis.info or
+>>>>>> CCing that address on a reply. I'll handle everything else then and tell
+>>>>>> regzbot about it. But if you feel adventurous, you can also skip me as
+>>>>>> the man-in-the-middle and tell the bot directly. To do that, just send a
+>>>>>> reply to the report to the regressions mailing list
+>>>>>> (regressions@lists.linux.dev) either directly or by CCing it on a reply
+>>>>>> you would have written anyway; when doing so, place something like
+>>>>>> '#regzbot ^introduced v5.15..' (separated by blank lines) somewhere in
+>>>>>> the text, as outlined in regzbot's 'getting started guide' or its
+>>>>>> reference documentation:
+>>>>>> https://gitlab.com/knurd42/regzbot/-/blob/main/docs/getting_started.md
+>>>>>> https://gitlab.com/knurd42/regzbot/-/blob/main/docs/reference.md
+>>>>>>
+>>>>>> That's it, regzbot then on its next run will add the report to the list
+>>>>>> of tracked regression. I'll keep an eye on things and try to fix any
+>>>>>> problems I notice, as there likely will be a few. But then doesn't need
+>>>>>> to bother you.
+>>>>>>
+>>>>>> There is one thing that would really help: if one or two subsystem
+>>>>>> maintainers could give regzbot a shot for all the regression reports
+>>>>>> they get, even for easy fixes, as the bot really needs something to chew
+>>>>>> on. Any volunteers?
+>>>>>
+>>>>> I'll try it for the USB subsystem this merge cycle. 
+>>>>
+>>>> That will be a great help, many thx.
+>>>>
+>>>>> Do you want a bug
+>>>>> report email redirected to that address or will a simple forward work
+>>>>> well enough?
+>>>>
+>>>> Redirecting will make it a little easier for me, but a simple forward is
+>>>> fine, too.
+>>>
+>>> Ok, I did that now for a USB bug report, hopefully that worked.  If not,
+>>> I can forward it on.
+>>
+>> Got it, but I could need some advice on it if you have a minute.
+>>
+>> Does that report really look like a regression from your point of view?
+>> The part "The code has been this way in the kernel for a very long time,
+>> which suggests that it has been working, [...]" sounds like it is, but
+>> OTOH it's quite vague.
 > 
-> Do we really now have any use of COMPILE_TEST=y WERROR=y with `make W=1`?
-> To me it seems every CI just disabled it because it's impossible to
-> build a kernel anymore.
-> 
-> What is the roadmap of fixing this (to some extent)?
-> 
-> I remember that Lee spent a lot of time cleaning up W=1 cases. Maybe
-> he knows the state of affairs of this with -Werror enabled...
+> Later in the thread it was determined that this is a regression that
+> showed up in the 3.4 kernel release and the commit id was referenced.
 
-Probably never.  I managed to get the warnings down from ~18k to ~2k
-IIRC.  However subsystems like GPU keep adding 10's of them every
-release, so the job became perpetual.
+Hah, stupid me, sorry, should have looked closer myself, thx for the
+pointer.
 
-I do plan on doing another rotation once I get a bit more free time.
+>> I'm asking, because with my regression tracking work and regzbot I focus
+>> on regressions and ignore things that were always broken, as I (at least
+>> for now) don't want it to become yet another bug tracker (and I guess I
+>> would quickly drown in bugs as well).
+>
+> I agree, this shouldn't be a bug tracker, sorry, I shouldn't have
+> started this with a report of a really old issue, but it's all I found
+> at short notice :)
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+No worries, I'm glad I get something to test regzbot better :-D
+
+> I've found another report of a regression that is newer for USB and
+> bounced it to you as well.  Hopefully that is a bit easier to track.
+
+Many thx, much appreciated!
+
+Ciao, Thorsten
