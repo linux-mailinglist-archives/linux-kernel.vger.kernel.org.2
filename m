@@ -2,150 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EB3D441E05
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 17:21:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 714EE441E13
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 17:21:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232711AbhKAQXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 12:23:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232709AbhKAQX3 (ORCPT
+        id S232726AbhKAQYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 12:24:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60152 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232686AbhKAQYU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 12:23:29 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ACCFC0613F5
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 09:20:54 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id oa4so12449836pjb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 09:20:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=nOeoZHECPKNnAQytROjQG/8KfDcG2slvfmEJKCwImrQ=;
-        b=OHjfuxxdfClfMEvZDiRQncM/tj04Oc4zKUcJsre2fgbrUibg0OrOYtxJvVFbiYWF/V
-         QV1/1BkSOuYAiHB/7n6GnABT8PtXMjdF0q/3kN7tXSbbW0ibOXOrXBZIBg62Du0E12fR
-         r2TOG2W15LOqdfoteLKwfqdg6gxPX1atPhYAw=
+        Mon, 1 Nov 2021 12:24:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635783706;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=D0pDbHtTcR82UVCQHWAbgqpuu1KGubZnwzSQ8mPGn+I=;
+        b=i/02LgkUvloue5jfupZk1IncQ6Q8mOr5C6ymya0EbLkkFdRA5uH0OuJ0cxEZJhxtJQvBw2
+        N6qj0wLnyh0i4A6AMLnpNg+KdoMggs9DYcph0QJ7nOLfV4AusSCKYW2svQhKTSYG+Sk4fa
+        lZlSyJr9jWamWWYuNUtaCHlmpOOeE6o=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-581-XSEwg3fpM-GK7yQmtqHuYA-1; Mon, 01 Nov 2021 12:21:45 -0400
+X-MC-Unique: XSEwg3fpM-GK7yQmtqHuYA-1
+Received: by mail-wm1-f70.google.com with SMTP id b15-20020a1c800f000000b0033214e5b021so3236402wmd.3
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 09:21:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=nOeoZHECPKNnAQytROjQG/8KfDcG2slvfmEJKCwImrQ=;
-        b=RGHXdbJMezduhaZiuaUfLheKt1wT+e9YA2YHweEbDHpd3nxESrXmTGexymDlMqecCN
-         tEjeEdvsZFm0QJuQzDrxAYmjpSy5GH+a6Is8JI066dRQGYkJnfy6nbwicJFFgcWr+gGt
-         6mW4zQXqVZIK38CedPFDQ8V2T4Rnl5FbavDbUGxjPlB7GPXQ2A1y3kTrpWf2YPrKIBAX
-         GVkePN1w67aRI1JMhyFJnDSp2rFAg3GzTFIC98ROOXZUPHe6dSepAepPcliD1QZBwoi4
-         cS6PbRGEWvdZ1biYOnJdg4bJDHVzU3tve08OYH/LgR2pRLrWuhHLPcV8fS6+hPN00Bog
-         JgMA==
-X-Gm-Message-State: AOAM532yX++JpPMHtczS24rka+UCJ7b+TpGY5wGq2u0Q8FyCkPoi52au
-        29z4Fyt4/t2/eRKaMoDpIlqxpQ==
-X-Google-Smtp-Source: ABdhPJx8302mlq2+2oG33p1FJwabY8ZQ+cEyzVsGqRt9mxOuWC/f5cg60TkG3G0h376S22Pc08/BlA==
-X-Received: by 2002:a17:902:70c5:b0:13f:f941:9ad6 with SMTP id l5-20020a17090270c500b0013ff9419ad6mr26059732plt.28.1635783653857;
-        Mon, 01 Nov 2021 09:20:53 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id p23sm18296772pjg.55.2021.11.01.09.20.53
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=D0pDbHtTcR82UVCQHWAbgqpuu1KGubZnwzSQ8mPGn+I=;
+        b=gpHD5yLHluUTk9TeS8Vae6m2nWtGaY4ohney4bN4WSPnlV4zUn+KFLx8MQZUQRDJt2
+         7oMPh/eioaPWFjhLszkk7Ka+mPPzXp+R8BUS4vcOITyoISYe5CGPwvJj6aWKg/e90DQp
+         nQ0uzUzZpTNMFm+Xi+Dd+45McR5kKLGDYgqvgtQCH756skSAOMQ743QXJ1jRFYx46rpe
+         9hlZL7ORmC2ueQaT4XrUo9ozSpSCL03NztHlbqBssQRnLw45HEua0qq80Op4fo9zUxXc
+         XDLsz8kxRQUHSz2ZflOpmeEeV7VyLvpf0cBMOaWZtnCYs4q2J/MAo+ALGT52xkM8o2RK
+         WN9Q==
+X-Gm-Message-State: AOAM531ULelBSfS0krNWyVrgk5f9KKhCpYH3iCsl80+A/bXKaPgqqrHT
+        RytqYAtltMTssrsnBgK9P2JzYBWdPbEevnTo4KBVAjpbGBr+Axlhzl3uoYn16xwBNKkROk2NbHI
+        Wnw+D3fKF7iKjwZ1+2H/28RGR
+X-Received: by 2002:a05:600c:35cb:: with SMTP id r11mr32964170wmq.76.1635783704388;
+        Mon, 01 Nov 2021 09:21:44 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzg54pONXTEoQJ+SUEIJ8W1KRheAbFXi6E/qkqBCPrstK3ffBjgfgu7fIfChSWRMD/80LyMAg==
+X-Received: by 2002:a05:600c:35cb:: with SMTP id r11mr32964133wmq.76.1635783704156;
+        Mon, 01 Nov 2021 09:21:44 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id z8sm8283223wrh.54.2021.11.01.09.21.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 09:20:53 -0700 (PDT)
-Date:   Mon, 1 Nov 2021 09:20:52 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
-        Fangrui Song <maskray@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        James Morris <jmorris@namei.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>, "KE.LI" <like1@oppo.com>,
-        linux-doc@vger.kernel.org, linux-hardening@vger.kernel.org,
-        linux-kbuild@vger.kernel.org,
-        linux-security-module@vger.kernel.org, llvm@lists.linux.dev,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Padmanabha Srinivasaiah <treasure4paddy@gmail.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Will Deacon <will@kernel.org>,
-        Ye Guojin <ye.guojin@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [GIT PULL] hardening updates for v5.16-rc1
-Message-ID: <202111010917.75B96F4E@keescook>
+        Mon, 01 Nov 2021 09:21:43 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
+Cc:     Shuah Khan <shuah@kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, Borislav Petkov <bp@alien8.de>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Bandan Das <bsd@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Wei Huang <wei.huang2@amd.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>
+Subject: Re: [PATCH v2 1/6] KVM: x86: SVM: add module param to control LBR
+ virtualization
+In-Reply-To: <20211101140324.197921-2-mlevitsk@redhat.com>
+References: <20211101140324.197921-1-mlevitsk@redhat.com>
+ <20211101140324.197921-2-mlevitsk@redhat.com>
+Date:   Mon, 01 Nov 2021 17:21:42 +0100
+Message-ID: <87pmrjkfs9.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Maxim Levitsky <mlevitsk@redhat.com> writes:
 
-Please pull these hardening updates for v5.16-rc1. These are various
-compiler-related hardening feature updates. Notable is the addition of an
-explicit limited rationale for, and deprecation schedule of, gcc-plugins.
-More details in the tag below.
+> This is useful for debug and also makes it consistent with
+> the rest of the SVM optional features.
+>
+> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+> ---
+>  arch/x86/kvm/svm/svm.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index 21bb81710e0f6..2b5f8e10d686d 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -186,12 +186,13 @@ module_param(vls, int, 0444);
+>  static int vgif = true;
+>  module_param(vgif, int, 0444);
+>  
+> +static int tsc_scaling = true;
+> +module_param(tsc_scaling, int, 0444);
+> +
+>  /* enable/disable LBR virtualization */
+>  static int lbrv = true;
+>  module_param(lbrv, int, 0444);
+>  
+> -static int tsc_scaling = true;
+> -module_param(tsc_scaling, int, 0444);
 
-Thanks!
+Subject line says "KVM: x86: SVM: add module param to control LBR
+virtualization" but the patch just moves 'tsc_scaling' param a couple
+lines up. Was this intended or is this a rebase artifact and the patch
+just needs to be dropped?
 
--Kees
-
-The following changes since commit e4e737bb5c170df6135a127739a9e6148ee3da82:
-
-  Linux 5.15-rc2 (2021-09-19 17:28:22 -0700)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/hardening-v5.16-rc1
-
-for you to fetch changes up to 6425392acf24b6d469932dd1b217dc7b20d6447f:
-
-  gcc-plugins: remove duplicate include in gcc-common.h (2021-10-21 08:41:51 -0700)
-
-----------------------------------------------------------------
-compiler hardening updates for v5.16-rc1
-
-This collects various compiler hardening feature related updates:
-
-- gcc-plugins:
-  - remove support for GCC 4.9 and older (Ard Biesheuvel)
-  - remove duplicate include in gcc-common.h (Ye Guojin)
-  - Explicitly document purpose and deprecation schedule (Kees Cook)
-  - Remove cyc_complexity (Kees Cook)
-
-- instrumentation:
-  - Avoid harmless Clang option under CONFIG_INIT_STACK_ALL_ZERO (Kees Cook)
-
-- Clang LTO:
-  - kallsyms: strip LTO suffixes from static functions (Nick Desaulniers)
-
-----------------------------------------------------------------
-Ard Biesheuvel (1):
-      gcc-plugins: remove support for GCC 4.9 and older
-
-Kees Cook (3):
-      hardening: Avoid harmless Clang option under CONFIG_INIT_STACK_ALL_ZERO
-      gcc-plugins: Explicitly document purpose and deprecation schedule
-      gcc-plugins: Remove cyc_complexity
-
-Nick Desaulniers (1):
-      kallsyms: strip LTO suffixes from static functions
-
-Ye Guojin (1):
-      gcc-plugins: remove duplicate include in gcc-common.h
-
- Documentation/kbuild/gcc-plugins.rst               |  28 ++++-
- Makefile                                           |   6 +-
- kernel/kallsyms.c                                  |  46 +++++--
- scripts/Makefile.gcc-plugins                       |   2 -
- scripts/gcc-plugins/Kconfig                        |  20 +---
- scripts/gcc-plugins/cyc_complexity_plugin.c        |  69 -----------
- scripts/gcc-plugins/gcc-common.h                   | 132 +--------------------
- scripts/gcc-plugins/gcc-generate-gimple-pass.h     |  19 ---
- scripts/gcc-plugins/gcc-generate-ipa-pass.h        |  19 ---
- scripts/gcc-plugins/gcc-generate-rtl-pass.h        |  19 ---
- scripts/gcc-plugins/gcc-generate-simple_ipa-pass.h |  19 ---
- scripts/gcc-plugins/structleak_plugin.c            |   2 -
- security/Kconfig.hardening                         |  14 ++-
- 13 files changed, 75 insertions(+), 320 deletions(-)
- delete mode 100644 scripts/gcc-plugins/cyc_complexity_plugin.c
+>  
+>  /*
+>   * enable / disable AVIC.  Because the defaults differ for APICv
 
 -- 
-Kees Cook
+Vitaly
+
