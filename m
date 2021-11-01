@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 248984416EF
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:28:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95F3044174F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:33:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231443AbhKAJaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:30:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58248 "EHLO mail.kernel.org"
+        id S232384AbhKAJfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:35:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37002 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232655AbhKAJ0a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:26:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C6643610CB;
-        Mon,  1 Nov 2021 09:22:13 +0000 (UTC)
+        id S232484AbhKAJcM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:32:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8696C6117A;
+        Mon,  1 Nov 2021 09:24:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758534;
-        bh=XP6xqaCKaVSIlA0u5zfaKe8UB3AZGYZFVkc+IJ3zeA4=;
+        s=korg; t=1635758656;
+        bh=lcL9YykhwXtIsauYrMsyAo6kj0FnmWrgRJn4Pn/ASck=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rSpR2lppFNNNnJozPGVC3Z0JRyfgfjAE7PPtqz1XzKzUNnSqV9oDCCIYaSBEp1M8k
-         UxG7HEsrQm0v0TVDDGla/ocBS8B+fFAyzKdF2Ec0lBbCC1mX0XZDd0RE13thv+97i7
-         9BRhzS0qNf90wR+MGHq3WO43vFTmbDCpVnmMO4jw=
+        b=CzfyAZ+VYpLQDe6U0E4kKkmYsoluc8GkdCtA4takG8EyEHTspne1p84u0ACQ+rNlb
+         Jqs1nywaqITlbaK+J6ccy2kfO9RtZzm7OSSPfw/Ec/jpEbCTaewFuZ68cA2QOoQ0z4
+         tzMZBoGU37bWHfoSWJRpGnEcTg29DBTKwp0CYPBQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Eric Dumazet <edumazet@google.com>, Keyu Man <kman001@ucr.edu>,
-        Wei Wang <weiwan@google.com>, Martin KaFai Lau <kafai@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Ovidiu Panait <ovidiu.panait@windriver.com>
-Subject: [PATCH 4.19 14/35] ipv6: use siphash in rt6_exception_hash()
+        stable@vger.kernel.org,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Erhard F." <erhard_f@mailbox.org>, Huang Rui <ray.huang@amd.com>
+Subject: [PATCH 5.4 22/51] drm/ttm: fix memleak in ttm_transfered_destroy
 Date:   Mon,  1 Nov 2021 10:17:26 +0100
-Message-Id: <20211101082454.927128089@linuxfoundation.org>
+Message-Id: <20211101082505.681517249@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082451.430720900@linuxfoundation.org>
-References: <20211101082451.430720900@linuxfoundation.org>
+In-Reply-To: <20211101082500.203657870@linuxfoundation.org>
+References: <20211101082500.203657870@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,72 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Christian König <christian.koenig@amd.com>
 
-commit 4785305c05b25a242e5314cc821f54ade4c18810 upstream.
+commit 0db55f9a1bafbe3dac750ea669de9134922389b5 upstream.
 
-A group of security researchers brought to our attention
-the weakness of hash function used in rt6_exception_hash()
+We need to cleanup the fences for ghost objects as well.
 
-Lets use siphash instead of Jenkins Hash, to considerably
-reduce security risks.
-
-Following patch deals with IPv4.
-
-Fixes: 35732d01fe31 ("ipv6: introduce a hash table to store dst cache")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: Keyu Man <kman001@ucr.edu>
-Cc: Wei Wang <weiwan@google.com>
-Cc: Martin KaFai Lau <kafai@fb.com>
-Acked-by: Wei Wang <weiwan@google.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-[OP: adjusted context for 4.19 stable]
-Signed-off-by: Ovidiu Panait <ovidiu.panait@windriver.com>
+Signed-off-by: Christian König <christian.koenig@amd.com>
+Reported-by: Erhard F. <erhard_f@mailbox.org>
+Tested-by: Erhard F. <erhard_f@mailbox.org>
+Reviewed-by: Huang Rui <ray.huang@amd.com>
+Bug: https://bugzilla.kernel.org/show_bug.cgi?id=214029
+Bug: https://bugzilla.kernel.org/show_bug.cgi?id=214447
+CC: <stable@vger.kernel.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20211020173211.2247-1-christian.koenig@amd.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv6/route.c |   20 ++++++++++++++------
- 1 file changed, 14 insertions(+), 6 deletions(-)
+ drivers/gpu/drm/ttm/ttm_bo_util.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/net/ipv6/route.c
-+++ b/net/ipv6/route.c
-@@ -45,6 +45,7 @@
- #include <linux/nsproxy.h>
- #include <linux/slab.h>
- #include <linux/jhash.h>
-+#include <linux/siphash.h>
- #include <net/net_namespace.h>
- #include <net/snmp.h>
- #include <net/ipv6.h>
-@@ -1337,17 +1338,24 @@ static void rt6_exception_remove_oldest(
- static u32 rt6_exception_hash(const struct in6_addr *dst,
- 			      const struct in6_addr *src)
- {
--	static u32 seed __read_mostly;
--	u32 val;
-+	static siphash_key_t rt6_exception_key __read_mostly;
-+	struct {
-+		struct in6_addr dst;
-+		struct in6_addr src;
-+	} __aligned(SIPHASH_ALIGNMENT) combined = {
-+		.dst = *dst,
-+	};
-+	u64 val;
+--- a/drivers/gpu/drm/ttm/ttm_bo_util.c
++++ b/drivers/gpu/drm/ttm/ttm_bo_util.c
+@@ -463,6 +463,7 @@ static void ttm_transfered_destroy(struc
+ 	struct ttm_transfer_obj *fbo;
  
--	net_get_random_once(&seed, sizeof(seed));
--	val = jhash(dst, sizeof(*dst), seed);
-+	net_get_random_once(&rt6_exception_key, sizeof(rt6_exception_key));
- 
- #ifdef CONFIG_IPV6_SUBTREES
- 	if (src)
--		val = jhash(src, sizeof(*src), val);
-+		combined.src = *src;
- #endif
--	return hash_32(val, FIB6_EXCEPTION_BUCKET_SIZE_SHIFT);
-+	val = siphash(&combined, sizeof(combined), &rt6_exception_key);
-+
-+	return hash_64(val, FIB6_EXCEPTION_BUCKET_SIZE_SHIFT);
+ 	fbo = container_of(bo, struct ttm_transfer_obj, base);
++	dma_resv_fini(&fbo->base.base._resv);
+ 	ttm_bo_put(fbo->bo);
+ 	kfree(fbo);
  }
- 
- /* Helper function to find the cached rt in the hash table
 
 
