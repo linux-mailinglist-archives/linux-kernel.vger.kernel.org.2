@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B98C7441708
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:30:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EC2E441647
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:21:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232589AbhKAJcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:32:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37170 "EHLO mail.kernel.org"
+        id S232173AbhKAJXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:23:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59008 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233084AbhKAJ2W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:28:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0313A6112D;
-        Mon,  1 Nov 2021 09:23:02 +0000 (UTC)
+        id S232024AbhKAJWi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:22:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7518261154;
+        Mon,  1 Nov 2021 09:19:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758583;
-        bh=OrxyeqUFbryvuioRIbJPK7wsOs+UhN8lPaXNzm8ozyk=;
+        s=korg; t=1635758387;
+        bh=ZBXdjgbuxxhQ2y/2usIrvWYhAoIhT9+fazOOChFGWL4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0cmwwbHlcivGWQKiZBRN2dONGKl4HlFTxxVlPdpxvMDi2k18IkXHXQCHlB1pVKTsR
-         ry1hQ4ROumvnMzSTUftxpNHvlNmCXqpVsOGde4hV4tgOVR9xSROf6YgwsGZHiZgJ8Y
-         PFiLCD6hGnBeMjjS8EdzJnQt6sD8qpybNe0gaLRQ=
+        b=Hc27AUUqXYGw/+kiKYS3QMvzzEqeVOdL6ruSpUAuqYxiTDZVjOur4UCOZnA2QubIc
+         JOzPOLot+Qz0CaXDHXm+NW1ey0u8sod0FeigSjSx3Hu4k54aPT2SdSXeyky58Vs46W
+         kQHjHIybCjlNIy2pHlwNS9xo4arO2cBXD7bMVBzQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Wang Hai <wanghai38@huawei.com>,
-        Johan Hovold <johan@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 09/51] usbnet: fix error return code in usbnet_probe()
+        stable@vger.kernel.org,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Song Liu <songliubraving@fb.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+Subject: [PATCH 4.9 04/20] powerpc/bpf: Fix BPF_MOD when imm == 1
 Date:   Mon,  1 Nov 2021 10:17:13 +0100
-Message-Id: <20211101082502.153933817@linuxfoundation.org>
+Message-Id: <20211101082445.140331093@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082500.203657870@linuxfoundation.org>
-References: <20211101082500.203657870@linuxfoundation.org>
+In-Reply-To: <20211101082444.133899096@linuxfoundation.org>
+References: <20211101082444.133899096@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,32 +44,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang Hai <wanghai38@huawei.com>
+From: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
 
-commit 6f7c88691191e6c52ef2543d6f1da8d360b27a24 upstream.
+commit 8bbc9d822421d9ac8ff9ed26a3713c9afc69d6c8 upstream.
 
-Return error code if usb_maxpacket() returns 0 in usbnet_probe()
+Only ignore the operation if dividing by 1.
 
-Fixes: 397430b50a36 ("usbnet: sanity check for maxpacket")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
-Reviewed-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20211026124015.3025136-1-wanghai38@huawei.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: 156d0e290e969c ("powerpc/ebpf/jit: Implement JIT compiler for extended BPF")
+Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+Tested-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Acked-by: Song Liu <songliubraving@fb.com>
+Acked-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/c674ca18c3046885602caebb326213731c675d06.1633464148.git.naveen.n.rao@linux.vnet.ibm.com
+[cascardo: use PPC_LI instead of EMIT(PPC_RAW_LI)]
+Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/usb/usbnet.c |    1 +
- 1 file changed, 1 insertion(+)
+ arch/powerpc/net/bpf_jit_comp64.c |   10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
---- a/drivers/net/usb/usbnet.c
-+++ b/drivers/net/usb/usbnet.c
-@@ -1775,6 +1775,7 @@ usbnet_probe (struct usb_interface *udev
- 	dev->maxpacket = usb_maxpacket (dev->udev, dev->out, 1);
- 	if (dev->maxpacket == 0) {
- 		/* that is a broken device */
-+		status = -ENODEV;
- 		goto out4;
- 	}
+--- a/arch/powerpc/net/bpf_jit_comp64.c
++++ b/arch/powerpc/net/bpf_jit_comp64.c
+@@ -430,8 +430,14 @@ static int bpf_jit_build_body(struct bpf
+ 		case BPF_ALU64 | BPF_DIV | BPF_K: /* dst /= imm */
+ 			if (imm == 0)
+ 				return -EINVAL;
+-			else if (imm == 1)
+-				goto bpf_alu32_trunc;
++			if (imm == 1) {
++				if (BPF_OP(code) == BPF_DIV) {
++					goto bpf_alu32_trunc;
++				} else {
++					PPC_LI(dst_reg, 0);
++					break;
++				}
++			}
  
+ 			PPC_LI32(b2p[TMP_REG_1], imm);
+ 			switch (BPF_CLASS(code)) {
 
 
