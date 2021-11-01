@@ -2,130 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9173C44122B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 03:28:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EB35441230
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 03:35:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230400AbhKACa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 22:30:58 -0400
-Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:41356
-        "HELO zg8tmty1ljiyny4xntqumjca.icoremail.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with SMTP id S230222AbhKACa5 (ORCPT
+        id S230321AbhKAChd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 22:37:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38076 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230222AbhKACh3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 22:30:57 -0400
-Received: from [10.8.148.37] (unknown [59.61.78.138])
-        by app2 (Coremail) with SMTP id 4zNnewDn72PBUH9hlncAAA--.123S2;
-        Mon, 01 Nov 2021 10:28:17 +0800 (CST)
-Message-ID: <e33c0951-f882-8b2d-a86f-eb9342334b1b@wangsu.com>
-Date:   Mon, 1 Nov 2021 10:28:17 +0800
+        Sun, 31 Oct 2021 22:37:29 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5CEAC061714;
+        Sun, 31 Oct 2021 19:34:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=YVq1DQ33vlTfqQwlUVtldRtum7VTJ4Qf1wo2xOWYsbs=; b=gRMXvXUxYDh5PXfGY5PmoKkYNO
+        XFLFQoynUl1o2KWv51EHkiPEdljCH01lPjc7+M/bKuM+7+9IMZ5jSaJ1MGCpifQEIS4Qcd4dJc1Wa
+        8dO9Kqrf/Di+5EBltPtFcL+YtbwV3OLvk6Xd+aK2ECFw7/Gdg6aHCwAbztH3lXoJa/BeCs6oUo293
+        PDjr1JQ8F7sTCQXgKQMS9nw7lOnA4+04vMjmHw0d21F6Bmw25BeerzvqDabqxyqC/dw8tJs3qOPJ5
+        esyiwcXYwn4sfB97InYFLCCmiTcpnwhbut8Sq53K97IVVQd9qJb66Xm71VeQJPsOdp6iE9VKRW5XR
+        oQBeZ3uw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mhN6c-003SWk-T1; Mon, 01 Nov 2021 02:31:47 +0000
+Date:   Mon, 1 Nov 2021 02:31:26 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Pavel Begunkov <asml.silence@gmail.com>
+Cc:     Dave Chinner <david@fromorbit.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jane Chu <jane.chu@oracle.com>,
+        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
+        "vishal.l.verma@intel.com" <vishal.l.verma@intel.com>,
+        "dave.jiang@intel.com" <dave.jiang@intel.com>,
+        "agk@redhat.com" <agk@redhat.com>,
+        "snitzer@redhat.com" <snitzer@redhat.com>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        "ira.weiny@intel.com" <ira.weiny@intel.com>,
+        "vgoyal@redhat.com" <vgoyal@redhat.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
+Subject: Re: [dm-devel] [PATCH 0/6] dax poison recovery with
+ RWF_RECOVERY_DATA flag
+Message-ID: <YX9RftrcBNwgyCXc@casper.infradead.org>
+References: <YXFPfEGjoUaajjL4@infradead.org>
+ <e89a2b17-3f03-a43e-e0b9-5d2693c3b089@oracle.com>
+ <YXJN4s1HC/Y+KKg1@infradead.org>
+ <2102a2e6-c543-2557-28a2-8b0bdc470855@oracle.com>
+ <YXj2lwrxRxHdr4hb@infradead.org>
+ <20211028002451.GB2237511@magnolia>
+ <20211028225955.GA449541@dread.disaster.area>
+ <22255117-52de-4b2d-822e-b4bc50bbc52b@gmail.com>
+ <20211029223233.GB449541@dread.disaster.area>
+ <1a76314d-9b62-82a3-2787-96e6b83720fc@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH] bcache: kill macro MAX_CACHES_PER_SET
-Content-Language: en-US
-To:     Coly Li <colyli@suse.de>
-Cc:     linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kent.overstreet@gmail.com
-References: <20211029125958.95298-1-linf@wangsu.com>
- <9516418b-27d0-d84b-d9cb-be72d5e8f9ce@suse.de>
-From:   Lin Feng <linf@wangsu.com>
-In-Reply-To: <9516418b-27d0-d84b-d9cb-be72d5e8f9ce@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: 4zNnewDn72PBUH9hlncAAA--.123S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxCry7GFWDur43XF4kJryUtrb_yoW5Aw15pF
-        WDZFySyr4kZFyUCrykZw1rur1Fy34YkFy8Was3Za40vFy2yFy8ZFW7Kan8Ar1rXryrJF4f
-        tr4UtrnxWa4DtaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnUUvcSsGvfC2KfnxnUUI43ZEXa7xR_UUUUUUUUU==
-X-CM-SenderInfo: holqwq5zdqw23xof0z/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1a76314d-9b62-82a3-2787-96e6b83720fc@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Coly,
+On Sun, Oct 31, 2021 at 01:19:48PM +0000, Pavel Begunkov wrote:
+> On 10/29/21 23:32, Dave Chinner wrote:
+> > Yup, you just described RWF_HIPRI! Seriously, Pavel, did you read
+> > past this?  I'll quote what I said again, because I've already
+> > addressed this argument to point out how silly it is:
+> 
+> And you almost got to the initial point in your penult paragraph. A
+> single if for a single flag is not an issue, what is the problem is
+> when there are dozens of them and the overhead for it is not isolated,
+> so the kernel has to jump through dozens of those.
 
-OK, I will send another patch but keep MAX_CACHES_PER_SET, thanks :)
+This argument can be used to reject *ANY* new feature.  For example, by
+using your argument, we should have rejected the addition of IOCB_WAITQ
+because it penalises the vast majority of IOs which do not use it.
 
-linfeng
+But we didn't.  Because we see that while it may not be of use to US
+today, it's a generally useful feature for Linux to support.  You say
+yourself that this feature doesn't slow down your use case, so why are
+you spending so much time and energy annoying the people who actually
+want to use it?
 
-On 10/30/21 23:19, Coly Li wrote:
-> On 10/29/21 8:59 PM, Lin Feng wrote:
->> Commit 697e23495c94f0380c1ed8b11f830b92b64c99ea
->> ("bcache: explicitly make cache_set only have single cache")
->> explicitly makes a cache_set only have single cache and based on the
->> fact that historily only one cache is ever used in the cache set, so
->> macro defination for MAX_CACHES_PER_SET as 8 is misleading now.
->>
->> In fact it should be redefined to 1 and valid number fo sb.nr_in_set
->> should be 1 and sb.nr_this_dev should always be 0.
->>
->> But jset's disk layout replies on MAX_CACHES_PER_SET(8), so replace it
->> with a hardcoded number 8.
->>
->> Signed-off-by: Lin Feng <linf@wangsu.com>
->> ---
->>    drivers/md/bcache/bcache.h  | 2 +-
->>    drivers/md/bcache/super.c   | 4 +---
->>    include/uapi/linux/bcache.h | 4 ++--
->>    3 files changed, 4 insertions(+), 6 deletions(-)
->>
->> diff --git a/drivers/md/bcache/bcache.h b/drivers/md/bcache/bcache.h
->> index 5fc989a6d452..a4a410a178c0 100644
->> --- a/drivers/md/bcache/bcache.h
->> +++ b/drivers/md/bcache/bcache.h
->> @@ -833,7 +833,7 @@ static inline uint8_t ptr_stale(struct cache_set *c, const struct bkey *k,
->>    static inline bool ptr_available(struct cache_set *c, const struct bkey *k,
->>    				 unsigned int i)
->>    {
->> -	return (PTR_DEV(k, i) < MAX_CACHES_PER_SET) && c->cache;
->> +	return (PTR_DEV(k, i) == 0) && c->cache;
->>    }
->>    
->>    /* Btree key macros */
->> diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
->> index f2874c77ff79..2253044c9289 100644
->> --- a/drivers/md/bcache/super.c
->> +++ b/drivers/md/bcache/super.c
->> @@ -140,9 +140,7 @@ static const char *read_super_common(struct cache_sb *sb,  struct block_device *
->>    		goto err;
->>    
->>    	err = "Bad cache device number in set";
->> -	if (!sb->nr_in_set ||
->> -	    sb->nr_in_set <= sb->nr_this_dev ||
->> -	    sb->nr_in_set > MAX_CACHES_PER_SET)
->> +	if (sb->nr_in_set != 1 || sb->nr_this_dev != 0)
->>    		goto err;
->>    
->>    	err = "Journal buckets not sequential";
-> 
-> Hi Feng,
-> 
-> The above changes are fine to me. But let's keep the below part as what
-> it is at this moment.
-> 
-> Thanks.
-> 
-> Coly Li
-> 
->> diff --git a/include/uapi/linux/bcache.h b/include/uapi/linux/bcache.h
->> index cf7399f03b71..4beb3e7826ca 100644
->> --- a/include/uapi/linux/bcache.h
->> +++ b/include/uapi/linux/bcache.h
->> @@ -155,7 +155,6 @@ static inline struct bkey *bkey_idx(const struct bkey *k, unsigned int nr_keys)
->>    #define SB_LABEL_SIZE			32
->>    #define SB_JOURNAL_BUCKETS		256U
->>    /* SB_JOURNAL_BUCKETS must be divisible by BITS_PER_LONG */
->> -#define MAX_CACHES_PER_SET		8
->>    
->>    #define BDEV_DATA_START_DEFAULT		16	/* sectors */
->>    
->> @@ -356,7 +355,8 @@ struct jset {
->>    	__u16			btree_level;
->>    	__u16			pad[3];
->>    
->> -	__u64			prio_bucket[MAX_CACHES_PER_SET];
->> +	/* only a single cache is available */
->> +	__u64			prio_bucket[8];
->>    
->>    	union {
->>    		struct bkey	start[0];
-
+Seriously.  Stop arguing about something you actually don't care about.
+You're just making Linux less fun to work on.
