@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CBCF441897
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:48:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86C3C44167C
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:24:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233608AbhKAJtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:49:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47850 "EHLO mail.kernel.org"
+        id S232568AbhKAJ0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:26:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234425AbhKAJon (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:44:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BE16761166;
-        Mon,  1 Nov 2021 09:29:41 +0000 (UTC)
+        id S232484AbhKAJX3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:23:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5AFB360FC4;
+        Mon,  1 Nov 2021 09:20:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758982;
-        bh=se536qyWgd+Saudg8JzNo5S9uEwyH7QnCMCSpXHPrBI=;
+        s=korg; t=1635758445;
+        bh=UN6jZ/sR6iiSrtrleUZvBSrd49B7j6Oi8n9bGIqgCCM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rM04TCzoku04fhO5DfFKf2Dt37BNPgkbWYgy9ucu4RSefpFqHkMaW4TDIANoL6u32
-         x4t0aVE5yzYc+UrieTImlkKTYetYBT/As7TqNFzX28vEDIh0567DtSF+ShN/w05TWQ
-         IUNAohn6Nv01jKfcG0naXYeKlgmn+6y5mbkJrmsk=
+        b=Nd/Rl5Yk12hKqQ+aA6bRzzbIxy7hmZK1BjrX+D1YQKN/BsoSPCZf3Z0v7TkmtsPrl
+         ZGyY67JTapFOB+OrirJIfZv/srix/n5Mnd9by+tAOVdniYaTxk4a9Zfs/9thBxISQm
+         dHZVMgpcESm0dbKA7URj5rAMIEV0vqnMfopJn3AI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Ilja Van Sprundel <ivansprundel@ioactive.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Subject: [PATCH 5.14 063/125] IB/qib: Protect from buffer overflow in struct qib_user_sdma_pkt fields
-Date:   Mon,  1 Nov 2021 10:17:16 +0100
-Message-Id: <20211101082545.097211749@linuxfoundation.org>
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Nicolas Pitre <nico@linaro.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Stefan Agner <stefan@agner.ch>,
+        Russell King <rmk+kernel@armlinux.org.uk>
+Subject: [PATCH 4.14 05/25] ARM: 8819/1: Remove -p from LDFLAGS
+Date:   Mon,  1 Nov 2021 10:17:17 +0100
+Message-Id: <20211101082448.269953065@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082533.618411490@linuxfoundation.org>
-References: <20211101082533.618411490@linuxfoundation.org>
+In-Reply-To: <20211101082447.070493993@linuxfoundation.org>
+References: <20211101082447.070493993@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,115 +44,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+From: Nathan Chancellor <natechancellor@gmail.com>
 
-commit d39bf40e55e666b5905fdbd46a0dced030ce87be upstream.
+commit 091bb549f7722723b284f63ac665e2aedcf9dec9 upstream.
 
-Overflowing either addrlimit or bytes_togo can allow userspace to trigger
-a buffer overflow of kernel memory. Check for overflows in all the places
-doing math on user controlled buffers.
+This option is not supported by lld:
 
-Fixes: f931551bafe1 ("IB/qib: Add new qib driver for QLogic PCIe InfiniBand adapters")
-Link: https://lore.kernel.org/r/20211012175519.7298.77738.stgit@awfm-01.cornelisnetworks.com
-Reported-by: Ilja Van Sprundel <ivansprundel@ioactive.com>
-Reviewed-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Signed-off-by: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
-Signed-off-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+    ld.lld: error: unknown argument: -p
+
+This has been a no-op in binutils since 2004 (see commit dea514f51da1 in
+that tree). Given that the lowest officially supported of binutils for
+the kernel is 2.20, which was released in 2009, nobody needs this flag
+around so just remove it. Commit 1a381d4a0a9a ("arm64: remove no-op -p
+linker flag") did the same for arm64.
+
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+Acked-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Acked-by: Nicolas Pitre <nico@linaro.org>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Reviewed-by: Stefan Agner <stefan@agner.ch>
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/infiniband/hw/qib/qib_user_sdma.c |   33 ++++++++++++++++++++----------
- 1 file changed, 23 insertions(+), 10 deletions(-)
+ arch/arm/Makefile                 |    2 +-
+ arch/arm/boot/bootp/Makefile      |    2 +-
+ arch/arm/boot/compressed/Makefile |    2 --
+ 3 files changed, 2 insertions(+), 4 deletions(-)
 
---- a/drivers/infiniband/hw/qib/qib_user_sdma.c
-+++ b/drivers/infiniband/hw/qib/qib_user_sdma.c
-@@ -602,7 +602,7 @@ done:
- /*
-  * How many pages in this iovec element?
-  */
--static int qib_user_sdma_num_pages(const struct iovec *iov)
-+static size_t qib_user_sdma_num_pages(const struct iovec *iov)
- {
- 	const unsigned long addr  = (unsigned long) iov->iov_base;
- 	const unsigned long  len  = iov->iov_len;
-@@ -658,7 +658,7 @@ static void qib_user_sdma_free_pkt_frag(
- static int qib_user_sdma_pin_pages(const struct qib_devdata *dd,
- 				   struct qib_user_sdma_queue *pq,
- 				   struct qib_user_sdma_pkt *pkt,
--				   unsigned long addr, int tlen, int npages)
-+				   unsigned long addr, int tlen, size_t npages)
- {
- 	struct page *pages[8];
- 	int i, j;
-@@ -722,7 +722,7 @@ static int qib_user_sdma_pin_pkt(const s
- 	unsigned long idx;
+--- a/arch/arm/Makefile
++++ b/arch/arm/Makefile
+@@ -13,7 +13,7 @@
+ # Ensure linker flags are correct
+ LDFLAGS		:=
  
- 	for (idx = 0; idx < niov; idx++) {
--		const int npages = qib_user_sdma_num_pages(iov + idx);
-+		const size_t npages = qib_user_sdma_num_pages(iov + idx);
- 		const unsigned long addr = (unsigned long) iov[idx].iov_base;
+-LDFLAGS_vmlinux	:=-p --no-undefined -X --pic-veneer
++LDFLAGS_vmlinux	:= --no-undefined -X --pic-veneer
+ ifeq ($(CONFIG_CPU_ENDIAN_BE8),y)
+ LDFLAGS_vmlinux	+= --be8
+ LDFLAGS_MODULE	+= --be8
+--- a/arch/arm/boot/bootp/Makefile
++++ b/arch/arm/boot/bootp/Makefile
+@@ -8,7 +8,7 @@
  
- 		ret = qib_user_sdma_pin_pages(dd, pq, pkt, addr,
-@@ -824,8 +824,8 @@ static int qib_user_sdma_queue_pkts(cons
- 		unsigned pktnw;
- 		unsigned pktnwc;
- 		int nfrags = 0;
--		int npages = 0;
--		int bytes_togo = 0;
-+		size_t npages = 0;
-+		size_t bytes_togo = 0;
- 		int tiddma = 0;
- 		int cfur;
+ GCOV_PROFILE	:= n
  
-@@ -885,7 +885,11 @@ static int qib_user_sdma_queue_pkts(cons
- 
- 			npages += qib_user_sdma_num_pages(&iov[idx]);
- 
--			bytes_togo += slen;
-+			if (check_add_overflow(bytes_togo, slen, &bytes_togo) ||
-+			    bytes_togo > type_max(typeof(pkt->bytes_togo))) {
-+				ret = -EINVAL;
-+				goto free_pbc;
-+			}
- 			pktnwc += slen >> 2;
- 			idx++;
- 			nfrags++;
-@@ -904,8 +908,7 @@ static int qib_user_sdma_queue_pkts(cons
- 		}
- 
- 		if (frag_size) {
--			int tidsmsize, n;
--			size_t pktsize;
-+			size_t tidsmsize, n, pktsize, sz, addrlimit;
- 
- 			n = npages*((2*PAGE_SIZE/frag_size)+1);
- 			pktsize = struct_size(pkt, addr, n);
-@@ -923,14 +926,24 @@ static int qib_user_sdma_queue_pkts(cons
- 			else
- 				tidsmsize = 0;
- 
--			pkt = kmalloc(pktsize+tidsmsize, GFP_KERNEL);
-+			if (check_add_overflow(pktsize, tidsmsize, &sz)) {
-+				ret = -EINVAL;
-+				goto free_pbc;
-+			}
-+			pkt = kmalloc(sz, GFP_KERNEL);
- 			if (!pkt) {
- 				ret = -ENOMEM;
- 				goto free_pbc;
- 			}
- 			pkt->largepkt = 1;
- 			pkt->frag_size = frag_size;
--			pkt->addrlimit = n + ARRAY_SIZE(pkt->addr);
-+			if (check_add_overflow(n, ARRAY_SIZE(pkt->addr),
-+					       &addrlimit) ||
-+			    addrlimit > type_max(typeof(pkt->addrlimit))) {
-+				ret = -EINVAL;
-+				goto free_pbc;
-+			}
-+			pkt->addrlimit = addrlimit;
- 
- 			if (tiddma) {
- 				char *tidsm = (char *)pkt + pktsize;
+-LDFLAGS_bootp	:=-p --no-undefined -X \
++LDFLAGS_bootp	:= --no-undefined -X \
+ 		 --defsym initrd_phys=$(INITRD_PHYS) \
+ 		 --defsym params_phys=$(PARAMS_PHYS) -T
+ AFLAGS_initrd.o :=-DINITRD=\"$(INITRD)\"
+--- a/arch/arm/boot/compressed/Makefile
++++ b/arch/arm/boot/compressed/Makefile
+@@ -129,8 +129,6 @@ endif
+ ifeq ($(CONFIG_CPU_ENDIAN_BE8),y)
+ LDFLAGS_vmlinux += --be8
+ endif
+-# ?
+-LDFLAGS_vmlinux += -p
+ # Report unresolved symbol references
+ LDFLAGS_vmlinux += --no-undefined
+ # Delete all temporary local symbols
 
 
