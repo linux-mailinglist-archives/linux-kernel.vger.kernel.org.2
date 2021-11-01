@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D79A4418F0
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:51:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 883EC441627
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:21:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234904AbhKAJxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:53:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51098 "EHLO mail.kernel.org"
+        id S232149AbhKAJXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:23:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58250 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234738AbhKAJss (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:48:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C37E611CC;
-        Mon,  1 Nov 2021 09:31:26 +0000 (UTC)
+        id S232040AbhKAJV6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:21:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 71357610E5;
+        Mon,  1 Nov 2021 09:19:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635759087;
-        bh=oP70mvvBFpm42lYoA/4Wu789MTu/AJSU+1ote24pc8g=;
+        s=korg; t=1635758359;
+        bh=o9jBs3v16d2EnvhoyfSgE+PqqBJiZQ/gOXD3hrlgRmA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qoN7BupUPKKbqvobFGbVjVDjVVXwdF66sfYTemxzy5H1h8yM9wiLpbXfk71zUsgQU
-         bZKqXpHPfQPhpcQWrWGAppFh1tAM9WOBYKvz89wiJHLXVOfk4to3BNfVy6DjLOiLzm
-         apuAMYhT0VbY19jz0myInfLSm1VNi1Bps+80/Sdc=
+        b=H7Zn85SAmFAaJYgR3kpF6hWLAYcIBAkNg+fF/HKNiAcPAQpLYnlR2+PkJrlmVHUrz
+         wTGiJNTu67jxHImzB0anIC0Tjya6i0yOzQdfMIndUhZWdegHkkSv8JO0oU8DeoNnQB
+         z+1LLAMxn4oO2UTXmE1p4U6AcsD5iZG8v45Lo1+Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Varun Prakash <varun@chelsio.com>,
-        Keith Busch <kbusch@kernel.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 5.14 067/125] nvme-tcp: fix possible req->offset corruption
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 4.9 11/20] mmc: vub300: fix control-message timeouts
 Date:   Mon,  1 Nov 2021 10:17:20 +0100
-Message-Id: <20211101082545.833634434@linuxfoundation.org>
+Message-Id: <20211101082446.593691986@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082533.618411490@linuxfoundation.org>
-References: <20211101082533.618411490@linuxfoundation.org>
+In-Reply-To: <20211101082444.133899096@linuxfoundation.org>
+References: <20211101082444.133899096@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,54 +39,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Varun Prakash <varun@chelsio.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit ce7723e9cdae4eb3030da082876580f4b2dc0861 upstream.
+commit 8c8171929116cc23f74743d99251eedadf62341a upstream.
 
-With commit db5ad6b7f8cd ("nvme-tcp: try to send request in queue_rq
-context") r2t and response PDU can get processed while send function
-is executing.
+USB control-message timeouts are specified in milliseconds and should
+specifically not vary with CONFIG_HZ.
 
-Current data digest send code uses req->offset after kernel_sendmsg(),
-this creates a race condition where req->offset gets reset before it
-is used in send function.
-
-This can happen in two cases -
-1. Target sends r2t PDU which resets req->offset.
-2. Target send response PDU which completes the req and then req is
-   used for a new command, nvme_tcp_setup_cmd_pdu() resets req->offset.
-
-Fix this by storing req->offset in a local variable and using
-this local variable after kernel_sendmsg().
-
-Fixes: db5ad6b7f8cd ("nvme-tcp: try to send request in queue_rq context")
-Signed-off-by: Varun Prakash <varun@chelsio.com>
-Reviewed-by: Keith Busch <kbusch@kernel.org>
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Fixes: 88095e7b473a ("mmc: Add new VUB300 USB-to-SD/SDIO/MMC driver")
+Cc: stable@vger.kernel.org      # 3.0
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20211025115608.5287-1-johan@kernel.org
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/nvme/host/tcp.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/mmc/host/vub300.c |   18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
---- a/drivers/nvme/host/tcp.c
-+++ b/drivers/nvme/host/tcp.c
-@@ -1037,6 +1037,7 @@ static int nvme_tcp_try_send_data_pdu(st
- static int nvme_tcp_try_send_ddgst(struct nvme_tcp_request *req)
- {
- 	struct nvme_tcp_queue *queue = req->queue;
-+	size_t offset = req->offset;
- 	int ret;
- 	struct msghdr msg = { .msg_flags = MSG_DONTWAIT };
- 	struct kvec iov = {
-@@ -1053,7 +1054,7 @@ static int nvme_tcp_try_send_ddgst(struc
- 	if (unlikely(ret <= 0))
- 		return ret;
- 
--	if (req->offset + ret == NVME_TCP_DIGEST_LENGTH) {
-+	if (offset + ret == NVME_TCP_DIGEST_LENGTH) {
- 		nvme_tcp_done_send_req(queue);
- 		return 1;
- 	}
+--- a/drivers/mmc/host/vub300.c
++++ b/drivers/mmc/host/vub300.c
+@@ -579,7 +579,7 @@ static void check_vub300_port_status(str
+ 				GET_SYSTEM_PORT_STATUS,
+ 				USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
+ 				0x0000, 0x0000, &vub300->system_port_status,
+-				sizeof(vub300->system_port_status), HZ);
++				sizeof(vub300->system_port_status), 1000);
+ 	if (sizeof(vub300->system_port_status) == retval)
+ 		new_system_port_status(vub300);
+ }
+@@ -1245,7 +1245,7 @@ static void __download_offload_pseudocod
+ 						SET_INTERRUPT_PSEUDOCODE,
+ 						USB_DIR_OUT | USB_TYPE_VENDOR |
+ 						USB_RECIP_DEVICE, 0x0000, 0x0000,
+-						xfer_buffer, xfer_length, HZ);
++						xfer_buffer, xfer_length, 1000);
+ 			kfree(xfer_buffer);
+ 			if (retval < 0) {
+ 				strncpy(vub300->vub_name,
+@@ -1292,7 +1292,7 @@ static void __download_offload_pseudocod
+ 						SET_TRANSFER_PSEUDOCODE,
+ 						USB_DIR_OUT | USB_TYPE_VENDOR |
+ 						USB_RECIP_DEVICE, 0x0000, 0x0000,
+-						xfer_buffer, xfer_length, HZ);
++						xfer_buffer, xfer_length, 1000);
+ 			kfree(xfer_buffer);
+ 			if (retval < 0) {
+ 				strncpy(vub300->vub_name,
+@@ -1998,7 +1998,7 @@ static void __set_clock_speed(struct vub
+ 		usb_control_msg(vub300->udev, usb_sndctrlpipe(vub300->udev, 0),
+ 				SET_CLOCK_SPEED,
+ 				USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
+-				0x00, 0x00, buf, buf_array_size, HZ);
++				0x00, 0x00, buf, buf_array_size, 1000);
+ 	if (retval != 8) {
+ 		dev_err(&vub300->udev->dev, "SET_CLOCK_SPEED"
+ 			" %dkHz failed with retval=%d\n", kHzClock, retval);
+@@ -2020,14 +2020,14 @@ static void vub300_mmc_set_ios(struct mm
+ 		usb_control_msg(vub300->udev, usb_sndctrlpipe(vub300->udev, 0),
+ 				SET_SD_POWER,
+ 				USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
+-				0x0000, 0x0000, NULL, 0, HZ);
++				0x0000, 0x0000, NULL, 0, 1000);
+ 		/* must wait for the VUB300 u-proc to boot up */
+ 		msleep(600);
+ 	} else if ((ios->power_mode == MMC_POWER_UP) && !vub300->card_powered) {
+ 		usb_control_msg(vub300->udev, usb_sndctrlpipe(vub300->udev, 0),
+ 				SET_SD_POWER,
+ 				USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
+-				0x0001, 0x0000, NULL, 0, HZ);
++				0x0001, 0x0000, NULL, 0, 1000);
+ 		msleep(600);
+ 		vub300->card_powered = 1;
+ 	} else if (ios->power_mode == MMC_POWER_ON) {
+@@ -2288,14 +2288,14 @@ static int vub300_probe(struct usb_inter
+ 				GET_HC_INF0,
+ 				USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
+ 				0x0000, 0x0000, &vub300->hc_info,
+-				sizeof(vub300->hc_info), HZ);
++				sizeof(vub300->hc_info), 1000);
+ 	if (retval < 0)
+ 		goto error5;
+ 	retval =
+ 		usb_control_msg(vub300->udev, usb_sndctrlpipe(vub300->udev, 0),
+ 				SET_ROM_WAIT_STATES,
+ 				USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
+-				firmware_rom_wait_states, 0x0000, NULL, 0, HZ);
++				firmware_rom_wait_states, 0x0000, NULL, 0, 1000);
+ 	if (retval < 0)
+ 		goto error5;
+ 	dev_info(&vub300->udev->dev,
+@@ -2310,7 +2310,7 @@ static int vub300_probe(struct usb_inter
+ 				GET_SYSTEM_PORT_STATUS,
+ 				USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
+ 				0x0000, 0x0000, &vub300->system_port_status,
+-				sizeof(vub300->system_port_status), HZ);
++				sizeof(vub300->system_port_status), 1000);
+ 	if (retval < 0) {
+ 		goto error4;
+ 	} else if (sizeof(vub300->system_port_status) == retval) {
 
 
