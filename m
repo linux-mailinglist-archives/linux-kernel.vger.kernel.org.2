@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E28D4417E6
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:39:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA836441731
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:32:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233987AbhKAJlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:41:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43532 "EHLO mail.kernel.org"
+        id S232320AbhKAJeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:34:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37168 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233630AbhKAJho (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:37:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9AD7961350;
-        Mon,  1 Nov 2021 09:26:30 +0000 (UTC)
+        id S232829AbhKAJaX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:30:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 206FD61221;
+        Mon,  1 Nov 2021 09:23:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758791;
-        bh=iSymP04eayXhdaeGBYoXyAWFkq35uLJ1B/yaG+QOIgE=;
+        s=korg; t=1635758632;
+        bh=M8rjZj00TruxZUTpzsonvBIVGc+5pd5B/scd8NR4j5M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WHtgPPp9ayEdVUc0WfnMDGHg/MW4pYPZC0vZHeqD84iCiL0XZ2RxZYQFZlx7NRu6a
-         PO9bGK5/XKEKe3CngCF6qZgHFUMoSz4uZM9tCHbUICv54rV+ilKsRkgYC2xoDx+kpQ
-         nd7sODQui2QFV3Qn/fneqtgmCkFUANYec8bTDM3M=
+        b=YBPvelFh4qBkWO0yP0LGSO5QE+Rt5qIoKOM1E5Cfp9lPheIAB2jxI9z8LTKkyqf2R
+         0/y9QhHbE6kq8VHKUxwUrjDVNAkuDISt3DWR2zJbum5ONVH6KlNz4F+3dm0bPqphRm
+         qwKb2hmawB8aZHbWPKJjBtiAQAx79xpjZIpmdPjY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 60/77] net/tls: Fix flipped sign in async_wait.err assignment
+        stable@vger.kernel.org, Xin Long <lucien.xin@gmail.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 44/51] sctp: add vtag check in sctp_sf_violation
 Date:   Mon,  1 Nov 2021 10:17:48 +0100
-Message-Id: <20211101082524.264945476@linuxfoundation.org>
+Message-Id: <20211101082510.950517587@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082511.254155853@linuxfoundation.org>
-References: <20211101082511.254155853@linuxfoundation.org>
+In-Reply-To: <20211101082500.203657870@linuxfoundation.org>
+References: <20211101082500.203657870@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,32 +41,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Jordan <daniel.m.jordan@oracle.com>
+From: Xin Long <lucien.xin@gmail.com>
 
-commit 1d9d6fd21ad4a28b16ed9ee5432ae738b9dc58aa upstream.
+[ Upstream commit aa0f697e45286a6b5f0ceca9418acf54b9099d99 ]
 
-sk->sk_err contains a positive number, yet async_wait.err wants the
-opposite.  Fix the missed sign flip, which Jakub caught by inspection.
+sctp_sf_violation() is called when processing HEARTBEAT_ACK chunk
+in cookie_wait state, and some other places are also using it.
 
-Fixes: a42055e8d2c3 ("net/tls: Add support for async encryption of records for performance")
-Suggested-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+The vtag in the chunk's sctphdr should be verified, otherwise, as
+later in chunk length check, it may send abort with the existent
+asoc's vtag, which can be exploited by one to cook a malicious
+chunk to terminate a SCTP asoc.
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Xin Long <lucien.xin@gmail.com>
+Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/tls/tls_sw.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/sctp/sm_statefuns.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/net/tls/tls_sw.c
-+++ b/net/tls/tls_sw.c
-@@ -459,7 +459,7 @@ static void tls_encrypt_done(struct cryp
+diff --git a/net/sctp/sm_statefuns.c b/net/sctp/sm_statefuns.c
+index 1e3f6be5bab9..35701acbed73 100644
+--- a/net/sctp/sm_statefuns.c
++++ b/net/sctp/sm_statefuns.c
+@@ -4549,6 +4549,9 @@ enum sctp_disposition sctp_sf_violation(struct net *net,
+ {
+ 	struct sctp_chunk *chunk = arg;
  
- 		/* If err is already set on socket, return the same code */
- 		if (sk->sk_err) {
--			ctx->async_wait.err = sk->sk_err;
-+			ctx->async_wait.err = -sk->sk_err;
- 		} else {
- 			ctx->async_wait.err = err;
- 			tls_err_abort(sk, err);
++	if (!sctp_vtag_verify(chunk, asoc))
++		return sctp_sf_pdiscard(net, ep, asoc, type, arg, commands);
++
+ 	/* Make sure that the chunk has a valid length. */
+ 	if (!sctp_chunk_length_valid(chunk, sizeof(struct sctp_chunkhdr)))
+ 		return sctp_sf_violation_chunklen(net, ep, asoc, type, arg,
+-- 
+2.33.0
+
 
 
