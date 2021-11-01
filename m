@@ -2,94 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DACA7441977
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 11:07:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7CAB4417B6
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:37:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231320AbhKAKJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 06:09:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232191AbhKAKJf (ORCPT
+        id S232297AbhKAJjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:39:01 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:30890 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233129AbhKAJfu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 06:09:35 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D991FC07B071;
-        Mon,  1 Nov 2021 02:43:44 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id k24so9049050ljg.3;
-        Mon, 01 Nov 2021 02:43:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=/sAaTCsGEvX971H9PZ+79ejrTrHZcLZymIeiO6p1VXA=;
-        b=lJ0bJxp7WNtyStPLrWYIwUwv1Ed0NEWOutm7Sw+Z1z9y1RH5Ub79O+tu1FCMD8sPs3
-         C0smZkIvPtnWFkY6BeYSjBTMPNA2GyRq3LyGuC8ebWPNRHW3o+qh5hgB82uu6/9zOBkk
-         XdeAl0e7ob9pufMR3suXBcdugXRs1I3PlU9sHVyeu4Qv/VZA9/2rY3Wdr3qK5HkIxpyo
-         mJjUZAvOzKyqS5stxGAeANg97zNmC1EJZfg3XqjDa0SHPdinfZ/2CBXyZTdLoFjK/6Qn
-         XSB3Ga7a023CFVr3e0Vc+J6Bml5Bh//PO+mjtWE+IbVJ5mCnPFV15osjol4NwMyaNx5H
-         kUbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=/sAaTCsGEvX971H9PZ+79ejrTrHZcLZymIeiO6p1VXA=;
-        b=C+BDrPIz11bdDnOTBZucjy51NUTcqv4fuPBRNVygy8/P7GXvoG/GCjFrlVVN68+FJj
-         pZneERyOhOlvonRpbCv0ZBzxGIJyxlmabwhGZF1XaYik+OfM43dOBmecqNIX3Sf1ApTP
-         WA4Jp9f2QrTa37L84j1+lpytAvHvzu/bCoGbWUA/rb0/LT8ITTHs9wR0uDVSCuqB5/wo
-         SyF/dRLc1X+Q+wPDkGK+xKzszS+ZH1+0ekpgcalvPqfUILCI3kY5jpp7+2T0QdPWe91b
-         pRRI5FD5vH/RHRkni5UuzPqT4yNNc/mSzMKc/4mKBSDzWAhefjYXFLXLic3kM3jIE1CM
-         zd6Q==
-X-Gm-Message-State: AOAM533A4JyqBv3e+FiWpGwrSs2ftZc2cxMR4bpq92c66QbP++MD1aIt
-        VDJYWk9Ql9o1j282DZsx/YcGNDPbLh9Kpw==
-X-Google-Smtp-Source: ABdhPJxouib5kBa62gnK7ZA4iyJRHHuIlAeP7eh9jIzlBPu8TPxpoMlFicnesFFywK+L784q6RLkxw==
-X-Received: by 2002:a2e:9108:: with SMTP id m8mr30732185ljg.216.1635759823272;
-        Mon, 01 Nov 2021 02:43:43 -0700 (PDT)
-Received: from [192.168.1.11] ([94.103.235.8])
-        by smtp.gmail.com with ESMTPSA id d15sm1336490lfs.210.2021.11.01.02.43.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Nov 2021 02:43:42 -0700 (PDT)
-Message-ID: <ffbaeb72-0f76-fb1e-dde5-6e6bdcce1301@gmail.com>
-Date:   Mon, 1 Nov 2021 12:43:42 +0300
+        Mon, 1 Nov 2021 05:35:50 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HjSQ51QTCzcZyn;
+        Mon,  1 Nov 2021 17:28:29 +0800 (CST)
+Received: from dggpeml500006.china.huawei.com (7.185.36.76) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Mon, 1 Nov 2021 17:33:11 +0800
+Received: from compute.localdomain (10.175.112.70) by
+ dggpeml500006.china.huawei.com (7.185.36.76) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Mon, 1 Nov 2021 17:33:11 +0800
+From:   Zhang Changzhong <zhangchangzhong@huawei.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+CC:     Zhang Changzhong <zhangchangzhong@huawei.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH net] net: phy: fix duplex out of sync problem while changing settings
+Date:   Mon, 1 Nov 2021 17:44:34 +0800
+Message-ID: <1635759875-5927-1-git-send-email-zhangchangzhong@huawei.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: Need help in debugging "memory leak in em28xx_init_dev"
-Content-Language: en-US
-To:     Dongliang Mu <mudongliangabcd@gmail.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-References: <CAD-N9QXsUcczurqq9LdaVjXFZMBSbStynwFJyu0UayDazGe=nw@mail.gmail.com>
- <55f04cb1-18ac-085b-3d35-7a01716fbcbe@gmail.com>
- <CAD-N9QVN7cepUpRu3d-xtr1L3DG90-nLS4gmkjerDZO21F_ejQ@mail.gmail.com>
- <f622f569-25d5-f38e-e9fb-7f07e12c4b7e@gmail.com>
- <CAD-N9QWeGOZdnuRuHVVNzZHWeP3eSHg=tsm+Qn3tqGqACSNbhg@mail.gmail.com>
-From:   Pavel Skripkin <paskripkin@gmail.com>
-In-Reply-To: <CAD-N9QWeGOZdnuRuHVVNzZHWeP3eSHg=tsm+Qn3tqGqACSNbhg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.175.112.70]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500006.china.huawei.com (7.185.36.76)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/1/21 12:41, Dongliang Mu wrote:
->> Hi, Dongliang,
->>
->> Did patch attached to my previous email pass syzbot's reproducer test?
->> Unfortunately, I am not able to test rn :(
-> 
-> Yes, it works. The memory leak does not occur anymore.
-> 
-> But I am crafting another patch based on yours as there is a small
-> issue in the retval and I would like to make the error handling code
-> uniform.
-> 
+Before commit 2bd229df5e2e ("net: phy: remove state PHY_FORCING") if
+phy_ethtool_ksettings_set() is called with autoneg off, phy_start_aneg()
+will set phydev->state to PHY_FORCING, so adjust_link will always be
+called.
 
-Cool! Thank you for confirmation.
+But after that commit, if phy_ethtool_ksettings_set() changes the local
+link from 10Mbps/Half to 10Mbps/Full when the link partner is
+10Mbps/Full, phy_check_link_status() will not trigger the link change,
+because phydev->link and phydev->state has not changed. This will causes
+the duplex of the PHY and MAC to be out of sync.
 
+Fix it by re-adding the PHY_FORCING state to force adjust_link to be
+called in fixed mode.
 
-With regards,
-Pavel Skripkin
+Fixes: 2bd229df5e2e ("net: phy: remove state PHY_FORCING")
+Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+---
+ drivers/net/phy/phy.c | 10 ++++++++--
+ include/linux/phy.h   |  6 ++++++
+ 2 files changed, 14 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/phy/phy.c b/drivers/net/phy/phy.c
+index a3bfb15..b114f15 100644
+--- a/drivers/net/phy/phy.c
++++ b/drivers/net/phy/phy.c
+@@ -49,6 +49,7 @@ static const char *phy_state_to_str(enum phy_state st)
+ 	PHY_STATE_STR(UP)
+ 	PHY_STATE_STR(RUNNING)
+ 	PHY_STATE_STR(NOLINK)
++	PHY_STATE_STR(FORCING)
+ 	PHY_STATE_STR(CABLETEST)
+ 	PHY_STATE_STR(HALTED)
+ 	}
+@@ -724,8 +725,12 @@ static int _phy_start_aneg(struct phy_device *phydev)
+ 	if (err < 0)
+ 		return err;
+ 
+-	if (phy_is_started(phydev))
+-		err = phy_check_link_status(phydev);
++	if (phy_is_started(phydev)) {
++		if (phydev->autoneg == AUTONEG_ENABLE)
++			err = phy_check_link_status(phydev);
++		else
++			phydev->state = PHY_FORCING;
++	}
+ 
+ 	return err;
+ }
+@@ -1120,6 +1125,7 @@ void phy_state_machine(struct work_struct *work)
+ 		needs_aneg = true;
+ 
+ 		break;
++	case PHY_FORCING:
+ 	case PHY_NOLINK:
+ 	case PHY_RUNNING:
+ 		err = phy_check_link_status(phydev);
+diff --git a/include/linux/phy.h b/include/linux/phy.h
+index 736e1d1..e639729 100644
+--- a/include/linux/phy.h
++++ b/include/linux/phy.h
+@@ -446,6 +446,11 @@ struct phy_device *mdiobus_scan(struct mii_bus *bus, int addr);
+  * - irq or timer will set @PHY_NOLINK if link goes down
+  * - phy_stop moves to @PHY_HALTED
+  *
++ * @PHY_FORCING: PHY is being configured with forced settings.
++ * - if link is up, move to @PHY_RUNNING
++ * - if link is down, move to @PHY_NOLINK
++ * - phy_stop moves to @PHY_HALTED
++ *
+  * @PHY_CABLETEST: PHY is performing a cable test. Packet reception/sending
+  * is not expected to work, carrier will be indicated as down. PHY will be
+  * poll once per second, or on interrupt for it current state.
+@@ -463,6 +468,7 @@ enum phy_state {
+ 	PHY_UP,
+ 	PHY_RUNNING,
+ 	PHY_NOLINK,
++	PHY_FORCING,
+ 	PHY_CABLETEST,
+ };
+ 
+-- 
+2.9.5
+
