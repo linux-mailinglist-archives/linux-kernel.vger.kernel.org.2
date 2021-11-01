@@ -2,172 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98BAF441277
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 04:44:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09EDA44127C
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 04:48:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230520AbhKADqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 23:46:43 -0400
-Received: from mga14.intel.com ([192.55.52.115]:42537 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230233AbhKADqm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 23:46:42 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10154"; a="231203934"
-X-IronPort-AV: E=Sophos;i="5.87,198,1631602800"; 
-   d="scan'208";a="231203934"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2021 20:44:09 -0700
-X-IronPort-AV: E=Sophos;i="5.87,198,1631602800"; 
-   d="scan'208";a="449123239"
-Received: from yeqin-desk1.ccr.corp.intel.com (HELO [10.167.226.45]) ([10.255.28.179])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2021 20:44:04 -0700
-Subject: Re: [LKP] Re: [tracing/selftests] cfece71411:
- kernel-selftests.ftrace.event_trigger_-_test_inter-event_histogram_trigger_onchange_action.fail
-To:     Masami Hiramatsu <mhiramat@kernel.org>,
-        "Sang, Oliver" <oliver.sang@intel.com>
-Cc:     Kalesh Singh <kaleshsingh@google.com>,
-        "lkp@lists.01.org" <lkp@lists.01.org>, lkp <lkp@intel.com>,
-        "surenb@google.com" <surenb@google.com>,
-        "hridya@google.com" <hridya@google.com>,
-        "namhyung@kernel.org" <namhyung@kernel.org>,
-        "kernel-team@android.com" <kernel-team@android.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
-References: <20211025200852.3002369-8-kaleshsingh@google.com>
- <20211029064818.GG737@xsang-OptiPlex-9020>
- <20211029210056.6cd7796aea59cec3e9c1d7da@kernel.org>
-From:   Li Zhijian <zhijianx.li@intel.com>
-Message-ID: <4194a7d6-db5c-5efe-debc-3c3121d1ebff@intel.com>
-Date:   Mon, 1 Nov 2021 11:43:58 +0800
+        id S230326AbhKADuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 23:50:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230222AbhKADun (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Oct 2021 23:50:43 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2170BC061714;
+        Sun, 31 Oct 2021 20:48:11 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id v2-20020a05683018c200b0054e3acddd91so23551637ote.8;
+        Sun, 31 Oct 2021 20:48:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=dSMSdJzsSo0hXmRoiI8+pJHJkW+iwLpzQ5iUUQzYzcg=;
+        b=kpzDjCz6aWw7ruDUm2P0xUDUZbzCv4ujV8tBQ+kNfJTj3xXfc/2h20isqd0yR8bGk+
+         slKMEx+ZDRejcG3g2osOcq9QgY+Cf4oUG2u4WTX8/N7rFbtR2jjo+mqUXPjYR9bpth7r
+         10lfxDKY4v/CDDeZyOBcSaeyXzdITuA194RW6Seg+SRdtmLX1jNEW74xKGGHTOT1IpJA
+         yodA5PhxvU20m5yRMFt5hjJ24//dfRnU9i6uM13VDuBoNrB4b+CR5zwpZ/+bALv8cQsj
+         TNTO1ktl4eXVu8JMKiZHn2/If11d2hgSV5zmfqyiv+ConLAVSvsEezLPUBsAepjmeLQd
+         SAYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=dSMSdJzsSo0hXmRoiI8+pJHJkW+iwLpzQ5iUUQzYzcg=;
+        b=BiT9pb4YP+3md7EMYm6UrivEw9br6/adDzQU4lF2DsL+rWMEre2VZF0GT+Bfv3kS9W
+         kXJym3H9RvmMPSmIBUmfFbojCBtkVZ7eH77zps6GwKh0/LFivsXaxXlE0pkJQ1zrsgk+
+         GucwUm0xaIcmuFppcmDAgsQenguqrNieg0n6E20uXjWLhDUETQ/XI1lEiJ+vC5PMOog9
+         walFIoCjyQBUFzXQWhRVDzmrFKJLIGOMzYrKefeO+FW82Rw+bRmKEkp9pRPW3G/H7goq
+         CJLd8IQicuruyfbOJC7mKEkYvyHwkJLlFuUe5+3/MHdAxxJLV7TLAUfk4nsbi1nqJflm
+         G3lg==
+X-Gm-Message-State: AOAM531z2DfmfaOUym4JsNt0MtvSD7Aej5EeoN8E/qiKGUxQkFDD4wGE
+        NO4aC71RzGNnxl0CnXuiUxAVbiXZ9jU=
+X-Google-Smtp-Source: ABdhPJy8ZqxMRV8FgxBwfMiNcet12Kj3O0DoVaiMt7WfaidrfQsSt8y9GB41WVsWHj1MLcVOMMhwZg==
+X-Received: by 2002:a05:6830:43aa:: with SMTP id s42mr1510744otv.13.1635738490389;
+        Sun, 31 Oct 2021 20:48:10 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id r23sm1384074ooh.44.2021.10.31.20.48.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 31 Oct 2021 20:48:09 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH v3 3/3] hwmon: Driver for Texas Instruments INA238
+To:     Nathan Rossi <nathan@nathanrossi.com>
+Cc:     linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Nathan Rossi <nathan.rossi@digi.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Jonathan Corbet <corbet@lwn.net>
+References: <20211028081030.719265-0-nathan@nathanrossi.com>
+ <20211028081030.719265-3-nathan@nathanrossi.com>
+ <7b6764bf-4978-60ec-b1e6-8d59077c3023@roeck-us.net>
+ <CA+aJhH1aGJXwYSCU8RC275G5=qGLyZRK94g9ic24wxKuRGCwEA@mail.gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <43c17bba-d4bd-1f9d-5034-1f5a9279d751@roeck-us.net>
+Date:   Sun, 31 Oct 2021 20:48:07 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20211029210056.6cd7796aea59cec3e9c1d7da@kernel.org>
+In-Reply-To: <CA+aJhH1aGJXwYSCU8RC275G5=qGLyZRK94g9ic24wxKuRGCwEA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/31/21 7:20 PM, Nathan Rossi wrote:
+[ ... ]
+>>> +
+>>> +     if (attr != hwmon_in_max && attr != hwmon_in_min)
+>>> +             return -EOPNOTSUPP;
+>>> +
+>>> +     /* convert decimal to register value */
+>>> +     switch (channel) {
+>>> +     case 0:
+>>> +             /* signed value, clamp to max range +/-163 mV */
+>>> +             regval = clamp_val(val, -163, 163);
+>>> +             regval = (regval * 1000L * (4 - (int)data->gain + 1)) /
+>>
+>> nit: The typecast "(int)" is not needed here.
+> 
+> Due to the unsigned type of gain, it causes promotion of regval (and
+> the rest of the numerator) to unsigned long which causes issues with
+> negative numbers on the divide. It makes more sense for gain to be an
+> int to begin with, I will change it to int to avoid the need for type
+> casting.
+> 
 
+Are you sure ? I initially thought that as well and wrote a little test
+program with that expression, but it didn't do the promotion to unsigned.
 
-On 29/10/2021 20:00, Masami Hiramatsu wrote:
->
->>
->> TAP version 13
->> 1..1
->> # selftests: ftrace: ftracetest
->> # === Ftrace unit tests ===
->> # [1] Basic trace file check	[PASS]
->> ...
->> <<< [1] - [67] have same results as parent, i.e. both PASS or both FAIL >>>
-> At first, I guess the robot just checks the "[number]" instead
-> of the test description, but the ftracetest doesn't fix the "[number]"
-> for each test, Thus, it can be different when updated it.
-
-Hi Masami
-
-Good catch, thanks for these information, we will improve the robot.
-
-Thanks
-Zhjian
-
-
-> So if you compare the result, please check the descriptions too.
->
->> ...
->> # [67] event trigger - test multiple actions on hist trigger	[PASS]
->>
->>>>> [68] - [72] can PASS on parent
->> # [68] event trigger - test inter-event histogram trigger onchange action	[FAIL]
->> # [69] event trigger - test inter-event histogram trigger onmatch action	[FAIL]
->> # [70] event trigger - test inter-event histogram trigger onmatch-onmax action	[FAIL]
->> # [71] event trigger - test inter-event histogram trigger onmax action	[FAIL]
->> # [72] event trigger - test inter-event histogram trigger snapshot action	[FAIL]
->>
->>>>> [73] fail on parent, too
->> # [73] event trigger - test inter-event histogram trigger eprobe on synthetic event	[FAIL]
->>
->>>>> [74] - [92] can PASS on parent
->> # [74] event trigger - test synthetic event create remove	[FAIL]
->> # [75] event trigger - test inter-event histogram trigger trace action with dynamic string param	[FAIL]
->> # [76] event trigger - test synthetic_events syntax parser	[FAIL]
->> # [77] event trigger - test synthetic_events syntax parser errors	[FAIL]
->> # [78] event trigger - test inter-event histogram trigger trace action	[FAIL]
->> # [79] event trigger - test event enable/disable trigger	[FAIL]
->> # [80] event trigger - test trigger filter	[FAIL]
->> # [81] event trigger - test histogram expression parsing	[FAIL]
->> # [82] event trigger - test histogram modifiers	[FAIL]
->> # [83] event trigger - test histogram parser errors	[FAIL]
->> # [84] event trigger - test histogram trigger	[FAIL]
->> # [85] event trigger - test multiple histogram triggers	[FAIL]
->> # [86] event trigger - test snapshot-trigger	[FAIL]
->> # [87] event trigger - test stacktrace-trigger	[FAIL]
->> # [88] trace_marker trigger - test histogram trigger	[FAIL]
->> # [89] trace_marker trigger - test snapshot trigger	[FAIL]
->> # [90] trace_marker trigger - test histogram with synthetic event against kernel event	[FAIL]
->> # [91] trace_marker trigger - test histogram with synthetic event	[FAIL]
->> # [92] event trigger - test traceon/off trigger	[FAIL]
->> # [93] (instance)  Basic test for tracers	[PASS]
->> ...
->> <<< [93] - [112] have same results as parent, all PASS >>>
->> ...
->> # [112] (instance)  trace_marker trigger - test histogram trigger	[PASS]
->>
->>>>> parent has no [113]
->> # [113] (instance)  trace_marker trigger - test snapshot trigger	[PASS]
-> And next, some patch series may *ADD* new testcases if the series add
-> a new feature, so if you find the difference which is not in the
-> parent commit but it is passed, please ignore that.
->
->> # tac: failed to create temporary file in '/tmp/ftracetest-dir.o54lNh': No such file or directory
->> # tac: failed to create temporary file in '/tmp/ftracetest-dir.o54lNh': No such file or directory
->> # tac: failed to create temporary file in '/tmp/ftracetest-dir.o54lNh': No such file or directory
->> # tac: failed to create temporary file in '/tmp/ftracetest-dir.o54lNh': No such file or directory
-> And if you find this kind of new error message like above, please report it.
-> This is more important for us.
->
->> #
->> #
->> # # of passed:  85
->> # # of failed:  26
->> # # of unresolved:  1
->> # # of untested:  0
->> # # of unsupported:  0
->> # # of xfailed:  1
->> # # of undefined(test bug):  0
->> not ok 1 selftests: ftrace: ftracetest # exit=1
-> Also, please configure your running environment correctly so that all
-> ftracetest passes. If you unsure how to do, please ask me.
->
-> Thank you,
->
->>
->>
->> To reproduce:
->>
->>          git clone https://github.com/intel/lkp-tests.git
->>          cd lkp-tests
->>          sudo bin/lkp install job.yaml           # job file is attached in this email
->>          bin/lkp split-job --compatible job.yaml # generate the yaml file for lkp run
->>          sudo bin/lkp run generated-yaml-file
->>
->>          # if come across any failure that blocks the test,
->>          # please remove ~/.lkp and /lkp dir to run from a clean state.
->>
->>
->>
->> ---
->> 0DAY/LKP+ Test Infrastructure                   Open Source Technology Center
->> https://lists.01.org/hyperkitty/list/lkp@lists.01.org       Intel Corporation
->>
->> Thanks,
->> Oliver Sang
->>
->
-
+Thanks,
+Guenter
