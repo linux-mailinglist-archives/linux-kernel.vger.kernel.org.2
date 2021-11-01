@@ -2,93 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B30E84422F9
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 23:00:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BE7A4422F1
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 22:56:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232253AbhKAWC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 18:02:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230460AbhKAWC5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 18:02:57 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F5CBC061714;
-        Mon,  1 Nov 2021 15:00:23 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id k4so3026106plx.8;
-        Mon, 01 Nov 2021 15:00:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lQidb9JCO2tS/0bSUKgi1+mcgxOacGZsvxUTQHhQVCo=;
-        b=clC7qZvzfmQnXJfsuJsBcm+xJ5bkWRiWPjWISgR24F4fyl3VUF5Ss5xuqotGo0zjXE
-         A3l9ic0D7evlfSTL405qR2G0i7kNJtjEXMOngR/bd6S0GgkGFob2ldX9y7ZDveNVx/ga
-         dgN6WcsoV19FXTc5KyT4G5Qun84rFPEZ+ovOqjqSC6AFp6IHz+l5K2gq3FgN4v9F7NHP
-         JH8y2s7euqOSP9tI1ZgimkiC6HxULTLCnnA4U658duNPprVcftZFSczvxFa4sdT+zmaY
-         hcpNSFqSP+6KZDHOKXlbNJji/kqI357JYXVyFmjrBlU8VNQd2uQIAXRMAau8PZH9HKLs
-         btcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lQidb9JCO2tS/0bSUKgi1+mcgxOacGZsvxUTQHhQVCo=;
-        b=3epESxORpcRAXrN7FtbLkffYSWtxnUseupuLDZHFl7qJXk8iJu6T0NmQAZXWRNsYsm
-         eeVU8D20J4Ib6sX7LS8bvKD1FkcMdJUpdrGWmLzG6UXKY3RZJCp7AYBwk/tiPp+10xs/
-         F8rk7K1yVFBHtuS9KV/SNs/sXKj3CFRxyp4frfIuDgarcV32/1DWfrF4X9vFUC0ysTS+
-         rfsTGnRsVicUz9wQLDwu9f3FJa/rYfU55RdXkwP80QhIQmQTg1bRCdcnv+hGqnF+OxPC
-         +pxD1xiddap1wcH492/H+W2a90Ko/GGuzL2Y+gkXc2WRPGLii+EsZrukbVS7hYWNZubv
-         vubQ==
-X-Gm-Message-State: AOAM5320yIEHistRavJVZiT/nMt56hy9JvFEo2h0taim0vVIKD6R50iA
-        kSWG5JwBk06yAL+nsrDl8vJzc6D15zwH40nvuMU=
-X-Google-Smtp-Source: ABdhPJxsuUlznQMiJfwR4AYM4OltePlg0lfGOqzeFIiCgNE6YPQ0+SnbfkmsYDVcB6cHSBeVY91V0Lz+V3+X/0baJSQ=
-X-Received: by 2002:a17:902:7246:b0:138:a6ed:66cc with SMTP id
- c6-20020a170902724600b00138a6ed66ccmr28298780pll.22.1635804022932; Mon, 01
- Nov 2021 15:00:22 -0700 (PDT)
+        id S232239AbhKAV7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 17:59:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42026 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232113AbhKAV7M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 17:59:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 05B9461053;
+        Mon,  1 Nov 2021 21:56:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635803798;
+        bh=1yvbeSAe6FYPXVyBLDYNYxnS3QQk38yTPaCZ9PMZ5Jw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=OeSjcnfgG0/o5JqTZQxvG6rtlILnMsD5gT0EYKz6ePfzy4aq7qYbBk3V9WpDRKAa2
+         5C71MqAl5Nc6OSFdCHUKzLpYIhSYHovgxhJZL/0ZPstYgqAZXi0lhFWVfvUe6yWuBH
+         nHy7Tq3WXHAJqFv4jhjhGlRqDtr5X5Ox9MBr7hBm/og/SDen//8NICa/xjNC0ifVaW
+         QI4+SS2Z/fJ+0yUJO0+sdSqIRUUXJsVIA3WrmWrLeW/a8V0SEmSO1acXlr2KBiXSWm
+         SAcfdLMxRFypE8lYyDjKC1Jv5RBNh5odWqexHJKeFIb4NRkHm5wH5c/91xrVxXhVyc
+         YmfRRAnnOznuA==
+Date:   Mon, 1 Nov 2021 17:01:20 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: [GIT PULL] fallthrough fixes for Clang for 5.16-rc1
+Message-ID: <20211101220120.GA30083@embeddedor>
 MIME-Version: 1.0
-References: <20211101124310.3947887-1-yangyingliang@huawei.com>
-In-Reply-To: <20211101124310.3947887-1-yangyingliang@huawei.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 1 Nov 2021 15:00:11 -0700
-Message-ID: <CAADnVQJS_2St=iaqHU+zasy_0A0bidJN=STnkHrNcSNL5vO1Dg@mail.gmail.com>
-Subject: Re: [PATCH -next v2] bpf/benchs: Fix return value check of bpf_program__attach()
-To:     Yang Yingliang <yangyingliang@huawei.com>,
-        Joanne Koong <joannekoong@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 1, 2021 at 5:35 AM Yang Yingliang <yangyingliang@huawei.com> wrote:
->
-> If bpf_program__attach() fails, it never returns NULL,
-> we should use libbpf_get_error() to check the return value.
->
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-> Acked-by: Yonghong Song <yhs@fb.com>
-> ---
-> v2:
->   don't use 'int err'
-> ---
->  .../selftests/bpf/benchs/bench_bloom_filter_map.c      | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c b/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
-> index 6eeeed2913e6..4afaa4adb327 100644
-> --- a/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
-> +++ b/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
-> @@ -304,7 +304,7 @@ static void bloom_lookup_setup(void)
->         populate_maps();
->
->         link = bpf_program__attach(ctx.skel->progs.bloom_lookup);
-> -       if (!link) {
-> +       if (libbpf_get_error(link)) {
+The following changes since commit e4e737bb5c170df6135a127739a9e6148ee3da82:
 
-Please use ASSERT_OK_PTR() instead.
-See how other tests are doing it.
+  Linux 5.15-rc2 (2021-09-19 17:28:22 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git tags/fallthrough-fixes-clang-5.16-rc1
+
+for you to fetch changes up to 02900f428d3c7acd89b77784bec33ddec7b750a4:
+
+  pcmcia: db1xxx_ss: Fix fall-through warning for Clang (2021-10-13 14:47:48 -0500)
+
+----------------------------------------------------------------
+fallthrough fixes for Clang for 5.16-rc1
+
+Hi Linus,
+
+Please, pull the following patches that fix some fall-through warnings
+when building with Clang and -Wimplicit-fallthrough.
+
+Thanks!
+--
+Gustavo
+
+----------------------------------------------------------------
+Gustavo A. R. Silva (3):
+      scsi: st: Fix fall-through warning for Clang
+      MIPS: Fix fall-through warnings for Clang
+      pcmcia: db1xxx_ss: Fix fall-through warning for Clang
+
+ arch/mips/alchemy/devboards/db1550.c | 1 +
+ arch/mips/kernel/uprobes.c           | 1 +
+ drivers/pcmcia/db1xxx_ss.c           | 1 +
+ drivers/scsi/st.c                    | 1 +
+ 4 files changed, 4 insertions(+)
