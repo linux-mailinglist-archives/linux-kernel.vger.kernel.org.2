@@ -2,122 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48A15441B9E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 14:19:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D12E441BA3
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 14:20:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232273AbhKANWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 09:22:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232437AbhKANWC (ORCPT
+        id S232507AbhKANWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 09:22:46 -0400
+Received: from mail-ot1-f46.google.com ([209.85.210.46]:33787 "EHLO
+        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231794AbhKANWo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 09:22:02 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B00EC061766
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 06:19:29 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id bq14so4954665qkb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 06:19:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=usp.br; s=usp-google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :content-transfer-encoding;
-        bh=TtX9VhCBKuhF3Ol7gnPYFLRhj5nFsqp3SrQe6dqQFXM=;
-        b=ZnSQtUuzlxpPJR1GQQpbQSUoHtb09P8H7VrR18O2ahTTXRWmIDnxQOQgnULadzL610
-         JTN6lYue33HVu7p8L3y+810xNbHrJ19Tbeg/nOHqdYm3ftynFUO/NzeHUfMkEmSBM0as
-         ixAQxM3YbNoJXyv6pSbwPGcTlgAAOJXCqc13eV7HVkg/mau8AHrgfsWxgHABcrz2rwRh
-         UeEIEFLjysCIxUATqgwwbyaCpZHBJytSLFFgeo2NtXcSey60XzPh+fJHD56twsIX7o+/
-         PaI3j9470t9hHKW9dYvhUboq8DOEMMJw2ouHi3SnG6XPpzRVJ/ugKM+EZj1UusPbJosC
-         Qq0g==
+        Mon, 1 Nov 2021 09:22:44 -0400
+Received: by mail-ot1-f46.google.com with SMTP id 107-20020a9d0a74000000b00553bfb53348so25326345otg.0;
+        Mon, 01 Nov 2021 06:20:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:content-transfer-encoding;
-        bh=TtX9VhCBKuhF3Ol7gnPYFLRhj5nFsqp3SrQe6dqQFXM=;
-        b=IqK9OfWxohAj1Klt9EmY8eL5lSU4j8o9VyWqIrkfIG9hHDSASr8rYA2DHRcCwFjau5
-         dbiDSkcy8rvKHThTbYcB7ImhN1KtRRhw9Cpj33x7acIS/3lZFZZ/MxZuWmfS0Uq1C44l
-         59bO16dZ09bEY8A43rizlFI8Ym+9h2Cq4QHm4QSBsgSIQ2cTsH17PvZitS/meLeCTVOg
-         hwOyB7K4BdBnI1b/08aHYNthfGnkv9Q0i1jM5qmkaNxsbYOnCMR185sodNlIAAxEilmS
-         E0l2gz0kRBxFl9aobfurUI7fn9sf0IRrcONWnreO4IDNOMi1GXzB3M3e35UpS8XTmtdx
-         h16w==
-X-Gm-Message-State: AOAM532ldp+bJNDqUc0h7h+mUK7hiMJxjuukZElR685xRBCgydUuAYUC
-        cgiiKn/AeggRMbsrS7qfYiUe6A==
-X-Google-Smtp-Source: ABdhPJwRu8kRDMOftlvRTysjNpt3BbtoelDYP69+cdAc8RNpfvYVVPhdMVgDl11Rbi0bEU43xN5/Tg==
-X-Received: by 2002:a05:620a:1999:: with SMTP id bm25mr23030512qkb.40.1635772767335;
-        Mon, 01 Nov 2021 06:19:27 -0700 (PDT)
-Received: from fedora ([187.64.134.142])
-        by smtp.gmail.com with ESMTPSA id h17sm4185790qtx.64.2021.11.01.06.19.24
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=NQsXgN1/B5gwjOVAAacfDLhfdCYF4Dwe+DAjivz+Nyc=;
+        b=kaDXexlIPEfQISaVbZXCafx1c5ElYiRWmllHY65SZTvEqJ8U89znHlYyNRfE5vXzlq
+         HTsBUcRfsK9JIk5g64oc5/vfr6lkeYwNFZWFzS0JxAD15QQwFz6m4meHR7i4TuYhlK8A
+         /Z3H1xoLdWeyOMH12x02rhaovVdsN9FhoxmJNXu/PyZlMKjX41JRTl3ZR6zfYt6z5t7D
+         V+G9WPPKbYQ3ttZqq01roSm6EiZP+vt4Jt+moe0O2OC58fuz0XHMKxUM3vfwsXcRx7ng
+         CWKVaIirJ6ARro9qeZSADxvCNYTnQeJVvHA3+ADX21zDI5XrVjGI5f10CN6ESwC5jESS
+         8uuQ==
+X-Gm-Message-State: AOAM5328t/rG4VrCYTSciZctzgwvSkMu1FkIUIsaYMZJ9Seh0f+zEbX+
+        2nvAJRqmKWuz5ImVrgXqxGUCScKAmA==
+X-Google-Smtp-Source: ABdhPJyzU4cxvEcItOGfrwaiiIz8T6WXPuadFqxeg4zVhDDGAM4Y5N64HkjfJRt7VwCNAaxicAaTwA==
+X-Received: by 2002:a9d:a64:: with SMTP id 91mr13798795otg.198.1635772810834;
+        Mon, 01 Nov 2021 06:20:10 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id x28sm4236076ote.24.2021.11.01.06.20.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 06:19:27 -0700 (PDT)
-Date:   Mon, 1 Nov 2021 10:19:21 -0300
-From:   =?iso-8859-1?Q?Ma=EDra?= Canal <maira.canal@usp.br>
-To:     lee.jones@linaro.org, daniel.thompson@linaro.org,
-        jingoohan1@gmail.com, thierry.reding@gmail.com,
-        u.kleine-koenig@pengutronix.de
-Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org
-Subject: [PATCH v4] backlight: lp855x: Switch to atomic PWM API
-Message-ID: <YX/pWeXPv1bykg2g@fedora>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+        Mon, 01 Nov 2021 06:20:09 -0700 (PDT)
+Received: (nullmailer pid 278147 invoked by uid 1000);
+        Mon, 01 Nov 2021 13:20:09 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     "hammer.hsieh" <hammerh0314@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        "hammer.hsieh" <hammer.hsieh@sunplus.com>,
+        devicetree@vger.kernel.org, gregkh@linuxfoundation.org,
+        p.zabel@pengutronix.de, wells.lu@sunplus.com,
+        tony.huang@sunplus.com, jirislaby@kernel.org
+In-Reply-To: <1635752903-14968-2-git-send-email-hammer.hsieh@sunplus.com>
+References: <1635752903-14968-1-git-send-email-hammer.hsieh@sunplus.com> <1635752903-14968-2-git-send-email-hammer.hsieh@sunplus.com>
+Subject: Re: [PATCH 1/2] dt-bindings:serial:Add bindings doc for Sunplus SoC UART Driver
+Date:   Mon, 01 Nov 2021 08:20:09 -0500
+Message-Id: <1635772809.026695.278146.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove legacy PWM interface (pwm_config, pwm_enable, pwm_disable) and
-replace it for the atomic PWM API.
+On Mon, 01 Nov 2021 15:48:22 +0800, hammer.hsieh wrote:
+> Add bindings doc for Sunplus SoC UART Driver
+> 
+> Signed-off-by: hammer.hsieh <hammer.hsieh@sunplus.com>
+> ---
+>  .../devicetree/bindings/serial/sunplus,uart.yaml   | 116 +++++++++++++++++++++
+>  MAINTAINERS                                        |   5 +
+>  2 files changed, 121 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/serial/sunplus,uart.yaml
+> 
 
-Signed-off-by: Maíra Canal <maira.canal@usp.br>
----
-V1 -> V2: Initialize variable and simply conditional loop
-V2 -> V3: Fix assignment of NULL variable
-V3 -> V4: Replace division for pwm_set_relative_duty_cycle
----
- drivers/video/backlight/lp855x_bl.c | 20 ++++++++------------
- 1 file changed, 8 insertions(+), 12 deletions(-)
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-diff --git a/drivers/video/backlight/lp855x_bl.c b/drivers/video/backlight/lp855x_bl.c
-index e94932c69f54..bbf24564082a 100644
---- a/drivers/video/backlight/lp855x_bl.c
-+++ b/drivers/video/backlight/lp855x_bl.c
-@@ -233,9 +233,8 @@ static int lp855x_configure(struct lp855x *lp)
- 
- static void lp855x_pwm_ctrl(struct lp855x *lp, int br, int max_br)
- {
--	unsigned int period = lp->pdata->period_ns;
--	unsigned int duty = br * period / max_br;
- 	struct pwm_device *pwm;
-+	struct pwm_state state;
- 
- 	/* request pwm device with the consumer name */
- 	if (!lp->pwm) {
-@@ -245,18 +244,15 @@ static void lp855x_pwm_ctrl(struct lp855x *lp, int br, int max_br)
- 
- 		lp->pwm = pwm;
- 
--		/*
--		 * FIXME: pwm_apply_args() should be removed when switching to
--		 * the atomic PWM API.
--		 */
--		pwm_apply_args(pwm);
-+		pwm_init_state(lp->pwm, &state);
-+		state.period = lp->pdata->period_ns;
- 	}
- 
--	pwm_config(lp->pwm, duty, period);
--	if (duty)
--		pwm_enable(lp->pwm);
--	else
--		pwm_disable(lp->pwm);
-+	pwm_get_state(lp->pwm, &state);
-+	pwm_set_relative_duty_cycle(&state, br, max_br);
-+	state.enabled = state.duty_cycle;
-+
-+	pwm_apply_state(lp->pwm, &state);
- }
- 
- static int lp855x_bl_update_status(struct backlight_device *bl)
--- 
-2.31.1
+yamllint warnings/errors:
+./Documentation/devicetree/bindings/serial/sunplus,uart.yaml:36:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
+./Documentation/devicetree/bindings/serial/sunplus,uart.yaml:39:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
+./Documentation/devicetree/bindings/serial/sunplus,uart.yaml:42:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
+./Documentation/devicetree/bindings/serial/sunplus,uart.yaml:45:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
+
+dtschema/dtc warnings/errors:
+Documentation/devicetree/bindings/serial/sunplus,uart.example.dts:20:18: fatal error: dt-bindings/clock/sp-sp7021.h: No such file or directory
+   20 |         #include <dt-bindings/clock/sp-sp7021.h>
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+compilation terminated.
+make[1]: *** [scripts/Makefile.lib:385: Documentation/devicetree/bindings/serial/sunplus,uart.example.dt.yaml] Error 1
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1441: dt_binding_check] Error 2
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/patch/1548996
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
 
