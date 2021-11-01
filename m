@@ -2,124 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54E5A441A18
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 11:43:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3889B441A1C
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 11:44:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231952AbhKAKqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 06:46:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33718 "EHLO
+        id S232087AbhKAKqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 06:46:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231485AbhKAKqB (ORCPT
+        with ESMTP id S231485AbhKAKqp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 06:46:01 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F8ACC061714;
-        Mon,  1 Nov 2021 03:43:28 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id z20so63199100edc.13;
-        Mon, 01 Nov 2021 03:43:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hkAfHmlmX9XWaQXSquKe/6RtfK/xB73zNGE3haQKgYE=;
-        b=pmmpF5wfmYLmqYTcxMJhjqntWGMjj77X7b/s1PkF8/xALJuU8zrr6MKC3v0s4PKZid
-         r6fhca2xFz6gZY8YuGfR1ocMFAIiQu0vVIBkd9kN/eH7aakvBE7Q8WZ12QQGEZUSqqfT
-         NRW/Asfixo/GWNq32s6XjwPVzm+xBv4FpylSMRpgxNtGIW2kB6gG/aKZ86rQ2FHGOO8X
-         EyQ8Z5eKWuNvrNH149SlRDtha7vCNQ8svs5Y8Mo4Mgqwpssp639EiqtFlBRth/lNPUvI
-         tB4QuReGjL7LWvyKRxD215jykgIHzDlffKrFPvjt7KFQmbsUYAF8MQpeLP2CpAanbUrE
-         wAjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hkAfHmlmX9XWaQXSquKe/6RtfK/xB73zNGE3haQKgYE=;
-        b=2ECDPryh50S3fgZuw1HFcnJJTBDShSN+kPL4QE+v+pD1C97LmKVanIKf2OgVhXyULf
-         J+8CqKg1m6ra/p9GDl+yX27px1laBQ7mXM+NwwTs9GJMWUpCVLinsUxwsdBnSZT73Ie9
-         GTThOT7axYB8zKUtpTCwslUMK8UiReJPpNGd4Rwy0nVoU06/1Wsnn93sEVy+gHGygAyq
-         QcuSq8usM4BP0cXhJPAQAXVYKflPd7JsamUai6yKWno05GOCtQLnpnDeyOFw5YyXHdLL
-         Q0FULcch/ptoAkulXRdVjxTiwSWG/YboDHytw96buIz/uiWMzQu7GNV7El7FXSKX55Mb
-         Ss5Q==
-X-Gm-Message-State: AOAM5319YS0OlFRn6Ob5DljAibSWsElb+L/TGcM7mfyuASoexHnVCapD
-        1ge76a+1BrPB7bH2iHDVFIq3CI9WdyHv3Ajf53o=
-X-Google-Smtp-Source: ABdhPJyXVNhlnl/0TfajrJTGbiXqFhdoeCCdMhQrbeibxaSPX2lFJNn3AJttuCqMvlSaoRJEwRY4HfJ0S+fEGopoa1Q=
-X-Received: by 2002:a05:6402:207c:: with SMTP id bd28mr29606819edb.240.1635763407145;
- Mon, 01 Nov 2021 03:43:27 -0700 (PDT)
+        Mon, 1 Nov 2021 06:46:45 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD39BC061714;
+        Mon,  1 Nov 2021 03:44:11 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HjV5K1KvFz4xbP;
+        Mon,  1 Nov 2021 21:44:04 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1635763445;
+        bh=gB9iNl3t799T/J5L9ejYsk4Qt71TSkLbd+1y3ioJFPM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ThJPBVPssquwH4q2JzpqVj6NF4eEVIT04BkEeb6N7r5Yr8PVHdUxQEcuMfAyHrqOO
+         DQMp9+YLbCjPLGLu3QosVGo/J/CqgDcH3ta17ozp2xIiko+8RGdiusaFB4AgkBx43d
+         Ar9bIhNyBKzFLMTYFYmzDui9NcAo+cC/wbk9FLES4HaRKJqOSsxPglhIhhMI+5qJTi
+         3e1A/nmUfxF7AwnoVIk1RjxZXLd/wEdx/0NkiA/1P66s4fJJTwv0SbmFDoE/OL+sjA
+         8V5ivP8MUHywzsi5m2CLWTOMJl3xM/vLvJLNPHegCt9ZPI/hCN2foG50utIZG43wLW
+         HNRLYXtq8K1gQ==
+Date:   Mon, 1 Nov 2021 21:44:03 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Helge Deller <deller@gmx.de>,
+        Parisc List <linux-parisc@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the parisc-hd tree
+Message-ID: <20211101214403.47d36f6c@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20211025094119.82967-1-hdegoede@redhat.com> <20211025094119.82967-6-hdegoede@redhat.com>
- <CAHp75VdfwA_3QK2Fo1S34rRZWHCMNzzHug4AKsRfOrKu4CU_YA@mail.gmail.com> <ff8c8418-8e73-f949-3734-c0e2e109f554@redhat.com>
-In-Reply-To: <ff8c8418-8e73-f949-3734-c0e2e109f554@redhat.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 1 Nov 2021 12:42:37 +0200
-Message-ID: <CAHp75VfUq+DZk_u5Wsyr5nnibbe+WrYDyhvCU22=4Pog06DgHg@mail.gmail.com>
-Subject: Re: [PATCH v4 05/11] clk: Introduce clk-tps68470 driver
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Kate Hsuan <hpa@redhat.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/v=_TMBRR3YUcklTba6sU78e";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 1, 2021 at 12:27 PM Hans de Goede <hdegoede@redhat.com> wrote:
-> On 10/25/21 13:24, Andy Shevchenko wrote:
-> > On Mon, Oct 25, 2021 at 12:42 PM Hans de Goede <hdegoede@redhat.com> wrote:
+--Sig_/v=_TMBRR3YUcklTba6sU78e
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-...
+Hi all,
 
-> >> +       for (i = 0; i < ARRAY_SIZE(clk_freqs); i++) {
-> >> +               diff = clk_freqs[i].freq - rate;
-> >> +               if (diff == 0)
-> >> +                       return i;
-> >
-> >> +               diff = abs(diff);
-> >
-> > This needs a comment why higher (lower) frequency is okay.
->
-> This function is called in 2 places:
->
-> 1. From tps68470_clk_round_rate(), where higher/lower clearly is ok,
-> (see the function name) so no comment needed.
->
-> 2. From tps68470_clk_set_rate() where it is NOT ok and this is
-> enforced in the caller:
->
->         unsigned int idx = tps68470_clk_cfg_lookup(rate);
->
->         if (rate != clk_freqs[idx].freq)
->                 return -EINVAL;
->
-> This is not easy to describe in a comment, while being obvious
-> if someone looking at this actually looks at the callers.
+Commit
 
-Hmm... but try your best. :-)
+  cad7eadf2afb ("parisc: Use swap() to swap values in setup_bootmem()")
 
-While at it, recently I have learned about util_macros.h. Any use of it here?
-Or amending it there and re-using it here?
+is missing a Signed-off-by from its committer.
 
-> >> +               if (diff < best_diff) {
-> >> +                       best_diff = diff;
-> >> +                       best_idx = i;
-> >> +               }
-> >> +       }
+--=20
+Cheers,
+Stephen Rothwell
 
--- 
-With Best Regards,
-Andy Shevchenko
+--Sig_/v=_TMBRR3YUcklTba6sU78e
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF/xPMACgkQAVBC80lX
+0GyGJQgAjAZF344KJSQPoX9s/CM/DzCD7jzR7IMuE8XLw/KyW1fApQ5BiEsutRfp
+w/kUmdZgdNtma/fUt4bjJpWfVKLFS2xEmMbGtlrvxgmPQtxUYnySF3kMxSRXIWfZ
+DrWsfXZppK7W6bOC4UTED4a1OfaJHKU5ijChvmaB/oZF/PPcD3mvgkyNdLegWyHF
+VrIU+wcuHUwKxcsB6n+4uyevCv8SzOoZjRbY7pjaUaeuQeF+8F8hi8vFRa7JmcA1
+7wgaKty9mvM8uMa3HyzndTUP+zznDhPvx5W0vM5lioEk/JZxszZcCIMfTv+LJ5Af
+GYRbyHcYODja5+bMlivrPeFJh4C9iw==
+=faFf
+-----END PGP SIGNATURE-----
+
+--Sig_/v=_TMBRR3YUcklTba6sU78e--
