@@ -2,108 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90535441AC4
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 12:41:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B66D5441ACF
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 12:42:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231928AbhKALoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 07:44:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231437AbhKALoB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 07:44:01 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB8ADC061714
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 04:41:27 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id g10so63104623edj.1
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 04:41:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1vzz5M91BX0QvpSEDHAoinm2QbwS4lcXb3VFQF+9RUY=;
-        b=lFkt+KqdE/clax4K3AsmkijFisYtgScpWdkDzsKkOFtZFkeVvQg5QhyzCtH/wdmaO0
-         ZKydlxi+xO2p/Crwgg/YwkYOrVZAg9ffs7f258I9yciN4hJR91VKVrESvf/lht3br0wj
-         KXtRYgky6+ODhojVKc72dST5VFDEuWKGqS2IFDX8wiXc653+2oBFek9+Bnd4P0UoOTcN
-         tCZxF/iIbnEfnqs7odnHK5UIUceNELRYuHWd2O9gLYPJcTxQj0c2dJBHRFZzk55+VZL+
-         sTjQI5CxyBxferELZliMGwgZJSkXJbgdys5bobFZ0wzKdFR6wK4rOK3HhXlPatHC0JWg
-         qf/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1vzz5M91BX0QvpSEDHAoinm2QbwS4lcXb3VFQF+9RUY=;
-        b=JB5IoeFNDKpaIGfAVmf3zsOX1bsIiB/MPdt6rJj/lvm7AcqKlQJuzjo8MvkqdiljUQ
-         afqveOinFe4GfPgH/CZ+XNUy7+vn6YreF/wM+6b83e8nu8DriIjVq4wwk3pvZ1PBpuYz
-         495zdrlWdJ0uEUrxeR4LWjZ7oii7fWdlWLcKXhoSIqs5uQvK6ZM3AmQivkxcw1uDNbVL
-         +igZa3m+KcBZRwF3JJfBZe85EEWeNTyZf3nqjRIZ6E2r04FyOYXb4/gJ13sUIqUEeiJp
-         rF31sXPwExYrG/X4VHm7kyBL5jFD69CneTR6TMkZHbUUERCvlC+Lq+z4xWCUlA4DcBgl
-         Xe1g==
-X-Gm-Message-State: AOAM532A76iKLzK6UgHfFibyqdOBszMObeDx3x16DBygXKuWnOoMwfvZ
-        8HdDqgMxFcfnPYYxnzwVR91R84KeJPg=
-X-Google-Smtp-Source: ABdhPJw/pBFq99I4VZndRkQeU/UpbiIeOOsB/wkbT0ai/j7TOxgrSBq2/QgIqwMBnD578+Vz/t8Amg==
-X-Received: by 2002:a05:6402:4387:: with SMTP id o7mr40257618edc.77.1635766886328;
-        Mon, 01 Nov 2021 04:41:26 -0700 (PDT)
-Received: from localhost.localdomain (host-79-56-54-101.retail.telecomitalia.it. [79.56.54.101])
-        by smtp.gmail.com with ESMTPSA id nb4sm1057600ejc.74.2021.11.01.04.41.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 04:41:25 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: [PATCH] staging: r8188eu: Use kzalloc() with GFP_ATOMIC in atomic context
-Date:   Mon,  1 Nov 2021 12:41:21 +0100
-Message-Id: <20211101114121.23865-1-fmdefrancesco@gmail.com>
-X-Mailer: git-send-email 2.33.1
+        id S232370AbhKALpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 07:45:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47920 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232354AbhKALpI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 07:45:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DAE2860FE8;
+        Mon,  1 Nov 2021 11:42:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1635766955;
+        bh=pg73EoNfZFnrvniXr6TqULBVuw9n2QOmf1j+cJnIiIQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=v4yBTKUtE2ZMU2Vjt8gCvpEJD/sB9oOhv0xoDOGQDGg8cbtpb+aT+foCjKzqykSS3
+         CaYFx4cYjXAzMH6W5t5oV+FdUivxtfpfVTz0QwP1nMBWrf8xjSPt7ArivigKLRDFUr
+         9SAGP8BNCYKJOmoT6iScZntsIDlNX0PueKuxe678=
+Date:   Mon, 1 Nov 2021 12:42:29 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Pavel Machek <pavel@denx.de>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.19 00/35] 4.19.215-rc1 review
+Message-ID: <YX/SpTZC4ulePcmx@kroah.com>
+References: <20211101082451.430720900@linuxfoundation.org>
+ <20211101103732.GA24359@duo.ucw.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211101103732.GA24359@duo.ucw.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the GFP_ATOMIC type flag of kzalloc() with two memory allocation in
-report_del_sta_event(). This function is called while holding spinlocks,
-therefore it is not allowed to sleep. With the GFP_ATOMIC type flag, the
-allocation is high priority and must not sleep.
+On Mon, Nov 01, 2021 at 11:37:32AM +0100, Pavel Machek wrote:
+> Hi!
+> 
+> > This is the start of the stable review cycle for the 4.19.215 release.
+> > There are 35 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> 
+> I'm getting some failures on 4.19.215-rc1, and at least this one is real:
+> 
+> https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/jobs/1734614739
+> 
+>   CC      drivers/mtd/nand/raw/nand_samsung.o
+> 3313drivers/mmc/host/sdhci-esdhc-imx.c: In function 'esdhc_reset_tuning':
+> 3314drivers/mmc/host/sdhci-esdhc-imx.c:966:10: error: implicit declaration of function 'readl_poll_timeout'; did you mean 'key_set_timeout'? [-Werror=implicit-function-declaration]
+> 3315    ret = readl_poll_timeout(host->ioaddr + SDHCI_AUTO_CMD_STATUS,
+> 3316          ^~~~~~~~~~~~~~~~~~
+> 3317          key_set_timeout
+> 3318  AR      drivers/pci/controller/dwc/built-in.a
 
-This issue is detected by Smatch which emits the following warning:
-"drivers/staging/r8188eu/core/rtw_mlme_ext.c:6848 report_del_sta_event()
-warn: sleeping in atomic context".
-
-After the change, the post-commit hook output the following message:
-"CHECK: Prefer kzalloc(sizeof(*pcmd_obj)...) over
-kzalloc(sizeof(struct cmd_obj)...)".
-
-According to the above "CHECK", use the preferred style in the first
-kzalloc().
-
-Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
----
- drivers/staging/r8188eu/core/rtw_mlme_ext.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/staging/r8188eu/core/rtw_mlme_ext.c b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
-index 55c3d4a6faeb..3367ec40679d 100644
---- a/drivers/staging/r8188eu/core/rtw_mlme_ext.c
-+++ b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
-@@ -6845,12 +6845,12 @@ void report_del_sta_event(struct adapter *padapter, unsigned char *MacAddr, unsi
- 	struct mlme_ext_priv		*pmlmeext = &padapter->mlmeextpriv;
- 	struct cmd_priv *pcmdpriv = &padapter->cmdpriv;
- 
--	pcmd_obj = kzalloc(sizeof(struct cmd_obj), GFP_KERNEL);
-+	pcmd_obj = kzalloc(*cmd_obj, GFP_ATOMIC);
- 	if (!pcmd_obj)
- 		return;
- 
- 	cmdsz = (sizeof(struct stadel_event) + sizeof(struct C2HEvent_Header));
--	pevtcmd = kzalloc(cmdsz, GFP_KERNEL);
-+	pevtcmd = kzalloc(cmdsz, GFP_ATOMIC);
- 	if (!pevtcmd) {
- 		kfree(pcmd_obj);
- 		return;
--- 
-2.33.1
-
+Thanks, let me go fix this and push out -rc2...
