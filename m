@@ -2,461 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCC36441F84
+	by mail.lfdr.de (Postfix) with ESMTP id 02098441F81
 	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 18:44:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231765AbhKARqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 13:46:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44386 "EHLO
+        id S231706AbhKARqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 13:46:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231720AbhKARqo (ORCPT
+        with ESMTP id S229619AbhKARqe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 13:46:44 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CBD6C061714
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 10:44:11 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id y196so4652969wmc.3
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 10:44:10 -0700 (PDT)
+        Mon, 1 Nov 2021 13:46:34 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72F0AC061714
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 10:44:01 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id v7so46652926ybq.0
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 10:44:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4fvlj04P3TZ4ZUlAQBEQ3+W+OFwhH5yPMr1dZ8HfdcU=;
-        b=o6leZNOaT6toyqIZDEaxPU9UDokVlgAC+qajPmzjMNc63rv5nn4Z1D0FkA5q8aqs+D
-         U3Tdr1G6JSUEdA9AnGXODn+k84MsF7xGVfdLRtjdXGUyrCZLdLo01Vt+wuBpyfrIerGY
-         gYkmHgslAj3lPwEXtO8NxTDrtcVg7BLytHOTOMSO7sxmoYolmjNfQsvaIetsfU3iOiI6
-         mgNjX26aWGrtywl0c1gQUtpwLPgvdHrMlBcdjHvn1dZTkMsL6hYgUi8zenSzMD1kSNN6
-         Y19Bn4+ydYmwxuh9gyzUt0jKq6VQn+tmEA2NieQMfi9D4wtsFA12Pgwar2wJQg59O7rS
-         btkg==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+Fmyu5Mn4i82cp8HMsdl33MAzo8mJP0Q39h/qUlCf0Q=;
+        b=ZGLIjb6VJaU8wer4pug6zS3Pp/Ya9KByddsZSsXhikN90vlK5Kns3+32lBZMa+bhOG
+         fqvbiUWC8nnj8k0LR7K7IEiuEpg1lLlGflHTVR7UGt+xZ1+lmdzZhgPDHgJojsBrR8/B
+         F0+KKHEXD7BtVvxGO5lH7Pvexp9z8qPpqE9MGQaQ/AE3oQw4+XlQi6vKHVO3CP8rJlGK
+         77mY/JwzORTKv+1glzTayTuswnAKEEjYhQRZl0VfmDq+sbuCfy66ohqVdsUspHBiAR/l
+         mIBEGCaP0g628RohfMcrErdtaO4fvTLObe+0N1Wjg4i3SyTylaOEt9Q+q1K/CZcEErO+
+         tJoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4fvlj04P3TZ4ZUlAQBEQ3+W+OFwhH5yPMr1dZ8HfdcU=;
-        b=bldPYMABb3LfNiTFRofRaVwN0Hc1CF8SccZ9sTHCxWIuKRQc6/soASgNqJPNIXA+wV
-         FAiDAFZW7d/OPJbAokOZWB9XZJVEIQBspXXJtKLAI75/fOWdNzKFkOiwhriGdxqSWNDF
-         aydgQR43pZCEIHC2nQdTllZzH8fDRRVGlpg41XaJ+eJ+5opLx9zYP9XjwEpS9r2B6bRY
-         YLplV94rQPJbxmSY0xYRo7XAcgFo4XMknyAHDOSXnFcEUtvWBKEk3GsadWQA79iOLAjj
-         4EyqntVrUXme2Tjt7+Wxn8cDLhsbB0UonYSv/v9Jnr5QdLLq1hf3lMiBKZ2rmP1kfG71
-         E6ZQ==
-X-Gm-Message-State: AOAM532Wi5KCMEQVkHoAZS7G/h6Cz/xMtNJMBS6StnCn6AgXKZq639GA
-        vYeJTchaH4CRfbcOccLtdoHPLA==
-X-Google-Smtp-Source: ABdhPJx4keFuWInWm9DhDw77jY0HFdj5r7uMS652bmxEsiBfVRBTPbpZQhkO3aa8sF77m3Q3C2q5DA==
-X-Received: by 2002:a05:600c:2118:: with SMTP id u24mr436393wml.0.1635788649414;
-        Mon, 01 Nov 2021 10:44:09 -0700 (PDT)
-Received: from wychelm.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id x8sm14495052wrw.6.2021.11.01.10.44.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 10:44:08 -0700 (PDT)
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Jason Wessel <jason.wessel@windriver.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>
-Cc:     Xiang wangx <wangxiang@cdjrlc.com>,
-        jing yangyang <jing.yangyang@zte.com.cn>,
-        kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        patches@linaro.org
-Subject: [PATCH v3] kdb: Adopt scheduler's task classification
-Date:   Mon,  1 Nov 2021 17:43:44 +0000
-Message-Id: <20211101174344.3220974-1-daniel.thompson@linaro.org>
-X-Mailer: git-send-email 2.31.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+Fmyu5Mn4i82cp8HMsdl33MAzo8mJP0Q39h/qUlCf0Q=;
+        b=dLOp2n3ZUDYpnLVGKkGiBS7lTlMzoqoGxxgiWXaYYOEmgNdi1Rw7Fg8SDMLoCYq8oR
+         2BajoSi+0oOk85JmAqxnFZyzvzdrUxCY0vWt5Vc+ehehFsGVzbMOFNoPycGFogRt/ekw
+         LmOB8jySwloCvWmz1ZvqFzolywFmSPe+w5ONhv0aexAJ0MfqQ7+JMc5YODS1YtanyAtY
+         pvVb1X7hJ4jr4QGD/Rq3h+mkLb7BycutdlV1B5H8whu0kB9rGh2dcqtvSoM6mIL0FwGs
+         WkEIIqWZyTsyLujRFqGWENVcsw4jYzKfmn3lBBlKGj6vAkHA8eCHGS+g+QJ2hPH90v0l
+         sLSg==
+X-Gm-Message-State: AOAM5302Da3z2KufHiiuDctfU1L2Y24zHdamSvLEtfzNrsjSoX9BMCjE
+        gJ5/4rVjtJtgleend8cLxPYc9HbABVirHvRYD3Z4vcEDj6TofA==
+X-Google-Smtp-Source: ABdhPJy8yTlLWG4HgdFtxqaTwCWYlCCin5bPaCJr6rTK2yhMkgh4cmx6q7WO1dC/nFaHckuJT6sw6Twf/PBBdFf/KfE=
+X-Received: by 2002:a25:3142:: with SMTP id x63mr31367323ybx.99.1635788639054;
+ Mon, 01 Nov 2021 10:43:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211005234459.430873-1-michael.roth@amd.com> <20211005234459.430873-2-michael.roth@amd.com>
+ <CAL715WK2toExGW7GGWGQyzhqBijMEhQfhamyb9_eZkrU=+LKnQ@mail.gmail.com>
+ <20211021034529.gwv3hz5xhomtvnu7@amd.com> <CAL715W+PE1hGmxZfMc4oOm6dyNzCBmStnJzp-OyW6DdhNAmwjQ@mail.gmail.com>
+In-Reply-To: <CAL715W+PE1hGmxZfMc4oOm6dyNzCBmStnJzp-OyW6DdhNAmwjQ@mail.gmail.com>
+From:   Mingwei Zhang <mizhang@google.com>
+Date:   Mon, 1 Nov 2021 10:43:48 -0700
+Message-ID: <CAL715W+q1NuV6vWGoK=ef==zLv26mTqbft6F5r=wFF81E+72tA@mail.gmail.com>
+Subject: Re: [RFC 01/16] KVM: selftests: move vm_phy_pages_alloc() earlier in file
+To:     Michael Roth <Michael.Roth@amd.com>
+Cc:     linux-kselftest@vger.kernel.org, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        Nathan Tempelman <natet@google.com>,
+        Marc Orr <marcorr@google.com>,
+        Steve Rutherford <srutherford@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <Thomas.Lendacky@amd.com>,
+        Varad Gautam <varad.gautam@suse.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Ricardo Koller <ricarkol@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently kdb contains some open-coded routines to generate a summary
-character for each task. This code currently issues warnings, is
-almost certainly broken and won't make sense to any kernel dev who
-has ever used /proc to examine task states.
+On Tue, Oct 26, 2021 at 8:52 AM Mingwei Zhang <mizhang@google.com> wrote:
+>
+> On Wed, Oct 20, 2021 at 8:47 PM Michael Roth <michael.roth@amd.com> wrote:
+> >
+> > On Mon, Oct 18, 2021 at 08:00:00AM -0700, Mingwei Zhang wrote:
+> > > On Tue, Oct 5, 2021 at 4:46 PM Michael Roth <michael.roth@amd.com> wrote:
+> > > >
+> > > > Subsequent patches will break some of this code out into file-local
+> > > > helper functions, which will be used by functions like vm_vaddr_alloc(),
+> > > > which currently are defined earlier in the file, so a forward
+> > > > declaration would be needed.
+> > > >
+> > > > Instead, move it earlier in the file, just above vm_vaddr_alloc() and
+> > > > and friends, which are the main users.
+> > > >
+> > > > Signed-off-by: Michael Roth <michael.roth@amd.com>
+> > > > ---
+> > > >  tools/testing/selftests/kvm/lib/kvm_util.c | 146 ++++++++++-----------
+> > > >  1 file changed, 73 insertions(+), 73 deletions(-)
+> > > >
+> > > > diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
+> > > > index 10a8ed691c66..92f59adddebe 100644
+> > > > --- a/tools/testing/selftests/kvm/lib/kvm_util.c
+> > > > +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+> > > > @@ -1145,6 +1145,79 @@ void vm_vcpu_add(struct kvm_vm *vm, uint32_t vcpuid)
+> > > >         list_add(&vcpu->list, &vm->vcpus);
+> > > >  }
+> > > >
+> > > > +/*
+> > > > + * Physical Contiguous Page Allocator
+> > > > + *
+> > > > + * Input Args:
+> > > > + *   vm - Virtual Machine
+> > > > + *   num - number of pages
+> > > > + *   paddr_min - Physical address minimum
+> > > > + *   memslot - Memory region to allocate page from
+> > > > + *
+> > > > + * Output Args: None
+> > > > + *
+> > > > + * Return:
+> > > > + *   Starting physical address
+> > > > + *
+> > > > + * Within the VM specified by vm, locates a range of available physical
+> > > > + * pages at or above paddr_min. If found, the pages are marked as in use
+> > > > + * and their base address is returned. A TEST_ASSERT failure occurs if
+> > > > + * not enough pages are available at or above paddr_min.
+> > > > + */
+> > > > +vm_paddr_t vm_phy_pages_alloc(struct kvm_vm *vm, size_t num,
+> > > > +                             vm_paddr_t paddr_min, uint32_t memslot)
+> > > > +{
+> > > > +       struct userspace_mem_region *region;
+> > > > +       sparsebit_idx_t pg, base;
+> > > > +
+> > > > +       TEST_ASSERT(num > 0, "Must allocate at least one page");
+> > > > +
+> > > > +       TEST_ASSERT((paddr_min % vm->page_size) == 0, "Min physical address "
+> > > > +               "not divisible by page size.\n"
+> > > > +               "  paddr_min: 0x%lx page_size: 0x%x",
+> > > > +               paddr_min, vm->page_size);
+> > > > +
+> > > > +       region = memslot2region(vm, memslot);
+> > > > +       base = pg = paddr_min >> vm->page_shift;
+> > > > +
+> > > > +       do {
+> > > > +               for (; pg < base + num; ++pg) {
+> > > > +                       if (!sparsebit_is_set(region->unused_phy_pages, pg)) {
+> > > > +                               base = pg = sparsebit_next_set(region->unused_phy_pages, pg);
+> > > > +                               break;
+> > > > +                       }
+> > > > +               }
+> > > > +       } while (pg && pg != base + num);
+> > > > +
+> > > > +       if (pg == 0) {
+> > > > +               fprintf(stderr, "No guest physical page available, "
+> > > > +                       "paddr_min: 0x%lx page_size: 0x%x memslot: %u\n",
+> > > > +                       paddr_min, vm->page_size, memslot);
+> > > > +               fputs("---- vm dump ----\n", stderr);
+> > > > +               vm_dump(stderr, vm, 2);
+> > > > +               abort();
+> > > > +       }
+> > > > +
+> > > > +       for (pg = base; pg < base + num; ++pg)
+> > > > +               sparsebit_clear(region->unused_phy_pages, pg);
+> > > > +
+> > > > +       return base * vm->page_size;
+> > > > +}
+> > > > +
+> > > > +vm_paddr_t vm_phy_page_alloc(struct kvm_vm *vm, vm_paddr_t paddr_min,
+> > > > +                            uint32_t memslot)
+> > > > +{
+> > > > +       return vm_phy_pages_alloc(vm, 1, paddr_min, memslot);
+> > > > +}
+> > > > +
+> > > > +/* Arbitrary minimum physical address used for virtual translation tables. */
+> > > > +#define KVM_GUEST_PAGE_TABLE_MIN_PADDR 0x180000
+> > > > +
+> > > > +vm_paddr_t vm_alloc_page_table(struct kvm_vm *vm)
+> > > > +{
+> > > > +       return vm_phy_page_alloc(vm, KVM_GUEST_PAGE_TABLE_MIN_PADDR, 0);
+> > > > +}
+> > > > +
+> > > >  /*
+> > > >   * VM Virtual Address Unused Gap
+> > > >   *
+> > > > @@ -2149,79 +2222,6 @@ const char *exit_reason_str(unsigned int exit_reason)
+> > > >         return "Unknown";
+> > > >  }
+> > > >
+> > > > -/*
+> > > > - * Physical Contiguous Page Allocator
+> > > > - *
+> > > > - * Input Args:
+> > > > - *   vm - Virtual Machine
+> > > > - *   num - number of pages
+> > > > - *   paddr_min - Physical address minimum
+> > > > - *   memslot - Memory region to allocate page from
+> > > > - *
+> > > > - * Output Args: None
+> > > > - *
+> > > > - * Return:
+> > > > - *   Starting physical address
+> > > > - *
+> > > > - * Within the VM specified by vm, locates a range of available physical
+> > > > - * pages at or above paddr_min. If found, the pages are marked as in use
+> > > > - * and their base address is returned. A TEST_ASSERT failure occurs if
+> > > > - * not enough pages are available at or above paddr_min.
+> > > > - */
+> > > > -vm_paddr_t vm_phy_pages_alloc(struct kvm_vm *vm, size_t num,
+> > > > -                             vm_paddr_t paddr_min, uint32_t memslot)
+> > > > -{
+> > > > -       struct userspace_mem_region *region;
+> > > > -       sparsebit_idx_t pg, base;
+> > > > -
+> > > > -       TEST_ASSERT(num > 0, "Must allocate at least one page");
+> > > > -
+> > > > -       TEST_ASSERT((paddr_min % vm->page_size) == 0, "Min physical address "
+> > > > -               "not divisible by page size.\n"
+> > > > -               "  paddr_min: 0x%lx page_size: 0x%x",
+> > > > -               paddr_min, vm->page_size);
+> > > > -
+> > > > -       region = memslot2region(vm, memslot);
+> > > > -       base = pg = paddr_min >> vm->page_shift;
+> > > > -
+> > > > -       do {
+> > > > -               for (; pg < base + num; ++pg) {
+> > > > -                       if (!sparsebit_is_set(region->unused_phy_pages, pg)) {
+> > > > -                               base = pg = sparsebit_next_set(region->unused_phy_pages, pg);
+> > > > -                               break;
+> > > > -                       }
+> > > > -               }
+> > > > -       } while (pg && pg != base + num);
+> > > > -
+> > > > -       if (pg == 0) {
+> > > > -               fprintf(stderr, "No guest physical page available, "
+> > > > -                       "paddr_min: 0x%lx page_size: 0x%x memslot: %u\n",
+> > > > -                       paddr_min, vm->page_size, memslot);
+> > > > -               fputs("---- vm dump ----\n", stderr);
+> > > > -               vm_dump(stderr, vm, 2);
+> > > > -               abort();
+> > > > -       }
+> > > > -
+> > > > -       for (pg = base; pg < base + num; ++pg)
+> > > > -               sparsebit_clear(region->unused_phy_pages, pg);
+> > > > -
+> > > > -       return base * vm->page_size;
+> > > > -}
+> > > > -
+> > > > -vm_paddr_t vm_phy_page_alloc(struct kvm_vm *vm, vm_paddr_t paddr_min,
+> > > > -                            uint32_t memslot)
+> > > > -{
+> > > > -       return vm_phy_pages_alloc(vm, 1, paddr_min, memslot);
+> > > > -}
+> > > > -
+> > > > -/* Arbitrary minimum physical address used for virtual translation tables. */
+> > > > -#define KVM_GUEST_PAGE_TABLE_MIN_PADDR 0x180000
+> > > > -
+> > > > -vm_paddr_t vm_alloc_page_table(struct kvm_vm *vm)
+> > > > -{
+> > > > -       return vm_phy_page_alloc(vm, KVM_GUEST_PAGE_TABLE_MIN_PADDR, 0);
+> > > > -}
+> > > > -
+> > > >  /*
+> > > >   * Address Guest Virtual to Host Virtual
+> > > >   *
+> > > > --
+> > > > 2.25.1
+> > > >
+> > >
+> > > Why move the function implementation? Maybe just adding a declaration
+> > > at the top of kvm_util.c should suffice.
+> >
+> > At least from working on other projects I'd gotten the impression that
+> > forward function declarations should be avoided if they can be solved by
+> > moving the function above the caller. Certainly don't mind taking your
+> > suggestion and dropping this patch if that's not the case here though.
+>
+> Understood. Yes, I think it would be better to follow your experience
+> then. I was thinking that if you move the code and then potentially
+> git blame on that function might point to you :)
+>
+> Thanks.
+> -Mingwei
 
-Fix both the warning and the potential for confusion by adopting the
-scheduler's task classification. Whilst doing this we also simplify the
-filtering by using mask strings directly (which means we don't have to
-guess all the characters the scheduler might give us).
 
-Unfortunately we can't quite match the scheduler classification completely.
-We add four extra states: - for idle loops and i, m and s sleeping system
-daemons (which means kthreads in one of the I, M and S states). These
-extra states are used to manage the filters for tools to make the output
-of ps and bta less noisy.
+Reviewed-by: Mingwei Zhang <mizhang@google.com>
 
-Note: The Fixes below is the last point the original dubious code was
-      moved; it was not introduced by that patch. However it gives us
-      the last point to which this patch can be easily backported.
-      Happily that should be enough to cover the introduction of
-      CONFIG_WERROR!
-
-Fixes: 2f064a59a11f ("sched: Change task_struct::state")
-Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
----
-
-Notes:
-    v3:
-    - Fix the uninitialized cpu variable (Doug and 0-day CI bot)
-    - Added a Fixes: (Doug)
-    - Changed "state I" -> "state -" and "state M" to "state [ism]"
-    
-    v2:
-    - Fix the typos in the description (Doug)
-    - Stop trying to bend to world so I can keep 'I' exactly as
-      it was before. Instead we now replace 'I' with '-' and
-      fully adopt the scheduler description of tasks. kdb
-      it an interactive tool, not ABI so this is OK. (Doug)
-    - Don't try to enumerate all possible letters in the
-      comments and help. You can learn what to filter from
-      the output of ps anyway, (Doug)
-    - Fix the sleeping system daemon stuff.
-
- kernel/debug/kdb/kdb_bt.c      |  14 ++--
- kernel/debug/kdb/kdb_main.c    |  35 +++++-----
- kernel/debug/kdb/kdb_private.h |   4 +-
- kernel/debug/kdb/kdb_support.c | 118 +++++++--------------------------
- 4 files changed, 51 insertions(+), 120 deletions(-)
-
-diff --git a/kernel/debug/kdb/kdb_bt.c b/kernel/debug/kdb/kdb_bt.c
-index 1f9f0e47aeda..3368a2d15d73 100644
---- a/kernel/debug/kdb/kdb_bt.c
-+++ b/kernel/debug/kdb/kdb_bt.c
-@@ -74,7 +74,7 @@ static void kdb_show_stack(struct task_struct *p, void *addr)
-  */
-
- static int
--kdb_bt1(struct task_struct *p, unsigned long mask, bool btaprompt)
-+kdb_bt1(struct task_struct *p, const char *mask, bool btaprompt)
- {
- 	char ch;
-
-@@ -120,7 +120,7 @@ kdb_bt_cpu(unsigned long cpu)
- 		return;
- 	}
-
--	kdb_bt1(kdb_tsk, ~0UL, false);
-+	kdb_bt1(kdb_tsk, "A", false);
- }
-
- int
-@@ -138,8 +138,8 @@ kdb_bt(int argc, const char **argv)
- 	if (strcmp(argv[0], "bta") == 0) {
- 		struct task_struct *g, *p;
- 		unsigned long cpu;
--		unsigned long mask = kdb_task_state_string(argc ? argv[1] :
--							   NULL);
-+		const char *mask = argc ? argv[1] : kdbgetenv("PS");
-+
- 		if (argc == 0)
- 			kdb_ps_suppressed();
- 		/* Run the active tasks first */
-@@ -167,7 +167,7 @@ kdb_bt(int argc, const char **argv)
- 			return diag;
- 		p = find_task_by_pid_ns(pid, &init_pid_ns);
- 		if (p)
--			return kdb_bt1(p, ~0UL, false);
-+			return kdb_bt1(p, "A", false);
- 		kdb_printf("No process with pid == %ld found\n", pid);
- 		return 0;
- 	} else if (strcmp(argv[0], "btt") == 0) {
-@@ -176,7 +176,7 @@ kdb_bt(int argc, const char **argv)
- 		diag = kdbgetularg((char *)argv[1], &addr);
- 		if (diag)
- 			return diag;
--		return kdb_bt1((struct task_struct *)addr, ~0UL, false);
-+		return kdb_bt1((struct task_struct *)addr, "A", false);
- 	} else if (strcmp(argv[0], "btc") == 0) {
- 		unsigned long cpu = ~0;
- 		if (argc > 1)
-@@ -212,7 +212,7 @@ kdb_bt(int argc, const char **argv)
- 			kdb_show_stack(kdb_current_task, (void *)addr);
- 			return 0;
- 		} else {
--			return kdb_bt1(kdb_current_task, ~0UL, false);
-+			return kdb_bt1(kdb_current_task, "A", false);
- 		}
- 	}
-
-diff --git a/kernel/debug/kdb/kdb_main.c b/kernel/debug/kdb/kdb_main.c
-index fa6deda894a1..60862af3d27a 100644
---- a/kernel/debug/kdb/kdb_main.c
-+++ b/kernel/debug/kdb/kdb_main.c
-@@ -2203,8 +2203,8 @@ static void kdb_cpu_status(void)
- 			state = 'D';	/* cpu is online but unresponsive */
- 		} else {
- 			state = ' ';	/* cpu is responding to kdb */
--			if (kdb_task_state_char(KDB_TSK(i)) == 'I')
--				state = 'I';	/* idle task */
-+			if (kdb_task_state_char(KDB_TSK(i)) == '-')
-+				state = '-';	/* idle task */
- 		}
- 		if (state != prev_state) {
- 			if (prev_state != '?') {
-@@ -2271,37 +2271,30 @@ static int kdb_cpu(int argc, const char **argv)
- void kdb_ps_suppressed(void)
- {
- 	int idle = 0, daemon = 0;
--	unsigned long mask_I = kdb_task_state_string("I"),
--		      mask_M = kdb_task_state_string("M");
- 	unsigned long cpu;
- 	const struct task_struct *p, *g;
- 	for_each_online_cpu(cpu) {
- 		p = kdb_curr_task(cpu);
--		if (kdb_task_state(p, mask_I))
-+		if (kdb_task_state(p, "-"))
- 			++idle;
- 	}
- 	for_each_process_thread(g, p) {
--		if (kdb_task_state(p, mask_M))
-+		if (kdb_task_state(p, "ims"))
- 			++daemon;
- 	}
- 	if (idle || daemon) {
- 		if (idle)
--			kdb_printf("%d idle process%s (state I)%s\n",
-+			kdb_printf("%d idle process%s (state -)%s\n",
- 				   idle, idle == 1 ? "" : "es",
- 				   daemon ? " and " : "");
- 		if (daemon)
--			kdb_printf("%d sleeping system daemon (state M) "
-+			kdb_printf("%d sleeping system daemon (state [ism]) "
- 				   "process%s", daemon,
- 				   daemon == 1 ? "" : "es");
- 		kdb_printf(" suppressed,\nuse 'ps A' to see all.\n");
- 	}
- }
-
--/*
-- * kdb_ps - This function implements the 'ps' command which shows a
-- *	list of the active processes.
-- *		ps [DRSTCZEUIMA]   All processes, optionally filtered by state
-- */
- void kdb_ps1(const struct task_struct *p)
- {
- 	int cpu;
-@@ -2330,17 +2323,25 @@ void kdb_ps1(const struct task_struct *p)
- 	}
- }
-
-+/*
-+ * kdb_ps - This function implements the 'ps' command which shows a
-+ *	    list of the active processes.
-+ *
-+ * ps [<state_chars>]   Show processes, optionally selecting only those whose
-+ *                      state character is found in <state_chars>.
-+ */
- static int kdb_ps(int argc, const char **argv)
- {
- 	struct task_struct *g, *p;
--	unsigned long mask, cpu;
-+	const char *mask;
-+	unsigned long cpu;
-
- 	if (argc == 0)
- 		kdb_ps_suppressed();
- 	kdb_printf("%-*s      Pid   Parent [*] cpu State %-*s Command\n",
- 		(int)(2*sizeof(void *))+2, "Task Addr",
- 		(int)(2*sizeof(void *))+2, "Thread");
--	mask = kdb_task_state_string(argc ? argv[1] : NULL);
-+	mask = argc ? argv[1] : kdbgetenv("PS");
- 	/* Run the active tasks first */
- 	for_each_online_cpu(cpu) {
- 		if (KDB_FLAG(CMD_INTERRUPT))
-@@ -2742,8 +2743,8 @@ static kdbtab_t maintab[] = {
- 	},
- 	{	.name = "bta",
- 		.func = kdb_bt,
--		.usage = "[D|R|S|T|C|Z|E|U|I|M|A]",
--		.help = "Backtrace all processes matching state flag",
-+		.usage = "[<state_chars>|A]",
-+		.help = "Backtrace all processes matching whose state matches",
- 		.flags = KDB_ENABLE_INSPECT,
- 	},
- 	{	.name = "btc",
-diff --git a/kernel/debug/kdb/kdb_private.h b/kernel/debug/kdb/kdb_private.h
-index 629590084a0d..0d2f9feea0a4 100644
---- a/kernel/debug/kdb/kdb_private.h
-+++ b/kernel/debug/kdb/kdb_private.h
-@@ -190,10 +190,8 @@ extern char kdb_grep_string[];
- extern int kdb_grep_leading;
- extern int kdb_grep_trailing;
- extern char *kdb_cmds[];
--extern unsigned long kdb_task_state_string(const char *);
- extern char kdb_task_state_char (const struct task_struct *);
--extern unsigned long kdb_task_state(const struct task_struct *p,
--				    unsigned long mask);
-+extern bool kdb_task_state(const struct task_struct *p, const char *mask);
- extern void kdb_ps_suppressed(void);
- extern void kdb_ps1(const struct task_struct *p);
- extern void kdb_send_sig(struct task_struct *p, int sig);
-diff --git a/kernel/debug/kdb/kdb_support.c b/kernel/debug/kdb/kdb_support.c
-index 7507d9a8dc6a..df2bface866e 100644
---- a/kernel/debug/kdb/kdb_support.c
-+++ b/kernel/debug/kdb/kdb_support.c
-@@ -24,6 +24,7 @@
- #include <linux/uaccess.h>
- #include <linux/kdb.h>
- #include <linux/slab.h>
-+#include <linux/ctype.h>
- #include "kdb_private.h"
-
- /*
-@@ -473,82 +474,7 @@ int kdb_putword(unsigned long addr, unsigned long word, size_t size)
- 	return diag;
- }
-
--/*
-- * kdb_task_state_string - Convert a string containing any of the
-- *	letters DRSTCZEUIMA to a mask for the process state field and
-- *	return the value.  If no argument is supplied, return the mask
-- *	that corresponds to environment variable PS, DRSTCZEU by
-- *	default.
-- * Inputs:
-- *	s	String to convert
-- * Returns:
-- *	Mask for process state.
-- * Notes:
-- *	The mask folds data from several sources into a single long value, so
-- *	be careful not to overlap the bits.  TASK_* bits are in the LSB,
-- *	special cases like UNRUNNABLE are in the MSB.  As of 2.6.10-rc1 there
-- *	is no overlap between TASK_* and EXIT_* but that may not always be
-- *	true, so EXIT_* bits are shifted left 16 bits before being stored in
-- *	the mask.
-- */
--
--/* unrunnable is < 0 */
--#define UNRUNNABLE	(1UL << (8*sizeof(unsigned long) - 1))
--#define RUNNING		(1UL << (8*sizeof(unsigned long) - 2))
--#define IDLE		(1UL << (8*sizeof(unsigned long) - 3))
--#define DAEMON		(1UL << (8*sizeof(unsigned long) - 4))
-
--unsigned long kdb_task_state_string(const char *s)
--{
--	long res = 0;
--	if (!s) {
--		s = kdbgetenv("PS");
--		if (!s)
--			s = "DRSTCZEU";	/* default value for ps */
--	}
--	while (*s) {
--		switch (*s) {
--		case 'D':
--			res |= TASK_UNINTERRUPTIBLE;
--			break;
--		case 'R':
--			res |= RUNNING;
--			break;
--		case 'S':
--			res |= TASK_INTERRUPTIBLE;
--			break;
--		case 'T':
--			res |= TASK_STOPPED;
--			break;
--		case 'C':
--			res |= TASK_TRACED;
--			break;
--		case 'Z':
--			res |= EXIT_ZOMBIE << 16;
--			break;
--		case 'E':
--			res |= EXIT_DEAD << 16;
--			break;
--		case 'U':
--			res |= UNRUNNABLE;
--			break;
--		case 'I':
--			res |= IDLE;
--			break;
--		case 'M':
--			res |= DAEMON;
--			break;
--		case 'A':
--			res = ~0UL;
--			break;
--		default:
--			  kdb_func_printf("unknown flag '%c' ignored\n", *s);
--			  break;
--		}
--		++s;
--	}
--	return res;
--}
-
- /*
-  * kdb_task_state_char - Return the character that represents the task state.
-@@ -559,7 +485,6 @@ unsigned long kdb_task_state_string(const char *s)
-  */
- char kdb_task_state_char (const struct task_struct *p)
- {
--	unsigned int p_state;
- 	unsigned long tmp;
- 	char state;
- 	int cpu;
-@@ -568,25 +493,18 @@ char kdb_task_state_char (const struct task_struct *p)
- 	    copy_from_kernel_nofault(&tmp, (char *)p, sizeof(unsigned long)))
- 		return 'E';
-
--	cpu = kdb_process_cpu(p);
--	p_state = READ_ONCE(p->__state);
--	state = (p_state == 0) ? 'R' :
--		(p_state < 0) ? 'U' :
--		(p_state & TASK_UNINTERRUPTIBLE) ? 'D' :
--		(p_state & TASK_STOPPED) ? 'T' :
--		(p_state & TASK_TRACED) ? 'C' :
--		(p->exit_state & EXIT_ZOMBIE) ? 'Z' :
--		(p->exit_state & EXIT_DEAD) ? 'E' :
--		(p_state & TASK_INTERRUPTIBLE) ? 'S' : '?';
-+	state = task_state_to_char((struct task_struct *) p);
-+
- 	if (is_idle_task(p)) {
- 		/* Idle task.  Is it really idle, apart from the kdb
- 		 * interrupt? */
-+		cpu = kdb_process_cpu(p);
- 		if (!kdb_task_has_cpu(p) || kgdb_info[cpu].irq_depth == 1) {
- 			if (cpu != kdb_initial_cpu)
--				state = 'I';	/* idle task */
-+				state = '-';	/* idle task */
- 		}
--	} else if (!p->mm && state == 'S') {
--		state = 'M';	/* sleeping system daemon */
-+	} else if (!p->mm && strchr("IMS", state)) {
-+		state = tolower(state);		/* sleeping system daemon */
- 	}
- 	return state;
- }
-@@ -596,14 +514,28 @@ char kdb_task_state_char (const struct task_struct *p)
-  *	given by the mask.
-  * Inputs:
-  *	p	struct task for the process
-- *	mask	mask from kdb_task_state_string to select processes
-+ *	mask	set of characters used to select processes; both NULL
-+ *	        and the empty string mean adopt a default filter, which
-+ *	        is to suppress sleeping system daemons and the idle tasks
-  * Returns:
-  *	True if the process matches at least one criteria defined by the mask.
-  */
--unsigned long kdb_task_state(const struct task_struct *p, unsigned long mask)
-+bool kdb_task_state(const struct task_struct *p, const char *mask)
- {
--	char state[] = { kdb_task_state_char(p), '\0' };
--	return (mask & kdb_task_state_string(state)) != 0;
-+	char state = kdb_task_state_char(p);
-+
-+	/* If there is no mask, then we will filter code that runs when the
-+	 * scheduler is idling and any system daemons that are currently
-+	 * sleeping.
-+	 */
-+	if (!mask || mask[0] == '\0')
-+		return !strchr("-ims", state);
-+
-+	/* A is a special case that matches all states */
-+	if (strchr(mask, 'A'))
-+		return true;
-+
-+	return strchr(mask, state);
- }
-
- /* Maintain a small stack of kdb_flags to allow recursion without disturbing
-
-base-commit: 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f
---
-2.31.1
-
+Thanks.
+-Mingwei
