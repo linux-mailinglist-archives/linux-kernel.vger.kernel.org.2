@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4052C4418E6
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:51:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0172F4417E5
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:39:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233533AbhKAJwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:52:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52156 "EHLO mail.kernel.org"
+        id S233668AbhKAJlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:41:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43582 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234590AbhKAJs2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:48:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 32F6661401;
-        Mon,  1 Nov 2021 09:31:06 +0000 (UTC)
+        id S233646AbhKAJhr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:37:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4468C61353;
+        Mon,  1 Nov 2021 09:26:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635759066;
-        bh=WLY8H+wkc9mJ5duFKJxVHhdQsUXMKn34u44rPoOT6Mw=;
+        s=korg; t=1635758802;
+        bh=L0e9MjlUSI+T7GeM+QozspY/hywwhA4+PDtzbxM3ylQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QIXoMaS55KkSF8OczDTrKSngf1sNVE96Vpoeh14jZjMGAJ4wkTHgjVkwZY8RdvQM1
-         Dzet20dekDkO6JOmcv4gTjGwY0EqhdNC9D5LA/W6KyjeQEi3532j819AK5nIFvMf2D
-         2k3nnnBUmOg4l5+Iz6ewuQLfT9lwM4L6nR0eZNFA=
+        b=tBF6lM5JSJr5Fv/DnVUdkmkPb5Bp7YHSKm+2PgzPN9Zdx5iANoU3ev4ub0nMoehHf
+         FYkeDZOl4BUPEupTpuTbvjAakbl3PMOMjgOC7Oms+vo/QLbe74Wl3jkrwPgVzCyKit
+         hptKno0Pr24Zb55SfxMjdGOTVl4WOI5VQ+JItiFc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xin Long <lucien.xin@gmail.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 099/125] sctp: use init_tag from inithdr for ABORT chunk
+        stable@vger.kernel.org, Walter Stoll <Walter.Stoll@duagon.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.10 64/77] phy: phy_ethtool_ksettings_set: Lock the PHY while changing settings
 Date:   Mon,  1 Nov 2021 10:17:52 +0100
-Message-Id: <20211101082551.857609767@linuxfoundation.org>
+Message-Id: <20211101082525.050743740@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082533.618411490@linuxfoundation.org>
-References: <20211101082533.618411490@linuxfoundation.org>
+In-Reply-To: <20211101082511.254155853@linuxfoundation.org>
+References: <20211101082511.254155853@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Andrew Lunn <andrew@lunn.ch>
 
-[ Upstream commit 4f7019c7eb33967eb87766e0e4602b5576873680 ]
+commit af1a02aa23c37045e6adfcf074cf7dbac167a403 upstream.
 
-Currently Linux SCTP uses the verification tag of the existing SCTP
-asoc when failing to process and sending the packet with the ABORT
-chunk. This will result in the peer accepting the ABORT chunk and
-removing the SCTP asoc. One could exploit this to terminate a SCTP
-asoc.
+There is a race condition where the PHY state machine can change
+members of the phydev structure at the same time userspace requests a
+change via ethtool. To prevent this, have phy_ethtool_ksettings_set
+take the PHY lock.
 
-This patch is to fix it by always using the initiate tag of the
-received INIT chunk for the ABORT chunk to be sent.
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 2d55173e71b0 ("phy: add generic function to support ksetting support")
+Reported-by: Walter Stoll <Walter.Stoll@duagon.com>
+Suggested-by: Walter Stoll <Walter.Stoll@duagon.com>
+Tested-by: Walter Stoll <Walter.Stoll@duagon.com>
+Signed-off-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/sctp/sm_statefuns.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/phy/phy.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/net/sctp/sm_statefuns.c b/net/sctp/sm_statefuns.c
-index 32df65f68c12..7f8306968c39 100644
---- a/net/sctp/sm_statefuns.c
-+++ b/net/sctp/sm_statefuns.c
-@@ -6348,6 +6348,7 @@ static struct sctp_packet *sctp_ootb_pkt_new(
- 		 * yet.
- 		 */
- 		switch (chunk->chunk_hdr->type) {
-+		case SCTP_CID_INIT:
- 		case SCTP_CID_INIT_ACK:
- 		{
- 			struct sctp_initack_chunk *initack;
--- 
-2.33.0
-
+--- a/drivers/net/phy/phy.c
++++ b/drivers/net/phy/phy.c
+@@ -814,6 +814,7 @@ int phy_ethtool_ksettings_set(struct phy
+ 	      duplex != DUPLEX_FULL)))
+ 		return -EINVAL;
+ 
++	mutex_lock(&phydev->lock);
+ 	phydev->autoneg = autoneg;
+ 
+ 	if (autoneg == AUTONEG_DISABLE) {
+@@ -830,8 +831,9 @@ int phy_ethtool_ksettings_set(struct phy
+ 	phydev->mdix_ctrl = cmd->base.eth_tp_mdix_ctrl;
+ 
+ 	/* Restart the PHY */
+-	phy_start_aneg(phydev);
++	_phy_start_aneg(phydev);
+ 
++	mutex_unlock(&phydev->lock);
+ 	return 0;
+ }
+ EXPORT_SYMBOL(phy_ethtool_ksettings_set);
 
 
