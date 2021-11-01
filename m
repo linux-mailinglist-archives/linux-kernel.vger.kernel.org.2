@@ -2,121 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00491441BD5
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 14:39:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18332441BDA
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 14:40:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232314AbhKANlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 09:41:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45184 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232050AbhKANlo (ORCPT
+        id S232199AbhKANmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 09:42:33 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:15463 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232071AbhKANmc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 09:41:44 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AB6CC061714;
-        Mon,  1 Nov 2021 06:39:11 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id m21so17172638pgu.13;
-        Mon, 01 Nov 2021 06:39:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=T1SuG6omwX4jHf9ObVREsw81tCKAtJ4gq5pIVSAuqKs=;
-        b=gx/1SnU1oprmoKv/Cn7RmkU2CQ8NbIG4ajuuhiJSFuHoo4GILmh5jTtyy4R5Zt3zRG
-         /jkyNNVoufEhV+GDKgba+K493UCo5gq1o+5Y3L2qeJ83lo6bo+27+FO8poE+9cUlJoOP
-         r6QhXVaeFwLnQoqL3FPf3aMUt5KCvwJjUfkoeCVeqGPmvl02V9NC+YlaZ9EXzlDZluUQ
-         HFZBxUF7BFn/uulob18GrKsyRjcjH9J7IcqyDbu3zpcWvqmXZwybFgQXVAO1OAAVKORm
-         wig6eEImQbkL02q0XOAzzHpXIYG+MyzUGLlPGcEWATfgUe6cU+MXpo+RNcZ8AnPDKG2P
-         giKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=T1SuG6omwX4jHf9ObVREsw81tCKAtJ4gq5pIVSAuqKs=;
-        b=nYDCMw0ZCBJ7jpHRCLUUw6w0CP530Sz6zit89Sw69LPWvEGMSbKAimdqGwVDHYoJun
-         2GacWGbbweSRQNMlL1/ax964PDth38AZp9l3iUl5a6hzTA46Tjtp363qXLfPxQUqp24l
-         50KcYeWhXR3xKwzc7nvwY6kgi+qrtzGN84IS127kMrbdYz7JKjK0qhHFbZUU0WNU7SOm
-         82XsJbyAIhjZqG8gNE/SSwpHVqapnLCP6SnGx25sCRpS/VBNmd7tvgdME5fvwZwZyYYV
-         n/Mf0bdhNSJ2qWC8wFT6h0Iif+/Bgm3yhTJs7XY4m+AuAYTOBumcGzgHLmzfWNCCxhMH
-         SqcA==
-X-Gm-Message-State: AOAM532ci/z7+ULBhv+Lc2e3STS4LjqAS79u++/q4RWQNxrvTuKbT+Ov
-        lKpl9wa0xKWGnn8ldxT0pvj+dZZL8PLKpVczhFZA36eYe/c=
-X-Google-Smtp-Source: ABdhPJwC5ZJWwaaUwsKGZKVeTjDGF2qlmYMsxUwjkqc7gO6VNVyx3bO8F9LFNM5BqR7qH7iomvFvZjfKJgr98OPgN6o=
-X-Received: by 2002:a05:6a00:1681:b0:46f:6fc0:e515 with SMTP id
- k1-20020a056a00168100b0046f6fc0e515mr28551253pfc.11.1635773950511; Mon, 01
- Nov 2021 06:39:10 -0700 (PDT)
+        Mon, 1 Nov 2021 09:42:32 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1635773999; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=oCiwHNpAGx+7qf4ko0KtXb5a49/AVJ95iHboNyo0CEo=;
+ b=rTVnfd6y1S2+jkheATYPJ1ufg/mDicRJxAxaUil7QFptlvrA7FP0Vt2rUnFQhG+Im1dkePRj
+ JKYamBH9auHnYWmOAFqiEKtZpD7HIcSOf//YgWQDQKBJOlT2xqeInBsNFU4P0EJjDvO2SHBq
+ Nl3UDVkKotL4O/lPmCtU1C4zGyU=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 617fee2d2e144ac4d3ef0af7 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 01 Nov 2021 13:39:57
+ GMT
+Sender: okukatla=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id ED320C43617; Mon,  1 Nov 2021 13:39:56 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: okukatla)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 435E1C4338F;
+        Mon,  1 Nov 2021 13:39:56 +0000 (UTC)
 MIME-Version: 1.0
-References: <cover.1634630485.git.mchehab+huawei@kernel.org>
- <b22b772c23f531708a9bc025d56c0312a53bd6c9.1634630486.git.mchehab+huawei@kernel.org>
- <878ryosocf.fsf@meer.lwn.net> <f0269915-4863-9ed6-dedd-592f2e308f46@redhat.com>
- <CAJy-AmnHht4=sNyQ5r78MwfOpMF8dRqrct8fasVX-ULadfMNvg@mail.gmail.com>
-In-Reply-To: <CAJy-AmnHht4=sNyQ5r78MwfOpMF8dRqrct8fasVX-ULadfMNvg@mail.gmail.com>
-From:   teng sterling <sterlingteng@gmail.com>
-Date:   Mon, 1 Nov 2021 21:38:59 +0800
-Message-ID: <CAMU9jJoSVeXThH6vKjKKEvrMQ5f_Yu7Z9PD99Oxk1-MHVLLb5w@mail.gmail.com>
-Subject: Re: [PATCH v3 16/23] docs: translations: zh_CN: memory-hotplug.rst:
- fix a typo
-To:     Alex Shi <seakeel@gmail.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Alex Shi <alexs@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Wu XiangCheng <bobwxc@email.cn>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 01 Nov 2021 19:09:56 +0530
+From:   okukatla@codeaurora.org
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     georgi.djakov@linaro.org, evgreen@google.com,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sboyd@kernel.org,
+        mdtipton@codeaurora.org, sibis@codeaurora.org,
+        saravanak@google.com, seansw@qti.qualcomm.com, elder@linaro.org,
+        linux-pm@vger.kernel.org, linux-arm-msm-owner@vger.kernel.org
+Subject: Re: [v8 3/3] arm64: dts: qcom: sc7280: Add EPSS L3 interconnect
+ provider
+In-Reply-To: <YXsxxd7f/FaDJEMa@ripper>
+References: <1634812857-10676-1-git-send-email-okukatla@codeaurora.org>
+ <1634812857-10676-4-git-send-email-okukatla@codeaurora.org>
+ <YXsxxd7f/FaDJEMa@ripper>
+Message-ID: <fc4ef5ecd91401f49411cf138b0da526@codeaurora.org>
+X-Sender: okukatla@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alex Shi <seakeel@gmail.com> =E4=BA=8E2021=E5=B9=B411=E6=9C=881=E6=97=A5=E5=
-=91=A8=E4=B8=80 =E4=B8=8B=E5=8D=883:48=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Wed, Oct 20, 2021 at 3:08 PM David Hildenbrand <david@redhat.com> wrot=
-e:
-> >
-> > Dumb question that probably has been asked a couple of times already:
-> > why do we even maintain a translated doc in-tree?
-> >
-> > Every time I do an update on the original doc, I for sure can only gues=
-s
-> > which translated parts need updating. And I really can only update when
-Dear David
-
-Thank you very much for your contribution, in fact, we are always updating =
-the
-translations and improving the speed of the sync, so If you are not
-good at Chinese
-and want to get the sync faster, please CC us when you send the patch.
-
-> > "deleting", not when rewording/adding. So we'll be left with stale doc
-> > that will have to be updated manually by $whoever.
->
-> cc to the translation maintainers and translator would be helpful?
-Alex,Maybe we should provide a translation guide in English, e.g::
-
-  Dear developers, if you have trouble updating the Chinese documentation a=
-fter
-  updating the original documentation, please CC the translator of
-that documentation
-  and the maintainer of the Chinese documentation, and the relevant
-documentation
-  will be updated soon.
-
->
-> > I don't feel very
-> > confident about this. No translated doc is better than outdated
-> > translated doc.
->
-> Uh, I don't know other languages, but in Chinese, 15 years before
-> translated books are still selling well in China. :)
-> https://item.jd.com/1075130482.html  ->  Linux device driver
-> https://item.jd.com/10100237.html  -> Understanding linux kernel
-Yes, I just bought a LDD3 last week.! >_<
-
-
-Thanks,
-Yanteng
+On 2021-10-29 04:57, Bjorn Andersson wrote:
+> On Thu 21 Oct 03:40 PDT 2021, Odelu Kukatla wrote:
+> 
+>> Add Epoch Subsystem (EPSS) L3 interconnect provider node on SC7280
+>> SoCs.
+>> 
+>> Signed-off-by: Odelu Kukatla <okukatla@codeaurora.org>
+>> ---
+>>  arch/arm64/boot/dts/qcom/sc7280.dtsi | 8 ++++++++
+>>  1 file changed, 8 insertions(+)
+>> 
+>> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi 
+>> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> index d74a4c8..0b55742 100644
+>> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> @@ -3687,6 +3687,14 @@
+>>  			};
+>>  		};
+>> 
+>> +		epss_l3: interconnect@18590000 {
+>> +			compatible = "qcom,sc7280-epss-l3";
+>> +			reg = <0 0x18590000 0 0x1000>;
+> 
+> This series looks like I would expect, with and without per-core dcvs.
+> But can you please explain why this contradict what Sibi says here:
+> https://lore.kernel.org/all/1627581885-32165-3-git-send-email-sibis@codeaurora.org/
+> 
+> Regards,
+> Bjorn
+> 
+Thanks for Review!
+Sibi's patch will be dropped, it is not required with my updated patch 
+series:
+https://lore.kernel.org/all/1627581885-32165-3-git-send-email-sibis@codeaurora.org/
+>> +			clocks = <&rpmhcc RPMH_CXO_CLK>, <&gcc GCC_GPLL0>;
+>> +			clock-names = "xo", "alternate";
+>> +			#interconnect-cells = <1>;
+>> +		};
+>> +
+>>  		cpufreq_hw: cpufreq@18591000 {
+>>  			compatible = "qcom,cpufreq-epss";
+>>  			reg = <0 0x18591000 0 0x1000>,
+>> --
+>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+>> Forum,
+>> a Linux Foundation Collaborative Project
+>> 
