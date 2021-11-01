@@ -2,141 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A93D4419F9
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 11:33:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 126554419F6
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 11:33:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232233AbhKAKgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 06:36:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:24477 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232161AbhKAKf4 (ORCPT
+        id S232156AbhKAKfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 06:35:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231841AbhKAKfy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 06:35:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635762802;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mh/lXvO/DjLUSeyCpSgez/WyU/AXkpH1vth0jy9+/fg=;
-        b=Gp27gZu9UkN/rG3GB+E/NXITgjryz0CL3u2BQG8B3vkEtwW/IakfF23kp1fHjZvzT3Yuee
-        j+DuE9CsEvniqdIlYmOia/H3e9RrAZb/rdllG/xMBcSn1q3UhRsurLDGQxJ2Mst6I6qH18
-        ZJHFHDUm6JhacMpJbFtHThl36iH+QF0=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-147-uurX3Jq7M5Ss4QQG4OKKnA-1; Mon, 01 Nov 2021 06:33:21 -0400
-X-MC-Unique: uurX3Jq7M5Ss4QQG4OKKnA-1
-Received: by mail-ed1-f69.google.com with SMTP id y12-20020a056402270c00b003e28de6e995so1676650edd.11
+        Mon, 1 Nov 2021 06:35:54 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E917C061714
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 03:33:21 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id t30so2626931wra.10
         for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 03:33:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=8OI3fn/D0tpVt5kezlEtyVyudNoVFRpyBkJURCL4fgY=;
+        b=gn0OESYVqEp7F6L3AbiTq1XJAAWO5Q6JVmuKVmstEtESpZeQldrpTIpr+foQ5cUfld
+         zwhrkDA26PSzFtVHfHmUlsM6RwiE7YYCb1QTKMewdnox+pDAqV8bZL7y3xxY+UQG7YiT
+         uilarkibkWDNNnBPnt5pU6/dq3GqTcV5Q6ceMTDsn7dg7TDDzqNgmZjr1Iuw53RXYghN
+         UNdMdvkNzQbnuiWCjSdVcGZu4VsN9+oobTsm/Dno8Gmw3XT9n6ChYy1YvmnHnroTfHX/
+         VFpPC5Ap52xiex+tfNH9H9CTlGu07EmZVqyVOzFwxwCgeeyPvCjqkgM+sURkW2yUR0Pm
+         QpNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=mh/lXvO/DjLUSeyCpSgez/WyU/AXkpH1vth0jy9+/fg=;
-        b=Z+ycD4gXtzSyttncce+uDPeA5vwwjkogBl7OM3NlLk1YCdedKTcRiid6nZwBeRawSu
-         OaiFMditEHdrIHDCoL/qxzNoDWcvils6tL2oOo+as7/jXQRQicPSuilOlFxgcD4yrSFF
-         lobYkcnPgyGy+oLd7IdoF+1rssi7TkTaAs/k4aC2b8wFMURwxdRS80sU4qSir6jAJjKG
-         OBaK/sbTAfjnMjKqNz90OMoumEVQPT1QW1rcZRbgurRL0nPNB5cwAH4UF+L/pvtzDHj0
-         w4ZUaWbTrYvAcesg+8oBdjBS1PeP55SzBrHUWnDFArjYdTHdM4sX2Q76d1+9LISj735/
-         eruw==
-X-Gm-Message-State: AOAM5313Qj4ncZXr9VxVavhINvZpbokexNhO8pSvAbHodZjMi3MNc1UJ
-        HIWmNk4Qym7rpq0B7uxLb0nOo9Ad1hfJw04gCXDOwZh6wbzi0GlEzx75WsG1VohUI+YecDQ4Ddw
-        grTDjcVNNSH6icMjVPpMKNJwy
-X-Received: by 2002:a50:8e05:: with SMTP id 5mr39702747edw.76.1635762800379;
-        Mon, 01 Nov 2021 03:33:20 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw9gnk66lzzUHLALthwE3raOdlZGF410uhbCdfiSGqNONoUSpPMJi4RKxjukoAv0gSOLjBOOg==
-X-Received: by 2002:a50:8e05:: with SMTP id 5mr39702727edw.76.1635762800215;
-        Mon, 01 Nov 2021 03:33:20 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id q17sm6607866ejp.106.2021.11.01.03.33.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 03:33:19 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ajay Garg <ajaygargnsit@gmail.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v2 8/8] KVM: x86: Add checks for reserved-to-zero
- Hyper-V hypercall fields
-In-Reply-To: <20211030000800.3065132-9-seanjc@google.com>
-References: <20211030000800.3065132-1-seanjc@google.com>
- <20211030000800.3065132-9-seanjc@google.com>
-Date:   Mon, 01 Nov 2021 11:33:18 +0100
-Message-ID: <87v91cjhch.fsf@vitty.brq.redhat.com>
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=8OI3fn/D0tpVt5kezlEtyVyudNoVFRpyBkJURCL4fgY=;
+        b=A48ivxD63jt5j91vYKDMcNSeF/koI03tDfjUHwj6YYvGFSMWvQOCC+JxpTuRv+Cf1L
+         NZ2tpzD4s6/fcd8RRZ6cRA4xyV8dLbCZvDAM6FB5aBUsga566dNKOP/k0L2Qt1nygjxl
+         MO9Oz4rzPWq7LP3ghFdm7f1rSWBhg6kh6u9avRcXBe2nDI+Yu7ECH0TkfxA/Pt8maaTT
+         Tzv+SyAQuip47gfthEla4ZMkfnhA9afBI6wgUcW83UNUSIcoz68MZN1wwiLA0p5GYNsP
+         /CgLmUbUyG6xGyl8rmjz1XH4W8UjlMWs95n37IKEWUYZ9TS0xUH8S5OJ4KjxpkW6j2nT
+         K7tw==
+X-Gm-Message-State: AOAM531b2zpure95+1TDEzEMbwJldzEAhcZ1Zm/zKek4E9He9JSFrdcP
+        k2bGDn7v5KICJut7V8IDzE4WmgNEzArYu2dCX7c=
+X-Google-Smtp-Source: ABdhPJzWXnnaEEQCQpwgpymCXZOHGbUud+G15it2L8o0Upxnb3K/ph8VJfATwaJMgCdMXw9dNVt0HCLXkDJYTZEDezA=
+X-Received: by 2002:a05:6000:1a89:: with SMTP id f9mr36474444wry.249.1635762799807;
+ Mon, 01 Nov 2021 03:33:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+Reply-To: ahmeddrali60@gmail.com
+Sender: dr.daouda.augustin11@gmail.com
+Received: by 2002:a5d:6d0a:0:0:0:0:0 with HTTP; Mon, 1 Nov 2021 03:33:19 -0700 (PDT)
+From:   "Dr.Ali Ahmed" <ahmeddrali60@gmail.com>
+Date:   Mon, 1 Nov 2021 03:33:19 -0700
+X-Google-Sender-Auth: CC6_kQ2hnR2WJeNlazWSCZSPz3k
+Message-ID: <CAOmrfMvn=wUpP6f7jHvNVK-MBrTwkYq6wO3WVBjnAJN2G02Jmg@mail.gmail.com>
+Subject: VERY VERY URGENT,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sean Christopherson <seanjc@google.com> writes:
+Dear Friend,
 
-> Add checks for the three fields in Hyper-V's hypercall params that must
-> be zero.  Per the TLFS, HV_STATUS_INVALID_HYPERCALL_INPUT is returned if
-> "A reserved bit in the specified hypercall input value is non-zero."
->
-> Note, the TLFS has an off-by-one bug for the last reserved field, which
-> it defines as being bits 64:60.  The same section states "The input field
-> 64-bit value called a hypercall input value.", i.e. bit 64 doesn't
-> exist.
+I Dr.Ali Ahmed, With due respect, I have decided to contact you on a
+business transaction that will be beneficial to both of us.At the bank
+last account and  auditing evaluation, my staff came across an old
+account which was being maintained by a foreign client who we learned
+was among the deceased passengers of a motor accident on
+November.2003, the deceased was unable to run this account since his
+death. The Account has  remained dormant without the knowledge of his
+family since it was put in a  safe deposit account in the bank for
+future investment by the client.
 
-This version are you looking at? I can't see this issue in 6.0b
+Since his demise, even the members of his family haven't applied for
+claims over this fund and it has been in the safe deposit account
+until I discovered that it cannot be claimed since our client
+isaforeign national and we are sure that he has no next of kin here to
+file claims over the money. As the director of the department, this
+discovery was brought to my office so as to decide what is to be
+done.I decided to seek ways through which to transfer this money out
+of the bank and out of the country too.
 
->
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  arch/x86/kvm/hyperv.c             | 5 +++++
->  include/asm-generic/hyperv-tlfs.h | 6 ++++++
->  2 files changed, 11 insertions(+)
->
-> diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
-> index ad455df850c9..1cdcf3ad5684 100644
-> --- a/arch/x86/kvm/hyperv.c
-> +++ b/arch/x86/kvm/hyperv.c
-> @@ -2228,6 +2228,11 @@ int kvm_hv_hypercall(struct kvm_vcpu *vcpu)
->  		goto hypercall_complete;
->  	}
->  
-> +	if (unlikely(hc.param & HV_HYPERCALL_RSVD_MASK)) {
-> +		ret = HV_STATUS_INVALID_HYPERCALL_INPUT;
-> +		goto hypercall_complete;
-> +	}
-> +
->  	if (hc.fast && is_xmm_fast_hypercall(&hc)) {
->  		if (unlikely(hv_vcpu->enforce_cpuid &&
->  			     !(hv_vcpu->cpuid_cache.features_edx &
-> diff --git a/include/asm-generic/hyperv-tlfs.h b/include/asm-generic/hyperv-tlfs.h
-> index 1ba8e6da4427..92b9ce5882f8 100644
-> --- a/include/asm-generic/hyperv-tlfs.h
-> +++ b/include/asm-generic/hyperv-tlfs.h
-> @@ -183,11 +183,17 @@ enum HV_GENERIC_SET_FORMAT {
->  #define HV_HYPERCALL_FAST_BIT		BIT(16)
->  #define HV_HYPERCALL_VARHEAD_OFFSET	17
->  #define HV_HYPERCALL_VARHEAD_MASK	GENMASK_ULL(26, 17)
-> +#define HV_HYPERCALL_RSVD0_MASK		GENMASK_ULL(31, 27)
->  #define HV_HYPERCALL_REP_COMP_OFFSET	32
->  #define HV_HYPERCALL_REP_COMP_1		BIT_ULL(32)
->  #define HV_HYPERCALL_REP_COMP_MASK	GENMASK_ULL(43, 32)
-> +#define HV_HYPERCALL_RSVD1_MASK		GENMASK_ULL(47, 44)
->  #define HV_HYPERCALL_REP_START_OFFSET	48
->  #define HV_HYPERCALL_REP_START_MASK	GENMASK_ULL(59, 48)
-> +#define HV_HYPERCALL_RSVD2_MASK		GENMASK_ULL(63, 60)
-> +#define HV_HYPERCALL_RSVD_MASK		(HV_HYPERCALL_RSVD0_MASK | \
-> +					 HV_HYPERCALL_RSVD1_MASK | \
-> +					 HV_HYPERCALL_RSVD2_MASK)
->  
->  /* hypercall status code */
->  #define HV_STATUS_SUCCESS			0
+The total amount in the account is USD $18.6 million with my positions
+as staff of the bank,I am handicapped because I cannot operate foreign
+accounts and cannot lay a bonafide claim over this money. The client
+was a foreign  national and you will only be asked to act as his next
+of kin and I will supply you with all the necessary information and
+bank data to assist you in being able to transfer this money to any
+bank of your  choice where this money could be transferred into.The
+total sum will be shared as follows: 50% for me, 50% for you and
+expenses incidental occur  during the transfer will be incur by both
+of us. The transfer is risk free on both sides hence you are going to
+follow my instruction till the fund  transfer to your account. Since I
+work in this bank that is why you should  be confident in the success
+of this transaction because you will be updated with information as
+and when desired.
 
-Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+I will wish you to keep this transaction secret and confidential as I
+am hoping to retire with my share of this money at the end of the
+transaction  which will be when this money is safe in your account.I
+will then come over to your country for sharing according to the
+previously agreed percentages. You might even have to advise me on
+possibilities of investment in your country or elsewhere of our
+choice. May God help you to help me to a restive retirement,Amen,And
+You have to  contact me through my private e-mail
+at(ahmeddrali60@gmail.com)Please for further information and inquiries
+feel free to contact me back immediately for more explanation and
+better understanding I want you to assure me your capability of
+handling this  project with trust by providing me your following
+information details such as:
 
--- 
-Vitaly
+(1)NAME..............
+(2)AGE:................
+(3)SEX:.....................
+(4)PHONE NUMBER:.................
+(5)OCCUPATION:.....................
+(6)YOUR COUNTRY:.....................
 
+Yours sincerely,
+Dr.Ali Ahmed
