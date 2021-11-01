@@ -2,96 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCD554412D6
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 06:00:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 877D84412D2
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 05:58:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229834AbhKAFCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 01:02:53 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:52044 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbhKAFCw (ORCPT
+        id S229738AbhKAFBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 01:01:18 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:48266 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229502AbhKAFBO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 01:02:52 -0400
-Received: by mail-il1-f199.google.com with SMTP id a14-20020a927f0e000000b002597075cb35so9283086ild.18
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 22:00:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=8kbiHxOD2R5Kq+0WAmJMkHoocjtefmqjMs5G+/Y1aAA=;
-        b=0XbTH9ZVA85ApYLit+CSh6UScVt35lOZQib+gE47cYjaZ/up5Q86JRhyRFUu8gtnYf
-         WbMkAFsFCu6+/DmMdpOrSh7xNwopsE8VHFUjYsk1oL8b0MICoU+UyakokkPKs8RwRbsX
-         sSZ/zbSa2TKCFK1m/kM5nWycHIHsxe+/LN2cJfszijVh8nNWNlYGdtyZ8Gb4NbGEv/Pa
-         +LBtVDCKCUWv4TFWDxH5Jd0hnnIySDz1+v1hg8aouFPn2Jio9VmbNQBNN/Z6NXKMT9z2
-         losBhv1srD6DXG4DkQvtk7fpnTcccsclSGkFx3FYiYxdFIpI5LDOVk212RRG45DLAzSs
-         JJGQ==
-X-Gm-Message-State: AOAM531dbNvxcTGFZ3I13h3g6/b5Y6tzgwR2ECfKLV9jz6u4iYfElG2+
-        YPtQ2u6bHebGJf0lbSox4HJcY3GXTKp+ATsQpExvOH9Dz/5w
-X-Google-Smtp-Source: ABdhPJyWZCUoBUEwmt0F5ibRDQL3QZG8mGbbVoHRLj5BWXhBbWPu/W5Hf3le/6CuHAd8Au/fs+ACLBcCPTpom4yOF9WfjYewpKRc
+        Mon, 1 Nov 2021 01:01:14 -0400
+Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20211101045838epoutp04cec30b3b0678f57d03218c4038230455~zU1YWVbQu2350323503epoutp04g
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 04:58:38 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20211101045838epoutp04cec30b3b0678f57d03218c4038230455~zU1YWVbQu2350323503epoutp04g
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1635742718;
+        bh=IJ8BEhRakEjtjgjClZJy5PcZ8sx14ybuUNY2BjRZzQA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=MiOj7Xwpo545MXdITUXWsMHhgKIqgygwTzDCRn2Qyxc9gsgfDzgH1QphUcJ2ohReS
+         5hwB/eYOewSTyt4Euv0RlwKQ9cNbPlDTQx/Ejri+kVWvHashx1yLhOczSlqOrF+Nww
+         xgSMVwawePMoOqSuUzq6DHbMUiJzPGZw+DIxW5NY=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
+        20211101045838epcas2p4882c3fbaa3bf3c63b22491524ba4e42f~zU1XybeLY0577405774epcas2p4T;
+        Mon,  1 Nov 2021 04:58:38 +0000 (GMT)
+Received: from epsmges2p3.samsung.com (unknown [182.195.36.92]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4HjLQg2Ck4z4x9Qd; Mon,  1 Nov
+        2021 04:58:35 +0000 (GMT)
+Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
+        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        FC.8D.10014.6F37F716; Mon,  1 Nov 2021 13:58:30 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas2p3.samsung.com (KnoxPortal) with ESMTPA id
+        20211101045829epcas2p37b38a4e4fd0af4a72a62bdeba46daf17~zU1P5Un942895128951epcas2p3A;
+        Mon,  1 Nov 2021 04:58:29 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20211101045829epsmtrp1d2e3061320d8978940771ce158c53dff~zU1P4jeDH1809618096epsmtrp1N;
+        Mon,  1 Nov 2021 04:58:29 +0000 (GMT)
+X-AuditID: b6c32a47-473ff7000000271e-a8-617f73f6715f
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        5A.C2.08738.5F37F716; Mon,  1 Nov 2021 13:58:29 +0900 (KST)
+Received: from perf (unknown [12.36.155.123]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20211101045829epsmtip1e168ff4e9d4430798a70171f70b1099b~zU1PrIXNn2432424324epsmtip1J;
+        Mon,  1 Nov 2021 04:58:29 +0000 (GMT)
+Date:   Mon, 1 Nov 2021 14:25:42 +0900
+From:   Youngmin Nam <youngmin.nam@samsung.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     daniel.lezcano@linaro.org, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, pullip.cho@samsung.com,
+        hoony.yu@samsung.com, hajun.sung@samsung.com,
+        myung-su.cha@samsung.com
+Subject: Re: [PATCH v1 1/2] clocksource/drivers/exynos_mct_v2: introduce
+ Exynos MCT version 2 driver for next Exynos SoC
+Message-ID: <20211101052542.GA35671@perf>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:df1:: with SMTP id m17mr17705480ilj.125.1635742819571;
- Sun, 31 Oct 2021 22:00:19 -0700 (PDT)
-Date:   Sun, 31 Oct 2021 22:00:19 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b45deb05cfb30d1c@google.com>
-Subject: [syzbot] INFO: trying to register non-static key in
- hci_uart_send_frame (3)
-From:   syzbot <syzbot+944c82cd12dd1db5b05f@syzkaller.appspotmail.com>
-To:     johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org,
-        linux-kernel@vger.kernel.org, luiz.dentz@gmail.com,
-        marcel@holtmann.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <117dfec8-e417-642b-7647-9d17592826ad@canonical.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrFJsWRmVeSWpSXmKPExsWy7bCmhe634vpEg6s7BCzmfZa1aNp/idni
+        +NrXrBYb3/5gstj0+BqrxeVdc9gsZpzfx2Sx+PEKJot/vQcZLTZvmsrswOUxq6GXzePOtT1s
+        Hu/OnWP32Lyk3qNvyypGj8+b5ALYorJtMlITU1KLFFLzkvNTMvPSbZW8g+Od403NDAx1DS0t
+        zJUU8hJzU22VXHwCdN0yc4AOU1IoS8wpBQoFJBYXK+nb2RTll5akKmTkF5fYKqUWpOQUmBfo
+        FSfmFpfmpevlpZZYGRoYGJkCFSZkZ/xZN4uloJ23omnGAdYGxltcXYwcHBICJhKNi/K6GDk5
+        hAR2MEr8XeDUxcgFZH9ilOj+cp0NwvnMKLFp1koWkCqQhobWnUwQiV2MEkcWToZyHjFKrPmx
+        hxmkikVARaLl6QqwDjYBXYltJ/4xgtgiAtYSR7fOZwZpYBb4xyjRMHUNE0hCWKBK4trTBWwg
+        Nq+ApkTju5MsELagxMmZT8BsTgFHicXb94INEhVQljiw7TjYZgmBmRwSK8+dZIa4z0XiyvPr
+        ULcKS7w6voUdwpaSeNnfBmXXSyzetpQZonkCo8T8TR+gEsYSs561g21gFsiQ6Ft8lR0SSsoS
+        R26xQIT5JDoO/4UK80p0tAlBdKpJ/JqygRHClpHYvXgF1DkeEru2HGSEhNAfRonZF04yT2CU
+        n4Xkt1lItkHYOhILdn9imwW0gllAWmL5Pw4IU1Ni/S79BYysqxjFUguKc9NTi40KjOGxnZyf
+        u4kRnGi13Hcwznj7Qe8QIxMH4yFGCQ5mJRHeiAs1iUK8KYmVValF+fFFpTmpxYcYTYExNZFZ
+        SjQ5H5jq80riDU0sDUzMzAzNjUwNzJXEeS1FsxOFBNITS1KzU1MLUotg+pg4OKUamNK6D96f
+        rzyDM1Px6cbFoYsefitmsEvakdZvpjLrfLF97KP7fNsXb1Y50+D37nTEBuGLmv5KrH1dYfyf
+        5okEJjOfCNlmWjspNmBf9k6lhSUFE7Y3u/Ao11c2Rzcelt18uEkxcJfTvAd3i43Kd7A//+az
+        p2KTBk8SB5/P5TUvnu4xXCKotVbg0/ylpw6YNc8Rv6ZSV+Qz/SMTU8PU4g5Tx2sGfoddcyer
+        ndrY3Oof911hW52O/83vr4+Ja+o0P3KbZTp1WWfUuRUs04WfXN2t5S66QWW/7pWZ5gbhUqxr
+        1LzuZWdue7Y7v8GMaUXHQf6J0mmrr3fwK0nseyBh4uN5dfIkuc6wzZyi3kaVMybWKrEUZyQa
+        ajEXFScCAAwM0bM9BAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrILMWRmVeSWpSXmKPExsWy7bCSnO7X4vpEg0UrtC3mfZa1aNp/idni
+        +NrXrBYb3/5gstj0+BqrxeVdc9gsZpzfx2Sx+PEKJot/vQcZLTZvmsrswOUxq6GXzePOtT1s
+        Hu/OnWP32Lyk3qNvyypGj8+b5ALYorhsUlJzMstSi/TtErgyLq1Yx1ZwnKti88vTjA2Mmzm6
+        GDk5JARMJBpadzJ1MXJxCAnsYJQ49X0NG0RCRuL2ysusELawxP2WI6wQRQ8YJTb+m88IkmAR
+        UJFoebqCBcRmE9CV2HbiH1hcRMBa4ujW+cwgDcwCDUwSB67MBEsIC1RJXHu6AGwDr4CmROO7
+        kywQU/8wSnyd2cIOkRCUODnzCdhUZgEtiRv/XgLdxwFkS0ss/wd2NqeAo8Ti7XvBZooKKEsc
+        2HacaQKj4Cwk3bOQdM9C6F7AyLyKUTK1oDg3PbfYsMAoL7Vcrzgxt7g0L10vOT93EyM4VrS0
+        djDuWfVB7xAjEwfjIUYJDmYlEd6ICzWJQrwpiZVVqUX58UWlOanFhxilOViUxHkvdJ2MFxJI
+        TyxJzU5NLUgtgskycXBKNTDNuKJ4s8xwW23aTzaeqSpxHgpFC4wcThzc86z++OQJIaa2/ncP
+        sIr4dOQL3X2SVeaaKcC4p2fPk7YFwsoz/27fXrtP9KVNWiWHkmrL+cXb/awM7UN2TBaWu7lP
+        qP7UzAiG/HJeo48VQkIicl9k5RL/7JO5rb7sYuF/nZI99orfA14vf6Qic3xOzfOiXXskdCsT
+        tuakbJlXfLr8Y8EF1bxXWV6Rb6zeyArG3V4wY96WAquYC0lrIpb+vXDpbqmZ4n3p3sKdD3qm
+        zp58493FmIBUO+7Z0wMXm5w1nWNb5bfkSb9q0QSO5ArO0rI5D5gFMiLc5H2+rN/HLLY6r3K/
+        aYiX8WlTgVvsx3b+X5RislSJpTgj0VCLuag4EQAFM9T5BAMAAA==
+X-CMS-MailID: 20211101045829epcas2p37b38a4e4fd0af4a72a62bdeba46daf17
+X-Msg-Generator: CA
+Content-Type: multipart/mixed;
+        boundary="----cdUjzaOTU1RPrvxdiax6HhSlBq1jqBVFQM-mWLfQP3CdA8rT=_96e4a_"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20211021055112epcas2p278145beb21cd6cc4217813a41c1e1407
+References: <20211021061804.39118-1-youngmin.nam@samsung.com>
+        <CGME20211021055112epcas2p278145beb21cd6cc4217813a41c1e1407@epcas2p2.samsung.com>
+        <20211021061804.39118-2-youngmin.nam@samsung.com>
+        <117dfec8-e417-642b-7647-9d17592826ad@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+------cdUjzaOTU1RPrvxdiax6HhSlBq1jqBVFQM-mWLfQP3CdA8rT=_96e4a_
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
 
-syzbot found the following issue on:
+On Wed, Oct 27, 2021 at 10:38:09AM +0200, Krzysztof Kozlowski wrote:
+> On 21/10/2021 08:18, Youngmin Nam wrote:
+> > Exynos MCT version 2 is composed of 1 FRC and 12 comparators.
+> > The 12 comparators can produces interrupts independently,
+> > so they can be used as local timer of each CPU.
+> > 
+> 
+> ...
+> 
+> > +
+> > +static void exynos_mct_comp_start(struct mct_clock_event_device *mevt,
+> > +				  bool periodic, unsigned long cycles)
+> > +{
+> > +	unsigned int index = mevt->comp_index;
+> > +	unsigned int comp_enable;
+> > +	unsigned int loop_cnt = 0;
+> > +
+> > +	comp_enable = readl_relaxed(reg_base + EXYNOS_MCT_COMP_ENABLE(index));
+> > +	if (comp_enable == MCT_COMP_ENABLE)
+> > +		exynos_mct_comp_stop(mevt);
+> > +
+> > +	if (periodic)
+> > +		writel_relaxed(MCT_COMP_CIRCULAR_MODE, reg_base + EXYNOS_MCT_COMP_MODE(index));
+> > +
+> > +	writel_relaxed(cycles, reg_base + EXYNOS_MCT_COMP_PERIOD(index));
+> 
+> This is unsigned long, so 64-bit on your platform. Use writeq_relaxed or
+> handle it somehow.
 
-HEAD commit:    1fc596a56b33 Merge tag 'trace-v5.15-rc6' of git://git.kern..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12b58364b00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b160d0631c7a8f26
-dashboard link: https://syzkaller.appspot.com/bug?extid=944c82cd12dd1db5b05f
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+Thanks for your review.
+I checked again and data sheet of MCTv2 shows compartor period has 32-bit data width.
+Once we write 32bit value to comp_period register, H/W will produce interrupt when increasing FRC
+is the same with the value of "current FRC + comp_period".
 
-Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> 
+> Best regards,
+> Krzysztof
+> 
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+944c82cd12dd1db5b05f@syzkaller.appspotmail.com
-
-INFO: trying to register non-static key.
-The code is fine but needs lockdep annotation, or maybe
-you didn't initialize this object before use?
-turning off the locking correctness validator.
-CPU: 1 PID: 150 Comm: kworker/u5:0 Not tainted 5.15.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: hci7 hci_cmd_work
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- assign_lock_key kernel/locking/lockdep.c:939 [inline]
- register_lock_class+0xf79/0x10c0 kernel/locking/lockdep.c:1251
- __lock_acquire+0x105/0x54a0 kernel/locking/lockdep.c:4894
- lock_acquire kernel/locking/lockdep.c:5625 [inline]
- lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
- percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
- hci_uart_send_frame+0x8e/0x6c0 drivers/bluetooth/hci_ldisc.c:279
- hci_send_frame+0x1c0/0x380 net/bluetooth/hci_core.c:4244
- hci_cmd_work+0x202/0x390 net/bluetooth/hci_core.c:5177
- process_one_work+0x9bf/0x16b0 kernel/workqueue.c:2297
- worker_thread+0x658/0x11f0 kernel/workqueue.c:2444
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-Bluetooth: hci6: sending frame failed (-49)
-Bluetooth: hci6: sending frame failed (-49)
+------cdUjzaOTU1RPrvxdiax6HhSlBq1jqBVFQM-mWLfQP3CdA8rT=_96e4a_
+Content-Type: text/plain; charset="utf-8"
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+------cdUjzaOTU1RPrvxdiax6HhSlBq1jqBVFQM-mWLfQP3CdA8rT=_96e4a_--
