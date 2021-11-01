@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A4DF441660
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:22:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07CC04417E3
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:39:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232734AbhKAJYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:24:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58580 "EHLO mail.kernel.org"
+        id S233690AbhKAJky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:40:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43606 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232332AbhKAJWp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:22:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EADE610CF;
-        Mon,  1 Nov 2021 09:20:10 +0000 (UTC)
+        id S233055AbhKAJht (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:37:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A1F6E61356;
+        Mon,  1 Nov 2021 09:26:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758410;
-        bh=IaLBB6kjoIv8Ibi2T0Qlxfof1djFfv180Gm38A6fwh8=;
+        s=korg; t=1635758812;
+        bh=Gh/8BVu33pNE4rI2kcpJL+qQl5bR/JeuGu+ygPgdVUA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AfHTl8y3H8c2ZGUGvVamnI/t9Z5QYDrGjwXPZco7He3Vl692QtRI4qGU9chZIXol+
-         8JWfZ+PeXXPh3gc7oVV6ExWWR0oQ3+atPGeQMl1o0bGlw/VKVNz6fCztjXFHnOecG7
-         pJUm35GmNwAFAUpY94mDVNa6HC7rDWqw4yvic2iw=
+        b=eqp0Qi0aRNHM1oK4wRsx1WU92zoOXdIQB6R/vTdKA53Dn9kmfiRDML78A6jgS9K/u
+         QgnRQdMdRU+ITwYPIkDAZlWim2cIv3NDDLcRHjH2RKb/HmwY24+EKBv9CZ5Q9B/Pnt
+         y5lr4bpMeh8q4N8TfFGLSCjAkGroW1BLUSAX8Ke4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 4.14 12/25] mmc: vub300: fix control-message timeouts
-Date:   Mon,  1 Nov 2021 10:17:24 +0100
-Message-Id: <20211101082449.863781220@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>
+Subject: [PATCH 5.10 37/77] bpf: Fix potential race in tail call compatibility check
+Date:   Mon,  1 Nov 2021 10:17:25 +0100
+Message-Id: <20211101082519.633404679@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082447.070493993@linuxfoundation.org>
-References: <20211101082447.070493993@linuxfoundation.org>
+In-Reply-To: <20211101082511.254155853@linuxfoundation.org>
+References: <20211101082511.254155853@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,103 +41,130 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Toke Høiland-Jørgensen <toke@redhat.com>
 
-commit 8c8171929116cc23f74743d99251eedadf62341a upstream.
+commit 54713c85f536048e685258f880bf298a74c3620d upstream.
 
-USB control-message timeouts are specified in milliseconds and should
-specifically not vary with CONFIG_HZ.
+Lorenzo noticed that the code testing for program type compatibility of
+tail call maps is potentially racy in that two threads could encounter a
+map with an unset type simultaneously and both return true even though they
+are inserting incompatible programs.
 
-Fixes: 88095e7b473a ("mmc: Add new VUB300 USB-to-SD/SDIO/MMC driver")
-Cc: stable@vger.kernel.org      # 3.0
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20211025115608.5287-1-johan@kernel.org
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+The race window is quite small, but artificially enlarging it by adding a
+usleep_range() inside the check in bpf_prog_array_compatible() makes it
+trivial to trigger from userspace with a program that does, essentially:
+
+        map_fd = bpf_create_map(BPF_MAP_TYPE_PROG_ARRAY, 4, 4, 2, 0);
+        pid = fork();
+        if (pid) {
+                key = 0;
+                value = xdp_fd;
+        } else {
+                key = 1;
+                value = tc_fd;
+        }
+        err = bpf_map_update_elem(map_fd, &key, &value, 0);
+
+While the race window is small, it has potentially serious ramifications in
+that triggering it would allow a BPF program to tail call to a program of a
+different type. So let's get rid of it by protecting the update with a
+spinlock. The commit in the Fixes tag is the last commit that touches the
+code in question.
+
+v2:
+- Use a spinlock instead of an atomic variable and cmpxchg() (Alexei)
+v3:
+- Put lock and the members it protects into an embedded 'owner' struct (Daniel)
+
+Fixes: 3324b584b6f6 ("ebpf: misc core cleanup")
+Reported-by: Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Link: https://lore.kernel.org/bpf/20211026110019.363464-1-toke@redhat.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/mmc/host/vub300.c |   18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ include/linux/bpf.h   |    7 +++++--
+ kernel/bpf/arraymap.c |    1 +
+ kernel/bpf/core.c     |   20 +++++++++++++-------
+ kernel/bpf/syscall.c  |    6 ++++--
+ 4 files changed, 23 insertions(+), 11 deletions(-)
 
---- a/drivers/mmc/host/vub300.c
-+++ b/drivers/mmc/host/vub300.c
-@@ -579,7 +579,7 @@ static void check_vub300_port_status(str
- 				GET_SYSTEM_PORT_STATUS,
- 				USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
- 				0x0000, 0x0000, &vub300->system_port_status,
--				sizeof(vub300->system_port_status), HZ);
-+				sizeof(vub300->system_port_status), 1000);
- 	if (sizeof(vub300->system_port_status) == retval)
- 		new_system_port_status(vub300);
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -862,8 +862,11 @@ struct bpf_array_aux {
+ 	 * stored in the map to make sure that all callers and callees have
+ 	 * the same prog type and JITed flag.
+ 	 */
+-	enum bpf_prog_type type;
+-	bool jited;
++	struct {
++		spinlock_t lock;
++		enum bpf_prog_type type;
++		bool jited;
++	} owner;
+ 	/* Programs with direct jumps into programs part of this array. */
+ 	struct list_head poke_progs;
+ 	struct bpf_map *map;
+--- a/kernel/bpf/arraymap.c
++++ b/kernel/bpf/arraymap.c
+@@ -1025,6 +1025,7 @@ static struct bpf_map *prog_array_map_al
+ 	INIT_WORK(&aux->work, prog_array_map_clear_deferred);
+ 	INIT_LIST_HEAD(&aux->poke_progs);
+ 	mutex_init(&aux->poke_mutex);
++	spin_lock_init(&aux->owner.lock);
+ 
+ 	map = array_map_alloc(attr);
+ 	if (IS_ERR(map)) {
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -1775,20 +1775,26 @@ static unsigned int __bpf_prog_ret0_warn
+ bool bpf_prog_array_compatible(struct bpf_array *array,
+ 			       const struct bpf_prog *fp)
+ {
++	bool ret;
++
+ 	if (fp->kprobe_override)
+ 		return false;
+ 
+-	if (!array->aux->type) {
++	spin_lock(&array->aux->owner.lock);
++
++	if (!array->aux->owner.type) {
+ 		/* There's no owner yet where we could check for
+ 		 * compatibility.
+ 		 */
+-		array->aux->type  = fp->type;
+-		array->aux->jited = fp->jited;
+-		return true;
++		array->aux->owner.type  = fp->type;
++		array->aux->owner.jited = fp->jited;
++		ret = true;
++	} else {
++		ret = array->aux->owner.type  == fp->type &&
++		      array->aux->owner.jited == fp->jited;
+ 	}
+-
+-	return array->aux->type  == fp->type &&
+-	       array->aux->jited == fp->jited;
++	spin_unlock(&array->aux->owner.lock);
++	return ret;
  }
-@@ -1242,7 +1242,7 @@ static void __download_offload_pseudocod
- 						SET_INTERRUPT_PSEUDOCODE,
- 						USB_DIR_OUT | USB_TYPE_VENDOR |
- 						USB_RECIP_DEVICE, 0x0000, 0x0000,
--						xfer_buffer, xfer_length, HZ);
-+						xfer_buffer, xfer_length, 1000);
- 			kfree(xfer_buffer);
- 			if (retval < 0) {
- 				strncpy(vub300->vub_name,
-@@ -1289,7 +1289,7 @@ static void __download_offload_pseudocod
- 						SET_TRANSFER_PSEUDOCODE,
- 						USB_DIR_OUT | USB_TYPE_VENDOR |
- 						USB_RECIP_DEVICE, 0x0000, 0x0000,
--						xfer_buffer, xfer_length, HZ);
-+						xfer_buffer, xfer_length, 1000);
- 			kfree(xfer_buffer);
- 			if (retval < 0) {
- 				strncpy(vub300->vub_name,
-@@ -1994,7 +1994,7 @@ static void __set_clock_speed(struct vub
- 		usb_control_msg(vub300->udev, usb_sndctrlpipe(vub300->udev, 0),
- 				SET_CLOCK_SPEED,
- 				USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
--				0x00, 0x00, buf, buf_array_size, HZ);
-+				0x00, 0x00, buf, buf_array_size, 1000);
- 	if (retval != 8) {
- 		dev_err(&vub300->udev->dev, "SET_CLOCK_SPEED"
- 			" %dkHz failed with retval=%d\n", kHzClock, retval);
-@@ -2016,14 +2016,14 @@ static void vub300_mmc_set_ios(struct mm
- 		usb_control_msg(vub300->udev, usb_sndctrlpipe(vub300->udev, 0),
- 				SET_SD_POWER,
- 				USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
--				0x0000, 0x0000, NULL, 0, HZ);
-+				0x0000, 0x0000, NULL, 0, 1000);
- 		/* must wait for the VUB300 u-proc to boot up */
- 		msleep(600);
- 	} else if ((ios->power_mode == MMC_POWER_UP) && !vub300->card_powered) {
- 		usb_control_msg(vub300->udev, usb_sndctrlpipe(vub300->udev, 0),
- 				SET_SD_POWER,
- 				USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
--				0x0001, 0x0000, NULL, 0, HZ);
-+				0x0001, 0x0000, NULL, 0, 1000);
- 		msleep(600);
- 		vub300->card_powered = 1;
- 	} else if (ios->power_mode == MMC_POWER_ON) {
-@@ -2285,14 +2285,14 @@ static int vub300_probe(struct usb_inter
- 				GET_HC_INF0,
- 				USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
- 				0x0000, 0x0000, &vub300->hc_info,
--				sizeof(vub300->hc_info), HZ);
-+				sizeof(vub300->hc_info), 1000);
- 	if (retval < 0)
- 		goto error5;
- 	retval =
- 		usb_control_msg(vub300->udev, usb_sndctrlpipe(vub300->udev, 0),
- 				SET_ROM_WAIT_STATES,
- 				USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
--				firmware_rom_wait_states, 0x0000, NULL, 0, HZ);
-+				firmware_rom_wait_states, 0x0000, NULL, 0, 1000);
- 	if (retval < 0)
- 		goto error5;
- 	dev_info(&vub300->udev->dev,
-@@ -2307,7 +2307,7 @@ static int vub300_probe(struct usb_inter
- 				GET_SYSTEM_PORT_STATUS,
- 				USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
- 				0x0000, 0x0000, &vub300->system_port_status,
--				sizeof(vub300->system_port_status), HZ);
-+				sizeof(vub300->system_port_status), 1000);
- 	if (retval < 0) {
- 		goto error4;
- 	} else if (sizeof(vub300->system_port_status) == retval) {
+ 
+ static int bpf_check_tail_call(const struct bpf_prog *fp)
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -535,8 +535,10 @@ static void bpf_map_show_fdinfo(struct s
+ 
+ 	if (map->map_type == BPF_MAP_TYPE_PROG_ARRAY) {
+ 		array = container_of(map, struct bpf_array, map);
+-		type  = array->aux->type;
+-		jited = array->aux->jited;
++		spin_lock(&array->aux->owner.lock);
++		type  = array->aux->owner.type;
++		jited = array->aux->owner.jited;
++		spin_unlock(&array->aux->owner.lock);
+ 	}
+ 
+ 	seq_printf(m,
 
 
