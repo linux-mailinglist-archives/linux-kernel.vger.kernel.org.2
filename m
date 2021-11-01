@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F7594417B9
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:37:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19CBD44172A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:31:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232753AbhKAJjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:39:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43768 "EHLO mail.kernel.org"
+        id S233425AbhKAJd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:33:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37074 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233303AbhKAJgC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:36:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AA0B261288;
-        Mon,  1 Nov 2021 09:26:23 +0000 (UTC)
+        id S232707AbhKAJaQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:30:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1AFB661244;
+        Mon,  1 Nov 2021 09:23:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758784;
-        bh=Wd1TMrG9bhlBcjNM+Eh5nn4puss28CY/8bKP/IUPYmU=;
+        s=korg; t=1635758625;
+        bh=V2NimrkSPs5EYeIrch/3y/YC02C+RFk1wvnJq4QVqOU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=L5rhSziS/q5hWo2umYJ2ljjzDib9IX3EXSFvvPuQTX+FvbMtewG+jJ8T7KiIEsFs6
-         TIsrjaw9EQfaLZuk7Ce+3wz33MXG3ryPeg5SqDV+T3thMKGUh/AVi0D1dlrO6ZEK23
-         OmHTBHgiFOIs/uqH1Ogw5cCTP9xx+TovyOCzdgNw=
+        b=VHqp/iMssgj3i/S073V/B++JrPyY7Fyef3XRZ6uy3ycGSKoT73oVn3sUCyY2CSHO8
+         gKBaqPv/yRB8bfmOvUYG6zWTIbm7/MIM1PBrkWlQAX+wB2SKNs0qogujfVCcSsHA63
+         XfaPArjlwRH79W05p+e2dd8gkVrc1h8m1LT1lRHQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yuiko Oshino <yuiko.oshino@microchip.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 57/77] net: ethernet: microchip: lan743x: Fix driver crash when lan743x_pm_resume fails
+        stable@vger.kernel.org, Xin Long <lucien.xin@gmail.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 41/51] sctp: use init_tag from inithdr for ABORT chunk
 Date:   Mon,  1 Nov 2021 10:17:45 +0100
-Message-Id: <20211101082523.679279513@linuxfoundation.org>
+Message-Id: <20211101082510.253739069@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082511.254155853@linuxfoundation.org>
-References: <20211101082511.254155853@linuxfoundation.org>
+In-Reply-To: <20211101082500.203657870@linuxfoundation.org>
+References: <20211101082500.203657870@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,30 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yuiko Oshino <yuiko.oshino@microchip.com>
+From: Xin Long <lucien.xin@gmail.com>
 
-commit d6423d2ec39cce2bfca418c81ef51792891576bc upstream.
+[ Upstream commit 4f7019c7eb33967eb87766e0e4602b5576873680 ]
 
-The driver needs to clean up and return when the initialization fails on resume.
+Currently Linux SCTP uses the verification tag of the existing SCTP
+asoc when failing to process and sending the packet with the ABORT
+chunk. This will result in the peer accepting the ABORT chunk and
+removing the SCTP asoc. One could exploit this to terminate a SCTP
+asoc.
 
-Fixes: 23f0703c125b ("lan743x: Add main source files for new lan743x driver")
-Signed-off-by: Yuiko Oshino <yuiko.oshino@microchip.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This patch is to fix it by always using the initiate tag of the
+received INIT chunk for the ABORT chunk to be sent.
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Xin Long <lucien.xin@gmail.com>
+Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/microchip/lan743x_main.c |    2 ++
- 1 file changed, 2 insertions(+)
+ net/sctp/sm_statefuns.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/net/ethernet/microchip/lan743x_main.c
-+++ b/drivers/net/ethernet/microchip/lan743x_main.c
-@@ -3066,6 +3066,8 @@ static int lan743x_pm_resume(struct devi
- 	if (ret) {
- 		netif_err(adapter, probe, adapter->netdev,
- 			  "lan743x_hardware_init returned %d\n", ret);
-+		lan743x_pci_cleanup(adapter);
-+		return ret;
- 	}
- 
- 	/* open netdev when netdev is at running state while resume.
+diff --git a/net/sctp/sm_statefuns.c b/net/sctp/sm_statefuns.c
+index 82a202d71a31..962b848459f5 100644
+--- a/net/sctp/sm_statefuns.c
++++ b/net/sctp/sm_statefuns.c
+@@ -6248,6 +6248,7 @@ static struct sctp_packet *sctp_ootb_pkt_new(
+ 		 * yet.
+ 		 */
+ 		switch (chunk->chunk_hdr->type) {
++		case SCTP_CID_INIT:
+ 		case SCTP_CID_INIT_ACK:
+ 		{
+ 			struct sctp_initack_chunk *initack;
+-- 
+2.33.0
+
 
 
