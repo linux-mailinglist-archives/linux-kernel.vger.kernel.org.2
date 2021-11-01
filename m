@@ -2,204 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85F4544150F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 09:11:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6059441514
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 09:11:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231470AbhKAINo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 04:13:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44814 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231284AbhKAINn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 04:13:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B28C60C4B;
-        Mon,  1 Nov 2021 08:11:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635754270;
-        bh=RUFki9qBrHYRF5mCH4qHIpQeS+hm5cKlVdDUyxWnQk0=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=S39LsCj1UWB+6RfF10axT+FEVP8jlyFOoAnhYfqBafnBOaWrvDmaGWXZhNhc8ASW3
-         qGRdGG8TMGZBlaphRXuBqCShKR/rrD3x1x7Wskg1bGdLND44rTR7FApVpxzQFzDnJJ
-         PKt+Sy41FixjDC6sGjh1FSgBQNZo2lZjmzCf7vUqMKeiRRZwKC1+ev0LoQFjYxnc9P
-         pDMG7h41EpqDPIhL37Va850QIWr0KRqKDAbhkIYgIjQIS6QRFnJkkNrIR0vrPjg6Ox
-         vmSQxU9+IEtVR5NTOT9NonzbFwibWmtZ80u6vfk9puFzW/IP2WDqyVzlALN1Nih7jt
-         NDvNuUh9VFPEQ==
-Message-ID: <e1903d27-ff8e-adb2-ac64-5af662b99d1f@kernel.org>
-Date:   Mon, 1 Nov 2021 16:11:06 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH] F2FS: invalidate META_MAPPING before IPU/DIO write
-Content-Language: en-US
-To:     Hyeong-Jun Kim <hj514.kim@samsung.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-References: <CGME20211101054217epcas1p3c695f37ab925f47156bd45e3adb5ed94@epcas1p3.samsung.com>
- <20211101054214.24456-1-hj514.kim@samsung.com>
- <d1929b64-15a3-feaf-5401-1552b2eb2461@kernel.org>
- <9a0360922130485f4252970de4bb535667cc26e9.camel@samsung.com>
- <75c52307-7bfd-2408-d067-26d1fca7bb73@kernel.org>
- <02ffe8465f514102f5278e97bf3854c520fae91d.camel@samsung.com>
-From:   Chao Yu <chao@kernel.org>
-In-Reply-To: <02ffe8465f514102f5278e97bf3854c520fae91d.camel@samsung.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        id S231720AbhKAIOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 04:14:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55360 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231472AbhKAIOB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 04:14:01 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D220C061714;
+        Mon,  1 Nov 2021 01:11:27 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id iq11so4662791pjb.3;
+        Mon, 01 Nov 2021 01:11:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=J9QT2lHWekz3y2luPuBfa/44XsdKO2ND6DuwVMfcAzw=;
+        b=JOC3FnY6vmzclt30T9ywNFncB8JUYf8Ot3HU0/enGDVoWXg60vQWfm2PYYdORwJ0Ge
+         uJlbcg4Zdl3TG+FHE2mhvaUpzs3K5k5J5NnFWe7MVhbqwKc3k24d1TL5YiBF/YZUjWRN
+         zk8ROcL8EUEcFVyxJytxHybsWu41+IFCO+SlXBDcp/lRRW9ptUmy2OXc6rwAdi4RHOmz
+         TAhNNDcTCVTOCg8cES1DHaqbRhzt9v7jT8bwfwnYJndR/MFDEpJBTBVtEWOSb04YuYeU
+         MLiyRGU27/Fiv/oRMt9LxxlRRxNJMjMcP1ad3ZFSrCYpMrkuZt5HXseEOeXMJjcad4B8
+         N3Ew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=J9QT2lHWekz3y2luPuBfa/44XsdKO2ND6DuwVMfcAzw=;
+        b=TS/LitFrF7FT5rDecOR+v7DbkE+9d5ss+JhOjIVZ/gbeVzpX26ewdEdDSJQLkT8JNc
+         ROSrrGytLG4D3RLPPeUdjpgSVvgUvoVzfYZyenFco8YrqsSeycumo8PVQw6Hjk91QuyL
+         9IhOy7XO5OmSnVdcAj2ze3KL4CyaUtzaWq9RMzxLccC9HjVjRrMiYQZNFq26/cZJ0FUb
+         pzfM0kQdqkhCJia3IRxh9kIIXm2BpAO08FaTSKuomh4ddpFJXPZ6Xud6jn/sc6aCXK+k
+         ojujwXTV7QN0IibtA5+vmZge56kPBQEFyB05SiMbkHpyhBzrVcVYIMze5X/idKe8tG1E
+         7eug==
+X-Gm-Message-State: AOAM531pX6ej8SoGc1XB6wTXuTIiYMyyPMJK8Te9F7DC0izaP88A2Szq
+        MmVST0IreLAsWowtkQh/JME=
+X-Google-Smtp-Source: ABdhPJzr68vZLGPkmyiaFiHoAgFgE+LlvljKsj6pdJSQM1U+uLIl6MSNATSYt0vqbJodSVslryXkpQ==
+X-Received: by 2002:a17:90b:4acd:: with SMTP id mh13mr4213888pjb.230.1635754286998;
+        Mon, 01 Nov 2021 01:11:26 -0700 (PDT)
+Received: from scdiu3.sunplus.com ([113.196.136.192])
+        by smtp.googlemail.com with ESMTPSA id d2sm15732606pfj.42.2021.11.01.01.11.24
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 01 Nov 2021 01:11:26 -0700 (PDT)
+From:   Wells Lu <wellslutw@gmail.com>
+X-Google-Original-From: Wells Lu <wells.lu@sunplus.com>
+To:     linus.walleij@linaro.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        devicetree@vger.kernel.org
+Cc:     qinjian@cqplus1.com, dvorkin@tibbo.com,
+        Wells Lu <wells.lu@sunplus.com>
+Subject: [PATCH v2 0/3] This is a patch series for pinctrl driver for Sunplus SP7021 SoC.
+Date:   Mon,  1 Nov 2021 16:11:14 +0800
+Message-Id: <1635754277-32429-1-git-send-email-wells.lu@sunplus.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1635324926-22319-1-git-send-email-wells.lu@sunplus.com>
+References: <1635324926-22319-1-git-send-email-wells.lu@sunplus.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/11/1 15:23, Hyeong-Jun Kim wrote:
-> On Mon, 2021-11-01 at 15:12 +0800, Chao Yu wrote:
->> On 2021/11/1 15:09, Hyeong-Jun Kim wrote:
->>> On Mon, 2021-11-01 at 14:28 +0800, Chao Yu wrote:
->>>> On 2021/11/1 13:42, Hyeong-Jun Kim wrote:
->>>>> Encrypted pages during GC are read and cached in META_MAPPING.
->>>>> However, due to cached pages in META_MAPPING, there is an issue
->>>>> where
->>>>> newly written pages are lost by IPU or DIO writes.
->>>>>
->>>>> Thread A                              Thread B
->>>>> - f2fs_gc(): blk 0x10 -> 0x20 (a)
->>>>>                                          - IPU or DIO write on
->>>>> blk
->>>>> 0x20 (b)
->>>>> - f2fs_gc(): blk 0x20 -> 0x30 (c)
->>>>>
->>>>> (a) page for blk 0x20 is cached in META_MAPPING and page for
->>>>> blk
->>>>> 0x10
->>>>>        is invalidated from META_MAPPING.
->>>>> (b) write new data to blk 0x200 using IPU or DIO, but outdated
->>>>> data
->>>>>        still remains in META_MAPPING.
->>>>> (c) f2fs_gc() try to move blk from 0x20 to 0x30 using cached
->>>>> page
->>>>> in
->>>>>        META_MAPPING. In conclusion, the newly written data in
->>>>> (b) is
->>>>> lost.
->>>>
->>>> In c), f2fs_gc() will readahead encrypted block from disk via
->>>> ra_data_block() anyway,
->>>> not matter cached encrypted page of meta inode is uptodate or
->>>> not, so
->>>> it's safe, right?
->>>
->>> Right,
->>> However, if DIO write is performed between phase 3 and phase 4 of
->>> f2fs_gc(),
->>> the cached page of meta_mapping will be out-dated, though it read
->>> data
->>> from
->>> disk via ra_data_block() in phase 3.
->>>
->>> What do you think?
->>
->> Due to i_gc_rwsem lock coverage, the race condition should not happen
->> right now?
->>
-> - Thread A                                       - Thread B
-> /* phase 3 */
-> down_write(i_gc_rwsem)
-> ra_data_block()
-> up_write(i_gc_rwsem)
->                                                         
->   f2fs_direct_IO() :
->                                                         
->   down_read(i_gc_rwsem)
->                                                         
->   __blockdev_direct_IO()
->                                                             ...
->                                                           
->   get_ddata_block_dio_write()
->                                                             ...
->                                                           
->   f2fs_dio_submit_bio()
->                                                         
->   up_read(i_gc_rwsem)
-> /* phase 4 */
-> down_write(i_gc_rwsem)
-> move_data_block()
-> up_write(i_gc_rwsem)
-> 
-> It looks, i_gc_rwsem could not protect page update between phase 3 and
-> 4.
-> 
-> Am I missing anything?
+Sunplus SP7021 is an ARM Cortex A7 (4 cores) based SoC. It integrates
+many peripherals (ex: UART, I2C, SPI, SDIO, eMMC, USB, SD card and
+etc.) into a single chip. It is designed for industrial control.
 
-It looks you're right, there is a hole in between readahead and movepage functions...
+Refer to:
+https://sunplus-tibbo.atlassian.net/wiki/spaces/doc/overview
+https://tibbo.com/store/plus1.html
 
-Could you please update the race condition description? and add a tag as below to fix
-stable kernel as well:
+Changes in v2:
+ - Addressed all comments from Mr. Randy Dunlap.
+ - Added more 'defines' in dt-bindings header files (forgot to add in v1).
+ - Modified vendor name in MAINTAINERS file.
 
-Fixes: 6aa58d8ad20a ("f2fs: readahead encrypted block during GC")
+Wells Lu (3):
+  pinctrl: Add driver for Sunplus SP7021
+  dt-bindings: pinctrl: Add dt-bindings for Sunplus SP7021
+  devicetree: bindings: pinctrl: Add bindings doc for Sunplus SP7021.
 
-Thanks,
+ .../bindings/pinctrl/sunplus,sp7021-pinctrl.yaml   | 277 ++++++++++
+ MAINTAINERS                                        |  10 +
+ drivers/pinctrl/Kconfig                            |   1 +
+ drivers/pinctrl/Makefile                           |   1 +
+ drivers/pinctrl/sunplus/Kconfig                    |  33 ++
+ drivers/pinctrl/sunplus/Makefile                   |  11 +
+ drivers/pinctrl/sunplus/gpio_inf_sp7021.c          |  48 ++
+ drivers/pinctrl/sunplus/pinctrl_inf_sp7021.c       | 501 +++++++++++++++++
+ drivers/pinctrl/sunplus/sppctl.c                   | 359 +++++++++++++
+ drivers/pinctrl/sunplus/sppctl.h                   | 181 +++++++
+ drivers/pinctrl/sunplus/sppctl_gpio.c              | 136 +++++
+ drivers/pinctrl/sunplus/sppctl_gpio.h              |  73 +++
+ drivers/pinctrl/sunplus/sppctl_gpio_ops.c          | 288 ++++++++++
+ drivers/pinctrl/sunplus/sppctl_gpio_ops.h          |  75 +++
+ drivers/pinctrl/sunplus/sppctl_pinctrl.c           | 593 +++++++++++++++++++++
+ drivers/pinctrl/sunplus/sppctl_pinctrl.h           |  33 ++
+ drivers/pinctrl/sunplus/sppctl_sysfs.c             | 385 +++++++++++++
+ drivers/pinctrl/sunplus/sppctl_sysfs.h             |  33 ++
+ include/dt-bindings/pinctrl/sppctl-sp7021.h        | 171 ++++++
+ include/dt-bindings/pinctrl/sppctl.h               |  40 ++
+ 20 files changed, 3249 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/sunplus,sp7021-pinctrl.yaml
+ create mode 100644 drivers/pinctrl/sunplus/Kconfig
+ create mode 100644 drivers/pinctrl/sunplus/Makefile
+ create mode 100644 drivers/pinctrl/sunplus/gpio_inf_sp7021.c
+ create mode 100644 drivers/pinctrl/sunplus/pinctrl_inf_sp7021.c
+ create mode 100644 drivers/pinctrl/sunplus/sppctl.c
+ create mode 100644 drivers/pinctrl/sunplus/sppctl.h
+ create mode 100644 drivers/pinctrl/sunplus/sppctl_gpio.c
+ create mode 100644 drivers/pinctrl/sunplus/sppctl_gpio.h
+ create mode 100644 drivers/pinctrl/sunplus/sppctl_gpio_ops.c
+ create mode 100644 drivers/pinctrl/sunplus/sppctl_gpio_ops.h
+ create mode 100644 drivers/pinctrl/sunplus/sppctl_pinctrl.c
+ create mode 100644 drivers/pinctrl/sunplus/sppctl_pinctrl.h
+ create mode 100644 drivers/pinctrl/sunplus/sppctl_sysfs.c
+ create mode 100644 drivers/pinctrl/sunplus/sppctl_sysfs.h
+ create mode 100644 include/dt-bindings/pinctrl/sppctl-sp7021.h
+ create mode 100644 include/dt-bindings/pinctrl/sppctl.h
 
-> 
-> Thanks
-> 
->> Thanks,
->>
->>> Thanks,
->>>> Am I missing anything?
->>>>
->>>> Thanks,
->>>>
->>>>> To address this issue, invalidating pages in META_MAPPING
->>>>> before
->>>>> IPU or
->>>>> DIO write.
->>>>>
->>>>> Signed-off-by: Hyeong-Jun Kim <
->>>>> hj514.kim@samsung.com
->>>>>
->>>>>
->>>>> ---
->>>>>     fs/f2fs/data.c    | 2 ++
->>>>>     fs/f2fs/segment.c | 3 +++
->>>>>     2 files changed, 5 insertions(+)
->>>>>
->>>>> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
->>>>> index 74e1a350c1d8..9f754aaef558 100644
->>>>> --- a/fs/f2fs/data.c
->>>>> +++ b/fs/f2fs/data.c
->>>>> @@ -1708,6 +1708,8 @@ int f2fs_map_blocks(struct inode *inode,
->>>>> struct f2fs_map_blocks *map,
->>>>>     		 */
->>>>>     		f2fs_wait_on_block_writeback_range(inode,
->>>>>     						map->m_pblk,
->>>>> map-
->>>>>> m_len);
->>>>>
->>>>> +		invalidate_mapping_pages(META_MAPPING(sbi),
->>>>> +						map->m_pblk,
->>>>> map-
->>>>>> m_pblk);
->>>>>
->>>>>     
->>>>>     		if (map->m_multidev_dio) {
->>>>>     			block_t blk_addr = map->m_pblk;
->>>>> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
->>>>> index 526423fe84ce..f57c55190f9e 100644
->>>>> --- a/fs/f2fs/segment.c
->>>>> +++ b/fs/f2fs/segment.c
->>>>> @@ -3652,6 +3652,9 @@ int f2fs_inplace_write_data(struct
->>>>> f2fs_io_info *fio)
->>>>>     		goto drop_bio;
->>>>>     	}
->>>>>     
->>>>> +	invalidate_mapping_pages(META_MAPPING(fio->sbi),
->>>>> +				fio->new_blkaddr, fio-
->>>>>> new_blkaddr);
->>>>> +
->>>>>     	stat_inc_inplace_blocks(fio->sbi);
->>>>>     
->>>>>     	if (fio->bio && !(SM_I(sbi)->ipu_policy & (1 <<
->>>>> F2FS_IPU_NOCACHE)))
->>>>>
->>>>
->>>>
->>
->>
-> 
+-- 
+2.7.4
+
