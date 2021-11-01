@@ -2,95 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E4F9441BA6
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 14:20:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 397C0441BBB
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 14:28:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232414AbhKANXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 09:23:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41054 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231794AbhKANXG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 09:23:06 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88C01C061714
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 06:20:33 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id g14so2256180edz.2
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 06:20:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KxiC8TOCDYGZGvzRqJnkq0LwxmwjLEv2v/sIODiLxJc=;
-        b=wdIdVhPNOzx5jnUpsM3GCx+83Yp9a+mAZg+BSUg4BVZTw+MBvJnq9bBEOfYUcSRNP6
-         4Zl7V6Yss3Erb4jFTCwZOXmWVi+J3gMiYzK+g5RyLgcegrwhI11YQheWUb8U0ZahWD+3
-         +Dlto0wjcj3wiIA+be1d4QIdBIxFmEmdAnS2ZQuhcYZr1r/G3ofMMBIfrboU19sMXyBH
-         nTIcr+xNtmjm+oBmoyuJeN5zgCKo0cUX1WAHtELHPy44TPdm1/4PgasIsOHCGaDAa5u/
-         gZOeqAK83aPzVWHG3YWhREbYPeMIq3PZWUj17zD/es0jH7OTapW5GRldzEqCrMfERPP2
-         kWwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KxiC8TOCDYGZGvzRqJnkq0LwxmwjLEv2v/sIODiLxJc=;
-        b=jaykoF1gMF0aLfUagrLEbPwCUM1n+fuK9sDhwCNvb1/4gJA1Z4QOypgh1weU5HRWWd
-         Um1/355LHKpgerDAhLMxwWOu3rtkXBuRocHTp4v+X3dTtRWt6vBVH313CPSnwMtLrtKd
-         +kO1RvU+5w+GKy/gAT+SS6UTItg5IeXXWUjmUVMKHdYEPsfxnaxcObxX6vlLEQv5KgKP
-         gCVc2Q8hlBMSW7tVY4FGWvN5WxQVukC1AK3S5O/E8n31y0ZE+qoVuzgN9O4grul9vGaL
-         Bs++bw2m9f2/JxDyWLbNQO7l17982PP4AETPuCvZuu0bwoPKAbqTHQKjSCrIy1mpeUme
-         mX+w==
-X-Gm-Message-State: AOAM532c3i+yCL0PIA78nX7xKE5Hqwrek4JUk3JEEVxJaACzbsbJj8TC
-        oryQJDRwMSMtz1jSKK6y32Jk86DTjrjGslLx/tecBA==
-X-Google-Smtp-Source: ABdhPJyJQqeGbufX4I+U4qbdDbwM8MR69cxMk6BiNOWW7zXqiwCalLSYDDuw+wdQdZflvS6F5WohciNSyvkn0xthNf8=
-X-Received: by 2002:a17:906:9f21:: with SMTP id fy33mr36364553ejc.567.1635772832049;
- Mon, 01 Nov 2021 06:20:32 -0700 (PDT)
+        id S232040AbhKANbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 09:31:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53992 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230417AbhKANbG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 09:31:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A1A3160551;
+        Mon,  1 Nov 2021 13:28:22 +0000 (UTC)
+Date:   Mon, 1 Nov 2021 13:28:19 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Russell King <linux@armlinux.org.uk>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
+        Tony Lindgren <tony@atomide.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
+        linux-omap@vger.kernel.org, openbmc@lists.ozlabs.org,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH v2 11/45] arm64: Use do_kernel_power_off()
+Message-ID: <YX/rc872EIlC+QGE@arm.com>
+References: <20211027211715.12671-1-digetx@gmail.com>
+ <20211027211715.12671-12-digetx@gmail.com>
 MIME-Version: 1.0
-References: <CA+G9fYso1sBLRAMpc0bdPiim8GvMhmwuRDaEZ0xbP1TZz864ZA@mail.gmail.com>
- <CAK8P3a1mP_ZvigBj5+pRSSf-OsvX70BSJByGfqcDjE5pXLD9Yw@mail.gmail.com>
-In-Reply-To: <CAK8P3a1mP_ZvigBj5+pRSSf-OsvX70BSJByGfqcDjE5pXLD9Yw@mail.gmail.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Mon, 1 Nov 2021 18:50:20 +0530
-Message-ID: <CA+G9fYt3EjUTF+C26x8sCRc+4R8raCDUOF03qmcwP820QEKgbg@mail.gmail.com>
-Subject: Re: [next] Error: selected processor does not support `isb ' in ARM mode
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Juerg Haefliger <juergh@canonical.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211027211715.12671-12-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+On Thu, Oct 28, 2021 at 12:16:41AM +0300, Dmitry Osipenko wrote:
+> Kernel now supports chained power-off handlers. Use do_kernel_power_off()
+> that invokes chained power-off handlers. It also invokes legacy
+> pm_power_off() for now, which will be removed once all drivers will
+> be converted to the new power-off API.
+> 
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 
-On Mon, 1 Nov 2021 at 18:44, Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Mon, Nov 1, 2021 at 2:00 PM Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
-> >
-> > [Please ignore this email report if it is already reported]
-> >
-> > Regression found on arm gcc-11 built with following config
-> > Following build warnings / errors reported on linux next-20211101.
-> >
-> > metadata:
-> >     git_describe: next-20211101
-> >     git_repo: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-> >     git_short_log: 9febf1194306 (\"Add linux-next specific files for 20211101\")
-> >     target_arch: arm
-> >     toolchain: gcc-11
->
-> Is this a Debian gcc? If so, this one should fix it, I need to send
-> that to Russell's
-> patch tracker:
->
-> https://lore.kernel.org/linux-arm-kernel/20211018140735.3714254-1-arnd@kernel.org/
->
-
-Yes.
-This is Debian gcc-11
-
-- Naresh
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
