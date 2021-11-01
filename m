@@ -2,116 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F4FD441B97
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 14:17:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19409441B9A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 14:19:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231886AbhKANUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 09:20:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230177AbhKANUT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 09:20:19 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1347C061714;
-        Mon,  1 Nov 2021 06:17:46 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id g11so4941286pfv.7;
-        Mon, 01 Nov 2021 06:17:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=ElXLGUufMIfi7saztQ05KyMJtRkBVmLZk3K8RMUcE/g=;
-        b=pbWrcOS/E/Gkv13GNp//Zd/onyhqaNcNq2Rdu9GxPxMXEDnfiBU933SbOH0wbi0FJC
-         obvfAJ/lnAXDu938R6NR9nSq2GaJpxSmgiSW48lj5dE/iknMmNjPY7afACSmTivHY6NS
-         y03ZdwmxJmriBiBTtPYs9SVLnMg1Ho7E4e5DESub/+DGM8HwLFFo9tff2ENNEKE+ae+G
-         0zU4uHj/N4RTMuV7Fg5ejyKTvLwtcBIarPnAHOTH5CGgCJL/O8KtCf/3baCwl6E/H3wQ
-         wbxN1xEHKnirwvrIiL94fxx/ULwhEJwO/fGj2u4aPwtmVpoSSg4piz4zOTfHbIEiwv/4
-         6Wcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=ElXLGUufMIfi7saztQ05KyMJtRkBVmLZk3K8RMUcE/g=;
-        b=cx6kKTjNk/ihbNjt8w/uk/n16/EpvLFRbcJToKfPjoG/jaj3lVmglYlfApSJIVxNF5
-         KAqtLij9B3R5OZ24Ec1PEUsGiJc8w91d6unUInjenov+0K8cXc2dk5DZYFXJ0gHKtOIl
-         4sx0gb0Um4TBQOz5YAoDRVQpd8pIWVi5ECWRDRM8aN+R0bRKRzJsJszO6kLBjH5nk3nm
-         MI/OpEHJEJbqbP5vnMuNF2SfKXr7uBS1g1/L2fUd6obgl+M9N/jo5h+ujNKD5qyEzp4p
-         rvEKyaqRw1r6GyIUqA/cStQuz4F+K4NrS20RHR6qWVcQzLi4daKWyy+TvfKKN5oOXHtV
-         8V5Q==
-X-Gm-Message-State: AOAM530359Hn1uL8hA4ucQwcaVx4u2asOn0jWgWiTYkVyg1AKZ//vTBC
-        dlOyYXUnNLWLZXMZIlWcW8A=
-X-Google-Smtp-Source: ABdhPJxZtOo8xG7N0PRsh2O8ZZhFc5wI/xd3rxFZqqMP3xc3A++hez5iW7ovtZl1hKAhrmG1ZwjX5A==
-X-Received: by 2002:aa7:90d0:0:b0:44d:b8a:8837 with SMTP id k16-20020aa790d0000000b0044d0b8a8837mr28905418pfk.47.1635772666050;
-        Mon, 01 Nov 2021 06:17:46 -0700 (PDT)
-Received: from [192.168.255.10] ([203.205.141.115])
-        by smtp.gmail.com with ESMTPSA id q18sm16897419pfj.46.2021.11.01.06.17.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Nov 2021 06:17:45 -0700 (PDT)
-Message-ID: <204584e8-7817-f445-1e73-b23552f54c2f@gmail.com>
-Date:   Mon, 1 Nov 2021 21:17:42 +0800
+        id S232135AbhKANVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 09:21:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49596 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230417AbhKANVc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 09:21:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3859F60EE9;
+        Mon,  1 Nov 2021 13:18:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635772739;
+        bh=MRJJ65sLMFNXIIujuO4NjvdCus/lqQZG52E50gJmYb0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aV8RQBnIfNfBNgcXm+Px0Zvm5oHOsdzOa/rnXgLGFy+Iu5DJiookNA8ViwikTF6Ob
+         a4x+IsWTrEtGn8JiBuFm6VydrIAuPDA3u88mTK4zGVwIdjKJdAp4ov/I9HgBAuuK6x
+         neNS9EVyUubFDvBV42fOGBoir4XrMMIOs/SZnd3ZTlLV8Z6YjjOGxR2De4s4ZYsGkU
+         /wqlCF/zo7LbPFHkN5qb/lITlk0B0JC5m7mVJIjlEKQlbuxPRol054QCgKrhMGFDVJ
+         gerwtkFGgt+qy05JJM1JMRkLgSjWmgyK/KUYOXl2ugRilhxI0xX1uf+u0GLM2S51pl
+         3eW/eDmN+bhSg==
+Date:   Mon, 1 Nov 2021 21:18:49 +0800
+From:   Peter Chen <peter.chen@kernel.org>
+To:     Qihang Hu <huqihang@oppo.com>
+Cc:     balbi@kernel.org, gregkh@linuxfoundation.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: gadget: composite: Fix null pointer exception
+Message-ID: <20211101131849.GA4126@Peter>
+References: <20211101015757.290350-1-huqihang@oppo.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.0
-Subject: Re: [PATCH bpf-next] bpf: Allow bpf_d_path in perf_event_mmap
-Content-Language: en-US
-To:     Florent Revest <revest@chromium.org>,
-        Martin KaFai Lau <kafai@fb.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kpsingh@kernel.org, jackmanb@google.com,
-        linux-kernel@vger.kernel.org
-References: <20211028164357.1439102-1-revest@chromium.org>
- <20211028224653.qhuwkp75fridkzpw@kafai-mbp.dhcp.thefacebook.com>
- <CABRcYmLWAp6kYJBA2g+DvNQcg-5NaAz7u51ucBMPfW0dGykZAg@mail.gmail.com>
-From:   Hengqi Chen <hengqi.chen@gmail.com>
-In-Reply-To: <CABRcYmLWAp6kYJBA2g+DvNQcg-5NaAz7u51ucBMPfW0dGykZAg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211101015757.290350-1-huqihang@oppo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 21-11-01 09:57:57, Qihang Hu wrote:
+> In the config_ep_by_speed_and_alt function, select the corresponding
+> descriptor through g->speed, but the interface driver
 
+function driver
 
-On 2021/10/30 1:02 AM, Florent Revest wrote:
-> On Fri, Oct 29, 2021 at 12:47 AM Martin KaFai Lau <kafai@fb.com> wrote:
->>
->> On Thu, Oct 28, 2021 at 06:43:57PM +0200, Florent Revest wrote:
->>> Allow the helper to be called from the perf_event_mmap hook. This is
->>> convenient to lookup vma->vm_file and implement a similar logic as
->>> perf_event_mmap_event in BPF.
->> From struct vm_area_struct:
->>         struct file * vm_file;          /* File we map to (can be NULL). */
->>
->> Under perf_event_mmap, vm_file won't be NULL or bpf_d_path can handle it?
+> may not
+> support the corresponding speed. So, we need to check whether the
+> interface driver provides the corresponding speed descriptor when
+> selecting the descriptor.
 > 
-> Thanks Martin, this is a very good point. :) Yes, vm_file can be NULL
-> in perf_event_mmap.
-> I wonder what would happen (and what we could do about it? :|).
-> bpf_d_path is called on &vma->vm_file->f_path So without NULL checks
-> (of vm_file) in BPF, the helper wouldn't be called with a NULL pointer
-> but rather with an address that is offsetof(struct file, f_path).
+> [  237.708146]  android_work: sent uevent USB_STATE=CONNECTED
+> [  237.712464]  kconfigfs-gadget gadget: super-speed config #1: b
+> [  237.712487]  kUnable to handle kernel NULL pointer dereference at virtual address 0000000000000000
+> [  237.712493]  kMem abort info:
+> [  237.712498]  k  ESR = 0x96000006
+> [  237.712504]  k  EC = 0x25: DABT (current EL), IL = 32 bits
+> [  237.712510]  k  SET = 0, FnV = 0
+> [  237.712515]  k  EA = 0, S1PTW = 0
+> [  237.712520]  kData abort info:
+> [  237.712525]  k  ISV = 0, ISS = 0x00000006
+> [  237.712530]  k  CM = 0, WnR = 0
+> [  237.712536]  kuser pgtable: 4k pages, 39-bit VAs, pgdp=000000020ef29000
+> [  237.712541]  k[0000000000000000] pgd=000000020ef2a003, pud=000000020ef2a003, pmd=0000000000000000
+> [  237.712554]  kInternal error: Oops: 96000006 [#1] PREEMPT SMP
+> [  237.722067]  kSkip md ftrace buffer dump for: 0x1609e0
+> [  237.787037]  kWorkqueue: dwc_wq dwc3_bh_work.cfi_jt
+> [  237.854922]  kpstate: 60c00085 (nZCv daIf +PAN +UAO)
+> [  237.863165]  kpc : config_ep_by_speed_and_alt+0x90/0x308
+> [  237.871766]  klr : audio_set_alt+0x54/0x78
+> [  237.879108]  ksp : ffffffc0104839e0
+> 
+> Signed-off-by: Qihang Hu <huqihang@oppo.com>
+> ---
+>  drivers/usb/gadget/composite.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/usb/gadget/composite.c b/drivers/usb/gadget/composite.c
+> index 72a9797dbbae..443a65af98af 100644
+> --- a/drivers/usb/gadget/composite.c
+> +++ b/drivers/usb/gadget/composite.c
+> @@ -166,21 +166,21 @@ int config_ep_by_speed_and_alt(struct usb_gadget *g,
+>  	/* select desired speed */
+>  	switch (g->speed) {
+>  	case USB_SPEED_SUPER_PLUS:
+> -		if (gadget_is_superspeed_plus(g)) {
+> +		if (gadget_is_superspeed_plus(g) && f->ssp_descriptors) {
+>  			speed_desc = f->ssp_descriptors;
+>  			want_comp_desc = 1;
+>  			break;
+>  		}
+>  		fallthrough;
+>  	case USB_SPEED_SUPER:
+> -		if (gadget_is_superspeed(g)) {
+> +		if (gadget_is_superspeed(g) && f->ss_descriptors) {
+>  			speed_desc = f->ss_descriptors;
+>  			want_comp_desc = 1;
+>  			break;
+>  		}
+>  		fallthrough;
+>  	case USB_SPEED_HIGH:
+> -		if (gadget_is_dualspeed(g)) {
+> +		if (gadget_is_dualspeed(g) && f->hs_descriptors) {
+>  			speed_desc = f->hs_descriptors;
+>  			break;
+>  		}
+> -- 
+> 2.25.1
 > 
 
-I tested this patch with the following BCC script:
+Besides your fix, you may show an warning that said "the function
+doesn't hold the descriptors for supported speed, using the default (FS)
+descriptors". See below kernel doc for detail.
 
-    bpf_text = '''
-    #include <linux/mm_types.h>
+/**
+ * config_ep_by_speed_and_alt() - configures the given endpoint
+ *
+ * ....
+ * Note: the supplied function should hold all the descriptors
+ * for supported speeds
+ */
 
-    KFUNC_PROBE(perf_event_mmap, struct vm_area_struct *vma)
-    {
-        char path[256] = {};
+What's more, you may fix android f_audio_source.c, and let it support
+super speed and super speed plus.
 
-        bpf_d_path(&vma->vm_file->f_path, path, sizeof(path));
-        bpf_trace_printk("perf_event_mmap %s", path);
-        return 0;
-    }
-    '''
+-- 
 
-    b = BPF(text=bpf_text)
-    print("BPF program loaded")
-    b.trace_print()
+Thanks,
+Peter Chen
 
-This change causes kernel panic. I think it's because of this NULL pointer.
