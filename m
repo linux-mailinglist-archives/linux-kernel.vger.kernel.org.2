@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D97A1441772
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:34:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79D934418D1
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:51:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233394AbhKAJgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:36:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37498 "EHLO mail.kernel.org"
+        id S234084AbhKAJwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:52:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51108 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232983AbhKAJcd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:32:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A66C6125F;
-        Mon,  1 Nov 2021 09:24:55 +0000 (UTC)
+        id S233144AbhKAJpA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:45:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C267760C41;
+        Mon,  1 Nov 2021 09:29:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758695;
-        bh=cnhBnhKfSSN1LMscALYG7vXRtiolW1UdG+mv+SpXGsM=;
+        s=korg; t=1635758996;
+        bh=s/GCZQS4eKhH9G78N4AHMdG9j9LpI4/y02eoL8pkNBE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ARdTCtaKWt9FuvOX2Z68njH0TJEsF0wuvVycPe0TBGp4IBKoI2QrJFg4ibfzMxqKg
-         0nzYaw2BAhivnG1p0OezrUJ94MYOT9OF0VLqaf+xuKDNgqXQdobh79HrcrnMnQXEV7
-         hoo5n9bHrQZrd4R29lBuGADNjwE7fb/34f6xxaIo=
+        b=pIuhWbbycc/D0zNjqQhmnJ2xdrx2TSVe+NI6ctwynR1nRXUpVGnxhP/QFg+pg1UHY
+         8GMco8X4ieB6X/TxRUK9tsB3ppYFMcP62MlKGtXcBUnHOjTGjnVCAtrh4QhU1mX2u+
+         FisD3SSOwqWifVlVh09lk+WdQJ53d2fHYP3pyQg4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-        Richard Henderson <richard.henderson@linaro.org>
-Subject: [PATCH 5.10 02/77] ARM: 9133/1: mm: proc-macros: ensure *_tlb_fns are 4B aligned
-Date:   Mon,  1 Nov 2021 10:16:50 +0100
-Message-Id: <20211101082511.710094821@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Shawn Guo <shawnguo@kernel.org>
+Subject: [PATCH 5.14 038/125] arm64: dts: imx8mm-kontron: Fix CAN SPI clock frequency
+Date:   Mon,  1 Nov 2021 10:16:51 +0100
+Message-Id: <20211101082540.377488703@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082511.254155853@linuxfoundation.org>
-References: <20211101082511.254155853@linuxfoundation.org>
+In-Reply-To: <20211101082533.618411490@linuxfoundation.org>
+References: <20211101082533.618411490@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,41 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nick Desaulniers <ndesaulniers@google.com>
+From: Frieder Schrempf <frieder.schrempf@kontron.de>
 
-commit e6a0c958bdf9b2e1b57501fc9433a461f0a6aadd upstream.
+commit ca6f9d85d5944046a241b325700c1ca395651c28 upstream.
 
-A kernel built with CONFIG_THUMB2_KERNEL=y and using clang as the
-assembler could generate non-naturally-aligned v7wbi_tlb_fns which
-results in a boot failure. The original commit adding the macro missed
-the .align directive on this data.
+The MCP2515 can be used with an SPI clock of up to 10 MHz. Set the
+limit accordingly to prevent any performance issues caused by the
+really low clock speed of 100 kHz.
 
-Link: https://github.com/ClangBuiltLinux/linux/issues/1447
-Link: https://lore.kernel.org/all/0699da7b-354f-aecc-a62f-e25693209af4@linaro.org/
-Debugged-by: Ard Biesheuvel <ardb@kernel.org>
-Debugged-by: Nathan Chancellor <nathan@kernel.org>
-Debugged-by: Richard Henderson <richard.henderson@linaro.org>
+This removes the arbitrarily low limit on the SPI frequency, that was
+caused by a typo in the original dts.
 
-Fixes: 66a625a88174 ("ARM: mm: proc-macros: Add generic proc/cache/tlb struct definition macros")
-Suggested-by: Ard Biesheuvel <ardb@kernel.org>
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-Tested-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Without this change, receiving CAN messages on the board beyond a
+certain bitrate will cause overrun errors (see 'ip -det -stat link show
+can0').
+
+With this fix, receiving messages on the bus works without any overrun
+errors for bitrates up to 1 MBit.
+
+Fixes: 8668d8b2e67f ("arm64: dts: Add the Kontron i.MX8M Mini SoMs and baseboards")
+Cc: stable@vger.kernel.org
+Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm/mm/proc-macros.S |    1 +
- 1 file changed, 1 insertion(+)
+ arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-s.dts |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/arm/mm/proc-macros.S
-+++ b/arch/arm/mm/proc-macros.S
-@@ -340,6 +340,7 @@ ENTRY(\name\()_cache_fns)
- 
- .macro define_tlb_functions name:req, flags_up:req, flags_smp
- 	.type	\name\()_tlb_fns, #object
-+	.align 2
- ENTRY(\name\()_tlb_fns)
- 	.long	\name\()_flush_user_tlb_range
- 	.long	\name\()_flush_kern_tlb_range
+--- a/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-s.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-s.dts
+@@ -97,7 +97,7 @@
+ 		clocks = <&osc_can>;
+ 		interrupt-parent = <&gpio4>;
+ 		interrupts = <28 IRQ_TYPE_EDGE_FALLING>;
+-		spi-max-frequency = <100000>;
++		spi-max-frequency = <10000000>;
+ 		vdd-supply = <&reg_vdd_3v3>;
+ 		xceiver-supply = <&reg_vdd_5v>;
+ 	};
 
 
