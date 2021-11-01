@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB12544163B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:21:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23ABC441670
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:22:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232047AbhKAJXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:23:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58178 "EHLO mail.kernel.org"
+        id S232818AbhKAJZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:25:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58982 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232252AbhKAJWg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:22:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D26E461166;
-        Mon,  1 Nov 2021 09:19:35 +0000 (UTC)
+        id S232236AbhKAJXO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:23:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 66E5C610CA;
+        Mon,  1 Nov 2021 09:20:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758376;
-        bh=shtjU+p2NCu2mu9HUq7unFtiM+hkby71sUG0AJ6qYpY=;
+        s=korg; t=1635758417;
+        bh=poHWi9MlbVmSmN9cI2HHqFeK+sJpC4qM/p8itdGfWws=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ct8h/4prY56oQ95WTI5ph1Man+y6wuEoGcUxFg8L8JxaqiP9p2cGPB+YQjhu16fW8
-         UHynueLqCwrZMU0T3W9foxYCUzVM0avY+ZvhkCih1d+yjKKUfuQqetkC3xpumUXz8q
-         GuhfPgnJlI1xId+dIE9bTcyPFZ+uaUAY3Sg0mdok=
+        b=eE1JkJKpxDL8nqUhHThQdSD5l/+IyaOnzznuX7m44fyGET0g/SETqXunpWohAuWJT
+         ivgGkUI486rNppnTm60qMM1WI4Pd91Wxv3xeTqCLx/7G+6rFlA+555qg7e1bvC5xs3
+         vfFbvbIuo6f2A5o1QbIyN/uJY/jMxKs5w7JhqMlo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Trevor Woerner <twoerner@gmail.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 18/20] net: nxp: lpc_eth.c: avoid hang when bringing interface down
+        stable@vger.kernel.org, Haibo Chen <haibo.chen@nxp.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 4.14 15/25] mmc: sdhci-esdhc-imx: clear the buffer_read_ready to reset standard tuning circuit
 Date:   Mon,  1 Nov 2021 10:17:27 +0100
-Message-Id: <20211101082447.960614660@linuxfoundation.org>
+Message-Id: <20211101082450.660660674@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082444.133899096@linuxfoundation.org>
-References: <20211101082444.133899096@linuxfoundation.org>
+In-Reply-To: <20211101082447.070493993@linuxfoundation.org>
+References: <20211101082447.070493993@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,44 +40,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trevor Woerner <twoerner@gmail.com>
+From: Haibo Chen <haibo.chen@nxp.com>
 
-commit ace19b992436a257d9a793672e57abc28fe83e2e upstream.
+commit 9af372dc70e9fdcbb70939dac75365e7b88580b4 upstream.
 
-A hard hang is observed whenever the ethernet interface is brought
-down. If the PHY is stopped before the LPC core block is reset,
-the SoC will hang. Comparing lpc_eth_close() and lpc_eth_open() I
-re-arranged the ordering of the functions calls in lpc_eth_close() to
-reset the hardware before stopping the PHY.
-Fixes: b7370112f519 ("lpc32xx: Added ethernet driver")
-Signed-off-by: Trevor Woerner <twoerner@gmail.com>
-Acked-by: Vladimir Zapolskiy <vz@mleia.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+To reset standard tuning circuit completely, after clear ESDHC_MIX_CTRL_EXE_TUNE,
+also need to clear bit buffer_read_ready, this operation will finally clear the
+USDHC IP internal logic flag execute_tuning_with_clr_buf, make sure the following
+normal data transfer will not be impacted by standard tuning logic used before.
+
+Find this issue when do quick SD card insert/remove stress test. During standard
+tuning prodedure, if remove SD card, USDHC standard tuning logic can't clear the
+internal flag execute_tuning_with_clr_buf. Next time when insert SD card, all
+data related commands can't get any data related interrupts, include data transfer
+complete interrupt, data timeout interrupt, data CRC interrupt, data end bit interrupt.
+Always trigger software timeout issue. Even reset the USDHC through bits in register
+SYS_CTRL (0x2C, bit28 reset tuning, bit26 reset data, bit 25 reset command, bit 24
+reset all) can't recover this. From the user's point of view, USDHC stuck, SD can't
+be recognized any more.
+
+Fixes: d9370424c948 ("mmc: sdhci-esdhc-imx: reset tuning circuit when power on mmc card")
+Signed-off-by: Haibo Chen <haibo.chen@nxp.com>
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/1634263236-6111-1-git-send-email-haibo.chen@nxp.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/nxp/lpc_eth.c |    5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/mmc/host/sdhci-esdhc-imx.c |   16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
---- a/drivers/net/ethernet/nxp/lpc_eth.c
-+++ b/drivers/net/ethernet/nxp/lpc_eth.c
-@@ -1039,9 +1039,6 @@ static int lpc_eth_close(struct net_devi
- 	napi_disable(&pldat->napi);
- 	netif_stop_queue(ndev);
+--- a/drivers/mmc/host/sdhci-esdhc-imx.c
++++ b/drivers/mmc/host/sdhci-esdhc-imx.c
+@@ -927,6 +927,7 @@ static void esdhc_reset_tuning(struct sd
+ 	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+ 	struct pltfm_imx_data *imx_data = sdhci_pltfm_priv(pltfm_host);
+ 	u32 ctrl;
++	int ret;
  
--	if (ndev->phydev)
--		phy_stop(ndev->phydev);
--
- 	spin_lock_irqsave(&pldat->lock, flags);
- 	__lpc_eth_reset(pldat);
- 	netif_carrier_off(ndev);
-@@ -1049,6 +1046,8 @@ static int lpc_eth_close(struct net_devi
- 	writel(0, LPC_ENET_MAC2(pldat->net_base));
- 	spin_unlock_irqrestore(&pldat->lock, flags);
- 
-+	if (ndev->phydev)
-+		phy_stop(ndev->phydev);
- 	clk_disable_unprepare(pldat->clk);
- 
- 	return 0;
+ 	/* Reset the tuning circuit */
+ 	if (esdhc_is_usdhc(imx_data)) {
+@@ -939,7 +940,22 @@ static void esdhc_reset_tuning(struct sd
+ 		} else if (imx_data->socdata->flags & ESDHC_FLAG_STD_TUNING) {
+ 			ctrl = readl(host->ioaddr + SDHCI_AUTO_CMD_STATUS);
+ 			ctrl &= ~ESDHC_MIX_CTRL_SMPCLK_SEL;
++			ctrl &= ~ESDHC_MIX_CTRL_EXE_TUNE;
+ 			writel(ctrl, host->ioaddr + SDHCI_AUTO_CMD_STATUS);
++			/* Make sure ESDHC_MIX_CTRL_EXE_TUNE cleared */
++			ret = readl_poll_timeout(host->ioaddr + SDHCI_AUTO_CMD_STATUS,
++				ctrl, !(ctrl & ESDHC_MIX_CTRL_EXE_TUNE), 1, 50);
++			if (ret == -ETIMEDOUT)
++				dev_warn(mmc_dev(host->mmc),
++				 "Warning! clear execute tuning bit failed\n");
++			/*
++			 * SDHCI_INT_DATA_AVAIL is W1C bit, set this bit will clear the
++			 * usdhc IP internal logic flag execute_tuning_with_clr_buf, which
++			 * will finally make sure the normal data transfer logic correct.
++			 */
++			ctrl = readl(host->ioaddr + SDHCI_INT_STATUS);
++			ctrl |= SDHCI_INT_DATA_AVAIL;
++			writel(ctrl, host->ioaddr + SDHCI_INT_STATUS);
+ 		}
+ 	}
+ }
 
 
