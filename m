@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CB28441F41
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 18:29:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0858441F47
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 18:29:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230395AbhKARb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 13:31:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53196 "EHLO mail.kernel.org"
+        id S230497AbhKARb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 13:31:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53268 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229931AbhKARbX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 13:31:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 0236060E52;
+        id S229948AbhKARbY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 13:31:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 969D760EBB;
         Mon,  1 Nov 2021 17:28:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1635787730;
-        bh=u9/YqL4okeaq06nWtVTHi0mXPdkw3Gt5DbFWaZOmVj0=;
+        bh=+5P76ORn15fkZ7MtqcyxYHX1IanWXRWaJB2mC0o1EjI=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=G8xSv+EnRKDHhJqMJ8wBNgOSMP1xba0WwC1KmsfgyDooZbisE8f3YdiX3Q6JVIjea
-         2qhf8U8+fUB7cwW9BTAq3J4S36taHX86iuxttU+Tivn7rIIoK49/HGGGA51DSCXLUv
-         hYQRkEC4eCbL1QNvPdNNQ/kM6BDJqSCQ1o+SFKOSdU6mSuwHzLGfqyCXgO+SE0sP0q
-         6nf9cv1QUU2pEDqP7vhiKDVFkrfx5FRyF6+dU+/aZvTKceSrzA1xlHMTX2eztEk3Z9
-         UzNjxyObAuKTiyY7gTGCboD0VbLZHpL8efX5LFPHxM+Yr63H/HMdCPXks8dPlEb7AZ
-         dz/lL7xRtgxqg==
+        b=r6lS4iYgq+HRkhvx+0Ru94Wn8l0G5GmnDVCabwWtTvBNxfhBpKqGFfa9wlYxIYRWU
+         9i+qJfNHVzhsTtFKMunG5PQzEiu240G4VsgWgtILtisqwNao+JEIzbfQfH5aIy4Idy
+         cAzhYeYo1O0kfCr44d+UBU6UxMrxKk8Ophx0xKSPQMt+vT+QiLYbvE6NMy+t1q0aO3
+         1oXPizovMrGZxuu8+eTeDfUU+DfufeYzKbDLu/bCdu0IvgpnyacGR4jG8qEADfHx2L
+         RgxuFWhXczQPjgtNlH3LPv6U5/ODaQWsYlkz/Kl82edAZz7WfzNJPooJJb9TWlg2oH
+         rLxebZCHg4l4Q==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id EFC36609B9;
-        Mon,  1 Nov 2021 17:28:49 +0000 (UTC)
-Subject: Re: [GIT PULL] TPM DEVICE DRIVER changes for v5.16
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 8F05E609B9;
+        Mon,  1 Nov 2021 17:28:50 +0000 (UTC)
+Subject: Re: [GIT PULL] CDROM updates for 5.16-rc1
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YXdkK4IH9J1xcMXb@iki.fi>
-References: <YXdkK4IH9J1xcMXb@iki.fi>
+In-Reply-To: <9170ad88-1150-1a34-9979-669054d6d2f9@kernel.dk>
+References: <9170ad88-1150-1a34-9979-669054d6d2f9@kernel.dk>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YXdkK4IH9J1xcMXb@iki.fi>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git/ tags/tpmdd-next-v5.16
-X-PR-Tracked-Commit-Id: 7eba41fe8c7bb01ff3d4b757bd622375792bc720
+X-PR-Tracked-Message-Id: <9170ad88-1150-1a34-9979-669054d6d2f9@kernel.dk>
+X-PR-Tracked-Remote: git://git.kernel.dk/linux-block.git tags/for-5.16/cdrom-2021-10-29
+X-PR-Tracked-Commit-Id: bbc3925cf696422492ebdaba386e61450fa2294c
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: ad98a9246616e736504d1ebc2f3f35c2c0dcb806
-Message-Id: <163578772997.18307.941320912979431776.pr-tracker-bot@kernel.org>
-Date:   Mon, 01 Nov 2021 17:28:49 +0000
-To:     Jarkko Sakkinen <jarkko.sakkinen@iki.fi>
+X-PR-Merge-Commit-Id: 737f1cd8a8e80fe3243662f04d4d66829facc71a
+Message-Id: <163578773057.18307.6642739354203150781.pr-tracker-bot@kernel.org>
+Date:   Mon, 01 Nov 2021 17:28:50 +0000
+To:     Jens Axboe <axboe@kernel.dk>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        jmorris@namei.org, dhowells@redhat.com, peterhuewe@gmx.de
+        Phillip Potter <phil@philpotter.co.uk>,
+        LKML <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 26 Oct 2021 05:12:59 +0300:
+The pull request you sent on Sun, 31 Oct 2021 13:42:02 -0600:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git/ tags/tpmdd-next-v5.16
+> git://git.kernel.dk/linux-block.git tags/for-5.16/cdrom-2021-10-29
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/ad98a9246616e736504d1ebc2f3f35c2c0dcb806
+https://git.kernel.org/torvalds/c/737f1cd8a8e80fe3243662f04d4d66829facc71a
 
 Thank you!
 
