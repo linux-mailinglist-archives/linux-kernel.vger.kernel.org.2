@@ -2,113 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57E0B441E36
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 17:30:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A458E441E39
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 17:31:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232674AbhKAQd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 12:33:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55902 "EHLO
+        id S232692AbhKAQeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 12:34:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232340AbhKAQdX (ORCPT
+        with ESMTP id S232070AbhKAQeP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 12:33:23 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F84CC061764
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 09:30:50 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id w1so12321185edd.10
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 09:30:49 -0700 (PDT)
+        Mon, 1 Nov 2021 12:34:15 -0400
+Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62188C061714
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 09:31:42 -0700 (PDT)
+Received: by mail-oo1-xc31.google.com with SMTP id o26-20020a4abe9a000000b002b74bffdef0so6454784oop.12
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 09:31:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=YgSSvNsm0Z7aKAqIRScZzvLuuJ1N/g+l4fO8S50yBac=;
-        b=KdHxsDLJ3nYJ6rEFuu6y20lSQvJl/+9lyQ/kzVHZvoinyti94cbmslC8LTVxsJ4Hf7
-         fRNBPiiPppFTmKubbeEl5fImTL8NYaKF/K/1ehrio8SsP7vz0fbY5EoORH6H4tUoG80G
-         oX3ObLjDa+QpG1taiiUC+nUjr++/qoxDNlBo1G5ZaQAt6In8v4AM8F0ZQbA2gxrRr7y8
-         iaLqCIyLy2uyewF8ejjVqFeL3J+lvZemLIQPIXae0FLMppc9ZZF+BMF0MsihX4ccRPMn
-         JGHcMrNypwFRnC4ccat6rHeBF9fm4qDTIE1QmVZ7+U8iwm7WNNvw3z91M4sf5+Q80qyO
-         ybrQ==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RoxrbwXI/uzghbJByN0kudXg7vyA8QYSZFm4zmFhcvg=;
+        b=KcxYFvFVS2aVhuqU5fCWKH/beck96M3XSdshLqzozu7Bm41PLb8HYXUH1r/VviksrA
+         kwRieikyx2iuDGkrARVy5MxOzUBU9w2kvQOkwc9jr6AAzjzM3qbfeT52R2Swm1yXsaJF
+         O5gYj8uh95VXdy68GKY60azTFUUPsfm1/d5o8SBmAurpNKF32P3QIHDcPy4Lg53cJfIr
+         RkG9p1bQkB+JUsB3U9fkllhhZ2Y3+0MkAYRhQ7T4YeYlD2SgaVcdjSziwrOT2y2MJfVc
+         IQyQdLIbC/5pvbKMuA3VCCVpnSgMn68ZAlIY9EIhKssYV9E5/qMGCex5rM6RpeejToON
+         WT4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=YgSSvNsm0Z7aKAqIRScZzvLuuJ1N/g+l4fO8S50yBac=;
-        b=3z4hbiHyv5b4A83mKpE1R4Uy1UNiiQ6V7Zy7JZ3WdRbrIjBd2ycVJAPXBwJ5KRoxii
-         /IiLt0YQA3fU1X/oj9BW88cIV4/OvTzX3E3trSrdQYRJ4Sw7ohRX07nmw+8onO0Nhv5Z
-         9Atg7Xb8DYaIGfTz0fJqft3GSnp6ox2eroA1koexBh1YZjOk4+YhRW2YeSZtpL43aI5w
-         xw1zctWNNLLpZPKDLKvMqwbJf7dMUMXy6Kkj1BoqvdVSVJvM+TC5GlrM6wd2gaXdiqqa
-         NZG9nfalA4x392xj+pz439LHXpJdyL6QY18C8TKwFOMN7lCBU81uCt8vEoWG977Z0Fuw
-         F0HA==
-X-Gm-Message-State: AOAM533yRirPxQsFo0vmKlvLjmOHX8dZxFQBrbqziBsCzRTAZuexot+h
-        1H/+r664rDQgHdsL0Le74GmrpR8dWm8=
-X-Google-Smtp-Source: ABdhPJxislw1mEA6MJ7mPzLwu32b6iS0P9nZzjWGPETt5rAxv80MXqEjVgyEWzP2Tt0I13bWQSqanw==
-X-Received: by 2002:a17:906:6089:: with SMTP id t9mr38872474ejj.323.1635784248600;
-        Mon, 01 Nov 2021 09:30:48 -0700 (PDT)
-Received: from localhost.localdomain (host-79-56-54-101.retail.telecomitalia.it. [79.56.54.101])
-        by smtp.gmail.com with ESMTPSA id d3sm4300846edr.0.2021.11.01.09.30.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 09:30:48 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Phillip Potter <phil@philpotter.co.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Larry Finger <Larry.Finger@lwfinger.net>
-Subject: Re: [PATCH v2] staging: r8188eu: Use kzalloc() with GFP_ATOMIC in atomic context
-Date:   Mon, 01 Nov 2021 17:30:47 +0100
-Message-ID: <11283844.I1tDBM3C2B@localhost.localdomain>
-In-Reply-To: <d1a8eb91-adb9-2163-dc3d-9f86ebdc45e3@lwfinger.net>
-References: <20211101142732.5638-1-fmdefrancesco@gmail.com> <d1a8eb91-adb9-2163-dc3d-9f86ebdc45e3@lwfinger.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RoxrbwXI/uzghbJByN0kudXg7vyA8QYSZFm4zmFhcvg=;
+        b=n02MDsWm8CAnYcYqbTPOKBUvkStTixpxgWQmYJcTE3A/mU/4rSklGp6dQ8lTNdcZF+
+         eYX/T2f8y9lskaqhZ3FemgDkPgd0NzVreOawooDzickF0+cEgoGxWcetcGUCDRfwrMU/
+         3IDtC6mws++cixjibMnFwB0ulzlF7i0ZuCujIs8ANuTy7z9ZRltHAGMVpsh7czlITzJw
+         dsbcQ5h0dIDMy/wg6WyEqVVj5zANAtgGjIf79UDft7Q0tu+jb9eiEQiL4pyqr2KbtHqs
+         TvXTiCmb/VLm5ITX8+i0XMxCuYfTmyoO3HGw0zLdhl85uvLxYwR3W4tcrurbYD8X2N04
+         SvTQ==
+X-Gm-Message-State: AOAM530FUES+/qv/4rlBTyRmxDE0180O28GkIPY0xpRSl7TyJgIEJ884
+        BMqQ5UDxui+Km1mEFbukXnm/7/RnMmbkQo+0OHyckw==
+X-Google-Smtp-Source: ABdhPJwdWjQxYd3uF5tbv+EyRSlihkTR74QwtSNyzpKsGmaK8YAZ5Lh3VQ5OKy5O1AR9OP1S409UU35oWuUEVPN4jiw=
+X-Received: by 2002:a4a:dc1a:: with SMTP id p26mr19990397oov.6.1635784301540;
+ Mon, 01 Nov 2021 09:31:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
+References: <20211028175749.1219188-1-pgonda@google.com>
+In-Reply-To: <20211028175749.1219188-1-pgonda@google.com>
+From:   Marc Orr <marcorr@google.com>
+Date:   Mon, 1 Nov 2021 09:31:30 -0700
+Message-ID: <CAA03e5HhGfBKKWFo1eT3wyUUY+5r2C3-jWQpMkntOQRe=CocTw@mail.gmail.com>
+Subject: Re: [PATCH 0/4] Add SEV_INIT_EX support
+To:     Peter Gonda <pgonda@google.com>
+Cc:     Thomas.Lendacky@amd.com, David Rientjes <rientjes@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        John Allen <john.allen@amd.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday, November 1, 2021 4:11:26 PM CET Larry Finger wrote:
-> On 11/1/21 09:27, Fabio M. De Francesco wrote:
-> > Use the GFP_ATOMIC flag of kzalloc() with two memory allocation in
-> > report_del_sta_event(). This function is called while holding spinlocks,
-> > therefore it is not allowed to sleep. With the GFP_ATOMIC type flag, the
-> > allocation is high priority and must not sleep.
-> > 
-> > This issue is detected by Smatch which emits the following warning:
-> > "drivers/staging/r8188eu/core/rtw_mlme_ext.c:6848 report_del_sta_event()
-> > warn: sleeping in atomic context".
-> >
-> > []
-> >
-> I am happy that you caught the error before it destroyed every instance of 
-> r8188eu.
+On Thu, Oct 28, 2021 at 10:57 AM Peter Gonda <pgonda@google.com> wrote:
+>
+> SEV_INIT requires users to unlock their SPI bus for the PSP's non
+> volatile (NV) storage. Users may wish to lock their SPI bus for numerous
+> reasons, to support this the PSP firmware supports SEV_INIT_EX. INIT_EX
+> allows the firmware to use a region of memory for its NV storage leaving
+> the kernel responsible for actually storing the data in a persistent
+> way. This series adds a new module parameter to ccp allowing users to
+> specify a path to a file for use as the PSP's NV storage. The ccp driver
+> then reads the file into memory for the PSP to use and is responsible
+> for writing the file whenever the PSP modifies the memory region.
+>
+> Signed-off-by: Peter Gonda <pgonda@google.com>
+> Acked-by: David Rientjes <rientjes@google.com>
+> Cc: Tom Lendacky <thomas.lendacky@amd.com>
+> Cc: Brijesh Singh <brijesh.singh@amd.com>
+> Cc: Marc Orr <marcorr@google.com>
+> Cc: Joerg Roedel <jroedel@suse.de>
+> Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> Cc: David Rientjes <rientjes@google.com>
+> Cc: John Allen <john.allen@amd.com>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Paolo Bonzini <pbonzini@redhat.com> (
+> Cc: linux-crypto@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+>
+> David Rientjes (1):
+>   crypto: ccp - Add SEV_INIT_EX support
+>
+> Peter Gonda (3):
+>   crypto: ccp - Fix SEV_INIT error logging on init
+>   crypto: ccp - Move SEV_INIT retry for corrupted data
+>   crypto: ccp - Refactor out sev_fw_alloc()
+>
+>  drivers/crypto/ccp/sev-dev.c | 235 ++++++++++++++++++++++++++++++-----
+>  include/linux/psp-sev.h      |  21 ++++
+>  2 files changed, 222 insertions(+), 34 deletions(-)
+>
+> --
+> 2.33.1.1089.g2158813163f-goog
+>
 
-I don't think so, since we have run this driver with no problems at all :)
-
-SAC bugs can potentially cause serious system hangs at runtime, but they do 
-not always cause problems in real execution as you have noticed here with 
-this driver. We have used and tested it hundreds of times with no problems.
-
-> Incidentally, I disagree with checkpatch in that I think that 
-> sizeof(struct foo) is more descriptive than sizeof(*bar). 
-
-I agree with you in full, but I felt that I had to change it just because of 
-the warning output by that tool. I don't like to have my patches discarded 
-because they don't fix checkpatch warnings or introduce new ones. 
-
-> If I wanted to check 
-> the resulting value of the sizeof(), the second form requires an additional 
-> step. It probably does not matter much to the compiler, but when I have to 
-do it 
-> manually, the extra effort is not negligible.
-> 
-> Even though I disagree with the philosophy,
-> 
-> Acked-by: Larry Finger <Larry.Finger@lwfinger.net>
-> 
-
-Thanks for your "Acked-by" tag.
-
-Fabio
-
-
-
-
+I've just replied with my Reviewed-by tag to all of the patches
+because I had reviewed the v1 internally, before Peter posted
+externally. Thank you, Tom, for the excellent reviews! I'm looking
+forward to seeing the v2 with all of this feedback incorporated.
