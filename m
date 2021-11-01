@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DD07441681
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:24:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66EA04416A2
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:26:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231664AbhKAJ0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:26:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59152 "EHLO mail.kernel.org"
+        id S232166AbhKAJ13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:27:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231807AbhKAJXj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:23:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 070CB610CC;
-        Mon,  1 Nov 2021 09:20:49 +0000 (UTC)
+        id S232647AbhKAJYY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:24:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D4340610E5;
+        Mon,  1 Nov 2021 09:21:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758450;
-        bh=GjIwVZag5F/dvHbY7hvrx/LnENV5CA3TVlawfz7+//A=;
+        s=korg; t=1635758478;
+        bh=St0LobpWJov0hVt+W4TVWNARJ5CMi+3hwNzHhwPGzY4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LYvVPAp3ZBw8lVfepoNLnoAxlFgu1dY7QLq+cg8hSAAb7JeV70dAA+LKUyep6z2/G
-         W/U64xgQ3D2JPgtSpeWwGEu16Lkct5K7VSqNfdw/C01PeWlsyqzXQBgr7Y9h+6o3yU
-         8WKN6G28BPYOCUOCtL5n0H1EZcfi3fx4bJYschDM=
+        b=hNdkHCpyOR2yd6tqrQzlu/xhziV1p80pvQSPZrmxs3B4meQOp5XQwStmnXHbjEojR
+         kx5RhkwmIu/HEJiLnC06TMLfE0VvM7gK7/ZyMQp78k+XPGCspUim3JUFNPx6ekOGu9
+         IALrJ9/dujCvs0qjztFWu927f4ktDu/1Nd2EK3i4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Wang Hai <wanghai38@huawei.com>,
-        Johan Hovold <johan@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.14 07/25] usbnet: fix error return code in usbnet_probe()
+        stable@vger.kernel.org,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Nicolas Pitre <nico@linaro.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Stefan Agner <stefan@agner.ch>,
+        Russell King <rmk+kernel@armlinux.org.uk>
+Subject: [PATCH 4.19 07/35] ARM: 8819/1: Remove -p from LDFLAGS
 Date:   Mon,  1 Nov 2021 10:17:19 +0100
-Message-Id: <20211101082448.700597935@linuxfoundation.org>
+Message-Id: <20211101082453.278295835@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082447.070493993@linuxfoundation.org>
-References: <20211101082447.070493993@linuxfoundation.org>
+In-Reply-To: <20211101082451.430720900@linuxfoundation.org>
+References: <20211101082451.430720900@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,32 +44,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang Hai <wanghai38@huawei.com>
+From: Nathan Chancellor <natechancellor@gmail.com>
 
-commit 6f7c88691191e6c52ef2543d6f1da8d360b27a24 upstream.
+commit 091bb549f7722723b284f63ac665e2aedcf9dec9 upstream.
 
-Return error code if usb_maxpacket() returns 0 in usbnet_probe()
+This option is not supported by lld:
 
-Fixes: 397430b50a36 ("usbnet: sanity check for maxpacket")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
-Reviewed-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20211026124015.3025136-1-wanghai38@huawei.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+    ld.lld: error: unknown argument: -p
+
+This has been a no-op in binutils since 2004 (see commit dea514f51da1 in
+that tree). Given that the lowest officially supported of binutils for
+the kernel is 2.20, which was released in 2009, nobody needs this flag
+around so just remove it. Commit 1a381d4a0a9a ("arm64: remove no-op -p
+linker flag") did the same for arm64.
+
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+Acked-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Acked-by: Nicolas Pitre <nico@linaro.org>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Reviewed-by: Stefan Agner <stefan@agner.ch>
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/usb/usbnet.c |    1 +
- 1 file changed, 1 insertion(+)
+ arch/arm/Makefile                 |    2 +-
+ arch/arm/boot/bootp/Makefile      |    2 +-
+ arch/arm/boot/compressed/Makefile |    2 --
+ 3 files changed, 2 insertions(+), 4 deletions(-)
 
---- a/drivers/net/usb/usbnet.c
-+++ b/drivers/net/usb/usbnet.c
-@@ -1790,6 +1790,7 @@ usbnet_probe (struct usb_interface *udev
- 	dev->maxpacket = usb_maxpacket (dev->udev, dev->out, 1);
- 	if (dev->maxpacket == 0) {
- 		/* that is a broken device */
-+		status = -ENODEV;
- 		goto out4;
- 	}
+--- a/arch/arm/Makefile
++++ b/arch/arm/Makefile
+@@ -10,7 +10,7 @@
+ #
+ # Copyright (C) 1995-2001 by Russell King
  
+-LDFLAGS_vmlinux	:=-p --no-undefined -X --pic-veneer
++LDFLAGS_vmlinux	:= --no-undefined -X --pic-veneer
+ ifeq ($(CONFIG_CPU_ENDIAN_BE8),y)
+ LDFLAGS_vmlinux	+= --be8
+ KBUILD_LDFLAGS_MODULE	+= --be8
+--- a/arch/arm/boot/bootp/Makefile
++++ b/arch/arm/boot/bootp/Makefile
+@@ -8,7 +8,7 @@
+ 
+ GCOV_PROFILE	:= n
+ 
+-LDFLAGS_bootp	:=-p --no-undefined -X \
++LDFLAGS_bootp	:= --no-undefined -X \
+ 		 --defsym initrd_phys=$(INITRD_PHYS) \
+ 		 --defsym params_phys=$(PARAMS_PHYS) -T
+ AFLAGS_initrd.o :=-DINITRD=\"$(INITRD)\"
+--- a/arch/arm/boot/compressed/Makefile
++++ b/arch/arm/boot/compressed/Makefile
+@@ -133,8 +133,6 @@ endif
+ ifeq ($(CONFIG_CPU_ENDIAN_BE8),y)
+ LDFLAGS_vmlinux += --be8
+ endif
+-# ?
+-LDFLAGS_vmlinux += -p
+ # Report unresolved symbol references
+ LDFLAGS_vmlinux += --no-undefined
+ # Delete all temporary local symbols
 
 
