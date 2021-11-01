@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1379A4418D8
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:51:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44D5E441656
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:22:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234540AbhKAJwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:52:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50956 "EHLO mail.kernel.org"
+        id S232644AbhKAJYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:24:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58554 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232346AbhKAJoy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:44:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B2D361407;
-        Mon,  1 Nov 2021 09:29:46 +0000 (UTC)
+        id S232318AbhKAJWp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:22:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EF3D461181;
+        Mon,  1 Nov 2021 09:19:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758986;
-        bh=Z/cUCPXMS5z1azsoc/8KO/HVpK3NL+kZ3c427D6Fh2k=;
+        s=korg; t=1635758399;
+        bh=t+5vw9w4e8TA8m/8OMY0IRxAvMCb5tYvM4LFmNpksX0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V2du3pCrtVIJTsqV4O5OMP8E3w0eAncjqZnELrzi43Dfgj651GmOypWY8feqcxOqb
-         aXrrcqXl97CrW31Qn+hHGPC2UnlgfH3TTLNNnojkXHWXohMa53xyHi6f617/TlpIQY
-         hg11ZbVMnKy4R5P0xx32Vv/RmoUiiS6uO7ryW720=
+        b=cM0XEcX4CcIzP5TbSywipM5i25ARsx9unySoyC65mwMlv4L8eVLPi5zjTpkzY4p0B
+         05CkpNG6aVjvWTMIY2kTz/3pEz+FVnEXJ2FlL+r7/xkj7rGIDxoUdzY9BeyOMdmzPs
+         NlAd4Wmp/ZFz4aTgDt9HFiX7ajM5eh+uaJEaNvpQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Varun Prakash <varun@chelsio.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 5.14 065/125] nvmet-tcp: fix data digest pointer calculation
+        stable@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.9 09/20] nfc: port100: fix using -ERRNO as command type mask
 Date:   Mon,  1 Nov 2021 10:17:18 +0100
-Message-Id: <20211101082545.463654423@linuxfoundation.org>
+Message-Id: <20211101082446.173948420@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082533.618411490@linuxfoundation.org>
-References: <20211101082533.618411490@linuxfoundation.org>
+In-Reply-To: <20211101082444.133899096@linuxfoundation.org>
+References: <20211101082444.133899096@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,33 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Varun Prakash <varun@chelsio.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-commit e790de54e94a7a15fb725b34724d41d41cbaa60c upstream.
+commit 2195f2062e4cc93870da8e71c318ef98a1c51cef upstream.
 
-exp_ddgst is of type __le32, &cmd->exp_ddgst + cmd->offset increases
-&cmd->exp_ddgst by 4 * cmd->offset, fix this by type casting
-&cmd->exp_ddgst to u8 *.
+During probing, the driver tries to get a list (mask) of supported
+command types in port100_get_command_type_mask() function.  The value
+is u64 and 0 is treated as invalid mask (no commands supported).  The
+function however returns also -ERRNO as u64 which will be interpret as
+valid command mask.
 
-Fixes: 872d26a391da ("nvmet-tcp: add NVMe over TCP target driver")
-Signed-off-by: Varun Prakash <varun@chelsio.com>
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Return 0 on every error case of port100_get_command_type_mask(), so the
+probing will stop.
+
+Cc: <stable@vger.kernel.org>
+Fixes: 0347a6ab300a ("NFC: port100: Commands mechanism implementation")
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/nvme/target/tcp.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/nfc/port100.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/nvme/target/tcp.c
-+++ b/drivers/nvme/target/tcp.c
-@@ -702,7 +702,7 @@ static int nvmet_try_send_ddgst(struct n
- 	struct nvmet_tcp_queue *queue = cmd->queue;
- 	struct msghdr msg = { .msg_flags = MSG_DONTWAIT };
- 	struct kvec iov = {
--		.iov_base = &cmd->exp_ddgst + cmd->offset,
-+		.iov_base = (u8 *)&cmd->exp_ddgst + cmd->offset,
- 		.iov_len = NVME_TCP_DIGEST_LENGTH - cmd->offset
- 	};
- 	int ret;
+--- a/drivers/nfc/port100.c
++++ b/drivers/nfc/port100.c
+@@ -1011,11 +1011,11 @@ static u64 port100_get_command_type_mask
+ 
+ 	skb = port100_alloc_skb(dev, 0);
+ 	if (!skb)
+-		return -ENOMEM;
++		return 0;
+ 
+ 	resp = port100_send_cmd_sync(dev, PORT100_CMD_GET_COMMAND_TYPE, skb);
+ 	if (IS_ERR(resp))
+-		return PTR_ERR(resp);
++		return 0;
+ 
+ 	if (resp->len < 8)
+ 		mask = 0;
 
 
