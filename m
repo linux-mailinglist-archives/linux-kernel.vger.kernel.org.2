@@ -2,37 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E57644164A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:21:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6291441781
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:36:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232000AbhKAJYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:24:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59012 "EHLO mail.kernel.org"
+        id S232949AbhKAJhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:37:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43594 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232285AbhKAJWi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:22:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 174286117A;
-        Mon,  1 Nov 2021 09:19:51 +0000 (UTC)
+        id S233622AbhKAJdr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:33:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F24061265;
+        Mon,  1 Nov 2021 09:25:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758392;
-        bh=RsDMZW4n7+Z30k1OBfySXl2xmRMbFiWRHcUn4mW6JWo=;
+        s=korg; t=1635758716;
+        bh=pvJr1WrYLJxcxoBfz2R65K5Wa7sWMt1a0oeZCQbtU80=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gMOAlrtU283U/DN7H64Hr0hIh4zqv0+w9qNNq+h+n5CYAsRWKKQ3G+etjUlCgODpv
-         Fo/TE35tT91yZzpuTfNZPq4PFjVgXwctBPmfuv4uqClW12SSS/J2Z3qKmbos+Yr/au
-         PbBMo6btAtpsbwCCVbCg5Tm1CTt+FCGIo2P+PUjE=
+        b=cPOviT/1E+P4LJkdDP5Jh3mxHURZxWMQ+VEVRgP/nMgyJ4Ysl3y1NoUg0t8H5TfMy
+         CmyTtSRHX1k9cqjMHM8Xy4R8oHTKKKfRgA2/Q/LmvEsosgclRfZsFVkY4Tskq1J8QM
+         gR7KsLP7/bVHpvvpZun3/9USE5nmyXERKN7Ewrtk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Oliver Neukum <oneukum@suse.com>,
-        syzbot+76bb1d34ffa0adc03baa@syzkaller.appspotmail.com,
-        Johan Hovold <johan@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.9 06/20] usbnet: sanity check for maxpacket
-Date:   Mon,  1 Nov 2021 10:17:15 +0100
-Message-Id: <20211101082445.557168731@linuxfoundation.org>
+        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH 5.10 28/77] cfg80211: scan: fix RCU in cfg80211_add_nontrans_list()
+Date:   Mon,  1 Nov 2021 10:17:16 +0100
+Message-Id: <20211101082517.840847610@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082444.133899096@linuxfoundation.org>
-References: <20211101082444.133899096@linuxfoundation.org>
+In-Reply-To: <20211101082511.254155853@linuxfoundation.org>
+References: <20211101082511.254155853@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,37 +38,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oliver Neukum <oneukum@suse.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-commit 397430b50a363d8b7bdda00522123f82df6adc5e upstream.
+commit a2083eeb119fb9307258baea9b7c243ca9a2e0b6 upstream.
 
-maxpacket of 0 makes no sense and oopses as we need to divide
-by it. Give up.
+The SSID pointer is pointing to RCU protected data, so we
+need to have it under rcu_read_lock() for the entire use.
+Fix this.
 
-V2: fixed typo in log and stylistic issues
-
-Signed-off-by: Oliver Neukum <oneukum@suse.com>
-Reported-by: syzbot+76bb1d34ffa0adc03baa@syzkaller.appspotmail.com
-Reviewed-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20211021122944.21816-1-oneukum@suse.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Cc: stable@vger.kernel.org
+Fixes: 0b8fb8235be8 ("cfg80211: Parsing of Multiple BSSID information in scanning")
+Link: https://lore.kernel.org/r/20210930131120.6ddfc603aa1d.I2137344c4e2426525b1a8e4ce5fca82f8ecbfe7e@changeid
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/usb/usbnet.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ net/wireless/scan.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
---- a/drivers/net/usb/usbnet.c
-+++ b/drivers/net/usb/usbnet.c
-@@ -1740,6 +1740,10 @@ usbnet_probe (struct usb_interface *udev
- 	if (!dev->rx_urb_size)
- 		dev->rx_urb_size = dev->hard_mtu;
- 	dev->maxpacket = usb_maxpacket (dev->udev, dev->out, 1);
-+	if (dev->maxpacket == 0) {
-+		/* that is a broken device */
-+		goto out4;
-+	}
+--- a/net/wireless/scan.c
++++ b/net/wireless/scan.c
+@@ -418,14 +418,17 @@ cfg80211_add_nontrans_list(struct cfg802
+ 	}
+ 	ssid_len = ssid[1];
+ 	ssid = ssid + 2;
+-	rcu_read_unlock();
  
- 	/* let userspace know we have a random address */
- 	if (ether_addr_equal(net->dev_addr, node_id))
+ 	/* check if nontrans_bss is in the list */
+ 	list_for_each_entry(bss, &trans_bss->nontrans_list, nontrans_list) {
+-		if (is_bss(bss, nontrans_bss->bssid, ssid, ssid_len))
++		if (is_bss(bss, nontrans_bss->bssid, ssid, ssid_len)) {
++			rcu_read_unlock();
+ 			return 0;
++		}
+ 	}
+ 
++	rcu_read_unlock();
++
+ 	/* add to the list */
+ 	list_add_tail(&nontrans_bss->nontrans_list, &trans_bss->nontrans_list);
+ 	return 0;
 
 
