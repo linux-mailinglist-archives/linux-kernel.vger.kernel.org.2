@@ -2,142 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B95C441ADC
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 12:45:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB589441ADE
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 12:46:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231437AbhKALsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 07:48:21 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:50470 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232324AbhKALsT (ORCPT
+        id S232258AbhKALtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 07:49:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231485AbhKALtH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 07:48:19 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 8F66D212C2;
-        Mon,  1 Nov 2021 11:45:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1635767145; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=udXCdAEmS4VTvg1V1PFPhQUcJosQzWcPRY0wGlGXD48=;
-        b=jmYuh594Y+YTjMR45WeakBcsbZNx9IH6J2lQX2xfbgRCPSuWGLNp2PQP2MBR4h4a6DhPXA
-        7htuByfWnFdFd80bZNGVt8rIgYWtcYSo7SCLKA3LRBdtuY0cICTt4RcNNW3DMEQ9QglQY+
-        68wyj5HsI2lR9zhFxLgPekj9xJkrSKU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1635767145;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=udXCdAEmS4VTvg1V1PFPhQUcJosQzWcPRY0wGlGXD48=;
-        b=9ar6MWqPsaOboVyRjARG1N1/HTxU6FZRd/p7AdnhSpqFQxo0kgOr3ZgbBvO0wk5Bmj0pgg
-        xFUkN5za82qqGbAw==
-Received: from quack2.suse.cz (unknown [10.163.28.18])
-        by relay2.suse.de (Postfix) with ESMTP id 81C27A3B87;
-        Mon,  1 Nov 2021 11:45:45 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 2766D1E0922; Mon,  1 Nov 2021 12:45:45 +0100 (CET)
-Date:   Mon, 1 Nov 2021 12:45:45 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>, Jan Kara <jack@suse.cz>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the ext3 tree
-Message-ID: <20211101114545.GB21679@quack2.suse.cz>
-References: <20211028232100.03d394fd@canb.auug.org.au>
- <87y26camhe.fsf@collabora.com>
+        Mon, 1 Nov 2021 07:49:07 -0400
+Received: from metanate.com (unknown [IPv6:2001:8b0:1628:5005::111])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E39ADC061714
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 04:46:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=metanate.com; s=stronger; h=Content-Transfer-Encoding:Message-Id:Date:
+        Subject:Cc:To:From:Content-Type:Reply-To:Content-ID:Content-Description:
+        In-Reply-To:References; bh=kuLy/8jiUbD+nZ5OSmtZpAkZEkowU/+2O9rn5AK/AIQ=; b=Pv
+        wwrJWqEA66dBac0YPxQHvqCPR5NMWbuE+zWGv94t2awG4N7lfHMyQxxYYjxRg8mIX9U0tzZ7kfPz8
+        qNfKf/nzg77GRRPgtMQO8LfvEVazaqSGYzbEDSi9JliOZ5CLFZyGyq/bq1jpavOKOGrLqlNX2mW9+
+        fPSuHzQshH97AcuwUVBtIFgboXsaHNM5AVcyIXQ7bO6frNlT0Kva5tfJNFAVvIZMv2cTr2LBycwYt
+        HQ3qnkzaW5ECx2w7+ueUKnRL6ax0GIWiE5FWOnd2tQ+yJ7VXD9MZF/3cbi7OIfdPEje3X09sFwxY1
+        QbN57r3v1rfNZ4vn15+hOb2O94Rm5/RA==;
+Received: from [81.174.171.191] (helo=donbot.metanate.com)
+        by email.metanate.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <john@metanate.com>)
+        id 1mhVlk-0007Ay-01; Mon, 01 Nov 2021 11:46:28 +0000
+From:   John Keeping <john@metanate.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     John Keeping <john@metanate.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Sandy Huang <hjc@rock-chips.com>,
+        =?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/rockchip: pass 0 to drm_fbdev_generic_setup()
+Date:   Mon,  1 Nov 2021 11:46:22 +0000
+Message-Id: <20211101114622.813536-1-john@metanate.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87y26camhe.fsf@collabora.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-Authenticated: YES
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 28-10-21 18:05:49, Gabriel Krisman Bertazi wrote:
-> Stephen Rothwell <sfr@canb.auug.org.au> writes:
-> 
-> > Hi all,
-> >
-> > After merging the ext3 tree, today's linux-next build (htmldocs) produced
-> > this warning:
-> >
-> > Documentation/admin-guide/filesystem-monitoring.rst:60: WARNING: Definition list ends without a blank line; unexpected unindent.
-> >
-> > Introduced by commit
-> >
-> >   c0baf9ac0b05 ("docs: Document the FAN_FS_ERROR event")
-> 
-> Hi Stephen, Jan,
-> 
-> I'd suggest the patch below.
+Allow drm_fbdev_generic_setup() to pick the default bpp value for the
+framebuffer.
 
-Thanks. I've added the patch to my tree.
+This has no functional impact because the default is 32, given that
+mode_config.preferred_depth is not set for Rockchip.
 
-										Honza
+Suggested-by: Thomas Zimmermann <tzimmermann@suse.de>
+Signed-off-by: John Keeping <john@metanate.com>
+---
+This needs [1] to be applied first.
 
-> 
-> Thank you,
-> 
-> -- >8 --
-> From: Gabriel Krisman Bertazi <krisman@collabora.com>
-> Date: Thu, 28 Oct 2021 17:17:47 -0300
-> Subject: [PATCH] docs: Fix formatting of literal sections in fanotify docs
-> 
-> Stephen Rothwell reported the following warning was introduced by commit
-> c0baf9ac0b05 ("docs: Document the FAN_FS_ERROR event").
-> 
-> Documentation/admin-guide/filesystem-monitoring.rst:60: WARNING:
->  Definition list ends without a blank line; unexpected unindent.
-> 
-> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-> ---
->  .../admin-guide/filesystem-monitoring.rst     | 20 +++++++++++--------
->  1 file changed, 12 insertions(+), 8 deletions(-)
-> 
-> diff --git a/Documentation/admin-guide/filesystem-monitoring.rst b/Documentation/admin-guide/filesystem-monitoring.rst
-> index 5a3c84e60095..ab8dba76283c 100644
-> --- a/Documentation/admin-guide/filesystem-monitoring.rst
-> +++ b/Documentation/admin-guide/filesystem-monitoring.rst
-> @@ -35,9 +35,11 @@ notifications is Ext4.
->  
->  A FAN_FS_ERROR Notification has the following format::
->  
-> -  [ Notification Metadata (Mandatory) ]
-> -  [ Generic Error Record  (Mandatory) ]
-> -  [ FID record            (Mandatory) ]
-> +  ::
-> +
-> +     [ Notification Metadata (Mandatory) ]
-> +     [ Generic Error Record  (Mandatory) ]
-> +     [ FID record            (Mandatory) ]
->  
->  The order of records is not guaranteed, and new records might be added
->  in the future.  Therefore, applications must not rely on the order and
-> @@ -53,11 +55,13 @@ providing any additional details about the problem.  This record is
->  identified by ``struct fanotify_event_info_header.info_type`` being set
->  to FAN_EVENT_INFO_TYPE_ERROR.
->  
-> -  struct fanotify_event_info_error {
-> -	struct fanotify_event_info_header hdr;
-> -	__s32 error;
-> -	__u32 error_count;
-> -  };
-> +  ::
-> +
-> +     struct fanotify_event_info_error {
-> +          struct fanotify_event_info_header hdr;
-> +         __s32 error;
-> +         __u32 error_count;
-> +     };
->  
->  The `error` field identifies the type of error using errno values.
->  `error_count` tracks the number of errors that occurred and were
-> -- 
-> 2.33.0
-> 
+[1] https://lore.kernel.org/all/20211029115014.264084-1-john@metanate.com
+
+ drivers/gpu/drm/rockchip/rockchip_drm_drv.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_drv.c b/drivers/gpu/drm/rockchip/rockchip_drm_drv.c
+index 1481181445fd..e37e74998fa9 100644
+--- a/drivers/gpu/drm/rockchip/rockchip_drm_drv.c
++++ b/drivers/gpu/drm/rockchip/rockchip_drm_drv.c
+@@ -165,7 +165,7 @@ static int rockchip_drm_bind(struct device *dev)
+ 	if (ret)
+ 		goto err_kms_helper_poll_fini;
+ 
+-	drm_fbdev_generic_setup(drm_dev, 32);
++	drm_fbdev_generic_setup(drm_dev, 0);
+ 
+ 	return 0;
+ err_kms_helper_poll_fini:
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.33.1
+
