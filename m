@@ -2,190 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2617D441CDC
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 15:52:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29BCD441CE5
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 15:53:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232111AbhKAOzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 10:55:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229826AbhKAOzO (ORCPT
+        id S232176AbhKAO43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 10:56:29 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:58762
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230261AbhKAO41 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 10:55:14 -0400
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 919AAC061714
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 07:52:40 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id h14so15232504qtb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 07:52:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20210112.gappssmtp.com; s=20210112;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=mpvNT8Ri6AwqEAbY0lXNb8KCZijn3p0iMge2tpFnF0M=;
-        b=gYFcfpozzpHSUVgfxwxaPadsAqpgcmqTGigotPMhTxb2xsahsKb8P3ZraJ94GXFhQi
-         0IksXfpjirucdEvciGM0dsyAkZ/pPw4wZQ/+YNt8vu8nzmconlrGozSJ4CPp5Q25Ly9d
-         VouUjaOAA0JsNiTUoq83voi+7jYcu+dtxtQ+9PsZ5hC+ONOfbq7hdW7QT+pBrO0TfLyo
-         gXW75QosgGlqgcUITWa3Hrh+LnsZjNoe+nTqSxcf9HUVJ1otiz1gRNJPLJ8rGZIDGlrX
-         NtP1hvRyUoiQq7aIm2xC9ULZ8Q9V8qVL441FLxKajFtcUEOEUc6hcCAzWFwWT8BNHrxo
-         ydeQ==
+        Mon, 1 Nov 2021 10:56:27 -0400
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com [209.85.128.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 0FEB13F1AB
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 14:53:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1635778432;
+        bh=rmAXyW8JKxDq9r0r+1Hiw1y/OwyI9OGQCKHICCyfzlQ=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=k517EJmtWC2QNtixCLe84eqeLQgT6gpjIi13UuC1e/j4ks8G1fXVnu2ldBEsQRbwY
+         HBVI4f5SfbN/RDaQGHaiK04ETOvgTKttA0eqRKjv8YqAn5MwCKoeV0tmiWfzDmYqQm
+         81zOFIo7yMiQq+ScEyMMD30ut4y/+mj7ONSaVMmyl5W5JX7DqHgUzjHItr5nCNyTSK
+         tl6F2IO9mKEK5jLef8+NsPUyw4cXI/weL3sW0OXZCNmqtgxV8QKNopO5fQKEPweTYh
+         XiWHcETPS7jQ667FfK+yyU54iLQF7rS2JPlhPsMYkDGfsdMp4+gigO628CpD9m22lF
+         kpm9+Aoh3noEw==
+Received: by mail-wm1-f70.google.com with SMTP id j25-20020a05600c1c1900b00332372c252dso45752wms.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 07:53:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=mpvNT8Ri6AwqEAbY0lXNb8KCZijn3p0iMge2tpFnF0M=;
-        b=Ipr7A09juKHykPjnAYpxZUYOoD3+88+2pVBjAaGkL46pEHloewfDFo2GfJuxhYLwgC
-         YvlnU26qzC8zkTKJodGUafP1lSEBZiZsJjr7pBEsUR2fb87wwmYz7oYCxPwQ0Yxag88k
-         U5/M935X+YjQy65NKRcJGNGQpLf7+EJCIcFiFJwmPckjXYQ1JYzuKSHNIMY8qzYTmTiJ
-         +euE4rnsgUOlk0VlmSN6fRKtIC7LwqSZLQgdbrOxxUA1oFkBWceLtFX91qEBiQwJu8xj
-         PnTPSYRbk8TvtEfOmVsuWVmYBBwDI2cnPLBjzAuJ//5EKM64uUy/qUAtzyYypfLhKUr3
-         ZVhg==
-X-Gm-Message-State: AOAM533QrJS+ITmuyhF0lxAzDY0Z8vZBNdSiVtppUaiLHXxax5wCdQGq
-        CaDeoOd30SzWAJWRcGkw86m1Ww==
-X-Google-Smtp-Source: ABdhPJzaXX6Ors0LN4D9hHKbAD8CzUdTjEYwfIR+yDsVmlhBBAFKClVJECXSBHac4FSvuoHEzEnvtg==
-X-Received: by 2002:ac8:5794:: with SMTP id v20mr30445002qta.243.1635778359759;
-        Mon, 01 Nov 2021 07:52:39 -0700 (PDT)
-Received: from nicolas-tpx395.localdomain (mtl.collabora.ca. [66.171.169.34])
-        by smtp.gmail.com with ESMTPSA id z19sm10100639qts.96.2021.11.01.07.52.38
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rmAXyW8JKxDq9r0r+1Hiw1y/OwyI9OGQCKHICCyfzlQ=;
+        b=VELpVvoy1Xw7+dXQqbxvRPdFdosbYP5L3irbHzkAwvFw5HgM3zAHOlFlNz5YGrB57N
+         nHsATGSBd55ys2CDW5pNNsXdeniDfqxaxsSEPd1oJ1SIMYaHIkrY7X/C80IafpeI8d9A
+         jKhKs3FXYLrVsAwTsgjdKghonLRcGB/s698j6BK32CBdzT1G4HD2N62DcnAkLGVkPywz
+         BXM0JivEnRiHHL4r3aY04zFAYL7ZxbghQ/MnmaYvn5FlJdscq0uAg6C2grlJVkilgFUp
+         bt8iLcxBYH0KLROWcamfZ7DfCGijSHEFfRarpGBA27LgslAFUfDvjI5oF6vnobRRrhoR
+         QuSg==
+X-Gm-Message-State: AOAM530dFeTshlwg0/QjuHGKoecreY4Ymkk6m7DENXkF2KIj+I9Bf5Vf
+        91ZYJl5tk6xTp2ctERNfISABgO3jbX0frqBSDxLWA01Nwg2Fb9jCJl22F4Wgc8vhyFK0/X6QCxz
+        o9pcCXKq6CWoAvdGDAb5QRNOA/iOaTYHJ8lGd5tcz0g==
+X-Received: by 2002:a1c:29c6:: with SMTP id p189mr10765638wmp.129.1635778431803;
+        Mon, 01 Nov 2021 07:53:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzGiGBfWozkCP/mfa2+E7javYRR+SMfA/sCvASq0mdQDoSV2wdr7K7fwnlORgW5vU0HOn1y6g==
+X-Received: by 2002:a1c:29c6:: with SMTP id p189mr10765618wmp.129.1635778431616;
+        Mon, 01 Nov 2021 07:53:51 -0700 (PDT)
+Received: from localhost.localdomain (p579d859a.dip0.t-ipconnect.de. [87.157.133.154])
+        by smtp.gmail.com with ESMTPSA id x13sm10461694wrr.47.2021.11.01.07.53.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 07:52:39 -0700 (PDT)
-Message-ID: <b8f877c9ba2cbd0d6839ac86892725a41097391a.camel@ndufresne.ca>
-Subject: Re: [EXT] Re: [PATCH] media: docs: dev-decoder: add restrictions
- about CAPTURE buffers
-From:   Nicolas Dufresne <nicolas@ndufresne.ca>
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Ming Qian <ming.qian@nxp.com>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tomasz Figa <tfiga@chromium.org>
-Cc:     "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Mon, 01 Nov 2021 10:52:38 -0400
-In-Reply-To: <dc7496db-9ba3-fa7b-8563-1157b63c9b0d@linaro.org>
-References: <20211018091427.88468-1-acourbot@chromium.org>
-         <9cb4f64e2ec3959df44b71dd69ef95697920dc4b.camel@ndufresne.ca>
-         <AM6PR04MB634130FEB433CCA352CE98FBE7879@AM6PR04MB6341.eurprd04.prod.outlook.com>
-         <dc7496db-9ba3-fa7b-8563-1157b63c9b0d@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 (3.40.4-2.fc34) 
+        Mon, 01 Nov 2021 07:53:51 -0700 (PDT)
+From:   Kleber Sacilotto de Souza <kleber.souza@canonical.com>
+To:     netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Shuah Khan <shuah@kernel.org>, Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH] selftests: net: reuseport_bpf_numa: skip nodes not available
+Date:   Mon,  1 Nov 2021 15:53:17 +0100
+Message-Id: <20211101145317.286118-1-kleber.souza@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le vendredi 29 octobre 2021 à 10:28 +0300, Stanimir Varbanov a écrit :
-> 
-> On 10/29/21 5:10 AM, Ming Qian wrote:
-> > > -----Original Message-----
-> > > From: Nicolas Dufresne [mailto:nicolas@ndufresne.ca]
-> > > Sent: Tuesday, October 26, 2021 10:12 PM
-> > > To: Alexandre Courbot <acourbot@chromium.org>; Mauro Carvalho Chehab
-> > > <mchehab@kernel.org>; Hans Verkuil <hverkuil-cisco@xs4all.nl>; Tomasz Figa
-> > > <tfiga@chromium.org>
-> > > Cc: linux-media@vger.kernel.org; linux-kernel@vger.kernel.org
-> > > Subject: [EXT] Re: [PATCH] media: docs: dev-decoder: add restrictions about
-> > > CAPTURE buffers
-> > > 
-> > > Caution: EXT Email
-> > > 
-> > > Le lundi 18 octobre 2021 à 18:14 +0900, Alexandre Courbot a écrit :
-> > > > CAPTURE buffers might be read by the hardware after they are dequeued,
-> > > > which goes against the general idea that userspace has full control
-> > > > over dequeued buffers. Explain why and document the restrictions that
-> > > > this implies for userspace.
-> > > > 
-> > > > Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
-> > > > ---
-> > > >  .../userspace-api/media/v4l/dev-decoder.rst     | 17
-> > > +++++++++++++++++
-> > > >  1 file changed, 17 insertions(+)
-> > > > 
-> > > > diff --git a/Documentation/userspace-api/media/v4l/dev-decoder.rst
-> > > > b/Documentation/userspace-api/media/v4l/dev-decoder.rst
-> > > > index 5b9b83feeceb..3cf2b496f2d0 100644
-> > > > --- a/Documentation/userspace-api/media/v4l/dev-decoder.rst
-> > > > +++ b/Documentation/userspace-api/media/v4l/dev-decoder.rst
-> > > > @@ -752,6 +752,23 @@ available to dequeue. Specifically:
-> > > >       buffers are out-of-order compared to the ``OUTPUT`` buffers):
-> > > ``CAPTURE``
-> > > >       timestamps will not retain the order of ``OUTPUT`` timestamps.
-> > > > 
-> > > > +.. note::
-> > > > +
-> > > > +   The backing memory of ``CAPTURE`` buffers that are used as reference
-> > > frames
-> > > > +   by the stream may be read by the hardware even after they are
-> > > dequeued.
-> > > > +   Consequently, the client should avoid writing into this memory while the
-> > > > +   ``CAPTURE`` queue is streaming. Failure to observe this may result in
-> > > > +   corruption of decoded frames.
-> > > > +
-> > > > +   Similarly, when using a memory type other than
-> > > ``V4L2_MEMORY_MMAP``, the
-> > > > +   client should make sure that each ``CAPTURE`` buffer is always queued
-> > > with
-> > > > +   the same backing memory for as long as the ``CAPTURE`` queue is
-> > > streaming.
-> > > > +   The reason for this is that V4L2 buffer indices can be used by drivers to
-> > > > +   identify frames. Thus, if the backing memory of a reference frame is
-> > > > +   submitted under a different buffer ID, the driver may misidentify it and
-> > > > +   decode a new frame into it while it is still in use, resulting in corruption
-> > > > +   of the following frames.
-> > > > +
-> > > 
-> > > I think this is nice addition, but insufficient. We should extend the API with a
-> > > flags that let application know if the buffers are reference or secondary. For the
-> > > context, we have a mix of CODEC that will output usable reference frames and
-> > > needs careful manipulation and many other drivers where the buffers *maybe*
-> > > secondary, meaning they may have been post-processed and modifying these
-> > > in- place may have no impact.
-> > > 
-> > > The problem is the "may", that will depends on the chosen CAPTURE format. I
-> > > believe we should flag this, this flag should be set by the driver, on CAPTURE
-> > > queue. The information is known after S_FMT, so Format Flag, Reqbufs
-> > > capabilities or querybuf flags are candidates. I think the buffer flags are the
-> > > best named flag, though we don't expect this to differ per buffer. Though,
-> > > userspace needs to call querybuf for all buf in order to export or map them.
-> > > 
-> > > What userspace can do with this is to export the DMABuf as read-only, and
-> > > signal this internally in its own context. This is great to avoid any unwanted
-> > > side effect described here.
-> > 
-> > I think a flag should be add to tell a buffer is reference or secondary.
-> > But for some codec, it's hard to determine the buffer flag when reqbufs.
-> > The buffer flag should be dynamically updated by driver.
-> > User can check the flag after dqbuf every time.
-> 
-> +1
-> 
-> I'm not familiar with stateless decoders where on the reqbuf time it
-> could work, debut for stateful coders it should be a dynamic flag on
-> every capture buffer.
+In some platforms the numa node numbers are not necessarily consecutive,
+meaning that not all nodes from 0 to the value returned by
+numa_max_node() are available on the system. Using node numbers which
+are not available results on errors from libnuma such as:
 
-This isn't very clear request here, on which C structure to you say you would
-prefer this ?
+---- IPv4 UDP ----
+send node 0, receive socket 0
+libnuma: Warning: Cannot read node cpumask from sysfs
+./reuseport_bpf_numa: failed to pin to node: No such file or directory
 
-There is no difference for stateful/stateless for this regard. The capture
-format must have been configured prior to reqbuf, so nothing post S_FMT(CAPTURE)
-can every be very dynamic. I think the flag in S_FMT is miss-named and would
-create confusion. struct v4l2_reqbufs vs struc v4l2_buffer are equivalent. The
-seconds opens for flexibility.
+Fix it by checking if the node number bit is set on numa_nodes_ptr,
+which is defined on libnuma as "Set with all nodes the kernel has
+exposed to userspace".
 
-In fact, for some certain CODEC, there exist B-Frames that are never used as
-references, so these could indeed can be written to even if the buffer are not
-secondary. I think recommending to flag this in v4l2_buffer, and read through
-VIDIOC_QUERYBUF would be the best choice.
+Signed-off-by: Kleber Sacilotto de Souza <kleber.souza@canonical.com>
+---
+ tools/testing/selftests/net/reuseport_bpf_numa.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-> 
-> > 
-> > > 
-> > > >  During the decoding, the decoder may initiate one of the special
-> > > > sequences, as  listed below. The sequences will result in the decoder
-> > > > returning all the  ``CAPTURE`` buffers that originated from all the
-> > > > ``OUTPUT`` buffers processed
-> > > 
-> > 
-> 
-
+diff --git a/tools/testing/selftests/net/reuseport_bpf_numa.c b/tools/testing/selftests/net/reuseport_bpf_numa.c
+index c9f478b40996..b2eebf669b8c 100644
+--- a/tools/testing/selftests/net/reuseport_bpf_numa.c
++++ b/tools/testing/selftests/net/reuseport_bpf_numa.c
+@@ -211,12 +211,16 @@ static void test(int *rcv_fd, int len, int family, int proto)
+ 
+ 	/* Forward iterate */
+ 	for (node = 0; node < len; ++node) {
++		if (!numa_bitmask_isbitset(numa_nodes_ptr, node))
++			continue;
+ 		send_from_node(node, family, proto);
+ 		receive_on_node(rcv_fd, len, epfd, node, proto);
+ 	}
+ 
+ 	/* Reverse iterate */
+ 	for (node = len - 1; node >= 0; --node) {
++		if (!numa_bitmask_isbitset(numa_nodes_ptr, node))
++			continue;
+ 		send_from_node(node, family, proto);
+ 		receive_on_node(rcv_fd, len, epfd, node, proto);
+ 	}
+-- 
+2.30.2
 
