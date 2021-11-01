@@ -2,61 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98C22441B91
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 14:16:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4692441B93
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 14:16:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232179AbhKANSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 09:18:45 -0400
-Received: from mail-il1-f200.google.com ([209.85.166.200]:33431 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230177AbhKANSo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 09:18:44 -0400
-Received: by mail-il1-f200.google.com with SMTP id m7-20020a056e021c2700b00259bf1e38b1so10127962ilh.0
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 06:16:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=gt2XnhzY8fDS+SgeNfM/Uab1dWqIkAJn0jd2H/ERAws=;
-        b=qpqyjkacK/LljxXBKQ3mJ5PfBuQsvcmPOiwLK2tCKkQqcjamtxhkRsnSC32Q7LGqsr
-         hlzMZFZqp9zeyiteLOyMrwaY3+3Lov5hvrXKXV3go+06ApxpxsbKZ5nT+ra7sfzN+BuJ
-         SRNqmYHZ0iv6GjqC0ax/mIbzv74pFbeXFbqX+DTjFSg6JconANUPHGAkCrUXAzZBgyBH
-         uc1rCQqbw63ra7w5a0/NAHUzm7yXKHPcvrP3yyx+YMC/jQ1YLU4wOxKBazK4GB+KMQSb
-         rBCTPujO+YtxSVis8vDgfWXM5OS7aCjooWtiXnHd7cAd8zQqBdeU4zenqEHd2efJrAyM
-         xieA==
-X-Gm-Message-State: AOAM532BIeB7SW29jdKHL75Cwv9YdrJDmvcyqIzliWPLibYcfPAsXLnu
-        9d46faE+CRONcH2Pt2U734KyEt4lbatg/XMD9N/S8m7yVf1E
-X-Google-Smtp-Source: ABdhPJygvpMoysiFZMBOQUyz3LUgeuSlsCMSsz+vxGrqQK4ulKv05XNBG1CFhA4ZkcGq4EQP7/OZF4WQgXd+fDJsPHikb/WL5tKV
+        id S232319AbhKANTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 09:19:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48138 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230177AbhKANTS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 09:19:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7113460FE8;
+        Mon,  1 Nov 2021 13:16:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1635772605;
+        bh=kOpBDDGaH87nGht/vlIlCbJDUyolK3Z7JgS92RWh5Tw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Z+DgNYc9diT2vkpi1Y+yP6P0lu3xCwgGiL0ep5s0DTxWNiUAEFfOx8TbX2/hcBVnB
+         k7zHSr0LC0UcvZ39VjZx6M6nNfXPO+OWi4819oBV9DZWjc5++7Yk9pMGHKq21mVrzl
+         11vBpz2AZHBgpJ5K8fapgHh4XXe7DlyFahZTGBxQ=
+Date:   Mon, 1 Nov 2021 14:16:41 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Chen Yu <yu.c.chen@intel.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@intel.com>,
+        linux-acpi@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Aubrey Li <aubrey.li@intel.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 2/4] drivers/acpi: Introduce Platform Firmware Runtime
+ Update device driver
+Message-ID: <YX/ouT/hi5ccaxsz@kroah.com>
+References: <cover.1635317102.git.yu.c.chen@intel.com>
+ <a318e4edc13e5a3ff95b901871b8929746535715.1635317102.git.yu.c.chen@intel.com>
+ <YXkn8aBvAVEXxgdp@smile.fi.intel.com>
+ <20211101093320.GA18982@chenyu5-mobl1>
+ <YX/NwEdw26wzKFvQ@smile.fi.intel.com>
+ <20211101131434.GA32880@chenyu5-mobl1>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1c2a:: with SMTP id m10mr6772343ilh.192.1635772570980;
- Mon, 01 Nov 2021 06:16:10 -0700 (PDT)
-Date:   Mon, 01 Nov 2021 06:16:10 -0700
-In-Reply-To: <f3de46fd-2159-6843-d2da-9a7a6a46b6c9@kernel.dk>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000006d69c05cfb9fb2c@google.com>
-Subject: Re: [syzbot] BUG: unable to handle kernel paging request in __blk_mq_alloc_requests
-From:   syzbot <syzbot+cd20829ac44b92bf6ed0@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211101131434.GA32880@chenyu5-mobl1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, Nov 01, 2021 at 09:14:34PM +0800, Chen Yu wrote:
+> On Mon, Nov 01, 2021 at 01:21:36PM +0200, Andy Shevchenko wrote:
+> > On Mon, Nov 01, 2021 at 05:33:20PM +0800, Chen Yu wrote:
+> > > On Wed, Oct 27, 2021 at 01:20:33PM +0300, Andy Shevchenko wrote:
+> > > > On Wed, Oct 27, 2021 at 03:07:51PM +0800, Chen Yu wrote:
+> > 
+> > ...
+> > 
+> > > > > +	guid_t *image_type_id = &img_hdr->image_type_id;
+> > > > 
+> > > > efi_guid_t ?
+> > > >
+> > > efi_guid_t is a 32-bit aligned guid_t, which is for the case when
+> > > efi_guid_t* arguments are 32-bit aligned. And it is for 32-bit ARM.
+> > > Since this code injection is only for 64-bit, the guid is not required
+> > > to be strictly 32-bit aligned I suppose?
+> > 
+> > But the type of that member may not be guid_t. So, I expect not to see guid_t
+> > at all here or as a internal member with the export/import GUID API in place.
+> >
+> > See, for example
+> > d1c6e08e7503 ("libnvdimm/labels: Add uuid helpers")
+> >
+> 8b03aa0e0e5a ("libnvdimm/labels: Add type-guid helpers") I suppose. Do you
+> mean, since the label is not delcared as uuid type, then need to treat the
+> data region as a uuid. But it is actually not a formal 'uuid' type, so uuid_t
+> is not applicable here. And this also applys to the case in this patch?
+> > ...
+> > 
+> > > > > +	ret = guid_parse(PFRU_UUID, &pfru_dev->uuid);
+> > 
+> > > > > +	ret = guid_parse(PFRU_CODE_INJ_UUID, &pfru_dev->code_uuid);
+> > 
+> > > > > +	ret = guid_parse(PFRU_DRV_UPDATE_UUID, &pfru_dev->drv_uuid);
+> > 
+> > > > Why do you need to keep zillions of copies of the data which seems
+> > > > is not going to be changed? Three global variables should be enough,
+> > > > no?
+> > > >
+> > > The guid information is embedded in each pfru_dev and only calculated
+> > > once during probe. I thought people try to avoid using global variables
+> > > if possible?
+> > 
+> > Use your common sense. You might have a lot of data duplication,
+> > and this data is definitely not something that needs any kind of
+> > serialization / personification / etc.
+> > 
+> Ok, I'll switch to global variables in next version.
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Wait, no, why?  Keep them per-device unless you can somehow be
+guaranteed there will never be more than one of these ACPI devices in a
+system.  It's simpler this way, no need to worry about global state at
+all.
 
-Reported-and-tested-by: syzbot+cd20829ac44b92bf6ed0@syzkaller.appspotmail.com
+thanks,
 
-Tested on:
-
-commit:         d1c2a961 Merge branch 'for-5.16/block' into for-next
-git tree:       git://git.kernel.dk/linux-block for-next
-kernel config:  https://syzkaller.appspot.com/x/.config?x=bfca9240a79435af
-dashboard link: https://syzkaller.appspot.com/bug?extid=cd20829ac44b92bf6ed0
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-
-Note: testing is done by a robot and is best-effort only.
+greg k-h
