@@ -2,89 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB88B44126A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 04:33:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8AB1441272
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 04:42:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230417AbhKADf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 23:35:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50688 "EHLO
+        id S230312AbhKADpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 23:45:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230222AbhKADf4 (ORCPT
+        with ESMTP id S230246AbhKADpG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 23:35:56 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEC34C061714;
-        Sun, 31 Oct 2021 20:33:23 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id 75so16047025pga.3;
-        Sun, 31 Oct 2021 20:33:23 -0700 (PDT)
+        Sun, 31 Oct 2021 23:45:06 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA424C061714
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 20:42:33 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id f8so10685665plo.12
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 20:42:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:to:cc:references:subject
-         :content-language:from:in-reply-to:content-transfer-encoding;
-        bh=sharXBBWNJQME5ykY3LH+Wuf67MVUTp15Nj0dIthtu4=;
-        b=YNKZPhGxufB1MqdoLMpX2GgiBUoek9Je1+IUYEEe+W4RTQ8dKyjs4HuwkJDE7WItU8
-         5QLRMEeeJeH93IAEB7FtpD189DdiqLNtLPZAPIJ6s3l+Q0Rfoe+gWBbkYk8Y5ik2kbPx
-         vvyC0IhJcKsDZ1NviSWRTTT20o3MBTlqL12HK97h5FLU6FALN1bmMp84dyrOxwUWvPm8
-         Bj2epbaPGN0MvVij0J8ZR79dAqcCEiLSzkPvXz7DcInYAl4IepwXKJ79Gqur4ScbDShR
-         CwUutsvEfXZu9KUyzx7n0eRtUbsR3TnVd/veVNIoq5YArKI8wKpqZJ+ySxlXMVmu7rSu
-         jvgw==
+        d=kylehuey.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=APpKnlySmIgEFDR/sbeGSY0ig+Ql5pQCqjLI+NAb2Ec=;
+        b=dzVsVOGuWeWUwYQRBqkOH179l0p1nrWFZ6O/8+jsKIy43sNdnozqXY/9B2FU9//OUY
+         Iy5GdEAX9qQ7alacdssf2k5QwvyIxPFs4XWG+FPuV1mhTQW4dgZZCGWTQqqH6n8TyvNC
+         U6Qu4en4fM4/P8PbFlKujZkmWAi2ktHI5X+T5xw+3xSBYFTzd+KNRAZymL6DM2IfgQCm
+         IIBvDhEmrfSAjLNbgQu0rCa1Ss5fCC+Bci1kKPOnTXtoFO1DAvbiPdqloMTTydayvC6y
+         JxGY9zUR/UBesXYk7FkUabYAoqUNMRzUKc22BxU345f7vCTy3KgryNozL5i4CmU4Ix1n
+         cAkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:to:cc
-         :references:subject:content-language:from:in-reply-to
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=sharXBBWNJQME5ykY3LH+Wuf67MVUTp15Nj0dIthtu4=;
-        b=bs8NVgwCpLUun6ejIcM0hr37GhyQ3+iH6dUuXyH5LT1VrDVHea4bvJ2VoNhptCpCRd
-         GalJxWi7jsIm6cM4QGI+eaXR0kkcNLv9tMlfq9QycUGH/tnBxN0fLlo0MQEEJg6tRy7b
-         qfSfikg04Lh5rguJzIA86VWcBRMG4g81G4fq11T/1o0dqyjDQ6RT8i/B+8Sz4xhcEOd6
-         cRtudhsBPCWO2oiPf4qZStuuQggVdcNuAyvGwLDYeQ9TevTXda9gCSrethgq88/4Qdch
-         99Obta8Xpwa6feA//45WDFIlvvTsp2+9WSNi29q2lbgi1a9dXiBJezRewbq3COUtt8uj
-         mFEg==
-X-Gm-Message-State: AOAM532IkByg2PXF5l/pz4sVXbWpmMl/myO8VsMSDKPbIMMOAYmgbeRX
-        kpP36Q/8780zHgCEamBnyZo=
-X-Google-Smtp-Source: ABdhPJyMvgiysaFFd7vJTxWh3eDoFfSzoDu6orq/3c+qmlVO4XLL+lpJqF+q+5V6CjZ2MHarSBDLDQ==
-X-Received: by 2002:a05:6a00:22cb:b0:47e:5755:7d86 with SMTP id f11-20020a056a0022cb00b0047e57557d86mr23342419pfj.78.1635737603550;
-        Sun, 31 Oct 2021 20:33:23 -0700 (PDT)
-Received: from [192.168.50.189] (67.218.130.61.16clouds.com. [67.218.130.61])
-        by smtp.gmail.com with ESMTPSA id h11sm15364884pfh.162.2021.10.31.20.33.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 31 Oct 2021 20:33:23 -0700 (PDT)
-Message-ID: <c639c965-5231-b745-7b59-476877202e0c@gmail.com>
-Date:   Mon, 1 Nov 2021 11:33:16 +0800
+        bh=APpKnlySmIgEFDR/sbeGSY0ig+Ql5pQCqjLI+NAb2Ec=;
+        b=D0KePEshk0H+Sfo85UoiBgqpYP8F68JM9O53NiJNfJc/ucGG2mMyIUvL9zBVQdN9IJ
+         +lnY4oHmFCiBczcR8SgMfkQbdoAD85a6y8QC9l6r6di4HP0Uyq6BrPaLSWY/y/BIQE2f
+         3q2gj6gM4LYIqO8JsRtveMJjeF+Q69X0+uJLV1jRxfy6HMmHp+230JQLpCnmk8r9moMu
+         TodLMllijPM02mWWmDnwHbmVE2AI5zzRlOoXFxATEBNXRM/W9+UU93Xq9OIL8iJ7KKHi
+         RBA9Q5HOvEtQ4YZ7FVoEfgR9a7KjHKRf9Zl7t03Yq8gEq/FiudVKYv0zRKPJL98pZfRN
+         pbKg==
+X-Gm-Message-State: AOAM531KAEOZLI9Kzffqn2MfqqFix3FIuGrOKtaeSQDHDPAnOml0jg3r
+        HB6c/qo+LnIkpPHOr00aG/e8Qg==
+X-Google-Smtp-Source: ABdhPJziZn0z1VI1sEizUJCnQDhdAbpHu0KMs+z4THUQsy1FF8ZRiRcxkeJcIUCd9lc4JFxj/AWQfA==
+X-Received: by 2002:a17:903:2c2:b029:101:9c88:d928 with SMTP id s2-20020a17090302c2b02901019c88d928mr22772939plk.62.1635738153146;
+        Sun, 31 Oct 2021 20:42:33 -0700 (PDT)
+Received: from minbar.home.kylehuey.com (c-71-198-251-229.hsd1.ca.comcast.net. [71.198.251.229])
+        by smtp.gmail.com with ESMTPSA id x9sm11270588pga.28.2021.10.31.20.42.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 31 Oct 2021 20:42:32 -0700 (PDT)
+From:   Kyle Huey <me@kylehuey.com>
+X-Google-Original-From: Kyle Huey <khuey@kylehuey.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Marco Elver <elver@google.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Collingbourne <pcc@google.com>,
+        Alexey Gladkov <legion@kernel.org>
+Cc:     Robert O'Callahan <rocallahan@gmail.com>,
+        =?UTF-8?q?Marko=20M=C3=A4kel=C3=A4?= <marko.makela@mariadb.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] signal: SIGKILL can cause signal effects to appear at PTRACE_EVENT_EXIT without tracer notification
+Date:   Sun, 31 Oct 2021 20:41:45 -0700
+Message-Id: <20211101034147.6203-1-khuey@kylehuey.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-To:     chunfeng.yun@mediatek.com
-Cc:     eddie.hung@mediatek.com, gregkh@linuxfoundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-usb@vger.kernel.org,
-        matthias.bgg@gmail.com, nishadkamdar@gmail.com,
-        stern@rowland.harvard.edu
-References: <1618017645-12259-1-git-send-email-chunfeng.yun@mediatek.com>
-Subject: Re: [PATCH v2] usb: core: reduce power-on-good delay time of root hub
-Content-Language: en-US
-From:   "Walt Jr. Brake" <mr.yming81@gmail.com>
-In-Reply-To: <1618017645-12259-1-git-send-email-chunfeng.yun@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Three month ago, My USB 3.1 device cannot be detected after upgrade 
-kernel from version 5.10.41 to 5.10.42.
+rr, a userspace record and replay debugger[0], uses the recorded register
+state at PTRACE_EVENT_EXIT to find the point in time at which to cease
+executing the program during replay.
 
-And I found some other people ran into the same issue:
+If a SIGKILL races with processing another signal in get_signal, it is
+possible for the kernel to decline to notify the tracer of the original
+signal. But if the original signal had a handler, the kernel proceeds
+with setting up a signal handler frame as if the tracer had chosen to
+deliver the signal unmodified to the tracee. When the kernel goes to
+execute the signal handler that it has now modified the stack and registers
+for, it will discover the pending SIGKILL, and terminate the tracee
+without executing the handler. When PTRACE_EVENT_EXIT is delivered to
+the tracer, however, the effects of handler setup will be visible to
+the tracer.
 
-https://forum.manjaro.org/t/kernel-5-10-59-doesnt-detect-a-connected-usb-external-disk/79320
+Because rr (the tracer) was never notified of the signal, it is not aware
+that a signal handler frame was set up and expects the state of the program
+at PTRACE_EVENT_EXIT to be a state that will be reconstructed naturally
+by allowing the program to execute from the last event. When that fails
+to happen during replay, rr will assert and die.
 
-https://forum.manjaro.org/t/how-to-make-active-usb-hub-work-in-manjaro/84548
+The following patches add an explicit check for a newly pending SIGKILL
+after the ptracer has been notified and the siglock has been reacquired.
+If this happens, we stop processing the current signal and proceed
+immediately to handling the SIGKILL. This makes the state reported at
+PTRACE_EVENT_EXIT the unmodified state of the program, and also avoids the
+work to set up a signal handler frame that will never be used.
 
-Two days ago, I try to fix the issue myself, and I found out that it was 
-cause by this patch. After revert this patch, my USB 3.1 device can be 
-detect again.
+This issue was originally reported by the credited rr user.
 
-I have already file a bug on here: 
-https://bugzilla.kernel.org/show_bug.cgi?id=214875.
+[0] https://rr-project.org/
 
 
