@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B354A4417E2
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:39:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA70B44190D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:54:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232987AbhKAJku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:40:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43648 "EHLO mail.kernel.org"
+        id S234845AbhKAJxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:53:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50956 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233708AbhKAJhx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:37:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5ED0061357;
-        Mon,  1 Nov 2021 09:26:56 +0000 (UTC)
+        id S234731AbhKAJss (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:48:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 21E9A6117A;
+        Mon,  1 Nov 2021 09:31:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758816;
-        bh=se536qyWgd+Saudg8JzNo5S9uEwyH7QnCMCSpXHPrBI=;
+        s=korg; t=1635759080;
+        bh=neNbb1lS9mPDKJJTeoCw3hvhNrfP6N74eu6k6XZsfNI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nYP4gxmM6ef4wA5V8po0UEo265Hw4dQ7grLECdA8nhU0EAXO4n1O103t9YR1siq8u
-         XhGGiJOWfjZtOraoJIwmxl30I+b6zno1S9GnWFx9Mz0xjnG/e5LLh4UQ6ygtDiCvDW
-         JMqALk0tgULaRmTElTj2APpI7xx8ZhqMJxl/qKwA=
+        b=kfkmfHZu956Qf3etTizVZfGwTZlemKapYA7empkh+PVg77h0xV/EM3NYwRtnj4q45
+         XMudmcdjNjILRYxQCMxSvuM9KuUa5JWzqUfOcVqPhr5itjY+4YaAV805uPY2lAdOQ+
+         3kM+kA/ng77ZQc63ppVfmba8/X1S7+zizZh9NLoM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Ilja Van Sprundel <ivansprundel@ioactive.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Subject: [PATCH 5.10 39/77] IB/qib: Protect from buffer overflow in struct qib_user_sdma_pkt fields
+        stable@vger.kernel.org, Jim Quinlan <jim2101024@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+Subject: [PATCH 5.14 074/125] reset: brcmstb-rescal: fix incorrect polarity of status bit
 Date:   Mon,  1 Nov 2021 10:17:27 +0100
-Message-Id: <20211101082520.103837486@linuxfoundation.org>
+Message-Id: <20211101082547.226921183@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082511.254155853@linuxfoundation.org>
-References: <20211101082511.254155853@linuxfoundation.org>
+In-Reply-To: <20211101082533.618411490@linuxfoundation.org>
+References: <20211101082533.618411490@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,115 +40,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+From: Jim Quinlan <jim2101024@gmail.com>
 
-commit d39bf40e55e666b5905fdbd46a0dced030ce87be upstream.
+commit f33eb7f29c16ba78db3221ee02346fd832274cdd upstream.
 
-Overflowing either addrlimit or bytes_togo can allow userspace to trigger
-a buffer overflow of kernel memory. Check for overflows in all the places
-doing math on user controlled buffers.
+The readl_poll_timeout() should complete when the status bit
+is a 1, not 0.
 
-Fixes: f931551bafe1 ("IB/qib: Add new qib driver for QLogic PCIe InfiniBand adapters")
-Link: https://lore.kernel.org/r/20211012175519.7298.77738.stgit@awfm-01.cornelisnetworks.com
-Reported-by: Ilja Van Sprundel <ivansprundel@ioactive.com>
-Reviewed-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Signed-off-by: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
-Signed-off-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Fixes: 4cf176e52397 ("reset: Add Broadcom STB RESCAL reset controller")
+Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Link: https://lore.kernel.org/r/20210914221122.62315-1-f.fainelli@gmail.com
+Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/infiniband/hw/qib/qib_user_sdma.c |   33 ++++++++++++++++++++----------
- 1 file changed, 23 insertions(+), 10 deletions(-)
+ drivers/reset/reset-brcmstb-rescal.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/infiniband/hw/qib/qib_user_sdma.c
-+++ b/drivers/infiniband/hw/qib/qib_user_sdma.c
-@@ -602,7 +602,7 @@ done:
- /*
-  * How many pages in this iovec element?
-  */
--static int qib_user_sdma_num_pages(const struct iovec *iov)
-+static size_t qib_user_sdma_num_pages(const struct iovec *iov)
- {
- 	const unsigned long addr  = (unsigned long) iov->iov_base;
- 	const unsigned long  len  = iov->iov_len;
-@@ -658,7 +658,7 @@ static void qib_user_sdma_free_pkt_frag(
- static int qib_user_sdma_pin_pages(const struct qib_devdata *dd,
- 				   struct qib_user_sdma_queue *pq,
- 				   struct qib_user_sdma_pkt *pkt,
--				   unsigned long addr, int tlen, int npages)
-+				   unsigned long addr, int tlen, size_t npages)
- {
- 	struct page *pages[8];
- 	int i, j;
-@@ -722,7 +722,7 @@ static int qib_user_sdma_pin_pkt(const s
- 	unsigned long idx;
+--- a/drivers/reset/reset-brcmstb-rescal.c
++++ b/drivers/reset/reset-brcmstb-rescal.c
+@@ -38,7 +38,7 @@ static int brcm_rescal_reset_set(struct
+ 	}
  
- 	for (idx = 0; idx < niov; idx++) {
--		const int npages = qib_user_sdma_num_pages(iov + idx);
-+		const size_t npages = qib_user_sdma_num_pages(iov + idx);
- 		const unsigned long addr = (unsigned long) iov[idx].iov_base;
- 
- 		ret = qib_user_sdma_pin_pages(dd, pq, pkt, addr,
-@@ -824,8 +824,8 @@ static int qib_user_sdma_queue_pkts(cons
- 		unsigned pktnw;
- 		unsigned pktnwc;
- 		int nfrags = 0;
--		int npages = 0;
--		int bytes_togo = 0;
-+		size_t npages = 0;
-+		size_t bytes_togo = 0;
- 		int tiddma = 0;
- 		int cfur;
- 
-@@ -885,7 +885,11 @@ static int qib_user_sdma_queue_pkts(cons
- 
- 			npages += qib_user_sdma_num_pages(&iov[idx]);
- 
--			bytes_togo += slen;
-+			if (check_add_overflow(bytes_togo, slen, &bytes_togo) ||
-+			    bytes_togo > type_max(typeof(pkt->bytes_togo))) {
-+				ret = -EINVAL;
-+				goto free_pbc;
-+			}
- 			pktnwc += slen >> 2;
- 			idx++;
- 			nfrags++;
-@@ -904,8 +908,7 @@ static int qib_user_sdma_queue_pkts(cons
- 		}
- 
- 		if (frag_size) {
--			int tidsmsize, n;
--			size_t pktsize;
-+			size_t tidsmsize, n, pktsize, sz, addrlimit;
- 
- 			n = npages*((2*PAGE_SIZE/frag_size)+1);
- 			pktsize = struct_size(pkt, addr, n);
-@@ -923,14 +926,24 @@ static int qib_user_sdma_queue_pkts(cons
- 			else
- 				tidsmsize = 0;
- 
--			pkt = kmalloc(pktsize+tidsmsize, GFP_KERNEL);
-+			if (check_add_overflow(pktsize, tidsmsize, &sz)) {
-+				ret = -EINVAL;
-+				goto free_pbc;
-+			}
-+			pkt = kmalloc(sz, GFP_KERNEL);
- 			if (!pkt) {
- 				ret = -ENOMEM;
- 				goto free_pbc;
- 			}
- 			pkt->largepkt = 1;
- 			pkt->frag_size = frag_size;
--			pkt->addrlimit = n + ARRAY_SIZE(pkt->addr);
-+			if (check_add_overflow(n, ARRAY_SIZE(pkt->addr),
-+					       &addrlimit) ||
-+			    addrlimit > type_max(typeof(pkt->addrlimit))) {
-+				ret = -EINVAL;
-+				goto free_pbc;
-+			}
-+			pkt->addrlimit = addrlimit;
- 
- 			if (tiddma) {
- 				char *tidsm = (char *)pkt + pktsize;
+ 	ret = readl_poll_timeout(base + BRCM_RESCAL_STATUS, reg,
+-				 !(reg & BRCM_RESCAL_STATUS_BIT), 100, 1000);
++				 (reg & BRCM_RESCAL_STATUS_BIT), 100, 1000);
+ 	if (ret) {
+ 		dev_err(data->dev, "time out on SATA/PCIe rescal\n");
+ 		return ret;
 
 
