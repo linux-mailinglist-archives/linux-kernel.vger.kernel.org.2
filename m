@@ -2,122 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E32A744133E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 06:29:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CE1B44134B
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 06:42:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229948AbhKAFbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 01:31:50 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:37374 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229502AbhKAFbt (ORCPT
+        id S229931AbhKAFo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 01:44:59 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:43631 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229502AbhKAFo6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 01:31:49 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id DD6E62192D;
-        Mon,  1 Nov 2021 05:29:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1635744555; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2f9OAzzfJHvRfINaxNeskzvutF1GbL7BKDUPsw3Xn2Y=;
-        b=o7kFO+o8eHSOSi9a//Yb4bLikBrGF0kWOfCJCtQbCGOq6mAMyBbwwP4UjlsEBuHX8BLd+m
-        pusXpho4Y/Zr+jLpjDBMvhpsdNf6EBSFmn+mZhD7qIZtIlgIiv8yr3FZ4dkLWPCN7/wEiO
-        U0L+q+i7rv2GkwZ9Nu1j+TeMW06pgII=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1635744555;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2f9OAzzfJHvRfINaxNeskzvutF1GbL7BKDUPsw3Xn2Y=;
-        b=8phHEmcuCpPQjjmAmmGWk3bwwN2oMirunEJpjSzlV7lo840AYI8qmO+QuEeP7Zlqysrkk6
-        j+N3rq/QYyzFPmDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C9A6C1323E;
-        Mon,  1 Nov 2021 05:29:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id odijJCp7f2G1cgAAMHmgww
-        (envelope-from <colyli@suse.de>); Mon, 01 Nov 2021 05:29:14 +0000
-Message-ID: <2c190f49-ffde-c6eb-e632-3f53832a3d83@suse.de>
-Date:   Mon, 1 Nov 2021 13:29:12 +0800
+        Mon, 1 Nov 2021 01:44:58 -0400
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20211101054223epoutp046c6b743ba0a5cbc679f8311c1fa82928~zVbktcZn-0463604636epoutp04P
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 05:42:23 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20211101054223epoutp046c6b743ba0a5cbc679f8311c1fa82928~zVbktcZn-0463604636epoutp04P
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1635745343;
+        bh=s26XtAoUeNsGxfGSeq6N3awANG4u5mCRCZ15ODJh9is=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=QgBGbFGlTnNrKP0x9fa+35IJWK7yZ3geB1evF/Nbw3R6g7BVtzjohQOL2YCb/XhfF
+         FkDIkvsi7upxP5OetMIwJihPp29fdns7c4dYQNxTKVKYIzlQdPc36edMAgDdkpkUlB
+         tzv05xargJ12wo8OlE9EAxgYuGeJems+OZtJeCfI=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20211101054223epcas1p1eec90b8beba62f5409947eb0bbc4dcc0~zVbkXcLZ-1778317783epcas1p19;
+        Mon,  1 Nov 2021 05:42:23 +0000 (GMT)
+Received: from epsmges1p2.samsung.com (unknown [182.195.38.242]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4HjMP82Y1Sz4x9QK; Mon,  1 Nov
+        2021 05:42:20 +0000 (GMT)
+Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
+        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        24.75.08277.93E7F716; Mon,  1 Nov 2021 14:42:17 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
+        20211101054217epcas1p3c695f37ab925f47156bd45e3adb5ed94~zVbfD8FcX2690626906epcas1p3b;
+        Mon,  1 Nov 2021 05:42:17 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20211101054217epsmtrp26067122406458d63755dfb7ad87637ba~zVbfDTckf3079730797epsmtrp2V;
+        Mon,  1 Nov 2021 05:42:17 +0000 (GMT)
+X-AuditID: b6c32a36-203ff70000002055-47-617f7e396a1e
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        35.92.29871.93E7F716; Mon,  1 Nov 2021 14:42:17 +0900 (KST)
+Received: from hj514.kim-office (unknown [10.253.100.146]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20211101054217epsmtip179140532a14e2de28a05b685463fe4f9~zVbe4chzI2028820288epsmtip1Y;
+        Mon,  1 Nov 2021 05:42:17 +0000 (GMT)
+From:   Hyeong-Jun Kim <hj514.kim@samsung.com>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>
+Cc:     Hyeong-Jun Kim <hj514.kim@samsung.com>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] F2FS: invalidate META_MAPPING before IPU/DIO write
+Date:   Mon,  1 Nov 2021 14:42:14 +0900
+Message-Id: <20211101054214.24456-1-hj514.kim@samsung.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.1
-Subject: Re: [PATCH] bcache: make checkings for sb.nr_in_set and
- sb.nr_this_dev to be more precise
-Content-Language: en-US
-To:     Lin Feng <linf@wangsu.com>
-Cc:     linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kent.overstreet@gmail.com
-References: <20211101030751.8645-1-linf@wangsu.com>
-From:   Coly Li <colyli@suse.de>
-In-Reply-To: <20211101030751.8645-1-linf@wangsu.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrPKsWRmVeSWpSXmKPExsWy7bCmnq5lXX2iwZ/Tehanp55lspjecZDN
+        4sn6WcwWlxa5W1zeNYfNgdVj06pONo/dCz4zefRtWcXo8XmTXABLVLZNRmpiSmqRQmpecn5K
+        Zl66rZJ3cLxzvKmZgaGuoaWFuZJCXmJuqq2Si0+ArltmDtBaJYWyxJxSoFBAYnGxkr6dTVF+
+        aUmqQkZ+cYmtUmpBSk6BWYFecWJucWleul5eaomVoYGBkSlQYUJ2xqX+moIG/oqdnW+ZGxjv
+        cHcxcnJICJhInNo/mbmLkYtDSGAHo8SrBxuhnE+MEtNXP2SEcL4xSnybf4EFpuXI8W4WiMRe
+        oJYJ19khnPeMEmf6GtlAqtgEdCQ+zFrJCGKLCNhLfP5+HaybWaBIYmf/OXYQW1jAWeLv8m4m
+        EJtFQFVi7bTlYL28AlYS72dvZobYJi8x89J3doi4oMTJmU+g5shLNG+dDXarhMA2dokDM7cw
+        QTS4SGz/twnqVGGJV8e3sEPYUhKf3+1lg7DrJY5f+cQK0dzCKPF46SugSzmAHHuJ95csQExm
+        AU2J9bv0IcoVJXb+nssIsZdP4t3XHlaIal6JjjYhiBJlic13D0NNl5R4uugvI4TtIXF/031W
+        EFtIIFbi0ZSNTBMY5Wch+WYWkm9mISxewMi8ilEstaA4Nz212LDACB6pyfm5mxjBKU/LbAfj
+        pLcf9A4xMnEwHmKU4GBWEuGNuFCTKMSbklhZlVqUH19UmpNafIjRFBi+E5mlRJPzgUk3ryTe
+        0MTSwMTMyMTC2NLYTEmc97NcYaKQQHpiSWp2ampBahFMHxMHp1QDk/aRzw+Se+Q8Zt/48lTx
+        zBdjUVWWZ6ZbfwteOtn25Msa54IpwZHKjHzeW/R+Xj+ZyvP0q/edd7L/Indefyq9TvlEnEtU
+        gL7Bx6zJ2xQj5MQuf/nmUd3AlHnj7uaE+mhfm426frMbome7PpliN5Ole8v63U79V7/r/w7K
+        NOSQKV6osXPv3vKvge++7OiTnKontcvv2r31/5WNmdLimb/rcd0wXenMKb1yovynbH/N7vnP
+        ax9MOavy/XLYp8h8m15ek99Sf081rmUNlvbmqZyyRsbqiNvuiIt/67KaZ/E8CrSewc3+ZluI
+        +n2O1xNvFyxVuqrBcPDtEvHqkCkqyxvS5IMV9243iz2ho9N+Qud9vhJLcUaioRZzUXEiANOX
+        tEICBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprDLMWRmVeSWpSXmKPExsWy7bCSnK5lXX2iQccaFYvTU88yWUzvOMhm
+        8WT9LGaLS4vcLS7vmsPmwOqxaVUnm8fuBZ+ZPPq2rGL0+LxJLoAlissmJTUnsyy1SN8ugSvj
+        Un9NQQN/xc7Ot8wNjHe4uxg5OSQETCSOHO9m6WLk4hAS2M0ocXfSPuYuRg6ghKTEvPXlEKaw
+        xOHDxRAlbxklTl8+zQTSyyagI/Fh1kpGEFtEwFHi1+tFrCA2s0CJxOZNL9hBbGEBZ4m/y7vB
+        6lkEVCXWTlvOBmLzClhJvJ+9mRniBnmJmZe+s0PEBSVOznzCAjFHXqJ562zmCYx8s5CkZiFJ
+        LWBkWsUomVpQnJueW2xYYJiXWq5XnJhbXJqXrpecn7uJERyAWpo7GLev+qB3iJGJg/EQowQH
+        s5IIb8SFmkQh3pTEyqrUovz4otKc1OJDjNIcLErivBe6TsYLCaQnlqRmp6YWpBbBZJk4OKUa
+        mE4kHL1w8mmXobOTiyu71OZdZmu4l2wt+MY7Q1Xk/vt1eZvmV3EJvzjpqH8zbEps0rT6Mzlv
+        hCqu5Or9VY25MufPtfog945MDf4yDuO+zoiTTZqfLs3fNDX1ruTSVgmp1o8cy/V8jV4bsGqp
+        MjeH3Vn4yunP3pOmfRcXXWV9tfmOUXKDVo4Ka+503wUquwN7DtodiuD+0WcyPWNmp6Xyukqh
+        YxtalVXm3lBJ8jTc8qrlwJw9s/6fNAuT3/iyvFuGT7Hd77L0Sw5Bb6Pd7OuPhac5rfRLaZr8
+        xS4vT/xy4V2PK5kddxuDXhwtUXx5af7y3FsNbCHqAlcFVy5+qdx52dJA8Ne3F3053+ffWGfl
+        psRSnJFoqMVcVJwIABcobaKvAgAA
+X-CMS-MailID: 20211101054217epcas1p3c695f37ab925f47156bd45e3adb5ed94
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20211101054217epcas1p3c695f37ab925f47156bd45e3adb5ed94
+References: <CGME20211101054217epcas1p3c695f37ab925f47156bd45e3adb5ed94@epcas1p3.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/1/21 11:07 AM, Lin Feng wrote:
-> Commit 697e23495c94f0380c1ed8b11f830b92b64c99ea
-> ("bcache: explicitly make cache_set only have single cache")
-> explicitly makes a cache_set only have single cache and based on the
-> fact that historily only one cache is ever used in the cache set, so
-> valid number fo sb.nr_in_set should be 1 and sb.nr_this_dev should
-> always be 0.
->
-> Based on above truth, codes validations for sb.nr_in_set and sb.nr_this_dev
-> can make to be more accurate, that means tolerance for error checking
-> are reduced comparing before.
->
-> Signed-off-by: Lin Feng <linf@wangsu.com>
+Encrypted pages during GC are read and cached in META_MAPPING.
+However, due to cached pages in META_MAPPING, there is an issue where
+newly written pages are lost by IPU or DIO writes.
 
-Hi Lin,
+Thread A                              Thread B
+- f2fs_gc(): blk 0x10 -> 0x20 (a)
+                                      - IPU or DIO write on blk 0x20 (b)
+- f2fs_gc(): blk 0x20 -> 0x30 (c)
 
-Thanks for the patch up. I add this change to my for-test directory.
+(a) page for blk 0x20 is cached in META_MAPPING and page for blk 0x10
+    is invalidated from META_MAPPING.
+(b) write new data to blk 0x200 using IPU or DIO, but outdated data
+    still remains in META_MAPPING.
+(c) f2fs_gc() try to move blk from 0x20 to 0x30 using cached page in
+    META_MAPPING. In conclusion, the newly written data in (b) is lost.
 
-Coly Li
+To address this issue, invalidating pages in META_MAPPING before IPU or
+DIO write.
 
+Signed-off-by: Hyeong-Jun Kim <hj514.kim@samsung.com>
+---
+ fs/f2fs/data.c    | 2 ++
+ fs/f2fs/segment.c | 3 +++
+ 2 files changed, 5 insertions(+)
 
-> ---
->   drivers/md/bcache/bcache.h | 2 +-
->   drivers/md/bcache/super.c  | 4 +---
->   2 files changed, 2 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/md/bcache/bcache.h b/drivers/md/bcache/bcache.h
-> index 5fc989a6d452..a4a410a178c0 100644
-> --- a/drivers/md/bcache/bcache.h
-> +++ b/drivers/md/bcache/bcache.h
-> @@ -833,7 +833,7 @@ static inline uint8_t ptr_stale(struct cache_set *c, const struct bkey *k,
->   static inline bool ptr_available(struct cache_set *c, const struct bkey *k,
->   				 unsigned int i)
->   {
-> -	return (PTR_DEV(k, i) < MAX_CACHES_PER_SET) && c->cache;
-> +	return (PTR_DEV(k, i) == 0) && c->cache;
->   }
->   
->   /* Btree key macros */
-> diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
-> index f2874c77ff79..2253044c9289 100644
-> --- a/drivers/md/bcache/super.c
-> +++ b/drivers/md/bcache/super.c
-> @@ -140,9 +140,7 @@ static const char *read_super_common(struct cache_sb *sb,  struct block_device *
->   		goto err;
->   
->   	err = "Bad cache device number in set";
-> -	if (!sb->nr_in_set ||
-> -	    sb->nr_in_set <= sb->nr_this_dev ||
-> -	    sb->nr_in_set > MAX_CACHES_PER_SET)
-> +	if (sb->nr_in_set != 1 || sb->nr_this_dev != 0)
->   		goto err;
->   
->   	err = "Journal buckets not sequential";
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index 74e1a350c1d8..9f754aaef558 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -1708,6 +1708,8 @@ int f2fs_map_blocks(struct inode *inode, struct f2fs_map_blocks *map,
+ 		 */
+ 		f2fs_wait_on_block_writeback_range(inode,
+ 						map->m_pblk, map->m_len);
++		invalidate_mapping_pages(META_MAPPING(sbi),
++						map->m_pblk, map->m_pblk);
+ 
+ 		if (map->m_multidev_dio) {
+ 			block_t blk_addr = map->m_pblk;
+diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+index 526423fe84ce..f57c55190f9e 100644
+--- a/fs/f2fs/segment.c
++++ b/fs/f2fs/segment.c
+@@ -3652,6 +3652,9 @@ int f2fs_inplace_write_data(struct f2fs_io_info *fio)
+ 		goto drop_bio;
+ 	}
+ 
++	invalidate_mapping_pages(META_MAPPING(fio->sbi),
++				fio->new_blkaddr, fio->new_blkaddr);
++
+ 	stat_inc_inplace_blocks(fio->sbi);
+ 
+ 	if (fio->bio && !(SM_I(sbi)->ipu_policy & (1 << F2FS_IPU_NOCACHE)))
+-- 
+2.25.1
 
