@@ -2,377 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 698E1442255
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 22:06:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E997A442257
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 22:07:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231435AbhKAVJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 17:09:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33718 "EHLO
+        id S231446AbhKAVJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 17:09:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230384AbhKAVJO (ORCPT
+        with ESMTP id S229541AbhKAVJg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 17:09:14 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 955F3C061764
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 14:06:39 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id v133-20020a25c58b000000b005c20153475dso16805783ybe.17
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 14:06:39 -0700 (PDT)
+        Mon, 1 Nov 2021 17:09:36 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA2AFC061714
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 14:07:02 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id g10so68366384edj.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 14:07:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=NbXQXdCm8kL6XOVXwUbDjKsclIV2Hv/kcZR/mnYlPiQ=;
-        b=P+sG6Tyx/RAYZxuYCTVG+ENBNDPdEZi8ReyQeRGGMpCSdpwOHruyUY5xWQoxGuTgxL
-         PqTexgRctbwcSyWdAVnepX0cdTG6oxhIzNHZtBOUVx2u8dTuKHvJACATySGhfViNvDqt
-         fXI72aZAX4FPI9sTXMqYEWGAJAN0MBW9TiMpqGnPR4YsCpBUoKBYjgiUNZdlN9Igp3j7
-         cMS0DTdthahFhCw115p10G4+ozZKdMe0pKD5gsFraHq3Xba4E+Y1wp9dxDFxinzY5DqL
-         7TglPxPF9/Jn8fxWm8lqf0yBgSZOdZIYtkI2Zg8XtjTgyWGyHr9JppbzzeSaidpIRmlj
-         vsiA==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/SAIU+IuE23Lw7sXqYvikkteMzMCec9k3mkNvwAaD1c=;
+        b=JTLt05AlEHI961xxW/tusGjITZ2yRmJvdTokKIPc2QLIuzEbC74+SjvP+80LlX1JY7
+         DZqGeDI1LYtuhuyZNhBmkcCjmnQKanNCh4eFfrVd9FWCAh0dNMO/0qTd+3QxoIJWQx2P
+         lbiGtp7Xzj6ewwzVrhIfYJeMn2RanJ+33SGst8cCfX3xACL2fB8kr0LRWpmbqDZ4Y6DH
+         +O3YUP6/9N5DeDqgx/+yIkiTsdQE0X41fXsk0YUt4Fo6f5tzzGfoimm7UY/GVJUSK4al
+         JzbhCaUTmbqQtVC1DH5QOe/zUBBBzsv51PBlAWuAGTEijo61cvMl4P3U5632pPJv3zGz
+         uh0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=NbXQXdCm8kL6XOVXwUbDjKsclIV2Hv/kcZR/mnYlPiQ=;
-        b=1rKUmMo/qz3lPT3OBgN5nZCOtFrimS0JoMMPL9sgl72vd6YY5j61dgFYxVND7oB/ff
-         5DLE/AyAVATUyBBfGNyLwC9wHOfN+h0Q9I3wt5DL4d2Oes0arGS+BONF1Z42/uEnnjdv
-         1/mJvTixsMVY3M0g7WtrX3KEjw05jH+5WG/5za4PVONEq6PoTVY4xMqxTk6rd37xnKZm
-         AMb5ST8LVsptLL+HPtZkNWqhhbQO8TY2LzBrMCT59kB5dgisUBisfuNxEFji/CKpMKnp
-         XIakCH1Zc+LFbHt0WOmM0kfPpl7oqJULU4yWhzJBZvrGe5JoBpx3dpvK78LnFXD3MD/a
-         KRgA==
-X-Gm-Message-State: AOAM5334RsBq/xn9eJ7flaeiwVzrY2ib0YPRZi1r7UWunr+qHhKE24IG
-        3bkNGjlAPjLs4UHR6bir20NCq0I+VNI=
-X-Google-Smtp-Source: ABdhPJydf/EslTxlaK3eKzUeqSkjq8nOhFcyhat8b59E4JQ66u+OuPAoCsMkCeHWZaMSUe5Do+lF/gvovSI=
-X-Received: from mpratt.nyc.corp.google.com ([2620:0:1003:1213:253a:1c3f:ff38:b34e])
- (user=mpratt job=sendgmr) by 2002:a05:6902:4c6:: with SMTP id
- v6mr36271350ybs.160.1635800798839; Mon, 01 Nov 2021 14:06:38 -0700 (PDT)
-Date:   Mon,  1 Nov 2021 17:06:15 -0400
-Message-Id: <20211101210615.716522-1-mpratt@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.1.1089.g2158813163f-goog
-Subject: [PATCH] posix-cpu-timers: Clear posix_cputimers_work in copy_process
-From:   Michael Pratt <mpratt@google.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>, Rhys Hiltner <rhys@justin.tv>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/SAIU+IuE23Lw7sXqYvikkteMzMCec9k3mkNvwAaD1c=;
+        b=NEzx774KaOD8tH68izs7hcykNdJSHzYyrHqa+ccE1I8xqsiZaTB0UmRvbrPwCWwPtu
+         Q5yS0ewZ2MfKTAxyFXlQEq/MdvrjVvFPj1v/AciqWUXIVpLB4xgCoiNqaPzv9rGZag90
+         eNaU8xwFCUdeA8H4VLf1Xq6tZLvrzOWK/RY0iXsr56MqwFqFlaW0QfgZy0PDKHzqqWZK
+         IbWYy9mEtej2nqpetnccXhiO3oxwbi+eIW3mzDENC5PGja98stSvrhUn611FABX4HAg+
+         MaGaYS7D1BfxYb338ymL716bI4pUfacenzZwgDfP0x8SkQXsZ2XKgVxm0R/JQ2VVFAuD
+         KDMw==
+X-Gm-Message-State: AOAM532GAbEr4AqF7MLoN00yNcDRDgmclx6dOgDXN5RpzytZe2tNuBXy
+        W2caSm/v8xiupp3E7A4n9hY9PDTUP4cE2g9oBJs=
+X-Google-Smtp-Source: ABdhPJxN3QSIRkPsc+8zd3aRq/WjgQUAMwDW9tVIqvOw68oAb61UD21Pse+Izcm3WITNC1J3KVzBSDZIPJTtvL7C26w=
+X-Received: by 2002:a17:906:d20c:: with SMTP id w12mr18780674ejz.521.1635800821471;
+ Mon, 01 Nov 2021 14:07:01 -0700 (PDT)
+MIME-Version: 1.0
+References: <20211101194336.305546-1-shy828301@gmail.com> <YYBRePv3w9cfCpHC@casper.infradead.org>
+In-Reply-To: <YYBRePv3w9cfCpHC@casper.infradead.org>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Mon, 1 Nov 2021 14:06:49 -0700
+Message-ID: <CAHbLzkr7+-urztS70fnCvGwkvBEPHvv3+OSzQk8ZzpPX1MAivw@mail.gmail.com>
+Subject: Re: [PATCH] mm: page-flags: fix build failure due to missing
+ parameter for HasHWPoisoned flag
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Alexey Gladkov <legion@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        David Hildenbrand <david@redhat.com>,
-        Rolf Eike Beer <eb@emlix.com>, linux-kernel@vger.kernel.org,
-        Michael Pratt <mpratt@google.com>, stable@vger.kernel.org
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-copy_process currently copies task_struct.posix_cputimers_work as-is. If a
-timer interrupt arrives while handling clone and before dup_task_struct
-completes then the child task will have:
+On Mon, Nov 1, 2021 at 1:45 PM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> Should probbaly cc Linus, and also note that Stephen noticed & fixed
+> this problem already.
+> https://lore.kernel.org/lkml/20211101174846.2b1097d7@canb.auug.org.au/
 
-1. posix_cputimers_work.scheduled = true
-2. posix_cputimers_work.work queued.
+Oh, yes, I forgot that fix. Anyway picking either one is fine to me.
 
-copy_process clears task_struct.task_works, so (2) will have no effect and
-posix_cpu_timers_work will never run (not to mention it doesn't make sense
-for two tasks to share a common linked list).
+>
+> I didn't know about it at the time I sent the pull request because it
+> hadn't been merged at that point.
 
-Since posix_cpu_timers_work never runs, posix_cputimers_work.scheduled is
-never cleared. Since scheduled is set, future timer interrupts will skip
-scheduling work, with the ultimate result that the task will never receive
-timer expirations.
+It is fine. I really don't mean blame to you.
 
-Together, the complete flow is:
-
-1. Task 1 calls clone(), enters kernel.
-2. Timer interrupt fires, schedules task work on Task 1.
-   2a. task_struct.posix_cputimers_work.scheduled = true
-   2b. task_struct.posix_cputimers_work.work added to
-       task_struct.task_works.
-3. dup_task_struct copies Task 1 to Task 2.
-4. copy_process clears task_struct.task_works for Task 2.
-5. Future timer interrupts on Task 2 see
-   task_struct.posix_cputimers_work.scheduled = true and skip scheduling
-   work.
-
-Fix this by explicitly clearing contents of
-task_struct.posix_cputimers_work in copy_process. This was never meant to
-be shared or inherited across tasks in the first place.
-
-Signed-off-by: Michael Pratt <mpratt@google.com>
-Reported-by: Rhys Hiltner <rhys@justin.tv>
-Fixes: 1fb497dd0030 ("posix-cpu-timers: Provide mechanisms to defer timer handling to task_work")
-Cc: <stable@vger.kernel.org>
----
-This issue was discovered while investigating a flaky test in the Go
-language standard libary, https://golang.org/issue/49065. After our testing
-VMs upgraded from 5.4 to 5.10 kernels, several profiling tests started
-failing ~1% of the time with threads not receiving their expected profiling
-signals.
-
-Bisection of problem by Rhys blamed b6b178e38f40 ("Merge tag
-'timers-core-2020-08-14' of
-git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip"). This merge commit
-introduced the broken commit 1fb497dd0030 ("posix-cpu-timers: Provide
-mechanisms to defer timer handling to task_work") and its child
-0099808553ad ("x86: Select POSIX_CPU_TIMERS_TASK_WORK"), which enables the
-new codepath.
-
-The C program below also reproduces the problem. Build with `gcc repro.c
--lrt -pthread -O2`.
-
-The program starts a CPU timer on the main thread, which then spawns child
-threads that create their own CPU timers and verify that they receive timer
-signals. At HEAD and 0099808553ad this program fails with ~3-15 / 20000
-threads not receiving signals.
-
-Prior to 0099808553ad and with this patch, the program reports no failures.
-
-// SPDX-License-Identifier: GPL-2.0
-#include <pthread.h>
-#include <signal.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <sys/syscall.h>
-#include <time.h>
-#include <unistd.h>
-
-__thread uint64_t signaled;
-
-_Atomic int threads_bad;
-
-void signal_handler(int signo, siginfo_t *siginfo, void *uctx)
-{
-	signaled++;
-}
-
-int gettid(void)
-{
-	return syscall(SYS_gettid);
-}
-
-timer_t setup_timer(void)
-{
-	struct sigevent sev = {
-		.sigev_signo = SIGPROF,
-		.sigev_notify = SIGEV_THREAD_ID,
-		._sigev_un = {
-			._tid = gettid(),
-		},
-	};
-	struct itimerspec spec = {
-		.it_interval = {
-			.tv_nsec = 10*1000*1000, /* 10ms */
-		},
-		.it_value = {
-			.tv_nsec = 10*1000*1000, /* 10ms */
-		},
-	};
-	timer_t timerid;
-	int ret;
-
-	ret = timer_create(CLOCK_THREAD_CPUTIME_ID, &sev, &timerid);
-	if (ret != 0) {
-		perror("timer_create");
-		_exit(1);
-	}
-
-	ret = timer_settime(timerid, 0, &spec, NULL);
-	if (ret != 0) {
-		perror("timer_settime");
-		_exit(1);
-	}
-
-	return timerid;
-}
-
-uint64_t thread_cpu_ns(void)
-{
-	struct timespec ts;
-	int ret;
-
-	ret = clock_gettime(CLOCK_THREAD_CPUTIME_ID, &ts);
-	if (ret != 0) {
-		perror("clock_gettime");
-		_exit(1);
-	}
-	return ts.tv_nsec + 1000*1000*1000*ts.tv_sec;
-}
-
-void *thread(void *arg)
-{
-	timer_t timerid;
-	uint64_t start;
-	int ret;
-
-	timerid = setup_timer();
-
-	start = thread_cpu_ns();
-	while (1) {
-		uint64_t now;
-
-		/* 50ms passed? */
-		now = thread_cpu_ns();
-		if (now - start > 50*1000*1000)
-			break;
-
-		/* Busy loop */
-		for (volatile int i = 0; i < 100000; i++)
-			;
-	}
-
-	/*
-	 * 50ms passed; we should certainly have received some profiling
-	 * signals.
-	 */
-	if (signaled == 0) {
-		printf("Thread %d received no profiling signals!\n", gettid());
-		threads_bad++;
-	}
-
-	ret = timer_delete(timerid);
-	if (ret != 0) {
-		perror("timer_delete");
-		_exit(1);
-	}
-
-	return NULL;
-}
-
-int main(void)
-{
-	struct sigaction sa = {
-		.sa_sigaction = &signal_handler,
-		.sa_flags = SA_SIGINFO | SA_RESTART,
-	};
-	int ret;
-	sigset_t set;
-	timer_t timerid;
-	int bad;
-	int thread_count = 0;
-
-	ret = sigaction(SIGPROF, &sa, NULL);
-	if (ret != 0) {
-		perror("sigaction");
-		return 1;
-	}
-
-	sigemptyset(&set);
-	sigaddset(&set, SIGPROF);
-	ret = sigprocmask(SIG_UNBLOCK, &set, NULL);
-	if (ret != 0) {
-		perror("sigprocmask");
-		return 1;
-	}
-
-	timerid = setup_timer();
-
-	while (thread_count < 20000) {
-		pthread_t threads[10];
-
-		for (int i = 0; i < 10; i++) {
-			ret = pthread_create(&threads[i], NULL, &thread, NULL);
-			if (ret != 0) {
-				perror("pthread_create");
-				return 1;
-			}
-			thread_count++;
-		}
-
-		/* Busy loop */
-		for (volatile int i = 0; i < 100000; i++)
-			;
-
-		for (int i = 0; i < 10; i++) {
-			ret = pthread_join(threads[i], NULL);
-			if (ret != 0) {
-				perror("pthread_join");
-				return 1;
-			}
-		}
-
-		if (thread_count % 100 == 0)
-			printf("%d threads\n", thread_count);
-	}
-
-	bad = threads_bad;
-	printf("Bad threads %d / %d = %f%%\n", threads_bad, thread_count,
-	       100*((double)threads_bad) / ((double)thread_count));
-
-	if (threads_bad > 0)
-		return 1;
-	return 0;
-}
-
- include/linux/posix-timers.h   |  2 ++
- kernel/fork.c                  |  1 +
- kernel/time/posix-cpu-timers.c | 19 +++++++++++++++++--
- 3 files changed, 20 insertions(+), 2 deletions(-)
-
-diff --git a/include/linux/posix-timers.h b/include/linux/posix-timers.h
-index 00fef0064355..5bbcd280bfd2 100644
---- a/include/linux/posix-timers.h
-+++ b/include/linux/posix-timers.h
-@@ -184,8 +184,10 @@ static inline void posix_cputimers_group_init(struct posix_cputimers *pct,
- #endif
- 
- #ifdef CONFIG_POSIX_CPU_TIMERS_TASK_WORK
-+void clear_posix_cputimers_work(struct task_struct *p);
- void posix_cputimers_init_work(void);
- #else
-+static inline void clear_posix_cputimers_work(struct task_struct *p) { }
- static inline void posix_cputimers_init_work(void) { }
- #endif
- 
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 38681ad44c76..b1551c074b74 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -2280,6 +2280,7 @@ static __latent_entropy struct task_struct *copy_process(
- 	p->pdeath_signal = 0;
- 	INIT_LIST_HEAD(&p->thread_group);
- 	p->task_works = NULL;
-+	clear_posix_cputimers_work(p);
- 
- #ifdef CONFIG_KRETPROBES
- 	p->kretprobe_instances.first = NULL;
-diff --git a/kernel/time/posix-cpu-timers.c b/kernel/time/posix-cpu-timers.c
-index 643d412ac623..96b4e7810426 100644
---- a/kernel/time/posix-cpu-timers.c
-+++ b/kernel/time/posix-cpu-timers.c
-@@ -1158,14 +1158,29 @@ static void posix_cpu_timers_work(struct callback_head *work)
- 	handle_posix_cpu_timers(current);
- }
- 
-+/*
-+ * Clear existing posix CPU timers task work.
-+ */
-+void clear_posix_cputimers_work(struct task_struct *p)
-+{
-+	/*
-+	 * A copied work entry from the old task is not meaningful, clear it.
-+	 * N.B. init_task_work will not do this.
-+	 */
-+	memset(&p->posix_cputimers_work.work, 0,
-+	       sizeof(p->posix_cputimers_work.work));
-+	init_task_work(&p->posix_cputimers_work.work,
-+		       posix_cpu_timers_work);
-+	p->posix_cputimers_work.scheduled = false;
-+}
-+
- /*
-  * Initialize posix CPU timers task work in init task. Out of line to
-  * keep the callback static and to avoid header recursion hell.
-  */
- void __init posix_cputimers_init_work(void)
- {
--	init_task_work(&current->posix_cputimers_work.work,
--		       posix_cpu_timers_work);
-+	clear_posix_cputimers_work(current);
- }
- 
- /*
--- 
-2.33.1.1089.g2158813163f-goog
-
+>
+> On Mon, Nov 01, 2021 at 12:43:36PM -0700, Yang Shi wrote:
+> > The below build failure when !CONFIG_MEMORY_FAILURE was reported for
+> > v5.16 merge window:
+> > In file included from include/linux/mmzone.h:22,
+> >                  from include/linux/gfp.h:6,
+> >                  from include/linux/slab.h:15,
+> >                  from include/linux/crypto.h:20,
+> >                  from arch/x86/kernel/asm-offsets.c:9:
+> > include/linux/page-flags.h:806:29: error: macro "PAGEFLAG_FALSE"
+> > requires 2 arguments, but only 1 given
+> >   806 | PAGEFLAG_FALSE(HasHWPoisoned)
+> >       |                             ^
+> > include/linux/page-flags.h:411: note: macro "PAGEFLAG_FALSE" defined here
+> >   411 | #define PAGEFLAG_FALSE(uname, lname) TESTPAGEFLAG_FALSE(uname, lname)   \
+> >       |
+> > include/linux/page-flags.h:807:39: error: macro "TESTSCFLAG_FALSE"
+> > requires 2 arguments, but only 1 given
+> >   807 |         TESTSCFLAG_FALSE(HasHWPoisoned)
+> >       |                                       ^
+> > include/linux/page-flags.h:414: note: macro "TESTSCFLAG_FALSE" defined here
+> >   414 | #define TESTSCFLAG_FALSE(uname, lname)
+> >          \
+> >       |
+> > include/linux/page-flags.h:806:1: error: unknown type name 'PAGEFLAG_FALSE'
+> >   806 | PAGEFLAG_FALSE(HasHWPoisoned)
+> >       | ^~~~~~~~~~~~~~
+> > include/linux/page-flags.h:807:25: error: expected ';' before 'static'
+> >   807 |         TESTSCFLAG_FALSE(HasHWPoisoned)
+> >       |                         ^
+> >       |                         ;
+> > ......
+> >   815 | static inline bool is_page_hwpoison(struct page *page)
+> >       | ~~~~~~
+> > make[2]: *** [scripts/Makefile.build:121: arch/x86/kernel/asm-offsets.s] Error 1
+> >
+> > The commit d389a4a81155 ("mm: Add folio flag manipulation functions")
+> > changed the definition of PAGEFLAG macros, this caused the build failure
+> > for HasHWPoisoned flag.  The new flag was introduced by commit
+> > eac96c3efdb5 ("mm: filemap: check if THP has hwpoisoned subpage for PMD
+> > page fault") in v5.15-rc7.  But the folio series pull request was
+> > prepared before v5.15, so this new flag was missed.
+> >
+> > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> > Cc: Naresh Kamboju <naresh.kamboju@linaro.org>
+> > Cc: Matthew Wilcox <willy@infradead.org>
+> > Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> > Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
+> > Signed-off-by: Yang Shi <shy828301@gmail.com>
+> > ---
+> >  include/linux/page-flags.h | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
+> > index d8623d6e1141..981341a3c3c4 100644
+> > --- a/include/linux/page-flags.h
+> > +++ b/include/linux/page-flags.h
+> > @@ -803,8 +803,8 @@ PAGEFLAG_FALSE(DoubleMap, double_map)
+> >  PAGEFLAG(HasHWPoisoned, has_hwpoisoned, PF_SECOND)
+> >       TESTSCFLAG(HasHWPoisoned, has_hwpoisoned, PF_SECOND)
+> >  #else
+> > -PAGEFLAG_FALSE(HasHWPoisoned)
+> > -     TESTSCFLAG_FALSE(HasHWPoisoned)
+> > +PAGEFLAG_FALSE(HasHWPoisoned, has_hwpoisoned)
+> > +     TESTSCFLAG_FALSE(HasHWPoisoned, has_hwpoisoned)
+> >  #endif
+> >
+> >  /*
+> > --
+> > 2.26.2
+> >
+> >
