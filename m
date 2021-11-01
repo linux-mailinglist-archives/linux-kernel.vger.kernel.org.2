@@ -2,128 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62F4644123A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 03:51:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F40D044123B
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 03:53:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230327AbhKACyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 22:54:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41648 "EHLO
+        id S230393AbhKAC4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 22:56:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230246AbhKACyR (ORCPT
+        with ESMTP id S230246AbhKAC4A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 22:54:17 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49098C061714;
-        Sun, 31 Oct 2021 19:51:45 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HjHcB2t0Xz4xbC;
-        Mon,  1 Nov 2021 13:51:38 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1635735102;
-        bh=CcJraMUYFIdN8BoImcFcde7fMSGugo71oB6ZjBy0J6w=;
-        h=Date:From:To:Cc:Subject:From;
-        b=iWY+tXQqHfHK8QF+aaqj/NRdA6bLfHtziGfKGhGQ8LJTWEc6JQRLClXSNFngbEX19
-         o5ZET9YFA0CN/Ufv1lFz8u6B0BRutN/YJUpIxCz88a0xyjjdEfvt/h2nFqPSM+qHv2
-         ul8X/PtPkF17bTVLEvoq1YpdepL8X2TFsvWvqgM+jKb40lfuIxJb/DsQJ8iSjJL18b
-         4k+4qinUCJMQHJ+92VW5iawYdJ0V1O52Cki9+vVUpzgLHQQ8JX/J9ZZTcfj8sXi0ji
-         dLEJTUPz6dhsOST1Xmy2XAcj2K+JCcbHP5QD4WDhwoVl86G4hNWu+sRbbrZhVCuJsu
-         kDvNX40qfCBcQ==
-Date:   Mon, 1 Nov 2021 13:51:35 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jassi Brar <jaswinder.singh@linaro.org>,
-        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        ARM <linux-arm-kernel@lists.infradead.org>,
-        Rob Herring <robherring2@gmail.com>
-Cc:     Hector Martin <marcan@marcan.st>, Joey Gouly <joey.gouly@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Mark Kettenis <kettenis@openbsd.org>,
-        Rob Herring <robh@kernel.org>, Sven Peter <sven@svenpeter.dev>
-Subject: linux-next: manual merge of the mailbox tree with the arm-soc,
- devicetree trees
-Message-ID: <20211101135135.395b6ad8@canb.auug.org.au>
+        Sun, 31 Oct 2021 22:56:00 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3F70C061714
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 19:53:27 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id d5so10827871wrc.1
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 19:53:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OvbOQpgpKa/5ij2ev10oZE8n6rmgG4chJJBzT/WxPJ0=;
+        b=diIfg/CNueN8pMnCSN/txdouYqdEB7R13PondC3mzFuIywkxT/4fharfu2kkesKGY1
+         UnWYWe70KFjZ3mfGRzkUJtSx8xTgz+L0uNBTh1xa1Lk7Wief1CgV+7s7XrsyPTCj+azq
+         HgPttcFRHP5ejF/nQcxl+Z7SgbFcY9+SOSNumAdDpodezNBWCJzXUZDox3xccZ/FDOAT
+         gZXXKBdDn/G6/AWmEdS7FyXe/FdoOB4Lx9/sEes55248auuHwZzACuDMQrf8q6T8foK2
+         n38IL/wWQOLV3kN/dc5bv5I6Kw8y+FDDhGU3r+2NYog+2xCQfbDyY/2WURJ/07XMlCJc
+         +6LQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OvbOQpgpKa/5ij2ev10oZE8n6rmgG4chJJBzT/WxPJ0=;
+        b=6pc/JquMW3pasckXr+Y3DYQfoPUVN6kZHhy2xUhEewHl5RNcywSTU3vKxNVrovGs/2
+         rL/21+uvRBs2Sot45kGXZ1f9RqoN9x7QEgYHblopDn+VOpb9uGRSFoTQOwyU8j4R/aMY
+         3NPizph6qB9/0+kN6z2muQEPuGN69AzZnN6K3MhSvWg6mU5FHcqt3mRO1V8x14wybkGc
+         tq2ljNxRM+jXy+8lpJSqKK+5AEj2NRy/z55dyn8wHhJUFcUqpFB07k6ETDUDwYdTHBLU
+         jFz8n2AX1xoDD9pPYAHfNUDOvKdeCyPPJwqVo7H94+wYFUxiWqOQb5CpRkf5eBMhC++k
+         /pMA==
+X-Gm-Message-State: AOAM530I/PNx52XY9aS1RcsjUaAiOdggxwrkWlHENSa+e8MQFQAbnTFX
+        Tx6JM5mDx6KJMmq2gjmWJORikLU7DNi0em3rERDq5OFk6uU=
+X-Google-Smtp-Source: ABdhPJwouoUj164/5xoi25/rch+6KuRfZi1QqakhntCC4/6ov2KkbfvMaMe6RBq8MifprVJ2w0UyWfVUNidosFu1r1k=
+X-Received: by 2002:a05:6000:1a45:: with SMTP id t5mr22392605wry.306.1635735206224;
+ Sun, 31 Oct 2021 19:53:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/tAp1aJTic4WlFnxzexnr/f7";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20211024013303.3499461-1-guoren@kernel.org> <20211024013303.3499461-4-guoren@kernel.org>
+ <87a6ixbcse.wl-maz@kernel.org> <20211028135523.5cf4b66b@redslave.neermore.group>
+ <87sfwl9oxg.wl-maz@kernel.org> <CAJF2gTR3CqtmKZKS3fOQ9mzSLn7_oh7YoSSmWP1YM=ujB_srMw@mail.gmail.com>
+In-Reply-To: <CAJF2gTR3CqtmKZKS3fOQ9mzSLn7_oh7YoSSmWP1YM=ujB_srMw@mail.gmail.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Mon, 1 Nov 2021 08:23:14 +0530
+Message-ID: <CAAhSdy1WrxbMsiWkwOXd_76A6wNAh05C1QQ-oFXoE9U-F0akiA@mail.gmail.com>
+Subject: Re: [PATCH V5 3/3] irqchip/sifive-plic: Fixup thead, c900-plic
+ request_threaded_irq with ONESHOT
+To:     Guo Ren <guoren@kernel.org>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Nikita Shubin <nikita.shubin@maquefel.me>,
+        Atish Patra <atish.patra@wdc.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
+        Rob Herring <robh@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Guo Ren <guoren@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/tAp1aJTic4WlFnxzexnr/f7
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Nov 1, 2021 at 7:50 AM Guo Ren <guoren@kernel.org> wrote:
+>
+> On Thu, Oct 28, 2021 at 10:58 PM Marc Zyngier <maz@kernel.org> wrote:
+> >
+> > On Thu, 28 Oct 2021 11:55:23 +0100,
+> > Nikita Shubin <nikita.shubin@maquefel.me> wrote:
+> > >
+> > > Hello Marc and Guo Ren!
+> > >
+> > > On Mon, 25 Oct 2021 11:48:33 +0100
+> > > Marc Zyngier <maz@kernel.org> wrote:
+> > >
+> > > > On Sun, 24 Oct 2021 02:33:03 +0100,
+> > > > guoren@kernel.org wrote:
+> > > > >
+> > > > > From: Guo Ren <guoren@linux.alibaba.com>
+> > > > >
+> > > > > When using "devm_request_threaded_irq(,,,,IRQF_ONESHOT,,)" in the
+> > > > > driver, only the first interrupt could be handled, and continue irq
+> > > > > is blocked by hw. Because the thead,c900-plic couldn't complete
+> > > > > masked irq source which has been disabled in enable register. Add
+> > > > > thead_plic_chip which fix up c906-plic irq source completion
+> > > > > problem by unmask/mask wrapper.
+> > > > >
+> > > > > Here is the description of Interrupt Completion in PLIC spec [1]:
+> > > > >
+> > > > > The PLIC signals it has completed executing an interrupt handler by
+> > > > > writing the interrupt ID it received from the claim to the
+> > > > > claim/complete register. The PLIC does not check whether the
+> > > > > completion ID is the same as the last claim ID for that target. If
+> > > > > the completion ID does not match an interrupt source that is
+> > > > > currently enabled for the target, the ^^ ^^^^^^^^^ ^^^^^^^
+> > > > > completion is silently ignored.
+> > > >
+> > > > Given this bit of the spec...
+> > > >
+> > > > > +static void plic_thead_irq_eoi(struct irq_data *d)
+> > > > > +{
+> > > > > + struct plic_handler *handler =
+> > > > > this_cpu_ptr(&plic_handlers); +
+> > > > > + if (irqd_irq_masked(d)) {
+> > > > > +         plic_irq_unmask(d);
+> > > > > +         writel(d->hwirq, handler->hart_base +
+> > > > > CONTEXT_CLAIM);
+> > > > > +         plic_irq_mask(d);
+> > > > > + } else {
+> > > > > +         writel(d->hwirq, handler->hart_base +
+> > > > > CONTEXT_CLAIM);
+> > > > > + }
+> > > > > +}
+> > > > > +
+> > > >
+> > > > ... it isn't obvious to me why this cannot happen on an SiFive PLIC.
+> > >
+> > > This indeed happens with SiFive PLIC. I am currently tinkering with
+> > > da9063 RTC on SiFive Unmatched, and ALARM irq fires only once. However
+> > > with changes proposed by Guo Ren in plic_thead_irq_eoi, everything
+> > > begins to work fine.
+> > >
+> > > May be these change should be propagated to plic_irq_eoi instead of
+> > > making a new function ?
+> >
+> > That's my impression too. I think the T-Head defect is pretty much
+> > immaterial when you consider how 'interesting' the PLIC architecture
+> > is.
+> Which is the "T-Head defect" you mentioned here?
+>  1. Auto masking with claim + complete (I don't think it's a defect,
+> right? May I add a new patch to utilize the feature to decrease a
+> little duplicate mask/unmask operations in the future?)
 
-Hi all,
+This is definitely a defect and non-compliance for T-HEAD because
+no sane interrupt controller would mask interrupt upon claim and this
+is not what RISC-V PLIC defines.
 
-Today's linux-next merge of the mailbox tree got a conflict in:
+>  2. EOI failed when masked
 
-  MAINTAINERS
+This defect exists for both RISC-V PLIC and T-HEAD PLIC
+because of the way interrupt completion is defined.
 
-between commits:
+>
+> > Conflating EOI and masking really is a misfeature...
+> I think the problem is riscv PLIC reuse enable bit as mask bit. I
+> recommend separating them. That means:
 
-  a3b539fedc09 ("dt-bindings: pci: Add DT bindings for apple,pcie")
-  e081c53a5ba1 ("MAINTAINERS: add pinctrl-apple-gpio to ARM/APPLE MACHINE")
+There are no per-interrupt mask bits. We only have per-context
+and per-interrupt enable bits which is used to provide mask/unmask
+functionality expected by the irqchip framework.
 
-from the arm-soc, devicetree trees and commit:
+I don't see how this is a problem for RISC-V PLIC. The only real
+issue with RISC-V PLIC is the fact the interrupt completion will be
+ignored for a masked interrupt which is what Marc is pointing at.
 
-  7feea290e9f4 ("MAINTAINERS: Add Apple mailbox files")
+Regards,
+Anup
 
-from the mailbox tree.
+>  - EOI still depends on enable bit.
+>  - Add mask/unmask bit regs to do the right thing.
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
 
---=20
-Cheers,
-Stephen Rothwell
 
-diff --cc MAINTAINERS
-index 244002eb7220,333eff21b8d2..000000000000
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@@ -1730,17 -1728,15 +1736,20 @@@ B:	https://github.com/AsahiLinux/linux/
-  C:	irc://irc.oftc.net/asahi-dev
-  T:	git https://github.com/AsahiLinux/linux.git
-  F:	Documentation/devicetree/bindings/arm/apple.yaml
- +F:	Documentation/devicetree/bindings/i2c/apple,i2c.yaml
-  F:	Documentation/devicetree/bindings/interrupt-controller/apple,aic.yaml
-+ F:	Documentation/devicetree/bindings/mailbox/apple,mailbox.yaml
- +F:	Documentation/devicetree/bindings/pci/apple,pcie.yaml
-  F:	Documentation/devicetree/bindings/pinctrl/apple,pinctrl.yaml
-  F:	arch/arm64/boot/dts/apple/
- +F:	drivers/i2c/busses/i2c-pasemi-core.c
- +F:	drivers/i2c/busses/i2c-pasemi-platform.c
-  F:	drivers/irqchip/irq-apple-aic.c
-+ F:	drivers/mailbox/apple-mailbox.c
- +F:	drivers/pinctrl/pinctrl-apple-gpio.c
-  F:	include/dt-bindings/interrupt-controller/apple-aic.h
-  F:	include/dt-bindings/pinctrl/apple.h
-+ F:	include/linux/apple-mailbox.h
- =20
-  ARM/ARTPEC MACHINE SUPPORT
-  M:	Jesper Nilsson <jesper.nilsson@axis.com>
-
---Sig_/tAp1aJTic4WlFnxzexnr/f7
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF/VjcACgkQAVBC80lX
-0Gyf8Qf8DvRCvnY6hcC1l+TJA8/3o58EMS2vEr0EkOwShVSt6SY5au/PEMJCVY+s
-rKrf+XwmP+deGKlFqptICAmhpgAFodTB3HOgZATfL99ZerKMpFrV2dndRcHeeNuf
-Qqn6QxSsOfiK+AvHEuk+m2yibDYvdqpEnpxgSOGvl2zCLln04bKHYvo1/TyAV6HO
-FzRXqXJzG5IlofkWlRQRdMhL0RGmVYZC6K2WlkqPhl6a+aCt3kuajNXzkn/SF+C1
-B0z7ARfW7pBPkceVkv1YTxzXa89mGFzfGmxdEKt0YuQV7sYSHhbFBzjW/gWcQBzR
-myeH9eaNWrEOHtKHLqLTLfy1LJVclQ==
-=XDmw
------END PGP SIGNATURE-----
-
---Sig_/tAp1aJTic4WlFnxzexnr/f7--
+>
+> >
+> >         M.
+> >
+> > --
+> > Without deviation from the norm, progress is not possible.
+>
+>
+>
+> --
+> Best Regards
+>  Guo Ren
+>
+> ML: https://lore.kernel.org/linux-csky/
