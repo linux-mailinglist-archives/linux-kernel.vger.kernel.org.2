@@ -2,88 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3E6D441404
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 08:12:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99AF4441405
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 08:13:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231176AbhKAHO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 03:14:59 -0400
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:56425 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231145AbhKAHOz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 03:14:55 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 16EB55C00EF;
-        Mon,  1 Nov 2021 03:12:22 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Mon, 01 Nov 2021 03:12:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=4fX8NR
-        AOk+O/aWbcdEs/lDF3SUCga+DQgKNNX9Asy+k=; b=WrD29iuvdGgIiCLcZrAV22
-        DZDvpymUWj3uUjONZw76XYgiMjrl+x/Qx0kIUGsdHEJQWamoN8ExtbCekst77wwt
-        pLQ297XkWE2V64B7dBtzmHvl32gGEp997CJwaim9OCIAFtp9kcsf4KqWpw417+/3
-        e6HPDhdt4s0WMtaBpdn8RCjVZua9sj6B6y45CArJGsfrFwmB3bGuSFPjJE65ua7V
-        1HLHztjE8aco98+u6ZV8chRp5GGSToeoUyN3JzRNCzPY53FWym9XMBRe7+WAPAbB
-        IKt5jmdgsJ3M+ICZBq0hYXthqXNXVDPzSyBlihostsrVbwLHab9/6bYVKW7cE5mA
-        ==
-X-ME-Sender: <xms:VZN_YboCKaM3zlGwNguBgU_eaSEmY0qllreYhZuY6rd1KLOf-4Lk8Q>
-    <xme:VZN_YVphV2j_zWUHw9HFcMxPJbdZPRGJQvCpGlhGzSbtf3ZxyM242KAamjl4fghEg
-    OAM42M05EnwSNY>
-X-ME-Received: <xmr:VZN_YYOnA7Ed6dO1lFAwukGJtSEmhBj8ZzV_C0qQZgpsv-4W29ysm47G-VHDFw2LHDUbll_6wcbXykqkek_GQE89g8Q>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvdehuddguddtvdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepkfguohcu
-    ufgthhhimhhmvghluceoihguohhstghhsehiughoshgthhdrohhrgheqnecuggftrfgrth
-    htvghrnheptdffkeekfeduffevgeeujeffjefhtefgueeugfevtdeiheduueeukefhudeh
-    leetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepih
-    guohhstghhsehiughoshgthhdrohhrgh
-X-ME-Proxy: <xmx:VZN_Ye5wtfKGXQu2IvehavcEMlt4goo4272KeS1Ae8PlXDrk2pdxcA>
-    <xmx:VZN_Ya6tYhahwndJD7eaKm-NtnJpXfSF1JEFxWMI-hifTaEbMBMNNA>
-    <xmx:VZN_YWjjXLGmryl1Fs7_eTS4Sz9dxjt_wpw-v5brRt-rGNLMkCMeLg>
-    <xmx:VpN_YcRuI55ZUi95a3x5K9DfDwBQLt5SjlAqER5P2CpqIE00k0p0ZQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 1 Nov 2021 03:12:21 -0400 (EDT)
-Date:   Mon, 1 Nov 2021 09:12:17 +0200
-From:   Ido Schimmel <idosch@idosch.org>
-To:     Leon Romanovsky <leon@kernel.org>, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     Leon Romanovsky <leonro@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        edwin.peer@broadcom.com
-Subject: Re: [PATCH net-next] devlink: Require devlink lock during device
- reload
-Message-ID: <YX+TUX0agfjMD0Ft@shredder>
-References: <9716f9a13e217a0a163b745b6e92e02d40973d2c.1635701665.git.leonro@nvidia.com>
+        id S231192AbhKAHPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 03:15:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35928 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230096AbhKAHPd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 03:15:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9723E60FE8;
+        Mon,  1 Nov 2021 07:12:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635750780;
+        bh=vHovt+cQzLZT7BElPIMbzumsvBYvSVJ0/rUbXoi52bo=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=lQYnG+YAUYKW1+jNysoNFIybCd4R4j7cLy84azLDo40aZd/T0kuv9Db7SXSGkOrJQ
+         XMFpPiGnAcd4ZEkJZnHuoGRTBG2J2+zi313Z+7x7NKfG9JuoFkOzatfz2yJATrXY0Q
+         9SXlRFz0GgSw+QiMPlQykLsq1HEivcHs64dUK96Q0dfhs9EIH9L+jYe11XS+44MWSR
+         lLwNqoUvtimuEVS2fDUkhN3Lj3gTyfd0+WSqodh79eqZBA9tobzMyC30LDXuj9Db0S
+         hI2vI8yvIUJjuGvwoAXtnsm1Taze4IFtQ5V9rKHdSf/IrQcVIG0KXJjIIm3lwqyocn
+         ZEmnyk8HChPZw==
+Message-ID: <75c52307-7bfd-2408-d067-26d1fca7bb73@kernel.org>
+Date:   Mon, 1 Nov 2021 15:12:57 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9716f9a13e217a0a163b745b6e92e02d40973d2c.1635701665.git.leonro@nvidia.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH] F2FS: invalidate META_MAPPING before IPU/DIO write
+Content-Language: en-US
+To:     Hyeong-Jun Kim <hj514.kim@samsung.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+References: <CGME20211101054217epcas1p3c695f37ab925f47156bd45e3adb5ed94@epcas1p3.samsung.com>
+ <20211101054214.24456-1-hj514.kim@samsung.com>
+ <d1929b64-15a3-feaf-5401-1552b2eb2461@kernel.org>
+ <9a0360922130485f4252970de4bb535667cc26e9.camel@samsung.com>
+From:   Chao Yu <chao@kernel.org>
+In-Reply-To: <9a0360922130485f4252970de4bb535667cc26e9.camel@samsung.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 31, 2021 at 07:35:56PM +0200, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
+On 2021/11/1 15:09, Hyeong-Jun Kim wrote:
+> On Mon, 2021-11-01 at 14:28 +0800, Chao Yu wrote:
+>> On 2021/11/1 13:42, Hyeong-Jun Kim wrote:
+>>> Encrypted pages during GC are read and cached in META_MAPPING.
+>>> However, due to cached pages in META_MAPPING, there is an issue
+>>> where
+>>> newly written pages are lost by IPU or DIO writes.
+>>>
+>>> Thread A                              Thread B
+>>> - f2fs_gc(): blk 0x10 -> 0x20 (a)
+>>>                                         - IPU or DIO write on blk
+>>> 0x20 (b)
+>>> - f2fs_gc(): blk 0x20 -> 0x30 (c)
+>>>
+>>> (a) page for blk 0x20 is cached in META_MAPPING and page for blk
+>>> 0x10
+>>>       is invalidated from META_MAPPING.
+>>> (b) write new data to blk 0x200 using IPU or DIO, but outdated data
+>>>       still remains in META_MAPPING.
+>>> (c) f2fs_gc() try to move blk from 0x20 to 0x30 using cached page
+>>> in
+>>>       META_MAPPING. In conclusion, the newly written data in (b) is
+>>> lost.
+>>
+>> In c), f2fs_gc() will readahead encrypted block from disk via
+>> ra_data_block() anyway,
+>> not matter cached encrypted page of meta inode is uptodate or not, so
+>> it's safe, right?
+> Right,
+> However, if DIO write is performed between phase 3 and phase 4 of
+> f2fs_gc(),
+> the cached page of meta_mapping will be out-dated, though it read data
+> from
+> disk via ra_data_block() in phase 3.
 > 
-> Devlink reload was implemented as a special command which does _SET_
-> operation, but doesn't take devlink->lock, while recursive devlink
-> calls that were part of .reload_up()/.reload_down() sequence took it.
-> 
-> This fragile flow was possible due to holding a big devlink lock
-> (devlink_mutex), which effectively stopped all devlink activities,
-> even unrelated to reloaded devlink.
-> 
-> So let's make sure that devlink reload behaves as other commands and
-> use special nested locking primitives with a depth of 1. Such change
-> opens us to a venue of removing devlink_mutex completely, while keeping
-> devlink locking complexity in devlink.c.
+> What do you think?
 
-Jakub/Dave, I will be mostly unavailable until later this week, but I
-have applied this patch to our queue and can report testing results
-tomorrow. I would appreciate it if you could hold off on applying it
-until then.
+Due to i_gc_rwsem lock coverage, the race condition should not happen right now?
 
-Thanks
+Thanks,
+
+> 
+> Thanks,
+>>
+>> Am I missing anything?
+>>
+>> Thanks,
+>>
+>>> To address this issue, invalidating pages in META_MAPPING before
+>>> IPU or
+>>> DIO write.
+>>>
+>>> Signed-off-by: Hyeong-Jun Kim <
+>>> hj514.kim@samsung.com
+>>>>
+>>> ---
+>>>    fs/f2fs/data.c    | 2 ++
+>>>    fs/f2fs/segment.c | 3 +++
+>>>    2 files changed, 5 insertions(+)
+>>>
+>>> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+>>> index 74e1a350c1d8..9f754aaef558 100644
+>>> --- a/fs/f2fs/data.c
+>>> +++ b/fs/f2fs/data.c
+>>> @@ -1708,6 +1708,8 @@ int f2fs_map_blocks(struct inode *inode,
+>>> struct f2fs_map_blocks *map,
+>>>    		 */
+>>>    		f2fs_wait_on_block_writeback_range(inode,
+>>>    						map->m_pblk, map-
+>>>> m_len);
+>>> +		invalidate_mapping_pages(META_MAPPING(sbi),
+>>> +						map->m_pblk, map-
+>>>> m_pblk);
+>>>    
+>>>    		if (map->m_multidev_dio) {
+>>>    			block_t blk_addr = map->m_pblk;
+>>> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+>>> index 526423fe84ce..f57c55190f9e 100644
+>>> --- a/fs/f2fs/segment.c
+>>> +++ b/fs/f2fs/segment.c
+>>> @@ -3652,6 +3652,9 @@ int f2fs_inplace_write_data(struct
+>>> f2fs_io_info *fio)
+>>>    		goto drop_bio;
+>>>    	}
+>>>    
+>>> +	invalidate_mapping_pages(META_MAPPING(fio->sbi),
+>>> +				fio->new_blkaddr, fio->new_blkaddr);
+>>> +
+>>>    	stat_inc_inplace_blocks(fio->sbi);
+>>>    
+>>>    	if (fio->bio && !(SM_I(sbi)->ipu_policy & (1 <<
+>>> F2FS_IPU_NOCACHE)))
+>>>
+>>
+>>
+> 
