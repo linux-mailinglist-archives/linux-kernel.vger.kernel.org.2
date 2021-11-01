@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BED34418CF
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:51:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E28D4417E6
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:39:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233152AbhKAJwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:52:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51432 "EHLO mail.kernel.org"
+        id S233987AbhKAJlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:41:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43532 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234127AbhKAJrW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:47:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D741261406;
-        Mon,  1 Nov 2021 09:30:51 +0000 (UTC)
+        id S233630AbhKAJho (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:37:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9AD7961350;
+        Mon,  1 Nov 2021 09:26:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635759052;
-        bh=ATBsLN0XtI/+FNx8UYR94fhcNhcWjLUiML3YLjYCQoI=;
+        s=korg; t=1635758791;
+        bh=iSymP04eayXhdaeGBYoXyAWFkq35uLJ1B/yaG+QOIgE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M3vkENhtiYDKCM8PDTHeVmym0OBljnmfXzXYCLUp7vyKhsxabJ01NOYDMxtz/qVJn
-         YC4qV+fmJepvZMHA7O9EclbxZN7HgwJD2Z0i98MDoqD0uZH+yykLh3KpD98KlaYEZd
-         FzmSyrLGYFOzRd0AgDvg1s51oowzYvQeoNX5cvkI=
+        b=WHtgPPp9ayEdVUc0WfnMDGHg/MW4pYPZC0vZHeqD84iCiL0XZ2RxZYQFZlx7NRu6a
+         PO9bGK5/XKEKe3CngCF6qZgHFUMoSz4uZM9tCHbUICv54rV+ilKsRkgYC2xoDx+kpQ
+         nd7sODQui2QFV3Qn/fneqtgmCkFUANYec8bTDM3M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        stable@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.14 094/125] phy: phy_start_aneg: Add an unlocked version
-Date:   Mon,  1 Nov 2021 10:17:47 +0100
-Message-Id: <20211101082550.941197352@linuxfoundation.org>
+Subject: [PATCH 5.10 60/77] net/tls: Fix flipped sign in async_wait.err assignment
+Date:   Mon,  1 Nov 2021 10:17:48 +0100
+Message-Id: <20211101082524.264945476@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082533.618411490@linuxfoundation.org>
-References: <20211101082533.618411490@linuxfoundation.org>
+In-Reply-To: <20211101082511.254155853@linuxfoundation.org>
+References: <20211101082511.254155853@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,81 +40,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrew Lunn <andrew@lunn.ch>
+From: Daniel Jordan <daniel.m.jordan@oracle.com>
 
-commit 707293a56f95f8e7e0cfae008010c7933fb68973 upstream.
+commit 1d9d6fd21ad4a28b16ed9ee5432ae738b9dc58aa upstream.
 
-Split phy_start_aneg into a wrapper which takes the PHY lock, and a
-helper doing the real work. This will be needed when
-phy_ethtook_ksettings_set takes the lock.
+sk->sk_err contains a positive number, yet async_wait.err wants the
+opposite.  Fix the missed sign flip, which Jakub caught by inspection.
 
-Fixes: 2d55173e71b0 ("phy: add generic function to support ksetting support")
-Signed-off-by: Andrew Lunn <andrew@lunn.ch>
+Fixes: a42055e8d2c3 ("net/tls: Add support for async encryption of records for performance")
+Suggested-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/phy/phy.c |   30 ++++++++++++++++++++++++------
- 1 file changed, 24 insertions(+), 6 deletions(-)
+ net/tls/tls_sw.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/phy/phy.c
-+++ b/drivers/net/phy/phy.c
-@@ -700,7 +700,7 @@ static int phy_check_link_status(struct
- }
+--- a/net/tls/tls_sw.c
++++ b/net/tls/tls_sw.c
+@@ -459,7 +459,7 @@ static void tls_encrypt_done(struct cryp
  
- /**
-- * phy_start_aneg - start auto-negotiation for this PHY device
-+ * _phy_start_aneg - start auto-negotiation for this PHY device
-  * @phydev: the phy_device struct
-  *
-  * Description: Sanitizes the settings (if we're not autonegotiating
-@@ -708,25 +708,43 @@ static int phy_check_link_status(struct
-  *   If the PHYCONTROL Layer is operating, we change the state to
-  *   reflect the beginning of Auto-negotiation or forcing.
-  */
--int phy_start_aneg(struct phy_device *phydev)
-+static int _phy_start_aneg(struct phy_device *phydev)
- {
- 	int err;
- 
-+	lockdep_assert_held(&phydev->lock);
-+
- 	if (!phydev->drv)
- 		return -EIO;
- 
--	mutex_lock(&phydev->lock);
--
- 	if (AUTONEG_DISABLE == phydev->autoneg)
- 		phy_sanitize_settings(phydev);
- 
- 	err = phy_config_aneg(phydev);
- 	if (err < 0)
--		goto out_unlock;
-+		return err;
- 
- 	if (phy_is_started(phydev))
- 		err = phy_check_link_status(phydev);
--out_unlock:
-+
-+	return err;
-+}
-+
-+/**
-+ * phy_start_aneg - start auto-negotiation for this PHY device
-+ * @phydev: the phy_device struct
-+ *
-+ * Description: Sanitizes the settings (if we're not autonegotiating
-+ *   them), and then calls the driver's config_aneg function.
-+ *   If the PHYCONTROL Layer is operating, we change the state to
-+ *   reflect the beginning of Auto-negotiation or forcing.
-+ */
-+int phy_start_aneg(struct phy_device *phydev)
-+{
-+	int err;
-+
-+	mutex_lock(&phydev->lock);
-+	err = _phy_start_aneg(phydev);
- 	mutex_unlock(&phydev->lock);
- 
- 	return err;
+ 		/* If err is already set on socket, return the same code */
+ 		if (sk->sk_err) {
+-			ctx->async_wait.err = sk->sk_err;
++			ctx->async_wait.err = -sk->sk_err;
+ 		} else {
+ 			ctx->async_wait.err = err;
+ 			tls_err_abort(sk, err);
 
 
