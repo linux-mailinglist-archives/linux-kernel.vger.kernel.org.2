@@ -2,104 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7017C441250
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 04:16:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67A96441251
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 04:16:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230417AbhKADSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 23:18:39 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:35560 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230222AbhKADSh (ORCPT
+        id S230487AbhKADS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 23:18:57 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:34288 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230222AbhKADSz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 23:18:37 -0400
-X-UUID: a197251d0ae64fcd84ee44743b2b31b3-20211101
-X-UUID: a197251d0ae64fcd84ee44743b2b31b3-20211101
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
-        (envelope-from <walter-zh.wu@mediatek.com>)
+        Sun, 31 Oct 2021 23:18:55 -0400
+X-UUID: 48e43b0dd3e4464dbcabdf5578280799-20211101
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=MplEKwNK6OAffXAWeN1ahMfbiWO2NiLp63P/1LmLGmw=;
+        b=GwLjNXSy9y3R8TBI6qDXqnz80ODYYegeSsZ5xWIcRcMN8Yokk0J4LaCQDl0f28JyFayOUTiNri6legOvAlqbuq+DM2RutmdALU+y67KHM1r7/ObUKEvHUem5inSeOtYItalllV8E3F6cjf8ZyXwLtOerYKO5f+7KX5UiPB2r3Gg=;
+X-UUID: 48e43b0dd3e4464dbcabdf5578280799-20211101
+Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
+        (envelope-from <jitao.shi@mediatek.com>)
         (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1302630291; Mon, 01 Nov 2021 11:16:01 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.792.15; Mon, 1 Nov 2021 11:15:59 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
+        with ESMTP id 1647572588; Mon, 01 Nov 2021 11:16:17 +0800
+Received: from mtkexhb01.mediatek.inc (172.21.101.102) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 1 Nov 2021 11:16:16 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by mtkexhb01.mediatek.inc
+ (172.21.101.102) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 1 Nov
+ 2021 11:16:16 +0800
+Received: from mszsdhlt06 (10.16.6.206) by mtkcas10.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 1 Nov 2021 11:15:59 +0800
-From:   Walter Wu <walter-zh.wu@mediatek.com>
-To:     Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "Matthias Brugger" <matthias.bgg@gmail.com>
-CC:     <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        <linux-mediatek@lists.infradead.org>,
-        Walter Wu <walter-zh.wu@mediatek.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH] dma-direct: fix DMA_ATTR_NO_KERNEL_MAPPING
-Date:   Mon, 1 Nov 2021 11:15:58 +0800
-Message-ID: <20211101031558.7184-1-walter-zh.wu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+ Transport; Mon, 1 Nov 2021 11:16:15 +0800
+Message-ID: <a16150b6b10dca4bf961b8e02b5e4d940b98468c.camel@mediatek.com>
+Subject: Re: [PATCH v7 3/3] drm/bridge: anx7625: config hs packets end
+ aligned to avoid screen shift
+From:   Jitao Shi <jitao.shi@mediatek.com>
+To:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        "Laurent Pinchart" <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Xin Ji <xji@analogixsemi.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        "Philipp Zabel" <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+CC:     <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>, <ck.hu@mediatek.com>,
+        <stonea168@163.com>, <huijuan.xie@mediatek.com>,
+        <rex-bc.chen@mediatek.com>, <shuijing.li@mediatek.com>
+Date:   Mon, 1 Nov 2021 11:16:15 +0800
+In-Reply-To: <20210915223117.7857-4-jitao.shi@mediatek.com>
+References: <20210915223117.7857-1-jitao.shi@mediatek.com>
+         <20210915223117.7857-4-jitao.shi@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-Content-Type: text/plain
 X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DMA_ATTR_NO_KERNEL_MAPPING is to avoid creating a kernel mapping
-for the allocated buffer, but current implementation is that
-PTE of allocated buffer in kernel page table is valid. So we
-should set invalid for PTE of allocate buffer so that there are
-no kernel mapping for the allocated buffer.
-
-In some cases, we don't hope the allocated buffer to be read
-by cpu or speculative execution, so we use DMA_ATTR_NO_KERNEL_MAPPING
-to get no kernel mapping in order to achieve this goal.
-
-Signed-off-by: Walter Wu <walter-zh.wu@mediatek.com>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Marek Szyprowski <m.szyprowski@samsung.com>
-Cc: Robin Murphy <robin.murphy@arm.com>
-Cc: Matthias Brugger <matthias.bgg@gmail.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
----
- kernel/dma/direct.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
-index 4c6c5e0635e3..aa10b4c5d762 100644
---- a/kernel/dma/direct.c
-+++ b/kernel/dma/direct.c
-@@ -13,6 +13,7 @@
- #include <linux/vmalloc.h>
- #include <linux/set_memory.h>
- #include <linux/slab.h>
-+#include <asm/cacheflush.h>
- #include "direct.h"
- 
- /*
-@@ -169,6 +170,9 @@ void *dma_direct_alloc(struct device *dev, size_t size,
- 		if (!PageHighMem(page))
- 			arch_dma_prep_coherent(page, size);
- 		*dma_handle = phys_to_dma_direct(dev, page_to_phys(page));
-+		/* remove kernel mapping for pages */
-+		set_memory_valid((unsigned long)phys_to_virt(dma_to_phys(dev, *dma_handle)),
-+				size >> PAGE_SHIFT, 0);
- 		/* return the page pointer as the opaque cookie */
- 		return page;
- 	}
-@@ -278,6 +282,10 @@ void dma_direct_free(struct device *dev, size_t size,
- 
- 	if ((attrs & DMA_ATTR_NO_KERNEL_MAPPING) &&
- 	    !force_dma_unencrypted(dev) && !is_swiotlb_for_alloc(dev)) {
-+		size = PAGE_ALIGN(size);
-+		/* create kernel mapping for pages */
-+		set_memory_valid((unsigned long)phys_to_virt(dma_to_phys(dev, dma_addr)),
-+				size >> PAGE_SHIFT, 1);
- 		/* cpu_addr is a struct page cookie, not a kernel address */
- 		dma_free_contiguous(dev, cpu_addr, size);
- 		return;
--- 
-2.18.0
+SGkgWGluLA0KDQpQbGVhc2UgaGVscCB0byByZXZpZXcgdGhlIGNoYW5nZXMgaW4gYW54NzYyNS5j
+DQoNCk9uIFRodSwgMjAyMS0wOS0xNiBhdCAwNjozMSArMDgwMCwgSml0YW8gU2hpIHdyb3RlOg0K
+PiBUaGlzIGRldmljZSByZXF1aXJlcyB0aGUgcGFja2V0cyBvbiBsYW5lcyBhbGlnbmVkIGF0IHRo
+ZSBlbmQgdG8gZml4DQo+IHNjcmVlbiBzaGlmdCBvciBzY3JvbGwuDQo+IA0KPiBTaWduZWQtb2Zm
+LWJ5OiBKaXRhbyBTaGkgPGppdGFvLnNoaUBtZWRpYXRlay5jb20+DQo+IC0tLQ0KPiAgZHJpdmVy
+cy9ncHUvZHJtL2JyaWRnZS9hbmFsb2dpeC9hbng3NjI1LmMgfCAxICsNCj4gIDEgZmlsZSBjaGFu
+Z2VkLCAxIGluc2VydGlvbigrKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9i
+cmlkZ2UvYW5hbG9naXgvYW54NzYyNS5jDQo+IGIvZHJpdmVycy9ncHUvZHJtL2JyaWRnZS9hbmFs
+b2dpeC9hbng3NjI1LmMNCj4gaW5kZXggMTRkNzNmYjFkZDE1Li5kNzZmYjYzZmE5ZjcgMTAwNjQ0
+DQo+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9icmlkZ2UvYW5hbG9naXgvYW54NzYyNS5jDQo+ICsr
+KyBiL2RyaXZlcnMvZ3B1L2RybS9icmlkZ2UvYW5hbG9naXgvYW54NzYyNS5jDQo+IEBAIC0xMzI3
+LDYgKzEzMjcsNyBAQCBzdGF0aWMgaW50IGFueDc2MjVfYXR0YWNoX2RzaShzdHJ1Y3QNCj4gYW54
+NzYyNV9kYXRhICpjdHgpDQo+ICAJCU1JUElfRFNJX01PREVfVklERU9fU1lOQ19QVUxTRQl8DQo+
+ICAJCU1JUElfRFNJX01PREVfTk9fRU9UX1BBQ0tFVAl8DQo+ICAJCU1JUElfRFNJX01PREVfVklE
+RU9fSFNFOw0KPiArCWRzaS0+aHNfcGFja2V0X2VuZF9hbGlnbmVkID0gdHJ1ZTsNCj4gIA0KPiAg
+CWlmIChtaXBpX2RzaV9hdHRhY2goZHNpKSA8IDApIHsNCj4gIAkJRFJNX0RFVl9FUlJPUihkZXYs
+ICJmYWlsIHRvIGF0dGFjaCBkc2kgdG8gaG9zdC5cbiIpOw0K
 
