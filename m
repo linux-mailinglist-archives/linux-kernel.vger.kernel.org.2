@@ -2,271 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4858C441F35
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 18:27:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9282F441F37
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 18:28:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229947AbhKAR3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 13:29:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40490 "EHLO
+        id S229834AbhKARa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 13:30:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbhKAR3n (ORCPT
+        with ESMTP id S229541AbhKARa6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 13:29:43 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 517EAC061714;
-        Mon,  1 Nov 2021 10:27:10 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id j1so9297452qtq.11;
-        Mon, 01 Nov 2021 10:27:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:reply-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/Wxgz95yQyXJnxm6JHtyjO5RNM3gtThxljplW0b6MjM=;
-        b=VioXlBAd8mgWoWl4LtsE3F3H9hKnG7hhjqy1A9n5SsCe+AZ+ZM1Iz0F2wIbhs36Uql
-         rOspuwV35OckZcPoFzgVOhAVKNySDLmX2VazOohB0gdkcFrZJrpKF2HH6lIKXO4g3n4w
-         uNnOk2rAw/0G/+HDQvjNOssqxMnMkxrC5DtBDek19mh6oNdF71VesTlynb/Y1+n6pLZv
-         uulh3ZdThdOmGVQ0+mI6mBwCOFIR/i/pPHJxpqs850Rtg257fDnjjK88U1delvZTi5WR
-         lroYhwccmYuCJdFXF/6HzqtXhkokfxxHSHo2iz8vT5AIFZoXR5Ry4XAFYe4vyskIN2+4
-         ElLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :reply-to:references:mime-version:content-disposition:in-reply-to;
-        bh=/Wxgz95yQyXJnxm6JHtyjO5RNM3gtThxljplW0b6MjM=;
-        b=qP4JHfwodu39yufKECkE44aLeudK/IMlFeuwZT+v7lOI5DwsRAe2V2DDmOAQNAXPYU
-         Rk1PqoVs2eYC3zj+Jo4TnHy2HDT4sLxRjwOvjEv/AiYOSdfd7MSpGTyQZwO7K8Bfqh03
-         x2aA0qXPOpJ5riHTkEDOGVIAxtDQdoWvqg3CpWLY2mI0YG1GpS0AjY8Q3nOLZ5x1ObuA
-         J6b9QO8I65v/JtGql/momHVzutKegrnnE578/htSdFwNC0fL0j+pVEbeqVk8UACtiwPV
-         IDSyF8VdXjY7iKZ5yLwO08HSwvVDJvO7qNYLcUK2WfkPKt/YH2RRb23JyQ1j8Owuwe69
-         XKXQ==
-X-Gm-Message-State: AOAM530ZZmioeUY9prrRat1oBSvbiev/+eHbdaIvrTGvYXYfe7TPAkG2
-        P3Az5t1orsvl/JoGf3OXQg==
-X-Google-Smtp-Source: ABdhPJwQT+Eq/MkVmZUn56IaAtf7MNPK+P0vuUGtqS4rD1ZhHp4rWsGKN8eIpvQf/cgYuBTHXsrGgw==
-X-Received: by 2002:ac8:3b4a:: with SMTP id r10mr31342333qtf.53.1635787629025;
-        Mon, 01 Nov 2021 10:27:09 -0700 (PDT)
-Received: from serve.minyard.net ([47.184.156.158])
-        by smtp.gmail.com with ESMTPSA id l1sm11120483qkp.65.2021.11.01.10.27.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 10:27:08 -0700 (PDT)
-Sender: Corey Minyard <tcminyard@gmail.com>
-Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:cfe:2000:592b:61b1])
-        by serve.minyard.net (Postfix) with ESMTPSA id 3C7191800BA;
-        Mon,  1 Nov 2021 17:27:07 +0000 (UTC)
-Date:   Mon, 1 Nov 2021 12:27:06 -0500
-From:   Corey Minyard <minyard@acm.org>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Pengutronix Kernel Team <kernel@pengutronix.de>,
-        linux-i2c@vger.kernel.org,
-        Andrew Manley <andrew.manley@sealingtech.com>,
-        linux-kernel@vger.kernel.org, Corey Minyard <cminyard@mvista.com>
-Subject: Re: [PATCH 1/3] i2c:imx: Add timer for handling the stop condition
-Message-ID: <20211101172706.GC4698@minyard.net>
-Reply-To: minyard@acm.org
-References: <20211005003216.2670632-1-minyard@acm.org>
- <20211005003216.2670632-2-minyard@acm.org>
+        Mon, 1 Nov 2021 13:30:58 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58DCCC061714;
+        Mon,  1 Nov 2021 10:28:25 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0cfa004489ab9813dd6ac7.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:fa00:4489:ab98:13dd:6ac7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 47B241EC03AD;
+        Mon,  1 Nov 2021 18:28:23 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1635787703;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=eYaoRCUmJyiH2GvVbQB2ZVepH4soF139tueZyPA8kuY=;
+        b=Uzmi9atMX4XAf4R5X939yMYVD5ZZO8B2Gvu82M62QHF8Sg5TyqnySC4UlChuGL/VJZkKI3
+        lX5KR19nifz848L8EGhwZKs3smTEPx+h4J/AhDRVKraLcTTgD4RZiciJlpgIdRVz0Md1n1
+        SZkyIIELqDZLuBxtEpjxFOBPJeH3kpQ=
+Date:   Mon, 1 Nov 2021 18:28:18 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Naveen Krishna Chatradhi <nchatrad@amd.com>
+Cc:     linux-edac@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, mingo@redhat.com, mchehab@kernel.org,
+        yazen.ghannam@amd.com, Muralidhara M K <muralimk@amd.com>
+Subject: Re: [PATCH v6 1/5] x86/amd_nb: Add support for northbridges on
+ Aldebaran
+Message-ID: <YYAjssgwjBw/vkf0@zn.tnic>
+References: <20211028130106.15701-1-nchatrad@amd.com>
+ <20211028130106.15701-2-nchatrad@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211005003216.2670632-2-minyard@acm.org>
+In-Reply-To: <20211028130106.15701-2-nchatrad@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 07:32:14PM -0500, minyard@acm.org wrote:
-> From: Corey Minyard <cminyard@mvista.com>
-
-Any comments for this patch series?
-
--corey
-
-> 
-> Most IMX I2C interfaces don't generate an interrupt on a stop condition,
-> so it won't generate a timely stop event on a slave mode transfer.
-> Some users, like IPMB, need a timely stop event to work properly.
-> 
-> So, add a timer and add the proper handling to generate a stop event in
-> slave mode if the interface goes idle.
-> 
-> Signed-off-by: Corey Minyard <minyard@acm.org>
-> Tested-by: Andrew Manley <andrew.manley@sealingtech.com>
-> Reviewed-by: Andrew Manley <andrew.manley@sealingtech.com>
-> ---
->  drivers/i2c/busses/i2c-imx.c | 78 +++++++++++++++++++++++++++---------
->  1 file changed, 59 insertions(+), 19 deletions(-)
-> 
-> diff --git a/drivers/i2c/busses/i2c-imx.c b/drivers/i2c/busses/i2c-imx.c
-> index 3576b63a6c03..97369fe48b30 100644
-> --- a/drivers/i2c/busses/i2c-imx.c
-> +++ b/drivers/i2c/busses/i2c-imx.c
-> @@ -37,6 +37,8 @@
->  #include <linux/io.h>
->  #include <linux/iopoll.h>
->  #include <linux/kernel.h>
-> +#include <linux/spinlock.h>
-> +#include <linux/timer.h>
->  #include <linux/module.h>
->  #include <linux/of.h>
->  #include <linux/of_device.h>
-> @@ -210,6 +212,10 @@ struct imx_i2c_struct {
->  	struct imx_i2c_dma	*dma;
->  	struct i2c_client	*slave;
->  	enum i2c_slave_event last_slave_event;
+On Thu, Oct 28, 2021 at 06:31:02PM +0530, Naveen Krishna Chatradhi wrote:
+> +/* GPU Data Fabric ID Device 24 Function 1 */
+> +#define PCI_DEVICE_ID_AMD_ALDEBARAN_DF_F1 0x14d1
 > +
-> +	/* For checking slave events. */
-> +	spinlock_t	  slave_lock;
-> +	struct timer_list slave_timer;
->  };
->  
->  static const struct imx_i2c_hwdata imx1_i2c_hwdata = {
-> @@ -680,7 +686,7 @@ static void i2c_imx_slave_event(struct imx_i2c_struct *i2c_imx,
->  
->  static void i2c_imx_slave_finish_op(struct imx_i2c_struct *i2c_imx)
->  {
-> -	u8 val;
-> +	u8 val = 0;
->  
->  	while (i2c_imx->last_slave_event != I2C_SLAVE_STOP) {
->  		switch (i2c_imx->last_slave_event) {
-> @@ -701,10 +707,11 @@ static void i2c_imx_slave_finish_op(struct imx_i2c_struct *i2c_imx)
->  	}
->  }
->  
-> -static irqreturn_t i2c_imx_slave_isr(struct imx_i2c_struct *i2c_imx,
-> -				     unsigned int status, unsigned int ctl)
-> +/* Returns true if the timer should be restarted, false if not. */
-> +static irqreturn_t i2c_imx_slave_handle(struct imx_i2c_struct *i2c_imx,
-> +					unsigned int status, unsigned int ctl)
->  {
-> -	u8 value;
-> +	u8 value = 0;
->  
->  	if (status & I2SR_IAL) { /* Arbitration lost */
->  		i2c_imx_clear_irq(i2c_imx, I2SR_IAL);
-> @@ -712,6 +719,16 @@ static irqreturn_t i2c_imx_slave_isr(struct imx_i2c_struct *i2c_imx,
->  			return IRQ_HANDLED;
->  	}
->  
-> +	if (!(status & I2SR_IBB)) {
-> +		/* No master on the bus, that could mean a stop condition. */
-> +		i2c_imx_slave_finish_op(i2c_imx);
-> +		return IRQ_HANDLED;
+> +/* DF18xF1 registers on Aldebaran GPU */
+> +#define REG_LOCAL_NODE_TYPE_MAP		0x144
+> +#define REG_RMT_NODE_TYPE_MAP		0x148
+
+Move those defines up, along with the rest of them. While at it, you can
+align them all vertically.
+
+> +
+> +/*
+> + * Newer AMD CPUs and GPUs whose data fabrics can be connected via custom xGMI
+
+"Newer" is a commit message type of adjective and doesn't belong in
+permanent comments because when years pass, they won't be "newer"
+anymore. IOW, you can simply drop it here.
+
+> + * links, comes with registers to gather local and remote node type map info.
+
+"come"
+
+> + *
+> + * "Local Node Type" refers to nodes with the same type as that from which the
+> + * register is read, and "Remote Node Type" refers to nodes with a different type.
+
+This sure sounds weird.
+
+With my simplistic thinking I'd assume "local" is the CPU and "remote"
+is the GPU...
+
+> + * This function, reads the registers from GPU DF function 1.
+> + * Hence, local nodes are GPU and remote nodes are CPUs.
+> + */
+> +static int amd_get_node_map(void)
+> +{
+> +	struct amd_node_map *nodemap;
+> +	struct pci_dev *pdev;
+> +	u32 tmp;
+> +
+> +	pdev = pci_get_device(PCI_VENDOR_ID_AMD,
+> +			      PCI_DEVICE_ID_AMD_ALDEBARAN_DF_F1, NULL);
+> +	if (!pdev) {
+> +		pr_debug("DF Func1 PCI device not found on this node.\n");
+> +		return -ENODEV;
 > +	}
 > +
-> +	if (!(status & I2SR_ICF))
-> +		/* Data transfer still in progress, ignore this. */
-> +		goto out;
+> +	nodemap = kmalloc(sizeof(*nodemap), GFP_KERNEL);
+
+You allocate a whopping 4 bytes? Just do
+
+	struct amd_node_map nodemap;
+
+in the nb info descriptor.
+
+I still need to see whether those node maps and functions you're adding
+and exporting even make sense but that will happen later.
+
+> +	if (!nodemap)
+> +		return -ENOMEM;
 > +
->  	if (status & I2SR_IAAS) { /* Addressed as a slave */
->  		i2c_imx_slave_finish_op(i2c_imx);
->  		if (status & I2SR_SRW) { /* Master wants to read from us*/
-> @@ -737,16 +754,9 @@ static irqreturn_t i2c_imx_slave_isr(struct imx_i2c_struct *i2c_imx,
->  			imx_i2c_read_reg(i2c_imx, IMX_I2C_I2DR);
->  		}
->  	} else if (!(ctl & I2CR_MTX)) { /* Receive mode */
-> -		if (status & I2SR_IBB) { /* No STOP signal detected */
-> -			value = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2DR);
-> -			i2c_imx_slave_event(i2c_imx,
-> -					    I2C_SLAVE_WRITE_RECEIVED, &value);
-> -		} else { /* STOP signal is detected */
-> -			dev_dbg(&i2c_imx->adapter.dev,
-> -				"STOP signal detected");
-> -			i2c_imx_slave_event(i2c_imx,
-> -					    I2C_SLAVE_STOP, &value);
-> -		}
-> +		value = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2DR);
-> +		i2c_imx_slave_event(i2c_imx,
-> +				    I2C_SLAVE_WRITE_RECEIVED, &value);
->  	} else if (!(status & I2SR_RXAK)) { /* Transmit mode received ACK */
->  		ctl |= I2CR_MTX;
->  		imx_i2c_write_reg(ctl, i2c_imx, IMX_I2C_I2CR);
-> @@ -755,15 +765,32 @@ static irqreturn_t i2c_imx_slave_isr(struct imx_i2c_struct *i2c_imx,
->  				    I2C_SLAVE_READ_PROCESSED, &value);
->  
->  		imx_i2c_write_reg(value, i2c_imx, IMX_I2C_I2DR);
-> -	} else { /* Transmit mode received NAK */
-> +	} else { /* Transmit mode received NAK, operation is done */
->  		ctl &= ~I2CR_MTX;
->  		imx_i2c_write_reg(ctl, i2c_imx, IMX_I2C_I2CR);
->  		imx_i2c_read_reg(i2c_imx, IMX_I2C_I2DR);
-> +		i2c_imx_slave_finish_op(i2c_imx);
-> +		return IRQ_HANDLED;
->  	}
->  
-> +out:
-> +	mod_timer(&i2c_imx->slave_timer, jiffies + 1);
->  	return IRQ_HANDLED;
->  }
->  
-> +static void i2c_imx_slave_timeout(struct timer_list *t)
-> +{
-> +	struct imx_i2c_struct *i2c_imx = from_timer(i2c_imx, t, slave_timer);
-> +	unsigned int ctl, status;
-> +	unsigned long flags;
+> +	pci_read_config_dword(pdev, REG_LOCAL_NODE_TYPE_MAP, &tmp);
+
+Check retval.
+
+> +	nodemap->gpu_node_start_id = tmp & 0xFFF;
 > +
-> +	spin_lock_irqsave(&i2c_imx->slave_lock, flags);
-> +	status = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2SR);
-> +	ctl = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2CR);
-> +	i2c_imx_slave_handle(i2c_imx, status, ctl);
-> +	spin_unlock_irqrestore(&i2c_imx->slave_lock, flags);
+> +	pci_read_config_dword(pdev, REG_RMT_NODE_TYPE_MAP, &tmp);
+
+Ditto.
+
+> +	nodemap->cpu_node_count = tmp >> 16 & 0xFFF;
+> +
+> +	amd_northbridges.nodemap = nodemap;
+> +	return 0;
 > +}
 > +
->  static void i2c_imx_slave_init(struct imx_i2c_struct *i2c_imx)
+>  static struct pci_dev *next_northbridge(struct pci_dev *dev,
+>  					const struct pci_device_id *ids)
 >  {
->  	int temp;
-> @@ -843,7 +870,9 @@ static irqreturn_t i2c_imx_isr(int irq, void *dev_id)
->  {
->  	struct imx_i2c_struct *i2c_imx = dev_id;
->  	unsigned int ctl, status;
-> +	unsigned long flags;
->  
-> +	spin_lock_irqsave(&i2c_imx->slave_lock, flags);
->  	status = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2SR);
->  	ctl = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2CR);
->  
-> @@ -851,14 +880,20 @@ static irqreturn_t i2c_imx_isr(int irq, void *dev_id)
->  		i2c_imx_clear_irq(i2c_imx, I2SR_IIF);
->  		if (i2c_imx->slave) {
->  			if (!(ctl & I2CR_MSTA)) {
-> -				return i2c_imx_slave_isr(i2c_imx, status, ctl);
-> -			} else if (i2c_imx->last_slave_event !=
-> -				   I2C_SLAVE_STOP) {
-> -				i2c_imx_slave_finish_op(i2c_imx);
-> +				irqreturn_t ret;
-> +
-> +				ret = i2c_imx_slave_handle(i2c_imx,
-> +							   status, ctl);
-> +				spin_unlock_irqrestore(&i2c_imx->slave_lock,
-> +						       flags);
-> +				return ret;
->  			}
-> +			i2c_imx_slave_finish_op(i2c_imx);
->  		}
-> +		spin_unlock_irqrestore(&i2c_imx->slave_lock, flags);
->  		return i2c_imx_master_isr(i2c_imx, status);
->  	}
-> +	spin_unlock_irqrestore(&i2c_imx->slave_lock, flags);
->  
->  	return IRQ_NONE;
+> @@ -230,6 +297,27 @@ int amd_df_indirect_read(u16 node, u8 func, u16 reg, u8 instance_id, u32 *lo)
 >  }
-> @@ -1378,6 +1413,9 @@ static int i2c_imx_probe(struct platform_device *pdev)
->  	if (!i2c_imx)
->  		return -ENOMEM;
+>  EXPORT_SYMBOL_GPL(amd_df_indirect_read);
 >  
-> +	spin_lock_init(&i2c_imx->slave_lock);
-> +	timer_setup(&i2c_imx->slave_timer, i2c_imx_slave_timeout, 0);
+> +struct pci_dev *get_root_devs(struct pci_dev *root,
+
+static
+
+> +			      const struct pci_device_id *root_ids,
+> +			      u16 roots_per_misc)
+> +{
+> +	u16 j;
 > +
->  	match = device_get_match_data(&pdev->dev);
->  	if (match)
->  		i2c_imx->hwdata = match;
-> @@ -1491,6 +1529,8 @@ static int i2c_imx_remove(struct platform_device *pdev)
->  	if (ret < 0)
->  		return ret;
+> +	/*
+> +	 * If there are more PCI root devices than data fabric/
+> +	 * system management network interfaces, then the (N)
+> +	 * PCI roots per DF/SMN interface are functionally the
+> +	 * same (for DF/SMN access) and N-1 are redundant.  N-1
+> +	 * PCI roots should be skipped per DF/SMN interface so
+> +	 * the following DF/SMN interfaces get mapped to
+> +	 * correct PCI roots.
+> +	 */
+> +	for (j = 0; j < roots_per_misc; j++)
+> +		root = next_northbridge(root, root_ids);
+> +
+> +	return root;
+> +}
+> +
+>  int amd_cache_northbridges(void)
+>  {
+>  	const struct pci_device_id *misc_ids = amd_nb_misc_ids;
+> @@ -237,10 +325,10 @@ int amd_cache_northbridges(void)
+>  	const struct pci_device_id *root_ids = amd_root_ids;
+>  	struct pci_dev *root, *misc, *link;
+>  	struct amd_northbridge *nb;
+> -	u16 roots_per_misc = 0;
+> -	u16 misc_count = 0;
+> -	u16 root_count = 0;
+> -	u16 i, j;
+> +	u16 roots_per_misc = 0, gpu_roots_per_misc = 0;
+> +	u16 misc_count = 0, gpu_misc_count = 0;
+> +	u16 root_count = 0, gpu_root_count = 0;
+> +	u16 i;
 >  
-> +	del_timer_sync(&i2c_imx->slave_timer);
+>  	if (amd_northbridges.num)
+>  		return 0;
+> @@ -252,15 +340,23 @@ int amd_cache_northbridges(void)
+>  	}
+>  
+>  	misc = NULL;
+> -	while ((misc = next_northbridge(misc, misc_ids)) != NULL)
+> -		misc_count++;
+> +	while ((misc = next_northbridge(misc, misc_ids)) != NULL) {
+
+Just remove that redundant "!= NULL" at the end, while at it.
+
+> +		if (misc->device == PCI_DEVICE_ID_AMD_ALDEBARAN_DF_F3)
+> +			gpu_misc_count++;
+> +		else
+> +			misc_count++;
+> +	}
+>  
+>  	if (!misc_count)
+>  		return -ENODEV;
+>  
+>  	root = NULL;
+> -	while ((root = next_northbridge(root, root_ids)) != NULL)
+> -		root_count++;
+> +	while ((root = next_northbridge(root, root_ids)) != NULL) {
+> +		if (root->device == PCI_DEVICE_ID_AMD_ALDEBARAN_ROOT)
+> +			gpu_root_count++;
+> +		else
+> +			root_count++;
+> +	}
+>  
+>  	if (root_count) {
+>  		roots_per_misc = root_count / misc_count;
+> @@ -275,33 +371,37 @@ int amd_cache_northbridges(void)
+>  		}
+>  	}
+>  
+> -	nb = kcalloc(misc_count, sizeof(struct amd_northbridge), GFP_KERNEL);
+> +	/*
+> +	 * The number of miscs, roots and roots_per_misc might vary on different
+> +	 * nodes of a heterogeneous system.
+> +	 * Calculate roots_per_misc accordingly in order to skip the redundant
+> +	 * roots and map the DF/SMN interfaces to correct PCI roots.
+> +	 */
+
+Reflow that comment so that it is a block.
+
+> +	if (gpu_root_count && gpu_misc_count) {
+> +		int ret = amd_get_node_map();
 > +
->  	/* remove adapter */
->  	dev_dbg(&i2c_imx->adapter.dev, "adapter removed\n");
->  	i2c_del_adapter(&i2c_imx->adapter);
-> -- 
-> 2.25.1
-> 
+
+^ Superfluous newline.
+
+> +		if (ret)
+> +			return ret;
+> +
+> +		gpu_roots_per_misc = gpu_root_count / gpu_misc_count;
+> +	}
+> +
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
