@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1805441784
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:36:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E30F04416FB
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:30:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233467AbhKAJhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:37:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43562 "EHLO mail.kernel.org"
+        id S233170AbhKAJbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:31:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37076 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233593AbhKAJdo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:33:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9DB106126A;
-        Mon,  1 Nov 2021 09:25:04 +0000 (UTC)
+        id S233030AbhKAJ2Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:28:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 472CC6120A;
+        Mon,  1 Nov 2021 09:22:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758705;
-        bh=1L6HOAZc3NguJR8Z1xZ9cpvltmPs7kriAtdzSkzbNdA=;
+        s=korg; t=1635758578;
+        bh=Wb/JvmoAGG8E9nxzREEhiKjrhZUdNGhZfOZmFE5VbPI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a3x39UYkuWdYRI0yygXKFu9x4cwtgc17CiFzNDKmmZGCz/hbaMOsfVcHrqEsnffvg
-         dekrhwndt3+6GQtrd4KexS4lFCZXNfYa+G4k93c2lqQUoWyYMRBgiqPWsb9ghq9Bf1
-         YdGV1Iefrv7UqQn4k0PeD5Jtt9PH4HQ9KsqRqJ6c=
+        b=uHWvTI+AoTvJheijbMWxWG4CvSKiBeJgYbcYp/xtI1azIL/6z7ebDQ1DbIeVASwDn
+         mdbzOZx+ZTVGD3PB59QLRiNiyDjvn2GqUP+oY2HgkSEvokyJwYKG/yMtqyaQpxpzyn
+         lTBhJy5eIcsVbtl7ggW9BXift8DKnBL37c5D+4HE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jaehoon Chung <jh80.chung@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Christian Hewitt <christianshewitt@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 5.10 23/77] mmc: dw_mmc: exynos: fix the finding clock sample value
+        Eric Dumazet <edumazet@google.com>, Keyu Man <kman001@ucr.edu>,
+        Willy Tarreau <w@1wt.eu>,
+        "David S. Miller" <davem@davemloft.net>,
+        Ovidiu Panait <ovidiu.panait@windriver.com>
+Subject: [PATCH 5.4 07/51] ipv4: use siphash instead of Jenkins in fnhe_hashfun()
 Date:   Mon,  1 Nov 2021 10:17:11 +0100
-Message-Id: <20211101082516.790385948@linuxfoundation.org>
+Message-Id: <20211101082501.770829189@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082511.254155853@linuxfoundation.org>
-References: <20211101082511.254155853@linuxfoundation.org>
+In-Reply-To: <20211101082500.203657870@linuxfoundation.org>
+References: <20211101082500.203657870@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,55 +41,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jaehoon Chung <jh80.chung@samsung.com>
+From: Eric Dumazet <edumazet@google.com>
 
-commit 697542bceae51f7620af333b065dd09d213629fb upstream.
+commit 6457378fe796815c973f631a1904e147d6ee33b1 upstream.
 
-Even though there are candiates value if can't find best value, it's
-returned -EIO. It's not proper behavior.
-If there is not best value, use a first candiate value to work eMMC.
+A group of security researchers brought to our attention
+the weakness of hash function used in fnhe_hashfun().
 
-Signed-off-by: Jaehoon Chung <jh80.chung@samsung.com>
-Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Tested-by: Christian Hewitt <christianshewitt@gmail.com>
-Cc: stable@vger.kernel.org
-Fixes: c537a1c5ff63 ("mmc: dw_mmc: exynos: add variable delay tuning sequence")
-Link: https://lore.kernel.org/r/20211022082106.1557-1-jh80.chung@samsung.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Lets use siphash instead of Jenkins Hash, to considerably
+reduce security risks.
+
+Also remove the inline keyword, this really is distracting.
+
+Fixes: d546c621542d ("ipv4: harden fnhe_hashfun()")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Reported-by: Keyu Man <kman001@ucr.edu>
+Cc: Willy Tarreau <w@1wt.eu>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+[OP: adjusted context for 5.4 stable]
+Signed-off-by: Ovidiu Panait <ovidiu.panait@windriver.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/mmc/host/dw_mmc-exynos.c |   14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ net/ipv4/route.c |   12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
---- a/drivers/mmc/host/dw_mmc-exynos.c
-+++ b/drivers/mmc/host/dw_mmc-exynos.c
-@@ -464,6 +464,18 @@ static s8 dw_mci_exynos_get_best_clksmpl
- 		}
- 	}
- 
-+	/*
-+	 * If there is no cadiates value, then it needs to return -EIO.
-+	 * If there are candiates values and don't find bset clk sample value,
-+	 * then use a first candiates clock sample value.
-+	 */
-+	for (i = 0; i < iter; i++) {
-+		__c = ror8(candiates, i);
-+		if ((__c & 0x1) == 0x1) {
-+			loc = i;
-+			goto out;
-+		}
-+	}
- out:
- 	return loc;
+--- a/net/ipv4/route.c
++++ b/net/ipv4/route.c
+@@ -631,14 +631,14 @@ static void fnhe_remove_oldest(struct fn
+ 	kfree_rcu(oldest, rcu);
  }
-@@ -494,6 +506,8 @@ static int dw_mci_exynos_execute_tuning(
- 		priv->tuned_sample = found;
- 	} else {
- 		ret = -EIO;
-+		dev_warn(&mmc->class_dev,
-+			"There is no candiates value about clksmpl!\n");
- 	}
  
- 	return ret;
+-static inline u32 fnhe_hashfun(__be32 daddr)
++static u32 fnhe_hashfun(__be32 daddr)
+ {
+-	static u32 fnhe_hashrnd __read_mostly;
+-	u32 hval;
++	static siphash_key_t fnhe_hash_key __read_mostly;
++	u64 hval;
+ 
+-	net_get_random_once(&fnhe_hashrnd, sizeof(fnhe_hashrnd));
+-	hval = jhash_1word((__force u32) daddr, fnhe_hashrnd);
+-	return hash_32(hval, FNHE_HASH_SHIFT);
++	net_get_random_once(&fnhe_hash_key, sizeof(fnhe_hash_key));
++	hval = siphash_1u32((__force u32)daddr, &fnhe_hash_key);
++	return hash_64(hval, FNHE_HASH_SHIFT);
+ }
+ 
+ static void fill_route_from_fnhe(struct rtable *rt, struct fib_nh_exception *fnhe)
 
 
