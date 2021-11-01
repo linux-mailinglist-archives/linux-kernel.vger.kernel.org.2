@@ -2,95 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 987DF441C7F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 15:19:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6FA4441C7D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 15:18:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232191AbhKAOVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 10:21:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42786 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232174AbhKAOVk (ORCPT
+        id S232124AbhKAOV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 10:21:28 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:24372 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232003AbhKAOVZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 10:21:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635776346;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=grnEDNR+DhcQw8Yy4DrErkca3Qi7jQ/4xAssJ+EIqu0=;
-        b=iMrTURznvbua5jdOVZfRjG5dK7dNO6HG3emLYRi0bscbq6z2No9804dI8GJWNCr3r6FbUw
-        eNhRe22j6I5FSLmoCpIOrbpoM3Z+vWNDXbbcBrjhAhm5GaFzZGFcUUBRhloVb3tuqIEAPm
-        TXNGk38D5ahM8T1zFmmWGfYFOWlXyjw=
-Received: from mail-yb1-f199.google.com (mail-yb1-f199.google.com
- [209.85.219.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-235-B_jB1YEFPm2vnzPDOKVOog-1; Mon, 01 Nov 2021 10:19:04 -0400
-X-MC-Unique: B_jB1YEFPm2vnzPDOKVOog-1
-Received: by mail-yb1-f199.google.com with SMTP id t24-20020a252d18000000b005c225ae9e16so8143367ybt.15
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 07:19:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=grnEDNR+DhcQw8Yy4DrErkca3Qi7jQ/4xAssJ+EIqu0=;
-        b=bH/1dZkzSieCTFEWYTfv1TwCXj8hkP2d0KfLvaBpqGKuDq67Z9D7nASV7YlFc1NPhs
-         XczP2h745oIRGKIi03sby8GRYsh6S+Blkb+Ihxu+t1V+qWy3EOtDFwstESZU6w+cX4ai
-         1nzDGMCVwrvrp7OYDf9eQvMcbVYJK467owMPVcHXz81oBVoZ8T+lalvKp32q/nXLKT9n
-         qQpymKHhhlTIAiW6R7TQ5VNhqrrBAFqMVpeHQc8rAVDG/dEZoeERpFODmoSriryfQDI/
-         Z55vp4XHCAqE2bNcTg35zzPnXVlz5Zz0xlmv9Pz3JvqJqd1CZi1K8CUvX9nmhlzJAEKb
-         eo/g==
-X-Gm-Message-State: AOAM531y4eofa7W23YpxtIFuoyPdPhX4tfDk78EZhay1mrWC20izNUSv
-        NCPSZAVLm0h23wwSjdIZUY8358lNq2MTI6Up89VxmE85IUKUevIaa9jj3Fj99eifi7b8UWie/pd
-        xzOz9FeQJgngbgSN5E5e55My19D0o1CDmMPsgjtJu
-X-Received: by 2002:a25:8b90:: with SMTP id j16mr32930284ybl.210.1635776344394;
-        Mon, 01 Nov 2021 07:19:04 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzrV8UpfpZC0DvRRXKkp6XeEMkMtvN2gjHGneF97Z4WSzDAEg0KfICJKWzvGacEgOXgwfCH2pd1HYDLs94DeM0=
-X-Received: by 2002:a25:8b90:: with SMTP id j16mr32930261ybl.210.1635776344239;
- Mon, 01 Nov 2021 07:19:04 -0700 (PDT)
+        Mon, 1 Nov 2021 10:21:25 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1635776332; h=Date: Message-ID: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=qYmFgf5ucD4zcEhg7qIGyKjrg+6uL6LqCjm6lIDN7zI=;
+ b=TmR44buvOwZ0qy8UwVzZWlVI/pCYlYRkgf9LEVJDUip0tSgxkoHX65Otcib2lJYQTiDtJczh
+ NGPMQf1gELWDvd++FvPuiysnXJhzJq7kk/edgmGQrja1erKyyDwp2OQ1KiVcrlwxvfsrumHM
+ HPtU2LICfHRqGTsEjiSw/cl3E/0=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 617ff74baeb2390556240ea1 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 01 Nov 2021 14:18:51
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8DD07C43618; Mon,  1 Nov 2021 14:18:51 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.5 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B182CC4338F;
+        Mon,  1 Nov 2021 14:18:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org B182CC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20211029215516.801593-1-cmirabil@redhat.com> <CANiq72=cp+LTQhGMMmtWHLAk+AE81HOVB+2f06kQ9DXtBz+NyA@mail.gmail.com>
-In-Reply-To: <CANiq72=cp+LTQhGMMmtWHLAk+AE81HOVB+2f06kQ9DXtBz+NyA@mail.gmail.com>
-From:   Joel Savitz <jsavitz@redhat.com>
-Date:   Mon, 1 Nov 2021 10:18:48 -0400
-Message-ID: <CAL1p7m6ernt3fHMkLRePEWo5aqfb_6N+upt4a9GQPdzSrrpUHQ@mail.gmail.com>
-Subject: Re: [PATCH 0/5] Raspberry Pi Sense HAT driver
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     Charles Mirabile <cmirabil@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Serge Schneider <serge@raspberrypi.org>,
-        Stefan Wahren <stefan.wahren@i2se.com>,
-        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
-        linux-rpi-kernel@lists.infradead.org,
-        Fedora RPi <fedora-rpi@googlegroups.com>,
-        Mwesigwa Guma <mguma@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH v2 1/3] wcn36xx: add debug prints for sw_scan
+ start/complete
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20211027170306.555535-2-benl@squareup.com>
+References: <20211027170306.555535-2-benl@squareup.com>
+To:     Benjamin Li <benl@squareup.com>
+Cc:     Joseph Gates <jgates@squareup.com>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        linux-arm-msm@vger.kernel.org, Benjamin Li <benl@squareup.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "John W. Linville" <linville@tuxdriver.com>,
+        Eugene Krasnikov <k.eugene.e@gmail.com>,
+        wcn36xx@lists.infradead.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
+Message-ID: <163577632563.7461.17354156589296346576.kvalo@codeaurora.org>
+Date:   Mon,  1 Nov 2021 14:18:51 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the suggestion, we weren't sure what the right "Xxx-by:"
-was for this circumstance so we will use this in subsequent patchsets.
+Benjamin Li <benl@squareup.com> wrote:
 
-Best,
-Joel Savitz
+> Add some MAC debug prints for more easily demarcating a software scan
+> when parsing logs.
+> 
+> Signed-off-by: Benjamin Li <benl@squareup.com>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-Best,
-Joel Savitz
+3 patches applied to ath-next branch of ath.git, thanks.
 
+df008741dd62 wcn36xx: add debug prints for sw_scan start/complete
+f02e1cc2a846 wcn36xx: implement flush op to speed up connected scan
+8f1ba8b0ee26 wcn36xx: ensure pairing of init_scan/finish_scan and start_scan/end_scan
 
-On Sun, Oct 31, 2021 at 12:39 PM Miguel Ojeda
-<miguel.ojeda.sandonis@gmail.com> wrote:
->
-> On Fri, Oct 29, 2021 at 11:58 PM Charles Mirabile <cmirabil@redhat.com> wrote:
-> >
-> > Signed-off-by: Charles Mirabile <cmirabil@redhat.com>
-> > Signed-off-by: Mwesigwa Guma <mguma@redhat.com>
-> > Signed-off-by: Joel Savitz <jsavitz@redhat.com>
->
-> Please note that you need to write `Co-developed-by: ...` (see
-> `Documentation/process/submitting-patches.rst`); otherwise, it looks
-> as if this was sent through several layers.
->
-> Cheers,
-> Miguel
->
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20211027170306.555535-2-benl@squareup.com/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
