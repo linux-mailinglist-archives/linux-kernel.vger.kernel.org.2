@@ -2,98 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B700E441D1F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 16:05:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3F63441D24
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 16:07:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232461AbhKAPIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 11:08:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231304AbhKAPIW (ORCPT
+        id S232486AbhKAPJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 11:09:42 -0400
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:57485 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231304AbhKAPJl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 11:08:22 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CD83C061714;
-        Mon,  1 Nov 2021 08:05:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=KEjSiPeQus1e5C5m4glvQm9hY/OA1aKif95A7YiVQtI=; b=2LGb6RpYGmcP87QrowtsGlb1CG
-        MlNNkNVp7zrosbZMXSGbqsff+zVFddtxYJ0AwM45FBd0nEfPgeMcoZerqRhfkQKcsmvSqBtVRXYTI
-        9F4kFpo3TJ1bR9YTKfIQ89iDY7ZYn9EX+qCOq8wvNergjFgNicLNKOIRjnxS3M1RU/uMtMIM5G3yi
-        wvbeBtSXV214nJSnbJ9eHPHivKJDfjo7kipr+RUoApfqqu5X9Ng5AmLIhYmKYuABk3KeXQAlIYccf
-        dufg8fg4bQWGA5deqm/TxMoiq49lywFjfdzog9V3YHefDkCBn0RHPFbCtYOi2/lAlx0VTEM3u4rPX
-        473BS/HQ==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mhYse-00GdmR-PV; Mon, 01 Nov 2021 15:05:48 +0000
-Subject: Re: Need help in debugging "memory leak in em28xx_init_dev"
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Dongliang Mu <mudongliangabcd@gmail.com>
-Cc:     Pavel Skripkin <paskripkin@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>
-References: <CAD-N9QXsUcczurqq9LdaVjXFZMBSbStynwFJyu0UayDazGe=nw@mail.gmail.com>
- <55f04cb1-18ac-085b-3d35-7a01716fbcbe@gmail.com>
- <CAD-N9QVN7cepUpRu3d-xtr1L3DG90-nLS4gmkjerDZO21F_ejQ@mail.gmail.com>
- <f622f569-25d5-f38e-e9fb-7f07e12c4b7e@gmail.com>
- <CAD-N9QWeGOZdnuRuHVVNzZHWeP3eSHg=tsm+Qn3tqGqACSNbhg@mail.gmail.com>
- <ffbaeb72-0f76-fb1e-dde5-6e6bdcce1301@gmail.com>
- <CAD-N9QWQkivwR0mWwiaW_pLE6J_b03x4dP8RyxbmuKYRkcRhoQ@mail.gmail.com>
- <20211101143004.GD2914@kadam>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <c0e25c48-84cc-6ad1-8312-1957f459148d@infradead.org>
-Date:   Mon, 1 Nov 2021 08:05:47 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Mon, 1 Nov 2021 11:09:41 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id DCC2C5C0186;
+        Mon,  1 Nov 2021 11:07:06 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Mon, 01 Nov 2021 11:07:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
+         h=from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm2; bh=oYK4pXojD6J5Wa+UyhlJtj9Yzf
+        aW2MYHVOQZX050zE4=; b=qvALMwGokjB1UMeCdtXaB+Do3g+AJFzbjc20FXLw0L
+        x9VTLmRI+lyvF7AzXPxVQSzqf6mzCrrGtTaZIkpuc6Z3PhPtEo5SSSV+jePiQ9aT
+        Xw5+Cp2JvHeK8aD7Gh7KDkL4VKji43skg0SV4ykU/U626e/3inidtCnJ1M0mOwpk
+        LEXYvT+IU7BZiUWvgoUHnwgkjeGCYS/eR7FnFoTojvXIQdDN9SHqxIREACeVxg2K
+        A/Cvb0oyVDQzNHJc3/VIUlSJyjSR56Z23JZQtG89WCwusQjVcR1SEROpwuJmHyU8
+        l+gzNftB6e+dEoezTO/fKOLjXG4Ok9IUAjxP0BHfiCsQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=oYK4pXojD6J5Wa+Uy
+        hlJtj9YzfaW2MYHVOQZX050zE4=; b=DZfPiYhncnIA7+dusy9AS0cBJYqXGVoMc
+        EWjtDtapSCOCtCn4AYF9mox2iB9c1rCp6XfmNWkWdd+bxtBORAJQ7DUQygqPtZcS
+        E1yV7JlUHXTq07s6/lDBSiwBneSfAxI5WTQjfZXhrLfAmFEik9y4NS738dVROd26
+        0YtbHnf0HdM/R/zdJHCo4t3JgyikhKSfw+W5AinjRHMbEBQOoeObzPjpr92pum+d
+        esLwAmTIJ98qGRJQu5t+cGPiqLQI5lKWAydtA/erODOJMvNajpQz4P1oAvG1YuvL
+        ShRcdC/uJG0tN5DCWNWRelusFjNwEENLSTaK+5D1xgjyEwKW8DBcw==
+X-ME-Sender: <xms:mgKAYdi4Ul2TTFWxPQQeS3KlkDIYAEPn5pZh3lY-cFghrXX1Y0awug>
+    <xme:mgKAYSDgYA21xlYsJgjHTcwym569LxOU7Jeq8gH_Ps2w8GHbMQpU2fvgoG0f7aYuA
+    DZVRO7TxzPx7mDX6aA>
+X-ME-Received: <xmr:mgKAYdGFfBBMAL9eF85xsSb49Ho9a3YUqIwkaNf3ZnBpL9kbOGFk0dozC2aiVAdKmHtc6v5cLceA8ajjBmMLCzWDpZ7LBhuSbyueszc6ZtgF_r5UtbfY0H8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvdehvddgjedtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefuvhgvnhcurfgv
+    thgvrhcuoehsvhgvnhesshhvvghnphgvthgvrhdruggvvheqnecuggftrfgrthhtvghrnh
+    epuefgleekvddtjefffeejheevleefveekgfduudfhgefhfeegtdehveejfefffffgnecu
+    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepshhvvghnse
+    hsvhgvnhhpvghtvghrrdguvghv
+X-ME-Proxy: <xmx:mgKAYSQszsRQKeO7haUaLn1U_PBa9t3DsQo3qSubQZD0Xh_vPrZBSg>
+    <xmx:mgKAYazn5CxUQf1_biKoF8XPEVw-UbXEA91qB5o8kgJcJ3mbYEWTEg>
+    <xmx:mgKAYY7IEQFYrDEMQ86RAtljO-Bob28akIPeUhlBtw-6lH_jbIwVdA>
+    <xmx:mgKAYVyyQqglLnJj0nGqFJy_IbCj2XBufLcPIPPa18dABXA1ZDGUYg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 1 Nov 2021 11:07:04 -0400 (EDT)
+From:   Sven Peter <sven@svenpeter.dev>
+To:     Hector Martin <marcan@marcan.st>, Sven Peter <sven@svenpeter.dev>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Joey Gouly <joey.gouly@arm.com>
+Cc:     Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Marc Zyngier <maz@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] pinctrl: apple: Always return valid type in apple_gpio_irq_type
+Date:   Mon,  1 Nov 2021 16:06:40 +0100
+Message-Id: <20211101150640.46553-1-sven@svenpeter.dev>
+X-Mailer: git-send-email 2.30.1 (Apple Git-130)
 MIME-Version: 1.0
-In-Reply-To: <20211101143004.GD2914@kadam>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/1/21 7:30 AM, Dan Carpenter wrote:
-> On Mon, Nov 01, 2021 at 05:58:56PM +0800, Dongliang Mu wrote:
->> On Mon, Nov 1, 2021 at 5:43 PM Pavel Skripkin <paskripkin@gmail.com> wrote:
->>>
->>> On 11/1/21 12:41, Dongliang Mu wrote:
->>>>> Hi, Dongliang,
->>>>>
->>>>> Did patch attached to my previous email pass syzbot's reproducer test?
->>>>> Unfortunately, I am not able to test rn :(
->>>>
->>>> Yes, it works. The memory leak does not occur anymore.
->>>>
->>>> But I am crafting another patch based on yours as there is a small
->>>> issue in the retval and I would like to make the error handling code
->>>> uniform.
->>>>
->>>
->>> Cool! Thank you for confirmation.
->>
->> Hi Pavel,
->>
->> Thanks for your advice. I have sent the patch and you are on the CC
->> list. Can you please take a look at and review my patch?
->>
-> 
-> What's the Message-ID of your patch so I can b4 it.
+apple_gpio_irq_type can possibly return -EINVAL which triggers the
+following compile error with gcc 9 because the type no longer fits
+into the mask.
 
-<20211101095539.423246-1-mudongliangabcd@gmail.com>
+  drivers/pinctrl/pinctrl-apple-gpio.c: In function 'apple_gpio_irq_set_type':
+  ././include/linux/compiler_types.h:335:38: error: call to '__compiletime_assert_289' declared with attribute error: FIELD_PREP: value too large for the field
+    335 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+        |                                      ^
+  [...]
+  drivers/pinctrl/pinctrl-apple-gpio.c:294:7: note: in expansion of macro 'FIELD_PREP'
+    294 |       FIELD_PREP(REG_GPIOx_MODE, irqtype));
+        |       ^~~~~~~~~~
 
-> This whole thread has no patches.  I don't know why I'm CC'd when the
-> only part I'm interested in is not included...  :/  Hashtag Grumble.
-> 
-> regards,
-> dan carpenter
-> 
+Fix this by making the return value always valid and instead checking
+for REG_GPIOx_IN_IRQ_OFF in apple_gpio_irq_set_type and return -EINVAL
+from there.
 
+Fixes: a0f160ffcb83 ("pinctrl: add pinctrl/GPIO driver for Apple SoCs")
+Signed-off-by: Sven Peter <sven@svenpeter.dev>
+---
+ drivers/pinctrl/pinctrl-apple-gpio.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
+diff --git a/drivers/pinctrl/pinctrl-apple-gpio.c b/drivers/pinctrl/pinctrl-apple-gpio.c
+index 0cc346bfc4c3..a7861079a650 100644
+--- a/drivers/pinctrl/pinctrl-apple-gpio.c
++++ b/drivers/pinctrl/pinctrl-apple-gpio.c
+@@ -258,7 +258,7 @@ static void apple_gpio_irq_ack(struct irq_data *data)
+ 	       pctl->base + REG_IRQ(irqgrp, data->hwirq));
+ }
+ 
+-static int apple_gpio_irq_type(unsigned int type)
++static unsigned int apple_gpio_irq_type(unsigned int type)
+ {
+ 	switch (type & IRQ_TYPE_SENSE_MASK) {
+ 	case IRQ_TYPE_EDGE_RISING:
+@@ -272,7 +272,7 @@ static int apple_gpio_irq_type(unsigned int type)
+ 	case IRQ_TYPE_LEVEL_LOW:
+ 		return REG_GPIOx_IN_IRQ_LO;
+ 	default:
+-		return -EINVAL;
++		return REG_GPIOx_IN_IRQ_OFF;
+ 	}
+ }
+ 
+@@ -288,7 +288,7 @@ static void apple_gpio_irq_unmask(struct irq_data *data)
+ {
+ 	struct apple_gpio_pinctrl *pctl =
+ 		gpiochip_get_data(irq_data_get_irq_chip_data(data));
+-	int irqtype = apple_gpio_irq_type(irqd_get_trigger_type(data));
++	unsigned int irqtype = apple_gpio_irq_type(irqd_get_trigger_type(data));
+ 
+ 	apple_gpio_set_reg(pctl, data->hwirq, REG_GPIOx_MODE,
+ 			   FIELD_PREP(REG_GPIOx_MODE, irqtype));
+@@ -313,10 +313,10 @@ static int apple_gpio_irq_set_type(struct irq_data *data,
+ {
+ 	struct apple_gpio_pinctrl *pctl =
+ 		gpiochip_get_data(irq_data_get_irq_chip_data(data));
+-	int irqtype = apple_gpio_irq_type(type);
++	unsigned int irqtype = apple_gpio_irq_type(type);
+ 
+-	if (irqtype < 0)
+-		return irqtype;
++	if (irqtype == REG_GPIOx_IN_IRQ_OFF)
++		return -EINVAL;
+ 
+ 	apple_gpio_set_reg(pctl, data->hwirq, REG_GPIOx_MODE,
+ 			   FIELD_PREP(REG_GPIOx_MODE, irqtype));
 -- 
-~Randy
+2.25.1
+
