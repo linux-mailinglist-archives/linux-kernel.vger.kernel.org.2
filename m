@@ -2,97 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CA48441A4B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 11:59:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 152A5441A51
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 12:01:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231936AbhKALCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 07:02:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230520AbhKALCQ (ORCPT
+        id S231695AbhKALD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 07:03:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25761 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230520AbhKALD0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 07:02:16 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2441C061714
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 03:59:42 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id j9so8718056pgh.1
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 03:59:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Du3RdDKeh8d/WwM1bhUDKYYDQzg7en92iJDHOWcBOyo=;
-        b=ZOPdrP9trG9iG2RXxn/odr2iVHSdmsIZMm6sKg2WEzvoH9qJpVF5Lo6TJEW/+RTrCH
-         0t4gzaB5v0+6vuXoTm6U4nMq2w8By79rxMJUfcB3gg6GZ+YkEokPM0EeNi58s4Bgb/Tm
-         UNQ4pVa43n0SR2iQcD5CcLwGHUasv2mizrAvHra1IfHABknLYmE2ZTffOjKo6cPQEZ6L
-         i6lHcjNi+EdRQAT/NnfrId5t91DTDOwBUN0Br2/rrJgbAbTbnVZTerpzNniw8eyi1rN8
-         sSjjh6/XsWYuDDVXfh1WZuSGDxCCCyAtFo+XR4izv5NEVA+1pEMsuPSaZDmgPXonFWGP
-         jM/Q==
+        Mon, 1 Nov 2021 07:03:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635764452;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=joHNzvFQfcbDTZ/dkFJGCsXdvXmYKWaiFrgOXjjG3U4=;
+        b=a+RIImCJhfrRU6s3u1RrgcLnsWVs+YoUve9q2xnn5mvwQxFBfb8t/Xxu4XecU/im9QkV8x
+        jS5CyaB+gS4oE2zBVbv/c78ZNzCuIWNFYdtBYhqqUWWDPNU7eVtU0ZyErybgbK/ts5ihhS
+        1V4iLQ9AAyAlpjosCKVcp4E7tD0ZSmk=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-316-ofC_w0iOMJW5HhDhctJvzw-1; Mon, 01 Nov 2021 07:00:51 -0400
+X-MC-Unique: ofC_w0iOMJW5HhDhctJvzw-1
+Received: by mail-ed1-f70.google.com with SMTP id g3-20020a056402424300b003e2981e1edbso674205edb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 04:00:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Du3RdDKeh8d/WwM1bhUDKYYDQzg7en92iJDHOWcBOyo=;
-        b=i0z4VckrpWCYq2Rn4yNq/I2vEEN3aGKIC/u+zt4Wk3GVhAqV7aNON6h/ng9GfvTgXM
-         3V8qPt3HT6LzIPRvq0ziYxHPP1mhv/JEXKtyP7c6I6KIy8q5NF5Z2ZZpPofNSrZYWn1z
-         MKkQeQhFKVtc3nE6aFNd2OfifNtELE2bhepccaCeDTOzei/LattqPNI8WK9ALp2A1sJY
-         75Cp/6B3ZzbAsg8nUseC1hIwmloSwyQ/iMuS3/qh3heqsO8ftVHP1WhkmdeITROJfLcu
-         NoX26GhvTRhSPdnRjMEnyjOKHuthGmDoP5fzuPucN4NmUenymARF3XUB2IIkpvfY99UE
-         65gg==
-X-Gm-Message-State: AOAM532kevsSOrH2CUzoN7VFAJactTMkRAugsBv17yX55BWrzzU205eh
-        eLKtKO/Cb2LRxd0Qa4jwjhzS+Q==
-X-Google-Smtp-Source: ABdhPJyjqamA36C/F4jzZl5mgFp20XtycHRu1lZlE+OPkr7oKWZ8pR/b6abnMjLy4KU+zz9qy+pv8w==
-X-Received: by 2002:a63:6f4c:: with SMTP id k73mr21295263pgc.61.1635764382391;
-        Mon, 01 Nov 2021 03:59:42 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([103.136.124.227])
-        by smtp.gmail.com with ESMTPSA id h18sm16015568pfh.144.2021.11.01.03.59.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 03:59:41 -0700 (PDT)
-Date:   Mon, 1 Nov 2021 18:59:36 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        James Clark <james.clark@arm.com>, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/4] coresight: etm4x: Add lock for reading virtual
- context ID comparator
-Message-ID: <20211101105936.GA352474@leoy-ThinkPad-X240s>
-References: <20211031144214.237879-1-leo.yan@linaro.org>
- <20211031144214.237879-2-leo.yan@linaro.org>
- <df07c7b0-0145-8290-b4cd-a1831f19330d@arm.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=joHNzvFQfcbDTZ/dkFJGCsXdvXmYKWaiFrgOXjjG3U4=;
+        b=JrAsJRjO0cPKb16Reix0tHSJ09BdVxaRlEFBYv2yeRyY7fd5577wSNr3L/7rXbCDbX
+         KXVsmkpd9iF7khhg9WsscFbBdtF6QhsjjEs//Ggp5tP9+rWpLQG5ClkiMzKIbBOQ1bBK
+         u0G12dRiAZ5lOV1jcyeiO+Byc5vmVFw0/8MCeHMIlW30Mt72MJ4eZiafEcQZPum+dBN6
+         PsnKqF4oTa/POrxn8FkUtH7aOybK19wp2vFGiNC8NXu4+wqSKy28uTJq4N8R/bp9W0yF
+         cfvwcM1JqTmprC57c+gCJGH6ODWeVtsMLVWNb+4BuXCjejuwZHY0c0T1i0x0aFLrBLPS
+         4GYA==
+X-Gm-Message-State: AOAM531sSc8cNLMSRdKLrsdtwjZvK5jLeKxGUr37iH8Thmdvb3+CVwH7
+        KgLF9bejbpOx/1nIIpBhxeklm/UEUR7mda7Q71aG10vy+na1EJN1LlrLU2eO9UBGgjVzG3jvbbB
+        POiP1p6BrKejRnNofpi+7AoL3
+X-Received: by 2002:a17:907:1c0a:: with SMTP id nc10mr22593178ejc.211.1635764450402;
+        Mon, 01 Nov 2021 04:00:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwsz/WHOhVGJrVLCTGkCypW0KYkc8EOI/EYIO1yZjx/IvEyS0VgbABqYAnWykZcfYTHcUOH7g==
+X-Received: by 2002:a17:907:1c0a:: with SMTP id nc10mr22593140ejc.211.1635764450202;
+        Mon, 01 Nov 2021 04:00:50 -0700 (PDT)
+Received: from [10.40.1.223] ([81.30.35.201])
+        by smtp.gmail.com with ESMTPSA id g12sm6748963ejs.39.2021.11.01.04.00.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Nov 2021 04:00:49 -0700 (PDT)
+Message-ID: <4aec04d1-0964-e4c3-2c92-f9cef395494a@redhat.com>
+Date:   Mon, 1 Nov 2021 12:00:49 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <df07c7b0-0145-8290-b4cd-a1831f19330d@arm.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v4 05/11] clk: Introduce clk-tps68470 driver
+Content-Language: en-US
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Kate Hsuan <hpa@redhat.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>
+References: <20211025094119.82967-1-hdegoede@redhat.com>
+ <20211025094119.82967-6-hdegoede@redhat.com>
+ <CAHp75VdfwA_3QK2Fo1S34rRZWHCMNzzHug4AKsRfOrKu4CU_YA@mail.gmail.com>
+ <ff8c8418-8e73-f949-3734-c0e2e109f554@redhat.com>
+ <CAHp75VfUq+DZk_u5Wsyr5nnibbe+WrYDyhvCU22=4Pog06DgHg@mail.gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <CAHp75VfUq+DZk_u5Wsyr5nnibbe+WrYDyhvCU22=4Pog06DgHg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Suzuki,
+Hi,
 
-On Mon, Nov 01, 2021 at 09:49:06AM +0000, Suzuki Kuruppassery Poulose wrote:
-> Hi Leo
+On 11/1/21 11:42, Andy Shevchenko wrote:
+> On Mon, Nov 1, 2021 at 12:27 PM Hans de Goede <hdegoede@redhat.com> wrote:
+>> On 10/25/21 13:24, Andy Shevchenko wrote:
+>>> On Mon, Oct 25, 2021 at 12:42 PM Hans de Goede <hdegoede@redhat.com> wrote:
 > 
-> On 31/10/2021 14:42, Leo Yan wrote:
-> > When read the virtual context ID comparator value via sysfs node, the
-> > driver firstly reads out the index, then reads the comparator value
-> > based on index. >
-> > This patch adds the spinlock to protect the atomicity for up two steps.
+> ...
 > 
-> minor nit: This could be :
+>>>> +       for (i = 0; i < ARRAY_SIZE(clk_freqs); i++) {
+>>>> +               diff = clk_freqs[i].freq - rate;
+>>>> +               if (diff == 0)
+>>>> +                       return i;
+>>>
+>>>> +               diff = abs(diff);
+>>>
+>>> This needs a comment why higher (lower) frequency is okay.
+>>
+>> This function is called in 2 places:
+>>
+>> 1. From tps68470_clk_round_rate(), where higher/lower clearly is ok,
+>> (see the function name) so no comment needed.
+>>
+>> 2. From tps68470_clk_set_rate() where it is NOT ok and this is
+>> enforced in the caller:
+>>
+>>         unsigned int idx = tps68470_clk_cfg_lookup(rate);
+>>
+>>         if (rate != clk_freqs[idx].freq)
+>>                 return -EINVAL;
+>>
+>> This is not easy to describe in a comment, while being obvious
+>> if someone looking at this actually looks at the callers.
 > 
-> "Updates to the values and the index are protected via the
-> spinlock. Ensure we use the same lock to read the value
-> safely"
+> Hmm... but try your best. :-)
 
-Yeah, this is more simple and clear.  Will use it.
+Ok I will :)
 
-> With that:
+> While at it, recently I have learned about util_macros.h. Any use of it here?
+> Or amending it there and re-using it here?
+
+That only works on straight integer/long/float arrays, not
+on arrays of structs where we are looking for a specific member of
+the struct to be closest. And reworking that to also work on
+structs is really (really really) out of scope for this patch-set.
+
+Regards,
+
+Hans
+
+
 > 
-> Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>>>> +               if (diff < best_diff) {
+>>>> +                       best_diff = diff;
+>>>> +                       best_idx = i;
+>>>> +               }
+>>>> +       }
+> 
 
-Thanks for review.
-
-Leo
