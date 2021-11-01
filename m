@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5997D441728
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:31:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01B5D4417B4
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:37:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232657AbhKAJdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:33:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37024 "EHLO mail.kernel.org"
+        id S234023AbhKAJie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:38:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43700 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232626AbhKAJaN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:30:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 15E0461166;
-        Mon,  1 Nov 2021 09:23:37 +0000 (UTC)
+        id S233286AbhKAJgA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:36:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 02F2E611BF;
+        Mon,  1 Nov 2021 09:26:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758618;
-        bh=xV6huBq/8AAwUIXxkZGe2Hy8XE+oBm9XoPD/WP7bLAY=;
+        s=korg; t=1635758779;
+        bh=cGCxs+1Ry/Qu7CSd/SGrQrCzbmL0By5mcfTNjiE5zdY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TGLl/Zw1F0x5B8AEmAx7hZSZmDNKFS6vprZHO7LTjC1rg4hpm86XdBl0i2e6aOTpI
-         hOaXCBHNs7EEp+dJbM7zBuD/l9nLtyanoe76wSf9TCF7XbfFdUL33dQWAdNOdNvi9J
-         JbT4IeE9ufdjyXoM5ibKlwKFP0zIwLwoDwjYEBlo=
+        b=FMVjNDn5P1NQH7VjtKUebKU6jmWCG0N6hwLPG4qqP3WdXo36JnjXu7a/hDKnej66P
+         43pNvnwxMzeyNsXhiL4NIsYxFH80LBAkowgBwK7OS+DBp2tqVwjgj6WvwT9T3r4aPl
+         80pdTgGULLG6xTH94iJ/mNQJC2HbwimTil7gRGzE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 38/51] net/tls: Fix flipped sign in async_wait.err assignment
-Date:   Mon,  1 Nov 2021 10:17:42 +0100
-Message-Id: <20211101082509.577418454@linuxfoundation.org>
+        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Dinh Nguyen <dinguyen@kernel.org>
+Subject: [PATCH 5.10 55/77] nios2: Make NIOS2_DTB_SOURCE_BOOL depend on !COMPILE_TEST
+Date:   Mon,  1 Nov 2021 10:17:43 +0100
+Message-Id: <20211101082523.247584369@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082500.203657870@linuxfoundation.org>
-References: <20211101082500.203657870@linuxfoundation.org>
+In-Reply-To: <20211101082511.254155853@linuxfoundation.org>
+References: <20211101082511.254155853@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,32 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Jordan <daniel.m.jordan@oracle.com>
+From: Guenter Roeck <linux@roeck-us.net>
 
-commit 1d9d6fd21ad4a28b16ed9ee5432ae738b9dc58aa upstream.
+commit 4a089e95b4d6bb625044d47aed0c442a8f7bd093 upstream.
 
-sk->sk_err contains a positive number, yet async_wait.err wants the
-opposite.  Fix the missed sign flip, which Jakub caught by inspection.
+nios2:allmodconfig builds fail with
 
-Fixes: a42055e8d2c3 ("net/tls: Add support for async encryption of records for performance")
-Suggested-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+make[1]: *** No rule to make target 'arch/nios2/boot/dts/""',
+	needed by 'arch/nios2/boot/dts/built-in.a'.  Stop.
+make: [Makefile:1868: arch/nios2/boot/dts] Error 2 (ignored)
+
+This is seen with compile tests since those enable NIOS2_DTB_SOURCE_BOOL,
+which in turn enables NIOS2_DTB_SOURCE. This causes the build error
+because the default value for NIOS2_DTB_SOURCE is an empty string.
+Disable NIOS2_DTB_SOURCE_BOOL for compile tests to avoid the error.
+
+Fixes: 2fc8483fdcde ("nios2: Build infrastructure")
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/tls/tls_sw.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/nios2/platform/Kconfig.platform |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/net/tls/tls_sw.c
-+++ b/net/tls/tls_sw.c
-@@ -456,7 +456,7 @@ static void tls_encrypt_done(struct cryp
+--- a/arch/nios2/platform/Kconfig.platform
++++ b/arch/nios2/platform/Kconfig.platform
+@@ -37,6 +37,7 @@ config NIOS2_DTB_PHYS_ADDR
  
- 		/* If err is already set on socket, return the same code */
- 		if (sk->sk_err) {
--			ctx->async_wait.err = sk->sk_err;
-+			ctx->async_wait.err = -sk->sk_err;
- 		} else {
- 			ctx->async_wait.err = err;
- 			tls_err_abort(sk, err);
+ config NIOS2_DTB_SOURCE_BOOL
+ 	bool "Compile and link device tree into kernel image"
++	depends on !COMPILE_TEST
+ 	help
+ 	  This allows you to specify a dts (device tree source) file
+ 	  which will be compiled and linked into the kernel image.
 
 
