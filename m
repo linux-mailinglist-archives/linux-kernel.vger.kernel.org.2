@@ -2,253 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 712AE44141D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 08:23:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 731FB441427
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 08:27:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230316AbhKAH0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 03:26:16 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:27515 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229827AbhKAH0O (ORCPT
+        id S230505AbhKAHaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 03:30:06 -0400
+Received: from mail-ed1-f47.google.com ([209.85.208.47]:41608 "EHLO
+        mail-ed1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229827AbhKAHaC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 03:26:14 -0400
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20211101072340epoutp02da4079842f77fb93f8d0f99b3d55b138~zW0AAcYLb0757707577epoutp02p
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 07:23:40 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20211101072340epoutp02da4079842f77fb93f8d0f99b3d55b138~zW0AAcYLb0757707577epoutp02p
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1635751420;
-        bh=O4SXJpZKPIg5VQ96Yr1zqOjIh9Tms0gkWUtuQiaU7vQ=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=HVShWjkTAQ0LzMndSWPjRE0Ptx5Jh6gTLCKL9n7Y8IXoYMOmvugs1pI8opksYNXju
-         qGTGi3RdCweejT6wKbiG/xn7Wjy5QB+DFSpxySgnZ2/piPLc0m3CsPpDLXIXkvC0p2
-         dHaVPHJ2bLtrpRtbS9aZgfoq/4gTfQ/8Or9T1YlM=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
-        20211101072339epcas1p349a4296cf3134a6e142e41da4ad091b7~zWz-qaQNo0306803068epcas1p3s;
-        Mon,  1 Nov 2021 07:23:39 +0000 (GMT)
-Received: from epsmges1p2.samsung.com (unknown [182.195.38.241]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4HjPf04krYz4x9QV; Mon,  1 Nov
-        2021 07:23:36 +0000 (GMT)
-Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
-        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        19.98.08277.5F59F716; Mon,  1 Nov 2021 16:23:33 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
-        20211101072333epcas1p4026451f7461f3d0b965feb6c1a58c7df~zWz5YtfvG1023010230epcas1p4D;
-        Mon,  1 Nov 2021 07:23:32 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20211101072332epsmtrp156deb4aba69e62343ba8db137df1acd2~zWz5YGewI1186111861epsmtrp1I;
-        Mon,  1 Nov 2021 07:23:32 +0000 (GMT)
-X-AuditID: b6c32a36-1edff70000002055-31-617f95f5d7e6
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        D2.FD.29871.4F59F716; Mon,  1 Nov 2021 16:23:32 +0900 (KST)
-Received: from hj514 (unknown [10.253.100.146]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20211101072332epsmtip2f95e1535fd0f8332259d3ea24b838615~zWz5OVlpE3001830018epsmtip2X;
-        Mon,  1 Nov 2021 07:23:32 +0000 (GMT)
-Message-ID: <02ffe8465f514102f5278e97bf3854c520fae91d.camel@samsung.com>
-Subject: Re: [PATCH] F2FS: invalidate META_MAPPING before IPU/DIO write
-From:   Hyeong-Jun Kim <hj514.kim@samsung.com>
-To:     Chao Yu <chao@kernel.org>, Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-Date:   Mon, 01 Nov 2021 16:23:32 +0900
-In-Reply-To: <75c52307-7bfd-2408-d067-26d1fca7bb73@kernel.org>
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        Mon, 1 Nov 2021 03:30:02 -0400
+Received: by mail-ed1-f47.google.com with SMTP id h7so61935224ede.8;
+        Mon, 01 Nov 2021 00:27:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=QX73/TVtR5W8m/Vq63b5sJhbliBL72ushPOHfy32+cA=;
+        b=KM4JJfDijYvvnT3SEC2XN73FuVc1kdbqJ+pW/VkmK7MkP+QvJY0229gHw1RyEv1nOl
+         7gnOaY83bDfwrYvJXulTfyGwigUT4/CgiBSdRXn5xKAlo3jjqTqqkPKSUPRTQwrNLXxc
+         KpWKofXV9c6kaPrvFYRMG+08AhUNaUaJdVZ1P19kZvZOjfsL+Vv1f4mU8GqXgA2QOafA
+         ACFs740O8y2wdJ60BT3bSDCiMBOfbPhMvxg59XG1NhpG89lsnCm/N+UNyECdtwggLAw1
+         ORHK7S+/PFb6HGI5hg6hMs5S3uAeTo4s+N5MvRwRcxXAe2qxSd33RnfXfmxYaP6dIiSb
+         zewQ==
+X-Gm-Message-State: AOAM53138G8dZXhUrKGDrdzJkGi/94AlC5xcn+TFUuB2s074Hr0fojoq
+        Ppih9/NKjA3orO2q9xgpGpE=
+X-Google-Smtp-Source: ABdhPJz67dOV3GnCoSUWOvabzexqGXdP8guxumkAaVgH9YZqCSQCmsiydaI/dW9/wtOJPyA45DiFiw==
+X-Received: by 2002:a17:906:4e54:: with SMTP id g20mr31002753ejw.284.1635751648035;
+        Mon, 01 Nov 2021 00:27:28 -0700 (PDT)
+Received: from ?IPV6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
+        by smtp.gmail.com with ESMTPSA id w1sm1854315edd.49.2021.11.01.00.27.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Nov 2021 00:27:27 -0700 (PDT)
+Message-ID: <0b42eede-d909-1afb-f3fc-c4ee1e2fc0f4@kernel.org>
+Date:   Mon, 1 Nov 2021 08:27:26 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH v10 0/2] Add rpmsg tty driver
+Content-Language: en-US
+To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Suman Anna <s-anna@ti.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org
+References: <20211015094701.5732-1-arnaud.pouliquen@foss.st.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+In-Reply-To: <20211015094701.5732-1-arnaud.pouliquen@foss.st.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrNKsWRmVeSWpSXmKPExsWy7bCmvu7XqfWJBmvmClqcnnqWyWJ6x0E2
-        iyfrZzFbXFrkbnF51xw2B1aPTas62Tx2L/jM5NG3ZRWjx+dNcgEsUdk2GamJKalFCql5yfkp
-        mXnptkrewfHO8aZmBoa6hpYW5koKeYm5qbZKLj4Bum6ZOUBrlRTKEnNKgUIBicXFSvp2NkX5
-        pSWpChn5xSW2SqkFKTkFZgV6xYm5xaV56Xp5qSVWhgYGRqZAhQnZGW/3HWIsuKNU8a7tLXMD
-        Y49YFyMnh4SAicSuTzPYuxi5OIQEdjBKrHjZBOV8YpRoWP+PEaRKSOAbo8TxWTEwHZ9WvmWB
-        KNrLKPH41G9GCOcJo8T37q/MIFW8Ah4SzRdngNnCAu4Sj963s4LYbAI6Eh9mrQSbKiJgL9H5
-        bQmYzQxU39jxHaiGg4NFQFXiw2oBkDCngJ3E/7/rWUBsUQE1iVcrH7FCjBeUODnzCQtEq7zE
-        9rdzmEFukBB4xC5xddshRohLXSQeNDUyQ9jCEq+Ob2GHsKUkXva3Qdn1EsevfGKFaG4B+mbp
-        K0aQIySAjnt/yQLEZBbQlFi/Sx+iXFFi5++5UCfzSbz72sMKUc0r0dEmBFGiLLH57mE2CFtS
-        4umiv1DXeEjc33SfFRJUW5kkTh/qYpnAqDALyTuzkLwzC2HzAkbmVYxiqQXFuempxYYFRvAI
-        Ts7P3cQIToVaZjsYJ739oHeIkYmD8RCjBAezkghvxIWaRCHelMTKqtSi/Pii0pzU4kOMpsDw
-        ncgsJZqcD0zGeSXxhiaWBiZmRiYWxpbGZkrivJ/lChOFBNITS1KzU1MLUotg+pg4OKUamJIU
-        gqK/F9VfFOUtKOqUTxXasu1QdPB1tisf9GMmPkpeLntO1OlClOQO96gy/orXPZFFpxoWS64S
-        PVT/sctEc1nSAnvRmRUnCrv2hD2S7+UX+Os2L1zv+G4OW0uluwV+Hlvlr65Rv3faJEs6b8GJ
-        icX/NvwR0vzJs3+DT+g0t2sek4weu+3rf/J95+ytii8/8Wm1v1GcsGKm3i7FSelaaneZmcyr
-        Z24/33GZ9aX1pY1uOgccX5gY/luePi0jXqDN11Az+K7U1SNnrm9hErqxJOxm6q/9syOtizTs
-        sjs3ll1wsyw7sYvrcFWUt3xx1oPft5+XM+YLF6TcFJfyCZe5MqVN/vEhzbyIg2U+sXd9lFiK
-        MxINtZiLihMBWz15Fw4EAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrDLMWRmVeSWpSXmKPExsWy7bCSvO6XqfWJBnceWVicnnqWyWJ6x0E2
-        iyfrZzFbXFrkbnF51xw2B1aPTas62Tx2L/jM5NG3ZRWjx+dNcgEsUVw2Kak5mWWpRfp2CVwZ
-        b/cdYiy4o1Txru0tcwNjj1gXIyeHhICJxKeVb1m6GLk4hAR2M0qc3/GftYuRAyghKTFvfTmE
-        KSxx+HAxSLmQwCNGiavPwWxeAQ+J5oszmEFsYQF3iUfv21lBbDYBHYkPs1YygtgiAvYSnd+W
-        gNnMQPWNHd/BprMIqEp8WC0AEuYUsJP4/3c91AV7mCQe/z/NDlGvKdG6/TeYLSqgJvFq5SNW
-        iL2CEidnPmGBqJGX2P52DvMERsFZSFpmISmbhaRsASPzKkbJ1ILi3PTcYsMCw7zUcr3ixNzi
-        0rx0veT83E2M4ADX0tzBuH3VB71DjEwcjIcYJTiYlUR4Iy7UJArxpiRWVqUW5ccXleakFh9i
-        lOZgURLnvdB1Ml5IID2xJDU7NbUgtQgmy8TBKdXANF2R89bCmIMhK30MVL70pmZdXthc8H5v
-        cvhZ59JtMQF3vl628Ja9fDkj98p97dlX35w4mjVzkVUgr9Wps3ePzOvae+Hb1Xmda783XHuY
-        sOKZ7YZLU542Ll929fo233themfMHKdzGbHvuMWXtLWXMW19i1JOuMOe0i+WVW1yTl5L063i
-        vh2PclJdF/Cz5IrHzavaPh9F37faGXGbRqgbPL07LUXt/cfcYMVVZ4Vv7Vp9ZlvSuqNf7r7Z
-        tstyKstFC7ZwP2lmhzXKtxmnzj1xqdjcQKJperjKD8muq4cZ5hzc7hklHrPr1be0/s87U9zD
-        dKdOWu1/QpFJpkb83AHekLVKS2J/r+28wt+mqjpzyQ4lluKMREMt5qLiRACxviKg3wIAAA==
-X-CMS-MailID: 20211101072333epcas1p4026451f7461f3d0b965feb6c1a58c7df
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20211101054217epcas1p3c695f37ab925f47156bd45e3adb5ed94
-References: <CGME20211101054217epcas1p3c695f37ab925f47156bd45e3adb5ed94@epcas1p3.samsung.com>
-        <20211101054214.24456-1-hj514.kim@samsung.com>
-        <d1929b64-15a3-feaf-5401-1552b2eb2461@kernel.org>
-        <9a0360922130485f4252970de4bb535667cc26e9.camel@samsung.com>
-        <75c52307-7bfd-2408-d067-26d1fca7bb73@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-11-01 at 15:12 +0800, Chao Yu wrote:
-> On 2021/11/1 15:09, Hyeong-Jun Kim wrote:
-> > On Mon, 2021-11-01 at 14:28 +0800, Chao Yu wrote:
-> > > On 2021/11/1 13:42, Hyeong-Jun Kim wrote:
-> > > > Encrypted pages during GC are read and cached in META_MAPPING.
-> > > > However, due to cached pages in META_MAPPING, there is an issue
-> > > > where
-> > > > newly written pages are lost by IPU or DIO writes.
-> > > > 
-> > > > Thread A                              Thread B
-> > > > - f2fs_gc(): blk 0x10 -> 0x20 (a)
-> > > >                                         - IPU or DIO write on
-> > > > blk
-> > > > 0x20 (b)
-> > > > - f2fs_gc(): blk 0x20 -> 0x30 (c)
-> > > > 
-> > > > (a) page for blk 0x20 is cached in META_MAPPING and page for
-> > > > blk
-> > > > 0x10
-> > > >       is invalidated from META_MAPPING.
-> > > > (b) write new data to blk 0x200 using IPU or DIO, but outdated
-> > > > data
-> > > >       still remains in META_MAPPING.
-> > > > (c) f2fs_gc() try to move blk from 0x20 to 0x30 using cached
-> > > > page
-> > > > in
-> > > >       META_MAPPING. In conclusion, the newly written data in
-> > > > (b) is
-> > > > lost.
-> > > 
-> > > In c), f2fs_gc() will readahead encrypted block from disk via
-> > > ra_data_block() anyway,
-> > > not matter cached encrypted page of meta inode is uptodate or
-> > > not, so
-> > > it's safe, right?
-> > 
-> > Right,
-> > However, if DIO write is performed between phase 3 and phase 4 of
-> > f2fs_gc(),
-> > the cached page of meta_mapping will be out-dated, though it read
-> > data
-> > from
-> > disk via ra_data_block() in phase 3.
-> > 
-> > What do you think?
-> 
-> Due to i_gc_rwsem lock coverage, the race condition should not happen
-> right now?
-> 
-- Thread A                                       - Thread B
-/* phase 3 */
-down_write(i_gc_rwsem)
-ra_data_block()
-up_write(i_gc_rwsem)
-                                                       
- f2fs_direct_IO() : 
-                                                       
- down_read(i_gc_rwsem)
-                                                       
- __blockdev_direct_IO()
-                                                           ...
-                                                         
- get_ddata_block_dio_write()
-                                                           ...
-                                                         
- f2fs_dio_submit_bio()
-                                                       
- up_read(i_gc_rwsem)
-/* phase 4 */
-down_write(i_gc_rwsem)
-move_data_block()
-up_write(i_gc_rwsem)
+On 15. 10. 21, 11:46, Arnaud Pouliquen wrote:
+...
+>   drivers/rpmsg/rpmsg_core.c       |  21 +++
+>   drivers/rpmsg/rpmsg_internal.h   |   2 +
+>   drivers/rpmsg/virtio_rpmsg_bus.c |  10 ++
+>   drivers/tty/Kconfig              |  12 ++
+>   drivers/tty/Makefile             |   1 +
+>   drivers/tty/rpmsg_tty.c          | 274 +++++++++++++++++++++++++++++++
+>   include/linux/rpmsg.h            |  10 ++
 
-It looks, i_gc_rwsem could not protect page update between phase 3 and
-4.
+Hi,
 
-Am I missing anything?
+care to add an entry to MAINTAINERS too?
 
-Thanks
-
-> Thanks,
-> 
-> > Thanks,
-> > > Am I missing anything?
-> > > 
-> > > Thanks,
-> > > 
-> > > > To address this issue, invalidating pages in META_MAPPING
-> > > > before
-> > > > IPU or
-> > > > DIO write.
-> > > > 
-> > > > Signed-off-by: Hyeong-Jun Kim <
-> > > > hj514.kim@samsung.com
-> > > > 
-> > > > 
-> > > > ---
-> > > >    fs/f2fs/data.c    | 2 ++
-> > > >    fs/f2fs/segment.c | 3 +++
-> > > >    2 files changed, 5 insertions(+)
-> > > > 
-> > > > diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-> > > > index 74e1a350c1d8..9f754aaef558 100644
-> > > > --- a/fs/f2fs/data.c
-> > > > +++ b/fs/f2fs/data.c
-> > > > @@ -1708,6 +1708,8 @@ int f2fs_map_blocks(struct inode *inode,
-> > > > struct f2fs_map_blocks *map,
-> > > >    		 */
-> > > >    		f2fs_wait_on_block_writeback_range(inode,
-> > > >    						map->m_pblk,
-> > > > map-
-> > > > > m_len);
-> > > > 
-> > > > +		invalidate_mapping_pages(META_MAPPING(sbi),
-> > > > +						map->m_pblk,
-> > > > map-
-> > > > > m_pblk);
-> > > > 
-> > > >    
-> > > >    		if (map->m_multidev_dio) {
-> > > >    			block_t blk_addr = map->m_pblk;
-> > > > diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-> > > > index 526423fe84ce..f57c55190f9e 100644
-> > > > --- a/fs/f2fs/segment.c
-> > > > +++ b/fs/f2fs/segment.c
-> > > > @@ -3652,6 +3652,9 @@ int f2fs_inplace_write_data(struct
-> > > > f2fs_io_info *fio)
-> > > >    		goto drop_bio;
-> > > >    	}
-> > > >    
-> > > > +	invalidate_mapping_pages(META_MAPPING(fio->sbi),
-> > > > +				fio->new_blkaddr, fio-
-> > > > >new_blkaddr);
-> > > > +
-> > > >    	stat_inc_inplace_blocks(fio->sbi);
-> > > >    
-> > > >    	if (fio->bio && !(SM_I(sbi)->ipu_policy & (1 <<
-> > > > F2FS_IPU_NOCACHE)))
-> > > > 
-> > > 
-> > > 
-> 
-> 
-
+thanks,
+-- 
+js
+suse labs
