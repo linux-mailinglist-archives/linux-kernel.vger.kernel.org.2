@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 191584418EF
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:51:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 160434417DF
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:39:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233839AbhKAJxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:53:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51094 "EHLO mail.kernel.org"
+        id S233896AbhKAJkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:40:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43674 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234729AbhKAJss (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:48:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E1FE611AD;
-        Mon,  1 Nov 2021 09:31:22 +0000 (UTC)
+        id S233250AbhKAJh5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:37:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AF9846135E;
+        Mon,  1 Nov 2021 09:26:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635759082;
-        bh=MrlPpx7DvVJXpmBB1vpvxboB4PpqCFjyFXwqMbtxq5o=;
+        s=korg; t=1635758819;
+        bh=YQrqZ+hp/Vwdu7IJKKeZURnxa8c0+4XmeibeupmRxcM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PDxP+SPs5dZ7qm+b/RKu/b6NusMKziDYlP1PzkTnejxk3RNZP7CPkThgI/p6IWO3d
-         fg1htCvxTP+5mggI2eWfbQZps9pSalYsmWiSBbCg6cVSDTlcuG/A1bdm9Xb9oKLXgB
-         UD/jDAbPELd0Qop94Lhh0dzaoDo1qwGICorzKFAs=
+        b=lv1k9GkjttkjFHz/xKOSqdMxsC69SbxfdOUELKMGm6jzjJORLGaTApGcu4bp9nMHM
+         ETZp/aqTyO1vbCEhfSOhMj5f00sUC7pqouHQLolydnIX6rJpV7Ir5GqOawMyINM6kS
+         typwpANR2RTttsVyWxKjdWxzjz17YnuKTNXrOxIU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.14 075/125] regmap: Fix possible double-free in regcache_rbtree_exit()
+        stable@vger.kernel.org,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        TOTE Robot <oslab@tsinghua.edu.cn>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Subject: [PATCH 5.10 40/77] IB/hfi1: Fix abba locking issue with sc_disable()
 Date:   Mon,  1 Nov 2021 10:17:28 +0100
-Message-Id: <20211101082547.423708643@linuxfoundation.org>
+Message-Id: <20211101082520.314026290@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082533.618411490@linuxfoundation.org>
-References: <20211101082533.618411490@linuxfoundation.org>
+In-Reply-To: <20211101082511.254155853@linuxfoundation.org>
+References: <20211101082511.254155853@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,70 +42,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
 
-commit 55e6d8037805b3400096d621091dfbf713f97e83 upstream.
+commit 13bac861952a78664907a0f927d3e874e9a59034 upstream.
 
-In regcache_rbtree_insert_to_block(), when 'present' realloc failed,
-the 'blk' which is supposed to assign to 'rbnode->block' will be freed,
-so 'rbnode->block' points a freed memory, in the error handling path of
-regcache_rbtree_init(), 'rbnode->block' will be freed again in
-regcache_rbtree_exit(), KASAN will report double-free as follows:
+sc_disable() after having disabled the send context wakes up any waiters
+by calling hfi1_qp_wakeup() while holding the waitlock for the sc.
 
-BUG: KASAN: double-free or invalid-free in kfree+0xce/0x390
-Call Trace:
- slab_free_freelist_hook+0x10d/0x240
- kfree+0xce/0x390
- regcache_rbtree_exit+0x15d/0x1a0
- regcache_rbtree_init+0x224/0x2c0
- regcache_init+0x88d/0x1310
- __regmap_init+0x3151/0x4a80
- __devm_regmap_init+0x7d/0x100
- madera_spi_probe+0x10f/0x333 [madera_spi]
- spi_probe+0x183/0x210
- really_probe+0x285/0xc30
+This is contrary to the model for all other calls to hfi1_qp_wakeup()
+where the waitlock is dropped and a local is used to drive calls to
+hfi1_qp_wakeup().
 
-To fix this, moving up the assignment of rbnode->block to immediately after
-the reallocation has succeeded so that the data structure stays valid even
-if the second reallocation fails.
+Fix by moving the sc->piowait into a local list and driving the wakeup
+calls from the list.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Fixes: 3f4ff561bc88b ("regmap: rbtree: Make cache_present bitmap per node")
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Link: https://lore.kernel.org/r/20211012023735.1632786-1-yangyingliang@huawei.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 099a884ba4c0 ("IB/hfi1: Handle wakeup of orphaned QPs for pio")
+Link: https://lore.kernel.org/r/20211013141852.128104.2682.stgit@awfm-01.cornelisnetworks.com
+Signed-off-by: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/base/regmap/regcache-rbtree.c |    7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ drivers/infiniband/hw/hfi1/pio.c |    9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
---- a/drivers/base/regmap/regcache-rbtree.c
-+++ b/drivers/base/regmap/regcache-rbtree.c
-@@ -281,14 +281,14 @@ static int regcache_rbtree_insert_to_blo
- 	if (!blk)
- 		return -ENOMEM;
+--- a/drivers/infiniband/hw/hfi1/pio.c
++++ b/drivers/infiniband/hw/hfi1/pio.c
+@@ -920,6 +920,7 @@ void sc_disable(struct send_context *sc)
+ {
+ 	u64 reg;
+ 	struct pio_buf *pbuf;
++	LIST_HEAD(wake_list);
  
-+	rbnode->block = blk;
-+
- 	if (BITS_TO_LONGS(blklen) > BITS_TO_LONGS(rbnode->blklen)) {
- 		present = krealloc(rbnode->cache_present,
- 				   BITS_TO_LONGS(blklen) * sizeof(*present),
- 				   GFP_KERNEL);
--		if (!present) {
--			kfree(blk);
-+		if (!present)
- 			return -ENOMEM;
--		}
+ 	if (!sc)
+ 		return;
+@@ -954,19 +955,21 @@ void sc_disable(struct send_context *sc)
+ 	spin_unlock(&sc->release_lock);
  
- 		memset(present + BITS_TO_LONGS(rbnode->blklen), 0,
- 		       (BITS_TO_LONGS(blklen) - BITS_TO_LONGS(rbnode->blklen))
-@@ -305,7 +305,6 @@ static int regcache_rbtree_insert_to_blo
+ 	write_seqlock(&sc->waitlock);
+-	while (!list_empty(&sc->piowait)) {
++	if (!list_empty(&sc->piowait))
++		list_move(&sc->piowait, &wake_list);
++	write_sequnlock(&sc->waitlock);
++	while (!list_empty(&wake_list)) {
+ 		struct iowait *wait;
+ 		struct rvt_qp *qp;
+ 		struct hfi1_qp_priv *priv;
+ 
+-		wait = list_first_entry(&sc->piowait, struct iowait, list);
++		wait = list_first_entry(&wake_list, struct iowait, list);
+ 		qp = iowait_to_qp(wait);
+ 		priv = qp->priv;
+ 		list_del_init(&priv->s_iowait.list);
+ 		priv->s_iowait.lock = NULL;
+ 		hfi1_qp_wakeup(qp, RVT_S_WAIT_PIO | HFI1_S_WAIT_PIO_DRAIN);
  	}
+-	write_sequnlock(&sc->waitlock);
  
- 	/* update the rbnode block, its size and the base register */
--	rbnode->block = blk;
- 	rbnode->blklen = blklen;
- 	rbnode->base_reg = base_reg;
- 	rbnode->cache_present = present;
+ 	spin_unlock_irq(&sc->alloc_lock);
+ }
 
 
