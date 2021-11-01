@@ -2,112 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74267441B72
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 14:01:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 389DC441B74
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 14:01:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232575AbhKAND0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 09:03:26 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:15506 "EHLO m43-7.mailgun.net"
+        id S232552AbhKANED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 09:04:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41352 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232529AbhKANDT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 09:03:19 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1635771646; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
- To: From: Sender; bh=vhffXgl6XrT5R0iOl/U73G4M8Vp4ByFiaGaz/tHmkzQ=; b=FJIm1e+UynKd/qY5Xb733zvJxrg6pzM9AOMKC5fkBBxP5spShqWK0PNKfD6H9rTXWU+jdIP2
- eQPQu9uCZ/0p/SqhxakDmsjwR4HXkerg+YIrMT8SdB4PqUqbIfidJ+C3+vm3rlRVilJ5m8Ro
- iH3ApcizVnclA0GX1Vq4Z+Ryns0=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 617fe4f4648aeeca5cde3a53 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 01 Nov 2021 13:00:36
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D1F9DC4360D; Mon,  1 Nov 2021 13:00:35 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from tykki (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D89DCC4338F;
-        Mon,  1 Nov 2021 13:00:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org D89DCC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Benjamin Li <benl@squareup.com>
-Cc:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        linux-arm-msm@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, wcn36xx@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] wcn36xx: fix RX BD rate mapping for 5GHz legacy rates
-References: <20211028223131.897548-1-benl@squareup.com>
-        <20211028223131.897548-2-benl@squareup.com>
-        <b3473977-5bb6-06df-55c3-85f08a29a964@linaro.org>
-        <631a3ab4-56d9-5c1d-be53-c885747e3f7b@squareup.com>
-Date:   Mon, 01 Nov 2021 15:00:30 +0200
-In-Reply-To: <631a3ab4-56d9-5c1d-be53-c885747e3f7b@squareup.com> (Benjamin
-        Li's message of "Thu, 28 Oct 2021 17:39:58 -0700")
-Message-ID: <8735og2fpt.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S231493AbhKANEB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 09:04:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 22ED6610CB;
+        Mon,  1 Nov 2021 13:01:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1635771687;
+        bh=BnvAlu2La+WcsQ9YbWNSwcRtBUFoQ6NF91J/WMIhk2w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kCAbVo1fhBICtG4Fxnkyt8PmWvLNDqCjDK53PhBY6myVuI7c+F5UzQm/vB5T3KPMi
+         f/CxPaMsVwuIpFeuxQbRmrN3THACcxmuZAg7vObL8+ipDyOtIoVCJqJVsDifiPIBQr
+         75zqS/WMNXczB4MLtB4R9hLa1PHCZMpyOrxxeNto=
+Date:   Mon, 1 Nov 2021 14:01:24 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Saurav Girepunje <saurav.girepunje@gmail.com>
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        straube.linux@gmail.com, martin@kaiser.cx,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        saurav.girepunje@hotmail.com
+Subject: Re: [PATCH] staging: r8188eu: os_dep: remove the goto statement
+Message-ID: <YX/lJMEfqXqlserL@kroah.com>
+References: <YX7cCtVss2RWOJ/a@Sauravs-MacBook-Air.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YX7cCtVss2RWOJ/a@Sauravs-MacBook-Air.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Benjamin Li <benl@squareup.com> writes:
+On Sun, Oct 31, 2021 at 11:40:18PM +0530, Saurav Girepunje wrote:
+> Remove the goto statement from rtw_init_drv_sw(). In this function goto
+> can be replace by return statement. As on goto label exit, function
+> only return it is not performing any cleanup. Avoiding goto will
+> improve the function readability.
+> 
+> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+> ---
+>  drivers/staging/r8188eu/os_dep/os_intfs.c | 39 +++++++----------------
+>  1 file changed, 12 insertions(+), 27 deletions(-)
+> 
+> diff --git a/drivers/staging/r8188eu/os_dep/os_intfs.c b/drivers/staging/r8188eu/os_dep/os_intfs.c
+> index 1418c9c4916c..4b409479108e 100644
+> --- a/drivers/staging/r8188eu/os_dep/os_intfs.c
+> +++ b/drivers/staging/r8188eu/os_dep/os_intfs.c
+> @@ -480,48 +480,34 @@ u8 rtw_init_drv_sw(struct adapter *padapter)
+>  {
+>  	u8	ret8 = _SUCCESS;
+> 
+> -	if ((rtw_init_cmd_priv(&padapter->cmdpriv)) == _FAIL) {
+> -		ret8 = _FAIL;
+> -		goto exit;
+> -	}
+> +	if (!rtw_init_cmd_priv(&padapter->cmdpriv))
+> +		return _FAIL;
+> 
+>  	padapter->cmdpriv.padapter = padapter;
+> 
+> -	if ((rtw_init_evt_priv(&padapter->evtpriv)) == _FAIL) {
+> -		ret8 = _FAIL;
+> -		goto exit;
+> -	}
+> -
+> -	if (rtw_init_mlme_priv(padapter) == _FAIL) {
+> -		ret8 = _FAIL;
+> -		goto exit;
+> -	}
+> +	if (!rtw_init_evt_priv(&padapter->evtpriv) || !rtw_init_mlme_priv(padapter))
+> +		return _FAIL;
 
-> On 10/28/21 5:30 PM, Bryan O'Donoghue wrote:
->> On 28/10/2021 23:31, Benjamin Li wrote:
->>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 sta=
-tus.rate_idx >=3D sband->n_bitrates) {
->> This fix was applied because we were getting a negative index
->>=20
->> If you want to remove that, you'll need to do something about this
->>=20
->> status.rate_idx -=3D 4;
->
-> Hmm... so you're saying there's a FW bug where sometimes we get
-> bd->rate_id =3D 0-7 (leading to status.rate_idx =3D 0-3) on a 5GHz
-> channel?
->
-> static const struct wcn36xx_rate wcn36xx_rate_table[] =3D {
->     /* 11b rates */
->     {  10, 0, RX_ENC_LEGACY, 0, RATE_INFO_BW_20 },
->     {  20, 1, RX_ENC_LEGACY, 0, RATE_INFO_BW_20 },
->     {  55, 2, RX_ENC_LEGACY, 0, RATE_INFO_BW_20 },
->     { 110, 3, RX_ENC_LEGACY, 0, RATE_INFO_BW_20 },
->
->     /* 11b SP (short preamble) */
->     {  10, 0, RX_ENC_LEGACY, RX_ENC_FLAG_SHORTPRE, RATE_INFO_BW_20 },
->     {  20, 1, RX_ENC_LEGACY, RX_ENC_FLAG_SHORTPRE, RATE_INFO_BW_20 },
->     {  55, 2, RX_ENC_LEGACY, RX_ENC_FLAG_SHORTPRE, RATE_INFO_BW_20 },
->     { 110, 3, RX_ENC_LEGACY, RX_ENC_FLAG_SHORTPRE, RATE_INFO_BW_20 },
->
-> It sounds like we should WARN and drop the frame in that case. If
-> you agree I'll send a v2.
+These are functions that are being called so keeping them separate as
+the code you removed did makes it "obvious" what is happening here.
 
-BTW, please avoid using WARN() family of functions in the data path as
-that can cause host crashes due to too much spamming in the logs. A some
-kind of ratelimited version of an error message is much safer. For
-example ath11k_warn() is ratelimited, maybe wcn36xx_warn() should be as
-well?
+So can you keep it that way please?
 
---=20
-https://patchwork.kernel.org/project/linux-wireless/list/
+But my larger question is do these functions create state or allocate
+memory that needs to be unwound properly if an error does happen?  Right
+now the function seems to not be doing that at all, but that does not
+mean it is correct as-is...
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
-hes
+thanks,
+
+greg k-h
