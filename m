@@ -2,71 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3FDC441B34
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 13:32:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5AAA441B35
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 13:33:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232479AbhKAMfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 08:35:24 -0400
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:52835 "EHLO
-        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232029AbhKAMfW (ORCPT
+        id S232488AbhKAMfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 08:35:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232467AbhKAMfY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 08:35:22 -0400
+        Mon, 1 Nov 2021 08:35:24 -0400
+Received: from mail-vk1-xa2e.google.com (mail-vk1-xa2e.google.com [IPv6:2607:f8b0:4864:20::a2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB548C061714
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 05:32:50 -0700 (PDT)
+Received: by mail-vk1-xa2e.google.com with SMTP id t127so7916636vke.13
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 05:32:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1635769969; x=1667305969;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=8IVlbd60CPyDWVek2Gr4+wVOTu29dbilRXC6UZZbq6M=;
-  b=G1wewsZphSPWpuNPCeCEA6y2DolmNMSyZS5fHedP5B21b6oC7e/zMjaW
-   IfI5tuflkaCBVwZjaJfVl3zRUV2dO89xPUTjlvNtfAp69Mzs902kvItJv
-   BgpnDU/0RhY6yCCb95frDmOYCU+82wnlsLqeujwsaSWVUiM3N/zI3oedh
-   w=;
-Received: from unknown (HELO ironmsg02-sd.qualcomm.com) ([10.53.140.142])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 01 Nov 2021 05:32:49 -0700
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg02-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2021 05:32:49 -0700
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Mon, 1 Nov 2021 05:32:49 -0700
-Received: from [10.110.103.191] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7; Mon, 1 Nov 2021
- 05:32:48 -0700
-Subject: Re: [PATCH v2] configs: Introduce debug.config for CI-like setup
-To:     Daniel Thompson <daniel.thompson@linaro.org>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        <linux-kbuild@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20211029034434.24553-1-quic_qiancai@quicinc.com>
- <20211029093115.6ychbe56pnebzi43@maple.lan>
- <e0301a5f-a2c7-eedb-90b1-1d6d631fcc47@quicinc.com>
- <20211029161952.u4g7vutcz3qd57lo@maple.lan>
-From:   Qian Cai <quic_qiancai@quicinc.com>
-Message-ID: <9b5e6938-9e31-b846-a936-072a34020d87@quicinc.com>
-Date:   Mon, 1 Nov 2021 08:32:46 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=HIfydDL9urxuFuRHChKNwgDGNZExxDugcZdeFKfwZbE=;
+        b=P1NPzWOtYbGBXHVniw2G6l/kLW0UPLC0dLR6qbvcKAFwZYQeakOEnarKPLJgUbzwky
+         hpyCzKOuDYZ6pSkDTeisUY0+MKNYTww5s8CcuhvpviuJX8eyytlR/NGnNAM2N2IBWmgo
+         AMuStM2mo2ZlkJdo6fuvM6YkdBxtQr3jeakJrziMOcMdCg25snSgx7S74ZipMeM0XbpF
+         oCh55pDkj2ThcN4QP20xeLItSE8w5y89ai7OsFYo4bkagw3F4cIof5RqQ0LULcftfYwX
+         Dien9Z7JXZN1OJSJZaP7f6jbHMAUFTbkLoUst6E0JKdHGeMety11XScNxYz/hW5GSrJl
+         YDzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=HIfydDL9urxuFuRHChKNwgDGNZExxDugcZdeFKfwZbE=;
+        b=NBlaVtw7Y+fwOO8cBv1SezY+kLqGOkpWUfIo9Vu/kCbtKAuQ+3BAJGhtvkW3aGGlUl
+         VYBYlzlyed92LN8/Th1FB0UBjcb8QyyfT1UrHe/Zp79eNDV5qHgwZTsONI0ag0MEqc3A
+         9HbrPHp8GD3+Xa3ANnOly3lNeNTlnYcvwEC2f4MoGnnCj1fUBydT70DdnXA/hovXegqB
+         USaUAE/gkNgzzFhEfEhVBXzqRsnryqxvT1ZbO/X3zJ/fScRF6oy2V3qASnV+emm+/VlJ
+         g4kwI7NKLAunwkfkZfCZTYyjtluTFP8uGnq6etyXzDyAumQAOoIFflEBg//XKZx+BVrh
+         2AIA==
+X-Gm-Message-State: AOAM533/+Q15XI8T/dN/nBwTNt8QNI+5DREtB74TQc4bdU8Yl04pfmLd
+        1MvnZbs0E0mDqDFdOEPhjLM8JlTLnScS1T/kkC4=
+X-Google-Smtp-Source: ABdhPJyJhBY0R4YFQh8qZISF/9KTdnT/4Nphzs02mg9TlmQsk1UvWYHPowwH3kSHV/krQSXJcwftx1iDNdsOXCGfHUQ=
+X-Received: by 2002:a05:6122:1815:: with SMTP id ay21mr2680012vkb.24.1635769970106;
+ Mon, 01 Nov 2021 05:32:50 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211029161952.u4g7vutcz3qd57lo@maple.lan>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+Received: by 2002:a05:612c:1192:b0:232:2e76:603a with HTTP; Mon, 1 Nov 2021
+ 05:32:49 -0700 (PDT)
+Reply-To: donaldmrschantal01un@gmail.com
+From:   "Mrs.Chantal Donald" <omeunurehi.andrew00226@gmail.com>
+Date:   Mon, 1 Nov 2021 05:32:49 -0700
+Message-ID: <CAKRsz=Mj9G4y_K0+dS0LKrwARWmxeW59NAvajJYLwRe739pS2w@mail.gmail.com>
+Subject: You have been compensated by United Nations (UN) Governments!
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Atten:
 
+The United Nations Compensation Commissioner Payment Unit Office: Has
+compensated you with the sum of USD$10.5 Million Dollars, And the
+Compensation will be Issue into Atm Visa Card and send it to you from
+the Bank, So therefore you are properly advise to send us your full
+information address, Along with your Passport Or, Id Copy and your
+WhatsApp Number :
 
-On 10/29/21 12:19 PM, Daniel Thompson wrote:
-> My feedback came about because, in alphabetic form, it is not easy to
-> see which ftrace tracers are enabled (because they are named
-> CONFIG_<feature>_TRACER they appear all over the place).
+Via E-mail Address: donaldmrschantal01un@gmail.com
 
-Good point, Daniel. I also think the existing categories could change
-but are fairly stable. I'll reorganize them.
+Looking forward to your quick cooperation response!
+
+Yours sincerely In American.
+Mrs. Chantal Donald
