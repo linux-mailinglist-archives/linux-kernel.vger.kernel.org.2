@@ -2,84 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7602F441ED7
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 17:52:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C01E2441ED8
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 17:54:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231671AbhKAQzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 12:55:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229744AbhKAQzP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 12:55:15 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16D0CC061764
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 09:52:42 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id h81so13519988iof.6
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 09:52:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=LjD4GxWdc2zr8/9EZOl5q2FS3VyqZrhxuRWYjSCst2U=;
-        b=KiSk8LZhR7EZ/6Y/XeCSQZEjR7gPdV1w/ihpXQJrwiIBFMuPhCVhIFeiQYWo8CYa1z
-         Df7GWUMVZkI3hloAM9BQvv3bkbNMij0XMwazsTY8oHQdeOvNzVB96famhHLiW9AGecDM
-         nZHhwuzvLgGIp1JqYojKJyYDWTJlUNK/54Vdeygvt+B6ds8+KAmvLvUfMhsJFII+kv+G
-         VIFaN68qihLLN53lLk/R0TQJZxCO1qStepUqEyJ2hs4MG7+kYIafTRbZvGAZw0PaNxnG
-         lavTjPsXn+2suPlGogjD3moJmOFQACURdndJBOGmcDzAQXfJZ1pRPYYrPe69ClDZiNRk
-         5RuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=LjD4GxWdc2zr8/9EZOl5q2FS3VyqZrhxuRWYjSCst2U=;
-        b=nFDV/ru1PHZTA65yjWrYGX8gts2BgIbbF1TPhi2dhK+eorPdJdqk36gFs8J/fpJxfH
-         NWMg6XVyTrmkUma2PSt7GXoKmcGcf/7gziVq4Pzv2mNomLYCCZnXYwc32X4s5DxasMPC
-         rirZ82a0H183nhDctrar0VJDK6DD/XLQpehgjMjf60jH3i/XYRaPUvw7la0hmel8mqVQ
-         3EVfzdY320y7xUpXU5aI58q6uciKJspfal80EvJEjMd+LvhIBLBX7ounP8sKYryP4DwV
-         fAusE2uoTULbOybTZMeayVDC2UA+fO+QpGQxBKRYuHXGJFFqXH5x3sEk6RieWJSCj1Gl
-         hhqw==
-X-Gm-Message-State: AOAM531nqHjWOCRT2aYrHB+F4IVxm084dpGdBoh2VIS1Cmoqzkj5+Pxq
-        00DHPnSHh48PG7l7jL9oucNa9I52/1EcvZ6Fu4E=
-X-Google-Smtp-Source: ABdhPJyJawcz7J3D3BhTKOOSV5gD20ZECyj0S5nLNNDsEKYR56W4l7eyyzYWS0luko/WegN6zPQS90X2lc3hLZwF7BQ=
-X-Received: by 2002:a02:7047:: with SMTP id f68mr9473228jac.109.1635785561397;
- Mon, 01 Nov 2021 09:52:41 -0700 (PDT)
+        id S231927AbhKAQ43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 12:56:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33636 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229811AbhKAQ42 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 12:56:28 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E6ED9611C9;
+        Mon,  1 Nov 2021 16:53:54 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mhaZE-002tcG-Mj; Mon, 01 Nov 2021 16:53:52 +0000
 MIME-Version: 1.0
-Sender: readsghfrdfrsafxgf@gmail.com
-Received: by 2002:a05:6e02:1bee:0:0:0:0 with HTTP; Mon, 1 Nov 2021 09:52:41
- -0700 (PDT)
-From:   Mrs Carlsen monika <carlsen.monika@gmail.com>
-Date:   Mon, 1 Nov 2021 17:52:41 +0100
-X-Google-Sender-Auth: D9QI990OBmKiogm5tZnMWTUO9YM
-Message-ID: <CAAbfOQwdBV60-k=B_-MyrH-mKBBi5KD0Juf1sxg3SZrrLJeBjg@mail.gmail.com>
-Subject: Hello
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Date:   Mon, 01 Nov 2021 16:53:52 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Zhaoyu Liu <zackary.liu.pro@gmail.com>
+Cc:     masahiroy@kernel.org, ripxorip@gmail.com,
+        gregkh@linuxfoundation.org, matthieu.baerts@tessares.net,
+        mpe@ellerman.id.au, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] tags: add a space regex to DECLARE_BITMAP
+In-Reply-To: <20211101155948.GA10424@pc>
+References: <20211101155948.GA10424@pc>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <17bd93d6d81cf267e7d0c63b533cc23f@kernel.org>
+X-Sender: maz@kernel.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: zackary.liu.pro@gmail.com, masahiroy@kernel.org, ripxorip@gmail.com, gregkh@linuxfoundation.org, matthieu.baerts@tessares.net, mpe@ellerman.id.au, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- I sent this mail praying it will found you in a good condition of
-health, since I myself are in a very critical health condition in
-which I sleep every night without knowing if I may be alive to see the
-next day.I'm Mrs.Monika John Carlsen, wife of late Mr John Carlsen, a
-widow suffering from long time illness.i have some funds i inherited
-from my late husband, the sum of (elevenmilliondollars) my Doctor told
-me recently that I have serious sickness which is cancer problem. What
-disturbs me most is my stroke sickness.Having known my condition,I
-decided to donate this fund to a good person that will utilize it the
-way i am going to instruct herein.I need a very honest and God fearing
-person who can claim this money and use it for Charity works,for
-orphanages,widows and also build schools for less privileges that will
-be named after my late husband if possible and to promote the word of
-God and the effort that the house of God is maintained.
+On 2021-11-01 15:59, Zhaoyu Liu wrote:
+> When "make tags", it prompts a warning:
+> 
+>     ctags: Warning: drivers/pci/controller/pcie-apple.c:150:
+>     null expansion of name pattern "\1"
+> 
+> The reason is that there is an indentation beside arguments of
+> DECLARE_BITMAP, but it can parsed normally by gtags. It's also
+> allowed in C.
+> 
+> So fix this regex temporarily, and wait for better solutions
+> applied to other regexs.
+> 
+> Reviewed-by: Marc Zyngier <maz@kernel.org>
 
-I do not want a situation where this money will be used in an ungodly
-manner.That's why I'm taking this decision. I'm not afraid of death so
-I know where I'm going.I accept this decision because I do not have
-any child who will inherit this money after I die. Please I want your
-sincerely and urgent answer to know if you will be able to execute
-this project, and I will give you more information on how the fund
-will be transferred to your bank account.I'm waiting for your reply.
+No, please! I never reviewed this patch. I *suggested*i it [1]
+as a potential avenue for improvement.
 
-Best Regards,
-Mrs. Monika John Carlsen
+You cannot put this tag on a patch unless someone explicitly
+grants it.
+
+> Signed-off-by: Zhaoyu Liu <zackary.liu.pro@gmail.com>
+> ---
+>  scripts/tags.sh | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/scripts/tags.sh b/scripts/tags.sh
+> index b24bfaec6290..7e5f19391f20 100755
+> --- a/scripts/tags.sh
+> +++ b/scripts/tags.sh
+> @@ -186,7 +186,7 @@ regex_c=(
+>  
+> 	'/\<DEFINE_\(RT_MUTEX\|MUTEX\|SEMAPHORE\|SPINLOCK\)(\([[:alnum:]_]*\)/\2/v/'
+>  	'/\<DEFINE_\(RAW_SPINLOCK\|RWLOCK\|SEQLOCK\)(\([[:alnum:]_]*\)/\2/v/'
+>  	'/\<DECLARE_\(RWSEM\|COMPLETION\)(\([[:alnum:]_]\+\)/\2/v/'
+> -	'/\<DECLARE_BITMAP(\([[:alnum:]_]*\)/\1/v/'
+> +	'/\<DECLARE_BITMAP([[:space:]]*\([[:alnum:]_]*\)/\1/v/'
+>  	'/\(^\|\s\)\(\|L\|H\)LIST_HEAD(\([[:alnum:]_]*\)/\3/v/'
+>  	'/\(^\|\s\)RADIX_TREE(\([[:alnum:]_]*\)/\2/v/'
+>  	'/\<DEFINE_PER_CPU([^,]*, *\([[:alnum:]_]*\)/\1/v/'
+
+More importantly, and assuming this is the correct approach,
+why should we limit this to DECLARE_BITMAP()?
+
+Thanks,
+
+         M.
+
+[1] https://lore.kernel.org/r/878ry89nfp.wl-maz@kernel.org
+-- 
+Jazz is not dead. It just smells funny...
