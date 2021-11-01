@@ -2,112 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D77FD442277
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 22:17:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C46B44227E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 22:20:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230322AbhKAVTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 17:19:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229712AbhKAVTR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 17:19:17 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 223F0C061714
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 14:16:43 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id c28so38739993lfv.13
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 14:16:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=b8vfSiLQfcV8LSE/0VZN9nVymiWfQcf3HwDo3/s+A28=;
-        b=Nq1P/t/kTMIhHA/oVJQEreCbMYA1lLPseP1YwRnBgkI+rwLrkUnvCwRE5vK8d+UrWb
-         MYWBvzpASJ6sYAnkGmmhJG91PeyumZXs75AUf9oA3+gvZyaIwKzA9V7La+eusnHHoKYm
-         ymfuDesBPwWtB570ovAO0NARSsUWyH+QCYLtw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=b8vfSiLQfcV8LSE/0VZN9nVymiWfQcf3HwDo3/s+A28=;
-        b=S20wzXaDTM4jXqDqpFuKAfyvaFcix/qsxcMkYjV8d9OOy2bX9SZotPFxHJTM9MXuPC
-         4F7Cm864L0A6dh2fuhO39ipO0oKA/QrqCzO5RCrUDpuASZDolbpiFkPqPylckiHaOWwh
-         GTo7o8dEpmXVdJIk52cpy2DheH6DLL4SsGKkTt2GO4qGdgnNd/HWvlX8KR/Yx1TIQj5+
-         kmSVa/9ItiakfQR0WPyaDHi0eVa1DFg0FeE9kEUjvliP5RPt6cbzIrXG1biROuZ194Oo
-         JdGit4H5AuVFQDl1tj0uKnlJF3h2LicmssqVdT7CBtRq+om2pH87PbOR8zovC9DSS2fV
-         CHEg==
-X-Gm-Message-State: AOAM532C33eampPTnOwiIZ8xLVkjyerndMvNCJW6NDymn1nfKJ9EjmOx
-        HmTkfkG4ZEYDO4PfLE9+KBwhjO0/nYYOgKiw
-X-Google-Smtp-Source: ABdhPJzQFfl8ZXrMmLKsBoe0FWt2edwYdkE0Q+9WHPpvtiFejunzQPahTD5mUsmhv79eSJew3qyOKQ==
-X-Received: by 2002:a05:6512:230b:: with SMTP id o11mr32595092lfu.490.1635801401230;
-        Mon, 01 Nov 2021 14:16:41 -0700 (PDT)
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
-        by smtp.gmail.com with ESMTPSA id f4sm1508525lfr.43.2021.11.01.14.16.40
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Nov 2021 14:16:40 -0700 (PDT)
-Received: by mail-lf1-f44.google.com with SMTP id f3so30648871lfu.12
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 14:16:40 -0700 (PDT)
-X-Received: by 2002:a19:ad0c:: with SMTP id t12mr29903941lfc.173.1635801399851;
- Mon, 01 Nov 2021 14:16:39 -0700 (PDT)
-MIME-Version: 1.0
-References: <YX/AmFgkQ0AEqDaG@zn.tnic>
-In-Reply-To: <YX/AmFgkQ0AEqDaG@zn.tnic>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 1 Nov 2021 14:16:24 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiNyR-cAxicOD6nkRQNw-q+uzFvB3hpA-s=7asEKom=og@mail.gmail.com>
-Message-ID: <CAHk-=wiNyR-cAxicOD6nkRQNw-q+uzFvB3hpA-s=7asEKom=og@mail.gmail.com>
-Subject: Re: [GIT PULL (not really)] x86/core for v5.16
-To:     Borislav Petkov <bp@suse.de>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S230460AbhKAVWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 17:22:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47570 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229541AbhKAVWd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 17:22:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 0C49060E9B;
+        Mon,  1 Nov 2021 21:20:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635801600;
+        bh=KBET1oAU8zZ5Q5HNRA6Wr6CZcZA4+U56inGr0G9V+fI=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=Im9g3uQhdXTZlZKd56MaKANVBx/+NejQxYyguJTdVQNyB4ADQZWBDB7WdcUbiCXwE
+         J7g1KCdnhlTic/IoigqwIyxFvcl10Ni3YRti9Wob885Th8y9DnG9UkAzx+8KXF+vYb
+         IqoSk8INqsGJILde9tn8vkq8E0zh/F4uzsBGVRgQlPTKakOmwVLCFynucr7iLEyGWT
+         MFZSVeu0f17AiIKde5PKg1irFJnafWJPqOKLcelMDIAyrSuD2nao7/0hiIt/8UvKrQ
+         Lkrts/KQfV7jOnK4FKKjXMyWH7A+bvyVMUa1j40CKGAVm8my6r33GcI/MDdC+M3A3o
+         95UynagqqPmnw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id ECB1560A0F;
+        Mon,  1 Nov 2021 21:19:59 +0000 (UTC)
+Subject: Re: [GIT pull] irq/core for v5.16-rc1
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <163572864256.3357115.931779940195622047.tglx@xen13>
+References: <163572864256.3357115.931779940195622047.tglx@xen13>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <163572864256.3357115.931779940195622047.tglx@xen13>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq-core-2021-10-31
+X-PR-Tracked-Commit-Id: 2258a6fc33d56227a981a45069fc651d85a0076f
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 5a47ebe98e6e5113ea8213d019a794d5851fbd46
+Message-Id: <163580159991.7741.9907206988143867308.pr-tracker-bot@kernel.org>
+Date:   Mon, 01 Nov 2021 21:19:59 +0000
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, x86@kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 1, 2021 at 3:25 AM Borislav Petkov <bp@suse.de> wrote:
->
-> so this is not really a pull request but more of a question on the
-> process. I have merged the x86/cc branch into this branch I'm sending to
-> you - x86/core - and when I generate the diffstat with git request-pull,
-> it adds the changes of the merged branch x86/cc too, of course.
->
-> I can doctor the diffstat and the merge message by doing
->
->  git diff --stat ^x86/cc x86_core_for_v5.16_rc1
->
-> see below, so that the merged branch's changes are not there.
->
-> But I'm not sure if this is the right thing to do. Especially if you do
-> not merge x86/cc first - then the below diffstat becomes wrong.
+The pull request you sent on Mon,  1 Nov 2021 02:15:57 +0100 (CET):
 
-So other developers do this kind of thing fairly regularly, because
-they have some "core branch" that does the basic core development
-(say, a driver subsystem), and then they have other branches (eg the
-lowlevel drivers themselves etc) that depended on the core work but
-are sent as individual pull requests to keep the conceptual separation
-alive, and make it easier to review.
+> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq-core-2021-10-31
 
-The way to do it tends to be:
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/5a47ebe98e6e5113ea8213d019a794d5851fbd46
 
- (a) make it clear that some pull request depends on a previous one,
-so that I'm aware of it, and don't do them out of order and get
-confused
+Thank you!
 
- (b) when you have a series of pull requests that aren't independent,
-create the series of pulls yourself in a temporary tree, and generate
-the pull request from that series, with the previous merge always as
-the "base".
-
-The reason for (a) is obvious, and the reason for (b) is that then
-each pull request automatically gets the right shortlog and diffstat.
-
-Of course, if this is the only time you expect to haev this kind of
-dependency, you don't need to have much of a process in place, and a
-hacky manual one-time thing like the above works fine too.
-
-And in general, the more independent the pull request can be, the
-better. But having two or more branches that have some serial
-dependency certainly isn't unheard of or wrong either.  It happens.
-
-             Linus
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
