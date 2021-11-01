@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF1744417D5
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:39:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C3A74418F8
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:51:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233231AbhKAJkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:40:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43770 "EHLO mail.kernel.org"
+        id S235161AbhKAJxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:53:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51418 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232033AbhKAJiB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:38:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EF43260F4F;
-        Mon,  1 Nov 2021 09:27:07 +0000 (UTC)
+        id S234775AbhKAJtC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:49:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 203F761205;
+        Mon,  1 Nov 2021 09:31:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758828;
-        bh=CDMlvG5duSBUuvRV8fQFE52vESjelhXLk01PF/XH+Hc=;
+        s=korg; t=1635759094;
+        bh=fZVerNpCBZyP9MJ/63mzMn5VUC7cc2H05bLULyo8nNc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YPu5L9M4i1CyS8BZB4/cD35z0sUOrQ85hr0lpwj98wQRQBx+zXjiJlh7VXxUgRIhc
-         KmVMPYJYcgdzL9CF0REHU9jsv1dAulgHWh+EMMhGXJumPFnd93M7ugVh2Li4mV97UQ
-         WvCBLVKdOdqCCzacUiTTxyqPIp5PZ0ArfuhWgfVQ=
+        b=dQkHL9wOA2iVMfX+4vZEPMURPX/Xpt0HM6OiuZGBZXGLQbSucmqxSdb9c++gIRoVr
+         ZsQvnvqsgWOqGMNjden0G/1N42+/p/aeZh9S0xGyXQTpAhxXng2LYRaj+efC8cOtdW
+         +DklO6z1Esjl6OIt0q3C3ESkn8bxlXpeUGD5afqQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Song Liu <songliubraving@fb.com>,
-        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 5.10 77/77] perf script: Check session->header.env.arch before using it
-Date:   Mon,  1 Nov 2021 10:18:05 +0100
-Message-Id: <20211101082527.560848483@linuxfoundation.org>
+        stable@vger.kernel.org, Matthew Rosato <mjrosato@linux.ibm.com>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Michael Mueller <mimu@linux.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 113/125] KVM: s390: clear kicked_mask before sleeping again
+Date:   Mon,  1 Nov 2021 10:18:06 +0100
+Message-Id: <20211101082554.460781400@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082511.254155853@linuxfoundation.org>
-References: <20211101082511.254155853@linuxfoundation.org>
+In-Reply-To: <20211101082533.618411490@linuxfoundation.org>
+References: <20211101082533.618411490@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,56 +43,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Song Liu <songliubraving@fb.com>
+From: Halil Pasic <pasic@linux.ibm.com>
 
-commit 29c77550eef31b0d72a45b49eeab03b8963264e8 upstream.
+[ Upstream commit 9b57e9d5010bbed7c0d9d445085840f7025e6f9a ]
 
-When perf.data is not written cleanly, we would like to process existing
-data as much as possible (please see f_header.data.size == 0 condition
-in perf_session__read_header). However, perf.data with partial data may
-crash perf. Specifically, we see crash in 'perf script' for NULL
-session->header.env.arch.
+The idea behind kicked mask is that we should not re-kick a vcpu that
+is already in the "kick" process, i.e. that was kicked and is
+is about to be dispatched if certain conditions are met.
 
-Fix this by checking session->header.env.arch before using it to determine
-native_arch. Also split the if condition so it is easier to read.
+The problem with the current implementation is, that it assumes the
+kicked vcpu is going to enter SIE shortly. But under certain
+circumstances, the vcpu we just kicked will be deemed non-runnable and
+will remain in wait state. This can happen, if the interrupt(s) this
+vcpu got kicked to deal with got already cleared (because the interrupts
+got delivered to another vcpu). In this case kvm_arch_vcpu_runnable()
+would return false, and the vcpu would remain in kvm_vcpu_block(),
+but this time with its kicked_mask bit set. So next time around we
+wouldn't kick the vcpu form __airqs_kick_single_vcpu(), but would assume
+that we just kicked it.
 
-Committer notes:
+Let us make sure the kicked_mask is cleared before we give up on
+re-dispatching the vcpu.
 
-If it is a pipe, we already assume is a native arch, so no need to check
-session->header.env.arch.
-
-Signed-off-by: Song Liu <songliubraving@fb.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: kernel-team@fb.com
-Cc: stable@vger.kernel.org
-Link: http://lore.kernel.org/lkml/20211004053238.514936-1-songliubraving@fb.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 9f30f6216378 ("KVM: s390: add gib_alert_irq_handler()")
+Reported-by: Matthew Rosato <mjrosato@linux.ibm.com>
+Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
+Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
+Reviewed-by: Michael Mueller <mimu@linux.ibm.com>
+Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+Link: https://lore.kernel.org/r/20211019175401.3757927-2-pasic@linux.ibm.com
+Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/builtin-script.c |   12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ arch/s390/kvm/kvm-s390.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/tools/perf/builtin-script.c
-+++ b/tools/perf/builtin-script.c
-@@ -3820,11 +3820,15 @@ int cmd_script(int argc, const char **ar
- 		goto out_delete;
+diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
+index 8580543c5bc3..46ad1bdd53a2 100644
+--- a/arch/s390/kvm/kvm-s390.c
++++ b/arch/s390/kvm/kvm-s390.c
+@@ -3341,6 +3341,7 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
  
- 	uname(&uts);
--	if (data.is_pipe ||  /* assume pipe_mode indicates native_arch */
--	    !strcmp(uts.machine, session->header.env.arch) ||
--	    (!strcmp(uts.machine, "x86_64") &&
--	     !strcmp(session->header.env.arch, "i386")))
-+	if (data.is_pipe) { /* Assume pipe_mode indicates native_arch */
- 		native_arch = true;
-+	} else if (session->header.env.arch) {
-+		if (!strcmp(uts.machine, session->header.env.arch))
-+			native_arch = true;
-+		else if (!strcmp(uts.machine, "x86_64") &&
-+			 !strcmp(session->header.env.arch, "i386"))
-+			native_arch = true;
-+	}
+ int kvm_arch_vcpu_runnable(struct kvm_vcpu *vcpu)
+ {
++	clear_bit(vcpu->vcpu_idx, vcpu->kvm->arch.gisa_int.kicked_mask);
+ 	return kvm_s390_vcpu_has_irq(vcpu, 0);
+ }
  
- 	script.session = session;
- 	script__setup_sample_type(&script);
+-- 
+2.33.0
+
 
 
