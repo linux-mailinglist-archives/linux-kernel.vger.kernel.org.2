@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11A1644187A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:48:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6FCF441877
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:45:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232253AbhKAJsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:48:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48004 "EHLO mail.kernel.org"
+        id S234312AbhKAJr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:47:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48030 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234073AbhKAJoD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234074AbhKAJoD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 1 Nov 2021 05:44:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 59725613AB;
-        Mon,  1 Nov 2021 09:29:16 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A8043613A0;
+        Mon,  1 Nov 2021 09:29:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758956;
-        bh=RmgLSzd5z0bUGJsedzcOVjdV9/m3Yv1GbbKzfCaS6a4=;
+        s=korg; t=1635758959;
+        bh=OHa/Enrm9r8tXMOOH05HAbdva9L3ZCVR0alYtEzSPcA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hBlOZ1u9J3MUt2nrrnn3fCLpTz8nUzJ+d9UNK+7quITnZHPT+7gGofN0LK285XsVk
-         cuIEdRxveA5l6TNlcPOm8OPrXFRqrAaCDwUG7vycoMidn3oiILvzkx/1qiBfu2cn9H
-         9KnZ32QLTJzyxH2grdqGUb7jUGjeRHDLAl1EyZQ8=
+        b=A2JhK22BuAGLTvz5GyDJEHtTezITbrfXgbRSXrzyyIpsLyUWuI16jT/sZSz4ryJ4A
+         ZEUk6Aif7Q7/xgw2Csa1Ilxnz/FjiplqdhWCjH5reHV15KTGD5desMPQIOdRhaZmVq
+         AEGyibvHo9x+VLbp6nCEP7HMuZX9vaSnlkWlt8x8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ahmad Othman <ahmad.othman@amd.com>,
+        stable@vger.kernel.org, Aric Cyr <Aric.Cyr@amd.com>,
+        Eric Yang <eric.yang2@amd.com>,
         Agustin Gutierrez Sanchez <agustin.gutierrez@amd.com>,
-        Nikola Cornij <nikola.cornij@amd.com>,
+        Jake Wang <haonan.wang2@amd.com>,
         Daniel Wheeler <daniel.wheeler@amd.com>,
         Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.14 053/125] drm/amd/display: Increase watermark latencies for DCN3.1
-Date:   Mon,  1 Nov 2021 10:17:06 +0100
-Message-Id: <20211101082543.204059478@linuxfoundation.org>
+Subject: [PATCH 5.14 054/125] drm/amd/display: Moved dccg init to after bios golden init
+Date:   Mon,  1 Nov 2021 10:17:07 +0100
+Message-Id: <20211101082543.430391486@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211101082533.618411490@linuxfoundation.org>
 References: <20211101082533.618411490@linuxfoundation.org>
@@ -42,69 +43,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nikola Cornij <nikola.cornij@amd.com>
+From: Jake Wang <haonan.wang2@amd.com>
 
-commit dd8cb18906d97b2916fde42d32d915ae363c7e55 upstream.
+commit 2ef8ea23942f4c2569930c34e7689a0cb1b232cc upstream.
 
-[why]
-The original latencies were causing underflow in some modes
+[Why]
+bios_golden_init will override dccg_init during init_hw.
 
-[how]
-Replace with the up-to-date watermark values based on new measurments
+[How]
+Move dccg_init to after bios_golden_init.
 
-Reviewed-by: Ahmad Othman <ahmad.othman@amd.com>
+Reviewed-by: Aric Cyr <Aric.Cyr@amd.com>
+Reviewed-by: Eric Yang <eric.yang2@amd.com>
 Acked-by: Agustin Gutierrez Sanchez <agustin.gutierrez@amd.com>
-Signed-off-by: Nikola Cornij <nikola.cornij@amd.com>
+Signed-off-by: Jake Wang <haonan.wang2@amd.com>
 Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/amd/display/dc/clk_mgr/dcn31/dcn31_clk_mgr.c |   16 +++++------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ drivers/gpu/drm/amd/display/dc/dcn31/dcn31_hwseq.c |    7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
---- a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn31/dcn31_clk_mgr.c
-+++ b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn31/dcn31_clk_mgr.c
-@@ -366,32 +366,32 @@ static struct wm_table lpddr5_wm_table =
- 			.wm_inst = WM_A,
- 			.wm_type = WM_TYPE_PSTATE_CHG,
- 			.pstate_latency_us = 11.65333,
--			.sr_exit_time_us = 5.32,
--			.sr_enter_plus_exit_time_us = 6.38,
-+			.sr_exit_time_us = 11.5,
-+			.sr_enter_plus_exit_time_us = 14.5,
- 			.valid = true,
- 		},
- 		{
- 			.wm_inst = WM_B,
- 			.wm_type = WM_TYPE_PSTATE_CHG,
- 			.pstate_latency_us = 11.65333,
--			.sr_exit_time_us = 9.82,
--			.sr_enter_plus_exit_time_us = 11.196,
-+			.sr_exit_time_us = 11.5,
-+			.sr_enter_plus_exit_time_us = 14.5,
- 			.valid = true,
- 		},
- 		{
- 			.wm_inst = WM_C,
- 			.wm_type = WM_TYPE_PSTATE_CHG,
- 			.pstate_latency_us = 11.65333,
--			.sr_exit_time_us = 9.89,
--			.sr_enter_plus_exit_time_us = 11.24,
-+			.sr_exit_time_us = 11.5,
-+			.sr_enter_plus_exit_time_us = 14.5,
- 			.valid = true,
- 		},
- 		{
- 			.wm_inst = WM_D,
- 			.wm_type = WM_TYPE_PSTATE_CHG,
- 			.pstate_latency_us = 11.65333,
--			.sr_exit_time_us = 9.748,
--			.sr_enter_plus_exit_time_us = 11.102,
-+			.sr_exit_time_us = 11.5,
-+			.sr_enter_plus_exit_time_us = 14.5,
- 			.valid = true,
- 		},
+--- a/drivers/gpu/drm/amd/display/dc/dcn31/dcn31_hwseq.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn31/dcn31_hwseq.c
+@@ -76,10 +76,6 @@ void dcn31_init_hw(struct dc *dc)
+ 	if (dc->clk_mgr && dc->clk_mgr->funcs->init_clocks)
+ 		dc->clk_mgr->funcs->init_clocks(dc->clk_mgr);
+ 
+-	// Initialize the dccg
+-	if (res_pool->dccg->funcs->dccg_init)
+-		res_pool->dccg->funcs->dccg_init(res_pool->dccg);
+-
+ 	if (IS_FPGA_MAXIMUS_DC(dc->ctx->dce_environment)) {
+ 
+ 		REG_WRITE(REFCLK_CNTL, 0);
+@@ -106,6 +102,9 @@ void dcn31_init_hw(struct dc *dc)
+ 		hws->funcs.bios_golden_init(dc);
+ 		hws->funcs.disable_vga(dc->hwseq);
  	}
++	// Initialize the dccg
++	if (res_pool->dccg->funcs->dccg_init)
++		res_pool->dccg->funcs->dccg_init(res_pool->dccg);
+ 
+ 	if (dc->debug.enable_mem_low_power.bits.dmcu) {
+ 		// Force ERAM to shutdown if DMCU is not enabled
 
 
