@@ -2,206 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BF76441F6C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 18:37:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 316FE441F77
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 18:41:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232212AbhKARj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 13:39:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42826 "EHLO
+        id S231181AbhKARoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 13:44:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229990AbhKARj5 (ORCPT
+        with ESMTP id S229834AbhKARoH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 13:39:57 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78870C061714
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 10:37:24 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id t17-20020a056830083100b00553ced10177so26150610ots.1
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 10:37:24 -0700 (PDT)
+        Mon, 1 Nov 2021 13:44:07 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C309C061764
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 10:41:34 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id gt5so4323212pjb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 10:41:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=google.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=G6TcqpHFdZZYSxe2t4YewV0bxg9nDBi/X+VnzoNiljk=;
-        b=iEr27HKRHJrarwIO9n1LC6MIkFyDYM3qab0PilgmMleud4k76Jdg5s/365sHRMPZ/D
-         e19c2oqdGLNAGEqGcy7D6LcbUAVUsUH1lYOVd3DJ6PYvICXht4D1ApZCcgQU7Y3ma7n2
-         oMDEct1WQXGNrZCmE86+3JMZLZ4oMAOFk/PbvGWCw4UURvj0JToDDZsplnHM2jAwxxUr
-         QTDliYlDK4VbY1npus73FgW4MxijgbG8fRwMaEgtq1vYrzH+ECVIs/5LgqdgcOxbna3N
-         JJkQrSLgsTWSGeAaLZUJrHvYQe4e0iWL9UailvKihOCn2bTR04f6uh9CcBMOGHlfXJ5V
-         RRlg==
+        bh=rtTqRA7823rLhhDHR/FeABtCXlD+vQwUZXFhSKbl7nw=;
+        b=otcBvN/3IcuDrr15J0K5CvKDj9ic0jccTokbwB/sVPFst2f0LLD/XC7PPmPO9eJXRu
+         P2OBNUe1RlpO0zOo26l/3DPAdKxfcfvQY3tyTT+VRt2u50F02VgF8OTA49ToznF2ILGt
+         Yy6m85iKMGx1XCrOjugojlIHRrq3kXSGg8wFybO1VALqYGLus50IE17TDpBh8OqfqKK1
+         AAKVEsJcdEBK8202Jfb1yydMhJbNy9mJ8dChJ1pRBEEAKk0vwWevUCT/VxYAjLKOhhmx
+         ip94OeR4ZQJbCq2qfgBZUaSsgLQoBT6PDF+7fUOqfu8QIWy5qh2RFzJV0Hmhvl6+AMgp
+         M0Sw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=G6TcqpHFdZZYSxe2t4YewV0bxg9nDBi/X+VnzoNiljk=;
-        b=dcQLC0fUc6ce+CIluZVPKxRHyHK/RDeSAciHFoFKSXB0JMeWwlHhniUCybhjCW+d6Q
-         PkFV/Sx7zpHQFe6MVd6G+WAz7JyKT9NyEOyrYH+B4VCv/fT4AGOeKTXxH4HKVZxFDRay
-         Nlx5H3b+LEYDc3tgr610E6krR/ppXElaaYY0M2V1rFSw+FkA55rMpqYl2PORgxbmB+87
-         qwx4MYDVrZml41K60j7sKWIA7YezYKDEW08xIMPe6n+XC3Urnt1iMS5Om6TW/wT6k79n
-         DbU5PvUtmN8bTaVutnEnqz59CYTNe7D+9b1o6LYepiHD7w4uIdCoaj7vrzetiH3dYPz/
-         x6EQ==
-X-Gm-Message-State: AOAM532+CIc9M1Vim4wpu3FbFTeSlX/u0L2gnkNdaEGktQ1vGxTsBIdz
-        InLcPiWsVJbhENhp21BziOQbzoB8r935ULcs
-X-Google-Smtp-Source: ABdhPJw9L2dzbBwVxfG/mj16FU1rikZcWY/vLQoxgaaNK7FBf6Xg0Nh0F4ZldiiKvS6zn+0IIw4r9w==
-X-Received: by 2002:a05:6830:144d:: with SMTP id w13mr11475596otp.163.1635788243767;
-        Mon, 01 Nov 2021 10:37:23 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id bb33sm1139550oob.2.2021.11.01.10.37.23
+        bh=rtTqRA7823rLhhDHR/FeABtCXlD+vQwUZXFhSKbl7nw=;
+        b=JhVGZ7lp9Fkw82v4/nu4J1VGIZXDN4FFsla4xhnuye6fqBRmsyW0SfuXqjHomGhdKm
+         L7xhYqziDd33s1OKLjt5V+zBtpcDq0f5iReazEGKrBOSUHl3ozFj8HSiHO8gzkOpLfWv
+         j3A+yRBZ2DGeCJqRUbCl2hz0Yr4N2isIeqx1q8ZYeMH2cNShTHfU1kEe1atTZMSwfS2O
+         8M/GBiNASBWmuGd+Pa+o+gk8JUHiIq3A8OuGDPKH+1lBLqWBGKwx4Jg+IrVK/JeUIBtv
+         NLeGj1sFq8YgkxDPg3Wy3H+0LQ4YtfmsxMFsBkr16/M/GlCWEnWYMC74I0Y6Vo9xdw+O
+         aI6Q==
+X-Gm-Message-State: AOAM531klcfnkS8djHVKRBPzkyBmt5ym2f2PQd9c2a82tk9Sp//Ab6qu
+        Tx2D1Oc9XU2gsHBZ4iGyju3QWg==
+X-Google-Smtp-Source: ABdhPJyQ2rd8AtzfLKSk7pcRIWMkAF0QH30KhY5NHLgIkgccLRDTnxh33KsvfNWVKvhaR3vGZrvloQ==
+X-Received: by 2002:a17:90b:3ec6:: with SMTP id rm6mr365778pjb.27.1635788493615;
+        Mon, 01 Nov 2021 10:41:33 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id cv1sm86275pjb.48.2021.11.01.10.41.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 10:37:23 -0700 (PDT)
-Date:   Mon, 1 Nov 2021 12:37:18 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com, julien.massot@iot.bzh
-Subject: Re: [PATCH v6 06/10] rpmsg: Introduce rpmsg_create_default_ept
- function
-Message-ID: <YYAlzvXns4Ejxa6S@builder.lan>
-References: <20211022125426.2579-1-arnaud.pouliquen@foss.st.com>
- <20211022125426.2579-7-arnaud.pouliquen@foss.st.com>
+        Mon, 01 Nov 2021 10:41:33 -0700 (PDT)
+Date:   Mon, 1 Nov 2021 17:41:29 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        David Matlack <dmatlack@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Jing Zhang <jingzhangos@google.com>
+Subject: Re: [PATCH v2 26/43] KVM: VMX: Read Posted Interrupt "control"
+ exactly once per loop iteration
+Message-ID: <YYAmyUZhmcSntUza@google.com>
+References: <20211009021236.4122790-1-seanjc@google.com>
+ <20211009021236.4122790-27-seanjc@google.com>
+ <b078cce30f86672d7d8f8eaa0adc47d24def24e2.camel@redhat.com>
+ <YXrH/ZZBOHrWHz4j@google.com>
+ <20a17d75855dfb9bd496466fcd9f14baab0b2bda.camel@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211022125426.2579-7-arnaud.pouliquen@foss.st.com>
+In-Reply-To: <20a17d75855dfb9bd496466fcd9f14baab0b2bda.camel@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 22 Oct 07:54 CDT 2021, Arnaud Pouliquen wrote:
-
-> By providing a callback in the rpmsg_driver structure, the rpmsg devices
-> can be probed with a default endpoint created.
+On Mon, Nov 01, 2021, Maxim Levitsky wrote:
+> On Thu, 2021-10-28 at 15:55 +0000, Sean Christopherson wrote:
+> > On Thu, Oct 28, 2021, Maxim Levitsky wrote:
+> > > On Fri, 2021-10-08 at 19:12 -0700, Sean Christopherson wrote:
+> > > I wish there was a way to mark fields in a struct, as requiring 'READ_ONCE' on them
+> > > so that compiler would complain if this isn't done, or automatically use 'READ_ONCE'
+> > > logic.
+> > 
+> > Hmm, I think you could make an argument that ON and thus the whole "control"
+> > word should be volatile.  AFAICT, tagging just "on" as volatile actually works.
+> > There's even in a clause in Documentation/process/volatile-considered-harmful.rst
+> > that calls this out as a (potentially) legitimate use case.
+> > 
+> >   - Pointers to data structures in coherent memory which might be modified
+> >     by I/O devices can, sometimes, legitimately be volatile.
+> > 
+> > That said, I think I actually prefer forcing the use of READ_ONCE.  The descriptor
+> > requires more protections than what volatile provides, namely that all writes need
+> > to be atomic.  So given that volatile alone isn't sufficient, I'd prefer to have
+> > the code itself be more self-documenting.
 > 
-> In this case, it is not possible to associated to this endpoint private data
-> that could allow the driver to retrieve the context.
+> I took a look at how READ_ONCE/WRITE_ONCE is implemented and indeed they use volatile
+> (the comment above __READ_ONCE is worth gold...), so there is a bit of contradiction:
 > 
-> This helper function allows rpmsg drivers to create a default endpoint
-> on runtime with an associated private context.
-> 
-> For example, a driver might create a context structure on the probe and
-> want to provide that context as private data for the default rpmsg
-> callback.
-> 
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Tested-by: Julien Massot <julien.massot@iot.bzh>
-> ---
->  drivers/rpmsg/rpmsg_core.c | 51 ++++++++++++++++++++++++++++++++++++++
->  include/linux/rpmsg.h      | 13 ++++++++++
->  2 files changed, 64 insertions(+)
-> 
-> diff --git a/drivers/rpmsg/rpmsg_core.c b/drivers/rpmsg/rpmsg_core.c
-> index 53162038254d..92557c49d460 100644
-> --- a/drivers/rpmsg/rpmsg_core.c
-> +++ b/drivers/rpmsg/rpmsg_core.c
-> @@ -132,6 +132,57 @@ void rpmsg_destroy_ept(struct rpmsg_endpoint *ept)
->  }
->  EXPORT_SYMBOL(rpmsg_destroy_ept);
->  
-> +/**
-> + * rpmsg_create_default_ept() - create a default rpmsg_endpoint for a rpmsg device
-> + * @rpdev: rpmsg channel device
-> + * @cb: rx callback handler
-> + * @priv: private data for the driver's use
-> + * @chinfo: channel_info with the local rpmsg address to bind with @cb
-> + *
-> + * On register_rpmsg_driver if no callback is provided in the rpmsg_driver structure,
-> + * no endpoint is created when the device is probed by the rpmsg bus.
-> + *
-> + * This function returns a pointer to the default endpoint if already created or creates
-> + * an endpoint and assign it as the default endpoint of the rpmsg device.
+> volatile-considered-harmful.rst states not to mark struct members volatile since
+> you usually need more that than (very true often) and yet, I also heard that
+> READ_ONCE/WRITE_ONCE is very encouraged to be used to fields that are used in lockless
+> algorithms, even when not strictly needed,
+> so why not to just mark the field and then use it normally? I guess that
+> explicit READ_ONCE/WRITE_ONCE is much more readable/visible that a volatile
+> in some header file.
 
-But if the driver didn't specify a callback, when would this ever
-happen?
+Are you asking about this PI field in particular, or for any field in general?
 
-> + *
-> + * Drivers should provide their @rpdev channel (so the new endpoint would belong
-> + * to the same remote processor their channel belongs to), an rx callback
-> + * function, an optional private data (which is provided back when the
-> + * rx callback is invoked), and an address they want to bind with the
-> + * callback. If @addr is RPMSG_ADDR_ANY, then rpmsg_create_ept will
-> + * dynamically assign them an available rpmsg address (drivers should have
-> + * a very good reason why not to always use RPMSG_ADDR_ANY here).
-> + *
-> + * Returns a pointer to the endpoint on success, or NULL on error.
+In this particular case, visibility and documentation is really the only difference,
+functionally the result is the same.  But that's also very much related to why this
+case gets the exception listed above.  The "use it normally" part is also why I
+don't want to tag the field volatile since writing the field absolutely cannot be
+done "normally", it must be done atomically, and volatile doesn't capture that
+detail.
 
-Correct kerneldoc is "Return: ..."
+If you're asking about fields in general, the "volatile is harmful" guideline is
+to deter usage of volatile for cases where the field/variable in question is not
+intrinsically volatile.  As the docs call out, using volatile in those cases often
+leads to worse code generation because the compiler is disallowed from optimizing
+accesses that are protected through other mechanisms.
 
-> + */
-> +struct rpmsg_endpoint *rpmsg_create_default_ept(struct rpmsg_device *rpdev,
-> +						rpmsg_rx_cb_t cb, void *priv,
-> +						struct rpmsg_channel_info chinfo)
-> +{
-> +	struct rpmsg_endpoint *ept;
-> +
-> +	if (WARN_ON(!rpdev))
-> +		return NULL;
-> +
-> +	/* It does not make sense to create a default endpoint without a callback. */
-> +	if (!cb)
-> +		return NULL;
-> +
-> +	if (rpdev->ept)
-> +		return rpdev->ept;
-
-How does the caller know if they should call rpmsg_destroy_ept() on the
-returned ept or not?
-
-> +
-> +	ept = rpdev->ops->create_ept(rpdev, cb, priv, chinfo);
-> +	if (!ept)
-> +		return NULL;
-> +
-> +	/* Assign the new endpoint as default endpoint */
-> +	rpdev->ept = ept;
-> +	rpdev->src = ept->addr;
-> +
-> +	return ept;
-> +}
-> +EXPORT_SYMBOL(rpmsg_create_default_ept);
-> +
->  /**
->   * rpmsg_send() - send a message across to the remote processor
->   * @ept: the rpmsg endpoint
-> diff --git a/include/linux/rpmsg.h b/include/linux/rpmsg.h
-> index 6fe51549d931..b071ac17ff78 100644
-> --- a/include/linux/rpmsg.h
-> +++ b/include/linux/rpmsg.h
-> @@ -172,6 +172,9 @@ void rpmsg_destroy_ept(struct rpmsg_endpoint *);
->  struct rpmsg_endpoint *rpmsg_create_ept(struct rpmsg_device *,
->  					rpmsg_rx_cb_t cb, void *priv,
->  					struct rpmsg_channel_info chinfo);
-> +struct rpmsg_endpoint *rpmsg_create_default_ept(struct rpmsg_device *rpdev,
-
-Is there ever a case where someone outside drivers/rpmsg/ should call
-this function?
-
-Regards,
-Bjorn
-
-> +						rpmsg_rx_cb_t cb, void *priv,
-> +						struct rpmsg_channel_info chinfo);
->  
->  int rpmsg_send(struct rpmsg_endpoint *ept, void *data, int len);
->  int rpmsg_sendto(struct rpmsg_endpoint *ept, void *data, int len, u32 dst);
-> @@ -236,6 +239,16 @@ static inline struct rpmsg_endpoint *rpmsg_create_ept(struct rpmsg_device *rpdev
->  	return NULL;
->  }
->  
-> +static inline struct rpmsg_endpoint *rpmsg_create_default_ept(struct rpmsg_device *rpdev,
-> +							      rpmsg_rx_cb_t cb, void *priv,
-> +							      struct rpmsg_channel_info chinfo)
-> +{
-> +	/* This shouldn't be possible */
-> +	WARN_ON(1);
-> +
-> +	return NULL;
-> +}
-> +
->  static inline int rpmsg_send(struct rpmsg_endpoint *ept, void *data, int len)
->  {
->  	/* This shouldn't be possible */
-> -- 
-> 2.17.1
-> 
+A good example in x86 KVM is the READ_ONCE(sp->unsync) in mmu_try_to_unsync_pages() to
+force the compiler to emit a load of sp->unsync after acquiring mmu_unsync_pages_lock.
+Tagging "unsync" as volatile is unnecessary since the vast majority of its usage is
+protected by holding a spinlock for write, and would prevent optimizing references in
+kvm_mmu_get_page() and other flows that are protected by mmu_lock in the legacy MMU.
