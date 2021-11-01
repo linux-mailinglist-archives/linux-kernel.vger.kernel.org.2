@@ -2,183 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABFDE441A82
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 12:12:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55633441A84
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 12:13:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232167AbhKALPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 07:15:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21057 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232136AbhKALPA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 07:15:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635765146;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6ZFhVEO+We6qm43UDAioY1QSBCdYaZIxbYcL8uvY64Y=;
-        b=TSSXdCMgx8ouWeYKEMRiwsYC4zZCgXeqWiAY2kLLh9OYgNc2lVNtxG2OLTL6w6lwphzLbt
-        An845XCbiCFRtdKSRGLkXGGOAzHIUG4B3bDJYGTmmmhnxGeryHkL+60TdJvGl1yY+hNM5G
-        NpP5EvFC7p90xQVzDANvAEWuBlBdyiU=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-98-EQMgtpmZOJ6W0x2UbeEv3w-1; Mon, 01 Nov 2021 07:12:24 -0400
-X-MC-Unique: EQMgtpmZOJ6W0x2UbeEv3w-1
-Received: by mail-wm1-f69.google.com with SMTP id a186-20020a1c7fc3000000b00332f1a308e7so1044700wmd.3
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 04:12:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6ZFhVEO+We6qm43UDAioY1QSBCdYaZIxbYcL8uvY64Y=;
-        b=PODsmBSW+jrV3lEHr5i8IKAe+oSQo5EESiRkEVO56cGHLlliUV741s1AWsHfyV1WgT
-         lEdAHfXU89t5bTNLTR0ERDFwHxy7vykabgHp7rNu3LFS496Ty5hYL3+FJDNmHV4yITxR
-         JTd/EBPAKplMGIAl40OuRW7TzHIWFvw1AiiN3LZBL1gjCKoiYsXfjQK7M2bQqV9ze25A
-         tvOO+HGUh91Fj0NCtyyY95JO4ew+bGzG5sLQiwAWe6IT4QmHXCEVN7DC09m39r9JiFvj
-         0krFW2cMNMORoJdAosklmOH9ZmgpL0uIgav66uQQ1w0ZeSviLzAgI4AlhjRVh97tSm5O
-         xCRA==
-X-Gm-Message-State: AOAM533FUgzU/3fWFzNCriJleocqnIex573R2xJDrk7+TBL3pD4FZQ70
-        CP3z19aXGO8r2wDvmrtuSxubdtZyVdnnIeffbQebygyTZYRGXsIYNuARyhP0t/RRgqCvGWC2Yh1
-        n8I6nTRQ51f1DtVMjhD7+rbJ8
-X-Received: by 2002:a1c:8090:: with SMTP id b138mr16426507wmd.25.1635765143636;
-        Mon, 01 Nov 2021 04:12:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwisKVtWLf4fD5NwZ4Am8fKpj39xISIcWYMZ4VZQyVX9L141g3kzyjbm8B0Xz0WdH5R58pfqw==
-X-Received: by 2002:a1c:8090:: with SMTP id b138mr16426488wmd.25.1635765143448;
-        Mon, 01 Nov 2021 04:12:23 -0700 (PDT)
-Received: from redhat.com ([2a03:c5c0:107f:7087:907d:ff12:1534:78b7])
-        by smtp.gmail.com with ESMTPSA id v3sm14122663wrg.23.2021.11.01.04.12.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 04:12:22 -0700 (PDT)
-Date:   Mon, 1 Nov 2021 07:12:17 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Wu Zongyong <wuzongyong@linux.alibaba.com>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        wei.yang1@linux.alibaba.com
-Subject: Re: [PATCH v7 0/9] vDPA driver for Alibaba ENI
-Message-ID: <20211101071140-mutt-send-email-mst@kernel.org>
-References: <cover.1634870456.git.wuzongyong@linux.alibaba.com>
- <cover.1635493219.git.wuzongyong@linux.alibaba.com>
- <CACGkMEv8+1YMhXfS31CoyFuwJ-toCLXd12ny7b=Ge+3fXWNYUw@mail.gmail.com>
- <20211101062250.GA29814@L-PF27918B-1352.localdomain>
- <CACGkMEvZkdEgAFpSo1Oen5JWthSowZ7NHqnp_X5AhNt+jxuiZg@mail.gmail.com>
- <20211101081159.GA4341@L-PF27918B-1352.localdomain>
+        id S231949AbhKALP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 07:15:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42518 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230520AbhKALPy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 07:15:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D937960C41;
+        Mon,  1 Nov 2021 11:13:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1635765201;
+        bh=NispMSSM3f4yPtuU4e/ZHhw/LHg6vk+i5/TW9NlGTPY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kTWNsW0jtNaC3TAwn+fNlc4PpNdgREWDRRqW4c1qA3xN9A+NVzlwhfUEA6DFlWEDH
+         aSbHz2bTI96OzpWj7wey0p/bu3anZPdk0pB1hvdZBCkg90Vuj+uOODnVjEuauvHFCE
+         9ISy9oDDAlUyW0yRxPO9/THJ0pJpE7BmkfUOat1c=
+Date:   Mon, 1 Nov 2021 12:13:14 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Brazdil <dbrazdil@google.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] [RFC] arm64: export this_cpu_has_cap
+Message-ID: <YX/LymZ5ZwNbtjUp@kroah.com>
+References: <20211029113023.760421-1-arnd@kernel.org>
+ <9d4e09b4-47dc-ed3c-2b6d-e0d1a081e592@arm.com>
+ <YXw4H2BNx85KnLDh@arm.com>
+ <20211101090143.GA27181@willie-the-truck>
+ <db9bb430-4502-0c46-d8d7-ddb236750499@arm.com>
+ <20211101094045.GB27400@willie-the-truck>
+ <55cc7816-cc7a-3161-71cc-0c969ec131a2@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211101081159.GA4341@L-PF27918B-1352.localdomain>
+In-Reply-To: <55cc7816-cc7a-3161-71cc-0c969ec131a2@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 01, 2021 at 04:11:59PM +0800, Wu Zongyong wrote:
-> On Mon, Nov 01, 2021 at 03:02:52PM +0800, Jason Wang wrote:
-> > On Mon, Nov 1, 2021 at 2:23 PM Wu Zongyong <wuzongyong@linux.alibaba.com> wrote:
-> > >
-> > > On Mon, Nov 01, 2021 at 11:31:15AM +0800, Jason Wang wrote:
-> > > > On Fri, Oct 29, 2021 at 5:15 PM Wu Zongyong
-> > > > <wuzongyong@linux.alibaba.com> wrote:
-> > > > >
-> > > > > This series implements the vDPA driver for Alibaba ENI (Elastic Network
-> > > > > Interface) which is built based on virtio-pci 0.9.5 specification.
-> > > >
-> > > > It looks to me Michael has applied the patches, if this is the case,
-> > > > we probably need to send patches on top.
-> > >
-> > > What do you mean by saying "send patches on top"?
-> > > Sorry, I'm a newbie to contribute for kernel, could you please explain
-> > > it in detail?
+On Mon, Nov 01, 2021 at 09:52:22AM +0000, Suzuki K Poulose wrote:
+> On 01/11/2021 09:40, Will Deacon wrote:
+> > On Mon, Nov 01, 2021 at 09:34:08AM +0000, Suzuki K Poulose wrote:
+> > > On 01/11/2021 09:01, Will Deacon wrote:
+> > > > On Fri, Oct 29, 2021 at 07:06:23PM +0100, Catalin Marinas wrote:
+> > > > > On Fri, Oct 29, 2021 at 02:31:23PM +0100, Suzuki K Poulose wrote:
+> > > > > > On 29/10/2021 12:30, Arnd Bergmann wrote:
+> > > > > > > From: Arnd Bergmann <arnd@arndb.de>
+> > > > > > > 
+> > > > > > > It's now used in a coresight driver that can be a loadable module:
+> > > > > > > 
+> > > > > > > ERROR: modpost: "this_cpu_has_cap" [drivers/hwtracing/coresight/coresight-trbe.ko] undefined!
+> > > > > > > 
+> > > > > > > Fixes: 8a1065127d95 ("coresight: trbe: Add infrastructure for Errata handling")
+> > > > > > 
+> > > > > > Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> > > > > > Tested-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> > > > > > 
+> > > > > > Will, Catalin, Mathieu,
+> > > > > > 
+> > > > > > Do you have a preference on how this fix can be pulled in ? This may
+> > > > > > be safe to go via coresight tree if it is not too late. Otherwise,
+> > > > > > it could go via the arm64 tree.
+> > > > > 
+> > > > > I think Will already closed/tagged the arm64 tree for the upcoming
+> > > > > merging window, though he could take it as a fix afterwards.
+> > > > > 
+> > > > > If it doesn't conflict with the arm64 for-next/core, it's fine by me to
+> > > > > go through the coresight tree.
+> > > > > 
+> > > > > > > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> > > > > > > ---
+> > > > > > > Not sure if we actually want this to be exported, this is my local
+> > > > > > > workaround for the randconfig build bot.
+> > > > > > > ---
+> > > > > > >     arch/arm64/kernel/cpufeature.c | 1 +
+> > > > > > >     1 file changed, 1 insertion(+)
+> > > > > > > 
+> > > > > > > diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+> > > > > > > index ecbdff795f5e..beccbcfa7391 100644
+> > > > > > > --- a/arch/arm64/kernel/cpufeature.c
+> > > > > > > +++ b/arch/arm64/kernel/cpufeature.c
+> > > > > > > @@ -2864,6 +2864,7 @@ bool this_cpu_has_cap(unsigned int n)
+> > > > > > >     	return false;
+> > > > > > >     }
+> > > > > > > +EXPORT_SYMBOL(this_cpu_has_cap);
+> > > > > 
+> > > > > EXPORT_SYMBOL_GPL? I think this_cpu_has_cap() is a bit more more
+> > > > > specialised than cpus_have_const_cap().
+> > > > > 
+> > > > > With that:
+> > > > > 
+> > > > > Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+> > > > 
+> > > > Yes, at this stage I think it's best for this to go via the Coresight tree.
+> > > > So with the _GPL export:
+> > > > 
+> > > > Acked-by: Will Deacon <will@kernel.org>
+> > > > 
+> > > > If that doesn't work for some reason, I can take it next week after the
+> > > > initial arm64 queue has been merged. Please just let me know.
+> > > 
+> > > As I understand correctly, this will now need to go via arm64 tree. The
+> > > CoreSight tree changes are pulled into Greg's tree and the next it will
+> > > happen is for the next release. Usually the fixes don't end up there
+> > > during the -rc cycles. So, I believe it is better if this goes via
+> > > arm64.
 > > 
-> > I meant you probably need to send incremental patch on top of:
-> > 
-> > git://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git linux-next.
+> > Hmm, are you saying that Coresight drivers don't receive fixes outside of
+> > the merge window? That sounds sub-optimal...
 > 
-> Get it.
+> Unfortunately thats how it works today. We should fix this.
 > 
-> Thanks
+> Mathieu, Greg,
+> 
+> Do you have any thoughts on how to address this ?
 
-No need, I rebased.
+What?  That's crazy, if there are bugfixes needed of course I would take
+them during the -rc cycle, that is explicitly what it is there for!
 
-> > 
-> > Thanks
-> > 
-> > 
-> > >
-> > > Thanks
-> > > > Thanks
-> > > >
-> > > > >
-> > > > > Changes since V6:
-> > > > > - set default min vq size to 1 intead of 0
-> > > > > - enable eni vdpa driver only on X86 hosts
-> > > > > - fix some typos
-> > > > >
-> > > > > Changes since V5:
-> > > > > - remove unused codes
-> > > > >
-> > > > > Changes since V4:
-> > > > > - check return values of get_vq_num_{max,min} when probing devices
-> > > > > - disable the driver on BE host via Kconfig
-> > > > > - add missing commit message
-> > > > >
-> > > > > Changes since V3:
-> > > > > - validate VIRTIO_NET_F_MRG_RXBUF when negotiate features
-> > > > > - present F_ORDER_PLATFORM in get_features
-> > > > > - remove endian check since ENI always use litter endian
-> > > > >
-> > > > > Changes since V2:
-> > > > > - add new attribute VDPA_ATTR_DEV_MIN_VQ_SIZE instead
-> > > > >   VDPA_ATTR_DEV_F_VERSION_1 to guide users to choose correct virtqueue
-> > > > >   size as suggested by Jason Wang
-> > > > > - present ACCESS_PLATFORM in get_features callback as suggested by Jason
-> > > > >   Wang
-> > > > > - disable this driver on Big Endian host as suggested by Jason Wang
-> > > > > - fix a typo
-> > > > >
-> > > > > Changes since V1:
-> > > > > - add new vdpa attribute VDPA_ATTR_DEV_F_VERSION_1 to indicate whether
-> > > > >   the vdpa device is legacy
-> > > > > - implement dedicated driver for Alibaba ENI instead a legacy virtio-pci
-> > > > >   driver as suggested by Jason Wang
-> > > > > - some bugs fixed
-> > > > >
-> > > > > Wu Zongyong (9):
-> > > > >   virtio-pci: introduce legacy device module
-> > > > >   vdpa: fix typo
-> > > > >   vp_vdpa: add vq irq offloading support
-> > > > >   vdpa: add new callback get_vq_num_min in vdpa_config_ops
-> > > > >   vdpa: min vq num of vdpa device cannot be greater than max vq num
-> > > > >   virtio_vdpa: setup correct vq size with callbacks get_vq_num_{max,min}
-> > > > >   vdpa: add new attribute VDPA_ATTR_DEV_MIN_VQ_SIZE
-> > > > >   eni_vdpa: add vDPA driver for Alibaba ENI
-> > > > >   eni_vdpa: alibaba: fix Kconfig typo
-> > > > >
-> > > > >  drivers/vdpa/Kconfig                   |   8 +
-> > > > >  drivers/vdpa/Makefile                  |   1 +
-> > > > >  drivers/vdpa/alibaba/Makefile          |   3 +
-> > > > >  drivers/vdpa/alibaba/eni_vdpa.c        | 553 +++++++++++++++++++++++++
-> > > > >  drivers/vdpa/vdpa.c                    |  13 +
-> > > > >  drivers/vdpa/virtio_pci/vp_vdpa.c      |  12 +
-> > > > >  drivers/virtio/Kconfig                 |  10 +
-> > > > >  drivers/virtio/Makefile                |   1 +
-> > > > >  drivers/virtio/virtio_pci_common.c     |  10 +-
-> > > > >  drivers/virtio/virtio_pci_common.h     |   9 +-
-> > > > >  drivers/virtio/virtio_pci_legacy.c     | 101 ++---
-> > > > >  drivers/virtio/virtio_pci_legacy_dev.c | 220 ++++++++++
-> > > > >  drivers/virtio/virtio_vdpa.c           |  16 +-
-> > > > >  include/linux/vdpa.h                   |   6 +-
-> > > > >  include/linux/virtio_pci_legacy.h      |  42 ++
-> > > > >  include/uapi/linux/vdpa.h              |   1 +
-> > > > >  16 files changed, 917 insertions(+), 89 deletions(-)
-> > > > >  create mode 100644 drivers/vdpa/alibaba/Makefile
-> > > > >  create mode 100644 drivers/vdpa/alibaba/eni_vdpa.c
-> > > > >  create mode 100644 drivers/virtio/virtio_pci_legacy_dev.c
-> > > > >  create mode 100644 include/linux/virtio_pci_legacy.h
-> > > > >
-> > > > > --
-> > > > > 2.31.1
-> > > > >
-> > >
+It's up to the maintainer of the subsystem to send me the fixes to get
+into the -final kernel release, I don't pick them up on my own unless
+asked to by them.
 
+thanks,
+
+greg k-h
