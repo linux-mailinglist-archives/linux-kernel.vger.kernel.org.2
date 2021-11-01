@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26E93441629
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:21:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A10524417D0
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:39:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232388AbhKAJXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:23:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58580 "EHLO mail.kernel.org"
+        id S233287AbhKAJkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:40:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43604 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232070AbhKAJWQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:22:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D74EB610CA;
-        Mon,  1 Nov 2021 09:19:28 +0000 (UTC)
+        id S232620AbhKAJhs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:37:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F5D96128A;
+        Mon,  1 Nov 2021 09:26:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758369;
-        bh=TcWYGCOlpki0C81uZqZVH0QLWUlmqDkCh/gp6pjsezQ=;
+        s=korg; t=1635758809;
+        bh=RRqlQEZ47fdGBwq+opIEfcwMmp66tYLJ3Yj1NnoxAe0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XZbB8QDXuN4xWqOWi5yoB/4AS0pLwdUrw+Dphb1SCHHdOv0C6Efu2N7aNTOmNsR8L
-         fzDYXxUvhlJ1LUWnpM5eVLDjKnIAWHeisuYrhWwtfD+0iubHgKA2JBQqXB24np365A
-         N5LpUSGbW35uVY7x1iaR7i51WDpPQZy/nuGMFRwU=
+        b=IAzUG9fxCZOGpW12Nqoetg2tJ69Uk/0GIgtGtu3DkQH+uWgO5UtuYoPFTCsX05P1G
+         PggK9cMp0VUcAgcyX7v5rZvej26qyJ8c9+dRY1RMwoYsQW0uVzY5xDZHkxNrPDVbro
+         rUKBH+i7v9faAOh8/83UST0FfjdM1LIYZ6aHB3SQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 4.9 15/20] regmap: Fix possible double-free in regcache_rbtree_exit()
+        stable@vger.kernel.org, Liu Jian <liujian56@huawei.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+Subject: [PATCH 5.10 36/77] tcp_bpf: Fix one concurrency problem in the tcp_bpf_send_verdict function
 Date:   Mon,  1 Nov 2021 10:17:24 +0100
-Message-Id: <20211101082447.383804619@linuxfoundation.org>
+Message-Id: <20211101082519.419310564@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082444.133899096@linuxfoundation.org>
-References: <20211101082444.133899096@linuxfoundation.org>
+In-Reply-To: <20211101082511.254155853@linuxfoundation.org>
+References: <20211101082511.254155853@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,70 +40,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Liu Jian <liujian56@huawei.com>
 
-commit 55e6d8037805b3400096d621091dfbf713f97e83 upstream.
+commit cd9733f5d75c94a32544d6ce5be47e14194cf137 upstream.
 
-In regcache_rbtree_insert_to_block(), when 'present' realloc failed,
-the 'blk' which is supposed to assign to 'rbnode->block' will be freed,
-so 'rbnode->block' points a freed memory, in the error handling path of
-regcache_rbtree_init(), 'rbnode->block' will be freed again in
-regcache_rbtree_exit(), KASAN will report double-free as follows:
+With two Msgs, msgA and msgB and a user doing nonblocking sendmsg calls (or
+multiple cores) on a single socket 'sk' we could get the following flow.
 
-BUG: KASAN: double-free or invalid-free in kfree+0xce/0x390
-Call Trace:
- slab_free_freelist_hook+0x10d/0x240
- kfree+0xce/0x390
- regcache_rbtree_exit+0x15d/0x1a0
- regcache_rbtree_init+0x224/0x2c0
- regcache_init+0x88d/0x1310
- __regmap_init+0x3151/0x4a80
- __devm_regmap_init+0x7d/0x100
- madera_spi_probe+0x10f/0x333 [madera_spi]
- spi_probe+0x183/0x210
- really_probe+0x285/0xc30
+ msgA, sk                               msgB, sk
+ -----------                            ---------------
+ tcp_bpf_sendmsg()
+ lock(sk)
+ psock = sk->psock
+                                        tcp_bpf_sendmsg()
+                                        lock(sk) ... blocking
+tcp_bpf_send_verdict
+if (psock->eval == NONE)
+   psock->eval = sk_psock_msg_verdict
+ ..
+ < handle SK_REDIRECT case >
+   release_sock(sk)                     < lock dropped so grab here >
+   ret = tcp_bpf_sendmsg_redir
+                                        psock = sk->psock
+                                        tcp_bpf_send_verdict
+ lock_sock(sk) ... blocking on B
+                                        if (psock->eval == NONE) <- boom.
+                                         psock->eval will have msgA state
 
-To fix this, moving up the assignment of rbnode->block to immediately after
-the reallocation has succeeded so that the data structure stays valid even
-if the second reallocation fails.
+The problem here is we dropped the lock on msgA and grabbed it with msgB.
+Now we have old state in psock and importantly psock->eval has not been
+cleared. So msgB will run whatever action was done on A and the verdict
+program may never see it.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Fixes: 3f4ff561bc88b ("regmap: rbtree: Make cache_present bitmap per node")
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Link: https://lore.kernel.org/r/20211012023735.1632786-1-yangyingliang@huawei.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 604326b41a6fb ("bpf, sockmap: convert to generic sk_msg interface")
+Signed-off-by: Liu Jian <liujian56@huawei.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Acked-by: John Fastabend <john.fastabend@gmail.com>
+Link: https://lore.kernel.org/bpf/20211012052019.184398-1-liujian56@huawei.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/base/regmap/regcache-rbtree.c |    7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ net/ipv4/tcp_bpf.c |   12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
---- a/drivers/base/regmap/regcache-rbtree.c
-+++ b/drivers/base/regmap/regcache-rbtree.c
-@@ -296,14 +296,14 @@ static int regcache_rbtree_insert_to_blo
- 	if (!blk)
- 		return -ENOMEM;
+--- a/net/ipv4/tcp_bpf.c
++++ b/net/ipv4/tcp_bpf.c
+@@ -317,6 +317,7 @@ static int tcp_bpf_send_verdict(struct s
+ 	bool cork = false, enospc = sk_msg_full(msg);
+ 	struct sock *sk_redir;
+ 	u32 tosend, delta = 0;
++	u32 eval = __SK_NONE;
+ 	int ret;
  
-+	rbnode->block = blk;
+ more_data:
+@@ -360,13 +361,24 @@ more_data:
+ 	case __SK_REDIRECT:
+ 		sk_redir = psock->sk_redir;
+ 		sk_msg_apply_bytes(psock, tosend);
++		if (!psock->apply_bytes) {
++			/* Clean up before releasing the sock lock. */
++			eval = psock->eval;
++			psock->eval = __SK_NONE;
++			psock->sk_redir = NULL;
++		}
+ 		if (psock->cork) {
+ 			cork = true;
+ 			psock->cork = NULL;
+ 		}
+ 		sk_msg_return(sk, msg, tosend);
+ 		release_sock(sk);
 +
- 	if (BITS_TO_LONGS(blklen) > BITS_TO_LONGS(rbnode->blklen)) {
- 		present = krealloc(rbnode->cache_present,
- 				   BITS_TO_LONGS(blklen) * sizeof(*present),
- 				   GFP_KERNEL);
--		if (!present) {
--			kfree(blk);
-+		if (!present)
- 			return -ENOMEM;
--		}
- 
- 		memset(present + BITS_TO_LONGS(rbnode->blklen), 0,
- 		       (BITS_TO_LONGS(blklen) - BITS_TO_LONGS(rbnode->blklen))
-@@ -320,7 +320,6 @@ static int regcache_rbtree_insert_to_blo
- 	}
- 
- 	/* update the rbnode block, its size and the base register */
--	rbnode->block = blk;
- 	rbnode->blklen = blklen;
- 	rbnode->base_reg = base_reg;
- 	rbnode->cache_present = present;
+ 		ret = tcp_bpf_sendmsg_redir(sk_redir, msg, tosend, flags);
++
++		if (eval == __SK_REDIRECT)
++			sock_put(sk_redir);
++
+ 		lock_sock(sk);
+ 		if (unlikely(ret < 0)) {
+ 			int free = sk_msg_free_nocharge(sk, msg);
 
 
