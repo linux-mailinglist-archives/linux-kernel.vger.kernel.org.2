@@ -2,84 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F5864413EE
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 07:54:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 859F34413F2
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 08:03:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230393AbhKAG5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 02:57:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21551 "EHLO
+        id S230395AbhKAHFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 03:05:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46105 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229938AbhKAG5Y (ORCPT
+        by vger.kernel.org with ESMTP id S229938AbhKAHFj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 02:57:24 -0400
+        Mon, 1 Nov 2021 03:05:39 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635749690;
+        s=mimecast20190719; t=1635750186;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=NhXyRApgs2cJlmSVsNQs3Vi5TjevtHCjRWBXl4hPKh0=;
-        b=g+Vx+IxDmTtl0iIIikCmGsBhkJBuARFcehuepVXZDiLs1VlfiLlT3gpJuU7cTaDc14oEfz
-        jifBp9GDBcDLrrVi0jZj24t883wiXA/z74Ekyh5ojV5Kl2yb+axSw7gGWcsGsG+m2pXcDv
-        kEgwhmyUi5gV/TQrDtsU5553IrIHJDQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-534-25ZQ8Jg9ONedDt86TfWf1g-1; Mon, 01 Nov 2021 02:54:49 -0400
-X-MC-Unique: 25ZQ8Jg9ONedDt86TfWf1g-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2B2791006AA3;
-        Mon,  1 Nov 2021 06:54:48 +0000 (UTC)
-Received: from dhcp-128-65.nay.redhat.com (ovpn-13-86.pek2.redhat.com [10.72.13.86])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0F6C260C0F;
-        Mon,  1 Nov 2021 06:54:45 +0000 (UTC)
-Date:   Mon, 1 Nov 2021 14:54:42 +0800
-From:   Dave Young <dyoung@redhat.com>
-To:     Baoquan He <bhe@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
-        akpm@linux-foundation.org
-Subject: Re: [PATCH 0/3] x86/kexec: fix memory leak of elf header buffer
-Message-ID: <YX+PMtj0gN458gTQ@dhcp-128-65.nay.redhat.com>
-References: <20211029072424.9109-1-bhe@redhat.com>
+        bh=8nIZ9XZS8kXj/EsotjjSLAWLpZa2G0PtCLWtzDmN8pk=;
+        b=bxvJXoyyQ2ds3jPGaHKyj1ohWedjfkEeK2zmsXgEoFDEqxs4aTOGmrfniGlv6J/nWpSPVF
+        GqSIV52c2Mbo89R/FnoKzXeJMVdVZ8IDj17hMqedXAPksYulmtzfxmYedkMITsAcjA47IH
+        wt3TdumGpog8zo8WJJ1OExH2BLjTx+4=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-366-jk5mEDR6NT2JZ0k2CZWP7Q-1; Mon, 01 Nov 2021 03:03:05 -0400
+X-MC-Unique: jk5mEDR6NT2JZ0k2CZWP7Q-1
+Received: by mail-lf1-f69.google.com with SMTP id c13-20020a05651200cd00b004001aab328aso205687lfp.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 00:03:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8nIZ9XZS8kXj/EsotjjSLAWLpZa2G0PtCLWtzDmN8pk=;
+        b=1fjoBdeJNaKu1KGiS36oJgd2A3u7whZIvByQjXyLAXpkry+pNzy8UTL4W/0Gz91vh0
+         dOZxsDYM6NABRUZ84/ZzC0pmHJsZ0xrrgj6Q05m5R+RUqbiHQXbdhtSXRtSYlQ20Vcs2
+         MGoHdeVDv9FRbu4wof1B9esFKWImmVCncExH/tfxTydb8owxbEP+z0tRZjBBCQiJvm5P
+         Q7A1rBdXe/Wi8VJk1YlomT1E0qBd4pr5vCMt38XH/LJSN7fdWlpeYnfypATiseuFzT8p
+         H/v0z3DJZvnBlW8BWgzTJpvpOUvQ5WajzBko9VL26U1QDynqUPwD5narUgXqnRws/el9
+         hIPg==
+X-Gm-Message-State: AOAM530fCt97meAqYFtrz9wD4sRvmxOOALzGkWDOdPAGytwDDB8y1i1E
+        hvmXLfimV94keriCLb8CvK40UX0xvWGnToyUIHkSxFxple8PTxdnmkYTQv/WgBk75fYTwFm3ffB
+        o38GXMMR6M780reoGtmO1cJSzSbrEiJzXWHOdigit
+X-Received: by 2002:a05:6512:32c1:: with SMTP id f1mr26983587lfg.498.1635750183492;
+        Mon, 01 Nov 2021 00:03:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxvCUMxg2fWpw2CfJJoYRfJmyKMm7aQRlkb2EtHXN1hEP8h95d8aY4eDNKwn4e6z4ENnTVOAdVv2/jphY/X41o=
+X-Received: by 2002:a05:6512:32c1:: with SMTP id f1mr26983574lfg.498.1635750183286;
+ Mon, 01 Nov 2021 00:03:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211029072424.9109-1-bhe@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <cover.1634870456.git.wuzongyong@linux.alibaba.com>
+ <cover.1635493219.git.wuzongyong@linux.alibaba.com> <CACGkMEv8+1YMhXfS31CoyFuwJ-toCLXd12ny7b=Ge+3fXWNYUw@mail.gmail.com>
+ <20211101062250.GA29814@L-PF27918B-1352.localdomain>
+In-Reply-To: <20211101062250.GA29814@L-PF27918B-1352.localdomain>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Mon, 1 Nov 2021 15:02:52 +0800
+Message-ID: <CACGkMEvZkdEgAFpSo1Oen5JWthSowZ7NHqnp_X5AhNt+jxuiZg@mail.gmail.com>
+Subject: Re: [PATCH v7 0/9] vDPA driver for Alibaba ENI
+To:     Wu Zongyong <wuzongyong@linux.alibaba.com>
+Cc:     virtualization <virtualization@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        mst <mst@redhat.com>, wei.yang1@linux.alibaba.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Baoquan,
+On Mon, Nov 1, 2021 at 2:23 PM Wu Zongyong <wuzongyong@linux.alibaba.com> wrote:
+>
+> On Mon, Nov 01, 2021 at 11:31:15AM +0800, Jason Wang wrote:
+> > On Fri, Oct 29, 2021 at 5:15 PM Wu Zongyong
+> > <wuzongyong@linux.alibaba.com> wrote:
+> > >
+> > > This series implements the vDPA driver for Alibaba ENI (Elastic Network
+> > > Interface) which is built based on virtio-pci 0.9.5 specification.
+> >
+> > It looks to me Michael has applied the patches, if this is the case,
+> > we probably need to send patches on top.
+>
+> What do you mean by saying "send patches on top"?
+> Sorry, I'm a newbie to contribute for kernel, could you please explain
+> it in detail?
 
-On 10/29/21 at 03:24pm, Baoquan He wrote:
-> The memory leak is reported by kmemleak detector, has been existing
-> for very long time. It could casue much memory loss on large machine
-> with huge memory hotplug which will trigger kdump kernel reloading
-> many times, with kexec_file_load interface.
-> 
-> And in patch 2, 3, clean up is done to remove unnecessary elf header
-> buffer freeing and unneeded arch_kexec_kernel_image_load().
-> 
-> Baoquan He (3):
->   x86/kexec: fix memory leak of elf header buffer
->   x86/kexec: remove incorrect elf header buffer freeing
->   kexec_file: clean up arch_kexec_kernel_image_load
-> 
->  arch/x86/kernel/machine_kexec_64.c | 23 +++++++++--------------
->  include/linux/kexec.h              |  1 -
->  kernel/kexec_file.c                |  9 ++-------
->  3 files changed, 11 insertions(+), 22 deletions(-)
-> 
-> -- 
-> 2.17.2
-> 
+I meant you probably need to send incremental patch on top of:
 
-Acked-by: Dave Young <dyoung@redhat.com>
-
-nitpick: the first two patches can be merged togeter, but I'm also fine if
-they are in two patches.
+git://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git linux-next.
 
 Thanks
-Dave
+
+
+>
+> Thanks
+> > Thanks
+> >
+> > >
+> > > Changes since V6:
+> > > - set default min vq size to 1 intead of 0
+> > > - enable eni vdpa driver only on X86 hosts
+> > > - fix some typos
+> > >
+> > > Changes since V5:
+> > > - remove unused codes
+> > >
+> > > Changes since V4:
+> > > - check return values of get_vq_num_{max,min} when probing devices
+> > > - disable the driver on BE host via Kconfig
+> > > - add missing commit message
+> > >
+> > > Changes since V3:
+> > > - validate VIRTIO_NET_F_MRG_RXBUF when negotiate features
+> > > - present F_ORDER_PLATFORM in get_features
+> > > - remove endian check since ENI always use litter endian
+> > >
+> > > Changes since V2:
+> > > - add new attribute VDPA_ATTR_DEV_MIN_VQ_SIZE instead
+> > >   VDPA_ATTR_DEV_F_VERSION_1 to guide users to choose correct virtqueue
+> > >   size as suggested by Jason Wang
+> > > - present ACCESS_PLATFORM in get_features callback as suggested by Jason
+> > >   Wang
+> > > - disable this driver on Big Endian host as suggested by Jason Wang
+> > > - fix a typo
+> > >
+> > > Changes since V1:
+> > > - add new vdpa attribute VDPA_ATTR_DEV_F_VERSION_1 to indicate whether
+> > >   the vdpa device is legacy
+> > > - implement dedicated driver for Alibaba ENI instead a legacy virtio-pci
+> > >   driver as suggested by Jason Wang
+> > > - some bugs fixed
+> > >
+> > > Wu Zongyong (9):
+> > >   virtio-pci: introduce legacy device module
+> > >   vdpa: fix typo
+> > >   vp_vdpa: add vq irq offloading support
+> > >   vdpa: add new callback get_vq_num_min in vdpa_config_ops
+> > >   vdpa: min vq num of vdpa device cannot be greater than max vq num
+> > >   virtio_vdpa: setup correct vq size with callbacks get_vq_num_{max,min}
+> > >   vdpa: add new attribute VDPA_ATTR_DEV_MIN_VQ_SIZE
+> > >   eni_vdpa: add vDPA driver for Alibaba ENI
+> > >   eni_vdpa: alibaba: fix Kconfig typo
+> > >
+> > >  drivers/vdpa/Kconfig                   |   8 +
+> > >  drivers/vdpa/Makefile                  |   1 +
+> > >  drivers/vdpa/alibaba/Makefile          |   3 +
+> > >  drivers/vdpa/alibaba/eni_vdpa.c        | 553 +++++++++++++++++++++++++
+> > >  drivers/vdpa/vdpa.c                    |  13 +
+> > >  drivers/vdpa/virtio_pci/vp_vdpa.c      |  12 +
+> > >  drivers/virtio/Kconfig                 |  10 +
+> > >  drivers/virtio/Makefile                |   1 +
+> > >  drivers/virtio/virtio_pci_common.c     |  10 +-
+> > >  drivers/virtio/virtio_pci_common.h     |   9 +-
+> > >  drivers/virtio/virtio_pci_legacy.c     | 101 ++---
+> > >  drivers/virtio/virtio_pci_legacy_dev.c | 220 ++++++++++
+> > >  drivers/virtio/virtio_vdpa.c           |  16 +-
+> > >  include/linux/vdpa.h                   |   6 +-
+> > >  include/linux/virtio_pci_legacy.h      |  42 ++
+> > >  include/uapi/linux/vdpa.h              |   1 +
+> > >  16 files changed, 917 insertions(+), 89 deletions(-)
+> > >  create mode 100644 drivers/vdpa/alibaba/Makefile
+> > >  create mode 100644 drivers/vdpa/alibaba/eni_vdpa.c
+> > >  create mode 100644 drivers/virtio/virtio_pci_legacy_dev.c
+> > >  create mode 100644 include/linux/virtio_pci_legacy.h
+> > >
+> > > --
+> > > 2.31.1
+> > >
+>
 
