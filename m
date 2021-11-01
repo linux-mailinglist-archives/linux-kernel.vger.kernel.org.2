@@ -2,188 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7000441D95
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 16:54:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25B9D441D97
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 16:55:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232295AbhKAP4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 11:56:45 -0400
-Received: from mout.gmx.net ([212.227.17.20]:50887 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230517AbhKAP4o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 11:56:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1635782043;
-        bh=o8O/vojK2NIE9mJpyWbXMCjMOgFZFpA8dCaHEaWp19Y=;
-        h=X-UI-Sender-Class:Date:From:To:Subject;
-        b=R2ZUQSH4s4kOitA0WBg07eDPzOZxXmHf03ADrFi8sbtNMuaYekntqhZiVjBRhe76c
-         B3RN3Qti49fWACOwlEHfB43QjsbJ3KmYmrTr2X2hh473HRpq1FbghpHt4IDFz4XuMc
-         QKOAR3NCSJbI8FdVcIp+gP8UV3cjifSMeYNH/ZUs=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from ls3530 ([92.116.177.231]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1M9Fnj-1mnucW1bZH-006RYN; Mon, 01
- Nov 2021 16:54:03 +0100
-Date:   Mon, 1 Nov 2021 16:53:37 +0100
-From:   Helge Deller <deller@gmx.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        John David Anglin <dave.anglin@bell.net>,
-        Sven Schnelle <svens@stackframe.org>
-Subject: [GIT PULL] parisc architecture fixes for kernel v5.16-rc1
-Message-ID: <YYANgdNcYx8KQJUJ@ls3530>
+        id S232611AbhKAP5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 11:57:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230517AbhKAP5r (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 11:57:47 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A0B4C061714
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 08:55:13 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id g191-20020a1c9dc8000000b0032fbf912885so233083wme.4
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 08:55:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=E8Lha7INYy+OIBEKFbSkPguyiICrTHAY0jRQJffJHBI=;
+        b=LoluX0lwTgGnDJ2tphDyPpt1N+5iYeM4+8SWtaLYXO/5BRCdapADoYlD/mdnQTG6+L
+         KCHALsOpIl7OZMpVVidkRYIIn+rKD438VDLzq/Khc2u0p46t6cUNyUvI2McE2rpQO0Mx
+         aGZAKclcApp9cI4BXxpvHxWCr8lbNz0CQgzSgUEzHxqYfBA9eXUrAw3PUbgHwCI0t1/a
+         omxefoDmfWaNl0pAE0q06ckP/W+eYTcLhMFfLR+WDFdsualHP0uM1QuxXwwfm+N3ztqp
+         0uIef8jf8dlViSKTJqkn0jWSn/XzjwRv53lzB8kuJCAyoSuJT+HunVhUAU295Nh8HXrk
+         knjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=E8Lha7INYy+OIBEKFbSkPguyiICrTHAY0jRQJffJHBI=;
+        b=CKWRi3Pnzzcm29+HO2/6KUi4QiXAupssCrZgvDxJ01EREgKQI8+ZNfCbTC55SKSHFu
+         YrpeeHaSRqZOc3/eNN/6M5+wXjRqWb4b+segGDeXgWqgweyXzH55ChUznohe0lXzCFsZ
+         gP9JXehwgFzEVPJ2hf6uZRsQlkeXCia0xrcO73ZPxzgmqloLlK2hgAEAh+FtLn2Z+/rC
+         DfdjYjPko6z0voL7h5XoiogkRpi5GUKTsPsM2aijSgB9R7zGldHO3OGObyydCIefEC7k
+         LyG2zqShRdM+u1frmXhU+diBmXFieqTWfTffc8xB+tkNfoMauvC5dNTyotd+W3Ap31TX
+         oTQw==
+X-Gm-Message-State: AOAM532TyjRQZqjVORYE1u3LEKrwiVwFbVWGBYyjzELWy4QOZdjR3dRW
+        OQ3zlO/hznbGXQf2UbdI65I3h1AnGuXgX0FCYc0=
+X-Google-Smtp-Source: ABdhPJxPeVHXkYrPS6qJHLb/O2EZX6eheK+hkU3KzYaAyPdROpxd+rui+UGQPrH4VwD0/Nc+CWCG4/v7UkBYIvaWlnY=
+X-Received: by 2002:a05:600c:104b:: with SMTP id 11mr3616208wmx.54.1635782112219;
+ Mon, 01 Nov 2021 08:55:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Provags-ID: V03:K1:2ltR8udwH8z6wmjI/1pbZ6eF0wKRadBEyt7a1xQe9YBxMxnxC0L
- Bg5sDEtjtCO590ZOnTDRbrHxmKtrZruoIDObViKVHJziaW88Js5V3xWV3TQi7P2sM4e0Dor
- 8UpeRazAcU+J0S/IL66rVpJkc3C4FekavIRW4PGb6bMAh4HUao16R0ZbQHkhsxqnkCqCpvL
- 10/ZVlkAyoObPcpnpKyxw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:II99DMCnopc=:0VdOqCAukw1/2I8UnDp3vq
- 5fhjF7EKS3OLpATPctxcSlGjZXn6vwmJDQRPUYNtQLOOIdb6YvGjHssHHvYe95VeuDEqAKGVN
- BIg0ysf78wcrQg4SJlwDgPyBxCXm7KzQp+cVrgq7WqzP5xkEIBQ86Cz3y0axyajI/JtMMjqRC
- RmIDn+Rc7HB066oIolLcNsHh+w7zOK7/mON1vIW2pxXjBiNZEYi7Ra/itsMNxVBlO9dW7xSUo
- M2dXKOMDv8RalyDxHHLUVLD5Z6lxrRGjvcKMo4W1AYLY2YzYGAXQu1y5D27UQS16etl/b6y7Z
- 2ltWfGda2JZwsYfcPM6H/6H58OinURfzIP410CvRFDUdskmazcp3CV6eSjOjc/VX5v4vViy/Q
- 7GckScYnWS21cgBHmNce/5w+zq8Hfx4iPNQjGXiIRNOrPzD7ERk1uVpJOq3xD0GBW+QWpcnd7
- VMhEtNAg1IXfnxiAmDXnM/B3CczukX3UBt4mXVmmWuoBL8jyGZpwhCaAdVt3KA4p/VC9EekLC
- QHpIyt6dvwiEdXVuAZvtx0GbVZxDJaFMd45dzryF1UZR8YztqLTSOmEP0WHMVt+65Qjx4Iu4K
- BGTSCTxG/BVYHZaQW3rWxPBKz0Cdgf8Ah0KT21piwOml3WkIn6VTxDM1SC4tyI4A6StoVv+KJ
- pkTAfMF+1DaEfK5kdCVIvBLPjC7duEv8qJmv3z5Iq+8Ivot4aRfRmy1C3bR86IUA4uZu24PS6
- L2feL6z53QcDrrWHfHc00khtOEEo3wfyGEkTb6MhTXDzahD+jOyZp1V3S78M/L6iBi24cAPOr
- oPinv2BZvJpfJaI1XK9Xj8gFRfJM/Js3WGF5xT20lptNc9gPi5/QLK8rca10sbg9CrfMKYY4i
- TnIS1UXEHSGv8b/wx/Q4IDcRp52RblTYQgzSBWecCKJXUj4ymwZxTEl+/qZCRrx98Tzh4OOb5
- +eFAYO4DuIROs/p5I2arzDB+PEU1hL2g7g/kgvvWoYdaU8TqlWzBR2I0sprpWIDJPdkldv6Zn
- /HKkSvM0jQkafXYhXUgf43Pf+QrpJcvR7q2ZJ/pABTaDWedr+D6nb5a3eBkt5hD9KSKOny7C3
- uUrkHMyWeTUicA=
+References: <20211101150759.617943-1-xiehuan09@gmail.com> <20211101111214.1710bfb3@gandalf.local.home>
+In-Reply-To: <20211101111214.1710bfb3@gandalf.local.home>
+From:   Huan Xie <xiehuan09@gmail.com>
+Date:   Mon, 1 Nov 2021 23:55:02 +0800
+Message-ID: <CAEr6+EBLeTKRDVzZnrkRf-L+NU_krdZHY7CvJ9kAgJM2dod8Dg@mail.gmail.com>
+Subject: Re: [RFC][PATCH v4 1/2] trace: Add trace any kernel object
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>, mingo@redhat.com,
+        Tom Zanussi <zanussi@kernel.org>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 3a4347d82efdfcc5465b3ed37616426989182915:
+On Mon, Nov 1, 2021 at 11:12 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> On Mon,  1 Nov 2021 23:07:59 +0800
+> Jeff Xie <xiehuan09@gmail.com> wrote:
+>
+> > Introduce a method based on function tracer to trace any object and get
+> > the value of the object dynamically. the object can from the dynamic ev=
+ent
+> > (kprobe_event/uprobe_event) or the static event(tracepoint).
+> >
+> > Usage:
+> > When using the kprobe event, only need to set the objtrace(a new trigge=
+r),
+> > we can get the value of the object. The object is from the setting of t=
+he
+> > kprobe event.
+>
+> Hi Jeff,
+>
+> I just wanted to let you know that because the merge window just opened
+> (Linus released 5.15 and is now accepting changes for 5.16), I most likel=
+y
+> wont have any time to review your changes while the merge window is open
+> (for the next two weeks).
+>
+> Please do not take my lack of responses during this time as ignoring you.
+> I'm just going to be overwhelmed with getting things right, and this merg=
+e
+> window is going to be a bit tougher for me than other merge windows.
+>
+> Thanks,
+>
+> -- Steve
 
-  Merge tag 'clk-fixes-for-linus' of git://git.kernel.org/pub/scm/linux/kernel/git/clk/linux (2021-10-30 09:55:46 -0700)
+I=E2=80=99m very glad you can explain this and let me know. because the
+previous patch[PATCH V3] lacks some functions.
+Just update it.
 
-are available in the Git repository at:
-
-  http://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git tags/for-5.16/parisc-1
-
-for you to fetch changes up to 6e866a462867b60841202e900f10936a0478608c:
-
-  parisc: Fix set_fixmap() on PA1.x CPUs (2021-11-01 12:00:22 +0100)
-
-----------------------------------------------------------------
-parisc architecture updates for kernel v5.16-rc1
-
-Lots of new features and fixes:
-* Added TOC (table of content) support, which is a debugging feature which is
-  either initiated by pressing the TOC button or via command in the BMC. If
-  pressed the Linux built-in KDB/KGDB will be called (Sven Schnelle)
-* Fix CONFIG_PREEMPT (Sven)
-* Fix unwinder on 64-bit kernels (Sven)
-* Various kgdb fixes (Sven)
-* Added KFENCE support (me)
-* Switch to ARCH_STACKWALK implementation (me)
-* Fix ptrace check on syscall return (me)
-* Fix kernel crash with fixmaps on PA1.x machines (me)
-* Move thread_info into task struct, aka CONFIG_THREAD_INFO_IN_TASK (me)
-* Updated defconfigs
-* Smaller cleanups, including Makefile cleanups (Masahiro Yamada),
-  use kthread_run() macro (Cai Huoqing), use swap() macro (Yihao Han).
-
-----------------------------------------------------------------
-Cai Huoqing (1):
-      parisc: Make use of the helper macro kthread_run()
-
-Helge Deller (17):
-      parisc: make parisc_acctyp() available outside of faults.c
-      parisc: Switch to ARCH_STACKWALK implementation
-      parisc: Add KFENCE support
-      parisc: Define FRAME_ALIGN and PRIV_USER/PRIV_KERNEL in assembly.h
-      parisc: Allocate task struct with stack frame alignment
-      parisc: Use FRAME_SIZE and FRAME_ALIGN from assembly.h
-      parisc: Use PRIV_USER instead of 3 in entry.S
-      task_stack: Fix end_of_stack() for architectures with upwards-growing stack
-      parisc: Fix ptrace check on syscall return
-      parisc: Move thread_info into task struct
-      parisc: Use PRIV_USER in syscall.S
-      parisc: Use PRIV_USER and PRIV_KERNEL in ptrace.h
-      parisc: Drop ifdef __KERNEL__ from non-uapi kernel headers
-      parisc: enhance warning regarding usage of O_NONBLOCK
-      parisc: Remove unused constants from asm-offsets.c
-      parisc: Update defconfigs
-      parisc: Fix set_fixmap() on PA1.x CPUs
-
-Masahiro Yamada (2):
-      parisc: decompressor: remove repeated depenency of misc.o
-      parisc: decompressor: clean up Makefile
-
-Sven Schnelle (15):
-      parisc/unwind: use copy_from_kernel_nofault()
-      parisc: disable preemption during local tlb flush
-      parisc: deduplicate code in flush_cache_mm() and flush_cache_range()
-      parisc: fix preempt_count() check in entry.S
-      parisc: disable preemption in send_IPI_allbutself()
-      parisc: fix warning in flush_tlb_all
-      parisc/unwind: fix unwinder when CONFIG_64BIT is enabled
-      parisc: move virt_map macro to assembly.h
-      parisc: add PIM TOC data structures
-      parisc/firmware: add functions to retrieve TOC data
-      parisc: add support for TOC (transfer of control)
-      parisc/kgdb: add kgdb_roundup() to make kgdb work with idle polling
-      parisc: mark xchg functions notrace
-      parisc/ftrace: set function trace function
-      parisc/ftrace: use static key to enable/disable function graph tracer
-
-Yihao Han (1):
-      parisc: Use swap() to swap values in setup_bootmem()
-
- .../core/thread-info-in-task/arch-support.txt      |   2 +-
- arch/parisc/Kconfig                                |  22 +++-
- arch/parisc/boot/compressed/Makefile               |   9 +-
- arch/parisc/configs/generic-32bit_defconfig        |   9 +-
- arch/parisc/configs/generic-64bit_defconfig        |  21 ++--
- arch/parisc/include/asm/assembly.h                 |  32 ++++++
- arch/parisc/include/asm/bitops.h                   |  10 --
- arch/parisc/include/asm/current.h                  |  19 ++++
- arch/parisc/include/asm/futex.h                    |   3 -
- arch/parisc/include/asm/ide.h                      |   4 -
- arch/parisc/include/asm/kfence.h                   |  44 ++++++++
- arch/parisc/include/asm/mckinley.h                 |   2 -
- arch/parisc/include/asm/pdc.h                      |   2 +
- arch/parisc/include/asm/processor.h                |  11 +-
- arch/parisc/include/asm/ptrace.h                   |   6 +-
- arch/parisc/include/asm/runway.h                   |   2 -
- arch/parisc/include/asm/smp.h                      |  19 +++-
- arch/parisc/include/asm/thread_info.h              |  12 +--
- arch/parisc/include/asm/traps.h                    |   1 +
- arch/parisc/include/asm/unaligned.h                |   2 -
- arch/parisc/include/uapi/asm/pdc.h                 |  28 +++++-
- arch/parisc/kernel/Makefile                        |   1 +
- arch/parisc/kernel/asm-offsets.c                   |  34 ++-----
- arch/parisc/kernel/cache.c                         |  87 +++++++---------
- arch/parisc/kernel/entry.S                         |  90 ++++++-----------
- arch/parisc/kernel/firmware.c                      |  32 ++++++
- arch/parisc/kernel/ftrace.c                        |  21 ++--
- arch/parisc/kernel/head.S                          |  40 ++++----
- arch/parisc/kernel/irq.c                           |   6 +-
- arch/parisc/kernel/pdt.c                           |   4 +-
- arch/parisc/kernel/process.c                       |   4 +-
- arch/parisc/kernel/smp.c                           |  25 ++++-
- arch/parisc/kernel/stacktrace.c                    |  30 +++---
- arch/parisc/kernel/sys_parisc.c                    |  10 +-
- arch/parisc/kernel/syscall.S                       |  26 ++---
- arch/parisc/kernel/toc.c                           | 111 +++++++++++++++++++++
- arch/parisc/kernel/toc_asm.S                       |  88 ++++++++++++++++
- arch/parisc/kernel/traps.c                         |   7 +-
- arch/parisc/kernel/unwind.c                        |  34 ++++---
- arch/parisc/lib/bitops.c                           |  12 +--
- arch/parisc/mm/fault.c                             |   2 +-
- arch/parisc/mm/fixmap.c                            |   5 +-
- arch/parisc/mm/init.c                              |  10 +-
- include/linux/sched/task_stack.h                   |   4 +
- 44 files changed, 622 insertions(+), 321 deletions(-)
- create mode 100644 arch/parisc/include/asm/current.h
- create mode 100644 arch/parisc/include/asm/kfence.h
- create mode 100644 arch/parisc/kernel/toc.c
- create mode 100644 arch/parisc/kernel/toc_asm.S
+Thanks.
+---
+JeffXie
