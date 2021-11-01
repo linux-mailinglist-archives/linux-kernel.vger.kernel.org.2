@@ -2,137 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BCDC442392
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 23:47:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C67EF442395
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 23:48:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232357AbhKAWth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 18:49:37 -0400
-Received: from sonic311-30.consmr.mail.ne1.yahoo.com ([66.163.188.211]:42308
-        "EHLO sonic311-30.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232355AbhKAWtf (ORCPT
+        id S232366AbhKAWvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 18:51:25 -0400
+Received: from relay6-d.mail.gandi.net ([217.70.183.198]:45181 "EHLO
+        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231701AbhKAWvX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 18:49:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1635806821; bh=6/TIVJ5a3v7Q7E577iTkgkCrU+qS8OuqzrmRI9eBVjU=; h=Date:From:Subject:To:Cc:References:In-Reply-To:From:Subject:Reply-To; b=sgkaYR081wE70/cqYOblQHPuHCCy+jc8JgOFdgq4Yz6310ifbA1QMpAEdvQP71CA3GxGtPHZLjUXyhYrS/gcJOpsP5XVVpzFTvHSTaFJ9RvMNHJEgon9+45FfaPLQ99CGAI6SEIPGv7EywNxnvWIqVFAUOlSS3FafOi7HKSoeNKxJ13BU41G1myecmlIq8LHIE83np3XmQYHUiU3vHHui5wPYeIdWe7NRtNWrs1YHDTFF/hMCpmQVSzNRsBanGBqT835z971VoA6KBtCuvkxy25RMqLneHAjRYJhBX77sls59H3AsmR6bAGoi5E8bzMw+WC2T3Z3mAGrhpSSGOBjdg==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1635806821; bh=Ncji8YX7jndnxKPYluSdvbdA+VkWEdMz3Ej4GxdehsK=; h=X-Sonic-MF:Date:From:Subject:To:From:Subject; b=XJhb376W5QPCoolDGf3KS9NkktOtIY7lPLYHyZ26iJdxQkNASPHWcdVhr9be6Rkul23/GaPW6WeSSmidf63FzFabklo0hTXQj1Kmg15J3TV0Q7XVT8eCM8s53D0TH5rvbT3BdObxWDzP5Dr4hivJ1flk4jJvw70L1fWUzW3Esg8cqzeByBdFr/HKvHsi/6vWWsJvy/T7Qc2hgyUkPPG8Zyop+5YLpClTJFJXCd35dIJ8LI1NtVubvaYwkIhGwYK+TscbAuVNINbNTOFvZT1cGzfYOfFLrA5pWXEO69auP9MqTUrV4y/ZksGKyEGp5pCaWeduwblpgyzSJQfanKYEyA==
-X-YMail-OSG: jR1.ILkVM1l6jM18pcUGgCLtU3hCb57J_IQQs_jqPZ2XmUko.vuVw_YRPxfiJzr
- .6Cx7EdD1DSJyU09SdPQfmzvx6s9ZlPZnRkca7lE8V4uDaaKir5k9Wt7S6TfDD.nWr7YAFHaSKNq
- D2qe8ni5cCpL6t6JZHw66lWwaS3H1_4WMPO7SfgyKAbqa6LUBzMuc63AjDo60yu91tCak1cDnZL7
- pWerDk1wPnIteu7M94qX0LK3JJ_c2_4fNL50yPKb1WlrAccddftxLvwIcsYgwuF8WfuFivjDOoVt
- c64BEk3CvPBf4ilCCV3n38eAqFO6rGdKXXn68AoY5idiEBvZXRBivYAtzSzmVoGAjyrIKXR651ZF
- s8LKE3vJ4HeeQt0X.Utoyuwhod3czzfVphlGxC3aLcA8iU_ufebxX0szllCpyJDT6RGMxQoLm8J4
- PomeqG57Pb3z6Ker3VVlJt_rnwWyjoBpie2_Xl7P8ilZVC2s8xCzYLsiILDRx1yNeIQINwB5PVPT
- zPJAh_L49dQ6nlrnpOLxfwGRlKqWTLuKcbLIK5Zwv6S.asSm.Mtqop4Nxwoz.rJTIomWrusds7aJ
- HXSbEq2HqkMGJQeXOkwaDKc7GKzbkZBBi1NWyINvBVU8nnTjYDgoDzYVuztVRhigWjUEkIYHYV2m
- ihiPC25KtRgXMJpYTtz9CHXc7ZOA6Cp121.y3.NpJra_t5IghL_3bmvek7KUvb2TvZ0ZPUB.7SE2
- 5j9tzvz6nSa_t6gjFaxLpJmbBMHyX22jNCNMVgHZouqfMdsFQFCzLQZBsMH0PFlmNMIuf7GGTqx5
- gqiJWbX0YSsnhYm7NS02GOdD_5YR4iBUkkQxIbChlY32z5N3EuDxqNnEU7Abw5IFgp4DiLloVLzv
- Gr6tyvoygcC1_vr05B_7MSrIigtkZTZ740NBzxjLJKV3FamEHd5Nfqd_BgwC5QPZR.mUJ1rjkNcB
- V4Qc3SY7b4rkZr4ny9u4ntg6TQ5GgsKDEJwv9r6vYh82rfydC9G6xKcfJ3DTFevJpNwNYuQATF0C
- Hm_Iw9swTGoi6A_9NwVrgt92DXazHdYToug5Up_DDE0v8DmxZkHV8PNGlOgdq2YwBnfdqACBAi8K
- MNCHbP1iObKTYKwQ1gU607nuuNZ7tPdrLeZMt8iZGQdiaZKdl2rw9AlhEKptv7zBbMV6Xk9kmwOz
- F1qNEha6EK1olBmcWYJjlbtX9fXNomXkY7j5ltLB.bb1NI9AICLS7M2bxwE5P1PeGNM7widiUR.U
- tu2DOOxJKq2nDHBCTynHac1H1lknpIh69fG8yc2PhTzTrFQ0svHYfxn13HAoAA2kCnGjZwjlUPhR
- Z.p6BkX_91y5L9LiPAu9krFwftb92F_KSGYaJuMTsiszrKXVI61oSCpy_ZCK7sQBfKZBqmZL33kd
- frJ.k0fpXpA1fQ_vW5tQVZ8V5cI6c3zi9OUG5VDPTizoyJKZUpN1FO_iDDTa197UU57x7.CpQIJI
- KgrKYyIRgJt39gKlRDZ9DzDBCyHtQJ01Wpk0ZisaGAGqgHa5Cu7z4m2yaQMBsCcQZ6ahqHpqL1L9
- 0ZjW9kHVh_fC.Vnc29A4t77CB.PpsfRKXQHhNgqtzB2ataNVCQLUaUKoFBs5A2Nq2dyl0uoqJVzg
- lBAkw.eCzHaiF1lWpseei.6im2Cp_WZOi2unZ4gzdm52mokT.Lg7uQyiDFM3WcdHgFUXkLdHFWfj
- Mods9A9M_ajIMJ2bUNMf_Bj.0.V5MQsG_APrCf7ZMM.SHGCTJCuyKu5n2w.IxHxUDMPs5y4bXwOk
- h3IohlsoARVWGowdXAw34g6qbao9bgxaNJv8i3udJE428wtaPPod6VNIqhJg1vVpe0EogrloZCYD
- TsQVooCEMgkecYKsi3dt5_VduXvXHiSt7Lzf9DBY1MyiyB.SHMX.iDePJdtMDPcFRkliUTiBhb.u
- BpMIA9mgOUHg5WGBBvDi6hue08qZom1lUBLomuja0asdw_zmqWQQBjS8NFJIwyOglMNePOUjn0WD
- _81oT1j4fDtnWud7acxyLTsF20vIjtp9jWmTyPR7wwVGeBBwGTWHh1RrKWwi81DCNbAyi86bU_5D
- 3RGjfbtWcKp84VAX7YVASmwDFMlFCUM1fKJcV9oa9ykViOdF_rsj4p_7.suoWCD4LlTFXtmeKjKO
- nQd8KYf5bbHOMaKry7JECGvkgPpHdeMDkbrwqTikaHjQYUAz6Rbm1tIvnxsLMIR5O.GcZ4J.P7pF
- 99wecMN3tIIEjFfTJSRxFYmpCpmNHkj2JaMvUxtZX9uuIpViRIzd2Wjcor5do9TeZyX6TLtkEm4U
- z384JPSfwywyZ_w--
-X-Sonic-MF: <casey@schaufler-ca.com>
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic311.consmr.mail.ne1.yahoo.com with HTTP; Mon, 1 Nov 2021 22:47:01 +0000
-Received: by kubenode549.mail-prod1.omega.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID cf8550e7fff37b14786e6ebe5d791649;
-          Mon, 01 Nov 2021 22:46:56 +0000 (UTC)
-Message-ID: <b3e4f10f-b065-68fc-957d-92c65a5c7193@schaufler-ca.com>
-Date:   Mon, 1 Nov 2021 15:46:54 -0700
+        Mon, 1 Nov 2021 18:51:23 -0400
+Received: (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 40799C000A;
+        Mon,  1 Nov 2021 22:48:46 +0000 (UTC)
+Date:   Mon, 1 Nov 2021 23:48:46 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Dominique Martinet <dominique.martinet@atmark-techno.com>
+Cc:     Alessandro Zummo <a.zummo@towertech.it>, linux-rtc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Marek Vasut <marex@denx.de>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH 2/2] rv8803: add irq-gpio optional dts attribute
+Message-ID: <YYBuzqZD8/uK3d6Z@piout.net>
+References: <20211101013400.325855-1-dominique.martinet@atmark-techno.com>
+ <20211101013400.325855-2-dominique.martinet@atmark-techno.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-From:   Casey Schaufler <casey@schaufler-ca.com>
-Subject: [GIT PULL] Smack patches for v5.16
-To:     torvalds@linux-foundation.org
-Cc:     linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Florian Westphal <fw@strlen.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        casey@schaufler-ca.com
-References: <f34e40a9-e4ba-ce9f-fdf8-1faaf73c69d2.ref@schaufler-ca.com>
-Content-Language: en-US
-In-Reply-To: <f34e40a9-e4ba-ce9f-fdf8-1faaf73c69d2.ref@schaufler-ca.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Mailer: WebService/1.1.19266 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211101013400.325855-2-dominique.martinet@atmark-techno.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Linus,
+On 01/11/2021 10:34:00+0900, Dominique Martinet wrote:
+> Some device cannot be woken up from i2c signal.
+> Add a new irq-gpio attribute for devices which have a gpio connected to
+> the rv8803 INT line so the rtc can be used for suspend to mem
+> 
 
-Here is the Smack pull request for v5.16.
+I don't think this is right, the interrupts property of the rtc node can
+point to a gpio and this is expected to be the one connected on INT. You
+don't need another property.
 
-There is a change for overlayfs support that corrects
-the initial attributes on created files. There is
-code clean-up for netlabel processing. There are several
-fixes in smackfs for a variety of reasons. Errors reported
-by W=1 have been addressed. All told, nothing challenging.
+> Signed-off-by: Dominique Martinet <dominique.martinet@atmark-techno.com>
+> ---
+> 
+> Our board does not have an upstream dts so I cannot provide a real
+> example for it, but I've tested this on something close to the
+> imx8mp-evk.
+> 
+> It should not break anything for people having no alarm at all or using
+> the i2c irq.
+> 
+>  .../devicetree/bindings/rtc/epson,rx8900.yaml |  5 ++
+>  drivers/rtc/rtc-rv8803.c                      | 73 +++++++++++++++++--
+>  2 files changed, 73 insertions(+), 5 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/rtc/epson,rx8900.yaml b/Documentation/devicetree/bindings/rtc/epson,rx8900.yaml
+> index 29fe39bb08ad..0d7912b984c7 100644
+> --- a/Documentation/devicetree/bindings/rtc/epson,rx8900.yaml
+> +++ b/Documentation/devicetree/bindings/rtc/epson,rx8900.yaml
+> @@ -28,6 +28,10 @@ properties:
+>  
+>    trickle-diode-disable: true
+>  
+> +  irq-gpio:
+> +    description: |
+> +      gpio for INT signal. Set up gpio for irq and device wakeup.
+> +
+>  required:
+>    - compatible
+>    - reg
+> @@ -45,5 +49,6 @@ examples:
+>              reg = <0x32>;
+>              epson,vdet-disable;
+>              trickle-diode-disable;
+> +            irq-gpio = <&gpio1 11 GPIO_ACTIVE_LOW>;
+>          };
+>      };
+> diff --git a/drivers/rtc/rtc-rv8803.c b/drivers/rtc/rtc-rv8803.c
+> index 0d5ed38bf60c..1c4b96bc110e 100644
+> --- a/drivers/rtc/rtc-rv8803.c
+> +++ b/drivers/rtc/rtc-rv8803.c
+> @@ -16,6 +16,7 @@
+>  #include <linux/module.h>
+>  #include <linux/of_device.h>
+>  #include <linux/rtc.h>
+> +#include <linux/pm_wakeirq.h>
+>  
+>  #define RV8803_I2C_TRY_COUNT		4
+>  
+> @@ -509,6 +510,61 @@ static int rx8900_trickle_charger_init(struct rv8803_data *rv8803)
+>  					 flags);
+>  }
+>  
+> +static int rv8803_setup_gpio_irq(struct i2c_client *client)
+> +{
+> +	struct device *dev = &client->dev;
+> +	int err;
+> +	int irq;
+> +	unsigned long irqflags;
+> +	struct gpio_desc *gpiod;
+> +
+> +
+> +	gpiod = devm_gpiod_get_from_of_node(dev, dev->of_node, "irq-gpio",
+> +					    0, GPIOD_IN, "RTC irq pin");
+> +	if (!gpiod || IS_ERR(gpiod)) {
+> +		dev_dbg(dev, "no gpio for rtc: skipping\n");
+> +		return -ENOENT;
+> +	}
+> +
+> +	irq = gpiod_to_irq(gpiod);
+> +	if (irq < 0) {
+> +		dev_err(dev, "gpio found but no irq\n");
+> +		err = irq;
+> +		goto error_gpio;
+> +	}
+> +
+> +	irqflags = IRQF_ONESHOT;
+> +	irqflags |= gpiod_is_active_low(gpiod) ?
+> +		    IRQF_TRIGGER_FALLING : IRQF_TRIGGER_RISING;
+> +
+> +	err = devm_request_threaded_irq(dev, irq, NULL, rv8803_handle_irq,
+> +					irqflags, "rtc-rv8803-gpio", client);
+> +	if (err) {
+> +		dev_warn(dev, "unable to request IRQ\n");
+> +		goto error_gpio;
+> +	}
+> +
+> +	err = device_init_wakeup(dev, true);
+> +	if (err) {
+> +		dev_warn(dev, "unable to set as wakeup source\n");
+> +		goto error_irq;
+> +	}
+> +
+> +	err = dev_pm_set_wake_irq(dev, irq);
+> +	if (err) {
+> +		dev_warn(dev, "unable to set wake irq\n");
+> +		goto error_irq;
+> +	}
+> +
+> +	return 0;
+> +
+> +error_irq:
+> +	devm_free_irq(dev, irq, client);
+> +error_gpio:
+> +	devm_gpiod_put(dev, gpiod);
+> +	return err;
+> +}
+> +
+>  static int rv8803_probe(struct i2c_client *client,
+>  			const struct i2c_device_id *id)
+>  {
+> @@ -524,6 +580,7 @@ static int rv8803_probe(struct i2c_client *client,
+>  		.reg_write = rv8803_nvram_write,
+>  		.priv = client,
+>  	};
+> +	bool irq_setup = false;
+>  
+>  	if (!i2c_check_functionality(adapter, I2C_FUNC_SMBUS_BYTE_DATA |
+>  				     I2C_FUNC_SMBUS_I2C_BLOCK)) {
+> @@ -562,17 +619,23 @@ static int rv8803_probe(struct i2c_client *client,
+>  	if (IS_ERR(rv8803->rtc))
+>  		return PTR_ERR(rv8803->rtc);
+>  
+> -	if (client->irq > 0) {
+> +	if (client->dev.of_node) {
+> +		err = rv8803_setup_gpio_irq(client);
+> +		if (!err)
+> +			irq_setup = true;
+> +	}
+> +
+> +	if (!irq_setup && client->irq > 0) {
+>  		err = devm_request_threaded_irq(&client->dev, client->irq,
+>  						NULL, rv8803_handle_irq,
+>  						IRQF_TRIGGER_LOW | IRQF_ONESHOT,
+>  						"rv8803", client);
+> -		if (err) {
+> +		if (err)
+>  			dev_warn(&client->dev, "unable to request IRQ, alarms disabled\n");
+> -			client->irq = 0;
+> -		}
+> +		else
+> +			irq_setup = true;
+>  	}
+> -	if (!client->irq)
+> +	if (!irq_setup)
+>  		clear_bit(RTC_FEATURE_ALARM, rv8803->rtc->features);
+>  
+>  	err = rv8803_write_reg(rv8803->client, RV8803_EXT, RV8803_EXT_WADA);
+> -- 
+> 2.30.2
+> 
 
-I am attempting a revised email setup. Hopefully this will
-address the issues I've had with previous pull requests.
-Sorry for the multiple copies I've sent. I am trying to
-work this out.
-
-
---
-The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
-
-  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
-
-are available in the Git repository at:
-
-  https://github.com/cschaufler/smack-next tags/Smack-for-5.16
-
-for you to fetch changes up to 0934ad42bb2c5df90a1b9de690f93de735b622fe:
-
-  smackfs: use netlbl_cfg_cipsov4_del() for deleting cipso_v4_doi (2021-10-22 08:46:53 -0700)
-
-----------------------------------------------------------------
-Smack changes for 5.16
-
-Multiple corrections to smackfs.
-W=1 fixes
-Fix for overlayfs.
-
-----------------------------------------------------------------
-Casey Schaufler (1):
-      Smack: fix W=1 build warnings
-
-Florian Westphal (1):
-      smack: remove duplicated hook function
-
-Pawan Gupta (1):
-      smackfs: Fix use-after-free in netlbl_catmap_walk()
-
-Sebastian Andrzej Siewior (1):
-      smack: Guard smack_ipv6_lock definition within a SMACK_IPV6_PORT_LABELING block
-
-Tetsuo Handa (2):
-      smackfs: use __GFP_NOFAIL for smk_cipso_doi()
-      smackfs: use netlbl_cfg_cipsov4_del() for deleting cipso_v4_doi
-
-Vishal Goel (1):
-      Smack:- Use overlay inode label in smack_inode_copy_up()
-
- security/smack/smack_lsm.c       | 41 ++++++++++++++++++++++++----------------
- security/smack/smack_netfilter.c | 26 +++----------------------
- security/smack/smackfs.c         | 11 ++++++-----
- 3 files changed, 34 insertions(+), 44 deletions(-)
-
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
