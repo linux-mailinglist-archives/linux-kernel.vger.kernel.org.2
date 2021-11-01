@@ -2,136 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E4A64411D0
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 02:27:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF0734411E5
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 02:46:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230274AbhKAB1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 21:27:33 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:26140 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230191AbhKAB1c (ORCPT
+        id S230417AbhKABtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 21:49:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230133AbhKABtU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 21:27:32 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HjFdr0H6Qz1DHwt;
-        Mon,  1 Nov 2021 09:22:56 +0800 (CST)
-Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Mon, 1 Nov 2021 09:24:57 +0800
-Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
- (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Mon, 1 Nov
- 2021 09:24:57 +0800
-From:   Baokun Li <libaokun1@huawei.com>
-To:     <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-CC:     <patchwork@huawei.com>, <libaokun1@huawei.com>,
-        <yukuai3@huawei.com>, "Hulk Robot" <hulkci@huawei.com>
-Subject: [PATCH -next] ubi: fix race between ctrl_cdev_ioctl and ubi_cdev_ioctl
-Date:   Mon, 1 Nov 2021 09:37:39 +0800
-Message-ID: <20211101013739.236430-1-libaokun1@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        Sun, 31 Oct 2021 21:49:20 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B3C0C061714;
+        Sun, 31 Oct 2021 18:46:47 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id s1so13211555qta.13;
+        Sun, 31 Oct 2021 18:46:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zQzW9FOFGCtdGxPb7IFZ+bArAFYHt9WKC/Ll9XJG/Qs=;
+        b=Qz980rF9X01xG8ESB4yJI4njGSt9fiC/Wve5yU8IXr8x+hko7N0fI0wixAUw9ajsy7
+         ClPBPxEI4juCW347mY11baf8OjMm3Dd+ORzrEOH+rPOYfxZlIAdIhQlpWnY9IwNGggK7
+         syxcGpeQUoU5VJbmJU+Bacrv+qfgz/Tx9/AKTKdusR2KrDfdkenZyT0lgR0pQ3dovxIc
+         swbdclg3lsqZ5rrLd16zw95UQ3MBtGkIlJT2/2m3v8AhlHrML6mtt/1opA/5DMqJXCQd
+         sgo2kLiy8wjGE4qH9UZUoKeFs8UMhiVMCvpPNuKmD6rqR3KPsFIBx2R0fMNIvEb6LiTQ
+         BMgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zQzW9FOFGCtdGxPb7IFZ+bArAFYHt9WKC/Ll9XJG/Qs=;
+        b=JFvzsAOlpjRa2cMDIMrMJ3KfJI+o0b3Jie1IKA85AcOlF0FvRy8sSgPPXPj5i0sATE
+         UEjeRKCi022Uqhc1S1/r+XgPwlFtWBh4ATlxOxFZlOSgWJC4ho3AF44u50Y5jTgWLKQZ
+         w/KuYBZ0stkYdLmGEFKK+42isZC+i/NRC1s3DJiFBeo7yHpbch9/UrJTmwDZHoHvRrpc
+         zRV0Tco6DNRiBX79qVcq/WIMhoULi2iSsJNo7W8x/t/EZqg3vUMkhkuhPHmNv/o6HyRO
+         2uRlQMhFgKnqMVRBIKYm595TNmayvYFdN8JrMtzKLX+RwZ1X6UHQvWCg+WGw5U3D7OLf
+         GgWw==
+X-Gm-Message-State: AOAM5339rbK6+FPBiuu7RUw1F8gkbpEIIb4925DWmEe8EeKUdDNPsBzR
+        rUzwSJgkco08Ek+/QAT2dYuzPdyjJPnQezJHNEvk6zq4
+X-Google-Smtp-Source: ABdhPJwh4ySFpphCb8iKgLWd9whJqGmrAaECcwfh2nGFTs3RFsAfe7dRdnBlzOt5dnNuTnvhg8QEIIt9aaTChN6KkiE=
+X-Received: by 2002:ac8:7d47:: with SMTP id h7mr26590292qtb.92.1635731206729;
+ Sun, 31 Oct 2021 18:46:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml500020.china.huawei.com (7.185.36.88)
-X-CFilter-Loop: Reflected
+References: <20211030064049.9992-1-xingwu.yang@gmail.com> <e2699ba8-e733-2c71-584a-138746511f4@ssi.bg>
+ <3fa86627-969-cf6-9de0-25721c9f3964@ssi.bg>
+In-Reply-To: <3fa86627-969-cf6-9de0-25721c9f3964@ssi.bg>
+From:   yangxingwu <xingwu.yang@gmail.com>
+Date:   Mon, 1 Nov 2021 09:46:35 +0800
+Message-ID: <CA+7U5JuMocD3r1RAp4uNeLsi9zDB24GdX3SucLY06WzqBOjyag@mail.gmail.com>
+Subject: Re: [PATCH nf-next v4] netfilter: ipvs: Fix reuse connection if RS
+ weight is 0
+To:     Julian Anastasov <ja@ssi.bg>
+Cc:     Simon Horman <horms@verge.net.au>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        netdev@vger.kernel.org, lvs-devel@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-doc@vger.kernel.org, Chuanqi Liu <legend050709@qq.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hulk Robot reported a KASAN report about use-after-free:
- ==================================================================
- BUG: KASAN: use-after-free in __list_del_entry_valid+0x13d/0x160
- Read of size 8 at addr ffff888035e37d98 by task ubiattach/1385
- [...]
- Call Trace:
-  klist_dec_and_del+0xa7/0x4a0
-  klist_put+0xc7/0x1a0
-  device_del+0x4d4/0xed0
-  cdev_device_del+0x1a/0x80
-  ubi_attach_mtd_dev+0x2951/0x34b0 [ubi]
-  ctrl_cdev_ioctl+0x286/0x2f0 [ubi]
+ok, I will do that
 
- Allocated by task 1414:
-  device_add+0x60a/0x18b0
-  cdev_device_add+0x103/0x170
-  ubi_create_volume+0x1118/0x1a10 [ubi]
-  ubi_cdev_ioctl+0xb7f/0x1ba0 [ubi]
-
- Freed by task 1385:
-  cdev_device_del+0x1a/0x80
-  ubi_remove_volume+0x438/0x6c0 [ubi]
-  ubi_cdev_ioctl+0xbf4/0x1ba0 [ubi]
- [...]
- ==================================================================
-
-The following race could cause the use-after-free problem:
-           cpu1                   cpu2                  cpu3
-_______________________|________________________|______________________
-ctrl_cdev_ioctl
- ubi_attach_mtd_dev
-  uif_init
-                           ubi_cdev_ioctl
-                            ubi_create_volume
-                             cdev_device_add
-   ubi_add_volume
-   // sysfs exist
-   kill_volumes
-                                                    ubi_cdev_ioctl
-                                                     ubi_remove_volume
-                                                      cdev_device_del
-                                                       // first free
-    ubi_free_volume
-     cdev_del
-     // double free
-   cdev_device_del
-
-The lock held by ctrl_cdev_ioctl is ubi_devices_mutex, but the lock held by
-ubi cdev_ioctl is ubi->device_mutex. Therefore, the two locks can be
-concurrent. However, volume addition and deletion operations are performed
-in both ctrl_cdev_ioctl and ubi_cdev_ioctl. When these operations are
-performed concurrently in both ioctl, a race condition may be triggered.The
-UAF stack above is one such case.
-
-To solve this problem, add spin_lock(&ubi->volumes_lock) to ctrl_cdev_ioctl
-where volumes are added and deleted.
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
----
- drivers/mtd/ubi/build.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index a7e3eb9befb6..708b1b96de01 100644
---- a/drivers/mtd/ubi/build.c
-+++ b/drivers/mtd/ubi/build.c
-@@ -467,6 +467,7 @@ static int uif_init(struct ubi_device *ubi)
- 	if (err)
- 		goto out_unreg;
- 
-+	spin_lock(&ubi->volumes_lock);
- 	for (i = 0; i < ubi->vtbl_slots; i++)
- 		if (ubi->volumes[i]) {
- 			err = ubi_add_volume(ubi, ubi->volumes[i]);
-@@ -475,11 +476,13 @@ static int uif_init(struct ubi_device *ubi)
- 				goto out_volumes;
- 			}
- 		}
-+	spin_unlock(&ubi->volumes_lock);
- 
- 	return 0;
- 
- out_volumes:
- 	kill_volumes(ubi);
-+	spin_unlock(&ubi->volumes_lock);
- 	cdev_device_del(&ubi->cdev, &ubi->dev);
- out_unreg:
- 	unregister_chrdev_region(ubi->cdev.dev, ubi->vtbl_slots + 1);
--- 
-2.31.1
-
+On Sat, Oct 30, 2021 at 9:51 PM Julian Anastasov <ja@ssi.bg> wrote:
+>
+>
+>         Hello,
+>
+> On Sat, 30 Oct 2021, Julian Anastasov wrote:
+>
+> > On Sat, 30 Oct 2021, yangxingwu wrote:
+> >
+> > > We are changing expire_nodest_conn to work even for reused connections when
+> > > conn_reuse_mode=0 but without affecting the controlled and persistent
+> > > connections during the graceful termination period while server is with
+> > > weight=0.
+> > >
+> > > Fixes: d752c3645717 ("ipvs: allow rescheduling of new connections when port
+> > > reuse is detected")
+> > > Co-developed-by: Chuanqi Liu <legend050709@qq.com>
+> > > Signed-off-by: Chuanqi Liu <legend050709@qq.com>
+> > > Signed-off-by: yangxingwu <xingwu.yang@gmail.com>
+> >
+> >       Looks good to me, thanks!
+> >
+> > Acked-by: Julian Anastasov <ja@ssi.bg>
+>
+> NACK for v4.
+>
+>         May be we should not include the !cp->control changes
+> in this patch, it is better to reschedule as it was done
+> before, the new connection will get the needed real server
+> depending on the rules in ip_vs_check_template().
+>
+>         So, please send v5 with cp->control changes removed,
+> updated commit message and Fixes tag without line wrap.
+>
+> >       Simon, Pablo, may be you can change Fixes tag to be
+> > on one line before applying.
+> >
+> > > ---
+> > >  Documentation/networking/ipvs-sysctl.rst |  3 +--
+> > >  net/netfilter/ipvs/ip_vs_core.c          | 12 ++++--------
+> > >  2 files changed, 5 insertions(+), 10 deletions(-)
+> > >
+> > > diff --git a/Documentation/networking/ipvs-sysctl.rst b/Documentation/networking/ipvs-sysctl.rst
+> > > index 2afccc63856e..1cfbf1add2fc 100644
+> > > --- a/Documentation/networking/ipvs-sysctl.rst
+> > > +++ b/Documentation/networking/ipvs-sysctl.rst
+> > > @@ -37,8 +37,7 @@ conn_reuse_mode - INTEGER
+> > >
+> > >     0: disable any special handling on port reuse. The new
+> > >     connection will be delivered to the same real server that was
+> > > -   servicing the previous connection. This will effectively
+> > > -   disable expire_nodest_conn.
+> > > +   servicing the previous connection.
+> > >
+> > >     bit 1: enable rescheduling of new connections when it is safe.
+> > >     That is, whenever expire_nodest_conn and for TCP sockets, when
+> > > diff --git a/net/netfilter/ipvs/ip_vs_core.c b/net/netfilter/ipvs/ip_vs_core.c
+> > > index 128690c512df..ce6ceb55822b 100644
+> > > --- a/net/netfilter/ipvs/ip_vs_core.c
+> > > +++ b/net/netfilter/ipvs/ip_vs_core.c
+> > > @@ -1100,10 +1100,6 @@ static inline bool is_new_conn(const struct sk_buff *skb,
+> > >  static inline bool is_new_conn_expected(const struct ip_vs_conn *cp,
+> > >                                     int conn_reuse_mode)
+> > >  {
+> > > -   /* Controlled (FTP DATA or persistence)? */
+> > > -   if (cp->control)
+> > > -           return false;
+> > > -
+> > >     switch (cp->protocol) {
+> > >     case IPPROTO_TCP:
+> > >             return (cp->state == IP_VS_TCP_S_TIME_WAIT) ||
+> > > @@ -1964,7 +1960,6 @@ ip_vs_in(struct netns_ipvs *ipvs, unsigned int hooknum, struct sk_buff *skb, int
+> > >     struct ip_vs_proto_data *pd;
+> > >     struct ip_vs_conn *cp;
+> > >     int ret, pkts;
+> > > -   int conn_reuse_mode;
+> > >     struct sock *sk;
+> > >
+> > >     /* Already marked as IPVS request or reply? */
+> > > @@ -2041,15 +2036,16 @@ ip_vs_in(struct netns_ipvs *ipvs, unsigned int hooknum, struct sk_buff *skb, int
+> > >     cp = INDIRECT_CALL_1(pp->conn_in_get, ip_vs_conn_in_get_proto,
+> > >                          ipvs, af, skb, &iph);
+> > >
+> > > -   conn_reuse_mode = sysctl_conn_reuse_mode(ipvs);
+> > > -   if (conn_reuse_mode && !iph.fragoffs && is_new_conn(skb, &iph) && cp) {
+> > > +   if (!iph.fragoffs && is_new_conn(skb, &iph) && cp && !cp->control) {
+> > >             bool old_ct = false, resched = false;
+> > > +           int conn_reuse_mode = sysctl_conn_reuse_mode(ipvs);
+> > >
+> > >             if (unlikely(sysctl_expire_nodest_conn(ipvs)) && cp->dest &&
+> > >                 unlikely(!atomic_read(&cp->dest->weight))) {
+> > >                     resched = true;
+> > >                     old_ct = ip_vs_conn_uses_old_conntrack(cp, skb);
+> > > -           } else if (is_new_conn_expected(cp, conn_reuse_mode)) {
+> > > +           } else if (conn_reuse_mode &&
+> > > +                      is_new_conn_expected(cp, conn_reuse_mode)) {
+> > >                     old_ct = ip_vs_conn_uses_old_conntrack(cp, skb);
+> > >                     if (!atomic_read(&cp->n_control)) {
+> > >                             resched = true;
+> > > --
+> > > 2.30.2
+>
+> Regards
+>
+> --
+> Julian Anastasov <ja@ssi.bg>
