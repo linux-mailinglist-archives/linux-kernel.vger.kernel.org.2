@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3877C44185A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:43:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6E9B441859
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:43:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233576AbhKAJqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:46:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47892 "EHLO mail.kernel.org"
+        id S233534AbhKAJqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:46:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47878 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234019AbhKAJnw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234016AbhKAJnw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 1 Nov 2021 05:43:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 75AE96139D;
-        Mon,  1 Nov 2021 09:29:02 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BD5CF613AD;
+        Mon,  1 Nov 2021 09:29:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758942;
-        bh=9g/RVMqCKCYsmHZgYuQhLhr6c/CRsZfO74101G/VfAM=;
+        s=korg; t=1635758945;
+        bh=0Jb+ZtKc3oPBJP7+yme89ilX2XntbeaN0ojNW0zHWUQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Psr8cQC5W8xZaRS4fFQi0ZLr/WxuBEyMs0QCclynWnhx+elo1/IsNzGe2kdC8KQak
-         OSBgP1Oc0Tld+ynRJhG6XFY7gBUtCrlnXYj946r4ov1OzmisVVKmSfl85MiIeAfT7U
-         qUxYOF1X9N8fkDn0OXOOS2j64enmRWRDvTbIAP+w=
+        b=K7jQALJpS1VvropSBoIWGilkKVEqPXL3mxkp8xxFevIkIuTF09WT3U7tTQiNSHevi
+         ddS5+4QXuaR4Yi4waIjyB9LkVIkBLWqJh28xNIv+0eRBKFB5KoPJKSQ9GwGC3rWymg
+         c0R6tFwvD7eIg+t2X/bk0MB1eh4UyPYyGfj3Z0p8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thelford Williams <tdwilliamsiv@gmail.com>,
+        stable@vger.kernel.org, Aaron Liu <aaron.liu@amd.com>,
+        Huang Rui <ray.huang@amd.com>,
         Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.14 048/125] drm/amdgpu: fix out of bounds write
-Date:   Mon,  1 Nov 2021 10:17:01 +0100
-Message-Id: <20211101082542.281324405@linuxfoundation.org>
+Subject: [PATCH 5.14 049/125] drm/amdgpu: support B0&B1 external revision id for yellow carp
+Date:   Mon,  1 Nov 2021 10:17:02 +0100
+Message-Id: <20211101082542.523771288@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211101082533.618411490@linuxfoundation.org>
 References: <20211101082533.618411490@linuxfoundation.org>
@@ -39,31 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thelford Williams <tdwilliamsiv@gmail.com>
+From: Aaron Liu <aaron.liu@amd.com>
 
-commit 5afa7898ab7a0ec9c28556a91df714bf3c2f725e upstream.
+commit 53c2ff8bcb06acd07e24a62e7f5a0247bd7c6f67 upstream.
 
-Size can be any value and is user controlled resulting in overwriting the
-40 byte array wr_buf with an arbitrary length of data from buf.
+B0 internal rev_id is 0x01, B1 internal rev_id is 0x02.
+The external rev_id for B0 and B1 is 0x20.
+The original expression is not suitable for B1.
 
-Signed-off-by: Thelford Williams <tdwilliamsiv@gmail.com>
+v2: squash in fix for display code (Alex)
+
+Signed-off-by: Aaron Liu <aaron.liu@amd.com>
+Reviewed-by: Huang Rui <ray.huang@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/amd/amdgpu/nv.c                   |    2 +-
+ drivers/gpu/drm/amd/display/include/dal_asic_id.h |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
-@@ -263,7 +263,7 @@ static ssize_t dp_link_settings_write(st
- 	if (!wr_buf)
- 		return -ENOSPC;
+--- a/drivers/gpu/drm/amd/amdgpu/nv.c
++++ b/drivers/gpu/drm/amd/amdgpu/nv.c
+@@ -1237,7 +1237,7 @@ static int nv_common_early_init(void *ha
+ 			AMD_PG_SUPPORT_VCN_DPG |
+ 			AMD_PG_SUPPORT_JPEG;
+ 		if (adev->pdev->device == 0x1681)
+-			adev->external_rev_id = adev->rev_id + 0x19;
++			adev->external_rev_id = 0x20;
+ 		else
+ 			adev->external_rev_id = adev->rev_id + 0x01;
+ 		break;
+--- a/drivers/gpu/drm/amd/display/include/dal_asic_id.h
++++ b/drivers/gpu/drm/amd/display/include/dal_asic_id.h
+@@ -227,7 +227,7 @@ enum {
+ #define FAMILY_YELLOW_CARP                     146
  
--	if (parse_write_buffer_into_params(wr_buf, size,
-+	if (parse_write_buffer_into_params(wr_buf, wr_buf_size,
- 					   (long *)param, buf,
- 					   max_param_num,
- 					   &param_nums)) {
+ #define YELLOW_CARP_A0 0x01
+-#define YELLOW_CARP_B0 0x1A
++#define YELLOW_CARP_B0 0x20
+ #define YELLOW_CARP_UNKNOWN 0xFF
+ 
+ #ifndef ASICREV_IS_YELLOW_CARP
 
 
