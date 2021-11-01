@@ -2,76 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 707AD442055
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 19:52:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88BAF44205D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 19:56:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232447AbhKASzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 14:55:11 -0400
-Received: from mail-oo1-f54.google.com ([209.85.161.54]:37418 "EHLO
-        mail-oo1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232426AbhKASzK (ORCPT
+        id S232233AbhKAS6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 14:58:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30653 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231205AbhKAS6F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 14:55:10 -0400
-Received: by mail-oo1-f54.google.com with SMTP id j6-20020a4aab46000000b002bb88bfb594so3958170oon.4;
-        Mon, 01 Nov 2021 11:52:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Ez0ExjaNOgPztd9ik8mcUgxIwkY6xjgLzAofxYvSIf0=;
-        b=lZ3Qmmp3JtejhNAz8hcLMBNXyZKTBtm9QhclHA8ju5r+TttQAbfRr+pqtTZ9L99wJi
-         JAl/DwLwV/i1QvwRsZ7tOoRR8fua3Hzyvj212UlFhwH8Ffuhg2qotQbuS5cSZrfSyvcx
-         UAI4vgMvwWDK5Pam3wD1q9+oWBeG77BvtO1SmQDJDIGLORROVRlibtlyykLNKDtWee79
-         P9m6mwcUU7td+6MlUOYtN/s71FYN1kbkDbA7cpCdgUMb1+lzNTcYrKPwMKMrzZ02sqcw
-         EgV4NYgDtUraMUQO+MQ1Jj/qFKUIv4F9ZUCTlcm7HRjPRzv0FWFWUBRkdQmW91zOy9og
-         eIzA==
-X-Gm-Message-State: AOAM531c4FIE6fC8q1qV0zWjCS827dlA6kxS187z76e2PTfgp1j/ch6r
-        DSllG92cda00WricyVB2Ag==
-X-Google-Smtp-Source: ABdhPJxtoXJxZs7lFaY7FEDIKbY6oPUmYGlccuoUr1jfHm2e1MPRxljcAxM8pevk4tFiQE5bW3btvA==
-X-Received: by 2002:a4a:e681:: with SMTP id u1mr10019234oot.75.1635792756553;
-        Mon, 01 Nov 2021 11:52:36 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id s23sm4364436oie.20.2021.11.01.11.52.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 11:52:35 -0700 (PDT)
-Received: (nullmailer pid 819012 invoked by uid 1000);
-        Mon, 01 Nov 2021 18:52:34 -0000
-Date:   Mon, 1 Nov 2021 13:52:34 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     David Heidelberg <david@ixit.cz>
-Cc:     Jernej Skrabec <jernej.skrabec@gmail.com>,
-        devicetree@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        Maxime Ripard <mripard@kernel.org>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-watchdog@vger.kernel.org, ~okias/devicetree@lists.sr.ht
-Subject: Re: [PATCH] dt-bindings: watchdog: sunxi: fix error in schema
-Message-ID: <YYA3cqxn7k6p8Iti@robh.at.kernel.org>
-References: <20211029142443.68779-1-david@ixit.cz>
+        Mon, 1 Nov 2021 14:58:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635792924;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=gZzdkJekBWG4x4xkvb6CthYR9L71Zxbnl6IAJZMNVVM=;
+        b=HyLeVtb34EW+AONdXq7iNu0XQtXn83tqN5E+ZCiUXPOQK4lr7GNz915dpzCPqzDuC8znyK
+        0+FBQjqZKa+5czcPHq3oIVYlEXzpcbTbB1+RHY82LZO5FeZefULnZMSHi3y8xBVAaYz1sy
+        /CH6KYNQG2YM7F1kjwTSDb/x3vQq6is=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-552-VzgEnrQxMWWt2qRthEsR_w-1; Mon, 01 Nov 2021 14:55:21 -0400
+X-MC-Unique: VzgEnrQxMWWt2qRthEsR_w-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 26F57100C661;
+        Mon,  1 Nov 2021 18:55:20 +0000 (UTC)
+Received: from x1.localdomain (unknown [10.39.192.61])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E273160C17;
+        Mon,  1 Nov 2021 18:55:18 +0000 (UTC)
+From:   Hans de Goede <hdegoede@redhat.com>
+To:     Lee Jones <lee.jones@linaro.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/3] backlight: lp855x: Move device_config setting out of lp855x_configure()
+Date:   Mon,  1 Nov 2021 19:55:15 +0100
+Message-Id: <20211101185518.306728-1-hdegoede@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211029142443.68779-1-david@ixit.cz>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Oct 2021 16:24:42 +0200, David Heidelberg wrote:
-> "maxItems" is not needed with an "items" list
-> 
-> Fixes:
-> $ DT_SCHEMA_FILES=Documentation/devicetree/bindings/watchdog/allwinner,sun4i-a10-wdt.yaml make dtbs_check
-> Documentation/devicetree/bindings/watchdog/allwinner,sun4i-a10-wdt.yaml: properties:clocks: {'required': ['maxItems']} is not allowed for {'minItems': 1, 'maxItems': 2, 'items': [{'description': 'High-frequency oscillator input, divided internally'}, {'description': 'Low-frequency oscillator input, only found on some variants'}]}
-> 	hint: "maxItems" is not needed with an "items" list
-> 	from schema $id: http://devicetree.org/meta-schemas/items.yaml#
-> ...
-> 
-> Signed-off-by: David Heidelberg <david@ixit.cz>
-> ---
->  .../devicetree/bindings/watchdog/allwinner,sun4i-a10-wdt.yaml   | 2 --
->  1 file changed, 2 deletions(-)
-> 
+Move the setting of the lp->cfg pointer to the chip specific
+lp855x_device_config struct from lp855x_configure() to
+lp855x_probe(), before calling lp855x_parse_dt().
 
-Acked-by: Rob Herring <robh@kernel.org>
+This is a preperation patch for adding ACPI enumeration support.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+---
+ drivers/video/backlight/lp855x_bl.c | 32 ++++++++++++++---------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
+
+diff --git a/drivers/video/backlight/lp855x_bl.c b/drivers/video/backlight/lp855x_bl.c
+index e94932c69f54..808ff00b2003 100644
+--- a/drivers/video/backlight/lp855x_bl.c
++++ b/drivers/video/backlight/lp855x_bl.c
+@@ -170,22 +170,6 @@ static int lp855x_configure(struct lp855x *lp)
+ 	int i, ret;
+ 	struct lp855x_platform_data *pd = lp->pdata;
+ 
+-	switch (lp->chip_id) {
+-	case LP8550:
+-	case LP8551:
+-	case LP8552:
+-	case LP8553:
+-	case LP8556:
+-		lp->cfg = &lp855x_dev_cfg;
+-		break;
+-	case LP8555:
+-	case LP8557:
+-		lp->cfg = &lp8557_dev_cfg;
+-		break;
+-	default:
+-		return -EINVAL;
+-	}
+-
+ 	if (lp->cfg->pre_init_device) {
+ 		ret = lp->cfg->pre_init_device(lp);
+ 		if (ret) {
+@@ -413,6 +397,22 @@ static int lp855x_probe(struct i2c_client *cl, const struct i2c_device_id *id)
+ 	lp->chip_id = id->driver_data;
+ 	lp->pdata = dev_get_platdata(&cl->dev);
+ 
++	switch (lp->chip_id) {
++	case LP8550:
++	case LP8551:
++	case LP8552:
++	case LP8553:
++	case LP8556:
++		lp->cfg = &lp855x_dev_cfg;
++		break;
++	case LP8555:
++	case LP8557:
++		lp->cfg = &lp8557_dev_cfg;
++		break;
++	default:
++		return -EINVAL;
++	}
++
+ 	if (!lp->pdata) {
+ 		ret = lp855x_parse_dt(lp);
+ 		if (ret < 0)
+-- 
+2.31.1
+
