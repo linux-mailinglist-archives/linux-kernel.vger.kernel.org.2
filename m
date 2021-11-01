@@ -2,169 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01F334411E0
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 02:46:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66DCF4411E9
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 02:49:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230312AbhKABtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 21:49:18 -0400
-Received: from mail-vi1eur05on2046.outbound.protection.outlook.com ([40.107.21.46]:44001
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        id S230501AbhKABvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 21:51:38 -0400
+Received: from mail-mw2nam10on2049.outbound.protection.outlook.com ([40.107.94.49]:33632
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230133AbhKABtO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 21:49:14 -0400
+        id S230133AbhKABva (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Oct 2021 21:51:30 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JyOd+hMDn6jVsy1K/Hdqvu77xnOFOXxFNXj7uTZRxxWAeS49RpIW7buUednLa3S+2Cr6yKm7r2f1e15/4NDqtK6mnRw6W24R1HsZgoDUFJzh1tOeASUQqpFfhP2nSDw5JPA0CkciTOG7LeFSuCqbmRjlBqbdgRsYMwVfIkCVm+UzMM+d/Bmv1guodHl8jQMyqrugw8fuTDoxtuTc/szXabi2e45UDQXWjWJSJlXdXad8uv5HpANtuwX2YcnRpiZ5nsYIovJAf54+j0Ae5VVI/tj6yp38pxTQQhIV6kTstwpOnghdJW0M2ci+WbbQikgkVGVmUjYVbdXA0mqb3U1X0w==
+ b=Gj1uuMQUbtqEBZ+W6odRLos3RlS+W0ApsHblEXVyblXEPd5EAXdavUzO62Tj+r/aKDDim3YzPD74W1SdSfXD9+up/KSR/1klEKsyoqLkEIW9J0GwtL+jUGRMOI4tFGcQ8uUTe5cQjVGfBk8Ac0ufb1d0huUC5Au1lnr14YiZomEYJf9aaL3gF4GKXqI0q5cXJ6SqE7MYUxgWWY0bYpt9dBGbo0R4CMK9Xc+SUEniYePlCKKEZ3+5nGMwVD97f51az66PUSLnGkx0XWqqaTmc3g/iuFvHUMebv3gr+DNI80MDsTcmSEEgeQqCOzucwmlifKp/BuiFOqiRgx9DBFNrvg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=b7f3TU1fd7TQEy+/gDO5PHybi5gH/wdJ0IyvuqPEU5Q=;
- b=KAyEEycljde8giyrlBW8PRM2y/A4TQWaoMqU8oqR4k1N9clvtA78cR6e5JvtXED0TaGRtN4372q7cOVXKSHEmzuRyEDGzOAHlpC50dmJFzEvTZd1yi/+HSEyT78EoOrcK0At6cajf7KTaAgLXYl4U2tGdGO3ilalg4/gXts4iM1Z+7wDqHuLyQx/0EQw77wS50hE/mzL2Yfx5H7y+9ogJYTskj+0HSr61Mm8o+mfuMoySs+e1Ag3baJnrJPG8/6CrgLPLC7zpg1mEDU91AT7FDB2LyMta/o9OBPZoH/zHNKMgvbcmSRC25y7r+ZSdzIRK/38Zjqy9jZFLD7Bd9haGw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ bh=ClUaccHing3kzMGC308MHFl97KTOjb6rqYqHLYU513U=;
+ b=i2Xf0gd/GjN+BooeqsxW5KbYcqSPIhpgiOT5gl9j1PWS7pFyZwUPadH1lPksIK8VTlWKTSPso5m6C4WycVLBqLqFX8238dMAG6Nmx4J3gyVpr2iy95MkdizgELIz57KmbKeQGh3UtEpskjjfcRcZ11rtQ29/iRcbC/jkxY1m9JQPXQa6eFtwVTlLv5hzDh9JCaiDaj4C3uW98NKPdHaAxyptr9Ea0vSVTx/cd+z7dXo4ZPkiO7Wog3Z0Z4t6ycCZl/mvkpPwjoPU5yrGJ5oTZ39y+3s5p30cV+SfQz6R98eaTTs79W8z270rqT8Y34yT4f9LUR5EiTaaZDqF+G6AlQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=linaro.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=b7f3TU1fd7TQEy+/gDO5PHybi5gH/wdJ0IyvuqPEU5Q=;
- b=mhdnlvN1XBg0ukU0aqLHx7R6wADPlllGlOS24a2Nh+rY32SbkGSChz0/2J2Va6xfaF5zgEHLTenigs+YyQE+dRwBFN8kbpm5/cy7aeN377SmSUKVRfw+YthCvAVFZhCx1yrF0qur3XjtIBLWcobRsq6kwkel/tizf0DVuT9uJqg=
-Received: from AS8PR04MB8676.eurprd04.prod.outlook.com (2603:10a6:20b:42b::10)
- by AS8PR04MB9208.eurprd04.prod.outlook.com (2603:10a6:20b:44f::20) with
+ bh=ClUaccHing3kzMGC308MHFl97KTOjb6rqYqHLYU513U=;
+ b=ggDKgKlmPC0nFtkD6WjAAgd9Qa6W7fUnPy6ACg8sxOx3g9bNsfYnkkMO5YNitOp+fvxWCgobe1MWCp4Y+yREmHhYUuvgtMvXZgefmYJAhAKJpbgXS2d3nm33m1COxiEtIUizved4zoEHY8UGiFINGcBA63/hs48pAnmmhNwNHP0=
+Received: from DS7PR03CA0310.namprd03.prod.outlook.com (2603:10b6:8:2b::9) by
+ BL1PR12MB5128.namprd12.prod.outlook.com (2603:10b6:208:316::15) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.13; Mon, 1 Nov
- 2021 01:46:35 +0000
-Received: from AS8PR04MB8676.eurprd04.prod.outlook.com
- ([fe80::b059:46c6:685b:e0fc]) by AS8PR04MB8676.eurprd04.prod.outlook.com
- ([fe80::b059:46c6:685b:e0fc%5]) with mapi id 15.20.4649.019; Mon, 1 Nov 2021
- 01:46:35 +0000
-From:   Richard Zhu <hongxing.zhu@nxp.com>
-To:     Mark Brown <broonie@kernel.org>
-CC:     Francesco Dolcini <francesco.dolcini@toradex.com>,
-        "l.stach@pengutronix.de" <l.stach@pengutronix.de>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
-        "jingoohan1@gmail.com" <jingoohan1@gmail.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>
-Subject: RE: [PATCH v3 3/7] PCI: imx6: Fix the regulator dump when link never
- came up
-Thread-Topic: [PATCH v3 3/7] PCI: imx6: Fix the regulator dump when link never
- came up
-Thread-Index: AQHXxxe5hpSrQkcPqkWGr8lEYEKQh6vjlGkAgAAC9gCAAPQyAIAAlv4AgAFuIxCAAcUHAIAA/dUAgACTWACABA5hcA==
-Date:   Mon, 1 Nov 2021 01:46:35 +0000
-Message-ID: <AS8PR04MB86761F6DD5395282A472CFBC8C8A9@AS8PR04MB8676.eurprd04.prod.outlook.com>
-References: <1634886750-13861-1-git-send-email-hongxing.zhu@nxp.com>
- <1634886750-13861-4-git-send-email-hongxing.zhu@nxp.com>
- <20211025111312.GA31419@francesco-nb.int.toradex.com>
- <YXaTxDJjhpcj5XBV@sirena.org.uk>
- <AS8PR04MB8676A0F3DA3248C6A27801148C849@AS8PR04MB8676.eurprd04.prod.outlook.com>
- <YXffRmvPYwetsg3L@sirena.org.uk>
- <AS8PR04MB8676AF8685A951E19B1CE0688C869@AS8PR04MB8676.eurprd04.prod.outlook.com>
- <YXqOcAIO2aYkr1sM@sirena.org.uk>
- <AS8PR04MB8676CF52F4D8E9E4E6C07F758C879@AS8PR04MB8676.eurprd04.prod.outlook.com>
- <YXve+HlpEWOzZ+k3@sirena.org.uk>
-In-Reply-To: <YXve+HlpEWOzZ+k3@sirena.org.uk>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: dc11d0b8-2162-4ada-be30-08d99cd9701b
-x-ms-traffictypediagnostic: AS8PR04MB9208:
-x-microsoft-antispam-prvs: <AS8PR04MB92086ABB0C0B12BB225D33968C8A9@AS8PR04MB9208.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: fiq0ftANNWPIYzv1A4gsWT+BbFARMWNfs7nkYwiDRe/moXkHQiR+AzWUikBasVTw3PcmG6OQ6+oYR+a/xJ5VK1zi6ZI9TkpuFS1kjSb6TT85VcmKqqMjxAhVrp8/16KoGzu4RigUNG5GMERG/DUMTFmXfeIZ+YoSSCKTDbkjigjAhTyleQrlSERwNs9RsJKovw5ZCAQMy9k2o15RhXiYlx9oXd0gTxDasL76OgL6WZmrwZdZZvBHwrw758naUIwvvLwa/cZM5eqEEHL1i89ZrN5JJLYPkDEXf33SlS1wu91NKiZY3UdmvUy0aUFVxaxuU0ozLYNJRl1aGkhREqlDIlcEdtG2dEkkefrvSQdwdUdgnpDr4ZlX9MVknozeP/rB4oMMLIXTOX6uM76EJC3Iy2F1g3Dmj6bZ9Vcl6uQaEr9utjwUneXIVHYkLOXIOpckgfUcWM0mY+Ql1sK7FCJP4DDu/3u38H3b1zEpdBoSVtO+YZ27r6lT3eU3H/6DhxbLmpJQlqifz00RQG6twXAYVl30Ylt90tPyIosSCiEROijNbrA/aPMN/Yi+A2zQ0lMBWaoa7N/JwafdtR5952Ikj9jdo73tYKHCnDs9a0DvKfTy5QQxCnpTEWRHeiuLV3JxMNN7sW5HKlppu2DwlxGPhCIH+aqIGwdk+vzcG8nHI/Xq973M1EH/5lKsiwOXKmnRKShmdD71D7HiCU4nnrN5ZQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8676.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(86362001)(508600001)(8676002)(186003)(83380400001)(55016002)(6916009)(4326008)(52536014)(64756008)(5660300002)(66446008)(316002)(66946007)(9686003)(66476007)(26005)(33656002)(54906003)(7696005)(122000001)(76116006)(7416002)(6506007)(66556008)(71200400001)(2906002)(38100700002)(38070700005)(8936002)(53546011);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?NqV6nzBg9/2UQ/ZwzMgQcXEI92r0sY3v0E515GT0tgQDp7asgqlUPb9FtK9X?=
- =?us-ascii?Q?6KMZnrliWv9UxRQiytDXHTNIJ4R9nopk2U7Zitq8nVOdJBLwWht42RqCe++i?=
- =?us-ascii?Q?ybeuxOpn9jYVdJTpZ6YrXHFXnHzUpCrERoymnLCUBD6IYuGkM0kkjmMBQl2p?=
- =?us-ascii?Q?POS64ySsiEhLNR0qOgeRuC3XkLNsYeZTX7AMvPRKRb3gH8JihnlTBcteVcDY?=
- =?us-ascii?Q?gcN4Ze2oO2jdRADlfXz3AwDD3vTB3LdhDGvGDOIAkYXNPrQIhmBD0TmRaCQf?=
- =?us-ascii?Q?xez73y8IM3QAyDVLBD5e9yuRtmkcqBoo8EbYVPpNbl1T0iONhBzmNeYagZI7?=
- =?us-ascii?Q?mf1B9q85MhqgdazDX5rr53goU9l4f21ysGYi3WovX5Wnfz9+taHmV+110osz?=
- =?us-ascii?Q?ux0xkfvk2sIEFOXr91YLeYcAhhlW2hhCzy3lIg36t1OCD+oEG4BtvLcLjTzD?=
- =?us-ascii?Q?XxuiVIq5wxRNIoV7gasVdVTGt5l7svnOplgwJqzLrSWu4V7+nCUxm2o6hKHc?=
- =?us-ascii?Q?NvW6N59Td61lY6JcFjV8Kso3N066cqZm1YkhZ5t6YcXa+rwM4bPLVLYqyAkn?=
- =?us-ascii?Q?2iVLl8iPRxB/L+/yYF9bL7efV0a4/JmqteGHH9FRxjLegBSljzU9QEPPe0GG?=
- =?us-ascii?Q?xfLZ+vx+GsZDwZdh3yzKnACLFaljOm3hg9SchaHxKowbUUfpoEau3IaO1/lB?=
- =?us-ascii?Q?Lkkb9DBqjfMdTlHEDhBs9DiH7DryZ5sd9sjb8ZVjiJDPyXvPpqEhjSP/VadI?=
- =?us-ascii?Q?/nYKNah2q3yHX/yA7/Y9zerYhpW1fFuc9eGB1zN5p9BQwhu00Q9/ZBzVS9cs?=
- =?us-ascii?Q?8YzhnPYMBm/U70uy48n7y3whVUSzYvB3pqhJBKgZqBSRGSrqG6a38GKbAOfF?=
- =?us-ascii?Q?X/ZHiA2UYn1TdgltIXnuorzU9MrSGeXIJSGVHMESuGpdjnrx5UODY/PlzqAP?=
- =?us-ascii?Q?SAY+GHUeAQkRsxFRnUeqNpbkhUUIKcDgtYNcqCHKHz/ATCKUSinVP01ileIW?=
- =?us-ascii?Q?QeOhtTEwprl5SOmgx0T3//zW/SF8SELbKkpORPuvmG7NKxkU8oyqZ3PQApk6?=
- =?us-ascii?Q?hCMHcSLhb29vJl//HGqvolMPT8l+08KSGKTbUZ8qto8PnPq8wwDxAce6nkOl?=
- =?us-ascii?Q?OUYky9BdLGrpaknJWU4n9FbpmN3hx3yAsTzBZiLzzqNjIPtAWTlXroXeUyKC?=
- =?us-ascii?Q?B6hFEKw55qMP5tUCn4Gcmau360oXLVKUALdUSufIt47DX412RMXj8MS352c3?=
- =?us-ascii?Q?cJ49gO5BAgowYNhZBjoumIxD2AmGMVCYRmdrpBzmmHwni7NBLbbTTMDNZGEl?=
- =?us-ascii?Q?WKtRMtSEVMMFhOBooOWPVY1k3IcoGmnTxkPXoAQbEn+q89vnWMXma9jf2iMq?=
- =?us-ascii?Q?5CuMJMXJ9zTq2Jxy/nVgYtW2pq/xypUeImxEIiD6OfGgtoiqKsgFqWy0sdbK?=
- =?us-ascii?Q?tb59Kely9vfEKzqDyfPT+/YpZuuIRk6M+lhQ1gixsL+PawjRCulCrE4LcXyv?=
- =?us-ascii?Q?M7L3/KoIhxbZB3B+fs3dPn01eS/7ZM8VAe8xlvnjFUg9+vrWLXen5OjpCQXr?=
- =?us-ascii?Q?q2YgCvfCdg4s/3CViPByAT0IwqU4+H6OmReATitaG0jFbC5l0Pv0EogyBjXb?=
- =?us-ascii?Q?bQ=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.15; Mon, 1 Nov
+ 2021 01:48:56 +0000
+Received: from DM6NAM11FT061.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:8:2b:cafe::92) by DS7PR03CA0310.outlook.office365.com
+ (2603:10b6:8:2b::9) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.14 via Frontend
+ Transport; Mon, 1 Nov 2021 01:48:56 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB03.amd.com;
+Received: from SATLEXMB03.amd.com (165.204.84.17) by
+ DM6NAM11FT061.mail.protection.outlook.com (10.13.173.138) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4649.14 via Frontend Transport; Mon, 1 Nov 2021 01:48:56 +0000
+Received: from AUS-LX-MLIMONCI.amd.com (10.180.168.240) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Sun, 31 Oct
+ 2021 20:48:55 -0500
+From:   Mario Limonciello <mario.limonciello@amd.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Basavaraj Natikar <Basavaraj.Natikar@amd.com>,
+        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
+CC:     "open list:PIN CONTROL SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        <linux-acpi@vger.kernel.org>,
+        Nehal Shah <Nehal-bakulchandra.Shah@amd.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH v7 1/2] ACPI: Add stubs for wakeup handler functions
+Date:   Sun, 31 Oct 2021 20:48:52 -0500
+Message-ID: <20211101014853.6177-1-mario.limonciello@amd.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8676.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dc11d0b8-2162-4ada-be30-08d99cd9701b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Nov 2021 01:46:35.1322
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB03.amd.com
+ (10.181.40.144)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 3108b841-ec03-4cc2-eb5b-08d99cd9c43b
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5128:
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5128D9A318874006A07CD438E28A9@BL1PR12MB5128.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1201;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: IJHYtU2Q/zIWP6HHXu5DF+o2F7xb72TtYgh1VYiOwXDSJUgMo6WfOOEkrecHsPmpOh2TILlbskRBzv+wAru5JMtTIUQWo7AWY4G7DerMcVpqRYepb2S1i74AljXF01GvTf3qoeMsfafIId/ow4BoDY5pxfmkCXJQ2oRi+HueJXLXc1LFIJtaiVhC14jQ63VL5bAZJ1emjBEMf2H6mLxcZ2L5CYBfdTWRI0bqIC5Win/JeYmbz3G3INzRzDPByrltJMQc/MSuBWqXAsFPryOpmlbliQGYy8Emtqnw/fo9YFALT2iWKj5pTlfYMIhJ0suqrzpKTHDOCoLfxAvdYLeESVUUELYeJN8yxac98JuUXoHjvwyG51TnjelssjF9dF0+DLeEyGFOEZ9pr0acD7PFnX3T6gFZ7XkjnhFMk7QIV1u3PvDdP0syuRcmY5du0eVnKkxZHGGVZgtJlWtWnuBn6cHwgfvEGSyzGMsZuS/MqzgyFkpd5rSLx7RexrlLQ7IcfRca9uTvCV04lVPwmsN/LS9LTy5lPYNbAzb47M6YGdFLR6a+OtNJ/JGGrIn+U+WHDSzFvHi/Sus1t1dyeeTutGhRtVsFUDiI1woBrlwFg9UDwtzFm1EWtYzcBzNTAHKWQU9826nm1Rn2poswA5SlmsnlTaAxlMTEEC/V5F4PKmXUyqdxf0gPVlFzyubAcdzLIWRiSEAqMbjjdmJx0MA/fxMSWE9hUJVCWnrpSC/zQ5s=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(316002)(4326008)(6636002)(44832011)(54906003)(7696005)(83380400001)(2616005)(110136005)(336012)(2906002)(426003)(81166007)(70206006)(5660300002)(86362001)(47076005)(356005)(82310400003)(16526019)(186003)(6666004)(508600001)(70586007)(26005)(8676002)(8936002)(36860700001)(36756003)(1076003)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Nov 2021 01:48:56.2873
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: DCVUyfZc7qKtOOm4IqilSZrCopH8ugS/LeArIL5aV2qvggAonBekGLo2hbpfW8aUVmQFKxhUTsoOF4ohtEZKig==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB9208
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3108b841-ec03-4cc2-eb5b-08d99cd9c43b
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT061.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5128
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The commit ddfd9dcf270c ("ACPI: PM: Add acpi_[un]register_wakeup_handler()")
+added new functions for drivers to use during the s2idle wakeup path, but
+didn't add stubs for when CONFIG_ACPI wasn't set.
 
-> -----Original Message-----
-> From: Mark Brown <broonie@kernel.org>
-> Sent: Friday, October 29, 2021 7:46 PM
-> To: Richard Zhu <hongxing.zhu@nxp.com>
-> Cc: Francesco Dolcini <francesco.dolcini@toradex.com>;
-> l.stach@pengutronix.de; bhelgaas@google.com;
-> lorenzo.pieralisi@arm.com; jingoohan1@gmail.com;
-> linux-pci@vger.kernel.org; dl-linux-imx <linux-imx@nxp.com>;
-> linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org;
-> kernel@pengutronix.de
-> Subject: Re: [PATCH v3 3/7] PCI: imx6: Fix the regulator dump when link
-> never came up
->=20
-> On Fri, Oct 29, 2021 at 03:58:41AM +0000, Richard Zhu wrote:
->=20
-> > > The driver should undo any enables it did itself, it should not undo
-> > > any enables that anything else did which means it should never be
-> > > basing decisions on regulator_is_enabled().  While the regulator may
-> > > not be shared in the particular board you're looking at it may be
-> > > shared in other systems.
->=20
-> > [Richard Zhu] Understood. Thanks.
-> > Can I disabled this regulator in PCIe probe failure handler without
-> > the
-> >  regulator_is_enabled() check?
->=20
-> If the driver called regulator_enable() (and that didn't return an
-> error) it can always call regulator_disable() as many times as it called
-> regulator_enable(), no need to check if the regulator is still enabled.
-> When the driver hasn't successfully called regulator_enable() it shouldn'=
-t
-> call regulator_disable() even if the regualtor is enabled.
-> This means that after your driver has enabled the regulator it can just
-> disable it but between the regulator_get() and regulator_enable() it
-> shouldn't do that.
-[Richard Zhu] Got that, thanks a lot.
-BR
-Richard
+Add those stubs in for other drivers to be able to use.
+
+Fixes: ddfd9dcf270c ("ACPI: PM: Add acpi_[un]register_wakeup_handler()")
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+---
+Changes from v6->v7:
+ * No changes
+Changes from v5->v6:
+ * No changes
+Changes from v4->v5:
+ * Pick up Rafael's tag
+ * Target to stable as well
+Changes from v3->v4:
+ * Reword commit message
+ * Adjust whitespace
+ * Return -ENXIO instead of -EINVAL
+ include/linux/acpi.h | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+index 72e4f7fd268c..e29b4c1da377 100644
+--- a/include/linux/acpi.h
++++ b/include/linux/acpi.h
+@@ -976,6 +976,15 @@ static inline int acpi_get_local_address(acpi_handle handle, u32 *addr)
+ 	return -ENODEV;
+ }
+ 
++static inline int acpi_register_wakeup_handler(int wake_irq,
++	bool (*wakeup)(void *context), void *context)
++{
++	return -ENXIO;
++}
++
++static inline void acpi_unregister_wakeup_handler(
++	bool (*wakeup)(void *context), void *context) { }
++
+ #endif	/* !CONFIG_ACPI */
+ 
+ #ifdef CONFIG_ACPI_HOTPLUG_IOAPIC
+-- 
+2.25.1
+
