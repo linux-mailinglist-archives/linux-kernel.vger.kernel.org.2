@@ -2,111 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 657D6441D6B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 16:27:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 484CF441D6C
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 16:28:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232535AbhKAPaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 11:30:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49058 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229826AbhKAPaO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 11:30:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A428660F56;
-        Mon,  1 Nov 2021 15:27:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635780461;
-        bh=BVma498njk1NXgHcqsLSWnVyew8XNDNSvRicyHkgS38=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OuMd665kG4xFPOhYHgB2nBX526uSan4rE6Ap8USpVCRQS5Twxt+2th+UmXgzbG0NI
-         609J9/D+z1y9zSnF6wF++cjsF79zAIB7FR4akJYFo05SRPnJhDQAqPm80YsvagKLJA
-         pgoptCTDX07FYInsxyqBBAke3o5nv6SrMvM9pfsw=
-Date:   Mon, 1 Nov 2021 16:27:36 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Thorsten Leemhuis <regressions@leemhuis.info>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "regressions@lists.linux.dev" <regressions@lists.linux.dev>
-Subject: Re: Thorsten is tracking regression again and could need a little
- help (was: Re: Linux 5.15)
-Message-ID: <YYAHaONs8IOdecOs@kroah.com>
-References: <CAHk-=wjfbfQobW2jygMvgfJXKmzZNB=UTzBrFs2vTEzVpBXA4Q@mail.gmail.com>
- <a365ffb9-a4d2-b1d7-7cd7-dd9d7039e04e@leemhuis.info>
- <YX/ekB+9F9xvHCB7@kroah.com>
- <da21322a-95e8-40f9-a718-fa1e56eb203f@leemhuis.info>
- <YX/lnI5gX4TAF5Ea@kroah.com>
- <d757b7c0-9d6d-a3ad-8bd0-748396db5861@leemhuis.info>
+        id S232584AbhKAPbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 11:31:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231362AbhKAPbS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 11:31:18 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3B8AC061714
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 08:28:44 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id nh10-20020a17090b364a00b001a69adad5ebso238339pjb.2
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 08:28:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4nczZzPOROr/Kyy51BrycrxkeBsFlmOfWA3LpP384+8=;
+        b=B8Z2fR33FZt++MnFctR1qPORvENn/ikeBgkvySxKjGFAVBKRckfbvj8w/pwET/S81l
+         FKz8AYS5aaLNspjsDgpypoKbUE2O5wJ4B8nQ6dYUimjg/947Es3W7bLdQ4LycVaHOQLK
+         rTFpdV04JIR48pIW4m+EIPcXZ45vNgVIjtROynE5Tp7yFOic/rygPsuLxqS0pwW+VeuB
+         7PkllgMKOp9vrY8rf9SOu5SY3XSHktDgJVusBF/LV4cL/Bs7uZ/f8Z0jTACUaVPRkIwm
+         M0FzXZBtNB3uTP08iUGuiz63TtwDcgEfHuGNPsr6cLS3sTiWRDj3lItmUfQbe35aN8eB
+         3QLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4nczZzPOROr/Kyy51BrycrxkeBsFlmOfWA3LpP384+8=;
+        b=xgMl3Fo6tKxOe2cylNUiZLxrR8UIF3QluTBaex2glQS/ertCgf7lhWr1WMB5KjplcB
+         PwAVlhn+eyrYgl5edyLNYm3wu9Qhw40DumqKSj/4WvZBgg27xKTdklG5Xct14oM+fFq4
+         8JpeKsH/4zPEkRVp9haRvrwEJmcBphxMII9hoy8bj/8ANpAkxeBHrUKd9YwvcBBPRCVs
+         3oZ+4SDvTEM3Vdm6w+8NafXbu1V58845P6YMZvysPKmtiy+qRawLfO2oIeXVaKCYlElO
+         nuE8HchnKdSl01gVrx3Ejl7hslpTFYtDHAuKeemtOZutxI9rI3GAU7YCNM6xn+rs/ACa
+         4XVg==
+X-Gm-Message-State: AOAM533xpjl1dlrnwfhAo6YIktKyEDexIvnQaJvKJgu/dwHbXT5/6Iko
+        dGiIFnYw04AtPAG6V4rffGrPxg==
+X-Google-Smtp-Source: ABdhPJw/46wh7WVg32S3b5SUGL+jz4NvUZ1xwsb2hzAEG92vkUqDXT5Ic1JNg+rvBW7cERoss/7a1w==
+X-Received: by 2002:a17:902:6b86:b0:13f:8d7a:397c with SMTP id p6-20020a1709026b8600b0013f8d7a397cmr26145198plk.50.1635780524336;
+        Mon, 01 Nov 2021 08:28:44 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([103.136.124.227])
+        by smtp.gmail.com with ESMTPSA id c21sm2974143pfv.119.2021.11.01.08.28.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Nov 2021 08:28:43 -0700 (PDT)
+Date:   Mon, 1 Nov 2021 23:28:35 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        James Morse <james.morse@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Joey Gouly <joey.gouly@arm.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Stephane Eranian <eranian@google.com>,
+        James Clark <james.clark@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFCv1 4/4] perf: arm_spe: Dynamically switch PID tracing to
+ contextidr
+Message-ID: <20211101152835.GB375622@leoy-ThinkPad-X240s>
+References: <20211021134530.206216-1-leo.yan@linaro.org>
+ <20211021134530.206216-5-leo.yan@linaro.org>
+ <202110210848.35971643C6@keescook>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d757b7c0-9d6d-a3ad-8bd0-748396db5861@leemhuis.info>
+In-Reply-To: <202110210848.35971643C6@keescook>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 01, 2021 at 02:34:21PM +0100, Thorsten Leemhuis wrote:
-> On 01.11.21 14:03, Greg KH wrote:
-> > On Mon, Nov 01, 2021 at 01:44:01PM +0100, Thorsten Leemhuis wrote:
-> >> On 01.11.21 13:33, Greg KH wrote:
-> >>> On Mon, Nov 01, 2021 at 05:49:40AM +0100, Thorsten Leemhuis wrote:
-> >>>> example by simply forwarding the mail to regressions@leemhuis.info or
-> >>>> CCing that address on a reply. I'll handle everything else then and tell
-> >>>> regzbot about it. But if you feel adventurous, you can also skip me as
-> >>>> the man-in-the-middle and tell the bot directly. To do that, just send a
-> >>>> reply to the report to the regressions mailing list
-> >>>> (regressions@lists.linux.dev) either directly or by CCing it on a reply
-> >>>> you would have written anyway; when doing so, place something like
-> >>>> '#regzbot ^introduced v5.15..' (separated by blank lines) somewhere in
-> >>>> the text, as outlined in regzbot's 'getting started guide' or its
-> >>>> reference documentation:
-> >>>> https://gitlab.com/knurd42/regzbot/-/blob/main/docs/getting_started.md
-> >>>> https://gitlab.com/knurd42/regzbot/-/blob/main/docs/reference.md
-> >>>>
-> >>>> That's it, regzbot then on its next run will add the report to the list
-> >>>> of tracked regression. I'll keep an eye on things and try to fix any
-> >>>> problems I notice, as there likely will be a few. But then doesn't need
-> >>>> to bother you.
-> >>>>
-> >>>> There is one thing that would really help: if one or two subsystem
-> >>>> maintainers could give regzbot a shot for all the regression reports
-> >>>> they get, even for easy fixes, as the bot really needs something to chew
-> >>>> on. Any volunteers?
-> >>>
-> >>> I'll try it for the USB subsystem this merge cycle. 
-> >>
-> >> That will be a great help, many thx.
-> >>
-> >>> Do you want a bug
-> >>> report email redirected to that address or will a simple forward work
-> >>> well enough?
-> >>
-> >> Redirecting will make it a little easier for me, but a simple forward is
-> >> fine, too.
+Hi Catalin, Will,
+
+On Thu, Oct 21, 2021 at 08:49:46AM -0700, Kees Cook wrote:
+> On Thu, Oct 21, 2021 at 09:45:30PM +0800, Leo Yan wrote:
+> > Now Arm64 provides API for enabling and disable PID tracing, Arm SPE
+> > driver invokes these functions to dynamically enable it during
+> > profiling when the program runs in root PID name space, and disable PID
+> > tracing when the perf event is stopped.
 > > 
-> > Ok, I did that now for a USB bug report, hopefully that worked.  If not,
-> > I can forward it on.
+> > Device drivers should not depend on CONFIG_PID_IN_CONTEXTIDR for PID
+> > tracing, so this patch uses the consistent condition for setting bit
+> > EL1_CX for PMSCR.
 > 
-> Got it, but I could need some advice on it if you have a minute.
-> 
-> Does that report really look like a regression from your point of view?
-> The part "The code has been this way in the kernel for a very long time,
-> which suggests that it has been working, [...]" sounds like it is, but
-> OTOH it's quite vague.
+> My own preference here would be to not bother with the new
+> enable/disable helpers, but just open code it right here. (Save a patch
+> and is the only user.) But I defer to the taste of arm64 maintainers. :)
 
-Later in the thread it was determined that this is a regression that
-showed up in the 3.4 kernel release and the commit id was referenced.
+Before I send out a new version for this patch set (for support
+dynamic PID tracing on Arm64), I'd like to get your opinions for two
+things:
 
-> I'm asking, because with my regression tracking work and regzbot I focus
-> on regressions and ignore things that were always broken, as I (at least
-> for now) don't want it to become yet another bug tracker (and I guess I
-> would quickly drown in bugs as well).
+- Firstly, as Kees suggested to directly use variable
+  'contextidr_in_use' in drivers, which is exported as GPL symbol,
+  it's not necessarily to add two helpers contextidr_{enable|disable}().
+  What's your preference for this?
 
-I agree, this shouldn't be a bug tracker, sorry, I shouldn't have
-started this with a report of a really old issue, but it's all I found
-at short notice :)
+- Secondly, now this patch set only support dynamic PID tracing for
+  Arm64; and there would be two customers to use dynamic PID tracing:
+  Arm SPE and Coresight ETMv4.x.  So this patch set doesn't support
+  dynamic PID tracing for Arm32 (under arch/arm).
 
-I've found another report of a regression that is newer for USB and
-bounced it to you as well.  Hopefully that is a bit easier to track.
+  Do you accept this patch set for enabling PID tracing on Arm64 and we
+  can defer to support Arm32 when really need PID tracing on Arm32?
+  Or we should enable PID dynamic tracing for Arm64 and Arm32 in one
+  go?
 
-thanks,
 
-greg k-h
+Thanks,
+Leo
