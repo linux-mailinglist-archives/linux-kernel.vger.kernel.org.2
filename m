@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7DB94417FD
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:39:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25EB2441805
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:40:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232796AbhKAJmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:42:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47850 "EHLO mail.kernel.org"
+        id S232110AbhKAJmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:42:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47854 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233427AbhKAJjp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:39:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 514A46112F;
-        Mon,  1 Nov 2021 09:27:24 +0000 (UTC)
+        id S233455AbhKAJjr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:39:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A577C61360;
+        Mon,  1 Nov 2021 09:27:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758844;
-        bh=xOmdrLMaR4ceIG50D7SxFSFU3GepjWv0UEegBLGgeQg=;
+        s=korg; t=1635758847;
+        bh=IWRUI0SyL1hEyhmCpWwl37mSrbmg1wKo4wvR1IQOjsI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A7JSgKKq+5dsSeg+rkxnUiIGJEeb7nzkKC/Jiup2PzP9FG00SdvpjvFuxtUfLQmIE
-         3v1MWt2YD7b503ythfSrYjGpx8yuLfmD2bKa2qPFHY11luCIc79EsBclHw6qrmTRXi
-         K/U5wwXUmIx3REW1I8HxAQqh3YNvVFTtXtuzZlPo=
+        b=0VPPXl6Tk7i2/3iu3qNhB4jZHEPZ34BtgpWu5HDkarlSDHiqnP3NWD84I1rlPL8yp
+         1pzOiuQnE4RLmaO5EtwNGIt+6iNcJnkt1gopKMb6zjXvnjcda2vYYXuVq27C474udW
+         5G80sH4xIvN+VInxUDmfGvJQhTDlm16GSxfuXKoA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chen Lu <181250012@smail.nju.edu.cn>,
-        Anup Patel <anup.patel@wdc.com>,
+        stable@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
+        Alexandre Ghiti <alexandre.ghiti@canonical.com>,
         Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: [PATCH 5.10 75/77] riscv: fix misalgned trap vector base address
-Date:   Mon,  1 Nov 2021 10:18:03 +0100
-Message-Id: <20211101082527.164506260@linuxfoundation.org>
+Subject: [PATCH 5.10 76/77] riscv: Fix asan-stack clang build
+Date:   Mon,  1 Nov 2021 10:18:04 +0100
+Message-Id: <20211101082527.351745789@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211101082511.254155853@linuxfoundation.org>
 References: <20211101082511.254155853@linuxfoundation.org>
@@ -40,33 +40,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chen Lu <181250012@smail.nju.edu.cn>
+From: Alexandre Ghiti <alexandre.ghiti@canonical.com>
 
-commit 64a19591a2938b170aa736443d5d3bf4c51e1388 upstream.
+commit 54c5639d8f507ebefa814f574cb6f763033a72a5 upstream.
 
-The trap vector marked by label .Lsecondary_park must align on a
-4-byte boundary, as the {m,s}tvec is defined to require 4-byte
-alignment.
+Nathan reported that because KASAN_SHADOW_OFFSET was not defined in
+Kconfig, it prevents asan-stack from getting disabled with clang even
+when CONFIG_KASAN_STACK is disabled: fix this by defining the
+corresponding config.
 
-Signed-off-by: Chen Lu <181250012@smail.nju.edu.cn>
-Reviewed-by: Anup Patel <anup.patel@wdc.com>
-Fixes: e011995e826f ("RISC-V: Move relocate and few other functions out of __init")
+Reported-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Alexandre Ghiti <alexandre.ghiti@canonical.com>
+Fixes: 8ad8b72721d0 ("riscv: Add KASAN support")
 Cc: stable@vger.kernel.org
 Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/riscv/kernel/head.S |    1 +
- 1 file changed, 1 insertion(+)
+ arch/riscv/Kconfig             |    6 ++++++
+ arch/riscv/include/asm/kasan.h |    3 +--
+ arch/riscv/mm/kasan_init.c     |    3 +++
+ 3 files changed, 10 insertions(+), 2 deletions(-)
 
---- a/arch/riscv/kernel/head.S
-+++ b/arch/riscv/kernel/head.S
-@@ -175,6 +175,7 @@ setup_trap_vector:
- 	csrw CSR_SCRATCH, zero
- 	ret
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -138,6 +138,12 @@ config PAGE_OFFSET
+ 	default 0xffffffff80000000 if 64BIT && MAXPHYSMEM_2GB
+ 	default 0xffffffe000000000 if 64BIT && MAXPHYSMEM_128GB
  
-+.align 2
- .Lsecondary_park:
- 	/* We lack SMP support or have too many harts, so park this hart */
- 	wfi
++config KASAN_SHADOW_OFFSET
++	hex
++	depends on KASAN_GENERIC
++	default 0xdfffffc800000000 if 64BIT
++	default 0xffffffff if 32BIT
++
+ config ARCH_FLATMEM_ENABLE
+ 	def_bool y
+ 
+--- a/arch/riscv/include/asm/kasan.h
++++ b/arch/riscv/include/asm/kasan.h
+@@ -14,8 +14,7 @@
+ #define KASAN_SHADOW_START	KERN_VIRT_START /* 2^64 - 2^38 */
+ #define KASAN_SHADOW_END	(KASAN_SHADOW_START + KASAN_SHADOW_SIZE)
+ 
+-#define KASAN_SHADOW_OFFSET	(KASAN_SHADOW_END - (1ULL << \
+-					(64 - KASAN_SHADOW_SCALE_SHIFT)))
++#define KASAN_SHADOW_OFFSET	_AC(CONFIG_KASAN_SHADOW_OFFSET, UL)
+ 
+ void kasan_init(void);
+ asmlinkage void kasan_early_init(void);
+--- a/arch/riscv/mm/kasan_init.c
++++ b/arch/riscv/mm/kasan_init.c
+@@ -16,6 +16,9 @@ asmlinkage void __init kasan_early_init(
+ 	uintptr_t i;
+ 	pgd_t *pgd = early_pg_dir + pgd_index(KASAN_SHADOW_START);
+ 
++	BUILD_BUG_ON(KASAN_SHADOW_OFFSET !=
++		KASAN_SHADOW_END - (1UL << (64 - KASAN_SHADOW_SCALE_SHIFT)));
++
+ 	for (i = 0; i < PTRS_PER_PTE; ++i)
+ 		set_pte(kasan_early_shadow_pte + i,
+ 			mk_pte(virt_to_page(kasan_early_shadow_page),
 
 
