@@ -2,170 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 065244419DE
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 11:27:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7408A4419E0
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 11:28:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232079AbhKAKaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 06:30:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24126 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232021AbhKAKaN (ORCPT
+        id S232143AbhKAKaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 06:30:46 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:47394 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231946AbhKAKam (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 06:30:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635762459;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Mon, 1 Nov 2021 06:30:42 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id D10CB21941;
+        Mon,  1 Nov 2021 10:28:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1635762488; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=2uCAdP1QdrurNg3VYXaeroiWVBLb/WhdrZPNJcrlkas=;
-        b=MQzhnsEEl4mSJQx7nykcpC1Gkaq9Sn2kse3zTfcLtk2SMeJn6j5PTz63LOTRYZFzu4svXh
-        qTgFl/xEHUVefzOwvjd7r6nBq7mzopa29eMGUIviuY63kFOlz+UdJqmTqla2mqIlkC/+ow
-        NLvC0mgTXgO2c3+9CXETogYxESCz1Gw=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-524-p0Vylzy1M_yGWQ7ilhXrDA-1; Mon, 01 Nov 2021 06:27:38 -0400
-X-MC-Unique: p0Vylzy1M_yGWQ7ilhXrDA-1
-Received: by mail-ed1-f69.google.com with SMTP id z20-20020a05640240d400b003dce046ab51so15087255edb.14
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 03:27:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=2uCAdP1QdrurNg3VYXaeroiWVBLb/WhdrZPNJcrlkas=;
-        b=L8mpYNNe6kZDFmHbCiJOksvGQCkIAFAiPEVIWVnGUImkIe7mEEBGfzB+kBzyoIqwkJ
-         oHr899b1/hmnp1Vn8K3cLwOxu4egcPugiGX2ppwJD/hw5RwWbL2LkbJLI6lAknHWJi0U
-         gJEn92fQes9I9RgiithrFbdV0WgDUhaBX6lBWDUOVGGEjEFYZeExqVqNbu06EqGfnfXH
-         E6IB3uspejG/mTBr1W3GwUdrJhA0Ksp4NLOfwGNiIHGXNrTcqsJm16y0H8itAJnZX1Ls
-         Dq65/lSnxhcZ09t2RzMtgG6kDHC7PaqJI9c3S7VuNhrccrYDJWRYPeUTBMdehqzXAx6S
-         eNfA==
-X-Gm-Message-State: AOAM530fCf0BAKsjbw1s/r0PnrWaI5P812IRGX3J7zKu6DU238dRpagY
-        FW0pebOJRNVKClV8NX8s46bB8ButleJ6PkXJe2TztnVVC9V2liSzDLBo0CK2Ar3d7zkjWasLU5t
-        z1NJvHHXmclRO03Jd3CwOSB+y
-X-Received: by 2002:a17:907:3e0a:: with SMTP id hp10mr5140862ejc.318.1635762456894;
-        Mon, 01 Nov 2021 03:27:36 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzjZIaZvRfLbelCks3Bnp4YpkcYtDKg2/JML94gJgBsswZs4QJjAUtfEbZjra2xURRbQh3eqA==
-X-Received: by 2002:a17:907:3e0a:: with SMTP id hp10mr5140840ejc.318.1635762456689;
-        Mon, 01 Nov 2021 03:27:36 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id z9sm9254464edb.70.2021.11.01.03.27.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 03:27:36 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ajay Garg <ajaygargnsit@gmail.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v2 7/8] KVM: x86: Reject fixeds-size Hyper-V hypercalls
- with non-zero "var_cnt"
-In-Reply-To: <20211030000800.3065132-8-seanjc@google.com>
-References: <20211030000800.3065132-1-seanjc@google.com>
- <20211030000800.3065132-8-seanjc@google.com>
-Date:   Mon, 01 Nov 2021 11:27:34 +0100
-Message-ID: <87y268jhm1.fsf@vitty.brq.redhat.com>
+        bh=usVlcm16rD4WtoGbsEUNqTyTpA7Ux47Pw/hhZhArBGY=;
+        b=tFJ5sBD3FBPtAw9MezQg7it8KhjmqH8K5z0bz2dIpVE8R2vGTfN06vUsgs9JfEGQ7FXrzt
+        8mGqrz26LMEeO4jOoneRA4DgfxtgWq1H+CH67cpshO3AFKMGOIvjGIRLA1DxLB8dceqXy+
+        LLWuKSNAb+U0rfVwbvY+77iznZnOARM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1635762488;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=usVlcm16rD4WtoGbsEUNqTyTpA7Ux47Pw/hhZhArBGY=;
+        b=dAwN2+J3gaHn1fuz1paoHW7kVdJdiP0wnJ4n5Yax8OIZdPBQ7QWvI2+ya5+0uGx8XRnwR9
+        85aQcPoKfFFDFkAg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C325113AA9;
+        Mon,  1 Nov 2021 10:28:08 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id BlubLzjBf2EsTgAAMHmgww
+        (envelope-from <jwiesner@suse.de>); Mon, 01 Nov 2021 10:28:08 +0000
+Received: by incl.suse.cz (Postfix, from userid 1000)
+        id 56A415956F; Mon,  1 Nov 2021 11:28:03 +0100 (CET)
+Date:   Mon, 1 Nov 2021 11:28:03 +0100
+From:   Jiri Wiesner <jwiesner@suse.de>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, Mel Gorman <mgorman@suse.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>
+Subject: Re: [RFC PATCH] clocksource: increase watchdog retries
+Message-ID: <20211101102803.GA16089@incl>
+References: <20211027164352.GA23273@incl>
+ <20211027213829.GB880162@paulmck-ThinkPad-P17-Gen-1>
+ <20211028162025.GA1068@incl>
+ <20211028184209.GH880162@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211028184209.GH880162@paulmck-ThinkPad-P17-Gen-1>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sean Christopherson <seanjc@google.com> writes:
+On Thu, Oct 28, 2021 at 11:42:09AM -0700, Paul E. McKenney wrote:
+> On Thu, Oct 28, 2021 at 06:20:25PM +0200, Jiri Wiesner wrote:
+> > On Wed, Oct 27, 2021 at 02:38:29PM -0700, Paul E. McKenney wrote:
+> > > I had something like this pending, but people came up with other workloads
+> > > that resulted in repeated delays.  In those cases, it does not make sense
+> > > to ever mark the affected clocksource unstable.  This led me to the patch
+> > > shown below, which splats after about 100 consecutive long-delay retries,
+> > > but which avoids marking the clocksource unstable.  This is queued on -rcu.
+> > > 
+> > > Does this work for you?
+> > > 
+> > > commit 9ec2a03bbf4bee3d9fbc02a402dee36efafc5a2d
+> > > Author: Paul E. McKenney <paulmck@kernel.org>
+> > > Date:   Thu May 27 11:03:28 2021 -0700
+> > > 
+> > >     clocksource: Forgive repeated long-latency watchdog clocksource reads
+> > 
+> > Yes, it does. I have done 100 reboots of the testing machine (running
+> > 5.15-rc5 with the above patch applied) and TSC was stable every time. I
+> > am going to start a longer test of 300 reboots for good measure and
+> > report back next week. J.
+> 
+> Very good, and thank you for giving it a go!
 
-> Reject Hyper-V hypercalls if the guest specifies a non-zero variable size
-> header (var_cnt in KVM) for a hypercall that has a fixed header size.
-> Per the TLFS:
->
->   It is illegal to specify a non-zero variable header size for a
->   hypercall that is not explicitly documented as accepting variable sized
->   input headers. In such a case the hypercall will result in a return
->   code of HV_STATUS_INVALID_HYPERCALL_INPUT.
->
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  arch/x86/kvm/hyperv.c | 17 +++++++++++------
->  1 file changed, 11 insertions(+), 6 deletions(-)
->
-> diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
-> index 3d83d6a5d337..ad455df850c9 100644
-> --- a/arch/x86/kvm/hyperv.c
-> +++ b/arch/x86/kvm/hyperv.c
-> @@ -2241,14 +2241,14 @@ int kvm_hv_hypercall(struct kvm_vcpu *vcpu)
->  
->  	switch (hc.code) {
->  	case HVCALL_NOTIFY_LONG_SPIN_WAIT:
-> -		if (unlikely(hc.rep)) {
-> +		if (unlikely(hc.rep || hc.var_cnt)) {
->  			ret = HV_STATUS_INVALID_HYPERCALL_INPUT;
->  			break;
->  		}
->  		kvm_vcpu_on_spin(vcpu, true);
->  		break;
->  	case HVCALL_SIGNAL_EVENT:
-> -		if (unlikely(hc.rep)) {
-> +		if (unlikely(hc.rep || hc.var_cnt)) {
->  			ret = HV_STATUS_INVALID_HYPERCALL_INPUT;
->  			break;
->  		}
-> @@ -2258,7 +2258,7 @@ int kvm_hv_hypercall(struct kvm_vcpu *vcpu)
->  		fallthrough;	/* maybe userspace knows this conn_id */
->  	case HVCALL_POST_MESSAGE:
->  		/* don't bother userspace if it has no way to handle it */
-> -		if (unlikely(hc.rep || !to_hv_synic(vcpu)->active)) {
-> +		if (unlikely(hc.rep || hc.var_cnt || !to_hv_synic(vcpu)->active)) {
->  			ret = HV_STATUS_INVALID_HYPERCALL_INPUT;
->  			break;
->  		}
-> @@ -2271,14 +2271,14 @@ int kvm_hv_hypercall(struct kvm_vcpu *vcpu)
->  				kvm_hv_hypercall_complete_userspace;
->  		return 0;
->  	case HVCALL_FLUSH_VIRTUAL_ADDRESS_LIST:
-> -		if (unlikely(!hc.rep_cnt || hc.rep_idx)) {
-> +		if (unlikely(!hc.rep_cnt || hc.rep_idx || hc.var_cnt)) {
->  			ret = HV_STATUS_INVALID_HYPERCALL_INPUT;
->  			break;
->  		}
->  		ret = kvm_hv_flush_tlb(vcpu, &hc, false);
->  		break;
->  	case HVCALL_FLUSH_VIRTUAL_ADDRESS_SPACE:
-> -		if (unlikely(hc.rep)) {
-> +		if (unlikely(hc.rep || hc.var_cnt)) {
->  			ret = HV_STATUS_INVALID_HYPERCALL_INPUT;
->  			break;
->  		}
-> @@ -2299,7 +2299,7 @@ int kvm_hv_hypercall(struct kvm_vcpu *vcpu)
->  		ret = kvm_hv_flush_tlb(vcpu, &hc, true);
->  		break;
->  	case HVCALL_SEND_IPI:
-> -		if (unlikely(hc.rep)) {
-> +		if (unlikely(hc.rep || hc.var_cnt)) {
->  			ret = HV_STATUS_INVALID_HYPERCALL_INPUT;
->  			break;
->  		}
-> @@ -2331,6 +2331,11 @@ int kvm_hv_hypercall(struct kvm_vcpu *vcpu)
->  			ret = HV_STATUS_OPERATION_DENIED;
->  			break;
->  		}
-> +		if (unlikely(hc.var_cnt)) {
-> +			ret = HV_STATUS_INVALID_HYPERCALL_INPUT;
-> +			break;
-> +		}
-> +
+Thank you for the fix! It resolves several strange results we got in our performance testing.
 
-Probably true for HVCALL_RESET_DEBUG_SESSION but I'm not sure about
-HVCALL_POST_DEBUG_DATA/HVCALL_RETRIEVE_DEBUG_DATA (note 'fallthrough'
-above) -- these are not described well in TLFS.
+> If it passes the upcoming tests
 
->  		vcpu->run->exit_reason = KVM_EXIT_HYPERV;
->  		vcpu->run->hyperv.type = KVM_EXIT_HYPERV_HCALL;
->  		vcpu->run->hyperv.u.hcall.input = hc.param;
+I have done 300 reboots of the testing machine. Again, TSC was stable every time.
 
--- 
-Vitaly
+> may I have your Tested-by?
 
+Absolutely:
+Tested-by: Jiri Wiesner <jwiesner@suse.de>
