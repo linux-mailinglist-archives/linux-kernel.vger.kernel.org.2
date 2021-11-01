@@ -2,89 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAE284420E1
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 20:35:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD4564420E4
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 20:35:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229834AbhKATgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 15:36:42 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:41864 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229511AbhKATgk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 15:36:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=8x/WQ9gVs8Xb1wXlf+BUiBeF7va4QTCMKiyuXcRdSQI=; b=44Veb7J9Vn7x0tAwe5nqK3s0HM
-        nr9tWRakPFkXJxDEzEd/mYy41LSNOW/zPk9ztkmxd5uAb0JvX8j5fF6OQl8p5fskKeJTAqMPL08On
-        kcIOtq2x4Nwv0v/fRFNxUqaFCrpBKQtgI+TVhfTcAmj1hRolo9lYyLsaIBa0x2VXreSo=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mhd42-00CKZd-Ps; Mon, 01 Nov 2021 20:33:50 +0100
-Date:   Mon, 1 Nov 2021 20:33:50 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Grygorii Strashko <grygorii.strashko@ti.com>
-Cc:     "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-kernel@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [RFC PATCH] net: phy/mdio: enable mmd indirect access through
- phy_mii_ioctl()
-Message-ID: <YYBBHsFEwGdPJw3b@lunn.ch>
-References: <20211101182859.24073-1-grygorii.strashko@ti.com>
+        id S229918AbhKAThX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 15:37:23 -0400
+Received: from mail-oi1-f176.google.com ([209.85.167.176]:46687 "EHLO
+        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229636AbhKAThT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 15:37:19 -0400
+Received: by mail-oi1-f176.google.com with SMTP id bd30so6738694oib.13;
+        Mon, 01 Nov 2021 12:34:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9/CLSb5CgKegFKHKytZg90KV98ydhoqUrhMNoJ+i398=;
+        b=N498Z2t9QQrVNDMC0tmGoJy9Ggo/Wz1UGzGeguFjVlXcXoIbw8YbXKVs+h0nHI5LJC
+         YulliP8OcqowMDVi9+g/yjJwvLHaFwxREcFMbD+atDsV1FEjjHZYI4A3pq9KjPKazPBn
+         /6A2/YkIrVUZolG9o4UCtCO7/7V3qE8h3Lfxe2Y1ftpbXDqESw9nGs7qARGoxdUurwt6
+         gFTh9Vhv0kmbQ1B5wZKUAfNg8J8vbMKGaSOU6LhFm8c6ecnJHAsVhMhZNCKoRORQo/qv
+         SDkc53wJ6mhQMMaLNoodaVHCf1BnCiIvvHSgGYbfFn5FoE4YESePvrAGEZYKd5ugz9OP
+         Qamg==
+X-Gm-Message-State: AOAM532y8sxVfVmEuaWpsOhNYfqIzRvhgwyUip5ZSA4SdVHZZeyvDRVl
+        vqRrhulcPOQDhaCNluiJZQ==
+X-Google-Smtp-Source: ABdhPJzbCROu1FfrFNPXsvUcRW58+bChO2LWQzwVSOf9yxQCXbghbysMFMwpm8AfjfwJc1+3boyGHw==
+X-Received: by 2002:aca:bec1:: with SMTP id o184mr817398oif.43.1635795285218;
+        Mon, 01 Nov 2021 12:34:45 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id g17sm4392898otq.17.2021.11.01.12.34.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Nov 2021 12:34:44 -0700 (PDT)
+Received: (nullmailer pid 889789 invoked by uid 1000);
+        Mon, 01 Nov 2021 19:34:43 -0000
+Date:   Mon, 1 Nov 2021 14:34:43 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     "hammer.hsieh" <hammerh0314@gmail.com>
+Cc:     gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jirislaby@kernel.org, p.zabel@pengutronix.de,
+        tony.huang@sunplus.com, wells.lu@sunplus.com,
+        "hammer.hsieh" <hammer.hsieh@sunplus.com>
+Subject: Re: [PATCH 1/2] dt-bindings:serial:Add bindings doc for Sunplus SoC
+ UART Driver
+Message-ID: <YYBBU+EPkheiUMuH@robh.at.kernel.org>
+References: <1635752903-14968-1-git-send-email-hammer.hsieh@sunplus.com>
+ <1635752903-14968-2-git-send-email-hammer.hsieh@sunplus.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211101182859.24073-1-grygorii.strashko@ti.com>
+In-Reply-To: <1635752903-14968-2-git-send-email-hammer.hsieh@sunplus.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 01, 2021 at 08:28:59PM +0200, Grygorii Strashko wrote:
-> This patch enables access to C22 PHY MMD address space through
-
-I'm not sure the terminology is correct here. I think it actually
-enables access to C45 address space, making use of C45 over C22.
-
-> phy_mii_ioctl() SIOCGMIIREG/SIOCSMIIREG IOCTLs. It checks if R/W request is
-> received with C45 flag enabled while MDIO bus doesn't support C45 and, in
-> this case, tries to treat prtad as PHY MMD selector and use MMD API.
+On Mon, Nov 01, 2021 at 03:48:22PM +0800, hammer.hsieh wrote:
+> Add bindings doc for Sunplus SoC UART Driver
 > 
-> With this change it's possible to r/w PHY MMD registers with phytool, for
-> example, before:
+> Signed-off-by: hammer.hsieh <hammer.hsieh@sunplus.com>
+> ---
+>  .../devicetree/bindings/serial/sunplus,uart.yaml   | 116 +++++++++++++++++++++
+>  MAINTAINERS                                        |   5 +
+>  2 files changed, 121 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/serial/sunplus,uart.yaml
 > 
->   phytool read eth0/0x1f:0/0x32
->   0xffea
-> 
-> after:
->   phytool read eth0/0x1f:0/0x32
->   0x00d1
-> @@ -300,8 +300,19 @@ int phy_mii_ioctl(struct phy_device *phydev, struct ifreq *ifr, int cmd)
->  			prtad = mii_data->phy_id;
->  			devad = mii_data->reg_num;
->  		}
-> -		mii_data->val_out = mdiobus_read(phydev->mdio.bus, prtad,
-> -						 devad);
-> +		if (mdio_phy_id_is_c45(mii_data->phy_id) &&
-> +		    phydev->mdio.bus->probe_capabilities <= MDIOBUS_C22) {
-> +			phy_lock_mdio_bus(phydev);
+> diff --git a/Documentation/devicetree/bindings/serial/sunplus,uart.yaml b/Documentation/devicetree/bindings/serial/sunplus,uart.yaml
+> new file mode 100644
+> index 0000000..f2ca9ee
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/serial/sunplus,uart.yaml
+> @@ -0,0 +1,116 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +# Copyright (C) Sunplus Co., Ltd. 2021
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/serial/sunplus,uart.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
 > +
-> +			mii_data->val_out = __mmd_phy_read(phydev->mdio.bus,
-> +							   mdio_phy_id_devad(mii_data->phy_id),
-> +							   prtad,
-> +							   mii_data->reg_num);
+> +title: Sunplus SoC UART Controller Device Tree Bindings
 > +
-> +			phy_unlock_mdio_bus(phydev);
-> +		} else {
-> +			mii_data->val_out = mdiobus_read(phydev->mdio.bus, prtad, devad);
-> +		}
+> +maintainers:
+> +  - Tony Huang <tony.huang@sunplus.com>
+> +  - Hammer Hsieh <hammer.hsieh@sunplus.com>
+> +  - Wells Lu <wells.lu@sunplus.com>
+> +
+> +allOf:
+> +  - $ref: serial.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    const: sunplus,sp7021-uart
+> +
+> +  reg:
+> +    minItems: 1
+> +    maxItems: 2
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    minItems: 1
+> +    maxItems: 2
+> +
+> +  clock-names:
+> +    oneOf:
+> +      - items:
+> +        - const: UADMA
+> +        - const: PERI0
+> +      - items:
+> +        - const: UADMA
+> +        - const: PERI1
 
-The layering look wrong here. You are trying to perform MDIO bus
-operation here, so it seems odd to perform __mmd_phy_read(). I wonder
-if it would be cleaner to move C45 over C22 down into the mdiobus_
-level API?
+These 2 can be:
 
-      Andrew
+items:
+  - const UADMA
+  - pattern: '^PERI[0-1]$'
+
+But why the difference for only one model of UART? The names should 
+reflect the function of the clock. 
+
+> +      - items:
+> +        - const: HWUA
+> +        - const: PERI0
+> +      - items:
+> +        - const: HWUA
+> +        - const: PERI1
+> +
+> +  resets:
+> +    maxItems: 1
+> +
+> +  which-uart:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum: [ 1, 2, 3, 4]
+
+What's this for? Looks like an index and we don't do indices in DT. 
+There is 'aliases' though.
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - resets
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    #include <dt-bindings/clock/sp-sp7021.h>
+> +    #include <dt-bindings/reset/sp-sp7021.h>
+> +    aliases {
+> +            serial0 = &uart0;
+> +            serial1 = &uart1;
+> +            serial10 = &uartdmarx0;
+> +            serial20 = &uartdmatx0;
+> +    };
+> +
+> +    uart0: serial@9c000900 {
+> +      compatible = "sunplus,sp7021-uart";
+> +      reg = <0x9c000900 0x80>;
+> +      interrupt-parent = <&intc>;
+> +      interrupts = <53 IRQ_TYPE_LEVEL_HIGH>;
+> +      clocks = <&clkc UA0>;
+
+The schema says you must have 2 clocks.
+
+> +      resets = <&rstc RST_UA0>;
+> +    };
+> +
+> +    // UART1 PIO mode
+> +    uart1: serial@9c000980 {
+> +        compatible = "sunplus,sp7021-uart";
+> +        reg = <0x9c000980 0x80>;
+> +        interrupt-parent = <&intc>;
+> +        interrupts = <54 IRQ_TYPE_LEVEL_HIGH>;
+> +        clocks = <&clkc UA1>;
+> +        resets = <&rstc RST_UA1>;
+> +    };
+> +
+> +    // UART1 DMA mode for RX
+> +    uartdmarx0: serial@9c008980 {
+> +        compatible = "sunplus,sp7021-uart";
+> +        reg = <0x9c008980 0x40>;
+> +        interrupt-parent = <&intc>;
+> +        interrupts = <138 IRQ_TYPE_LEVEL_HIGH>;
+> +        clocks = <&clkc UADMA>, <&clkc PERI0>;
+> +        clock-names = "UADMA", "PERI0";
+> +        resets = <&rstc RST_UADMA>;
+> +        which-uart = <1>;
+> +    };
+> +
+> +    // UART1 DMA mode for TX
+> +    uartdmatx0: serial@9c008a00 {
+> +        compatible = "sunplus,sp7021-uart";
+> +        reg = <0x9c008a00 0x40>, <0x9c008880 0x80>;
+> +        clocks = <&clkc HWUA>, <&clkc PERI0>;
+> +        clock-names = "HWUA", "PERI0";
+> +        resets = <&rstc RST_HWUA>;
+> +        which-uart = <1>;
+> +    };
+> +
+> +...
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 3b79fd4..f863e97 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -17945,6 +17945,11 @@ L:	netdev@vger.kernel.org
+>  S:	Maintained
+>  F:	drivers/net/ethernet/dlink/sundance.c
+>  
+> +SUNPLUS UART DRIVER
+> +M:	Hammer Hsieh <hammer.hsieh@sunplus.com>
+> +S:	Maintained
+> +F:	Documentation/devicetree/bindings/serial/sunplus,uart.yaml
+> +
+>  SUPERH
+>  M:	Yoshinori Sato <ysato@users.sourceforge.jp>
+>  M:	Rich Felker <dalias@libc.org>
+> -- 
+> 2.7.4
+> 
+> 
