@@ -2,91 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54C10441B3C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 13:34:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D021441B41
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 13:36:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232513AbhKAMhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 08:37:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232051AbhKAMhS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 08:37:18 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61BB8C061714;
-        Mon,  1 Nov 2021 05:34:45 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id s5so4654301pfg.2;
-        Mon, 01 Nov 2021 05:34:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=hq3EgDXMF1+jcTFvY4w2kMpW6vFqDAJq24D6kljsps8=;
-        b=KQrmqNzS5azL/yYFHpqCoaJq+yUHlk862t7a7Rg1PuGo5ota7aDMJIkPLbTw1coQOG
-         7SNcTGaCzmkqQUMSpKV8dgpgCzll70Q37OJMdNkaOKwZxvsC+FL99Esn9cuiTNr/SFwb
-         26gr9PNecmEPzTtbIPBF3Q88afXckTqAnCBEQaf+B0cwoZxIH5RVDsDKm/5DjAPGge27
-         q5k1gj1g1XamVIVgNWtxxOKWMGTrBidDa/WJPcv/sIpz5c1wD9MTRpGWZP6JH25K1se7
-         a8SIkxmSFAnvbkEbGxpRA/CfaU12vydr8MwKSKAtcbj4GAHqpZoyTp8FuVhGiIZC0ZJ2
-         dXug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=hq3EgDXMF1+jcTFvY4w2kMpW6vFqDAJq24D6kljsps8=;
-        b=D2bcghqDeHANtinf8DQC//lOwyrqzaRAjQ4tK9rZ11brhj0IWtkM792Gk2ki3PwDkn
-         fhs4RB9cERqg90HGnLl8VCpCBUbu5/nhhmh/KYYmYL6xEfFc9GpESzF8vc0oTM6+gm2A
-         q8ZDaopc8KpOb4c/lcyl7dcvAsLtBFhH3lqGZ5Aq5Gztp22QYfc9ML64an/U1wOhW+Tp
-         7/pQ6TJfqWdOGEymMc+G+5s8RZdVLPdKoDEesTb3L9yv/9alq0YstO90z4V+HDcFv8UD
-         BjHT22ltmCfZzP/zO2XAFhawcZZnDXT8r3y6ilkvsxRwh9VIoisC1irGuKgGxPCRcyUq
-         +uyw==
-X-Gm-Message-State: AOAM530SD03b+Uc6UTU9hO1MKhXQJyfWWnGJDVsKRc3dSD8pAOClODLM
-        wTOTsi95jAosUvucxd2J9vIdqbiLvDFv0VYYyr0=
-X-Google-Smtp-Source: ABdhPJwsxr1o/YdfLPK7zthyE1S6kw9YhQbjZZB1NpAarh0q0X/pcxhpdAhSX7Jx8WU7+3MxIOizCw==
-X-Received: by 2002:a05:6a00:b85:b0:481:fc6:f100 with SMTP id g5-20020a056a000b8500b004810fc6f100mr4836156pfj.69.1635770084356;
-        Mon, 01 Nov 2021 05:34:44 -0700 (PDT)
-Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [71.19.144.195])
-        by smtp.gmail.com with ESMTPSA id w5sm17249419pfu.85.2021.11.01.05.34.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 05:34:43 -0700 (PDT)
-Message-ID: <617fdee3.1c69fb81.d1874.e16d@mx.google.com>
-Date:   Mon, 01 Nov 2021 05:34:43 -0700 (PDT)
-X-Google-Original-Date: Mon, 01 Nov 2021 12:34:37 GMT
-From:   Fox Chen <foxhlchen@gmail.com>
-In-Reply-To: <20211101082511.254155853@linuxfoundation.org>
-Subject: RE: [PATCH 5.10 00/77] 5.10.77-rc1 review
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Fox Chen <foxhlchen@gmail.com>
-Content-Transfer-Encoding: 7bit
+        id S232500AbhKAMib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 08:38:31 -0400
+Received: from smtpbgsg1.qq.com ([54.254.200.92]:57130 "EHLO smtpbgsg1.qq.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232241AbhKAMia (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 08:38:30 -0400
+X-QQ-GoodBg: 1
+X-QQ-SSF: B0400000000000F0
+X-QQ-FEAT: 3VHFGWe+x7HaR9Nqg2dOJFQauBpP6Fwmq3kD2nKxVbpZY3gIzHs+YvsC2PRf4
+        OfbpA1t6FSu4Wu//FzUBIlhIHn+/Odb667gM1yuJy/deGF/nJOXBnIbtCFIYtjXm4Vz2IVl
+        CY0c7wV1zGvB+HEdtCBzmlyfGQb0LPkhIMOK2t4Ay9Q6EYdz/HjsKYdfDatkKX8jPpTDtBP
+        wVe5Jt1FLJO7sjzqD7zMURft846YNDuyDelJibsVrydbMU7Fir8d/1kE8UZ9gJW6zRqv3u2
+        +MFUrwNFtP4NQsXe6AVn8pNO62MPaCwUn4l2WC/B3Ugp2KCU4YtFLuoGSnrzpv+mpUTEzdn
+        qXaUoeVcKoaPSD03Tk=
+X-QQ-BUSINESS-ORIGIN: 2
+X-Originating-IP: 113.57.13.187
+X-QQ-STYLE: 
+X-QQ-mid: logic531t1635770147t9056710
+From:   "=?utf-8?B?5bi45buJ5b+X?=" <changlianzhi@uniontech.com>
+To:     "=?utf-8?B?bGludXgta2VybmVs?=" <linux-kernel@vger.kernel.org>
+Cc:     "=?utf-8?B?ZG1pdHJ5LnRvcm9raG92?=" <dmitry.torokhov@gmail.com>,
+        "=?utf-8?B?R3JlZyBLSA==?=" <gregkh@linuxfoundation.org>,
+        "=?utf-8?B?amlyaXNsYWJ5?=" <jirislaby@kernel.org>,
+        "=?utf-8?B?QW5keSBTaGV2Y2hlbmtv?=" 
+        <andriy.shevchenko@linux.intel.com>,
+        "=?utf-8?B?MjgyODI3OTYx?=" <282827961@qq.com>
+Subject: Re:[PATCH v9] tty: Fix the keyboard led light display problem
+Mime-Version: 1.0
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: base64
+Date:   Mon, 1 Nov 2021 20:35:47 +0800
+X-Priority: 3
+Message-ID: <tencent_10C69A8D3BC51F781F21A754@qq.com>
+X-QQ-MIME: TCMime 1.0 by Tencent
+X-Mailer: QQMail 2.x
+X-QQ-Mailer: QQMail 2.x
+X-QQ-SENDSIZE: 520
+Received: from qq.com (unknown [127.0.0.1])
+        by smtp.qq.com (ESMTP) with SMTP
+        id ; Mon, 01 Nov 2021 20:35:48 +0800 (CST)
+Feedback-ID: logic:uniontech.com:qybgforeign:qybgforeign6
+X-QQ-Bgrelay: 1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon,  1 Nov 2021 10:16:48 +0100, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 5.10.77 release.
-> There are 77 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 03 Nov 2021 08:24:20 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.77-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+PiBTd2l0Y2hpbmcgZnJvbSB0aGUgZGVza3RvcCBlbnZpcm9ubWVudCB0byB0aGUgdHR5IGVu
+dmlyb25tZW50LA0KPiB0aGUgc3RhdGUgb2YgdGhlIGtleWJvYXJkIGxlZCBsaWdodHMgYW5k
+IHRoZSBzdGF0ZSBvZiB0aGUga2V5Ym9hcmQNCj4gbG9jayBhcmUgaW5jb25zaXN0ZW50LiBU
+aGlzIGlzIGJlY2F1c2UgdGhlIGF0dHJpYnV0ZSBrYi0+a2JkbW9kZQ0KPiBvZiB0aGUgdHR5
+IGJvdW5kIGluIHRoZSBkZXNrdG9wIGVudmlyb25tZW50IChYb3JnKSBpcyBzZXQgdG8NCj4g
+VkNfT0ZGLCB3aGljaCBjYXVzZXMgdGhlIGxlZHN0YXRlIGFuZCBrYi0+bGVkZmxhZ3N0YXRl
+DQo+IHZhbHVlcyBvZiB0aGUgYm91bmQgdHR5IHRvIGFsd2F5cyBiZSAwLCB3aGljaCBjYXVz
+ZXMgdGhlIHN3aXRjaA0KPiBmcm9tIHRoZSBkZXNrdG9wIFdoZW4gdG8gdGhlIHR0eSBlbnZp
+cm9ubWVudCwgdGhlIExFRCBsaWdodA0KPiBzdGF0dXMgaXMgaW5jb25zaXN0ZW50IHdpdGgg
+dGhlIGtleWJvYXJkIGxvY2sgc3RhdHVzLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogbGlhbnpo
+aSBjaGFuZyA8Y2hhbmdsaWFuemhpQHVuaW9udGVjaC5jb20+DQo+IC0tLQ0KPiAgdjctLT52
+ODoNCj4gIE9wdGltaXplIHRoZSBpbXBsZW1lbnRhdGlvbiBvZiBrYmRfdXBkYXRlX2xlZHN0
+YXRlIGZ1bmN0aW9uDQogPiANCj4gIFdoeSBub3QgYWRvcHQgdGhlIG9waW5pb25zIG9mIEdy
+ZWcgS0ggYW5kIEFuZHkgU2hldmNoZW5rbzoNCj4gICgxKSBJbiB0aGUgc3RydWN0dXJlIHN0
+cnVjdCBpbnB1dF9kZXYsIHRoZSBkZWZpbml0aW9uIG9mIGxlZCBpcw0KPiAgbGlrZSB0aGlz
+OiB1bnNpZ25lZCBsb25nIGxlZFtCSVRTX1RPX0xPTkdTKExFRF9DTlQpXTsgSWYgeW91DQo+
+ICBkZWZpbmUgaXQgbGlrZSB0aGlzOiB1bnNpZ25lZCBsb25nIG5ld3N0YXRlID0gKmRldi0+
+bGVkOyBJDQo+ICBhbHdheXMgZmVlbCB0aGF0IHRoZXJlIGlzIHN0aWxsIGJpZyBlbmQgYW5k
+IExpdHRsZSBlbmRpYW4gcHJvYmxlbS4NCj4gICgyKSBUaGUgdGVzdF9iaXQgZnVuY3Rpb24g
+aXMgdXNlZCB0byBhdm9pZCB0aGUgcHJvYmxlbSBvZiBsYXJnZQ0KPiAgYW5kIHNtYWxsIGVu
+ZHMsIGFuZCB0aGUgY3VycmVudCBhbGdvcml0aG0gKHY4KSBhbHNvIGV4aXN0cw0KPiAgZWxz
+ZXdoZXJlIGluIHRoZSBrZXJuZWw6IHRoZSBhdGtiZF9zZXRfbGVkcyBmdW5jdGlvbiAoZHJp
+dmVycy8NCj4gIGlucHV0L2tleWJvYXJkL2F0a2JkLmMpLg0KPiAgKDMpIEluIHRoZSBjdXJy
+ZW50IGtleWJvYXJkLmMgY29kZSwgdGhlIGNvZGUgaXMgYWxyZWFkeSB2ZXJ5IGdvb2QsDQo+
+ICBhbmQgaXQgaXMgYWxyZWFkeSByZWxhdGl2ZWx5IGluZGVwZW5kZW50LiBJZiB5b3UgbW9k
+aWZ5IHRoZSB0eXBlDQo+ICBvZiBsZWRzdGF0ZSB0byB1NjQgb3IgbW9kaWZ5IHRoZSBtYWNy
+byBkZWZpbml0aW9ucyBzdWNoIGFzDQo+ICBWQ19OVU1MT0NLLCBpdCBmZWVscyB0aGF0IGl0
+IGlzIG5vdCB2ZXJ5IG1lYW5pbmdmdWwsIGFuZCB0aGlzIEl0DQo+ICB3aWxsIGFsc28gY2F1
+c2Ugb3RoZXIgcmVsYXRlZCBtb2RpZmljYXRpb25zLiBPZiBjb3Vyc2UsIHRoaXMgaXMNCj4g
+IG9ubHkgbXkgY3VycmVudCBvcGluaW9uLiBJZiBldmVyeW9uZSBzdGlsbCBmZWVscyB0aGF0
+IGl0IGlzDQo+ICBuZWNlc3NhcnkgdG8gbW9kaWZ5LCBJIHdpbGwgZG8gaXQgdGhpcyB3YXku
+IE9mIGNvdXJzZSwgdGhpcw0KPiAgcHJvY2VzcyBtYXkgYmUgYSBiaXQgbG9uZ2VyLCBhbmQg
+SSB0aGluayBpdCBpcyBuZWNlc3NhcnkgdG8NCj4gIGNvbmR1Y3QgbW9yZSB0ZXN0cy4NCj4g
+IA0KPiAgdjk6IENoYW5nZSBkZXNjcmlwdGlvbiBpbmZvcm1hdGlvbjogeG9yZy0tPlhvcmcN
+Cj4g4oCm4oCmDQoNCkhpLCBmcmllbmRzLCBJIHdvdWxkIGxpa2UgdG8gYXNrIHdoZXRoZXIg
+dGhpcyB2ZXJzaW9uIG9mIHBhdGNoIGlzIHBvc3NpYmxlLCBpZiBub3QsDQpJIHdpbGwgdHJ5
+IG15IGJlc3QgdG8gZmluZCBhIHdheSB0byBjb21wbGV0ZSB0aGUgbmV4dCB2ZXJzaW9uIQ0K
+VGhhbmtzLg0KLS0NCmxpYW56aGkgY2hhbmc=
 
-5.10.77-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
-                
-Tested-by: Fox Chen <foxhlchen@gmail.com>
+
 
