@@ -2,180 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6031E441189
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 01:00:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBE9744118B
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 01:01:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230234AbhKAACm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 20:02:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230121AbhKAACl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 20:02:41 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB2BFC061714;
-        Sun, 31 Oct 2021 17:00:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=NkaMbkAfLHRkcex2Pqf8J0IsG/GjJ1X79xApVZhJZb4=; b=GAiBRQmtI7n8ds8ZxG+6sYQUWA
-        P9RbjzQViE/upqxtCf6HVvhIAq45aE8xyaUNHP1h5aZfsQjbkve0XlQwxQ7i6vTAilWrLrKlLPWju
-        ysJqK90SLyOMDihf5gORNNvAH3JI1EPW9O9pSJxY81fdRNJulwp5sF7VSxdXfp3KPPsYVcnoKMTDx
-        ZTsggXfPnAULE1hb2vOavtjZynrZswnoZE7xKtz7Vl9QaZoJdbxBJDcluvJqQYIOZTvddFxXABam7
-        /Teyvw6jkI6DILDNNt0Cy7k44mZzvY6QZjKcThZHGGKzOAqI1crT1ClRCz3Cn21ONnMC5/Brnd1Ol
-        pE5jLbMw==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mhKkA-00ExJz-38; Mon, 01 Nov 2021 00:00:06 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>, keyrings@vger.kernel.org
-Subject: [PATCH v2] certs: system_keyring.c: clean up kernel-doc
-Date:   Sun, 31 Oct 2021 17:00:05 -0700
-Message-Id: <20211101000005.9902-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        id S230260AbhKAAEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 20:04:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59140 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230121AbhKAAEM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Oct 2021 20:04:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 591AB60FC2;
+        Mon,  1 Nov 2021 00:01:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635724899;
+        bh=nZ9T23ohCusqaZPcl4A906nALO+MSjH/F5bmO0wM0KE=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=FuAM7in5lQtaBcUsXBG/IhPMXGl/dBFzblPLcrP6UmtrkTf0GEx1o8U0Eue+IXwP4
+         3fG9FoflNRnAstNcG1VeKpoZ1AAdRZ8lEIBQGThLDH65Yn4zGgbhBi1n/IfG9qQpFB
+         Xwk3tmQoLmttkeSTzK1ypSIB051IRvM1Fonci38YIB82eq1lQ1SVRfMqEIw30maGrM
+         nmeWgzXwhpBHU1QrGeU5gJjGiTDI14fRR9JmRieSiXB4yeaV15KiQsMQjw2tQA7wId
+         RHjxFCwnnDnQNLEElSeqkR9qIhdqwvxuAgf0IZ7ILJhPXTkx8ZD1k6LguDWELuhNiS
+         tT/8/65heWmCg==
+Message-ID: <256be690a45eb4a01a508b911fa5950f26c91f96.camel@kernel.org>
+Subject: Re: [PATCH v9 2/2] x86/sgx: Add an attribute for the amount of SGX
+ memory in a NUMA node
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Dave Hansen <dave.hansen@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     reinette.chatre@intel.com, tony.luck@intel.com,
+        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org
+Date:   Mon, 01 Nov 2021 02:01:37 +0200
+In-Reply-To: <4e5cdd5825018778ad15abed33242703b8066e76.camel@kernel.org>
+References: <20211029121857.477885-1-jarkko@kernel.org>
+         <20211029121857.477885-2-jarkko@kernel.org>
+         <3ffafe28-e770-a285-98d0-1379271ba36d@intel.com>
+         <4e5cdd5825018778ad15abed33242703b8066e76.camel@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.40.4-1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-- Fix all kernel-doc warnings in system_keyring.c:
+On Sun, 2021-10-31 at 19:49 +0200, Jarkko Sakkinen wrote:
+> On Fri, 2021-10-29 at 10:00 -0700, Dave Hansen wrote:
+> > On 10/29/21 5:18 AM, Jarkko Sakkinen wrote:
+> > > +What:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/sy=
+s/devices/system/node/nodeX/sgx/size
+> > > +Date:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0Oct=
+ober 2021
+> > > +Contact:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0Jarkko Sakkinen <j=
+arkko@kernel.org>
+> >=20
+> > I don't think we should do something *entirely* SGX-specific here.=C2=
+=A0 The
+> > only question to me is whether any non-SGX users want something like
+> > this and who they are.
+> >=20
+> > Here are some ideas I like more than an "sgx/" directory:
+> >=20
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/sys/devices/system/nod=
+e/nodeX/arch/sgx_size
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/sys/devices/system/nod=
+e/nodeX/x86/sgx_size
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/sys/devices/system/nod=
+e/nodeX/coco/sgx_size
+>=20
+> Sure, I can rename the attribute group as "x86".
 
-system_keyring.c:43: warning: expecting prototype for restrict_link_to_builtin_trusted(). Prototype was for restrict_link_by_builtin_trusted() instead
-system_keyring.c:77: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
- * Allocate a struct key_restriction for the "builtin and secondary trust"
-system_keyring.c:77: warning: missing initial short description on line:
- * Allocate a struct key_restriction for the "builtin and secondary trust"
+Dave,
 
-system_keyring.c:43: warning: No description found for return value of 'restrict_link_by_builtin_trusted'
-system_keyring.c:62: warning: No description found for return value of 'restrict_link_by_builtin_and_secondary_trusted'
-system_keyring.c:190: warning: No description found for return value of 'verify_pkcs7_message_sig'
-system_keyring.c:275: warning: No description found for return value of 'verify_pkcs7_signature'
+So, if I rename sgx_node_group as arch_node_dev_group, we also need
+something like CONFIG_ARCH_HAS_NODE_DEV_GROUP defined in arch/Kconfig,
+so that the group definition in drivers/base/node.c becomes:
 
-system_keyring.c:39: warning: contents before sections
-system_keyring.c:45: warning: Function parameter or member 'dest_keyring' not described in 'restrict_link_by_builtin_trusted'
-system_keyring.c:45: warning: Function parameter or member 'type' not described in 'restrict_link_by_builtin_trusted'
-system_keyring.c:45: warning: Function parameter or member 'payload' not described in 'restrict_link_by_builtin_trusted'
-system_keyring.c:45: warning: Function parameter or member 'restriction_key' not described in 'restrict_link_by_builtin_trusted'
-system_keyring.c:59: warning: contents before sections
-system_keyring.c:66: warning: Function parameter or member 'dest_keyring' not described in 'restrict_link_by_builtin_and_secondary_trusted'
-system_keyring.c:66: warning: Function parameter or member 'type' not described in 'restrict_link_by_builtin_and_secondary_trusted'
-system_keyring.c:66: warning: Function parameter or member 'payload' not described in 'restrict_link_by_builtin_and_secondary_trusted'
-system_keyring.c:66: warning: Function parameter or member 'restrict_key' not described in 'restrict_link_by_builtin_and_secondary_trusted'
+static const struct attribute_group *node_dev_groups[] =3D {
+	&node_dev_group,
+#ifdef CONFIG_ARCH_HAS_NODE_DEV_GROUP
+	&arch_node_dev_group,
+#endif
+	NULL,
+}
 
-- Use '%' preceding constants in kernel-doc notation.
+Does this make sense to you, and reflect your feedback in a=C2=A0
+reasonable manner?
 
-- Use "builtin" consistently instead of "built in" or "built-in".
+/Jarkko
 
-- Don't use "/**" to begin a comment that is not in kernel-doc format.
-
-- Document the use of VERIFY_USE_SECONDARY_KEYRING and
-VERIFY_USE_PLATFORM_KEYRING.
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Mimi Zohar <zohar@linux.ibm.com>
-Cc: David Howells <dhowells@redhat.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: keyrings@vger.kernel.org
----
-v2: add missing function parameter descriptions
-
- certs/system_keyring.c |   38 ++++++++++++++++++++++++++++----------
- 1 file changed, 28 insertions(+), 10 deletions(-)
-
---- linux-next-20211029.orig/certs/system_keyring.c
-+++ linux-next-20211029/certs/system_keyring.c
-@@ -31,10 +31,16 @@ extern __initconst const unsigned long s
- extern __initconst const unsigned long module_cert_size;
- 
- /**
-- * restrict_link_to_builtin_trusted - Restrict keyring addition by built in CA
-+ * restrict_link_by_builtin_trusted - Restrict keyring addition by builtin CA
-+ * @dest_keyring: Keyring being linked to.
-+ * @type: The type of key being added.
-+ * @payload: The payload of the new key.
-+ * @restriction_key: Key providing additional data for evaluating restriction.
-  *
-  * Restrict the addition of keys into a keyring based on the key-to-be-added
-- * being vouched for by a key in the built in system keyring.
-+ * being vouched for by a key in the builtin system keyring.
-+ *
-+ * Return: %0 on success or a negative value on error
-  */
- int restrict_link_by_builtin_trusted(struct key *dest_keyring,
- 				     const struct key_type *type,
-@@ -49,10 +55,16 @@ int restrict_link_by_builtin_trusted(str
- /**
-  * restrict_link_by_builtin_and_secondary_trusted - Restrict keyring
-  *   addition by both builtin and secondary keyrings
-+ * @dest_keyring: Keyring being linked to.
-+ * @type: The type of key being added.
-+ * @payload: The payload of the new key.
-+ * @restrict_key: Key providing additional data for evaluating restriction.
-  *
-  * Restrict the addition of keys into a keyring based on the key-to-be-added
-- * being vouched for by a key in either the built-in or the secondary system
-+ * being vouched for by a key in either the builtin or the secondary system
-  * keyrings.
-+ *
-+ * Return: %0 on success or a negative value on error
-  */
- int restrict_link_by_builtin_and_secondary_trusted(
- 	struct key *dest_keyring,
-@@ -73,7 +85,7 @@ int restrict_link_by_builtin_and_seconda
- 					  secondary_trusted_keys);
- }
- 
--/**
-+/*
-  * Allocate a struct key_restriction for the "builtin and secondary trust"
-  * keyring. Only for use in system_trusted_keyring_init().
-  */
-@@ -170,14 +182,17 @@ late_initcall(load_system_certificate_li
- 
- /**
-  * verify_pkcs7_message_sig - Verify a PKCS#7-based signature on system data.
-- * @data: The data to be verified (NULL if expecting internal data).
-+ * @data: The data to be verified (%NULL if expecting internal data).
-  * @len: Size of @data.
-  * @pkcs7: The PKCS#7 message that is the signature.
-- * @trusted_keys: Trusted keys to use (NULL for builtin trusted keys only,
-- *					(void *)1UL for all trusted keys).
-+ * @trusted_keys: Trusted keys to use (%NULL for builtin trusted keys only,
-+ *		  %VERIFY_USE_SECONDARY_KEYRING for secondary trusted keys,
-+ *		  %VERIFY_USE_PLATFORM_KEYRING for platform trusted keys).
-  * @usage: The use to which the key is being put.
-  * @view_content: Callback to gain access to content.
-  * @ctx: Context for callback.
-+ *
-+ * Return: %0 on success or a negative value on error
-  */
- int verify_pkcs7_message_sig(const void *data, size_t len,
- 			     struct pkcs7_message *pkcs7,
-@@ -254,15 +269,18 @@ error:
- 
- /**
-  * verify_pkcs7_signature - Verify a PKCS#7-based signature on system data.
-- * @data: The data to be verified (NULL if expecting internal data).
-+ * @data: The data to be verified (%NULL if expecting internal data).
-  * @len: Size of @data.
-  * @raw_pkcs7: The PKCS#7 message that is the signature.
-  * @pkcs7_len: The size of @raw_pkcs7.
-- * @trusted_keys: Trusted keys to use (NULL for builtin trusted keys only,
-- *					(void *)1UL for all trusted keys).
-+ * @trusted_keys: Trusted keys to use (%NULL for builtin trusted keys only,
-+ *		  %VERIFY_USE_SECONDARY_KEYRING for secondary trusted keys,
-+ *		  %VERIFY_USE_PLATFORM_KEYRING for platform trusted keys).
-  * @usage: The use to which the key is being put.
-  * @view_content: Callback to gain access to content.
-  * @ctx: Context for callback.
-+ *
-+ * Return: %0 on success or a negative value on error
-  */
- int verify_pkcs7_signature(const void *data, size_t len,
- 			   const void *raw_pkcs7, size_t pkcs7_len,
