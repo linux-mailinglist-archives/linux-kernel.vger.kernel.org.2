@@ -2,110 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2523344175E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:33:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E83C441624
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:21:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233252AbhKAJfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:35:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37278 "EHLO mail.kernel.org"
+        id S231890AbhKAJWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:22:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232804AbhKAJc0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:32:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BF8B61205;
-        Mon,  1 Nov 2021 09:24:41 +0000 (UTC)
+        id S232034AbhKAJV6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:21:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CC05610F7;
+        Mon,  1 Nov 2021 09:19:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758681;
-        bh=lvNhA7an8fKjojN5MWGLRF8aDdtVCV5Em07sbHUVItg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dDMKLQUiYIMUdiSCcsp24o1i0FCs5AvHjJrLm1ComTtjm+0FPLgMFzxnloVI5b7ex
-         77B/gaSNceVZN1IHm+YgHZQkIcRmxsW24mBHTfjznb8KlbUU41G9e76NQIrg0nNKYk
-         eE488RlK4n6KMKLqVW2f3EsHG/myZEuRz9FmCrZQ=
+        s=korg; t=1635758352;
+        bh=U5nxLnpsUpluGSbABhx0LYa62xjNWT75KOkKUK17IZ8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Ne8HLUKO0xTaMugIIV1oSaQKQ9bLp5UHhJXnHujWauHttr/aJhw3lipjTT08Fj9an
+         aTNuehLAUxA1gInCOfcn9+3/GxH6BYLPdkZUVJwDvga4qxqkYlNcdN9Ov54x0+kush
+         pcbCTkY6B+7TeyocPxx4ceWehzgxUTtmoJktv2s0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sachi King <nakato@nakato.io>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH 5.10 14/77] pinctrl: amd: disable and mask interrupts on probe
-Date:   Mon,  1 Nov 2021 10:17:02 +0100
-Message-Id: <20211101082514.877396588@linuxfoundation.org>
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: [PATCH 4.4 00/17] 4.4.291-rc1 review
+Date:   Mon,  1 Nov 2021 10:17:03 +0100
+Message-Id: <20211101082440.664392327@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082511.254155853@linuxfoundation.org>
-References: <20211101082511.254155853@linuxfoundation.org>
-User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.291-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.4.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.4.291-rc1
+X-KernelTest-Deadline: 2021-11-03T08:24+00:00
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sachi King <nakato@nakato.io>
+This is the start of the stable review cycle for the 4.4.291 release.
+There are 17 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-commit 4e5a04be88fe335ad5331f4f8c17f4ebd357e065 upstream.
+Responses should be made by Wed, 03 Nov 2021 08:24:20 +0000.
+Anything received after that time might be too late.
 
-Some systems such as the Microsoft Surface Laptop 4 leave interrupts
-enabled and configured for use in sleep states on boot, which cause
-unexpected behaviour such as spurious wakes and failed resumes in
-s2idle states.
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.291-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.4.y
+and the diffstat can be found below.
 
-As interrupts should not be enabled until they are claimed and
-explicitly enabled, disabling any interrupts mistakenly left enabled by
-firmware should be safe.
+thanks,
 
-Signed-off-by: Sachi King <nakato@nakato.io>
-Link: https://lore.kernel.org/r/20211009033240.21543-1-nakato@nakato.io
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/pinctrl/pinctrl-amd.c |   31 +++++++++++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
+greg k-h
 
---- a/drivers/pinctrl/pinctrl-amd.c
-+++ b/drivers/pinctrl/pinctrl-amd.c
-@@ -764,6 +764,34 @@ static const struct pinconf_ops amd_pinc
- 	.pin_config_group_set = amd_pinconf_group_set,
- };
- 
-+static void amd_gpio_irq_init(struct amd_gpio *gpio_dev)
-+{
-+	struct pinctrl_desc *desc = gpio_dev->pctrl->desc;
-+	unsigned long flags;
-+	u32 pin_reg, mask;
-+	int i;
-+
-+	mask = BIT(WAKE_CNTRL_OFF_S0I3) | BIT(WAKE_CNTRL_OFF_S3) |
-+		BIT(INTERRUPT_MASK_OFF) | BIT(INTERRUPT_ENABLE_OFF) |
-+		BIT(WAKE_CNTRL_OFF_S4);
-+
-+	for (i = 0; i < desc->npins; i++) {
-+		int pin = desc->pins[i].number;
-+		const struct pin_desc *pd = pin_desc_get(gpio_dev->pctrl, pin);
-+
-+		if (!pd)
-+			continue;
-+
-+		raw_spin_lock_irqsave(&gpio_dev->lock, flags);
-+
-+		pin_reg = readl(gpio_dev->base + i * 4);
-+		pin_reg &= ~mask;
-+		writel(pin_reg, gpio_dev->base + i * 4);
-+
-+		raw_spin_unlock_irqrestore(&gpio_dev->lock, flags);
-+	}
-+}
-+
- #ifdef CONFIG_PM_SLEEP
- static bool amd_gpio_should_save(struct amd_gpio *gpio_dev, unsigned int pin)
- {
-@@ -901,6 +929,9 @@ static int amd_gpio_probe(struct platfor
- 		return PTR_ERR(gpio_dev->pctrl);
- 	}
- 
-+	/* Disable and mask interrupts */
-+	amd_gpio_irq_init(gpio_dev);
-+
- 	girq = &gpio_dev->gc.irq;
- 	girq->chip = &amd_gpio_irqchip;
- 	/* This will let us handle the parent IRQ in the driver */
+-------------
+Pseudo-Shortlog of commits:
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 4.4.291-rc1
+
+Xin Long <lucien.xin@gmail.com>
+    sctp: add vtag check in sctp_sf_violation
+
+Xin Long <lucien.xin@gmail.com>
+    sctp: use init_tag from inithdr for ABORT chunk
+
+Guenter Roeck <linux@roeck-us.net>
+    nios2: Make NIOS2_DTB_SOURCE_BOOL depend on !COMPILE_TEST
+
+Yang Yingliang <yangyingliang@huawei.com>
+    regmap: Fix possible double-free in regcache_rbtree_exit()
+
+Johan Hovold <johan@kernel.org>
+    net: lan78xx: fix division by zero in send path
+
+Shawn Guo <shawn.guo@linaro.org>
+    mmc: sdhci: Map more voltage level to SDHCI_POWER_330
+
+Jaehoon Chung <jh80.chung@samsung.com>
+    mmc: dw_mmc: exynos: fix the finding clock sample value
+
+Johan Hovold <johan@kernel.org>
+    mmc: vub300: fix control-message timeouts
+
+Pavel Skripkin <paskripkin@gmail.com>
+    Revert "net: mdiobus: Fix memory leak in __mdiobus_register"
+
+Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+    nfc: port100: fix using -ERRNO as command type mask
+
+Zheyu Ma <zheyuma97@gmail.com>
+    ata: sata_mv: Fix the error handling of mv_chip_id()
+
+Wang Hai <wanghai38@huawei.com>
+    usbnet: fix error return code in usbnet_probe()
+
+Oliver Neukum <oneukum@suse.com>
+    usbnet: sanity check for maxpacket
+
+Nathan Chancellor <natechancellor@gmail.com>
+    ARM: 8819/1: Remove '-p' from LDFLAGS
+
+Arnd Bergmann <arnd@arndb.de>
+    ARM: 9139/1: kprobes: fix arch_init_kprobes() prototype
+
+Arnd Bergmann <arnd@arndb.de>
+    ARM: 9134/1: remove duplicate memcpy() definition
+
+Nick Desaulniers <ndesaulniers@google.com>
+    ARM: 9133/1: mm: proc-macros: ensure *_tlb_fns are 4B aligned
+
+
+-------------
+
+Diffstat:
+
+ Makefile                              |  4 ++--
+ arch/arm/Makefile                     |  2 +-
+ arch/arm/boot/bootp/Makefile          |  2 +-
+ arch/arm/boot/compressed/Makefile     |  2 --
+ arch/arm/boot/compressed/decompress.c |  3 +++
+ arch/arm/mm/proc-macros.S             |  1 +
+ arch/arm/probes/kprobes/core.c        |  2 +-
+ arch/nios2/platform/Kconfig.platform  |  1 +
+ drivers/ata/sata_mv.c                 |  4 ++--
+ drivers/base/regmap/regcache-rbtree.c |  7 +++----
+ drivers/mmc/host/dw_mmc-exynos.c      | 14 ++++++++++++++
+ drivers/mmc/host/sdhci.c              |  6 ++++++
+ drivers/mmc/host/vub300.c             | 18 +++++++++---------
+ drivers/net/phy/mdio_bus.c            |  1 -
+ drivers/net/usb/lan78xx.c             |  6 ++++++
+ drivers/net/usb/usbnet.c              |  5 +++++
+ drivers/nfc/port100.c                 |  4 ++--
+ net/sctp/sm_statefuns.c               |  4 ++++
+ 18 files changed, 61 insertions(+), 25 deletions(-)
 
 
