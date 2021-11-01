@@ -2,131 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05B3B442037
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 19:41:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DBE2442047
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 19:49:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232276AbhKASn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 14:43:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232193AbhKASn5 (ORCPT
+        id S232191AbhKASvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 14:51:49 -0400
+Received: from mail-ot1-f47.google.com ([209.85.210.47]:42632 "EHLO
+        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232100AbhKASvk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 14:43:57 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B2B6C061764
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 11:41:23 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id z20so67775747edc.13
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 11:41:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rammhold-de.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tK7r+aOUpXiWnfiwAPiSOz1gaCFp1ie4wKIj38RnVS0=;
-        b=ruKobEoKgA+9XBxDsgVW1CRTiVWK+aw/bHsUEJ0s52ltCFSRjtIqfAPoS7wGOBxQr2
-         IUtSLE+xTgVPnOcNQkt/Afjf+zw9SsXwnk0HQqgnjm+lFqMc2HAzqV4NMVVzFqSZ0CG3
-         BXtPJOl0LNHCsG2zYyU5mJqnLTUMjqf55mVBcm/8RzBGawMMHjV84a3LjCF8wbToFYig
-         ZixbsMAyzF0XGTu1dzGfWfKJspHNy1e1BgfOs9lXaabZhexAGWali4LkDy45fbhRKFps
-         oNvk+j1lQ6ZeZ3UD0vV9og0yfN+WHzuPp2gvKKIw52fhwJ9+3gF9OC4EyOnO6v1+q6cG
-         iIvw==
+        Mon, 1 Nov 2021 14:51:40 -0400
+Received: by mail-ot1-f47.google.com with SMTP id v19-20020a9d69d3000000b00555a7318f31so14489637oto.9;
+        Mon, 01 Nov 2021 11:49:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tK7r+aOUpXiWnfiwAPiSOz1gaCFp1ie4wKIj38RnVS0=;
-        b=UjW+NfTfPHmzQ1khYjHcZciaukuMHep76I/EaixeIMeX34mx/kDprywVOZIlGiluqX
-         wOAeuREAyHy5RiG21I9uDg4Og3Ev7vvW6PsquaXToVnq8RHT6r7thZhWPvgZO7EL7dbW
-         NtIZUbc/4TSFGW7p2siWJ7b6M3EWssNok5ksnGmYzVdxT9vCU4/MgL8QrCUxZOuj432L
-         8xlA2yBqz2A3XcllBu7Hqmlm6HOgsJHgMT3zjejtcFUcjsMEu3RUvh9td8/QBzok8alW
-         R0lasj0mne6cQHcYUS77cpflZZgrOmnILsPuA6xQd1yZR08oJkhfYLDZcuW5reiystEt
-         n0pg==
-X-Gm-Message-State: AOAM530na2iBDa/5grvtFG9iHJ7bgGWxaM7XWMSquOdS0Pd/rzhY0a9j
-        Ad/TaEXIRjop3ttKjuioGWY5Rz/ZXaFiNjcP
-X-Google-Smtp-Source: ABdhPJw1o58zrRvllzKw3O/CP70fCWa3OK8W/Nc/1ktVmi36JGPjLsBMcoTFRiSdotgSABpmTqs4Uw==
-X-Received: by 2002:a05:6402:1242:: with SMTP id l2mr24547785edw.50.1635792081696;
-        Mon, 01 Nov 2021 11:41:21 -0700 (PDT)
-Received: from localhost ([2a00:e67:5c9:a:2e15:c474:2ef7:bc26])
-        by smtp.gmail.com with ESMTPSA id e13sm7175182eje.95.2021.11.01.11.41.20
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=H7wFgbeLMuUv4++Ly+4nu5qsuu1wVGNwUtHn/JRfj8Q=;
+        b=kyEFBbOvjdfWCW+vwycyC3tv6vcGYTTriLxOQCeHImdWZ19ms/ou2IVg4YcsRU/vvU
+         wBiyYfzXbuAu2y+RvcgTqBuRaTGpWzPvtAXxFvCCQ9ekmJ4KwjNHkOe4OXesLHV9AHa8
+         KmX6Bd5Sr8OqlrZaWYKPNqAhBUq32QWMiFBIajWJ2WdIwnoccHLCNKpgpUiinwIFX6Up
+         65aMXLtb7omaOSMEc1OOuuK8XmepIRNDG0vlmljxeTMdkKxHLNcFmZMqy0ihT6w0duVQ
+         VXzvl7f/fx6CcLzpGDGO3N2WHMVQJ8/v1ZXOoghB+h5bqeG6ErznWx4P84GV1bz65+1H
+         PFeA==
+X-Gm-Message-State: AOAM5331ZGJIRwhonzicrcKH2kLq81c/FGi4bNcOfKDeSbINJISN5NTL
+        IgvmQY1jHp5idjJGlyhKgRXTp/O5tA==
+X-Google-Smtp-Source: ABdhPJwOH3OGownRZ9Fvz+SijRxwkSjoLikgygUWYcUfS9iA8bYqhjT3m323jyxbtuICTpdVNFhn6g==
+X-Received: by 2002:a05:6830:3498:: with SMTP id c24mr7839863otu.263.1635792542039;
+        Mon, 01 Nov 2021 11:49:02 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id e20sm1751291oow.5.2021.11.01.11.49.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 11:41:20 -0700 (PDT)
-From:   andreas@rammhold.de
-To:     James Bottomley <jejb@linux.ibm.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Sumit Garg <sumit.garg@linaro.org>
-Cc:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Andreas Rammhold <andreas@rammhold.de>,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND] KEYS: trusted: Fix trusted key backends when building as module
-Date:   Mon,  1 Nov 2021 19:41:14 +0100
-Message-Id: <20211101184115.1468041-1-andreas@rammhold.de>
-X-Mailer: git-send-email 2.33.0
+        Mon, 01 Nov 2021 11:49:01 -0700 (PDT)
+Received: (nullmailer pid 813055 invoked by uid 1000);
+        Mon, 01 Nov 2021 18:49:00 -0000
+Date:   Mon, 1 Nov 2021 13:49:00 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     David Heidelberg <david@ixit.cz>
+Cc:     Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alex Elder <elder@kernel.org>, linux-arm-msm@vger.kernel.org,
+        ~okias/devicetree@lists.sr.ht, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] dt-bindings: net: qcom,ipa: IPA does support up to
+ two iommus
+Message-ID: <YYA2nEd6jkSwx8QW@robh.at.kernel.org>
+References: <20211026163240.131052-1-david@ixit.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211026163240.131052-1-david@ixit.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andreas Rammhold <andreas@rammhold.de>
+On Tue, 26 Oct 2021 18:32:40 +0200, David Heidelberg wrote:
+> Fix warnings as:
+> arch/arm/boot/dts/qcom-sdx55-mtp.dt.yaml: ipa@1e40000: iommus: [[21, 1504, 0], [21, 1506, 0]] is too long
+> 	From schema: Documentation/devicetree/bindings/net/qcom,ipa.yaml
+> 
+> Signed-off-by: David Heidelberg <david@ixit.cz>
+> ---
+>  Documentation/devicetree/bindings/net/qcom,ipa.yaml | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
 
-Before this commit the kernel could end up with no trusted key sources
-even though both of the currently supported backends (TPM and TEE) were
-compiled as modules. This manifested in the trusted key type not being
-registered at all.
-
-When checking if a CONFIG_… preprocessor variable is defined we only
-test for the builtin (=y) case and not the module (=m) case. By using
-the IS_REACHABLE() macro we do test for both cases.
-
-Fixes: 5d0682be3189 ("KEYS: trusted: Add generic trusted keys framework")
-Signed-off-by: Andreas Rammhold <andreas@rammhold.de>
----
-
-This is a resend becuase of this unfortunate timeline:
-  - 2021-05-09: Regression hits mainline with v5.13-rc1
-  - 2021-07-16: Issue reported. v1 of this patch sent out
-  - 2021-07-21: Ahmad sends out alternative patch to fix issue
-  - 2021-07-27: Jarkko (Maintainer) NACKs Ahmad's patch because of scope
-  - 2021-07-29: v2 with fixes sent out
-  - 2021-07-29: Jarkko gives his Reviewed-by and requests one more v3
-  - 2021-07-31: v3 sent out
-  - 2021-09-13: Pinged, no feedback
-  - 2021-09-27: Pinged, Mimi (Maintainer) comments due to to misunderstanding.
-                Question about why this is not merged ignored
-  - 2021-10-11: Pinged, no feedback
-
-v3:
-* Fixed patch formatting
-
-v2:
-* Fixed commit message
-* Switched from IS_DEFINED() to IS_REACHABLE()
-
-
- security/keys/trusted-keys/trusted_core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/security/keys/trusted-keys/trusted_core.c b/security/keys/trusted-keys/trusted_core.c
-index d5c891d8d3534..5b35f1b876441 100644
---- a/security/keys/trusted-keys/trusted_core.c
-+++ b/security/keys/trusted-keys/trusted_core.c
-@@ -27,10 +27,10 @@ module_param_named(source, trusted_key_source, charp, 0);
- MODULE_PARM_DESC(source, "Select trusted keys source (tpm or tee)");
- 
- static const struct trusted_key_source trusted_key_sources[] = {
--#if defined(CONFIG_TCG_TPM)
-+#if IS_REACHABLE(CONFIG_TCG_TPM)
- 	{ "tpm", &trusted_key_tpm_ops },
- #endif
--#if defined(CONFIG_TEE)
-+#if IS_REACHABLE(CONFIG_TEE)
- 	{ "tee", &trusted_key_tee_ops },
- #endif
- };
--- 
-2.33.0
-
+Applied, thanks!
