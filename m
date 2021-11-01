@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07CC04417E3
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:39:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11876441746
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:33:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233690AbhKAJky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:40:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43606 "EHLO mail.kernel.org"
+        id S232396AbhKAJfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:35:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36830 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233055AbhKAJht (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:37:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A1F6E61356;
-        Mon,  1 Nov 2021 09:26:51 +0000 (UTC)
+        id S233253AbhKAJcE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:32:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2999661242;
+        Mon,  1 Nov 2021 09:24:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758812;
-        bh=Gh/8BVu33pNE4rI2kcpJL+qQl5bR/JeuGu+ygPgdVUA=;
+        s=korg; t=1635758653;
+        bh=LHb5xpwpJeeeSy7fFPuxXsbbECtM6BBP1HcvCfBRMSE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eqp0Qi0aRNHM1oK4wRsx1WU92zoOXdIQB6R/vTdKA53Dn9kmfiRDML78A6jgS9K/u
-         QgnRQdMdRU+ITwYPIkDAZlWim2cIv3NDDLcRHjH2RKb/HmwY24+EKBv9CZ5Q9B/Pnt
-         y5lr4bpMeh8q4N8TfFGLSCjAkGroW1BLUSAX8Ke4=
+        b=mDjE0yZtfK6/pO2dts11frj86xpXsTr4U1gYilvRTX6B6FQNC2ldIR5OUmYFCrekY
+         i7os2FyZDhDdWpXET5Zimblby0OQbExaCSCMaVHdJ6qROYMTZrCBxqTY9cWJqFCiyR
+         OnCJV9udELOimjbMvkvNyIzc2ROhl/DNaiWGzqvM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>
-Subject: [PATCH 5.10 37/77] bpf: Fix potential race in tail call compatibility check
+        "Woojung.Huh@microchip.com" <Woojung.Huh@microchip.com>,
+        Johan Hovold <johan@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 21/51] net: lan78xx: fix division by zero in send path
 Date:   Mon,  1 Nov 2021 10:17:25 +0100
-Message-Id: <20211101082519.633404679@linuxfoundation.org>
+Message-Id: <20211101082505.440385987@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082511.254155853@linuxfoundation.org>
-References: <20211101082511.254155853@linuxfoundation.org>
+In-Reply-To: <20211101082500.203657870@linuxfoundation.org>
+References: <20211101082500.203657870@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,130 +41,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Toke Høiland-Jørgensen <toke@redhat.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit 54713c85f536048e685258f880bf298a74c3620d upstream.
+commit db6c3c064f5d55fa9969f33eafca3cdbefbb3541 upstream.
 
-Lorenzo noticed that the code testing for program type compatibility of
-tail call maps is potentially racy in that two threads could encounter a
-map with an unset type simultaneously and both return true even though they
-are inserting incompatible programs.
+Add the missing endpoint max-packet sanity check to probe() to avoid
+division by zero in lan78xx_tx_bh() in case a malicious device has
+broken descriptors (or when doing descriptor fuzz testing).
 
-The race window is quite small, but artificially enlarging it by adding a
-usleep_range() inside the check in bpf_prog_array_compatible() makes it
-trivial to trigger from userspace with a program that does, essentially:
+Note that USB core will reject URBs submitted for endpoints with zero
+wMaxPacketSize but that drivers doing packet-size calculations still
+need to handle this (cf. commit 2548288b4fb0 ("USB: Fix: Don't skip
+endpoint descriptors with maxpacket=0")).
 
-        map_fd = bpf_create_map(BPF_MAP_TYPE_PROG_ARRAY, 4, 4, 2, 0);
-        pid = fork();
-        if (pid) {
-                key = 0;
-                value = xdp_fd;
-        } else {
-                key = 1;
-                value = tc_fd;
-        }
-        err = bpf_map_update_elem(map_fd, &key, &value, 0);
-
-While the race window is small, it has potentially serious ramifications in
-that triggering it would allow a BPF program to tail call to a program of a
-different type. So let's get rid of it by protecting the update with a
-spinlock. The commit in the Fixes tag is the last commit that touches the
-code in question.
-
-v2:
-- Use a spinlock instead of an atomic variable and cmpxchg() (Alexei)
-v3:
-- Put lock and the members it protects into an embedded 'owner' struct (Daniel)
-
-Fixes: 3324b584b6f6 ("ebpf: misc core cleanup")
-Reported-by: Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Link: https://lore.kernel.org/bpf/20211026110019.363464-1-toke@redhat.com
+Fixes: 55d7de9de6c3 ("Microchip's LAN7800 family USB 2/3 to 10/100/1000 Ethernet device driver")
+Cc: stable@vger.kernel.org      # 4.3
+Cc: Woojung.Huh@microchip.com <Woojung.Huh@microchip.com>
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/bpf.h   |    7 +++++--
- kernel/bpf/arraymap.c |    1 +
- kernel/bpf/core.c     |   20 +++++++++++++-------
- kernel/bpf/syscall.c  |    6 ++++--
- 4 files changed, 23 insertions(+), 11 deletions(-)
+ drivers/net/usb/lan78xx.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -862,8 +862,11 @@ struct bpf_array_aux {
- 	 * stored in the map to make sure that all callers and callees have
- 	 * the same prog type and JITed flag.
- 	 */
--	enum bpf_prog_type type;
--	bool jited;
-+	struct {
-+		spinlock_t lock;
-+		enum bpf_prog_type type;
-+		bool jited;
-+	} owner;
- 	/* Programs with direct jumps into programs part of this array. */
- 	struct list_head poke_progs;
- 	struct bpf_map *map;
---- a/kernel/bpf/arraymap.c
-+++ b/kernel/bpf/arraymap.c
-@@ -1025,6 +1025,7 @@ static struct bpf_map *prog_array_map_al
- 	INIT_WORK(&aux->work, prog_array_map_clear_deferred);
- 	INIT_LIST_HEAD(&aux->poke_progs);
- 	mutex_init(&aux->poke_mutex);
-+	spin_lock_init(&aux->owner.lock);
+--- a/drivers/net/usb/lan78xx.c
++++ b/drivers/net/usb/lan78xx.c
+@@ -3753,6 +3753,12 @@ static int lan78xx_probe(struct usb_inte
  
- 	map = array_map_alloc(attr);
- 	if (IS_ERR(map)) {
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -1775,20 +1775,26 @@ static unsigned int __bpf_prog_ret0_warn
- bool bpf_prog_array_compatible(struct bpf_array *array,
- 			       const struct bpf_prog *fp)
- {
-+	bool ret;
+ 	dev->maxpacket = usb_maxpacket(dev->udev, dev->pipe_out, 1);
+ 
++	/* Reject broken descriptors. */
++	if (dev->maxpacket == 0) {
++		ret = -ENODEV;
++		goto out4;
++	}
 +
- 	if (fp->kprobe_override)
- 		return false;
+ 	/* driver requires remote-wakeup capability during autosuspend. */
+ 	intf->needs_remote_wakeup = 1;
  
--	if (!array->aux->type) {
-+	spin_lock(&array->aux->owner.lock);
-+
-+	if (!array->aux->owner.type) {
- 		/* There's no owner yet where we could check for
- 		 * compatibility.
- 		 */
--		array->aux->type  = fp->type;
--		array->aux->jited = fp->jited;
--		return true;
-+		array->aux->owner.type  = fp->type;
-+		array->aux->owner.jited = fp->jited;
-+		ret = true;
-+	} else {
-+		ret = array->aux->owner.type  == fp->type &&
-+		      array->aux->owner.jited == fp->jited;
- 	}
--
--	return array->aux->type  == fp->type &&
--	       array->aux->jited == fp->jited;
-+	spin_unlock(&array->aux->owner.lock);
-+	return ret;
- }
- 
- static int bpf_check_tail_call(const struct bpf_prog *fp)
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -535,8 +535,10 @@ static void bpf_map_show_fdinfo(struct s
- 
- 	if (map->map_type == BPF_MAP_TYPE_PROG_ARRAY) {
- 		array = container_of(map, struct bpf_array, map);
--		type  = array->aux->type;
--		jited = array->aux->jited;
-+		spin_lock(&array->aux->owner.lock);
-+		type  = array->aux->owner.type;
-+		jited = array->aux->owner.jited;
-+		spin_unlock(&array->aux->owner.lock);
- 	}
- 
- 	seq_printf(m,
 
 
