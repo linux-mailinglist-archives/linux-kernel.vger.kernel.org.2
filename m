@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6291441781
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:36:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89A26441699
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:26:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232949AbhKAJhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:37:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43594 "EHLO mail.kernel.org"
+        id S231829AbhKAJ1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:27:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58984 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233622AbhKAJdr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:33:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F24061265;
-        Mon,  1 Nov 2021 09:25:16 +0000 (UTC)
+        id S232621AbhKAJYV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:24:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CB45561179;
+        Mon,  1 Nov 2021 09:21:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758716;
-        bh=pvJr1WrYLJxcxoBfz2R65K5Wa7sWMt1a0oeZCQbtU80=;
+        s=korg; t=1635758471;
+        bh=USSO+xNUiBioOo7quBRHf76QRiBObLPd9my0F6hFe5k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cPOviT/1E+P4LJkdDP5Jh3mxHURZxWMQ+VEVRgP/nMgyJ4Ysl3y1NoUg0t8H5TfMy
-         CmyTtSRHX1k9cqjMHM8Xy4R8oHTKKKfRgA2/Q/LmvEsosgclRfZsFVkY4Tskq1J8QM
-         gR7KsLP7/bVHpvvpZun3/9USE5nmyXERKN7Ewrtk=
+        b=jZJh/zS75ytPwszLFAbcdRp5Hx0PLN+76syDCEo1ifHL6Q/niWvY4ckm4Lc0j1Oc0
+         YeZKqjYQrzgGG7v5dJx4EBIXWydgI0KvABM3OjxJPv/oKCZePaqqFTk3xFol+dBre5
+         +08Abe0kzd/4GULUV4VCnOVkT1CMkTsCAQaPJKIA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 5.10 28/77] cfg80211: scan: fix RCU in cfg80211_add_nontrans_list()
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
+Subject: [PATCH 4.19 04/35] ARM: 9141/1: only warn about XIP address when not compile testing
 Date:   Mon,  1 Nov 2021 10:17:16 +0100
-Message-Id: <20211101082517.840847610@linuxfoundation.org>
+Message-Id: <20211101082452.581447646@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082511.254155853@linuxfoundation.org>
-References: <20211101082511.254155853@linuxfoundation.org>
+In-Reply-To: <20211101082451.430720900@linuxfoundation.org>
+References: <20211101082451.430720900@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,44 +39,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-commit a2083eeb119fb9307258baea9b7c243ca9a2e0b6 upstream.
+commit 48ccc8edf5b90622cdc4f8878e0042ab5883e2ca upstream.
 
-The SSID pointer is pointing to RCU protected data, so we
-need to have it under rcu_read_lock() for the entire use.
-Fix this.
+In randconfig builds, we sometimes come across this warning:
 
-Cc: stable@vger.kernel.org
-Fixes: 0b8fb8235be8 ("cfg80211: Parsing of Multiple BSSID information in scanning")
-Link: https://lore.kernel.org/r/20210930131120.6ddfc603aa1d.I2137344c4e2426525b1a8e4ce5fca82f8ecbfe7e@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+arm-linux-gnueabi-ld: XIP start address may cause MPU programming issues
+
+While this is helpful for actual systems to figure out why it
+fails, the warning does not provide any benefit for build testing,
+so guard it in a check for CONFIG_COMPILE_TEST, which is usually
+set on randconfig builds.
+
+Fixes: 216218308cfb ("ARM: 8713/1: NOMMU: Support MPU in XIP configuration")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/wireless/scan.c |    7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ arch/arm/kernel/vmlinux-xip.lds.S |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/wireless/scan.c
-+++ b/net/wireless/scan.c
-@@ -418,14 +418,17 @@ cfg80211_add_nontrans_list(struct cfg802
- 	}
- 	ssid_len = ssid[1];
- 	ssid = ssid + 2;
--	rcu_read_unlock();
+--- a/arch/arm/kernel/vmlinux-xip.lds.S
++++ b/arch/arm/kernel/vmlinux-xip.lds.S
+@@ -181,7 +181,7 @@ ASSERT(__hyp_idmap_text_end - (__hyp_idm
+ ASSERT((_end - __bss_start) >= 12288, ".bss too small for CONFIG_XIP_DEFLATED_DATA")
+ #endif
  
- 	/* check if nontrans_bss is in the list */
- 	list_for_each_entry(bss, &trans_bss->nontrans_list, nontrans_list) {
--		if (is_bss(bss, nontrans_bss->bssid, ssid, ssid_len))
-+		if (is_bss(bss, nontrans_bss->bssid, ssid, ssid_len)) {
-+			rcu_read_unlock();
- 			return 0;
-+		}
- 	}
- 
-+	rcu_read_unlock();
-+
- 	/* add to the list */
- 	list_add_tail(&nontrans_bss->nontrans_list, &trans_bss->nontrans_list);
- 	return 0;
+-#ifdef CONFIG_ARM_MPU
++#if defined(CONFIG_ARM_MPU) && !defined(CONFIG_COMPILE_TEST)
+ /*
+  * Due to PMSAv7 restriction on base address and size we have to
+  * enforce minimal alignment restrictions. It was seen that weaker
 
 
