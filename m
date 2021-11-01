@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF67A44164D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:21:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 535CA441696
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:26:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232193AbhKAJYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:24:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58250 "EHLO mail.kernel.org"
+        id S231939AbhKAJ1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:27:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58982 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232279AbhKAJWi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:22:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C1FDE6115B;
-        Mon,  1 Nov 2021 09:19:49 +0000 (UTC)
+        id S232365AbhKAJYI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:24:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BAF461175;
+        Mon,  1 Nov 2021 09:21:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758390;
-        bh=lJYl+eTyR5zz+jjSLkRUcNts9COzZsNo24UiIkyRcgk=;
+        s=korg; t=1635758466;
+        bh=YVw+uFsBiuziYMgWDPhq4IsRqGCFlICJfMeobdxw6KA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UN5V02eP9MqguYPXp/nuap6gbZ7VsXSebI/tr7IXjKZGvypLYwLmLIOP7WzNrvqyX
-         lFpT4VTrFG/Y54i+t1yy3Aq4VfovWvLLFHUibvY51Dqx2UQ+mRY2vWsYV/O5G/eaaN
-         1s1FvWRDMydPbsbeOBAL++xlRv3IyWcaUT1RdYwM=
+        b=TPbDdd/umjb3HOfpiLL4/OGpR/9gwEQF2QrbuD89ElMZnJk65LbuGTRTkCSpJUoeR
+         nNAu9k3eVmAizLeSbfNZvmOiBwP2CnBgq4ha3G4F1h2+c5HebeIGv5TjyKt8C1m3kL
+         mhFJxu75dMyFGA8eK5TtirLyD8e8e8i6MQ1FyA+M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Nicolas Pitre <nico@linaro.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Stefan Agner <stefan@agner.ch>,
-        Russell King <rmk+kernel@armlinux.org.uk>
-Subject: [PATCH 4.9 05/20] ARM: 8819/1: Remove -p from LDFLAGS
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
+Subject: [PATCH 4.19 02/35] ARM: 9134/1: remove duplicate memcpy() definition
 Date:   Mon,  1 Nov 2021 10:17:14 +0100
-Message-Id: <20211101082445.393989253@linuxfoundation.org>
+Message-Id: <20211101082452.057431845@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082444.133899096@linuxfoundation.org>
-References: <20211101082444.133899096@linuxfoundation.org>
+In-Reply-To: <20211101082451.430720900@linuxfoundation.org>
+References: <20211101082451.430720900@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,65 +41,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <natechancellor@gmail.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-commit 091bb549f7722723b284f63ac665e2aedcf9dec9 upstream.
+commit eaf6cc7165c9c5aa3c2f9faa03a98598123d0afb upstream.
 
-This option is not supported by lld:
+Both the decompressor code and the kasan logic try to override
+the memcpy() and memmove()  definitions, which leading to a clash
+in a KASAN-enabled kernel with XZ decompression:
 
-    ld.lld: error: unknown argument: -p
+arch/arm/boot/compressed/decompress.c:50:9: error: 'memmove' macro redefined [-Werror,-Wmacro-redefined]
+ #define memmove memmove
+        ^
+arch/arm/include/asm/string.h:59:9: note: previous definition is here
+ #define memmove(dst, src, len) __memmove(dst, src, len)
+        ^
+arch/arm/boot/compressed/decompress.c:51:9: error: 'memcpy' macro redefined [-Werror,-Wmacro-redefined]
+ #define memcpy memcpy
+        ^
+arch/arm/include/asm/string.h:58:9: note: previous definition is here
+ #define memcpy(dst, src, len) __memcpy(dst, src, len)
+        ^
 
-This has been a no-op in binutils since 2004 (see commit dea514f51da1 in
-that tree). Given that the lowest officially supported of binutils for
-the kernel is 2.20, which was released in 2009, nobody needs this flag
-around so just remove it. Commit 1a381d4a0a9a ("arm64: remove no-op -p
-linker flag") did the same for arm64.
+Here we want the set of functions from the decompressor, so undefine
+the other macros before the override.
 
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-Acked-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Acked-by: Nicolas Pitre <nico@linaro.org>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Reviewed-by: Stefan Agner <stefan@agner.ch>
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Link: https://lore.kernel.org/linux-arm-kernel/CACRpkdZYJogU_SN3H9oeVq=zJkRgRT1gDz3xp59gdqWXxw-B=w@mail.gmail.com/
+Link: https://lore.kernel.org/lkml/202105091112.F5rmd4By-lkp@intel.com/
+
+Fixes: d6d51a96c7d6 ("ARM: 9014/2: Replace string mem* functions for KASan")
+Fixes: a7f464f3db93 ("ARM: 7001/2: Wire up support for the XZ decompressor")
+Reported-by: kernel test robot <lkp@intel.com>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm/Makefile                 |    2 +-
- arch/arm/boot/bootp/Makefile      |    2 +-
- arch/arm/boot/compressed/Makefile |    2 --
- 3 files changed, 2 insertions(+), 4 deletions(-)
+ arch/arm/boot/compressed/decompress.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/arch/arm/Makefile
-+++ b/arch/arm/Makefile
-@@ -13,7 +13,7 @@
- # Ensure linker flags are correct
- LDFLAGS		:=
+--- a/arch/arm/boot/compressed/decompress.c
++++ b/arch/arm/boot/compressed/decompress.c
+@@ -46,7 +46,10 @@ extern int memcmp(const void *cs, const
+ #endif
  
--LDFLAGS_vmlinux	:=-p --no-undefined -X --pic-veneer
-+LDFLAGS_vmlinux	:= --no-undefined -X --pic-veneer
- ifeq ($(CONFIG_CPU_ENDIAN_BE8),y)
- LDFLAGS_vmlinux	+= --be8
- LDFLAGS_MODULE	+= --be8
---- a/arch/arm/boot/bootp/Makefile
-+++ b/arch/arm/boot/bootp/Makefile
-@@ -7,7 +7,7 @@
- 
- GCOV_PROFILE	:= n
- 
--LDFLAGS_bootp	:=-p --no-undefined -X \
-+LDFLAGS_bootp	:= --no-undefined -X \
- 		 --defsym initrd_phys=$(INITRD_PHYS) \
- 		 --defsym params_phys=$(PARAMS_PHYS) -T
- AFLAGS_initrd.o :=-DINITRD=\"$(INITRD)\"
---- a/arch/arm/boot/compressed/Makefile
-+++ b/arch/arm/boot/compressed/Makefile
-@@ -128,8 +128,6 @@ endif
- ifeq ($(CONFIG_CPU_ENDIAN_BE8),y)
- LDFLAGS_vmlinux += --be8
- endif
--# ?
--LDFLAGS_vmlinux += -p
- # Report unresolved symbol references
- LDFLAGS_vmlinux += --no-undefined
- # Delete all temporary local symbols
+ #ifdef CONFIG_KERNEL_XZ
++/* Prevent KASAN override of string helpers in decompressor */
++#undef memmove
+ #define memmove memmove
++#undef memcpy
+ #define memcpy memcpy
+ #include "../../../../lib/decompress_unxz.c"
+ #endif
 
 
