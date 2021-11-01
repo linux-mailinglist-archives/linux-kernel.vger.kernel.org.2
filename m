@@ -2,71 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 441F4441616
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:20:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA845441652
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:22:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232208AbhKAJW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:22:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57752 "EHLO mail.kernel.org"
+        id S232614AbhKAJYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:24:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231994AbhKAJVg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:21:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DFB9E60FC4;
-        Mon,  1 Nov 2021 09:19:02 +0000 (UTC)
+        id S232316AbhKAJWp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:22:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 27D62611AD;
+        Mon,  1 Nov 2021 09:20:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758343;
-        bh=INNpM2ETFrOv7yS1YHWaSEDkFPOEjzXDOu6pPCCn3jg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2uCQsPunuFI5ahlm0wbC/Tlm4l4/JZc1WpZoyk7/qjbZbQrVo/rLR94/3JmaVVj3g
-         CQJxt+90N397EBYmPVFxfmIPMUkzzjN3ofqxpkXspGwM6zh+V6r0DsdcVNuol9ejG2
-         KJ3ldBx1vWI1+2O/5uKOA3L0IuFnhBWgEBQ9qD7w=
+        s=korg; t=1635758401;
+        bh=lHpNhNxPiGdL77iG/RG+HgqI7wwiSPgq94ks62tNaUQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=aAY6qwssSU6FfSksbMaBrt9sCygkIChU+G2AuKTjNEAc9z23BVoaItsW0GBcBg33J
+         4IZ2Jp34CkI8ldP5oEUEvsaDoscCoGacmeWPJmQm5SU6pv4gAgYhnMO0c1nGKQmm6H
+         3xm5jv2LOh1fBuzYcOV7tF+KPT5XjuhC5snBEAuk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Wang Hai <wanghai38@huawei.com>,
-        Johan Hovold <johan@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.4 06/17] usbnet: fix error return code in usbnet_probe()
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: [PATCH 4.9 00/20] 4.9.289-rc1 review
 Date:   Mon,  1 Nov 2021 10:17:09 +0100
-Message-Id: <20211101082442.030153014@linuxfoundation.org>
+Message-Id: <20211101082444.133899096@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082440.664392327@linuxfoundation.org>
-References: <20211101082440.664392327@linuxfoundation.org>
-User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.289-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.9.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.9.289-rc1
+X-KernelTest-Deadline: 2021-11-03T08:24+00:00
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang Hai <wanghai38@huawei.com>
+This is the start of the stable review cycle for the 4.9.289 release.
+There are 20 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-commit 6f7c88691191e6c52ef2543d6f1da8d360b27a24 upstream.
+Responses should be made by Wed, 03 Nov 2021 08:24:20 +0000.
+Anything received after that time might be too late.
 
-Return error code if usb_maxpacket() returns 0 in usbnet_probe()
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.289-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
+and the diffstat can be found below.
 
-Fixes: 397430b50a36 ("usbnet: sanity check for maxpacket")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
-Reviewed-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20211026124015.3025136-1-wanghai38@huawei.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/usb/usbnet.c |    1 +
- 1 file changed, 1 insertion(+)
+thanks,
 
---- a/drivers/net/usb/usbnet.c
-+++ b/drivers/net/usb/usbnet.c
-@@ -1732,6 +1732,7 @@ usbnet_probe (struct usb_interface *udev
- 	dev->maxpacket = usb_maxpacket (dev->udev, dev->out, 1);
- 	if (dev->maxpacket == 0) {
- 		/* that is a broken device */
-+		status = -ENODEV;
- 		goto out4;
- 	}
- 
+greg k-h
+
+-------------
+Pseudo-Shortlog of commits:
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 4.9.289-rc1
+
+Xin Long <lucien.xin@gmail.com>
+    sctp: add vtag check in sctp_sf_violation
+
+Xin Long <lucien.xin@gmail.com>
+    sctp: use init_tag from inithdr for ABORT chunk
+
+Trevor Woerner <twoerner@gmail.com>
+    net: nxp: lpc_eth.c: avoid hang when bringing interface down
+
+Guenter Roeck <linux@roeck-us.net>
+    nios2: Make NIOS2_DTB_SOURCE_BOOL depend on !COMPILE_TEST
+
+Pavel Skripkin <paskripkin@gmail.com>
+    net: batman-adv: fix error handling
+
+Yang Yingliang <yangyingliang@huawei.com>
+    regmap: Fix possible double-free in regcache_rbtree_exit()
+
+Johan Hovold <johan@kernel.org>
+    net: lan78xx: fix division by zero in send path
+
+Shawn Guo <shawn.guo@linaro.org>
+    mmc: sdhci: Map more voltage level to SDHCI_POWER_330
+
+Jaehoon Chung <jh80.chung@samsung.com>
+    mmc: dw_mmc: exynos: fix the finding clock sample value
+
+Johan Hovold <johan@kernel.org>
+    mmc: vub300: fix control-message timeouts
+
+Pavel Skripkin <paskripkin@gmail.com>
+    Revert "net: mdiobus: Fix memory leak in __mdiobus_register"
+
+Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+    nfc: port100: fix using -ERRNO as command type mask
+
+Zheyu Ma <zheyuma97@gmail.com>
+    ata: sata_mv: Fix the error handling of mv_chip_id()
+
+Wang Hai <wanghai38@huawei.com>
+    usbnet: fix error return code in usbnet_probe()
+
+Oliver Neukum <oneukum@suse.com>
+    usbnet: sanity check for maxpacket
+
+Nathan Chancellor <natechancellor@gmail.com>
+    ARM: 8819/1: Remove '-p' from LDFLAGS
+
+Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+    powerpc/bpf: Fix BPF_MOD when imm == 1
+
+Arnd Bergmann <arnd@arndb.de>
+    ARM: 9139/1: kprobes: fix arch_init_kprobes() prototype
+
+Arnd Bergmann <arnd@arndb.de>
+    ARM: 9134/1: remove duplicate memcpy() definition
+
+Nick Desaulniers <ndesaulniers@google.com>
+    ARM: 9133/1: mm: proc-macros: ensure *_tlb_fns are 4B aligned
+
+
+-------------
+
+Diffstat:
+
+ Makefile                               |  4 +--
+ arch/arm/Makefile                      |  2 +-
+ arch/arm/boot/bootp/Makefile           |  2 +-
+ arch/arm/boot/compressed/Makefile      |  2 --
+ arch/arm/boot/compressed/decompress.c  |  3 ++
+ arch/arm/mm/proc-macros.S              |  1 +
+ arch/arm/probes/kprobes/core.c         |  2 +-
+ arch/nios2/platform/Kconfig.platform   |  1 +
+ arch/powerpc/net/bpf_jit_comp64.c      | 10 ++++--
+ drivers/ata/sata_mv.c                  |  4 +--
+ drivers/base/regmap/regcache-rbtree.c  |  7 ++---
+ drivers/mmc/host/dw_mmc-exynos.c       | 14 +++++++++
+ drivers/mmc/host/sdhci.c               |  6 ++++
+ drivers/mmc/host/vub300.c              | 18 +++++------
+ drivers/net/ethernet/nxp/lpc_eth.c     |  5 ++-
+ drivers/net/phy/mdio_bus.c             |  1 -
+ drivers/net/usb/lan78xx.c              |  6 ++++
+ drivers/net/usb/usbnet.c               |  5 +++
+ drivers/nfc/port100.c                  |  4 +--
+ net/batman-adv/bridge_loop_avoidance.c |  8 +++--
+ net/batman-adv/main.c                  | 56 ++++++++++++++++++++++++----------
+ net/batman-adv/network-coding.c        |  4 ++-
+ net/batman-adv/translation-table.c     |  4 ++-
+ net/sctp/sm_statefuns.c                |  4 +++
+ 24 files changed, 123 insertions(+), 50 deletions(-)
 
 
