@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B967344177B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:36:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CE78441873
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:45:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233041AbhKAJgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:36:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43532 "EHLO mail.kernel.org"
+        id S233949AbhKAJru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:47:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48026 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233553AbhKAJdl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:33:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E209E61251;
-        Mon,  1 Nov 2021 09:24:59 +0000 (UTC)
+        id S234071AbhKAJoD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:44:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 98ACB613A4;
+        Mon,  1 Nov 2021 09:29:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758700;
-        bh=lpeYeTsGZkT8KmzE3cRaqNKlJKN242ItCaEOKSNdFFM=;
+        s=korg; t=1635758966;
+        bh=lupnL6TaCmkoQPb3WZhdGjlX6X2St7+f5b1FvgLxB1M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=w6WgxQxyYClJ81elrxbPjS0d0V/5KqhjXU6IAv9QL7f5gMEpbcUDWYPbwDtLOvwQ/
-         e8ahnabKaBjt94/0gC2Lidcafs9lI2KJVzO8Y5gkoxMqHXoGmFsWo55hzOOqmUwrXU
-         XCUV0fJbxQS3V7wwa8VwHrZ7u6fG4qzpB++qxYCU=
+        b=WRWpA/n5v4lS4hEqXKFKU5TdilRzPZsYPnQaIlWPTVA1FknbBkquE/gWnMivIOsrW
+         TbxeypDKpeOJy+H61sE9NU/w12qFZZm6vFdRzSYbQUZ3mZeUDtreZyJx6ygMf5MDDe
+         wTZFrFeMr+e33uHk5OPmX+/rWbU+y1TmvBz1fZUI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wenbin Mei <wenbin.mei@mediatek.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 5.10 21/77] mmc: cqhci: clear HALT state after CQE enable
-Date:   Mon,  1 Nov 2021 10:17:09 +0100
-Message-Id: <20211101082516.340238920@linuxfoundation.org>
+        stable@vger.kernel.org, Jan Kiszka <jan.kiszka@siemens.com>,
+        =?UTF-8?q?Mantas=20Mikul=C4=97nas?= <grawity@gmail.com>,
+        "Javier S. Pedro" <debbugs@javispedro.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>
+Subject: [PATCH 5.14 057/125] Revert "watchdog: iTCO_wdt: Account for rebooting on second timeout"
+Date:   Mon,  1 Nov 2021 10:17:10 +0100
+Message-Id: <20211101082543.957189543@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082511.254155853@linuxfoundation.org>
-References: <20211101082511.254155853@linuxfoundation.org>
+In-Reply-To: <20211101082533.618411490@linuxfoundation.org>
+References: <20211101082533.618411490@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,57 +42,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wenbin Mei <wenbin.mei@mediatek.com>
+From: Guenter Roeck <linux@roeck-us.net>
 
-commit 92b18252b91de567cd875f2e84722b10ab34ee28 upstream.
+commit 6e7733ef0bb9372d5491168635f6ecba8ac3cb8a upstream.
 
-While mmc0 enter suspend state, we need halt CQE to send legacy cmd(flush
-cache) and disable cqe, for resume back, we enable CQE and not clear HALT
-state.
-In this case MediaTek mmc host controller will keep the value for HALT
-state after CQE disable/enable flow, so the next CQE transfer after resume
-will be timeout due to CQE is in HALT state, the log as below:
-<4>.(4)[318:kworker/4:1H]mmc0: cqhci: timeout for tag 2
-<4>.(4)[318:kworker/4:1H]mmc0: cqhci: ============ CQHCI REGISTER DUMP ===========
-<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Caps:      0x100020b6 | Version:  0x00000510
-<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Config:    0x00001103 | Control:  0x00000001
-<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Int stat:  0x00000000 | Int enab: 0x00000006
-<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Int sig:   0x00000006 | Int Coal: 0x00000000
-<4>.(4)[318:kworker/4:1H]mmc0: cqhci: TDL base:  0xfd05f000 | TDL up32: 0x00000000
-<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Doorbell:  0x8000203c | TCN:      0x00000000
-<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Dev queue: 0x00000000 | Dev Pend: 0x00000000
-<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Task clr:  0x00000000 | SSC1:     0x00001000
-<4>.(4)[318:kworker/4:1H]mmc0: cqhci: SSC2:      0x00000001 | DCMD rsp: 0x00000000
-<4>.(4)[318:kworker/4:1H]mmc0: cqhci: RED mask:  0xfdf9a080 | TERRI:    0x00000000
-<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Resp idx:  0x00000000 | Resp arg: 0x00000000
-<4>.(4)[318:kworker/4:1H]mmc0: cqhci: CRNQP:     0x00000000 | CRNQDUN:  0x00000000
-<4>.(4)[318:kworker/4:1H]mmc0: cqhci: CRNQIS:    0x00000000 | CRNQIE:   0x00000000
+This reverts commit cb011044e34c ("watchdog: iTCO_wdt: Account for
+rebooting on second timeout") and commit aec42642d91f ("watchdog: iTCO_wdt:
+Fix detection of SMI-off case") since those patches cause a regression
+on certain boards (https://bugzilla.kernel.org/show_bug.cgi?id=213809).
 
-This change check HALT state after CQE enable, if CQE is in HALT state, we
-will clear it.
+While this revert may result in some boards to only reset after twice
+the configured timeout value, that is still better than a watchdog reset
+after half the configured value.
 
-Signed-off-by: Wenbin Mei <wenbin.mei@mediatek.com>
-Cc: stable@vger.kernel.org
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-Fixes: a4080225f51d ("mmc: cqhci: support for command queue enabled host")
-Link: https://lore.kernel.org/r/20211026070812.9359-1-wenbin.mei@mediatek.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Fixes: cb011044e34c ("watchdog: iTCO_wdt: Account for rebooting on second timeout")
+Fixes: aec42642d91f ("watchdog: iTCO_wdt: Fix detection of SMI-off case")
+Cc: Jan Kiszka <jan.kiszka@siemens.com>
+Cc: Mantas Mikulėnas <grawity@gmail.com>
+Reported-by: Javier S. Pedro <debbugs@javispedro.com>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Link: https://lore.kernel.org/r/20211008003302.1461733-1-linux@roeck-us.net
+Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/mmc/host/cqhci.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/watchdog/iTCO_wdt.c |   12 +++---------
+ 1 file changed, 3 insertions(+), 9 deletions(-)
 
---- a/drivers/mmc/host/cqhci.c
-+++ b/drivers/mmc/host/cqhci.c
-@@ -273,6 +273,9 @@ static void __cqhci_enable(struct cqhci_
+--- a/drivers/watchdog/iTCO_wdt.c
++++ b/drivers/watchdog/iTCO_wdt.c
+@@ -71,8 +71,6 @@
+ #define TCOBASE(p)	((p)->tco_res->start)
+ /* SMI Control and Enable Register */
+ #define SMI_EN(p)	((p)->smi_res->start)
+-#define TCO_EN		(1 << 13)
+-#define GBL_SMI_EN	(1 << 0)
  
- 	cqhci_writel(cq_host, cqcfg, CQHCI_CFG);
+ #define TCO_RLD(p)	(TCOBASE(p) + 0x00) /* TCO Timer Reload/Curr. Value */
+ #define TCOv1_TMR(p)	(TCOBASE(p) + 0x01) /* TCOv1 Timer Initial Value*/
+@@ -357,12 +355,8 @@ static int iTCO_wdt_set_timeout(struct w
  
-+	if (cqhci_readl(cq_host, CQHCI_CTL) & CQHCI_HALT)
-+		cqhci_writel(cq_host, 0, CQHCI_CTL);
-+
- 	mmc->cqe_on = true;
+ 	tmrval = seconds_to_ticks(p, t);
  
- 	if (cq_host->ops->enable)
+-	/*
+-	 * If TCO SMIs are off, the timer counts down twice before rebooting.
+-	 * Otherwise, the BIOS generally reboots when the SMI triggers.
+-	 */
+-	if (p->smi_res &&
+-	    (inl(SMI_EN(p)) & (TCO_EN | GBL_SMI_EN)) != (TCO_EN | GBL_SMI_EN))
++	/* For TCO v1 the timer counts down twice before rebooting */
++	if (p->iTCO_version == 1)
+ 		tmrval /= 2;
+ 
+ 	/* from the specs: */
+@@ -527,7 +521,7 @@ static int iTCO_wdt_probe(struct platfor
+ 		 * Disables TCO logic generating an SMI#
+ 		 */
+ 		val32 = inl(SMI_EN(p));
+-		val32 &= ~TCO_EN;	/* Turn off SMI clearing watchdog */
++		val32 &= 0xffffdfff;	/* Turn off SMI clearing watchdog */
+ 		outl(val32, SMI_EN(p));
+ 	}
+ 
 
 
