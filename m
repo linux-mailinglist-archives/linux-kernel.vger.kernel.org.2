@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD3A6441666
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:22:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4354644190E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:54:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232266AbhKAJYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:24:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59239 "EHLO mail.kernel.org"
+        id S234863AbhKAJxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:53:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232093AbhKAJWs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:22:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B2A4610E5;
-        Mon,  1 Nov 2021 09:20:14 +0000 (UTC)
+        id S234730AbhKAJss (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:48:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C4B7E61183;
+        Mon,  1 Nov 2021 09:31:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758415;
-        bh=tzhIHcOaFXOkeViXplJyN2QI9bsKwcBSHxwrgTAL4q8=;
+        s=korg; t=1635759078;
+        bh=iYzB8uoi1sGWZCZS/I4pYim9/2xbkFY0MsMsRt2QZkY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N9YCDHMxpK4rpN1P7mLcWTHfQITVkbkDrxnv1NVTKWeltIw4dsLFpGzdQvjReUBn+
-         nbD+GTgPlYPzQYWwpJbjPShvkLEe3ruzG/xtipmzwapTWpOlWIC6R/pOudK/6KyteC
-         5Gby98/fhcEshTi90oKgUtC0fXd0zq2MRgbXpIEc=
+        b=nQlc5+szz1T0+7u0XCJLefRZ/eYy357gL4diksRKqrNaaWkY3PNoP3LGnrklAH4uA
+         TuFBfVTpcP3o+TzwcpxOIaTs7tWi9X96J7t2hV0d2lEr5RtHiWUIlOvUgtbt0iR6Gh
+         4SFB7FIzG5Sq7hpfrXCpXJPS+slIJgzGEHUKxhaE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shawn Guo <shawn.guo@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 4.14 14/25] mmc: sdhci: Map more voltage level to SDHCI_POWER_330
+        stable@vger.kernel.org,
+        =?UTF-8?q?Cl=C3=A9ment=20B=C5=93sch?= <u@pkh.me>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>, Maxime Ripard <maxime@cerno.tech>
+Subject: [PATCH 5.14 073/125] arm64: dts: allwinner: h5: NanoPI Neo 2: Fix ethernet node
 Date:   Mon,  1 Nov 2021 10:17:26 +0100
-Message-Id: <20211101082450.403840056@linuxfoundation.org>
+Message-Id: <20211101082547.017632283@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082447.070493993@linuxfoundation.org>
-References: <20211101082447.070493993@linuxfoundation.org>
+In-Reply-To: <20211101082533.618411490@linuxfoundation.org>
+References: <20211101082533.618411490@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,84 +41,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shawn Guo <shawn.guo@linaro.org>
+From: Clément Bœsch <u@pkh.me>
 
-commit 4217d07b9fb328751f877d3bd9550122014860a2 upstream.
+commit 0764e365dacd0b8f75c1736f9236be280649bd18 upstream.
 
-On Thundercomm TurboX CM2290, the eMMC OCR reports vdd = 23 (3.5 ~ 3.6 V),
-which is being treated as an invalid value by sdhci_set_power_noreg().
-And thus eMMC is totally broken on the platform.
+RX and TX delay are provided by ethernet PHY. Reflect that in ethernet
+node.
 
-[    1.436599] ------------[ cut here ]------------
-[    1.436606] mmc0: Invalid vdd 0x17
-[    1.436640] WARNING: CPU: 2 PID: 69 at drivers/mmc/host/sdhci.c:2048 sdhci_set_power_noreg+0x168/0x2b4
-[    1.436655] Modules linked in:
-[    1.436662] CPU: 2 PID: 69 Comm: kworker/u8:1 Tainted: G        W         5.15.0-rc1+ #137
-[    1.436669] Hardware name: Thundercomm TurboX CM2290 (DT)
-[    1.436674] Workqueue: events_unbound async_run_entry_fn
-[    1.436685] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-[    1.436692] pc : sdhci_set_power_noreg+0x168/0x2b4
-[    1.436698] lr : sdhci_set_power_noreg+0x168/0x2b4
-[    1.436703] sp : ffff800010803a60
-[    1.436705] x29: ffff800010803a60 x28: ffff6a9102465f00 x27: ffff6a9101720a70
-[    1.436715] x26: ffff6a91014de1c0 x25: ffff6a91014de010 x24: ffff6a91016af280
-[    1.436724] x23: ffffaf7b1b276640 x22: 0000000000000000 x21: ffff6a9101720000
-[    1.436733] x20: ffff6a9101720370 x19: ffff6a9101720580 x18: 0000000000000020
-[    1.436743] x17: 0000000000000000 x16: 0000000000000004 x15: ffffffffffffffff
-[    1.436751] x14: 0000000000000000 x13: 00000000fffffffd x12: ffffaf7b1b84b0bc
-[    1.436760] x11: ffffaf7b1b720d10 x10: 000000000000000a x9 : ffff800010803a60
-[    1.436769] x8 : 000000000000000a x7 : 000000000000000f x6 : 00000000fffff159
-[    1.436778] x5 : 0000000000000000 x4 : 0000000000000000 x3 : 00000000ffffffff
-[    1.436787] x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff6a9101718d80
-[    1.436797] Call trace:
-[    1.436800]  sdhci_set_power_noreg+0x168/0x2b4
-[    1.436805]  sdhci_set_ios+0xa0/0x7fc
-[    1.436811]  mmc_power_up.part.0+0xc4/0x164
-[    1.436818]  mmc_start_host+0xa0/0xb0
-[    1.436824]  mmc_add_host+0x60/0x90
-[    1.436830]  __sdhci_add_host+0x174/0x330
-[    1.436836]  sdhci_msm_probe+0x7c0/0x920
-[    1.436842]  platform_probe+0x68/0xe0
-[    1.436850]  really_probe.part.0+0x9c/0x31c
-[    1.436857]  __driver_probe_device+0x98/0x144
-[    1.436863]  driver_probe_device+0xc8/0x15c
-[    1.436869]  __device_attach_driver+0xb4/0x120
-[    1.436875]  bus_for_each_drv+0x78/0xd0
-[    1.436881]  __device_attach_async_helper+0xac/0xd0
-[    1.436888]  async_run_entry_fn+0x34/0x110
-[    1.436895]  process_one_work+0x1d0/0x354
-[    1.436903]  worker_thread+0x13c/0x470
-[    1.436910]  kthread+0x150/0x160
-[    1.436915]  ret_from_fork+0x10/0x20
-[    1.436923] ---[ end trace fcfac44cb045c3a8 ]---
-
-Fix the issue by mapping MMC_VDD_35_36 (and MMC_VDD_34_35) to
-SDHCI_POWER_330 as well.
-
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20211004024935.15326-1-shawn.guo@linaro.org
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Fixes: 44a94c7ef989 ("arm64: dts: allwinner: H5: Restore EMAC changes")
+Signed-off-by: Clément Bœsch <u@pkh.me>
+Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Link: https://lore.kernel.org/r/20210905002027.171984-1-u@pkh.me
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/mmc/host/sdhci.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi-neo2.dts |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/mmc/host/sdhci.c
-+++ b/drivers/mmc/host/sdhci.c
-@@ -1500,6 +1500,12 @@ void sdhci_set_power_noreg(struct sdhci_
- 			break;
- 		case MMC_VDD_32_33:
- 		case MMC_VDD_33_34:
-+		/*
-+		 * 3.4 ~ 3.6V are valid only for those platforms where it's
-+		 * known that the voltage range is supported by hardware.
-+		 */
-+		case MMC_VDD_34_35:
-+		case MMC_VDD_35_36:
- 			pwr = SDHCI_POWER_330;
- 			break;
- 		default:
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi-neo2.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi-neo2.dts
+@@ -75,7 +75,7 @@
+ 	pinctrl-0 = <&emac_rgmii_pins>;
+ 	phy-supply = <&reg_gmac_3v3>;
+ 	phy-handle = <&ext_rgmii_phy>;
+-	phy-mode = "rgmii";
++	phy-mode = "rgmii-id";
+ 	status = "okay";
+ };
+ 
 
 
