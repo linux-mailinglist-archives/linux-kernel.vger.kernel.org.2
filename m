@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 304FC4423C8
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 00:11:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B95894423C6
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 00:11:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232489AbhKAXNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 19:13:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60352 "EHLO mail.kernel.org"
+        id S232426AbhKAXNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 19:13:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60336 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232367AbhKAXNa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231745AbhKAXNa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 1 Nov 2021 19:13:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 09E8960F5A;
-        Mon,  1 Nov 2021 23:10:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635808257;
-        bh=6fqqVCVv9NJ47XoffYOmmBl36X/ZGcyOlUfJVnPy0a8=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=aZAUOjeuM2pct+5sUtrfA5bG2VbLC6TSf2awbf6m0Y37i1eqDemqluSHY4uboi03E
-         epEU/gNWKZMVds5oVcmh50XzEbVBjzA903H9BapsvIvMvo1dxYOhJALIUyQ2AbaKGC
-         muPyr4QdplFHb7SfZnsrj62MemT8lb7g4RqCnmr2NzQKAaZrLJxBpvIIKIUuJ3pbKG
-         hG5n0cQ1QODYvqrxs6e7ML5X0EVCZarobmosddC/fRPujDb+pUTk+MxmjrBolch4Vl
-         FbA4cj8HLh6JIWcroSgv/V3uubnKh+gz1HQSpz5wPrFCwbSV0NW1DJTNa/qlCjgzIZ
-         rDVj96yZKt8Bw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E34A960AA4;
+Received: by mail.kernel.org (Postfix) with ESMTPS id D42A060F56;
         Mon,  1 Nov 2021 23:10:56 +0000 (UTC)
-Subject: Re: [GIT PULL] x86/cleanups for v5.16
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635808256;
+        bh=Jrj3xPyFqLXG0ZJ1AQpYzusjP+nS2JcL/f6MMpt0I2k=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=V75sTf0VbkdNI/m3qzjGDdjo8bY2Szdgr6zHMjJPKLnp3TwqxyJNEH1FHXIu3YCyx
+         G8I7m6R4stZXLAoVHGSwOjaxkvcbmer5pjOWqLCNPoRd76WX5UK4a+vPByyArbdRiH
+         g+yR/I1piCQNZKIDjrxV7yFI34VghphALc1ailVMtA0WW+3Zc6HMdvsmH+VLEFaDZ9
+         6d4I57uFgqQM2aRKwaUJ1JwaBB3QITb9YQ5j7jh4enfQhkrvn75Cb6x814T2jMTEUq
+         ZKVyz4yVoPT6X5Zo44uBYHLualTmZEaqxJgiu7ONHWuEo88BiBmMw4R1tYqI857Y8f
+         B85mLFXGXwKkA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C8A97609EF;
+        Mon,  1 Nov 2021 23:10:56 +0000 (UTC)
+Subject: Re: [GIT PULL] x86/cc for v5.16
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YX+6TDV7B8USNUji@zn.tnic>
-References: <YX+6TDV7B8USNUji@zn.tnic>
+In-Reply-To: <YX+5ekjTbK3rhX+Y@zn.tnic>
+References: <YX+5ekjTbK3rhX+Y@zn.tnic>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YX+6TDV7B8USNUji@zn.tnic>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_cleanups_for_v5.16_rc1
-X-PR-Tracked-Commit-Id: a757ac555ce1dafca848aa090b66cd04b5ce40e7
+X-PR-Tracked-Message-Id: <YX+5ekjTbK3rhX+Y@zn.tnic>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_cc_for_v5.16_rc1
+X-PR-Tracked-Commit-Id: e9d1d2bb75b2d5d4b426769c5aae0ce8cef3558f
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 18398bb825eaa12c0d2f490767c2b85e531e0a4c
-Message-Id: <163580825692.31036.10052536821834683170.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 6e5772c8d9cf0a77ba4d6fd34fd4126fb66c9983
+Message-Id: <163580825681.31036.14964239042979027636.pr-tracker-bot@kernel.org>
 Date:   Mon, 01 Nov 2021 23:10:56 +0000
 To:     Borislav Petkov <bp@suse.de>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
@@ -46,12 +46,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 1 Nov 2021 10:58:36 +0100:
+The pull request you sent on Mon, 1 Nov 2021 10:55:06 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_cleanups_for_v5.16_rc1
+> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_cc_for_v5.16_rc1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/18398bb825eaa12c0d2f490767c2b85e531e0a4c
+https://git.kernel.org/torvalds/c/6e5772c8d9cf0a77ba4d6fd34fd4126fb66c9983
 
 Thank you!
 
