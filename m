@@ -2,37 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57D1F44177D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:36:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D028441626
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:21:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232373AbhKAJhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:37:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43560 "EHLO mail.kernel.org"
+        id S232361AbhKAJW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:22:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58246 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233589AbhKAJdo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:33:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4CBE561266;
-        Mon,  1 Nov 2021 09:25:02 +0000 (UTC)
+        id S232035AbhKAJV6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:21:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BBC4F610E8;
+        Mon,  1 Nov 2021 09:19:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758702;
-        bh=ESQKUtkM4InYMNExH3qDwqsx9HLqgV9G3H1q3JNLPbg=;
+        s=korg; t=1635758355;
+        bh=5XiN2nZUVEbEsI42V1nlcIHrJlVFBIwN1m9rVIWYrec=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vAzE3OIPEvGWeV7VVTNdLP9QFhqYu5no3M00Y7nUN2FEpB0+9jgN6ZAz/2N8wp1JS
-         YqomNyZqwkoBYS8lfW4o28rvcxrqfOMvzoDpz0ZDlB3JUUPq7Dnwf1wRQuGcsf25FE
-         OmOjO1BLWegPLeZcxgLjXdqNfMNxGI0BMSbaoAAg=
+        b=mfRtNPKGtH7o0i+kdUKMd4gFqbtODoA24Kon5sWV4n11/U0Ivethn9YRxAxcowSfc
+         yA5kucJ3WVQhiIb3cIgIGkv5dZ/cA/BOsTdC9ng4CGQ9IL0dXcrJyrA/fKN8H0xmHX
+         SxCzd4QLcZmHJd/GmS8on4s5gO60Tiap9W/Lbp+Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wenbin Mei <wenbin.mei@mediatek.com>,
-        Chaotian Jing <chaotian.jing@mediatek.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 5.10 22/77] mmc: mediatek: Move cqhci init behind ungate clock
+        stable@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        Richard Henderson <richard.henderson@linaro.org>
+Subject: [PATCH 4.9 01/20] ARM: 9133/1: mm: proc-macros: ensure *_tlb_fns are 4B aligned
 Date:   Mon,  1 Nov 2021 10:17:10 +0100
-Message-Id: <20211101082516.569216846@linuxfoundation.org>
+Message-Id: <20211101082444.447485230@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082511.254155853@linuxfoundation.org>
-References: <20211101082511.254155853@linuxfoundation.org>
+In-Reply-To: <20211101082444.133899096@linuxfoundation.org>
+References: <20211101082444.133899096@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -40,78 +44,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wenbin Mei <wenbin.mei@mediatek.com>
+From: Nick Desaulniers <ndesaulniers@google.com>
 
-commit e8a1ff65927080278e6826f797b7c197fb2611a6 upstream.
+commit e6a0c958bdf9b2e1b57501fc9433a461f0a6aadd upstream.
 
-We must enable clock before cqhci init, because crypto needs read
-information from CQHCI registers, otherwise, it will hang in MediaTek mmc
-host controller.
+A kernel built with CONFIG_THUMB2_KERNEL=y and using clang as the
+assembler could generate non-naturally-aligned v7wbi_tlb_fns which
+results in a boot failure. The original commit adding the macro missed
+the .align directive on this data.
 
-Signed-off-by: Wenbin Mei <wenbin.mei@mediatek.com>
-Fixes: 88bd652b3c74 ("mmc: mediatek: command queue support")
-Cc: stable@vger.kernel.org
-Acked-by: Chaotian Jing <chaotian.jing@mediatek.com>
-Link: https://lore.kernel.org/r/20211028022049.22129-1-wenbin.mei@mediatek.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Link: https://github.com/ClangBuiltLinux/linux/issues/1447
+Link: https://lore.kernel.org/all/0699da7b-354f-aecc-a62f-e25693209af4@linaro.org/
+Debugged-by: Ard Biesheuvel <ardb@kernel.org>
+Debugged-by: Nathan Chancellor <nathan@kernel.org>
+Debugged-by: Richard Henderson <richard.henderson@linaro.org>
+
+Fixes: 66a625a88174 ("ARM: mm: proc-macros: Add generic proc/cache/tlb struct definition macros")
+Suggested-by: Ard Biesheuvel <ardb@kernel.org>
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+Tested-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/mmc/host/mtk-sd.c |   38 +++++++++++++++++++-------------------
- 1 file changed, 19 insertions(+), 19 deletions(-)
+ arch/arm/mm/proc-macros.S |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/mmc/host/mtk-sd.c
-+++ b/drivers/mmc/host/mtk-sd.c
-@@ -2503,6 +2503,25 @@ static int msdc_drv_probe(struct platfor
- 		host->dma_mask = DMA_BIT_MASK(32);
- 	mmc_dev(mmc)->dma_mask = &host->dma_mask;
+--- a/arch/arm/mm/proc-macros.S
++++ b/arch/arm/mm/proc-macros.S
+@@ -343,6 +343,7 @@ ENTRY(\name\()_cache_fns)
  
-+	host->timeout_clks = 3 * 1048576;
-+	host->dma.gpd = dma_alloc_coherent(&pdev->dev,
-+				2 * sizeof(struct mt_gpdma_desc),
-+				&host->dma.gpd_addr, GFP_KERNEL);
-+	host->dma.bd = dma_alloc_coherent(&pdev->dev,
-+				MAX_BD_NUM * sizeof(struct mt_bdma_desc),
-+				&host->dma.bd_addr, GFP_KERNEL);
-+	if (!host->dma.gpd || !host->dma.bd) {
-+		ret = -ENOMEM;
-+		goto release_mem;
-+	}
-+	msdc_init_gpd_bd(host, &host->dma);
-+	INIT_DELAYED_WORK(&host->req_timeout, msdc_request_timeout);
-+	spin_lock_init(&host->lock);
-+
-+	platform_set_drvdata(pdev, mmc);
-+	msdc_ungate_clock(host);
-+	msdc_init_hw(host);
-+
- 	if (mmc->caps2 & MMC_CAP2_CQE) {
- 		host->cq_host = devm_kzalloc(mmc->parent,
- 					     sizeof(*host->cq_host),
-@@ -2523,25 +2542,6 @@ static int msdc_drv_probe(struct platfor
- 		mmc->max_seg_size = 64 * 1024;
- 	}
- 
--	host->timeout_clks = 3 * 1048576;
--	host->dma.gpd = dma_alloc_coherent(&pdev->dev,
--				2 * sizeof(struct mt_gpdma_desc),
--				&host->dma.gpd_addr, GFP_KERNEL);
--	host->dma.bd = dma_alloc_coherent(&pdev->dev,
--				MAX_BD_NUM * sizeof(struct mt_bdma_desc),
--				&host->dma.bd_addr, GFP_KERNEL);
--	if (!host->dma.gpd || !host->dma.bd) {
--		ret = -ENOMEM;
--		goto release_mem;
--	}
--	msdc_init_gpd_bd(host, &host->dma);
--	INIT_DELAYED_WORK(&host->req_timeout, msdc_request_timeout);
--	spin_lock_init(&host->lock);
--
--	platform_set_drvdata(pdev, mmc);
--	msdc_ungate_clock(host);
--	msdc_init_hw(host);
--
- 	ret = devm_request_irq(&pdev->dev, host->irq, msdc_irq,
- 			       IRQF_TRIGGER_NONE, pdev->name, host);
- 	if (ret)
+ .macro define_tlb_functions name:req, flags_up:req, flags_smp
+ 	.type	\name\()_tlb_fns, #object
++	.align 2
+ ENTRY(\name\()_tlb_fns)
+ 	.long	\name\()_flush_user_tlb_range
+ 	.long	\name\()_flush_kern_tlb_range
 
 
