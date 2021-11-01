@@ -2,74 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92D90441B16
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 13:23:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55FFD441B18
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 13:24:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232397AbhKAMZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 08:25:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55798 "EHLO
+        id S232438AbhKAM0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 08:26:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232029AbhKAMZi (ORCPT
+        with ESMTP id S232029AbhKAM0a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 08:25:38 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3554C061714;
-        Mon,  1 Nov 2021 05:23:05 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0cfa00ec4efdd1c18768d4.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:fa00:ec4e:fdd1:c187:68d4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2464F1EC0372;
-        Mon,  1 Nov 2021 13:23:03 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1635769383;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=aOWJ/xWRA0KQY6ubEa2Bhf55JdIZ4Fz4oQrfWNl+tj4=;
-        b=dcatoeFJAnA20lMUZJRKvn0cbBBsIc3RoG3IC3+Xf0OHOQuZ0xiJqcAMv/wgzNXvu4b9DA
-        K19aVqVWqNSU3qieYv5/SEzpB2oq6eaZrg8JWNQ92f9Z/pFUL9cb1UjUvrOW/BkqXEmi4c
-        KDhjMwUs1dmiyXsqRDD1tNM+8gVu9K0=
-Date:   Mon, 1 Nov 2021 13:22:58 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Xuesong Chen <xuesong.chen@linux.alibaba.com>
-Cc:     Will Deacon <will@kernel.org>, helgaas@kernel.org,
-        catalin.marinas@arm.com, lorenzo.pieralisi@arm.com,
-        james.morse@arm.com, rafael@kernel.org, tony.luck@intel.com,
-        mingo@kernel.org, bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 0/4] PCI MCFG consolidation and APEI resource filtering
-Message-ID: <YX/cIhZDgUGI3FKd@zn.tnic>
-References: <YW5OTMz+x8zrsqkF@Dennis-MBP.local>
- <20211027081035.53370-1-xuesong.chen@linux.alibaba.com>
- <e387413f-dbe8-e0f1-257b-141362d74e3a@linux.alibaba.com>
- <20211101093618.GA27400@willie-the-truck>
- <286ac625-e712-d7e9-2f5d-923f1572b5d1@linux.alibaba.com>
+        Mon, 1 Nov 2021 08:26:30 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F182C061714;
+        Mon,  1 Nov 2021 05:23:57 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id g14so1706754edz.2;
+        Mon, 01 Nov 2021 05:23:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=byDMT2KgXrMfovwaSAreY2Cp1u1Q+kqI2ntbv1QgSr0=;
+        b=WCovBYR7ewTEY4L5Yq7VlrzOf++vNA7jZPfEM+HglKj7Hyu4WeEXBuIpbR1NwuRWyW
+         CRxwFHwZL/9KKX2hf9NrCrpMA9dw4VE+dppv2SMDabFafAfyw8v/fuzCqL14YD9eYoUe
+         CngsdbAkXNmk/YAFrtKcdGscFsSQ/PLPijEvIho9IHEHjaLG402Wp40b+IqbQgjieJ00
+         iJ9KPf4UqMSZ5/Ar6q9IY97TqY7pwQgPQnjafguBKpxLNoezsB9xFbedoWvhTYzZSEHn
+         ctjICtNWM3w7q+lurmLoC8EHksk3NHUx8qYPXs10Zv32ijND5pmqmhbMfvVKCE9nl6W6
+         1pYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=byDMT2KgXrMfovwaSAreY2Cp1u1Q+kqI2ntbv1QgSr0=;
+        b=I+KR2fcQBLBeQ3FGhsyToEtdnySRLbNvQtg2qSbgLioaImAteZZ6q7PVfeyaH6gVVY
+         YsLM3iTz+bDeZENfZX3jTqmkE2hOYiPsRrErsCOIeHNgLWUNR3GsCxRpQZrRiCaB0ly2
+         J2DIqT94L2hUaTqJECp3L5SoJ1bSOLud2SnUPCmSFCItHSCO4tBDiY8B5dupzESHjx/Y
+         IZYMxHvIrozSd1wyMJNTzdmIv0ZrFV+M8xPKf2ONxf6D+sAyQGWZ1n6JLh/MZaikHsvL
+         /J51fqX6rMTYCdKPVFKGxV58cUfRwBhScawE3NCQLflMmiS09GZ6/KUtF3ALvDEFFMaO
+         8yag==
+X-Gm-Message-State: AOAM532K9xSse18uJJlbD9UvBJuJx97zBJ9APrVB8FmxUTgnG+BfwC88
+        YAc8g4ywqfmQnVuEzVx8ZTWjNQWOfxMkAuOBpec=
+X-Google-Smtp-Source: ABdhPJyyYPfSyzKu3jVpm0y22TKiaQ3LAK8DGZsbTwJdq2Bq/jToREVoh7kIqz2/C+o8W4evzEBZ6uDJKHCgHHjeXHI=
+X-Received: by 2002:a05:6402:3489:: with SMTP id v9mr17166813edc.80.1635769435960;
+ Mon, 01 Nov 2021 05:23:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <286ac625-e712-d7e9-2f5d-923f1572b5d1@linux.alibaba.com>
+References: <CAD-N9QXsUcczurqq9LdaVjXFZMBSbStynwFJyu0UayDazGe=nw@mail.gmail.com>
+ <55f04cb1-18ac-085b-3d35-7a01716fbcbe@gmail.com> <CAD-N9QVN7cepUpRu3d-xtr1L3DG90-nLS4gmkjerDZO21F_ejQ@mail.gmail.com>
+ <f622f569-25d5-f38e-e9fb-7f07e12c4b7e@gmail.com> <CAD-N9QWeGOZdnuRuHVVNzZHWeP3eSHg=tsm+Qn3tqGqACSNbhg@mail.gmail.com>
+ <ffbaeb72-0f76-fb1e-dde5-6e6bdcce1301@gmail.com> <CAD-N9QWQkivwR0mWwiaW_pLE6J_b03x4dP8RyxbmuKYRkcRhoQ@mail.gmail.com>
+ <28a3777a-7941-6ffc-07e5-38456372cfb3@gmail.com>
+In-Reply-To: <28a3777a-7941-6ffc-07e5-38456372cfb3@gmail.com>
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+Date:   Mon, 1 Nov 2021 20:23:29 +0800
+Message-ID: <CAD-N9QUcoKnEWw98XnBJZkas3AkwPonNG0K-PMROOwn8kReT5g@mail.gmail.com>
+Subject: Re: Need help in debugging "memory leak in em28xx_init_dev"
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 01, 2021 at 08:12:15PM +0800, Xuesong Chen wrote:
-> I'm very sorry about the non-constructived response, and I'd like to
-> take this chance to withdraw them entirely... personally this is not a
-> good example in terms of the mood or the way of expression.
+On Mon, Nov 1, 2021 at 8:17 PM Pavel Skripkin <paskripkin@gmail.com> wrote:
+>
+> On 11/1/21 12:58, Dongliang Mu wrote:
+> > On Mon, Nov 1, 2021 at 5:43 PM Pavel Skripkin <paskripkin@gmail.com> wrote:
+> >>
+> >> On 11/1/21 12:41, Dongliang Mu wrote:
+> >> >> Hi, Dongliang,
+> >> >>
+> >> >> Did patch attached to my previous email pass syzbot's reproducer test?
+> >> >> Unfortunately, I am not able to test rn :(
+> >> >
+> >> > Yes, it works. The memory leak does not occur anymore.
+> >> >
+> >> > But I am crafting another patch based on yours as there is a small
+> >> > issue in the retval and I would like to make the error handling code
+> >> > uniform.
+> >> >
+> >>
+> >> Cool! Thank you for confirmation.
+> >
+> > Hi Pavel,
+> >
+> > Thanks for your advice. I have sent the patch and you are on the CC
+> > list. Can you please take a look at and review my patch?
+> >
+> > It should cover your patch. But I am not sure if I introduce any new
+> > issue in the patch.
+> >
+>
+> The patch LGTM, but I can't drop R-b tag, since I am not an expert in
+> this driver. Anyway, there is 100% missing clean up, so, I believe, you
+> don't introduce new bugs
 
-Good idea. There are other maintainers who would ignore you indefinitely
-for uncalled for explosions like that. And then you would have achieved
-the opposite of what you were aiming for, with that rant.
+drop? I do see some patches from local syzkaller will attach this tag
+to assign credits to syzkaller/syzbot.
 
-To Will's point, you can always read Documentation/process/ while
-waiting for your patches to get reviewed - there the whole process is
-explained and what the best ways and times are to send a patchset.
+I think this form is good. Thus I copy this tag from them.
 
-HTH.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+>
+>
+>
+> With regards,
+> Pavel Skripkin
