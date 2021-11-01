@@ -2,122 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DECA74413E8
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 07:49:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D785C4413EA
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 07:53:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231159AbhKAGvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 02:51:35 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:49269 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229938AbhKAGvX (ORCPT
+        id S230326AbhKAG4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 02:56:16 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:59956 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229933AbhKAG4M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 02:51:23 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HjNsr5bzFz4xbc;
-        Mon,  1 Nov 2021 17:48:48 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1635749329;
-        bh=LwOxcSmejku04OvgnT+sj+dtnKHGyaxldQw1RO/zOWg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=mRvQGzBeKlpajrKfoMBVh6y3YupdWNLNTp1yw96QOFHtAHTmVG1VPF2FT1rB8h9HE
-         ujKSsFwBVshmiYCy3fxv9jR6XkV85SlUw3L7Rr/ipw4/FuENTdCQAu18OUa1x9X0Nj
-         1jcUuFzfgr2wmsn55A82X9TXnNkWmjN3Y+hECoFyRDCXNvp0Izs23LBg3waPkGRJxJ
-         /a16cb6a0wWtxLu7q0dowRJ0dG60f1LCGeEzDIByKDtS3MSXRwG4Kg553sGJ8qMklF
-         ZbTTcOpneVyj0q3vwxdT0Kcd59tfWmHK+gvPTMAbtgxQrf6nFcaWVTLPbvExKYvxob
-         7jSZP/d9/cMAg==
-Date:   Mon, 1 Nov 2021 17:48:46 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Yang Shi <shy828301@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the folio tree
-Message-ID: <20211101174846.2b1097d7@canb.auug.org.au>
+        Mon, 1 Nov 2021 02:56:12 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R811e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UuSq4su_1635749616;
+Received: from 30.21.164.3(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UuSq4su_1635749616)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 01 Nov 2021 14:53:37 +0800
+Subject: Re: [PATCH] mm: migrate: Correct the hugetlb migration stats
+To:     Zi Yan <ziy@nvidia.com>
+Cc:     akpm@linux-foundation.org, shy828301@gmail.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <b35e54802a9a82d03d24845b463e9d9a68f7fd6b.1635491660.git.baolin.wang@linux.alibaba.com>
+ <677EF981-F33E-4002-AA38-DD669C319284@nvidia.com>
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+Message-ID: <29aa9c6e-7191-71bb-d8a3-e2695b18fa3e@linux.alibaba.com>
+Date:   Mon, 1 Nov 2021 14:54:23 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/fdcIZB22wX8enD78RFxDID3";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <677EF981-F33E-4002-AA38-DD669C319284@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/fdcIZB22wX8enD78RFxDID3
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi all,
-
-After merging the folio tree, today's linux-next build (powerpc
-ppc64_defconfig) failed like this:
 
 
-Caused by commit
+On 2021/10/29 23:43, Zi Yan wrote:
+> On 29 Oct 2021, at 3:42, Baolin Wang wrote:
+> 
+>> Now hugetlb migration is also available for some scenarios, such as
+>> soft offling or memory compaction. So we should correct the migration
+> 
+> hugetlb migration is available at the time if (PageHuge(page)) branch
+> is added. I am not sure what is new here.
 
-  d389a4a81155 ("mm: Add folio flag manipulation functions")
+No new things actually, sorry for confusing and will update the commit 
+message in next version.
 
-interacting with commit
+> 
+>> stats for hugetlb with using compound_nr() instead of thp_nr_pages()
+>> to get the number of pages.
+> 
+> nr_failed records the number of pages, not subpages. It is returned to
 
-  eac96c3efdb5 ("mm: filemap: check if THP has hwpoisoned subpage for PMD p=
-age fault")
+I also think nr_failed should record the number of pages, not the number 
+of hugetlb, if I understand you correctly.
 
-from Linus' tree.
+> user space when move_pages() syscall is used. After your change,
+> if users try to migrate a list of pages including THPs and/or hugetlb
+> pages and some of THPs and/or hugetlb fail to migrate, move_pages()
+> will return a number larger than the number of pages the users tried
 
-I have applied the following merge fix patch taken from Andrew's patch
-series.
+OK, thanks for pointing out the issue.
 
-From: Andrew Morton <akpm@linux-foundation.org>
-Subject: mm-filemap-check-if-thp-has-hwpoisoned-subpage-for-pmd-page-fault-=
-vs-folios
+But before my patch, we've already returned the number of pages 
+successed or failed for THP migration, instead of the number of THP. 
+That means if we just move only 1 page by move_pages() and if this page 
+is 2M THP, so move_pages() will return 512 if failed to migrate, which 
+is larger than the page count specified from user.
 
-fix
-mm-filemap-check-if-thp-has-hwpoisoned-subpage-for-pmd-page-fault.patch
-for folio tree PAGEFLAG_FALSE() change.
+if (err > 0)
+	err += nr_pages - i - 1;
 
-Cc: Yang Shi <shy828301@gmail.com>
-Cc: Matthew Wilcox <willy@infradead.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
----
+On the other hand, the stats of PGMIGRATE_SUCCESS/PGMIGRATE_FAIL should 
+stand for the number of pages, instead of the number of hugetlb. Also 
+for hugetlb migration when memory compaction, we've already counted the 
+number of pages for a hugetlb into cc->nr_migratepages, if the hugetlb 
+migration failed, the trace stat of compaction will be confusing if we 
+return the number of hugetlb.
 
- include/linux/page-flags.h |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+trace_mm_compaction_migratepages(cc->nr_migratepages, err, 
+                                   &cc->migratepages);
 
---- a/include/linux/page-flags.h~mm-filemap-check-if-thp-has-hwpoisoned-sub=
-page-for-pmd-page-fault-vs-folios
-+++ a/include/linux/page-flags.h
-@@ -803,8 +803,8 @@ PAGEFLAG_FALSE(DoubleMap, double_map)
- PAGEFLAG(HasHWPoisoned, has_hwpoisoned, PF_SECOND)
- 	TESTSCFLAG(HasHWPoisoned, has_hwpoisoned, PF_SECOND)
- #else
--PAGEFLAG_FALSE(HasHWPoisoned)
--	TESTSCFLAG_FALSE(HasHWPoisoned)
-+PAGEFLAG_FALSE(HasHWPoisoned, has_hwpoisoned)
-+	TESTSCFLAG_FALSE(HasHWPoisoned, has_hwpoisoned)
- #endif
-=20
- /*
-_
+So I think the stats of hugetlb migration should be consistent with THP.
 
---=20
-Cheers,
-Stephen Rothwell
+> to migrate. I am not sure this is the change we want. Or at least,
+> the comment of migrate_pages() and the manpage of move_pages() need
+> to be changed and linux-api mailing list should be cc’d.
 
---Sig_/fdcIZB22wX8enD78RFxDID3
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+I don't think we should update the comments of migrate_pages(), "Returns 
+the number of pages that were not migrated" makes sense to me if I 
+understand correctly.
 
------BEGIN PGP SIGNATURE-----
+For the manpage of move_pages(), as you said, the the returned 
+non-migrate page numbers can be larger than the numbers specified from 
+user if failed to migrate a THP or a hugetlb. I am not sure if we should 
+change the manpage, since the THP already did, but I can send a patch to 
+update the manpage if you think this is still necessary. Thanks.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF/jc4ACgkQAVBC80lX
-0Gzriwf/VkRZOXqlYYmKbzLXlqhJbJix6BbemTQ1wS0Lz56rOtqcNxfKgjEzh1vG
-dQ9VzDEzZBsSdGt02K4OVlt6qac43birNycwExAVgdDVvqO/9tNvoSZBV9gwl14L
-Rcdhte25I7VKxaFXy4iOmwrhS2RwRO+EABVsnKJQmD6sSsnwXZPE5UVZvKfB8AWz
-NwKznpyB/3BYvakYr4DWwxtaFxAJ8HRgStGmUrFthXzx2RLDoY2PdY1So5CAeSgm
-GsCHjOQhyjde6UV884qOgdxaPTAx1x+6iBufnSjavhpJsQZ13qL2lcr7MdeoB77F
-01uQhSQeEh+SGFiAPuM8tFvil3lzvQ==
-=YSdf
------END PGP SIGNATURE-----
-
---Sig_/fdcIZB22wX8enD78RFxDID3--
+>>
+>> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+>> ---
+>>   mm/migrate.c | 10 ++++------
+>>   1 file changed, 4 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/mm/migrate.c b/mm/migrate.c
+>> index a11e948..2b45a29 100644
+>> --- a/mm/migrate.c
+>> +++ b/mm/migrate.c
+>> @@ -1475,7 +1475,7 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
+>>   			 * during migration.
+>>   			 */
+>>   			is_thp = PageTransHuge(page) && !PageHuge(page);
+>> -			nr_subpages = thp_nr_pages(page);
+>> +			nr_subpages = compound_nr(page);
+>>   			cond_resched();
+>>
+>>   			if (PageHuge(page))
+>> @@ -1540,7 +1540,7 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
+>>   					nr_failed += nr_subpages;
+>>   					goto out;
+>>   				}
+>> -				nr_failed++;
+>> +				nr_failed += nr_subpages;
+>>   				goto out;
+>>   			case -EAGAIN:
+>>   				if (is_thp) {
+>> @@ -1550,14 +1550,14 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
+>>   				retry++;
+>>   				break;
+>>   			case MIGRATEPAGE_SUCCESS:
+>> +				nr_succeeded += nr_subpages;
+>>   				if (is_thp) {
+>>   					nr_thp_succeeded++;
+>> -					nr_succeeded += nr_subpages;
+>>   					break;
+>>   				}
+>> -				nr_succeeded++;
+>>   				break;
+>>   			default:
+>> +				nr_failed += nr_subpages;
+>>   				/*
+>>   				 * Permanent failure (-EBUSY, etc.):
+>>   				 * unlike -EAGAIN case, the failed page is
+>> @@ -1566,10 +1566,8 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
+>>   				 */
+>>   				if (is_thp) {
+>>   					nr_thp_failed++;
+>> -					nr_failed += nr_subpages;
+>>   					break;
+>>   				}
+>> -				nr_failed++;
+>>   				break;
+>>   			}
+>>   		}
+>> -- 
+>> 1.8.3.1
+> 
+> --
+> Best Regards,
+> Yan, Zi
+> 
