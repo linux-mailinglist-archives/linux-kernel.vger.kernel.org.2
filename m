@@ -2,114 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFD114422B9
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 22:34:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E6DE4422BC
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 22:35:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231959AbhKAVgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 17:36:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57034 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229712AbhKAVgb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 17:36:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E3D860EE5;
-        Mon,  1 Nov 2021 21:33:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635802437;
-        bh=7tNPkR8LH3M50AiRO4S5v3pmlMXimGrDP2pqpUEozag=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=kTxkiUJlqckzc2BKIMPQSR0+jqOH4GFbnePFnsVAhskMQV9sd8pPSF6fn++ivsI8r
-         YlVnnfEzKi5EJlhN+bVEkoNv+mckCB+9GRbTfp2SWkDUYHpxYPhYolpiIkHFlxq9+X
-         v7N0PtGIrOycR5eK0AyZF7zWVOumQy6mBNC4DJkxiF/tOQoaATu78XTa5POkvrdKT6
-         ux22YLvmEYIpKDjrYg2UeD8qg58pMr2PVp1WL8plbqAFZMTumLM2TbMug54eOjOAht
-         ChFNS9pzXAgPkHDOQn+qHDVTSYHz0kcR2Qln8YbE10L1SGESQOCq9i0fqoqXtR139J
-         cvdxtCRdysXag==
-Date:   Mon, 1 Nov 2021 21:33:52 +0000
-From:   Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Tsuchiya Yuto <kitakar@gmail.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Nable <nable.maininbox@googlemail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Fabio Aiuto <fabioaiuto83@gmail.com>,
-        "andrey.i.trufanov" <andrey.i.trufanov@gmail.com>,
-        Patrik Gfeller <patrik.gfeller@gmail.com>
-Subject: Re: [PATCH 04/17] media: atomisp: pci: do not use err var when
- checking port validity for ISP2400
-Message-ID: <20211101213352.0600bceb@sal.lan>
-In-Reply-To: <8b81025d-a35d-da91-b059-eab1108013e8@redhat.com>
-References: <20211017161958.44351-1-kitakar@gmail.com>
-        <20211017161958.44351-5-kitakar@gmail.com>
-        <20211026092637.196447aa@sal.lan>
-        <1a295721fd1f1e512cd54a659a250aef162bfb6f.camel@gmail.com>
-        <20211028123944.66c212c1@sal.lan>
-        <af7cdf9de020171567c2e75b713deb2ed073e4e3.camel@gmail.com>
-        <20211101141058.36ea2c8e@sal.lan>
-        <2b81ca7e-fcaa-5449-5662-4eb72e746b02@redhat.com>
-        <20211101200347.2910cbc7@sal.lan>
-        <8b81025d-a35d-da91-b059-eab1108013e8@redhat.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S231985AbhKAVhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 17:37:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40340 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229712AbhKAVho (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 17:37:44 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41811C061714
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 14:35:10 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id 1so25637717ljv.2
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 14:35:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=x7xnA/1aaoRBIc6J8h72yDhrlo1CeZnkWHnggGQPu1g=;
+        b=FvzXbuNNfz59lIkE50rk42kdYK9c682XyyX2sslNajNHI26k2R3ZPCcM/siHj1scHW
+         Rsb5fIRlilbyUFOj9nIJnVroNiadNayfBHtcRn/GLy9v9YjwU5OCGbkc/fO382toRbG6
+         QzFviHI8m48UzttmH2f/CFj4FqMn8gpJDk0+w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=x7xnA/1aaoRBIc6J8h72yDhrlo1CeZnkWHnggGQPu1g=;
+        b=snIoVwBfuzreoSiPAN6ao1S2e4f3uCzDHw4Vp23KdvE+WQLh7Zhom1p5gvQ8m0FrOS
+         gTFJZc1GfGAWxIvsWYQKSBNjshQ+hOSmDSFr97cK+ZW8JfCaaUy7WD+vfICLON7bL5uD
+         YHYy3+VnAXoLS/UW/kBxIxE1HB2+XG3YrKnR1hGbILNIzsidiEoPXPE6twIymIJufHiC
+         TrKoRWL9bVhCYcIH7tfmzydXSvv1tjHWz/5MoXp/AQ837jF+WNhInmOuI5fV1351RQN5
+         Lt/NNGt3jWD0MlQEv/tMDVmpqzT8fXAzpw2ypQ5hP3KCPzFw0Sz5RD8P3CzHpJ358jIB
+         gzBQ==
+X-Gm-Message-State: AOAM531sJh/tRyR/RoyGTGn4Cwiz00c5BjJWsqKiBtvuQ8JOxFxj3Bd6
+        k5WvGSv9bFiDjWQ7I0LQwNo21p84IQvbF4HF
+X-Google-Smtp-Source: ABdhPJw2apseW1DDk6Bqwrle/k0uHSom+Ege3ef4GSUb7WMibVtGcxtmMgMK1ls98UUeRfTrgQj1UA==
+X-Received: by 2002:a05:651c:1254:: with SMTP id h20mr34006431ljh.420.1635802507994;
+        Mon, 01 Nov 2021 14:35:07 -0700 (PDT)
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com. [209.85.208.176])
+        by smtp.gmail.com with ESMTPSA id z17sm258100lfr.177.2021.11.01.14.35.06
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Nov 2021 14:35:06 -0700 (PDT)
+Received: by mail-lj1-f176.google.com with SMTP id 1so25637556ljv.2
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 14:35:06 -0700 (PDT)
+X-Received: by 2002:a2e:b744:: with SMTP id k4mr34065351ljo.31.1635802506130;
+ Mon, 01 Nov 2021 14:35:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20211101194336.305546-1-shy828301@gmail.com> <YYBRePv3w9cfCpHC@casper.infradead.org>
+In-Reply-To: <YYBRePv3w9cfCpHC@casper.infradead.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 1 Nov 2021 14:34:50 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wihHKSno9_35mgoX5F+COUep7X6EbouyDVKEoncFix8OQ@mail.gmail.com>
+Message-ID: <CAHk-=wihHKSno9_35mgoX5F+COUep7X6EbouyDVKEoncFix8OQ@mail.gmail.com>
+Subject: Re: [PATCH] mm: page-flags: fix build failure due to missing
+ parameter for HasHWPoisoned flag
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Yang Shi <shy828301@gmail.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, 1 Nov 2021 22:06:12 +0100
-Hans de Goede <hdegoede@redhat.com> escreveu:
+On Mon, Nov 1, 2021 at 1:45 PM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> Should probbaly cc Linus, and also note that Stephen noticed & fixed
+> this problem already.
+> https://lore.kernel.org/lkml/20211101174846.2b1097d7@canb.auug.org.au/
 
-> Hi,
-> 
-> On 11/1/21 21:03, Mauro Carvalho Chehab wrote:
-> > Em Mon, 1 Nov 2021 20:06:52 +0100
-> > Hans de Goede <hdegoede@redhat.com> escreveu:  
-> 
-> <snip>
-> 
-> >>    -Patch to not load atomisp_foo sensor drivers on !BYT && !CHT  
-> > 
-> > Not sure if it is worth doing it, as there are a lot more to be
-> > done before being able to use a generic sensor driver.  
-> 
-> As you may know, I'm also working on IPU3 support for $dayjob atm
-> actually :)
+Oops. And both my "small" and "large" config have MEMORY_FAILURE and
+TRANSPARENT_HUGEPAGE enabled, which seems to be why my build tests
+didn't trigger the failure case.
 
-Didn't know that... Btw, I have one Dell device with IPU3. It would 
-be great to have it working there ;-)
+Will fix up.
 
-> So the drivers for e.g. the ov5693 sensor conflict, by adding
-> a small (one line) check to atomisp_ov5693.c to not register
-> the driver at all when not on BYT/CHT we can avoid the conflict
-> on most devices for now. And when actually on BYT/CHT the user
-> will need to blacklist the non atomisp sensor-modules which, well
-> sucks, but atomisp is in staging for a reason ...
-> 
-> So the idea here is that with some small added ugliness to the
-> atomisp_foo.c sensor drivers we can make the 2 drivers co-exist
-> a bit more, allowing e.g. generic distro kernels to (maybe) enable
-> the atomisp2 stuff without regressing the IPU3 support.
-> 
-> ###
-> 
-> Since we are discussing this now anyways, the atomisp_foo.c
-> patches would look like this:
-> 
-> #include <linux/platform_data/x86/soc.h>
-> 
->         if (!soc_intel_is_byt() && !soc_intel_is_cht())
->                 return -ENODEV;
-> 
-> In the probe() function and change driver.name from
-> e.g. "ov5693" to "atom_ov5693".
-> 
-> Before I spend time on writing patches for this, would patches doing
-> this for conflicting drivers be acceptable ?
-
-Surely. Yeah, it makes sense to me. Feel free to submit such
-patches.
-
-Regards,
-Mauro
+             Linus
