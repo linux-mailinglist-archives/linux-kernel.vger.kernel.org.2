@@ -2,80 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3889B441A1C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 11:44:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB95B441A24
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 11:45:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232087AbhKAKqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 06:46:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33884 "EHLO
+        id S232168AbhKAKsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 06:48:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231485AbhKAKqp (ORCPT
+        with ESMTP id S231485AbhKAKsO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 06:46:45 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD39BC061714;
-        Mon,  1 Nov 2021 03:44:11 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HjV5K1KvFz4xbP;
-        Mon,  1 Nov 2021 21:44:04 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1635763445;
-        bh=gB9iNl3t799T/J5L9ejYsk4Qt71TSkLbd+1y3ioJFPM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ThJPBVPssquwH4q2JzpqVj6NF4eEVIT04BkEeb6N7r5Yr8PVHdUxQEcuMfAyHrqOO
-         DQMp9+YLbCjPLGLu3QosVGo/J/CqgDcH3ta17ozp2xIiko+8RGdiusaFB4AgkBx43d
-         Ar9bIhNyBKzFLMTYFYmzDui9NcAo+cC/wbk9FLES4HaRKJqOSsxPglhIhhMI+5qJTi
-         3e1A/nmUfxF7AwnoVIk1RjxZXLd/wEdx/0NkiA/1P66s4fJJTwv0SbmFDoE/OL+sjA
-         8V5ivP8MUHywzsi5m2CLWTOMJl3xM/vLvJLNPHegCt9ZPI/hCN2foG50utIZG43wLW
-         HNRLYXtq8K1gQ==
-Date:   Mon, 1 Nov 2021 21:44:03 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Helge Deller <deller@gmx.de>,
-        Parisc List <linux-parisc@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the parisc-hd tree
-Message-ID: <20211101214403.47d36f6c@canb.auug.org.au>
+        Mon, 1 Nov 2021 06:48:14 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CEA0C061714;
+        Mon,  1 Nov 2021 03:45:41 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id m14so9928815edd.0;
+        Mon, 01 Nov 2021 03:45:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YrYn8HwkWu9IjsAY6uUUxMRIsoewZD3Zbqzhh/3VGa4=;
+        b=gcQ/W/pfScTsVlIdnaYRMAJfaCGT5vIoV/HBDj3pBRvGqLyB77tm9U6uQTjzvi5CDh
+         kDcbsYKeN1DOtJVn0yLMEEpD5t0Fn3Q+Vim709sGzTfh94eCQ9QI9D7G0A3J9wYXH2L4
+         ctKEc1sFdbJ+xK9jqFqyGFSRTd7ASax35cAhTEK0/xcY7v5TCenjNMz9dqfwpBuenqRM
+         viBH7V9FdsMuNcHYvnQw28DLA3n4f1wS0p07BvtfdNJHBFuBzOisXnQPIlXcEMLPTcCy
+         lTp4CcQ3U53ajAospJ3Q1pTt+jeK/y7DtOjf+2DRnx1srVnRFLzxle/PbKv0a2sjTs84
+         Kqew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YrYn8HwkWu9IjsAY6uUUxMRIsoewZD3Zbqzhh/3VGa4=;
+        b=extyXQ4JMyfnIWj25l9gIBEc5F/W1UC8p2V/0SG0IUnybwwao+SYwz+uyk9xVGIelK
+         HV62KO939/RneV5oqDrvLGwhQSHLRsnmSO9fV5TnE/zSYN6COiRg0mRZ39iISh2Q4cWx
+         TXJE0Q4eyUkFOhbUcZOTdGPdkeXsTEjLlNyFGyERaZVe8G4LJofaNx0NbpDrf9I/c5Cm
+         rSfs8u3SVHAydrtksEJLFWMXvlb9jV0fHWUE2QhfmxeHPN92c8K/43ERWjhcm/KFUtfU
+         NKRUXD62fJcvCU7Po6VWsAE34eTXWyLUsDXd11u2BSAP1cbcQa2pLGjaH9uYOOcfrApR
+         dRSA==
+X-Gm-Message-State: AOAM533AlKrlUtYJ0/VsH0Q/1tLv/X4u+4JiScra+Nq5azoUK5pbIpvN
+        fDiKDkZ3BmsGT3n9zyu4+9n9Qpy10/yePEPru5U=
+X-Google-Smtp-Source: ABdhPJwlk7yj+LnqpGtUa24O/09WH38yisRxJGg+DakfxGjwjisBLvrxXASwHyz72wFB/a950EFjZKDxi1ATHq9GK8k=
+X-Received: by 2002:a17:906:2887:: with SMTP id o7mr34660453ejd.425.1635763539634;
+ Mon, 01 Nov 2021 03:45:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/v=_TMBRR3YUcklTba6sU78e";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20211025094119.82967-1-hdegoede@redhat.com> <20211025094119.82967-9-hdegoede@redhat.com>
+ <CAHp75VeLAW6ZBQYidnD7PDYfAH3A2bq+oMJTru-9OW_t-XS26g@mail.gmail.com> <8804fa29-d0d9-14a9-e48e-268113a79d07@redhat.com>
+In-Reply-To: <8804fa29-d0d9-14a9-e48e-268113a79d07@redhat.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 1 Nov 2021 12:44:49 +0200
+Message-ID: <CAHp75VcdZV7NLEgQnEbsG951Mo2s_eRwfijgjSConXGF2SaSGA@mail.gmail.com>
+Subject: Re: [PATCH v4 08/11] platform/x86: int3472: Add get_sensor_adev_and_name()
+ helper
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Kate Hsuan <hpa@redhat.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/v=_TMBRR3YUcklTba6sU78e
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Nov 1, 2021 at 12:31 PM Hans de Goede <hdegoede@redhat.com> wrote:
+> On 10/25/21 13:31, Andy Shevchenko wrote:
+> > On Mon, Oct 25, 2021 at 12:42 PM Hans de Goede <hdegoede@redhat.com> wrote:
 
-Hi all,
+...
 
-Commit
+> >> +int skl_int3472_get_sensor_adev_and_name(struct device *dev,
+> >> +                                        struct acpi_device **sensor_adev_ret,
+> >> +                                        const char **name_ret)
+> >> +{
+> >> +       struct acpi_device *adev = ACPI_COMPANION(dev);
+> >> +       struct acpi_device *sensor;
+> >> +       int ret = 0;
+> >> +
+> >> +       sensor = acpi_dev_get_first_consumer_dev(adev);
+> >> +       if (!sensor) {
+> >> +               dev_err(dev, "INT3472 seems to have no dependents.\n");
+> >> +               return -ENODEV;
+> >> +       }
+> >> +
+> >> +       *name_ret = devm_kasprintf(dev, GFP_KERNEL, I2C_DEV_NAME_FORMAT,
+> >> +                                  acpi_dev_name(sensor));
+> >> +       if (!*name_ret)
+> >> +               ret = -ENOMEM;
+> >> +
+> >> +       if (ret == 0 && sensor_adev_ret)
+> >> +               *sensor_adev_ret = sensor;
+> >> +       else
+> >> +               acpi_dev_put(sensor);
+> >> +
+> >> +       return ret;
+> >
+> > The error path is twisted a bit including far staying ret=0 assignment.
+> >
+> > Can it be
+> >
+> >        int ret;
+> >        ...
+> >        *name_ret = devm_kasprintf(dev, GFP_KERNEL, I2C_DEV_NAME_FORMAT,
+> >                                   acpi_dev_name(sensor));
+> >        if (!*name_ret) {
+> >                acpi_dev_put(sensor);
+> >                return -ENOMEM;
+> >        }
+> >
+> >        if (sensor_adev_ret)
+> >                *sensor_adev_ret = sensor;
+> >
+> >        return 0;
+> >
+> > ?
+>
+> That misses an acpi_dev_put(sensor) when sensor_adev_ret == NULL.
 
-  cad7eadf2afb ("parisc: Use swap() to swap values in setup_bootmem()")
+else
+  acpi_dev_put(...);
 
-is missing a Signed-off-by from its committer.
+?
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/v=_TMBRR3YUcklTba6sU78e
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF/xPMACgkQAVBC80lX
-0GyGJQgAjAZF344KJSQPoX9s/CM/DzCD7jzR7IMuE8XLw/KyW1fApQ5BiEsutRfp
-w/kUmdZgdNtma/fUt4bjJpWfVKLFS2xEmMbGtlrvxgmPQtxUYnySF3kMxSRXIWfZ
-DrWsfXZppK7W6bOC4UTED4a1OfaJHKU5ijChvmaB/oZF/PPcD3mvgkyNdLegWyHF
-VrIU+wcuHUwKxcsB6n+4uyevCv8SzOoZjRbY7pjaUaeuQeF+8F8hi8vFRa7JmcA1
-7wgaKty9mvM8uMa3HyzndTUP+zznDhPvx5W0vM5lioEk/JZxszZcCIMfTv+LJ5Af
-GYRbyHcYODja5+bMlivrPeFJh4C9iw==
-=faFf
------END PGP SIGNATURE-----
-
---Sig_/v=_TMBRR3YUcklTba6sU78e--
+-- 
+With Best Regards,
+Andy Shevchenko
