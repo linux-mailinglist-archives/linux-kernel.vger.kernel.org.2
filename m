@@ -2,188 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BFD8442018
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 19:33:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6777442021
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 19:37:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232058AbhKASgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 14:36:17 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:40958 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232156AbhKASgF (ORCPT
+        id S232181AbhKASjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 14:39:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232027AbhKASiy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 14:36:05 -0400
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1A1HtNhZ005969;
-        Mon, 1 Nov 2021 18:33:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2021-07-09;
- bh=dJwO0KqbqUfeStKrLiVHgQOliv3ZhmBP0dKiFWFZr8g=;
- b=ZQ2wmlFh9O3gIUfxVRxXMf69wzowq06/CrC7oCg5o1PLElXlhZEMpO+6hVqCiKnwm/I5
- s0gPdiaWsk0RsngeZxZQO59ORk3H7hDjhkJS6YFTjafIfN0e6VBaNOwpFZ+g/C2V9Awn
- zqjjbzxSk6ptsX3JMs6HwE23l5MEpTO//TvWRpsQIdytnNcY6OJVO9RY8NKHPy0/hY6Z
- hGAfrfcSKlGyTeA96Tlg8Y8UWLbHE9A5Vz+OrtEQ7jCfvGeWvlq+2rMUMbvOP1RcidgH
- TwJhuQFK+fiA+w+KWr1m8o++pFF6scJvW+U4qC92y9UhM4jdY9EPeTCSrjdsdYmIV0/j DA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3c27r5bb4b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 01 Nov 2021 18:33:24 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1A1IKRnH065290;
-        Mon, 1 Nov 2021 18:33:22 GMT
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2175.outbound.protection.outlook.com [104.47.58.175])
-        by userp3030.oracle.com with ESMTP id 3c27k3v16v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 01 Nov 2021 18:33:22 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IKfkE1l1IUD05mCjH/jcuXF3HfHycJTrfqaQvYnSSTGc+TBVd/8rAQ7lwqsMBA1N6zSPFkpdkVx5nBZIN+R1X374vZdBD0gb3s7h7pbX653UsSH1hjLvMs+rd5lsMxfDP708sA29lvqcpf1TAOTSOyEi09D6CqQxizYprGgnatRK0xOUHWxqNpRSEb6A9a2lvH5XIQccdD25l3/7iFTnobTIu2kIT4um6ZafwHYXvJLa39gMbXRFG296WKsuCGMmeWwnvCtdnyyt4gdPceaDVFDb5aQvz8MJQYF+MhYCAGUvHOKE6FzgyLbE2vzNZAnzZ1GxQol6EHMTD1ttj4BK3A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=dJwO0KqbqUfeStKrLiVHgQOliv3ZhmBP0dKiFWFZr8g=;
- b=IDbW41OFQhqlR6+JdIb6kcCN5YeLXLJAHC4WFHuyd7zFis3qYzyxXMFc0muBBUl+DUZw34YBRgOY5lZMgDa8RN84sXZP770zQHbGVW+tO1RGoxytjqyJutvK1anLrB8WKRS5dKW1KLVU5r5zKBOzt3FfDAMjuUwgGeYQQloG058f3pDpNnzoct/QRq/gpPp8nCEL6rddg8wBzEjRSHzzCZ1LXRQUb9HG7joQrAg1RAWabXLZkfLJT6cESBkVwC8uoRAMTaKH5JH0ht0jErzdfFt6e2aFpAJvImcS4BM+9tfuZiLfRGFQXvuXqZkHIxOVN4LICgAKM0o8m5PLZi33vA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Mon, 1 Nov 2021 14:38:54 -0400
+Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5AE6C061714
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 11:36:20 -0700 (PDT)
+Received: by mail-ua1-x936.google.com with SMTP id f4so33503567uad.4
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 11:36:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dJwO0KqbqUfeStKrLiVHgQOliv3ZhmBP0dKiFWFZr8g=;
- b=kQRB+v5A/df4BQTUeey2KzKdzlxvQo7I24knvgBCwsti4+VXAtsdvUkh0ZesxQ/zfIRunw/L/8YvlUzFKbceyhu7xG3quJL9/z0EuV1Sm1HFIt1OzT4m7OxsUyvy8qJE9oYeU+4iI43xSbwbTLn2R1mE/EFXkfELu8vb1YDPu2U=
-Authentication-Results: infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=none action=none header.from=oracle.com;
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28) by CO1PR10MB4513.namprd10.prod.outlook.com
- (2603:10b6:303:93::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.14; Mon, 1 Nov
- 2021 18:33:20 +0000
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::d409:11b5:5eb2:6be9]) by MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::d409:11b5:5eb2:6be9%5]) with mapi id 15.20.4649.019; Mon, 1 Nov 2021
- 18:33:20 +0000
-Date:   Mon, 1 Nov 2021 21:33:01 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Dongliang Mu <mudongliangabcd@gmail.com>,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: Need help in debugging "memory leak in em28xx_init_dev"
-Message-ID: <20211101183301.GF2914@kadam>
-References: <CAD-N9QXsUcczurqq9LdaVjXFZMBSbStynwFJyu0UayDazGe=nw@mail.gmail.com>
- <55f04cb1-18ac-085b-3d35-7a01716fbcbe@gmail.com>
- <CAD-N9QVN7cepUpRu3d-xtr1L3DG90-nLS4gmkjerDZO21F_ejQ@mail.gmail.com>
- <f622f569-25d5-f38e-e9fb-7f07e12c4b7e@gmail.com>
- <CAD-N9QWeGOZdnuRuHVVNzZHWeP3eSHg=tsm+Qn3tqGqACSNbhg@mail.gmail.com>
- <ffbaeb72-0f76-fb1e-dde5-6e6bdcce1301@gmail.com>
- <CAD-N9QWQkivwR0mWwiaW_pLE6J_b03x4dP8RyxbmuKYRkcRhoQ@mail.gmail.com>
- <20211101143004.GD2914@kadam>
- <c0e25c48-84cc-6ad1-8312-1957f459148d@infradead.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c0e25c48-84cc-6ad1-8312-1957f459148d@infradead.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: JNAP275CA0039.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4e::6)
- To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tO/sJOVXGu1XRctd0mIlL8N/rOf5z8jD5S9ZOoMr6sA=;
+        b=frqAOxOFRbIGvADBVTuSAriUmgCHoZ/CYC5iPcTxfPHcBNFBsImfPerdak2uyfweZt
+         39uELQ6rZ60s4TSuledNo8ZegjiyXUCj3YYgb9Vn8oBQjf0Pcjy/VQIzPT7g2adCx4NW
+         UlTWVETRO/NM9/HnhiGzizt74td5bUjqH97mgBlr6nbecT8YmDaa2t5Uk5UvLmd6c6jO
+         fbEwCWE0BB//Jkq5tGbfhuZQ6xnfgOTjzwJvyO1Hd+kCP9pTyyVBAJWGL0xcSwbZ4pIr
+         PiHVD/edvPxHCyv4N1Zk6FdMdkfGOr/3c4nnqksYNtcRCnE5u7jHNBfux+M80GI4gzr5
+         BEvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tO/sJOVXGu1XRctd0mIlL8N/rOf5z8jD5S9ZOoMr6sA=;
+        b=PGdoLv3yv8tH/aqUpjDkcyCSrrCvEed5f+jqj+8zfDLkXVmB2/EfPmCgLMu6a3PT6j
+         SNGALJVytr6YO0/SDg6TsdkNPI5LMZ3+WdN9tNv4KRaCt6eFsYZ7TbOY8pApn17ire+S
+         za6TwTKEcEcMvq6iiiAVYhVkPfoxH0ZK0Zp39UebpyuOEwikXOrWls4ZqQdkcQKHFoUX
+         x6azxKrJHHReWAForipcrfo6BX43XdENWwtKuGQUcu0IdnwKkq4bPwWv1f6sJO8q2DFK
+         JjOK1HLApbsQJiC1FG09V8oM+1CGfO5oy72YejjegUYTCDpVXCXP/+matrlNwDPhJ3N8
+         eWqg==
+X-Gm-Message-State: AOAM532H/Hp8LUc0GICPwcGo3XYhs+m4P9sfTW/sAznfPcbHcc+6Kamh
+        o1r3pQZ+SbLokxPcMDD24bfHZXc26+meUMdZDntv3w==
+X-Google-Smtp-Source: ABdhPJxxjq8c8R6Qdvb63KamFUYIe0D4384RONh+9u++oFlaAHmRLO/1rp4h+nDtz1lq4Qr2SJUpuqnEc0NneC7ZWow=
+X-Received: by 2002:a67:1781:: with SMTP id 123mr31610936vsx.1.1635791779839;
+ Mon, 01 Nov 2021 11:36:19 -0700 (PDT)
 MIME-Version: 1.0
-Received: from kadam (62.8.83.22) by JNAP275CA0039.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4e::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.21 via Frontend Transport; Mon, 1 Nov 2021 18:33:15 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 419d2f46-4c44-42b1-7124-08d99d661453
-X-MS-TrafficTypeDiagnostic: CO1PR10MB4513:
-X-Microsoft-Antispam-PRVS: <CO1PR10MB4513962CEF6345E27924CAA88E8A9@CO1PR10MB4513.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dwq5hRwNtWheQ9Lmaj4nZL7aSewaq5tMtxgG9PBLp5J/yF3TUG6FJJuBrMoATKqo6cZW7mI1NV34CTju6ylsjDNE6fMJyiYuYFqppglGwtiiC1u1webmuQPXU/BII8VPEpsfhoYGZUscOoqhSYjGghMokWUPc1jkb7RKTIMxhmWKYRo1AxO+tsORM+EpLcpEnZU9kK/2sdLhA5fRwDhinbEPf7/Q3F35lB0k9Z1TEm1Uti2HSYczjTAwDp1V60LZ8pcwYwGZkIzwLY8flg4aUyXfg2g9n5uPKFPIGazctblbDEjtAQRto6a5VTHgrJKLUKzU0N7jGYh79xN4spN+lDk5J85JV5IIh3wfz99X7rVXTcj+1BkQTFmluKZlPiSNRFRaOcdVWiPjkMpsknCf0BQE8KNdeRiMgcMPm3+2HcGhZIo91STRqktrw4d/TAVapP20ztPX8MqUP8P0iM9foyNRrZNOYYgNe73fxxaVvDWgm5sv8tQ2GA5pmf5VIlMTM4GHYjgUNapT3kXf4kJklAwKmBOA2rwIO3PZTH/QbMFRT2s2fCn9C1sOOk8IIlikmtKJS8KHh2lI0pukm+NtcdLLvHB0A7SfwszW3hBXcnfWC7QutUptCFgwA+82S5vBza9y/M3+W0XHC9CkhNaIRKzaE8ffvsemnWTiMi5zbUi4opCxzjCb1HOCZJ2ex3etsQIegZ1P1rOlFQ1PU1+MBw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(186003)(8676002)(6916009)(26005)(8936002)(1076003)(52116002)(4326008)(316002)(9576002)(5660300002)(33716001)(6496006)(9686003)(83380400001)(55016002)(508600001)(6666004)(2906002)(38100700002)(38350700002)(53546011)(66556008)(54906003)(956004)(66476007)(86362001)(44832011)(66946007)(33656002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Ja5euTCPnSqxNAS0VD1pfpHG5yRhcIIiVxukGkkPYYzW3zb1BohwXkPxD8is?=
- =?us-ascii?Q?9Rxb81nyWcq1fw+JM1UoGXoRh1HGw1J21irLSZX+N45jALv4eLL871Cn9YvF?=
- =?us-ascii?Q?rlnq7t8d8/SKZB4RBq/nGAJXFPmMPJ2RKD/NS1PF0E3zguhGh8eLad7Zbm8G?=
- =?us-ascii?Q?4mqK1JySWfmTTngAnLub75PKwcVSRJfBnI/TuVXmL6YlREOvgJAVn8mNHhhW?=
- =?us-ascii?Q?EcZusWNXDbzTB4Ib9ClA7g9cWRa3rTwDzoMtWoomMt4WPJOMc12BWR04dDFM?=
- =?us-ascii?Q?/2RSB/WB/N0BU2EE17nJfb1p+B6/egFj1Pg8D8q6V8Zgs3uJjjZjRbl080V4?=
- =?us-ascii?Q?gBLBR509+Pmog+5RAaKRNfRwZ/Lko6zkpK501tAqah/AmVN9Nc+HEH+Z0a0L?=
- =?us-ascii?Q?+8AR0/m3q7ODDnKfcQLXWAHRAoWv9EjO1v4MllltLY2hoaJ5e1hjy1IKmEzd?=
- =?us-ascii?Q?kqGwxXweHJM4sFXPOpYSziafiVIdqZnsA9zIcIY5I3wBaTdwnGSDowO3I4Cc?=
- =?us-ascii?Q?OgFRPCFXPI59cNoIxEMNRLRr/RzxV/WQeRaAtLrkoTh7lLpGPlU/xhVzWGGh?=
- =?us-ascii?Q?sEBt/PGMd7ojoWK+xD4bFTbKx668jCsp+XsETDdQ1FHR+hTdwYYCimC+c4Lf?=
- =?us-ascii?Q?jtuT8DLutoozoKYOMhsklcHQK5d8mWt4QhCcYx5GvKzaeOFiBonKjUM1xy9x?=
- =?us-ascii?Q?O5Zt9F0WvJduc3hGTD8mrMbP9cXUXd+uf36TS56YsCdhRraPIk1YQOfe7qRP?=
- =?us-ascii?Q?KQvWC2u4RLEW2SAIWr4mSFdRzhBdzCt0o2nLyYVCiSVIEVeB70LAIsaY+lc6?=
- =?us-ascii?Q?7JYhcQEu4FDqa6V3QPFgwf6cbDo4lSiyMoitN+lLAWXHVO65phKavmqh6G+a?=
- =?us-ascii?Q?y62/HVCQ6KaARmBmzdI1vKPI2bmSkjra7EzQzoeZtRNP9oAxWS3/uPuVqu49?=
- =?us-ascii?Q?FSD61T5yp7G31qiHaqz4IowznXCSrBHOeAWZQr2J5yMhqF1UM2/0BtxWLaoy?=
- =?us-ascii?Q?x06q+TMqU6g2qGB8S/IwBvijfx7xdJs3j4KhpyxUT2lTRKkKCohiQO5o7jBu?=
- =?us-ascii?Q?7vPGxAzezncYtIS6CXth6Ef9+CQPZDFoxWGpvZ3l14NxgtkMl/07hUOgFs62?=
- =?us-ascii?Q?KXDDKstTuYSObsENbppwvhRfilwlyu31GlvHntwh4y5XOjktmxyxp1W9zgpd?=
- =?us-ascii?Q?U9hl1NRV0SMaZv9LcdXoQdNxajqF72FN3/t7jQyaCKJvsqQ1KVaiPaOci+Ig?=
- =?us-ascii?Q?q4FINEs5pM50P48Q/1gXzduhWE5Kz9ymN0ZFREOQGr3TICewpKYs+JGhwztC?=
- =?us-ascii?Q?q4ttZUljiOQ9T1d2GD4xGEKUOjisuJYAl5mbhEwH3k4bcoQLHOKmOSACo1Bq?=
- =?us-ascii?Q?gk1iHYh9sjHYw1H4oV7/fDhua646uIPfGNgrbhNnXzWOO5lwK9jSQe38pG3H?=
- =?us-ascii?Q?EFg2SqNIex7lVrNPBTevpMnK9vZcZekZ0j/5MX2y4MQkIN5vlFtX9I/nZjta?=
- =?us-ascii?Q?30TuBAwca4+5PES3iICrkkQVbpSn2XTPtBGcmNw+psfDPGvAgo/d7wmBtqIR?=
- =?us-ascii?Q?QeahC0PpH5IjqgbohpktNLME4zfq10lpOj8va0C0dREBp/6kbWFGH/IaZ89O?=
- =?us-ascii?Q?V17MfhOlfW2yCwGAv4poKM+fPRAF7zJtCIDVT0yXt9858qubQlsJsafZch72?=
- =?us-ascii?Q?0n4ysQ=3D=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 419d2f46-4c44-42b1-7124-08d99d661453
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Nov 2021 18:33:20.7540
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: W6YdYpEHD9i1Xeg2ItczlE1oP+wG2KffD5LBC8h5NNU6aJfVQO2KnXIGvuEzT3sv6e9bd/8mu0wS7BqK2jdOv5vBRUkdz2Ur5wQO7H4DfT0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4513
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10155 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 spamscore=0
- malwarescore=0 mlxlogscore=822 adultscore=0 phishscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2111010099
-X-Proofpoint-ORIG-GUID: ZI6h-eY9XoabvhgUY2iI97G9ZAxYJ5Uo
-X-Proofpoint-GUID: ZI6h-eY9XoabvhgUY2iI97G9ZAxYJ5Uo
+References: <20211026115916.31553-1-semen.protsenko@linaro.org>
+ <8b3466f1-2b16-80ca-79c7-577860fc90aa@canonical.com> <CAPLW+4=YizLzdiZ1mdCGxvPCTYhNjeiomO=q=4Xk-ZxqqH++nA@mail.gmail.com>
+ <CGME20211028143524eucas1p16f240d8bc7e0d2c677fc54afde45957b@eucas1p1.samsung.com>
+ <e01b0072-008a-c83d-59b2-2174860c00fd@canonical.com> <d4398079-e512-e75b-92e9-51d590d8c240@samsung.com>
+ <CAPLW+4kKBXiwQF4qPTA04WCDb3PY365OORV4brtFxmQbSBxL8A@mail.gmail.com> <c888fc5e-4698-333f-6922-8b53f3efbe36@samsung.com>
+In-Reply-To: <c888fc5e-4698-333f-6922-8b53f3efbe36@samsung.com>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Mon, 1 Nov 2021 20:36:07 +0200
+Message-ID: <CAPLW+4kw-fz2=Hkhy-tJBOXW7j=Ok1GwUHAsZB2Bc53Uj+qzYg@mail.gmail.com>
+Subject: Re: [PATCH] arm64: Kconfig: Enable MCT timer for ARCH_EXYNOS
+To:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Will Deacon <will@kernel.org>,
+        Marc Zyngier <marc.zyngier@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 01, 2021 at 08:05:47AM -0700, Randy Dunlap wrote:
-> On 11/1/21 7:30 AM, Dan Carpenter wrote:
-> > On Mon, Nov 01, 2021 at 05:58:56PM +0800, Dongliang Mu wrote:
-> > > On Mon, Nov 1, 2021 at 5:43 PM Pavel Skripkin <paskripkin@gmail.com> wrote:
-> > > > 
-> > > > On 11/1/21 12:41, Dongliang Mu wrote:
-> > > > > > Hi, Dongliang,
-> > > > > > 
-> > > > > > Did patch attached to my previous email pass syzbot's reproducer test?
-> > > > > > Unfortunately, I am not able to test rn :(
-> > > > > 
-> > > > > Yes, it works. The memory leak does not occur anymore.
-> > > > > 
-> > > > > But I am crafting another patch based on yours as there is a small
-> > > > > issue in the retval and I would like to make the error handling code
-> > > > > uniform.
-> > > > > 
-> > > > 
-> > > > Cool! Thank you for confirmation.
-> > > 
-> > > Hi Pavel,
-> > > 
-> > > Thanks for your advice. I have sent the patch and you are on the CC
-> > > list. Can you please take a look at and review my patch?
-> > > 
-> > 
-> > What's the Message-ID of your patch so I can b4 it.
-> 
-> <20211101095539.423246-1-mudongliangabcd@gmail.com>
-> 
+On Fri, 29 Oct 2021 at 16:36, Marek Szyprowski <m.szyprowski@samsung.com> wrote:
+>
+> On 29.10.2021 15:15, Sam Protsenko wrote:
+> > On Fri, 29 Oct 2021 at 14:38, Marek Szyprowski <m.szyprowski@samsung.com> wrote:
+> >> On 28.10.2021 16:35, Krzysztof Kozlowski wrote:
+> >>> On 28/10/2021 16:22, Sam Protsenko wrote:
+> >>>> On Tue, 26 Oct 2021 at 17:03, Krzysztof Kozlowski
+> >>>> <krzysztof.kozlowski@canonical.com> wrote:
+> >>>>> On 26/10/2021 13:59, Sam Protsenko wrote:
+> >>>>>> Some ARM64 Exynos SoCs have MCT timer block, e.g. Exynos850 and
+> >>>>>> Exynos5433. CLKSRC_EXYNOS_MCT option is not visible unless COMPILE_TEST
+> >>>>>> is enabled. Select CLKSRC_EXYNOS_MCT option for ARM64 ARCH_EXYNOS like
+> >>>>>> it's done in arch/arm/mach-exynos/Kconfig, to enable MCT timer support
+> >>>>>> for ARM64 Exynos SoCs.
+> >>>>>>
+> >>>>>> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> >>>>>> ---
+> >>>>>>    arch/arm64/Kconfig.platforms | 1 +
+> >>>>>>    1 file changed, 1 insertion(+)
+> >>>>>>
+> >>>>> +CC Marek, Marc, Mark and Chanwoo,
+> >>>>> Looks like duplicated:
+> >>>>> https://lore.kernel.org/lkml/20181018095708.1527-7-m.szyprowski@samsung.com/
+> >>>>>
+> >>>>> The topic stalled and I think this particular patch did not make sense
+> >>>>> on its own, without rest of changes from Marek. I am not sure, though...
+> >>>>>
+> >>>> Krzysztof, Marek,
+> >>>>
+> >>>> That series looks nice, I'm quite interested in that being applied. Do
+> >>>> you think I can do something to help with that (e.g. rebasing,
+> >>>> re-sending on behalf of Marek, testing on Exynos850, etc)?
+> >>> I think there were no objections against v4 of this patchset, but
+> >>> somehow it wasn't applied.
+> >>>
+> >>> Marek,
+> >>> Does it make sense to try respinning your v4?
+> >> I think I've abandoned it, because I got a final NACK on the arch timer
+> >> change (support for 'not-fw-configured' timers). Without that the above
+> >> mentioned changes doesn't make much sense.
+> >>
+> >> I know that the Exynos5433 firmware breaks the defined protocol, but on
+> >> the other hand I can do nothing more than carrying internally those few
+> >> patches out of tree to keep it fully working with 'mainline'.
+> >>
+> >> I've observed the same problem with newer Exynos SoCs, but those so far
+> >> didn't get mainline support (yet), although there have been some
+> >> attempts from the community.
+> >>
+> > There is no such problem on Exynos850 SoC (which I'm trying to
+> > upstream right now), the architectured timer seems to be working fine
+> > there, as is. Or maybe everything is configured properly in
+> > bootloader, not sure. Also I managed to use MCT as a primary
+> > clocksource (for sched_clock, etc) by disabling arch timer in
+> > arch/arm64/kernel/time.c (just for the sake of test), and it works
+> > fine.  So I still would like to have MCT enabled in kernel: this way
+> > we can at least test the driver, as the clocksource can be changed to
+> > MCT via sysfs (or by disabling arch timer in time.c). And for that we
+> > need to at least enable CLKSRC_EXYNOS_MCT in ARCH_EXYNOS.
+> MCT can be also set as default by changing its rating, like it is done
+> under #ifdef CONFIG_ARM.
+> > I guess all your patches (except one you mentioned) from that series
+> > should be fine to apply. Do you mind if I re-send your patch series
+> > (minus one patch) on your behalf? That would spare you some boring
+> > work, and at least minimize your local delta you're carrying.
+>
+> Feel free to resend it.
+>
 
-Thanks, Randy!
+Thanks! This patch of mine should be ignored then, I'll re-submit
+Marek's patches soon.
 
-regards,
-dan carpenter
-
+> Best regards
+>
+> --
+> Marek Szyprowski, PhD
+> Samsung R&D Institute Poland
+>
