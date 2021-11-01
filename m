@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5447744190C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:54:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDBF54416EE
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:28:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234824AbhKAJxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:53:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52288 "EHLO mail.kernel.org"
+        id S233108AbhKAJat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:30:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59012 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234732AbhKAJss (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:48:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 79840610E8;
-        Mon,  1 Nov 2021 09:31:15 +0000 (UTC)
+        id S232656AbhKAJ0a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:26:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 72AA861177;
+        Mon,  1 Nov 2021 09:22:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635759075;
-        bh=BrOIcfZkfakfLm2U32HmhYXzwiyAaowKAZcqcGPr2uU=;
+        s=korg; t=1635758531;
+        bh=mXvQlSloKrpdhCt5IpZXTJFqKh65jakgVrGXt/ZgwW8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KgawaKnxC74rlfwCDkK0tsbk+oqDOhSFLZuLwClXTU4IwmFUHd6q9LHltA2n4aO0V
-         0+pM02L32NFS98t5EQz6qeOXQgrT0WGmShylZoz5wdLMND6+9qpLrjQEom/78BFOP7
-         xCdbqKU5PCAuiyvATXUk/ykNldlMSLiToZPMXWfU=
+        b=SP2nxm37+S3Q4Tk80yJ7N9XqwPCGrqpQtxMahFtaCE+LOAhGYlcBEtNhaIfdLpWcc
+         7N4m2mxg3OODSDMj64UUd7g1G9lrdhKhP1isVfcLP2LxSerDnTx2yP+ET+hCHivy3X
+         Fb2l/2dXzjp+l7rIJZm/y4Nt3rAzcB9VsrtKfcB8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yongxin Liu <yongxin.liu@windriver.com>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Gurucharan G <gurucharanx.g@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>
-Subject: [PATCH 5.14 072/125] ice: check whether PTP is initialized in ice_ptp_release()
+        Eric Dumazet <edumazet@google.com>, Keyu Man <kman001@ucr.edu>,
+        Willy Tarreau <w@1wt.eu>,
+        "David S. Miller" <davem@davemloft.net>,
+        Ovidiu Panait <ovidiu.panait@windriver.com>
+Subject: [PATCH 4.19 13/35] ipv4: use siphash instead of Jenkins in fnhe_hashfun()
 Date:   Mon,  1 Nov 2021 10:17:25 +0100
-Message-Id: <20211101082546.836982281@linuxfoundation.org>
+Message-Id: <20211101082454.680783711@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082533.618411490@linuxfoundation.org>
-References: <20211101082533.618411490@linuxfoundation.org>
+In-Reply-To: <20211101082451.430720900@linuxfoundation.org>
+References: <20211101082451.430720900@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,67 +41,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yongxin Liu <yongxin.liu@windriver.com>
+From: Eric Dumazet <edumazet@google.com>
 
-commit fd1b5beb177a8372cea2a0d014835491e4886f77 upstream.
+commit 6457378fe796815c973f631a1904e147d6ee33b1 upstream.
 
-PTP is currently only supported on E810 devices, it is checked
-in ice_ptp_init(). However, there is no check in ice_ptp_release().
-For other E800 series devices, ice_ptp_release() will be wrongly executed.
+A group of security researchers brought to our attention
+the weakness of hash function used in fnhe_hashfun().
 
-Fix the following calltrace.
+Lets use siphash instead of Jenkins Hash, to considerably
+reduce security risks.
 
-  INFO: trying to register non-static key.
-  The code is fine but needs lockdep annotation, or maybe
-  you didn't initialize this object before use?
-  turning off the locking correctness validator.
-  Workqueue: ice ice_service_task [ice]
-  Call Trace:
-   dump_stack_lvl+0x5b/0x82
-   dump_stack+0x10/0x12
-   register_lock_class+0x495/0x4a0
-   ? find_held_lock+0x3c/0xb0
-   __lock_acquire+0x71/0x1830
-   lock_acquire+0x1e6/0x330
-   ? ice_ptp_release+0x3c/0x1e0 [ice]
-   ? _raw_spin_lock+0x19/0x70
-   ? ice_ptp_release+0x3c/0x1e0 [ice]
-   _raw_spin_lock+0x38/0x70
-   ? ice_ptp_release+0x3c/0x1e0 [ice]
-   ice_ptp_release+0x3c/0x1e0 [ice]
-   ice_prepare_for_reset+0xcb/0xe0 [ice]
-   ice_do_reset+0x38/0x110 [ice]
-   ice_service_task+0x138/0xf10 [ice]
-   ? __this_cpu_preempt_check+0x13/0x20
-   process_one_work+0x26a/0x650
-   worker_thread+0x3f/0x3b0
-   ? __kthread_parkme+0x51/0xb0
-   ? process_one_work+0x650/0x650
-   kthread+0x161/0x190
-   ? set_kthread_struct+0x40/0x40
-   ret_from_fork+0x1f/0x30
+Also remove the inline keyword, this really is distracting.
 
-Fixes: 4dd0d5c33c3e ("ice: add lock around Tx timestamp tracker flush")
-Signed-off-by: Yongxin Liu <yongxin.liu@windriver.com>
-Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
-Tested-by: Gurucharan G <gurucharanx.g@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Fixes: d546c621542d ("ipv4: harden fnhe_hashfun()")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Reported-by: Keyu Man <kman001@ucr.edu>
+Cc: Willy Tarreau <w@1wt.eu>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+[OP: adjusted context for 4.19 stable]
+Signed-off-by: Ovidiu Panait <ovidiu.panait@windriver.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/intel/ice/ice_ptp.c |    3 +++
- 1 file changed, 3 insertions(+)
+ net/ipv4/route.c |   12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
---- a/drivers/net/ethernet/intel/ice/ice_ptp.c
-+++ b/drivers/net/ethernet/intel/ice/ice_ptp.c
-@@ -1582,6 +1582,9 @@ err_kworker:
-  */
- void ice_ptp_release(struct ice_pf *pf)
- {
-+	if (!test_bit(ICE_FLAG_PTP, pf->flags))
-+		return;
-+
- 	/* Disable timestamping for both Tx and Rx */
- 	ice_ptp_cfg_timestamp(pf, false);
+--- a/net/ipv4/route.c
++++ b/net/ipv4/route.c
+@@ -625,14 +625,14 @@ static void fnhe_remove_oldest(struct fn
+ 	kfree_rcu(oldest, rcu);
+ }
  
+-static inline u32 fnhe_hashfun(__be32 daddr)
++static u32 fnhe_hashfun(__be32 daddr)
+ {
+-	static u32 fnhe_hashrnd __read_mostly;
+-	u32 hval;
++	static siphash_key_t fnhe_hash_key __read_mostly;
++	u64 hval;
+ 
+-	net_get_random_once(&fnhe_hashrnd, sizeof(fnhe_hashrnd));
+-	hval = jhash_1word((__force u32) daddr, fnhe_hashrnd);
+-	return hash_32(hval, FNHE_HASH_SHIFT);
++	net_get_random_once(&fnhe_hash_key, sizeof(fnhe_hash_key));
++	hval = siphash_1u32((__force u32)daddr, &fnhe_hash_key);
++	return hash_64(hval, FNHE_HASH_SHIFT);
+ }
+ 
+ static void fill_route_from_fnhe(struct rtable *rt, struct fib_nh_exception *fnhe)
 
 
