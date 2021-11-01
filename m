@@ -2,153 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C43F0441ACA
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 12:42:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90535441AC4
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 12:41:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232326AbhKALop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 07:44:45 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:27957 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232179AbhKALok (ORCPT
+        id S231928AbhKALoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 07:44:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46614 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231437AbhKALoB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 07:44:40 -0400
-Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20211101114205epoutp03b14c929af72920cf62eca5b218621202~zaVo0E7Jy1366113661epoutp03H
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 11:42:05 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20211101114205epoutp03b14c929af72920cf62eca5b218621202~zaVo0E7Jy1366113661epoutp03H
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1635766925;
-        bh=up1MO0KkPVwe2zBA55fSLzsTBsRC2h2hrtZ0viDd6Go=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I9RC8PHzHR32Pn0HNzdiN8y/XNCGmso5tjtkEFYp7+EpXBYQfLRdpk0U2nEJgttXc
-         2Zz1YHazqOxzA3g9O1dlYKV+wxqZJxbKnVDj0MWaKeZX3ySEHfmaDs0ZwkqKZzrikg
-         Br30owMXCYClQb7MzXx8rrt7KI0nRyfh3SHjIscY=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
-        20211101114205epcas2p2b8dd94830a757a67a328b683d4b98ca1~zaVoQ-pE_2816928169epcas2p2O;
-        Mon,  1 Nov 2021 11:42:05 +0000 (GMT)
-Received: from epsmges2p2.samsung.com (unknown [182.195.36.99]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4HjWN66GQpz4x9Q5; Mon,  1 Nov
-        2021 11:41:58 +0000 (GMT)
-Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
-        epsmges2p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        D5.D4.10018.682DF716; Mon,  1 Nov 2021 20:41:58 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTPA id
-        20211101114158epcas2p46b50f8d946d59ffaedd203370b81c6ed~zaVh9TBM30536905369epcas2p4e;
-        Mon,  1 Nov 2021 11:41:58 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20211101114158epsmtrp1185644d28b8f56f44e29d22b58d872d9~zaVh5ESh21195811958epsmtrp1C;
-        Mon,  1 Nov 2021 11:41:58 +0000 (GMT)
-X-AuditID: b6c32a46-a25ff70000002722-f9-617fd2864ba1
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        B2.A4.29871.682DF716; Mon,  1 Nov 2021 20:41:58 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.229.9.51]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20211101114158epsmtip27bb411339cbb4c0d03b5abd790daeeca~zaVhvCua23134731347epsmtip2D;
-        Mon,  1 Nov 2021 11:41:58 +0000 (GMT)
-From:   Jaewon Kim <jaewon02.kim@samsung.com>
-To:     Wolfram Sang <wsa@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Chanho Park <chanho61.park@samsung.com>, linux-i2c@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jaewon Kim <jaewon02.kim@samsung.com>
-Subject: [PATCH 2/2] dt-bindings: i2c: exynos5: add exynos-usi-hsi2c
- compatible
-Date:   Mon,  1 Nov 2021 20:38:19 +0900
-Message-Id: <20211101113819.50651-2-jaewon02.kim@samsung.com>
+        Mon, 1 Nov 2021 07:44:01 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB8ADC061714
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 04:41:27 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id g10so63104623edj.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 04:41:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1vzz5M91BX0QvpSEDHAoinm2QbwS4lcXb3VFQF+9RUY=;
+        b=lFkt+KqdE/clax4K3AsmkijFisYtgScpWdkDzsKkOFtZFkeVvQg5QhyzCtH/wdmaO0
+         ZKydlxi+xO2p/Crwgg/YwkYOrVZAg9ffs7f258I9yciN4hJR91VKVrESvf/lht3br0wj
+         KXtRYgky6+ODhojVKc72dST5VFDEuWKGqS2IFDX8wiXc653+2oBFek9+Bnd4P0UoOTcN
+         tCZxF/iIbnEfnqs7odnHK5UIUceNELRYuHWd2O9gLYPJcTxQj0c2dJBHRFZzk55+VZL+
+         sTjQI5CxyBxferELZliMGwgZJSkXJbgdys5bobFZ0wzKdFR6wK4rOK3HhXlPatHC0JWg
+         qf/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1vzz5M91BX0QvpSEDHAoinm2QbwS4lcXb3VFQF+9RUY=;
+        b=JB5IoeFNDKpaIGfAVmf3zsOX1bsIiB/MPdt6rJj/lvm7AcqKlQJuzjo8MvkqdiljUQ
+         afqveOinFe4GfPgH/CZ+XNUy7+vn6YreF/wM+6b83e8nu8DriIjVq4wwk3pvZ1PBpuYz
+         495zdrlWdJ0uEUrxeR4LWjZ7oii7fWdlWLcKXhoSIqs5uQvK6ZM3AmQivkxcw1uDNbVL
+         +igZa3m+KcBZRwF3JJfBZe85EEWeNTyZf3nqjRIZ6E2r04FyOYXb4/gJ13sUIqUEeiJp
+         rF31sXPwExYrG/X4VHm7kyBL5jFD69CneTR6TMkZHbUUERCvlC+Lq+z4xWCUlA4DcBgl
+         Xe1g==
+X-Gm-Message-State: AOAM532A76iKLzK6UgHfFibyqdOBszMObeDx3x16DBygXKuWnOoMwfvZ
+        8HdDqgMxFcfnPYYxnzwVR91R84KeJPg=
+X-Google-Smtp-Source: ABdhPJw/pBFq99I4VZndRkQeU/UpbiIeOOsB/wkbT0ai/j7TOxgrSBq2/QgIqwMBnD578+Vz/t8Amg==
+X-Received: by 2002:a05:6402:4387:: with SMTP id o7mr40257618edc.77.1635766886328;
+        Mon, 01 Nov 2021 04:41:26 -0700 (PDT)
+Received: from localhost.localdomain (host-79-56-54-101.retail.telecomitalia.it. [79.56.54.101])
+        by smtp.gmail.com with ESMTPSA id nb4sm1057600ejc.74.2021.11.01.04.41.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Nov 2021 04:41:25 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [PATCH] staging: r8188eu: Use kzalloc() with GFP_ATOMIC in atomic context
+Date:   Mon,  1 Nov 2021 12:41:21 +0100
+Message-Id: <20211101114121.23865-1-fmdefrancesco@gmail.com>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101113819.50651-1-jaewon02.kim@samsung.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupik+LIzCtJLcpLzFFi42LZdljTVLftUn2iQc8ZI4vL+7UtdjQcYbXY
-        +PYHk0XH3y+MFpd3zWGzmHF+H5NF694j7BZ3989ldODwmNXQy+axaVUnm0ffllWMHp83yQWw
-        RGXbZKQmpqQWKaTmJeenZOal2yp5B8c7x5uaGRjqGlpamCsp5CXmptoqufgE6Lpl5gBdoaRQ
-        lphTChQKSCwuVtK3synKLy1JVcjILy6xVUotSMkpMC/QK07MLS7NS9fLSy2xMjQwMDIFKkzI
-        zvh27jVbwRnuir1nOlkaGLdwdjFycEgImEgsnWTUxcjFISSwg1Fi/+FVzBDOJ0aJG/PesEA4
-        3xgltsxeDZThBOvYsXU5VGIvo0Tv3i4mCOcjo8S6JZNYQKrYBLQlvq9fzApiiwjUSbQ9nQHW
-        wSywiVHiweQWZpDlwgKBEkd2WoLUsAioSkyZfoIRxOYVsJVYvrQJapu8xMQJ99hBbE4BO4l5
-        1zrYIGoEJU7OfAK2ixmopnnrbLC7JQResks8n9QH1ewi8eLfDBYIW1ji1fEt7BC2lMTL/jZ2
-        SADUS3y94QDR28MosabrFxNEjb3Er+lbWEFqmAU0Jdbv0ocoV5Y4cgtqLZ9Ex+G/UFN4JTra
-        hCAa1STuTz3HBmHLSEw6shJqoIdEb/NnaOhOZJR4Pu8W0wRGhVlIvpmF5JtZCIsXMDKvYhRL
-        LSjOTU8tNiowgkdwcn7uJkZwotRy28E45e0HvUOMTByMhxglOJiVRHgjLtQkCvGmJFZWpRbl
-        xxeV5qQWH2I0BYb1RGYp0eR8YKrOK4k3NLE0MDEzMzQ3MjUwVxLntRTNThQSSE8sSc1OTS1I
-        LYLpY+LglGpgmnomXkSN+/LxAzZ3+srLT35N9b7yaXKU8hPNTDPdbW0GmsGrEq7tUz042/em
-        w3433bJl+n6LGBscGA+cXvNSf7pzDMNVxz0J9eUTtz/OXHyF4/BX4zWHGCrcZVVZdlxe8Ixz
-        ScW/tDTbxbdO/jHe58EoyKDPl8J4dtryqZOKgrxSmUyOrNa9m7TcYMaL/HVHXCsMP/1frJyT
-        viAynuPn82K1yivCCZ+ybDf+Vy+Z4XMl3M+ycll+OO/F5gr5g+ysX83mfppsPfGs1mntILdP
-        9q971V4+6P76Zv2rqWVrmjRfaE39Z/fxjPn2Q/nmnP+/eJxaoqtZnnlkj4DEm/g3yd+LZ059
-        pCEu971FPuFNhhJLcUaioRZzUXEiAMnqr4YdBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrKLMWRmVeSWpSXmKPExsWy7bCSvG7bpfpEgwdLhCwu79e22NFwhNVi
-        49sfTBYdf78wWlzeNYfNYsb5fUwWrXuPsFvc3T+X0YHDY1ZDL5vHplWdbB59W1YxenzeJBfA
-        EsVlk5Kak1mWWqRvl8CV8e3ca7aCM9wVe890sjQwbuHsYuTkkBAwkdixdTkLiC0ksJtRYs0v
-        Voi4jMTyZ31sELawxP2WI0BxLqCa94wSf1fNYwZJsAloS3xfvxisQUSggVFiZ4stSBGzwDZG
-        icO3T4FNFRbwl3jz+RJYEYuAqsSU6ScYQWxeAVuJ5UubmCE2yEtMnHCPHcTmFLCTmHetA2gz
-        B9A2W4kNU4IgygUlTs58AjaSGai8eets5gmMArOQpGYhSS1gZFrFKJlaUJybnltsWGCYl1qu
-        V5yYW1yal66XnJ+7iREc0lqaOxi3r/qgd4iRiYPxEKMEB7OSCG/EhZpEId6UxMqq1KL8+KLS
-        nNTiQ4zSHCxK4rwXuk7GCwmkJ5akZqemFqQWwWSZODilGph09rO2Wp6I66+4d2Xm5CRxV0Wn
-        SDuD6FyX+bOVt4dYts/ff41n60GpnXHytoevKjbfYFLa4H9VkumbAneJz9VrCpofl/Uedz6+
-        a+e/nRpTg12nbD/+OX6q+hZbu4NLbcVuKrUyLNQ92GdwcnJqe3NDnnT69xxJkadvvCZl/+9i
-        V4mTWLRyGkOY5DH55PeP+qtu7/qpuj+Jbw5fn+RdrsdGH2+fuH0naMqCat2T3UE1Rb1bGnI+
-        z+u7ZvIsVJX76vvf6jcPqpx+YWQp9tPSZ8b6+oXN6/uuv7HK9Xgh4P42aeeMXfd1p9fErvu1
-        0kR8bsf/F8sXJXJKhtRoLflrkhieanXMMTlYKO1DuVf/42lKLMUZiYZazEXFiQDHOBnF2AIA
-        AA==
-X-CMS-MailID: 20211101114158epcas2p46b50f8d946d59ffaedd203370b81c6ed
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20211101114158epcas2p46b50f8d946d59ffaedd203370b81c6ed
-References: <20211101113819.50651-1-jaewon02.kim@samsung.com>
-        <CGME20211101114158epcas2p46b50f8d946d59ffaedd203370b81c6ed@epcas2p4.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds new "samsung,exynos-usi-hsi2c" compatible.
-It is for i2c compatible with HSI2C available on Exynos SoC with USI.
+Use the GFP_ATOMIC type flag of kzalloc() with two memory allocation in
+report_del_sta_event(). This function is called while holding spinlocks,
+therefore it is not allowed to sleep. With the GFP_ATOMIC type flag, the
+allocation is high priority and must not sleep.
 
-Signed-off-by: Jaewon Kim <jaewon02.kim@samsung.com>
+This issue is detected by Smatch which emits the following warning:
+"drivers/staging/r8188eu/core/rtw_mlme_ext.c:6848 report_del_sta_event()
+warn: sleeping in atomic context".
+
+After the change, the post-commit hook output the following message:
+"CHECK: Prefer kzalloc(sizeof(*pcmd_obj)...) over
+kzalloc(sizeof(struct cmd_obj)...)".
+
+According to the above "CHECK", use the preferred style in the first
+kzalloc().
+
+Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
 ---
- Documentation/devicetree/bindings/i2c/i2c-exynos5.txt | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/staging/r8188eu/core/rtw_mlme_ext.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/i2c/i2c-exynos5.txt b/Documentation/devicetree/bindings/i2c/i2c-exynos5.txt
-index 2dbc0b62daa6..ce2373c7a357 100644
---- a/Documentation/devicetree/bindings/i2c/i2c-exynos5.txt
-+++ b/Documentation/devicetree/bindings/i2c/i2c-exynos5.txt
-@@ -14,6 +14,8 @@ Required properties:
- 				on Exynos5260 SoCs.
- 	-> "samsung,exynos7-hsi2c", for i2c compatible with HSI2C available
- 				on Exynos7 SoCs.
-+	-> "samsung,exynos-usi-hsi2c", for i2c compatible with HSI2C available
-+				on Exynos SoCs with USI.
+diff --git a/drivers/staging/r8188eu/core/rtw_mlme_ext.c b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
+index 55c3d4a6faeb..3367ec40679d 100644
+--- a/drivers/staging/r8188eu/core/rtw_mlme_ext.c
++++ b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
+@@ -6845,12 +6845,12 @@ void report_del_sta_event(struct adapter *padapter, unsigned char *MacAddr, unsi
+ 	struct mlme_ext_priv		*pmlmeext = &padapter->mlmeextpriv;
+ 	struct cmd_priv *pcmdpriv = &padapter->cmdpriv;
  
-   - reg: physical base address of the controller and length of memory mapped
-     region.
-@@ -31,6 +33,8 @@ Optional properties:
-        at 100khz.
-     -> If specified, the bus operates in high-speed mode only if the
-        clock-frequency is >= 1Mhz.
-+  - samsung,usi-sysreg : sysreg handle to control USI type.
-+    -> sysreg phandle for "samsung,exynos-usi-hsic" compatible.
+-	pcmd_obj = kzalloc(sizeof(struct cmd_obj), GFP_KERNEL);
++	pcmd_obj = kzalloc(*cmd_obj, GFP_ATOMIC);
+ 	if (!pcmd_obj)
+ 		return;
  
- Example:
- 
-@@ -46,6 +50,8 @@ hsi2c@12ca0000 {
- 	#address-cells = <1>;
- 	#size-cells = <0>;
- 
-+	samsung,usi-sysreg = <&usi_sysreg 0x28>;
-+
- 	s2mps11_pmic@66 {
- 		compatible = "samsung,s2mps11-pmic";
- 		reg = <0x66>;
+ 	cmdsz = (sizeof(struct stadel_event) + sizeof(struct C2HEvent_Header));
+-	pevtcmd = kzalloc(cmdsz, GFP_KERNEL);
++	pevtcmd = kzalloc(cmdsz, GFP_ATOMIC);
+ 	if (!pevtcmd) {
+ 		kfree(pcmd_obj);
+ 		return;
 -- 
 2.33.1
 
