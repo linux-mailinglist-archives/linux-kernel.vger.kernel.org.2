@@ -2,66 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAD844412A0
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 05:01:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84F174412A4
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 05:02:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229560AbhKAEDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 00:03:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56708 "EHLO
+        id S229617AbhKAEFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 00:05:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbhKAEDu (ORCPT
+        with ESMTP id S229462AbhKAEE4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 00:03:50 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAC22C061714;
-        Sun, 31 Oct 2021 21:01:17 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id o14so1727507pfu.10;
-        Sun, 31 Oct 2021 21:01:17 -0700 (PDT)
+        Mon, 1 Nov 2021 00:04:56 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 049D1C061714
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 21:02:23 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id x5so6276008pgk.11
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 21:02:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=j1zj81YWFTCZDWmrdom1kjokPFz9peyCsLfXqGwKeAM=;
-        b=oEXgbZE9MHRoqaP8v3ANr6PRFNf293gF+YOPtvpe51oK0zkfO4HvXRp+/o3kEjQhfw
-         QZV+/4H8kYbKEnoRBNn45OFYS9sAdhCClHzuOV3J7YXgAN+Z18pkVgCqCjRVE2v+SPMu
-         cdiYvBzs8tdXVpvVbN/UaP/HPIPrY/apU4kGgyX2epjG0BstHdoAxNAM4V4iumXO+AUm
-         /JJJhrUVhwSKa62zb/TejxjvYTBFkwi6r7rBWD5bVFAdVpZu3vPaZJzkjX3i/SYg7tPQ
-         GR8iOV3KKGoJR9zS20atQ46TCZLj+K9DA+6S+l4Qa85eL10vrhLbKsFPbiKNG9imIlaa
-         WYjw==
+        bh=GtiwVFtHI+j8Vy2Q3Iq1fgzUP2WmAtec5CugDxM8ax4=;
+        b=K339gEZeyd4SCXcLT5h29aVmD43lvtCRsdu5ts8/9Ek7IPmLEXspkNJkgmvLJOS0MU
+         s+2sG+mzwKDEtNQOGK1eCGQugN4a1QxJ1PPl2DX9+IZ7PXha5/MM9pMUUtYtQZHFiq/4
+         d/wZCNOiOaTg4WoPCGanv5lLkLhmkkYLwXc4KlzbB6JFgp09oesv5tUNcKTNby5sqnMg
+         LwiCdVbGLpnU3AaBGGtaLFYIu5ktClnJwzdyEOvC8pTnN8G4N2z1gCKh+qPdBCl4/8QQ
+         zr2w+CZMiV3btsHlWFNIpE4mNBEZK+QvhzWQDhEPLaMFCVnPa1fw+NVTxUqmWCiw467j
+         QoaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=j1zj81YWFTCZDWmrdom1kjokPFz9peyCsLfXqGwKeAM=;
-        b=AuGC+ocrxoGJ83D1Ow8D+ARo3MBHsTdWdCWNsk3l5mZZwzcawFn9iXjB6fGrXNf5NY
-         /LSEMtzZyvypBHTpi1+u/v6LCOHyXLSox1Jd2XYrWyiX/STTUilHaJ9Q8T/QI/8NsUfE
-         tmCHmB+Nso1p8y7lXpny9KB/KYz5lfAIC7B6wraXZDFLDtcZP06czc7uMsj6P7y3OKcb
-         TQdLc7w7uCDoFJ2mgBRuAYcTcX7uBFaAhL3w5P2KhneXIpbtjld2i0uXx+w0mtVMS1O1
-         XwNR82fJnWOfzkz4oZMGcYjGfsWETm7tYXb/KsNXb6aKOHR3Z4zPks2EqKjZx/2k3hrh
-         yBRg==
-X-Gm-Message-State: AOAM5306DAvS2zGYvceEYgZXdJ47dVjw45QI4XB5Kh28qrQKW7n+Cr6d
-        wkfVh+/6NjOkfryCFacgyfk=
-X-Google-Smtp-Source: ABdhPJx3viV9qB1TaG/SmbmbPFCaZuGtMQWOEaiqw5HZpi1nO9LoS6YyMIJVdscQCooQtte/iK3Haw==
-X-Received: by 2002:a63:e216:: with SMTP id q22mr19590520pgh.3.1635739277100;
-        Sun, 31 Oct 2021 21:01:17 -0700 (PDT)
-Received: from localhost.localdomain ([94.177.118.117])
-        by smtp.gmail.com with ESMTPSA id a20sm13387682pff.57.2021.10.31.21.01.13
+        bh=GtiwVFtHI+j8Vy2Q3Iq1fgzUP2WmAtec5CugDxM8ax4=;
+        b=ba0E7l6mhCV6n3Ly3qm1/r+DvDJB85Tps/mgEe4OXxg9JlkbeSrdKYjQDmzjwHv7gS
+         oZQgxiqZLsQtTs7AGTl2cSFmXZ5eJLM4g2aPb+GUEKQAfTi9zcRqTDdSUTWPmSDmxh9E
+         JmRdqG1CZdAwQeiVtLyWfyBr4OJG0AYm98NyiXV9mCPLlSZrQ8bnkvxd1IuVRdVoD96T
+         MfZU5cp31XjQW8N9HsTxW7U7u3na8Ah3yivckKJK6wpV1wGqbjDqc4DDIReVpymizET4
+         KXbgl9fHFoWyfJFQltEj3/FuqRsJx99Q98Gk6wwTuxEHF47rFmFIHc3fkmNRzhJ8JVFP
+         r/2w==
+X-Gm-Message-State: AOAM530HF1lQHgpQtduqlg5M5xqL0bsOi6xjiEfG6HSHHIZux5lt37nM
+        ++TA0hZ8L7oczyOD3/LT+mw=
+X-Google-Smtp-Source: ABdhPJyFtJcEqUSXpLgZI8e/+6gESa0+IBgtXzewHdbCGqxGOZZOzvMABTfsjepCKIZKZC8xT5VTNA==
+X-Received: by 2002:a65:62d1:: with SMTP id m17mr19914014pgv.370.1635739342494;
+        Sun, 31 Oct 2021 21:02:22 -0700 (PDT)
+Received: from ubuntu.localdomain ([103.121.208.77])
+        by smtp.gmail.com with ESMTPSA id z71sm14358252pfc.19.2021.10.31.21.02.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 31 Oct 2021 21:01:16 -0700 (PDT)
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-To:     Marek Lindner <mareklindner@neomailbox.ch>,
-        Simon Wunderlich <sw@simonwunderlich.de>,
-        Antonio Quartulli <a@unstable.cc>,
-        Sven Eckelmann <sven@narfation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Dongliang Mu <mudongliangabcd@gmail.com>,
-        Antonio Quartulli <antonio@open-mesh.com>,
-        b.a.t.m.a.n@lists.open-mesh.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] net: batman-adv: fix warning in batadv_v_ogm_free
-Date:   Mon,  1 Nov 2021 12:01:02 +0800
-Message-Id: <20211101040103.388646-1-mudongliangabcd@gmail.com>
+        Sun, 31 Oct 2021 21:02:22 -0700 (PDT)
+From:   Quanfa Fu <fuqf0919@gmail.com>
+To:     akpm@linux-foundation.org, naoya.horiguchi@nec.com, cl@linux.com,
+        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
+        vbabka@suse.cz
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Quanfa Fu <fuqf0919@gmail.com>
+Subject: [PATCH] writeback: Fix some comment errors
+Date:   Sun, 31 Oct 2021 21:02:08 -0700
+Message-Id: <20211101040208.460810-1-fuqf0919@gmail.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -69,59 +64,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If batadv_v_ogm_init encounters a memory failure, the fields ogm_wq,
-ogm_buff_mutex and etc. are not initialized. Then the control flow goes
-to batadv_v_ogm_free due to the error handling code. As a result, the
-API invocation "cancel_delayed_work_sync" and "mutex_lock" will cause
-many issues. The crashing stack trace is as follows:
-
-Call Trace:
- __cancel_work_timer+0x1c9/0x280 kernel/workqueue.c:3170
- batadv_v_ogm_free+0x1d/0x50 net/batman-adv/bat_v_ogm.c:1076
- batadv_mesh_free+0x35/0xa0 net/batman-adv/main.c:244
- batadv_mesh_init+0x22a/0x240 net/batman-adv/main.c:226
- batadv_softif_init_late+0x1ad/0x240 net/batman-adv/soft-interface.c:804
- register_netdevice+0x15d/0x810 net/core/dev.c:10229
-
-Fixes: a8d23cbbf6c9 ("batman-adv: Avoid free/alloc race when handling OGM2 buffer")
-Fixes: 0da0035942d4 ("batman-adv: OGMv2 - add basic infrastructure")
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+Signed-off-by: Quanfa Fu <fuqf0919@gmail.com>
 ---
- net/batman-adv/bat_v_ogm.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ mm/khugepaged.c     | 2 +-
+ mm/memory-failure.c | 2 +-
+ mm/slab_common.c    | 2 +-
+ mm/swap.c           | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/net/batman-adv/bat_v_ogm.c b/net/batman-adv/bat_v_ogm.c
-index 1d750f3cb2e4..2f3ecbcec58d 100644
---- a/net/batman-adv/bat_v_ogm.c
-+++ b/net/batman-adv/bat_v_ogm.c
-@@ -1044,6 +1044,13 @@ int batadv_v_ogm_init(struct batadv_priv *bat_priv)
- 	unsigned char *ogm_buff;
- 	u32 random_seqno;
+diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+index 8a8b3aa92937..f482a7861141 100644
+--- a/mm/khugepaged.c
++++ b/mm/khugepaged.c
+@@ -1306,7 +1306,7 @@ static int khugepaged_scan_pmd(struct mm_struct *mm,
+ 		/*
+ 		 * Record which node the original page is from and save this
+ 		 * information to khugepaged_node_load[].
+-		 * Khupaged will allocate hugepage from the node has the max
++		 * Khugepaged will allocate hugepage from the node has the max
+ 		 * hit record.
+ 		 */
+ 		node = page_to_nid(page);
+diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+index bdbbb32211a5..5908661e5c23 100644
+--- a/mm/memory-failure.c
++++ b/mm/memory-failure.c
+@@ -1227,7 +1227,7 @@ static int get_any_page(struct page *p, unsigned long flags)
+  *
+  * get_hwpoison_page() takes a page refcount of an error page to handle memory
+  * error on it, after checking that the error page is in a well-defined state
+- * (defined as a page-type we can successfully handle the memor error on it,
++ * (defined as a page-type we can successfully handle the memory error on it,
+  * such as LRU page and hugetlb page).
+  *
+  * Memory error handling could be triggered at any time on any type of page,
+diff --git a/mm/slab_common.c b/mm/slab_common.c
+index ec2bb0beed75..e845a8286f2c 100644
+--- a/mm/slab_common.c
++++ b/mm/slab_common.c
+@@ -832,7 +832,7 @@ void __init setup_kmalloc_cache_index_table(void)
  
-+	/* randomize initial seqno to avoid collision */
-+	get_random_bytes(&random_seqno, sizeof(random_seqno));
-+	atomic_set(&bat_priv->bat_v.ogm_seqno, random_seqno);
-+	INIT_DELAYED_WORK(&bat_priv->bat_v.ogm_wq, batadv_v_ogm_send);
-+
-+	mutex_init(&bat_priv->bat_v.ogm_buff_mutex);
-+
- 	bat_priv->bat_v.ogm_buff_len = BATADV_OGM2_HLEN;
- 	ogm_buff = kzalloc(bat_priv->bat_v.ogm_buff_len, GFP_ATOMIC);
- 	if (!ogm_buff)
-@@ -1057,13 +1064,6 @@ int batadv_v_ogm_init(struct batadv_priv *bat_priv)
- 	ogm_packet->flags = BATADV_NO_FLAGS;
- 	ogm_packet->throughput = htonl(BATADV_THROUGHPUT_MAX_VALUE);
- 
--	/* randomize initial seqno to avoid collision */
--	get_random_bytes(&random_seqno, sizeof(random_seqno));
--	atomic_set(&bat_priv->bat_v.ogm_seqno, random_seqno);
--	INIT_DELAYED_WORK(&bat_priv->bat_v.ogm_wq, batadv_v_ogm_send);
--
--	mutex_init(&bat_priv->bat_v.ogm_buff_mutex);
--
- 	return 0;
- }
- 
+ 	if (KMALLOC_MIN_SIZE >= 64) {
+ 		/*
+-		 * The 96 byte size cache is not used if the alignment
++		 * The 96 byte sized cache is not used if the alignment
+ 		 * is 64 byte.
+ 		 */
+ 		for (i = 64 + 8; i <= 96; i += 8)
+diff --git a/mm/swap.c b/mm/swap.c
+index af3cad4e5378..0ab1aa4a79b6 100644
+--- a/mm/swap.c
++++ b/mm/swap.c
+@@ -866,7 +866,7 @@ void lru_cache_disable(void)
+ 	 * all online CPUs so any calls of lru_cache_disabled wrapped by
+ 	 * local_lock or preemption disabled would be ordered by that.
+ 	 * The atomic operation doesn't need to have stronger ordering
+-	 * requirements because that is enforeced by the scheduling
++	 * requirements because that is enforced by the scheduling
+ 	 * guarantees.
+ 	 */
+ 	__lru_add_drain_all(true);
 -- 
 2.25.1
 
