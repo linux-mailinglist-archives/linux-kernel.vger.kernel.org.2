@@ -2,170 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B81444213C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 21:00:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A202844213F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 21:01:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230438AbhKAUCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 16:02:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46756 "EHLO
+        id S230317AbhKAUEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 16:04:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229712AbhKAUCk (ORCPT
+        with ESMTP id S229712AbhKAUES (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 16:02:40 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13D1BC061714
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 13:00:06 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id j75so19652362ybj.6
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 13:00:06 -0700 (PDT)
+        Mon, 1 Nov 2021 16:04:18 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21E5FC061764
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 13:01:44 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id t11so12378015plq.11
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 13:01:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uIiikhiKANm16gJ3zgFho5/Ja/cA/584/loqdnT20mg=;
-        b=mLGfJvKpxQcN5+1bgKSbhr3CHnyK9Dv9MIU6eTvJOMcjxJ6TtQmw1KCpU9NLyLAZVu
-         oM8SJNjWglOkujwTODQqHVHHRuQZG8YysvfDKgOm+QZGhOxwvUk5l5cUqnLp6+oDBnVv
-         c5fqH52azYDTueOFKLAoi3HKoVJ/52QBi5Zm8IeJzBzlVA7pcb6yKvmNn1Bs7Qy0ZeFL
-         sfOq9v28z0b4N91opwk1CbmLK+heKbmf161m/HU62X+PKykdp+KU0uKwPAiv3I8xAtko
-         jKAXX/YYMRnNzKgzSW7c83HnxxqAMeXjYff/YxfAdcwjFNJ0aGXYfV1Hw153/RjQSTzA
-         MItw==
+        d=linaro.org; s=google;
+        h=message-id:date:mime-version:user-agent:subject:content-language
+         :from:to:cc:references:in-reply-to:content-transfer-encoding;
+        bh=//qLyozC7UQaBdURgH8zYX1NEvcJQYYYqxcLEEiD/C0=;
+        b=peBqNdpy1901jw2VuRMcFADsSNPGF2oy8Kr3JTH5yjMnOZlkZ7FUSw2c+AbfaWojkL
+         u1kye+XZNhbFlI5FANhCGhNvqQHCaD9wlL60y6neZNgZ/aE7uJjVYizEhfyP6ZywkXtd
+         VSlfE1AYfiWuUjtlNT8xjq+tksH6x+z3jhxKPvjYXr1KWwMFrJmFKVkxzcAS6n7gLy3E
+         oI2RURVtjxWVv2m6FeAnrJhrHm9UQQMiNHUIMbsCd8Pngg7Kg9l3w5subPAqC9lA2D3C
+         eIoQThPd3PQcZcDEC9f7/1QFI5rMb1H1J0rxWNXhl8LkFxqbRFuzEvySsq6t/MVzOznT
+         usaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uIiikhiKANm16gJ3zgFho5/Ja/cA/584/loqdnT20mg=;
-        b=OIAexr7Hl9qqpLssZyxElCqXa8YI6/mVtDe6KeiwQBWzecSBkFO+1nhefJYdbZp1qc
-         sLCHwAzP0Kg3rMPw0ZQ4MyMKiF6Y58+sXgRAiw3mcy/YQJ/Cp8fPIrWBK9kTBfprN/i1
-         ZIORzrTna1lZXBKTTGsiwVrAGibHxNYaB/GUoJXjCymIUNDqw3AV4uAgwC7ZwbIc0umc
-         RdUKN7ILpUcTJhHTQd4trUFtlrBoIgrQfFcvRqm41wGesO5q/b5reMBUi1k7gkMXre93
-         K0kaSqJWsWxPyNDprJpYrFQpe5gU1gFqngUssfNislw4QmvVjhZDJcxClhe1/Z1yJo56
-         vgvQ==
-X-Gm-Message-State: AOAM53063dsC7UlLemeOSx+cd82aliHFsBesDqZQtbW6WSOGKecEVHi2
-        kE61zRhv4EounomNivG4/j3uz9QLzr+VoFFWpxMOrw==
-X-Google-Smtp-Source: ABdhPJy9YUocfasSw70FNO/svv5wulusp1+kDqDhT223oXWC6yRkNWKoM+3TyDkuuF9r8ipCnxwJivDO8jiIMO0U7kg=
-X-Received: by 2002:a05:6902:120e:: with SMTP id s14mr39312732ybu.161.1635796804356;
- Mon, 01 Nov 2021 13:00:04 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:from:to:cc:references:in-reply-to
+         :content-transfer-encoding;
+        bh=//qLyozC7UQaBdURgH8zYX1NEvcJQYYYqxcLEEiD/C0=;
+        b=qoZyhzhiNKr7XMcB/97HFaVVlIwYIuz+0/WK9isXIZF+VJfdExFcK/bkR0/s9dgyxR
+         iJGZ6GXCqiQG6V9kjFEo+I5FYgiLKhOS/VzLDiV5zfNX1pyemzeUj2at1qkbi0qXM5Fi
+         Y5tz+T3rhjTU5LdsoQsa7j+iPX5W6VCpQNSpd6Pf7fQpnXcnciA9LIFZzt3LtOjFJxiL
+         a5zD4JdcYK8BcWqAINZOR4ceKzc2+6QZo+QbhdRslw6wxDCsVOGe1in7MVQXbW8slD9L
+         3ooe0iFUC2lHX/xkiPRVPQgKElvdo/K+23bQw397uQhraXP6yF2vJIYxA8H0KFtpU4iW
+         pgug==
+X-Gm-Message-State: AOAM532KxBFodtBM82ZZDUfcF0Pd2iRr/mqX3jH0dWAZYg5XCWifVHYB
+        JhByEWWMO4hdyeVkYLi2znBhTxvtjuKxTLOy
+X-Google-Smtp-Source: ABdhPJzxz3cnVsLDaAL1jCkkJjFC5U9ToZGS8xlNZ6wLOTkNhl62tXI+5y13i4LrDg7zVvr5wX7rbA==
+X-Received: by 2002:a17:902:c407:b0:13f:68f:6753 with SMTP id k7-20020a170902c40700b0013f068f6753mr26985851plk.39.1635796903499;
+        Mon, 01 Nov 2021 13:01:43 -0700 (PDT)
+Received: from [192.168.254.17] ([50.39.160.154])
+        by smtp.gmail.com with ESMTPSA id mr2sm258610pjb.25.2021.11.01.13.01.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Nov 2021 13:01:43 -0700 (PDT)
+Message-ID: <2bf04f26-4e82-a822-90ce-4c28e2c0e407@linaro.org>
+Date:   Mon, 1 Nov 2021 13:01:42 -0700
 MIME-Version: 1.0
-References: <20211022014658.263508-1-surenb@google.com> <YXJwUUPjfg9wV6MQ@dhcp22.suse.cz>
- <CAJuCfpEcSbK8WrufZjDj-7iUxiQtrmVTqHOxFUOvLhYGz6_ttQ@mail.gmail.com>
- <CAJuCfpFccBJHHqfOKixJvLr7Xta_ojkdHGfGomwTDNKffzziRQ@mail.gmail.com>
- <YXvxBSzA2YIxbwVC@dhcp22.suse.cz> <CAJuCfpHBoMGPOUvB2ZWQ=TxbFuWBRF++UaKJZDCrQV4mzb5kMA@mail.gmail.com>
- <YX+nYGlZBOAljoeF@dhcp22.suse.cz> <CAJuCfpGC9-c9P40x7oy=jy5SphMcd0o0G_6U1-+JAziGKG6dGA@mail.gmail.com>
-In-Reply-To: <CAJuCfpGC9-c9P40x7oy=jy5SphMcd0o0G_6U1-+JAziGKG6dGA@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Mon, 1 Nov 2021 12:59:53 -0700
-Message-ID: <CAJuCfpGgi49C6fT7D8yV7evmzFVqZS2qvSQRHZkvNruc43ZmFQ@mail.gmail.com>
-Subject: Re: [PATCH 1/1] mm: prevent a race between process_mrelease and exit_mmap
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christian Brauner <christian@brauner.io>,
-        Christoph Hellwig <hch@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jann Horn <jannh@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Jan Engelhardt <jengelh@inai.de>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Andrea Arcangeli <aarcange@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: general protection fault in del_gendisk
+Content-Language: en-US
+From:   Tadeusz Struk <tadeusz.struk@linaro.org>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <7468db5d-55b4-07c9-628a-9a60419d9121@linaro.org>
+In-Reply-To: <7468db5d-55b4-07c9-628a-9a60419d9121@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 1, 2021 at 8:44 AM Suren Baghdasaryan <surenb@google.com> wrote:
->
-> On Mon, Nov 1, 2021 at 1:37 AM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Fri 29-10-21 09:07:39, Suren Baghdasaryan wrote:
-> > > On Fri, Oct 29, 2021 at 6:03 AM Michal Hocko <mhocko@suse.com> wrote:
-> > [...]
-> > > > Well, I still do not see why that is a problem. This syscall is meant to
-> > > > release the address space not to do it fast.
-> > >
-> > > It's the same problem for a userspace memory reaper as for the
-> > > oom-reaper. The goal is to release the memory of the victim and to
-> > > quickly move on to the next one if needed.
-> >
-> > The purpose of the oom_reaper is to _guarantee_ a forward progress. It
-> > doesn't have to be quick or optimized for speed.
->
-> Fair enough. Then the same guarantees should apply to userspace memory
-> reapers. I think you clarified that well in your replies in
-> https://lore.kernel.org/all/20170725154514.GN26723@dhcp22.suse.cz:
->
-> Because there is no _guarantee_ that the final __mmput will release
-> the memory in finite time. And we cannot guarantee that longterm.
-> ...
-> __mmput calls into exit_aio and that can wait for completion and there
-> is no way to guarantee this will finish in finite time.
->
-> >
-> > [...]
-> >
-> > > > Btw. the above code will not really tell you much on a larger machine
-> > > > unless you manage to trigger mmap_sem contection. Otherwise you are
-> > > > measuring the mmap_sem writelock fast path and that should be really
-> > > > within a noise comparing to the whole address space destruction time. If
-> > > > that is not the case then we have a real problem with the locking...
-> > >
-> > > My understanding of that discussion is that the concern was that even
-> > > taking uncontended mmap_sem writelock would regress the exit path.
-> > > That was what I wanted to confirm. Am I misreading it?
-> >
-> > No, your reading match my recollection. I just think that code
-> > robustness in exchange of a rw semaphore write lock fast path is a
-> > reasonable price to pay even if that has some effect on micro
-> > benchmarks.
->
-> I'm with you on this one, that's why I wanted to measure the price we
-> would pay. Below are the test results:
->
-> Test: https://lore.kernel.org/all/20170725142626.GJ26723@dhcp22.suse.cz/
-> Compiled: gcc -O2 -static test.c -o test
-> Test machine: 128 core / 256 thread 2x AMD EPYC 7B12 64-Core Processor
-> (family 17h)
->
-> baseline (Linus master, f31531e55495ca3746fb895ffdf73586be8259fa)
-> p50 (median)   87412
-> p95                  168210
-> p99                  190058
-> average           97843.8
-> stdev               29.85%
->
-> unconditional mmap_write_lock in exit_mmap (last column is the change
-> from the baseline)
-> p50 (median)   88312     +1.03%
-> p95                  170797   +1.54%
-> p99                  191813   +0.92%
-> average           97659.5  -0.19%
-> stdev               32.41%
->
-> unconditional mmap_write_lock in exit_mmap + Matthew's patch (last
-> column is the change from the baseline)
-> p50 (median)   88807      +1.60%
-> p95                  167783     -0.25%
-> p99                  187853     -1.16%
-> average           97491.4    -0.36%
-> stdev               30.61%
->
-> stdev is quite high in all cases, so the test is very noisy.
+On 10/29/21 12:13, Tadeusz Struk wrote:
+> Hi,
+> I'm looking at a bug found by the syzkaller robot [1], and I just wanted
+> to confirm that my understanding is correct, and the issue can be closed.
+> First, the kernel is configured with some fault injections enabled:
+> 
+> CONFIG_FAULT_INJECTION=y
+> CONFIG_FAILSLAB=y
+> CONFIG_FAIL_PAGE_ALLOC=y
+> 
+> The test adds loop devices, which causes some entries in sysfs to be created.
+> It does some magic with ioctls, which calls:
+> __device_add_disk() -> register_disk()
+> which eventually triggers sysfs_create_files() and it crashes there,
+> in line 627 [2], because the fault injector logic triggers it.
+> That can be seen in the trace [3]:
+> [   34.089707][ T1813] FAULT_INJECTION: forcing a failure.
+> 
+> Sysfs code returns a -ENOMEM error, but because the __device_add_disk()
+> implementation mostly uses void function, and doesn't return on errors [4]
+> it goes farther, hits some warnings, like:
+> disk_add_events() -> sysfs_create_files() -> sysfs_create_file_ns() - > WARN()
+> and eventually triggers general protection fault in sysfs code, and panics there.
+> 
+> I think for this to recover and return an error to the caller via ioctl()
+> the __device_add_disk() code would need be reworked to handle errors,
+> and return errors to the caller.
+> My question is: is it implemented like this by design? Are there any plans
+> to make it fail more gracefully?
 
-Need to clarify that what I called here "stdev" is actually stdev /
-average in %.
+Hi,
+Any comments on this one?
 
-> The impact seems quite low IMHO. WDYT?
->
-> > --
-> > Michal Hocko
-> > SUSE Labs
+-- 
+Thanks,
+Tadeusz
