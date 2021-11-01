@@ -2,135 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B06CF441984
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 11:10:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB6E544193B
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:57:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231955AbhKAKNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 06:13:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54392 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232161AbhKAKM4 (ORCPT
+        id S232705AbhKAKAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 06:00:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:48791 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233139AbhKAJ7R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 06:12:56 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB976C061767;
-        Mon,  1 Nov 2021 02:55:52 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id m26so15873978pff.3;
-        Mon, 01 Nov 2021 02:55:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UVw7JpRuL3Zpasl1yKpDjtfcQv9s3AR150vJWnlV/mo=;
-        b=VF7DsrQ3BN98ddp3+F0aoZvy4BRNhLGMryo/aRHLnVAqnoSq1vrpYIbem0ev3R6De+
-         x0rEe7MPkW96oOhVrK/r23PyXE6tXqmlUuJspm63C2eEn3pFpiELfg4Dxo3UhZVx7iVK
-         4pU7zrvgQ+zNYERog0QnsoC0iu7ZTYwZxsvbaUAcyFGs1xYraZvStZAwaqX0plP0tAIU
-         5z3PS+NfJtpphVdWd3+HbFa6NPOjBTef7oB0mLT9iIFbtnxgThJtxX7+0a/HJSZg/cSv
-         ruNExtDPhFKub0Iqv7cEDcjvHq+epc4EaHE6KORCLkoJJxGa8NcDoaLZxlDFnnIjAo7j
-         55AQ==
+        Mon, 1 Nov 2021 05:59:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635760604;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vnNLP3pxCj5kK+Y7vBpKll8NWXd7vahWcRAymdcHOXU=;
+        b=XMxIYR6Ct4LAlKOU6HWX70OX7h6tOys4BaqEVdiM8JApgs6qvrpxFTi5SpPIs/QnEH0rUz
+        sE3m/CRr0ZLWd9I/6XCuX5xNomIW7nwM+Vns8qyQO7ozIOWYuq9dV2ln9HR1ghEgpWBf7B
+        oSTqMFEdOqA/UDYzpNI3tz32XOO79zo=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-107-H071VeTrPDCXqgTerVheXw-1; Mon, 01 Nov 2021 05:56:43 -0400
+X-MC-Unique: H071VeTrPDCXqgTerVheXw-1
+Received: by mail-ed1-f71.google.com with SMTP id y12-20020a056402270c00b003e28de6e995so1594904edd.11
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 02:56:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=UVw7JpRuL3Zpasl1yKpDjtfcQv9s3AR150vJWnlV/mo=;
-        b=rKaICKNyI+H6MDJLGnls/NBhfWKOId6vQeVM1iW+/PWJo9fHypg2XixdDCOMTjSBOo
-         VOCfr8afDrqJiS1GBUhBwKu+nXWpUt80XT6eQLjE/D6WN3qEj7It+/7UmMUkSjx5PTr9
-         fMS+Jo2EhSN5Zxuj3U76lu+rL6EjsYas4bPZRCIx605pXUyIGFcS9Ib3x1uu4ob+FuIh
-         DVMrESqyXDwBMj/OCnEHU1rOt1kQIlzmo3NLv2qQ4F9wb92qgQnL0hUHU+ihhBb3PC42
-         CdH3WARrN/5Q4ROzpkflH0jwcuZrD+i4yuvnaGIaNY6HSxmMCOFVBqKt0urCwGFPMgSL
-         1RQw==
-X-Gm-Message-State: AOAM530i7okk5bw5wJ+dhFZECULWFcA+Uu8V6cOPnZD9GPvl7iAYjVa/
-        DL0HN7eig3g64wBFb4qphv8=
-X-Google-Smtp-Source: ABdhPJwcPzEvKL6lcLx0z54E2uefZwIWW/fS4DODk3QnRyS4ZehmSIYnNsyH6uHTZl1tTAVariYdAQ==
-X-Received: by 2002:a63:8842:: with SMTP id l63mr10247192pgd.280.1635760552289;
-        Mon, 01 Nov 2021 02:55:52 -0700 (PDT)
-Received: from localhost.localdomain ([94.177.118.117])
-        by smtp.gmail.com with ESMTPSA id u11sm14727719pfk.151.2021.11.01.02.55.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 02:55:51 -0700 (PDT)
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Dongliang Mu <mudongliangabcd@gmail.com>,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        syzbot <syzkaller@googlegroups.com>, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] media: em28xx: fix memory leak in em28xx_init_dev
-Date:   Mon,  1 Nov 2021 17:55:39 +0800
-Message-Id: <20211101095539.423246-1-mudongliangabcd@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        bh=vnNLP3pxCj5kK+Y7vBpKll8NWXd7vahWcRAymdcHOXU=;
+        b=MCIGR9KRHkSCk6fAudgaHqnFyC74LymfSiOLP71z4yvycovJUZUICqQyELjKmlzCUS
+         jfjDregbXsdJOzVCyA3bCx5ZPaJb+TzadXopofOTHivzS8Ry5I8Tc7piw0Sti/lVM7HG
+         h9MfbGgYzKxFK94pVyD/m3YHDC2wRGZFfBlCz5OqpSkD8KY9jNeUskDOTnUtDQk/McrD
+         qAMHdDb3n1j22X4l/28NOmY14WLRYPLU+qku6x2TS3xlBpir7icKY8HbOsh//NSy3lc5
+         BItWMhUZl2pchtPkPckbKTE1i4vKCzWEaOQe/34QC7mzMYqn1b6E0bRCqisnhuZfiFfP
+         8NrQ==
+X-Gm-Message-State: AOAM532YhdIKgtxnWjMZF7IN2da3p6qxc4eGbctBVyVpvG4/7zyhJE4q
+        cFpYDE6FfMzywEdXbQqUrkH9pyWceZ3OAH8LvHbhg4+jn0/0Ew7RESXToEdW/pnoWQi1fpAso0z
+        nrDxfMbnjz0g82mROlSeNT/1I
+X-Received: by 2002:a17:907:72c3:: with SMTP id du3mr34940716ejc.536.1635760601916;
+        Mon, 01 Nov 2021 02:56:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxDvKiU7RqegUNMLj+l6RYZc7y2j4L+5bcqrSsjwNjl0uODitZefSFLpVVKu1zw5CeLeXrwIA==
+X-Received: by 2002:a17:907:72c3:: with SMTP id du3mr34940693ejc.536.1635760601753;
+        Mon, 01 Nov 2021 02:56:41 -0700 (PDT)
+Received: from [10.40.1.223] ([81.30.35.201])
+        by smtp.gmail.com with ESMTPSA id bm1sm6701834ejb.38.2021.11.01.02.56.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Nov 2021 02:56:40 -0700 (PDT)
+Message-ID: <883db585-c9bb-5255-4ddd-f093616af1a1@redhat.com>
+Date:   Mon, 1 Nov 2021 10:56:40 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 0/6] MODULE_DEVICE_TABLE() support for the ISHTP bus
+Content-Language: en-US
+To:     =?UTF-8?Q?Thomas_Wei=c3=9fschuh?= <linux@weissschuh.net>,
+        linux-input@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Mark Gross <markgross@kernel.org>,
+        Rushikesh S Kadam <rushikesh.s.kadam@intel.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Benson Leung <bleung@chromium.org>,
+        platform-driver-x86@vger.kernel.org, linux-kbuild@vger.kernel.org
+References: <20211029152901.297939-1-linux@weissschuh.net>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20211029152901.297939-1-linux@weissschuh.net>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the em28xx_init_rev, if em28xx_audio_setup fails, this function fails
-to deallocate the media_dev allocated in the em28xx_media_device_init.
+Hi,
 
-Fix this by adding em28xx_unregister_media_device to free media_dev.
+On 10/29/21 17:28, Thomas Weißschuh wrote:
+> Currently as soon as any ISHTP device appears all available ISHTP device
+> drivers are loaded automatically.
+> This series extends the MODULE_DEVICE_TABLE() functionality to properly handle
+> the ishtp bus and switches the drivers over to use it.
+> 
+> Patch 1 adds the infrastructure to handle ishtp devices via MODULE_DEVICE_TABLE()
+> Patch 2 replaces some inlined constants with ones now defined by mod_devicetable.h
+> Patches 3-6 migrate all ishtp drivers to MODULE_DEVICE_TABLE()
+> 
+> Note: This patchset is based on the pdx86/for-next tree because that contains
+> one of the drivers that is not yet in the other trees.
 
-BTW, this patch is tested in my local syzkaller instance, and it can
-prevent the memory leak from occurring again.
+Since most of the changes here are under drivers/hid and since the latter
+patches depend on 1/6, I believe it would be best to merge the entire series
+through the HID tree, here is my ack for this:
 
-CC: Pavel Skripkin <paskripkin@gmail.com>
-Fixes: 37ecc7b1278f ("[media] em28xx: add media controller support")
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-Reported-by: syzbot <syzkaller@googlegroups.com>
----
- drivers/media/usb/em28xx/em28xx-cards.c | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
+Acked-by: Hans de Goede <hdegoede@redhat.com>
 
-diff --git a/drivers/media/usb/em28xx/em28xx-cards.c b/drivers/media/usb/em28xx/em28xx-cards.c
-index c1e0dccb7408..fca68939ca50 100644
---- a/drivers/media/usb/em28xx/em28xx-cards.c
-+++ b/drivers/media/usb/em28xx/em28xx-cards.c
-@@ -3625,8 +3625,10 @@ static int em28xx_init_dev(struct em28xx *dev, struct usb_device *udev,
- 
- 	if (dev->is_audio_only) {
- 		retval = em28xx_audio_setup(dev);
--		if (retval)
--			return -ENODEV;
-+		if (retval) {
-+			retval = -ENODEV;
-+			goto err_deinit_media;
-+		}
- 		em28xx_init_extension(dev);
- 
- 		return 0;
-@@ -3645,7 +3647,7 @@ static int em28xx_init_dev(struct em28xx *dev, struct usb_device *udev,
- 		dev_err(&dev->intf->dev,
- 			"%s: em28xx_i2c_register bus 0 - error [%d]!\n",
- 		       __func__, retval);
--		return retval;
-+		goto err_deinit_media;
- 	}
- 
- 	/* register i2c bus 1 */
-@@ -3661,9 +3663,7 @@ static int em28xx_init_dev(struct em28xx *dev, struct usb_device *udev,
- 				"%s: em28xx_i2c_register bus 1 - error [%d]!\n",
- 				__func__, retval);
- 
--			em28xx_i2c_unregister(dev, 0);
--
--			return retval;
-+			goto err_unreg_i2c;
- 		}
- 	}
- 
-@@ -3671,6 +3671,13 @@ static int em28xx_init_dev(struct em28xx *dev, struct usb_device *udev,
- 	em28xx_card_setup(dev);
- 
- 	return 0;
-+
-+
-+err_unreg_i2c:
-+	em28xx_i2c_unregister(dev, 0);
-+err_deinit_media:
-+	em28xx_unregister_media_device(dev);
-+	return retval;
- }
- 
- static int em28xx_duplicate_dev(struct em28xx *dev)
--- 
-2.25.1
+Regards,
+
+Hans
+
+
+> 
+> Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+> Cc: Mark Gross <markgross@kernel.org>
+> Cc: Hans de Goede <hdegoede@redhat.com>
+> Cc: Rushikesh S Kadam <rushikesh.s.kadam@intel.com>
+> Cc: Jiri Kosina <jikos@kernel.org>
+> Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+> Cc: Guenter Roeck <groeck@chromium.org>
+> Cc: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+> Cc: Benson Leung <bleung@chromium.org>
+> 
+> Cc: platform-driver-x86@vger.kernel.org
+> Cc: linux-kbuild@vger.kernel.org
+> 
+> Thomas Weißschuh (6):
+>   HID: intel-ish-hid: add support for MODULE_DEVICE_TABLE()
+>   HID: intel-ish-hid: use constants for modaliases
+>   HID: intel-ish-hid: fw-loader: only load for matching devices
+>   HID: intel-ish-hid: hid-client: only load for matching devices
+>   platform/chrome: chros_ec_ishtp: only load for matching devices
+>   platform/x86: isthp_eclite: only load for matching devices
+> 
+>  drivers/hid/intel-ish-hid/ishtp-fw-loader.c  |  7 +++++-
+>  drivers/hid/intel-ish-hid/ishtp-hid-client.c |  7 +++++-
+>  drivers/hid/intel-ish-hid/ishtp/bus.c        |  4 ++--
+>  drivers/platform/chrome/cros_ec_ishtp.c      |  7 +++++-
+>  drivers/platform/x86/intel/ishtp_eclite.c    |  7 +++++-
+>  include/linux/mod_devicetable.h              | 13 +++++++++++
+>  scripts/mod/devicetable-offsets.c            |  3 +++
+>  scripts/mod/file2alias.c                     | 24 ++++++++++++++++++++
+>  8 files changed, 66 insertions(+), 6 deletions(-)
+> 
+> 
+> base-commit: 85303db36b6e170917a7bc6aae4898c31a5272a0
+> 
 
