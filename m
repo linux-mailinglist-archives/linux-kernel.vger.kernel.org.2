@@ -2,112 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3B4544197D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 11:09:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5105441985
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 11:10:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231862AbhKAKLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 06:11:46 -0400
-Received: from todd.t-8ch.de ([159.69.126.157]:50805 "EHLO todd.t-8ch.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232024AbhKAKLk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 06:11:40 -0400
-Date:   Mon, 1 Nov 2021 11:09:05 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
-        s=mail; t=1635761345;
-        bh=LQZlI/sMH6WQ1R6Ac/PazlDCwM196E6fO967FhmAjMI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=t/eL9dlaWPmjiKHRBTXr7otVbaI5yDHZ+YJW44tZdw06c7uRiCAnxEONBSNGKuAZC
-         fFpL2yD1zVXexKnZ015vg8mko0lmyS3iuYeoV+Eo2EuV7dICDre2lJPhWhQC/8yG/w
-         QJzO9LBLLZvMtef7AxHHhvoGPAASDQIpyRvd/wfg=
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Jiri Kosina <jkosina@suse.cz>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [PATCH 1/6] HID: intel-ish-hid: add support for
- MODULE_DEVICE_TABLE()
-Message-ID: <091a4bb3-0734-4b58-9417-7ef18fcc385b@t-8ch.de>
-References: <20211029152901.297939-1-linux@weissschuh.net>
- <20211029152901.297939-2-linux@weissschuh.net>
- <cd712bd7-cce7-58fb-d644-ced4fc0c76b1@redhat.com>
+        id S232152AbhKAKNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 06:13:20 -0400
+Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:12620 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232248AbhKAKNE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 06:13:04 -0400
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1A17M1xZ007443;
+        Mon, 1 Nov 2021 05:10:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=MuHTk7WWbI4FaMOqXKtopVQskFCqIgwcH1k0Lq3hmRo=;
+ b=Vm0pyE8M/YIOxE4MGOwELCznlmtOENo8y39o9EcRXbZl4D2ue4f1fk9s8q8xtMWc6vMh
+ qGm9sdGd4N/WGQGWKHoyZENJcq6k4r07op8oHW7+Yg4OH2RufkGDV+CtkeiLxtbRU2RM
+ 9jV3wgkBGtdNluOdhfOvMbePY+TY2bbMSY/VOuFuBtxutJRh34WeFPsnQq7isr+d9heR
+ d7fEIqpXkraUhq8gzyA7YeICjj7SP4el4/pnCRvIhs2oCt19l0MBNfDx10C0n7dcEctx
+ UXqRa6p6ni/ode8i4KE9bCoUvd6s1MVxrSy/KNjlZtyduQ1PRhmhKbU2SUSLTbd6+gQd fg== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3c27qwrehr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 01 Nov 2021 05:10:25 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.12; Mon, 1 Nov
+ 2021 10:10:23 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.12 via Frontend
+ Transport; Mon, 1 Nov 2021 10:10:23 +0000
+Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com [198.61.65.118])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id EA2B5B2F;
+        Mon,  1 Nov 2021 10:10:16 +0000 (UTC)
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+To:     <broonie@kernel.org>
+CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <patches@opensource.cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: [PATCH v2] ASoC: cs42l42: Add control for audio slow-start switch
+Date:   Mon, 1 Nov 2021 10:10:06 +0000
+Message-ID: <20211101101006.13092-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <cd712bd7-cce7-58fb-d644-ced4fc0c76b1@redhat.com>
-Jabber-ID: thomas@t-8ch.de
-X-Accept: text/plain, text/html;q=0.2, text/*;q=0.1
-X-Accept-Language: en-us, en;q=0.8, de-de;q=0.7, de;q=0.6
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: v8mNlrN4fmjmj4_0JemTQZ59cjMICkPn
+X-Proofpoint-GUID: v8mNlrN4fmjmj4_0JemTQZ59cjMICkPn
+X-Proofpoint-Spam-Reason: safe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-11-01 10:58+0100, Hans de Goede wrote:
-> On 10/29/21 17:28, Thomas Weißschuh wrote:
-> > This allows to selectively autoload drivers for ISH devices.
-> > Currently all ISH drivers are loaded for all systems having any ISH
-> > device.
-> > 
-> > Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
-> > 
-> > ---
-> > 
-> > Cc: linux-kbuild@vger.kernel.org
-> > Cc: linux-input@vger.kernel.org
-> > Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> > Cc: Jiri Kosina <jkosina@suse.cz>
-> > Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-> > Cc: Hans de Goede <hdegoede@redhat.com>
-> > Cc: Masahiro Yamada <masahiroy@kernel.org>
-> > Cc: Michal Marek <michal.lkml@markovi.net>
-> > Cc: Nick Desaulniers <ndesaulniers@google.com>
-> > ---
-> >  include/linux/mod_devicetable.h   | 13 +++++++++++++
-> >  scripts/mod/devicetable-offsets.c |  3 +++
-> >  scripts/mod/file2alias.c          | 24 ++++++++++++++++++++++++
-> >  3 files changed, 40 insertions(+)
-> > 
-> > diff --git a/include/linux/mod_devicetable.h b/include/linux/mod_devicetable.h
-> > index ae2e75d15b21..befbf53c4b7c 100644
-> > --- a/include/linux/mod_devicetable.h
-> > +++ b/include/linux/mod_devicetable.h
-> > @@ -895,4 +895,17 @@ struct dfl_device_id {
-> >  	kernel_ulong_t driver_data;
-> >  };
-> >  
-> > +/* ISHTP (Integrated Sensor Hub Transport Protocol) */
-> > +
-> > +#define ISHTP_MODULE_PREFIX	"ishtp:"
-> > +
-> > +/**
-> > + * struct ishtp_device_id - ISHTP device identifier
-> > + * @guid_string: 36 char string of the form fa50ff2b-f2e8-45de-83fa-65417f2f49ba
-> > + * @context: pointer to driver specific data
-> > + */
-> > +struct ishtp_device_id {
-> > +	guid_t guid;
-> 
-> The kdoc comment documents a context pointer, but this is missing from the
-> actual struct. Having some sort of driver_data (1) field here would be good IMHO.
+This adds an ALSA control so that the slow-start audio ramp feature
+can be disabled. This is useful for high-definition audio applications.
 
-Fine for me.
+The register field is unusual in that it is a 3-bit field with only
+two valid values, 000=off and 111=on.
 
-I left it out because nothing would be using it at the moment and
-it would have been easy to add when needed.
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+---
+ sound/soc/codecs/cs42l42.c | 30 +++++++++++++++++++++++++++++-
+ sound/soc/codecs/cs42l42.h |  3 +++
+ 2 files changed, 32 insertions(+), 1 deletion(-)
 
-Do you want me to send a v2 for that or would you add it when merging?
-(Or remove the spurious comment)
+diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
+index 27a1c4c73074..56804a3f285e 100644
+--- a/sound/soc/codecs/cs42l42.c
++++ b/sound/soc/codecs/cs42l42.c
+@@ -42,6 +42,7 @@ static const struct reg_default cs42l42_reg_defaults[] = {
+ 	{ CS42L42_SRC_CTL,			0x10 },
+ 	{ CS42L42_MCLK_CTL,			0x02 },
+ 	{ CS42L42_SFTRAMP_RATE,			0xA4 },
++	{ CS42L42_SLOW_START_ENABLE,		0x70 },
+ 	{ CS42L42_I2C_DEBOUNCE,			0x88 },
+ 	{ CS42L42_I2C_STRETCH,			0x03 },
+ 	{ CS42L42_I2C_TIMEOUT,			0xB7 },
+@@ -177,6 +178,7 @@ static bool cs42l42_readable_register(struct device *dev, unsigned int reg)
+ 	case CS42L42_MCLK_STATUS:
+ 	case CS42L42_MCLK_CTL:
+ 	case CS42L42_SFTRAMP_RATE:
++	case CS42L42_SLOW_START_ENABLE:
+ 	case CS42L42_I2C_DEBOUNCE:
+ 	case CS42L42_I2C_STRETCH:
+ 	case CS42L42_I2C_TIMEOUT:
+@@ -387,6 +389,28 @@ static const struct regmap_config cs42l42_regmap = {
+ static DECLARE_TLV_DB_SCALE(adc_tlv, -9700, 100, true);
+ static DECLARE_TLV_DB_SCALE(mixer_tlv, -6300, 100, true);
+ 
++static int cs42l42_slow_start_put(struct snd_kcontrol *kcontrol,
++				  struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	u8 val;
++
++	/* all bits of SLOW_START_EN much change together */
++	switch (ucontrol->value.integer.value[0]) {
++	case 0:
++		val = 0;
++		break;
++	case 1:
++		val = CS42L42_SLOW_START_EN_MASK;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return snd_soc_component_update_bits(component, CS42L42_SLOW_START_ENABLE,
++					     CS42L42_SLOW_START_EN_MASK, val);
++}
++
+ static const char * const cs42l42_hpf_freq_text[] = {
+ 	"1.86Hz", "120Hz", "235Hz", "466Hz"
+ };
+@@ -431,7 +455,11 @@ static const struct snd_kcontrol_new cs42l42_snd_controls[] = {
+ 				CS42L42_DAC_HPF_EN_SHIFT, true, false),
+ 	SOC_DOUBLE_R_TLV("Mixer Volume", CS42L42_MIXER_CHA_VOL,
+ 			 CS42L42_MIXER_CHB_VOL, CS42L42_MIXER_CH_VOL_SHIFT,
+-				0x3f, 1, mixer_tlv)
++				0x3f, 1, mixer_tlv),
++
++	SOC_SINGLE_EXT("Slow Start Switch", CS42L42_SLOW_START_ENABLE,
++			CS42L42_SLOW_START_EN_SHIFT, true, false,
++			snd_soc_get_volsw, cs42l42_slow_start_put),
+ };
+ 
+ static int cs42l42_hp_adc_ev(struct snd_soc_dapm_widget *w,
+diff --git a/sound/soc/codecs/cs42l42.h b/sound/soc/codecs/cs42l42.h
+index f45bcc9a3a62..c8b3267a318b 100644
+--- a/sound/soc/codecs/cs42l42.h
++++ b/sound/soc/codecs/cs42l42.h
+@@ -62,6 +62,9 @@
+ #define CS42L42_INTERNAL_FS_MASK	(1 << CS42L42_INTERNAL_FS_SHIFT)
+ 
+ #define CS42L42_SFTRAMP_RATE		(CS42L42_PAGE_10 + 0x0A)
++#define CS42L42_SLOW_START_ENABLE	(CS42L42_PAGE_10 + 0x0B)
++#define CS42L42_SLOW_START_EN_MASK	GENMASK(6, 4)
++#define CS42L42_SLOW_START_EN_SHIFT	4
+ #define CS42L42_I2C_DEBOUNCE		(CS42L42_PAGE_10 + 0x0E)
+ #define CS42L42_I2C_STRETCH		(CS42L42_PAGE_10 + 0x0F)
+ #define CS42L42_I2C_TIMEOUT		(CS42L42_PAGE_10 + 0x10)
+-- 
+2.11.0
 
-> Regards,
-> 
-> Hans
-> 
-> 1) "context" is fine, but AFAIK almost all other foo_device_id structs call this
-> driver_data, so that would be more consistent IMHO.
-
-Thomas
