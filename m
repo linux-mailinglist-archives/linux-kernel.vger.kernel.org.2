@@ -2,97 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88D614411D7
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 02:36:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E4A64411D0
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 02:27:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230321AbhKABjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 21:39:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230191AbhKABjV (ORCPT
+        id S230274AbhKAB1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 21:27:33 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:26140 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230191AbhKAB1c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 21:39:21 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFFF7C061714;
-        Sun, 31 Oct 2021 18:36:48 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HjFxm4qMnz4xbP;
-        Mon,  1 Nov 2021 12:36:44 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1635730606;
-        bh=bCKRL41vwGERGAU6XSktu0PQOdeDQ2pSM6IhizIvfgM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=iBy+XaKGWEBaGpBS7bAUH9D4yQ1X3Rfj9FJlR1hdJW6Ev5GMpI7oF6KFo/9RM8GMZ
-         9iUxV4jNHL8MMfGrew7KK24R8f5gOqGPsxE8dO34qFIoLZfqDPxlLYYfBan9tnNgoy
-         xgdbFkVuPNgbjctldKCJQh27BM0e4U2ICdqiV9iKAlsPNp5iW1V9FbPeoY4dbQ9HwV
-         pqGLtuYy6RKlepnR22GbOfphBTknTL86A7HnfJJbphC/hHwLKRHzXGuGrdKsGveTjR
-         0TtHCrizk71zDLmXlJvlRjcuH6Tr/XskdOPss6k9fohmE0zF7Ve5bs2LUD5i6mageR
-         g+qZhvhpodcEw==
-Date:   Mon, 1 Nov 2021 12:36:43 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Avri Altman <avri.altman@wdc.com>, Christoph Hellwig <hch@lst.de>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: linux-next: manual merge of the block tree with Linus' tree
-Message-ID: <20211101123643.2b637a50@canb.auug.org.au>
+        Sun, 31 Oct 2021 21:27:32 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HjFdr0H6Qz1DHwt;
+        Mon,  1 Nov 2021 09:22:56 +0800 (CST)
+Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Mon, 1 Nov 2021 09:24:57 +0800
+Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
+ (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Mon, 1 Nov
+ 2021 09:24:57 +0800
+From:   Baokun Li <libaokun1@huawei.com>
+To:     <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+CC:     <patchwork@huawei.com>, <libaokun1@huawei.com>,
+        <yukuai3@huawei.com>, "Hulk Robot" <hulkci@huawei.com>
+Subject: [PATCH -next] ubi: fix race between ctrl_cdev_ioctl and ubi_cdev_ioctl
+Date:   Mon, 1 Nov 2021 09:37:39 +0800
+Message-ID: <20211101013739.236430-1-libaokun1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/GtwtyuFKLcCICD7f3a9_Jmz";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500020.china.huawei.com (7.185.36.88)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/GtwtyuFKLcCICD7f3a9_Jmz
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hulk Robot reported a KASAN report about use-after-free:
+ ==================================================================
+ BUG: KASAN: use-after-free in __list_del_entry_valid+0x13d/0x160
+ Read of size 8 at addr ffff888035e37d98 by task ubiattach/1385
+ [...]
+ Call Trace:
+  klist_dec_and_del+0xa7/0x4a0
+  klist_put+0xc7/0x1a0
+  device_del+0x4d4/0xed0
+  cdev_device_del+0x1a/0x80
+  ubi_attach_mtd_dev+0x2951/0x34b0 [ubi]
+  ctrl_cdev_ioctl+0x286/0x2f0 [ubi]
 
-Hi all,
+ Allocated by task 1414:
+  device_add+0x60a/0x18b0
+  cdev_device_add+0x103/0x170
+  ubi_create_volume+0x1118/0x1a10 [ubi]
+  ubi_cdev_ioctl+0xb7f/0x1ba0 [ubi]
 
-Today's linux-next merge of the block tree got a conflict in:
+ Freed by task 1385:
+  cdev_device_del+0x1a/0x80
+  ubi_remove_volume+0x438/0x6c0 [ubi]
+  ubi_cdev_ioctl+0xbf4/0x1ba0 [ubi]
+ [...]
+ ==================================================================
 
-  drivers/scsi/ufs/ufshpb.c
+The following race could cause the use-after-free problem:
+           cpu1                   cpu2                  cpu3
+_______________________|________________________|______________________
+ctrl_cdev_ioctl
+ ubi_attach_mtd_dev
+  uif_init
+                           ubi_cdev_ioctl
+                            ubi_create_volume
+                             cdev_device_add
+   ubi_add_volume
+   // sysfs exist
+   kill_volumes
+                                                    ubi_cdev_ioctl
+                                                     ubi_remove_volume
+                                                      cdev_device_del
+                                                       // first free
+    ubi_free_volume
+     cdev_del
+     // double free
+   cdev_device_del
 
-between commit:
+The lock held by ctrl_cdev_ioctl is ubi_devices_mutex, but the lock held by
+ubi cdev_ioctl is ubi->device_mutex. Therefore, the two locks can be
+concurrent. However, volume addition and deletion operations are performed
+in both ctrl_cdev_ioctl and ubi_cdev_ioctl. When these operations are
+performed concurrently in both ioctl, a race condition may be triggered.The
+UAF stack above is one such case.
 
-  09d9e4d04187 ("scsi: ufs: ufshpb: Remove HPB2.0 flows")
+To solve this problem, add spin_lock(&ubi->volumes_lock) to ctrl_cdev_ioctl
+where volumes are added and deleted.
 
-from Linus' tree and commit:
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Baokun Li <libaokun1@huawei.com>
+---
+ drivers/mtd/ubi/build.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-  0bf6d96cb829 ("block: remove blk_{get,put}_request")
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index a7e3eb9befb6..708b1b96de01 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -467,6 +467,7 @@ static int uif_init(struct ubi_device *ubi)
+ 	if (err)
+ 		goto out_unreg;
+ 
++	spin_lock(&ubi->volumes_lock);
+ 	for (i = 0; i < ubi->vtbl_slots; i++)
+ 		if (ubi->volumes[i]) {
+ 			err = ubi_add_volume(ubi, ubi->volumes[i]);
+@@ -475,11 +476,13 @@ static int uif_init(struct ubi_device *ubi)
+ 				goto out_volumes;
+ 			}
+ 		}
++	spin_unlock(&ubi->volumes_lock);
+ 
+ 	return 0;
+ 
+ out_volumes:
+ 	kill_volumes(ubi);
++	spin_unlock(&ubi->volumes_lock);
+ 	cdev_device_del(&ubi->cdev, &ubi->dev);
+ out_unreg:
+ 	unregister_chrdev_region(ubi->cdev.dev, ubi->vtbl_slots + 1);
+-- 
+2.31.1
 
-from the block tree.
-
-I fixed it up (the former removed the code modified by the latter, so I
-did that) and can carry the fix as necessary. This is now fixed as far as
-linux-next is concerned, but any non trivial conflicts should be mentioned
-to your upstream maintainer when your tree is submitted for merging.
-You may also want to consider cooperating with the maintainer of the
-conflicting tree to minimise any particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/GtwtyuFKLcCICD7f3a9_Jmz
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF/RKsACgkQAVBC80lX
-0GxnBAf/XqUt0Qkq0FjKPQS8olf4QP74yIjWcu43tCOsZdq09Chr+bJkMJXRaztg
-lnmNQ0bSoZE3p6nEJoXOU8Lo66EHnjugynNLgO9Pwtkwk04Mi2twPCTuNPnU8FhP
-2Zg7g2p/MY9BMNbfBwayEiKVui8E1YDDPoDsSTSRZH2z9S0a9252DvpLsOcoQi0r
-MW/o/NSM2viVML3wFHpc55p2bMYNeNtrPZ+06ufhsBw8V3LSGMIVeMkBSDsm9Vyy
-xkeBFvuvc03KzO5drj9GNtc/itMVfcBk1KyfVlMVvtjCgkjCDsa2LvG3fD6gqz8r
-aojTS1CT62zfh9Mn4p8iq3QO7nhBQA==
-=TwgH
------END PGP SIGNATURE-----
-
---Sig_/GtwtyuFKLcCICD7f3a9_Jmz--
