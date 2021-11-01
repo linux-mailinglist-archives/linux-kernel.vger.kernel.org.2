@@ -2,103 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84663441FAD
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 18:55:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 410E8441FB4
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 18:56:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231826AbhKAR5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 13:57:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:47631 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231862AbhKAR5g (ORCPT
+        id S231499AbhKAR7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 13:59:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231970AbhKAR6v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 13:57:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635789302;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cdA4HEi03IAhyS4b70T1LHDhUS3p0K2wOZ6l2OOPtzk=;
-        b=IsMNYOGaxVpwJADNevMW4bf2Anm8d/tKjABn/ESYRVBglL+vVfscOq+ARunhPXziM3ExVx
-        +RuLqwpJnl+PFMe6ay7gkJ8ucyWqqejsQcFR4L9OQ2AYeBtd67PReFSoKjvebCbqtV8vn/
-        hwYF5NS9Ca6mQWf0q0o12VaRkADOAqs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-161-FsODh18NP9CY1-GxhOsuuQ-1; Mon, 01 Nov 2021 13:54:58 -0400
-X-MC-Unique: FsODh18NP9CY1-GxhOsuuQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8190010B3940;
-        Mon,  1 Nov 2021 17:54:57 +0000 (UTC)
-Received: from asgard.redhat.com (unknown [10.36.110.3])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5D50E5D9D3;
-        Mon,  1 Nov 2021 17:54:55 +0000 (UTC)
-Date:   Mon, 1 Nov 2021 18:54:53 +0100
-From:   Eugene Syromiatnikov <esyr@redhat.com>
-To:     Jeremy Kerr <jk@codeconstruct.com.au>,
-        Matt Johnston <matt@codeconstruct.com.au>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 2/2] mctp: handle the struct sockaddr_mctp_ext
- padding field
-Message-ID: <ebab61afcbcd91441c4a5395612a4f1eca691bae.1635788968.git.esyr@redhat.com>
-References: <cover.1635788968.git.esyr@redhat.com>
+        Mon, 1 Nov 2021 13:58:51 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2210FC061767;
+        Mon,  1 Nov 2021 10:56:18 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id a20-20020a1c7f14000000b003231d13ee3cso4356wmd.3;
+        Mon, 01 Nov 2021 10:56:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YZ2A2AWagNpv2J8C8P3tLCVgYhd2un+CUt39jsHUZpc=;
+        b=JsBw+/WDf2+nx6I0RUT1eXgDPCkJk4ykkvyEZ238RYwKJ3qDaKRsJODzA9eJ1SrR6M
+         KR5MYPjaYeQUnH52j2eXrj8I/uz8phJ2Z7uZ+JjusWHJFxfRDYpZ9+sZbyqLjnDzf2P7
+         /Z8TjVHHXrDSqPhsxCSjk/6CL8CJsOc5ZJE78ur0eMGBNcJBrd51DCpeRCyzH7ovKCoh
+         kgE2c64VAfVU0nY6ajuPze5o6VeNElMlXUmUiJ6wKhmfn6Lvdnc1qGAJouGUubToQr1R
+         aIoxZ+m+5GfutNpg8WEN8FS2IfUjXSci/JYQ5IPSRX97WHpmhFJfi//GDhu6nPIvtG9j
+         FK5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YZ2A2AWagNpv2J8C8P3tLCVgYhd2un+CUt39jsHUZpc=;
+        b=Qa/NhH+ykSoewyngHb5tEwflEq3kMGHBuq/qhUMF9rUtSV48h1R4ZIt9moz2aMzV1w
+         iBGQfNm/fGtcLqA5+l9Fss/SW4ehADC1yj9jPA5g3BhPWzYkfQIs6jZu3zzzQjsN3Pqu
+         Ll3XzBZWX3KtpP/DWpvRL6LC1Ug89GMaEUM/MVoT7ZU6VNX64u2WU45GRHrPNZUyHF5e
+         BEXilvRfV3O962M7BPYdiMY/7ltkPZ7LjcVhyQiHr3P4/qblmEPwe9tNMYAibbbrcXgW
+         7frpFSuMk0VKuk3lXKk1GhWqFY8cc1tR1PzkwUMxJy1+6KLyQeVGqCoT1+g5pRjhi/Do
+         kicw==
+X-Gm-Message-State: AOAM531Ap8kyj8FE5wsdMkvOxD7Tp0M8GRn7V8jlb6tJrqXvFZ66vkqy
+        BWuHbO+GSkYFAnw/48Hc+8V/nFnQqmDBKNS+uBQ=
+X-Google-Smtp-Source: ABdhPJw8wKcfyMP3WnvzELw4fAFEeF9Qqe/NMhnO6k7F1oamAM9YgTt8bPddiGlxtH3a7+NJoBGGnIWyIHXYGeKvo1o=
+X-Received: by 2002:a7b:c1d5:: with SMTP id a21mr502663wmj.14.1635789376712;
+ Mon, 01 Nov 2021 10:56:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1635788968.git.esyr@redhat.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20211028135737.8625-1-yc.hung@mediatek.com> <20211028135737.8625-2-yc.hung@mediatek.com>
+ <YXwoB7FtRw0AzgcD@sirena.org.uk>
+In-Reply-To: <YXwoB7FtRw0AzgcD@sirena.org.uk>
+From:   Daniel Baluta <daniel.baluta@gmail.com>
+Date:   Mon, 1 Nov 2021 19:56:04 +0200
+Message-ID: <CAEnQRZCQHxctG+3L72Xx3083shytF478ONGGpZf0A-6-+nFE=w@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] ASoC: SOF: mediatek: Add mt8195 dsp clock support
+To:     Mark Brown <broonie@kernel.org>
+Cc:     YC Hung <yc.hung@mediatek.com>, Takashi Iwai <tiwai@suse.com>,
+        Rob Herring <robh+dt@kernel.org>, matthias.bgg@gmail.com,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        Daniel Baluta <daniel.baluta@nxp.com>, trevor.wu@mediatek.com,
+        allen-kh.cheng@mediatek.com,
+        angelogioacchino.delregno@collabora.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-struct sockaddr_mctp_ext.__smctp_paddin0 has to be checked for being set
-to zero, otherwise it cannot be utilised in the future.
+On Fri, Oct 29, 2021 at 8:00 PM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Thu, Oct 28, 2021 at 09:57:36PM +0800, YC Hung wrote:
+> > Add adsp clock on/off support on mt8195 platform.
+> >
+> > Acked-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> > Signed-off-by: YC Hung <yc.hung@mediatek.com>
+> > ---
+> >  sound/soc/sof/mediatek/adsp_helper.h       |   2 +-
+>
+> This doesn't apply against current code, there's no such file upstream.
+> Please check and resend.
 
-Complements: 99ce45d5e7dbde39 ("mctp: Implement extended addressing")
-Signed-off-by: Eugene Syromiatnikov <esyr@redhat.com>
----
- net/mctp/af_mctp.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+This patch was sent only to get an Ack-by for 2/2 from Rob Herring.
+The patch will go first to SOF tree and then I will
+send you a patch based on your for-next branch.
 
-diff --git a/net/mctp/af_mctp.c b/net/mctp/af_mctp.c
-index bc88159..6cd1308 100644
---- a/net/mctp/af_mctp.c
-+++ b/net/mctp/af_mctp.c
-@@ -39,6 +39,13 @@ static bool mctp_sockaddr_is_ok(const struct sockaddr_mctp *addr)
- 	return !addr->__smctp_pad0 && !addr->__smctp_pad1;
- }
- 
-+static bool mctp_sockaddr_ext_is_ok(const struct sockaddr_mctp_ext *addr)
-+{
-+	return !addr->__smctp_pad0[0]
-+	       && !addr->__smctp_pad0[1]
-+	       && !addr->__smctp_pad0[2];
-+}
-+
- static int mctp_bind(struct socket *sock, struct sockaddr *addr, int addrlen)
- {
- 	struct sock *sk = sock->sk;
-@@ -135,7 +142,8 @@ static int mctp_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
- 		DECLARE_SOCKADDR(struct sockaddr_mctp_ext *,
- 				 extaddr, msg->msg_name);
- 
--		if (extaddr->smctp_halen > sizeof(cb->haddr)) {
-+		if (!mctp_sockaddr_ext_is_ok(extaddr)
-+		    || extaddr->smctp_halen > sizeof(cb->haddr)) {
- 			rc = -EINVAL;
- 			goto err_free;
- 		}
-@@ -224,6 +232,7 @@ static int mctp_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
- 			msg->msg_namelen = sizeof(*ae);
- 			ae->smctp_ifindex = cb->ifindex;
- 			ae->smctp_halen = cb->halen;
-+			memset(ae->__smctp_pad0, 0x0, sizeof(ae->__smctp_pad0));
- 			memset(ae->smctp_haddr, 0x0, sizeof(ae->smctp_haddr));
- 			memcpy(ae->smctp_haddr, cb->haddr, cb->halen);
- 		}
--- 
-2.1.4
-
+YC sorry for not being more explicit. I think the right way was to
+mark this patch series as [RFC PATCH].
