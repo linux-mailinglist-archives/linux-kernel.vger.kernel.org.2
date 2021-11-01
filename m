@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16604441785
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:36:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B98C7441708
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:30:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233475AbhKAJhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:37:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43568 "EHLO mail.kernel.org"
+        id S232589AbhKAJcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:32:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37170 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233599AbhKAJdp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:33:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B19361264;
-        Mon,  1 Nov 2021 09:25:09 +0000 (UTC)
+        id S233084AbhKAJ2W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:28:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0313A6112D;
+        Mon,  1 Nov 2021 09:23:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758709;
-        bh=agL3lLPFruZumBuXzUMVnJ3pEnwr/9zrL7wKXeA7QZ4=;
+        s=korg; t=1635758583;
+        bh=OrxyeqUFbryvuioRIbJPK7wsOs+UhN8lPaXNzm8ozyk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yqHfXcd3wsJbOirCmt2/BLkTVWoV0eeqr+DY1cl/j5QftuvZmV8ZAJ67pvMAzyCXn
-         uNfSS549zD8JF/WQ/nFoPq3Ct6m0oxfVYXdk+zOayj99d95/MxcnWXbl6fg7O1UVGP
-         NNmWaN/UyuRp28uOm/vqjdatoAF303X+G7kFfArM=
+        b=0cmwwbHlcivGWQKiZBRN2dONGKl4HlFTxxVlPdpxvMDi2k18IkXHXQCHlB1pVKTsR
+         ry1hQ4ROumvnMzSTUftxpNHvlNmCXqpVsOGde4hV4tgOVR9xSROf6YgwsGZHiZgJ8Y
+         PFiLCD6hGnBeMjjS8EdzJnQt6sD8qpybNe0gaLRQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Haibo Chen <haibo.chen@nxp.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 5.10 25/77] mmc: sdhci-esdhc-imx: clear the buffer_read_ready to reset standard tuning circuit
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wang Hai <wanghai38@huawei.com>,
+        Johan Hovold <johan@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.4 09/51] usbnet: fix error return code in usbnet_probe()
 Date:   Mon,  1 Nov 2021 10:17:13 +0100
-Message-Id: <20211101082517.227114846@linuxfoundation.org>
+Message-Id: <20211101082502.153933817@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082511.254155853@linuxfoundation.org>
-References: <20211101082511.254155853@linuxfoundation.org>
+In-Reply-To: <20211101082500.203657870@linuxfoundation.org>
+References: <20211101082500.203657870@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,68 +41,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Haibo Chen <haibo.chen@nxp.com>
+From: Wang Hai <wanghai38@huawei.com>
 
-commit 9af372dc70e9fdcbb70939dac75365e7b88580b4 upstream.
+commit 6f7c88691191e6c52ef2543d6f1da8d360b27a24 upstream.
 
-To reset standard tuning circuit completely, after clear ESDHC_MIX_CTRL_EXE_TUNE,
-also need to clear bit buffer_read_ready, this operation will finally clear the
-USDHC IP internal logic flag execute_tuning_with_clr_buf, make sure the following
-normal data transfer will not be impacted by standard tuning logic used before.
+Return error code if usb_maxpacket() returns 0 in usbnet_probe()
 
-Find this issue when do quick SD card insert/remove stress test. During standard
-tuning prodedure, if remove SD card, USDHC standard tuning logic can't clear the
-internal flag execute_tuning_with_clr_buf. Next time when insert SD card, all
-data related commands can't get any data related interrupts, include data transfer
-complete interrupt, data timeout interrupt, data CRC interrupt, data end bit interrupt.
-Always trigger software timeout issue. Even reset the USDHC through bits in register
-SYS_CTRL (0x2C, bit28 reset tuning, bit26 reset data, bit 25 reset command, bit 24
-reset all) can't recover this. From the user's point of view, USDHC stuck, SD can't
-be recognized any more.
-
-Fixes: d9370424c948 ("mmc: sdhci-esdhc-imx: reset tuning circuit when power on mmc card")
-Signed-off-by: Haibo Chen <haibo.chen@nxp.com>
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/1634263236-6111-1-git-send-email-haibo.chen@nxp.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Fixes: 397430b50a36 ("usbnet: sanity check for maxpacket")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Reviewed-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20211026124015.3025136-1-wanghai38@huawei.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/mmc/host/sdhci-esdhc-imx.c |   16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ drivers/net/usb/usbnet.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/mmc/host/sdhci-esdhc-imx.c
-+++ b/drivers/mmc/host/sdhci-esdhc-imx.c
-@@ -1157,6 +1157,7 @@ static void esdhc_reset_tuning(struct sd
- 	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
- 	struct pltfm_imx_data *imx_data = sdhci_pltfm_priv(pltfm_host);
- 	u32 ctrl;
-+	int ret;
- 
- 	/* Reset the tuning circuit */
- 	if (esdhc_is_usdhc(imx_data)) {
-@@ -1169,7 +1170,22 @@ static void esdhc_reset_tuning(struct sd
- 		} else if (imx_data->socdata->flags & ESDHC_FLAG_STD_TUNING) {
- 			ctrl = readl(host->ioaddr + SDHCI_AUTO_CMD_STATUS);
- 			ctrl &= ~ESDHC_MIX_CTRL_SMPCLK_SEL;
-+			ctrl &= ~ESDHC_MIX_CTRL_EXE_TUNE;
- 			writel(ctrl, host->ioaddr + SDHCI_AUTO_CMD_STATUS);
-+			/* Make sure ESDHC_MIX_CTRL_EXE_TUNE cleared */
-+			ret = readl_poll_timeout(host->ioaddr + SDHCI_AUTO_CMD_STATUS,
-+				ctrl, !(ctrl & ESDHC_MIX_CTRL_EXE_TUNE), 1, 50);
-+			if (ret == -ETIMEDOUT)
-+				dev_warn(mmc_dev(host->mmc),
-+				 "Warning! clear execute tuning bit failed\n");
-+			/*
-+			 * SDHCI_INT_DATA_AVAIL is W1C bit, set this bit will clear the
-+			 * usdhc IP internal logic flag execute_tuning_with_clr_buf, which
-+			 * will finally make sure the normal data transfer logic correct.
-+			 */
-+			ctrl = readl(host->ioaddr + SDHCI_INT_STATUS);
-+			ctrl |= SDHCI_INT_DATA_AVAIL;
-+			writel(ctrl, host->ioaddr + SDHCI_INT_STATUS);
- 		}
+--- a/drivers/net/usb/usbnet.c
++++ b/drivers/net/usb/usbnet.c
+@@ -1775,6 +1775,7 @@ usbnet_probe (struct usb_interface *udev
+ 	dev->maxpacket = usb_maxpacket (dev->udev, dev->out, 1);
+ 	if (dev->maxpacket == 0) {
+ 		/* that is a broken device */
++		status = -ENODEV;
+ 		goto out4;
  	}
- }
+ 
 
 
