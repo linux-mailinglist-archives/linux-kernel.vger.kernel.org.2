@@ -2,159 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE2294420F1
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 20:36:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 195324420EC
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 20:35:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230492AbhKATic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 15:38:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230107AbhKATiP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S230281AbhKATiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 1 Nov 2021 15:38:15 -0400
-Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24F88C061714;
-        Mon,  1 Nov 2021 12:35:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
-         s=20161220; h=Content-Transfer-Encoding:Content-Type:Message-ID:References:
-        In-Reply-To:Subject:Cc:To:From:Date:MIME-Version:Sender:Reply-To:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=p5j38nD4C6JFRNTsNhzwvjuue/W06jEH6YlXaA0bpeU=; b=jbLZtsyJxM9oj7PQePkpXtK5kb
-        mdV8zpactjaZuYEv7XKtLrdyChEfIsddeHZmX+saHhtRh1zMhukiG2cGhihHIl8Z8UjnYpqazgi2j
-        G3ePggflvINuBVvN2eCr9T1rW0dtWweZvQsBCe8hWVN+P6rW1XD0lrJ60kTFeQsfD+R5rmFk6AcEp
-        g3XRtTlrMWsFCxgx63tAQuWvV5+01JJcrfMq6IgR2tbhufHcGwh2NpJoNFXcIDu/FwonZiE7NG6Az
-        nhFopVf6K+QEVodyZG7hO5dCIitxX13/iU3mPU3o2/puUu2cS3cP7L7hutsDVf+nVy6jSZ9VYmlQL
-        E0ISl+bQ==;
-Received: from webng-gw.kapsi.fi ([91.232.154.200] helo=roundcube.kapsi.fi)
-        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <jyri.sarha@iki.fi>)
-        id 1mhd5b-000303-Us; Mon, 01 Nov 2021 21:35:27 +0200
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41202 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230004AbhKATiI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 15:38:08 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6820AC061764
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 12:35:34 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id 5so66899309edw.7
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 12:35:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IHx+6RyAT00bbPl2zwH9JrS2kr0JH1+UQLDTyQafWP0=;
+        b=KyHC/2sMIjaigeVOlTGEGijkFCjfxxTwxhKSBqFgKNJl8gzl+JgEnm3ZVQRF6GoH6M
+         N93vex8ipcoeTJp3V6JdsA42l82+4Zf+2Xedthdz6ZmdGKVSwpMuE422AsiAGgt/WUOM
+         xmwtDwGMv9Dz/J9rKlAagS4nZ1evh/kgJTLKFMmgeXDKPDUqLeDCTPcaqSSV5CnkYfo6
+         wQ+7TEz+11owwdU922VEC3FuTGzcAK/B1L2ZH21Q3Jl6QySTTiMVgUSNwkDlsvl2U31U
+         NTwhWWFcROhYuh5KJmZLQU+hQMbTKY8ZZG1hzQrhS8Q9tYP3KaePClGEYbHTapzvdXmg
+         k3pg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IHx+6RyAT00bbPl2zwH9JrS2kr0JH1+UQLDTyQafWP0=;
+        b=vsHIObpMY2OK+F/CuUd19zIt/Ms3IOt2lIs2UZbIRz24iNBG/mTSIZ9d3AUwXU6VhK
+         J41DyYmlKMf+RSuhOzSL8ze8a6xPoTVY1QYhlqv8OTqaQ20CHZSWYVbHy5m6p5oH4kon
+         mYafWD9BSFmWDq+AJn6VEBJjldeBvYL8aPkgKljS9838FLYx15ufANWbxFHLCInkAYeo
+         xIHD14jQY3wof2qPp2Vs7rAUxWpg5cKOOZ/lcrcpFiw16xe/iatsjLdOg/qobgeQGm2H
+         CuaLKL+msRXBjzJk/1Rp2q10kWXCR5LFSrhSD8eq7bPoFfLx356vm7e0IWxjccnM7myk
+         0E2A==
+X-Gm-Message-State: AOAM5319ed1MdCa0FfEhKb6EKiJBqewE1So9gQ5e/iOt4yqI5h95fpW0
+        TFRXeMZChXMgl9YwRN0bMgJdrA==
+X-Google-Smtp-Source: ABdhPJyYEGncnTnzkLTin5kRwPLyQGpRlYP737W+Tw3n8ODVeVmxndxYj5KOPtogv8tmWGduU4D2QA==
+X-Received: by 2002:a17:906:c1c9:: with SMTP id bw9mr38931001ejb.3.1635795332945;
+        Mon, 01 Nov 2021 12:35:32 -0700 (PDT)
+Received: from localhost ([31.134.121.151])
+        by smtp.gmail.com with ESMTPSA id kw5sm7164357ejc.110.2021.11.01.12.35.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Nov 2021 12:35:32 -0700 (PDT)
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org
+Subject: [PATCH 0/2] clocksource: exynos_mct: Enable MCT on ARM64
+Date:   Mon,  1 Nov 2021 21:35:29 +0200
+Message-Id: <20211101193531.15078-1-semen.protsenko@linaro.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Date:   Mon, 01 Nov 2021 21:35:25 +0200
-From:   Jyri Sarha <jyri.sarha@iki.fi>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        Tomi Valkeinen <tomba@kernel.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Russell King <rmk+kernel@arm.linux.org.uk>,
-        Saravana Kannan <saravanak@google.com>
-Subject: Re: [PATCH v3 24/34] drm/tilcdc: Migrate to aggregate driver
-In-Reply-To: <20211026000044.885195-25-swboyd@chromium.org>
-References: <20211026000044.885195-1-swboyd@chromium.org>
- <20211026000044.885195-25-swboyd@chromium.org>
-Message-ID: <db784574b2cbe57ac0efbe045c9576f3@iki.fi>
-X-Sender: jyri.sarha@iki.fi
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 91.232.154.200
-X-SA-Exim-Mail-From: jyri.sarha@iki.fi
-X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-10-26 3:00, Stephen Boyd wrote:
-> Use an aggregate driver instead of component ops so that we can get
-> proper driver probe ordering of the aggregate device with respect to 
-> all
-> the component devices that make up the aggregate device.
-> 
-> Cc: Jyri Sarha <jyri.sarha@iki.fi>
-> Cc: Tomi Valkeinen <tomba@kernel.org>
-> Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
-> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-> Cc: Rob Clark <robdclark@gmail.com>
-> Cc: Russell King <rmk+kernel@arm.linux.org.uk>
-> Cc: Saravana Kannan <saravanak@google.com>
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> ---
+This is re-submission of Marek Szyprowski patches, which were sent
+earlier [1], but weren't applied for some reason. Those two patches look
+helpful and benign:
 
-Tested-by: Jyri Sarha <jyri.sarha@iki.fi>
+  - [PATCH 1/2]: cleanup MCT irqs setting up
+  - [PATCH 2/2]: enable MCT on ARM64
 
-Thanks,
-Jyri
+I'm mostly interested in [PATCH 2/2], which allows one to test MCT on
+Exynos850 (architected timer works fine on Exynos850, but it's nice to
+have MCT for wakeup and testing too). But cleanup one seems desirable as
+well, so sending both.
 
->  drivers/gpu/drm/tilcdc/tilcdc_drv.c | 28 ++++++++++++++++------------
->  1 file changed, 16 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/tilcdc/tilcdc_drv.c
-> b/drivers/gpu/drm/tilcdc/tilcdc_drv.c
-> index 6b03f89a98d4..d5c6567eec8d 100644
-> --- a/drivers/gpu/drm/tilcdc/tilcdc_drv.c
-> +++ b/drivers/gpu/drm/tilcdc/tilcdc_drv.c
-> @@ -531,13 +531,16 @@ static const struct dev_pm_ops tilcdc_pm_ops = {
->  /*
->   * Platform driver:
->   */
-> -static int tilcdc_bind(struct device *dev)
-> +static int tilcdc_bind(struct aggregate_device *adev)
->  {
-> +	struct device *dev = adev->parent;
-> +
->  	return tilcdc_init(&tilcdc_driver, dev);
->  }
-> 
-> -static void tilcdc_unbind(struct device *dev)
-> +static void tilcdc_unbind(struct aggregate_device *adev)
->  {
-> +	struct device *dev = adev->parent;
->  	struct drm_device *ddev = dev_get_drvdata(dev);
-> 
->  	/* Check if a subcomponent has already triggered the unloading. */
-> @@ -547,9 +550,13 @@ static void tilcdc_unbind(struct device *dev)
->  	tilcdc_fini(dev_get_drvdata(dev));
->  }
-> 
-> -static const struct component_master_ops tilcdc_comp_ops = {
-> -	.bind = tilcdc_bind,
-> -	.unbind = tilcdc_unbind,
-> +static struct aggregate_driver tilcdc_aggregate_driver = {
-> +	.probe = tilcdc_bind,
-> +	.remove = tilcdc_unbind,
-> +	.driver = {
-> +		.name = "tilcdc_drm",
-> +		.owner = THIS_MODULE,
-> +	},
->  };
-> 
->  static int tilcdc_pdev_probe(struct platform_device *pdev)
-> @@ -566,12 +573,9 @@ static int tilcdc_pdev_probe(struct 
-> platform_device *pdev)
->  	ret = tilcdc_get_external_components(&pdev->dev, &match);
->  	if (ret < 0)
->  		return ret;
-> -	else if (ret == 0)
-> +	if (ret == 0)
->  		return tilcdc_init(&tilcdc_driver, &pdev->dev);
-> -	else
-> -		return component_master_add_with_match(&pdev->dev,
-> -						       &tilcdc_comp_ops,
-> -						       match);
-> +	return component_aggregate_register(&pdev->dev,
-> &tilcdc_aggregate_driver, match);
->  }
-> 
->  static int tilcdc_pdev_remove(struct platform_device *pdev)
-> @@ -581,10 +585,10 @@ static int tilcdc_pdev_remove(struct
-> platform_device *pdev)
->  	ret = tilcdc_get_external_components(&pdev->dev, NULL);
->  	if (ret < 0)
->  		return ret;
-> -	else if (ret == 0)
-> +	if (ret == 0)
->  		tilcdc_fini(platform_get_drvdata(pdev));
->  	else
-> -		component_master_del(&pdev->dev, &tilcdc_comp_ops);
-> +		component_aggregate_unregister(&pdev->dev, 
-> &tilcdc_aggregate_driver);
-> 
->  	return 0;
->  }
+[PATCH 2/2] commit message was rewritten to provide new reasoning and
+background, as original commit message was related to [1] series.
+
+[1] https://patchwork.kernel.org/project/linux-samsung-soc/cover/20181018095708.1527-1-m.szyprowski@samsung.com/
+
+Marek Szyprowski (2):
+  clocksource: exynos_mct: Refactor resources allocation
+  arm64: platform: Enable Exynos Multi-Core Timer driver
+
+ arch/arm64/Kconfig.platforms     |  1 +
+ drivers/clocksource/exynos_mct.c | 50 +++++++++++++++++++-------------
+ 2 files changed, 31 insertions(+), 20 deletions(-)
+
+-- 
+2.30.2
+
