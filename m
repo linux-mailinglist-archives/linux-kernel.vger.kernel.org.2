@@ -2,213 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D768B44200A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 19:30:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF2AA44200C
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 19:30:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231588AbhKASc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 14:32:26 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:50866 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231916AbhKAScM (ORCPT
+        id S232096AbhKAScv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 14:32:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229760AbhKAScq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 14:32:12 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1A1ITCNu043565;
-        Mon, 1 Nov 2021 13:29:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1635791352;
-        bh=i4SlabNeux/CJimAkQl7wJwhqnLKCYcOWMS9od/vzeY=;
-        h=From:To:CC:Subject:Date;
-        b=OVy0MGH0qJpsuETkkV0b4+dyA01znzuE02NmtzVacbw/BAmdLk49ftD1qqBQmVBim
-         8BTHCRKLBfkxXIjpgGMo/SqTuHqOCFilHhD49wHXEe/wjjPmbyJN3Go9mLuJyhkHNr
-         6BIDmRaxT8KPEkwf8NKLeC+67DS1Szccd0sL4RFM=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1A1ITCnZ000738
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 1 Nov 2021 13:29:12 -0500
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 1
- Nov 2021 13:29:12 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Mon, 1 Nov 2021 13:29:12 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1A1ITBl3073637;
-        Mon, 1 Nov 2021 13:29:11 -0500
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-To:     "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Florian Fainelli <f.fainelli@gmail.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>
-Subject: [RFC PATCH] net: phy/mdio: enable mmd indirect access through phy_mii_ioctl()
-Date:   Mon, 1 Nov 2021 20:28:59 +0200
-Message-ID: <20211101182859.24073-1-grygorii.strashko@ti.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 1 Nov 2021 14:32:46 -0400
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D95FC061764
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 11:30:12 -0700 (PDT)
+Received: by mail-il1-x133.google.com with SMTP id i12so13221338ila.12
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 11:30:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=/OdvGRGPu0zDVBrtV3KLjsx6ZoiLAgQ4dU32aGnds/Q=;
+        b=pQAxahXBIfbwdOIYt/l59ZH82L0ST1pPCyL09hl00FzeH/EiHYLnoWeUmTP7+u+9OP
+         FmyXJCT40tP63vQ1vKYAseaud6pMZGfj6IhEqZhDQdiSn2mTecmq1MN226dOtFFaGBJf
+         kgOu/BNs/2dZanENMcs/KAcUgKmDj9lysRcqikWdoRufMgQ4mZgOcyapwC6B9vtrZzVu
+         1r0LuTsis5xSTORf7z9vd0tcaOKW4BiiO+4rXrQsepRivuCgyVB/njT88xfNtYm0YdwT
+         AC0YoApL2W7X84spkh/R30RrR8oXYgq/8MjnBbN/vakcuSQG6caY/vI51wBH8Qh9Ra0s
+         CYRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/OdvGRGPu0zDVBrtV3KLjsx6ZoiLAgQ4dU32aGnds/Q=;
+        b=TUI5tSQwVeBj1vxS26geEaMxkbTwtHHy8LYOoRq55kJyD7bcsf1AmYw5QdrgxQUiT4
+         t0t9VmK2Q5ZvbzhWvu0swmIg797ekDk7fULoy8VFeDcfEjFBELq2FQZK4tuGpCOnV16f
+         z9jO27Y7rKZVdkieyP4WezMclCNpkrs4/EU92zHfJTDUYM3euIXZ/H/XwQ767qok61ZO
+         jafDwfAeLV/xAzWeFQhiPN4kLtpTkSWZxNqSATap0A3wSFVcbojWfd4fw/YpvdJAB6YF
+         RWS6WdojSRvIq0fwXJV8qO9Uxbl7QF2YOTDp+mEvH1GM0WlR6E+7MfoctiIouXTT8KVW
+         MyJA==
+X-Gm-Message-State: AOAM530vFhr95J2t9MmB6UWW9hr/j6HIRZWad2O3mHA6hmAQRqw8tFsB
+        7bjcMw2Q5yHfOndVvLLvsMNu+w==
+X-Google-Smtp-Source: ABdhPJzm/F7/ygI9I4QcM9qe4P/bULdDiNQ8WQzJYyeUU3GutDtK1TvphmEsYcNN2yF2kXMKJxjQdA==
+X-Received: by 2002:a05:6e02:2143:: with SMTP id d3mr4228107ilv.241.1635791411720;
+        Mon, 01 Nov 2021 11:30:11 -0700 (PDT)
+Received: from [192.168.1.30] ([207.135.234.126])
+        by smtp.gmail.com with ESMTPSA id s3sm5657737ilv.61.2021.11.01.11.30.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Nov 2021 11:30:11 -0700 (PDT)
+Subject: Re: [syzbot] WARNING in io_poll_task_func
+To:     syzbot <syzbot+50a186b2a3a0139929ab@syzkaller.appspotmail.com>,
+        asml.silence@gmail.com, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        xiaoguang.wang@linux.alibaba.com
+References: <000000000000e8ad6005cfbe4960@google.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <a24e8fb9-f378-5308-8956-718c390c6c82@kernel.dk>
+Date:   Mon, 1 Nov 2021 12:30:10 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <000000000000e8ad6005cfbe4960@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch enables access to C22 PHY MMD address space through
-phy_mii_ioctl() SIOCGMIIREG/SIOCSMIIREG IOCTLs. It checks if R/W request is
-received with C45 flag enabled while MDIO bus doesn't support C45 and, in
-this case, tries to treat prtad as PHY MMD selector and use MMD API.
+On 11/1/21 12:24 PM, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    bdcc9f6a5682 Add linux-next specific files for 20211029
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=142531f4b00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=4b504bcb4c507265
+> dashboard link: https://syzkaller.appspot.com/bug?extid=50a186b2a3a0139929ab
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=177a979ab00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1636cc5f300000
+> 
+> The issue was bisected to:
+> 
+> commit 34ced75ca1f63fac6148497971212583aa0f7a87
+> Author: Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
+> Date:   Mon Oct 25 05:38:48 2021 +0000
+> 
+>     io_uring: reduce frequent add_wait_queue() overhead for multi-shot poll request
 
-With this change it's possible to r/w PHY MMD registers with phytool, for
-example, before:
+#syz invalid
 
-  phytool read eth0/0x1f:0/0x32
-  0xffea
+Please stop testing this old branch, as mentioned the patches causing this
+have been dropped.
 
-after:
-  phytool read eth0/0x1f:0/0x32
-  0x00d1
-
-This feature is very useful for various PHY issues debugging (now it's
-required to modify phy code to collect MMD regs dump).
-
-The patch is marked as RFC as it possible that I've missed something and
-such feature already present in Kernel, but I just can't find it. 
-It also doesn't cover phylink.
-
-Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
----
- drivers/net/phy/phy-core.c | 32 ++++++++++++++++++++++++--------
- drivers/net/phy/phy.c      | 29 ++++++++++++++++++++++++++---
- include/linux/phy.h        |  2 ++
- 3 files changed, 52 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/net/phy/phy-core.c b/drivers/net/phy/phy-core.c
-index 2870c33b8975..2c83a121a5fa 100644
---- a/drivers/net/phy/phy-core.c
-+++ b/drivers/net/phy/phy-core.c
-@@ -457,6 +457,28 @@ static void mmd_phy_indirect(struct mii_bus *bus, int phy_addr, int devad,
- 			devad | MII_MMD_CTRL_NOINCR);
- }
- 
-+int __mmd_phy_read(struct mii_bus *bus, int phy_addr, int devad, u32 regnum)
-+{
-+	int retval;
-+
-+	mmd_phy_indirect(bus, phy_addr, devad, regnum);
-+
-+	/* Read the content of the MMD's selected register */
-+	retval = __mdiobus_read(bus, phy_addr, MII_MMD_DATA);
-+
-+	return retval;
-+}
-+
-+int __mmd_phy_write(struct mii_bus *bus, int phy_addr, int devad, u32 regnum, u16 val)
-+{
-+	mmd_phy_indirect(bus, phy_addr, devad, regnum);
-+
-+	/* Write the data into MMD's selected register */
-+	__mdiobus_write(bus, phy_addr, MII_MMD_DATA, val);
-+
-+	return 0;
-+}
-+
- /**
-  * __phy_read_mmd - Convenience function for reading a register
-  * from an MMD on a given PHY.
-@@ -482,10 +504,7 @@ int __phy_read_mmd(struct phy_device *phydev, int devad, u32 regnum)
- 		struct mii_bus *bus = phydev->mdio.bus;
- 		int phy_addr = phydev->mdio.addr;
- 
--		mmd_phy_indirect(bus, phy_addr, devad, regnum);
--
--		/* Read the content of the MMD's selected register */
--		val = __mdiobus_read(bus, phy_addr, MII_MMD_DATA);
-+		val = __mmd_phy_read(bus, phy_addr, devad, regnum);
- 	}
- 	return val;
- }
-@@ -538,10 +557,7 @@ int __phy_write_mmd(struct phy_device *phydev, int devad, u32 regnum, u16 val)
- 		struct mii_bus *bus = phydev->mdio.bus;
- 		int phy_addr = phydev->mdio.addr;
- 
--		mmd_phy_indirect(bus, phy_addr, devad, regnum);
--
--		/* Write the data into MMD's selected register */
--		__mdiobus_write(bus, phy_addr, MII_MMD_DATA, val);
-+		__mmd_phy_write(bus, phy_addr, devad, regnum, val);
- 
- 		ret = 0;
- 	}
-diff --git a/drivers/net/phy/phy.c b/drivers/net/phy/phy.c
-index a3bfb156c83d..212ec5954b95 100644
---- a/drivers/net/phy/phy.c
-+++ b/drivers/net/phy/phy.c
-@@ -300,8 +300,19 @@ int phy_mii_ioctl(struct phy_device *phydev, struct ifreq *ifr, int cmd)
- 			prtad = mii_data->phy_id;
- 			devad = mii_data->reg_num;
- 		}
--		mii_data->val_out = mdiobus_read(phydev->mdio.bus, prtad,
--						 devad);
-+		if (mdio_phy_id_is_c45(mii_data->phy_id) &&
-+		    phydev->mdio.bus->probe_capabilities <= MDIOBUS_C22) {
-+			phy_lock_mdio_bus(phydev);
-+
-+			mii_data->val_out = __mmd_phy_read(phydev->mdio.bus,
-+							   mdio_phy_id_devad(mii_data->phy_id),
-+							   prtad,
-+							   mii_data->reg_num);
-+
-+			phy_unlock_mdio_bus(phydev);
-+		} else {
-+			mii_data->val_out = mdiobus_read(phydev->mdio.bus, prtad, devad);
-+		}
- 		return 0;
- 
- 	case SIOCSMIIREG:
-@@ -351,7 +362,19 @@ int phy_mii_ioctl(struct phy_device *phydev, struct ifreq *ifr, int cmd)
- 			}
- 		}
- 
--		mdiobus_write(phydev->mdio.bus, prtad, devad, val);
-+		if (mdio_phy_id_is_c45(mii_data->phy_id) &&
-+		    phydev->mdio.bus->probe_capabilities <= MDIOBUS_C22) {
-+			phy_lock_mdio_bus(phydev);
-+
-+			__mmd_phy_write(phydev->mdio.bus, mdio_phy_id_devad(mii_data->phy_id),
-+					prtad,
-+					mii_data->reg_num,
-+					val);
-+
-+			phy_unlock_mdio_bus(phydev);
-+		} else {
-+			mdiobus_write(phydev->mdio.bus, prtad, devad, val);
-+		}
- 
- 		if (prtad == phydev->mdio.addr &&
- 		    devad == MII_BMCR &&
-diff --git a/include/linux/phy.h b/include/linux/phy.h
-index 96e43fbb2dd8..f6032c1708e6 100644
---- a/include/linux/phy.h
-+++ b/include/linux/phy.h
-@@ -1114,12 +1114,14 @@ int phy_read_mmd(struct phy_device *phydev, int devad, u32 regnum);
-  * from an MMD on a given PHY.
-  */
- int __phy_read_mmd(struct phy_device *phydev, int devad, u32 regnum);
-+int __mmd_phy_read(struct mii_bus *bus, int phy_addr, int devad, u32 regnum);
- 
- /*
-  * phy_write_mmd - Convenience function for writing a register
-  * on an MMD on a given PHY.
-  */
- int phy_write_mmd(struct phy_device *phydev, int devad, u32 regnum, u16 val);
-+int __mmd_phy_write(struct mii_bus *bus, int phy_addr, int devad, u32 regnum, u16 val);
- 
- /*
-  * __phy_write_mmd - Convenience function for writing a register
 -- 
-2.17.1
+Jens Axboe
 
