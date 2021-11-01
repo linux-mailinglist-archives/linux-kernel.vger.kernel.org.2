@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1229D4416AF
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:26:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AFC74417B5
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:37:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233028AbhKAJ2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:28:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59152 "EHLO mail.kernel.org"
+        id S232441AbhKAJi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:38:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43594 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232492AbhKAJY4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:24:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 691B3610E8;
-        Mon,  1 Nov 2021 09:21:36 +0000 (UTC)
+        id S233199AbhKAJfr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:35:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FD4D610CC;
+        Mon,  1 Nov 2021 09:26:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758496;
-        bh=EyVhYykjNsNJaeHThoyuDdJZpI/45o5n5Mwbt2kBEr4=;
+        s=korg; t=1635758760;
+        bh=MrlPpx7DvVJXpmBB1vpvxboB4PpqCFjyFXwqMbtxq5o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WVbXZxVOZJZ+/muDMPADLnGmRhxk3JXjj78+ugby9luMtRIV0COIqZflW+aRKGPAz
-         +BKSHiDUyl0o3RdhvFBgoC0EtlBItQ/ic6o1bi935G8B8tsD/HJ+JueBb5QkyTo7Zj
-         ExSP5GEkqHQwQ2q8HR0slFpLCcgCXSPlQbd53eZY=
+        b=akbfDeev8zdwsYv0ALyQcgv/C8oPrDfMQp7jNe2eNqpLu0pII6E3IVr3OOFoI4pON
+         PE0oVeN6A2HacH9le1TsCGqVzdRGww9MScM453jrc6FpYZ5ZWWl4Yfbp1F0NBIQdW6
+         eIllW/c2Tmj3MgWOE/PXARnYiZRccI6yfUCI/PhY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Cl=C3=A9ment=20B=C5=93sch?= <u@pkh.me>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>, Maxime Ripard <maxime@cerno.tech>
-Subject: [PATCH 4.19 23/35] arm64: dts: allwinner: h5: NanoPI Neo 2: Fix ethernet node
-Date:   Mon,  1 Nov 2021 10:17:35 +0100
-Message-Id: <20211101082457.023981695@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.10 48/77] regmap: Fix possible double-free in regcache_rbtree_exit()
+Date:   Mon,  1 Nov 2021 10:17:36 +0100
+Message-Id: <20211101082521.877125303@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082451.430720900@linuxfoundation.org>
-References: <20211101082451.430720900@linuxfoundation.org>
+In-Reply-To: <20211101082511.254155853@linuxfoundation.org>
+References: <20211101082511.254155853@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,34 +40,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Clément Bœsch <u@pkh.me>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-commit 0764e365dacd0b8f75c1736f9236be280649bd18 upstream.
+commit 55e6d8037805b3400096d621091dfbf713f97e83 upstream.
 
-RX and TX delay are provided by ethernet PHY. Reflect that in ethernet
-node.
+In regcache_rbtree_insert_to_block(), when 'present' realloc failed,
+the 'blk' which is supposed to assign to 'rbnode->block' will be freed,
+so 'rbnode->block' points a freed memory, in the error handling path of
+regcache_rbtree_init(), 'rbnode->block' will be freed again in
+regcache_rbtree_exit(), KASAN will report double-free as follows:
 
-Fixes: 44a94c7ef989 ("arm64: dts: allwinner: H5: Restore EMAC changes")
-Signed-off-by: Clément Bœsch <u@pkh.me>
-Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Link: https://lore.kernel.org/r/20210905002027.171984-1-u@pkh.me
+BUG: KASAN: double-free or invalid-free in kfree+0xce/0x390
+Call Trace:
+ slab_free_freelist_hook+0x10d/0x240
+ kfree+0xce/0x390
+ regcache_rbtree_exit+0x15d/0x1a0
+ regcache_rbtree_init+0x224/0x2c0
+ regcache_init+0x88d/0x1310
+ __regmap_init+0x3151/0x4a80
+ __devm_regmap_init+0x7d/0x100
+ madera_spi_probe+0x10f/0x333 [madera_spi]
+ spi_probe+0x183/0x210
+ really_probe+0x285/0xc30
+
+To fix this, moving up the assignment of rbnode->block to immediately after
+the reallocation has succeeded so that the data structure stays valid even
+if the second reallocation fails.
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Fixes: 3f4ff561bc88b ("regmap: rbtree: Make cache_present bitmap per node")
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Link: https://lore.kernel.org/r/20211012023735.1632786-1-yangyingliang@huawei.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi-neo2.dts |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/base/regmap/regcache-rbtree.c |    7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
---- a/arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi-neo2.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi-neo2.dts
-@@ -114,7 +114,7 @@
- 	pinctrl-0 = <&emac_rgmii_pins>;
- 	phy-supply = <&reg_gmac_3v3>;
- 	phy-handle = <&ext_rgmii_phy>;
--	phy-mode = "rgmii";
-+	phy-mode = "rgmii-id";
- 	status = "okay";
- };
+--- a/drivers/base/regmap/regcache-rbtree.c
++++ b/drivers/base/regmap/regcache-rbtree.c
+@@ -281,14 +281,14 @@ static int regcache_rbtree_insert_to_blo
+ 	if (!blk)
+ 		return -ENOMEM;
  
++	rbnode->block = blk;
++
+ 	if (BITS_TO_LONGS(blklen) > BITS_TO_LONGS(rbnode->blklen)) {
+ 		present = krealloc(rbnode->cache_present,
+ 				   BITS_TO_LONGS(blklen) * sizeof(*present),
+ 				   GFP_KERNEL);
+-		if (!present) {
+-			kfree(blk);
++		if (!present)
+ 			return -ENOMEM;
+-		}
+ 
+ 		memset(present + BITS_TO_LONGS(rbnode->blklen), 0,
+ 		       (BITS_TO_LONGS(blklen) - BITS_TO_LONGS(rbnode->blklen))
+@@ -305,7 +305,6 @@ static int regcache_rbtree_insert_to_blo
+ 	}
+ 
+ 	/* update the rbnode block, its size and the base register */
+-	rbnode->block = blk;
+ 	rbnode->blklen = blklen;
+ 	rbnode->base_reg = base_reg;
+ 	rbnode->cache_present = present;
 
 
