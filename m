@@ -2,66 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 403D9441B4A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 13:47:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DCA6441B4C
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 13:48:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232244AbhKAMuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 08:50:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232029AbhKAMuK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 08:50:10 -0400
-Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAF85C061714
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 05:47:36 -0700 (PDT)
-Received: by mail-vk1-xa41.google.com with SMTP id e64so7948882vke.4
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 05:47:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=LUKCzvVf4bXMMkokBp2PkhgLaFYfU3uMR3npGHmCjps=;
-        b=kHWTgMonVNFRjplakRgJ0gEIQd8JxUBtkAdzcotTRwGSK1gpDyZeEMT9kK/CLqgJxL
-         VLf4Ij03OeutfxIJPVK0d6FRy56GwBrUHuF4yFHj5ptwYukamu4mV6j7ANcy1H39juxQ
-         XN6QW9FuRwaXnY7V6VQ7OnCtZJewFB3QCXWCnxozVSHkQivKThSVG3Qp/xDwxwT2ir7x
-         JUZHjVw7AZpGirgcKOlzbSeg4wHmtsd1q4KZED7ucc5BPD2LKYGR1It9ITiM73JrRHEn
-         UMzLoICvDHkVyvTAUwrPa0wrb2HVScOzf/SSyOlF3u5AL2gAkDBxT8/y12ounTQDWq/Z
-         xc+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=LUKCzvVf4bXMMkokBp2PkhgLaFYfU3uMR3npGHmCjps=;
-        b=yTJ+ZYrww9wnydPUHbNYwv7zVYl/xPjORVSA/29qLiyhZJgXdMqJoY2KQZSWMJFlFn
-         uOB2RxnyhyR7bITzcdfDbp82MgK3X9t3zNn5oTh4vs3vG0vmKOO0GqAT0VnboZBfCVeU
-         Z3Cqpz55UhIOHrJWXCMRmR/kmvBhthox8HqivBRWTrnu6RYUedl0LtnrtuPsD2DcmqeQ
-         p6wdX4NNh7y+lLhO2aqGc4o9Pj5gBSC8IF/+WBuKswTb/buFBMchrZbyxqzupLfTyMAq
-         0iM9l4nQmJYydM7oT0YKHs3vE1uNxGOqqgmhUOQPUt1EHZN0Cgpqho+Bj3szeY7SYgrP
-         32WQ==
-X-Gm-Message-State: AOAM532qr1D7Kf8zhfOwXPsmbZBw6YUnP8MTensmZl35MTAbZOZ+elFy
-        5wr1BO3d9ZHb4C/0a3HB2aFTbEna5G7cPIxAyI8=
-X-Google-Smtp-Source: ABdhPJzKWa7V08962BCloU/vC5v6E9abuocQFyTztWRoClrdMjKv2u0MkGq0y06Zb1pYTL+XaN+V1fgHvLZVbh9nINU=
-X-Received: by 2002:a05:6122:551:: with SMTP id y17mr1683184vko.25.1635770855955;
- Mon, 01 Nov 2021 05:47:35 -0700 (PDT)
+        id S232502AbhKAMvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 08:51:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38202 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232467AbhKAMvD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 08:51:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B91560EE3;
+        Mon,  1 Nov 2021 12:48:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1635770909;
+        bh=+SBk+SYjceFJkTq8C08W0GYFlIzex7exv2uuONzJ/AE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GX3iuQ+MYB8VQXKve+uwP/BpakNk11zhXlpKFoKMMptJcpGEDgR2S27KZt3GdK+ii
+         0P+UqJcX3m3RHayEcQOCh/HjJv358Z8b55erptWDW6u81d3NAKl7s4BIg/CkxqthBk
+         h+EIfh54x7iMazpQxGqDQ1h5XzxbMzmGuwd+Q6Rs=
+Date:   Mon, 1 Nov 2021 13:48:25 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     =?utf-8?B?5bi45buJ5b+X?= <changlianzhi@uniontech.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        "dmitry.torokhov" <dmitry.torokhov@gmail.com>,
+        jirislaby <jirislaby@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        282827961 <282827961@qq.com>
+Subject: Re: [PATCH v9] tty: Fix the keyboard led light display problem
+Message-ID: <YX/iGfXdc8UKUFCx@kroah.com>
+References: <tencent_10C69A8D3BC51F781F21A754@qq.com>
 MIME-Version: 1.0
-Received: by 2002:ab0:7a78:0:0:0:0:0 with HTTP; Mon, 1 Nov 2021 05:47:35 -0700 (PDT)
-Reply-To: mllchrist0574@gmail.com
-From:   Christiane <martinez01florence@gmail.com>
-Date:   Mon, 1 Nov 2021 13:47:35 +0100
-Message-ID: <CABnS-PsFBmTizzDJzSJupBU3-9yfp7VkJCeEqbfNvj9QqRbUzg@mail.gmail.com>
-Subject: HOSPITAL MESSAGE
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <tencent_10C69A8D3BC51F781F21A754@qq.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
-my humble regards,
+On Mon, Nov 01, 2021 at 08:35:47PM +0800, 常廉志 wrote:
+> > Switching from the desktop environment to the tty environment,
+> > the state of the keyboard led lights and the state of the keyboard
+> > lock are inconsistent. This is because the attribute kb->kbdmode
+> > of the tty bound in the desktop environment (Xorg) is set to
+> > VC_OFF, which causes the ledstate and kb->ledflagstate
+> > values of the bound tty to always be 0, which causes the switch
+> > from the desktop When to the tty environment, the LED light
+> > status is inconsistent with the keyboard lock status.
+> > 
+> > Signed-off-by: lianzhi chang <changlianzhi@uniontech.com>
+> > ---
+> >  v7-->v8:
+> >  Optimize the implementation of kbd_update_ledstate function
+>  > 
+> >  Why not adopt the opinions of Greg KH and Andy Shevchenko:
+> >  (1) In the structure struct input_dev, the definition of led is
+> >  like this: unsigned long led[BITS_TO_LONGS(LED_CNT)]; If you
+> >  define it like this: unsigned long newstate = *dev->led; I
+> >  always feel that there is still big end and Little endian problem.
+> >  (2) The test_bit function is used to avoid the problem of large
+> >  and small ends, and the current algorithm (v8) also exists
+> >  elsewhere in the kernel: the atkbd_set_leds function (drivers/
+> >  input/keyboard/atkbd.c).
+> >  (3) In the current keyboard.c code, the code is already very good,
+> >  and it is already relatively independent. If you modify the type
+> >  of ledstate to u64 or modify the macro definitions such as
+> >  VC_NUMLOCK, it feels that it is not very meaningful, and this It
+> >  will also cause other related modifications. Of course, this is
+> >  only my current opinion. If everyone still feels that it is
+> >  necessary to modify, I will do it this way. Of course, this
+> >  process may be a bit longer, and I think it is necessary to
+> >  conduct more tests.
+> >  
+> >  v9: Change description information: xorg-->Xorg
+> > ……
+> 
+> Hi, friends, I would like to ask whether this version of patch is possible, if not,
+> I will try my best to find a way to complete the next version!
 
-Dear friend how are you, I have a charitable donation fund that I want
-to donate by helping you. Please try to get back to me for more
-information. I will tell you more about myself and my plans with this
-money when I hear from you.
+It's the merge window right now, we can't do anything with this until
+after 5.16-rc1 is out.  So give us until then at the least please, then
+I will review it again.
 
-Awaiting your reply to me to give you more details.
+thanks,
+
+greg k-h
