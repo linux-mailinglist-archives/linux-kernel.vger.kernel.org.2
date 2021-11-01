@@ -2,122 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E35EF442418
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 00:34:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C9A244241A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 00:35:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231303AbhKAXh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 19:37:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39156 "EHLO
+        id S231443AbhKAXho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 19:37:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbhKAXhZ (ORCPT
+        with ESMTP id S229523AbhKAXhh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 19:37:25 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 920E1C061714;
-        Mon,  1 Nov 2021 16:34:51 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id h14so16621199qtb.3;
-        Mon, 01 Nov 2021 16:34:51 -0700 (PDT)
+        Mon, 1 Nov 2021 19:37:37 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0116AC061767;
+        Mon,  1 Nov 2021 16:35:04 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id s23-20020a056830125700b00553e2ca2dccso22681456otp.3;
+        Mon, 01 Nov 2021 16:35:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=Qe/jf30Y3o/pmc26ACLNjuS8JmQeoQQ3eNfoksRErqQ=;
-        b=meyqyUd/ZQyFTlOFbpQmDWQBblRqcdcrSUKWso+9ZuYNublXe/ZttCH0W4VdQjJwSG
-         7/EPsTeoo+WkMvDC1cOTQjJh7gVZUABjpKsY7SR6uFh8yqsrjAHIEBIX3Km5Dsq2Y+Ob
-         SnDXPeVMXiO8jugBR67Bvhix80sc4zcO6KoiCYVhtCPTi39BnakPo5MFx7jaH3l2URmb
-         Sh5+SyCQh3qIHa4JXkxf2XNrNcb6kUwjxzMGOk+cfaCRwkATpuom1R4bdlBRZYTiXQoA
-         dTZlLZpdj9KfLY13M8iqYjkn14dAB6fqmNENU9JlJlivYefautnTK/6H6Qdb8vZnDXL7
-         wKqQ==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=nuuOsGBgb7bR9inMKm9Gx1YLkfJrm0F/VqyRlTV4UHg=;
+        b=WXUAftZJ93u3JpEldDcq2vy5rQ9I4ocC1cWOnZoiTECIv9JKG2iZ3gh9k01tLWDDJn
+         qbKD9cb5IMkjm2MP7iR9kSHD2jWwbLMUxy9GvPF2z7w4ZjaYP/gEHGIRWTbk5yj0prx0
+         mf7KnpkHbFE9mWusym4hjqBLPZyzAZYZh5GRttJ3+H4/oQKdWwY8/qO7+sCBBZrNtP0b
+         /C5DFac7dnurdpqZv938uZ5G0kHb7hRupsjjJ9KlGq162jByUPGAHNV52OTOZs0tPwjA
+         t4b6Q/ndP9OX0hvM2gpruw5g7J5w73eDvuNbcNtxtYdY5rpasMx1qf1tdCp8z8Cr2OW/
+         6NHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=Qe/jf30Y3o/pmc26ACLNjuS8JmQeoQQ3eNfoksRErqQ=;
-        b=WFT6OLZJ7y560zQh2CrmnXxS0r06VXy44lJAh9LiAKTMbT2TgQcc5oFDZ2HBqSVpnf
-         k/AyAaSNbgiW6B5QLDznWXmkFROUjTkHYCrTW0vEN6Jnw560JwxAl3sTSgapKnL3dWmm
-         ULvYRxmVZJcbftW/YHXgRyEthNK7z7nPX9bwTq48qG3BJCiruecV2yjUds5g+02hkPC9
-         FaqhJdk9EGRWeA7PlU0WYhFIT2go52pYfwz7sG6hDdEsWNlbsjhUNxHNCwPV/PqONJUG
-         czTfFUJJK47R8PbrHkno8IUp6a759biIrzqyGMKo8VUQkPsEGKoPJiH23NjmPZLhy2lk
-         iQ5w==
-X-Gm-Message-State: AOAM533Q1YSRpXh3FQa7Nn1FrqI5Y3GVO92EDJVsVUL7cgTBcE4bY6D5
-        vbEgxwRgQeHwXAbnT+ZzKDI=
-X-Google-Smtp-Source: ABdhPJzszAm1hNUhWdNj2F3b33eIBAlQhcRdClkzaW2WFdJoN9bdZELkbTvPnuJLuvdKLmw9qyoaWg==
-X-Received: by 2002:a05:622a:54a:: with SMTP id m10mr27961206qtx.239.1635809690756;
-        Mon, 01 Nov 2021 16:34:50 -0700 (PDT)
-Received: from [10.4.10.38] (146-115-144-188.s4282.c3-0.nwt-cbr1.sbo-nwt.ma.cable.rcncustomer.com. [146.115.144.188])
-        by smtp.gmail.com with ESMTPSA id m6sm11260918qti.38.2021.11.01.16.34.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Nov 2021 16:34:50 -0700 (PDT)
-Message-ID: <58e5ec6a-7b85-3935-f859-6670600ac6a2@gmail.com>
-Date:   Mon, 1 Nov 2021 19:34:48 -0400
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=nuuOsGBgb7bR9inMKm9Gx1YLkfJrm0F/VqyRlTV4UHg=;
+        b=SeVEYclSKtkPASa9/ruNvT0pzrzxSRHhqlIH6GGk/FUVHKsPCRZrXaznVzw1G/5yMC
+         Z4ks7ljyeIY6Py48qhNdqYgd5y9kzS2yv9xjlEr4DgwLbfSCV0DZTwSDAQqR6qQe8GEe
+         uH5ykjOS3FNHnjWHs0oym62zlsrMJlyaCG6N4NF0MxnI9DnxM3HKkqQEre1aAbKB5r8u
+         wtAnOZnsnnT0KPt5J1H+iGeA9AFGbYq/RXJleLvCv8U3zdc+ZRwWlPsv6OlzihZZD5Nv
+         1AY4A+0SFW6hhS2qJbsHRXylrTsyTWw0RDbC5zQtHoPSHbbZxyDe0yPbakuITxYvq/W1
+         fR4w==
+X-Gm-Message-State: AOAM533yJ6zahP0hKn6JWhKJHyt/cvTErM7uH04BF27FMkfC+Ahsd3or
+        aI7uYUt8qtph/JaplWoQjaIbBRALH64=
+X-Google-Smtp-Source: ABdhPJzOzIdYCWOKEgzp3Q3am8JHHrx71bmZ2w5aMV3OeX/n1o80D/1RllScyjlOBCDmICJ+a/sR3g==
+X-Received: by 2002:a05:6830:409a:: with SMTP id x26mr15216595ott.362.1635809703373;
+        Mon, 01 Nov 2021 16:35:03 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id r131sm4589027oib.27.2021.11.01.16.35.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Nov 2021 16:35:02 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Mon, 1 Nov 2021 16:35:00 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.4 00/17] 4.4.291-rc1 review
+Message-ID: <20211101233500.GA415203@roeck-us.net>
+References: <20211101082440.664392327@linuxfoundation.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH 08/13] dt-bindings: serial: fsl-lpuart: add i.MXRT
- compatible
-Content-Language: en-US
-To:     Rob Herring <robh@kernel.org>
-Cc:     linux-imx@nxp.com, mturquette@baylibre.com, sboyd@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, ulf.hansson@linaro.org, aisheng.dong@nxp.com,
-        stefan@agner.ch, linus.walleij@linaro.org,
-        gregkh@linuxfoundation.org, arnd@arndb.de, olof@lixom.net,
-        soc@kernel.org, linux@armlinux.org.uk, abel.vesa@nxp.com,
-        adrian.hunter@intel.com, jirislaby@kernel.org,
-        giulio.benetti@benettiengineering.com,
-        nobuhiro1.iwamatsu@toshiba.co.jp, leonard.crestez@nxp.com,
-        b20788@freescale.com, fugang.duan@nxp.com,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-serial@vger.kernel.org
-References: <20211024154027.1479261-1-Mr.Bossman075@gmail.com>
- <20211024154027.1479261-9-Mr.Bossman075@gmail.com>
- <YYBKh1KYrWTzm+5G@robh.at.kernel.org>
-From:   Jesse Taube <mr.bossman075@gmail.com>
-In-Reply-To: <YYBKh1KYrWTzm+5G@robh.at.kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211101082440.664392327@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 01, 2021 at 10:17:03AM +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.4.291 release.
+> There are 17 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 03 Nov 2021 08:24:20 +0000.
+> Anything received after that time might be too late.
+> 
 
+Build results:
+	total: 160 pass: 160 fail: 0
+Qemu test results:
+	total: 341 pass: 341 fail: 0
 
-On 11/1/21 16:13, Rob Herring wrote:
-> On Sun, Oct 24, 2021 at 11:40:22AM -0400, Jesse Taube wrote:
->> Add i.MXRT documentation for compatible string.
->>
->> Cc: Giulio Benetti <giulio.benetti@benettiengineering.com>
->> Signed-off-by: Jesse Taube <Mr.Bossman075@gmail.com>
->> ---
->>  Documentation/devicetree/bindings/serial/fsl-lpuart.yaml | 1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/Documentation/devicetree/bindings/serial/fsl-lpuart.yaml b/Documentation/devicetree/bindings/serial/fsl-lpuart.yaml
->> index a90c971b4f1f..4b4340def2aa 100644
->> --- a/Documentation/devicetree/bindings/serial/fsl-lpuart.yaml
->> +++ b/Documentation/devicetree/bindings/serial/fsl-lpuart.yaml
->> @@ -21,6 +21,7 @@ properties:
->>            - fsl,ls1028a-lpuart
->>            - fsl,imx7ulp-lpuart
->>            - fsl,imx8qm-lpuart
->> +          - fsl,imxrt-lpuart
-> 
-> Actually, 'rt' is not a single part is it? If the variations are same 
-> die, but fused off then no need to distinguish. Otherwise, these should 
-> be SoC specific.
-> 
-I don't exactly know what "but fused off" means I would assume
-disconnected but on-die? The imxrtxxx is a series that has the same UART
-controller across them. Should I add ACK?
-> Same applies to other compatible strings.
-> 
->>        - items:
->>            - const: fsl,imx8qxp-lpuart
->>            - const: fsl,imx7ulp-lpuart
->> -- 
->> 2.33.0
->>
->>
+Tested-by: Guenter Roeck <linux@roeck-us.net>
+
+Guenter
