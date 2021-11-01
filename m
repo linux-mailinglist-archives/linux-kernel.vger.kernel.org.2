@@ -2,184 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47F2B44133C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 06:28:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E32A744133E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 06:29:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229988AbhKAFag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 01:30:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229502AbhKAFaf (ORCPT
+        id S229948AbhKAFbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 01:31:50 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:37374 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229502AbhKAFbt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 01:30:35 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74456C061714;
-        Sun, 31 Oct 2021 22:28:02 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id b1so11809064pfm.6;
-        Sun, 31 Oct 2021 22:28:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=x97BekPRcHY1pmzWyeSNQW7Yc3qbeRmxf+KXg5Cyt/0=;
-        b=DqT0JrGtRGtMuziFBzPP3wjD55ScQ9Ji50JaSqI3p7kLh1b6AqGvZXw+ZWgxBuSs/U
-         DEow4ZLYh8N55WdDKbSbDssGi4Ky48fLBNhgeePtCxe/tjYOlglUqA+k3HZWVFJNMtx/
-         f6gTKNSXhoPhqzJY1i9ZT7QpySMqG3/7208TIMf3mOYXLvheXsYQil22et0X2HiiB6Ty
-         dFtn7Dw07SDJMU0QT7a+1PQcPwBfnnFP63Kcd9Jp8ub7yHAwTSAWw49M6IySPpp7OFnJ
-         x21IAq7Qel8nkQEqso6QjRbZNTO4U7MKoso5gjqb9cjN5GbgwoyWoRy+/ttHB+LZBadG
-         1X2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=x97BekPRcHY1pmzWyeSNQW7Yc3qbeRmxf+KXg5Cyt/0=;
-        b=5Jc5Zdh/dW5HmLoIaeghJfhj+TD/Fuqg0tZgTJsMtNRhX8r+XK/WvCgaeG5UU4ncuo
-         WqqRriANGFDcdLVKifsxTpRqrboq+Dl88su+sOMGNIV8qMs0phUDLZ9H6r/Tx8W1Bco4
-         VI+Sr6UnPVHie6LjrFglKgDvo9dLHQ/6RFPRofIF2yV6JPoYaSmkpBM5DOdyNJG95K6J
-         WNAIWCGXvueL6i6JAmAUjVK7f4oxb1eokD2U4qhsYL31kHTng6/UVp19fsSNI3D+D1Of
-         CSap+IIKx4jlUMNWqxasLz16KhunpHVFXZQewMgCbSnIz7bJG28gXb1M2FPHsFwzk26t
-         FPVg==
-X-Gm-Message-State: AOAM530JxA4e2BM5hpze2AGSM3X+OL7jjg9oOSATaaTZu4UBJdn2XtYk
-        vXJZyNZ/7mdy8+NKLZ2l89uNbe0Tk34=
-X-Google-Smtp-Source: ABdhPJz7eD4dxgV4JE2nPYNZZ6Nl7USsDIw/sfxld/a9HfVCG5JLOzj6x22um5JLAfS2iG7S3sj4Jg==
-X-Received: by 2002:aa7:888d:0:b0:47c:128b:ee57 with SMTP id z13-20020aa7888d000000b0047c128bee57mr26724845pfe.81.1635744481602;
-        Sun, 31 Oct 2021 22:28:01 -0700 (PDT)
-Received: from shinobu ([156.146.35.76])
-        by smtp.gmail.com with ESMTPSA id s2sm13293178pfe.215.2021.10.31.22.27.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 31 Oct 2021 22:28:00 -0700 (PDT)
-Date:   Mon, 1 Nov 2021 14:27:55 +0900
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     David Lechner <david@lechnology.com>
-Cc:     linux-iio@vger.kernel.org, Robert Nelson <robertcnelson@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/8] docs: counter: add unit timer sysfs attributes
-Message-ID: <YX9620RskHAExvcc@shinobu>
-References: <20211017013343.3385923-1-david@lechnology.com>
- <20211017013343.3385923-5-david@lechnology.com>
- <YXj1xc6DdeOrUKjW@shinobu>
- <6e96cdd9-d1f1-6861-59eb-c4e6b9a2ffb9@lechnology.com>
- <YXpYUIUIQe+oxwXK@shinobu>
- <d5d7454b-e0a0-7436-10d7-dcb402885479@lechnology.com>
- <YX9oTuLB1d6CqQOK@shinobu>
+        Mon, 1 Nov 2021 01:31:49 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id DD6E62192D;
+        Mon,  1 Nov 2021 05:29:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1635744555; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2f9OAzzfJHvRfINaxNeskzvutF1GbL7BKDUPsw3Xn2Y=;
+        b=o7kFO+o8eHSOSi9a//Yb4bLikBrGF0kWOfCJCtQbCGOq6mAMyBbwwP4UjlsEBuHX8BLd+m
+        pusXpho4Y/Zr+jLpjDBMvhpsdNf6EBSFmn+mZhD7qIZtIlgIiv8yr3FZ4dkLWPCN7/wEiO
+        U0L+q+i7rv2GkwZ9Nu1j+TeMW06pgII=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1635744555;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2f9OAzzfJHvRfINaxNeskzvutF1GbL7BKDUPsw3Xn2Y=;
+        b=8phHEmcuCpPQjjmAmmGWk3bwwN2oMirunEJpjSzlV7lo840AYI8qmO+QuEeP7Zlqysrkk6
+        j+N3rq/QYyzFPmDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C9A6C1323E;
+        Mon,  1 Nov 2021 05:29:14 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id odijJCp7f2G1cgAAMHmgww
+        (envelope-from <colyli@suse.de>); Mon, 01 Nov 2021 05:29:14 +0000
+Message-ID: <2c190f49-ffde-c6eb-e632-3f53832a3d83@suse.de>
+Date:   Mon, 1 Nov 2021 13:29:12 +0800
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="zDtKk9OJ85v1seA2"
-Content-Disposition: inline
-In-Reply-To: <YX9oTuLB1d6CqQOK@shinobu>
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.1
+Subject: Re: [PATCH] bcache: make checkings for sb.nr_in_set and
+ sb.nr_this_dev to be more precise
+Content-Language: en-US
+To:     Lin Feng <linf@wangsu.com>
+Cc:     linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kent.overstreet@gmail.com
+References: <20211101030751.8645-1-linf@wangsu.com>
+From:   Coly Li <colyli@suse.de>
+In-Reply-To: <20211101030751.8645-1-linf@wangsu.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/1/21 11:07 AM, Lin Feng wrote:
+> Commit 697e23495c94f0380c1ed8b11f830b92b64c99ea
+> ("bcache: explicitly make cache_set only have single cache")
+> explicitly makes a cache_set only have single cache and based on the
+> fact that historily only one cache is ever used in the cache set, so
+> valid number fo sb.nr_in_set should be 1 and sb.nr_this_dev should
+> always be 0.
+>
+> Based on above truth, codes validations for sb.nr_in_set and sb.nr_this_dev
+> can make to be more accurate, that means tolerance for error checking
+> are reduced comparing before.
+>
+> Signed-off-by: Lin Feng <linf@wangsu.com>
 
---zDtKk9OJ85v1seA2
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi Lin,
 
-On Mon, Nov 01, 2021 at 01:08:46PM +0900, William Breathitt Gray wrote:
-> On Sat, Oct 30, 2021 at 11:40:27AM -0500, David Lechner wrote:
-> > On 10/28/21 2:59 AM, William Breathitt Gray wrote:
-> > > On Wed, Oct 27, 2021 at 10:30:36AM -0500, David Lechner wrote:
-> > >> On 10/27/21 1:46 AM, William Breathitt Gray wrote:
-> > >>> On Sat, Oct 16, 2021 at 08:33:39PM -0500, David Lechner wrote:
-> > >>>> This documents new unit timer sysfs attributes for the counter
-> > >>>> subsystem.
-> > >>>>
-> > >>>> Signed-off-by: David Lechner <david@lechnology.com>
-> > >>>
-> > >>> Hello David,
-> > >>>
-> > >>> The unit timer is effectively a Count in its own right, so instead =
-of
-> > >>> introducing new sysfs attributes you can just implement it as anoth=
-er
-> > >>> Count in the driver. Count 0 is "QPOSCNT", so set the name of this =
-new
-> > >>> Count 1 as "Unit Timer" (or the datasheet naming if more apt) to
-> > >>> differentiate the Counts. You can then provide the "unit_timer_enab=
-le",
-> > >>> "unit_timer_period", and "unit_timer_time" functionalities as respe=
-ctive
-> > >>> Count 1 extensions ("enable" and "period") and Count 1 "count".
-> > >=20
-> > > Actually if the counter function here is COUNTER_FUNCTION_DECREASE, t=
-hen
-> >=20
-> > It is an increasing counter.
-> >=20
-> > > instead of introducing a new "period" extension, define this as a
-> > > "ceiling" extension; that's what ceiling represents in the Counter
-> > > interface: "the upper limit for the respective counter", which is the
-> > > period of a timer counting down to a timeout.
-> >=20
-> > In one of the other patches, you made a comment about the semantics
-> > of ceiling with relation to the overflow event. We can indeed treat
-> > the timer as a counter and the period as the ceiling. However, the
-> > unit timer event occurs when the count is equal to the period (ceiling)
-> > whereas an overflow event occurs when the count exceeds the ceiling.
-> > So what would this event be called in generic counter terms? "timeout"
-> > doesn't seem right.
->=20
-> Okay, so COUNTER_EVENT_THRESHOLD would be the respective Counter event
-> type for this behavior because the event triggers once a threshold is
-> reached (ceiling in this case).
->=20
-> But implementing the unit timer as a counter might not be the best path
-> forward as you've mentioned below.
->=20
-> > >=20
-> > > William Breathitt Gray
-> > >=20
-> > >>>
-> > >>> If you believe it appropriate, you can provide the raw timer ticks =
-via
-> > >>> the Count 1 "count" while a nanoseconds interface is provided via a
-> > >>> Count 1 extension "timeout" (or something similar).
-> > >>>
-> >=20
-> > One area where this concept of treating a timer as a counter potentially
-> > breaks down is the issue of CPU frequency scaling. By treating the unit
-> > timer as a timer, then the kernel could take care of any changes in clo=
-ck
-> > rate internally by automatically adjusting the prescalar and period on
-> > rate change events. But if we are just treating it as a counter, then we
-> > should probably just have an attribute that provides the clock rate and
-> > if we want to support CPU frequency scaling, add an event that indicates
-> > that the clock rate changed.
->=20
-> You're right, treating the unit timer as a counter might not be the most
-> appropriate interface. Because this is a timer afterall, perhaps
-> exposing this via the hrtimer API is better. You then have an existing
-> interface available designed for timer configuration, and you can
-> leverage the struct hrtimer function callback to handle your timeout
-> interrupts.
->=20
-> William Breathitt Gray
+Thanks for the patch up. I add this change to my for-test directory.
 
-Sorry, I think I meant the clockevents framework, not hrtimers. I'm not
-as familiar with timers but perhaps you know more than I do here.
+Coly Li
 
-William Breathitt Gray
 
---zDtKk9OJ85v1seA2
-Content-Type: application/pgp-signature; name="signature.asc"
+> ---
+>   drivers/md/bcache/bcache.h | 2 +-
+>   drivers/md/bcache/super.c  | 4 +---
+>   2 files changed, 2 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/md/bcache/bcache.h b/drivers/md/bcache/bcache.h
+> index 5fc989a6d452..a4a410a178c0 100644
+> --- a/drivers/md/bcache/bcache.h
+> +++ b/drivers/md/bcache/bcache.h
+> @@ -833,7 +833,7 @@ static inline uint8_t ptr_stale(struct cache_set *c, const struct bkey *k,
+>   static inline bool ptr_available(struct cache_set *c, const struct bkey *k,
+>   				 unsigned int i)
+>   {
+> -	return (PTR_DEV(k, i) < MAX_CACHES_PER_SET) && c->cache;
+> +	return (PTR_DEV(k, i) == 0) && c->cache;
+>   }
+>   
+>   /* Btree key macros */
+> diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
+> index f2874c77ff79..2253044c9289 100644
+> --- a/drivers/md/bcache/super.c
+> +++ b/drivers/md/bcache/super.c
+> @@ -140,9 +140,7 @@ static const char *read_super_common(struct cache_sb *sb,  struct block_device *
+>   		goto err;
+>   
+>   	err = "Bad cache device number in set";
+> -	if (!sb->nr_in_set ||
+> -	    sb->nr_in_set <= sb->nr_this_dev ||
+> -	    sb->nr_in_set > MAX_CACHES_PER_SET)
+> +	if (sb->nr_in_set != 1 || sb->nr_this_dev != 0)
+>   		goto err;
+>   
+>   	err = "Journal buckets not sequential";
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmF/etsACgkQhvpINdm7
-VJLFFxAA3gV73WEkluyg0fvOt3hSVOeyc9JvpMpV68yZwFwmJF0k9fBEX7SaaTxO
-m8qMbWUxit4cTty3JaX0oOu6NYGS9VVlf8ZeJk2GoafhthQRKp4Dc4HgGDRxr8Gc
-2ZLBXeMc34IJAa1h+bJ5Dboh1nqEpWijhcKwsJ/Wk8/JWF/N6xjsiNl2AspFhoxE
-+8Yv48sHTswMD6S5de7MU4qpy1QhEQRJPGr9Xg7K9onADTizTN1zdMckl/yJVA8f
-lEHU11xbWrMd8AWKG9cGFluIO6hyqky7HNktm+l2YB3VcB9tVrE+QyDyTIYBL2Q9
-T7TakUQx58/fDPkzOlTYe5a9RjiF0C8kJ0cxC7yctJhvuo9DZ6a7q2VcgvQal4AW
-kGAM+B9FNGI3lLC2Dn126xq3bNGecWFkDWsre4AL/0anUuazZsbJItJgVzB9INAW
-wjqfd6Xh7zHgWHlU6d2ntFIHvEoM4YMhlaIFNcRE7JNJkJl0RCeu+cdxIdxf3TE5
-qDaYrr2FIaTUPJlxHUNZDf5FOZrROUQHUroVmSdKC2VYUWagp9L3V5mYDkX/Diva
-if7ZrFjbFqglm4BZqtJSteBzDoHZQ2XNTqulChFsL8euvveIg8D9y4B+g/MCILOH
-Bk/IE58cUwLYwQpriHJuIhsah3FuyI9EuOFpmPyf6thfLvoCpbI=
-=kuFj
------END PGP SIGNATURE-----
-
---zDtKk9OJ85v1seA2--
