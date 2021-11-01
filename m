@@ -2,91 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E741C44121B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 03:20:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04B2344121C
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 03:20:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230393AbhKACWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Oct 2021 22:22:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230222AbhKACWb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Oct 2021 22:22:31 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45B71C061714;
-        Sun, 31 Oct 2021 19:19:59 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id br39so2126861qkb.8;
-        Sun, 31 Oct 2021 19:19:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=apo1O/u7x4ygIzIjs1+32Zs5mIdmvskQIGsrlrv3jIM=;
-        b=MvgA2rL3j+obJa0oiLSETqU9HjLHkgDSJ4mfgmVxnBwOAKZ7hzkHdWQjB5U5MwO+pM
-         oAWp1Zldu9vfVt3LgePYZArY+GwTOz3orPKafLENJqPeU5IT1e8ru9AYripseK9gCfh7
-         imElCpwoP7NmWur3/jDTKs/qCNh/bQW6xGb5mWwTRkE7tMIPSKH3ulWvkLN9jnXa9n2J
-         c3fsW0gCVaHuUGJ3KfPkuYfo425LXgBgH6mEbmsQXVR1NkeoOKnQ4JolFcZUPVz1g/R+
-         wux29HDM2dWp95S8970xOqaP2zcZ+XWXR1kJ9EQ2BwOa9kjMeynp1IL2A1l+k0I7dvbf
-         +7xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=apo1O/u7x4ygIzIjs1+32Zs5mIdmvskQIGsrlrv3jIM=;
-        b=77rWt7lie0tKy+pS+pTeFAA/I8/UrU7Vx+64G/0KQwjw18Ded2teiZ9EuuugaIzIps
-         wqEmbALd4cfpMShnwn3IsfZmM8Q43oUSp2zhVdu16/MJciPapwfAS1Xo72qAzZT1a2bL
-         daQh+bT3EXiEdkqpX92rGspFPcJCthXOB2XHBcQ+XwdnRoup9u0nzvLMdgDbU1O7RMv0
-         YkF1QcLIvkRmtfvRwBJC653xergkO1l6hkiMWzhNKWM4DvABedmqtXgKwKczlxXIS8Gt
-         opoua9PDR7bGBOscIMjTV/100TY+OCXXc3PJuGw4Bxm+I/WL0gxNuj7kY96mun2JhOzJ
-         EXKQ==
-X-Gm-Message-State: AOAM531VSH1DehV3VC8jfvaALe65UUfvRR6asLxaLkNLvyOgZEPrdR+B
-        NZnO710PN0d6LVlAuki/5jU=
-X-Google-Smtp-Source: ABdhPJynPAPcFb/y63CzxPiJ/4rzD4iznUAB7ay6xOQniYLEJwEpfwx5w6zO1igWqZUnXVCQ+EDtjQ==
-X-Received: by 2002:a37:88c2:: with SMTP id k185mr20983364qkd.227.1635733197396;
-        Sun, 31 Oct 2021 19:19:57 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id a3sm10149002qta.58.2021.10.31.19.19.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 31 Oct 2021 19:19:56 -0700 (PDT)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: chi.minghao@zte.com.cn
-To:     jejb@linux.ibm.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, chi minghao <chi.minghao@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] scsi: fixup coccinelle warnings
-Date:   Mon,  1 Nov 2021 02:19:05 +0000
-Message-Id: <20211101021905.34659-1-chi.minghao@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        id S230333AbhKACXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Oct 2021 22:23:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45626 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230222AbhKACXF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Oct 2021 22:23:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 67A7161077
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 02:20:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635733233;
+        bh=IafejwO8g0dsJcdD0EGcB6iICuhfeqWu6PXS1URW8eA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=fMd3ZfXtabZUeHFQplrpeiqOicoOh9ZVCi/8eenk5EEx/VpokftF2WvYZ90Lhi8sp
+         BZvlG+Rd2dYSBpY8DmyPOqSE1BAOHRj8FFwNoZQVewKIgu8e4OfscNn9u/EoX16ouj
+         c5YogGHGBhVwi92Y5dWx5TqfK1MqwOtBezKDCVViW4xcYql31uKVteyHaUYRKLDRx0
+         ttGxCAKNT4f/IWbQdMqyTsWzj+/pxOyyg9HtxhFs4Gx64utst1bnKgk0g1U8KkGWY1
+         ZbVepXHBTd5nUjHAzEKCBtoU3CzjRpkPrWWxQxX6yz1mEWxirhxKNsaxN1qPWh9CSh
+         6BGDTEDIeDIEw==
+Received: by mail-ua1-f49.google.com with SMTP id v3so29209037uam.10
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Oct 2021 19:20:33 -0700 (PDT)
+X-Gm-Message-State: AOAM533NWI3PTD5EXxMRxvHfgXeqmtPwT6/pJu4iLgnvRPW6IcWs2wLK
+        BYbK35397oXscat1n713ZUMp+2eBOgnZ13Bqol4=
+X-Google-Smtp-Source: ABdhPJw8d5Byej8xH1/8N2aLyuBdS2vuVUMUDwb2mMOTbLN4DdP83kv1veF/0Zgp+KutXfqR/v946qlKf6b/H1kJ3ng=
+X-Received: by 2002:a05:6102:510d:: with SMTP id bm13mr6180428vsb.28.1635733232495;
+ Sun, 31 Oct 2021 19:20:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211024013303.3499461-1-guoren@kernel.org> <20211024013303.3499461-4-guoren@kernel.org>
+ <87a6ixbcse.wl-maz@kernel.org> <20211028135523.5cf4b66b@redslave.neermore.group>
+ <87sfwl9oxg.wl-maz@kernel.org>
+In-Reply-To: <87sfwl9oxg.wl-maz@kernel.org>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Mon, 1 Nov 2021 10:20:21 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTR3CqtmKZKS3fOQ9mzSLn7_oh7YoSSmWP1YM=ujB_srMw@mail.gmail.com>
+Message-ID: <CAJF2gTR3CqtmKZKS3fOQ9mzSLn7_oh7YoSSmWP1YM=ujB_srMw@mail.gmail.com>
+Subject: Re: [PATCH V5 3/3] irqchip/sifive-plic: Fixup thead, c900-plic
+ request_threaded_irq with ONESHOT
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Nikita Shubin <nikita.shubin@maquefel.me>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atish.patra@wdc.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
+        Rob Herring <robh@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Guo Ren <guoren@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: chi minghao <chi.minghao@zte.com.cn>
+On Thu, Oct 28, 2021 at 10:58 PM Marc Zyngier <maz@kernel.org> wrote:
+>
+> On Thu, 28 Oct 2021 11:55:23 +0100,
+> Nikita Shubin <nikita.shubin@maquefel.me> wrote:
+> >
+> > Hello Marc and Guo Ren!
+> >
+> > On Mon, 25 Oct 2021 11:48:33 +0100
+> > Marc Zyngier <maz@kernel.org> wrote:
+> >
+> > > On Sun, 24 Oct 2021 02:33:03 +0100,
+> > > guoren@kernel.org wrote:
+> > > >
+> > > > From: Guo Ren <guoren@linux.alibaba.com>
+> > > >
+> > > > When using "devm_request_threaded_irq(,,,,IRQF_ONESHOT,,)" in the
+> > > > driver, only the first interrupt could be handled, and continue irq
+> > > > is blocked by hw. Because the thead,c900-plic couldn't complete
+> > > > masked irq source which has been disabled in enable register. Add
+> > > > thead_plic_chip which fix up c906-plic irq source completion
+> > > > problem by unmask/mask wrapper.
+> > > >
+> > > > Here is the description of Interrupt Completion in PLIC spec [1]:
+> > > >
+> > > > The PLIC signals it has completed executing an interrupt handler by
+> > > > writing the interrupt ID it received from the claim to the
+> > > > claim/complete register. The PLIC does not check whether the
+> > > > completion ID is the same as the last claim ID for that target. If
+> > > > the completion ID does not match an interrupt source that is
+> > > > currently enabled for the target, the ^^ ^^^^^^^^^ ^^^^^^^
+> > > > completion is silently ignored.
+> > >
+> > > Given this bit of the spec...
+> > >
+> > > > +static void plic_thead_irq_eoi(struct irq_data *d)
+> > > > +{
+> > > > + struct plic_handler *handler =
+> > > > this_cpu_ptr(&plic_handlers); +
+> > > > + if (irqd_irq_masked(d)) {
+> > > > +         plic_irq_unmask(d);
+> > > > +         writel(d->hwirq, handler->hart_base +
+> > > > CONTEXT_CLAIM);
+> > > > +         plic_irq_mask(d);
+> > > > + } else {
+> > > > +         writel(d->hwirq, handler->hart_base +
+> > > > CONTEXT_CLAIM);
+> > > > + }
+> > > > +}
+> > > > +
+> > >
+> > > ... it isn't obvious to me why this cannot happen on an SiFive PLIC.
+> >
+> > This indeed happens with SiFive PLIC. I am currently tinkering with
+> > da9063 RTC on SiFive Unmatched, and ALARM irq fires only once. However
+> > with changes proposed by Guo Ren in plic_thead_irq_eoi, everything
+> > begins to work fine.
+> >
+> > May be these change should be propagated to plic_irq_eoi instead of
+> > making a new function ?
+>
+> That's my impression too. I think the T-Head defect is pretty much
+> immaterial when you consider how 'interesting' the PLIC architecture
+> is.
+Which is the "T-Head defect" you mentioned here?
+ 1. Auto masking with claim + complete (I don't think it's a defect,
+right? May I add a new patch to utilize the feature to decrease a
+little duplicate mask/unmask operations in the future?)
+ 2. EOI failed when masked
 
-Use sysfs_emit instead of scnprintf or sprintf makes more sense.
+> Conflating EOI and masking really is a misfeature...
+I think the problem is riscv PLIC reuse enable bit as mask bit. I
+recommend separating them. That means:
+ - EOI still depends on enable bit.
+ - Add mask/unmask bit regs to do the right thing.
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: chi minghao <chi.minghao@zte.com.cn>
----
- drivers/scsi/ncr53c8xx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>
+>         M.
+>
+> --
+> Without deviation from the norm, progress is not possible.
 
-diff --git a/drivers/scsi/ncr53c8xx.c b/drivers/scsi/ncr53c8xx.c
-index fc8abe05fa8f..135a0a112dbb 100644
---- a/drivers/scsi/ncr53c8xx.c
-+++ b/drivers/scsi/ncr53c8xx.c
-@@ -8031,7 +8031,7 @@ static ssize_t show_ncr53c8xx_revision(struct device *dev,
- 	struct Scsi_Host *host = class_to_shost(dev);
- 	struct host_data *host_data = (struct host_data *)host->hostdata;
- 
--	return snprintf(buf, 20, "0x%x\n", host_data->ncb->revision_id);
-+	return sysfs_emit(buf, "0x%x\n", host_data->ncb->revision_id);
- }
- 
- static struct device_attribute ncr53c8xx_revision_attr = {
+
+
 -- 
-2.25.1
+Best Regards
+ Guo Ren
 
+ML: https://lore.kernel.org/linux-csky/
