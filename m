@@ -2,108 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CF364415BD
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:01:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4358D4415D7
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:06:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231371AbhKAJEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:04:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53658 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230520AbhKAJEW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:04:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A36D960F36;
-        Mon,  1 Nov 2021 09:01:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635757309;
-        bh=l7HaZsOf0inuUkFmNCqzqHcB4dS2C93Ciex8mXy6UPA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cgH/76ARewnijYGJDipqNTzX9kG+pGG3OP9wOnXKswhFX1ofUD6x4pdu8jADvqOK6
-         2vCrn/H5Io79U7DvaYn1vHiXe81PExUysDmZm1TjydiHZjlcU+37NkDorvXqF1pINQ
-         XRVDg+su98u6TUpHBP7EJ0lmfA/35FJ7LzK5KicrhYORVRxRk1JTLbtXmb/vH2eRLb
-         idX/jFc+oa0/ve8HJOFhF9ol1D2xjew/88Q1jwhWYFeBseZiMFSi+3BOi+xBjbRSpa
-         z78PK5mO241DrO4kqd0fZT9wTYu1ZgeL5chCozc6w7RYeCeuAnSU+womooLCtCPUUa
-         7yYecgXoapG4g==
-Date:   Mon, 1 Nov 2021 09:01:44 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [RFC] arm64: export this_cpu_has_cap
-Message-ID: <20211101090143.GA27181@willie-the-truck>
-References: <20211029113023.760421-1-arnd@kernel.org>
- <9d4e09b4-47dc-ed3c-2b6d-e0d1a081e592@arm.com>
- <YXw4H2BNx85KnLDh@arm.com>
+        id S231776AbhKAJJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:09:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231223AbhKAJJX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:09:23 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 795FDC061714;
+        Mon,  1 Nov 2021 02:06:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=8e2Zw1HhTX3FErHDM4Hv2jUGCHYSSUs72uIP19ebFBg=; b=O1NgmmcArlP/CVyTZedoMJoN+8
+        lyvZ0PYu4u2unqztHfgbNIhvSpCwUbqAat2uSORK3lDJ0WGkUaAbocCsY9aifIktmwU2oWOnvmLIh
+        n+dSmIJgXu/iTkWVLfZzbh9DsX7vTij+rue4uY0ftwyLm1hOjWR20yjQxljOIZhWcpS7bYwJRbG2i
+        LB/xN10BH5LXBWXBDzGdlL9kYDtTtp7bAUAeyGdwmZgVtJZALa6N9tg1JBk54fGRb2ZCvXeBE3yls
+        Xs+OUVYBD7WjSx+CJY1e0Zyw3GUgkpT68YefNSGmgvuIYnl9SQTcTL1VvC/f2jXtC1TEJbZ2Rnw/G
+        d7habtoQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mhTCY-003duA-EH; Mon, 01 Nov 2021 09:02:35 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id A41899822A3; Mon,  1 Nov 2021 10:01:55 +0100 (CET)
+Date:   Mon, 1 Nov 2021 10:01:55 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Mark Rutland <mark.rutland@arm.com>, X86 ML <x86@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-hardening@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH] static_call,x86: Robustify trampoline patching
+Message-ID: <20211101090155.GW174703@worktop.programming.kicks-ass.net>
+References: <CAMj1kXEJd5=3A_6Jhd4UU-TBGarnHo5+U76Zxxt7SzXsWp4CcA@mail.gmail.com>
+ <20211030180249.GU174703@worktop.programming.kicks-ass.net>
+ <CAMj1kXF4ZNAvdC8tP_H=v1Dn_Zcv=La11Ok43ceQOyb1Xo1jXQ@mail.gmail.com>
+ <CAMj1kXEvemVOWf4M_0vsduN_kiCsGVmM92cE7KPMoNKViKp=RQ@mail.gmail.com>
+ <20211031163920.GV174703@worktop.programming.kicks-ass.net>
+ <CAMj1kXHk5vbrT49yRCivX3phrEkN6Xbb+g8WEmavL_d1iE0OxQ@mail.gmail.com>
+ <YX74Ch9/DtvYxzh/@hirez.programming.kicks-ass.net>
+ <CAMj1kXG+MuGaG3BHk8pnE1MKVmRf5E+nRNoFMHxOA1y84eGikg@mail.gmail.com>
+ <YX8AQJqyB+H3PF1d@hirez.programming.kicks-ass.net>
+ <CAMj1kXF3n-oQ1WP8=asb60K6UjSYOtz5RVhrcoCoNq3v7mZdQg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YXw4H2BNx85KnLDh@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAMj1kXF3n-oQ1WP8=asb60K6UjSYOtz5RVhrcoCoNq3v7mZdQg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 07:06:23PM +0100, Catalin Marinas wrote:
-> On Fri, Oct 29, 2021 at 02:31:23PM +0100, Suzuki K Poulose wrote:
-> > On 29/10/2021 12:30, Arnd Bergmann wrote:
-> > > From: Arnd Bergmann <arnd@arndb.de>
-> > > 
-> > > It's now used in a coresight driver that can be a loadable module:
-> > > 
-> > > ERROR: modpost: "this_cpu_has_cap" [drivers/hwtracing/coresight/coresight-trbe.ko] undefined!
-> > > 
-> > > Fixes: 8a1065127d95 ("coresight: trbe: Add infrastructure for Errata handling")
-> > 
-> > Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> > Tested-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> > 
-> > Will, Catalin, Mathieu,
-> > 
-> > Do you have a preference on how this fix can be pulled in ? This may
-> > be safe to go via coresight tree if it is not too late. Otherwise,
-> > it could go via the arm64 tree.
+On Mon, Nov 01, 2021 at 12:36:18AM +0100, Ard Biesheuvel wrote:
+> On Sun, 31 Oct 2021 at 21:45, Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > On Sun, Oct 31, 2021 at 09:21:56PM +0100, Ard Biesheuvel wrote:
+> >
+> > > That means we can support static calls on arm64 now without breaking
+> > > Clang CFI, and work on a solution for the redundant jumps on a more
+> > > relaxed schedule.
+> >
+> > Yes, arm64 has a 'problem' with having already merged the clang-cfi
+> > stuff :/
+> >
+> > I'm hoping the x86 solution can be an alternative CFI scheme, I'm
+> > starting to really hate this one. And I'm not at all convinced the
+> > proposed scheme is the best possible scheme given the constraints of
+> > kernel code. AFAICT it's a compromise made in userspace.
 > 
-> I think Will already closed/tagged the arm64 tree for the upcoming
-> merging window, though he could take it as a fix afterwards.
-> 
-> If it doesn't conflict with the arm64 for-next/core, it's fine by me to
-> go through the coresight tree.
-> 
-> > > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> > > ---
-> > > Not sure if we actually want this to be exported, this is my local
-> > > workaround for the randconfig build bot.
-> > > ---
-> > >   arch/arm64/kernel/cpufeature.c | 1 +
-> > >   1 file changed, 1 insertion(+)
-> > > 
-> > > diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-> > > index ecbdff795f5e..beccbcfa7391 100644
-> > > --- a/arch/arm64/kernel/cpufeature.c
-> > > +++ b/arch/arm64/kernel/cpufeature.c
-> > > @@ -2864,6 +2864,7 @@ bool this_cpu_has_cap(unsigned int n)
-> > >   	return false;
-> > >   }
-> > > +EXPORT_SYMBOL(this_cpu_has_cap);
-> 
-> EXPORT_SYMBOL_GPL? I think this_cpu_has_cap() is a bit more more
-> specialised than cpus_have_const_cap().
-> 
-> With that:
-> 
-> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+> Your scheme only works with IBT: the value of %r11 is under the
+> adversary's control so it could just point it at 'foo+0x10' if it
+> wants to call foo indirectly, and circumvent the check. So without IBT
+> (or BTI), I think the check fundamentally belongs in the caller, not
+> in the callee.
 
-Yes, at this stage I think it's best for this to go via the Coresight tree.
-So with the _GPL export:
+How is that not true for the jump table approach? Like I showed earlier,
+it is *trivial* to reconstruct the actual function pointer from a
+jump-table entry pointer.
 
-Acked-by: Will Deacon <will@kernel.org>
-
-If that doesn't work for some reason, I can take it next week after the
-initial arm64 queue has been merged. Please just let me know.
-
-Will
+In any case, I really want the discussion to start at square one, and
+show/explain why any chosen CFI scheme is actually good for the kernel.
+Just because clang happened to have implemented it, doesn't make it the
+most suitable scheme for the kernel.
