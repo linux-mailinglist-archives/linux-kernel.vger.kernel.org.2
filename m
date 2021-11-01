@@ -2,121 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B03B441523
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 09:13:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89E7B441536
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 09:18:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231407AbhKAIQQ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 1 Nov 2021 04:16:16 -0400
-Received: from mail-ua1-f53.google.com ([209.85.222.53]:37532 "EHLO
-        mail-ua1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231371AbhKAIQM (ORCPT
+        id S231402AbhKAIVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 04:21:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23121 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231223AbhKAIVU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 04:16:12 -0400
-Received: by mail-ua1-f53.google.com with SMTP id f4so30398245uad.4
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 01:13:39 -0700 (PDT)
+        Mon, 1 Nov 2021 04:21:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635754720;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1VJ7I9+UXANPnUsj7WuJy/EQjAg507IxwXZkWzzQG2E=;
+        b=hRja0s/qJRTGJaoErCwu4cP+BhQFBvknbNJeFL12V20ICzotRrmLbBaGEa+AZb7dFqH0U2
+        UvD3crTBVM+D9K9eE50y173BoJbdj+IQZsQb1cJLiDNL5IxfbsVs+r3ChhDt+fXFVZ2Ji4
+        sSczBvVJsxeNxqm+d34No+7ImIpwbxU=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-26-KQszCzRdM8m9qkFeXLGm8w-1; Mon, 01 Nov 2021 04:18:39 -0400
+X-MC-Unique: KQszCzRdM8m9qkFeXLGm8w-1
+Received: by mail-ed1-f71.google.com with SMTP id s12-20020a50dacc000000b003dbf7a78e88so14880828edj.2
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 01:18:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=wKEXgiE+KS/+BQe8KTx4zyXWOlKWlw5eMFNjnPfFT74=;
-        b=GJlwhath44vPGzIjv0MmIq/302zQ73KYT+msdmL/kLm7L3YLZtBBC3697tPVsSRCdP
-         +Ycm2TnDTFwWDNcrxc2xkaCYf6av/nZPBlRPBXfRDLtQtF6BfCeRbOJPPfJeBkZx4rFI
-         LKlw18n2h8PIfqI+s7T+c8Xpv5tQMyL53ckbKlIwkkcrCGsaNg3egnyKv7568Cf+Fx/e
-         3OYoYVCDlaJU7Jz5Efza0nYoIIq6RAcd6Kjl8yfhxJdAt5iL3eQeVGmX1Yy/Zf0bZ7Cf
-         saElGpWowUOPu+pTZTcprtoYHHkW7+2lJPG3mI5QO2sTSoq164GGz51oucuGNuuDKkU/
-         WZgg==
-X-Gm-Message-State: AOAM533N5k4S2d2/xaSjCMTkY95nCju7HwGcEnoYB/ROJiBL+kaaHdiz
-        0BMlOKm7Ba6cbNEp+1Ix/cnbYnFaInVDjw==
-X-Google-Smtp-Source: ABdhPJzMD3S2lcFAEYyh/bN1+6aQbBoDwT31OTMQxipw1q2mBkTE8h80tef3Bkp98IUeDfBznDVMAQ==
-X-Received: by 2002:a05:6102:50a7:: with SMTP id bl39mr10616500vsb.12.1635754419017;
-        Mon, 01 Nov 2021 01:13:39 -0700 (PDT)
-Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com. [209.85.222.52])
-        by smtp.gmail.com with ESMTPSA id k28sm1708285vkn.2.2021.11.01.01.13.38
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Nov 2021 01:13:38 -0700 (PDT)
-Received: by mail-ua1-f52.google.com with SMTP id e2so30380090uax.7
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 01:13:38 -0700 (PDT)
-X-Received: by 2002:a67:ee41:: with SMTP id g1mr518643vsp.41.1635754418420;
- Mon, 01 Nov 2021 01:13:38 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1VJ7I9+UXANPnUsj7WuJy/EQjAg507IxwXZkWzzQG2E=;
+        b=ByiUJt3iolL+Qkw6s81XCWQGtCtCFqv3jH/oG2ovGCWWxgEO4SkTt6GKA3EMgvA240
+         YjuImI7qn2ilK2/i8SOFrjQmWDHqRz5RH1MV4gVU3qdqWMcdHaHKb0PQsLw3S2YLTzCq
+         tVdQogXPOGLoL5BRpaKiKUY6AIjGlRv7BCqK16lF90m6eak+a4QSsaVZINn7qvjgxj2y
+         spljGnCLvmLWpdTaenxWv3lcEzCrwes7MFjE+cAjNBO0qY1Pa9geF/7gGAkZXpvy9Q3M
+         nl46Y8Yc7xsnC+6fT/cZRrVD4ElF+XMTfpwRBXsJ6BXx57SPPdPGHn4r6K24/vBdKvXn
+         S/tA==
+X-Gm-Message-State: AOAM530tBUprLDNiy0v0v8IvTq797kIWp0uzmhCkqfYxMvkkLc3760S3
+        GInNEWW8sJrodw7yCBbDK8EQBNh4mzmF5re1nsE99nxY+sosnugLAIpn7wB6SscItycOncffr+W
+        Lp+VkCz+uUyn2gipJhHnRs3EJ
+X-Received: by 2002:a50:9eab:: with SMTP id a40mr39722372edf.281.1635754718314;
+        Mon, 01 Nov 2021 01:18:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxjgeNnO1O2bOJHQh8lmeLqGbJq9Vgsp7BeICMK7EiQVwicym1EUAm8TwLuENIy8A/xBTFpNg==
+X-Received: by 2002:a50:9eab:: with SMTP id a40mr39722356edf.281.1635754718179;
+        Mon, 01 Nov 2021 01:18:38 -0700 (PDT)
+Received: from redhat.com ([176.12.204.186])
+        by smtp.gmail.com with ESMTPSA id g10sm7504925edr.56.2021.11.01.01.18.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Nov 2021 01:18:37 -0700 (PDT)
+Date:   Mon, 1 Nov 2021 04:18:32 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Wu Zongyong <wuzongyong@linux.alibaba.com>
+Cc:     jasowang@redhat.com, virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, wei.yang1@linux.alibaba.com,
+        Arnd Bergmann <arnd@arndb.de>,
+        Stefano Garzarella <sgarzare@redhat.com>
+Subject: Re: [PATCH v7 9/9] eni_vdpa: alibaba: fix Kconfig typo
+Message-ID: <20211101041739-mutt-send-email-mst@kernel.org>
+References: <cover.1634870456.git.wuzongyong@linux.alibaba.com>
+ <cover.1635493219.git.wuzongyong@linux.alibaba.com>
+ <0945b37f19b96ecadb79a4e1b01f486119a0b83a.1635493219.git.wuzongyong@linux.alibaba.com>
 MIME-Version: 1.0
-References: <CAHk-=wjfbfQobW2jygMvgfJXKmzZNB=UTzBrFs2vTEzVpBXA4Q@mail.gmail.com>
- <20211101002346.GA304515@roeck-us.net>
-In-Reply-To: <20211101002346.GA304515@roeck-us.net>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 1 Nov 2021 09:13:27 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWBgGvt8q9suk6tysgga7sJ4v74eJHHO=ifg2Rc3S9A9Q@mail.gmail.com>
-Message-ID: <CAMuHMdWBgGvt8q9suk6tysgga7sJ4v74eJHHO=ifg2Rc3S9A9Q@mail.gmail.com>
-Subject: Re: Linux 5.15
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0945b37f19b96ecadb79a4e1b01f486119a0b83a.1635493219.git.wuzongyong@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Günter.
+On Fri, Oct 29, 2021 at 05:14:50PM +0800, Wu Zongyong wrote:
+> The Kconfig symbol was misspelled, which leads to randconfig link
+> failures:
+> 
+> ld.lld: error: undefined symbol: vp_legacy_probe
+> >>> referenced by eni_vdpa.c
+> >>>               vdpa/alibaba/eni_vdpa.o:(eni_vdpa_probe) in archive drivers/built-in.a
+> 
+> Fixes: 6a9f32c00609 ("eni_vdpa: add vDPA driver for Alibaba ENI")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+> Signed-off-by: Wu Zongyong <wuzongyong@linux.alibaba.com>
 
-On Mon, Nov 1, 2021 at 1:28 AM Guenter Roeck <linux@roeck-us.net> wrote:
-> On Sun, Oct 31, 2021 at 02:09:07PM -0700, Linus Torvalds wrote:
-> Building m68k:allmodconfig ... failed
-> --------------
-> Error log:
-> In file included from include/linux/string.h:20,
->                  from include/linux/bitmap.h:10,
->                  from include/linux/cpumask.h:12,
->                  from include/linux/smp.h:13,
->                  from include/linux/lockdep.h:14,
->                  from include/linux/spinlock.h:63,
->                  from include/linux/mmzone.h:8,
->                  from include/linux/gfp.h:6,
->                  from include/linux/slab.h:15,
->                  from drivers/nvme/target/discovery.c:7:
-> In function 'memcpy_and_pad',
->     inlined from 'nvmet_execute_disc_identify' at drivers/nvme/target/discovery.c:268:2:
-> arch/m68k/include/asm/string.h:72:25: error: '__builtin_memcpy' reading 8 bytes from a region of size 7
->
-> Another instance of the same problem:
->
-> In function 'memcpy_and_pad',
->     inlined from 'nvmet_execute_identify_ctrl' at drivers/nvme/target/admin-cmd.c:372:2:
-> arch/m68k/include/asm/string.h:72:25: error: '__builtin_memcpy' reading 8 bytes from a region of size 7
->
-> This is seen with gcc 11.1 and 11.2. gcc 10.3 builds fine.
-> The code in question is
->
->         memcpy_and_pad(id->fr, sizeof(id->fr),
->                        UTS_RELEASE, strlen(UTS_RELEASE), ' ');
->
-> and UTS_RELEASE is "5.15.0". I have no idea what might be wrong with the code.
+This one I'll squash into the previous one. That commit hash is not
+going to match anything useful.
 
-Me neither.  That warning (now error) has been seen with all point
-releases (i.e. strlen(UTS_RELEASE) < 8) since v5.0.
+> ---
+>  drivers/vdpa/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/vdpa/Kconfig b/drivers/vdpa/Kconfig
+> index 07b0c73212aa..50f45d037611 100644
+> --- a/drivers/vdpa/Kconfig
+> +++ b/drivers/vdpa/Kconfig
+> @@ -80,7 +80,7 @@ config VP_VDPA
+>  
+>  config ALIBABA_ENI_VDPA
+>  	tristate "vDPA driver for Alibaba ENI"
+> -	select VIRTIO_PCI_LEGACY_LIB
+> +	select VIRTIO_PCI_LIB_LEGACY
+>  	depends on PCI_MSI && X86
+>  	help
+>  	  VDPA driver for Alibaba ENI (Elastic Network Interface) which is built upon
+> -- 
+> 2.31.1
 
-> Does anyone have an idea ?
-
-We had a discussion in
-https://lore.kernel.org/all/CAMuHMdX365qmWiii=gQLADpW49EMkdDrVJDPWNBpAZuZM0WQFQ@mail.gmail.com
-but without any definitive conclusion.
-
-> Do I need to revert to gcc 10.3 for m68k ?
-
-I'm not sure that might help, as the issue has been seen with
-e.g. 8.1.0 and 8.2.0, too, with a slightly different message:
-warning: ‘__builtin_memcpy’ forming offset 8 is out of the bounds [0,
-7] [-Warray-bounds]
-
-Any suggestions? Thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
