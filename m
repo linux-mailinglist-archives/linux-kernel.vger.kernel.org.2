@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6B6E44184D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:43:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD8D4441841
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:43:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233897AbhKAJpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:45:35 -0400
-Received: from mo4-p02-ob.smtp.rzone.de ([81.169.146.171]:10050 "EHLO
+        id S233744AbhKAJpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:45:24 -0400
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.83]:12474 "EHLO
         mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233439AbhKAJmJ (ORCPT
+        with ESMTP id S233399AbhKAJmF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:42:09 -0400
+        Mon, 1 Nov 2021 05:42:05 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1635759560;
     s=strato-dkim-0002; d=goldelico.com;
     h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=TJ0YVmi/NuO/y3MEGu168+AMKkVXNrfAPjqEA0cq6xQ=;
-    b=Aw/w8324cu6fGUaXHE/5jI/B5sCJEYKhxXtu16FlSM3R4vAaiaU7JeOdTtZeoucHsA
-    fn9ECHbg3wXdlkGTwTlnVZJn6LAP+J8bUUp3QNVf7ogoOhX6RboM3mjRPeKlula5EY4s
-    tAqYHonKlBDt7f/KyNAmNf9A09aeVwIsGDrrID/itKLVoll3ILWf+j+3Y9N2iURDTd5X
-    qcA8FAsxxXYfFx1JiKjnBAU1ks2DKKPPj/ovFB+zZVNmo/aawtR2Sj4Amtz0Gtii+m9B
-    lwyY06u6nBDeu7DmTu5Oyw5q7oHJuzuSl2ch+Euxqg1Q6Oe4zqE6fASTrh0hx/qKKNBN
-    /wgg==
+    bh=/pr3oUiSp/AbYNg/y8i1kgJY8VAP2+QSFI6+vf3Alag=;
+    b=XW44j9YGvSDfKStWSJU9Id0QUfLg059QLdbqWx99IfBa3Eja6z0A+Jd0da6zHNA4kn
+    Xgf2e29KXSqxH1zrjsYlz2yqBNTK3gQ8i+XwerL8cABAELTltZm2eZHru81dpaNM9D/z
+    ucXlX8ohsDdqqV9L2CQULpvYbvynv/bxCHggGEnvpNC4coRtFHiKtmaVacYpZFwbbOja
+    BgZRydV17jgl755jtVcdTYYVMupCA/dxeJNznTwsyw9VomI4pHdcrTaM6SsKXHlUD3Yh
+    s09Twt9aj6WnIl7j0Y8eNz9lwjtDMT7jau+AWhQChOc7nn9wi75amAIMFw6AH1NfV4lk
+    efcw==
 Authentication-Results: strato.com;
     dkim=none
 X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o1KHeBQyh+ITDDJhD74="
 X-RZG-CLASS-ID: mo00
 Received: from iMac.fritz.box
     by smtp.strato.de (RZmta 47.34.1 SBL|AUTH)
-    with ESMTPSA id d01d1fxA19dJH5k
+    with ESMTPSA id d01d1fxA19dKH5l
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-    Mon, 1 Nov 2021 10:39:19 +0100 (CET)
+    Mon, 1 Nov 2021 10:39:20 +0100 (CET)
 From:   "H. Nikolaus Schaller" <hns@goldelico.com>
 To:     Ulf Hansson <ulf.hansson@linaro.org>,
         =?UTF-8?q?J=C3=A9r=C3=B4me=20Pouiller?= 
@@ -44,9 +44,9 @@ Cc:     notasas@gmail.com, linux-mmc@vger.kernel.org,
         linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org,
         kernel@pyra-handheld.com,
         "H. Nikolaus Schaller" <hns@goldelico.com>
-Subject: [RFC v2 1/2] mmc: core: transplant ti,wl1251 quirks from to be retired omap_hsmmc
-Date:   Mon,  1 Nov 2021 10:39:11 +0100
-Message-Id: <91096a01e37192e2e6f047cd747994fe3c6b2627.1635759337.git.hns@goldelico.com>
+Subject: [RFC v2 2/2] mmc: host: omap_hsmmc: revert special init for wl1251
+Date:   Mon,  1 Nov 2021 10:39:12 +0100
+Message-Id: <f66aee5586f4d0702ee855e477bbce0c54c24623.1635759337.git.hns@goldelico.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <cover.1635759337.git.hns@goldelico.com>
 References: <cover.1635759337.git.hns@goldelico.com>
@@ -56,142 +56,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The TiWi 5 WiFi module needs special setup of the sdio
-interface before it can be probed.
+Replaces: commit f6498b922e57 ("mmc: host: omap_hsmmc: add code for special init of wl1251 to get rid of pandora_wl1251_init_card")
+Requires: commit ("mmc: core: transplant ti,wl1251 quirks from omap_hsmmc")
 
-So far, this is done in omap_hsmmc_init_card() in omap_hsmmc.c
-which makes it useable only if connected to omap devices
-which use the omap_hsmmc. The OpenPandora is the most promient
-example.
+After moving the wl1251 quirks from omap_hsmmc_init_card() to mmc_fixup_device()
+we can remove omap_hsmmc_init_card() which specialized on the combination of
+omap_hsmmc and wl1251.
 
-There are plans to switch to a newer sdhci-omap driver and
-retire omap_hsmmc. Hence this quirk must be reworked or moved
-somewhere else. Ideally to some location that is not dependent
-on the specific SoC mmc host driver.
-
-This is achieved by the new mmc_fixup_device() option introduced
-by ("mmc: allow to match the device tree to apply quirks") to match
-through device tree compatible string.
-
-This is called early right after where host->ops->init_card()
-and omap_hsmmc_init_card() was previously called.
-
+Related-to: commit f6498b922e57 ("mmc: host: omap_hsmmc: add code for special init of wl1251 to get rid of pandora_wl1251_init_card")
+Related-to: commit 2398c41d6432 ("omap: pdata-quirks: remove openpandora quirks for mmc3 and wl1251")
+Related-to: commit f9d50fef4b64 ("ARM: OMAP2+: omap3-pandora: add wifi support")
 Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
 ---
- drivers/mmc/core/card.h   | 19 +++++++++++++++++++
- drivers/mmc/core/mmc.c    |  1 +
- drivers/mmc/core/quirks.h | 22 ++++++++++++++++++++++
- drivers/mmc/core/sd.c     |  2 ++
- drivers/mmc/core/sdio.c   |  1 +
- 5 files changed, 45 insertions(+)
+ drivers/mmc/host/omap_hsmmc.c | 36 -----------------------------------
+ 1 file changed, 36 deletions(-)
 
-diff --git a/drivers/mmc/core/card.h b/drivers/mmc/core/card.h
-index 2f73f8567e14f..a876f4585fbb9 100644
---- a/drivers/mmc/core/card.h
-+++ b/drivers/mmc/core/card.h
-@@ -153,6 +153,25 @@ static inline void __maybe_unused add_limit_rate_quirk(struct mmc_card *card,
- 	card->quirk_max_rate = data;
+diff --git a/drivers/mmc/host/omap_hsmmc.c b/drivers/mmc/host/omap_hsmmc.c
+index 6960e305e0a39..9749639ea8977 100644
+--- a/drivers/mmc/host/omap_hsmmc.c
++++ b/drivers/mmc/host/omap_hsmmc.c
+@@ -1504,41 +1504,6 @@ static void omap_hsmmc_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
+ 	omap_hsmmc_set_bus_mode(host);
  }
  
-+static inline void __maybe_unused wl1251_quirk(struct mmc_card *card,
-+					       int data)
-+{
-+	/*
-+	 * We have TI wl1251 attached to this mmc. Pass this
-+	 * information to the SDIO core because it can't be
-+	 * probed by normal methods.
-+	 */
-+
-+	dev_info(card->host->parent, "found wl1251\n");
-+	card->quirks |= MMC_QUIRK_NONSTD_SDIO;
-+	card->cccr.wide_bus = 1;
-+	card->cis.vendor = 0x104c;
-+	card->cis.device = 0x9066;
-+	card->cis.blksize = 512;
-+	card->cis.max_dtr = 24000000;
-+	card->ocr = 0x80;
-+}
-+
- /*
-  * Quirk add/remove for MMC products.
-  */
-diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
-index 29e58ffae3797..19cd138acaec9 100644
---- a/drivers/mmc/core/mmc.c
-+++ b/drivers/mmc/core/mmc.c
-@@ -1634,6 +1634,7 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
- 	 */
- 	if (host->ops->init_card)
- 		host->ops->init_card(host, card);
-+	mmc_fixup_device(card, sdio_card_init_methods);
- 
- 	/*
- 	 * For native busses:  set card RCA and quit open drain mode.
-diff --git a/drivers/mmc/core/quirks.h b/drivers/mmc/core/quirks.h
-index ef368386e7112..0ffb69044a749 100644
---- a/drivers/mmc/core/quirks.h
-+++ b/drivers/mmc/core/quirks.h
-@@ -146,6 +146,28 @@ static const struct mmc_fixup __maybe_unused sdio_fixup_methods[] = {
- 	END_FIXUP
+-static void omap_hsmmc_init_card(struct mmc_host *mmc, struct mmc_card *card)
+-{
+-	struct omap_hsmmc_host *host = mmc_priv(mmc);
+-
+-	if (card->type == MMC_TYPE_SDIO || card->type == MMC_TYPE_SD_COMBO) {
+-		struct device_node *np = mmc_dev(mmc)->of_node;
+-
+-		/*
+-		 * REVISIT: should be moved to sdio core and made more
+-		 * general e.g. by expanding the DT bindings of child nodes
+-		 * to provide a mechanism to provide this information:
+-		 * Documentation/devicetree/bindings/mmc/mmc-card.txt
+-		 */
+-
+-		np = of_get_compatible_child(np, "ti,wl1251");
+-		if (np) {
+-			/*
+-			 * We have TI wl1251 attached to MMC3. Pass this
+-			 * information to the SDIO core because it can't be
+-			 * probed by normal methods.
+-			 */
+-
+-			dev_info(host->dev, "found wl1251\n");
+-			card->quirks |= MMC_QUIRK_NONSTD_SDIO;
+-			card->cccr.wide_bus = 1;
+-			card->cis.vendor = 0x104c;
+-			card->cis.device = 0x9066;
+-			card->cis.blksize = 512;
+-			card->cis.max_dtr = 24000000;
+-			card->ocr = 0x80;
+-			of_node_put(np);
+-		}
+-	}
+-}
+-
+ static void omap_hsmmc_enable_sdio_irq(struct mmc_host *mmc, int enable)
+ {
+ 	struct omap_hsmmc_host *host = mmc_priv(mmc);
+@@ -1667,7 +1632,6 @@ static struct mmc_host_ops omap_hsmmc_ops = {
+ 	.set_ios = omap_hsmmc_set_ios,
+ 	.get_cd = mmc_gpio_get_cd,
+ 	.get_ro = mmc_gpio_get_ro,
+-	.init_card = omap_hsmmc_init_card,
+ 	.enable_sdio_irq = omap_hsmmc_enable_sdio_irq,
  };
  
-+static const char * const wl1251_compatible_list[] = { "ti,wl1251", NULL };
-+
-+// FIXME: this needs a nice macro for initialization
-+
-+static const struct mmc_fixup __maybe_unused sdio_card_init_methods[] = {
-+	{
-+		.name = CID_NAME_ANY,
-+		.manfid = CID_MANFID_ANY,
-+		.oemid = CID_OEMID_ANY,
-+		.rev_start = 0,
-+		.rev_end = -1ull,
-+		.cis_vendor = SDIO_ANY_ID,
-+		.cis_device = SDIO_ANY_ID,
-+		.vendor_fixup = wl1251_quirk,
-+		.data = 0,
-+		.ext_csd_rev = EXT_CSD_REV_ANY,
-+		.of_compatible = wl1251_compatible_list,
-+	},
-+
-+	END_FIXUP
-+};
-+
- static inline bool mmc_fixup_of_compatible_match(struct mmc_card *card,
- 						 const char *const *compat_list)
- {
-diff --git a/drivers/mmc/core/sd.c b/drivers/mmc/core/sd.c
-index 4646b7a03db6b..0d174fdf47164 100644
---- a/drivers/mmc/core/sd.c
-+++ b/drivers/mmc/core/sd.c
-@@ -23,6 +23,7 @@
- #include "host.h"
- #include "bus.h"
- #include "mmc_ops.h"
-+#include "quirks.h"
- #include "sd.h"
- #include "sd_ops.h"
- 
-@@ -1427,6 +1428,7 @@ static int mmc_sd_init_card(struct mmc_host *host, u32 ocr,
- 	 */
- 	if (host->ops->init_card)
- 		host->ops->init_card(host, card);
-+	mmc_fixup_device(card, sdio_card_init_methods);
- 
- 	/*
- 	 * For native busses:  get card RCA and quit open drain mode.
-diff --git a/drivers/mmc/core/sdio.c b/drivers/mmc/core/sdio.c
-index 68edf7a615be5..cf8ee66990508 100644
---- a/drivers/mmc/core/sdio.c
-+++ b/drivers/mmc/core/sdio.c
-@@ -707,6 +707,7 @@ static int mmc_sdio_init_card(struct mmc_host *host, u32 ocr,
- 	 */
- 	if (host->ops->init_card)
- 		host->ops->init_card(host, card);
-+	mmc_fixup_device(card, sdio_card_init_methods);
- 
- 	/*
- 	 * If the host and card support UHS-I mode request the card
 -- 
 2.33.0
 
