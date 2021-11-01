@@ -2,150 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB0104419AA
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 11:16:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA7754419B0
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 11:17:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231905AbhKAKTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 06:19:24 -0400
-Received: from mga06.intel.com ([134.134.136.31]:12199 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230298AbhKAKTV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 06:19:21 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10154"; a="291826685"
-X-IronPort-AV: E=Sophos;i="5.87,198,1631602800"; 
-   d="scan'208";a="291826685"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2021 03:16:48 -0700
-X-IronPort-AV: E=Sophos;i="5.87,198,1631602800"; 
-   d="scan'208";a="488572933"
-Received: from shiweiyu-mobl.ccr.corp.intel.com (HELO chenyu5-mobl1) ([10.255.28.221])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2021 03:16:45 -0700
-Date:   Mon, 1 Nov 2021 18:16:41 +0800
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc:     linux-acpi@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Aubrey Li <aubrey.li@intel.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 3/4] drivers/acpi: Introduce Platform Firmware Runtime
- Update Telemetry
-Message-ID: <20211101101641.GA20219@chenyu5-mobl1>
-References: <cover.1635317102.git.yu.c.chen@intel.com>
- <b37584e515c36882990295097386e783da29110e.1635317102.git.yu.c.chen@intel.com>
- <YXktrG1LhK5tj2uF@smile.fi.intel.com>
+        id S231958AbhKAKUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 06:20:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56128 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231693AbhKAKUK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 06:20:10 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26DBDC061714
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 03:17:37 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id t21so11229175plr.6
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 03:17:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oYkYwA/2dIbGzKgJMwo2/gyHeXXzrEzdf/BzDdeRQYA=;
+        b=B/ANsDuh9hFhnDCEr03H/+WltnM+MqPmj6syRy87S7MAMDiRYGF/x3Cu0Q9mh7XLV6
+         9uCCBkB+ICcjo9XV5lBU6QwH+O9orWD4mc3purMHhtulYY4kHTmOm6JA+zs7+3taMrH/
+         Ft0AvCkn6/XlS1wLg+SobkQJ6BJno0ZHJNRGZtFJk7IwEAcPaSyFZCJmqDYgRQZK5NtO
+         QVMve5ualc28/2Dqvj25xqum1C2ZIbU3ot2VJUVlgZFuLpi+tUsp2HBt+17okhBTsgk7
+         LPYuganUngqgRR4UBX6PqLtA+KRA4atrap4PIzjGJf4fTR/c9DSSEo6n15sPXuEs0MrU
+         f3TA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oYkYwA/2dIbGzKgJMwo2/gyHeXXzrEzdf/BzDdeRQYA=;
+        b=7FN+KvUdw7zYzss27pnpaQ6Dkt/oeQ7Equg5pbI1Hu3xhu401DxX7gD/X3NPeiv5Vz
+         GyZQPDpPUyYF7Hl80Ijju4heAa8JMjEDcBvT4IcldL5GBqlN0bPzOnB7ZWhHgGBQdvZ2
+         zPDRARILVgDDKtQ+CYJKH09KA1gU9TDeEusnU4e+yaMBe6UNM3Uu/cDPqks+VBq42/+D
+         ZWnR+c9qIa5z4iqYsGpU36mtIlpfZcKJvanmO6QO9XsLrhSFjtQaQQH0gz7XXf/g0PCu
+         XAjUQMtNxgx4HSJ4zj8EDcdTbhhxKIqX+6BfcwSFY5WM7Pe8AX+sD8uDsAYt6zahqKlI
+         cuOQ==
+X-Gm-Message-State: AOAM530HLrvasn8xEK0ZyfQGUEfleHCn4NUaFiKBBLUWsu6R7nxOV8ET
+        RVsNo1r/V9Wgf2WAHbGNi44=
+X-Google-Smtp-Source: ABdhPJwMDfPd/xfRVQnK0lt7H0nn2UbQze6DOjcxq15tm1YELLEgCQy5+LCMaooWaVfyYg6QMJVq4A==
+X-Received: by 2002:a17:902:d50d:b0:141:ea03:5193 with SMTP id b13-20020a170902d50d00b00141ea035193mr4871880plg.89.1635761856537;
+        Mon, 01 Nov 2021 03:17:36 -0700 (PDT)
+Received: from kushal ([115.96.218.96])
+        by smtp.gmail.com with ESMTPSA id y6sm15891676pfi.154.2021.11.01.03.17.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Nov 2021 03:17:36 -0700 (PDT)
+From:   Kushal Kothari <kushalkothari285@gmail.com>
+To:     rppt@kernel.org, akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, mike.rapoport@gmail.com,
+        kushalkothari2850@gmail.com
+Cc:     Kushal Kothari <kushalkothari285@gmail.com>
+Subject: [PATCH] staging: mm: Fix ERROR:do not initialise statics to 0 or NULL in memblock.c
+Date:   Mon,  1 Nov 2021 15:47:19 +0530
+Message-Id: <20211101101719.22538-1-kushalkothari285@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YXktrG1LhK5tj2uF@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 01:45:00PM +0300, Andy Shevchenko wrote:
-> On Wed, Oct 27, 2021 at 03:08:05PM +0800, Chen Yu wrote:
-> > Platform Firmware Runtime Update(PFRU) Telemetry Service is part of RoT
-> > (Root of Trust), which allows PFRU handler and other PFRU drivers to
-> > produce telemetry data to upper layer OS consumer at runtime.
-> > 
-> > The linux provides interfaces for the user to query the parameters of
-> 
-> Linux kernel
->
-Ok. 
-> > telemetry data, and the user could read out the telemetry data
-> > accordingly.
-> > 
-> > The corresponding userspace tool and man page will be introduced at
-> > tools/power/acpi/pfru.
-> 
-> ...
-> 
-> > +#include <linux/acpi.h>
-> > +#include <linux/device.h>
-> > +#include <linux/err.h>
-> > +#include <linux/errno.h>
-> > +#include <linux/file.h>
-> > +#include <linux/fs.h>
-> > +#include <linux/miscdevice.h>
-> > +#include <linux/module.h>
-> > +#include <linux/mm.h>
-> > +#include <linux/platform_device.h>
-> > +#include <linux/string.h>
-> > +#include <linux/uaccess.h>
-> > +#include <linux/uio.h>
-> > +#include <linux/uuid.h>
-> 
-> + blank line?
-> 
-Ok.
-> > +#include <uapi/linux/pfru.h>
-> 
-> ...
-> 
-> > +static DEFINE_IDA(pfru_log_ida);
-> 
-> Do you need any mutex against operations on IDA? (I don't remember
-> if it incorporates any synchronization primitives).
-> 
-The IDA uses a spinlock_irqsave() to protect the bitmap.
-> ...
-> 
-> Looking into the code I have feelings of déjà-vu. Has it really had
-> nothing in common with the previous patch?
-> 
-They both invokes _DSM to trigger the low level actions. However the input
-parameters and return ACPI package as well as the functions are different
-and hard to extract the common code between them.
-> ...
-> 
-> > +static int valid_log_level(int level)
-> > +{
-> > +	return level == LOG_ERR || level == LOG_WARN ||
-> > +		level == LOG_INFO || level == LOG_VERB;
-> 
-> Indentation.
-> 
-Ok, will add.
-> > +}
-> 
-> ...
-> 
-> 
-> This ordering in ->probe() is not okay:
-> 	devm_*()
-> 	non-devm_*()
-> 	devm_*()
-> 	non-devm_*()
-> 
-> One mustn't interleave these. The allowed are:
-> 
-> Case 1:
-> 	non-devm_*()
-> 
-> Case 2:
-> 	devm_*()
-> 
-> Case 3:
-> 	devm_*()
-> 	non-devm_*()
-> 
-> Otherwise in ->remove() you have wrong release ordering which may hide
-> subtle bugs.
-> 
-Got it. I'll fix it in next version.
-> Above comment is applicable to the other patch as well as some comments
-> from there are applicable here.
-> 
-Ok.
+The default value of static variable is zero and bool is false so
+not need to set it here.
+This patch fixes this ERROR in memblock.c
 
-Thanks,
-Chenyu
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
-> 
+Signed-off-by: Kushal Kothari <kushalkothari285@gmail.com>
+---
+ mm/memblock.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/mm/memblock.c b/mm/memblock.c
+index 5c3503c98b2f..57b9153b2278 100644
+--- a/mm/memblock.c
++++ b/mm/memblock.c
+@@ -16,7 +16,7 @@
+ #include <linux/kmemleak.h>
+ #include <linux/seq_file.h>
+ #include <linux/memblock.h>
+-
++#include<stdbool.h>
+ #include <asm/sections.h>
+ #include <linux/io.h>
+ 
+@@ -152,10 +152,10 @@ static __refdata struct memblock_type *memblock_memory = &memblock.memory;
+ 	} while (0)
+ 
+ static int memblock_debug __initdata_memblock;
+-static bool system_has_some_mirror __initdata_memblock = false;
++static bool system_has_some_mirror __initdata_memblock;
+ static int memblock_can_resize __initdata_memblock;
+-static int memblock_memory_in_slab __initdata_memblock = 0;
+-static int memblock_reserved_in_slab __initdata_memblock = 0;
++static int memblock_memory_in_slab __initdata_memblock;
++static int memblock_reserved_in_slab __initdata_memblock;
+ 
+ static enum memblock_flags __init_memblock choose_memblock_flags(void)
+ {
+-- 
+2.25.1
+
