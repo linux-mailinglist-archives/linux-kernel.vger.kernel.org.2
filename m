@@ -2,81 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 560BA441B75
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 14:02:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06EC2441B7A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 14:05:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232024AbhKANEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 09:04:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41784 "EHLO mail.kernel.org"
+        id S232065AbhKANHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 09:07:46 -0400
+Received: from mga12.intel.com ([192.55.52.136]:20531 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232157AbhKANEd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 09:04:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C498860FE8;
-        Mon,  1 Nov 2021 13:01:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635771720;
-        bh=VYx73tcpjpexSamiB+yt/silKL4ndXPFt8SomZn4KFI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Pw+pDF+OL6KL8IWekUsKbgEV3jgusKkgitoQORVYV7rVt0A1rhIrpeLo3pH4jW4f8
-         joj49/RTG74cxZ6dadR0yYBf3QeHlnzOCLMxiXGF2a2QVfGtYFdQMyuykVGj4nEW9i
-         soqIn/gOxUUlPVjb0nTUOPD+ZB5QC714N6kMbaY8=
-Date:   Mon, 1 Nov 2021 14:01:56 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Saurav Girepunje <saurav.girepunje@gmail.com>
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
-        straube.linux@gmail.com, martin@kaiser.cx,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        saurav.girepunje@hotmail.com
-Subject: Re: [PATCH] staging: r8188eu: hal: else is not useful after a return
-Message-ID: <YX/lRMNGsCZMKAV3@kroah.com>
-References: <YX7iBmKKNZfj8Gca@Sauravs-MacBook-Air.local>
+        id S232017AbhKANHl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 09:07:41 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10154"; a="211061306"
+X-IronPort-AV: E=Sophos;i="5.87,199,1631602800"; 
+   d="scan'208";a="211061306"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2021 06:02:12 -0700
+X-IronPort-AV: E=Sophos;i="5.87,199,1631602800"; 
+   d="scan'208";a="500031023"
+Received: from mvtammin-mobl.ger.corp.intel.com (HELO localhost) ([10.251.214.228])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2021 06:02:08 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     He Ying <heying24@huawei.com>, mripard@kernel.org, wens@csie.org,
+        airlied@linux.ie, daniel@ffwll.ch, jernej.skrabec@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org, linux-sunxi@lists.linux.dev
+Subject: Re: [PATCH] drm: Grab reference of connector before return connector from sun4i_tcon_get_connector
+In-Reply-To: <20211101062906.231518-1-heying24@huawei.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20211101062906.231518-1-heying24@huawei.com>
+Date:   Mon, 01 Nov 2021 15:02:06 +0200
+Message-ID: <87cznkdo6p.fsf@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YX7iBmKKNZfj8Gca@Sauravs-MacBook-Air.local>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 01, 2021 at 12:05:50AM +0530, Saurav Girepunje wrote:
-> In the function rtl8188eu_hal_init() else after the return statement
-> of the if section is not useful. As if condition is true function will
-> return from if section, On the other case if condition is false
-> function will not return and statement after the if section will
-> execute, So there is no need to have else in this case. Remove the
-> else after a return statement of the if section.
-> 
-> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+On Mon, 01 Nov 2021, He Ying <heying24@huawei.com> wrote:
+> From the comments of drm_for_each_connector_iter(), we know
+> that "connector is only valid within the list body, if you
+> want to use connector after calling drm_connector_list_iter_end()
+> then you need to grab your own reference first using
+> drm_connector_get()". So fix the wrong use of connector
+> according to the comments and then call drm_connector_put()
+> after using connector finishes.
+>
+> Signed-off-by: He Ying <heying24@huawei.com>
+
+Please use "drm/sun4i:" subject prefix for sun4i patches.
+
+BR,
+Jani.
+
+
 > ---
->  drivers/staging/r8188eu/hal/usb_halinit.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
+>  drivers/gpu/drm/sun4i/sun4i_tcon.c | 18 +++++++++++++-----
+>  1 file changed, 13 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/sun4i/sun4i_tcon.c b/drivers/gpu/drm/sun4i/sun4i_tcon.c
+> index 9f06dec0fc61..24fa6784ee5f 100644
+> --- a/drivers/gpu/drm/sun4i/sun4i_tcon.c
+> +++ b/drivers/gpu/drm/sun4i/sun4i_tcon.c
+> @@ -47,12 +47,12 @@ static struct drm_connector *sun4i_tcon_get_connector(const struct drm_encoder *
+>  	drm_connector_list_iter_begin(encoder->dev, &iter);
+>  	drm_for_each_connector_iter(connector, &iter)
+>  		if (connector->encoder == encoder) {
+> -			drm_connector_list_iter_end(&iter);
+> -			return connector;
+> +			drm_connector_get(connector);
+> +			break;
+>  		}
+>  	drm_connector_list_iter_end(&iter);
+>  
+> -	return NULL;
+> +	return connector;
+>  }
+>  
+>  static int sun4i_tcon_get_pixel_depth(const struct drm_encoder *encoder)
+> @@ -65,6 +65,7 @@ static int sun4i_tcon_get_pixel_depth(const struct drm_encoder *encoder)
+>  		return -EINVAL;
+>  
+>  	info = &connector->display_info;
+> +	drm_connector_put(connector);
+>  	if (info->num_bus_formats != 1)
+>  		return -EINVAL;
+>  
+> @@ -361,6 +362,7 @@ static void sun4i_tcon0_mode_set_cpu(struct sun4i_tcon *tcon,
+>  	/* TODO support normal CPU interface modes */
+>  	struct sun6i_dsi *dsi = encoder_to_sun6i_dsi(encoder);
+>  	struct mipi_dsi_device *device = dsi->device;
+> +	struct drm_connector *connector;
+>  	u8 bpp = mipi_dsi_pixel_format_to_bpp(device->format);
+>  	u8 lanes = device->lanes;
+>  	u32 block_space, start_delay;
+> @@ -372,7 +374,9 @@ static void sun4i_tcon0_mode_set_cpu(struct sun4i_tcon *tcon,
+>  	sun4i_tcon0_mode_set_common(tcon, mode);
+>  
+>  	/* Set dithering if needed */
+> -	sun4i_tcon0_mode_set_dithering(tcon, sun4i_tcon_get_connector(encoder));
+> +	connector = sun4i_tcon_get_connector(encoder);
+> +	sun4i_tcon0_mode_set_dithering(tcon, connector);
+> +	drm_connector_put(connector);
+>  
+>  	regmap_update_bits(tcon->regs, SUN4I_TCON0_CTL_REG,
+>  			   SUN4I_TCON0_CTL_IF_MASK,
+> @@ -430,6 +434,7 @@ static void sun4i_tcon0_mode_set_lvds(struct sun4i_tcon *tcon,
+>  				      const struct drm_display_mode *mode)
+>  {
+>  	unsigned int bp;
+> +	struct drm_connector *connector;
+>  	u8 clk_delay;
+>  	u32 reg, val = 0;
+>  
+> @@ -440,7 +445,9 @@ static void sun4i_tcon0_mode_set_lvds(struct sun4i_tcon *tcon,
+>  	sun4i_tcon0_mode_set_common(tcon, mode);
+>  
+>  	/* Set dithering if needed */
+> -	sun4i_tcon0_mode_set_dithering(tcon, sun4i_tcon_get_connector(encoder));
+> +	connector = sun4i_tcon_get_connector(encoder);
+> +	sun4i_tcon0_mode_set_dithering(tcon, connector);
+> +	drm_connector_put(connector);
+>  
+>  	/* Adjust clock delay */
+>  	clk_delay = sun4i_tcon_get_clk_delay(mode, 0);
+> @@ -518,6 +525,7 @@ static void sun4i_tcon0_mode_set_rgb(struct sun4i_tcon *tcon,
+>  
+>  	/* Set dithering if needed */
+>  	sun4i_tcon0_mode_set_dithering(tcon, connector);
+> +	drm_connector_put(connector);
+>  
+>  	/* Adjust clock delay */
+>  	clk_delay = sun4i_tcon_get_clk_delay(mode, 0);
 
-
-Hi,
-
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
-
-You are receiving this message because of the following common error(s)
-as indicated below:
-
-- You sent multiple patches, yet no indication of which ones should be
-  applied in which order.  Greg could just guess, but if you are
-  receiving this email, he guessed wrong and the patches didn't apply.
-  Please read the section entitled "The canonical patch format" in the
-  kernel file, Documentation/SubmittingPatches for a description of how
-  to do this so that Greg has a chance to apply these correctly.
-
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
+-- 
+Jani Nikula, Intel Open Source Graphics Center
