@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2830144174E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:33:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB12544163B
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 10:21:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233214AbhKAJfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 05:35:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37004 "EHLO mail.kernel.org"
+        id S232047AbhKAJXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 05:23:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58178 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232503AbhKAJcM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:32:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE603611C6;
-        Mon,  1 Nov 2021 09:24:17 +0000 (UTC)
+        id S232252AbhKAJWg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 05:22:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D26E461166;
+        Mon,  1 Nov 2021 09:19:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635758658;
-        bh=RfOAoIZHXPDWdVQfY1GGeh1/fhH4XB/qu00zO9Txl/o=;
+        s=korg; t=1635758376;
+        bh=shtjU+p2NCu2mu9HUq7unFtiM+hkby71sUG0AJ6qYpY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h8W+eV2PEfh9Zm1GHLh8DgEPUHFpU+jEMY88e+E/HuqB46xKZtQFiET3TVCxwspdW
-         i0LJLq7cy2Itvtr5jC33Jvl2S5czdCV1DNUNgmhkAjf9F5BdF44noEmtXa+g6m55gc
-         JBh5/fyWJYt7ltqQAykDQBs6ZJVs05ky4xApvapg=
+        b=ct8h/4prY56oQ95WTI5ph1Man+y6wuEoGcUxFg8L8JxaqiP9p2cGPB+YQjhu16fW8
+         UHynueLqCwrZMU0T3W9foxYCUzVM0avY+ZvhkCih1d+yjKKUfuQqetkC3xpumUXz8q
+         GuhfPgnJlI1xId+dIE9bTcyPFZ+uaUAY3Sg0mdok=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Liu Jian <liujian56@huawei.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>
-Subject: [PATCH 5.4 23/51] tcp_bpf: Fix one concurrency problem in the tcp_bpf_send_verdict function
+        stable@vger.kernel.org, Trevor Woerner <twoerner@gmail.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.9 18/20] net: nxp: lpc_eth.c: avoid hang when bringing interface down
 Date:   Mon,  1 Nov 2021 10:17:27 +0100
-Message-Id: <20211101082505.874854191@linuxfoundation.org>
+Message-Id: <20211101082447.960614660@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211101082500.203657870@linuxfoundation.org>
-References: <20211101082500.203657870@linuxfoundation.org>
+In-Reply-To: <20211101082444.133899096@linuxfoundation.org>
+References: <20211101082444.133899096@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,82 +40,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liu Jian <liujian56@huawei.com>
+From: Trevor Woerner <twoerner@gmail.com>
 
-commit cd9733f5d75c94a32544d6ce5be47e14194cf137 upstream.
+commit ace19b992436a257d9a793672e57abc28fe83e2e upstream.
 
-With two Msgs, msgA and msgB and a user doing nonblocking sendmsg calls (or
-multiple cores) on a single socket 'sk' we could get the following flow.
-
- msgA, sk                               msgB, sk
- -----------                            ---------------
- tcp_bpf_sendmsg()
- lock(sk)
- psock = sk->psock
-                                        tcp_bpf_sendmsg()
-                                        lock(sk) ... blocking
-tcp_bpf_send_verdict
-if (psock->eval == NONE)
-   psock->eval = sk_psock_msg_verdict
- ..
- < handle SK_REDIRECT case >
-   release_sock(sk)                     < lock dropped so grab here >
-   ret = tcp_bpf_sendmsg_redir
-                                        psock = sk->psock
-                                        tcp_bpf_send_verdict
- lock_sock(sk) ... blocking on B
-                                        if (psock->eval == NONE) <- boom.
-                                         psock->eval will have msgA state
-
-The problem here is we dropped the lock on msgA and grabbed it with msgB.
-Now we have old state in psock and importantly psock->eval has not been
-cleared. So msgB will run whatever action was done on A and the verdict
-program may never see it.
-
-Fixes: 604326b41a6fb ("bpf, sockmap: convert to generic sk_msg interface")
-Signed-off-by: Liu Jian <liujian56@huawei.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Acked-by: John Fastabend <john.fastabend@gmail.com>
-Link: https://lore.kernel.org/bpf/20211012052019.184398-1-liujian56@huawei.com
+A hard hang is observed whenever the ethernet interface is brought
+down. If the PHY is stopped before the LPC core block is reset,
+the SoC will hang. Comparing lpc_eth_close() and lpc_eth_open() I
+re-arranged the ordering of the functions calls in lpc_eth_close() to
+reset the hardware before stopping the PHY.
+Fixes: b7370112f519 ("lpc32xx: Added ethernet driver")
+Signed-off-by: Trevor Woerner <twoerner@gmail.com>
+Acked-by: Vladimir Zapolskiy <vz@mleia.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv4/tcp_bpf.c |   12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ drivers/net/ethernet/nxp/lpc_eth.c |    5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
---- a/net/ipv4/tcp_bpf.c
-+++ b/net/ipv4/tcp_bpf.c
-@@ -313,6 +313,7 @@ static int tcp_bpf_send_verdict(struct s
- 	bool cork = false, enospc = sk_msg_full(msg);
- 	struct sock *sk_redir;
- 	u32 tosend, delta = 0;
-+	u32 eval = __SK_NONE;
- 	int ret;
+--- a/drivers/net/ethernet/nxp/lpc_eth.c
++++ b/drivers/net/ethernet/nxp/lpc_eth.c
+@@ -1039,9 +1039,6 @@ static int lpc_eth_close(struct net_devi
+ 	napi_disable(&pldat->napi);
+ 	netif_stop_queue(ndev);
  
- more_data:
-@@ -356,13 +357,24 @@ more_data:
- 	case __SK_REDIRECT:
- 		sk_redir = psock->sk_redir;
- 		sk_msg_apply_bytes(psock, tosend);
-+		if (!psock->apply_bytes) {
-+			/* Clean up before releasing the sock lock. */
-+			eval = psock->eval;
-+			psock->eval = __SK_NONE;
-+			psock->sk_redir = NULL;
-+		}
- 		if (psock->cork) {
- 			cork = true;
- 			psock->cork = NULL;
- 		}
- 		sk_msg_return(sk, msg, tosend);
- 		release_sock(sk);
-+
- 		ret = tcp_bpf_sendmsg_redir(sk_redir, msg, tosend, flags);
-+
-+		if (eval == __SK_REDIRECT)
-+			sock_put(sk_redir);
-+
- 		lock_sock(sk);
- 		if (unlikely(ret < 0)) {
- 			int free = sk_msg_free_nocharge(sk, msg);
+-	if (ndev->phydev)
+-		phy_stop(ndev->phydev);
+-
+ 	spin_lock_irqsave(&pldat->lock, flags);
+ 	__lpc_eth_reset(pldat);
+ 	netif_carrier_off(ndev);
+@@ -1049,6 +1046,8 @@ static int lpc_eth_close(struct net_devi
+ 	writel(0, LPC_ENET_MAC2(pldat->net_base));
+ 	spin_unlock_irqrestore(&pldat->lock, flags);
+ 
++	if (ndev->phydev)
++		phy_stop(ndev->phydev);
+ 	clk_disable_unprepare(pldat->clk);
+ 
+ 	return 0;
 
 
