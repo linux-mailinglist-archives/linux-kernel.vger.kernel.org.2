@@ -2,192 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A9D3441D2C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 16:11:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA02D441D2E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Nov 2021 16:11:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232421AbhKAPNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 11:13:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37986 "EHLO
+        id S232505AbhKAPNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 11:13:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229826AbhKAPNh (ORCPT
+        with ESMTP id S232536AbhKAPNp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 11:13:37 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39E8EC061714
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 08:11:04 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id j9so9303851pgh.1
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 08:11:04 -0700 (PDT)
+        Mon, 1 Nov 2021 11:13:45 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A085C061764
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 08:11:12 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id p18so8433904plf.13
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 08:11:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JBZi83vZo90X4DWmybsCLymlTmBLf30mrVPyLTdyp98=;
-        b=bhiVPa4HmoYB06HhL3gKuW6b3+gCHF3y9NkMc3itttd4nDlARQGqcp4olrHfIVxkFw
-         j8Ej3sgGlCFDOlxuO6zvcGmKB0i3zrGEJKCrNxco6ZE105zbpa0sVZDQSJwQI8OjfDEq
-         2fx9/+sg8QWuqUmP63p0e1mK5mKgnHRzfggW3S4mIDHGcOCY3zzAF0HjMc9cJ/uZPrQ8
-         fJs9MatKzbyvWlveznUpN6uwfs4LObmbhj4IkMA6IZxGtYeJxLFRmQXu9/fPyIs4I1Nt
-         9pLIxo4dqueujpk9H7Om1heZtdL9xzLI1UhDJM+easzdGMplldfGEHwAn/YSXBI4Vlia
-         dQxw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=FRxiYUYjjBjManTEC+FRiqOqoYoR9gbJXKuCAylEkiE=;
+        b=NxtPH22PyRO1d+cm4wFFOdty/7D/lkwyQQFIj9ny6rc2j3QUqqnNZRxWKp/JmWgmqd
+         D+wo4mZKmGiQ87MGQFw4KFb2HHQOej1i1tgIGb/VrmFa9RUr58JlRyKiJg4olkbTYWfg
+         jxF/HnUXtBIHnPTKF8KHDpShN0k5hXm3TazDbopmQQCWaRwG/D3OQuCVeph4xDf98mG1
+         ght6UelcbWR/u0amwlRkACGVKs2UlkbBGT0RBcGl0NbbB0dRxN2Gp5mzo9+EhkBB5ddh
+         rWxE6pZFXW8pNmS2iEWXm7xSNj0GUESdgzZc3DVe+QbfNZASVxw4+6NnZ2of7khI/yt4
+         fQlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JBZi83vZo90X4DWmybsCLymlTmBLf30mrVPyLTdyp98=;
-        b=4R8IB36sAEFkgmojjXpiEqZcwpxoFFSEN7k7+dohsG8KxNphdpAo2inImnsJkbx60H
-         pfk9HtueltG7xjb+1M9PzVwOXQsM+Q9VoHUVocVZAOYaxuTMdka8KzkTL69U3ORil/4J
-         ZdFoTPPaodMm4vh1i74uA2Bh1esmstHn071ods+Xf8mlhsqvwF7xYC56yC86AuePtfWt
-         duGeEVo9cnvkIFq7UVNcKdgRHYvF06V1+hxZpUHHcGuoP1qlUkq+TyXP26DPw4GxaLuG
-         j/Fj2Px+nqbIRxdKDRIq4QgVhEWOXNK7VAItgnodSEw+FJfXox9IIVQ50mJmyxGXWW6b
-         jJJQ==
-X-Gm-Message-State: AOAM532ECL2m2b1JMQuxWq4GYsGqOAcBLcoSdxfXi/uIjrkvfQCvZKv6
-        YPhGVljMezFBlAQae6DLfMM=
-X-Google-Smtp-Source: ABdhPJzBWMw0uXmaZMzYXhdUhhVw4vQDybBmKWUZqZqjCHysHSuTv9ab1YTCoJLdS8LRXT/8KzU72w==
-X-Received: by 2002:a05:6a00:ac8:b029:320:a6bb:880d with SMTP id c8-20020a056a000ac8b0290320a6bb880dmr29334553pfl.41.1635779463612;
-        Mon, 01 Nov 2021 08:11:03 -0700 (PDT)
-Received: from localhost.localdomain (li1164-150.members.linode.com. [45.79.65.150])
-        by smtp.gmail.com with ESMTPSA id z16sm2435967pfr.69.2021.11.01.08.10.58
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=FRxiYUYjjBjManTEC+FRiqOqoYoR9gbJXKuCAylEkiE=;
+        b=uyUnV7EyISa0vW/453n4h4XqqQRPpyrvR6sdhMGTHXRcsNFHza98h98hI/1YWNHZnE
+         2tUjU8zv1hGI3juf0/JvQXNTMOj04WsI2l46DhqQCSP3EqPIvHRhSQ0Erj9oN66LO3uc
+         EzEvhxdFxCQIbyFcrD6tso3huuIa7HuzofXeBedStQxN6SfgbubeGZ3NibMlc9xsDyrK
+         YNrnWLCuPBg0OlBXiF7ay8EIzY+CB/C+3IYNWryVo+mO8nJH4sJ4QCFuGnils71K9IFR
+         TjSX56A5jT0Z+s+x6PE4iUjYP8/NDAi51iLtVtPypurNrfFrogmHEiA634EwmEC9kzXA
+         scVg==
+X-Gm-Message-State: AOAM530ofnGp4BsKJ8IQGtkgMr0ZDybYsYl3EVouIJcmQzO0qgh3fBNF
+        5Qh8fv20fOuveNperhFXmr3TWg==
+X-Google-Smtp-Source: ABdhPJy0Wb4AWhFD2xMcZPIL/nB57LMoBAK6IARwjrE85gWXg4n3kHdtP2n1jbYVwonG6lHSFv8yQA==
+X-Received: by 2002:a17:90b:1a87:: with SMTP id ng7mr12513098pjb.230.1635779471829;
+        Mon, 01 Nov 2021 08:11:11 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([103.136.124.227])
+        by smtp.gmail.com with ESMTPSA id z22sm15037201pfa.214.2021.11.01.08.11.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 08:11:03 -0700 (PDT)
-From:   Jeff Xie <xiehuan09@gmail.com>
-To:     rostedt@goodmis.org
-Cc:     mhiramat@kernel.org, mingo@redhat.com, zanussi@kernel.org,
-        linux-kernel@vger.kernel.org, Jeff Xie <xiehuan09@gmail.com>
-Subject: [RFC][PATCH v4 2/2] trace: add documentation for the object trace
-Date:   Mon,  1 Nov 2021 23:10:41 +0800
-Message-Id: <20211101151041.618057-1-xiehuan09@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 01 Nov 2021 08:11:11 -0700 (PDT)
+Date:   Mon, 1 Nov 2021 23:11:01 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     German Gomez <german.gomez@arm.com>
+Cc:     Namhyung Kim <namhyung@kernel.org>,
+        James Clark <james.clark@arm.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: Re: [RFC] perf arm-spe: Track task context switch for cpu-mode events
+Message-ID: <20211101151101.GA375622@leoy-ThinkPad-X240s>
+References: <CAM9d7cghXgUbAqUUJjyKAea+9=jxei7RDScgV5Fd_i9bXyXkKA@mail.gmail.com>
+ <be937a2e-311b-2a8b-1094-39c203c6d9f3@arm.com>
+ <CAM9d7cho2hN+NDWd9-P-AQAf3D8WfPgCpEDe7cD6hk5FoA_c8Q@mail.gmail.com>
+ <87dad53f-a9a5-cd36-7348-ee10f4edd8fb@arm.com>
+ <20211011142940.GB37383@leoy-ThinkPad-X240s>
+ <8a1eafe3-d19e-40d6-f659-de0e9daa5877@arm.com>
+ <eae1a617-2624-dc1f-1ddb-ba9f5600819d@arm.com>
+ <20211018132328.GG130233@leoy-ThinkPad-X240s>
+ <cd354485-5267-0e07-eb18-ddd0d002ecc3@arm.com>
+ <354d76da-5402-5c24-516f-c1f7e58590fc@arm.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <354d76da-5402-5c24-516f-c1f7e58590fc@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Jeff Xie <xiehuan09@gmail.com>
----
- Documentation/trace/events.rst | 110 +++++++++++++++++++++++++++++++++
- 1 file changed, 110 insertions(+)
+Hi German,
 
-diff --git a/Documentation/trace/events.rst b/Documentation/trace/events.rst
-index 8ddb9b09451c..d8477273ee3a 100644
---- a/Documentation/trace/events.rst
-+++ b/Documentation/trace/events.rst
-@@ -527,6 +527,116 @@ The following commands are supported:
- 
-   See Documentation/trace/histogram.rst for details and examples.
- 
-+- objtrace
-+
-+  This command provides a way to get the value of any object, The object
-+  can from the dynamic event(kprobe_event/uprobe_event) or the static event
-+  (tracepoint).
-+
-+  Usage:
-+  When using the kprobe event, only need to set the objtrace(a new trigger),
-+  we can get the value of the object. The object is from the setting of the
-+  kprobe event.
-+
-+  For example:
-+  For the function bio_add_page():
-+
-+  int bio_add_page(struct bio *bio, struct page *page,
-+	unsigned int len, unsigned int offset)
-+
-+  Firstly, we can set the base of the object, thus the first string "arg1"
-+  stands for the value of the first parameter of this function bio_add_gage(),
-+
-+  echo 'p bio_add_page arg1=$arg1' >> ./kprobe_events
-+
-+  Secondly, we can get the value dynamically base the above object.
-+
-+  find the offset of the bi_size in struct bio:
-+  $ gdb vmlinux
-+  (gdb) p &(((struct bio *)0)->bi_iter.bi_size)
-+  $1 = (unsigned int *) 0x28
-+
-+  echo 'objtrace:0x28(arg1):u32:1 if comm == "cat"' > ./events/kprobes/ \
-+	p_bio_add_page_0/trigger
-+
-+  The best way to use this is that we can set the entrance event and exit
-+  event, for example, the following example is to set the read_papes as
-+  the entrance event, and set the blk_account_io_start as the exit event.
-+
-+  dd if=/dev/zero of=/test.txt bs=4k count=3
-+  cd /sys/kernel/debug/tracing/
-+  echo 0 > ./tracing_on
-+  echo 'p read_pages' >> ./kprobe_events
-+  echo 'p blk_account_io_start' >> ./kprobe_events
-+  echo 'traceon if comm == "cat"' > ./events/kprobes/p_read_pages_0/trigger
-+  echo 'traceoff if comm == "cat"' > ./events/kprobes/p_blk_account_io_start_0/trigger
-+  echo 'p bio_add_page arg1=$arg1' >> ./kprobe_events
-+  echo 'objtrace:0x28(arg1):u32:1 if comm == "cat"' > ./events/kprobes/p_bio_add_page_0/trigger
-+  cat  /test.txt > /dev/null
-+  cat ./trace
-+  # tracer: nop
-+  #
-+  # entries-in-buffer/entries-written: 50/50   #P:1
-+  #
-+  #                                _-----=> irqs-off
-+  #                               / _----=> need-resched
-+  #                              | / _---=> hardirq/softirq
-+  #                              || / _--=> preempt-depth
-+  #                              ||| / _-=> migrate-disable
-+  #                              |||| /     delay
-+  #           TASK-PID     CPU#  |||||  TIMESTAMP  FUNCTION
-+  #              | |         |   |||||     |         |
-+             cat-95      [000] .....     1.412065: _raw_spin_unlock_irqrestore <-event_triggers_call object:0xffff888108af6328 value:0x0
-+             cat-95      [000] .....     1.412066: __bio_try_merge_page <-bio_add_page object:0xffff888108af6328 value:0x0
-+             cat-95      [000] .....     1.412066: __bio_add_page <-bio_add_page object:0xffff888108af6328 value:0x0
-+             cat-95      [000] .....     1.412066: rcu_read_unlock_strict <-xa_load object:0xffff888108af6328 value:0x1000
-+             cat-95      [000] .....     1.412066: bio_add_page <-ext4_mpage_readpages object:0xffff888108af6328 value:0x1000
-+             cat-95      [000] .....     1.412066: kprobe_ftrace_handler <-ftrace_ops_list_func object:0xffff888108af6328 value:0x1000
-+             cat-95      [000] .....     1.412067: get_kprobe <-kprobe_ftrace_handler object:0xffff888108af6328 value:0x1000
-+             cat-95      [000] .....     1.412067: __bio_try_merge_page <-bio_add_page object:0xffff888108af6328 value:0x1000
-+             cat-95      [000] .....     1.412067: __bio_add_page <-bio_add_page object:0xffff888108af6328 value:0x1000
-+             cat-95      [000] .....     1.412067: rcu_read_unlock_strict <-xa_load object:0xffff888108af6328 value:0x2000
-+             cat-95      [000] .....     1.412067: bio_add_page <-ext4_mpage_readpages object:0xffff888108af6328 value:0x2000
-+             cat-95      [000] .....     1.412067: kprobe_ftrace_handler <-ftrace_ops_list_func object:0xffff888108af6328 value:0x2000
-+             cat-95      [000] .....     1.412067: get_kprobe <-kprobe_ftrace_handler object:0xffff888108af6328 value:0x2000
-+             cat-95      [000] .....     1.412067: __bio_try_merge_page <-bio_add_page object:0xffff888108af6328 value:0x2000
-+             cat-95      [000] .....     1.412068: submit_bio <-ext4_mpage_readpages object:0xffff888108af6328 value:0x3000
-+             cat-95      [000] .....     1.412068: submit_bio_noacct <-ext4_mpage_readpages object:0xffff888108af6328 value:0x3000
-+             cat-95      [000] .....     1.412068: __submit_bio <-submit_bio_noacct object:0xffff888108af6328 value:0x3000
-+             cat-95      [000] .....     1.412068: blk_try_enter_queue <-__submit_bio object:0xffff888108af6328 value:0x3000
-+             cat-95      [000] .....     1.412068: rcu_read_unlock_strict <-blk_try_enter_queue object:0xffff888108af6328 value:0x3000
-+             cat-95      [000] .....     1.412068: rcu_read_unlock_strict <-blk_try_enter_queue object:0xffff888108af6328 value:0x3000
-+             cat-95      [000] .....     1.412068: submit_bio_checks <-__submit_bio object:0xffff888108af6328 value:0x3000
-+             cat-95      [000] .....     1.412068: __cond_resched <-submit_bio_checks object:0xffff888108af6328 value:0x3000
-+             cat-95      [000] .....     1.412068: rcu_all_qs <-__cond_resched object:0xffff888108af6328 value:0x3000
-+             cat-95      [000] .....     1.412068: should_fail_bio <-submit_bio_checks object:0xffff888108af6328 value:0x3000
-+             cat-95      [000] .....     1.412069: create_task_io_context <-submit_bio_checks object:0xffff888108af6328 value:0x3000
-+             cat-95      [000] .....     1.412069: kmem_cache_alloc_node <-create_task_io_context object:0xffff888108af6328 value:0x3000
-+             cat-95      [000] .....     1.412069: should_failslab <-kmem_cache_alloc_node object:0xffff888108af6328 value:0x3000
-+             cat-95      [000] .....     1.412069: _raw_spin_lock <-create_task_io_context object:0xffff888108af6328 value:0x3000
-+             cat-95      [000] .....     1.412069: blk_mq_submit_bio <-__submit_bio object:0xffff888108af6328 value:0x3000
-+             cat-95      [000] .....     1.412069: __blk_queue_split <-blk_mq_submit_bio object:0xffff888108af6328 value:0x3000
-+             cat-95      [000] .....     1.412069: bvec_split_segs <-__blk_queue_split object:0xffff888108af6328 value:0x3000
-+             cat-95      [000] .....     1.412069: blk_attempt_plug_merge <-blk_mq_submit_bio object:0xffff888108af6328 value:0x3000
-+             cat-95      [000] .....     1.412070: __blk_mq_sched_bio_merge <-blk_mq_submit_bio object:0xffff888108af6328 value:0x3000
-+             cat-95      [000] .....     1.412070: dd_bio_merge <-blk_mq_submit_bio object:0xffff888108af6328 value:0x3000
-+             cat-95      [000] .....     1.412070: _raw_spin_lock <-dd_bio_merge object:0xffff888108af6328 value:0x3000
-+             cat-95      [000] .....     1.412070: blk_mq_sched_try_merge <-dd_bio_merge object:0xffff888108af6328 value:0x3000
-+             cat-95      [000] .....     1.412070: elv_merge <-blk_mq_sched_try_merge object:0xffff888108af6328 value:0x3000
-+             cat-95      [000] .....     1.412070: elv_rqhash_find <-elv_merge object:0xffff888108af6328 value:0x3000
-+             cat-95      [000] .....     1.412070: dd_request_merge <-blk_mq_sched_try_merge object:0xffff888108af6328 value:0x3000
-+             cat-95      [000] .....     1.412070: elv_rb_find <-dd_request_merge object:0xffff888108af6328 value:0x3000
-+             cat-95      [000] .....     1.412070: __blk_mq_alloc_request <-blk_mq_submit_bio object:0xffff888108af6328 value:0x3000
-+             cat-95      [000] .....     1.412071: dd_limit_depth <-__blk_mq_alloc_request object:0xffff888108af6328 value:0x3000
-+             cat-95      [000] .....     1.412071: blk_mq_get_tag <-__blk_mq_alloc_request object:0xffff888108af6328 value:0x3000
-+             cat-95      [000] .....     1.412071: __blk_mq_get_tag <-blk_mq_get_tag object:0xffff888108af6328 value:0x3000
-+             cat-95      [000] .....     1.412071: blk_mq_rq_ctx_init.isra.0 <-blk_mq_submit_bio object:0xffff888108af6328 value:0x3000
-+             cat-95      [000] .....     1.412071: ktime_get <-blk_mq_rq_ctx_init.isra.0 object:0xffff888108af6328 value:0x3000
-+             cat-95      [000] .....     1.412071: dd_prepare_request <-blk_mq_rq_ctx_init.isra.0 object:0xffff888108af6328 value:0x3000
-+             cat-95      [000] .....     1.412071: blk_account_io_start <-blk_mq_submit_bio object:0xffff888108af6328 value:0x3000
-+             cat-95      [000] .....     1.412071: kprobe_ftrace_handler <-ftrace_ops_list_func object:0xffff888108af6328 value:0x3000
-+             cat-95      [000] .....     1.412071: get_kprobe <-kprobe_ftrace_handler object:0xffff888108af6328 value:0x3000
-+
- 7. In-kernel trace event API
- ============================
- 
--- 
-2.25.1
+On Fri, Oct 29, 2021 at 11:51:16AM +0100, German Gomez wrote:
+> Hi Leo,
+> 
+> The current plan is to define a global flag in the `struct arm_spe` to
+> select the method of pid tracing (context pkt, or switch events):
+> 
+>     struct arm_spe {
+>        /* ... */
+>        u8        use_ctx_pkt_for_pid;
+>     }
+> 
+> The method could be determined by peeking at the top element of the
+> `struct auxtrace_heap` at the beginning of the perf-report. If ctx
+> packets have been collected, the first one should have a context_id !=
+> -1. We could then tweak this part of Namhyung patch slightly:
 
+Have one concern: if cannot find the context packet, will the decoder
+drop the SPE packets until it find the first context packet?  If this
+is the case, I am concern the decoder will run out for all packets
+and doesn't generate any samples if the SPE trace data doesn't contain
+any context packet.
+
+> 
+>     if (!spe->use_ctx_pkt_for_pid &&
+>         (event->header.type == PERF_RECORD_SWITCH_CPU_WIDE ||
+>          event->header.type == PERF_RECORD_SWITCH))
+>             err = arm_spe_context_switch(spe, event, sample);
+> 
+> Then we could apply patch [1] which wasn't fully merged in the end,
+> including similar `if (spe->use_ctx_pkt_for_pid)` to collect the pid/tid
+> from the context packets.
+> 
+> What do you think?
+
+Except the above concern, the solution looks good to me.
+
+Thanks,
+Leo
