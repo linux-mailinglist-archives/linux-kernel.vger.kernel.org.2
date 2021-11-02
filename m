@@ -2,89 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAB80443A2A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 00:55:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B9B4443A2C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 00:58:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231666AbhKBX6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 19:58:00 -0400
-Received: from smtpcmd13151.aruba.it ([62.149.156.151]:37246 "EHLO
-        smtpcmd13151.aruba.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231461AbhKBX5j (ORCPT
+        id S230348AbhKCAAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 20:00:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59920 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229934AbhKCAAd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 19:57:39 -0400
-Received: from ubuntu.localdomain ([146.241.216.221])
-        by Aruba Outgoing Smtp  with ESMTPSA
-        id i3cHmA3UmueW5i3cMmi7qk; Wed, 03 Nov 2021 00:55:02 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
-        t=1635897302; bh=uEmAMAGs4vUbQ1vkWnqilm8FyrWQhxYkvOIUp+u0ruY=;
-        h=From:To:Subject:Date:MIME-Version;
-        b=YryxOMiDDeljOR6UTjDkBSqbWtAD2rNIXhzUJISndDV3KrgezwECBo2hG/NEJdg8c
-         UcEWi/2kASSBtC/zy3upNPeQA3lDlpKhtYC7+LcWrlzh2PQ1CPLjHXIGj4fpcjevyu
-         FR4/SZqG8gu/LnZ19Z0NCdAWxyzbAbnP+z+7UpmfnY+IXjH7dYDk4WAHBkHIC/Cwjb
-         MUR6BZfsqVgAfc3fPDl+SyBPFFc8xgjeJUl72IkrgSTppXRztEMBIT2SRRFuqpxDTo
-         JLGZ2nUEO9ByQSCr9sfudAiHSgNbQpsF94/dChwntAmM2UvICEmYX0WFQVWZkWR/2f
-         fUruoR4Xpd61w==
-From:   Giulio Benetti <giulio.benetti@benettiengineering.com>
-To:     Lubomir Rintel <lkundrak@v3.sk>
-Cc:     Rob Herring <robh+dt@kernel.org>, Daniel Mack <daniel@zonque.org>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Russell King <linux@armlinux.org.uk>,
-        Giulio Benetti <giulio.benetti@benettiengineering.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 7/7] ARM: pxa910: update pxa910_defconfig to fix wrong static ip autoconf
-Date:   Wed,  3 Nov 2021 00:54:56 +0100
-Message-Id: <20211102235456.710617-8-giulio.benetti@benettiengineering.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211102235456.710617-1-giulio.benetti@benettiengineering.com>
-References: <20211102235456.710617-1-giulio.benetti@benettiengineering.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4wfBeQFITUefc5p0YRpGdN1pihTrXklNwZgSko7+yR4yXBPuiEG8B2bMMsjBFVAmB4oh6rHv0c1hIIFJvLXsxSU6si7mv/2Hm1WcI5GUmxDgJmmZEBljMr
- xy84rxfnFxsCHKrOmYyFiN6Qa98tfabuS4s+cH3lqtjnnjBgSWS9g/qloC80P6VJ7Ly24epkv8yXpjlldI0kX6u3ugDHeZyBy0IuBXet+Fe3X2RYIoUFhgUs
- yKQHI4X96RNTksVLZI7vJiFLJXruo9VnUejW0pIIiibHavu1XD42ZxnSfbGim7FocYR3GmDwe6o5dqZUQv/eU7PHpRxsIGXdAkxo/Hdu5VMvb4g0Uw5b9qZr
- zf6as/zTaVM9/8t+pbfT2OYPe2jkSt6cjMCX8ZQ2Wg+CA5zn/R5WS0KuXUGY76w7I5Xa3LDElMr5uh7blA6+rs6jQIWsH1rJFBnflWNbCnUz10mCGua2ZsqZ
- PHgCE1Qg3bcK6/j7lWOJxNRZem16tPN7cwjNv8tceHRd3/J2zPhny5RFVCgPBVrGROL35S+v5OCQaGT91PbhSay1GzPv45Sz+EK0/aDcFX2jeQb2VaeTZB6L
- H4UeG3pO5phNDf3lIVQCjrJWMep/DLUqgwW1D4e088IzP73s55WE/uzM3btloUQoiZIH91CqQX1aOP2XGZ1cf3r5fmCV4qNDuCLgM3f8/zGxPQ==
+        Tue, 2 Nov 2021 20:00:33 -0400
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ADFCC061714
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 16:57:57 -0700 (PDT)
+Received: by mail-pg1-x54a.google.com with SMTP id g18-20020a631112000000b00299f5f53824so614498pgl.2
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 16:57:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=6xRUAwGEAvL2FLNG6Ew0dIktYeQXABiRZImi7UO46gg=;
+        b=CsFcRkCifq3Fsq6P3dEKCPtHEuEoIzbRM2MLLoxVkiKbXe3tvWN5WP7lkN/N2YBT9j
+         5oaDxmcYbH6b54zSmOpMLiW3UrD19aib4pbRYedyTYrednVpwdd41HohZsAfckvE+MJ0
+         E+BwWkp/+ti/DpZgBtNRemaaZ+EMAcHAF8/C95MajuFr9eu7AWw+g1M6JcfZ/sxfZ6en
+         dNZOP61uNtlGd0L3S+j/9InZUWEQ5DYsmw72ClpH2i2X+16j6NsQxf2GaszFrwBrTZdL
+         V7Y4DfxukazdbSTxmhQk41RnPF63TlrFUaVjvwvWPJ4kezk/uShmNQdgWFQKezmR5ZRT
+         qzIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=6xRUAwGEAvL2FLNG6Ew0dIktYeQXABiRZImi7UO46gg=;
+        b=nACDAm/Nv1mIf/E9c05z6yVbnOV2KL1qKw2YqUifFcCz6LYo8kKwQBx/MWzYT/L4Yx
+         iJG8lOtFIAEwLWILWXtJcYwEfuz6KzsBE9aUDtss2zx4LhS0udGP9lB0Y+qcybdQgquy
+         HSCzE6pFZyQPLQrfuYpe3olt5MwlfCh57ZMFKSQNXilgGcelmvSf3t+y+ec06BIxAgCy
+         l2OzfsKBwr87F7fdg2mSgsQxGWmXnWwfhpFJORJs5KComy49fY4YHxK/lDA8NXkG7//j
+         2QzSX7aqZiwFCSE3VmxNnozMaTq/lTosVPoS2yGsC4wfVi4HN86B86AWtQV4vjyYv02V
+         lC1A==
+X-Gm-Message-State: AOAM533A0JGVb4cLqefx8Ai2KmMFiF8xiBm202hKz7A5khB1v77UkdQK
+        Gm8MAOdj48xkGO7sKm8VYgejunWMp9X7ZQ==
+X-Google-Smtp-Source: ABdhPJxWodAcytdPjc6Pqhtm4ixpFTyLDSQebOYq8Atv0Un99RQTw9uZ6nJvnq5y4XIvN6zorQ8TW2B2JW9xUw==
+X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:c525:894b:a510:93ff])
+ (user=dlatypov job=sendgmr) by 2002:a17:90b:380d:: with SMTP id
+ mq13mr10305132pjb.110.1635897476992; Tue, 02 Nov 2021 16:57:56 -0700 (PDT)
+Date:   Tue,  2 Nov 2021 16:57:34 -0700
+Message-Id: <20211102235734.497713-1-dlatypov@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.1.1089.g2158813163f-goog
+Subject: [PATCH] kunit: add run_checks.py script to validate kunit changes
+From:   Daniel Latypov <dlatypov@google.com>
+To:     brendanhiggins@google.com, davidgow@google.com
+Cc:     linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
+        Daniel Latypov <dlatypov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-At the moment <autoconf> field is set to 'on' but judging from the static
-ip setting it should be set to 'off', since in [1] states:
-```
-<autoconf>
-off or none: don't use autoconfiguration (do static IP assignment instead)
-on or any: use any protocol available in the kernel (default)
-```
+This formalizes the checks KUnit maintainers have been running (or in
+other cases: forgetting to run).
 
-So let's substitute <autoconf> 'on' with 'off'.
+This script also runs them all in parallel to minimize friction (pytype
+can be fairly slow, but not slower than running kunit.py).
 
-[1]: https://www.kernel.org/doc/Documentation/filesystems/nfs/nfsroot.txt
+Example output:
+$ ./tools/testing/kunit/run_checks.py
+Waiting on 4 checks (kunit_tool_test.py, kunit smoke test, pytype, mypy)...
+kunit_tool_test.py: PASSED
+mypy: PASSED
+pytype: PASSED
+kunit smoke test: PASSED
 
-Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
+On failure or timeout (5 minutes), it'll dump out the stdout/stderr.
+E.g. adding in a type-checking error:
+  mypy: FAILED
+  > kunit.py:54: error: Name 'nonexistent_function' is not defined
+  > Found 1 error in 1 file (checked 8 source files)
+
+mypy and pytype are two Python type-checkers and must be installed.
+This file treats them as optional and will mark them as SKIPPED if not
+installed.
+
+This tool also runs `kunit.py run --kunitconfig=lib/kunit` to run
+KUnit's own KUnit tests and to verify KUnit kernel code and kunit.py
+play nicely together.
+
+It uses --build_dir=kunit_run_checks so as not to clobber the default
+build_dir, which helps make it faster by reducing the need to rebuild,
+esp. if you're been passing in --arch instead of using UML.
+
+Signed-off-by: Daniel Latypov <dlatypov@google.com>
 ---
- arch/arm/configs/pxa910_defconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/testing/kunit/run_checks.py | 76 +++++++++++++++++++++++++++++++
+ 1 file changed, 76 insertions(+)
+ create mode 100755 tools/testing/kunit/run_checks.py
 
-diff --git a/arch/arm/configs/pxa910_defconfig b/arch/arm/configs/pxa910_defconfig
-index b21196372158..36ced16095c8 100644
---- a/arch/arm/configs/pxa910_defconfig
-+++ b/arch/arm/configs/pxa910_defconfig
-@@ -16,7 +16,7 @@ CONFIG_PREEMPT=y
- CONFIG_AEABI=y
- CONFIG_ZBOOT_ROM_TEXT=0x0
- CONFIG_ZBOOT_ROM_BSS=0x0
--CONFIG_CMDLINE="root=/dev/nfs rootfstype=nfs nfsroot=192.168.2.100:/nfsroot/ ip=192.168.2.101:192.168.2.100::255.255.255.0::eth0:on console=ttyS0,115200 mem=128M earlyprintk"
-+CONFIG_CMDLINE="root=/dev/nfs rootfstype=nfs nfsroot=192.168.2.100:/nfsroot/ ip=192.168.2.101:192.168.2.100::255.255.255.0::eth0:off console=ttyS0,115200 mem=128M earlyprintk"
- CONFIG_FPE_NWFPE=y
- CONFIG_NET=y
- CONFIG_PACKET=y
+diff --git a/tools/testing/kunit/run_checks.py b/tools/testing/kunit/run_checks.py
+new file mode 100755
+index 000000000000..d03ca3f84b91
+--- /dev/null
++++ b/tools/testing/kunit/run_checks.py
+@@ -0,0 +1,76 @@
++#!/usr/bin/env python3
++# SPDX-License-Identifier: GPL-2.0
++#
++# This file runs some basic checks to verify kunit works.
++# It is only of interest if you're making changes to KUnit itself.
++#
++# Copyright (C) 2021, Google LLC.
++# Author: Daniel Latypov <dlatypov@google.com.com>
++
++from concurrent import futures
++import datetime
++import os
++import shutil
++import subprocess
++import sys
++import textwrap
++from typing import Dict, List, Sequence, Tuple
++
++ABS_TOOL_PATH = os.path.abspath(os.path.dirname(__file__))
++_TIMEOUT = datetime.timedelta(minutes=5).total_seconds()
++
++commands: Dict[str, Sequence[str]] = {
++	'kunit_tool_test.py': ['./kunit_tool_test.py'],
++	'kunit smoke test': ['./kunit.py', 'run', '--kunitconfig=lib/kunit', '--build_dir=kunit_run_checks'],
++	'pytype': ['/bin/sh', '-c', 'pytype *.py'],
++	'mypy': ['/bin/sh', '-c', 'mypy *.py'],
++}
++
++# The user might not have mypy or pytype installed, skip them if so.
++# Note: you can install both via `$ pip install mypy pytype`
++necessary_deps : Dict[str, str] = {
++	'pytype': 'pytype',
++	'mypy': 'mypy',
++}
++
++def main(argv: Sequence[str]) -> None:
++	if len(argv) > 1:
++		raise RuntimeError('Too many command-line arguments.')
++
++	future_to_name: Dict[futures.Future, str] = {}
++	executor = futures.ThreadPoolExecutor(max_workers=len(commands))
++	for name, argv in commands.items():
++		if name in necessary_deps and shutil.which(necessary_deps[name]) is None:
++			print(f'{name}: SKIPPED, {necessary_deps[name]} not in $PATH')
++			continue
++		f = executor.submit(run_cmd, argv)
++		future_to_name[f] = name
++
++	print(f'Waiting on {len(future_to_name)} checks ({", ".join(future_to_name.values())})...')
++	for f in  futures.as_completed(future_to_name.keys()):
++		name = future_to_name[f]
++		ex = f.exception()
++		if not ex:
++			print(f'{name}: PASSED')
++			continue
++
++		if isinstance(ex, subprocess.TimeoutExpired):
++			print(f'{name}: TIMED OUT')
++		elif isinstance(ex, subprocess.CalledProcessError):
++			print(f'{name}: FAILED')
++		else:
++			print('{name}: unexpected exception: {ex}')
++			continue
++
++		output = ex.output
++		if output:
++			print(textwrap.indent(output.decode(), '> '))
++	executor.shutdown()
++
++
++def run_cmd(argv: Sequence[str]):
++	subprocess.check_output(argv, stderr=subprocess.STDOUT, cwd=ABS_TOOL_PATH, timeout=_TIMEOUT)
++
++
++if __name__ == '__main__':
++	main(sys.argv[1:])
+
+base-commit: 52a5d80a2225e2d0b2a8f4656b76aead2a443b2a
 -- 
-2.25.1
+2.33.1.1089.g2158813163f-goog
 
