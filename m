@@ -2,83 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B656443831
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 23:02:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A26AC443834
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 23:04:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231812AbhKBWFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 18:05:15 -0400
-Received: from ms.lwn.net ([45.79.88.28]:53374 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231435AbhKBWE4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 18:04:56 -0400
-Received: from meer.lwn.net (unknown [IPv6:2601:281:8300:104d::5f6])
-        by ms.lwn.net (Postfix) with ESMTPA id 4349A5ED5;
-        Tue,  2 Nov 2021 22:02:21 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 4349A5ED5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1635890541; bh=sOvuzkedV2G+rjKxMbKHFtNpi+hURuSCtmrA/GWze3A=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EhLhQ3kSwz+nPj9l9U8CZkxYEltLWloHnoPepCpl67dWam1/lKdAZrAj+20mFz1LR
-         9yJ/gpvxqFrkOXvhOlEL5ymx69t7eKVriPbWwShnN5iR7eBuK2qYNJAV0IOlQikc7x
-         Br3zkDV8ES+hMwdxsLACp6Z3LA2T/V0hcIZid9EDe7jd6Y/sIq1i6X+3VgDmh4uk2X
-         DQtI6yc8/AEcIbaDrYi8Cm5QRELGoJTLZFSwkzvq6C4uTq+SKgNMV+b/4WaTY+YI+a
-         hXPIqOi3QyvSpddEBu6rlTEn8ox+bev3rDhV+x1RmYW97LLg8wVuHhJfwmb3wKCpCl
-         70fMhH2k5KDeA==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     Jonathan Corbet <corbet@lwn.net>, Marek Vasut <marex@denx.de>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: [PATCH 9/9] net: remove unused header file <linux/ks8851_mll.h>
-Date:   Tue,  2 Nov 2021 16:02:03 -0600
-Message-Id: <20211102220203.940290-10-corbet@lwn.net>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211102220203.940290-1-corbet@lwn.net>
-References: <20211102220203.940290-1-corbet@lwn.net>
+        id S231218AbhKBWHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 18:07:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34434 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229672AbhKBWHX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 18:07:23 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23A6FC061714
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 15:04:48 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id z20so2277072edc.13
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 15:04:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=n4F13XQgVfHrFjDyFI3dMs7NsVDxr8/9oSk7fc0QDng=;
+        b=P4nJjt/fXf671D9eUvZ9+y2bS+QDywI1rCVkTQODwOQV83TwA4krXZ7DTRv5643PYu
+         nMXoWLhAOqQBTli5Xrp/KuciRht6NbwzCpTkhpKUxgRFTYGZqdUrZatUog5rJSs2lgfX
+         H6N6qANOFFyiXZvTthW1CuCVJ0KXY4zPBZuHt48oUWyz7Ayj3g9Ooc4FgS6CFJV6h5CY
+         Lbmoz5D1O8xBo+glIM6hvtuQctVF6/T2kHB1n8bmxK8tALLMaAH9NRZb2/MkJ+mLParS
+         RIDHAd2t3NPegMZM91FO1Zejd4HVII8jRLkmTu7iNKMf59bppokv5o2c09jEw+LX5pn8
+         v4Ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=n4F13XQgVfHrFjDyFI3dMs7NsVDxr8/9oSk7fc0QDng=;
+        b=SPDprrrLnQWbZCxqG/9dro1AzkPhfWjVH642TWW7e3Yab26vW78LVyeCoRabJlYZqJ
+         1XMhRW8tyyvJk9eRV/TtqbUXP4a7dE8ryeJ38MTChcp9+bI7eebpJLap90CS9MjLlM26
+         FVuPbS+h3fn3nNCWobyGiSjIb9ooj9evbI1w0HanX4/aCBVAGEFKVYZBPau/Of6Ol1Nm
+         RMwc+OuhxDKxQiX7YiL1dHMOktwhOB2AnxjugxI+Fo3EvPu7YXUDtCAoVHIg2SH+ikFO
+         3tLC4zYG88XMENt88qBkmjzzuZKzqGKg7ybNnaxxTmxfZdbLGXefpi99fQ59T1/wokFD
+         T4xg==
+X-Gm-Message-State: AOAM532KTTsrvsE4vnHz/9PtqmFK5WOcXWtIiU0ZFU9ONWy3n9BYL9TX
+        j0TtWVbzViKzMYtw8u/tA+00nMyZPRkmxoRl9iYLhA==
+X-Google-Smtp-Source: ABdhPJzTazRGBk5tHZ5IA/YT481aZrqOv2RHiiBDcFVRQOVYSiPeM5kCIsHtyEdCdFkGD1Yr28LrnfqmQq+gR6UCRoM=
+X-Received: by 2002:a05:6402:1e8e:: with SMTP id f14mr20147051edf.250.1635890686722;
+ Tue, 02 Nov 2021 15:04:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211029114312.1921603-1-anders.roxell@linaro.org>
+ <834d18b6-4106-045f-0264-20e54edf47bc@linuxfoundation.org> <CAKwvOdk8D5=AxzSpqjvXJc4XXL8CA7O=WY-LW0mZb3eQRK_EWg@mail.gmail.com>
+In-Reply-To: <CAKwvOdk8D5=AxzSpqjvXJc4XXL8CA7O=WY-LW0mZb3eQRK_EWg@mail.gmail.com>
+From:   Anders Roxell <anders.roxell@linaro.org>
+Date:   Tue, 2 Nov 2021 23:04:35 +0100
+Message-ID: <CADYN=9+iueC3rJ4=32OM9rOUDLLmvcKY-y_By4hwAj1+9gxRiQ@mail.gmail.com>
+Subject: Re: [PATCH] selftests: kselftest.h: mark functions with 'noreturn'
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Shuah Khan <skhan@linuxfoundation.org>, shuah@kernel.org,
+        fenghua.yu@intel.com, reinette.chatre@intel.com,
+        john.stultz@linaro.org, tglx@linutronix.de,
+        akpm@linux-foundation.org, nathan@kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-mm@kvack.org, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 72628da6d634 ("net: ks8851: Remove ks8851_mll.c") removed the only
-use of <linux/ks8851_mll.h>, but left the header file in place.  Nothing
-uses that file, delete it now.
+On Sat, 30 Oct 2021 at 00:08, Nick Desaulniers <ndesaulniers@google.com> wrote:
+>
+> On Fri, Oct 29, 2021 at 11:19 AM Shuah Khan <skhan@linuxfoundation.org> wrote:
+> >
+> > On 10/29/21 5:43 AM, Anders Roxell wrote:
+> > > When building kselftests/capabilities the following warning shows up:
+> > >
+> > > clang -O2 -g -std=gnu99 -Wall    test_execve.c -lcap-ng -lrt -ldl -o test_execve
+> > > test_execve.c:121:13: warning: variable 'have_outer_privilege' is used uninitialized whenever 'if' condition is false [-Wsometimes-uninitialized]
+> > >          } else if (unshare(CLONE_NEWUSER | CLONE_NEWNS) == 0) {
+> > >                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > > test_execve.c:136:9: note: uninitialized use occurs here
+> > >          return have_outer_privilege;
+> > >                 ^~~~~~~~~~~~~~~~~~~~
+> > > test_execve.c:121:9: note: remove the 'if' if its condition is always true
+> > >          } else if (unshare(CLONE_NEWUSER | CLONE_NEWNS) == 0) {
+> > >                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > > test_execve.c:94:27: note: initialize the variable 'have_outer_privilege' to silence this warning
+> > >          bool have_outer_privilege;
+> > >                                   ^
+> > >                                    = false
+> > >
+> > > Rework so all the ksft_exit_*() functions have attribue
+> > > '__attribute__((noreturn))' so the compiler knows that there wont be
+> > > any return from the function. That said, without
+> > > '__attribute__((noreturn))' the compiler warns about the above issue
+> > > since it thinks that it will get back from the ksft_exit_skip()
+> > > function, which it wont.
+> > > Cleaning up the callers that rely on ksft_exit_*() return code, since
+> > > the functions ksft_exit_*() have never returned anything.
+> > >
+> > > Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+> >
+> > Lot of changes to fix this warning. Is this necessary? I would
+> > like to explore if there is an easier and localized change that
+> > can fix the problem.
+>
+> via `man 3 exit`:
+> ```
+> The  exit() function causes normal process termination ...
+> ...
+> RETURN VALUE
+>        The exit() function does not return.
+> ```
+> so seeing `ksft_exit_pass`, `ksft_exit_fail`, `ksft_exit_fail_msg`,
+> `ksft_exit_xfail`, `ksft_exit_xpass`, and `ksft_exit_skip` all
+> unconditional call `exit` yet return an `int` looks wrong to me on
+> first glance. So on that point this patch and its resulting diffstat
+> LGTM.
 
-Cc: Marek Vasut <marex@denx.de>
-Cc: David S. Miller <davem@davemloft.net>
-Signed-off-by: Jonathan Corbet <corbet@lwn.net>
----
- include/linux/ks8851_mll.h | 21 ---------------------
- 1 file changed, 21 deletions(-)
- delete mode 100644 include/linux/ks8851_mll.h
+I'll respin the patch with these changes only.
 
-diff --git a/include/linux/ks8851_mll.h b/include/linux/ks8851_mll.h
-deleted file mode 100644
-index 57c0a39ed796..000000000000
---- a/include/linux/ks8851_mll.h
-+++ /dev/null
-@@ -1,21 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-only */
--/*
-- * ks8861_mll platform data struct definition
-- * Copyright (c) 2012 BTicino S.p.A.
-- */
--
--#ifndef _LINUX_KS8851_MLL_H
--#define _LINUX_KS8851_MLL_H
--
--#include <linux/if_ether.h>
--
--/**
-- * struct ks8851_mll_platform_data - Platform data of the KS8851_MLL network driver
-- * @macaddr:	The MAC address of the device, set to all 0:s to use the on in
-- *		the chip.
-- */
--struct ks8851_mll_platform_data {
--	u8 mac_addr[ETH_ALEN];
--};
--
--#endif
--- 
-2.31.1
+>
+> That said, there are many changes that explicitly call `ksft_exit`
+> with an expression; are those setting the correct exit code? Note that
+> ksft_exit_pass is calling exit with KSFT_PASS which is 0.  So some of
+> the negations don't look quite correct to me.  For example:
+>
+> -       return !ksft_get_fail_cnt() ? ksft_exit_pass() : ksft_exit_fail();
+> +       ksft_exit(!ksft_get_fail_cnt());
+>
+> so if ksft_get_fail_cnt() returns 0, then we were calling
+> ksft_exit_pass() which exited with 0. Now we'd be exiting with 1?
 
+oh, right, thank you for your review.
+I will drop all the 'ksft_exit()' changes, they should be fixed and go
+in as separete patches.
+
+
+Cheers,
+Anders
