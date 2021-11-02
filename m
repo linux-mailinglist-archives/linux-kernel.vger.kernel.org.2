@@ -2,135 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 698E9442A97
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 10:43:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ED64442A9B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 10:45:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230321AbhKBJps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 05:45:48 -0400
-Received: from foss.arm.com ([217.140.110.172]:59422 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230058AbhKBJpq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 05:45:46 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8DAA411B3;
-        Tue,  2 Nov 2021 02:43:08 -0700 (PDT)
-Received: from [10.32.36.26] (e121896.Emea.Arm.com [10.32.36.26])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1E3BA3F5A1;
-        Tue,  2 Nov 2021 02:43:02 -0700 (PDT)
-Subject: Re: [PATCH v2 2/2] kallsyms: ignore arm mapping symbols when loading
- module
-To:     Lexi Shao <shaolexi@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Cc:     acme@kernel.org, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, mark.rutland@arm.com, mingo@redhat.com,
-        namhyung@kernel.org, nixiaoming@huawei.com, peterz@infradead.org,
-        qiuxi1@huawei.com, wangbing6@huawei.com, jeyu@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        natechancellor@gmail.com, ndesaulniers@google.com,
-        bpf@vger.kernel.org, clang-built-linux@googlegroups.com
-References: <cb7e9ef7-eda4-b197-df8a-0b54f9b56181@arm.com>
- <20211029065038.39449-1-shaolexi@huawei.com>
- <20211029065038.39449-3-shaolexi@huawei.com>
-From:   James Clark <james.clark@arm.com>
-Message-ID: <415161e7-cdfc-557a-23cb-f72c5829bae4@arm.com>
-Date:   Tue, 2 Nov 2021 09:43:00 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S229783AbhKBJsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 05:48:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56675 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229577AbhKBJsH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 05:48:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635846332;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nYxvqfKyKtI4tu/9sa2DOgaLzeCCe5kytXHcdT7EDvU=;
+        b=CPCWVN6fACV1mC3xIu4Uy1VVC7xrOCWoKUYxcVI7XBxY7XpjYlcA2guxLdUIvR0ti0Kjkj
+        nJjtcqpNMSSxGMCVVtUCGw2gKKZhzx/E+uWkt2IaBtYAdg8X8oSN/EMBV31X4Wny2XO2BM
+        kvVllde/20hF6DUXdRGTQpwgCayZgw8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-424-4x6F5WCcPPyxkNENe6Mihg-1; Tue, 02 Nov 2021 05:45:27 -0400
+X-MC-Unique: 4x6F5WCcPPyxkNENe6Mihg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 40EBE1006AA2;
+        Tue,  2 Nov 2021 09:45:26 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.36.144])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A3F4A60D30;
+        Tue,  2 Nov 2021 09:45:24 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20210919094432.30510-1-len.baker@gmx.com>
+References: <20210919094432.30510-1-len.baker@gmx.com>
+To:     Len Baker <len.baker@gmx.com>
+Cc:     dhowells@redhat.com, Marc Dionne <marc.dionne@auristor.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        linux-afs@lists.infradead.org, linux-hardening@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] afs: Prefer struct_size over open coded arithmetic
 MIME-Version: 1.0
-In-Reply-To: <20211029065038.39449-3-shaolexi@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <4028804.1635846297.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Tue, 02 Nov 2021 09:44:57 +0000
+Message-ID: <4028805.1635846297@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Len Baker <len.baker@gmx.com> wrote:
 
+> As noted in the "Deprecated Interfaces, Language Features, Attributes,
+> and Conventions" documentation [1], size calculations (especially
+> multiplication) should not be performed in memory allocator (or similar)
+> function arguments due to the risk of them overflowing. This could lead
+> to values wrapping around and a smaller allocation being made than the
+> caller was expecting. Using those allocations could lead to linear
+> overflows of heap memory and other misbehaviors.
+> =
 
-On 29/10/2021 07:50, Lexi Shao wrote:
-> Arm modules contains mapping symbols(e.g. $a $d) which are ignored in
-> module_kallsyms_on_each_symbol. However, these symbols are still
-> displayed when catting /proc/kallsyms. This confuses tools(e.g. perf)
-> that resolves kernel symbols with address using information from
-> /proc/kallsyms. See discussion in Link:
-> https://lore.kernel.org/all/c7dfbd17-85fd-b914-b90f-082abc64c9d1@arm.com/
-> 
-> Being left out in vmlinux(see scripts/kallsyms.c is_ignored_symbol) and
-> kernelspace API implies that these symbols are not used in any cases.
-> So we can ignore them in the first place by not adding them to module
-> kallsyms.
-> 
-> Signed-off-by: Lexi Shao <shaolexi@huawei.com>
+> So, use the struct_size() helper to do the arithmetic instead of the
+> argument "size + size * count" in the kzalloc() function.
+> =
 
+> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#open-=
+coded-arithmetic-in-allocator-arguments
+> =
 
-I tested this and it has removed the $ symbols from kallsyms where I saw
-them before.
+> Signed-off-by: Len Baker <len.baker@gmx.com>
 
-Reviewed-by: James Clark <james.clark@arm.com>
+Acked-by: David Howells <dhowells@redhat.com>
 
-> ---
->  kernel/module.c | 19 +++++++++++--------
->  1 file changed, 11 insertions(+), 8 deletions(-)
-> 
-> diff --git a/kernel/module.c b/kernel/module.c
-> index 5c26a76e800b..b30cbbe144c7 100644
-> --- a/kernel/module.c
-> +++ b/kernel/module.c
-> @@ -2662,16 +2662,22 @@ static char elf_type(const Elf_Sym *sym, const struct load_info *info)
->  	return '?';
->  }
->  
-> -static bool is_core_symbol(const Elf_Sym *src, const Elf_Shdr *sechdrs,
-> -			unsigned int shnum, unsigned int pcpundx)
-> +static inline int is_arm_mapping_symbol(const char *str);
-> +static bool is_core_symbol(const Elf_Sym *src, const struct load_info *info)
->  {
->  	const Elf_Shdr *sec;
-> +	const Elf_Shdr *sechdrs = info->sechdrs;
-> +	unsigned int shnum = info->hdr->e_shnum;
-> +	unsigned int pcpundx = info->index.pcpu;
->  
->  	if (src->st_shndx == SHN_UNDEF
->  	    || src->st_shndx >= shnum
->  	    || !src->st_name)
->  		return false;
->  
-> +	if (is_arm_mapping_symbol(&info->strtab[src->st_name]))
-> +		return false;
-> +
->  #ifdef CONFIG_KALLSYMS_ALL
->  	if (src->st_shndx == pcpundx)
->  		return true;
-> @@ -2714,8 +2720,7 @@ static void layout_symtab(struct module *mod, struct load_info *info)
->  	/* Compute total space required for the core symbols' strtab. */
->  	for (ndst = i = 0; i < nsrc; i++) {
->  		if (i == 0 || is_livepatch_module(mod) ||
-> -		    is_core_symbol(src+i, info->sechdrs, info->hdr->e_shnum,
-> -				   info->index.pcpu)) {
-> +		    is_core_symbol(src+i, info)) {
->  			strtab_size += strlen(&info->strtab[src[i].st_name])+1;
->  			ndst++;
->  		}
-> @@ -2778,8 +2783,7 @@ static void add_kallsyms(struct module *mod, const struct load_info *info)
->  	for (ndst = i = 0; i < mod->kallsyms->num_symtab; i++) {
->  		mod->kallsyms->typetab[i] = elf_type(src + i, info);
->  		if (i == 0 || is_livepatch_module(mod) ||
-> -		    is_core_symbol(src+i, info->sechdrs, info->hdr->e_shnum,
-> -				   info->index.pcpu)) {
-> +		    is_core_symbol(src+i, info)) {
->  			mod->core_kallsyms.typetab[ndst] =
->  			    mod->kallsyms->typetab[i];
->  			dst[ndst] = src[i];
-> @@ -4246,8 +4250,7 @@ static const char *find_kallsyms_symbol(struct module *mod,
->  		 * We ignore unnamed symbols: they're uninformative
->  		 * and inserted at a whim.
->  		 */
-> -		if (*kallsyms_symbol_name(kallsyms, i) == '\0'
-> -		    || is_arm_mapping_symbol(kallsyms_symbol_name(kallsyms, i)))
-> +		if (*kallsyms_symbol_name(kallsyms, i) == '\0')
->  			continue;
->  
->  		if (thisval <= addr && thisval > bestval) {
-> 
