@@ -2,441 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5988344304A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 15:23:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57E5B443053
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 15:24:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231495AbhKBO01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 10:26:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40474 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231312AbhKBO0S (ORCPT
+        id S231557AbhKBO0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 10:26:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36172 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231588AbhKBO0l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 10:26:18 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 516C9C06120E
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 07:23:41 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id g26-20020a63521a000000b0029524f04f5aso12004021pgb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 07:23:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=QJliOy3iQ9BlSXxW1/Qo2iOn93RnWvlViCQ1mPvrMpA=;
-        b=DZD30mOuQTqkdzgB0gYFfC060RRo+IPlPbpxIUUNZRrtSPu6gG9C7mJMdVFhIgw7bs
-         2QNRuLeVeyTBUUkorEdvsZfGmmZOnGBuDSwxk6dNtd6Wq2q5ccwvcoHNvYm4xPJ8Al3X
-         Eta52lYateA4D7JE9oDFypujUXBbL8Lk7sKivJhJhEoinaMRTGWaaYtFFgbSA30FdHTX
-         pRv9JGZFvAPIop66BZaIPti6v8oEx86/kZIrACu59+u/NZ4V4c5C+KNA6vsX57J6Zpfs
-         jNr9Da46DcYg45rS0QIh7xNZ09hRKz8xNpg28txGuEf6TASW4MZA7yssGARUUxu4CQkC
-         hCPQ==
+        Tue, 2 Nov 2021 10:26:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635863046;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1YjJj9IqpDhJ07HE33uojzp5DuJdOMzvHOGPrvOy2QU=;
+        b=b9AsSj6i1AcGLKQ2t8BdJ0vCpxnWC0HdlpYBh5pxxWKgBWDtFzzLMvO4Xxp3Dn5ZSfEEa0
+        NpSZPzESE3IJ+sQv6LxmfUj0jjFUyuBy8xnLGnXkX0Av9fDqW/FUQPJMp1pdBedcjTHJuU
+        3pxZ/bH7AS9W6DoBxOXHSbbsMeZtiQ0=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-357-P5jU7uSbMhmYTibpklrgqg-1; Tue, 02 Nov 2021 10:24:05 -0400
+X-MC-Unique: P5jU7uSbMhmYTibpklrgqg-1
+Received: by mail-ed1-f72.google.com with SMTP id v9-20020a50d849000000b003dcb31eabaaso19072850edj.13
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 07:24:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=QJliOy3iQ9BlSXxW1/Qo2iOn93RnWvlViCQ1mPvrMpA=;
-        b=i0+eyHdjyaUVYmkProHDuqkBu10JhXEzW7QwsHI7QreREfDymHEf3wjJBgwRjjDWKt
-         rB4RQScYNsWXdWYozXLntgUCbjcZ1ANWHy/pbXfuU65bdj2YUH5CvQ1bOnNVIYwQtfL1
-         nBz7/rM/C1Nx+lWm6ZTu9RRzLSh7jQO63RBVt/Dw/4EJy/fajb00sYT6/TJK2JdXcVSm
-         J7bIcb6KSC9TCcxmP9Enx6RePb1kuT9ajK/ifIrrBYIlX7/GEnS7pxCgguKoOMg9O0YZ
-         sSslp47LrrKpC4tBurzUZd6B9Yf+S7dAQ1Em76LTbK2Xjz/67W7rAXHIUMkST7jeGwXD
-         PBXg==
-X-Gm-Message-State: AOAM533bRtqzkRfAVDdTrAv5aPLvE5wvnS7Mj0U+n1pq3YGWV4Uk9aJx
-        p4/0qSr3YZHWfN/rRLDv7jXrTRrb2HA=
-X-Google-Smtp-Source: ABdhPJzqH09mat3Zk/JV6yFQIfK3rSSPSF3uja2GP5uBqqZ7U+FF86UhGtydhFl+aFahvH9P3g8xJzLmXxs=
-X-Received: from pgonda1.kir.corp.google.com ([2620:15c:29:204:3109:8497:f59d:9150])
- (user=pgonda job=sendgmr) by 2002:a17:902:6902:b0:13f:c1cd:88f1 with SMTP id
- j2-20020a170902690200b0013fc1cd88f1mr32068206plk.36.1635863020477; Tue, 02
- Nov 2021 07:23:40 -0700 (PDT)
-Date:   Tue,  2 Nov 2021 07:23:31 -0700
-In-Reply-To: <20211102142331.3753798-1-pgonda@google.com>
-Message-Id: <20211102142331.3753798-5-pgonda@google.com>
-Mime-Version: 1.0
-References: <20211102142331.3753798-1-pgonda@google.com>
-X-Mailer: git-send-email 2.33.1.1089.g2158813163f-goog
-Subject: [PATCH V3 4/4] crypto: ccp - Add SEV_INIT_EX support
-From:   Peter Gonda <pgonda@google.com>
-To:     thomas.lendacky@amd.com
-Cc:     David Rientjes <rientjes@google.com>,
-        Peter Gonda <pgonda@google.com>, Marc Orr <marcorr@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        John Allen <john.allen@amd.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=1YjJj9IqpDhJ07HE33uojzp5DuJdOMzvHOGPrvOy2QU=;
+        b=U/0FKA0eAd7yg+w98RKpaTpU12SjLdHU+o9B5JB2IWUm+5X5D+0t5EzXaWkxdzYmzI
+         Y3n8ywFq5PyaJa1OAjHcOdBE/j0De8Uofl6pou6iJvMnOeIs+2EEMsaqtLGYyg53NGul
+         4yQkS47XDiELBAywIgKCM/FEvIN6HqigSjpENyVuujVP4MfqI0KT49tDiQSzFOP291O9
+         aK9Bq8gZ7ch8vFL2yU2bu6fzg+ujs6C5/NuJRwXrxRyhmbq+WbcPX8TqOIHVSELasiiY
+         bhZCm9cJma+JAezF8nZE3ZtFLLHJZbf1KcbYqIiJTPPSHukTLG28unb978yYyfySDkx4
+         VpKg==
+X-Gm-Message-State: AOAM532PIPl3ek0ISoD652wdSSWhA2wAMLePcctIOXhGTUF4uN9VsYkt
+        OhVrUBeVoWNyeiTiVdpWWwS6DPi4Q7O+Eu1V7k2IuzO3LpBHqtSqefYnDFi9wvlrpR4q/1aIfGJ
+        lqBttIEDkrnCmWjg2VSUPYFXV
+X-Received: by 2002:a17:907:7f8b:: with SMTP id qk11mr46491565ejc.313.1635863043786;
+        Tue, 02 Nov 2021 07:24:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxkmvL1HIl9M3KIUQMmw+yeeX/QNnPDpALyKPCkIFoHEdHZkwzBVyQbxiHQ+ACffR2u+1RHkA==
+X-Received: by 2002:a17:907:7f8b:: with SMTP id qk11mr46491524ejc.313.1635863043578;
+        Tue, 02 Nov 2021 07:24:03 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id sg17sm3448785ejc.72.2021.11.02.07.24.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Nov 2021 07:24:02 -0700 (PDT)
+Message-ID: <8eaeca66-f719-6b5d-bd7c-ccbd15a0b91c@redhat.com>
+Date:   Tue, 2 Nov 2021 15:24:01 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v5 07/11] platform/x86: int3472: Split into 2 drivers
+Content-Language: en-US
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Kate Hsuan <hpa@redhat.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>
+References: <20211102094907.31271-1-hdegoede@redhat.com>
+ <20211102094907.31271-8-hdegoede@redhat.com>
+ <CAHp75VePSv8b=oTJXJCL_go9Lody+8JQJyMC6exO-Zw8cPk9og@mail.gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <CAHp75VePSv8b=oTJXJCL_go9Lody+8JQJyMC6exO-Zw8cPk9og@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Rientjes <rientjes@google.com>
+Hi,
 
-Add new module parameter to allow users to use SEV_INIT_EX instead of
-SEV_INIT. This helps users who lock their SPI bus to use the PSP for SEV
-functionality. The 'init_ex_path' parameter defaults to NULL which means
-the kernel will use SEV_INIT, if a path is specified SEV_INIT_EX will be
-used with the data found at the path. On certain PSP commands this
-file is written to as the PSP updates the NV memory region. Depending on
-file system initialization this file open may fail during module init
-but the CCP driver for SEV already has sufficient retries for platform
-initialization. During normal operation of PSP system and SEV commands
-if the PSP has not been initialized it is at run time. If the file at
-'init_ex_path' does not exist the PSP will not be initialized. The user
-must create the file prior to use with 32Kb of 0xFFs per spec.
+On 11/2/21 15:16, Andy Shevchenko wrote:
+> On Tue, Nov 2, 2021 at 11:49 AM Hans de Goede <hdegoede@redhat.com> wrote:
+>>
+>> The intel_skl_int3472.ko module contains 2 separate drivers,
+>> the int3472_discrete platform driver and the int3472_tps68470
+>> I2C-driver.
+>>
+>> These 2 drivers contain very little shared code, only
+>> skl_int3472_get_acpi_buffer() and skl_int3472_fill_cldb() are
+>> shared.
+>>
+>> Split the module into 2 drivers, linking the little shared code
+>> directly into both.
+>>
+>> This will allow us to add soft-module dependencies for the
+>> tps68470 clk, gpio and regulator drivers to the new
+>> intel_skl_int3472_tps68470.ko to help with probe ordering issues
+>> without causing these modules to get loaded on boards which only
+>> use the int3472_discrete platform driver.
+>>
+>> While at it also rename the .c and .h files to remove the
+>> cumbersome intel_skl_int3472_ prefix.
+> 
+> ...
+> 
+>> +union acpi_object *skl_int3472_get_acpi_buffer(struct acpi_device *adev, char *id)
+>> +{
+>> +       struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
+>> +       acpi_handle handle = adev->handle;
+>> +       union acpi_object *obj;
+>> +       acpi_status status;
+>> +
+>> +       status = acpi_evaluate_object(handle, id, NULL, &buffer);
+>> +       if (ACPI_FAILURE(status))
+>> +               return ERR_PTR(-ENODEV);
+>> +
+>> +       obj = buffer.pointer;
+>> +       if (!obj)
+>> +               return ERR_PTR(-ENODEV);
+>> +
+>> +       if (obj->type != ACPI_TYPE_BUFFER) {
+>> +               acpi_handle_err(handle, "%s object is not an ACPI buffer\n", id);
+> 
+>> +               kfree(obj);
+> 
+> I'm wondering if we should use more of the ACPI_FREE() calls as
+> opposed to ACPI_ALLOCATE_BUFFER. Ditto for all such cases.
 
-Signed-off-by: David Rientjes <rientjes@google.com>
-Co-developed-by: Peter Gonda <pgonda@google.com>
-Signed-off-by: Peter Gonda <pgonda@google.com>
-Reviewed-by: Marc Orr <marcorr@google.com>
-Cc: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: Brijesh Singh <brijesh.singh@amd.com>
-Cc: Marc Orr <marcorr@google.com>
-Cc: Joerg Roedel <jroedel@suse.de>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: David Rientjes <rientjes@google.com>
-Cc: John Allen <john.allen@amd.com>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: linux-crypto@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
----
- .../virt/kvm/amd-memory-encryption.rst        |   6 +
- drivers/crypto/ccp/sev-dev.c                  | 181 ++++++++++++++++--
- include/linux/psp-sev.h                       |  21 ++
- 3 files changed, 195 insertions(+), 13 deletions(-)
+Basically the situation surrounding this is a mess, most code seems to
+simply use plain kfree() which I find much more readable, but some
+code indeed is using ACPI_FREE(), which I believe is really mostly
+meant for internal use by the acpica code.
 
-diff --git a/Documentation/virt/kvm/amd-memory-encryption.rst b/Documentation/virt/kvm/amd-memory-encryption.rst
-index 5c081c8c7164..1c6847fff304 100644
---- a/Documentation/virt/kvm/amd-memory-encryption.rst
-+++ b/Documentation/virt/kvm/amd-memory-encryption.rst
-@@ -85,6 +85,12 @@ guests, such as launching, running, snapshotting, migrating and decommissioning.
- The KVM_SEV_INIT command is used by the hypervisor to initialize the SEV platform
- context. In a typical workflow, this command should be the first command issued.
- 
-+The firmware can be initialized either by using its own non-volatile storage or
-+the OS can manage the NV storage for the firmware using the module parameter
-+``init_ex_path``. The file specified by ``init_ex_path`` must exist. To create
-+a new NV storage file allocate the file with 32KB bytes of 0xFF as required by
-+the SEV spec.
-+
- Returns: 0 on success, -negative on error
- 
- 2. KVM_SEV_LAUNCH_START
-diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
-index 00ca74dd7b3c..2264a0b76bee 100644
---- a/drivers/crypto/ccp/sev-dev.c
-+++ b/drivers/crypto/ccp/sev-dev.c
-@@ -22,6 +22,7 @@
- #include <linux/firmware.h>
- #include <linux/gfp.h>
- #include <linux/cpufeature.h>
-+#include <linux/fs.h>
- 
- #include <asm/smp.h>
- 
-@@ -43,6 +44,10 @@ static int psp_probe_timeout = 5;
- module_param(psp_probe_timeout, int, 0644);
- MODULE_PARM_DESC(psp_probe_timeout, " default timeout value, in seconds, during PSP device probe");
- 
-+static char *init_ex_path;
-+module_param(init_ex_path, charp, 0660);
-+MODULE_PARM_DESC(init_ex_path, " Path for INIT_EX data; if set try INIT_EX");
-+
- MODULE_FIRMWARE("amd/amd_sev_fam17h_model0xh.sbin"); /* 1st gen EPYC */
- MODULE_FIRMWARE("amd/amd_sev_fam17h_model3xh.sbin"); /* 2nd gen EPYC */
- MODULE_FIRMWARE("amd/amd_sev_fam19h_model0xh.sbin"); /* 3rd gen EPYC */
-@@ -58,6 +63,14 @@ static int psp_timeout;
- #define SEV_ES_TMR_SIZE		(1024 * 1024)
- static void *sev_es_tmr;
- 
-+/* INIT_EX NV Storage:
-+ *   The NV Storage is a 32Kb area and must be 4Kb page aligned.  Use the page
-+ *   allocator to allocate the memory, which will return aligned memory for the
-+ *   specified allocation order.
-+ */
-+#define NV_LENGTH (32 * 1024)
-+static void *sev_init_ex_nv_address;
-+
- static inline bool sev_version_greater_or_equal(u8 maj, u8 min)
- {
- 	struct sev_device *sev = psp_master->sev_data;
-@@ -107,6 +120,7 @@ static int sev_cmd_buffer_len(int cmd)
- {
- 	switch (cmd) {
- 	case SEV_CMD_INIT:			return sizeof(struct sev_data_init);
-+	case SEV_CMD_INIT_EX:                   return sizeof(struct sev_data_init_ex);
- 	case SEV_CMD_PLATFORM_STATUS:		return sizeof(struct sev_user_data_status);
- 	case SEV_CMD_PEK_CSR:			return sizeof(struct sev_data_pek_csr);
- 	case SEV_CMD_PEK_CERT_IMPORT:		return sizeof(struct sev_data_pek_cert_import);
-@@ -152,6 +166,87 @@ static void *sev_fw_alloc(unsigned long len)
- 	return page_address(page);
- }
- 
-+static int sev_read_nv_memory(void)
-+{
-+	struct file *fp;
-+	ssize_t nread;
-+
-+	if (!sev_init_ex_nv_address)
-+		return -EOPNOTSUPP;
-+
-+	fp = filp_open(init_ex_path, O_RDONLY, 0);
-+	if (IS_ERR(fp)) {
-+		int ret = PTR_ERR(fp);
-+
-+		dev_err(psp_master->dev,
-+			"SEV: could not open %s for read, error %d\n",
-+			init_ex_path, ret);
-+		return ret;
-+	}
-+
-+	nread = kernel_read(fp, sev_init_ex_nv_address, NV_LENGTH, NULL);
-+	dev_dbg(psp_master->dev, "SEV: read %ld bytes from NV file\n", nread);
-+	filp_close(fp, NULL);
-+
-+	return 0;
-+}
-+
-+static void sev_write_nv_memory(void)
-+{
-+	struct sev_device *sev = psp_master->sev_data;
-+	struct file *fp;
-+	loff_t offset = 0;
-+	ssize_t nwrite;
-+
-+	if (!sev_init_ex_nv_address)
-+		return;
-+
-+	fp = filp_open(init_ex_path, O_CREAT | O_WRONLY, 0600);
-+	if (IS_ERR(fp)) {
-+		dev_err(sev->dev,
-+			"SEV: could not open file for write, error %d\n",
-+			PTR_ERR(fp));
-+		return;
-+	}
-+
-+	nwrite = kernel_write(fp, sev_init_ex_nv_address, NV_LENGTH, &offset);
-+	vfs_fsync(fp, 0);
-+	filp_close(fp, NULL);
-+
-+	if (nwrite != NV_LENGTH) {
-+		dev_err(sev->dev,
-+			"SEV: failed to write %u bytes to non volatile memory area, ret %ld\n",
-+			NV_LENGTH, nwrite);
-+		return;
-+	}
-+
-+	dev_dbg(sev->dev, "SEV: write successful to NV file\n");
-+}
-+
-+static void sev_write_nv_memory_if_required(int cmd_id)
-+{
-+	if (!sev_init_ex_nv_address)
-+		return;
-+
-+	/*
-+	 * Only a few platform commands modify the SPI/NV area, but none of the
-+	 * non-platform commands do. Only INIT(_EX), PLATFORM_RESET, PEK_GEN,
-+	 * PEK_CERT_IMPORT, and PDH_GEN do.
-+	 */
-+	switch (cmd_id) {
-+	case SEV_CMD_FACTORY_RESET:
-+	case SEV_CMD_INIT_EX:
-+	case SEV_CMD_PDH_GEN:
-+	case SEV_CMD_PEK_CERT_IMPORT:
-+	case SEV_CMD_PEK_GEN:
-+		break;
-+	default:
-+		return;
-+	};
-+
-+	sev_write_nv_memory();
-+}
-+
- static int __sev_do_cmd_locked(int cmd, void *data, int *psp_ret)
- {
- 	struct psp_device *psp = psp_master;
-@@ -221,6 +316,8 @@ static int __sev_do_cmd_locked(int cmd, void *data, int *psp_ret)
- 		dev_dbg(sev->dev, "sev command %#x failed (%#010x)\n",
- 			cmd, reg & PSP_CMDRESP_ERR_MASK);
- 		ret = -EIO;
-+	} else {
-+		sev_write_nv_memory_if_required(cmd);
- 	}
- 
- 	print_hex_dump_debug("(out): ", DUMP_PREFIX_OFFSET, 16, 2, data,
-@@ -247,22 +344,42 @@ static int sev_do_cmd(int cmd, void *data, int *psp_ret)
- 	return rc;
- }
- 
--static int __sev_platform_init_locked(int *error)
-+static int __sev_init_locked(int *error)
- {
--	struct psp_device *psp = psp_master;
- 	struct sev_data_init data;
--	struct sev_device *sev;
--	int rc = 0;
- 
--	if (!psp || !psp->sev_data)
--		return -ENODEV;
-+	memset(&data, 0, sizeof(data));
-+	if (sev_es_tmr) {
-+		u64 tmr_pa;
- 
--	sev = psp->sev_data;
-+		/*
-+		 * Do not include the encryption mask on the physical
-+		 * address of the TMR (firmware should clear it anyway).
-+		 */
-+		tmr_pa = __pa(sev_es_tmr);
- 
--	if (sev->state == SEV_STATE_INIT)
--		return 0;
-+		data.flags |= SEV_INIT_FLAGS_SEV_ES;
-+		data.tmr_address = tmr_pa;
-+		data.tmr_len = SEV_ES_TMR_SIZE;
-+	}
-+
-+	return __sev_do_cmd_locked(SEV_CMD_INIT, &data, error);
-+}
-+
-+static int __sev_init_ex_locked(int *error)
-+{
-+	struct sev_data_init_ex data;
-+	int ret;
- 
- 	memset(&data, 0, sizeof(data));
-+	data.length = sizeof(data);
-+	data.nv_address = __psp_pa(sev_init_ex_nv_address);
-+	data.nv_len = NV_LENGTH;
-+
-+	ret = sev_read_nv_memory();
-+	if (ret)
-+		return ret;
-+
- 	if (sev_es_tmr) {
- 		u64 tmr_pa;
- 
-@@ -277,7 +394,27 @@ static int __sev_platform_init_locked(int *error)
- 		data.tmr_len = SEV_ES_TMR_SIZE;
- 	}
- 
--	rc = __sev_do_cmd_locked(SEV_CMD_INIT, &data, error);
-+	return __sev_do_cmd_locked(SEV_CMD_INIT_EX, &data, error);
-+}
-+
-+static int __sev_platform_init_locked(int *error)
-+{
-+	struct psp_device *psp = psp_master;
-+	struct sev_device *sev;
-+	int rc;
-+	int (*init_function)(int *error);
-+
-+	if (!psp || !psp->sev_data)
-+		return -ENODEV;
-+
-+	sev = psp->sev_data;
-+
-+	if (sev->state == SEV_STATE_INIT)
-+		return 0;
-+
-+	init_function = sev_init_ex_nv_address ? __sev_init_ex_locked :
-+	    __sev_init_locked;
-+	rc = init_function(error);
- 	if (rc && *error == SEV_RET_SECURE_DATA_INVALID) {
- 		/*
- 		 * INIT command returned an integrity check failure
-@@ -286,8 +423,8 @@ static int __sev_platform_init_locked(int *error)
- 		 * failed and persistent state has been erased.
- 		 * Retrying INIT command here should succeed.
- 		 */
--		dev_dbg(sev->dev, "SEV: retrying INIT command");
--		rc = __sev_do_cmd_locked(SEV_CMD_INIT, &data, error);
-+		dev_notice(sev->dev, "SEV: retrying INIT command");
-+		rc = init_function(error);
- 	}
- 
- 	if (rc)
-@@ -303,7 +440,7 @@ static int __sev_platform_init_locked(int *error)
- 
- 	dev_dbg(sev->dev, "SEV firmware initialized\n");
- 
--	return rc;
-+	return 0;
- }
- 
- int sev_platform_init(int *error)
-@@ -1057,6 +1194,12 @@ static void sev_firmware_shutdown(struct sev_device *sev)
- 			   get_order(SEV_ES_TMR_SIZE));
- 		sev_es_tmr = NULL;
- 	}
-+
-+	if (sev_init_ex_nv_address) {
-+		free_pages((unsigned long)sev_init_ex_nv_address,
-+			   get_order(NV_LENGTH));
-+		sev_init_ex_nv_address = NULL;
-+	}
- }
- 
- void sev_dev_destroy(struct psp_device *psp)
-@@ -1101,6 +1244,18 @@ void sev_pci_init(void)
- 	    sev_update_firmware(sev->dev) == 0)
- 		sev_get_api_version();
- 
-+	/* If an init_ex_path is provided rely on INIT_EX for PSP initialization
-+	 * instead of INIT.
-+	 */
-+	if (init_ex_path) {
-+		sev_init_ex_nv_address = sev_fw_alloc(NV_LENGTH);
-+		if (!sev_init_ex_nv_address) {
-+			dev_err(sev->dev,
-+				"SEV: INIT_EX NV memory allocation failed\n");
-+			goto err;
-+		}
-+	}
-+
- 	/* Obtain the TMR memory area for SEV-ES use */
- 	sev_es_tmr = sev_fw_alloc(SEV_ES_TMR_SIZE);
- 	if (!sev_es_tmr)
-diff --git a/include/linux/psp-sev.h b/include/linux/psp-sev.h
-index d48a7192e881..1595088c428b 100644
---- a/include/linux/psp-sev.h
-+++ b/include/linux/psp-sev.h
-@@ -52,6 +52,7 @@ enum sev_cmd {
- 	SEV_CMD_DF_FLUSH		= 0x00A,
- 	SEV_CMD_DOWNLOAD_FIRMWARE	= 0x00B,
- 	SEV_CMD_GET_ID			= 0x00C,
-+	SEV_CMD_INIT_EX                 = 0x00D,
- 
- 	/* Guest commands */
- 	SEV_CMD_DECOMMISSION		= 0x020,
-@@ -102,6 +103,26 @@ struct sev_data_init {
- 	u32 tmr_len;			/* In */
- } __packed;
- 
-+/**
-+ * struct sev_data_init_ex - INIT_EX command parameters
-+ *
-+ * @length: len of the command buffer read by the PSP
-+ * @flags: processing flags
-+ * @tmr_address: system physical address used for SEV-ES
-+ * @tmr_len: len of tmr_address
-+ * @nv_address: system physical address used for PSP NV storage
-+ * @nv_len: len of nv_address
-+ */
-+struct sev_data_init_ex {
-+	u32 length;                     /* In */
-+	u32 flags;                      /* In */
-+	u64 tmr_address;                /* In */
-+	u32 tmr_len;                    /* In */
-+	u32 reserved;                   /* In */
-+	u64 nv_address;                 /* In/Out */
-+	u32 nv_len;                     /* In */
-+} __packed;
-+
- #define SEV_INIT_FLAGS_SEV_ES	0x01
- 
- /**
--- 
-2.33.1.1089.g2158813163f-goog
+Eitherway until one of the ACPI maintainers clearly states
+that we really should use ACPI_FREE() here I plan to stick with kfree()
+because:
+
+1. I find it much more readable.
+2. AFAICT ACPI_FREE() is meant for acpica internal use
+   (basically it is part of the OS abstraction bits of acpica)
+
+Regards,
+
+Hans
 
