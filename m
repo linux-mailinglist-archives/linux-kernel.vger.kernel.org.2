@@ -2,122 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E53DE442DBD
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 13:23:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F472442DC1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 13:23:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230115AbhKBMZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 08:25:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40966 "EHLO
+        id S230124AbhKBMZ4 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 2 Nov 2021 08:25:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbhKBMZc (ORCPT
+        with ESMTP id S229557AbhKBMZx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 08:25:32 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7253DC061714
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 05:22:57 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id r8so20170596wra.7
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 05:22:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=PPrVvkKpDShrC2goi1J/Uno+TTdyeE7cxJPzYCbMSPg=;
-        b=jxU04U0MA10e7Y9U6CN0a4OFuXLVChKzFdX2BjfJHLmAeI8hJ1qIVqZRMXuo1qTWJJ
-         cVBoleFGmLtwyZh9rJDn75yqDgsZYr6c3qDRg9+tzXmS0nKqg3r/iJGblkGBkICrZKcc
-         HZHjvOuCGu6J+o5WZ0qcYYidKMyhW0ow1egcdY0EBDTbkco3CzcO1fV0Gam4qcd6+NhQ
-         g5c4D5HbGdriLR3dD94mKdWrQ76lxel8gklujAv1GprHxc4TlQBceogA43e6BtZZWzKv
-         IVVDJRjA7rzJKa8NetTDVdXGdYt32YEoyK2FvVFb1OX99fxZsP+XX7jFJv39Z/YMqC/r
-         UPsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PPrVvkKpDShrC2goi1J/Uno+TTdyeE7cxJPzYCbMSPg=;
-        b=duuzdMetlh5U5JAGiMuag4L3RmdDOfJsP5usZJuIC+3fncPPRygD+9kASEjWT8p8vL
-         1fDS7EVv/YzBd1+mE4Lc2XDan+fGtPRrmu9BIJR7XQ9cNdEwZRFeVRG3YPsMgsTkQcPr
-         dFXmBvchrqPG+GuhshP/jUYTQ25yiAO27uuryxqmEaKaOli3RYSo6F/E3cy2p8erEsZH
-         4+i1iplF83gfbolVOvMNhygj6xuiQKJOieSnljm42euY/q7aFLTEymsD3bxAJpCrBIEh
-         6QbumbmjPBHTUmnMvMISm9t317RzzBVMwdCpiqpsf8ODuBE53Md+73Kr2sqSZFqVaw3c
-         SQoQ==
-X-Gm-Message-State: AOAM531+rJq1+HVkcBDtYOoCO6KinT9Z/reHYleIuq7AD2qaXKboTINt
-        0VhWtCAclqj82he8DawqBVFD5w==
-X-Google-Smtp-Source: ABdhPJw2cKX4hOFi9O3gYybeogMRGL3fiRW5uZVJYAl/ga+gA0jafphuJrk6wM5hf/6vINnLKSD2uA==
-X-Received: by 2002:a5d:6e04:: with SMTP id h4mr22288639wrz.127.1635855775993;
-        Tue, 02 Nov 2021 05:22:55 -0700 (PDT)
-Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id m20sm2634572wmq.5.2021.11.02.05.22.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Nov 2021 05:22:55 -0700 (PDT)
-Date:   Tue, 2 Nov 2021 12:22:53 +0000
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] backlight: lp855x: Add support ACPI enumeration
-Message-ID: <20211102122253.s4oc2p7hmy7w2qgn@maple.lan>
-References: <20211101185518.306728-1-hdegoede@redhat.com>
- <20211101185518.306728-3-hdegoede@redhat.com>
+        Tue, 2 Nov 2021 08:25:53 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE3D3C061714
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 05:23:18 -0700 (PDT)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1mhsok-0008Ea-4s; Tue, 02 Nov 2021 13:23:06 +0100
+Received: from pza by lupine with local (Exim 4.94.2)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1mhsoe-004AoX-2M; Tue, 02 Nov 2021 13:23:00 +0100
+Message-ID: <296d4a9fdbe2b60eea4d259f1e2e3fe8d67b3c07.camel@pengutronix.de>
+Subject: Re: [PATCH v3 4/8] reset: Add Sunplus SP7021 reset driver
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Qin Jian <qinjian@cqplus1.com>, robh+dt@kernel.org
+Cc:     mturquette@baylibre.com, sboyd@kernel.org, maz@kernel.org,
+        broonie@kernel.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, wells.lu@sunplus.com
+Date:   Tue, 02 Nov 2021 13:22:59 +0100
+In-Reply-To: <c6f0aaef57b25705af988797ede5ab7119852a5c.1635737544.git.qinjian@cqplus1.com>
+References: <cover.1635737544.git.qinjian@cqplus1.com>
+         <c6f0aaef57b25705af988797ede5ab7119852a5c.1635737544.git.qinjian@cqplus1.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.38.3-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211101185518.306728-3-hdegoede@redhat.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 01, 2021 at 07:55:17PM +0100, Hans de Goede wrote:
-> The Xiaomi Mi Pad 2 tablet uses an ACPI enumerated LP8556 backlight
-> controller for its LCD-panel, with a Xiaomi specific ACPI HID of
-> "XMCC0001", add support for this.
-> 
-> Note the new "if (id)" check also fixes a NULL pointer deref when a user
-> tries to manually bind the driver from sysfs.
-> 
-> When CONFIG_ACPI is disabled acpi_match_device() will always return NULL,
-> so the lp855x_parse_acpi() call will get optimized away.
-> 
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-> ---
->  drivers/video/backlight/lp855x_bl.c | 70 ++++++++++++++++++++++++-----
->  1 file changed, 60 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/video/backlight/lp855x_bl.c b/drivers/video/backlight/lp855x_bl.c
-> index d1d27d5eb0f2..f075ec84acfb 100644
-> --- a/drivers/video/backlight/lp855x_bl.c
-> +++ b/drivers/video/backlight/lp855x_bl.c
-> @@ -338,10 +339,6 @@ static int lp855x_parse_dt(struct lp855x *lp)
->  		return -EINVAL;
->  	}
->  
-> -	pdata = devm_kzalloc(dev, sizeof(*pdata), GFP_KERNEL);
-> -	if (!pdata)
-> -		return -ENOMEM;
-> -
->  	of_property_read_string(node, "bl-name", &pdata->name);
->  	of_property_read_u8(node, "dev-ctrl", &pdata->device_control);
->  	of_property_read_u8(node, "init-brt", &pdata->initial_brightness);
+On Mon, 2021-11-01 at 13:01 +0800, Qin Jian wrote:
+> Add reset driver for Sunplus SP7021 SoC.
 
-Shouldn't there be a removal of an `lp->pdata = pdata` from somewhere in
-this function?
+You don't mention Q645 here, it appears this driver supports both SoCs?
+
+[...]
+> diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
+> index be799a5ab..50695ab47 100644
+> --- a/drivers/reset/Kconfig
+> +++ b/drivers/reset/Kconfig
+> @@ -249,6 +249,14 @@ config RESET_TI_SYSCON
+>  	  you wish to use the reset framework for such memory-mapped devices,
+>  	  say Y here. Otherwise, say N.
+> 
+>
+> +config RESET_SUNPLUS
+
+Please add these entries in alphabetical order.
+
+> +	bool "Sunplus SoCs Reset Driver"
+
+Can this be made:
+
+	depends SOC_SP7021 || SOC_Q645 || COMPILE_TEST
+
+?
+
+> +	help
+> +	  This enables the reset driver support for Sunplus SP7021 SoC family.
+> +	  Say Y if you want to control reset signals by the reset controller.
+> +	  Otherwise, say N.
+> +	  This driver is selected automatically by platform config.
+
+Which platform config?
 
 
-> @@ -379,8 +376,31 @@ static int lp855x_parse_dt(struct lp855x *lp)
->  }
->  #endif
->  
-> +static int lp855x_parse_acpi(struct lp855x *lp)
-> +{
-> +	int ret;
+[...]
+> diff --git a/drivers/reset/reset-sunplus.c b/drivers/reset/reset-sunplus.c
+> new file mode 100644
+> index 000000000..696efd75e
+> --- /dev/null
+> +++ b/drivers/reset/reset-sunplus.c
+> @@ -0,0 +1,159 @@
+> +// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +/*
+> + * SP7021 reset driver
+> + *
+> + * Copyright (C) Sunplus Technology Co., Ltd.
+> + *       All rights reserved.
+> + *
+> + *
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License version 2 as
+> + * published by the Free Software Foundation.
+> + *
+> + * This program is distributed "as is" WITHOUT ANY WARRANTY of any
+> + * kind, whether express or implied; without even the implied warranty
+> + * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
+
+Drop this boilerplate, this is not required with the SPDX identifier
+above.
+
+> + */
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/device.h>
+> +#include <linux/err.h>
+> +#include <linux/io.h>
+> +#include <linux/of.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/reset-controller.h>
+> +#include <linux/reboot.h>
 > +
-> +	/*
-> +	 * On ACPI the device has already been initialized by the firmware
+> +#if defined(CONFIG_SOC_SP7021)
+> +#include <dt-bindings/reset/sp-sp7021.h>
+> +#elif defined(CONFIG_SOC_Q645)
+> +#include <dt-bindings/reset/sp-q645.h>
+> +#endif
 
-Perhaps nitpicking but ideally I'd like "and is in register mode" here 
-since I presume it can also be assumed that everything with this HID
-has adopted that).
+I'd prefer if you added namespace prefixes to the defines and included
+both headers unconditionally.
+These are just required for RST_MAX, correct?
 
-Other than these, LGTM.
+> +
+> +#define BITASSERT(id, val)          ((1 << (16 + id)) | (val << id))
+> +
+> +
+> +struct sp_reset_data {
+> +	struct reset_controller_dev	rcdev;
+> +	void __iomem			*membase;
+> +} sp_reset;
 
+Please allocate this with devm_kzalloc in the probe function instead.
 
-Daniel.
+> +
+> +
+> +static inline struct sp_reset_data *
+> +to_sp_reset_data(struct reset_controller_dev *rcdev)
+> +{
+> +	return container_of(rcdev, struct sp_reset_data, rcdev);
+> +}
+> +
+> +static int sp_reset_update(struct reset_controller_dev *rcdev,
+> +			      unsigned long id, bool assert)
+> +{
+> +	struct sp_reset_data *data = to_sp_reset_data(rcdev);
+> +	int reg_width = sizeof(u32)/2;
+> +	int bank = id / (reg_width * BITS_PER_BYTE);
+> +	int offset = id % (reg_width * BITS_PER_BYTE);
+> +	void __iomem *addr;
+> +
+> +	addr = data->membase + (bank * 4);
+> +
+> +	if (assert)
+> +		writel(BITASSERT(offset, 1), addr);
+> +	else
+> +		writel(BITASSERT(offset, 0), addr);
+
+Could be
+
+	writel(BITASSERT(offset, assert), addr);
+
+> +
+> +	return 0;
+> +}
+> +
+> +static int sp_reset_assert(struct reset_controller_dev *rcdev,
+> +			      unsigned long id)
+> +{
+> +	return sp_reset_update(rcdev, id, true);
+> +}
+> +
+> +
+> +static int sp_reset_deassert(struct reset_controller_dev *rcdev,
+> +				unsigned long id)
+> +{
+> +	return sp_reset_update(rcdev, id, false);
+> +}
+> +
+> +static int sp_reset_status(struct reset_controller_dev *rcdev,
+> +			      unsigned long id)
+> +{
+> +	struct sp_reset_data *data = to_sp_reset_data(rcdev);
+> +	int reg_width = sizeof(u32)/2;
+> +	int bank = id / (reg_width * BITS_PER_BYTE);
+> +	int offset = id % (reg_width * BITS_PER_BYTE);
+> +	u32 reg;
+> +
+> +	reg = readl(data->membase + (bank * 4));
+> +
+> +	return !!(reg & BIT(offset));
+> +}
+> +
+> +static int sp_restart(struct notifier_block *this, unsigned long mode,
+> +				void *cmd)
+> +{
+> +	sp_reset_assert(&sp_reset.rcdev, RST_SYSTEM);
+> +	sp_reset_deassert(&sp_reset.rcdev, RST_SYSTEM);
+> +
+> +	return NOTIFY_DONE;
+> +}
+> +
+> +static struct notifier_block sp_restart_nb = {
+> +	.notifier_call = sp_restart,
+> +	.priority = 192,
+> +};
+> +
+> +static const struct reset_control_ops sp_reset_ops = {
+> +	.assert		= sp_reset_assert,
+> +	.deassert	= sp_reset_deassert,
+> +	.status		= sp_reset_status,
+> +};
+> +
+> +static const struct of_device_id sp_reset_dt_ids[] = {
+> +	{ .compatible = "sunplus,sp7021-reset", },
+> +	{ .compatible = "sunplus,q645-reset", },
+> +	{ /* sentinel */ },
+> +};
+> +
+> +static int sp_reset_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct sp_reset_data *data = &sp_reset;
+> +	void __iomem *membase;
+> +	struct resource *res;
+> +
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	membase = devm_ioremap(dev, res->start, resource_size(res));
+> +	if (IS_ERR(membase))
+> +		return PTR_ERR(membase);
+> +
+> +	data->membase = membase;
+> +	data->rcdev.owner = THIS_MODULE;
+> +	data->rcdev.nr_resets = RST_MAX;
+
+Use of_device_get_match_data() to determine the correct number of
+resets.
+
+regards
+Philipp
