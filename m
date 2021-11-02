@@ -2,138 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E4AA443885
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 23:36:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F1A6443889
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 23:36:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230076AbhKBWi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 18:38:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229736AbhKBWi4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 18:38:56 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CBC2C061203
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 15:36:21 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id r8so722694wra.7
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 15:36:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mlauy3vNd9KbBeQ/P3IhRFrTYk9NsjbV35NI/DoCFQQ=;
-        b=LhJzMSC03GD6kwFoHkcv0WlZV8/LiMo3e6aUlmAyFmOZ03I0K/GJ7F40Hc1b+LDbys
-         tYwF6MfkMGi4kGmcYAQrVZ0wm6bqC4JEDNJsKiWBlgYmK/SLRCAp/vSUag2Lgc2mUTbK
-         FwoLgRPulKd9iQCBHERoM+IfA8GraokFzdvOU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mlauy3vNd9KbBeQ/P3IhRFrTYk9NsjbV35NI/DoCFQQ=;
-        b=PUE+zgxxPPlefhYm0MXBBFvJCCZNR1zfr8D6WhcbuhTrlln0Jb+2vLof5RW/bKIhuf
-         xidLq5jYZw8Hk2cI9nCGlodcw47FmLwSxYRi7arnBSzQqQDry3mbuwIjwiuFiXdDB5Fp
-         e5rIiXv1EUOtZlxuTaiyWEMk3GGZLakB+qW9csO4yD0vWB9HWLtXJi3gf7xKuvjf3wMQ
-         mcpnImkfiVYE8/Wx9IKKitUbogDcLQYjKmxhK0fhWQ5m6AeQmyNZS5Ja0KS3aQDRglnS
-         9DnDkl735OxwcxECqjVJhLEf8XX5wifCEN2cQ2Iej0BnorPjiEdMmruZJOIbCD8qxKoI
-         Vh7A==
-X-Gm-Message-State: AOAM531YmmalYSy5/cbuN1crOFv6Rw+t7QccAGOO+paLRX4hROd5mSIx
-        B4YKHtnN5cOuLoGe2FacP5Hv6W1jjT3ayx+GCcJZQg==
-X-Google-Smtp-Source: ABdhPJySLhbC5WzDuB67uzrOZ9QpcyPxMj+1yYafVt6ksGWZ/DZ7G9DR4tON+WdfbjWdcBceE+hKBMwT/h9K3GGxKII=
-X-Received: by 2002:a5d:59ab:: with SMTP id p11mr5870456wrr.340.1635892579719;
- Tue, 02 Nov 2021 15:36:19 -0700 (PDT)
+        id S231201AbhKBWjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 18:39:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48932 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230293AbhKBWjL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 18:39:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E7AB61076;
+        Tue,  2 Nov 2021 22:36:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635892595;
+        bh=XcL/yji/ofphJmOG1nSJU5SP1NHCrSvT6FBl/FyJizk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=luBl2mwKcdMB8SS422yo7JWvrSuPaOCqUbSO3kqsNO10QaA89Sse5pZZqpmekhBpm
+         xQDADDKd8jjyoZguACL0bLBe+GGxDB9yRQu3fT0Yc8PIT6HjlJU7adIHiUoRoc3MRo
+         hDV08CejoshXzL6dpuesv+SudS+bvBuvTkatOn4jWDMcV5/oI1XuDaB3RYUa8nl3rI
+         Cwm5k9+PDZ1KlUKKHgZhCp1WmhXIhnGIHKnR3hSUFWSM0Ij9rjynnpy66upSXUBS39
+         v05gDVaKfPzowtYo6lgQDGuasiv1WFsGCCGp/qcxO6JofzGhC2sc+AqhuFtv8CVMgu
+         lNYJwByLoKn0A==
+Date:   Tue, 2 Nov 2021 15:36:35 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH 08/21] iomap: Add iomap_invalidate_folio
+Message-ID: <20211102223635.GJ24307@magnolia>
+References: <20211101203929.954622-1-willy@infradead.org>
+ <20211101203929.954622-9-willy@infradead.org>
 MIME-Version: 1.0
-References: <20211029200319.23475-1-jim2101024@gmail.com> <20211029200319.23475-8-jim2101024@gmail.com>
- <YYFgmxMCnKtTlaqL@robh.at.kernel.org>
-In-Reply-To: <YYFgmxMCnKtTlaqL@robh.at.kernel.org>
-From:   Jim Quinlan <james.quinlan@broadcom.com>
-Date:   Tue, 2 Nov 2021 18:36:08 -0400
-Message-ID: <CA+-6iNwdLt96U26eW-GDJFD3XB9unKX-ucF3gZ754ux78yMRCw@mail.gmail.com>
-Subject: Re: [PATCH v6 7/9] PCI: brcmstb: Add control of subdevice voltage regulators
-To:     Rob Herring <robh@kernel.org>
-Cc:     Jim Quinlan <jim2101024@gmail.com>, linux-pci@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211101203929.954622-9-willy@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 2, 2021 at 12:00 PM Rob Herring <robh@kernel.org> wrote:
->
-> On Fri, Oct 29, 2021 at 04:03:15PM -0400, Jim Quinlan wrote:
-> > This Broadcom STB PCIe RC driver has one port and connects directly to one
-> > device, be it a switch or an endpoint.  We want to be able to turn on/off
-> > any regulators for that device.  Control of regulators is needed because of
-> > the chicken-and-egg situation: although the regulator is "owned" by the
-> > device and would be best handled by its driver, the device cannot be
-> > discovered and probed unless its regulator is already turned on.
->
-> I think this can be done in a much more simple way that avoids the
-> prior patches using the pci_ops.add_bus() (and remove_bus()) hook.
-> add_bus is called before the core scans a child bus. In the handler, you
-> just need to get the bridge device, then the bridge DT node, and then
-> get the regulators and enable.
-Hi Rob,
-In reply to my bindings commit you wanted to put the "xxx-supply"
-property(s) under the
-bridge node rather than under the pci-ep node.   This not only makes
-sense but also removes
-the burden of prematurely creating the struct device *ptr as the
-bridge device has
-already been created.
+On Mon, Nov 01, 2021 at 08:39:16PM +0000, Matthew Wilcox (Oracle) wrote:
+> Keep iomap_invalidatepage around as a wrapper for use in address_space
+> operations.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-However, there is still an issue:  if  the pcie-link is not
-successful, we want the bus enumeration
-to stop and not read the vendor/dev id of the EP.  Our controller has
-the disadvantage of causing
-an abort when accessing config space when the link is not established.  Other
-controllers kindly return 0xffffffff as the data.
+Looks ok,
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 
-Doing something like this gets around the issue:
+--D
 
-static struct pci_bus *pci_alloc_child_bus(...)
-{
-        /* ... */
-add_dev:
-        /* ... */
-        if (child->ops->add_bus) {
-                ret = child->ops->add_bus(child);
-+               if (ret == -ENOLINK)
-+                       return NULL;
-                if (WARN_ON(ret < 0))
-                        dev_err(&child->dev, "failed to add bus: %d\n", ret);
-        }
-
-Is this acceptable?  Other suggestions?
-
-
->
-> Given we're talking about standard properties in a standard (bridge)
-> node, I think the implementation for .add_bus should be common
-> (drivers/pci/of.c). It doesn't scale to be doing this in every host
-> bridge driver.
-Are you saying that the bridge DT node  should have a property such as
-"get-and-turn-on-subdev-regulators;" which would invoke what I'm now
-calling brcm_pcie_add_bus()?   The problem with this is that our host
-bridge needs to be the agent freeing the regulators.  IIRC correctly, when
-the regulators were freed by the EP device -- or now the bridge in this case
--- we got panics when doing unbinds.  I will go back and get the details
-on this, but I'm wondering if our controller has arcane but necessary
-requirements
-outside of what a general mechanism could provide.
-
-Thanks,
-Jim
-
->
-> Rob
+> ---
+>  fs/iomap/buffered-io.c | 20 ++++++++++++--------
+>  include/linux/iomap.h  |  1 +
+>  2 files changed, 13 insertions(+), 8 deletions(-)
+> 
+> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+> index a6b64a1ad468..e9a60520e769 100644
+> --- a/fs/iomap/buffered-io.c
+> +++ b/fs/iomap/buffered-io.c
+> @@ -468,23 +468,27 @@ iomap_releasepage(struct page *page, gfp_t gfp_mask)
+>  }
+>  EXPORT_SYMBOL_GPL(iomap_releasepage);
+>  
+> -void
+> -iomap_invalidatepage(struct page *page, unsigned int offset, unsigned int len)
+> +void iomap_invalidate_folio(struct folio *folio, size_t offset, size_t len)
+>  {
+> -	struct folio *folio = page_folio(page);
+> -
+> -	trace_iomap_invalidatepage(page->mapping->host, offset, len);
+> +	trace_iomap_invalidatepage(folio->mapping->host, offset, len);
+>  
+>  	/*
+>  	 * If we're invalidating the entire page, clear the dirty state from it
+>  	 * and release it to avoid unnecessary buildup of the LRU.
+>  	 */
+> -	if (offset == 0 && len == PAGE_SIZE) {
+> -		WARN_ON_ONCE(PageWriteback(page));
+> -		cancel_dirty_page(page);
+> +	if (offset == 0 && len == folio_size(folio)) {
+> +		WARN_ON_ONCE(folio_test_writeback(folio));
+> +		folio_cancel_dirty(folio);
+>  		iomap_page_release(folio);
+>  	}
+>  }
+> +EXPORT_SYMBOL_GPL(iomap_invalidate_folio);
+> +
+> +void iomap_invalidatepage(struct page *page, unsigned int offset,
+> +		unsigned int len)
+> +{
+> +	iomap_invalidate_folio(page_folio(page), offset, len);
+> +}
+>  EXPORT_SYMBOL_GPL(iomap_invalidatepage);
+>  
+>  #ifdef CONFIG_MIGRATION
+> diff --git a/include/linux/iomap.h b/include/linux/iomap.h
+> index 63f4ea4dac9b..91de58ca09fc 100644
+> --- a/include/linux/iomap.h
+> +++ b/include/linux/iomap.h
+> @@ -225,6 +225,7 @@ void iomap_readahead(struct readahead_control *, const struct iomap_ops *ops);
+>  int iomap_is_partially_uptodate(struct page *page, unsigned long from,
+>  		unsigned long count);
+>  int iomap_releasepage(struct page *page, gfp_t gfp_mask);
+> +void iomap_invalidate_folio(struct folio *folio, size_t offset, size_t len);
+>  void iomap_invalidatepage(struct page *page, unsigned int offset,
+>  		unsigned int len);
+>  #ifdef CONFIG_MIGRATION
+> -- 
+> 2.33.0
+> 
