@@ -2,127 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C17B4430F5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 15:57:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46EF94430F7
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 15:57:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233375AbhKBO75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 10:59:57 -0400
-Received: from mga09.intel.com ([134.134.136.24]:59707 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234555AbhKBO6c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 10:58:32 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10155"; a="231130590"
-X-IronPort-AV: E=Sophos;i="5.87,203,1631602800"; 
-   d="scan'208";a="231130590"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2021 07:55:57 -0700
-X-IronPort-AV: E=Sophos;i="5.87,203,1631602800"; 
-   d="scan'208";a="500585200"
-Received: from sohamdas-mobl.gar.corp.intel.com (HELO localhost) ([10.249.32.13])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2021 07:55:54 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Christoph Hellwig <hch@lst.de>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, intel-gfx@lists.freedesktop.org,
-        intel-gvt-dev@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 02/29] drm/i915/gvt: integrate into the main Makefile
-In-Reply-To: <20211102070601.155501-3-hch@lst.de>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20211102070601.155501-1-hch@lst.de> <20211102070601.155501-3-hch@lst.de>
-Date:   Tue, 02 Nov 2021 16:55:51 +0200
-Message-ID: <87cznid2tk.fsf@intel.com>
+        id S234397AbhKBO77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 10:59:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29189 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234784AbhKBO7N (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 10:59:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635864997;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YG2VGNtE+69cPxmqVydtAL5vxJZLZtIYVVth/K03gCo=;
+        b=XSEhU5dXP0h3cXByjFo2RLYrWRcMFJRi7FT4KBugkHi0HxNJ7g7WJFcWJ0SThp5FCMk25k
+        NS7G1jR/p9SnmhLC0Y7VLaAPdug6/aTfOVJqz1RxeKy5mRKViJaKiVlASjxzL6hUJB9G2T
+        Z53cMEGkPIVdST+x2XxaLrKBvDAmCk4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-487-0K9G4ltAMemdXrbZ-quSRA-1; Tue, 02 Nov 2021 10:56:34 -0400
+X-MC-Unique: 0K9G4ltAMemdXrbZ-quSRA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C01F810A8E07;
+        Tue,  2 Nov 2021 14:56:30 +0000 (UTC)
+Received: from T590 (ovpn-8-19.pek2.redhat.com [10.72.8.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id F3B2D60657;
+        Tue,  2 Nov 2021 14:56:19 +0000 (UTC)
+Date:   Tue, 2 Nov 2021 22:56:14 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Miroslav Benes <mbenes@suse.cz>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, tj@kernel.org,
+        gregkh@linuxfoundation.org, akpm@linux-foundation.org,
+        minchan@kernel.org, jeyu@kernel.org, shuah@kernel.org,
+        bvanassche@acm.org, dan.j.williams@intel.com, joe@perches.com,
+        tglx@linutronix.de, keescook@chromium.org, rostedt@goodmis.org,
+        linux-spdx@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        live-patching@vger.kernel.org, ming.lei@redhat.com
+Subject: Re: [PATCH v8 11/12] zram: fix crashes with cpu hotplug multistate
+Message-ID: <YYFRjpJcIaZ1AQRS@T590>
+References: <YW4uwep3BCe9Vxq8@T590>
+ <alpine.LSU.2.21.2110190820590.15009@pobox.suse.cz>
+ <YW6OptglA6UykZg/@T590>
+ <alpine.LSU.2.21.2110200835490.26817@pobox.suse.cz>
+ <YW/KEsfWJMIPnz76@T590>
+ <alpine.LSU.2.21.2110201014400.26817@pobox.suse.cz>
+ <YW/q70dLyF+YudyF@T590>
+ <YXfA0jfazCPDTEBw@alley>
+ <YXgguuAY5iEUIV0u@T590>
+ <YYFH85CmVOYIMdYh@alley>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YYFH85CmVOYIMdYh@alley>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 02 Nov 2021, Christoph Hellwig <hch@lst.de> wrote:
-> Remove the separately included Makefile and just use the relative
-> reference from the main i915 Makefile as for source files in other
-> subdirectories.
->
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+On Tue, Nov 02, 2021 at 03:15:15PM +0100, Petr Mladek wrote:
+> On Tue 2021-10-26 23:37:30, Ming Lei wrote:
+> > On Tue, Oct 26, 2021 at 10:48:18AM +0200, Petr Mladek wrote:
+> > > Below are more details about the livepatch code. I hope that it will
+> > > help you to see if zram has similar problems or not.
+> > > 
+> > > We have kobject in three structures: klp_func, klp_object, and
+> > > klp_patch, see include/linux/livepatch.h.
+> > > 
+> > > These structures have to be statically defined in the module sources
+> > > because they define what is livepatched, see
+> > > samples/livepatch/livepatch-sample.c
+> > > 
+> > > The kobject is used there to show information about the patch, patched
+> > > objects, and patched functions, in sysfs. And most importantly,
+> > > the sysfs interface can be used to disable the livepatch.
+> > > 
+> > > The problem with static structures is that the module must stay
+> > > in the memory as long as the sysfs interface exists. It can be
+> > > solved in module_exit() callback. It could wait until the sysfs
+> > > interface is destroyed.
+> > > 
+> > > kobject API does not support this scenario. The relase() callbacks
+> > 
+> > kobject_delete() is for supporting this scenario, that is why we don't
+> > need to grab module refcnt before calling show()/store() of the
+> > kobject's attributes.
+> > 
+> > kobject_delete() can be called in module_exit(), then any show()/store()
+> > will be done after kobject_delete() returns.
+> 
+> I am a bit confused. I do not see kobject_delete() anywhere in kernel
+> sources.
+> 
+> I see only kobject_del() and kobject_put(). AFAIK, they do _not_
+> guarantee that either the sysfs interface was destroyed or
+> the release callbacks were called. For example, see
+> schedule_delayed_work(&kobj->release, delay) in kobject_release().
 
-Acked-by: Jani Nikula <jani.nikula@intel.com>
+After kobject_del() returns, no one can call run into show()/store(),
+and all pending show()/store() are drained meantime. But yes, the release
+handler may still be called later, and the kobject has to be freed
+during or before module_exit().
 
-> ---
->  drivers/gpu/drm/i915/Makefile     | 29 ++++++++++++++++++++++++-----
->  drivers/gpu/drm/i915/gvt/Makefile |  9 ---------
->  drivers/gpu/drm/i915/gvt/trace.h  |  2 +-
->  3 files changed, 25 insertions(+), 15 deletions(-)
->  delete mode 100644 drivers/gpu/drm/i915/gvt/Makefile
->
-> diff --git a/drivers/gpu/drm/i915/Makefile b/drivers/gpu/drm/i915/Makefile
-> index 335ba9f43d8f7..63523032eea26 100644
-> --- a/drivers/gpu/drm/i915/Makefile
-> +++ b/drivers/gpu/drm/i915/Makefile
-> @@ -295,11 +295,30 @@ i915-$(CONFIG_DRM_I915_SELFTEST) += \
->  
->  # virtual gpu code
->  i915-y += i915_vgpu.o
-> -
-> -ifeq ($(CONFIG_DRM_I915_GVT),y)
-> -i915-y += intel_gvt.o
-> -include $(src)/gvt/Makefile
-> -endif
-> +i915-$(CONFIG_DRM_I915_GVT) += \
-> +	intel_gvt.o \
-> +	gvt/gvt.o \
-> +	gvt/aperture_gm.o \
-> +	gvt/handlers.o \
-> +	gvt/vgpu.o \
-> +	gvt/trace_points.o \
-> +	gvt/firmware.o \
-> +	gvt/interrupt.o \
-> +	gvt/gtt.o \
-> +	gvt/cfg_space.o \
-> +	gvt/opregion.o \
-> +	gvt/mmio.o \
-> +	gvt/display.o \
-> +	gvt/edid.o \
-> +	gvt/execlist.o \
-> +	gvt/scheduler.o \
-> +	gvt/sched_policy.o \
-> +	gvt/mmio_context.o \
-> +	gvt/cmd_parser.o \
-> +	gvt/debugfs.o \
-> +	gvt/fb_decoder.o \
-> +	gvt/dmabuf.o \
-> +	gvt/page_track.o
->  
->  obj-$(CONFIG_DRM_I915) += i915.o
->  obj-$(CONFIG_DRM_I915_GVT_KVMGT) += gvt/kvmgt.o
-> diff --git a/drivers/gpu/drm/i915/gvt/Makefile b/drivers/gpu/drm/i915/gvt/Makefile
-> deleted file mode 100644
-> index ea8324abc784a..0000000000000
-> --- a/drivers/gpu/drm/i915/gvt/Makefile
-> +++ /dev/null
-> @@ -1,9 +0,0 @@
-> -# SPDX-License-Identifier: GPL-2.0
-> -GVT_DIR := gvt
-> -GVT_SOURCE := gvt.o aperture_gm.o handlers.o vgpu.o trace_points.o firmware.o \
-> -	interrupt.o gtt.o cfg_space.o opregion.o mmio.o display.o edid.o \
-> -	execlist.o scheduler.o sched_policy.o mmio_context.o cmd_parser.o debugfs.o \
-> -	fb_decoder.o dmabuf.o page_track.o
-> -
-> -ccflags-y				+= -I $(srctree)/$(src) -I $(srctree)/$(src)/$(GVT_DIR)/
-> -i915-y					+= $(addprefix $(GVT_DIR)/, $(GVT_SOURCE))
-> diff --git a/drivers/gpu/drm/i915/gvt/trace.h b/drivers/gpu/drm/i915/gvt/trace.h
-> index 6d787750d279f..348f57f8301db 100644
-> --- a/drivers/gpu/drm/i915/gvt/trace.h
-> +++ b/drivers/gpu/drm/i915/gvt/trace.h
-> @@ -379,5 +379,5 @@ TRACE_EVENT(render_mmio,
->  #undef TRACE_INCLUDE_PATH
->  #define TRACE_INCLUDE_PATH .
->  #undef TRACE_INCLUDE_FILE
-> -#define TRACE_INCLUDE_FILE trace
-> +#define TRACE_INCLUDE_FILE gvt/trace
->  #include <trace/define_trace.h>
+https://lore.kernel.org/lkml/20211101112548.3364086-2-ming.lei@redhat.com/
 
--- 
-Jani Nikula, Intel Open Source Graphics Center
+> 
+> By other words, anyone could still be using either the sysfs interface
+> or the related structures after kobject_del() or kobject_put()
+> returns.
+
+No, no one can do that after kobject_del() returns.
+
+> 
+> IMHO, kobject API does not support static structures and module
+> removal.
+
+But so far klp_patch can only be defined as static instance, and it
+depends on the implementation, especially the release handler.
+
+
+Thanks,
+Ming
+
