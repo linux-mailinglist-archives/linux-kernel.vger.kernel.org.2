@@ -2,95 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7554E44348C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 18:27:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF636443493
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 18:30:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233758AbhKBR34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 13:29:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54660 "EHLO
+        id S230457AbhKBRdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 13:33:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230214AbhKBR3v (ORCPT
+        with ESMTP id S229684AbhKBRdU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 13:29:51 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E483C061714;
-        Tue,  2 Nov 2021 10:27:16 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id w1so134259edd.10;
-        Tue, 02 Nov 2021 10:27:16 -0700 (PDT)
+        Tue, 2 Nov 2021 13:33:20 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAAEDC061714
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 10:30:45 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id x66so20160049pfx.13
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 10:30:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
+        h=message-id:from:to:cc:subject:date:mime-version
          :content-transfer-encoding;
-        bh=1OdaxtB4LssE4g+n1VNEzexPIrO9OAMoPZzNOdCXvKY=;
-        b=mdU0U8go0ySDUlWCxLU1AzstBNRGwhKDX900iZOIN6UnsNA0AA/oAbCX71K7X0NfuM
-         oPPhYZwjM+8WzEqudWqL6w/uibOHtKJKzGOdod/KLm6/RajNfrxw+arQVDguduOGFIHH
-         kxYLILQOrQcCimkzUiBUlv7pYINRGLtyc4vzp+rHohqW0R6styn1Mr3uTfQjRYX1TeH7
-         XgTi5fKJCjxHhETF4DF09C8CeW3GEGaRNmF2j6LxPHr44ioS7C9STeDPKJcmvNRBsp5o
-         NbUHHTU6hxAxJqk4DC7Vkxg/JcUxxHEurtWThcNXd2J1PQvo+GzkjtteiYqZsB9NW/mc
-         xXHA==
+        bh=xS8kpc+xRiwOGSFAyUf/L9Jmpay7a8DV5EtWJms3sD0=;
+        b=gPwXVMCjxt0pnTZ2FivA+2m9i2jVVT+U5apy7WFgwvHnadXHuu/gf3bw7TrQ2V0JKC
+         YpZt/c6gNL9pbpMy7MgXyAxIlCSmYZ6z52IWeSq1pfWiblscg/lENRXV6EFChJQ6gWUX
+         eZCW0l8gLdYj7bkmjS1wYdc31xixgKk0xtDvAx7vg8Fa1kejUtocDQZRcwLAHlZYjNx4
+         dQLBwUmWeo+teCuInFqVkUwSbrjIPPrAJGaR2cjOhGCgpCCRaPHOTms3qgavq8XmssxI
+         DWENSkPSPF5LoYv9YXoFrxbgItgp7Hgoc7FHukm7OjPXr5mGdyJxuRZNeJ66Y30L5pZg
+         WNvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:message-id:from:to:cc:subject:date:mime-version
          :content-transfer-encoding;
-        bh=1OdaxtB4LssE4g+n1VNEzexPIrO9OAMoPZzNOdCXvKY=;
-        b=FxzzwmrQ7XV4Yl7QL+8Cp5Mqi0r2BVDBtjXVR5Ey656R4Yu+uY4YZxxHZ6nNwnd+rM
-         hFrO9RewazEjJA+CJtgTYNoBuxeFQzccFBwTnB3SUcDoTyxEi5izkZok4uCpyeTbAMdZ
-         ZPFi3V7EKB0N/NreVDvgmsyvvrRHYfjARD4oy316dkk8U74WbafZ6hXQ41x6i6QcwPSt
-         V9bVmTeYatSk2wGqk2tIfsJnSmYHDWwpqhz2gSdGkaw4nY+KABJL5eCY+7k5eQp9nvhc
-         a0Es0vEFa+Db4sopQgKLrf4HmbBw3eQ0erL6kb5OS++dPNlzfgXtwpVnmKjJf9dRsPhG
-         WgKg==
-X-Gm-Message-State: AOAM532a6Bl5y5Eq9Q5JZCW7NcpJ71X9WSm70pQ3e/WWhjdjE9D6Cxwf
-        rz26n1zuQeEWasmvpOGASk2+1a4reCo=
-X-Google-Smtp-Source: ABdhPJwAVmlP9bDQGX4Sjh/CtxgelisUtOodlrNzHt6mtFxJZuuUYoIBjfqq982xFydqLrvjAXTAYA==
-X-Received: by 2002:a50:cbc2:: with SMTP id l2mr24754089edi.89.1635874034854;
-        Tue, 02 Nov 2021 10:27:14 -0700 (PDT)
-Received: from md2k7s8c.fritz.box ([2a02:810d:9040:4c1f:e0b6:d0e7:64d2:f3a0])
-        by smtp.gmail.com with ESMTPSA id nd36sm8580753ejc.17.2021.11.02.10.27.14
+        bh=xS8kpc+xRiwOGSFAyUf/L9Jmpay7a8DV5EtWJms3sD0=;
+        b=iHD91xXPFUJDxoLQfd9g+4K2YUB+JFYOlviEvAcTv/y3fUFnqYwzuE8nThhD5/Jzcj
+         yYUBR5SbySG/lEldfYLpJv8IkhqPwqcqFEgOXFbWP3zmED/KOqcS1Q8NZ6rKR9fFm681
+         XP8G1bh/WIWKYkdUAfjC+VMv8r7p+JbiR8HXLPP1PwuWw6M8rGP3JTLWm2Lhxh38iyyt
+         R4GpIRYc7yyZmCxiilYdoqQsl1rJ3Nx2lsGrxM+jPWV0nphEx2DRyICiN2OI2nRvYNvi
+         WGFkJiUiLkqM2oKk+8zWIuSwlZ8ZeVQ4hi6SGj0nKTohsNbVrpKpgROz3Ibpkm338ohW
+         18Ag==
+X-Gm-Message-State: AOAM530EW2zYgYdgJROYm7gktSPpngkU0RbQHFtAIEFukC/TRZsT4Y5F
+        9UWzzLeSXKjC5Me8oi8ZKMM=
+X-Google-Smtp-Source: ABdhPJzC7uysNTuDxYYp61g6ZXzJnw2xOgZqigqzEaZ01xhIdq/fMovxeMBD8d14is29IuUeVTQQ2Q==
+X-Received: by 2002:a63:7c42:: with SMTP id l2mr28703237pgn.90.1635874245215;
+        Tue, 02 Nov 2021 10:30:45 -0700 (PDT)
+Received: from surfacebook2-fedora.. (36-233-20-55.dynamic-ip.hinet.net. [36.233.20.55])
+        by smtp.gmail.com with ESMTPSA id ng5sm3353480pjb.51.2021.11.02.10.30.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Nov 2021 10:27:14 -0700 (PDT)
-From:   Andreas Oetken <ennoerlangen@gmail.com>
-X-Google-Original-From: Andreas Oetken <andreas.oetken@siemens-energy.com>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Cc:     Andreas Oetken <ennoerlangen@gmail.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Andreas Oetken <andreas.oetken@siemens-energy.com>,
-        stable@vger.kernel.org
-Subject: [PATCH v2] drivers: mtd: Fixed breaking list in __mtd_del_partition.
-Date:   Tue,  2 Nov 2021 18:27:10 +0100
-Message-Id: <20211102172710.2933885-1-andreas.oetken@siemens-energy.com>
-X-Mailer: git-send-email 2.30.2
+        Tue, 02 Nov 2021 10:30:44 -0700 (PDT)
+Message-ID: <618175c4.1c69fb81.bff5d.9cb8@mx.google.com>
+X-Google-Original-Message-ID: <20211102173017.8890-1-Hoshinomori-Owari>
+From:   hoshinomorimorimo@gmail.com
+X-Google-Original-From: Hoshinomori-Owari
+To:     gregkh@linuxfoundation.org, fabioaiuto83@gmail.com,
+        ross.schm.dev@gmail.com
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Hoshinomori-Owari <hoshinomorimorimo@gmail.com>
+Subject: [PATCH] staging: rtl8723bs: Fix the style problem
+Date:   Wed,  3 Nov 2021 01:30:17 +0800
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Not the child partition should be removed from the partition list
-but the partition itself. Otherwise the partition list gets broken
-and any subsequent remove operations leads to a kernel panic.
+From: Hoshinomori-Owari <hoshinomorimorimo@gmail.com>
 
-Fixes: 46b5889cc2c5 ("mtd: implement proper partition handling")
-Signed-off-by: Andreas Oetken <andreas.oetken@siemens-energy.com>
-Cc: stable@vger.kernel.org
+Fix block comment at
+rtw_io.c:8:
+rtw_io.c:139:
+rtw_io.c:154:
+
+Remove not useful filename at
+rtw_io.c:9:
+
+Add a blank line after declarations
+rtw_io.c:147:
+
+Issue found by checkpatch.pl
+
+Signed-off-by: Hoshinomori-Owari <hoshinomorimorimo@gmail.com>
 ---
- drivers/mtd/mtdpart.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/staging/rtl8723bs/core/rtw_io.c | 56 +++++++++++++------------
+ 1 file changed, 29 insertions(+), 27 deletions(-)
 
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 95d47422bbf20..5725818fa199f 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -313,7 +313,7 @@ static int __mtd_del_partition(struct mtd_info *mtd)
- 	if (err)
- 		return err;
+diff --git a/drivers/staging/rtl8723bs/core/rtw_io.c b/drivers/staging/rtl8723bs/core/rtw_io.c
+index 4d3c30ec93b5..6c46c6e295d5 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_io.c
++++ b/drivers/staging/rtl8723bs/core/rtw_io.c
+@@ -4,26 +4,27 @@
+  * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
+  *
+  ******************************************************************************/
+-/*
+-
+-The purpose of rtw_io.c
+-
+-a. provides the API
+-
+-b. provides the protocol engine
+-
+-c. provides the software interface between caller and the hardware interface
+-
  
--	list_del(&child->part.node);
-+	list_del(&mtd->part.node);
- 	free_partition(mtd);
+-Compiler Flag Option:
+-
+-1. CONFIG_SDIO_HCI:
+-    a. USE_SYNC_IRP:  Only sync operations are provided.
+-    b. USE_ASYNC_IRP:Both sync/async operations are provided.
+-
+-jackson@realtek.com.tw
+-
+-*/
++/*
++ *
++ *Purpose:
++ *
++ *	a. provides the API
++ *
++ *	b. provides the protocol engine
++ *
++ *	c. provides the software interface between caller and the hardware interface
++ *
++ *
++ *Compiler Flag Option:
++ *
++ *1. CONFIG_SDIO_HCI:
++ *	a. USE_SYNC_IRP:  Only sync operations are provided.
++ *	b. USE_ASYNC_IRP:Both sync/async operations are provided.
++ *
++ *jackson@realtek.com.tw
++ *
++ */
  
- 	return 0;
+ #include <drv_types.h>
+ #include <rtw_debug.h>
+@@ -135,24 +136,25 @@ int rtw_init_io_priv(struct adapter *padapter, void (*set_intf_ops)(struct adapt
+ 	return _SUCCESS;
+ }
+ 
+-/*
+-* Increase and check if the continual_io_error of this @param dvobjprive is larger than MAX_CONTINUAL_IO_ERR
+-* @return true:
+-* @return false:
+-*/
++/**
++ * Increase and check if the continual_io_error of this @param dvobjprive is larger than MAX_CONTINUAL_IO_ERR
++ * @return true:
++ * @return false:
++ */
+ int rtw_inc_and_chk_continual_io_error(struct dvobj_priv *dvobj)
+ {
+ 	int ret = false;
+ 	int value = atomic_inc_return(&dvobj->continual_io_error);
++
+ 	if (value > MAX_CONTINUAL_IO_ERR)
+ 		ret = true;
+ 
+ 	return ret;
+ }
+ 
+-/*
+-* Set the continual_io_error of this @param dvobjprive to 0
+-*/
++/**
++ * Set the continual_io_error of this @param dvobjprive to 0
++ */
+ void rtw_reset_continual_io_error(struct dvobj_priv *dvobj)
+ {
+ 	atomic_set(&dvobj->continual_io_error, 0);
 -- 
-2.30.2
+2.31.1
 
