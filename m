@@ -2,100 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC82B4429CD
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 09:47:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54CA74429B7
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 09:42:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230140AbhKBItX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 04:49:23 -0400
-Received: from elvis.franken.de ([193.175.24.41]:55619 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229720AbhKBItW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 04:49:22 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1mhpRK-0002yN-00; Tue, 02 Nov 2021 09:46:42 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id AEE3DC27BF; Tue,  2 Nov 2021 09:42:41 +0100 (CET)
-Date:   Tue, 2 Nov 2021 09:42:41 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Cc:     Russell King <linux@armlinux.org.uk>, Andrew Lunn <andrew@lunn.ch>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI: Marvell: Update PCIe fixup
-Message-ID: <20211102084241.GA6134@alpha.franken.de>
-References: <20211101150405.14618-1-pali@kernel.org>
+        id S231189AbhKBIpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 04:45:30 -0400
+Received: from mail-vk1-f169.google.com ([209.85.221.169]:46794 "EHLO
+        mail-vk1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229770AbhKBIp3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 04:45:29 -0400
+Received: by mail-vk1-f169.google.com with SMTP id t127so9210207vke.13;
+        Tue, 02 Nov 2021 01:42:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7D60swm9PvWLJeNxTF4fmKkedNp+6Pn6fPP3l3+EUaE=;
+        b=C9dzS3VdKeXr+EFpVfNk7H74rE6dCIajMzST9bzxJ3DbYbsF+8J7NeUjP8iSSqvbyN
+         mHJjNiZPMngkbYW2ywyI50JQjEVT3VgHD7XPRVhSO6ZlGrgZk60z2EaDG84pWPLBUHjt
+         uXVu1MYNd22luly0ROXVLwOaFZqwHBBPfmL/LguT2aRSfWJl8Rt/ekPcrcMoLx5gtpJk
+         3LzzRBdnB9sFb42uQmcujTXTjqbd7L9NMi5tS8m0WeI9tLJbhdmsiAbHb3k+cDOhWoei
+         1XmJmqJd7rt95xofTjKkLxCGAXwn9FuUZy0dUJzcJqrj0meN05LsmSjrO5DSHBpJyWp2
+         lrig==
+X-Gm-Message-State: AOAM531r51jNnJriBJuhMA/sQQAOn6i06gTGnHOhZjsRYf1+y8Q3RrPj
+        WF7lkbS70OhV5Rl8fwfnoH9QYyLB0FFBZQ==
+X-Google-Smtp-Source: ABdhPJz9qwVqWg0g5s+2DGo1Kv7Zo4JA/zTNuE2Qha+TA1QclRrGrh9o/b9tVBIYaAECPmFYom2enA==
+X-Received: by 2002:a05:6122:550:: with SMTP id y16mr1430516vko.0.1635842573766;
+        Tue, 02 Nov 2021 01:42:53 -0700 (PDT)
+Received: from mail-vk1-f176.google.com (mail-vk1-f176.google.com. [209.85.221.176])
+        by smtp.gmail.com with ESMTPSA id t5sm2837956vsk.24.2021.11.02.01.42.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Nov 2021 01:42:53 -0700 (PDT)
+Received: by mail-vk1-f176.google.com with SMTP id h133so9210426vke.10;
+        Tue, 02 Nov 2021 01:42:52 -0700 (PDT)
+X-Received: by 2002:a05:6122:a05:: with SMTP id 5mr5132731vkn.15.1635842572695;
+ Tue, 02 Nov 2021 01:42:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211101150405.14618-1-pali@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <097d8602906e9db279728330c6cf2837be184704.1635338663.git.geert+renesas@glider.be>
+ <YYBdzwshhM5fmsEE@robh.at.kernel.org>
+In-Reply-To: <YYBdzwshhM5fmsEE@robh.at.kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 2 Nov 2021 09:42:41 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUvy9oVCv+3HJ_dZr6Rm4iP8FPwTETxq+j2ja_BR1=c5A@mail.gmail.com>
+Message-ID: <CAMuHMdUvy9oVCv+3HJ_dZr6Rm4iP8FPwTETxq+j2ja_BR1=c5A@mail.gmail.com>
+Subject: Re: [PATCH] bindings: media: venus: Drop bogus maxItems for power-domain-names
+To:     Rob Herring <robh@kernel.org>
+Cc:     Dikshita Agarwal <dikshita@codeaurora.org>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 01, 2021 at 04:04:05PM +0100, Pali Rohár wrote:
-> - The code relies on rc_pci_fixup being called, which only happens
->   when CONFIG_PCI_QUIRKS is enabled, so add that to Kconfig. Omitting
->   this causes a booting failure with a non-obvious cause.
-> - Update rc_pci_fixup to set the class properly, copying the
->   more modern style from other places
-> - Correct the rc_pci_fixup comment
-> 
-> This patch just re-applies commit 1dc831bf53fd ("ARM: Kirkwood: Update
-> PCI-E fixup") for all other Marvell platforms which use same buggy PCIe
-> controller.
-> [..]
+Hi Rob,
 
-> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-> index 771ca53af06d..c8d51bd20b84 100644
-> --- a/arch/mips/Kconfig
-> +++ b/arch/mips/Kconfig
-> @@ -346,6 +346,7 @@ config MIPS_COBALT
->  	select CEVT_GT641XX
->  	select DMA_NONCOHERENT
->  	select FORCE_PCI
-> +	select PCI_QUIRKS
->  	select I8253
->  	select I8259
->  	select IRQ_MIPS_CPU
+On Mon, Nov 1, 2021 at 10:36 PM Rob Herring <robh@kernel.org> wrote:
+> On Wed, Oct 27, 2021 at 02:45:30PM +0200, Geert Uytterhoeven wrote:
+> > make dt_binding_check:
+>
+> I'd say it's redundant rather than bogus.
 
-this is enabled by default, via drivers/pci/Kconfig
+I wrote "bogus", as the "redundant" ones typically give:
 
-config PCI_QUIRKS
-        default y
-        bool "Enable PCI quirk workarounds" if EXPERT
-        help
-          This enables workarounds for various PCI chipset bugs/quirks.
-          Disable this only if your target machine is unaffected by PCI
-          quirks.
+                hint: "maxItems" is not needed with an "items" list
 
-> diff --git a/arch/mips/pci/fixup-cobalt.c b/arch/mips/pci/fixup-cobalt.c
-> index 44be65c3e6bb..202f3a0bd97d 100644
-> --- a/arch/mips/pci/fixup-cobalt.c
-> +++ b/arch/mips/pci/fixup-cobalt.c
-> @@ -36,6 +36,12 @@
->  #define VIA_COBALT_BRD_ID_REG  0x94
->  #define VIA_COBALT_BRD_REG_to_ID(reg)	((unsigned char)(reg) >> 4)
->  
-> +/*
-> + * The root complex has a hardwired class of PCI_CLASS_MEMORY_OTHER, when it
-> + * is operating as a root complex this needs to be switched to
-> + * PCI_CLASS_BRIDGE_HOST or Linux will errantly try to process the BAR's on
-> + * the device. Decoding setup is handled by the orion code.
-> + */
->  static void qube_raq_galileo_early_fixup(struct pci_dev *dev)
->  {
->  	if (dev->devfn == PCI_DEVFN(0, 0) &&
+And I didn't get that here?
 
-this is not a PCIe controller, so how is this patch related ?
+> >     Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml: ignoring, error in schema: properties: power-domain-names
+> >     warning: no schema found in file: Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml
+> >
+> > Fixes: e48b839b6699c226 ("media: dt-bindings: media: venus: Add sc7280 dt schema")
+> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > ---
+> >  Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml | 1 -
+> >  1 file changed, 1 deletion(-)
+>
+> Acked-by: Rob Herring <robh@kernel.org>
 
-Thomas.
+Thanks!
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
