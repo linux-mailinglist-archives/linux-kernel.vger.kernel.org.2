@@ -2,105 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6375E442CFE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 12:43:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93F2D442D03
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 12:44:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230333AbhKBLpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 07:45:45 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:25343 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230102AbhKBLpo (ORCPT
+        id S230282AbhKBLqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 07:46:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229850AbhKBLqt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 07:45:44 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Hk7FR6KNyzbhXr;
-        Tue,  2 Nov 2021 19:38:19 +0800 (CST)
-Received: from dggpeml500024.china.huawei.com (7.185.36.10) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Tue, 2 Nov 2021 19:43:01 +0800
-Received: from [10.174.176.231] (10.174.176.231) by
- dggpeml500024.china.huawei.com (7.185.36.10) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Tue, 2 Nov 2021 19:43:01 +0800
-To:     <cl@linux.com>, <penberg@kernel.org>, <rientjes@google.com>,
-        <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>, <vbabka@suse.cz>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-CC:     <vbabka@suse.cz>, <jhubbard@nvidia.com>,
-        <songmuchun@bytedance.com>, <willy@infradead.org>,
-        <wuxu.wu@huawei.com>, Hewenliang <hewenliang4@huawei.com>
-From:   Yunfeng Ye <yeyunfeng@huawei.com>
-Subject: [PATCH v2] mm, slub: emit the "free" trace report before freeing
- memory in kmem_cache_free()
-Message-ID: <a6824ebe-a0ad-fedb-ada3-c362f9c8f363@huawei.com>
-Date:   Tue, 2 Nov 2021 19:43:00 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        Tue, 2 Nov 2021 07:46:49 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D5C0C061714;
+        Tue,  2 Nov 2021 04:44:14 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hk7ND4GbPz4xcJ;
+        Tue,  2 Nov 2021 22:44:12 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1635853453;
+        bh=LKS/UOAC5wuVUICjnTKq5vvzZND76w3GGAtk8ppE2Ek=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=L474jENH64o1ywrnnRiEGkAcurPJD5biVyMwTPsXGqlLMi/rRY0P+sIo+ovQoM6sU
+         T6j2fCMzxsORYptJQG+kUU/zzEgqQwsKYaWTVrEY8FabR8TnHqnw49k8pimkkhoqk+
+         7po3a7XbDTYqUCqyhiGtJvZV0s36Y/Bmuvr9aHD8cmBO2awg+I0NLvY60Gw1smOdB4
+         ZMLEXZM5JV+gpmODY8wyFPtvj5omFXgMfXCF2+jSvId7577XDci8BYb+VZrjJ021tu
+         g+jDHFFWapPuaJKc63wWvG0jfgRDP4MmDCvEdW1yZb9ijKsRBcXbep0LfAVb1BcXCd
+         pnpG/+HnC9UDQ==
+Date:   Tue, 2 Nov 2021 22:44:11 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Sterba <dsterba@suse.cz>
+Cc:     David Sterba <dsterba@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Qu Wenruo <wqu@suse.com>
+Subject: Re: linux-next: manual merge of the btrfs tree with Linus' tree
+Message-ID: <20211102224411.53de0883@canb.auug.org.au>
+In-Reply-To: <20211102104244.GH20319@suse.cz>
+References: <20211101105341.5fde8108@canb.auug.org.au>
+        <20211102104244.GH20319@suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.231]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500024.china.huawei.com (7.185.36.10)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; boundary="Sig_/6z2Gybn2nev/T8qy0Z8ZmgT";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After the memory is freed, it can be immediately allocated by other
-CPUs, before the "free" trace report has been emitted. This causes
-inaccurate traces.
+--Sig_/6z2Gybn2nev/T8qy0Z8ZmgT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-For example, if the following sequence of events occurs:
+Hi David,
 
-    CPU 0                 CPU 1
+On Tue, 2 Nov 2021 11:42:44 +0100 David Sterba <dsterba@suse.cz> wrote:
+>
+> Thanks, it's a bit different that I did as a proposed conflict
+> resulution and Linus resolved it in a yet another way. I'll refresh my
+> for-next branch today to minimize the conflict surface.
 
-  (1) alloc xxxxxx
-  (2) free  xxxxxx
-                         (3) alloc xxxxxx
-                         (4) free  xxxxxx
+Thanks.  I really could only try to pattern match my resolution.
 
-Then they will be inaccurately reported via tracing, so that they appear
-to have happened in this order:
+--=20
+Cheers,
+Stephen Rothwell
 
-    CPU 0                 CPU 1
+--Sig_/6z2Gybn2nev/T8qy0Z8ZmgT
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-  (1) alloc xxxxxx
-                         (2) alloc xxxxxx
-  (3) free  xxxxxx
-                         (4) free  xxxxxx
+-----BEGIN PGP SIGNATURE-----
 
-This makes it look like CPU 1 somehow managed to allocate mmemory that
-CPU 0 still had allocated for itself.
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGBJIsACgkQAVBC80lX
+0GyMswf/eu3uQwFCnid1BcEt6FEAzmH/zYOdvwBru52lZIb2h31MomMCX11rMkjE
+npd/zulz4ufuet9AKiyD1gzrX0pkiuVqejHEJ3ASljDMQ3cnIzX1U9LNPLk/2iZ5
+nDDhi7IgzklhTy4dmWLVfY+Q9yZP9zSQ7TY2KGIbW1Uz6E1x79lWnICRvmOzv1Ea
+0MvwKgD86cFjJUrKdpzSxJhHJT0vAfjEmZbYmisq5uECFg01U0fxIGvsYPT7hlQg
+yIUNLaYWq7UxtD5EOy/LtH+kRlbogagaxJkTdCfboPyqfatMNko8w8lS8wimyazl
+RuwHrcGYTL+YwdbclCd7LkWrxGH0uw==
+=oNqd
+-----END PGP SIGNATURE-----
 
-In order to avoid this, emit the "free xxxxxx" tracing report just
-before the actual call to free the memory, instead of just after it.
-
-Signed-off-by: Yunfeng Ye <yeyunfeng@huawei.com>
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
----
-v1 -> v2:
- - Modify the description
- - Add "Reviewed-by"
-
- mm/slub.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/mm/slub.c b/mm/slub.c
-index 432145d7b4ec..427e62034c3f 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -3526,8 +3526,8 @@ void kmem_cache_free(struct kmem_cache *s, void *x)
- 	s = cache_from_obj(s, x);
- 	if (!s)
- 		return;
--	slab_free(s, virt_to_head_page(x), x, NULL, 1, _RET_IP_);
- 	trace_kmem_cache_free(_RET_IP_, x, s->name);
-+	slab_free(s, virt_to_head_page(x), x, NULL, 1, _RET_IP_);
- }
- EXPORT_SYMBOL(kmem_cache_free);
-
--- 
-2.27.0
+--Sig_/6z2Gybn2nev/T8qy0Z8ZmgT--
