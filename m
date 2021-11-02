@@ -2,74 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A52944315C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 16:14:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AF07443160
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 16:15:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234262AbhKBPR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 11:17:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52344 "EHLO
+        id S234295AbhKBPSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 11:18:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230175AbhKBPRZ (ORCPT
+        with ESMTP id S234185AbhKBPS2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 11:17:25 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BD1AC061714;
-        Tue,  2 Nov 2021 08:14:50 -0700 (PDT)
+        Tue, 2 Nov 2021 11:18:28 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E05A3C061714;
+        Tue,  2 Nov 2021 08:15:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=DdGSXX/q8kDFS1dWnx7V8YbNbR2QqrGu8E1YFZRm2l4=; b=zAtDFooFIgpaZsaMrWva8wehQj
-        MWJAFhRBNzr90tRNyy+lNsfvzx/7ZdYvkz2M5pGE7CKtWWUeyieSa551xS3MQHPuVtqCVxeQZ0ANE
-        VOKsZtCstE9Y4fpH/iSaFG+/X+kZrhg2InCVXYyYzUSKP7rwNsuy51FSrESZZF1MwaUgEuA1ZzOgz
-        vf64A3EnvIGggJU1gG9nUtFnjel7fPKbiyh8jJqvdfpETX9B84qiKqSAJKcdQiTWhJRB1A8d3A4b0
-        TtP4sqmcaTnSu0WFMFjA6xUUDVobdTARFDyBcumQgYxj4oHPMDqU0CSubcgtVCe366t5MERkhs7eC
-        Tvms4K/g==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mhvUu-0026LG-4C; Tue, 02 Nov 2021 15:14:48 +0000
-Subject: Re: linux-next: Tree for Nov 2 (drivers/platform/x86/amd-pmc.o)
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org,
-        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
-References: <20211102191553.7467166d@canb.auug.org.au>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <caa259b7-0560-647d-80d0-6dd25a6f09d2@infradead.org>
-Date:   Tue, 2 Nov 2021 08:14:46 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Lji0Q0mKscbCR4s6xv/OULJVtCJGnkPpvCozvtfPKyM=; b=rQyjFmdABWfQuxVIFtBoZm6409
+        f7Q8mBnnIbnhARKu8AfsBA+4oU06whRCygb0Kmatd7/iZv1bYZsEWfsGsixFCGVYvb84ZDTeWPrCp
+        Q6jCl/jLsDBIJ0mcDOI6pJvQ8RlkyBRHWj8FjpOu/YcCrGs13flAN4Igvu4smCRzFdUkiQYzuSUb1
+        6es1pUMYkJOvoNjyCsH0ehnNGvmn8bAy43xYzwsGy3VH+5/D/uiBNNq0DomJQKUaKqwYD21X2okrq
+        VEuxt2Gfwz+P27cZgCnyOIvyi6YhiZE/m01nwh44rhuizmTlrOLtuZ0qOfiu//1K+/L7/4sth9g6M
+        5L7zz5Wg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mhvVb-00DluO-H2; Tue, 02 Nov 2021 15:15:31 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 989D1300366;
+        Tue,  2 Nov 2021 16:15:30 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7D7AA2D5FE2D6; Tue,  2 Nov 2021 16:15:30 +0100 (CET)
+Date:   Tue, 2 Nov 2021 16:15:30 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Mark Rutland <mark.rutland@arm.com>, X86 ML <x86@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-hardening@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev, joao@overdrivepizza.com
+Subject: Re: [PATCH] static_call,x86: Robustify trampoline patching
+Message-ID: <YYFWEnBb/UaZKGzz@hirez.programming.kicks-ass.net>
+References: <CAMj1kXEvemVOWf4M_0vsduN_kiCsGVmM92cE7KPMoNKViKp=RQ@mail.gmail.com>
+ <20211031163920.GV174703@worktop.programming.kicks-ass.net>
+ <CAMj1kXHk5vbrT49yRCivX3phrEkN6Xbb+g8WEmavL_d1iE0OxQ@mail.gmail.com>
+ <YX74Ch9/DtvYxzh/@hirez.programming.kicks-ass.net>
+ <CAMj1kXG+MuGaG3BHk8pnE1MKVmRf5E+nRNoFMHxOA1y84eGikg@mail.gmail.com>
+ <YX8AQJqyB+H3PF1d@hirez.programming.kicks-ass.net>
+ <CAMj1kXF3n-oQ1WP8=asb60K6UjSYOtz5RVhrcoCoNq3v7mZdQg@mail.gmail.com>
+ <20211101090155.GW174703@worktop.programming.kicks-ass.net>
+ <CAMj1kXGhRmdM3om289Q2-s1Pzfob3D2iSDMorzggfhSk1oj53A@mail.gmail.com>
+ <YYE1yPClPMHvyvIt@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <20211102191553.7467166d@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YYE1yPClPMHvyvIt@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/2/21 1:15 AM, Stephen Rothwell wrote:
-> Hi all,
+On Tue, Nov 02, 2021 at 01:57:44PM +0100, Peter Zijlstra wrote:
+
+> So how insane is something like this, have each function:
 > 
-> Please do not add any v5.17 related material to your linux-next included
-> trees until the merge window has closed.
+> foo.cfi:
+> 	endbr64
+> 	xorl $0xdeadbeef, %r10d
+> 	jz foo
+> 	ud2
+> 	nop	# make it 16 bytes
+> foo:
+> 	# actual function text goes here
 > 
-> Changes since 20211101:
+> 
+> And for each hash have two thunks:
+> 
+> 
+> 	# arg: r11
+> 	# clobbers: r10, r11
+> __x86_indirect_cfi_deadbeef:
+> 	movl -9(%r11), %r10		# immediate in foo.cfi
+> 	xorl $0xdeadbeef, %r10		# our immediate
+> 	jz 1f
+> 	ud2
+> 1:	ALTERNATIVE_2	"jmp *%r11",
+> 			"jmp __x86_indirect_thunk_r11", X86_FEATURE_RETPOLINE
+> 			"lfence; jmp *%r11", X86_FEATURE_RETPOLINE_AMD
+> 
+> 
+> 
+> 	# arg: r11
+> 	# clobbers: r10, r11
+> __x86_indirect_ibt_deadbeef:
+> 	movl $0xdeadbeef, %r10
+> 	subq $0x10, %r11
+> 	ALTERNATIVE "", "lfence", X86_FEATURE_RETPOLINE
+> 	jmp *%r11
 > 
 
+These two thunks could of course be one big alternative.
 
-on i386:
+> And have the actual indirect callsite look like:
+> 
+> 	# r11 - &foo
+> 	ALTERNATIVE_2	"cs call __x86_indirect_thunk_r11",
+> 			"cs call __x86_indirect_cfi_deadbeef", X86_FEATURE_CFI
+> 			"cs call __x86_indirect_ibt_deadbeef", X86_FEATURE_IBT
 
-ld: drivers/platform/x86/amd-pmc.o: in function `amd_pmc_suspend':
-amd-pmc.c:(.text+0x5db): undefined reference to `rtc_class_open'
-ld: amd-pmc.c:(.text+0x5ea): undefined reference to `rtc_read_alarm'
-ld: amd-pmc.c:(.text+0x604): undefined reference to `rtc_read_time'
-ld: amd-pmc.c:(.text+0x660): undefined reference to `rtc_alarm_irq_enable'
+Also simplifying this.
 
-
-Also "depends on RTC_CLASS" ?
-
-
--- 
-~Randy
+> Although if the compiler were to emit:
+> 
+> 	cs call __x86_indirect_cfi_deadbeef
+> 
+> we could probaly fix it up from there.
+> 
+> 
+> Then we can at runtime decide between:
+> 
+>   {!cfi, cfi, ibt} x {!retpoline, retpoline, retpoline-amd}
+> 
