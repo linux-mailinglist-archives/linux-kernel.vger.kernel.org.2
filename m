@@ -2,151 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 235CD4439A3
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 00:26:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B123F44399E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 00:25:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231230AbhKBX2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 19:28:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52654 "EHLO
+        id S230419AbhKBX2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 19:28:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229747AbhKBX2n (ORCPT
+        with ESMTP id S229747AbhKBX2b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 19:28:43 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6253C061714;
-        Tue,  2 Nov 2021 16:26:07 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id s3so2031284ybs.9;
-        Tue, 02 Nov 2021 16:26:07 -0700 (PDT)
+        Tue, 2 Nov 2021 19:28:31 -0400
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9964C061714;
+        Tue,  2 Nov 2021 16:25:55 -0700 (PDT)
+Received: by mail-qv1-xf36.google.com with SMTP id s9so671337qvk.12;
+        Tue, 02 Nov 2021 16:25:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=Cu6J0IQ4SS7piVDY+POK17T7s5SlbfDSNogv9COZfaU=;
-        b=YO06sruHwC5tUgAXNeHgGeaZaGnp92/QWUrvCSGUnpDqr9ZWplO8rNzvu1cCyqL5hz
-         BoPmf49zAjvhKafF0J0rtslVp8loGQ3yofsK64n4oY5rJE8uIio7xO6PLSqsH8dw6yWn
-         Czy6abIv7AOxA43e7APwiuwbsp+Y+jbFOVSo4C1pMj+cZQHZDGpzDrhemxOg1PkDfbbf
-         3jBH5zbW9IRkrNXSDWT1nODkOmgK+Y5cPZT5RC5aWhYv+H/QkkNYDGAT5252O4CKn9M0
-         moCr20unk6aa0cH8Gji2JBSnk0028qZ8Se1BNgtY2fsUt/g3+doQbOJCBVZgxK9NazYX
-         o1SQ==
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=1Q2vdfG7RGBNovRi6ZQgZ1wF88cREbVfT7Wm+Vm56C0=;
+        b=nin7+qKSHkzYWEGvEdvgnH3/O8EKsM31mjLCTIVDC0RU6Gjmc6FDyPc3T7eF1RLPbV
+         q+so6Yb1Mj9jH6UXA2ptlzJYWBOKXBKRIrWI6pfZntqMT5T8QuT7O6mLm5RZqOThkg8j
+         VfijQqx9EXqMw/1Lt/mInH5GPH3krcyc3y8Xl/JPvvxIZzizcIU8bUJUjFq3RzlipP7B
+         QKzywxYCjyBUh0Bqv/3+7N6sbK+brvEPio3NBypN15XXjUPuKu92W7ydx+jERRd1+w+Y
+         4bmPiTDHiXBJr8+sl6WQ3KzH+8mU+04ZEHriY+Drn+c4+lfz5PorTr4Kb6P+mM5+LlQK
+         +tfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=Cu6J0IQ4SS7piVDY+POK17T7s5SlbfDSNogv9COZfaU=;
-        b=TSfGacy6M4huqeWQf5LfrCsxd0M3/7m9p9m3MjoLRKFcFfZZw2LNB7bZhDKR8Cd9an
-         NTZOJKoJXEzkeO4ov/TYtvsLXI70T9rLAUhhLulJSFjb5yynPaA6TeORITjwmhLi80/J
-         Wxij77i8NF1MFeQlDoBNi57X7FboeAIgszUc8bxP6eMcivlkW2RuDPLWWTer6R7bND32
-         0W1bNwoSpUPJNytGplKFPw827OUi14Gwk1eWWB79stukdJEUJu94lx6DmBeqEvdqIDqf
-         bnwTQKyOFAoPYJuQVJn4oG9h42WZZ9Uud1HyeyzJ8bZmBhmjBZrzg7GEu5eA+PXY+C8Q
-         eiIg==
-X-Gm-Message-State: AOAM532WOd2yfVUHQAuZk7RZnRK3OqG/TM0ImJo8DKSImzB45NVkf7P3
-        rkeIPY385mV9QUU57d+zZSs9k5Ghb45yyBPapAk=
-X-Google-Smtp-Source: ABdhPJwedsYZLDHlJQjqewFfB4TtfbiChus+iG3ErkENprCWnTpybff4ZfVlqb49nzVBliXr45KvILkjXpx7uOdGgvk=
-X-Received: by 2002:a25:f502:: with SMTP id a2mr42181223ybe.254.1635895567114;
- Tue, 02 Nov 2021 16:26:07 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=1Q2vdfG7RGBNovRi6ZQgZ1wF88cREbVfT7Wm+Vm56C0=;
+        b=o0CopbaikGRGR2kfGFzZp0xRvyqco0jf0iAY+NZGVYX+SGxyTFyLaKdnzxWF9AVyrl
+         dTduxkXkG5SO7yVaUOsBYDWVqfcFfO0TJW22A3OrRjbgPS52HlY/XXkZL6wGgWgRQNKb
+         NGxmgcwP6F6/pMreKtHhyrnCpURW9KXx1/MXQRZYKN3rqeAyBFzQ6Z4i5JNdXlJk7MWu
+         A/04ku9Xi14LQNOKrVY7KXzI+AZa71cy4vLg175AeWHjaLow4AOZwS/RlyVfYKXfWxgf
+         pE2mbZGH/A8Gs8RgpONyQCBNbI1lh1/bhRP5JNGxoLSkwLWzjVYmiISyymJvgFzQEaZU
+         Ywug==
+X-Gm-Message-State: AOAM532vwmg5c3DWOnsZiwqVUSp4NB0SSNj0y4DBa/GdfO3uYfy4hsfy
+        35PMz0q1oeWxs493JlRuYno=
+X-Google-Smtp-Source: ABdhPJy433blIlKuyCcnmKWrFmRgcmIIJ8Ghs12aXE0aeRJk94WZUPEN2SxC+eIuy2D2cCyxLBwFRA==
+X-Received: by 2002:ac8:3d49:: with SMTP id u9mr42492742qtf.264.1635895554931;
+        Tue, 02 Nov 2021 16:25:54 -0700 (PDT)
+Received: from [10.4.10.38] (146-115-144-188.s4282.c3-0.nwt-cbr1.sbo-nwt.ma.cable.rcncustomer.com. [146.115.144.188])
+        by smtp.gmail.com with ESMTPSA id k16sm295890qkj.70.2021.11.02.16.25.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Nov 2021 16:25:54 -0700 (PDT)
+Message-ID: <c1610093-95ae-68d3-57ae-93b1bc9715d7@gmail.com>
+Date:   Tue, 2 Nov 2021 19:25:52 -0400
 MIME-Version: 1.0
-References: <20211025205631.21151-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20211025205631.21151-8-prabhakar.mahadev-lad.rj@bp.renesas.com> <YYElefbpP4pwfmUl@shikoro>
-In-Reply-To: <YYElefbpP4pwfmUl@shikoro>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Tue, 2 Nov 2021 23:25:40 +0000
-Message-ID: <CA+V-a8uJxeSr=uoF14gccuSLG7WRqRk8X8uD9UDoxKPGM8hGgQ@mail.gmail.com>
-Subject: Re: [PATCH v2 7/7] memory: renesas-rpc-if: Add support for RZ/G2L
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH v2 11/13] mmc: sdhci-esdhc-imx: Add sdhc support for
+ i.MXRT series
+Content-Language: en-US
+To:     Fabio Estevam <festevam@gmail.com>
+Cc:     NXP Linux Team <linux-imx@nxp.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Mark Brown <broonie@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Stefan Agner <stefan@agner.ch>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        soc@kernel.org, Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Abel Vesa <abel.vesa@nxp.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Giulio Benetti <giulio.benetti@benettiengineering.com>,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+        linux-clk <linux-clk@vger.kernel.org>,
         "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        linux-mtd@lists.infradead.org,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-serial@vger.kernel.org
+References: <20211102225701.98944-1-Mr.Bossman075@gmail.com>
+ <20211102225701.98944-12-Mr.Bossman075@gmail.com>
+ <CAOMZO5AxMXxDkNDqGJDhtepqSUxGRCWO+L=c67O==4fx66M7XQ@mail.gmail.com>
+From:   Jesse Taube <mr.bossman075@gmail.com>
+In-Reply-To: <CAOMZO5AxMXxDkNDqGJDhtepqSUxGRCWO+L=c67O==4fx66M7XQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wolfram,
 
-Thank you for the review.
 
-On Tue, Nov 2, 2021 at 11:48 AM Wolfram Sang
-<wsa+renesas@sang-engineering.com> wrote:
->
-> Hi Prabhakar,
->
-> > +#define RPCIF_PHYADD         0x0070  /* R/W available on R-Car E3/D3/V3M and RZ/G2{E,L} */
-> > +#define RPCIF_PHYWR          0x0074  /* R/W available on R-Car E3/D3/V3M and RZ/G2{E,L} */
->
-> Nice detailed research, thanks! Minor nit: Keep the sorting
-> alphabetical: D3, E3, V3M.
->
-> > +static void rpcif_rzg2l_timing_adjust_sdr(struct rpcif *rpc)
-> > +{
-> > +     u32 data;
-> > +
-> > +     regmap_write(rpc->regmap, RPCIF_PHYWR, 0xa5390000);
-> > +     regmap_write(rpc->regmap, RPCIF_PHYADD, 0x80000000);
-> > +     regmap_write(rpc->regmap, RPCIF_PHYWR, 0x00008080);
-> > +     regmap_write(rpc->regmap, RPCIF_PHYADD, 0x80000022);
-> > +     regmap_write(rpc->regmap, RPCIF_PHYWR, 0x00008080);
-> > +     regmap_write(rpc->regmap, RPCIF_PHYADD, 0x80000024);
-> > +
-> > +     regmap_read(rpc->regmap, RPCIF_PHYCNT, &data);
-> > +     regmap_write(rpc->regmap, RPCIF_PHYCNT, data | RPCIF_PHYCNT_CKSEL(3));
-> > +     regmap_write(rpc->regmap, RPCIF_PHYWR, 0x00000030);
-> > +     regmap_write(rpc->regmap, RPCIF_PHYADD, 0x80000032);
-> > +}
->
-> Still magic values here. Don't you have them explained in your Gen3
-> documentation? It is tables 62.16 and 62.17 in my versions.
->
-Oops I missed that, does the below look good?
-
-#define RPCIF_PHYADD_ADD_MD 0x00
-#define RPCIF_PHYADD_ADD_RDLSEL 0x22
-#define RPCIF_PHYADD_ADD_FDLSEL 0x24
-#define RPCIF_PHYADD_ADD_RDLMON 0x26
-#define RPCIF_PHYADD_ADD_FDLMON 0x28
-
-#define RPCIF_PHYADD_ACCEN BIT(31)
-#define RPCIF_PHYADD_RW BIT(30)
-#define RPCIF_PHYADD_ADD(v) (v & 0x3f)
-
-#define RPCIF_MD_PHYREGEN_VAL 0xa539
-#define RPCIF_MD_PHYREGEN(v) ((v & 0xffff) << 16)
-
-#define RPCIF_RDLSEL_QSPI0DLTAPSEL(v) (v & 0x1f)
-#define RPCIF_RDLSEL_QSPI0DLSETEN(v) ((v & 0x1) << 7)
-#define RPCIF_RDLSEL_QSPI1DLTAPSEL(v) ((v & 0x1f) << 8)
-#define RPCIF_RDLSEL_QSPI1DLSETEN(v) ((v & 0x1) << 15)
-
-#define RPCIF_FDLSEL_QSPI0DLTAPSEL(v) (v & 0x1f)
-#define RPCIF_FDLSEL_QSPI0DLSETEN(v) ((v & 0x1) << 7)
-#define RPCIF_FDLSEL_QSPI1DLTAPSEL(v) ((v & 0x1f) << 8)
-#define RPCIF_FDLSEL_QSPI1DLSETEN(v) ((v & 0x1) << 15)
-
-> +     regmap_write(rpc->regmap, RPCIF_PHYWR, 0x00000030);
-> +     regmap_write(rpc->regmap, RPCIF_PHYADD, 0x80000032);
->
-For the above do you have any suggestions? As I couldn't find any
-details about it or shall I just go with magic numbers for now?
-
-> Other than these, looks good.
->
-thanks, once we agree upon above I shall re-spin v3.
-
-Cheers,
-Prabhakar
-
-> Thanks,
->
->    Wolfram
+On 11/2/21 19:17, Fabio Estevam wrote:
+> On Tue, Nov 2, 2021 at 7:57 PM Jesse Taube <mr.bossman075@gmail.com> wrote:
+> 
+>>   static struct esdhc_soc_data usdhc_imx8qxp_data = {
+>>          .flags = ESDHC_FLAG_USDHC | ESDHC_FLAG_STD_TUNING
+>> @@ -357,6 +363,7 @@ static const struct of_device_id imx_esdhc_dt_ids[] = {
+>>          { .compatible = "fsl,imx7ulp-usdhc", .data = &usdhc_imx7ulp_data, },
+>>          { .compatible = "fsl,imx8qxp-usdhc", .data = &usdhc_imx8qxp_data, },
+>>          { .compatible = "fsl,imx8mm-usdhc", .data = &usdhc_imx8mm_data, },
+>> +       { .compatible = "fsl,imxrt-usdhc", .data = &usdhc_imxrt_data, },
+> 
+> I thought Rob suggested to use the SoC name, so this would be:
+> 
+Uh i think that may have been for the UART.
+> { .compatible = "fsl,imxrt1050-usdhc", .data = &usdhc_imxrt1050_data, },
+> 
+> The same applies to the other bindings in the series.
+> 
+> This way it would be possible to differentiate between future
+> supported i.MX RT devices.
+> 
+This makes sense will do in V3.
