@@ -2,230 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B15FA442E39
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 13:33:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE089442E44
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 13:35:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231283AbhKBMfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 08:35:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36537 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229530AbhKBMfn (ORCPT
+        id S230326AbhKBMiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 08:38:18 -0400
+Received: from angie.orcam.me.uk ([78.133.224.34]:36538 "EHLO
+        angie.orcam.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229530AbhKBMiR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 08:35:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635856388;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=faLoLpLyKy/Ab8XQ27t5jmK0JEkq3soAYUpBSCy17oY=;
-        b=D+TIox7+WsRRsXtfIBGnlbb2OKNr8yNSba1E2GHf4KJ1L1e+G13DVxet5AGGaJUyXEM7XS
-        SWHkmQWbuPFj8U4PLq3JPNjGfVrE4WBFhS0Z+xi7QPdjySMidyYXj32TnU47N8sBJtxkcK
-        ifmeVS7k/eZBHC+yqlLgXPkCVbFrIRQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-460-Ww8bC-2wMe2RsfP5VGf83w-1; Tue, 02 Nov 2021 08:33:03 -0400
-X-MC-Unique: Ww8bC-2wMe2RsfP5VGf83w-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4574B802682;
-        Tue,  2 Nov 2021 12:33:01 +0000 (UTC)
-Received: from max.localdomain (unknown [10.40.195.95])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 06EF769119;
-        Tue,  2 Nov 2021 12:32:08 +0000 (UTC)
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-To:     cluster-devel@redhat.com
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Paul Mackerras <paulus@ozlabs.org>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ocfs2-devel@oss.oracle.com, kvm-ppc@vger.kernel.org,
-        linux-btrfs@vger.kernel.org,
-        Andreas Gruenbacher <agruenba@redhat.com>
-Subject: [PATCH v9 17/17] gfs2: Fix mmap + page fault deadlocks for direct I/O
-Date:   Tue,  2 Nov 2021 13:29:45 +0100
-Message-Id: <20211102122945.117744-18-agruenba@redhat.com>
-In-Reply-To: <20211102122945.117744-1-agruenba@redhat.com>
-References: <20211102122945.117744-1-agruenba@redhat.com>
+        Tue, 2 Nov 2021 08:38:17 -0400
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id 3024692009D; Tue,  2 Nov 2021 13:35:41 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id 29DCA92009B;
+        Tue,  2 Nov 2021 12:35:41 +0000 (GMT)
+Date:   Tue, 2 Nov 2021 12:35:41 +0000 (GMT)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
+cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Russell King <linux@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: Marvell: Update PCIe fixup
+In-Reply-To: <20211102100034.rhcb3k2jvr6alm6y@pali>
+Message-ID: <alpine.DEB.2.21.2111021210180.57165@angie.orcam.me.uk>
+References: <20211101150405.14618-1-pali@kernel.org> <20211102084241.GA6134@alpha.franken.de> <20211102090246.unmbruykfdjabfga@pali> <20211102094700.GA7376@alpha.franken.de> <20211102100034.rhcb3k2jvr6alm6y@pali>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Also disable page faults during direct I/O requests and implement a
-similar kind of retry logic as in the buffered I/O case.
+On Tue, 2 Nov 2021, Pali Rohár wrote:
 
-The retry logic in the direct I/O case differs from the buffered I/O
-case in the following way: direct I/O doesn't provide the kinds of
-consistency guarantees between concurrent reads and writes that buffered
-I/O provides, so once we lose the inode glock while faulting in user
-pages, we always resume the operation.  We never need to return a
-partial read or write.
+> > > >From all what I saw, I'm sure that this device with this specific
+> > > characteristics is really (non-compliant) Marvell PCIe controller.
+> > 
+> > just nitpicking, it's a Galileo PCI bridge and not PCIe.
+> 
+> Marvell acquired Galileo Technology in the past, so it is possible that
+> this bad design is originated in Galileo. And maybe same for PCIe from
+> PCI. At least PCI vendor id for all (new) PCIe controllers is this one.
 
-This locking problem was originally reported by Jan Kara.  Linus came up
-with the idea of disabling page faults.  Many thanks to Al Viro and
-Matthew Wilcox for their feedback.
+ Umm, PCIe is so different hardware-wise from PCI I doubt there's any 
+chance for errata to be carried across.  Plus the MIPS SysAD bus is so 
+different from other CPU buses.  And we're talking 20+ years old Galileo 
+devices here.
 
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
----
- fs/gfs2/file.c | 99 ++++++++++++++++++++++++++++++++++++++++++++------
- 1 file changed, 87 insertions(+), 12 deletions(-)
+ None of the Galileo system controllers I came across had the class code 
+set incorrectly.
 
-diff --git a/fs/gfs2/file.c b/fs/gfs2/file.c
-index f772ee0fcae3..40e6501c02e5 100644
---- a/fs/gfs2/file.c
-+++ b/fs/gfs2/file.c
-@@ -811,22 +811,64 @@ static ssize_t gfs2_file_direct_read(struct kiocb *iocb, struct iov_iter *to,
- {
- 	struct file *file = iocb->ki_filp;
- 	struct gfs2_inode *ip = GFS2_I(file->f_mapping->host);
--	size_t count = iov_iter_count(to);
-+	size_t prev_count = 0, window_size = 0;
-+	size_t written = 0;
- 	ssize_t ret;
- 
--	if (!count)
-+	/*
-+	 * In this function, we disable page faults when we're holding the
-+	 * inode glock while doing I/O.  If a page fault occurs, we indicate
-+	 * that the inode glock may be dropped, fault in the pages manually,
-+	 * and retry.
-+	 *
-+	 * Unlike generic_file_read_iter, for reads, iomap_dio_rw can trigger
-+	 * physical as well as manual page faults, and we need to disable both
-+	 * kinds.
-+	 *
-+	 * For direct I/O, gfs2 takes the inode glock in deferred mode.  This
-+	 * locking mode is compatible with other deferred holders, so multiple
-+	 * processes and nodes can do direct I/O to a file at the same time.
-+	 * There's no guarantee that reads or writes will be atomic.  Any
-+	 * coordination among readers and writers needs to happen externally.
-+	 */
-+
-+	if (!iov_iter_count(to))
- 		return 0; /* skip atime */
- 
- 	gfs2_holder_init(ip->i_gl, LM_ST_DEFERRED, 0, gh);
-+retry:
- 	ret = gfs2_glock_nq(gh);
- 	if (ret)
- 		goto out_uninit;
-+retry_under_glock:
-+	pagefault_disable();
-+	to->nofault = true;
-+	ret = iomap_dio_rw(iocb, to, &gfs2_iomap_ops, NULL,
-+			   IOMAP_DIO_PARTIAL, written);
-+	to->nofault = false;
-+	pagefault_enable();
-+	if (ret > 0)
-+		written = ret;
- 
--	ret = iomap_dio_rw(iocb, to, &gfs2_iomap_ops, NULL, 0, 0);
--	gfs2_glock_dq(gh);
-+	if (should_fault_in_pages(ret, to, &prev_count, &window_size)) {
-+		size_t leftover;
-+
-+		gfs2_holder_allow_demote(gh);
-+		leftover = fault_in_iov_iter_writeable(to, window_size);
-+		gfs2_holder_disallow_demote(gh);
-+		if (leftover != window_size) {
-+			if (!gfs2_holder_queued(gh))
-+				goto retry;
-+			goto retry_under_glock;
-+		}
-+	}
-+	if (gfs2_holder_queued(gh))
-+		gfs2_glock_dq(gh);
- out_uninit:
- 	gfs2_holder_uninit(gh);
--	return ret;
-+	if (ret < 0)
-+		return ret;
-+	return written;
- }
- 
- static ssize_t gfs2_file_direct_write(struct kiocb *iocb, struct iov_iter *from,
-@@ -835,10 +877,20 @@ static ssize_t gfs2_file_direct_write(struct kiocb *iocb, struct iov_iter *from,
- 	struct file *file = iocb->ki_filp;
- 	struct inode *inode = file->f_mapping->host;
- 	struct gfs2_inode *ip = GFS2_I(inode);
--	size_t len = iov_iter_count(from);
--	loff_t offset = iocb->ki_pos;
-+	size_t prev_count = 0, window_size = 0;
-+	size_t read = 0;
- 	ssize_t ret;
- 
-+	/*
-+	 * In this function, we disable page faults when we're holding the
-+	 * inode glock while doing I/O.  If a page fault occurs, we indicate
-+	 * that the inode glock may be dropped, fault in the pages manually,
-+	 * and retry.
-+	 *
-+	 * For writes, iomap_dio_rw only triggers manual page faults, so we
-+	 * don't need to disable physical ones.
-+	 */
-+
- 	/*
- 	 * Deferred lock, even if its a write, since we do no allocation on
- 	 * this path. All we need to change is the atime, and this lock mode
-@@ -848,22 +900,45 @@ static ssize_t gfs2_file_direct_write(struct kiocb *iocb, struct iov_iter *from,
- 	 * VFS does.
- 	 */
- 	gfs2_holder_init(ip->i_gl, LM_ST_DEFERRED, 0, gh);
-+retry:
- 	ret = gfs2_glock_nq(gh);
- 	if (ret)
- 		goto out_uninit;
--
-+retry_under_glock:
- 	/* Silently fall back to buffered I/O when writing beyond EOF */
--	if (offset + len > i_size_read(&ip->i_inode))
-+	if (iocb->ki_pos + iov_iter_count(from) > i_size_read(&ip->i_inode))
- 		goto out;
- 
--	ret = iomap_dio_rw(iocb, from, &gfs2_iomap_ops, NULL, 0, 0);
-+	from->nofault = true;
-+	ret = iomap_dio_rw(iocb, from, &gfs2_iomap_ops, NULL,
-+			   IOMAP_DIO_PARTIAL, read);
-+	from->nofault = false;
-+
- 	if (ret == -ENOTBLK)
- 		ret = 0;
-+	if (ret > 0)
-+		read = ret;
-+
-+	if (should_fault_in_pages(ret, from, &prev_count, &window_size)) {
-+		size_t leftover;
-+
-+		gfs2_holder_allow_demote(gh);
-+		leftover = fault_in_iov_iter_readable(from, window_size);
-+		gfs2_holder_disallow_demote(gh);
-+		if (leftover != window_size) {
-+			if (!gfs2_holder_queued(gh))
-+				goto retry;
-+			goto retry_under_glock;
-+		}
-+	}
- out:
--	gfs2_glock_dq(gh);
-+	if (gfs2_holder_queued(gh))
-+		gfs2_glock_dq(gh);
- out_uninit:
- 	gfs2_holder_uninit(gh);
--	return ret;
-+	if (ret < 0)
-+		return ret;
-+	return read;
- }
- 
- static ssize_t gfs2_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
--- 
-2.31.1
+> > > But I do not have this hardware to verify it.
+> > 
+> > I still have a few Cobalt systems here.
+> 
+> Perfect! It would help if you could provide 'lspci -nn -vv' output from
+> that system. In case you have very old version of lspci on that system
+> you could try to run it with '-xxxx' (or '-xxx') which prints hexdump
+> and I can parse it with local lspci.
 
+ For the record here's one from a core card used with a Malta (as with 
+arch/mips/pci/fixup-malta.c); it has a newer 64120A chip (marked as an 
+engineering sample BTW):
+
+00:00.0 Host bridge: Marvell Technology Group Ltd. GT-64120/64120A/64121A System Controller (rev 11)
+00: ab 11 20 46 47 01 80 22 11 00 00 06 00 20 00 00
+10: 00 00 00 00 00 00 00 08 00 00 00 00 00 00 00 00
+20: 00 00 e0 1b 00 00 00 00 00 00 00 00 00 00 00 00
+30: 00 00 00 00 00 00 00 00 00 00 00 00 ff 01 00 00
+40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+70: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+90: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+
+The lack of a quirk with a platform does not mean it cannot have a certain 
+PCI/e device.
+
+ As I recall various Atlas/Malta core cards had any of the three device 
+variants covered by this vendor:device ID and later batches were actually 
+indeed marked Marvell rather than Galileo.
+
+  Maciej
