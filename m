@@ -2,219 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B2BD442C9D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 12:32:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7C57442C9F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 12:32:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230096AbhKBLet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 07:34:49 -0400
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:13008 "EHLO
-        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230518AbhKBLes (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 07:34:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1635852733; x=1667388733;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=RnC9WiU+bMlrpr4oeqGd2lWJnjhCpPWkRh3Q+hPfyzs=;
-  b=JaktFkyGNa1fx8bwAsFm83fewmTeS0Ovsg5hqSSPr1tzjgYfODQKQGJ/
-   LueW+9fWrNpEqBppjoUpJ0C8sFF1tM56yAU/59pBsPDkTJYbsdjxpA+wW
-   FvjICmYptwDVKFobfArZ6eo/1k1To0BEvGVM3mmtXyL0tyUYiDsLSU4EM
-   k=;
-Received: from unknown (HELO ironmsg05-sd.qualcomm.com) ([10.53.140.145])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 02 Nov 2021 04:32:13 -0700
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg05-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2021 04:32:13 -0700
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Tue, 2 Nov 2021 04:32:13 -0700
-Received: from sbillaka-linux.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Tue, 2 Nov 2021 04:32:08 -0700
-From:   Sankeerth Billakanti <quic_sbillaka@quicinc.com>
-To:     <dri-devel@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>,
-        <freedreno@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-CC:     Sankeerth Billakanti <quic_sbillaka@quicinc.com>,
-        <robdclark@gmail.com>, <seanpaul@chromium.org>,
-        <swboyd@chromium.org>, <quic_kalyant@quicinc.com>,
-        <quic_abhinavk@quicinc.com>, <dianders@chromium.org>,
-        <quic_khsieh@quicinc.com>, <quic_mkrishn@quicinc.com>
-Subject: [PATCH v3 3/3] arm64: dts: qcom: sc7280: add edp display dt nodes
-Date:   Tue, 2 Nov 2021 17:01:42 +0530
-Message-ID: <1635852702-25822-3-git-send-email-quic_sbillaka@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1635852702-25822-1-git-send-email-quic_sbillaka@quicinc.com>
-References: <1635852702-25822-1-git-send-email-quic_sbillaka@quicinc.com>
+        id S231165AbhKBLfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 07:35:02 -0400
+Received: from foss.arm.com ([217.140.110.172]:33470 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230326AbhKBLfA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 07:35:00 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E854CD6E;
+        Tue,  2 Nov 2021 04:32:25 -0700 (PDT)
+Received: from bogus (unknown [10.57.46.68])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7EE213F70D;
+        Tue,  2 Nov 2021 04:32:24 -0700 (PDT)
+Date:   Tue, 2 Nov 2021 11:32:21 +0000
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     rishabhb@codeaurora.org
+Cc:     Cristian Marussi <cristian.marussi@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        avajid@codeaurora.org, adharmap@codeaurora.org
+Subject: Re: [PATCH v3] firmware: arm_scmi: Free mailbox channels if probe
+ fails
+Message-ID: <20211102113221.w7ivffssjb6jmggj@bogus>
+References: <1628111999-21595-1-git-send-email-rishabhb@codeaurora.org>
+ <20210805105427.GU6592@e120937-lin>
+ <51782599a01a6a22409d01e5fc1f8a50@codeaurora.org>
+ <20210831054835.GJ13160@e120937-lin>
+ <20210901093558.GL13160@e120937-lin>
+ <aab71610e11c2dd293159576cc53e277@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aab71610e11c2dd293159576cc53e277@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add edp controller and phy DT nodes for sc7280.
+On Mon, Nov 01, 2021 at 09:35:42AM -0700, rishabhb@codeaurora.org wrote:
+> On 2021-09-01 02:35, Cristian Marussi wrote:
+> > On Tue, Aug 31, 2021 at 06:48:35AM +0100, Cristian Marussi wrote:
+> > > On Mon, Aug 30, 2021 at 02:09:37PM -0700, rishabhb@codeaurora.org
+> > > wrote:
+> > > > Hi Christian
+> > > 
+> > > Hi Rishabh,
+> > > 
+> > > thanks for looking into this kind of bad interactions.
+> > > 
+> > > > There seems to be another issue here. The response from agent can be delayed
+> > > > causing a timeout during base protocol acquire,
+> > > > which leads to the probe failure. What I have observed is sometimes the
+> > > > failure of probe and rx_callback (due to a delayed message)
+> > > > happens at the same time on different cpus.
+> > > > Because of this race, the device memory may be cleared while the
+> > > > interrupt(rx_callback) is executing on another cpu.
+> > > 
+> > > You are right that concurrency was not handled properly in this kind
+> > > of
+> > > context and moreover, if you think about it, even the case of out of
+> > > order reception of responses and delayed_responses (type2 SCMI
+> > > messages)
+> > > for asynchronous SCMI commands was not handled properly.
+> > > 
+> > > > How do you propose we solve this? Do you think it is better to take the
+> > > > setting up of base and other protocols out of probe and
+> > > > in some delayed work? That would imply the device memory is not released
+> > > > until remove is called. Or should we add locking to
+> > > > the interrupt handler(scmi_rx_callback) and the cleanup in probe to avoid
+> > > > the race?
+> > > >
+> > > 
+> > > These issues were more easily exposed by SCMI Virtio transport, so in
+> > > the series where I introduced scmi-virtio:
+> > > 
+> > > https://lore.kernel.org/linux-arm-kernel/162848483974.232214.9506203742448269364.b4-ty@arm.com/
+> > > 
+> > > (which is now queued for v5.15 ...  now on -next I think...finger
+> > > crossed)
+> > > 
+> > > I took the chance to rectify a couple of other things in the SCMI core
+> > > in the initial commits.
+> > > As an example, in the above series
+> > > 
+> > >  [PATCH v7 05/15] firmware: arm_scmi: Handle concurrent and
+> > > out-of-order messages
+> > > 
+> > > cares to add a refcount to xfers and some locking on xfers between TX
+> > > and RX path to avoid that a timed out xfer can vanish while the rx
+> > > path
+> > > is concurrently working on it (as you said); moreover I handle the
+> > > condition (rare if not unplausible anyway) in which a transport
+> > > delivers
+> > > out of order responses and delayed responses.
+> > > 
+> > > I tested this scenarios on some fake emulated SCMI Virtio transport
+> > > where I could play any sort of mess and tricks to stress this limit
+> > > conditions, but you're more than welcome to verify if the race you are
+> > > seeing on Base protocol time out is solved (as I would hope :D) by
+> > > this
+> > > series of mine.
+> > > 
+> > > Let me know, any feedback is welcome.
+> > > 
+> > > Btw, in the series above there are also other minor changes, but there
+> > > is also another more radical change needed to ensure correctness and
+> > > protection against stale old messages which maybe could interest you
+> > > in general if you are looking into SCMI:
+> > > 
+> > > [PATCH v7 04/15] firmware: arm_scmi: Introduce monotonically
+> > > increasing tokens
+> > > 
+> > > Let me know if yo have other concerns.
+> > > 
+> > 
+> > Hi Rishabhb,
+> > 
+> > just a quick remark, thinking again about your fail @probe scenario
+> > above
+> > I realized that while the concurrency patch I mentioned above could help
+> > on
+> > races against vanishing xfers when late timed-out responses are
+> > delivered,
+> > here we really are then also shutting down everything on failure, so
+> > there
+> > could be further issues between a very late invokation of
+> > scmi_rx_callback
+> > and the core devm_ helpers freeing the underlying xfer/cinfo/etc..
+> > structs
+> > used by scmi-rx-callback itself (maybe this was already what you meant
+> > and
+> > I didn't get it,...sorry)
+> > 
+> > On the other side, I don't feel that delaying Base init to a deferred
+> > worker is a viable solution since we need Base protocol init to be
+> > initialized and we need to just give up if we cannot communicate with
+> > the SCMI platform fw in such early stages. (Base protocol is really the
+> > only mandatory proto is I remember correctly the spec)
+> > 
+> > Currenly I'm off and only glancing at mails but I'll have a thought
+> > about
+> > these issues once back in a few weeks time.
+> > 
+> > Thanks,
+> > Cristian
+> > 
+> Hi Cristian
+> I hope you enjoyed your vacation. Did you get a chance to look at the issue
+> stated above and have some idea as to how to solve this?
 
-Signed-off-by: Krishna Manikandan <quic_mkrishn@quicinc.com>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-Signed-off-by: Sankeerth Billakanti <quic_sbillaka@quicinc.com>
----
+Do you still see the issue with v5.15 ? Can you please check if haven't
+already done that ?
 
-Changes in v3:
-    - Add one clock cell per line (Stephen Boyd)
-    - Unit address should match first reg property (Stephen Boyd)
-    - Remove new line (Stephen Boyd)
-    - Add the dsi_phy clocks in dispcc (Kuogee Hsieh)
+Also 30ms delay we have is huge IMO and we typically expect the communication
+with remote processor or any entity that implements SCMI to happen in terms
+of one or few ms tops.
 
-Changes in v2:
-    - Move regulator definitions to board file (Matthias Kaehlcke)
-    - Move the gpio definitions to board file (Matthias Kaehlcke)
-    - Move the pinconf to board file (Matthias Kaehlcke)
-    - Move status property (Stephen Boyd)
-    - Drop flags from interrupts (Stephen Boyd)
-    - Add clock names one per line for readability (Stephen Boyd)
-    - Rename edp-opp-table (Stephen Boyd)
+If there is a race, we need to fix that but I am interested in knowing
+why the default time of 30ms not sufficient ? Did increasing that helps
+and is this timeout happening only for the initial commands(guessing the
+SCMI firmware is not yet ready) or does it happen even during run-time ?
 
- arch/arm64/boot/dts/qcom/sc7280.dtsi | 107 ++++++++++++++++++++++++++++++++++-
- 1 file changed, 105 insertions(+), 2 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-index 12c4d32..5ad500e 100644
---- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-@@ -2695,8 +2695,8 @@
- 				 <&dsi_phy 1>,
- 				 <0>,
- 				 <0>,
--				 <0>,
--				 <0>;
-+				 <&edp_phy 0>,
-+				 <&edp_phy 1>;
- 			clock-names = "bi_tcxo",
- 				      "gcc_disp_gpll0_clk",
- 				      "dsi0_phy_pll_out_byteclk",
-@@ -2784,6 +2784,13 @@
- 							remote-endpoint = <&dsi0_in>;
- 						};
- 					};
-+
-+					port@1 {
-+						reg = <1>;
-+						dpu_intf5_out: endpoint {
-+							remote-endpoint = <&edp_in>;
-+						};
-+					};
- 				};
- 
- 				mdp_opp_table: opp-table {
-@@ -2899,6 +2906,102 @@
- 
- 				status = "disabled";
- 			};
-+
-+			msm_edp: edp@aea0000 {
-+				compatible = "qcom,sc7280-edp";
-+
-+				reg = <0 0xaea0000 0 0x200>,
-+				      <0 0xaea0200 0 0x200>,
-+				      <0 0xaea0400 0 0xc00>,
-+				      <0 0xaea1000 0 0x400>;
-+
-+				interrupt-parent = <&mdss>;
-+				interrupts = <14>;
-+
-+				clocks = <&rpmhcc RPMH_CXO_CLK>,
-+					 <&gcc GCC_EDP_CLKREF_EN>,
-+					 <&dispcc DISP_CC_MDSS_AHB_CLK>,
-+					 <&dispcc DISP_CC_MDSS_EDP_AUX_CLK>,
-+					 <&dispcc DISP_CC_MDSS_EDP_LINK_CLK>,
-+					 <&dispcc DISP_CC_MDSS_EDP_LINK_INTF_CLK>,
-+					 <&dispcc DISP_CC_MDSS_EDP_PIXEL_CLK>;
-+				clock-names = "core_xo",
-+					      "core_ref",
-+					      "core_iface",
-+					      "core_aux",
-+					      "ctrl_link",
-+					      "ctrl_link_iface",
-+					      "stream_pixel";
-+				#clock-cells = <1>;
-+				assigned-clocks = <&dispcc DISP_CC_MDSS_EDP_LINK_CLK_SRC>,
-+						  <&dispcc DISP_CC_MDSS_EDP_PIXEL_CLK_SRC>;
-+				assigned-clock-parents = <&edp_phy 0>, <&edp_phy 1>;
-+
-+				phys = <&edp_phy>;
-+				phy-names = "dp";
-+
-+				operating-points-v2 = <&edp_opp_table>;
-+				power-domains = <&rpmhpd SC7280_CX>;
-+
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+
-+				status = "disabled";
-+
-+				ports {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					port@0 {
-+						reg = <0>;
-+						edp_in: endpoint {
-+							remote-endpoint = <&dpu_intf5_out>;
-+						};
-+					};
-+				};
-+
-+				edp_opp_table: opp-table {
-+					compatible = "operating-points-v2";
-+
-+					opp-160000000 {
-+						opp-hz = /bits/ 64 <160000000>;
-+						required-opps = <&rpmhpd_opp_low_svs>;
-+					};
-+
-+					opp-270000000 {
-+						opp-hz = /bits/ 64 <270000000>;
-+						required-opps = <&rpmhpd_opp_svs>;
-+					};
-+
-+					opp-540000000 {
-+						opp-hz = /bits/ 64 <540000000>;
-+						required-opps = <&rpmhpd_opp_nom>;
-+					};
-+
-+					opp-810000000 {
-+						opp-hz = /bits/ 64 <810000000>;
-+						required-opps = <&rpmhpd_opp_nom>;
-+					};
-+				};
-+			};
-+
-+			edp_phy: phy@aec2a00 {
-+				compatible = "qcom,sc7280-edp-phy";
-+
-+				reg = <0 0xaec2a00 0 0x19c>,
-+				      <0 0xaec2200 0 0xa0>,
-+				      <0 0xaec2600 0 0xa0>,
-+				      <0 0xaec2000 0 0x1c0>;
-+
-+				clocks = <&rpmhcc RPMH_CXO_CLK>,
-+					 <&gcc GCC_EDP_CLKREF_EN>;
-+				clock-names = "aux",
-+					      "cfg_ahb";
-+
-+				#clock-cells = <1>;
-+				#phy-cells = <0>;
-+
-+				status = "disabled";
-+			};
- 		};
- 
- 		pdc: interrupt-controller@b220000 {
 -- 
-2.7.4
-
+Regards,
+Sudeep
