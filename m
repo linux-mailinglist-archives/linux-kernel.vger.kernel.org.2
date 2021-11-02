@@ -2,132 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC3194433F3
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 17:50:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52A4A4433EF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 17:50:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234982AbhKBQxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 12:53:00 -0400
-Received: from mail-dm6nam11on2060.outbound.protection.outlook.com ([40.107.223.60]:57569
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234958AbhKBQwK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 12:52:10 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ihpABOMcdkSVsaEmL+QEf6OonVWy1ZkwXsKXrCzgHHh2lBsSQ3UBkXuZphNAcODLCxADFNR2RnDB4/wmTnTDXR7Dx8UwaA5ESFaMXhGO9zBFik2hklH0QhR451Y16FgAE+LNgOzWM9yTZGhFn5Y0hFExPWTDHmq2+hn26MWUmwaI+SR8jqXCcBZWB7Tf9bymRQ2/Rc4iyyoeS0m5bbGBBRs2yRjvblEPfXXmpDeSeB+2FTouTv63uwA5jz2RoMo4bBE+9YZgCo9Oym843TpIaXV2f7FEUCylqiwJkGDAYkoL8pZCWA3qxyGNRAjgtSdDBe932PEY7s6C6j8JDyjuzw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EcWXFcTJr29tcbDfZPJodxv1XBM7WxLJEvGs2yH0V+E=;
- b=AoMZTuVPoPlIh9OSiBk409jNFFmQY4WuxE8I+RE5kyqw3uQ/fGm5E+QNCUiyVV4EBXW1dTkJFqqpLvNMQSoSSJbYQCmog6U41ahGTwjpwnZV064fP0h05syNBhuO8q6y/tms40OTSOGsY7Muug9dfQ9C0YIRrjH7jo1xj9b5gGaXCNmXWC1LZmxQzSwje4lma048moV0/3pMAWbTAxMJt6LoW7uZKIe95EaY3XKxcuDc90vXp9XYMrPfpmTO2Q/PDgcny0Gp99NrzzH57A8IBmwsdriuGHbObR6NN1JsqnZKxPKux+0r7OHx3mOliSqhUj3fBOoegwNt24W4Af7OKQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EcWXFcTJr29tcbDfZPJodxv1XBM7WxLJEvGs2yH0V+E=;
- b=aSnDd20XdbimAHKMXcmOLGpXjc/dVut5+S6rZEgu0xoZd2QVsA+UZq0pY6p7Qrhh6vbC7lvGwF2j3s6ZIbEe+zrhq6+EYHwVOQNIitvDG6lDmix7HutAE80eeTW5yPXItY3B3dSKhIPrHNDuG7Ue53zuIcBTXB/8x3pyGDWBgEq1QbquxQkHKCMyAc86Nf4O0e0cIqVigl2TpgYvbMZhViife/6pKHXEcBrNsKjeheRjfOVekulB72jw/cVZ12bszy7JcK9J7wPwZkizpU/2lrZtRUI61fKw+jGhWMB9tjBIPLCkeltgB1x30ABVfe+gGn1xihqo31cKNdLUgLw5Yw==
-Authentication-Results: lst.de; dkim=none (message not signed)
- header.d=none;lst.de; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5125.namprd12.prod.outlook.com (2603:10b6:208:309::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.14; Tue, 2 Nov
- 2021 16:12:40 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4649.020; Tue, 2 Nov 2021
- 16:12:40 +0000
-Date:   Tue, 2 Nov 2021 13:12:39 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        intel-gfx@lists.freedesktop.org,
-        intel-gvt-dev@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 15/29] drm/i915/gvt: devirtualize ->set_edid and
- ->set_opregion
-Message-ID: <20211102161239.GU2744544@nvidia.com>
-References: <20211102070601.155501-1-hch@lst.de>
- <20211102070601.155501-16-hch@lst.de>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211102070601.155501-16-hch@lst.de>
-X-ClientProxiedBy: MN2PR15CA0010.namprd15.prod.outlook.com
- (2603:10b6:208:1b4::23) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S235094AbhKBQwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 12:52:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45716 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234682AbhKBQv5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 12:51:57 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABAFFC061193
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 09:12:59 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id k4so7195699plx.8
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 09:12:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pIALiqswCfSwk+/MEarCA9yLgBnLpJVqWRaUmM6jp5w=;
+        b=YDMPEv8WJX5C5t8J+KvkqjymPpcW6bISPU13EEZn9i3ppfDrXqCBOkIiZ+qG6d/0W9
+         oMQLSczBNDPwvPGAeBCQCFCpFym+2LBzFX/2J1emFCX8/PiT0sSrN/EKaU5MKnn4a0Kp
+         2TPNyYUqhhBEvMdCFQyeipttIkdwn8Tm3bBSASjQz/q8pbYMW+PXgXDYQ9zDnbsNtNKj
+         tEA+auAFo01awfsN/txIuLZzv2x3qAeCbidvO2qL7Rnrtfwe8Rz+IyyDyOLljZkYawzP
+         JPuyPodJwGTYZZ1N8kC66Kge83QF/+vX/h8zKe7PGTocddZq4FaAT4hFeKM3Pxy/O7TW
+         pClQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pIALiqswCfSwk+/MEarCA9yLgBnLpJVqWRaUmM6jp5w=;
+        b=GsbWzoSZEIapHZ+/Jt+GRNXL2rvG2Vo5UaNbl8RrKjYh/84S0tH5aWLjOsIBZpPmaQ
+         xm6kPqHNIt4rqquiQ7TPxP9MV7KSWYm4ZLzbVgjKqPRNck5jgiKNi246A2sJkY0MZHwf
+         MdQGXA1u4NkH/AYCejtkF7qFT9AcO9SmdRsukhim8pm5GlZnJ95E28gj7wURYjzE0tVR
+         L/T+uTAk7+DNysmgmWL8j6/Fej3xOGoAZAAMe2h3h0D4azy6b/EokngtUwo2cU3pHdvn
+         d5X3Na/dMBPztoJjwZwzcJwvh1YwSjXkTHOC51hgO5InILBBOhBwG8CVVtSjRhYYXOZr
+         na3w==
+X-Gm-Message-State: AOAM531j9oFJRBvV219sBbzk/ZXZfISg0HQSKUVYqrNOEZ2I+oa8a/qo
+        3rRNGqvThtjq5h1TFo1TVXD7hWx+GGUEh4vm+IYdQQ==
+X-Google-Smtp-Source: ABdhPJyUerhRmPa3p6Y+5F6zaaUU9FmrqYmMRvdoPUtNZXczvAj1BoJWZcyxx8lp/uHInRyxjBoZleDZuAuNEyTgQ/Q=
+X-Received: by 2002:a17:902:ab50:b0:13f:4c70:9322 with SMTP id
+ ij16-20020a170902ab5000b0013f4c709322mr32351492plb.89.1635869579139; Tue, 02
+ Nov 2021 09:12:59 -0700 (PDT)
 MIME-Version: 1.0
-Received: from mlx.ziepe.ca (142.162.113.129) by MN2PR15CA0010.namprd15.prod.outlook.com (2603:10b6:208:1b4::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.10 via Frontend Transport; Tue, 2 Nov 2021 16:12:40 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mhwOt-005AS1-98; Tue, 02 Nov 2021 13:12:39 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5295b567-94db-45e9-f07d-08d99e1b982a
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5125:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5125D622098D659D1D94D430C28B9@BL1PR12MB5125.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:462;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: UyRwsod8AKuGvm1f9XA2dvuqB/1OOSoDa9mRX9giSQZ4vsphVc+GQGb+z6/cvbfrFpeR3wqwb3T3EkJNTgbQKVhREy0xqVTkCOZe+LgyVJ4x+5raBwHKoiNSf2OKAxKovRb82YlW3Q9n/ncoumitjKBCSQ7oWMw3p6eK1l5p7JvX6LniT1GX4btCMIHYiwDG/fTOmDFI73xrvJltB+DTTfckavW0lRbrqVafWzAAwOGi4Vj9LC9cjaHKnGQNqgB1X08guCpbradqxP6AU671mGzUKLK2tPDwZKpwL68dB+iuzOISDne1ymzIzJJPHqnS9oBrx5r5D3Sp4GpjkpTq53TFqEqXtoTKtK6crf7Zsq43fn5RhM7Qz5hkyKmf4pEq6svE6tzuuZbxxGoI+rrO+sO5M9bv3hHPObDIIQSGtZaQfd/5VGXziEPz1nm5yEH71Gs2kWpkXNo6gqVXDlPxcmoyWFMU/VMeau5fbHzQriwXPKvv+9IZwgSeVG35wloEu6rozW0Jn6V6nF49ROyhatk+jbsihH8pBb7Q9P6doUxaiZZQ5b6BHbw4Z7DP1ySstAg8/DYwfsUT16q9d51r0M2bzx9HwgktUhAulewqeDVjouh7EqTsMzFngTn09GEdXrfG54FqlnuKkcVb0BYlOg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8936002)(36756003)(66476007)(38100700002)(66556008)(54906003)(66946007)(2906002)(8676002)(33656002)(83380400001)(316002)(1076003)(9786002)(26005)(426003)(2616005)(4326008)(6916009)(7416002)(86362001)(5660300002)(9746002)(4744005)(508600001)(186003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ueF2AwEFLchV6rQ+WfO4gwuuLnaZDZUZ8z5gmcqmM54ukft0ZulBzctIbD3t?=
- =?us-ascii?Q?kUhU2EZUJ73OcjZgsvbuiTq7yrajoDGzgPm2IyDdsAm90L6guaP3TS5WXdtZ?=
- =?us-ascii?Q?/DbFAz6IuQeXCJq3Vjv7+tlicuY0D8TKntoU6Uvv5WtRtkYYFhlNKac8OjL9?=
- =?us-ascii?Q?8M5rZ73XhbkhRB0DKKjcY4qoB7Q0QE4j+Whv5YPTxVNj0Zwzza8eibXJnat6?=
- =?us-ascii?Q?yL1jnPLShbr+KlrOIB+87YDPOXizwzdkwJWONCieCo62TJUYGt8hdL1D4JoI?=
- =?us-ascii?Q?3xb/VzUCOGzrcq8gaUkwQ6Zob9CIJLOMDJQpOMHG4n0y3i3fbWVhhUvHODyY?=
- =?us-ascii?Q?XXfK2+/J1/8uJtZs+eZpTyYQyAPuln+CJutKgKmXCm+k+4YYbwioWNQ0EOwg?=
- =?us-ascii?Q?5RGB6si+TIFY8qWntgvwe0QzCZQy4EK71ntvQpD+4ReKJCtDSQlIYpiC908Z?=
- =?us-ascii?Q?6/z0fA+nKMGZdbd/EYV9Nq1YmpP10aKCxHdjaxsYoE9BPxdAAqIPxVg32v2g?=
- =?us-ascii?Q?EhBV7XB78Vqjfeq/YdctJrN6fGKYu48Cb9tekvQhYU8j3ImhSxnItEOGO7Qc?=
- =?us-ascii?Q?m4Gao/26orD7xpjHfd7EST+TwAtfq7ULnoQI1KAjyBZ0cLv/HbWiine5GHxt?=
- =?us-ascii?Q?ZM2mbKPJ/0+fZ+rPuS1jOLsGgtixAXOw+1T5CwGBeOQUIDGGhgWTUfXfPbHF?=
- =?us-ascii?Q?BaUic3Txzfx9Nr7RHJDr0MrBrZmrQB9w8liEQoirgp/atfWjQGZoWx2Jgsjl?=
- =?us-ascii?Q?y+x74QBYPeQeKWoA6JdNiz6NFgqShsCBUbkiSGVpN+6RWKK3ndaoXPiWcViX?=
- =?us-ascii?Q?SJ0Fj8uNykAuhXwpLHLG1C5M+O2YGEL9//Yv7GiaXKotVPnu6qqFkIKNY9kE?=
- =?us-ascii?Q?//i4OYfp0u4kM1zBCFsX7KIrEwAHVaD0m74VWcQy3IFkjt5m2NEHDj2hO9Nn?=
- =?us-ascii?Q?1sIzZWyBeMeP94q02NyvdLlDu5hACkFMvsuOtygQ6NDbzCi0eNFtidIX/PMi?=
- =?us-ascii?Q?8NzbV2YkmouHJr+EkUdQsUR3ELMf+SPM2LIECvBH68cJA8TVTnyHLduHRCnh?=
- =?us-ascii?Q?LQqPgOoowwV/j6FGtEVWvMN0rT0QJYQE1l05lLM1RhRT2oqM2UexXk9+5bcD?=
- =?us-ascii?Q?q4bQUOzc/fvf/X8x0M6YfqQS9MMG5gzcrTANoelIFFGncrZ+5EJ+P0f8lZr0?=
- =?us-ascii?Q?SyVuHyJLRIuqEGCU2AwnzuinaAMf62kwEmRmdntWNRMaHG3AIrXNoM2bFS3Q?=
- =?us-ascii?Q?3gGv1AAO+xoBvzAR9Tn7jU7mFDJDBeaEMBHA1ihWX7MVLejWKmOsYz43VtEw?=
- =?us-ascii?Q?BBpEXOJQuWmQ65r3RNza3roK2Tz6fDz8MfiV9JawHaeA/hbi+T5YlMiWCz+w?=
- =?us-ascii?Q?dTv375F6B14HCdYLpTlwcbXDWtobYpLkzv0lF6jO8dRtHEOh52EyuMVs/JT4?=
- =?us-ascii?Q?zRQ18Not3ANWdoK+RIlk7b05zS6vP0VnX525iFTrvNe/rj4cP06iAqI5cBNk?=
- =?us-ascii?Q?PA+JmMt285kdpPwtn2/cPbyFwzX9koboBmMws6ap8XZ5o69ArYCbaW8raC8R?=
- =?us-ascii?Q?z7V6Dhpa2nrH0zuhgOA=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5295b567-94db-45e9-f07d-08d99e1b982a
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2021 16:12:40.5993
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: KElIi2zzJ6e0yqknG7e+uRF8Fmxr0pQ3THujL/M43lK3eZqQf7JxGq6MNrJnNbAT
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5125
+References: <20211021001059.438843-1-jane.chu@oracle.com> <YXFPfEGjoUaajjL4@infradead.org>
+ <e89a2b17-3f03-a43e-e0b9-5d2693c3b089@oracle.com> <YXJN4s1HC/Y+KKg1@infradead.org>
+ <2102a2e6-c543-2557-28a2-8b0bdc470855@oracle.com> <YXj2lwrxRxHdr4hb@infradead.org>
+ <20211028002451.GB2237511@magnolia>
+In-Reply-To: <20211028002451.GB2237511@magnolia>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Tue, 2 Nov 2021 09:12:48 -0700
+Message-ID: <CAPcyv4ge8ebFn2tBtc9_ThEYXjCczLW4H8NYrOJKbGF_Y-Wg5w@mail.gmail.com>
+Subject: Re: [dm-devel] [PATCH 0/6] dax poison recovery with RWF_RECOVERY_DATA flag
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Jane Chu <jane.chu@oracle.com>,
+        "david@fromorbit.com" <david@fromorbit.com>,
+        "vishal.l.verma@intel.com" <vishal.l.verma@intel.com>,
+        "dave.jiang@intel.com" <dave.jiang@intel.com>,
+        "agk@redhat.com" <agk@redhat.com>,
+        "snitzer@redhat.com" <snitzer@redhat.com>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        "ira.weiny@intel.com" <ira.weiny@intel.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "vgoyal@redhat.com" <vgoyal@redhat.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 08:05:47AM +0100, Christoph Hellwig wrote:
-> Just call the code to setup the opregions and EDID data directly.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  drivers/gpu/drm/i915/gvt/gvt.h       |  3 +++
->  drivers/gpu/drm/i915/gvt/hypercall.h |  3 ---
->  drivers/gpu/drm/i915/gvt/kvmgt.c     |  6 ++----
->  drivers/gpu/drm/i915/gvt/mpt.h       | 32 ----------------------------
->  drivers/gpu/drm/i915/gvt/vgpu.c      |  6 +++---
->  5 files changed, 8 insertions(+), 42 deletions(-)
+On Wed, Oct 27, 2021 at 5:25 PM Darrick J. Wong <djwong@kernel.org> wrote:
+>
+> On Tue, Oct 26, 2021 at 11:49:59PM -0700, Christoph Hellwig wrote:
+> > On Fri, Oct 22, 2021 at 08:52:55PM +0000, Jane Chu wrote:
+> > > Thanks - I try to be honest.  As far as I can tell, the argument
+> > > about the flag is a philosophical argument between two views.
+> > > One view assumes design based on perfect hardware, and media error
+> > > belongs to the category of brokenness. Another view sees media
+> > > error as a build-in hardware component and make design to include
+> > > dealing with such errors.
+> >
+> > No, I don't think so.  Bit errors do happen in all media, which is
+> > why devices are built to handle them.  It is just the Intel-style
+> > pmem interface to handle them which is completely broken.
+>
+> Yeah, I agree, this takes me back to learning how to use DISKEDIT to
+> work around a hole punched in a file (with a pen!) in the 1980s...
+>
+> ...so would you happen to know if anyone's working on solving this
+> problem for us by putting the memory controller in charge of dealing
+> with media errors?
 
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+What are you guys going on about? ECC memory corrects single-bit
+errors in the background, multi-bit errors cause the memory controller
+to signal that data is gone. This is how ECC memory has worked since
+forever. Typically the kernel's memory-failure path is just throwing
+away pages that signal data loss. Throwing away pmem pages is harder
+because unlike DRAM the physical address of the page matters to upper
+layers.
 
-Jason
+>
+> > > errors in mind from start.  I guess I'm trying to articulate why
+> > > it is acceptable to include the RWF_DATA_RECOVERY flag to the
+> > > existing RWF_ flags. - this way, pwritev2 remain fast on fast path,
+> > > and its slow path (w/ error clearing) is faster than other alternative.
+> > > Other alternative being 1 system call to clear the poison, and
+> > > another system call to run the fast pwrite for recovery, what
+> > > happens if something happened in between?
+> >
+> > Well, my point is doing recovery from bit errors is by definition not
+> > the fast path.  Which is why I'd rather keep it away from the pmem
+> > read/write fast path, which also happens to be the (much more important)
+> > non-pmem read/write path.
+>
+> The trouble is, we really /do/ want to be able to (re)write the failed
+> area, and we probably want to try to read whatever we can.  Those are
+> reads and writes, not {pre,f}allocation activities.  This is where Dave
+> and I arrived at a month ago.
+>
+> Unless you'd be ok with a second IO path for recovery where we're
+> allowed to be slow?  That would probably have the same user interface
+> flag, just a different path into the pmem driver.
+>
+> Ha, how about a int fd2 = recoveryfd(fd); call where you'd get whatever
+> speshul options (retry raid mirrors!  scrape the film off the disk if
+> you have to!) you want that can take forever, leaving the fast paths
+> alone?
+
+I am still failing to see the technical argument for why
+RWF_RECOVER_DATA significantly impacts the fast path, and why you
+think this is somehow specific to pmem. In fact the pmem effort is
+doing the responsible thing and trying to plumb this path while other
+storage drivers just seem to be pretending that memory errors never
+happen.
