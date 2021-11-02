@@ -2,362 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B36A443A07
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 00:50:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA9BC443A09
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 00:51:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230462AbhKBXxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 19:53:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58170 "EHLO
+        id S230518AbhKBXyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 19:54:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230076AbhKBXxL (ORCPT
+        with ESMTP id S230054AbhKBXyT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 19:53:11 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A355C06120B
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 16:50:36 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id f3so1619096lfu.12
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 16:50:36 -0700 (PDT)
+        Tue, 2 Nov 2021 19:54:19 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B338C061714
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 16:51:44 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id t5-20020a17090a4e4500b001a0a284fcc2so154909pjl.2
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 16:51:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=fVBGk1MYyCWrNZI+cGnXDaPmanq61gpSQuTYWAYJ+rg=;
-        b=ct6rwWB5FRv5Mti6ZNWlPXqu8r/Q2ELC3sZ//jRtNp/MEx7eF4jfyZIdP733Qhi1LS
-         3zUM+Cdkey0NBeVZZhuNPNH/nkmYS7FtlOwQEYFYI/lFgzIj9UOxmiuKiZhImhAA8sFp
-         +FvtNKpYI8yOZM5EGEQIgMkFwHA37YNcBlF3i6ercceteicQIpR+V4nvzLEyj1/e85nD
-         6OL7Gp0bxn/3ZI02LjXDUH+G6TeVjTQrA9NVp/4A7FfeC2VOwEccVrYvKpl4b/Y1Xxgb
-         WDqOU90M4L2K0yG/V6diro/qFJxz6Hbml+w28liXPAycWrahis2aOW+7+x7i28fSid5m
-         xWlQ==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Qt0/23auoTMv6veLw+XEVIQ0c4MWIwE9bvcbG+AtpIg=;
+        b=S+7tPio6594UcZ76kPOpsfDFcT9yDrShzEcvJ4zqJo2++7nZRvqSyNyV4Y1xbg7XuH
+         92/ph6lnebZ1WG8JZiasPRbZhfw3VZNzLZ/+Fza3K2VWBQAy2QzPqssxjj6muePa8qIX
+         0kyqO6ZTcKeuzisJJW4LZCYmn7+wVlWbuR0T9bJfuqrrxOeExeMXWDCBYR7e522Bvg0O
+         EW99KCaclz466t91OkpGOowBWz9Whk+Ls9UBOAgl2RDBtZAI8RlX3rKTtSJ2Bxb6hXJM
+         sTtQe8esgs8601mIWP8waL0+vMW/jrYWuRgcJbiWKsHZuOSJkXcQQ5QKARp6ch9CllQx
+         nxVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=fVBGk1MYyCWrNZI+cGnXDaPmanq61gpSQuTYWAYJ+rg=;
-        b=VqiREW+F7hcj2JXwDlIQL1JYMZMC4ZwKecZgEtqwViCZGyLKIrnzlEKXqTMwnay6Zv
-         iUrR96HjgWZasVojGXcECGH8fTtPH/HXXOYYq/sE2kIMbqIodOlbfDcfyqZ2ygzGu1Sr
-         tOpehaT6t5pvJppIEPlZn4YvCr/6OdNBZsuXgyUoVq1gZZFTF4njV/ZPX6Ae3DC0IRu5
-         U+P4lB5xSjyIna/y8VpuuMpFsAKB7Flf83aZC/wI9xrpkC64S33Y0xurWIehJMO0Xyaw
-         C0TpwCudrO7A4p5pi5h5MjIwhzLC+NfLKwirHBh481uYCummNGcDOZ/GDR8uD6GHznpd
-         outA==
-X-Gm-Message-State: AOAM530AKeQdbp72u7GT44PSAPGe2uF/lhudoOGZ8PJ3JNgCUlIzYRhA
-        eVtly7qisD+csj9hdRLdSrqtt+5jbU+kQg==
-X-Google-Smtp-Source: ABdhPJzVjWt0dzeXhRVr9LeJ7wx4S7kb2JiWs4DZ1Y5b+WPKmsokaDHCGflD/Im5gu1IMPh0Ik3PVA==
-X-Received: by 2002:a05:6512:2022:: with SMTP id s2mr36121348lfs.661.1635897034131;
-        Tue, 02 Nov 2021 16:50:34 -0700 (PDT)
-Received: from [192.168.1.211] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id o17sm30262lfg.211.2021.11.02.16.50.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Nov 2021 16:50:33 -0700 (PDT)
-Subject: Re: [PATCH v2 1/5] arm64: dts: qcom: msm8996: Revamp reserved memory
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Yassine Oudjana <y.oudjana@protonmail.com>
-Cc:     Andy Gross <agross@kernel.org>, Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Raffaele Tranquillini <raffaele.tranquillini@gmail.com>,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, phone-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210926190555.278589-1-y.oudjana@protonmail.com>
- <20210926190555.278589-2-y.oudjana@protonmail.com>
- <YXTNL7boyiRFKQiV@builder.lan>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <4455e52f-7e8a-c431-9977-dcf4aefe9822@linaro.org>
-Date:   Wed, 3 Nov 2021 02:50:32 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Qt0/23auoTMv6veLw+XEVIQ0c4MWIwE9bvcbG+AtpIg=;
+        b=Udq/EboKWdOaS2MCU/I9pnkKjVOBc1fzMmNEEm/6lqADQ2R4j/1mazne4mzGUa2fLn
+         MPwFtWzIgs7FW71NrC2k1FlOVze8jMgnNxfQrBW/SAxY07m29cAQjyAm7gC0oawGZdlG
+         UsVy261zmvGESHuma8TQuYgQcFxl1+21BWXx5d9rnKLbt/1BALKWcXaFIKpFgGma8sWA
+         cdb/kvrEildSAloK2xMAm5NaFt394nV2doir7NPmHdCrmdmHDMdEtrFWuEU4A8m1iDyU
+         421FwqP4nYfksgnsFlTv8pA3vSPXcYMEDPbh0rCxCWi8cC2qgYNnvFID1R5TBn6+hGKq
+         yHpw==
+X-Gm-Message-State: AOAM532NJJ+jb+60BNJ8dOU/k6q37wLFGKcwANg5cjNh4xyU94E1aEo5
+        DzCllYY2+4hD3U8MPV0Evck=
+X-Google-Smtp-Source: ABdhPJzyvp7jOK3kbhLTxYPIFODEd5sfeMGqHStr43KzAYkYnfeyZBEvVfstCkNy9Yvz+DkWB2G60A==
+X-Received: by 2002:a17:902:bd46:b0:141:9a52:fa25 with SMTP id b6-20020a170902bd4600b001419a52fa25mr32762721plx.64.1635897103884;
+        Tue, 02 Nov 2021 16:51:43 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:9ff4:d422:7d09:b7e7])
+        by smtp.gmail.com with ESMTPSA id y25sm263138pfa.70.2021.11.02.16.51.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Nov 2021 16:51:42 -0700 (PDT)
+Date:   Tue, 2 Nov 2021 16:51:40 -0700
+From:   "dmitry.torokhov" <dmitry.torokhov@gmail.com>
+To:     =?utf-8?B?5bi45buJ5b+X?= <changlianzhi@uniontech.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        jirislaby <jirislaby@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        282827961 <282827961@qq.com>
+Subject: Re: [PATCH v9] tty: Fix the keyboard led light display problem
+Message-ID: <YYHPDBDuYvcr4I/S@google.com>
+References: <tencent_10C69A8D3BC51F781F21A754@qq.com>
+ <YX/iGfXdc8UKUFCx@kroah.com>
+ <YYAXVP4v2bCpGA8s@google.com>
+ <tencent_0215A22726EA8F7807FF43A9@qq.com>
+ <YYC4QGKjY42lZXsE@google.com>
+ <tencent_58FBAAE735B7BF622A690384@qq.com>
 MIME-Version: 1.0
-In-Reply-To: <YXTNL7boyiRFKQiV@builder.lan>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <tencent_58FBAAE735B7BF622A690384@qq.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/10/2021 06:04, Bjorn Andersson wrote:
-> On Sun 26 Sep 14:06 CDT 2021, Yassine Oudjana wrote:
+On Tue, Nov 02, 2021 at 03:09:20PM +0800, 常廉志 wrote:
+> > >
+> > > Hi Dmitry, I don’t know if I fully understand what you mean, but I will
+> > > try to fully explain the intent of the current patch.
+> > > (1) What is the current bug phenomenon? I will describe with the Num
+> > > Lock indicator as the object here.
+> > >
+> > > Phenomenon 1: Suppose that Xorg is bound to tty1 in the desktop environment.
+> > > At this time, the Num light of the keyboard is on, and the keypad can input numbers
+> > > normally; assume that the state of the keyboard light saved by tty2 itself is the
+> > > opposite (the Num light is off, The keypad cannot enter numbers); at this time,
+> > > if we use the key combination "ctrl+alt+F2" to switch the system to tty2, we will find
+> > > that the Num light is still on, but the keypad cannot enter numbers.
+> > >
+> > > Phenomenon 2: Assuming that you are currently in the tty2 environment, the Num
+> > > light of the keyboard is on, and the keypad can input numbers normally; assume that
+> > > the Num state saved by Xorg is the same as that of tty2 (the Num light is on, and the
+> > > keypad can input numbers normally); At this point, if we use the key combination
+> > > "ctrl+alt+F1" to switch the system to tty1 (that is, to switch to the desktop environment)
+> > > , we will find that the Num light will not light up, but the small keyboard can input numbers .
+> > >
+> > > (2) Why do these two phenomena occur?
+> > > The variable static unsigned int ledstate is defined in keyboard.c. ledstate should be used to
+> > > tell VT the current state of the keyboard light, because after each VT sets the state of the
+> > > keyboard light, it will synchronize the latest keyboard light state to ledstate( (Implemented
+> > > in the kbd_bh() function).
+> > >
+> > > Then the problem comes. The scope of ledstate is only in VT, and it cannot include all the
+> > > scenes where the keyboard light is set. And, in the desktop environment, "kb->kbdmode ==
+> > > VC_OFF" of tty1, at this time, through the NumLock button, only Xorg's own state can be
+> > > changed, and the led state stored by tty1 cannot be changed (implemented in the kbd_keycode()
+> > > function), This results in that the kb->ledflagstate stored by tty1 itself and the ledstate in the tty
+> > > environment are always 0 at this time.
+> > >
+> > > When we switch tty, the VT code compares the current tty's kb->ledflagstate and ledstate values.
+> > > If they are inconsistent, change the state of the keyboard light (implemented in the kbd_bh() function).
+> > >
+> > > In phenomenon 1, in the desktop environment, although the actual state saved by xorg is 1, the state
+> > > of ledstate of tty is always 0. In the environment of tty2, the state of kb->ledflagstate of tty2 is also 0.
+> > > At this point, in the kbd_bh() function, comparing these two values ​​is equal, there is no need to set the
+> > > led light state to the keyboard. So after switching to tty2, the Num light is still on, but the small
+> > > keyboard cannot input numbers.
+> > >
+> > > In phenomenon 2, in the tty2 environment, the state of ledstate is set to 1, but the kb->ledflagstate of
+> > > tty1 is 0. At this time, the two values ​​are not equal in the kbd_bh() function, so set the led The light
+> > > status to the keyboard. Xorg did not redistribute the configuration during this process is also one of
+> > > the reasons. And even if Xorg re-issues the configuration at this time, it will cause confusion and only
+> > > one can be set.
+> > >
+> > > (3) How to solve it?
+> > > To solve the problem of phenomenon 1, we must first enable ledstate to correctly reflect the current
+> > > state of the keyboard light. Therefore, the solution to all versions of patch is to synchronize the
+> > > latest led state of the input device to ledstate.
 > 
->> Fix a total overlap between zap_shader_region and slpi_region, and rename
->> all regions to match the naming convention in other Qualcomm SoC device trees.
->>
->> Signed-off-by: Yassine Oudjana <y.oudjana@protonmail.com>
+> > You assume that input's device NumLock LED reflects the state of
+> > terminal. That does not have to be the case.
 > 
-> FYI, I like this series, but I held off applying it because I wanted to
-> verify that the shuffling of the memory regions works on the existing
-> 8996 boards.
+> > Now how to solve this... On VT switch redraw_screen() calls
+> > vt_set_leds_compute_shiftstate(). Can we do something like:
 > 
-> Unfortunately it didn't work, either with or without the shuffling on
-> the db820c - and I've not found the time to figure out why that is. I
-> hope to get back to this shortly (or that someone else will figure it
-> out and provide a tested-by)
+> > /*
+> > * On VT switch pretend our led state is opposite of target
+> > * state to ensure we refresh all leds.
+> > */
+> > spin_lock_irqsave(&led_lock, flags);
+> > leds = getleds();
+> > leds |= (unsigned int)kbd->lockstate << 8;
+> > ledstate = ~leds;
+> > spin_unlock_irqrestore(&led_lock, flags);
+> > 
+> > set_leds();
+> > 
+> > ?
+> Hi Dmitry:
+> /*
+> * The following piece of code exists in the kbd_bh() function
+> */
+> spin_lock_irqsave(&led_lock, flags);
+> leds = getleds();
+> leds |= (unsigned int)kbd->lockstate << 8;
+> ledstate = ~leds;
 
-I gave this a test too on my db820c. Usually the board MSS will crash 
-after ~0.1 - 0.15 seconds after booting up, then during recovery the 
-board will crash/reboot somewhere at the end of q6v5_mss_load() (and 
-typically after successful q6v5_rmb_mba_wait() call.
+  ^^^^^^^^^^^^^^^^^
 
-Occasionally (approximately 1 of 20) the MSS will not crash, presenting 
-PDS service to the userspace. Even in this state it doesn't seem to be 
-able to lock the gps location (but this might be related to the big UART 
-mezzanine sitting on top of the board).
+This is not the exact code that exists in kbd_bh(). It lacks the line
+above which should cause LEDs be synchronized once set_leds()/kbd_bh()
+runs.
 
-Unfortunately there seem to be no SLPI firmware for the db820c, so I can 
-not test slpi.
-
-A notice regarding the patchset itself. It looks like pil_q6v5_mss.c 
-driver misses mx and cx proxy power domains for the MSS_MSM8996 case.
-
+> spin_unlock_irqrestore(&led_lock, flags);
 > 
-> Regards,
-> Bjorn
+> Moreover, the process of calling the set_leds() function is 
+> the process of calling the kbd_bh function:
+> static void set_leds(void)
+> {
+> tasklet_schedule(&keyboard_tasklet);
+> }
+> static DECLARE_TASKLET_DISABLED(keyboard_tasklet, kbd_bh);
 > 
->> ---
->>   .../dts/qcom/msm8996-sony-xperia-tone.dtsi    | 18 ++++--
->>   .../boot/dts/qcom/msm8996-xiaomi-common.dtsi  | 18 +++---
->>   arch/arm64/boot/dts/qcom/msm8996.dtsi         | 63 ++++++++++---------
->>   3 files changed, 55 insertions(+), 44 deletions(-)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone.dtsi b/arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone.dtsi
->> index 507396c4d23b..4c26e66f0610 100644
->> --- a/arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone.dtsi
->> @@ -13,9 +13,10 @@
->>   #include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
->>   #include <dt-bindings/pinctrl/qcom,pmic-mpp.h>
->>   
->> -/delete-node/ &slpi_region;
->> -/delete-node/ &venus_region;
->> -/delete-node/ &zap_shader_region;
->> +/delete-node/ &adsp_mem;
->> +/delete-node/ &slpi_mem;
->> +/delete-node/ &venus_mem;
->> +/delete-node/ &gpu_mem;
->>   
->>   / {
->>   	qcom,msm-id = <246 0x30001>; /* MSM8996 V3.1 (Final) */
->> @@ -46,18 +47,23 @@ cont_splash_mem: memory@83401000 {
->>   			no-map;
->>   		};
->>   
->> -		zap_shader_region: gpu@90400000 {
->> +		adsp_mem: adsp@8ea00000 {
->> +			reg = <0x0 0x8ea00000 0x0 0x1a00000>;
->> +			no-map;
->> +		};
->> +
->> +		gpu_mem: gpu@90400000 {
->>   			compatible = "shared-dma-pool";
->>   			reg = <0x0 0x90400000 0x0 0x2000>;
->>   			no-map;
->>   		};
->>   
->> -		slpi_region: memory@90500000 {
->> +		slpi_mem: memory@90500000 {
->>   			reg = <0 0x90500000 0 0xa00000>;
->>   			no-map;
->>   		};
->>   
->> -		venus_region: memory@90f00000 {
->> +		venus_mem: memory@90f00000 {
->>   			reg = <0 0x90f00000 0 0x500000>;
->>   			no-map;
->>   		};
->> diff --git a/arch/arm64/boot/dts/qcom/msm8996-xiaomi-common.dtsi b/arch/arm64/boot/dts/qcom/msm8996-xiaomi-common.dtsi
->> index d239b01b8505..a5e7bccadba2 100644
->> --- a/arch/arm64/boot/dts/qcom/msm8996-xiaomi-common.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/msm8996-xiaomi-common.dtsi
->> @@ -66,32 +66,32 @@ memory@88800000 {
->>   
->>   		/* This platform has all PIL regions offset by 0x1400000 */
->>   		/delete-node/ mpss@88800000;
->> -		mpss_region: mpss@89c00000 {
->> +		mpss_mem: mpss@89c00000 {
->>   			reg = <0x0 0x89c00000 0x0 0x6200000>;
->>   			no-map;
->>   		};
->>   
->>   		/delete-node/ adsp@8ea00000;
->> -		adsp_region: adsp@8ea00000 {
->> +		adsp_mem: adsp@8fe00000 {
->>   			reg = <0x0 0x8fe00000 0x0 0x1b00000>;
->>   			no-map;
->>   		};
->>   
->> -		/delete-node/ slpi@90b00000;
->> -		slpi_region: slpi@91900000 {
->> +		/delete-node/ slpi@90500000;
->> +		slpi_mem: slpi@91900000 {
->>   			reg = <0x0 0x91900000 0x0 0xa00000>;
->>   			no-map;
->>   		};
->>   
->> -		/delete-node/ gpu@8f200000;
->> -		zap_shader_region: gpu@92300000 {
->> +		/delete-node/ gpu@90f00000;
->> +		gpu_mem: gpu@92300000 {
->>   			compatible = "shared-dma-pool";
->>   			reg = <0x0 0x92300000 0x0 0x2000>;
->>   			no-map;
->>   		};
->>   
->>   		/delete-node/ venus@91000000;
->> -		venus_region: venus@90400000 {
->> +		venus_mem: venus@92400000 {
->>   			reg = <0x0 0x92400000 0x0 0x500000>;
->>   			no-map;
->>   		};
->> @@ -107,7 +107,7 @@ ramoops@92900000 {
->>   			pmsg-size = <0x40000>;
->>   		};
->>   
->> -		/delete-node/ rmtfs@86700000;
->> +		/delete-node/ rmtfs;
->>   		rmtfs@f6c00000 {
->>   			compatible = "qcom,rmtfs-mem";
->>   			reg = <0 0xf6c00000 0 0x200000>;
->> @@ -118,7 +118,7 @@ rmtfs@f6c00000 {
->>   		};
->>   
->>   		/delete-node/ mba@91500000;
->> -		mba_region: mba@f6f00000 {
->> +		mba_mem: mba@f6f00000 {
->>   			reg = <0x0 0xf6f00000 0x0 0x100000>;
->>   			no-map;
->>   		};
->> diff --git a/arch/arm64/boot/dts/qcom/msm8996.dtsi b/arch/arm64/boot/dts/qcom/msm8996.dtsi
->> index eb3ec5ff46eb..1495fff6ffc9 100644
->> --- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
->> @@ -384,60 +384,65 @@ reserved-memory {
->>   		#size-cells = <2>;
->>   		ranges;
->>   
->> -		mba_region: mba@91500000 {
->> -			reg = <0x0 0x91500000 0x0 0x200000>;
->> +		hyp_mem: memory@85800000 {
->> +			reg = <0x0 0x85800000 0x0 0x600000>;
->>   			no-map;
->>   		};
->>   
->> -		slpi_region: slpi@90b00000 {
->> -			reg = <0x0 0x90b00000 0x0 0xa00000>;
->> +		xbl_mem: memory@85e00000 {
->> +			reg = <0x0 0x85e00000 0x0 0x200000>;
->>   			no-map;
->>   		};
->>   
->> -		venus_region: venus@90400000 {
->> -			reg = <0x0 0x90400000 0x0 0x700000>;
->> +		smem_mem: smem-mem@86000000 {
->> +			reg = <0x0 0x86000000 0x0 0x200000>;
->>   			no-map;
->>   		};
->>   
->> -		adsp_region: adsp@8ea00000 {
->> -			reg = <0x0 0x8ea00000 0x0 0x1a00000>;
->> +		tz_mem: memory@86200000 {
->> +			reg = <0x0 0x86200000 0x0 0x2600000>;
->>   			no-map;
->>   		};
->>   
->> -		mpss_region: mpss@88800000 {
->> -			reg = <0x0 0x88800000 0x0 0x6200000>;
->> +		rmtfs_mem: rmtfs {
->> +			compatible = "qcom,rmtfs-mem";
->> +
->> +			size = <0x0 0x200000>;
->> +			alloc-ranges = <0x0 0xa0000000 0x0 0x2000000>;
->>   			no-map;
->> +
->> +			qcom,client-id = <1>;
->> +			qcom,vmid = <15>;
->>   		};
->>   
->> -		smem_mem: smem-mem@86000000 {
->> -			reg = <0x0 0x86000000 0x0 0x200000>;
->> +		mpss_mem: mpss@88800000 {
->> +			reg = <0x0 0x88800000 0x0 0x6200000>;
->>   			no-map;
->>   		};
->>   
->> -		memory@85800000 {
->> -			reg = <0x0 0x85800000 0x0 0x800000>;
->> +		adsp_mem: adsp@8ea00000 {
->> +			reg = <0x0 0x8ea00000 0x0 0x1b00000>;
->>   			no-map;
->>   		};
->>   
->> -		memory@86200000 {
->> -			reg = <0x0 0x86200000 0x0 0x2600000>;
->> +		slpi_mem: slpi@90500000 {
->> +			reg = <0x0 0x90500000 0x0 0xa00000>;
->>   			no-map;
->>   		};
->>   
->> -		rmtfs@86700000 {
->> -			compatible = "qcom,rmtfs-mem";
->> -
->> -			size = <0x0 0x200000>;
->> -			alloc-ranges = <0x0 0xa0000000 0x0 0x2000000>;
->> +		gpu_mem: gpu@90f00000 {
->> +			compatible = "shared-dma-pool";
->> +			reg = <0x0 0x90f00000 0x0 0x100000>;
->>   			no-map;
->> +		};
->>   
->> -			qcom,client-id = <1>;
->> -			qcom,vmid = <15>;
->> +		venus_mem: venus@91000000 {
->> +			reg = <0x0 0x91000000 0x0 0x500000>;
->> +			no-map;
->>   		};
->>   
->> -		zap_shader_region: gpu@8f200000 {
->> -			compatible = "shared-dma-pool";
->> -			reg = <0x0 0x90b00000 0x0 0xa00000>;
->> +		mba_mem: mba@91500000 {
->> +			reg = <0x0 0x91500000 0x0 0x200000>;
->>   			no-map;
->>   		};
->>   	};
->> @@ -1013,7 +1018,7 @@ opp-133000000 {
->>   			};
->>   
->>   			zap-shader {
->> -				memory-region = <&zap_shader_region>;
->> +				memory-region = <&gpu_mem>;
->>   			};
->>   		};
->>   
->> @@ -2001,7 +2006,7 @@ venus: video-codec@c00000 {
->>   				 <&venus_smmu 0x2c>,
->>   				 <&venus_smmu 0x2d>,
->>   				 <&venus_smmu 0x31>;
->> -			memory-region = <&venus_region>;
->> +			memory-region = <&venus_mem>;
->>   			status = "disabled";
->>   
->>   			video-decoder {
->> @@ -3008,7 +3013,7 @@ adsp_pil: remoteproc@9300000 {
->>   			clocks = <&xo_board>;
->>   			clock-names = "xo";
->>   
->> -			memory-region = <&adsp_region>;
->> +			memory-region = <&adsp_mem>;
->>   
->>   			qcom,smem-states = <&smp2p_adsp_out 0>;
->>   			qcom,smem-state-names = "stop";
->> -- 
->> 2.33.0
->>
->>
+> I don't really understand what you mean here, but one thing 
+> can be confirmed, my patch just synchronizes the current input 
+> device's led state to ledstate. Moreover, after VT's 
+> kb->ledflagstate is set to the input device, it will also 
+> be synchronized to ledstate (the original logic of the kbd_bh() 
+> function), which does not destroy the original internal logic of 
+> VT. In addition, I have tested it, whether it is switching 
+> between the desktop environment (tty1) and tty2~6, or switching 
+> between tty2~6, the indicator status of the keyboard light is 
+> correct, and it is normal in the multi-keyboard state. . 
 
+And I keep telling you that your approach to solving the problem is not
+correct because state of a random input device is not necessarily
+connected to the state of a VT.
+
+Thanks.
 
 -- 
-With best wishes
 Dmitry
