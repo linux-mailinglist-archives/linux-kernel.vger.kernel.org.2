@@ -2,108 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66151442AEB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 10:50:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21191442AFC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 10:51:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231978AbhKBJww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 05:52:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34712 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbhKBJwY (ORCPT
+        id S231857AbhKBJxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 05:53:30 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:60446
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231853AbhKBJwc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 05:52:24 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0455FC0613B9
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 02:49:49 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0f62005f026b777d4e743c.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:6200:5f02:6b77:7d4e:743c])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Tue, 2 Nov 2021 05:52:32 -0400
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com [209.85.208.198])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 77C731EC0295;
-        Tue,  2 Nov 2021 10:49:48 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1635846588;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=8BWnG30MtY0UUhkaiHYGZzY4ggSfKaanZFstlmENNNU=;
-        b=KO3JlJSf1mqxUGS6Psivk0XaGEOGXs3CQtOFr13HLmeMhhveiegwU5heaUDIdA1cYGH4CN
-        vfUkBS+PpGXP40Z027J8h3H/USqcIiuKjaj850QLvpXh+LYHn9g2ukhmnObmcpVXDNRcjO
-        O315g6jdka9sV7Pwm+xuEBnMyYKtT3k=
-Date:   Tue, 2 Nov 2021 10:49:44 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Lai Jiangshan <laijs@linux.alibaba.com>
-Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Jan Beulich <jbeulich@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Juergen Gross <jgross@suse.com>, Peter Anvin <hpa@zytor.com>,
-        xen-devel@lists.xenproject.org, Andy Lutomirski <luto@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>
-Subject: Re: [PATCH V4 04/50] x86/xen: Add
- xenpv_restore_regs_and_return_to_usermode()
-Message-ID: <YYEJuIgQukcDzy1R@zn.tnic>
-References: <20211026141420.17138-1-jiangshanlai@gmail.com>
- <20211026141420.17138-5-jiangshanlai@gmail.com>
- <YYD9ohN2Zcy4EdMb@zn.tnic>
- <d4ae23dd-377e-8316-909b-d5bdeacc0904@linux.alibaba.com>
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id A54503F1AA
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 09:49:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1635846597;
+        bh=H4PRgtqYnlG+AxvXi78i+Kv6j0hX3gecOQeQHgsvRvQ=;
+        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+         In-Reply-To:Content-Type;
+        b=JkRgX9/7rmGOgYdYlyoBKqcXtwqGfUUzBm1iwVmrR7zfAaQudv0VjDjqCmfGz+6CE
+         AxJUtebapskw4vFJJgDH3NpLADjXz+UwNflCLQ2SjtGjrgQqh1wTPkhB07TkWNe+IX
+         10gGpabAUZ+kPTJg+yAnjFamZhw4S5oXM/59yEZIwvAn9tczD3p/2B0zipZSk+sZqi
+         PrzyT0WRRsLgx5tO3pbfxDLvPWOXPtzKEwiyMyEhh/0iE8GQy+s18rnsPBaCOc9IRE
+         KiTEnoS0C8qtcMBveZOjrqE23TKoFl2/o8tR+DdF9x9Q3YI8j88nzIuwi1VrYg7kXw
+         aXXZqEYrlkf3g==
+Received: by mail-lj1-f198.google.com with SMTP id 73-20020a2e054c000000b0021668f13ce2so1337762ljf.17
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 02:49:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=H4PRgtqYnlG+AxvXi78i+Kv6j0hX3gecOQeQHgsvRvQ=;
+        b=N2Ar+jnxLTd9mhceSgR0kwN26MJcg1tDAzw1Vo77TFJ5IbBn+avX2lQJBTJnJwoj75
+         Rujh4iPIlVB22pygcJ83Y7vXrquQLd8s06g0bWZLz4ExtEC955YeCphpL87/du+Vr+kh
+         ChBkPY3hoG8zt6mnWTTqQLXUu2FZLNd1T61ZFdLxzLOaFuCYRwfS7t/YF2yCngF8gAuw
+         3WVTy/xBdRP8//0cbKth5K2lTMczkr9gaP9JLx9BTJCnKveN3UtojFOK792wyqjDVYrB
+         MrUiPAHr2bBplwvKY4Bd7lLVT5iuu62JLUQK14PPOZOstGfo2VXo7KG+ZGzoNylKXMHB
+         JtvQ==
+X-Gm-Message-State: AOAM532i0MVlQVYKHpclIlyUMI78SON7jwcHGRawoVMpojPM9Bp0SN8Z
+        hITENJ4/ObHQI2qr2LIQ1P/BbvYQ5ZDEqKx41yaSXyQD3mpzyT0gVi8VRt4OsTYAgwyzn2LZ5x9
+        yjmoTfV2opKbHxHYYITBllIHp99ykn/gG0cBQMWr5tw==
+X-Received: by 2002:a05:6512:553:: with SMTP id h19mr13615721lfl.113.1635846597092;
+        Tue, 02 Nov 2021 02:49:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwzlgvzofJuAAE8dNqBMYnyvIkBrMqxjncCeUi48MRldl6QE9k2xwTc7MDmkRTJvyHkahXTpQ==
+X-Received: by 2002:a05:6512:553:: with SMTP id h19mr13615700lfl.113.1635846596921;
+        Tue, 02 Nov 2021 02:49:56 -0700 (PDT)
+Received: from [192.168.3.67] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id g18sm1633602lfr.286.2021.11.02.02.49.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Nov 2021 02:49:56 -0700 (PDT)
+Message-ID: <c7d88f99-f370-da6b-5328-58f294f8386d@canonical.com>
+Date:   Tue, 2 Nov 2021 10:49:55 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <d4ae23dd-377e-8316-909b-d5bdeacc0904@linux.alibaba.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Subject: Re: [PATCH v2 04/12] watchdog: s3c2410: Let kernel kick watchdog
+Content-Language: en-US
+To:     Sam Protsenko <semen.protsenko@linaro.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org
+References: <20211031122216.30212-1-semen.protsenko@linaro.org>
+ <20211031122216.30212-5-semen.protsenko@linaro.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20211031122216.30212-5-semen.protsenko@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 05:19:46PM +0800, Lai Jiangshan wrote:
-> It will add a 5-byte NOP at the beginning of the native
-> swapgs_restore_regs_and_return_to_usermode.
+On 31/10/2021 13:22, Sam Protsenko wrote:
+> When "tmr_atboot" module param is set, the watchdog is started in
+> driver's probe. In that case, also set WDOG_HW_RUNNING bit to let
+> watchdog core driver know it's running. This way watchdog core can kick
+> the watchdog for us (if CONFIG_WATCHDOG_HANDLE_BOOT_ENABLED option is
+> enabled), until user space takes control.
+> 
+> WDOG_HW_RUNNING bit must be set before registering the watchdog. So the
+> "tmr_atboot" handling code is moved before watchdog registration, to
+> avoid performing the same check twice. This is also logical because
+> WDOG_HW_RUNNING bit makes WDT core expect actually running watchdog.
+> 
+> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> ---
+> Changes in v2:
+>   - Added explanation on moving the code block to commit message
+>   - [PATCH 03/12] handles the case when tmr_atboot is present but valid
+>     timeout wasn't found
+> 
+>  drivers/watchdog/s3c2410_wdt.c | 26 +++++++++++++++-----------
+>  1 file changed, 15 insertions(+), 11 deletions(-)
+> 
 
-So?
 
-> I avoided adding unneeded code in the native code even if it is NOPs
-> and avoided melting xenpv-one into the native one which will reduce
-> the code readability.
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-How does this reduce code readability?!
 
-diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-index e38a4cf795d9..bf1de54a1fca 100644
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -567,6 +567,10 @@ __irqentry_text_end:
- 
- SYM_CODE_START_LOCAL(common_interrupt_return)
- SYM_INNER_LABEL(swapgs_restore_regs_and_return_to_usermode, SYM_L_GLOBAL)
-+
-+	ALTERNATIVE "", "jmp xenpv_restore_regs_and_return_to_usermode", \
-+                X86_FEATURE_XENPV
-+
- #ifdef CONFIG_DEBUG_ENTRY
- 	/* Assert that pt_regs indicates user mode. */
- 	testb	$3, CS(%rsp)
-
-> I will follow your preference since a 5-byte NOP is so negligible in the slow
-> path with an iret instruction.
-
-Yes, we do already gazillion things on those entry and exit paths.
-
-> Or other option that adds macros to wrap the ALTERNATIVE.
-> RESTORE_REGS_AND_RETURN_TO_USERMODE and
-> COND_RESTORE_REGS_AND_RETURN_TO_USERMODE (test %eax before jmp in native case)
-
-No, the main goal is to keep the asm code as readable and as simple as
-possible.
-
-If macros or whatever need to be added, there better be a good reason
-for them. Saving a NOP is not one of them.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Best regards,
+Krzysztof
