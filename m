@@ -2,152 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 978CC442E55
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 13:39:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62899442E59
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 13:40:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231312AbhKBMlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 08:41:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26048 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229850AbhKBMlo (ORCPT
+        id S231239AbhKBMme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 08:42:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229538AbhKBMmd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 08:41:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635856749;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jIkHBillbCKCZYFZuYQdXQ8luVuR63mT21wNxhTkVuM=;
-        b=BB++xVUynx8mhTUznoCeZvnNricmBVTo3YWK3RqGBFvaHCZKwymWZXbRTE8pHUAqPgbk+K
-        OvJ2pw4+tqJsCJRHamxK+7EGE6UC9oMnGvaTNHyJ2AIHRBYC2ukXELmwZXAxCnIMbrgEGL
-        2fBHMhMpwkNWf2c0eV9b2+59jlj2ENc=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-271-M0G65OAON1eJ7BjEpy4_Xw-1; Tue, 02 Nov 2021 08:39:08 -0400
-X-MC-Unique: M0G65OAON1eJ7BjEpy4_Xw-1
-Received: by mail-wm1-f69.google.com with SMTP id z137-20020a1c7e8f000000b0030cd1800d86so6905230wmc.2
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 05:39:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=jIkHBillbCKCZYFZuYQdXQ8luVuR63mT21wNxhTkVuM=;
-        b=IpiizpoWuBCLZeUUWcylUniocJp1DB76W3FNNCpsNow3VigUqjctB4xOQzsIP4UNas
-         ohTQfbKBfq0mRabIksUC5oe3tyySFCrEDPa3y3TrAUCY6KIEtKNyWNCdDKXRFAFRQI/U
-         q/lPn1NEVg/QTqzYpN0rFFLIPiT9cY7tDeOJ5AKazeOe9+vVv6xIwhKwJqhzQ625BgYb
-         gq7FoSrgzD5YB6aSQ6WIHNzDAX2MDCz6R6fUOgmUUBOHUWvA2u7NpcMfF3cXNaBfcpQy
-         hQQvVcXodUE6yqmrovJ2ZwvRdI4MzfL6zTQ7LGE2P0OLOZkyVEGT8Ui7kyD7fWjDS6HY
-         mbMw==
-X-Gm-Message-State: AOAM530VgI+nu4oAkjFX3j/DxFm8Ps016ylScGJ1utRhOHAaM7y9C4d9
-        xREjEZ4UtILfPw9u0fFhNEomxEcc1fux/uguZefDvQGGFg5WM/Yez+ck7dzK22d9JQE+LbqDviH
-        lG+5lWZ/xl3YLwLkBJHOCB+gx
-X-Received: by 2002:a5d:648b:: with SMTP id o11mr47850882wri.56.1635856747722;
-        Tue, 02 Nov 2021 05:39:07 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyPAtManKqas0sqXcvZrMMHN6XCbXPcL93RLbXpskjnJsSOhAZs99TXw5dZs5B4HcxSez/rGg==
-X-Received: by 2002:a5d:648b:: with SMTP id o11mr47850848wri.56.1635856747513;
-        Tue, 02 Nov 2021 05:39:07 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6810.dip0.t-ipconnect.de. [91.12.104.16])
-        by smtp.gmail.com with ESMTPSA id h14sm2656442wmq.34.2021.11.02.05.39.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Nov 2021 05:39:07 -0700 (PDT)
-Message-ID: <e7aed7c0-b7b1-4a94-f323-0bcde2f879d2@redhat.com>
-Date:   Tue, 2 Nov 2021 13:39:06 +0100
+        Tue, 2 Nov 2021 08:42:33 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54BEAC061714;
+        Tue,  2 Nov 2021 05:39:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=Q2t2Yay9P4Tekd7fAPWyB6W35FYZ8UjNPE7qgmxtFgo=; b=mzrMOti1jC7Z7IrbXrFKTxSdjj
+        xBdhuoTsRPyszsPNVJYGOM9tVuEUkNjumWw8op58jmC+Klrwy0rGjhCSOHgJPbCkVC+1lzq2mtm4D
+        t86k3knymXnDi/mx9OWBtMV3bSEpm+L3YEGn40GGagGNuqVLdhQdFZ1K30/Ok8hczyJxGYVUzo8Vq
+        FYQrT+XN+w0HPHiv8oWogVv0zNN+muK+TF7ib5PiIJg3onDrfMcWBQ+RsCcRpXXJ25YBGrlCPoskT
+        MtH87Vcwn9uecvpIVZxx1A1hnxQMYmxObQWAsq5wWvqjtKO2zs1QMac4NsDB3hJivGwUOXqkzQNel
+        YG6nSHWw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55438)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mht50-0003oe-Oy; Tue, 02 Nov 2021 12:39:54 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mht4y-0005QI-Rn; Tue, 02 Nov 2021 12:39:52 +0000
+Date:   Tue, 2 Nov 2021 12:39:52 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Grygorii Strashko <grygorii.strashko@ti.com>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-kernel@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [RFC PATCH] net: phy/mdio: enable mmd indirect access through
+ phy_mii_ioctl()
+Message-ID: <YYExmHYW49jOjfOt@shell.armlinux.org.uk>
+References: <20211101182859.24073-1-grygorii.strashko@ti.com>
+ <YYBBHsFEwGdPJw3b@lunn.ch>
+ <YYBF3IZoSN6/O6AL@shell.armlinux.org.uk>
+ <YYCLJnY52MoYfxD8@lunn.ch>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH] mm: fix panic in __alloc_pages
-Content-Language: en-US
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Alexey Makhalov <amakhalov@vmware.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Oscar Salvador <OSalvador@suse.com>
-References: <20211101201312.11589-1-amakhalov@vmware.com>
- <YYDtDkGNylpAgPIS@dhcp22.suse.cz>
- <7136c959-63ff-b866-b8e4-f311e0454492@redhat.com>
- <C69EF2FE-DFF6-492E-AD40-97A53739C3EC@vmware.com>
- <YYD/FkpAk5IvmOux@dhcp22.suse.cz>
- <b2e4a611-45a6-732a-a6d3-6042afd2af6e@redhat.com>
- <E34422F0-A44A-48FD-AE3B-816744359169@vmware.com>
- <b3908fce-6b07-8390-b691-56dd2f85c05f@redhat.com>
- <YYEkqH8l0ASWv/JT@dhcp22.suse.cz>
- <42abfba6-b27e-ca8b-8cdf-883a9398b506@redhat.com>
- <YYEun6s/mF9bE+rQ@dhcp22.suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <YYEun6s/mF9bE+rQ@dhcp22.suse.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YYCLJnY52MoYfxD8@lunn.ch>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> Yes, but a zonelist cannot be correct for an offline node, where we might
->> not even have an allocated pgdat yet. No pgdat, no zonelist. So as soon as
->> we allocate the pgdat and set the node online (->hotadd_new_pgdat()), the zone lists have to be correct. And I can spot an build_all_zonelists() in hotadd_new_pgdat().
+On Tue, Nov 02, 2021 at 01:49:42AM +0100, Andrew Lunn wrote:
+> > The use of the indirect registers is specific to PHYs, and we already
+> > know that various PHYs don't support indirect access, and some emulate
+> > access to the EEE registers - both of which are handled at the PHY
+> > driver level.
 > 
-> Yes, that is what I had in mind. We are talking about two things here.
-> Memoryless nodes and offline nodes. The later sounds like a bug to me.
-
-Agreed. memoryless nodes should just have proper zonelists -- which
-seems to be the case.
-
->> Maybe __alloc_pages_bulk() and alloc_pages_node() should bail out directly
->> (VM_BUG()) in case we're providing an offline node with eventually no/stale pgdat as
->> preferred nid.
+> That is actually an interesting point. Should the ioctl call actually
+> use the PHY driver read_mmd and write_mmd? Or should it go direct to
+> the bus? realtek uses MII_MMD_DATA for something to do with suspend,
+> and hence it uses genphy_write_mmd_unsupported(), or it has its own
+> function emulating MMD operations.
 > 
-> Historically, those allocation interfaces were not trying to be robust
-> against wrong inputs because that adds cpu cycles for everybody for
-> "what if buggy" code. This has worked (surprisingly) well. Memory less
-> nodes have brought in some confusion but this is still something that we
-> can address on a higher level. Nobody give arbitrary nodes as an input.
-> cpu_to_node might be tricky because it can point to a memory less node
-> which along with __GFP_THISNODE is very likely not something anybody
-> wants. Hence cpu_to_mem should be used for allocations. I hate we have
-> two very similar APIs...
-
-To be precise, I'm wondering if we should do:
-
-diff --git a/include/linux/gfp.h b/include/linux/gfp.h
-index 55b2ec1f965a..8c49b88336ee 100644
---- a/include/linux/gfp.h
-+++ b/include/linux/gfp.h
-@@ -565,7 +565,7 @@ static inline struct page *
- __alloc_pages_node(int nid, gfp_t gfp_mask, unsigned int order)
- {
-        VM_BUG_ON(nid < 0 || nid >= MAX_NUMNODES);
--       VM_WARN_ON((gfp_mask & __GFP_THISNODE) && !node_online(nid));
-+       VM_WARN_ON(!node_online(nid));
-
-        return __alloc_pages(gfp_mask, order, nid, NULL);
- }
-
-(Or maybe VM_BUG_ON)
-
-Because it cannot possibly work and we'll dereference NULL later.
-
+> So maybe the ioctl handler actually needs to use __phy_read_mmd() if
+> there is a phy at the address, rather than go direct to the bus?
 > 
-> But something seems wrong in this case. cpu_to_node shouldn't return
-> offline nodes. That is just a land mine. It is not clear to me how the
-> cpu has been brought up so that the numa node allocation was left
-> behind. As pointed in other email add_cpu resp. cpu_up is not it.
-> Is it possible that the cpu bring up was only half way?
+> Or maybe we should just say no, you should do this all from userspace,
+> by implementing C45 over C22 in userspace, the ioctl allows that, the
+> kernel does not need to be involved.
 
-I tried to follow the code (what sets a CPU present, what sets a CPU
-online, when do we update cpu_to_node() mapping) and IMHO it's all a big
-mess. Maybe it's clearer to people familiar with that code, but CPU
-hotplug in general seems to be a confusing piece of (arch-specific) code.
+Yes and no. There's a problem accessing anything that involves some kind
+of indirect or paged access with the current API - you can only do one
+access under the bus lock at a time, which makes the whole thing
+unreliable. We've accepted that unreliability on the grounds that this
+interface is for debugging only, so if it does go wrong, you get to keep
+all the pieces!
 
-Also, I have no clue if cpu_to_node() mapping will get invalidated after
-unplugging that CPU, or if the mapping will simply stay around for all
-eternity ...
+The paged access case is really no different from the indirect C45 case.
+They're both exactly the same type of indirect access, just using
+different registers.
+
+That said, the MII ioctls are designed to be a bus level thing - you can
+address anything on the MII bus with them. Pushing the ioctl up to the
+PHY layer means we need to find the right phy device to operate on. What
+if we attempt a C45 access at an address that there isn't a phy device?
+
+For example, what would be the effect of trying a C45 indirect access to
+a DSA switch?
+
+Personally, my feeling would be that if we want to solve this, we need
+to solve this properly - we need to revise the interface so it's
+possible to request the kernel to perform a group of MII operations, so
+that userspace can safely access any paged/indirect register. With that
+solved, there will be no issue with requiring userspace to know what
+it's doing with indirect C45 accesses.
 
 -- 
-Thanks,
-
-David / dhildenb
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
