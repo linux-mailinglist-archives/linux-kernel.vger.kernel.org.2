@@ -2,90 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 550E54428C4
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 08:44:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 711CE4428C8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 08:46:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230324AbhKBHrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 03:47:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39604 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230519AbhKBHq4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 03:46:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3936B60F56;
-        Tue,  2 Nov 2021 07:44:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635839060;
-        bh=K+5794DO0CyR1WowT7L3guGby6Lpr9bHzC6ZoG6dV/I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Vq9/XrwBdPx+SkNvMiK+xsGpRUUBOGlQGR4cdQ3SMXR7+sqxCmdN8gPeNmm31qtpn
-         hhQNVQveYd8Pz0qdYZwet6cfa2EyvDxAOTCuIwKrAhk+Tu2AvWIKQ8HyeVGBD9Vr7r
-         Jihkch6CkRqk/5t8wXAHl8SJpGWZk6bTAGBuUZXqMow0HmXaQBpzrfPcrRbG1/nBmL
-         q32n5vU5Gv2otj8+y6oaS2UZmR72sC49o/D66GectLPGoh/aJiBuzhTd/vUvZtB/kS
-         7nE1iobpde/jg3pEl65+3BvgYFgeRrfPui2jALpvoh/lmZ6KiP06hcicKdl9Du5+Pj
-         LdJpHCpNwfoIg==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1mhoSx-00071v-FO; Tue, 02 Nov 2021 08:44:20 +0100
-Date:   Tue, 2 Nov 2021 08:44:19 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     cgel.zte@gmail.com
-Cc:     joe@perches.com, andrew@aj.id.au, fancer.lancer@gmail.com,
-        gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        macro@orcam.me.uk, pali@kernel.org, yao.jing2@zte.com.cn,
-        zealci@zte.com.cn
-Subject: Re: [PATCH v2] drivers: tty: replace snprintf in show functions with
- sysfs_emit
-Message-ID: <YYDsU778y71byGdj@hovoldconsulting.com>
-References: <b42482be11d04963fed0903ce1bd983742efc5c6.camel@perches.com>
- <20211102065206.3368-1-yao.jing2@zte.com.cn>
+        id S231138AbhKBHsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 03:48:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34694 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229924AbhKBHsc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 03:48:32 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 801C8C061714;
+        Tue,  2 Nov 2021 00:45:58 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id g11so7370770pfv.7;
+        Tue, 02 Nov 2021 00:45:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qbB02tYMjQ6ue9qGZBRJ8S9gr/0EkY+iFqk7/OfhdSU=;
+        b=BhFbnPPiVL90b5KhHYM2HP+eTEZRg062PnJWkTw56i6SZ9dZG8pz9cEVMuN1DU0Yw9
+         Kob+UwPBg3n8umm2QjxQI//s2gfLZeiJLR/4IhK7tgK/tXtLj1F6ifRhZh23rUQNOhTB
+         DW8y9ATuZdvOiE1sbhe1hRY15PsVTfCgKwanoNXGlg9QuUBM72QJzsBVZeRn4YuZ1gZ3
+         VgJOod/ukGHDVfmv+V1bb3ttPprBgV9rCZS6SEgagegTjb+webyJUmVR53hbcDAVRWCW
+         akb34oEic5Dwb2a27l0U/FhIGfRzgewCkng96l4Gzd6hfQNqPyKcZ+o5hM8mtBqFgffT
+         mjYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qbB02tYMjQ6ue9qGZBRJ8S9gr/0EkY+iFqk7/OfhdSU=;
+        b=6gIUeWG+sZQwgrHi+cBfMbeGvkzb4cz08+pkAWV3MvjQHL8cfcJZT1nvoXT5ecRgG+
+         EIM9jCJgvH8Mh+T84qSVB7XY7lMB/cJhXegt5rFB5Dvs58yNafuwoBXYUPdmTvVy9sfZ
+         S4DBfk5RSlQpFkyyQWTI0OzxQZu6NBBpy2LT6VJz7jDfn1KgmYBbFuKVxo6U0r2NCj95
+         /nVGkVbyMCzwq2UeaVLOmPp3EFSxuhdNRZWZaCZzlFj01ZRVMKjf92NUg65BioDvyER5
+         EWIrvF6lrKiC7G/Vs7lUrlGUqakdI+OcQirISlTR4g0v2BRXHA7N7oq8FkRHay+s5Fqz
+         gVWQ==
+X-Gm-Message-State: AOAM531m+5iPiWLAo1FYRjrzA5zArMDKqGDCYLoRZyxjAlFTi+W7gvbz
+        JCuPF/WaIvfaAngTDPATsgJmJ22vAzo=
+X-Google-Smtp-Source: ABdhPJwT9OpxlXsOQ18uXTAetKiDu8ic53T4TTtMxfVe5F7MqWrLeowkvJI2AfmFHl923Lstqz3IRQ==
+X-Received: by 2002:a05:6a00:15ca:b0:47f:59c4:dcf6 with SMTP id o10-20020a056a0015ca00b0047f59c4dcf6mr25978760pfu.63.1635839157626;
+        Tue, 02 Nov 2021 00:45:57 -0700 (PDT)
+Received: from ELIJAHBAI-MB0.tencent.com ([103.7.29.31])
+        by smtp.gmail.com with ESMTPSA id u13sm14668281pga.92.2021.11.02.00.45.55
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 02 Nov 2021 00:45:57 -0700 (PDT)
+From:   Haimin Zhang <tcs.kernel@gmail.com>
+X-Google-Original-From: Haimin Zhang <tcs_kernel@tencent.com>
+To:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Haimin Zhang <tcs_kernel@tencent.com>,
+        TCS Robot <tcs_robot@tencent.com>
+Subject: [PATCH] USB:  array-index-out-of-bounds in ehci_brcm_hub_control
+Date:   Tue,  2 Nov 2021 15:44:46 +0800
+Message-Id: <20211102074446.87107-1-tcs_kernel@tencent.com>
+X-Mailer: git-send-email 2.30.1 (Apple Git-130)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211102065206.3368-1-yao.jing2@zte.com.cn>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 06:52:06AM +0000, cgel.zte@gmail.com wrote:
-> From: Jing Yao <yao.jing2@zte.com.cn>
-> 
-> coccicheck complains about the use of snprintf() in sysfs show
-> functions:
-> WARNING use scnprintf or sprintf
-> 
-> Use sysfs_emit instead of scnprintf or sprintf makes more sense.
-> 
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Jing Yao <yao.jing2@zte.com.cn>
-> ---
+There isn't enough check parameter `wIndex` in the function 
+`ehci_brcm_hub_control`;due to the size of array `port_status`
+is 15, so it may lead to out of bounds.
 
-What changed since v1? Always include a changelog here.
+Signed-off-by: Haimin Zhang <tcs_kernel@tencent.com>
+Reported-by: TCS Robot <tcs_robot@tencent.com>
+---
+ drivers/usb/host/ehci-brcm.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Also you ignored my comment on the patch Subject. Including "drivers: "
-is never correct. You should also mention which driver you're changing
-since it's not done subtree-wide for tty. 
+diff --git a/drivers/usb/host/ehci-brcm.c b/drivers/usb/host/ehci-brcm.c
+index d3626bfa966b..4ca3eb9fcda9 100644
+--- a/drivers/usb/host/ehci-brcm.c
++++ b/drivers/usb/host/ehci-brcm.c
+@@ -63,7 +63,8 @@ static int ehci_brcm_hub_control(
+ 	unsigned long flags;
+ 	int retval, irq_disabled = 0;
+ 
+-	status_reg = &ehci->regs->port_status[(wIndex & 0xff) - 1];
++	if (wIndex && wIndex <= ports)
++		status_reg = &ehci->regs->port_status[(wIndex & 0xff) - 1];
+ 
+ 	/*
+ 	 * RESUME is cleared when GetPortStatus() is called 20ms after start
+-- 
 
-Again, look at the git log for the driver you're changing. In this case
-it should have been something like:
-
-	serial: 8250: use sysfs_emit...
-
->  drivers/tty/serial/8250/8250_port.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
-> index 5775cbff8f6e..3d58f383152e 100644
-> --- a/drivers/tty/serial/8250/8250_port.c
-> +++ b/drivers/tty/serial/8250/8250_port.c
-> @@ -3099,7 +3099,7 @@ static ssize_t rx_trig_bytes_show(struct device *dev,
->  	if (rxtrig_bytes < 0)
->  		return rxtrig_bytes;
->  
-> -	return snprintf(buf, PAGE_SIZE, "%d\n", rxtrig_bytes);
-> +	return sysfs_emit(buf, "%d\n", rxtrig_bytes);
->  }
->  
->  static int do_set_rxtrig(struct tty_port *port, unsigned char bytes)
-
-Johan
