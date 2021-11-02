@@ -2,105 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BD054431EC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 16:41:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77EEA4431EF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 16:41:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232676AbhKBPne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 11:43:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58426 "EHLO
+        id S234251AbhKBPoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 11:44:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232003AbhKBPnc (ORCPT
+        with ESMTP id S231920AbhKBPo2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 11:43:32 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B592C061714;
-        Tue,  2 Nov 2021 08:40:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=r/i/KXCV63u35JO0/BNDE+hkZKtvbs8LAbgs3kVqOMg=; b=htJyD8AjqXx0jnW0nNAoUoopTQ
-        B2tGGLL0UrZ0KgBmpxZjieLJYWFk35jfBa3x27voK5KDqwbLXeHZdGr/9yakBcKp+jvufuPuDczFN
-        og+FOm4vDUX9FndFDpRdsPoVZx+0tTWI7C2eHL0E8LBbZOcIuJApHgFGjNKVke4gOUFCDcGpvhho/
-        E4WHbiCvB9F/msQt3Gqc8Sxq0NTpS1gcFr9tvoMzz8tMhoxLqdtmzT3d3zqJbHM1paPnch4YvKVFV
-        5KnTwpveXCZcdklcalO+A/mLlhAx4GuxNZT8uvE75onsvmQCATKOvnlrXW2IrqU+Vfg6aTgtfRXc5
-        M38TTf+A==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mhvuD-002AQy-6a; Tue, 02 Nov 2021 15:40:57 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Hugues Fruchet <hugues.fruchet@foss.st.com>,
-        linux-media@vger.kernel.org, Dillon Min <dillon.minfei@gmail.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH -next] media: stm32-dma2d: fix Kconfig dependencies grouping
-Date:   Tue,  2 Nov 2021 08:40:56 -0700
-Message-Id: <20211102154056.1282-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        Tue, 2 Nov 2021 11:44:28 -0400
+Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90F8CC061714
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 08:41:53 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:a1ae:b980:25da:18ce])
+        by michel.telenet-ops.be with bizsmtp
+        id DThp2600U4WmP4T06ThpKP; Tue, 02 Nov 2021 16:41:50 +0100
+Received: from geert (helo=localhost)
+        by ramsan.of.borg with local-esmtp (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mhvv3-009mVx-EJ; Tue, 02 Nov 2021 16:41:49 +0100
+Date:   Tue, 2 Nov 2021 16:41:49 +0100 (CET)
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+X-X-Sender: geert@ramsan.of.borg
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+cc:     Nathan Chancellor <nathan@kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Vladis Dronov <vdronov@redhat.com>,
+        Simo Sorce <ssorce@redhat.com>,
+        Eric Biggers <ebiggers@kernel.org>, llvm@lists.linux.dev,
+        kernel test robot <lkp@intel.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] crypto: api - Do not create test larvals if manager is
+ disabled
+In-Reply-To: <20211019132802.GA14233@gondor.apana.org.au>
+Message-ID: <alpine.DEB.2.22.394.2111021636040.2330984@ramsan.of.borg>
+References: <20210913071251.GA15235@gondor.apana.org.au> <20210917002619.GA6407@gondor.apana.org.au> <YVNfqUVJ7w4Z3WXK@archlinux-ax161> <20211001055058.GA6081@gondor.apana.org.au> <YVdNFzs8HUQwHa54@archlinux-ax161> <20211003002801.GA5435@gondor.apana.org.au>
+ <YV0K+EbrAqDdw2vp@archlinux-ax161> <20211019132802.GA14233@gondor.apana.org.au>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On x86_64, when
-CONFIG_COMPILE_TEST=y
-CONFIG_VIDEO_DEV=m
-CONFIG_VIDEO_V4L2=m
-CONFIG_VIDEO_STM32_DMA2D=y
+ 	Hi Herbert,
 
-there are many build errors (this is only a sampling of them):
+On Tue, 19 Oct 2021, Herbert Xu wrote:
+> On Tue, Oct 05, 2021 at 07:33:28PM -0700, Nathan Chancellor wrote:
+>> I assume this is the diff you mean? This does not resolve the issue. My
+>> apologies if I am slow to respond, I am on vacation until the middle of
+>> next week.
+>
+> Sorry for the delay.  The kernel robot figured out the problem
+> for me.  It's the crypto_alg_tested call that causes api.c to
+> depend on algapi.c.  This call is only invoked in the case where
+> the crypto manager is turned off.  We could instead simply make
+> test larvals disappear in that case.
+>
+> ---8<---
+> The delayed boot-time testing patch created a dependency loop
+> between api.c and algapi.c because it added a crypto_alg_tested
+> call to the former when the crypto manager is disabled.
+>
+> We could instead avoid creating the test larvals if the crypto
+> manager is disabled.  This avoids the dependency loop as well
+> as saving some unnecessary work, albeit in a very unlikely case.
+>
+> Reported-by: Nathan Chancellor <nathan@kernel.org>
+> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Fixes: adad556efcdd ("crypto: api - Fix built-in testing dependency failures")
+> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 
-ld: drivers/media/common/videobuf2/videobuf2-core.o: in function `vb2_core_streamon':
-videobuf2-core.c:(.text+0x1f4e): undefined reference to `v4l_vb2q_enable_media_source'
-ld: drivers/media/platform/stm32/dma2d/dma2d.o: in function `dma2d_remove':
-dma2d.c:(.text+0x4d9): undefined reference to `v4l2_m2m_release'
-ld: dma2d.c:(.text+0x4e5): undefined reference to `video_unregister_device'
-ld: dma2d.c:(.text+0x4ed): undefined reference to `v4l2_device_unregister'
-ld: drivers/media/platform/stm32/dma2d/dma2d.o: in function `device_run':
-dma2d.c:(.text+0x588): undefined reference to `v4l2_m2m_next_buf'
-ld: dma2d.c:(.text+0x59b): undefined reference to `v4l2_m2m_next_buf'
-ld: dma2d.c:(.text+0x61f): undefined reference to `v4l2_m2m_buf_copy_metadata'
-ld: drivers/media/platform/stm32/dma2d/dma2d.o: in function `vidioc_g_fmt':
-dma2d.c:(.text+0x71c): undefined reference to `v4l2_m2m_get_vq'
-ld: drivers/media/platform/stm32/dma2d/dma2d.o: in function `dma2d_release':
-dma2d.c:(.text+0x850): undefined reference to `video_devdata'
-ld: dma2d.c:(.text+0x87b): undefined reference to `v4l2_m2m_ctx_release'
-ld: dma2d.c:(.text+0x88f): undefined reference to `v4l2_ctrl_handler_free'
-ld: dma2d.c:(.text+0x897): undefined reference to `v4l2_fh_del'
-ld: dma2d.c:(.text+0x89f): undefined reference to `v4l2_fh_exit'
-ld: drivers/media/platform/stm32/dma2d/dma2d.o: in function `dma2d_buf_queue':
-dma2d.c:(.text+0x8db): undefined reference to `v4l2_m2m_buf_queue'
-ld: drivers/media/platform/stm32/dma2d/dma2d.o: in function `dma2d_stop_streaming':
-dma2d.c:(.text+0x922): undefined reference to `v4l2_m2m_buf_remove'
-ld: dma2d.c:(.text+0x956): undefined reference to `v4l2_m2m_buf_remove'
-ld: drivers/media/platform/stm32/dma2d/dma2d.o: in function `dma2d_open':
-dma2d.c:(.text+0x996): undefined reference to `video_devdata'
+Thanks for your patch, which is now commit cad439fc040efe5f
+("crypto: api - Do not create test larvals if manager is disabled").
 
-Regrouping the depend items limits the STM32_DMA2D symbol to =m,
-so that the build errors are eliminated.
+I have bisected a failure to mount the root file system on k210 to this
+commit.
 
-Fixes: bdbbd511ef0c ("media: stm32-dma2d: STM32 DMA2D driver")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Hugues Fruchet <hugues.fruchet@foss.st.com>
-Cc: linux-media@vger.kernel.org
-Cc: Dillon Min <dillon.minfei@gmail.com>
-Cc: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- drivers/media/platform/Kconfig |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Dmesg before/after:
 
---- linux-next-20211102.orig/drivers/media/platform/Kconfig
-+++ linux-next-20211102/drivers/media/platform/Kconfig
-@@ -494,7 +494,7 @@ endif # VIDEO_STI_DELTA
- 
- config VIDEO_STM32_DMA2D
- 	tristate "STM32 Chrom-Art Accelerator (DMA2D)"
--	depends on (VIDEO_DEV && VIDEO_V4L2 && ARCH_STM32) || COMPILE_TEST
-+	depends on (VIDEO_DEV && VIDEO_V4L2) && (ARCH_STM32 || COMPILE_TEST)
- 	select VIDEOBUF2_DMA_CONTIG
- 	select V4L2_MEM2MEM_DEV
- 	help
+      mmcblk0: mmc0:0000 SA04G 3.68 GiB
+      random: fast init done
+       mmcblk0: p1
+     -EXT4-fs (mmcblk0p1): mounted filesystem with ordered data mode. Opts: (null). Quota mode: disabled.
+     -VFS: Mounted root (ext4 filesystem) readonly on device 179:1.
+     +EXT4-fs (mmcblk0p1): Cannot load crc32c driver.
+     +VFS: Cannot open root device "mmcblk0p1" or unknown-block(179,1): error -80
+     +Please append a correct "root=" boot option; here are the available partitions:
+     +b300         3858432 mmcblk0
+     + driver: mmcblk
+     +  b301         3854336 mmcblk0p1 00000000-01
+
+> --- a/crypto/algapi.c
+> +++ b/crypto/algapi.c
+> @@ -216,6 +216,32 @@ void crypto_remove_spawns(struct crypto_alg *alg, struct list_head *list,
+> }
+> EXPORT_SYMBOL_GPL(crypto_remove_spawns);
+>
+> +static struct crypto_larval *crypto_alloc_test_larval(struct crypto_alg *alg)
+> +{
+> +	struct crypto_larval *larval;
+> +
+> +	if (!IS_ENABLED(CONFIG_CRYPTO_MANAGER))
+> +		return NULL;
+> +
+> +	larval = crypto_larval_alloc(alg->cra_name,
+> +				     alg->cra_flags | CRYPTO_ALG_TESTED, 0);
+> +	if (IS_ERR(larval))
+> +		return larval;
+> +
+> +	larval->adult = crypto_mod_get(alg);
+> +	if (!larval->adult) {
+> +		kfree(larval);
+> +		return ERR_PTR(-ENOENT);
+> +	}
+> +
+> +	refcount_set(&larval->alg.cra_refcnt, 1);
+> +	memcpy(larval->alg.cra_driver_name, alg->cra_driver_name,
+> +	       CRYPTO_MAX_ALG_NAME);
+> +	larval->alg.cra_priority = alg->cra_priority;
+> +
+> +	return larval;
+> +}
+> +
+> static struct crypto_larval *__crypto_register_alg(struct crypto_alg *alg)
+> {
+> 	struct crypto_alg *q;
+> @@ -250,31 +276,20 @@ static struct crypto_larval *__crypto_register_alg(struct crypto_alg *alg)
+> 			goto err;
+> 	}
+>
+> -	larval = crypto_larval_alloc(alg->cra_name,
+> -				     alg->cra_flags | CRYPTO_ALG_TESTED, 0);
+> +	larval = crypto_alloc_test_larval(alg);
+> 	if (IS_ERR(larval))
+> 		goto out;
+>
+> -	ret = -ENOENT;
+> -	larval->adult = crypto_mod_get(alg);
+> -	if (!larval->adult)
+> -		goto free_larval;
+> -
+> -	refcount_set(&larval->alg.cra_refcnt, 1);
+> -	memcpy(larval->alg.cra_driver_name, alg->cra_driver_name,
+> -	       CRYPTO_MAX_ALG_NAME);
+> -	larval->alg.cra_priority = alg->cra_priority;
+> -
+> 	list_add(&alg->cra_list, &crypto_alg_list);
+> -	list_add(&larval->alg.cra_list, &crypto_alg_list);
+> +
+> +	if (larval)
+> +		list_add(&larval->alg.cra_list, &crypto_alg_list);
+>
+> 	crypto_stats_init(alg);
+>
+> out:
+> 	return larval;
+>
+> -free_larval:
+> -	kfree(larval);
+> err:
+> 	larval = ERR_PTR(ret);
+> 	goto out;
+> @@ -403,10 +418,11 @@ int crypto_register_alg(struct crypto_alg *alg)
+> 	down_write(&crypto_alg_sem);
+> 	larval = __crypto_register_alg(alg);
+> 	test_started = static_key_enabled(&crypto_boot_test_finished);
+> -	larval->test_started = test_started;
+> +	if (!IS_ERR_OR_NULL(larval))
+> +		larval->test_started = test_started;
+> 	up_write(&crypto_alg_sem);
+>
+> -	if (IS_ERR(larval))
+> +	if (IS_ERR_OR_NULL(larval))
+> 		return PTR_ERR(larval);
+>
+> 	if (test_started)
+> @@ -616,8 +632,8 @@ int crypto_register_instance(struct crypto_template *tmpl,
+> 	larval = __crypto_register_alg(&inst->alg);
+> 	if (IS_ERR(larval))
+> 		goto unlock;
+> -
+> -	larval->test_started = true;
+> +	else if (larval)
+> +		larval->test_started = true;
+>
+> 	hlist_add_head(&inst->list, &tmpl->instances);
+> 	inst->tmpl = tmpl;
+> @@ -626,7 +642,7 @@ int crypto_register_instance(struct crypto_template *tmpl,
+> 	up_write(&crypto_alg_sem);
+>
+> 	err = PTR_ERR(larval);
+> -	if (IS_ERR(larval))
+> +	if (IS_ERR_OR_NULL(larval))
+> 		goto err;
+>
+> 	crypto_wait_for_test(larval);
+> diff --git a/crypto/api.c b/crypto/api.c
+> index ee5991fe11f8..cf0869dd130b 100644
+> --- a/crypto/api.c
+> +++ b/crypto/api.c
+> @@ -167,11 +167,8 @@ void crypto_wait_for_test(struct crypto_larval *larval)
+> 	int err;
+>
+> 	err = crypto_probing_notify(CRYPTO_MSG_ALG_REGISTER, larval->adult);
+> -	if (err != NOTIFY_STOP) {
+> -		if (WARN_ON(err != NOTIFY_DONE))
+> -			goto out;
+> -		crypto_alg_tested(larval->alg.cra_driver_name, 0);
+> -	}
+> +	if (WARN_ON_ONCE(err != NOTIFY_STOP))
+> +		goto out;
+>
+> 	err = wait_for_completion_killable(&larval->completion);
+> 	WARN_ON(err);
+
+Gr{oetje,eeting}s,
+
+ 						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+ 							    -- Linus Torvalds
