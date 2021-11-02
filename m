@@ -2,90 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84220442ED0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 14:07:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23F69442EE1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 14:11:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231347AbhKBNKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 09:10:00 -0400
-Received: from mail-ua1-f53.google.com ([209.85.222.53]:34383 "EHLO
-        mail-ua1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230170AbhKBNJ7 (ORCPT
+        id S230282AbhKBNNm convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 2 Nov 2021 09:13:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52080 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229924AbhKBNNi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 09:09:59 -0400
-Received: by mail-ua1-f53.google.com with SMTP id b3so14116097uam.1;
-        Tue, 02 Nov 2021 06:07:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tkTP1A6qXwuEKMshM23kAiOxOnfyNG09RSd2SDdbGyo=;
-        b=z8e0J1nieleGMnzCPbDHie1tyoi3tjWXmJ140MP56l8rSjtLQFNYYK640Qv5ddEYW8
-         FCX1h52nSyUeThkjQvUq44gvTJnasMGnUdPYPi7G6PtcG/H7yOxIjgrL1XKwinExP8z7
-         Qmm2f7tNIe2d1lN+vPedadncpBI9UhM8xudRY89s3BRp2l8/ntkLnWiV0gTO+5YmEZx5
-         65X5U4AwvmBNH6o66tR9Gsx8Bt4HtwC5b56nMjlHII+QFJTkL4aFy3xSp1qctWkOXRMq
-         raMI45jYX0s/ourGcBFhYrZXhCQnVfXZrN6jmcmZtDmini5RugaO9uG/XF3YIm3GFp3w
-         QSIg==
-X-Gm-Message-State: AOAM532k36tVDMO/YgdJDxNrc4rDZykVG3hh5FkbKA2FvYywton0j6Tp
-        iQJiVO6bVcg0F1Z9bdQRZ2uotM6vDRq0lQ==
-X-Google-Smtp-Source: ABdhPJwRNAFNZ8yhbfEJs5QBG37QCf6jkQvcThO2yFgrzkdIImvau0dFmwIDrZuJDIcBl9WNaQEi6A==
-X-Received: by 2002:a05:6102:374e:: with SMTP id u14mr20640127vst.28.1635858442866;
-        Tue, 02 Nov 2021 06:07:22 -0700 (PDT)
-Received: from mail-vk1-f180.google.com (mail-vk1-f180.google.com. [209.85.221.180])
-        by smtp.gmail.com with ESMTPSA id u17sm877290vsk.25.2021.11.02.06.07.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Nov 2021 06:07:22 -0700 (PDT)
-Received: by mail-vk1-f180.google.com with SMTP id bc10so9541646vkb.1;
-        Tue, 02 Nov 2021 06:07:21 -0700 (PDT)
-X-Received: by 2002:a1f:2906:: with SMTP id p6mr15272478vkp.19.1635858441673;
- Tue, 02 Nov 2021 06:07:21 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210928203815.77175-1-luca@z3ntu.xyz> <20210928203815.77175-2-luca@z3ntu.xyz>
-In-Reply-To: <20210928203815.77175-2-luca@z3ntu.xyz>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 2 Nov 2021 14:07:10 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWfMeLOvWYWQPEYokddz=vPQ=pbicrmmb79oC211Nw=WQ@mail.gmail.com>
-Message-ID: <CAMuHMdWfMeLOvWYWQPEYokddz=vPQ=pbicrmmb79oC211Nw=WQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] ARM: dts: qcom: apq8026-lg-lenok: rename board vendor
-To:     Luca Weiss <luca@z3ntu.xyz>
-Cc:     linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        arm-soc <soc@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        Tue, 2 Nov 2021 09:13:38 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB77FC061714
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 06:11:03 -0700 (PDT)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1mhtYt-0004rh-Fm; Tue, 02 Nov 2021 14:10:47 +0100
+Received: from pza by lupine with local (Exim 4.94.2)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1mhtYp-004CFx-W3; Tue, 02 Nov 2021 14:10:44 +0100
+Message-ID: <276db30d95bf84cb31f9d9a6c029593fb0ccec21.camel@pengutronix.de>
+Subject: Re: [PATCH 2/5] reset: tegra-bpmp: Handle errors in BPMP response
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Jon Hunter <jonathanh@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>, rafael@kernel.org,
+        viresh.kumar@linaro.org, thierry.reding@gmail.com,
+        krzysztof.kozlowski@canonical.com, lorenzo.pieralisi@arm.com,
+        robh@kernel.org, kw@linux.com, rui.zhang@intel.com,
+        daniel.lezcano@linaro.org, amitk@kernel.org
+Cc:     linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Date:   Tue, 02 Nov 2021 14:10:43 +0100
+In-Reply-To: <397003f8-bf3c-68a4-828c-1254710f714b@nvidia.com>
+References: <20210915085517.1669675-1-mperttunen@nvidia.com>
+         <20210915085517.1669675-2-mperttunen@nvidia.com>
+         <397003f8-bf3c-68a4-828c-1254710f714b@nvidia.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.38.3-1 
+MIME-Version: 1.0
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Luca,
+Hi Jon,
 
-On Tue, Sep 28, 2021 at 10:39 PM Luca Weiss <luca@z3ntu.xyz> wrote:
-> In order to avoid having prefixes for multiple internal divisions of LG
-> use the "lg" prefix instead of "lge".
->
-> Fixes: ad3f04b7bef6 ("ARM: dts: qcom: Add support for LG G Watch R")
-> Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
-> ---
->  arch/arm/boot/dts/Makefile                                      | 2 +-
->  .../{qcom-apq8026-lge-lenok.dts => qcom-apq8026-lg-lenok.dts}   | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
->  rename arch/arm/boot/dts/{qcom-apq8026-lge-lenok.dts => qcom-apq8026-lg-lenok.dts} (99%)
+On Thu, 2021-10-28 at 12:54 +0100, Jon Hunter wrote:
+> Hi Philipp,
+> 
+> On 15/09/2021 09:55, Mikko Perttunen wrote:
+> > The return value from tegra_bpmp_transfer indicates the success or
+> > failure of the IPC transaction with BPMP. If the transaction
+> > succeeded, we also need to check the actual command's result code.
+> > Add code to do this.
+> > 
+> > Signed-off-by: Mikko Perttunen <mperttunen@nvidia.com>
+> > ---
+> >   drivers/reset/tegra/reset-bpmp.c | 9 ++++++++-
+> >   1 file changed, 8 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/reset/tegra/reset-bpmp.c b/drivers/reset/tegra/reset-bpmp.c
+> > index 24d3395964cc..4c5bba52b105 100644
+> > --- a/drivers/reset/tegra/reset-bpmp.c
+> > +++ b/drivers/reset/tegra/reset-bpmp.c
+> > @@ -20,6 +20,7 @@ static int tegra_bpmp_reset_common(struct reset_controller_dev *rstc,
+> >   	struct tegra_bpmp *bpmp = to_tegra_bpmp(rstc);
+> >   	struct mrq_reset_request request;
+> >   	struct tegra_bpmp_message msg;
+> > +	int err;
+> >   
+> > 
+> >   	memset(&request, 0, sizeof(request));
+> >   	request.cmd = command;
+> > @@ -30,7 +31,13 @@ static int tegra_bpmp_reset_common(struct reset_controller_dev *rstc,
+> >   	msg.tx.data = &request;
+> >   	msg.tx.size = sizeof(request);
+> >   
+> > 
+> > -	return tegra_bpmp_transfer(bpmp, &msg);
+> > +	err = tegra_bpmp_transfer(bpmp, &msg);
+> > +	if (err)
+> > +		return err;
+> > +	if (msg.rx.ret)
+> > +		return -EINVAL;
+> > +
+> > +	return 0;
+> >   }
+> >   
+> > 
+> >   static int tegra_bpmp_reset_module(struct reset_controller_dev *rstc,
+> 
+> I see that you have pulled this into the mainline for v5.15. 
+> Unfortunately, this is causing a regression for the Tegra HDA 
+> controller. We need to fix the Tegra HDA driver but this is too late now 
+> for v5.15 and so we need to revert this change for v5.15. Sorry about 
+> this, but I did not expect this to be pulled in so late.
 
-What about the second board DTS using "lge"?
-arch/arm/boot/dts/qcom-msm8974-lge-nexus5-hammerhead.dts
+I'm sorry, I picked this up as a fix and went on vacation. Now that
+v5.15 has already been released, could you send a revert for stable?
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+regards
+Philipp
