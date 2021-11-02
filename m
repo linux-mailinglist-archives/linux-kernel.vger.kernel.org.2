@@ -2,73 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A62DB443890
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 23:38:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F101443892
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 23:38:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230304AbhKBWkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 18:40:43 -0400
-Received: from mout.kundenserver.de ([212.227.126.130]:37335 "EHLO
+        id S231230AbhKBWlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 18:41:05 -0400
+Received: from mout.kundenserver.de ([212.227.126.187]:44847 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229685AbhKBWkm (ORCPT
+        with ESMTP id S230293AbhKBWlC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 18:40:42 -0400
-Received: from mail-wr1-f54.google.com ([209.85.221.54]) by
- mrelayeu.kundenserver.de (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1M76jv-1mpz2Q32oJ-008cTA for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021
- 23:38:05 +0100
-Received: by mail-wr1-f54.google.com with SMTP id d24so815730wra.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 15:38:05 -0700 (PDT)
-X-Gm-Message-State: AOAM532lPbJHijRge0zJnQICD2u/ECbSZTeYfN/IHhm7fMN7vydfpd0H
-        9b6bnVjQ0DVyd/jPqosmdkWVmjFSe6A1ZVyoC64=
-X-Google-Smtp-Source: ABdhPJyIreu0e/juJ7sM+azf8hGD9ZA1ERFc8xrmEMd8EnHyfzAgXsF/wVSN66cVAtI/P1LC8ies8Br0rDAnd3YVwE0=
-X-Received: by 2002:a05:6000:18c7:: with SMTP id w7mr50932714wrq.411.1635892685429;
- Tue, 02 Nov 2021 15:38:05 -0700 (PDT)
+        Tue, 2 Nov 2021 18:41:02 -0400
+Received: from mail-wr1-f45.google.com ([209.85.221.45]) by
+ mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1N5mWp-1mfz6Q3OqR-017DVy for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021
+ 23:38:25 +0100
+Received: by mail-wr1-f45.google.com with SMTP id d13so698577wrf.11
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 15:38:25 -0700 (PDT)
+X-Gm-Message-State: AOAM5319TxQr5db0sY0HDTxFEQZqieErcPfplMieRlCG0BsXCUEIj5zd
+        Qj4GWjeQkv7bWzPqQgp6g/oyZ9gtF7FBTgaF8PU=
+X-Google-Smtp-Source: ABdhPJy60zCJQR1XMCJhReC1GB4Sb24lNtnag2Zp5qca8ElcGLuS5KOeXNPrUKkgPJf+PgBpqIHLJRg4t1COpA2mmyw=
+X-Received: by 2002:a05:6000:10cb:: with SMTP id b11mr38955396wrx.71.1635892705511;
+ Tue, 02 Nov 2021 15:38:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211102220203.940290-1-corbet@lwn.net> <20211102220203.940290-9-corbet@lwn.net>
-In-Reply-To: <20211102220203.940290-9-corbet@lwn.net>
+References: <20211102220203.940290-1-corbet@lwn.net> <20211102220203.940290-8-corbet@lwn.net>
+In-Reply-To: <20211102220203.940290-8-corbet@lwn.net>
 From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Tue, 2 Nov 2021 23:37:49 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3nSxX+U4LnKbvyjx=7sFphvkqEu4JyaZCBXNkKkBqV7g@mail.gmail.com>
-Message-ID: <CAK8P3a3nSxX+U4LnKbvyjx=7sFphvkqEu4JyaZCBXNkKkBqV7g@mail.gmail.com>
-Subject: Re: [PATCH 8/9] spi: remove unused header file <linux/platform_data/spi-clps711x.h>
+Date:   Tue, 2 Nov 2021 23:38:09 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1vDjfbx0_y9py69f28nbWLcXUS8H9pRGW3TGzVOfAMig@mail.gmail.com>
+Message-ID: <CAK8P3a1vDjfbx0_y9py69f28nbWLcXUS8H9pRGW3TGzVOfAMig@mail.gmail.com>
+Subject: Re: [PATCH 7/9] ARM: ixp4xx: remove unused header file pata_ixp4xx_cf.h
 To:     Jonathan Corbet <corbet@lwn.net>
 Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Signed-off-by : Arnd Bergmann" <arnd@arndb.de>,
-        "Signed-off-by : Mark Brown" <broonie@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
+        Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:Z03GcCnSOtdM1IWGLB/fF89BJgK1DkvPHUEU9fNFrsJfUQ/vOj/
- +8N6hS5iY3HytbHRcLL2uoHn8G9AvyxLqMwEvC014OTgE91Ytp2/IS1G4Oqhc0JOuMvw823
- pXP91FbmxLMBE4rtSBOknLtIk4UjcnuwBIhRsaQt2w1IWtH3fzBRTP0uheKsuCzbE/92Zs7
- gu1z3jhF8oUz3Xyc6e4Bw==
+X-Provags-ID: V03:K1:Hs7myEjIVGHxgEaFgAEKAeyhIvgnL/6G9Sjw5X5pdOkh817Og2i
+ t4ONK6uqNl3id6VQ08gqnf9yOmlyXt6LkpHJ3DRWkKuiS9wSI+6tvzCS7hJmvuheHSIh/ZN
+ HGvROwF1uLbg9LH8BjHi5buayHfV5P5Fe8w5APBECsvjN0nfRH5xGJ13KArDyRB7/BiYvOW
+ 386uXIVzvI9GylgCEI1VA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:6FZfRlV0BUw=:8LfjqYuBayHqTMIy+vpSRQ
- v4aQqS7PUy2dngpYS+P+PmwxUPzjBil+EnwIa5V/TRTHbHD2LdmAymkgmk+bc4zq3aAOt/G3X
- 4YODi7dLAK4thwMX1S1L/J8A1gasYUrC4aCunFYTCjLPri1BfxHeCdupaGzV48SBFmPjEIvsw
- +x0Bxzs9Sw5DVaK0ZitKGb5GKi19/S8wrgo1xEgi656yuvsAbLtoOaL//bmx38ezNYRs2jbxX
- fKUVGy+LPNbZgNd6VxNQ/iF99ZXUWjNjl6tZ3N3yl0BtQxC2sPmo9uZ7MzoGwjdznQM0JqRf+
- nI+fMdHvE32TaFXs/Dq3U/CWOq5BgXvQtT9o4Dttb2Gl1ZapQyyrqcS3A6ns+MFNqApKTkbCR
- z3z95tZ7J9uo2Oee5ANbfXi2Kgo0YTXmCNNIDcaWQ3ehqc0gmwDUf45u9JZPklY6hyYFBjgAd
- 5f2cdfQayrIAWdW/VwM9NO/awuPyPQARPzdl+/KX0VlYvY5F3YknU7foS/V4r+UC+yTFO5LtH
- gXQprodZcdSs7vV39yypPY/TEK0TR2uASgEx4tcXtPKghhXDTIqVhmgMwDYswK9icFJVJC6Hk
- ih/9iyKu07xPfaVaKC32mzD3hTWbeKPqfEK3NbzEmx/CPMNGOJPBlu0Enru3kNKNI5dbm+R/C
- ayRt6ildoapjCWJ1bl+65WzYeAJO+b8UxargjHkgD96z7KCOy6uX6vOgBCSKWDZp8Eig=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:932QEs+nwaE=:GTzWIEOuEn74gvBvsxKr1I
+ BeQjYQW6j7xKaVDEalrMUsrCzoz+2mYj8L56d28K/JV6VBupBehjPdC1FXJUSrX5BP0zuzt2U
+ 5y9Aw1mekhMP3Cord8wYqeHrLPe6Xy/qcgygNPiz15tb7Ogb8sYP+S92bqane7fENffYc7NQy
+ mLf1QJOt/SRakmTLRNTq13XJY+wkgrrRq92qwaot9Zzf/dAtU3Wb56XHN3OGDZ5VkL4DeCry3
+ lnaOP95immpYof8YtNvTCKdrtczT11YFFl5nPsHaP0Z0AXm2yJSPtNlRrnocF/tZj3AetswaH
+ IvTg9M1wN4LaOWSVtD11K8poDdO3M/R9VzSlVDNxwe9swKd8tLOaQhuVmZR+cgJKsUkrAjkA7
+ IFz26vSe49+f2T0ENBbtxnpteoOLW6lr17ol8GAQD8izwJRz8v+bu5WbgbAbYp6Qla6pTPhkp
+ Mf5LYxDZSz5doyxp4hRuelfkKYHlWpKQ34GNfcxbyZZhgSkIwXk0Dqa1Huw7ulh65x4cqtgOF
+ wOtbaLE1W5FP2N3E+EmElIb+nOpNIwD0gQPFPKRG+YPxEni+RqQUZi+Z9wtN0/RfqQnX57A44
+ t7hp85N+XuVxX/Nf6x02CICo/KHo0+X0p8rrCqtzopFifnGwrw2SjMOSOartlC2I80vPc2VsE
+ j9s1HiEIQCvdzt9BqfVdX0Fbj5iECsSvccjuQldInYLUwxrMfp/iOyKdKKiwvf8v0pZCdxxaV
+ RdIVm6tbqX+zb5nI8aQo4k5JUKvgNWh66u3Sge+NNDXhPvIguVPJd31uulk9YuwykZmIaNMk6
+ vLB1YDVg6/lDCitK7zMCsMWT1Fyl7Tjpe+TcMNbc3xO0SkbqJQ=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Tue, Nov 2, 2021 at 11:02 PM Jonathan Corbet <corbet@lwn.net> wrote:
 >
-> Commit 6acaadc852f1 ("spi: clps711x: Driver refactor") removed the only use
-> of <linux/platform_data/spi-clps711x.h>, but left the header file behind.
-> This file is unused, delete it.
+> Commit b00ced38e317 ("ARM: ixp4xx: Delete Avila boardfiles") removed the
+> last use of <linux/platform_data/pata_ixp4xx_cf.h> but left the header file
+> in place.  Nothing uses this file, delete it now.
 >
-> Cc: Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> Cc: Signed-off-by: Mark Brown <broonie@kernel.org>
-
-Aside from the misplaced Signed-off-by, the patch looks good
-
-> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Arnd Bergmann <arnd@arndb.de>
 > Signed-off-by: Jonathan Corbet <corbet@lwn.net>
 
 Acked-by: Arnd Bergmann <arnd@arndb.de>
