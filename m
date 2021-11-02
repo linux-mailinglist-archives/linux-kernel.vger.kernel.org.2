@@ -2,77 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 091BC442D33
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 12:51:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5FE4442D37
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 12:51:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230522AbhKBLxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 07:53:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57480 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229720AbhKBLxj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 07:53:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E8BAA60F5A;
-        Tue,  2 Nov 2021 11:51:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635853864;
-        bh=dqJN2Gi6q7TPSF77o6RQLRWPsFd/JVJbppmgYInfGv8=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=nrrauIoQWCLjHnJV4rwpOzX2ac87/ZtDlNMSEV6MKg9vOdLreBYmoyc400xNpNfZH
-         Rmlrf0jQyLtJf0bllBRc/QbwTFmsYDUHzvbpHyzge1yqnJMbkl7+ClMHQZuVD+nrwi
-         9mcmwp/ccnxVm2h8ufjseCAb1CvvSdTKYrpuR8a+7KF6FrGojKjOzCWy3m7biDn1y4
-         YccZjkRj4nGzGozfqBeNmQDckxGzLZHpgY0eSaR+ZDPfGckr38ti02CHrkaQCKmXMO
-         DcQt0m2nCwh0DzPoqkG2UFMsDNtBh9tysmL8ZF6pM9wfvFFWjqZ3UvDT/rjnChGuAZ
-         32I5UGdrp6ahg==
-Date:   Tue, 2 Nov 2021 12:50:59 +0100 (CET)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Hans de Goede <hdegoede@redhat.com>
-cc:     =?ISO-8859-15?Q?Thomas_Wei=DFschuh?= <linux@weissschuh.net>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Mark Gross <markgross@kernel.org>,
-        Rushikesh S Kadam <rushikesh.s.kadam@intel.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Benson Leung <bleung@chromium.org>,
-        platform-driver-x86@vger.kernel.org, linux-kbuild@vger.kernel.org
-Subject: Re: [PATCH 0/6] MODULE_DEVICE_TABLE() support for the ISHTP bus
-In-Reply-To: <85cb78cd-92d9-69ed-9360-f5d6f8f904af@redhat.com>
-Message-ID: <nycvar.YFH.7.76.2111021249520.12554@cbobk.fhfr.pm>
-References: <20211029152901.297939-1-linux@weissschuh.net> <883db585-c9bb-5255-4ddd-f093616af1a1@redhat.com> <1bb82b37-06e4-4937-ba0d-57fd301eaf2e@t-8ch.de> <85cb78cd-92d9-69ed-9360-f5d6f8f904af@redhat.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S231165AbhKBLyF convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 2 Nov 2021 07:54:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229720AbhKBLyE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 07:54:04 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5BE8C061714
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 04:51:29 -0700 (PDT)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1mhsJx-0004RX-3V; Tue, 02 Nov 2021 12:51:17 +0100
+Received: from pza by lupine with local (Exim 4.94.2)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1mhsJv-0049ko-1l; Tue, 02 Nov 2021 12:51:15 +0100
+Message-ID: <34481cb056c4bc4dc355571713675f141350e04d.camel@pengutronix.de>
+Subject: Re: [PATCH v3 3/8] dt-bindings: reset: Add bindings for SP7021
+ reset driver
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Qin Jian <qinjian@cqplus1.com>, robh+dt@kernel.org
+Cc:     mturquette@baylibre.com, sboyd@kernel.org, maz@kernel.org,
+        broonie@kernel.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, wells.lu@sunplus.com
+Date:   Tue, 02 Nov 2021 12:51:14 +0100
+In-Reply-To: <852e24e942cf40b8240ced4de4ac78acc7694355.1635737544.git.qinjian@cqplus1.com>
+References: <cover.1635737544.git.qinjian@cqplus1.com>
+         <852e24e942cf40b8240ced4de4ac78acc7694355.1635737544.git.qinjian@cqplus1.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.38.3-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 1 Nov 2021, Hans de Goede wrote:
-
-> >> Since most of the changes here are under drivers/hid and since the latter
-> >> patches depend on 1/6, I believe it would be best to merge the entire series
-> >> through the HID tree, here is my ack for this:
-> >>
-> >> Acked-by: Hans de Goede <hdegoede@redhat.com>
-> > 
-> > Please note that patch 6 modifies a driver that is not yet available in the HID
-> > and 5.15 trees but only in pdx86/for-next.
+On Mon, 2021-11-01 at 13:01 +0800, Qin Jian wrote:
+> Add documentation to describe Sunplus SP7021 reset driver bindings.
 > 
-> Right, but given where we are in the cycle this is going to be something to
-> merge post 5.16-rc1 anyways which resolves the dependency issue.
+> Signed-off-by: Qin Jian <qinjian@cqplus1.com>
+> ---
+>  .../bindings/reset/sunplus,reset.yaml         | 40 ++++++++
+>  MAINTAINERS                                   |  2 +
+>  include/dt-bindings/reset/sp-sp7021.h         | 99 +++++++++++++++++++
+>  3 files changed, 141 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/reset/sunplus,reset.yaml
+>  create mode 100644 include/dt-bindings/reset/sp-sp7021.h
 > 
-> I guess it might be good to send this our in a later pull-req as a fix series
-> for a later 5.16-rc# though, to avoid the eclite and chrome-ec drivers from
-> autoloading on all systems with an ISH, even though they usually will not be
-> used there.
+> diff --git a/Documentation/devicetree/bindings/reset/sunplus,reset.yaml b/Documentation/devicetree/bindings/reset/sunplus,reset.yaml
+> new file mode 100644
+> index 000000000..bf55f4ee2
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/reset/sunplus,reset.yaml
+> @@ -0,0 +1,40 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +# Copyright (C) Sunplus Co., Ltd. 2021
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/reset/sunplus,reset.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: Sunplus SoC Reset Controller
+> +
+> +maintainers:
+> +  - Qin Jian <qinjian@cqplus1.com>
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - sunplus,sp7021-reset # Reset Controller on SP7021 and compatible SoCs
+> +      - sunplus,q645-reset # Reset Controller on Q645 and compatible SoCs
 
-I'll be happy to take this as 5.16 fixups after the merge window is over 
-(I am not adding anything new to the branches now, before Linus merges HID 
-tree), but I'd still like to see Ack from Srinivas.
+The commit message only mentions SP7021. Should Q645 be added later, or
+is this patch missing the binding header for Q655?
 
-Thanks,
-
--- 
-Jiri Kosina
-SUSE Labs
-
+regards
+Philipp
