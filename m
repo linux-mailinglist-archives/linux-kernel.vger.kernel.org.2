@@ -2,124 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E31F4424DE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 01:48:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7C134424E1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 01:49:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231526AbhKBArz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 20:47:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231138AbhKBArw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 20:47:52 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD617C061764
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 17:45:18 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id p204so12019139iod.8
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 17:45:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=usp.br; s=usp-google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=CdQjx0HGt5etDdjQfXz4rMpreR3TwFiKL0chx+EioEw=;
-        b=F9PkwVOBx0rYvi51997OwY6dfgJ3I+V/W1M9p2GzsmoMx768QZjmjUGrI1P92KHDvm
-         +4ZSUPUbmedpRRouesQI96TEuwr/ROwn6kljAUZ1AuSz7ctQ15WZTI5DKuNlkXeGgYZh
-         kKN8lzNg+WF3Tb4MeaBmO6u3xiD6gGZyl+4P/dZrDkQCEalQZ28hZHLZweq1Xleys/T+
-         XhIVj2oCIpgOLdCvzx2+z4JxrzAybEqEku4DUSYeMYJlHRUSkvFX68lqdyDt4wAp05Jx
-         THTxnMCg6BuzAk29SFZLbHiJHnawNWgx5KTqsd3eYR1qtggN8tVUzkuO2HoLoE8KI6V2
-         yDCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=CdQjx0HGt5etDdjQfXz4rMpreR3TwFiKL0chx+EioEw=;
-        b=beBD8Zp4ZhGAj+ZhGpDkWJ2b2wTGnq+9IC+tgSNWKkHpMVWVV3AUwrG3yJ7A/Zbw8F
-         HQ2/dR4Ed3gReeDlWBZfsedpugojPIFEaXQW0BZZJW0f+7XW46vYM92+iFIc53rOeY4c
-         V/MX7uvL65R47AAmApl81Y83CsFPougV1LiClTdd+6ruKCXmIp3eWgJGGKD6KPEq/uZg
-         SFIBFQ36DsMmiwCP+zj0x/2i5Kqgt/Li1tcjOPluwxtTqW3fARhgmUHqiw+9AaDtuN87
-         bdaB3rRaR5M1b/wbylhLiIzCJuvIubPUgDj+i44a1myUnUftZSyCG1k2W7xRq23GWt3o
-         U3rw==
-X-Gm-Message-State: AOAM531pDLg2/xNe5y1pCKv0VqaW/EMB2YUqtp92yUJcz/JwpSpeKEw1
-        OYpub6tZBE9K4PIpaCKoVFjIJOnmIAERrfMFKXwT0Q==
-X-Google-Smtp-Source: ABdhPJx35C1DFToM8I+/8vn3pb+0BVcZmhi7R/yAadTa2d4BnYEiWtS0uvxY91mtpifdmpuP5XpEWRNIkCKpi9IMpjw=
-X-Received: by 2002:a05:6638:134f:: with SMTP id u15mr24353893jad.7.1635813918186;
- Mon, 01 Nov 2021 17:45:18 -0700 (PDT)
+        id S231669AbhKBAw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 20:52:27 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:42266 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229480AbhKBAw0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 20:52:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=Oat4dkNGPgPrMhy99YcPihYIB0B0LOufAF+2fSLtM9c=; b=3LFdum8/tu48Iz3Tf/FCDBCcgt
+        hQ/j3oRtBM+RJoLmYoRJ4hh6mi3g1VwB7xLyMMQwATUHAJMXk9tdD0DnGmseE6RGPYh2xAhalaTje
+        SvwV7RbmEUDrVCSXo+5YnlRViwXItm00jzFO/iAIwkqGCHHYzlw0KgHtCO7ty7mhkGIY=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mhhzi-00CM5B-4M; Tue, 02 Nov 2021 01:49:42 +0100
+Date:   Tue, 2 Nov 2021 01:49:42 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Grygorii Strashko <grygorii.strashko@ti.com>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-kernel@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [RFC PATCH] net: phy/mdio: enable mmd indirect access through
+ phy_mii_ioctl()
+Message-ID: <YYCLJnY52MoYfxD8@lunn.ch>
+References: <20211101182859.24073-1-grygorii.strashko@ti.com>
+ <YYBBHsFEwGdPJw3b@lunn.ch>
+ <YYBF3IZoSN6/O6AL@shell.armlinux.org.uk>
 MIME-Version: 1.0
-References: <YX/zlRqmxbLRnTqT@fedora> <4f1b60bab451b219c7139e2204eb5b9f462ee4e0.camel@pengutronix.de>
- <CAH7FV3nyyLndqTdJYN8HDxU4C7pW0-DLu6ZSOLof2=tEEHbHxQ@mail.gmail.com> <557e68ad15634ddb65c98ebf80cd7ef962ac2608.camel@pengutronix.de>
-In-Reply-To: <557e68ad15634ddb65c98ebf80cd7ef962ac2608.camel@pengutronix.de>
-From:   =?UTF-8?B?TWHDrXJhIENhbmFs?= <maira.canal@usp.br>
-Date:   Mon, 1 Nov 2021 21:45:07 -0300
-Message-ID: <CAH7FV3nfkihmc9UTvmGC7kL=tO40CL4350smc4FKiLVdsesxkA@mail.gmail.com>
-Subject: Re: [PATCH v2 RESEND] PCI: imx6: Replace legacy gpio interface for
- gpiod interface
-To:     Lucas Stach <l.stach@pengutronix.de>
-Cc:     hongxing.zhu@nxp.com, lorenzo.pieralisi@arm.com, robh@kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bjorn Helgaas <helgaas@kernel.org>, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, linux-imx@nxp.com,
-        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YYBF3IZoSN6/O6AL@shell.armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em seg., 1 de nov. de 2021 =C3=A0s 11:58, Lucas Stach
-<l.stach@pengutronix.de> escreveu:
->
-> Am Montag, dem 01.11.2021 um 11:44 -0300 schrieb Ma=C3=ADra Canal:
-> > ?
-> > > >       /* Some boards don't have PCIe reset GPIO. */
-> > > > -     if (gpio_is_valid(imx6_pcie->reset_gpio)) {
-> > > > -             gpio_set_value_cansleep(imx6_pcie->reset_gpio,
-> > > > +     if (imx6_pcie->reset_gpio) {
-> > > > +             gpiod_set_value_cansleep(imx6_pcie->reset_gpio,
-> > > >                                       imx6_pcie->gpio_active_high);
-> > > >               msleep(100);
-> > > > -             gpio_set_value_cansleep(imx6_pcie->reset_gpio,
-> > > > +             gpiod_set_value_cansleep(imx6_pcie->reset_gpio,
-> > > >                                       !imx6_pcie->gpio_active_high)=
-;
-> > >
-> > > I don't think this is correct. gpiod_set_value sets the logical line
-> > > state, so if the GPIO is specified as active-low in the DT, the real
-> > > line state will be negated. The only reason why the reset-gpio-active=
--
-> > > high property even exists is that old DTs might specify the wrong GPI=
-O
-> > > polarity in the reset-gpio DT description. I think you need to use to
-> > > gpiod_set_raw_value API here to get the expected real line state even
-> > > with a broken DT description.
-> > >
-> > > Regards,
-> > > Lucas
-> > >
-> >
-> > I'm a beginner in kernel development, so I'm sorry for the question.
-> > If I change gpiod_set_value_cansleep for gpiod_set_raw_value, wouldn't
-> > I change the behavior of the driver? I replaced
-> > gpio_set_value_cansleep for gpiod_set_value_cansleep because they have
-> > the same behavior and I didn't change the logic states. Thank you for
-> > the feedback!
->
-> Yes, you need to use the _cansleep variant of the API to keep the
-> context information. The point I was trying to make was that you
-> probably (please double check, that's just an assumption on my side)
-> need to use the _raw variant of the gpiod API to keep the current
-> behavior of the driver, as we are setting the physical line state
-> purely depending on the reset-gpio-active-high property presence, not
-> the logical line state, which would take into account the polarity
-> specified in the DT gpio descriptor.
->
-> I guess the right API call here would be
-> gpiod_set_raw_value_cansleep().
+> The use of the indirect registers is specific to PHYs, and we already
+> know that various PHYs don't support indirect access, and some emulate
+> access to the EEE registers - both of which are handled at the PHY
+> driver level.
 
-I got it now. Thank you for your attention! I will send the v3 with
-the correction.
+That is actually an interesting point. Should the ioctl call actually
+use the PHY driver read_mmd and write_mmd? Or should it go direct to
+the bus? realtek uses MII_MMD_DATA for something to do with suspend,
+and hence it uses genphy_write_mmd_unsupported(), or it has its own
+function emulating MMD operations.
 
->
-> Regards,
-> Lucas
->
+So maybe the ioctl handler actually needs to use __phy_read_mmd() if
+there is a phy at the address, rather than go direct to the bus?
+
+Or maybe we should just say no, you should do this all from userspace,
+by implementing C45 over C22 in userspace, the ioctl allows that, the
+kernel does not need to be involved.
+
+	Andrew
