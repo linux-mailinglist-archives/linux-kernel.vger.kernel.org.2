@@ -2,129 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AD5F443539
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 19:13:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FA1144353B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 19:14:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234917AbhKBSQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 14:16:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36980 "EHLO
+        id S234933AbhKBSRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 14:17:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230392AbhKBSQI (ORCPT
+        with ESMTP id S230392AbhKBSRY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 14:16:08 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA750C061714
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 11:13:32 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id o18so245827lfu.13
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 11:13:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3aAa2g6F5cEPDJn1H2dtRZP1YIEtghO4gfoLlk3Pcbw=;
-        b=GfYlX9OX1sXNX3bqVCRC2BllZhiCQ8NlGee8f88VSWYP2ig7CAf2Utra5o2oD74c2m
-         +LjbuarZU+QVe8722G9iG/Teg9V+KcqsX7jhPWSWsrMbt/+96RWuBKMlxbX1mZC6qwJL
-         8y5WE3+1DVmd5KG7eWHV5sNzPGKyrj+Xzf3WdLkvC/FYsEJtUniSvAYJm7MX6ewTxgOy
-         FDC2VdZZVY1yQ2bbhwySRoE9HsQ2vLGfsXW80jdTrOFsJ6EKRLaPDzinyL9R8o9A2CJL
-         nUvoPS7fgisBAp0eYwymB/TozwaXgxlAMK4KJ6zTIv36tvXmIoyBh1R/s72FpjxvNflN
-         aa4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3aAa2g6F5cEPDJn1H2dtRZP1YIEtghO4gfoLlk3Pcbw=;
-        b=cBQoaotdMNW4Js9pHMGDJxLKOoINV1rv/sRr0chqoioJpqXCIKn6ukHPZ2MzgOag0F
-         VxBIU5CMqHLhB1w1WUHoxJX4oiFQB6l3PvYkqtXeqqSj35fd6zLh/wnQPvuMAa1IPksS
-         RWZ14oIlopLv8lvfJWbz7Sc5q0sAa9OJ/pOvtuzMkOBrX0Uc3iW38Yjhq7OvSrUxI+jO
-         Ztar50Y/1RqD8Pi/wNmeuWGJy87k4f6eu78mMv3hy5ITEblUOzFUTF0poa6VE9MOs0/B
-         ZulnOcRxnfp/I4S+454IcmncSa+8T0RXeonB9t46m3/cb+Fe66Lxww35fVYxWwgFyHxg
-         cpMQ==
-X-Gm-Message-State: AOAM531UuB5/tp/TIctKAhjatDr/mQ05YpLrLVLbxyseYC7NsorzIvjE
-        v7Dzl5mMd78i/kYMtvQ4cmEIXhyIunc31QsZmOm3GA==
-X-Google-Smtp-Source: ABdhPJzQPbuMorJmK9nCRvVx6XoY1VFFKPA5GSxKNeEFkMIqDPnhiabLHyeOXvMUuFZ9AiY07W2nVcpOLfoYU8dKgiA=
-X-Received: by 2002:a05:6512:3c9e:: with SMTP id h30mr5245802lfv.93.1635876810700;
- Tue, 02 Nov 2021 11:13:30 -0700 (PDT)
+        Tue, 2 Nov 2021 14:17:24 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B773C061714;
+        Tue,  2 Nov 2021 11:14:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=apcnU7ismDMGqhT244nxT/5OUNxzvS18BDxORL1RIIY=; b=UG4CE4sK5Ph3+yQomBR8Ofbygx
+        eJa7ofiHw6NzIXdD4e6gpwxgKNuX+K8zMLnbBSwNvYv7Drxs69Pi6IJSGBvTzwoYPDMiYxVLX7q+V
+        ZbEitT0HDCnIBbrhgtuIaGeBlVdHCqQZJFPuxwAYfaRBeF9tuHz5eMMds4TJI3C1o0WpSOIizc6+j
+        /qrDzfCuj4GBmgzQNxirtD+fCwTIlPTCePR8lz5CCCQSCET4LLLQyraaVhd5LNobwCA2G9ZOKnRiU
+        mtJrBT/t4ldrqDZ2JNpRvInKHzqe4pNQygTuOI6FJ3p9n6GXGNdATh98C0jxFwu0/U6n0o0ARB7QG
+        TsRm3gzA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mhyIl-00DnQw-75; Tue, 02 Nov 2021 18:14:27 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4EA0C3000D5;
+        Tue,  2 Nov 2021 19:14:25 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 33DF22D53269E; Tue,  2 Nov 2021 19:14:25 +0100 (CET)
+Date:   Tue, 2 Nov 2021 19:14:25 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Mark Rutland <mark.rutland@arm.com>, X86 ML <x86@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-hardening@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev, joao@overdrivepizza.com
+Subject: Re: [PATCH] static_call,x86: Robustify trampoline patching
+Message-ID: <YYGAAVG5aRDKRHso@hirez.programming.kicks-ass.net>
+References: <CAMj1kXHk5vbrT49yRCivX3phrEkN6Xbb+g8WEmavL_d1iE0OxQ@mail.gmail.com>
+ <YX74Ch9/DtvYxzh/@hirez.programming.kicks-ass.net>
+ <CAMj1kXG+MuGaG3BHk8pnE1MKVmRf5E+nRNoFMHxOA1y84eGikg@mail.gmail.com>
+ <YX8AQJqyB+H3PF1d@hirez.programming.kicks-ass.net>
+ <CAMj1kXF3n-oQ1WP8=asb60K6UjSYOtz5RVhrcoCoNq3v7mZdQg@mail.gmail.com>
+ <20211101090155.GW174703@worktop.programming.kicks-ass.net>
+ <CAMj1kXGhRmdM3om289Q2-s1Pzfob3D2iSDMorzggfhSk1oj53A@mail.gmail.com>
+ <YYE1yPClPMHvyvIt@hirez.programming.kicks-ass.net>
+ <YYFWEnBb/UaZKGzz@hirez.programming.kicks-ass.net>
+ <CAMj1kXFQSitDY5WT246YEXXFphUv_HSjBrgvGzQGiCr4jLrM+g@mail.gmail.com>
 MIME-Version: 1.0
-References: <20211011194615.2955791-1-vipinsh@google.com> <YWSdTpkzNt3nppBc@google.com>
- <CALMp9eRzPXg2WS6-Yy6U90+B8wXm=zhVSkmAym4Y924m7FM-7g@mail.gmail.com>
- <YWhgxjAwHhy0POut@google.com> <CALMp9eQ4y+YO7THjfpHzJPmoODkUqoPUURaBvL+OdGjZhAMuTA@mail.gmail.com>
-In-Reply-To: <CALMp9eQ4y+YO7THjfpHzJPmoODkUqoPUURaBvL+OdGjZhAMuTA@mail.gmail.com>
-From:   Vipin Sharma <vipinsh@google.com>
-Date:   Tue, 2 Nov 2021 11:12:53 -0700
-Message-ID: <CAHVum0eMByJA5Yc0iom6w5+Web105cYoJ-94jxzLPTLVpYOHSw@mail.gmail.com>
-Subject: Re: [PATCH] KVM: VMX: Add a wrapper for reading INVPCID/INVEPT/INVVPID
- type
-To:     Jim Mattson <jmattson@google.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     pbonzini@redhat.com, dmatlack@google.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXFQSitDY5WT246YEXXFphUv_HSjBrgvGzQGiCr4jLrM+g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry for the late reply.
-
-On Thu, Oct 14, 2021 at 10:05 AM Jim Mattson <jmattson@google.com> wrote:
->
-> On Thu, Oct 14, 2021 at 9:54 AM Sean Christopherson <seanjc@google.com> wrote:
+On Tue, Nov 02, 2021 at 06:44:56PM +0100, Ard Biesheuvel wrote:
+> On Tue, 2 Nov 2021 at 16:15, Peter Zijlstra <peterz@infradead.org> wrote:
 > >
-> > On Mon, Oct 11, 2021, Jim Mattson wrote:
-> > > On Mon, Oct 11, 2021 at 1:23 PM Sean Christopherson <seanjc@google.com> wrote:
-> > > >
-> > > > On Mon, Oct 11, 2021, Vipin Sharma wrote:
-> > > > > -     if (type > 3) {
-> > > > > +     if (type > INVPCID_TYPE_MAX) {
-> > > >
-> > > > Hrm, I don't love this because it's not auto-updating in the unlikely chance that
-> > > > a new type is added.  I definitely don't like open coding '3' either.  What about
-> > > > going with a verbose option of
-> > > >
-> > > >         if (type != INVPCID_TYPE_INDIV_ADDR &&
-> > > >             type != INVPCID_TYPE_SINGLE_CTXT &&
-> > > >             type != INVPCID_TYPE_ALL_INCL_GLOBAL &&
-> > > >             type != INVPCID_TYPE_ALL_NON_GLOBAL) {
-> > > >                 kvm_inject_gp(vcpu, 0);
-> > > >                 return 1;
-> > > >         }
+> > On Tue, Nov 02, 2021 at 01:57:44PM +0100, Peter Zijlstra wrote:
+> >
+> > > So how insane is something like this, have each function:
 > > >
-> > > Better, perhaps, to introduce a new function, valid_invpcid_type(),
-> > > and squirrel away the ugliness there?
-> >
+> > > foo.cfi:
+> > >       endbr64
+> > >       xorl $0xdeadbeef, %r10d
+> > >       jz foo
+> > >       ud2
+> > >       nop     # make it 16 bytes
+> > > foo:
+> > >       # actual function text goes here
+> > >
+> > >
+> > > And for each hash have two thunks:
+> > >
+> > >
+> > >       # arg: r11
+> > >       # clobbers: r10, r11
+> > > __x86_indirect_cfi_deadbeef:
+> > >       movl -9(%r11), %r10             # immediate in foo.cfi
+> > >       xorl $0xdeadbeef, %r10          # our immediate
+> > >       jz 1f
+> > >       ud2
+> > > 1:    ALTERNATIVE_2   "jmp *%r11",
+> > >                       "jmp __x86_indirect_thunk_r11", X86_FEATURE_RETPOLINE
+> > >                       "lfence; jmp *%r11", X86_FEATURE_RETPOLINE_AMD
+> > >
+> 
+> So are these supposed to go into the jump tables? If so, there still
+> needs to be a check against the boundary of the table at the call
+> site, to ensure that we are not calling something that we shouldn't.
+> 
+> If they are not going into the jump tables, I don't see the point of
+> having them, as only happy flow/uncomprised code would bother to use
+> them.
 
-I might not have understood your auto-updating concern correctly, can
-I change these macros to an enum like:
+I don't understand. If you can scribble your own code, you can
+circumvent pretty much any range check anyway. But if you can't scribble
+your own code, you get to use the branch here and that checks the
+callsite and callee signature.
 
-enum INVPCID_TYPE {
-        INVPCID_TYPE_INDIV_ADDR,
-        INVPCID_TYPE_SINGLE_CTXT,
-        INVPCID_TYPE_ALL_INCL_GLOBAL,
-        INVPCID_TYPE_ALL_NON_GLOBAL,
-        INVPCID_TYPE_MAX,
-};
-
-My check in the condition will be then "if (type >= INVPCID_TYPE_MAX) {}"
-This way if there is a new type added, max will be auto updated. Will
-this answers your concern?
-
-> > Oh, yeah, definitely.  I missed that SVM's invpcid_interception() has the same
-> > open-coded check.
-> >
-> > Alternatively, could we handle the invalid type in the main switch statement?  I
-> > don't see anything in the SDM or APM that architecturally _requires_ the type be
-> > checked before reading the INVPCID descriptor.  Hardware may operate that way,
-> > but that's uArch specific behavior unless there's explicit documentation.
->
-> Right. INVVPID and INVEPT are explicitly documented to check the type
-> first, but INVPCID is not.
-
-It seems to me that I can move type > 3 check to kvm_handle_invpcid()
-switch statement. I can replace BUG() in that switch statement with
-kvm_inject_gp for the default case, I won't even need INVPCID_TYPE_MAX
-in this case.
-
-If you are fine with this approach then I will send out a patch where
-invalid type is handled  in kvm_handle_invpcid() switch statement.
-
-Thanks
-Vipin
+The range check isn't fundamental to CFI, having a check is the
+important thing AFAIU.
