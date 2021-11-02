@@ -2,165 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E0A84425C1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 03:53:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47D744425C3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 03:55:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231586AbhKBC4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 22:56:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbhKBC4H (ORCPT
+        id S231168AbhKBC6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 22:58:04 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:25338 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229526AbhKBC6C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 22:56:07 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 538EAC061714;
-        Mon,  1 Nov 2021 19:53:33 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id 75so18891620pga.3;
-        Mon, 01 Nov 2021 19:53:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GW3N9pYi7csnm9MMTiOu12WSVm3tdN6Dpl31hs2hw4A=;
-        b=AXIZ3wBU64rkACD+0vKNTxUt6TxNduLO0hVu50R2FcuV2jpnZHYh5KhzCgDlhkjQb5
-         dCWW0LNpuJPiyHJuan+rvkFcj/eeB5Z13BkobpM3y7RpacngNDBF/fi2IexnR5GeIYLh
-         WOVUVKhLPdu17EUA7icUzifF9rQjxPoVL7lEgwgvlo9HKrxUoW1xv0h+w3R6NbKxJsks
-         57WRIx3+EoQzmwvCCuojhXfF18TsIU+zSlJ0Ao/905iV+O+jG5OHXeAJPTLA+23b8shl
-         QaZuPeC7LC0FvmoKr2kVlWKE9p/IokkwbVLPzSQYJjD7a6/77aUXLfEwoHp2RZIa9czq
-         oHQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GW3N9pYi7csnm9MMTiOu12WSVm3tdN6Dpl31hs2hw4A=;
-        b=aG6nivsiN9VxEN62RXkoY+d5PipifUFMIwfcDib+5nEJjUBInA/qsbF93MQz+t/5D1
-         MoyOHJbfM6siqset16pet1Drz5569FYM5sVoNgT2fWIOVdlR1waMRXjDfGxg1jsGAogM
-         rgrJQzfCutyOprRtvW1mMAlJVu7WJ//UZg4OEcKXt9YgRsyEipv0hktRennEgSuqIw8S
-         36k7L0fhsFSmrlFB3PpGrrZa9uYJn4jdUdEp8o3kJj8OEzn0FjqUSBqf7lsgdGJBGJmf
-         /+nHTlyHiX3N0dOYUs5bTgVseaUUwQ9fdRPUYohP0yITaiijoBvfIlzkNXCCF4DRCqQj
-         1efQ==
-X-Gm-Message-State: AOAM532QsmgZz5m0AL8ibagfkITKqCayPHQfeXB4DWBJJ7VnAi9KPScE
-        9lzlsOxG5RzLxV008oko1m4qGDkJ0RSRn1BBz88=
-X-Google-Smtp-Source: ABdhPJy9xmkkT6qQjK9/KrkPoTc0xJZr32tGXGYORmtsQvzmKy/2olsNsuD3snUtfsz2DJpkHCa2lPoLQFVzn8k11Qg=
-X-Received: by 2002:aa7:8b56:0:b0:44c:10a:4ee9 with SMTP id
- i22-20020aa78b56000000b0044c010a4ee9mr33684010pfd.46.1635821611842; Mon, 01
- Nov 2021 19:53:31 -0700 (PDT)
+        Mon, 1 Nov 2021 22:58:02 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HjvXd2w1VzbhWk;
+        Tue,  2 Nov 2021 10:50:41 +0800 (CST)
+Received: from kwepeml100005.china.huawei.com (7.221.188.221) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Tue, 2 Nov 2021 10:55:17 +0800
+Received: from kwepeml500002.china.huawei.com (7.221.188.128) by
+ kwepeml100005.china.huawei.com (7.221.188.221) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Tue, 2 Nov 2021 10:55:16 +0800
+Received: from kwepeml500002.china.huawei.com ([7.221.188.128]) by
+ kwepeml500002.china.huawei.com ([7.221.188.128]) with mapi id 15.01.2308.015;
+ Tue, 2 Nov 2021 10:55:16 +0800
+From:   huangguobin <huangguobin4@huawei.com>
+To:     Julian Wiedmann <jwi@linux.ibm.com>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH -next] bonding: Fix a use-after-free problem when
+ bond_sysfs_slave_add() failed
+Thread-Topic: [PATCH -next] bonding: Fix a use-after-free problem when
+ bond_sysfs_slave_add() failed
+Thread-Index: AQHXzywi8OO9Gir3ZUGCSM3T8JXbNqvuiXYAgAD75SA=
+Date:   Tue, 2 Nov 2021 02:55:16 +0000
+Message-ID: <5c02fbac130941a1a8578965975116b5@huawei.com>
+References: <1635777273-46028-1-git-send-email-huangguobin4@huawei.com>
+ <d6cd47b1-3b46-fc44-3a8d-b2444af527e6@linux.ibm.com>
+In-Reply-To: <d6cd47b1-3b46-fc44-3a8d-b2444af527e6@linux.ibm.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.177.139]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20211028164357.1439102-1-revest@chromium.org> <20211028224653.qhuwkp75fridkzpw@kafai-mbp.dhcp.thefacebook.com>
- <CABRcYmLWAp6kYJBA2g+DvNQcg-5NaAz7u51ucBMPfW0dGykZAg@mail.gmail.com>
- <204584e8-7817-f445-1e73-b23552f54c2f@gmail.com> <CABRcYmJxp6-GSDRZfBQ-_7MbaJWTM_W4Ok=nSxLVEJ3+Sn7Fpw@mail.gmail.com>
- <dccc55b4-9f45-4b1c-2166-184a8979bdc6@fb.com>
-In-Reply-To: <dccc55b4-9f45-4b1c-2166-184a8979bdc6@fb.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 1 Nov 2021 19:53:20 -0700
-Message-ID: <CAADnVQ+pwWWumw9_--jj7e_RL=n6Q3jhe6yawuSeMJzpFi_E2A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Allow bpf_d_path in perf_event_mmap
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Florent Revest <revest@chromium.org>,
-        Hengqi Chen <hengqi.chen@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@google.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 1, 2021 at 10:32 AM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 11/1/21 8:01 AM, Florent Revest wrote:
-> > On Mon, Nov 1, 2021 at 2:17 PM Hengqi Chen <hengqi.chen@gmail.com> wrote:
-> >>
-> >> Hi,
-> >>
-> >>
-> >> On 2021/10/30 1:02 AM, Florent Revest wrote:
-> >>> On Fri, Oct 29, 2021 at 12:47 AM Martin KaFai Lau <kafai@fb.com> wrote:
-> >>>>
-> >>>> On Thu, Oct 28, 2021 at 06:43:57PM +0200, Florent Revest wrote:
-> >>>>> Allow the helper to be called from the perf_event_mmap hook. This is
-> >>>>> convenient to lookup vma->vm_file and implement a similar logic as
-> >>>>> perf_event_mmap_event in BPF.
-> >>>>  From struct vm_area_struct:
-> >>>>          struct file * vm_file;          /* File we map to (can be NULL). */
-> >>>>
-> >>>> Under perf_event_mmap, vm_file won't be NULL or bpf_d_path can handle it?
-> >>>
-> >>> Thanks Martin, this is a very good point. :) Yes, vm_file can be NULL
-> >>> in perf_event_mmap.
-> >>> I wonder what would happen (and what we could do about it? :|).
-> >>> bpf_d_path is called on &vma->vm_file->f_path So without NULL checks
-> >>> (of vm_file) in BPF, the helper wouldn't be called with a NULL pointer
-> >>> but rather with an address that is offsetof(struct file, f_path).
-> >>>
-> >>
-> >> I tested this patch with the following BCC script:
-> >>
-> >>      bpf_text = '''
-> >>      #include <linux/mm_types.h>
-> >>
-> >>      KFUNC_PROBE(perf_event_mmap, struct vm_area_struct *vma)
-> >>      {
-> >>          char path[256] = {};
-> >>
-> >>          bpf_d_path(&vma->vm_file->f_path, path, sizeof(path));
-> >>          bpf_trace_printk("perf_event_mmap %s", path);
-> >>          return 0;
-> >>      }
-> >>      '''
-> >>
-> >>      b = BPF(text=bpf_text)
-> >>      print("BPF program loaded")
-> >>      b.trace_print()
-> >>
-> >> This change causes kernel panic. I think it's because of this NULL pointer.
-> >
-> > Thank you for the testing and repro Hengqi :)
-> > Indeed, I was able to reproduce this panic. When vma->vm_file is NULL,
-> > &vma->vm_file->f_path ends up being 0x18 so d_path causes a panic.
-> > I suppose that this sort of issue must be relatively common in helpers
-> > that take a PTR_TO_BTF_ID though ? I wonder if there is anything that
->
-> Most non-tracing ARG_PTR_TO_BTF_ID argument has strict helper/prog_type
-> protection and should be okay although I didn't check them 100%.
->
-> For some tracing helpers with ARG_PTR_TO_BTF_ID argument, we have
-> bpf_seq_printf/bpf_seq_write which has strict context as well and should
-> not be NULL.
->
-> For helper bpf_task_pt_regs() which can attach to ANY kernel function,
-> we kind of assume "task" is not NULL which should be the case in "almost
-> all* cases from kernel internal data structure.
->
-> > the verifier could do about this ? For example if vma->vm_file could
-> > be PTR_TO_BTF_ID_OR_NULL and therefore vma->vm_file->f_path somehow
-> > considered invalid ?
->
-> Verifier has no way to know whether vma->vm_file is NULL or not during
-> verification time. So in your case, if we have to be conservative, that
-> means verifier will reject the program.
->
-> One possible way could be add a mode in verifier, we still *go through*
-> the process for direct memory access but we require user explicit
-> checking NULL pointers. This way, user will be forced to write code like
->
->     FILE *vm_file = vma->vm_file; /* no checking is needed, vma from
-> parameter which is not NULL */
->     if (vm_file)
->       bpf_d_path(&vm_file->f_path, path, sizeof(path));
-
-That should work.
-The verifier can achieve that by marking certain fields as PTR_TO_BTF_ID_OR_NULL
-instead of PTR_TO_BTF_ID while walking such pointers.
-And then disallow pointer arithmetic on PTR_TO_BTF_ID_OR_NULL until it
-goes through 'if (Rx == NULL)' check inside the program and gets converted to
-PTR_TO_BTF_ID.
-Initially we can hard code such fields via BTF_ID(struct, file) macro.'
-So any pointer that results into a 'struct file' pointer will be
-PTR_TO_BTF_ID_OR_NULL.
+SSB0aGluayBib25kX3N5c2ZzX3NsYXZlX2RlbCBzaG91bGQgbm90IGJlIHVzZWQgaW4gdGhlIGVy
+cm9yIGhhbmRsaW5nIHByb2Nlc3MsIGJlY2F1c2UgYm9uZF9zeXNmc19zbGF2ZV9kZWwgd2lsbCB0
+cmF2ZXJzZSBhbGwgc2xhdmVfYXR0cnMgYW5kIHJlbGVhc2UgdGhlbS4gV2hlbiBzeXNmc19jcmVh
+dGVfZmlsZSBmYWlscywgb25seSBzb21lIGF0dHJpYnV0ZXMgbWF5IGJlIGNyZWF0ZWQgc3VjY2Vz
+c2Z1bGx5Lg0KLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IEp1bGlhbiBXaWVkbWFu
+biBbbWFpbHRvOmp3aUBsaW51eC5pYm0uY29tXSANClNlbnQ6IFR1ZXNkYXksIE5vdmVtYmVyIDIs
+IDIwMjEgMzozMSBBTQ0KVG86IGh1YW5nZ3VvYmluIDxodWFuZ2d1b2JpbjRAaHVhd2VpLmNvbT47
+IGoudm9zYnVyZ2hAZ21haWwuY29tOyB2ZmFsaWNvQGdtYWlsLmNvbTsgYW5keUBncmV5aG91c2Uu
+bmV0OyBkYXZlbUBkYXZlbWxvZnQubmV0OyBrdWJhQGtlcm5lbC5vcmcNCkNjOiBuZXRkZXZAdmdl
+ci5rZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnDQpTdWJqZWN0OiBSZTog
+W1BBVENIIC1uZXh0XSBib25kaW5nOiBGaXggYSB1c2UtYWZ0ZXItZnJlZSBwcm9ibGVtIHdoZW4g
+Ym9uZF9zeXNmc19zbGF2ZV9hZGQoKSBmYWlsZWQNCg0KT24gMDEuMTEuMjEgMTU6MzQsIEh1YW5n
+IEd1b2JpbiB3cm90ZToNCj4gV2hlbiBJIGRvIGZ1enogdGVzdCBmb3IgYm9uZGluZyBkZXZpY2Ug
+aW50ZXJmYWNlLCBJIGdvdCB0aGUgZm9sbG93aW5nIA0KPiB1c2UtYWZ0ZXItZnJlZSBDYWxsdHJh
+Y2U6DQo+IA0KDQpbLi4uXQ0KDQo+IEZpeGVzOiA3YWZjYWVjNDk2OTYgKGJvbmRpbmc6IHVzZSBr
+b2JqZWN0X3B1dCBpbnN0ZWFkIG9mIF9kZWwgYWZ0ZXIgDQo+IGtvYmplY3RfYWRkKQ0KPiBTaWdu
+ZWQtb2ZmLWJ5OiBIdWFuZyBHdW9iaW4gPGh1YW5nZ3VvYmluNEBodWF3ZWkuY29tPg0KPiAtLS0N
+Cj4gIGRyaXZlcnMvbmV0L2JvbmRpbmcvYm9uZF9zeXNmc19zbGF2ZS5jIHwgMTEgKysrKysrKyst
+LS0NCj4gIDEgZmlsZSBjaGFuZ2VkLCA4IGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0pDQo+
+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvYm9uZGluZy9ib25kX3N5c2ZzX3NsYXZlLmMg
+DQo+IGIvZHJpdmVycy9uZXQvYm9uZGluZy9ib25kX3N5c2ZzX3NsYXZlLmMNCj4gaW5kZXggZmQw
+NzU2MS4uZDFhNWIzZiAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9uZXQvYm9uZGluZy9ib25kX3N5
+c2ZzX3NsYXZlLmMNCj4gKysrIGIvZHJpdmVycy9uZXQvYm9uZGluZy9ib25kX3N5c2ZzX3NsYXZl
+LmMNCj4gQEAgLTEzNywxOCArMTM3LDIzIEBAIHN0YXRpYyBzc2l6ZV90IHNsYXZlX3Nob3coc3Ry
+dWN0IGtvYmplY3QgKmtvYmosDQo+ICANCj4gIGludCBib25kX3N5c2ZzX3NsYXZlX2FkZChzdHJ1
+Y3Qgc2xhdmUgKnNsYXZlKSAgew0KPiAtCWNvbnN0IHN0cnVjdCBzbGF2ZV9hdHRyaWJ1dGUgKiph
+Ow0KPiArCWNvbnN0IHN0cnVjdCBzbGF2ZV9hdHRyaWJ1dGUgKiphLCAqKmI7DQo+ICAJaW50IGVy
+cjsNCj4gIA0KPiAgCWZvciAoYSA9IHNsYXZlX2F0dHJzOyAqYTsgKythKSB7DQo+ICAJCWVyciA9
+IHN5c2ZzX2NyZWF0ZV9maWxlKCZzbGF2ZS0+a29iaiwgJigoKmEpLT5hdHRyKSk7DQo+ICAJCWlm
+IChlcnIpIHsNCj4gLQkJCWtvYmplY3RfcHV0KCZzbGF2ZS0+a29iaik7DQo+IC0JCQlyZXR1cm4g
+ZXJyOw0KPiArCQkJZ290byBlcnJfcmVtb3ZlX2ZpbGU7DQo+ICAJCX0NCj4gIAl9DQo+ICANCj4g
+IAlyZXR1cm4gMDsNCj4gKw0KPiArZXJyX3JlbW92ZV9maWxlOg0KPiArCWZvciAoYiA9IHNsYXZl
+X2F0dHJzOyBiIDwgYTsgKytiKQ0KPiArCQlzeXNmc19yZW1vdmVfZmlsZSgmc2xhdmUtPmtvYmos
+ICYoKCpiKS0+YXR0cikpOw0KPiArDQo+ICsJcmV0dXJuIGVycjsNCj4gIH0NCj4gIA0KDQpUaGlz
+IGxvb2tzIGxpa2UgYSBjYW5kaWRhdGUgZm9yIHN5c2ZzX2NyZWF0ZV9maWxlcygpLCBubz8NCg0K
+PiAgdm9pZCBib25kX3N5c2ZzX3NsYXZlX2RlbChzdHJ1Y3Qgc2xhdmUgKnNsYXZlKQ0KPiANCg0K
