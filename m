@@ -2,82 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58FD54437BA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 22:18:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0609F4437BC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 22:20:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231216AbhKBVU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 17:20:57 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:37678 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229931AbhKBVUy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 17:20:54 -0400
-Received: from zn.tnic (p200300ec2f1e1e0080adfba3347e3dab.dip0.t-ipconnect.de [IPv6:2003:ec:2f1e:1e00:80ad:fba3:347e:3dab])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4C4AD1EC0372;
-        Tue,  2 Nov 2021 22:18:18 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1635887898;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=+/uDq33xUD46XLKdHYR9LMs4FyeNj1wjtbIaLFhaSWU=;
-        b=mXz/zjz0JdyUSUexsPc4zLrAmMcEklloNANLpGI8mtCpf6bWFQ0UShVIu+z0cuoZYhLDgT
-        gL22/17Lk0ZAOlBLZ+fXQVHtehCZxGGmB+fz/OsOG42ryphNXlXed5gg508eT3iRJDFwNL
-        yZK+7ypcGCRAoC0E/YJXQmPkPiY+vbw=
-Date:   Tue, 2 Nov 2021 22:18:12 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        id S231240AbhKBVWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 17:22:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229931AbhKBVWp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 17:22:45 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D897BC061714;
+        Tue,  2 Nov 2021 14:20:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=FY9GWn+7lMSMdwfBpzLCtCeO76LLNEo5Zfs/hiHZS3I=; b=L3LD/gFmRIFEVOj5isWwE8Er8u
+        z6P3bjMjsqvBKUIcVpTg1xWa5Wqp4a/EKjC5io1gGTxQy/owd8giXoi1LQksYqUeYEEZhItXRgCOM
+        Ehrg6FSZhvEo/z2QnUuuFEgC5HXCQfO7WgEz6CcF45sgWD4owU0cy16uLM4XEVTmTSEuRDKchaaC4
+        9ZZBHtYm5DjkIaX1AOAtLR+v7b9BRkY2VGpylXAhftbtlCU/e3C0aKQBEZoFM4Dptqyy6QHYFaKTC
+        5udL3P2LD9/6lERIR/kWn2uyegYEc5J+00unGOgy5UzTdt2dlqwBkgGAuUwPAxOJVgmZ9abBU/kSb
+        DGlOojaQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mi1C3-00Dozc-JJ; Tue, 02 Nov 2021 21:19:43 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4DB6E984CD2; Tue,  2 Nov 2021 22:19:42 +0100 (CET)
+Date:   Tue, 2 Nov 2021 22:19:42 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Mark Rutland <mark.rutland@arm.com>, X86 ML <x86@kernel.org>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-hardening@vger.kernel.org,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Alexander Popov <alex.popov@linux.com>
-Subject: Re: Stackleak vs noinstr (Was: [GIT pull] objtool/core for v5.16-rc1)
-Message-ID: <YYGrFAx17lD/GTul@zn.tnic>
-References: <163572864256.3357115.931779940195622047.tglx@xen13>
- <163572864563.3357115.8793939214537874196.tglx@xen13>
- <CAHk-=wgNzL3AaVNruwLv=kcGXi1EbJN9CZC6GoRY66t6WFcfGg@mail.gmail.com>
- <YYDwJORywW2FjprP@hirez.programming.kicks-ass.net>
- <YYD/bpLabfumrvL+@hirez.programming.kicks-ass.net>
- <YYENAKB0igNFnFmK@hirez.programming.kicks-ass.net>
- <CAHk-=wghWC3B6tFpQChL=q+HdUKN6R3OohPt53VsEOcKASKrRQ@mail.gmail.com>
+        llvm@lists.linux.dev
+Subject: Re: [PATCH] static_call,x86: Robustify trampoline patching
+Message-ID: <20211102211942.GY174703@worktop.programming.kicks-ass.net>
+References: <20211031163920.GV174703@worktop.programming.kicks-ass.net>
+ <CAMj1kXHk5vbrT49yRCivX3phrEkN6Xbb+g8WEmavL_d1iE0OxQ@mail.gmail.com>
+ <YX74Ch9/DtvYxzh/@hirez.programming.kicks-ass.net>
+ <CAMj1kXG+MuGaG3BHk8pnE1MKVmRf5E+nRNoFMHxOA1y84eGikg@mail.gmail.com>
+ <YX8AQJqyB+H3PF1d@hirez.programming.kicks-ass.net>
+ <CAMj1kXF3n-oQ1WP8=asb60K6UjSYOtz5RVhrcoCoNq3v7mZdQg@mail.gmail.com>
+ <20211101090155.GW174703@worktop.programming.kicks-ass.net>
+ <CAMj1kXGhRmdM3om289Q2-s1Pzfob3D2iSDMorzggfhSk1oj53A@mail.gmail.com>
+ <YYE1yPClPMHvyvIt@hirez.programming.kicks-ass.net>
+ <202111021040.6570189A5@keescook>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wghWC3B6tFpQChL=q+HdUKN6R3OohPt53VsEOcKASKrRQ@mail.gmail.com>
+In-Reply-To: <202111021040.6570189A5@keescook>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 10:50:06AM -0700, Linus Torvalds wrote:
-> On Tue, Nov 2, 2021 at 3:05 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > Having the plugin gate on section name seems a lot hacky, but given it's
-> > already doing that, one more doesn't hurt.
-> 
-> Looks sane to me.
-> 
-> Some of the other warnings are just odd.
-> 
-> Why is mce_setup() 'noinst'? I'm not seeing any reason for it, but
-> maybe I'm just blind. That one complains about the memcpy() call.
-> 
-> Of course, I suspect memcpy/memset might be better off noinstr anyway,
-> exactly because they can happen for very regular C code (struct
-> assignments etc). But mce_setup() doesn't really seem to have much
-> reason to not be instrumented.
+On Tue, Nov 02, 2021 at 11:10:10AM -0700, Kees Cook wrote:
+> On Tue, Nov 02, 2021 at 01:57:44PM +0100, Peter Zijlstra wrote:
 
-That is going away in my local patchset here. The aim is to have the #MC
-handler be noinstr, ofc, but that thing calls a bunch of other functions
-and even external ones so it needs careful massaging without destroying
-the whole house of cards in the process. :-)
+> > All questions that need answering I think.
+> 
+> I'm totally fine with designing a new CFI for a future option,
+> but blocking the existing (working) one does not best serve our end
+> users.
 
-I should have something palatable - read: properly split patches - soon.
+Accepting a half arsed CFI now, just because it is what we have, will
+only make it ever so much more difficuly to get new/better
+things implemented in the toolchains, because the pressure is off.
 
--- 
-Regards/Gruss,
-    Boris.
+Also, it will make enabling IBT more difficult, or we'll end up having
+CFI and IBT mutually exclusive, which is a crap position to be in.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+> There are already people waiting on x86 CFI because having the
+> extra layer of defense is valuable for them. No, it's not perfect,
+> but it works right now, and evidence from Android shows that it has
+> significant real-world defensive value. Some of the more adventurous
+> are actually patching their kernels with the CFI support already, and
+> happily running their workloads, etc.
+
+It works by accident, not design. Which is a giant red flag in my book.
+
+> Supporting Clang CFI means we actually have something to evolve
+> from,
+
+I don't want to evolve from a place that's crazy and we shouldn't have
+been in to begin with. Redefining what a function pointer is is insane,
+and the required work-arounds are ugly at best.
+
+The ARM64 folks have expressed regret from having merged it. Why should
+x86 do something that's known to cause regret?
+
+> where as starting completely over means (likely significant)
+> delays leaving folks without the option available at all.
+
+See above. Maybe some of those folks will get motivated to make it
+happen faster.
+
+> I think the various compiler and kernel tweaks needed to improve
+> kernel support are reasonable, but building a totally new CFI
+> implementation is not: it _does_ work today on x86. 
+
+By sodding accident; see that one static call patch that makes it burn.
+
+If someone were to use the jump-table entry after we'd scribbled it,
+thing will go sideways bad.
+
+> Yes, it's weird, but not outrageously so.
+
+Clearly we disagree.
+
+> Regardless, speaking to a new CFI design below:
+> 
+> > So how insane is something like this, have each function:
+> > 
+> > foo.cfi:
+> > 	endbr64
+> > 	xorl $0xdeadbeef, %r10d
+> > 	jz foo
+> > 	ud2
+> > 	nop	# make it 16 bytes
+> > foo:
+> > 	# actual function text goes here
+> > 
+> > 
+> > And for each hash have two thunks:
+> > 
+> > 
+> > 	# arg: r11
+> > 	# clobbers: r10, r11
+> > __x86_indirect_cfi_deadbeef:
+> > 	movl -9(%r11), %r10		# immediate in foo.cfi
+> 
+> This requires the text be readable. I have been hoping to avoid this for
+> a CFI implementation so we could gain the benefit of execute-only
+> memory (available soon on arm64, and possible today on x86 under a
+> hypervisor).
+
+It's only needed for the 'legacy' case of software only CFI if that
+makes you feel better. BTI/IBT based CFI doesn't need this.
+
+(also, I'm very much a bare metal kinda guy)
+
+> > 	xorl $0xdeadbeef, %r10		# our immediate
+> > 	jz 1f
+> > 	ud2
+> > 1:	ALTERNATIVE_2	"jmp *%r11",
+> > 			"jmp __x86_indirect_thunk_r11", X86_FEATURE_RETPOLINE
+> > 			"lfence; jmp *%r11", X86_FEATURE_RETPOLINE_AMD
+> > 
+> > 
+> > 
+> > 	# arg: r11
+> > 	# clobbers: r10, r11
+> > __x86_indirect_ibt_deadbeef:
+> > 	movl $0xdeadbeef, %r10
+> > 	subq $0x10, %r11
+> > 	ALTERNATIVE "", "lfence", X86_FEATURE_RETPOLINE
+> > 	jmp *%r11
+> > 
+
+IBT case ^ doesn't actually read from the code. It simply jumps in front
+of the real function by a set amount to get the extra cruft /
+landing-pad required for indirect calls.
+
+Also note that direct calls never make use of that pad, which means it
+can be stripped from all symbols that never have their address taken,
+which means less indirect targets.
+
+(Or poison the thing with UD2 and write 0 in the immediate)
+
+> > And have the actual indirect callsite look like:
+> > 
+> > 	# r11 - &foo
+> > 	ALTERNATIVE_2	"cs call __x86_indirect_thunk_r11",
+> > 			"cs call __x86_indirect_cfi_deadbeef", X86_FEATURE_CFI
+> > 			"cs call __x86_indirect_ibt_deadbeef", X86_FEATURE_IBT
+> > 
+> > Although if the compiler were to emit:
+> > 
+> > 	cs call __x86_indirect_cfi_deadbeef
+> > 
+> > we could probaly fix it up from there.
+> 
+> It seems like this could work for any CFI implementation, though, if
+
+The strong suggestion is that function pointers are sane, and there's a
+few other considerations, but yes.
+
+> the CFI implementation always performed a call, or if the bounds of the
+> inline checking were known? i.e. objtool could also find the inline
+> checks just as well as the call, though?
+
+Somewhat hard, it's much easier to find a single instruction than a
+pattern. Also, footprint. Smaller really is better.
+
+> > Then we can at runtime decide between:
+> > 
+> >   {!cfi, cfi, ibt} x {!retpoline, retpoline, retpoline-amd}
+> 
+> This does look pretty powerful, but I still don't think it precludes
+> using the existing Clang CFI. I don't want perfect to be the enemy of
+> good. :)
+
+As stated above, we're in violent disagreement that the proposed scheme
+comes anywhere near good. I utterly hate the redefintion of function
+pointers and I also think the range compare goes sideways in the face of
+modules. That's two marks against jump-tables.
+
+(Also, in the !CFI case, you can't actually free the jump-tables, since
+you're uncondtionally s(t)uck with them because of how &func is
+wrecked.)
+
