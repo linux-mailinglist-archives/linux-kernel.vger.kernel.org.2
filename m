@@ -2,112 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6F41443320
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 17:38:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 068B1443328
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 17:38:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234897AbhKBQkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 12:40:46 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:32892 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235079AbhKBQjz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 12:39:55 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 9297A212C8;
-        Tue,  2 Nov 2021 16:37:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1635871036; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7nyVmI1mw9hsrpGGFASoS9zmXwbZwXMt3G3NBwpCKoI=;
-        b=oxpUqcVUqOdx58uNgbc5N6ILlWgD3iJ5JPVwc2mdzgH+1mj50dvEB5b+/uhhjl1TRp4gBu
-        LqFrZ2K4t2GlUf0LdITJXWcCqKYJmqnEd8YJ6PgxhFZwI0AAMs5q04OFKDqkXCyB+mTm9w
-        KVRl2sit9AWi35m02eH2qPy1jDHOqoQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1635871036;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7nyVmI1mw9hsrpGGFASoS9zmXwbZwXMt3G3NBwpCKoI=;
-        b=ap4V+wyZXiSnHi24Hqmm/NJJvV092FZptqOKrb38V8qzI3Vs9bcV3t1Y6DRPVnoyqcb2wL
-        AceBPKZEc9ueKnCQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 949F313BB8;
-        Tue,  2 Nov 2021 16:37:15 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id i3BsIjtpgWGhcQAAMHmgww
-        (envelope-from <jroedel@suse.de>); Tue, 02 Nov 2021 16:37:15 +0000
-Date:   Tue, 2 Nov 2021 17:37:13 +0100
-From:   Joerg Roedel <jroedel@suse.de>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Borislav Petkov <bp@alien8.de>, Joerg Roedel <joro@8bytes.org>,
-        x86@kernel.org, kexec@lists.infradead.org, stable@vger.kernel.org,
-        hpa@zytor.com, Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v2 01/12] kexec: Allow architecture code to opt-out at
- runtime
-Message-ID: <YYFpOfovSN2Af+ux@suse.de>
-References: <20210913155603.28383-1-joro@8bytes.org>
- <20210913155603.28383-2-joro@8bytes.org>
- <YYARccITlowHABg1@zn.tnic>
- <87pmrjbmy9.fsf@disp2133>
+        id S234797AbhKBQlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 12:41:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42746 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234716AbhKBQkl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 12:40:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D272560C51;
+        Tue,  2 Nov 2021 16:38:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635871086;
+        bh=UdQt9PK3L8XB/dN3LAsfIcM0QcNxMg3DkJ0OQnI5fG4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DEb56UfEg9IWKBW8oV9jWecxQGIHR1f10Sg50fMdCH8bmEeM8TgQF9HurX5VaJ/+r
+         L6Ee7KhX8U4+PiIqcRVQKZSzYoYstShzzBYF3C++QfDipTzE2ZeL9sygFkCMubMa0j
+         4bZ7KcHApsvwvo9CB2AN0kqA6gcI1vS9xnWnEK6cLe6bR2ucmsY9Iqa9Aoh0KIBHET
+         5pta+OrHgwPUGjRLCRlHgsjacAQhrYyNB0jnyugU/ObCv681JXB8tkonQU4EwywGyf
+         hX2AjYDAdEDSuS/kXbZyX1a3njkpTp9rJF7BYkFTddko8lzBLC5deTFVGANb3hGqdr
+         ykMK3YF4V92ig==
+Date:   Tue, 2 Nov 2021 16:37:59 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, Olof Johansson <olof@lixom.net>,
+        Kukjin Kim <kgene@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Sylwester Nawrocki <snawrocki@kernel.org>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Inki Dae <inki.dae@samsung.com>, Cedric Roux <sed@free.fr>,
+        Sam Van Den Berge <sam.van.den.berge@telenet.be>,
+        Lihua Yao <ylhuajnu@outlook.com>,
+        Heiko Stuebner <heiko@sntech.de>
+Subject: Re: [RFC PATCH] ARM: s3c: mark as deprecated and schedule removal
+ after 2022
+Message-ID: <YYFpZ9zh5++xl6nr@sirena.org.uk>
+References: <20211102110519.142434-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="TE5r+IQ6TnxUK8oQ"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87pmrjbmy9.fsf@disp2133>
+In-Reply-To: <20211102110519.142434-1-krzysztof.kozlowski@canonical.com>
+X-Cookie: Love America -- or give it back.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 01, 2021 at 04:11:42PM -0500, Eric W. Biederman wrote:
-> I seem to remember the consensus when this was reviewed that it was
-> unnecessary and there is already support for doing something like
-> this at a more fine grained level so we don't need a new kexec hook.
 
-It was a discussion, no consenus :)
+--TE5r+IQ6TnxUK8oQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I still think it is better to solve this in generic code for everybody
-to re-use than with an hack in the architecture hooks.
+On Tue, Nov 02, 2021 at 12:05:19PM +0100, Krzysztof Kozlowski wrote:
 
-More and more platforms which enable confidential computing features
-may need this hook in the future.
+> Let's mark all S3C24xx and S3C64xx platforms as deprecated and mention
+> possible removal in one year (after 2022).  The deprecation message will
+> be as text in Kconfig, build message (not a warning though) and runtime
+> print error.
+>=20
+> If there are any users, they might respond and postpone the removal.
 
-Regards,
+The Speyside system is s3c64xx based, I'm in the middle of reorganising
+my hardware setup so it's not usable right now but it's quite useful.
 
--- 
-Jörg Rödel
-jroedel@suse.de
+--TE5r+IQ6TnxUK8oQ
+Content-Type: application/pgp-signature; name="signature.asc"
 
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5
-90409 Nürnberg
-Germany
- 
-(HRB 36809, AG Nürnberg)
-Geschäftsführer: Ivo Totev
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGBaWcACgkQJNaLcl1U
+h9CrjQf+PnesumCFL1DvgflH3XWUMUM2ZzcJtAuKSNq2macjpsBkZJ+YSktw5/5y
+Y7hQJxlW9Xm8qjE+/XluPkmPoaep7HiNXE2Olukgw48JnYXUH35qZakj2IVUkocC
+I0sm6pprgZjTkEltZY5Z2s8gh4CdnqrLyxmBIE6KKdbAOwyfkNxFcr+O63jAX7C6
+nUDffSGpAT02Eey9dOL2tz9qyvOULlFoY43Ne9E0VddtUN7V/abVczLNPKx1A1KS
+RPpGnmx8tveXm1Rb+9YrnEvSvRSwdZMx+2pPTtZymHKkQ7uSlNEWKnChgR/jUh7N
+2vbtlXucIwBUxIKgi5bKQ0uYl/dQ3Q==
+=63V7
+-----END PGP SIGNATURE-----
+
+--TE5r+IQ6TnxUK8oQ--
