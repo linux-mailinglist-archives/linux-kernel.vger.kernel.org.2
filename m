@@ -2,137 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD4BC442505
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 02:18:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4B5F44250B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 02:18:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231145AbhKBBUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 21:20:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbhKBBUj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 21:20:39 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAD6CC061714
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 18:18:05 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id n13-20020a9d710d000000b005558709b70fso21336630otj.10
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 18:18:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=PzGNcPgh/OyDH+zMOkFMCYuGyrvziyRj5gQ48PelaTQ=;
-        b=X4Kh4RwnuhFR+dAPJjLMfQRlNxRFQeooBuLxQ/5NCh4oBJA99x8GdH0cc/48T6lS2k
-         LQ4jY7vKHWpxLeWOn1ar3LUk1HXxHt9csi4zjFT6jc1pxrn7QrJnpQ3YE9Zmcd5ZgbEh
-         Pnw153ReRlugPofIZgl3m8rRP1aMhY0iotngtn96Qn9Hi63HhgUBlOrQnqQ7B6PC0IxG
-         8mktZhZmk8Nlt3ARrU/Zfu6VugdZgSR1UkkQ/Pu5vofOwiVn0l7OISjF+kdO9ERJV2Sy
-         8dRk+wKm7mu1fbkue5EtAKSc/w0E25n3K3HDMjNXgo/aL6VEIzBt/xN2soUTHksmzHZY
-         QTkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=PzGNcPgh/OyDH+zMOkFMCYuGyrvziyRj5gQ48PelaTQ=;
-        b=Y5s/5C6MbGHyK998H87f6Cse1r08ZiHdUwriyjOjyVTJlBtKzWzwFXQjohmSh7aF3J
-         QYigIOnUUj6w3v5Z++HfUfgGGfJaSnXM2N+fYNpwtAJdel8ngkAcAZyaAetcxISfpuU1
-         Qj28mkRWuBLTa3zXm7bZvZnWfzpmN+x6HRxoWa1VGRCHf52XjJXjKDLQwwes15z9VfjV
-         ZJmS7TNYB9XkVQdXYl9waj1qL0sLngyfoe0xfuPbiGnczH2O474CJ31aVTptNoJeCBMN
-         dIV+vfTSBtIVSssMi8KQO8aFqMJzwgEzL4WxAY8ecr+NyBXmKZcHwES+6QcrD/neBiw7
-         KFSA==
-X-Gm-Message-State: AOAM5338pxMH5awOfnA8RF0qrieRk8+Vyjz0EWy+ixFOndk8YodJyfLf
-        aIYXJ0b1Hl8O3Q9BbsD6/dhjoBi3Wps=
-X-Google-Smtp-Source: ABdhPJwMGp3plTmnbyYDeaE75O7wp7qzgQN9spyzwBTsrlSozWmAcqnbky2WF26jqrtPIOE8lTAicA==
-X-Received: by 2002:a9d:d02:: with SMTP id 2mr24100880oti.358.1635815884654;
-        Mon, 01 Nov 2021 18:18:04 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id k4sm4488349oic.48.2021.11.01.18.18.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Nov 2021 18:18:03 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <CAHk-=wjfbfQobW2jygMvgfJXKmzZNB=UTzBrFs2vTEzVpBXA4Q@mail.gmail.com>
- <20211101002346.GA304515@roeck-us.net>
- <CAMuHMdWBgGvt8q9suk6tysgga7sJ4v74eJHHO=ifg2Rc3S9A9Q@mail.gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: Linux 5.15
-Message-ID: <89a3686d-1ef6-4677-5d9f-f5e15a77c50e@roeck-us.net>
-Date:   Mon, 1 Nov 2021 18:17:59 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S231532AbhKBBV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 21:21:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53166 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229510AbhKBBVZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 21:21:25 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DF35F61051;
+        Tue,  2 Nov 2021 01:18:47 +0000 (UTC)
+Date:   Mon, 1 Nov 2021 21:18:45 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qiang Zhang <qiang.zhang@windriver.com>,
+        robdclark <robdclark@chromium.org>,
+        christian <christian@brauner.io>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        dennis.dalessandro@cornelisnetworks.com,
+        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
+        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        kbuild test robot <lkp@intel.com>
+Subject: Re: [PATCH v7 00/11] extend task comm from 16 to 24
+Message-ID: <20211101211845.20ff5b2e@gandalf.local.home>
+In-Reply-To: <CALOAHbAx55AUo3bm8ZepZSZnw7A08cvKPdPyNTf=E_tPqmw5hw@mail.gmail.com>
+References: <20211101060419.4682-1-laoar.shao@gmail.com>
+        <YX/0h7j/nDwoBA+J@alley>
+        <CALOAHbA61RyGVzG8SVcNG=0rdqnUCt4AxCKmtuxRnbS_SH=+MQ@mail.gmail.com>
+        <YYAPhE9uX7OYTlpv@alley>
+        <CALOAHbAx55AUo3bm8ZepZSZnw7A08cvKPdPyNTf=E_tPqmw5hw@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdWBgGvt8q9suk6tysgga7sJ4v74eJHHO=ifg2Rc3S9A9Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/1/21 1:13 AM, Geert Uytterhoeven wrote:
-> Hi Günter.
-> 
-> On Mon, Nov 1, 2021 at 1:28 AM Guenter Roeck <linux@roeck-us.net> wrote:
->> On Sun, Oct 31, 2021 at 02:09:07PM -0700, Linus Torvalds wrote:
->> Building m68k:allmodconfig ... failed
->> --------------
->> Error log:
->> In file included from include/linux/string.h:20,
->>                   from include/linux/bitmap.h:10,
->>                   from include/linux/cpumask.h:12,
->>                   from include/linux/smp.h:13,
->>                   from include/linux/lockdep.h:14,
->>                   from include/linux/spinlock.h:63,
->>                   from include/linux/mmzone.h:8,
->>                   from include/linux/gfp.h:6,
->>                   from include/linux/slab.h:15,
->>                   from drivers/nvme/target/discovery.c:7:
->> In function 'memcpy_and_pad',
->>      inlined from 'nvmet_execute_disc_identify' at drivers/nvme/target/discovery.c:268:2:
->> arch/m68k/include/asm/string.h:72:25: error: '__builtin_memcpy' reading 8 bytes from a region of size 7
->>
->> Another instance of the same problem:
->>
->> In function 'memcpy_and_pad',
->>      inlined from 'nvmet_execute_identify_ctrl' at drivers/nvme/target/admin-cmd.c:372:2:
->> arch/m68k/include/asm/string.h:72:25: error: '__builtin_memcpy' reading 8 bytes from a region of size 7
->>
->> This is seen with gcc 11.1 and 11.2. gcc 10.3 builds fine.
->> The code in question is
->>
->>          memcpy_and_pad(id->fr, sizeof(id->fr),
->>                         UTS_RELEASE, strlen(UTS_RELEASE), ' ');
->>
->> and UTS_RELEASE is "5.15.0". I have no idea what might be wrong with the code.
-> 
-> Me neither.  That warning (now error) has been seen with all point
-> releases (i.e. strlen(UTS_RELEASE) < 8) since v5.0.
-> 
+On Tue, 2 Nov 2021 09:09:50 +0800
+Yafang Shao <laoar.shao@gmail.com> wrote:
 
-Ah yes, I can see that now. I guess I didn't notice earlier because it was
-only reported as warning.
+> So if no one against, I will do it in two steps,
+> 
+> 1. Send the task comm cleanups in a separate patchset named "task comm cleanups"
+>     This patchset includes patch #1, #2, #4,  #5, #6, #7 and #9.
+>     Cleaning them up can make it less error prone, and it will be
+> helpful if we want to extend task comm in the future :)
 
->> Does anyone have an idea ?
-> 
-> We had a discussion in
-> https://lore.kernel.org/all/CAMuHMdX365qmWiii=gQLADpW49EMkdDrVJDPWNBpAZuZM0WQFQ@mail.gmail.com
-> but without any definitive conclusion.
-> 
->> Do I need to revert to gcc 10.3 for m68k ?
-> 
-> I'm not sure that might help, as the issue has been seen with
-> e.g. 8.1.0 and 8.2.0, too, with a slightly different message:
-> warning: ‘__builtin_memcpy’ forming offset 8 is out of the bounds [0,
-> 7] [-Warray-bounds]
-> 
-> Any suggestions? Thanks!
-> 
+Agreed.
 
-Replacing "strlen(UTS_RELEASE)" with "sizeof(UTS_RELEASE) - 1" seems to do
-the trick, at least with gcc 11.2 and v5.15. I just wonder if that would be
-acceptable. Any idea ?
+> 
+> 2.  Keep the current comm[16] as-is and introduce a separate pointer
+> to store kthread's long name
+
+I'm OK with this. Hopefully more would chime in too.
+
+>      Now we only care about kthread, so we can put the pointer into a
+> kthread specific struct.
+>      For example in the struct kthread, or in kthread->data (which may
+> conflict with workqueue).
+
+No, add a new field to the structure. "full_name" or something like that.
+I'm guessing it should be NULL if the name fits in TASK_COMM_LEN and
+allocated if the name had to be truncated.
+
+Do not overload data with this. That will just make things confusing.
+There's not that many kthreads, where an addition of an 8 byte pointer is
+going to cause issues.
+
+> 
+>      And then dynamically allocate a longer name if it is truncated,
+> for example,
+>      __kthread_create_on_node
+>          len = vsnprintf(name, sizeof(name), namefmt, args);
+>          if (len >= TASK_COMM_LEN) {
+>              /* create a longer name */
+
+And make sure you have it fail the kthread allocation if it fails to
+allocate.
+
+>          }
+> 
+>      And then we modify proc_task_name(), so the user can get
+> kthread's longer name via /proc/[pid]/comm.
+
+Agreed.
+
+> 
+>      And then free the allocated memory when the kthread is destroyed.
+
+Correct.
 
 Thanks,
-Guenter
+
+-- Steve
