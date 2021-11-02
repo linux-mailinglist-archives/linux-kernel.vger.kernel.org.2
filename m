@@ -2,132 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6571C44371C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 21:15:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0907B443731
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 21:21:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231378AbhKBURv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 16:17:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38162 "EHLO
+        id S231283AbhKBUXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 16:23:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230060AbhKBURt (ORCPT
+        with ESMTP id S230293AbhKBUXa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 16:17:49 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 447F8C061714;
-        Tue,  2 Nov 2021 13:15:14 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id ee33so1591480edb.8;
-        Tue, 02 Nov 2021 13:15:14 -0700 (PDT)
+        Tue, 2 Nov 2021 16:23:30 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D52FDC061714;
+        Tue,  2 Nov 2021 13:20:54 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id r4so1672878edi.5;
+        Tue, 02 Nov 2021 13:20:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PqKC2t1Z5DmsnmpUEFoy3liKWP90tFs8sH60erHgihQ=;
-        b=fEzLluxtpVt49nA4nW9VmHwOB8olNv+cr8vCPFXRg0BkU9xXcs+9xohjH/dbJb/JZm
-         Jn3Q3DM8vHyiyVHH9L88UrLBov1G/x2g9AS8+xnhPdqgsW3BSmt0mE0+OlmkbrDrd0jp
-         9LhOL8TleGNjvJ8eV+5+vmURHblBY/BVRfriYPyvzd8G/vkEED7FSUuW1YE22Qfbf+qg
-         jaNSsvv5/ym05HE998urmd/1qGbYVG5FTeSoz5dM7zj779osugHcFdEe8INh9MBGEafG
-         RUGhXbDGYgkziz96URb0Gr84f6OovpS6941kwHY0lsVhfWJNPA2rtK8XlwpQjnxrR9PT
-         kDjg==
+         :cc:content-transfer-encoding;
+        bh=UyetWvPuNDfyKp+4+2PGhwT/Geo73HADN4YLF27UPDU=;
+        b=jPxPft0LAcrb9jf3ZVLf2T+Ts98E+25/MARM4tWWyPjZrtDTeZMQ8NovVytW1FiuCZ
+         W4b5fHnVQzGp2ig/EPRU6jJZLxEie3YyBFzdlchKkK20gYHB5WpM2WSQMtC65b+Ixlad
+         aS750LdXZFrA6VPEet8mbbrWSiMS8SCt/JH+o12os55SdpHQCYreVuV9k2g9ZG6qyRH3
+         WghiilMZPEjIrmpDLwM4AUe8OQPGhP+vCtfUINudBGc7K1nz5DnT2ys5gi+Lak4c0iWL
+         59pWcYXihX2xRsP7hsTCiCGJr/KEfcwo/lu8uxitooXbIgjzIVlfsDlDI/jYAEraY0Hd
+         fXJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PqKC2t1Z5DmsnmpUEFoy3liKWP90tFs8sH60erHgihQ=;
-        b=fUgb6F/H2CHsjqnm2CtZxT9pZjkonJxxVSE3KZsDrsPwR4Y+ofRFAcEXIlk5a5L5hP
-         K4gnH4OtO9J5YKN9Mp5SESn/WSUpWYaAF5UE5IOw5O+zltOWBPpXQoVvNRUAxThosLB0
-         mqdCxdASor+jfjJkRoMn3fmFhftc026iHUIj/DvTCLAA822qzTwPoupFVq3JW1fM4f3i
-         HbhL41uaNF47Xsc31RIaylYVXZ5O6wUiH4fusMgSy6p7Hlz3wOdlwPS/JRriyh/2Jn1i
-         Cw28vPpbVROTaB6OmVPQrXEWAzIRnV6PGy5cNW8ErjkirwKL7hL0WUspqARvmQr/rq6x
-         iVKg==
-X-Gm-Message-State: AOAM531tsuz2pwsT5x4P0tOBQeXHsJ4MKjShQRB1YqukBSXHYWG1RdRr
-        +g3B9+wzJnSJJYx5HWAmQ3/jCH/Rq/1MnwACYeM=
-X-Google-Smtp-Source: ABdhPJxCzvbiL8SrPnqlEyRkEgG13MVi98u1HbMKyGOzzMrOjh5GeBgylI4pX9nKhd44bj3Ih6Nc/FPn8GJISHkbprU=
-X-Received: by 2002:a17:906:1707:: with SMTP id c7mr47407307eje.377.1635884112761;
- Tue, 02 Nov 2021 13:15:12 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=UyetWvPuNDfyKp+4+2PGhwT/Geo73HADN4YLF27UPDU=;
+        b=CVYKvTOzx20b/lY54VSYuvWEJJtcTvqxY+2GyGBV1P++WGTA0k6C4bL0j0DqkjI+GE
+         gVtjlH+jS6Y6mOSIma2W90iUZwsb7BqPNjjjGkDoIwu+xMjb6pBvXTJyV5drzoPxGUmg
+         1XE1cMUaTsAeoJxyg8AL2NSlk+4Db147fEHkZRkz3/Vk2PiVfQkbX+zWZPz7wVuP746W
+         siOqS+GPBzWh4KvhtZ92ovbdSBti2Fm+O2sSEM7Ga04H/nAbweu5GR+nDdVLZ1Kq8JtG
+         oTRkDZm1n2nlPJ075zmF0NGxc7tP/LORA/zer2UfXh0JnhQ3v2lNvIn4FguvvWQ16UPL
+         EIdA==
+X-Gm-Message-State: AOAM5321rl3lzj1w6GbZjdxEadkrTmbTQ8HnjA9URkir+0ZN5COWtbCL
+        UI5LXextjxzxVG9kLzu/myLzTmR/9tJNBAPc7sc=
+X-Google-Smtp-Source: ABdhPJzI/ebWOWGB2dP1VAOOAJLjsnxGsrinSpguycoI1uct4Q0O43HSBt1LwROMKas/ujZk3x9VRjfDjoIlhcErdZo=
+X-Received: by 2002:a17:906:d553:: with SMTP id cr19mr46570525ejc.128.1635884453458;
+ Tue, 02 Nov 2021 13:20:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211102161125.1144023-1-kernel@esmil.dk> <20211102161125.1144023-15-kernel@esmil.dk>
-In-Reply-To: <20211102161125.1144023-15-kernel@esmil.dk>
+References: <20211101200346.16466-1-quic_qiancai@quicinc.com>
+ <CAHp75VcrWPdR8EVGpcsniQedT0J4X700N7thFs6+srTP1MTgwQ@mail.gmail.com> <c5767824-f39c-772c-d376-77db24bb2f84@quicinc.com>
+In-Reply-To: <c5767824-f39c-772c-d376-77db24bb2f84@quicinc.com>
 From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 2 Nov 2021 22:14:23 +0200
-Message-ID: <CAHp75VeyC9nW0zSD9Hz23ypN8jQqU+JXOAG=oJfhebq4ptmm1w@mail.gmail.com>
-Subject: Re: [PATCH v3 14/16] serial: 8250_dw: Add StarFive JH7100 quirk
-To:     Emil Renner Berthing <kernel@esmil.dk>
-Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
+Date:   Tue, 2 Nov 2021 22:20:04 +0200
+Message-ID: <CAHp75VebqgAyOz5MYRjdujijhas2iTw3viS1vpXm8RNkBevaMg@mail.gmail.com>
+Subject: Re: [RFC PATCH] software node: Skip duplicated software_node sysfs
+To:     Qian Cai <quic_qiancai@quicinc.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Sagar Kadam <sagar.kadam@sifive.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michael Zhu <michael.zhu@starfivetech.com>,
-        Fu Wei <tekkamanninja@gmail.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 2, 2021 at 6:44 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
+On Tue, Nov 2, 2021 at 9:44 PM Qian Cai <quic_qiancai@quicinc.com> wrote:
+> On 11/1/21 7:51 PM, Andy Shevchenko wrote:
+> > No, it=E2=80=99s not so easy. What you are doing is a papering over the=
+ real issue
+> > which is the limitation of the firmware nodes to two. What we need is t=
+o
+> > drop the link from struct fwnode_handle, move it to upper layer and mod=
+ify
+> > all fwnode ops to be used over the list of fwnode:s.
 >
-> On the StarFive JH7100 RISC-V SoC the UART core clocks can't be set to
-> exactly 16 * 115200Hz and many other common bitrates. Trying this will
-> only result in a higher input clock, but low enough that the UART's
-> internal divisor can't come close enough to the baud rate target.
-> So rather than try to set the input clock it's better to skip the
-> clk_set_rate call and rely solely on the UART's internal divisor.
+> Andy, this is my first time touching fwnode/swnode. After reading the
+> source code for a few hours, I still don't understand the hint here.
+> Specifically, what does the "the link" refer to?
 
-Bingo!
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+https://elixir.bootlin.com/linux/latest/source/include/linux/fwnode.h#L36
 
-> Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
-> ---
->  drivers/tty/serial/8250/8250_dw.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/drivers/tty/serial/8250/8250_dw.c b/drivers/tty/serial/8250/8250_dw.c
-> index 53f57c3b9f42..1769808031c5 100644
-> --- a/drivers/tty/serial/8250/8250_dw.c
-> +++ b/drivers/tty/serial/8250/8250_dw.c
-> @@ -414,6 +414,8 @@ static void dw8250_quirks(struct uart_port *p, struct dw8250_data *data)
->
->                 if (of_device_is_compatible(np, "marvell,armada-38x-uart"))
->                         p->serial_out = dw8250_serial_out38x;
-> +               if (of_device_is_compatible(np, "starfive,jh7100-uart"))
-> +                       p->set_termios = dw8250_do_set_termios;
->
->         } else if (acpi_dev_present("APMC0D08", NULL, -1)) {
->                 p->iotype = UPIO_MEM32;
-> @@ -696,6 +698,7 @@ static const struct of_device_id dw8250_of_match[] = {
->         { .compatible = "cavium,octeon-3860-uart" },
->         { .compatible = "marvell,armada-38x-uart" },
->         { .compatible = "renesas,rzn1-uart" },
-> +       { .compatible = "starfive,jh7100-uart" },
->         { /* Sentinel */ }
->  };
->  MODULE_DEVICE_TABLE(of, dw8250_of_match);
-> --
-> 2.33.1
->
+(Property related) fwnode (as of today) is the single linked list with
+only two possible entries. Comments against set_primary_fwnode()
+followed by set_secondary_fwnode() may shed a bit of light here
+https://elixir.bootlin.com/linux/latest/source/drivers/base/core.c#L4724
 
-
--- 
+--=20
 With Best Regards,
 Andy Shevchenko
