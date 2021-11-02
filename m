@@ -2,133 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8614A442FA3
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 15:00:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ABC7442FAB
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 15:00:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231283AbhKBOC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 10:02:59 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:21806 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231267AbhKBOC4 (ORCPT
+        id S231450AbhKBOD2 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 2 Nov 2021 10:03:28 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:47184 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230436AbhKBOD0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 10:02:56 -0400
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1A2BZ9q7019241;
-        Tue, 2 Nov 2021 10:00:21 -0400
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3c2g25nhqt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 02 Nov 2021 10:00:20 -0400
-Received: from SCSQMBX10.ad.analog.com (SCSQMBX10.ad.analog.com [10.77.17.5])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 1A2E0Iep063923
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 2 Nov 2021 10:00:19 -0400
-Received: from SCSQCASHYB6.ad.analog.com (10.77.17.132) by
- SCSQMBX10.ad.analog.com (10.77.17.5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5;
- Tue, 2 Nov 2021 07:00:18 -0700
-Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
- SCSQCASHYB6.ad.analog.com (10.77.17.132) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5;
- Tue, 2 Nov 2021 07:00:17 -0700
-Received: from zeus.spd.analog.com (10.66.68.11) by scsqmbx11.ad.analog.com
- (10.77.17.10) with Microsoft SMTP Server id 15.2.858.5 via Frontend
- Transport; Tue, 2 Nov 2021 07:00:17 -0700
-Received: from amiclaus-VirtualBox.ad.analog.com (AMICLAUS-L02.ad.analog.com [10.48.65.121])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 1A2E0CvE031291;
-        Tue, 2 Nov 2021 10:00:15 -0400
-From:   Antoniu Miclaus <antoniu.miclaus@analog.com>
-To:     <jic23@kernel.org>, <robh+dt@kernel.org>,
-        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Antoniu Miclaus <antoniu.miclaus@analog.com>
-Subject: [PATCH 2/2] dt-bindings:iio:amplifiers: add ad7293 doc
-Date:   Tue, 2 Nov 2021 15:59:47 +0200
-Message-ID: <20211102135947.131223-3-antoniu.miclaus@analog.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211102135947.131223-1-antoniu.miclaus@analog.com>
-References: <20211102135947.131223-1-antoniu.miclaus@analog.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-ORIG-GUID: TG0gVOD6GLlg0IOZdoJbvLjZ7G23UBvN
-X-Proofpoint-GUID: TG0gVOD6GLlg0IOZdoJbvLjZ7G23UBvN
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-02_08,2021-11-02_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
- spamscore=0 mlxlogscore=882 suspectscore=0 bulkscore=0 mlxscore=0
- impostorscore=0 malwarescore=0 priorityscore=1501 clxscore=1015
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111020083
+        Tue, 2 Nov 2021 10:03:26 -0400
+Received: from smtpclient.apple (p4fefc15c.dip0.t-ipconnect.de [79.239.193.92])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 67872CECF0;
+        Tue,  2 Nov 2021 15:00:47 +0100 (CET)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 15.0 \(3693.20.0.1.32\))
+Subject: Re: [PATCH] Bluetooth: Fix receiving
+ HCI_LE_Advertising_Set_Terminated event
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20211102192742.1.I3ba1a76d72da5a813cf6e6f219838c9ef28c5eaa@changeid>
+Date:   Tue, 2 Nov 2021 15:00:46 +0100
+Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Archie Pusaka <apusaka@chromium.org>,
+        Alain Michaud <alainm@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <4049F5B5-D5A7-4F60-A33D-F22B601E7064@holtmann.org>
+References: <20211102192742.1.I3ba1a76d72da5a813cf6e6f219838c9ef28c5eaa@changeid>
+To:     Archie Pusaka <apusaka@google.com>
+X-Mailer: Apple Mail (2.3693.20.0.1.32)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add device tree bindings for the AD7293 Power Amplifier.
+Hi Archie,
 
-Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
----
- .../bindings/iio/amplifiers/adi,ad7293.yaml   | 49 +++++++++++++++++++
- 1 file changed, 49 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/iio/amplifiers/adi,ad7293.yaml
+> This event is received when the controller stops advertising,
+> specifically for these three reasons:
+> (a) Connection is successfully created (success).
+> (b) Timeout is reached (error).
+> (c) Number of advertising events is reached (error).
+> (*) This event is NOT generated when the host stops the advertisement.
+> Refer to the BT spec ver 5.3 vol 4 part E sec 7.7.65.18. Note that the
+> section was revised from BT spec ver 5.0 vol 2 part E sec 7.7.65.18
+> which was ambiguous about (*).
+> 
+> Some chips (e.g. RTL8822CE) send this event when the host stops the
+> advertisement with status = HCI_ERROR_CANCELLED_BY_HOST (due to (*)
+> above). This is treated as an error and the advertisement will be
+> removed and userspace will be informed via MGMT event.
+> 
+> On suspend, we are supposed to temporarily disable advertisements,
+> and continue advertising on resume. However, due to the behavior
+> above, the advertisements are removed instead.
+> 
+> This patch returns early if HCI_ERROR_CANCELLED_BY_HOST is received.
 
-diff --git a/Documentation/devicetree/bindings/iio/amplifiers/adi,ad7293.yaml b/Documentation/devicetree/bindings/iio/amplifiers/adi,ad7293.yaml
-new file mode 100644
-index 000000000000..b9cfd4621fb7
---- /dev/null
-+++ b/Documentation/devicetree/bindings/iio/amplifiers/adi,ad7293.yaml
-@@ -0,0 +1,49 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/iio/amplifiers/adi,ad7293.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: AD7293 12-Bit Power Amplifier Current Controller with ADC,
-+       DACs, Temperature and Current Sensors
-+
-+maintainers:
-+  - Antoniu Miclaus <antoniu.miclaus@analog.com>
-+
-+description: |
-+   Power Amplifier drain current controller containing functionality
-+   for general-purpose monitoring and control of current, voltage,
-+   and temperature, integrated into a single chip solution with an
-+   SPI-compatible interface.
-+
-+   https://www.analog.com/en/products/ad7293.html
-+
-+properties:
-+  compatible:
-+    enum:
-+      - adi,ad7293
-+
-+  reg:
-+    maxItems: 1
-+
-+  spi-max-frequency:
-+    maximum: 1000000
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    spi {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+      ad7293@0 {
-+        compatible = "adi,ad7293";
-+        reg = <0>;
-+        spi-max-frequency = <1000000>;
-+      };
-+    };
-+...
--- 
-2.33.1
+lets include a btmon snippet here to show the faulty behavior.
+
+> 
+> Additionally, this patch also clear HCI_LE_ADV if there are no more
+> advertising instances after receiving other errors.
+
+Does this really belong in this patch? I think it warrants a separate patch with an appropriate Fixes: tag. Especially in the case we are working around a firmware bug, this should be separate. It gives us a better chance to bisect anything if we ever have to.
+
+> 
+> Signed-off-by: Archie Pusaka <apusaka@chromium.org>
+> Reviewed-by: Alain Michaud <alainm@chromium.org>
+> 
+> ---
+> 
+> include/net/bluetooth/hci.h |  1 +
+> net/bluetooth/hci_event.c   | 12 ++++++++++++
+> 2 files changed, 13 insertions(+)
+> 
+> diff --git a/include/net/bluetooth/hci.h b/include/net/bluetooth/hci.h
+> index 63065bc01b76..84db6b275231 100644
+> --- a/include/net/bluetooth/hci.h
+> +++ b/include/net/bluetooth/hci.h
+> @@ -566,6 +566,7 @@ enum {
+> #define HCI_ERROR_INVALID_LL_PARAMS	0x1e
+> #define HCI_ERROR_UNSPECIFIED		0x1f
+> #define HCI_ERROR_ADVERTISING_TIMEOUT	0x3c
+> +#define HCI_ERROR_CANCELLED_BY_HOST	0x44
+> 
+> /* Flow control modes */
+> #define HCI_FLOW_CTL_MODE_PACKET_BASED	0x00
+> diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+> index d4b75a6cfeee..150b50677790 100644
+> --- a/net/bluetooth/hci_event.c
+> +++ b/net/bluetooth/hci_event.c
+> @@ -5538,6 +5538,14 @@ static void hci_le_ext_adv_term_evt(struct hci_dev *hdev, struct sk_buff *skb)
+> 
+> 	adv = hci_find_adv_instance(hdev, ev->handle);
+> 
+> +	/* Some chips (e.g. RTL8822CE) emit HCI_ERROR_CANCELLED_BY_HOST. This
+> +	 * event is being fired as a result of a hci_cp_le_set_ext_adv_enable
+> +	 * disable request, which will have its own callback and cleanup via
+> +	 * the hci_cc_le_set_ext_adv_enable path.
+> +	 */
+
+I am not in favor of pointing fingers at bad hardware in the source code of core (that belongs in a commit message). Blaming hardware is really up to the drivers. So I would rather phrase it like this:
+
+	/* The Bluetooth Core 5.3 specification clearly states that this event
+	 * shall not be sent when the Host disables the advertising set. So in
+	 * case of HCI_ERROR_CANCELLED_BY_HOST, just ignore the event.
+	 *
+	 * When the Host disables an advertising set, all cleanup is done via
+	 * its command callback and not needed to be duplicated here.
+	 */
+
+> +	if (ev->status == HCI_ERROR_CANCELLED_BY_HOST)
+> +		return;
+> +
+
+And since this is clearly an implementation issue, the manufactures can issue a firmware fix for this. So lets be verbose and complain about it.
+
+	if (ev->status == HCI_ERRROR..) {
+		bt_dev_warn_ratelimited(hdev, “Unexpected advertising set terminated event”);
+		return;
+	}
+
+> 	if (ev->status) {
+> 		if (!adv)
+> 			return;
+> @@ -5546,6 +5554,10 @@ static void hci_le_ext_adv_term_evt(struct hci_dev *hdev, struct sk_buff *skb)
+> 		hci_remove_adv_instance(hdev, ev->handle);
+> 		mgmt_advertising_removed(NULL, hdev, ev->handle);
+> 
+> +		/* If we are no longer advertising, clear HCI_LE_ADV */
+> +		if (list_empty(&hdev->adv_instances))
+> +			hci_dev_clear_flag(hdev, HCI_LE_ADV);
+> +
+
+See comment above why this might be better suited for a separate patch.
+
+Regards
+
+Marcel
 
