@@ -2,159 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57E5B443053
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 15:24:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DA5A443054
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 15:24:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231557AbhKBO0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 10:26:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36172 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231588AbhKBO0l (ORCPT
+        id S230447AbhKBO1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 10:27:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230208AbhKBO1L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 10:26:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635863046;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1YjJj9IqpDhJ07HE33uojzp5DuJdOMzvHOGPrvOy2QU=;
-        b=b9AsSj6i1AcGLKQ2t8BdJ0vCpxnWC0HdlpYBh5pxxWKgBWDtFzzLMvO4Xxp3Dn5ZSfEEa0
-        NpSZPzESE3IJ+sQv6LxmfUj0jjFUyuBy8xnLGnXkX0Av9fDqW/FUQPJMp1pdBedcjTHJuU
-        3pxZ/bH7AS9W6DoBxOXHSbbsMeZtiQ0=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-357-P5jU7uSbMhmYTibpklrgqg-1; Tue, 02 Nov 2021 10:24:05 -0400
-X-MC-Unique: P5jU7uSbMhmYTibpklrgqg-1
-Received: by mail-ed1-f72.google.com with SMTP id v9-20020a50d849000000b003dcb31eabaaso19072850edj.13
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 07:24:04 -0700 (PDT)
+        Tue, 2 Nov 2021 10:27:11 -0400
+Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BA2AC061714
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 07:24:36 -0700 (PDT)
+Received: by mail-oo1-xc31.google.com with SMTP id t7-20020a4aadc7000000b002b8733ab498so7464658oon.3
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 07:24:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JI0Ej4DOcNCkfUFyUyiO9iOW2E1mQQJnZ1aAxjyxxx0=;
+        b=a7nMNY8e7XhoAQX6x5gKIFRopgM4d9faZSm2ckKytem4akNvEDG00LCf5uPAk5l9D9
+         mKZPEQTqVcERalHxJbqIxhi3NkP1QHIJp1Ss/Snz9Uq53V5EXbeLKGWZk0Ho8Yc3AM0p
+         rWPEstz+QirAEkluGjoE7mWnvQ1K/bNYgR2X9jkrdE68dJzsKrCGaW2uHHmgyhzpZ6Qe
+         /LMXoybczXQKIuhKfb0miuj9cXredGiLGScvFeSjZeriFb+VaUXw2Qi9hFVwWv8yYeAZ
+         qsXAX6iPfU/Wn2IjqB7UqYXtOJUA6aALah8zTZWVCNrJ8/2M5BHPzoRujj91UZMeAKmv
+         NzQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=1YjJj9IqpDhJ07HE33uojzp5DuJdOMzvHOGPrvOy2QU=;
-        b=U/0FKA0eAd7yg+w98RKpaTpU12SjLdHU+o9B5JB2IWUm+5X5D+0t5EzXaWkxdzYmzI
-         Y3n8ywFq5PyaJa1OAjHcOdBE/j0De8Uofl6pou6iJvMnOeIs+2EEMsaqtLGYyg53NGul
-         4yQkS47XDiELBAywIgKCM/FEvIN6HqigSjpENyVuujVP4MfqI0KT49tDiQSzFOP291O9
-         aK9Bq8gZ7ch8vFL2yU2bu6fzg+ujs6C5/NuJRwXrxRyhmbq+WbcPX8TqOIHVSELasiiY
-         bhZCm9cJma+JAezF8nZE3ZtFLLHJZbf1KcbYqIiJTPPSHukTLG28unb978yYyfySDkx4
-         VpKg==
-X-Gm-Message-State: AOAM532PIPl3ek0ISoD652wdSSWhA2wAMLePcctIOXhGTUF4uN9VsYkt
-        OhVrUBeVoWNyeiTiVdpWWwS6DPi4Q7O+Eu1V7k2IuzO3LpBHqtSqefYnDFi9wvlrpR4q/1aIfGJ
-        lqBttIEDkrnCmWjg2VSUPYFXV
-X-Received: by 2002:a17:907:7f8b:: with SMTP id qk11mr46491565ejc.313.1635863043786;
-        Tue, 02 Nov 2021 07:24:03 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxkmvL1HIl9M3KIUQMmw+yeeX/QNnPDpALyKPCkIFoHEdHZkwzBVyQbxiHQ+ACffR2u+1RHkA==
-X-Received: by 2002:a17:907:7f8b:: with SMTP id qk11mr46491524ejc.313.1635863043578;
-        Tue, 02 Nov 2021 07:24:03 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id sg17sm3448785ejc.72.2021.11.02.07.24.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Nov 2021 07:24:02 -0700 (PDT)
-Message-ID: <8eaeca66-f719-6b5d-bd7c-ccbd15a0b91c@redhat.com>
-Date:   Tue, 2 Nov 2021 15:24:01 +0100
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=JI0Ej4DOcNCkfUFyUyiO9iOW2E1mQQJnZ1aAxjyxxx0=;
+        b=4IXOHpVN480XBZTp83+S4v0U/QCiiw+608Zj/7XokvXxDL8j3T9olTJGalyFJcSo6w
+         c46APe6ZVpvBZpN9tBJXmKTOXJ40U+9obB1lmjFOt8hyk2rn9Ti9qPFTE4PLFU7Zsnkn
+         0GKniZamfnPfuRvD/TXhnZZixO9CKgjpY/YR3f8VQPwLmDAvdDIN/IXFtLqEOmgvNUax
+         GxNEp4vv44qRNHSX8ybB+VpgrcLNqKBJrP6SyeIGKaMfVNiVIVQAOZPtO7+uae6THoc8
+         9LXZi6s/s7xalG0PQYEebCzs2CUi0M0gaewU01YELo5Fc4qo/qd2PPKd3pm9bHYbMv6Y
+         Y+Jg==
+X-Gm-Message-State: AOAM533gWdiEBTl6cvTtWEUA2wjbVVXS6iRJCuUmmNeRPGSq+VILuOJx
+        W2GjYRcGnwAIUYUkcSqlDIkzvQwauOA=
+X-Google-Smtp-Source: ABdhPJxatjbHrHxxBgFnrFEk6R0/L4G01foHF2xYaS3i+PSPbBdZUu3DNQpgFaJRlp5n7Wc3mB+KUA==
+X-Received: by 2002:a4a:6412:: with SMTP id o18mr24923792ooc.79.1635863075966;
+        Tue, 02 Nov 2021 07:24:35 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id t12sm3744026oiw.39.2021.11.02.07.24.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Nov 2021 07:24:35 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Andy Shevchenko <andy@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>
+Subject: [PATCH] string: uninline memcpy_and_pad
+Date:   Tue,  2 Nov 2021 07:24:20 -0700
+Message-Id: <20211102142420.3723616-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v5 07/11] platform/x86: int3472: Split into 2 drivers
-Content-Language: en-US
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Kate Hsuan <hpa@redhat.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>
-References: <20211102094907.31271-1-hdegoede@redhat.com>
- <20211102094907.31271-8-hdegoede@redhat.com>
- <CAHp75VePSv8b=oTJXJCL_go9Lody+8JQJyMC6exO-Zw8cPk9og@mail.gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <CAHp75VePSv8b=oTJXJCL_go9Lody+8JQJyMC6exO-Zw8cPk9og@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+When building m68k:allmodconfig, recent versions of gcc generate the
+following error if the length of UTS_RELEASE is less than 8 bytes.
 
-On 11/2/21 15:16, Andy Shevchenko wrote:
-> On Tue, Nov 2, 2021 at 11:49 AM Hans de Goede <hdegoede@redhat.com> wrote:
->>
->> The intel_skl_int3472.ko module contains 2 separate drivers,
->> the int3472_discrete platform driver and the int3472_tps68470
->> I2C-driver.
->>
->> These 2 drivers contain very little shared code, only
->> skl_int3472_get_acpi_buffer() and skl_int3472_fill_cldb() are
->> shared.
->>
->> Split the module into 2 drivers, linking the little shared code
->> directly into both.
->>
->> This will allow us to add soft-module dependencies for the
->> tps68470 clk, gpio and regulator drivers to the new
->> intel_skl_int3472_tps68470.ko to help with probe ordering issues
->> without causing these modules to get loaded on boards which only
->> use the int3472_discrete platform driver.
->>
->> While at it also rename the .c and .h files to remove the
->> cumbersome intel_skl_int3472_ prefix.
-> 
-> ...
-> 
->> +union acpi_object *skl_int3472_get_acpi_buffer(struct acpi_device *adev, char *id)
->> +{
->> +       struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
->> +       acpi_handle handle = adev->handle;
->> +       union acpi_object *obj;
->> +       acpi_status status;
->> +
->> +       status = acpi_evaluate_object(handle, id, NULL, &buffer);
->> +       if (ACPI_FAILURE(status))
->> +               return ERR_PTR(-ENODEV);
->> +
->> +       obj = buffer.pointer;
->> +       if (!obj)
->> +               return ERR_PTR(-ENODEV);
->> +
->> +       if (obj->type != ACPI_TYPE_BUFFER) {
->> +               acpi_handle_err(handle, "%s object is not an ACPI buffer\n", id);
-> 
->> +               kfree(obj);
-> 
-> I'm wondering if we should use more of the ACPI_FREE() calls as
-> opposed to ACPI_ALLOCATE_BUFFER. Ditto for all such cases.
+In function 'memcpy_and_pad',
+    inlined from 'nvmet_execute_disc_identify' at
+    	drivers/nvme/target/discovery.c:268:2:
+arch/m68k/include/asm/string.h:72:25: error:
+	'__builtin_memcpy' reading 8 bytes from a region of size 7
 
-Basically the situation surrounding this is a mess, most code seems to
-simply use plain kfree() which I find much more readable, but some
-code indeed is using ACPI_FREE(), which I believe is really mostly
-meant for internal use by the acpica code.
+Discussions around the problem suggest that this only happens if an
+architecture does not provide strlen(), if -ffreestanding is provided as
+compiler option, and if CONFIG_FORTIFY_SOURCE=n. All of this is the case
+for m68k. The exact reasons are unknown, but seem to be related to the
+ability of the compiler to evaluate the return value of strlen() and
+the resulting execution flow in memcpy_and_pad(). It would be possible
+to work around the problem by using sizeof(UTS_RELEASE) instead of
+strlen(UTS_RELEASE), but that would only postpone the problem until the
+function is called in a similar way. Uninline memcpy_and_pad() instead
+to solve the problem for good.
 
-Eitherway until one of the ACPI maintainers clearly states
-that we really should use ACPI_FREE() here I plan to stick with kfree()
-because:
+Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Acked-by: Andy Shevchenko <andriy.shevchenko@intel.com>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+---
+v2: Moved to lib/string_helpers.c
+    Balanced { } in if/else statement to make checkpatch happy
+    Added Reviewed-by: /Acked-by: tags
 
-1. I find it much more readable.
-2. AFAICT ACPI_FREE() is meant for acpica internal use
-   (basically it is part of the OS abstraction bits of acpica)
+ include/linux/string.h | 19 ++-----------------
+ lib/string_helpers.c   | 20 ++++++++++++++++++++
+ 2 files changed, 22 insertions(+), 17 deletions(-)
 
-Regards,
-
-Hans
+diff --git a/include/linux/string.h b/include/linux/string.h
+index 5a36608144a9..b6572aeca2f5 100644
+--- a/include/linux/string.h
++++ b/include/linux/string.h
+@@ -253,23 +253,8 @@ static inline const char *kbasename(const char *path)
+ #include <linux/fortify-string.h>
+ #endif
+ 
+-/**
+- * memcpy_and_pad - Copy one buffer to another with padding
+- * @dest: Where to copy to
+- * @dest_len: The destination buffer size
+- * @src: Where to copy from
+- * @count: The number of bytes to copy
+- * @pad: Character to use for padding if space is left in destination.
+- */
+-static inline void memcpy_and_pad(void *dest, size_t dest_len,
+-				  const void *src, size_t count, int pad)
+-{
+-	if (dest_len > count) {
+-		memcpy(dest, src, count);
+-		memset(dest + count, pad,  dest_len - count);
+-	} else
+-		memcpy(dest, src, dest_len);
+-}
++void memcpy_and_pad(void *dest, size_t dest_len, const void *src, size_t count,
++		    int pad);
+ 
+ /**
+  * memset_after - Set a value after a struct member to the end of a struct
+diff --git a/lib/string_helpers.c b/lib/string_helpers.c
+index faa9d8e4e2c5..d5d008f5b1d9 100644
+--- a/lib/string_helpers.c
++++ b/lib/string_helpers.c
+@@ -883,6 +883,26 @@ char *strreplace(char *s, char old, char new)
+ }
+ EXPORT_SYMBOL(strreplace);
+ 
++/**
++ * memcpy_and_pad - Copy one buffer to another with padding
++ * @dest: Where to copy to
++ * @dest_len: The destination buffer size
++ * @src: Where to copy from
++ * @count: The number of bytes to copy
++ * @pad: Character to use for padding if space is left in destination.
++ */
++void memcpy_and_pad(void *dest, size_t dest_len, const void *src, size_t count,
++		    int pad)
++{
++	if (dest_len > count) {
++		memcpy(dest, src, count);
++		memset(dest + count, pad,  dest_len - count);
++	} else {
++		memcpy(dest, src, dest_len);
++	}
++}
++EXPORT_SYMBOL(memcpy_and_pad);
++
+ #ifdef CONFIG_FORTIFY_SOURCE
+ void fortify_panic(const char *name)
+ {
+-- 
+2.33.0
 
