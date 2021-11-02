@@ -2,89 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28B0C44366C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 20:21:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80944443670
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 20:21:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230392AbhKBTYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 15:24:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54206 "EHLO
+        id S230457AbhKBTY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 15:24:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229791AbhKBTYM (ORCPT
+        with ESMTP id S230413AbhKBTYZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 15:24:12 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8A35C061714;
-        Tue,  2 Nov 2021 12:21:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=y7NmXxmwgNpuEsIAHDr8sgPMHa6A/nAcTvtGWxZXzeI=; b=OVECd4bQpwqdFBu7KHEkYG2Vcn
-        vMCT3NQhvvIzWlTRdSvrUOXAVw7hy8Gle1CndoQdDI3eDblsNpslKIbJnmCjZXV+4iHHmMuSvicrl
-        i8ToskSx2IU+EJL+v9froy266qnDomOIyQCG54iSBTe3ZLY5ilxxxTIlAoDPVASp+ypnOvIX39JXP
-        /W0DgxKFFqLzgH7QAPm4FE+MBHyUu8WbNhxug7I78SbIDjuK9LpsfmetV+etd5Z7iKxNzxMahRgHz
-        fIp9CB8HSsHmsNcaOtAZv/uVJuaW+8btPAhM0cq7UY/SKg8+A/dbg2afseLM+gK3L7O7ZgIWSTRmg
-        s1JjkiGQ==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mhzLj-002nSc-Mp; Tue, 02 Nov 2021 19:21:35 +0000
-Subject: Re: [PATCH 1/2] rtc: Add driver for Sunplus SP7021
-To:     Vincent Shih <vincent.sunplus@gmail.com>, a.zummo@towertech.it,
-        alexandre.belloni@bootlin.com, p.zabel@pengutronix.de,
-        linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org,
-        robh+dt@kernel.org, devicetree@vger.kernel.org
-Cc:     Vincent Shih <vincent.shih@sunplus.com>
-References: <1635834123-24668-1-git-send-email-vincent.shih@sunplus.com>
- <1635834123-24668-2-git-send-email-vincent.shih@sunplus.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <1ebf36aa-2680-81b2-aa26-d8b4d10c80ec@infradead.org>
-Date:   Tue, 2 Nov 2021 12:21:34 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 2 Nov 2021 15:24:25 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1304C061205
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 12:21:49 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id r8so109702qkp.4
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 12:21:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=arista.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WBuZwnr+5bcLsCP355FoQ/4BAq59hOrIy0vTMjfrBb8=;
+        b=ALlpwX4Ukti+ianWKoWCIEQelRKQDPprVmMyF7bY3MLoaTiwrVTK5iB5Dj/dZaHq3W
+         KZV8OTzfuS/or+8PvImBgX4G6dn8bORZKLQieLhsR0VakaYdhiVDHPhqE0DAc6DgI3YP
+         qOUG2tDX/JOnvl9Fs5gLfeQrOTTSOwWxomvDyz5A1EYf5j/a4RtkxXLXKZ7lUnzZknTT
+         5KOSyYc907dONlMc0xlMGtReevrX7GYR1ReSD+XzKCg7O/fxvgDH2qzJ+0nVPEV/GhfQ
+         soNobREkXIq9xmUImY+ilfq91wSTK1/k0Vy+HjHldzm/1iR0gqxelWZNN2L5Z0Kc/FGn
+         z0VA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WBuZwnr+5bcLsCP355FoQ/4BAq59hOrIy0vTMjfrBb8=;
+        b=c7ihOMYNIXGB2Gd7dJ12H37Gl7CkQOFHBKWsF3pHNrXqCy3/8e8BkxS37gz8OAN/90
+         PlZ5rSyyooz0WncmGkNHps15JI99NkJwyj5yupHiqYexC9PzHUGuPFdZ/8Eds4zrsyNm
+         IgoDb2BDEdr/HLlKHN1j5xRQWRUodqnHFnSLbKSMEULTw1DZHbry1BTZWbxymFN5Eb5j
+         hMt9d08QUmEZ108o9WYTaHPW1wfSjbQxSrthsSOeLIcAD08DN9K9KHE0tvaVMaSoMZsP
+         O0cGhPSdoB7ebuJLzOnEsAeNJSgFLuyI2zLTZuUF8xxcLh5cnolgcrHEeZXhQi1NWYgN
+         dmDQ==
+X-Gm-Message-State: AOAM533jJRLK5Eoaefo62GGQ8vE+x1GPxqHFepg8VLsxzWPhkEWtrLkg
+        JoW2skUafOWJtoH3VcVfhi4wrPcp+Ub3w9dkBNzKYA==
+X-Google-Smtp-Source: ABdhPJyx7G/CA9C9oGEYGtlGn8S6R1B/EfiFUabVqEtFBOelrmJNlKgnzA8B8ZHYEjdpYUSsc60JjgULOPpcaJ5ICwM=
+X-Received: by 2002:ae9:edc6:: with SMTP id c189mr30616528qkg.183.1635880908773;
+ Tue, 02 Nov 2021 12:21:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1635834123-24668-2-git-send-email-vincent.shih@sunplus.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <cover.1635784253.git.cdleonard@gmail.com> <6097ec24d87efc55962a1bfac9441132f0fc4206.1635784253.git.cdleonard@gmail.com>
+ <CA+HUmGgMAU235hMtTgucVb1GX_Ru83bngHg8-Jvy2g6BA7djsg@mail.gmail.com> <876f0df1-894a-49bb-07dc-1b1137479f3f@gmail.com>
+In-Reply-To: <876f0df1-894a-49bb-07dc-1b1137479f3f@gmail.com>
+From:   Francesco Ruggeri <fruggeri@arista.com>
+Date:   Tue, 2 Nov 2021 12:21:38 -0700
+Message-ID: <CA+HUmGguspEHZpH-WB4Qi9+xVpz3x3z3KqQVoQmhEJsn-w2q1w@mail.gmail.com>
+Subject: Re: [PATCH v2 11/25] tcp: authopt: Implement Sequence Number Extension
+To:     Leonard Crestez <cdleonard@gmail.com>
+Cc:     David Ahern <dsahern@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Yuchung Cheng <ycheng@google.com>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Christoph Paasch <cpaasch@apple.com>,
+        Ivan Delalande <colona@arista.com>,
+        Priyaranjan Jha <priyarjha@google.com>, netdev@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi--
+On Tue, Nov 2, 2021 at 3:03 AM Leonard Crestez <cdleonard@gmail.com> wrote:
+>
+> On 11/1/21 9:22 PM, Francesco Ruggeri wrote:
+> >> +/* Compute SNE for a specific packet (by seq). */
+> >> +static int compute_packet_sne(struct sock *sk, struct tcp_authopt_info *info,
+> >> +                             u32 seq, bool input, __be32 *sne)
+> >> +{
+> >> +       u32 rcv_nxt, snd_nxt;
+> >> +
+> >> +       // We can't use normal SNE computation before reaching TCP_ESTABLISHED
+> >> +       // For TCP_SYN_SENT the dst_isn field is initialized only after we
+> >> +       // validate the remote SYN/ACK
+> >> +       // For TCP_NEW_SYN_RECV there is no tcp_authopt_info at all
+> >> +       if (sk->sk_state == TCP_SYN_SENT ||
+> >> +           sk->sk_state == TCP_NEW_SYN_RECV ||
+> >> +           sk->sk_state == TCP_LISTEN)
+> >> +               return 0;
+> >> +
+> >
+> > In case of TCP_NEW_SYN_RECV, if our SYNACK had sequence number
+> > 0xffffffff, we will receive an ACK sequence number of 0, which
+> > should have sne = 1.
+> >
+> > In a somewhat similar corner case, when we receive a SYNACK to
+> > our SYN in tcp_rcv_synsent_state_process, if the SYNACK has
+> > sequence number 0xffffffff, we set tp->rcv_nxt to 0, and we
+> > should set sne to 1.
+> >
+> > There may be more similar corner cases related to a wraparound
+> > during the handshake.
+> >
+> > Since as you pointed out all we need is "recent" valid <sne, seq>
+> > pairs as reference, rather than relying on rcv_sne being paired
+> > with tp->rcv_nxt (and similarly for snd_sne and tp->snd_nxt),
+> > would it be easier to maintain reference <sne, seq> pairs for send
+> > and receive in tcp_authopt_info, appropriately handle the different
+> > handshake cases and initialize the pairs, and only then track them
+> > in tcp_rcv_nxt_update and tcp_rcv_snd_update?
+>
+> For TCP_NEW_SYN_RECV there is no struct tcp_authopt_info, only a request
+> minisock. I think those are deliberately kept small save resources on
+> SYN floods so I'd rather not increase their size.
+>
+> For all the handshake cases we can just rely on SNE=0 for ISN and we
+> already need to keep track of ISNs because they're part of the signature.
+>
 
-On 11/1/21 11:22 PM, Vincent Shih wrote:
-> diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
-> index e1bc521..0c205d2 100644
-> --- a/drivers/rtc/Kconfig
-> +++ b/drivers/rtc/Kconfig
-> @@ -1028,6 +1028,16 @@ config RTC_DRV_DS1685_FAMILY
->   	  This driver can also be built as a module. If so, the module
->   	  will be called rtc-ds1685.
->   
-> +config RTC_DRV_SUNPLUS
-> +	bool "Sunplus SP7021 RTC"
-> +	depends on SOC_SP7021
-> +	help
-> +		Say 'yse' to get support for Sunplus SP7021 real-time clock
+Exactly. But the current code, when setting rcv_sne and snd_sne,
+always compares the sequence number with the <info->rcv_sne, tp->rcv_nxt>
+(or <info->snd_sne, tp->snd_nxt>) pair, where info->rcv_sne and
+info->snd_sne are initialized to 0 at the time of info creation.
+In other words, the code assumes that rcv_sne always corresponds to
+tp->rcv_nxt, and snd_sne to tp->snd_nxt. But that may not be true
+when info is created, on account of rollovers during a handshake.
+So it is not just a matter of what to use for SNE before info is
+created and used, but also how SNEs are initialized in info.
+That is why I was suggesting of saving valid <sne, seq> pairs
+(initialized with <0, ISN>) in tcp_authopt_info rather than just SNEs,
+and then always compare seq to those pairs if info is available.
+The pairs could then be updated in tcp_rcv_nxt_update and
+tcp_snd_una_update.
 
-		     yes
-
-> +		(RTC) for industrial applications.
-> +		It provides RTC status check, timer/alarm functionalities,
-> +		user data reservation only with battery with voltage over 2.5V,
-> +		RTC power status check and battery charge.
-
-
-Also please follow coding-style for Kconfig files:
-
-(from Documentation/process/coding-style.rst, section 10):
-
-For all of the Kconfig* configuration files throughout the source tree,
-the indentation is somewhat different.  Lines under a ``config`` definition
-are indented with one tab, while help text is indented an additional two
-spaces.
-
-
-thanks.
--- 
-~Randy
+Regards,
+Francesco
