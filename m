@@ -2,220 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5644442F0C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 14:23:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7A5D442F10
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 14:24:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231405AbhKBNZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 09:25:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43798 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229924AbhKBNZl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 09:25:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C62E60E74;
-        Tue,  2 Nov 2021 13:23:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635859386;
-        bh=YSlNiHdFLNLpeqGWMGeoCbpNuiS7/1dGHPuVR53S5WE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ogjOOHCX5jR3hSEkx8RtPmV+wKbiuSHTJqNh/atHq9JEHRAIjYxs6Tg65ImM4QHaZ
-         5CqQtqIWuWyBbLt8AYwgb7jUhJgUfIixIv925ImioAXiIR6UBIu/ZptPzNGCbANlsz
-         mnuQzXxYhAQnVMQUeICr9LOAK1JA5Jqm9emM4EVE=
-Date:   Tue, 2 Nov 2021 14:23:03 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Zijun Hu <zijuhu@codeaurora.org>
-Cc:     marcel@holtmann.org, johan.hedberg@gmail.com,
-        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
-        c-hbandi@codeaurora.org, hemantg@codeaurora.org, mka@chromium.org,
-        rjliao@codeaurora.org, Zijun Hu <quic_zijuhu@quicinc.com>
-Subject: Re: [PATCH v1 3/3] Bluetooth: hci_qca: Add support for QTI bluetooth
- MAPLE
-Message-ID: <YYE7t6GJa+cXIyrx@kroah.com>
-References: <1635837177-1341-1-git-send-email-zijuhu@codeaurora.org>
- <YYDqW6ewycWP1Y7a@kroah.com>
- <4f6aee28-4d86-116c-6c47-bfce5de6551b@codeaurora.org>
- <YYD1PJrFw/xmEXIW@kroah.com>
- <bba14dcb-7c42-ee36-514c-46ed54ef497b@codeaurora.org>
-MIME-Version: 1.0
+        id S231347AbhKBN0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 09:26:43 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:18982 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229924AbhKBN0l (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 09:26:41 -0400
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1A2BeQwd001786;
+        Tue, 2 Nov 2021 13:24:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2021-07-09;
+ bh=O9/IzLP6Gip53c+oOvfUk2feilagm+x7jp/Iyynpljw=;
+ b=RAyaQzELd+82TfEXOWrsNUoFip9ximf/FXBymy5aL/hFYqa2D691zS4JBOOxX4MU4qlf
+ sMxAa7W6iWxesX2ET1I/n+iUqlHUDap/su2FWQrP7kYmjNb1YZG/WVeLxmsXsrLf/7wh
+ rmcsoTHcrbSUaAeoiZ5CfaqOUx51UQP6LXUOFYvDo9Y6g4JxUdWSJ0JFv+7+kDZbymjN
+ xDKlFip6CFoycGW38DlpvbjyTEhFFXL0ngNECEiSknP6BEAFXLbkI0t9ts8xu5kSiqtG
+ IKIEks03q2f9y3PnlZ/5kIqWBlHgoiVPASN3oelYsgbkE8GUQ6grSTG7SmatGs0lH5rs ew== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3c27r5f0mk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 02 Nov 2021 13:24:00 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1A2DFbGV073035;
+        Tue, 2 Nov 2021 13:23:59 GMT
+Received: from nam02-bn1-obe.outbound.protection.outlook.com (mail-bn1nam07lp2041.outbound.protection.outlook.com [104.47.51.41])
+        by aserp3030.oracle.com with ESMTP id 3c0v3dp74c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 02 Nov 2021 13:23:59 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JW8te68yRsTVlEm6c+mImXeSuKmVtKK/3SWtS4HduQb4IBfm11NUDJNwKv/+lW/fxLc0zLNc/Fq+kktQ46qtSUNoULOFjfdNbaTVQnpzwxaK3/XnOnNIpw5/GPK2H4s6F142lPCFxTo6/diYf1dEoPc06GYwoKhAERnLBqjc6YXEzIWHWNvI3UicSSdTr8FFJ11Gb8UqBjSyAlTJ1KTWe9Zd/s+ysZvIzO4hvrCK988/M8oMPFBjD2pgJFAC47BgEWKv9F649galYX66COuHW47BHITxlIU2ZuZZMxYuTsU9D2ndJuCMwOsJ6wx2IoGIrZUGqfYynQqKvpReaOZPSw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=O9/IzLP6Gip53c+oOvfUk2feilagm+x7jp/Iyynpljw=;
+ b=Y8j8mzoaAW6MNIY9mpTOWHy+MCTCU90UYC1ekg4ptSFLdAj9PoMiv3kPdart+5wY8edhUWVZPrr+9nfyxQMCdElLHTmEb1iP4nhZOpT1P2Fa2xoZMt2OLsCLNBnHcuRCj2/MZtxDMczxhmqh1cRIo7tWj7N9FOL2Kg2ySm4zPvfM+/tXS8BpDBNkKViqIw8tFE8sdMqI1GBQ+OnmeOyWqffNT6uBFrYLV3LwG1l9X5t7C9Bg7e3zTyiL3minXVpfL0LgOSb5ACLtZtDeWq4gLYih7z2+/p9sZREEyK5nEahOL9lldJ5fNLzcP7GflEFO28WIv4UYKp04/uJ88XjxGw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=O9/IzLP6Gip53c+oOvfUk2feilagm+x7jp/Iyynpljw=;
+ b=Pi4GRNul0PHForP4jNMpPM5mnOBWzMbUEOuBZTQvT3U7BzD/squq99+oM9mBYZki61zwlQskr/lb7swAiUKGjMcsW/uP8S1n8e5rPoSNaYjcZEx27r0YwNVgqpWDkOYnL6IQunbir01wUGvxJGfOb7FI7ciETxAJJUb3FXhkjw4=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=oracle.com;
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28) by MWHPR10MB1565.namprd10.prod.outlook.com
+ (2603:10b6:300:24::17) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.17; Tue, 2 Nov
+ 2021 13:23:57 +0000
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::d409:11b5:5eb2:6be9]) by MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::d409:11b5:5eb2:6be9%5]) with mapi id 15.20.4649.020; Tue, 2 Nov 2021
+ 13:23:57 +0000
+Date:   Tue, 2 Nov 2021 16:23:36 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Todd Kjos <tkjos@google.com>
+Cc:     gregkh@linuxfoundation.org, christian@brauner.io, arve@android.com,
+        jannh@google.com, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, maco@google.com,
+        joel@joelfernandes.org, kernel-team@android.com
+Subject: Re: [PATCH] binder: don't detect sender/target during buffer cleanup
+Message-ID: <20211102132336.GG2794@kadam>
+References: <20211015233811.3532235-1-tkjos@google.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <bba14dcb-7c42-ee36-514c-46ed54ef497b@codeaurora.org>
+In-Reply-To: <20211015233811.3532235-1-tkjos@google.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: JNAP275CA0017.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4c::22)
+ To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
+MIME-Version: 1.0
+Received: from kadam (62.8.83.22) by JNAP275CA0017.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4c::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.15 via Frontend Transport; Tue, 2 Nov 2021 13:23:50 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c6b4bf62-e630-4ddf-5d9a-08d99e040631
+X-MS-TrafficTypeDiagnostic: MWHPR10MB1565:
+X-Microsoft-Antispam-PRVS: <MWHPR10MB1565E12CE54687420E0102F28E8B9@MWHPR10MB1565.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: wjUPHjgdKLcb803BUB85YjP0KtsyGK/LcTsvEONeWwatzsRQMoD9YHFBRUOg288pjYydGjymTBcTdSJLLyZASnNIgZhFFFxbtaYsNfNGH2fKBbWu8fpcfV4aLWWxch+/WDDZ56XtKJgyqg/3CM4LWi0dm/tCv0DUtRxZ9Pl+GfL241Aa/Z+BRSFF87Q7oD+CzAWoy/6FjSb88cJWnhrtkweiyxpO1mzgxS81MLgrZr8nx3UQheBRr4b/uTn7S4C9ZhjMvPeXy8evkgtI5o/g7HZaWb0H5HIheK8XB7G8cfhHw/5jYqtZQP0XAB2y3DeFIESZw6GomTd35ekF8zkoG/thxdS5N9CiyVA6w0PmXBgQTC3KrOUwULenhNo4350ovIzGKNiIA4NpR4AybOgzwGYhkqTDSOZ6RLcrtPqbANOGiDOFHafXcfGzAa1X7I5qYELw2ujYukrnFp8KbV9k+/9QmxGTuFaJPvCRDgaEK3ur0f+GsTlZWOefOnwwBYkzcQCRMhuHk7ejpdHCOg876s0shTH3GfsDFc0yuVPYa8XMvFQ3mt1Y6HreMtT1zeCmoK6kW8grvvVdSbQrZRI+4SsEFTIVOB8sD4CUVcJcE0Ca6vrQGfmS8F1EXVhxB/t/3TbahNfBewH8qq8/Hn3Ahlcco0MyomLBcJFkmjDPIe8jpOwmOlb64YBC6sG+ocbx0lyrOUd1RnOjVVLpBOjYDw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(5660300002)(9686003)(26005)(86362001)(956004)(7416002)(2906002)(508600001)(1076003)(66946007)(316002)(44832011)(66556008)(8936002)(66476007)(9576002)(6916009)(33656002)(4744005)(6496006)(4326008)(33716001)(186003)(38350700002)(38100700002)(52116002)(8676002)(6666004)(55016002)(83380400001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?bFYdTqQ0D8y5FxheNjlHMahcpy1wA09MDZfC/LDCBQ4VuHMnDw+CgFFu4bdl?=
+ =?us-ascii?Q?3wTE9t9OOFuIuubD90bFyIJB7sRkTwsRHKSw5pRrAPZkRwJHWvhQJpcTjiuG?=
+ =?us-ascii?Q?56v0VHhjgPig//zzZvMw9CIASwAMMFOQ7mGwK/u6xC0vu0ZURjov0ipn4x2q?=
+ =?us-ascii?Q?QZxbQRJrlN3Ad9c9ADkQcZN7z0P1FswWvvqKcpsDL9Ng94slssdpNkq2Khtp?=
+ =?us-ascii?Q?jZmQ6gk9vQoU6/UJuqCE9GWWEsIXJ/SlNw2A7dLuaYhIqb2TxF66JF9Si3q9?=
+ =?us-ascii?Q?KYaBlI3YlF5lYQaO8IgS3EnUEHrGGA+Kpe589olzASY/uZD3Xt1iYT+6Whq7?=
+ =?us-ascii?Q?+2coQtofEHv9EqZRdwMcJ+rsNuRf8D+52gkPk8SZU+PiE0puxOnXpT6xtKDu?=
+ =?us-ascii?Q?iCvyrBj/9R8q4u9HADFvSkw3HLy8bjHC7BpH7PoNZEfKJt+gxMNwumJCkJ4H?=
+ =?us-ascii?Q?MCRE2mhOcX3x8LCPHKSlsbLJuCYrA0PDa/77pxX2DQWRxh2tfj6iceFR0BAf?=
+ =?us-ascii?Q?e4HXRr4jPcBFy1kgJDjH0hNyoeiWiOP4SkeY5o5BZWN0VcR48fGZgT/iEBcr?=
+ =?us-ascii?Q?ytrrhNNJVwTRwingiRqq1rOMP676P6kIxrwTi1a3b4rY3mFigguKLsPit5F2?=
+ =?us-ascii?Q?z5XnJ0hI8p36zeywDjHUTnjsFeiOoUmSy+Vqx6sqHtyLHckewSIqWOnE/KbH?=
+ =?us-ascii?Q?IGemG3XZ0FijbgajkNG3SrrO3b6HxpWuJbPaU1iPTErig8tZHO6YUP8Sqr8H?=
+ =?us-ascii?Q?gq9oaKznbFElP6I3hkb0MKx3OqtbjrMydYu9j3wNG/u/zMKg4gPi24MYlOTD?=
+ =?us-ascii?Q?E/hSxs3qYZIdbxickmQsFwurQtjH0G4WBvFjo9cJpjds+np5ZIjkiysy6Iwo?=
+ =?us-ascii?Q?5G5wFXz7XtleYZo9SATWWWjT/I9IudESBR+D0EL0hrmBoNj+kh/DFJ1tQuo9?=
+ =?us-ascii?Q?jcJ6GQoCZwigr95EXz8QrfMuOHpQWIX7ZkuGW0Ngnv7xHKV2P8OZMGvWR4YO?=
+ =?us-ascii?Q?ixlDiQM0Fb6mhukAY/ryUVeu9UwYvfX2TUpu4cr1kJ5fExlePLomvoy3QfBK?=
+ =?us-ascii?Q?6jG5aPMqS2bM7l0YaSsKZ5tgCwgzUrxuJmMNw6Uorvv+BaFbqS3hitCOGY1p?=
+ =?us-ascii?Q?MmWTQh/CNsyP3u0rfpwysHnN/+4PCWmzx5K86XrLNlXtrJNaYpk1Y/3fi0Wx?=
+ =?us-ascii?Q?1pCGCQrspSvYnrhES+2bk31dvp4+2iLSO/8F1ViEyYmW7t0Zd6ej0gdXG+uV?=
+ =?us-ascii?Q?lPe9NlbURPkbVmjt9Ah47q9tpTSsBTQqtUkisohVfvppd6bXA5jFp4RS4mY7?=
+ =?us-ascii?Q?WrH3VHf5svCvSmL/2Uoq4mH2sxICRLwJQM3AbiBI1O5v9cJzIjYBFRgvD4qP?=
+ =?us-ascii?Q?tY0CoZDWR3kNQRVPzwvanDuMzWzuDZkwrUXii80BpBnAIJDqK02w+KumKVed?=
+ =?us-ascii?Q?pPlwPffwZfIBVjf8H5y9DAIzcb2bRfOehTh+oWNaLyj0VEjN/E2aoLS8bdt4?=
+ =?us-ascii?Q?4jOgK1hKYSo4qCN9ZpiRzLHEq8ykqchdsR3UJLSD+Q65DaFcgwCMusmrMOTP?=
+ =?us-ascii?Q?Eoa+KcqL1b+J0xWcagQk/zRI7OpH39SdxwhKv4zW/m4CiFx7L6Jdiou2sPFf?=
+ =?us-ascii?Q?qa9BhsfKYI+70cXfFvaexBhWwAdYibll4curdQd6GPovGyQuosM+66/k2DW+?=
+ =?us-ascii?Q?GhONoA=3D=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c6b4bf62-e630-4ddf-5d9a-08d99e040631
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2021 13:23:57.2760
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: nvmG2/jwuYrNconN5gRsuGUzL2xoHWawOqyCIjbJhpQOO7gXXfGkSaFhmyXZ1YzNPm42NP4PxJkQafhpBkPTdSjh4Y4mdTCaV6FCO9aiLoM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1565
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10155 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=679 mlxscore=0 adultscore=0
+ spamscore=0 bulkscore=0 phishscore=0 suspectscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
+ definitions=main-2111020079
+X-Proofpoint-ORIG-GUID: 8j4qCOCfcB1rjMDQB58bKiQ4fF6aS799
+X-Proofpoint-GUID: 8j4qCOCfcB1rjMDQB58bKiQ4fF6aS799
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 04:54:23PM +0800, Zijun Hu wrote:
+On Fri, Oct 15, 2021 at 04:38:11PM -0700, Todd Kjos wrote:
+> When freeing txn buffers, binder_transaction_buffer_release()
+> attempts to detect whether the current context is the target by
+> comparing current->group_leader to proc->tsk. This is an unreliable
+> test. Instead explicitly pass an 'is_failure' boolean.
 > 
+> Detecting the sender was being used as a way to tell if the
+> transaction failed to be sent.  When cleaning up after
+> failing to send a transaction, there is no need to close
+> the fds associated with a BINDER_TYPE_FDA object. Now
+> 'is_failure' can be used to accurately detect this case.
 > 
-> On 11/2/2021 4:22 PM, Greg KH wrote:
-> > On Tue, Nov 02, 2021 at 03:53:33PM +0800, Zijun Hu wrote:
-> >>
-> >>
-> >> On 11/2/2021 3:35 PM, Greg KH wrote:
-> >>> On Tue, Nov 02, 2021 at 03:12:57PM +0800, Zijun Hu wrote:
-> >>>> From: Zijun Hu <quic_zijuhu@quicinc.com>
-> >>>>
-> >>>> Add support for MAPLE integrated within SOC, it is mounted on
-> >>>> a virtual tty port and powered on/off via relevant IOCTL, neither
-> >>>> IBS nor RAMPATCH downloading is not required.
-> >>>>
-> >>>> Signed-off-by: Zijun Hu <quic_zijuhu@quicinc.com>
-> >>>> ---
-> >>>>  drivers/bluetooth/btqca.c   | 13 ++++++++++++-
-> >>>>  drivers/bluetooth/btqca.h   | 13 +++++++++++++
-> >>>>  drivers/bluetooth/hci_qca.c | 47 ++++++++++++++++++++++++++++++++++++++++++++-
-> >>>>  3 files changed, 71 insertions(+), 2 deletions(-)
-> >>>>
-> >>>> diff --git a/drivers/bluetooth/btqca.c b/drivers/bluetooth/btqca.c
-> >>>> index be04d74037d2..b83d2ecefe5d 100644
-> >>>> --- a/drivers/bluetooth/btqca.c
-> >>>> +++ b/drivers/bluetooth/btqca.c
-> >>>> @@ -255,6 +255,8 @@ static void qca_tlv_check_data(struct hci_dev *hdev,
-> >>>>  		BT_DBG("TLV Type\t\t : 0x%x", type_len & 0x000000ff);
-> >>>>  		BT_DBG("Length\t\t : %d bytes", length);
-> >>>>  
-> >>>> +		if (qca_is_maple(soc_type))
-> >>>> +			break;
-> >>>>  		idx = 0;
-> >>>>  		data = tlv->data;
-> >>>>  		while (idx < length) {
-> >>>> @@ -552,6 +554,9 @@ int qca_uart_setup(struct hci_dev *hdev, uint8_t baudrate,
-> >>>>  	rom_ver = ((soc_ver & 0x00000f00) >> 0x04) | (soc_ver & 0x0000000f);
-> >>>>  
-> >>>>  	/* Download rampatch file */
-> >>>> +	if (qca_is_maple(soc_type))
-> >>>> +		goto download_nvm;
-> >>>> +
-> >>>>  	config.type = TLV_TYPE_PATCH;
-> >>>>  	if (qca_is_wcn399x(soc_type)) {
-> >>>>  		snprintf(config.fwname, sizeof(config.fwname),
-> >>>> @@ -580,6 +585,7 @@ int qca_uart_setup(struct hci_dev *hdev, uint8_t baudrate,
-> >>>>  	/* Give the controller some time to get ready to receive the NVM */
-> >>>>  	msleep(10);
-> >>>>  
-> >>>> +download_nvm:
-> >>>>  	/* Download NVM configuration */
-> >>>>  	config.type = TLV_TYPE_NVM;
-> >>>>  	if (firmware_name)
-> >>>> @@ -597,6 +603,9 @@ int qca_uart_setup(struct hci_dev *hdev, uint8_t baudrate,
-> >>>>  	else if (soc_type == QCA_QCA6390)
-> >>>>  		snprintf(config.fwname, sizeof(config.fwname),
-> >>>>  			 "qca/htnv%02x.bin", rom_ver);
-> >>>> +	else if (qca_is_maple(soc_type))
-> >>>> +		snprintf(config.fwname, sizeof(config.fwname),
-> >>>> +			 "qca/mpnv%02x.bin", rom_ver);
-> >>>>  	else if (soc_type == QCA_WCN6750)
-> >>>>  		snprintf(config.fwname, sizeof(config.fwname),
-> >>>>  			 "qca/msnv%02x.bin", rom_ver);
-> >>>> @@ -609,6 +618,8 @@ int qca_uart_setup(struct hci_dev *hdev, uint8_t baudrate,
-> >>>>  		bt_dev_err(hdev, "QCA Failed to download NVM (%d)", err);
-> >>>>  		return err;
-> >>>>  	}
-> >>>> +	if (qca_is_maple(soc_type))
-> >>>> +		msleep(MAPLE_NVM_READY_DELAY_MS);
-> >>>>  
-> >>>>  	if (soc_type >= QCA_WCN3991) {
-> >>>>  		err = qca_disable_soc_logging(hdev);
-> >>>> @@ -637,7 +648,7 @@ int qca_uart_setup(struct hci_dev *hdev, uint8_t baudrate,
-> >>>>  		return err;
-> >>>>  	}
-> >>>>  
-> >>>> -	if (soc_type == QCA_WCN3991 || soc_type == QCA_WCN6750) {
-> >>>> +	if (soc_type == QCA_WCN3991 || soc_type == QCA_WCN6750 || qca_is_maple(soc_type)) {
-> >>>>  		/* get fw build info */
-> >>>>  		err = qca_read_fw_build_info(hdev);
-> >>>>  		if (err < 0)
-> >>>> diff --git a/drivers/bluetooth/btqca.h b/drivers/bluetooth/btqca.h
-> >>>> index 30afa7703afd..0a5a7d1daa71 100644
-> >>>> --- a/drivers/bluetooth/btqca.h
-> >>>> +++ b/drivers/bluetooth/btqca.h
-> >>>> @@ -46,6 +46,8 @@
-> >>>>  
-> >>>>  #define QCA_FW_BUILD_VER_LEN		255
-> >>>>  
-> >>>> +#define MAPLE_NVM_READY_DELAY_MS        1500
-> >>>> +#define MAPLE_POWER_CONTROL_DELAY_MS    50
-> >>>>  
-> >>>>  enum qca_baudrate {
-> >>>>  	QCA_BAUDRATE_115200 	= 0,
-> >>>> @@ -145,6 +147,7 @@ enum qca_btsoc_type {
-> >>>>  	QCA_WCN3991,
-> >>>>  	QCA_QCA6390,
-> >>>>  	QCA_WCN6750,
-> >>>> +	QCA_MAPLE,
-> >>>>  };
-> >>>>  
-> >>>>  #if IS_ENABLED(CONFIG_BT_QCA)
-> >>>> @@ -167,6 +170,11 @@ static inline bool qca_is_wcn6750(enum qca_btsoc_type soc_type)
-> >>>>  	return soc_type == QCA_WCN6750;
-> >>>>  }
-> >>>>  
-> >>>> +static inline bool qca_is_maple(enum qca_btsoc_type soc_type)
-> >>>> +{
-> >>>> +	return soc_type == QCA_MAPLE;
-> >>>> +}
-> >>>> +
-> >>>>  #else
-> >>>>  
-> >>>>  static inline int qca_set_bdaddr_rome(struct hci_dev *hdev, const bdaddr_t *bdaddr)
-> >>>> @@ -204,6 +212,11 @@ static inline bool qca_is_wcn6750(enum qca_btsoc_type soc_type)
-> >>>>  	return false;
-> >>>>  }
-> >>>>  
-> >>>> +static inline bool qca_is_maple(enum qca_btsoc_type soc_type)
-> >>>> +{
-> >>>> +	return false;
-> >>>> +}
-> >>>> +
-> >>>>  static inline int qca_send_pre_shutdown_cmd(struct hci_dev *hdev)
-> >>>>  {
-> >>>>  	return -EOPNOTSUPP;
-> >>>> diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
-> >>>> index dd768a8ed7cb..f1d9670719c4 100644
-> >>>> --- a/drivers/bluetooth/hci_qca.c
-> >>>> +++ b/drivers/bluetooth/hci_qca.c
-> >>>> @@ -70,6 +70,10 @@
-> >>>>  #define QCA_CRASHBYTE_PACKET_LEN	1096
-> >>>>  #define QCA_MEMDUMP_BYTE		0xFB
-> >>>>  
-> >>>> +#ifndef IOCTL_IPC_BOOT
-> >>>> +#define IOCTL_IPC_BOOT                  0xBE
-> >>>> +#endif
-> >>>
-> >>> You send this command, but never use it.  Where is the driver code that
-> >>> uses this command?
-> >>>
-> >> qca_maple_power_control() will use it.  this driver depends on bt_tty kernel module
-> >> https://source.codeaurora.org/quic/qsdk/oss/kernel/linux-ipq-5.4/tree/drivers/soc/qcom/bt_tty.c?h=NHSS.QSDK.11.5.0.5.r2
-> > 
-> > You can not add code to the kernel that is not used by the kernel
-> > itself.  That driver needs to be in the tree as well, why is it not
-> > submitted now too?
-> > 
->   the bt_tty driver module is not developed and maintained by me.
->   bluetooth driver code of linux-ipq-5.4 stopped update at Sep 15 2019.
->   many relevant changes need to be picked up from bluetooth-next if apply this patch int to linux-ipq-5.4
-> 
-> >>> And why not tabs?
-> >>>
-> >>> And why is this patch series not properly threaded so tools can pick it
-> >>> up and find them?
-> >>>
-> >>> And why the odd named ioctl that is different from other ones in this
-> >>> file?
-> >>>
-> >> that IOCTL name is defined by that module.
-> >> https://source.codeaurora.org/quic/qsdk/oss/kernel/linux-ipq-5.4/tree/include/linux/bt.h?h=NHSS.QSDK.11.5.0.5.r2
-> > 
-> > Again, it needs to be in the tree.
-> > 
->   make sense, i will try to submit this change to linux-ipq-5.4
 
-"linux-ipq-5.4" has NOTHING to do with the upstream kernel development
-process here.  Please work with the developers at your company to
-understand how the kernel development process works to help understand
-this correctly, before submitting patches again.
+It's really hard for me to understand what this bug looks like to the
+user?  Is it a memory leak or do we free the wrong thing?
 
-thanks,
+regards,
+dan carpenter
 
-greg k-h
