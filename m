@@ -2,125 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A17A644313A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 16:06:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F0AE44313D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 16:07:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232271AbhKBPJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 11:09:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50414 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234823AbhKBPIz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 11:08:55 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 266FDC061714
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 08:06:20 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id j1so11884420qtq.11
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 08:06:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=VroI1JUj2TTWzELMwXyHiZqn8NIRBkFCrP9dHy/2068=;
-        b=TdTfAWEhPGmwY1t5Tz+OjaidTjXzVu37QuKGZvyzGdFPsPQ68kgut5D6vTETHd89zE
-         AimP2YcrxRLRuErNCczADVkRGj46k9i6XAe3eHyYE5vAMDKxjRarMr/FmPAYfSzwhXIU
-         wASX/WagNYKc6SskYHXWgYWOf2wQ68qiDNZULOWAzsKePq48elWgb2xIo+PYJiVJYV9P
-         AACN5g54KbpWXPNtu56dqsgVAWgzk/xF2ji2xrj60KmR6v8yKlBlNBrXcCe1noDQzveV
-         BOsfPaO8/txKri8C82ynqyDVRqLkJ0NGDGG/rXToBWpN6tZITiNZIUKDO3YHi2UfX7Mt
-         LgZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VroI1JUj2TTWzELMwXyHiZqn8NIRBkFCrP9dHy/2068=;
-        b=mz07tQqU7j0UNXfcix0KEK28tPDgjh307rOWathaFbVHVeZXDFYXy+p7Q4bif27Zmu
-         Wge0P7omam+B4zVLI+na7JtKYAAtnRFiBizI7QQdymPCfqEj5AamNY12IlgZwFa8D5y2
-         d9T/J+EDOqSXxorYZ5T3pyleMBGjCyM95+aKZXUHriv1NW4b8zBivKM8I+rgQaK9HNZ1
-         jsmAyiXWEI7S0DBUi7J2bU639Q/CpWuK5/nvRwC0ZrY4YRxObveDAg2mnfBAWkqPn6lu
-         7OCE6pLaWkpYtHKeW1U8lG5pSPjh/k5bbZGbjqSb7ljpAgQBZHiaX9fhlb98G6f15oDV
-         xXzg==
-X-Gm-Message-State: AOAM5320uj72TXNpodaJfWjIUOnD+1Z/revvKZdt9vtXp8RD2rRm+IW1
-        W1BBZfuuu6lYTNO8CNZQLdUqg9u/s4Jggw==
-X-Google-Smtp-Source: ABdhPJxVUzgtID5bD2MMMjfb3b3MU1mwCq6h2NmHyS9aw+r9gLXRj8h6riewjH8XjvjTkse+w0rJig==
-X-Received: by 2002:ac8:7dcb:: with SMTP id c11mr38510553qte.12.1635865579154;
-        Tue, 02 Nov 2021 08:06:19 -0700 (PDT)
-Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
-        by smtp.gmail.com with ESMTPSA id h14sm8386099qth.23.2021.11.02.08.06.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Nov 2021 08:06:18 -0700 (PDT)
-Date:   Tue, 2 Nov 2021 11:06:17 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 4/4] mm: zswap: add basic meminfo and vmstat coverage
-Message-ID: <YYFT6VtNT1Fvl4Iz@cmpxchg.org>
-References: <20210819195533.211756-1-hannes@cmpxchg.org>
- <20210819195533.211756-4-hannes@cmpxchg.org>
- <YS0oV23m5NfyMcJJ@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YS0oV23m5NfyMcJJ@google.com>
+        id S233417AbhKBPJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 11:09:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47328 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232959AbhKBPJs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 11:09:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id A2C7760EE9;
+        Tue,  2 Nov 2021 15:07:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635865633;
+        bh=vGgOIedU91inK904/ppQAJzo1WWdA4MXUC4N5eNrS7Q=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=V1cwWAkln9Gbq5ABv0zxe2nfnohLp50rjKak1Nw1mVgwK1FKClT2EBpNv6ahsIW+0
+         9DPuHV4X2nd8oSg0kJugBG/YG8lOKfEtbnlwkoQRPaKR14B3WZZv4GaWxCS9AkO9QF
+         vi+gWHhkpYaa/zrOzscFaIDfi4W/aMq0/UF08XZeU1UTaT57qV2uVt+Y5DK5Y/IePo
+         M1itjhybNFd8SQ1eFPXRhNWtUgNUjgboT7j/gsJbJ7t0EzkGrZvat7EjvO6KJgnHyn
+         2ITp+I4hqCputaoMgJhrFSnr+f7E1fVEX89r+k3ysSzYG1DKWhrmOe3HSOmULR96BW
+         Mq3GEEFYmKgSw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 8EEEF60A90;
+        Tue,  2 Nov 2021 15:07:13 +0000 (UTC)
+Subject: Re: [GIT PULL (not really)] x86/core for v5.16
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <YX/AmFgkQ0AEqDaG@zn.tnic>
+References: <YX/AmFgkQ0AEqDaG@zn.tnic>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YX/AmFgkQ0AEqDaG@zn.tnic>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_core_for_v5.16_rc1
+X-PR-Tracked-Commit-Id: a72fdfd21e01c626273ddcf5ab740d4caef4be54
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: cc0356d6a02e064387c16a83cb96fe43ef33181e
+Message-Id: <163586563352.9311.11256252862591599788.pr-tracker-bot@kernel.org>
+Date:   Tue, 02 Nov 2021 15:07:13 +0000
+To:     Borislav Petkov <bp@suse.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Minchan,
+The pull request you sent on Mon, 1 Nov 2021 11:25:28 +0100:
 
-Sorry about the delay, I'm just now getting back to these patches.
+> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_core_for_v5.16_rc1
 
-On Mon, Aug 30, 2021 at 11:49:59AM -0700, Minchan Kim wrote:
-> Hi Johannes,
-> 
-> On Thu, Aug 19, 2021 at 03:55:33PM -0400, Johannes Weiner wrote:
-> > Currently it requires poking at debugfs to figure out the size of the
-> > zswap cache size on a host. There are no counters for reads and writes
-> > against the cache. This makes it difficult to understand behavior on
-> > production systems.
-> > 
-> > Print zswap memory consumption in /proc/meminfo, count zswapouts and
-> > zswapins in /proc/vmstat.
-> > 
-> > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-> > ---
-> >  fs/proc/meminfo.c             |  4 ++++
-> >  include/linux/swap.h          |  4 ++++
-> >  include/linux/vm_event_item.h |  4 ++++
-> >  mm/vmstat.c                   |  4 ++++
-> >  mm/zswap.c                    | 11 +++++------
-> >  5 files changed, 21 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
-> > index 6fa761c9cc78..2dc474940691 100644
-> > --- a/fs/proc/meminfo.c
-> > +++ b/fs/proc/meminfo.c
-> > @@ -86,6 +86,10 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
-> >  
-> >  	show_val_kb(m, "SwapTotal:      ", i.totalswap);
-> >  	show_val_kb(m, "SwapFree:       ", i.freeswap);
-> > +#ifdef CONFIG_ZSWAP
-> > +	seq_printf(m,  "Zswap:          %8lu kB\n",
-> > +		   (unsigned long)(zswap_pool_total_size >> 10));
-> 
-> Since we have zram as well as zswap, it would be great if
-> we can abstract both at once without introducing another
-> "Zram: " stuff in meminfo. A note: zram can support fs based on
-> on zram blk device as well as swap. Thus, term would be better
-> to say "compressed" rather than "swap".
-> 
-> How about this?
-> 
-> "Compressed: xx kB"
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/cc0356d6a02e064387c16a83cb96fe43ef33181e
 
-Wouldn't it make more sense to keep separate counters? Zswap and zram
-are quite different from each other.
+Thank you!
 
-From an MM perspective, zram is an opaque storage backend. zswap OTOH
-is an explicit MM cache stage which may in the future make different
-decisions than zram, be integrated into vmscan's LRU hierarchy
-etc. And in theory, you could put zswap with fast compression in front
-of a zram device with denser compression, right?
-
-I agree zram should probably also have memory counters, but I think it
-makes sense to recognize zswap as a unique MM layer.
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
