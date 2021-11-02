@@ -2,75 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5CCC44284B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 08:26:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AB18442850
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 08:26:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229778AbhKBH2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 03:28:52 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:40706 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229497AbhKBH2u (ORCPT
+        id S230326AbhKBH3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 03:29:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58322 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229497AbhKBH3S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 03:28:50 -0400
-X-UUID: e7445f08e2964818a4e40bd383f7fff4-20211102
-X-UUID: e7445f08e2964818a4e40bd383f7fff4-20211102
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw01.mediatek.com
-        (envelope-from <walter-zh.wu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1610379575; Tue, 02 Nov 2021 15:26:13 +0800
-Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.792.15; Tue, 2 Nov 2021 15:26:12 +0800
-Received: from mtksdccf07 (172.21.84.99) by mtkmbs10n1.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.2.792.15 via Frontend
- Transport; Tue, 2 Nov 2021 15:26:12 +0800
-Message-ID: <c5036587af69e70a60f6187048be1991bb2d7e7b.camel@mediatek.com>
-Subject: Re: [PATCH] dma-direct: fix DMA_ATTR_NO_KERNEL_MAPPING
-From:   Walter Wu <walter-zh.wu@mediatek.com>
-To:     Christoph Hellwig <hch@lst.de>
-CC:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        <linux-mediatek@lists.infradead.org>,
-        "Andrew Morton" <akpm@linux-foundation.org>
-Date:   Tue, 2 Nov 2021 15:26:12 +0800
-In-Reply-To: <20211102064155.GA27749@lst.de>
-References: <20211101031558.7184-1-walter-zh.wu@mediatek.com>
-         <20211102064155.GA27749@lst.de>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Tue, 2 Nov 2021 03:29:18 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDF3EC061714;
+        Tue,  2 Nov 2021 00:26:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=PVVbJ+L6vQN1A1jcNpOyUiq5xpDOlQSOqXfQWlozuyo=; b=G0cJsbWBva68Jqi2KKs+MyKrgY
+        3qn0pmmYTkuj39dlW/O0Ptt86hSqG7bftMNnK1dKVUaKaPMdT9nCCA95myTl82oHWKqfItT0PMg2o
+        5YoOWLied2s1pC/u0EEaidX52RVDxWhg3NEctu6oiwKXYEFV64V4P+VXYU3dFuFJqLoqPHdCtmWZ+
+        QAtpVHsq7S/Q389i20jbD2Qeq/XCtGiM3iBOSp5Mb6CBZulk4W2BtKBDrDQ3EbdSCQB284SyRemRf
+        ijxdP5YvmKzUh62pkdVdj4fQ7IjAxOHsgM+dNQlVCZ7Cnws5APolZpyNWNRFmbZZ/dJKnXozMvCQU
+        toxPmcyQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mhoBu-000mDv-GQ; Tue, 02 Nov 2021 07:26:42 +0000
+Date:   Tue, 2 Nov 2021 00:26:42 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH 18/21] iomap: Convert iomap_add_to_ioend to take a folio
+Message-ID: <YYDoMltwjNKtJaWR@infradead.org>
+References: <20211101203929.954622-1-willy@infradead.org>
+ <20211101203929.954622-19-willy@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211101203929.954622-19-willy@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph,
+On Mon, Nov 01, 2021 at 08:39:26PM +0000, Matthew Wilcox (Oracle) wrote:
+> @@ -1431,11 +1428,9 @@ iomap_do_writepage(struct page *page, struct writeback_control *wbc, void *data)
+>  	 * |     desired writeback range    |      see else    |
+>  	 * ---------------------------------^------------------|
+>  	 */
+> -	offset = i_size_read(inode);
+> -	end_index = offset >> PAGE_SHIFT;
+> -	if (page->index < end_index)
+> -		end_offset = (loff_t)(page->index + 1) << PAGE_SHIFT;
+> -	else {
+> +	isize = i_size_read(inode);
+> +	end_pos = folio_pos(folio) + folio_size(folio);
+> +	if (end_pos - 1 >= isize) {
 
-I am sorry, fix my typo.
+Looking at the code not part of the context this looks fine.  But I
+really wonder if this (and also the blocks change above) would be
+better off being split into separate, clearly documented patches.
 
+Otherwise looks good:
 
-Walter
-
-On Tue, 2021-11-02 at 07:41 +0100, Christoph Hellwig wrote:
-> As others pointed out, DMA_ATTR_NO_KERNEL_MAPPING just means the
-> caller can't rely on a kernel mapping.  So the "fix" here is
-> wrong.  That being said for cases where we can easily remove a page
-> from the kernel mapping it would be nice to do to:
-> 
->  a) improve security
->  b) as a debug check to see that no one actually tries to access it
-> 
-> > +		/* remove kernel mapping for pages */
-> > +		set_memory_valid((unsigned
-> > long)phys_to_virt(dma_to_phys(dev, *dma_handle)),
-> 
-> Please avoid overly long lines.  Also this function only exists for
-> arm64
-> also and others pointed out won't work for all cases.
-
+Reviewed-by: Christoph Hellwig <hch@lst.de>
