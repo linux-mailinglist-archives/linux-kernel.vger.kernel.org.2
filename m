@@ -2,325 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ED61443466
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 18:12:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B15C44346B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 18:13:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231890AbhKBRPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 13:15:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230382AbhKBRPV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 13:15:21 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8604DC061714
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 10:12:46 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id c71-20020a1c9a4a000000b0032cdcc8cbafso2624000wme.3
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 10:12:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=raspberrypi.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ExPjvgW5+HgLBD3vwf1sZATM17VIaSiS+5B1wlAARyE=;
-        b=r0ryqpPaqC8ZpK6FvWaVj+8+wKpqmkST82PkJs2T1tOWyooCdPnB3QtWbpLKDcMxia
-         npuZcOCKv4PMqLFnAET6L2dUsDKUEa6xI9d4oHqAl7tS+MC8kNkwuYW54yZ+WtnDvduM
-         pv6TEK1j6ZX6JlYXDUntXSR4xmWb/gnaftPAb+Pwtb/EwrKHxD/lBj2TjyXB7Q7E0TTD
-         b7hJOqCir3N2Mz064uT5DNXcaIZ0vC0xDqGTqhL1dAWCg/M6hw6DKyX/cnCJvYalvIR6
-         XgeiQn+sa2Ux2COVTs6tiutr1ZDwgoOXcIvizwFqRLGsP4RMxf+8i4MPaSFHOm2w2XXl
-         b0iA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ExPjvgW5+HgLBD3vwf1sZATM17VIaSiS+5B1wlAARyE=;
-        b=mzEMsVMBaftYeSVKRCkbPnJ9JxHX/q5kVOhs8GOaCavjnSIf5okqAS2q9ZH0euj0Ig
-         qQpAzqyTC2wuw8m9m/RRZmNxxcONkVX9IiF6+ksH2IRqZBX1TC5O2tKv9UEv0L39E+pu
-         ai1jQ23icUdoNWiEnp7a8a7ydU2W9kFbmi5x0p2gV69HYmgZjwktZtrbJA0DFaoyA1oe
-         AtsgZKn95QowgXwJnbmux4aL7sYknm3iFyYV1qmkDC0iwz844dnx3C8IBVqOhRWuncc/
-         /YEnfWqdjr1jLjWZzDjMNHw7gfi6/SZCGcbM0K2ngzvRGNEQHbM3uQD3b9YjV5ATAwWw
-         TwBA==
-X-Gm-Message-State: AOAM533t84W3OwDZEUeZ1LRudhZ+F4ffF/SYcIrHB1ANLa+snhIQlIVW
-        KDZwjppfwNRuF642lksiPUIOpXmy+988BDYv1MQJfw==
-X-Google-Smtp-Source: ABdhPJz+h7P3iPYin2I3wqlzcVk8/gWBeYkTnR+JkJTveXfr2TH66/ZNOHBOLXiYTLix9gUL1ZElQ87dmC7VTELRljw=
-X-Received: by 2002:a1c:4e04:: with SMTP id g4mr8285788wmh.15.1635873165095;
- Tue, 02 Nov 2021 10:12:45 -0700 (PDT)
+        id S234164AbhKBRPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 13:15:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56452 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230382AbhKBRPw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 13:15:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ACFD561051;
+        Tue,  2 Nov 2021 17:13:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635873197;
+        bh=G1om8c0vcFzwgqgDeCK6eQYDL8ECQ2Fb4KIp+WlFoDM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=B1lOwW8/97VvuJii5R7+ucTEe7y0m0FA2LMnjF/3qzpbtU2cXiSfu0UDdvLzV4Lly
+         z9xUXM+uU7XcJb6qKlG97ZM2Wf7axTSMYhm4O4LftgMELqiNu5sYOlfVhOdhupxfXp
+         XmwzrozrQ/8/ULq8ir3TaggKp8c4UGqDcvgHHgVsch/HvknhH4I2lbogJynq4XUWEd
+         Vmz5NW6ZT2Jow5ZQ9F+rP6qEzNQv1k5DCMpFgEA+jJdwIgBiFleNEeMxvDXZEPCcER
+         qH4IOn6asXr+3HAh3v6PS8wzbXurECYsCNp5QAQ5Pp1gQwGXZex9g9MUC+xQX23QqC
+         3HM+aiiUpvyyQ==
+Received: by pali.im (Postfix)
+        id 42803A41; Tue,  2 Nov 2021 18:13:14 +0100 (CET)
+From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+To:     Russell King <linux@armlinux.org.uk>, Andrew Lunn <andrew@lunn.ch>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/2] ARM: Marvell: Update PCIe fixup
+Date:   Tue,  2 Nov 2021 18:12:58 +0100
+Message-Id: <20211102171259.9590-1-pali@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20211101150405.14618-1-pali@kernel.org>
+References: <20211101150405.14618-1-pali@kernel.org>
 MIME-Version: 1.0
-References: <20211025152903.1088803-1-maxime@cerno.tech> <20211025152903.1088803-11-maxime@cerno.tech>
-In-Reply-To: <20211025152903.1088803-11-maxime@cerno.tech>
-From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
-Date:   Tue, 2 Nov 2021 17:12:29 +0000
-Message-ID: <CAPY8ntAwCamnfFDZssuRRJ45Xe8shK+YxiO=Lcr-w34c4L-_2A@mail.gmail.com>
-Subject: Re: [PATCH v8 10/10] drm/vc4: Increase the core clock based on HVS load
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        linux-rpi-kernel@lists.infradead.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Emma Anholt <emma@anholt.net>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Dom Cobley <dom@raspberrypi.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Oct 2021 at 16:29, Maxime Ripard <maxime@cerno.tech> wrote:
->
-> Depending on a given HVS output (HVS to PixelValves) and input (planes
-> attached to a channel) load, the HVS needs for the core clock to be
-> raised above its boot time default.
->
-> Failing to do so will result in a vblank timeout and a stalled display
-> pipeline.
->
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+- The code relies on rc_pci_fixup being called, which only happens
+  when CONFIG_PCI_QUIRKS is enabled, so add that to Kconfig. Omitting
+  this causes a booting failure with a non-obvious cause.
+- Update rc_pci_fixup to set the class properly, copying the
+  more modern style from other places
+- Correct the rc_pci_fixup comment
 
-I will make the comment that this does a load of computation of hvs
-load when running on hvs4 (BCM2835/6/7), even though it's redundant on
-those chips.
-The overhead is relatively minimal, but could be bypassed if viewed necessary.
+This patch just re-applies commit 1dc831bf53fd ("ARM: Kirkwood: Update
+PCI-E fixup") for all other Marvell ARM platforms which have same buggy
+PCIe controller and do not use pci-mvebu.c controller driver yet.
 
-Otherwise
-Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+Long-term goal for these Marvell ARM platforms should be conversion to
+pci-mvebu.c controller driver and removal of these fixups in arch code.
 
-> ---
->  drivers/gpu/drm/vc4/vc4_crtc.c |  15 +++++
->  drivers/gpu/drm/vc4/vc4_drv.h  |   2 +
->  drivers/gpu/drm/vc4/vc4_kms.c  | 110 ++++++++++++++++++++++++++++++---
->  3 files changed, 118 insertions(+), 9 deletions(-)
->
-> diff --git a/drivers/gpu/drm/vc4/vc4_crtc.c b/drivers/gpu/drm/vc4/vc4_crtc.c
-> index 6decaa12a078..287dbc89ad64 100644
-> --- a/drivers/gpu/drm/vc4/vc4_crtc.c
-> +++ b/drivers/gpu/drm/vc4/vc4_crtc.c
-> @@ -659,12 +659,27 @@ static int vc4_crtc_atomic_check(struct drm_crtc *crtc,
->         struct vc4_crtc_state *vc4_state = to_vc4_crtc_state(crtc_state);
->         struct drm_connector *conn;
->         struct drm_connector_state *conn_state;
-> +       struct drm_encoder *encoder;
->         int ret, i;
->
->         ret = vc4_hvs_atomic_check(crtc, state);
->         if (ret)
->                 return ret;
->
-> +       encoder = vc4_get_crtc_encoder(crtc, crtc_state);
-> +       if (encoder) {
-> +               const struct drm_display_mode *mode = &crtc_state->adjusted_mode;
-> +               struct vc4_encoder *vc4_encoder = to_vc4_encoder(encoder);
-> +
-> +               mode = &crtc_state->adjusted_mode;
-> +               if (vc4_encoder->type == VC4_ENCODER_TYPE_HDMI0) {
-> +                       vc4_state->hvs_load = max(mode->clock * mode->hdisplay / mode->htotal + 1000,
-> +                                                 mode->clock * 9 / 10) * 1000;
-> +               } else {
-> +                       vc4_state->hvs_load = mode->clock * 1000;
-> +               }
-> +       }
-> +
->         for_each_new_connector_in_state(state, conn, conn_state,
->                                         i) {
->                 if (conn_state->crtc != crtc)
-> diff --git a/drivers/gpu/drm/vc4/vc4_drv.h b/drivers/gpu/drm/vc4/vc4_drv.h
-> index 813c5d0ea98e..4329e09d357c 100644
-> --- a/drivers/gpu/drm/vc4/vc4_drv.h
-> +++ b/drivers/gpu/drm/vc4/vc4_drv.h
-> @@ -558,6 +558,8 @@ struct vc4_crtc_state {
->                 unsigned int bottom;
->         } margins;
->
-> +       unsigned long hvs_load;
-> +
->         /* Transitional state below, only valid during atomic commits */
->         bool update_muxing;
->  };
-> diff --git a/drivers/gpu/drm/vc4/vc4_kms.c b/drivers/gpu/drm/vc4/vc4_kms.c
-> index 41cb4869da50..79d4d9dd1394 100644
-> --- a/drivers/gpu/drm/vc4/vc4_kms.c
-> +++ b/drivers/gpu/drm/vc4/vc4_kms.c
-> @@ -39,9 +39,11 @@ static struct vc4_ctm_state *to_vc4_ctm_state(struct drm_private_state *priv)
->
->  struct vc4_hvs_state {
->         struct drm_private_state base;
-> +       unsigned long core_clock_rate;
->
->         struct {
->                 unsigned in_use: 1;
-> +               unsigned long fifo_load;
->                 struct drm_crtc_commit *pending_commit;
->         } fifo_state[HVS_NUM_CHANNELS];
->  };
-> @@ -340,10 +342,19 @@ static void vc4_atomic_commit_tail(struct drm_atomic_state *state)
->         struct vc4_hvs *hvs = vc4->hvs;
->         struct drm_crtc_state *old_crtc_state;
->         struct drm_crtc_state *new_crtc_state;
-> +       struct vc4_hvs_state *new_hvs_state;
->         struct drm_crtc *crtc;
->         struct vc4_hvs_state *old_hvs_state;
->         int i;
->
-> +       old_hvs_state = vc4_hvs_get_old_global_state(state);
-> +       if (WARN_ON(!old_hvs_state))
-> +               return;
-> +
-> +       new_hvs_state = vc4_hvs_get_new_global_state(state);
-> +       if (WARN_ON(!new_hvs_state))
-> +               return;
-> +
->         for_each_new_crtc_in_state(state, crtc, new_crtc_state, i) {
->                 struct vc4_crtc_state *vc4_crtc_state;
->
-> @@ -354,12 +365,13 @@ static void vc4_atomic_commit_tail(struct drm_atomic_state *state)
->                 vc4_hvs_mask_underrun(dev, vc4_crtc_state->assigned_channel);
->         }
->
-> -       if (vc4->hvs->hvs5)
-> -               clk_set_min_rate(hvs->core_clk, 500000000);
-> +       if (vc4->hvs->hvs5) {
-> +               unsigned long core_rate = max_t(unsigned long,
-> +                                               500000000,
-> +                                               new_hvs_state->core_clock_rate);
->
-> -       old_hvs_state = vc4_hvs_get_old_global_state(state);
-> -       if (!old_hvs_state)
-> -               return;
-> +               clk_set_min_rate(hvs->core_clk, core_rate);
-> +       }
->
->         for_each_old_crtc_in_state(state, crtc, old_crtc_state, i) {
->                 struct vc4_crtc_state *vc4_crtc_state =
-> @@ -399,8 +411,12 @@ static void vc4_atomic_commit_tail(struct drm_atomic_state *state)
->
->         drm_atomic_helper_cleanup_planes(dev, state);
->
-> -       if (vc4->hvs->hvs5)
-> -               clk_set_min_rate(hvs->core_clk, 0);
-> +       if (vc4->hvs->hvs5) {
-> +               drm_dbg(dev, "Running the core clock at %lu Hz\n",
-> +                       new_hvs_state->core_clock_rate);
-> +
-> +               clk_set_min_rate(hvs->core_clk, new_hvs_state->core_clock_rate);
-> +       }
->  }
->
->  static int vc4_atomic_commit_setup(struct drm_atomic_state *state)
-> @@ -657,9 +673,9 @@ vc4_hvs_channels_duplicate_state(struct drm_private_obj *obj)
->
->         __drm_atomic_helper_private_obj_duplicate_state(obj, &state->base);
->
-> -
->         for (i = 0; i < HVS_NUM_CHANNELS; i++) {
->                 state->fifo_state[i].in_use = old_state->fifo_state[i].in_use;
-> +               state->fifo_state[i].fifo_load = old_state->fifo_state[i].fifo_load;
->
->                 if (!old_state->fifo_state[i].pending_commit)
->                         continue;
-> @@ -668,6 +684,8 @@ vc4_hvs_channels_duplicate_state(struct drm_private_obj *obj)
->                         drm_crtc_commit_get(old_state->fifo_state[i].pending_commit);
->         }
->
-> +       state->core_clock_rate = old_state->core_clock_rate;
-> +
->         return &state->base;
->  }
->
-> @@ -822,6 +840,76 @@ static int vc4_pv_muxing_atomic_check(struct drm_device *dev,
->         return 0;
->  }
->
-> +static int
-> +vc4_core_clock_atomic_check(struct drm_atomic_state *state)
-> +{
-> +       struct vc4_dev *vc4 = to_vc4_dev(state->dev);
-> +       struct drm_private_state *priv_state;
-> +       struct vc4_hvs_state *hvs_new_state;
-> +       struct vc4_load_tracker_state *load_state;
-> +       struct drm_crtc_state *old_crtc_state, *new_crtc_state;
-> +       struct drm_crtc *crtc;
-> +       unsigned int num_outputs;
-> +       unsigned long pixel_rate;
-> +       unsigned long cob_rate;
-> +       unsigned int i;
-> +
-> +       priv_state = drm_atomic_get_private_obj_state(state,
-> +                                                     &vc4->load_tracker);
-> +       if (IS_ERR(priv_state))
-> +               return PTR_ERR(priv_state);
-> +
-> +       load_state = to_vc4_load_tracker_state(priv_state);
-> +
-> +       hvs_new_state = vc4_hvs_get_global_state(state);
-> +       if (!hvs_new_state)
-> +               return -EINVAL;
-> +
-> +       for_each_oldnew_crtc_in_state(state, crtc,
-> +                                     old_crtc_state,
-> +                                     new_crtc_state,
-> +                                     i) {
-> +               if (old_crtc_state->active) {
-> +                       struct vc4_crtc_state *old_vc4_state =
-> +                               to_vc4_crtc_state(old_crtc_state);
-> +                       unsigned int channel = old_vc4_state->assigned_channel;
-> +
-> +                       hvs_new_state->fifo_state[channel].fifo_load = 0;
-> +               }
-> +
-> +               if (new_crtc_state->active) {
-> +                       struct vc4_crtc_state *new_vc4_state =
-> +                               to_vc4_crtc_state(new_crtc_state);
-> +                       unsigned int channel = new_vc4_state->assigned_channel;
-> +
-> +                       hvs_new_state->fifo_state[channel].fifo_load =
-> +                               new_vc4_state->hvs_load;
-> +               }
-> +       }
-> +
-> +       cob_rate = 0;
-> +       num_outputs = 0;
-> +       for (i = 0; i < HVS_NUM_CHANNELS; i++) {
-> +               if (!hvs_new_state->fifo_state[i].in_use)
-> +                       continue;
-> +
-> +               num_outputs++;
-> +               cob_rate += hvs_new_state->fifo_state[i].fifo_load;
-> +       }
-> +
-> +       pixel_rate = load_state->hvs_load;
-> +       if (num_outputs > 1) {
-> +               pixel_rate = (pixel_rate * 40) / 100;
-> +       } else {
-> +               pixel_rate = (pixel_rate * 60) / 100;
-> +       }
-> +
-> +       hvs_new_state->core_clock_rate = max(cob_rate, pixel_rate);
-> +
-> +       return 0;
-> +}
-> +
-> +
->  static int
->  vc4_atomic_check(struct drm_device *dev, struct drm_atomic_state *state)
->  {
-> @@ -839,7 +927,11 @@ vc4_atomic_check(struct drm_device *dev, struct drm_atomic_state *state)
->         if (ret)
->                 return ret;
->
-> -       return vc4_load_tracker_atomic_check(state);
-> +       ret = vc4_load_tracker_atomic_check(state);
-> +       if (ret)
-> +               return ret;
-> +
-> +       return vc4_core_clock_atomic_check(state);
->  }
->
->  static struct drm_mode_config_helper_funcs vc4_mode_config_helpers = {
-> --
-> 2.31.1
->
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Cc: Jason Gunthorpe <jgg@nvidia.com>
+Cc: stable@vger.kernel.org
+
+---
+Changes in v2:
+* Move MIPS change into separate patch
+* Add information that this patch is for platforms which do not use pci-mvebu.c
+---
+ arch/arm/Kconfig              |  1 +
+ arch/arm/mach-dove/pcie.c     | 11 ++++++++---
+ arch/arm/mach-mv78xx0/pcie.c  | 11 ++++++++---
+ arch/arm/mach-orion5x/Kconfig |  1 +
+ arch/arm/mach-orion5x/pci.c   | 12 +++++++++---
+ 5 files changed, 27 insertions(+), 9 deletions(-)
+
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index fc196421b2ce..9f157e973555 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -400,6 +400,7 @@ config ARCH_DOVE
+ 	select GENERIC_IRQ_MULTI_HANDLER
+ 	select GPIOLIB
+ 	select HAVE_PCI
++	select PCI_QUIRKS if PCI
+ 	select MVEBU_MBUS
+ 	select PINCTRL
+ 	select PINCTRL_DOVE
+diff --git a/arch/arm/mach-dove/pcie.c b/arch/arm/mach-dove/pcie.c
+index ee91ac6b5ebf..ecf057a0f5ba 100644
+--- a/arch/arm/mach-dove/pcie.c
++++ b/arch/arm/mach-dove/pcie.c
+@@ -135,14 +135,19 @@ static struct pci_ops pcie_ops = {
+ 	.write = pcie_wr_conf,
+ };
+ 
++/*
++ * The root complex has a hardwired class of PCI_CLASS_MEMORY_OTHER, when it
++ * is operating as a root complex this needs to be switched to
++ * PCI_CLASS_BRIDGE_HOST or Linux will errantly try to process the BAR's on
++ * the device. Decoding setup is handled by the orion code.
++ */
+ static void rc_pci_fixup(struct pci_dev *dev)
+ {
+-	/*
+-	 * Prevent enumeration of root complex.
+-	 */
+ 	if (dev->bus->parent == NULL && dev->devfn == 0) {
+ 		int i;
+ 
++		dev->class &= 0xff;
++		dev->class |= PCI_CLASS_BRIDGE_HOST << 8;
+ 		for (i = 0; i < DEVICE_COUNT_RESOURCE; i++) {
+ 			dev->resource[i].start = 0;
+ 			dev->resource[i].end   = 0;
+diff --git a/arch/arm/mach-mv78xx0/pcie.c b/arch/arm/mach-mv78xx0/pcie.c
+index 636d84b40466..9362b5fc116f 100644
+--- a/arch/arm/mach-mv78xx0/pcie.c
++++ b/arch/arm/mach-mv78xx0/pcie.c
+@@ -177,14 +177,19 @@ static struct pci_ops pcie_ops = {
+ 	.write = pcie_wr_conf,
+ };
+ 
++/*
++ * The root complex has a hardwired class of PCI_CLASS_MEMORY_OTHER, when it
++ * is operating as a root complex this needs to be switched to
++ * PCI_CLASS_BRIDGE_HOST or Linux will errantly try to process the BAR's on
++ * the device. Decoding setup is handled by the orion code.
++ */
+ static void rc_pci_fixup(struct pci_dev *dev)
+ {
+-	/*
+-	 * Prevent enumeration of root complex.
+-	 */
+ 	if (dev->bus->parent == NULL && dev->devfn == 0) {
+ 		int i;
+ 
++		dev->class &= 0xff;
++		dev->class |= PCI_CLASS_BRIDGE_HOST << 8;
+ 		for (i = 0; i < DEVICE_COUNT_RESOURCE; i++) {
+ 			dev->resource[i].start = 0;
+ 			dev->resource[i].end   = 0;
+diff --git a/arch/arm/mach-orion5x/Kconfig b/arch/arm/mach-orion5x/Kconfig
+index e94a61901ffd..7189a5b1ec46 100644
+--- a/arch/arm/mach-orion5x/Kconfig
++++ b/arch/arm/mach-orion5x/Kconfig
+@@ -6,6 +6,7 @@ menuconfig ARCH_ORION5X
+ 	select GPIOLIB
+ 	select MVEBU_MBUS
+ 	select FORCE_PCI
++	select PCI_QUIRKS
+ 	select PHYLIB if NETDEVICES
+ 	select PLAT_ORION_LEGACY
+ 	help
+diff --git a/arch/arm/mach-orion5x/pci.c b/arch/arm/mach-orion5x/pci.c
+index 76951bfbacf5..5145fe89702e 100644
+--- a/arch/arm/mach-orion5x/pci.c
++++ b/arch/arm/mach-orion5x/pci.c
+@@ -509,14 +509,20 @@ static int __init pci_setup(struct pci_sys_data *sys)
+ /*****************************************************************************
+  * General PCIe + PCI
+  ****************************************************************************/
++
++/*
++ * The root complex has a hardwired class of PCI_CLASS_MEMORY_OTHER, when it
++ * is operating as a root complex this needs to be switched to
++ * PCI_CLASS_BRIDGE_HOST or Linux will errantly try to process the BAR's on
++ * the device. Decoding setup is handled by the orion code.
++ */
+ static void rc_pci_fixup(struct pci_dev *dev)
+ {
+-	/*
+-	 * Prevent enumeration of root complex.
+-	 */
+ 	if (dev->bus->parent == NULL && dev->devfn == 0) {
+ 		int i;
+ 
++		dev->class &= 0xff;
++		dev->class |= PCI_CLASS_BRIDGE_HOST << 8;
+ 		for (i = 0; i < DEVICE_COUNT_RESOURCE; i++) {
+ 			dev->resource[i].start = 0;
+ 			dev->resource[i].end   = 0;
+-- 
+2.20.1
+
