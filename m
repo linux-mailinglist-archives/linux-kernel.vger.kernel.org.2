@@ -2,109 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C73F443414
+	by mail.lfdr.de (Postfix) with ESMTP id 9CDB5443415
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 17:54:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234998AbhKBQ5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 12:57:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46800 "EHLO
+        id S234965AbhKBQ5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 12:57:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230382AbhKBQ46 (ORCPT
+        with ESMTP id S230008AbhKBQ46 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 2 Nov 2021 12:56:58 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2A33C061205
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 09:04:06 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id g11so8589669pfv.7
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 09:04:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pqUtMw42srMAJfM2b3lzp/b+ILplHJlRcpIaRS/3TQM=;
-        b=M1Jy4rAev2XNNrOaCWRPKKonIM70Nc4Pm5SPQkebmdl++tjn6a6C7m3mnLdNZFp0pr
-         Dw88LtEJTtN1PUO++FTkdtdNtjTNQDnlwv2yLNTeMXrjP9ZyYAKGTMcL8r9RTRPBw3il
-         4C97/+Sa7C2wkCTq6baD8je9LdaO98oiGYYt7spVrtyDRzBtQpt9dbnzUI85k/5rztRv
-         YJjx1bNAw3Odr4BoA8nGSa8XDcp5bV9j8cNbaFaDoC0vNAdSZH4jYZcFSEHleUzrSlpk
-         yxIbYa611I/q0MBtSK4EowjkBNpDUpLqBOxKzNjkyNInHvPRJou4mqsFW/Ul7RBz7G+C
-         9qNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pqUtMw42srMAJfM2b3lzp/b+ILplHJlRcpIaRS/3TQM=;
-        b=dL08dnytxTP2d+Z5bkzs+pZPT5XrxzDXOIR2uCSVwQrWWJWt6gmM3E9SxfHsktZzPM
-         xeXxt4yuq1t4002TAxyHTE5SvVa6e4X1vsU9beMTmOHq/TGcG8YYR4ztEaPVIlaOVQH4
-         8xwpIHlNIMHB/Gbhij71bajhpo9jJVSIn65307Z+S2Do5KuxmhNVk8e50FfEi8zOfsf8
-         lCpYWQZIoP/g+LKdQ6euuPw3St+FJBn2CMDeDa0UzFvV9k73VFo4g6tIyJ8Mn9eYz33a
-         iQEML4YEX6zAVRgKKinBt1KUGzLcH0hbQs9Z4yuaCp/VIvF69F3AJ8wj0TXJAfLdb6FV
-         WNuQ==
-X-Gm-Message-State: AOAM531VZsm/l6VGovG9O0xOTtjvR0VaEbrWCHlSnjOBkyRDdFNQsGUJ
-        zL3ZBxzh51LrzCrlimQazGZEtRZwqPsNYsEvtWdZhg==
-X-Google-Smtp-Source: ABdhPJyi2jXIzQpJmrRalOBu2yRBUoqURsVK2whse/fQ0ZQUdF57+LmGNFNbptM0HlteOtS8dkMwnbU4y4A7thJeMNM=
-X-Received: by 2002:a63:6302:: with SMTP id x2mr11074410pgb.5.1635869046166;
- Tue, 02 Nov 2021 09:04:06 -0700 (PDT)
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FDA6C06120B
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 09:04:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=1sJdvJqhAZ8971iSxAtIuMLFnEJHx4QlcRhowz6J5Po=; b=UdvDzwHUdl7TAS3z1mhORKh/yt
+        3irrVNIEUFmZ5bDiNfBaX5LloCH9pcJQMb13F3WP2htvyofIRD+GTlIACkkPU8vClmBBZ5N9LxK9d
+        s/oAa77XtKdncaRdHRAPa3XlOrndiCrW7tSnA6HWW37m3/SHjTh2VyRnpDSDo3eLdHBUMLOWTVs6C
+        jhuBuVgwEXyzPezZiXWsmxfWtfEYicLPe4gj4JaDcfDLax+hLjuA9aCyse4PSa9GweF2DDdHnVZD9
+        MrtJmT0TbDo7NW4qa+rFDhbn6Kr2WqaTKNn2l+Htr6snw6iWFBgxwMoSudUG3oNvfMTCRFB7jUk6/
+        z36oG+ZQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mhwGa-00DmKw-1A; Tue, 02 Nov 2021 16:04:04 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C25B39816BA; Tue,  2 Nov 2021 17:04:02 +0100 (CET)
+Date:   Tue, 2 Nov 2021 17:04:02 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     "Morotti, Romain (London)" <romain.morotti@man.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: kernel/scheduler: The Linux scheduler doesn't scale to more than
+ 8 cores?
+Message-ID: <20211102160402.GX174703@worktop.programming.kicks-ass.net>
+References: <6725b3093d47459fa438825fb187970f@man.com>
+ <CAKfTPtAKpMj15dHO1MC=dH_XJQe1Os24k93N2jDZ=kgg3O7K7A@mail.gmail.com>
 MIME-Version: 1.0
-References: <20211021001059.438843-1-jane.chu@oracle.com> <YXFPfEGjoUaajjL4@infradead.org>
- <e89a2b17-3f03-a43e-e0b9-5d2693c3b089@oracle.com> <YXJN4s1HC/Y+KKg1@infradead.org>
- <2102a2e6-c543-2557-28a2-8b0bdc470855@oracle.com> <YXj2lwrxRxHdr4hb@infradead.org>
-In-Reply-To: <YXj2lwrxRxHdr4hb@infradead.org>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 2 Nov 2021 09:03:55 -0700
-Message-ID: <CAPcyv4hK18DetEf9+NcDqM5y07Vp-=nhysHJ3JSnKbS-ET2ppw@mail.gmail.com>
-Subject: Re: [dm-devel] [PATCH 0/6] dax poison recovery with RWF_RECOVERY_DATA flag
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Jane Chu <jane.chu@oracle.com>,
-        "david@fromorbit.com" <david@fromorbit.com>,
-        "djwong@kernel.org" <djwong@kernel.org>,
-        "vishal.l.verma@intel.com" <vishal.l.verma@intel.com>,
-        "dave.jiang@intel.com" <dave.jiang@intel.com>,
-        "agk@redhat.com" <agk@redhat.com>,
-        "snitzer@redhat.com" <snitzer@redhat.com>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "ira.weiny@intel.com" <ira.weiny@intel.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "vgoyal@redhat.com" <vgoyal@redhat.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKfTPtAKpMj15dHO1MC=dH_XJQe1Os24k93N2jDZ=kgg3O7K7A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 11:50 PM Christoph Hellwig <hch@infradead.org> wrote:
->
-> On Fri, Oct 22, 2021 at 08:52:55PM +0000, Jane Chu wrote:
-> > Thanks - I try to be honest.  As far as I can tell, the argument
-> > about the flag is a philosophical argument between two views.
-> > One view assumes design based on perfect hardware, and media error
-> > belongs to the category of brokenness. Another view sees media
-> > error as a build-in hardware component and make design to include
-> > dealing with such errors.
->
-> No, I don't think so.  Bit errors do happen in all media, which is
-> why devices are built to handle them.  It is just the Intel-style
-> pmem interface to handle them which is completely broken.
+On Tue, Nov 02, 2021 at 04:25:05PM +0100, Vincent Guittot wrote:
+> > From the first line, the CPU count is capped to 8.
+> >
+> > Thus the scheduler scaling won't be more than a factor of 4, no matter how many CPUs there are. (1+log2(8))
+> >
+> > There's also a linear scaling option, that is similarly capped to 8 times, because 8 CPUs.
+> 
+> That's a good point and I never realized this limitation in the scaling factor.
+> 
+> Peter mentioned that there were interactivity problems with large
+> scale factors at the time it was added. But the scheduler has changed
+> since and it would be interesting to run benchmarks on more recent
+> platforms with larger factor
 
-No, any media can report checksum / parity errors. NVME also seems to
-do a poor job with multi-bit ECC errors consumed from DRAM. There is
-nothing "pmem" or "Intel" specific here.
+The important note here is that this limit is about timescales, not
+anything else. Previously a 64 cpu system would blow up the latency to
+6ms * (1 + ln)2(64)) = 42ms, which is atrocious.
 
-> > errors in mind from start.  I guess I'm trying to articulate why
-> > it is acceptable to include the RWF_DATA_RECOVERY flag to the
-> > existing RWF_ flags. - this way, pwritev2 remain fast on fast path,
-> > and its slow path (w/ error clearing) is faster than other alternative.
-> > Other alternative being 1 system call to clear the poison, and
-> > another system call to run the fast pwrite for recovery, what
-> > happens if something happened in between?
->
-> Well, my point is doing recovery from bit errors is by definition not
-> the fast path.  Which is why I'd rather keep it away from the pmem
-> read/write fast path, which also happens to be the (much more important)
-> non-pmem read/write path.
-
-I would expect this interface to be useful outside of pmem as a
-"failfast" or "try harder to recover" flag for reading over media
-errors.
