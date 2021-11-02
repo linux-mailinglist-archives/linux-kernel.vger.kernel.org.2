@@ -2,270 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80D8A442758
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 07:58:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2FB244275B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 07:59:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229770AbhKBHB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 03:01:27 -0400
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:27905 "EHLO
-        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229497AbhKBHB0 (ORCPT
+        id S229933AbhKBHCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 03:02:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51702 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229497AbhKBHB6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 03:01:26 -0400
+        Tue, 2 Nov 2021 03:01:58 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F243C061714;
+        Mon,  1 Nov 2021 23:59:24 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id k4so4724277plx.8;
+        Mon, 01 Nov 2021 23:59:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1635836332; x=1667372332;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=DyfsefN+fg24S/Y07/SZYYESBeyYSN6YQ8afJ7/nhdk=;
-  b=elAUX24myMjV1p/DeuHK3WF+WaoEJYlAuuAnEIz7ZjHJA4OgquCQCBOz
-   JbLwgLEF4vf8Cdrblhga7OM0HIELzqOd2k+iRMEB1QQQ1lTWRu50nVOpJ
-   6abErWx+4FlRdqMfznwY9yWoUafTQ3lD7IxD67mP/hmG97HPbf/mASwTX
-   M=;
-Received: from unknown (HELO ironmsg-SD-alpha.qualcomm.com) ([10.53.140.30])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 01 Nov 2021 23:58:51 -0700
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg-SD-alpha.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2021 23:58:51 -0700
-Received: from nalasex01c.na.qualcomm.com (10.47.97.35) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Mon, 1 Nov 2021 23:58:51 -0700
-Received: from fenglinw-gv.qualcomm.com (10.80.80.8) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Mon, 1 Nov 2021 23:58:47 -0700
-From:   Fenglin Wu <quic_fenglinw@quicinc.com>
-To:     <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <sboyd@kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Fenglin Wu <quic_fenglinw@quicinc.com>,
-        <devicetree@vger.kernel.org>
-CC:     <collinsd@codeaurora.org>, <subbaram@codeaurora.org>
-Subject: [PATCH v1] dt-bindings: convert qcom,spmi-pmic-arb binding to YAML format
-Date:   Tue, 2 Nov 2021 14:57:35 +0800
-Message-ID: <1635836275-8873-1-git-send-email-quic_fenglinw@quicinc.com>
-X-Mailer: git-send-email 2.7.4
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vqXwOUNI4/IijAlpWAo12uhMUJZ0tnXr5EHJzFt7VTI=;
+        b=lneso4AyG+tGq8owgQRSmatMK3IUeSPdI90ZQgFfY757rx79Q4gYgWf8mSwll4IBee
+         zn/Xfsn/z8MB5jpN35Gq7EOzjX8X49ah8k2IYpxYK7hi5MOLrzfdJ4wE78cM6gMTV/6l
+         ZPSUjm8NAcWZNXnpISUyWpNFF5NpiXVg6PVwurlJgxUxtLvN3wiXvSf9LwFthVeEFR0F
+         ILs1U2SlKMZN+yyuIyHWyLroKVb40R5ysqMP31UbFsNuIVNQS6c6mXfptGN7zToWzhWF
+         T+uoJVObXQLMHPC4mhJdsRED6da/IYlpasL90jwH1OxqFO+fkrl7vTOakAS4eNXiLHOO
+         tnrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vqXwOUNI4/IijAlpWAo12uhMUJZ0tnXr5EHJzFt7VTI=;
+        b=jpp25hspoXAAeFfILgK/sZ/B3+MawgpVEymLOG36rhpJBaJ6cGHn2tmyFmcwPUAwSS
+         wekCLuGiur7qkwYuiXEl1NOMmwIGsVZeBOPcd31h9Vd+lHilwmy5GqO8e1o1UBkx3qkx
+         obEEmJ12OEI6ROYxt6lOhZMZjlsLXVlj9UChQCsNJygWPa7LmuXa9PKbLXEaQ9ioiI6y
+         gogkbWo2/vcSXotYjVcIjEoC3Q0KQ7s6b+ilRflcKbbox2t6zgdxqS5mar8O75hV0e29
+         nqWYhmbRfRQENwYe4P1oJ6j+k05fmNS5LY7FItmDY5TDtNnoTNaf7COK2knGeDav1/YA
+         9RvQ==
+X-Gm-Message-State: AOAM533E1bXNIR7uMT2fmPjwFfbOZGYlZIdNWOIPfu/FD+iRzfU3McMh
+        wYobpMwtldpau2AeapjFpa0=
+X-Google-Smtp-Source: ABdhPJyZwE+1coELcVY3xbl84n48ESpJ+5RLjdIi/ksHkVEOoBlelvQsQw/eCDp7BkzvDbomG0bpQw==
+X-Received: by 2002:a17:90a:df96:: with SMTP id p22mr3153842pjv.129.1635836364229;
+        Mon, 01 Nov 2021 23:59:24 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id v14sm17611914pff.199.2021.11.01.23.59.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Nov 2021 23:59:23 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: yao.jing2@zte.com.cn
+To:     tyreld@linux.ibm.com
+Cc:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        jejb@linux.ibm.com, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, Jing Yao <yao.jing2@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH v2] drivers: scsi: replace snprintf in show functions with sysfs_emit
+Date:   Tue,  2 Nov 2021 06:59:16 +0000
+Message-Id: <20211102065916.4164-1-yao.jing2@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the SPMI PMIC arbiter documentation to JSON/yaml.
+From: Jing Yao <yao.jing2@zte.com.cn>
 
-Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
+coccicheck complains about the use of snprintf() in sysfs show
+functions:
+WARNING use scnprintf or sprintf
+
+Use sysfs_emit instead of scnprintf or sprintf makes more sense.
+
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Jing Yao <yao.jing2@zte.com.cn>
 ---
- .../bindings/spmi/qcom,spmi-pmic-arb.txt           |  67 -----------
- .../bindings/spmi/qcom,spmi-pmic-arb.yaml          | 122 +++++++++++++++++++++
- 2 files changed, 122 insertions(+), 67 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/spmi/qcom,spmi-pmic-arb.txt
- create mode 100644 Documentation/devicetree/bindings/spmi/qcom,spmi-pmic-arb.yaml
+ drivers/scsi/ibmvscsi/ibmvfc.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/spmi/qcom,spmi-pmic-arb.txt b/Documentation/devicetree/bindings/spmi/qcom,spmi-pmic-arb.txt
-deleted file mode 100644
-index 6332507..0000000
---- a/Documentation/devicetree/bindings/spmi/qcom,spmi-pmic-arb.txt
-+++ /dev/null
-@@ -1,67 +0,0 @@
--Qualcomm SPMI Controller (PMIC Arbiter)
--
--The SPMI PMIC Arbiter is found on Snapdragon chipsets.  It is an SPMI
--controller with wrapping arbitration logic to allow for multiple on-chip
--devices to control a single SPMI master.
--
--The PMIC Arbiter can also act as an interrupt controller, providing interrupts
--to slave devices.
--
--See Documentation/devicetree/bindings/spmi/spmi.yaml for the generic SPMI
--controller binding requirements for child nodes.
--
--See Documentation/devicetree/bindings/interrupt-controller/interrupts.txt for
--generic interrupt controller binding documentation.
--
--Required properties:
--- compatible : should be "qcom,spmi-pmic-arb".
--- reg-names  : must contain:
--     "core" - core registers
--     "intr" - interrupt controller registers
--     "cnfg" - configuration registers
--   Registers used only for V2 PMIC Arbiter:
--     "chnls"  - tx-channel per virtual slave registers.
--     "obsrvr" - rx-channel (called observer) per virtual slave registers.
--
--- reg : address + size pairs describing the PMIC arb register sets; order must
--        correspond with the order of entries in reg-names
--- #address-cells : must be set to 2
--- #size-cells : must be set to 0
--- qcom,ee : indicates the active Execution Environment identifier (0-5)
--- qcom,channel : which of the PMIC Arb provided channels to use for accesses (0-5)
--
--Optional properties:
--- interrupts : interrupt list for the PMIC Arb controller, must contain a
--               single interrupt entry for the peripheral interrupt
--- interrupt-names : corresponding interrupt names for the interrupts
--                    listed in the 'interrupts' property, must contain:
--     "periph_irq" - summary interrupt for PMIC peripherals
--- interrupt-controller : boolean indicator that the PMIC arbiter is an interrupt controller
--- #interrupt-cells :  must be set to 4. Interrupts are specified as a 4-tuple:
--    cell 1: slave ID for the requested interrupt (0-15)
--    cell 2: peripheral ID for requested interrupt (0-255)
--    cell 3: the requested peripheral interrupt (0-7)
--    cell 4: interrupt flags indicating level-sense information, as defined in
--            dt-bindings/interrupt-controller/irq.h
--
--Example:
--
--	spmi {
--		compatible = "qcom,spmi-pmic-arb";
--		reg-names = "core", "intr", "cnfg";
--		reg = <0xfc4cf000 0x1000>,
--		      <0xfc4cb000 0x1000>,
--		      <0xfc4ca000 0x1000>;
--
--		interrupt-names = "periph_irq";
--		interrupts = <0 190 0>;
--
--		qcom,ee = <0>;
--		qcom,channel = <0>;
--
--		#address-cells = <2>;
--		#size-cells = <0>;
--
--		interrupt-controller;
--		#interrupt-cells = <4>;
--	};
-diff --git a/Documentation/devicetree/bindings/spmi/qcom,spmi-pmic-arb.yaml b/Documentation/devicetree/bindings/spmi/qcom,spmi-pmic-arb.yaml
-new file mode 100644
-index 0000000..05bb114
---- /dev/null
-+++ b/Documentation/devicetree/bindings/spmi/qcom,spmi-pmic-arb.yaml
-@@ -0,0 +1,122 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/spmi/qcom,spmi-pmic-arb.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Qualcomm SPMI PMIC Arbiter
-+
-+maintainers:
-+  - Fenglin Wu <quic_fenglinw@quicinc.com>
-+
-+description: |
-+  The SPMI PMIC Arbiter is found on Snapdragon chipsets. It is an SPMI
-+  controller with wrapping arbitration logic to allow for multiple
-+  on-chip devices to control a single SPMI master.
-+
-+  The PMIC Arbiter can also act as an interrupt controller, providing
-+  interrupts to slave devices.
-+
-+  See Documentation/devicetree/bindings/spmi/spmi.yaml for the generic
-+  SPMI controller binding requirements for child nodes.
-+
-+properties:
-+  $nodename:
-+    pattern: "^qcom,spmi@.*"
-+
-+  compatible:
-+    const: qcom,spmi-pmic-arb
-+
-+  reg-names:
-+    minItems: 3
-+    maxItems: 5
-+    items:
-+      - const: core
-+      - const: intr
-+      - const: cnfg
-+      - const: chnls
-+      - const: obsrvr
-+
-+  reg:
-+    minItems: 3
-+    maxItems: 5
-+    description: |
-+      Specifies base physical address and size of the registers in SPMI PMIC
-+      Arbiter HW module, with the following order.
-+        - SPMI PMIC arbiter core registers (core)
-+        - SPMI PMIC arbiter interrupt controller registers (intr)
-+        - SPMI PMIC arbiter configuration registers (cnfg)
-+        - SPMI PMIC arbiter tx-channel per virtual slave registers (chnls)
-+        - SPMI PMIC arbiter rx-channel per virtual slave registers (obsrvr).
-+      Register for "chnls" and "obsrvr" are only applicable for PMIC arbiter
-+      with HW version greater than V2.
-+
-+  "#address-cells":
-+    const: 2
-+
-+  "#size-cells":
-+    const: 0
-+
-+  interrupts:
-+    description: The summary interrupt for the PMIC Arb controller.
-+    maxItems: 1
-+
-+  interrupt-names:
-+    maxItems: 1
-+    const: periph_irq
-+
-+  interrupt-controller: true
-+
-+  "#interrupt-cells":
-+    const: 4
-+    description: |
-+      Specifies the number of cells needed to encode any interrupt source.
-+      The 1st cell is the slave ID for the requested interrupt, its valid
-+      range is [0-15].
-+      The 2nd cell is the  peripheral ID for requested interrupt, its valid
-+      range is [0-255].
-+      The 3rd cell is the requested peripheral interrupt, its valid range
-+      is [0-7].
-+      The 4th cell is interrupt flags indicating level-sense information,
-+      as defined in dt-bindings/interrupt-controller/irq.h
-+
-+  qcom,ee:
-+    description: the active Execution Environment identifier
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    enum: [0, 1, 2, 3, 4, 5]
-+
-+  qcom,channel:
-+    description: which of the PMIC Arbiter provided channels to use for accesses
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    enum: [0, 1, 2, 3, 4, 5]
-+
-+required:
-+  - compatible
-+  - reg-names
-+  - reg
-+  - "#address-cells"
-+  - "#size-cells"
-+  - qcom,ee
-+  - qcom,channel
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    qcom,spmi@fc4cf000 {
-+          compatible = "qcom,spmi-pmic-arb";
-+          reg-names = "core", "intr", "cnfg";
-+          reg = <0xfc4cf000 0x1000>,
-+                <0xfc4cb000 0x1000>,
-+                <0xfc4ca000 0x1000>;
-+          interrupt-names = "periph_irq";
-+          interrupts = <0 190 0>;
-+          interrupt-controller;
-+          #interrupt-cells = <4>;
-+
-+          qcom,ee = <0>;
-+          qcom,channel = <0>;
-+
-+          #address-cells = <2>;
-+          #size-cells = <0>;
-+    };
+diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
+index d0eab5700dc5..69bf55c037a5 100644
+--- a/drivers/scsi/ibmvscsi/ibmvfc.c
++++ b/drivers/scsi/ibmvscsi/ibmvfc.c
+@@ -3403,7 +3403,7 @@ static ssize_t ibmvfc_show_host_partition_name(struct device *dev,
+ 	struct Scsi_Host *shost = class_to_shost(dev);
+ 	struct ibmvfc_host *vhost = shost_priv(shost);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%s\n",
++	return sysfs_emit(buf, "%s\n",
+ 			vhost->login_buf->resp.partition_name);
+ }
+ 
+@@ -3413,7 +3413,7 @@ static ssize_t ibmvfc_show_host_device_name(struct device *dev,
+ 	struct Scsi_Host *shost = class_to_shost(dev);
+ 	struct ibmvfc_host *vhost = shost_priv(shost);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%s\n",
++	return sysfs_emit(buf, "%s\n",
+ 			vhost->login_buf->resp.device_name);
+ }
+ 
+@@ -3423,7 +3423,7 @@ static ssize_t ibmvfc_show_host_loc_code(struct device *dev,
+ 	struct Scsi_Host *shost = class_to_shost(dev);
+ 	struct ibmvfc_host *vhost = shost_priv(shost);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%s\n",
++	return sysfs_emit(buf, "%s\n",
+ 			vhost->login_buf->resp.port_loc_code);
+ }
+ 
+@@ -3433,7 +3433,7 @@ static ssize_t ibmvfc_show_host_drc_name(struct device *dev,
+ 	struct Scsi_Host *shost = class_to_shost(dev);
+ 	struct ibmvfc_host *vhost = shost_priv(shost);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%s\n",
++	return sysfs_emit(buf, "%s\n",
+ 			vhost->login_buf->resp.drc_name);
+ }
+ 
+@@ -3442,7 +3442,7 @@ static ssize_t ibmvfc_show_host_npiv_version(struct device *dev,
+ {
+ 	struct Scsi_Host *shost = class_to_shost(dev);
+ 	struct ibmvfc_host *vhost = shost_priv(shost);
+-	return snprintf(buf, PAGE_SIZE, "%d\n", be32_to_cpu(vhost->login_buf->resp.version));
++	return sysfs_emit(buf, "%d\n", be32_to_cpu(vhost->login_buf->resp.version));
+ }
+ 
+ static ssize_t ibmvfc_show_host_capabilities(struct device *dev,
+@@ -3450,7 +3450,7 @@ static ssize_t ibmvfc_show_host_capabilities(struct device *dev,
+ {
+ 	struct Scsi_Host *shost = class_to_shost(dev);
+ 	struct ibmvfc_host *vhost = shost_priv(shost);
+-	return snprintf(buf, PAGE_SIZE, "%llx\n", be64_to_cpu(vhost->login_buf->resp.capabilities));
++	return sysfs_emit(buf, "%llx\n", be64_to_cpu(vhost->login_buf->resp.capabilities));
+ }
+ 
+ /**
 -- 
-2.7.4
+2.25.1
 
