@@ -2,86 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C44C1443821
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 22:58:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 718E8443826
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 23:02:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231254AbhKBWAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 18:00:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60176 "EHLO mail.kernel.org"
+        id S230293AbhKBWEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 18:04:51 -0400
+Received: from ms.lwn.net ([45.79.88.28]:53370 "EHLO ms.lwn.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229525AbhKBWAk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 18:00:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BDA660EDF;
-        Tue,  2 Nov 2021 21:58:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635890285;
-        bh=P16OQEV/s/AT2BeYrLgBIB2QROVOkYZGirYakOBKtd8=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=JK0aPFSs5hLpl7vTgMaRlAT7rSvA9eNskbYJAdAWx7++gDRJauzmxSx1+VZrR6se9
-         5J5Q4wmjTSkkNgFFocGpQnEN5c7AvE7sYyPiaiSwFHqaleEV1A5KBJq4GFN5P+HlbO
-         L5sZUZ6QWfeQall0MIogFvUA/vvDuym4KzjwQNuJdsANiQ6WCPA6JwRmbYifgxF6Nt
-         lK3sVBMQttdtHUD5QZZLJfwUCq4ToWOBchFkqCO4/Tdv6HbASSYYWgA5/9/fZ0HC16
-         o93h64sKbgubjqBi7qCFlNjvjbvn3OO6cn8QcQ1VUKW3nJo/cm2NkfSfBEjL/Cg37T
-         4zCOOLTmwbo7w==
-Content-Type: text/plain; charset="utf-8"
+        id S229525AbhKBWEu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 18:04:50 -0400
+Received: from meer.lwn.net (unknown [IPv6:2601:281:8300:104d::5f6])
+        by ms.lwn.net (Postfix) with ESMTPA id E51B35EBE;
+        Tue,  2 Nov 2021 22:02:14 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net E51B35EBE
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1635890535; bh=QYCx8iyB5QbzPzCDV274eB6oB6pXbjKZaGgcnZWvu98=;
+        h=From:To:Cc:Subject:Date:From;
+        b=pUTpxEG3/+BLWHeWRKdDVgPZk2Bz0s8rn03j1z3EgymRXWlAkw77VKWStkjjeK9+U
+         isUdWisTBAsXW15vY3VjbUMYDDzXKwja3YxDC3J/ogqkcwl45rHiupqpKS7Zl++VWg
+         dV2uWAq9Z8mNRnXnYaRGUtRzzQGD18LeEWc2jpaNy3km2CFrVfLCuS0NhIVhkEcjIM
+         59FCy1g44t8L8mavFlBAHVaxZehv6CLusqa1MrSOkvAUYI8jQznMI7M/lOzhuv+MVP
+         c7Pi+P50KAxgy2T5rUJgG+hAmkTEDfr4Qkf8uHAI5dIWJQg3Ihq7ukEBMYlFeSK1TM
+         maM4/STnynGTw==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     Jonathan Corbet <corbet@lwn.net>
+Subject: [PATCH 0/9] Remove some unused header files
+Date:   Tue,  2 Nov 2021 16:01:54 -0600
+Message-Id: <20211102220203.940290-1-corbet@lwn.net>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1635847013-3220-3-git-send-email-tdas@codeaurora.org>
-References: <1635847013-3220-1-git-send-email-tdas@codeaurora.org> <1635847013-3220-3-git-send-email-tdas@codeaurora.org>
-Subject: Re: [PATCH v1 2/4] clk: qcom: gdsc: Add support for clock voting from GDSC
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, robh@kernel.org, robh+dt@kernel.org,
-        Taniya Das <tdas@codeaurora.org>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Taniya Das <tdas@codeaurora.org>
-Date:   Tue, 02 Nov 2021 14:58:03 -0700
-Message-ID: <163589028388.2993099.5936912812368868539@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Taniya Das (2021-11-02 02:56:51)
-> In the cases where the clock is required to be enabled before the genpd
-> enable add support for the same.
+While working on something totally different, it occurred to me to wonder
+which header files in the kernel are not used anywhere.  Writing a little
+program to figure that out in Rust was the perfect distriction from the
+work I really needed to be doing...  It turns out there aren't many under
+include/linux; this gets rid of the ones I found.
 
-Please describe more. One sentence is not enough here.
+Jonathan Corbet (9):
+  Remove unused headers <linux/jz4740-adc.h> and
+    <linux/power/jz4740-battery.h>
+  nfs: remove unused header <linux/pnfs_osd_xdr.h>
+  Remove unused header <linux/cnt32_to_63.h>
+  Remove unused header <linux/sdb.h>
+  Input: remove unused header <linux/input/cy8ctmg110_pdata.h>
+  mtd: remove unused header file <linux/mtd/latch-addr-flash.h>
+  ARM: ixp4xx: remove unused header file pata_ixp4xx_cf.h
+  spi: remove unused header file <linux/platform_data/spi-clps711x.h>
+  net: remove unused header file <linux/ks8851_mll.h>
 
->=20
-> Signed-off-by: Taniya Das <tdas@codeaurora.org>
-> ---
->  drivers/clk/qcom/gdsc.c | 45 +++++++++++++++++++++++++++++++++++++++----=
---
->  drivers/clk/qcom/gdsc.h |  3 +++
->  2 files changed, 42 insertions(+), 6 deletions(-)
->=20
-> diff --git a/drivers/clk/qcom/gdsc.c b/drivers/clk/qcom/gdsc.c
-> index 7e1dd8c..1caca32 100644
-> --- a/drivers/clk/qcom/gdsc.c
-> +++ b/drivers/clk/qcom/gdsc.c
-> @@ -478,6 +499,18 @@ int gdsc_register(struct gdsc_desc *desc,
->                         return PTR_ERR(scs[i]->rsupply);
->         }
->=20
-> +       for (i =3D 0; i < num; i++) {
-> +               if (!scs[i])
-> +                       continue;
-> +
-> +               scs[i]->clk =3D devm_clk_get(dev, scs[i]->clk_name);
-> +               if (IS_ERR(scs[i]->clk))
-> +                       return PTR_ERR(scs[i]->clk);
-> +               ret =3D clk_prepare(scs[i]->clk);
+ include/linux/cnt32_to_63.h                  | 104 ------
+ include/linux/input/cy8ctmg110_pdata.h       |  10 -
+ include/linux/jz4740-adc.h                   |  33 --
+ include/linux/ks8851_mll.h                   |  21 --
+ include/linux/mtd/latch-addr-flash.h         |  29 --
+ include/linux/platform_data/pata_ixp4xx_cf.h |  21 --
+ include/linux/platform_data/spi-clps711x.h   |  17 -
+ include/linux/pnfs_osd_xdr.h                 | 317 -------------------
+ include/linux/power/jz4740-battery.h         |  15 -
+ include/linux/sdb.h                          | 160 ----------
+ 10 files changed, 727 deletions(-)
+ delete mode 100644 include/linux/cnt32_to_63.h
+ delete mode 100644 include/linux/input/cy8ctmg110_pdata.h
+ delete mode 100644 include/linux/jz4740-adc.h
+ delete mode 100644 include/linux/ks8851_mll.h
+ delete mode 100644 include/linux/mtd/latch-addr-flash.h
+ delete mode 100644 include/linux/platform_data/pata_ixp4xx_cf.h
+ delete mode 100644 include/linux/platform_data/spi-clps711x.h
+ delete mode 100644 include/linux/pnfs_osd_xdr.h
+ delete mode 100644 include/linux/power/jz4740-battery.h
+ delete mode 100644 include/linux/sdb.h
 
-Why do we keep it prepared forever? And don't we have support for
-writing directly into cxc registers?
+-- 
+2.31.1
 
-> +               if (ret)
-> +                       return ret;
-> +       }
-> +
->         data->num_domains =3D num;
->         for (i =3D 0; i < num; i++) {
->                 if (!scs[i])
