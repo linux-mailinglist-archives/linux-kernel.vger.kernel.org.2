@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DA5A443054
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 15:24:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9ED5443058
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 15:25:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230447AbhKBO1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 10:27:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40720 "EHLO
+        id S231251AbhKBO2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 10:28:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230208AbhKBO1L (ORCPT
+        with ESMTP id S230286AbhKBO2B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 10:27:11 -0400
-Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BA2AC061714
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 07:24:36 -0700 (PDT)
-Received: by mail-oo1-xc31.google.com with SMTP id t7-20020a4aadc7000000b002b8733ab498so7464658oon.3
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 07:24:36 -0700 (PDT)
+        Tue, 2 Nov 2021 10:28:01 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B0D1C061714
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 07:25:26 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id y11so1929330oih.7
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 07:25:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=sender:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
         bh=JI0Ej4DOcNCkfUFyUyiO9iOW2E1mQQJnZ1aAxjyxxx0=;
-        b=a7nMNY8e7XhoAQX6x5gKIFRopgM4d9faZSm2ckKytem4akNvEDG00LCf5uPAk5l9D9
-         mKZPEQTqVcERalHxJbqIxhi3NkP1QHIJp1Ss/Snz9Uq53V5EXbeLKGWZk0Ho8Yc3AM0p
-         rWPEstz+QirAEkluGjoE7mWnvQ1K/bNYgR2X9jkrdE68dJzsKrCGaW2uHHmgyhzpZ6Qe
-         /LMXoybczXQKIuhKfb0miuj9cXredGiLGScvFeSjZeriFb+VaUXw2Qi9hFVwWv8yYeAZ
-         qsXAX6iPfU/Wn2IjqB7UqYXtOJUA6aALah8zTZWVCNrJ8/2M5BHPzoRujj91UZMeAKmv
-         NzQA==
+        b=G0s1ihF1Vb837BAi0gTK/HC+mrAWRPu0SXZW/mcjnujgvWusG8nXqoL6Pl5npYLKhs
+         oPAXBr42/xQn+i28PVjfmWhXrU+ZIiVPcf3F//Srkr+sYCnNkd2Z+563yUyJOun7kZML
+         DaoI2myEc7wXqI5VZwCSs1rbiVZRBkSihAWb/kOyd9Pl4rgdUvWUR8OAtTZ11DMTn2iQ
+         96dCaQe1dlZZ1E9MeQOXJpB4+bkJLNajYbtBN1IUCv74z02Kp6xxBfg7S6i4z8hj4X5K
+         SWTxgA5lxR1GEMB7HgXSdjyfNgENQg9HsQ8/P4sVUWoI6Evb+PXRLFZSoDvyoYP3Y/Lz
+         Dj8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :mime-version:content-transfer-encoding;
         bh=JI0Ej4DOcNCkfUFyUyiO9iOW2E1mQQJnZ1aAxjyxxx0=;
-        b=4IXOHpVN480XBZTp83+S4v0U/QCiiw+608Zj/7XokvXxDL8j3T9olTJGalyFJcSo6w
-         c46APe6ZVpvBZpN9tBJXmKTOXJ40U+9obB1lmjFOt8hyk2rn9Ti9qPFTE4PLFU7Zsnkn
-         0GKniZamfnPfuRvD/TXhnZZixO9CKgjpY/YR3f8VQPwLmDAvdDIN/IXFtLqEOmgvNUax
-         GxNEp4vv44qRNHSX8ybB+VpgrcLNqKBJrP6SyeIGKaMfVNiVIVQAOZPtO7+uae6THoc8
-         9LXZi6s/s7xalG0PQYEebCzs2CUi0M0gaewU01YELo5Fc4qo/qd2PPKd3pm9bHYbMv6Y
-         Y+Jg==
-X-Gm-Message-State: AOAM533gWdiEBTl6cvTtWEUA2wjbVVXS6iRJCuUmmNeRPGSq+VILuOJx
-        W2GjYRcGnwAIUYUkcSqlDIkzvQwauOA=
-X-Google-Smtp-Source: ABdhPJxatjbHrHxxBgFnrFEk6R0/L4G01foHF2xYaS3i+PSPbBdZUu3DNQpgFaJRlp5n7Wc3mB+KUA==
-X-Received: by 2002:a4a:6412:: with SMTP id o18mr24923792ooc.79.1635863075966;
-        Tue, 02 Nov 2021 07:24:35 -0700 (PDT)
+        b=iI+8BsRZT4OP4gpwGyefVy5SoER5z/UDVnxgPOsgiix3b7RNAad6nJevCEY1mTqkbi
+         E8zax3xF/KZtdqx2WyRvO7Vr81G4+g6TtzyLmhLsYjX4KWa4zxM6oYWQLy1YoH8L4kgD
+         b8Dx4/ptp3qI3MrXb7M7Z4V64nk71hMepExNKNb3VhXz/+hHK/5NRVWqJVKUEU9WOkLI
+         wRRoV6Yke+maV7mRI+Bg18SNrt3t8JiqFuunw5uD3eJYFQUzQK08u8u0Sb+VrFBlxefR
+         WHe/mQKu8F6Mk+eUPJJ50mYcb29EP/Xi/EDkXY3R51K6o3etMFgbwMVuDtskE227n+ni
+         YkJQ==
+X-Gm-Message-State: AOAM532S6qV9grZk7vLHdz1wcMib1R6PD7bEBtXP18zwSTYbo1Sbz9PP
+        vn9mSE+tNy6WvawJ4B7GsTY=
+X-Google-Smtp-Source: ABdhPJw9cfouxOlWal/eYiaELUw43TBUF4yOWjfQiYHWIiiLm+4ozYKx1XYVVnjUtAvqKaHLvmy80A==
+X-Received: by 2002:a05:6808:1a92:: with SMTP id bm18mr5366743oib.0.1635863125513;
+        Tue, 02 Nov 2021 07:25:25 -0700 (PDT)
 Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id t12sm3744026oiw.39.2021.11.02.07.24.34
+        by smtp.gmail.com with ESMTPSA id d10sm4869062ooj.24.2021.11.02.07.25.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Nov 2021 07:24:35 -0700 (PDT)
+        Tue, 02 Nov 2021 07:25:25 -0700 (PDT)
 Sender: Guenter Roeck <groeck7@gmail.com>
 From:   Guenter Roeck <linux@roeck-us.net>
 To:     Andy Shevchenko <andy@kernel.org>
@@ -57,9 +57,9 @@ Cc:     linux-kernel@vger.kernel.org,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         Andy Shevchenko <andriy.shevchenko@intel.com>
-Subject: [PATCH] string: uninline memcpy_and_pad
-Date:   Tue,  2 Nov 2021 07:24:20 -0700
-Message-Id: <20211102142420.3723616-1-linux@roeck-us.net>
+Subject: [RESEND PATCH v2] string: uninline memcpy_and_pad
+Date:   Tue,  2 Nov 2021 07:25:18 -0700
+Message-Id: <20211102142518.3723655-1-linux@roeck-us.net>
 X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
