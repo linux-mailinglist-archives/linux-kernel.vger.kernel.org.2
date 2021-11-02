@@ -2,280 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E122544358B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 19:26:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B94C44358D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 19:27:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235104AbhKBS27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 14:28:59 -0400
-Received: from foss.arm.com ([217.140.110.172]:41720 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230361AbhKBS2t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 14:28:49 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0EBE811B3;
-        Tue,  2 Nov 2021 11:26:14 -0700 (PDT)
-Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 29BA73F7B4;
-        Tue,  2 Nov 2021 11:26:13 -0700 (PDT)
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Robert Moore <robert.moore@intel.com>
-Cc:     Sudeep Holla <sudeep.holla@arm.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        devel@acpica.org
-Subject: [PATCH 3/3] ACPI: PCC: Implement OperationRegion handler for the PCC Type 3 subtype
-Date:   Tue,  2 Nov 2021 18:25:42 +0000
-Message-Id: <20211102182542.3460787-4-sudeep.holla@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211102182542.3460787-1-sudeep.holla@arm.com>
-References: <20211102182542.3460787-1-sudeep.holla@arm.com>
+        id S235116AbhKBS3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 14:29:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229792AbhKBS3e (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 14:29:34 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77E46C061714;
+        Tue,  2 Nov 2021 11:26:59 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id z20so612779edc.13;
+        Tue, 02 Nov 2021 11:26:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5w8G3ePpRz8HjzM8/nM4qOryTyhiVY12B8UfXPbDks8=;
+        b=ChQGfMCB1XRs8WrdGm6DcepGZjTv3OriROgs0wC2aIRyqN27CytNz32sRY4L0NiOcj
+         E0Z5WwaaiZ5nUM6TO8evrr4mPeVOz4lrPXjNDnUstPg5zuMeekPpgBB8FEHMAjP4kG7Z
+         kxAZKMCuWXWVp3KbpkJ4cYJI/X6mA8enltbKMeZHEBzUBabnAS1ooAwUfAyw981j+aDV
+         0zblHf1k3JxksnrL5EtrTe1ids/V8pa6zwfpUDShwpfxTNRzDqKa8RQcxEgYU5J3RkWT
+         jQHS3h1xraqNNqYv9PKEjanm+E4UHWlFdxnCA+jVmnFT+7TXkKCcZ3xnCHM1drLywNqk
+         RBMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5w8G3ePpRz8HjzM8/nM4qOryTyhiVY12B8UfXPbDks8=;
+        b=dw0AHS8w0K6drGheUYDlAKYEpJ5zhTlcmAbo0QjjIUuAyNipBs0maLGw1eHyKFMMc8
+         /EDnLbww9uaKKolBvZV4IvCiMPjb8ZYK0NnSNYBg6dMb6iAxslN+y7CeSdLOrLl0WqUk
+         /VlXE9Tx5uqUZFbOmhz9czP6j0HuUKCwtHSu+X022NRP2/S+g5/2Nrux/8UVasaQaImn
+         VDhqHvYWRVQEfkwzur6f2M6dxzuUolfb7KQsoElR4MuWZvYhRWAtTm3loafFxit5gRop
+         EXgFNs5niIlNxuA03R+eU3jGMeifG2RfMkLpiVoASKDH9lWC4P+G4E871m+UHMpoaARr
+         guIw==
+X-Gm-Message-State: AOAM533S7Vd025IrLHh3tx6tygBODtvGOkowDJgA8rcAK4ECj0hsuF/A
+        P/SmICDwTa/PwgPW1/t3y9c=
+X-Google-Smtp-Source: ABdhPJzCrOMM0l99NEi2g6pj0OxiTt74GAugnIY6HOI0zvarOKDxlfb44oazo6DCGb/I/zPKKp1E6g==
+X-Received: by 2002:a17:906:ad9a:: with SMTP id la26mr34255922ejb.266.1635877617778;
+        Tue, 02 Nov 2021 11:26:57 -0700 (PDT)
+Received: from skbuf ([188.25.175.102])
+        by smtp.gmail.com with ESMTPSA id cs15sm2882759ejc.31.2021.11.02.11.26.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Nov 2021 11:26:57 -0700 (PDT)
+Date:   Tue, 2 Nov 2021 20:26:55 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [net-next PATCH] net: dsa: qca8k: make sure PAD0 MAC06 exchange
+ is disabled
+Message-ID: <20211102182655.t74adxlw3q3ctlas@skbuf>
+References: <20211102175629.24102-1-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211102175629.24102-1-ansuelsmth@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PCC OpRegion provides a mechanism to communicate with the platform
-directly from the AML. PCCT provides the list of PCC channel available
-in the platform, a subset or all of them can be used in PCC Opregion.
+On Tue, Nov 02, 2021 at 06:56:29PM +0100, Ansuel Smith wrote:
+> Some device set MAC06 exchange in the bootloader. This cause some
+> problem as we don't support this strange mode and we just set the port6
+> as the primary CPU port. With MAC06 exchange, PAD0 reg configure port6
+> instead of port0. Add an extra check and explicitly disable MAC06 exchange
+> to correctly configure the port PAD config.
+> 
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> ---
 
-This patch registers the PCC OpRegion handler before ACPI tables are loaded.
-This relies on the special context data passed to identify and setup the
-PCC channel before the OpRegion handler is executed for the first time.
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
 
-Typical PCC Opregion declaration looks like this:
+Since net-next has closed, please add
 
-OperationRegion (PFRM, PCC, 2, 0x74)
-Field (PFRM, ByteAcc, NoLock, Preserve)
-{
-    SIGN,   32,
-    FLGS,   32,
-    LEN,    32,
-    CMD,    32,
-    DATA,   800
-}
+Fixes: 3fcf734aa482 ("net: dsa: qca8k: add support for cpu port 6")
 
-It contains 4 named double words followed by 100 bytes of buffer names DATA.
+and resend to the "net" tree.
 
-ASL can fill out the buffer something like:
-
-    /* Create global or local buffer */
-    Name (BUFF, Buffer (0x0C){})
-    /* Create double word fields over the buffer */
-    CreateDWordField (BUFF, 0x0, WD0)
-    CreateDWordField (BUFF, 0x04, WD1)
-    CreateDWordField (BUFF, 0x08, WD2)
-
-    /* Fill the named fields */
-    WD0 = 0x50434300
-    SIGN = BUFF
-    WD0 = 1
-    FLGS = BUFF
-    WD0 = 0x10
-    LEN = BUFF
-
-    /* Fill the payload in the DATA buffer */
-    WD0 = 0
-    WD1 = 0x08
-    WD2 = 0
-    DATA = BUFF
-
-    /* Write to CMD field to trigger handler */
-    WD0 = 0x4404
-    CMD = BUFF
-
-This buffer is recieved by acpi_pcc_opregion_space_handler. This
-handler will fetch the commplete buffer via internal_pcc_buffer.
-
-The setup handler will receive the special PCC context data which will
-contain the PCC channel index which used to setup the channel. The buffer
-pointer and length is saved in region context which is then used in the
-handler.
-
-Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
----
- drivers/acpi/Kconfig        |   5 ++
- drivers/acpi/Makefile       |   1 +
- drivers/acpi/bus.c          |   1 +
- drivers/acpi/pcc_opregion.c | 111 ++++++++++++++++++++++++++++++++++++
- include/linux/acpi.h        |   6 ++
- 5 files changed, 124 insertions(+)
- create mode 100644 drivers/acpi/pcc_opregion.c
-
-diff --git a/drivers/acpi/Kconfig b/drivers/acpi/Kconfig
-index 1da360c51d66..c2998e489cec 100644
---- a/drivers/acpi/Kconfig
-+++ b/drivers/acpi/Kconfig
-@@ -524,6 +524,11 @@ config ACPI_PPTT
- 	bool
- endif
- 
-+config ACPI_PCC_OPREGION
-+	bool "PCC Opregion"
-+	depends on PCC
-+	default y
-+
- source "drivers/acpi/pmic/Kconfig"
- 
- config ACPI_VIOT
-diff --git a/drivers/acpi/Makefile b/drivers/acpi/Makefile
-index 3018714e87d9..d010ed3f4937 100644
---- a/drivers/acpi/Makefile
-+++ b/drivers/acpi/Makefile
-@@ -67,6 +67,7 @@ acpi-$(CONFIG_ACPI_LPIT)	+= acpi_lpit.o
- acpi-$(CONFIG_ACPI_GENERIC_GSI) += irq.o
- acpi-$(CONFIG_ACPI_WATCHDOG)	+= acpi_watchdog.o
- acpi-$(CONFIG_ACPI_PRMT)	+= prmt.o
-+acpi-$(CONFIG_ACPI_PCC_OPREGION) += pcc_opregion.o
- 
- # Address translation
- acpi-$(CONFIG_ACPI_ADXL)	+= acpi_adxl.o
-diff --git a/drivers/acpi/bus.c b/drivers/acpi/bus.c
-index fa923a929224..5e1eea7fb6f4 100644
---- a/drivers/acpi/bus.c
-+++ b/drivers/acpi/bus.c
-@@ -1320,6 +1320,7 @@ static int __init acpi_init(void)
- 		pr_debug("%s: kset create error\n", __func__);
- 
- 	init_prmt();
-+	init_pcc_opregion();
- 	result = acpi_bus_init();
- 	if (result) {
- 		kobject_put(acpi_kobj);
-diff --git a/drivers/acpi/pcc_opregion.c b/drivers/acpi/pcc_opregion.c
-new file mode 100644
-index 000000000000..c965ce555bd0
---- /dev/null
-+++ b/drivers/acpi/pcc_opregion.c
-@@ -0,0 +1,111 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Author: Sudeep Holla <sudeep.holla@arm.com>
-+ * Copyright 2021 Arm Limited
-+ *
-+ * pcc_opregion.c
-+ *
-+ */
-+#include <linux/kernel.h>
-+#include <linux/acpi.h>
-+#include <linux/completion.h>
-+#include <linux/idr.h>
-+#include <linux/io.h>
-+
-+#include <acpi/pcc.h>
-+
-+struct pcc_data {
-+	struct pcc_mbox_chan *pcc_chan;
-+	void __iomem *pcc_comm_addr;
-+	struct completion done;
-+        struct mbox_client cl;
-+	struct acpi_pcc_info ctx;
-+};
-+
-+struct acpi_pcc_info pcc_ctx;
-+
-+static void pcc_rx_callback(struct mbox_client *cl, void *m)
-+{
-+        struct pcc_data *data = container_of(cl, struct pcc_data, cl);
-+
-+	complete(&data->done);
-+}
-+
-+static acpi_status
-+acpi_pcc_opregion_setup(acpi_handle region_handle, u32 function,
-+			void *handler_context,  void **region_context)
-+{
-+	struct pcc_data *data;
-+	struct acpi_pcc_info *ctx = handler_context;
-+	struct pcc_mbox_chan *pcc_chan;
-+
-+	data = kzalloc(sizeof(*data), GFP_KERNEL);
-+	if (!data)
-+		return_ACPI_STATUS(AE_NO_MEMORY);
-+
-+	data->cl.rx_callback = pcc_rx_callback;
-+	data->cl.knows_txdone = true;
-+	data->ctx.length = ctx->length;
-+	data->ctx.subspace_id = ctx->subspace_id;
-+	data->ctx.internal_buffer = ctx->internal_buffer;
-+
-+	init_completion(&data->done);
-+	data->pcc_chan = pcc_mbox_request_channel(&data->cl, ctx->subspace_id);
-+	if (IS_ERR(data->pcc_chan)) {
-+		pr_err("Failed to find PCC channel for subspace %d\n",
-+		       ctx->subspace_id);
-+		return_ACPI_STATUS(AE_NOT_FOUND);
-+	}
-+
-+	pcc_chan = data->pcc_chan;
-+	data->pcc_comm_addr = acpi_os_ioremap(pcc_chan->shmem_base_addr,
-+					      pcc_chan->shmem_size);
-+	if (!data->pcc_comm_addr) {
-+		pr_err("Failed to ioremap PCC comm region mem for %d\n",
-+		       ctx->subspace_id);
-+		return_ACPI_STATUS(AE_NO_MEMORY);
-+	}
-+
-+	*region_context = data;
-+	return_ACPI_STATUS(AE_OK);
-+}
-+
-+static acpi_status
-+acpi_pcc_opregion_space_handler(u32 function, acpi_physical_address addr,
-+				u32 bits, acpi_integer *value,
-+				void *handler_context, void *region_context)
-+{
-+	int ret;
-+	struct pcc_data* data = region_context;
-+
-+	reinit_completion(&data->done);
-+
-+	/* Write to Shared Memory */
-+	memcpy_toio(data->pcc_comm_addr, (void *)value, data->ctx.length);
-+
-+	ret = mbox_send_message(data->pcc_chan->mchan, NULL);
-+	if (ret < 0)
-+		return_ACPI_STATUS(AE_ERROR);
-+
-+	if (data->pcc_chan->mchan->mbox->txdone_irq)
-+		wait_for_completion(&data->done);
-+
-+	mbox_client_txdone(data->pcc_chan->mchan, ret);
-+
-+	memcpy_fromio(value, data->pcc_comm_addr, data->ctx.length);
-+
-+	return_ACPI_STATUS(AE_OK);
-+}
-+
-+void __init init_pcc_opregion(void)
-+{
-+	acpi_status status;
-+
-+	status = acpi_install_address_space_handler(ACPI_ROOT_OBJECT,
-+						    ACPI_ADR_SPACE_PLATFORM_COMM,
-+						    &acpi_pcc_opregion_space_handler,
-+						    &acpi_pcc_opregion_setup,
-+						    &pcc_ctx);
-+	if (ACPI_FAILURE(status))
-+		pr_alert("OperationRegion handler could not be installed\n");
-+}
-diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-index fbc2146050a4..7dd565294408 100644
---- a/include/linux/acpi.h
-+++ b/include/linux/acpi.h
-@@ -1384,6 +1384,12 @@ static inline int find_acpi_cpu_cache_topology(unsigned int cpu, int level)
- }
- #endif
- 
-+#ifdef CONFIG_ACPI_PCC_OPREGION
-+void init_pcc_opregion(void);
-+#else
-+static inline void init_pcc_opregion(void) { }
-+#endif
-+
- #ifdef CONFIG_ACPI
- extern void acpi_device_notify(struct device *dev);
- extern void acpi_device_notify_remove(struct device *dev);
--- 
-2.25.1
-
+>  drivers/net/dsa/qca8k.c | 8 ++++++++
+>  drivers/net/dsa/qca8k.h | 1 +
+>  2 files changed, 9 insertions(+)
+> 
+> Some comments here:
+> Resetting the switch using the sw reg doesn't reset the port PAD
+> configuration. I was thinking if it would be better to clear all the
+> pad configuration but considering that the entire reg is set by phylink
+> mac config, I think it's not necessary as the PAD related to the port will
+> be reset anyway with the new values. Have a dirty configuration on PAD6
+> doesn't cause any problem as we have that port disabled and it would be
+> reset and configured anyway if defined.
+> 
+> diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
+> index ea7f12778922..a429c9750add 100644
+> --- a/drivers/net/dsa/qca8k.c
+> +++ b/drivers/net/dsa/qca8k.c
+> @@ -1109,6 +1109,14 @@ qca8k_setup(struct dsa_switch *ds)
+>  	if (ret)
+>  		return ret;
+>  
+> +	/* Make sure MAC06 is disabled */
+> +	ret = qca8k_reg_clear(priv, QCA8K_REG_PORT0_PAD_CTRL,
+> +			      QCA8K_PORT0_PAD_MAC06_EXCHANGE_EN);
+> +	if (ret) {
+> +		dev_err(priv->dev, "failed disabling MAC06 exchange");
+> +		return ret;
+> +	}
+> +
+>  	/* Enable CPU Port */
+>  	ret = qca8k_reg_set(priv, QCA8K_REG_GLOBAL_FW_CTRL0,
+>  			    QCA8K_GLOBAL_FW_CTRL0_CPU_PORT_EN);
+> diff --git a/drivers/net/dsa/qca8k.h b/drivers/net/dsa/qca8k.h
+> index e10571a398c9..128b8cf85e08 100644
+> --- a/drivers/net/dsa/qca8k.h
+> +++ b/drivers/net/dsa/qca8k.h
+> @@ -34,6 +34,7 @@
+>  #define   QCA8K_MASK_CTRL_DEVICE_ID_MASK		GENMASK(15, 8)
+>  #define   QCA8K_MASK_CTRL_DEVICE_ID(x)			((x) >> 8)
+>  #define QCA8K_REG_PORT0_PAD_CTRL			0x004
+> +#define   QCA8K_PORT0_PAD_MAC06_EXCHANGE_EN		BIT(31)
+>  #define   QCA8K_PORT0_PAD_SGMII_RXCLK_FALLING_EDGE	BIT(19)
+>  #define   QCA8K_PORT0_PAD_SGMII_TXCLK_FALLING_EDGE	BIT(18)
+>  #define QCA8K_REG_PORT5_PAD_CTRL			0x008
+> -- 
+> 2.32.0
+> 
