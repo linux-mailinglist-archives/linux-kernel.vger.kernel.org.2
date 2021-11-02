@@ -2,75 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 271D14432CE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 17:36:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C73F443414
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 17:54:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235127AbhKBQiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 12:38:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36414 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234673AbhKBQG6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 12:06:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B5CBD610FC;
-        Tue,  2 Nov 2021 16:03:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635869013;
-        bh=oRT/FmZplSaoJey7CINetDmKzmY3y11l8ZtjzjuLNT4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=gjK1iB0tJm8BpurKxt3zIG/gnTjtJ3IZDq6pOyzVxRZtqFpM3213F7/Ya6bUjJ11H
-         mmjY4YXTRRjmeVnrMx3bQsKkRYbiKI6kbg+FKjbUz9kskmGoLxr3DyTbA/Brj7tAn9
-         KMMHiNfEkMevWsoEMaOhtLwV1Q4AUTT4V3mjK/CsXH0OVJiYgQXQCP1o5T1PCgoL/u
-         ZxyPMyNOb9uYKqeHMGu5g+PgNCMws2818Bi/e4JLvJVUIxbgdvNrhnTvpfxVEKADBw
-         y3dKw37zGqf8bs+RitG7GZmNQq3QXrlTIrmSR5Fe7oS+hwYSOX311p4txg5ZzBCYfJ
-         cV8LxObiZ8RNA==
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Santosh Shilimkar <ssantosh@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Nathan Chancellor <nathan@kernel.org>
-Subject: [PATCH] soc: ti: wkup_m3_ipc: Fix return type error in wkup_m3_rproc_boot_thread()
-Date:   Tue,  2 Nov 2021 09:03:15 -0700
-Message-Id: <20211102160315.1067553-1-nathan@kernel.org>
-X-Mailer: git-send-email 2.34.0.rc0
+        id S234998AbhKBQ5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 12:57:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46800 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230382AbhKBQ46 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 12:56:58 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2A33C061205
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 09:04:06 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id g11so8589669pfv.7
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 09:04:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pqUtMw42srMAJfM2b3lzp/b+ILplHJlRcpIaRS/3TQM=;
+        b=M1Jy4rAev2XNNrOaCWRPKKonIM70Nc4Pm5SPQkebmdl++tjn6a6C7m3mnLdNZFp0pr
+         Dw88LtEJTtN1PUO++FTkdtdNtjTNQDnlwv2yLNTeMXrjP9ZyYAKGTMcL8r9RTRPBw3il
+         4C97/+Sa7C2wkCTq6baD8je9LdaO98oiGYYt7spVrtyDRzBtQpt9dbnzUI85k/5rztRv
+         YJjx1bNAw3Odr4BoA8nGSa8XDcp5bV9j8cNbaFaDoC0vNAdSZH4jYZcFSEHleUzrSlpk
+         yxIbYa611I/q0MBtSK4EowjkBNpDUpLqBOxKzNjkyNInHvPRJou4mqsFW/Ul7RBz7G+C
+         9qNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pqUtMw42srMAJfM2b3lzp/b+ILplHJlRcpIaRS/3TQM=;
+        b=dL08dnytxTP2d+Z5bkzs+pZPT5XrxzDXOIR2uCSVwQrWWJWt6gmM3E9SxfHsktZzPM
+         xeXxt4yuq1t4002TAxyHTE5SvVa6e4X1vsU9beMTmOHq/TGcG8YYR4ztEaPVIlaOVQH4
+         8xwpIHlNIMHB/Gbhij71bajhpo9jJVSIn65307Z+S2Do5KuxmhNVk8e50FfEi8zOfsf8
+         lCpYWQZIoP/g+LKdQ6euuPw3St+FJBn2CMDeDa0UzFvV9k73VFo4g6tIyJ8Mn9eYz33a
+         iQEML4YEX6zAVRgKKinBt1KUGzLcH0hbQs9Z4yuaCp/VIvF69F3AJ8wj0TXJAfLdb6FV
+         WNuQ==
+X-Gm-Message-State: AOAM531VZsm/l6VGovG9O0xOTtjvR0VaEbrWCHlSnjOBkyRDdFNQsGUJ
+        zL3ZBxzh51LrzCrlimQazGZEtRZwqPsNYsEvtWdZhg==
+X-Google-Smtp-Source: ABdhPJyi2jXIzQpJmrRalOBu2yRBUoqURsVK2whse/fQ0ZQUdF57+LmGNFNbptM0HlteOtS8dkMwnbU4y4A7thJeMNM=
+X-Received: by 2002:a63:6302:: with SMTP id x2mr11074410pgb.5.1635869046166;
+ Tue, 02 Nov 2021 09:04:06 -0700 (PDT)
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+References: <20211021001059.438843-1-jane.chu@oracle.com> <YXFPfEGjoUaajjL4@infradead.org>
+ <e89a2b17-3f03-a43e-e0b9-5d2693c3b089@oracle.com> <YXJN4s1HC/Y+KKg1@infradead.org>
+ <2102a2e6-c543-2557-28a2-8b0bdc470855@oracle.com> <YXj2lwrxRxHdr4hb@infradead.org>
+In-Reply-To: <YXj2lwrxRxHdr4hb@infradead.org>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Tue, 2 Nov 2021 09:03:55 -0700
+Message-ID: <CAPcyv4hK18DetEf9+NcDqM5y07Vp-=nhysHJ3JSnKbS-ET2ppw@mail.gmail.com>
+Subject: Re: [dm-devel] [PATCH 0/6] dax poison recovery with RWF_RECOVERY_DATA flag
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Jane Chu <jane.chu@oracle.com>,
+        "david@fromorbit.com" <david@fromorbit.com>,
+        "djwong@kernel.org" <djwong@kernel.org>,
+        "vishal.l.verma@intel.com" <vishal.l.verma@intel.com>,
+        "dave.jiang@intel.com" <dave.jiang@intel.com>,
+        "agk@redhat.com" <agk@redhat.com>,
+        "snitzer@redhat.com" <snitzer@redhat.com>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        "ira.weiny@intel.com" <ira.weiny@intel.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "vgoyal@redhat.com" <vgoyal@redhat.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This function should not return a value:
+On Tue, Oct 26, 2021 at 11:50 PM Christoph Hellwig <hch@infradead.org> wrote:
+>
+> On Fri, Oct 22, 2021 at 08:52:55PM +0000, Jane Chu wrote:
+> > Thanks - I try to be honest.  As far as I can tell, the argument
+> > about the flag is a philosophical argument between two views.
+> > One view assumes design based on perfect hardware, and media error
+> > belongs to the category of brokenness. Another view sees media
+> > error as a build-in hardware component and make design to include
+> > dealing with such errors.
+>
+> No, I don't think so.  Bit errors do happen in all media, which is
+> why devices are built to handle them.  It is just the Intel-style
+> pmem interface to handle them which is completely broken.
 
-drivers/soc/ti/wkup_m3_ipc.c: In function 'wkup_m3_rproc_boot_thread':
-drivers/soc/ti/wkup_m3_ipc.c:429:16: error: 'return' with a value, in function returning void [-Werror=return-type]
-  429 |         return 0;
-      |                ^
-drivers/soc/ti/wkup_m3_ipc.c:416:13: note: declared here
-  416 | static void wkup_m3_rproc_boot_thread(struct wkup_m3_ipc *m3_ipc)
-      |             ^~~~~~~~~~~~~~~~~~~~~~~~~
-cc1: all warnings being treated as errors
+No, any media can report checksum / parity errors. NVME also seems to
+do a poor job with multi-bit ECC errors consumed from DRAM. There is
+nothing "pmem" or "Intel" specific here.
 
-Fixes: 111e70490d2a ("exit/kthread: Have kernel threads return instead of calling do_exit")
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
- drivers/soc/ti/wkup_m3_ipc.c | 2 --
- 1 file changed, 2 deletions(-)
+> > errors in mind from start.  I guess I'm trying to articulate why
+> > it is acceptable to include the RWF_DATA_RECOVERY flag to the
+> > existing RWF_ flags. - this way, pwritev2 remain fast on fast path,
+> > and its slow path (w/ error clearing) is faster than other alternative.
+> > Other alternative being 1 system call to clear the poison, and
+> > another system call to run the fast pwrite for recovery, what
+> > happens if something happened in between?
+>
+> Well, my point is doing recovery from bit errors is by definition not
+> the fast path.  Which is why I'd rather keep it away from the pmem
+> read/write fast path, which also happens to be the (much more important)
+> non-pmem read/write path.
 
-diff --git a/drivers/soc/ti/wkup_m3_ipc.c b/drivers/soc/ti/wkup_m3_ipc.c
-index 0733443a2631..2238beb40f8d 100644
---- a/drivers/soc/ti/wkup_m3_ipc.c
-+++ b/drivers/soc/ti/wkup_m3_ipc.c
-@@ -425,8 +425,6 @@ static void wkup_m3_rproc_boot_thread(struct wkup_m3_ipc *m3_ipc)
- 		dev_err(dev, "rproc_boot failed\n");
- 	else
- 		m3_ipc_state = m3_ipc;
--
--	return 0;
- }
- 
- static int wkup_m3_ipc_probe(struct platform_device *pdev)
-
-base-commit: ac4fdfaf4792d41ad7b24d1c8ab486aeb7ccd495
--- 
-2.34.0.rc0
-
+I would expect this interface to be useful outside of pmem as a
+"failfast" or "try harder to recover" flag for reading over media
+errors.
