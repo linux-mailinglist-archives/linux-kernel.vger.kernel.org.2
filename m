@@ -2,179 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51195442EEA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 14:13:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A220442EEE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 14:13:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231365AbhKBNPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 09:15:49 -0400
-Received: from mail-wm1-f53.google.com ([209.85.128.53]:40743 "EHLO
-        mail-wm1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230518AbhKBNPs (ORCPT
+        id S231314AbhKBNQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 09:16:26 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.54]:30825 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229530AbhKBNQZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 09:15:48 -0400
-Received: by mail-wm1-f53.google.com with SMTP id j128-20020a1c2386000000b003301a98dd62so1872537wmj.5;
-        Tue, 02 Nov 2021 06:13:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=FEG94uCi+qFoEnBjX5NCLN8clEw8Q6AaBcymoPqaSdI=;
-        b=Th2STZAmIloDNceUGh8c1zoNVDp4zEF0aJeizpaJTATTtcIdDm3GjHtUpra6cwdbJm
-         m49+E2vjaLELBkPQmzmi17+/o3LLmK/kVMEJRXTj8BWO7DE0cwzsgMpjYr4hdusjnobK
-         VFQ6cjuVwO2pPDAMTKg+g6Pi8lQfg4z7bayCadRnYxN348XbdUQA2qYGBDnCyu/d+X0u
-         uj0rrmdXFqf3p5xHRI0EeaZUDUHVrLXHcCs3plvocuJN4Ek1Pp9q6+OIy7RsnHdMB2Cc
-         Pjsp8+/WaBGM3v2orn1gIFF7QOSbKnDYtIerXuk7oENWfeHZ1Agor/dkdLIMpnW0hVfI
-         d4IA==
-X-Gm-Message-State: AOAM533jBwi1/xjMB2H+gd2vXdLfoMYeZh5Cpi4RTPbXEYvt4oIw6ya3
-        z9ikpBuKuXOdRgPRx78WbR603NfZPqk=
-X-Google-Smtp-Source: ABdhPJyU84qNM4egSKJgXMWg8Z+C/hWBfE7Z01V1hIhfKCeVeZNDtmUsyFSBkG4gl8MXnD4/au7gFQ==
-X-Received: by 2002:a05:600c:1990:: with SMTP id t16mr7353649wmq.124.1635858792274;
-        Tue, 02 Nov 2021 06:13:12 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id c1sm14161503wrt.14.2021.11.02.06.13.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Nov 2021 06:13:11 -0700 (PDT)
-Date:   Tue, 2 Nov 2021 13:13:09 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        kys@microsoft.com, haiyangz@microsoft.com, decui@microsoft.com,
-        sthemmin@microsoft.com, Michael Kelley <mikelley@microsoft.com>
-Subject: [GIT PULL] Hyper-V commits for 5.16
-Message-ID: <20211102131309.3hknsf66swvkv6hm@liuwe-devbox-debian-v2>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+        Tue, 2 Nov 2021 09:16:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1635858795;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=NDxaeULcD+myLBhUj1L/NV8BkGrM/ANcyR6xBtxG5ag=;
+    b=Wx8on7qDbbv2eVqypmEBn50uKn8Tb8TUZMdarglwwJaN1Y/uF8NTtzLsyfK83fyleO
+    tUOHuOXafgY6dvlzRZockEdXz0JOX0mh81NQG6AnNLpUA6EEXg1t5HeitUY2APJ+gMNG
+    gsSMsvO+EEE6g5k1Syx49BLps7bPAPfRkEUyligFKVuScfbw1D2sc2BlxLFyCquVSsaR
+    qc0BkqAD/wXRbjjSVyEW7NelOg2/gHW9LCDQvsgOhJa71f3WkXwFqvgbpmSKe/q67X2S
+    nMpsriqop2IemmW6gTJpmBRgS3U3pwoXhYALEanSAafIYSa1HA667RtfHSWgZ84bfK4Y
+    7e7A==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7wpz8NIGH/jrwDOvmhs="
+X-RZG-CLASS-ID: mo00
+Received: from imac.fritz.box
+    by smtp.strato.de (RZmta 47.34.1 DYNA|AUTH)
+    with ESMTPSA id d01d1fxA2DDENa1
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+    Tue, 2 Nov 2021 14:13:14 +0100 (CET)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
+Subject: Re: [RFC v2 0/2] mmc_fixup_device
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <65944054.TfMWBj6dXo@pc-42>
+Date:   Tue, 2 Nov 2021 14:13:13 +0100
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Avri Altman <avri.altman@wdc.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Bean Huo <beanhuo@micron.com>,
+        =?utf-8?Q?Gra=C5=BEvydas_Ignotas?= <notasas@gmail.com>,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        letux-kernel@openphoenux.org, kernel@pyra-handheld.com
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <B797E225-B589-4AB5-B62A-6EF8BCADE9B1@goldelico.com>
+References: <cover.1635759337.git.hns@goldelico.com>
+ <65944054.TfMWBj6dXo@pc-42>
+To:     =?utf-8?B?SsOpcsO0bWUgUG91aWxsZXI=?= <jerome.pouiller@silabs.com>
+X-Mailer: Apple Mail (2.3445.104.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi Jerome,
 
-The following changes since commit 64570fbc14f8d7cb3fe3995f20e26bc25ce4b2cc:
+> Am 02.11.2021 um 12:14 schrieb J=C3=A9r=C3=B4me Pouiller =
+<jerome.pouiller@silabs.com>:
+>=20
+> Hello Nikolaus,
+>=20
+> On Monday 1 November 2021 10:39:10 CET H. Nikolaus Schaller wrote:
+>>=20
+>> RFC V2 2021-11-01 10:24:26:
+>> * reworked to not misuse mmc_select_card() but add a call to
+>>  mmc_fixup_device() right after where host->ops->init_card
+>>  was called before to apply the wl1251 specific quirks.
+>>  Device tree matching is done by a new table passed to =
+mmc_fixup_device().
+>>  suggested by: ulf.hansson@linaro.org
+>>  based on patches by: jerome.pouiller@silabs.com
+>=20
+> To make review easier, I think you can include these patches
+> in this series (BTW, I have no time to care of them until end
+> of next week. So, it will probably go faster if you take over
+> these patches).
 
-  Linux 5.15-rc5 (2021-10-10 17:01:59 -0700)
+Ok, no problem.
 
-are available in the Git repository at:
+Now as I understand how it should be set up I could even propose
+some new macro for discussion.
 
-  ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-next-signed-20211102
+>=20
+> (I also suggest to add a title to your series to make your work
+> easier to track.)
 
-for you to fetch changes up to 285f68afa8b20f752b0b7194d54980b5e0e27b75:
+Yes... I didn't notice before I received my copy of this mail.
+There is a missing if(strlen(subject) =3D=3D 0) reject; in my helper
+tool...
 
-  x86/hyperv: Protect set_hv_tscchange_cb() against getting preempted (2021-10-28 11:59:13 +0000)
+BR and thanks,
+Nikolaus
 
-There are two merges from the tip tree: one is because of Tianyu's
-patches went in via tip/x86/sev, the other is because a tree-wide
-cleanup in tip/x86/cc conflicted with Tianyu's patch.
-
-Instead of requiring you to fix up I thought I'd just do it myself.
-
-Thanks,
-Wei.
-
-----------------------------------------------------------------
-hyperv-next for 5.16
-  - Initial patch set for Hyper-V isolation VM support (Tianyu Lan)
-  - Fix a warning on preemption (Vitaly Kuznetsov)
-  - A bunch of misc cleanup patches.
-----------------------------------------------------------------
-Jiapeng Chong (1):
-      x86/hyperv: Remove duplicate include
-
-Lv Ruyi (1):
-      Drivers: hv : vmbus: Adding NULL pointer check
-
-Michael Kelley (1):
-      Drivers: hv: vmbus: Remove unused code to check for subchannels
-
-Tianyu Lan (9):
-      x86/sev: Expose sev_es_ghcb_hv_call() for use by HyperV
-      x86/hyperv: Initialize GHCB page in Isolation VM
-      x86/hyperv: Initialize shared memory boundary in the Isolation VM.
-      x86/hyperv: Add new hvcall guest address host visibility support
-      Drivers: hv: vmbus: Mark vmbus ring buffer visible to host in Isolation VM
-      x86/hyperv: Add Write/Read MSR registers via ghcb page
-      x86/hyperv: Add ghcb hvcall support for SNP VM
-      Drivers: hv: vmbus: Add SNP support for VMbus channel initiate message
-      Drivers: hv: vmbus: Initialize VMbus ring buffer for Isolation VM
-
-Vitaly Kuznetsov (1):
-      x86/hyperv: Protect set_hv_tscchange_cb() against getting preempted
-
-Wan Jiabing (1):
-      x86/hyperv: Remove duplicated include in hv_init
-
-Wei Liu (2):
-      Merge remote-tracking branch 'tip/x86/sev' into hyperv-next
-      Merge remote-tracking branch 'tip/x86/cc' into hyperv-next
-
- arch/Kconfig                                 |   3 +
- arch/powerpc/include/asm/mem_encrypt.h       |   5 -
- arch/powerpc/platforms/pseries/Kconfig       |   1 +
- arch/powerpc/platforms/pseries/Makefile      |   2 +
- arch/powerpc/platforms/pseries/cc_platform.c |  26 +++
- arch/powerpc/platforms/pseries/svm.c         |   5 +-
- arch/s390/include/asm/mem_encrypt.h          |   2 -
- arch/x86/Kconfig                             |   1 +
- arch/x86/hyperv/Makefile                     |   2 +-
- arch/x86/hyperv/hv_init.c                    |  82 ++++++--
- arch/x86/hyperv/ivm.c                        | 289 +++++++++++++++++++++++++++
- arch/x86/include/asm/hyperv-tlfs.h           |  17 ++
- arch/x86/include/asm/io.h                    |   8 +
- arch/x86/include/asm/kexec.h                 |   2 +-
- arch/x86/include/asm/mem_encrypt.h           |  12 +-
- arch/x86/include/asm/mshyperv.h              |  70 +++++--
- arch/x86/include/asm/sev.h                   |   6 +
- arch/x86/kernel/Makefile                     |   6 +
- arch/x86/kernel/cc_platform.c                |  69 +++++++
- arch/x86/kernel/cpu/mshyperv.c               |   5 +
- arch/x86/kernel/crash_dump_64.c              |   4 +-
- arch/x86/kernel/head64.c                     |   9 +-
- arch/x86/kernel/kvm.c                        |   3 +-
- arch/x86/kernel/kvmclock.c                   |   4 +-
- arch/x86/kernel/machine_kexec_64.c           |  19 +-
- arch/x86/kernel/pci-swiotlb.c                |   9 +-
- arch/x86/kernel/relocate_kernel_64.S         |   2 +-
- arch/x86/kernel/sev-shared.c                 |  68 ++++---
- arch/x86/kernel/sev.c                        |  40 ++--
- arch/x86/kernel/traps.c                      |   2 +-
- arch/x86/kvm/svm/svm.c                       |   3 +-
- arch/x86/mm/ioremap.c                        |  18 +-
- arch/x86/mm/mem_encrypt.c                    |  55 ++---
- arch/x86/mm/mem_encrypt_identity.c           |  18 +-
- arch/x86/mm/pat/set_memory.c                 |  24 ++-
- arch/x86/platform/efi/efi_64.c               |   9 +-
- arch/x86/realmode/init.c                     |   8 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c      |   4 +-
- drivers/gpu/drm/drm_cache.c                  |   4 +-
- drivers/gpu/drm/vmwgfx/vmwgfx_drv.c          |   4 +-
- drivers/gpu/drm/vmwgfx/vmwgfx_msg.c          |   6 +-
- drivers/hv/Kconfig                           |   1 +
- drivers/hv/channel.c                         |  72 ++++---
- drivers/hv/channel_mgmt.c                    |  34 ----
- drivers/hv/connection.c                      | 101 +++++++++-
- drivers/hv/hv.c                              |  82 ++++++--
- drivers/hv/hv_common.c                       |  12 ++
- drivers/hv/hyperv_vmbus.h                    |   2 +
- drivers/hv/ring_buffer.c                     |  57 ++++--
- drivers/iommu/amd/init.c                     |   7 +-
- drivers/iommu/amd/iommu.c                    |   3 +-
- drivers/iommu/amd/iommu_v2.c                 |   3 +-
- drivers/iommu/iommu.c                        |   3 +-
- drivers/net/hyperv/hyperv_net.h              |   5 +-
- drivers/net/hyperv/netvsc.c                  |  15 +-
- drivers/uio/uio_hv_generic.c                 |  18 +-
- fs/proc/vmcore.c                             |   6 +-
- include/asm-generic/hyperv-tlfs.h            |   1 +
- include/asm-generic/mshyperv.h               |  20 +-
- include/linux/cc_platform.h                  |  88 ++++++++
- include/linux/hyperv.h                       |  25 +--
- include/linux/mem_encrypt.h                  |   4 -
- kernel/dma/swiotlb.c                         |   4 +-
- 63 files changed, 1150 insertions(+), 339 deletions(-)
- create mode 100644 arch/powerpc/platforms/pseries/cc_platform.c
- create mode 100644 arch/x86/hyperv/ivm.c
- create mode 100644 arch/x86/kernel/cc_platform.c
- create mode 100644 include/linux/cc_platform.h
