@@ -2,84 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66125442644
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 04:56:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30330442646
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 04:56:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232730AbhKBD6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 23:58:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232760AbhKBD56 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 23:57:58 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2C1BC061714
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 20:55:24 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id u11so1682388plf.3
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 20:55:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=m8cVtkWKgPUMZJ3AtVb3knoep8UoSR2rrED4LPbjbkI=;
-        b=GHiBd4jBYqQVyoTuEDOCGYv7kgWm3OdNrGRL353yRlewVRaowwKQixpzN/LH6AFpid
-         m4WzVFrdeu3ZX3bHBHAUmBPp5xLmoaSPRwyZfQxrnuShScp+Q6ZxSuWHX2bfXDQOCgLC
-         3USNfB9kUE0AnWcziU5RZ7rqGzmPTEZI5Ip96KwSfOdOttBqaQXwfXCxTIZsAag/JzDC
-         7AvG9MMdZBTuPzHtwmdIii/ejhX1Ml/P8Xn1aKA+7W2mRFTI3n5GfeUIPBrumqQtf82b
-         QM1l/EF3ixqxynaAGncd18LbuBwGngkBA/KKg0fssdb8VLYbZZKleUmlY4nL4vgkp29F
-         FRJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=m8cVtkWKgPUMZJ3AtVb3knoep8UoSR2rrED4LPbjbkI=;
-        b=R4D1xkROGtIE0hLoLaBW69Q8m609C15NjXxFDtYWAuO6ZWE1em4qg2WjP9SJV+glBc
-         j1sah7B5gIK/9Ss6Zc1n8KgCjxCzDHNS4qKDR3DcmmQ4itX/HR8SDSmE0x2JS+mPB5x4
-         SBSZ6d1TxOpkHqHdBatdaBfj7HHYxGz8jklX+i30K6NHw+T2RDS/yXXuAM+tjG4LHCFT
-         uwLBiVmXmjNK+8IZYdaqsYg1nqHy8Bh2+B1n/hswvkvnxLdZh+A22ZwvzX4Oj35kV557
-         D2xtRfka2zq03oOA4H+aNy8nFpEhEbYKgQtC/BkkJhOb06+eTtmUG70JAEtla9vsF7Th
-         oDVA==
-X-Gm-Message-State: AOAM530iqH8Oqux5WvJBAC/DuSr5k5gIBAB98dTXNdzwOdtLHXEJtzRH
-        eMAbfsRcYlOz4FNDJl6DLR6gJQ==
-X-Google-Smtp-Source: ABdhPJxYfBW/c6mWtHDy4XXyKl3wz+a7WMN6k3KSAwhuYnuossmKhj2QHWFZWPxEOROKs7wzZIA0fg==
-X-Received: by 2002:a17:90b:1d86:: with SMTP id pf6mr3688966pjb.20.1635825324232;
-        Mon, 01 Nov 2021 20:55:24 -0700 (PDT)
-Received: from localhost ([106.201.113.61])
-        by smtp.gmail.com with ESMTPSA id c3sm3264992pfv.25.2021.11.01.20.55.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 20:55:23 -0700 (PDT)
-Date:   Tue, 2 Nov 2021 09:25:22 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Viresh Kumar <vireshk@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
-        Nishanth Menon <nm@ti.com>, Rob Herring <robh+dt@kernel.org>,
-        David Heidelberg <david@ixit.cz>,
-        Thierry Reding <treding@nvidia.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v4] dt-bindings: opp: Allow multi-worded OPP entry name
-Message-ID: <20211102035522.z3nemnrz6r5ycf6z@vireshk-i7>
-References: <20211028221547.22601-1-digetx@gmail.com>
+        id S232271AbhKBD7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 23:59:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43006 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232720AbhKBD7O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 23:59:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 074BD60EBC;
+        Tue,  2 Nov 2021 03:56:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635825400;
+        bh=dj+iduYD46Zxko0xXTACsVOTIt8MF2IXH58t7O216Xo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fA2WylUAvidZdUUFyCNzrrZX16P+RbT89RH3zDGKJUD+RJECmyauokrJx8qJJVtNn
+         bLyTi5fv0Ec9bdgfEH4Nwm7KaQZGg7FykC1haAurUd/XW+c7XycvV3iB8XzRATszKT
+         0fz6WacB/ksWp10yy703TloVvzbUNS+M8pF+nF+oFRptwSsMOCXb3d1jjCyn21NRFB
+         T+jB4Fg1XisBWDe9tIzkBZmQzISjDeAA06WTnb0Rg6IuRDhFfVmvsXuaMG9MF/juUa
+         k4WP2fl1ydHmhpXqSLOUGZ+NgYR92s9xzUGdvWrRSg5NGVAuITES0ZpDkFO+UER+DV
+         5ly+t1bZeSURw==
+Date:   Tue, 2 Nov 2021 09:26:32 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Slark Xiao <slark_xiao@163.com>
+Cc:     mani@kernel.org, hemantk@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] bus: mhi: pci_generic: Add new device ID support for
+ T99W175
+Message-ID: <20211102035632.GA5646@thinkpad>
+References: <20211029104918.3976-1-slark_xiao@163.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211028221547.22601-1-digetx@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20211029104918.3976-1-slark_xiao@163.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29-10-21, 01:15, Dmitry Osipenko wrote:
-> Not all OPP entries fit into a single word. In particular NVIDIA Tegra OPP
-> tables use multi-word names. Allow OPP entry to have multi-worded name
-> separated by hyphen. This silences DT checker warnings about wrong naming
-> scheme.
+On Fri, Oct 29, 2021 at 06:49:18PM +0800, Slark Xiao wrote:
+> Add new device ID 0xe0bf for T99W175.
+> This device ID is created because it is using Qualcomm SDX55 new base line.
 > 
-> Reviewed-by: David Heidelberg <david@ixit.cz>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> Test evidence as below:
+> root@jbd-ThinkPad-P1-Gen-4:/dev# lspci -nn | grep Foxconn
+> 0000:08:00.0 Wireless controller [0d40]: Foxconn International, Inc. Device [105b:e0bf]
+> root@jbd-ThinkPad-P1-Gen-4:/dev# cat wwan0at0 & echo -ne "ati\r" > wwan0at0
+> [2] 2977
+> root@jbd-ThinkPad-P1-Gen-4:/dev# ati
+> Manufacturer: Qualcomm
+> Model: T99W175
+> Revision: T99W175.F0.6.0.0.6.CC.005  1  [Oct 21 2021 10:00:00]
+> IMEI:
+> +GCAP: +CGSM
+> 
+> OK
+> 
+> Signed-off-by: Slark Xiao <slark_xiao@163.com>
 
-Applied. Thanks.
+Reviewed-by: Manivannan Sadhasivam <mani@kernel.org>
 
--- 
-viresh
+Thanks,
+Mani
+
+> ---
+> 
+> v2: Add descriptions about the dfiiference between 0xe0ab and 0xeobf.
+> ---
+>  drivers/bus/mhi/pci_generic.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/bus/mhi/pci_generic.c b/drivers/bus/mhi/pci_generic.c
+> index 59a4896a8030..94d8aa9c2eae 100644
+> --- a/drivers/bus/mhi/pci_generic.c
+> +++ b/drivers/bus/mhi/pci_generic.c
+> @@ -423,6 +423,9 @@ static const struct pci_device_id mhi_pci_id_table[] = {
+>  	/* DW5930e (sdx55), Non-eSIM, It's also T99W175 */
+>  	{ PCI_DEVICE(PCI_VENDOR_ID_FOXCONN, 0xe0b1),
+>  		.driver_data = (kernel_ulong_t) &mhi_foxconn_sdx55_info },
+> +	/* T99W175 (sdx55), Based on Qualcomm new baseline */
+> +	{ PCI_DEVICE(PCI_VENDOR_ID_FOXCONN, 0xe0bf),
+> +		.driver_data = (kernel_ulong_t) &mhi_foxconn_sdx55_info },
+>  	/* MV31-W (Cinterion) */
+>  	{ PCI_DEVICE(0x1269, 0x00b3),
+>  		.driver_data = (kernel_ulong_t) &mhi_mv31_info },
+> -- 
+> 2.25.1
+> 
