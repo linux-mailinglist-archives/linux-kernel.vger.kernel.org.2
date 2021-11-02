@@ -2,65 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 061E844389A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 23:39:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F40E34438A7
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 23:40:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231419AbhKBWl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 18:41:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51158 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229844AbhKBWlx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 18:41:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F67F61058;
-        Tue,  2 Nov 2021 22:39:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635892758;
-        bh=O/fJB1Su3Q6+W+ASLuT2yZYyhlwKE3dR8/QUTtPvjD4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tDNEFCkbG7NaEdirxQosgbQhsoyCtLel9OaEYYfvNmxtI8yX/CZlxBmSL764KxLTa
-         uHTNSiRzacCfGvwV/W+jty7ZIKkVyuNKDewNUF+mKzl37QxFHJhysHodVYfnF5zReL
-         QPpOi4p71CAaVlJatpUgYLh6o4dDYPjXk+FAUWdbkerflcu14JScXRFtwV6ge2pepd
-         CMiVVqkNqVC3NNrEj2OSjSzmREhrhHrBD5Hti2CONiWwMIL2fhHAc3+oIkyDvEYGto
-         cAzOjK0TJunxjBkAy0du4DTrl3FKDnEfUAE9AMpzV7w8ago4dm6alC2ZK1kiqPPzsh
-         /RxIY56CKwu+g==
-Date:   Tue, 2 Nov 2021 15:39:18 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>
-Subject: Re: [PATCH 07/21] iomap: Convert iomap_releasepage to use a folio
-Message-ID: <20211102223918.GF2237511@magnolia>
-References: <20211101203929.954622-1-willy@infradead.org>
- <20211101203929.954622-8-willy@infradead.org>
- <YYDlWz8eHOzrQ29Y@infradead.org>
+        id S230409AbhKBWnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 18:43:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229844AbhKBWnV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 18:43:21 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42E37C061714;
+        Tue,  2 Nov 2021 15:40:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=cOU6fJ6CIwTv1kvDcNkH1XvDvhXueDW5em6fcmrW0X4=; b=ea1z5WE4/rsiqR0KskFWKrquok
+        S7Y+UQxZ0agrpfn7vL7DNXtuu8vkMktBTW8b8loo4D9gkLw3y+ghXBf/kRCSX1h7OnXt6VGxZRb7P
+        fzldcorGwZTEDdR/pT5/4a6agAzgSy9+wrtZpi2nK4VmQKB1leHxK861/EYaBQooum8cZMZK93tUD
+        zS+Bc8zETovVHht9Imcy4P/wNzWdiUjI/fzU2lrMRwGYb644uQdWULK5gMU8vvapc3P48rnYg7vvU
+        igirSnUIvTncEH/EgMxsjRGRz0Vp8OqnHfmymtsXJk9HDmKBB493L4okdJrDw3SD7BI6X4iuTqBKm
+        pIEIzEJw==;
+Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mi2SQ-003Bvx-5t; Tue, 02 Nov 2021 22:40:42 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kbuild@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
+        Nicolas Schier <nicolas@fjasle.eu>
+Subject: [PATCH v2] scripts/config: allow "O=config-dir" option
+Date:   Tue,  2 Nov 2021 15:40:41 -0700
+Message-Id: <20211102224041.5105-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YYDlWz8eHOzrQ29Y@infradead.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 12:14:35AM -0700, Christoph Hellwig wrote:
-> On Mon, Nov 01, 2021 at 08:39:15PM +0000, Matthew Wilcox (Oracle) wrote:
-> > This is an address_space operation, so its argument must remain as a
-> > struct page, but we can use a folio internally.
-> > 
-> > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> 
-> Looks good,
-> 
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
+Support "O=config-dir" as the location of the .config file
+like (some) other kernel build (make) tools do.
 
-This seems reasonable to me too.
+Also check for the existence of the config-dir/config-file
+and report if there is no such file instead of letting grep
+report that there is no such file.
 
-Even if my MTA saw "This is an ad" and spat it out. ;)
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: linux-kbuild@vger.kernel.org
+Cc: Andi Kleen <ak@linux.intel.com>
+Reviewed-by: Nicolas Schier <nicolas@fjasle.eu>
+---
+v2:
+- use 'shellcheck' and other recommendations from Nicolas
+- move one comment from the commit description to under the "---" line
 
-That has now been fixed, so
+Someone asked for this "feature" a few months ago but I don't
+recall who it was.
 
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+ scripts/config |   44 +++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 39 insertions(+), 5 deletions(-)
 
---D
-
+--- linux-next-20211102.orig/scripts/config
++++ linux-next-20211102/scripts/config
+@@ -37,6 +37,7 @@ commands:
+ 
+ options:
+ 	--file config-file   .config file to change (default .config)
++	O=config-dir         Specify the directory location of the config-file
+ 	--keep-case|-k       Keep next symbols' case (dont' upper-case it)
+ 
+ $myname doesn't check the validity of the .config file. This is done at next
+@@ -124,15 +125,48 @@ undef_var() {
+ 	txt_delete "^# $name is not set" "$FN"
+ }
+ 
+-if [ "$1" = "--file" ]; then
+-	FN="$2"
+-	if [ "$FN" = "" ] ; then
++DIR=
++FN=
++
++while [ "$DIR" = "" ] || [ "$FN" = "" ]; do
++
++	if [ "$1" = "" ] ; then
+ 		usage
+ 	fi
+-	shift 2
+-else
++	if [ "$1" = "--file" ]; then
++		FN="$2"
++		if [ "$FN" = "" ] ; then
++			usage
++		fi
++		shift 2
++		continue
++	fi
++
++	optn=$1
++	optnlen=${#optn}
++	if [ "$optnlen" -gt 1 ] && [ "${optn:0:2}" = "O=" ]; then
++		DIR=${optn:2}
++		shift
++		if [ "$DIR" = "" ]; then
++			usage
++		fi
++		continue
++	fi
++	break	# something other than --file or O=dir
++done
++
++if [ "$FN" = "" ]; then
+ 	FN=.config
+ fi
++if [ "$DIR" != "" ]; then
++	DIR=$DIR"/"
++fi
++FN="${DIR}${FN}"
++
++if [ ! -r "$FN" ]; then
++	echo "No such config file: $FN"
++	exit
++fi
+ 
+ if [ "$1" = "" ] ; then
+ 	usage
