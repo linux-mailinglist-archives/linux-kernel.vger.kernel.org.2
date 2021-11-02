@@ -2,280 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B59D443125
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 16:00:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D062D44310A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 15:59:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234460AbhKBPCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 11:02:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38580 "EHLO
+        id S233663AbhKBPCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 11:02:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36696 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233686AbhKBPCr (ORCPT
+        by vger.kernel.org with ESMTP id S233661AbhKBPCU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 11:02:47 -0400
+        Tue, 2 Nov 2021 11:02:20 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635865212;
+        s=mimecast20190719; t=1635865185;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=hldzXdTC4k0SUZw36wKMAEkT8W/BZfkm68u5aS6Q7fQ=;
-        b=JjRTscejmk/aWFLngd/yG/pa1AmHH800vCpoRwi8w5tTrtKlVL3BffbzOQoczs+aTi0IId
-        T4B4wMKSgAKPk90zGf63wrvUtvEZJ1ck5mUTnl5u67hy+46gIrlhNV1tCutK44S2wmBTRh
-        /Ys5MqS3s2RWgzxNU+naBFWgq02HGmU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-340-cVUy6fNrPRyTS_PuO_byTw-1; Tue, 02 Nov 2021 11:00:09 -0400
-X-MC-Unique: cVUy6fNrPRyTS_PuO_byTw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CBF3A362F8;
-        Tue,  2 Nov 2021 15:00:07 +0000 (UTC)
-Received: from localhost (ovpn-8-19.pek2.redhat.com [10.72.8.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DB59A1E6;
-        Tue,  2 Nov 2021 14:59:50 +0000 (UTC)
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>, live-patching@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Ming Lei <ming.lei@redhat.com>
-Subject: [PATCH V4 2/3] livepatch: free klp_patch object without holding klp_mutex
-Date:   Tue,  2 Nov 2021 22:59:31 +0800
-Message-Id: <20211102145932.3623108-3-ming.lei@redhat.com>
-In-Reply-To: <20211102145932.3623108-1-ming.lei@redhat.com>
-References: <20211102145932.3623108-1-ming.lei@redhat.com>
+        bh=s2qlvsp2B/ajzGnaxNanhBYqk1Fo8lMuMvQWyew1YE4=;
+        b=R5MDtdtCnUXB4MhBXt08sdLBchpzq9Jqrl98/HHZ0PkgCpUWJ9HkK5q98I96+Z39SpzWER
+        VGlAETlFqnqWx2ao+NYjTQrVUXzlaVxXSscdMvDFhr+YMrlhvq9mLZ7wJFPTLgBPdUap/i
+        1ktqiv5Wmvbr6hgXrhuzeqeNskUDPK0=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-554-NaJ4KeLRMPOMOjpay5r8sw-1; Tue, 02 Nov 2021 10:59:44 -0400
+X-MC-Unique: NaJ4KeLRMPOMOjpay5r8sw-1
+Received: by mail-ed1-f72.google.com with SMTP id t20-20020a056402525400b003e2ad6b5ee7so229197edd.8
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 07:59:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=s2qlvsp2B/ajzGnaxNanhBYqk1Fo8lMuMvQWyew1YE4=;
+        b=5Vg5F0p1pwgblprNdThccQM6NOppcIsCswP4WBaugYMCA1YiJm7yeD/JIqUB3iRqUt
+         9qHZNbSFPJU4c+zjHDOjW3CDo1SrDsOB5g4LB5AJAAx+7VWgOyjNageJLjTaYO4AOFu/
+         ZKcqexocfMvhEy+RJQCtPaHjDd8f1I+85J8xsWNlqOiMJnM0Vt5aN+TMWs8jzkJEWTPu
+         VoWoU+H7uFhXDa5Qudoo3akXkDn5SPttnIoJ3wsWBuEmGPTvZQ5mf/WF7YBuRTj1W1kE
+         7ZhbG4ew8YU2WFJhJnVpiBCBvGeXYRPETJPm7bAleGoZntaHny86se9pLKwmH3386sCs
+         IcTw==
+X-Gm-Message-State: AOAM530FVYBVSg54Ho/TkRlZdH4CnvzXIqkZjWGi0VoJdRIhl+O6Nvhh
+        JQxVHk7QJj18RXpxFTdEy1crF5fGQR5gPhA8CkC+OUP9R3LIYrVTFqcQ4vHe7BXrVH05tV5Nt0O
+        ZuacSFkC3Vc2PCUIiaJ2xbrMW
+X-Received: by 2002:a17:906:c283:: with SMTP id r3mr25294490ejz.138.1635865183288;
+        Tue, 02 Nov 2021 07:59:43 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxKFQbu2utF1Nmvh8J5nGyiXWxLqQwUpuqFEbRaoqq44byXxZI0wBMOszsSdo8mNls2SFQ1cw==
+X-Received: by 2002:a17:906:c283:: with SMTP id r3mr25294449ejz.138.1635865183026;
+        Tue, 02 Nov 2021 07:59:43 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id bm2sm9241694edb.39.2021.11.02.07.59.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Nov 2021 07:59:42 -0700 (PDT)
+Message-ID: <1f4377bb-2902-05e9-95c7-ad924477b543@redhat.com>
+Date:   Tue, 2 Nov 2021 15:59:41 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v5 10/11] platform/x86: int3472: Pass
+ tps68470_regulator_platform_data to the tps68470-regulator MFD-cell
+Content-Language: en-US
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Kate Hsuan <hpa@redhat.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>
+References: <20211102094907.31271-1-hdegoede@redhat.com>
+ <20211102094907.31271-11-hdegoede@redhat.com>
+ <CAHp75Vd-xY43H8jPOUqJp55Rq3Wuhsdzctfhqq300S0vAKTzpw@mail.gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <CAHp75Vd-xY43H8jPOUqJp55Rq3Wuhsdzctfhqq300S0vAKTzpw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kobject_del() is called from kobject_put(), and after the klp_patch
-kobject is deleted, any show()/store() are done.
+Hi,
 
-Once the klp_patch object is removed from list and prepared for
-releasing, no need to hold the global mutex of klp_mutex, so
-move the freeing outside of klp_mutex.
+On 11/2/21 15:34, Andy Shevchenko wrote:
+> On Tue, Nov 2, 2021 at 11:50 AM Hans de Goede <hdegoede@redhat.com> wrote:
+>>
+>> Pass tps68470_regulator_platform_data to the tps68470-regulator
+>> MFD-cell, specifying the voltages of the various regulators and
+>> tying the regulators to the sensor supplies so that sensors which use
+>> the TPS68470 can find their regulators.
+>>
+>> Since the voltages and supply connections are board-specific, this
+>> introduces a DMI matches int3472_tps68470_board_data struct which
+>> contains the necessary per-board info.
+>>
+>> This per-board info also includes GPIO lookup information for the
+>> sensor IO lines which may be connected to the tps68470 GPIOs.
+> 
+> ...
+> 
+>> +               board_data = int3472_tps68470_get_board_data(dev_name(&client->dev));
+>> +               if (!board_data) {
+>> +                       dev_err(&client->dev, "No board-data found for this laptop/tablet model\n");
+>> +                       return -ENODEV;
+> 
+> It's fine to use dev_err_probe() for known error codes.
+> 
+>> +               }
+> 
+> ...
+> 
+>> +               cells[1].platform_data = (void *)board_data->tps68470_regulator_pdata;
+> 
+> Do we need casting?
 
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
----
- kernel/livepatch/core.c       | 36 +++++++++++++++++++++--------------
- kernel/livepatch/core.h       |  3 +--
- kernel/livepatch/transition.c | 23 ++++++++++++++++------
- kernel/livepatch/transition.h |  2 +-
- 4 files changed, 41 insertions(+), 23 deletions(-)
+Yes, the cast casts away a "const", the const is correct
+since the data only ever gets read by the regulator driver,
+but platform_data pointers are normally not const, so it
+is either the cast, or loose the const on the definition
+of the struct to which board_data->tps68470_regulator_pdata
+points...
 
-diff --git a/kernel/livepatch/core.c b/kernel/livepatch/core.c
-index b967b4b0071b..27768bb5a38c 100644
---- a/kernel/livepatch/core.c
-+++ b/kernel/livepatch/core.c
-@@ -327,7 +327,8 @@ int klp_apply_section_relocs(struct module *pmod, Elf_Shdr *sechdrs,
-  * /sys/kernel/livepatch/<patch>/<object>
-  * /sys/kernel/livepatch/<patch>/<object>/<function,sympos>
-  */
--static int __klp_disable_patch(struct klp_patch *patch);
-+static int __klp_disable_patch(struct klp_patch *patch,
-+		struct list_head *to_free);
- 
- static ssize_t enabled_store(struct kobject *kobj, struct kobj_attribute *attr,
- 			     const char *buf, size_t count)
-@@ -335,6 +336,7 @@ static ssize_t enabled_store(struct kobject *kobj, struct kobj_attribute *attr,
- 	struct klp_patch *patch;
- 	int ret;
- 	bool enabled;
-+	LIST_HEAD(to_free);
- 
- 	ret = kstrtobool(buf, &enabled);
- 	if (ret)
-@@ -360,13 +362,15 @@ static ssize_t enabled_store(struct kobject *kobj, struct kobj_attribute *attr,
- 	if (patch == klp_transition_patch)
- 		klp_reverse_transition();
- 	else if (!enabled)
--		ret = __klp_disable_patch(patch);
-+		ret = __klp_disable_patch(patch, &to_free);
- 	else
- 		ret = -EINVAL;
- 
- out:
- 	mutex_unlock(&klp_mutex);
- 
-+	klp_free_patches_async(&to_free);
-+
- 	if (ret)
- 		return ret;
- 	return count;
-@@ -693,20 +697,19 @@ static void klp_free_patch_work_fn(struct work_struct *work)
- 	klp_free_patch_finish(patch);
- }
- 
--void klp_free_patch_async(struct klp_patch *patch)
-+static void klp_free_patch_async(struct klp_patch *patch)
- {
- 	klp_free_patch_start(patch);
- 	schedule_work(&patch->free_work);
- }
- 
--void klp_free_replaced_patches_async(struct klp_patch *new_patch)
-+void klp_free_patches_async(struct list_head *to_free)
- {
--	struct klp_patch *old_patch, *tmp_patch;
-+	struct klp_patch *patch, *tmp_patch;
- 
--	klp_for_each_patch_safe(old_patch, tmp_patch) {
--		if (old_patch == new_patch)
--			return;
--		klp_free_patch_async(old_patch);
-+	list_for_each_entry_safe(patch, tmp_patch, to_free, list) {
-+		list_del_init(&patch->list);
-+		klp_free_patch_async(patch);
- 	}
- }
- 
-@@ -915,7 +918,8 @@ static int klp_init_patch(struct klp_patch *patch)
- 	return 0;
- }
- 
--static int __klp_disable_patch(struct klp_patch *patch)
-+static int __klp_disable_patch(struct klp_patch *patch,
-+		struct list_head *to_free)
- {
- 	struct klp_object *obj;
- 
-@@ -942,12 +946,13 @@ static int __klp_disable_patch(struct klp_patch *patch)
- 
- 	klp_start_transition();
- 	patch->enabled = false;
--	klp_try_complete_transition();
-+	klp_try_complete_transition(to_free);
- 
- 	return 0;
- }
- 
--static int __klp_enable_patch(struct klp_patch *patch)
-+static int __klp_enable_patch(struct klp_patch *patch,
-+		struct list_head *to_free)
- {
- 	struct klp_object *obj;
- 	int ret;
-@@ -992,7 +997,7 @@ static int __klp_enable_patch(struct klp_patch *patch)
- 
- 	klp_start_transition();
- 	patch->enabled = true;
--	klp_try_complete_transition();
-+	klp_try_complete_transition(to_free);
- 
- 	return 0;
- err:
-@@ -1018,6 +1023,7 @@ static int __klp_enable_patch(struct klp_patch *patch)
- int klp_enable_patch(struct klp_patch *patch)
- {
- 	int ret;
-+	LIST_HEAD(to_free);
- 
- 	if (!patch || !patch->mod)
- 		return -EINVAL;
-@@ -1055,12 +1061,14 @@ int klp_enable_patch(struct klp_patch *patch)
- 	if (ret)
- 		goto err;
- 
--	ret = __klp_enable_patch(patch);
-+	ret = __klp_enable_patch(patch, &to_free);
- 	if (ret)
- 		goto err;
- 
- 	mutex_unlock(&klp_mutex);
- 
-+	klp_free_patches_async(&to_free);
-+
- 	return 0;
- 
- err:
-diff --git a/kernel/livepatch/core.h b/kernel/livepatch/core.h
-index 38209c7361b6..8ff97745ba40 100644
---- a/kernel/livepatch/core.h
-+++ b/kernel/livepatch/core.h
-@@ -13,8 +13,7 @@ extern struct list_head klp_patches;
- #define klp_for_each_patch(patch)	\
- 	list_for_each_entry(patch, &klp_patches, list)
- 
--void klp_free_patch_async(struct klp_patch *patch);
--void klp_free_replaced_patches_async(struct klp_patch *new_patch);
-+void klp_free_patches_async(struct list_head *to_free);
- void klp_unpatch_replaced_patches(struct klp_patch *new_patch);
- void klp_discard_nops(struct klp_patch *new_patch);
- 
-diff --git a/kernel/livepatch/transition.c b/kernel/livepatch/transition.c
-index 5683ac0d2566..0c1857405c17 100644
---- a/kernel/livepatch/transition.c
-+++ b/kernel/livepatch/transition.c
-@@ -31,12 +31,16 @@ static unsigned int klp_signals_cnt;
-  */
- static void klp_transition_work_fn(struct work_struct *work)
- {
-+	LIST_HEAD(to_free);
-+
- 	mutex_lock(&klp_mutex);
- 
- 	if (klp_transition_patch)
--		klp_try_complete_transition();
-+		klp_try_complete_transition(&to_free);
- 
- 	mutex_unlock(&klp_mutex);
-+
-+	klp_free_patches_async(&to_free);
- }
- static DECLARE_DELAYED_WORK(klp_transition_work, klp_transition_work_fn);
- 
-@@ -382,7 +386,7 @@ static void klp_send_signals(void)
-  *
-  * If any tasks are still stuck in the initial patch state, schedule a retry.
-  */
--void klp_try_complete_transition(void)
-+void klp_try_complete_transition(struct list_head *to_free)
- {
- 	unsigned int cpu;
- 	struct task_struct *g, *task;
-@@ -450,10 +454,17 @@ void klp_try_complete_transition(void)
- 	 * klp_complete_transition() but it is called also
- 	 * from klp_cancel_transition().
- 	 */
--	if (!patch->enabled)
--		klp_free_patch_async(patch);
--	else if (patch->replace)
--		klp_free_replaced_patches_async(patch);
-+	if (!patch->enabled) {
-+		list_move(&patch->list, to_free);
-+	} else if (patch->replace) {
-+		struct klp_patch *old_patch, *tmp_patch;
-+
-+		klp_for_each_patch_safe(old_patch, tmp_patch) {
-+			if (old_patch == patch)
-+				break;
-+			list_move(&old_patch->list, to_free);
-+		}
-+	}
- }
- 
- /*
-diff --git a/kernel/livepatch/transition.h b/kernel/livepatch/transition.h
-index 322db16233de..20e3a5a0cbce 100644
---- a/kernel/livepatch/transition.h
-+++ b/kernel/livepatch/transition.h
-@@ -9,7 +9,7 @@ extern struct klp_patch *klp_transition_patch;
- void klp_init_transition(struct klp_patch *patch, int state);
- void klp_cancel_transition(void);
- void klp_start_transition(void);
--void klp_try_complete_transition(void);
-+void klp_try_complete_transition(struct list_head *to_free);
- void klp_reverse_transition(void);
- void klp_force_transition(void);
- 
--- 
-2.31.1
+So not good choice here really, only chosing between bad
+options and I picked the lets do the cast "least worse"
+option (at least to me). I'm open to changing this.
+
+
+
+> ...
+> 
+>> +#include <linux/dmi.h>
+>> +#include <linux/gpio/machine.h>
+>> +#include <linux/platform_data/tps68470.h>
+>> +#include <linux/regulator/machine.h>
+> 
+> string.h  for strcmp() ?
+> kernel.h for ARRAY_SIZE() ?
+
+Ack.
+
+Regards,
+
+Hans
+
 
