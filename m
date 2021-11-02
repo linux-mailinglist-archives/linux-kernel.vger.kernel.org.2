@@ -2,77 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54A2B442837
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 08:20:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09D78442838
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 08:21:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231482AbhKBHXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 03:23:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231138AbhKBHXX (ORCPT
+        id S231489AbhKBHXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 03:23:54 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:33144 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230281AbhKBHXw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 03:23:23 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3395EC061714;
-        Tue,  2 Nov 2021 00:20:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=wDLhAnhRGJ38F/R5GBK7oivxF6ESZSsILVg+gz9cSFI=; b=OouaVoGtagEHDIi4N16OO6TvNo
-        m+z7eZobmUwYUoALqjEs0GnipY2N0Dz2cYcN4eOXmdI+yGrhrVouqPGgq2THVRLw9MZwN4eeTmt6z
-        X3gwYUDGagCxLEg4r+zC06bgNS3+eL3BfmqSd+ZYcSLPNvIaZBzDRLcniJ2KzrYVbAQx6tNDVQwPU
-        MtCJykhhLXONYq1xGfTBAQ8xh8n5FX64lL3Hw/k6zvDR1WA93h45nrSa+LmqlTjOEILvDxU5z4iP1
-        cPdaMa967H30t8qYMsHmlLAdxGR5ywc0EemFFC1r8WDgKQdp6NY9KxRzO8IoOl0Bq5WE4isHs55MG
-        NOLWVxGw==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mho6B-000lC1-5f; Tue, 02 Nov 2021 07:20:47 +0000
-Date:   Tue, 2 Nov 2021 00:20:47 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH 13/21] iomap: Convert readahead and readpage to use a
- folio
-Message-ID: <YYDmz8olTe/Qr2ch@infradead.org>
-References: <20211101203929.954622-1-willy@infradead.org>
- <20211101203929.954622-14-willy@infradead.org>
+        Tue, 2 Nov 2021 03:23:52 -0400
+X-UUID: 397eba2c52f54dc6b87da86c99d13c6a-20211102
+X-UUID: 397eba2c52f54dc6b87da86c99d13c6a-20211102
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1200185247; Tue, 02 Nov 2021 15:21:15 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
+ Tue, 2 Nov 2021 15:21:14 +0800
+Received: from localhost.localdomain (10.17.3.154) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 2 Nov 2021 15:21:14 +0800
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Chun-Jie Chen <chun-jie.chen@mediatek.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>
+Subject: [RFC PATCH] soc: mediatek: Add support always on flag
+Date:   Tue, 2 Nov 2021 15:20:58 +0800
+Message-ID: <20211102072058.4107-1-chunfeng.yun@mediatek.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211101203929.954622-14-willy@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 01, 2021 at 08:39:21PM +0000, Matthew Wilcox (Oracle) wrote:
->  	for (done = 0; done < length; done += ret) {
-> -		if (ctx->cur_page && offset_in_page(iter->pos + done) == 0) {
-> -			if (!ctx->cur_page_in_bio)
-> -				unlock_page(ctx->cur_page);
-> -			put_page(ctx->cur_page);
-> -			ctx->cur_page = NULL;
-> +		if (ctx->cur_folio &&
-> +		    offset_in_folio(ctx->cur_folio, iter->pos + done) == 0) {
-> +			if (!ctx->cur_folio_in_bio)
-> +				folio_unlock(ctx->cur_folio);
-> +			ctx->cur_folio = NULL;
+There is a t-phy shared by PCIe and USB3 on mt8195, if the t-phy is
+used by PCIe, when power off its mtcmos, need software reset it
+(workaround way, usually hardware do it, but has an issue on mt8195),
+but it has side effect to USB2 phy(works with USB3 phy to support
+USB3.2 Gen1), so add support GENPD_FLAG_ALWAYS_ON flag, and make its
+power always on;
+Another reason is that USB3.2 Gen1/2 need keep power always on when
+support runtime-pm due to hardware limitation until now;
 
-Where did the put_page here disappear to?
+Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+---
+ drivers/soc/mediatek/mt8195-pm-domains.h | 2 +-
+ drivers/soc/mediatek/mtk-pm-domains.c    | 2 ++
+ drivers/soc/mediatek/mtk-pm-domains.h    | 1 +
+ 3 files changed, 4 insertions(+), 1 deletion(-)
 
-> @@ -403,10 +403,9 @@ void iomap_readahead(struct readahead_control *rac, const struct iomap_ops *ops)
->  
->  	if (ctx.bio)
->  		submit_bio(ctx.bio);
-> -	if (ctx.cur_page) {
-> -		if (!ctx.cur_page_in_bio)
-> -			unlock_page(ctx.cur_page);
-> -		put_page(ctx.cur_page);
-> +	if (ctx.cur_folio) {
-> +		if (!ctx.cur_folio_in_bio)
-> +			folio_unlock(ctx.cur_folio);
+diff --git a/drivers/soc/mediatek/mt8195-pm-domains.h b/drivers/soc/mediatek/mt8195-pm-domains.h
+index 1379aa39bf16..b6949874c72b 100644
+--- a/drivers/soc/mediatek/mt8195-pm-domains.h
++++ b/drivers/soc/mediatek/mt8195-pm-domains.h
+@@ -67,7 +67,7 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8195[] = {
+ 		.ctl_offs = 0x334,
+ 		.pwr_sta_offs = 0x174,
+ 		.pwr_sta2nd_offs = 0x178,
+-		.caps = MTK_SCPD_ACTIVE_WAKEUP,
++		.caps = MTK_SCPD_ALWAYS_ON,
+ 	},
+ 	[MT8195_POWER_DOMAIN_CSI_RX_TOP] = {
+ 		.name = "csi_rx_top",
+diff --git a/drivers/soc/mediatek/mtk-pm-domains.c b/drivers/soc/mediatek/mtk-pm-domains.c
+index 61973a306e97..b89e5e3e3363 100644
+--- a/drivers/soc/mediatek/mtk-pm-domains.c
++++ b/drivers/soc/mediatek/mtk-pm-domains.c
+@@ -446,6 +446,8 @@ generic_pm_domain *scpsys_add_one_domain(struct scpsys *scpsys, struct device_no
+ 
+ 	if (MTK_SCPD_CAPS(pd, MTK_SCPD_ACTIVE_WAKEUP))
+ 		pd->genpd.flags |= GENPD_FLAG_ACTIVE_WAKEUP;
++	if (MTK_SCPD_CAPS(pd, MTK_SCPD_ALWAYS_ON))
++		pd->genpd.flags |= GENPD_FLAG_ALWAYS_ON;
+ 
+ 	if (MTK_SCPD_CAPS(pd, MTK_SCPD_KEEP_DEFAULT_OFF))
+ 		pm_genpd_init(&pd->genpd, NULL, true);
+diff --git a/drivers/soc/mediatek/mtk-pm-domains.h b/drivers/soc/mediatek/mtk-pm-domains.h
+index daa24e890dd4..419d23d5e394 100644
+--- a/drivers/soc/mediatek/mtk-pm-domains.h
++++ b/drivers/soc/mediatek/mtk-pm-domains.h
+@@ -8,6 +8,7 @@
+ #define MTK_SCPD_SRAM_ISO		BIT(2)
+ #define MTK_SCPD_KEEP_DEFAULT_OFF	BIT(3)
+ #define MTK_SCPD_DOMAIN_SUPPLY		BIT(4)
++#define MTK_SCPD_ALWAYS_ON		BIT(5)
+ #define MTK_SCPD_CAPS(_scpd, _x)	((_scpd)->data->caps & (_x))
+ 
+ #define SPM_VDE_PWR_CON			0x0210
+-- 
+2.25.1
 
-... and here?
