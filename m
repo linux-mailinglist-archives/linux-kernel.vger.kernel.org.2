@@ -2,137 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AA5A4438A9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 23:42:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F343B4438AE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 23:44:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230155AbhKBWpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 18:45:19 -0400
-Received: from mail-bn8nam12on2101.outbound.protection.outlook.com ([40.107.237.101]:43872
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229685AbhKBWpR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 18:45:17 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dV/NMn8Srcby7xPtCyeHnAcuXAP69A2fZiDIx1cwG9d+TUVg7JMKZVLeUCApS2QBeOP3HzbCSPXzpuzE8SrNEhZHNweydezMz26QRdLaXL67AEFyExfYtwDGJwbjNOabtTgujf8zzIMBTXTfWsGzakx0uRqMDwjyt6cYUIbbQd5oPbp/4VjY0sAm/6DAgEoqx8IDJzCG1WR19ZluhmrSI9kHNk4zG0RkpX74NqiTKBz5jfHU4HBBpkJXOJEm2GQWGLTkOtsF5ymivGPP8LgeiWWBSyEj6ouuRE8rfRCgz0tQoE2GoEBrb/YdSSoOFhVgS9aHOSFK6HiWika1YKHQLw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6ooqMTNWWaw5jRUxmsM5Nvpd75gFWCz4d7ZaXB8OUFM=;
- b=RYXzmQeuXS5mQGejjOHjIFO/d6D+42BmgTa85suzg34U+iXFXn6IylI7ejL5LBJ4VqFqJsPnFFiqhV5pd7f8lVKRmsjVVzCZn8g5wKO2J3jzaEt0kXnzLNIyaP9j1ky2sRGe+VHWWnbS7KSy9IzckVb0o7cZCQygQwY/jIi9S4qNTdx5FA1ZroRSlNG8GQ7GjCCa770Q2sFYoYp2S0G0QKOXS9TxGOWeeAvvTlmE027puIAZhMu1zSD5M4DoHT8TCvKCwTS+ziK0Q/aifoUGaCeGq3zHaE8IqpCgrbhNlnr34H2fu6+vTR+e4H6x8ArbiKsGjXADF1aoJ8I8OJz0sA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=hammerspace.com; dmarc=pass action=none
- header.from=hammerspace.com; dkim=pass header.d=hammerspace.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hammerspace.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6ooqMTNWWaw5jRUxmsM5Nvpd75gFWCz4d7ZaXB8OUFM=;
- b=YRdj+Og7lMgz3G26YQ+sx78rW63SzAZFQidvA2rUcBkjZdihEwZlv6JKcDo4SnFqqhaUA5nvIiV6WiAgqK9/MYZgEHtzsZsU3eytj9ZpjxrErzPPJENEKM69GGGZ9VcFad+VK//8VLv///RTUAVKlIVjNnJ63S99UkJ4h8ySjeY=
-Received: from CH0PR13MB5084.namprd13.prod.outlook.com (2603:10b6:610:111::7)
- by CH2PR13MB4492.namprd13.prod.outlook.com (2603:10b6:610:64::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.6; Tue, 2 Nov
- 2021 22:42:38 +0000
-Received: from CH0PR13MB5084.namprd13.prod.outlook.com
- ([fe80::1533:4550:d876:1486]) by CH0PR13MB5084.namprd13.prod.outlook.com
- ([fe80::1533:4550:d876:1486%8]) with mapi id 15.20.4669.010; Tue, 2 Nov 2021
- 22:42:38 +0000
-From:   Trond Myklebust <trondmy@hammerspace.com>
-To:     "corbet@lwn.net" <corbet@lwn.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "hch@lst.de" <hch@lst.de>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>
-Subject: Re: [PATCH 2/9] nfs: remove unused header <linux/pnfs_osd_xdr.h>
-Thread-Topic: [PATCH 2/9] nfs: remove unused header <linux/pnfs_osd_xdr.h>
-Thread-Index: AQHX0DVQ984FywqRDkeU7h4MdEH9Tqvw1XOA
-Date:   Tue, 2 Nov 2021 22:42:38 +0000
-Message-ID: <08d283fbedab1be09a9dd6cf5a296c6a465a9394.camel@hammerspace.com>
-References: <20211102220203.940290-1-corbet@lwn.net>
-         <20211102220203.940290-3-corbet@lwn.net>
-In-Reply-To: <20211102220203.940290-3-corbet@lwn.net>
-Accept-Language: en-US, en-GB
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: lwn.net; dkim=none (message not signed)
- header.d=none;lwn.net; dmarc=none action=none header.from=hammerspace.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: d39069b4-a313-47c7-cc1a-08d99e521294
-x-ms-traffictypediagnostic: CH2PR13MB4492:
-x-microsoft-antispam-prvs: <CH2PR13MB4492B845A433D1EC75D1820DB88B9@CH2PR13MB4492.namprd13.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2399;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: IB1Aaw0IGXBn2wv7UzwWReJW0CzuEEtSqxeWmOhIFu+6jLZLOS5LMFOrMan1Xyt6ISYBCcmlcOejfcaSdpjFPNfbq9WtpLsZEuDH2aHRHh22B65679kJJJWA5lWYd6AR3rWoKzcW0Ohk9hEL+W6T4p8/kPAbG50MR1ZWhZNKbqLLVWKgYAM0e0lgouCRDj70ytrDE07upsm1ULPlWMU6cPwYn1aAgiaARyY3ZVIFvLo3HhEP72bxyuk92h6esBiJ5QlsKY8F5BINAVAA8cMqhJhS/XVBm+Mn+wl80EMaQvGe4PFPl0zzqiU6H06gWIQ+xqRqICeCdmORzdrqLYQmkABdSAnv9PgqcFQpjxaS8i1bi4KsyBsZdnqPMOgSslQDBFHG+KSqxrQUvKweehpLsBIrnLsnFmWixMsRviY0S5EAg/eyGNnGqiPslPM8Yt2qSupo/C0w0/7GpRAnJOcrik1hKoSPxe2YbHrL7/w1HAOyTBnRe6UgH3KA8mweatVxoium3oGvCqFSyZ2wbZlcqnnL1g9IeQ8002v/muypKUHnVkCupvem4tJ/xDyftJxoNOwF1L3WAQxKavMGu+kyXwOr4d9DEd3wmhhtH2zYjTk+5RrtQHLMu06krwcujgR6p8HDo2NqRmcT1/dGiotUZxB8M/CwHh7Ui4ySwDiDX7tYHISFjNMgPrY+EGYAc3TQGxH9MM//kJV+MzXtKP/G3A==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR13MB5084.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(508600001)(8936002)(4326008)(6506007)(38100700002)(5660300002)(8676002)(86362001)(36756003)(6486002)(6512007)(4744005)(71200400001)(122000001)(2616005)(26005)(2906002)(66946007)(186003)(76116006)(38070700005)(66476007)(83380400001)(66556008)(64756008)(66446008)(54906003)(110136005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?VnQ1K2pCYVI5NlYzUm9OUWExaHlsTXVZcTVhSGNNa203OEZua0FQQXhqQWVy?=
- =?utf-8?B?M1RrUmdYNUlkak5IaE9FWlRBQ0tHYWtwdXF5TzhSNVF3cG5reFpGUjBjNWZN?=
- =?utf-8?B?VFIvOTJGazl0Q09vYnZvMUNDOTRSRnBUL2ZRVTlIQ1YwNlI2L3VpL0lMMFR4?=
- =?utf-8?B?QjE4KzY4MWhmRkYwdnJVbTFxZ3dOL1hJTDhER2l0NzgvZUplR3c0TUs2bmJp?=
- =?utf-8?B?UkxHL0NmdHNIaW9hZzhNdm9KbG8wVmRiS2RiRjFWR0dLU1FVNmYybzE3UDRx?=
- =?utf-8?B?bE9WUUFTQU9ycnlWakszdDhYSUJJTVdjWWhFcDU3L0ZoWFgyWmpZZUM5cUVU?=
- =?utf-8?B?aDlNOGhuZVllR2VIcXlnaWFOK3pHRzRoM1kyQ3VZZXNWbFVhL1MwbjF6dGRU?=
- =?utf-8?B?SlV4c21wY3NnVk5BRW1yMTdidzV4QWl6b1I2UDlZeVpsR0k0SHlwUnU4dzJJ?=
- =?utf-8?B?YWwyc3hMSm0zanVSNzV6dDk2SmtrVnp4NnE3alNNcDNRS1N4cFZWZEVYbEl1?=
- =?utf-8?B?K1pWbGhHUlFPS1IwWUpEaXQySndmZ043dDArSWN4SWIyeTAvMGhkKys0eGpm?=
- =?utf-8?B?S1pTL0RuQ1hPcGd0U3NVYTIweHozYXl3T3UxaURhNWk5dzE2TFV2MjV3UlQ3?=
- =?utf-8?B?c3hoeHhJZWF6bUg5aUhsc2piYVk5b1JlbGRRY21mb0hOVjUyWEc5RzdGbTN0?=
- =?utf-8?B?RDA0MzI5dEdna29WK05ZWUduQUtZTjVuWG1zaVNxbUkxOVJLWXR2OGdLZDNE?=
- =?utf-8?B?c3lmZWxZa1VVbkUzMTJWMmNHb3RIdm1Sb2huZTFUV0NKNFVET1JRaGwwRnd1?=
- =?utf-8?B?bUF4bi9NTG84Z1Ryb24yRDkxMlB2UW5hRkxBc1UrV0c2ODlTUzlaQm1nN1RB?=
- =?utf-8?B?WTlQeGI1eTZlUFlYbzB2eG1Ya3F5UzF5TEUvM0JRNHlSN1BOQW1HTElJUlUw?=
- =?utf-8?B?RkZnVjg2RWYzMTBLLzZ5R1ljMUF6Q0R0cU1RdnliZENuRGVwUlFpdWhiTklx?=
- =?utf-8?B?YUlCTXVBVmw2K3krTlBHeXhZTVFycENLa2NFMnRXbGxqZDdBOW5HdFdhMWtR?=
- =?utf-8?B?TUJjNEw5U2p2dnFXU3kwMFpMM3ZUcGt5b3l6Qm5Sb25QdHRLaEkzaXk4bjQz?=
- =?utf-8?B?YVdZeWZwT1JrencrVm1xR2N4VFRIYWJrWVMvbWNHaXh6aGVDbEptSXlpTFda?=
- =?utf-8?B?TkRuU2tTNTU2dTdmVVFvRXNzd2hGVmFvSUh6ZlNpdXdiVHU2LzdxYTlaaDBJ?=
- =?utf-8?B?ZkorNTZmZHMySnZCTkZLSjk2YVVrNC94VkpIYUlUaVZqODdrVkJ0OVNDODVk?=
- =?utf-8?B?YmF4Qm1xaGpiUjNBcFdOSTduVHlzSW1PYjFPcFVFZ1J0WTJTKy80UEVjL2Ju?=
- =?utf-8?B?ajZOcnpDZE5FRWlNRDgxU21aUjhyam1YL3k1R1VvTjUwUjd1N2gzZ0E5VEVk?=
- =?utf-8?B?aHpIZFVtMHR5b1JOZi9yRnRIY0psbmhIMlE0UWlQUnplU3E5UlZvczFhOEJU?=
- =?utf-8?B?azVUWDJYSVgrbGFjaTNmTitJVFdHeXBuZnlyU3lMbW5mMXhoZE5ka0sxaVY2?=
- =?utf-8?B?TkxFY1VTbUxPRUVjR1dBdVRxbzBuTXJJRmtXTXhGY3h3Ym9DTTU5QUwwYlJL?=
- =?utf-8?B?dytRZTZBV29HdkVxOUZyd3ozbG1hdVkzVmtCYTU1akp3aXk2b3piMG1CUWVt?=
- =?utf-8?B?QTJTNTVMS0ZuclgySnYyTC92alByMFAyQW10UG1OT1NJRHNvRHhWU3hNU1lX?=
- =?utf-8?B?Q3ZNOE5RQlBCNlJpdTBMS3NHR3Q2b0VRZzdiQUdCS2hPZzJjVmZMQ3psS052?=
- =?utf-8?B?UEgyeVJ6ZHNzTzhwMWRJREVFK1IzNTRHSUpLcFpoQTh5dlpkRTN6YnhBSTh2?=
- =?utf-8?B?RElEMU05Rnd2VDlkQkhHUVZCQnJWZ2hBTEtXbS90TGtYUmZsQWo5dFZuR0pZ?=
- =?utf-8?B?YUNXNTVtMXRPeUFnZWZueGxPaFFielRvRXp2eFdja2t3TmZjMndaYTJlSHNJ?=
- =?utf-8?B?TTVBckZxZVRueTFxWENIQjcxNDN2ODdRVHZxMmtzSVdYd1RKYUErdjdOOEI4?=
- =?utf-8?B?emRTUWpJbVBvRHVKaGFDbkNPbk5NQ1lOY3JtREp1d3VSK3R0NjRyVGxQVFpC?=
- =?utf-8?B?VGtEcndBTGRUZm1tZmM5NVB1RmRmdVlPNnJQaFd0MG9jcFJrdEd5OXRic2I3?=
- =?utf-8?Q?v7WM3vq+xLtdWxIdEAdDgkk=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <941EEC865608A8499C4D5CF003D2DDFB@namprd13.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S231201AbhKBWqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 18:46:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229685AbhKBWqk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 18:46:40 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76EDCC061714;
+        Tue,  2 Nov 2021 15:44:04 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id ee33so2628069edb.8;
+        Tue, 02 Nov 2021 15:44:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=LDnLbQUA7eyK1FrDO7VrlZC4VQ3RUSvHLnAoAvoZuOc=;
+        b=LmY8iRfTTKzcFKxpKJUZaG1G77If5TNT9NJ8reyrdO8Kw8HmqSMogK8+FRYVT7Ak4q
+         pg+n01qQ+ks8LcRf/ms8jIV+K5jnryBcMwehAnyZhSzDVTyqsXwTyXRblGHcXOxPiKzo
+         bR1z2eLwiXxiMjqh49/LxQ2Rr82fw//4jxjlR7ZdJ2alozrXSxrB9bepMUfAzwnOMFdb
+         h3l7w1QHs+f7gayW0aRaukyMm6YcvDP/SI/bFD6bEjfEvLBT9JB1i752YXcw6xVCnqDy
+         3wsUlllmsFsFSCa8IrNLHcj7qkK+7gaAja6Yw+3rP4N1t551EZOUkcwP+cEDMpj1UMLZ
+         OdgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LDnLbQUA7eyK1FrDO7VrlZC4VQ3RUSvHLnAoAvoZuOc=;
+        b=xqjZ/BHvYAncVol2+QO3MdN0c0Om5DHBNTU2JhkI1SxKcKWlhBBltl150uA8h+kXZ5
+         6ypC0VrLsYIDekpuKAO9OPvnp56M8RM7qqcjja76IoKROziR/MjhRCS5GOtv+C315JqF
+         H3OiwAWpUJRRbKpHkZou0TlrvjUIM8liCf5dTfRnhm9+GUHlVf/B6n12oTyso0X64BG8
+         /uTiccri+sNGVXW6HZsHBh1ikn4AzSQunO0c20p5QQaDKduXQd2cz5E98b/4eYcCpQ+f
+         DZYXZ9P8e6YLyJVXPO/F4g2VawxlTd9z3Do3XlShx1gARZ++LLixYWjlhYoLdb4LDi25
+         4pFw==
+X-Gm-Message-State: AOAM532q5eMWn37tq6/HmwcOgmHqkJKcAeux21jXLd7CznYsO1beMJpD
+        AFiQeLAx9lvxf/z4QgdcEGk=
+X-Google-Smtp-Source: ABdhPJyfX+Es3nzz+CM8s/jrO5166B1Fk/2V22GKG3Qj9qhStAoxFdqbv0reUmd4k6YAJd4OkyWdzA==
+X-Received: by 2002:a17:907:3eaa:: with SMTP id hs42mr48695778ejc.429.1635893043028;
+        Tue, 02 Nov 2021 15:44:03 -0700 (PDT)
+Received: from tom-ThinkPad-T470p (net-188-153-110-208.cust.vodafonedsl.it. [188.153.110.208])
+        by smtp.gmail.com with ESMTPSA id z22sm163651edc.83.2021.11.02.15.44.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Nov 2021 15:44:02 -0700 (PDT)
+Date:   Tue, 2 Nov 2021 23:43:58 +0100
+From:   Tommaso Merciai <tomm.merciai@gmail.com>
+To:     Tim Harvey <tharvey@gateworks.com>
+Cc:     Adam Ford <aford173@gmail.com>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Peng Fan <peng.fan@nxp.com>, Alice Guo <alice.guo@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Schrempf Frieder <frieder.schrempf@kontron.de>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Michael Tretter <m.tretter@pengutronix.de>
+Subject: Re: [PATCH] arm64: dts: imx8m: add syscon node for display_blk_ctrl
+ module regs
+Message-ID: <20211102224358.GA4637@tom-ThinkPad-T470p>
+References: <20211101222857.6940-1-tomm.merciai@gmail.com>
+ <c04d4af6-8c7b-da23-d562-78324948ac35@pengutronix.de>
+ <20211101225827.GA9208@tom-desktop>
+ <CAHCN7xLDHCQoA41FJpP3GY+nbFm99zf=tspHSOXkeFogMF22+A@mail.gmail.com>
+ <20211102115739.GA48972@tom-ThinkBook-14-G2-ARE>
+ <CAHCN7xLoePWS33HsFANcHQB2-VgQVNG40EgDoz+-xba810XPBQ@mail.gmail.com>
+ <20211102154742.GA86474@tom-ThinkBook-14-G2-ARE>
+ <CAHCN7xJtDtBNJ-rFcveya8TGr8+jA-HrDBxPYfZx=fiv7w5UPA@mail.gmail.com>
+ <CAJ+vNU0DRMuVMgibc1Ag3HdPXFq1Mzs-q0Znb0aLukYVvKc1gA@mail.gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: hammerspace.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CH0PR13MB5084.namprd13.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d39069b4-a313-47c7-cc1a-08d99e521294
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Nov 2021 22:42:38.4838
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 0d4fed5c-3a70-46fe-9430-ece41741f59e
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: FVEskcDCsjMDPxCGLCCxSL97YcqTPUgDIOQ/PVyMd8CLpFdw4tTvnnQZ7I4MxilKoC8K7h4tFq50ZUyFXkrSog==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR13MB4492
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJ+vNU0DRMuVMgibc1Ag3HdPXFq1Mzs-q0Znb0aLukYVvKc1gA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgSm9uLA0KDQpPbiBUdWUsIDIwMjEtMTEtMDIgYXQgMTY6MDEgLTA2MDAsIEpvbmF0aGFuIENv
-cmJldCB3cm90ZToNCj4gQ29tbWl0IDE5ZmNhZTNkNGYyZGQgKCJzY3NpOiByZW1vdmUgdGhlIFND
-U0kgT1NEIGxpYnJhcnkiKSBkZWxldGVkDQo+IHRoZSBsYXN0DQo+IGZpbGUgdGhhdCBpbmNsdWRl
-ZCA8bGludXgvcG5mc19vc2RfeGRyLmg+IGJ1dCBsZWZ0IHRoYXQgZmlsZSBiZWhpbmQuwqANCj4g
-SXQncw0KPiB1bnVzZWQsIGdldCByaWQgb2YgaXQgbm93Lg0KPiANCj4gQ2M6IENocmlzdG9waCBI
-ZWxsd2lnIDxoY2hAbHN0LmRlPg0KPiBDYzogVHJvbmQgTXlrbGVidXN0IDx0cm9uZC5teWtsZWJ1
-c3RAaGFtbWVyc3BhY2UuY29tPg0KPiBDYzogQW5uYSBTY2h1bWFrZXIgPGFubmEuc2NodW1ha2Vy
-QG5ldGFwcC5jb20+DQo+IENjOiBsaW51eC1uZnNAdmdlci5rZXJuZWwub3JnDQo+IFNpZ25lZC1v
-ZmYtYnk6IEpvbmF0aGFuIENvcmJldCA8Y29yYmV0QGx3bi5uZXQ+DQoNCkFyZSB5b3Ugc2VuZGlu
-ZyB0aGlzIGRpcmVjdGx5IHRvIExpbnVzIG9yIGRvIHlvdSB3YW50IG1lIHRvIHRha2UgaXQNCnRo
-cm91Z2ggdGhlIE5GUyBjbGllbnQgdHJlZT8gSSdtIGZpbmUgZWl0aGVyIHdheS4NCg0KPiANCg0K
-LS0gDQpUcm9uZCBNeWtsZWJ1c3QNCkxpbnV4IE5GUyBjbGllbnQgbWFpbnRhaW5lciwgSGFtbWVy
-c3BhY2UNCnRyb25kLm15a2xlYnVzdEBoYW1tZXJzcGFjZS5jb20NCg0KDQo=
+On Tue, Nov 02, 2021 at 11:18:53AM -0700, Tim Harvey wrote:
+> On Tue, Nov 2, 2021 at 9:08 AM Adam Ford <aford173@gmail.com> wrote:
+> >
+> > On Tue, Nov 2, 2021 at 10:47 AM Tommaso Merciai <tomm.merciai@gmail.com> wrote:
+> > >
+> > > On Tue, Nov 02, 2021 at 07:23:06AM -0500, Adam Ford wrote:
+> > > > The upcoming 5.16 kernel will have a new blk-ctrl driver which will
+> > > > work in conjunction with the GPC.  You can see it in linux-next [1],
+> > > > and I would expect it to be present in 5.16-rc1 once the merge is
+> > > > done.
+> > > >
+> > > > In [1], Look for :
+> > > >
+> > > > disp_blk_ctrl: blk-ctrl@32e28000 {
+> > > >     compatible = "fsl,imx8mm-disp-blk-ctrl", "syscon";
+> > > >
+> > > > It creates a bunch of virtual power domains which are effectively the
+> > > > resets for the VPU, CSI, DSI, and LCDIF [2].
+> > > >
+> > > > Basically, to pull the respective device out of reset, you'd reference
+> > > > them using power-domains.  I have an RFC patch for the CSI located [3]
+> > > > which should bring the GPC power domain up, then take the CSI bridge
+> > > > and MIPI_CSI out of reset using the blk-ctrl.  A few of us are still
+> > > > investigating the CSI bridge and mipi_csi drivers to determine what's
+> > > > going wrong, but  inside that patch, you'll see that we reference
+> > > > "power-domains = <&disp_blk_ctrl IMX8MM_DISPBLK_PD_CSI_BRIDGE>;" and
+> > > > "power-domains = <&disp_blk_ctrl IMX8MM_DISPBLK_PD_MIPI_CSI>;" which
+> > > > are part of the new blk-ctrl driver @32e2800.  Other peripherals like
+> > > > LCD, DSI, and the VPU's should be able to reference their respective
+> > > > power domains to activate the corresponding resets after enabling the
+> > > > proper GPC power domain.
+> > >
+> > >   Hi Adam,
+> > >   Then is all done right. Using this this new driver/dts node eLCDIF/mipi_dsi
+> > >   module are out of reset. Thanks for the tips. I'm trying to get eLCDIF/mipi_dsi
+> > >   work on mainline. I try to get work
+> > >
+> > >   - eLCDIF using: mxsfb_drv.c
+> > >   - mipi_dsi using: nwl-dsi.c
+> > >
+> > >   What do you think about? You think that can be a good way ( taking
+> > >   imx8mq as reference )?
+> >
+> > The DSI controller for the 8MM and 8MN is not the same as the DSI
+> > controller on the 8MQ, but the LCDIF controller should be compatible.
+> >
+> > There have been several attempts to support the 8MM DSI, but none of
+> > them have been accepted for various reasons.
+> >
+> > The latest was found here [1], but others [2]  and [3] , when used
+> > together, do something similar.
+> >
+> > If memory serves, the main issue has to do with the fact that the DSIM
+> > controller in the 8MM and 8MN is also present in one of the Samsung
+> > processors, and the goal is to rework those drivers so we'll have one
+> > driver that supports both Samsung progressors and NXP instead of
+> > having two duplicate drivers doing the same thing. When whatever
+> > driver is chosen is ready, it'll be likely that the LCDIF will use
+> > power-domains = <&disp_blk_ctrl MX8MM_DISPBLK_PD_LCDIF> and the DSI
+> > node will use power-domains = <&disp_blk_ctrl
+> > IMX8MM_DISPBLK_PD_MIPI_DSI> to pull their respective devices out of
+> > reset and enable the gpc.
+> >
+> >
+> > [1] - https://patchwork.kernel.org/project/linux-arm-kernel/list/?series=510489&archive=both&state=*
+> > [2] - https://patchwork.kernel.org/project/dri-devel/list/?series=347439&archive=both&state=*
+> > [3] - https://patchwork.kernel.org/project/linux-arm-kernel/list/?series=359775&archive=both&state=*
+> 
+> Adam,
+> 
+> Thanks for the good summary... I was just putting this info together
+> as well. I'm also interested to see if anyone has made progress on
+> IMX8MM MIPI DSI display. Now that blk-ctl and most of the dt bindings
+> have been merged for 5.16 I think we are just down to the drm/exynos
+> driver issue.
+> 
+> Added Frieder, Jagan, and Michael to the thread.
+> 
+> Best Regards,
+> 
+> Tim
+
+  Hi Adam,
+  Thanks again for your explanation. Then, now the main goal is refactoring
+  exynos dsim driver as bridge driver in order to support both imx8mm and exynos
+  SOC. I'll investigate on it.
+
+  Regards,
+  Thanks
