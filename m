@@ -2,112 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD04244331D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 17:38:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2162443400
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 17:52:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234804AbhKBQki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 12:40:38 -0400
-Received: from mga06.intel.com ([134.134.136.31]:15979 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232033AbhKBQjt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 12:39:49 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10156"; a="292145052"
-X-IronPort-AV: E=Sophos;i="5.87,203,1631602800"; 
-   d="scan'208";a="292145052"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2021 09:17:54 -0700
-X-IronPort-AV: E=Sophos;i="5.87,203,1631602800"; 
-   d="scan'208";a="728408938"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2021 09:17:49 -0700
-Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
-        by paasikivi.fi.intel.com (Postfix) with SMTP id 0112D20180;
-        Tue,  2 Nov 2021 18:17:46 +0200 (EET)
-Date:   Tue, 2 Nov 2021 18:17:46 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Kate Hsuan <hpa@redhat.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>
-Subject: Re: [PATCH v5 10/11] platform/x86: int3472: Pass
- tps68470_regulator_platform_data to the tps68470-regulator MFD-cell
-Message-ID: <YYFkqlGkd7Jftcdk@paasikivi.fi.intel.com>
-References: <20211102094907.31271-1-hdegoede@redhat.com>
- <20211102094907.31271-11-hdegoede@redhat.com>
- <CAHp75Vd-xY43H8jPOUqJp55Rq3Wuhsdzctfhqq300S0vAKTzpw@mail.gmail.com>
- <1f4377bb-2902-05e9-95c7-ad924477b543@redhat.com>
-MIME-Version: 1.0
+        id S230318AbhKBQzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 12:55:11 -0400
+Received: from mail-bn8nam11on2047.outbound.protection.outlook.com ([40.107.236.47]:39705
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235281AbhKBQym (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 12:54:42 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=no1TTg0JbDYmNzctNt7eCSPmd69eYUZ43wBUJK7q5RBIK1K3BSiVfl26HOd6SShI1jApClefZOjDqh8Y5Ljk6PSeyVg65VqZypi9u/YEGsz7HDIlXJEYjKB/c3pMU8EYZt8icoRdPBlMt8vb9XC4wJMzrBFYGhMuvqIUSUR4pCR1MewU7BR5lSJ1GS4zZKzYT2Nby3FrNOBEwAMIpRsI/QwJbIPXgOwNPUxEKwbL+zWNvGegFlcmIkRW4SYBWLlW9JdTFr4VUolAQQEav+mq3hy9u33lNOmnInMwmqGoeisTf25HFXzrSCW5688cKfglP+YG6MXYx1SbE6KNm1joUg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8LFDZiRhi3Rv1asTi6F0aE7ornzsAX+tq/1TfCFvmZo=;
+ b=hg80Jvtm6NEb3Vr6CegPhx/njmDLTZxCkdvb6/o/H/0aJer1ZR6K3lx3uTOcZ0cJT4VRTn0KvN8dA01zggX/LFZArzRXRrDSWr4hbB6kCrYN2CK6h/NbL8/7ZW5YXRMJEzBMDU92QqQr1KKHc21aCE+EzUDTTo4GwvVfzw4rGOV/ksG+savRjP7nuiX5p/1CwOT6R19Yq+eS743wZw1PG+JN8mmpBScEKRyC5FGF6ipJfvpTeQQ2/7wmuWsPumRYID4heZat52+Mogr3Oq5TtpG4aLnpu2fjQzATXTELzM6Le6cQFXxfhk7mwHb9EMArDMWinSYvOLgowxLEubcXGA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8LFDZiRhi3Rv1asTi6F0aE7ornzsAX+tq/1TfCFvmZo=;
+ b=E9p/5p+LofjXVLtSKSIUPkW3Sg4OM/wYnMDcnZsm1VBlAdlvYtL/l32gmvRzniDeGaPhELfKrjt05YqgBhMLfhGobI+pF21vLdbGzvfKcNGFirtPo8Ux8Pm6KRF6CXv9+XJQay6V6RywhMZro8ebBo18XylsNhfU+XD9cU76QAsrlPJ8vOgOVPQIHgf2GUnCZAJ/8QispJYvvZkvDV655mAUtBGMEzTLD5R1yFS61TYgGbesYrKVRJ4mkHTIj99ioYqPJ7HLmUs6b+PmtASyCojF8hpYPfGfTle28HySIChsuM9VLvmGbiju1xILtqDCiZPOtNBwDvSJeIsc/9WPDA==
+Authentication-Results: lst.de; dkim=none (message not signed)
+ header.d=none;lst.de; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5363.namprd12.prod.outlook.com (2603:10b6:208:317::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.14; Tue, 2 Nov
+ 2021 16:17:59 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4649.020; Tue, 2 Nov 2021
+ 16:17:59 +0000
+Date:   Tue, 2 Nov 2021 13:17:58 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        intel-gfx@lists.freedesktop.org,
+        intel-gvt-dev@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 22/29] drm/i915/gvt: devirtualize dma_pin_guest_page
+Message-ID: <20211102161758.GB2744544@nvidia.com>
+References: <20211102070601.155501-1-hch@lst.de>
+ <20211102070601.155501-23-hch@lst.de>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1f4377bb-2902-05e9-95c7-ad924477b543@redhat.com>
+In-Reply-To: <20211102070601.155501-23-hch@lst.de>
+X-ClientProxiedBy: MN2PR22CA0014.namprd22.prod.outlook.com
+ (2603:10b6:208:238::19) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
+MIME-Version: 1.0
+Received: from mlx.ziepe.ca (142.162.113.129) by MN2PR22CA0014.namprd22.prod.outlook.com (2603:10b6:208:238::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.17 via Frontend Transport; Tue, 2 Nov 2021 16:17:58 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mhwU2-005AZy-2d; Tue, 02 Nov 2021 13:17:58 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f439278c-6388-4de0-8c69-08d99e1c560e
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5363:
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5363A53BF21635C5C20DB2C9C28B9@BL1PR12MB5363.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:269;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: csVYjqLZ2HXoWQujzAYMN5GiKFWw5pUCKJBTy9Z/eknzbbQkEGzQPFjEDRaNt1DYiOICRC9AYUuTtJMYv/7fr9jDQFr4Y3lii13RPrCbE2PkOFdMNTb000t7FCbE2ESENfy2yXdzgk6klrhKvmJhSrq06W/Jvri10q2V2/ucy66JPrklTyKs2BmLk09oMCWYlqI7DfKOhZp6DWqTDVjMkWFBK9dPP4gTXRajRXjrvQh325jzR73X6/NBf7ld1HFtWAqm9BZ+ixEMmiorRX+/Kz+Mfzcs1/4k5mCzYyNh8OT6fpWu7qUyNCp2D0ahDlCKfQE560RmYM54DPyGmUmDAJY45NxuN9Dba2154BsaGrRRj9sAWvL/5BHM8UYGHstLtPMRv56aD6yv6pnnZOQ5kjhKrvBjI7K+fcJy4z8n1c0DFqZPVqgmkAuZmEgjV4U/Y72meXKSdb2vYj+nWkB7WhuNUw5+7fj2NsOn0dz/1V8U7CDjLml9Ua7r6YpgIFyl4jyIPkeNi+zjuQOS3e89vRBsEITcTRGncVvvUsLuTVJksitb9Raay5B+0MdATTHrPcGPS7sRCjyG65uy205OCMqhAUALL3GCvgcEcAV9SQ6ef1wLmgY145PYcfWJkMZG34hGSQ+glHwZYFGFB4kdsw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(1076003)(2906002)(4326008)(26005)(54906003)(38100700002)(66476007)(66556008)(66946007)(508600001)(316002)(5660300002)(86362001)(33656002)(8676002)(6916009)(83380400001)(186003)(36756003)(8936002)(9746002)(4744005)(426003)(2616005)(7416002)(9786002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Y8hLW32wVZ9p/lJ/hQaO29egDAtGab2N+UgFsy/qWyuVSu1Oxd/eyMv9ch30?=
+ =?us-ascii?Q?x61qPxnGeh8MlcW/x1k6skjlOpuQgRZgzVMR8cDcSpGxTqtCkcF+krxZLIfJ?=
+ =?us-ascii?Q?7y1lL6m77fAdRkEOJ5RAJMG5Yx6tUDJa0p5depfoASpI6hV/9FemGhqWlMpd?=
+ =?us-ascii?Q?VfuoMU8DmLUpSLKVxqls+7SKew67AJmMgOCQl6a3kWloNE3kMeYPO/XsCfFE?=
+ =?us-ascii?Q?anMemzlDxkakpA1dg7NMcc8OrJ7lDW2QuremQ22qQHkzsN42nNStSJTS92fm?=
+ =?us-ascii?Q?sp8DM0YqADUVQQtZWGvE1P8bIxII2flDy/gpNe04m6jiEpMWpAXPiCx/UV7Y?=
+ =?us-ascii?Q?PVG2CKTqAHHCcuc1nuedcLg1JPmfvKuX4mvfyI/tdIMwUgj6lQb7ZmtNpIqQ?=
+ =?us-ascii?Q?G2hsmXw0hAJGZglUzeIXk1W+k/VR+iZnM5ltKwsobHcmHLyTFYBUUxiDTK6i?=
+ =?us-ascii?Q?FTGeDQ/n0IPX8RYFdk+QC1aLNPL/2ZOENYv9sQIt7yzdIpSl1PYeD9BQld+A?=
+ =?us-ascii?Q?aT7/YPrxiO5X9j8LfxqeqidGzyG+NfD6LSKN8w//knGyHtVQUY9JyUiVJEDf?=
+ =?us-ascii?Q?TawFDN/IZ3z5WmuMcM7DZOkqdJ+Cj+zi8IVurb0Aq+mSwn/IU+NiZWLa7ATr?=
+ =?us-ascii?Q?QfzvbHtV+ws8LPd13Sxai7oW+t6VKCeu+RryCeHnkroKz9egbncEnL9raDQE?=
+ =?us-ascii?Q?wrgRFzg/sfazSgdwC4filGmO0POrmxpggTOZXiCzJ/XJAJLEmvAE4O4URw9R?=
+ =?us-ascii?Q?p8yo4e8HK+3kfzrNk83vSjVp7+9vjVkgmwvO0JNix1Ge1Sx45ODmdS4FddtZ?=
+ =?us-ascii?Q?9vmT/4B1S5+o55gUOpcIcrBw20E0wUrON9E1MbFCaFmMSWpIMCEDZQ1qiNL/?=
+ =?us-ascii?Q?C0Hq7R32VT6SuU0c1Z2TVQfsxyMkRm7N57hj/PvANW4FgB4C3eNh3hfJRl/z?=
+ =?us-ascii?Q?IQjxhd6Gq+45RAvEjujqqEn01Bu+T9xMo0VrWXayHQzSaAY7A3x1bLxAUeiL?=
+ =?us-ascii?Q?9GICcLUhYh5YkOxXDWBMWYXMvpF6FqKC/3vRx/cUNYdEHEewCzJXcwxwojWn?=
+ =?us-ascii?Q?8uHk89BCUrTxq9elC5C8kDRn6JTUiaNHScm6gR3S6prb1umhs5mqilruE4Gj?=
+ =?us-ascii?Q?QwWB6rCQxgyFqueSURDGg1x76mmcThcyu1VuzStce/lN4wZPCziN0fWG1Bvf?=
+ =?us-ascii?Q?aJXRcOJ7/TK/LZDLcfnmfv9jSmJ8EoNaTngF6d16lQisY7B/vdPSRelEWl10?=
+ =?us-ascii?Q?gSbWB2b6XWx1yns1Cvz6N0R2ECJHH5WRfUt7pPQdXaPNnTZpa7Eq4DNC44th?=
+ =?us-ascii?Q?TU5W27vMUEWpRxkwhdOgUOSTjSoCYEQki8C/aFWnU+8S5Mkrjhy8BrsloFjw?=
+ =?us-ascii?Q?lGdQ0Ov7rnFV9dHLIEkEqvmeiMXzscznmkBMqIyBZVj1mZrMjVCde7hslpDc?=
+ =?us-ascii?Q?0aFoPywKsNBFAw4yCmYfcgnnzj/tYR1NaHQFWOJlQzlpj95Fz8w7+8o3cpRK?=
+ =?us-ascii?Q?Qp+ncK9/rPNlvrGp9leEgCmGJgaTtPbPX5JiA/rUnk5LworZjQKFJANdnOsB?=
+ =?us-ascii?Q?1ZzJr8z3hZicQop32IY=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f439278c-6388-4de0-8c69-08d99e1c560e
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2021 16:17:59.3316
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: meA9YXUqZbKu57EVZ2qkMFYWECsAojf0dVqk3OGpfVrjolhwO9suQA7t58cpBLXP
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5363
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 03:59:41PM +0100, Hans de Goede wrote:
-> Hi,
+On Tue, Nov 02, 2021 at 08:05:54AM +0100, Christoph Hellwig wrote:
+> Just call the function directly and remove a pointless wrapper.
 > 
-> On 11/2/21 15:34, Andy Shevchenko wrote:
-> > On Tue, Nov 2, 2021 at 11:50 AM Hans de Goede <hdegoede@redhat.com> wrote:
-> >>
-> >> Pass tps68470_regulator_platform_data to the tps68470-regulator
-> >> MFD-cell, specifying the voltages of the various regulators and
-> >> tying the regulators to the sensor supplies so that sensors which use
-> >> the TPS68470 can find their regulators.
-> >>
-> >> Since the voltages and supply connections are board-specific, this
-> >> introduces a DMI matches int3472_tps68470_board_data struct which
-> >> contains the necessary per-board info.
-> >>
-> >> This per-board info also includes GPIO lookup information for the
-> >> sensor IO lines which may be connected to the tps68470 GPIOs.
-> > 
-> > ...
-> > 
-> >> +               board_data = int3472_tps68470_get_board_data(dev_name(&client->dev));
-> >> +               if (!board_data) {
-> >> +                       dev_err(&client->dev, "No board-data found for this laptop/tablet model\n");
-> >> +                       return -ENODEV;
-> > 
-> > It's fine to use dev_err_probe() for known error codes.
-> > 
-> >> +               }
-> > 
-> > ...
-> > 
-> >> +               cells[1].platform_data = (void *)board_data->tps68470_regulator_pdata;
-> > 
-> > Do we need casting?
-> 
-> Yes, the cast casts away a "const", the const is correct
-> since the data only ever gets read by the regulator driver,
-> but platform_data pointers are normally not const, so it
-> is either the cast, or loose the const on the definition
-> of the struct to which board_data->tps68470_regulator_pdata
-> points...
-> 
-> So not good choice here really, only chosing between bad
-> options and I picked the lets do the cast "least worse"
-> option (at least to me). I'm open to changing this.
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  drivers/gpu/drm/i915/gvt/dmabuf.c    | 14 +-------------
+>  drivers/gpu/drm/i915/gvt/gvt.h       |  1 +
+>  drivers/gpu/drm/i915/gvt/hypercall.h |  2 --
+>  drivers/gpu/drm/i915/gvt/kvmgt.c     |  4 +---
+>  drivers/gpu/drm/i915/gvt/mpt.h       | 15 ---------------
+>  5 files changed, 3 insertions(+), 33 deletions(-)
 
-Maybe a comment explaining this briefly?
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 
--- 
-Sakari Ailus
+Jason
