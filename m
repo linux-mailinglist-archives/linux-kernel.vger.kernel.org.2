@@ -2,190 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D34594435B6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 19:37:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 065D14435B8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 19:37:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235109AbhKBSkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 14:40:06 -0400
-Received: from mail-ot1-f49.google.com ([209.85.210.49]:44909 "EHLO
-        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235069AbhKBSj5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 14:39:57 -0400
-Received: by mail-ot1-f49.google.com with SMTP id o10-20020a9d718a000000b00554a0fe7ba0so118859otj.11;
-        Tue, 02 Nov 2021 11:37:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2A2UDvJi9kp6H/LtkNAZQfbLqAmYaqz9ZqP/gIursqU=;
-        b=3FPtUaPS+WNkNwgLguUPpcvHf8JVTiUdljt3bzF6jDsUwY7xoNNZu3MKECUB8bTJ9x
-         ttEE4R0ESRTVpmFhBBh+pVUYIcNOa+PppHcOuvm6xSuazrjhmOJHLMKsbzb4EpedQxai
-         Zy9V7k9CzxzcdIZwUY32Bgv+wCZJBY3eXNTOrfhvttL/OyRKJNjCGJkJo1KuDZ1gaM+a
-         7iEuse4h9dpa8W7mspgB8hl0LV/Sy9/re5NQ5t6+ZBgmPn+TPdNncmtxeUYDOK1E63Ej
-         QkfQiNSGXdCA38BSJ2tmgS86jt5IVHQACk7qScWaW/+Z2SS67S25rI9G72ZBoDRS+E7+
-         b0vQ==
-X-Gm-Message-State: AOAM5304g1QgGD2z3a9k5b3NV4qjgwc3QmvFLO+qp3vhrGGlEB2Jn08r
-        tZYjdYK87io7CU9nTlR/voA3aMWg9g==
-X-Google-Smtp-Source: ABdhPJz3B5TEDANfU82YOIztONed4+CortgJTLLEow4f7R/qN+5SQ6YWQ17cqlhWs70Ahg+xbE1PUA==
-X-Received: by 2002:a9d:774c:: with SMTP id t12mr21559726otl.282.1635878242175;
-        Tue, 02 Nov 2021 11:37:22 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id bm5sm4404968oib.16.2021.11.02.11.37.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Nov 2021 11:37:21 -0700 (PDT)
-Received: (nullmailer pid 3233546 invoked by uid 1000);
-        Tue, 02 Nov 2021 18:37:20 -0000
-Date:   Tue, 2 Nov 2021 13:37:20 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Horatiu Vultur <horatiu.vultur@microchip.com>
-Cc:     Peter Rosin <peda@axentia.se>, linux-i2c@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] dt-bindings: i2c-mux: Add property for settle time
-Message-ID: <YYGFYLtehnDOgA9d@robh.at.kernel.org>
-References: <20211101122545.3417624-1-horatiu.vultur@microchip.com>
- <20211101122545.3417624-2-horatiu.vultur@microchip.com>
- <fb0ca91d-f5fa-5977-7574-8926d8d0e3bb@axentia.se>
- <20211101213201.wdjsuexuuinepu3m@soft-dev3-1.localhost>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211101213201.wdjsuexuuinepu3m@soft-dev3-1.localhost>
+        id S230071AbhKBSkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 14:40:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36392 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235177AbhKBSkF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 14:40:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 6C8EA6103C;
+        Tue,  2 Nov 2021 18:37:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635878250;
+        bh=KW/6vlseMMQdU9ju+f0Im9d/jyi6hPkLygCy+5iFyYU=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=scgivtIsiakuZmYSx7cNLPYdiqzlzWgsX2ECnUf+K1Tb7uObKU/k3AF3jWCmd1Kh5
+         zHvbuea9BqXGS+5+5Y7fiOkOpk1AWrIwFaoV8WoCbHTDwRDIBtOJVZXAbfr4vPEp84
+         IExj1IhGAwlmNxd4xRjQx28Q4Xei8TR3gM5Fc12309mbk1xg3bj7L5ZKxAdu/IfSzQ
+         8jsbLPGAznRdqJ4LQiwsyUFive1bT6KmG0z36C+8A1O7oRRsw5BJucRrz0uRQOl4uw
+         RmKn9+Gp9zoCt5Hj/hHSh5LUcUyXtCxhfOO3dHkwXPgCqQ21MqjNqyZ2xe7+g9e5Xx
+         84DsaCaTGOrwA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 66F4160A90;
+        Tue,  2 Nov 2021 18:37:30 +0000 (UTC)
+Subject: Re: [GIT PULL] integrity subsystem updates for v5.16
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <3f066f52d4937414a9e01c7f46a714e988e6196a.camel@linux.ibm.com>
+References: <3f066f52d4937414a9e01c7f46a714e988e6196a.camel@linux.ibm.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <3f066f52d4937414a9e01c7f46a714e988e6196a.camel@linux.ibm.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git tags/integrity-v5.16
+X-PR-Tracked-Commit-Id: 32ba540f3c2a7ef61ed5a577ce25069a3d714fc9
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: c150d66bd514b21a8d0c4da063d77fb7bf1ecc4b
+Message-Id: <163587825041.14475.16002631597249011515.pr-tracker-bot@kernel.org>
+Date:   Tue, 02 Nov 2021 18:37:30 +0000
+To:     Mimi Zohar <zohar@linux.ibm.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 01, 2021 at 10:32:01PM +0100, Horatiu Vultur wrote:
-> The 11/01/2021 15:32, Peter Rosin wrote:
-> 
-> Hi Peter,
-> 
-> > 
-> > On 2021-11-01 13:25, Horatiu Vultur wrote:
-> > > Some HW requires some time for the signals to settle after the muxing is
-> > > changed. Allow this time to be specified in device tree.
-> > >
-> > > Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
-> > > ---
-> > >  Documentation/devicetree/bindings/i2c/i2c-mux.yaml | 6 ++++++
-> > >  1 file changed, 6 insertions(+)
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/i2c/i2c-mux.yaml b/Documentation/devicetree/bindings/i2c/i2c-mux.yaml
-> > > index 24cac36037f5..4628ff6340c1 100644
-> > > --- a/Documentation/devicetree/bindings/i2c/i2c-mux.yaml
-> > > +++ b/Documentation/devicetree/bindings/i2c/i2c-mux.yaml
-> > > @@ -29,6 +29,12 @@ properties:
-> > >    '#size-cells':
-> > >      const: 0
-> > >
-> > > +  settle-time-us:
-> > > +    default: 0
-> > > +    description:
-> > > +      The time required for the signals to settle. Currently only the
-> > > +      i2c-mux-gpmux driver supports this optional binding.
-> > 
-> > The information about how i2c-mux-gpmux is special is bound to go stale,
-> > and I don't think we should mention such specific details in the binding.
-> > What I meant was a generic warnings about optional bindings perhaps not
-> > being supported by all drivers, along the lines of this from i2c.txt:
-> > 
-> > "These properties may not be supported by all drivers. However, if a driver
-> >  wants to support one of the below features, it should adapt these bindings."
-> > 
-> > However, I now notice that this sentence makes no sense. It looks like it
-> > should be s/adapt/adopt/.
-> > 
-> > And, in the i2c-mux.yaml case it can simply say "Optional properties"
-> > instead of "These properites" (which refers to a subset of properties
-> > immediately below the text) since with a yaml binding it is always
-> > clear which properties are optional and which are required. Lastly, I
-> > guess this warning belongs in the description.
-> > 
-> > > +
-> > >  patternProperties:
-> > >    '^i2c@[0-9a-f]+$':
-> > >      $ref: /schemas/i2c/i2c-controller.yaml
-> > >
-> > 
-> > Since this is the first optional property, you now need to specify what
-> > properties are required, which is everything but settle-time-us. If you
-> > don't, all properties are required. Which is not what we want...
-> > 
-> > Something like this should do it, I think:
-> > 
-> > required:
-> >   - compatible
-> >   - '#address-cells'
-> >   - '#size-cells'
-> 
-> Thanks for a detail explanation but I am still struggling with these
-> bindings. Were you thinking to have something like this?
-> 
-> ---
-> diff --git a/Documentation/devicetree/bindings/i2c/i2c-mux.yaml b/Documentation/devicetree/bindings/i2c/i2c-mux.yaml
-> index 24cac36037f5..c9fde1bb0fea 100644
-> --- a/Documentation/devicetree/bindings/i2c/i2c-mux.yaml
-> +++ b/Documentation/devicetree/bindings/i2c/i2c-mux.yaml
-> @@ -19,6 +19,9 @@ description: |+
->    populating the i2c child busses.  If an 'i2c-mux' subnode is present, only
->    subnodes of this will be considered as i2c child busses.
-> 
-> +  Optional properties may not be supported by all drivers. However, if a driver
-> +  wants to support one of the below features, it should adopt these bindings.
-> +
->  properties:
->    $nodename:
->      pattern: '^(i2c-?)?mux'
-> @@ -29,6 +32,11 @@ properties:
->    '#size-cells':
->      const: 0
-> 
-> +  settle-time-us:
-> +    default: 0
-> +    description:
-> +      The time required for the signals to settle.
-> +
->  patternProperties:
->    '^i2c@[0-9a-f]+$':
->      $ref: /schemas/i2c/i2c-controller.yaml
-> @@ -41,6 +49,11 @@ patternProperties:
-> 
->  additionalProperties: true
-> 
-> +required:
-> +  - compatible
+The pull request you sent on Tue, 02 Nov 2021 06:41:09 -0400:
 
-compatible should not be required here.
+> git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git tags/integrity-v5.16
 
-> +  - '#address-cells'
-> +  - '#size-cells'
-> +
->  examples:
->    - |
->      /*
-> ---
-> 
-> If I have this then my problem is with the required properties because then I
-> start to get new warnings once I run:
-> 
-> make ARCH=arm CROSS_COMPILE=arm-linux- dtbs_check DT_SCHEMA_FILES=Documentation/devicetree/bindings/i2c/i2c-mux.yaml
-> 
-> For example, one of new the warnings is this:
-> 
-> /home/hvultur/linux/arch/arm/boot/dts/am335x-icev2.dt.yaml: mux-mii-hog: 'compatible' is a required property
-> 	From schema: /home/hvultur/linux/Documentation/devicetree/bindings/i2c/i2c-mux.yaml
-> /home/hvultur/linux/arch/arm/boot/dts/am335x-icev2.dt.yaml: mux-mii-hog: '#address-cells' is a required property
-> 	From schema: /home/hvultur/linux/Documentation/devicetree/bindings/i2c/i2c-mux.yaml
-> /home/hvultur/linux/arch/arm/boot/dts/am335x-icev2.dt.yaml: mux-mii-hog: '#size-cells' is a required property
-> 	From schema: /home/hvultur/linux/Documentation/devicetree/bindings/i2c/i2c-mux.yaml
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/c150d66bd514b21a8d0c4da063d77fb7bf1ecc4b
 
-This is because of the $nodename pattern being pretty lax and matches 
-on mux-mii-hog by mistake. We have 2 options. Change the nodename 
-pattern to '^(i2c-?)?mux(@.*)?$' or add 'select: false'. The former 
-would still match on 'mux' or 'mux@.*' which might still have problems. 
-For the latter, we just need to make sure all the i2c-mux schemas have a 
-$ref to this schema. Also, with that change we'd stop checking 'i2c-mux' 
-nodes that don't yet have a specific schema. That said, I do lean toward 
-the latter option.
+Thank you!
 
-Rob
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
