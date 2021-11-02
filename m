@@ -2,125 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6595F4439E4
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 00:38:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 633344439E7
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 00:41:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231127AbhKBXlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 19:41:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55474 "EHLO
+        id S230227AbhKBXny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 19:43:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229684AbhKBXlL (ORCPT
+        with ESMTP id S229747AbhKBXnv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 19:41:11 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5111AC061714;
-        Tue,  2 Nov 2021 16:38:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=ZHrRv9lRDnhzq0Dx7ta3YDH1jFpjaiR1Oe9RJjBQ2nk=; b=QMUCqtaR5NG5SISenJY5o1X1mu
-        ovO4VVdO1Xb5uxYcUTjggnYBDDyDFtxds5lICBgAoVvBOzCloiPdyBiHSiuwzR0+/TY7H9sZMD7QX
-        CadmBjPzaMZ34BvbwSPa0p8AjNf9UnTzRmLxY99vc2Avtd+Zwsk6OsaswRfMHkpyddtp1unYN9m/x
-        vL7KG+LaAzpnF4747CXXrORkzjHQwOByo1amtlH4jdsvv3lml4oFNQf6Q8FxRA2M5Oygk/ZXfXCuR
-        rr/0YW02HkBAAKKgTkF8tKXH46nI+wYlWR71R13hXIEca9upeUrT5NWRvyKQ5Rl4Tg25r4Mef5Mhd
-        YwtaRr/g==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55448)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mi3MK-0004Og-Qz; Tue, 02 Nov 2021 23:38:28 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mi3MJ-0005nF-2q; Tue, 02 Nov 2021 23:38:27 +0000
-Date:   Tue, 2 Nov 2021 23:38:27 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Sean Anderson <sean.anderson@seco.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-kernel@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [RFC PATCH] net: phy/mdio: enable mmd indirect access through
- phy_mii_ioctl()
-Message-ID: <YYHL82nNuh3ylXlq@shell.armlinux.org.uk>
-References: <20211101182859.24073-1-grygorii.strashko@ti.com>
- <YYBBHsFEwGdPJw3b@lunn.ch>
- <YYBF3IZoSN6/O6AL@shell.armlinux.org.uk>
- <YYCLJnY52MoYfxD8@lunn.ch>
- <YYExmHYW49jOjfOt@shell.armlinux.org.uk>
- <YYFx0YJ2KlDhbfQB@lunn.ch>
- <ff601233-0b54-b0ad-37ce-1c18f0b7ca47@seco.com>
+        Tue, 2 Nov 2021 19:43:51 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5686C061714
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 16:41:15 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id e65so757659pgc.5
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 16:41:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ztFy+AIhTro45Wm/0WSCmIyJLR2meR9e0zaFbQwWOPE=;
+        b=C0WPRzj4nG3Jbynwjw9puJw+3WLHNSuJwkJ+B0draM5st3HbUKDGyCaAXMB1yebh5g
+         Z931U4Aw5C2nUBbgJtWmLpUcJdnM/Q9uwWFhmMjecK+UmJ/TaYVMioKqQ07BrTRIwwba
+         0+1Igqg9Tbg0qyq5oOe3UKK0OyoW5Bqt+W2XE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ztFy+AIhTro45Wm/0WSCmIyJLR2meR9e0zaFbQwWOPE=;
+        b=SQGNMS637SQ4oYF+eSSBbkUtsuTbD+PxOrXn8scTECZiqK+BSvSPC0euyFhDF4Tkjv
+         Gu4mj8G5197qzfqcMl5xsyQmMN9AVuNra2FDUiR/EnytIbcUclKkRXwE7Xi7qPSXkWrP
+         GTvhhHAwgG6gApxTjg2zxOKgPM2IopOcymXVZ97DYuRZtQUTjhRj48vUlvC4LlC148nu
+         gEND+3nIPiDzFQaR2l+0kONoFfyVRAWL1YdJ2R+NnyN2cHQIzX328fITByMGU5GX9McF
+         MeOVZ1m8e0HbPEc6FF58heHTMQ8Sl/21PSKtfLx1UBU+LMyquj7nCKsZkYOeYZQuOSIi
+         zTGg==
+X-Gm-Message-State: AOAM532QPmbFR3AO8monITw/4C4efjLaxTFV4kSAKbCnQ9r4UTTsWIvu
+        o4aO+E2pFklW9sNZVpAsdGnIrun0JI2Zhg==
+X-Google-Smtp-Source: ABdhPJyJi8JUw18UQD3rX3Oyor5l+xAfn3rBA6Lk5ErmPZg5jFoFgf94EubxEFR41EfsEw23Bx6r4w==
+X-Received: by 2002:aa7:9219:0:b0:480:2117:8306 with SMTP id 25-20020aa79219000000b0048021178306mr27636727pfo.31.1635896475054;
+        Tue, 02 Nov 2021 16:41:15 -0700 (PDT)
+Received: from smtp.gmail.com ([2620:15c:202:201:3dd6:e5e8:407:748c])
+        by smtp.gmail.com with ESMTPSA id f10sm245889pfe.82.2021.11.02.16.41.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Nov 2021 16:41:14 -0700 (PDT)
+From:   Stephen Boyd <swboyd@chromium.org>
+To:     Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Cc:     linux-kernel@vger.kernel.org, Guenter Roeck <groeck@chromium.org>
+Subject: [PATCH] platform/chrome: cros_ec_chardev: Export chardev ioctls to UAPI
+Date:   Tue,  2 Nov 2021 16:41:13 -0700
+Message-Id: <20211102234113.3896676-1-swboyd@chromium.org>
+X-Mailer: git-send-email 2.33.1.1089.g2158813163f-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ff601233-0b54-b0ad-37ce-1c18f0b7ca47@seco.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 03:46:13PM -0400, Sean Anderson wrote:
-> I have not found this to be the case. As soon as you need to access
-> something using phylink, the emulated registers make the ioctls useless
-> (especially because there may be multiple phy-like devices for one
-> interface).
+These ioctls and structures are part of the UAPI, export them as such by
+moving the header to include/uapi/. We leave the version define out of
+the header as it isn't part of the UAPI. Similarly, EC_MEMMAP_SIZE is
+from the copy/pasted cros ec header so we just hardcode the array size
+instead of exporting that define.
 
-I think you're fundamentally misunderstanding something there.
+Cc: Guenter Roeck <groeck@chromium.org>
+Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+---
+ drivers/mfd/cros_ec_dev.c                     |  1 -
+ drivers/platform/chrome/cros_ec_chardev.c     |  5 ++-
+ include/linux/platform_data/cros_ec_proto.h   | 19 +-----------
+ .../linux}/cros_ec_chardev.h                  | 31 +++++++++++++------
+ 4 files changed, 27 insertions(+), 29 deletions(-)
+ rename include/{linux/platform_data => uapi/linux}/cros_ec_chardev.h (55%)
 
-If there is a PHY present, phylink presents no different an interface
-from phylib - it does no emulation what so ever, and you can access any
-address. I use this on Macchiatobin when researching the 88x3310 PHY. I
-have a tool that allows me to view part of the register set in any MMD
-in almost real-time - and I can access either of the two PHYs on the
-xmdio bus from either of their network interfaces. Same for the clause
-22 mdio bus. There is no emulation in this case, and you get full
-access to the MDIO/XMDIO bus just like via phylib. There is absolutely
-no difference.
+diff --git a/drivers/mfd/cros_ec_dev.c b/drivers/mfd/cros_ec_dev.c
+index 8c08d1c55726..8c54381bbf45 100644
+--- a/drivers/mfd/cros_ec_dev.c
++++ b/drivers/mfd/cros_ec_dev.c
+@@ -12,7 +12,6 @@
+ #include <linux/mod_devicetable.h>
+ #include <linux/of_platform.h>
+ #include <linux/platform_device.h>
+-#include <linux/platform_data/cros_ec_chardev.h>
+ #include <linux/platform_data/cros_ec_commands.h>
+ #include <linux/platform_data/cros_ec_proto.h>
+ #include <linux/slab.h>
+diff --git a/drivers/platform/chrome/cros_ec_chardev.c b/drivers/platform/chrome/cros_ec_chardev.c
+index e0bce869c49a..3116c5de9fa2 100644
+--- a/drivers/platform/chrome/cros_ec_chardev.c
++++ b/drivers/platform/chrome/cros_ec_chardev.c
+@@ -16,7 +16,6 @@
+ #include <linux/miscdevice.h>
+ #include <linux/module.h>
+ #include <linux/notifier.h>
+-#include <linux/platform_data/cros_ec_chardev.h>
+ #include <linux/platform_data/cros_ec_commands.h>
+ #include <linux/platform_data/cros_ec_proto.h>
+ #include <linux/platform_device.h>
+@@ -25,6 +24,10 @@
+ #include <linux/types.h>
+ #include <linux/uaccess.h>
+ 
++#include <uapi/linux/cros_ec_chardev.h>
++
++#define CROS_EC_DEV_VERSION	"1.0.0"
++
+ #define DRV_NAME		"cros-ec-chardev"
+ 
+ /* Arbitrary bounded size for the event queue */
+diff --git a/include/linux/platform_data/cros_ec_proto.h b/include/linux/platform_data/cros_ec_proto.h
+index 02599687770c..6fa882768239 100644
+--- a/include/linux/platform_data/cros_ec_proto.h
++++ b/include/linux/platform_data/cros_ec_proto.h
+@@ -13,6 +13,7 @@
+ #include <linux/notifier.h>
+ 
+ #include <linux/platform_data/cros_ec_commands.h>
++#include <uapi/linux/cros_ec_chardev.h>
+ 
+ #define CROS_EC_DEV_NAME	"cros_ec"
+ #define CROS_EC_DEV_FP_NAME	"cros_fp"
+@@ -54,24 +55,6 @@ enum {
+ 	EC_MAX_MSG_BYTES	= 64 * 1024,
+ };
+ 
+-/**
+- * struct cros_ec_command - Information about a ChromeOS EC command.
+- * @version: Command version number (often 0).
+- * @command: Command to send (EC_CMD_...).
+- * @outsize: Outgoing length in bytes.
+- * @insize: Max number of bytes to accept from the EC.
+- * @result: EC's response to the command (separate from communication failure).
+- * @data: Where to put the incoming data from EC and outgoing data to EC.
+- */
+-struct cros_ec_command {
+-	uint32_t version;
+-	uint32_t command;
+-	uint32_t outsize;
+-	uint32_t insize;
+-	uint32_t result;
+-	uint8_t data[];
+-};
+-
+ /**
+  * struct cros_ec_device - Information about a ChromeOS EC device.
+  * @phys_name: Name of physical comms layer (e.g. 'i2c-4').
+diff --git a/include/linux/platform_data/cros_ec_chardev.h b/include/uapi/linux/cros_ec_chardev.h
+similarity index 55%
+rename from include/linux/platform_data/cros_ec_chardev.h
+rename to include/uapi/linux/cros_ec_chardev.h
+index 7de8faaf77df..61f8690e86c4 100644
+--- a/include/linux/platform_data/cros_ec_chardev.h
++++ b/include/uapi/linux/cros_ec_chardev.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
++/* SPDX-License-Identifier: GPL-2.0+ WITH Linux-syscall-note */
+ /*
+  * ChromeOS EC device interface.
+  *
+@@ -8,13 +8,26 @@
+ #ifndef _UAPI_LINUX_CROS_EC_DEV_H_
+ #define _UAPI_LINUX_CROS_EC_DEV_H_
+ 
+-#include <linux/bits.h>
+ #include <linux/ioctl.h>
+ #include <linux/types.h>
+ 
+-#include <linux/platform_data/cros_ec_commands.h>
+-
+-#define CROS_EC_DEV_VERSION "1.0.0"
++/**
++ * struct cros_ec_command - Information about a ChromeOS EC command.
++ * @version: Command version number (often 0).
++ * @command: Command to send (EC_CMD_...).
++ * @outsize: Outgoing length in bytes.
++ * @insize: Max number of bytes to accept from the EC.
++ * @result: EC's response to the command (separate from communication failure).
++ * @data: Where to put the incoming data from EC and outgoing data to EC.
++ */
++struct cros_ec_command {
++	__u32 version;
++	__u32 command;
++	__u32 outsize;
++	__u32 insize;
++	__u32 result;
++	__u8 data[];
++};
+ 
+ /**
+  * struct cros_ec_readmem - Struct used to read mapped memory.
+@@ -25,9 +38,9 @@
+  *         read or negative on error.
+  */
+ struct cros_ec_readmem {
+-	uint32_t offset;
+-	uint32_t bytes;
+-	uint8_t buffer[EC_MEMMAP_SIZE];
++	__u32 offset;
++	__u32 bytes;
++	__u8  buffer[255];
+ };
+ 
+ #define CROS_EC_DEV_IOC       0xEC
+@@ -35,4 +48,4 @@ struct cros_ec_readmem {
+ #define CROS_EC_DEV_IOCRDMEM  _IOWR(CROS_EC_DEV_IOC, 1, struct cros_ec_readmem)
+ #define CROS_EC_DEV_IOCEVENTMASK _IO(CROS_EC_DEV_IOC, 2)
+ 
+-#endif /* _CROS_EC_DEV_H_ */
++#endif /* _UAPI_LINUX_CROS_EC_DEV_H_ */
 
-If there is no PHY connected, then phylink will emulate the accesses
-in just the same way as the fixed-phy support emulates accesses, and
-in a bug-compatible way with fixed-phy. It only emulates for PHY
-address 0. As there is no PHY, there is no MII bus known to phylink,
-so it there is no MII bus for phylink to pass any non-zero address on
-to.
-
-Split PCS support is relatively new, and this brings with it a whole
-host of issues:
-
-1) the PCS may not be on a MII bus, and may not even have a PHY-like
-   set of registers. How do we export that kind of setup through the
-   MII ioctls?
-
-2) when we have a copper SFP plugged in with its own PHY, we export it
-   through the MII ioctls because phylink now has a PHY (so it falls
-   in the "PHY present" case above). If we also have a PCS on a MII
-   bus, we now have two completely different MII buses. Which MII bus
-   do we export?
-
-3) in the non-SFP case, the PHY and PCS may be sitting on different
-   MII buses. Again, which MII bus do we export?
-
-The MII ioctls have no way to indicate which MII bus should be
-accessed.  We can't just look at the address - what if the PHY and PCS
-are at the same address but on different buses?
-
-We may have cases where the PHY and PCS are sitting on the same MII bus
-- and in that case, phylink does not restrict whether you can access
-the PCS through the MII ioctls.
-
-Everything other case is "complicated" and unless we can come up with
-a sane way to fit everything into two or more buses into these
-antequated ioctls that are designed for a single MII bus, it's probably
-best not to even bodge something at the phylink level - it probably
-makes more sense for the network driver to do it. After all, the
-network driver probably has more knowledge about the hardware around it
-than phylink does.
-
+base-commit: 8bb7eca972ad531c9b149c0a51ab43a417385813
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+https://chromeos.dev
+
