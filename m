@@ -2,136 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D42744315E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 16:15:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A52944315C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 16:14:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234279AbhKBPRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 11:17:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52378 "EHLO
+        id S234262AbhKBPR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 11:17:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234268AbhKBPRa (ORCPT
+        with ESMTP id S230175AbhKBPRZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 11:17:30 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2B03C0613B9
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 08:14:55 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id d10so43039131ybe.3
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 08:14:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=m4vo3xOow7zioCDniOqo/cUmPTsQ9k5oLRBoc2H5RmM=;
-        b=LjddqU8TuEc2mSGQVv8Shw6Rr8F04MBGWv+W9yGEUEesBAdukLgf4ydPLMDaao9Wdw
-         9WLQvTXkckHoyRv6v9GtcQoSUqzNA61qJKqXNqcM6Dnek77lhQqK/epy8W9dn2XJTY0D
-         5Hu193h2Bd0tO0VjKZX99CKIYedxlVnhR4JCkYCE/HxlIFSA2W+wXQ+pVuYUCi2eI8Dz
-         Wfc8Fj+9itDanLTLbQ94LQqSz2tUOXmnTPsWjOsTR54diV0sM/fHxQ2UILjdC/hLJtJL
-         Mg/UJHcPBF/D9ZufOMQ2XQlFAzttQ/jqQSJ9gzipUDab72pOLdanRYCcxzwlhw7og6jV
-         awxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=m4vo3xOow7zioCDniOqo/cUmPTsQ9k5oLRBoc2H5RmM=;
-        b=i1cN3rbnMZos7a/gMuJXh3djkDEpa/xbdypJWVRd5fwsxn7aoxE3MpodeloNAQVN20
-         McdDgQ5AShjyJ4ZGR2AMTAlYjO9JNvRyZuXHC2YObATm9Q2wo5nmqs/cKCEJsU7MWU0N
-         wfbO8emcpLk8sHPEq9CzhITfoQK/1xebLbV3FE40nfsamd25cz6UYEQL1qrFJP5opxA5
-         o/ri57u5bLNaeN71wjI1QNjRHP0KhTKxbvb31w6qS48XTW1hfQXYCKKh4bBTsv3jrYkz
-         TxEk8gckd6z7CsZr4ZPV9UUs7XDm/8CdVj3D607sNhqDb5SHXz418G8/zFncAXJ7ZOIs
-         1vcw==
-X-Gm-Message-State: AOAM532p8s0FmxjcWswGTegZ01faZDxCJVbnqxspWGZTrk2yp/n6sSpF
-        I/6y7BqSZRlmvMKzdZTSjJjzispUtAZWI9V9ZGskng==
-X-Google-Smtp-Source: ABdhPJzVNIQAwK+DaQmN14pKDqKRyuYzpi/QTvph4WYwByoDr2ZVNR43H0trqcjKVtUtTg2UFfwMO19+eG3dj3An+7g=
-X-Received: by 2002:a25:2f58:: with SMTP id v85mr33607068ybv.487.1635866094771;
- Tue, 02 Nov 2021 08:14:54 -0700 (PDT)
+        Tue, 2 Nov 2021 11:17:25 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BD1AC061714;
+        Tue,  2 Nov 2021 08:14:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=DdGSXX/q8kDFS1dWnx7V8YbNbR2QqrGu8E1YFZRm2l4=; b=zAtDFooFIgpaZsaMrWva8wehQj
+        MWJAFhRBNzr90tRNyy+lNsfvzx/7ZdYvkz2M5pGE7CKtWWUeyieSa551xS3MQHPuVtqCVxeQZ0ANE
+        VOKsZtCstE9Y4fpH/iSaFG+/X+kZrhg2InCVXYyYzUSKP7rwNsuy51FSrESZZF1MwaUgEuA1ZzOgz
+        vf64A3EnvIGggJU1gG9nUtFnjel7fPKbiyh8jJqvdfpETX9B84qiKqSAJKcdQiTWhJRB1A8d3A4b0
+        TtP4sqmcaTnSu0WFMFjA6xUUDVobdTARFDyBcumQgYxj4oHPMDqU0CSubcgtVCe366t5MERkhs7eC
+        Tvms4K/g==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mhvUu-0026LG-4C; Tue, 02 Nov 2021 15:14:48 +0000
+Subject: Re: linux-next: Tree for Nov 2 (drivers/platform/x86/amd-pmc.o)
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org,
+        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
+References: <20211102191553.7467166d@canb.auug.org.au>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <caa259b7-0560-647d-80d0-6dd25a6f09d2@infradead.org>
+Date:   Tue, 2 Nov 2021 08:14:46 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20211022014658.263508-1-surenb@google.com> <YXJwUUPjfg9wV6MQ@dhcp22.suse.cz>
- <CAJuCfpEcSbK8WrufZjDj-7iUxiQtrmVTqHOxFUOvLhYGz6_ttQ@mail.gmail.com>
- <CAJuCfpFccBJHHqfOKixJvLr7Xta_ojkdHGfGomwTDNKffzziRQ@mail.gmail.com>
- <YXvxBSzA2YIxbwVC@dhcp22.suse.cz> <CAJuCfpHBoMGPOUvB2ZWQ=TxbFuWBRF++UaKJZDCrQV4mzb5kMA@mail.gmail.com>
- <YX+nYGlZBOAljoeF@dhcp22.suse.cz> <CAJuCfpGC9-c9P40x7oy=jy5SphMcd0o0G_6U1-+JAziGKG6dGA@mail.gmail.com>
- <YYDvm9c/7cGtBvw6@dhcp22.suse.cz>
-In-Reply-To: <YYDvm9c/7cGtBvw6@dhcp22.suse.cz>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Tue, 2 Nov 2021 08:14:43 -0700
-Message-ID: <CAJuCfpFX8FRynoK29h8tpRXRT-Kk+sHboiBnc7N-8MY6AAqVLw@mail.gmail.com>
-Subject: Re: [PATCH 1/1] mm: prevent a race between process_mrelease and exit_mmap
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christian Brauner <christian@brauner.io>,
-        Christoph Hellwig <hch@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jann Horn <jannh@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Jan Engelhardt <jengelh@inai.de>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Andrea Arcangeli <aarcange@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211102191553.7467166d@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 2, 2021 at 12:58 AM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Mon 01-11-21 08:44:58, Suren Baghdasaryan wrote:
-> [...]
-> > I'm with you on this one, that's why I wanted to measure the price we
-> > would pay. Below are the test results:
-> >
-> > Test: https://lore.kernel.org/all/20170725142626.GJ26723@dhcp22.suse.cz/
-> > Compiled: gcc -O2 -static test.c -o test
-> > Test machine: 128 core / 256 thread 2x AMD EPYC 7B12 64-Core Processor
-> > (family 17h)
-> >
-> > baseline (Linus master, f31531e55495ca3746fb895ffdf73586be8259fa)
-> > p50 (median)   87412
-> > p95                  168210
-> > p99                  190058
-> > average           97843.8
-> > stdev               29.85%
-> >
-> > unconditional mmap_write_lock in exit_mmap (last column is the change
-> > from the baseline)
-> > p50 (median)   88312     +1.03%
-> > p95                  170797   +1.54%
-> > p99                  191813   +0.92%
-> > average           97659.5  -0.19%
-> > stdev               32.41%
-> >
-> > unconditional mmap_write_lock in exit_mmap + Matthew's patch (last
-> > column is the change from the baseline)
-> > p50 (median)   88807      +1.60%
-> > p95                  167783     -0.25%
-> > p99                  187853     -1.16%
-> > average           97491.4    -0.36%
-> > stdev               30.61%
-> >
-> > stdev is quite high in all cases, so the test is very noisy.
-> > The impact seems quite low IMHO. WDYT?
->
-> Results being very noisy is what I recall as well. Thanks!
+On 11/2/21 1:15 AM, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Please do not add any v5.17 related material to your linux-next included
+> trees until the merge window has closed.
+> 
+> Changes since 20211101:
+> 
 
-I believe, despite the noise, the percentiles show that overall we do
-not noticeably regress the exit path by taking mmap_lock
-unconditionally.
-If there are no objections, I would like to post a patchset which
-implements unconditional locking in exit_mmap() and process_madvise()
-calling __oom_reap_task_mm() under protection of read mmap_lock.
-Thanks!
 
-> --
-> Michal Hocko
-> SUSE Labs
+on i386:
+
+ld: drivers/platform/x86/amd-pmc.o: in function `amd_pmc_suspend':
+amd-pmc.c:(.text+0x5db): undefined reference to `rtc_class_open'
+ld: amd-pmc.c:(.text+0x5ea): undefined reference to `rtc_read_alarm'
+ld: amd-pmc.c:(.text+0x604): undefined reference to `rtc_read_time'
+ld: amd-pmc.c:(.text+0x660): undefined reference to `rtc_alarm_irq_enable'
+
+
+Also "depends on RTC_CLASS" ?
+
+
+-- 
+~Randy
