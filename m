@@ -2,1066 +2,558 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2406844361F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 19:53:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1E66443626
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 19:57:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231393AbhKBS4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 14:56:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44352 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231366AbhKBS4P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 14:56:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0633661181;
-        Tue,  2 Nov 2021 18:53:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635879219;
-        bh=f5MtTmEmQxgTuXkE06Ani77OB0PZXxXi88+KVtyIsms=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JlL1csxbztgbA7uwXwDVJWXBJ6ImtD7ycdJyz11JKvae6q33t8SfQMDM21kJdRC5h
-         T3h+AELkeCTyFrWy1Lb/3udcrzQdnGJCBnTp348BaK8HW6bxQrZBEYy/SrCyEC2zHm
-         IsC9yA9/OOTbX5wZ6U1Zq7sVq6xhLwiFitH3RdP4=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, stable@vger.kernel.org
-Cc:     lwn@lwn.net, jslaby@suse.cz,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: Linux 4.19.215
-Date:   Tue,  2 Nov 2021 19:53:36 +0100
-Message-Id: <1635879215167240@kroah.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <1635879215845@kroah.com>
-References: <1635879215845@kroah.com>
+        id S229981AbhKBS7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 14:59:32 -0400
+Received: from mail-vi1eur05on2091.outbound.protection.outlook.com ([40.107.21.91]:27185
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229764AbhKBS7a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 14:59:30 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=A7kFT0q73fUREpaqXjLxLCQuMTM34kd+P+oTleewRN3CiQcnVZBDq3IwnIRj/lkPUXeI/805mOJ8us8+1cAuPVSEL/9d2psWSRO97vonq7eJUDSORfg+Ha5nF0XdFbAz7rTTrshwFcSq5MuX2MmgJJw/lEcYCnB+RS0Hzsc4g7dn92dNJkBtH899EZU+32fbuFzw2Ej6abPIqL+XPHZIqlNypzVXl0frsUDmwk3/xzpJo4Mf8lkazK/4YHgO81uomOFerHOmZAEMpvMOFeuWAzXn9gBzCQAKJEEYmZOk8eBFf/7E5+5YNbh/S8+oMAT2bEocAOXLdtcZSbWQO0zTZg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=6y9D4RIrSZfK8agmiOB63n2Xlj0mPN/ROLxjad1rW/s=;
+ b=LVACIkGuiyhJfLVMgooMEzkDFS7Tza4W+5T29/V5nyG1pw5B0qK3bZa4EKsuqRUYfnE5OU4LY/evCnmnROOeNedyK5bJVD4/fwkri0bL8nElC9t5H6Fjlgw0gwJ1CjYxkFp8wA+QAGxFxcjT9Uc2DyHqsfvgN9uCEcnV12XSSgh3PmktryHDBZj0KIqqB9uya7JoRsih3XeqYMy6f/QJ/qFtcHzUE03TAMP1/grVyn7hYLO6yF+/0SBAVSdm2biKri7xC4TlU5ZgC5/be6cLFHeMVQGYe98cXQqK2yTGCHrGRnoCXGvo3+EmL4YO+ZNQE4eLAoxDVelf8UDol1rmgQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=plvision.eu; dmarc=pass action=none header.from=plvision.eu;
+ dkim=pass header.d=plvision.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plvision.eu;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6y9D4RIrSZfK8agmiOB63n2Xlj0mPN/ROLxjad1rW/s=;
+ b=OaBSnvQcKtb/+opuELMOnCA2xyR/iNOZJAPtHwOXJ5fbJLyIZ6y9V53Oe4l1EBWi4L3kyQV0qVuLqp+4LMyZa/tG0QR3XBSZItEQePfVuniFq96NNd+LjXhsGPfqBxmmuv9X6tLjn543BYDvsxfEAFcQpbP59Dxzl1MGUpAQd6w=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=plvision.eu;
+Received: from VI1P190MB0734.EURP190.PROD.OUTLOOK.COM (2603:10a6:800:123::23)
+ by VI1P190MB0397.EURP190.PROD.OUTLOOK.COM (2603:10a6:802:36::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.17; Tue, 2 Nov
+ 2021 18:56:51 +0000
+Received: from VI1P190MB0734.EURP190.PROD.OUTLOOK.COM
+ ([fe80::a1aa:fd40:3626:d67f]) by VI1P190MB0734.EURP190.PROD.OUTLOOK.COM
+ ([fe80::a1aa:fd40:3626:d67f%5]) with mapi id 15.20.4649.019; Tue, 2 Nov 2021
+ 18:56:51 +0000
+From:   Volodymyr Mytnyk <volodymyr.mytnyk@plvision.eu>
+To:     netdev@vger.kernel.org
+Cc:     Taras Chornyi <taras.chornyi@plvision.eu>,
+        Mickey Rachamim <mickeyr@marvell.com>,
+        Serhiy Pshyk <serhiy.pshyk@plvision.eu>,
+        Andrew Lunn <andrew@lunn.ch>, Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Volodymyr Mytnyk <vmytnyk@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vadym Kochan <vkochan@marvell.com>,
+        Yevhen Orlov <yevhen.orlov@plvision.eu>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net-next] net: marvell: prestera: fix hw structure laid out
+Date:   Tue,  2 Nov 2021 20:56:05 +0200
+Message-Id: <1635879365-19235-1-git-send-email-volodymyr.mytnyk@plvision.eu>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-ClientProxiedBy: AM5PR0101CA0014.eurprd01.prod.exchangelabs.com
+ (2603:10a6:206:16::27) To VI1P190MB0734.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:800:123::23)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: from vmytnykub.x.ow.s (217.20.186.93) by AM5PR0101CA0014.eurprd01.prod.exchangelabs.com (2603:10a6:206:16::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.4649.15 via Frontend Transport; Tue, 2 Nov 2021 18:56:50 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 59205f9c-e542-48ce-3fb2-08d99e3287a7
+X-MS-TrafficTypeDiagnostic: VI1P190MB0397:
+X-Microsoft-Antispam-PRVS: <VI1P190MB039770E8BAD7F49D04155C448F8B9@VI1P190MB0397.EURP190.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:69;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: s57WvgNETZ8lDiwl0h+ZHh40vatxvR8BZDFAL5VGC7OhPFsvEcoiXGmYCXtmYhjmRgPL2vKdqyXjwcWwPescc1NmdZZVgqBWxTlGegKr9d1cYgLExB1FDS5HjmxcWImTVxmCzxZpQhI/1B2TfJLWq0EN38aMT1LMW3n939x1V8xtqYpxYYN6E+vz6+BE32rYtJfwk10OOdqavrnuGh+DwSRg3V3WK80fUDzP0eSyCvsEQ08/8k40P+53xHSYSxmaGIwK8EaXqOCq8rkpCxKZqkRianq08DOnXzEbEaMfbruYuuXoMLLNikvwmRNU/cFqKUtcxbmLdq5phi15FcebgWOABM8P76k9k27DeXIn4etcZ29ccNxb7BljVGClrdD5WdnOko6UThfkrI5GbuUMnFb7FzXQZk7dASpb2WsI2/qZeFDGkp0+XDlXmdtDFckE5znnmCe9dTY9VpXPeVvu5eA3HVZ5Oa82kOfz0Ca4QT7wqtg5iMQkpRN71J2Xtn1UyodRy/5MNJtC7MPUP+K2/8JHUDVwcTqSmpi6fj6mkk4/QBbbgRkIts4GoxJH3QY+zWLw6PzuWgrsr06jLveWtjEiMpqyjcxiWDHYd6CTsCpnkm590uu6Vr0uQo17MihSgujW/w8KQ2DR+2XRPVN/NRfBDKeLpTnfgRcamKegHWd7THJ5VSNntfFgo5thEIxUdeeg4dE6ayJ97pIY7Ymevi0N2ayV1VXw3EQYyyw/RWk3KUnz9gYX13GPWwDLST9R9v3f6re6jYAhvZIQyEmB210F3JJNKrjvhuM4xpepuzk=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1P190MB0734.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(346002)(366004)(39830400003)(396003)(376002)(136003)(8936002)(38350700002)(7416002)(2906002)(6916009)(8676002)(4326008)(38100700002)(54906003)(86362001)(316002)(66556008)(508600001)(83380400001)(6512007)(186003)(52116002)(44832011)(6666004)(36756003)(5660300002)(2616005)(6486002)(956004)(66946007)(6506007)(66574015)(26005)(966005)(30864003)(66476007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?UY6cu/EvEv9gLFOBwekKj8MEJlMr/QwEijHO+lpJ9IbSRURGDirSTUNo8mIa?=
+ =?us-ascii?Q?wTPbmJlLvOfukQWEBdXBRWGccddnzNXhmMfVl+BuhGbiWxcX6VslmPJFqNU5?=
+ =?us-ascii?Q?e8mfaW2V5lTC+ushT6naPWbTQno+srmERpgvyzC5nFKYHOB9Q2VQNabzYoEf?=
+ =?us-ascii?Q?JFOIlmWekPOC3BfP6wiGFyuBUTPxTzG+xEt17GXt4PH0LYQd3M5jhU19MGGS?=
+ =?us-ascii?Q?jIdyuCY3914MLQUtzJv6xPbKTrCzWJub4Lj09NK5jnK/8d7kuIDHmIErWMc1?=
+ =?us-ascii?Q?f3AgBWPrGhirgZoG4Uyt66+xkkmxXb5cbfC8p4Erd785H/rvT6Pq83F7MHga?=
+ =?us-ascii?Q?SeN5JIp1c+VASxRPLAkhcLRzaKi4qzQqXsH5OKowQ/8Zvi4TYyKD5ql8ln90?=
+ =?us-ascii?Q?qlPAHdZyZVMtOOjtn7XMDz9Jd1+ijChWVg2HPz+sYCi5ZRvh4y9S1Lr2LNUF?=
+ =?us-ascii?Q?ajL9oY1g+rQSVNMIPtLlen8fdDoQpsB+cvwuRofV9GxggXJWpm/CJKJ2YH5e?=
+ =?us-ascii?Q?W0SZpZXEO/Pz6/pBDK+dU7p6/HKdcQBwbXgUk8+GqsTeNCDR4/KeBcxmMuDg?=
+ =?us-ascii?Q?5O/xtmN/nWNWB/LGf9WbzA2B012CySnvdnr2fhEQlHq5r9V5kdsDS1jaDH/q?=
+ =?us-ascii?Q?GKNBRnNIcwuOXq1tNRf+h0voyLwh3NymuGwareaQRPyIWFiL1GhbQUOn7rFm?=
+ =?us-ascii?Q?Cqyl1kVoB0WZN8QKj+VBPuNbpib9inDRzPTGgPRhk5F3u+n3dm8RffqQA32C?=
+ =?us-ascii?Q?zfgqTBE3g3Mda458v8V8ouhKrQ4YrTz1C8b4IPHa/NehNUwFsFtWyZwukXuR?=
+ =?us-ascii?Q?fPc62Z4KrvHgqnEIpaKtKaKbiMpkPVC4xw9ryF4VxFllQaWIfzzffnbQ3TMJ?=
+ =?us-ascii?Q?QPfMKl/dQQDw8aL9oNY4jygsHk+YMRcneeAU7kUiQbdFFqclx2Sy+FybOzvS?=
+ =?us-ascii?Q?lhpfZ3t1ObolGjWmvG/aDjENV+gJd5u82el2nAPEF280/bKlsIMpEnWKUCz0?=
+ =?us-ascii?Q?tHJkWVFcIi/fJg0ZEyjdnn4uYIRv4fn1xMIt3VhJ7Hdkev+485hdYccSsHvC?=
+ =?us-ascii?Q?q4sTP6wQ5xJDRcvSfUaf5MPKKrBSc8Ja30b/2UnzFr5Hzop3MAQb/y+JES6X?=
+ =?us-ascii?Q?j1UUdhClCCKv9TXAmcvczdln3rtS+FOxUnrnATwV+ZPEHMT3aWsraDaI9xZQ?=
+ =?us-ascii?Q?feVLl9GkOVD2jiFimIYhIb2+B0xMKXw8Yn76//xvg1YOr8Aa45o90Kjbms4s?=
+ =?us-ascii?Q?RptuwI1hBZ82bb52aSbu4gXT9xgeEWJT1wTnq3Ma5esgjB86H8EGgin4oRMW?=
+ =?us-ascii?Q?U7iceM5kO1PKWxNRF106hIO+3Z+tlmov/WHFVTlyJCMCysmi/nsqmpF1Nphf?=
+ =?us-ascii?Q?YW3TjvA9eK0aOROrrVx2kBh9zbjJPBNmdFNDzpWwqcDP3MAvzJooh70dihGq?=
+ =?us-ascii?Q?lWpKJIkUki3gvmpbKNtiITtJ/Wa6nFXdXcaHjQJGZKn4QwL2FGhVeG2Y21nP?=
+ =?us-ascii?Q?8jUVz1RDytjNXmfwzeKFaoqINmC5tK0X5n7X+v1lTG2PP4jXvO1WwivJ1qmC?=
+ =?us-ascii?Q?D0SUiftZgG09wZIgP1zAVL8sqbkbfMAhFpPNnyE+3DwsPapsk0ddIkW8bSoS?=
+ =?us-ascii?Q?iKWubGBcelIcdX2zjJwPt6k6LkQud39CsGsd3La29ak7TFfaoxzydUUogZA3?=
+ =?us-ascii?Q?doH9eg=3D=3D?=
+X-OriginatorOrg: plvision.eu
+X-MS-Exchange-CrossTenant-Network-Message-Id: 59205f9c-e542-48ce-3fb2-08d99e3287a7
+X-MS-Exchange-CrossTenant-AuthSource: VI1P190MB0734.EURP190.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2021 18:56:51.3334
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 03707b74-30f3-46b6-a0e0-ff0a7438c9c4
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 36vY6mrRIiINUyb7kj8YLFaTNe4NmNF90UjGdu7VmFS3KS1jatNaQ6Zwyr4xbPjQScSUUpFP3y1A3FW0K6G0veXWDHZvFArMmHb2UxZyFH4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1P190MB0397
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-diff --git a/Makefile b/Makefile
-index 358b07946bd1..40657b8e92f1 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
- VERSION = 4
- PATCHLEVEL = 19
--SUBLEVEL = 214
-+SUBLEVEL = 215
- EXTRAVERSION =
- NAME = "People's Front"
- 
-diff --git a/arch/arm/Makefile b/arch/arm/Makefile
-index d1516f85f25d..658896a7d30d 100644
---- a/arch/arm/Makefile
-+++ b/arch/arm/Makefile
-@@ -10,7 +10,7 @@
- #
- # Copyright (C) 1995-2001 by Russell King
- 
--LDFLAGS_vmlinux	:=-p --no-undefined -X --pic-veneer
-+LDFLAGS_vmlinux	:= --no-undefined -X --pic-veneer
- ifeq ($(CONFIG_CPU_ENDIAN_BE8),y)
- LDFLAGS_vmlinux	+= --be8
- KBUILD_LDFLAGS_MODULE	+= --be8
-diff --git a/arch/arm/boot/bootp/Makefile b/arch/arm/boot/bootp/Makefile
-index 83e1a076a5d6..981a8d03f064 100644
---- a/arch/arm/boot/bootp/Makefile
-+++ b/arch/arm/boot/bootp/Makefile
-@@ -8,7 +8,7 @@
- 
- GCOV_PROFILE	:= n
- 
--LDFLAGS_bootp	:=-p --no-undefined -X \
-+LDFLAGS_bootp	:= --no-undefined -X \
- 		 --defsym initrd_phys=$(INITRD_PHYS) \
- 		 --defsym params_phys=$(PARAMS_PHYS) -T
- AFLAGS_initrd.o :=-DINITRD=\"$(INITRD)\"
-diff --git a/arch/arm/boot/compressed/Makefile b/arch/arm/boot/compressed/Makefile
-index 1b3a4144646b..7f19143981c9 100644
---- a/arch/arm/boot/compressed/Makefile
-+++ b/arch/arm/boot/compressed/Makefile
-@@ -133,8 +133,6 @@ endif
- ifeq ($(CONFIG_CPU_ENDIAN_BE8),y)
- LDFLAGS_vmlinux += --be8
- endif
--# ?
--LDFLAGS_vmlinux += -p
- # Report unresolved symbol references
- LDFLAGS_vmlinux += --no-undefined
- # Delete all temporary local symbols
-diff --git a/arch/arm/boot/compressed/decompress.c b/arch/arm/boot/compressed/decompress.c
-index c16c1829a5e4..c10e10f26c09 100644
---- a/arch/arm/boot/compressed/decompress.c
-+++ b/arch/arm/boot/compressed/decompress.c
-@@ -46,7 +46,10 @@ extern int memcmp(const void *cs, const void *ct, size_t count);
- #endif
- 
- #ifdef CONFIG_KERNEL_XZ
-+/* Prevent KASAN override of string helpers in decompressor */
-+#undef memmove
- #define memmove memmove
-+#undef memcpy
- #define memcpy memcpy
- #include "../../../../lib/decompress_unxz.c"
- #endif
-diff --git a/arch/arm/kernel/vmlinux-xip.lds.S b/arch/arm/kernel/vmlinux-xip.lds.S
-index 3593d5c1acd2..93267800ccff 100644
---- a/arch/arm/kernel/vmlinux-xip.lds.S
-+++ b/arch/arm/kernel/vmlinux-xip.lds.S
-@@ -181,7 +181,7 @@ ASSERT(__hyp_idmap_text_end - (__hyp_idmap_text_start & PAGE_MASK) <= PAGE_SIZE,
- ASSERT((_end - __bss_start) >= 12288, ".bss too small for CONFIG_XIP_DEFLATED_DATA")
- #endif
- 
--#ifdef CONFIG_ARM_MPU
-+#if defined(CONFIG_ARM_MPU) && !defined(CONFIG_COMPILE_TEST)
- /*
-  * Due to PMSAv7 restriction on base address and size we have to
-  * enforce minimal alignment restrictions. It was seen that weaker
-diff --git a/arch/arm/mm/proc-macros.S b/arch/arm/mm/proc-macros.S
-index 60ac7c5999a9..86e54447dc91 100644
---- a/arch/arm/mm/proc-macros.S
-+++ b/arch/arm/mm/proc-macros.S
-@@ -342,6 +342,7 @@ ENTRY(\name\()_cache_fns)
- 
- .macro define_tlb_functions name:req, flags_up:req, flags_smp
- 	.type	\name\()_tlb_fns, #object
-+	.align 2
- ENTRY(\name\()_tlb_fns)
- 	.long	\name\()_flush_user_tlb_range
- 	.long	\name\()_flush_kern_tlb_range
-diff --git a/arch/arm/probes/kprobes/core.c b/arch/arm/probes/kprobes/core.c
-index f8bd523d64d1..62da8e2211e4 100644
---- a/arch/arm/probes/kprobes/core.c
-+++ b/arch/arm/probes/kprobes/core.c
-@@ -542,7 +542,7 @@ static struct undef_hook kprobes_arm_break_hook = {
- 
- #endif /* !CONFIG_THUMB2_KERNEL */
- 
--int __init arch_init_kprobes()
-+int __init arch_init_kprobes(void)
+From: Volodymyr Mytnyk <vmytnyk@marvell.com>
+
+- fix structure laid out discussed in:
+    [PATCH net-next v4] net: marvell: prestera: add firmware v4.0 support
+    https://www.spinics.net/lists/kernel/msg4127689.html
+
+- fix m68k compilation problem caused by commit above
+
+- fix review comments discussed in:
+    [PATCH] [-next] net: marvell: prestera: Add explicit padding
+    https://www.spinics.net/lists/kernel/msg4130293.html
+
+- fix patchwork issues
+
+Reported-by: kernel test robot <lkp@intel.com>
+Fixes: bb5dbf2cc64d ("net: marvell: prestera: add firmware v4.0 support")
+Signed-off-by: Volodymyr Mytnyk <vmytnyk@marvell.com>
+---
+ .../ethernet/marvell/prestera/prestera_ethtool.c   |   3 +-
+ .../net/ethernet/marvell/prestera/prestera_hw.c    | 139 ++++++++++++---------
+ .../net/ethernet/marvell/prestera/prestera_main.c  |   6 +-
+ .../net/ethernet/marvell/prestera/prestera_pci.c   |   3 +-
+ 4 files changed, 86 insertions(+), 65 deletions(-)
+
+diff --git a/drivers/net/ethernet/marvell/prestera/prestera_ethtool.c b/drivers/net/ethernet/marvell/prestera/prestera_ethtool.c
+index 6011454dba71..40d5b89573bb 100644
+--- a/drivers/net/ethernet/marvell/prestera/prestera_ethtool.c
++++ b/drivers/net/ethernet/marvell/prestera/prestera_ethtool.c
+@@ -499,7 +499,8 @@ static void prestera_port_mdix_get(struct ethtool_link_ksettings *ecmd,
  {
- 	arm_probes_decode_init();
- #ifdef CONFIG_THUMB2_KERNEL
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi-neo2.dts b/arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi-neo2.dts
-index cc268a69786c..cac9231e2e29 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi-neo2.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi-neo2.dts
-@@ -114,7 +114,7 @@
- 	pinctrl-0 = <&emac_rgmii_pins>;
- 	phy-supply = <&reg_gmac_3v3>;
- 	phy-handle = <&ext_rgmii_phy>;
--	phy-mode = "rgmii";
-+	phy-mode = "rgmii-id";
- 	status = "okay";
+ 	struct prestera_port_phy_state *state = &port->state_phy;
+ 
+-	if (prestera_hw_port_phy_mode_get(port, &state->mdix, NULL, NULL, NULL)) {
++	if (prestera_hw_port_phy_mode_get(port,
++					  &state->mdix, NULL, NULL, NULL)) {
+ 		netdev_warn(port->dev, "MDIX params get failed");
+ 		state->mdix = ETH_TP_MDI_INVALID;
+ 	}
+diff --git a/drivers/net/ethernet/marvell/prestera/prestera_hw.c b/drivers/net/ethernet/marvell/prestera/prestera_hw.c
+index 41ba17cb2965..1a460d3c85ad 100644
+--- a/drivers/net/ethernet/marvell/prestera/prestera_hw.c
++++ b/drivers/net/ethernet/marvell/prestera/prestera_hw.c
+@@ -180,108 +180,113 @@ struct prestera_msg_common_resp {
+ 	struct prestera_msg_ret ret;
  };
  
-diff --git a/arch/arm64/lib/copy_from_user.S b/arch/arm64/lib/copy_from_user.S
-index 96b22c0fa343..7cd6eeaa216c 100644
---- a/arch/arm64/lib/copy_from_user.S
-+++ b/arch/arm64/lib/copy_from_user.S
-@@ -39,7 +39,7 @@
- 	.endm
- 
- 	.macro ldrh1 ptr, regB, val
--	uao_user_alternative 9998f, ldrh, ldtrh, \ptr, \regB, \val
-+	uao_user_alternative 9997f, ldrh, ldtrh, \ptr, \regB, \val
- 	.endm
- 
- 	.macro strh1 ptr, regB, val
-@@ -47,7 +47,7 @@
- 	.endm
- 
- 	.macro ldr1 ptr, regB, val
--	uao_user_alternative 9998f, ldr, ldtr, \ptr, \regB, \val
-+	uao_user_alternative 9997f, ldr, ldtr, \ptr, \regB, \val
- 	.endm
- 
- 	.macro str1 ptr, regB, val
-@@ -55,7 +55,7 @@
- 	.endm
- 
- 	.macro ldp1 ptr, regB, regC, val
--	uao_ldp 9998f, \ptr, \regB, \regC, \val
-+	uao_ldp 9997f, \ptr, \regB, \regC, \val
- 	.endm
- 
- 	.macro stp1 ptr, regB, regC, val
-@@ -63,9 +63,11 @@
- 	.endm
- 
- end	.req	x5
-+srcin	.req	x15
- ENTRY(__arch_copy_from_user)
- 	uaccess_enable_not_uao x3, x4, x5
- 	add	end, x0, x2
-+	mov	srcin, x1
- #include "copy_template.S"
- 	uaccess_disable_not_uao x3, x4
- 	mov	x0, #0				// Nothing to copy
-@@ -74,6 +76,11 @@ ENDPROC(__arch_copy_from_user)
- 
- 	.section .fixup,"ax"
- 	.align	2
-+9997:	cmp	dst, dstin
-+	b.ne	9998f
-+	// Before being absolutely sure we couldn't copy anything, try harder
-+USER(9998f, ldtrb tmp1w, [srcin])
-+	strb	tmp1w, [dst], #1
- 9998:	sub	x0, end, dst			// bytes not copied
- 	uaccess_disable_not_uao x3, x4
- 	ret
-diff --git a/arch/arm64/lib/copy_in_user.S b/arch/arm64/lib/copy_in_user.S
-index e56c705f1f23..b20d3a0b3237 100644
---- a/arch/arm64/lib/copy_in_user.S
-+++ b/arch/arm64/lib/copy_in_user.S
-@@ -40,34 +40,36 @@
- 	.endm
- 
- 	.macro ldrh1 ptr, regB, val
--	uao_user_alternative 9998f, ldrh, ldtrh, \ptr, \regB, \val
-+	uao_user_alternative 9997f, ldrh, ldtrh, \ptr, \regB, \val
- 	.endm
- 
- 	.macro strh1 ptr, regB, val
--	uao_user_alternative 9998f, strh, sttrh, \ptr, \regB, \val
-+	uao_user_alternative 9997f, strh, sttrh, \ptr, \regB, \val
- 	.endm
- 
- 	.macro ldr1 ptr, regB, val
--	uao_user_alternative 9998f, ldr, ldtr, \ptr, \regB, \val
-+	uao_user_alternative 9997f, ldr, ldtr, \ptr, \regB, \val
- 	.endm
- 
- 	.macro str1 ptr, regB, val
--	uao_user_alternative 9998f, str, sttr, \ptr, \regB, \val
-+	uao_user_alternative 9997f, str, sttr, \ptr, \regB, \val
- 	.endm
- 
- 	.macro ldp1 ptr, regB, regC, val
--	uao_ldp 9998f, \ptr, \regB, \regC, \val
-+	uao_ldp 9997f, \ptr, \regB, \regC, \val
- 	.endm
- 
- 	.macro stp1 ptr, regB, regC, val
--	uao_stp 9998f, \ptr, \regB, \regC, \val
-+	uao_stp 9997f, \ptr, \regB, \regC, \val
- 	.endm
- 
- end	.req	x5
-+srcin	.req	x15
- 
- ENTRY(__arch_copy_in_user)
- 	uaccess_enable_not_uao x3, x4, x5
- 	add	end, x0, x2
-+	mov	srcin, x1
- #include "copy_template.S"
- 	uaccess_disable_not_uao x3, x4
- 	mov	x0, #0
-@@ -76,6 +78,12 @@ ENDPROC(__arch_copy_in_user)
- 
- 	.section .fixup,"ax"
- 	.align	2
-+9997:	cmp	dst, dstin
-+	b.ne	9998f
-+	// Before being absolutely sure we couldn't copy anything, try harder
-+USER(9998f, ldtrb tmp1w, [srcin])
-+USER(9998f, sttrb tmp1w, [dst])
-+	add	dst, dst, #1
- 9998:	sub	x0, end, dst			// bytes not copied
- 	uaccess_disable_not_uao x3, x4
- 	ret
-diff --git a/arch/arm64/lib/copy_to_user.S b/arch/arm64/lib/copy_to_user.S
-index 6b99b939c50f..cfdbb1fe8d51 100644
---- a/arch/arm64/lib/copy_to_user.S
-+++ b/arch/arm64/lib/copy_to_user.S
-@@ -42,7 +42,7 @@
- 	.endm
- 
- 	.macro strh1 ptr, regB, val
--	uao_user_alternative 9998f, strh, sttrh, \ptr, \regB, \val
-+	uao_user_alternative 9997f, strh, sttrh, \ptr, \regB, \val
- 	.endm
- 
- 	.macro ldr1 ptr, regB, val
-@@ -50,7 +50,7 @@
- 	.endm
- 
- 	.macro str1 ptr, regB, val
--	uao_user_alternative 9998f, str, sttr, \ptr, \regB, \val
-+	uao_user_alternative 9997f, str, sttr, \ptr, \regB, \val
- 	.endm
- 
- 	.macro ldp1 ptr, regB, regC, val
-@@ -58,13 +58,15 @@
- 	.endm
- 
- 	.macro stp1 ptr, regB, regC, val
--	uao_stp 9998f, \ptr, \regB, \regC, \val
-+	uao_stp 9997f, \ptr, \regB, \regC, \val
- 	.endm
- 
- end	.req	x5
-+srcin	.req	x15
- ENTRY(__arch_copy_to_user)
- 	uaccess_enable_not_uao x3, x4, x5
- 	add	end, x0, x2
-+	mov	srcin, x1
- #include "copy_template.S"
- 	uaccess_disable_not_uao x3, x4
- 	mov	x0, #0
-@@ -73,6 +75,12 @@ ENDPROC(__arch_copy_to_user)
- 
- 	.section .fixup,"ax"
- 	.align	2
-+9997:	cmp	dst, dstin
-+	b.ne	9998f
-+	// Before being absolutely sure we couldn't copy anything, try harder
-+	ldrb	tmp1w, [srcin]
-+USER(9998f, sttrb tmp1w, [dst])
-+	add	dst, dst, #1
- 9998:	sub	x0, end, dst			// bytes not copied
- 	uaccess_disable_not_uao x3, x4
- 	ret
-diff --git a/arch/nios2/platform/Kconfig.platform b/arch/nios2/platform/Kconfig.platform
-index 74c1aaf588b8..54f6dfb3b797 100644
---- a/arch/nios2/platform/Kconfig.platform
-+++ b/arch/nios2/platform/Kconfig.platform
-@@ -37,6 +37,7 @@ config NIOS2_DTB_PHYS_ADDR
- 
- config NIOS2_DTB_SOURCE_BOOL
- 	bool "Compile and link device tree into kernel image"
-+	depends on !COMPILE_TEST
- 	default n
- 	help
- 	  This allows you to specify a dts (device tree source) file
-diff --git a/arch/powerpc/net/bpf_jit_comp64.c b/arch/powerpc/net/bpf_jit_comp64.c
-index e7d56ddba43a..87213a1bb14c 100644
---- a/arch/powerpc/net/bpf_jit_comp64.c
-+++ b/arch/powerpc/net/bpf_jit_comp64.c
-@@ -385,8 +385,14 @@ static int bpf_jit_build_body(struct bpf_prog *fp, u32 *image,
- 		case BPF_ALU64 | BPF_DIV | BPF_K: /* dst /= imm */
- 			if (imm == 0)
- 				return -EINVAL;
--			else if (imm == 1)
--				goto bpf_alu32_trunc;
-+			if (imm == 1) {
-+				if (BPF_OP(code) == BPF_DIV) {
-+					goto bpf_alu32_trunc;
-+				} else {
-+					PPC_LI(dst_reg, 0);
-+					break;
-+				}
-+			}
- 
- 			PPC_LI32(b2p[TMP_REG_1], imm);
- 			switch (BPF_CLASS(code)) {
-diff --git a/drivers/ata/sata_mv.c b/drivers/ata/sata_mv.c
-index 57ef11ecbb9b..84ea284502d5 100644
---- a/drivers/ata/sata_mv.c
-+++ b/drivers/ata/sata_mv.c
-@@ -3905,8 +3905,8 @@ static int mv_chip_id(struct ata_host *host, unsigned int board_idx)
- 		break;
- 
- 	default:
--		dev_err(host->dev, "BUG: invalid board index %u\n", board_idx);
--		return 1;
-+		dev_alert(host->dev, "BUG: invalid board index %u\n", board_idx);
-+		return -EINVAL;
- 	}
- 
- 	hpriv->hp_flags = hp_flags;
-diff --git a/drivers/base/regmap/regcache-rbtree.c b/drivers/base/regmap/regcache-rbtree.c
-index b1e9aae9a5d0..e9b7ce8c272c 100644
---- a/drivers/base/regmap/regcache-rbtree.c
-+++ b/drivers/base/regmap/regcache-rbtree.c
-@@ -295,14 +295,14 @@ static int regcache_rbtree_insert_to_block(struct regmap *map,
- 	if (!blk)
- 		return -ENOMEM;
- 
-+	rbnode->block = blk;
-+
- 	if (BITS_TO_LONGS(blklen) > BITS_TO_LONGS(rbnode->blklen)) {
- 		present = krealloc(rbnode->cache_present,
- 				   BITS_TO_LONGS(blklen) * sizeof(*present),
- 				   GFP_KERNEL);
--		if (!present) {
--			kfree(blk);
-+		if (!present)
- 			return -ENOMEM;
--		}
- 
- 		memset(present + BITS_TO_LONGS(rbnode->blklen), 0,
- 		       (BITS_TO_LONGS(blklen) - BITS_TO_LONGS(rbnode->blklen))
-@@ -319,7 +319,6 @@ static int regcache_rbtree_insert_to_block(struct regmap *map,
- 	}
- 
- 	/* update the rbnode block, its size and the base register */
--	rbnode->block = blk;
- 	rbnode->blklen = blklen;
- 	rbnode->base_reg = base_reg;
- 	rbnode->cache_present = present;
-diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
-index 10f6ae4f8f3f..361b1b859782 100644
---- a/drivers/infiniband/hw/mlx5/qp.c
-+++ b/drivers/infiniband/hw/mlx5/qp.c
-@@ -3387,6 +3387,8 @@ static int mlx5_ib_modify_dct(struct ib_qp *ibqp, struct ib_qp_attr *attr,
- 		MLX5_SET(dctc, dctc, mtu, attr->path_mtu);
- 		MLX5_SET(dctc, dctc, my_addr_index, attr->ah_attr.grh.sgid_index);
- 		MLX5_SET(dctc, dctc, hop_limit, attr->ah_attr.grh.hop_limit);
-+		if (attr->ah_attr.type == RDMA_AH_ATTR_TYPE_ROCE)
-+			MLX5_SET(dctc, dctc, eth_prio, attr->ah_attr.sl & 0x7);
- 
- 		err = mlx5_core_create_dct(dev->mdev, &qp->dct.mdct, qp->dct.in,
- 					   MLX5_ST_SZ_BYTES(create_dct_in));
-diff --git a/drivers/mmc/host/cqhci.c b/drivers/mmc/host/cqhci.c
-index 2c5a6e7aadc0..495a09b5a8e7 100644
---- a/drivers/mmc/host/cqhci.c
-+++ b/drivers/mmc/host/cqhci.c
-@@ -281,6 +281,9 @@ static void __cqhci_enable(struct cqhci_host *cq_host)
- 
- 	cqhci_writel(cq_host, cqcfg, CQHCI_CFG);
- 
-+	if (cqhci_readl(cq_host, CQHCI_CTL) & CQHCI_HALT)
-+		cqhci_writel(cq_host, 0, CQHCI_CTL);
-+
- 	mmc->cqe_on = true;
- 
- 	if (cq_host->ops->enable)
-diff --git a/drivers/mmc/host/dw_mmc-exynos.c b/drivers/mmc/host/dw_mmc-exynos.c
-index ab47b018716a..d7915e511ed2 100644
---- a/drivers/mmc/host/dw_mmc-exynos.c
-+++ b/drivers/mmc/host/dw_mmc-exynos.c
-@@ -455,6 +455,18 @@ static s8 dw_mci_exynos_get_best_clksmpl(u8 candiates)
- 		}
- 	}
- 
-+	/*
-+	 * If there is no cadiates value, then it needs to return -EIO.
-+	 * If there are candiates values and don't find bset clk sample value,
-+	 * then use a first candiates clock sample value.
-+	 */
-+	for (i = 0; i < iter; i++) {
-+		__c = ror8(candiates, i);
-+		if ((__c & 0x1) == 0x1) {
-+			loc = i;
-+			goto out;
-+		}
-+	}
- out:
- 	return loc;
- }
-@@ -485,6 +497,8 @@ static int dw_mci_exynos_execute_tuning(struct dw_mci_slot *slot, u32 opcode)
- 		priv->tuned_sample = found;
- 	} else {
- 		ret = -EIO;
-+		dev_warn(&mmc->class_dev,
-+			"There is no candiates value about clksmpl!\n");
- 	}
- 
- 	return ret;
-diff --git a/drivers/mmc/host/sdhci-esdhc-imx.c b/drivers/mmc/host/sdhci-esdhc-imx.c
-index 5099353e6f13..f8a4791e64f8 100644
---- a/drivers/mmc/host/sdhci-esdhc-imx.c
-+++ b/drivers/mmc/host/sdhci-esdhc-imx.c
-@@ -25,6 +25,7 @@
- #include <linux/pinctrl/consumer.h>
- #include <linux/platform_data/mmc-esdhc-imx.h>
- #include <linux/pm_runtime.h>
-+#include <linux/iopoll.h>
- #include "sdhci-pltfm.h"
- #include "sdhci-esdhc.h"
- 
-@@ -947,6 +948,7 @@ static void esdhc_reset_tuning(struct sdhci_host *host)
- 	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
- 	struct pltfm_imx_data *imx_data = sdhci_pltfm_priv(pltfm_host);
- 	u32 ctrl;
-+	int ret;
- 
- 	/* Reset the tuning circuit */
- 	if (esdhc_is_usdhc(imx_data)) {
-@@ -959,7 +961,22 @@ static void esdhc_reset_tuning(struct sdhci_host *host)
- 		} else if (imx_data->socdata->flags & ESDHC_FLAG_STD_TUNING) {
- 			ctrl = readl(host->ioaddr + SDHCI_AUTO_CMD_STATUS);
- 			ctrl &= ~ESDHC_MIX_CTRL_SMPCLK_SEL;
-+			ctrl &= ~ESDHC_MIX_CTRL_EXE_TUNE;
- 			writel(ctrl, host->ioaddr + SDHCI_AUTO_CMD_STATUS);
-+			/* Make sure ESDHC_MIX_CTRL_EXE_TUNE cleared */
-+			ret = readl_poll_timeout(host->ioaddr + SDHCI_AUTO_CMD_STATUS,
-+				ctrl, !(ctrl & ESDHC_MIX_CTRL_EXE_TUNE), 1, 50);
-+			if (ret == -ETIMEDOUT)
-+				dev_warn(mmc_dev(host->mmc),
-+				 "Warning! clear execute tuning bit failed\n");
-+			/*
-+			 * SDHCI_INT_DATA_AVAIL is W1C bit, set this bit will clear the
-+			 * usdhc IP internal logic flag execute_tuning_with_clr_buf, which
-+			 * will finally make sure the normal data transfer logic correct.
-+			 */
-+			ctrl = readl(host->ioaddr + SDHCI_INT_STATUS);
-+			ctrl |= SDHCI_INT_DATA_AVAIL;
-+			writel(ctrl, host->ioaddr + SDHCI_INT_STATUS);
- 		}
- 	}
- }
-diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
-index 5cb7c2cc501a..8ff37f06e691 100644
---- a/drivers/mmc/host/sdhci.c
-+++ b/drivers/mmc/host/sdhci.c
-@@ -1578,6 +1578,12 @@ void sdhci_set_power_noreg(struct sdhci_host *host, unsigned char mode,
- 			break;
- 		case MMC_VDD_32_33:
- 		case MMC_VDD_33_34:
-+		/*
-+		 * 3.4 ~ 3.6V are valid only for those platforms where it's
-+		 * known that the voltage range is supported by hardware.
-+		 */
-+		case MMC_VDD_34_35:
-+		case MMC_VDD_35_36:
- 			pwr = SDHCI_POWER_330;
- 			break;
- 		default:
-diff --git a/drivers/mmc/host/vub300.c b/drivers/mmc/host/vub300.c
-index a004f2ee15b1..aa8905753be3 100644
---- a/drivers/mmc/host/vub300.c
-+++ b/drivers/mmc/host/vub300.c
-@@ -579,7 +579,7 @@ static void check_vub300_port_status(struct vub300_mmc_host *vub300)
- 				GET_SYSTEM_PORT_STATUS,
- 				USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
- 				0x0000, 0x0000, &vub300->system_port_status,
--				sizeof(vub300->system_port_status), HZ);
-+				sizeof(vub300->system_port_status), 1000);
- 	if (sizeof(vub300->system_port_status) == retval)
- 		new_system_port_status(vub300);
- }
-@@ -1244,7 +1244,7 @@ static void __download_offload_pseudocode(struct vub300_mmc_host *vub300,
- 						SET_INTERRUPT_PSEUDOCODE,
- 						USB_DIR_OUT | USB_TYPE_VENDOR |
- 						USB_RECIP_DEVICE, 0x0000, 0x0000,
--						xfer_buffer, xfer_length, HZ);
-+						xfer_buffer, xfer_length, 1000);
- 			kfree(xfer_buffer);
- 			if (retval < 0)
- 				goto copy_error_message;
-@@ -1287,7 +1287,7 @@ static void __download_offload_pseudocode(struct vub300_mmc_host *vub300,
- 						SET_TRANSFER_PSEUDOCODE,
- 						USB_DIR_OUT | USB_TYPE_VENDOR |
- 						USB_RECIP_DEVICE, 0x0000, 0x0000,
--						xfer_buffer, xfer_length, HZ);
-+						xfer_buffer, xfer_length, 1000);
- 			kfree(xfer_buffer);
- 			if (retval < 0)
- 				goto copy_error_message;
-@@ -1994,7 +1994,7 @@ static void __set_clock_speed(struct vub300_mmc_host *vub300, u8 buf[8],
- 		usb_control_msg(vub300->udev, usb_sndctrlpipe(vub300->udev, 0),
- 				SET_CLOCK_SPEED,
- 				USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
--				0x00, 0x00, buf, buf_array_size, HZ);
-+				0x00, 0x00, buf, buf_array_size, 1000);
- 	if (retval != 8) {
- 		dev_err(&vub300->udev->dev, "SET_CLOCK_SPEED"
- 			" %dkHz failed with retval=%d\n", kHzClock, retval);
-@@ -2016,14 +2016,14 @@ static void vub300_mmc_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
- 		usb_control_msg(vub300->udev, usb_sndctrlpipe(vub300->udev, 0),
- 				SET_SD_POWER,
- 				USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
--				0x0000, 0x0000, NULL, 0, HZ);
-+				0x0000, 0x0000, NULL, 0, 1000);
- 		/* must wait for the VUB300 u-proc to boot up */
- 		msleep(600);
- 	} else if ((ios->power_mode == MMC_POWER_UP) && !vub300->card_powered) {
- 		usb_control_msg(vub300->udev, usb_sndctrlpipe(vub300->udev, 0),
- 				SET_SD_POWER,
- 				USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
--				0x0001, 0x0000, NULL, 0, HZ);
-+				0x0001, 0x0000, NULL, 0, 1000);
- 		msleep(600);
- 		vub300->card_powered = 1;
- 	} else if (ios->power_mode == MMC_POWER_ON) {
-@@ -2285,14 +2285,14 @@ static int vub300_probe(struct usb_interface *interface,
- 				GET_HC_INF0,
- 				USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
- 				0x0000, 0x0000, &vub300->hc_info,
--				sizeof(vub300->hc_info), HZ);
-+				sizeof(vub300->hc_info), 1000);
- 	if (retval < 0)
- 		goto error5;
- 	retval =
- 		usb_control_msg(vub300->udev, usb_sndctrlpipe(vub300->udev, 0),
- 				SET_ROM_WAIT_STATES,
- 				USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
--				firmware_rom_wait_states, 0x0000, NULL, 0, HZ);
-+				firmware_rom_wait_states, 0x0000, NULL, 0, 1000);
- 	if (retval < 0)
- 		goto error5;
- 	dev_info(&vub300->udev->dev,
-@@ -2307,7 +2307,7 @@ static int vub300_probe(struct usb_interface *interface,
- 				GET_SYSTEM_PORT_STATUS,
- 				USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
- 				0x0000, 0x0000, &vub300->system_port_status,
--				sizeof(vub300->system_port_status), HZ);
-+				sizeof(vub300->system_port_status), 1000);
- 	if (retval < 0) {
- 		goto error4;
- 	} else if (sizeof(vub300->system_port_status) == retval) {
-diff --git a/drivers/net/ethernet/microchip/lan743x_main.c b/drivers/net/ethernet/microchip/lan743x_main.c
-index 0d681714878b..e734bc5e3ceb 100644
---- a/drivers/net/ethernet/microchip/lan743x_main.c
-+++ b/drivers/net/ethernet/microchip/lan743x_main.c
-@@ -1710,6 +1710,16 @@ static int lan743x_tx_ring_init(struct lan743x_tx *tx)
- 		ret = -EINVAL;
- 		goto cleanup;
- 	}
-+	if (dma_set_mask_and_coherent(&tx->adapter->pdev->dev,
-+				      DMA_BIT_MASK(64))) {
-+		if (dma_set_mask_and_coherent(&tx->adapter->pdev->dev,
-+					      DMA_BIT_MASK(32))) {
-+			dev_warn(&tx->adapter->pdev->dev,
-+				 "lan743x_: No suitable DMA available\n");
-+			ret = -ENOMEM;
-+			goto cleanup;
-+		}
-+	}
- 	ring_allocation_size = ALIGN(tx->ring_size *
- 				     sizeof(struct lan743x_tx_descriptor),
- 				     PAGE_SIZE);
-@@ -2258,6 +2268,16 @@ static int lan743x_rx_ring_init(struct lan743x_rx *rx)
- 		ret = -EINVAL;
- 		goto cleanup;
- 	}
-+	if (dma_set_mask_and_coherent(&rx->adapter->pdev->dev,
-+				      DMA_BIT_MASK(64))) {
-+		if (dma_set_mask_and_coherent(&rx->adapter->pdev->dev,
-+					      DMA_BIT_MASK(32))) {
-+			dev_warn(&rx->adapter->pdev->dev,
-+				 "lan743x_: No suitable DMA available\n");
-+			ret = -ENOMEM;
-+			goto cleanup;
-+		}
-+	}
- 	ring_allocation_size = ALIGN(rx->ring_size *
- 				     sizeof(struct lan743x_rx_descriptor),
- 				     PAGE_SIZE);
-@@ -3003,6 +3023,8 @@ static int lan743x_pm_resume(struct device *dev)
- 	if (ret) {
- 		netif_err(adapter, probe, adapter->netdev,
- 			  "lan743x_hardware_init returned %d\n", ret);
-+		lan743x_pci_cleanup(adapter);
-+		return ret;
- 	}
- 
- 	/* open netdev when netdev is at running state while resume.
-diff --git a/drivers/net/ethernet/nxp/lpc_eth.c b/drivers/net/ethernet/nxp/lpc_eth.c
-index 6bd6c261f2ba..415ac33341c5 100644
---- a/drivers/net/ethernet/nxp/lpc_eth.c
-+++ b/drivers/net/ethernet/nxp/lpc_eth.c
-@@ -1037,9 +1037,6 @@ static int lpc_eth_close(struct net_device *ndev)
- 	napi_disable(&pldat->napi);
- 	netif_stop_queue(ndev);
- 
--	if (ndev->phydev)
--		phy_stop(ndev->phydev);
+-union prestera_msg_switch_param {
+-	u8 mac[ETH_ALEN];
+-	__le32 ageing_timeout_ms;
+-} __packed;
 -
- 	spin_lock_irqsave(&pldat->lock, flags);
- 	__lpc_eth_reset(pldat);
- 	netif_carrier_off(ndev);
-@@ -1047,6 +1044,8 @@ static int lpc_eth_close(struct net_device *ndev)
- 	writel(0, LPC_ENET_MAC2(pldat->net_base));
- 	spin_unlock_irqrestore(&pldat->lock, flags);
+ struct prestera_msg_switch_attr_req {
+ 	struct prestera_msg_cmd cmd;
+ 	__le32 attr;
+-	union prestera_msg_switch_param param;
++	union {
++		__le32 ageing_timeout_ms;
++		struct {
++			u8 mac[ETH_ALEN];
++			u8 __pad[2];
++		};
++	} param;
+ };
  
-+	if (ndev->phydev)
-+		phy_stop(ndev->phydev);
- 	clk_disable_unprepare(pldat->clk);
+ struct prestera_msg_switch_init_resp {
+ 	struct prestera_msg_ret ret;
+ 	__le32 port_count;
+ 	__le32 mtu_max;
+-	u8  switch_id;
+-	u8  lag_max;
+-	u8  lag_member_max;
+ 	__le32 size_tbl_router_nexthop;
+-} __packed __aligned(4);
++	u8 switch_id;
++	u8 lag_max;
++	u8 lag_member_max;
++};
  
- 	return 0;
-diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
-index f31a822bf4cc..3207da2224f6 100644
---- a/drivers/net/phy/mdio_bus.c
-+++ b/drivers/net/phy/mdio_bus.c
-@@ -388,7 +388,6 @@ int __mdiobus_register(struct mii_bus *bus, struct module *owner)
- 	err = device_register(&bus->dev);
- 	if (err) {
- 		pr_err("mii_bus %s failed to register\n", bus->id);
--		put_device(&bus->dev);
+ struct prestera_msg_event_port_param {
+ 	union {
+ 		struct {
+-			u8 oper;
+ 			__le32 mode;
+ 			__le32 speed;
++			u8 oper;
+ 			u8 duplex;
+ 			u8 fc;
+ 			u8 fec;
+-		} __packed mac;
++		} mac;
+ 		struct {
+-			u8 mdix;
+ 			__le64 lmode_bmap;
++			u8 mdix;
+ 			u8 fc;
++			u8 __pad[2];
+ 		} __packed phy;
+ 	} __packed;
+-} __packed __aligned(4);
++} __packed;
+ 
+ struct prestera_msg_port_cap_param {
+ 	__le64 link_mode;
+-	u8  type;
+-	u8  fec;
+-	u8  fc;
+-	u8  transceiver;
+-};
++	u8 type;
++	u8 fec;
++	u8 fc;
++	u8 transceiver;
++} __packed;
+ 
+ struct prestera_msg_port_flood_param {
+ 	u8 type;
+ 	u8 enable;
+-};
++	u8 __pad[2];
++} __packed;
+ 
+ union prestera_msg_port_param {
++	__le32 mtu;
++	__le32 speed;
++	__le32 link_mode;
+ 	u8 admin_state;
+ 	u8 oper_state;
+-	__le32 mtu;
+ 	u8 mac[ETH_ALEN];
+ 	u8 accept_frm_type;
+-	__le32 speed;
+ 	u8 learning;
+ 	u8 flood;
+-	__le32 link_mode;
+ 	u8 type;
+ 	u8 duplex;
+ 	u8 fec;
+ 	u8 fc;
+-
+ 	union {
+ 		struct {
+-			u8 admin:1;
++			u8 admin;
+ 			u8 fc;
+ 			u8 ap_enable;
++			u8 __reserved;
+ 			union {
+ 				struct {
+ 					__le32 mode;
+-					u8  inband:1;
+ 					__le32 speed;
+-					u8  duplex;
+-					u8  fec;
+-					u8  fec_supp;
+-				} __packed reg_mode;
++					u8 inband;
++					u8 duplex;
++					u8 fec;
++					u8 fec_supp;
++				} reg_mode;
+ 				struct {
+ 					__le32 mode;
+ 					__le32 speed;
+-					u8  fec;
+-					u8  fec_supp;
+-				} __packed ap_modes[PRESTERA_AP_PORT_MAX];
+-			} __packed;
+-		} __packed mac;
++					u8 fec;
++					u8 fec_supp;
++					u8 __pad[2];
++				} ap_modes[PRESTERA_AP_PORT_MAX];
++			};
++		} mac;
+ 		struct {
+-			u8 admin:1;
+-			u8 adv_enable;
+ 			__le64 modes;
+ 			__le32 mode;
++			u8 admin;
++			u8 adv_enable;
+ 			u8 mdix;
+-		} __packed phy;
++			u8 __pad;
++		} phy;
+ 	} __packed link;
+ 
+ 	struct prestera_msg_port_cap_param cap;
+ 	struct prestera_msg_port_flood_param flood_ext;
+ 	struct prestera_msg_event_port_param link_evt;
+-} __packed;
++};
+ 
+ struct prestera_msg_port_attr_req {
+ 	struct prestera_msg_cmd cmd;
+@@ -289,14 +294,12 @@ struct prestera_msg_port_attr_req {
+ 	__le32 port;
+ 	__le32 dev;
+ 	union prestera_msg_port_param param;
+-} __packed __aligned(4);
+-
++};
+ 
+ struct prestera_msg_port_attr_resp {
+ 	struct prestera_msg_ret ret;
+ 	union prestera_msg_port_param param;
+-} __packed __aligned(4);
+-
++};
+ 
+ struct prestera_msg_port_stats_resp {
+ 	struct prestera_msg_ret ret;
+@@ -313,6 +316,7 @@ struct prestera_msg_port_info_resp {
+ 	__le32 hw_id;
+ 	__le32 dev_id;
+ 	__le16 fp_id;
++	__le16 __pad;
+ };
+ 
+ struct prestera_msg_vlan_req {
+@@ -320,13 +324,13 @@ struct prestera_msg_vlan_req {
+ 	__le32 port;
+ 	__le32 dev;
+ 	__le16 vid;
+-	u8  is_member;
+-	u8  is_tagged;
++	u8 is_member;
++	u8 is_tagged;
+ };
+ 
+ struct prestera_msg_fdb_req {
+ 	struct prestera_msg_cmd cmd;
+-	u8 dest_type;
++	__le32 flush_mode;
+ 	union {
+ 		struct {
+ 			__le32 port;
+@@ -334,22 +338,25 @@ struct prestera_msg_fdb_req {
+ 		};
+ 		__le16 lag_id;
+ 	} dest;
+-	u8  mac[ETH_ALEN];
+ 	__le16 vid;
+-	u8  dynamic;
+-	__le32 flush_mode;
+-} __packed __aligned(4);
++	u8 dest_type;
++	u8 dynamic;
++	u8 mac[ETH_ALEN];
++	u8 __pad[2];
++};
+ 
+ struct prestera_msg_bridge_req {
+ 	struct prestera_msg_cmd cmd;
+ 	__le32 port;
+ 	__le32 dev;
+ 	__le16 bridge;
++	__le16 __pad;
+ };
+ 
+ struct prestera_msg_bridge_resp {
+ 	struct prestera_msg_ret ret;
+ 	__le16 bridge;
++	__le16 __pad;
+ };
+ 
+ struct prestera_msg_acl_action {
+@@ -379,7 +386,7 @@ struct prestera_msg_acl_match {
+ 		struct {
+ 			u8 key[ETH_ALEN];
+ 			u8 mask[ETH_ALEN];
+-		} __packed mac;
++		} mac;
+ 	} keymask;
+ };
+ 
+@@ -408,16 +415,19 @@ struct prestera_msg_acl_ruleset_bind_req {
+ 	__le32 port;
+ 	__le32 dev;
+ 	__le16 ruleset_id;
++	__le16 __pad;
+ };
+ 
+ struct prestera_msg_acl_ruleset_req {
+ 	struct prestera_msg_cmd cmd;
+ 	__le16 id;
++	__le16 __pad;
+ };
+ 
+ struct prestera_msg_acl_ruleset_resp {
+ 	struct prestera_msg_ret ret;
+ 	__le16 id;
++	__le16 __pad;
+ };
+ 
+ struct prestera_msg_span_req {
+@@ -425,11 +435,13 @@ struct prestera_msg_span_req {
+ 	__le32 port;
+ 	__le32 dev;
+ 	u8 id;
++	u8 __pad[3];
+ };
+ 
+ struct prestera_msg_span_resp {
+ 	struct prestera_msg_ret ret;
+ 	u8 id;
++	u8 __pad[3];
+ };
+ 
+ struct prestera_msg_stp_req {
+@@ -437,12 +449,14 @@ struct prestera_msg_stp_req {
+ 	__le32 port;
+ 	__le32 dev;
+ 	__le16 vid;
+-	u8  state;
++	u8 state;
++	u8 __pad;
+ };
+ 
+ struct prestera_msg_rxtx_req {
+ 	struct prestera_msg_cmd cmd;
+ 	u8 use_sdma;
++	u8 __pad[3];
+ };
+ 
+ struct prestera_msg_rxtx_resp {
+@@ -455,12 +469,14 @@ struct prestera_msg_lag_req {
+ 	__le32 port;
+ 	__le32 dev;
+ 	__le16 lag_id;
++	__le16 __pad;
+ };
+ 
+ struct prestera_msg_cpu_code_counter_req {
+ 	struct prestera_msg_cmd cmd;
+ 	u8 counter_type;
+ 	u8 code;
++	u8 __pad[2];
+ };
+ 
+ struct mvsw_msg_cpu_code_counter_ret {
+@@ -485,21 +501,21 @@ union prestera_msg_event_fdb_param {
+ 
+ struct prestera_msg_event_fdb {
+ 	struct prestera_msg_event id;
+-	u8 dest_type;
++	__le32 vid;
+ 	union {
+ 		__le32 port_id;
+ 		__le16 lag_id;
+ 	} dest;
+-	__le32 vid;
+ 	union prestera_msg_event_fdb_param param;
+-} __packed __aligned(4);
++	u8 dest_type;
++};
+ 
+-static inline void prestera_hw_build_tests(void)
++static void prestera_hw_build_tests(void)
+ {
+ 	/* check requests */
+ 	BUILD_BUG_ON(sizeof(struct prestera_msg_common_req) != 4);
+ 	BUILD_BUG_ON(sizeof(struct prestera_msg_switch_attr_req) != 16);
+-	BUILD_BUG_ON(sizeof(struct prestera_msg_port_attr_req) != 120);
++	BUILD_BUG_ON(sizeof(struct prestera_msg_port_attr_req) != 140);
+ 	BUILD_BUG_ON(sizeof(struct prestera_msg_port_info_req) != 8);
+ 	BUILD_BUG_ON(sizeof(struct prestera_msg_vlan_req) != 16);
+ 	BUILD_BUG_ON(sizeof(struct prestera_msg_fdb_req) != 28);
+@@ -516,7 +532,7 @@ static inline void prestera_hw_build_tests(void)
+ 	/* check responses */
+ 	BUILD_BUG_ON(sizeof(struct prestera_msg_common_resp) != 8);
+ 	BUILD_BUG_ON(sizeof(struct prestera_msg_switch_init_resp) != 24);
+-	BUILD_BUG_ON(sizeof(struct prestera_msg_port_attr_resp) != 112);
++	BUILD_BUG_ON(sizeof(struct prestera_msg_port_attr_resp) != 132);
+ 	BUILD_BUG_ON(sizeof(struct prestera_msg_port_stats_resp) != 248);
+ 	BUILD_BUG_ON(sizeof(struct prestera_msg_port_info_resp) != 20);
+ 	BUILD_BUG_ON(sizeof(struct prestera_msg_bridge_resp) != 12);
+@@ -549,9 +565,9 @@ static int __prestera_cmd_ret(struct prestera_switch *sw,
+ 	if (err)
+ 		return err;
+ 
+-	if (__le32_to_cpu(ret->cmd.type) != PRESTERA_CMD_TYPE_ACK)
++	if (ret->cmd.type != __cpu_to_le32(PRESTERA_CMD_TYPE_ACK))
+ 		return -EBADE;
+-	if (__le32_to_cpu(ret->status) != PRESTERA_CMD_ACK_OK)
++	if (ret->status != __cpu_to_le32(PRESTERA_CMD_ACK_OK))
  		return -EINVAL;
- 	}
- 
-diff --git a/drivers/net/usb/lan78xx.c b/drivers/net/usb/lan78xx.c
-index ac5f72077b26..75984c799afc 100644
---- a/drivers/net/usb/lan78xx.c
-+++ b/drivers/net/usb/lan78xx.c
-@@ -3772,6 +3772,12 @@ static int lan78xx_probe(struct usb_interface *intf,
- 
- 	dev->maxpacket = usb_maxpacket(dev->udev, dev->pipe_out, 1);
- 
-+	/* Reject broken descriptors. */
-+	if (dev->maxpacket == 0) {
-+		ret = -ENODEV;
-+		goto out4;
-+	}
-+
- 	/* driver requires remote-wakeup capability during autosuspend. */
- 	intf->needs_remote_wakeup = 1;
- 
-diff --git a/drivers/net/usb/usbnet.c b/drivers/net/usb/usbnet.c
-index 84b354f76dea..867cadb1e5cc 100644
---- a/drivers/net/usb/usbnet.c
-+++ b/drivers/net/usb/usbnet.c
-@@ -1784,6 +1784,11 @@ usbnet_probe (struct usb_interface *udev, const struct usb_device_id *prod)
- 	if (!dev->rx_urb_size)
- 		dev->rx_urb_size = dev->hard_mtu;
- 	dev->maxpacket = usb_maxpacket (dev->udev, dev->out, 1);
-+	if (dev->maxpacket == 0) {
-+		/* that is a broken device */
-+		status = -ENODEV;
-+		goto out4;
-+	}
- 
- 	/* let userspace know we have a random address */
- 	if (ether_addr_equal(net->dev_addr, node_id))
-diff --git a/drivers/nfc/port100.c b/drivers/nfc/port100.c
-index 06bb226c62ef..0f37acec98ab 100644
---- a/drivers/nfc/port100.c
-+++ b/drivers/nfc/port100.c
-@@ -1012,11 +1012,11 @@ static u64 port100_get_command_type_mask(struct port100 *dev)
- 
- 	skb = port100_alloc_skb(dev, 0);
- 	if (!skb)
--		return -ENOMEM;
-+		return 0;
- 
- 	resp = port100_send_cmd_sync(dev, PORT100_CMD_GET_COMMAND_TYPE, skb);
- 	if (IS_ERR(resp))
--		return PTR_ERR(resp);
-+		return 0;
- 
- 	if (resp->len < 8)
- 		mask = 0;
-diff --git a/net/batman-adv/bridge_loop_avoidance.c b/net/batman-adv/bridge_loop_avoidance.c
-index 1401031f4bb4..b9e61fc3928a 100644
---- a/net/batman-adv/bridge_loop_avoidance.c
-+++ b/net/batman-adv/bridge_loop_avoidance.c
-@@ -1574,10 +1574,14 @@ int batadv_bla_init(struct batadv_priv *bat_priv)
- 		return 0;
- 
- 	bat_priv->bla.claim_hash = batadv_hash_new(128);
--	bat_priv->bla.backbone_hash = batadv_hash_new(32);
-+	if (!bat_priv->bla.claim_hash)
-+		return -ENOMEM;
- 
--	if (!bat_priv->bla.claim_hash || !bat_priv->bla.backbone_hash)
-+	bat_priv->bla.backbone_hash = batadv_hash_new(32);
-+	if (!bat_priv->bla.backbone_hash) {
-+		batadv_hash_destroy(bat_priv->bla.claim_hash);
- 		return -ENOMEM;
-+	}
- 
- 	batadv_hash_set_lock_class(bat_priv->bla.claim_hash,
- 				   &batadv_claim_hash_lock_class_key);
-diff --git a/net/batman-adv/main.c b/net/batman-adv/main.c
-index 79b8a2d8793e..bba64b9b3668 100644
---- a/net/batman-adv/main.c
-+++ b/net/batman-adv/main.c
-@@ -187,29 +187,41 @@ int batadv_mesh_init(struct net_device *soft_iface)
- 	INIT_HLIST_HEAD(&bat_priv->softif_vlan_list);
- 	INIT_HLIST_HEAD(&bat_priv->tp_list);
- 
--	ret = batadv_v_mesh_init(bat_priv);
--	if (ret < 0)
--		goto err;
--
- 	ret = batadv_originator_init(bat_priv);
--	if (ret < 0)
--		goto err;
-+	if (ret < 0) {
-+		atomic_set(&bat_priv->mesh_state, BATADV_MESH_DEACTIVATING);
-+		goto err_orig;
-+	}
- 
- 	ret = batadv_tt_init(bat_priv);
--	if (ret < 0)
--		goto err;
-+	if (ret < 0) {
-+		atomic_set(&bat_priv->mesh_state, BATADV_MESH_DEACTIVATING);
-+		goto err_tt;
-+	}
-+
-+	ret = batadv_v_mesh_init(bat_priv);
-+	if (ret < 0) {
-+		atomic_set(&bat_priv->mesh_state, BATADV_MESH_DEACTIVATING);
-+		goto err_v;
-+	}
- 
- 	ret = batadv_bla_init(bat_priv);
--	if (ret < 0)
--		goto err;
-+	if (ret < 0) {
-+		atomic_set(&bat_priv->mesh_state, BATADV_MESH_DEACTIVATING);
-+		goto err_bla;
-+	}
- 
- 	ret = batadv_dat_init(bat_priv);
--	if (ret < 0)
--		goto err;
-+	if (ret < 0) {
-+		atomic_set(&bat_priv->mesh_state, BATADV_MESH_DEACTIVATING);
-+		goto err_dat;
-+	}
- 
- 	ret = batadv_nc_mesh_init(bat_priv);
--	if (ret < 0)
--		goto err;
-+	if (ret < 0) {
-+		atomic_set(&bat_priv->mesh_state, BATADV_MESH_DEACTIVATING);
-+		goto err_nc;
-+	}
- 
- 	batadv_gw_init(bat_priv);
- 	batadv_mcast_init(bat_priv);
-@@ -219,8 +231,20 @@ int batadv_mesh_init(struct net_device *soft_iface)
  
  	return 0;
+@@ -1344,7 +1360,8 @@ int prestera_hw_port_speed_get(const struct prestera_port *port, u32 *speed)
+ int prestera_hw_port_autoneg_restart(struct prestera_port *port)
+ {
+ 	struct prestera_msg_port_attr_req req = {
+-		.attr = __cpu_to_le32(PRESTERA_CMD_PORT_ATTR_PHY_AUTONEG_RESTART),
++		.attr =
++		    __cpu_to_le32(PRESTERA_CMD_PORT_ATTR_PHY_AUTONEG_RESTART),
+ 		.port = __cpu_to_le32(port->hw_id),
+ 		.dev = __cpu_to_le32(port->dev_id),
+ 	};
+diff --git a/drivers/net/ethernet/marvell/prestera/prestera_main.c b/drivers/net/ethernet/marvell/prestera/prestera_main.c
+index 625b40149fac..4369a3ffad45 100644
+--- a/drivers/net/ethernet/marvell/prestera/prestera_main.c
++++ b/drivers/net/ethernet/marvell/prestera/prestera_main.c
+@@ -405,7 +405,8 @@ static int prestera_port_create(struct prestera_switch *sw, u32 id)
  
--err:
--	batadv_mesh_free(soft_iface);
-+err_nc:
-+	batadv_dat_free(bat_priv);
-+err_dat:
-+	batadv_bla_free(bat_priv);
-+err_bla:
-+	batadv_v_mesh_free(bat_priv);
-+err_v:
-+	batadv_tt_free(bat_priv);
-+err_tt:
-+	batadv_originator_free(bat_priv);
-+err_orig:
-+	batadv_purge_outstanding_packets(bat_priv, NULL);
-+	atomic_set(&bat_priv->mesh_state, BATADV_MESH_INACTIVE);
-+
- 	return ret;
- }
- 
-diff --git a/net/batman-adv/network-coding.c b/net/batman-adv/network-coding.c
-index 7f1be5a28757..d6749fc22236 100644
---- a/net/batman-adv/network-coding.c
-+++ b/net/batman-adv/network-coding.c
-@@ -167,8 +167,10 @@ int batadv_nc_mesh_init(struct batadv_priv *bat_priv)
- 				   &batadv_nc_coding_hash_lock_class_key);
- 
- 	bat_priv->nc.decoding_hash = batadv_hash_new(128);
--	if (!bat_priv->nc.decoding_hash)
-+	if (!bat_priv->nc.decoding_hash) {
-+		batadv_hash_destroy(bat_priv->nc.coding_hash);
- 		goto err;
-+	}
- 
- 	batadv_hash_set_lock_class(bat_priv->nc.decoding_hash,
- 				   &batadv_nc_decoding_hash_lock_class_key);
-diff --git a/net/batman-adv/translation-table.c b/net/batman-adv/translation-table.c
-index cc350ab4de0a..6bdb70c93e3f 100644
---- a/net/batman-adv/translation-table.c
-+++ b/net/batman-adv/translation-table.c
-@@ -4413,8 +4413,10 @@ int batadv_tt_init(struct batadv_priv *bat_priv)
- 		return ret;
- 
- 	ret = batadv_tt_global_init(bat_priv);
--	if (ret < 0)
-+	if (ret < 0) {
-+		batadv_tt_local_table_free(bat_priv);
- 		return ret;
-+	}
- 
- 	batadv_tvlv_handler_register(bat_priv, batadv_tt_tvlv_ogm_handler_v1,
- 				     batadv_tt_tvlv_unicast_handler_v1,
-diff --git a/net/core/dev.c b/net/core/dev.c
-index a6798117bb1a..397bc2f50de0 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -2846,6 +2846,12 @@ static u16 skb_tx_hash(const struct net_device *dev,
- 
- 		qoffset = sb_dev->tc_to_txq[tc].offset;
- 		qcount = sb_dev->tc_to_txq[tc].count;
-+		if (unlikely(!qcount)) {
-+			net_warn_ratelimited("%s: invalid qcount, qoffset %u for tc %u\n",
-+					     sb_dev->name, qoffset, tc);
-+			qoffset = 0;
-+			qcount = dev->real_num_tx_queues;
-+		}
+ 	err = prestera_port_cfg_mac_write(port, &cfg_mac);
+ 	if (err) {
+-		dev_err(prestera_dev(sw), "Failed to set port(%u) mac mode\n", id);
++		dev_err(prestera_dev(sw),
++			"Failed to set port(%u) mac mode\n", id);
+ 		goto err_port_init;
  	}
  
- 	if (skb_rx_queue_recorded(skb)) {
-diff --git a/net/ipv4/route.c b/net/ipv4/route.c
-index 730a15fc497c..b41d4acc57e6 100644
---- a/net/ipv4/route.c
-+++ b/net/ipv4/route.c
-@@ -625,14 +625,14 @@ static void fnhe_remove_oldest(struct fnhe_hash_bucket *hash)
- 	kfree_rcu(oldest, rcu);
- }
+@@ -418,7 +419,8 @@ static int prestera_port_create(struct prestera_switch *sw, u32 id)
+ 						    false, 0, 0,
+ 						    port->cfg_phy.mdix);
+ 		if (err) {
+-			dev_err(prestera_dev(sw), "Failed to set port(%u) phy mode\n", id);
++			dev_err(prestera_dev(sw),
++				"Failed to set port(%u) phy mode\n", id);
+ 			goto err_port_init;
+ 		}
+ 	}
+diff --git a/drivers/net/ethernet/marvell/prestera/prestera_pci.c b/drivers/net/ethernet/marvell/prestera/prestera_pci.c
+index 5d4d410b07c8..461259b3655a 100644
+--- a/drivers/net/ethernet/marvell/prestera/prestera_pci.c
++++ b/drivers/net/ethernet/marvell/prestera/prestera_pci.c
+@@ -411,7 +411,8 @@ static int prestera_fw_cmd_send(struct prestera_fw *fw, int qid,
+ 		goto cmd_exit;
+ 	}
  
--static inline u32 fnhe_hashfun(__be32 daddr)
-+static u32 fnhe_hashfun(__be32 daddr)
- {
--	static u32 fnhe_hashrnd __read_mostly;
--	u32 hval;
-+	static siphash_key_t fnhe_hash_key __read_mostly;
-+	u64 hval;
+-	memcpy_fromio(out_msg, prestera_fw_cmdq_buf(fw, qid) + in_size, ret_size);
++	memcpy_fromio(out_msg,
++		      prestera_fw_cmdq_buf(fw, qid) + in_size, ret_size);
  
--	net_get_random_once(&fnhe_hashrnd, sizeof(fnhe_hashrnd));
--	hval = jhash_1word((__force u32) daddr, fnhe_hashrnd);
--	return hash_32(hval, FNHE_HASH_SHIFT);
-+	net_get_random_once(&fnhe_hash_key, sizeof(fnhe_hash_key));
-+	hval = siphash_1u32((__force u32)daddr, &fnhe_hash_key);
-+	return hash_64(hval, FNHE_HASH_SHIFT);
- }
- 
- static void fill_route_from_fnhe(struct rtable *rt, struct fib_nh_exception *fnhe)
-diff --git a/net/ipv6/route.c b/net/ipv6/route.c
-index f884739a0c1c..d04f3951c5fb 100644
---- a/net/ipv6/route.c
-+++ b/net/ipv6/route.c
-@@ -45,6 +45,7 @@
- #include <linux/nsproxy.h>
- #include <linux/slab.h>
- #include <linux/jhash.h>
-+#include <linux/siphash.h>
- #include <net/net_namespace.h>
- #include <net/snmp.h>
- #include <net/ipv6.h>
-@@ -1337,17 +1338,24 @@ static void rt6_exception_remove_oldest(struct rt6_exception_bucket *bucket)
- static u32 rt6_exception_hash(const struct in6_addr *dst,
- 			      const struct in6_addr *src)
- {
--	static u32 seed __read_mostly;
--	u32 val;
-+	static siphash_key_t rt6_exception_key __read_mostly;
-+	struct {
-+		struct in6_addr dst;
-+		struct in6_addr src;
-+	} __aligned(SIPHASH_ALIGNMENT) combined = {
-+		.dst = *dst,
-+	};
-+	u64 val;
- 
--	net_get_random_once(&seed, sizeof(seed));
--	val = jhash(dst, sizeof(*dst), seed);
-+	net_get_random_once(&rt6_exception_key, sizeof(rt6_exception_key));
- 
- #ifdef CONFIG_IPV6_SUBTREES
- 	if (src)
--		val = jhash(src, sizeof(*src), val);
-+		combined.src = *src;
- #endif
--	return hash_32(val, FIB6_EXCEPTION_BUCKET_SIZE_SHIFT);
-+	val = siphash(&combined, sizeof(combined), &rt6_exception_key);
-+
-+	return hash_64(val, FIB6_EXCEPTION_BUCKET_SIZE_SHIFT);
- }
- 
- /* Helper function to find the cached rt in the hash table
-@@ -1446,6 +1454,7 @@ static int rt6_insert_exception(struct rt6_info *nrt,
- 	struct rt6_exception_bucket *bucket;
- 	struct in6_addr *src_key = NULL;
- 	struct rt6_exception *rt6_ex;
-+	int max_depth;
- 	int err = 0;
- 
- 	spin_lock_bh(&rt6_exception_lock);
-@@ -1507,7 +1516,9 @@ static int rt6_insert_exception(struct rt6_info *nrt,
- 	bucket->depth++;
- 	net->ipv6.rt6_stats->fib_rt_cache++;
- 
--	if (bucket->depth > FIB6_MAX_DEPTH)
-+	/* Randomize max depth to avoid some side channels attacks. */
-+	max_depth = FIB6_MAX_DEPTH + prandom_u32_max(FIB6_MAX_DEPTH);
-+	while (bucket->depth > max_depth)
- 		rt6_exception_remove_oldest(bucket);
- 
- out:
-diff --git a/net/sctp/sm_statefuns.c b/net/sctp/sm_statefuns.c
-index be5ea5e8b19e..ebca069064df 100644
---- a/net/sctp/sm_statefuns.c
-+++ b/net/sctp/sm_statefuns.c
-@@ -712,6 +712,9 @@ enum sctp_disposition sctp_sf_do_5_1D_ce(struct net *net,
- 	struct sock *sk;
- 	int error = 0;
- 
-+	if (asoc && !sctp_vtag_verify(chunk, asoc))
-+		return sctp_sf_pdiscard(net, ep, asoc, type, arg, commands);
-+
- 	/* If the packet is an OOTB packet which is temporarily on the
- 	 * control endpoint, respond with an ABORT.
- 	 */
-@@ -726,7 +729,8 @@ enum sctp_disposition sctp_sf_do_5_1D_ce(struct net *net,
- 	 * in sctp_unpack_cookie().
- 	 */
- 	if (!sctp_chunk_length_valid(chunk, sizeof(struct sctp_chunkhdr)))
--		return sctp_sf_pdiscard(net, ep, asoc, type, arg, commands);
-+		return sctp_sf_violation_chunklen(net, ep, asoc, type, arg,
-+						  commands);
- 
- 	/* If the endpoint is not listening or if the number of associations
- 	 * on the TCP-style socket exceed the max backlog, respond with an
-@@ -2156,9 +2160,11 @@ enum sctp_disposition sctp_sf_do_5_2_4_dupcook(
- 	 * enough for the chunk header.  Cookie length verification is
- 	 * done later.
- 	 */
--	if (!sctp_chunk_length_valid(chunk, sizeof(struct sctp_chunkhdr)))
--		return sctp_sf_violation_chunklen(net, ep, asoc, type, arg,
--						  commands);
-+	if (!sctp_chunk_length_valid(chunk, sizeof(struct sctp_chunkhdr))) {
-+		if (!sctp_vtag_verify(chunk, asoc))
-+			asoc = NULL;
-+		return sctp_sf_violation_chunklen(net, ep, asoc, type, arg, commands);
-+	}
- 
- 	/* "Decode" the chunk.  We have no optional parameters so we
- 	 * are in good shape.
-@@ -3577,6 +3583,9 @@ enum sctp_disposition sctp_sf_ootb(struct net *net,
- 
- 	SCTP_INC_STATS(net, SCTP_MIB_OUTOFBLUES);
- 
-+	if (asoc && !sctp_vtag_verify(chunk, asoc))
-+		asoc = NULL;
-+
- 	ch = (struct sctp_chunkhdr *)chunk->chunk_hdr;
- 	do {
- 		/* Report violation if the chunk is less then minimal */
-@@ -3692,12 +3701,6 @@ static enum sctp_disposition sctp_sf_shut_8_4_5(
- 
- 	SCTP_INC_STATS(net, SCTP_MIB_OUTCTRLCHUNKS);
- 
--	/* If the chunk length is invalid, we don't want to process
--	 * the reset of the packet.
--	 */
--	if (!sctp_chunk_length_valid(chunk, sizeof(struct sctp_chunkhdr)))
--		return sctp_sf_pdiscard(net, ep, asoc, type, arg, commands);
--
- 	/* We need to discard the rest of the packet to prevent
- 	 * potential bomming attacks from additional bundled chunks.
- 	 * This is documented in SCTP Threats ID.
-@@ -3725,6 +3728,9 @@ enum sctp_disposition sctp_sf_do_8_5_1_E_sa(struct net *net,
- {
- 	struct sctp_chunk *chunk = arg;
- 
-+	if (!sctp_vtag_verify(chunk, asoc))
-+		asoc = NULL;
-+
- 	/* Make sure that the SHUTDOWN_ACK chunk has a valid length. */
- 	if (!sctp_chunk_length_valid(chunk, sizeof(struct sctp_chunkhdr)))
- 		return sctp_sf_violation_chunklen(net, ep, asoc, type, arg,
-@@ -4555,6 +4561,9 @@ enum sctp_disposition sctp_sf_violation(struct net *net,
- {
- 	struct sctp_chunk *chunk = arg;
- 
-+	if (!sctp_vtag_verify(chunk, asoc))
-+		return sctp_sf_pdiscard(net, ep, asoc, type, arg, commands);
-+
- 	/* Make sure that the chunk has a valid length. */
- 	if (!sctp_chunk_length_valid(chunk, sizeof(struct sctp_chunkhdr)))
- 		return sctp_sf_violation_chunklen(net, ep, asoc, type, arg,
-@@ -6261,6 +6270,7 @@ static struct sctp_packet *sctp_ootb_pkt_new(
- 		 * yet.
- 		 */
- 		switch (chunk->chunk_hdr->type) {
-+		case SCTP_CID_INIT:
- 		case SCTP_CID_INIT_ACK:
- 		{
- 			struct sctp_initack_chunk *initack;
+ cmd_exit:
+ 	prestera_fw_write(fw, PRESTERA_CMDQ_REQ_CTL_REG(qid),
+-- 
+2.7.4
+
