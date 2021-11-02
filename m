@@ -2,119 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CF92443157
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 16:13:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D42744315E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 16:15:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234247AbhKBPQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 11:16:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50850 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230175AbhKBPQL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 11:16:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D3C960F24;
-        Tue,  2 Nov 2021 15:13:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635866016;
-        bh=BB+R/uffB4V5gOFeD0uput1lLasOetsv77SLC1aQ4KU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oea2cXP0x/vG+90qMT5cqaYMw/jruITLkn/ngexh6Bs/p3B8J+sDonHOvvogcpz7i
-         9QA+pK2OlRC7ZNhuP9WIQ/PxRXEaXdpDIchYSuMPp7R60WaH1I1g+roBXKuK5yhuK1
-         EipGwOvnxrpo7zyXUAR7h1yy9D4k5BkW+Qd5hwQZJJNWH1ImMacnjz9olkfBSell59
-         XS9ZPfXUAd3f7zrGmgo7JgRzIdgqWcXJ/VxTZX+3+y947c5s1nDkd/UvjnJXfIONun
-         LEYH/lxywQvkU5O7xUQo3eFm1uab5WRQ0O77L/fGAWdkrfMmk/u7f+F+nJoY5WdVB6
-         G2o5u/O/N0x5A==
-Received: by pali.im (Postfix)
-        id 4B64CA41; Tue,  2 Nov 2021 16:13:34 +0100 (CET)
-Date:   Tue, 2 Nov 2021 16:13:34 +0100
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Russell King <linux@armlinux.org.uk>, Andrew Lunn <andrew@lunn.ch>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI: Marvell: Update PCIe fixup
-Message-ID: <20211102151334.2pispbz6zfewworr@pali>
-References: <20211101150405.14618-1-pali@kernel.org>
- <20211102084241.GA6134@alpha.franken.de>
- <20211102090246.unmbruykfdjabfga@pali>
- <20211102094700.GA7376@alpha.franken.de>
- <20211102100034.rhcb3k2jvr6alm6y@pali>
- <20211102150201.GA11675@alpha.franken.de>
+        id S234279AbhKBPRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 11:17:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234268AbhKBPRa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 11:17:30 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2B03C0613B9
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 08:14:55 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id d10so43039131ybe.3
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 08:14:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=m4vo3xOow7zioCDniOqo/cUmPTsQ9k5oLRBoc2H5RmM=;
+        b=LjddqU8TuEc2mSGQVv8Shw6Rr8F04MBGWv+W9yGEUEesBAdukLgf4ydPLMDaao9Wdw
+         9WLQvTXkckHoyRv6v9GtcQoSUqzNA61qJKqXNqcM6Dnek77lhQqK/epy8W9dn2XJTY0D
+         5Hu193h2Bd0tO0VjKZX99CKIYedxlVnhR4JCkYCE/HxlIFSA2W+wXQ+pVuYUCi2eI8Dz
+         Wfc8Fj+9itDanLTLbQ94LQqSz2tUOXmnTPsWjOsTR54diV0sM/fHxQ2UILjdC/hLJtJL
+         Mg/UJHcPBF/D9ZufOMQ2XQlFAzttQ/jqQSJ9gzipUDab72pOLdanRYCcxzwlhw7og6jV
+         awxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=m4vo3xOow7zioCDniOqo/cUmPTsQ9k5oLRBoc2H5RmM=;
+        b=i1cN3rbnMZos7a/gMuJXh3djkDEpa/xbdypJWVRd5fwsxn7aoxE3MpodeloNAQVN20
+         McdDgQ5AShjyJ4ZGR2AMTAlYjO9JNvRyZuXHC2YObATm9Q2wo5nmqs/cKCEJsU7MWU0N
+         wfbO8emcpLk8sHPEq9CzhITfoQK/1xebLbV3FE40nfsamd25cz6UYEQL1qrFJP5opxA5
+         o/ri57u5bLNaeN71wjI1QNjRHP0KhTKxbvb31w6qS48XTW1hfQXYCKKh4bBTsv3jrYkz
+         TxEk8gckd6z7CsZr4ZPV9UUs7XDm/8CdVj3D607sNhqDb5SHXz418G8/zFncAXJ7ZOIs
+         1vcw==
+X-Gm-Message-State: AOAM532p8s0FmxjcWswGTegZ01faZDxCJVbnqxspWGZTrk2yp/n6sSpF
+        I/6y7BqSZRlmvMKzdZTSjJjzispUtAZWI9V9ZGskng==
+X-Google-Smtp-Source: ABdhPJzVNIQAwK+DaQmN14pKDqKRyuYzpi/QTvph4WYwByoDr2ZVNR43H0trqcjKVtUtTg2UFfwMO19+eG3dj3An+7g=
+X-Received: by 2002:a25:2f58:: with SMTP id v85mr33607068ybv.487.1635866094771;
+ Tue, 02 Nov 2021 08:14:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211102150201.GA11675@alpha.franken.de>
-User-Agent: NeoMutt/20180716
+References: <20211022014658.263508-1-surenb@google.com> <YXJwUUPjfg9wV6MQ@dhcp22.suse.cz>
+ <CAJuCfpEcSbK8WrufZjDj-7iUxiQtrmVTqHOxFUOvLhYGz6_ttQ@mail.gmail.com>
+ <CAJuCfpFccBJHHqfOKixJvLr7Xta_ojkdHGfGomwTDNKffzziRQ@mail.gmail.com>
+ <YXvxBSzA2YIxbwVC@dhcp22.suse.cz> <CAJuCfpHBoMGPOUvB2ZWQ=TxbFuWBRF++UaKJZDCrQV4mzb5kMA@mail.gmail.com>
+ <YX+nYGlZBOAljoeF@dhcp22.suse.cz> <CAJuCfpGC9-c9P40x7oy=jy5SphMcd0o0G_6U1-+JAziGKG6dGA@mail.gmail.com>
+ <YYDvm9c/7cGtBvw6@dhcp22.suse.cz>
+In-Reply-To: <YYDvm9c/7cGtBvw6@dhcp22.suse.cz>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Tue, 2 Nov 2021 08:14:43 -0700
+Message-ID: <CAJuCfpFX8FRynoK29h8tpRXRT-Kk+sHboiBnc7N-8MY6AAqVLw@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mm: prevent a race between process_mrelease and exit_mmap
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Christoph Hellwig <hch@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jann Horn <jannh@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Andrea Arcangeli <aarcange@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday 02 November 2021 16:02:01 Thomas Bogendoerfer wrote:
-> On Tue, Nov 02, 2021 at 11:00:34AM +0100, Pali Rohár wrote:
-> > > > But I do not have this hardware to verify it.
-> > > 
-> > > I still have a few Cobalt systems here.
-> > 
-> > Perfect! It would help if you could provide 'lspci -nn -vv' output from
-> > that system. In case you have very old version of lspci on that system
-> > you could try to run it with '-xxxx' (or '-xxx') which prints hexdump
-> > and I can parse it with local lspci.
-> 
-> not sure, if you still needed:
-> 
-> root@raq2:~# lspci -nn -vv
-> 00:00.0 Host bridge [0600]: Marvell Technology Group Ltd. Device [11ab:4146] (rev 11)
-> 	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx-
-> 	Status: Cap- 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort+ >SERR- <PERR+ INTx-
-> 	Latency: 64, Cache Line Size: 32 bytes
-> 	Interrupt: pin A routed to IRQ 0
-> 	Region 1: Memory at 08000000 (32-bit, non-prefetchable) [size=128M]
-> 	Region 2: Memory at 1c000000 (32-bit, non-prefetchable) [size=32M]
-> 	Region 3: Memory at 1f000000 (32-bit, non-prefetchable) [size=16M]
-> 	Region 4: Memory at 14000000 (32-bit, non-prefetchable) [size=4K]
-> 	Region 5: I/O ports at 4000000 [disabled] [size=4K]
-> 
-> 
-> root@raq2:~# lspci -xxxx
-> 00:00.0 Host bridge: Marvell Technology Group Ltd. Device 4146 (rev 11)
-> 00: ab 11 46 41 06 00 80 a2 11 00 80 05 08 40 00 00
+On Tue, Nov 2, 2021 at 12:58 AM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Mon 01-11-21 08:44:58, Suren Baghdasaryan wrote:
+> [...]
+> > I'm with you on this one, that's why I wanted to measure the price we
+> > would pay. Below are the test results:
+> >
+> > Test: https://lore.kernel.org/all/20170725142626.GJ26723@dhcp22.suse.cz/
+> > Compiled: gcc -O2 -static test.c -o test
+> > Test machine: 128 core / 256 thread 2x AMD EPYC 7B12 64-Core Processor
+> > (family 17h)
+> >
+> > baseline (Linus master, f31531e55495ca3746fb895ffdf73586be8259fa)
+> > p50 (median)   87412
+> > p95                  168210
+> > p99                  190058
+> > average           97843.8
+> > stdev               29.85%
+> >
+> > unconditional mmap_write_lock in exit_mmap (last column is the change
+> > from the baseline)
+> > p50 (median)   88312     +1.03%
+> > p95                  170797   +1.54%
+> > p99                  191813   +0.92%
+> > average           97659.5  -0.19%
+> > stdev               32.41%
+> >
+> > unconditional mmap_write_lock in exit_mmap + Matthew's patch (last
+> > column is the change from the baseline)
+> > p50 (median)   88807      +1.60%
+> > p95                  167783     -0.25%
+> > p99                  187853     -1.16%
+> > average           97491.4    -0.36%
+> > stdev               30.61%
+> >
+> > stdev is quite high in all cases, so the test is very noisy.
+> > The impact seems quite low IMHO. WDYT?
+>
+> Results being very noisy is what I recall as well. Thanks!
 
-                                 ^^ ^^ ^^
-                           Here is class code
+I believe, despite the noise, the percentiles show that overall we do
+not noticeably regress the exit path by taking mmap_lock
+unconditionally.
+If there are no objections, I would like to post a patchset which
+implements unconditional locking in exit_mmap() and process_madvise()
+calling __oom_reap_task_mm() under protection of read mmap_lock.
+Thanks!
 
-So it confirms that PCI Class code is 0580 which is Memory Controller.
-And not Host Bridge as it should be.
-
-If I put this hexdump into dump.txt and run 'lspci -F dump.txt -nn' then I see:
-00:00.0 Memory controller [0580]: Marvell Technology Group Ltd. Device [11ab:4146] (rev 11)
-
-In your output above is "Host bridge" which means that quirk was applied:
-00:00.0 Host bridge [0600]: Marvell Technology Group Ltd. Device [11ab:4146] (rev 11)
-
-(I guess in 'lspci -nn -vv -b' should be Memory controller as lspci with
-'-b' should not see that quirk change)
-
-> 10: 00 00 00 00 00 00 00 08 00 00 00 1c 00 00 00 1f
-> 20: 00 00 00 14 01 00 00 14 00 00 00 00 00 00 00 00
-> 30: 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 00
-> 40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> 50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> 60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> 70: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> 80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> 90: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> 
-> Thomas.
-> 
-> -- 
-> Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-> good idea.                                                [ RFC1925, 2.3 ]
+> --
+> Michal Hocko
+> SUSE Labs
