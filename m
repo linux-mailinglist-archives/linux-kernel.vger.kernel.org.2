@@ -2,161 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA45E4433F7
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 17:51:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9928C4433B1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 17:48:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235130AbhKBQxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 12:53:02 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:34728 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234928AbhKBQwJ (ORCPT
+        id S234901AbhKBQuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 12:50:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233404AbhKBQur (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 12:52:09 -0400
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1A2ELW5I011686;
-        Tue, 2 Nov 2021 17:49:21 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=selector1;
- bh=QJ6uXo4CEaD4BilyVlTiA31QtvvAdHcFZfiTCH/Jv/U=;
- b=SyxBB5Wmxqce4kvtjGlGooBkwoBhYMQxW1jBIpbmkTrGmQtONC94S3D19jpN1pv4cYsd
- cQcVtfLU4qiosRqjCTTp+ApLCu5g+1NZggXUaYPZiwT59jD3+qdIpeZTTnMBCNi/y2iV
- q2dktGQnLryKh9y/+vsilWEE/l/I5TewQskuLdC05mIXy3OTphz07vDFXlrtp55o6EfB
- ysGcql6O2Do/+A9A8Xnb5DGMozfuLSruW/yKxG40zewohfUF7ekwznzMDqam4N0Lty+Y
- KzCV7yORo2jAOT6lnf3LcvMY+ixCKzQUWLq18xindPvlkzu4Wl4UYXgl6AH4o6b9iInL Yw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3c2jfj6pjw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 02 Nov 2021 17:49:21 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 06F4D100038;
-        Tue,  2 Nov 2021 17:49:21 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id F205123535A;
-        Tue,  2 Nov 2021 17:49:20 +0100 (CET)
-Received: from localhost (10.75.127.46) by SFHDAG2NODE2.st.com (10.75.127.5)
- with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 2 Nov 2021 17:49:20
- +0100
-From:   Nicolas Toromanoff <nicolas.toromanoff@foss.st.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>
-CC:     Marek Vasut <marex@denx.de>,
-        Nicolas Toromanoff <nicolas.toromanoff@foss.st.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        <linux-crypto@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 8/8] crypto: stm32/cryp - reorder hw initialization
-Date:   Tue, 2 Nov 2021 17:47:29 +0100
-Message-ID: <20211102164729.9957-9-nicolas.toromanoff@foss.st.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211102164729.9957-1-nicolas.toromanoff@foss.st.com>
-References: <20211102164729.9957-1-nicolas.toromanoff@foss.st.com>
+        Tue, 2 Nov 2021 12:50:47 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7112C0613F5;
+        Tue,  2 Nov 2021 09:48:11 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id t7so20624887pgl.9;
+        Tue, 02 Nov 2021 09:48:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=Xhz9r7JZBOQDI5whNrjmgfij89zWmhOWkSDOjjnmQtU=;
+        b=LFq5SycnhAKDHq9ZyasKQkc8+vi8lqOCAUuILQ33aZtyJ1e00W9RjrwYzW3sja+mYk
+         5+lmaHTcJcMOCerhu4EIwjborGskve15iWDXO0KicLqjRXgrPY6cEH91q64qZMgZGFxy
+         83NRV1K6dz659Bzf43hOPPJvGnT3bMb44CiIyxCj0nVp00kXn7e4dV0Uy0d86tWWL7Uc
+         wD2AcpQMHRVzaeXEF7oCop5ZzXcbeAphTjQTb44rp0ixPRsWW4S9QobJPWfq3Q3SNO+m
+         XOiWQgWJ77XtntkkURIlAkL6y9Li3Yj953/27IS4g8QKBHMaW5fU2BqHXeeXL9ryyFV2
+         aEqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition;
+        bh=Xhz9r7JZBOQDI5whNrjmgfij89zWmhOWkSDOjjnmQtU=;
+        b=Hh0DBvspUoOQonxEzfgpI5WEJzLFWrZFTDdifvAdcKuwOs/Kd6XtNi0CtxBjD2woZt
+         +Kv6UZhQfNzTdp1V/gUgk+PRJeGNqaUPcm+xWQmYInkUCGEHa75VrACmQyC5AksPjtkk
+         E5/EGFTgUDvJ9BQJ237ZdTrdIXLybEEq7fPs2+JUqnx3a/bKZbiu7D1c3gvGAQpm9RL4
+         R2EHQK+ElIie/zQQLvWMMAgSAE8IPV1AQ20MENedJg0EpbU27+P1qlMuSkUtMvhQq3H/
+         XT1hkgoL/+l7BL5h8hZ3PWdagXErk9g5n3FZQtK8G1w3tCpPqP2qJlwQ5ak1rwwhuS3p
+         5jRA==
+X-Gm-Message-State: AOAM5316aTNR36m5tJwwtxSBsJXC2aPItpm24c0AEBdLoLFx+zuHdp5l
+        hsoKfGSl/6RfuXTfR3b+lK0=
+X-Google-Smtp-Source: ABdhPJz2XdH0RwG9i9PgDghtTp4v9ZF5yp0LKtfKT+kYBORV67Iu3RkXkje/UdWUmel8K32Oew/2rQ==
+X-Received: by 2002:a63:154:: with SMTP id 81mr28375443pgb.38.1635871691043;
+        Tue, 02 Nov 2021 09:48:11 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id m184sm15625698pga.40.2021.11.02.09.48.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Nov 2021 09:48:10 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 2 Nov 2021 06:48:09 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] cgroup changes for v5.16-rc1
+Message-ID: <YYFryTJQxFok0jo/@slm.duckdns.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.46]
-X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-02_08,2021-11-02_01,2020-04-07_01
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The CRYP IP checks the written key depending of the configuration, it's
-safer to write the whole configuration to hardware then the key to avoid
-unexpected key rejection.
+Hello,
 
-Signed-off-by: Nicolas Toromanoff <nicolas.toromanoff@foss.st.com>
----
- drivers/crypto/stm32/stm32-cryp.c | 39 ++++++++++++++++++++-----------
- 1 file changed, 26 insertions(+), 13 deletions(-)
+* The misc controller now reports allocation rejections through misc.events
+  instead of printking.
 
-diff --git a/drivers/crypto/stm32/stm32-cryp.c b/drivers/crypto/stm32/stm32-cryp.c
-index 5962fbb0bc91..d99eea9cb8cd 100644
---- a/drivers/crypto/stm32/stm32-cryp.c
-+++ b/drivers/crypto/stm32/stm32-cryp.c
-@@ -232,6 +232,11 @@ static inline int stm32_cryp_wait_busy(struct stm32_cryp *cryp)
- 			!(status & SR_BUSY), 10, 100000);
- }
- 
-+static inline void stm32_cryp_enable(struct stm32_cryp *cryp)
-+{
-+	writel_relaxed(readl_relaxed(cryp->regs + CRYP_CR) | CR_CRYPEN, cryp->regs + CRYP_CR);
-+}
-+
- static inline int stm32_cryp_wait_enable(struct stm32_cryp *cryp)
- {
- 	u32 status;
-@@ -534,9 +539,6 @@ static int stm32_cryp_hw_init(struct stm32_cryp *cryp)
- 	/* Disable interrupt */
- 	stm32_cryp_write(cryp, CRYP_IMSCR, 0);
- 
--	/* Set key */
--	stm32_cryp_hw_write_key(cryp);
--
- 	/* Set configuration */
- 	cfg = CR_DATA8 | CR_FFLUSH;
- 
-@@ -562,23 +564,36 @@ static int stm32_cryp_hw_init(struct stm32_cryp *cryp)
- 	/* AES ECB/CBC decrypt: run key preparation first */
- 	if (is_decrypt(cryp) &&
- 	    ((hw_mode == CR_AES_ECB) || (hw_mode == CR_AES_CBC))) {
--		stm32_cryp_write(cryp, CRYP_CR, cfg | CR_AES_KP | CR_CRYPEN);
-+		/* Configure in key preparation mode */
-+		stm32_cryp_write(cryp, CRYP_CR, cfg | CR_AES_KP);
- 
-+		/* Set key only after full configuration done */
-+		stm32_cryp_hw_write_key(cryp);
-+
-+		/* Start prepare key */
-+		stm32_cryp_enable(cryp);
- 		/* Wait for end of processing */
- 		ret = stm32_cryp_wait_busy(cryp);
- 		if (ret) {
- 			dev_err(cryp->dev, "Timeout (key preparation)\n");
- 			return ret;
- 		}
--	}
- 
--	cfg |= hw_mode;
-+		cfg |= hw_mode | CR_DEC_NOT_ENC;
- 
--	if (is_decrypt(cryp))
--		cfg |= CR_DEC_NOT_ENC;
-+		/* Apply updated config (Decrypt + algo) and flush */
-+		stm32_cryp_write(cryp, CRYP_CR, cfg);
-+	} else {
-+		cfg |= hw_mode;
-+		if (is_decrypt(cryp))
-+			cfg |= CR_DEC_NOT_ENC;
- 
--	/* Apply config and flush (valid when CRYPEN = 0) */
--	stm32_cryp_write(cryp, CRYP_CR, cfg);
-+		/* Apply config and flush */
-+		stm32_cryp_write(cryp, CRYP_CR, cfg);
-+
-+		/* Set key only after configuration done */
-+		stm32_cryp_hw_write_key(cryp);
-+	}
- 
- 	switch (hw_mode) {
- 	case CR_AES_GCM:
-@@ -606,9 +621,7 @@ static int stm32_cryp_hw_init(struct stm32_cryp *cryp)
- 	}
- 
- 	/* Enable now */
--	cfg |= CR_CRYPEN;
--
--	stm32_cryp_write(cryp, CRYP_CR, cfg);
-+	stm32_cryp_enable(cryp);
- 
- 	return 0;
- }
+* cgroup_mutex usage is reduced to improve scalability of some operations.
+
+* vhost helper threads are now assigned to the right cgroup on cgroup2.
+
+* Bug fixes.
+
+Thanks.
+
+The following changes since commit c0002d11d79900f8aa5c8375336434940d6afedf:
+
+  cgroupv2, docs: fix misinformation in "device controller" section (2021-09-13 08:08:46 -1000)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.16
+
+for you to fetch changes up to 588e5d8766486e52ee332a4bb097b016a355b465:
+
+  cgroup: bpf: Move wrapper for __cgroup_bpf_*() to kernel/bpf/cgroup.c (2021-11-01 06:49:00 -1000)
+
+----------------------------------------------------------------
+Chunguang Xu (3):
+      misc_cgroup: introduce misc.events to count failures
+      misc_cgroup: remove error log to avoid log flood
+      docs/cgroup: add entry for misc.events
+
+Dan Schatzberg (1):
+      cgroup: Fix rootcg cpu.stat guest double counting
+
+He Fengqing (1):
+      cgroup: bpf: Move wrapper for __cgroup_bpf_*() to kernel/bpf/cgroup.c
+
+Shakeel Butt (3):
+      cgroup: reduce dependency on cgroup_mutex
+      cgroup: remove cgroup_mutex from cgroupstats_build
+      cgroup: no need for cgroup_mutex for /proc/cgroups
+
+Vishal Verma (1):
+      cgroup: cgroup-v1: do not exclude cgrp_dfl_root
+
+Waiman Long (1):
+      cgroup: Make rebind_subsystems() disable v2 controllers all at once
+
+ Documentation/admin-guide/cgroup-v2.rst |  10 +++
+ include/linux/bpf-cgroup.h              |  20 ------
+ include/linux/misc_cgroup.h             |   6 +-
+ kernel/bpf/cgroup.c                     |  54 +++++++++++---
+ kernel/cgroup/cgroup-v1.c               |  17 ++---
+ kernel/cgroup/cgroup.c                  | 120 +++++++++++++++-----------------
+ kernel/cgroup/misc.c                    |  31 +++++++--
+ kernel/cgroup/rstat.c                   |   2 -
+ 8 files changed, 144 insertions(+), 116 deletions(-)
+
 -- 
-2.17.1
-
+tejun
