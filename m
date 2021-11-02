@@ -2,121 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 269B9442833
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 08:20:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54A2B442837
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 08:20:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230005AbhKBHXP convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 2 Nov 2021 03:23:15 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:59147 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230465AbhKBHXN (ORCPT
+        id S231482AbhKBHXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 03:23:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56934 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231138AbhKBHXX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 03:23:13 -0400
-Received: from smtpclient.apple (p4fefc15c.dip0.t-ipconnect.de [79.239.193.92])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 86F41CECE9;
-        Tue,  2 Nov 2021 08:20:36 +0100 (CET)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 15.0 \(3693.20.0.1.32\))
-Subject: Re: [PATCH v1 1/3] serdev: Add interface serdev_device_ioctl
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <1635836707-29341-1-git-send-email-zijuhu@codeaurora.org>
-Date:   Tue, 2 Nov 2021 08:20:36 +0100
-Cc:     robh@kernel.org, Greg KH <gregkh@linuxfoundation.org>,
-        jirislaby@kernel.org, linux-serial@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        Zijun Hu <quic_zijuhu@quicinc.com>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <C6172915-FCF9-4638-BB9C-F7E9FCAEF9F0@holtmann.org>
-References: <1635836707-29341-1-git-send-email-zijuhu@codeaurora.org>
-To:     Zijun Hu <zijuhu@codeaurora.org>
-X-Mailer: Apple Mail (2.3693.20.0.1.32)
+        Tue, 2 Nov 2021 03:23:23 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3395EC061714;
+        Tue,  2 Nov 2021 00:20:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=wDLhAnhRGJ38F/R5GBK7oivxF6ESZSsILVg+gz9cSFI=; b=OouaVoGtagEHDIi4N16OO6TvNo
+        m+z7eZobmUwYUoALqjEs0GnipY2N0Dz2cYcN4eOXmdI+yGrhrVouqPGgq2THVRLw9MZwN4eeTmt6z
+        X3gwYUDGagCxLEg4r+zC06bgNS3+eL3BfmqSd+ZYcSLPNvIaZBzDRLcniJ2KzrYVbAQx6tNDVQwPU
+        MtCJykhhLXONYq1xGfTBAQ8xh8n5FX64lL3Hw/k6zvDR1WA93h45nrSa+LmqlTjOEILvDxU5z4iP1
+        cPdaMa967H30t8qYMsHmlLAdxGR5ywc0EemFFC1r8WDgKQdp6NY9KxRzO8IoOl0Bq5WE4isHs55MG
+        NOLWVxGw==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mho6B-000lC1-5f; Tue, 02 Nov 2021 07:20:47 +0000
+Date:   Tue, 2 Nov 2021 00:20:47 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH 13/21] iomap: Convert readahead and readpage to use a
+ folio
+Message-ID: <YYDmz8olTe/Qr2ch@infradead.org>
+References: <20211101203929.954622-1-willy@infradead.org>
+ <20211101203929.954622-14-willy@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211101203929.954622-14-willy@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zijun,
+On Mon, Nov 01, 2021 at 08:39:21PM +0000, Matthew Wilcox (Oracle) wrote:
+>  	for (done = 0; done < length; done += ret) {
+> -		if (ctx->cur_page && offset_in_page(iter->pos + done) == 0) {
+> -			if (!ctx->cur_page_in_bio)
+> -				unlock_page(ctx->cur_page);
+> -			put_page(ctx->cur_page);
+> -			ctx->cur_page = NULL;
+> +		if (ctx->cur_folio &&
+> +		    offset_in_folio(ctx->cur_folio, iter->pos + done) == 0) {
+> +			if (!ctx->cur_folio_in_bio)
+> +				folio_unlock(ctx->cur_folio);
+> +			ctx->cur_folio = NULL;
 
-> For serdev_device which is mounted at virtual tty port, tty ioctl()
-> maybe be used to make serdev_device ready to talk with tty port, so
-> add interface serdev_device_ioctl().
-> 
-> Signed-off-by: Zijun Hu <quic_zijuhu@quicinc.com>
-> ---
-> drivers/tty/serdev/core.c           | 13 +++++++++++++
-> drivers/tty/serdev/serdev-ttyport.c | 12 ++++++++++++
-> include/linux/serdev.h              |  9 +++++++++
-> 3 files changed, 34 insertions(+)
-> 
-> diff --git a/drivers/tty/serdev/core.c b/drivers/tty/serdev/core.c
-> index f1324fe99378..dee934203277 100644
-> --- a/drivers/tty/serdev/core.c
-> +++ b/drivers/tty/serdev/core.c
-> @@ -405,6 +405,19 @@ int serdev_device_set_tiocm(struct serdev_device *serdev, int set, int clear)
-> }
-> EXPORT_SYMBOL_GPL(serdev_device_set_tiocm);
-> 
-> +int serdev_device_ioctl(struct serdev_device *serdev, unsigned int cmd, unsigned long arg)
-> +{
-> +	struct serdev_controller *ctrl = serdev->ctrl;
-> +
-> +	if (!ctrl)
-> +		return -ENOTTY;
-> +	else if	(!ctrl->ops->ioctl)
-> +		return -ENOSYS;
-> +	else
-> +		return ctrl->ops->ioctl(ctrl, cmd, arg);
-> +}
-> +EXPORT_SYMBOL_GPL(serdev_device_ioctl);
-> +
-> static int serdev_drv_probe(struct device *dev)
-> {
-> 	const struct serdev_device_driver *sdrv = to_serdev_device_driver(dev->driver);
-> diff --git a/drivers/tty/serdev/serdev-ttyport.c b/drivers/tty/serdev/serdev-ttyport.c
-> index d367803e2044..66afad1eb1b7 100644
-> --- a/drivers/tty/serdev/serdev-ttyport.c
-> +++ b/drivers/tty/serdev/serdev-ttyport.c
-> @@ -247,6 +247,17 @@ static int ttyport_set_tiocm(struct serdev_controller *ctrl, unsigned int set, u
-> 	return tty->ops->tiocmset(tty, set, clear);
-> }
-> 
-> +static int ttyport_ioctl(struct serdev_controller *ctrl, unsigned int cmd, unsigned long arg)
-> +{
-> +	struct serport *serport = serdev_controller_get_drvdata(ctrl);
-> +	struct tty_struct *tty = serport->tty;
-> +
-> +	if (!tty->ops->ioctl)
-> +		return -ENOSYS;
-> +
-> +	return tty->ops->ioctl(tty, cmd, arg);
-> +}
-> +
-> static const struct serdev_controller_ops ctrl_ops = {
-> 	.write_buf = ttyport_write_buf,
-> 	.write_flush = ttyport_write_flush,
-> @@ -259,6 +270,7 @@ static const struct serdev_controller_ops ctrl_ops = {
-> 	.wait_until_sent = ttyport_wait_until_sent,
-> 	.get_tiocm = ttyport_get_tiocm,
-> 	.set_tiocm = ttyport_set_tiocm,
-> +	.ioctl = ttyport_ioctl,
-> };
-> 
-> struct device *serdev_tty_port_register(struct tty_port *port,
-> diff --git a/include/linux/serdev.h b/include/linux/serdev.h
-> index 3368c261ab62..5804201fafb2 100644
-> --- a/include/linux/serdev.h
-> +++ b/include/linux/serdev.h
-> @@ -91,6 +91,7 @@ struct serdev_controller_ops {
-> 	void (*wait_until_sent)(struct serdev_controller *, long);
-> 	int (*get_tiocm)(struct serdev_controller *);
-> 	int (*set_tiocm)(struct serdev_controller *, unsigned int, unsigned int);
-> +	int (*ioctl)(struct serdev_controller *ctrl, unsigned int cmd, unsigned long arg);
-> };
+Where did the put_page here disappear to?
 
-I thought the conclusion was not do this and instead have a proper Bluetooth driver. So please drop this patch.
+> @@ -403,10 +403,9 @@ void iomap_readahead(struct readahead_control *rac, const struct iomap_ops *ops)
+>  
+>  	if (ctx.bio)
+>  		submit_bio(ctx.bio);
+> -	if (ctx.cur_page) {
+> -		if (!ctx.cur_page_in_bio)
+> -			unlock_page(ctx.cur_page);
+> -		put_page(ctx.cur_page);
+> +	if (ctx.cur_folio) {
+> +		if (!ctx.cur_folio_in_bio)
+> +			folio_unlock(ctx.cur_folio);
 
-Regards
-
-Marcel
-
+... and here?
