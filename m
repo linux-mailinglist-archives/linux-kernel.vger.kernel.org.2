@@ -2,566 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB00D442D82
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 13:06:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5851442C09
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 12:02:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231138AbhKBMI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 08:08:59 -0400
-Received: from ixit.cz ([94.230.151.217]:53412 "EHLO ixit.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230504AbhKBMI6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 08:08:58 -0400
-Received: from [10.30.101.165] (unknown [213.151.89.154])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        id S231200AbhKBLEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 07:04:52 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:49406 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229931AbhKBLEo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 07:04:44 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1635850929; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: To:
+ Subject: Sender; bh=qXzp9Dq3okeTeCCG2IPt/sqOPmtUhJPZ3qV0EbiFkQo=; b=Ouy0qSQBJEIGpYqO81R4pohGM95pPrdpUjSQLyIDN7pc/YOD9daVSkdB2/MKkANQV11GIaIk
+ hzro0B593zYK9CFp74BTkzxtbhzt1DiAgC4+cIEAmKV3QAxVrSVj0+c2iX1H1OIhd2QJHi01
+ thXqhvf8Hhl2EaCbDmsLaW2AlQE=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 61811a94c8c1b282a56f6d22 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 02 Nov 2021 11:01:40
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 25BD7C4360C; Tue,  2 Nov 2021 11:01:40 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-5.4 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [10.242.143.72] (unknown [202.46.23.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id 6E35A23D91;
-        Tue,  2 Nov 2021 11:54:57 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-        t=1635850498;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kcR+UbX7AAZrx18Zkaz7kifP0coYY6gO+cS+5WvnmCU=;
-        b=OVQhQOWT2Sr5xuW/jN78LsLBpuP3hnkYXShElxphD5X+ICOmag3Mm+1j6jAf0qKlqqnlA1
-        q6stjP4kujPbomZlNKpKCUfa07FoAvDp/8BG7mR6u9ouFKDh50VyXyh1Oq8hT3Gl790L3F
-        X1LfllcAufEiTnMuPt6LJkUGJfvBJT4=
-Date:   Tue, 02 Nov 2021 11:54:51 +0100
-From:   David Heidelberg <david@ixit.cz>
-Subject: Re: [PATCH v2 1/3] ARM: dts: make dts use gpio-fan matrix instead of
- array
-To:     Simon Guinot <simon.guinot@sequanux.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        ~okias/devicetree@lists.sr.ht, phone-devel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-Message-Id: <FBYX1R.0YW8ZV2YAPGR2@ixit.cz>
-In-Reply-To: <20211102093014.GL13663@kw.sim.vm.gnt>
-References: <20211029114948.41841-1-david@ixit.cz>
-        <20211102093014.GL13663@kw.sim.vm.gnt>
-X-Mailer: geary/40.0
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 76430C43616;
+        Tue,  2 Nov 2021 11:01:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 76430C43616
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH v4 2/2] ASoC: qcom: SC7280: Add machine driver
+To:     Stephen Boyd <swboyd@chromium.org>, agross@kernel.org,
+        alsa-devel@alsa-project.org, bgoswami@codeaurora.org,
+        bjorn.andersson@linaro.org, broonie@kernel.org,
+        devicetree@vger.kernel.org, judyhsiao@chromium.org,
+        lgirdwood@gmail.com, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, perex@perex.cz, plai@codeaurora.org,
+        robh+dt@kernel.org, rohitkr@codeaurora.org,
+        srinivas.kandagatla@linaro.org, tiwai@suse.com
+References: <1635519876-7112-1-git-send-email-srivasam@codeaurora.org>
+ <1635519876-7112-3-git-send-email-srivasam@codeaurora.org>
+ <CAE-0n51zXLZiaB9aCdv=p_Wcxr5ZEdN-=b1hd5VATL6-CD0vRw@mail.gmail.com>
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Organization: Qualcomm India Private Limited.
+Message-ID: <ee81276a-0715-0e55-9944-6c021075911e@codeaurora.org>
+Date:   Tue, 2 Nov 2021 16:31:32 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+In-Reply-To: <CAE-0n51zXLZiaB9aCdv=p_Wcxr5ZEdN-=b1hd5VATL6-CD0vRw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+On 10/30/2021 12:40 AM, Stephen Boyd wrote:
+Thanks for our time Stephen!!!
+> Quoting Srinivasa Rao Mandadapu (2021-10-29 08:04:36)
+>> diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
+>> index cc7c1de..d9ffcb7 100644
+>> --- a/sound/soc/qcom/Kconfig
+>> +++ b/sound/soc/qcom/Kconfig
+>> @@ -152,4 +152,16 @@ config SND_SOC_SC7180
+>>            SC7180 SoC-based systems.
+>>            Say Y if you want to use audio device on this SoCs.
+>>
+>> +config SND_SOC_SC7280
+>> +       tristate "SoC Machine driver for SC7280 boards"
+>> +       depends on I2C && SOUNDWIRE
+> Add || COMPILE_TEST so we can compile test this driver?
+Okay. Will add it.
+>
+>> +       select SND_SOC_QCOM_COMMON
+>> +       select SND_SOC_MAX98357A
+>> +       select SND_SOC_LPASS_RX_MACRO
+>> +       select SND_SOC_LPASS_TX_MACRO
+>> +       help
+>> +         To add support for audio on Qualcomm Technologies Inc.
+> Drop "To"?
+Okay.
+>
+>> +         SC7280 SoC-based systems.
+>> +         Say Y if you want to use audio device on this SoCs.
+>> +
+>>   endif #SND_SOC_QCOM
+>> diff --git a/sound/soc/qcom/sc7280.c b/sound/soc/qcom/sc7280.c
+>> new file mode 100644
+>> index 0000000..1d73b4f
+>> --- /dev/null
+>> +++ b/sound/soc/qcom/sc7280.c
+>> @@ -0,0 +1,343 @@
+>> +// SPDX-License-Identifier: GPL-2.0-only
+>> +//
+>> +// Copyright (c) 2020-2021, The Linux Foundation. All rights reserved.
+>> +//
+>> +// sc7280.c -- ALSA SoC Machine driver for sc7280
+> Please remove filename from the comment as it's not useful and may
+> change.
+Okay.
+>> +
+>> +#include <linux/gpio.h>
+> [...]
+>> +
+>> +static void sc7280_snd_shutdown(struct snd_pcm_substream *substream)
+>> +{
+>> +       struct snd_soc_pcm_runtime *rtd = substream->private_data;
+>> +       struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
+>> +
+>> +       switch (cpu_dai->id) {
+>> +       case LPASS_CDC_DMA_RX0:
+>> +       case LPASS_CDC_DMA_TX3:
+>> +       case LPASS_CDC_DMA_VA_TX0:
+>> +               break;
+>> +       case MI2S_SECONDARY:
+>> +               break;
+>> +       case LPASS_DP_RX:
+>> +               break;
+>> +       default:
+>> +               dev_err(rtd->dev, "%s: invalid dai id %d\n", __func__, cpu_dai->id);
+>> +               break;
+>> +       }
+> The function doesn't do anything though. Why do we care?
+Okay. will remove 'sc7280_snd_startup' and 'sc7280_snd_shutdown'.
+>
+>> +}
+>> +
+>> +static const struct snd_soc_ops sc7280_ops = {
+>> +       .startup = sc7280_snd_startup,
+>> +       .shutdown = sc7280_snd_shutdown,
+>> +       .hw_params = sc7280_snd_hw_params,
+>> +       .hw_free = sc7280_snd_hw_free,
+>> +       .prepare = sc7280_snd_prepare,
+>> +};
+>> +
+>> +static const struct snd_soc_dapm_widget sc7280_snd_widgets[] = {
+>> +       SND_SOC_DAPM_HP("Headphone Jack", NULL),
+>> +       SND_SOC_DAPM_MIC("Headset Mic", NULL),
+>> +};
+>> +
+>> +static int sc7280_snd_platform_probe(struct platform_device *pdev)
+>> +{
+>> +       struct snd_soc_card *card;
+>> +       struct sc7280_snd_data *data;
+>> +       struct device *dev = &pdev->dev;
+>> +       struct snd_soc_dai_link *link;
+>> +       int ret, i;
+>> +
+>> +       data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
+>> +       if (!data)
+>> +               return -ENOMEM;
+>> +
+>> +       card = &data->card;
+>> +       snd_soc_card_set_drvdata(card, data);
+>> +
+>> +       card->owner = THIS_MODULE;
+>> +       card->driver_name = "SC7280";
+>> +       card->dev = dev;
+>> +
+>> +       ret = qcom_snd_parse_of(card);
+>> +       if (ret)
+>> +               return ret;
+>> +
+>> +       for_each_card_prelinks(card, i, link) {
+>> +               link->init = sc7280_init;
+>> +               link->ops = &sc7280_ops;
+>> +       }
+>> +
+>> +       return devm_snd_soc_register_card(dev, card);
+>> +}
+>> +
+>> +static const struct of_device_id sc7280_snd_device_id[]  = {
+>> +       {.compatible = "google,sc7280-herobrine"},
+> Please add space after { and before }
+Okay.
+>> +       {}
+>> +};
+>> +MODULE_DEVICE_TABLE(of, sc7280_snd_device_id);
 
-
-On Tue, Nov 2 2021 at 10:30:14 +0100, Simon Guinot 
-<simon.guinot@sequanux.org> wrote:
-> Hi David,
-> 
-> For the LaCie and Seagate boards:
-> 
-> Acked-by: Simon Guinot <simon.guinot@sequanux.org>
-> 
-> In addition, can you ensure that the example in
-> Documentation/devicetree/bindings/hwmon/gpio-fan.txt is updated as 
-> well ?
-
-Hello Simon,
-
-third patch in this series takes care of it, together with conversion 
-to the YAML format.
-
-David
-
-> 
-> Thanks.
-> 
-> Simon
-> 
-> On Fri, Oct 29, 2021 at 01:49:44PM +0200, David Heidelberg wrote:
->>  No functional changes.
->> 
->>  Adjust to comply with dt-schema requirements
->>  and make possible to validate values.
->> 
->>  Signed-off-by: David Heidelberg <david@ixit.cz>
->>  ---
->>   arch/arm/boot/dts/armada-370-rd.dts           |   2 +-
->>   .../boot/dts/armada-370-seagate-nas-2bay.dts  |   8 +-
->>   .../boot/dts/armada-370-seagate-nas-4bay.dts  |   8 +-
->>   .../boot/dts/armada-370-synology-ds213j.dts   |  16 +--
->>   .../boot/dts/armada-385-synology-ds116.dts    |  16 +--
->>   arch/arm/boot/dts/armada-388-gp.dts           |   4 +-
->>   arch/arm/boot/dts/kirkwood-dnskw.dtsi         |   6 +-
->>   .../boot/dts/kirkwood-linkstation-6282.dtsi   |   9 +-
->>   .../boot/dts/kirkwood-linkstation-lswxl.dts   |   9 +-
->>   arch/arm/boot/dts/kirkwood-lsxl.dtsi          |   9 +-
->>   arch/arm/boot/dts/kirkwood-ns2max.dts         |  18 ++--
->>   arch/arm/boot/dts/kirkwood-ns2mini.dts        |  18 ++--
->>   arch/arm/boot/dts/kirkwood-synology.dtsi      | 102 
->> +++++++++---------
->>   arch/arm/boot/dts/mvebu-linkstation-fan.dtsi  |   8 +-
->>   arch/arm/boot/dts/tegra30-ouya.dts            |   4 +-
->>   15 files changed, 123 insertions(+), 114 deletions(-)
->> 
->>  diff --git a/arch/arm/boot/dts/armada-370-rd.dts 
->> b/arch/arm/boot/dts/armada-370-rd.dts
->>  index c910d157a686..041c99b99921 100644
->>  --- a/arch/arm/boot/dts/armada-370-rd.dts
->>  +++ b/arch/arm/boot/dts/armada-370-rd.dts
->>  @@ -96,7 +96,7 @@ button {
->>   			gpio-fan {
->>   				compatible = "gpio-fan";
->>   				gpios = <&gpio0 8 GPIO_ACTIVE_HIGH>;
->>  -				gpio-fan,speed-map = <0 0 3000 1>;
->>  +				gpio-fan,speed-map = <0 0>, <3000 1>;
->>   				pinctrl-0 = <&fan_pins>;
->>   				pinctrl-names = "default";
->>   			};
->>  diff --git a/arch/arm/boot/dts/armada-370-seagate-nas-2bay.dts 
->> b/arch/arm/boot/dts/armada-370-seagate-nas-2bay.dts
->>  index 8dd242e668e6..6ec3dd3337f4 100644
->>  --- a/arch/arm/boot/dts/armada-370-seagate-nas-2bay.dts
->>  +++ b/arch/arm/boot/dts/armada-370-seagate-nas-2bay.dts
->>  @@ -25,9 +25,9 @@ / {
->> 
->>   	gpio-fan {
->>   		gpio-fan,speed-map =
->>  -			<   0 3
->>  -			  950 2
->>  -			 1400 1
->>  -			 1800 0>;
->>  +			<   0 3>,
->>  +			< 950 2>,
->>  +			<1400 1>,
->>  +			<1800 0>;
->>   	};
->>   };
->>  diff --git a/arch/arm/boot/dts/armada-370-seagate-nas-4bay.dts 
->> b/arch/arm/boot/dts/armada-370-seagate-nas-4bay.dts
->>  index 3cf70c72c5ca..d62e32e9ddb5 100644
->>  --- a/arch/arm/boot/dts/armada-370-seagate-nas-4bay.dts
->>  +++ b/arch/arm/boot/dts/armada-370-seagate-nas-4bay.dts
->>  @@ -109,10 +109,10 @@ NS_V2_LED_ON   1 0
->> 
->>   	gpio-fan {
->>   		gpio-fan,speed-map =
->>  -			<   0 3
->>  -			  800 2
->>  -			  1050 1
->>  -			  1300 0>;
->>  +			<   0 3>,
->>  +			< 800 2>,
->>  +			<1050 1>,
->>  +			<1300 0>;
->>   	};
->>   };
->> 
->>  diff --git a/arch/arm/boot/dts/armada-370-synology-ds213j.dts 
->> b/arch/arm/boot/dts/armada-370-synology-ds213j.dts
->>  index 64f2ce254fb6..88aa2b7c4962 100644
->>  --- a/arch/arm/boot/dts/armada-370-synology-ds213j.dts
->>  +++ b/arch/arm/boot/dts/armada-370-synology-ds213j.dts
->>  @@ -113,14 +113,14 @@ gpio-fan-32-38 {
->>   			 &gpio2  0 GPIO_ACTIVE_HIGH
->>   			 &gpio2  1 GPIO_ACTIVE_HIGH>;
->>   		alarm-gpios = <&gpio1 6 GPIO_ACTIVE_HIGH>;
->>  -		gpio-fan,speed-map = <    0 0
->>  -				       1000 1
->>  -				       1150 2
->>  -				       1350 4
->>  -				       1500 3
->>  -				       1650 5
->>  -				       1750 6
->>  -				       1900 7 >;
->>  +		gpio-fan,speed-map = <   0 0>,
->>  +				     <1000 1>,
->>  +				     <1150 2>,
->>  +				     <1350 4>,
->>  +				     <1500 3>,
->>  +				     <1650 5>,
->>  +				     <1750 6>,
->>  +				     <1900 7>;
->>   	};
->> 
->>   	gpio-leds {
->>  diff --git a/arch/arm/boot/dts/armada-385-synology-ds116.dts 
->> b/arch/arm/boot/dts/armada-385-synology-ds116.dts
->>  index d8769956cbfc..26c6ef47354c 100644
->>  --- a/arch/arm/boot/dts/armada-385-synology-ds116.dts
->>  +++ b/arch/arm/boot/dts/armada-385-synology-ds116.dts
->>  @@ -131,14 +131,14 @@ gpio-fan {
->>   			gpios = <&gpio1 18 GPIO_ACTIVE_HIGH>,
->>   				<&gpio1 17 GPIO_ACTIVE_HIGH>,
->>   				<&gpio1 16 GPIO_ACTIVE_HIGH>;
->>  -			gpio-fan,speed-map = <   0 0
->>  -					      1500 1
->>  -					      2500 2
->>  -					      3000 3
->>  -					      3400 4
->>  -					      3700 5
->>  -					      3900 6
->>  -					      4000 7>;
->>  +			gpio-fan,speed-map = <   0 0>,
->>  +					     <1500 1>,
->>  +					     <2500 2>,
->>  +					     <3000 3>,
->>  +					     <3400 4>,
->>  +					     <3700 5>,
->>  +					     <3900 6>,
->>  +					     <4000 7>;
->>   			#cooling-cells = <2>;
->>   		};
->> 
->>  diff --git a/arch/arm/boot/dts/armada-388-gp.dts 
->> b/arch/arm/boot/dts/armada-388-gp.dts
->>  index 9d873257ac45..9f8d7ab2c897 100644
->>  --- a/arch/arm/boot/dts/armada-388-gp.dts
->>  +++ b/arch/arm/boot/dts/armada-388-gp.dts
->>  @@ -237,8 +237,8 @@ pcie@3,0 {
->>   		gpio-fan {
->>   			compatible = "gpio-fan";
->>   			gpios = <&expander1 3 GPIO_ACTIVE_HIGH>;
->>  -			gpio-fan,speed-map = <	 0 0
->>  -					      3000 1>;
->>  +			gpio-fan,speed-map = <	 0 0>,
->>  +					     <3000 1>;
->>   		};
->>   	};
->> 
->>  diff --git a/arch/arm/boot/dts/kirkwood-dnskw.dtsi 
->> b/arch/arm/boot/dts/kirkwood-dnskw.dtsi
->>  index eb917462b219..0738eb679fcd 100644
->>  --- a/arch/arm/boot/dts/kirkwood-dnskw.dtsi
->>  +++ b/arch/arm/boot/dts/kirkwood-dnskw.dtsi
->>  @@ -38,9 +38,9 @@ gpio_fan {
->>   		pinctrl-names = "default";
->>   		gpios = <&gpio1 14 GPIO_ACTIVE_HIGH
->>   			 &gpio1 13 GPIO_ACTIVE_HIGH>;
->>  -		gpio-fan,speed-map = <0    0
->>  -				      3000 1
->>  -				      6000 2>;
->>  +		gpio-fan,speed-map = <0    0>,
->>  +				     <3000 1>,
->>  +				     <6000 2>;
->>   	};
->> 
->>   	gpio_poweroff {
->>  diff --git a/arch/arm/boot/dts/kirkwood-linkstation-6282.dtsi 
->> b/arch/arm/boot/dts/kirkwood-linkstation-6282.dtsi
->>  index 377b6e970259..dfac2045a1eb 100644
->>  --- a/arch/arm/boot/dts/kirkwood-linkstation-6282.dtsi
->>  +++ b/arch/arm/boot/dts/kirkwood-linkstation-6282.dtsi
->>  @@ -118,10 +118,11 @@ gpio_fan {
->>   		gpios = <&gpio0 17 GPIO_ACTIVE_LOW
->>   			 &gpio0 16 GPIO_ACTIVE_LOW>;
->> 
->>  -		gpio-fan,speed-map = <0 3
->>  -				1500 2
->>  -				3250 1
->>  -				5000 0>;
->>  +		gpio-fan,speed-map =
->>  +				<   0 3>,
->>  +				<1500 2>,
->>  +				<3250 1>,
->>  +				<5000 0>;
->> 
->>   		alarm-gpios = <&gpio1 11 GPIO_ACTIVE_HIGH>;
->>   	};
->>  diff --git a/arch/arm/boot/dts/kirkwood-linkstation-lswxl.dts 
->> b/arch/arm/boot/dts/kirkwood-linkstation-lswxl.dts
->>  index c6024b569423..0425df8cb91c 100644
->>  --- a/arch/arm/boot/dts/kirkwood-linkstation-lswxl.dts
->>  +++ b/arch/arm/boot/dts/kirkwood-linkstation-lswxl.dts
->>  @@ -69,10 +69,11 @@ gpio_fan {
->>   		gpios = <&gpio1 16 GPIO_ACTIVE_LOW
->>   			 &gpio1 15 GPIO_ACTIVE_LOW>;
->> 
->>  -		gpio-fan,speed-map = <0 3
->>  -				1500 2
->>  -				3250 1
->>  -				5000 0>;
->>  +		gpio-fan,speed-map =
->>  +				<   0 3>,
->>  +				<1500 2>,
->>  +				<3250 1>,
->>  +				<5000 0>;
->> 
->>   		alarm-gpios = <&gpio1 8 GPIO_ACTIVE_HIGH>;
->>   	};
->>  diff --git a/arch/arm/boot/dts/kirkwood-lsxl.dtsi 
->> b/arch/arm/boot/dts/kirkwood-lsxl.dtsi
->>  index 7b151acb9984..74009ed9e423 100644
->>  --- a/arch/arm/boot/dts/kirkwood-lsxl.dtsi
->>  +++ b/arch/arm/boot/dts/kirkwood-lsxl.dtsi
->>  @@ -167,10 +167,11 @@ gpio_fan {
->>   		pinctrl-names = "default";
->>   		gpios = <&gpio0 19 GPIO_ACTIVE_LOW
->>   		         &gpio0 18 GPIO_ACTIVE_LOW>;
->>  -		gpio-fan,speed-map = <0    3
->>  -		                      1500 2
->>  -		                      3250 1
->>  -		                      5000 0>;
->>  +		gpio-fan,speed-map =
->>  +				<0    3>,
->>  +				<1500 2>,
->>  +				<3250 1>,
->>  +				<5000 0>;
->>   		alarm-gpios = <&gpio1 8 GPIO_ACTIVE_HIGH>;
->>   	};
->> 
->>  diff --git a/arch/arm/boot/dts/kirkwood-ns2max.dts 
->> b/arch/arm/boot/dts/kirkwood-ns2max.dts
->>  index c0a087e77408..044958bc55da 100644
->>  --- a/arch/arm/boot/dts/kirkwood-ns2max.dts
->>  +++ b/arch/arm/boot/dts/kirkwood-ns2max.dts
->>  @@ -29,15 +29,15 @@ &gpio0  7 GPIO_ACTIVE_LOW
->>   			 &gpio1  1 GPIO_ACTIVE_LOW
->>   			 &gpio0 23 GPIO_ACTIVE_LOW>;
->>   		gpio-fan,speed-map =
->>  -			<   0  0
->>  -			 1500 15
->>  -			 1700 14
->>  -			 1800 13
->>  -			 2100 12
->>  -			 3100 11
->>  -			 3300 10
->>  -			 4300  9
->>  -			 5500  8>;
->>  +			<   0  0>,
->>  +			<1500 15>,
->>  +			<1700 14>,
->>  +			<1800 13>,
->>  +			<2100 12>,
->>  +			<3100 11>,
->>  +			<3300 10>,
->>  +			<4300  9>,
->>  +			<5500  8>;
->>   		alarm-gpios = <&gpio0 25 GPIO_ACTIVE_LOW>;
->>   	};
->> 
->>  diff --git a/arch/arm/boot/dts/kirkwood-ns2mini.dts 
->> b/arch/arm/boot/dts/kirkwood-ns2mini.dts
->>  index 5b9fa14b6428..3fbe008f9141 100644
->>  --- a/arch/arm/boot/dts/kirkwood-ns2mini.dts
->>  +++ b/arch/arm/boot/dts/kirkwood-ns2mini.dts
->>  @@ -30,15 +30,15 @@ &gpio0  7 GPIO_ACTIVE_LOW
->>   			 &gpio1  1 GPIO_ACTIVE_LOW
->>   			 &gpio0 23 GPIO_ACTIVE_LOW>;
->>   		gpio-fan,speed-map =
->>  -			<   0  0
->>  -			 3000 15
->>  -			 3180 14
->>  -			 4140 13
->>  -			 4570 12
->>  -			 6760 11
->>  -			 7140 10
->>  -			 7980  9
->>  -			 9200  8>;
->>  +			<   0  0>,
->>  +			<3000 15>,
->>  +			<3180 14>,
->>  +			<4140 13>,
->>  +			<4570 12>,
->>  +			<6760 11>,
->>  +			<7140 10>,
->>  +			<7980  9>,
->>  +			<9200  8>;
->>   		alarm-gpios = <&gpio0 25 GPIO_ACTIVE_LOW>;
->>   	};
->> 
->>  diff --git a/arch/arm/boot/dts/kirkwood-synology.dtsi 
->> b/arch/arm/boot/dts/kirkwood-synology.dtsi
->>  index 217bd374e52b..00adca68ae95 100644
->>  --- a/arch/arm/boot/dts/kirkwood-synology.dtsi
->>  +++ b/arch/arm/boot/dts/kirkwood-synology.dtsi
->>  @@ -286,14 +286,15 @@ gpio-fan-150-32-35 {
->>   		gpios = <&gpio1 0 GPIO_ACTIVE_HIGH
->>   			 &gpio1 1 GPIO_ACTIVE_HIGH
->>   			 &gpio1 2 GPIO_ACTIVE_HIGH>;
->>  -		gpio-fan,speed-map = <    0 0
->>  -				       2200 1
->>  -				       2500 2
->>  -				       3000 4
->>  -				       3300 3
->>  -				       3700 5
->>  -				       3800 6
->>  -				       4200 7 >;
->>  +		gpio-fan,speed-map =
->>  +				<   0 0>,
->>  +				<2200 1>,
->>  +				<2500 2>,
->>  +				<3000 4>,
->>  +				<3300 3>,
->>  +				<3700 5>,
->>  +				<3800 6>,
->>  +				<4200 7>;
->>   	};
->> 
->>   	gpio-fan-150-15-18 {
->>  @@ -306,14 +307,15 @@ gpio-fan-150-15-18 {
->>   			 &gpio0 16 GPIO_ACTIVE_HIGH
->>   			 &gpio0 17 GPIO_ACTIVE_HIGH>;
->>   		alarm-gpios = <&gpio0 18 GPIO_ACTIVE_HIGH>;
->>  -		gpio-fan,speed-map = <    0 0
->>  -				       2200 1
->>  -				       2500 2
->>  -				       3000 4
->>  -				       3300 3
->>  -				       3700 5
->>  -				       3800 6
->>  -				       4200 7 >;
->>  +		gpio-fan,speed-map =
->>  +				<   0 0>,
->>  +				<2200 1>,
->>  +				<2500 2>,
->>  +				<3000 4>,
->>  +				<3300 3>,
->>  +				<3700 5>,
->>  +				<3800 6>,
->>  +				<4200 7>;
->>   	};
->> 
->>   	gpio-fan-100-32-35 {
->>  @@ -326,14 +328,15 @@ gpio-fan-100-32-35 {
->>   			 &gpio1 1 GPIO_ACTIVE_HIGH
->>   			 &gpio1 2 GPIO_ACTIVE_HIGH>;
->>   		alarm-gpios = <&gpio1 3 GPIO_ACTIVE_HIGH>;
->>  -		gpio-fan,speed-map = <    0 0
->>  -				       2500 1
->>  -				       3100 2
->>  -				       3800 3
->>  -				       4600 4
->>  -				       4800 5
->>  -				       4900 6
->>  -				       5000 7 >;
->>  +		gpio-fan,speed-map =
->>  +				<   0 0>,
->>  +				<2500 1>,
->>  +				<3100 2>,
->>  +				<3800 3>,
->>  +				<4600 4>,
->>  +				<4800 5>,
->>  +				<4900 6>,
->>  +				<5000 7>;
->>   	};
->> 
->>   	gpio-fan-100-15-18 {
->>  @@ -346,14 +349,15 @@ gpio-fan-100-15-18 {
->>   			 &gpio0 16 GPIO_ACTIVE_HIGH
->>   			 &gpio0 17 GPIO_ACTIVE_HIGH>;
->>   		alarm-gpios = <&gpio0 18 GPIO_ACTIVE_HIGH>;
->>  -		gpio-fan,speed-map = <    0 0
->>  -				       2500 1
->>  -				       3100 2
->>  -				       3800 3
->>  -				       4600 4
->>  -				       4800 5
->>  -				       4900 6
->>  -				       5000 7 >;
->>  +		gpio-fan,speed-map =
->>  +				<   0 0>,
->>  +				<2500 1>,
->>  +				<3100 2>,
->>  +				<3800 3>,
->>  +				<4600 4>,
->>  +				<4800 5>,
->>  +				<4900 6>,
->>  +				<5000 7>;
->>   	};
->> 
->>   	gpio-fan-100-15-35-1 {
->>  @@ -366,14 +370,15 @@ gpio-fan-100-15-35-1 {
->>   			 &gpio0 16 GPIO_ACTIVE_HIGH
->>   			 &gpio0 17 GPIO_ACTIVE_HIGH>;
->>   		alarm-gpios = <&gpio1 3 GPIO_ACTIVE_HIGH>;
->>  -		gpio-fan,speed-map = <    0 0
->>  -				       2500 1
->>  -				       3100 2
->>  -				       3800 3
->>  -				       4600 4
->>  -				       4800 5
->>  -				       4900 6
->>  -				       5000 7 >;
->>  +		gpio-fan,speed-map =
->>  +				<   0 0>,
->>  +				<2500 1>,
->>  +				<3100 2>,
->>  +				<3800 3>,
->>  +				<4600 4>,
->>  +				<4800 5>,
->>  +				<4900 6>,
->>  +				<5000 7>;
->>   	};
->> 
->>   	gpio-fan-100-15-35-3 {
->>  @@ -388,14 +393,15 @@ &gpio0 16 GPIO_ACTIVE_HIGH
->>   		alarm-gpios = <&gpio1 3 GPIO_ACTIVE_HIGH
->>   			       &gpio1 12 GPIO_ACTIVE_HIGH
->>   			       &gpio1 13 GPIO_ACTIVE_HIGH>;
->>  -		gpio-fan,speed-map = <    0 0
->>  -				       2500 1
->>  -				       3100 2
->>  -				       3800 3
->>  -				       4600 4
->>  -				       4800 5
->>  -				       4900 6
->>  -				       5000 7 >;
->>  +		gpio-fan,speed-map =
->>  +				<   0 0>,
->>  +				<2500 1>,
->>  +				<3100 2>,
->>  +				<3800 3>,
->>  +				<4600 4>,
->>  +				<4800 5>,
->>  +				<4900 6>,
->>  +				<5000 7>;
->>   	};
->> 
->>   	gpio-leds-alarm-12 {
->>  diff --git a/arch/arm/boot/dts/mvebu-linkstation-fan.dtsi 
->> b/arch/arm/boot/dts/mvebu-linkstation-fan.dtsi
->>  index e172029a0c4d..a260c42dbda3 100644
->>  --- a/arch/arm/boot/dts/mvebu-linkstation-fan.dtsi
->>  +++ b/arch/arm/boot/dts/mvebu-linkstation-fan.dtsi
->>  @@ -50,10 +50,10 @@ gpio_fan {
->>   		pinctrl-names = "default";
->> 
->>   		gpio-fan,speed-map =
->>  -			<0		3
->>  -			1500	2
->>  -			3250	1
->>  -			5000	0>;
->>  +			<   0 3>,
->>  +			<1500 2>,
->>  +			<3250 1>,
->>  +			<5000 0>;
->>   	};
->>   };
->> 
->>  diff --git a/arch/arm/boot/dts/tegra30-ouya.dts 
->> b/arch/arm/boot/dts/tegra30-ouya.dts
->>  index a93bc452d315..19aa9c2169fd 100644
->>  --- a/arch/arm/boot/dts/tegra30-ouya.dts
->>  +++ b/arch/arm/boot/dts/tegra30-ouya.dts
->>  @@ -426,8 +426,8 @@ trusted-foundations {
->>   	fan: gpio_fan {
->>   		compatible = "gpio-fan";
->>   		gpios = <&gpio TEGRA_GPIO(J, 2) GPIO_ACTIVE_HIGH>;
->>  -		gpio-fan,speed-map = <0    0
->>  -				      4500 1>;
->>  +		gpio-fan,speed-map = <0    0>,
->>  +				     <4500 1>;
->>   		#cooling-cells = <2>;
->>   	};
->> 
->>  --
->>  2.33.0
->> 
->> 
->>  _______________________________________________
->>  linux-arm-kernel mailing list
->>  linux-arm-kernel@lists.infradead.org
->>  http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
