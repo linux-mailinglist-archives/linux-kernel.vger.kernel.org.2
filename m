@@ -2,131 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53439442B54
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 11:05:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D86F2442B59
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 11:06:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229720AbhKBKIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 06:08:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230000AbhKBKII (ORCPT
+        id S231133AbhKBKIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 06:08:36 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:33082
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229770AbhKBKIf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 06:08:08 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC289C061764
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 03:05:33 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id u1so776312wru.13
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 03:05:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=iYLMuf3bD3yM/Xi9gc5DeQ7+ailWv3pCd20wKELPV+A=;
-        b=cFnX21AjnJbHSPGd7EX5s7DI/2ObKunmpv40Y5AFsmpaHGoFigC1QQ5pzC3z5MD9mO
-         hhFxZjOzFlZI54gPqvWGGlaYUi8wM32FpZkMDlA2coqGWnXH952IqqzxbmgccWT/ePwP
-         afkf2peXtkXxbN48yhUYMpXUaLzrKSfeR5poiM2IPKp5IKWPxbMnLgRwfg2R7Kn1884P
-         DHIFl8YIKWuOIQkoh+8ytDq2FG3fu2qoW78xcFJO+PPinwf+2OElqeJzCHZbahZbMJk5
-         FENz9Zk5DDaZY3eloL50ChE0DGLz2gZwLIDTcgC9FynWWKbbD6pVvYyweWcAJgRiXcTs
-         0ITg==
+        Tue, 2 Nov 2021 06:08:35 -0400
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com [209.85.167.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 803143F1B3
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 10:05:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1635847559;
+        bh=iopnLDRT4PEv0iqGKO5r/URHpGpD2WP/l0pXso7TuIU=;
+        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+         In-Reply-To:Content-Type;
+        b=buNO03doEFc57glcY6LrCyK/i1i/9E6enX71AzZ2OSTSqz9oMh2XEZuH+xPDMOyYC
+         rHXiY23bfQXFQRpQWA691tjHsQsCoBlJcsBaxUb6iyF1wL8zJ3B6OsfDjhQzj6+KiR
+         sqduqa9CgDay0dtW34UjJMP2iiESnm7leDYrRaHFdO1hL07Za1TUulEb3DlUwkF4LJ
+         f+emjLiTmwQSSETIEP1SULPRx5YwiByeYDUS9RxRZFwkeD3Z1vpen6ChNb9cUe/EIX
+         VuoaU9NHHx8hbd2/L0wrqtrPlbsKDy3Jxkzk+tE4GuBICEm75jSf6HZHRTzBti3Khb
+         d6BA54bNkrdHQ==
+Received: by mail-lf1-f72.google.com with SMTP id x7-20020a056512130700b003fd1a7424a8so6817784lfu.5
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 03:05:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=iYLMuf3bD3yM/Xi9gc5DeQ7+ailWv3pCd20wKELPV+A=;
-        b=x9vAx4RVeSQYF4fj+iNh1a8vQka4lJF1t5VE85+zE/NRFVm0bkBnM7OljoO1LNgWlA
-         uyhqGOwr3sshaeNuMAtZmKCvId/Pm6pAbt76Jkv8tp1XQkJ4+Fmx36W+6DymKsjYfxWE
-         2eWnyLTZmr8AgzRN+R5ft7uS6HUxPE7MG10Hxw/nmmJCojN64i7scOGeLeDLvX6oDGIi
-         YdCn5X677QkjVIn5F9dIj08kQSuuf1M9Rj0PXPSXnTYPueiF8dKB+DuWQlEBwx/ZSafG
-         YfBJUxu3sGjGLOYq1ngHRMOJhF0TfM8ePN7nBe4LzrPabgrWLB+ve9KC3AQsHJfPhVkI
-         Vvog==
-X-Gm-Message-State: AOAM533YWYIGW03VMc9ayYsRUQoANcE+O9LKPryyJvXBteVyysZNNces
-        89qNGzWtDOuiZ8mNGN2IoH5gDA==
-X-Google-Smtp-Source: ABdhPJxt3bN1oRHkd5fsk2sQswWJgq8yAvVNc4ziZAfnf50krWHiOnJpCEsjC4BOSZeaqYq2/ywl3w==
-X-Received: by 2002:a05:6000:1010:: with SMTP id a16mr34185086wrx.155.1635847532426;
-        Tue, 02 Nov 2021 03:05:32 -0700 (PDT)
-Received: from localhost.localdomain (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.googlemail.com with ESMTPSA id p13sm2315273wmi.0.2021.11.02.03.05.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Nov 2021 03:05:32 -0700 (PDT)
-From:   Corentin LABBE <clabbe@baylibre.com>
-To:     lee.jones@linaro.org, daniel.thompson@linaro.org,
-        jingoohan1@gmail.com
-Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, khilman@baylibre.com,
-        Jean-Jacques Hiblot <jjhiblot@ti.com>,
-        Corentin LABBE <clabbe@baylibre.com>
-Subject: [PATCH] backlight: led_bl: Add support for an "enable" GPIO
-Date:   Tue,  2 Nov 2021 10:04:55 +0000
-Message-Id: <20211102100455.2016610-1-clabbe@baylibre.com>
-X-Mailer: git-send-email 2.25.1
+        bh=iopnLDRT4PEv0iqGKO5r/URHpGpD2WP/l0pXso7TuIU=;
+        b=ETqradbB+dqKbADWR1V4z3U0SGoGN6SGC1HOcgZkbFyAGkGomOQGp4QfFh6myry/uk
+         zzke9OlXRQlef28SnGjYFQUlgP9M53CyQI1r/UbsN+vqfA/wodpg1fYXSqVFodXkEdT1
+         D4AlWZsP335iliCSDRWEjwhXcK+JjM8jxdRCteDCN3Qq/ke8rEJD8lwpypPTqXMz5x87
+         tWlVUmMHaBRkaRFlCr6a6uJySCkJhZy5PVqbgpZuog8Cr8CZ0ucqXK82J8+2ebsXebwS
+         j8Ccv7AmmJsOQ2UAKp6FfunKL4jvm3eL7VS72qN8zm5Ay/a5Uudq8h+97FgMY5KCzv2P
+         lnkQ==
+X-Gm-Message-State: AOAM530COye8vW4gsGlSSUUZwfAXU29z+EAgb1W55bqYwYXK95ewhD5s
+        9NVGqYzoJBp1n0saFl8DLJlnsg6Z7bMziLbPDkbpRj56PWZvhn+pjRdhJkIzyHyKLVtoKwpJrxb
+        U+zZ0TIfgf5uVllDp3c4Fxk7pdho6g6/8W2u5UOuhZQ==
+X-Received: by 2002:ac2:4db9:: with SMTP id h25mr33415058lfe.494.1635847558946;
+        Tue, 02 Nov 2021 03:05:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyE6ArjJ7fk1tGDyreqp3vN6bbCH+FJsIaRpHdwMJlu2PO4wJnIKSVH1nnwqQgz4k97JTDUIA==
+X-Received: by 2002:ac2:4db9:: with SMTP id h25mr33415035lfe.494.1635847558677;
+        Tue, 02 Nov 2021 03:05:58 -0700 (PDT)
+Received: from [192.168.3.67] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id t17sm220669ljk.101.2021.11.02.03.05.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Nov 2021 03:05:58 -0700 (PDT)
+Message-ID: <30b190ec-ec71-6b13-12cc-2822b1032d80@canonical.com>
+Date:   Tue, 2 Nov 2021 11:05:57 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Subject: Re: [PATCH v2 08/12] watchdog: s3c2410: Add support for WDT counter
+ enable register
+Content-Language: en-US
+To:     Sam Protsenko <semen.protsenko@linaro.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org
+References: <20211031122216.30212-1-semen.protsenko@linaro.org>
+ <20211031122216.30212-9-semen.protsenko@linaro.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20211031122216.30212-9-semen.protsenko@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jean-Jacques Hiblot <jjhiblot@ti.com>
+On 31/10/2021 13:22, Sam Protsenko wrote:
+> On new Exynos chips (e.g. Exynos850) new CLUSTERx_NONCPU_OUT register is
+> introduced, where CNT_EN_WDT bit must be enabled to make watchdog
+> counter running. Add corresponding quirk and proper infrastructure to
+> handle that register if the quirk is set.
+> 
+> This commit doesn't bring any functional change to existing devices, but
+> merely provides an infrastructure for upcoming chips support.
+> 
+> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> ---
+> Changes in v2:
+>   - Used quirks instead of callbacks for all added PMU registers
+>   - Used BIT() macro
+>   - Extracted cleanup code to separate patch to minimize changes and
+>     ease the review and porting
+> 
+>  drivers/watchdog/s3c2410_wdt.c | 28 +++++++++++++++++++++++++++-
+>  1 file changed, 27 insertions(+), 1 deletion(-)
+> 
 
-This patch adds support for an "enable GPIO".
 
-Signed-off-by: Jean-Jacques Hiblot <jjhiblot@ti.com>
-Signed-off-by: Corentin LABBE <clabbe@baylibre.com>
----
- drivers/video/backlight/led_bl.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-diff --git a/drivers/video/backlight/led_bl.c b/drivers/video/backlight/led_bl.c
-index f54d256e2d54..ebd7acc32980 100644
---- a/drivers/video/backlight/led_bl.c
-+++ b/drivers/video/backlight/led_bl.c
-@@ -8,6 +8,7 @@
- 
- #include <linux/backlight.h>
- #include <linux/leds.h>
-+#include <linux/gpio.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
- 
-@@ -15,6 +16,7 @@ struct led_bl_data {
- 	struct device		*dev;
- 	struct backlight_device	*bl_dev;
- 	struct led_classdev	**leds;
-+	struct gpio_desc        *enable_gpio;
- 	bool			enabled;
- 	int			nb_leds;
- 	unsigned int		*levels;
-@@ -35,6 +37,9 @@ static void led_bl_set_brightness(struct led_bl_data *priv, int level)
- 	for (i = 0; i < priv->nb_leds; i++)
- 		led_set_brightness(priv->leds[i], bkl_brightness);
- 
-+	if (!priv->enabled)
-+		gpiod_set_value_cansleep(priv->enable_gpio, 1);
-+
- 	priv->enabled = true;
- }
- 
-@@ -48,6 +53,9 @@ static void led_bl_power_off(struct led_bl_data *priv)
- 	for (i = 0; i < priv->nb_leds; i++)
- 		led_set_brightness(priv->leds[i], LED_OFF);
- 
-+	if (priv->enabled)
-+		gpiod_set_value_cansleep(priv->enable_gpio, 0);
-+
- 	priv->enabled = false;
- }
- 
-@@ -209,6 +217,11 @@ static int led_bl_probe(struct platform_device *pdev)
- 		return PTR_ERR(priv->bl_dev);
- 	}
- 
-+	priv->enable_gpio = devm_gpiod_get_optional(&pdev->dev, "enable",
-+						    GPIOD_OUT_LOW);
-+	if (IS_ERR(priv->enable_gpio))
-+		return PTR_ERR(priv->enable_gpio);
-+
- 	for (i = 0; i < priv->nb_leds; i++)
- 		led_sysfs_disable(priv->leds[i]);
- 
--- 
-2.25.1
 
+Best regards,
+Krzysztof
