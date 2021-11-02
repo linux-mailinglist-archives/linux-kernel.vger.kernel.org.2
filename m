@@ -2,125 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4B5F44250B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 02:18:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6186A442512
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 02:23:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231532AbhKBBV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 21:21:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53166 "EHLO mail.kernel.org"
+        id S231365AbhKBB0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 21:26:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53692 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229510AbhKBBVZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 21:21:25 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DF35F61051;
-        Tue,  2 Nov 2021 01:18:47 +0000 (UTC)
-Date:   Mon, 1 Nov 2021 21:18:45 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qiang Zhang <qiang.zhang@windriver.com>,
-        robdclark <robdclark@chromium.org>,
-        christian <christian@brauner.io>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        dennis.dalessandro@cornelisnetworks.com,
-        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
-        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        kbuild test robot <lkp@intel.com>
-Subject: Re: [PATCH v7 00/11] extend task comm from 16 to 24
-Message-ID: <20211101211845.20ff5b2e@gandalf.local.home>
-In-Reply-To: <CALOAHbAx55AUo3bm8ZepZSZnw7A08cvKPdPyNTf=E_tPqmw5hw@mail.gmail.com>
-References: <20211101060419.4682-1-laoar.shao@gmail.com>
-        <YX/0h7j/nDwoBA+J@alley>
-        <CALOAHbA61RyGVzG8SVcNG=0rdqnUCt4AxCKmtuxRnbS_SH=+MQ@mail.gmail.com>
-        <YYAPhE9uX7OYTlpv@alley>
-        <CALOAHbAx55AUo3bm8ZepZSZnw7A08cvKPdPyNTf=E_tPqmw5hw@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229510AbhKBB0Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 21:26:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD58360296;
+        Tue,  2 Nov 2021 01:23:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635816222;
+        bh=pHB+2LvA/NTpkeqz8KeT7ncJiwdAgdeadepH/in3dDg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=jvgkfEquB4pWMKLGA8eRvZVWmHOn+Jd9qFQONqEFWHUydd97oQtxQWvBIFdw1aQbM
+         C8N1HGQLbE/iexOfFoDL8HVmS2YwbqpSevZIalmtLcZ/xAKKLzgap+8wtL1BUPbMbt
+         DEj6TqnChC6VODSGXtSBMJm8vcNlljGFtbPcNy3Gjh/x28qPzzM4uPf4/0wx3k+qr7
+         OllAp76QtKxVGwAanlSAeM5/jFTEnH/n+xkQrG8KdHw97z7ACLv66I28biwymQrLhP
+         pcJGHiOEH3BxQM5Pqqa3FQz9yONu6XwwtdUph2u6GxB6kCgXS3fMh362qtxWcH9GR6
+         ecUmHECrK7Xdw==
+Received: by mail-ua1-f42.google.com with SMTP id i6so20860593uae.6;
+        Mon, 01 Nov 2021 18:23:42 -0700 (PDT)
+X-Gm-Message-State: AOAM532ArRpAcrX2mDeT2BtS21JbuzapVkiHNnQwd4TrvaBZrHxQ0Hmx
+        rLJvU1TwC1VH18qu5pbZkDFIP5gXB1Wl9ZyY8Fo=
+X-Google-Smtp-Source: ABdhPJxzeQ6fl1rfXujihBXdVjQnt/Rk4SsL/y0+BEWA+rS49WBxpqaiDO84drXXx+CXOBFih6F35DSjyLSsw60BHhk=
+X-Received: by 2002:a67:ca1c:: with SMTP id z28mr34852395vsk.11.1635816221773;
+ Mon, 01 Nov 2021 18:23:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20211101150502.222969-1-kelly.devilliv@gmail.com>
+In-Reply-To: <20211101150502.222969-1-kelly.devilliv@gmail.com>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Tue, 2 Nov 2021 09:23:30 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTRzvX1M36cb9MFkM9-3jtCwfxtFsgGY8rVWfWZeavSRJg@mail.gmail.com>
+Message-ID: <CAJF2gTRzvX1M36cb9MFkM9-3jtCwfxtFsgGY8rVWfWZeavSRJg@mail.gmail.com>
+Subject: Re: [PATCH] csky: fix typo of fpu config macro
+To:     Kelly Devilliv <kelly.devilliv@gmail.com>
+Cc:     linux-csky@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2 Nov 2021 09:09:50 +0800
-Yafang Shao <laoar.shao@gmail.com> wrote:
+Thx Kelly, approved.
 
-> So if no one against, I will do it in two steps,
-> 
-> 1. Send the task comm cleanups in a separate patchset named "task comm cleanups"
->     This patchset includes patch #1, #2, #4,  #5, #6, #7 and #9.
->     Cleaning them up can make it less error prone, and it will be
-> helpful if we want to extend task comm in the future :)
+On Mon, Nov 1, 2021 at 11:05 PM Kelly Devilliv <kelly.devilliv@gmail.com> wrote:
+>
+> Fix typo which will cause fpe and privilege exception error.
+>
+> Signed-off-by: Kelly Devilliv <kelly.devilliv@gmail.com>
+> ---
+>  arch/csky/kernel/traps.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/csky/kernel/traps.c b/arch/csky/kernel/traps.c
+> index e5fbf8653a21..2020af88b636 100644
+> --- a/arch/csky/kernel/traps.c
+> +++ b/arch/csky/kernel/traps.c
+> @@ -209,7 +209,7 @@ asmlinkage void do_trap_illinsn(struct pt_regs *regs)
+>
+>  asmlinkage void do_trap_fpe(struct pt_regs *regs)
+>  {
+> -#ifdef CONFIG_CPU_HAS_FP
+> +#ifdef CONFIG_CPU_HAS_FPU
+>         return fpu_fpe(regs);
+>  #else
+>         do_trap_error(regs, SIGILL, ILL_ILLOPC, regs->pc,
+> @@ -219,7 +219,7 @@ asmlinkage void do_trap_fpe(struct pt_regs *regs)
+>
+>  asmlinkage void do_trap_priv(struct pt_regs *regs)
+>  {
+> -#ifdef CONFIG_CPU_HAS_FP
+> +#ifdef CONFIG_CPU_HAS_FPU
+>         if (user_mode(regs) && fpu_libc_helper(regs))
+>                 return;
+>  #endif
+> --
+> 2.25.1
+>
 
-Agreed.
 
-> 
-> 2.  Keep the current comm[16] as-is and introduce a separate pointer
-> to store kthread's long name
+-- 
+Best Regards
+ Guo Ren
 
-I'm OK with this. Hopefully more would chime in too.
-
->      Now we only care about kthread, so we can put the pointer into a
-> kthread specific struct.
->      For example in the struct kthread, or in kthread->data (which may
-> conflict with workqueue).
-
-No, add a new field to the structure. "full_name" or something like that.
-I'm guessing it should be NULL if the name fits in TASK_COMM_LEN and
-allocated if the name had to be truncated.
-
-Do not overload data with this. That will just make things confusing.
-There's not that many kthreads, where an addition of an 8 byte pointer is
-going to cause issues.
-
-> 
->      And then dynamically allocate a longer name if it is truncated,
-> for example,
->      __kthread_create_on_node
->          len = vsnprintf(name, sizeof(name), namefmt, args);
->          if (len >= TASK_COMM_LEN) {
->              /* create a longer name */
-
-And make sure you have it fail the kthread allocation if it fails to
-allocate.
-
->          }
-> 
->      And then we modify proc_task_name(), so the user can get
-> kthread's longer name via /proc/[pid]/comm.
-
-Agreed.
-
-> 
->      And then free the allocated memory when the kthread is destroyed.
-
-Correct.
-
-Thanks,
-
--- Steve
+ML: https://lore.kernel.org/linux-csky/
