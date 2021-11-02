@@ -2,66 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1D3D4435B9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 19:37:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B48F34435BD
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 19:38:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235121AbhKBSkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 14:40:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36402 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235128AbhKBSkF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 14:40:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 8C99A60F90;
-        Tue,  2 Nov 2021 18:37:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635878250;
-        bh=QpxY/uns7tQK5EXcdc/OiRfBOqwtoDAAxJlS+tca5nU=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=QvvkBJ2t3/rm2HEgM5rLJesmGZZxeFwaiP4Obzbbig/ebJkWmBkGBDxBXrxnkm1gL
-         8cP3J3wCLF2wmZLzfZXWrLcypE8o1lwsn5zyJN1z/BChdFHu8GDlSdk/TCTkXnm2iw
-         RmfR8J9a89VmjxhuDXM2Icdso/MvdwD2hFN+RSQhn9EH/v2w6CMukuW+EavPq9r+xv
-         7NEwRhd844aqMES52mItA/x2G2yFpseGix2EnyfaTteaR6pfJY4WOns2WgAqGjhweR
-         CpRIelt2u4y/pezGu2FUMyvKq5zPgbsnQpgelCptdANJiOht/21wQQD5ILadbGmUPj
-         t9gce5p6Od7iw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 861F660A3C;
-        Tue,  2 Nov 2021 18:37:30 +0000 (UTC)
-Subject: Re: [GIT PULL] printk for 5.16
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YYEZeIVxrp8MJ/yb@alley>
-References: <YYEZeIVxrp8MJ/yb@alley>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YYEZeIVxrp8MJ/yb@alley>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/printk/linux.git tags/printk-for-5.16
-X-PR-Tracked-Commit-Id: 40e64a88dadcfa168914065baf7f035de957bbe0
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 0aaa58eca65a876c9b8c5174a1b3ac23be6440ad
-Message-Id: <163587825054.14475.11193399961487963007.pr-tracker-bot@kernel.org>
-Date:   Tue, 02 Nov 2021 18:37:30 +0000
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        id S235503AbhKBSlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 14:41:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235461AbhKBSlL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 14:41:11 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58B65C061714
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 11:38:36 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id t7so187306pgl.9
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 11:38:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wtwMNok/oS+uqbAcXvNbRmtV8aoGFRlPvBnKAS2OABs=;
+        b=dkUsvt1FXSekVZLjszihzsGgRAeAnAB1GtlL1olNIkdMTc4Vzi+c12TbSA89d04EW5
+         gK9VzjcQECAHmGa50uE2H/MGxFR3hVZSMH8sMfk2Is/mMBolgXd4IIaocWJjwi7UPXaG
+         D3L2CSxsIcC749fCI0qafHRFXV3Gj+UNrXyNJ40Uhb3JfVADYVrrv/wSxEhLH49B/1O6
+         xgkuA5r39aUvYXzviXoh9fZ9NBg4tqkuqeNBOmyJICyt2o2dO8qJ7VfQpZfg2bjGmFEX
+         1qGA2X4LMRtJPesld/eEpsJH2K1UA8G+nJ8BH/mvroNC23RdSOhFuh+LiZ1gY5fxE4iD
+         gNQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wtwMNok/oS+uqbAcXvNbRmtV8aoGFRlPvBnKAS2OABs=;
+        b=vbSkWewF2uEV0MWstB7GpTOsYVIV1Yor4KvHhBdOHGlnEDNiRiR+rT2JhgOxTBtUDC
+         aC5Q4HgI/rOf2HV4WL6s8o34PAeJ1IEP+SIZ3RprTlauxkN1ebmG5C0m6fyvr6GJ8XM+
+         ACl+/dnRYpGYoCBUsRfZvZOSrkD2NSY7tEXTipih5oa2j5n00HVsutm8S6I1IVzoJG+v
+         FYmc+A9MAvko8/FSQKowltXBoer0ADqwfqhJQrdGAOImzSVhzGuay8g6WPq+v2AubUvx
+         lghocBThpQSoTDwGUSXvjZptSe5eYO4i/8tpqdRLppKSO7xSzQ1tpHEej5RgH1HxVd7L
+         dGfQ==
+X-Gm-Message-State: AOAM531JJncYaNTZvASfRQW9QUOiat/SOoB59tVu4dotzAL8iZTTluUm
+        kjNlwkv0k9mw9w70Rw9UjLgE9CRXOlF/k3W9uOYhRg==
+X-Google-Smtp-Source: ABdhPJyVRrrsb4RUC9XUP9L6QjFp/rQ6P5+Rlce6y59oRmwUDtlYFYFCdn9M2NfT/WwqSdkvL1KAQXuQxGtpnLSrITI=
+X-Received: by 2002:a63:3fcd:: with SMTP id m196mr28982342pga.417.1635878315614;
+ Tue, 02 Nov 2021 11:38:35 -0700 (PDT)
+MIME-Version: 1.0
+References: <20211028205854.830200-1-almasrymina@google.com>
+ <2fede4d2-9d82-eac9-002b-9a7246b2c3f8@redhat.com> <CAHS8izMckg03uLB0vrTGv2g-_xmTh1LPRc2P8sfnmL-FK5A8hg@mail.gmail.com>
+ <e02b1a75-58ab-2b8a-1e21-5199e3e3c5e9@redhat.com> <CAHS8izOkvuZ2pEGZXaYb0mfwC3xwpvXSgc9S+u_R-0zLWjzznQ@mail.gmail.com>
+ <9fd0a86f-c012-4bb7-78eb-7413346448e0@redhat.com>
+In-Reply-To: <9fd0a86f-c012-4bb7-78eb-7413346448e0@redhat.com>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Tue, 2 Nov 2021 11:38:23 -0700
+Message-ID: <CAHS8izOrwiUrMD=QYjpda3trMkHLaK4UuAee_zvnmPj1h6Lycg@mail.gmail.com>
+Subject: Re: [PATCH v1] mm: Add /proc/$PID/pageflags
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Nathan Lewis <npl@google.com>, Yu Zhao <yuzhao@google.com>,
+        "Paul E . McKenney" <paulmckrcu@fb.com>,
+        Jonathan Corbet <corbet@lwn.net>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org
+        Peter Xu <peterx@redhat.com>,
+        Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
+        Florian Schmidt <florian.schmidt@nutanix.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 2 Nov 2021 11:56:56 +0100:
+On Tue, Nov 2, 2021 at 4:42 AM David Hildenbrand <david@redhat.com> wrote:
+>
+> >> Bit 58-60 are still free, no? Bit 57 was recently added for uffd-wp
+> >> purposes I think.
+> >>
+> >> #define PM_SOFT_DIRTY           BIT_ULL(55)
+> >> #define PM_MMAP_EXCLUSIVE       BIT_ULL(56)
+> >> #define PM_UFFD_WP              BIT_ULL(57)
+> >> #define PM_FILE                 BIT_ULL(61)
+> >> #define PM_SWAP                 BIT_ULL(62)
+> >> #define PM_PRESENT              BIT_ULL(63)
+> >>
+> >> PM_MMAP_EXCLUSIVE and PM_FILE already go into the direction of "what is
+> >> mapped" IMHO. So just a thought if something in there (PM_HUGE? PM_THP?)
+> >> ... could make sense.
+> >>
+> >
+> > Thanks! I _think_ that would work for us, I'll look into confirming.
+> > To be honest I still wonder if eventually different folks will find
+> > uses for other page flags and eventually we'll run out of pagemaps
+> > bits, but I'll yield to whatever you think is best here.
+>
+> Using one of the remaining 3 bits should be fine. In the worst case,
+> we'll need pagemap_ext at some point that provides more bits per PFN, if
+> we ever run out of bits.
+>
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/printk/linux.git tags/printk-for-5.16
+That sounds great to me. Thank you Both Matthew and David for
+patiently explaining the concerns with /proc/self/pageflags to me and
+suggesting alternatives that could work :-)
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/0aaa58eca65a876c9b8c5174a1b3ac23be6440ad
+> But as mentioned by Matthew, extending mincore() could also work: not
+> only indicating if the page is resident, but also in which "form" it is
+> resident.
+>
 
-Thank you!
+I need to learn more about mincore() to be honest, from casually
+reading some docs I didn't get a full understanding on if/why that
+would work better. I'll do some investigating and upload V2 either
+with /proc/self/pagemaps or mincore() and why I chose such and we can
+go from there.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+> We could separate the cases "cont PTE huge page" vs. "PMD huge page".
+>
+
+So to be completely honest (and I need to confirm), we are using this
+on x86 and we essentially care that the virt address is mapped by 2MB,
+so mapped by PMD. I think (but need to confirm) that's what the
+pageflags HUGE bit refers to as well as does PageHuge() and
+TransPageHuge(). After confirming I'll upload V2 with the precise info
+we need (I think it's going to be "PMD huge page" as David says).
+
+> I recall that the information (THP / !THP) might be valuable for users:
+> there was a discussion to let user space decide where to place THP.
+> (IIRC madvise() extension to have something like MADV_COLLAPSE_THP /
+> MADV_DISSOLVE_THP)
+>
+> --
+> Thanks,
+>
+> David / dhildenb
+>
