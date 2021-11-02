@@ -2,85 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AD344434B5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 18:42:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EE214434B8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 18:42:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234570AbhKBRoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 13:44:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58010 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231702AbhKBRoh (ORCPT
+        id S234618AbhKBRpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 13:45:19 -0400
+Received: from mail-oi1-f173.google.com ([209.85.167.173]:34807 "EHLO
+        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231702AbhKBRpS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 13:44:37 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47B79C061203;
-        Tue,  2 Nov 2021 10:42:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=N3bAGKj17dhulSsI0ZUBKwInlPRr6U/3HY9amRyD0lc=; b=xiYs7m7EKOK18NW6IWhhzz6Tpa
-        WmZj5EzZei9J4nK3z6zhRMKM+fJ3ZYIwbKJzWsXtxYDyBH20wvGQeyQVZXs1isX2jySsdPsGCEkpw
-        oBMzoscAkM4orJCm/AjL7GS3KKLvIMR9HoLPyTkDsQMUce8HijZNUwGd9UmvGW9cx9qPe/a/Ud82s
-        PL9hZRLV6kaE8SSy3G/9S8HDMYsqlL1HCqdYE+tgeorL7vkXCiJtKfi4LyX9Kbpm7cRA0eCQfv3i8
-        DVm2JgvPv6JymQ1/fHjTgn3Y11q4SjeVL992THSgk+nitRLm2jy2mDKN3qkbw14D/x4etL4cw1wVI
-        TQEMhXZg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55444)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mhxnK-000448-Tl; Tue, 02 Nov 2021 17:41:58 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mhxnJ-0005ah-CX; Tue, 02 Nov 2021 17:41:57 +0000
-Date:   Tue, 2 Nov 2021 17:41:57 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Grygorii Strashko <grygorii.strashko@ti.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-kernel@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [RFC PATCH] net: phy/mdio: enable mmd indirect access through
- phy_mii_ioctl()
-Message-ID: <YYF4ZQHqc1jJsE/+@shell.armlinux.org.uk>
-References: <20211101182859.24073-1-grygorii.strashko@ti.com>
- <YYBBHsFEwGdPJw3b@lunn.ch>
- <YYBF3IZoSN6/O6AL@shell.armlinux.org.uk>
- <YYCLJnY52MoYfxD8@lunn.ch>
- <YYExmHYW49jOjfOt@shell.armlinux.org.uk>
- <bc9df441-49bf-5c8a-891c-cc3f0db00aba@ti.com>
+        Tue, 2 Nov 2021 13:45:18 -0400
+Received: by mail-oi1-f173.google.com with SMTP id w193so31149780oie.1;
+        Tue, 02 Nov 2021 10:42:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=j7SAltEFCFCxWIOQc/N0dj7i5qLB+kB8LHdDq/G0tp4=;
+        b=SFHcdjS1UAsORZic0DO2zAZjvKmgPtS2PE8HSShQbwge3e5qQhmS6LudR7ExOn0E0Y
+         1QImTARB5etMAdx2Pyt3ORvrVlop1F0LDv5O9bs8xqcjfvcQUh/N7yW99ASvrPYov+bC
+         Z0Udr2Jvwk7x2Q6Jyjq66+xIIhpOEChld+USmpK0sqoI4OwD1cI88prseo9Wa8kqATGY
+         iz9Btmikql7X8NzvRs2w/p0a273SCmy+laGfDPd+5Itlvr8+Y2rP49DUdN3dB7NvWRHr
+         nSvHh9zokslRaTXQDzsv7MJZX+gK0LWrkrIPvEHkRfrNUJ/IfTahgEQd03jr+Ykdof2T
+         RSVg==
+X-Gm-Message-State: AOAM530LZAkhjGey2fgJ0mCEg7wU7piPIrquFygdvXPo49o4Z+Qg+kGt
+        a7d5jvpYsLVtNRGOr+sZU3IM+EzS3A==
+X-Google-Smtp-Source: ABdhPJxCHwK3tNXuY/YgeMOJexw/W0yAQWldXe1P4Gu1A/OO+rC6EYp+fOSVGILxfLyI03i0bzyk7g==
+X-Received: by 2002:a05:6808:bd6:: with SMTP id o22mr6157254oik.151.1635874963125;
+        Tue, 02 Nov 2021 10:42:43 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id h4sm1574693otr.8.2021.11.02.10.42.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Nov 2021 10:42:42 -0700 (PDT)
+Received: (nullmailer pid 3139749 invoked by uid 1000);
+        Tue, 02 Nov 2021 17:42:41 -0000
+Date:   Tue, 2 Nov 2021 12:42:41 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     David Heidelberg <david@ixit.cz>
+Cc:     devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        Sebastian Reichel <sre@kernel.org>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        ~okias/devicetree@lists.sr.ht
+Subject: Re: [PATCH v3] dt-bindings: power: reset: gpio-poweroff: Convert txt
+ bindings to yaml
+Message-ID: <YYF4kXX9HWaef33N@robh.at.kernel.org>
+References: <20211028165009.76641-1-david@ixit.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <bc9df441-49bf-5c8a-891c-cc3f0db00aba@ti.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <20211028165009.76641-1-david@ixit.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 07:19:46PM +0200, Grygorii Strashko wrote:
-> It would require MDIO bus lock, which is not a solution,
-> or some sort of batch processing, like for mmd:
->  w reg1 val1
->  w reg2 val2
->  w reg1 val3
->  r reg2
+On Thu, 28 Oct 2021 18:50:08 +0200, David Heidelberg wrote:
+> Convert power-off action connected to the GPIO documentation to the YAML syntax.
 > 
-> What Kernel interface do you have in mind?
+> Signed-off-by: David Heidelberg <david@ixit.cz>
+> ---
+> v3:
+>  - incorporated Sebastian notes
+> v2:
+>  - remove driver specific note about WARN_ON
+> 
+>  .../bindings/power/reset/gpio-poweroff.txt    | 41 -------------
+>  .../bindings/power/reset/gpio-poweroff.yaml   | 59 +++++++++++++++++++
+>  2 files changed, 59 insertions(+), 41 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/power/reset/gpio-poweroff.txt
+>  create mode 100644 Documentation/devicetree/bindings/power/reset/gpio-poweroff.yaml
+> 
 
-That is roughly what I was thinking, but Andrew has basically said no
-to it.
-
-> Sry, but I have to note that demand for this become terribly high, min two pings in months
-
-Feel free to continue demanding it, but it seems that at least two of
-the phylib maintainers are in agreement that providing generic
-emulation of C45 accesses in kernel space is just not going to happen.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Reviewed-by: Rob Herring <robh@kernel.org>
