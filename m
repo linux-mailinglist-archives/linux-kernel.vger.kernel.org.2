@@ -2,135 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 055A9442E48
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 13:37:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A03C442E4C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 13:38:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230442AbhKBMj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 08:39:59 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:58442 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbhKBMj5 (ORCPT
+        id S230321AbhKBMlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 08:41:25 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:54816 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229557AbhKBMlY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 08:39:57 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1A2Cb9Zt104533;
-        Tue, 2 Nov 2021 07:37:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1635856629;
-        bh=KUzMs8AeEsPu55XE63e87SghtGWjDbtB3TxcE2WTWAQ=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=i5WpF3GFSga2dnWcdNZiyKtqxbMcWX4HZ6VvRiqwA0EvTfOsKndZSZD2EjcJus4nh
-         YGjQvKStkE1Mv6edRqbW/6vFvszDP22CqczJv/OB6A5BxaAanb+SFsiI9GF4jUW+Fe
-         ZSCSfwSXUf3vYQe7QqKzU/D3eJiLbdcxAN70F//I=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1A2Cb9vh073243
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 2 Nov 2021 07:37:09 -0500
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 2
- Nov 2021 07:37:09 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Tue, 2 Nov 2021 07:37:08 -0500
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1A2Cb6GP115699;
-        Tue, 2 Nov 2021 07:37:06 -0500
-Subject: Re: [PATCH net-next v2 0/3] net: ethernet: ti: cpsw: enable bc/mc
- storm prevention support
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-        Tony Lindgren <tony@atomide.com>, Andrew Lunn <andrew@lunn.ch>
-References: <20211101170122.19160-1-grygorii.strashko@ti.com>
- <20211101235327.63ggtuhvplsgpmya@skbuf>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <3fb0e416-ef36-e76f-2ba5-624928f71929@ti.com>
-Date:   Tue, 2 Nov 2021 14:36:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 2 Nov 2021 08:41:24 -0400
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1A2A7Umr011675;
+        Tue, 2 Nov 2021 13:38:41 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=fiHhS2Mb7kwte0tsuCAFhpaUls6IvBjNVIQ/S4SDy1g=;
+ b=icOoH+XRauc55CGZP2dmSImAVNf/ZkmUg9OIC2x15kSzSzngOp00m3mJsh4IhUza6Zql
+ ReYXby2LFHigK0frV6vU6JoFFoO9oDjJ5BJYDQ/4Cn2S3Zr0Haf0DhsYsF7DQPA1YMc7
+ hp+yLLb0smnueRpFWRrhaCngXnBrgNeOPLriMIhUP0uppwNlVYdJlJK+8sygfCn0eBcU
+ Iov43u/cq8sIhFRi/7K4USNcVMMOXbUg4G2Sw0ztVZgA7tlLdG/3EERfstMNsIxcAdIq
+ T0ELHPiToShB0j6sIH9BERSnWGuzJUbq/VnlPfFH/4PxPJeL8OhsUx8SxwXXeiLyPEAR MQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3c2jfj51t7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 02 Nov 2021 13:38:41 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7F8AA10002A;
+        Tue,  2 Nov 2021 13:38:40 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 73F97231DC7;
+        Tue,  2 Nov 2021 13:38:40 +0100 (CET)
+Received: from localhost (10.75.127.46) by SFHDAG2NODE2.st.com (10.75.127.5)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 2 Nov 2021 13:38:40
+ +0100
+From:   Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     <arnaud.pouliquen@foss.st.com>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-kernel@vger.kernel.org>, <linux-remoteproc@vger.kernel.org>
+Subject: [PATCH] MAINTAINERS: Add rpmsg tty driver maintainer
+Date:   Tue, 2 Nov 2021 13:38:17 +0100
+Message-ID: <20211102123817.19874-1-arnaud.pouliquen@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <20211101235327.63ggtuhvplsgpmya@skbuf>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.46]
+X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-02_08,2021-11-02_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Adding myself as rpmsg tty maintainer and also adding remoteproc
+mailing list to inform about changes in the driver.
 
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+---
+ MAINTAINERS | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-On 02/11/2021 01:53, Vladimir Oltean wrote:
-> On Mon, Nov 01, 2021 at 07:01:19PM +0200, Grygorii Strashko wrote:
->> Hi
->>
->> This series first adds supports for the ALE feature to rate limit number ingress
->> broadcast(BC)/multicast(MC) packets per/sec which main purpose is BC/MC storm
->> prevention.
->>
->> And then enables corresponding support for ingress broadcast(BC)/multicast(MC)
->> packets rate limiting for TI CPSW switchdev and AM65x/J221E CPSW_NUSS drivers by
->> implementing HW offload for simple tc-flower with policer action with matches
->> on dst_mac:
->>   - ff:ff:ff:ff:ff:ff has to be used for BC packets rate limiting
->>   - 01:00:00:00:00:00 fixed value has to be used for MC packets rate limiting
->>
->> Examples:
->> - BC rate limit to 1000pps:
->>    tc qdisc add dev eth0 clsact
->>    tc filter add dev eth0 ingress flower skip_sw dst_mac ff:ff:ff:ff:ff:ff \
->>    action police pkts_rate 1000 pkts_burst 1
->>
->> - MC rate limit to 20000pps:
->>    tc qdisc add dev eth0 clsact
->>    tc filter add dev eth0 ingress flower skip_sw dst_mac 01:00:00:00:00:00 \
->>    action police pkts_rate 10000 pkts_burst 1
->>
->>    pkts_burst - not used.
->>
->> The solution inspired patch from Vladimir Oltean [1].
->>
->> Changes in v2:
->>   - switch to packet-per-second policing introduced by
->>     commit 2ffe0395288a ("net/sched: act_police: add support for packet-per-second policing") [2]
->>
->> v1: https://patchwork.kernel.org/project/netdevbpf/cover/20201114035654.32658-1-grygorii.strashko@ti.com/
->>
->> [1] https://lore.kernel.org/patchwork/patch/1217254/
->> [2] https://patchwork.kernel.org/project/netdevbpf/cover/20210312140831.23346-1-simon.horman@netronome.com/
->>
->> Grygorii Strashko (3):
->>    drivers: net: cpsw: ale: add broadcast/multicast rate limit support
->>    net: ethernet: ti: am65-cpsw: enable bc/mc storm prevention support
->>    net: ethernet: ti: cpsw_new: enable bc/mc storm prevention support
->>
->>   drivers/net/ethernet/ti/am65-cpsw-qos.c | 145 ++++++++++++++++++++
->>   drivers/net/ethernet/ti/am65-cpsw-qos.h |   8 ++
->>   drivers/net/ethernet/ti/cpsw_ale.c      |  66 +++++++++
->>   drivers/net/ethernet/ti/cpsw_ale.h      |   2 +
->>   drivers/net/ethernet/ti/cpsw_new.c      |   4 +-
->>   drivers/net/ethernet/ti/cpsw_priv.c     | 170 ++++++++++++++++++++++++
->>   drivers/net/ethernet/ti/cpsw_priv.h     |   8 ++
->>   7 files changed, 402 insertions(+), 1 deletion(-)
->>
->> -- 
->> 2.17.1
->>
-> 
-> I don't think I've asked this for v1, but when you say multicast storm
-> control, does the hardware police just unknown multicast frames, or all
-> multicast frames?
-> 
-
-  packets per/sec rate limiting is affects all MC or BC packets once enabled.
-
+diff --git a/MAINTAINERS b/MAINTAINERS
+index ba9f6537abc3..e234a740707b 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -16482,6 +16482,12 @@ T:	git git://linuxtv.org/media_tree.git
+ F:	Documentation/devicetree/bindings/media/allwinner,sun8i-a83t-de2-rotate.yaml
+ F:	drivers/media/platform/sunxi/sun8i-rotate/
+ 
++RPMSG TTY DRIVER
++M:	Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
++L:	linux-remoteproc@vger.kernel.org
++S:	Maintained
++F:	drivers/tty/rpmsg_tty.c
++
+ RTL2830 MEDIA DRIVER
+ M:	Antti Palosaari <crope@iki.fi>
+ L:	linux-media@vger.kernel.org
 -- 
-Best regards,
-grygorii
+2.17.1
+
