@@ -2,136 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7842144286A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 08:30:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B36344286E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 08:31:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231453AbhKBHdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 03:33:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbhKBHdC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 03:33:02 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A679AC061714
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 00:30:27 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id v7-20020a25ab87000000b005c2130838beso15112297ybi.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 00:30:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=ccic3rr4mdoxbdec06AcmZnoBxRewK3GJUdYuoNnen4=;
-        b=D1CekfftDJe+rtDY9HWYJwucEzP5l6K0C+HneWxHOD3zepmQR/GMV0yegg0KuY31Ji
-         GQXdWGwrGqstc0vOw6oclM/e2Xex53BWfvqSC3qZu13RsITXL2u30USINCOctSICRnX/
-         Cl/U8dMEvnAexLUEOQAPjxc6Tv3oI4UOkyqFNzC+FcnjUbZeP4/HE/Pr9Hq9YwRE3Jtt
-         IkEP9N2Km/wgmhb+F/FZgss/x1hI1+e/kZzUAjKMRIDZW2WeuAZGWc/VCgjNXajEhOiF
-         HOfzefb36NHsYW/KrKomnusQE9KBx+NcWAwlQb5Z1rwNWDJmkvrZ59Pes+sfYyGYu5Ia
-         DJxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=ccic3rr4mdoxbdec06AcmZnoBxRewK3GJUdYuoNnen4=;
-        b=5fLS6W3kZs0GX+dOV7bmZiXM6DohBzAjrYmHxnTQyWSQ7+SYc4IxYawI4tYOXzyCX7
-         jbY8FNVv3dmWmfMk1RzUf7esHzbXBNpbZToqZjKNtSBlCc8QUJeWkx74XtpoLXLisy5V
-         MaVji03AixzNGbiQUr9Gc6KqFkMoCi1a176nSVwX5RM1LX4tumXUsuAQeJhiA8/f8qUo
-         1kyyV5pmBSO3DzDBQteSbMJuPF+Mjnn3omgM2nk4FggduuF0dcWFcEJJ+T+EBnJ98Kds
-         DFHek028XS+jt76hIOr55qw6IPXhM5SwRjw06gWFQ1ntDEZck8iZkz26vrdt8oB93Vcu
-         Q/rA==
-X-Gm-Message-State: AOAM5332kTKJ+P4kjvjozyB6mk65/cOR01pUDNaWJFsIOfi+cQhMei5i
-        1Gf4xQsGcURP3JoZvzKSdvNpzKpKvG2Gww==
-X-Google-Smtp-Source: ABdhPJy1s2Yko/ka6XxoOb8uiAt2VfEYKhvlH9ZvKrjTWRKBwfamluyKBPgySQrqEVYvpT0H6OaQioq+vPtKwg==
-X-Received: from spirogrip.svl.corp.google.com ([2620:15c:2cb:201:524f:74d8:b474:2517])
- (user=davidgow job=sendgmr) by 2002:a25:cc07:: with SMTP id
- l7mr26331915ybf.313.1635838226959; Tue, 02 Nov 2021 00:30:26 -0700 (PDT)
-Date:   Tue,  2 Nov 2021 00:30:14 -0700
-In-Reply-To: <20211102073014.2901870-1-davidgow@google.com>
-Message-Id: <20211102073014.2901870-4-davidgow@google.com>
-Mime-Version: 1.0
-References: <20211102073014.2901870-1-davidgow@google.com>
-X-Mailer: git-send-email 2.33.1.1089.g2158813163f-goog
-Subject: [PATCH v4 4/4] kunit: Report test parameter results as (K)TAP subtests
-From:   David Gow <davidgow@google.com>
-To:     Brendan Higgins <brendanhiggins@google.com>,
-        Rae Moar <rmr167@gmail.com>,
-        Daniel Latypov <dlatypov@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Cc:     David Gow <davidgow@google.com>, kunit-dev@googlegroups.com,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S230508AbhKBHeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 03:34:02 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:55135 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229873AbhKBHd5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 03:33:57 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1635838283; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=ZtcWXP/DICrrVoa56QdFrH9TdBdluRLfCuEUwQ9cLuU=; b=cWRRYF8YuQXifSQ1JdSM0fwJLCPuuohQic2j24vEiIRtLgZ8ZOO5J3/mA0O4ntPEuWH7no8Q
+ k4ta13/Bi+YUEVmqi8oYPCpnzKDSMC4zWKqXO5POY3/D+5uJWNFD3sFcjMsKXFwaQ4vPxXho
+ D1I7AL3OB4+zkUZxg07LjHWeESI=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 6180e949aeb23905560adf2e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 02 Nov 2021 07:31:21
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 5FD0BC4360D; Tue,  2 Nov 2021 07:31:21 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from hu-srivasam-hyd.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7B5DFC4360D;
+        Tue,  2 Nov 2021 07:31:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 7B5DFC4360D
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        swboyd@chromium.org, judyhsiao@chromium.org
+Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Subject: [PATCH v4 00/10] Add support for audio on SC7280 based targets
+Date:   Tue,  2 Nov 2021 13:00:55 +0530
+Message-Id: <1635838265-27346-1-git-send-email-srivasam@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, the results for individial parameters in a parameterised test
-are simply output as (K)TAP diagnostic lines.
+This patch set is to add support for Audio over wcd codec,
+digital mics, through digital codecs and without ADSP.
+This patch set depends on:
+	-- https://patchwork.kernel.org/project/alsa-devel/list/?series=570161
+	-- https://patchwork.kernel.org/project/alsa-devel/list/?series=572615
+	-- https://patchwork.kernel.org/project/alsa-devel/list/?series=559677
 
-As kunit_tool now supports nested subtests, report each parameter as its
-own subtest.
+Changes Since V3:
+    -- Remove redundant power domain controls. As power domains can be configured from dtsi.
+Changes Since V2:
+    -- Split lpass sc7280 cpu driver patch and create regmap config patch.
+    -- Create patches based on latest kernel tip.
+    -- Add helper function to get dma control and lpaif handle.
+    -- Remove unused variables.
+Changes Since V1:
+    -- Typo errors fix
+    -- CPU driver readable/writable apis optimization.
+    -- Add Missing config patch
+    -- Add Common api for repeated dmactl initialization.
 
-For example, here's what the output now looks like:
-	# Subtest: inode_test_xtimestamp_decoding
-	ok 1 - 1901-12-13 Lower bound of 32bit < 0 timestamp, no extra bits
-	ok 2 - 1969-12-31 Upper bound of 32bit < 0 timestamp, no extra bits
-	ok 3 - 1970-01-01 Lower bound of 32bit >=0 timestamp, no extra bits
-	ok 4 - 2038-01-19 Upper bound of 32bit >=0 timestamp, no extra bits
-	ok 5 - 2038-01-19 Lower bound of 32bit <0 timestamp, lo extra sec bit on
-	ok 6 - 2106-02-07 Upper bound of 32bit <0 timestamp, lo extra sec bit on
-	ok 7 - 2106-02-07 Lower bound of 32bit >=0 timestamp, lo extra sec bit on
-	ok 8 - 2174-02-25 Upper bound of 32bit >=0 timestamp, lo extra sec bit on
-	ok 9 - 2174-02-25 Lower bound of 32bit <0 timestamp, hi extra sec bit on
-	ok 10 - 2242-03-16 Upper bound of 32bit <0 timestamp, hi extra sec bit on
-	ok 11 - 2242-03-16 Lower bound of 32bit >=0 timestamp, hi extra sec bit on
-	ok 12 - 2310-04-04 Upper bound of 32bit >=0 timestamp, hi extra sec bit on
-	ok 13 - 2310-04-04 Upper bound of 32bit>=0 timestamp, hi extra sec bit 1. 1 ns
-	ok 14 - 2378-04-22 Lower bound of 32bit>= timestamp. Extra sec bits 1. Max ns
-	ok 15 - 2378-04-22 Lower bound of 32bit >=0 timestamp. All extra sec bits on
-	ok 16 - 2446-05-10 Upper bound of 32bit >=0 timestamp. All extra sec bits on
-	# inode_test_xtimestamp_decoding: pass:16 fail:0 skip:0 total:16
-	ok 1 - inode_test_xtimestamp_decoding
+Srinivasa Rao Mandadapu (10):
+  ASoC: qcom: Move lpass_pcm_data structure to lpass header
+  ASoC: qcom: lpass: Add dma fields for codec dma lpass interface
+  ASoC: qcom: Add register definition for codec rddma and wrdma
+  ASoC: qcom: Add lpass CPU driver for codec dma control
+  ASoC: qcom: Add helper function to get dma control and lpaif handle
+  ASoC: qcom: Add support for codec dma driver
+  ASoC: qcom: Add regmap config support for codec dma driver
+  ASoC: dt-bindings: Add SC7280 sound card bindings
+  ASoC: qcom: lpass-sc7280: Add platform driver for lpass audio
+  ASoC: qcom: SC7280: Update config for building codec dma drivers
 
-Signed-off-by: David Gow <davidgow@google.com>
-Reviewed-by: Daniel Latypov <dlatypov@google.com>
----
+ .../devicetree/bindings/sound/qcom,lpass-cpu.yaml  |  69 ++-
+ sound/soc/qcom/Kconfig                             |  13 +
+ sound/soc/qcom/Makefile                            |   4 +
+ sound/soc/qcom/common.c                            |  39 ++
+ sound/soc/qcom/common.h                            |   1 +
+ sound/soc/qcom/lpass-cdc-dma.c                     | 195 ++++++++
+ sound/soc/qcom/lpass-cpu.c                         | 245 +++++++++-
+ sound/soc/qcom/lpass-lpaif-reg.h                   | 103 ++++-
+ sound/soc/qcom/lpass-platform.c                    | 513 ++++++++++++++++++---
+ sound/soc/qcom/lpass-sc7280.c                      | 417 +++++++++++++++++
+ sound/soc/qcom/lpass.h                             | 150 ++++++
+ 11 files changed, 1670 insertions(+), 79 deletions(-)
+ create mode 100644 sound/soc/qcom/lpass-cdc-dma.c
+ create mode 100644 sound/soc/qcom/lpass-sc7280.c
 
-Changes since v3:
-https://lore.kernel.org/linux-kselftest/20211028064154.2301049-4-davidgow@google.com/
-- Fix the missing log line which ended up in patch 3 by mistake.
-
-Changes since v2:
-https://lore.kernel.org/linux-kselftest/20211027013702.2039566-4-davidgow@google.com/
-- No changes to this patch.
-
-
- lib/kunit/test.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/lib/kunit/test.c b/lib/kunit/test.c
-index f96498ede2cc..c7ed4aabec04 100644
---- a/lib/kunit/test.c
-+++ b/lib/kunit/test.c
-@@ -512,6 +512,8 @@ int kunit_run_tests(struct kunit_suite *suite)
- 			/* Get initial param. */
- 			param_desc[0] = '\0';
- 			test.param_value = test_case->generate_params(NULL, param_desc);
-+			kunit_log(KERN_INFO, &test, KUNIT_SUBTEST_INDENT KUNIT_SUBTEST_INDENT
-+				  "# Subtest: %s", test_case->name);
- 
- 			while (test.param_value) {
- 				kunit_run_case_catch_errors(suite, test_case, &test);
-@@ -522,9 +524,8 @@ int kunit_run_tests(struct kunit_suite *suite)
- 				}
- 
- 				kunit_log(KERN_INFO, &test,
--					  KUNIT_SUBTEST_INDENT
--					  "# %s: %s %d - %s",
--					  test_case->name,
-+					  KUNIT_SUBTEST_INDENT KUNIT_SUBTEST_INDENT
-+					  "%s %d - %s",
- 					  kunit_status_to_ok_not_ok(test.status),
- 					  test.param_index + 1, param_desc);
- 
 -- 
-2.33.1.1089.g2158813163f-goog
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
