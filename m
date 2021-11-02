@@ -2,150 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AB8644321B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 16:54:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91469443226
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 16:56:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234675AbhKBP46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 11:56:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33914 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231526AbhKBP44 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 11:56:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 52FC860F70;
-        Tue,  2 Nov 2021 15:54:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635868461;
-        bh=c613B/51b6bDm1GcoVj+H/Wzr4te9tRl8TXBB57MdsY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OgvXxm0TKc+l5rsOGAgBmVMLlYOtSUNL/Ckwxgw1QrW9UwRCJ9rhwfTXNmeRUDVzQ
-         f0RrPctXMuCGqb58uxMMvZ5TIhbseypLUw5BwuKSNlFCXat2WpqAENQ46Q4zhKn+ZC
-         +aJhIGM5TlvfgkiqAoGIC7oQ22X+3eJ8rYEmLBA4=
-Date:   Tue, 2 Nov 2021 16:54:10 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     stable@vger.kernel.org, asml.silence@gmail.com, axboe@kernel.dk,
+        id S234450AbhKBP6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 11:58:54 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:58184 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231314AbhKBP6t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 11:58:49 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 0DC23212C5;
+        Tue,  2 Nov 2021 15:56:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1635868574; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BmonHUnAnYnD8EpEMAbj9Xb4Tj4hqZW3n8QfuohThc4=;
+        b=q77Vi0EksI1bvwukk8f+UhQtvSydthVGfiehL1dkY8ypR3VtkJ1e5zRb6e1Q8fUNqbKHax
+        4uhSCMXUjYGYHj2b7fekF6D/3G9NVygd8rGY/YmfjpKxlOQPprQr1gOyaGxOH389rZJ3z4
+        GZIHKLBI9vw/jSphQjTc6h9J9Z7xTq0=
+Received: from suse.cz (unknown [10.100.216.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id E63E4A3B83;
+        Tue,  2 Nov 2021 15:56:13 +0000 (UTC)
+Date:   Tue, 2 Nov 2021 16:56:10 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>, live-patching@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        syzbot+b0003676644cf0d6acc4@syzkaller.appspotmail.com
-Subject: Re: [PATCH v5.10.y 1/1] Revert "io_uring: reinforce cancel on flush
- during exit"
-Message-ID: <YYFfIk2CQaFI0Zdg@kroah.com>
-References: <20211102154930.2282421-1-lee.jones@linaro.org>
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Joe Lawrence <joe.lawrence@redhat.com>
+Subject: Re: [PATCH V4 1/3] livepatch: remove 'struct completion finish' from
+ klp_patch
+Message-ID: <YYFfmo5/Dds7bspY@alley>
+References: <20211102145932.3623108-1-ming.lei@redhat.com>
+ <20211102145932.3623108-2-ming.lei@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211102154930.2282421-1-lee.jones@linaro.org>
+In-Reply-To: <20211102145932.3623108-2-ming.lei@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 03:49:30PM +0000, Lee Jones wrote:
-> This reverts commit 88dbd085a51ec78c83dde79ad63bca8aa4272a9d.
+On Tue 2021-11-02 22:59:30, Ming Lei wrote:
+> The completion finish is just for waiting release of the klp_patch
+> object, then releases module refcnt. We can simply drop the module
+> refcnt in the kobject release handler of klp_patch.
 > 
-> Causes the following Syzkaller reported issue:
+> This way also helps to support allocating klp_patch from heap.
+
+IMHO, this is wrong assumption. kobject_put() might do everyting
+asynchronously, see:
+
+   kobject_put()
+     kobject_release()
+       INIT_DELAYED_WORK(&kobj->release, kobject_delayed_cleanup);
+       schedule_delayed_work(&kobj->release, delay);
+
+   asynchronously:
+
+     kobject_delayed_cleanup()
+      kobject_cleanup()
+	__kobject_del()
+
+
+> Signed-off-by: Ming Lei <ming.lei@redhat.com>
+> ---
+>  include/linux/livepatch.h |  1 -
+>  kernel/livepatch/core.c   | 12 +++---------
+>  2 files changed, 3 insertions(+), 10 deletions(-)
 > 
-> BUG: kernel NULL pointer dereference, address: 0000000000000010
-> PGD 0 P4D 0
-> Oops: 0002 [#1] PREEMPT SMP KASAN
-> CPU: 1 PID: 546 Comm: syz-executor631 Tainted: G    B             5.10.76-syzkaller-01178-g4944ec82ebb9 #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> RIP: 0010:arch_atomic_try_cmpxchg syzkaller/managers/android-5-10/kernel/./arch/x86/include/asm/atomic.h:202 [inline]
-> RIP: 0010:atomic_try_cmpxchg_acquire syzkaller/managers/android-5-10/kernel/./include/asm-generic/atomic-instrumented.h:707 [inline]
-> RIP: 0010:queued_spin_lock syzkaller/managers/android-5-10/kernel/./include/asm-generic/qspinlock.h:82 [inline]
-> RIP: 0010:do_raw_spin_lock_flags syzkaller/managers/android-5-10/kernel/./include/linux/spinlock.h:195 [inline]
-> RIP: 0010:__raw_spin_lock_irqsave syzkaller/managers/android-5-10/kernel/./include/linux/spinlock_api_smp.h:119 [inline]
-> RIP: 0010:_raw_spin_lock_irqsave+0x10d/0x210 syzkaller/managers/android-5-10/kernel/kernel/locking/spinlock.c:159
-> Code: 00 00 00 e8 d5 29 09 fd 4c 89 e7 be 04 00 00 00 e8 c8 29 09 fd 42 8a 04 3b 84 c0 0f 85 be 00 00 00 8b 44 24 40 b9 01 00 00 00 <f0> 41 0f b1 4d 00 75 45 48 c7 44 24 20 0e 36 e0 45 4b c7 04 37 00
-> RSP: 0018:ffffc90000f174e0 EFLAGS: 00010097
-> RAX: 0000000000000000 RBX: 1ffff920001e2ea4 RCX: 0000000000000001
-> RDX: 0000000000000001 RSI: 0000000000000004 RDI: ffffc90000f17520
-> RBP: ffffc90000f175b0 R08: dffffc0000000000 R09: 0000000000000003
-> R10: fffff520001e2ea5 R11: 0000000000000004 R12: ffffc90000f17520
-> R13: 0000000000000010 R14: 1ffff920001e2ea0 R15: dffffc0000000000
-> FS:  0000000000000000(0000) GS:ffff8881f7100000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000000000000010 CR3: 000000000640f000 CR4: 00000000003506a0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  prepare_to_wait+0x9c/0x290 syzkaller/managers/android-5-10/kernel/kernel/sched/wait.c:248
->  io_uring_cancel_files syzkaller/managers/android-5-10/kernel/fs/io_uring.c:8690 [inline]
->  io_uring_cancel_task_requests+0x16a9/0x1ed0 syzkaller/managers/android-5-10/kernel/fs/io_uring.c:8760
->  io_uring_flush+0x170/0x6d0 syzkaller/managers/android-5-10/kernel/fs/io_uring.c:8923
->  filp_close+0xb0/0x150 syzkaller/managers/android-5-10/kernel/fs/open.c:1319
->  close_files syzkaller/managers/android-5-10/kernel/fs/file.c:401 [inline]
->  put_files_struct+0x1d4/0x350 syzkaller/managers/android-5-10/kernel/fs/file.c:429
->  exit_files+0x80/0xa0 syzkaller/managers/android-5-10/kernel/fs/file.c:458
->  do_exit+0x6d9/0x23a0 syzkaller/managers/android-5-10/kernel/kernel/exit.c:808
->  do_group_exit+0x16a/0x2d0 syzkaller/managers/android-5-10/kernel/kernel/exit.c:910
->  get_signal+0x133e/0x1f80 syzkaller/managers/android-5-10/kernel/kernel/signal.c:2790
->  arch_do_signal+0x8d/0x620 syzkaller/managers/android-5-10/kernel/arch/x86/kernel/signal.c:805
->  exit_to_user_mode_loop syzkaller/managers/android-5-10/kernel/kernel/entry/common.c:161 [inline]
->  exit_to_user_mode_prepare+0xaa/0xe0 syzkaller/managers/android-5-10/kernel/kernel/entry/common.c:191
->  syscall_exit_to_user_mode+0x24/0x40 syzkaller/managers/android-5-10/kernel/kernel/entry/common.c:266
->  do_syscall_64+0x3d/0x70 syzkaller/managers/android-5-10/kernel/arch/x86/entry/common.c:56
->  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> RIP: 0033:0x7fc6d1589a89
-> Code: Unable to access opcode bytes at RIP 0x7fc6d1589a5f.
-> RSP: 002b:00007ffd2b5da728 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
-> RAX: fffffffffffffdfc RBX: 0000000000005193 RCX: 00007fc6d1589a89
-> RDX: 0000000000000000 RSI: 0000000000000080 RDI: 00007fc6d161142c
-> RBP: 0000000000000032 R08: 00007ffd2b5eb0b8 R09: 0000000000000000
-> R10: 00007ffd2b5da750 R11: 0000000000000246 R12: 00007fc6d161142c
-> R13: 00007ffd2b5da750 R14: 00007ffd2b5da770 R15: 0000000000000000
-> Modules linked in:
-> CR2: 0000000000000010
-> ---[ end trace fe8044f7dc4d8d65 ]---
-> RIP: 0010:arch_atomic_try_cmpxchg syzkaller/managers/android-5-10/kernel/./arch/x86/include/asm/atomic.h:202 [inline]
-> RIP: 0010:atomic_try_cmpxchg_acquire syzkaller/managers/android-5-10/kernel/./include/asm-generic/atomic-instrumented.h:707 [inline]
-> RIP: 0010:queued_spin_lock syzkaller/managers/android-5-10/kernel/./include/asm-generic/qspinlock.h:82 [inline]
-> RIP: 0010:do_raw_spin_lock_flags syzkaller/managers/android-5-10/kernel/./include/linux/spinlock.h:195 [inline]
-> RIP: 0010:__raw_spin_lock_irqsave syzkaller/managers/android-5-10/kernel/./include/linux/spinlock_api_smp.h:119 [inline]
-> RIP: 0010:_raw_spin_lock_irqsave+0x10d/0x210 syzkaller/managers/android-5-10/kernel/kernel/locking/spinlock.c:159
-> Code: 00 00 00 e8 d5 29 09 fd 4c 89 e7 be 04 00 00 00 e8 c8 29 09 fd 42 8a 04 3b 84 c0 0f 85 be 00 00 00 8b 44 24 40 b9 01 00 00 00 <f0> 41 0f b1 4d 00 75 45 48 c7 44 24 20 0e 36 e0 45 4b c7 04 37 00
-> RSP: 0018:ffffc90000f174e0 EFLAGS: 00010097
-> RAX: 0000000000000000 RBX: 1ffff920001e2ea4 RCX: 0000000000000001
-> RDX: 0000000000000001 RSI: 0000000000000004 RDI: ffffc90000f17520
-> RBP: ffffc90000f175b0 R08: dffffc0000000000 R09: 0000000000000003
-> R10: fffff520001e2ea5 R11: 0000000000000004 R12: ffffc90000f17520
-> R13: 0000000000000010 R14: 1ffff920001e2ea0 R15: dffffc0000000000
-> FS:  0000000000000000(0000) GS:ffff8881f7100000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000000000000010 CR3: 000000000640f000 CR4: 00000000003506a0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> ----------------
-> Code disassembly (best guess), 1 bytes skipped:
->    0:	00 00                	add    %al,(%rax)
->    2:	e8 d5 29 09 fd       	callq  0xfd0929dc
->    7:	4c 89 e7             	mov    %r12,%rdi
->    a:	be 04 00 00 00       	mov    $0x4,%esi
->    f:	e8 c8 29 09 fd       	callq  0xfd0929dc
->   14:	42 8a 04 3b          	mov    (%rbx,%r15,1),%al
->   18:	84 c0                	test   %al,%al
->   1a:	0f 85 be 00 00 00    	jne    0xde
->   20:	8b 44 24 40          	mov    0x40(%rsp),%eax
->   24:	b9 01 00 00 00       	mov    $0x1,%ecx
-> * 29:	f0 41 0f b1 4d 00    	lock cmpxchg %ecx,0x0(%r13) <-- trapping instruction
->   2f:	75 45                	jne    0x76
->   31:	48 c7 44 24 20 0e 36 	movq   $0x45e0360e,0x20(%rsp)
->   38:	e0 45
->   3a:	4b                   	rex.WXB
->   3b:	c7                   	.byte 0xc7
->   3c:	04 37                	add    $0x37,%al
-> 
-> LINK: https://syzkaller.appspot.com/bug?extid=b0003676644cf0d6acc4
+> diff --git a/include/linux/livepatch.h b/include/linux/livepatch.h
+> index 2614247a9781..9712818997c5 100644
+> --- a/include/linux/livepatch.h
+> +++ b/include/linux/livepatch.h
+> @@ -170,7 +170,6 @@ struct klp_patch {
+>  	bool enabled;
+>  	bool forced;
+>  	struct work_struct free_work;
+> -	struct completion finish;
+>  };
+>  
+>  #define klp_for_each_object_static(patch, obj) \
+> diff --git a/kernel/livepatch/core.c b/kernel/livepatch/core.c
+> index 335d988bd811..b967b4b0071b 100644
+> --- a/kernel/livepatch/core.c
+> +++ b/kernel/livepatch/core.c
+> @@ -551,10 +551,10 @@ static int klp_add_nops(struct klp_patch *patch)
+>  
+>  static void klp_kobj_release_patch(struct kobject *kobj)
+>  {
+> -	struct klp_patch *patch;
+> +	struct klp_patch *patch = container_of(kobj, struct klp_patch, kobj);
+>  
+> -	patch = container_of(kobj, struct klp_patch, kobj);
+> -	complete(&patch->finish);
+> +	if (!patch->forced)
+> +		module_put(patch->mod);
+>  }
+>  
+>  static struct kobj_type klp_ktype_patch = {
+> @@ -678,11 +678,6 @@ static void klp_free_patch_finish(struct klp_patch *patch)
+>  	 * cannot get enabled again.
+>  	 */
+>  	kobject_put(&patch->kobj);
+> -	wait_for_completion(&patch->finish);
+> -
+> -	/* Put the module after the last access to struct klp_patch. */
+> -	if (!patch->forced)
+> -		module_put(patch->mod);
 
-"Link:"?
+klp_free_patch_finish() does not longer wait until the release
+callbacks are called.
 
-> Reported-by: syzbot+b0003676644cf0d6acc4@syzkaller.appspotmail.com
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+klp_free_patch_finish() is called also in klp_enable_patch() error
+path.
 
-Why does the patch here cause this error?  Is it due to the backport
-being different than what went into Linus's tree, or something else?
+klp_enable_patch() is called in module_init(). For example, see
+samples/livepatch/livepatch-sample.c
 
-The original commit did fix a real issue, what should we do now to
-resolve that issue in 5.10.y instead?
+The module must not get removed until the release callbacks are called.
+Does the module loader check the module reference counter when
+module_init() fails?
 
-thanks,
-
-greg k-h
+Best Regards,
+Petr
