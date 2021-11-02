@@ -2,104 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04C4C442787
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 08:06:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3109A4427A7
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 08:07:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230468AbhKBHJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 03:09:10 -0400
-Received: from mout.kundenserver.de ([212.227.126.135]:55439 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231189AbhKBHJE (ORCPT
+        id S231547AbhKBHKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 03:10:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231495AbhKBHJo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 03:09:04 -0400
-Received: from mail-wr1-f44.google.com ([209.85.221.44]) by
- mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MMoXE-1n0RBm2L00-00Ii0d; Tue, 02 Nov 2021 08:06:26 +0100
-Received: by mail-wr1-f44.google.com with SMTP id d13so31655181wrf.11;
-        Tue, 02 Nov 2021 00:06:26 -0700 (PDT)
-X-Gm-Message-State: AOAM531zlB0EmLR/uxZY3TGZ1ndcSSUAcBkZg8AIOj7m4O65F+UALHQn
-        0tsx87eXS1yDGKDr0Cg1H0wcH3zgVMpwuhLZsE8=
-X-Google-Smtp-Source: ABdhPJzQ3znFRq+ZQpxRVWHkuDXTcOZcbFjCxXe6hcE5/1xLsILVEWGw7RLhfP3RsG3pwxU47kpK2ABE5NgJOsrnlrM=
-X-Received: by 2002:adf:df89:: with SMTP id z9mr7537007wrl.336.1635836786184;
- Tue, 02 Nov 2021 00:06:26 -0700 (PDT)
+        Tue, 2 Nov 2021 03:09:44 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C7B0C0613F5
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 00:07:10 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id t21so14561274plr.6
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 00:07:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yMI7pynxheqFYbCOJ1SIixE40Oy4tlFktPtjKi1YeQo=;
+        b=I9OERzFOQlQ6Pl0219Y6IzuOO+9HDdIjniEtzNg+Yo5myWsaV6AiptI8r6riJo4Cyt
+         WMo4/aDXbl+25fpUeco+loa4RR7L9SpHIzD7dKpwYOD1uMh/fvyOQjr9MZZv5BQTA7ci
+         U9zsBnP5KOKxR8qKA2Xl0YhFZDOF7/K//IDwOKXqeaU2s29OXNb2FrLmqU8qCPF1w6g+
+         wM9VeVHWSy+tNQ97qLUAc5kN9eep6b+wnGgb48dQPHlkQhd43P99eeRqnEOF6jgBxaof
+         Knvh4Ykrhsv1tpzNBhRtVLVRC/mDmRIk0HI5ZWcLqy3e7mOr+3sF+uK36HVIJRsgrru2
+         oVYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yMI7pynxheqFYbCOJ1SIixE40Oy4tlFktPtjKi1YeQo=;
+        b=w5ugfaHoZC4UyhffNr1aMaQ4An0sLmzg3r5rPZPzyDuJYhKTvTgXgd0tkxs5AL121x
+         Np5f4a0maQF1CwVpPiPZAhAvz3/IBHbq4bSpfRpvsHkNBqXvg7AO+e7tcpsyWUrtvYHi
+         kp54fgBlpWsGGeN3oWE9ZOoPTqcVe+LFaIUuhaJvDlZNRAZqzvcHU0I74kfpZ9vHpS93
+         IyXxr0rU9Idgwf2EAMFrqPWovcv4813hf83pogmanvsHIMW/9mr1c/ASQEbKjENDFwy+
+         nvbf4zXJRwjd5mflRF+Oe+6NiBqBVY0gnYjMeEp5Hxa60+KcQubD4zgGWFzFCIkPCnX/
+         81fQ==
+X-Gm-Message-State: AOAM532//wWhJm3Y4S7Dd9Lyf728VtkHKDj96799L+kpe5D6Pbt+h9H9
+        UDtkbvCHApCBXgTkMEfLt1U=
+X-Google-Smtp-Source: ABdhPJyFCOhJMnrYRLgRdSHWpRfBrQSmh4Njh3Ah4iTPbeeV8J2V9espi9GPqwixGzI3wFGukIaz7w==
+X-Received: by 2002:a17:903:2348:b0:141:d60b:ee90 with SMTP id c8-20020a170903234800b00141d60bee90mr14786352plh.15.1635836830222;
+        Tue, 02 Nov 2021 00:07:10 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id g7sm14417934pgp.17.2021.11.02.00.07.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Nov 2021 00:07:10 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: zhang.mingyu@zte.com.cn
+To:     mingo@redhat.com
+Cc:     peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, linux-kernel@vger.kernel.org,
+        Zhang Mingyu <zhang.mingyu@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] sched:Remove unneeded semicolon
+Date:   Tue,  2 Nov 2021 07:07:04 +0000
+Message-Id: <20211102070704.5206-1-zhang.mingyu@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20211028212651.57beb05b@canb.auug.org.au> <20211028233844.292e1319@canb.auug.org.au>
- <20211102174400.1aaee22c@canb.auug.org.au>
-In-Reply-To: <20211102174400.1aaee22c@canb.auug.org.au>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Tue, 2 Nov 2021 08:06:10 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3Fx0UmbxP48RnXHcJYf_tU3_NTkMZrFnM42eAb_F4jRQ@mail.gmail.com>
-Message-ID: <CAK8P3a3Fx0UmbxP48RnXHcJYf_tU3_NTkMZrFnM42eAb_F4jRQ@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of almost all the trees
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Anton Altaparmakov <anton@tuxera.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:om69LVjW6amBGGfNSqv92SkVmaKXuVCdW0S46lr8YIhpdu3ybSU
- lRV6R8pCV/KajJXTJcwtgdixcjE0JiTo2A1pUFozThhr37NVzdcy1/nJlDolUZP9un51Lfp
- j/I59xY3a8BIZWQlz0cFmw9pXL4HB2fVfvYxyeUonj6YO2h8ZsrFgCahBh80HbOYRVFyztk
- 8F5U35iRXFh7rHlbTqjUw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:grWNEfrtS80=:xjYYgLMHH4UAqZZRN0c/mV
- ehPBlwG14shS01tbr06N3zPSbCe7buAjbpTCYNSq5j+wEEpYEixi89WIN0BEeVGjLzw8x5V79
- MQgWZn7sqtZEvlC9UQBVTxV6ZensuslmoTnm+Hq0IXEvZqr//LIg/7g5X3BsO55L0K2LRixrz
- FM6UXdYSa22SSEjpdNh8lCdMYJ5tfzSmSABdK7mBvexlFWyaXDO5FNovQFIwPkx+wgxC7kOcE
- lUdQfl6AoQJBvB7qQdwnJ+faCdJtW0npUJcLT9FAvYAOqOp4OUOggnFpiUKhB0yGNY+mDcYbS
- S7+WXHhAAGVE93scqYOGsIdlh3D9AsOKhYLOtO9Ucm9UgNgLnRZx2iJiHYMA0/dahrmzpT81g
- QU4DRGJLmDseMOoZiZ88r1GvAh7PUiTeo1NfogMxChXa3I6gxBHvNNbUQ0xAc/aOh7OB/zCn6
- uHHmsASN3foMA+aeEWEY4TYlpWK0f87/IMKGJJb3I+BEwf89iX3W/viICmW2Nz2f4PJYWAO4Q
- BCUWORwBKJpojphZxfuUZGoovFn8KV0lrK+gZ3vdmhVruMm8tExDwG/1i3Nala6ceHldzjkUH
- 2xQjrX3pChEVrXZj13w6UMYkX5UJKDYkh9REYhzr6plrnUKXIA/WGe4qZXBjBmp3WTENq4AyG
- 8Q6PxSX897HYX294y/b5ULLZBShjsGxAG+wIBsWm5hiEMgdZtNczhmNBv5BaeSddpVqLva3M4
- TcKpNhAQ6p42y4rRTkpq4Uw+h8X6d6iCV1i4ETYnHqaqOTFYdxxs+4ihWkFQroL4K8nf2Qz6E
- dgSTPbIXxHT2tRfv9IxTprgPa4407EE9ffQmFw78XDHE5YDS3Q=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 2, 2021 at 7:44 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi all,
->
-> On Thu, 28 Oct 2021 23:38:44 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> >
-> > Hi all,
-> >
-> > On Thu, 28 Oct 2021 21:26:51 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> > >
-> > > Today's linux-next build (powerpc allyesconfig) failed like this:
-> > >
-> > > fs/ntfs/aops.c: In function 'ntfs_write_mst_block':
-> > > fs/ntfs/aops.c:1311:1: error: the frame size of 2304 bytes is larger than 2048 bytes [-Werror=frame-larger-than=]
-> > >  1311 | }
-> > >       | ^
-> > > cc1: all warnings being treated as errors
-> > >
-> > > I have no idea what has caused this.
-> >
-> > With a nudge from Arnd, it seems the immediate case was commit
-> >
-> >   f22969a66041 ("powerpc/64s: Default to 64K pages for 64 bit book3s")
-> >
-> > from the powerpc tree switching the allyesconfig build from 4k pages to
-> > 64k pages which expanded a few arrays on the stack in that function.
->
-> Can we do something about this, please?
+From: Zhang Mingyu <zhang.mingyu@zte.com.cn>
 
-I submitted a workaround a while ago. Anton didn't like it, but has not
-come up with a proper fix in ntfs either:
+Eliminate the following coccinelle check warning:
+kernel/sched/core_sched.c:206:2-3
 
-https://lore.kernel.org/lkml/20210927141815.1711736-1-arnd@kernel.org/
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Zhang Mingyu <zhang.mingyu@zte.com.cn>
+---
+ kernel/sched/core_sched.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-It does need to be changed a bit as I realized it depends on a rework of
-the Kconfig logic that I had in my randconfig build tree to have a common
-page size symbol across architectures. Without my other patch, it also
-needs to check for PPC_64K_PAGES.
+diff --git a/kernel/sched/core_sched.c b/kernel/sched/core_sched.c
+index 517f72b008f5..f945b0c373db 100644
+--- a/kernel/sched/core_sched.c
++++ b/kernel/sched/core_sched.c
+@@ -203,7 +203,7 @@ int sched_core_share_pid(unsigned int cmd, pid_t pid, enum pid_type type,
+ 	default:
+ 		err = -EINVAL;
+ 		goto out;
+-	};
++	}
+ 
+ 	if (type == PIDTYPE_PID) {
+ 		__sched_core_set(task, cookie);
+-- 
+2.25.1
 
-Should I send an updated version of the patch?
-
-       Arnd
