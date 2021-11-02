@@ -2,123 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BDE1443087
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 15:35:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47C40443089
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 15:36:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231326AbhKBOh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 10:37:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbhKBOhz (ORCPT
+        id S231278AbhKBOiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 10:38:09 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:47262 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229530AbhKBOiI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 10:37:55 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83560C0613F5;
-        Tue,  2 Nov 2021 07:35:20 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id w15so76792713edc.9;
-        Tue, 02 Nov 2021 07:35:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=65sYvvqiPacKnyXGm00uOfZmsdN1H152QZb/K+6oTrA=;
-        b=JxLBTKIVNZHK0eYuQS+2xQbio8EFWVSsF86el4ZeRBHIxp4C+xMek7kd13w+RHprtp
-         BUr6gFI4Vd7RVLKLTkAdpctZSALuqID7yhubn31jBEo/wGXnTxwHFvGgb5i4tXyM44Ee
-         eMuMErWiXd+lLV4bh96VAYwFml+Qjt1p1vDuv5nvc4C96SKi161F3rM8FIZVUGE//s0i
-         BLwF+OO8ZOIzlyS7sPYrylrrQKNDcbv8boMgC6JrTdWxM8/0I6RP3FvRt/eSc2c6djHg
-         ZW1mqeU1TH+QAxauUw/3Jv37PxViBGQ8hzcIpuWT7DOpoVx8iwLliYA8im2G00scJf3i
-         dBKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=65sYvvqiPacKnyXGm00uOfZmsdN1H152QZb/K+6oTrA=;
-        b=w9WksMXQ69VBCIl/ePBEdHusuh0tpUoLSsMRPQVUZgzkThSOtvCIhdilpIPQKg+YZs
-         GuWeFZF3F012u0eAwer5ydliXuZ7UoRjQ5J3KCencmJvnk5zQ/3Vr0fRN2YxoFulg/WL
-         /MBFwkBWmjwy3OO/kGI2EqDDba3rUTHCjnZDxFwPb6etYilFOme0FFLquBch3DDjDUBS
-         YtYhkdJ2a3R0zppzu28NVAQz0sje5sjpW1/upl+lJqw9sTFk1D+SOB33A2RXBikoHyC3
-         C/roUKgdFEdvBpy2aE2N5QNUhmxDPPWCtMglaasXzTFF5RABOXq3Bwo5ieC85PvPPhQP
-         SHvg==
-X-Gm-Message-State: AOAM530mHExfyJrE6KZuf6NPWOGOTK7Jt7jPq+IWUR3Bh4xFal/6ceEo
-        nzunRVd6gIfc88uzY9DrzndOu6onUaLF4Gu3Kgk=
-X-Google-Smtp-Source: ABdhPJxbNeuBL+SSNH+3/S3iAwFmMxZhFeZFkV/g7SdZI4XCi+BAFf24eDiSTLXHPzQiLIjNziN/KABxFr0PzlrMtTE=
-X-Received: by 2002:a05:6402:207c:: with SMTP id bd28mr41368359edb.240.1635863711126;
- Tue, 02 Nov 2021 07:35:11 -0700 (PDT)
+        Tue, 2 Nov 2021 10:38:08 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 01AD41FD4E;
+        Tue,  2 Nov 2021 14:35:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1635863733; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PZOYwTcs/uRKNYMtgWTyKzvzPAmp2lHm06+rRoOs/v4=;
+        b=vQq48Hi9tmkUX4nm9Wzk1Fq+ApGIlZIIZmmiD9SmLhgmExEVMaSiVApTakHz0HYqIqdy44
+        Ot3l2rxUuQ7ce7mmLPELGfrb1s4WWwDEC6Qn5wpi/v7GoGi94FHMUVj3KQTFdyyJYzllRl
+        zjCzO1aYk947DkoYQKmzAyuTUh3hwbM=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id B4221A3B87;
+        Tue,  2 Nov 2021 14:35:32 +0000 (UTC)
+Date:   Tue, 2 Nov 2021 15:35:32 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Alexey Makhalov <amakhalov@vmware.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Oscar Salvador <OSalvador@suse.com>
+Subject: Re: [PATCH] mm: fix panic in __alloc_pages
+Message-ID: <YYFMtFwkKLUXaG/W@dhcp22.suse.cz>
+References: <YYD/FkpAk5IvmOux@dhcp22.suse.cz>
+ <b2e4a611-45a6-732a-a6d3-6042afd2af6e@redhat.com>
+ <E34422F0-A44A-48FD-AE3B-816744359169@vmware.com>
+ <b3908fce-6b07-8390-b691-56dd2f85c05f@redhat.com>
+ <YYEkqH8l0ASWv/JT@dhcp22.suse.cz>
+ <42abfba6-b27e-ca8b-8cdf-883a9398b506@redhat.com>
+ <YYEun6s/mF9bE+rQ@dhcp22.suse.cz>
+ <e7aed7c0-b7b1-4a94-f323-0bcde2f879d2@redhat.com>
+ <YYE8L4gs8/+HH6bf@dhcp22.suse.cz>
+ <20211102135201.GA4348@linux>
 MIME-Version: 1.0
-References: <20211102094907.31271-1-hdegoede@redhat.com> <20211102094907.31271-11-hdegoede@redhat.com>
-In-Reply-To: <20211102094907.31271-11-hdegoede@redhat.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 2 Nov 2021 16:34:21 +0200
-Message-ID: <CAHp75Vd-xY43H8jPOUqJp55Rq3Wuhsdzctfhqq300S0vAKTzpw@mail.gmail.com>
-Subject: Re: [PATCH v5 10/11] platform/x86: int3472: Pass tps68470_regulator_platform_data
- to the tps68470-regulator MFD-cell
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Kate Hsuan <hpa@redhat.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211102135201.GA4348@linux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 2, 2021 at 11:50 AM Hans de Goede <hdegoede@redhat.com> wrote:
->
-> Pass tps68470_regulator_platform_data to the tps68470-regulator
-> MFD-cell, specifying the voltages of the various regulators and
-> tying the regulators to the sensor supplies so that sensors which use
-> the TPS68470 can find their regulators.
->
-> Since the voltages and supply connections are board-specific, this
-> introduces a DMI matches int3472_tps68470_board_data struct which
-> contains the necessary per-board info.
->
-> This per-board info also includes GPIO lookup information for the
-> sensor IO lines which may be connected to the tps68470 GPIOs.
+On Tue 02-11-21 14:52:01, Oscar Salvador wrote:
+> On Tue, Nov 02, 2021 at 02:25:03PM +0100, Michal Hocko wrote:
+> > I think we want to learn how exactly Alexey brought that cpu up. Because
+> > his initial thought on add_cpu resp cpu_up doesn't seem to be correct.
+> > Or I am just not following the code properly. Once we know all those
+> > details we can get in touch with cpu hotplug maintainers and see what
+> > can we do.
+> 
+> I am not really familiar with CPU hot-onlining, but I have been taking a look.
+> As with memory, there are two different stages, hot-adding and onlining (and the
+> counterparts).
+> 
+> Part of the hot-adding being:
+> 
+> acpi_processor_get_info
+>  acpi_processor_hotadd_init
+>   arch_register_cpu
+>    register_cpu
+> 
+> One of the things that register_cpu() does is to set cpu->dev.bus pointing to
+> &cpu_subsys, which is:
+> 
+> struct bus_type cpu_subsys = {
+> 	.name = "cpu",
+> 	.dev_name = "cpu",
+> 	.match = cpu_subsys_match,
+> #ifdef CONFIG_HOTPLUG_CPU
+> 	.online = cpu_subsys_online,
+> 	.offline = cpu_subsys_offline,
+> #endif
+> };
+> 
+> Then, the onlining part (in case of a udev rule or someone onlining the device)
+> would be:
+> 
+> online_store
+>  device_online
+>   cpu_subsys_online
+>    cpu_device_up
+>     cpu_up
+>      ...
+>      online node
+> 
+> Since Alexey disabled the udev rule and no one onlined the CPU, online_store()->
+> device_online() wasn't really called.
+> 
+> The following only applies to x86_64:
+> I think we got confused because cpu_device_up() is also called from add_cpu(),
+> but that is an exported function and x86 does not call add_cpu() unless for
+> debugging purposes (check kernel/torture.c and arch/x86/kernel/topology.c).
+> It does the onlining through online_store()...
+> So we can take add_cpu() off the equation here.
 
-...
+Yes, so the real problem is (thanks for pointing me to the acpi code).
+The cpu->node association is done in acpi_map_cpu2node and I suspect
+this expects that the node is already present as it gets the information
+from SRAT/PXM tables which are parsed during boot. But I might be just
+confused or maybe just VMware inject new entries here somehow.
 
-> +               board_data = int3472_tps68470_get_board_data(dev_name(&client->dev));
-> +               if (!board_data) {
-> +                       dev_err(&client->dev, "No board-data found for this laptop/tablet model\n");
-> +                       return -ENODEV;
+Another interesting thing is that acpi_map_cpu2node skips over
+association if there is no node found in SRAT but that should only mean
+it would use the default initialization which should be hopefuly 0.
 
-It's fine to use dev_err_probe() for known error codes.
+Anyway, I have found in my notes
+https://www.spinics.net/lists/kernel/msg3010886.html which is a slightly
+different problem but it has some notes about how the initialization
+mess works (that one was boot time though and hotplug might be different
+actually).
 
-> +               }
-
-...
-
-> +               cells[1].platform_data = (void *)board_data->tps68470_regulator_pdata;
-
-Do we need casting?
-
-...
-
-> +#include <linux/dmi.h>
-> +#include <linux/gpio/machine.h>
-> +#include <linux/platform_data/tps68470.h>
-> +#include <linux/regulator/machine.h>
-
-string.h  for strcmp() ?
-kernel.h for ARRAY_SIZE() ?
+I have ran out of time for this today so hopefully somebody can re-learn
+that from there...
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Michal Hocko
+SUSE Labs
