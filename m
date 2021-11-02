@@ -2,76 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB14E443064
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 15:27:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76B3644306D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 15:31:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231419AbhKBOaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 10:30:15 -0400
-Received: from mail-ot1-f54.google.com ([209.85.210.54]:43621 "EHLO
-        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230483AbhKBOaI (ORCPT
+        id S230415AbhKBOds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 10:33:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229557AbhKBOdo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 10:30:08 -0400
-Received: by mail-ot1-f54.google.com with SMTP id n13-20020a9d710d000000b005558709b70fso23762796otj.10;
-        Tue, 02 Nov 2021 07:27:33 -0700 (PDT)
+        Tue, 2 Nov 2021 10:33:44 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23C25C061714
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 07:31:10 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id c2-20020a056830348200b0055a46c889a8so9533019otu.5
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 07:31:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=VSEH8Q3Lr+Mcr/0lsL1VFPftJp7ALZ21MKYEz4sry74=;
+        b=TgBYq6DdJ3RKLnaf1/aZHPhvIF7hfxYxgaHtOXxTEETNLbt9sY3YHRV+8Q1J6F4SsW
+         3BW5zuFmHizAl0imIS2XNLtGF04Y2GAorczJRYtAOkBetWyXOjfA3ccnsBwIvYoUGe96
+         WjLQyihyFihoINFVuh5BmwqY37BhWw5fRXWSZl48oVAlPr8wQNGpxOjEFKpJzo606Bu/
+         ++Qy4++4/Dd9/do0B3u59KNhRmnLgjWJdJU7LZivUxd17iujAnUKkKKgLb+o1GtO1jNa
+         ZdzFZhkdDz6VLoRut5TudCR+uj46+9Yn06zkf5X+3Zx6XvXmL1ZHP+3oE8gBrpFzJaxf
+         uIlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iJsAkCsAmGZv5gRDRXSkbNwK6vmPsC2LYUXejh0824s=;
-        b=o//fYDtEvJhuc7bEeMJiG0Z4MeQ7n1XfTyzgFFta+JuZF71p8wKg4E9AP9jtqkSTuV
-         p8RFSRuETZNyMlCe5GVPybVD70ZnZt9WAxFal1k/w+mJtw9QB/5r4mUOlQ+Ilto3dG4B
-         YrETMgFgL59zrqBNPNW6NM5tWoVmGumUkE4+dVkBsE0gQQDxfTirXrRmSddeJTpIqnwa
-         3Hir0AecTn7k3WCDo+e7SUA7iIT9WzeEF6i93NRLHRq5O0qjqdnLSo91XBT3aVx1gJNh
-         Hjy5sWlKbmj07CyVc2+In5vrU4nFHOebjNYac2IQekJihtTXByroponKwl/gLJ+PkDmA
-         ij8A==
-X-Gm-Message-State: AOAM533gOjr0Kk8Qd4RviVn5VwKY5u8IpAxHO+CBju7hBemtsvDuFvwW
-        I7Sc5lK1+qq8mdWxFDFd8g==
-X-Google-Smtp-Source: ABdhPJzGWhZyyJSZnmIhNcfiPdiSLvkAudb19QtTakiAtFsSxK1EZgasqAS8pi+xSgZqWWJm66Ifag==
-X-Received: by 2002:a9d:518a:: with SMTP id y10mr21488710otg.143.1635863253170;
-        Tue, 02 Nov 2021 07:27:33 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id j25sm3377889oos.23.2021.11.02.07.27.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Nov 2021 07:27:32 -0700 (PDT)
-Received: (nullmailer pid 2822626 invoked by uid 1000);
-        Tue, 02 Nov 2021 14:27:31 -0000
-Date:   Tue, 2 Nov 2021 09:27:31 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Jim Quinlan <jim2101024@gmail.com>
-Cc:     devicetree@vger.kernel.org, james.quinlan@broadcom.com,
-        Mark Brown <broonie@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-kernel@vger.kernel.org,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        linux-pci@vger.kernel.org, Saenz Julienne <nsaenzjulienne@suse.de>,
-        linux-rpi-kernel@lists.infradead.org
-Subject: Re: [PATCH v6 1/9] dt-bindings: PCI: correct brcmstb interrupts,
- interrupt-map.
-Message-ID: <YYFK0xL1YI40OgZF@robh.at.kernel.org>
-References: <20211029200319.23475-1-jim2101024@gmail.com>
- <20211029200319.23475-2-jim2101024@gmail.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=VSEH8Q3Lr+Mcr/0lsL1VFPftJp7ALZ21MKYEz4sry74=;
+        b=1ebZZefIPnEtKsupff2VNx/u/jrjP1kETTN8HZpmlOtLLziRh2QI5rQQd/lFB97qq5
+         AViBZByNukxTRkaz3PS4KRJOOYFMi9ien9SBxy/aKxD119YsyN/KO5KZLQKgcnqHJMIO
+         g59+lLNHV388TFJtTAaONZ9294LOPE3/qI5sxLFJl6f9MWHJ4MrvI6G+eb9V+AmNfleY
+         zbbCC8rOO36ipBqUHd7wEJ9hJJIx/qlcCvgdnoasHeUxTtBsBK24IDRuEnY9X8uno5sM
+         mZFxlETjyt8AnmikDKN/M8MrUHFi/3BmpqgEZgadZvZHXQz3QNdPsG6sxV87WmE863Q9
+         lfMg==
+X-Gm-Message-State: AOAM533ma37sejeTwjeJQccCBomdDAEC+DaRYz9u5Ld4O9fCJzpGhWY2
+        YgQ8ioFDbspFw+K1wcg6wBIWMVZnJqCjnTOLwmk=
+X-Google-Smtp-Source: ABdhPJyxFYCs5GOTOC0i26bnW/3xY3ClG/93vrHO3lB6tQoKeX/iMAg1PQI9SFbRpwsa0gUdDg4hWuTMngsc/6anJSI=
+X-Received: by 2002:a05:6830:16cc:: with SMTP id l12mr25863610otr.158.1635863468226;
+ Tue, 02 Nov 2021 07:31:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211029200319.23475-2-jim2101024@gmail.com>
+Received: by 2002:a4a:ea37:0:0:0:0:0 with HTTP; Tue, 2 Nov 2021 07:31:07 -0700 (PDT)
+Reply-To: christopherdaniel830@gmail.com
+From:   Christopher Daniel <cd01100237@gmail.com>
+Date:   Tue, 2 Nov 2021 14:31:07 +0000
+Message-ID: <CABuPnhyOn8PK6haxwkSNeQEdSnf=RMJ_k2=nD8Et_TznybBntg@mail.gmail.com>
+Subject: Investment Funding
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Oct 2021 16:03:09 -0400, Jim Quinlan wrote:
-> The "pcie" and "msi" interrupts were given the same interrupt when they are
-> actually different.  Interrupt-map only had the INTA entry; the INTB, INTC,
-> and INTD entries are added.
-> 
-> Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
-> ---
->  Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
+.
+I wish to invite you to participate in our Investment Funding Program,
+get back to me for more details if interested please.
 
-Acked-by: Rob Herring <robh@kernel.org>
+Regards.
+Christopher Daniel.
