@@ -2,143 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DF214429B3
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 09:41:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC82B4429CD
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 09:47:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231176AbhKBIo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 04:44:27 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:50734 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230000AbhKBIoZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 04:44:25 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 7AD221FD78;
-        Tue,  2 Nov 2021 08:41:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1635842510; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tz+vql88CgsF58vdIu35HL5zvxpH8YjJc4+0TvPpKZU=;
-        b=H9YxqWEuNTYd76rLiYI4L2XWYeZpjWLmlKrUXU9juLdw0BiHN+rc/+2tqDR7Fy5Se8CEEs
-        ckR+mYMKzMouG8AAdyCrXUQoGApmouZx3jOViMTAaaiQMvr3zWWYVivsmtKHsdKeJZ1O04
-        jEhFZ/seHwuQ3OclEt90swpZcmneaXo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1635842510;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tz+vql88CgsF58vdIu35HL5zvxpH8YjJc4+0TvPpKZU=;
-        b=XT0uu/odAQtZWNn7poivWN7ZKPovW+GJIMttnv1upl52cpOvfSU2FT1dMPk/YkdsZKcob2
-        eB4XzNx8FV47N/DQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4EC1013B16;
-        Tue,  2 Nov 2021 08:41:50 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id HgZZEs75gGEFawAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Tue, 02 Nov 2021 08:41:50 +0000
-Message-ID: <b3843ab5-a2d9-fc12-6ed9-4646c3c6fdd7@suse.cz>
-Date:   Tue, 2 Nov 2021 09:41:50 +0100
+        id S230140AbhKBItX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 04:49:23 -0400
+Received: from elvis.franken.de ([193.175.24.41]:55619 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229720AbhKBItW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 04:49:22 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1mhpRK-0002yN-00; Tue, 02 Nov 2021 09:46:42 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id AEE3DC27BF; Tue,  2 Nov 2021 09:42:41 +0100 (CET)
+Date:   Tue, 2 Nov 2021 09:42:41 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Cc:     Russell King <linux@armlinux.org.uk>, Andrew Lunn <andrew@lunn.ch>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: Marvell: Update PCIe fixup
+Message-ID: <20211102084241.GA6134@alpha.franken.de>
+References: <20211101150405.14618-1-pali@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH] mm, slub: place the trace before freeing memory in
- kmem_cache_free()
-Content-Language: en-US
-To:     John Hubbard <jhubbard@nvidia.com>,
-        Yunfeng Ye <yeyunfeng@huawei.com>, cl@linux.com,
-        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     wuxu.wu@huawei.com, Hewenliang <hewenliang4@huawei.com>
-References: <867f6da4-6d38-6435-3fbb-a2a3744029f1@huawei.com>
- <df216633-cc14-6c3b-29ed-cdce136402eb@nvidia.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <df216633-cc14-6c3b-29ed-cdce136402eb@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211101150405.14618-1-pali@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/2/21 08:03, John Hubbard wrote:
-> On 10/30/21 03:11, Yunfeng Ye wrote:
->> After the memory is freed, it may be allocated by other CPUs and has
->> been recorded by trace. So the timing sequence of the memory tracing is
->> inaccurate.
->>
->> For example, we expect the following timing sequeuce:
->>
->>      CPU 0                 CPU 1
->>
->>    (1) alloc xxxxxx
->>    (2) free  xxxxxx
->>                           (3) alloc xxxxxx
->>                           (4) free  xxxxxx
->>
->> However, the following timing sequence may occur:
->>
->>      CPU 0                 CPU 1
->>
->>    (1) alloc xxxxxx
->>                           (2) alloc xxxxxx
->>    (3) free  xxxxxx
->>                           (4) free  xxxxxx
->>
->> So place the trace before freeing memory in kmem_cache_free().
+On Mon, Nov 01, 2021 at 04:04:05PM +0100, Pali Roh�r wrote:
+> - The code relies on rc_pci_fixup being called, which only happens
+>   when CONFIG_PCI_QUIRKS is enabled, so add that to Kconfig. Omitting
+>   this causes a booting failure with a non-obvious cause.
+> - Update rc_pci_fixup to set the class properly, copying the
+>   more modern style from other places
+> - Correct the rc_pci_fixup comment
 > 
-> Hi Yunfeng,
-> 
-> Like Muchun, I had some difficulty with the above description, but
-> now I think I get it. :)
-> 
-> In order to make it easier for others, how about this wording and subject
-> line, instead:
-> 
-> 
-> mm, slub: emit the "free" trace report before freeing memory in
-> kmem_cache_free()
-> 
-> After the memory is freed, it can be immediately allocated by other
-> CPUs, before the "free" trace report has been emitted. This causes
-> inaccurate traces.
-> 
-> For example, if the following sequence of events occurs:
-> 
->     CPU 0                 CPU 1
-> 
->   (1) alloc xxxxxx
->   (2) free  xxxxxx
->                          (3) alloc xxxxxx
->                          (4) free  xxxxxx
-> 
-> ...then they will be inaccurately reported via tracing, so that they
-> appear to have happened in this order. This makes it look like CPU 1
-> somehow managed to allocate mmemory that CPU 0 still had allocated for
-> itself:
-> 
->     CPU 0                 CPU 1
-> 
->   (1) alloc xxxxxx
->                          (2) alloc xxxxxx
->   (3) free  xxxxxx
->                          (4) free  xxxxxx
-> 
-> In order to avoid this, emit the "free xxxxxx" tracing report just
-> before the actual call to free the memory, instead of just after it.
+> This patch just re-applies commit 1dc831bf53fd ("ARM: Kirkwood: Update
+> PCI-E fixup") for all other Marvell platforms which use same buggy PCIe
+> controller.
+> [..]
 
-Agree, this wording is better.
-IIRC the same problem was fixed for mmap_lock trace ordering just recently.
+> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+> index 771ca53af06d..c8d51bd20b84 100644
+> --- a/arch/mips/Kconfig
+> +++ b/arch/mips/Kconfig
+> @@ -346,6 +346,7 @@ config MIPS_COBALT
+>  	select CEVT_GT641XX
+>  	select DMA_NONCOHERENT
+>  	select FORCE_PCI
+> +	select PCI_QUIRKS
+>  	select I8253
+>  	select I8259
+>  	select IRQ_MIPS_CPU
 
->> Signed-off-by: Yunfeng Ye <yeyunfeng@huawei.com>
+this is enabled by default, via drivers/pci/Kconfig
 
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+config PCI_QUIRKS
+        default y
+        bool "Enable PCI quirk workarounds" if EXPERT
+        help
+          This enables workarounds for various PCI chipset bugs/quirks.
+          Disable this only if your target machine is unaffected by PCI
+          quirks.
+
+> diff --git a/arch/mips/pci/fixup-cobalt.c b/arch/mips/pci/fixup-cobalt.c
+> index 44be65c3e6bb..202f3a0bd97d 100644
+> --- a/arch/mips/pci/fixup-cobalt.c
+> +++ b/arch/mips/pci/fixup-cobalt.c
+> @@ -36,6 +36,12 @@
+>  #define VIA_COBALT_BRD_ID_REG  0x94
+>  #define VIA_COBALT_BRD_REG_to_ID(reg)	((unsigned char)(reg) >> 4)
+>  
+> +/*
+> + * The root complex has a hardwired class of PCI_CLASS_MEMORY_OTHER, when it
+> + * is operating as a root complex this needs to be switched to
+> + * PCI_CLASS_BRIDGE_HOST or Linux will errantly try to process the BAR's on
+> + * the device. Decoding setup is handled by the orion code.
+> + */
+>  static void qube_raq_galileo_early_fixup(struct pci_dev *dev)
+>  {
+>  	if (dev->devfn == PCI_DEVFN(0, 0) &&
+
+this is not a PCIe controller, so how is this patch related ?
+
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
