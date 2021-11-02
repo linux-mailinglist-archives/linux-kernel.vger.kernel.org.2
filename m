@@ -2,84 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95E1D442BA5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 11:28:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADC07442BA3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 11:28:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231133AbhKBKbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 06:31:00 -0400
-Received: from foss.arm.com ([217.140.110.172]:60492 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230368AbhKBKa7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 06:30:59 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 29F341FB;
-        Tue,  2 Nov 2021 03:28:25 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.75.232])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A206B3F719;
-        Tue,  2 Nov 2021 03:28:22 -0700 (PDT)
-Date:   Tue, 2 Nov 2021 10:28:10 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Youngmin Nam <youngmin.nam@samsung.com>
-Cc:     krzysztof.kozlowski@canonical.com, will@kernel.org,
-        daniel.lezcano@linaro.org, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, pullip.cho@samsung.com,
-        hoony.yu@samsung.com, hajun.sung@samsung.com,
-        myung-su.cha@samsung.com, kgene@kernel.org
-Subject: Re: [PATCH v2 1/2] clocksource/drivers/exynos_mct_v2: introduce
- Exynos MCT version 2 driver for next Exynos SoC
-Message-ID: <20211102102802.GA16545@C02TD0UTHF1T.local>
-References: <20211102001122.27516-1-youngmin.nam@samsung.com>
- <CGME20211101234500epcas2p2d0e5bc54615b635f6694bc1be4c89fb5@epcas2p2.samsung.com>
- <20211102001122.27516-2-youngmin.nam@samsung.com>
+        id S230326AbhKBKaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 06:30:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:59821 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229770AbhKBKax (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 06:30:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635848898;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/KIXqG/+aRX3VfX0pbGv7+LnUyCe/jR+SgkDGe77Qco=;
+        b=RcB6/AoP5ufEJM4FMgOedu2rd1TVAgl/LyZCmM6jHk4M7YtEbo/Jh1A0qZ6J/JassYC2DR
+        2UeFSsL54MV3KGhPwWoL2yzzEs0Ibx/1sCYT2hV5cv5/Y//nBDQdDGhxfyO+PTQC9pPUWZ
+        ELUTgDSnXBNUoQ3KXeNNVbCpqCxVqQQ=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-99-b9DxUo5bPfOgwyNflbPw9A-1; Tue, 02 Nov 2021 06:28:17 -0400
+X-MC-Unique: b9DxUo5bPfOgwyNflbPw9A-1
+Received: by mail-ed1-f70.google.com with SMTP id s18-20020a056402521200b003dd5902f4f3so18315754edd.23
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 03:28:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=/KIXqG/+aRX3VfX0pbGv7+LnUyCe/jR+SgkDGe77Qco=;
+        b=v23LyjQeOryol8M4OC6XklT8lEUViqh794OJJxAf4UGa7gtjmFoBu4FOxbaLOjN3RK
+         hP99rPFe4BXS7ne2jKg9kXEa3JOKT42s2mCIg5mA3uNP/eK5df8M1xEpwi4xiEnDNZ63
+         b1Pi6xjY8lYDGoaVeqWTwLLE76lLuyTvPBwGj6V+IXulAb/2zBomtgGUW7rn2qg5bxA1
+         3/k7ED4i4hvkxAkuvjpR3EzjZN8iC/cyaT3JXv3Yi+Dcnh0/gCMAHUHPxeqZZibbPW+N
+         eXMPhdFytfqHElKoxHRjDR1Nr+Ny3/zzDuUsSuHmnhRS4f65pl1/+NPOf/yx8NKu/PJd
+         uI/A==
+X-Gm-Message-State: AOAM533r5cKnyPP21qPtvJ0eSZULsCjj5WEMgI7vV6qdXanlEc0YT8Wm
+        E/FHusvE2MqP8qNxbTaloEn0rLGHyuImH/F6uPZvuo/IRDtjySkxbTE5NoYVIDcIDq1SK0kDlUh
+        XVUxVlHjESXjLvnG8GPs6Chdj
+X-Received: by 2002:a05:6402:40cf:: with SMTP id z15mr48998770edb.138.1635848896645;
+        Tue, 02 Nov 2021 03:28:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJygd/kOa0LmQJO7gJ7dW3kSjTVBWPteQe1G8nO+W/t28YcbO7eaHan+3AORZNhaEB+zJqth9A==
+X-Received: by 2002:a05:6402:40cf:: with SMTP id z15mr48998748edb.138.1635848896467;
+        Tue, 02 Nov 2021 03:28:16 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id rl1sm577976ejb.90.2021.11.02.03.28.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Nov 2021 03:28:16 -0700 (PDT)
+Message-ID: <f16d7cb4-7ac9-382e-ea9b-45433f5b8299@redhat.com>
+Date:   Tue, 2 Nov 2021 11:28:15 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211102001122.27516-2-youngmin.nam@samsung.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: linux-next: Fixes tag needs some work in the drivers-x86 tree
+Content-Language: en-US
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Mark Gross <markgross@kernel.org>
+Cc:     Tim Crawford <tcrawford@system76.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20211102083724.5e6c8d68@canb.auug.org.au>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20211102083724.5e6c8d68@canb.auug.org.au>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 09:11:21AM +0900, Youngmin Nam wrote:
-> Exynos MCT version 2 is composed of 1 FRC and 12 comparators.
-> There are no global timer and local timer anymore.
-> The 1 of 64bit FRC serves as "up-counter"(not "comparators").
-> The 12 comaprators(not "counter") can be used as per-cpu event timer
-> so that it can support upto 12 cores.
-> And a RTC source can be used as backup clock source.
+Hi Stephen,
 
-[...]
+On 11/1/21 22:37, Stephen Rothwell wrote:
+> Hi all,
+> 
+> In commit
+> 
+>   7885061a10f4 ("platform/x86: system76_acpi: Fix input device error handling")
+> 
+> Fixes tag
+> 
+>   Fixes: 0de30fc684b ("platform/x86: system76_acpi: Replace Fn+F2 function for OLED models")
+> 
+> has these problem(s):
+> 
+>   - SHA1 should be at least 12 digits long
+>     Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
+>     or later) just making sure it is not set (or set to "auto").
+> 
+> Also, please keep all the commit tags together at the end of the commit
+> message.
 
-> +static int exynos_mct_starting_cpu(unsigned int cpu)
-> +{
-> +	struct mct_clock_event_device *mevt = per_cpu_ptr(&percpu_mct_tick, cpu);
-> +	struct clock_event_device *evt = &mevt->evt;
-> +
-> +	snprintf(mevt->name, sizeof(mevt->name), "mct_comp%d", cpu);
-> +
-> +	evt->name = mevt->name;
-> +	evt->cpumask = cpumask_of(cpu);
-> +	evt->set_next_event = exynos_comp_set_next_event;
-> +	evt->set_state_periodic = mct_set_state_periodic;
-> +	evt->set_state_shutdown = mct_set_state_shutdown;
-> +	evt->set_state_oneshot = mct_set_state_shutdown;
-> +	evt->set_state_oneshot_stopped = mct_set_state_shutdown;
-> +	evt->tick_resume = mct_set_state_shutdown;
-> +	evt->features = CLOCK_EVT_FEAT_PERIODIC | CLOCK_EVT_FEAT_ONESHOT;
-> +	evt->rating = 500;	/* use value higher than ARM arch timer */
+Thank you for reporting this, I've fixed up both issues and done
+a forced-push of my for-next branch.
 
-Previously Will asked you to try CLOCK_EVT_FEAT_PERCPU here, and to set
-the C3STOP flag on the arch timer via the DT when necessary, rather than
-trying to override the arch timer like this:
+Regards,
 
-  https://lore.kernel.org/r/20211027073458.GA22231@willie-the-truck
+Hans
 
-There are a bunch of things that depend on the architected timer working
-as a clocksource (e.g. vdso, kvm), and it *should* work as a lock
-clockevent_device if configured correctly, and it's much more consistent
-with *everyone else* to use the arhcitected timer by default.
-
-Please try as Will suggested above, so that this works from day one.
-
-Thanks,
-Mark.
