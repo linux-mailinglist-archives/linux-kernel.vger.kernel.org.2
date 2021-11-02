@@ -2,111 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BEB1442EFD
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 14:20:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AE9D442EFC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 14:19:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231267AbhKBNWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 09:22:51 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:50972 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230175AbhKBNWt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 09:22:49 -0400
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1A2A7R5Z011686;
-        Tue, 2 Nov 2021 14:19:07 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=Ri4yMGwrAUZiVf3L1C/w0Zj9MIgPav+yZmRTaIH3Qws=;
- b=nC99aj0m6/J7C2P12APD0T3skjuSsRU9U4YxQtgNhkS1LpiewNPoXwDdiPCdfbsmMv1A
- Uy2NdYnolyro+RqQ7UhK7XEy7WpwHUiwfBgOmVqTZ466uEYKRqCW2NWk/ZkdTVLi/azS
- dVpXqUDHmIrLl/bx3xsEeOfGhzDgzpprbJH7M5Pn1KwxgOy6VQU9ZlCVx5MrIV4Ejzha
- GGPpWQUnttOJ2Kw2pqFQC+nKjy8eTR/4OQXQ6HPSLjLsXbOY6xVps9J9Ukhxrkn0mTLk
- B6HInFH2LRe25rhCjMTs9oJzqqX2Z9+80Jo2JA3qu0A99aqbAh0g5hJ310BLfRnFnolS Fg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3c2jfj583t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 02 Nov 2021 14:19:07 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id EC359100034;
-        Tue,  2 Nov 2021 14:19:06 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id E4FB5235D2A;
-        Tue,  2 Nov 2021 14:19:06 +0100 (CET)
-Received: from lmecxl0889.lme.st.com (10.75.127.49) by SFHDAG2NODE2.st.com
- (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 2 Nov
- 2021 14:19:06 +0100
-Subject: Re: [PATCH v1 1/5] tty: rpmsg: Assign returned id to a local variable
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        <linux-kernel@vger.kernel.org>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-References: <20211025135148.53944-1-andriy.shevchenko@linux.intel.com>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Message-ID: <ef2cca2f-8566-ad3c-3ab2-cf0a4439faa0@foss.st.com>
-Date:   Tue, 2 Nov 2021 14:19:06 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S229924AbhKBNWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 09:22:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42606 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230175AbhKBNWY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 09:22:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A0F0D61076;
+        Tue,  2 Nov 2021 13:19:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1635859189;
+        bh=/FbBvuDIqll1nY6ugZ5ISgYPcBEZfDJ7GeMZ3M5GhHg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=h4Wvcp09OP+Tu6ErrIaJU6guA5PwAmGCvWPd5bK0KVicBz95eKeD+GCd1Qzh8NscB
+         5QhdK/N9kt9B8Znc4P/HjUJNb5UvcV4i1XzgU9FHVXqXfja22qJeijTLzGZwEobOza
+         vBflqpW6QuC/JCOM3VU+fvukveRge59AJgfvhDB4=
+Date:   Tue, 2 Nov 2021 14:19:46 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     George Kennedy <george.kennedy@oracle.com>
+Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dan.carpenter@oracle.com
+Subject: Re: [PATCH] scsi: scsi_debug: fix type in min_t to avoid stack OOB
+Message-ID: <YYE68lDOjX9aE5yX@kroah.com>
+References: <1635857278-29246-1-git-send-email-george.kennedy@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <20211025135148.53944-1-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.49]
-X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-02_08,2021-11-02_01,2020-04-07_01
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1635857278-29246-1-git-send-email-george.kennedy@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
-
-On 10/25/21 3:51 PM, Andy Shevchenko wrote:
-> Instead of putting garbage in the data structure, assign allocated id
-> or an error code to a temporary variable. This makes code cleaner.
+On Tue, Nov 02, 2021 at 07:47:58AM -0500, George Kennedy wrote:
+> Change min_t() to use type "unsigned int" instead of type "int" to
+> avoid stack out of bounds. With min_t() type "int" the values get
+> sign extended and the larger value gets used causing stack out of bounds.
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  drivers/tty/rpmsg_tty.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
+> Reported-by: syzkaller <syzkaller@googlegroups.com>
+> Signed-off-by: George Kennedy <george.kennedy@oracle.com>
 > 
-> diff --git a/drivers/tty/rpmsg_tty.c b/drivers/tty/rpmsg_tty.c
-> index 813076341ffd..8c17ddbf371d 100644
-> --- a/drivers/tty/rpmsg_tty.c
-> +++ b/drivers/tty/rpmsg_tty.c
-> @@ -121,15 +121,16 @@ static struct rpmsg_tty_port *rpmsg_tty_alloc_cport(void)
->  		return ERR_PTR(-ENOMEM);
->  
->  	mutex_lock(&idr_lock);
-> -	cport->id = idr_alloc(&tty_idr, cport, 0, MAX_TTY_RPMSG, GFP_KERNEL);
-> +	err = idr_alloc(&tty_idr, cport, 0, MAX_TTY_RPMSG, GFP_KERNEL);
->  	mutex_unlock(&idr_lock);
->  
-> -	if (cport->id < 0) {
-> -		err = cport->id;
-> +	if (err < 0) {
->  		kfree(cport);
->  		return ERR_PTR(err);
->  	}
->  
-> +	cport->id = err;
-
-Set the cport->id to the err variable on success doesn't seem completely clean
-to me either.
-What about renaming "err" by "id" as done in [1]?
-
-[1]
-https://elixir.bootlin.com/linux/latest/source/drivers/tty/serial/mps2-uart.c#L526
-
-Regards,
-Arnaud
-
-> +
->  	return cport;
->  }
->  
+> BUG: KASAN: stack-out-of-bounds in memcpy include/linux/fortify-string.h:191 [inline]
+> BUG: KASAN: stack-out-of-bounds in sg_copy_buffer+0x1de/0x240 lib/scatterlist.c:976
+> Read of size 127 at addr ffff888072607128 by task syz-executor.7/18707
 > 
+> CPU: 1 PID: 18707 Comm: syz-executor.7 Not tainted 5.15.0-syzk #1
+> Hardware name: Red Hat KVM, BIOS 1.13.0-2.module+el8.3.0+7860+a7792d29 04/01/2014
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:88 [inline]
+>  dump_stack_lvl+0x89/0xb5 lib/dump_stack.c:106
+>  print_address_description.constprop.9+0x28/0x160 mm/kasan/report.c:256
+>  __kasan_report mm/kasan/report.c:442 [inline]
+>  kasan_report.cold.14+0x7d/0x117 mm/kasan/report.c:459
+>  check_region_inline mm/kasan/generic.c:183 [inline]
+>  kasan_check_range+0x1a3/0x210 mm/kasan/generic.c:189
+>  memcpy+0x23/0x60 mm/kasan/shadow.c:65
+>  memcpy include/linux/fortify-string.h:191 [inline]
+>  sg_copy_buffer+0x1de/0x240 lib/scatterlist.c:976
+>  sg_copy_from_buffer+0x33/0x40 lib/scatterlist.c:1000
+>  fill_from_dev_buffer.part.34+0x82/0x130 drivers/scsi/scsi_debug.c:1162
+>  fill_from_dev_buffer drivers/scsi/scsi_debug.c:1888 [inline]
+>  resp_readcap16+0x365/0x3b0 drivers/scsi/scsi_debug.c:1887
+>  schedule_resp+0x4d8/0x1a70 drivers/scsi/scsi_debug.c:5478
+>  scsi_debug_queuecommand+0x8c9/0x1ec0 drivers/scsi/scsi_debug.c:7533
+>  scsi_dispatch_cmd drivers/scsi/scsi_lib.c:1520 [inline]
+>  scsi_queue_rq+0x16b0/0x2d40 drivers/scsi/scsi_lib.c:1699
+>  blk_mq_dispatch_rq_list+0xb9b/0x2700 block/blk-mq.c:1639
+>  __blk_mq_sched_dispatch_requests+0x28f/0x590 block/blk-mq-sched.c:325
+>  blk_mq_sched_dispatch_requests+0x105/0x190 block/blk-mq-sched.c:358
+>  __blk_mq_run_hw_queue+0xe5/0x150 block/blk-mq.c:1761
+>  __blk_mq_delay_run_hw_queue+0x4f8/0x5c0 block/blk-mq.c:1838
+>  blk_mq_run_hw_queue+0x18d/0x350 block/blk-mq.c:1891
+>  blk_mq_sched_insert_request+0x3db/0x4e0 block/blk-mq-sched.c:474
+>  blk_execute_rq_nowait+0x16b/0x1c0 block/blk-exec.c:62
+>  sg_common_write.isra.18+0xeb3/0x2000 drivers/scsi/sg.c:836
+>  sg_new_write.isra.19+0x570/0x8c0 drivers/scsi/sg.c:774
+>  sg_ioctl_common+0x14d6/0x2710 drivers/scsi/sg.c:939
+>  sg_ioctl+0xa2/0x180 drivers/scsi/sg.c:1165
+>  vfs_ioctl fs/ioctl.c:51 [inline]
+>  __do_sys_ioctl fs/ioctl.c:874 [inline]
+>  __se_sys_ioctl fs/ioctl.c:860 [inline]
+>  __x64_sys_ioctl+0x19d/0x220 fs/ioctl.c:860
+>  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>  do_syscall_64+0x3a/0x80 arch/x86/entry/common.c:80
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+All of that needs to go above the signed-off-by lines, they need to be
+last in the changelog text.
+
+thanks,
+
+greg k-h
