@@ -2,114 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 237A8442B38
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 11:00:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DD8C442B41
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 11:00:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229931AbhKBKCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 06:02:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229612AbhKBKCf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 06:02:35 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D114C061714
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 03:00:01 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id r28so19770461pga.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 03:00:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id;
-        bh=JpTyGYnff/5miun0g61C6IcTX8F0aNJvJj2eVkMxvhU=;
-        b=OaZ87GejHK9lo+qBFKeYET1LmjJ2+z5pq2FkNimcTEj4hwzuGTrDqOr4cszXqebtS6
-         NPnLD92dSg+E236N7oAmvOxDA9YLEAwDpRS9HcyanMOaOd60dJI+yzaJsr98B8kF2t0E
-         nRDUxynghTgr18yWZA5grBqqlpnN4TxAO1aUvoZgGnAXHdhHFh2ZgtbMUG5dgfnwQNpq
-         fGajTCWpxEjlhoWT6UpBZO2FrL07j/aLE692ioMebNMk5equZKzfd5NT6jBhMJaZrr0v
-         VI0o67fhjdue2dhKNmDgwZf0fFqHWA6AeLzGL50W5Gl9KpGgv8M/hzses9uPMNsNoZOy
-         Qc7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=JpTyGYnff/5miun0g61C6IcTX8F0aNJvJj2eVkMxvhU=;
-        b=V5BLNUH34ek4hJkhi5KIx/3iOyOU8ZXjV4Mw9uX4feUsBN2SFfI98dSXKEUk4S4Jsv
-         /ZArMwSyvwhOljqp9kYn0tIwz4bMR01/TmxrjEfphModyxlD6Ieq/8wFC2JeHma6Qawt
-         Ugs5jx2UkUAPfqu1rHv05x+8Puoqr+v/hyiFHNRr+ii2OTnyhxvV8WYrtBC6d0va18+I
-         3OyLWo2bcePb4US9Y+So1nJEM+BNp/qzI1ELOn0joAwcTO/76yCNJ1N1mSSvjGYHcera
-         vqWGboARprvqB/ktpYLPfRySijvcMxYC/AgcenSA71m9eJbT9xBGZe3axn++2xR+Yqvj
-         a2wA==
-X-Gm-Message-State: AOAM533lHMbYNTsr/tM0NnDv9zt1nsZf3oQGrf54ckzKWZ+lqm7MNb//
-        RQ4lJKfV7XNNlvMK3ZjgFa8=
-X-Google-Smtp-Source: ABdhPJwCWI/5Qq+20VTAWY790ex7XZTcC5l+HGCxwBioFFFqY8ChuQReqyQ+/YcIlL0BiC+ba2i8Ow==
-X-Received: by 2002:aa7:8019:0:b0:44d:d761:6f79 with SMTP id j25-20020aa78019000000b0044dd7616f79mr35580155pfi.3.1635847200638;
-        Tue, 02 Nov 2021 03:00:00 -0700 (PDT)
-Received: from BJ-zhangqiang.qcraft.lan ([137.59.101.13])
-        by smtp.gmail.com with ESMTPSA id ml24sm1921607pjb.16.2021.11.02.02.59.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Nov 2021 03:00:00 -0700 (PDT)
-From:   Zqiang <qiang.zhang1211@gmail.com>
-To:     tiwai@suse.com
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Zqiang <qiang.zhang1211@gmail.com>
-Subject: [PATCH v2] ALSA: seq: Fix RCU stall in snd_seq_write()
-Date:   Tue,  2 Nov 2021 17:59:55 +0800
-Message-Id: <20211102095955.30060-1-qiang.zhang1211@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S231176AbhKBKDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 06:03:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35562 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229823AbhKBKDL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 06:03:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DB50660E73;
+        Tue,  2 Nov 2021 10:00:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635847237;
+        bh=hFHvZyAdEautfrDtjYs1cZTPpjyQldm+fG5o+hHF77c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Gf61I0Z1mYypZ5vVL8oeq+Dho3VR+hAu8mdZe8edv/lGbiLyoHIA5NcPLrHeARgHN
+         UoZptYkTMaiQufZxy2GOINTBiSye/5al1tFW9UatFtGDv968yaSARMgDlRqcPcn3Ta
+         Z8yVP77MaqYFNYR9eMiqivWsMKjfDpSXdoIDBRK9NYGAv81aGJLwmrnTZto1gtp0LE
+         PTLkltr+ohsyd8fNSeV8QUcqQjwPIzEFLIcRo9Ncspi+I4WPALxjO+NNZjZBzCzOIj
+         LU+xN5nz3iVPXensCwEjWFGSqEJveWjiHgVAgOaqfFPTPwnBejYZSijFMkRCUdCzLf
+         bljzzRVKftOxQ==
+Received: by pali.im (Postfix)
+        id 63C6EA41; Tue,  2 Nov 2021 11:00:34 +0100 (CET)
+Date:   Tue, 2 Nov 2021 11:00:34 +0100
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Russell King <linux@armlinux.org.uk>, Andrew Lunn <andrew@lunn.ch>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: Marvell: Update PCIe fixup
+Message-ID: <20211102100034.rhcb3k2jvr6alm6y@pali>
+References: <20211101150405.14618-1-pali@kernel.org>
+ <20211102084241.GA6134@alpha.franken.de>
+ <20211102090246.unmbruykfdjabfga@pali>
+ <20211102094700.GA7376@alpha.franken.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211102094700.GA7376@alpha.franken.de>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If we have a lot of cell object, this cycle may take a long time, and
-trigger RCU stall. insert a conditional reschedule point to fix it.
+On Tuesday 02 November 2021 10:47:00 Thomas Bogendoerfer wrote:
+> On Tue, Nov 02, 2021 at 10:02:46AM +0100, Pali Rohár wrote:
+> > On Tuesday 02 November 2021 09:42:41 Thomas Bogendoerfer wrote:
+> > > On Mon, Nov 01, 2021 at 04:04:05PM +0100, Pali Rohár wrote:
+> > > > - The code relies on rc_pci_fixup being called, which only happens
+> > > >   when CONFIG_PCI_QUIRKS is enabled, so add that to Kconfig. Omitting
+> > > >   this causes a booting failure with a non-obvious cause.
+> > > > - Update rc_pci_fixup to set the class properly, copying the
+> > > >   more modern style from other places
+> > > > - Correct the rc_pci_fixup comment
+> > > > 
+> > > > This patch just re-applies commit 1dc831bf53fd ("ARM: Kirkwood: Update
+> > > > PCI-E fixup") for all other Marvell platforms which use same buggy PCIe
+> > > > controller.
+> > > > [..]
+> > > 
+> > > > diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+> > > > index 771ca53af06d..c8d51bd20b84 100644
+> > > > --- a/arch/mips/Kconfig
+> > > > +++ b/arch/mips/Kconfig
+> > > > @@ -346,6 +346,7 @@ config MIPS_COBALT
+> > > >  	select CEVT_GT641XX
+> > > >  	select DMA_NONCOHERENT
+> > > >  	select FORCE_PCI
+> > > > +	select PCI_QUIRKS
+> > > >  	select I8253
+> > > >  	select I8259
+> > > >  	select IRQ_MIPS_CPU
+> > > 
+> > > this is enabled by default, via drivers/pci/Kconfig
+> > 
+> > IIRC 'default y' can be disabled but 'select' not.
+> 
+> overruled only if CONFIG_EXPERT is enabled, which IMHO sounds good enough.
 
-rcu: INFO: rcu_preempt self-detected stall on CPU
-rcu: 	1-....: (1 GPs behind) idle=9f5/1/0x4000000000000000
-	softirq=16474/16475 fqs=4916
-	(t=10500 jiffies g=19249 q=192515)
-NMI backtrace for cpu 1
-......
-asm_sysvec_apic_timer_interrupt
-RIP: 0010:_raw_spin_unlock_irqrestore+0x38/0x70
-spin_unlock_irqrestore
-snd_seq_prioq_cell_out+0x1dc/0x360
-snd_seq_check_queue+0x1a6/0x3f0
-snd_seq_enqueue_event+0x1ed/0x3e0
-snd_seq_client_enqueue_event.constprop.0+0x19a/0x3c0
-snd_seq_write+0x2db/0x510
-vfs_write+0x1c4/0x900
-ksys_write+0x171/0x1d0
-do_syscall_64+0x35/0xb0
+Well, if you think this is not needed (anymore), I can drop it. I just
+reapplied original fix 1dc831bf53fd.
 
-Reported-by: syzbot+bb950e68b400ab4f65f8@syzkaller.appspotmail.com
-Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
----
- v1->v2:
- Add atomic context detection.
+> > > config PCI_QUIRKS
+> > >         default y
+> > >         bool "Enable PCI quirk workarounds" if EXPERT
+> > >         help
+> > >           This enables workarounds for various PCI chipset bugs/quirks.
+> > >           Disable this only if your target machine is unaffected by PCI
+> > >           quirks.
+> > > 
+> > > > diff --git a/arch/mips/pci/fixup-cobalt.c b/arch/mips/pci/fixup-cobalt.c
+> > > > index 44be65c3e6bb..202f3a0bd97d 100644
+> > > > --- a/arch/mips/pci/fixup-cobalt.c
+> > > > +++ b/arch/mips/pci/fixup-cobalt.c
+> > > > @@ -36,6 +36,12 @@
+> > > >  #define VIA_COBALT_BRD_ID_REG  0x94
+> > > >  #define VIA_COBALT_BRD_REG_to_ID(reg)	((unsigned char)(reg) >> 4)
+> > > >  
+> > > > +/*
+> > > > + * The root complex has a hardwired class of PCI_CLASS_MEMORY_OTHER, when it
+> > > > + * is operating as a root complex this needs to be switched to
+> > > > + * PCI_CLASS_BRIDGE_HOST or Linux will errantly try to process the BAR's on
+> > > > + * the device. Decoding setup is handled by the orion code.
+> > > > + */
+> > > >  static void qube_raq_galileo_early_fixup(struct pci_dev *dev)
+> > > >  {
+> > > >  	if (dev->devfn == PCI_DEVFN(0, 0) &&
+> > > 
+> > > this is not a PCIe controller, so how is this patch related ?
+> > 
+> > I put that comment into all quirk code which is related to Marvell PCIe
+> > device XX:00.0 and changes PCI class type from PCI_CLASS_MEMORY_OTHER to
+> > PCI_CLASS_BRIDGE_HOST.
+> > 
+> > >From all what I saw, I'm sure that this device with this specific
+> > characteristics is really (non-compliant) Marvell PCIe controller.
+> 
+> just nitpicking, it's a Galileo PCI bridge and not PCIe.
 
- sound/core/seq/seq_queue.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Marvell acquired Galileo Technology in the past, so it is possible that
+this bad design is originated in Galileo. And maybe same for PCIe from
+PCI. At least PCI vendor id for all (new) PCIe controllers is this one.
 
-diff --git a/sound/core/seq/seq_queue.c b/sound/core/seq/seq_queue.c
-index d6c02dea976c..3a05b5e0d555 100644
---- a/sound/core/seq/seq_queue.c
-+++ b/sound/core/seq/seq_queue.c
-@@ -263,6 +263,8 @@ void snd_seq_check_queue(struct snd_seq_queue *q, int atomic, int hop)
- 		if (!cell)
- 			break;
- 		snd_seq_dispatch_event(cell, atomic, hop);
-+		if (!atomic)
-+			cond_resched();
- 	}
- 
- 	/* Process time queue... */
-@@ -272,6 +274,8 @@ void snd_seq_check_queue(struct snd_seq_queue *q, int atomic, int hop)
- 		if (!cell)
- 			break;
- 		snd_seq_dispatch_event(cell, atomic, hop);
-+		if (!atomic)
-+			cond_resched();
- 	}
- 
- 	/* free lock */
--- 
-2.17.1
+> > But I do not have this hardware to verify it.
+> 
+> I still have a few Cobalt systems here.
 
+Perfect! It would help if you could provide 'lspci -nn -vv' output from
+that system. In case you have very old version of lspci on that system
+you could try to run it with '-xxxx' (or '-xxx') which prints hexdump
+and I can parse it with local lspci.
+
+> Thomas.
+> 
+> -- 
+> Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+> good idea.                                                [ RFC1925, 2.3 ]
