@@ -2,141 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F11344265E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 05:22:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72BAB442661
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 05:23:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232742AbhKBEZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 00:25:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45924 "EHLO
+        id S232784AbhKBEZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 00:25:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229783AbhKBEZI (ORCPT
+        with ESMTP id S229783AbhKBEZr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 00:25:08 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C408C061714;
-        Mon,  1 Nov 2021 21:22:34 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id w1so17433157edd.10;
-        Mon, 01 Nov 2021 21:22:33 -0700 (PDT)
+        Tue, 2 Nov 2021 00:25:47 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA157C061714
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 21:23:12 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id h11so32800696ljk.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 21:23:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=8wvlsTEh9v6d7t2lqZ3L4fn0Kl7+4KHrTzQoMERiXTg=;
-        b=VrxGInNXD0B4oQVm8NkWETycecI5eXLtWhb8kTg8HD4lP84ibgT0vUOVkIwSzT1eEy
-         yoxOeUGulCy8lX1byszNOYTqIOIXQSOsXAiJVV/cCAbdRhLjy/CUXp3BSXeALbhODKM/
-         UzRDsNG69E6VYV1/whtSuUFkTMrwI1m3CyvQdl719RtpChPfZXX9C2kSfl2UK+Ecqd68
-         OCQ+E27sOrMNbd0obOeiSSmdeUVO2oQhLu+1bNHdr+wYRXvc+NBEOw8ApWusvZAzyuHx
-         U6mx6hk3xUQNAthJdVZWvuF3Ni3qS5jXAL0E8PJ75+ACrjalFtxdUeEN2SGJ2w7OI3VC
-         kfRA==
+        bh=hOI6QRrV5zRFm8op/6Gd1rEX3NwOtN92NhH17jVxu8Q=;
+        b=h2hpRrDEtL2p/0jKnOT1ONm13DydLtzTwK16ZAknZGkNhW/tlObp6XIQd0rp6I341A
+         udIAa9pOsmlDUrXTMYgQUcl7ZnA8e0LTW5Af4pzSEIriRhrOdTUbOSj46aJLK2hVIQJz
+         gI+p6bpFk2SL46CZy+5Qhjmn1YVMC8AVmA9+w=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=8wvlsTEh9v6d7t2lqZ3L4fn0Kl7+4KHrTzQoMERiXTg=;
-        b=FOM2YOXW3T3Rn06i36139QLpdvjbdnj1NbTWr1iGNizRmNmheddshpuzOwcn9ob/vy
-         00GCkKt2fFsPkoJrkk4QNQFq3zJj+OsL1BAj8g9ilATMNYmMm8uPRHuQ8ud7LsmY/Q39
-         pBNHjd6snnPPR7aYni9n4uM+4Ew4PjoeO57+9vyDhoiEyAcHhkFefdr+SSnGpk/igEFW
-         ejD6syW+QCiVPZYEJS/YgEO8aea8Sr8oiqxo4oVGoq6NCFRhIZ1PCMhUqO+tKYdL8kOq
-         r+3PSMgb7pdnrSODH2hg9NpXJgOHHR5MjWZM4/C+5TegQPmuskxD/CYaWpA+t9M2H63W
-         SpTA==
-X-Gm-Message-State: AOAM532xdNUFOZMdfNmrQ4y5EUR/x67KYR+hMWrue56mz4tRGL1yNT5I
-        sBlu5HsMxxRZUjEudQaY+bh772FfXCnfLFivqRs=
-X-Google-Smtp-Source: ABdhPJz04lDpzZsKg7vUXthp25hdWbyRKaHlNT+vcWzgKd1s76PCi4SjNQat12axJKG6PcfAq/CMGarHTyyNgg2o2BM=
-X-Received: by 2002:a17:906:284e:: with SMTP id s14mr41215732ejc.332.1635826952470;
- Mon, 01 Nov 2021 21:22:32 -0700 (PDT)
+        bh=hOI6QRrV5zRFm8op/6Gd1rEX3NwOtN92NhH17jVxu8Q=;
+        b=mJ2NbcT3Mq3DijxMv14UXkojmP4hVINDMtngtlRGe5IYwtAmvkJW2BT/i/hDss14D2
+         3v1QGRWuJA6225tx/KO9DkQbSAV5BUBxWhVQJ45+K96SUVX1bsntSsQwuL7pi5UWwZRN
+         ra5J9Hk3wQMAwGCRs2D0/fZB2fGIK7qlTCmZ5Q+n14e3y7B3Td7g2lkORJrQE5qw1g8x
+         d6mzy7hNf4li4EHLSZkel4h8P4KiNegeY8uSKf7pwZkazrTYs12K+j3u3qgFA+m6No0a
+         YgS5rs31fbg5m/w1tOn7flecYjpl8XgY0BUONRfGtcm2Ps54D0wBCBQlmHm5iZWFeKu3
+         9/SA==
+X-Gm-Message-State: AOAM530QkS64IGUfljEum9Ti9GleAijt10ceBZKzqfs6gDnmgv/SezdK
+        tjS0L96RmS+xVroEluAQJXUAMN7FdeqmvfPi
+X-Google-Smtp-Source: ABdhPJx93Hbpe98UvAVEhA1ycNJHMTPPreZ0AcDRIQQx0YrmrDNtvHily3MyB+sT6ILZRNUcgF+imw==
+X-Received: by 2002:a2e:810c:: with SMTP id d12mr18978608ljg.398.1635826990381;
+        Mon, 01 Nov 2021 21:23:10 -0700 (PDT)
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
+        by smtp.gmail.com with ESMTPSA id v14sm145952lfr.176.2021.11.01.21.23.09
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Nov 2021 21:23:10 -0700 (PDT)
+Received: by mail-lf1-f41.google.com with SMTP id l13so40381562lfg.6
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 21:23:09 -0700 (PDT)
+X-Received: by 2002:a05:6512:10c3:: with SMTP id k3mr32858764lfg.150.1635826989429;
+ Mon, 01 Nov 2021 21:23:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211101222857.6940-1-tomm.merciai@gmail.com> <c04d4af6-8c7b-da23-d562-78324948ac35@pengutronix.de>
- <20211101225827.GA9208@tom-desktop>
-In-Reply-To: <20211101225827.GA9208@tom-desktop>
-From:   Adam Ford <aford173@gmail.com>
-Date:   Mon, 1 Nov 2021 23:22:21 -0500
-Message-ID: <CAHCN7xLDHCQoA41FJpP3GY+nbFm99zf=tspHSOXkeFogMF22+A@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: imx8m: add syscon node for display_blk_ctrl
- module regs
-To:     Tommaso Merciai <tomm.merciai@gmail.com>
-Cc:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        arm-soc <linux-arm-kernel@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Peng Fan <peng.fan@nxp.com>, Alice Guo <alice.guo@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Lucas Stach <l.stach@pengutronix.de>
+References: <CAHC9VhRJ=fHzMHM6tt8JqkZa4bf0h72CAytSX9YrEs14Oaj8SA@mail.gmail.com>
+ <CAHk-=wj2LqbZ3xSLKfnR42y7ZEgqw8K42-mE+nsHwsoFiNNpKw@mail.gmail.com>
+ <CAHC9VhS3LfGvuVyXW5ePTQNtQ0KeQ7vz3wLinoZrbGVjU6GuoQ@mail.gmail.com> <CAHk-=whvZRaJSXirjcWKn75H-2H1tc54cru8p-vXE_2UyuvGNQ@mail.gmail.com>
+In-Reply-To: <CAHk-=whvZRaJSXirjcWKn75H-2H1tc54cru8p-vXE_2UyuvGNQ@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 1 Nov 2021 21:22:53 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wj0fNVO9tfEmWTcW7i+HoN4K4PejZ44sQYCEfL1S3UPWA@mail.gmail.com>
+Message-ID: <CAHk-=wj0fNVO9tfEmWTcW7i+HoN4K4PejZ44sQYCEfL1S3UPWA@mail.gmail.com>
+Subject: Re: [GIT PULL] SELinux patches for v5.16
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     SElinux list <selinux@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 1, 2021 at 5:58 PM Tommaso Merciai <tomm.merciai@gmail.com> wrote:
+On Mon, Nov 1, 2021 at 8:55 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
 >
-> On Mon, Nov 01, 2021 at 11:35:49PM +0100, Ahmad Fatoum wrote:
-> > Hello Tommaso,
-> >
-> > On 01.11.21 23:28, Tommaso Merciai wrote:
-> > > Add system controller node for registers of module Display Block Control
-> > > (DISPLAY_BLK_CTRL, base address: 0x32e28000).
-> > > The DISPLAY_BLK_CTRL module contains general purpose registers (GPRs),
-> > > which control varied features of the associated peripherals.
-> > > Reference: IMX8MMRM Rev. 3, 11/2020, p 3897
-> > > ---
-> > >  arch/arm64/boot/dts/freescale/imx8mm.dtsi | 5 +++++
-> > >  1 file changed, 5 insertions(+)
-> > >
-> > > diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-> > > index 2f632e8ca388..3e496b457e1a 100644
-> > > --- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-> > > +++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-> > > @@ -961,6 +961,11 @@ aips4: bus@32c00000 {
-> > >                     #size-cells = <1>;
-> > >                     ranges = <0x32c00000 0x32c00000 0x400000>;
-> > >
-> > > +                   dispmix_gpr: display-gpr@32e28000 {
-> > > +                           compatible = "fsl, imx8mm-iomuxc-gpr", "syscon";
-> >
-> > Please read vendor patches before submitting them. The space
-> > is out-of-place in the compatible and the compatible is wrong:
-> > This doesn't look like a i.MX8MM pin controller.
-> >
-> > Cheers,
-> > Ahmad
->
->   Hi Ahmad,
->   Thanks for your review. Do you think this is correct?
->
->   compatible = "fsl,imx8mm-dispmix-gpr", "syscon";
->
->   Let me know.
+> This follow-up was sufficient. In fact, the original should have been
+> sufficient for me.
 
-There was already a driver created for the blk-ctrl stuff and it has a
-device tree binding at 32e28000.  It's tied into the power-domain
-system, so if you want to enable the csi, dsi, or lcd, etc. you can
-just reference the blt-ctrl power domain index, and it enables the
-device's gpc power domain and takes the corresponding device out of
-reset.
+... and as you saw from the pr-tracker-bot, it's all merged now.
 
-adam
->
->   Thanks,
->   Tommaso
->
-> >
-> > > +                           reg = <0x32e28000 0x100>;
-> > > +                   };
-> > > +
-> > >                     usbotg1: usb@32e40000 {
-> > >                             compatible = "fsl,imx8mm-usb", "fsl,imx7d-usb";
-> > >                             reg = <0x32e40000 0x200>;
-> > >
-> >
-> >
-> > --
-> > Pengutronix e.K.                           |                             |
-> > Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-> > 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-> > Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Sorry for missing that part of your original pull request.
+
+            Linus
