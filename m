@@ -2,134 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F40E34438A7
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 23:40:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AA5A4438A9
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 23:42:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230409AbhKBWnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 18:43:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229844AbhKBWnV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 18:43:21 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42E37C061714;
-        Tue,  2 Nov 2021 15:40:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=cOU6fJ6CIwTv1kvDcNkH1XvDvhXueDW5em6fcmrW0X4=; b=ea1z5WE4/rsiqR0KskFWKrquok
-        S7Y+UQxZ0agrpfn7vL7DNXtuu8vkMktBTW8b8loo4D9gkLw3y+ghXBf/kRCSX1h7OnXt6VGxZRb7P
-        fzldcorGwZTEDdR/pT5/4a6agAzgSy9+wrtZpi2nK4VmQKB1leHxK861/EYaBQooum8cZMZK93tUD
-        zS+Bc8zETovVHht9Imcy4P/wNzWdiUjI/fzU2lrMRwGYb644uQdWULK5gMU8vvapc3P48rnYg7vvU
-        igirSnUIvTncEH/EgMxsjRGRz0Vp8OqnHfmymtsXJk9HDmKBB493L4okdJrDw3SD7BI6X4iuTqBKm
-        pIEIzEJw==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mi2SQ-003Bvx-5t; Tue, 02 Nov 2021 22:40:42 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kbuild@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
-        Nicolas Schier <nicolas@fjasle.eu>
-Subject: [PATCH v2] scripts/config: allow "O=config-dir" option
-Date:   Tue,  2 Nov 2021 15:40:41 -0700
-Message-Id: <20211102224041.5105-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        id S230155AbhKBWpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 18:45:19 -0400
+Received: from mail-bn8nam12on2101.outbound.protection.outlook.com ([40.107.237.101]:43872
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229685AbhKBWpR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 18:45:17 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dV/NMn8Srcby7xPtCyeHnAcuXAP69A2fZiDIx1cwG9d+TUVg7JMKZVLeUCApS2QBeOP3HzbCSPXzpuzE8SrNEhZHNweydezMz26QRdLaXL67AEFyExfYtwDGJwbjNOabtTgujf8zzIMBTXTfWsGzakx0uRqMDwjyt6cYUIbbQd5oPbp/4VjY0sAm/6DAgEoqx8IDJzCG1WR19ZluhmrSI9kHNk4zG0RkpX74NqiTKBz5jfHU4HBBpkJXOJEm2GQWGLTkOtsF5ymivGPP8LgeiWWBSyEj6ouuRE8rfRCgz0tQoE2GoEBrb/YdSSoOFhVgS9aHOSFK6HiWika1YKHQLw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=6ooqMTNWWaw5jRUxmsM5Nvpd75gFWCz4d7ZaXB8OUFM=;
+ b=RYXzmQeuXS5mQGejjOHjIFO/d6D+42BmgTa85suzg34U+iXFXn6IylI7ejL5LBJ4VqFqJsPnFFiqhV5pd7f8lVKRmsjVVzCZn8g5wKO2J3jzaEt0kXnzLNIyaP9j1ky2sRGe+VHWWnbS7KSy9IzckVb0o7cZCQygQwY/jIi9S4qNTdx5FA1ZroRSlNG8GQ7GjCCa770Q2sFYoYp2S0G0QKOXS9TxGOWeeAvvTlmE027puIAZhMu1zSD5M4DoHT8TCvKCwTS+ziK0Q/aifoUGaCeGq3zHaE8IqpCgrbhNlnr34H2fu6+vTR+e4H6x8ArbiKsGjXADF1aoJ8I8OJz0sA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=hammerspace.com; dmarc=pass action=none
+ header.from=hammerspace.com; dkim=pass header.d=hammerspace.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hammerspace.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6ooqMTNWWaw5jRUxmsM5Nvpd75gFWCz4d7ZaXB8OUFM=;
+ b=YRdj+Og7lMgz3G26YQ+sx78rW63SzAZFQidvA2rUcBkjZdihEwZlv6JKcDo4SnFqqhaUA5nvIiV6WiAgqK9/MYZgEHtzsZsU3eytj9ZpjxrErzPPJENEKM69GGGZ9VcFad+VK//8VLv///RTUAVKlIVjNnJ63S99UkJ4h8ySjeY=
+Received: from CH0PR13MB5084.namprd13.prod.outlook.com (2603:10b6:610:111::7)
+ by CH2PR13MB4492.namprd13.prod.outlook.com (2603:10b6:610:64::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.6; Tue, 2 Nov
+ 2021 22:42:38 +0000
+Received: from CH0PR13MB5084.namprd13.prod.outlook.com
+ ([fe80::1533:4550:d876:1486]) by CH0PR13MB5084.namprd13.prod.outlook.com
+ ([fe80::1533:4550:d876:1486%8]) with mapi id 15.20.4669.010; Tue, 2 Nov 2021
+ 22:42:38 +0000
+From:   Trond Myklebust <trondmy@hammerspace.com>
+To:     "corbet@lwn.net" <corbet@lwn.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "hch@lst.de" <hch@lst.de>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>
+Subject: Re: [PATCH 2/9] nfs: remove unused header <linux/pnfs_osd_xdr.h>
+Thread-Topic: [PATCH 2/9] nfs: remove unused header <linux/pnfs_osd_xdr.h>
+Thread-Index: AQHX0DVQ984FywqRDkeU7h4MdEH9Tqvw1XOA
+Date:   Tue, 2 Nov 2021 22:42:38 +0000
+Message-ID: <08d283fbedab1be09a9dd6cf5a296c6a465a9394.camel@hammerspace.com>
+References: <20211102220203.940290-1-corbet@lwn.net>
+         <20211102220203.940290-3-corbet@lwn.net>
+In-Reply-To: <20211102220203.940290-3-corbet@lwn.net>
+Accept-Language: en-US, en-GB
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: lwn.net; dkim=none (message not signed)
+ header.d=none;lwn.net; dmarc=none action=none header.from=hammerspace.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d39069b4-a313-47c7-cc1a-08d99e521294
+x-ms-traffictypediagnostic: CH2PR13MB4492:
+x-microsoft-antispam-prvs: <CH2PR13MB4492B845A433D1EC75D1820DB88B9@CH2PR13MB4492.namprd13.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2399;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: IB1Aaw0IGXBn2wv7UzwWReJW0CzuEEtSqxeWmOhIFu+6jLZLOS5LMFOrMan1Xyt6ISYBCcmlcOejfcaSdpjFPNfbq9WtpLsZEuDH2aHRHh22B65679kJJJWA5lWYd6AR3rWoKzcW0Ohk9hEL+W6T4p8/kPAbG50MR1ZWhZNKbqLLVWKgYAM0e0lgouCRDj70ytrDE07upsm1ULPlWMU6cPwYn1aAgiaARyY3ZVIFvLo3HhEP72bxyuk92h6esBiJ5QlsKY8F5BINAVAA8cMqhJhS/XVBm+Mn+wl80EMaQvGe4PFPl0zzqiU6H06gWIQ+xqRqICeCdmORzdrqLYQmkABdSAnv9PgqcFQpjxaS8i1bi4KsyBsZdnqPMOgSslQDBFHG+KSqxrQUvKweehpLsBIrnLsnFmWixMsRviY0S5EAg/eyGNnGqiPslPM8Yt2qSupo/C0w0/7GpRAnJOcrik1hKoSPxe2YbHrL7/w1HAOyTBnRe6UgH3KA8mweatVxoium3oGvCqFSyZ2wbZlcqnnL1g9IeQ8002v/muypKUHnVkCupvem4tJ/xDyftJxoNOwF1L3WAQxKavMGu+kyXwOr4d9DEd3wmhhtH2zYjTk+5RrtQHLMu06krwcujgR6p8HDo2NqRmcT1/dGiotUZxB8M/CwHh7Ui4ySwDiDX7tYHISFjNMgPrY+EGYAc3TQGxH9MM//kJV+MzXtKP/G3A==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR13MB5084.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(508600001)(8936002)(4326008)(6506007)(38100700002)(5660300002)(8676002)(86362001)(36756003)(6486002)(6512007)(4744005)(71200400001)(122000001)(2616005)(26005)(2906002)(66946007)(186003)(76116006)(38070700005)(66476007)(83380400001)(66556008)(64756008)(66446008)(54906003)(110136005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?VnQ1K2pCYVI5NlYzUm9OUWExaHlsTXVZcTVhSGNNa203OEZua0FQQXhqQWVy?=
+ =?utf-8?B?M1RrUmdYNUlkak5IaE9FWlRBQ0tHYWtwdXF5TzhSNVF3cG5reFpGUjBjNWZN?=
+ =?utf-8?B?VFIvOTJGazl0Q09vYnZvMUNDOTRSRnBUL2ZRVTlIQ1YwNlI2L3VpL0lMMFR4?=
+ =?utf-8?B?QjE4KzY4MWhmRkYwdnJVbTFxZ3dOL1hJTDhER2l0NzgvZUplR3c0TUs2bmJp?=
+ =?utf-8?B?UkxHL0NmdHNIaW9hZzhNdm9KbG8wVmRiS2RiRjFWR0dLU1FVNmYybzE3UDRx?=
+ =?utf-8?B?bE9WUUFTQU9ycnlWakszdDhYSUJJTVdjWWhFcDU3L0ZoWFgyWmpZZUM5cUVU?=
+ =?utf-8?B?aDlNOGhuZVllR2VIcXlnaWFOK3pHRzRoM1kyQ3VZZXNWbFVhL1MwbjF6dGRU?=
+ =?utf-8?B?SlV4c21wY3NnVk5BRW1yMTdidzV4QWl6b1I2UDlZeVpsR0k0SHlwUnU4dzJJ?=
+ =?utf-8?B?YWwyc3hMSm0zanVSNzV6dDk2SmtrVnp4NnE3alNNcDNRS1N4cFZWZEVYbEl1?=
+ =?utf-8?B?K1pWbGhHUlFPS1IwWUpEaXQySndmZ043dDArSWN4SWIyeTAvMGhkKys0eGpm?=
+ =?utf-8?B?S1pTL0RuQ1hPcGd0U3NVYTIweHozYXl3T3UxaURhNWk5dzE2TFV2MjV3UlQ3?=
+ =?utf-8?B?c3hoeHhJZWF6bUg5aUhsc2piYVk5b1JlbGRRY21mb0hOVjUyWEc5RzdGbTN0?=
+ =?utf-8?B?RDA0MzI5dEdna29WK05ZWUduQUtZTjVuWG1zaVNxbUkxOVJLWXR2OGdLZDNE?=
+ =?utf-8?B?c3lmZWxZa1VVbkUzMTJWMmNHb3RIdm1Sb2huZTFUV0NKNFVET1JRaGwwRnd1?=
+ =?utf-8?B?bUF4bi9NTG84Z1Ryb24yRDkxMlB2UW5hRkxBc1UrV0c2ODlTUzlaQm1nN1RB?=
+ =?utf-8?B?WTlQeGI1eTZlUFlYbzB2eG1Ya3F5UzF5TEUvM0JRNHlSN1BOQW1HTElJUlUw?=
+ =?utf-8?B?RkZnVjg2RWYzMTBLLzZ5R1ljMUF6Q0R0cU1RdnliZENuRGVwUlFpdWhiTklx?=
+ =?utf-8?B?YUlCTXVBVmw2K3krTlBHeXhZTVFycENLa2NFMnRXbGxqZDdBOW5HdFdhMWtR?=
+ =?utf-8?B?TUJjNEw5U2p2dnFXU3kwMFpMM3ZUcGt5b3l6Qm5Sb25QdHRLaEkzaXk4bjQz?=
+ =?utf-8?B?YVdZeWZwT1JrencrVm1xR2N4VFRIYWJrWVMvbWNHaXh6aGVDbEptSXlpTFda?=
+ =?utf-8?B?TkRuU2tTNTU2dTdmVVFvRXNzd2hGVmFvSUh6ZlNpdXdiVHU2LzdxYTlaaDBJ?=
+ =?utf-8?B?ZkorNTZmZHMySnZCTkZLSjk2YVVrNC94VkpIYUlUaVZqODdrVkJ0OVNDODVk?=
+ =?utf-8?B?YmF4Qm1xaGpiUjNBcFdOSTduVHlzSW1PYjFPcFVFZ1J0WTJTKy80UEVjL2Ju?=
+ =?utf-8?B?ajZOcnpDZE5FRWlNRDgxU21aUjhyam1YL3k1R1VvTjUwUjd1N2gzZ0E5VEVk?=
+ =?utf-8?B?aHpIZFVtMHR5b1JOZi9yRnRIY0psbmhIMlE0UWlQUnplU3E5UlZvczFhOEJU?=
+ =?utf-8?B?azVUWDJYSVgrbGFjaTNmTitJVFdHeXBuZnlyU3lMbW5mMXhoZE5ka0sxaVY2?=
+ =?utf-8?B?TkxFY1VTbUxPRUVjR1dBdVRxbzBuTXJJRmtXTXhGY3h3Ym9DTTU5QUwwYlJL?=
+ =?utf-8?B?dytRZTZBV29HdkVxOUZyd3ozbG1hdVkzVmtCYTU1akp3aXk2b3piMG1CUWVt?=
+ =?utf-8?B?QTJTNTVMS0ZuclgySnYyTC92alByMFAyQW10UG1OT1NJRHNvRHhWU3hNU1lX?=
+ =?utf-8?B?Q3ZNOE5RQlBCNlJpdTBMS3NHR3Q2b0VRZzdiQUdCS2hPZzJjVmZMQ3psS052?=
+ =?utf-8?B?UEgyeVJ6ZHNzTzhwMWRJREVFK1IzNTRHSUpLcFpoQTh5dlpkRTN6YnhBSTh2?=
+ =?utf-8?B?RElEMU05Rnd2VDlkQkhHUVZCQnJWZ2hBTEtXbS90TGtYUmZsQWo5dFZuR0pZ?=
+ =?utf-8?B?YUNXNTVtMXRPeUFnZWZueGxPaFFielRvRXp2eFdja2t3TmZjMndaYTJlSHNJ?=
+ =?utf-8?B?TTVBckZxZVRueTFxWENIQjcxNDN2ODdRVHZxMmtzSVdYd1RKYUErdjdOOEI4?=
+ =?utf-8?B?emRTUWpJbVBvRHVKaGFDbkNPbk5NQ1lOY3JtREp1d3VSK3R0NjRyVGxQVFpC?=
+ =?utf-8?B?VGtEcndBTGRUZm1tZmM5NVB1RmRmdVlPNnJQaFd0MG9jcFJrdEd5OXRic2I3?=
+ =?utf-8?Q?v7WM3vq+xLtdWxIdEAdDgkk=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <941EEC865608A8499C4D5CF003D2DDFB@namprd13.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: hammerspace.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CH0PR13MB5084.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d39069b4-a313-47c7-cc1a-08d99e521294
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Nov 2021 22:42:38.4838
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 0d4fed5c-3a70-46fe-9430-ece41741f59e
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: FVEskcDCsjMDPxCGLCCxSL97YcqTPUgDIOQ/PVyMd8CLpFdw4tTvnnQZ7I4MxilKoC8K7h4tFq50ZUyFXkrSog==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR13MB4492
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support "O=config-dir" as the location of the .config file
-like (some) other kernel build (make) tools do.
-
-Also check for the existence of the config-dir/config-file
-and report if there is no such file instead of letting grep
-report that there is no such file.
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Cc: linux-kbuild@vger.kernel.org
-Cc: Andi Kleen <ak@linux.intel.com>
-Reviewed-by: Nicolas Schier <nicolas@fjasle.eu>
----
-v2:
-- use 'shellcheck' and other recommendations from Nicolas
-- move one comment from the commit description to under the "---" line
-
-Someone asked for this "feature" a few months ago but I don't
-recall who it was.
-
- scripts/config |   44 +++++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 39 insertions(+), 5 deletions(-)
-
---- linux-next-20211102.orig/scripts/config
-+++ linux-next-20211102/scripts/config
-@@ -37,6 +37,7 @@ commands:
- 
- options:
- 	--file config-file   .config file to change (default .config)
-+	O=config-dir         Specify the directory location of the config-file
- 	--keep-case|-k       Keep next symbols' case (dont' upper-case it)
- 
- $myname doesn't check the validity of the .config file. This is done at next
-@@ -124,15 +125,48 @@ undef_var() {
- 	txt_delete "^# $name is not set" "$FN"
- }
- 
--if [ "$1" = "--file" ]; then
--	FN="$2"
--	if [ "$FN" = "" ] ; then
-+DIR=
-+FN=
-+
-+while [ "$DIR" = "" ] || [ "$FN" = "" ]; do
-+
-+	if [ "$1" = "" ] ; then
- 		usage
- 	fi
--	shift 2
--else
-+	if [ "$1" = "--file" ]; then
-+		FN="$2"
-+		if [ "$FN" = "" ] ; then
-+			usage
-+		fi
-+		shift 2
-+		continue
-+	fi
-+
-+	optn=$1
-+	optnlen=${#optn}
-+	if [ "$optnlen" -gt 1 ] && [ "${optn:0:2}" = "O=" ]; then
-+		DIR=${optn:2}
-+		shift
-+		if [ "$DIR" = "" ]; then
-+			usage
-+		fi
-+		continue
-+	fi
-+	break	# something other than --file or O=dir
-+done
-+
-+if [ "$FN" = "" ]; then
- 	FN=.config
- fi
-+if [ "$DIR" != "" ]; then
-+	DIR=$DIR"/"
-+fi
-+FN="${DIR}${FN}"
-+
-+if [ ! -r "$FN" ]; then
-+	echo "No such config file: $FN"
-+	exit
-+fi
- 
- if [ "$1" = "" ] ; then
- 	usage
+SGkgSm9uLA0KDQpPbiBUdWUsIDIwMjEtMTEtMDIgYXQgMTY6MDEgLTA2MDAsIEpvbmF0aGFuIENv
+cmJldCB3cm90ZToNCj4gQ29tbWl0IDE5ZmNhZTNkNGYyZGQgKCJzY3NpOiByZW1vdmUgdGhlIFND
+U0kgT1NEIGxpYnJhcnkiKSBkZWxldGVkDQo+IHRoZSBsYXN0DQo+IGZpbGUgdGhhdCBpbmNsdWRl
+ZCA8bGludXgvcG5mc19vc2RfeGRyLmg+IGJ1dCBsZWZ0IHRoYXQgZmlsZSBiZWhpbmQuwqANCj4g
+SXQncw0KPiB1bnVzZWQsIGdldCByaWQgb2YgaXQgbm93Lg0KPiANCj4gQ2M6IENocmlzdG9waCBI
+ZWxsd2lnIDxoY2hAbHN0LmRlPg0KPiBDYzogVHJvbmQgTXlrbGVidXN0IDx0cm9uZC5teWtsZWJ1
+c3RAaGFtbWVyc3BhY2UuY29tPg0KPiBDYzogQW5uYSBTY2h1bWFrZXIgPGFubmEuc2NodW1ha2Vy
+QG5ldGFwcC5jb20+DQo+IENjOiBsaW51eC1uZnNAdmdlci5rZXJuZWwub3JnDQo+IFNpZ25lZC1v
+ZmYtYnk6IEpvbmF0aGFuIENvcmJldCA8Y29yYmV0QGx3bi5uZXQ+DQoNCkFyZSB5b3Ugc2VuZGlu
+ZyB0aGlzIGRpcmVjdGx5IHRvIExpbnVzIG9yIGRvIHlvdSB3YW50IG1lIHRvIHRha2UgaXQNCnRo
+cm91Z2ggdGhlIE5GUyBjbGllbnQgdHJlZT8gSSdtIGZpbmUgZWl0aGVyIHdheS4NCg0KPiANCg0K
+LS0gDQpUcm9uZCBNeWtsZWJ1c3QNCkxpbnV4IE5GUyBjbGllbnQgbWFpbnRhaW5lciwgSGFtbWVy
+c3BhY2UNCnRyb25kLm15a2xlYnVzdEBoYW1tZXJzcGFjZS5jb20NCg0KDQo=
