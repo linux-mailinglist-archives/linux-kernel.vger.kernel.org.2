@@ -2,185 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26928442CAB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 12:33:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6F41442C89
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 12:27:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230442AbhKBLfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 07:35:34 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:4051 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230349AbhKBLf1 (ORCPT
+        id S230511AbhKBLa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 07:30:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56648 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229577AbhKBLaZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 07:35:27 -0400
-Received: from fraeml702-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Hk7201Fdsz67v1F;
-        Tue,  2 Nov 2021 19:28:24 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml702-chm.china.huawei.com (10.206.15.51) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.15; Tue, 2 Nov 2021 12:32:50 +0100
-Received: from localhost.localdomain (10.69.192.58) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Tue, 2 Nov 2021 11:32:48 +0000
-From:   John Garry <john.garry@huawei.com>
-To:     <axboe@kernel.dk>
-CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <ming.lei@redhat.com>, <kashyap.desai@broadcom.com>,
-        <hare@suse.de>, "John Garry" <john.garry@huawei.com>
-Subject: [PATCH RFT 3/3] blk-mq: Optimise blk_mq_queue_tag_busy_iter() for shared tags
-Date:   Tue, 2 Nov 2021 19:27:35 +0800
-Message-ID: <1635852455-39935-4-git-send-email-john.garry@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1635852455-39935-1-git-send-email-john.garry@huawei.com>
-References: <1635852455-39935-1-git-send-email-john.garry@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.58]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+        Tue, 2 Nov 2021 07:30:25 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14DB4C061714
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 04:27:51 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id r67-20020a252b46000000b005bea12c4befso30024783ybr.19
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 04:27:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=5sNj/QMNumolMMKBSDqH1xGPUsCbMl4BcAinNLIbYXg=;
+        b=VcO4Edxounpwoi+o3qO80QAHh3/I9FHDEEh2AYQDpy3BjUxtS6wbaU7yV+FC2T6bUA
+         r/mEmzTMWXobeOCey3elwWdyP/W9dAvytqbEbMeBaykIb6Zpzz73sjPcgkocA0mVzR9h
+         O8LXHV03WuWqYlxwu4HuyJpl6UMozUM1MGRmMOvNuPgZTtiiiwbuX8EuixDIu8uKa2em
+         Lkm+E9Qv/N7phZYkwrMnUrrGmrM4rX8bt1GcB1JFE43+Y4s5K60vfqsJSl8eahy4e2SJ
+         LY/AynJERtWfXG3STizwLCao8yQCVXJDqPHOrJxXf5z29N8rkaNgRDCd22+6oR2VA0AX
+         bldA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=5sNj/QMNumolMMKBSDqH1xGPUsCbMl4BcAinNLIbYXg=;
+        b=gvxPtGQ1Yne1K5FQh43xEk1TJxIE+bg33fyHl/7/IE8H7BvHZb2n6anMuLIbkGMHCS
+         51tcjKdZG0Z5eu7V3JAG/FhftHfFbRPWeuIYOMpiQGYIXotMBma5VkTIS/fI2iTpiaIr
+         iC06ExEUK9tZ7niL4pbpeZnsVdPFV/PDHKfwIwNXAhxizMixnjpbJlByG++9VZO5nGD2
+         87RZBN/667mjFVxywpvc1nwE/Oyz4LNc1f+wm0kKxBsEL1aHftmuntFC4Cqkk/5dZBHb
+         bcbat7WpUSZLpASVHr7m13zDUsYpOreB8iZ9aZABUA5LzQD3HPdhNR5qyqkMilDHZ/8C
+         EMqg==
+X-Gm-Message-State: AOAM530cokznQWgnd6bh7PYbmTaU1vQ2bTP0Kd0sz2GdjTYHvbOey7tf
+        9CVnF0fhePAfbgGhuoH3W8VnONK02Pes
+X-Google-Smtp-Source: ABdhPJyyBzQNUjoWuSZ3gyw7veG9oOSrnNzZtUmfTxbYxxCAoNEAILEzxY31ZTBCTXC7pnCkdJW78OTX/qIW
+X-Received: from apusaka-p920.tpe.corp.google.com ([2401:fa00:1:10:e184:a33f:252b:7530])
+ (user=apusaka job=sendgmr) by 2002:a25:ada5:: with SMTP id
+ z37mr7407492ybi.93.1635852470289; Tue, 02 Nov 2021 04:27:50 -0700 (PDT)
+Date:   Tue,  2 Nov 2021 19:27:44 +0800
+Message-Id: <20211102192742.1.I3ba1a76d72da5a813cf6e6f219838c9ef28c5eaa@changeid>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.1.1089.g2158813163f-goog
+Subject: [PATCH] Bluetooth: Fix receiving HCI_LE_Advertising_Set_Terminated event
+From:   Archie Pusaka <apusaka@google.com>
+To:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        Marcel Holtmann <marcel@holtmann.org>
+Cc:     CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Archie Pusaka <apusaka@chromium.org>,
+        Alain Michaud <alainm@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kashyap reports high CPU usage in blk_mq_queue_tag_busy_iter() and callees
-using megaraid SAS RAID card since moving to shared tags [0].
+From: Archie Pusaka <apusaka@chromium.org>
 
-Previously, when shared tags was shared sbitmap, this function was less
-than optimum since we would iter through all tags for all hctx's,
-yet only ever match upto tagset depth number of rqs.
+This event is received when the controller stops advertising,
+specifically for these three reasons:
+(a) Connection is successfully created (success).
+(b) Timeout is reached (error).
+(c) Number of advertising events is reached (error).
+(*) This event is NOT generated when the host stops the advertisement.
+Refer to the BT spec ver 5.3 vol 4 part E sec 7.7.65.18. Note that the
+section was revised from BT spec ver 5.0 vol 2 part E sec 7.7.65.18
+which was ambiguous about (*).
 
-Since the change to shared tags, things are even less efficient if we have
-parallel callers of blk_mq_queue_tag_busy_iter(). This is because in
-bt_iter() -> blk_mq_find_and_get_req() there would be more contention on
-accessing each request ref and tags->lock since they are now shared among
-all HW queues.
+Some chips (e.g. RTL8822CE) send this event when the host stops the
+advertisement with status = HCI_ERROR_CANCELLED_BY_HOST (due to (*)
+above). This is treated as an error and the advertisement will be
+removed and userspace will be informed via MGMT event.
 
-Optimise by having separate calls to bt_for_each() for when we're using
-shared tags. In this case no longer pass a hctx, as it is no longer
-relevant, and teach bt_iter() about this.
+On suspend, we are supposed to temporarily disable advertisements,
+and continue advertising on resume. However, due to the behavior
+above, the advertisements are removed instead.
 
-Ming suggested something along the lines of this change, apart from a
-different implementation.
+This patch returns early if HCI_ERROR_CANCELLED_BY_HOST is received.
 
-[0] https://lore.kernel.org/linux-block/e4e92abbe9d52bcba6b8cc6c91c442cc@mail.gmail.com/
+Additionally, this patch also clear HCI_LE_ADV if there are no more
+advertising instances after receiving other errors.
 
-Signed-off-by: John Garry <john.garry@huawei.com>
+Signed-off-by: Archie Pusaka <apusaka@chromium.org>
+Reviewed-by: Alain Michaud <alainm@chromium.org>
+
 ---
- block/blk-mq-tag.c | 52 +++++++++++++++++++++++++++++++---------------
- 1 file changed, 35 insertions(+), 17 deletions(-)
 
-diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
-index bc233ea92adf..00515933c8a8 100644
---- a/block/blk-mq-tag.c
-+++ b/block/blk-mq-tag.c
-@@ -215,6 +215,7 @@ void blk_mq_put_tags(struct blk_mq_tags *tags, int *tag_array, int nr_tags)
+ include/net/bluetooth/hci.h |  1 +
+ net/bluetooth/hci_event.c   | 12 ++++++++++++
+ 2 files changed, 13 insertions(+)
+
+diff --git a/include/net/bluetooth/hci.h b/include/net/bluetooth/hci.h
+index 63065bc01b76..84db6b275231 100644
+--- a/include/net/bluetooth/hci.h
++++ b/include/net/bluetooth/hci.h
+@@ -566,6 +566,7 @@ enum {
+ #define HCI_ERROR_INVALID_LL_PARAMS	0x1e
+ #define HCI_ERROR_UNSPECIFIED		0x1f
+ #define HCI_ERROR_ADVERTISING_TIMEOUT	0x3c
++#define HCI_ERROR_CANCELLED_BY_HOST	0x44
  
- struct bt_iter_data {
- 	struct blk_mq_hw_ctx *hctx;
-+	struct request_queue *q;
- 	busy_tag_iter_fn *fn;
- 	void *data;
- 	bool reserved;
-@@ -238,11 +239,18 @@ static bool bt_iter(struct sbitmap *bitmap, unsigned int bitnr, void *data)
- {
- 	struct bt_iter_data *iter_data = data;
- 	struct blk_mq_hw_ctx *hctx = iter_data->hctx;
--	struct blk_mq_tags *tags = hctx->tags;
-+	struct request_queue *q = iter_data->q;
- 	bool reserved = iter_data->reserved;
-+	struct blk_mq_tag_set *set = q->tag_set;
-+	struct blk_mq_tags *tags;
- 	struct request *rq;
- 	bool ret = true;
+ /* Flow control modes */
+ #define HCI_FLOW_CTL_MODE_PACKET_BASED	0x00
+diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+index d4b75a6cfeee..150b50677790 100644
+--- a/net/bluetooth/hci_event.c
++++ b/net/bluetooth/hci_event.c
+@@ -5538,6 +5538,14 @@ static void hci_le_ext_adv_term_evt(struct hci_dev *hdev, struct sk_buff *skb)
  
-+	if (blk_mq_is_shared_tags(set->flags))
-+		tags = set->shared_tags;
-+	else
-+		tags = hctx->tags;
+ 	adv = hci_find_adv_instance(hdev, ev->handle);
+ 
++	/* Some chips (e.g. RTL8822CE) emit HCI_ERROR_CANCELLED_BY_HOST. This
++	 * event is being fired as a result of a hci_cp_le_set_ext_adv_enable
++	 * disable request, which will have its own callback and cleanup via
++	 * the hci_cc_le_set_ext_adv_enable path.
++	 */
++	if (ev->status == HCI_ERROR_CANCELLED_BY_HOST)
++		return;
 +
- 	if (!reserved)
- 		bitnr += tags->nr_reserved_tags;
- 	/*
-@@ -253,7 +261,7 @@ static bool bt_iter(struct sbitmap *bitmap, unsigned int bitnr, void *data)
- 	if (!rq)
- 		return true;
+ 	if (ev->status) {
+ 		if (!adv)
+ 			return;
+@@ -5546,6 +5554,10 @@ static void hci_le_ext_adv_term_evt(struct hci_dev *hdev, struct sk_buff *skb)
+ 		hci_remove_adv_instance(hdev, ev->handle);
+ 		mgmt_advertising_removed(NULL, hdev, ev->handle);
  
--	if (rq->q == hctx->queue && rq->mq_hctx == hctx)
-+	if (rq->q == q && (!hctx || rq->mq_hctx == hctx))
- 		ret = iter_data->fn(rq, iter_data->data, reserved);
- 	blk_mq_put_rq_ref(rq);
- 	return ret;
-@@ -274,13 +282,15 @@ static bool bt_iter(struct sbitmap *bitmap, unsigned int bitnr, void *data)
-  *		bitmap_tags member of struct blk_mq_tags.
-  */
- static void bt_for_each(struct blk_mq_hw_ctx *hctx, struct sbitmap_queue *bt,
--			busy_tag_iter_fn *fn, void *data, bool reserved)
-+			busy_tag_iter_fn *fn, void *data, bool reserved,
-+			struct request_queue *q)
- {
- 	struct bt_iter_data iter_data = {
- 		.hctx = hctx,
- 		.fn = fn,
- 		.data = data,
- 		.reserved = reserved,
-+		.q = q,
- 	};
- 
- 	sbitmap_for_each_set(&bt->sb, bt_iter, &iter_data);
-@@ -460,9 +470,6 @@ EXPORT_SYMBOL(blk_mq_tagset_wait_completed_request);
- void blk_mq_queue_tag_busy_iter(struct request_queue *q, busy_tag_iter_fn *fn,
- 		void *priv)
- {
--	struct blk_mq_hw_ctx *hctx;
--	int i;
--
- 	/*
- 	 * __blk_mq_update_nr_hw_queues() updates nr_hw_queues and queue_hw_ctx
- 	 * while the queue is frozen. So we can use q_usage_counter to avoid
-@@ -471,19 +478,30 @@ void blk_mq_queue_tag_busy_iter(struct request_queue *q, busy_tag_iter_fn *fn,
- 	if (!percpu_ref_tryget(&q->q_usage_counter))
++		/* If we are no longer advertising, clear HCI_LE_ADV */
++		if (list_empty(&hdev->adv_instances))
++			hci_dev_clear_flag(hdev, HCI_LE_ADV);
++
  		return;
- 
--	queue_for_each_hw_ctx(q, hctx, i) {
--		struct blk_mq_tags *tags = hctx->tags;
--
--		/*
--		 * If no software queues are currently mapped to this
--		 * hardware queue, there's nothing to check
--		 */
--		if (!blk_mq_hw_queue_mapped(hctx))
--			continue;
-+	if (blk_mq_is_shared_tags(q->tag_set->flags)) {
-+		struct blk_mq_tags *tags = q->tag_set->shared_tags;
- 
- 		if (tags->nr_reserved_tags)
--			bt_for_each(hctx, &tags->breserved_tags, fn, priv, true);
--		bt_for_each(hctx, &tags->bitmap_tags, fn, priv, false);
-+			bt_for_each(NULL, &tags->breserved_tags, fn, priv, true, q);
-+		bt_for_each(NULL, &tags->bitmap_tags, fn, priv, false, q);
-+	} else {
-+		struct blk_mq_hw_ctx *hctx;
-+		int i;
-+
-+		queue_for_each_hw_ctx(q, hctx, i) {
-+			struct blk_mq_tags *tags = hctx->tags;
-+
-+			/*
-+			 * If no software queues are currently mapped to this
-+			 * hardware queue, there's nothing to check
-+			 */
-+			if (!blk_mq_hw_queue_mapped(hctx))
-+				continue;
-+
-+			if (tags->nr_reserved_tags)
-+				bt_for_each(hctx, &tags->breserved_tags, fn, priv, true, q);
-+			bt_for_each(hctx, &tags->bitmap_tags, fn, priv, false, q);
-+		}
  	}
- 	blk_queue_exit(q);
- }
+ 
 -- 
-2.17.1
+2.33.1.1089.g2158813163f-goog
 
