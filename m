@@ -2,144 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E9924429EE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 09:55:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B073A442956
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 09:28:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231176AbhKBI6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 04:58:07 -0400
-Received: from m15111.mail.126.com ([220.181.15.111]:39058 "EHLO
-        m15111.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229720AbhKBI6E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 04:58:04 -0400
-X-Greylist: delayed 1812 seconds by postgrey-1.27 at vger.kernel.org; Tue, 02 Nov 2021 04:58:04 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=yYK7j
-        4zSR3tU5Nj9zPzz1aeMvcwXiqLMsS3fqcTDIo0=; b=FyTEuFR5OddJJXvGzdYLC
-        hl/50cqBbzP5rucXIXGTH0R7PC3oLBn7067f7YYykbRQJwygiFfOa0aEdLfqFW0B
-        N/zMo0noiv0rc6Pe7A7QyUmbBMy9RLZLZDRQYQksd25Y5k2G57LCV1Z4DKvHjfp9
-        TK7mJ4l8y1/qjVfyLixPnE=
-Received: from pek-lpd-ccm5.wrs.com (unknown [60.247.85.82])
-        by smtp1 (Coremail) with SMTP id C8mowADX5XHI9YBh3wm5CQ--.38969S2;
-        Tue, 02 Nov 2021 16:24:53 +0800 (CST)
-From:   Zhaolong Zhang <zhangzl2013@126.com>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Yanteng Si <siyanteng@loongson.cn>, linux-mips@vger.kernel.org,
-        Zhaolong Zhang <zhangzl2013@126.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] mips: fix HUGETLB function without THP enabled
-Date:   Tue,  2 Nov 2021 16:24:37 +0800
-Message-Id: <20211102082437.3319235-1-zhangzl2013@126.com>
-X-Mailer: git-send-email 2.27.0
+        id S230324AbhKBIb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 04:31:27 -0400
+Received: from mga04.intel.com ([192.55.52.120]:45498 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229720AbhKBIbZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 04:31:25 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10155"; a="229932632"
+X-IronPort-AV: E=Sophos;i="5.87,202,1631602800"; 
+   d="scan'208";a="229932632"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2021 01:28:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,202,1631602800"; 
+   d="scan'208";a="638113795"
+Received: from kuha.fi.intel.com ([10.237.72.166])
+  by fmsmga001.fm.intel.com with SMTP; 02 Nov 2021 01:28:42 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 02 Nov 2021 10:28:41 +0200
+Date:   Tue, 2 Nov 2021 10:28:41 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Qian Cai <quic_qiancai@quicinc.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH] software node: Skip duplicated software_node sysfs
+Message-ID: <YYD2uXPcnFmiy54c@kuha.fi.intel.com>
+References: <20211101200346.16466-1-quic_qiancai@quicinc.com>
+ <CAHp75VcrWPdR8EVGpcsniQedT0J4X700N7thFs6+srTP1MTgwQ@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: C8mowADX5XHI9YBh3wm5CQ--.38969S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxZF4DKr15tw1rtr13Jry3XFb_yoW5CFy5pF
-        Z3AF48uw4UtFnrJay3trnYqry3Xr4kXayDtr17Ga1DX3WUKw40gF4vgw4avrn5XrWkZFWx
-        AFZ0gayj9rsrJw7anT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UeMKtUUUUU=
-X-Originating-IP: [60.247.85.82]
-X-CM-SenderInfo: x2kd0wt2osiiat6rjloofrz/1tbiaRU-z1pEDpurlwAAs7
+In-Reply-To: <CAHp75VcrWPdR8EVGpcsniQedT0J4X700N7thFs6+srTP1MTgwQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ltp test futex_wake04 without THP enabled leads to below bt:
-  [<ffffffff80a03728>] BUG+0x0/0x8
-  [<ffffffff80a0624c>] internal_get_user_pages_fast+0x81c/0x820
-  [<ffffffff8093ac18>] get_futex_key+0xa0/0x480
-  [<ffffffff8093b074>] futex_wait_setup+0x7c/0x1a8
-  [<ffffffff8093b2c0>] futex_wait+0x120/0x228
-  [<ffffffff8093dbe8>] do_futex+0x140/0xbd8
-  [<ffffffff8093e78c>] sys_futex+0x10c/0x1c0
-  [<ffffffff808703d0>] syscall_common+0x34/0x58
+On Tue, Nov 02, 2021 at 01:51:34AM +0200, Andy Shevchenko wrote:
+> On Monday, November 1, 2021, Qian Cai <quic_qiancai@quicinc.com> wrote:
+> 
+> > A recent commit allowed device_create_managed_software_node() to call
+> > software_node_notify() which could generate duplicated "software_node"
+> > sysfs files. For example,
+> >
+> > "/devices/platform/808622B7:01/xhci-hcd.3.auto/software_node"
+> >
+> > Since it was created earlier from another path,
+> >
+> >   sysfs_create_link
+> >   software_node_notify
+> >   device_add
+> >   platform_device_add
+> >   dwc3_host_init
+> >   dwc3_probe
+> >   platform_probe
+> >   really_probe.part.0
+> >   really_probe
+> >   __driver_probe_device
+> >   driver_probe_device
+> >   __driver_attach
+> >   bus_for_each_dev
+> >   driver_attach
+> >   bus_add_driver
+> >   driver_register
+> >   __platform_driver_register
+> >   dwc3_driver_init at drivers/usb/dwc3/core.c:2072
+> >   do_one_initcall
+> >
+> > Fixed it by using sysfs_create_link_nowarn() in software_node_notify() to
+> > avoid those bad messages during booting,
+> 
+> 
+> No, it’s not so easy. What you are doing is a papering over the real issue
+> which is the limitation of the firmware nodes to two. What we need is to
+> drop the link from struct fwnode_handle, move it to upper layer and modify
+> all fwnode ops to be used over the list of fwnode:s.
+> 
+> XHCI driver and DWC3 are sharing the primary fwnode, but at the same time
+> they wanted to have _different_ secondary ones when role is switched. This
+> can’t be done in the current design. And here is the symptom what you got.
 
-Move pmd_write() and pmd_page() from TRANSPARENT_HUGEPAGE scope to
-MIPS_HUGE_TLB_SUPPORT scope, because both THP and HUGETLB will need
-them.
+I'm actually not sure what is going on in this case, because this is
+the ACPI enumerated BSW board, at least based on the ACPI ID?
 
-Signed-off-by: Zhaolong Zhang <zhangzl2013@126.com>
----
- arch/mips/include/asm/pgtable.h | 40 +++++++++++++++++----------------
- 1 file changed, 21 insertions(+), 19 deletions(-)
+That board should not have the initial secondary fwnode assigned by
+the time the dwc3 host driver is called.
 
-diff --git a/arch/mips/include/asm/pgtable.h b/arch/mips/include/asm/pgtable.h
-index 804889b70965..1fcf4be5cd20 100644
---- a/arch/mips/include/asm/pgtable.h
-+++ b/arch/mips/include/asm/pgtable.h
-@@ -86,10 +86,12 @@ extern void paging_init(void);
-  */
- #define pmd_phys(pmd)		virt_to_phys((void *)pmd_val(pmd))
- 
-+#ifndef CONFIG_MIPS_HUGE_TLB_SUPPORT
- #define __pmd_page(pmd)		(pfn_to_page(pmd_phys(pmd) >> PAGE_SHIFT))
- #ifndef CONFIG_TRANSPARENT_HUGEPAGE
- #define pmd_page(pmd)		__pmd_page(pmd)
- #endif /* CONFIG_TRANSPARENT_HUGEPAGE  */
-+#endif /* CONFIG_MIPS_HUGE_TLB_SUPPORT */
- 
- #define pmd_page_vaddr(pmd)	pmd_val(pmd)
- 
-@@ -416,6 +418,25 @@ static inline pte_t pte_mkhuge(pte_t pte)
- 	pte_val(pte) |= _PAGE_HUGE;
- 	return pte;
- }
-+
-+#define pmd_write pmd_write
-+static inline int pmd_write(pmd_t pmd)
-+{
-+	return !!(pmd_val(pmd) & _PAGE_WRITE);
-+}
-+
-+static inline unsigned long pmd_pfn(pmd_t pmd)
-+{
-+	return pmd_val(pmd) >> _PFN_SHIFT;
-+}
-+
-+static inline struct page *pmd_page(pmd_t pmd)
-+{
-+	if (pmd_val(pmd) & _PAGE_HUGE)
-+		return pfn_to_page(pmd_pfn(pmd));
-+
-+	return pfn_to_page(pmd_phys(pmd) >> PAGE_SHIFT);
-+}
- #endif /* CONFIG_MIPS_HUGE_TLB_SUPPORT */
- 
- #ifdef CONFIG_HAVE_ARCH_SOFT_DIRTY
-@@ -591,12 +612,6 @@ static inline pmd_t pmd_mkhuge(pmd_t pmd)
- extern void set_pmd_at(struct mm_struct *mm, unsigned long addr,
- 		       pmd_t *pmdp, pmd_t pmd);
- 
--#define pmd_write pmd_write
--static inline int pmd_write(pmd_t pmd)
--{
--	return !!(pmd_val(pmd) & _PAGE_WRITE);
--}
--
- static inline pmd_t pmd_wrprotect(pmd_t pmd)
- {
- 	pmd_val(pmd) &= ~(_PAGE_WRITE | _PAGE_SILENT_WRITE);
-@@ -677,19 +692,6 @@ static inline pmd_t pmd_clear_soft_dirty(pmd_t pmd)
- /* Extern to avoid header file madness */
- extern pmd_t mk_pmd(struct page *page, pgprot_t prot);
- 
--static inline unsigned long pmd_pfn(pmd_t pmd)
--{
--	return pmd_val(pmd) >> _PFN_SHIFT;
--}
--
--static inline struct page *pmd_page(pmd_t pmd)
--{
--	if (pmd_trans_huge(pmd))
--		return pfn_to_page(pmd_pfn(pmd));
--
--	return pfn_to_page(pmd_phys(pmd) >> PAGE_SHIFT);
--}
--
- static inline pmd_t pmd_modify(pmd_t pmd, pgprot_t newprot)
- {
- 	pmd_val(pmd) = (pmd_val(pmd) & (_PAGE_CHG_MASK | _PAGE_HUGE)) |
+
+> sysfs: cannot create duplicatefilename '/devices/platform/808622B7:
+> > 01/xhci-hcd.3.auto/software_node'
+> >  Call trace:
+> >   dump_backtrace
+> >   show_stack
+> >   dump_stack_lvl
+> >   dump_stack
+> >   sysfs_warn_dup
+> >   sysfs_do_create_link_sd.isra.0
+> >   sysfs_create_link
+> >   software_node_notify
+> >   device_create_managed_software_node
+> >   iort_named_component_init
+> >   iort_iommu_configure_id
+> >   acpi_dma_configure_id
+> >   platform_dma_configure
+> >   really_probe.part.0
+> >   really_probe
+> >   __driver_probe_device
+> >   driver_probe_device
+> >   __driver_attach
+> >   bus_for_each_dev
+> >   driver_attach
+> >   bus_add_driver
+> >   driver_register
+> >   __platform_driver_register
+> >   xhci_plat_init
+> >   do_one_initcall
+> >   kernel_init_freeable
+> >   kernel_init
+> >   ret_from_fork
+> >
+> > Fixes: 5aeb05b27f81 ("software node: balance refcount for managed software
+> > nodes")
+> > Signed-off-by: Qian Cai <quic_qiancai@quicinc.com>
+> > ---
+> >  drivers/base/swnode.c | 14 ++++++--------
+> >  1 file changed, 6 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
+> > index 4debcea4fb12..0a266c312aa3 100644
+> > --- a/drivers/base/swnode.c
+> > +++ b/drivers/base/swnode.c
+> > @@ -1126,17 +1126,15 @@ void software_node_notify(struct device *dev)
+> >         if (!swnode)
+> >                 return;
+> >
+> > -       ret = sysfs_create_link(&dev->kobj, &swnode->kobj,
+> > "software_node");
+> > -       if (ret)
+> > +       ret = sysfs_create_link_nowarn(&dev->kobj, &swnode->kobj,
+> > +                                      "software_node");
+> > +       if (ret && ret != -EEXIST)
+> >                 return;
+> >
+> > -       ret = sysfs_create_link(&swnode->kobj, &dev->kobj, dev_name(dev));
+> > -       if (ret) {
+> > +       if (!sysfs_create_link(&swnode->kobj, &dev->kobj, dev_name(dev)))
+> > +               kobject_get(&swnode->kobj);
+> > +       else if (!ret)
+> >                 sysfs_remove_link(&dev->kobj, "software_node");
+> > -               return;
+> > -       }
+> > -
+> > -       kobject_get(&swnode->kobj);
+> >  }
+> >
+> >  void software_node_notify_remove(struct device *dev)
+
+thanks,
+
 -- 
-2.27.0
-
+heikki
