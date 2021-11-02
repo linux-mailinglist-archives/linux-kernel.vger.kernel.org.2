@@ -2,140 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81CF4442FB5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 15:01:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94425442FBF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 15:04:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231340AbhKBOET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 10:04:19 -0400
-Received: from angie.orcam.me.uk ([78.133.224.34]:36590 "EHLO
-        angie.orcam.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230257AbhKBOES (ORCPT
+        id S230419AbhKBOHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 10:07:18 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:37164 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230124AbhKBOHN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 10:04:18 -0400
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id B92D992009D; Tue,  2 Nov 2021 15:01:41 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id B1C7B92009B;
-        Tue,  2 Nov 2021 14:01:41 +0000 (GMT)
-Date:   Tue, 2 Nov 2021 14:01:41 +0000 (GMT)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
-cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI: Marvell: Update PCIe fixup
-In-Reply-To: <20211102125843.sqsusis4krnmhorq@pali>
-Message-ID: <alpine.DEB.2.21.2111021312160.57165@angie.orcam.me.uk>
-References: <20211101150405.14618-1-pali@kernel.org> <20211102084241.GA6134@alpha.franken.de> <20211102090246.unmbruykfdjabfga@pali> <20211102094700.GA7376@alpha.franken.de> <20211102100034.rhcb3k2jvr6alm6y@pali> <alpine.DEB.2.21.2111021210180.57165@angie.orcam.me.uk>
- <20211102125843.sqsusis4krnmhorq@pali>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        Tue, 2 Nov 2021 10:07:13 -0400
+X-UUID: 6670d21069c341a5b8172b5157fe5cef-20211102
+X-UUID: 6670d21069c341a5b8172b5157fe5cef-20211102
+Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw01.mediatek.com
+        (envelope-from <mark-pk.tsai@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 672707749; Tue, 02 Nov 2021 22:04:34 +0800
+Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 2 Nov 2021 22:04:33 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs10n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.792.3 via Frontend Transport; Tue, 2 Nov 2021 22:04:33 +0800
+From:   Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+To:     <linux@armlinux.org.uk>
+CC:     <bjorn.andersson@linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-remoteproc@vger.kernel.org>, <mark-pk.tsai@mediatek.com>,
+        <mathieu.poirier@linaro.org>, <matthias.bgg@gmail.com>,
+        <ohad@wizery.com>, <yj.chiang@mediatek.com>
+Subject: Re: [PATCH] remoteproc: use %d format string to print return error code
+Date:   Tue, 2 Nov 2021 22:04:33 +0800
+Message-ID: <20211102140433.28170-1-mark-pk.tsai@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <YYErBcJlkTi0sJ/N@shell.armlinux.org.uk>
+References: <YYErBcJlkTi0sJ/N@shell.armlinux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2 Nov 2021, Pali Rohár wrote:
-
-> >  None of the Galileo system controllers I came across had the class code 
-> > set incorrectly.
+> On Tue, Nov 02, 2021 at 08:08:05PM +0800, Mark-PK Tsai wrote:
+> > Use %d format string to print return error code which
+> > make the error message easier to understand.
 > 
-> In kernel there is quirk only for one device with id:
-> PCI_VENDOR_ID_MARVELL (0x11ab) PCI_DEVICE_ID_MARVELL_GT64111 (0x4146)
-> 
-> So for some reasons quirk is needed... Anyway, patch for this quirk just
-> adds comment as there is no explanation for it. It does not modify quirk
-> code.
-> 
-> So it is possible that Marvell (or rather Galileo at that time) included
-> some config space fixup in some products and 0x4146 did not have it.
-> Just guessing... We can really only guess what could happen at that time
-> 20 years ago...
+> Even better, if you use %pe after converting "ret" to a pointer via
+> ERR_PTR(ret), when the kernel is appropriately configured, the kernel
+> will give a textual version of the error code, which is even easier!
 
- Ah, there you go! -- sadly I don't seem to have a copy of the datasheet 
-for the GT-64111, but the GT-64115 has it[1]:
-
-Table 158: PCI Class Code and Revision ID, Offset: 0x008
- Bits  Field name Function                                     Initial Value
- 7:0   RevID      Indicates the GT-64115 PCI Revision          0x01
-                  number.
- 15:8  Reserved   Read only.                                   0x0
- 23:16 SubClass   Indicates the GT-64115 Subclass - Mem-       0x80
-                  ory controller.
- 31:24 BaseClass  Indicates the GT-64115 Base Class -          0x05
-                  memory controller.
-
-and then:
-
-"Device and Vendor ID (0x000), Class Code and Revision ID (0x008), and 
-Header Type (0x00e) fields are read only from the PCI bus.  These fields 
-can be modified and read via the CPU bus."
-
-Likewise with the GT-64120[2]:
-
-Table 208: PCI_0 Class Code and Revision ID, Offset: 0x008 from PCI_0 or CPU; 0x088 from
-           PCI_1
- Bits  Field name Function                                      Initial Value
- 7:0   RevID      Indicates the GT-64120 PCI_0 revision number. 0x02
- 15:8  Reserved   Read Only 0.                                  0x0
- 23:16 SubClass   Indicates the GT-64120 Subclass               Depends on value
-                  0x00 - Host Bridge Device.                    sampled at reset
-                  0x80 - Memory Device.                         on BankSel[0]. See
-                                                                Table 44 on page
-                                                                11-1.
- 31:24 BaseClass  Indicates the GT-64120 Base Class             Depends on value
-                  0x06 - Bridge Device.                         sampled at reset
-                  0x05 - Memory Device.                         on BankSel[0]. See
-                                                                Table 44 on page
-                                                                11-1.
-
-Table 209: PCI_1 Class Code and Revision ID, Offset: 0x088 from PCI_0 or CPU; 0x008 from
-           PCI_1
- Bits  Field name Function                                      Initial Value
- 31:0  Various    Same as for PCI_0 Class Code and Revision ID.
-
-and then also:
-
-"Device and Vendor ID (0x000), Class Code and Revision ID (0x008), and 
-Header Type (0x00e) fields are read only from the PCI bus.  These fields 
-can be modified and read via the CPU bus."
-
--- so this is system-specific and an intended chip feature rather than an 
-erratum (or rather it is a system erratum if the reset strap or the boot 
-firmware has got it wrong).
-
- The memory device class code is IIUC meant to be typically chosen when 
-the Galileo/Marvell device is used without the CPU interface, i.e. as a 
-PCI memory controller device only[3].
-
-> > The lack of a quirk with a platform does not mean it cannot have a certain 
-> > PCI/e device.
-> 
-> This is 11ab:4620 device an there is no PCIe capability in its config
-> space (you can inspect it via 'lspci -F dump.txt -nn -vv' but there is
-> nothing interesting).
-
- Of course, just as Thomas told you about the GT-64111 too.  But you were 
-right in that the memory controller feature seems shared across all the 
-chip line, whether PCI or PCIe.
-
-References:
-
-[1] "GT-64115 System Controller for RC4640, RM523X, and VR4300 CPUs", 
-    Galileo Technology, Datasheet Revision 1.11, APR 04, 2000, Section 
-    18.16 "PCI Configuration", p. 161
-
-[2] "GT-64120 System Controller For RC4650/4700/5000 and RM526X/527X/7000 
-    CPUs", Galileo Technology, Datasheet Revision 1.4, SEP 14, 1999, 
-    Section 17.16 "PCI Configuration", p. 17-59
-
-[3] same, Chapter 14. "Using the GT-64120 Without the CPU Interface", p. 
-    14-1
-
-  Maciej
+Thanks for the suggestion!
+I will use it in v2.
