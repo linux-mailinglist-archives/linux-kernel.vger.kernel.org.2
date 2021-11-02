@@ -2,67 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3FE1442BFE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 11:59:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C246442C05
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 12:01:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231133AbhKBLCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 07:02:17 -0400
-Received: from todd.t-8ch.de ([159.69.126.157]:48783 "EHLO todd.t-8ch.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229577AbhKBLCO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 07:02:14 -0400
-Date:   Tue, 2 Nov 2021 11:59:32 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
-        s=mail; t=1635850778;
-        bh=EQgH6iFqsqRpn3YWDSWz+nzr9GGk1LqsgNBEiOd9Bno=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YOsujDQuLI5Pd5A72ogB7lsJe//g7lv4F5YHhFsroauupNNiSYRf3RnB3z3hImV1d
-         jSzB/ucHxWr7yBQtfAr8cPdjktzgkQUlw7wcPYyucv3hdtlWK3fmGvjRDh4DUpipbb
-         4mPVMzAS4ahegxuObHfWUhr1nYJdRED7cyGNQYLo=
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To:     Dominique Martinet <asmadeus@codewreck.org>
-Cc:     Eric Van Hensbergen <ericvh@gmail.com>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        v9fs-developer@lists.sourceforge.net, netdev@vger.kernel.org,
+        id S231135AbhKBLDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 07:03:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22531 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229850AbhKBLDd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 07:03:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635850858;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=djlLnyWoaKPAw0wSkw5dEbcfALL5w0jKJlCdzBfCt+k=;
+        b=VRvyTYX4I67ZBTa7VELQPwy5OIQXVu9Ciw3+d6SaEs74alFxi0B9FH0S8H8FXmVp+09ue4
+        rU+I2O5JIhZmk4t4E+3cMS5EKMeIMyKYCWX0u8PThDQVP0F9cHPEJPR1tvjc8YyPmfKT9Z
+        ToeLeGkcAOLREBKfwtLapCyxLtXjqx0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-426-b9Ht4PA1Nf2bX63BCv6odg-1; Tue, 02 Nov 2021 07:00:55 -0400
+X-MC-Unique: b9Ht4PA1Nf2bX63BCv6odg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6343F18358F2;
+        Tue,  2 Nov 2021 11:00:54 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.36.144])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2D01A1007625;
+        Tue,  2 Nov 2021 11:00:53 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+To:     torvalds@linux-foundation.org
+cc:     dhowells@redhat.com, marc.dionne@auristor.com,
+        linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net/9p: autoload transport modules
-Message-ID: <922a4843-c7b0-4cdc-b2a6-33bf089766e4@t-8ch.de>
-References: <20211017134611.4330-1-linux@weissschuh.net>
- <YYEYMt543Hg+Hxzy@codewreck.org>
+Subject: [GIT PULL] afs: Split readpage and fix file creation mtime
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YYEYMt543Hg+Hxzy@codewreck.org>
-Jabber-ID: thomas@t-8ch.de
-X-Accept: text/plain, text/html;q=0.2, text/*;q=0.1
-X-Accept-Language: en-us, en;q=0.8, de-de;q=0.7, de;q=0.6
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <4096835.1635850852.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Tue, 02 Nov 2021 11:00:52 +0000
+Message-ID: <4096836.1635850852@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Linus,
 
-On 2021-11-02 19:51+0900, Dominique Martinet wrote:
-> Sorry for the late reply
-> 
-> Thomas Weißschuh wrote on Sun, Oct 17, 2021 at 03:46:11PM +0200:
-> > Automatically load transport modules based on the trans= parameter
-> > passed to mount.
-> > The removes the requirement for the user to know which module to use.
-> 
-> This looks good to me, I'll test this briefly on differnet config (=y,
-> =m) and submit to Linus this week for the next cycle.
+Can you pull these afs patches please?  There are two of them:
 
-Thanks. Could you also fix up the typo in the commit message when applying?
-("The removes" -> "This removes")
+ (1) Split the readpage handler for symlinks from the one for files.  The
+     symlink readpage isn't given a file pointer, so the handling has to b=
+e
+     special-cased.
 
-> Makes me wonder why trans_fd is included in 9pnet and not in a 9pnet-fd
-> or 9pnet-tcp module but that'll be for another time...
+     This has been posted as part of a patchset to foliate netfs, afs,
+     etc.[1] but I've moved it to this one as it's not actually doing
+     foliation but is more of a pre-cleanup.
 
-To prepare for the moment when those transport modules are split into their own
-module(s), we could already add MODULE_ALIAS_9P() calls to net/9p/trans_fd.c.
+ (2) Fix file creation to set the mtime from the client's clock to keep
+     make happy if the server's clock isn't quite in sync.[2]
 
-Thomas
+Thanks,
+David
+
+Link: https://lore.kernel.org/r/163005742570.2472992.7800423440314043178.s=
+tgit@warthog.procyon.org.uk/ [1]
+Link: http://lists.infradead.org/pipermail/linux-afs/2021-October/004395.h=
+tml [2]
+
+---
+The following changes since commit 8bb7eca972ad531c9b149c0a51ab43a41738581=
+3:
+
+  Linux 5.15 (2021-10-31 13:53:10 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git tags=
+/afs-next-20211102
+
+for you to fetch changes up to 52af7105eceb311b96b3b7971a367f30a70de907:
+
+  afs: Set mtime from the client for yfs create operations (2021-11-02 09:=
+42:26 +0000)
+
+----------------------------------------------------------------
+AFS changes
+
+----------------------------------------------------------------
+David Howells (1):
+      afs: Sort out symlink reading
+
+Marc Dionne (1):
+      afs: Set mtime from the client for yfs create operations
+
+ fs/afs/file.c      | 14 +++++++++-----
+ fs/afs/inode.c     |  6 +++---
+ fs/afs/internal.h  |  3 ++-
+ fs/afs/yfsclient.c | 32 +++++++++++++-------------------
+ 4 files changed, 27 insertions(+), 28 deletions(-)
+
