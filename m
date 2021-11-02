@@ -2,133 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68D24442A14
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 10:04:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74615442A3D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 10:19:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230368AbhKBJHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 05:07:02 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:58468 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229612AbhKBJG6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 05:06:58 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 58FE92190B;
-        Tue,  2 Nov 2021 09:04:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1635843863; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FQEk7euf1G3s43BnBfla4wo2KxK/XLAKoQBCeTgbFlg=;
-        b=gwqfHlozMmRuDrNEqUdlPz/QNOyKLaEHUOPCTD/fwVhFXUbh95iEqVl1jM6gHypg8HqxA0
-        WcYpkHBTHRNlmo9prJIrq672nWBeFKVmSyLyT5NOJPo4LH8mMuEwoIm8KaFBJXupjkebRG
-        gth4aIr8JV0/YYHlfbvSFfluFwCcmcE=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 26AD0A3B83;
-        Tue,  2 Nov 2021 09:04:23 +0000 (UTC)
-Date:   Tue, 2 Nov 2021 10:04:22 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Alexey Makhalov <amakhalov@vmware.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Oscar Salvador <OSalvador@suse.com>
-Subject: Re: [PATCH] mm: fix panic in __alloc_pages
-Message-ID: <YYD/FkpAk5IvmOux@dhcp22.suse.cz>
-References: <20211101201312.11589-1-amakhalov@vmware.com>
- <YYDtDkGNylpAgPIS@dhcp22.suse.cz>
- <7136c959-63ff-b866-b8e4-f311e0454492@redhat.com>
- <C69EF2FE-DFF6-492E-AD40-97A53739C3EC@vmware.com>
+        id S231126AbhKBJVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 05:21:16 -0400
+Received: from mga11.intel.com ([192.55.52.93]:30947 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229577AbhKBJUz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 05:20:55 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10155"; a="228668464"
+X-IronPort-AV: E=Sophos;i="5.87,202,1631602800"; 
+   d="scan'208";a="228668464"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2021 02:03:54 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,202,1631602800"; 
+   d="scan'208";a="638121195"
+Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.199]) ([10.237.72.199])
+  by fmsmga001.fm.intel.com with ESMTP; 02 Nov 2021 02:03:45 -0700
+To:     Alan Stern <stern@rowland.harvard.edu>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        "Walt Jr. Brake" <mr.yming81@gmail.com>
+Cc:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Nishad Kamdar <nishadkamdar@gmail.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Eddie Hung <eddie.hung@mediatek.com>
+References: <1618017645-12259-1-git-send-email-chunfeng.yun@mediatek.com>
+ <5e907ccd-40bb-2ece-fe05-1a65a74f3aa2@gmail.com>
+ <20211101140613.GC1456700@rowland.harvard.edu>
+From:   Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: Re: [PATCH v2] usb: core: reduce power-on-good delay time of root hub
+Message-ID: <3cf46eaf-5443-30df-6d72-b92a6a518afc@linux.intel.com>
+Date:   Tue, 2 Nov 2021 11:05:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <C69EF2FE-DFF6-492E-AD40-97A53739C3EC@vmware.com>
+In-Reply-To: <20211101140613.GC1456700@rowland.harvard.edu>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is hard to follow your reply as your email client is not quoting
-properly. Let me try to reconstruct
+On 1.11.2021 16.06, Alan Stern wrote:
+> On Sat, Oct 30, 2021 at 12:49:37PM +0800, Walt Jr. Brake wrote:
+>> This patch make USB 3.1 device cannot be detected, and I report the bug [1]
+>> to archlinux three month ago. Yesterday I try to fix it myself, and after I
+>> revert this patch, compile the kernel and test, it works.
+>>
+>> [1] https://bugs.archlinux.org/task/71660?project=1&pagenum=2
+>>
+>>
+>> diff --git a/drivers/usb/core/hub.h b/drivers/usb/core/hub.h
+>> index 22ea1f4f2d66..73f4482d833a 100644
+>> --- a/drivers/usb/core/hub.h
+>> +++ b/drivers/usb/core/hub.h
+>> @@ -148,10 +148,8 @@ static inline unsigned hub_power_on_good_delay(struct
+>> usb_hub *hub)
+>>  {
+>>         unsigned delay = hub->descriptor->bPwrOn2PwrGood * 2;
+>>
+>> -       if (!hub->hdev->parent) /* root hub */
+>> -               return delay;
+>> -       else /* Wait at least 100 msec for power to become stable */
+>> -               return max(delay, 100U);
+>> +       /* Wait at least 100 msec for power to become stable */
+>> +       return max(delay, 100U);
+>>  }
+> 
+> Mathias:
+> 
+> It looks like the bPwrOn2PwrGood value in xhci-hcd's hub descriptor is 
+> too small for some USB 3.1 devices.
+> 
+> Can you look into this?
+> 
+> Alan Stern
+> 
 
-On Tue 02-11-21 08:48:27, Alexey Makhalov wrote:
-> On 02.11.21 08:47, Michal Hocko wrote:
-[...]
->>>>  CPU2 has been hot-added
->>>>  BUG: unable to handle page fault for address: 0000000000001608
->>>>  #PF: supervisor read access in kernel mode
->>>>  #PF: error_code(0x0000) - not-present page
->>>>  PGD 0 P4D 0
->>>>  Oops: 0000 [#1] SMP PTI
->>>>  CPU: 0 PID: 1 Comm: systemd Tainted: G            E     5.15.0-rc7+ #11
->>>>  Hardware name: VMware, Inc. VMware7,1/440BX Desktop Reference Platform, BIOS VMW
->>>>
->>>>  RIP: 0010:__alloc_pages+0x127/0x290
->>> 
->>> Could you resolve this into a specific line of the source code please?
+At first glance the xhci roothub bPwrOn2PwrGood value looks ok.
+xhci spec 5.4.8 states software should wait 20ms after asserting PP, before
+attempting to change the state of the port.
 
-This got probably unnoticed. I would be really curious whether this is
-a broken zonelist or something else.
+xhci driver sets desc->bPwrOn2PwrGood = 10; (2ms interval, so equals 20ms )
+
+We should probably get this working immediately, so maybe revert that patch
+while looking into the rootcause.
+
+Walt Jr. Brake, instead of reverting that patch, could you test if changing the
+xhci roothub bPwrOn2PwrGood value helps.
+
+diff --git a/drivers/usb/host/xhci-hub.c b/drivers/usb/host/xhci-hub.c
+index a3f875eea751..756231a55602 100644
+--- a/drivers/usb/host/xhci-hub.c
++++ b/drivers/usb/host/xhci-hub.c
+@@ -257,7 +257,7 @@ static void xhci_common_hub_descriptor(struct xhci_hcd *xhci,
+ {
+        u16 temp;
  
->>>> Node can be in one of the following states:
->>>> 1. not present (nid == NUMA_NO_NODE)
->>>> 2. present, but offline (nid > NUMA_NO_NODE, node_online(nid) == 0,
->>>> 				NODE_DATA(nid) == NULL)
->>>> 3. present and online (nid > NUMA_NO_NODE, node_online(nid) > 0,
->>>> 				NODE_DATA(nid) != NULL)
->>>>
->>>> alloc_page_{bulk_array}node() functions verify for nid validity only
->>>> and do not check if nid is online. Enhanced verification check allows
->>>> to handle page allocation when node is in 2nd state.
->>> 
->>> I do not think this is a correct approach. We should make sure that the
->>> proper fallback node is used instead. This means that the zone list is
->>> initialized properly. IIRC this has been a problem in the past and it
->>> has been fixed. The initialization code is quite subtle though so it is
->>> possible that this got broken again.
+-       desc->bPwrOn2PwrGood = 10;      /* xhci section 5.4.9 says 20ms max */
++       desc->bPwrOn2PwrGood = 50;      /* The 20ms in xhci 5.4.8 isn't enough for USB 3.1 */
+        desc->bHubContrCurrent = 0;
+ 
+        desc->bNbrPorts = ports;
 
-> This approach behaves in the same way as CPU was not yet added. (state #1).
-> So, we can think of state #2 as state #1 when CPU is not present.
-
->> I'm a little confused:
->> 
->> In add_memory_resource() we hotplug the new node if required and set it
->> online. Memory might get onlined later, via online_pages().
->
-> You are correct. In case of memory hot add, it is true. But in case of adding
-> CPU with memoryless node, try_node_online() will be called only during CPU
-> onlining, see cpu_up().
-> 
-> Is there any reason why try_online_node() resides in cpu_up() and not in add_cpu()?
-> I think it would be correct to online node during the CPU hot add to align with
-> memory hot add.
-
-I am not familiar with cpu hotplug, but this doesn't seem to be anything
-new so how come this became problem only now?
-
->> So after add_memory_resource()->__try_online_node() succeeded, we have
->> an online pgdat -- essentially 3.
->> 
-> This patch detects if we're past 3. but says that it reproduced by
-> disabling *memory* onlining.
-> This is the hot adding of both new CPU and new _memoryless_ node (with CPU only)
-> And onlining CPU makes its node online. Disabling CPU onlining puts new node
-> into state #2, which leads to repro.    
-> 
->> Before we online memory for a hotplugged node, all zones are !populated.
->> So once we online memory for a !populated zone in online_pages(), we
->> trigger setup_zone_pageset().
->> 
->> 
->> The confusing part is that this patch checks for 3. but says it can be
->> reproduced by not onlining *memory*. There seems to be something missing.
-> 
-> Do we maybe need a proper populated_zone() check before accessing zone data?
-
-No, we need them initialize properly.
--- 
-Michal Hocko
-SUSE Labs
+Thanks
+-Mathias
