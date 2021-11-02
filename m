@@ -2,274 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F08AC443990
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 00:22:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 235CD4439A3
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 00:26:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231405AbhKBXYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 19:24:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50922 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229747AbhKBXYv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 19:24:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C931060F90;
-        Tue,  2 Nov 2021 23:22:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635895335;
-        bh=hh1XvCtAGXhkzXESsTFx/N/yLgo9NT5r8ywDgrvHFTg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=epcyrvuoyC59+hs4bJh+FGW8oEZfCl3j25PbDVpgH/W7OoANk33IqU9ST0CaaBtzS
-         ws9Vj4m1tPZTdyed0TRzqbAE3Z3XoxPpzIR1EV8CP+AnGB07T4Zxm78nc32M25swjX
-         h2/ltRF72w8uOm6DtLQunpPCoBktO70BlZwNACbk1SJU3ELt1IIRB3m/JcX4pwMnAJ
-         4DvMwt+iOnERflWdG/MFrnLjJDxw/Lqkv8jixtd7IcB6vhZU+twPvz0CESExel3uy0
-         cQcwEBmOsuyA0LYFySe9Jfe1wS9bmSlG+uqQicWCk7aKSYYd57HMI9RQ3kjK0T8lSf
-         YL7Ks9QyuL8OA==
-Date:   Tue, 2 Nov 2021 16:22:15 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH 15/21] iomap: Convert iomap_write_begin and
- iomap_write_end to folios
-Message-ID: <20211102232215.GG2237511@magnolia>
-References: <20211101203929.954622-1-willy@infradead.org>
- <20211101203929.954622-16-willy@infradead.org>
+        id S231230AbhKBX2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 19:28:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229747AbhKBX2n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 19:28:43 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6253C061714;
+        Tue,  2 Nov 2021 16:26:07 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id s3so2031284ybs.9;
+        Tue, 02 Nov 2021 16:26:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=Cu6J0IQ4SS7piVDY+POK17T7s5SlbfDSNogv9COZfaU=;
+        b=YO06sruHwC5tUgAXNeHgGeaZaGnp92/QWUrvCSGUnpDqr9ZWplO8rNzvu1cCyqL5hz
+         BoPmf49zAjvhKafF0J0rtslVp8loGQ3yofsK64n4oY5rJE8uIio7xO6PLSqsH8dw6yWn
+         Czy6abIv7AOxA43e7APwiuwbsp+Y+jbFOVSo4C1pMj+cZQHZDGpzDrhemxOg1PkDfbbf
+         3jBH5zbW9IRkrNXSDWT1nODkOmgK+Y5cPZT5RC5aWhYv+H/QkkNYDGAT5252O4CKn9M0
+         moCr20unk6aa0cH8Gji2JBSnk0028qZ8Se1BNgtY2fsUt/g3+doQbOJCBVZgxK9NazYX
+         o1SQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=Cu6J0IQ4SS7piVDY+POK17T7s5SlbfDSNogv9COZfaU=;
+        b=TSfGacy6M4huqeWQf5LfrCsxd0M3/7m9p9m3MjoLRKFcFfZZw2LNB7bZhDKR8Cd9an
+         NTZOJKoJXEzkeO4ov/TYtvsLXI70T9rLAUhhLulJSFjb5yynPaA6TeORITjwmhLi80/J
+         Wxij77i8NF1MFeQlDoBNi57X7FboeAIgszUc8bxP6eMcivlkW2RuDPLWWTer6R7bND32
+         0W1bNwoSpUPJNytGplKFPw827OUi14Gwk1eWWB79stukdJEUJu94lx6DmBeqEvdqIDqf
+         bnwTQKyOFAoPYJuQVJn4oG9h42WZZ9Uud1HyeyzJ8bZmBhmjBZrzg7GEu5eA+PXY+C8Q
+         eiIg==
+X-Gm-Message-State: AOAM532WOd2yfVUHQAuZk7RZnRK3OqG/TM0ImJo8DKSImzB45NVkf7P3
+        rkeIPY385mV9QUU57d+zZSs9k5Ghb45yyBPapAk=
+X-Google-Smtp-Source: ABdhPJwedsYZLDHlJQjqewFfB4TtfbiChus+iG3ErkENprCWnTpybff4ZfVlqb49nzVBliXr45KvILkjXpx7uOdGgvk=
+X-Received: by 2002:a25:f502:: with SMTP id a2mr42181223ybe.254.1635895567114;
+ Tue, 02 Nov 2021 16:26:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211101203929.954622-16-willy@infradead.org>
+References: <20211025205631.21151-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20211025205631.21151-8-prabhakar.mahadev-lad.rj@bp.renesas.com> <YYElefbpP4pwfmUl@shikoro>
+In-Reply-To: <YYElefbpP4pwfmUl@shikoro>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Tue, 2 Nov 2021 23:25:40 +0000
+Message-ID: <CA+V-a8uJxeSr=uoF14gccuSLG7WRqRk8X8uD9UDoxKPGM8hGgQ@mail.gmail.com>
+Subject: Re: [PATCH v2 7/7] memory: renesas-rpc-if: Add support for RZ/G2L
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Mark Brown <broonie@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        linux-mtd@lists.infradead.org,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 01, 2021 at 08:39:23PM +0000, Matthew Wilcox (Oracle) wrote:
-> These functions still only work in PAGE_SIZE chunks, but there are
-> fewer conversions from tail to head pages as a result of this patch.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> ---
->  fs/iomap/buffered-io.c | 67 ++++++++++++++++++++++--------------------
->  1 file changed, 35 insertions(+), 32 deletions(-)
-> 
-> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-> index b55d947867b1..6df8fdbb1951 100644
-> --- a/fs/iomap/buffered-io.c
-> +++ b/fs/iomap/buffered-io.c
-> @@ -539,9 +539,8 @@ static int iomap_read_folio_sync(loff_t block_start, struct folio *folio,
->  }
->  
->  static int __iomap_write_begin(const struct iomap_iter *iter, loff_t pos,
-> -		unsigned len, struct page *page)
-> +		size_t len, struct folio *folio)
->  {
-> -	struct folio *folio = page_folio(page);
->  	const struct iomap *srcmap = iomap_iter_srcmap(iter);
->  	struct iomap_page *iop = iomap_page_create(iter->inode, folio);
->  	loff_t block_size = i_blocksize(iter->inode);
-> @@ -583,9 +582,8 @@ static int __iomap_write_begin(const struct iomap_iter *iter, loff_t pos,
->  }
->  
->  static int iomap_write_begin_inline(const struct iomap_iter *iter,
-> -		struct page *page)
-> +		struct folio *folio)
->  {
-> -	struct folio *folio = page_folio(page);
->  	int ret;
->  
->  	/* needs more work for the tailpacking case; disable for now */
-> @@ -598,11 +596,13 @@ static int iomap_write_begin_inline(const struct iomap_iter *iter,
->  }
->  
->  static int iomap_write_begin(const struct iomap_iter *iter, loff_t pos,
-> -		unsigned len, struct page **pagep)
-> +		size_t len, struct folio **foliop)
->  {
->  	const struct iomap_page_ops *page_ops = iter->iomap.page_ops;
->  	const struct iomap *srcmap = iomap_iter_srcmap(iter);
-> +	struct folio *folio;
->  	struct page *page;
-> +	unsigned fgp = FGP_LOCK | FGP_WRITE | FGP_CREAT | FGP_STABLE | FGP_NOFS;
->  	int status = 0;
->  
->  	BUG_ON(pos + len > iter->iomap.offset + iter->iomap.length);
-> @@ -618,29 +618,30 @@ static int iomap_write_begin(const struct iomap_iter *iter, loff_t pos,
->  			return status;
->  	}
->  
-> -	page = grab_cache_page_write_begin(iter->inode->i_mapping,
-> -				pos >> PAGE_SHIFT, AOP_FLAG_NOFS);
-> -	if (!page) {
-> +	folio = __filemap_get_folio(iter->inode->i_mapping, pos >> PAGE_SHIFT,
-> +			fgp, mapping_gfp_mask(iter->inode->i_mapping));
-> +	if (!folio) {
->  		status = -ENOMEM;
->  		goto out_no_page;
->  	}
->  
-> +	page = folio_file_page(folio, pos >> PAGE_SHIFT);
+Hi Wolfram,
 
-Isn't this only needed in the BUFFER_HEAD case?
+Thank you for the review.
 
---D
+On Tue, Nov 2, 2021 at 11:48 AM Wolfram Sang
+<wsa+renesas@sang-engineering.com> wrote:
+>
+> Hi Prabhakar,
+>
+> > +#define RPCIF_PHYADD         0x0070  /* R/W available on R-Car E3/D3/V3M and RZ/G2{E,L} */
+> > +#define RPCIF_PHYWR          0x0074  /* R/W available on R-Car E3/D3/V3M and RZ/G2{E,L} */
+>
+> Nice detailed research, thanks! Minor nit: Keep the sorting
+> alphabetical: D3, E3, V3M.
+>
+> > +static void rpcif_rzg2l_timing_adjust_sdr(struct rpcif *rpc)
+> > +{
+> > +     u32 data;
+> > +
+> > +     regmap_write(rpc->regmap, RPCIF_PHYWR, 0xa5390000);
+> > +     regmap_write(rpc->regmap, RPCIF_PHYADD, 0x80000000);
+> > +     regmap_write(rpc->regmap, RPCIF_PHYWR, 0x00008080);
+> > +     regmap_write(rpc->regmap, RPCIF_PHYADD, 0x80000022);
+> > +     regmap_write(rpc->regmap, RPCIF_PHYWR, 0x00008080);
+> > +     regmap_write(rpc->regmap, RPCIF_PHYADD, 0x80000024);
+> > +
+> > +     regmap_read(rpc->regmap, RPCIF_PHYCNT, &data);
+> > +     regmap_write(rpc->regmap, RPCIF_PHYCNT, data | RPCIF_PHYCNT_CKSEL(3));
+> > +     regmap_write(rpc->regmap, RPCIF_PHYWR, 0x00000030);
+> > +     regmap_write(rpc->regmap, RPCIF_PHYADD, 0x80000032);
+> > +}
+>
+> Still magic values here. Don't you have them explained in your Gen3
+> documentation? It is tables 62.16 and 62.17 in my versions.
+>
+Oops I missed that, does the below look good?
 
->  	if (srcmap->type == IOMAP_INLINE)
-> -		status = iomap_write_begin_inline(iter, page);
-> +		status = iomap_write_begin_inline(iter, folio);
->  	else if (srcmap->flags & IOMAP_F_BUFFER_HEAD)
->  		status = __block_write_begin_int(page, pos, len, NULL, srcmap);
->  	else
-> -		status = __iomap_write_begin(iter, pos, len, page);
-> +		status = __iomap_write_begin(iter, pos, len, folio);
->  
->  	if (unlikely(status))
->  		goto out_unlock;
->  
-> -	*pagep = page;
-> +	*foliop = folio;
->  	return 0;
->  
->  out_unlock:
-> -	unlock_page(page);
-> -	put_page(page);
-> +	folio_unlock(folio);
-> +	folio_put(folio);
->  	iomap_write_failed(iter->inode, pos, len);
->  
->  out_no_page:
-> @@ -650,11 +651,10 @@ static int iomap_write_begin(const struct iomap_iter *iter, loff_t pos,
->  }
->  
->  static size_t __iomap_write_end(struct inode *inode, loff_t pos, size_t len,
-> -		size_t copied, struct page *page)
-> +		size_t copied, struct folio *folio)
->  {
-> -	struct folio *folio = page_folio(page);
->  	struct iomap_page *iop = to_iomap_page(folio);
-> -	flush_dcache_page(page);
-> +	flush_dcache_folio(folio);
->  
->  	/*
->  	 * The blocks that were entirely written will now be uptodate, so we
-> @@ -667,10 +667,10 @@ static size_t __iomap_write_end(struct inode *inode, loff_t pos, size_t len,
->  	 * non-uptodate page as a zero-length write, and force the caller to
->  	 * redo the whole thing.
->  	 */
-> -	if (unlikely(copied < len && !PageUptodate(page)))
-> +	if (unlikely(copied < len && !folio_test_uptodate(folio)))
->  		return 0;
->  	iomap_set_range_uptodate(folio, iop, offset_in_folio(folio, pos), len);
-> -	__set_page_dirty_nobuffers(page);
-> +	filemap_dirty_folio(inode->i_mapping, folio);
->  	return copied;
->  }
->  
-> @@ -694,8 +694,9 @@ static size_t iomap_write_end_inline(const struct iomap_iter *iter,
->  
->  /* Returns the number of bytes copied.  May be 0.  Cannot be an errno. */
->  static size_t iomap_write_end(struct iomap_iter *iter, loff_t pos, size_t len,
-> -		size_t copied, struct page *page)
-> +		size_t copied, struct folio *folio)
->  {
-> +	struct page *page = folio_file_page(folio, pos >> PAGE_SHIFT);
->  	const struct iomap_page_ops *page_ops = iter->iomap.page_ops;
->  	const struct iomap *srcmap = iomap_iter_srcmap(iter);
->  	loff_t old_size = iter->inode->i_size;
-> @@ -707,7 +708,7 @@ static size_t iomap_write_end(struct iomap_iter *iter, loff_t pos, size_t len,
->  		ret = block_write_end(NULL, iter->inode->i_mapping, pos, len,
->  				copied, page, NULL);
->  	} else {
-> -		ret = __iomap_write_end(iter->inode, pos, len, copied, page);
-> +		ret = __iomap_write_end(iter->inode, pos, len, copied, folio);
->  	}
->  
->  	/*
-> @@ -719,13 +720,13 @@ static size_t iomap_write_end(struct iomap_iter *iter, loff_t pos, size_t len,
->  		i_size_write(iter->inode, pos + ret);
->  		iter->iomap.flags |= IOMAP_F_SIZE_CHANGED;
->  	}
-> -	unlock_page(page);
-> +	folio_unlock(folio);
->  
->  	if (old_size < pos)
->  		pagecache_isize_extended(iter->inode, old_size, pos);
->  	if (page_ops && page_ops->page_done)
->  		page_ops->page_done(iter->inode, pos, ret, page);
-> -	put_page(page);
-> +	folio_put(folio);
->  
->  	if (ret < len)
->  		iomap_write_failed(iter->inode, pos, len);
-> @@ -740,6 +741,7 @@ static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
->  	long status = 0;
->  
->  	do {
-> +		struct folio *folio;
->  		struct page *page;
->  		unsigned long offset;	/* Offset into pagecache page */
->  		unsigned long bytes;	/* Bytes to write to page */
-> @@ -763,16 +765,17 @@ static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
->  			break;
->  		}
->  
-> -		status = iomap_write_begin(iter, pos, bytes, &page);
-> +		status = iomap_write_begin(iter, pos, bytes, &folio);
->  		if (unlikely(status))
->  			break;
->  
-> +		page = folio_file_page(folio, pos >> PAGE_SHIFT);
->  		if (mapping_writably_mapped(iter->inode->i_mapping))
->  			flush_dcache_page(page);
->  
->  		copied = copy_page_from_iter_atomic(page, offset, bytes, i);
->  
-> -		status = iomap_write_end(iter, pos, bytes, copied, page);
-> +		status = iomap_write_end(iter, pos, bytes, copied, folio);
->  
->  		if (unlikely(copied != status))
->  			iov_iter_revert(i, copied - status);
-> @@ -838,13 +841,13 @@ static loff_t iomap_unshare_iter(struct iomap_iter *iter)
->  	do {
->  		unsigned long offset = offset_in_page(pos);
->  		unsigned long bytes = min_t(loff_t, PAGE_SIZE - offset, length);
-> -		struct page *page;
-> +		struct folio *folio;
->  
-> -		status = iomap_write_begin(iter, pos, bytes, &page);
-> +		status = iomap_write_begin(iter, pos, bytes, &folio);
->  		if (unlikely(status))
->  			return status;
->  
-> -		status = iomap_write_end(iter, pos, bytes, bytes, page);
-> +		status = iomap_write_end(iter, pos, bytes, bytes, folio);
->  		if (WARN_ON_ONCE(status == 0))
->  			return -EIO;
->  
-> @@ -880,19 +883,19 @@ EXPORT_SYMBOL_GPL(iomap_file_unshare);
->  
->  static s64 __iomap_zero_iter(struct iomap_iter *iter, loff_t pos, u64 length)
->  {
-> -	struct page *page;
-> +	struct folio *folio;
->  	int status;
->  	unsigned offset = offset_in_page(pos);
->  	unsigned bytes = min_t(u64, PAGE_SIZE - offset, length);
->  
-> -	status = iomap_write_begin(iter, pos, bytes, &page);
-> +	status = iomap_write_begin(iter, pos, bytes, &folio);
->  	if (status)
->  		return status;
->  
-> -	zero_user(page, offset, bytes);
-> -	mark_page_accessed(page);
-> +	zero_user(folio_file_page(folio, pos >> PAGE_SHIFT), offset, bytes);
-> +	folio_mark_accessed(folio);
->  
-> -	return iomap_write_end(iter, pos, bytes, bytes, page);
-> +	return iomap_write_end(iter, pos, bytes, bytes, folio);
->  }
->  
->  static loff_t iomap_zero_iter(struct iomap_iter *iter, bool *did_zero)
-> -- 
-> 2.33.0
-> 
+#define RPCIF_PHYADD_ADD_MD 0x00
+#define RPCIF_PHYADD_ADD_RDLSEL 0x22
+#define RPCIF_PHYADD_ADD_FDLSEL 0x24
+#define RPCIF_PHYADD_ADD_RDLMON 0x26
+#define RPCIF_PHYADD_ADD_FDLMON 0x28
+
+#define RPCIF_PHYADD_ACCEN BIT(31)
+#define RPCIF_PHYADD_RW BIT(30)
+#define RPCIF_PHYADD_ADD(v) (v & 0x3f)
+
+#define RPCIF_MD_PHYREGEN_VAL 0xa539
+#define RPCIF_MD_PHYREGEN(v) ((v & 0xffff) << 16)
+
+#define RPCIF_RDLSEL_QSPI0DLTAPSEL(v) (v & 0x1f)
+#define RPCIF_RDLSEL_QSPI0DLSETEN(v) ((v & 0x1) << 7)
+#define RPCIF_RDLSEL_QSPI1DLTAPSEL(v) ((v & 0x1f) << 8)
+#define RPCIF_RDLSEL_QSPI1DLSETEN(v) ((v & 0x1) << 15)
+
+#define RPCIF_FDLSEL_QSPI0DLTAPSEL(v) (v & 0x1f)
+#define RPCIF_FDLSEL_QSPI0DLSETEN(v) ((v & 0x1) << 7)
+#define RPCIF_FDLSEL_QSPI1DLTAPSEL(v) ((v & 0x1f) << 8)
+#define RPCIF_FDLSEL_QSPI1DLSETEN(v) ((v & 0x1) << 15)
+
+> +     regmap_write(rpc->regmap, RPCIF_PHYWR, 0x00000030);
+> +     regmap_write(rpc->regmap, RPCIF_PHYADD, 0x80000032);
+>
+For the above do you have any suggestions? As I couldn't find any
+details about it or shall I just go with magic numbers for now?
+
+> Other than these, looks good.
+>
+thanks, once we agree upon above I shall re-spin v3.
+
+Cheers,
+Prabhakar
+
+> Thanks,
+>
+>    Wolfram
