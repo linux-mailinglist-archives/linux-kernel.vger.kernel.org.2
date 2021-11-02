@@ -2,158 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B20D44327D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 17:14:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A19444330D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 17:37:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234782AbhKBQIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 12:08:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234656AbhKBQEL (ORCPT
+        id S234777AbhKBQTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 12:19:10 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:52542 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231855AbhKBQFF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 12:04:11 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC2EFC061714
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 09:01:35 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id ee33so6807340edb.8
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 09:01:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kylehuey.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=agEg3yR2EHtB3USVNLWuj0pxKoD4uaEXVmbjvi+Z3Fg=;
-        b=OP1NZ1dY1ZKmBKNTamwnHEvd3PcxefTSJ+udknOEzwQ0zxLuveT+qBcHLzBWF//qKo
-         7o0ol8tNgz08NZFvUa1Z6HPRKEc0oRjwdtAeTwa3IY3wio3Nfh7PcqP6Ok09MLO9VsTH
-         33WyraL3qNvPTcXLgT+iCMLwfdfivLia9YBBfG7zB0QJFej4iHOHWCZ3vVNF40oZAbOi
-         886lI3tfPLu4tFSAh1EKIsP9WUgDms5+pyW30qduQvre27Ul2fuLCGJ0fCqxAg06o6Vj
-         7mPFFGa3Hpb2AVsb7/OdUFFHtGtcQTZNlcT6QxnBEfEMAnSmOo8/51dPOm2ZkF32wwEb
-         YkMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=agEg3yR2EHtB3USVNLWuj0pxKoD4uaEXVmbjvi+Z3Fg=;
-        b=YfY1GOSa5vP9RpINpbvWHza970cRB4zWdxKtz6J0lIGU8AkndcIJslRgZK0wb/cA4T
-         RjFocKLIEycna5VajhdfrU1wxqTvXyqvYeZZxmOgWgUazoNttTombnIRlOAeoE2BnfK6
-         aKqhVU/3MNyIfxkOJ0jJADcb36h/RKd6i8vf2URvip8bW+CmprroT8IWeFz8tJMnghqt
-         gAjJDNKQuQLGZr6SjfZBHwXJUQ1slfh936ST4GAyyFCpFq0q0fsLCTpdRdFscc0v7bbS
-         uZuFq7kDl9OPrLCm+wC9KkbHUkGfwn9SXKw03Q1LKtXa0YFnqfhcCFI/pQ39v2HRLpd7
-         VkPw==
-X-Gm-Message-State: AOAM530LxwTg0njXkTLM9/lMdcPJrO7/1R2UzdS1NX+MYICwsC3mYu0c
-        wWWilds/R3SY4DGvhISrynYQfZaOv2foQjCYVO6OOA==
-X-Google-Smtp-Source: ABdhPJzpmmb4yy28bkSIy8imrQLAA15tnlF7goYytwFyF2yQTVFJnhYZ3TwxxYgVrqb9rGBYZrYNnku2t0taRKLZGOE=
-X-Received: by 2002:a50:9b07:: with SMTP id o7mr52019020edi.104.1635868894187;
- Tue, 02 Nov 2021 09:01:34 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211101034147.6203-1-khuey@kylehuey.com> <877ddqabvs.fsf@disp2133>
-In-Reply-To: <877ddqabvs.fsf@disp2133>
-From:   Kyle Huey <me@kylehuey.com>
-Date:   Tue, 2 Nov 2021 09:01:19 -0700
-Message-ID: <CAP045AqJVXA60R9RF8Gb2PWGBsK6bZ7tVBkdCcPYYrp6rOkG-Q@mail.gmail.com>
-Subject: Re: [PATCH] signal: SIGKILL can cause signal effects to appear at
- PTRACE_EVENT_EXIT without tracer notification
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Jens Axboe <axboe@kernel.dk>,
+        Tue, 2 Nov 2021 12:05:05 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id D71E41FD4C;
+        Tue,  2 Nov 2021 16:02:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1635868949; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/JlVo+e56fzGXmTMRyE6MjSjxKScNH08XBgyqebErkQ=;
+        b=qoiUc1EUltN0LAyDnx4uqbquAI2p0wQbZn+b5o4iK0BgKara5k6edJWwK/VtYG7XhbbkPG
+        Dv2xTeyypnE3UvqHsTDRnEO2KOZtH40uK24USJFDkTUnqrBOl7N94rAdNYkkLhM3UKyb6K
+        +NazNazYw+3Z+XSP8Bs2yzxfLZ4IVQs=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id ABD2813DC7;
+        Tue,  2 Nov 2021 16:02:29 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id JNXlKBVhgWFnXgAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Tue, 02 Nov 2021 16:02:29 +0000
+Date:   Tue, 2 Nov 2021 17:02:28 +0100
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Odin Ugedal <odin@uged.al>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Marco Elver <elver@google.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Collingbourne <pcc@google.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        "Robert O'Callahan" <rocallahan@gmail.com>,
-        =?UTF-8?B?TWFya28gTcOka2Vsw6Q=?= <marko.makela@mariadb.com>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Subject: task_group unthrottling and removal race (was Re: [PATCH]
+ sched/fair: Use rq->lock when checking cfs_rq list) presence
+Message-ID: <20211102160228.GA57072@blackbody.suse.cz>
+References: <20211011172236.11223-1-mkoutny@suse.com>
+ <CAKfTPtAQmqgAiNGqk9xRmiB4_dzHxaKK68+fWwea25mZv0kT2w@mail.gmail.com>
+ <20211013142643.GA48428@blackbody.suse.cz>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="WIyZ46R2i8wDzkSu"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211013142643.GA48428@blackbody.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 2, 2021 at 7:09 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
->
-> Kyle Huey <me@kylehuey.com> writes:
->
-> > rr, a userspace record and replay debugger[0], uses the recorded register
-> > state at PTRACE_EVENT_EXIT to find the point in time at which to cease
-> > executing the program during replay.
-> >
-> > If a SIGKILL races with processing another signal in get_signal, it is
-> > possible for the kernel to decline to notify the tracer of the original
-> > signal. But if the original signal had a handler, the kernel proceeds
-> > with setting up a signal handler frame as if the tracer had chosen to
-> > deliver the signal unmodified to the tracee. When the kernel goes to
-> > execute the signal handler that it has now modified the stack and registers
-> > for, it will discover the pending SIGKILL, and terminate the tracee
-> > without executing the handler. When PTRACE_EVENT_EXIT is delivered to
-> > the tracer, however, the effects of handler setup will be visible to
-> > the tracer.
-> >
-> > Because rr (the tracer) was never notified of the signal, it is not aware
-> > that a signal handler frame was set up and expects the state of the program
-> > at PTRACE_EVENT_EXIT to be a state that will be reconstructed naturally
-> > by allowing the program to execute from the last event. When that fails
-> > to happen during replay, rr will assert and die.
-> >
-> > The following patches add an explicit check for a newly pending SIGKILL
-> > after the ptracer has been notified and the siglock has been reacquired.
-> > If this happens, we stop processing the current signal and proceed
-> > immediately to handling the SIGKILL. This makes the state reported at
-> > PTRACE_EVENT_EXIT the unmodified state of the program, and also avoids the
-> > work to set up a signal handler frame that will never be used.
-> >
-> > This issue was originally reported by the credited rr user.
-> >
-> > [0] https://rr-project.org/
->
-> If I read this correctly the problem is not precisely that the rr
-> debugger is never notified about the signal, but rather that the program
-> is killed with SIGKILL before rr can read the notification and see which
-> signal it is.
 
-The precise problem is that the kernel made a modification to the
-tracee state (setting up the signal handler frame) without telling the
-tracer about it (delivering the ptrace notification for the pending
-non-SIGKILL signal). That can be fixed either by not modifying the
-tracee state here or by telling the tracer about the signal (that will
-never actually run). I suspect we'll all agree that the former seems
-preferable.
+--WIyZ46R2i8wDzkSu
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-> This definitely sounds like a quality of implementation issue.
->
-> The solution that is proposed in your patches simply drops the signal
-> when SIGKILL is pending.
+Hello.
 
-That's right.
+(Getting back to this after some more analysis.)
 
-> I think we can have a slightly better of quality of implementation
-> than that (as well as a simpler implementation) by requeuing the
-> signal instead of simply dropping it.  Something like the below.
+On Wed, Oct 13, 2021 at 04:26:43PM +0200, Michal Koutný <mkoutny@suse.com> wrote:
+> On Wed, Oct 13, 2021 at 09:57:17AM +0200, Vincent Guittot <vincent.guittot@linaro.org> wrote:
+> > This seems to closes the race window in your case but this could still
+> > happen AFAICT.
+> 
+> You seem to be right.
+> Hopefully, I'll be able to collect more data evaluating this.
 
-What is the benefit of requeueing the signal? All pending signals will
-be dropped when the SIGKILL is processed, no?
+I've observed that the window between unregister_fair_sched_group() and
+free_fair_sched_group() is commonly around 15 ms (based on kprobe
+tracing).
 
-> Can you test that and see if it works for you?
+I have a reproducer (attached) that can hit this window quite easily
+after tuning.  I can observe consequences of it even with a recent 5.15
+kernel. (And I also have reports from real world workloads failing due
+to a7b359fc6a37 ("sched/fair: Correctly insert cfs_rq's to list on
+unthrottle").)
 
-It does not work. This triggers an infinite loop in get_signal, as we
-dequeue the signal, attempt to notify the ptracer, see the pending
-sigkill, requeue the signal, go around the loop, dequeue the original
-signal ...
+My original patch was really an uninformed attempt given the length of
+the window.
 
-- Kyle
+[snip]
 
-> Eric
->
-> diff --git a/kernel/signal.c b/kernel/signal.c
-> index 056a107e3cbc..0dff366b9129 100644
-> --- a/kernel/signal.c
-> +++ b/kernel/signal.c
-> @@ -2610,7 +2610,8 @@ static int ptrace_signal(int signr, kernel_siginfo_t *info)
->         }
->
->         /* If the (new) signal is now blocked, requeue it.  */
-> -       if (sigismember(&current->blocked, signr)) {
-> +       if (sigismember(&current->blocked, signr) ||
-> +           signal_group_exit(current->signal)) {
->                 send_signal(signr, info, current, PIDTYPE_PID);
->                 signr = 0;
->         }
->
+On Wed, Oct 13, 2021 at 07:45:59PM +0100, Odin Ugedal <odin@uged.al> wrote:
+> Ref. your comment about reverting a7b359fc6a37
+> ("sched/fair: Correctly insert cfs_rq's to list on unthrottle"), I
+> think that is fine as long as we revert the commit it fixes as well,
+> to avoid a regression of that (but yeah, that regression itself is
+> less bad than your discovery).
+
+I say no to reverting 31bc6aeaab1d ("sched/fair: Optimize
+update_blocked_averages()") (it solves reported performance issues, it's
+way too old :-).
+
+> set cfs_rq->on_list=2 inside that lock under your code change? If we
+> then treat on_list=2
+> as "not on list, and do not add"?
+
+The possibilities for the current problem:
+
+1) Revert a7b359fc6a37 ("sched/fair: Correctly insert cfs_rq's to list on unthrottle") and its fixups.
+(Not exclusive with the other suggestions, rather a stop-gap for the
+time being.)
+
+2) Don't add offlined task_groups into the undecayed list
+- Your proposal with overloaded on_list=2 could serve as mark of that,
+  but it's a hack IMO.
+- Proper way (tm) would be to use css_tryget_online() and css_put() when
+  dealing with the list (my favorite at the moment).
+
+3) Narrowing the race-window dramatically
+- that is by moving list removal from unregister_fair_sched_group() to
+  free_fair_sched_group(),
+- <del>or use list_empty(tg->list) as indicator whether we're working
+  with onlined task_group.</del> (won't work for RCU list)
+
+4) Rework how throttled load is handled (hand waving)
+- There is remove_entity_load_avg() that moves the load to parent upon
+  final removal. Maybe it could be generalized for temporary removals by
+  throttling (so that unthrottling could again add only non-empty
+  cfs_rqs to the list and undecayed load won't skew fairness).
+- or the way of [1].
+
+5) <your ideas>
+
+Opinions?
+
+Thanks,
+Michal
+
+[1] https://lore.kernel.org/lkml/CAFpoUr1AO_qStNOYrFWGnFfc=uSFrXSYD8A5cQ8h0t2pioQzDA@mail.gmail.com/
+
+--WIyZ46R2i8wDzkSu
+Content-Type: application/x-sh
+Content-Disposition: attachment; filename="run2.sh"
+Content-Transfer-Encoding: quoted-printable
+
+#!/bin/bash=0A=0ACGROOT=3D/sys/fs/cgroup/cpu=0ACGTARGET=3D$CGROOT/queen/pri=
+nce=0ACGSTRESS=3D$CGROOT/stress=0A=0Afunction worker() {=0A	echo $BASHPID >=
+$CGTARGET/cont-$it/cgroup.procs=0A	exec stress-ng -c1 -l 100 =0A}=0A=0AVAL2=
+72=3D"0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef01234=
+56789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef=
+0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789a=
+bcdef0123456789abcdef0123456789abcdef0123456789abcdef"=0A=0Afunction slab_s=
+tress() {=0A	local dummy=3D/sys/devices/system/cpu/online=0A	echo "Starting=
+ slab_stress"=0A	# the crafted value length causes fitting into kmalloc-512=
+=0A	while true ; do=0A		for i in $(seq 100) ; do setfattr -n trusted.foo$i =
+-v "$VAL272" $dummy ; done=0A		for i in $(seq 100) ; do setfattr -x trusted=
+=2Efoo$i $dummy ; done=0A	done=0A}=0A=0Amkdir -p $CGTARGET=0A=0Aslab_stress=
+ &=0Apid_ss=3D$!=0A=0Aecho "Starting run2.sh" >/dev/kmsg=0A=0Ait=3D0=0Awhil=
+e true ; do=0A	it=3D$(($it + 1))=0A	mkdir $CGTARGET/cont-$it=0A	# sub-HZ qu=
+ota so that throttling can happen after exit=0A	echo 2500 >$CGTARGET/cont-$=
+it/cpu.cfs_quota_us=0A=0A	worker &=0A	pid_w=3D$!=0A=0A	# grow the load in t=
+ransient cgroup=0A	# randomize runtime to avoid aliasing=0A	sleep 1.$(($RAN=
+DOM % 100))=0A	# kill "synchronously"=0A	kill $pid_w=0A	wait $pid_w=0A	# th=
+e magic happens HERE, needs machine specific adjustments=0A	sleep 0.07$((40=
+ + $RANDOM % 50))=0A	rmdir $CGTARGET/cont-$it =0A=0A	# now, we've removed t=
+he cgroup and it was likely unthrottled too=0A	# then wait for someone to s=
+tep on it=0A	# better stress kmalloc-512 so that data are quickly overwritt=
+en=0A	# let the CPU idle to do some rebalancing=0A	sleep 0.5=0A	echo $it=0A=
+done=0A=0A
+--WIyZ46R2i8wDzkSu--
