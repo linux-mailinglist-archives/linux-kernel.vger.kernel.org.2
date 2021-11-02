@@ -2,76 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B80344359C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 19:29:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2233944359E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 19:30:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235132AbhKBScS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 14:32:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235121AbhKBScQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 14:32:16 -0400
-Received: from metanate.com (unknown [IPv6:2001:8b0:1628:5005::111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C304C061714;
-        Tue,  2 Nov 2021 11:29:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=metanate.com; s=stronger; h=Content-Transfer-Encoding:References:
-        In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Content-Type:Reply-To:
-        Content-ID:Content-Description;
-        bh=+Ul1n4yoKPptLWY+ebpdvAt82oUzxqM4aKQK6FDToeg=; b=oWN+hPiA3Tz2M+Ohb60VR6NptS
-        HViu5Oqxd4JwyPmvY2/8aOB+0p6PqVM/0Uvdyo8C9cO8lQRDeCH3teiWxH6yS1zNApGZkBOkzNoDS
-        SC0HKPykdoeER0vv9RoPgfeZ6TpjiO7UniwV5OIt/N/zVAlUpxZ/JJW5PoMfE9ge3MvXhBX4kshCe
-        UQzSUCu0zrqmCeCvBHC+Wv/qBVIVHGmMVWtHkhqcY/01eracWI5BUPtD2kFTo1atBLzJalSdr930F
-        uHkmJrXf/wFasshmp3/2Ap2UpaMqYyDyDS2NlW+FPIPob6f5bA/BuNt6RW7eCPgZ/lmtCL1PNh4K6
-        Vh13EQ7w==;
-Received: from [81.174.171.191] (helo=donbot.metanate.com)
-        by email.metanate.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <john@metanate.com>)
-        id 1mhyXK-0004Uv-FX; Tue, 02 Nov 2021 18:29:30 +0000
-From:   John Keeping <john@metanate.com>
-To:     linux-rockchip@lists.infradead.org
-Cc:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
-        Andy Yan <andyshrk@gmail.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        John Keeping <john@metanate.com>
-Subject: [PATCH 2/2] arm64: dts: rockchip: fix rk3399-leez-p710 vcc3v3-lan supply
-Date:   Tue,  2 Nov 2021 18:29:08 +0000
-Message-Id: <20211102182908.3409670-3-john@metanate.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211102182908.3409670-1-john@metanate.com>
-References: <20211102182908.3409670-1-john@metanate.com>
+        id S235107AbhKBSdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 14:33:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60346 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235090AbhKBSdJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 14:33:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 03A6661050;
+        Tue,  2 Nov 2021 18:30:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635877834;
+        bh=1yFmPUSLjQ6coZuPz6HKIjZgNys614LuubH4dIqXbWU=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=siESjPkSKl5UHDw6/omsoUlDt0CmvEesN3M5wkcOwGnfcf4wwWFFNnkN13oVZtiMc
+         QlagBst37O5BzgWx+qH0UdSGgmM8p5GMqlo7D4660ML+pAy9vG012pdci8tI/Wo39h
+         Z54Rr+JowHJ3JyOj7Exeb+Hjj3WIozlHoa0D1Sa4esMB/q3ObBQgeWteLgs/1Jpx8Y
+         wmZ1UWKqOraj9ZD81fb1Hr2SWZEbnPKrNHHVi/hv6vi084yrCGd91TZTxSxC0UZ/YA
+         Gn/1Ut6c1K8N9Yus/5sPonk1KXqZJ7boRreHh3dV9SvFjS8f7OAd/3nqRExsil0Km5
+         aFjwQ+nBNP7wA==
+From:   Mark Brown <broonie@kernel.org>
+To:     pierre-louis.bossart@linux.intel.com,
+        kuninori.morimoto.gx@renesas.com, tiwai@suse.com,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        perex@perex.cz, lgirdwood@gmail.com, mikhail_durnev@mentor.com,
+        joe@perches.com
+Cc:     kernel-janitors@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <4c0e893cbfa21dc76c1ede0b6f4f8cff42209299.1634586167.git.christophe.jaillet@wanadoo.fr>
+References: <4c0e893cbfa21dc76c1ede0b6f4f8cff42209299.1634586167.git.christophe.jaillet@wanadoo.fr>
+Subject: Re: [PATCH] ASoC: rsnd: Fix an error handling path in 'rsnd_node_count()'
+Message-Id: <163587783174.970357.16497711772885268572.b4-ty@kernel.org>
+Date:   Tue, 02 Nov 2021 18:30:31 +0000
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Authenticated: YES
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Correct a typo in the vin-supply property.  The input supply is
-always-on, so this mistake doesn't affect whether the supply is actually
-enabled correctly.
+On Mon, 18 Oct 2021 21:44:16 +0200, Christophe JAILLET wrote:
+> If we return before the end of the 'for_each_child_of_node()' iterator, the
+> reference taken on 'np' must be released.
+> 
+> Add the missing 'of_node_put()' call.
+> 
+> 
 
-Fixes: fc702ed49a86 ("arm64: dts: rockchip: Add dts for Leez RK3399 P710 SBC")
-Signed-off-by: John Keeping <john@metanate.com>
----
- arch/arm64/boot/dts/rockchip/rk3399-leez-p710.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Applied to
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-leez-p710.dts b/arch/arm64/boot/dts/rockchip/rk3399-leez-p710.dts
-index 7c93f840bc64..e890166e7fd4 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-leez-p710.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-leez-p710.dts
-@@ -55,7 +55,7 @@ vcc3v3_lan: vcc3v3-lan {
- 		regulator-boot-on;
- 		regulator-min-microvolt = <3300000>;
- 		regulator-max-microvolt = <3300000>;
--		vim-supply = <&vcc3v3_sys>;
-+		vin-supply = <&vcc3v3_sys>;
- 	};
- 
- 	vcc3v3_sys: vcc3v3-sys {
--- 
-2.33.1
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
+Thanks!
+
+[1/1] ASoC: rsnd: Fix an error handling path in 'rsnd_node_count()'
+      commit: 173632358fde7a567f28e07c4549b959ee857986
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
