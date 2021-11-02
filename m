@@ -2,115 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ECE144340E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 17:54:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76C6E443403
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 17:53:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234796AbhKBQ4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 12:56:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235026AbhKBQ4E (ORCPT
+        id S234907AbhKBQzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 12:55:37 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:49940 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234881AbhKBQzC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 12:56:04 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A223C0613F5
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 09:52:08 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id b2-20020a1c8002000000b0032fb900951eso2480766wmd.4
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 09:52:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=raspberrypi.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=A0Gv/QN2qKt1UUPbNJBs29OCuwlLk5Iawd0kmAyppIA=;
-        b=h8aMBSgC270p3YyYgpwd9zWqS4OtdEsHQZvdJaLWV40vD/w3SBChTEGVptLs4VFMcV
-         F+m0yWAxAiUwVV61X7q/i5Unb16+/SPQ06goMnbo0rqkGD+hNXgrCr40eqc0eyCriHWQ
-         vVcCZrnStQNxzF0Vk8mGFtQ5go+gzkRcRs9mbuG1d9X6dTQTvvMLv1WlRaKMnOXQyn8s
-         +lCoJMOgq1G2+PNrnXXiToV8q+ew4tPM6QgDTNohpD2dn4A/Z3Ze8FR7X5yRuAM5qkHo
-         arzRyFiTo2RFka7YS6ianmQPTC7B19SphNKM4HC3fK6Tlykb1zjzHE5J9pgr3HSDpMRL
-         o7fA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=A0Gv/QN2qKt1UUPbNJBs29OCuwlLk5Iawd0kmAyppIA=;
-        b=aN37+2UsgnwBjdDpi+MWuLDBixy+Dr409LIu8xtvT4TJut2yCOIXlIub9Pxpg0I+aq
-         YhKvF7CK2gUhMEoO3sP0r76pUC1SHKEoMvc9aIAVLGfjUFZ04TDhyBMy+LoJFIkViTLz
-         6Seay+sJyiumtIWbegqcsK+VRBPV0EC9gxmIcl851I6o3EkrFwE3ssthahDDqTcfFPk6
-         ZugeMDI4NjRNhnvj4Wvzy5YlSpwDfsTXq7CQdzygYeLvDk2FT5H1gA5uHBBehCv3b/o2
-         YeXZOIk+qtIpzoqUtzU28RJ8FlLPb9aH3dBz21HTVDw7Q3LQcQMyIUOEVgQyhERcUVZ3
-         k++g==
-X-Gm-Message-State: AOAM533E8e8Nmq18yhHFI1a29E83W2k3scZhyXQiFtn4tg/MiaPWuy92
-        J/cxm4u37if+hoPjz0RJLTixkkunPrYvsEhjV9Qpwg==
-X-Google-Smtp-Source: ABdhPJxwhjzaNXSqOK31BY9i52m7fgj9oObZ/pz+E28nZFxKsfZi10g6CAzJlWv/8mfKRLWsrXwneMezrmknElEZ96o=
-X-Received: by 2002:a1c:4e04:: with SMTP id g4mr8145187wmh.15.1635871926869;
- Tue, 02 Nov 2021 09:52:06 -0700 (PDT)
+        Tue, 2 Nov 2021 12:55:02 -0400
+Date:   Tue, 2 Nov 2021 17:52:24 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1635871946;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=bCJaAndOO/4NSmeYwxNL/qLhoa4w8he58KG9tEjlpvw=;
+        b=dQdvQE+y1gD5dr3P04E2FvHdJB24twVjiPDqDHZCkaobEjGRin4ksCTd6bJJz5RZS4vNN1
+        fFkbc1BSM5TIjs7cBPJsvPFrzEw9qQSJko8+C64lXATbNXuc/8Ml2aboi0ssU/0SazQkNb
+        C4i9wx5rVpWRPT4XPvWUl0xmFK5O1jCWDdxMmBRjSPTEfYzDwiObwH31wNOUUDnsvjpLGQ
+        JMtgZrQk9I7Q5PittMg0jV3jdbYVkaBxatSoCMZyW9Zd4E2lI5dHFi+TCC2/ppLQxQwabc
+        kz13ukIiL5BXZB/lqwOaQi6SeoUf+0QdNGqGBl4o1gF4MIkIQwMGe/zY8+z95Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1635871946;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=bCJaAndOO/4NSmeYwxNL/qLhoa4w8he58KG9tEjlpvw=;
+        b=Zp3JV4lZ5qsNNfFTmiPwbBuYbuMm28Nn4ESQpe1JBEoYm46YEAznqCZFv0y3nvxJj6weaQ
+        far0iFNOgUu3WLDQ==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     linux-kernel@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: [PATCH] x86/mm: Include spinlock_t definition in pgtable.
+Message-ID: <20211102165224.wpz4zyhsvwccx5p3@linutronix.de>
 MIME-Version: 1.0
-References: <20211025152903.1088803-1-maxime@cerno.tech> <20211025152903.1088803-10-maxime@cerno.tech>
-In-Reply-To: <20211025152903.1088803-10-maxime@cerno.tech>
-From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
-Date:   Tue, 2 Nov 2021 16:51:50 +0000
-Message-ID: <CAPY8ntCiQ_42mXMYz_TF33TwAArH=o_C9MazuPmKwSosP2qrnQ@mail.gmail.com>
-Subject: Re: [PATCH v8 09/10] drm/vc4: hdmi: Enable the scrambler on reconnection
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        linux-rpi-kernel@lists.infradead.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Emma Anholt <emma@anholt.net>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Dom Cobley <dom@raspberrypi.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Oct 2021 at 16:29, Maxime Ripard <maxime@cerno.tech> wrote:
->
-> If we have a state already and disconnect/reconnect the display, the
-> SCDC messages won't be sent again since we didn't go through a disable /
-> enable cycle.
->
-> In order to fix this, let's call the vc4_hdmi_enable_scrambling function
-> in the detect callback if there is a mode and it needs the scrambler to
-> be enabled.
->
-> Fixes: c85695a2016e ("drm/vc4: hdmi: Enable the scrambler")
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+This header file provides forward declartion for pgd_lock but does not
+include the header defining its type. This works since the definition of
+spinlock_t is usually included somehow via printk.
 
-Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+By trying to avoid recursive includes on PREEMPT_RT I avoided the loop
+in printk and as a consequnce kernel/intel.c failed to compile due to
+missing type definition.
 
-> ---
->  drivers/gpu/drm/vc4/vc4_hdmi.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
-> index d36b3b6ebed1..fab9b93e1b84 100644
-> --- a/drivers/gpu/drm/vc4/vc4_hdmi.c
-> +++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
-> @@ -180,6 +180,8 @@ static void vc4_hdmi_cec_update_clk_div(struct vc4_hdmi *vc4_hdmi)
->  static void vc4_hdmi_cec_update_clk_div(struct vc4_hdmi *vc4_hdmi) {}
->  #endif
->
-> +static void vc4_hdmi_enable_scrambling(struct drm_encoder *encoder);
-> +
->  static enum drm_connector_status
->  vc4_hdmi_connector_detect(struct drm_connector *connector, bool force)
->  {
-> @@ -216,6 +218,7 @@ vc4_hdmi_connector_detect(struct drm_connector *connector, bool force)
->                         }
->                 }
->
-> +               vc4_hdmi_enable_scrambling(&vc4_hdmi->encoder.base.base);
->                 pm_runtime_put(&vc4_hdmi->pdev->dev);
->                 mutex_unlock(&vc4_hdmi->mutex);
->                 return connector_status_connected;
-> --
-> 2.31.1
->
+Include the needed definition for spinlock_t.
+
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+---
+ arch/x86/include/asm/pgtable.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
+index 448cd01eb3ecb..a34430b7af4a3 100644
+--- a/arch/x86/include/asm/pgtable.h
++++ b/arch/x86/include/asm/pgtable.h
+@@ -22,6 +22,7 @@
+ #define pgprot_decrypted(prot)	__pgprot(__sme_clr(pgprot_val(prot)))
+ 
+ #ifndef __ASSEMBLY__
++#include <linux/spinlock.h>
+ #include <asm/x86_init.h>
+ #include <asm/pkru.h>
+ #include <asm/fpu/api.h>
+-- 
+2.33.1
+
