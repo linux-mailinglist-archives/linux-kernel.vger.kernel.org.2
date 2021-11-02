@@ -2,94 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B397442615
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 04:33:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 660D8442618
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 04:34:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232467AbhKBDgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 23:36:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35122 "EHLO
+        id S232649AbhKBDgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 23:36:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231889AbhKBDgC (ORCPT
+        with ESMTP id S232122AbhKBDga (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 23:36:02 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F28D7C061764
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 20:33:27 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id u33so6226227pfg.8
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 20:33:27 -0700 (PDT)
+        Mon, 1 Nov 2021 23:36:30 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92088C061766
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 20:33:56 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id s24so13899104plp.0
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 20:33:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=a1lXUR6SQ/hD6znen9JgIoQ/BqqL7K0xRUGaDryk68I=;
-        b=fDv8r6JcJVMfIdN1DY+fvOCubW1/T4KMG8OpFRuNA7E1WcPkfwCCMv3Yee5QwmoOcV
-         4MVv14+urzbcwNqRSWA66Ky8VqbzrTFe8DHYZ0+qSfmcCZxHJeF6EzLzgAJM1dRvr16v
-         oO9OEegl8oRX11NZjUJdAr5KC3w36lHqnios0M8p/2+lTa3wkfnVxUN6Sw0NPWbiOoM8
-         VBppoS1bPQeyt9qk6sc3cwEX421Clumks+bCXpw3vDYWnyZWy14yJGbv43EwDyQ4CZtE
-         6iiBDwBb559risFbjnm4sbjn3jMHvr8fDNTiCdyuZaPaBHuxauVFkRtTmgWnPYH4yPQF
-         1WbA==
+        bh=9wL6e6Rl6omDkjcl8QpQbRrkQlAk7mdAPYBPin+CVyw=;
+        b=sr9LMU/0B9YZmnps9ZwovfhG6XGReafmiDTIHlX7hKnopo1nuSLxf60/tLBQZE9nyi
+         YuKBQIyUOkLtGmCthfnxaNxHUlYhvle3LEAtlIN9WRM+05Swo6BlvUiABoEHgP9Z8Gye
+         ZBEDZd2Hkpo4WBpOJppuL/YEqqCjv9IjlkGpgQopb7uPsTorsXXqZbgfRct8JHjqJsxS
+         8hf2j/oOaBcRj8U3p2Hc6VwFozosrefUDG8YbOyM4p44zlvZyne4axnuuoEo1iGZ9fHv
+         YdSbyBGEtUM4LCrA3axNztJNJlrvB8tWOhq23mA1FootsUHnSMq0P7Griia6WSuzjynW
+         rbXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=a1lXUR6SQ/hD6znen9JgIoQ/BqqL7K0xRUGaDryk68I=;
-        b=N+6t5jLSV+dsa6loa4Rb+IGgObQVWFSsSgalDIopPOIiUxXkSYBLCjNpKCY1lpCYF8
-         sFFlI1DH1V04oZ4s+6835eT9rCFZmJn9ujt1RkccqvBHS6ArcCN8XYfQ1cBBf+GTjWmz
-         3v9FkZt3gUhEatFog3yQejLgwdPoSkTLSfTgEYO3n8XcrReYAme97XMIJCFFS3D50qBp
-         NCkIYzhqKBKM2BWjUBbH7CB/eFRtsAwWQutFra3/IyMehsKNek9zr8vXSyKtM/e1pGk7
-         il76c52VHbfjKKVxSDpK3tUBv7SkxZDglCYd4JSwODPW5rlGFiHp2XUbX5Bksi78NJYO
-         gxMg==
-X-Gm-Message-State: AOAM530GFT5CrFBjBMjSZoz8Txs1zQle7eTIYugGzeX6ei9HxTyqnoRj
-        Mg6jkWxnW4Xf4FFfDKfm9QI1ag==
-X-Google-Smtp-Source: ABdhPJy4IoDlvp7DZL85+0EmaBuTHCvSx5BaTfRfxNq3AqWLrcAJqM+saZjZj61Da9g/a3H4u6KF8w==
-X-Received: by 2002:a63:7881:: with SMTP id t123mr24852203pgc.150.1635824007531;
-        Mon, 01 Nov 2021 20:33:27 -0700 (PDT)
+        bh=9wL6e6Rl6omDkjcl8QpQbRrkQlAk7mdAPYBPin+CVyw=;
+        b=P772tIbhLZjwt3zx6Si42RK0+wGKVK0mCCMz1MgXCthoihg/TDsvGuQbFKTd4GdpK0
+         vS+CX9eiRe0p8ABIanoieHt9XBf8XAG5ZWLvIlEGVRcfuc1trPYrnmcjltiv7iq3Zl0k
+         Utl4FYZuahPhqBzKaC7GgLwO3+L3cQ9YblJfWE2E8CTI88ShK3zPluZTxtXb0R23MjZU
+         628OnIadjqOjvq9e0QRz1jg6qhFB2mUowjdMCaowMjB6WMdSNl3EF82X6Cm+LYyVk0V/
+         WudgFL5p/o07//5hylShMQaPyyHC4aqG49AfKsBccuj/pNv4N+S4M1/Jp8doRp2j7P3F
+         37BQ==
+X-Gm-Message-State: AOAM530pMLEDeAtwz5SkSysI6YND70NAgClfXQJDd8lb8X/+ZmhHSqMx
+        t3EDRfc94y31AuIRXpjwK+Q+zQ==
+X-Google-Smtp-Source: ABdhPJx4N2536lXrqEoILHMVErOOpiqbnJ3ORZ+r+y1oWUc8bc0saalhkhVXA+jDAws5J37zsepRfQ==
+X-Received: by 2002:a17:90a:191c:: with SMTP id 28mr3498852pjg.121.1635824036118;
+        Mon, 01 Nov 2021 20:33:56 -0700 (PDT)
 Received: from localhost ([106.201.113.61])
-        by smtp.gmail.com with ESMTPSA id d20sm5475136pfu.189.2021.11.01.20.33.26
+        by smtp.gmail.com with ESMTPSA id j6sm14002047pgq.0.2021.11.01.20.33.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 20:33:26 -0700 (PDT)
-Date:   Tue, 2 Nov 2021 09:03:24 +0530
+        Mon, 01 Nov 2021 20:33:55 -0700 (PDT)
+Date:   Tue, 2 Nov 2021 09:03:54 +0530
 From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Jie Deng <jie.deng@intel.com>
-Cc:     linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, wsa@kernel.org,
-        conghui.chen@intel.com, mst@redhat.com, jiedeng@alumni.sjtu.edu.cn,
-        vincent.whitchurch@axis.com
-Subject: Re: [PATCH] i2c: virtio: update the maintainer to Conghui
-Message-ID: <20211102033324.5x2sd7ezcmbk427e@vireshk-i7>
-References: <00fadb64713aebd752dca3156e37c8f01c5ac184.1635736816.git.jie.deng@intel.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Jason Wang <jasowang@redhat.com>, linux-gpio@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH] virtio_gpio: drop packed attribute
+Message-ID: <20211102033354.rka35agybojk65n7@vireshk-i7>
+References: <20211101091122.442512-1-mst@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <00fadb64713aebd752dca3156e37c8f01c5ac184.1635736816.git.jie.deng@intel.com>
+In-Reply-To: <20211101091122.442512-1-mst@redhat.com>
 User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01-11-21, 13:24, Jie Deng wrote:
-> Due to changes in my work, I'm passing the virtio-i2c driver
-> maintenance to Conghui.
+On 01-11-21, 05:11, Michael S. Tsirkin wrote:
+> Declaring the struct packed here is mostly harmless,
+> but gives a bad example for people to copy.
+> As the struct is packed and aligned manually,
+> let's just drop the attribute.
 > 
-> Signed-off-by: Jie Deng <jie.deng@intel.com>
+> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 > ---
->  MAINTAINERS | 2 +-
+>  include/uapi/linux/virtio_gpio.h | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 3b79fd4..8c9a677 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -19944,7 +19944,7 @@ F:	include/uapi/linux/virtio_snd.h
->  F:	sound/virtio/*
->  
->  VIRTIO I2C DRIVER
-> -M:	Jie Deng <jie.deng@intel.com>
-> +M:	Conghui Chen <conghui.chen@intel.com>
->  M:	Viresh Kumar <viresh.kumar@linaro.org>
->  L:	linux-i2c@vger.kernel.org
->  L:	virtualization@lists.linux-foundation.org
+> diff --git a/include/uapi/linux/virtio_gpio.h b/include/uapi/linux/virtio_gpio.h
+> index 0445f905d8cc..25c95a034674 100644
+> --- a/include/uapi/linux/virtio_gpio.h
+> +++ b/include/uapi/linux/virtio_gpio.h
+> @@ -25,7 +25,7 @@ struct virtio_gpio_config {
+>  	__le16 ngpio;
+>  	__u8 padding[2];
+>  	__le32 gpio_names_size;
+> -} __packed;
+> +};
 
 Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 
