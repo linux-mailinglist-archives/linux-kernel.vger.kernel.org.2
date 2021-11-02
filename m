@@ -2,146 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 703CF4431E1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 16:38:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A50C4431E8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 16:39:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234328AbhKBPkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 11:40:51 -0400
-Received: from mail-bn8nam11on2087.outbound.protection.outlook.com ([40.107.236.87]:18016
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230370AbhKBPko (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 11:40:44 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WI9VW4sUrd7yas70Er0XvP+eVf3reGjhmv+zd2cv0H9kn1jtSYQk59WbcagmCNQsK7WPDXjYEQy+bxBtALNKh20QFGJ9wUSfxDvfWvkubwvtNEI40hPpPyCYkRvscmWRpVtUEEIzAUTqC8Lx5XLRxDXbFvrBCVy5BTcqRCQ4Z4Bxm/ojWLd7uw7Ad1sm+doQ/b9jPO5UcZWIoSEoGmbHiqmP7zaXfcoYGY6uTPKFceBU6eJZlzV1NnNPalZBOWadizvj+H3U9VnwOczFxcEpWEoiYnG68zVrQqWCvDIAI48vVDqE4ovYzOz9memazNwetDmT8fI1qAYxVT2+DSTP9Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JclaWLprKEtPGJiP9JWue5pTs8t+uNPpE1WD5wsb/XE=;
- b=Ihiq48dC99XKBQJxaGBV6fJJd+42NCYTBA9gSph/ybVhunaZNEATSVLQTEm2bG9c08J6KEeqU+yij/zBOtf836sxhXOX19ChIS4+Ew1wlfvHBC/eGxqdLJCr2Biy98qrELjo06DXpOKon2yEuuv0Ogd1rQGmW+HPseBUMGLSvy7loeflBFYr7uIP+uzgyOtqlIEB8Y+OcIQOxFRqe+dDLEc21rUr2sQi7rjLynj3UDM+LbeRFVAsV4U0TlP1w81stT6HHhsbeIdSslZt6dtkkCOGYfPREBoIqZJe5IvbU+VxIiyGlp7B7GWdCIaCR1ZbWPR8vX8L/KSf8hiKf0tt2A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JclaWLprKEtPGJiP9JWue5pTs8t+uNPpE1WD5wsb/XE=;
- b=S8aNEUrehdmWviErbmHPnf7Y7B+NmYzUOJGu4Yf1mLVOQEXBGiaNDZbDGjHT67A78TtkLDuzSufaVYtb1NRow3/QaC4JeICQVxNCWP/VKb2E3NtITGUOj2snyN03KTLicbXsVOeLqIse37flDei87E4RCbbgGOwqzcYlOfiDryE=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from DM4PR12MB5229.namprd12.prod.outlook.com (2603:10b6:5:398::12)
- by DM4PR12MB5134.namprd12.prod.outlook.com (2603:10b6:5:391::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.15; Tue, 2 Nov
- 2021 15:38:06 +0000
-Received: from DM4PR12MB5229.namprd12.prod.outlook.com
- ([fe80::a87d:568d:994f:c5f9]) by DM4PR12MB5229.namprd12.prod.outlook.com
- ([fe80::a87d:568d:994f:c5f9%8]) with mapi id 15.20.4649.019; Tue, 2 Nov 2021
- 15:38:06 +0000
-Subject: Re: [PATCH V3 4/4] crypto: ccp - Add SEV_INIT_EX support
-To:     Peter Gonda <pgonda@google.com>
-Cc:     David Rientjes <rientjes@google.com>,
-        Marc Orr <marcorr@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        John Allen <john.allen@amd.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20211102142331.3753798-1-pgonda@google.com>
- <20211102142331.3753798-5-pgonda@google.com>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-Message-ID: <0701eb12-a60e-381f-ddd0-9ee9a0fa3edb@amd.com>
-Date:   Tue, 2 Nov 2021 10:38:02 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-In-Reply-To: <20211102142331.3753798-5-pgonda@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BL0PR03CA0031.namprd03.prod.outlook.com
- (2603:10b6:208:2d::44) To DM4PR12MB5229.namprd12.prod.outlook.com
- (2603:10b6:5:398::12)
+        id S234641AbhKBPmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 11:42:02 -0400
+Received: from mout.kundenserver.de ([212.227.17.10]:36861 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233646AbhKBPlu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 11:41:50 -0400
+Received: from leknes.fjasle.eu ([92.116.76.76]) by mrelayeu.kundenserver.de
+ (mreue108 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1MTzjI-1n8qMj3B1G-00R3xe; Tue, 02 Nov 2021 16:38:11 +0100
+Received: by leknes.fjasle.eu (Postfix, from userid 1000)
+        id 727003C3D9; Tue,  2 Nov 2021 16:38:09 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fjasle.eu; s=mail;
+        t=1635867489; bh=610F5WQ1yx00SQhXjORlJmcFXU+UbMId6bsECwrpfn8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IgDh870Zj5sQ5YDAl8AKuuz1QJlBcbkdwlcNlIa1gqYCMKhvecjbt6Yf90up6GMnr
+         yfDURdXFTfvilYkmrOLdmey6nmR2z6f/GQfsD2sQIFvwf1eSBvoUCSoARwvtXwUObk
+         D1c2F8LIANBy11C6/IdYkZPE3XQtIIIAoom8+WoU=
+Date:   Tue, 2 Nov 2021 16:38:09 +0100
+From:   Nicolas Schier <nicolas@fjasle.eu>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kbuild@vger.kernel.org, Andi Kleen <ak@linux.intel.com>
+Subject: Re: [PATCH] scripts/config: allow "O=config-dir" option
+Message-ID: <YYFbYac/iU21vYiu@fjasle.eu>
+References: <20211031063322.20486-1-rdunlap@infradead.org>
 MIME-Version: 1.0
-Received: from [10.236.30.241] (165.204.77.1) by BL0PR03CA0031.namprd03.prod.outlook.com (2603:10b6:208:2d::44) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.10 via Frontend Transport; Tue, 2 Nov 2021 15:38:04 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9206e46a-9353-4786-d388-08d99e16c373
-X-MS-TrafficTypeDiagnostic: DM4PR12MB5134:
-X-Microsoft-Antispam-PRVS: <DM4PR12MB5134AA622F0D8F9E88C9148CEC8B9@DM4PR12MB5134.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3826;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0S5PM4oY60uRDbIhPlfBYTK2YXeXHeL2DpOfo8b72VWn/cf19aHH0+SHIbh7UFZCDOeySwrJ9+a3bkJX8FCT0P18gqw96AgQg0MCjbxp7VO3OAZ6SB6bD4Uzw0ba98ROd1fo+9+Yms/5gBObomQjCFQoXcyhXMdQ8/1jWJEbzr0eoC9jpyJXIMDh0ocm7hqXsZBGVBraMLJ0HaUmEhp5lU6X7roccsDz73HJ8y6WCELcbhaDE/1QVD+v1dNxPr8eCEK1kug1qeEx+brYL+1Ai+FXt4ZtmJmDjfdIJQtoN+WKW/cf9I/3WOf9ELU+sXSYjhlHWKj+UjMCVIrvx44Iu8k83fdn25sD6ICoebCw9UHmW7OzAbapnTDTLV05BqCvM5QgJLYJpsxZ4eY4piNheqhE/Yog181F+fQXrDZrfPvLVIZmebDHJll459JH9KYsqkyHItHhRjQpVKZ6+6hhPFFfjUzcN50DsrYuoGYcWkzXgelvZkOakyaxCXgARdumceV21qmpjmk3OBw1DhnmGbP6fyGaeVEdQgZVyWaX/47jWC6TgnrzrMhUUPeUYzfiUZH3R/Zmv14TXseUjs3eMs+VmeJv2F1eOpAQCepO9+3nkLPJKax0wHzB3LtBVCARIT4pgwxG7blWMEWroZTlcy/C8ooSZAPTPVpIp682UhqpbHAFSKvBfABQV5mTDbUunTWiCQox8J2SDSbW2WIFVolVoo5buegSbdxyUrnfu/IfsVM3hIL3JaoV3ASSynxR
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5229.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66476007)(66556008)(36756003)(38100700002)(8676002)(508600001)(66946007)(31686004)(53546011)(2906002)(4744005)(186003)(26005)(956004)(2616005)(6486002)(6916009)(83380400001)(54906003)(4326008)(86362001)(16576012)(5660300002)(8936002)(316002)(31696002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VUxSZnh6c3lmWkc4bncyMWNBZ1ZEaW1OZnppNzhQVllhTERSVDJmV24yZExD?=
- =?utf-8?B?bUVFUmVBc25QdGxnVlZNTnM2c2RxcE00N3ZBTnh5SXNmWHBEYzdzZXZvVlA3?=
- =?utf-8?B?a0pVU0hFcnZ0ajI4dGlzbkF5Ykw2M1pqbS9iMThySnNVQ0Y4aUZyU1ZsQ1Ay?=
- =?utf-8?B?c3JKVDJEME04MGRWdFcyTWRmYXhvN25pbWRYWHN6NkpIRWVtZVBRSllWUVo1?=
- =?utf-8?B?cm9tcXlWVW9HQ1RkbUJmMTZDdmZkdGZ3RTBDeUNnMzdVYWhNcy9FSHFhOGVy?=
- =?utf-8?B?bkhCRnJZcDZBZW5QWXp2U3N0MFBtOFBmZWVvM3p0aFdGcXdKQ0RNT2t0RXFo?=
- =?utf-8?B?ODFDSHFQR3FFWEFSSTNmNUdheDRjcGNwZnY5ZXRyeHdvRjVsWWppQjF1a0JI?=
- =?utf-8?B?dGR5cXp4NHBkaDN6K3pnakxuczNlcW5pVUdiU0U2a0JQOTY3NjlPUnU2Rm1K?=
- =?utf-8?B?NDF4eVRQbHQrU1lnQmwwMDZzMzlNZzZlalBxaDFYNkpqOUhSdjc2ZGN0Y2FI?=
- =?utf-8?B?QVhJTnN0RDVzeUhHSklxZGVCNFRRa1k0TDNPU0dDQ0JqcDdmVDhEZVFJTGdN?=
- =?utf-8?B?QnIvOVdlcU1rS294NHNGU25pdjRvdWRDamtFQnJ2eWIzOUFjdzU4ZEZJV2s0?=
- =?utf-8?B?cW9zaW55Z3hla3VOYUk0RGp5S2RidGdUWFl3ODdmU1JwNDNDQ1VSM2Z4cVdK?=
- =?utf-8?B?emdVRTFXVEs5dGpMak4zMWRXNUh0VGZpRTNlYkpGT0RCVHZ5YkgxR2t2OVgz?=
- =?utf-8?B?QUVpYm5rb0RXc1QzUUFpK1BQNVhITE0zVEZJdjBLUjBBSmRhMXE2ZVRNK21S?=
- =?utf-8?B?RlAxRHNuRWxTNXE2OENLbW16MUlpaWFlaXdDeUdxY3ZZd0RZK3k2dHpvenhI?=
- =?utf-8?B?SndINnVCdVp3bW15V3pVM3YwdzZqZVZlV3Q3Vk0wRVMxVkREamswdTVTN2VZ?=
- =?utf-8?B?Y09xVUtQeHlhbU1OYzNrNUpaZUhUeHlJVVNDOVh0MjBSV3c1TmFQNlYwYkFr?=
- =?utf-8?B?ZTJ2Z0JSZHRUUWI3WGY4K0VGSllzOWJWM3p3TDVGSldrcGROTUcyR2xRVk9R?=
- =?utf-8?B?NUIyZWI0eHEweTlhSTVrSm1vOXVJRjM4OXl2dVloY2xDb2I1SHZNT0ZQNzBJ?=
- =?utf-8?B?ZEc1U0JVTWRzS2d3dnoydklSZnowcXVjeW9NcVV3L2x0OTU2WVY5WVRlVWdL?=
- =?utf-8?B?TG5LMTREWXRqWmJVdzVNQkRrcjdLNENRWE9iSk5FbElTd2ZLR05nTDIvcHR5?=
- =?utf-8?B?VDR1a2MrcGJXTTlKd3lNTjRmK2RuTDRtUE9jNVZkYUNFUEZLRldGSEllRzkz?=
- =?utf-8?B?dGk4YnVzRWRHVlgvSlIvdWJFK3Jlc2FYL0pWTmxmODl1N0R1RUpSZDI5aUZr?=
- =?utf-8?B?TFNwRUZVNXI1SXZXUEo5aTkzNnRvU0h0N0RFRU9TMVFoRG14UGJqYlQ3ejdI?=
- =?utf-8?B?cTZGQWRIcCtMWWNKcGROWjdMVDg2dXFQNFRwWTZSSjZzQ29URjVaRUprajMw?=
- =?utf-8?B?cEdSVzd6TnpLRGwyYmNWSzhRcXNmczJzNTRxOXZrWlJrakJXVGJpMVlTRVdh?=
- =?utf-8?B?OWU2UjA4cEVTcVhUR05xNGttR3p3R3VScGVRZTlXaVliMzBOV284aWNmNUJM?=
- =?utf-8?B?V000OHcwVUQ1Rm5zN0VhZ1pkamQ0cW4xU2FTSHBZdStESmRuWnB3bk5kZDhC?=
- =?utf-8?B?M0FncFdZTXRjKytDdjlURFdJQ1QwMy9CWFA4TnBWWTlvYWF0RDZJRDNaNkFl?=
- =?utf-8?B?enJ1QmlVUUd2NjBQckoybFVGZnF0ak1Ka0UrNEtGdjFYL0dnTkdTVnZPellZ?=
- =?utf-8?B?OFl5NG93T0M2VHgzc0I1WnVFWnpVVEpnZy9zd2EweVFSQm5xOWxicGZQcGxr?=
- =?utf-8?B?TEEvcTJEelVYOVJrcmdPRnpFUGRUOG5kOUcxalY0bHNqZjBTNTZzTWZHQ1dx?=
- =?utf-8?B?OEhkREJncEVQdDNJNlZSVjgzZXQ4VzJ0R05xYU9YRjI2VjROeVZHVzkxRHFx?=
- =?utf-8?B?WHp3dWFGZmhjOStXYStZaUd1eXZpVFV2bUlxbjlXNlhuckhyRkd5TE02ckhE?=
- =?utf-8?B?SEhNZk5ETW56TEN3UzFDNjlpVXBxWHJLZTkzK2wyb1EwRTRPd0M4dWVmV0NI?=
- =?utf-8?B?WTRjekxTRjNrM2hFMlVvWWtkUDRqT1ZTdkgyVGE3T2xFUGx5WmVoL1dSS1Iv?=
- =?utf-8?Q?F+UphjWPrrW0AYfWy4URJpU=3D?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9206e46a-9353-4786-d388-08d99e16c373
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5229.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2021 15:38:06.1176
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Z1EET06hzbHI7RaNKXotEXOtEHMl1aIRwItS0P2NeuaK6P7zhlnlFiFDH4izu7/1kbq9XkZUInTq6SCgouLVCw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5134
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211031063322.20486-1-rdunlap@infradead.org>
+X-Provags-ID: V03:K1:+uVDPtlmlyJvq2GmWsJpFq4Qj5x4+n+UMw1MRBkt/s+lVH+Sm6A
+ /IK7bVO3MdIjPTzHZ2v53joBQ8U68dMLoI5NcPuUyCpndgULJ8dco7vI+qJTknFYRVyskeW
+ cr+d/73ZClEndiHrUyyTH4Wi0x6WifLcYdXtoAc5kJYYaBzKHpfdMyy5OsFMUA7T8ki3ajr
+ CcjeugWJ93wCfJIyWIfEg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:uhAdAS0dlhQ=:qs/XlNiWJLo/PZk3vPpY8i
+ ZZag4tVXy06NyLg8KxXsP70a3rUokwUkxCLFVuF4uFw64fzhcWI66w6FUvfMn/dkoKsYJGLaL
+ XDsgzNpVtoJWzgGFTGxZybQuD0ZzPIi+mkzY1kvKrxMWIDGY4ehWZVRYH/yKCYOUkNx86w0B+
+ URi+I2RkTCSiBUnUHFO2aSS7e/nFR6I5N3IzUu/aPo0dHuTJNOz8S8xHROeFNroEwsiafBh5d
+ 6ToLm4A4YmfOveFybF4pbWWWyfFd0iGNEuIfksDnV41PlOZZVwRhyLFThCdyK+nj8jnyfKvjP
+ vzZviGlPdOJ0nJ8/dJbteGM2EC/ZTs810pprk1uNefeAvzN9eE8BSG1qD1YVhq/gCrcjarop1
+ prg6GkbyrxsSBB77XH4SguTewluQoqRJWV1rNMo3t66o/ptFA8vH0rmdp7waPGUZ1GlrQBsid
+ 7Uan7tQB/0gowtlS067avif7KvL9OYu2L7KOaFJKS9Cg/8MMDFKUebMT9CSGvW64Vm0A/fomr
+ IjRL/Z7MgJz+BDzbSzUM8zxzXX7rq03GQgcZrbS1p07Op7xVgorpl35Isn4luoEghRlVSpL88
+ 1pZL4vL3DKl9M/HK+ir+c8YY24dZL8LZaeQ6A6knhDvPxI7+K5qcrmmz3Sf9pzj/gBf+F3LWo
+ aQdoz8rfsCnmGa8ETQI/1CXEMJyE2NrAHEfinWo3V21jo8QxcrIsa4d7sWE84byI7rFY=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/2/21 9:23 AM, Peter Gonda wrote:
-> From: David Rientjes <rientjes@google.com>
+On Sat, Oct 30, 2021 at 11:33:22PM -0700, Randy Dunlap wrote:
+> Support "O=config-dir" as the location of the .config file
+> like (some) other kernel build (make) tools do.
 > 
+> Someone asked for this "feature" a few months ago but I don't
+> recall who it was.
+> 
+> Also check for the existence of the config-dir/config-file
+> and report if there is no such file instead of letting grep
+> report that there is no such file.
+> 
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Masahiro Yamada <masahiroy@kernel.org>
+> Cc: Nick Desaulniers <ndesaulniers@google.com>
+> Cc: linux-kbuild@vger.kernel.org
+> Cc: Andi Kleen <ak@linux.intel.com>
+> ---
+>  scripts/config |   44 +++++++++++++++++++++++++++++++++++++++-----
+>  1 file changed, 39 insertions(+), 5 deletions(-)
+> 
+> --- linux-next-20211029.orig/scripts/config
+> +++ linux-next-20211029/scripts/config
+> @@ -37,6 +37,7 @@ commands:
+>  
+>  options:
+>  	--file config-file   .config file to change (default .config)
+> +	O=config-dir         Specify the directory location of the config-file
+>  	--keep-case|-k       Keep next symbols' case (dont' upper-case it)
+>  
+>  $myname doesn't check the validity of the .config file. This is done at next
+> @@ -124,15 +125,48 @@ undef_var() {
+>  	txt_delete "^# $name is not set" "$FN"
+>  }
+>  
+> -if [ "$1" = "--file" ]; then
+> -	FN="$2"
+> -	if [ "$FN" = "" ] ; then
+> +DIR=
+> +FN=
 > +
-> +	nread = kernel_read(fp, sev_init_ex_nv_address, NV_LENGTH, NULL);
+> +while [ "$DIR" = "" -o "$FN" = "" ]; do
 
-Not sure if you missed the previous comment, but kernel_read can return an 
-error, shouldn't it be checked and fail on error?
+shellcheck recommends to use [ .. ] || [ .. ] instead of [ .. -o .. ].
 
-Thanks,
-Tom
-
-> +	dev_dbg(psp_master->dev, "SEV: read %ld bytes from NV file\n", nread);
-> +	filp_close(fp, NULL);
 > +
-> +	return 0;
-> +}
+> +	if [ "$1" = "" ] ; then
+>  		usage
+>  	fi
+> -	shift 2
+> -else
+> +	if [ "$1" = "--file" ]; then
+> +		FN="$2"
+> +		if [ "$FN" = "" ] ; then
+> +			usage
+> +		fi
+> +		shift 2
+> +		continue
+> +	fi
 > +
+> +	optn=$1
+> +	optnlen=${#optn}
+> +	if [ $optnlen -gt 1 ] && [ ${optn:0:2} = "O=" ]; then
+> +		DIR=${optn:2}
+> +		shift
+> +		if [ "$DIR" = "" ]; then
+> +			usage
+> +		fi
+> +		continue
+> +	fi
+> +	break	# something other than --file or O=dir
+> +done
+> +
+> +if [ "$FN" = "" ]; then
+>  	FN=.config
+>  fi
+> +if [ "$DIR" != "" ]; then
+> +	DIR=$DIR"/"
+> +fi
+> +FN="$DIR""$FN"
+
+A bike shed colour thing: I'd prefer quotes around the complete right
+hand side, e.g. "${DIR}/${FN}".
+
+> +
+> +if [ ! -r $FN ]; then
+             ^^^
+$FN needs quotes, otherwise it may lead to syntax errors, e.g. if FN
+contains spaces or other syntactical things.
+
+I do like that feature!
+
+With quotes round $FN:
+Reviewed-by: Nicolas Schier <nicolas@fjasle.eu>
+
+> +	echo "No such config file: $FN"
+> +	exit
+> +fi
+>  
+>  if [ "$1" = "" ] ; then
+>  	usage
