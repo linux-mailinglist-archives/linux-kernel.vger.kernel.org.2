@@ -2,184 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0177D4439F0
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 00:42:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 880A54439FA
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 00:45:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231160AbhKBXpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 19:45:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56384 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229747AbhKBXpS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 19:45:18 -0400
-Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FD4DC061714;
-        Tue,  2 Nov 2021 16:42:43 -0700 (PDT)
-Received: by mail-ua1-x92e.google.com with SMTP id b3so1216209uam.1;
-        Tue, 02 Nov 2021 16:42:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=O8/enUMhz+riyzQ2Zd8RV/GG8++DAENfi7ZT3OLtTzs=;
-        b=n6VZ9pT7W0nCDLDr1BLiRtznprYVOhzyzxWqZRe3Dzld4TwJqFhWdnGQW72uIy7/c7
-         p6Nrb/7UBpO+s3/fv4uTWtVhC5cYgoEwnFU0SM/AAySBDub0b7xVhk1qn3OmW5B9/mL0
-         kSsOnYbgWoZDhcmz5tEqx+gN35vEQAcbAehYBDycY/faaZN06EJJYFJ6ncuw15SrmLML
-         tjXvJ3p90QRX6fPR+tknrlMNS5RLBEH6o4xnzEQiePE4LLoIF68xw2+d08xWrSi5zsQr
-         Wujoh0Yww4IpvOExhcUbhf+Tv51Leih2LL2HrCQKs5MRLal3pntCsG4k69eG/va0jX8v
-         0dbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=O8/enUMhz+riyzQ2Zd8RV/GG8++DAENfi7ZT3OLtTzs=;
-        b=JsQlfMTXsE9ooXFXP3YdeEricHg59tmznLwGrj5xKOC6/y5VHovEbB2KX3xgkTG313
-         rYQrCXHwDdHlxIjAuzQO6/eBlIohAo8t3cW7NBt0BdVYetYttDmXS0KXFZJH+4BRdXuN
-         1WTpL0tgIoZYJo4OVLuq7nSXba1h0mtkMLZXfX2g9swZ7VjroHmhNMSHETR8joDm7fpX
-         /vJ4AUa4MYqxlr7IwaL+F3NQeb6NJ7rw7BG6KQp0f3xt5V9NQm/hZKJjeCInq1rMdZ5y
-         ywxnrm4jsfiikdbGr2G3s8eo7u2L7+aaI9CTiGlAsCDx78V9DqGGSWmED7bjfQwCFa4D
-         aIdw==
-X-Gm-Message-State: AOAM532+1LzI6G0gh0lEUVf1eKG69MjwzpshJTD3bbzp3IOiFc3zkWZf
-        Ats2VXXoBNYnOs98ARGHJnXCV/isLoLG+WTCWxc=
-X-Google-Smtp-Source: ABdhPJwurPunbhgaMhr2aohB9ULiuMaCOL1VxU+6z5Q9/nzQIcTtnZQ7HFyfuV8GL22sGJRc0itAFSRr6ZB6VOkTllQ=
-X-Received: by 2002:a67:af13:: with SMTP id v19mr4403884vsl.5.1635896562431;
- Tue, 02 Nov 2021 16:42:42 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211102225701.98944-1-Mr.Bossman075@gmail.com> <20211102225701.98944-13-Mr.Bossman075@gmail.com>
-In-Reply-To: <20211102225701.98944-13-Mr.Bossman075@gmail.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Tue, 2 Nov 2021 20:42:31 -0300
-Message-ID: <CAOMZO5DV-6dKnaGMgARhtv7mq-nOr9jO-XUWAJDmJWwNxc+B1g@mail.gmail.com>
-Subject: Re: [PATCH v2 12/13] ARM: dts: imx: add i.MXRT1050-EVK support
-To:     Jesse Taube <mr.bossman075@gmail.com>
-Cc:     NXP Linux Team <linux-imx@nxp.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Stefan Agner <stefan@agner.ch>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org, Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Abel Vesa <abel.vesa@nxp.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Giulio Benetti <giulio.benetti@benettiengineering.com>,
-        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-serial@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S230516AbhKBXsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 19:48:20 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:61993 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230157AbhKBXsS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 19:48:18 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1635896743; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=xxynaSB47PKFANJh0W+rTxGSzbolgH2alDmxwuNv1gs=; b=kpCLNa2dxLBpBgyC4d0qa+jEmG0fU/ZgRV+FRNwa/jw9k9QkBUZUVpPkGZkLciTtIbaYKMxn
+ YGR2idfBkgd5O0qlOu+EBI0GAE2YQHWwGwLTUaU/u073LZl/HuscNQmmvAy7cjO1dqLbrWEf
+ DE4Qb1yLWOiForkXuinMA+/Cvhs=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 6181cd6b883b2746f728631d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 02 Nov 2021 23:44:43
+ GMT
+Sender: quic_khsieh=quicinc.com@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 65927C4361B; Tue,  2 Nov 2021 23:44:42 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6C64AC4360D;
+        Tue,  2 Nov 2021 23:44:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 6C64AC4360D
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=fail (p=none dis=none) header.from=quicinc.com
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=quicinc.com
+From:   Kuogee Hsieh <quic_khsieh@quicinc.com>
+To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org,
+        vkoul@kernel.org, agross@kernel.org, bjorn.andersson@linaro.org,
+        robh+dt@kernel.org, devicetree@vger.kernel.org
+Cc:     quic_abhinavk@quicinc.com, aravindh@codeaurora.org,
+        quic_khsieh@quicinc.com, quic_sbillaka@quicinc.com,
+        quic_mkrishn@quicinc.com, quic_kalyant@quicinc.coml,
+        freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Kuogee Hsieh <khsieh@codeaurora.org>
+Subject: [PATCH v3] arm64: dts: qcom: sc7280: Add Display Port node
+Date:   Tue,  2 Nov 2021 16:44:33 -0700
+Message-Id: <1635896673-5841-1-git-send-email-quic_khsieh@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 2, 2021 at 7:57 PM Jesse Taube <mr.bossman075@gmail.com> wrote:
+From: Kuogee Hsieh <khsieh@codeaurora.org>
 
-> +/ {
-> +       model = "NXP IMXRT1050-evk board";
-> +       compatible = "fsl,imxrt1050-evk", "fsl,imxrt1050";
-> +
-> +       chosen {
-> +               bootargs = "root=/dev/ram";
+Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
+---
 
-No need to pass bootargs here.
+Changes in v2:
+-- move fixes of dp_phy reg property to other patch
 
-> +               stdout-path = &lpuart1;
-> +       };
-> +
-> +       aliases {
-> +               gpio0 = &gpio1;
-> +               gpio1 = &gpio2;
-> +               gpio2 = &gpio3;
-> +               gpio3 = &gpio4;
-> +               gpio4 = &gpio5;
-> +               mmc0 = &usdhc1;
-> +               serial0 = &lpuart1;
-> +       };
-> +
-> +       memory@0 {
+Changes in v3:
+-- delete "qcom,sc7180-dp" from msm_dp node
 
-memory@80000000
+ arch/arm64/boot/dts/qcom/sc7280.dtsi | 89 +++++++++++++++++++++++++++++++++++-
+ 1 file changed, 87 insertions(+), 2 deletions(-)
 
-Building with W=1 should give a dtc warning due to the unit address
-and reg mismatch.
+diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+index fb2f1506..4414abc 100644
+--- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+@@ -2709,8 +2709,8 @@
+ 				 <&gcc GCC_DISP_GPLL0_CLK_SRC>,
+ 				 <&dsi_phy 0>,
+ 				 <&dsi_phy 1>,
+-				 <0>,
+-				 <0>,
++			  	 <&dp_phy 0>,
++			  	 <&dp_phy 1>,
+ 				 <&edp_phy 0>,
+ 				 <&edp_phy 1>;
+ 			clock-names = "bi_tcxo",
+@@ -2807,6 +2807,13 @@
+ 							remote-endpoint = <&edp_in>;
+ 						};
+ 					};
++
++					port@2 {
++                                                reg = <2>;
++                                                dpu_intf0_out: endpoint {
++                                                        remote-endpoint = <&dp_in>;
++                                                };
++                                        };
+ 				};
+ 
+ 				mdp_opp_table: opp-table {
+@@ -3018,6 +3025,78 @@
+ 
+ 				status = "disabled";
+ 			};
++
++			msm_dp: displayport-controller@ae90000 {
++				status = "disabled";
++				compatible = "qcom,sc7280-dp";
++
++				reg = <0 0x0ae90000 0 0x1400>;
++
++				interrupt-parent = <&mdss>;
++				interrupts = <12>;
++
++				clocks = <&dispcc DISP_CC_MDSS_AHB_CLK>,
++					 <&dispcc DISP_CC_MDSS_DP_AUX_CLK>,
++					 <&dispcc DISP_CC_MDSS_DP_LINK_CLK>,
++					 <&dispcc DISP_CC_MDSS_DP_LINK_INTF_CLK>,
++					 <&dispcc DISP_CC_MDSS_DP_PIXEL_CLK>;
++				clock-names =	"core_iface",
++						"core_aux",
++						"ctrl_link",
++						"ctrl_link_iface",
++						"stream_pixel";
++				#clock-cells = <1>;
++				assigned-clocks = <&dispcc DISP_CC_MDSS_DP_LINK_CLK_SRC>,
++						  <&dispcc DISP_CC_MDSS_DP_PIXEL_CLK_SRC>;
++				assigned-clock-parents = <&dp_phy 0>, <&dp_phy 1>;
++				phys = <&dp_phy>;
++				phy-names = "dp";
++
++				operating-points-v2 = <&dp_opp_table>;
++				power-domains = <&rpmhpd SC7280_CX>;
++
++				#sound-dai-cells = <0>;
++
++				ports {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					port@0 {
++						reg = <0>;
++						dp_in: endpoint {
++							remote-endpoint = <&dpu_intf0_out>;
++						};
++					};
++
++					port@1 {
++						reg = <1>;
++						dp_out: endpoint { };
++					};
++				};
++
++				dp_opp_table: opp-table {
++					compatible = "operating-points-v2";
++
++					opp-160000000 {
++						opp-hz = /bits/ 64 <160000000>;
++						required-opps = <&rpmhpd_opp_low_svs>;
++					};
++
++					opp-270000000 {
++						opp-hz = /bits/ 64 <270000000>;
++						required-opps = <&rpmhpd_opp_svs>;
++					};
++
++					opp-540000000 {
++						opp-hz = /bits/ 64 <540000000>;
++						required-opps = <&rpmhpd_opp_svs_l1>;
++					};
++
++					opp-810000000 {
++						opp-hz = /bits/ 64 <810000000>;
++						required-opps = <&rpmhpd_opp_nom>;
++					};
++				};
++			};
+ 		};
+ 
+ 		pdc: interrupt-controller@b220000 {
+@@ -3120,6 +3199,12 @@
+ 				bias-pull-up;
+ 			};
+ 
++			dp_hot_plug_det: dp-hot-plug-det {
++				pins = "gpio47";
++				function = "dp_hot";
++				bias-disable;
++                        };
++
+ 			qspi_clk: qspi-clk {
+ 				pins = "gpio14";
+ 				function = "qspi_clk";
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-> +               device_type = "memory";
-> +               reg = <0x80000000 0x2000000>;
-> +       };
-> +
-
-Unneeded blank line.
-> +
-> +&iomuxc {
-> +       pinctrl-names = "default";
-> +
-> +       imxrt1050-evk {
-
-No need for this imxrt1050-evk container.
-
-> +               pinctrl_lpuart1: lpuart1grp {
-> +                       fsl,pins = <
-> +                               MXRT1050_IOMUXC_GPIO_AD_B0_12_LPUART1_TXD
-> +                                       0xf1
-
-Put it on a single line. It helps readability. Same applies globally.
-> +&usdhc1 {
-> +       pinctrl-names = "default", "state_100mhz", "state_200mhz", "sleep";
-> +       pinctrl-0 = <&pinctrl_usdhc0>;
-> +       pinctrl-1 = <&pinctrl_usdhc0>;
-> +       pinctrl-2 = <&pinctrl_usdhc0>;
-> +       pinctrl-3 = <&pinctrl_usdhc0>;
-> +       status = "okay";
-> +
-> +       cd-gpios = <&gpio2 28 GPIO_ACTIVE_LOW>;
-
-Make 'status' to be the last property. Remove the blank line.
-
-> +               edma1: dma-controller@400e8000 {
-> +                       #dma-cells = <2>;
-> +                       compatible = "fsl,imx7ulp-edma";
-> +                       reg = <0x400e8000 0x4000>,
-> +                               <0x400ec000 0x4000>;
-> +                       dma-channels = <32>;
-> +                       interrupts = <0>,
-> +                               <1>,
-> +                               <2>,
-> +                               <3>,
-> +                               <4>,
-> +                               <5>,
-> +                               <6>,
-> +                               <7>,
-> +                               <8>,
-> +                               <9>,
-> +                               <10>,
-> +                               <11>,
-> +                               <12>,
-> +                               <13>,
-> +                               <14>,
-> +                               <15>,
-> +                               <16>;
-
-Please group more elements into the same line.
-
-Putting one entry per line makes it extremely long.
-
-> +               gpio5: gpio@400c0000 {
-> +                       compatible = "fsl,imxrt-gpio", "fsl,imx35-gpio";
-> +                       reg = <0x400c0000 0x4000>;
-> +                       interrupts = <88>,
-> +                               <89>;
-
-Put the interrupts into a single line.
