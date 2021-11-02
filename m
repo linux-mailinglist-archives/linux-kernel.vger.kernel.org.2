@@ -2,65 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7C134424E1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 01:49:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88A014424E5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 01:51:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231669AbhKBAw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 20:52:27 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:42266 "EHLO vps0.lunn.ch"
+        id S231721AbhKBAxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 20:53:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48638 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229480AbhKBAw0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 20:52:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=Oat4dkNGPgPrMhy99YcPihYIB0B0LOufAF+2fSLtM9c=; b=3LFdum8/tu48Iz3Tf/FCDBCcgt
-        hQ/j3oRtBM+RJoLmYoRJ4hh6mi3g1VwB7xLyMMQwATUHAJMXk9tdD0DnGmseE6RGPYh2xAhalaTje
-        SvwV7RbmEUDrVCSXo+5YnlRViwXItm00jzFO/iAIwkqGCHHYzlw0KgHtCO7ty7mhkGIY=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mhhzi-00CM5B-4M; Tue, 02 Nov 2021 01:49:42 +0100
-Date:   Tue, 2 Nov 2021 01:49:42 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     Grygorii Strashko <grygorii.strashko@ti.com>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-kernel@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [RFC PATCH] net: phy/mdio: enable mmd indirect access through
- phy_mii_ioctl()
-Message-ID: <YYCLJnY52MoYfxD8@lunn.ch>
-References: <20211101182859.24073-1-grygorii.strashko@ti.com>
- <YYBBHsFEwGdPJw3b@lunn.ch>
- <YYBF3IZoSN6/O6AL@shell.armlinux.org.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YYBF3IZoSN6/O6AL@shell.armlinux.org.uk>
+        id S229480AbhKBAxc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 20:53:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id DDBF26052B;
+        Tue,  2 Nov 2021 00:50:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635814257;
+        bh=g45dLqWom2UdJNNut6ZLhl2OWeLMplRUVSgsw/zzjSM=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=CohSnDhPnaYAyL7RzROQEbDtm+nEfj8tr8WRbDD3KlaAbwmlYwkSnJVcvz35vmS6w
+         opwh6VKBvtpzRpe3T236IVlsXo7uXbE3Er988VdHfEbTUxMNardbSEtbaoJ8GjbEEH
+         OktRfQSXcnUTu2poIpMDZwOG40sFOAkwnRDjYKjvdXluFdHyRmwD9G/mIIn7Vf+zRu
+         DIJLAjCKqxn3vQLtjYrNqbTEvIWx1LHwfUYHLQ3WRmrpTOeLJRKL3di6+/B5TS/RfJ
+         TmI7xIpoS3fYylXCYus1rxKFP1ls04GzXE+1684H2Rc0sZP7R+oWc2DiQbA4DmpVh+
+         vwifQnRoEPVTg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C8AE560A0F;
+        Tue,  2 Nov 2021 00:50:57 +0000 (UTC)
+Subject: Re: [GIT PULL] hardening updates for v5.16-rc1
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <202111010917.75B96F4E@keescook>
+References: <202111010917.75B96F4E@keescook>
+X-PR-Tracked-List-Id: <linux-doc.vger.kernel.org>
+X-PR-Tracked-Message-Id: <202111010917.75B96F4E@keescook>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/hardening-v5.16-rc1
+X-PR-Tracked-Commit-Id: 6425392acf24b6d469932dd1b217dc7b20d6447f
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: f594e28d805aca2c6e158cc647f133cab58a8bb4
+Message-Id: <163581425776.14115.13508046273767600131.pr-tracker-bot@kernel.org>
+Date:   Tue, 02 Nov 2021 00:50:57 +0000
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+        Fangrui Song <maskray@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        James Morris <jmorris@namei.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>, "KE.LI" <like1@oppo.com>,
+        linux-doc@vger.kernel.org, linux-hardening@vger.kernel.org,
+        linux-kbuild@vger.kernel.org,
+        linux-security-module@vger.kernel.org, llvm@lists.linux.dev,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Padmanabha Srinivasaiah <treasure4paddy@gmail.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Will Deacon <will@kernel.org>,
+        Ye Guojin <ye.guojin@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> The use of the indirect registers is specific to PHYs, and we already
-> know that various PHYs don't support indirect access, and some emulate
-> access to the EEE registers - both of which are handled at the PHY
-> driver level.
+The pull request you sent on Mon, 1 Nov 2021 09:20:52 -0700:
 
-That is actually an interesting point. Should the ioctl call actually
-use the PHY driver read_mmd and write_mmd? Or should it go direct to
-the bus? realtek uses MII_MMD_DATA for something to do with suspend,
-and hence it uses genphy_write_mmd_unsupported(), or it has its own
-function emulating MMD operations.
+> https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/hardening-v5.16-rc1
 
-So maybe the ioctl handler actually needs to use __phy_read_mmd() if
-there is a phy at the address, rather than go direct to the bus?
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/f594e28d805aca2c6e158cc647f133cab58a8bb4
 
-Or maybe we should just say no, you should do this all from userspace,
-by implementing C45 over C22 in userspace, the ioctl allows that, the
-kernel does not need to be involved.
+Thank you!
 
-	Andrew
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
