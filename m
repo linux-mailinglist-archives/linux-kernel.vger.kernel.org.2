@@ -2,132 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB17B4429A5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 09:39:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D88B14429A9
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 09:40:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230109AbhKBIm2 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 2 Nov 2021 04:42:28 -0400
-Received: from mail-ua1-f44.google.com ([209.85.222.44]:36400 "EHLO
-        mail-ua1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229612AbhKBIm1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 04:42:27 -0400
-Received: by mail-ua1-f44.google.com with SMTP id e10so36591796uab.3;
-        Tue, 02 Nov 2021 01:39:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=vtHObjXz/fBAC2wVKkwQJuDdB+3lhXmiXIXLkWkTc/M=;
-        b=QRjdTDM7DGiXoPUsGRBHxFmP30NWTeiX+m8+IeTa/riO77kl5T24MmY8cVXrxXxslI
-         OIyFVa7AjwOABF9Gqnz8/miuV2Uyx0Kou2g3SAWOM7ItKkQiIwauQTAe5jIxX9Ct+UPS
-         13EzHDKOteOrg5SQsWYORbt71WTyxyGh9FsVTpq89YdyFb3gSWuBPqbmUJK3n8kW8EKN
-         wCv+2O2TINOjQ5WHRT+UJwG5+E6UJB4/r5OrB1eXVd/pOI/7zHbptijEBRBLYl6u9Sdc
-         1B2DbbzmhMufte6hTUM4e7CmLVJHd5h0BG+nip+kNHzSTqsG+jg+hdfIjEjAkQjkD+hN
-         mtbA==
-X-Gm-Message-State: AOAM531Yy2wADEp+VAhKDmGhl4Ufa+6j+oa1zFU8MkLAH6B6js7Epgbp
-        Y2veFyerT4gKM0sw+ebH4aWlcNmeMXwKmw==
-X-Google-Smtp-Source: ABdhPJzaZy7uW+fnKl5lEyCferMvOTPDGz+HhS234VwPunT4zBn9WGDVPTO3F5C7Ce+j1k1Ce6kkRA==
-X-Received: by 2002:a05:6102:3750:: with SMTP id u16mr37365166vst.60.1635842391918;
-        Tue, 02 Nov 2021 01:39:51 -0700 (PDT)
-Received: from mail-ua1-f44.google.com (mail-ua1-f44.google.com. [209.85.222.44])
-        by smtp.gmail.com with ESMTPSA id l8sm885718vse.30.2021.11.02.01.39.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Nov 2021 01:39:51 -0700 (PDT)
-Received: by mail-ua1-f44.google.com with SMTP id ay21so16052961uab.12;
-        Tue, 02 Nov 2021 01:39:50 -0700 (PDT)
-X-Received: by 2002:ab0:2bd2:: with SMTP id s18mr35296866uar.78.1635842390754;
- Tue, 02 Nov 2021 01:39:50 -0700 (PDT)
+        id S230324AbhKBIms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 04:42:48 -0400
+Received: from mga12.intel.com ([192.55.52.136]:39571 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229612AbhKBImr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 04:42:47 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10155"; a="211265311"
+X-IronPort-AV: E=Sophos;i="5.87,202,1631602800"; 
+   d="scan'208";a="211265311"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2021 01:40:13 -0700
+X-IronPort-AV: E=Sophos;i="5.87,202,1631602800"; 
+   d="scan'208";a="500426257"
+Received: from sohamdas-mobl.gar.corp.intel.com (HELO localhost) ([10.249.32.13])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2021 01:40:09 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     "Yuan\, Perry" <Perry.Yuan@amd.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     "dri-devel\@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Huang\, Shimmer" <Xinmei.Huang@amd.com>,
+        "Huang\, Ray" <Ray.Huang@amd.com>
+Subject: RE: [PATCH v2] drm/dp: Fix aux->transfer NULL pointer dereference on drm_dp_dpcd_access
+In-Reply-To: <MWHPR12MB1631610D235FCC3B47064F6B9C8B9@MWHPR12MB1631.namprd12.prod.outlook.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20211101061053.38173-1-Perry.Yuan@amd.com> <87a6iodnz7.fsf@intel.com> <MWHPR12MB1631610D235FCC3B47064F6B9C8B9@MWHPR12MB1631.namprd12.prod.outlook.com>
+Date:   Tue, 02 Nov 2021 10:40:07 +0200
+Message-ID: <87y267c5nc.fsf@intel.com>
 MIME-Version: 1.0
-References: <YX1KCclMB/HTZ22c@fedora>
-In-Reply-To: <YX1KCclMB/HTZ22c@fedora>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 2 Nov 2021 09:39:39 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdW5thqxWz37er3BHwqee_agvhHVDK5p8Hrx7HCKOdFjLA@mail.gmail.com>
-Message-ID: <CAMuHMdW5thqxWz37er3BHwqee_agvhHVDK5p8Hrx7HCKOdFjLA@mail.gmail.com>
-Subject: Re: [PATCH v3] backlight: lp855x: Switch to atomic PWM API
-To:     =?UTF-8?B?TWHDrXJhIENhbmFs?= <maira.canal@usp.br>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PWM List <linux-pwm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maíra,
-
-On Sat, Oct 30, 2021 at 3:35 PM Maíra Canal <maira.canal@usp.br> wrote:
-> Remove legacy PWM interface (pwm_config, pwm_enable, pwm_disable) and
-> replace it for the atomic PWM API.
+On Tue, 02 Nov 2021, "Yuan, Perry" <Perry.Yuan@amd.com> wrote:
+> [AMD Official Use Only]
 >
-> Signed-off-by: Maíra Canal <maira.canal@usp.br>
-
-Thanks for your patch!
-
-> --- a/drivers/video/backlight/lp855x_bl.c
-> +++ b/drivers/video/backlight/lp855x_bl.c
-> @@ -233,9 +233,8 @@ static int lp855x_configure(struct lp855x *lp)
+> Hi Jani:
+> Thanks for your comments.
 >
->  static void lp855x_pwm_ctrl(struct lp855x *lp, int br, int max_br)
->  {
-> -       unsigned int period = lp->pdata->period_ns;
-> -       unsigned int duty = br * period / max_br;
-> -       struct pwm_device *pwm;
-> +       struct pwm_device *pwm = NULL;
-> +       struct pwm_state state;
+>> -----Original Message-----
+>> From: Jani Nikula <jani.nikula@linux.intel.com>
+>> Sent: Monday, November 1, 2021 9:07 PM
+>> To: Yuan, Perry <Perry.Yuan@amd.com>; Maarten Lankhorst
+>> <maarten.lankhorst@linux.intel.com>; Maxime Ripard <mripard@kernel.org>;
+>> Thomas Zimmermann <tzimmermann@suse.de>; David Airlie <airlied@linux.ie>;
+>> Daniel Vetter <daniel@ffwll.ch>
+>> Cc: Yuan, Perry <Perry.Yuan@amd.com>; dri-devel@lists.freedesktop.org; linux-
+>> kernel@vger.kernel.org; Huang, Shimmer <Xinmei.Huang@amd.com>; Huang,
+>> Ray <Ray.Huang@amd.com>
+>> Subject: Re: [PATCH v2] drm/dp: Fix aux->transfer NULL pointer dereference on
+>> drm_dp_dpcd_access
+>> 
+>> [CAUTION: External Email]
+>> 
+>> On Mon, 01 Nov 2021, Perry Yuan <Perry.Yuan@amd.com> wrote:
+>> > Fix below crash by adding a check in the drm_dp_dpcd_access which
+>> > ensures that aux->transfer was actually initialized earlier.
+>> 
+>> Gut feeling says this is papering over a real usage issue somewhere else. Why is
+>> the aux being used for transfers before ->transfer has been set? Why should the
+>> dp helper be defensive against all kinds of misprogramming?
+>> 
+>> 
+>> BR,
+>> Jani.
+>> 
 >
->         /* request pwm device with the consumer name */
->         if (!lp->pwm) {
-> @@ -245,18 +244,16 @@ static void lp855x_pwm_ctrl(struct lp855x *lp, int br, int max_br)
+> The issue was found by Intel IGT test suite, graphic by pass test case.
+> https://gitlab.freedesktop.org/drm/igt-gpu-tools
+> normally use case will not see the issue. 
+> To avoid this issue happy again when we run the test case , it will be nice to add a check before the transfer is called.
+> And we can see that it really needs to have a check here to make ITG &kernel happy.
+
+You're missing my point. What is the root cause? Why do you have the aux
+device or connector registered before ->transfer function is
+initialized. I don't think you should do that.
+
+BR,
+Jani.
+
+
 >
->                 lp->pwm = pwm;
+> Perry.
 >
-> -               /*
-> -                * FIXME: pwm_apply_args() should be removed when switching to
-> -                * the atomic PWM API.
-> -                */
-> -               pwm_apply_args(pwm);
-> +               pwm_init_state(lp->pwm, &state);
-> +               state.period = lp->pdata->period_ns;
->         }
->
-> -       pwm_config(lp->pwm, duty, period);
-> -       if (duty)
-> -               pwm_enable(lp->pwm);
-> -       else
-> -               pwm_disable(lp->pwm);
-> +       pwm_get_state(lp->pwm, &state);
-> +
-> +       state.duty_cycle = br * state.period / max_br;
+>> 
+>> >
+>> > BUG: kernel NULL pointer dereference, address: 0000000000000000 PGD 0
+>> > P4D 0
+>> > Oops: 0010 [#1] SMP NOPTI
+>> > RIP: 0010:0x0
+>> > Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
+>> > RSP: 0018:ffffa8d64225bab8 EFLAGS: 00010246
+>> > RAX: 0000000000000000 RBX: 0000000000000020 RCX: ffffa8d64225bb5e
+>> > RDX: ffff93151d921880 RSI: ffffa8d64225bac8 RDI: ffff931511a1a9d8
+>> > RBP: ffffa8d64225bb10 R08: 0000000000000001 R09: ffffa8d64225ba60
+>> > R10: 0000000000000002 R11: 000000000000000d R12: 0000000000000001
+>> > R13: 0000000000000000 R14: ffffa8d64225bb5e R15: ffff931511a1a9d8
+>> > FS: 00007ff8ea7fa9c0(0000) GS:ffff9317fe6c0000(0000)
+>> > knlGS:0000000000000000
+>> > CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> > CR2: ffffffffffffffd6 CR3: 000000010d5a4000 CR4: 0000000000750ee0
+>> > PKRU: 55555554
+>> > Call Trace:
+>> > drm_dp_dpcd_access+0x72/0x110 [drm_kms_helper]
+>> > drm_dp_dpcd_read+0xb7/0xf0 [drm_kms_helper]
+>> > drm_dp_start_crc+0x38/0xb0 [drm_kms_helper]
+>> > amdgpu_dm_crtc_set_crc_source+0x1ae/0x3e0 [amdgpu]
+>> > crtc_crc_open+0x174/0x220 [drm]
+>> > full_proxy_open+0x168/0x1f0
+>> > ? open_proxy_open+0x100/0x100
+>> > do_dentry_open+0x156/0x370
+>> > vfs_open+0x2d/0x30
+>> >
+>> > v2: fix some typo
+>> >
+>> > Signed-off-by: Perry Yuan <Perry.Yuan@amd.com>
+>> > ---
+>> >  drivers/gpu/drm/drm_dp_helper.c | 4 ++++
+>> >  1 file changed, 4 insertions(+)
+>> >
+>> > diff --git a/drivers/gpu/drm/drm_dp_helper.c
+>> > b/drivers/gpu/drm/drm_dp_helper.c index 6d0f2c447f3b..76b28396001a
+>> > 100644
+>> > --- a/drivers/gpu/drm/drm_dp_helper.c
+>> > +++ b/drivers/gpu/drm/drm_dp_helper.c
+>> > @@ -260,6 +260,10 @@ static int drm_dp_dpcd_access(struct drm_dp_aux
+>> *aux, u8 request,
+>> >       msg.buffer = buffer;
+>> >       msg.size = size;
+>> >
+>> > +     /* No transfer function is set, so not an available DP connector */
+>> > +     if (!aux->transfer)
+>> > +             return -EINVAL;
+>> > +
+>> >       mutex_lock(&aux->hw_mutex);
+>> >
+>> >       /*
+>> 
+>> --
+>> Jani Nikula, Intel Open Source Graphics Center
 
-Above is a 64-by-32 division, which should not be open-coded, as
-that will cause link failures on 32-bit platform (cfr. "undefined
-reference to `__udivdi3'", as reported by the kernel test robot).
-Please use div_u64() instead.
-
-> +       state.enabled = state.duty_cycle;
-> +
-> +       pwm_apply_state(lp->pwm, &state);
->  }
->
->  static int lp855x_bl_update_status(struct backlight_device *bl)
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-- 
+Jani Nikula, Intel Open Source Graphics Center
