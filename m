@@ -2,127 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E0E9443567
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 19:16:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6590744356B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 19:17:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235023AbhKBST3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 14:19:29 -0400
-Received: from mail-wr1-f44.google.com ([209.85.221.44]:33555 "EHLO
-        mail-wr1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232211AbhKBST2 (ORCPT
+        id S235037AbhKBSUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 14:20:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37990 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232211AbhKBSUM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 14:19:28 -0400
-Received: by mail-wr1-f44.google.com with SMTP id d24so4085042wra.0;
-        Tue, 02 Nov 2021 11:16:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9F53UeZxts0KkuS7BqmAGiTCh9kaqx5yW63C8WAYLFw=;
-        b=mR696zBfkeavtqqnVr+dI8pfTJnRwiSHimzZXxEvYE7SigilxfCsX02JNRf9PjXsYC
-         xA+Tw1qx2aQHimKU2nEWPYDhL/D0rQ/PRfDN6TqpaO3hpoJhhLabehHBcqVqkwu+zUbr
-         ykZJvwK/67yy/E2q0HDofi3cpIV3WKJh5/nGEeUA39qBAUidjkLGTS2h0Mxg1ngF++b0
-         V9F1/DCFUIlpQw3WHA6p5YCJpSGBKDjjZ7fXAYGXADeTa5KLL/HyxFrUMSFq1kU0ocUY
-         RlpRk9cfYXo1RFjBNUEn7V2zrWY62a554Ia/4Fs0JxBQQ0l8p7llgt/0F5kGEQr7A/hs
-         uCfg==
-X-Gm-Message-State: AOAM531eU/QJrXcx1Rva3S+BY6dKLyTI39tWE1EUutb0lELrZ/3S9nLl
-        /iVcogBauPsQkVq1HzPYlrA=
-X-Google-Smtp-Source: ABdhPJxNyvZyA2AhEaG/1YewkpF0r0p8qpWN4UzY6LfmlZLhM8es3U+1krASA3TaDA18GHS6vyJuAA==
-X-Received: by 2002:adf:cf05:: with SMTP id o5mr13151325wrj.325.1635877012210;
-        Tue, 02 Nov 2021 11:16:52 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id a4sm1915867wmg.10.2021.11.02.11.16.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Nov 2021 11:16:51 -0700 (PDT)
-Date:   Tue, 2 Nov 2021 18:16:49 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        kys@microsoft.com, haiyangz@microsoft.com, decui@microsoft.com,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Michael Kelley <mikelley@microsoft.com>
-Subject: Re: [GIT PULL] Hyper-V commits for 5.16
-Message-ID: <20211102181649.pc3nhrajmyhd4fnq@liuwe-devbox-debian-v2>
-References: <20211102131309.3hknsf66swvkv6hm@liuwe-devbox-debian-v2>
- <CAHk-=wges7MttbFTQ9=YykWmn=B4F5pQsZNKNuxmyA1CUM7hNQ@mail.gmail.com>
+        Tue, 2 Nov 2021 14:20:12 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82DC0C061714;
+        Tue,  2 Nov 2021 11:17:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=DTR3HhOcoghnQ+WdEI8oOLsmOiTi+U5wJk9uwK8q0lM=; b=NIFLeQYVvY2n1ViwTH0gaMMPGe
+        iyBoZF05x+oX4tKDtWZ3RTzkETuF+RC/mxgm0F4aZOJ28+C0YmHZLXCjUcHCcDDz9jsBQP0e+rfx5
+        WY/3rujWFKfswF2v4eeJjOqSEKk49ZNVyjrihceWXpZW+lIKx4Zn3lWQyMlfPRqeo6hSJlmFQcJC1
+        W1jJ38pCV+pPRuni5Dfvpisgni3hnX7zMyOaiHdN0PKCp0kHwvckW4Q8it+1h6aHq2hv+PhqZkbLD
+        3J3zKunrJmVqvZ4rE2JuB0EFC7lgW3DV128FQ203MHdhZEtwNk6Q51jyLmnzyNs/brLiiHwrntYP+
+        dtL9e1/w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mhyLU-00DnTb-Fy; Tue, 02 Nov 2021 18:17:16 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0A1BC300366;
+        Tue,  2 Nov 2021 19:17:16 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id ED6572D53269A; Tue,  2 Nov 2021 19:17:15 +0100 (CET)
+Date:   Tue, 2 Nov 2021 19:17:15 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Mark Rutland <mark.rutland@arm.com>, X86 ML <x86@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-hardening@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev, joao@overdrivepizza.com
+Subject: Re: [PATCH] static_call,x86: Robustify trampoline patching
+Message-ID: <YYGAq3qLfb+35X/M@hirez.programming.kicks-ass.net>
+References: <YX74Ch9/DtvYxzh/@hirez.programming.kicks-ass.net>
+ <CAMj1kXG+MuGaG3BHk8pnE1MKVmRf5E+nRNoFMHxOA1y84eGikg@mail.gmail.com>
+ <YX8AQJqyB+H3PF1d@hirez.programming.kicks-ass.net>
+ <CAMj1kXF3n-oQ1WP8=asb60K6UjSYOtz5RVhrcoCoNq3v7mZdQg@mail.gmail.com>
+ <20211101090155.GW174703@worktop.programming.kicks-ass.net>
+ <CAMj1kXGhRmdM3om289Q2-s1Pzfob3D2iSDMorzggfhSk1oj53A@mail.gmail.com>
+ <YYE1yPClPMHvyvIt@hirez.programming.kicks-ass.net>
+ <YYFWEnBb/UaZKGzz@hirez.programming.kicks-ass.net>
+ <CAMj1kXFQSitDY5WT246YEXXFphUv_HSjBrgvGzQGiCr4jLrM+g@mail.gmail.com>
+ <YYGAAVG5aRDKRHso@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wges7MttbFTQ9=YykWmn=B4F5pQsZNKNuxmyA1CUM7hNQ@mail.gmail.com>
+In-Reply-To: <YYGAAVG5aRDKRHso@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 11:11:29AM -0700, Linus Torvalds wrote:
-> On Tue, Nov 2, 2021 at 6:13 AM Wei Liu <wei.liu@kernel.org> wrote:
-> >
-> > There are two merges from the tip tree: one is because of Tianyu's
-> > patches went in via tip/x86/sev, the other is because a tree-wide
-> > cleanup in tip/x86/cc conflicted with Tianyu's patch.
-> >
-> > Instead of requiring you to fix up I thought I'd just do it myself.
+On Tue, Nov 02, 2021 at 07:14:25PM +0100, Peter Zijlstra wrote:
+> On Tue, Nov 02, 2021 at 06:44:56PM +0100, Ard Biesheuvel wrote:
+> > On Tue, 2 Nov 2021 at 16:15, Peter Zijlstra <peterz@infradead.org> wrote:
+> > >
+> > > On Tue, Nov 02, 2021 at 01:57:44PM +0100, Peter Zijlstra wrote:
+> > >
+> > > > So how insane is something like this, have each function:
+> > > >
+> > > > foo.cfi:
+> > > >       endbr64
+> > > >       xorl $0xdeadbeef, %r10d
+> > > >       jz foo
+> > > >       ud2
+> > > >       nop     # make it 16 bytes
+> > > > foo:
+> > > >       # actual function text goes here
+> > > >
+> > > >
+> > > > And for each hash have two thunks:
+> > > >
+> > > >
+> > > >       # arg: r11
+> > > >       # clobbers: r10, r11
+> > > > __x86_indirect_cfi_deadbeef:
+> > > >       movl -9(%r11), %r10             # immediate in foo.cfi
+> > > >       xorl $0xdeadbeef, %r10          # our immediate
+> > > >       jz 1f
+> > > >       ud2
+> > > > 1:    ALTERNATIVE_2   "jmp *%r11",
+> > > >                       "jmp __x86_indirect_thunk_r11", X86_FEATURE_RETPOLINE
+> > > >                       "lfence; jmp *%r11", X86_FEATURE_RETPOLINE_AMD
+> > > >
+> > 
+> > So are these supposed to go into the jump tables? If so, there still
+> > needs to be a check against the boundary of the table at the call
+> > site, to ensure that we are not calling something that we shouldn't.
+> > 
+> > If they are not going into the jump tables, I don't see the point of
+> > having them, as only happy flow/uncomprised code would bother to use
+> > them.
 > 
-> Please don't do that.
+> I don't understand. If you can scribble your own code, you can
+> circumvent pretty much any range check anyway. But if you can't scribble
+> your own code, you get to use the branch here and that checks the
+> callsite and callee signature.
 > 
-> Merging a pre-requisite and having a common branch that you merge - that's fine.
-> 
-> But don't hide merge conflicts from me by "pre-merging". It's not helpful.
-> 
-> And to make matters worse, both of those merges are BAD.
-> 
-> They have absolutely no explanation.
-> 
-> Christ.
-> 
-> For the millionth time:
-> 
->    IF YOU CAN'T BE BOTHERED TO WRITE A PROPER COMMIT MESSAGE FOR A
-> MERGE, DON'T DO THE MERGE
-> 
-> I'm getting really tired of having to say this multiple times every
-> merge window (and often in between merge windows too).
-> 
-> Your merges are bad, and you should feel bad.
-> 
-> I've pulled this, but at some point I'm just going to have to decide
-> that "bad merges means I will not pull your garbage".
-> 
-> Merges need commit messages that explain what is going on, just as
-> much as any other commit does.
-> 
-> In fact, arguably they need *more* explanation, since they are subtler
-> and don't have the obvious patch associated with them that may clarify
-> what is going on.
-> 
-> So a merge message like
-> 
->     Merge remote-tracking branch 'tip/x86/sev' into hyperv-next
-> 
-> is *NOT* an acceptable merge message. It needs an explanation of what
-> that SEV branch contained, and *WHY* those contents needed to be
-> merged into hyperv-next.
-> 
-> Again: if you can't explain the merge, or you can't be bothered, just
-> DON'T DO IT.
-> 
-> And no, the "hide conflicts from Linus" is _not_ an acceptable reason
-> to do merges.
-> 
-> I do so many merges that I can do most conflicts in my sleep, and
-> often do them as well or better than the submaintainers do. And I
-> write proper merge messages, and when a conflict happens it means I
-> *know* about it and am aware of how different trees ended up
-> interacting with each other - all of which is good.
-> 
-> Again - I've taken this pull request, but I'm not happy about those
-> merges. Even the merge that was perfectly fine to do wasn't done well.
-> 
+> The range check isn't fundamental to CFI, having a check is the
+> important thing AFAIU.
 
-Okay. Noted. Thanks for pulling in those patches. I will keep what you
-said above in mind for future PRs.
-
-Wei.
-
->                Linus
+That is, how is a jump-table/range-check better than a hash-value match
+check?
