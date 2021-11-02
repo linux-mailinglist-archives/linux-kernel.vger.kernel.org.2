@@ -2,92 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8918443132
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 16:02:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FB58443136
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 16:03:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232735AbhKBPFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 11:05:24 -0400
-Received: from elvis.franken.de ([193.175.24.41]:56339 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232743AbhKBPFW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 11:05:22 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1mhvJC-0005rk-00; Tue, 02 Nov 2021 16:02:42 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 2DAE0C291E; Tue,  2 Nov 2021 16:02:01 +0100 (CET)
-Date:   Tue, 2 Nov 2021 16:02:01 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Cc:     Russell King <linux@armlinux.org.uk>, Andrew Lunn <andrew@lunn.ch>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI: Marvell: Update PCIe fixup
-Message-ID: <20211102150201.GA11675@alpha.franken.de>
-References: <20211101150405.14618-1-pali@kernel.org>
- <20211102084241.GA6134@alpha.franken.de>
- <20211102090246.unmbruykfdjabfga@pali>
- <20211102094700.GA7376@alpha.franken.de>
- <20211102100034.rhcb3k2jvr6alm6y@pali>
+        id S233846AbhKBPGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 11:06:11 -0400
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:36561 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233836AbhKBPGJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 11:06:09 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 4D4095C011D;
+        Tue,  2 Nov 2021 11:03:34 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Tue, 02 Nov 2021 11:03:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=GAofqbfPUokCWaAMbYDnlRK3LBS
+        NmSEwo1+DLnUZQPA=; b=icIDIil8mCAEUKdAFEM7bbBKJM4c3tow+C1rVnwW+ad
+        MUznoFGp9DBv7dGPibZgqbCm0Q0tey6/FvtxvGMTRKDKo83rf9G2yKhxNdlMfmt3
+        ok2BETvZfc6A/FXWa6HLmILlHq/2W0Ck38KgBOdvnRtyQqqCBsCdjlPMMDrLUlN7
+        TPUzShVSc2FtOhQABLAW/nG6CDrBSWD+zUDV7qS7QsKhJaLjtTsOky7z599t4nBN
+        tzOxG1hwiy8jQtszA5drBNszSvA9817qpmRN5zGc/F9WFvj7hPNm1Mja00T9Qmdx
+        PwF2Xw5SxETNMj8EsV57HNLhF+qICNKMGAt7pjXOjkA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=GAofqb
+        fPUokCWaAMbYDnlRK3LBSNmSEwo1+DLnUZQPA=; b=lS0scAA9GuTPiuitbEC3dS
+        qv4c6dADfSp8kKPWNRIHuE8oZuUWdIo6GylFAh7GPQ0zXHM35MDtWC8cyw6xfjOM
+        D5+yvuEOr4r+xowlLSaL23J92PnfZKpdj1TkHj7FM0wJXjlbpqCsykl0M3ii8rnP
+        OwIi08sSnJid0I0s4RAGF2pueZ517h5EQD+sMcxGjVxAZQwA3pdpPya5nXluxxNo
+        4xxkCQ5fLaREA7RfKJkCC8eK13Qhxi5/nImYPMxSxUHyxlvmBjlf+0eBfQwX97rY
+        jZK0kMOquZ5OVO1hIGPffYkGO1dkiRR6VSHgUkwtySG+ZoFPtemUHHwf/xBowLeQ
+        ==
+X-ME-Sender: <xms:RVOBYRmSxDE-ppFBnVAdJDRlNJxZyhIzpbc0PtTGoSN66esEdoVQUA>
+    <xme:RVOBYc3G9nDsOLqxYI3OEf8TBTFfV-5GAbcP8eUPDMW1GAA09G4qlXrquj6wUM9-s
+    deqlsHjP9miNUFw5QU>
+X-ME-Received: <xmr:RVOBYXorC9Kx3w30qm1BHzP-3yQTScjn4t6Om5e2Gh6bJnGcGaLMSEquQLz9-BZ5vmw8zzrJQMsNRmkYyGiyJsyw7DpU5_J0MNGckOkS>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrtddtgdeghecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
+    udenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrg
+    igihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:RVOBYRmLLJ0UnKsbu83sE6q-5mhZky_ifNG2WbNF6Tq_B2yC3uYQjQ>
+    <xmx:RVOBYf1zPxZ3-zxOvMDu9Kjba0RedM1WqL0QsHzFcevYYzJipDGWXQ>
+    <xmx:RVOBYQtNXE-2qsndLGoDB2gpXNWoMXPlKESxHpIKSaph6-DAHdk8bw>
+    <xmx:RlOBYUmeg4OiGeoV707zYscTun_wlHoz_frvERZjKemn3WECBXZduw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 2 Nov 2021 11:03:32 -0400 (EDT)
+Date:   Tue, 2 Nov 2021 16:03:31 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     He Ying <heying24@huawei.com>
+Cc:     wens@csie.org, airlied@linux.ie, daniel@ffwll.ch,
+        jernej.skrabec@gmail.com, dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -V2] drm/sun4i: Grab reference of connector before return
+ connector from sun4i_tcon_get_connector
+Message-ID: <20211102150331.526nn2e6oqjbf6ur@gilmour>
+References: <33e01d45-c9f9-0e8c-6871-868ecd198368@huawei.com>
+ <20211102084628.149070-1-heying24@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="vw4qxeyln6gwbonp"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211102100034.rhcb3k2jvr6alm6y@pali>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20211102084628.149070-1-heying24@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 11:00:34AM +0100, Pali Rohár wrote:
-> > > But I do not have this hardware to verify it.
-> > 
-> > I still have a few Cobalt systems here.
-> 
-> Perfect! It would help if you could provide 'lspci -nn -vv' output from
-> that system. In case you have very old version of lspci on that system
-> you could try to run it with '-xxxx' (or '-xxx') which prints hexdump
-> and I can parse it with local lspci.
 
-not sure, if you still needed:
+--vw4qxeyln6gwbonp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-root@raq2:~# lspci -nn -vv
-00:00.0 Host bridge [0600]: Marvell Technology Group Ltd. Device [11ab:4146] (rev 11)
-	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx-
-	Status: Cap- 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort+ >SERR- <PERR+ INTx-
-	Latency: 64, Cache Line Size: 32 bytes
-	Interrupt: pin A routed to IRQ 0
-	Region 1: Memory at 08000000 (32-bit, non-prefetchable) [size=128M]
-	Region 2: Memory at 1c000000 (32-bit, non-prefetchable) [size=32M]
-	Region 3: Memory at 1f000000 (32-bit, non-prefetchable) [size=16M]
-	Region 4: Memory at 14000000 (32-bit, non-prefetchable) [size=4K]
-	Region 5: I/O ports at 4000000 [disabled] [size=4K]
+Hi,
 
+On Tue, Nov 02, 2021 at 04:46:28AM -0400, He Ying wrote:
+> From the comments of drm_for_each_connector_iter(), we know
+> that "connector is only valid within the list body, if you
+> want to use connector after calling drm_connector_list_iter_end()
+> then you need to grab your own reference first using
+> drm_connector_get()". So fix the wrong use of connector
+> according to the comments and then call drm_connector_put()
+> after using connector finishes.
+>=20
+> Signed-off-by: He Ying <heying24@huawei.com>
+> ---
+>=20
+> V2:
+>  Use proper subject prefix
+>=20
+>  drivers/gpu/drm/sun4i/sun4i_tcon.c | 18 +++++++++++++-----
+>  1 file changed, 13 insertions(+), 5 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/sun4i/sun4i_tcon.c b/drivers/gpu/drm/sun4i/s=
+un4i_tcon.c
+> index 9f06dec0fc61..24fa6784ee5f 100644
+> --- a/drivers/gpu/drm/sun4i/sun4i_tcon.c
+> +++ b/drivers/gpu/drm/sun4i/sun4i_tcon.c
+> @@ -47,12 +47,12 @@ static struct drm_connector *sun4i_tcon_get_connector=
+(const struct drm_encoder *
+>  	drm_connector_list_iter_begin(encoder->dev, &iter);
+>  	drm_for_each_connector_iter(connector, &iter)
+>  		if (connector->encoder =3D=3D encoder) {
+> -			drm_connector_list_iter_end(&iter);
+> -			return connector;
+> +			drm_connector_get(connector);
+> +			break;
+>  		}
+>  	drm_connector_list_iter_end(&iter);
+> =20
+> -	return NULL;
+> +	return connector;
 
-root@raq2:~# lspci -xxxx
-00:00.0 Host bridge: Marvell Technology Group Ltd. Device 4146 (rev 11)
-00: ab 11 46 41 06 00 80 a2 11 00 80 05 08 40 00 00
-10: 00 00 00 00 00 00 00 08 00 00 00 1c 00 00 00 1f
-20: 00 00 00 14 01 00 00 14 00 00 00 00 00 00 00 00
-30: 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 00
-40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-70: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-90: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Connector might be uninitialized if we don't find one here
 
-Thomas.
+>  }
+> =20
+>  static int sun4i_tcon_get_pixel_depth(const struct drm_encoder *encoder)
+> @@ -65,6 +65,7 @@ static int sun4i_tcon_get_pixel_depth(const struct drm_=
+encoder *encoder)
+>  		return -EINVAL;
+> =20
+>  	info =3D &connector->display_info;
+> +	drm_connector_put(connector);
+>  	if (info->num_bus_formats !=3D 1)
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+We're still accessing connector->display_info here, but it might have been
+freed already.
+
+Maxime
+
+--vw4qxeyln6gwbonp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYYFTQwAKCRDj7w1vZxhR
+xW5tAP4vLeRUB7hovZ/pzeMNYb3F27REbqDmaJ5hMt09+f8PEwD/cTbVT8+nLcMU
+bJyX2cCnGrXIgeAL3mxTmb8Efmeypg0=
+=d0nY
+-----END PGP SIGNATURE-----
+
+--vw4qxeyln6gwbonp--
