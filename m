@@ -2,253 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E79D442860
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 08:28:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 732EE442867
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 08:30:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230281AbhKBHbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 03:31:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58816 "EHLO
+        id S230476AbhKBHdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 03:33:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbhKBHbT (ORCPT
+        with ESMTP id S229526AbhKBHc5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 03:31:19 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51FA7C061714
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 00:28:45 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id g14so10571519edz.2
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 00:28:45 -0700 (PDT)
+        Tue, 2 Nov 2021 03:32:57 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ED04C061764
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 00:30:21 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id x16-20020a25b910000000b005b6b7f2f91cso29986008ybj.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 00:30:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=cxWHL2V8mPHZBwLVhPzyF2zYMkIP2xx0HETqHhyGJcg=;
-        b=iey7kGkTQNS4cdfGrLnzmco9FYAcaG3/Lt4lTcV/ulyAh1Z2y0joLzbSJBglwa7aGO
-         D2vriEeB4RfYHANCz0k/6kcwYLK3oGMkfaJGVi3BJWuhlV+xsFP5zKjJ5mI+NCj4/X3n
-         bw1cl3F1ERhfsW66v3xYOv2DJbSWjoFNA3KxdbMnR/JiIJPl/5VoHBsKQem4D4zXawdc
-         rlHqCE+mcldGqDj29EDDjRRXwIJZbSsV/I5rhvCSlcXuY0+aFZnXQlGttPNYGoXYYVFP
-         XrZ2yGpg8LBv/4zoUV0hkjqQtxYcfNBV8bgfVjht6YrcnJqGi764/yvKNuVnlGzxWXCl
-         s/Hw==
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=4TO7cXb2F2AQHNi68Y4UhnFWgCfoNFbr4ZCVJOaX+38=;
+        b=nZ3R7daK2ARwboBEruz7yT3XKV0fn1XsrbiTNK3t7N/+PR1LqhOx2l2vzgm/QxZFOA
+         UGvGqtE0CkCFcPQ3ovL1mr7cSg4qkr8qzFJ0sitC8qcUXH8VBoPfV4riCZx8I5+JkDun
+         Ll4fuLcak6f0hUgyi6SdeLmBlEFKfLqiaxILWxa+WMAU0IUttIJu3NM8lgJNMM49OzRG
+         PcNmXf9pEGA4D8Vuo1wM8y3IiX9NKRuFr+RYdB6u5XDPtNaoRieRRcO4WivPAZVnCew6
+         ytXbte7+bPj8wCgZ1iUGeSqoVzSHclKHgAMb35HMS91Qp5yfai4RCTFEUuutpCgqVWEq
+         /L5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=cxWHL2V8mPHZBwLVhPzyF2zYMkIP2xx0HETqHhyGJcg=;
-        b=fEcSE4bjum2QLMhK2KLrwcwnO0FA9Dbh8p7VLqhuupwb3mHGkacJgQ1b0cIMjMSFFT
-         5gy1FxS3M8mQLX31B4QCCXIIGysf7+SLtUWvN08Pv+PtvW7mU6iZef86vvdwsqXzhYhi
-         eEDditfNj79JOeDh+WfaEumR6aJMW8SU/1zuzGxHeIbSli/OCQ8NLoksVWM9IeHCy/+w
-         iFhGIm1SMvsO5TPX1CcYSl7R8aRFg19Alm7R+KeNV3VS+SiWfN3Mhxnrp6DBH3ZLQ4wG
-         c6cbjFVcKVjsEQCCLf0nExpUoUBdtlDoE6fBHs4mYUAvC1Cz0Yk+uj9xNsp6Z5L2iHAd
-         MLzw==
-X-Gm-Message-State: AOAM530Vtmu07g+4JrdsafLMBHnnzQM5lXK5DxFBkmDL7bxPf+YJrbxI
-        9IdySLo0wYY6BCTuA5b402+uMXWfFzg/9qdYcL4a3Q==
-X-Google-Smtp-Source: ABdhPJzBUn1XxjtNqfsSYCgfNEkUxIwv7rDpDKzciCK8euvDYZt3owKWYY3HP8+mzViVfwrZ9eI1dDMMBnbYpy0Ba9M=
-X-Received: by 2002:a17:907:7fa7:: with SMTP id qk39mr43447345ejc.384.1635838123761;
- Tue, 02 Nov 2021 00:28:43 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211101114235.515637019@linuxfoundation.org>
-In-Reply-To: <20211101114235.515637019@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 2 Nov 2021 12:58:32 +0530
-Message-ID: <CA+G9fYu9-sr7u9Lqf364pg07Zk-a3OBiBHPE2RTJPnYPxdZs+g@mail.gmail.com>
-Subject: Re: [PATCH 5.4 00/51] 5.4.157-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
-        f.fainelli@gmail.com, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, linux@roeck-us.net
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=4TO7cXb2F2AQHNi68Y4UhnFWgCfoNFbr4ZCVJOaX+38=;
+        b=j8U1Ly2IhkZlocEWYXR0unGwK8Eb7CdL9u8mtpsfbLbRZ1vhlK/8Kh1u9hA6YWnHr8
+         Ad3Bc1uRQdmOpI1WceegRRaQ9dmnTXyC/m9rnvikArWPRcFxuT7KCBUnjjAVGowZCTYy
+         h2lbl3XwYq4buJZViPug9jAPNJ/zE4UgVnDAF/IV4EQGW2PygnL7QxzBKN3flxykNUCx
+         nBHK5jmmBCVQ4iiPct1fluYuVOEePhwwJPro6Eq9FQIqkTX8gxcUhbtrT5ZRIBQNQUA8
+         3IFozGOYzm53xpz7abtEQw5Y82s12TrUxoLq2jAkE9T9AQYt7DdZISbw5w6SrO/oAK+c
+         JqbQ==
+X-Gm-Message-State: AOAM530R13YniDixHosb9cXyFYSi8fy4TnrfdfcFUsnwiZlIomAyDcGA
+        9H3TS7wHvNZL4TgkJvhhGQGwLMYstgQbLA==
+X-Google-Smtp-Source: ABdhPJzzxK4N0+3UkZIX7/cbA0bqfqlwPpFrAUKBBilFhl/vZtMMLFYCw0XJRQnNVClnwP4+DeohLLDs0Viw/Q==
+X-Received: from spirogrip.svl.corp.google.com ([2620:15c:2cb:201:524f:74d8:b474:2517])
+ (user=davidgow job=sendgmr) by 2002:a25:2649:: with SMTP id
+ m70mr28997197ybm.21.1635838220057; Tue, 02 Nov 2021 00:30:20 -0700 (PDT)
+Date:   Tue,  2 Nov 2021 00:30:11 -0700
+Message-Id: <20211102073014.2901870-1-davidgow@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.1.1089.g2158813163f-goog
+Subject: [PATCH v4 1/4] kunit: tool: Do not error on tests without test plans
+From:   David Gow <davidgow@google.com>
+To:     Brendan Higgins <brendanhiggins@google.com>,
+        Rae Moar <rmr167@gmail.com>,
+        Daniel Latypov <dlatypov@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Cc:     David Gow <davidgow@google.com>, kunit-dev@googlegroups.com,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 1 Nov 2021 at 17:14, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.4.157 release.
-> There are 51 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 03 Nov 2021 11:42:01 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.4.157-rc2.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+The (K)TAP spec encourages test output to begin with a 'test plan': a
+count of the number of tests being run of the form:
+1..n
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+However, some test suites might not know the number of subtests in
+advance (for example, KUnit's parameterised tests use a generator
+function). In this case, it's not possible to print the test plan in
+advance.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+kunit_tool already parses test output which doesn't contain a plan, but
+reports an error. Since we want to use nested subtests with KUnit
+paramterised tests, remove this error.
 
-NOTE:
-With new gcc-11 toolchain arm builds failed.
-The fix patch is under review [1].
-Due to this reason not considering it as a kernel regression.
-* arm, build
-    - gcc-11-defconfig FAILED
+Signed-off-by: David Gow <davidgow@google.com>
+Reviewed-by: Daniel Latypov <dlatypov@google.com>
+---
 
-[1]
-ARM: drop cc-option fallbacks for architecture selection
-https://lore.kernel.org/linux-arm-kernel/20211018140735.3714254-1-arnd@kern=
-el.org/
+No changes since v3:
+https://lore.kernel.org/linux-kselftest/20211028064154.2301049-1-davidgow@google.com/
 
-## Build
-* kernel: 5.4.157-rc2
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-5.4.y
-* git commit: 48b0aec9543c78e79579e887ded0a2d96126081f
-* git describe: v5.4.156-52-g48b0aec9543c
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.y/build/v5.4.1=
-56-52-g48b0aec9543c
+Changes since v2:
+https://lore.kernel.org/linux-kselftest/20211027013702.2039566-1-davidgow@google.com/
+- No code changes.
+- Added Daniel's Reviewed-by.
 
-## No regressions (compared to v5.4.156)
 
-## No fixes (compared to v5.4.156)
+ tools/testing/kunit/kunit_parser.py    | 5 ++---
+ tools/testing/kunit/kunit_tool_test.py | 5 ++++-
+ 2 files changed, 6 insertions(+), 4 deletions(-)
 
-## Test result summary
-total: 82388, pass: 67744, fail: 799, skip: 12415, xfail: 1430
+diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
+index 3355196d0515..50ded55c168c 100644
+--- a/tools/testing/kunit/kunit_parser.py
++++ b/tools/testing/kunit/kunit_parser.py
+@@ -340,8 +340,8 @@ def parse_test_plan(lines: LineStream, test: Test) -> bool:
+ 	"""
+ 	Parses test plan line and stores the expected number of subtests in
+ 	test object. Reports an error if expected count is 0.
+-	Returns False and reports missing test plan error if fails to parse
+-	test plan.
++	Returns False and sets expected_count to None if there is no valid test
++	plan.
+ 
+ 	Accepted format:
+ 	- '1..[number of subtests]'
+@@ -356,7 +356,6 @@ def parse_test_plan(lines: LineStream, test: Test) -> bool:
+ 	match = TEST_PLAN.match(lines.peek())
+ 	if not match:
+ 		test.expected_count = None
+-		test.add_error('missing plan line!')
+ 		return False
+ 	test.log.append(lines.pop())
+ 	expected_count = int(match.group(1))
+diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
+index 9c4126731457..bc8793145713 100755
+--- a/tools/testing/kunit/kunit_tool_test.py
++++ b/tools/testing/kunit/kunit_tool_test.py
+@@ -191,7 +191,10 @@ class KUnitParserTest(unittest.TestCase):
+ 			result = kunit_parser.parse_run_tests(
+ 				kunit_parser.extract_tap_lines(
+ 				file.readlines()))
+-		self.assertEqual(2, result.test.counts.errors)
++		# A missing test plan is not an error.
++		self.assertEqual(0, result.test.counts.errors)
++		# All tests should be accounted for.
++		self.assertEqual(10, result.test.counts.total())
+ 		self.assertEqual(
+ 			kunit_parser.TestStatus.SUCCESS,
+ 			result.status)
+-- 
+2.33.1.1089.g2158813163f-goog
 
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 420 total, 369 passed, 51 failed
-* arm64: 39 total, 39 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 20 total, 20 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 37 total, 37 passed, 0 failed
-* parisc: 12 total, 12 passed, 0 failed
-* powerpc: 36 total, 36 passed, 0 failed
-* riscv: 24 total, 24 passed, 0 failed
-* s390: 12 total, 12 passed, 0 failed
-* sh: 24 total, 24 passed, 0 failed
-* sparc: 12 total, 12 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 39 total, 39 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* kselftest-android
-* kselftest-arm64
-* kselftest-arm64/arm64.btitest.bti_c_func
-* kselftest-arm64/arm64.btitest.bti_j_func
-* kselftest-arm64/arm64.btitest.bti_jc_func
-* kselftest-arm64/arm64.btitest.bti_none_func
-* kselftest-arm64/arm64.btitest.nohint_func
-* kselftest-arm64/arm64.btitest.paciasp_func
-* kselftest-arm64/arm64.nobtitest.bti_c_func
-* kselftest-arm64/arm64.nobtitest.bti_j_func
-* kselftest-arm64/arm64.nobtitest.bti_jc_func
-* kselftest-arm64/arm64.nobtitest.bti_none_func
-* kselftest-arm64/arm64.nobtitest.nohint_func
-* kselftest-arm64/arm64.nobtitest.paciasp_func
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libgpiod
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
