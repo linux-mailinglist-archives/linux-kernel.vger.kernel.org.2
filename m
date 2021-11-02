@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D211D44259B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 03:20:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B809144259D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 03:20:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231186AbhKBCWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 22:22:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37850 "EHLO mail.kernel.org"
+        id S231425AbhKBCWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 22:22:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37880 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230324AbhKBCWo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230015AbhKBCWo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 1 Nov 2021 22:22:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 7B21260EBC;
+Received: by mail.kernel.org (Postfix) with ESMTPS id C605260F0F;
         Tue,  2 Nov 2021 02:20:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1635819609;
-        bh=lj5qv0GyprYLCRZoJGeMxY2aUtyZGl1rD44pKSPbPO8=;
+        bh=uQl6cO8dcGtDqGSCZKOCifxTFjPPzsfeMqwtHQLojEI=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=mDKnE4Qgc3iQoDg0LjlHJaY6l2qnRUE/1wzAJKFegA/TeIgG3aTctrjhdelUoCxbV
-         u/eX/aRVAhumn+JrKvSuo90cJoJLjoSw9g4uUjTjxXFGb4CCivFCtTdDCZt4J+1GCI
-         ezntGn9O2PBnJ0z8fVcH9ebc/9j1JpnQ0VcdVAvASR+gxusgVhCpu6E3XoxiBwZy6U
-         0E9fNstDVDplMpvFErBZhEsar8p0TgS35ZqEE/xd10F6vMNA+FGgvIzLYZehMIl9HX
-         zuPEomNh0Oph5VcqE8VpvAOEhDTnmwLLqGrcJaNyDOD14PvCv842vKg8tE/Ak96ZWJ
-         R410PSX5JSknA==
+        b=P4+/opj6uL6LXCiZOmzOY5gR3o4+PXGZXpJJ6mtIhHRyl+6FgBgw3fRciLnqeBCCO
+         IDifEk1s0CQ4tkK8gCbmq4EnTbDQnFOb7sm0JSS+Hwyyp4Y79JYZv3wT3yzeL67tyP
+         vWLXqFP4srHFYWp+HdmnYsSUL1qhC1kCEFXurRS4Sfgq7QkznZcCorSCMQALWLo7yT
+         j+3NtaD3ait+1WdQwEYWcflr22Lcx1NG/FzwpatavuXf4fUMIEnEx5aV+KdfS7/hC2
+         VoFuo3StuSrRlfn+TJoyD025plUcoJGWCIII3tWVW3oWsnC+/M5hXzJIDxB+yxvCru
+         EHmsazMKSzWlQ==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 74FC260A3C;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id BF86C60A0C;
         Tue,  2 Nov 2021 02:20:09 +0000 (UTC)
-Subject: Re: [GIT PULL] IPMI bug fixes and enhancements for 5.16
+Subject: Re: [GIT PULL] regulator updates for v5.16
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20211101130435.GG4667@minyard.net>
-References: <20211101130435.GG4667@minyard.net>
+In-Reply-To: <20211101152117.5E62660F3A@mail.kernel.org>
+References: <20211101152117.5E62660F3A@mail.kernel.org>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20211101130435.GG4667@minyard.net>
-X-PR-Tracked-Remote: https://github.com/cminyard/linux-ipmi.git tags/for-linus-5.16-1
-X-PR-Tracked-Commit-Id: f281d010b87454e72475b668ad66e34961f744e0
+X-PR-Tracked-Message-Id: <20211101152117.5E62660F3A@mail.kernel.org>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git tags/regulator-v5.16
+X-PR-Tracked-Commit-Id: 7492b724df4d33ca3d5b38b70fb4acb93e6d02bf
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 316b7eaa932d99e6421bee9a89e4f19aefddd88a
-Message-Id: <163581960947.22980.3739390742478333185.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 1260d242d94ae423c585050bbaabe9064741f419
+Message-Id: <163581960977.22980.17418637509532006710.pr-tracker-bot@kernel.org>
 Date:   Tue, 02 Nov 2021 02:20:09 +0000
-To:     Corey Minyard <minyard@acm.org>
+To:     Mark Brown <broonie@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        openipmi-developer@lists.sourceforge.net
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 1 Nov 2021 08:04:35 -0500:
+The pull request you sent on Mon, 01 Nov 2021 15:21:03 +0000:
 
-> https://github.com/cminyard/linux-ipmi.git tags/for-linus-5.16-1
+> https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git tags/regulator-v5.16
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/316b7eaa932d99e6421bee9a89e4f19aefddd88a
+https://git.kernel.org/torvalds/c/1260d242d94ae423c585050bbaabe9064741f419
 
 Thank you!
 
