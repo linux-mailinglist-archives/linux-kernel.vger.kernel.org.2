@@ -2,132 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02364443402
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 17:52:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6318A44333B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 17:40:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234836AbhKBQzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 12:55:17 -0400
-Received: from mail-dm6nam12on2057.outbound.protection.outlook.com ([40.107.243.57]:59649
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235403AbhKBQxs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 12:53:48 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Kyxc/+IMG6qeRbZOXjNVGJJJ9Rs5rZJF1GX8nOdMGBoBYvkdij2XBkXWnEaYOs/3eeUKt3BhsFErWiv11La9uS/KnsQ3HG+bYlq62PKKuCiRrW3JJSW2AFjMjmSsCq2HTgYYY9Fs+ZTQ3LNbvM9O2ZNFZKmBxYgiL+ftdyP8U5iM+KYBpRxDXIRXuE9cKFUfxy//NiiI4LgbNHLRCOIYIP86SXeCm8bC4oF2x+H/zqnWz+2vbW1e1uFETAkVEmlik9pdDcPnarKFGRxqDn2uTUDkeepgDPkUw5zhIQFMhKc7nFfVtp6iwgKjVJzx6fFFqb4cl/X4jckEk5QqRdm/nw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Eg1oW+2DfvsGKdTOf6hsSHFOqDjMjhE2MEwoOP9QZ5A=;
- b=AvL7HlpKw4TKldYowTj4XMMCEQow7NY0Xpskro63Yt+UYlXCWpl+29WXjXYlxclec24wXzBGmYzP2d8+dmm8p0TYem4KGE1RTpo3pDR+QCW5lYVn3TXQzvzu84kwBtIK7A3DN1w6X3lEPvS6anJh1Tflvu/+2CERXMr+4w8fcq1E8hJco5JOFWlE53KkiKg8BLB6pFuXcSGmlnI0a5qeLKW/webB39nu7AY0tAPvUQajkNoxxkVGuuljHlNx5rymWVM22O14lzXjX60NMYHIxsrNbAGaoe/mqvDnwRMueaVXyaY2j5hCmh+3I/yP9SwxdvmBrBYT6ZvNqF9coplNVA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Eg1oW+2DfvsGKdTOf6hsSHFOqDjMjhE2MEwoOP9QZ5A=;
- b=QK2LojhuraFjJgbmDOPld1sCGPXwNktASchzNYheLWoX6+hP7VopdodKQBNzn1beLEvwYuGROIjl8CifZx8jArZ8mzqedqje4/XFYhC9mo+f7uQIaEdJOTv7WFBzAMLzZlxWAhwcUwsBxI+c1I3VfhoTPKhL9qMswZGBnVY4FfinOLR3thlHA3g92tBVIVt1rgRGNzOs9/s+ekLxMRIz1YBlZrzGJ1q3igEEOAgnZNiE6aQRcu9KNQGbdgmRmHG5Fz+hNbMvX7HEOiiyxiqHv1Qy+2S01khjrLACR115uD1oFhzwe5Ta88pLksdOvSYhDiT0W/aODR5EdA6gPSWBOw==
-Authentication-Results: lst.de; dkim=none (message not signed)
- header.d=none;lst.de; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5208.namprd12.prod.outlook.com (2603:10b6:208:311::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.10; Tue, 2 Nov
- 2021 16:15:33 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4649.020; Tue, 2 Nov 2021
- 16:15:33 +0000
-Date:   Tue, 2 Nov 2021 13:15:32 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        intel-gfx@lists.freedesktop.org,
-        intel-gvt-dev@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 20/29] drm/i915/gvt: devirtualize
- ->{enable,disable}_page_track
-Message-ID: <20211102161532.GZ2744544@nvidia.com>
-References: <20211102070601.155501-1-hch@lst.de>
- <20211102070601.155501-21-hch@lst.de>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211102070601.155501-21-hch@lst.de>
-X-ClientProxiedBy: MN2PR11CA0028.namprd11.prod.outlook.com
- (2603:10b6:208:23b::33) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S234713AbhKBQm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 12:42:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234665AbhKBQmP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 12:42:15 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D3F6C079785
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 09:16:17 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id c71-20020a1c9a4a000000b0032cdcc8cbafso2493275wme.3
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 09:16:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=raspberrypi.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Dk7gtJZIf8x3vKhtXKZKHOEj4aweMrUNlA9C44Zf6nU=;
+        b=cqWMTY5MJJwXi/lOFXC3vCIcbszW5fflGtz43DsvZLPKsdSxiqApa0wwvoK2yKSz/F
+         DPRrWb9YZesKfdQf2/Oyp85SNhzZ69Zi5I+LTrFuVolojhuwmLKazUyFbavizDyrt0TL
+         rlMXQgBiu1uHFBnyyuD9IKomgFj0gJvT0NuSf8pSJW4ZYPDW/0l4freXzseSVgiWVIEg
+         riqGJ7kWwyy/ZRo1S56rfZ8fulGudesmBjcoamz204qznCs1TVnezaagmlqO1oPJ1XaT
+         1ggUgUSkHgGxfyyvGuSxLu7z/HsNXlh8KLhbP3d9qKCI9pAYdXS3X419gt/dkAoINcvB
+         D5gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Dk7gtJZIf8x3vKhtXKZKHOEj4aweMrUNlA9C44Zf6nU=;
+        b=qvx8NkERdTc7JrTG46dePvD7EJ1apjJllybdFUWaLJgEJQa2TsfCyquF4u8srHXI/i
+         OqCPD1ZMbIhSnOcQE8sS6ktTGOtPYdpt/tE7Ztjkvc90gYT796GGKWEaUMQ2i9BSXAai
+         z0RYMWZK7DMhMTC3KkzGPec8uuDSI4GMC7wi6vnf03+NTJxhdwv+mwIf5a0ewjRnXlBB
+         thZT5Glp5LaDSMd4cNjvPxKEpWcgXspVYkRoVOe6zY60R030hvcNdRrEbsoVJEpcSGBo
+         q2xq5mD23E3Rbn+3blQLjqufx9DqB/7GpUS/ak9v2dN54uM0ytbAcJ2Z9btUhNWhJCvr
+         XIig==
+X-Gm-Message-State: AOAM531rgLtoQLFpWjdzLYJ+qDcwyIlmM8/dnCNw0VPI/p5N4bhBF8Sh
+        NvjXI5qyGmT48ks5crO3021ro7JyEJyY0YYF+b4r3A==
+X-Google-Smtp-Source: ABdhPJzlVpPbIvRPDvaNvaOkdQtTw92mc0xd1dJ21JwMbqrtyuKlYZ2WkPFRAg5+D39I+fM8WCaZOjbjxyvoYzoHEWU=
+X-Received: by 2002:a1c:2507:: with SMTP id l7mr8374133wml.144.1635869775698;
+ Tue, 02 Nov 2021 09:16:15 -0700 (PDT)
 MIME-Version: 1.0
-Received: from mlx.ziepe.ca (142.162.113.129) by MN2PR11CA0028.namprd11.prod.outlook.com (2603:10b6:208:23b::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.15 via Frontend Transport; Tue, 2 Nov 2021 16:15:33 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mhwRg-005AWY-Ew; Tue, 02 Nov 2021 13:15:32 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: bba03eb2-bc09-4190-5160-08d99e1bff49
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5208:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5208310C430B9AA16A3D2CF2C28B9@BL1PR12MB5208.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:296;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QKzUR77RAaiePvvoSitU6yo0lxkRvxcvQ38S/z0jxtG+kL02nPxJmNQObV8FKMtRQNVV1RhuDkeFjXOwPQbSMCVgeJJZM21NGbmuSklrmADoTZ8OGa5Wt/jJ+KtI3mhbxsaRuwzkgpsAysqkpZtqv/kixv8T/ZTDdGgirqDcqqgJvXxZFvdbXX6ZtE3QcmWu3lF9omtrFDsTrtRse32R+NPWfCoTePBQFY8yN/tVeiJpv5ZYXFr1XEaT2eUZPgMwJbwXpuCY0ho5HLUNmxqhqAzFAh7lKOAqg6TYi93aqAglZEIUQ2MSgYqW4NtxJow+3mL3IaDqKaFgAc3ULtkb10Cmi6JTHdZk7EZpWJCxcjyK6cCB1oS4GMDf3311RmXnE46g9CwVxgeci3SM8UmTv35BH18T3uLzHN/MV3m2DN8pcpYJ9oPA02ovRBCpdC7UOFQGPmpLWxgpr5YCqiJhRImnVp4L7/HGfrNqrGy8CEB+Cb3buGiVnvggyz4pr9k3V+fid7z3amlPJeobYrE19LGt7/3dgCGDLevT7Z9TCbiO/Dcg0j5ip7X1yFtPoluUDFENp0l+zZxFfVJfSrOCrrE/SXZdV/38C0f4idJkf7OfysDsqEGRgbXgQEkYVsNYwDTC57lWSJGm8spsHJ2kHg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(186003)(6916009)(83380400001)(5660300002)(54906003)(8936002)(66556008)(66476007)(4326008)(508600001)(36756003)(2616005)(7416002)(4744005)(2906002)(316002)(8676002)(1076003)(426003)(66946007)(26005)(38100700002)(9746002)(9786002)(86362001)(33656002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?s3HUXmSA68fcWy9OujwWt7XqFK8aYXRtnDDJC6Bs5vMJPaT6vFef3vVvM+PL?=
- =?us-ascii?Q?xly1xQPZDRI4D9Ffln8W+txAbyK91XFmVpPTWO4ZfRPo4hMyx3dmK0HB+qSG?=
- =?us-ascii?Q?E59hEtLjACqqfhJFacXd8zKcH08mXdc7HuSN6ROhVtxs0jQF3/Is+7C5CSWx?=
- =?us-ascii?Q?HWILO27SqO6FJQUPmGF2b8RH1TDJvsXeBEmHRIpIvVWZMwarohquvwU3XA9e?=
- =?us-ascii?Q?p+0D1/fn+R3atUs7whFolE2xTaK2Qa7C7zQZBk2cts353pC+KblvRPH7+RNn?=
- =?us-ascii?Q?Jy3NBXzhmdA83q3g2m6jcsSWnfe96/J1zB/VZYL6xNntZytEzMMgNn3a4f2r?=
- =?us-ascii?Q?ReGf9StQglQXdNFiqtQznxol8H+RFWzuFf/5uarH7rjyRpEVbL/Dlgqf2jap?=
- =?us-ascii?Q?HoHrhcGH9kOFR3fsZMaXfdOQcMdsGfsF/WrgOzos7erYTy851K8lPHPZ+76m?=
- =?us-ascii?Q?j+h8fm7E4vv0qkSV90WtSVHn7So/W5Mlmdzc71tm61jZrndLvb+XSWDzAMGx?=
- =?us-ascii?Q?GJ9pLxk8GKXOyaOqGYCeSrPxDUqYoHmB/DDtMeH749ikHaMSI+yuFomDfDJC?=
- =?us-ascii?Q?JYFQgvJ1YLpEVI7zZM/puSeBTa1HDB7svydUYU7xM5YsAuqkRvje7gh2uwGO?=
- =?us-ascii?Q?H/KPRtVK4LaXFvdCJZazFKPJnUoncuMKgW6vemY+k+iC+KXWB6hjPExql70/?=
- =?us-ascii?Q?ldrRJwXXq6sXet0zIedrf/WrYX+ppD/FP/wXMnwZd3/O9DQ55ygWjNn/BPx8?=
- =?us-ascii?Q?KXEKnxRxUzxNW1ljsQIX0ZAAVPyNFEUadJy9Hdt6MLzRchiVwDu+6XNAlkt1?=
- =?us-ascii?Q?F595uJ8EB7Dn6eUK4kbhkeAqR79GK4apWeMTYRAeeqggWfg2X1kLeH9bTXN0?=
- =?us-ascii?Q?6IRZrl4zWaXffdV4sxR/UMIAfjyY16QGwCLKj6FjSwS86HNSw48SW9Nw7VFM?=
- =?us-ascii?Q?WS0V/r1OAPa95NMaEvEx1Xr+TtvsH9cLjA2S3NcMeZ0CT1yRXuipf9mxDWfv?=
- =?us-ascii?Q?L9i+dxsoO3BerbbuSWUDcSDV8l5Sswlk3iP9xUT8c5rJJy8H9J0O/o1x+FMX?=
- =?us-ascii?Q?fdZ2K3DQFvWTB/spGg4nSiA7aQOZMYb8B7HH65EF3oGrhRiqKxyG7gc2wfOX?=
- =?us-ascii?Q?x7nZ6f2WZ9PCfeG7Ys7skay1PgLCs+upH1Tj1fPMh0/5E6Vr717FcgSc3ac3?=
- =?us-ascii?Q?MgMBLNaPCbJ3bhCquwJwNDXIDucPGvCb1R6krf5hP0FzqrE1hIB7rgXByT9p?=
- =?us-ascii?Q?8lvN/mIZSOygnjnM7rTCSA9MgsvNWFm4gaGDCbVjK84liEeJ1/0/lnycGe8S?=
- =?us-ascii?Q?wXDJMSW2OuUduWx+T8IMzDmMPnpF7NexG810HFADqssRidmM7vegCV4F/U3A?=
- =?us-ascii?Q?fQaNZj2SDXN9CncUycXVMKLLjlWcaRsgpJTp2jdHnEZeMJISK4NYHe7jzK01?=
- =?us-ascii?Q?5WlTnmqFFuC30j9bHjqA8XnwJNQWegZUeM/yVVlVrdCGj1HUdRrSXlyjOZiX?=
- =?us-ascii?Q?D4SfjpNb9FXJeFVfDUojYcbQjwA+UkSR/+FE4RPiaLCnzOUV7GQ63vgHOBeH?=
- =?us-ascii?Q?v6vpVtYkm71XniWDM+Q=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bba03eb2-bc09-4190-5160-08d99e1bff49
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2021 16:15:33.5340
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: oPuIQWt10gNclfwnmO7poaj9S06xYb+4tLKUIutxRWJsbp4FsjIkLp4F+8IgkBMH
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5208
+References: <20211025152903.1088803-1-maxime@cerno.tech> <20211025152903.1088803-3-maxime@cerno.tech>
+In-Reply-To: <20211025152903.1088803-3-maxime@cerno.tech>
+From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
+Date:   Tue, 2 Nov 2021 16:15:59 +0000
+Message-ID: <CAPY8ntCu=wzXtNeDrnYNC8NH8WwjUY-qC=UsgqS_VQO1voR8SA@mail.gmail.com>
+Subject: Re: [PATCH v8 02/10] drm/vc4: hdmi: Fix HPD GPIO detection
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        linux-rpi-kernel@lists.infradead.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Emma Anholt <emma@anholt.net>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Dom Cobley <dom@raspberrypi.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 08:05:52AM +0100, Christoph Hellwig wrote:
-> Just call the kvmgt functions directly.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+On Mon, 25 Oct 2021 at 16:29, Maxime Ripard <maxime@cerno.tech> wrote:
+>
+> Prior to commit 6800234ceee0 ("drm/vc4: hdmi: Convert to gpiod"), in the
+> detect hook, if we had an HPD GPIO we would only rely on it and return
+> whatever state it was in.
+>
+> However, that commit changed that by mistake to only consider the case
+> where we have a GPIO and it returns a logical high, and would fall back
+> to the other methods otherwise.
+>
+> Since we can read the EDIDs when the HPD signal is low on some displays,
+> we changed the detection status from disconnected to connected, and we
+> would ignore an HPD pulse.
+>
+> Fixes: 6800234ceee0 ("drm/vc4: hdmi: Convert to gpiod")
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+
+Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+
 > ---
->  drivers/gpu/drm/i915/gvt/gvt.h        |  3 +++
->  drivers/gpu/drm/i915/gvt/hypercall.h  |  2 --
->  drivers/gpu/drm/i915/gvt/kvmgt.c      |  6 ++----
->  drivers/gpu/drm/i915/gvt/mpt.h        | 28 ---------------------------
->  drivers/gpu/drm/i915/gvt/page_track.c |  8 ++++----
->  5 files changed, 9 insertions(+), 38 deletions(-)
-
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-
-Jason
+>  drivers/gpu/drm/vc4/vc4_hdmi.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
+> index 338968275724..dde67b991ae7 100644
+> --- a/drivers/gpu/drm/vc4/vc4_hdmi.c
+> +++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+> @@ -190,9 +190,9 @@ vc4_hdmi_connector_detect(struct drm_connector *connector, bool force)
+>
+>         WARN_ON(pm_runtime_resume_and_get(&vc4_hdmi->pdev->dev));
+>
+> -       if (vc4_hdmi->hpd_gpio &&
+> -           gpiod_get_value_cansleep(vc4_hdmi->hpd_gpio)) {
+> -               connected = true;
+> +       if (vc4_hdmi->hpd_gpio) {
+> +               if (gpiod_get_value_cansleep(vc4_hdmi->hpd_gpio))
+> +                       connected = true;
+>         } else {
+>                 unsigned long flags;
+>                 u32 hotplug;
+> --
+> 2.31.1
+>
