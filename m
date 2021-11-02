@@ -2,74 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6F3E4437A7
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 22:11:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6044B4437AF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 22:16:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230409AbhKBVOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 17:14:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50644 "EHLO
+        id S231167AbhKBVTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 17:19:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229931AbhKBVOB (ORCPT
+        with ESMTP id S229931AbhKBVTA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 17:14:01 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02FE2C061714
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 14:11:25 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id c4so468627wrd.9
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 14:11:25 -0700 (PDT)
+        Tue, 2 Nov 2021 17:19:00 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AC97C061714;
+        Tue,  2 Nov 2021 14:16:25 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id s136so518629pgs.4;
+        Tue, 02 Nov 2021 14:16:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=e/QXWrXONuOtfExDBpb5a3VX1DF3awUt3sXS2kjO/XY=;
-        b=KGBtMYqxy06R2OZffjiz7XN55i9fsGnoLY7GXd5+nVw9ygJV7ogUJQRS7JwryxLMLM
-         3j1RuNGOYhNmM4Si2TcX/h+CM2o9rrHWxe1ftARmlv/n/TozTSNwzD+DYUyxsYNyIGWJ
-         SKHuw5yw4RSIeY3vVv8oAvnNtLvc3KmJQtBT21P9rP0NipmmmmxAJ7s+yb089aYOuG/D
-         aPq8VuXyUSnsyINWOmfXCKnMemiZVByz46FLRvBOtaGreG9wSTY8/SkmVonTx8loy95L
-         J34LeI0ZqrCd1DcG3SznJ44uhIfrlkxgzOg+XiG1/lhxBbUv8EiOk7d4KqHknR36Hn9c
-         G5lw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rTz2VfXu9BFDNEqPjGiyXjjW4rvhVHqZ6MNOJZx8WDg=;
+        b=qmUDX2EOQCUYsPSl9eI7vSyCKTI7spEk6y3kx9kM9bDYPFnRK440Bwyt3OzUTDD9rp
+         rHRSLo2RUtxezphywnzqNbMOPyqln80bU8A/YNPEWwcAnJMDqGl6drnwf4euR16KTMtD
+         bJ91m/SmvHvCjVAdEIoI9gyxhXksKL+cniMVqQCDsGUhSU8ktWkp8xEmLUQ3rFz7AmDn
+         MTKVKsU2yvBUzs3MbYee9qylJcK2Y9K4PFMn/MlQQGJmUK6FiKS1c8ZmHgSaq1Zh9ucV
+         HDH9Fmtcx6bDbDPpLn/iGNa1tSPU7J9Dr+b+qxfHGIZbNjh8ueSI3dhGasnsyJvy0ra9
+         tOsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=e/QXWrXONuOtfExDBpb5a3VX1DF3awUt3sXS2kjO/XY=;
-        b=5F8GgTWvgHv6BrrYTcIQCrXzHSoFekNZncnVB8iSFidQ4hkCffvwAhA1noRVWqsy3B
-         cYxWGyP5FNKMSYGCwqlM3+7DYyapQ0g0Sctjk3aHF4iqCsYfTMSn0ZyXohXUT5oEQWQu
-         g7MeTn3F75A4xVl02jU90+L/tIQYtr9jbgL27inpnEUTdj0COtM8Cl8Tw/RJc6/2xZTM
-         BsN9HKXN64djhBF00G7XXAXlew+iEnIFENJygszEtcgXh+6v9OX/8maNw83NvDGVMTb7
-         BJw+vvk7sI2q1ICuSDlM6OWx4TwQEOE5HEfqPgxLSqNM+k2o0M5UNv5s+JjClxwoNBzA
-         9rSA==
-X-Gm-Message-State: AOAM5300LGkDwObDB97Cg/gMEgzgLyRBiehXXWEmS3sAMjazv6NTA3HK
-        Bx1FigFygPgZKJ5iD6buN24GDSNj0z89X7VNytI=
-X-Google-Smtp-Source: ABdhPJz15V+dzLra3kO8jNBXunjfXba2nhGKjqTRAmHBSH564lZh3PCmMIEzH4xoqO80tp8/6MrsVzwH2fd/k/ClJiI=
-X-Received: by 2002:a5d:4cd1:: with SMTP id c17mr24333311wrt.31.1635887484369;
- Tue, 02 Nov 2021 14:11:24 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rTz2VfXu9BFDNEqPjGiyXjjW4rvhVHqZ6MNOJZx8WDg=;
+        b=uJ6+GZQGRR/wj1ItKnIXoZteDRtiBHdFYq65Py8+8zo4DZzZuHMmR+zXcnevfG/aXA
+         JrRrRbC9CqbdOEJjtrZGnVgEk6J7Pi0n9k8pmk+KpxngqFu+8wkgnYhsqCpyPUAOpeVb
+         rD3iCyl+tsjG4j9Jk1nFTjhHmA02S2eJrwS18HTkTl+lfhIwxm8A7IovjUAGtAwZQFpZ
+         +fhgMU5jwGZJoIfD/qBj8f0PhnSOhecHnoISwpHJ9ZWGrUpiBUTLztC6mP4NlH/UQZMA
+         LO6ByuaE7qL8HA3uICFApxs1Q1yAmtAsNtkitw50SN017Z453CYy8HPAcwFjHhebVT8f
+         z9Wg==
+X-Gm-Message-State: AOAM532O6PQCVBJESHwdBAxDYhe2LhTjLF5X2UU2QANmhz8Syh8+9KG3
+        TKf/w6ZtOv7/kWVb4yKU7RR5VXZ14imWOWi8tmY=
+X-Google-Smtp-Source: ABdhPJwXqplI9yicGjFvgK5+seN5+uCcR5BmtK5nVve6Cjb9vCkNeb0U9XonYj5YjDzUbcwXpfnnvMm+mi2jPNVAQh4=
+X-Received: by 2002:a63:374c:: with SMTP id g12mr29677439pgn.35.1635887784746;
+ Tue, 02 Nov 2021 14:16:24 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a5d:6546:0:0:0:0:0 with HTTP; Tue, 2 Nov 2021 14:11:23 -0700 (PDT)
-Reply-To: berthierpatrick22@gmail.com
-From:   Berthier Patrick <rosesylvie.pinard2.1@gmail.com>
-Date:   Wed, 3 Nov 2021 05:11:23 +0800
-Message-ID: <CAH12wU-R_tT3SZhk3erB4v7zGqwhVY3SUfPrQL17LLRQFVU5uQ@mail.gmail.com>
-Subject: =?UTF-8?B?xIBUUkEgS1JFRMSqVEEgUElFRMSAVsSASlVNUw==?=
-To:     undisclosed-recipients:;
+References: <20211102084856.483534-1-zhudi2@huawei.com> <7511b8fd-c5b6-96b3-8b1d-e7eeeb0b2c33@fb.com>
+In-Reply-To: <7511b8fd-c5b6-96b3-8b1d-e7eeeb0b2c33@fb.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 2 Nov 2021 14:16:13 -0700
+Message-ID: <CAADnVQKKqnBJ+VjAFrWdM4BgRe4KdmeF5LYm9i96gZsr_urcvA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 1/2] bpf: support BPF_PROG_QUERY for progs
+ attached to sockmap
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Di Zhu <zhudi2@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cien=C4=ABjamais klient!
-  M=C4=93s pied=C4=81v=C4=81jam aizdevumus no =E2=82=AC 5 000 l=C4=ABdz =E2=
-=82=AC 4 000 000 ar l=C4=93tu
-Maks=C4=81juma nosac=C4=ABjumi.
+On Tue, Nov 2, 2021 at 1:11 PM Yonghong Song <yhs@fb.com> wrote:
+> >
+> > -static int sock_map_prog_update(struct bpf_map *map, struct bpf_prog *prog,
+> > -                             struct bpf_prog *old, u32 which)
+> > +static int sock_map_prog_lookup(struct bpf_map *map, struct bpf_prog **pprog[],
+>
+> Can we just change "**pprog[]" to "***pprog"? In the code, you really
+> just pass the address of the decl "struct bpf_prog **pprog;" to the
+> function.
 
-  -Invest=C4=ABciju aizdevums (projekti)
-  - Person=C4=ABgie aizdevumi
-  - Konsolid=C4=81cijas aizdevumi
+Di,
 
-  M=C5=ABsu procentu likme ir =C4=BCoti zema, 2-3% gad=C4=81 bez kred=C4=AB=
-ta p=C4=81rbaudes.
-
-  E-pasts: berthierpatrick22@gmail.com
-
-  =C4=80TR=C4=80 KRED=C4=AATA KOMANDA.
+this feedback was given twice already.
+You also didn't address several other points from the earlier reviews.
+Please do not resubmit until you address all points.
