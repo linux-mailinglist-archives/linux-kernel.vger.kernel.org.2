@@ -2,165 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 896D14438CB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 23:54:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ED914438CE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 23:54:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231230AbhKBW4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 18:56:37 -0400
-Received: from mga04.intel.com ([192.55.52.120]:52218 "EHLO mga04.intel.com"
+        id S231295AbhKBW5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 18:57:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60892 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229685AbhKBW4b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 18:56:31 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10156"; a="230105615"
-X-IronPort-AV: E=Sophos;i="5.87,203,1631602800"; 
-   d="scan'208";a="230105615"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2021 15:53:22 -0700
-X-IronPort-AV: E=Sophos;i="5.87,203,1631602800"; 
-   d="scan'208";a="489298161"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2021 15:53:22 -0700
-From:   ira.weiny@intel.com
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Ira Weiny <ira.weiny@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        linux-kernel@vger.kernel.org, Dave Jiang <dave.jiang@intel.com>,
-        linux-doc@vger.kernel.org
-Subject: [PATCH v2] Documentation/auxiliary_bus: Clarify auxiliary_device creation
-Date:   Tue,  2 Nov 2021 15:53:10 -0700
-Message-Id: <20211102225310.3677785-1-ira.weiny@intel.com>
-X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
-In-Reply-To: <87k0hq2oxc.fsf@meer.lwn.net>
-References: <87k0hq2oxc.fsf@meer.lwn.net>
+        id S229685AbhKBW5C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 18:57:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7648561105;
+        Tue,  2 Nov 2021 22:54:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635893667;
+        bh=vZAm7ovxBi6d/ZH+uziWTG6NBTualBYKsCvLvL3Gx7g=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=opY/abwJOWe66VHhwlVSS287YA1M9yULIi5wQIYoJ96jO4hPky0vB6vi6tafilMD7
+         rFkhmoLtQ0JjoO8LGuoGLus6tF2fIduGVRZrrxl51/4nWYnKX6dKCQmBd2uSI9wlMD
+         UO1XahuUVS5GKl3M0Aq9gJC4BEv6fCqD0q/CztW5e7meAcaEELHE3R2JXtckUw0jPy
+         z9VAQruKylB+jiZA16OORnFfBMF6rFzu7wr/0EvG1Cg0KZUTyId6/tOrFKoGJf1Uai
+         AP8H78hxGwQ6Ru8B4/CqaU93n8Gf4J+XTNIO9nFkSdgPnmTW9hS6RjiTF0OsrhHByR
+         HNvU7DC6mlsLg==
+Received: by mail-ed1-f45.google.com with SMTP id z20so2592137edc.13;
+        Tue, 02 Nov 2021 15:54:27 -0700 (PDT)
+X-Gm-Message-State: AOAM530YFzKW8liIBqYhqi1MWaZoZkmyk8Kfl2QuOBbC127wjqbZrplX
+        1xxztsa92j/GRSWWDUnADlqIYlY2PRj2/U0L9Q==
+X-Google-Smtp-Source: ABdhPJwvOPkHrOahXa3xj/c9OSX7wBr+wcK0xwNgYPaLagkYmgf2JQOlOc1GXKmuNsno2PWPju9ZZUGHXtyfOv39J7g=
+X-Received: by 2002:a17:907:2ce1:: with SMTP id hz1mr49090047ejc.241.1635893665770;
+ Tue, 02 Nov 2021 15:54:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211026155911.17651-1-jason-jh.lin@mediatek.com> <20211026155911.17651-6-jason-jh.lin@mediatek.com>
+In-Reply-To: <20211026155911.17651-6-jason-jh.lin@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Wed, 3 Nov 2021 06:54:14 +0800
+X-Gmail-Original-Message-ID: <CAAOTY__cyFB6VyKFUZsy+-9+Nz7QTR4QiGUXQApOdiFXQESi4g@mail.gmail.com>
+Message-ID: <CAAOTY__cyFB6VyKFUZsy+-9+Nz7QTR4QiGUXQApOdiFXQESi4g@mail.gmail.com>
+Subject: Re: [PATCH v12 05/16] dt-bindings: display: mediatek: merge: add
+ additional prop for mt8195
+To:     "jason-jh.lin" <jason-jh.lin@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Fei Shao <fshao@chromium.org>,
+        Moudy Ho <moudy.ho@mediatek.com>, roy-cw.yeh@mediatek.com,
+        Fabien Parent <fparent@baylibre.com>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        Nancy Lin <nancy.lin@mediatek.com>, singo.chang@mediatek.com,
+        DTML <devicetree@vger.kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ira Weiny <ira.weiny@intel.com>
+Hi, Jason:
 
-The documentation for creating an auxiliary device is a 3 step not a 2
-step process.  Specifically the requirements of setting the name, id,
-dev.release, and dev.parent fields was not clear as a precursor to the '2
-step' process documented.
+jason-jh.lin <jason-jh.lin@mediatek.com> =E6=96=BC 2021=E5=B9=B410=E6=9C=88=
+26=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=8811:59=E5=AF=AB=E9=81=93=EF=
+=BC=9A
+>
+> add MERGE additional properties description for mt8195:
+> 1. async clock
+> 2. fifo setting enable
+> 3. reset controller
 
-Clarify by declaring this a 3 step process starting with setting the
-fields of struct auxiliary_device correctly.
+Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
 
-Also add some sample code and tie the change into the rest of the
-documentation.
-
-Reviewed-by: Dave Jiang <dave.jiang@intel.com>
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-
----
-Changes from V1:
-	From Jonathan
-		Fix auxiliary spelling
----
- Documentation/driver-api/auxiliary_bus.rst | 77 +++++++++++++++++-----
- 1 file changed, 59 insertions(+), 18 deletions(-)
-
-diff --git a/Documentation/driver-api/auxiliary_bus.rst b/Documentation/driver-api/auxiliary_bus.rst
-index ef902daf0d68..cecfa2db46e6 100644
---- a/Documentation/driver-api/auxiliary_bus.rst
-+++ b/Documentation/driver-api/auxiliary_bus.rst
-@@ -79,18 +79,6 @@ is given a name that, combined with the registering drivers KBUILD_MODNAME,
- creates a match_name that is used for driver binding, and an id that combined
- with the match_name provide a unique name to register with the bus subsystem.
- 
--Registering an auxiliary_device is a two-step process.  First call
--auxiliary_device_init(), which checks several aspects of the auxiliary_device
--struct and performs a device_initialize().  After this step completes, any
--error state must have a call to auxiliary_device_uninit() in its resolution path.
--The second step in registering an auxiliary_device is to perform a call to
--auxiliary_device_add(), which sets the name of the device and add the device to
--the bus.
--
--Unregistering an auxiliary_device is also a two-step process to mirror the
--register process.  First call auxiliary_device_delete(), then call
--auxiliary_device_uninit().
--
- .. code-block:: c
- 
- 	struct auxiliary_device {
-@@ -99,15 +87,68 @@ auxiliary_device_uninit().
- 		u32 id;
- 	};
- 
--If two auxiliary_devices both with a match_name "mod.foo" are registered onto
--the bus, they must have unique id values (e.g. "x" and "y") so that the
--registered devices names are "mod.foo.x" and "mod.foo.y".  If match_name + id
--are not unique, then the device_add fails and generates an error message.
-+Registering an auxiliary_device is a three-step process.
-+
-+First, a 'struct auxiliary_device' needs to be defined or allocated for each
-+sub-device desired.  The name, id, dev.release, and dev.parent fields of this
-+structure must be filled in as follows.
-+
-+The 'name' field is to be given a name that is recognized by the auxiliary
-+driver.  If two auxiliary_devices with the same match_name, eg
-+"mod.MY_DEVICE_NAME", are registered onto the bus, they must have unique id
-+values (e.g. "x" and "y") so that the registered devices names are "mod.foo.x"
-+and "mod.foo.y".  If match_name + id are not unique, then the device_add fails
-+and generates an error message.
- 
- The auxiliary_device.dev.type.release or auxiliary_device.dev.release must be
--populated with a non-NULL pointer to successfully register the auxiliary_device.
-+populated with a non-NULL pointer to successfully register the
-+auxiliary_device.  This release call is where resources associated with the
-+auxiliary device must be free'ed.  Because once the device is placed on the bus
-+the parent driver can not tell what other code may have a reference to this
-+data.
-+
-+The auxiliary_device.dev.parent should be set.  Typically to the registering
-+drivers device.
-+
-+Second, call auxiliary_device_init(), which checks several aspects of the
-+auxiliary_device struct and performs a device_initialize().  After this step
-+completes, any error state must have a call to auxiliary_device_uninit() in its
-+resolution path.
-+
-+The third and final step in registering an auxiliary_device is to perform a
-+call to auxiliary_device_add(), which sets the name of the device and adds the
-+device to the bus.
-+
-+.. code-block:: c
-+
-+	struct auxiliary_device *my_aux_dev = my_aux_dev_alloc(xxx);
-+
-+        /* Step 1: */
-+	my_aux_dev->name = MY_DEVICE_NAME;
-+	my_aux_dev->id = my_unique_id_alloc(xxx);
-+	my_aux_dev->dev.release = my_aux_dev_release;
-+	my_aux_dev->dev.parent = my_dev;
-+
-+        /* Step 2: */
-+        if (auxiliary_device_init(my_aux_dev))
-+                goto fail;
-+
-+        /* Step 3: */
-+        if (auxiliary_device_add(my_aux_dev)) {
-+                auxiliary_device_uninit(my_aux_dev);
-+                goto fail;
-+        }
-+
-+Unregistering an auxiliary_device is a two-step process to mirror the register
-+process.  First call auxiliary_device_delete(), then call
-+auxiliary_device_uninit().
-+
-+
-+.. code-block:: c
-+
-+        auxiliary_device_delete(my_dev->my_aux_dev);
-+        auxiliary_device_uninit(my_dev->my_aux_dev);
- 
--The auxiliary_device.dev.parent must also be populated.
- 
- Auxiliary Device Memory Model and Lifespan
- ------------------------------------------
--- 
-2.28.0.rc0.12.gb6a658bd00c9
-
+>
+> Signed-off-by: jason-jh.lin <jason-jh.lin@mediatek.com>
+> ---
+>  .../display/mediatek/mediatek,merge.yaml      | 38 +++++++++++++++++++
+>  1 file changed, 38 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,=
+merge.yaml b/Documentation/devicetree/bindings/display/mediatek/mediatek,me=
+rge.yaml
+> index 75beeb207ceb..614721bdbf73 100644
+> --- a/Documentation/devicetree/bindings/display/mediatek/mediatek,merge.y=
+aml
+> +++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,merge.y=
+aml
+> @@ -36,8 +36,28 @@ properties:
+>        Documentation/devicetree/bindings/power/power-domain.yaml for deta=
+ils.
+>
+>    clocks:
+> +    maxItems: 2
+>      items:
+>        - description: MERGE Clock
+> +      - description: MERGE Async Clock
+> +          Controlling the synchronous process between MERGE and other di=
+splay
+> +          function blocks cross clock domain.
+> +
+> +  clock-names:
+> +    maxItems: 2
+> +    items:
+> +      - const: merge
+> +      - const: merge_async
+> +
+> +  mediatek,merge-fifo-en:
+> +    description:
+> +      The setting of merge fifo is mainly provided for the display laten=
+cy
+> +      buffer to ensure that the back-end panel display data will not be
+> +      underrun, a little more data is needed in the fifo.
+> +      According to the merge fifo settings, when the water level is dete=
+cted
+> +      to be insufficient, it will trigger RDMA sending ultra and preulra
+> +      command to SMI to speed up the data rate.
+> +    type: boolean
+>
+>    mediatek,gce-client-reg:
+>      description:
+> @@ -50,6 +70,11 @@ properties:
+>      $ref: /schemas/types.yaml#/definitions/phandle-array
+>      maxItems: 1
+>
+> +  resets:
+> +    description: reset controller
+> +      See Documentation/devicetree/bindings/reset/reset.txt for details.
+> +    maxItems: 1
+> +
+>  required:
+>    - compatible
+>    - reg
+> @@ -67,3 +92,16 @@ examples:
+>          power-domains =3D <&spm MT8173_POWER_DOMAIN_MM>;
+>          clocks =3D <&mmsys CLK_MM_DISP_MERGE>;
+>      };
+> +
+> +    merge5: disp_vpp_merge5@1c110000 {
+> +        compatible =3D "mediatek,mt8195-disp-merge";
+> +        reg =3D <0 0x1c110000 0 0x1000>;
+> +        interrupts =3D <GIC_SPI 507 IRQ_TYPE_LEVEL_HIGH 0>;
+> +        clocks =3D <&vdosys1 CLK_VDO1_VPP_MERGE4>,
+> +                 <&vdosys1 CLK_VDO1_MERGE4_DL_ASYNC>;
+> +        clock-names =3D "merge","merge_async";
+> +        power-domains =3D <&spm MT8195_POWER_DOMAIN_VDOSYS1>;
+> +        mediatek,gce-client-reg =3D <&gce1 SUBSYS_1c11XXXX 0x0000 0x1000=
+>;
+> +        mediatek,merge-fifo-en =3D <1>;
+> +        resets =3D <&vdosys1 MT8195_VDOSYS1_SW0_RST_B_MERGE4_DL_ASYNC>;
+> +    };
+> --
+> 2.18.0
+>
