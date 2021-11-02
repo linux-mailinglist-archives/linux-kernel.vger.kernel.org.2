@@ -2,118 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 406954430B6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 15:45:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FF164430BC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 15:46:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231251AbhKBOrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 10:47:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58141 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230326AbhKBOrc (ORCPT
+        id S231278AbhKBOsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 10:48:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230336AbhKBOss (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 10:47:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635864296;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jic1F9UNvooEC2d+xw/+5aCM+bj4ORtETpFt0PPjtmo=;
-        b=L4xhvObeDbLRlLIATzHYUkyX6GEygyPJcfSyL7+nlciRgPPhc3hjgWD5eVfk8SlQgNXWyZ
-        3GRNWIsjHVcTTS37bNQOKn4mxn9QOw7lQK61gIsTu3UknzzNlJii3FLyni4NjxXyXODcLS
-        pS01OHn60p0JfAYArF40hYPV6cLgySg=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-593-DBtO7zm2O6iwaLSIe9-dew-1; Tue, 02 Nov 2021 10:44:55 -0400
-X-MC-Unique: DBtO7zm2O6iwaLSIe9-dew-1
-Received: by mail-wr1-f70.google.com with SMTP id y10-20020adffa4a000000b0017eea6cb05dso3648032wrr.6
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 07:44:55 -0700 (PDT)
+        Tue, 2 Nov 2021 10:48:48 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACB75C061714;
+        Tue,  2 Nov 2021 07:46:13 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id f8so55348258edy.4;
+        Tue, 02 Nov 2021 07:46:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PqTPhnZWWSI7aaZPpC+xELL83kKV2UGyYtjIddeA+HE=;
+        b=S1/OyhmF4WKgNKAgKcKtKJ5M1kCxZU+WBMXZ07ktnV3k4kqdvrLp8ECjE+tnxLNlNO
+         22kILURY4+CKYKBE9XyTa/p5TlRt25wIoctoqejOARgFjd2W8Wp8k27X8uIwGZIkNz/I
+         FkehMXVaI7ghPs3WP5NNYliPyxwuNCIUBWV7H2VxdxQpo2lPrIgL1Zb3MReI4L3Micyw
+         rv1JM+yvM6HB1dWdfbOXe0HSxHLB2KXdWMTiBaJ7Z71sSevG6Rc+OMXQpRhEM3qZcyLc
+         MJZfaIQBYTQDPmOiEabMF40HrOslcGCQ97dV1ttvskUeMDXlqh0SzJdlna1uBU/uKCZu
+         Abew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=jic1F9UNvooEC2d+xw/+5aCM+bj4ORtETpFt0PPjtmo=;
-        b=aPKRQ+ZHJsfrmoroZ31eg7G0frbXUfLYyThYI7fqeQbQUBye9PTfcsyuKj1pl4fHwm
-         SwOCFHrxJGjIt30sq1JUp8aA2E8slD9Q858MhV9YEkEr9Z0jBoYfe9ZoCd7BmmeSXLbz
-         E4nDF+hs4iXVCqn0ezbOci0Cls3j5FIS8C1S+NCj/84QmlPoM+YT9sdovuO9I5Ao9G87
-         R4X0xK16dvbhbavq88gpezuqJEdp1FTE5p8WX4NfJOqD/HXqgrx1Np01FJXek4dJ+c7+
-         JqZgr5cTaK5T6ww8Zu+PVpZ2mUt9J5SzZjOGW3S8Ebjqc3MMnnyaM72m6V2JPWI7KW6U
-         Z6Ag==
-X-Gm-Message-State: AOAM531WOr7KvCVCiMsdAQTCdgPu+kjl6hwRektadpzRsLPn/yrocqWb
-        1PZqM89Io5bIUkPFeupN/7kRizFKAA3Wq74ZBbQSuFKQiz/BO+p3ONwQM0d/NEA6xjs/xk17SmI
-        dHKR45pxkM1NV4k8lphSYA4S1
-X-Received: by 2002:a05:600c:221a:: with SMTP id z26mr7823252wml.20.1635864294654;
-        Tue, 02 Nov 2021 07:44:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwBBOUAAgvnqsjRVZ4bzRv1lCqYgkkyX3fHbS5Y5cY5MU4aoQfmzPcf1WlQqb1AxIh7YDXh9w==
-X-Received: by 2002:a05:600c:221a:: with SMTP id z26mr7823225wml.20.1635864294488;
-        Tue, 02 Nov 2021 07:44:54 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6810.dip0.t-ipconnect.de. [91.12.104.16])
-        by smtp.gmail.com with ESMTPSA id c11sm3176123wmq.27.2021.11.02.07.44.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Nov 2021 07:44:53 -0700 (PDT)
-Message-ID: <c927ef49-ae10-ba1b-bc34-0c44bba2e864@redhat.com>
-Date:   Tue, 2 Nov 2021 15:44:52 +0100
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PqTPhnZWWSI7aaZPpC+xELL83kKV2UGyYtjIddeA+HE=;
+        b=bunSpdyrojpkjxogM9grtSolquUCJnSK9UMr7B2yk8c0jaiesDLi24dW+hG7yiVXkv
+         DEzaCcu++mSFRWkTtH2WSYI6KNmw2lKwMoIGxw3GkfjIkEKJt1PLa4v72CTtjC75c6If
+         NYZoI+rTnR1hEx0f9iiyyEQnN8hiBlX8miTGLZVpyYRTeDa6Vu9y6gOymarwFazLT7Fv
+         Oc2UAWE47zzS6By86ufsy8mRoPCQNGP6u4F8uF47nad+wBBAnBQn6sbLm2Fh5Q8tRIWv
+         tyT4joSNLb7HB/mFZwOT237sn3Z+QybDuUA9MIaM40/suXvAlRv56boSPKH1EnOfHn7C
+         2tww==
+X-Gm-Message-State: AOAM530BW1Im6HVt+M/h6bW6XULDfhi46BoRiggKe7KmM97cT2F4aX94
+        bfyBY3RQrhvDKkuvzKQE0kP80ajicL+BmhWhJZ8=
+X-Google-Smtp-Source: ABdhPJyil3/Y4/MEwYq4e9TpWqscZQDReM8TqFCTgf0g+O7x+5hVA0udsrU+qd3+XBdQxBtQFFztlu5DaK1IREZ2Cjk=
+X-Received: by 2002:a17:906:6a0a:: with SMTP id qw10mr18609747ejc.141.1635864371916;
+ Tue, 02 Nov 2021 07:46:11 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH] mm: fix panic in __alloc_pages
-Content-Language: en-US
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Alexey Makhalov <amakhalov@vmware.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Oscar Salvador <OSalvador@suse.com>
-References: <YYD/FkpAk5IvmOux@dhcp22.suse.cz>
- <b2e4a611-45a6-732a-a6d3-6042afd2af6e@redhat.com>
- <E34422F0-A44A-48FD-AE3B-816744359169@vmware.com>
- <b3908fce-6b07-8390-b691-56dd2f85c05f@redhat.com>
- <YYEkqH8l0ASWv/JT@dhcp22.suse.cz>
- <42abfba6-b27e-ca8b-8cdf-883a9398b506@redhat.com>
- <YYEun6s/mF9bE+rQ@dhcp22.suse.cz>
- <e7aed7c0-b7b1-4a94-f323-0bcde2f879d2@redhat.com>
- <YYE8L4gs8/+HH6bf@dhcp22.suse.cz>
- <ccf05348-e1b6-58a7-2626-701e60b662e6@redhat.com>
- <YYFHPGq/E9F11F7o@dhcp22.suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <YYFHPGq/E9F11F7o@dhcp22.suse.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20211017162337.44860-1-kitakar@gmail.com> <20211017162337.44860-4-kitakar@gmail.com>
+ <20211102130245.GE2794@kadam> <CAHp75VeThcCywYZsrUNYSA3Yc3MjJwfiCBCGep1DpWFFUg71cw@mail.gmail.com>
+In-Reply-To: <CAHp75VeThcCywYZsrUNYSA3Yc3MjJwfiCBCGep1DpWFFUg71cw@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 2 Nov 2021 16:45:20 +0200
+Message-ID: <CAHp75VdnvxCWYrdrBqtSDP0A2PCT6dYvHAhszY9iH9ooWKT49g@mail.gmail.com>
+Subject: Re: [BUG/RFC PATCH 3/5] [BUG][RFC] media: atomisp: pci: add NULL
+ check for asd obtained from atomisp_video_pipe
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Tsuchiya Yuto <kitakar@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Patrik Gfeller <patrik.gfeller@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Kaixu Xia <kaixuxia@tencent.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Yang Li <abaci-bugfix@linux.alibaba.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Alex Dewar <alex.dewar90@gmail.com>,
+        Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Alan <alan@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-staging@lists.linux.dev,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02.11.21 15:12, Michal Hocko wrote:
-> On Tue 02-11-21 14:41:25, David Hildenbrand wrote:
->> On 02.11.21 14:25, Michal Hocko wrote:
-> [...]
->>> Btw. do you plan to send a patch for pcp allocator to use cpu_to_mem?
->>
->> You mean s/cpu_to_node/cpu_to_mem/ or also handling offline nids?
-> 
-> just cpu_to_mem
-> 
->> cpu_to_mem() corresponds to cpu_to_node() unless on ia64+ppc IIUC, so it
->> won't help for this very report.
-> 
-> Weird, x86 allows memory less nodes as well. But you are right
-> there is nothing selecting HAVE_MEMORYLESS_NODES neither do I see any
-> arch specific implementation. I have to say that I have forgot all those
-> nasty details... Sigh
-> 
+On Tue, Nov 2, 2021 at 4:44 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+> On Tue, Nov 2, 2021 at 3:10 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+> > On Mon, Oct 18, 2021 at 01:23:34AM +0900, Tsuchiya Yuto wrote:
 
-I assume HAVE_MEMORYLESS_NODES is just an optimization to set a
-preferred memory node for memoryless nodes. It doesn't imply that we
-cannot have memoryless nodes otherwise.
+...
 
-I suspect just as so often, the config option name doesn't express what
-it really does.
+> > Run your patches through scripts/checkpatch.pl.
+>
+> While it's good advice, we are dealing with quite a bad code under
+> staging, so the requirements may be relaxed.
+
+To be more clear: the goal now is getting it _working_. That's why
+this kind of noise is not important _for now_.
 
 -- 
-Thanks,
-
-David / dhildenb
-
+With Best Regards,
+Andy Shevchenko
