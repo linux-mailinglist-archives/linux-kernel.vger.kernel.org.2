@@ -2,256 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA9774435FA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 19:47:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99BD8443605
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 19:49:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235548AbhKBSth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 14:49:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41774 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236003AbhKBStZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 14:49:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E35061050;
-        Tue,  2 Nov 2021 18:46:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635878810;
-        bh=e4mmZ1E1x7N9yMBlg1C9SEJsxmd3c5tVIwC4zmhhLbo=;
-        h=Date:From:To:Cc:Subject:From;
-        b=dLSz3abrhypxcuNcZWZCcViQ1nr7uhHbvS5+qrksBsADeH/shfomL4X9zcStxAx2I
-         BBsv0y2YdM+wOn3BtGLqrvLigUf0OGHX/nqaYX3fAhRdtFnVs420Zh2OndumDsko7u
-         84CcOnuooFIj17OBlt7rrWTC2DpZMupBwjZm0bSlsBKmcqPpjDtXHypT0Ggrf1vHBN
-         iN3v4xv9U1aUOfxOkIjdpXZBgVaX1kq3dP+1ZeQTrtsytMb+JDw4cpG3AQ/uG78pBB
-         lIZjkz/4ok/e9hdgR6+oVYUwR8Zy1Eh3NnfULxj/jaD2TUc0xu2FNN1/2uDGrp0qmh
-         B411TWGIWMTZA==
-Date:   Tue, 2 Nov 2021 11:46:50 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        david@fromorbit.com, linux-kernel@vger.kernel.org,
-        sandeen@sandeen.net, hch@lst.de
-Subject: [GIT PULL] xfs: new code for 5.16
-Message-ID: <20211102184650.GH24307@magnolia>
+        id S230429AbhKBSvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 14:51:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46904 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229616AbhKBSvk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 14:51:40 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7645FC061714;
+        Tue,  2 Nov 2021 11:49:04 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id h11so36514971ljk.1;
+        Tue, 02 Nov 2021 11:49:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2ezRyMBIdL3Lvhy1+8wI9E48HPuzhR1oOrs4TVu6vc4=;
+        b=JrrwETNoeg4AxZ9rBH5sxiHO/kIxNLxQh9t0PeFPa4nrrl0WKqVQ85Zk2YBDUbRCK1
+         xCRoJG0uxWj+xq7z3V/sQbSl8u1WDG7O4Xa1hjaQeWJDWLhc2vuHTbkBVPxtWPORpwnc
+         GBfGyeqnHwVd37RrPvOo0jKK4FD4AEt0ZdLFnLTLZz+DIA9iejoz+FG00N3ARNCQ5gTY
+         WsmuL+l0uqcXSEKP/RAP/gG6Cw7/uyo9Ckp4l9PaK7U8U2nNo1Q68N360c/4EuzpD0VG
+         a9qc28SvrdZ5QIsQWfSgKq9W0qn9Fv++HqOvhS/h2cWalv3EJli3CDkbTr8lOyLFsamQ
+         OrZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2ezRyMBIdL3Lvhy1+8wI9E48HPuzhR1oOrs4TVu6vc4=;
+        b=Uf8+dxzZbXhCC86RPETKTySBNm/qQ2vC07b2+EhTgy9Pz8tytkudu3AiFIv16OBPZ/
+         zccsd0kg1bOPSCMsoIXqqadvFhbM1k2mCULNxL7T7eXTNCex0e7UB7pvF1QSxLQ7s9MA
+         UloGEfhkelN0SP71dbmY4qsr3qSl4TPcncCnwOWyynJO93Q5hKS66t1jIxEtYBduGMCr
+         yIe6AY7wd8t9f8LveJ9a+4qIichoWATs6NwsIGMamNdRSLd3jLnnFgrCDd38n710SCm5
+         LgCAdDeX4lSnb89BDPlh4Bc3UHYgrATl40VU4VnUsQObdrfbNaMsNsdRFlZSnrRPyBRg
+         C1Rg==
+X-Gm-Message-State: AOAM533mrFFK6BcQYPhn41O7Mx0X6gwXMrykoXWXXsvVGVNFgQaP6sCV
+        x++bjsYeiHrOomVCDbV1vX8=
+X-Google-Smtp-Source: ABdhPJzFYCG6pItVftKEPz2jfS1bDIqqhXRn4ng/P6b2QOyhWgOaqahCYPBAyLL0wTBbiRX8E7tfFg==
+X-Received: by 2002:a2e:86d5:: with SMTP id n21mr5282658ljj.102.1635878942833;
+        Tue, 02 Nov 2021 11:49:02 -0700 (PDT)
+Received: from localhost.localdomain (46-138-10-73.dynamic.spd-mgts.ru. [46.138.10.73])
+        by smtp.gmail.com with ESMTPSA id t23sm151232ljc.120.2021.11.02.11.49.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Nov 2021 11:49:02 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <treding@nvidia.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        JC Kuo <jckuo@nvidia.com>, Nicolas Chauvet <kwizart@gmail.com>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+Subject: [PATCH v2] usb: xhci: tegra: Check padctrl interrupt presence in device tree
+Date:   Tue,  2 Nov 2021 21:48:01 +0300
+Message-Id: <20211102184801.7229-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Older device-trees don't specify padctrl interrupt and xhci-tegra driver
+now fails to probe with -EINVAL using those device-trees. Check interrupt
+presence and keep runtime PM disabled if it's missing to fix the trouble.
 
-Please pull this branch containing new code for 5.16.  This cycle we've
-worked on fixing bugs and improving XFS' memory footprint.
+Fixes: 971ee247060d ("usb: xhci: tegra: Enable ELPG for runtime/system PM")
+Cc: <stable@vger.kernel.org> # 5.14+
+Tested-by: Nicolas Chauvet <kwizart@gmail.com>
+Reported-by: Nicolas Chauvet <kwizart@gmail.com>
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
 
-The most notable fixes include: fixing a corruption warning (and
-free space accounting skew) if copy on write fails; fixing slab cache
-misuse if SLOB is enabled, which apparently was broken for years without
-anybody noticing; and fixing a potential race with online shrinkfs.
+Changelog:
 
-Otherwise, the bulk of the changes here involve setting up separate slab
-caches for frequently used items such as btree cursors and log intent
-items, and compacting the structures to reduce memory usage of those
-items substantially.  This also sets us up to support larger btrees in
-future kernels.  We also switch parts of online fsck to allocate scrub
-context information from the heap instead of using stack space.
+v2: - Use of_irq_parse_one() to check interrupt presence status in device-tree,
+      instead of checking interrupt properties directly.
 
-The branch merges cleanly against upstream as of a few minutes ago.
-Please let me know if anything else strange happens during the merge
-process.  There will probably be a second pull request next week with
-a few more minor cleanups and bug fixes.
+    - USB wakeup and runtime PM are kept disabled if interrupt is missing,
+      instead of returning -EOPNOTSUPP from RPM-suspend callback.
 
-As a side note: the only iomap changes for 5.16 that I know of are
-Andreas' gfs2 mmap pagefault deadlock fixes, which I think he's already
-sent you separately.
+    - Added debug message, telling about the missing interrupt.
 
---D
+ drivers/usb/host/xhci-tegra.c | 40 ++++++++++++++++++++++++-----------
+ 1 file changed, 28 insertions(+), 12 deletions(-)
 
-The following changes since commit 9e1ff307c779ce1f0f810c7ecce3d95bbae40896:
+diff --git a/drivers/usb/host/xhci-tegra.c b/drivers/usb/host/xhci-tegra.c
+index 1bf494b649bd..0a7ab596be85 100644
+--- a/drivers/usb/host/xhci-tegra.c
++++ b/drivers/usb/host/xhci-tegra.c
+@@ -1400,6 +1400,7 @@ static void tegra_xusb_deinit_usb_phy(struct tegra_xusb *tegra)
+ 
+ static int tegra_xusb_probe(struct platform_device *pdev)
+ {
++	struct of_phandle_args irq_arg;
+ 	struct tegra_xusb *tegra;
+ 	struct device_node *np;
+ 	struct resource *regs;
+@@ -1454,10 +1455,16 @@ static int tegra_xusb_probe(struct platform_device *pdev)
+ 		goto put_padctl;
+ 	}
+ 
+-	tegra->padctl_irq = of_irq_get(np, 0);
+-	if (tegra->padctl_irq <= 0) {
+-		err = (tegra->padctl_irq == 0) ? -ENODEV : tegra->padctl_irq;
+-		goto put_padctl;
++	/* Older device-trees don't have padctrl interrupt */
++	err = of_irq_parse_one(np, 0, &irq_arg);
++	if (!err) {
++		tegra->padctl_irq = of_irq_get(np, 0);
++		if (tegra->padctl_irq <= 0) {
++			err = (tegra->padctl_irq == 0) ? -ENODEV : tegra->padctl_irq;
++			goto put_padctl;
++		}
++	} else {
++		dev_dbg(&pdev->dev, "%pOF doesn't have interrupt\n", np);
+ 	}
+ 
+ 	tegra->host_clk = devm_clk_get(&pdev->dev, "xusb_host");
+@@ -1696,11 +1703,15 @@ static int tegra_xusb_probe(struct platform_device *pdev)
+ 		goto remove_usb3;
+ 	}
+ 
+-	err = devm_request_threaded_irq(&pdev->dev, tegra->padctl_irq, NULL, tegra_xusb_padctl_irq,
+-					IRQF_ONESHOT, dev_name(&pdev->dev), tegra);
+-	if (err < 0) {
+-		dev_err(&pdev->dev, "failed to request padctl IRQ: %d\n", err);
+-		goto remove_usb3;
++	if (tegra->padctl_irq) {
++		err = devm_request_threaded_irq(&pdev->dev, tegra->padctl_irq,
++						NULL, tegra_xusb_padctl_irq,
++						IRQF_ONESHOT, dev_name(&pdev->dev),
++						tegra);
++		if (err < 0) {
++			dev_err(&pdev->dev, "failed to request padctl IRQ: %d\n", err);
++			goto remove_usb3;
++		}
+ 	}
+ 
+ 	err = tegra_xusb_enable_firmware_messages(tegra);
+@@ -1718,13 +1729,16 @@ static int tegra_xusb_probe(struct platform_device *pdev)
+ 	/* Enable wake for both USB 2.0 and USB 3.0 roothubs */
+ 	device_init_wakeup(&tegra->hcd->self.root_hub->dev, true);
+ 	device_init_wakeup(&xhci->shared_hcd->self.root_hub->dev, true);
+-	device_init_wakeup(tegra->dev, true);
+ 
+ 	pm_runtime_use_autosuspend(tegra->dev);
+ 	pm_runtime_set_autosuspend_delay(tegra->dev, 2000);
+ 	pm_runtime_mark_last_busy(tegra->dev);
+ 	pm_runtime_set_active(tegra->dev);
+-	pm_runtime_enable(tegra->dev);
++
++	if (tegra->padctl_irq) {
++		device_init_wakeup(tegra->dev, true);
++		pm_runtime_enable(tegra->dev);
++	}
+ 
+ 	return 0;
+ 
+@@ -1772,7 +1786,9 @@ static int tegra_xusb_remove(struct platform_device *pdev)
+ 	dma_free_coherent(&pdev->dev, tegra->fw.size, tegra->fw.virt,
+ 			  tegra->fw.phys);
+ 
+-	pm_runtime_disable(&pdev->dev);
++	if (tegra->padctl_irq)
++		pm_runtime_disable(&pdev->dev);
++
+ 	pm_runtime_put(&pdev->dev);
+ 
+ 	tegra_xusb_powergate_partitions(tegra);
+-- 
+2.33.1
 
-  Linux 5.15-rc4 (2021-10-03 14:08:47 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/xfs-5.16-merge-4
-
-for you to fetch changes up to 2a09b575074ff3ed23907b6f6f3da87af41f592b:
-
-  xfs: use swap() to make code cleaner (2021-10-30 09:28:55 -0700)
-
-----------------------------------------------------------------
-New code for 5.16:
- * Bug fixes and cleanups for kernel memory allocation usage, this time
-   without touching the mm code.
- * Refactor the log recovery mechanism that preserves held resources
-   across a transaction roll so that it uses the exact same mechanism
-   that we use for that during regular runtime.
- * Fix bugs and tighten checking around btree heights.
- * Remove more old typedefs.
- * Fix perag reference leaks when racing with growfs.
- * Remove unused fields from xfs_btree_cur.
- * Allocate various scrub structures on the heap to reduce stack usage.
- * Pack xfs_btree_cur fields and rearrange to support arbitrary heights.
- * Compute maximum possible heights for each btree height, and use that
-   to set up slab caches for each btree type.
- * Finally remove kmem_zone_t, since these have always been struct
-   kmem_cache on Linux.
- * Compact the structures used to coordinate work intent items.
- * Set up slab caches for each work intent item type.
- * Rename the "bmap_add_free" function to "free_extent_later", which
-   more accurately describes what it does.
- * Fix corruption warning on unmount when a CoW preallocation covers a
-   data fork delalloc reservation but then the CoW fails.
- * Add some more minor code improvements.
-
-----------------------------------------------------------------
-Brian Foster (5):
-      xfs: fold perag loop iteration logic into helper function
-      xfs: rename the next_agno perag iteration variable
-      xfs: terminate perag iteration reliably on agcount
-      xfs: fix perag reference leak on iteration race with growfs
-      xfs: punch out data fork delalloc blocks on COW writeback failure
-
-Changcheng Deng (1):
-      xfs: use swap() to make code cleaner
-
-Christoph Hellwig (3):
-      xfs: remove the xfs_dinode_t typedef
-      xfs: remove the xfs_dsb_t typedef
-      xfs: remove the xfs_dqblk_t typedef
-
-Darrick J. Wong (32):
-      xfs: formalize the process of holding onto resources across a defer roll
-      xfs: port the defer ops capture and continue to resource capture
-      xfs: fix maxlevels comparisons in the btree staging code
-      xfs: remove xfs_btree_cur_t typedef
-      xfs: don't allocate scrub contexts on the stack
-      xfs: stricter btree height checking when looking for errors
-      xfs: stricter btree height checking when scanning for btree roots
-      xfs: check that bc_nlevels never overflows
-      xfs: fix incorrect decoding in xchk_btree_cur_fsbno
-      xfs: remove xfs_btree_cur.bc_blocklog
-      xfs: reduce the size of nr_ops for refcount btree cursors
-      xfs: don't track firstrec/firstkey separately in xchk_btree
-      xfs: dynamically allocate btree scrub context structure
-      xfs: prepare xfs_btree_cur for dynamic cursor heights
-      xfs: rearrange xfs_btree_cur fields for better packing
-      xfs: refactor btree cursor allocation function
-      xfs: encode the max btree height in the cursor
-      xfs: dynamically allocate cursors based on maxlevels
-      xfs: rename m_ag_maxlevels to m_allocbt_maxlevels
-      xfs: compute maximum AG btree height for critical reservation calculation
-      xfs: clean up xfs_btree_{calc_size,compute_maxlevels}
-      xfs: compute the maximum height of the rmap btree when reflink enabled
-      xfs: kill XFS_BTREE_MAXLEVELS
-      xfs: compute absolute maximum nlevels for each btree type
-      xfs: use separate btree cursor cache for each btree type
-      xfs: remove kmem_zone typedef
-      xfs: rename _zone variables to _cache
-      xfs: compact deferred intent item structures
-      xfs: create slab caches for frequently-used deferred items
-      xfs: rename xfs_bmap_add_free to xfs_free_extent_later
-      xfs: reduce the size of struct xfs_extent_free_item
-      xfs: remove unused parameter from refcount code
-
-Gustavo A. R. Silva (1):
-      xfs: Use kvcalloc() instead of kvzalloc()
-
-Qing Wang (1):
-      xfs: replace snprintf in show functions with sysfs_emit
-
-Rustam Kovhaev (1):
-      xfs: use kmem_cache_free() for kmem_cache objects
-
-Wan Jiabing (1):
-      xfs: Remove duplicated include in xfs_super
-
- fs/xfs/kmem.h                      |   4 -
- fs/xfs/libxfs/xfs_ag.c             |   2 +-
- fs/xfs/libxfs/xfs_ag.h             |  36 ++--
- fs/xfs/libxfs/xfs_ag_resv.c        |   3 +-
- fs/xfs/libxfs/xfs_alloc.c          | 120 ++++++++++---
- fs/xfs/libxfs/xfs_alloc.h          |  38 ++++-
- fs/xfs/libxfs/xfs_alloc_btree.c    |  63 +++++--
- fs/xfs/libxfs/xfs_alloc_btree.h    |   5 +
- fs/xfs/libxfs/xfs_attr_leaf.c      |   2 +-
- fs/xfs/libxfs/xfs_bmap.c           | 101 ++++-------
- fs/xfs/libxfs/xfs_bmap.h           |  35 +---
- fs/xfs/libxfs/xfs_bmap_btree.c     |  62 +++++--
- fs/xfs/libxfs/xfs_bmap_btree.h     |   5 +
- fs/xfs/libxfs/xfs_btree.c          | 333 +++++++++++++++++++++++--------------
- fs/xfs/libxfs/xfs_btree.h          |  99 ++++++++---
- fs/xfs/libxfs/xfs_btree_staging.c  |   8 +-
- fs/xfs/libxfs/xfs_da_btree.c       |   6 +-
- fs/xfs/libxfs/xfs_da_btree.h       |   3 +-
- fs/xfs/libxfs/xfs_defer.c          | 241 ++++++++++++++++++++-------
- fs/xfs/libxfs/xfs_defer.h          |  41 ++++-
- fs/xfs/libxfs/xfs_dquot_buf.c      |   4 +-
- fs/xfs/libxfs/xfs_format.h         |  12 +-
- fs/xfs/libxfs/xfs_fs.h             |   2 +
- fs/xfs/libxfs/xfs_ialloc.c         |   5 +-
- fs/xfs/libxfs/xfs_ialloc_btree.c   |  90 +++++++++-
- fs/xfs/libxfs/xfs_ialloc_btree.h   |   5 +
- fs/xfs/libxfs/xfs_inode_buf.c      |   6 +-
- fs/xfs/libxfs/xfs_inode_fork.c     |  24 +--
- fs/xfs/libxfs/xfs_inode_fork.h     |   2 +-
- fs/xfs/libxfs/xfs_refcount.c       |  46 +++--
- fs/xfs/libxfs/xfs_refcount.h       |   7 +-
- fs/xfs/libxfs/xfs_refcount_btree.c |  73 ++++++--
- fs/xfs/libxfs/xfs_refcount_btree.h |   5 +
- fs/xfs/libxfs/xfs_rmap.c           |  21 ++-
- fs/xfs/libxfs/xfs_rmap.h           |   7 +-
- fs/xfs/libxfs/xfs_rmap_btree.c     | 116 ++++++++++---
- fs/xfs/libxfs/xfs_rmap_btree.h     |   5 +
- fs/xfs/libxfs/xfs_sb.c             |   4 +-
- fs/xfs/libxfs/xfs_trans_resv.c     |  18 +-
- fs/xfs/libxfs/xfs_trans_space.h    |   9 +-
- fs/xfs/scrub/agheader.c            |  13 +-
- fs/xfs/scrub/agheader_repair.c     |   8 +-
- fs/xfs/scrub/bitmap.c              |  22 +--
- fs/xfs/scrub/bmap.c                |   2 +-
- fs/xfs/scrub/btree.c               | 121 +++++++-------
- fs/xfs/scrub/btree.h               |  17 +-
- fs/xfs/scrub/dabtree.c             |  62 +++----
- fs/xfs/scrub/repair.h              |   3 +
- fs/xfs/scrub/scrub.c               |  64 +++----
- fs/xfs/scrub/trace.c               |  11 +-
- fs/xfs/scrub/trace.h               |  10 +-
- fs/xfs/xfs_aops.c                  |  15 +-
- fs/xfs/xfs_attr_inactive.c         |   2 +-
- fs/xfs/xfs_bmap_item.c             |  18 +-
- fs/xfs/xfs_bmap_item.h             |   6 +-
- fs/xfs/xfs_buf.c                   |  14 +-
- fs/xfs/xfs_buf_item.c              |   8 +-
- fs/xfs/xfs_buf_item.h              |   2 +-
- fs/xfs/xfs_buf_item_recover.c      |   2 +-
- fs/xfs/xfs_dquot.c                 |  28 ++--
- fs/xfs/xfs_extfree_item.c          |  33 ++--
- fs/xfs/xfs_extfree_item.h          |   6 +-
- fs/xfs/xfs_icache.c                |  10 +-
- fs/xfs/xfs_icreate_item.c          |   6 +-
- fs/xfs/xfs_icreate_item.h          |   2 +-
- fs/xfs/xfs_inode.c                 |  12 +-
- fs/xfs/xfs_inode.h                 |   2 +-
- fs/xfs/xfs_inode_item.c            |   6 +-
- fs/xfs/xfs_inode_item.h            |   2 +-
- fs/xfs/xfs_ioctl.c                 |   6 +-
- fs/xfs/xfs_log.c                   |   6 +-
- fs/xfs/xfs_log_priv.h              |   2 +-
- fs/xfs/xfs_log_recover.c           |  12 +-
- fs/xfs/xfs_mount.c                 |  14 ++
- fs/xfs/xfs_mount.h                 |   5 +-
- fs/xfs/xfs_mru_cache.c             |   2 +-
- fs/xfs/xfs_qm.c                    |   2 +-
- fs/xfs/xfs_qm.h                    |   2 +-
- fs/xfs/xfs_refcount_item.c         |  18 +-
- fs/xfs/xfs_refcount_item.h         |   6 +-
- fs/xfs/xfs_reflink.c               |   2 +-
- fs/xfs/xfs_rmap_item.c             |  18 +-
- fs/xfs/xfs_rmap_item.h             |   6 +-
- fs/xfs/xfs_super.c                 | 233 +++++++++++++-------------
- fs/xfs/xfs_sysfs.c                 |  24 +--
- fs/xfs/xfs_trace.h                 |   2 +-
- fs/xfs/xfs_trans.c                 |  16 +-
- fs/xfs/xfs_trans.h                 |   8 +-
- fs/xfs/xfs_trans_dquot.c           |   4 +-
- 89 files changed, 1656 insertions(+), 907 deletions(-)
