@@ -2,87 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BACF442483
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 01:09:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69D3B442443
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 00:45:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231940AbhKBAMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 20:12:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55446 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229497AbhKBAMJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 20:12:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1052660EDF;
-        Tue,  2 Nov 2021 00:09:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635811775;
-        bh=EfZ9nBGWld8QFbfvoTqAhXWUe2i3SVh73ovScpJwvk4=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=ZZhtr1r0n9W4Q5dJ/4squPwswHOmfQjaTpoeZ+ZVh4jR+3CN1KFQS4CQxy+Nuxvr7
-         SNWNhwNE7hQTbk1du3DWdTHY9gxHjOowm5C1LwELaE3HY0OPXDLi1qFEM2HaTWuJ+O
-         CmfHhuJyPJPz3Ggz20FPsXlUnVoYDnap56r07cDx6ivfu0nPFLn9Ic14kntT8fB9PK
-         opIcmdLKqPC3Lfewz2qxv8skbbV9YG76sLyFhZwgTZpaP+PVw4XxKsEW/R+KD8MnWz
-         K0iz0Q9kt3293NAPQ7AopR3ZTxct4aRkSYG8VL8FE8pWAAwYJp/NeK8naK0lvamU9v
-         Tcmgbz/vKDSIA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id D06115C037F; Mon,  1 Nov 2021 17:09:34 -0700 (PDT)
-Date:   Mon, 1 Nov 2021 17:09:34 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Jiri Wiesner <jwiesner@suse.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, Mel Gorman <mgorman@suse.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>
-Subject: Re: [RFC PATCH] clocksource: increase watchdog retries
-Message-ID: <20211102000934.GG880162@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20211027164352.GA23273@incl>
- <20211027213829.GB880162@paulmck-ThinkPad-P17-Gen-1>
- <20211028162025.GA1068@incl>
- <20211028184209.GH880162@paulmck-ThinkPad-P17-Gen-1>
- <20211101102803.GA16089@incl>
+        id S231486AbhKAXrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 19:47:41 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:33824 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229526AbhKAXrk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 19:47:40 -0400
+Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20211101234503epoutp04ceff51d359a401de2b0642e62f4ca6b8~zkM3zxRRs1713817138epoutp04K
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 23:45:03 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20211101234503epoutp04ceff51d359a401de2b0642e62f4ca6b8~zkM3zxRRs1713817138epoutp04K
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1635810303;
+        bh=9Gmk3MsADtiTk0KbBQioQLGVbzrN8jvqxdb6of5f9dk=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=lCrkmDotdfFyp0HtG62P1vdcQjFqJytfS51Et7A+Cww4z5fN+l5jsBftBglcYtWG+
+         j7nCs5DPqnJQXKL3FzmwVMZ94czPynZJwIz6XLNlN4mQKCwRZtX0tjbLPCT6Xi1n4O
+         VEQNC7ZbrTLFX2dY8/YDWcyLVsKcCVNFjnT5drLA=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
+        20211101234503epcas2p18d7823f71f6ddb3e98cc4f51b4e3076f~zkM3DQnYb0999109991epcas2p1J;
+        Mon,  1 Nov 2021 23:45:03 +0000 (GMT)
+Received: from epsmges2p4.samsung.com (unknown [182.195.36.88]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4HjqQF6gGKz4x9Q2; Mon,  1 Nov
+        2021 23:44:53 +0000 (GMT)
+Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
+        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        F8.21.12141.2FB70816; Tue,  2 Nov 2021 08:44:50 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas2p3.samsung.com (KnoxPortal) with ESMTPA id
+        20211101234449epcas2p385cd5133ff8ed3a248649b4134bc0113~zkMqx4ckQ1057810578epcas2p3A;
+        Mon,  1 Nov 2021 23:44:49 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20211101234449epsmtrp1f1a570af88b37ba63052aad3603419a2~zkMqxEDFz0970709707epsmtrp1D;
+        Mon,  1 Nov 2021 23:44:49 +0000 (GMT)
+X-AuditID: b6c32a48-d73ff70000002f6d-d8-61807bf22ac1
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        B2.9C.08738.1FB70816; Tue,  2 Nov 2021 08:44:49 +0900 (KST)
+Received: from localhost.localdomain (unknown [12.36.155.123]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20211101234449epsmtip19475c1bd3d668d9f662a2e245ee06786~zkMqhkGD92411524115epsmtip1q;
+        Mon,  1 Nov 2021 23:44:49 +0000 (GMT)
+From:   Youngmin Nam <youngmin.nam@samsung.com>
+To:     krzysztof.kozlowski@canonical.com, will@kernel.org,
+        mark.rutland@arm.com, daniel.lezcano@linaro.org
+Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, pullip.cho@samsung.com,
+        hoony.yu@samsung.com, hajun.sung@samsung.com,
+        myung-su.cha@samsung.com, kgene@kernel.org,
+        Youngmin Nam <youngmin.nam@samsung.com>
+Subject: [PATCH v2 0/2] Indroduce Exynos Multi Core Timer version 2
+Date:   Tue,  2 Nov 2021 09:11:20 +0900
+Message-Id: <20211102001122.27516-1-youngmin.nam@samsung.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211101102803.GA16089@incl>
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrHJsWRmVeSWpSXmKPExsWy7bCmue6n6oZEgwlX5S3mfZa1aNp/idni
+        +NrXrBb9j18zW2x8+4PJYtPja6wWl3fNYbOYcX4fk8XS6xeZLBY/XsFk8a/3IKPF5k1TmS1a
+        7phaLD7wid2Bz2PNvDWMHrMaetk8Nq3qZPO4c20Pm8e7c+fYPTYvqffo27KK0ePzJrkAjqhs
+        m4zUxJTUIoXUvOT8lMy8dFsl7+B453hTMwNDXUNLC3MlhbzE3FRbJRefAF23zBygq5UUyhJz
+        SoFCAYnFxUr6djZF+aUlqQoZ+cUltkqpBSk5BeYFesWJucWleel6eaklVoYGBkamQIUJ2RnP
+        H/5hLDjPXTFzZj9jA+Nkzi5GTg4JAROJtRNvMXUxcnEICexglJhwfCsjhPOJUWLypyssIFVC
+        Ap8ZJb4udofpuPj7IjtE0S5GiaWPO6A6gIr2L1zCDlLFJqArse3EP0YQW0QgU+LDl0+sIEXM
+        AguYJC4cfgpWJCzgLPFw1xMmEJtFQFXi5Io+sHW8ArYSf2b8ZINYJy9x5FcnM0RcUOLkzCdg
+        NcxA8eats5khaiZySHydpglhu0g0X//KDmELS7w6vgXKlpJ42d8GZddLLN62lBnkIAmBCYwS
+        8zd9gEoYS8x61g50NQfQAk2J9bv0QUwJAWWJI7eg1vJJdBz+yw4R5pXoaBOCaFST+DVlAyOE
+        LSOxe/EKqMs8JG70vGOEBGKsxMpn09kmMMrPQvLMLCTPzELYu4CReRWjWGpBcW56arFRgQk8
+        UpPzczcxghOulscOxtlvP+gdYmTiYDzEKMHBrCTCG3GhJlGINyWxsiq1KD++qDQntfgQoykw
+        eCcyS4km5wNTfl5JvKGJpYGJmZmhuZGpgbmSOK+laHaikEB6YklqdmpqQWoRTB8TB6dUA9OJ
+        gnM17MHrxcw57+zne/hgAptB0qyS5ye62UJi4rTvLDwVu8/h4pN3uVfKO1qnlzBxODn4Wxll
+        OiRWK8864FjwM/xJe/7Unp8GmRu3Fd20aP/8SsKp+v2eM4EOwqKeEtOT0+9bvr+x2KJpVtWT
+        ac/VZp+p+1Z9Y/mpGftX2ohP6zZxl/t7SfcE39pv3Hu7TXMu7L/+cs3OtA+bZzf7lH3ZmXN4
+        +v8Zd79tCXM75nR+wjJt67+sRxma7RmXrdzs/D7Ap2jmEq5zmnPENq9/mLHsU3zhzBCe3BdX
+        +Awqz+8QqFH+esPb7Iy29SEtkeerFDxVRJzEyv+L3ft353RgVR3ruVfvHecLBLlclvNg2N+o
+        xFKckWioxVxUnAgA1lz7MkEEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrPLMWRmVeSWpSXmKPExsWy7bCSnO7H6oZEgx3zdSzmfZa1aNp/idni
+        +NrXrBb9j18zW2x8+4PJYtPja6wWl3fNYbOYcX4fk8XS6xeZLBY/XsFk8a/3IKPF5k1TmS1a
+        7phaLD7wid2Bz2PNvDWMHrMaetk8Nq3qZPO4c20Pm8e7c+fYPTYvqffo27KK0ePzJrkAjigu
+        m5TUnMyy1CJ9uwSujOcP/zAWnOeumDmzn7GBcTJnFyMnh4SAicTF3xfZuxi5OIQEdjBK7Lx/
+        kw0iISNxe+VlVghbWOJ+yxFWiKKPjBJLT/1lBEmwCehKbDvxD8wWEciV6DgwhxGkiFlgFZPE
+        k45TLCAJYQFniYe7njCB2CwCqhInV/SBxXkFbCX+zPgJtU1e4sivTmaIuKDEyZlPwGqYgeLN
+        W2czT2Dkm4UkNQtJagEj0ypGydSC4tz03GLDAqO81HK94sTc4tK8dL3k/NxNjOA40NLawbhn
+        1Qe9Q4xMHIyHGCU4mJVEeCMu1CQK8aYkVlalFuXHF5XmpBYfYpTmYFES573QdTJeSCA9sSQ1
+        OzW1ILUIJsvEwSnVwKT1Ypbdr5lTw0RPviiMtFldrvSzy+2J87kPNQu1bi0wYJNm0PboaQi8
+        fPNgJqt2ybLApHWmPFbc+zf/uybpXfWBOcphbvL+FuOilyea5gi+W7fRhGEjY+uKtxxCTVmJ
+        3Gq7Lz2McJqilLkxiElagNt1zduuGMvmf87SKbmP9/nn1qQ1Cj24qqPz5ldOiptPukbHFk9f
+        5sCFrp75pYzNtzYlHmnqsa98P71hC0tv44YGgUyD3jf6dpP7DKae4+R/x7T+hFrMYmndlBUb
+        k56vmXJjs8KSJIN5v9OfWeqc3SY0w5vr0nzWC12Nycwv1TSVre4WaJ5IbF/4baOM/66rX8uX
+        ple4O50uKIuJSK9XYinOSDTUYi4qTgQADX305vICAAA=
+X-CMS-MailID: 20211101234449epcas2p385cd5133ff8ed3a248649b4134bc0113
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20211101234449epcas2p385cd5133ff8ed3a248649b4134bc0113
+References: <CGME20211101234449epcas2p385cd5133ff8ed3a248649b4134bc0113@epcas2p3.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 01, 2021 at 11:28:03AM +0100, Jiri Wiesner wrote:
-> On Thu, Oct 28, 2021 at 11:42:09AM -0700, Paul E. McKenney wrote:
-> > On Thu, Oct 28, 2021 at 06:20:25PM +0200, Jiri Wiesner wrote:
-> > > On Wed, Oct 27, 2021 at 02:38:29PM -0700, Paul E. McKenney wrote:
-> > > > I had something like this pending, but people came up with other workloads
-> > > > that resulted in repeated delays.  In those cases, it does not make sense
-> > > > to ever mark the affected clocksource unstable.  This led me to the patch
-> > > > shown below, which splats after about 100 consecutive long-delay retries,
-> > > > but which avoids marking the clocksource unstable.  This is queued on -rcu.
-> > > > 
-> > > > Does this work for you?
-> > > > 
-> > > > commit 9ec2a03bbf4bee3d9fbc02a402dee36efafc5a2d
-> > > > Author: Paul E. McKenney <paulmck@kernel.org>
-> > > > Date:   Thu May 27 11:03:28 2021 -0700
-> > > > 
-> > > >     clocksource: Forgive repeated long-latency watchdog clocksource reads
-> > > 
-> > > Yes, it does. I have done 100 reboots of the testing machine (running
-> > > 5.15-rc5 with the above patch applied) and TSC was stable every time. I
-> > > am going to start a longer test of 300 reboots for good measure and
-> > > report back next week. J.
-> > 
-> > Very good, and thank you for giving it a go!
-> 
-> Thank you for the fix! It resolves several strange results we got in our performance testing.
-> 
-> > If it passes the upcoming tests
-> 
-> I have done 300 reboots of the testing machine. Again, TSC was stable every time.
-> 
-> > may I have your Tested-by?
-> 
-> Absolutely:
-> Tested-by: Jiri Wiesner <jwiesner@suse.de>
+Exynos Multi Core Timer version 2 is a new main system timer of next Exynos SoC.
+Exynos MCT v2 consists of 1 64bit FRC(Free Running Counter) and 12 comparators.
+Each comaprator produces interrupt when the value of current FRC + periods value matches with the
+increasinig value of FRC.
+So, 12 comaprators can be used as per-cpu event timer.
+And RTC can be used as a backup clock source.
 
-Applied, thank you!
+Changes in v2:
+  - Add config dependency with ARCH_EXYNOS.
+  - Remove 32bit of "mct-frc" which was used as a clock source in legacy SoC.
+    (Currently, clock source was replaced with ARM arch timer)
+  - Fix non-linux style comments and debug messege.
+  - Fix license comments.
+  - Update commit messege a bit to make it clear.
 
-							Thanx, Paul
+Youngmin Nam (2):
+  clocksource/drivers/exynos_mct_v2: introduce Exynos MCT version 2
+    driver for next Exynos SoC
+  dt-bindings: timer: samsung,s5e99xx-mct: Document s5e99xx-mct bindings
+
+ .../bindings/timer/samsung,s5e99xx-mct.yaml   |  91 ++++++
+ drivers/clocksource/Kconfig                   |   7 +
+ drivers/clocksource/Makefile                  |   1 +
+ drivers/clocksource/exynos_mct_v2.c           | 298 ++++++++++++++++++
+ drivers/clocksource/exynos_mct_v2.h           |  71 +++++
+ 5 files changed, 468 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/timer/samsung,s5e99xx-mct.yaml
+ create mode 100644 drivers/clocksource/exynos_mct_v2.c
+ create mode 100644 drivers/clocksource/exynos_mct_v2.h
+
+-- 
+2.33.0
+
