@@ -2,271 +2,325 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99279443462
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 18:11:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ED61443466
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 18:12:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230226AbhKBRON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 13:14:13 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:45008 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229689AbhKBROD (ORCPT
+        id S231890AbhKBRPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 13:15:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230382AbhKBRPV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 13:14:03 -0400
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1A2EJUeG011773;
-        Tue, 2 Nov 2021 18:11:14 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=jFbWexfVVsZE7MzAbDgySXVklqbP8iiroGc1J7oWwmQ=;
- b=lsx/4bc/GxkdTj3DB+PeRaUmncpVUwzcqZKITD3aJMI4U6D9OzZPu0cdPByz7uh3oWy9
- odEuRi7FTN9CkgD3t7i4VswSk3/4yIsuT5pyScb8FP0WWoq0G9zUHLt26ZdxXojMT53n
- Vhs5WliNbwchJ82JX/0QqQc4H2HKKvmj67NhvP8bZ3nnlhcPuhdsFsSuzmn9ZtrFFOIU
- CDd8zGsl1wl0LaN2/SFb6VF0eNI3sHat9FfjQQH9XFSgsLzP9DcfJlnHR+oiJ/+XlT7F
- TlqC6b1TW5yA3nkIjVmmRUvW4jaDM14eVXW5ehxsQwqwQgJo5l4jEXx2r640eOqtrXOF 4g== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3c2jfj6s7c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 02 Nov 2021 18:11:14 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 1466B10002A;
-        Tue,  2 Nov 2021 18:11:13 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 094DF220C6D;
-        Tue,  2 Nov 2021 18:11:13 +0100 (CET)
-Received: from lmecxl0889.lme.st.com (10.75.127.50) by SFHDAG2NODE2.st.com
- (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 2 Nov
- 2021 18:11:12 +0100
-Subject: Re: [PATCH v6 02/10] rpmsg: create the rpmsg class in core instead of
- in rpmsg char
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-CC:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>, <julien.massot@iot.bzh>
-References: <20211022125426.2579-1-arnaud.pouliquen@foss.st.com>
- <20211022125426.2579-3-arnaud.pouliquen@foss.st.com>
- <YYAcYLxEmbwJShg7@builder.lan>
- <962ca426-5cc4-4adb-df55-27fe93f7e767@foss.st.com> <YYFpit0SixojReo+@ripper>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Message-ID: <16853c3d-0b23-4d59-9c33-c7c99da4b9a1@foss.st.com>
-Date:   Tue, 2 Nov 2021 18:11:11 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 2 Nov 2021 13:15:21 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8604DC061714
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 10:12:46 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id c71-20020a1c9a4a000000b0032cdcc8cbafso2624000wme.3
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 10:12:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=raspberrypi.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ExPjvgW5+HgLBD3vwf1sZATM17VIaSiS+5B1wlAARyE=;
+        b=r0ryqpPaqC8ZpK6FvWaVj+8+wKpqmkST82PkJs2T1tOWyooCdPnB3QtWbpLKDcMxia
+         npuZcOCKv4PMqLFnAET6L2dUsDKUEa6xI9d4oHqAl7tS+MC8kNkwuYW54yZ+WtnDvduM
+         pv6TEK1j6ZX6JlYXDUntXSR4xmWb/gnaftPAb+Pwtb/EwrKHxD/lBj2TjyXB7Q7E0TTD
+         b7hJOqCir3N2Mz064uT5DNXcaIZ0vC0xDqGTqhL1dAWCg/M6hw6DKyX/cnCJvYalvIR6
+         XgeiQn+sa2Ux2COVTs6tiutr1ZDwgoOXcIvizwFqRLGsP4RMxf+8i4MPaSFHOm2w2XXl
+         b0iA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ExPjvgW5+HgLBD3vwf1sZATM17VIaSiS+5B1wlAARyE=;
+        b=mzEMsVMBaftYeSVKRCkbPnJ9JxHX/q5kVOhs8GOaCavjnSIf5okqAS2q9ZH0euj0Ig
+         qQpAzqyTC2wuw8m9m/RRZmNxxcONkVX9IiF6+ksH2IRqZBX1TC5O2tKv9UEv0L39E+pu
+         ai1jQ23icUdoNWiEnp7a8a7ydU2W9kFbmi5x0p2gV69HYmgZjwktZtrbJA0DFaoyA1oe
+         AtsgZKn95QowgXwJnbmux4aL7sYknm3iFyYV1qmkDC0iwz844dnx3C8IBVqOhRWuncc/
+         /YEnfWqdjr1jLjWZzDjMNHw7gfi6/SZCGcbM0K2ngzvRGNEQHbM3uQD3b9YjV5ATAwWw
+         TwBA==
+X-Gm-Message-State: AOAM533t84W3OwDZEUeZ1LRudhZ+F4ffF/SYcIrHB1ANLa+snhIQlIVW
+        KDZwjppfwNRuF642lksiPUIOpXmy+988BDYv1MQJfw==
+X-Google-Smtp-Source: ABdhPJz+h7P3iPYin2I3wqlzcVk8/gWBeYkTnR+JkJTveXfr2TH66/ZNOHBOLXiYTLix9gUL1ZElQ87dmC7VTELRljw=
+X-Received: by 2002:a1c:4e04:: with SMTP id g4mr8285788wmh.15.1635873165095;
+ Tue, 02 Nov 2021 10:12:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YYFpit0SixojReo+@ripper>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.50]
-X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-02_08,2021-11-02_01,2020-04-07_01
+References: <20211025152903.1088803-1-maxime@cerno.tech> <20211025152903.1088803-11-maxime@cerno.tech>
+In-Reply-To: <20211025152903.1088803-11-maxime@cerno.tech>
+From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
+Date:   Tue, 2 Nov 2021 17:12:29 +0000
+Message-ID: <CAPY8ntAwCamnfFDZssuRRJ45Xe8shK+YxiO=Lcr-w34c4L-_2A@mail.gmail.com>
+Subject: Re: [PATCH v8 10/10] drm/vc4: Increase the core clock based on HVS load
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        linux-rpi-kernel@lists.infradead.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Emma Anholt <emma@anholt.net>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Dom Cobley <dom@raspberrypi.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 25 Oct 2021 at 16:29, Maxime Ripard <maxime@cerno.tech> wrote:
+>
+> Depending on a given HVS output (HVS to PixelValves) and input (planes
+> attached to a channel) load, the HVS needs for the core clock to be
+> raised above its boot time default.
+>
+> Failing to do so will result in a vblank timeout and a stalled display
+> pipeline.
+>
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 
+I will make the comment that this does a load of computation of hvs
+load when running on hvs4 (BCM2835/6/7), even though it's redundant on
+those chips.
+The overhead is relatively minimal, but could be bypassed if viewed necessary.
 
-On 11/2/21 5:38 PM, Bjorn Andersson wrote:
-> On Tue 02 Nov 08:23 PDT 2021, Arnaud POULIQUEN wrote:
-> 
->>
->>
->> On 11/1/21 5:57 PM, Bjorn Andersson wrote:
->>> On Fri 22 Oct 07:54 CDT 2021, Arnaud Pouliquen wrote:
->>>
->>>> Migrate the creation of the rpmsg class from the rpmsg_char
->>>> to the core that the class is usable by all rpmsg services.
->>>>
->>>> Suggested-by: Bjorn Andersson <bjorn.andersson@linaro.org>
->>>> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
->>>> ---
->>>>  drivers/rpmsg/rpmsg_char.c | 14 ++------------
->>>>  drivers/rpmsg/rpmsg_core.c | 26 ++++++++++++++++++++++++--
->>>>  include/linux/rpmsg.h      | 10 ++++++++++
->>>>  3 files changed, 36 insertions(+), 14 deletions(-)
->>>>
->>>> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
->>>> index 941c5c54dd72..327ed739a3a7 100644
->>>> --- a/drivers/rpmsg/rpmsg_char.c
->>>> +++ b/drivers/rpmsg/rpmsg_char.c
->>>> @@ -28,7 +28,6 @@
->>>>  #define RPMSG_DEV_MAX	(MINORMASK + 1)
->>>>  
->>>>  static dev_t rpmsg_major;
->>>> -static struct class *rpmsg_class;
->>>>  
->>>>  static DEFINE_IDA(rpmsg_ctrl_ida);
->>>>  static DEFINE_IDA(rpmsg_ept_ida);
->>>> @@ -362,7 +361,7 @@ int rpmsg_chrdev_eptdev_create(struct rpmsg_device *rpdev, struct device *parent
->>>>  	init_waitqueue_head(&eptdev->readq);
->>>>  
->>>>  	device_initialize(dev);
->>>> -	dev->class = rpmsg_class;
->>>> +	dev->class = rpmsg_get_class();
->>>>  	dev->parent = parent;
->>>>  	dev->groups = rpmsg_eptdev_groups;
->>>>  	dev_set_drvdata(dev, eptdev);
->>>> @@ -482,7 +481,7 @@ static int rpmsg_chrdev_probe(struct rpmsg_device *rpdev)
->>>>  	dev = &ctrldev->dev;
->>>>  	device_initialize(dev);
->>>>  	dev->parent = &rpdev->dev;
->>>> -	dev->class = rpmsg_class;
->>>> +	dev->class = rpmsg_get_class();
->>>>  
->>>>  	cdev_init(&ctrldev->cdev, &rpmsg_ctrldev_fops);
->>>>  	ctrldev->cdev.owner = THIS_MODULE;
->>>> @@ -558,17 +557,9 @@ static int rpmsg_chrdev_init(void)
->>>>  		return ret;
->>>>  	}
->>>>  
->>>> -	rpmsg_class = class_create(THIS_MODULE, "rpmsg");
->>>> -	if (IS_ERR(rpmsg_class)) {
->>>> -		pr_err("failed to create rpmsg class\n");
->>>> -		unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
->>>> -		return PTR_ERR(rpmsg_class);
->>>> -	}
->>>> -
->>>>  	ret = register_rpmsg_driver(&rpmsg_chrdev_driver);
->>>>  	if (ret < 0) {
->>>>  		pr_err("rpmsgchr: failed to register rpmsg driver\n");
->>>> -		class_destroy(rpmsg_class);
->>>>  		unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
->>>>  	}
->>>>  
->>>> @@ -579,7 +570,6 @@ postcore_initcall(rpmsg_chrdev_init);
->>>>  static void rpmsg_chrdev_exit(void)
->>>>  {
->>>>  	unregister_rpmsg_driver(&rpmsg_chrdev_driver);
->>>> -	class_destroy(rpmsg_class);
->>>>  	unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
->>>>  }
->>>>  module_exit(rpmsg_chrdev_exit);
->>>> diff --git a/drivers/rpmsg/rpmsg_core.c b/drivers/rpmsg/rpmsg_core.c
->>>> index 9151836190ce..53162038254d 100644
->>>> --- a/drivers/rpmsg/rpmsg_core.c
->>>> +++ b/drivers/rpmsg/rpmsg_core.c
->>>> @@ -20,6 +20,8 @@
->>>>  
->>>>  #include "rpmsg_internal.h"
->>>>  
->>>> +static struct class *rpmsg_class;
->>>> +
->>>>  /**
->>>>   * rpmsg_create_channel() - create a new rpmsg channel
->>>>   * using its name and address info.
->>>> @@ -296,6 +298,19 @@ __poll_t rpmsg_poll(struct rpmsg_endpoint *ept, struct file *filp,
->>>>  }
->>>>  EXPORT_SYMBOL(rpmsg_poll);
->>>>  
->>>> +/**
->>>> + * rpmsg_get_class() - get reference to the sysfs rpmsg class
->>>> + *
->>>> + * This function return the pointer to the "rpmsg" class created by the rpmsg core.
->>>> + *
->>>> + * Returns the struct class pointer
->>>> + */
->>>> +struct class *rpmsg_get_class(void)
->>>
->>> What value does this helper function add? Can't we just expose
->>> rpmsg_class directly?
->>
->> look to me cleaner to not expose directly the rpmsg_class in rpmsg.h as this
->> variable is read only for rpmsg services.
->>
-> 
-> The pointer is read only, but the object isn't. So I think it's cleaner
-> to just share the pointer in the first place.
-> 
-> But that said, looking at this a little bit more, I don't think there's
-> any guarantee that class_create() has been executed before
-> rpmsg_ctrl_probe() is being invoked.
+Otherwise
+Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
 
-class_create is called in in the rpmsg_init (rpmsg_core.c). as RPMSG_CTRL and
-RPMSG_CHAR depend on RPMSG config this use case should not occurs, or did I miss
-something?
-
-> 
->>>
->>>> +{
->>>> +	return rpmsg_class;
->>>> +}
->>>> +EXPORT_SYMBOL(rpmsg_get_class);
-> [..]
->>>> diff --git a/include/linux/rpmsg.h b/include/linux/rpmsg.h
->>>
->>> Isn't this just going to be used by rpmsg_char and rpmsg_ctrl? Do we
->>> really need to expose it in the client-facing API?
->>
->> I based this dev on hypothesis that the class could be used by some other rpmsg
->> clients. But it is not mandatory. It can be extended later, on need.
->>
-> 
-> That's a good hypothesis, it might be useful in other places as well.
-> But I think it's best to keep it local for now and make an explicit
-> decision about opening up when that need comes.
-> 
->> What would you propose as an alternative to this API?
->>
->> I can see 2 alternatives:
->> - Define the rpmsg_class in rpmsg_internal.h
->>   In current patchset rpmsg_char.c does not include the rpmsg_internal.h.
->>   I'm not sure if this include makes sense for an rpmsg service driver.
->>
-> 
-> rpmsg_ctrl and rpmsg_char are more tightly coupled to rpmsg than typical
-> rpmsg drivers, so I think it's better to include rpmsg_internal.h than to
-> open up the API to the clients.
-
-So i will declare the variable in rpmsg_internal.h and remove the
-rpmsg_get_class to use directly the variable.
-
-Thanks,
-Arnaud
-
-> 
-> Thanks,
-> Bjorn
-> 
->> - Use "extern struct class *rpmsg_class; " in rpmsg_char and rpmsg_ctrl modules
->>
->> Regards,
->> Arnaud
->>
->>>
->>> Regards,
->>> Bjorn
->>>
->>>> index a8dcf8a9ae88..6fe51549d931 100644
->>>> --- a/include/linux/rpmsg.h
->>>> +++ b/include/linux/rpmsg.h
->>>> @@ -186,6 +186,8 @@ int rpmsg_trysend_offchannel(struct rpmsg_endpoint *ept, u32 src, u32 dst,
->>>>  __poll_t rpmsg_poll(struct rpmsg_endpoint *ept, struct file *filp,
->>>>  			poll_table *wait);
->>>>  
->>>> +struct class *rpmsg_get_class(void);
->>>> +
->>>>  #else
->>>>  
->>>>  static inline int rpmsg_register_device(struct rpmsg_device *rpdev)
->>>> @@ -296,6 +298,14 @@ static inline __poll_t rpmsg_poll(struct rpmsg_endpoint *ept,
->>>>  	return 0;
->>>>  }
->>>>  
->>>> +static inline struct class *rpmsg_get_class(void)
->>>> +{
->>>> +	/* This shouldn't be possible */
->>>> +	WARN_ON(1);
->>>> +
->>>> +	return NULL;
->>>> +}
->>>> +
->>>>  #endif /* IS_ENABLED(CONFIG_RPMSG) */
->>>>  
->>>>  /* use a macro to avoid include chaining to get THIS_MODULE */
->>>> -- 
->>>> 2.17.1
->>>>
+> ---
+>  drivers/gpu/drm/vc4/vc4_crtc.c |  15 +++++
+>  drivers/gpu/drm/vc4/vc4_drv.h  |   2 +
+>  drivers/gpu/drm/vc4/vc4_kms.c  | 110 ++++++++++++++++++++++++++++++---
+>  3 files changed, 118 insertions(+), 9 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/vc4/vc4_crtc.c b/drivers/gpu/drm/vc4/vc4_crtc.c
+> index 6decaa12a078..287dbc89ad64 100644
+> --- a/drivers/gpu/drm/vc4/vc4_crtc.c
+> +++ b/drivers/gpu/drm/vc4/vc4_crtc.c
+> @@ -659,12 +659,27 @@ static int vc4_crtc_atomic_check(struct drm_crtc *crtc,
+>         struct vc4_crtc_state *vc4_state = to_vc4_crtc_state(crtc_state);
+>         struct drm_connector *conn;
+>         struct drm_connector_state *conn_state;
+> +       struct drm_encoder *encoder;
+>         int ret, i;
+>
+>         ret = vc4_hvs_atomic_check(crtc, state);
+>         if (ret)
+>                 return ret;
+>
+> +       encoder = vc4_get_crtc_encoder(crtc, crtc_state);
+> +       if (encoder) {
+> +               const struct drm_display_mode *mode = &crtc_state->adjusted_mode;
+> +               struct vc4_encoder *vc4_encoder = to_vc4_encoder(encoder);
+> +
+> +               mode = &crtc_state->adjusted_mode;
+> +               if (vc4_encoder->type == VC4_ENCODER_TYPE_HDMI0) {
+> +                       vc4_state->hvs_load = max(mode->clock * mode->hdisplay / mode->htotal + 1000,
+> +                                                 mode->clock * 9 / 10) * 1000;
+> +               } else {
+> +                       vc4_state->hvs_load = mode->clock * 1000;
+> +               }
+> +       }
+> +
+>         for_each_new_connector_in_state(state, conn, conn_state,
+>                                         i) {
+>                 if (conn_state->crtc != crtc)
+> diff --git a/drivers/gpu/drm/vc4/vc4_drv.h b/drivers/gpu/drm/vc4/vc4_drv.h
+> index 813c5d0ea98e..4329e09d357c 100644
+> --- a/drivers/gpu/drm/vc4/vc4_drv.h
+> +++ b/drivers/gpu/drm/vc4/vc4_drv.h
+> @@ -558,6 +558,8 @@ struct vc4_crtc_state {
+>                 unsigned int bottom;
+>         } margins;
+>
+> +       unsigned long hvs_load;
+> +
+>         /* Transitional state below, only valid during atomic commits */
+>         bool update_muxing;
+>  };
+> diff --git a/drivers/gpu/drm/vc4/vc4_kms.c b/drivers/gpu/drm/vc4/vc4_kms.c
+> index 41cb4869da50..79d4d9dd1394 100644
+> --- a/drivers/gpu/drm/vc4/vc4_kms.c
+> +++ b/drivers/gpu/drm/vc4/vc4_kms.c
+> @@ -39,9 +39,11 @@ static struct vc4_ctm_state *to_vc4_ctm_state(struct drm_private_state *priv)
+>
+>  struct vc4_hvs_state {
+>         struct drm_private_state base;
+> +       unsigned long core_clock_rate;
+>
+>         struct {
+>                 unsigned in_use: 1;
+> +               unsigned long fifo_load;
+>                 struct drm_crtc_commit *pending_commit;
+>         } fifo_state[HVS_NUM_CHANNELS];
+>  };
+> @@ -340,10 +342,19 @@ static void vc4_atomic_commit_tail(struct drm_atomic_state *state)
+>         struct vc4_hvs *hvs = vc4->hvs;
+>         struct drm_crtc_state *old_crtc_state;
+>         struct drm_crtc_state *new_crtc_state;
+> +       struct vc4_hvs_state *new_hvs_state;
+>         struct drm_crtc *crtc;
+>         struct vc4_hvs_state *old_hvs_state;
+>         int i;
+>
+> +       old_hvs_state = vc4_hvs_get_old_global_state(state);
+> +       if (WARN_ON(!old_hvs_state))
+> +               return;
+> +
+> +       new_hvs_state = vc4_hvs_get_new_global_state(state);
+> +       if (WARN_ON(!new_hvs_state))
+> +               return;
+> +
+>         for_each_new_crtc_in_state(state, crtc, new_crtc_state, i) {
+>                 struct vc4_crtc_state *vc4_crtc_state;
+>
+> @@ -354,12 +365,13 @@ static void vc4_atomic_commit_tail(struct drm_atomic_state *state)
+>                 vc4_hvs_mask_underrun(dev, vc4_crtc_state->assigned_channel);
+>         }
+>
+> -       if (vc4->hvs->hvs5)
+> -               clk_set_min_rate(hvs->core_clk, 500000000);
+> +       if (vc4->hvs->hvs5) {
+> +               unsigned long core_rate = max_t(unsigned long,
+> +                                               500000000,
+> +                                               new_hvs_state->core_clock_rate);
+>
+> -       old_hvs_state = vc4_hvs_get_old_global_state(state);
+> -       if (!old_hvs_state)
+> -               return;
+> +               clk_set_min_rate(hvs->core_clk, core_rate);
+> +       }
+>
+>         for_each_old_crtc_in_state(state, crtc, old_crtc_state, i) {
+>                 struct vc4_crtc_state *vc4_crtc_state =
+> @@ -399,8 +411,12 @@ static void vc4_atomic_commit_tail(struct drm_atomic_state *state)
+>
+>         drm_atomic_helper_cleanup_planes(dev, state);
+>
+> -       if (vc4->hvs->hvs5)
+> -               clk_set_min_rate(hvs->core_clk, 0);
+> +       if (vc4->hvs->hvs5) {
+> +               drm_dbg(dev, "Running the core clock at %lu Hz\n",
+> +                       new_hvs_state->core_clock_rate);
+> +
+> +               clk_set_min_rate(hvs->core_clk, new_hvs_state->core_clock_rate);
+> +       }
+>  }
+>
+>  static int vc4_atomic_commit_setup(struct drm_atomic_state *state)
+> @@ -657,9 +673,9 @@ vc4_hvs_channels_duplicate_state(struct drm_private_obj *obj)
+>
+>         __drm_atomic_helper_private_obj_duplicate_state(obj, &state->base);
+>
+> -
+>         for (i = 0; i < HVS_NUM_CHANNELS; i++) {
+>                 state->fifo_state[i].in_use = old_state->fifo_state[i].in_use;
+> +               state->fifo_state[i].fifo_load = old_state->fifo_state[i].fifo_load;
+>
+>                 if (!old_state->fifo_state[i].pending_commit)
+>                         continue;
+> @@ -668,6 +684,8 @@ vc4_hvs_channels_duplicate_state(struct drm_private_obj *obj)
+>                         drm_crtc_commit_get(old_state->fifo_state[i].pending_commit);
+>         }
+>
+> +       state->core_clock_rate = old_state->core_clock_rate;
+> +
+>         return &state->base;
+>  }
+>
+> @@ -822,6 +840,76 @@ static int vc4_pv_muxing_atomic_check(struct drm_device *dev,
+>         return 0;
+>  }
+>
+> +static int
+> +vc4_core_clock_atomic_check(struct drm_atomic_state *state)
+> +{
+> +       struct vc4_dev *vc4 = to_vc4_dev(state->dev);
+> +       struct drm_private_state *priv_state;
+> +       struct vc4_hvs_state *hvs_new_state;
+> +       struct vc4_load_tracker_state *load_state;
+> +       struct drm_crtc_state *old_crtc_state, *new_crtc_state;
+> +       struct drm_crtc *crtc;
+> +       unsigned int num_outputs;
+> +       unsigned long pixel_rate;
+> +       unsigned long cob_rate;
+> +       unsigned int i;
+> +
+> +       priv_state = drm_atomic_get_private_obj_state(state,
+> +                                                     &vc4->load_tracker);
+> +       if (IS_ERR(priv_state))
+> +               return PTR_ERR(priv_state);
+> +
+> +       load_state = to_vc4_load_tracker_state(priv_state);
+> +
+> +       hvs_new_state = vc4_hvs_get_global_state(state);
+> +       if (!hvs_new_state)
+> +               return -EINVAL;
+> +
+> +       for_each_oldnew_crtc_in_state(state, crtc,
+> +                                     old_crtc_state,
+> +                                     new_crtc_state,
+> +                                     i) {
+> +               if (old_crtc_state->active) {
+> +                       struct vc4_crtc_state *old_vc4_state =
+> +                               to_vc4_crtc_state(old_crtc_state);
+> +                       unsigned int channel = old_vc4_state->assigned_channel;
+> +
+> +                       hvs_new_state->fifo_state[channel].fifo_load = 0;
+> +               }
+> +
+> +               if (new_crtc_state->active) {
+> +                       struct vc4_crtc_state *new_vc4_state =
+> +                               to_vc4_crtc_state(new_crtc_state);
+> +                       unsigned int channel = new_vc4_state->assigned_channel;
+> +
+> +                       hvs_new_state->fifo_state[channel].fifo_load =
+> +                               new_vc4_state->hvs_load;
+> +               }
+> +       }
+> +
+> +       cob_rate = 0;
+> +       num_outputs = 0;
+> +       for (i = 0; i < HVS_NUM_CHANNELS; i++) {
+> +               if (!hvs_new_state->fifo_state[i].in_use)
+> +                       continue;
+> +
+> +               num_outputs++;
+> +               cob_rate += hvs_new_state->fifo_state[i].fifo_load;
+> +       }
+> +
+> +       pixel_rate = load_state->hvs_load;
+> +       if (num_outputs > 1) {
+> +               pixel_rate = (pixel_rate * 40) / 100;
+> +       } else {
+> +               pixel_rate = (pixel_rate * 60) / 100;
+> +       }
+> +
+> +       hvs_new_state->core_clock_rate = max(cob_rate, pixel_rate);
+> +
+> +       return 0;
+> +}
+> +
+> +
+>  static int
+>  vc4_atomic_check(struct drm_device *dev, struct drm_atomic_state *state)
+>  {
+> @@ -839,7 +927,11 @@ vc4_atomic_check(struct drm_device *dev, struct drm_atomic_state *state)
+>         if (ret)
+>                 return ret;
+>
+> -       return vc4_load_tracker_atomic_check(state);
+> +       ret = vc4_load_tracker_atomic_check(state);
+> +       if (ret)
+> +               return ret;
+> +
+> +       return vc4_core_clock_atomic_check(state);
+>  }
+>
+>  static struct drm_mode_config_helper_funcs vc4_mode_config_helpers = {
+> --
+> 2.31.1
+>
