@@ -2,97 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AE9D442EFC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 14:19:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 797B6442F01
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 14:20:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229924AbhKBNWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 09:22:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42606 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230175AbhKBNWY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 09:22:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A0F0D61076;
-        Tue,  2 Nov 2021 13:19:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635859189;
-        bh=/FbBvuDIqll1nY6ugZ5ISgYPcBEZfDJ7GeMZ3M5GhHg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=h4Wvcp09OP+Tu6ErrIaJU6guA5PwAmGCvWPd5bK0KVicBz95eKeD+GCd1Qzh8NscB
-         5QhdK/N9kt9B8Znc4P/HjUJNb5UvcV4i1XzgU9FHVXqXfja22qJeijTLzGZwEobOza
-         vBflqpW6QuC/JCOM3VU+fvukveRge59AJgfvhDB4=
-Date:   Tue, 2 Nov 2021 14:19:46 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     George Kennedy <george.kennedy@oracle.com>
-Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dan.carpenter@oracle.com
-Subject: Re: [PATCH] scsi: scsi_debug: fix type in min_t to avoid stack OOB
-Message-ID: <YYE68lDOjX9aE5yX@kroah.com>
-References: <1635857278-29246-1-git-send-email-george.kennedy@oracle.com>
+        id S231366AbhKBNWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 09:22:53 -0400
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:42514 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231284AbhKBNWw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 09:22:52 -0400
+Received: by mail-ot1-f44.google.com with SMTP id v19-20020a9d69d3000000b00555a7318f31so17848440oto.9;
+        Tue, 02 Nov 2021 06:20:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Wzh03PSR5cG30V8z75lqhDgLPLd/dGpZFScd2ass+5k=;
+        b=o1nExjEX/2rXNoqeDMPekc6/YrOE/nf5NzwvXK+S+Xf7I7kjn6pjdqgnpqcN4pQglp
+         OAkI+t+Yw2DkpejTEwhBmZQPrqJxs5KdFnqFpppb973mwZLwmKZDPJTC5d3WG76nkfRv
+         UTTA/7cA2on1FejSTeNwWcMJBgPcKMMqouWJk0IbtueKj8yvRuWXN8zWx9I/OXxxGsUh
+         /T1R0v0CKr/w66SNPZYuBzfUJ6Yli9w8htGQ4EFTkcXwrYzRzkK1A17oTZxFJ2pi5FIN
+         c/Fm4MvX17QelfvZr3fHXQnIQbS0L6xehdp8qrmbYiOuw3bcHSzRovUvdJ54gRYlXG+1
+         TH4g==
+X-Gm-Message-State: AOAM5336Fz/qY0J87rxMQmRhypORgMeqbZcoXndLriX17QcNIs6dk0dm
+        14c1Zz21c5/vtMWvM/n64Q==
+X-Google-Smtp-Source: ABdhPJylcpLZGGhjNZtShUe5v5UatdNYwEtQFFpIY7evw1cIgDGu/sW4FpuuHD6AA0I7V7iuV9K/eQ==
+X-Received: by 2002:a9d:490e:: with SMTP id e14mr26734803otf.194.1635859217009;
+        Tue, 02 Nov 2021 06:20:17 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id p133sm4848317oia.11.2021.11.02.06.20.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Nov 2021 06:20:16 -0700 (PDT)
+Received: (nullmailer pid 2712189 invoked by uid 1000);
+        Tue, 02 Nov 2021 13:20:15 -0000
+Date:   Tue, 2 Nov 2021 08:20:15 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Akhil R <akhilrajeev@nvidia.com>
+Cc:     dan.j.williams@intel.com, devicetree@vger.kernel.org,
+        dmaengine@vger.kernel.org, jonathanh@nvidia.com,
+        kyarlagadda@nvidia.com, ldewangan@nvidia.com,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        p.zabel@pengutronix.de, rgumasta@nvidia.com,
+        thierry.reding@gmail.com, vkoul@kernel.org
+Subject: Re: [PATCH v11 1/4] dt-bindings: dmaengine: Add doc for tegra gpcdma
+Message-ID: <YYE7D2W721a1L4Mb@robh.at.kernel.org>
+References: <1635427419-22478-1-git-send-email-akhilrajeev@nvidia.com>
+ <1635427419-22478-2-git-send-email-akhilrajeev@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1635857278-29246-1-git-send-email-george.kennedy@oracle.com>
+In-Reply-To: <1635427419-22478-2-git-send-email-akhilrajeev@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 07:47:58AM -0500, George Kennedy wrote:
-> Change min_t() to use type "unsigned int" instead of type "int" to
-> avoid stack out of bounds. With min_t() type "int" the values get
-> sign extended and the larger value gets used causing stack out of bounds.
+On Thu, Oct 28, 2021 at 06:53:36PM +0530, Akhil R wrote:
+> Add DT binding document for Nvidia Tegra GPCDMA controller.
 > 
-> Reported-by: syzkaller <syzkaller@googlegroups.com>
-> Signed-off-by: George Kennedy <george.kennedy@oracle.com>
+> Signed-off-by: Rajesh Gumasta <rgumasta@nvidia.com>
+> Signed-off-by: Akhil R <akhilrajeev@nvidia.com>
+> Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+> ---
+>  .../bindings/dma/nvidia,tegra186-gpc-dma.yaml      | 115 +++++++++++++++++++++
+>  1 file changed, 115 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/dma/nvidia,tegra186-gpc-dma.yaml
 > 
-> BUG: KASAN: stack-out-of-bounds in memcpy include/linux/fortify-string.h:191 [inline]
-> BUG: KASAN: stack-out-of-bounds in sg_copy_buffer+0x1de/0x240 lib/scatterlist.c:976
-> Read of size 127 at addr ffff888072607128 by task syz-executor.7/18707
+> diff --git a/Documentation/devicetree/bindings/dma/nvidia,tegra186-gpc-dma.yaml b/Documentation/devicetree/bindings/dma/nvidia,tegra186-gpc-dma.yaml
+> new file mode 100644
+> index 0000000..bc97efc
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/dma/nvidia,tegra186-gpc-dma.yaml
+> @@ -0,0 +1,115 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/dma/nvidia,tegra186-gpc-dma.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: NVIDIA Tegra GPC DMA Controller Device Tree Bindings
+> +
+> +description: |
+> +  The Tegra General Purpose Central (GPC) DMA controller is used for faster
+> +  data transfers between memory to memory, memory to device and device to
+> +  memory.
+> +
+> +maintainers:
+> +  - Jon Hunter <jonathanh@nvidia.com>
+> +  - Rajesh Gumasta <rgumasta@nvidia.com>
+> +
+> +allOf:
+> +  - $ref: "dma-controller.yaml#"
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - enum:
+> +          - nvidia,tegra186-gpcdma
+> +          - nvidia,tegra194-gpcdma
+> +      - items:
+> +          - const: nvidia,tegra186-gpcdma
+> +          - const: nvidia,tegra194-gpcdma
+
+One of these is wrong. Either 186 has a fallback to 194 or it doesn't.
+
+> +
+> +  "#dma-cells":
+> +    const: 1
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    description: |
+
+Don't need '|' if there's no formatting.
+
+> +      Should contain all of the per-channel DMA interrupts in
+> +      ascending order with respect to the DMA channel index.
+> +    minItems: 1
+> +    maxItems: 32
+> +
+> +  resets:
+> +    description: |
+> +      Should contain the reset phandle for gpcdma.
+
+Not really a useful description. Drop.
+
+> +    maxItems: 1
+> +
+> +  reset-names:
+> +    const: gpcdma
+> +
+> +  iommus:
+> +    maxItems: 1
+> +
+> +  dma-coherent: true
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - resets
+> +  - reset-names
+> +  - "#dma-cells"
+> +  - iommus
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/memory/tegra186-mc.h>
+> +    #include <dt-bindings/reset/tegra186-reset.h>
+> +
+> +    dma-controller@2600000 {
+> +        compatible = "nvidia,tegra186-gpcdma";
+> +        reg = <0x2600000 0x0>;
+> +        resets = <&bpmp TEGRA186_RESET_GPCDMA>;
+> +        reset-names = "gpcdma";
+> +        interrupts = <GIC_SPI 75 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 76 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 77 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 78 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 79 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 80 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 81 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 82 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 83 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 84 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 85 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 87 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 88 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 89 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 90 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 91 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 92 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 93 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 95 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 96 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 97 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 98 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 99 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 100 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 101 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 102 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 103 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 104 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 105 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 106 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 107 IRQ_TYPE_LEVEL_HIGH>;
+> +        #dma-cells = <1>;
+> +        iommus = <&smmu TEGRA186_SID_GPCDMA_0>;
+> +        dma-coherent;
+> +    };
+> +...
+> -- 
+> 2.7.4
 > 
-> CPU: 1 PID: 18707 Comm: syz-executor.7 Not tainted 5.15.0-syzk #1
-> Hardware name: Red Hat KVM, BIOS 1.13.0-2.module+el8.3.0+7860+a7792d29 04/01/2014
-> Call Trace:
->  __dump_stack lib/dump_stack.c:88 [inline]
->  dump_stack_lvl+0x89/0xb5 lib/dump_stack.c:106
->  print_address_description.constprop.9+0x28/0x160 mm/kasan/report.c:256
->  __kasan_report mm/kasan/report.c:442 [inline]
->  kasan_report.cold.14+0x7d/0x117 mm/kasan/report.c:459
->  check_region_inline mm/kasan/generic.c:183 [inline]
->  kasan_check_range+0x1a3/0x210 mm/kasan/generic.c:189
->  memcpy+0x23/0x60 mm/kasan/shadow.c:65
->  memcpy include/linux/fortify-string.h:191 [inline]
->  sg_copy_buffer+0x1de/0x240 lib/scatterlist.c:976
->  sg_copy_from_buffer+0x33/0x40 lib/scatterlist.c:1000
->  fill_from_dev_buffer.part.34+0x82/0x130 drivers/scsi/scsi_debug.c:1162
->  fill_from_dev_buffer drivers/scsi/scsi_debug.c:1888 [inline]
->  resp_readcap16+0x365/0x3b0 drivers/scsi/scsi_debug.c:1887
->  schedule_resp+0x4d8/0x1a70 drivers/scsi/scsi_debug.c:5478
->  scsi_debug_queuecommand+0x8c9/0x1ec0 drivers/scsi/scsi_debug.c:7533
->  scsi_dispatch_cmd drivers/scsi/scsi_lib.c:1520 [inline]
->  scsi_queue_rq+0x16b0/0x2d40 drivers/scsi/scsi_lib.c:1699
->  blk_mq_dispatch_rq_list+0xb9b/0x2700 block/blk-mq.c:1639
->  __blk_mq_sched_dispatch_requests+0x28f/0x590 block/blk-mq-sched.c:325
->  blk_mq_sched_dispatch_requests+0x105/0x190 block/blk-mq-sched.c:358
->  __blk_mq_run_hw_queue+0xe5/0x150 block/blk-mq.c:1761
->  __blk_mq_delay_run_hw_queue+0x4f8/0x5c0 block/blk-mq.c:1838
->  blk_mq_run_hw_queue+0x18d/0x350 block/blk-mq.c:1891
->  blk_mq_sched_insert_request+0x3db/0x4e0 block/blk-mq-sched.c:474
->  blk_execute_rq_nowait+0x16b/0x1c0 block/blk-exec.c:62
->  sg_common_write.isra.18+0xeb3/0x2000 drivers/scsi/sg.c:836
->  sg_new_write.isra.19+0x570/0x8c0 drivers/scsi/sg.c:774
->  sg_ioctl_common+0x14d6/0x2710 drivers/scsi/sg.c:939
->  sg_ioctl+0xa2/0x180 drivers/scsi/sg.c:1165
->  vfs_ioctl fs/ioctl.c:51 [inline]
->  __do_sys_ioctl fs/ioctl.c:874 [inline]
->  __se_sys_ioctl fs/ioctl.c:860 [inline]
->  __x64_sys_ioctl+0x19d/0x220 fs/ioctl.c:860
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x3a/0x80 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-All of that needs to go above the signed-off-by lines, they need to be
-last in the changelog text.
-
-thanks,
-
-greg k-h
+> 
