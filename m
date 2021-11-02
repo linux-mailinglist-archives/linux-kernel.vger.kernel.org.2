@@ -2,142 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A747442922
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 09:11:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFB33442924
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 09:12:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230508AbhKBIOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 04:14:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40580 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbhKBIO3 (ORCPT
+        id S231181AbhKBIOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 04:14:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58001 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229770AbhKBIOm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 04:14:29 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C54E2C061714;
-        Tue,  2 Nov 2021 01:11:54 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id m14so20012552edd.0;
-        Tue, 02 Nov 2021 01:11:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PonNbMWoqThkAKEBfztMgFnpTF3vsFT/dHecSBkyWI0=;
-        b=G5eBfID8eDolsskr72EFJJyuW1FqdaP9+vW7iFdqD31D2MZcp4lLKFX0QcnO56DJfd
-         gWRXDcJkJAXblAPxVXTzIhjm8cDntvdRKc94B3jSuTKA7KsAJ2ztrwZ9SBh9+cNHGNn1
-         lBwyOzGVC7PBTIirSJR81c+KqYu6WNNLmES3BpuWGdYgXCSMs6RbkP3zNPLsndMbHsx0
-         jtQj5tTiaWhl7hshASMOrrNvIaQwpl1sUimgNKaOxkeovwG1d3Yvzg5zVWTvwiBwZWIl
-         7H5eB/eU61KGSc7N38duQz3PUIsjzP7cjH7wiE5fCVOVZZWKCwB5zsxqU+HnjPFxVBmF
-         NJGg==
+        Tue, 2 Nov 2021 04:14:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635840726;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=np1qThQAeJX33GQTcesiUPc23jDJuGnAxWws7e0zgcE=;
+        b=afIblKYIn+Ynykef8kCFNtWOzJqDG8u/LhwPyl27WLQwIVDAmHtHVPJXzj7tozIFP+36AQ
+        GDjyy/4qTCOFrdx6Dx2rMpa1d0H2j4dzL+NcFJtKOgO6evjIlMBWGP7lR4h//I0KIzj9/B
+        0p7wo5aZq/rJ7n5AmOeZ8/Zq74ou/E0=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-558-qtV3llqlPxGGagemguba1g-1; Tue, 02 Nov 2021 04:12:05 -0400
+X-MC-Unique: qtV3llqlPxGGagemguba1g-1
+Received: by mail-wm1-f70.google.com with SMTP id v10-20020a1cf70a000000b00318203a6bd1so541399wmh.6
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 01:12:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PonNbMWoqThkAKEBfztMgFnpTF3vsFT/dHecSBkyWI0=;
-        b=ukNUG0Q4Jncy+B3T/loxH8/py83SJAM9Rqyu2Nc685EaO8xYpE4n8tLGRfBK/KmGAF
-         dB3chlAxbXnM7YVLw2FExtWQcwcpcMDulm2xu+f0fbPwXSOUXqzgDWbvzVpVsZazI7+G
-         NLGEXiBmPoJPIJvZshduLnrnV7zphVkXsTb6H9K4DlpzMxQXACOR2lpXdWvOmOQx4uCp
-         n8shf/IODbIVvQCy3q9Ls9hwxf/WUxZwkSX2qUdbiYJ3yrRQXpKHwd525Zbc2bZ09J4B
-         hBn/tUU4/nycyY989/u5AiQFStZ5GaOWtspzDEO9m52mV5qMd+NRzp38UKQMst/SmR/i
-         6Ghg==
-X-Gm-Message-State: AOAM531go7mokCAv0NFYDKS+MfMpGBUXrKXjsJq+uqC63/4EXXgAV4FN
-        m4O+Hxka/3cvOokVOWGSDxKdeVhxu7zxMNUnniiveTW/EGQ=
-X-Google-Smtp-Source: ABdhPJydCLohKYbKOcB9h8hzYFEURNxjQLwBp0FlPDfNzCBZqHkjkFJZ18w7MfhvjwP6mGrE/EwrZ0pvPVRdgpxHzBc=
-X-Received: by 2002:a17:906:1707:: with SMTP id c7mr42515219eje.377.1635840712655;
- Tue, 02 Nov 2021 01:11:52 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent
+         :content-language:to:cc:references:from:organization:subject
+         :in-reply-to:content-transfer-encoding;
+        bh=np1qThQAeJX33GQTcesiUPc23jDJuGnAxWws7e0zgcE=;
+        b=6gi58b/zGjSYFV6l9ITm2N1ZUYB4J/DS06RWehuLQk3Jznk1GYiMaL5zyU1sN5D54p
+         A63fcElUwWCSyD+YENciMqPH72Mh0SRTderRFrOHAb8PH7ufF1gmON6MTJEiM/a1Wuir
+         o2SJInV+IUSccVj7dmvZHu3hmJTKBTKTpcFkmEp6Gv9j91GHYqB16kWfCFUHKo0Q3KVV
+         sfm6TTIpa6sd5meHei3E7i75+dvWdbGlQOK3QgbVj3Qf7MDRpm6FZiX+Fevvb3l8RHfE
+         GESKA7i+G+D26o5N+GUxVbuwPqzC0IHmXpEcO2e0/Oea2y2hrZi0LQmlBsHd7uxFB601
+         7WkA==
+X-Gm-Message-State: AOAM531Azky6EW9rRrdgZL8E4JySVszVjl4bKLtPcQa3l/YDvjZQCZ2F
+        0ExALWb14W0FO5d2BtHuFYjlsV+S5+ki04k2gw5v2dt6tmKNzZZONIT90M1FgZ9zTd30xR+ZeUz
+        cp7HN3VxjKeShuYNGxUQgIa+H
+X-Received: by 2002:a05:600c:202:: with SMTP id 2mr4991425wmi.167.1635840724604;
+        Tue, 02 Nov 2021 01:12:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzVsG7mgH2x69dUZcIdMg+BCcAEU4bmITDKbMyxAlIVSIddBG70EtJqHxXUxhsMataQ3vdK9A==
+X-Received: by 2002:a05:600c:202:: with SMTP id 2mr4991403wmi.167.1635840724380;
+        Tue, 02 Nov 2021 01:12:04 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c6810.dip0.t-ipconnect.de. [91.12.104.16])
+        by smtp.gmail.com with ESMTPSA id f6sm1663245wmj.40.2021.11.02.01.12.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Nov 2021 01:12:03 -0700 (PDT)
+Message-ID: <7136c959-63ff-b866-b8e4-f311e0454492@redhat.com>
+Date:   Tue, 2 Nov 2021 09:12:03 +0100
 MIME-Version: 1.0
-References: <CAHp75Vd7Wwka37w-6QTXT9vv13bPiygKryBhQTnyvtTpCNU9qw@mail.gmail.com>
- <20211102073300.13376-1-andriy.tryshnivskyy@opensynergy.com>
-In-Reply-To: <20211102073300.13376-1-andriy.tryshnivskyy@opensynergy.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 2 Nov 2021 10:11:16 +0200
-Message-ID: <CAHp75VfafpEBccivDRC2AVVJbZL2Kdq2KeR0yf_nwTtDTxvDkg@mail.gmail.com>
-Subject: Re: [PATCH v7 3/3] iio: test: Add test for IIO_VAL_INT_64.
-To:     Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com>
-Cc:     Vasyl.Vavrychuk@opensynergy.com, jbhayana@google.com,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Content-Language: en-US
+To:     Michal Hocko <mhocko@suse.com>,
+        Alexey Makhalov <amakhalov@vmware.com>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Oscar Salvador <OSalvador@suse.com>
+References: <20211101201312.11589-1-amakhalov@vmware.com>
+ <YYDtDkGNylpAgPIS@dhcp22.suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH] mm: fix panic in __alloc_pages
+In-Reply-To: <YYDtDkGNylpAgPIS@dhcp22.suse.cz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 2, 2021 at 9:33 AM Andriy Tryshnivskyy
-<andriy.tryshnivskyy@opensynergy.com> wrote:
->
+On 02.11.21 08:47, Michal Hocko wrote:
+> [CC Oscar and David]
+> 
+> On Mon 01-11-21 13:13:12, Alexey Makhalov wrote:
+>> There is a kernel panic caused by __alloc_pages() accessing
+>> uninitialized NODE_DATA(nid). Uninitialized node data exists
+>> during the time when CPU with memoryless node was added but
+>> not onlined yet. Panic can be easy reproduced by disabling
+>> udev rule for automatic onlining hot added CPU followed by
+>> CPU with memoryless node hot add.
+>>
+>> This is a panic caused by percpu code doing allocations for
+>> all possible CPUs and hitting this issue:
+>>
+>>  CPU2 has been hot-added
+>>  BUG: unable to handle page fault for address: 0000000000001608
+>>  #PF: supervisor read access in kernel mode
+>>  #PF: error_code(0x0000) - not-present page
+>>  PGD 0 P4D 0
+>>  Oops: 0000 [#1] SMP PTI
+>>  CPU: 0 PID: 1 Comm: systemd Tainted: G            E     5.15.0-rc7+ #11
+>>  Hardware name: VMware, Inc. VMware7,1/440BX Desktop Reference Platform, BIOS VMW
+>>
+>>  RIP: 0010:__alloc_pages+0x127/0x290
+> 
+> Could you resolve this into a specific line of the source code please?
+> 
+>>  Code: 4c 89 f0 5b 41 5c 41 5d 41 5e 41 5f 5d c3 44 89 e0 48 8b 55 b8 c1 e8 0c 83 e0 01 88 45 d0 4c 89 c8 48 85 d2 0f 85 1a 01 00 00 <45> 3b 41 08 0f 82 10 01 00 00 48 89 45 c0 48 8b 00 44 89 e2 81 e2
+>>  RSP: 0018:ffffc900006f3bc8 EFLAGS: 00010246
+>>  RAX: 0000000000001600 RBX: 0000000000000000 RCX: 0000000000000000
+>>  RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000cc2
+>>  RBP: ffffc900006f3c18 R08: 0000000000000001 R09: 0000000000001600
+>>  R10: ffffc900006f3a40 R11: ffff88813c9fffe8 R12: 0000000000000cc2
+>>  R13: 0000000000000000 R14: 0000000000000001 R15: 0000000000000cc2
+>>  FS:  00007f27ead70500(0000) GS:ffff88807ce00000(0000) knlGS:0000000000000000
+>>  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>  CR2: 0000000000001608 CR3: 000000000582c003 CR4: 00000000001706b0
+>>  Call Trace:
+>>   pcpu_alloc_pages.constprop.0+0xe4/0x1c0
+>>   pcpu_populate_chunk+0x33/0xb0
+>>   pcpu_alloc+0x4d3/0x6f0
+>>   __alloc_percpu_gfp+0xd/0x10
+>>   alloc_mem_cgroup_per_node_info+0x54/0xb0
+>>   mem_cgroup_alloc+0xed/0x2f0
+>>   mem_cgroup_css_alloc+0x33/0x2f0
+>>   css_create+0x3a/0x1f0
+>>   cgroup_apply_control_enable+0x12b/0x150
+>>   cgroup_mkdir+0xdd/0x110
+>>   kernfs_iop_mkdir+0x4f/0x80
+>>   vfs_mkdir+0x178/0x230
+>>   do_mkdirat+0xfd/0x120
+>>   __x64_sys_mkdir+0x47/0x70
+>>   ? syscall_exit_to_user_mode+0x21/0x50
+>>   do_syscall_64+0x43/0x90
+>>   entry_SYSCALL_64_after_hwframe+0x44/0xae
+>>
+>> Node can be in one of the following states:
+>> 1. not present (nid == NUMA_NO_NODE)
+>> 2. present, but offline (nid > NUMA_NO_NODE, node_online(nid) == 0,
+>> 				NODE_DATA(nid) == NULL)
+>> 3. present and online (nid > NUMA_NO_NODE, node_online(nid) > 0,
+>> 				NODE_DATA(nid) != NULL)
+>>
+>> alloc_page_{bulk_array}node() functions verify for nid validity only
+>> and do not check if nid is online. Enhanced verification check allows
+>> to handle page allocation when node is in 2nd state.
+> 
+> I do not think this is a correct approach. We should make sure that the
+> proper fallback node is used instead. This means that the zone list is
+> initialized properly. IIRC this has been a problem in the past and it
+> has been fixed. The initialization code is quite subtle though so it is
+> possible that this got broken again.
 
-Now it's good with format, but you have missed the commit message.
+I'm a little confused:
 
-> Signed-off-by: Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com>
+In add_memory_resource() we hotplug the new node if required and set it
+online. Memory might get onlined later, via online_pages().
 
-...
+So after add_memory_resource()->__try_online_node() succeeded, we have
+an online pgdat -- essentially 3.
 
-> +static void iio_test_iio_format_value_integer_64(struct kunit *test)
-> +{
-> +       char *buf = kunit_kmalloc(test, PAGE_SIZE, GFP_KERNEL);
+This patch detects if we're past 3. but says that it reproduced by
+disabling *memory* onlining.
 
-Shouldn't this be checked against NULL?
+Before we online memory for a hotplugged node, all zones are !populated.
+So once we online memory for a !populated zone in online_pages(), we
+trigger setup_zone_pageset().
 
-> +       s64 value;
-> +       int values[2];
-> +       int ret;
 
-Reversed xmas tree ordering?
+The confusing part is that this patch checks for 3. but says it can be
+reproduced by not onlining *memory*. There seems to be something missing.
 
-> +       value = 24;
-> +       values[0] = lower_32_bits(value);
-> +       values[1] = upper_32_bits(value);
-
-> +       ret = iio_format_value(buf, IIO_VAL_INT_64, 2, values);
-
-ARRAY_SIZE()?
-
-> +       IIO_TEST_FORMAT_EXPECT_EQ(test, buf, ret, "24\n");
-> +
-> +       value = -24;
-> +       values[0] = lower_32_bits(value);
-> +       values[1] = upper_32_bits(value);
-> +       ret = iio_format_value(buf, IIO_VAL_INT_64, 2, values);
-> +       IIO_TEST_FORMAT_EXPECT_EQ(test, buf, ret, "-24\n");
-> +
-> +       value = 0;
-> +       values[0] = lower_32_bits(value);
-> +       values[1] = upper_32_bits(value);
-> +       ret = iio_format_value(buf, IIO_VAL_INT_64, 2, values);
-> +       IIO_TEST_FORMAT_EXPECT_EQ(test, buf, ret, "0\n");
-> +
-> +       value = 4294967295;
-
-Is this UINT_MAX?
-
-> +       values[0] = lower_32_bits(value);
-> +       values[1] = upper_32_bits(value);
-> +       ret = iio_format_value(buf, IIO_VAL_INT_64, 2, values);
-> +       IIO_TEST_FORMAT_EXPECT_EQ(test, buf, ret, "4294967295\n");
-
-> +       value = -4294967295;
-
-Is this -UINT_MAX?
-
-> +       values[0] = lower_32_bits(value);
-> +       values[1] = upper_32_bits(value);
-> +       ret = iio_format_value(buf, IIO_VAL_INT_64, 2, values);
-> +       IIO_TEST_FORMAT_EXPECT_EQ(test, buf, ret, "-4294967295\n");
-> +
-> +       value = LLONG_MAX;
-> +       values[0] = lower_32_bits(value);
-> +       values[1] = upper_32_bits(value);
-> +       ret = iio_format_value(buf, IIO_VAL_INT_64, 2, values);
-> +       IIO_TEST_FORMAT_EXPECT_EQ(test, buf, ret, "9223372036854775807\n");
-> +
-> +       value = LLONG_MIN;
-> +       values[0] = lower_32_bits(value);
-> +       values[1] = upper_32_bits(value);
-> +       ret = iio_format_value(buf, IIO_VAL_INT_64, 2, values);
-> +       IIO_TEST_FORMAT_EXPECT_EQ(test, buf, ret, "-9223372036854775808\n");
-> +}
+Do we maybe need a proper populated_zone() check before accessing zone data?
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Thanks,
+
+David / dhildenb
+
