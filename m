@@ -2,92 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7C41443407
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 17:53:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ECE144340E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 17:54:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235203AbhKBQ4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 12:56:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45648 "EHLO
+        id S234796AbhKBQ4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 12:56:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234917AbhKBQzU (ORCPT
+        with ESMTP id S235026AbhKBQ4E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 12:55:20 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41A76C0432DC
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 09:50:48 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id f9so26172426ioo.11
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 09:50:48 -0700 (PDT)
+        Tue, 2 Nov 2021 12:56:04 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A223C0613F5
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 09:52:08 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id b2-20020a1c8002000000b0032fb900951eso2480766wmd.4
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 09:52:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:in-reply-to:references:subject:message-id:date
-         :mime-version:content-transfer-encoding;
-        bh=+dbQrmv/b1RygKbYKHH/vVKFe1UJLRUyNsf2ThtHMLg=;
-        b=yYUlBfR+AahwtMsc9t/bT1wxlAjiqYn6KCVtPJwRowvsrx3AKmWyImkeE9GwPnjJ/g
-         9r8CWW3DzzktOW7KdJ+OlIqgqGDN1GfijyeI05jbdMtmJF193edHIUXQLSK9qrKKIyXc
-         T3JJONJyx5Ui4jL4+9JYAlXgszMrv5YS53243mpOSaHZW+vpWNY/DKFeFrNLfikhUSAs
-         TqLnNYfmmG1kaL5GvME/9tzK12cAe65XdZwEZwJPsuySH6PEDukX5HldaRI3zrpv09JU
-         MVKABNXst6dfW9eTPFe4MtfuaE+J6UIZH1IgVyzy7sBLEs2j6IvB4JJcqYqTePNI7bKG
-         7Sjw==
+        d=raspberrypi.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=A0Gv/QN2qKt1UUPbNJBs29OCuwlLk5Iawd0kmAyppIA=;
+        b=h8aMBSgC270p3YyYgpwd9zWqS4OtdEsHQZvdJaLWV40vD/w3SBChTEGVptLs4VFMcV
+         F+m0yWAxAiUwVV61X7q/i5Unb16+/SPQ06goMnbo0rqkGD+hNXgrCr40eqc0eyCriHWQ
+         vVcCZrnStQNxzF0Vk8mGFtQ5go+gzkRcRs9mbuG1d9X6dTQTvvMLv1WlRaKMnOXQyn8s
+         +lCoJMOgq1G2+PNrnXXiToV8q+ew4tPM6QgDTNohpD2dn4A/Z3Ze8FR7X5yRuAM5qkHo
+         arzRyFiTo2RFka7YS6ianmQPTC7B19SphNKM4HC3fK6Tlykb1zjzHE5J9pgr3HSDpMRL
+         o7fA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject
-         :message-id:date:mime-version:content-transfer-encoding;
-        bh=+dbQrmv/b1RygKbYKHH/vVKFe1UJLRUyNsf2ThtHMLg=;
-        b=ZDOWNEIIpj4voBRgWolfGueVNJVEpeihOeTwyDDU6MpMZ6bCjhIXCVroS7RxyTenhT
-         hAve/kn1L5UcHRdB+BYyDUYl28m/JntNTmZa1XsqAvdnw6bcs7/dP3aGq+SmdfOLoh7i
-         E76D5zw6eSGUPHBhAtOIM7xr80hPmTXBLsuanD4P+rtq4pq3PNZKEWqxFdgsbYvzyUVx
-         EIHLENgXyc3UQwzx7+6Dfi7cxJ40Jfm5VEwEKsbmNBepOIiu3/jAqJyyr2qbvX/sc96G
-         5p2n6rGeS4PFcQj689DX31436n5DB6WNwmcX6L25IgK1rld1qwOvsSMWoJMEAsv6OQQ8
-         y/vA==
-X-Gm-Message-State: AOAM533yC2AnoM/g9eLx33ZZCKIJpLhvY6AO1eMFaAcrKkcvig9rpLiw
-        Dj/QXVPrYwDfV/EQSso4b5B5Gg==
-X-Google-Smtp-Source: ABdhPJx6UgcW+UNHqi1soE/BIyhBzdbWrSlvz2f+AJjxo6tGbxRgXfr43Pew7zrdEGjiWWyR9zQoKw==
-X-Received: by 2002:a05:6638:a2d:: with SMTP id 13mr28494972jao.12.1635871847575;
-        Tue, 02 Nov 2021 09:50:47 -0700 (PDT)
-Received: from [127.0.1.1] ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id g17sm4870213iow.20.2021.11.02.09.50.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Nov 2021 09:50:47 -0700 (PDT)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     nbd@other.debian.org, linux-block@vger.kernel.org,
-        Ye Bin <yebin10@huawei.com>, josef@toxicpanda.com
-Cc:     linux-kernel@vger.kernel.org
-In-Reply-To: <20211102015237.2309763-1-yebin10@huawei.com>
-References: <20211102015237.2309763-1-yebin10@huawei.com>
-Subject: Re: [PATCH -next v4 0/4] Fix hungtask when nbd_config_put and sanity check for first_minor
-Message-Id: <163587184699.364332.2099486260392695081.b4-ty@kernel.dk>
-Date:   Tue, 02 Nov 2021 10:50:46 -0600
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=A0Gv/QN2qKt1UUPbNJBs29OCuwlLk5Iawd0kmAyppIA=;
+        b=aN37+2UsgnwBjdDpi+MWuLDBixy+Dr409LIu8xtvT4TJut2yCOIXlIub9Pxpg0I+aq
+         YhKvF7CK2gUhMEoO3sP0r76pUC1SHKEoMvc9aIAVLGfjUFZ04TDhyBMy+LoJFIkViTLz
+         6Seay+sJyiumtIWbegqcsK+VRBPV0EC9gxmIcl851I6o3EkrFwE3ssthahDDqTcfFPk6
+         ZugeMDI4NjRNhnvj4Wvzy5YlSpwDfsTXq7CQdzygYeLvDk2FT5H1gA5uHBBehCv3b/o2
+         YeXZOIk+qtIpzoqUtzU28RJ8FlLPb9aH3dBz21HTVDw7Q3LQcQMyIUOEVgQyhERcUVZ3
+         k++g==
+X-Gm-Message-State: AOAM533E8e8Nmq18yhHFI1a29E83W2k3scZhyXQiFtn4tg/MiaPWuy92
+        J/cxm4u37if+hoPjz0RJLTixkkunPrYvsEhjV9Qpwg==
+X-Google-Smtp-Source: ABdhPJxwhjzaNXSqOK31BY9i52m7fgj9oObZ/pz+E28nZFxKsfZi10g6CAzJlWv/8mfKRLWsrXwneMezrmknElEZ96o=
+X-Received: by 2002:a1c:4e04:: with SMTP id g4mr8145187wmh.15.1635871926869;
+ Tue, 02 Nov 2021 09:52:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20211025152903.1088803-1-maxime@cerno.tech> <20211025152903.1088803-10-maxime@cerno.tech>
+In-Reply-To: <20211025152903.1088803-10-maxime@cerno.tech>
+From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
+Date:   Tue, 2 Nov 2021 16:51:50 +0000
+Message-ID: <CAPY8ntCiQ_42mXMYz_TF33TwAArH=o_C9MazuPmKwSosP2qrnQ@mail.gmail.com>
+Subject: Re: [PATCH v8 09/10] drm/vc4: hdmi: Enable the scrambler on reconnection
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        linux-rpi-kernel@lists.infradead.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Emma Anholt <emma@anholt.net>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Dom Cobley <dom@raspberrypi.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2 Nov 2021 09:52:33 +0800, Ye Bin wrote:
-> This patchset include two patchsets as follows:
-> 1. Fix hungtask when nbd_config_put
-> https://patchwork.kernel.org/project/linux-block/list/?series=573381
-> 2. nbd: fix sanity check for first_minor
-> https://lore.kernel.org/linux-block/20211021122936.758221-1-yukuai3@huawei.com/
-> 
-> I have consulted with Yu Kuai, and his modification has also been confirmed by him.
-> 
-> [...]
+On Mon, 25 Oct 2021 at 16:29, Maxime Ripard <maxime@cerno.tech> wrote:
+>
+> If we have a state already and disconnect/reconnect the display, the
+> SCDC messages won't be sent again since we didn't go through a disable /
+> enable cycle.
+>
+> In order to fix this, let's call the vc4_hdmi_enable_scrambling function
+> in the detect callback if there is a mode and it needs the scrambler to
+> be enabled.
+>
+> Fixes: c85695a2016e ("drm/vc4: hdmi: Enable the scrambler")
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 
-Applied, thanks!
+Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
 
-[1/4] nbd: fix max value for 'first_minor'
-      commit: e4c4871a73944353ea23e319de27ef73ce546623
-[2/4] nbd: fix possible overflow for 'first_minor' in nbd_dev_add()
-      commit: 940c264984fd1457918393c49674f6b39ee16506
-[3/4] nbd: Fix incorrect error handle when first_minor is illegal in nbd_dev_add
-      commit: 69beb62ff0d1723a750eebe1c4d01da573d7cd19
-[4/4] nbd: Fix hungtask when nbd_config_put
-      commit: e2daec488c57069a4a431d5b752f50294c4bf273
-
-Best regards,
--- 
-Jens Axboe
-
-
+> ---
+>  drivers/gpu/drm/vc4/vc4_hdmi.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
+> index d36b3b6ebed1..fab9b93e1b84 100644
+> --- a/drivers/gpu/drm/vc4/vc4_hdmi.c
+> +++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+> @@ -180,6 +180,8 @@ static void vc4_hdmi_cec_update_clk_div(struct vc4_hdmi *vc4_hdmi)
+>  static void vc4_hdmi_cec_update_clk_div(struct vc4_hdmi *vc4_hdmi) {}
+>  #endif
+>
+> +static void vc4_hdmi_enable_scrambling(struct drm_encoder *encoder);
+> +
+>  static enum drm_connector_status
+>  vc4_hdmi_connector_detect(struct drm_connector *connector, bool force)
+>  {
+> @@ -216,6 +218,7 @@ vc4_hdmi_connector_detect(struct drm_connector *connector, bool force)
+>                         }
+>                 }
+>
+> +               vc4_hdmi_enable_scrambling(&vc4_hdmi->encoder.base.base);
+>                 pm_runtime_put(&vc4_hdmi->pdev->dev);
+>                 mutex_unlock(&vc4_hdmi->mutex);
+>                 return connector_status_connected;
+> --
+> 2.31.1
+>
