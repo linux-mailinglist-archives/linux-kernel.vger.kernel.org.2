@@ -2,120 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E65B644270A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 07:19:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43686442712
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 07:22:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229769AbhKBGWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 02:22:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42942 "EHLO
+        id S229933AbhKBGYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 02:24:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbhKBGV7 (ORCPT
+        with ESMTP id S229497AbhKBGYl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 02:21:59 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2654C061714;
-        Mon,  1 Nov 2021 23:19:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=KdIhbeTBoLRUYR2IAPFmlM4VoN/TtUZV3//iIpzahwM=; b=gEliM4LypGip4U+QMQe7n5WPg+
-        8eF6rmeTZnEHXk8zsn5+LTsHo0ig9kZOyN4e+FFEa6YZuPTo4iSXZQcldSvGmvKpllSlorZqwbgkT
-        HKffEXvbAOcbwfsYA2+uU33ejwxMPoLiSRNY+d4hmrEY3vg4fS1/7E6nKilyDH/PiQvr7n9mSYnNs
-        jikQKAvqUFNTxA184hcFBlOilNj0XyLf3a0Uy2RsW8ZONVAYEDmx+GxVHvRm0MqozQH3lYB1ZPVt5
-        LxffLGlx8Gc5jttGyxDUerEAc3tqqv3LLUkq8lU5Hg3zMTTpnUOVYjoNmero8H6QeZnp+UkWZVzeg
-        THCpn1ug==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mhn8K-000eBZ-KX; Tue, 02 Nov 2021 06:18:56 +0000
-Date:   Mon, 1 Nov 2021 23:18:56 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Jane Chu <jane.chu@oracle.com>,
-        "david@fromorbit.com" <david@fromorbit.com>,
-        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
-        "vishal.l.verma@intel.com" <vishal.l.verma@intel.com>,
-        "dave.jiang@intel.com" <dave.jiang@intel.com>,
-        "agk@redhat.com" <agk@redhat.com>,
-        "snitzer@redhat.com" <snitzer@redhat.com>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "ira.weiny@intel.com" <ira.weiny@intel.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "vgoyal@redhat.com" <vgoyal@redhat.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
-Subject: Re: [dm-devel] [PATCH 0/6] dax poison recovery with
- RWF_RECOVERY_DATA flag
-Message-ID: <YYDYUCCiEPXhZEw0@infradead.org>
-References: <20211021001059.438843-1-jane.chu@oracle.com>
- <YXFPfEGjoUaajjL4@infradead.org>
- <e89a2b17-3f03-a43e-e0b9-5d2693c3b089@oracle.com>
- <YXJN4s1HC/Y+KKg1@infradead.org>
- <2102a2e6-c543-2557-28a2-8b0bdc470855@oracle.com>
- <YXj2lwrxRxHdr4hb@infradead.org>
- <20211028002451.GB2237511@magnolia>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211028002451.GB2237511@magnolia>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+        Tue, 2 Nov 2021 02:24:41 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAB9BC061714;
+        Mon,  1 Nov 2021 23:22:07 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id k4so4588653plx.8;
+        Mon, 01 Nov 2021 23:22:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=Nhi8A69n35wz1j8eG1NavWlgxA1pSKinVrZqcjltJbI=;
+        b=V/vUTfg2BkVrAzjLmhrRCg40Do8FURrxL/qf6MuZ+Awqz+Xmt2HGD47BxQsjQzLuGV
+         rircwI0/Z/f1ugTHVHzuQ8+Yp3h92l3xCDJQ4vFTSVg4E2GbIF1wiKMP1TxHIGC5YnPX
+         0BZL9+59NUUWFRAtDyKQMVihUExCwcJcGtPEX9Dj55pDECy5xFy2dNmVf5K182yinziD
+         TKqD8DzZO0kZ4GyC8r/4h3fknLzMMlSWozWsMFEQ9Mbhr55lHvUK7Kiv75kSpIKC37ib
+         f+6omtLldJgz2o3evA2PxdJyiOgVs94oKkrxhvfOo6LUGG39EVWSSuwrqJUKChYMRZsA
+         xGsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Nhi8A69n35wz1j8eG1NavWlgxA1pSKinVrZqcjltJbI=;
+        b=MKGn3qdZ9EmGILy4ziTeJn3TSTW/En1M8DuixxWnop0A2tLLH/ow0jTvdMjh16Z+vj
+         ++MY0jbyXjtxWZcyqjWPFP/Bq7qrBKjvZsnKafWjLcYEDAsd7B04dBVmF5GR/qESbDZY
+         7THKago/Kmcr/suz7yebtRO7SW9w+0R0uMOX+kTX3brH5FVH15SITStGQVf1PL1waxU/
+         iL8QTkgaPbQo+xjSTL1pioYpDqCGQdALBqM5VeJPpmIJJxHcQb+bXkR7WGif0uQH7yVe
+         ezPTHG7xYdWh5DAnbT3HVp/7frOmiD0QEomDENk40cj9kuSHGGBy8QGpgTk6JTpQcBZX
+         FvJA==
+X-Gm-Message-State: AOAM5313WWHzeSpYK84AxsIWn4lgkO8IKFzCTn2zPgzJdA2Q4l0qUqhh
+        i4CaCTh8JcNzlGijtrs6tDSzNgrMjzGBXA==
+X-Google-Smtp-Source: ABdhPJwC0E4yPCAHfK7CT3Xzwhf7DMzbwcFu8MAbU79w/UUDVBX3nJLSgWwDGOxd+teoUOYANjZRTw==
+X-Received: by 2002:a17:90a:c394:: with SMTP id h20mr4331478pjt.136.1635834127165;
+        Mon, 01 Nov 2021 23:22:07 -0700 (PDT)
+Received: from scdiu3.sunplus.com ([113.196.136.192])
+        by smtp.googlemail.com with ESMTPSA id v2sm14859402pga.57.2021.11.01.23.22.05
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 01 Nov 2021 23:22:06 -0700 (PDT)
+From:   Vincent Shih <vincent.sunplus@gmail.com>
+X-Google-Original-From: Vincent Shih <vincent.shih@sunplus.com>
+To:     a.zummo@towertech.it, alexandre.belloni@bootlin.com,
+        p.zabel@pengutronix.de, linux-kernel@vger.kernel.org,
+        linux-rtc@vger.kernel.org, robh+dt@kernel.org,
+        devicetree@vger.kernel.org
+Cc:     Vincent Shih <vincent.shih@sunplus.com>
+Subject: [PATCH 0/2] Add RTC driver for Sunplus SP7021 SoC
+Date:   Tue,  2 Nov 2021 14:22:01 +0800
+Message-Id: <1635834123-24668-1-git-send-email-vincent.shih@sunplus.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 05:24:51PM -0700, Darrick J. Wong wrote:
-> ...so would you happen to know if anyone's working on solving this
-> problem for us by putting the memory controller in charge of dealing
-> with media errors?
+This is a patch series for RTC driver for Sunplus SP7021 SoC.
 
-The only one who could know is Intel..
+Sunplus SP7021 is an ARM Cortex A7 (4 cores) based SoC. It integrates
+many peripherals (ex: UART, I2C, SPI, SDIO, eMMC, USB, SD Card and
+etc.) into a single chip. It is designed for industrial control.
 
-> The trouble is, we really /do/ want to be able to (re)write the failed
-> area, and we probably want to try to read whatever we can.  Those are
-> reads and writes, not {pre,f}allocation activities.  This is where Dave
-> and I arrived at a month ago.
-> 
-> Unless you'd be ok with a second IO path for recovery where we're
-> allowed to be slow?  That would probably have the same user interface
-> flag, just a different path into the pmem driver.
+Refer to:
+https://sunplus-tibbo.atlassian.net/wiki/spaces/doc/overview
+https://tibbo.com/store/plus1.html
 
-Which is fine with me.  If you look at the API here we do have the
-RWF_ API, which them maps to the IOMAP API, which maps to the DAX_
-API which then gets special casing over three methods.
+Vincent Shih (2):
+  rtc: Add driver for Sunplus SP7021
+  dt-bindings: rtc: Convert Sunplus RTC to json-schema
 
-And while Pavel pointed out that he and Jens are now optimizing for
-single branches like this.  I think this actually is silly and it is
-not my point.
+ .../bindings/rtc/sunplus,sp7021-rtc.yaml           |  58 +++
+ MAINTAINERS                                        |   7 +
+ drivers/rtc/Kconfig                                |  10 +
+ drivers/rtc/Makefile                               |   1 +
+ drivers/rtc/rtc-sunplus.c                          | 389 +++++++++++++++++++++
+ 5 files changed, 465 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/rtc/sunplus,sp7021-rtc.yaml
+ create mode 100644 drivers/rtc/rtc-sunplus.c
 
-The point is that the DAX in-kernel API is a mess, and before we make
-it even worse we need to sort it first.  What is directly relevant
-here is that the copy_from_iter and copy_to_iter APIs do not make
-sense.  Most of the DAX API is based around getting a memory mapping
-using ->direct_access, it is just the read/write path which is a slow
-path that actually uses this.  I have a very WIP patch series to try
-to sort this out here:
+-- 
+2.7.4
 
-http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/dax-devirtualize
-
-But back to this series.  The basic DAX model is that the callers gets a
-memory mapping an just works on that, maybe calling a sync after a write
-in a few cases.  So any kind of recovery really needs to be able to
-work with that model as going forward the copy_to/from_iter path will
-be used less and less.  i.e. file systems can and should use
-direct_access directly instead of using the block layer implementation
-in the pmem driver.  As an example the dm-writecache driver, the pending
-bcache nvdimm support and the (horribly and out of tree) nova file systems
-won't even use this path.  We need to find a way to support recovery
-for them.  And overloading it over the read/write path which is not
-the main path for DAX, but the absolutely fast path for 99% of the
-kernel users is a horrible idea.
-
-So how can we work around the horrible nvdimm design for data recovery
-in a way that:
-
-   a) actually works with the intended direct memory map use case
-   b) doesn't really affect the normal kernel too much
-
-?
