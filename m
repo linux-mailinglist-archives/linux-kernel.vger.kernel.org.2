@@ -2,133 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 609684432E2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 17:36:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B7344433CB
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 17:49:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235036AbhKBQjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 12:39:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41660 "EHLO
+        id S235113AbhKBQwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 12:52:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234881AbhKBQir (ORCPT
+        with ESMTP id S234965AbhKBQvr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 12:38:47 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E670CC0797BA;
-        Tue,  2 Nov 2021 09:26:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ZpP/HZLv604vtvae1cO/0WFon0sSJn671oAr7ZIWFxw=; b=UCimNJ3QWb++sHLFKw51gCkQKn
-        WWEC2X/M7um3LJKy9tXa7f8JPMslxJ5A40mI4Vct+q0Sv3gcUEgGzPrTFydyq7LDj4xgM8jIgE+YV
-        X3uJS07PEiYfQYOrNERQyGwoz4X0qZhFpi7WHnrxKGXUXB6VAT6jwbyJRPrTKcwzCTgUhlBeArX0X
-        zO89RZAmitmlNeBzM3i1PuQboNrclSbxS3a89BcNAExHk3J5/aTm3inLRkEvgG8Qe8rIDc2Dp0p5R
-        RjMjMh0QsXI8sIp4RfVofx0u3LD67AbwsVH9w4I/TlAdY/7UhPA3WEEHPuDBki1Eo1czIcKWZnbaH
-        DvYH7+8w==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mhwbY-002IBJ-2M; Tue, 02 Nov 2021 16:25:44 +0000
-Date:   Tue, 2 Nov 2021 09:25:44 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Miroslav Benes <mbenes@suse.cz>, Ming Lei <ming.lei@redhat.com>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, tj@kernel.org,
-        gregkh@linuxfoundation.org, akpm@linux-foundation.org,
-        minchan@kernel.org, jeyu@kernel.org, shuah@kernel.org,
-        bvanassche@acm.org, dan.j.williams@intel.com, joe@perches.com,
-        tglx@linutronix.de, keescook@chromium.org, rostedt@goodmis.org,
-        linux-spdx@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        live-patching@vger.kernel.org
-Subject: Re: [PATCH v8 11/12] zram: fix crashes with cpu hotplug multistate
-Message-ID: <YYFmiAAYIA2X7Uv5@bombadil.infradead.org>
-References: <YW6OptglA6UykZg/@T590>
- <alpine.LSU.2.21.2110200835490.26817@pobox.suse.cz>
- <YW/KEsfWJMIPnz76@T590>
- <alpine.LSU.2.21.2110201014400.26817@pobox.suse.cz>
- <YW/q70dLyF+YudyF@T590>
- <YXfA0jfazCPDTEBw@alley>
- <YXgguuAY5iEUIV0u@T590>
- <YXg0dFZ+6qHw7d0g@bombadil.infradead.org>
- <alpine.LSU.2.21.2110271343290.3655@pobox.suse.cz>
- <YYFYFrnhwPiyOtst@alley>
+        Tue, 2 Nov 2021 12:51:47 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDAF1C0797BC
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 09:26:11 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id bi35so44004843lfb.9
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 09:26:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8Q0JPKYImsEJj8uXVW8VH9ex3CWAhIL8zIYTnj92VzE=;
+        b=b2wpaHZtxvLTTFPBxpmHmXcYLsOooGKiTRHoJm0lDHl9gjWU3E8C5iKELK1urL9nl0
+         /eh+1gSgJQdZ0B6p9JqHjzhSCQMRq8oujbnPuUFf3+zcVzQPjc/4E1WgaXNf4CUI45fw
+         l/da5LhUd9WL5f11IO5SZp3AUVnwxjS2Lawu9L7H5V7nVq0bTn/qsg4J8cokd7eIc5Pf
+         Xzj5AhUtir4rSvNiIfy78uCzhl1pBSrepsGKkQFdZkhrlcG+YrRG9ivYblEs5p7RKm3v
+         qTqQh5dlLsWAowfQlKY+NpoFli/H2a8HDqBHHTeDoXCJQ4uOHIYXSTtJp4tMO7F8/faF
+         kYwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8Q0JPKYImsEJj8uXVW8VH9ex3CWAhIL8zIYTnj92VzE=;
+        b=qAAyP4yGcMmFQMZoJK3T2h3hqZhdUn/mrD8OjnCxGGjQ42s4epk19suw0RgG5Oa5P2
+         hUCV9CqKEX8lnlYaFn55smEhVSpDwRry/hpnNN4BJti1iGyU+m+/2Xjde8RsTwvbQA8L
+         vCsXRxstsV3BiM6rFcJnEAvCSCk51NgtC9kbA6foLMZcNd5+dOKwv8JN8kvAnp19eYwo
+         YCN7NZAOUdfRT9gkbOWIAmOULreRTqHetWjnZcupXX38IFwyeyUsiW5A6+xp1xc/r21U
+         qSz6r/2jHvR3czXb3LSWjjQxAYiBctdIxpzMUxRzNEwz8XOTAAH/JCVTslufilnJPGBW
+         akVQ==
+X-Gm-Message-State: AOAM533JSrl7W4TxgS8GOfsduM2nU+38aywKa75M+6EHL0uGaUygRaYT
+        YybU/IhM3S7egI9OqvVsNj5PPe7j5aasHcWJU1S85w==
+X-Google-Smtp-Source: ABdhPJyE48dVJQUvXK3BpIfv6YeOgL+VG6t5AJUmekuPNbSHTfUNWQhfUPoxkvPHoscLLNfESi/wos0A9JOKGtEJKN8=
+X-Received: by 2002:a05:6512:3d29:: with SMTP id d41mr12071889lfv.685.1635870369633;
+ Tue, 02 Nov 2021 09:26:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YYFYFrnhwPiyOtst@alley>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+References: <20211102142331.3753798-1-pgonda@google.com> <YYFh323otsIauvmH@google.com>
+In-Reply-To: <YYFh323otsIauvmH@google.com>
+From:   Peter Gonda <pgonda@google.com>
+Date:   Tue, 2 Nov 2021 10:25:58 -0600
+Message-ID: <CAMkAt6pnmr53V1Ckdw8vdK3=Ed0evknE8XPNyV35eFD_WP-RMQ@mail.gmail.com>
+Subject: Re: [PATCH V3 0/4] Add SEV_INIT_EX support
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Thomas.Lendacky@amd.com, Marc Orr <marcorr@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        John Allen <john.allen@amd.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 04:24:06PM +0100, Petr Mladek wrote:
-> On Wed 2021-10-27 13:57:40, Miroslav Benes wrote:
-> > >From my perspective, it is quite easy to get it wrong due to either a lack 
-> > of generic support, or missing rules/documentation. So if this thread 
-> > leads to "do not share locks between a module removal and a sysfs 
-> > operation" strict rule, it would be at least something. In the same 
-> > manner as Luis proposed to document try_module_get() expectations.
-> 
-> The rule "do not share locks between a module removal and a sysfs
-> operation" is not clear to me.
+On Tue, Nov 2, 2021 at 10:05 AM Sean Christopherson <seanjc@google.com> wrote:
+>
+> On Tue, Nov 02, 2021, Peter Gonda wrote:
+> > SEV_INIT requires users to unlock their SPI bus for the PSP's non
+> > volatile (NV) storage. Users may wish to lock their SPI bus for numerous
+> > reasons, to support this the PSP firmware supports SEV_INIT_EX. INIT_EX
+> > allows the firmware to use a region of memory for its NV storage leaving
+> > the kernel responsible for actually storing the data in a persistent
+> > way. This series adds a new module parameter to ccp allowing users to
+> > specify a path to a file for use as the PSP's NV storage. The ccp driver
+> > then reads the file into memory for the PSP to use and is responsible
+> > for writing the file whenever the PSP modifies the memory region.
+>
+> What's changed between v1 and v3?  Also, please wait a few days between versions.
+> I know us KVM people are often slow to get to reviews, but posting a new version
+> every day is usually counter-productive as it increases the review cost (more
+> threads to find and read).
 
-That's exactly it. It *is* not. The test_sysfs selftest will hopefully
-help with this. But I'll wait to take a final position on whether or not
-a generic fix should be merged until the Coccinelle patch which looks
-for all uses cases completes.
+My mistake. I can wait longer between revisions. I was just trying to
+include Tom's feedback promptly, I didn't think having many versions
+would be an issue.
 
-So I think that once that Coccinelle hunt is done for the deadlock, we
-should also remind folks of the potential deadlock and some of the rules
-you mentioned below so that if we take a position that we don't support
-this, we at least inform developers why and what to avoid. If Coccinelle
-finds quite a bit of cases, then perhaps evaluating the generic fix
-might be worth evaluating.
-
-> IMHO, there are the following rules:
-> 
-> 1. rule: kobject_del() or kobject_put() must not be called under a lock that
-> 	 is used by store()/show() callbacks.
-> 
->    reason: kobject_del() waits until the sysfs interface is destroyed.
-> 	 It has to wait until all store()/show() callbacks are finished.
-
-Right, this is what actually started this entire conversation.
-
-Note that as Ming pointed out, the generic kernfs fix I proposed would
-only cover the case when kobject_del() ends up being called on module
-exit, so it would not cover the cases where perhaps kobject_del() might
-be called outside of module exit, and so the cope of the possible
-deadlock then increases in scope.
-
-Likewise, the Coccinelle hunt I'm trying would only cover the module
-exit case. I'm a bit of afraid of the complexity of a generic hunt
-as expresed in rule 1.
-
-> 
-> 2. rule: kobject_del()/kobject_put() must not be called from the
-> 	related store() callbacks.
-> 
->    reason: same as in 1st rule.
-
-Sensible corollary.
-
-Given tha the exact kobjet_del() / kobject_put() which must not be
-called from the respective sysfs ops depends on which kobject is
-underneath the device for which the sysfs ops is being created,
-it would make this hunt in Coccinelle a bit tricky. My current iteration
-of a coccinelle hunt cheats and looks at any sysfs looking op and
-ensures a module exit exists.
-
-> 3. rule: module_exit() must wait until all release() callbacks are called
-> 	 when kobject are static.
-> 
->    reason: kobject_put() must be called to clean up internal
-> 	dependencies. The clean up might be done asynchronously
-> 	and need access to the kobject structure.
-
-This might be an easier rule to implement a respective Coccinelle rule
-for.
-
-  Luis
+Between V1 and V3: I have fixed a lot of style issues Tom identified.
+Added documentation to the SEV documentation file. Fixed some
+incorrect type usage. Made the logging more uniform. Removed writing
+on the SHUTDOWN command. And fixed some error handling.
