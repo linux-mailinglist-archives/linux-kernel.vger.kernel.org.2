@@ -2,154 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ED7F4425CD
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 03:57:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AA874425F8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 04:16:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231706AbhKBDAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 23:00:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbhKBDAC (ORCPT
+        id S232424AbhKBDTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 23:19:13 -0400
+Received: from m1323.mail.163.com ([220.181.13.23]:30010 "EHLO
+        m1323.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232376AbhKBDTB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 23:00:02 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF92CC061714;
-        Mon,  1 Nov 2021 19:57:27 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HjvhL18PGz4xYy;
-        Tue,  2 Nov 2021 13:57:21 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1635821845;
-        bh=pidXdGv0bM9++nTq59bGZx+P+sggoPMMZ7SzMRbYA1g=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=kJNd0hvcFhu6mdep32E2aU4iMNUm9c7YmvgsWRVSvzMabmATdiKs5umWVjFt0lz/T
-         WTYHAMZpJmrTvKTBC0fkZrC/aoWmZXd/HN8lBPAmWT+0K30iII6oLk/jYJeMpQ9MW3
-         sj9eQdjoVwxVFNHj3yFP0rktqBZCMVNMlHsKLWc6dYd7eSE74q+FMIf0fxPIr1A6d2
-         EPnUeT+caTxyckO9SklgzHdXnIJkPqGSLvrZFfUOrTkxRK8C5wgYBW9OX/B/EqdCi9
-         HwyiZuKIeZylKYtyeOpHeEc/6LNJBKyRlbnpPhw3TQs0URtCNqImih482nhi37tneV
-         5jBj/LkzVbZ0g==
-Date:   Tue, 2 Nov 2021 13:57:19 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Borislav Petkov <bp@suse.de>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>
-Subject: Re: linux-next: manual merge of the tip tree with the iommu tree
-Message-ID: <20211102135719.2011c55f@canb.auug.org.au>
-In-Reply-To: <20211021123527.29ec17c5@canb.auug.org.au>
-References: <20211021123527.29ec17c5@canb.auug.org.au>
+        Mon, 1 Nov 2021 23:19:01 -0400
+X-Greylist: delayed 911 seconds by postgrey-1.27 at vger.kernel.org; Mon, 01 Nov 2021 23:19:01 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:MIME-Version:Message-ID; bh=6VATN
+        KfgorcZVyE79SpdxqyJGlEBWMswbQSsraXZmLE=; b=hbN4mYiuaPOGER0QJE51v
+        7EjmtpLsLCqTa9bUU/eK2mq1b7RMP5t4GbaWtieeGWBszbu/NyGSpwCHqKLrKL5t
+        aacFgOgEkMfq9dG8wNKCauv/zXUxhGEazmsnfyeSMJavv/DiFzZRtNwL5jv/d1sJ
+        h8m7h6K6wGBrg8iwregY04=
+Received: from slark_xiao$163.com ( [112.97.61.236] ) by
+ ajax-webmail-wmsvr23 (Coremail) ; Tue, 2 Nov 2021 11:01:07 +0800 (CST)
+X-Originating-IP: [112.97.61.236]
+Date:   Tue, 2 Nov 2021 11:01:07 +0800 (CST)
+From:   "Slark Xiao" <slark_xiao@163.com>
+To:     "Manivannan Sadhasivam" <mani@kernel.org>
+Cc:     hemantk@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re:Re: Re: [PATCH] bus: mhi: pci_generic: Add new device ID support
+ for T99W175
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210622(1d4788a8)
+ Copyright (c) 2002-2021 www.mailtech.cn 163com
+In-Reply-To: <20211029102526.GD4945@thinkpad>
+References: <20211028034431.3563-1-slark_xiao@163.com>
+ <20211029092619.GA4945@thinkpad>
+ <68a1613c.3e54.17ccb7e922b.Coremail.slark_xiao@163.com>
+ <20211029102526.GD4945@thinkpad>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=GBK
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Lx+ECnxu0QLG73E5vMAWkJ.";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Message-ID: <4cfd51f8.105e.17cde97e0d3.Coremail.slark_xiao@163.com>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: F8GowADn76fzqYBhvhajAA--.37377W
+X-CM-SenderInfo: xvod2y5b0lt0i6rwjhhfrp/1tbiNRM7ZFrPd33I4wACsP
+X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Lx+ECnxu0QLG73E5vMAWkJ.
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi all,
-
-On Thu, 21 Oct 2021 12:35:27 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->=20
-> Today's linux-next merge of the tip tree got a conflict in:
->=20
->   arch/x86/include/asm/fpu/api.h
->=20
-> between commit:
->=20
->   00ecd5401349 ("iommu/vt-d: Clean up unused PASID updating functions")
->=20
-> from the iommu tree and commits:
->=20
->   a0ff0611c2fb ("x86/fpu: Move KVMs FPU swapping to FPU core")
->   ea4d6938d4c0 ("x86/fpu: Replace KVMs home brewed FPU copy from user")
->   90489f1dee8b ("x86/fpu: Move fpstate functions to api.h")
->   0ae67cc34f76 ("x86/fpu: Remove internal.h dependency from fpu/signal.h")
->   6415bb809263 ("x86/fpu: Mop up the internal.h leftovers")
->=20
-> from the tip tree.
->=20
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
->=20
-> diff --cc arch/x86/include/asm/fpu/api.h
-> index ca4d0dee1ecd,9263d708dff9..000000000000
-> --- a/arch/x86/include/asm/fpu/api.h
-> +++ b/arch/x86/include/asm/fpu/api.h
-> @@@ -106,4 -108,34 +108,32 @@@ extern int cpu_has_xfeatures(u64 xfeatu
->    */
->   #define PASID_DISABLED	0
->  =20
->  -static inline void update_pasid(void) { }
->  -
-> + /* Trap handling */
-> + extern int  fpu__exception_code(struct fpu *fpu, int trap_nr);
-> + extern void fpu_sync_fpstate(struct fpu *fpu);
-> + extern void fpu_reset_from_exception_fixup(void);
-> +=20
-> + /* Boot, hotplug and resume */
-> + extern void fpu__init_cpu(void);
-> + extern void fpu__init_system(struct cpuinfo_x86 *c);
-> + extern void fpu__init_check_bugs(void);
-> + extern void fpu__resume_cpu(void);
-> +=20
-> + #ifdef CONFIG_MATH_EMULATION
-> + extern void fpstate_init_soft(struct swregs_state *soft);
-> + #else
-> + static inline void fpstate_init_soft(struct swregs_state *soft) {}
-> + #endif
-> +=20
-> + /* State tracking */
-> + DECLARE_PER_CPU(struct fpu *, fpu_fpregs_owner_ctx);
-> +=20
-> + /* fpstate-related functions which are exported to KVM */
-> + extern void fpu_init_fpstate_user(struct fpu *fpu);
-> +=20
-> + /* KVM specific functions */
-> + extern void fpu_swap_kvm_fpu(struct fpu *save, struct fpu *rstor, u64 r=
-estore_mask);
-> +=20
-> + extern int fpu_copy_kvm_uabi_to_fpstate(struct fpu *fpu, const void *bu=
-f, u64 xcr0, u32 *pkru);
-> +=20
->   #endif /* _ASM_X86_FPU_API_H */
-
-This is now a conflict between Linus' tree and the iommu tree.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/Lx+ECnxu0QLG73E5vMAWkJ.
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGAqQ8ACgkQAVBC80lX
-0GzPagf/SYMl07QLjjGppqLnqgxWaUL44KHx/vZaP2G/563ecCwLDrrCOot8Jj+r
-wn4F2MItBcs/Sr4zMfSG1MsR5IeCYlYl8WJS5dWtzohbL31+ZwNx9wjGhit/paCw
-E4r3z/ytkJCN8jgTCsk+GMryNAq/yUPjRnag/1FROxYkaE3vhnAwUpnzZvXLSNS2
-jAR0zBYnZslBku8QVJRPmgoPHyEQjFiSi1253u0kDDK5Du+epSUnwVuY+nK8VWcx
-p+GPQGqnWBOOKzZ5v/pE7sO4HLrhbfdG5wWklco59jTLWrum1sJ9ChHzrAsHWITT
-w1bD0XT09Rai2JyR9aiwVPW64oatVA==
-=1z7j
------END PGP SIGNATURE-----
-
---Sig_/Lx+ECnxu0QLG73E5vMAWkJ.--
+CgpBdCAyMDIxLTEwLTI5IDE4OjI1OjI2LCAiTWFuaXZhbm5hbiBTYWRoYXNpdmFtIiA8bWFuaUBr
+ZXJuZWwub3JnPiB3cm90ZToKPk9uIEZyaSwgT2N0IDI5LCAyMDIxIGF0IDA2OjAwOjQyUE0gKzA4
+MDAsIFNsYXJrIFhpYW8gd3JvdGU6Cj4+IAo+PiBBdCAyMDIxLTEwLTI5IDE3OjI2OjE5LCAiTWFu
+aXZhbm5hbiBTYWRoYXNpdmFtIiA8bWFuaUBrZXJuZWwub3JnPiB3cm90ZToKPj4gCj4+ID5IaSwK
+Pj4gPgo+PiA+T24gVGh1LCBPY3QgMjgsIDIwMjEgYXQgMTE6NDQ6MzFBTSArMDgwMCwgU2xhcmsg
+WGlhbyB3cm90ZToKPj4gPj4gQWRkIG5ldyBkZXZpY2UgSUQgMHhlMGJmIGZvciBUOTlXMTc1Lgo+
+PiA+PiAKPj4gPgo+PiA+VGhhbmtzIGZvciB0aGUgcGF0Y2ghIENhbiB5b3Ugc2hhcmUgdGhlIGRp
+ZmZlcmVuY2UgYmV0d2VlbiB0aGlzIG1vZGVtIGFuZCB0aGUKPj4gPm9uZSAoVDk5VzE3NSkgd2Ug
+YWxyZWFkeSBoYXZlIHdpdGggUElEIDB4ZTBhYj8KPj4gPgo+PiA+UGxlYXNlIGluY2x1ZGUgdGhl
+IHByb2R1Y3QgcGFnZSBpbiBkZXNjcmlwdGlvbiBpZiBhbnkuCj4+ID4KPj4gPlRoYW5rcywKPj4g
+Pk1hbmkKPj4gPgo+PiBIaSBNYW5pLAo+PiAgICBUaGFua3MgZm9yIHRoaXMgcmV2aWV3LiAKPj4g
+ICAgQWN0dWFsbHkgdGhpcyBwcm9kdWN0KFNEWDU1LzB4ZTBiZikgaXMgdXNpbmcgUXVhbGNvbW0g
+U0RYNTUgbmV3IGJhc2VsaW5lKExFMS40KSwgCj4+ICBhbmQgcHJldmlvdXMgVDk5VzE3NS8weGUw
+YWIgaXMgdXNpbmcgb3JpZ2luYWwgYmFzZSBsaW5lKExFMS4yKS4KPj4gICAgT3VyIGN1c3RvbWVy
+IHdhbnRzIHVzIHRvIHVzZSBkaWZmZXJlbnQgZGV2aWNlIElEIHRvIHNlcGFyYXRlIGZyb20gZWFj
+aCBvdGhlci4gCj4+ICAgIEN1cnJlbnRseSB3ZSBkb24ndCBoYXZlIHByb2R1Y3QgcGFnZSAgYXMg
+b3VyIGN1c3RvbWVyJ3MgbmV3IHByb2R1Y3QgaXMgbm90IHJlbGVhc2VkLgo+PiAKPgo+VGhhbmtz
+IGZvciB0aGUgZXhwbGFuYXRpb24uIFBsZWFzZSBzZW5kIHYyIGFkZGluZyB0aGUgYmFzZWxpbmUg
+aW5mbyBpbiBjb21taXQKPmRlc2NyaXB0aW9uLgo+Cj5UaGFua3MsCj5NYW5pCj4KSGkgTWFuaSwK
+ICAgSSBoYXZlIHNlbnQgVjIgc2V2ZXJhbCBkYXlzIGFnbyAuIFBsZWFzZSB0YWtlIGEgbG9vayBv
+biB0aGF0LgogICBSZWYgbGluazogaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGttbC8yMDIxMTAy
+OTEwNDkxOC4zOTc2LTEtc2xhcmtfeGlhb0AxNjMuY29tLwoKVGhhbmtzIQpTbGFyawo+PiA+PiBU
+ZXN0IGV2aWRlbmNlIGFzIGJlbG93Ogo+PiA+PiByb290QGpiZC1UaGlua1BhZC1QMS1HZW4tNDov
+ZGV2IyBsc3BjaSAtbm4gfCBncmVwIEZveGNvbm4KPj4gPj4gMDAwMDowODowMC4wIFdpcmVsZXNz
+IGNvbnRyb2xsZXIgWzBkNDBdOiBGb3hjb25uIEludGVybmF0aW9uYWwsIEluYy4gRGV2aWNlIFsx
+MDViOmUwYmZdCj4+ID4+IHJvb3RAamJkLVRoaW5rUGFkLVAxLUdlbi00Oi9kZXYjIGNhdCB3d2Fu
+MGF0MCAmIGVjaG8gLW5lICJhdGlcciIgPiB3d2FuMGF0MAo+PiA+PiBbMl0gMjk3Nwo+PiA+PiBy
+b290QGpiZC1UaGlua1BhZC1QMS1HZW4tNDovZGV2IyBhdGkKPj4gPj4gTWFudWZhY3R1cmVyOiBR
+dWFsY29tbQo+PiA+PiBNb2RlbDogVDk5VzE3NQo+PiA+PiBSZXZpc2lvbjogVDk5VzE3NS5GMC42
+LjAuMC42LkNDLjAwNSAgMSAgW09jdCAyMSAyMDIxIDEwOjAwOjAwXQo+PiA+PiBJTUVJOgo+PiA+
+PiArR0NBUDogK0NHU00KPj4gPj4gCj4+ID4+IE9LCj4+ID4+IAo+PiA+PiBTaWduZWQtb2ZmLWJ5
+OiBTbGFyayBYaWFvIDxzbGFya194aWFvQDE2My5jb20+Cj4+ID4+IC0tLQo+PiA+PiAgZHJpdmVy
+cy9idXMvbWhpL3BjaV9nZW5lcmljLmMgfCAzICsrKwo+PiA+PiAgMSBmaWxlIGNoYW5nZWQsIDMg
+aW5zZXJ0aW9ucygrKQo+PiA+PiAKPj4gPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvYnVzL21oaS9w
+Y2lfZ2VuZXJpYy5jIGIvZHJpdmVycy9idXMvbWhpL3BjaV9nZW5lcmljLmMKPj4gPj4gaW5kZXgg
+NTlhNDg5NmE4MDMwLi41NjY0ODNkYzE1ZGIgMTAwNjQ0Cj4+ID4+IC0tLSBhL2RyaXZlcnMvYnVz
+L21oaS9wY2lfZ2VuZXJpYy5jCj4+ID4+ICsrKyBiL2RyaXZlcnMvYnVzL21oaS9wY2lfZ2VuZXJp
+Yy5jCj4+ID4+IEBAIC00MjMsNiArNDIzLDkgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBwY2lfZGV2
+aWNlX2lkIG1oaV9wY2lfaWRfdGFibGVbXSA9IHsKPj4gPj4gIAkvKiBEVzU5MzBlIChzZHg1NSks
+IE5vbi1lU0lNLCBJdCdzIGFsc28gVDk5VzE3NSAqLwo+PiA+PiAgCXsgUENJX0RFVklDRShQQ0lf
+VkVORE9SX0lEX0ZPWENPTk4sIDB4ZTBiMSksCj4+ID4+ICAJCS5kcml2ZXJfZGF0YSA9IChrZXJu
+ZWxfdWxvbmdfdCkgJm1oaV9mb3hjb25uX3NkeDU1X2luZm8gfSwKPj4gPj4gKwkvKiBUOTlXMTc1
+IChzZHg1NSkgKi8KPj4gPj4gKwl7IFBDSV9ERVZJQ0UoUENJX1ZFTkRPUl9JRF9GT1hDT05OLCAw
+eGUwYmYpLAo+PiA+PiArCQkuZHJpdmVyX2RhdGEgPSAoa2VybmVsX3Vsb25nX3QpICZtaGlfZm94
+Y29ubl9zZHg1NV9pbmZvIH0sCj4+ID4+ICAJLyogTVYzMS1XIChDaW50ZXJpb24pICovCj4+ID4+
+ICAJeyBQQ0lfREVWSUNFKDB4MTI2OSwgMHgwMGIzKSwKPj4gPj4gIAkJLmRyaXZlcl9kYXRhID0g
+KGtlcm5lbF91bG9uZ190KSAmbWhpX212MzFfaW5mbyB9LAo+PiA+PiAtLSAKPj4gPj4gMi4yNS4x
+Cj4+ID4+IAo=
