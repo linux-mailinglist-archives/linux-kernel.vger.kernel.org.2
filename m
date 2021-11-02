@@ -2,169 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEDF4442639
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 04:52:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05BBB44263D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 04:55:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232767AbhKBDzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 23:55:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30883 "EHLO
+        id S232734AbhKBD5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 23:57:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56642 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232752AbhKBDzJ (ORCPT
+        by vger.kernel.org with ESMTP id S232129AbhKBD5w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 23:55:09 -0400
+        Mon, 1 Nov 2021 23:57:52 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635825154;
+        s=mimecast20190719; t=1635825317;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=l5JQX7PK3bUB+fO7KCHuTs96kpHZCzUz5hWvhokA8Wo=;
-        b=RghOEjDL4afjnzXeL55cWpEv8TQnj+im4Xg6YL8Q9UZ8b7ywZC6RWYaVmoejXVlsUTxjML
-        n7dqZkUimmxIM9cufFuSp3odoS4C/14M80PXhaH24MEFexRj+cJBoCu02k9Iibw0XbVwGL
-        CZ0oKhiyg3N6AG4OyLVFjVRr3NKzuCU=
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
- [209.85.208.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-459-um07mfmdMxeM0-_6McAG6Q-1; Mon, 01 Nov 2021 23:52:33 -0400
-X-MC-Unique: um07mfmdMxeM0-_6McAG6Q-1
-Received: by mail-lj1-f199.google.com with SMTP id a20-20020a2eb554000000b0020de66f70bcso7062225ljn.1
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 20:52:33 -0700 (PDT)
+        bh=MrQHFqOaIMU1aGZWoTgExkk7O3ua1KNPJ05Mw8KBKHc=;
+        b=XgxoqBJgqdeEaL6YTxSZbLi+ZXpddOuznBvI7E6tA69kmSvXFPRRUBsp3bpM6sjNfj+Mty
+        PqEBz6ll5RUwq+ADdBswWuryMxqfPa/YvkaRBL/adVBpucyZQJv4Ci9PvCFb8tJSKSuomq
+        iCx+sCV0vKtD3fxyE3ioB8x6AuV3EUo=
+Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
+ [209.85.215.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-574-nKn-tjVpOryYVfgtMypbkg-1; Mon, 01 Nov 2021 23:55:16 -0400
+X-MC-Unique: nKn-tjVpOryYVfgtMypbkg-1
+Received: by mail-pg1-f200.google.com with SMTP id r7-20020a63ce47000000b002a5cadd2f25so9134316pgi.9
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 20:55:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=l5JQX7PK3bUB+fO7KCHuTs96kpHZCzUz5hWvhokA8Wo=;
-        b=mfzFtC/ABJbGDuy12kuVvJ1fXQng+6P4b7X2W/xqIuu5ZJ9O5HsIAbLH2PwIVkjf3y
-         xw5ZxeGlDdrCDkbzCYaRUYlm2Ny7BDv45aK7ffG6YhCPz2sNGvdrlsB/zTSM7cNb/djP
-         K/vbYLzEPGRVQ1wQYq9Zyor3tstdRY39YtWJVxvxKo/kkWPYaTHxLlzkTvxuCloTKW8+
-         QojFzSrcyMY7WNw37jI7YOBveDOR7U4+zgF3i2dEXJl+VHSlh3VkVGshACQe3/K7BqKb
-         viJMwwcWkC3yjqY6kBnBMdJdbc10F1SW36O4fQrfTry2zsa4jxpgZqc6EZ1apXgjZX9N
-         xd+w==
-X-Gm-Message-State: AOAM532/i0/Mkrt3Un1DkrGB0T7cZMxuGkbUd/IeduQDBsCK3b81Zq7z
-        UB+l6y5EF5fMg0VBVEl6e9mD8YbSx9WMGmd9efwZz7+XApHq9zWjZqVka1SC0ElB/c9obMk2yt+
-        3zxMYiBbc1ZM1lXSridk3DhYOeCC/zTtKl+WuVAdS
-X-Received: by 2002:a2e:a5c8:: with SMTP id n8mr34920396ljp.307.1635825151559;
-        Mon, 01 Nov 2021 20:52:31 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzFQk+sE0CmE+gyBZ9tANj3V6182Ct3x1qzy7cGmMP3hS/SewKac2u33kWWjZYVFWZ9SvqxSnBV3r7bPJN+SIk=
-X-Received: by 2002:a2e:a5c8:: with SMTP id n8mr34920347ljp.307.1635825151261;
- Mon, 01 Nov 2021 20:52:31 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MrQHFqOaIMU1aGZWoTgExkk7O3ua1KNPJ05Mw8KBKHc=;
+        b=0rxJEeiOCZQxBp2d4KdXToleW2frEGKFf9aoWnH2ebrDfMVQmkCiMHCxxG73QUC4b3
+         OAAhXvlggM4f4R5IgU+W9v6Kk8WtV9v8WDDpI5ZW6cJxou9GcG9ohuPrPsoMzIuq6Jo+
+         jIGqh71ML6xN40P2bctuMWmSnj4MQ2eZRxPDs0Tb+z6t7QsfEcnVh/4qgqwydkHUX+lS
+         b1NDfOg0kNFTJ4T4Vg9HesXdb01LoPfzw+34HrDzmLnD1SQPcIVsKIAjCpPDpJS2r2WR
+         7kXFKPiTXebrCiKOazZoqDVMr7TAPT09mTqTBlDJQzeMvxQ9S3olywOm5qZ+SNuuMdYG
+         wGnw==
+X-Gm-Message-State: AOAM531YYZdai5pSOJiXG4C2S7wDKdn7PkQs/U1by2guXGenEf8HZbh/
+        I+6Vn3ZfZ6EzWNRhEsoUSMiwOuNx0b5ehiS+LTmvNSkZa0lt2Q9h6wAQBk9p9ecm5HK2ZHX+6cR
+        uq8H8NNHr9PQY2U4sTWu0tr5O
+X-Received: by 2002:a17:90b:1bd2:: with SMTP id oa18mr3661849pjb.212.1635825315601;
+        Mon, 01 Nov 2021 20:55:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzXiBDCFzpA2RJvNRSsN5wNdAOQuYriKRM+4cmVat5soML4SeeIBr2aHIluOY8bBqktKc+qpg==
+X-Received: by 2002:a17:90b:1bd2:: with SMTP id oa18mr3661830pjb.212.1635825315396;
+        Mon, 01 Nov 2021 20:55:15 -0700 (PDT)
+Received: from localhost ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id f10sm17000953pfe.82.2021.11.01.20.55.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Nov 2021 20:55:15 -0700 (PDT)
+Date:   Tue, 2 Nov 2021 11:52:27 +0800
+From:   Coiby Xu <coxu@redhat.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Dave Young <dyoung@redhat.com>, Will Deacon <will@kernel.org>,
+        kexec@lists.infradead.org, open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 1/3] kexec: clean up arch_kexec_kernel_verify_sig
+Message-ID: <20211102035227.4c4kvqqunpwgcuup@Rk>
+References: <20211018083137.338757-1-coxu@redhat.com>
+ <20211018083137.338757-2-coxu@redhat.com>
 MIME-Version: 1.0
-References: <20200326140125.19794-1-jasowang@redhat.com> <20200326140125.19794-8-jasowang@redhat.com>
- <20211101141133.GA1073864@nvidia.com>
-In-Reply-To: <20211101141133.GA1073864@nvidia.com>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Tue, 2 Nov 2021 11:52:20 +0800
-Message-ID: <CACGkMEtbs3u7J7krpkusfqczTU00+6o_YtZjD8htC=+Un9cNew@mail.gmail.com>
-Subject: Re: [PATCH V9 7/9] vhost: introduce vDPA-based backend
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     mst <mst@redhat.com>, linux-kernel <linux-kernel@vger.kernel.org>,
-        kvm <kvm@vger.kernel.org>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        netdev <netdev@vger.kernel.org>,
-        Maxime Coquelin <maxime.coquelin@redhat.com>,
-        "Liang, Cunming" <cunming.liang@intel.com>, zhihong.wang@intel.com,
-        rob.miller@broadcom.com, Xiao W Wang <xiao.w.wang@intel.com>,
-        Zhu Lingshan <lingshan.zhu@intel.com>,
-        eperezma <eperezma@redhat.com>, Cindy Lu <lulu@redhat.com>,
-        Parav Pandit <parav@mellanox.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Ariel Adam <aadam@redhat.com>, jiri@mellanox.com,
-        shahafs@mellanox.com, Harpreet Singh Anand <hanand@xilinx.com>,
-        mhabets@solarflare.com, Gautam Dawar <gdawar@xilinx.com>,
-        Saugat Mitra <saugatm@xilinx.com>, vmireyno@marvell.com,
-        zhangweining@ruijie.com.cn, Tiwei Bie <tiwei.bie@intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20211018083137.338757-2-coxu@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 1, 2021 at 10:11 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
->
-> On Thu, Mar 26, 2020 at 10:01:23PM +0800, Jason Wang wrote:
-> > From: Tiwei Bie <tiwei.bie@intel.com>
-> >
-> > This patch introduces a vDPA-based vhost backend. This backend is
-> > built on top of the same interface defined in virtio-vDPA and provides
-> > a generic vhost interface for userspace to accelerate the virtio
-> > devices in guest.
-> >
-> > This backend is implemented as a vDPA device driver on top of the same
-> > ops used in virtio-vDPA. It will create char device entry named
-> > vhost-vdpa-$index for userspace to use. Userspace can use vhost ioctls
-> > on top of this char device to setup the backend.
-> >
-> > Vhost ioctls are extended to make it type agnostic and behave like a
-> > virtio device, this help to eliminate type specific API like what
-> > vhost_net/scsi/vsock did:
-> >
-> > - VHOST_VDPA_GET_DEVICE_ID: get the virtio device ID which is defined
-> >   by virtio specification to differ from different type of devices
-> > - VHOST_VDPA_GET_VRING_NUM: get the maximum size of virtqueue
-> >   supported by the vDPA device
-> > - VHSOT_VDPA_SET/GET_STATUS: set and get virtio status of vDPA device
-> > - VHOST_VDPA_SET/GET_CONFIG: access virtio config space
-> > - VHOST_VDPA_SET_VRING_ENABLE: enable a specific virtqueue
-> >
-> > For memory mapping, IOTLB API is mandated for vhost-vDPA which means
-> > userspace drivers are required to use
-> > VHOST_IOTLB_UPDATE/VHOST_IOTLB_INVALIDATE to add or remove mapping for
-> > a specific userspace memory region.
-> >
-> > The vhost-vDPA API is designed to be type agnostic, but it allows net
-> > device only in current stage. Due to the lacking of control virtqueue
-> > support, some features were filter out by vhost-vdpa.
-> >
-> > We will enable more features and devices in the near future.
->
-> [..]
->
-> > +static int vhost_vdpa_alloc_domain(struct vhost_vdpa *v)
-> > +{
-> > +     struct vdpa_device *vdpa = v->vdpa;
-> > +     const struct vdpa_config_ops *ops = vdpa->config;
-> > +     struct device *dma_dev = vdpa_get_dma_dev(vdpa);
-> > +     struct bus_type *bus;
-> > +     int ret;
-> > +
-> > +     /* Device want to do DMA by itself */
-> > +     if (ops->set_map || ops->dma_map)
-> > +             return 0;
-> > +
-> > +     bus = dma_dev->bus;
-> > +     if (!bus)
-> > +             return -EFAULT;
-> > +
-> > +     if (!iommu_capable(bus, IOMMU_CAP_CACHE_COHERENCY))
-> > +             return -ENOTSUPP;
-> > +
-> > +     v->domain = iommu_domain_alloc(bus);
-> > +     if (!v->domain)
-> > +             return -EIO;
-> > +
-> > +     ret = iommu_attach_device(v->domain, dma_dev);
-> > +     if (ret)
-> > +             goto err_attach;
-> >
->
-> I've been looking at the security of iommu_attach_device() users, and
-> I wonder if this is safe?
->
-> The security question is if userspace is able to control the DMA
-> address the devices uses? Eg if any of the cpu to device ring's are in
-> userspace memory?
->
-> For instance if userspace can tell the device to send a packet from an
-> arbitrary user controlled address.
+Hi Eric,
 
-The map is validated via pin_user_pages() which guarantees that the
-address is not arbitrary and must belong to userspace?
+Does this patch and "[PATCH v3 2/3] kexec, KEYS: make the code in
+bzImage64_verify_sig generic" look good you?
 
-Thanks
+On Mon, Oct 18, 2021 at 04:31:35PM +0800, Coiby Xu wrote:
+>commit 9ec4ecef0af7790551109283ca039a7c52de343c ("kexec_file,x86,
+>powerpc: factor out kexec_file_ops functions" allows implementing
+>the arch-specific implementation of kernel image verification
+>in kexec_file_ops->verify_sig. Currently, there is no arch-specific
+>implementation of arch_kexec_kernel_verify_sig. So clean it up.
+>
+>Suggested-by: Eric W. Biederman <ebiederm@xmission.com>
+>Signed-off-by: Coiby Xu <coxu@redhat.com>
+>---
+> include/linux/kexec.h |  4 ----
+> kernel/kexec_file.c   | 34 +++++++++++++---------------------
+> 2 files changed, 13 insertions(+), 25 deletions(-)
+>
+>diff --git a/include/linux/kexec.h b/include/linux/kexec.h
+>index 0c994ae37729..755fed183224 100644
+>--- a/include/linux/kexec.h
+>+++ b/include/linux/kexec.h
+>@@ -196,10 +196,6 @@ int arch_kexec_apply_relocations(struct purgatory_info *pi,
+> 				 const Elf_Shdr *relsec,
+> 				 const Elf_Shdr *symtab);
+> int arch_kimage_file_post_load_cleanup(struct kimage *image);
+>-#ifdef CONFIG_KEXEC_SIG
+>-int arch_kexec_kernel_verify_sig(struct kimage *image, void *buf,
+>-				 unsigned long buf_len);
+>-#endif
+> int arch_kexec_locate_mem_hole(struct kexec_buf *kbuf);
+>
+> extern int kexec_add_buffer(struct kexec_buf *kbuf);
+>diff --git a/kernel/kexec_file.c b/kernel/kexec_file.c
+>index 33400ff051a8..42b3ac34e4ee 100644
+>--- a/kernel/kexec_file.c
+>+++ b/kernel/kexec_file.c
+>@@ -89,25 +89,6 @@ int __weak arch_kimage_file_post_load_cleanup(struct kimage *image)
+> 	return kexec_image_post_load_cleanup_default(image);
+> }
+>
+>-#ifdef CONFIG_KEXEC_SIG
+>-static int kexec_image_verify_sig_default(struct kimage *image, void *buf,
+>-					  unsigned long buf_len)
+>-{
+>-	if (!image->fops || !image->fops->verify_sig) {
+>-		pr_debug("kernel loader does not support signature verification.\n");
+>-		return -EKEYREJECTED;
+>-	}
+>-
+>-	return image->fops->verify_sig(buf, buf_len);
+>-}
+>-
+>-int __weak arch_kexec_kernel_verify_sig(struct kimage *image, void *buf,
+>-					unsigned long buf_len)
+>-{
+>-	return kexec_image_verify_sig_default(image, buf, buf_len);
+>-}
+>-#endif
+>-
+> /*
+>  * arch_kexec_apply_relocations_add - apply relocations of type RELA
+>  * @pi:		Purgatory to be relocated.
+>@@ -184,13 +165,24 @@ void kimage_file_post_load_cleanup(struct kimage *image)
+> }
+>
+> #ifdef CONFIG_KEXEC_SIG
+>+static int kexec_image_verify_sig(struct kimage *image, void *buf,
+>+		unsigned long buf_len)
+>+{
+>+	if (!image->fops || !image->fops->verify_sig) {
+>+		pr_debug("kernel loader does not support signature verification.\n");
+>+		return -EKEYREJECTED;
+>+	}
+>+
+>+	return image->fops->verify_sig(buf, buf_len);
+>+}
+>+
+> static int
+> kimage_validate_signature(struct kimage *image)
+> {
+> 	int ret;
+>
+>-	ret = arch_kexec_kernel_verify_sig(image, image->kernel_buf,
+>-					   image->kernel_buf_len);
+>+	ret = kexec_image_verify_sig(image, image->kernel_buf,
+>+			image->kernel_buf_len);
+> 	if (ret) {
+>
+> 		if (IS_ENABLED(CONFIG_KEXEC_SIG_FORCE)) {
+>-- 
+>2.31.1
+>
 
->
-> Thanks,
-> Jason
->
+-- 
+Best regards,
+Coiby
 
