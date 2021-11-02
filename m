@@ -2,92 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18BD6442DDD
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 13:29:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 295D9442DD8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 13:28:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230282AbhKBMc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 08:32:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbhKBMcZ (ORCPT
+        id S230170AbhKBMb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 08:31:29 -0400
+Received: from ssl.serverraum.org ([176.9.125.105]:39941 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229530AbhKBMb1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 08:32:25 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06E1DC061714;
-        Tue,  2 Nov 2021 05:29:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=TKqWgfpw5AGxV0aXDmIN4fp1Id+pK1uozWw0xKtDRVU=; b=o3CXWrfh6eqE/lwsca02rozqZi
-        OKidFQjXbtIZCsmOTMW6lm0UZf4jV+/3UzKD5e2BRyjbi0/0OTBwZhxKMLqEikCYo5IknqCcBY4FZ
-        8tDZWe8odIIUSQvYZA99b7ad2EaM18IKKCj6hc4+hl6xAjdmRil/Vv2tSSgF0+vGrOiKRLpc84cEd
-        s40c1JwJvOlFAdQRRqzsMgQqCsGsWUywtkapp54VRZB5DKQhlhyvp/brpw1s+Kde1Kv1JjNcQLaZY
-        VBNS7+gt5Dv4idlPr/falDKw8o4yF554w+cRiqLW11HkNrPn4D0mK11mGQ+nqrJR7pnAzORfmr06c
-        39usDeAQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mhsta-004UJp-MJ; Tue, 02 Nov 2021 12:29:01 +0000
-Date:   Tue, 2 Nov 2021 12:28:06 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
-Subject: Re: [PATCH 13/21] iomap: Convert readahead and readpage to use a
- folio
-Message-ID: <YYEu1qj3yxF968HR@casper.infradead.org>
-References: <20211101203929.954622-1-willy@infradead.org>
- <20211101203929.954622-14-willy@infradead.org>
- <YYDmz8olTe/Qr2ch@infradead.org>
+        Tue, 2 Nov 2021 08:31:27 -0400
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id DD78122246;
+        Tue,  2 Nov 2021 13:28:51 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1635856131;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cOlB3SqbrvwOQNlyt+NUWTHe0zxF/8/HFOvQZzaohXM=;
+        b=IIaYn2RHSUAHEhe5xnVfhKUDDOsPZ75Idj8t3/tcfjf5uFlySxh6TAWBWv/2tC5WctUwLZ
+        E5CaB8w6pyA6bK9ErtpdiKTNxFG/X/S+DNcLQMGsYIi/ToE1untiAIxIddqxKXzrSMazC5
+        Tv/ekY92KLkfO1zEFcZJ3ZK9TLnRTjs=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YYDmz8olTe/Qr2ch@infradead.org>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 02 Nov 2021 13:28:51 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Robert Marko <robert.marko@sartura.hr>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mfd: simple-mfd-i2c: Select MFD_CORE to fix build error
+In-Reply-To: <YYEeS8gz8TBW63X8@google.com>
+References: <20211102100420.112215-1-robert.marko@sartura.hr>
+ <YYEeS8gz8TBW63X8@google.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <8b2b9e6f61107b79f93dd191c3fc2918@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 12:20:47AM -0700, Christoph Hellwig wrote:
-> On Mon, Nov 01, 2021 at 08:39:21PM +0000, Matthew Wilcox (Oracle) wrote:
-> >  	for (done = 0; done < length; done += ret) {
-> > -		if (ctx->cur_page && offset_in_page(iter->pos + done) == 0) {
-> > -			if (!ctx->cur_page_in_bio)
-> > -				unlock_page(ctx->cur_page);
-> > -			put_page(ctx->cur_page);
-> > -			ctx->cur_page = NULL;
-> > +		if (ctx->cur_folio &&
-> > +		    offset_in_folio(ctx->cur_folio, iter->pos + done) == 0) {
-> > +			if (!ctx->cur_folio_in_bio)
-> > +				folio_unlock(ctx->cur_folio);
-> > +			ctx->cur_folio = NULL;
+Am 2021-11-02 12:17, schrieb Lee Jones:
+> On Tue, 02 Nov 2021, Robert Marko wrote:
 > 
-> Where did the put_page here disappear to?
+>> MFD_SIMPLE_MFD_I2C should select the MFD_CORE to a prevent build 
+>> error:
+>> 
+>> aarch64-linux-ld: drivers/mfd/simple-mfd-i2c.o: in function 
+>> `simple_mfd_i2c_probe':
+>> drivers/mfd/simple-mfd-i2c.c:55: undefined reference to 
+>> `devm_mfd_add_devices'
+> 
+> What is your use-case?
+> 
+> How are you enabling this symbol?
 
-I'll put that explanation in the changelog:
+Mh? drivers/mfd/simple-mfd-i2c.c is using devm_mfd_add_devices which
+is provided by drivers/mfd/core.c. So select MFD_CORE is clearly
+missing here, no? I mean most of the MFD drivers do a "select MFD_CORE".
 
-Handle folios of arbitrary size instead of working in PAGE_SIZE units.
-readahead_folio() puts the page for you, so this is not quite a mechanical
-change.
-
----
-
-The reason for making that change is that I messed up when introducing the
-readahead() operation.  I followed the refcounting rule of ->readpages()
-instead of the rule of ->readpage().  For a successful readahead, we have
-two more atomic operations than necessary.  I want to fix that, and
-this seems like a good opportunity to do it.  Once all filesystems are
-converted to call readahead_folio(), we can remove the extra get_page()
-and put_page().
-
-I did put an explanation of that in commit 9bf70167e3c6, but it's not
-reasonable to expect reviewers to remember that when reviewing changes
-to their filesystem's readahead, so I'll be sure to mention it in any
-future conversion's changelogs.
-
-    mm/filemap: Add readahead_folio()
-
-    The pointers stored in the page cache are folios, by definition.
-    This change comes with a behaviour change -- callers of readahead_folio()
-    are no longer required to put the page reference themselves.  This matches
-    how readpage works, rather than matching how readpages used to work.
-
+-michael
