@@ -2,98 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FF164430BC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 15:46:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A826C4430BE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 15:46:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231278AbhKBOsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 10:48:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230336AbhKBOss (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 10:48:48 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACB75C061714;
-        Tue,  2 Nov 2021 07:46:13 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id f8so55348258edy.4;
-        Tue, 02 Nov 2021 07:46:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PqTPhnZWWSI7aaZPpC+xELL83kKV2UGyYtjIddeA+HE=;
-        b=S1/OyhmF4WKgNKAgKcKtKJ5M1kCxZU+WBMXZ07ktnV3k4kqdvrLp8ECjE+tnxLNlNO
-         22kILURY4+CKYKBE9XyTa/p5TlRt25wIoctoqejOARgFjd2W8Wp8k27X8uIwGZIkNz/I
-         FkehMXVaI7ghPs3WP5NNYliPyxwuNCIUBWV7H2VxdxQpo2lPrIgL1Zb3MReI4L3Micyw
-         rv1JM+yvM6HB1dWdfbOXe0HSxHLB2KXdWMTiBaJ7Z71sSevG6Rc+OMXQpRhEM3qZcyLc
-         MJZfaIQBYTQDPmOiEabMF40HrOslcGCQ97dV1ttvskUeMDXlqh0SzJdlna1uBU/uKCZu
-         Abew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PqTPhnZWWSI7aaZPpC+xELL83kKV2UGyYtjIddeA+HE=;
-        b=bunSpdyrojpkjxogM9grtSolquUCJnSK9UMr7B2yk8c0jaiesDLi24dW+hG7yiVXkv
-         DEzaCcu++mSFRWkTtH2WSYI6KNmw2lKwMoIGxw3GkfjIkEKJt1PLa4v72CTtjC75c6If
-         NYZoI+rTnR1hEx0f9iiyyEQnN8hiBlX8miTGLZVpyYRTeDa6Vu9y6gOymarwFazLT7Fv
-         Oc2UAWE47zzS6By86ufsy8mRoPCQNGP6u4F8uF47nad+wBBAnBQn6sbLm2Fh5Q8tRIWv
-         tyT4joSNLb7HB/mFZwOT237sn3Z+QybDuUA9MIaM40/suXvAlRv56boSPKH1EnOfHn7C
-         2tww==
-X-Gm-Message-State: AOAM530BW1Im6HVt+M/h6bW6XULDfhi46BoRiggKe7KmM97cT2F4aX94
-        bfyBY3RQrhvDKkuvzKQE0kP80ajicL+BmhWhJZ8=
-X-Google-Smtp-Source: ABdhPJyil3/Y4/MEwYq4e9TpWqscZQDReM8TqFCTgf0g+O7x+5hVA0udsrU+qd3+XBdQxBtQFFztlu5DaK1IREZ2Cjk=
-X-Received: by 2002:a17:906:6a0a:: with SMTP id qw10mr18609747ejc.141.1635864371916;
- Tue, 02 Nov 2021 07:46:11 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211017162337.44860-1-kitakar@gmail.com> <20211017162337.44860-4-kitakar@gmail.com>
- <20211102130245.GE2794@kadam> <CAHp75VeThcCywYZsrUNYSA3Yc3MjJwfiCBCGep1DpWFFUg71cw@mail.gmail.com>
-In-Reply-To: <CAHp75VeThcCywYZsrUNYSA3Yc3MjJwfiCBCGep1DpWFFUg71cw@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 2 Nov 2021 16:45:20 +0200
-Message-ID: <CAHp75VdnvxCWYrdrBqtSDP0A2PCT6dYvHAhszY9iH9ooWKT49g@mail.gmail.com>
-Subject: Re: [BUG/RFC PATCH 3/5] [BUG][RFC] media: atomisp: pci: add NULL
- check for asd obtained from atomisp_video_pipe
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Tsuchiya Yuto <kitakar@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Patrik Gfeller <patrik.gfeller@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Kaixu Xia <kaixuxia@tencent.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Yang Li <abaci-bugfix@linux.alibaba.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Alex Dewar <alex.dewar90@gmail.com>,
-        Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, Alan <alan@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-staging@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S231425AbhKBOtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 10:49:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57486 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230336AbhKBOtB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 10:49:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 3FB62610E5;
+        Tue,  2 Nov 2021 14:46:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635864386;
+        bh=BTmNc4j+6WSH2JmjhXNPtnxpJxeOBqN3231jn4TnPpY=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=oiMCY4X+12b69r0gQxAU2grncH2rXfFl3Oc6jX/nBTCNNvupkzKY0/wfVYNZqQX9e
+         zgEzf8lZA5l5edz+DO5MbvYsK2qUpg8ktgj+5bejKLPS2n2igdPm5H8HFMcKU7WdZu
+         gKFKxsOawWJr1E4egvIHQ+iyo+IrAGldk53PhFUlBGC3k/vXE9MaCj6glAIqtBDCS/
+         uEtK32zqyLBKadrHNCKytoNgajQudyQEiUfRgZjzRyvP6l2oxRh6gxUmG4Gc4TZMTB
+         nxLiIyBnWPgIv5NWLcbPTU/W4fLop1y2PjltZ1Hckx5b/RIUEvtQpsnbjRNhcdb/tx
+         ht3/K03h/KE0Q==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2AEDD609F7;
+        Tue,  2 Nov 2021 14:46:26 +0000 (UTC)
+Subject: Re: [GIT PULL] Networking for 5.16
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20211102054237.3307077-1-kuba@kernel.org>
+References: <20211102054237.3307077-1-kuba@kernel.org>
+X-PR-Tracked-List-Id: <netdev.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20211102054237.3307077-1-kuba@kernel.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git tags/net-next-for-5.16
+X-PR-Tracked-Commit-Id: 84882cf72cd774cf16fd338bdbf00f69ac9f9194
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: fc02cb2b37fe2cbf1d3334b9f0f0eab9431766c4
+Message-Id: <163586438611.5257.10464350684036071454.pr-tracker-bot@kernel.org>
+Date:   Tue, 02 Nov 2021 14:46:26 +0000
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     torvalds@linux-foundation.org, kuba@kernel.org,
+        davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, keescook@chromium.org,
+        kvalo@codeaurora.org, miriam.rachel.korenblit@intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 2, 2021 at 4:44 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
-> On Tue, Nov 2, 2021 at 3:10 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
-> > On Mon, Oct 18, 2021 at 01:23:34AM +0900, Tsuchiya Yuto wrote:
+The pull request you sent on Mon,  1 Nov 2021 22:42:36 -0700:
 
-...
+> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git tags/net-next-for-5.16
 
-> > Run your patches through scripts/checkpatch.pl.
->
-> While it's good advice, we are dealing with quite a bad code under
-> staging, so the requirements may be relaxed.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/fc02cb2b37fe2cbf1d3334b9f0f0eab9431766c4
 
-To be more clear: the goal now is getting it _working_. That's why
-this kind of noise is not important _for now_.
+Thank you!
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
