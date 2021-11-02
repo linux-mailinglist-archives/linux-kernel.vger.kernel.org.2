@@ -2,233 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECE6144341E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 17:57:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 442E344342A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 17:57:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231708AbhKBQ7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 12:59:38 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:43936 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229684AbhKBQ7g (ORCPT
+        id S235002AbhKBQ7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 12:59:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47680 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234848AbhKBQ7n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 12:59:36 -0400
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1A2GBcXa027700;
-        Tue, 2 Nov 2021 17:56:53 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=Cco84+3VE3T5v9x8tbKVq5wUeAloej3D5kb7+sWmIDA=;
- b=6Mb0MsR79aHQ5ZUSvM+jfTP0Q4jBdKYRBxk7fV8biwkoBpuvX888am/qkx9bTBnDM2EZ
- MwlbLxEl62DamCeTXC82jGZsINUejBqLrYlzxFIeZuL0eE3W2sq8AWNQA799DAVH/jAA
- gFJro5VUOBYkdxon4omzPFr/dIp3CMYwiUJLhwzyz3J8yxZeT+lHMoW1XDMBxxijBval
- k+ieW+txFt9d7zDaPPdjlYqWGk2g4H4Cj3IOZK3c9UikxFd96NmtNEkPXHWxiVQHRvcX
- 1Lnrk1u8AlnLpCP0x5Z46gUIaKGZX4AfYDAGGNuuWEP/tjQUJHk/S7RnIeYNJPI4beRm wA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3c30uvkru9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 02 Nov 2021 17:56:53 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id B948910002A;
-        Tue,  2 Nov 2021 17:56:52 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id ACACA21AE21;
-        Tue,  2 Nov 2021 17:56:52 +0100 (CET)
-Received: from lmecxl0889.lme.st.com (10.75.127.49) by SFHDAG2NODE2.st.com
- (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 2 Nov
- 2021 17:56:52 +0100
-Subject: Re: [PATCH v6 06/10] rpmsg: Introduce rpmsg_create_default_ept
- function
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-CC:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>, <julien.massot@iot.bzh>
-References: <20211022125426.2579-1-arnaud.pouliquen@foss.st.com>
- <20211022125426.2579-7-arnaud.pouliquen@foss.st.com>
- <YYAlzvXns4Ejxa6S@builder.lan>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Message-ID: <d1352a00-bc6d-91ae-b902-622c75448e3a@foss.st.com>
-Date:   Tue, 2 Nov 2021 17:56:51 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 2 Nov 2021 12:59:43 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AA34C061203
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 09:57:08 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id g10so8379edj.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 09:57:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura-hr.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rCu1OGKsqLNAMoqhoi0VbX309V/fJGalAsnrlUQrsDo=;
+        b=jhu6aCoeAMLlRocldjYOcix0kXuZl4gF71djpFefPdNOQGs30if/nnpDdlta5lT1tK
+         zA4ndWgiL7ifZJNHiMTU8lS3fqxHSZVeWUdYATfxTKNZMY7yJTyorp7FCYwkJAICszxB
+         aBh3pZLPuD4FI4gO8tPbzWMkbcRo0Ao3EMD36Lt+G8wk9EmRpJ2MshD3T8c/9BcTBZzA
+         WbrXYBvSWfIId4REndbN+/IWwa8P9+BhBB6kEnwzkmmmFjMiNaKTOKU5TCCzqi1oXkns
+         YbMD7HmFic111lZjl8nMX0xSyj9Rloq2sIZfaWIGYWiHqPtvjz08pOJU1ModxmApv/dV
+         oxbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rCu1OGKsqLNAMoqhoi0VbX309V/fJGalAsnrlUQrsDo=;
+        b=NlwmvqeIBHKnozqNj/Kz1UL3yGogT9Y403uehi5tUUIKReYrehG74ExMS05WkLY+Hm
+         Yt3s6pTM8gEhZB3CI225Krl8jNWgV/ZxfwFrLesTko7BBEmCtRIrBX/6GwTWNOrnOY3Z
+         wFz9PiM0Gq8OUO45DouowBeaa1FBUMV00FcujvIL3WeKu65S8enymz89hPaJaHBOxfa7
+         wDmv7JdX6SxpTvPpuWfmhnXbFEZFOfgkAL/63mCHKPIk/+QpgKGuV0+6/NGRJWWOXYGy
+         zFvPPDxpzPH/shGsWTUoUO53v74ArhbA1DmN0cqVSiaR3js+uvBy9idnZG/Dh8pQbL0Z
+         7H6A==
+X-Gm-Message-State: AOAM532HsJ1rOgVwAgkOP+wzRSIc8B7u/M9xwaFF08oFq4Xcq7LbJPrP
+        agap9fmkw/eHDnCtZK/M8aa5DA==
+X-Google-Smtp-Source: ABdhPJzTosDjNnPa+McFAm74Eaoj7BA3wjXHP3B/EHUfYt66n/QukfZLd9zrH9DUO8kLXNhJ9WyyYA==
+X-Received: by 2002:a17:907:3f83:: with SMTP id hr3mr46861059ejc.555.1635872224732;
+        Tue, 02 Nov 2021 09:57:04 -0700 (PDT)
+Received: from fedora.. (cpezg-94-253-144-183-cbl.xnet.hr. [94.253.144.183])
+        by smtp.googlemail.com with ESMTPSA id i22sm10816297edu.93.2021.11.02.09.57.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Nov 2021 09:57:04 -0700 (PDT)
+From:   Robert Marko <robert.marko@sartura.hr>
+To:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        robh+dt@kernel.org, lee.jones@linaro.org, p.zabel@pengutronix.de,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, andrew@lunn.ch,
+        andy.shevchenko@gmail.com
+Cc:     Robert Marko <robert.marko@sartura.hr>
+Subject: [PATCH v7 1/6] mfd: simple-mfd-i2c: Add Delta TN48M CPLD support
+Date:   Tue,  2 Nov 2021 17:56:52 +0100
+Message-Id: <20211102165657.3428995-1-robert.marko@sartura.hr>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-In-Reply-To: <YYAlzvXns4Ejxa6S@builder.lan>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.49]
-X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-02_08,2021-11-02_01,2020-04-07_01
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Delta TN48M switches have a Lattice CPLD that serves
+multiple purposes including being a GPIO expander.
 
+So, lets use the simple I2C MFD driver to provide the MFD core.
 
-On 11/1/21 6:37 PM, Bjorn Andersson wrote:
-> On Fri 22 Oct 07:54 CDT 2021, Arnaud Pouliquen wrote:
-> 
->> By providing a callback in the rpmsg_driver structure, the rpmsg devices
->> can be probed with a default endpoint created.
->>
->> In this case, it is not possible to associated to this endpoint private data
->> that could allow the driver to retrieve the context.
->>
->> This helper function allows rpmsg drivers to create a default endpoint
->> on runtime with an associated private context.
->>
->> For example, a driver might create a context structure on the probe and
->> want to provide that context as private data for the default rpmsg
->> callback.
->>
->> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
->> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
->> Tested-by: Julien Massot <julien.massot@iot.bzh>
->> ---
->>  drivers/rpmsg/rpmsg_core.c | 51 ++++++++++++++++++++++++++++++++++++++
->>  include/linux/rpmsg.h      | 13 ++++++++++
->>  2 files changed, 64 insertions(+)
->>
->> diff --git a/drivers/rpmsg/rpmsg_core.c b/drivers/rpmsg/rpmsg_core.c
->> index 53162038254d..92557c49d460 100644
->> --- a/drivers/rpmsg/rpmsg_core.c
->> +++ b/drivers/rpmsg/rpmsg_core.c
->> @@ -132,6 +132,57 @@ void rpmsg_destroy_ept(struct rpmsg_endpoint *ept)
->>  }
->>  EXPORT_SYMBOL(rpmsg_destroy_ept);
->>  
->> +/**
->> + * rpmsg_create_default_ept() - create a default rpmsg_endpoint for a rpmsg device
->> + * @rpdev: rpmsg channel device
->> + * @cb: rx callback handler
->> + * @priv: private data for the driver's use
->> + * @chinfo: channel_info with the local rpmsg address to bind with @cb
->> + *
->> + * On register_rpmsg_driver if no callback is provided in the rpmsg_driver structure,
->> + * no endpoint is created when the device is probed by the rpmsg bus.
->> + *
->> + * This function returns a pointer to the default endpoint if already created or creates
->> + * an endpoint and assign it as the default endpoint of the rpmsg device.
-> 
-> But if the driver didn't specify a callback, when would this ever
-> happen?
+Also add a virtual symbol which pulls in the simple-mfd-i2c driver and
+provide a common symbol on which the subdevice drivers can depend on.
 
-Not sure to understand your point here...
-Do you mean that something is missing in description such as:
- * On register_rpmsg_driver if no callback is provided in the rpmsg_driver
- * structure, no endpoint is created when the device is probed by the rpmsg bus.
- * The rpmsg driver can call rpmsg_create_default_ept during or after its
- * probing to register a default endpoint with an associated callback and @priv
- * context.
+Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+---
+Changes in v2:
+* Drop the custom MFD driver and header
+* Use simple I2C MFD driver
+---
+ drivers/mfd/Kconfig          | 10 ++++++++++
+ drivers/mfd/simple-mfd-i2c.c |  1 +
+ 2 files changed, 11 insertions(+)
 
-> 
->> + *
->> + * Drivers should provide their @rpdev channel (so the new endpoint would belong
->> + * to the same remote processor their channel belongs to), an rx callback
->> + * function, an optional private data (which is provided back when the
->> + * rx callback is invoked), and an address they want to bind with the
->> + * callback. If @addr is RPMSG_ADDR_ANY, then rpmsg_create_ept will
->> + * dynamically assign them an available rpmsg address (drivers should have
->> + * a very good reason why not to always use RPMSG_ADDR_ANY here).
->> + *
->> + * Returns a pointer to the endpoint on success, or NULL on error.
-> 
-> Correct kerneldoc is "Return: ..."
+diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+index ad15be6b86bc..3701657e831d 100644
+--- a/drivers/mfd/Kconfig
++++ b/drivers/mfd/Kconfig
+@@ -297,6 +297,16 @@ config MFD_ASIC3
+ 	  This driver supports the ASIC3 multifunction chip found on many
+ 	  PDAs (mainly iPAQ and HTC based ones)
+ 
++config MFD_TN48M_CPLD
++	tristate "Delta Networks TN48M switch CPLD driver"
++	depends on I2C
++	select MFD_SIMPLE_MFD_I2C
++	help
++	  Select this option to enable support for Delta Networks TN48M switch
++	  CPLD. It consists of reset and GPIO drivers. CPLD provides GPIOS-s
++	  for the SFP slots as well as power supply related information.
++	  SFP support depends on the GPIO driver being selected.
++
+ config PMIC_DA903X
+ 	bool "Dialog Semiconductor DA9030/DA9034 PMIC Support"
+ 	depends on I2C=y
+diff --git a/drivers/mfd/simple-mfd-i2c.c b/drivers/mfd/simple-mfd-i2c.c
+index 87f684cff9a1..af8e91781417 100644
+--- a/drivers/mfd/simple-mfd-i2c.c
++++ b/drivers/mfd/simple-mfd-i2c.c
+@@ -39,6 +39,7 @@ static int simple_mfd_i2c_probe(struct i2c_client *i2c)
+ 
+ static const struct of_device_id simple_mfd_i2c_of_match[] = {
+ 	{ .compatible = "kontron,sl28cpld" },
++	{ .compatible = "delta,tn48m-cpld" },
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(of, simple_mfd_i2c_of_match);
+-- 
+2.33.1
 
-I will update this
-
-> 
->> + */
->> +struct rpmsg_endpoint *rpmsg_create_default_ept(struct rpmsg_device *rpdev,
->> +						rpmsg_rx_cb_t cb, void *priv,
->> +						struct rpmsg_channel_info chinfo)
->> +{
->> +	struct rpmsg_endpoint *ept;
->> +
->> +	if (WARN_ON(!rpdev))
->> +		return NULL;
->> +
->> +	/* It does not make sense to create a default endpoint without a callback. */
->> +	if (!cb)
->> +		return NULL;
->> +
->> +	if (rpdev->ept)
->> +		return rpdev->ept;
-> 
-> How does the caller know if they should call rpmsg_destroy_ept() on the
-> returned ept or not?
-
-This case is probably a bug. What about replacing the condition by
-if(WARN_ON(rpdev->ept))?
-
-> 
->> +
->> +	ept = rpdev->ops->create_ept(rpdev, cb, priv, chinfo);
->> +	if (!ept)
->> +		return NULL;
->> +
->> +	/* Assign the new endpoint as default endpoint */
->> +	rpdev->ept = ept;
->> +	rpdev->src = ept->addr;
->> +
->> +	return ept;
->> +}
->> +EXPORT_SYMBOL(rpmsg_create_default_ept);
->> +
->>  /**
->>   * rpmsg_send() - send a message across to the remote processor
->>   * @ept: the rpmsg endpoint
->> diff --git a/include/linux/rpmsg.h b/include/linux/rpmsg.h
->> index 6fe51549d931..b071ac17ff78 100644
->> --- a/include/linux/rpmsg.h
->> +++ b/include/linux/rpmsg.h
->> @@ -172,6 +172,9 @@ void rpmsg_destroy_ept(struct rpmsg_endpoint *);
->>  struct rpmsg_endpoint *rpmsg_create_ept(struct rpmsg_device *,
->>  					rpmsg_rx_cb_t cb, void *priv,
->>  					struct rpmsg_channel_info chinfo);
->> +struct rpmsg_endpoint *rpmsg_create_default_ept(struct rpmsg_device *rpdev,
-> 
-> Is there ever a case where someone outside drivers/rpmsg/ should call
-> this function?
-
-A rpmsg service driver could call it to generate the ns announcement after
-the probe (for instance on a sysfs open).
-(Please have a look to [PATCH v6 10/10] rpmsg: core: send a ns announcement when
-a default endpoint is created)
-
-Thanks,
-Arnaud
-
-> 
-> Regards,
-> Bjorn
-> 
->> +						rpmsg_rx_cb_t cb, void *priv,
->> +						struct rpmsg_channel_info chinfo);
->>  
->>  int rpmsg_send(struct rpmsg_endpoint *ept, void *data, int len);
->>  int rpmsg_sendto(struct rpmsg_endpoint *ept, void *data, int len, u32 dst);
->> @@ -236,6 +239,16 @@ static inline struct rpmsg_endpoint *rpmsg_create_ept(struct rpmsg_device *rpdev
->>  	return NULL;
->>  }
->>  
->> +static inline struct rpmsg_endpoint *rpmsg_create_default_ept(struct rpmsg_device *rpdev,
->> +							      rpmsg_rx_cb_t cb, void *priv,
->> +							      struct rpmsg_channel_info chinfo)
->> +{
->> +	/* This shouldn't be possible */
->> +	WARN_ON(1);
->> +
->> +	return NULL;
->> +}
->> +
->>  static inline int rpmsg_send(struct rpmsg_endpoint *ept, void *data, int len)
->>  {
->>  	/* This shouldn't be possible */
->> -- 
->> 2.17.1
->>
