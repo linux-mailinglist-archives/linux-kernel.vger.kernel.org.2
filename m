@@ -2,54 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A17444273C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 07:45:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1CA5442742
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 07:47:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229873AbhKBGsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 02:48:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229612AbhKBGsC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 02:48:02 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0CACC061714;
-        Mon,  1 Nov 2021 23:45:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=JWE7BET0u8LTWvjGcNRFXwqkxiDef23FxFVDC5VVOss=; b=eFeSahGTH6egNVMFfTxi2Q9+wi
-        BMOptkk/L6UKXqlXQoYzqdHR9CgUcFWxA6ltg5UD8kDPGMt2/5WwxBJVI6A2UKnDacrHIEwIWjuFM
-        HJUi8u8bncfDuxxfdx8NUp1gbw6SR1zGIYKJ4tUK6e1hgYxKr+r/7+B04zmMXGnJk2t8lfTXCrlKj
-        ZIfPumhx05vlxragQo7ssc+e4PA/6lFUJxcI9Tno5ufz2BU8zcfVwbBoERVbOqgP9ogvnx9MYowjp
-        R+Mgk5uH0SemcC0qZny17nsoqVM4lsFb//FHVjFHOOM/mOVl4wzD88gqSqbrYOY/5VEeKcCuELHKB
-        FG/j5a4A==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mhnXy-000gKl-Tf; Tue, 02 Nov 2021 06:45:26 +0000
-Date:   Mon, 1 Nov 2021 23:45:26 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Tadeusz Struk <tadeusz.struk@linaro.org>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: general protection fault in del_gendisk
-Message-ID: <YYDehlqjWUKizzmB@infradead.org>
-References: <7468db5d-55b4-07c9-628a-9a60419d9121@linaro.org>
- <2bf04f26-4e82-a822-90ce-4c28e2c0e407@linaro.org>
- <90d72173-edd8-79d9-b680-b1d47ab78150@kernel.dk>
+        id S229931AbhKBGuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 02:50:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46954 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229497AbhKBGuI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 02:50:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C889260E8C;
+        Tue,  2 Nov 2021 06:47:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635835653;
+        bh=ZcWf/uumK2zsWoVDh/CeelKvA1JNtdQOPNoEoVKMohs=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=SeuXyTWP+sAPtAvLUB0OtEvFqEQl3MwnFCmVUXzeMp9XKll9RI43mYm/eFIux78Ef
+         tQ6UY7F5kAfsCAwuEcVZZxvwrxFnYYg7DDldWgYdA7LITyXM3vP34X8yoz/P4VZG2V
+         sc/RzI1vKiT1Gq+UcA1Eu37ct2RYv0MU5KuPbonokzxWZWKWDT0MtGfJ8up7cYPRZJ
+         QiIoXGFPc0oPoq5yW7p8+p9V329FJR9rAmCZQVxUnREinQEnc2wgbzgXOikdX/zCHy
+         OYNGFTfXOldkDxlaDIFjF1fpaGv99wFcIOWnaKuUNYAIzB0IZLBmt1xZXTuEFHjhXR
+         AsA9x5iEqAOOA==
+Message-ID: <9ee5741f-35f8-c0b9-f045-fb70aa49f6de@kernel.org>
+Date:   Tue, 2 Nov 2021 14:47:30 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <90d72173-edd8-79d9-b680-b1d47ab78150@kernel.dk>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH v3] F2FS: invalidate META_MAPPING before IPU/DIO write
+Content-Language: en-US
+To:     Hyeong-Jun Kim <hj514.kim@samsung.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     sj1557.seo@samsung.com, linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+References: <CGME20211102045952epcas1p44cb6fd41baa76a19e0924c4b6b3cf1e6@epcas1p4.samsung.com>
+ <20211102045949.63530-1-hj514.kim@samsung.com>
+From:   Chao Yu <chao@kernel.org>
+In-Reply-To: <20211102045949.63530-1-hj514.kim@samsung.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> People will take a look at it, but you sent it out on a Saturday right
-> before a merge window, doing a 'ping' kind of followup on a Monday is
-> way too soon.
+On 2021/11/2 12:59, Hyeong-Jun Kim wrote:
+> Encrypted pages during GC are read and cached in META_MAPPING.
+> However, due to cached pages in META_MAPPING, there is an issue where
+> newly written pages are lost by IPU or DIO writes.
+> 
+> Thread A - f2fs_gc()            Thread B
+> /* phase 3 */
+> down_write(i_gc_rwsem)
+> ra_data_block()       ---- (a)
+> up_write(i_gc_rwsem)
+>                                  f2fs_direct_IO() :
+>                                   - down_read(i_gc_rwsem)
+>                                   - __blockdev_direct_io()
+>                                   - get_data_block_dio_write()
+>                                   - f2fs_dio_submit_bio()  ---- (b)
+>                                   - up_read(i_gc_rwsem)
+> /* phase 4 */
+> down_write(i_gc_rwsem)
+> move_data_block()     ---- (c)
+> up_write(i_gc_rwsem)
+> 
+> (a) In phase 3 of f2fs_gc(), up-to-date page is read from storage and
+>      cached in META_MAPPING.
+> (b) In thread B, writing new data by IPU or DIO write on same blkaddr as
+>      read in (a). cached page in META_MAPPING become out-dated.
+> (c) In phase 4 of f2fs_gc(), out-dated page in META_MAPPING is copied to
+>      new blkaddr. In conclusion, the newly written data in (b) is lost.
+> 
+> To address this issue, invalidating pages in META_MAPPING before IPU or
+> DIO write.
+> 
+> ---
+> v3:
+>   - Use sbi instead of fio->sbi in f2fs_inplace_write_data()
+> v2:
+>   - Update patch description with race condition
 
-Please retests on 5.16-rc1 once it is out.  Sorting out add_disk error
-handling is one of the big changes in this merge window.  And no, it is
-not easily backportable.
+
+
+> 
+> Fixes: 6aa58d8ad20a ("f2fs: readahead encrypted block during GC")
+> Signed-off-by: Hyeong-Jun Kim <hj514.kim@samsung.com>
+> ---
+
+Change log should be attached here, otherwise Fixes & Signed-off-by tag will be lost
+after applying this patch.
+
+Thanks,
+
+>   fs/f2fs/data.c    | 2 ++
+>   fs/f2fs/segment.c | 3 +++
+>   2 files changed, 5 insertions(+)
+> 
+> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+> index 74e1a350c1d8..9f754aaef558 100644
+> --- a/fs/f2fs/data.c
+> +++ b/fs/f2fs/data.c
+> @@ -1708,6 +1708,8 @@ int f2fs_map_blocks(struct inode *inode, struct f2fs_map_blocks *map,
+>   		 */
+>   		f2fs_wait_on_block_writeback_range(inode,
+>   						map->m_pblk, map->m_len);
+> +		invalidate_mapping_pages(META_MAPPING(sbi),
+> +						map->m_pblk, map->m_pblk);
+>   
+>   		if (map->m_multidev_dio) {
+>   			block_t blk_addr = map->m_pblk;
+> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+> index 526423fe84ce..df9ed75f0b7a 100644
+> --- a/fs/f2fs/segment.c
+> +++ b/fs/f2fs/segment.c
+> @@ -3652,6 +3652,9 @@ int f2fs_inplace_write_data(struct f2fs_io_info *fio)
+>   		goto drop_bio;
+>   	}
+>   
+> +	invalidate_mapping_pages(META_MAPPING(sbi),
+> +				fio->new_blkaddr, fio->new_blkaddr);
+> +
+>   	stat_inc_inplace_blocks(fio->sbi);
+>   
+>   	if (fio->bio && !(SM_I(sbi)->ipu_policy & (1 << F2FS_IPU_NOCACHE)))
+> 
