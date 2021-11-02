@@ -2,100 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8075A442FF3
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 15:12:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0B23442FFE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 15:13:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229712AbhKBOPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 10:15:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37832 "EHLO
+        id S231314AbhKBOQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 10:16:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231133AbhKBOPA (ORCPT
+        with ESMTP id S229530AbhKBOQW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 10:15:00 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70855C0613F5;
-        Tue,  2 Nov 2021 07:12:25 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id p17so654393pgj.2;
-        Tue, 02 Nov 2021 07:12:25 -0700 (PDT)
+        Tue, 2 Nov 2021 10:16:22 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D805C061714;
+        Tue,  2 Nov 2021 07:13:47 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id m14so23419557edd.0;
+        Tue, 02 Nov 2021 07:13:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=O4WFsXzMqjFJjODjVmvQJrTg2heM7mzhLnJLW/+wWv0=;
-        b=bq9os5g7vQy10HyDqcY/e/+KxnUSeXtPmPXlCqD9z3fO+MGXLHP56v5izFiAmK5T+X
-         ylCX4MUmSw5Xos9wn0fKQT5/UT8Cxrxc5vER+3t2BeeBRP5ELs1C7l7g507hJ1zr0trl
-         IEMpa6lNvfB9+sYfbEVhWDUiXg/dfaTXkL1EJK7iA5Jhhqqz2lPdslX129P3T4OiWANK
-         TFb9I3e+4J/Aj5XFpHwH2imU+oUTlTe+zbkw9wwSBvY6wqzTITUKeTUwR1czMYqGfrUr
-         3+CL218D5e+lklyAze5WKrPqbl4Pyc87xX24Q4sxnpo41CLks/wjXcQCHTSqiGpzVj4P
-         Atng==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+j8hsXOY8XFBcUQY09d3Bm6u2Cd3NbaccVLoECv3HYE=;
+        b=Tdf1K3H+Lg7s+DMqBUPbp1Zj4RDwqdxJ5f9UrW88BlRUYlgBYic1r7/n7I13XZNDBU
+         oG5MV/LgkcrxjTcxXakGCMiekxd9Xs7A8uQyu6Zq5gkIAyFJyUVtqhjDvIBm0ML77BZx
+         SXq829uwldsaG4eMoTAK8Crrhzm2EkP6TsmBkUDwg2/pHv0aLXJXh9z3brShcJwYF/D5
+         DijQxGvU1JDSkzbIxedUwKVc+Qm/OQO2bLj74ptbpKXHkcTfPEFOdtliboFWtJCxPZkw
+         cH/KR6rcdAAbql0GwZz/RxdfBGSWaRjJ3bad2XkBiCIrZlVJ+2tukjBswD2rsr2IdD7i
+         roWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=O4WFsXzMqjFJjODjVmvQJrTg2heM7mzhLnJLW/+wWv0=;
-        b=hLvUSbuKF7OVMZo/lIx9l5RkdK1a4XoD3r7OqLxPDQ60yRRsPggLEPZRErHVPrgRKO
-         Mn3x4n+y6pigklDm4cPry1O6/skUOgV7h2kvkZhqzxBuv8p5QXMPJyD1UFF1iv//xLNp
-         BX92Aolt0GriIUtnR1KWQWbKsIA4Jr5O2SclJhpujdRdvuuSIIyl71uQ74VsNK6G1NdB
-         Loab+lchq9uhg7rA+hTFPEkKxZiNy7/SGwJI5B6/05ixZkIDb1FNV0nez0dXD52iQGOt
-         ndbPY3/M7GyZbUTU1SFqruF3dJzf3y3OgXdMd7EjBP+MANIBbnCrim92D0GueE2X8u5Z
-         Ou5w==
-X-Gm-Message-State: AOAM531CiGrFDRNhBFxrKFOfjzhPY9iyehDGra8L3G27S88AEe0d3buJ
-        T8rWJY+jdJus8JfJQjmgB98=
-X-Google-Smtp-Source: ABdhPJzRu8XbOYPiETj7ZurwK/CASyVTWX2iCdZggXs+Zr+xHgkgm1dH+hT3GbjFp2nkNsXFRGpcNQ==
-X-Received: by 2002:a62:e406:0:b0:480:fd90:1082 with SMTP id r6-20020a62e406000000b00480fd901082mr17971148pfh.45.1635862344897;
-        Tue, 02 Nov 2021 07:12:24 -0700 (PDT)
-Received: from [192.168.0.4] ([49.173.165.50])
-        by smtp.gmail.com with ESMTPSA id d6sm18672646pfa.39.2021.11.02.07.12.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Nov 2021 07:12:24 -0700 (PDT)
-Subject: Re: [PATCH net-next] amt: fix error return code in amt_init()
-To:     Yang Yingliang <yangyingliang@huawei.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Cc:     kuba@kernel.org, davem@davemloft.net
-References: <20211102130353.1666999-1-yangyingliang@huawei.com>
-From:   Taehee Yoo <ap420073@gmail.com>
-Message-ID: <cf76ccea-5678-4ed4-7bda-d9a522f31d61@gmail.com>
-Date:   Tue, 2 Nov 2021 23:12:21 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+j8hsXOY8XFBcUQY09d3Bm6u2Cd3NbaccVLoECv3HYE=;
+        b=emZMSV1Iln4zjpD/elp9Ewo0lQHX0YUV0lkDofhK6DU9oAbgFf1vZZcVGloSIZggrg
+         SQu3v6Dm1QWYszhgIaX/cK/qSZo6fy+X8Mw5z26jLIl45l2XWIXSR87pK+XaizjekXDB
+         lFsBsqqFPklZ8yNLYPXtneR7Mree9u6lX9YoVLUc6OARoLjlWh67NAB6un/Dnqwj7uYp
+         ICDpVFIY+5UpBMoCKe2qHrzHeen2iLALPGmtRr7ZXkI39DH2obKIZOIS4RVCVMPN84NA
+         47zGhaSidqKeSPNqkP6RNAATjcluDDkqUKJBU4/caSoZW87XoHGrIt4uTZ7DN8efLoY/
+         l3/w==
+X-Gm-Message-State: AOAM531QnNbRIYOn2IE/+bolNcddt46rMvWTo4A1A8J1mRZISrJH3Vga
+        gwMO+b2XLme9q0EFgEPhbsxlQqoyIIwJwt76Q8w=
+X-Google-Smtp-Source: ABdhPJyKcI23macxqNFIt9wwe+SVKY0dzoujCECZBAvK1EiUAl8fA0zKRHCqPQRXJB+c9kWKLTkoHkxrArinkXDo700=
+X-Received: by 2002:a17:907:7601:: with SMTP id jx1mr45648690ejc.69.1635862424213;
+ Tue, 02 Nov 2021 07:13:44 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211102130353.1666999-1-yangyingliang@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211102094907.31271-1-hdegoede@redhat.com> <20211102094907.31271-8-hdegoede@redhat.com>
+In-Reply-To: <20211102094907.31271-8-hdegoede@redhat.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 2 Nov 2021 16:12:54 +0200
+Message-ID: <CAHp75VfUUfJPRkwgSFCddv-Dm5PRNQkpKvAaATAtkCUvConhGg@mail.gmail.com>
+Subject: Re: [PATCH v5 07/11] platform/x86: int3472: Split into 2 drivers
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Kate Hsuan <hpa@redhat.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yang,
-
-On 11/2/21 10:03 PM, Yang Yingliang wrote:
-> Return error code when alloc_workqueue()
-> fails in amt_init().
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+On Tue, Nov 2, 2021 at 11:49 AM Hans de Goede <hdegoede@redhat.com> wrote:
+>
+> The intel_skl_int3472.ko module contains 2 separate drivers,
+> the int3472_discrete platform driver and the int3472_tps68470
+> I2C-driver.
+>
+> These 2 drivers contain very little shared code, only
+> skl_int3472_get_acpi_buffer() and skl_int3472_fill_cldb() are
+> shared.
+>
+> Split the module into 2 drivers, linking the little shared code
+> directly into both.
+>
+> This will allow us to add soft-module dependencies for the
+> tps68470 clk, gpio and regulator drivers to the new
+> intel_skl_int3472_tps68470.ko to help with probe ordering issues
+> without causing these modules to get loaded on boards which only
+> use the int3472_discrete platform driver.
+>
+> While at it also rename the .c and .h files to remove the
+> cumbersome intel_skl_int3472_ prefix.
+>
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 > ---
->   drivers/net/amt.c | 4 +++-
->   1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/amt.c b/drivers/net/amt.c
-> index 60a7053a9cf7..d8c9ed9f8a81 100644
-> --- a/drivers/net/amt.c
-> +++ b/drivers/net/amt.c
-> @@ -3259,8 +3259,10 @@ static int __init amt_init(void)
->   		goto unregister_notifier;
->   
->   	amt_wq = alloc_workqueue("amt", WQ_UNBOUND, 1);
-> -	if (!amt_wq)
-> +	if (!amt_wq) {
-> +		err = -ENOMEM;
->   		goto rtnl_unregister;
-> +	}
->   
->   	spin_lock_init(&source_gc_lock);
->   	spin_lock_bh(&source_gc_lock);
-> 
+> Note git rename detection is failing for the new common.c but this is
+> just the old intel_skl_int3472_common.c with the driver registering
+> bits removed.
 
-Reviewed-by: Taehee Yoo <ap420073@gmail.com>
+-M accepts a parameter (in percents) to set the threshold. Default is
+something like ~70 (?). You may play with it and see when it starts
+detecting the rename.
+
+-- 
+With Best Regards,
+Andy Shevchenko
