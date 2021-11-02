@@ -2,88 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD8E94424D7
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 01:45:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E31F4424DE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 01:48:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230326AbhKBArg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 20:47:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54644 "EHLO
+        id S231526AbhKBArz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 20:47:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbhKBArd (ORCPT
+        with ESMTP id S231138AbhKBArw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 20:47:33 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CC4BC061714
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 17:44:59 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id x19so7951810ljm.11
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 17:44:58 -0700 (PDT)
+        Mon, 1 Nov 2021 20:47:52 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD617C061764
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 17:45:18 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id p204so12019139iod.8
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 17:45:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=usp.br; s=usp-google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2wp3R+DkLsT+T3YFoaJRIQIAYG7GAntJAXplDMUWd84=;
-        b=QtBmRWZR83NCW2csJHPlbE12FMx+9r1wlUflS7a1ivTNjOWkmht93vyMN+4cUmk7xz
-         fI++ujKaX5Xmgic2PeRnf55VSeBcdPabRbOfUKwhlS8puywYcn5QxRXi0dM7BDOc4MG1
-         S4lO208Qp7TtLEtNczYjepazrKZhJCYWvruSg=
+         :cc:content-transfer-encoding;
+        bh=CdQjx0HGt5etDdjQfXz4rMpreR3TwFiKL0chx+EioEw=;
+        b=F9PkwVOBx0rYvi51997OwY6dfgJ3I+V/W1M9p2GzsmoMx768QZjmjUGrI1P92KHDvm
+         +4ZSUPUbmedpRRouesQI96TEuwr/ROwn6kljAUZ1AuSz7ctQ15WZTI5DKuNlkXeGgYZh
+         kKN8lzNg+WF3Tb4MeaBmO6u3xiD6gGZyl+4P/dZrDkQCEalQZ28hZHLZweq1Xleys/T+
+         XhIVj2oCIpgOLdCvzx2+z4JxrzAybEqEku4DUSYeMYJlHRUSkvFX68lqdyDt4wAp05Jx
+         THTxnMCg6BuzAk29SFZLbHiJHnawNWgx5KTqsd3eYR1qtggN8tVUzkuO2HoLoE8KI6V2
+         yDCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2wp3R+DkLsT+T3YFoaJRIQIAYG7GAntJAXplDMUWd84=;
-        b=tXvDkVL7xgFaXQOqJVidBSEXrW9JwI/XUgfWctU9OSwdGT4ja4RQIJ1TsvkSEjf7p2
-         O8akS/PipfcbyGbOiAizco22jNB90SyPtnwuRa2mHQxv/2nDmOQtIKCM97U4wLm+lqcb
-         wmuUIFpH6M735ubLe+K1dlFdYrDBVjQd9yTOi2uwLEIaK5V1Kte5GxGe5wuiLSzKH2e0
-         3NBvmrc1ZtjT/pt9lqEmmkNW9a/KTnG4i1KFZD1W0ytfLYvLjf8+5tFPSsh5B2+J5Q7Y
-         1zxsOKiy8N2VK54LkqDy1iQ+RP1ANvRhgCo+yF8If1TS4odY+0LRGx7XGC8KL9BLe/EV
-         EOzA==
-X-Gm-Message-State: AOAM531vNPR2AxUO6AVDYQ01cZhmoT29/ZlHfSjnlQjcoHaMWzDNljLf
-        fdMxrNWNFBn9U7h7hV3tqCQoOo9oiKddd0Ip
-X-Google-Smtp-Source: ABdhPJwDH2sSJg1FuNCcWVsNQWXEuFscCu703WcHjRxxDx59a9gbJgpMxMEeCujraGO9CT0UaD1xMQ==
-X-Received: by 2002:a2e:8041:: with SMTP id p1mr36552714ljg.158.1635813896420;
-        Mon, 01 Nov 2021 17:44:56 -0700 (PDT)
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com. [209.85.208.181])
-        by smtp.gmail.com with ESMTPSA id f6sm59843ljk.45.2021.11.01.17.44.55
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Nov 2021 17:44:55 -0700 (PDT)
-Received: by mail-lj1-f181.google.com with SMTP id g3so984412ljm.8
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 17:44:55 -0700 (PDT)
-X-Received: by 2002:a05:651c:17a6:: with SMTP id bn38mr34106005ljb.56.1635813895143;
- Mon, 01 Nov 2021 17:44:55 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=CdQjx0HGt5etDdjQfXz4rMpreR3TwFiKL0chx+EioEw=;
+        b=beBD8Zp4ZhGAj+ZhGpDkWJ2b2wTGnq+9IC+tgSNWKkHpMVWVV3AUwrG3yJ7A/Zbw8F
+         HQ2/dR4Ed3gReeDlWBZfsedpugojPIFEaXQW0BZZJW0f+7XW46vYM92+iFIc53rOeY4c
+         V/MX7uvL65R47AAmApl81Y83CsFPougV1LiClTdd+6ruKCXmIp3eWgJGGKD6KPEq/uZg
+         SFIBFQ36DsMmiwCP+zj0x/2i5Kqgt/Li1tcjOPluwxtTqW3fARhgmUHqiw+9AaDtuN87
+         bdaB3rRaR5M1b/wbylhLiIzCJuvIubPUgDj+i44a1myUnUftZSyCG1k2W7xRq23GWt3o
+         U3rw==
+X-Gm-Message-State: AOAM531pDLg2/xNe5y1pCKv0VqaW/EMB2YUqtp92yUJcz/JwpSpeKEw1
+        OYpub6tZBE9K4PIpaCKoVFjIJOnmIAERrfMFKXwT0Q==
+X-Google-Smtp-Source: ABdhPJx35C1DFToM8I+/8vn3pb+0BVcZmhi7R/yAadTa2d4BnYEiWtS0uvxY91mtpifdmpuP5XpEWRNIkCKpi9IMpjw=
+X-Received: by 2002:a05:6638:134f:: with SMTP id u15mr24353893jad.7.1635813918186;
+ Mon, 01 Nov 2021 17:45:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAHC9VhRJ=fHzMHM6tt8JqkZa4bf0h72CAytSX9YrEs14Oaj8SA@mail.gmail.com>
-In-Reply-To: <CAHC9VhRJ=fHzMHM6tt8JqkZa4bf0h72CAytSX9YrEs14Oaj8SA@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 1 Nov 2021 17:44:39 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wj2LqbZ3xSLKfnR42y7ZEgqw8K42-mE+nsHwsoFiNNpKw@mail.gmail.com>
-Message-ID: <CAHk-=wj2LqbZ3xSLKfnR42y7ZEgqw8K42-mE+nsHwsoFiNNpKw@mail.gmail.com>
-Subject: Re: [GIT PULL] SELinux patches for v5.16
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     SElinux list <selinux@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <YX/zlRqmxbLRnTqT@fedora> <4f1b60bab451b219c7139e2204eb5b9f462ee4e0.camel@pengutronix.de>
+ <CAH7FV3nyyLndqTdJYN8HDxU4C7pW0-DLu6ZSOLof2=tEEHbHxQ@mail.gmail.com> <557e68ad15634ddb65c98ebf80cd7ef962ac2608.camel@pengutronix.de>
+In-Reply-To: <557e68ad15634ddb65c98ebf80cd7ef962ac2608.camel@pengutronix.de>
+From:   =?UTF-8?B?TWHDrXJhIENhbmFs?= <maira.canal@usp.br>
+Date:   Mon, 1 Nov 2021 21:45:07 -0300
+Message-ID: <CAH7FV3nfkihmc9UTvmGC7kL=tO40CL4350smc4FKiLVdsesxkA@mail.gmail.com>
+Subject: Re: [PATCH v2 RESEND] PCI: imx6: Replace legacy gpio interface for
+ gpiod interface
+To:     Lucas Stach <l.stach@pengutronix.de>
+Cc:     hongxing.zhu@nxp.com, lorenzo.pieralisi@arm.com, robh@kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <helgaas@kernel.org>, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, linux-imx@nxp.com,
+        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 1, 2021 at 4:59 PM Paul Moore <paul@paul-moore.com> wrote:
+Em seg., 1 de nov. de 2021 =C3=A0s 11:58, Lucas Stach
+<l.stach@pengutronix.de> escreveu:
 >
-> - Add LSM/SELinux/Smack controls and auditing for io-uring.
+> Am Montag, dem 01.11.2021 um 11:44 -0300 schrieb Ma=C3=ADra Canal:
+> > ?
+> > > >       /* Some boards don't have PCIe reset GPIO. */
+> > > > -     if (gpio_is_valid(imx6_pcie->reset_gpio)) {
+> > > > -             gpio_set_value_cansleep(imx6_pcie->reset_gpio,
+> > > > +     if (imx6_pcie->reset_gpio) {
+> > > > +             gpiod_set_value_cansleep(imx6_pcie->reset_gpio,
+> > > >                                       imx6_pcie->gpio_active_high);
+> > > >               msleep(100);
+> > > > -             gpio_set_value_cansleep(imx6_pcie->reset_gpio,
+> > > > +             gpiod_set_value_cansleep(imx6_pcie->reset_gpio,
+> > > >                                       !imx6_pcie->gpio_active_high)=
+;
+> > >
+> > > I don't think this is correct. gpiod_set_value sets the logical line
+> > > state, so if the GPIO is specified as active-low in the DT, the real
+> > > line state will be negated. The only reason why the reset-gpio-active=
+-
+> > > high property even exists is that old DTs might specify the wrong GPI=
+O
+> > > polarity in the reset-gpio DT description. I think you need to use to
+> > > gpiod_set_raw_value API here to get the expected real line state even
+> > > with a broken DT description.
+> > >
+> > > Regards,
+> > > Lucas
+> > >
+> >
+> > I'm a beginner in kernel development, so I'm sorry for the question.
+> > If I change gpiod_set_value_cansleep for gpiod_set_raw_value, wouldn't
+> > I change the behavior of the driver? I replaced
+> > gpio_set_value_cansleep for gpiod_set_value_cansleep because they have
+> > the same behavior and I didn't change the logic states. Thank you for
+> > the feedback!
+>
+> Yes, you need to use the _cansleep variant of the API to keep the
+> context information. The point I was trying to make was that you
+> probably (please double check, that's just an assumption on my side)
+> need to use the _raw variant of the gpiod API to keep the current
+> behavior of the driver, as we are setting the physical line state
+> purely depending on the reset-gpio-active-high property presence, not
+> the logical line state, which would take into account the polarity
+> specified in the DT gpio descriptor.
+>
+> I guess the right API call here would be
+> gpiod_set_raw_value_cansleep().
 
-I started doing the merge resolution, and then I noted that there is
-no sign that this has been discussed with the io_uring developers at
-all.
+I got it now. Thank you for your attention! I will send the v3 with
+the correction.
 
-Maybe there have been extensive discussions. I wouldn't know. There's
-no acks, no links, no nothing in the commit messages.
-
-So I ended up deciding not to pull at all after all.
-
-You really can't just decide "let's add random audit hooks to this"
-without talking to the maintainers.
-
-And if you _did_ talk to maintainers, and got the go-ahead, why is
-there absolutely zero sign of that in the commits?
-
-              Linus
+>
+> Regards,
+> Lucas
+>
