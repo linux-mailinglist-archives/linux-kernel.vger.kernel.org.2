@@ -2,108 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE6ED442C15
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 12:03:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42D20442C20
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 12:05:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231348AbhKBLFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 07:05:39 -0400
-Received: from foss.arm.com ([217.140.110.172]:32940 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230109AbhKBLFg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 07:05:36 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AE734D6E;
-        Tue,  2 Nov 2021 04:03:01 -0700 (PDT)
-Received: from [10.57.46.25] (unknown [10.57.46.25])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 974903F70D;
-        Tue,  2 Nov 2021 04:02:58 -0700 (PDT)
-Subject: Re: [PATCH 4/5] perf arm-spe: Implement find_snapshot callback
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        John Garry <john.garry@huawei.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
-        James Clark <James.Clark@arm.com>
-References: <20210923135016.GG400258@leoy-ThinkPad-X240s>
- <20210923144048.GB603008@leoy-ThinkPad-X240s>
- <1c6a3a73-27dc-6673-7fe7-34bc7fcb0a68@arm.com>
- <20211004122724.GC174271@leoy-ThinkPad-X240s>
- <6b092f13-832f-5d1d-a504-aea96c81bf17@arm.com>
- <20211006095124.GC14400@leoy-ThinkPad-X240s>
- <377b54ef-b9c0-9cfc-ef0c-0187d7c493cc@arm.com>
- <20211013003916.GA130842@leoy-ThinkPad-X240s>
- <20211013075125.GA6701@willie-the-truck>
- <35209d5c-6387-5248-ab61-a1e1cb0553de@arm.com>
- <20211017061305.GA130233@leoy-ThinkPad-X240s>
-From:   German Gomez <german.gomez@arm.com>
-Message-ID: <0f5f8911-ff80-db4f-3c0d-d172d39794c6@arm.com>
-Date:   Tue, 2 Nov 2021 11:02:56 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S230411AbhKBLIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 07:08:05 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:35566
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230100AbhKBLIE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 07:08:04 -0400
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com [209.85.167.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id D5C3A3F1B2
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 11:05:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1635851128;
+        bh=eCXkhtzwAkxmBwcMzvoTZ9XLgb1F/fHJXMlrCrHh7Fg=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=MtbC5KbQDitQZKSYyONOYPcpqSOzvE/W13XCpeDYLifKwdg3Tj3D3FrxbqjcFfIx3
+         LYQOfx+n2o4VJuFxCpZUkZH6/jhIOD2nMIgIzysG6BktkGJBIXBd+IOxQUB0QZblvd
+         hXhNc62Qon5pgnkrUkeWXnup/2bshK5qp0W+f/J6E3AtDqp0MwhK3wJc+Olygptn1X
+         jFFud3u4PqxTC7mFaKGD0UKZyFUnaDnOpRskCB5sbZxq1Qy89XsDRSIlCaFOMG5EhL
+         ChRfxuexRgOFl14KqthiaiCzmSP1ibh+4Xho1vh4Gypq/gk++J0PGH7iFrxFxcGDUL
+         EAv2s4Vakuz3A==
+Received: by mail-lf1-f69.google.com with SMTP id p19-20020a056512139300b003ff6dfea137so6880331lfa.9
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 04:05:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eCXkhtzwAkxmBwcMzvoTZ9XLgb1F/fHJXMlrCrHh7Fg=;
+        b=nBOnNpnEbpe1ffqS79kIQM/p8VonklRJnnuDLnhCZLS+fAZHeCUqEqDzJXXZgIf+Rx
+         RXlAu+oMTn+wUO2GkySqTkd4EJbnnUo2WTF02JznOo12p49CgigMk6mtidl2yZRJPWUK
+         nfuXaGjDyGoMqdSKczi1TMvTAJP1E6O/6m9U6TUcJcdY7ScdLfOq4E8huVBHc8X2W1Ah
+         HoLxnoN+jcUyktLHIpsOHVFPHrM172S2Lvjgyl9hWklisTHarED4qQ8Nrqge9qH/wAA+
+         UVYNpXzJLPUSTQrVsoCFFHuY5sKgsohrdoy317jgHcml9mQsZGjnb1h+MIPWm9IOzRv/
+         CmdA==
+X-Gm-Message-State: AOAM533vldAQ3fTGkndqaco95bvlPQiJPfLxCzMGp9ITVpym3waGL0bI
+        w1WIskLDGV7trfjC2z3YRjiCp0Y6/wO23Pkd+a7XxvqClrozsoXaQxPmAA7pOXXhi/Z8EAszT9E
+        CI+P6NzQxZHouiV2M6pv876pkxz9t4610u8D3c2x7qw==
+X-Received: by 2002:a05:6512:e83:: with SMTP id bi3mr13362214lfb.479.1635851128161;
+        Tue, 02 Nov 2021 04:05:28 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwseu9XzPZO5lqX9ofSsGGrNhP59zvsk8fmBNAtBvWsuKP4dwmjgVWVIem8UF2IObzhslAmzA==
+X-Received: by 2002:a05:6512:e83:: with SMTP id bi3mr13362181lfb.479.1635851127903;
+        Tue, 02 Nov 2021 04:05:27 -0700 (PDT)
+Received: from krzk-bin.lan (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id j26sm1655127lfb.84.2021.11.02.04.05.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Nov 2021 04:05:27 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Russell King <linux@armlinux.org.uk>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, Olof Johansson <olof@lixom.net>,
+        Kukjin Kim <kgene@kernel.org>
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Sylwester Nawrocki <snawrocki@kernel.org>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Inki Dae <inki.dae@samsung.com>, Cedric Roux <sed@free.fr>,
+        Sam Van Den Berge <sam.van.den.berge@telenet.be>,
+        Lihua Yao <ylhuajnu@outlook.com>,
+        Heiko Stuebner <heiko@sntech.de>
+Subject: [RFC PATCH] ARM: s3c: mark as deprecated and schedule removal after 2022
+Date:   Tue,  2 Nov 2021 12:05:19 +0100
+Message-Id: <20211102110519.142434-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <20211017061305.GA130233@leoy-ThinkPad-X240s>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Leo,
+The Samsung S3C24xx and S3C64xx platforms are very old designs. S3C2416
+was introduced in 2008 and S3C6410 in 2009/2010.  They are not widely
+available anymore - out-of-stock on FriendlyArm (one of manufacturers of
+boards) and only few specialist stores still offer them for quite a high
+price.
 
-On 17/10/2021 07:13, Leo Yan wrote:
-> [...]
->
-> I looked into the Arm SPE driver and found it doesn't really support
-> free run mode for AUX ring buffer when the driver runs in snapshot
-> mode, the pair functions perf_aux_output_end() and
-> perf_aux_output_begin() are invoked when every time handle the
-> interrupt.  The detailed flow is:
->
->   arm_spe_pmu_irq_handler()
->     `> arm_spe_pmu_buf_get_fault_act()
->          `> arm_spe_perf_aux_output_end()
->               `> set SPE registers
->               `> perf_aux_output_end()
->     `> arm_spe_perf_aux_output_begin()
->          `> perf_aux_output_begin()
->          `> set SPE registers
->
-> Seems to me, a possible solution is to add an extra parameter 'int
-> in_interrupt' for functions arm_spe_perf_aux_output_end() and
-> arm_spe_perf_aux_output_begin(), if this parameter is passed as 1 in
-> the interrupt handling, these two functions should skip invoking
-> perf_aux_output_end() and perf_aux_output_begin() so can avoid the
-> redundant perf event PERF_RECORD_AUX.
->
->   arm_spe_pmu_irq_handler()
->     `> arm_spe_pmu_buf_get_fault_act()
->          `> arm_spe_perf_aux_output_end(..., in_interrupt=1)
->               `> set SPE registers
->     `> arm_spe_perf_aux_output_begin(..., in_interrupt=1)
->          `> set SPE registers
+The community around these platforms was not very active, so I suspect
+no one really uses them anymore. Maintenance takes precious time so
+there is little sense in keeping them alive if there are no real users.
 
-I brought the issue of the redundant AUX events to the team, and we know
-of at least one tool in Arm relying on these events in snapshot mode. So
-we think that changing this behavior of the driver might not be easy to
-do right now.
+Let's mark all S3C24xx and S3C64xx platforms as deprecated and mention
+possible removal in one year (after 2022).  The deprecation message will
+be as text in Kconfig, build message (not a warning though) and runtime
+print error.
 
->
-> P.s. I think Intel-PT has supported free run mode for snapshot mode,
-> so it should not generate interrupt in this mode.  Thus Intel-PT can
-> avoid this issue, please see the code [2].
->
-> Thanks,
-> Leo
->
-> [1] https://people.linaro.org/~leo.yan/spe/snapshot_test/perf.data
-> [2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/x86/events/intel/pt.c#n753
+If there are any users, they might respond and postpone the removal.
 
-Thanks,
-German
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+---
+ arch/arm/Kconfig                  | 7 ++++++-
+ arch/arm/mach-s3c/Kconfig.s3c64xx | 7 ++++++-
+ arch/arm/mach-s3c/cpu.c           | 1 +
+ arch/arm/mach-s3c/init.c          | 2 ++
+ arch/arm/mach-s3c/s3c24xx.c       | 5 +++++
+ arch/arm/mach-s3c/s3c64xx.c       | 5 +++++
+ 6 files changed, 25 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index f0f9e8bec83a..bd8237c7e7f1 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -473,7 +473,7 @@ config ARCH_SA1100
+ 	  Support for StrongARM 11x0 based boards.
+ 
+ config ARCH_S3C24XX
+-	bool "Samsung S3C24XX SoCs"
++	bool "Samsung S3C24XX SoCs (deprecated, see help)"
+ 	select ATAGS
+ 	select CLKSRC_SAMSUNG_PWM
+ 	select GPIO_SAMSUNG
+@@ -491,6 +491,11 @@ config ARCH_S3C24XX
+ 	  (<http://www.simtec.co.uk/products/EB110ITX/>), the IPAQ 1940 or the
+ 	  Samsung SMDK2410 development board (and derivatives).
+ 
++	  The platform is deprecated and scheduled in removal. Please reach to
++	  the maintainers of the platform and linux-samsung-soc@vger.kernel.org if
++	  you still use it.
++	  Without such feedback, the platform will be removed after 2022.
++
+ config ARCH_OMAP1
+ 	bool "TI OMAP1"
+ 	depends on MMU
+diff --git a/arch/arm/mach-s3c/Kconfig.s3c64xx b/arch/arm/mach-s3c/Kconfig.s3c64xx
+index f3fcb570edf5..3b090ae72bbd 100644
+--- a/arch/arm/mach-s3c/Kconfig.s3c64xx
++++ b/arch/arm/mach-s3c/Kconfig.s3c64xx
+@@ -4,7 +4,7 @@
+ #	Simtec Electronics, Ben Dooks <ben@simtec.co.uk>
+ 
+ menuconfig ARCH_S3C64XX
+-	bool "Samsung S3C64XX"
++	bool "Samsung S3C64XX (deprecated, see help)"
+ 	depends on ARCH_MULTI_V6
+ 	select ARM_AMBA
+ 	select ARM_VIC
+@@ -25,6 +25,11 @@ menuconfig ARCH_S3C64XX
+ 	help
+ 	  Samsung S3C64XX series based systems
+ 
++	  The platform is deprecated and scheduled in removal. Please reach to
++	  the maintainers of the platform and linux-samsung-soc@vger.kernel.org if
++	  you still use it.
++	  Without such feedback, the platform will be removed after 2022.
++
+ if ARCH_S3C64XX
+ 
+ # Configuration options for the S3C6410 CPU
+diff --git a/arch/arm/mach-s3c/cpu.c b/arch/arm/mach-s3c/cpu.c
+index 6e9772555f0d..3b16cf42910f 100644
+--- a/arch/arm/mach-s3c/cpu.c
++++ b/arch/arm/mach-s3c/cpu.c
+@@ -28,4 +28,5 @@ void __init s3c64xx_init_cpu(void)
+ 	}
+ 
+ 	pr_info("Samsung CPU ID: 0x%08lx\n", samsung_cpu_id);
++	pr_err("The platform is deprecated and scheduled in removal. Please reach to the maintainers of the platform and linux-samsung-soc@vger.kernel.org if you still use it.  Without such feedback, the platform will be removed after 2022.\n");
+ }
+diff --git a/arch/arm/mach-s3c/init.c b/arch/arm/mach-s3c/init.c
+index 9d92f03e9bc1..5db7dc54340c 100644
+--- a/arch/arm/mach-s3c/init.c
++++ b/arch/arm/mach-s3c/init.c
+@@ -59,6 +59,8 @@ void __init s3c_init_cpu(unsigned long idcode,
+ 
+ 	if (cpu->map_io)
+ 		cpu->map_io();
++
++	pr_err("The platform is deprecated and scheduled in removal. Please reach to the maintainers of the platform and linux-samsung-soc@vger.kernel.org if you still use it.  Without such feedback, the platform will be removed after 2022.\n");
+ }
+ 
+ /* s3c24xx_init_clocks
+diff --git a/arch/arm/mach-s3c/s3c24xx.c b/arch/arm/mach-s3c/s3c24xx.c
+index ccfed48c98aa..2ea1cb21dfbc 100644
+--- a/arch/arm/mach-s3c/s3c24xx.c
++++ b/arch/arm/mach-s3c/s3c24xx.c
+@@ -678,3 +678,8 @@ struct platform_device s3c2410_device_dclk = {
+ 	},
+ };
+ #endif
++
++#pragma message "The platform is deprecated and scheduled in removal (see platform help). " \
++		"Please reach to the maintainers of the platform " \
++		"and linux-samsung-soc@vger.kernel.org if you still use it." \
++		"Without such feedback, the platform will be removed after 2022."
+diff --git a/arch/arm/mach-s3c/s3c64xx.c b/arch/arm/mach-s3c/s3c64xx.c
+index 4dfb648142f2..3e248f0e96a2 100644
+--- a/arch/arm/mach-s3c/s3c64xx.c
++++ b/arch/arm/mach-s3c/s3c64xx.c
+@@ -425,3 +425,8 @@ static int __init s3c64xx_init_irq_eint(void)
+ 	return 0;
+ }
+ arch_initcall(s3c64xx_init_irq_eint);
++
++#pragma message "The platform is deprecated and scheduled in removal (see platform help). " \
++		"Please reach to the maintainers of the platform " \
++		"and linux-samsung-soc@vger.kernel.org if you still use it." \
++		"Without such feedback, the platform will be removed after 2022."
+-- 
+2.32.0
+
