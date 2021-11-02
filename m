@@ -2,166 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62EE3443351
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 17:42:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96110443310
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 17:37:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231361AbhKBQoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 12:44:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46300 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234807AbhKBQol (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 12:44:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635871326;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wK3CplyUTs+rLFNGYkxFeT0xpcKz1YPPLC+3BDuT/aI=;
-        b=UO+5W/N88ee+Dx8+k7sYJUYM/Pl0gwbmYptrYdElb1e3aBq/E5II2ElLimJ40i2vDx3Ojj
-        3BYg5kwYm5cWCf4umF6puVBYmHNcZwdEYPNWNTxA7gvjr9Q9I//M6+9yAMd4l117xh5WQp
-        NI72HW1fx1+f9tKgrAZMnKcOjAbXs60=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-424-fOGhtYnQMH22Uat_TPMiSA-1; Tue, 02 Nov 2021 12:18:53 -0400
-X-MC-Unique: fOGhtYnQMH22Uat_TPMiSA-1
-Received: by mail-wr1-f71.google.com with SMTP id q17-20020adfcd91000000b0017bcb12ad4fso4776095wrj.12
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 09:18:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=wK3CplyUTs+rLFNGYkxFeT0xpcKz1YPPLC+3BDuT/aI=;
-        b=aJ4xUwfkxoDMd5THXfBicm2u8mdSCaKmV+hLiHHW2IrEplr9reLKOCyb8B4YoGDqeE
-         HNdXH4QELZIUk92kg/dAcKubAwQ/QS1aicPHiVJat15DTvZLrNRzOkGloLyHUOPFjfFS
-         P+GKNpDqCoIygPaXMEEIY/LFDUFDzqkTpsuBYrGYhR64rfffCHZYJyPAMomcnxaHkdrU
-         oT7ehuvTFb42XOuYPAsEu4wqFPpObayEVmyvZlE8OZ8Tkzr5CCKyR3R4GipvxWggU4+a
-         eS42LRiJktqhro1K65ztao3659D8sjgnmdAaJ4pjgnFlPNTX2t2eMY9c2LazHRcrfo/W
-         +c4A==
-X-Gm-Message-State: AOAM531nNa2iNsw42F9Fapz7sXX6NlCtd+5TofRpUKrnoeoqgEEJNa9V
-        7+WHAkDjN+1tit+c6KFZFmgZXA396Nu6+sBFfcPVk1FepanONC3rRoB2SGxjSg0jWdzFe7iahGd
-        MMpAlD48fEnQQHzBXAOTIunGN
-X-Received: by 2002:adf:df0b:: with SMTP id y11mr24247322wrl.181.1635869932276;
-        Tue, 02 Nov 2021 09:18:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxRLgXOmmGYC7qrn6wZIz5rGaltkLk0p5nNwexOv2/BGr6u6CjLVcaCTf54oi69NKmWtoLxSQ==
-X-Received: by 2002:adf:df0b:: with SMTP id y11mr24247300wrl.181.1635869932069;
-        Tue, 02 Nov 2021 09:18:52 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id x13sm13871373wrr.47.2021.11.02.09.18.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Nov 2021 09:18:51 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Maxim Levitsky <mlevitsk@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        Kieran Bingham <kbingham@kernel.org>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jessica Yu <jeyu@kernel.org>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Yang Weijiang <weijiang.yang@intel.com>,
-        linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v3 6/6] KVM: selftests: test KVM_GUESTDBG_BLOCKIRQ
-In-Reply-To: <YYFe4LKXiuV+DyZh@google.com>
-References: <20210811122927.900604-1-mlevitsk@redhat.com>
- <20210811122927.900604-7-mlevitsk@redhat.com>
- <137f2dcc-75d2-9d71-e259-dd66d43ad377@redhat.com>
- <87sfwfkhk5.fsf@vitty.brq.redhat.com>
- <b48210a35b3bc6d63beeb33c19b609b3014191dd.camel@redhat.com>
- <YYB2l9bzFhKzobZB@google.com> <87k0hqkf6p.fsf@vitty.brq.redhat.com>
- <YYFe4LKXiuV+DyZh@google.com>
-Date:   Tue, 02 Nov 2021 17:18:49 +0100
-Message-ID: <87fsseo7iu.fsf@vitty.brq.redhat.com>
+        id S233739AbhKBQjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 12:39:41 -0400
+Received: from mail-bn8nam12on2067.outbound.protection.outlook.com ([40.107.237.67]:29164
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235079AbhKBQir (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 12:38:47 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PwJ6WW8e4m8hK7d3LOcIgh75EAu0qrQ6eQ6dOJtx0oJTNOrY7G9dXF5/xdZknjHyIGxMtPnHYFZz6oW61K3xOw+pLok51FyRkQtP0FmHsDH7onAkOEPNck3JE1dimZnt+nK0UutxMCe5DnrB0crXYLx+6xpGl10WzRZTm2rXaHNw/Es/WiDNcayXVNwN1gAsn5735Yjwlma63rESRXlwy9tHiKos4Da5Ll90WQATm8R6klZy6Eya2mgfa5XNfyHewXQwBkxY5MiFgnOqW0iOTQxrwGVfzyaknp0UGfckwlx2tmf8yzS+o1DIGk47rJURTGBpZXZON9SeW49GF0fwkA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=3qT+8tNyFy8DDcbJhn+5QPnPGDHYZIyE7QuplLpY+Tk=;
+ b=Pe6hyURMeYufIbbnLJBqKtv15+uODyY+q/K6Bw4GEQ8mM5S1tgGCIBrtLRn3/3Lvwr0wN0Zks4mDM1h2Ynzs1QtWAAmE2m81cvjvQDoE8Q0ihvslOZiczQ6Pf7kcJFHevWwHdDjGx6YsO72OyyTkYcJJkZ0ixJ1LJxEVcwaOdhcIH8COP0oh+K+2iHFlp2HSCuPS1QK5RNRXb3OMaDOibVNdpw6hJMBVDkMa5gCUeMcfeKtAqyvmoMxbedJkSqCNWlFwBLSB7p7vVF8QE9KsRFSECA85lbrlbExXNY1VipOZgzfRAQsAEDAjDlVNCJ2EEsIfb4WiV77HXRRBnrTnwg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3qT+8tNyFy8DDcbJhn+5QPnPGDHYZIyE7QuplLpY+Tk=;
+ b=SXyV5YUMTrqpkgqRVW2q2JwXJUSMDKhtdl2PkjncW9CrhKGHyP1h1Z+D/QQS8WVw9znzr6QWz6Rty+4yeQh8RfB+b1btR7Gev0rwlT8ItOxk+vExEhvuEIXijfymcy95PKzTU1UlkIhvmJyOLy8ErbTw2KzWDB+aYsJWhmSNoXh0BEON0A2KF167OSRAFCo35qPNJDGq44bgBjLnQGjm0u1Ytd0OqftknFJ3icK4TaLDXOd8w1IJnXiy9BPRvZIGDf7KfTvYj48zfI2g0djiad9gPjcGxUYJMv7YJkdt2CII3Zvujb82rDkTCkc4XYNMfuG0nGZ7P0BT+zLxHTWDGA==
+Authentication-Results: lst.de; dkim=none (message not signed)
+ header.d=none;lst.de; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5320.namprd12.prod.outlook.com (2603:10b6:208:314::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.14; Tue, 2 Nov
+ 2021 16:19:21 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4649.020; Tue, 2 Nov 2021
+ 16:19:21 +0000
+Date:   Tue, 2 Nov 2021 13:19:19 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        intel-gfx@lists.freedesktop.org,
+        intel-gvt-dev@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 24/29] drm/i915/gvt: remove the extra vfio_device
+ refcounting for dmabufs
+Message-ID: <20211102161919.GD2744544@nvidia.com>
+References: <20211102070601.155501-1-hch@lst.de>
+ <20211102070601.155501-25-hch@lst.de>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211102070601.155501-25-hch@lst.de>
+X-ClientProxiedBy: MN2PR16CA0011.namprd16.prod.outlook.com
+ (2603:10b6:208:134::24) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-Content-Type: text/plain
+Received: from mlx.ziepe.ca (142.162.113.129) by MN2PR16CA0011.namprd16.prod.outlook.com (2603:10b6:208:134::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.15 via Frontend Transport; Tue, 2 Nov 2021 16:19:20 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mhwVL-005AbX-NP; Tue, 02 Nov 2021 13:19:19 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5a0d3490-eb11-45fb-4506-08d99e1c86d7
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5320:
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5320FA5D995B56DB0CA936F7C28B9@BL1PR12MB5320.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3513;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: qtNXGjlYoY1l8rJCcFWZOJbhEW9LAk4E1JV8l/4+RSnjMQtmrld6oC9pBIz8wZPonxCjTPYyAIXshVp/NocbbYtdcsuuAel5fMh1wbT0EWPjCftjeXMtm3FWnLFCKze2R1gS9LcantiphhFgsFEkFvjkEIcTlAvkk0VW+ZBh/FtrUcWQNr+eSWqjEw2I+wxGtZxgjvza/YA4sITB83OvGktiD2FWXekG19jV3hwqLzbg+Bg5JfS3UkU3LVBsmxs1ifdwLxdn8TfFqyMDH/P6D2o62SvjU6V8bJcmpkxbyTlwphBummb4qVB6L1IXpUJJYVfSO+ZfKiEtFgtylzE9BN58dD9/N+X5SD+9ajvHlZYvl47jm4d9GufxK1SQT/mmRIlcfXTJKCxQKU2hKLvJLKn5EQu2h5bgDFf4JKlBDOoA2b/rUXX2qjqO5U2nQduu9nJA5Vx29XDljYovRh0jzVl80lvrouu22NWKF/HCeXWXuB8ThXT5XwnJIuhxgThVbN0jxrlIpkqvFxZeC1gFvjuGol7ksJFZAozs5F8I5Ml2G6knLnfRACRId3sxsQw6IAmQAFSelDPo1mYZ5F39gJbqFLwiBaCLTfTVW99sjnN1i2ebY6OojUEZ2+eWPPdey0XWFDPnZmiEZuoUhN4j9g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8676002)(4744005)(26005)(2616005)(7416002)(5660300002)(33656002)(9786002)(1076003)(316002)(66946007)(54906003)(66476007)(83380400001)(8936002)(426003)(66556008)(186003)(508600001)(6916009)(2906002)(38100700002)(4326008)(9746002)(36756003)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ezkoqHhfitM4+jVpVA8wd8L1EEIeS4Zrl96M5OyEzsDAcZne5PsJv5NpkWH4?=
+ =?us-ascii?Q?ZY4Zvnhtumv4yPYTdFPYwDOadqCUivZl5lU9LS7J+mZtR6ICTTYEKnNyer0+?=
+ =?us-ascii?Q?uRFknnCO0pkSSrb3LI/MZpwPeFwihm6VQ4PDGI6XLz0DWqkhOCqkGixOfHiW?=
+ =?us-ascii?Q?sXSvbkfgicJXWWwJUXoqWQbCtRvdjF/BdjF6eORDoSZml+Tecg7UqY9eg+I2?=
+ =?us-ascii?Q?/Je0FOn3G5k4vFfggFg6ulGnlFgQGNWOvB5Xq6hyhFFAhZpTui8TVoUuNANf?=
+ =?us-ascii?Q?uZnD2yZ4ZFqEx3sRpCJtJg4yCEOnNHaB6QmGsJZWFOANJl01xzNO1JKTMD3i?=
+ =?us-ascii?Q?0YUGQGiow5mxEqrxlGxD3xwn7X6PkNGNfAYzOANp7ACTKXl0hLXlbZcrsuo6?=
+ =?us-ascii?Q?U7mMT3Dp+oPCWjRyEiFoPcz8He0TJqxmNzVNGJbLUOipSmLigG+rOCw3rn2t?=
+ =?us-ascii?Q?DqVxW4yLPLewMoUbR4ZFuLvRPi1oQnUF575MZuGkU2rEqhxDV4K+SNZnESGi?=
+ =?us-ascii?Q?VB1Jp4TNvO0Ul7sefRM2bNhy33RYJo6wazr2sKWAdhgPo/bG/fZQZaNuAKY5?=
+ =?us-ascii?Q?IsxhVf1PbT1jWOqKzCCvqLJR048Ouqmn/LOeN66prw/jgN324ztfHw1AcKwL?=
+ =?us-ascii?Q?BpcMVj0GcYT6uqVNuVALx7c9q/T2qwrw+o8BtFVpwr5uGr48y1ojGC3D9nUc?=
+ =?us-ascii?Q?vJvOuSak51IdKCpndrkyJ1VAlctWKw9LgHyJ/59WlYphj8U2KFQjFn/maybj?=
+ =?us-ascii?Q?imBGcWAsjxF/xJV5T9rHrM2sWVQFZR4kRk++BkuVmsQDl1zBlfFN8q2nKhX/?=
+ =?us-ascii?Q?TzIiKg6P9CbysT0STsW810H5Bsz3IBuu+QIT10xazxFrS7lFUDpP1eeuvMVM?=
+ =?us-ascii?Q?uU1dsysfL2L0HfqxlKM8nUq8lz0pP09RUYBED5IIta68hFBjAYBYat1lR49S?=
+ =?us-ascii?Q?ODSG1DsRCl4dYNb967TMTSnlL4xpoO4IIrRN5qxfGZAI55l02/Gqqzlzihc4?=
+ =?us-ascii?Q?ROHDZGhN7gJt7X3wsM7syS0ixo081VAQpcDb9MtxkBXrtzFZSdwbDtmaLLtE?=
+ =?us-ascii?Q?UUQNUaOFu0PfbwB8g3UCKpIbpDS51hWNhlhLJd4LpV2E5xy9lJDX/2Ghhzyw?=
+ =?us-ascii?Q?jxFM14/aYSkL/p16AVE3fu07dqzNyXoUZmMJcSPRJpRIjr6IEB2zksSGCv6e?=
+ =?us-ascii?Q?oP5RBNv1OOcDq5vIArfZP+q0ePvAwYPy4ISoOtKFi5E19dM1+TRm94zawdKg?=
+ =?us-ascii?Q?+3gGRRY+0XPK2+598ME9PiV5U2zUtOPSRPJQriGn1Fp+TKwmP29U9ImUUEpX?=
+ =?us-ascii?Q?uiv/vUCrzorIRJS4ERignoPoKpqjWDv7mBnP2NGt/iE7TZ02gDfg3WcZzgco?=
+ =?us-ascii?Q?JSowf9MNPUwzqa9v/XSLNBW6Zjv1X4wecXIC7OSCdoMly6PPFiEqDG9aaNNS?=
+ =?us-ascii?Q?MCc5/lavXLxMW71iTqbXNHcsvEwx3kwGJQSVR9L55RhzPfZa11kT+R5DjqSx?=
+ =?us-ascii?Q?b8pVtxQ69JH1ngQnXbkuZCn09dQnMf8yo/Al0MSZqNuyZIudgtSGaZB2SK1F?=
+ =?us-ascii?Q?d3kc06LP8AFbkQryhh4=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5a0d3490-eb11-45fb-4506-08d99e1c86d7
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2021 16:19:20.9428
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: DqwF+gUt42CDu8DAsQNUlbFWrFFhlb4d+BgptXJkQ909se928faTYRtKQkbCFCsw
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5320
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sean Christopherson <seanjc@google.com> writes:
+On Tue, Nov 02, 2021 at 08:05:56AM +0100, Christoph Hellwig wrote:
+> All the dmabufs are torn down when th VGPU is released, so there is
+> no need for extra refcounting here.
+> 
+> Based on an patch from Jason Gunthorpe.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  drivers/gpu/drm/i915/gvt/dmabuf.c | 12 ------------
+>  drivers/gpu/drm/i915/gvt/gvt.h    |  1 -
+>  2 files changed, 13 deletions(-)
 
-> On Tue, Nov 02, 2021, Vitaly Kuznetsov wrote:
->> Sean Christopherson <seanjc@google.com> writes:
->> > I haven't verified on hardware, but my guess is that this code in vmx_vcpu_run()
->> >
->> > 	/* When single-stepping over STI and MOV SS, we must clear the
->> > 	 * corresponding interruptibility bits in the guest state. Otherwise
->> > 	 * vmentry fails as it then expects bit 14 (BS) in pending debug
->> > 	 * exceptions being set, but that's not correct for the guest debugging
->> > 	 * case. */
->> > 	if (vcpu->guest_debug & KVM_GUESTDBG_SINGLESTEP)
->> > 		vmx_set_interrupt_shadow(vcpu, 0);
->> >
->> > interacts badly with APICv=1.  It will kill the STI shadow and cause the IRQ in
->> > vmcs.GUEST_RVI to be recognized when it (micro-)architecturally should not.  My
->> > head is going in circles trying to sort out what would actually happen.  Maybe
->> > comment out that and/or disable APICv to see if either one makes the test pass?
->> >
->> 
->> Interestingly,
->> 
->> loading 'kvm-intel' with 'enable_apicv=0' makes the test pass, however,
->> commenting out "vmx_set_interrupt_shadow()" as suggested gives a
->> different result (with enable_apicv=1):
->> 
->> # ./x86_64/debug_regs 
->> ==== Test Assertion Failure ====
->>   x86_64/debug_regs.c:179: run->exit_reason == KVM_EXIT_DEBUG && run->debug.arch.exception == DB_VECTOR && run->debug.arch.pc == target_rip && run->debug.arch.dr6 == target_dr6
->>   pid=16352 tid=16352 errno=0 - Success
->>      1	0x0000000000402b33: main at debug_regs.c:179 (discriminator 10)
->>      2	0x00007f36401bd554: ?? ??:0
->>      3	0x00000000004023a9: _start at ??:?
->>   SINGLE_STEP[1]: exit 9 exception -2147483615 rip 0x1 (should be 0x4024d9) dr6 0xffff4ff0 (should be 0xffff4ff0)
->
-> Exit 9 is KVM_EXIT_FAIL_ENTRY, which in this case VM-Entry likely failed due to
-> invalid guest state because there was STI blocking with single-step enabled but
-> no pending BS #DB:
->
->   Bit 14 (BS) must be 1 if the TF flag (bit 8) in the RFLAGS field is 1 and the
->   BTF flag (bit 1) in the IA32_DEBUGCTL field is 0.
->
-> Which is precisely what that hack-a-fix avoids.  There isn't really a clean
-> solution for legacy single-step, AFAIK the only way to avoid this would be to
-> switch KVM_GUESTDBG_SINGLESTEP to use MTF.
->
-> But that mess is a red herring, the test fails with the same signature with APICv=1
-> if the STI is replaced by PUSHF+BTS+POPFD (to avoid the STI shadow).  We all missed
-> this key detail from Vitaly's report:
->
-> SINGLE_STEP[1]: exit 8 exception 1 rip 0x402a25 (should be 0x402a27) dr6 0xffff4ff0 (should be 0xffff4ff0)
->                 ^^^^^^
->
-> Exit '8' is KVM_EXIT_SHUTDOWN, i.e. the arrival of the IRQ hosed the guest because
-> the test doesn't invoke vm_init_descriptor_tables() to install event handlers.
-> The "exception 1" shows up because the run page isn't sanitized by the test, i.e.
-> it's stale data that happens to match.
->
-> So I would fully expect this test to fail with AVIC=1.  The problem is that
-> KVM_GUESTDBG_BLOCKIRQ does absolutely nothing to handle APICv interrupts.  And
-> even if KVM does something to fudge that behavior in the emulated local APIC, the
-> test will then fail miserably virtual IPIs (currently AVIC only).
+Oh, here it gets fixed up, yes:
 
-FWIW, the test doesn't seem to fail on my AMD EPYC system even with "avic=1" ...
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 
->
-> I stand by my original comment that "Deviating this far from architectural behavior
-> will end in tears at some point."  Rather than try to "fix" APICv, I vote to instead
-> either reject KVM_GUESTDBG_BLOCKIRQ if APICv=1, or log a debug message saying that
-> KVM_GUESTDBG_BLOCKIRQ is ineffective with APICv=1.
->
-
--- 
-Vitaly
-
+Jason
