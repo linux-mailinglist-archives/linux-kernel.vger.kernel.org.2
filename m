@@ -2,93 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 885984427DC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 08:09:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23C514427DD
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 08:09:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231948AbhKBHMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 03:12:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231366AbhKBHLs (ORCPT
+        id S231234AbhKBHM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 03:12:26 -0400
+Received: from smtpbg701.qq.com ([203.205.195.86]:39507 "EHLO
+        smtpproxy21.qq.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231681AbhKBHME (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 03:11:48 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2418C061230;
-        Tue,  2 Nov 2021 00:09:05 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id y20so7903359pfi.4;
-        Tue, 02 Nov 2021 00:09:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2h7taCbuxqRD4r9qvk+kIniAwnodtq+huHXyFqPigRU=;
-        b=VO7o82tgv1j0JGPD74AkmwNBGMC/fsYR5DWSDPNIST/5MK9ozEXGf2xz0x0MiWdR/6
-         O/whH3Y61YQAzbIl4I31g8Jz7jGLVd5bZmrWKe9sVjqCEimsQ8p37p6BpdgpI6HeBZAI
-         K8MKlF9dmq1qZNhHtLacLHrER3NOKLr3SWX2m5q2IWhCi+Lbpmy8sPuttXszbRuPUwSk
-         ZMPa/P1AHhO1klWBz8OwhJE3mo08UwwgBLnpXn1f/MlzbqW9bTL+sUdd3kjTaUvmhfsF
-         L6somPEnOSPY17xTqECDxkmFQ1/qphmdGBpRuOR84x7AGiDxGUm+HIf307iSdblc/C59
-         lwvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2h7taCbuxqRD4r9qvk+kIniAwnodtq+huHXyFqPigRU=;
-        b=yHSYfYMzC9oyJIUe+bkeK5u7SfBH9oiHwc29foSCRbq6RY4+y9jnQjlQ/TTsq++qR9
-         0O63IB0i+uphLVTEfQdhcPYizzPTIMQmHrDxcjkkBWALDCYVdJvHthrfpkii+NG/XiIv
-         e9032SKZuVAqG0WsVkK2t2LUBlDI06r11lsGC86tV3iwWUIiqxwhQljR4h49A1Aagfgs
-         K1OA621tHdFHGfQyOq9jhq1wFTmrq/rLFCJLLEhrG7qV3Z0xrEqVcEiGldwY3VlnKQSU
-         WNNhcqbLzlxL2Po9YsdkdLEB2lUJhw7il3hkk4XhMYmeycUxyQ/kYfitKHfWvbOn9FpP
-         L8xQ==
-X-Gm-Message-State: AOAM532iT8L5pd0RhKrwX3I9ASlbqXab9cwQsUOlyHLdLF059DzJMNEL
-        PNY3FBai5jUdVaM/oDLQYlc=
-X-Google-Smtp-Source: ABdhPJx7Zr6lQGXpQ0DBWtTZdXdDC/yTaPvT1LTpMdJsgORIT7xNUa283TVyevtiSHnEUf13gDq2mg==
-X-Received: by 2002:a62:e406:0:b0:480:fd90:1082 with SMTP id r6-20020a62e406000000b00480fd901082mr15600501pfh.45.1635836945272;
-        Tue, 02 Nov 2021 00:09:05 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id z24sm15753874pgu.54.2021.11.02.00.09.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Nov 2021 00:09:05 -0700 (PDT)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: zhang.mingyu@zte.com.cn
-To:     jejb@linux.ibm.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Zhang Mingyu <zhang.mingyu@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] scsi:pmcraid:Remove unneeded semicolon
-Date:   Tue,  2 Nov 2021 07:08:57 +0000
-Message-Id: <20211102070857.5468-1-zhang.mingyu@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Tue, 2 Nov 2021 03:12:04 -0400
+X-QQ-GoodBg: 1
+X-QQ-SSF: B0400000000000F0
+X-QQ-FEAT: TskX/GkkryBm8REfllNPHOFtChVHBHMykmMzkjnJ+sl+q6L+YjDxUTvioDmdv
+        /jvo0HzVzH41667jatOui/m501RHIUl5ugbf+e7CIQOzVxx4f1n4Ba2AB3NuaxWFPKE4jQR
+        qurcaQSwlX2dhcTmjHaEg3yVfaM5yetip4F+kjoC5h9HJ227nlTti1vgcQEJj59dst30HOd
+        iqaXa6PM+nKzugHFJ0ieQZkPwkF6SlyM3WiW/eGT16mQ2Ncr3uFC/k0vIqnGmZaLkopOrFm
+        N+uP13Ak2QKyz1romGvLe7oWUwIY785j3Rq0lMMBCHYMdsLgEI4l4dxIDpK/lHp+cuIDHHI
+        Zpc2FzBYcSxf0drqzIIWIrHtSvzOA==
+X-QQ-BUSINESS-ORIGIN: 2
+X-Originating-IP: 113.57.13.187
+X-QQ-STYLE: 
+X-QQ-mid: logic531t1635836960t7341683
+From:   "=?utf-8?B?5bi45buJ5b+X?=" <changlianzhi@uniontech.com>
+To:     "=?utf-8?B?ZG1pdHJ5LnRvcm9raG92?=" <dmitry.torokhov@gmail.com>
+Cc:     "=?utf-8?B?R3JlZyBLSA==?=" <gregkh@linuxfoundation.org>,
+        "=?utf-8?B?bGludXgta2VybmVs?=" <linux-kernel@vger.kernel.org>,
+        "=?utf-8?B?amlyaXNsYWJ5?=" <jirislaby@kernel.org>,
+        "=?utf-8?B?QW5keSBTaGV2Y2hlbmtv?=" 
+        <andriy.shevchenko@linux.intel.com>,
+        "=?utf-8?B?MjgyODI3OTYx?=" <282827961@qq.com>
+Subject: Re: [PATCH v9] tty: Fix the keyboard led light display problem
+Mime-Version: 1.0
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: base64
+Date:   Tue, 2 Nov 2021 15:09:20 +0800
+X-Priority: 3
+Message-ID: <tencent_58FBAAE735B7BF622A690384@qq.com>
+X-QQ-MIME: TCMime 1.0 by Tencent
+X-Mailer: QQMail 2.x
+X-QQ-Mailer: QQMail 2.x
+References: <tencent_10C69A8D3BC51F781F21A754@qq.com>
+        <YX/iGfXdc8UKUFCx@kroah.com>
+        <YYAXVP4v2bCpGA8s@google.com>
+        <tencent_0215A22726EA8F7807FF43A9@qq.com>
+        <YYC4QGKjY42lZXsE@google.com>
+In-Reply-To: <YYC4QGKjY42lZXsE@google.com>
+X-QQ-ReplyHash: 1321999802
+X-QQ-SENDSIZE: 520
+Received: from qq.com (unknown [127.0.0.1])
+        by smtp.qq.com (ESMTP) with SMTP
+        id ; Tue, 02 Nov 2021 15:09:21 +0800 (CST)
+Feedback-ID: logic:uniontech.com:qybgforeign:qybgforeign2
+X-QQ-Bgrelay: 1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Mingyu <zhang.mingyu@zte.com.cn>
+PiA+DQo+ID4gSGkgRG1pdHJ5LCBJIGRvbuKAmXQga25vdyBpZiBJIGZ1bGx5IHVuZGVyc3Rh
+bmQgd2hhdCB5b3UgbWVhbiwgYnV0IEkgd2lsbA0KPiA+IHRyeSB0byBmdWxseSBleHBsYWlu
+IHRoZSBpbnRlbnQgb2YgdGhlIGN1cnJlbnQgcGF0Y2guDQo+ID4gKDEpIFdoYXQgaXMgdGhl
+IGN1cnJlbnQgYnVnIHBoZW5vbWVub24/IEkgd2lsbCBkZXNjcmliZSB3aXRoIHRoZSBOdW0N
+Cj4gPiBMb2NrIGluZGljYXRvciBhcyB0aGUgb2JqZWN0IGhlcmUuDQo+ID4NCj4gPiBQaGVu
+b21lbm9uIDE6IFN1cHBvc2UgdGhhdCBYb3JnIGlzIGJvdW5kIHRvIHR0eTEgaW4gdGhlIGRl
+c2t0b3AgZW52aXJvbm1lbnQuDQo+ID4gQXQgdGhpcyB0aW1lLCB0aGUgTnVtIGxpZ2h0IG9m
+IHRoZSBrZXlib2FyZCBpcyBvbiwgYW5kIHRoZSBrZXlwYWQgY2FuIGlucHV0IG51bWJlcnMN
+Cj4gPiBub3JtYWxseTsgYXNzdW1lIHRoYXQgdGhlIHN0YXRlIG9mIHRoZSBrZXlib2FyZCBs
+aWdodCBzYXZlZCBieSB0dHkyIGl0c2VsZiBpcyB0aGUNCj4gPiBvcHBvc2l0ZSAodGhlIE51
+bSBsaWdodCBpcyBvZmYsIFRoZSBrZXlwYWQgY2Fubm90IGVudGVyIG51bWJlcnMpOyBhdCB0
+aGlzIHRpbWUsDQo+ID4gaWYgd2UgdXNlIHRoZSBrZXkgY29tYmluYXRpb24gImN0cmwrYWx0
+K0YyIiB0byBzd2l0Y2ggdGhlIHN5c3RlbSB0byB0dHkyLCB3ZSB3aWxsIGZpbmQNCj4gPiB0
+aGF0IHRoZSBOdW0gbGlnaHQgaXMgc3RpbGwgb24sIGJ1dCB0aGUga2V5cGFkIGNhbm5vdCBl
+bnRlciBudW1iZXJzLg0KPiA+DQo+ID4gUGhlbm9tZW5vbiAyOiBBc3N1bWluZyB0aGF0IHlv
+dSBhcmUgY3VycmVudGx5IGluIHRoZSB0dHkyIGVudmlyb25tZW50LCB0aGUgTnVtDQo+ID4g
+bGlnaHQgb2YgdGhlIGtleWJvYXJkIGlzIG9uLCBhbmQgdGhlIGtleXBhZCBjYW4gaW5wdXQg
+bnVtYmVycyBub3JtYWxseTsgYXNzdW1lIHRoYXQNCj4gPiB0aGUgTnVtIHN0YXRlIHNhdmVk
+IGJ5IFhvcmcgaXMgdGhlIHNhbWUgYXMgdGhhdCBvZiB0dHkyICh0aGUgTnVtIGxpZ2h0IGlz
+IG9uLCBhbmQgdGhlDQo+ID4ga2V5cGFkIGNhbiBpbnB1dCBudW1iZXJzIG5vcm1hbGx5KTsg
+QXQgdGhpcyBwb2ludCwgaWYgd2UgdXNlIHRoZSBrZXkgY29tYmluYXRpb24NCj4gPiAiY3Ry
+bCthbHQrRjEiIHRvIHN3aXRjaCB0aGUgc3lzdGVtIHRvIHR0eTEgKHRoYXQgaXMsIHRvIHN3
+aXRjaCB0byB0aGUgZGVza3RvcCBlbnZpcm9ubWVudCkNCj4gPiAsIHdlIHdpbGwgZmluZCB0
+aGF0IHRoZSBOdW0gbGlnaHQgd2lsbCBub3QgbGlnaHQgdXAsIGJ1dCB0aGUgc21hbGwga2V5
+Ym9hcmQgY2FuIGlucHV0IG51bWJlcnMgLg0KPiA+DQo+ID4gKDIpIFdoeSBkbyB0aGVzZSB0
+d28gcGhlbm9tZW5hIG9jY3VyPw0KPiA+IFRoZSB2YXJpYWJsZSBzdGF0aWMgdW5zaWduZWQg
+aW50IGxlZHN0YXRlIGlzIGRlZmluZWQgaW4ga2V5Ym9hcmQuYy4gbGVkc3RhdGUgc2hvdWxk
+IGJlIHVzZWQgdG8NCj4gPiB0ZWxsIFZUIHRoZSBjdXJyZW50IHN0YXRlIG9mIHRoZSBrZXli
+b2FyZCBsaWdodCwgYmVjYXVzZSBhZnRlciBlYWNoIFZUIHNldHMgdGhlIHN0YXRlIG9mIHRo
+ZQ0KPiA+IGtleWJvYXJkIGxpZ2h0LCBpdCB3aWxsIHN5bmNocm9uaXplIHRoZSBsYXRlc3Qg
+a2V5Ym9hcmQgbGlnaHQgc3RhdGUgdG8gbGVkc3RhdGUoIChJbXBsZW1lbnRlZA0KPiA+IGlu
+IHRoZSBrYmRfYmgoKSBmdW5jdGlvbikuDQo+ID4NCj4gPiBUaGVuIHRoZSBwcm9ibGVtIGNv
+bWVzLiBUaGUgc2NvcGUgb2YgbGVkc3RhdGUgaXMgb25seSBpbiBWVCwgYW5kIGl0IGNhbm5v
+dCBpbmNsdWRlIGFsbCB0aGUNCj4gPiBzY2VuZXMgd2hlcmUgdGhlIGtleWJvYXJkIGxpZ2h0
+IGlzIHNldC4gQW5kLCBpbiB0aGUgZGVza3RvcCBlbnZpcm9ubWVudCwgImtiLT5rYmRtb2Rl
+ID09DQo+ID4gVkNfT0ZGIiBvZiB0dHkxLCBhdCB0aGlzIHRpbWUsIHRocm91Z2ggdGhlIE51
+bUxvY2sgYnV0dG9uLCBvbmx5IFhvcmcncyBvd24gc3RhdGUgY2FuIGJlDQo+ID4gY2hhbmdl
+ZCwgYW5kIHRoZSBsZWQgc3RhdGUgc3RvcmVkIGJ5IHR0eTEgY2Fubm90IGJlIGNoYW5nZWQg
+KGltcGxlbWVudGVkIGluIHRoZSBrYmRfa2V5Y29kZSgpDQo+ID4gZnVuY3Rpb24pLCBUaGlz
+IHJlc3VsdHMgaW4gdGhhdCB0aGUga2ItPmxlZGZsYWdzdGF0ZSBzdG9yZWQgYnkgdHR5MSBp
+dHNlbGYgYW5kIHRoZSBsZWRzdGF0ZSBpbiB0aGUgdHR5DQo+ID4gZW52aXJvbm1lbnQgYXJl
+IGFsd2F5cyAwIGF0IHRoaXMgdGltZS4NCj4gPg0KPiA+IFdoZW4gd2Ugc3dpdGNoIHR0eSwg
+dGhlIFZUIGNvZGUgY29tcGFyZXMgdGhlIGN1cnJlbnQgdHR5J3Mga2ItPmxlZGZsYWdzdGF0
+ZSBhbmQgbGVkc3RhdGUgdmFsdWVzLg0KPiA+IElmIHRoZXkgYXJlIGluY29uc2lzdGVudCwg
+Y2hhbmdlIHRoZSBzdGF0ZSBvZiB0aGUga2V5Ym9hcmQgbGlnaHQgKGltcGxlbWVudGVkIGlu
+IHRoZSBrYmRfYmgoKSBmdW5jdGlvbikuDQo+ID4NCj4gPiBJbiBwaGVub21lbm9uIDEsIGlu
+IHRoZSBkZXNrdG9wIGVudmlyb25tZW50LCBhbHRob3VnaCB0aGUgYWN0dWFsIHN0YXRlIHNh
+dmVkIGJ5IHhvcmcgaXMgMSwgdGhlIHN0YXRlDQo+ID4gb2YgbGVkc3RhdGUgb2YgdHR5IGlz
+IGFsd2F5cyAwLiBJbiB0aGUgZW52aXJvbm1lbnQgb2YgdHR5MiwgdGhlIHN0YXRlIG9mIGti
+LT5sZWRmbGFnc3RhdGUgb2YgdHR5MiBpcyBhbHNvIDAuDQo+ID4gQXQgdGhpcyBwb2ludCwg
+aW4gdGhlIGtiZF9iaCgpIGZ1bmN0aW9uLCBjb21wYXJpbmcgdGhlc2UgdHdvIHZhbHVlcyDi
+gIvigItpcyBlcXVhbCwgdGhlcmUgaXMgbm8gbmVlZCB0byBzZXQgdGhlDQo+ID4gbGVkIGxp
+Z2h0IHN0YXRlIHRvIHRoZSBrZXlib2FyZC4gU28gYWZ0ZXIgc3dpdGNoaW5nIHRvIHR0eTIs
+IHRoZSBOdW0gbGlnaHQgaXMgc3RpbGwgb24sIGJ1dCB0aGUgc21hbGwNCj4gPiBrZXlib2Fy
+ZCBjYW5ub3QgaW5wdXQgbnVtYmVycy4NCj4gPg0KPiA+IEluIHBoZW5vbWVub24gMiwgaW4g
+dGhlIHR0eTIgZW52aXJvbm1lbnQsIHRoZSBzdGF0ZSBvZiBsZWRzdGF0ZSBpcyBzZXQgdG8g
+MSwgYnV0IHRoZSBrYi0+bGVkZmxhZ3N0YXRlIG9mDQo+ID4gdHR5MSBpcyAwLiBBdCB0aGlz
+IHRpbWUsIHRoZSB0d28gdmFsdWVzIOKAi+KAi2FyZSBub3QgZXF1YWwgaW4gdGhlIGtiZF9i
+aCgpIGZ1bmN0aW9uLCBzbyBzZXQgdGhlIGxlZCBUaGUgbGlnaHQNCj4gPiBzdGF0dXMgdG8g
+dGhlIGtleWJvYXJkLiBYb3JnIGRpZCBub3QgcmVkaXN0cmlidXRlIHRoZSBjb25maWd1cmF0
+aW9uIGR1cmluZyB0aGlzIHByb2Nlc3MgaXMgYWxzbyBvbmUgb2YNCj4gPiB0aGUgcmVhc29u
+cy4gQW5kIGV2ZW4gaWYgWG9yZyByZS1pc3N1ZXMgdGhlIGNvbmZpZ3VyYXRpb24gYXQgdGhp
+cyB0aW1lLCBpdCB3aWxsIGNhdXNlIGNvbmZ1c2lvbiBhbmQgb25seQ0KPiA+IG9uZSBjYW4g
+YmUgc2V0Lg0KPiA+DQo+ID4gKDMpIEhvdyB0byBzb2x2ZSBpdD8NCj4gPiBUbyBzb2x2ZSB0
+aGUgcHJvYmxlbSBvZiBwaGVub21lbm9uIDEsIHdlIG11c3QgZmlyc3QgZW5hYmxlIGxlZHN0
+YXRlIHRvIGNvcnJlY3RseSByZWZsZWN0IHRoZSBjdXJyZW50DQo+ID4gc3RhdGUgb2YgdGhl
+IGtleWJvYXJkIGxpZ2h0LiBUaGVyZWZvcmUsIHRoZSBzb2x1dGlvbiB0byBhbGwgdmVyc2lv
+bnMgb2YgcGF0Y2ggaXMgdG8gc3luY2hyb25pemUgdGhlDQo+ID4gbGF0ZXN0IGxlZCBzdGF0
+ZSBvZiB0aGUgaW5wdXQgZGV2aWNlIHRvIGxlZHN0YXRlLg0KDQo+IFlvdSBhc3N1bWUgdGhh
+dCBpbnB1dCdzIGRldmljZSBOdW1Mb2NrIExFRCByZWZsZWN0cyB0aGUgc3RhdGUgb2YNCj4g
+dGVybWluYWwuIFRoYXQgZG9lcyBub3QgaGF2ZSB0byBiZSB0aGUgY2FzZS4NCg0KPiBOb3cg
+aG93IHRvIHNvbHZlIHRoaXMuLi4gT24gVlQgc3dpdGNoIHJlZHJhd19zY3JlZW4oKSBjYWxs
+cw0KPiB2dF9zZXRfbGVkc19jb21wdXRlX3NoaWZ0c3RhdGUoKS4gQ2FuIHdlIGRvIHNvbWV0
+aGluZyBsaWtlOg0KDQo+IC8qDQo+ICogT24gVlQgc3dpdGNoIHByZXRlbmQgb3VyIGxlZCBz
+dGF0ZSBpcyBvcHBvc2l0ZSBvZiB0YXJnZXQNCj4gKiBzdGF0ZSB0byBlbnN1cmUgd2UgcmVm
+cmVzaCBhbGwgbGVkcy4NCj4gKi8NCj4gc3Bpbl9sb2NrX2lycXNhdmUoJmxlZF9sb2NrLCBm
+bGFncyk7DQo+IGxlZHMgPSBnZXRsZWRzKCk7DQo+IGxlZHMgfD0gKHVuc2lnbmVkIGludClr
+YmQtPmxvY2tzdGF0ZSA8PCA4Ow0KPiBsZWRzdGF0ZSA9IH5sZWRzOw0KPiBzcGluX3VubG9j
+a19pcnFyZXN0b3JlKCZsZWRfbG9jaywgZmxhZ3MpOw0KPiANCj4gc2V0X2xlZHMoKTsNCj4g
+DQo+ID8NCkhpIERtaXRyeToNCi8qDQoqIFRoZSBmb2xsb3dpbmcgcGllY2Ugb2YgY29kZSBl
+eGlzdHMgaW4gdGhlIGtiZF9iaCgpIGZ1bmN0aW9uDQoqLw0Kc3Bpbl9sb2NrX2lycXNhdmUo
+JmxlZF9sb2NrLCBmbGFncyk7DQpsZWRzID0gZ2V0bGVkcygpOw0KbGVkcyB8PSAodW5zaWdu
+ZWQgaW50KWtiZC0+bG9ja3N0YXRlIDw8IDg7DQpsZWRzdGF0ZSA9IH5sZWRzOw0Kc3Bpbl91
+bmxvY2tfaXJxcmVzdG9yZSgmbGVkX2xvY2ssIGZsYWdzKTsNCg0KTW9yZW92ZXIsIHRoZSBw
+cm9jZXNzIG9mIGNhbGxpbmcgdGhlIHNldF9sZWRzKCkgZnVuY3Rpb24gaXMgDQp0aGUgcHJv
+Y2VzcyBvZiBjYWxsaW5nIHRoZSBrYmRfYmggZnVuY3Rpb246DQpzdGF0aWMgdm9pZCBzZXRf
+bGVkcyh2b2lkKQ0Kew0KdGFza2xldF9zY2hlZHVsZSgma2V5Ym9hcmRfdGFza2xldCk7DQp9
+DQpzdGF0aWMgREVDTEFSRV9UQVNLTEVUX0RJU0FCTEVEKGtleWJvYXJkX3Rhc2tsZXQsIGti
+ZF9iaCk7DQoNCkkgZG9uJ3QgcmVhbGx5IHVuZGVyc3RhbmQgd2hhdCB5b3UgbWVhbiBoZXJl
+LCBidXQgb25lIHRoaW5nIA0KY2FuIGJlIGNvbmZpcm1lZCwgbXkgcGF0Y2gganVzdCBzeW5j
+aHJvbml6ZXMgdGhlIGN1cnJlbnQgaW5wdXQgDQpkZXZpY2UncyBsZWQgc3RhdGUgdG8gbGVk
+c3RhdGUuIE1vcmVvdmVyLCBhZnRlciBWVCdzIA0Ka2ItPmxlZGZsYWdzdGF0ZSBpcyBzZXQg
+dG8gdGhlIGlucHV0IGRldmljZSwgaXQgd2lsbCBhbHNvIA0KYmUgc3luY2hyb25pemVkIHRv
+IGxlZHN0YXRlICh0aGUgb3JpZ2luYWwgbG9naWMgb2YgdGhlIGtiZF9iaCgpIA0KZnVuY3Rp
+b24pLCB3aGljaCBkb2VzIG5vdCBkZXN0cm95IHRoZSBvcmlnaW5hbCBpbnRlcm5hbCBsb2dp
+YyBvZiANClZULiBJbiBhZGRpdGlvbiwgSSBoYXZlIHRlc3RlZCBpdCwgd2hldGhlciBpdCBp
+cyBzd2l0Y2hpbmcgDQpiZXR3ZWVuIHRoZSBkZXNrdG9wIGVudmlyb25tZW50ICh0dHkxKSBh
+bmQgdHR5Mn42LCBvciBzd2l0Y2hpbmcgDQpiZXR3ZWVuIHR0eTJ+NiwgdGhlIGluZGljYXRv
+ciBzdGF0dXMgb2YgdGhlIGtleWJvYXJkIGxpZ2h0IGlzIA0KY29ycmVjdCwgYW5kIGl0IGlz
+IG5vcm1hbCBpbiB0aGUgbXVsdGkta2V5Ym9hcmQgc3RhdGUuIC4gDQpPZiBjb3Vyc2UsIEkg
+bmVlZCB0byBhZGQgdGhlIFhvcmcgcmVwYWlyIHBhdGNoIEkgbWVudGlvbmVkIA0KZWFybGll
+ci4NCg0KVGhhbmtzLg0KLS0NCmxpYW56aGkgY2hhbmc=
 
-Eliminate the following coccinelle check warning:
-drivers/scsi/pmcraid.c:5085:2-3
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Zhang Mingyu <zhang.mingyu@zte.com.cn>
----
- drivers/scsi/pmcraid.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/scsi/pmcraid.c b/drivers/scsi/pmcraid.c
-index 88046a793767..85febecde7b8 100644
---- a/drivers/scsi/pmcraid.c
-+++ b/drivers/scsi/pmcraid.c
-@@ -5082,7 +5082,7 @@ static int pmcraid_init_instance(struct pci_dev *pdev, struct Scsi_Host *host,
- 			mapped_pci_addr + chip_cfg->ioa_host_mask_clr;
- 		pint_regs->global_interrupt_mask_reg =
- 			mapped_pci_addr + chip_cfg->global_intr_mask;
--	};
-+	}
- 
- 	pinstance->ioa_reset_attempts = 0;
- 	init_waitqueue_head(&pinstance->reset_wait_q);
--- 
-2.25.1
 
