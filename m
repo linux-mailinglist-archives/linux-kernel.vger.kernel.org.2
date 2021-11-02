@@ -2,115 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D8844428E0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 08:49:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 007DA4428E3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 08:51:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231357AbhKBHwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 03:52:19 -0400
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:22864 "EHLO
-        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231303AbhKBHwR (ORCPT
+        id S231214AbhKBHyY convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 2 Nov 2021 03:54:24 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:54886 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229720AbhKBHyQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 03:52:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1635839383; x=1667375383;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=XbITvdzhfLjyb4CX1ZOFhT1UhZy0Ds5/2mi6MtUV/uo=;
-  b=QWWjNg1J7XEvQn/95n5ozp8hqYVplkOL3nnb7WtlsINWB0QeVrckl1lo
-   g9l950PryXurhOBZLUwKhftUGNRjDhh6gjTP+wzZRpokr2pf+1GWyZ1tg
-   c4CatmGkGsD+TUf07o68XUI7/XqdS/ArmjWpNmpWe9XOk1rQ0JKgxghhi
-   w=;
-Received: from unknown (HELO ironmsg03-sd.qualcomm.com) ([10.53.140.143])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 02 Nov 2021 00:49:43 -0700
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg03-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2021 00:49:42 -0700
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Tue, 2 Nov 2021 00:49:42 -0700
-Received: from sbillaka-linux.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Tue, 2 Nov 2021 00:49:38 -0700
-From:   Sankeerth Billakanti <quic_sbillaka@quicinc.com>
-To:     <dri-devel@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>,
-        <freedreno@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-CC:     Sankeerth Billakanti <quic_sbillaka@quicinc.com>,
-        <robdclark@gmail.com>, <seanpaul@chromium.org>,
-        <swboyd@chromium.org>, <quic_kalyant@quicinc.com>,
-        <quic_abhinavk@quicinc.com>, <dianders@chromium.org>,
-        <quic_khsieh@quicinc.com>, <quic_mkrishn@quicinc.com>
-Subject: [PATCH v4 5/5] drm/msm/dp: Enable ASSR for supported DP sinks
-Date:   Tue, 2 Nov 2021 13:18:45 +0530
-Message-ID: <1635839325-401-6-git-send-email-quic_sbillaka@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1635839325-401-1-git-send-email-quic_sbillaka@quicinc.com>
-References: <1635839325-401-1-git-send-email-quic_sbillaka@quicinc.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+        Tue, 2 Nov 2021 03:54:16 -0400
+Received: from smtpclient.apple (p4fefc15c.dip0.t-ipconnect.de [79.239.193.92])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 50A05CECE9;
+        Tue,  2 Nov 2021 08:51:38 +0100 (CET)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 15.0 \(3693.20.0.1.32\))
+Subject: Re: [PATCH v7 1/2] Bluetooth: Add struct of reading AOSP vendor
+ capabilities
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20211102151908.v7.1.I139e71adfd3f00b88fe9edb63d013f9cd3e24506@changeid>
+Date:   Tue, 2 Nov 2021 08:51:37 +0100
+Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        =?utf-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
+        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Joseph Hwang <josephsih@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <8C7862EB-01EB-463E-AC20-AF1D8BCC1FFB@holtmann.org>
+References: <20211102151908.v7.1.I139e71adfd3f00b88fe9edb63d013f9cd3e24506@changeid>
+To:     Joseph Hwang <josephsih@chromium.org>
+X-Mailer: Apple Mail (2.3693.20.0.1.32)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The eDP sink on sc7280 supports ASSR and dp driver will
-enable ASSR in the source hardware. The driver needs to
-enable the ASSR field in the DPCD configuration register
-to avoid screen corruption. This change will enable ASSR
-if supported in the sink device.
+Hi Joseph,
 
-Signed-off-by: Sankeerth Billakanti <quic_sbillaka@quicinc.com>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
----
- drivers/gpu/drm/msm/dp/dp_ctrl.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+> This patch adds the struct of reading AOSP vendor capabilities.
+> New capabilities are added incrementally. Note that the
+> version_supported octets will be used to determine whether a
+> capability has been defined for the version.
+> 
+> Signed-off-by: Joseph Hwang <josephsih@chromium.org>
+> 
+> ---
+> 
+> Changes in v7:
+> - Use the full struct aosp_rp_le_get_vendor_capa. If the
+>  version_supported is >= 98, check bluetooth_quality_report_support.
+> - Use __le16 and __le32.
+> - Use proper bt_dev_err and bt_dev_warn per review comments.
+> - Skip unnecessary bt_dev_dbg.
+> - Remove unnecessary rp->status check.
+> - Skip unnecessary check about version_supported on versions that we
+>  do not care about. For now, we only care about quality report support.
+> - Add the define for the length of the struct.
+> - Mediatek will submit a separate patch to enable aosp.
+> 
+> Changes in v6:
+> - Add historical versions of struct aosp_rp_le_get_vendor_capabilities.
+> - Perform the basic check about the struct length.
+> - Through the version, bluetooth_quality_report_support can be checked.
+> 
+> Changes in v5:
+> - This is a new patch.
+> - Add struct aosp_rp_le_get_vendor_capabilities so that next patch
+>  can determine whether a particular capability is supported or not.
+> 
+> include/net/bluetooth/hci_core.h |  1 +
+> net/bluetooth/aosp.c             | 83 +++++++++++++++++++++++++++++++-
+> 2 files changed, 83 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
+> index 53a8c7d3a4bf..b5f061882c10 100644
+> --- a/include/net/bluetooth/hci_core.h
+> +++ b/include/net/bluetooth/hci_core.h
+> @@ -603,6 +603,7 @@ struct hci_dev {
+> 
+> #if IS_ENABLED(CONFIG_BT_AOSPEXT)
+> 	bool			aosp_capable;
+> +	bool			aosp_quality_report;
+> #endif
+> 
+> 	int (*open)(struct hci_dev *hdev);
+> diff --git a/net/bluetooth/aosp.c b/net/bluetooth/aosp.c
+> index a1b7762335a5..0d4f1702ce35 100644
+> --- a/net/bluetooth/aosp.c
+> +++ b/net/bluetooth/aosp.c
+> @@ -8,9 +8,43 @@
+> 
+> #include "aosp.h"
+> 
+> +/* Command complete parameters of LE_Get_Vendor_Capabilities_Command
+> + * The parameters grow over time. The base version that declares the
+> + * version_supported field is v0.95. Refer to
+> + * https://cs.android.com/android/platform/superproject/+/master:system/
+> + *         bt/gd/hci/controller.cc;l=452?q=le_get_vendor_capabilities_handler
+> + */
+> +struct aosp_rp_le_get_vendor_capa {
+> +	/* v0.95: 15 octets */
+> +	__u8	status;
+> +	__u8	max_advt_instances;
+> +	__u8	offloaded_resolution_of_private_address;
+> +	__le16	total_scan_results_storage;
+> +	__u8	max_irk_list_sz;
+> +	__u8	filtering_support;
+> +	__u8	max_filter;
+> +	__u8	activity_energy_info_support;
+> +	__le16	version_supported;
+> +	__le16	total_num_of_advt_tracked;
+> +	__u8	extended_scan_support;
+> +	__u8	debug_logging_supported;
+> +	/* v0.96: 16 octets */
+> +	__u8	le_address_generation_offloading_support;
+> +	/* v0.98: 21 octets */
+> +	__le32	a2dp_source_offload_capability_mask;
+> +	__u8	bluetooth_quality_report_support;
+> +	/* v1.00: 25 octets */
+> +	__le32	dynamic_audio_buffer_support;
+> +} __packed;
+> +
+> +#define VENDOR_CAPA_BASE_SIZE		15
+> +#define VENDOR_CAPA_0_98_SIZE		21
+> +
+> void aosp_do_open(struct hci_dev *hdev)
+> {
+> 	struct sk_buff *skb;
+> +	struct aosp_rp_le_get_vendor_capa *rp;
+> +	u16 version_supported;
+> 
+> 	if (!hdev->aosp_capable)
+> 		return;
+> @@ -20,9 +54,56 @@ void aosp_do_open(struct hci_dev *hdev)
+> 	/* LE Get Vendor Capabilities Command */
+> 	skb = __hci_cmd_sync(hdev, hci_opcode_pack(0x3f, 0x153), 0, NULL,
+> 			     HCI_CMD_TIMEOUT);
+> -	if (IS_ERR(skb))
+> +	if (IS_ERR(skb)) {
+> +		bt_dev_err(hdev, "AOSP get vendor capabilities (%ld)",
+> +			   PTR_ERR(skb));
+> 		return;
+> +	}
+> +
+> +	/* A basic length check */
+> +	if (skb->len < VENDOR_CAPA_BASE_SIZE)
+> +		goto length_error;
+> +
+> +	rp = (struct aosp_rp_le_get_vendor_capa *)skb->data;
+> +
+> +	version_supported = le16_to_cpu(rp->version_supported);
+> +	/* AOSP displays the verion number like v0.98, v1.00, etc. */
+> +	bt_dev_info(hdev, "AOSP version v%u.%02u",
+> +		    version_supported >> 8, version_supported & 0xff);
 
-diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
-index a40e798..c724cb0 100644
---- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
-+++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
-@@ -119,13 +119,13 @@ void dp_ctrl_push_idle(struct dp_ctrl *dp_ctrl)
- static void dp_ctrl_config_ctrl(struct dp_ctrl_private *ctrl)
- {
- 	u32 config = 0, tbd;
--	u8 *dpcd = ctrl->panel->dpcd;
-+	const u8 *dpcd = ctrl->panel->dpcd;
- 
- 	/* Default-> LSCLK DIV: 1/4 LCLK  */
- 	config |= (2 << DP_CONFIGURATION_CTRL_LSCLK_DIV_SHIFT);
- 
- 	/* Scrambler reset enable */
--	if (dpcd[DP_EDP_CONFIGURATION_CAP] & DP_ALTERNATE_SCRAMBLER_RESET_CAP)
-+	if (drm_dp_alternate_scrambler_reset_cap(dpcd))
- 		config |= DP_CONFIGURATION_CTRL_ASSR;
- 
- 	tbd = dp_link_get_test_bits_depth(ctrl->link,
-@@ -1231,6 +1231,7 @@ static int dp_ctrl_link_train(struct dp_ctrl_private *ctrl,
- 	const u8 *dpcd = ctrl->panel->dpcd;
- 	u8 encoding = DP_SET_ANSI_8B10B;
- 	u8 ssc;
-+	u8 assr;
- 	struct dp_link_info link_info = {0};
- 
- 	dp_ctrl_config_ctrl(ctrl);
-@@ -1249,6 +1250,12 @@ static int dp_ctrl_link_train(struct dp_ctrl_private *ctrl,
- 	drm_dp_dpcd_write(ctrl->aux, DP_MAIN_LINK_CHANNEL_CODING_SET,
- 				&encoding, 1);
- 
-+	if (drm_dp_alternate_scrambler_reset_cap(dpcd)) {
-+		assr = DP_ALTERNATE_SCRAMBLER_RESET_ENABLE;
-+		drm_dp_dpcd_write(ctrl->aux, DP_EDP_CONFIGURATION_SET,
-+				&assr, 1);
-+	}
-+
- 	ret = dp_ctrl_link_train_1(ctrl, training_step);
- 	if (ret) {
- 		DRM_ERROR("link training #1 failed. ret=%d\n", ret);
--- 
-2.7.4
+call it "AOSP extensions ..” to not confused it with the AOSP release version. I can also fix myself before applying if you like.
+
+> +
+> +	/* Do not support very old versions. */
+> +	if (version_supported < 95) {
+> +		bt_dev_warn(hdev, "AOSP capabilities version %u too old",
+> +			    version_supported);
+> +		goto done;
+> +	}
+> +
+> +	if (version_supported >= 95 && version_supported < 98) {
+> +		bt_dev_warn(hdev, "AOSP quality report is not supported");
+> +		goto done;
+> +	}
+
+I think you are bit too pedantic. Not that this bad in general, but you already established that your are >= 95 with the check above. So not need to repeat that here.
+
+> +
+> +	if (version_supported >= 98) {
+
+Same here. You already established that you are >= 98 with the check above.
+
+> +		if (skb->len < VENDOR_CAPA_0_98_SIZE)
+> +			goto length_error;
+> +
+> +		/* The bluetooth_quality_report_support is defined at version
+> +		 * v0.98. Refer to
+> +		 * https://cs.android.com/android/platform/superproject/+/
+> +		 *         master:system/bt/gd/hci/controller.cc;l=477
+> +		 */
+> +		if (rp->bluetooth_quality_report_support) {
+> +			hdev->aosp_quality_report = true;
+> +			bt_dev_info(hdev, "AOSP quality report is supported");
+> +		}
+> +	}
+> +
+> +	goto done;
+> +
+> +length_error:
+> +	bt_dev_err(hdev, "AOSP capabilities length %d too short", skb->len);
+> 
+> +done:
+> 	kfree_skb(skb);
+> }
+
+Rest looks great. Either send me a new version or I fix it before applying.
+
+Regards
+
+Marcel
 
