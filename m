@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A00A44382B
+	by mail.lfdr.de (Postfix) with ESMTP id A417844382C
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 23:02:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231669AbhKBWE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 18:04:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33830 "EHLO
+        id S231795AbhKBWFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 18:05:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231240AbhKBWEy (ORCPT
+        with ESMTP id S231325AbhKBWEy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 2 Nov 2021 18:04:54 -0400
 Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 478FBC061714
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9698FC061203
         for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 15:02:19 -0700 (PDT)
 Received: from meer.lwn.net (unknown [IPv6:2601:281:8300:104d::5f6])
-        by ms.lwn.net (Postfix) with ESMTPA id D52EE9B4;
-        Tue,  2 Nov 2021 22:02:18 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net D52EE9B4
+        by ms.lwn.net (Postfix) with ESMTPA id 420895EC9;
+        Tue,  2 Nov 2021 22:02:19 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 420895EC9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1635890539; bh=O1Oizdi3GsjZEryfYChbmXQeObgHv1rXkYHFf6Oq9eA=;
+        t=1635890539; bh=z7JqN0V/kJpMc6ONNBYeEyvnAIoTbnkPbVF3QDSXrtU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qOTwfwZOhLOb8J+hwbPlIBUG58F1RSYCHwkD7JSeKDOPvYW8mJwa9lO7zGCtxHfbi
-         E7y21QGEglqBX8fQ7xbSC69mTB3GLKOqsToOI6sS10r4rpd7aBSVDGUxmHJe9gO8uG
-         JmkN6mDqiiGVzb+3es+tTt/ccPeFqlcU0pFMi8UWe7tCDyP8ZI5fO/pmS9KdKorD8T
-         M7j5s3qzmlkTkdkyQhOTf6mACiSs/EmBR5vi6n/Dg1jG1yLWXgW/SawO9sxS+j71Fj
-         GJEqgqeZG9zgOI/TihyxFD3cX1xOrKVPze8MP9YLT3eDHuhElHwFiVm05QNArrhRpp
-         K1duzKwtGBq2A==
+        b=epq70gJl7bWpc2yx7+npXCMJb/BQ8BNsn0lBu+OHZdoeLuVHNWYdeWVSJ2fsJzs83
+         HkT/3Kw4PZDGNwNlH37nnn+Gs+zuwvh9lQeG4KZjSlFxL/6es4s3AaOgikIwSEaBA2
+         jwQJPY/JBvKIzPOL7f+wfpcmsb8nbBMeumYLxuHaXOY8u5e5rs2AUpLsV2vafckpYa
+         yomywvojZto+X0JUF9BppPMrK6EF6qnz8gzOWKFRxTLnNdmAxM9d72G6BWpFNzM7DD
+         mIR/kOAoTl1tor+my9A58JEtzwcnr82mQg7LDXsH+3dP2uVBHlbn8ePoo4241jfigF
+         IO9IP8Pq1kIpg==
 From:   Jonathan Corbet <corbet@lwn.net>
 To:     linux-kernel@vger.kernel.org
 Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Nicolas Pitre <npitre@baylibre.com>,
-        Mike Rapoport <rppt@kernel.org>, Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH 3/9] Remove unused header <linux/cnt32_to_63.h>
-Date:   Tue,  2 Nov 2021 16:01:57 -0600
-Message-Id: <20211102220203.940290-4-corbet@lwn.net>
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alessandro Rubini <rubini@gnudd.com>
+Subject: [PATCH 4/9] Remove unused header <linux/sdb.h>
+Date:   Tue,  2 Nov 2021 16:01:58 -0600
+Message-Id: <20211102220203.940290-5-corbet@lwn.net>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211102220203.940290-1-corbet@lwn.net>
 References: <20211102220203.940290-1-corbet@lwn.net>
@@ -45,129 +45,184 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit fb37409a01b0 ("arch: remove unicore32 port) deleted the last file
-that included <linux/cnt32_to_63.h>, but left that header file behind.
-Nothing uses it, delete it now.
+Commit 6a80b30086b8 ("fmc: Delete the FMC subsystem") removed the last user
+of <linux/sdb.h>, but left the header file behind.  Nothing uses this file,
+delete it now.
 
-Cc: Nicolas Pitre <npitre@baylibre.com>
-Cc: Mike Rapoport <rppt@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: Alessandro Rubini <rubini@gnudd.com>
 Signed-off-by: Jonathan Corbet <corbet@lwn.net>
 ---
- include/linux/cnt32_to_63.h | 104 ------------------------------------
- 1 file changed, 104 deletions(-)
- delete mode 100644 include/linux/cnt32_to_63.h
+ include/linux/sdb.h | 160 --------------------------------------------
+ 1 file changed, 160 deletions(-)
+ delete mode 100644 include/linux/sdb.h
 
-diff --git a/include/linux/cnt32_to_63.h b/include/linux/cnt32_to_63.h
+diff --git a/include/linux/sdb.h b/include/linux/sdb.h
 deleted file mode 100644
-index 064428479f2d..000000000000
---- a/include/linux/cnt32_to_63.h
+index a2404a2bbd10..000000000000
+--- a/include/linux/sdb.h
 +++ /dev/null
-@@ -1,104 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-only */
+@@ -1,160 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
 -/*
-- *  Extend a 32-bit counter to 63 bits
-- *
-- *  Author:	Nicolas Pitre
-- *  Created:	December 3, 2006
-- *  Copyright:	MontaVista Software, Inc.
+- * This is the official version 1.1 of sdb.h
+- */
+-#ifndef __SDB_H__
+-#define __SDB_H__
+-#ifdef __KERNEL__
+-#include <linux/types.h>
+-#else
+-#include <stdint.h>
+-#endif
+-
+-/*
+- * All structures are 64 bytes long and are expected
+- * to live in an array, one for each interconnect.
+- * Most fields of the structures are shared among the
+- * various types, and most-specific fields are at the
+- * beginning (for alignment reasons, and to keep the
+- * magic number at the head of the interconnect record
 - */
 -
--#ifndef __LINUX_CNT32_TO_63_H__
--#define __LINUX_CNT32_TO_63_H__
--
--#include <linux/compiler.h>
--#include <linux/types.h>
--#include <asm/byteorder.h>
--
--/* this is used only to give gcc a clue about good code generation */
--union cnt32_to_63 {
--	struct {
--#if defined(__LITTLE_ENDIAN)
--		u32 lo, hi;
--#elif defined(__BIG_ENDIAN)
--		u32 hi, lo;
--#endif
--	};
--	u64 val;
+-/* Product, 40 bytes at offset 24, 8-byte aligned
+- *
+- * device_id is vendor-assigned; version is device-specific,
+- * date is hex (e.g 0x20120501), name is UTF-8, blank-filled
+- * and not terminated with a 0 byte.
+- */
+-struct sdb_product {
+-	uint64_t		vendor_id;	/* 0x18..0x1f */
+-	uint32_t		device_id;	/* 0x20..0x23 */
+-	uint32_t		version;	/* 0x24..0x27 */
+-	uint32_t		date;		/* 0x28..0x2b */
+-	uint8_t			name[19];	/* 0x2c..0x3e */
+-	uint8_t			record_type;	/* 0x3f */
 -};
 -
--
--/**
-- * cnt32_to_63 - Expand a 32-bit counter to a 63-bit counter
-- * @cnt_lo: The low part of the counter
+-/*
+- * Component, 56 bytes at offset 8, 8-byte aligned
 - *
-- * Many hardware clock counters are only 32 bits wide and therefore have
-- * a relatively short period making wrap-arounds rather frequent.  This
-- * is a problem when implementing sched_clock() for example, where a 64-bit
-- * non-wrapping monotonic value is expected to be returned.
-- *
-- * To overcome that limitation, let's extend a 32-bit counter to 63 bits
-- * in a completely lock free fashion. Bits 0 to 31 of the clock are provided
-- * by the hardware while bits 32 to 62 are stored in memory.  The top bit in
-- * memory is used to synchronize with the hardware clock half-period.  When
-- * the top bit of both counters (hardware and in memory) differ then the
-- * memory is updated with a new value, incrementing it when the hardware
-- * counter wraps around.
-- *
-- * Because a word store in memory is atomic then the incremented value will
-- * always be in synch with the top bit indicating to any potential concurrent
-- * reader if the value in memory is up to date or not with regards to the
-- * needed increment.  And any race in updating the value in memory is harmless
-- * as the same value would simply be stored more than once.
-- *
-- * The restrictions for the algorithm to work properly are:
-- *
-- * 1) this code must be called at least once per each half period of the
-- *    32-bit counter;
-- *
-- * 2) this code must not be preempted for a duration longer than the
-- *    32-bit counter half period minus the longest period between two
-- *    calls to this code;
-- *
-- * Those requirements ensure proper update to the state bit in memory.
-- * This is usually not a problem in practice, but if it is then a kernel
-- * timer should be scheduled to manage for this code to be executed often
-- * enough.
-- *
-- * And finally:
-- *
-- * 3) the cnt_lo argument must be seen as a globally incrementing value,
-- *    meaning that it should be a direct reference to the counter data which
-- *    can be evaluated according to a specific ordering within the macro,
-- *    and not the result of a previous evaluation stored in a variable.
-- *
-- * For example, this is wrong:
-- *
-- *	u32 partial = get_hw_count();
-- *	u64 full = cnt32_to_63(partial);
-- *	return full;
-- *
-- * This is fine:
-- *
-- *	u64 full = cnt32_to_63(get_hw_count());
-- *	return full;
-- *
-- * Note that the top bit (bit 63) in the returned value should be considered
-- * as garbage.  It is not cleared here because callers are likely to use a
-- * multiplier on the returned value which can get rid of the top bit
-- * implicitly by making the multiplier even, therefore saving on a runtime
-- * clear-bit instruction. Otherwise caller must remember to clear the top
-- * bit explicitly.
+- * The address range is first to last, inclusive
+- * (for example 0x100000 - 0x10ffff)
 - */
--#define cnt32_to_63(cnt_lo) \
--({ \
--	static u32 __m_cnt_hi; \
--	union cnt32_to_63 __x; \
--	__x.hi = __m_cnt_hi; \
-- 	smp_rmb(); \
--	__x.lo = (cnt_lo); \
--	if (unlikely((s32)(__x.hi ^ __x.lo) < 0)) \
--		__m_cnt_hi = __x.hi = (__x.hi ^ 0x80000000) + (__x.hi >> 31); \
--	__x.val; \
--})
+-struct sdb_component {
+-	uint64_t		addr_first;	/* 0x08..0x0f */
+-	uint64_t		addr_last;	/* 0x10..0x17 */
+-	struct sdb_product	product;	/* 0x18..0x3f */
+-};
 -
--#endif
+-/* Type of the SDB record */
+-enum sdb_record_type {
+-	sdb_type_interconnect	= 0x00,
+-	sdb_type_device		= 0x01,
+-	sdb_type_bridge		= 0x02,
+-	sdb_type_integration	= 0x80,
+-	sdb_type_repo_url	= 0x81,
+-	sdb_type_synthesis	= 0x82,
+-	sdb_type_empty		= 0xFF,
+-};
+-
+-/* Type 0: interconnect (first of the array)
+- *
+- * sdb_records is the length of the table including this first
+- * record, version is 1. The bus type is enumerated later.
+- */
+-#define				SDB_MAGIC	0x5344422d /* "SDB-" */
+-struct sdb_interconnect {
+-	uint32_t		sdb_magic;	/* 0x00-0x03 */
+-	uint16_t		sdb_records;	/* 0x04-0x05 */
+-	uint8_t			sdb_version;	/* 0x06 */
+-	uint8_t			sdb_bus_type;	/* 0x07 */
+-	struct sdb_component	sdb_component;	/* 0x08-0x3f */
+-};
+-
+-/* Type 1: device
+- *
+- * class is 0 for "custom device", other values are
+- * to be standardized; ABI version is for the driver,
+- * bus-specific bits are defined by each bus (see below)
+- */
+-struct sdb_device {
+-	uint16_t		abi_class;	/* 0x00-0x01 */
+-	uint8_t			abi_ver_major;	/* 0x02 */
+-	uint8_t			abi_ver_minor;	/* 0x03 */
+-	uint32_t		bus_specific;	/* 0x04-0x07 */
+-	struct sdb_component	sdb_component;	/* 0x08-0x3f */
+-};
+-
+-/* Type 2: bridge
+- *
+- * child is the address of the nested SDB table
+- */
+-struct sdb_bridge {
+-	uint64_t		sdb_child;	/* 0x00-0x07 */
+-	struct sdb_component	sdb_component;	/* 0x08-0x3f */
+-};
+-
+-/* Type 0x80: integration
+- *
+- * all types with bit 7 set are meta-information, so
+- * software can ignore the types it doesn't know. Here we
+- * just provide product information for an aggregate device
+- */
+-struct sdb_integration {
+-	uint8_t			reserved[24];	/* 0x00-0x17 */
+-	struct sdb_product	product;	/* 0x08-0x3f */
+-};
+-
+-/* Type 0x81: Top module repository url
+- *
+- * again, an informative field that software can ignore
+- */
+-struct sdb_repo_url {
+-	uint8_t			repo_url[63];	/* 0x00-0x3e */
+-	uint8_t			record_type;	/* 0x3f */
+-};
+-
+-/* Type 0x82: Synthesis tool information
+- *
+- * this informative record
+- */
+-struct sdb_synthesis {
+-	uint8_t			syn_name[16];	/* 0x00-0x0f */
+-	uint8_t			commit_id[16];	/* 0x10-0x1f */
+-	uint8_t			tool_name[8];	/* 0x20-0x27 */
+-	uint32_t		tool_version;	/* 0x28-0x2b */
+-	uint32_t		date;		/* 0x2c-0x2f */
+-	uint8_t			user_name[15];	/* 0x30-0x3e */
+-	uint8_t			record_type;	/* 0x3f */
+-};
+-
+-/* Type 0xff: empty
+- *
+- * this allows keeping empty slots during development,
+- * so they can be filled later with minimal efforts and
+- * no misleading description is ever shipped -- hopefully.
+- * It can also be used to pad a table to a desired length.
+- */
+-struct sdb_empty {
+-	uint8_t			reserved[63];	/* 0x00-0x3e */
+-	uint8_t			record_type;	/* 0x3f */
+-};
+-
+-/* The type of bus, for bus-specific flags */
+-enum sdb_bus_type {
+-	sdb_wishbone = 0x00,
+-	sdb_data     = 0x01,
+-};
+-
+-#define SDB_WB_WIDTH_MASK	0x0f
+-#define SDB_WB_ACCESS8			0x01
+-#define SDB_WB_ACCESS16			0x02
+-#define SDB_WB_ACCESS32			0x04
+-#define SDB_WB_ACCESS64			0x08
+-#define SDB_WB_LITTLE_ENDIAN	0x80
+-
+-#define SDB_DATA_READ		0x04
+-#define SDB_DATA_WRITE		0x02
+-#define SDB_DATA_EXEC		0x01
+-
+-#endif /* __SDB_H__ */
 -- 
 2.31.1
 
