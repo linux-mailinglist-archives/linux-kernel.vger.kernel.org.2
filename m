@@ -2,59 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AACB3443591
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 19:27:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 162DB443593
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 19:28:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235068AbhKBSaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 14:30:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57758 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229791AbhKBSaU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 14:30:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EDA961051;
-        Tue,  2 Nov 2021 18:27:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635877665;
-        bh=DZplYRBGOrJPP0ubuE5YqCmm59G6QUPY/gj/biitGqk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=u0YYshMLr4md2FaV9dRKZULmDv6Cb1m03TbIiD7tHFLhUwZniDQx0cRAc/OQ4C1Wf
-         /sj92YhBaruQzq95oQWSWVR+2oMXKPfpXtZolDi4vkorcegBT4kh5lbbDGPjyOsE20
-         UHKoE5/gmbjy+GLrCcaWe2G1yBKUWnk0gBoT3SU5OyONdGbrVFXE3cE2hdvbqwJyBj
-         1+0x3EGj/fngyYrVGiTViyNTXjZYbfgdjEKh6rPrBxqKzw4pTGhiyh+DUSC8N9rFY/
-         Wbrp/lRzSCCVNK1pA82zuOVY5jGmTtxWz6hdoaD66bGTuGaH29FvRyAP96G0UB/X94
-         Q2vlPZiUiOs4w==
-Received: by mail-lf1-f41.google.com with SMTP id j2so418033lfg.3;
-        Tue, 02 Nov 2021 11:27:45 -0700 (PDT)
-X-Gm-Message-State: AOAM531b2SfzuHQ/bU+ZmUOatPsmc8aWjWSw325zhJwZ7KjHgrMnH5Yo
-        U68pP+rSCGuIZDptBaMQeSaFZ59DFO+DQCUibEc=
-X-Google-Smtp-Source: ABdhPJyhu29XICJvupMdivCJzmoC+g4vkRN50vLmrVsYv+mISI3cwD18BFEp8tSPZ6nGA5bxvxb8BR5dMdXZ/oh4E/0=
-X-Received: by 2002:ac2:5d4b:: with SMTP id w11mr35116383lfd.676.1635877663635;
- Tue, 02 Nov 2021 11:27:43 -0700 (PDT)
+        id S235059AbhKBSbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 14:31:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40856 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229697AbhKBSba (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 14:31:30 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DB93C061714;
+        Tue,  2 Nov 2021 11:28:55 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id 5so731144edw.7;
+        Tue, 02 Nov 2021 11:28:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xLglhMyyfoIuxmmQNs2EF8bn784/haAr2jzi2MaCmXg=;
+        b=izphqh718X2gyyHaTdPEjxlb1RNWJJyIDo+G/kyMGT7nk9oFsK2Z4G90vf7m9ydiVv
+         EybcgoBzQnqzJ9vgSo3qHoXNg9vzRDy2tWVj4BUOSP89T91uL4LDNfTWBkjAIMuaS6tJ
+         Iq/PUPAsxx0TlFJv3E+odGslsMoOltBxFLutJRrRcWxtLSg0ovZaixHumysHDUPdqFB+
+         eStSvsSyliREAozWM0oUqU53rxz28vQDI+82ltNcUARk7NjPb9sjI1v/zDqFh038LtnN
+         WHhz3/vI/RmUwv17KstNGIqrBa1EVI2oHyCSHJTnXzcEhW0m8GVchO8DWPGhjksAjT/g
+         eBEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xLglhMyyfoIuxmmQNs2EF8bn784/haAr2jzi2MaCmXg=;
+        b=St0T9xKS1BQDmvhb4QKGOalJIwysMeh/aCBpLq+iIb72AUfg5Y/NKwc8BP7k8oXCXV
+         OFxGwg7+a262FUqGZASRZ6KA1zWnuR91FyKsoWg92adCIR7Rnjs4MZKq88yxHU+AdFZa
+         MKqeM6bOpu7tkGXflAaQV7XdNQke2uSxXLlLnyoPrHN9ByNnwTeqBfcADK+lP6hKE7ey
+         SX0jeI8fMf3EcOVCHhzgJduW3qz/SbSmFnsHBh8uFiIMsh7bVh08DP8aD87vm1yFkw0c
+         NmF/39pv5o8qtm9nk7OUs7EqNKfvD7gYRw9Gh/6t9a5TAF8+cKfw09piVZ7gfgVDDIqq
+         OVVQ==
+X-Gm-Message-State: AOAM5302wFEAtyq7pyWvUrBAa0D5hAnhOAweyosOJAkqj9dmtG44UkLC
+        bPIRYp1ckP9kJRCJsN7zcFc=
+X-Google-Smtp-Source: ABdhPJykacMMEHQ/+BlOKgVFk/HygSip7cyiy6kUdL/wRrc2hXSMDqKG89FkDhEdBHJClUyQeY1aiQ==
+X-Received: by 2002:a05:6402:35c1:: with SMTP id z1mr25158969edc.141.1635877733495;
+        Tue, 02 Nov 2021 11:28:53 -0700 (PDT)
+Received: from Ansuel-xps.localdomain (93-42-71-246.ip85.fastwebnet.it. [93.42.71.246])
+        by smtp.gmail.com with ESMTPSA id m15sm11939104edd.5.2021.11.02.11.28.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Nov 2021 11:28:53 -0700 (PDT)
+Date:   Tue, 2 Nov 2021 19:28:50 +0100
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [net-next PATCH] net: dsa: qca8k: make sure PAD0 MAC06 exchange
+ is disabled
+Message-ID: <YYGDYoToj2r/uYIE@Ansuel-xps.localdomain>
+References: <20211102175629.24102-1-ansuelsmth@gmail.com>
+ <20211102182655.t74adxlw3q3ctlas@skbuf>
 MIME-Version: 1.0
-References: <7e805797dd70bc40aac9343f82548324ba28cd72.1635407415.git.yang.guang5@zte.com.cn>
-In-Reply-To: <7e805797dd70bc40aac9343f82548324ba28cd72.1635407415.git.yang.guang5@zte.com.cn>
-From:   Song Liu <song@kernel.org>
-Date:   Tue, 2 Nov 2021 11:27:32 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW59RWDaM6qL1LFJ1E2_=UOxOficDoUt=N46suZmTS54zA@mail.gmail.com>
-Message-ID: <CAPhsuW59RWDaM6qL1LFJ1E2_=UOxOficDoUt=N46suZmTS54zA@mail.gmail.com>
-Subject: Re: [PATCH v2] raid5-ppl: use swap() to make code cleaner
-To:     cgel.zte@gmail.com
-Cc:     Paul Menzel <pmenzel@molgen.mpg.de>, linux-kbuild@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>, zealci@zte.com.cn,
-        yang.guang5@zte.com.cn
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211102182655.t74adxlw3q3ctlas@skbuf>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 1:48 AM <cgel.zte@gmail.com> wrote:
+On Tue, Nov 02, 2021 at 08:26:55PM +0200, Vladimir Oltean wrote:
+> On Tue, Nov 02, 2021 at 06:56:29PM +0100, Ansuel Smith wrote:
+> > Some device set MAC06 exchange in the bootloader. This cause some
+> > problem as we don't support this strange mode and we just set the port6
+> > as the primary CPU port. With MAC06 exchange, PAD0 reg configure port6
+> > instead of port0. Add an extra check and explicitly disable MAC06 exchange
+> > to correctly configure the port PAD config.
+> > 
+> > Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> > ---
+> 
+> Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+> 
+> Since net-next has closed, please add
+> 
+> Fixes: 3fcf734aa482 ("net: dsa: qca8k: add support for cpu port 6")
+> 
+> and resend to the "net" tree.
 >
-> From: Yang Guang <yang.guang5@zte.com.cn>
->
-> Use the macro `swap()` defined in `include/linux/minmax.h` to avoid
-> opencoding it.
->
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Yang Guang <yang.guang5@zte.com.cn>
 
-Applied to md-next. Thanks!
+Oh sorry! I checked http://vger.kernel.org/~davem/net-next.html
+before posting and it does say it's open. Will resend sorry.
+
+> >  drivers/net/dsa/qca8k.c | 8 ++++++++
+> >  drivers/net/dsa/qca8k.h | 1 +
+> >  2 files changed, 9 insertions(+)
+> > 
+> > Some comments here:
+> > Resetting the switch using the sw reg doesn't reset the port PAD
+> > configuration. I was thinking if it would be better to clear all the
+> > pad configuration but considering that the entire reg is set by phylink
+> > mac config, I think it's not necessary as the PAD related to the port will
+> > be reset anyway with the new values. Have a dirty configuration on PAD6
+> > doesn't cause any problem as we have that port disabled and it would be
+> > reset and configured anyway if defined.
+> > 
+> > diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
+> > index ea7f12778922..a429c9750add 100644
+> > --- a/drivers/net/dsa/qca8k.c
+> > +++ b/drivers/net/dsa/qca8k.c
+> > @@ -1109,6 +1109,14 @@ qca8k_setup(struct dsa_switch *ds)
+> >  	if (ret)
+> >  		return ret;
+> >  
+> > +	/* Make sure MAC06 is disabled */
+> > +	ret = qca8k_reg_clear(priv, QCA8K_REG_PORT0_PAD_CTRL,
+> > +			      QCA8K_PORT0_PAD_MAC06_EXCHANGE_EN);
+> > +	if (ret) {
+> > +		dev_err(priv->dev, "failed disabling MAC06 exchange");
+> > +		return ret;
+> > +	}
+> > +
+> >  	/* Enable CPU Port */
+> >  	ret = qca8k_reg_set(priv, QCA8K_REG_GLOBAL_FW_CTRL0,
+> >  			    QCA8K_GLOBAL_FW_CTRL0_CPU_PORT_EN);
+> > diff --git a/drivers/net/dsa/qca8k.h b/drivers/net/dsa/qca8k.h
+> > index e10571a398c9..128b8cf85e08 100644
+> > --- a/drivers/net/dsa/qca8k.h
+> > +++ b/drivers/net/dsa/qca8k.h
+> > @@ -34,6 +34,7 @@
+> >  #define   QCA8K_MASK_CTRL_DEVICE_ID_MASK		GENMASK(15, 8)
+> >  #define   QCA8K_MASK_CTRL_DEVICE_ID(x)			((x) >> 8)
+> >  #define QCA8K_REG_PORT0_PAD_CTRL			0x004
+> > +#define   QCA8K_PORT0_PAD_MAC06_EXCHANGE_EN		BIT(31)
+> >  #define   QCA8K_PORT0_PAD_SGMII_RXCLK_FALLING_EDGE	BIT(19)
+> >  #define   QCA8K_PORT0_PAD_SGMII_TXCLK_FALLING_EDGE	BIT(18)
+> >  #define QCA8K_REG_PORT5_PAD_CTRL			0x008
+> > -- 
+> > 2.32.0
+> > 
+
+-- 
+	Ansuel
