@@ -2,68 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DADC44301A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 15:16:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59E5A443011
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 15:15:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231314AbhKBOTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 10:19:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229712AbhKBOTP (ORCPT
+        id S230379AbhKBOSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 10:18:18 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:49520 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229712AbhKBOSR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 10:19:15 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E97D4C061714;
-        Tue,  2 Nov 2021 07:16:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Frpr96sflPeeQPJcNwVDoz7On83K64HxlUkHEJTrzvk=; b=dzP+N8YEsV5NKFfEHD4ddUohAc
-        dANaLgnKRkAy3iIPJpjjFVP2o+c1WUllO471Y0Pp37vrPm5RqJmZzzWAo00q44fMMvoYOsYf4yxxR
-        KwUZRxhYlYEg2GcxAxgCu7dd7+Eq+q/mIpvdArPTO+pEJI6uSG0mNx8X9OQJqUoN+lvMUFh97uu9X
-        P+f5rO0VBpOii7AeA36S+CtTe/D8FtPNzlYk4i2Xih83VzaJ49SnqpKZgT50lEHcXJSjONvtlVl4p
-        vLmqp1bKS8FBqvAu63U0mxGPEwGL+ypD7kK7JiP2TaManjgx/cO+sLscyEfFAtVWBLiLpldNwlzTl
-        aQ9gDDXA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mhuZS-004Xf5-VB; Tue, 02 Nov 2021 14:15:37 +0000
-Date:   Tue, 2 Nov 2021 14:15:26 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH 02/21] block: Add bio_add_folio()
-Message-ID: <YYFH/k8oo1r4fl9p@casper.infradead.org>
-References: <20211101203929.954622-1-willy@infradead.org>
- <20211101203929.954622-3-willy@infradead.org>
- <0384e51b-0938-dccb-8c70-caa1f2b35d34@kernel.dk>
+        Tue, 2 Nov 2021 10:18:17 -0400
+X-UUID: 3648d3006f054c0d8cbbbf7b13307803-20211102
+X-UUID: 3648d3006f054c0d8cbbbf7b13307803-20211102
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
+        (envelope-from <mark-pk.tsai@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 366777280; Tue, 02 Nov 2021 22:15:39 +0800
+Received: from mtkexhb02.mediatek.inc (172.21.101.103) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 2 Nov 2021 22:15:37 +0800
+Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
+ mtkexhb02.mediatek.inc (172.21.101.103) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 2 Nov 2021 22:15:37 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs10n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.792.3 via Frontend Transport; Tue, 2 Nov 2021 22:15:37 +0800
+From:   Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+To:     <ohad@wizery.com>, <bjorn.andersson@linaro.org>,
+        <mathieu.poirier@linaro.org>
+CC:     <matthias.bgg@gmail.com>, <linux-remoteproc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <mark-pk.tsai@mediatek.com>,
+        <yj.chiang@mediatek.com>
+Subject: [PATCH v2] remoteproc: use %pe format string to print return error code
+Date:   Tue, 2 Nov 2021 22:15:35 +0800
+Message-ID: <20211102141535.28372-1-mark-pk.tsai@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0384e51b-0938-dccb-8c70-caa1f2b35d34@kernel.dk>
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 01, 2021 at 02:51:37PM -0600, Jens Axboe wrote:
-> On 11/1/21 2:39 PM, Matthew Wilcox (Oracle) wrote:
-> > This is a thin wrapper around bio_add_page().  The main advantage here
-> > is the documentation that stupidly large folios are not supported.
-> > It's not currently possible to allocate stupidly large folios, but if
-> > it ever becomes possible, this function will fail gracefully instead of
-> > doing I/O to the wrong bytes.
-> 
-> Might be better with UINT_MAX instead of stupidly here, because then
-> it immediately makes sense. Can you make a change to that effect?
+Use %pe format string to print return error code which
+make the error message easier to understand.
 
-I'll make it "that folios larger than 2GiB are not supported.  It's not
-currently possible to allocate folios that large,"
+Signed-off-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+---
+ drivers/remoteproc/remoteproc_core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> With that:
-> 
-> Reviewed-by: Jens Axboe <axboe@kernel.dk>
-> 
-> -- 
-> Jens Axboe
-> 
+diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+index 502b6604b757..2242da320368 100644
+--- a/drivers/remoteproc/remoteproc_core.c
++++ b/drivers/remoteproc/remoteproc_core.c
+@@ -575,8 +575,8 @@ static int rproc_handle_vdev(struct rproc *rproc, void *ptr,
+ 					   dma_get_mask(rproc->dev.parent));
+ 	if (ret) {
+ 		dev_warn(dev,
+-			 "Failed to set DMA mask %llx. Trying to continue... %x\n",
+-			 dma_get_mask(rproc->dev.parent), ret);
++			 "Failed to set DMA mask %llx. Trying to continue... (%pe)\n",
++			 dma_get_mask(rproc->dev.parent), ERR_PTR(ret));
+ 	}
+ 
+ 	/* parse the vrings */
+-- 
+2.18.0
+
