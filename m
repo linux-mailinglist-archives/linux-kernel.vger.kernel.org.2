@@ -2,165 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CA794436D9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 20:57:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F15E4436E0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 20:59:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231222AbhKBT76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 15:59:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230060AbhKBT74 (ORCPT
+        id S231148AbhKBUBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 16:01:44 -0400
+Received: from mail-pl1-f175.google.com ([209.85.214.175]:33296 "EHLO
+        mail-pl1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229813AbhKBUBn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 15:59:56 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 867A3C061203
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 12:57:21 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id n8so533874plf.4
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 12:57:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=27/CElpQAMzqqxlHmQpeS6Xg/mCPIF70OaGp9omQL+c=;
-        b=gnmFikOM0EZHcxypXtFnpwLzOY0Njy6YMU8YvFC8zWIuvUdPg0ng/ShUl1GQH9946d
-         j/uml9OxPc8/cIYdu5U+X7/EKsdz41DbrpobujjKkxErQyj+0U9SSrXqSHvGaLweJbBI
-         Vw7WMgzYl6YtyH/wl3L+/YQVZQ1SZP0LZVeeAAYx2qvIb277Lj4JJI/0NEI48DBcNhCj
-         ssj6g52WUR3TmsF60UJ8OwLblx0dz/v1O2jc2hcUaypWBm5VF8uFZKYSAcAvUAIlV84s
-         PXKSkGIa5Efu1x+AUfXtKpWi7fsvOt9V8k6CS6FB5Onm4Onqik2F6aJHvmb8xZ4Ntuo0
-         t7qA==
+        Tue, 2 Nov 2021 16:01:43 -0400
+Received: by mail-pl1-f175.google.com with SMTP id s24so617319plp.0;
+        Tue, 02 Nov 2021 12:59:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=27/CElpQAMzqqxlHmQpeS6Xg/mCPIF70OaGp9omQL+c=;
-        b=krt7C4cfa24MsCodKtKMDwOeLiBS/5RPWu0CkySwWFDmaHN+31VRKRI05xc2xw4NMg
-         IfoAltvr4WgCJObYbgD+yIunoPxkelKxyIVesqmwVJQ5ltnrjO/cuL4hquZ5EYQ+7vQJ
-         gNBqhk71JZIU1HsYC5mPpbncFuH/W0ucUmTcShhOJPayfed+hk5uFubsT5lCXOCWtPWX
-         i0iIuqWA0Hw2XZLR9zD8Z0N9K+lIdNZ0Fjxxk3va0MKYl98kYkMjZ9EJM56PvXfXYxTX
-         p4r7T93O4WStFObLfCL4k6i62TDDStjEP+hhcRRGBpxzO9S7mpkfB8NFAs2IOrpaoh9G
-         L7QQ==
-X-Gm-Message-State: AOAM531CFizSz9Wmhl4xWHrXWs39cxAdsbBKE7K8P9j2WpBlTEUf8a1h
-        NnorIFF/7w58/8DG20sn+gTXtewd2SoVmUbk+h19Cw==
-X-Google-Smtp-Source: ABdhPJzq586k0UH/EQKwqZQVt2ykdjLrrPOPnL+mNuoKsJoIKHfRoBAF8+snuu5yn1iHwpf7ywngttf1p1qav9DOqoI=
-X-Received: by 2002:a17:90a:a085:: with SMTP id r5mr9265133pjp.8.1635883041063;
- Tue, 02 Nov 2021 12:57:21 -0700 (PDT)
+        bh=RkF10ejv+ZfbbBVLr9JViJZH+YXp2/4h2Ubp9f1gi2c=;
+        b=mc7wf9S3vGDNWjNgPTnaD5ghHG98OpxUGSiTEfwtyeU5sls3AGHrhR7gFuK7F4AwdJ
+         tTITkyIRovka5daBa0lqOS3NqA6sHBNwdiGvtBp41KP5xSOo+kLJByf/IFRTOQtmu2fU
+         kHFQQV0pfX1T+dXoZwEY2VJLZPG6GRqtywPHgdRCaAyBwrV2J5aNuP3ahc1+nieeoYpy
+         idck+y2EdfvRsA+iYx8HKTD4ztf6FygMgffKsg8re0h5L9UBZNnJ90ahqgVuN2V4Mdi8
+         FANMx4ATyYy5Yww90SNtTY8Ye7bFrix/1EG5jZ7olpeZjql5J7QTJNZ/2Z8+X5dt7HHo
+         HcUQ==
+X-Gm-Message-State: AOAM531k+kF1pOdnmbwhvEJRnLCzYmTHEFE02Kh7MwV257GEThRaEOoA
+        Lovu4RwQjbJctSwJJGThvwRdCIJwO/oYUiTdLuo=
+X-Google-Smtp-Source: ABdhPJzAfyeKaGl5VCZ/L0KzMJgJN7/MZZr3d178DvhBBn4vWjScd0QbjXhDeG6xtMzYne48NrYC54CQIPNWsHmSO+U=
+X-Received: by 2002:a17:903:11c5:b0:13f:ef40:e319 with SMTP id
+ q5-20020a17090311c500b0013fef40e319mr33828546plh.33.1635883148168; Tue, 02
+ Nov 2021 12:59:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211021001059.438843-1-jane.chu@oracle.com> <YXFPfEGjoUaajjL4@infradead.org>
- <e89a2b17-3f03-a43e-e0b9-5d2693c3b089@oracle.com> <YXJN4s1HC/Y+KKg1@infradead.org>
- <2102a2e6-c543-2557-28a2-8b0bdc470855@oracle.com> <YXj2lwrxRxHdr4hb@infradead.org>
- <20211028002451.GB2237511@magnolia> <YYDYUCCiEPXhZEw0@infradead.org>
-In-Reply-To: <YYDYUCCiEPXhZEw0@infradead.org>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 2 Nov 2021 12:57:10 -0700
-Message-ID: <CAPcyv4j8snuGpy=z6BAXogQkP5HmTbqzd6e22qyERoNBvFKROw@mail.gmail.com>
-Subject: Re: [dm-devel] [PATCH 0/6] dax poison recovery with RWF_RECOVERY_DATA flag
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        Jane Chu <jane.chu@oracle.com>,
-        "david@fromorbit.com" <david@fromorbit.com>,
-        "vishal.l.verma@intel.com" <vishal.l.verma@intel.com>,
-        "dave.jiang@intel.com" <dave.jiang@intel.com>,
-        "agk@redhat.com" <agk@redhat.com>,
-        "snitzer@redhat.com" <snitzer@redhat.com>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "ira.weiny@intel.com" <ira.weiny@intel.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "vgoyal@redhat.com" <vgoyal@redhat.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
+References: <20211102161125.1144023-1-kernel@esmil.dk> <20211102161125.1144023-10-kernel@esmil.dk>
+ <CAHp75Ve-P8DR00mtRP_NkrXgB4nsZ+qBkgBen94iTcPqxQYUOg@mail.gmail.com>
+In-Reply-To: <CAHp75Ve-P8DR00mtRP_NkrXgB4nsZ+qBkgBen94iTcPqxQYUOg@mail.gmail.com>
+From:   Emil Renner Berthing <kernel@esmil.dk>
+Date:   Tue, 2 Nov 2021 20:58:57 +0100
+Message-ID: <CANBLGcyb=TAP0h2WuxBAjRvpN9n7Dt1Hvh5yE8NMOwm3ixZWuA@mail.gmail.com>
+Subject: Re: [PATCH v3 09/16] reset: starfive-jh7100: Add StarFive JH7100
+ reset driver
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Yury Norov <yury.norov@gmail.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Sagar Kadam <sagar.kadam@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michael Zhu <michael.zhu@starfivetech.com>,
+        Fu Wei <tekkamanninja@gmail.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 1, 2021 at 11:19 PM Christoph Hellwig <hch@infradead.org> wrote:
+On Tue, 2 Nov 2021 at 20:43, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> +Cc: Yury (bitmap expert)
 >
-> On Wed, Oct 27, 2021 at 05:24:51PM -0700, Darrick J. Wong wrote:
-> > ...so would you happen to know if anyone's working on solving this
-> > problem for us by putting the memory controller in charge of dealing
-> > with media errors?
->
-> The only one who could know is Intel..
->
-> > The trouble is, we really /do/ want to be able to (re)write the failed
-> > area, and we probably want to try to read whatever we can.  Those are
-> > reads and writes, not {pre,f}allocation activities.  This is where Dave
-> > and I arrived at a month ago.
+> On Tue, Nov 2, 2021 at 6:50 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
 > >
-> > Unless you'd be ok with a second IO path for recovery where we're
-> > allowed to be slow?  That would probably have the same user interface
-> > flag, just a different path into the pmem driver.
+> > Add a driver for the StarFive JH7100 reset controller.
 >
-> Which is fine with me.  If you look at the API here we do have the
-> RWF_ API, which them maps to the IOMAP API, which maps to the DAX_
-> API which then gets special casing over three methods.
+> ...
 >
-> And while Pavel pointed out that he and Jens are now optimizing for
-> single branches like this.  I think this actually is silly and it is
-> not my point.
+> > +#define BIT_MASK32(x) BIT((x) % 32)
 >
-> The point is that the DAX in-kernel API is a mess, and before we make
-> it even worse we need to sort it first.  What is directly relevant
-> here is that the copy_from_iter and copy_to_iter APIs do not make
-> sense.  Most of the DAX API is based around getting a memory mapping
-> using ->direct_access, it is just the read/write path which is a slow
-> path that actually uses this.  I have a very WIP patch series to try
-> to sort this out here:
+> Possible namespace collision.
 >
-> http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/dax-devirtualize
+> ...
 >
-> But back to this series.  The basic DAX model is that the callers gets a
-> memory mapping an just works on that, maybe calling a sync after a write
-> in a few cases.  So any kind of recovery really needs to be able to
-> work with that model as going forward the copy_to/from_iter path will
-> be used less and less.  i.e. file systems can and should use
-> direct_access directly instead of using the block layer implementation
-> in the pmem driver.  As an example the dm-writecache driver, the pending
-> bcache nvdimm support and the (horribly and out of tree) nova file systems
-> won't even use this path.  We need to find a way to support recovery
-> for them.  And overloading it over the read/write path which is not
-> the main path for DAX, but the absolutely fast path for 99% of the
-> kernel users is a horrible idea.
+> > +/*
+> > + * the registers work like a 32bit bitmap, so writing a 1 to the m'th bit of
+> > + * the n'th ASSERT register asserts line 32n + m, and writing a 0 deasserts the
+> > + * same line.
+> > + * most reset lines have their status inverted so a 0 in the STATUS register
+> > + * means the line is asserted and a 1 means it's deasserted. a few lines don't
+> > + * though, so store the expected value of the status registers when all lines
+> > + * are asserted.
+> > + */
 >
-> So how can we work around the horrible nvdimm design for data recovery
-> in a way that:
->
->    a) actually works with the intended direct memory map use case
->    b) doesn't really affect the normal kernel too much
->
-> ?
+> Besides missing capitalization,
 
-Ok, now I see where you are going, but I don't see line of sight to
-something better than RWF_RECOVER_DATA.
+I'm confused. it was you who wanted all comments to capitalized the same..
+64bi
+if it sounds like bitmap, use bitmap.
+> I have checked DT definitions and it seems you don't even need the
+> BIT_MASK() macro,
+>
+> > +static const u32 jh7100_reset_asserted[4] = {
+> > +       /* STATUS0 register */
+> > +       BIT_MASK32(JH7100_RST_U74) |
+> > +       BIT_MASK32(JH7100_RST_VP6_DRESET) |
+> > +       BIT_MASK32(JH7100_RST_VP6_BRESET),
+> > +       /* STATUS1 register */
+> > +       BIT_MASK32(JH7100_RST_HIFI4_DRESET) |
+> > +       BIT_MASK32(JH7100_RST_HIFI4_BRESET),
+> > +       /* STATUS2 register */
+> > +       BIT_MASK32(JH7100_RST_E24),
+> > +       /* STATUS3 register */
+> > +       0,
+> > +};
+>
+> Yury, do we have any clever (clean) way to initialize a bitmap with
+> particular bits so that it will be a constant from the beginning? If
+> no, any suggestion what we can provide to such users?
 
-This goes back to one of the original DAX concerns of wanting a kernel
-library for coordinating PMEM mmap I/O vs leaving userspace to wrap
-PMEM semantics on top of a DAX mapping. The problem is that mmap-I/O
-has this error-handling-API issue whether it is a DAX mapping or not.
-I.e. a memory failure in page cache is going to signal the process the
-same way and it will need to fall back to something other than mmap
-I/O to make forward progress. This is not a PMEM, Intel or even x86
-problem, it's a generic CONFIG_ARCH_SUPPORTS_MEMORY_FAILURE problem.
+The problem is, that even if we could initialize this without the
+monstrosity in our last conversation a 64bit bitmap would still
+produce worse code. As it is now it's simply a 32bit load and mask
+with index and mask already calculated for the registers. In the
+status callback the mask can even be folded into the register read
+mask. With a 64bit bitmap you'd need to calculate new 64bit index and
+masks, and then conditionally shift the bits into position.
 
-CONFIG_ARCH_SUPPORTS_MEMORY_FAILURE implies that processes will
-receive SIGBUS + BUS_MCEERR_A{R,O} when memory failure is signalled
-and then rely on readv(2)/writev(2) to recover. Do you see a readily
-available way to improve upon that model without CPU instruction
-changes? Even with CPU instructions changes, do you think it could
-improve much upon the model of interrupting the process when a load
-instruction aborts?
+If this reflection of the 32bit registers bothers you that much we
+could alternatively do
 
-I do agree with you that DAX needs to separate itself from block, but
-I don't think it follows that DAX also needs to separate itself from
-readv/writev for when a kernel slow-path needs to get involved because
-mmap I/O (just CPU instructions) does not have the proper semantics.
-Even if you got one of the ARCH_SUPPORTS_MEMORY_FAILURE to implement
-those semantics in new / augmented CPU instructions you will likely
-not get all of them to move and certainly not in any near term
-timeframe, so the kernel path will be around indefinitely.
+static bool jh7100_reset_inverted(unsigned int idx)
+{
+  switch (idx) {
+  case JH7100_RST_U74:
+  case JH7100_RST_VP6_DRESET:
+  ..
+    return false;
+  }
+  return true;
+}
 
-Meanwhile, I think RWF_RECOVER_DATA is generically useful for other
-storage besides PMEM and helps storage-drivers do better than large
-blast radius "I/O error" completions with no other recourse.
+It'd still produce worse code, but at least it would be readable.
+
+/Emil
+
+> ...
+>
+> > +       dev_dbg(rcdev->dev, "reset(%lu)\n", id);
+>
+> These debug messages are useless since one should use ftrace facility instead,
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
