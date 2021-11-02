@@ -2,61 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 860D54439AE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 00:27:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C47A4439BC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 00:30:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231254AbhKBXaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 19:30:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51668 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230054AbhKBXaB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 19:30:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 503D4610C8;
-        Tue,  2 Nov 2021 23:27:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635895646;
-        bh=AZzvbICg6oX/qle33P5Mj8FEVwJ7uNj/Ar0srUdXO5M=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=WfxFTn2DstR0Rr6ZipgEU/hs7n9DdsX5R5Lzi7Z0K/W2kRhH1aitGp6Kbs9mhHq4p
-         O7ktjAV0mEOo9Ib5yfxQWl+d6Sx5RoD6PzlGR9NMYrJkhk9G9g7itGWWDRBnqZrRT0
-         wfbHond+qCioOkdgZkpO8Byo0uQAwRw+L+AZhkRdWAdU6a1FSO/925+F39zjTsXgSV
-         VSbEQO3JFhgolUwOr8z5YPmBJTZVMpSiUgyLc13MZlFnxLDNDV3rQqRWbvlNbMvb6h
-         gKPpm0sGOe7GnJMtAJZt05eZf+Y1PDcxIUv3V1xGFDbPwLdf9/Q1vOin+0TXchLVxa
-         aT5pA2xMVv4hw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 48CF9609B9;
-        Tue,  2 Nov 2021 23:27:26 +0000 (UTC)
-Subject: Re: [GIT PULL] Thermal control updates for v5.16-rc1
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAJZ5v0hnj0zCXsZy0=Ukud3U_cn054GULmHmpz7Qrpg_TkLLqA@mail.gmail.com>
-References: <CAJZ5v0hnj0zCXsZy0=Ukud3U_cn054GULmHmpz7Qrpg_TkLLqA@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAJZ5v0hnj0zCXsZy0=Ukud3U_cn054GULmHmpz7Qrpg_TkLLqA@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git thermal-5.16-rc1
-X-PR-Tracked-Commit-Id: 46e9f92f31e67385fab8b49c030635415f36b362
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: f73cd9c951a9dc23f0ee1260fef5cc61d2825fb3
-Message-Id: <163589564629.24792.5376351556602801863.pr-tracker-bot@kernel.org>
-Date:   Tue, 02 Nov 2021 23:27:26 +0000
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        id S230331AbhKBXc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 19:32:58 -0400
+Received: from smtpcmd12131.aruba.it ([62.149.156.131]:43443 "EHLO
+        smtpcmd12131.aruba.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230299AbhKBXc4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 19:32:56 -0400
+Received: from [192.168.153.129] ([146.241.216.221])
+        by Aruba Outgoing Smtp  with ESMTPSA
+        id i3EPm4vnjnxSqi3EPmcRjP; Wed, 03 Nov 2021 00:30:19 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
+        t=1635895819; bh=CVH4E3T74mSLJgFr0+2baxsEGjTaCKZhPlnfRz38Urk=;
+        h=Subject:To:From:Date:MIME-Version:Content-Type;
+        b=Uc3Rw42EQnXVNFsK02zGrc5yAf03SDmcFOlh65qeVovEWtu6bUJl1KS4DpEp/bsa0
+         yah9gfcPBM25sIoH4/mR1cDwsHndi68rt5bLZo5zWWg6QR05HT2gyMkOPBho5sOF8U
+         icDGb6a1G9m+iEtCsAh0MekRLU4M8k3uyWHBvQvMWJ5wSeHcmFFPGTO9nI+xrZRwSo
+         B8zZbEj7Gq6xzqwYhvauGB8QC0mO0b9qSN+H7JN3AAJKOidAX2XaE6DoORmkKjeJ7L
+         AnMbnC5h9ZU4uRDEPX+uF8nKK4ufX3Qylqi7jaET13hzlxpOIclqXI87zpXfCbcLuk
+         4nKLDxdxtl5ug==
+Subject: Re: [PATCH v2 11/13] mmc: sdhci-esdhc-imx: Add sdhc support for
+ i.MXRT series
+To:     Jesse Taube <mr.bossman075@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>
+Cc:     NXP Linux Team <linux-imx@nxp.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Stefan Agner <stefan@agner.ch>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        soc@kernel.org, Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Abel Vesa <abel.vesa@nxp.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-serial@vger.kernel.org
+References: <20211102225701.98944-1-Mr.Bossman075@gmail.com>
+ <20211102225701.98944-12-Mr.Bossman075@gmail.com>
+ <CAOMZO5AxMXxDkNDqGJDhtepqSUxGRCWO+L=c67O==4fx66M7XQ@mail.gmail.com>
+ <c1610093-95ae-68d3-57ae-93b1bc9715d7@gmail.com>
+From:   Giulio Benetti <giulio.benetti@benettiengineering.com>
+Message-ID: <5ebe48f5-7b9c-be99-d50c-65a056084b96@benettiengineering.com>
+Date:   Wed, 3 Nov 2021 00:30:17 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <c1610093-95ae-68d3-57ae-93b1bc9715d7@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfFF0kMKCgHuPZZdTmE48caZfrYeN7mNuy9LJ5DmgdBa7PMy3yw4JyTgPV4UtB8gv8UWudxmi7EUMA7kBCNVePf5f6/hVKPgKmzEkfqfUXuHzumzwNTLp
+ Q1NtqsuDyb1jwU+35ZCycH1OV5YBjAO7yqXi+7RTucxA1jN8hYaocJ2iEX2j/12cfz/5KlEowUfU2CYfZIBfFTZvYm/5/qvdh5Nv6zY8ZrcwxkQBkEoKMoyL
+ bRKC6ajuyVQ7LxrOsCTs9UgQyjuKYsSuEMGHsrwoOg2cvS5bBTUtnf2utEFoOu6PTapJnzx8NYfFFCQLTAJytx9m6gzTMyEUsT4WQOpFNg1zIt59njdutT3S
+ 93mtFCyyLAJqjOPnaH3w1drDngGo6MdWIuTClPsbMpGY0BVurVmkhvGMqkTM6dtJ3EQRuoiz7J8hheiMZPDKjynmKkzCs8T0K0K67cb9N6LlB514im8UFZTy
+ E/CyYouaf3y1yMWTOTeh8HU3Z6RtZCuTtbXD6pvCfyzjMJFJ5jWjFgTMhpDuaMwOo6OPmc9COW4NyHhI4fVDxAh1Wh/XLGyVGEzGrO4lsBCTN7DqCTe7lHnA
+ UMVCb5huuzONw726B8vJOsk+5pFNwBAk2nnGev7aqPDpMxlcfuw9Rl8QafNXMHkTOGPGv1GVX/xxVP+HVrAilUqes3+OnZ+OOfA7BlrljqbvcsXLreUUmhoU
+ +lL/9x7iJAslxzl/zHNgYm0vQbJiVwjKyWYS3c86tZ1PNrrBypxUBKCP1Pjr74ufE4ZeqMWAUYBqxdYZ7kAGloMdFCLVwpybUvQ/Jx7c0ECAtltSthJ8bYG/
+ Blm7C9xps0o4nRT6H8AkjuYslA+rAGd8Q/TRv3apW1sAxuoFuMWlKvyZO2KNs8kNlHKfkMeAZ3ubrc+gX59FCUMQvTOM70AUrqBvGgrnmUBtbVRSdUUCWrbX
+ 6VlMF7RiDy6kWIeRW/skiSnPAdN0cnofXbwR0sBItsztUonf9AudWecAEkZM9mlWu2F43k0/jOmPqN+q3AcstG14vyw3v8F50L3M18jZ3rMw/TjtQU9tQiia
+ dJFiLZiiKMQa/hKTfuQHLdPER3G17gr0F7Qu2ijcTqi9STRkj+7jJ1t8w+IWuEmaN0JgC5pcshctaWkITgFAuPNEn81soe4VaNY=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 2 Nov 2021 20:54:53 +0100:
+Hi Fabio, Jesse, All,
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git thermal-5.16-rc1
+On 11/3/21 12:25 AM, Jesse Taube wrote:
+> 
+> 
+> On 11/2/21 19:17, Fabio Estevam wrote:
+>> On Tue, Nov 2, 2021 at 7:57 PM Jesse Taube <mr.bossman075@gmail.com> wrote:
+>>
+>>>    static struct esdhc_soc_data usdhc_imx8qxp_data = {
+>>>           .flags = ESDHC_FLAG_USDHC | ESDHC_FLAG_STD_TUNING
+>>> @@ -357,6 +363,7 @@ static const struct of_device_id imx_esdhc_dt_ids[] = {
+>>>           { .compatible = "fsl,imx7ulp-usdhc", .data = &usdhc_imx7ulp_data, },
+>>>           { .compatible = "fsl,imx8qxp-usdhc", .data = &usdhc_imx8qxp_data, },
+>>>           { .compatible = "fsl,imx8mm-usdhc", .data = &usdhc_imx8mm_data, },
+>>> +       { .compatible = "fsl,imxrt-usdhc", .data = &usdhc_imxrt_data, },
+>>
+>> I thought Rob suggested to use the SoC name, so this would be:
+>>
+> Uh i think that may have been for the UART.
+>> { .compatible = "fsl,imxrt1050-usdhc", .data = &usdhc_imxrt1050_data, },
+>>
+>> The same applies to the other bindings in the series.
+>>
+>> This way it would be possible to differentiate between future
+>> supported i.MX RT devices.
+>>
+> This makes sense will do in V3.
+> 
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/f73cd9c951a9dc23f0ee1260fef5cc61d2825fb3
+If we add every SoC we will end up having a long list for every device 
+driver. At the moment it would be 7 parts:
+1) imxrt1020
+2) imxrt1024
+.
+.
+.
+7) imxrt1170
 
-Thank you!
+Is it ok anyway?
 
+Best regards
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Giulio Benetti
+Benetti Engineering sas
