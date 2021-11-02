@@ -2,221 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0609F4437BC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 22:20:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B6D14437BE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 22:21:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231240AbhKBVWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 17:22:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229931AbhKBVWp (ORCPT
+        id S231248AbhKBVY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 17:24:26 -0400
+Received: from mail-1.ca.inter.net ([208.85.220.69]:60622 "EHLO
+        mail-1.ca.inter.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229931AbhKBVYZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 17:22:45 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D897BC061714;
-        Tue,  2 Nov 2021 14:20:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=FY9GWn+7lMSMdwfBpzLCtCeO76LLNEo5Zfs/hiHZS3I=; b=L3LD/gFmRIFEVOj5isWwE8Er8u
-        z6P3bjMjsqvBKUIcVpTg1xWa5Wqp4a/EKjC5io1gGTxQy/owd8giXoi1LQksYqUeYEEZhItXRgCOM
-        Ehrg6FSZhvEo/z2QnUuuFEgC5HXCQfO7WgEz6CcF45sgWD4owU0cy16uLM4XEVTmTSEuRDKchaaC4
-        9ZZBHtYm5DjkIaX1AOAtLR+v7b9BRkY2VGpylXAhftbtlCU/e3C0aKQBEZoFM4Dptqyy6QHYFaKTC
-        5udL3P2LD9/6lERIR/kWn2uyegYEc5J+00unGOgy5UzTdt2dlqwBkgGAuUwPAxOJVgmZ9abBU/kSb
-        DGlOojaQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mi1C3-00Dozc-JJ; Tue, 02 Nov 2021 21:19:43 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 4DB6E984CD2; Tue,  2 Nov 2021 22:19:42 +0100 (CET)
-Date:   Tue, 2 Nov 2021 22:19:42 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Mark Rutland <mark.rutland@arm.com>, X86 ML <x86@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-hardening@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH] static_call,x86: Robustify trampoline patching
-Message-ID: <20211102211942.GY174703@worktop.programming.kicks-ass.net>
-References: <20211031163920.GV174703@worktop.programming.kicks-ass.net>
- <CAMj1kXHk5vbrT49yRCivX3phrEkN6Xbb+g8WEmavL_d1iE0OxQ@mail.gmail.com>
- <YX74Ch9/DtvYxzh/@hirez.programming.kicks-ass.net>
- <CAMj1kXG+MuGaG3BHk8pnE1MKVmRf5E+nRNoFMHxOA1y84eGikg@mail.gmail.com>
- <YX8AQJqyB+H3PF1d@hirez.programming.kicks-ass.net>
- <CAMj1kXF3n-oQ1WP8=asb60K6UjSYOtz5RVhrcoCoNq3v7mZdQg@mail.gmail.com>
- <20211101090155.GW174703@worktop.programming.kicks-ass.net>
- <CAMj1kXGhRmdM3om289Q2-s1Pzfob3D2iSDMorzggfhSk1oj53A@mail.gmail.com>
- <YYE1yPClPMHvyvIt@hirez.programming.kicks-ass.net>
- <202111021040.6570189A5@keescook>
+        Tue, 2 Nov 2021 17:24:25 -0400
+Received: from mp-mx11.ca.inter.net (mp-mx11.ca.inter.net [208.85.217.19])
+        by mail-1.ca.inter.net (Postfix) with ESMTP id BA4EC2EA9D1;
+        Tue,  2 Nov 2021 17:21:47 -0400 (EDT)
+Received: from mail-1.ca.inter.net ([208.85.220.69])
+        by mp-mx11.ca.inter.net (mp-mx11.ca.inter.net [208.85.217.19]) (amavisd-new, port 10024)
+        with ESMTP id KPC76aglJgkm; Tue,  2 Nov 2021 17:21:47 -0400 (EDT)
+Received: from [192.168.48.23] (host-45-58-208-241.dyn.295.ca [45.58.208.241])
+        (using TLSv1 with cipher AES128-SHA (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: dgilbert@interlog.com)
+        by mail-1.ca.inter.net (Postfix) with ESMTPSA id A80282EA7FE;
+        Tue,  2 Nov 2021 17:21:46 -0400 (EDT)
+Reply-To: dgilbert@interlog.com
+Subject: Re: [PATCH v2] scsi: scsi_debug: fix type in min_t to avoid stack OOB
+To:     George Kennedy <george.kennedy@oracle.com>,
+        gregkh@linuxfoundation.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dan.carpenter@oracle.com
+References: <1635861997-987-1-git-send-email-george.kennedy@oracle.com>
+From:   Douglas Gilbert <dgilbert@interlog.com>
+Message-ID: <1cc05731-41b4-35f7-e6c2-56ea711dfb76@interlog.com>
+Date:   Tue, 2 Nov 2021 17:21:46 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202111021040.6570189A5@keescook>
+In-Reply-To: <1635861997-987-1-git-send-email-george.kennedy@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-CA
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 11:10:10AM -0700, Kees Cook wrote:
-> On Tue, Nov 02, 2021 at 01:57:44PM +0100, Peter Zijlstra wrote:
-
-> > All questions that need answering I think.
+On 2021-11-02 10:06 a.m., George Kennedy wrote:
+> Change min_t() to use type "unsigned int" instead of type "int" to
+> avoid stack out of bounds. With min_t() type "int" the values get
+> sign extended and the larger value gets used causing stack out of bounds.
 > 
-> I'm totally fine with designing a new CFI for a future option,
-> but blocking the existing (working) one does not best serve our end
-> users.
-
-Accepting a half arsed CFI now, just because it is what we have, will
-only make it ever so much more difficuly to get new/better
-things implemented in the toolchains, because the pressure is off.
-
-Also, it will make enabling IBT more difficult, or we'll end up having
-CFI and IBT mutually exclusive, which is a crap position to be in.
-
-> There are already people waiting on x86 CFI because having the
-> extra layer of defense is valuable for them. No, it's not perfect,
-> but it works right now, and evidence from Android shows that it has
-> significant real-world defensive value. Some of the more adventurous
-> are actually patching their kernels with the CFI support already, and
-> happily running their workloads, etc.
-
-It works by accident, not design. Which is a giant red flag in my book.
-
-> Supporting Clang CFI means we actually have something to evolve
-> from,
-
-I don't want to evolve from a place that's crazy and we shouldn't have
-been in to begin with. Redefining what a function pointer is is insane,
-and the required work-arounds are ugly at best.
-
-The ARM64 folks have expressed regret from having merged it. Why should
-x86 do something that's known to cause regret?
-
-> where as starting completely over means (likely significant)
-> delays leaving folks without the option available at all.
-
-See above. Maybe some of those folks will get motivated to make it
-happen faster.
-
-> I think the various compiler and kernel tweaks needed to improve
-> kernel support are reasonable, but building a totally new CFI
-> implementation is not: it _does_ work today on x86. 
-
-By sodding accident; see that one static call patch that makes it burn.
-
-If someone were to use the jump-table entry after we'd scribbled it,
-thing will go sideways bad.
-
-> Yes, it's weird, but not outrageously so.
-
-Clearly we disagree.
-
-> Regardless, speaking to a new CFI design below:
+> BUG: KASAN: stack-out-of-bounds in memcpy include/linux/fortify-string.h:191 [inline]
+> BUG: KASAN: stack-out-of-bounds in sg_copy_buffer+0x1de/0x240 lib/scatterlist.c:976
+> Read of size 127 at addr ffff888072607128 by task syz-executor.7/18707
 > 
-> > So how insane is something like this, have each function:
-> > 
-> > foo.cfi:
-> > 	endbr64
-> > 	xorl $0xdeadbeef, %r10d
-> > 	jz foo
-> > 	ud2
-> > 	nop	# make it 16 bytes
-> > foo:
-> > 	# actual function text goes here
-> > 
-> > 
-> > And for each hash have two thunks:
-> > 
-> > 
-> > 	# arg: r11
-> > 	# clobbers: r10, r11
-> > __x86_indirect_cfi_deadbeef:
-> > 	movl -9(%r11), %r10		# immediate in foo.cfi
+> CPU: 1 PID: 18707 Comm: syz-executor.7 Not tainted 5.15.0-syzk #1
+> Hardware name: Red Hat KVM, BIOS 1.13.0-2
+> Call Trace:
+>   __dump_stack lib/dump_stack.c:88 [inline]
+>   dump_stack_lvl+0x89/0xb5 lib/dump_stack.c:106
+>   print_address_description.constprop.9+0x28/0x160 mm/kasan/report.c:256
+>   __kasan_report mm/kasan/report.c:442 [inline]
+>   kasan_report.cold.14+0x7d/0x117 mm/kasan/report.c:459
+>   check_region_inline mm/kasan/generic.c:183 [inline]
+>   kasan_check_range+0x1a3/0x210 mm/kasan/generic.c:189
+>   memcpy+0x23/0x60 mm/kasan/shadow.c:65
+>   memcpy include/linux/fortify-string.h:191 [inline]
+>   sg_copy_buffer+0x1de/0x240 lib/scatterlist.c:976
+>   sg_copy_from_buffer+0x33/0x40 lib/scatterlist.c:1000
+>   fill_from_dev_buffer.part.34+0x82/0x130 drivers/scsi/scsi_debug.c:1162
+>   fill_from_dev_buffer drivers/scsi/scsi_debug.c:1888 [inline]
+>   resp_readcap16+0x365/0x3b0 drivers/scsi/scsi_debug.c:1887
+>   schedule_resp+0x4d8/0x1a70 drivers/scsi/scsi_debug.c:5478
+>   scsi_debug_queuecommand+0x8c9/0x1ec0 drivers/scsi/scsi_debug.c:7533
+>   scsi_dispatch_cmd drivers/scsi/scsi_lib.c:1520 [inline]
+>   scsi_queue_rq+0x16b0/0x2d40 drivers/scsi/scsi_lib.c:1699
+>   blk_mq_dispatch_rq_list+0xb9b/0x2700 block/blk-mq.c:1639
+>   __blk_mq_sched_dispatch_requests+0x28f/0x590 block/blk-mq-sched.c:325
+>   blk_mq_sched_dispatch_requests+0x105/0x190 block/blk-mq-sched.c:358
+>   __blk_mq_run_hw_queue+0xe5/0x150 block/blk-mq.c:1761
+>   __blk_mq_delay_run_hw_queue+0x4f8/0x5c0 block/blk-mq.c:1838
+>   blk_mq_run_hw_queue+0x18d/0x350 block/blk-mq.c:1891
+>   blk_mq_sched_insert_request+0x3db/0x4e0 block/blk-mq-sched.c:474
+>   blk_execute_rq_nowait+0x16b/0x1c0 block/blk-exec.c:62
+>   sg_common_write.isra.18+0xeb3/0x2000 drivers/scsi/sg.c:836
+>   sg_new_write.isra.19+0x570/0x8c0 drivers/scsi/sg.c:774
+>   sg_ioctl_common+0x14d6/0x2710 drivers/scsi/sg.c:939
+>   sg_ioctl+0xa2/0x180 drivers/scsi/sg.c:1165
+>   vfs_ioctl fs/ioctl.c:51 [inline]
+>   __do_sys_ioctl fs/ioctl.c:874 [inline]
+>   __se_sys_ioctl fs/ioctl.c:860 [inline]
+>   __x64_sys_ioctl+0x19d/0x220 fs/ioctl.c:860
+>   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>   do_syscall_64+0x3a/0x80 arch/x86/entry/common.c:80
+>   entry_SYSCALL_64_after_hwframe+0x44/0xae
 > 
-> This requires the text be readable. I have been hoping to avoid this for
-> a CFI implementation so we could gain the benefit of execute-only
-> memory (available soon on arm64, and possible today on x86 under a
-> hypervisor).
+> Reported-by: syzkaller <syzkaller@googlegroups.com>
+> Signed-off-by: George Kennedy <george.kennedy@oracle.com>
 
-It's only needed for the 'legacy' case of software only CFI if that
-makes you feel better. BTI/IBT based CFI doesn't need this.
+The resid value, inherited from CAM's cam_resid, was a signed quantity
+where a negative number implied a data-in overflow ***. That may happen
+if the alloc_len in the SCSI command implies a larger data-in transfer
+than the transport has been set up for. That subtlety seems to be lost
+on scsi_get_resid() which returns an unsigned int (i.e. it only reports
+underflows).
 
-(also, I'm very much a bare metal kinda guy)
+Can't see how the code in place can blow up other than a data length
+north of 2 billion bytes. But I guess that is what syzkaller specializes
+in.
 
-> > 	xorl $0xdeadbeef, %r10		# our immediate
-> > 	jz 1f
-> > 	ud2
-> > 1:	ALTERNATIVE_2	"jmp *%r11",
-> > 			"jmp __x86_indirect_thunk_r11", X86_FEATURE_RETPOLINE
-> > 			"lfence; jmp *%r11", X86_FEATURE_RETPOLINE_AMD
-> > 
-> > 
-> > 
-> > 	# arg: r11
-> > 	# clobbers: r10, r11
-> > __x86_indirect_ibt_deadbeef:
-> > 	movl $0xdeadbeef, %r10
-> > 	subq $0x10, %r11
-> > 	ALTERNATIVE "", "lfence", X86_FEATURE_RETPOLINE
-> > 	jmp *%r11
-> > 
+Can't see any downsides to the proposed patch.
 
-IBT case ^ doesn't actually read from the code. It simply jumps in front
-of the real function by a set amount to get the extra cruft /
-landing-pad required for indirect calls.
+Acked-by: Douglas Gilbert <sgilbert@interlog.com>
 
-Also note that direct calls never make use of that pad, which means it
-can be stripped from all symbols that never have their address taken,
-which means less indirect targets.
+---
 
-(Or poison the thing with UD2 and write 0 in the immediate)
+*** That happens more often than one might expect, mainly with READ
+commands. Some of my copy utilities don't do a READ CAPACITY if it
+is not needed (e.g. because count=BLOCKS is given). A copy utility may
+then not notice that the device has 4096 byte blocks (rather than the
+default 512 byte blocks). When that happens the copy operation runs
+slowly because the HBA driver (LLD) is filling the log with errors
+probably because there is no sensible way to report data-in overflow
+to the mid-level. IOWs the CAM designers knew what they were doing.
 
-> > And have the actual indirect callsite look like:
-> > 
-> > 	# r11 - &foo
-> > 	ALTERNATIVE_2	"cs call __x86_indirect_thunk_r11",
-> > 			"cs call __x86_indirect_cfi_deadbeef", X86_FEATURE_CFI
-> > 			"cs call __x86_indirect_ibt_deadbeef", X86_FEATURE_IBT
-> > 
-> > Although if the compiler were to emit:
-> > 
-> > 	cs call __x86_indirect_cfi_deadbeef
-> > 
-> > we could probaly fix it up from there.
+Here is an example of a LLD error which could be clearer:
+   mpt3sas_cm0: log_info(0x31120434): originator(PL), code(0x12), sub_code(0x0434)
+
+> ---
+>   drivers/scsi/scsi_debug.c | 20 ++++++++++----------
+>   1 file changed, 10 insertions(+), 10 deletions(-)
 > 
-> It seems like this could work for any CFI implementation, though, if
-
-The strong suggestion is that function pointers are sane, and there's a
-few other considerations, but yes.
-
-> the CFI implementation always performed a call, or if the bounds of the
-> inline checking were known? i.e. objtool could also find the inline
-> checks just as well as the call, though?
-
-Somewhat hard, it's much easier to find a single instruction than a
-pattern. Also, footprint. Smaller really is better.
-
-> > Then we can at runtime decide between:
-> > 
-> >   {!cfi, cfi, ibt} x {!retpoline, retpoline, retpoline-amd}
+> diff --git a/drivers/scsi/scsi_debug.c b/drivers/scsi/scsi_debug.c
+> index 40b473e..e4c48fb 100644
+> --- a/drivers/scsi/scsi_debug.c
+> +++ b/drivers/scsi/scsi_debug.c
+> @@ -1189,7 +1189,7 @@ static int p_fill_from_dev_buffer(struct scsi_cmnd *scp, const void *arr,
+>   		 __func__, off_dst, scsi_bufflen(scp), act_len,
+>   		 scsi_get_resid(scp));
+>   	n = scsi_bufflen(scp) - (off_dst + act_len);
+> -	scsi_set_resid(scp, min_t(int, scsi_get_resid(scp), n));
+> +	scsi_set_resid(scp, min_t(unsigned int, scsi_get_resid(scp), n));
+>   	return 0;
+>   }
+>   
+> @@ -1714,7 +1714,7 @@ static int resp_inquiry(struct scsi_cmnd *scp, struct sdebug_dev_info *devip)
+>   	}
+>   	put_unaligned_be16(0x2100, arr + n);	/* SPL-4 no version claimed */
+>   	ret = fill_from_dev_buffer(scp, arr,
+> -			    min_t(int, alloc_len, SDEBUG_LONG_INQ_SZ));
+> +			    min_t(unsigned int, alloc_len, SDEBUG_LONG_INQ_SZ));
+>   	kfree(arr);
+>   	return ret;
+>   }
+> @@ -1774,7 +1774,7 @@ static int resp_requests(struct scsi_cmnd *scp,
+>   			arr[7] = 0xa;
+>   		}
+>   	}
+> -	return fill_from_dev_buffer(scp, arr, min_t(int, len, alloc_len));
+> +	return fill_from_dev_buffer(scp, arr, min_t(unsigned int, len, alloc_len));
+>   }
+>   
+>   static int resp_start_stop(struct scsi_cmnd *scp, struct sdebug_dev_info *devip)
+> @@ -1885,7 +1885,7 @@ static int resp_readcap16(struct scsi_cmnd *scp,
+>   	}
+>   
+>   	return fill_from_dev_buffer(scp, arr,
+> -			    min_t(int, alloc_len, SDEBUG_READCAP16_ARR_SZ));
+> +			    min_t(unsigned int, alloc_len, SDEBUG_READCAP16_ARR_SZ));
+>   }
+>   
+>   #define SDEBUG_MAX_TGTPGS_ARR_SZ 1412
+> @@ -1959,9 +1959,9 @@ static int resp_report_tgtpgs(struct scsi_cmnd *scp,
+>   	 * - The constructed command length
+>   	 * - The maximum array size
+>   	 */
+> -	rlen = min_t(int, alen, n);
+> +	rlen = min_t(unsigned int, alen, n);
+>   	ret = fill_from_dev_buffer(scp, arr,
+> -			   min_t(int, rlen, SDEBUG_MAX_TGTPGS_ARR_SZ));
+> +			   min_t(unsigned int, rlen, SDEBUG_MAX_TGTPGS_ARR_SZ));
+>   	kfree(arr);
+>   	return ret;
+>   }
+> @@ -2467,7 +2467,7 @@ static int resp_mode_sense(struct scsi_cmnd *scp,
+>   		arr[0] = offset - 1;
+>   	else
+>   		put_unaligned_be16((offset - 2), arr + 0);
+> -	return fill_from_dev_buffer(scp, arr, min_t(int, alloc_len, offset));
+> +	return fill_from_dev_buffer(scp, arr, min_t(unsigned int, alloc_len, offset));
+>   }
+>   
+>   #define SDEBUG_MAX_MSELECT_SZ 512
+> @@ -2652,9 +2652,9 @@ static int resp_log_sense(struct scsi_cmnd *scp,
+>   		mk_sense_invalid_fld(scp, SDEB_IN_CDB, 3, -1);
+>   		return check_condition_result;
+>   	}
+> -	len = min_t(int, get_unaligned_be16(arr + 2) + 4, alloc_len);
+> +	len = min_t(unsigned int, get_unaligned_be16(arr + 2) + 4, alloc_len);
+>   	return fill_from_dev_buffer(scp, arr,
+> -		    min_t(int, len, SDEBUG_MAX_INQ_ARR_SZ));
+> +		    min_t(unsigned int, len, SDEBUG_MAX_INQ_ARR_SZ));
+>   }
+>   
+>   static inline bool sdebug_dev_is_zoned(struct sdebug_dev_info *devip)
+> @@ -4425,7 +4425,7 @@ static int resp_report_zones(struct scsi_cmnd *scp,
+>   	put_unaligned_be64(sdebug_capacity - 1, arr + 8);
+>   
+>   	rep_len = (unsigned long)desc - (unsigned long)arr;
+> -	ret = fill_from_dev_buffer(scp, arr, min_t(int, alloc_len, rep_len));
+> +	ret = fill_from_dev_buffer(scp, arr, min_t(unsigned int, alloc_len, rep_len));
+>   
+>   fini:
+>   	read_unlock(macc_lckp);
 > 
-> This does look pretty powerful, but I still don't think it precludes
-> using the existing Clang CFI. I don't want perfect to be the enemy of
-> good. :)
-
-As stated above, we're in violent disagreement that the proposed scheme
-comes anywhere near good. I utterly hate the redefintion of function
-pointers and I also think the range compare goes sideways in the face of
-modules. That's two marks against jump-tables.
-
-(Also, in the !CFI case, you can't actually free the jump-tables, since
-you're uncondtionally s(t)uck with them because of how &func is
-wrecked.)
 
