@@ -2,138 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 132C64438BF
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 23:50:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD6EE4438C5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 23:52:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230293AbhKBWwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 18:52:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30091 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229685AbhKBWwo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 18:52:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635893408;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fMXDJ1TPpIpn3w6SGHe+O23bhwkvcD2ThXDJ734AXLg=;
-        b=FYtOoSuHGrWIWJ7s46DEdqTk6k9twit9duBZutYvlI+vLJmPVkskNWJdQa4ALZ6M3ix2mp
-        jOcs1evG4pdvhzWlXco45/20iHrRuuuoP5HVYfcWHf+TUoUN/WkuzPgYg/D8D2ed6sjO3u
-        J2NinMKIHOdUawRAVqig/ikMUrxjTlw=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-306-ZvM0qGG5NiaAisvQfePClQ-1; Tue, 02 Nov 2021 18:50:03 -0400
-X-MC-Unique: ZvM0qGG5NiaAisvQfePClQ-1
-Received: by mail-ed1-f70.google.com with SMTP id z20-20020a05640240d400b003dce046ab51so766822edb.14
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 15:50:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=fMXDJ1TPpIpn3w6SGHe+O23bhwkvcD2ThXDJ734AXLg=;
-        b=8DoQLUK1eTynx9jL7nIqYkbw+qgXoxkcoYqDN3BFjc3FduC1mHRjFmqXi32Kb+jHxR
-         wZkTrowuXDfrV9Dpyeocfba/SDJB24yO8CWMFd0+BCyxygyX5RmieGc7AtGiTEujRhu3
-         fk27LqA1qHR08MoQ4J8aVjbN/0Nr+Yr2Ro/xAbyGEERaXLTN6PBguyYKw1o4haArwEPx
-         kviGfqXMBC+2IhOp3kEwaOoRbxQF8RCaSXZD4RkEpTcE0wULZBywaANnz43fpt3EwONz
-         uWHitBg3/CgGg9eeFbH5Gr+48HNWqvrmhutqzk/EoQEtawR0SS3rC23iU7wXV3U+HeFJ
-         uL5g==
-X-Gm-Message-State: AOAM533y0Ch3eZ3aHwp3W6Ua6sVmMcDaB1OZVEBa7aLqUN3CWd2wOXNI
-        yyaBVjPlq46rTPYOBOK6j6QQkhDIJGiET3SqtowvbmZLLXSp5CCJvyUU4S/FzB/463sBiQoL/jr
-        kZBuZKbgpYQHBTXv5aWoAnKY6
-X-Received: by 2002:a05:6402:d59:: with SMTP id ec25mr31128468edb.214.1635893402045;
-        Tue, 02 Nov 2021 15:50:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwvBLodOSLu5Kq97Smd47uhb24ifUvlhre7oO0RKS63qU7RqbIA2l2rnERIbXVcB7N0SNeKUA==
-X-Received: by 2002:a05:6402:d59:: with SMTP id ec25mr31128445edb.214.1635893401899;
-        Tue, 02 Nov 2021 15:50:01 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id gb2sm141913ejc.52.2021.11.02.15.50.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Nov 2021 15:50:01 -0700 (PDT)
-Message-ID: <812ff68b-2b4a-3993-245a-ea791e6caf7c@redhat.com>
-Date:   Tue, 2 Nov 2021 23:50:00 +0100
+        id S230382AbhKBWza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 18:55:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59538 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229685AbhKBWz3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 18:55:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 40DBB6044F;
+        Tue,  2 Nov 2021 22:52:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635893573;
+        bh=cTstKgx9m0Sh1q6mCiNjCpoALRcGk8ifU4/m88M8cv0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=kMLW3mbMG6pyMU10wApwwn7boni9kbp57SJkk9BNGgTbRqONhOKuWKXvCx5koC2zb
+         9HvNwjmFE0DLzx5f7UarSFvBTm8OxvU9IPmxYPSaJIGR+uHszclrrmq9p4mQfuGPFO
+         Q5a1S1Y8RRYTU9iVi/0kp6VmYNEdAQTfErCBAvQrjkYgnaXnCE52GFhjWv5ypQrxrT
+         sVGcQFGvn/kZ8CO2Pc4DCA2nBMxGB/atSRNcGa5ilTScBjJRlbTtJkSK7fzrSrNR3t
+         gP/o1PPUKkRJJpJtFCj8Y7TxxQouYiTxaX4uj7CF6aSUDgaZCz/01C8O3tIOpcRQ93
+         6bgJ8ebt8Ae9A==
+Date:   Tue, 2 Nov 2021 22:52:45 +0000
+From:   Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Patrik Gfeller <patrik.gfeller@gmail.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Kaixu Xia <kaixuxia@tencent.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Yang Li <abaci-bugfix@linux.alibaba.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Alex Dewar <alex.dewar90@gmail.com>,
+        Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Alan <alan@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-staging@lists.linux.dev,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [BUG/RFC PATCH 3/5] [BUG][RFC] media: atomisp: pci: add NULL
+ check for asd obtained from atomisp_video_pipe
+Message-ID: <20211102225245.0cd3bd20@sal.lan>
+In-Reply-To: <YYFd/Zb4aT3Qfjpi@smile.fi.intel.com>
+References: <20211017162337.44860-1-kitakar@gmail.com>
+        <20211017162337.44860-4-kitakar@gmail.com>
+        <20211102130245.GE2794@kadam>
+        <CAHp75VeThcCywYZsrUNYSA3Yc3MjJwfiCBCGep1DpWFFUg71cw@mail.gmail.com>
+        <CAHp75VdnvxCWYrdrBqtSDP0A2PCT6dYvHAhszY9iH9ooWKT49g@mail.gmail.com>
+        <20211102150523.GJ2794@kadam>
+        <YYFd/Zb4aT3Qfjpi@smile.fi.intel.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 3/3] backlight: lp855x: Add support ACPI enumeration
-Content-Language: en-US
-To:     Daniel Thompson <daniel.thompson@linaro.org>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20211101185518.306728-1-hdegoede@redhat.com>
- <20211101185518.306728-3-hdegoede@redhat.com>
- <20211102122253.s4oc2p7hmy7w2qgn@maple.lan>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20211102122253.s4oc2p7hmy7w2qgn@maple.lan>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+Em Tue, 2 Nov 2021 17:49:17 +0200
+Andy Shevchenko <andy.shevchenko@gmail.com> escreveu:
 
-Thank you for the quick review of this series.
-
-On 11/2/21 13:22, Daniel Thompson wrote:
-> On Mon, Nov 01, 2021 at 07:55:17PM +0100, Hans de Goede wrote:
->> The Xiaomi Mi Pad 2 tablet uses an ACPI enumerated LP8556 backlight
->> controller for its LCD-panel, with a Xiaomi specific ACPI HID of
->> "XMCC0001", add support for this.
->>
->> Note the new "if (id)" check also fixes a NULL pointer deref when a user
->> tries to manually bind the driver from sysfs.
->>
->> When CONFIG_ACPI is disabled acpi_match_device() will always return NULL,
->> so the lp855x_parse_acpi() call will get optimized away.
->>
->> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
->> ---
->>  drivers/video/backlight/lp855x_bl.c | 70 ++++++++++++++++++++++++-----
->>  1 file changed, 60 insertions(+), 10 deletions(-)
->>
->> diff --git a/drivers/video/backlight/lp855x_bl.c b/drivers/video/backlight/lp855x_bl.c
->> index d1d27d5eb0f2..f075ec84acfb 100644
->> --- a/drivers/video/backlight/lp855x_bl.c
->> +++ b/drivers/video/backlight/lp855x_bl.c
->> @@ -338,10 +339,6 @@ static int lp855x_parse_dt(struct lp855x *lp)
->>  		return -EINVAL;
->>  	}
->>  
->> -	pdata = devm_kzalloc(dev, sizeof(*pdata), GFP_KERNEL);
->> -	if (!pdata)
->> -		return -ENOMEM;
->> -
->>  	of_property_read_string(node, "bl-name", &pdata->name);
->>  	of_property_read_u8(node, "dev-ctrl", &pdata->device_control);
->>  	of_property_read_u8(node, "init-brt", &pdata->initial_brightness);
+> On Tue, Nov 02, 2021 at 06:05:23PM +0300, Dan Carpenter wrote:
+> > On Tue, Nov 02, 2021 at 04:45:20PM +0200, Andy Shevchenko wrote:  
+> > > On Tue, Nov 2, 2021 at 4:44 PM Andy Shevchenko
+> > > <andy.shevchenko@gmail.com> wrote:  
+> > > > On Tue, Nov 2, 2021 at 3:10 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:  
+> > > > > On Mon, Oct 18, 2021 at 01:23:34AM +0900, Tsuchiya Yuto wrote:  
 > 
-> Shouldn't there be a removal of an `lp->pdata = pdata` from somewhere in
-> this function?
-
-Ack, fixed for v2.
-
->> @@ -379,8 +376,31 @@ static int lp855x_parse_dt(struct lp855x *lp)
->>  }
->>  #endif
->>  
->> +static int lp855x_parse_acpi(struct lp855x *lp)
->> +{
->> +	int ret;
->> +
->> +	/*
->> +	 * On ACPI the device has already been initialized by the firmware
+> ...
 > 
-> Perhaps nitpicking but ideally I'd like "and is in register mode" here 
-> since I presume it can also be assumed that everything with this HID
-> has adopted that).
+> > > > > Run your patches through scripts/checkpatch.pl.  
+> > > >
+> > > > While it's good advice, we are dealing with quite a bad code under
+> > > > staging, so the requirements may be relaxed.  
 
-Nope not nitpicking, that is a good point, also fixed for v2.
+FYI, I fixed the checkpatch issue when I applied at media_stage:
+
+	https://git.linuxtv.org/media_stage.git/commit/?id=8a5457b7c7c3b6aa1789b18bbaff9b6a99d74caa
+
+Ok, I could have instead replied to Tsuchiya instead, but, as Andy
+pointed, those patches solved longstanding issues at the atomisp
+driver. So, I just went ahead and cleaned up the issue ;-)
+
+> > > 
+> > > To be more clear: the goal now is getting it _working_. That's why
+> > > this kind of noise is not important _for now_.  
+> > 
+> > If it's a new driver, then we accept all sorts of garbage, that's true.  
+> 
+> It was in kernel for a while, but never worked (hence anyhow tested)
+> up to the recent effort made by Tsuchiya.
+> 
+> In any case, as I said, we shall run checkpatch in the future when
+> we have something working.
+
+Yeah, agreed. The best is to run checkpatch and save some time from
+the maintainers.
+
+In any case, as Andy pointed out, this driver still requires major
+cleanups everywhere. Yet, our current focus is to make it work with
+standard V4L2 apps.
 
 Regards,
-
-Hans
-
+Mauro
