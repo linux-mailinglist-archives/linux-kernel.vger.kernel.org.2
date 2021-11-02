@@ -2,175 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8F22442A22
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 10:13:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18F8A442A27
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 10:14:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229813AbhKBJPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 05:15:38 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:58892 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229577AbhKBJPh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 05:15:37 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id EFF8B21763;
-        Tue,  2 Nov 2021 09:13:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1635844381; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2PL/CHUzCaTjVXcJ6tVaGk2chS8+euTk3CpkvBpMc1E=;
-        b=tnDkhHB8HpGVgDR1SrPZw/qrxFyjlJL14XuHF2zh77KPNBa+CvnJXL4jNEg0Jv2ku8gadb
-        y1NT2nOhGKQFtAt4J4wpeOo9fZsLzUq/SFrGObjIMD/0N8hT20NtBoWFlCuitplP4deH3h
-        hSVomYViDsEpzt5a3a01w8N55tY48zU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1635844381;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2PL/CHUzCaTjVXcJ6tVaGk2chS8+euTk3CpkvBpMc1E=;
-        b=A7hnLFj9n5cDyzOxFyetnMHdWMnOgTqnMyj9rbHzvG8zuEV+hY9UNe7lMMszOEfq2thGve
-        tns2CTCRSicxqVAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B814D13BAA;
-        Tue,  2 Nov 2021 09:13:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id zsqkHh0BgWEmewAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Tue, 02 Nov 2021 09:13:01 +0000
-Message-ID: <48ee2cec-ce4c-6f15-ad73-e1e4a6151d7a@suse.de>
-Date:   Tue, 2 Nov 2021 10:13:00 +0100
+        id S230333AbhKBJRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 05:17:00 -0400
+Received: from mail-eopbgr1320101.outbound.protection.outlook.com ([40.107.132.101]:31908
+        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229577AbhKBJQw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 05:16:52 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XxcZYuyLbRTGN7xDqeaNQy0evpozKjONgPZBI0GLTc6noSr2YIuLCneI6Ec8eySuPxeVh8tK+NKbhmHORzhJtfdgQX317CXlg8fHY3qbuLwAhVQkbY3mCeHlyrhYirJiQ4SDFcgryOzTq9w3kQsxjW1Q4WJUd0ITZqdAx3+WlwfgnCqPi0pXBifyfisPn8EslgyfAxgWhNJPBBV6RmsEOSUdlGRcTQw3rsmAEFJACAVT6RbCR9Dlq6v8P7o/96YEgw9lfApxio+V230TwSysi0LB/nsWDoGrP70YAOiR4D6Yf+qzLfOxVTsCLHJ9XjPjDPQ9jIl67R//O2veMvfaIw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=qYLD7k7Y+hPxwQi3/mW+nUUQ34K2rw+XEXmFd2DCowU=;
+ b=EkCXVUNCMJGab8EYxEkX//FBpRD6+5SJ2LmffB1yjwb+tDPYjfAT0CP1nMHRKD2BrmCY+qlGusbvDAad4vwZNnu0QsScQNSnW52XzKV+gs7nDRfphC5vID038bjo2ykie+MuRKZRd+sAwff8yMJT4fpWqkBZGd0MYD7xt2WqWWGos6ROXLzuh1dW3Ln2vwtku1WGzhtELfyn/TOdwQz4a0ivDDvw1XVki7ilBk1BdwZUGdxTKklMJuUbNPj9l3muiQw9EaEsnfXwBI79/AGc/DFZe8I3MQepn73R4qeiEgCj5DzlKVbJdXiRK/QxdlMkKl5x7QfP7o45Bt+i1yo9KQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
+ s=selector2-vivo0-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qYLD7k7Y+hPxwQi3/mW+nUUQ34K2rw+XEXmFd2DCowU=;
+ b=NYJocV58oHGBVe50NCi2rKsIByYPiPWA0kbsbjBaICgWCB156kFdYChJ8pfLUnvpCw+gqud8JePslB1ZhXLWO6JN2fSLgiAdJmmeKQ7r7f/M2zLHEheKtftH79SpVC3pLV74lXvtsG1nkReco2z2TAQzdsUzbDIhYoIR1U/ncpg=
+Authentication-Results: netfilter.org; dkim=none (message not signed)
+ header.d=none;netfilter.org; dmarc=none action=none header.from=vivo.com;
+Received: from SG2PR06MB3367.apcprd06.prod.outlook.com (2603:1096:4:78::19) by
+ SG2PR06MB2459.apcprd06.prod.outlook.com (2603:1096:4:66::18) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4649.15; Tue, 2 Nov 2021 09:14:11 +0000
+Received: from SG2PR06MB3367.apcprd06.prod.outlook.com
+ ([fe80::fc12:4e1b:cc77:6c0]) by SG2PR06MB3367.apcprd06.prod.outlook.com
+ ([fe80::fc12:4e1b:cc77:6c0%6]) with mapi id 15.20.4649.019; Tue, 2 Nov 2021
+ 09:14:11 +0000
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     jiabing.wan@qq.com, Wan Jiabing <wanjiabing@vivo.com>
+Subject: [PATCH] netfilter: nft_payload: Remove duplicated include in nft_payload.c
+Date:   Tue,  2 Nov 2021 05:13:55 -0400
+Message-Id: <20211102091355.21577-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.20.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: HK2PR02CA0205.apcprd02.prod.outlook.com
+ (2603:1096:201:20::17) To SG2PR06MB3367.apcprd06.prod.outlook.com
+ (2603:1096:4:78::19)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH v2 1/2] drm/aperture: Move conflicting fbdev frame buffer
- removal to a helper
-Content-Language: en-US
-To:     Javier Martinez Canillas <javierm@redhat.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Neal Gompa <ngompa13@gmail.com>,
-        Peter Robinson <pbrobinson@gmail.com>,
-        =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        dri-devel@lists.freedesktop.org
-References: <20211025075756.3479157-1-javierm@redhat.com>
- <20211025075756.3479157-2-javierm@redhat.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-In-Reply-To: <20211025075756.3479157-2-javierm@redhat.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------BtUEHiJ0AVXtJ6d4BYTqtngd"
+Received: from localhost.localdomain (218.213.202.190) by HK2PR02CA0205.apcprd02.prod.outlook.com (2603:1096:201:20::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.14 via Frontend Transport; Tue, 2 Nov 2021 09:14:09 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: db303546-ca65-4396-bbcd-08d99de121a3
+X-MS-TrafficTypeDiagnostic: SG2PR06MB2459:
+X-Microsoft-Antispam-PRVS: <SG2PR06MB2459D31D248358FE2819F216AB8B9@SG2PR06MB2459.apcprd06.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:296;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: gXHCtJWHoBAES3EqSodmTcZT7VMUYAKfhO+krVMMXG25dfv0AIhhJYVW8RQqivgdvDfZ/NWBzw+BCOdvUkmNFZO1gDxyBQHCrWuKYOQbGzAhevZ1i4nrP5A7Bt9CyJPU4/PMIPtKtZGxr6JgkPruEHXnLrf9ftUWAWsOY9AUQUA00KJz4IdRI8UTy5DVEvtfx8KdwEZRZihjo1SQ8lni3xYLnL4AAUfoJAg2fTtL9TZzpcEwcw29NXcEvO9710rEbrmIzb/ARM5hyinjkWxQVuW8VUjiKj/F3U4IPr3F7hNmDydt3B5hGLl84MEMnq8Y3LZhMNA5CJo4ewXK1X01kfhxjpbAxYKOscb7Ck74V4SrKofjQgjr96xymDFzaLP1m8qxQA9zkeeXslyJi4HKQNRsMHzu8yOIl7ykqh88Ymg9wu9NIya9FJ1SlFOQf40SaTw672MeMc/BAmmKn7tVTNEYwShQBcXCFbWxqCL34of+U7bmq8KkwjN6H1vatx6SCe1fjSF1FiYbO+CzWDQYplSOi9c5I3fAYwK9WtuVoHG86HZQr3FHMyvRbp1mUdVbwVVt9e06E9/CYtaBFRNT4Nl1TDfuhW87hBDLvp0v/ra6hs8MGM1RFOn7eVNY8QXajB3XRVzMRFCQzyQyrf46iAvZL7jbm9eejxlZ5uP0JqFekjHtdRKCoq/s/f6qOH+5G7JQ4vco8+Ex9EE+17zDcw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB3367.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(86362001)(5660300002)(110136005)(36756003)(1076003)(7416002)(52116002)(6666004)(4744005)(4326008)(83380400001)(38350700002)(38100700002)(107886003)(508600001)(2616005)(6512007)(316002)(186003)(6486002)(26005)(2906002)(66476007)(66556008)(8676002)(66946007)(956004)(6506007)(8936002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?a4Yru7TQKqO8hp4IjDuLunGbL4RGoAmdLYgWiTRV0DnfOS9fy90X0MVz1Zco?=
+ =?us-ascii?Q?vF5tAc4KTihci6o2w0dINR2xqx/4E9/lDkG3+vEHDBsK2IV5/rdSoFLCYehm?=
+ =?us-ascii?Q?TrUrlBvspKGx7KGllLYEyHhLpnR3gmjyfnduampZYcsShVEtwwwS3/JRYme9?=
+ =?us-ascii?Q?sTu9C4urh+J5y7vav7yWK/HM8rfDlw6SK9YC2g+4Bdq7ry208QIziJfNnFMS?=
+ =?us-ascii?Q?/rTh61wIX7uDjGZYqnh9UIi5OAyxR3b2MklaX0BBcnEC3tLyEq0qHIo1N2C1?=
+ =?us-ascii?Q?Ok/qgRyTvP10dsqUKvhFI2LVWrT5xP3T5VjmP9DCECCgT0LR0zuoLQm4qCYK?=
+ =?us-ascii?Q?dfOTr6pG1yGHWIqgjF4DQIye7QBfuuh1DQNYPDpGqDaM+g8FCIIc3Aj8SgXD?=
+ =?us-ascii?Q?AAEPXdz75tUpA7X+eeo9EFmi2KbdwmqS4OzRR300Qk05/FBq4/FNu4jAc6rr?=
+ =?us-ascii?Q?QnGyup0FLtYlMKO0YGlxnL2Em5D6B3YZ4eC/maw8qXL1oS8DxQQ9g2gaZt5x?=
+ =?us-ascii?Q?W/FFQI+B5kyToE9nSvb52FTryc7YLULIfu/jO/sTMjmEQwFD/QIR7WMsFoal?=
+ =?us-ascii?Q?D1YYIcnpEUcLVZeVcy3tC8QCPESigWSoKmSS3EGOOSIw43jKsnctRNHKgVYW?=
+ =?us-ascii?Q?3ihLJAfieVnSTbM0pR/4+z7Mdp1BPULCwjHU6QyXttyqA550o93huB2psNbn?=
+ =?us-ascii?Q?VfNfcbZB+HLOvwTO0aYlZajwelKwY28pbdr1/4PfeMC7u/fV8WOUULbu7L5s?=
+ =?us-ascii?Q?akrXmD5jfD6OBc1KiZ42zajtbAhOoVmkYC05n0HDDgZzMg54EQ1b+WiLVZJ/?=
+ =?us-ascii?Q?llBgGkvI7ZnjWlLTCAbJXArwx5mKbGP1FdupA88WwP5bb2eKQKTu58DJZMxK?=
+ =?us-ascii?Q?TGY/kU24hJ8g786Ut2uZEQ9uwV5eEFbRWNTXxxJ/mzEv2YK4iX+ipFibemhg?=
+ =?us-ascii?Q?JhZHCdbmOkRy3cu56TOzcx0DnU4RrwxZCxwWqu0o2bq4wBqroeNqFxGNiHUl?=
+ =?us-ascii?Q?URtHgA+SOXfTMv+IZoZyBltIYJSurzcFtSioOIjzRD22rmokIO3ucn7LPADq?=
+ =?us-ascii?Q?KYKYMuRF6JfnlUNGQpWWGaaxBLllCaM0k8TyM7LQcoO5zcAyr1XbJdWIpiHV?=
+ =?us-ascii?Q?5lpuxGYfCbjUrJZ50/dOkW/HzAJRQO48oMzHhgTewULHsBVT6NXlajZepWbh?=
+ =?us-ascii?Q?CAvEfTrJZURPYsDhdYNnrIfsWT0BuEwA5RLn7tvsCzIJ3JvuaBCIoIk3nWtr?=
+ =?us-ascii?Q?9EZNHMxjByHSSaHy0Jj86+b9UFkTmr9RSNm0tnaApVxUSr1yBXX8uBRLZqPz?=
+ =?us-ascii?Q?qD+7KmMKagtjNz7GGfIb5e+kvlQgK0vfuQebFaqLv7AF/WFS4Fwndy7foxaf?=
+ =?us-ascii?Q?jREF13IikcCnTzLRChJ7VmmprBcdH6g6BxfGOtWNBf3MJSMAR5iOmSlpWGSr?=
+ =?us-ascii?Q?0a5eG6ybqK/MUVh5kFp/MtfuKIdxkEOFVfyyfOrMItDhC+HDR+r8/YErV5l5?=
+ =?us-ascii?Q?UKLm8ohyH9JGZU4UxzzC61J5OMYBakQFXQERTMzck+5pndXf2EOcD6Sg6X7/?=
+ =?us-ascii?Q?QiIJqvQM3hO68YnAZYcurnu4eBdyHSBgVbMB2A4mD94vfax0EWNQ26vQlnkL?=
+ =?us-ascii?Q?GEna+UjaSeb7vV8BDJPZ7fo=3D?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: db303546-ca65-4396-bbcd-08d99de121a3
+X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB3367.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2021 09:14:11.0405
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: zjXQw6FW/FdCulYFkvU/hPAA3BvVDQzLA4yB1Kq31rw8J7fDQeg9plzL1LF26a3LV7kzku9JVjpAWj18XGm7xA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR06MB2459
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------BtUEHiJ0AVXtJ6d4BYTqtngd
-Content-Type: multipart/mixed; boundary="------------rSYPXBdfaNRJIrL1blKCymJn";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Javier Martinez Canillas <javierm@redhat.com>,
- linux-kernel@vger.kernel.org
-Cc: Neal Gompa <ngompa13@gmail.com>, Peter Robinson <pbrobinson@gmail.com>,
- =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
- Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, dri-devel@lists.freedesktop.org
-Message-ID: <48ee2cec-ce4c-6f15-ad73-e1e4a6151d7a@suse.de>
-Subject: Re: [PATCH v2 1/2] drm/aperture: Move conflicting fbdev frame buffer
- removal to a helper
-References: <20211025075756.3479157-1-javierm@redhat.com>
- <20211025075756.3479157-2-javierm@redhat.com>
-In-Reply-To: <20211025075756.3479157-2-javierm@redhat.com>
+Fix following checkincludes.pl warning:
+./net/netfilter/nft_payload.c: linux/ip.h is included more than once.
 
---------------rSYPXBdfaNRJIrL1blKCymJn
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+---
+ net/netfilter/nft_payload.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-DQoNCkFtIDI1LjEwLjIxIHVtIDA5OjU3IHNjaHJpZWIgSmF2aWVyIE1hcnRpbmV6IENhbmls
-bGFzOg0KPiBUaGUgbG9naWMgdG8gcmVtb3ZlIHRoZSBjb25mbGljdGluZyBmcmFtZSBidWZm
-ZXJzIGZvciBmYmRldiBkZXZpY2VzIHRoYXQNCj4gdXNlIGEgZ2l2ZW4gbWVtb3J5IHJhbmdl
-IGlzIG9ubHkgY29tcGlsZWQgaWYgQ09ORklHX0ZCIG9wdGlvbiBpcyBlbmFibGVkLg0KPiAN
-Cj4gQnV0IGhhdmluZyBhbiBpZmRlZmVyeSBpbiBkcm1fYXBlcnR1cmVfcmVtb3ZlX2NvbmZs
-aWN0aW5nX2ZyYW1lYnVmZmVycygpDQo+IG1ha2VzIHRoZSBmdW5jdGlvbiBoYXJkZXIgdG8g
-ZXh0ZW5kLiBNb3ZlIHRoZSBsb2dpYyBpbnRvIGl0cyBvd24gaGVscGVyLg0KPiANCj4gU3Vn
-Z2VzdGVkLWJ5OiBUaG9tYXMgWmltbWVybWFubiA8dHppbW1lcm1hbm5Ac3VzZS5kZT4NCj4g
-U2lnbmVkLW9mZi1ieTogSmF2aWVyIE1hcnRpbmV6IENhbmlsbGFzIDxqYXZpZXJtQHJlZGhh
-dC5jb20+DQoNCkFja2VkLWJ5OiBUaG9tYXMgWmltbWVybWFubiA8dHppbW1lcm1hbm5Ac3Vz
-ZS5kZT4NCg0KPiAtLS0NCj4gDQo+IChubyBjaGFuZ2VzIHNpbmNlIHYxKQ0KPiANCj4gICBk
-cml2ZXJzL2dwdS9kcm0vZHJtX2FwZXJ0dXJlLmMgfCAzOSArKysrKysrKysrKysrKysrKysr
-KysrLS0tLS0tLS0tLS0tDQo+ICAgMSBmaWxlIGNoYW5nZWQsIDI2IGluc2VydGlvbnMoKyks
-IDEzIGRlbGV0aW9ucygtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9k
-cm1fYXBlcnR1cmUuYyBiL2RyaXZlcnMvZ3B1L2RybS9kcm1fYXBlcnR1cmUuYw0KPiBpbmRl
-eCA3NGJkNGE3NmIyNTMuLjFhOGVkMGM2MTZkNiAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9n
-cHUvZHJtL2RybV9hcGVydHVyZS5jDQo+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9kcm1fYXBl
-cnR1cmUuYw0KPiBAQCAtMjczLDYgKzI3MywzMCBAQCBzdGF0aWMgdm9pZCBkcm1fYXBlcnR1
-cmVfZGV0YWNoX2RyaXZlcnMocmVzb3VyY2Vfc2l6ZV90IGJhc2UsIHJlc291cmNlX3NpemVf
-dCBzaQ0KPiAgIAltdXRleF91bmxvY2soJmRybV9hcGVydHVyZXNfbG9jayk7DQo+ICAgfQ0K
-PiAgIA0KPiArc3RhdGljIGludCBkcm1fYXBlcnR1cmVfcmVtb3ZlX2NvbmZsaWN0aW5nX2Zi
-ZGV2X2ZyYW1lYnVmZmVycyhyZXNvdXJjZV9zaXplX3QgYmFzZSwNCj4gKwkJCQkJCQkgICAg
-ICByZXNvdXJjZV9zaXplX3Qgc2l6ZSwgYm9vbCBwcmltYXJ5LA0KPiArCQkJCQkJCSAgICAg
-IGNvbnN0IHN0cnVjdCBkcm1fZHJpdmVyICpyZXFfZHJpdmVyKQ0KPiArew0KPiArI2lmIElT
-X1JFQUNIQUJMRShDT05GSUdfRkIpDQo+ICsJc3RydWN0IGFwZXJ0dXJlc19zdHJ1Y3QgKmE7
-DQo+ICsJaW50IHJldDsNCj4gKw0KPiArCWEgPSBhbGxvY19hcGVydHVyZXMoMSk7DQo+ICsJ
-aWYgKCFhKQ0KPiArCQlyZXR1cm4gLUVOT01FTTsNCj4gKw0KPiArCWEtPnJhbmdlc1swXS5i
-YXNlID0gYmFzZTsNCj4gKwlhLT5yYW5nZXNbMF0uc2l6ZSA9IHNpemU7DQo+ICsNCj4gKwly
-ZXQgPSByZW1vdmVfY29uZmxpY3RpbmdfZnJhbWVidWZmZXJzKGEsIHJlcV9kcml2ZXItPm5h
-bWUsIHByaW1hcnkpOw0KPiArCWtmcmVlKGEpOw0KPiArDQo+ICsJaWYgKHJldCkNCj4gKwkJ
-cmV0dXJuIHJldDsNCj4gKyNlbmRpZg0KPiArCXJldHVybiAwOw0KPiArfQ0KPiArDQo+ICAg
-LyoqDQo+ICAgICogZHJtX2FwZXJ0dXJlX3JlbW92ZV9jb25mbGljdGluZ19mcmFtZWJ1ZmZl
-cnMgLSByZW1vdmUgZXhpc3RpbmcgZnJhbWVidWZmZXJzIGluIHRoZSBnaXZlbiByYW5nZQ0K
-PiAgICAqIEBiYXNlOiB0aGUgYXBlcnR1cmUncyBiYXNlIGFkZHJlc3MgaW4gcGh5c2ljYWwg
-bWVtb3J5DQo+IEBAIC0yODksMjMgKzMxMywxMiBAQCBzdGF0aWMgdm9pZCBkcm1fYXBlcnR1
-cmVfZGV0YWNoX2RyaXZlcnMocmVzb3VyY2Vfc2l6ZV90IGJhc2UsIHJlc291cmNlX3NpemVf
-dCBzaQ0KPiAgIGludCBkcm1fYXBlcnR1cmVfcmVtb3ZlX2NvbmZsaWN0aW5nX2ZyYW1lYnVm
-ZmVycyhyZXNvdXJjZV9zaXplX3QgYmFzZSwgcmVzb3VyY2Vfc2l6ZV90IHNpemUsDQo+ICAg
-CQkJCQkJIGJvb2wgcHJpbWFyeSwgY29uc3Qgc3RydWN0IGRybV9kcml2ZXIgKnJlcV9kcml2
-ZXIpDQo+ICAgew0KPiAtI2lmIElTX1JFQUNIQUJMRShDT05GSUdfRkIpDQo+IC0Jc3RydWN0
-IGFwZXJ0dXJlc19zdHJ1Y3QgKmE7DQo+ICAgCWludCByZXQ7DQo+ICAgDQo+IC0JYSA9IGFs
-bG9jX2FwZXJ0dXJlcygxKTsNCj4gLQlpZiAoIWEpDQo+IC0JCXJldHVybiAtRU5PTUVNOw0K
-PiAtDQo+IC0JYS0+cmFuZ2VzWzBdLmJhc2UgPSBiYXNlOw0KPiAtCWEtPnJhbmdlc1swXS5z
-aXplID0gc2l6ZTsNCj4gLQ0KPiAtCXJldCA9IHJlbW92ZV9jb25mbGljdGluZ19mcmFtZWJ1
-ZmZlcnMoYSwgcmVxX2RyaXZlci0+bmFtZSwgcHJpbWFyeSk7DQo+IC0Ja2ZyZWUoYSk7DQo+
-IC0NCj4gKwlyZXQgPSBkcm1fYXBlcnR1cmVfcmVtb3ZlX2NvbmZsaWN0aW5nX2ZiZGV2X2Zy
-YW1lYnVmZmVycyhiYXNlLCBzaXplLCBwcmltYXJ5LA0KPiArCQkJCQkJCQkgcmVxX2RyaXZl
-cik7DQo+ICAgCWlmIChyZXQpDQo+ICAgCQlyZXR1cm4gcmV0Ow0KPiAtI2VuZGlmDQo+ICAg
-DQo+ICAgCWRybV9hcGVydHVyZV9kZXRhY2hfZHJpdmVycyhiYXNlLCBzaXplKTsNCj4gICAN
-Cj4gDQoNCi0tIA0KVGhvbWFzIFppbW1lcm1hbm4NCkdyYXBoaWNzIERyaXZlciBEZXZlbG9w
-ZXINClNVU0UgU29mdHdhcmUgU29sdXRpb25zIEdlcm1hbnkgR21iSA0KTWF4ZmVsZHN0ci4g
-NSwgOTA0MDkgTsO8cm5iZXJnLCBHZXJtYW55DQooSFJCIDM2ODA5LCBBRyBOw7xybmJlcmcp
-DQpHZXNjaMOkZnRzZsO8aHJlcjogSXZvIFRvdGV2DQo=
+diff --git a/net/netfilter/nft_payload.c b/net/netfilter/nft_payload.c
+index cbfe4e4a4ad7..bd689938a2e0 100644
+--- a/net/netfilter/nft_payload.c
++++ b/net/netfilter/nft_payload.c
+@@ -22,7 +22,6 @@
+ #include <linux/icmpv6.h>
+ #include <linux/ip.h>
+ #include <linux/ipv6.h>
+-#include <linux/ip.h>
+ #include <net/sctp/checksum.h>
+ 
+ static bool nft_payload_rebuild_vlan_hdr(const struct sk_buff *skb, int mac_off,
+-- 
+2.20.1
 
---------------rSYPXBdfaNRJIrL1blKCymJn--
-
---------------BtUEHiJ0AVXtJ6d4BYTqtngd
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmGBARwFAwAAAAAACgkQlh/E3EQov+C9
-jQ/+J5UR3cxu+5Dp5oWbjPSTW+TFsm5RNIcddy1hz/1B/1wkiyvhrbdXlGDd/UXq+YAUxIFp4xXR
-jnE4MeTix7A8nqo6q90qs+CCfPb9xxHtRBpq+k4xak7k5XSPGyWRzUJgGGEs6km5CP1W8XXfCZvq
-zXosazVq0bTvn+6w0Jb95SHAYJmuPhjLVcg9rzWGyZwaKeqHYrUUtSq15nmQgUNUPGjZUrstombK
-Us4t/zh6+A4GLLPh6caLYsZ4IGNPcbJCLrTDrpPO55JK9Mbq5MQVQWUY9n70E2Bp1dIOTYgIIk0x
-0YHZd67ZJSGdzY0G1Y4tdZgaJTfdwreQq9zRerkWfnqmqtrX2xMi2fcqyAy43Y7xQUzuMNxFFw+N
-V7IXNfT2uDUaJq6hHs5b6gYMRZXB9Oj3nKdOaLEfbZ7sJ3+00nXKmVfugzbt0nDSOI0+8XfDt/q2
-dofwPRBrUSMLkKxXH1Q2q3UQR86eArfGwormgdSO/SjvSVz8+cMhKTTXMw51qhUI7Rp0CyMpIXhv
-n2m+JJBY2p+680lFiqx6uA9VYpat8Rr5N+wQcPkGCS2yVdciW5YpfAHIrjpY711lqHZEkZNf3Llx
-0BrG7J2dGPVt+DW2KUEwtfcOVK1oSxdferfYHLvufut9ypZa3ySkMvNKSQd21yEkdlliqKTK3Ib5
-iY4=
-=kblq
------END PGP SIGNATURE-----
-
---------------BtUEHiJ0AVXtJ6d4BYTqtngd--
