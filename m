@@ -2,98 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72C0044307B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 15:34:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BDE1443087
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 15:35:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231164AbhKBOhB convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 2 Nov 2021 10:37:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42990 "EHLO
+        id S231326AbhKBOh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 10:37:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbhKBOg5 (ORCPT
+        with ESMTP id S229530AbhKBOhz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 10:36:57 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2F8FC061714
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 07:34:22 -0700 (PDT)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1mhurk-0006U6-OU; Tue, 02 Nov 2021 15:34:20 +0100
-Received: from pza by lupine with local (Exim 4.94.2)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1mhurk-004FSe-3e; Tue, 02 Nov 2021 15:34:20 +0100
-Message-ID: <a79a72c25dc4ab3a07ec74459edb1e8169be8504.camel@pengutronix.de>
-Subject: Re: [PATCH 1/2] mmc: Add SD/SDIO driver for Sunplus SP7021
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     "LH.Kuo" <lhjeff911@gmail.com>, ulf.hansson@linaro.org,
-        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     dvorkin@tibbo.com, qinjian@cqplus1.com, wells.lu@sunplus.com,
-        "LH.Kuo" <lh.kuo@sunplus.com>
-Date:   Tue, 02 Nov 2021 15:34:20 +0100
-In-Reply-To: <1635487055-18494-2-git-send-email-lh.kuo@sunplus.com>
-References: <1635487055-18494-1-git-send-email-lh.kuo@sunplus.com>
-         <1635487055-18494-2-git-send-email-lh.kuo@sunplus.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.38.3-1 
+        Tue, 2 Nov 2021 10:37:55 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83560C0613F5;
+        Tue,  2 Nov 2021 07:35:20 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id w15so76792713edc.9;
+        Tue, 02 Nov 2021 07:35:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=65sYvvqiPacKnyXGm00uOfZmsdN1H152QZb/K+6oTrA=;
+        b=JxLBTKIVNZHK0eYuQS+2xQbio8EFWVSsF86el4ZeRBHIxp4C+xMek7kd13w+RHprtp
+         BUr6gFI4Vd7RVLKLTkAdpctZSALuqID7yhubn31jBEo/wGXnTxwHFvGgb5i4tXyM44Ee
+         eMuMErWiXd+lLV4bh96VAYwFml+Qjt1p1vDuv5nvc4C96SKi161F3rM8FIZVUGE//s0i
+         BLwF+OO8ZOIzlyS7sPYrylrrQKNDcbv8boMgC6JrTdWxM8/0I6RP3FvRt/eSc2c6djHg
+         ZW1mqeU1TH+QAxauUw/3Jv37PxViBGQ8hzcIpuWT7DOpoVx8iwLliYA8im2G00scJf3i
+         dBKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=65sYvvqiPacKnyXGm00uOfZmsdN1H152QZb/K+6oTrA=;
+        b=w9WksMXQ69VBCIl/ePBEdHusuh0tpUoLSsMRPQVUZgzkThSOtvCIhdilpIPQKg+YZs
+         GuWeFZF3F012u0eAwer5ydliXuZ7UoRjQ5J3KCencmJvnk5zQ/3Vr0fRN2YxoFulg/WL
+         /MBFwkBWmjwy3OO/kGI2EqDDba3rUTHCjnZDxFwPb6etYilFOme0FFLquBch3DDjDUBS
+         YtYhkdJ2a3R0zppzu28NVAQz0sje5sjpW1/upl+lJqw9sTFk1D+SOB33A2RXBikoHyC3
+         C/roUKgdFEdvBpy2aE2N5QNUhmxDPPWCtMglaasXzTFF5RABOXq3Bwo5ieC85PvPPhQP
+         SHvg==
+X-Gm-Message-State: AOAM530mHExfyJrE6KZuf6NPWOGOTK7Jt7jPq+IWUR3Bh4xFal/6ceEo
+        nzunRVd6gIfc88uzY9DrzndOu6onUaLF4Gu3Kgk=
+X-Google-Smtp-Source: ABdhPJxbNeuBL+SSNH+3/S3iAwFmMxZhFeZFkV/g7SdZI4XCi+BAFf24eDiSTLXHPzQiLIjNziN/KABxFr0PzlrMtTE=
+X-Received: by 2002:a05:6402:207c:: with SMTP id bd28mr41368359edb.240.1635863711126;
+ Tue, 02 Nov 2021 07:35:11 -0700 (PDT)
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20211102094907.31271-1-hdegoede@redhat.com> <20211102094907.31271-11-hdegoede@redhat.com>
+In-Reply-To: <20211102094907.31271-11-hdegoede@redhat.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 2 Nov 2021 16:34:21 +0200
+Message-ID: <CAHp75Vd-xY43H8jPOUqJp55Rq3Wuhsdzctfhqq300S0vAKTzpw@mail.gmail.com>
+Subject: Re: [PATCH v5 10/11] platform/x86: int3472: Pass tps68470_regulator_platform_data
+ to the tps68470-regulator MFD-cell
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Kate Hsuan <hpa@redhat.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-10-29 at 13:57 +0800, LH.Kuo wrote:
-[...]
-> --- /dev/null
-> +++ b/drivers/mmc/host/sunplus_sd2.c
-> @@ -0,0 +1,1069 @@
-[...]
-> +static void spsdc_controller_init(struct spsdc_host *host)
-> +{
-> +	u32 value;
-> +	int ret = reset_control_assert(host->rstc);
-> +
-> +	if (!ret) {
-> +		mdelay(1);
+On Tue, Nov 2, 2021 at 11:50 AM Hans de Goede <hdegoede@redhat.com> wrote:
+>
+> Pass tps68470_regulator_platform_data to the tps68470-regulator
+> MFD-cell, specifying the voltages of the various regulators and
+> tying the regulators to the sensor supplies so that sensors which use
+> the TPS68470 can find their regulators.
+>
+> Since the voltages and supply connections are board-specific, this
+> introduces a DMI matches int3472_tps68470_board_data struct which
+> contains the necessary per-board info.
+>
+> This per-board info also includes GPIO lookup information for the
+> sensor IO lines which may be connected to the tps68470 GPIOs.
 
-Consider using usleep_range(), see Documentation/timers/timers-howto.rst
+...
 
-[...]
-> +static int spsdc_drv_probe(struct platform_device *pdev)
-> +{
-> +	int ret = 0;
-> +	struct mmc_host *mmc;
-> +	struct resource *resource;
-> +	struct spsdc_host *host;
-> +	unsigned int mode;
-> +
-> +	mmc = mmc_alloc_host(sizeof(*host), &pdev->dev);
-> +	if (!mmc) {
-> +		ret = -ENOMEM;
-> +		goto probe_free_host;
-> +	}
-> +
-> +	host = mmc_priv(mmc);
-> +	host->mmc = mmc;
-> +	host->power_state = MMC_POWER_OFF;
-> +	host->dma_int_threshold = 1024;
-> +	host->dmapio_mode = SPSDC_DMA_MODE;
-> +
-> +	host->clk = devm_clk_get(&pdev->dev, NULL);
-> +	if (IS_ERR(host->clk)) {
-> +		spsdc_pr(ERROR, "Can not find clock source\n");
-> +		ret = PTR_ERR(host->clk);
-> +		goto probe_free_host;
-> +	}
-> +
-> +	host->rstc = devm_reset_control_get(&pdev->dev, NULL);
+> +               board_data = int3472_tps68470_get_board_data(dev_name(&client->dev));
+> +               if (!board_data) {
+> +                       dev_err(&client->dev, "No board-data found for this laptop/tablet model\n");
+> +                       return -ENODEV;
 
-Please use devm_reset_control_get_exclusive() instead.
+It's fine to use dev_err_probe() for known error codes.
 
-regards
-Philipp
+> +               }
+
+...
+
+> +               cells[1].platform_data = (void *)board_data->tps68470_regulator_pdata;
+
+Do we need casting?
+
+...
+
+> +#include <linux/dmi.h>
+> +#include <linux/gpio/machine.h>
+> +#include <linux/platform_data/tps68470.h>
+> +#include <linux/regulator/machine.h>
+
+string.h  for strcmp() ?
+kernel.h for ARRAY_SIZE() ?
+
+-- 
+With Best Regards,
+Andy Shevchenko
