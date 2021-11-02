@@ -2,134 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47C40443089
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 15:36:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3FC1443095
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 15:38:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231278AbhKBOiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 10:38:09 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:47262 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbhKBOiI (ORCPT
+        id S231157AbhKBOkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 10:40:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43872 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229557AbhKBOkl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 10:38:08 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 01AD41FD4E;
-        Tue,  2 Nov 2021 14:35:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1635863733; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PZOYwTcs/uRKNYMtgWTyKzvzPAmp2lHm06+rRoOs/v4=;
-        b=vQq48Hi9tmkUX4nm9Wzk1Fq+ApGIlZIIZmmiD9SmLhgmExEVMaSiVApTakHz0HYqIqdy44
-        Ot3l2rxUuQ7ce7mmLPELGfrb1s4WWwDEC6Qn5wpi/v7GoGi94FHMUVj3KQTFdyyJYzllRl
-        zjCzO1aYk947DkoYQKmzAyuTUh3hwbM=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id B4221A3B87;
-        Tue,  2 Nov 2021 14:35:32 +0000 (UTC)
-Date:   Tue, 2 Nov 2021 15:35:32 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Alexey Makhalov <amakhalov@vmware.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Oscar Salvador <OSalvador@suse.com>
-Subject: Re: [PATCH] mm: fix panic in __alloc_pages
-Message-ID: <YYFMtFwkKLUXaG/W@dhcp22.suse.cz>
-References: <YYD/FkpAk5IvmOux@dhcp22.suse.cz>
- <b2e4a611-45a6-732a-a6d3-6042afd2af6e@redhat.com>
- <E34422F0-A44A-48FD-AE3B-816744359169@vmware.com>
- <b3908fce-6b07-8390-b691-56dd2f85c05f@redhat.com>
- <YYEkqH8l0ASWv/JT@dhcp22.suse.cz>
- <42abfba6-b27e-ca8b-8cdf-883a9398b506@redhat.com>
- <YYEun6s/mF9bE+rQ@dhcp22.suse.cz>
- <e7aed7c0-b7b1-4a94-f323-0bcde2f879d2@redhat.com>
- <YYE8L4gs8/+HH6bf@dhcp22.suse.cz>
- <20211102135201.GA4348@linux>
+        Tue, 2 Nov 2021 10:40:41 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63BB3C061714;
+        Tue,  2 Nov 2021 07:38:06 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id g10so76466997edj.1;
+        Tue, 02 Nov 2021 07:38:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0I7ubj1Ldo3Nk5KDl6c4JTG3GlivIn7ejVsprdJKiXY=;
+        b=JlJTn17qKYIhLmMbFUjqYTIi9H4FR8PTJE4FBsZLnl//slB0e20M00TFsPqunDzHxF
+         PbVznl4+bNrhhrtQwo3TbA+AFWCj8dxNsVeARjRpvwrlPO/qNVg9XntE2Tu72oEVqqlA
+         sI8ekdXZEX/jKSwoYaUCE52G+M8UskIwpShUEhDHge3BU1vfPfmEbTteuy2S9VGbAcz8
+         wNpgwpdWvlRmGYogKzxaHPHsNJsB0OKzJoCOClqei2uOF26HK0U4vETsulOx8uc+tbHn
+         /qgXz45mYp7zYmffuPj5cj5poU8tkZIB8CYsEsClP67R0h32k7QURMbdUHQ+C9YWiutM
+         pjbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0I7ubj1Ldo3Nk5KDl6c4JTG3GlivIn7ejVsprdJKiXY=;
+        b=g6FUfqFS/A5kily7HeyTA/8QhqwxASxlWI8r1/3Q4f+LPOOXzif7wFVEeuJWKEroKC
+         wVFnByCBSOwaud1+c9eSTEUBMbTZbHWz7SiT1sAGZtwe5OVzgycic9ONfG10l/rCxbLc
+         uTyhTJpD+pd7j2ttBl3mOLU4Ba/gcjlTiDZbkKIaNO0/DoSIqUGxuUhYdmF4S7NS/LUW
+         6Z300phn0vr+ypmG+boon0noPJglX1Vq/JGKOPh5p3bwYdgeHJ2CwlnuZEQCixs7BgIo
+         ymb+qiegzLDmVEMMyiMiYWxzE6a3pGnLuH0P7QaMdvNlYkpiMiUDGqpVuWbRQJbHIt95
+         F35Q==
+X-Gm-Message-State: AOAM532QFuaQ3pXTtFQGdb0pxVzZOHFi6fwh/iMu+CLgvmbjnds+5R+0
+        vDEzto0HFY2Da/Vg6M5ObNs58O1ov3pKdrLKJwI=
+X-Google-Smtp-Source: ABdhPJz78G9S+IwBiHwzwtrFf9Ws1srJp3v1MBNrdOcNp2jvAQsLpSlPPk6MqY0r4sswsy4EnwvJEpp19zeqpea2M7Q=
+X-Received: by 2002:a17:906:6a0a:: with SMTP id qw10mr18550055ejc.141.1635863882143;
+ Tue, 02 Nov 2021 07:38:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211102135201.GA4348@linux>
+References: <20211102094907.31271-1-hdegoede@redhat.com>
+In-Reply-To: <20211102094907.31271-1-hdegoede@redhat.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 2 Nov 2021 16:37:13 +0200
+Message-ID: <CAHp75VfHo1XRo8SPy2PtW8JyJ4K6AtZhwGotuCu3Fw5-FFpK0g@mail.gmail.com>
+Subject: Re: [PATCH v5 00/11] Add support for X86/ACPI camera sensor/PMIC
+ setup with clk and regulator platform data
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Kate Hsuan <hpa@redhat.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 02-11-21 14:52:01, Oscar Salvador wrote:
-> On Tue, Nov 02, 2021 at 02:25:03PM +0100, Michal Hocko wrote:
-> > I think we want to learn how exactly Alexey brought that cpu up. Because
-> > his initial thought on add_cpu resp cpu_up doesn't seem to be correct.
-> > Or I am just not following the code properly. Once we know all those
-> > details we can get in touch with cpu hotplug maintainers and see what
-> > can we do.
-> 
-> I am not really familiar with CPU hot-onlining, but I have been taking a look.
-> As with memory, there are two different stages, hot-adding and onlining (and the
-> counterparts).
-> 
-> Part of the hot-adding being:
-> 
-> acpi_processor_get_info
->  acpi_processor_hotadd_init
->   arch_register_cpu
->    register_cpu
-> 
-> One of the things that register_cpu() does is to set cpu->dev.bus pointing to
-> &cpu_subsys, which is:
-> 
-> struct bus_type cpu_subsys = {
-> 	.name = "cpu",
-> 	.dev_name = "cpu",
-> 	.match = cpu_subsys_match,
-> #ifdef CONFIG_HOTPLUG_CPU
-> 	.online = cpu_subsys_online,
-> 	.offline = cpu_subsys_offline,
-> #endif
-> };
-> 
-> Then, the onlining part (in case of a udev rule or someone onlining the device)
-> would be:
-> 
-> online_store
->  device_online
->   cpu_subsys_online
->    cpu_device_up
->     cpu_up
->      ...
->      online node
-> 
-> Since Alexey disabled the udev rule and no one onlined the CPU, online_store()->
-> device_online() wasn't really called.
-> 
-> The following only applies to x86_64:
-> I think we got confused because cpu_device_up() is also called from add_cpu(),
-> but that is an exported function and x86 does not call add_cpu() unless for
-> debugging purposes (check kernel/torture.c and arch/x86/kernel/topology.c).
-> It does the onlining through online_store()...
-> So we can take add_cpu() off the equation here.
+On Tue, Nov 2, 2021 at 11:49 AM Hans de Goede <hdegoede@redhat.com> wrote:
+>
+> Here is v5 of my patch-set adding support for camera sensor connected to a
+> TPS68470 PMIC on x86/ACPI devices.
 
-Yes, so the real problem is (thanks for pointing me to the acpi code).
-The cpu->node association is done in acpi_map_cpu2node and I suspect
-this expects that the node is already present as it gets the information
-from SRAT/PXM tables which are parsed during boot. But I might be just
-confused or maybe just VMware inject new entries here somehow.
+No showstoppers observed, FWIW,
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-Another interesting thing is that acpi_map_cpu2node skips over
-association if there is no node found in SRAT but that should only mean
-it would use the default initialization which should be hopefuly 0.
+> I'm quite happy with how this works now, so from my pov this is the final
+> version of the device-instantiation deferral code / approach.
+>
+> ###
+>
+> The clk and regulator frameworks expect clk/regulator consumer-devices
+> to have info about the consumed clks/regulators described in the device's
+> fw_node, but on ACPI this info is missing.
+>
+> This series worksaround this by providing platform_data with the info to
+> the TPS68470 clk/regulator MFD cells.
+>
+> Patches 1 - 2 deal with a probe-ordering problem this introduces,
+> since the lookups are only registered when the provider-driver binds,
+> trying to get these clks/regulators before then results in a -ENOENT
+> error for clks and a dummy regulator for regulators. See the patches
+> for more details.
+>
+> Patch 3 adds a header file which adds tps68470_clk_platform_data and
+> tps68470_regulator_platform_data structs. The futher patches depend on
+> this new header file.
+>
+> Patch 4 + 5 add the TPS68470 clk and regulator drivers
+>
+> Patches 6 - 11 Modify the INT3472 driver which instantiates the MFD cells to
+> provide the necessary platform-data.
 
-Anyway, I have found in my notes
-https://www.spinics.net/lists/kernel/msg3010886.html which is a slightly
-different problem but it has some notes about how the initialization
-mess works (that one was boot time though and hotplug might be different
-actually).
-
-I have ran out of time for this today so hopefully somebody can re-learn
-that from there...
 
 -- 
-Michal Hocko
-SUSE Labs
+With Best Regards,
+Andy Shevchenko
