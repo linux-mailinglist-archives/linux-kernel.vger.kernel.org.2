@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F03F6443392
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 17:44:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3202944337C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 17:44:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235025AbhKBQrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 12:47:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44492 "EHLO
+        id S234941AbhKBQq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 12:46:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234758AbhKBQqs (ORCPT
+        with ESMTP id S234662AbhKBQqs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 2 Nov 2021 12:46:48 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33866C0432E6
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 09:32:55 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id 133so6893600wme.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 09:32:55 -0700 (PDT)
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27FF7C0432ED
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 09:33:32 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id d3so34197069wrh.8
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 09:33:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=raspberrypi.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=w3lKGRRkGQqJSEit1/FXA4LRHXPjXkJLsSYikt6iWVk=;
-        b=sd58/iLDu7rGAwrsSY+Qta8kD4bYbi8auOoEeLBv7MTP+Y41O0UIxlTioJm9QIDDRl
-         ywHELwxoTsq4aB3O0fMcmKr399lKZ9zKRbNGB7+WgIkn/ELZ4SA9wDWsuAJVbWDjkz4I
-         ekDa1b+6BGoWy47eBFbNfCpUAocsap0/i+liwQRctfB1Rpp7OJqD5wBWKs/MUpwG+W3v
-         ngQDM406vGEMBOyR8y/TlwzXujogWjr33Z4+MOfdbTb6G4/hiuc3+gz3SQ0XacaMpfzA
-         DZFuDaPZB25EVeO1uV3vKusbWeoGfULzH2q1HF3iT3pwIViJcpK/r9BIVa6JTM4rR7h+
-         MmSQ==
+        bh=LAvIC90H2Q09upFWDw++dDK4c8sFoQjuntZhnvDGSjc=;
+        b=c0mbANBt9R9oj2N98L18a2I8SDKA/gipnKrWs4hd1qLDydb9Sm8p0Tcn6pVUrcNZYS
+         0YO3WLlDbYN9LkPXt9oDJl6yHVNsRc/ZsbJO9SKBnFILFlOP3mGcsfylFiqzMlw2UqnT
+         YK29EU54tvJhS6nmvqPUWmde/+VU0IeseY5lGZcxiujlOLNV4AjDG5pzVCa0ln+/aCSm
+         dC2PM5dknbACWIF0UteQJKH32XlB45eSytkJNuBTEBSSscH8Ui1Aoi/AbUA/acW/jYmG
+         dItZ9cExxmcMcfe+F9ZlzG16Fvcdwy5icX9D78B+l+EgvI0PHndwL0Ww0EwxWl26H6Oi
+         Ziag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=w3lKGRRkGQqJSEit1/FXA4LRHXPjXkJLsSYikt6iWVk=;
-        b=BQW9vcZIyXkmAHPSdm9WPizr973ZOEJkfkzndbsDSDSOjqYmLjUKsn4eWkWoKKXdVB
-         9z16G24a4JnlpBe08kv+Nah375J3HOc//SOJnwheFtzRqxDHbq7gTobVArJ/Zn96JXbN
-         Cig8DfeCsdLajcAeEyM4EuMV0rqgV7Xb/e27rp4AkqdS1LjZPGxzdtMAz521zwJDhVMB
-         94Baow9BbyEr/fvdwZAOIKMaJIu44VpzBgmEDEAWZu6wo3ec5qTU/DlJV03D7MuYK2vY
-         GNYUtMbhFDIsVRaeWLxgyzJfGSXg7fm3fOX+BRNSJV5qKYzW9F/gsN/NJJOhFgRBqu6a
-         xelA==
-X-Gm-Message-State: AOAM533UXrPdgarxrp8OKK0bTFnCj+rbF2eNS0e+NgFyfUMLH98Y4gCz
-        QroI38IXNWtI+0wB3BOgL832NiMBquV4IF73hhApJQ==
-X-Google-Smtp-Source: ABdhPJzAOU1qVLqVqjhLX//l0o87yTJPT7qeHI8GMR8AeobhuiyQ5rhy9/b50OOr2asWqIdFyI+ewPMxepwNXhiMrBo=
-X-Received: by 2002:a1c:4e04:: with SMTP id g4mr8026951wmh.15.1635870773733;
- Tue, 02 Nov 2021 09:32:53 -0700 (PDT)
+        bh=LAvIC90H2Q09upFWDw++dDK4c8sFoQjuntZhnvDGSjc=;
+        b=BNex0n5/CHIif7KHLGHH+tspd9XaHuhWr+pSPPrFgzq9V9cvanuz8sPOlaW850XgJj
+         n9jWY4V31PuRi+JPQx0EGPhsnODIjIQmIuHH6Zsh3aX9NdyuroeZRiRUsH5+0p0vhnLc
+         bZIeDZj4f3jPxUyPBzQvsQxWImDD//xWJBQhdQqN5WKlfYFDPMxGCr17dt1XEGWPqQ9H
+         d+SXnPP6B9dUsZXk4IHkFZ46BjFMt2kWhab4uNGF9j/6msWGMLMaxN8VPC4k2xHmSGrR
+         1hXcTZf+GSu2tT2pKUTI6nv5wmj7rHVWfp9cv1FOoYXBE25WQEk1233JTAO//BNEIW0U
+         f7nA==
+X-Gm-Message-State: AOAM530/oDCWwV+3yIudoQLvp7zhrduTKiVwww+TZZDuAlMLckurOTA1
+        mZj4On53BHRD71TjanzhRv3Ir2D8C/jUJau/TSI+KQ==
+X-Google-Smtp-Source: ABdhPJzWC/vow5AFfmXW2psyst7Pv3WXP5/d12dixg/4qM4EsHpPOXqX8KOpobyDj89zmTTPgtf8ds+xSsuvmiW+gcM=
+X-Received: by 2002:adf:a143:: with SMTP id r3mr48509272wrr.8.1635870810754;
+ Tue, 02 Nov 2021 09:33:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211025152903.1088803-1-maxime@cerno.tech> <20211025152903.1088803-6-maxime@cerno.tech>
-In-Reply-To: <20211025152903.1088803-6-maxime@cerno.tech>
+References: <20211025152903.1088803-1-maxime@cerno.tech> <20211025152903.1088803-7-maxime@cerno.tech>
+In-Reply-To: <20211025152903.1088803-7-maxime@cerno.tech>
 From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
-Date:   Tue, 2 Nov 2021 16:32:37 +0000
-Message-ID: <CAPY8ntDHdaz0r8Uxq-QsNkmBSz7Ywbf829uLTj=ZL_OwBhwAgA@mail.gmail.com>
-Subject: Re: [PATCH v8 05/10] drm/vc4: crtc: Rework the encoder retrieval code (again)
+Date:   Tue, 2 Nov 2021 16:33:14 +0000
+Message-ID: <CAPY8ntBKMr8RRCSq2xY-_uji-d=4Vr4BG53VoXzSd2dKJF-0ww@mail.gmail.com>
+Subject: Re: [PATCH v8 06/10] drm/vc4: crtc: Add some logging
 To:     Maxime Ripard <maxime@cerno.tech>
 Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
         Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
@@ -73,102 +73,44 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Mon, 25 Oct 2021 at 16:29, Maxime Ripard <maxime@cerno.tech> wrote:
 >
-> It turns out the encoder retrieval code, in addition to being
-> unnecessarily complicated, has a bug when only the planes and crtcs are
-> affected by a given atomic commit.
+> The encoder retrieval code has been a source of bugs and glitches in the
+> past and the crtc <-> encoder association been wrong in a number of
+> different ways.
 >
-> Indeed, in such a case, either drm_atomic_get_old_connector_state or
-> drm_atomic_get_new_connector_state will return NULL and thus our encoder
-> retrieval code will not match on anything.
->
-> We can however simplify the code by using drm_for_each_encoder_mask, the
-> drm_crtc_state storing the encoders a given CRTC is connected to
-> directly and without relying on any other state.
+> Add some logging to quickly spot issues if they occur.
 >
 > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 
 Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
 
 > ---
->  drivers/gpu/drm/vc4/vc4_crtc.c | 30 +++++++++---------------------
->  drivers/gpu/drm/vc4/vc4_drv.h  |  4 +---
->  2 files changed, 10 insertions(+), 24 deletions(-)
+>  drivers/gpu/drm/vc4/vc4_crtc.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
 >
 > diff --git a/drivers/gpu/drm/vc4/vc4_crtc.c b/drivers/gpu/drm/vc4/vc4_crtc.c
-> index e5c2e29a6f01..fbc1d4638650 100644
+> index fbc1d4638650..6decaa12a078 100644
 > --- a/drivers/gpu/drm/vc4/vc4_crtc.c
 > +++ b/drivers/gpu/drm/vc4/vc4_crtc.c
-> @@ -282,26 +282,14 @@ static u32 vc4_crtc_get_fifo_full_level_bits(struct vc4_crtc *vc4_crtc,
->   * same CRTC.
->   */
->  struct drm_encoder *vc4_get_crtc_encoder(struct drm_crtc *crtc,
-> -                                        struct drm_atomic_state *state,
-> -                                        struct drm_connector_state *(*get_state)(struct drm_atomic_state *state,
-> -                                                                                 struct drm_connector *connector))
-> +                                        struct drm_crtc_state *state)
->  {
-> -       struct drm_connector *connector;
-> -       struct drm_connector_list_iter conn_iter;
-> +       struct drm_encoder *encoder;
->
-> -       drm_connector_list_iter_begin(crtc->dev, &conn_iter);
-> -       drm_for_each_connector_iter(connector, &conn_iter) {
-> -               struct drm_connector_state *conn_state = get_state(state, connector);
-> +       WARN_ON(hweight32(state->encoder_mask) > 1);
->
-> -               if (!conn_state)
-> -                       continue;
-> -
-> -               if (conn_state->crtc == crtc) {
-> -                       drm_connector_list_iter_end(&conn_iter);
-> -                       return connector->encoder;
-> -               }
-> -       }
-> -       drm_connector_list_iter_end(&conn_iter);
-> +       drm_for_each_encoder_mask(encoder, crtc->dev, state->encoder_mask)
-> +               return encoder;
->
->         return NULL;
->  }
-> @@ -550,8 +538,7 @@ static void vc4_crtc_atomic_disable(struct drm_crtc *crtc,
->         struct drm_crtc_state *old_state = drm_atomic_get_old_crtc_state(state,
->                                                                          crtc);
->         struct vc4_crtc_state *old_vc4_state = to_vc4_crtc_state(old_state);
-> -       struct drm_encoder *encoder = vc4_get_crtc_encoder(crtc, state,
-> -                                                          drm_atomic_get_old_connector_state);
-> +       struct drm_encoder *encoder = vc4_get_crtc_encoder(crtc, old_state);
+> @@ -541,6 +541,9 @@ static void vc4_crtc_atomic_disable(struct drm_crtc *crtc,
+>         struct drm_encoder *encoder = vc4_get_crtc_encoder(crtc, old_state);
 >         struct drm_device *dev = crtc->dev;
 >
+> +       drm_dbg(dev, "Disabling CRTC %s (%u) connected to Encoder %s (%u)",
+> +               crtc->name, crtc->base.id, encoder->name, encoder->base.id);
+> +
 >         require_hvs_enabled(dev);
-> @@ -578,10 +565,11 @@ static void vc4_crtc_atomic_disable(struct drm_crtc *crtc,
->  static void vc4_crtc_atomic_enable(struct drm_crtc *crtc,
->                                    struct drm_atomic_state *state)
->  {
-> +       struct drm_crtc_state *new_state = drm_atomic_get_new_crtc_state(state,
-> +                                                                        crtc);
->         struct drm_device *dev = crtc->dev;
->         struct vc4_crtc *vc4_crtc = to_vc4_crtc(crtc);
-> -       struct drm_encoder *encoder = vc4_get_crtc_encoder(crtc, state,
-> -                                                          drm_atomic_get_new_connector_state);
-> +       struct drm_encoder *encoder = vc4_get_crtc_encoder(crtc, new_state);
+>
+>         /* Disable vblank irq handling before crtc is disabled. */
+> @@ -572,6 +575,9 @@ static void vc4_crtc_atomic_enable(struct drm_crtc *crtc,
+>         struct drm_encoder *encoder = vc4_get_crtc_encoder(crtc, new_state);
 >         struct vc4_encoder *vc4_encoder = to_vc4_encoder(encoder);
 >
+> +       drm_dbg(dev, "Enabling CRTC %s (%u) connected to Encoder %s (%u)",
+> +               crtc->name, crtc->base.id, encoder->name, encoder->base.id);
+> +
 >         require_hvs_enabled(dev);
-> diff --git a/drivers/gpu/drm/vc4/vc4_drv.h b/drivers/gpu/drm/vc4/vc4_drv.h
-> index f5e678491502..60826aca9e5b 100644
-> --- a/drivers/gpu/drm/vc4/vc4_drv.h
-> +++ b/drivers/gpu/drm/vc4/vc4_drv.h
-> @@ -545,9 +545,7 @@ vc4_crtc_to_vc4_pv_data(const struct vc4_crtc *crtc)
->  }
 >
->  struct drm_encoder *vc4_get_crtc_encoder(struct drm_crtc *crtc,
-> -                                        struct drm_atomic_state *state,
-> -                                        struct drm_connector_state *(*get_state)(struct drm_atomic_state *state,
-> -                                                                                 struct drm_connector *connector));
-> +                                        struct drm_crtc_state *state);
->
->  struct vc4_crtc_state {
->         struct drm_crtc_state base;
+>         /* Enable vblank irq handling before crtc is started otherwise
 > --
 > 2.31.1
 >
