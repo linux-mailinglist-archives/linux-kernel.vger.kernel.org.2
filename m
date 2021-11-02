@@ -2,60 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B56634431E6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 16:39:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BD054431EC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 16:41:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234236AbhKBPlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 11:41:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58028 "EHLO
+        id S232676AbhKBPne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 11:43:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230175AbhKBPls (ORCPT
+        with ESMTP id S232003AbhKBPnc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 11:41:48 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47BC3C061714
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 08:39:13 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id r5so16871396pls.1
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 08:39:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=E57tubdi4Kb+HoICFHf4HKGD0EgGpurJT1qek7rMtUQ=;
-        b=GyeQSwM3EHEh/vvJt9Y228S2DlCGiPLpgLBjzZk+ey13xUqVEgzQHQzLcgEHTgLD4Z
-         I6wFDVM//f2X2usezOIpT4gBSUj5mzISg1CptnJWdTssgx8umijV9AU/qvNz9WE+5Jkg
-         BKc3OnIriFxNyn7enPmYvHAx86FRD+oeC1Lxrr1FbYlyK/sK9FriNk2WrZHAxBGk+xcF
-         P3chbYutvEEIfEk2JlCRsG+Z+yDWNPAyYc6wICspGIMHK5oi35XkXj7/KDhYhVgJe9yo
-         wfsw99tOWdO16/MYxDJzjrwkc/uT+wnbzPJ6LWubSMPVSyPB/djs0kkmTrd64nKI+VLf
-         J47A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=E57tubdi4Kb+HoICFHf4HKGD0EgGpurJT1qek7rMtUQ=;
-        b=xwoSQG2sZf87GTLO28dVZJuqcrABlYIZK+7s4zTq5doH4yqmAEgGOQG9y0UrXhEiy9
-         75MemtSVAPb+gMP42M0EdQlgEkwwNMfcmY7bbSsMVsbT0O0JFZ7uPxdvas4ME1EcaCtl
-         fygu/TC33xEq6GhHRAmcMltorOH/3Xag1bKaejcvqBnKA+PZVbJHDfxf/epeQN3T5nxf
-         F7GcG+iweY6HwDcLK58VjHKNorHjVyZXqvOcMPcV77OnGRyLY2zZ2P2U+TRwUzue8WLy
-         CqBnO83r1vc6DITUKhRjfZeDvS58i5jsR+4bU6HmyZ9OBdGIOaqvYE87YmlC7ggk+ryK
-         aJag==
-X-Gm-Message-State: AOAM530dIxRaMHwF93PNTw3azWOGPaQJclvw1mOKst4kkMTS4Op1IYFB
-        MxAqwo4rIu48SLlQYI4TmI/Rb/kiJx2OwoyyEs4=
-X-Google-Smtp-Source: ABdhPJwa2sRg5VbEIeSzudAm2G9VcE8PqxmEevMIHstupWj5SP4XAImtn5apP33s/us5B+I8+ex0OGtDCQ8hLMtQDPI=
-X-Received: by 2002:a17:902:654d:b0:141:7df3:b94 with SMTP id
- d13-20020a170902654d00b001417df30b94mr32303883pln.60.1635867552900; Tue, 02
- Nov 2021 08:39:12 -0700 (PDT)
+        Tue, 2 Nov 2021 11:43:32 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B592C061714;
+        Tue,  2 Nov 2021 08:40:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=r/i/KXCV63u35JO0/BNDE+hkZKtvbs8LAbgs3kVqOMg=; b=htJyD8AjqXx0jnW0nNAoUoopTQ
+        B2tGGLL0UrZ0KgBmpxZjieLJYWFk35jfBa3x27voK5KDqwbLXeHZdGr/9yakBcKp+jvufuPuDczFN
+        og+FOm4vDUX9FndFDpRdsPoVZx+0tTWI7C2eHL0E8LBbZOcIuJApHgFGjNKVke4gOUFCDcGpvhho/
+        E4WHbiCvB9F/msQt3Gqc8Sxq0NTpS1gcFr9tvoMzz8tMhoxLqdtmzT3d3zqJbHM1paPnch4YvKVFV
+        5KnTwpveXCZcdklcalO+A/mLlhAx4GuxNZT8uvE75onsvmQCATKOvnlrXW2IrqU+Vfg6aTgtfRXc5
+        M38TTf+A==;
+Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mhvuD-002AQy-6a; Tue, 02 Nov 2021 15:40:57 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Hugues Fruchet <hugues.fruchet@foss.st.com>,
+        linux-media@vger.kernel.org, Dillon Min <dillon.minfei@gmail.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: [PATCH -next] media: stm32-dma2d: fix Kconfig dependencies grouping
+Date:   Tue,  2 Nov 2021 08:40:56 -0700
+Message-Id: <20211102154056.1282-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Received: by 2002:a05:6a10:453:0:0:0:0 with HTTP; Tue, 2 Nov 2021 08:39:12
- -0700 (PDT)
-Reply-To: kaylamanthey022@gmail.com
-From:   Kayla Manthey <carbearbalina66@gmail.com>
-Date:   Tue, 2 Nov 2021 15:39:12 +0000
-Message-ID: <CAAqnqZ4Fx5AThLyOiDwdrPc+a2LF5zv_SrY5NaS3F_GGQ4D_ug@mail.gmail.com>
-Subject: Hello
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings, My name is Kayla Manthey, please reply me back?
+On x86_64, when
+CONFIG_COMPILE_TEST=y
+CONFIG_VIDEO_DEV=m
+CONFIG_VIDEO_V4L2=m
+CONFIG_VIDEO_STM32_DMA2D=y
+
+there are many build errors (this is only a sampling of them):
+
+ld: drivers/media/common/videobuf2/videobuf2-core.o: in function `vb2_core_streamon':
+videobuf2-core.c:(.text+0x1f4e): undefined reference to `v4l_vb2q_enable_media_source'
+ld: drivers/media/platform/stm32/dma2d/dma2d.o: in function `dma2d_remove':
+dma2d.c:(.text+0x4d9): undefined reference to `v4l2_m2m_release'
+ld: dma2d.c:(.text+0x4e5): undefined reference to `video_unregister_device'
+ld: dma2d.c:(.text+0x4ed): undefined reference to `v4l2_device_unregister'
+ld: drivers/media/platform/stm32/dma2d/dma2d.o: in function `device_run':
+dma2d.c:(.text+0x588): undefined reference to `v4l2_m2m_next_buf'
+ld: dma2d.c:(.text+0x59b): undefined reference to `v4l2_m2m_next_buf'
+ld: dma2d.c:(.text+0x61f): undefined reference to `v4l2_m2m_buf_copy_metadata'
+ld: drivers/media/platform/stm32/dma2d/dma2d.o: in function `vidioc_g_fmt':
+dma2d.c:(.text+0x71c): undefined reference to `v4l2_m2m_get_vq'
+ld: drivers/media/platform/stm32/dma2d/dma2d.o: in function `dma2d_release':
+dma2d.c:(.text+0x850): undefined reference to `video_devdata'
+ld: dma2d.c:(.text+0x87b): undefined reference to `v4l2_m2m_ctx_release'
+ld: dma2d.c:(.text+0x88f): undefined reference to `v4l2_ctrl_handler_free'
+ld: dma2d.c:(.text+0x897): undefined reference to `v4l2_fh_del'
+ld: dma2d.c:(.text+0x89f): undefined reference to `v4l2_fh_exit'
+ld: drivers/media/platform/stm32/dma2d/dma2d.o: in function `dma2d_buf_queue':
+dma2d.c:(.text+0x8db): undefined reference to `v4l2_m2m_buf_queue'
+ld: drivers/media/platform/stm32/dma2d/dma2d.o: in function `dma2d_stop_streaming':
+dma2d.c:(.text+0x922): undefined reference to `v4l2_m2m_buf_remove'
+ld: dma2d.c:(.text+0x956): undefined reference to `v4l2_m2m_buf_remove'
+ld: drivers/media/platform/stm32/dma2d/dma2d.o: in function `dma2d_open':
+dma2d.c:(.text+0x996): undefined reference to `video_devdata'
+
+Regrouping the depend items limits the STM32_DMA2D symbol to =m,
+so that the build errors are eliminated.
+
+Fixes: bdbbd511ef0c ("media: stm32-dma2d: STM32 DMA2D driver")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Hugues Fruchet <hugues.fruchet@foss.st.com>
+Cc: linux-media@vger.kernel.org
+Cc: Dillon Min <dillon.minfei@gmail.com>
+Cc: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ drivers/media/platform/Kconfig |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- linux-next-20211102.orig/drivers/media/platform/Kconfig
++++ linux-next-20211102/drivers/media/platform/Kconfig
+@@ -494,7 +494,7 @@ endif # VIDEO_STI_DELTA
+ 
+ config VIDEO_STM32_DMA2D
+ 	tristate "STM32 Chrom-Art Accelerator (DMA2D)"
+-	depends on (VIDEO_DEV && VIDEO_V4L2 && ARCH_STM32) || COMPILE_TEST
++	depends on (VIDEO_DEV && VIDEO_V4L2) && (ARCH_STM32 || COMPILE_TEST)
+ 	select VIDEOBUF2_DMA_CONTIG
+ 	select V4L2_MEM2MEM_DEV
+ 	help
