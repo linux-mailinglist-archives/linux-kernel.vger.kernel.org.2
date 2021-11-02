@@ -2,267 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42F104438BB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 23:47:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 132C64438BF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 23:50:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231201AbhKBWuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 18:50:05 -0400
-Received: from mga14.intel.com ([192.55.52.115]:46348 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229685AbhKBWuB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 18:50:01 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10156"; a="231637428"
-X-IronPort-AV: E=Sophos;i="5.87,203,1631602800"; 
-   d="scan'208";a="231637428"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2021 15:47:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,203,1631602800"; 
-   d="scan'208";a="541420673"
-Received: from davehans-spike.ostc.intel.com (HELO localhost.localdomain) ([10.165.28.105])
-  by fmsmga008.fm.intel.com with ESMTP; 02 Nov 2021 15:47:26 -0700
-Subject: [PATCH] x86/fpu: Optimize out sigframe xfeatures when in init state
-To:     linux-kernel@vger.kernel.org
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org
-From:   Dave Hansen <dave.hansen@linux.intel.com>
-Date:   Tue, 02 Nov 2021 15:47:50 -0700
-Message-Id: <20211102224750.FA412E26@davehans-spike.ostc.intel.com>
+        id S230293AbhKBWwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 18:52:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30091 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229685AbhKBWwo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 18:52:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635893408;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fMXDJ1TPpIpn3w6SGHe+O23bhwkvcD2ThXDJ734AXLg=;
+        b=FYtOoSuHGrWIWJ7s46DEdqTk6k9twit9duBZutYvlI+vLJmPVkskNWJdQa4ALZ6M3ix2mp
+        jOcs1evG4pdvhzWlXco45/20iHrRuuuoP5HVYfcWHf+TUoUN/WkuzPgYg/D8D2ed6sjO3u
+        J2NinMKIHOdUawRAVqig/ikMUrxjTlw=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-306-ZvM0qGG5NiaAisvQfePClQ-1; Tue, 02 Nov 2021 18:50:03 -0400
+X-MC-Unique: ZvM0qGG5NiaAisvQfePClQ-1
+Received: by mail-ed1-f70.google.com with SMTP id z20-20020a05640240d400b003dce046ab51so766822edb.14
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 15:50:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=fMXDJ1TPpIpn3w6SGHe+O23bhwkvcD2ThXDJ734AXLg=;
+        b=8DoQLUK1eTynx9jL7nIqYkbw+qgXoxkcoYqDN3BFjc3FduC1mHRjFmqXi32Kb+jHxR
+         wZkTrowuXDfrV9Dpyeocfba/SDJB24yO8CWMFd0+BCyxygyX5RmieGc7AtGiTEujRhu3
+         fk27LqA1qHR08MoQ4J8aVjbN/0Nr+Yr2Ro/xAbyGEERaXLTN6PBguyYKw1o4haArwEPx
+         kviGfqXMBC+2IhOp3kEwaOoRbxQF8RCaSXZD4RkEpTcE0wULZBywaANnz43fpt3EwONz
+         uWHitBg3/CgGg9eeFbH5Gr+48HNWqvrmhutqzk/EoQEtawR0SS3rC23iU7wXV3U+HeFJ
+         uL5g==
+X-Gm-Message-State: AOAM533y0Ch3eZ3aHwp3W6Ua6sVmMcDaB1OZVEBa7aLqUN3CWd2wOXNI
+        yyaBVjPlq46rTPYOBOK6j6QQkhDIJGiET3SqtowvbmZLLXSp5CCJvyUU4S/FzB/463sBiQoL/jr
+        kZBuZKbgpYQHBTXv5aWoAnKY6
+X-Received: by 2002:a05:6402:d59:: with SMTP id ec25mr31128468edb.214.1635893402045;
+        Tue, 02 Nov 2021 15:50:02 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwvBLodOSLu5Kq97Smd47uhb24ifUvlhre7oO0RKS63qU7RqbIA2l2rnERIbXVcB7N0SNeKUA==
+X-Received: by 2002:a05:6402:d59:: with SMTP id ec25mr31128445edb.214.1635893401899;
+        Tue, 02 Nov 2021 15:50:01 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id gb2sm141913ejc.52.2021.11.02.15.50.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Nov 2021 15:50:01 -0700 (PDT)
+Message-ID: <812ff68b-2b4a-3993-245a-ea791e6caf7c@redhat.com>
+Date:   Tue, 2 Nov 2021 23:50:00 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 3/3] backlight: lp855x: Add support ACPI enumeration
+Content-Language: en-US
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20211101185518.306728-1-hdegoede@redhat.com>
+ <20211101185518.306728-3-hdegoede@redhat.com>
+ <20211102122253.s4oc2p7hmy7w2qgn@maple.lan>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20211102122253.s4oc2p7hmy7w2qgn@maple.lan>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Daniel,
 
-This is an optimization on top of the AMX code which was recently
-queued in Linus's tree:
+Thank you for the quick review of this series.
 
-2308ee57d93d ("x86/fpu/amx: Enable the AMX feature in 64-bit mode")
+On 11/2/21 13:22, Daniel Thompson wrote:
+> On Mon, Nov 01, 2021 at 07:55:17PM +0100, Hans de Goede wrote:
+>> The Xiaomi Mi Pad 2 tablet uses an ACPI enumerated LP8556 backlight
+>> controller for its LCD-panel, with a Xiaomi specific ACPI HID of
+>> "XMCC0001", add support for this.
+>>
+>> Note the new "if (id)" check also fixes a NULL pointer deref when a user
+>> tries to manually bind the driver from sysfs.
+>>
+>> When CONFIG_ACPI is disabled acpi_match_device() will always return NULL,
+>> so the lp855x_parse_acpi() call will get optimized away.
+>>
+>> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+>> ---
+>>  drivers/video/backlight/lp855x_bl.c | 70 ++++++++++++++++++++++++-----
+>>  1 file changed, 60 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/drivers/video/backlight/lp855x_bl.c b/drivers/video/backlight/lp855x_bl.c
+>> index d1d27d5eb0f2..f075ec84acfb 100644
+>> --- a/drivers/video/backlight/lp855x_bl.c
+>> +++ b/drivers/video/backlight/lp855x_bl.c
+>> @@ -338,10 +339,6 @@ static int lp855x_parse_dt(struct lp855x *lp)
+>>  		return -EINVAL;
+>>  	}
+>>  
+>> -	pdata = devm_kzalloc(dev, sizeof(*pdata), GFP_KERNEL);
+>> -	if (!pdata)
+>> -		return -ENOMEM;
+>> -
+>>  	of_property_read_string(node, "bl-name", &pdata->name);
+>>  	of_property_read_u8(node, "dev-ctrl", &pdata->device_control);
+>>  	of_property_read_u8(node, "init-brt", &pdata->initial_brightness);
+> 
+> Shouldn't there be a removal of an `lp->pdata = pdata` from somewhere in
+> this function?
 
-I've marked it "Fixes:" that commit.
+Ack, fixed for v2.
 
---
+>> @@ -379,8 +376,31 @@ static int lp855x_parse_dt(struct lp855x *lp)
+>>  }
+>>  #endif
+>>  
+>> +static int lp855x_parse_acpi(struct lp855x *lp)
+>> +{
+>> +	int ret;
+>> +
+>> +	/*
+>> +	 * On ACPI the device has already been initialized by the firmware
+> 
+> Perhaps nitpicking but ideally I'd like "and is in register mode" here 
+> since I presume it can also be assumed that everything with this HID
+> has adopted that).
 
-From: Dave Hansen <dave.hansen@linux.intel.com>
+Nope not nitpicking, that is a good point, also fixed for v2.
 
-tl;dr: AMX state is ~8k.  Signal frames can have space for this
-~8k and each signal entry writes out all 8k even if it is zeros.
-Skip writing zeros for AMX to speed up signal delivery by about
-4% overall when AMX is in its init state.
+Regards,
 
-This is a user-visible change to the sigframe ABI.
+Hans
 
-== Hardware XSAVE Background ==
-
-XSAVE state components may be tracked by the processor as being
-in their initial configuration.  Software can detect which
-features are in this configuration by looking at the XSTATE_BV
-field in an XSAVE buffer or with the XGETBV(1) instruction.
-
-Both the XSAVE and XSAVEOPT instructions enumerate features s
-being in the initial configuration via the XSTATE_BV field in the
-XSAVE header,  However, XSAVEOPT declines to actually write
-features in their initial configuration to the buffer.  XSAVE
-writes the feature unconditionally, regardless of whether it is
-in the initial configuration or not.
-
-Basically, XSAVE users never need to inspect XSTATE_BV to
-determine if the feature has been written to the buffer.
-XSAVEOPT users *do* need to inspect XSTATE_BV.  They might also
-need to clear out the buffer if they want to make an isolated
-change to the state, like modifying one register.
-
-== Software Signal / XSAVE Background ==
-
-Signal frames have historically been written with XSAVE itself.
-Each state is written in its entirety, regardless of being in its
-initial configuration.
-
-In other words, the signal frame ABI uses the XSAVE behavior, not
-the XSAVEOPT behavior.
-
-== Problem ==
-
-This means that any application which has acquired permission to
-use AMX via ARCH_REQ_XCOMP_PERM will write 8k of state to the
-signal frame.  This 8k write will occur even when AMX was in its
-initial configuration and software *knows* this because of
-XSTATE_BV.
-
-This problem also exists to a lesser degree with AVX-512 and its
-2k of state.  However, AVX-512 use does not require
-ARCH_REQ_XCOMP_PERM and is more likely to have existing users
-which would be impacted by any change in behavior.
-
-== Solution ==
-
-Stop writing out AMX xfeatures which are in their initial state
-to the signal frame.  This effectively makes the signal frame
-XSAVE buffer look as if it were written with a combination of
-XSAVEOPT and XSAVE behavior.  Userspace which handles XSAVEOPT-
-style buffers should be able to handle this naturally.
-
-For now, include only the AMX xfeatures: XTILE and XTILEDATA in
-this new behavior.  These require new ABI to use anyway, which
-makes their users very unlikely to be broken.  This XSAVEOPT-like
-behavior should be expected for all future dynamic xfeatures.  It
-may also be extended to legacy features like AVX-512 in the
-future.
-
-Only attempt this optimization on systems with dynamic features.
-Disable dynamic feature support (XFD) if XGETBV1 is unavailable
-by adding a CPUID dependency.
-
-This has been measured to reduce the *overall* cycle cost of
-signal delivery by about 4%.
-
-Fixes: 2308ee57d93d ("x86/fpu/amx: Enable the AMX feature in 64-bit mode")
-Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-Tested-by: "Chang S. Bae" <chang.seok.bae@intel.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: x86@kernel.org
----
-
- b/Documentation/x86/xstate.rst      |    9 ++++++++
- b/arch/x86/include/asm/fpu/xcr.h    |   12 +++++++++++
- b/arch/x86/include/asm/fpu/xstate.h |    7 ++++++
- b/arch/x86/kernel/cpu/cpuid-deps.c  |    1 
- b/arch/x86/kernel/fpu/xstate.h      |   37 ++++++++++++++++++++++++++++++++++--
- 5 files changed, 64 insertions(+), 2 deletions(-)
-
-diff -puN arch/x86/kernel/fpu/xstate.h~avoid-writing-amx-zeros arch/x86/kernel/fpu/xstate.h
---- a/arch/x86/kernel/fpu/xstate.h~avoid-writing-amx-zeros	2021-11-02 12:43:42.965655750 -0700
-+++ b/arch/x86/kernel/fpu/xstate.h	2021-11-02 12:43:42.973655749 -0700
-@@ -4,6 +4,7 @@
- 
- #include <asm/cpufeature.h>
- #include <asm/fpu/xstate.h>
-+#include <asm/fpu/xcr.h>
- 
- #ifdef CONFIG_X86_64
- DECLARE_PER_CPU(u64, xfd_state);
-@@ -199,6 +200,32 @@ static inline void os_xrstor_supervisor(
- }
- 
- /*
-+ * XSAVE itself always writes all requested xfeatures.  Removing features
-+ * from the request bitmap reduces the features which are written.
-+ * Generate a mask of features which must be written to a sigframe.  The
-+ * unset features can be optimized away and not written.
-+ *
-+ * This optimization is user-visible.  Only use for states where
-+ * uninitialized sigframe contents are tolerable, like dynamic features.
-+ *
-+ * Users of buffers produced with this optimization smust check XSTATE_BV
-+ * to determine which features have been optimized out.
-+ */
-+static inline u64 xfeatures_need_sigframe_write(void)
-+{
-+	u64 xfeaures_to_write;
-+
-+	/* In-use features must be written: */
-+	xfeaures_to_write = xfeatures_in_use();
-+
-+	/* Also write all non-optimizable sigframe features: */
-+	xfeaures_to_write |= XFEATURE_MASK_USER_SUPPORTED &
-+			     ~XFEATURE_MASK_SIGFRAME_INITOPT;
-+
-+	return xfeaures_to_write;
-+}
-+
-+/*
-  * Save xstate to user space xsave area.
-  *
-  * We don't use modified optimization because xrstor/xrstors might track
-@@ -220,10 +247,16 @@ static inline int xsave_to_user_sigframe
- 	 */
- 	struct fpstate *fpstate = current->thread.fpu.fpstate;
- 	u64 mask = fpstate->user_xfeatures;
--	u32 lmask = mask;
--	u32 hmask = mask >> 32;
-+	u32 lmask;
-+	u32 hmask;
- 	int err;
- 
-+	/* Optimize away writing unnecessary xfeatures: */
-+	if (fpu_state_size_dynamic())
-+		mask &= xfeatures_need_sigframe_write();
-+
-+	lmask = mask;
-+	hmask = mask >> 32;
- 	xfd_validate_state(fpstate, mask, false);
- 
- 	stac();
-diff -puN arch/x86/include/asm/fpu/xstate.h~avoid-writing-amx-zeros arch/x86/include/asm/fpu/xstate.h
---- a/arch/x86/include/asm/fpu/xstate.h~avoid-writing-amx-zeros	2021-11-02 12:43:42.965655750 -0700
-+++ b/arch/x86/include/asm/fpu/xstate.h	2021-11-02 12:43:42.973655749 -0700
-@@ -92,6 +92,13 @@
- #define XFEATURE_MASK_FPSTATE	(XFEATURE_MASK_USER_RESTORE | \
- 				 XFEATURE_MASK_SUPERVISOR_SUPPORTED)
- 
-+/*
-+ * Features in this mask have space allocated in the signal frame, but may not
-+ * have that space initialized when the feature is in its init state.
-+ */
-+#define XFEATURE_MASK_SIGFRAME_INITOPT	(XFEATURE_MASK_XTILE | \
-+					 XFEATURE_MASK_USER_DYNAMIC)
-+
- extern u64 xstate_fx_sw_bytes[USER_XSTATE_FX_SW_WORDS];
- 
- extern void __init update_regset_xstate_info(unsigned int size,
-diff -puN arch/x86/include/asm/fpu/xcr.h~avoid-writing-amx-zeros arch/x86/include/asm/fpu/xcr.h
---- a/arch/x86/include/asm/fpu/xcr.h~avoid-writing-amx-zeros	2021-11-02 12:43:42.965655750 -0700
-+++ b/arch/x86/include/asm/fpu/xcr.h	2021-11-02 12:43:42.973655749 -0700
-@@ -3,6 +3,7 @@
- #define _ASM_X86_FPU_XCR_H
- 
- #define XCR_XFEATURE_ENABLED_MASK	0x00000000
-+#define XCR_XFEATURE_IN_USE_MASK	0x00000001
- 
- static inline u64 xgetbv(u32 index)
- {
-@@ -20,4 +21,15 @@ static inline void xsetbv(u32 index, u64
- 	asm volatile("xsetbv" :: "a" (eax), "d" (edx), "c" (index));
- }
- 
-+/*
-+ * Return a mask of xfeatures which are currently being tracked
-+ * by the processor as being in the initial configuration.
-+ *
-+ * Callers should check X86_FEATURE_XGETBV1.
-+ */
-+static inline u64 xfeatures_in_use(void)
-+{
-+	return xgetbv(XCR_XFEATURE_IN_USE_MASK);
-+}
-+
- #endif /* _ASM_X86_FPU_XCR_H */
-diff -puN Documentation/x86/xstate.rst~avoid-writing-amx-zeros Documentation/x86/xstate.rst
---- a/Documentation/x86/xstate.rst~avoid-writing-amx-zeros	2021-11-02 12:43:42.965655750 -0700
-+++ b/Documentation/x86/xstate.rst	2021-11-02 12:43:42.973655749 -0700
-@@ -63,3 +63,12 @@ kernel sends SIGILL to the application.
- the handler allocates a larger xstate buffer for the task so the large
- state can be context switched. In the unlikely cases that the allocation
- fails, the kernel sends SIGSEGV.
-+
-+Dynamic features in signal frames
-+---------------------------------
-+
-+Dynamcally enabled features are not written to the signal frame upon signal
-+entry if the feature is in its initial configuration.  This differs from
-+non-dynamic features which are always written regardless of their
-+configuration.  Signal handlers can examine the XSAVE buffer's XSTATE_BV
-+field to determine if a features was written.
-diff -puN arch/x86/kernel/cpu/cpuid-deps.c~avoid-writing-amx-zeros arch/x86/kernel/cpu/cpuid-deps.c
---- a/arch/x86/kernel/cpu/cpuid-deps.c~avoid-writing-amx-zeros	2021-11-02 12:43:42.973655749 -0700
-+++ b/arch/x86/kernel/cpu/cpuid-deps.c	2021-11-02 12:43:42.973655749 -0700
-@@ -76,6 +76,7 @@ static const struct cpuid_dep cpuid_deps
- 	{ X86_FEATURE_SGX1,			X86_FEATURE_SGX       },
- 	{ X86_FEATURE_SGX2,			X86_FEATURE_SGX1      },
- 	{ X86_FEATURE_XFD,			X86_FEATURE_XSAVES    },
-+	{ X86_FEATURE_XFD,			X86_FEATURE_XGETBV1   },
- 	{ X86_FEATURE_AMX_TILE,			X86_FEATURE_XFD       },
- 	{}
- };
-_
