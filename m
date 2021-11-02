@@ -2,103 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 994EB4425FE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 04:20:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C79064425FF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 04:21:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232458AbhKBDXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 23:23:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60514 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbhKBDXD (ORCPT
+        id S232376AbhKBDXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 23:23:55 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:54600 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229526AbhKBDXv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 23:23:03 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6608C061714;
-        Mon,  1 Nov 2021 20:20:28 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id r28so18993827pga.0;
-        Mon, 01 Nov 2021 20:20:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lzmqKQY04x0Mf4v12yhiT4vRZMoRSKZyJDowpEUZgLM=;
-        b=jFB1CeXudan1gpt+WYXrPANf21KVYr7eNwWcSdTX7/NP0/0z2t8Scz3zfU7h+h8Bh8
-         TGzXwFsUK3hUfQoekamLiflZqX2w3Xhw9imauD6d9Qj5E561bl8jhXRZV+O0AUOpnPUC
-         9Avp4G8ZygQon7Cm5akD2V91qbhHRLBl0EPxZbVkSkTy4G6Xi5MT1MpddEUJ5pqgtBd5
-         YrDg7Ya1R4ZxMoHZWdBnHuPGn1Ea/bvZTt1pcLk1i5Ee70gsS4yPMHJ28XdKb+8dV3QZ
-         AgyMKcV9AxZQcoREHiVqdXF8hEOimkj3rXUF1+/M+gZmY6APdOVKNWX3eIQTZ59SoEgw
-         f3mw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lzmqKQY04x0Mf4v12yhiT4vRZMoRSKZyJDowpEUZgLM=;
-        b=jWLuq5pGjhRwKv6arbBuFKgk0aridU7Mim3BCOBUiBNH8hrBWU3Ane76O7+Eg7sBMd
-         /gZJUlh+UnI+O/YmCL0huN+9AX+c481B6oYcZSOuFriX/jhe8DaL/19NgNQ9qFgHRZQB
-         cmnW5eh77ItamvqVkMthsVRt2ryAPkz+Uc+/+CNMMFfCkzYruYd+CGwQZB8bQXw/nhgr
-         N4jt6YcOk7QIUnnDCH1Jf2ZEhoAgPMEVmJOCNSKhQq2Zkx7Ek655wdPKfaiPQHL/knM1
-         gDDclZGym0mA6kFaAu0zdL+sbfmMnftTxsamU7Vsx7FzPZjLrlWvzW23w28qm3eMrufz
-         wHhQ==
-X-Gm-Message-State: AOAM531TfISx6t1k5ewtppqkxFP0mpU7BxqpDMRRs1Ovdn0FaHkFW8AN
-        8Uyky2PsPb5IU1tUPnMdDR1qtGyLZB2TBY22yhE=
-X-Google-Smtp-Source: ABdhPJwdv1KNLDL9nmzyyC9NTW00o/MV6TecqdnK2ml7KeH69x0y2LowAWCTPO126l7tHvbrBg0nx+hO4Esmmra3724=
-X-Received: by 2002:a63:8642:: with SMTP id x63mr8609418pgd.376.1635823228318;
- Mon, 01 Nov 2021 20:20:28 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211028164357.1439102-1-revest@chromium.org> <20211028224653.qhuwkp75fridkzpw@kafai-mbp.dhcp.thefacebook.com>
- <CABRcYmLWAp6kYJBA2g+DvNQcg-5NaAz7u51ucBMPfW0dGykZAg@mail.gmail.com>
- <204584e8-7817-f445-1e73-b23552f54c2f@gmail.com> <CABRcYmJxp6-GSDRZfBQ-_7MbaJWTM_W4Ok=nSxLVEJ3+Sn7Fpw@mail.gmail.com>
- <dccc55b4-9f45-4b1c-2166-184a8979bdc6@fb.com> <CAADnVQ+pwWWumw9_--jj7e_RL=n6Q3jhe6yawuSeMJzpFi_E2A@mail.gmail.com>
- <CAEf4BzZ-YtppVG2GARkc_MNu-khqJXgS4=ThzOV4W6gic1rCxg@mail.gmail.com>
-In-Reply-To: <CAEf4BzZ-YtppVG2GARkc_MNu-khqJXgS4=ThzOV4W6gic1rCxg@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 1 Nov 2021 20:20:17 -0700
-Message-ID: <CAADnVQLKkqjnTOAqm3KeP45XsbfDATWcASJr5uoNOYT33W40OQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Allow bpf_d_path in perf_event_mmap
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>, Florent Revest <revest@chromium.org>,
-        Hengqi Chen <hengqi.chen@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@google.com>,
-        LKML <linux-kernel@vger.kernel.org>
+        Mon, 1 Nov 2021 23:23:51 -0400
+X-UUID: 98af482b8778443ca1aa8da941edd2f1-20211102
+X-UUID: 98af482b8778443ca1aa8da941edd2f1-20211102
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <walter-zh.wu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 571906133; Tue, 02 Nov 2021 11:21:16 +0800
+Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.792.3;
+ Tue, 2 Nov 2021 11:21:16 +0800
+Received: from mtksdccf07 (172.21.84.99) by mtkmbs10n1.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.2.792.15 via Frontend
+ Transport; Tue, 2 Nov 2021 11:21:16 +0800
+Message-ID: <c9f74d817aa1ae1cceaee9ec226d39bbdf2c5c48.camel@mediatek.com>
+Subject: Re: [PATCH] dma-direct: fix DMA_ATTR_NO_KERNEL_MAPPING
+From:   Walter Wu <walter-zh.wu@mediatek.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+CC:     Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "Matthias Brugger" <matthias.bgg@gmail.com>,
+        Linux IOMMU <iommu@lists.linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        <linux-mediatek@lists.infradead.org>,
+        "Andrew Morton" <akpm@linux-foundation.org>
+Date:   Tue, 2 Nov 2021 11:21:16 +0800
+In-Reply-To: <CAMj1kXFrUrThJFDJ0Q9qjDemcEovQVMtO20KbdnLccp7VfyVwA@mail.gmail.com>
+References: <20211101031558.7184-1-walter-zh.wu@mediatek.com>
+         <CAMj1kXGqOzHM+J30TXR3-uZPkjHBCXB4CMkzZjHbbmptyU5W9w@mail.gmail.com>
+         <76840b40fcf26a65467931a73f236982ad39989c.camel@mediatek.com>
+         <CAMj1kXFrUrThJFDJ0Q9qjDemcEovQVMtO20KbdnLccp7VfyVwA@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 1, 2021 at 8:16 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
-> > >
-> > >     FILE *vm_file = vma->vm_file; /* no checking is needed, vma from
-> > > parameter which is not NULL */
-> > >     if (vm_file)
-> > >       bpf_d_path(&vm_file->f_path, path, sizeof(path));
-> >
-> > That should work.
-> > The verifier can achieve that by marking certain fields as PTR_TO_BTF_ID_OR_NULL
-> > instead of PTR_TO_BTF_ID while walking such pointers.
-> > And then disallow pointer arithmetic on PTR_TO_BTF_ID_OR_NULL until it
-> > goes through 'if (Rx == NULL)' check inside the program and gets converted to
-> > PTR_TO_BTF_ID.
-> > Initially we can hard code such fields via BTF_ID(struct, file) macro.'
-> > So any pointer that results into a 'struct file' pointer will be
-> > PTR_TO_BTF_ID_OR_NULL.
->
-> Can we just require all helpers to check NULL if they accept
-> PTR_TO_BTF_ID? It's always been a case that PTR_TO_BTF_ID can be null.
-> We should audit all the helpers with ARG_PTR_TO_BTF_ID and ensure they
-> do proper validation, of course.
->
-> Or am I missing the essence of the issue?
+On Mon, 2021-11-01 at 15:17 +0100, Ard Biesheuvel wrote:
+> On Mon, 1 Nov 2021 at 13:21, Walter Wu <walter-zh.wu@mediatek.com>
+> wrote:
+> > 
+> > Hi Ard,
+> > 
+> > On Mon, 2021-11-01 at 09:34 +0100, Ard Biesheuvel wrote:
+> > > On Mon, 1 Nov 2021 at 04:17, Walter Wu <walter-zh.wu@mediatek.com
+> > > >
+> > > wrote:
+> > > > 
+> > > > DMA_ATTR_NO_KERNEL_MAPPING is to avoid creating a kernel
+> > > > mapping
+> > > > for the allocated buffer, but current implementation is that
+> > > > PTE of allocated buffer in kernel page table is valid. So we
+> > > > should set invalid for PTE of allocate buffer so that there are
+> > > > no kernel mapping for the allocated buffer.
+> > > > 
+> > > > In some cases, we don't hope the allocated buffer to be read
+> > > > by cpu or speculative execution, so we use
+> > > > DMA_ATTR_NO_KERNEL_MAPPING
+> > > > to get no kernel mapping in order to achieve this goal.
+> > > > 
+> > > > Signed-off-by: Walter Wu <walter-zh.wu@mediatek.com>
+> > > > Cc: Christoph Hellwig <hch@lst.de>
+> > > > Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+> > > > Cc: Robin Murphy <robin.murphy@arm.com>
+> > > > Cc: Matthias Brugger <matthias.bgg@gmail.com>
+> > > > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > > > ---
+> > > >  kernel/dma/direct.c | 8 ++++++++
+> > > >  1 file changed, 8 insertions(+)
+> > > > 
+> > > > diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
+> > > > index 4c6c5e0635e3..aa10b4c5d762 100644
+> > > > --- a/kernel/dma/direct.c
+> > > > +++ b/kernel/dma/direct.c
+> > > > @@ -13,6 +13,7 @@
+> > > >  #include <linux/vmalloc.h>
+> > > >  #include <linux/set_memory.h>
+> > > >  #include <linux/slab.h>
+> > > > +#include <asm/cacheflush.h>
+> > > >  #include "direct.h"
+> > > > 
+> > > >  /*
+> > > > @@ -169,6 +170,9 @@ void *dma_direct_alloc(struct device *dev,
+> > > > size_t size,
+> > > >                 if (!PageHighMem(page))
+> > > >                         arch_dma_prep_coherent(page, size);
+> > > >                 *dma_handle = phys_to_dma_direct(dev,
+> > > > page_to_phys(page));
+> > > > +               /* remove kernel mapping for pages */
+> > > > +               set_memory_valid((unsigned
+> > > > long)phys_to_virt(dma_to_phys(dev, *dma_handle)),
+> > > > +                               size >> PAGE_SHIFT, 0);
+> > > 
+> > > This only works if the memory is mapped at page granularity in
+> > > the
+> > > linear region, and you cannot rely on that. Many architectures
+> > > prefer
+> > > block mappings for the linear region, and arm64 will only use
+> > > page
+> > > mappings if rodata=full is set (which is set by default but can
+> > > be
+> > > overridden on the kernel command line)
+> > > 
+> > 
+> > We mainly want to solve arm64 arch.
+> 
+> Solve what?
 
-It's not a pointer dereference. It's math on the pointer. The
-&vm_file->f_path part.
-The helper can check that it's [0, few_pages] and declare it's bad.
-I guess we can do that and only do what I proposed for "more than a page"
-math on the pointer. Or even disallow "add more than a page offset to
-PTR_TO_BTF_ID"
-for now, since it will cover 99% of the cases.
+Our platform is arch64. We need a dynamic allocated buffer from CMA is
+not to read by CPU peculative execution, so we need to remove its
+kernel mapping.
+
+> > RODATA_FULL_DEFAULT_ENABLED should
+> > be the arm64 config. If we use CONFIG_RODATA_FULL_DEFAULT_ENABLED
+> > to
+> > check whether it call set_memory_valid(). It should avoid other
+> > architectures. Do you think this method is work?
+> > 
+> 
+> No. Try it with rodata=off (or rodata=on for that matter) and see
+> what happens.
+> 
+
+I try with rodata=[off/on] on qemu, it looks like boot pass. see below.
+
+[    0.000000] Kernel command line: root=/dev/ram0 rw rootfstype=ext4
+rodata=off console=ttyAMA0 rdinit=qemu/ramdisk.img earlyprintk=serial
+
+
+I also try with rodata=off on our platform and do stress test, it looks
+like pass.
+
+
+Thanks.
+Walter
+
+> > Thanks for your explaination and suggestion.
+> > 
+> 
+> YW
+> 
+> > 
+> > > 
+> > > >                 /* return the page pointer as the opaque cookie
+> > > > */
+> > > >                 return page;
+> > > >         }
+> > > > @@ -278,6 +282,10 @@ void dma_direct_free(struct device *dev,
+> > > > size_t size,
+> > > > 
+> > > >         if ((attrs & DMA_ATTR_NO_KERNEL_MAPPING) &&
+> > > >             !force_dma_unencrypted(dev) &&
+> > > > !is_swiotlb_for_alloc(dev)) {
+> > > > +               size = PAGE_ALIGN(size);
+> > > > +               /* create kernel mapping for pages */
+> > > > +               set_memory_valid((unsigned
+> > > > long)phys_to_virt(dma_to_phys(dev, dma_addr)),
+> > > > +                               size >> PAGE_SHIFT, 1);
+> > > >                 /* cpu_addr is a struct page cookie, not a
+> > > > kernel
+> > > > address */
+> > > >                 dma_free_contiguous(dev, cpu_addr, size);
+> > > >                 return;
+> > > > --
+> > > > 2.18.0
+> > > > 
+> > > > 
+> > > > _______________________________________________
+> > > > linux-arm-kernel mailing list
+> > > > linux-arm-kernel@lists.infradead.org
+> > > > 
+> > 
+> > 
+https://urldefense.com/v3/__http://lists.infradead.org/mailman/listinfo/linux-arm-kernel__;!!CTRNKA9wMg0ARbw!16dLCjnvtRkaRLeCO9AQ7Fund5XL0FicZmeVaU3-WkFymr-0lbITfzwrvoJpiHlqnqIu-g$
+> > > > 
+
