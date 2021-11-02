@@ -2,159 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19DB4442491
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 01:20:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5C18442497
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 01:22:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231904AbhKBAXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 20:23:18 -0400
-Received: from mail-eopbgr1320092.outbound.protection.outlook.com ([40.107.132.92]:49393
-        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229479AbhKBAXR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 20:23:17 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lu647KHDsgiZym3dRXJh8pptXBogAJtQLe/zL/Dmut0rZqiWWr5POPczyMqrQyOBdd/HVt9309KXOhx1g3aDpe0JI64pW+7yIWwTCr8qelaz4/Y4ITS/1hSZTBIlkRseig2fTEQB58R8yLDc477yfm9+sy4NCyd0epUQ2zVQ8+K8In5Z4R7PBVeHVcyDkR121tL8VfeP6vmK3iblC4JUMqGDkr+RD+jHagFGsU9Co5sjd306xW4g+gq4kf2elvTgLyucSJt4TLBOe8f9BsSrabCZiuK9xnFF1sUihk6efwfyhg8g23VsBDm7jFqshNQw5L5UBtguUtZuPnJU81KNdA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mupaFHBilGRHTj8l++Gsew04Xqsoly8j4E2cJdKmP90=;
- b=civIvEKfCtnYnlXiKVe1ARH1s0PCs3CFn8HWoK7ahtO4XOXDk+LZ7kvSJN6VP6DqwPOOjfmlWuE1rtU451D362FHvTHh8EMm9gK20K5y9lc8FIlj8MCPWXn4AKliKI4T/eyyXhdwAUlEC/OIQqOLpWEPLHl0LaR+bKBONkvDs2HpkO47DWspKG5HnHTNPNVUG/7nXhfcyYumxYRnIJTRO0g1vIHBbOsZ3wFIaYYHPDVFkMcSVqtuOP8DOPL9bAOoQBhkr5e2jiILKfwkzxZYYvCJdtRVEOHzInors1c3Pg4IdRK2VM+iIq0e7fv+MkBa54QR5yHZYY0x+Mlz79xmgA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
- header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aspeedtech.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mupaFHBilGRHTj8l++Gsew04Xqsoly8j4E2cJdKmP90=;
- b=LoesGTsFQ08SXBaWGopB8BwYtXgJ/oz953sPQgoStZJmQ/CLG82uvmOxTvOb8soEcsvSeE8REsah277psO+h8tFZ4Iw9zWSiNGoV6ceLdF4MkbiM3+Q9ODkosfwVCdbsmxnMXa+nUfcFyxfd/l6+hRziNoMoRd1YImNmcp6f9s8evOSdm0psOuVS56dA9u5uahMLfedOGJzMDpCx38ZVkh9Qj6/yJw92Ez2jiTUhNzD7+s7AJ+1uXbEmL+joeBLva14LTIe37iPwq0UHqrsXRbnUesD6SuIysC3X76krBi+sCmAEcwz03O8wVWeBuDB8E/uoZfpfIydo712FNq5MWQ==
-Received: from HK2PR0601MB2033.apcprd06.prod.outlook.com (10.170.148.16) by
- HK0PR06MB2353.apcprd06.prod.outlook.com (52.133.151.144) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4649.15; Tue, 2 Nov 2021 00:20:38 +0000
-Received: from HK2PR0601MB2033.apcprd06.prod.outlook.com
- ([fe80::2979:fa3:bd14:dc6f]) by HK2PR0601MB2033.apcprd06.prod.outlook.com
- ([fe80::2979:fa3:bd14:dc6f%9]) with mapi id 15.20.4649.019; Tue, 2 Nov 2021
- 00:20:38 +0000
-From:   Tommy Huang <tommy_huang@aspeedtech.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        BMC-SW <BMC-SW@aspeedtech.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "joel@jms.id.au" <joel@jms.id.au>,
-        "andrew@aj.id.au" <andrew@aj.id.au>,
-        "airlied@linux.ie" <airlied@linux.ie>
-Subject: RE: [PATCH 4/4] dt-bindings: gpu: Add ASPEED GFX bindings document
-Thread-Topic: [PATCH 4/4] dt-bindings: gpu: Add ASPEED GFX bindings document
-Thread-Index: AQHXzw/RgDHov3SmFEyde5AY8QXfAqvvGIOAgABH2WA=
-Date:   Tue, 2 Nov 2021 00:20:38 +0000
-Message-ID: <HK2PR0601MB20338733A2D74609492388FAE18B9@HK2PR0601MB2033.apcprd06.prod.outlook.com>
-References: <20211101110107.29010-1-tommy_huang@aspeedtech.com>
- <20211101110107.29010-5-tommy_huang@aspeedtech.com>
- <YYBHsy3Ed3Ss9281@robh.at.kernel.org>
-In-Reply-To: <YYBHsy3Ed3Ss9281@robh.at.kernel.org>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=aspeedtech.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 5c1ffd7e-c100-4114-0fed-08d99d9698f7
-x-ms-traffictypediagnostic: HK0PR06MB2353:
-x-microsoft-antispam-prvs: <HK0PR06MB235342AC4E3E530509F7D7CEE18B9@HK0PR06MB2353.apcprd06.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6108;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: H3dxKRrgsHhzpltot1ETBM61ZO8nymAT7xZpHVmDJ9nlQBo225cUUokaqDr3uNyWOpgn7g++ybzrDlrPMAZgIEv9Dtxc3vAAVkS1Yp16TYTd/yJbVMo3QwXq+QYnKNruwHeWVgzYX1WLx/H6KTZxGGLLGTpKSxFm9hPm3+/3KPA2tKynkMIERLnTiiee9ED1b+C439blvt7XnWib0g8jdbFaQJpsyJtyKw9NyhlpEklkAN9JFcQkpec348eIrzcfkFgEZANAL/KOLSY9rXglP3QoAfFuR6zp6v+yu/Uu+wsJFdXJho9+AUsx9nxPFn+b8zTKyJma/qAHgrg8/ifcxVfDVLXX0iAfO2oJZ1x7jJ4slDHPq4ezBDH9EInEK9Vnzx2iJLrzRsUHMvwemoi/nHdR3bw443ZRN/4oDiR7T7ZBJUlZtjWGesOoyVYGfCyA5NtkqbaABAlVIe+FR9CJXcgiiGrF8Rcweo5w0KbKERxbBp0Mpz6I+cvZe+hDFPklJPb/ktJuLcl8/o0+jQOg3UOXf09jBjxtaeGqEmQ6wmLCI7ucq9VKxArWjFcuradEYQHchRv3WmvFklI4Vr2I+XTLRtgh7nn/9g5/Io2amL6D4COUTenJdHrpAA56pqclG0ZWSoXL9/8lHdhACPrRz7RiAamhnoqTkkDWUcmmyNr+uCPpFCUY49SRHl6nhxsn/lbY1V4H+y7M+tjoUYfASA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK2PR0601MB2033.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(376002)(136003)(346002)(396003)(39840400004)(71200400001)(2906002)(86362001)(55016002)(38100700002)(76116006)(7696005)(4326008)(66946007)(5660300002)(6916009)(33656002)(83380400001)(508600001)(9686003)(7416002)(66446008)(122000001)(8676002)(26005)(52536014)(64756008)(38070700005)(54906003)(316002)(8936002)(66476007)(6506007)(53546011)(186003)(66556008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?tehIwXBa1Z+keS6NEJRjhOvNisGw2Ct/3hrlcB2MHiic3JdpIFWZRL90UxOl?=
- =?us-ascii?Q?ACi5Ak4frjQ68kz+/yz0kzToKG5AISnioh7mL3hFlVGlnbv0Ev+hG8uqYkwo?=
- =?us-ascii?Q?HecJ6Y+oUvSnkdSNWKstAxU8487Kx3r6GrxA93RA/ag+SidagFY3ZW0e1g0I?=
- =?us-ascii?Q?baRUbTwHhxuHPtBXdXy9cSCyB+X6mkVg61cx5iVJmokRvDWU4CCXekqR3ya6?=
- =?us-ascii?Q?vo3uUcSpoBxZGpNg34lRuygL3Koudf1WiDrCWTI/qUT/KEdjdBmSiSuaZqe4?=
- =?us-ascii?Q?3RJeT3T4Yb8nLMdaiRERXBUvbzbX8nQ8ppXTZpcFdzmO3txKV5Af2sP7TpEA?=
- =?us-ascii?Q?a2z3go2aTrJij7lo40ZaFe0MOLKjAQQRmh0a/583Cf0pXIogMc86L7ZUhd4k?=
- =?us-ascii?Q?fi1k/drIo76Z7sa+BVodshD/2xQQ4FIEblgcbNkuAt7TQ6O8+DeQQeD7CQAb?=
- =?us-ascii?Q?73M3zLqrdTjNpljtRAT1tXaRdKktKPmVlToywE2UZAoURC+/5PyfJcPdzmVE?=
- =?us-ascii?Q?VkKcpls+9YzjyG5evBxZcQvLAz911+lgvR+Qj8FQGAufl0o/YJBh8wuuFgct?=
- =?us-ascii?Q?UwOBsghCeu21zJtPhw3lnl2bpinS6f2fEUweq3m+84b0YxQnTZd91pvj78UF?=
- =?us-ascii?Q?hEPesB5eRohy/EyTmWSVz/GSPF2c8Xm5IRQjyv83kpQiQi74Al77n+Vastpi?=
- =?us-ascii?Q?VweuVRmJ4LcHHA5HHRpStkBixQolPHdkYQ7Ka2a2MVznS5f31PigJxeU+WeB?=
- =?us-ascii?Q?59IZN4Q45vv/y4KinKSEiTm0Or3siDt5FETFb+YCZgdYZK7IlrI6NMFKUQJs?=
- =?us-ascii?Q?swC4Rdsq+69vxHTTinTEohtVSXRqrrPwSAKlUL6afZZJ5SyCCUWLuJjOCmR2?=
- =?us-ascii?Q?7Lx+g6bkXyIiAHRZ2ZVd/wa3Cf2746ZODb1GlAxiJZEkPiS8UPq6TBq6u6Ev?=
- =?us-ascii?Q?lVXEfZ5DBm3kqDTleg8l5BoVGEiW0C0SyF+PfECI3Ca4l3BR0sJ4UafU7MPy?=
- =?us-ascii?Q?UGtz8EwnDLYrnCR/O1oSIFT4TwcnLpw2NwdXCQKjontratedXCOXpTIdNxJd?=
- =?us-ascii?Q?p5XH3BZ5vPr/8Xq9L4nJvGTMzn3MRDMeWIqkSwGaKOmNswTbtBsaCl/HJyCG?=
- =?us-ascii?Q?pnmxz6JpWSfiojD6ZXcga9f+nKvgJT4r3EiLzR76O4l4tH1TtSHIo3gw6KDB?=
- =?us-ascii?Q?TNh/m7iV7nePB4jpfKpwDAwF/Gi6lvucnerwIuJb9w+t7ubuPAe9lO0OA8LQ?=
- =?us-ascii?Q?efJGsFPaDhn1LkRf3YnWTZCnDVc9ZCA0E1XGWk5z1A/aDqgfuDLGxnNUWH4f?=
- =?us-ascii?Q?ez08AeGvqP3rQ5G9xTjx+5ItHm2tyQkqTo0G2qjD8ojsmcb5yJUklWinZL6r?=
- =?us-ascii?Q?H6a6yzjMczWWyuK8I5lNdVw5kwnMMQAUJDNFSjTfz/GZRJj/SaQ6EYyOkrz2?=
- =?us-ascii?Q?jqEwHk6JGbdPElURvCjwlOPts1yj94BTtS84OijhanZum/RVlt1vIy9O3Uzi?=
- =?us-ascii?Q?sIrdQyLwp1gTvSQ1Bq6I33zIvDqBLPUd/Vgk0VHzL89H6iaB/bpOdzITGcIq?=
- =?us-ascii?Q?z7bxui1yvNI4S43Q7ZhXpaDkMP0fJd3t0NuV5YsCpPpi1AafrrDwiiLJrlDo?=
- =?us-ascii?Q?fufWgmOrNRo576UlxXodic5s5kuXVtQTBuYCcK/Wod1yPrPGX90WrKIIH/uE?=
- =?us-ascii?Q?v8WQTA=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-OriginatorOrg: aspeedtech.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HK2PR0601MB2033.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5c1ffd7e-c100-4114-0fed-08d99d9698f7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Nov 2021 00:20:38.4710
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: JoOcHamxhfTB/50ZAcOL92xY8G+6Ssub4mPnek0anGEpKauk5yC22pFdNijdKpq2pYYMpLPdxLzWmVeiJcMAnAK2IKUzAK47eh6IbOWN+2Y=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK0PR06MB2353
+        id S231651AbhKBAYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 20:24:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229480AbhKBAYx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 20:24:53 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3AEEC061764
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 17:22:19 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id p35-20020a635b23000000b002cc3b82cc32so2741408pgb.14
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 17:22:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=0q1tLc0oeztZBZsXvvPTzof7ayB7Bik3/teaxGikVwA=;
+        b=M9RyMn9NtpqtxZRq6dzqh0AmQGmFRmQFCx0PnDS2BS3EfbwgzHnzMPoUT2VW2baznj
+         s/4fI0vdhHNI76oo0fmgPbIBhoai9JINiRpWpJUOG2dlyqm6CqqJR5kWP5ZUv+dsnVIV
+         V6vOssewxpAsmnUIyrtJ1cuEd+jTbQVSJf+572afB4Bhyl/o6D41fSZK1n/iV2T7a/f7
+         YlsTaWYn0UvkbjeKDIifzJna5+4mnIo+8UdBYC6+VQyTnS+Y0lkbYcoXGQVMjW4r7Cqj
+         OV+FXdbxhJC+XuK8NFkZPJ+UG5ZcHG5ePMrx+yZEseXk7KjEywWzFJvgXxvVq5zrPO2P
+         Wp/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=0q1tLc0oeztZBZsXvvPTzof7ayB7Bik3/teaxGikVwA=;
+        b=O9pyrs5fZZMYPr/JNDJvPwApRo2qwZ/9+C8JXTGN+zMEpQPttTEi7m22HlrEdmd10s
+         VIHaIJyGe5Zv9iHZN1A3Zd8+foRHh26XlbHcfOENL+rO3G5jZsrUfXQKlSAvbx/2esyD
+         XDYdJ2KkZtt8Ib+6lpod54AGV6LSv/0G2t6vkMRmqFGtADnm0Wj73Z2hG5MExN3FJkhe
+         MJr7DuANt+3qAxOzon/LtKVJecb0bgAgzdIw/pYWwqpNOX7It3A6qHC1FuiuwjxTbIE1
+         TZkyN7JKqxMUWHJKIQZ/okIkcYrg52DB7M+zOxrLZYFaa1L3HDB0Q9Jo3Rrsls352yLJ
+         RrvA==
+X-Gm-Message-State: AOAM5330sLSbaeXGINefpYVvGKFS7UnKtCBH7sunbhkpKu1XrJ5cYQiT
+        quARmkEz8xYBvdkXJdX8fk9vUUpdDSWF
+X-Google-Smtp-Source: ABdhPJxNMFUzGq4vVDxdHLg1Zowo37UyC15esk5w81Yj2K1hViKi29lRAuknRKEVUhuJwiI85y6JmFLNHLAH
+X-Received: from rananta-virt.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:1bcc])
+ (user=rananta job=sendgmr) by 2002:a17:902:6bc8:b0:13f:8a54:1188 with SMTP id
+ m8-20020a1709026bc800b0013f8a541188mr27979352plt.49.1635812539339; Mon, 01
+ Nov 2021 17:22:19 -0700 (PDT)
+Date:   Tue,  2 Nov 2021 00:21:55 +0000
+Message-Id: <20211102002203.1046069-1-rananta@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.1.1089.g2158813163f-goog
+Subject: [RFC PATCH 0/8] KVM: arm64: Add support for hypercall services selection
+From:   Raghavendra Rao Ananta <rananta@google.com>
+To:     Marc Zyngier <maz@kernel.org>, Andrew Jones <drjones@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Raghavendra Rao Anata <rananta@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+Hello,
 
-	Thanks for your comments.
-	I got it.
+Continuing the discussion from [1], the series tries to add support
+for the user-space to elect the hypercall services that it wishes
+to expose to the guest, rather than the guest discovering them
+unconditionally. The idea employed by the series was taken from
+[1] as suggested by Marc Z.
 
-	By Tommy
+In a broad sense, the idea is similar to the current implementation
+of PSCI interface- create a 'psuedo-firmware register' to handle the
+firmware revisions. The series extends this idea to all the other
+hypercalls such as TRNG (True Random Number Generator), PV_TIME
+(Paravirtualized Time), and PTP (Precision Time protocol).
 
-> -----Original Message-----
-> From: Rob Herring <robh@kernel.org>
-> Sent: Tuesday, November 2, 2021 4:02 AM
-> To: Tommy Huang <tommy_huang@aspeedtech.com>
-> Cc: dri-devel@lists.freedesktop.org; linux-arm-kernel@lists.infradead.org=
-;
-> linux-aspeed@lists.ozlabs.org; daniel@ffwll.ch; BMC-SW
-> <BMC-SW@aspeedtech.com>; devicetree@vger.kernel.org;
-> linux-kernel@vger.kernel.org; robh+dt@kernel.org; joel@jms.id.au;
-> andrew@aj.id.au; airlied@linux.ie
-> Subject: Re: [PATCH 4/4] dt-bindings: gpu: Add ASPEED GFX bindings docume=
-nt
->=20
-> On Mon, 01 Nov 2021 19:01:07 +0800, tommy-huang wrote:
-> > Add ast2600-gfx description for gfx driver.
-> >
-> > Signed-off-by: tommy-huang <tommy_huang@aspeedtech.com>
-> > ---
-> >  Documentation/devicetree/bindings/gpu/aspeed-gfx.txt | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
->=20
->=20
-> Please add Acked-by/Reviewed-by tags when posting new versions. However,
-> there's no need to repost patches *only* to add the tags. The upstream
-> maintainer will do that for acks received on the version they apply.
->=20
-> If a tag was not added on purpose, please state why and what changed.
+For better categorization and future scaling, firmware registers
+are introduced based on the SMCCC service call owner (standard secure
+service, standard hypervisor service, and vendor specific hypervisor
+service). Each of these registers exposes the features employed in
+the form of a bitmap and are enveloped into a generic interface (for
+future expansion).
+
+Upon VM creation, all the features supported by each owner type are
+enabled. User-space/VMM can learn about the services currently enabled
+via GET_ONE_REG and can manipulate them via SET_ONE_REG interfaces.
+These 'writes' directly effect the bitmap, which is further checked
+when the guest tries to issue the hypercall and a decision is taken
+weather or not the hypercall is accessable to the guest. The interface
+works well across live-migrations where the VMM can simply save/restore
+these firmware registers using the existing IOCTL interfaces.
+
+Upon VM start (at least one vCPU runs), the registers become read-only
+and cannot be manupulated by the VMM. This is just to avoid providing
+conflicting views of the services to the guests.
+
+One of the problems that the series need to address is the enablement
+of the features carried by a firmware register, whose existance is
+not known to the VMM yet. A couple of ideas were discussed to handle this:
+
+    1) Upon the first SET_ONE_REG, clear all the firmware registers
+    implicitly. It's the responsibility of the VMM to make sure that it
+    configures all the registers that's known to it.
+
+    2) Contrary to #1, which implicitly clears all the registers, introduce
+    a new capability to handle this explicitly. That is, the after learning
+    about the services supported by the host, the VMM writes to the
+    capability to explictly clear the registers.
+
+The series currently employs #1 just for the sake of completion, but is
+open for further discussion.
+
+The patches are based off of kvmarm-next 5.15-rc4, with the selftest
+patches from [2] applied.
+
+Patch-1 factors out the non-PSCI related interface from psci.c to
+hypercalls.c, as the series would extend the list in the upcoming
+patches.
+
+Patch-2 sets up a base environment to handle the 'writes' of firmware
+register- clear all the registers upon first 'write' and block 'writes'
+to the registers upon VM start.
+
+Patch-3 introduces the firmware register, KVM_REG_ARM_STD, which holds
+the standard secure services (such as TRNG).
+
+Patch-4 introduces the firmware register, KVM_REG_ARM_STD_HYP, which holds
+the standard hypervisor services (such as PV_TIME).
+
+Patch-5 introduces the firmware register, KVM_REG_ARM_VENDOR_HYP, which holds
+the vendor specific hypercall services.
+
+Patch-6 imports the firmware registers' UAPI definitions into tools/ for
+further use in selftests.
+
+Patch-7 imports the SMCCC definitions from linux/arm-smccc.h into tools/
+for further use in selftests.
+
+Patch-8 adds the selftest to test the guest (using 'hvc') and VMM
+interfaces (SET/GET_ONE_REG).
+
+[1]: https://lore.kernel.org/kvmarm/874kbcpmlq.wl-maz@kernel.org/T/
+[2]: https://lore.kernel.org/kvmarm/YUzgdbYk8BeCnHyW@google.com/
+
+Raghavendra Rao Ananta (8):
+  KVM: arm64: Factor out firmware register handling from psci.c
+  KVM: arm64: Setup base for hypercall firmware registers
+  KVM: arm64: Add standard secure service calls firmware register
+  KVM: arm64: Add standard hypervisor service calls firmware register
+  KVM: arm64: Add vendor hypervisor service calls firmware register
+  tools: Import the firmware registers
+  tools: Import ARM SMCCC definitions
+  selftests: KVM: aarch64: Introduce hypercall ABI test
+
+ .../virt/kvm/arm/{psci.rst => hypercalls.rst} |  59 ++-
+ Documentation/virt/kvm/arm/index.rst          |   2 +-
+ arch/arm64/include/asm/kvm_host.h             |  12 +
+ arch/arm64/include/uapi/asm/kvm.h             |  18 +
+ arch/arm64/kvm/arm.c                          |  17 +
+ arch/arm64/kvm/guest.c                        |   2 +-
+ arch/arm64/kvm/hypercalls.c                   | 339 ++++++++++++++++-
+ arch/arm64/kvm/psci.c                         | 167 +--------
+ arch/arm64/kvm/pvtime.c                       |   3 +
+ arch/arm64/kvm/trng.c                         |   9 +-
+ include/kvm/arm_hypercalls.h                  |  18 +
+ include/kvm/arm_psci.h                        |   8 +-
+ tools/arch/arm64/include/uapi/asm/kvm.h       |  18 +
+ tools/include/linux/arm-smccc.h               | 188 ++++++++++
+ tools/testing/selftests/kvm/.gitignore        |   1 +
+ tools/testing/selftests/kvm/Makefile          |   1 +
+ .../selftests/kvm/aarch64/hypercalls.c        | 340 ++++++++++++++++++
+ 17 files changed, 1018 insertions(+), 184 deletions(-)
+ rename Documentation/virt/kvm/arm/{psci.rst => hypercalls.rst} (57%)
+ create mode 100644 tools/include/linux/arm-smccc.h
+ create mode 100644 tools/testing/selftests/kvm/aarch64/hypercalls.c
+
+-- 
+2.33.1.1089.g2158813163f-goog
 
