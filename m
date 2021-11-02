@@ -2,89 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DB49442E71
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 13:48:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CF83442DB2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 13:19:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230522AbhKBMvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 08:51:15 -0400
-Received: from m1554.mail.126.com ([220.181.15.54]:16005 "EHLO
-        m1554.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230518AbhKBMvM (ORCPT
+        id S230102AbhKBMWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 08:22:17 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:36623 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229530AbhKBMWO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 08:51:12 -0400
-X-Greylist: delayed 1815 seconds by postgrey-1.27 at vger.kernel.org; Tue, 02 Nov 2021 08:51:06 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=Date:From:Subject:MIME-Version:Message-ID; bh=pMj+y
-        BaKZirGjoOyUnfDVs9NHpYkoEkGcqYmMujT7j4=; b=mTD3ky4//7iACed20JTVN
-        l0AY56UEQVbwQ1J5xyD5jrNNOV6fvAEkV8CUgw18Vo2M8hAOKcFj4730qsm1jw9+
-        Fh52gZwOJD9T0X0+XMDxsGKXDA8ta8mdN5ynufOhL3yTQupM+ARPv+KZOeHhcdOL
-        PFg0Y5DPxi06BmQNNwQgbY=
-Received: from zhangzl2013$126.com ( [223.72.63.29] ) by
- ajax-webmail-wmsvr54 (Coremail) ; Tue, 2 Nov 2021 20:17:52 +0800 (CST)
-X-Originating-IP: [223.72.63.29]
-Date:   Tue, 2 Nov 2021 20:17:52 +0800 (CST)
-From:   "Zhaolong Zhang" <zhangzl2013@126.com>
-To:     "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>
-Cc:     "Alexander Lobakin" <alobakin@pm.me>,
-        "Yanteng Si" <siyanteng@loongson.cn>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mips: fix HUGETLB function without THP enabled
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210622(1d4788a8)
- Copyright (c) 2002-2021 www.mailtech.cn 126com
-In-Reply-To: <20211102102051.GA7512@alpha.franken.de>
-References: <20211102082437.3319235-1-zhangzl2013@126.com>
- <20211102102051.GA7512@alpha.franken.de>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=GBK
+        Tue, 2 Nov 2021 08:22:14 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hk8963CQ3z4xbC;
+        Tue,  2 Nov 2021 23:19:38 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1635855578;
+        bh=6+whIbJLFfSYaBRlLi5F57gIixni6TM88ubJw+uo8bo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=H7ZdXCiQ2iVbuTqJP1e3dZQmY1GCVyxA6MN3ptzpMGHegoOSPpq9Zaz8St20IdIqU
+         smKUa3VYZXVSRezMhoA11Hjj1Psxndkjf/odAgWg3tSF+FlsbfiZXcg+xSpnblGgwc
+         0Dna90myYhf5/tIR1r68i3NbrpYCM434KITf0oRKMl8UDHsiEWANGjMPw1WkJ88/CR
+         w+lWZHfLWyXZ9hz3IhEmMhXgj2OP2xY26syTAMB6leMirrJEE+KzcyjpT9N/CXoRgK
+         uPAYyT9/sUS+rGEgnjZuhpt2d15V9oDKqNdj/sqwyQ1jLFsuz75bWHSS34AUNBWMvD
+         gJc7zYbntr/Sw==
+Date:   Tue, 2 Nov 2021 23:19:37 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: Re: linux-next: build failure after merge of almost all the trees
+Message-ID: <20211102231937.2fe27ba6@canb.auug.org.au>
+In-Reply-To: <20211102231307.6ba98df2@canb.auug.org.au>
+References: <20211028212651.57beb05b@canb.auug.org.au>
+        <20211028233844.292e1319@canb.auug.org.au>
+        <20211102174400.1aaee22c@canb.auug.org.au>
+        <CAK8P3a3Fx0UmbxP48RnXHcJYf_tU3_NTkMZrFnM42eAb_F4jRQ@mail.gmail.com>
+        <20211102231307.6ba98df2@canb.auug.org.au>
 MIME-Version: 1.0
-Message-ID: <181761.42aa.17ce0959595.Coremail.zhangzl2013@126.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: NsqowAAXZUlxLIFhFFpOAQ--.20702W
-X-CM-SenderInfo: x2kd0wt2osiiat6rjloofrz/1tbitBE-z1pEE26trQAAs2
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+Content-Type: multipart/signed; boundary="Sig_/kbJdJKXULdyduJMEaPvd13S";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CkF0IDIwMjEtMTEtMDIgMTg6MjA6NTEsICJUaG9tYXMgQm9nZW5kb2VyZmVyIiA8dHNib2dlbmRA
-YWxwaGEuZnJhbmtlbi5kZT4gd3JvdGU6Cj5PbiBUdWUsIE5vdiAwMiwgMjAyMSBhdCAwNDoyNDoz
-N1BNICswODAwLCBaaGFvbG9uZyBaaGFuZyB3cm90ZToKPj4gbHRwIHRlc3QgZnV0ZXhfd2FrZTA0
-IHdpdGhvdXQgVEhQIGVuYWJsZWQgbGVhZHMgdG8gYmVsb3cgYnQ6Cj4+ICAgWzxmZmZmZmZmZjgw
-YTAzNzI4Pl0gQlVHKzB4MC8weDgKPj4gICBbPGZmZmZmZmZmODBhMDYyNGM+XSBpbnRlcm5hbF9n
-ZXRfdXNlcl9wYWdlc19mYXN0KzB4ODFjLzB4ODIwCj4+ICAgWzxmZmZmZmZmZjgwOTNhYzE4Pl0g
-Z2V0X2Z1dGV4X2tleSsweGEwLzB4NDgwCj4+ICAgWzxmZmZmZmZmZjgwOTNiMDc0Pl0gZnV0ZXhf
-d2FpdF9zZXR1cCsweDdjLzB4MWE4Cj4+ICAgWzxmZmZmZmZmZjgwOTNiMmMwPl0gZnV0ZXhfd2Fp
-dCsweDEyMC8weDIyOAo+PiAgIFs8ZmZmZmZmZmY4MDkzZGJlOD5dIGRvX2Z1dGV4KzB4MTQwLzB4
-YmQ4Cj4+ICAgWzxmZmZmZmZmZjgwOTNlNzhjPl0gc3lzX2Z1dGV4KzB4MTBjLzB4MWMwCj4+ICAg
-WzxmZmZmZmZmZjgwODcwM2QwPl0gc3lzY2FsbF9jb21tb24rMHgzNC8weDU4Cj4+IAo+PiBNb3Zl
-IHBtZF93cml0ZSgpIGFuZCBwbWRfcGFnZSgpIGZyb20gVFJBTlNQQVJFTlRfSFVHRVBBR0Ugc2Nv
-cGUgdG8KPj4gTUlQU19IVUdFX1RMQl9TVVBQT1JUIHNjb3BlLCBiZWNhdXNlIGJvdGggVEhQIGFu
-ZCBIVUdFVExCIHdpbGwgbmVlZAo+PiB0aGVtLgo+PiAKPj4gU2lnbmVkLW9mZi1ieTogWmhhb2xv
-bmcgWmhhbmcgPHpoYW5nemwyMDEzQDEyNi5jb20+Cj4+IC0tLQo+PiAgYXJjaC9taXBzL2luY2x1
-ZGUvYXNtL3BndGFibGUuaCB8IDQwICsrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0tLQo+
-PiAgMSBmaWxlIGNoYW5nZWQsIDIxIGluc2VydGlvbnMoKyksIDE5IGRlbGV0aW9ucygtKQo+Cj5h
-cHBsaWVkIHRvIG1pcHMtbmV4dC4KPgo+PiAKPj4gZGlmZiAtLWdpdCBhL2FyY2gvbWlwcy9pbmNs
-dWRlL2FzbS9wZ3RhYmxlLmggYi9hcmNoL21pcHMvaW5jbHVkZS9hc20vcGd0YWJsZS5oCj4+IGlu
-ZGV4IDgwNDg4OWI3MDk2NS4uMWZjZjRiZTVjZDIwIDEwMDY0NAo+PiAtLS0gYS9hcmNoL21pcHMv
-aW5jbHVkZS9hc20vcGd0YWJsZS5oCj4+ICsrKyBiL2FyY2gvbWlwcy9pbmNsdWRlL2FzbS9wZ3Rh
-YmxlLmgKPj4gQEAgLTg2LDEwICs4NiwxMiBAQCBleHRlcm4gdm9pZCBwYWdpbmdfaW5pdCh2b2lk
-KTsKPj4gICAqLwo+PiAgI2RlZmluZSBwbWRfcGh5cyhwbWQpCQl2aXJ0X3RvX3BoeXMoKHZvaWQg
-KilwbWRfdmFsKHBtZCkpCj4+ICAKPj4gKyNpZm5kZWYgQ09ORklHX01JUFNfSFVHRV9UTEJfU1VQ
-UE9SVAo+PiAgI2RlZmluZSBfX3BtZF9wYWdlKHBtZCkJCShwZm5fdG9fcGFnZShwbWRfcGh5cyhw
-bWQpID4+IFBBR0VfU0hJRlQpKQo+PiAgI2lmbmRlZiBDT05GSUdfVFJBTlNQQVJFTlRfSFVHRVBB
-R0UKPj4gICNkZWZpbmUgcG1kX3BhZ2UocG1kKQkJX19wbWRfcGFnZShwbWQpCj4+ICAjZW5kaWYg
-LyogQ09ORklHX1RSQU5TUEFSRU5UX0hVR0VQQUdFICAqLwo+PiArI2VuZGlmIC8qIENPTkZJR19N
-SVBTX0hVR0VfVExCX1NVUFBPUlQgKi8KPgo+V2hpbGUgYXBwbHlpbmcgSSd2ZSBzaW1wbGlmaWVk
-IHRoYXQgaHVuayB0bwo+Cj4tI2RlZmluZSBfX3BtZF9wYWdlKHBtZCkgICAgICAgICAgICAgICAg
-KHBmbl90b19wYWdlKHBtZF9waHlzKHBtZCkgPj4gUEFHRV9TSElGVCkpCj4tI2lmbmRlZiBDT05G
-SUdfVFJBTlNQQVJFTlRfSFVHRVBBR0UKPi0jZGVmaW5lIHBtZF9wYWdlKHBtZCkgICAgICAgICAg
-X19wbWRfcGFnZShwbWQpCj4tI2VuZGlmIC8qIENPTkZJR19UUkFOU1BBUkVOVF9IVUdFUEFHRSAg
-Ki8KPisjaWZuZGVmIENPTkZJR19NSVBTX0hVR0VfVExCX1NVUFBPUlQKPisjZGVmaW5lIHBtZF9w
-YWdlKHBtZCkgICAgICAgICAgKHBmbl90b19wYWdlKHBtZF9waHlzKHBtZCkgPj4gUEFHRV9TSElG
-VCkpCj4rI2VuZGlmIC8qIENPTkZJR19NSVBTX0hVR0VfVExCX1NVUFBPUlQgKi8KPgoKSXQgaXMg
-bXVjaCBiZXR0ZXIuClRoYW5rcyBmb3IgeW91ciBraW5kIHJlcGx5LgoKUmVnYXJkcywKWmhhb2xv
-bmcKCj5UaG9tYXMuCj4KPi0tIAo+Q3JhcCBjYW4gd29yay4gR2l2ZW4gZW5vdWdoIHRocnVzdCBw
-aWdzIHdpbGwgZmx5LCBidXQgaXQncyBub3QgbmVjZXNzYXJpbHkgYQo+Z29vZCBpZGVhLiAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFsgUkZDMTkyNSwgMi4z
-IF0K
+--Sig_/kbJdJKXULdyduJMEaPvd13S
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hi all,
+
+On Tue, 2 Nov 2021 23:13:07 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
+>
+> On Tue, 2 Nov 2021 08:06:10 +0100 Arnd Bergmann <arnd@arndb.de> wrote:
+> >
+> > On Tue, Nov 2, 2021 at 7:44 AM Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote: =20
+> > >
+> > > On Thu, 28 Oct 2021 23:38:44 +1100 Stephen Rothwell <sfr@canb.auug.or=
+g.au> wrote:   =20
+> > > >
+> > > > On Thu, 28 Oct 2021 21:26:51 +1100 Stephen Rothwell <sfr@canb.auug.=
+org.au> wrote:   =20
+> > > > >
+> > > > > Today's linux-next build (powerpc allyesconfig) failed like this:
+> > > > >
+> > > > > fs/ntfs/aops.c: In function 'ntfs_write_mst_block':
+> > > > > fs/ntfs/aops.c:1311:1: error: the frame size of 2304 bytes is lar=
+ger than 2048 bytes [-Werror=3Dframe-larger-than=3D]
+> > > > >  1311 | }
+> > > > >       | ^
+> > > > > cc1: all warnings being treated as errors
+> > > > >
+> > > > > I have no idea what has caused this.   =20
+> > > >
+> > > > With a nudge from Arnd, it seems the immediate case was commit
+> > > >
+> > > >   f22969a66041 ("powerpc/64s: Default to 64K pages for 64 bit book3=
+s")
+> > > >
+> > > > from the powerpc tree switching the allyesconfig build from 4k page=
+s to
+> > > > 64k pages which expanded a few arrays on the stack in that function=
+.   =20
+> > >
+> > > Can we do something about this, please?   =20
+> >=20
+> > I submitted a workaround a while ago. Anton didn't like it, but has not
+> > come up with a proper fix in ntfs either:
+> >=20
+> > https://lore.kernel.org/lkml/20210927141815.1711736-1-arnd@kernel.org/
+> >=20
+> > It does need to be changed a bit as I realized it depends on a rework of
+> > the Kconfig logic that I had in my randconfig build tree to have a comm=
+on
+> > page size symbol across architectures. Without my other patch, it also
+> > needs to check for PPC_64K_PAGES.
+> >=20
+> > Should I send an updated version of the patch? =20
+>=20
+> That would be good, thanks.
+>=20
+> Even better would be to split up the function some how, but having had
+> a bit of a look at it, that may be a much longer job.  I am assuming
+> that allocations (or their failure) are out of the question in that
+> particular function.
+
+Looking again, we probably just need to disable CONFIG_NTFS_RW ...
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/kbJdJKXULdyduJMEaPvd13S
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGBLNkACgkQAVBC80lX
+0GxO9Qf/VOaKOsjq9/U0Vb3yYI6T9ESFn1y3OYWcLS2DE0mZNCmocvQvj40Gl91A
+71E8ir6whUZbMjRHiNzNrALhwoczAP+9DbkJhqN8DdCcAKGMBnBmBk6wLDxQ6CF4
+op1qAggg8HAMT9AM88aB80Ety4rd0dGzyZQiZAnBbaK240tld52uUfyPAGr+kT0u
+81XldfR1zcVv7nrUjjf9/OoA9mk6RPTzKS1ZmVmnZf/hN69IKHG+pgNW2pUrBrIb
+rRBCejhmoMYZX5vPWUmXdVx7NGVzhhlVC6PQWDiHw0PH3v1Ox5W7o4599ReY1pw9
+mjkTHCShQgn/f34LJ+ybIVfmdGwpOg==
+=pGjo
+-----END PGP SIGNATURE-----
+
+--Sig_/kbJdJKXULdyduJMEaPvd13S--
