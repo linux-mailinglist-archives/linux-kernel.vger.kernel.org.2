@@ -2,65 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 835554425B8
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 03:48:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD7B34425BD
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 03:50:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230451AbhKBCuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 22:50:54 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:26220 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbhKBCux (ORCPT
+        id S231868AbhKBCwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 22:52:50 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:44652 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231811AbhKBCws (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 22:50:53 -0400
-Received: from dggeme755-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HjvS66vqGzSh0v;
-        Tue,  2 Nov 2021 10:46:46 +0800 (CST)
-Received: from [10.67.110.136] (10.67.110.136) by
- dggeme755-chm.china.huawei.com (10.3.19.101) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.15; Tue, 2 Nov 2021 10:48:14 +0800
-Subject: Re: [PATCH] drm: Grab reference of connector before return connector
- from sun4i_tcon_get_connector
-To:     Jani Nikula <jani.nikula@linux.intel.com>, <mripard@kernel.org>,
-        <wens@csie.org>, <airlied@linux.ie>, <daniel@ffwll.ch>,
-        <jernej.skrabec@gmail.com>
-CC:     <linux-kernel@vger.kernel.org>,
+        Mon, 1 Nov 2021 22:52:48 -0400
+X-UUID: 068eddb77c51470f82fd0ff07568c308-20211102
+X-UUID: 068eddb77c51470f82fd0ff07568c308-20211102
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 409171439; Tue, 02 Nov 2021 10:50:07 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 2 Nov 2021 10:50:06 +0800
+Received: from localhost.localdomain (10.17.3.154) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 2 Nov 2021 10:50:05 +0800
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-usb@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
-        <dri-devel@lists.freedesktop.org>, <linux-sunxi@lists.linux.dev>
-References: <20211101062906.231518-1-heying24@huawei.com>
- <87cznkdo6p.fsf@intel.com>
-From:   He Ying <heying24@huawei.com>
-Message-ID: <33e01d45-c9f9-0e8c-6871-868ecd198368@huawei.com>
-Date:   Tue, 2 Nov 2021 10:48:14 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH 1/2] usb: xhci-mtk: remove unnecessary error check
+Date:   Tue, 2 Nov 2021 10:50:03 +0800
+Message-ID: <20211102025004.29156-1-chunfeng.yun@mediatek.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <87cznkdo6p.fsf@intel.com>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.110.136]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggeme755-chm.china.huawei.com (10.3.19.101)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+No need check the return value, just return it.
 
-ÔÚ 2021/11/1 21:02, Jani Nikula Ð´µÀ:
-> On Mon, 01 Nov 2021, He Ying <heying24@huawei.com> wrote:
->>  From the comments of drm_for_each_connector_iter(), we know
->> that "connector is only valid within the list body, if you
->> want to use connector after calling drm_connector_list_iter_end()
->> then you need to grab your own reference first using
->> drm_connector_get()". So fix the wrong use of connector
->> according to the comments and then call drm_connector_put()
->> after using connector finishes.
->>
->> Signed-off-by: He Ying <heying24@huawei.com>
-> Please use "drm/sun4i:" subject prefix for sun4i patches.
+Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+---
+ drivers/usb/host/xhci-mtk.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-OK. I'll send a V2 later. By the way, may I have your suggestions about
-
-this patch's content.
+diff --git a/drivers/usb/host/xhci-mtk.c b/drivers/usb/host/xhci-mtk.c
+index c53f6f276d5c..adc5debcde88 100644
+--- a/drivers/usb/host/xhci-mtk.c
++++ b/drivers/usb/host/xhci-mtk.c
+@@ -437,11 +437,8 @@ static int xhci_mtk_setup(struct usb_hcd *hcd)
+ 	if (ret)
+ 		return ret;
+ 
+-	if (usb_hcd_is_primary_hcd(hcd)) {
++	if (usb_hcd_is_primary_hcd(hcd))
+ 		ret = xhci_mtk_sch_init(mtk);
+-		if (ret)
+-			return ret;
+-	}
+ 
+ 	return ret;
+ }
+-- 
+2.18.0
 
