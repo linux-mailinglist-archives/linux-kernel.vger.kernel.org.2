@@ -2,90 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8000D443806
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 22:48:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20D6444380A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 22:52:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231337AbhKBVvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 17:51:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230175AbhKBVvT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 17:51:19 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEBF7C061714;
-        Tue,  2 Nov 2021 14:48:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Y4e5G7N0rSCI/bB/4KF9vQwtKks3I0Qizmban8wLh88=; b=deg62C+MyuBRwQgACHwdkh+TpH
-        rLxXHgp2kCN5sxwJAwtlpaMXRzaIEXFSfax93Azl8g+nUE4eW4As40ibGij99hMe3M+VHiZxLfWoZ
-        jQwZB/FHQPaDO1mTBz6jKM435wHVvQrUauh9YmdsLjQOVVhs1j1z39SyLEU1yJbO6dwmi+5UaHl9N
-        kkYd+La1bPtsk3Pb9/xEJ+Ud5JLYk+yTmNGSJaxwnNCFwGnVGvla6t74ZbQkukKoQYvfyRmvutpYW
-        uZSXv5PaA5Xl0FabbBzC3gA0tGodLB8BPLaHvcy8vufb+wnozGDTg9xTrdvIgLqIZcyusXKDRbIGZ
-        XUK5AWIw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mi1dj-00DpCo-PG; Tue, 02 Nov 2021 21:48:20 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 68039984CD2; Tue,  2 Nov 2021 22:48:19 +0100 (CET)
-Date:   Tue, 2 Nov 2021 22:48:19 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        Mark Rutland <mark.rutland@arm.com>, X86 ML <x86@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-hardening@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        llvm@lists.linux.dev, joao@overdrivepizza.com
-Subject: Re: [PATCH] static_call,x86: Robustify trampoline patching
-Message-ID: <20211102214819.GZ174703@worktop.programming.kicks-ass.net>
-References: <CAMj1kXG+MuGaG3BHk8pnE1MKVmRf5E+nRNoFMHxOA1y84eGikg@mail.gmail.com>
- <YX8AQJqyB+H3PF1d@hirez.programming.kicks-ass.net>
- <CAMj1kXF3n-oQ1WP8=asb60K6UjSYOtz5RVhrcoCoNq3v7mZdQg@mail.gmail.com>
- <20211101090155.GW174703@worktop.programming.kicks-ass.net>
- <CAMj1kXGhRmdM3om289Q2-s1Pzfob3D2iSDMorzggfhSk1oj53A@mail.gmail.com>
- <YYE1yPClPMHvyvIt@hirez.programming.kicks-ass.net>
- <YYFWEnBb/UaZKGzz@hirez.programming.kicks-ass.net>
- <CAMj1kXFQSitDY5WT246YEXXFphUv_HSjBrgvGzQGiCr4jLrM+g@mail.gmail.com>
- <YYGAAVG5aRDKRHso@hirez.programming.kicks-ass.net>
- <CAMj1kXHm99QNdHXUUAAJFD+M5VC-xFqjUoEVyg+oGkiJM51daA@mail.gmail.com>
+        id S231167AbhKBVz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 17:55:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59222 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229628AbhKBVz1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 17:55:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D7E460E08;
+        Tue,  2 Nov 2021 21:52:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635889972;
+        bh=+puO1KwLqb0QCA9FpzLKqvicjHb2V7kw3IRn3IkgR9o=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=l+BYIyhHlvR0cze4als5Myq56hEsCNz4giUp8WKMyXFEgtaKoUTAnJNYcTuDINEE2
+         tu9jCwaut/veW3VGjU/A8yaIx933f8VRNWrzWQANE2T9gCGzXlb5cZyoFoODG8Ohwg
+         tJ1waerZZxhFkQLge016LXQJcPRYQwaHqmu6wpP98lwrgN91y7/vxVuSUakz7LVHWV
+         QwSvMrg5ZcnErfp9u07X3xYRNzdGYNbIX1WBzBI5mG4R29Pacdrs9gdIypVop468pe
+         rclzQrmS5KFAda3lnxOmOa+LC4wyS/wfTvUp7HuB+hFOH6M81DeG5y+iQTOM11g0XC
+         /xAxDMn4HUdEA==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXHm99QNdHXUUAAJFD+M5VC-xFqjUoEVyg+oGkiJM51daA@mail.gmail.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20211019074030.31294-4-kavyasree.kotagiri@microchip.com>
+References: <20211019074030.31294-1-kavyasree.kotagiri@microchip.com> <20211019074030.31294-4-kavyasree.kotagiri@microchip.com>
+Subject: Re: [PATCH v9 3/3] clk: lan966x: Add lan966x SoC clock driver
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     nicolas.ferre@microchip.com, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        UNGLinuxDriver@microchip.com, Eugen.Hristev@microchip.com,
+        Kavyasree.Kotagiri@microchip.com, Manohar.Puri@microchip.com
+To:     Kavyasree Kotagiri <kavyasree.kotagiri@microchip.com>,
+        mturquette@baylibre.com, robh+dt@kernel.org
+Date:   Tue, 02 Nov 2021 14:52:50 -0700
+Message-ID: <163588997070.2993099.15915757233630724042@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 07:18:53PM +0100, Ard Biesheuvel wrote:
+Quoting Kavyasree Kotagiri (2021-10-19 00:40:30)
+> diff --git a/drivers/clk/clk-lan966x.c b/drivers/clk/clk-lan966x.c
+> new file mode 100644
+> index 000000000000..19bec94e1551
+> --- /dev/null
+> +++ b/drivers/clk/clk-lan966x.c
+> @@ -0,0 +1,240 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Microchip LAN966x SoC Clock driver.
+> + *
+> + * Copyright (C) 2021 Microchip Technology, Inc. and its subsidiaries
+> + *
+> + * Author: Kavyasree Kotagiri <kavyasree.kotagiri@microchip.com>
+> + */
+> +
+> +#include <linux/bitfield.h>
+> +#include <linux/clk-provider.h>
+> +#include <linux/io.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/slab.h>
+> +
+> +#include <dt-bindings/clock/microchip,lan966x.h>
+> +
+> +#define GCK_ENA         BIT(0)
+> +#define GCK_SRC_SEL     GENMASK(9, 8)
+> +#define GCK_PRESCALER   GENMASK(23, 16)
+> +
+> +#define DIV_MAX                255
+> +
+> +static const char *clk_names[N_CLOCKS] =3D {
+> +       "qspi0", "qspi1", "qspi2", "sdmmc0",
+> +       "pi", "mcan0", "mcan1", "flexcom0",
+> +       "flexcom1", "flexcom2", "flexcom3",
+> +       "flexcom4", "timer1", "usb_refclk",
+> +};
+> +
+> +struct lan966x_gck {
+> +       struct clk_hw hw;
+> +       void __iomem *reg;
+> +};
+> +#define to_lan966x_gck(hw) container_of(hw, struct lan966x_gck, hw)
+> +
+> +static const struct clk_parent_data lan966x_gck_pdata[] =3D {
+> +       { .fw_name =3D "cpu_clk", .name =3D "cpu_clk" },
 
-> > The range check isn't fundamental to CFI, having a check is the
-> > important thing AFAIU.
-> 
-> Agreed. If the call site has a direct branch, it doesn't need the range check.
+name shouldn't be required if the binding is new. That's the case
+right?
 
-That, from the earlier email:
 
- | And have the actual indirect callsite look like:
- |
- |        # r11 - &foo
- |        ALTERNATIVE_2   "cs call __x86_indirect_thunk_r11",
- |                        "cs call __x86_indirect_cfi_deadbeef", X86_FEATURE_CFI
- |                        "cs call __x86_indirect_ibt_deadbeef", X86_FEATURE_IBT
-
-So the callsite has a direct call to the hash-specific and cfi-type
-specific thunk, which then does an (indirect) tail-call.
-
-The CFI one does the hash check in the thunk and jumps to the function
-proper, the IBT one on does it in the landing-pad.
-
-The !CFI one ignore it all and simply does an indirect call (retpoline
-aided or otherwise) to the function proper -- in which case we can free
-all the thunks.
+> +       { .fw_name =3D "ddr_clk", .name =3D "ddr_clk" },
+> +       { .fw_name =3D "sys_clk", .name =3D "sys_clk" },
+> +};
+> +
