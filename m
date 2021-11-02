@@ -2,167 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14D124430E5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 15:54:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70B424430F3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 15:57:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234369AbhKBO4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 10:56:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233581AbhKBO4q (ORCPT
+        id S234375AbhKBO6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 10:58:08 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:59606
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233349AbhKBO6F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 10:56:46 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E84AC061714;
-        Tue,  2 Nov 2021 07:54:11 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id ee33so6009269edb.8;
-        Tue, 02 Nov 2021 07:54:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sQPZ+A7u6P6I2+Cdu40NEs7KpcMqwcX/VdKifLOtVBA=;
-        b=fubu4QoEJPYCuuJ0ncleAFSlDr0F0tbl53GJLEAAQU+rkCY72q0c5+YfNOgT8wNkPV
-         RHkIFwhIWGcFjwRWWHBTMB+p6yJs+Spext1PyaemoqWxeYB2X2PoxJCRfEBL+klYgU9W
-         CJHLpZOnq26UmNwHj3RZzRr+ybg4vtBe9WBwvE0316FN8z8mOVeW0OT7nXVEE9vvb5Q/
-         tbjfHndUoJoZsQ3LH3n382tEeNcfwaQjVpadFI5oUncWBMFtypddmHV4C0y+sX/ikQ3b
-         Hlwt/X7kHhvFLOS/9YGnyxDWfXCH25c7NJ0ZLKCX48EqvUQTw6Jvk5w+F2M9djS2SH3S
-         sGwg==
+        Tue, 2 Nov 2021 10:58:05 -0400
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com [209.85.167.71])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id DFC693F1C1
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 14:55:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1635864929;
+        bh=1l57wjx0a3onK41N41yLHbCEPI0pyVDuBTZPteBeCAE=;
+        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+         In-Reply-To:Content-Type;
+        b=WsDpMWK+3JIkFGHGdAYMraiKq9++otzjFsokawn/0ByKJft73+lbashXSNKXEirBV
+         a8g20lGlgrDv/65PRPFH+iVLxmXlR05Jh2HRp+Js1bPCywGuhKMzmaqERHYvx2ybne
+         FqN/gpG90T9R+mt6ZTCcZrLpMHNY+Zo3z/51MrTXp65MFbbX3Ba43RvxfF4gH6zTQh
+         s3X5cSgn8fokCNZSEZROgKVNQ3g2sEeHJI/1nMjhENuqu6Tl6K2Sku3NcHEfQh3fCl
+         ZMyUfgezhuMQTWVGTKi5Je7Hj3N5LyUW2WXepLQYPRL5SJKn7qgRXGvXk4GacMsP+d
+         V61n7jm3xhq4w==
+Received: by mail-lf1-f71.google.com with SMTP id d10-20020a0565123d0a00b004002359a671so1413003lfv.10
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 07:55:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sQPZ+A7u6P6I2+Cdu40NEs7KpcMqwcX/VdKifLOtVBA=;
-        b=Hfi5tPTwn5CRqHE3RnttSYdI2IL2chpl955TUv/OcFPsZB7X6u4UezYmD7psLxG+H5
-         z7QalJQpCUPBJaLbIkJkGgPFv2Z9o4uIyAinjp7cCGVshAndsU91r8YdydfbYIVolR1h
-         JpG8uTkzQzHkusoHwIdeUdkKembSXRYD185O6y7i/PvAnJqM2SOGfSRXxy2rMPvoNlQy
-         GI5msCz9Tc78Sr0ekEVA7srYakQlHXTHxnMkg+To8ZJoWC4RmJusLwyGIl92jPvW+CNI
-         1+X4kRGMpk5UIjuSAM9bZaHdbNNlqyC/VFNhe4XitmDYjAdTV3mM5cMO0R+4D+/Z7hXQ
-         RwCg==
-X-Gm-Message-State: AOAM531cOQeDeh5BaYf3BZOUsqeGBMqFAFDMFnM4DA4r80lGsH8N9ZXW
-        yZ3CXWg1+8Cq1marZRKSsRrhjs6mzvZ7m7065nI=
-X-Google-Smtp-Source: ABdhPJwH9JY+GKdKAr6hsTkOlZ1H9hgagZ+Ewpzzk8wko78etTrjOnl/8nTxh/sPW4I2WJtIWWceZ+n5D9ceJdNym2s=
-X-Received: by 2002:a50:e145:: with SMTP id i5mr51315860edl.16.1635864849792;
- Tue, 02 Nov 2021 07:54:09 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=1l57wjx0a3onK41N41yLHbCEPI0pyVDuBTZPteBeCAE=;
+        b=qhOCcG6N03TUfoplmKV3v1lyyC0VSWiDMzhvw32wQxnl/bQixNmfKHWv0syeHE/LW9
+         5bQ697g0GkIhKf01P4WmrlnNzaroQ5NIdmGsbzfGOQ8JSd+RLvsqx66JHnckuLq8KmDF
+         EjQjTIfGEiA7zPUsGVHt2m+Fhh7UFy7SJewxsOUSLR22Cyt8nlfQTIOp3o6rLA5w/jNO
+         CoocLQ27AV3pt8thyQLaa6KWbL2AOJHmB5F1X3D4c0JhZ1rpLp0/efnAHnW/ShCAS/IW
+         5LtztxAoDSz0t+Wny5vHFxGZzkscbISe+i/1zDP6ngrVE9gdv9kmo9TbMH21BixWdAFo
+         b54w==
+X-Gm-Message-State: AOAM53043MW6ZXzkHTLeOueb9vRpTC3MKQHSghMUMqQyYjz92IXhmU8x
+        rvtBTUEFPZ/ek+DEibWvCpvDqWuSOS4Ghlp2yby/si+w6OIYkg60vhwW+mD1DAbv0ZWSCb49+tw
+        IEtOZFYzIweKwNcXh4/CP++NdOvTQPszy2+pzh0pKGA==
+X-Received: by 2002:a05:651c:556:: with SMTP id q22mr26054594ljp.374.1635864928936;
+        Tue, 02 Nov 2021 07:55:28 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxPoqTSwnlW0IiQfpoSYvz+g+cYGtvYWlgr/XmqB9ie+7blrt7ma1maQXbww/CaUPLHEEg/Mg==
+X-Received: by 2002:a05:651c:556:: with SMTP id q22mr26054549ljp.374.1635864928572;
+        Tue, 02 Nov 2021 07:55:28 -0700 (PDT)
+Received: from [192.168.3.67] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id i1sm1691248lfr.287.2021.11.02.07.55.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Nov 2021 07:55:28 -0700 (PDT)
+Message-ID: <ee51e10d-0fbf-d87f-aa98-a95d97a7e437@canonical.com>
+Date:   Tue, 2 Nov 2021 15:55:26 +0100
 MIME-Version: 1.0
-References: <20211101103158.3725704-1-jun.miao@windriver.com> <96f9d669-b9da-f387-199e-e6bf36081fbd@windriver.com>
-In-Reply-To: <96f9d669-b9da-f387-199e-e6bf36081fbd@windriver.com>
-From:   Uladzislau Rezki <urezki@gmail.com>
-Date:   Tue, 2 Nov 2021 15:53:58 +0100
-Message-ID: <CA+KHdyU98uHkf1VKbvFs0wcXz7SaizENRXn4BEpKJhe+KmXZuw@mail.gmail.com>
-Subject: Re: [PATCH] rcu: avoid alloc_pages() when recording stack
-To:     Jun Miao <jun.miao@windriver.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Dmitry Vyukov <dvyukov@google.com>, qiang.zhang1211@gmail.com,
-        RCU <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        miaojun0823@163.com, ryabinin.a.a@gmail.com,
-        Alexander Potapenko <glider@google.com>,
-        jianwei.hu@windriver.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Subject: Re: [RFC PATCH] ARM: s3c: mark as deprecated and schedule removal
+ after 2022
+Content-Language: en-US
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/SAMSUNG EXYNOS ARM ARCHITECTURES" 
+        <linux-samsung-soc@vger.kernel.org>,
+        Olof Johansson <olof@lixom.net>, Kukjin Kim <kgene@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Sylwester Nawrocki <snawrocki@kernel.org>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Inki Dae <inki.dae@samsung.com>, Cedric Roux <sed@free.fr>,
+        Sam Van Den Berge <sam.van.den.berge@telenet.be>,
+        Lihua Yao <ylhuajnu@outlook.com>,
+        Heiko Stuebner <heiko@sntech.de>
+References: <20211102110519.142434-1-krzysztof.kozlowski@canonical.com>
+ <CAK8P3a0KqS-OZoo46ajfaXw1aFXR9HouW2ZezKRWCawMa7yuGA@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+In-Reply-To: <CAK8P3a0KqS-OZoo46ajfaXw1aFXR9HouW2ZezKRWCawMa7yuGA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->
-> Add KASAN maintainers
->
-> On 11/1/21 6:31 PM, Jun Miao wrote:
-> > The default kasan_record_aux_stack() calls stack_depot_save() with GFP_NOWAIT,
-> > which in turn can then call alloc_pages(GFP_NOWAIT, ...).  In general, however,
-> > it is not even possible to use either GFP_ATOMIC nor GFP_NOWAIT in certain
-> > non-preemptive contexts/RT kernel including raw_spin_locks (see gfp.h and ab00db216c9c7).
-> >
-> > Fix it by instructing stackdepot to not expand stack storage via alloc_pages()
-> > in case it runs out by using kasan_record_aux_stack_noalloc().
-> >
-> > Jianwei Hu reported:
-> >   BUG: sleeping function called from invalid context at kernel/locking/rtmutex.c:969
-> >   in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 15319, name: python3
-> >   INFO: lockdep is turned off.
-> >   irq event stamp: 0
-> >   hardirqs last  enabled at (0): [<0000000000000000>] 0x0
-> >   hardirqs last disabled at (0): [<ffffffff856c8b13>] copy_process+0xaf3/0x2590
-> >   softirqs last  enabled at (0): [<ffffffff856c8b13>] copy_process+0xaf3/0x2590
-> >   softirqs last disabled at (0): [<0000000000000000>] 0x0
-> >   CPU: 6 PID: 15319 Comm: python3 Tainted: G        W  O 5.15-rc7-preempt-rt #1
-> >   Hardware name: Supermicro SYS-E300-9A-8C/A2SDi-8C-HLN4F, BIOS 1.1b 12/17/2018
-> >   Call Trace:
-> >    show_stack+0x52/0x58
-> >    dump_stack+0xa1/0xd6
-> >    ___might_sleep.cold+0x11c/0x12d
-> >    rt_spin_lock+0x3f/0xc0
-> >    rmqueue+0x100/0x1460
-> >    rmqueue+0x100/0x1460
-> >    mark_usage+0x1a0/0x1a0
-> >    ftrace_graph_ret_addr+0x2a/0xb0
-> >    rmqueue_pcplist.constprop.0+0x6a0/0x6a0
-> >     __kasan_check_read+0x11/0x20
-> >     __zone_watermark_ok+0x114/0x270
-> >     get_page_from_freelist+0x148/0x630
-> >     is_module_text_address+0x32/0xa0
-> >     __alloc_pages_nodemask+0x2f6/0x790
-> >     __alloc_pages_slowpath.constprop.0+0x12d0/0x12d0
-> >     create_prof_cpu_mask+0x30/0x30
-> >     alloc_pages_current+0xb1/0x150
-> >     stack_depot_save+0x39f/0x490
-> >     kasan_save_stack+0x42/0x50
-> >     kasan_save_stack+0x23/0x50
-> >     kasan_record_aux_stack+0xa9/0xc0
-> >     __call_rcu+0xff/0x9c0
-> >     call_rcu+0xe/0x10
-> >     put_object+0x53/0x70
-> >     __delete_object+0x7b/0x90
-> >     kmemleak_free+0x46/0x70
-> >     slab_free_freelist_hook+0xb4/0x160
-> >     kfree+0xe5/0x420
-> >     kfree_const+0x17/0x30
-> >     kobject_cleanup+0xaa/0x230
-> >     kobject_put+0x76/0x90
-> >     netdev_queue_update_kobjects+0x17d/0x1f0
-> >     ... ...
-> >     ksys_write+0xd9/0x180
-> >     __x64_sys_write+0x42/0x50
-> >     do_syscall_64+0x38/0x50
-> >     entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> >
-> > Fixes: 84109ab58590 ("rcu: Record kvfree_call_rcu() call stack for KASAN")
-> > Fixes: 26e760c9a7c8 ("rcu: kasan: record and print call_rcu() call stack")
-> > Reported-by: Jianwei Hu <jianwei.hu@windriver.com>
-> > Signed-off-by: Jun Miao <jun.miao@windriver.com>
-> > ---
-> >   kernel/rcu/tree.c | 4 ++--
-> >   1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index 8270e58cd0f3..2c1034580f15 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -3026,7 +3026,7 @@ __call_rcu(struct rcu_head *head, rcu_callback_t func)
-> >       head->func = func;
-> >       head->next = NULL;
-> >       local_irq_save(flags);
-> > -     kasan_record_aux_stack(head);
-> > +     kasan_record_aux_stack_noalloc(head);
-> >       rdp = this_cpu_ptr(&rcu_data);
-> >
-> >       /* Add the callback to our list. */
-> > @@ -3591,7 +3591,7 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
-> >               return;
-> >       }
-> >
-> > -     kasan_record_aux_stack(ptr);
-> > +     kasan_record_aux_stack_noalloc(ptr);
-> >       success = add_ptr_to_bulk_krc_lock(&krcp, &flags, ptr, !head);
-> >       if (!success) {
-> >               run_page_cache_worker(krcp);
->
-Yep an allocation is tricky here. This change looks correct to me at
-least from the point that it does not allocate.
+On 02/11/2021 14:05, Arnd Bergmann wrote:
+> On Tue, Nov 2, 2021 at 12:05 PM Krzysztof Kozlowski
+> <krzysztof.kozlowski@canonical.com> wrote:
+>>
+>> The Samsung S3C24xx and S3C64xx platforms are very old designs. S3C2416
+>> was introduced in 2008 and S3C6410 in 2009/2010.  They are not widely
+>> available anymore - out-of-stock on FriendlyArm (one of manufacturers of
+>> boards) and only few specialist stores still offer them for quite a high
+>> price.
+>>
+>> The community around these platforms was not very active, so I suspect
+>> no one really uses them anymore. Maintenance takes precious time so
+>> there is little sense in keeping them alive if there are no real users.
+>>
+>> Let's mark all S3C24xx and S3C64xx platforms as deprecated and mention
+>> possible removal in one year (after 2022).  The deprecation message will
+>> be as text in Kconfig, build message (not a warning though) and runtime
+>> print error.
+>>
+>> If there are any users, they might respond and postpone the removal.
+>>
+>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> 
+> Looks good to me.
+> 
+> We have a couple of platforms that are in a similar state, and we could do
+> the same there. I'd have to dig through
+> https://lore.kernel.org/linux-arm-kernel/CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com/
+> to see which ones promised to get back to working on the code and
+> ended up not doing so. ;-)
+> 
+> The ones that would help the most in removing are probably omap1,
+> pxa, and the strongarm-based platforms: those have a lot of special
+> cases in the code base. At least a year ago the maintainers wanted
+> to keep those around, but maybe the 2022 LTS kernel is a better
+> time for planned EOL.
 
--- 
-Uladzislau Rezki
+If the maintainers or users expressed wish to keep them alive, let's
+keep them. In fact there might be some industrial machine working for 20
+more years...
+
+If you did not receive any feedback about your queries, I am happy to
+add similar deprecation-warning notes to these as well. Just let me know
+which one should be affected.
+
+> I also still have a backlog of cleanup patches
+> for omap1 and pxa (similar to the s3c24xx changes I did) that we
+> should get mainlined if we want to keep them around after all.
+> 
+> At some point later we can also seriously look into removing all
+> non-DT machine support, which would impact all of these:
+> 
+> $ git grep -w MACHINE_START arch/arm/mach-* | cut -f 3 -d/ | uniq -c
+>       1 mach-cns3xxx
+>      12 mach-davinci
+>       2 mach-dove
+>      19 mach-ep93xx
+>       3 mach-footbridge
+>       6 mach-iop32x
+>       2 mach-ixp4xx
+>      10 mach-mmp
+>       3 mach-mv78xx0
+>      14 mach-omap1
+>      17 mach-orion5x
+>      62 mach-pxa
+>       1 mach-rpc
+>      36 mach-s3c
+>      13 mach-sa1100
+> 
+>> +#pragma message "The platform is deprecated and scheduled in removal (see platform help). " \
+>> +               "Please reach to the maintainers of the platform " \
+>> +               "and linux-samsung-soc@vger.kernel.org if you still use it." \
+>> +               "Without such feedback, the platform will be removed after 2022."
+>> diff --git a/arch/arm/mach-s3c/s3c64xx.c b/arch/arm/mach-s3c/s3c64xx.c
+>> index 4dfb648142f2..3e248f0e96a2 100644
+>> --- a/arch/arm/mach-s3c/s3c64xx.c
+>> +++ b/arch/arm/mach-s3c/s3c64xx.c
+>> @@ -425,3 +425,8 @@ static int __init s3c64xx_init_irq_eint(void)
+>>         return 0;
+>>  }
+>>  arch_initcall(s3c64xx_init_irq_eint);
+>> +
+>> +#pragma message "The platform is deprecated and scheduled in removal (see platform help). " \
+>> +               "Please reach to the maintainers of the platform " \
+>> +               "and linux-samsung-soc@vger.kernel.org if you still use it." \
+>> +               "Without such feedback, the platform will be removed after 2022."
+> 
+> I don't want these to clutter up my randconfig build output, which I keep
+> completely empty by default. If you add an
+> 
+> #ifndef CONFIG_COMPILE_TEST
+> 
+> check around them, I'm fine with it though -- it would still catch all
+> real users
+> without bothering build-testing bots.
+
+I like that idea, I'll use it in v2. No one really should build a real
+config with COMPILE_TEST and I want to nag and find the real users.
+
+> I think even with CONFIG_WERROR, we don't fail the build for #warning,
+> so that would also work in place of #pragma message.
+
+It fails, I tried it. That's why #pragma.
+
+Best regards,
+Krzysztof
