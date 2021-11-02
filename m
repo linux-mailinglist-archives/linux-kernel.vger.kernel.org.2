@@ -2,95 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A11A442EC4
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 14:04:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4871442ED5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 14:08:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231340AbhKBNHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 09:07:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50584 "EHLO
+        id S230336AbhKBNLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 09:11:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231232AbhKBNG6 (ORCPT
+        with ESMTP id S230170AbhKBNKv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 09:06:58 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94964C061766
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 06:04:20 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id ay20so4203417qkb.7
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 06:04:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Dn4BqaMm8E/Ym9b6CTx4iFhLLdRskhG8/BnMWQZMYiA=;
-        b=CV7GUn5h7t+R98AniHQ+e3FbXFOMEsvZSd1hvuNMLgjeEftTO6nejnTl8CX3JEks84
-         BrapEDNZbfWvf92QCz0OUemnwTATzFp37+VH//NuzccwImZ92esGMPDXXoqCuNIynyNX
-         nyo3+OojZlZreduNyWOMdGQjy6xy2QhhQBbv10q8vmkX0R6az/sP1MXcB89v7TeiMEss
-         2cKH6f+rR5UqoGtizvM0KK/8l1nLerqgDl2QbZ6ozhAF9GREznf2k99QroLvyvq7si5W
-         kzi7SJOc/AObDiez/X8TwMNpd05WjseQc8SLwlzFMBH1kqlL3Z6P6cqVkzIuVl56U+of
-         AzWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Dn4BqaMm8E/Ym9b6CTx4iFhLLdRskhG8/BnMWQZMYiA=;
-        b=VSYac7RPwYPP0Eo3lJc0rFmFpROSW6LbmtXLQK10BICgIzlwt50U8lIjKBK/c7D9Vl
-         Qu53oIkbcgvPK6fHzpLd1d0vFRmVzmVwF+XOQxScjFsjhpiHZQCTjvgcF36CYgqSCb5n
-         j+NwZjnjwEbiwesewaxN0L1Ngu6VGcvMd1F1L4r8SVKRPwctrn+PRBteiIMfA7KEAHxE
-         tpFdsW2HigOI794YP1/KU6u69O+CE8nX6PwHutFjj/SS03h6AO8t09eSvl61UUgQ+Og2
-         f/+CloVAhWwCc6rMRWTk+qJW/TtzstXRjQMGm8g9q80uYm6NO/q2+z5QvQbjE6CYKTEp
-         0TDA==
-X-Gm-Message-State: AOAM531E4PhcoUMf/wdlbzfh3Bdh+e11n3OmMdICf1dhTt5AwVCJqTIx
-        kwx41YXKQ5FPTDIzRZLiXQ1zYg==
-X-Google-Smtp-Source: ABdhPJwM+zF/tlJ4BLYeH2ZKxc5LHh/BOCcEJcjNkHrZZDYjDhcr8F0U+JBW/PrHDJZEppOhOYYJqg==
-X-Received: by 2002:a05:620a:4015:: with SMTP id h21mr28584785qko.300.1635858259569;
-        Tue, 02 Nov 2021 06:04:19 -0700 (PDT)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id u185sm11980615qkd.48.2021.11.02.06.04.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Nov 2021 06:04:19 -0700 (PDT)
-Date:   Tue, 2 Nov 2021 09:04:16 -0400
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     Ye Bin <yebin10@huawei.com>
-Cc:     axboe@kernel.dk, linux-block@vger.kernel.org, nbd@other.debian.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next v4 0/4] Fix hungtask when nbd_config_put and sanity
- check for first_minor
-Message-ID: <YYE3UK//36MbVzC3@localhost.localdomain>
-References: <20211102015237.2309763-1-yebin10@huawei.com>
+        Tue, 2 Nov 2021 09:10:51 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D871C061714
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 06:08:16 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: kholk11)
+        with ESMTPSA id B42891F4490B
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+To:     a.hajda@samsung.com
+Cc:     narmstrong@baylibre.com, robert.foss@linaro.org,
+        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
+        jernej.skrabec@gmail.com, airlied@linux.ie, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, kernel@collabora.com,
+        linux-kernel@vger.kernel.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Subject: [PATCH] drm/bridge: parade-ps8640: Link device to ensure suspend/resume order
+Date:   Tue,  2 Nov 2021 14:04:28 +0100
+Message-Id: <20211102130428.444795-1-angelogioacchino.delregno@collabora.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211102015237.2309763-1-yebin10@huawei.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 09:52:33AM +0800, Ye Bin wrote:
-> This patchset include two patchsets as follows:
-> 1. Fix hungtask when nbd_config_put
-> https://patchwork.kernel.org/project/linux-block/list/?series=573381
-> 2. nbd: fix sanity check for first_minor
-> https://lore.kernel.org/linux-block/20211021122936.758221-1-yukuai3@huawei.com/
-> 
-> I have consulted with Yu Kuai, and his modification has also been confirmed by him.
-> 
-> Ye Bin (2):
->   nbd: Fix incorrect error handle when first_minor is illegal in
->     nbd_dev_add
->   nbd: Fix hungtask when nbd_config_put
-> 
-> Yu Kuai (2):
->   nbd: fix max value for 'first_minor'
->   nbd: fix possible overflow for 'first_minor' in nbd_dev_add()
-> 
->  drivers/block/nbd.c | 42 +++++++++++++++++++-----------------------
->  1 file changed, 19 insertions(+), 23 deletions(-)
-> 
+Entering suspend while the display attached to this bridge is still on
+makes the resume sequence to resume the bridge first, display last:
+when this happens, we get a timeout while resuming the bridge, as its
+MCU will get stuck due to the display being unpowered.
 
-Perfect, thanks guys, you can add
+On the other hand, on mt8173-elm, closing the lid makes the display to
+get powered off first, bridge last, so at resume time the sequence is
+swapped (compared to the first example) and everything just works
+as expected.
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Add a stateless device link to the DRM device that this bridge belongs
+to, ensuring a correct resume sequence and solving the unability to
+correctly resume bridge operation in the first mentioned example.
 
-to the series,
+Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+---
+ drivers/gpu/drm/bridge/parade-ps8640.c | 22 ++++++++++++++++++++--
+ 1 file changed, 20 insertions(+), 2 deletions(-)
 
-Josef
+diff --git a/drivers/gpu/drm/bridge/parade-ps8640.c b/drivers/gpu/drm/bridge/parade-ps8640.c
+index 45100edd745b..191cc196c9d1 100644
+--- a/drivers/gpu/drm/bridge/parade-ps8640.c
++++ b/drivers/gpu/drm/bridge/parade-ps8640.c
+@@ -100,6 +100,7 @@ struct ps8640 {
+ 	struct regulator_bulk_data supplies[2];
+ 	struct gpio_desc *gpio_reset;
+ 	struct gpio_desc *gpio_powerdown;
++	struct device_link *link;
+ 	bool powered;
+ };
+ 
+@@ -460,10 +461,23 @@ static int ps8640_bridge_attach(struct drm_bridge *bridge,
+ 		goto err_aux_register;
+ 	}
+ 
++	ps_bridge->link = device_link_add(bridge->dev->dev, dev, DL_FLAG_STATELESS);
++	if (!ps_bridge->link) {
++		dev_err(dev, "failed to create device link");
++		ret = -EINVAL;
++		goto err_devlink;
++	}
++
+ 	/* Attach the panel-bridge to the dsi bridge */
+-	return drm_bridge_attach(bridge->encoder, ps_bridge->panel_bridge,
++	ret = drm_bridge_attach(bridge->encoder, ps_bridge->panel_bridge,
+ 				 &ps_bridge->bridge, flags);
++	if (ret)
++		goto err_bridge_attach;
+ 
++err_bridge_attach:
++	device_link_del(ps_bridge->link);
++err_devlink:
++	drm_dp_aux_unregister(&ps_bridge->aux);
+ err_aux_register:
+ 	mipi_dsi_detach(dsi);
+ err_dsi_attach:
+@@ -473,7 +487,11 @@ static int ps8640_bridge_attach(struct drm_bridge *bridge,
+ 
+ static void ps8640_bridge_detach(struct drm_bridge *bridge)
+ {
+-	drm_dp_aux_unregister(&bridge_to_ps8640(bridge)->aux);
++	struct ps8640 *ps_bridge = bridge_to_ps8640(bridge);
++
++	drm_dp_aux_unregister(&ps_bridge->aux);
++	if (ps_bridge->link)
++		device_link_del(ps_bridge->link);
+ }
+ 
+ static struct edid *ps8640_bridge_get_edid(struct drm_bridge *bridge,
+-- 
+2.33.1
+
