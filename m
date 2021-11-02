@@ -2,163 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E716644291C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 09:10:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AE6D44291F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 09:11:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230015AbhKBIN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 04:13:27 -0400
-Received: from spam.zju.edu.cn ([61.164.42.155]:60706 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229497AbhKBINM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 04:13:12 -0400
-Received: from localhost.localdomain (unknown [222.205.7.222])
-        by mail-app2 (Coremail) with SMTP id by_KCgA3q_Z18oBhxp9fAA--.22102S4;
-        Tue, 02 Nov 2021 16:10:29 +0800 (CST)
-From:   Lin Ma <linma@zju.edu.cn>
-To:     krzysztof.kozlowski@canonical.com
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Lin Ma <linma@zju.edu.cn>
-Subject: [PATCH] NFC: add necessary privilege flags in netlink layer
-Date:   Tue,  2 Nov 2021 16:10:21 +0800
-Message-Id: <20211102081021.32237-1-linma@zju.edu.cn>
-X-Mailer: git-send-email 2.33.1
+        id S230451AbhKBINo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 04:13:44 -0400
+Received: from mout.kundenserver.de ([217.72.192.75]:40745 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230321AbhKBINn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 04:13:43 -0400
+Received: from mail-wr1-f42.google.com ([209.85.221.42]) by
+ mrelayeu.kundenserver.de (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MwPjf-1mROWt3gHN-00sQyZ; Tue, 02 Nov 2021 09:11:06 +0100
+Received: by mail-wr1-f42.google.com with SMTP id u1so296263wru.13;
+        Tue, 02 Nov 2021 01:11:06 -0700 (PDT)
+X-Gm-Message-State: AOAM533r/joAuQe66f5/Perh50hk81aCKa92TWunQ2TMFp6Vvpp63Vts
+        3vItsi0cjba3zrgGW7OB7RucelPYZCPEHalDwB0=
+X-Google-Smtp-Source: ABdhPJyFtamfSUetI1AbUBIOvCYQczN1Nlzp9gFqyOAdgQNhP9d2hcmJSPJ8rKmPIqsxt4VD5S+rUEmHQuxxkKHrxEU=
+X-Received: by 2002:adf:efc6:: with SMTP id i6mr21099177wrp.428.1635840666461;
+ Tue, 02 Nov 2021 01:11:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: by_KCgA3q_Z18oBhxp9fAA--.22102S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxGF4fWF45uryfCw4xKryfJFb_yoW5tF1xpw
-        1UCFyktFy8Wr1vqan3Za4qgFWSyr13Ar9rXFn2grW3Xa4rtw1UZF93CFyFqFs5WFyvqF9r
-        Zw48JFsakFyrAwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUv01xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
-        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
-        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW0oVCq3wA2z4x0Y4vEx4A2
-        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
-        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWU
-        XwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
-        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_GFyl42xK82IYc2Ij64vIr41l
-        42xK82IY6x8ErcxFaVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-        8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWU
-        twCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-        0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-        Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUb
-        qQ6JUUUUU==
-X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/
+References: <20211028141938.3530-1-lukas.bulwahn@gmail.com>
+ <20211028141938.3530-12-lukas.bulwahn@gmail.com> <CAK8P3a0Nq9hLbGiPCQTjVTiGFPR9-tdhN8Tf06Q=cWTgMK78yw@mail.gmail.com>
+ <CACPK8XfiN5qziPHLU6J=bC34mcjz+ix7jjSX=xk9zsr7+vyTdw@mail.gmail.com> <CAKXUXMyrhrM2o-OEW_qTTKjfKgxt-Z6Nt69geU80AoFnM1OuMA@mail.gmail.com>
+In-Reply-To: <CAKXUXMyrhrM2o-OEW_qTTKjfKgxt-Z6Nt69geU80AoFnM1OuMA@mail.gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Tue, 2 Nov 2021 09:10:50 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2N3zNkGzXQD8Pbs-8pDL7mv6rneJop-C_p_+d7-_sNqA@mail.gmail.com>
+Message-ID: <CAK8P3a2N3zNkGzXQD8Pbs-8pDL7mv6rneJop-C_p_+d7-_sNqA@mail.gmail.com>
+Subject: Re: [PATCH 11/13] arm: npcm: drop selecting non-existing ARM_ERRATA_794072
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Joel Stanley <joel@jms.id.au>, Arnd Bergmann <arnd@arndb.de>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Linus Walleij <linusw@kernel.org>,
+        Imre Kaloz <kaloz@openwrt.org>,
+        Krzysztof Halasa <khalasa@piap.pl>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        kernel-janitors <kernel-janitors@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:42h7IqhsqzshYTqnIAaEPgcxnXwAftpVOTvW1+XrZM+OcAVffYw
+ w8TmUnRnQyWR1Yc6rdfHDVhJJj63lfGNaMuF+LW+ha3zR9tgig3RBswoMWAqNRDe+Svv2QG
+ 6QKde7/grD06goUhGpJOss8Om7eR5k8H5s7/YlM66+0GQkwpewST4o5U6Wz+T7ylEdkTlEO
+ z91qlxh843Btd22w2xnQA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:JYr3zjFUXr0=:7bwhG4RYoOndC8Z24DQb0X
+ nG1zVfiYAyZp2HYSXnAK8NVV40Q6J0hWMyYrrYU53PBJ8EFyBbG9cSuAnfyIBXtOI6JzBWZTC
+ zx+zgOwxSLIZ39YQdBlEdTcWz4ZSvvCUtTXReSnOolTTKtjrq1EQYWwT/Oqxosy4L8bCH8Yo0
+ qCwkq7VQaMEjdPDOXxw3MCCYq4ce50bBw4nDezP1a6Keji/827FcwTK4ggszPgVGJnNh6F7xx
+ Puge+scI0FpYounpxGW9F1L0uS3kLsR13OTRt0L7TWpw5hgjoK3G3cnJ5mX8OM9BCCZJKv0me
+ MpCDDqriD+yEAm7gD47AcrgjAiO0tHfJl7DCcuCDOyGyKk/Ut3XXSvT1kbZ+2S8ouSD2+YU5/
+ mwV97tbgrnBrQ5UuV+TPdJko5skSft3EC9MBlXAxiwSU/dxEt7DV3Y/ZXfFfuwBkcrQtex1TL
+ Ut5vs1WFaH1MTG+M5YEe5JTp/vCUXcXtf84OM/RHxEmoM7ZEdq49VuyHfjMJkBULpHXtDgbvZ
+ eK9TvwYWVLlV6P92+MT7pFP18DBKjYwrorKM1WPNIYmlXVPUm4gCZzZExyOum1i5ulbJdhYFV
+ v+zdI9aNlNja7Ujxcyv/NN66SsBvGI/5APdNfnFGlVn9z2Xz32S79kYvt15YnsW29qXrbqWdk
+ ZV2SIGjf0MpAHmS4dcN/ODKpCaMebxwZ3Xm3e+8J4TvkzIStXP3+U3WtAJQNXGdhQXRHFK0J3
+ 9kH+2gg44jcZzuu/P781DNlRrYvmHMvASnSzQ0GK3UdjBIhY0zJoN9vg5YtUbtsqn0DqsfnM2
+ otUh2BsEIh3X8eOR2bC+bMSHeSgEcAKoyjjo9GvENMni2s/GAo=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The CAP_NET_ADMIN checks are needed to prevent attackers faking a
-device under NCIUARTSETDRIVER and exploit privileged commands.
+On Tue, Nov 2, 2021 at 8:31 AM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+> On Fri, Oct 29, 2021 at 8:36 AM Joel Stanley <joel@jms.id.au> wrote:
+> > On Thu, 28 Oct 2021 at 14:57, Arnd Bergmann <arnd@arndb.de> wrote:
+> > > On Thu, Oct 28, 2021 at 4:19 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+> > https://lore.kernel.org/all/6be32e0b5b454ed7b609317266a8e798@BLUPR03MB358.namprd03.prod.outlook.com/
+> >
+> > It looks like it's the same workaround as ARM_ERRATA_742230, which the
+> > kernel does implement.
+> >
+> > It would be good to hear from the Nuvoton people, or an Arm person.
+>
+> I will happily update the patch to select ARM_ERRATA_742230 instead of
+> the dead non-existing ARM_ERRATA_794072.
+>
+> In contrast to the current patch that basically only cleans up "dead
+> config" and has no effective functional change, the new patch would
+> change the behaviour. I cannot test this patch (beyond some basic
+> compile test) on the hardware; so, we certainly need someone to have
+> that hardware, knows how to test it or confirm otherwise that we
+> should select the ARM_ERRATA_742230 fix for this hardware.
+>
+> The current patch should be subsumed by the new patch; the submission
+> of the new patch is deferred until that person shows up. Let's see.
 
-This patch add GENL_ADMIN_PERM flags in genl_ops to fulfill the check.
-Except for commands like NFC_CMD_GET_DEVICE, NFC_CMD_GET_TARGET,
-NFC_CMD_LLC_GET_PARAMS, and NFC_CMD_GET_SE, which are mainly information-
-read operations.
+I'd prefer to leave the broken Kconfig symbol in place as a reminder until it
+gets fixed properly then.
 
-Signed-off-by: Lin Ma <linma@zju.edu.cn>
----
- net/nfc/netlink.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
-
-diff --git a/net/nfc/netlink.c b/net/nfc/netlink.c
-index 49089c50872e..334f63c9529e 100644
---- a/net/nfc/netlink.c
-+++ b/net/nfc/netlink.c
-@@ -1664,31 +1664,37 @@ static const struct genl_ops nfc_genl_ops[] = {
- 		.cmd = NFC_CMD_DEV_UP,
- 		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
- 		.doit = nfc_genl_dev_up,
-+		.flags = GENL_ADMIN_PERM,
- 	},
- 	{
- 		.cmd = NFC_CMD_DEV_DOWN,
- 		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
- 		.doit = nfc_genl_dev_down,
-+		.flags = GENL_ADMIN_PERM,
- 	},
- 	{
- 		.cmd = NFC_CMD_START_POLL,
- 		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
- 		.doit = nfc_genl_start_poll,
-+		.flags = GENL_ADMIN_PERM,
- 	},
- 	{
- 		.cmd = NFC_CMD_STOP_POLL,
- 		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
- 		.doit = nfc_genl_stop_poll,
-+		.flags = GENL_ADMIN_PERM,
- 	},
- 	{
- 		.cmd = NFC_CMD_DEP_LINK_UP,
- 		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
- 		.doit = nfc_genl_dep_link_up,
-+		.flags = GENL_ADMIN_PERM,
- 	},
- 	{
- 		.cmd = NFC_CMD_DEP_LINK_DOWN,
- 		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
- 		.doit = nfc_genl_dep_link_down,
-+		.flags = GENL_ADMIN_PERM,
- 	},
- 	{
- 		.cmd = NFC_CMD_GET_TARGET,
-@@ -1706,26 +1712,31 @@ static const struct genl_ops nfc_genl_ops[] = {
- 		.cmd = NFC_CMD_LLC_SET_PARAMS,
- 		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
- 		.doit = nfc_genl_llc_set_params,
-+		.flags = GENL_ADMIN_PERM,
- 	},
- 	{
- 		.cmd = NFC_CMD_LLC_SDREQ,
- 		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
- 		.doit = nfc_genl_llc_sdreq,
-+		.flags = GENL_ADMIN_PERM,
- 	},
- 	{
- 		.cmd = NFC_CMD_FW_DOWNLOAD,
- 		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
- 		.doit = nfc_genl_fw_download,
-+		.flags = GENL_ADMIN_PERM,
- 	},
- 	{
- 		.cmd = NFC_CMD_ENABLE_SE,
- 		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
- 		.doit = nfc_genl_enable_se,
-+		.flags = GENL_ADMIN_PERM,
- 	},
- 	{
- 		.cmd = NFC_CMD_DISABLE_SE,
- 		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
- 		.doit = nfc_genl_disable_se,
-+		.flags = GENL_ADMIN_PERM,
- 	},
- 	{
- 		.cmd = NFC_CMD_GET_SE,
-@@ -1737,21 +1748,25 @@ static const struct genl_ops nfc_genl_ops[] = {
- 		.cmd = NFC_CMD_SE_IO,
- 		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
- 		.doit = nfc_genl_se_io,
-+		.flags = GENL_ADMIN_PERM,
- 	},
- 	{
- 		.cmd = NFC_CMD_ACTIVATE_TARGET,
- 		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
- 		.doit = nfc_genl_activate_target,
-+		.flags = GENL_ADMIN_PERM,
- 	},
- 	{
- 		.cmd = NFC_CMD_VENDOR,
- 		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
- 		.doit = nfc_genl_vendor_cmd,
-+		.flags = GENL_ADMIN_PERM,
- 	},
- 	{
- 		.cmd = NFC_CMD_DEACTIVATE_TARGET,
- 		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
- 		.doit = nfc_genl_deactivate_target,
-+		.flags = GENL_ADMIN_PERM,
- 	},
- };
- 
--- 
-2.33.1
-
+       Arnd
