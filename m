@@ -2,179 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F343B4438AE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 23:44:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B4344438B2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 23:44:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231201AbhKBWqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 18:46:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43228 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229685AbhKBWqk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 18:46:40 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76EDCC061714;
-        Tue,  2 Nov 2021 15:44:04 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id ee33so2628069edb.8;
-        Tue, 02 Nov 2021 15:44:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LDnLbQUA7eyK1FrDO7VrlZC4VQ3RUSvHLnAoAvoZuOc=;
-        b=LmY8iRfTTKzcFKxpKJUZaG1G77If5TNT9NJ8reyrdO8Kw8HmqSMogK8+FRYVT7Ak4q
-         pg+n01qQ+ks8LcRf/ms8jIV+K5jnryBcMwehAnyZhSzDVTyqsXwTyXRblGHcXOxPiKzo
-         bR1z2eLwiXxiMjqh49/LxQ2Rr82fw//4jxjlR7ZdJ2alozrXSxrB9bepMUfAzwnOMFdb
-         h3l7w1QHs+f7gayW0aRaukyMm6YcvDP/SI/bFD6bEjfEvLBT9JB1i752YXcw6xVCnqDy
-         3wsUlllmsFsFSCa8IrNLHcj7qkK+7gaAja6Yw+3rP4N1t551EZOUkcwP+cEDMpj1UMLZ
-         OdgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LDnLbQUA7eyK1FrDO7VrlZC4VQ3RUSvHLnAoAvoZuOc=;
-        b=xqjZ/BHvYAncVol2+QO3MdN0c0Om5DHBNTU2JhkI1SxKcKWlhBBltl150uA8h+kXZ5
-         6ypC0VrLsYIDekpuKAO9OPvnp56M8RM7qqcjja76IoKROziR/MjhRCS5GOtv+C315JqF
-         H3OiwAWpUJRRbKpHkZou0TlrvjUIM8liCf5dTfRnhm9+GUHlVf/B6n12oTyso0X64BG8
-         /uTiccri+sNGVXW6HZsHBh1ikn4AzSQunO0c20p5QQaDKduXQd2cz5E98b/4eYcCpQ+f
-         DZYXZ9P8e6YLyJVXPO/F4g2VawxlTd9z3Do3XlShx1gARZ++LLixYWjlhYoLdb4LDi25
-         4pFw==
-X-Gm-Message-State: AOAM532q5eMWn37tq6/HmwcOgmHqkJKcAeux21jXLd7CznYsO1beMJpD
-        AFiQeLAx9lvxf/z4QgdcEGk=
-X-Google-Smtp-Source: ABdhPJyfX+Es3nzz+CM8s/jrO5166B1Fk/2V22GKG3Qj9qhStAoxFdqbv0reUmd4k6YAJd4OkyWdzA==
-X-Received: by 2002:a17:907:3eaa:: with SMTP id hs42mr48695778ejc.429.1635893043028;
-        Tue, 02 Nov 2021 15:44:03 -0700 (PDT)
-Received: from tom-ThinkPad-T470p (net-188-153-110-208.cust.vodafonedsl.it. [188.153.110.208])
-        by smtp.gmail.com with ESMTPSA id z22sm163651edc.83.2021.11.02.15.44.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Nov 2021 15:44:02 -0700 (PDT)
-Date:   Tue, 2 Nov 2021 23:43:58 +0100
-From:   Tommaso Merciai <tomm.merciai@gmail.com>
-To:     Tim Harvey <tharvey@gateworks.com>
-Cc:     Adam Ford <aford173@gmail.com>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        arm-soc <linux-arm-kernel@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Peng Fan <peng.fan@nxp.com>, Alice Guo <alice.guo@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Schrempf Frieder <frieder.schrempf@kontron.de>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Michael Tretter <m.tretter@pengutronix.de>
-Subject: Re: [PATCH] arm64: dts: imx8m: add syscon node for display_blk_ctrl
- module regs
-Message-ID: <20211102224358.GA4637@tom-ThinkPad-T470p>
-References: <20211101222857.6940-1-tomm.merciai@gmail.com>
- <c04d4af6-8c7b-da23-d562-78324948ac35@pengutronix.de>
- <20211101225827.GA9208@tom-desktop>
- <CAHCN7xLDHCQoA41FJpP3GY+nbFm99zf=tspHSOXkeFogMF22+A@mail.gmail.com>
- <20211102115739.GA48972@tom-ThinkBook-14-G2-ARE>
- <CAHCN7xLoePWS33HsFANcHQB2-VgQVNG40EgDoz+-xba810XPBQ@mail.gmail.com>
- <20211102154742.GA86474@tom-ThinkBook-14-G2-ARE>
- <CAHCN7xJtDtBNJ-rFcveya8TGr8+jA-HrDBxPYfZx=fiv7w5UPA@mail.gmail.com>
- <CAJ+vNU0DRMuVMgibc1Ag3HdPXFq1Mzs-q0Znb0aLukYVvKc1gA@mail.gmail.com>
+        id S231295AbhKBWqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 18:46:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54012 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230248AbhKBWqu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 18:46:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 85B5161058;
+        Tue,  2 Nov 2021 22:44:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635893054;
+        bh=xlJTg+g45NA5Jmaqfo0H1zJ7M0aSNbSpGn8R3qo/alA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=J3E8y0mMMimFVMbrPwTI/vuLIbS5uGyGpj0wTtaionlsJrkEZvjuqdEcZYJCbGoqC
+         VnR72U8fFhgoSs3c6iwvcNl7Q6Lk24uo1cQLeJHNL2VqBjUlIbUSTuzokk+3KdooQG
+         9AdOmz6ri1V1FKeE93/vitgRtGKkBdyI3un1SXq/UYn46bTcCEOg00dUZAkq/6ONZB
+         VcgtqN/485DnHb4EfdiB3y4FMFkK1RZ0Z/XMYcffQv/QzhM6Fh67KOU7rgTHpmf4Fc
+         y41ieGpHxDUZM2ti0JC3T0sCeTeK6TUdOYr5ZbzOI6vGPnnQYi+jJCaMKEFro/AUI/
+         1HVR4qyzYonKg==
+Received: by mail-ed1-f44.google.com with SMTP id o8so2701547edc.3;
+        Tue, 02 Nov 2021 15:44:14 -0700 (PDT)
+X-Gm-Message-State: AOAM530htOJ4PyPsvP7U6nbz9frq7QZ0HDWigrLJ1gq/cwnx4Gn/mBXR
+        ukjiSjNI5NGU59EW6V0e1poN3CGnHv1krANOJw==
+X-Google-Smtp-Source: ABdhPJwWkcHLupHM+eSOeq+xd9impIHRTT3qkTjxiKN/kL5YOlS59jRuQo/tHhUYUb2vMifYDtwGGYH3OoSmTPh7gC0=
+X-Received: by 2002:a17:907:16ac:: with SMTP id hc44mr26056561ejc.363.1635893052996;
+ Tue, 02 Nov 2021 15:44:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJ+vNU0DRMuVMgibc1Ag3HdPXFq1Mzs-q0Znb0aLukYVvKc1gA@mail.gmail.com>
+References: <097d8602906e9db279728330c6cf2837be184704.1635338663.git.geert+renesas@glider.be>
+ <YYBdzwshhM5fmsEE@robh.at.kernel.org> <CAMuHMdUvy9oVCv+3HJ_dZr6Rm4iP8FPwTETxq+j2ja_BR1=c5A@mail.gmail.com>
+In-Reply-To: <CAMuHMdUvy9oVCv+3HJ_dZr6Rm4iP8FPwTETxq+j2ja_BR1=c5A@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 2 Nov 2021 17:44:00 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJTMORDCAb=9nuSaKiHgVgw6wb4jQw7ppMmuru-MZ1uuQ@mail.gmail.com>
+Message-ID: <CAL_JsqJTMORDCAb=9nuSaKiHgVgw6wb4jQw7ppMmuru-MZ1uuQ@mail.gmail.com>
+Subject: Re: [PATCH] bindings: media: venus: Drop bogus maxItems for power-domain-names
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Dikshita Agarwal <dikshita@codeaurora.org>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 11:18:53AM -0700, Tim Harvey wrote:
-> On Tue, Nov 2, 2021 at 9:08 AM Adam Ford <aford173@gmail.com> wrote:
+On Tue, Nov 2, 2021 at 3:42 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Rob,
+>
+> On Mon, Nov 1, 2021 at 10:36 PM Rob Herring <robh@kernel.org> wrote:
+> > On Wed, Oct 27, 2021 at 02:45:30PM +0200, Geert Uytterhoeven wrote:
+> > > make dt_binding_check:
 > >
-> > On Tue, Nov 2, 2021 at 10:47 AM Tommaso Merciai <tomm.merciai@gmail.com> wrote:
-> > >
-> > > On Tue, Nov 02, 2021 at 07:23:06AM -0500, Adam Ford wrote:
-> > > > The upcoming 5.16 kernel will have a new blk-ctrl driver which will
-> > > > work in conjunction with the GPC.  You can see it in linux-next [1],
-> > > > and I would expect it to be present in 5.16-rc1 once the merge is
-> > > > done.
-> > > >
-> > > > In [1], Look for :
-> > > >
-> > > > disp_blk_ctrl: blk-ctrl@32e28000 {
-> > > >     compatible = "fsl,imx8mm-disp-blk-ctrl", "syscon";
-> > > >
-> > > > It creates a bunch of virtual power domains which are effectively the
-> > > > resets for the VPU, CSI, DSI, and LCDIF [2].
-> > > >
-> > > > Basically, to pull the respective device out of reset, you'd reference
-> > > > them using power-domains.  I have an RFC patch for the CSI located [3]
-> > > > which should bring the GPC power domain up, then take the CSI bridge
-> > > > and MIPI_CSI out of reset using the blk-ctrl.  A few of us are still
-> > > > investigating the CSI bridge and mipi_csi drivers to determine what's
-> > > > going wrong, but  inside that patch, you'll see that we reference
-> > > > "power-domains = <&disp_blk_ctrl IMX8MM_DISPBLK_PD_CSI_BRIDGE>;" and
-> > > > "power-domains = <&disp_blk_ctrl IMX8MM_DISPBLK_PD_MIPI_CSI>;" which
-> > > > are part of the new blk-ctrl driver @32e2800.  Other peripherals like
-> > > > LCD, DSI, and the VPU's should be able to reference their respective
-> > > > power domains to activate the corresponding resets after enabling the
-> > > > proper GPC power domain.
-> > >
-> > >   Hi Adam,
-> > >   Then is all done right. Using this this new driver/dts node eLCDIF/mipi_dsi
-> > >   module are out of reset. Thanks for the tips. I'm trying to get eLCDIF/mipi_dsi
-> > >   work on mainline. I try to get work
-> > >
-> > >   - eLCDIF using: mxsfb_drv.c
-> > >   - mipi_dsi using: nwl-dsi.c
-> > >
-> > >   What do you think about? You think that can be a good way ( taking
-> > >   imx8mq as reference )?
-> >
-> > The DSI controller for the 8MM and 8MN is not the same as the DSI
-> > controller on the 8MQ, but the LCDIF controller should be compatible.
-> >
-> > There have been several attempts to support the 8MM DSI, but none of
-> > them have been accepted for various reasons.
-> >
-> > The latest was found here [1], but others [2]  and [3] , when used
-> > together, do something similar.
-> >
-> > If memory serves, the main issue has to do with the fact that the DSIM
-> > controller in the 8MM and 8MN is also present in one of the Samsung
-> > processors, and the goal is to rework those drivers so we'll have one
-> > driver that supports both Samsung progressors and NXP instead of
-> > having two duplicate drivers doing the same thing. When whatever
-> > driver is chosen is ready, it'll be likely that the LCDIF will use
-> > power-domains = <&disp_blk_ctrl MX8MM_DISPBLK_PD_LCDIF> and the DSI
-> > node will use power-domains = <&disp_blk_ctrl
-> > IMX8MM_DISPBLK_PD_MIPI_DSI> to pull their respective devices out of
-> > reset and enable the gpc.
-> >
-> >
-> > [1] - https://patchwork.kernel.org/project/linux-arm-kernel/list/?series=510489&archive=both&state=*
-> > [2] - https://patchwork.kernel.org/project/dri-devel/list/?series=347439&archive=both&state=*
-> > [3] - https://patchwork.kernel.org/project/linux-arm-kernel/list/?series=359775&archive=both&state=*
-> 
-> Adam,
-> 
-> Thanks for the good summary... I was just putting this info together
-> as well. I'm also interested to see if anyone has made progress on
-> IMX8MM MIPI DSI display. Now that blk-ctl and most of the dt bindings
-> have been merged for 5.16 I think we are just down to the drm/exynos
-> driver issue.
-> 
-> Added Frieder, Jagan, and Michael to the thread.
-> 
-> Best Regards,
-> 
-> Tim
+> > I'd say it's redundant rather than bogus.
+>
+> I wrote "bogus", as the "redundant" ones typically give:
+>
+>                 hint: "maxItems" is not needed with an "items" list
+>
+> And I didn't get that here?
 
-  Hi Adam,
-  Thanks again for your explanation. Then, now the main goal is refactoring
-  exynos dsim driver as bridge driver in order to support both imx8mm and exynos
-  SOC. I'll investigate on it.
+Any schema file with an error shows up twice. First there's all the
+specific errors with details. Then there's what you reference which is
+all the schemas that we're skipping. If you set DT_SCHEMA_FILES now,
+you should only see the second case for other schema files.
 
-  Regards,
-  Thanks
+So it's probably better to reference the actual error:
+
+Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml:
+properties:power-domain-names: {'minItems': 2, 'maxItems': 3, 'items':
+[{'const': 'venus'}, {'const': 'vcodec0'}, {'const': 'cx'}]} should
+not be valid under {'required': ['maxItems']}
+ hint: "maxItems" is not needed with an "items" list
+ from schema $id: http://devicetree.org/meta-schemas/items.yaml#
+
+> > >     Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml: ignoring, error in schema: properties: power-domain-names
+> > >     warning: no schema found in file: Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml
+> > >
+> > > Fixes: e48b839b6699c226 ("media: dt-bindings: media: venus: Add sc7280 dt schema")
+> > > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > > ---
+> > >  Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml | 1 -
+> > >  1 file changed, 1 deletion(-)
+> >
+> > Acked-by: Rob Herring <robh@kernel.org>
+>
+> Thanks!
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
