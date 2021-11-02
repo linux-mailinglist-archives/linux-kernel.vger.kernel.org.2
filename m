@@ -2,200 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E1204426EF
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 07:00:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C13524426F3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 07:01:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230005AbhKBGCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 02:02:37 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:13998 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229902AbhKBGCf (ORCPT
+        id S230326AbhKBGDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 02:03:38 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:38340 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229877AbhKBGDh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 02:02:35 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Hjzhd1xmgzZcgw;
-        Tue,  2 Nov 2021 13:57:53 +0800 (CST)
-Received: from dggpeml500011.china.huawei.com (7.185.36.84) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Tue, 2 Nov 2021 13:59:56 +0800
-Received: from localhost.localdomain (10.175.101.6) by
- dggpeml500011.china.huawei.com (7.185.36.84) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Tue, 2 Nov 2021 13:59:55 +0800
-From:   Di Zhu <zhudi2@huawei.com>
-To:     <davem@davemloft.net>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
-        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-        <jakub@cloudflare.com>
-CC:     <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <zhudi2@huawei.com>
-Subject: [PATCH bpf-next v4 2/2] selftests: bpf: test BPF_PROG_QUERY for progs attached to sockmap
-Date:   Tue, 2 Nov 2021 13:59:02 +0800
-Message-ID: <20211102055902.435231-2-zhudi2@huawei.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20211102055902.435231-1-zhudi2@huawei.com>
-References: <20211102055902.435231-1-zhudi2@huawei.com>
+        Tue, 2 Nov 2021 02:03:37 -0400
+X-UUID: bafc3f3e0fd44b78b066c231ddbe3d21-20211102
+X-UUID: bafc3f3e0fd44b78b066c231ddbe3d21-20211102
+Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1926329016; Tue, 02 Nov 2021 14:00:58 +0800
+Received: from mtkexhb02.mediatek.inc (172.21.101.103) by
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.792.15; Tue, 2 Nov 2021 14:00:57 +0800
+Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
+ mtkexhb02.mediatek.inc (172.21.101.103) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 2 Nov 2021 14:00:57 +0800
+Received: from localhost.localdomain (10.17.3.154) by mtkmbs10n2.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.2.792.3 via Frontend
+ Transport; Tue, 2 Nov 2021 14:00:56 +0800
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>
+CC:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-usb@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH 1/3] dt-bindings: usb: mtk-xhci: add support ip-sleep for mt8195
+Date:   Tue, 2 Nov 2021 14:00:47 +0800
+Message-ID: <20211102060049.1843-1-chunfeng.yun@mediatek.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.101.6]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500011.china.huawei.com (7.185.36.84)
-X-CFilter-Loop: Reflected
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add test for querying progs attached to sockmap. we use an existing
-libbpf query interface to query prog cnt before and after progs
-attaching to sockmap and check whether the queried prog id is right.
+There are 4 USB controllers on MT8195, each controller's wakeup control is
+different, add some spicific versions for them.
 
-Signed-off-by: Di Zhu <zhudi2@huawei.com>
+Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
 ---
- .../selftests/bpf/prog_tests/sockmap_basic.c  | 85 +++++++++++++++++++
- .../bpf/progs/test_sockmap_progs_query.c      | 24 ++++++
- 2 files changed, 109 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/test_sockmap_progs_query.c
+ .../devicetree/bindings/usb/mediatek,mtk-xhci.yaml          | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-index 1352ec104149..3ef4a7341e56 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-@@ -8,6 +8,7 @@
- #include "test_sockmap_update.skel.h"
- #include "test_sockmap_invalid_update.skel.h"
- #include "test_sockmap_skb_verdict_attach.skel.h"
-+#include "test_sockmap_progs_query.skel.h"
- #include "bpf_iter_sockmap.skel.h"
+diff --git a/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml b/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml
+index 11f7bacd4e2b..41efb51638d1 100644
+--- a/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml
++++ b/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml
+@@ -146,7 +146,11 @@ properties:
+             2 - used by mt2712 etc, revision 2 following IPM rule;
+             101 - used by mt8183, specific 1.01;
+             102 - used by mt8192, specific 1.02;
+-          enum: [1, 2, 101, 102]
++            103 - used by mt8195, IP0, specific 1.03;
++            104 - used by mt8195, IP1, specific 1.04;
++            105 - used by mt8195, IP2, specific 1.05;
++            106 - used by mt8195, IP3, specific 1.06;
++          enum: [1, 2, 101, 102, 103, 104, 105, 106]
  
- #define TCP_REPAIR		19	/* TCP sock is under repair right now */
-@@ -315,6 +316,84 @@ static void test_sockmap_skb_verdict_attach(enum bpf_attach_type first,
- 	test_sockmap_skb_verdict_attach__destroy(skel);
- }
- 
-+static __u32 query_prog_id(int prog)
-+{
-+	struct bpf_prog_info info = {};
-+	__u32 info_len = sizeof(info);
-+	int err;
-+
-+	err = bpf_obj_get_info_by_fd(prog, &info, &info_len);
-+	if (CHECK_FAIL(err || info_len != sizeof(info))) {
-+		perror("bpf_obj_get_info_by_fd");
-+		return 0;
-+	}
-+
-+	return info.id;
-+}
-+
-+static void test_sockmap_progs_query(enum bpf_attach_type attach_type)
-+{
-+	struct test_sockmap_progs_query *skel;
-+	int err, map, verdict, duration = 0;
-+	__u32 attach_flags = 0;
-+	__u32 prog_ids[3] = {};
-+	__u32 prog_cnt = 3;
-+
-+	skel = test_sockmap_progs_query__open_and_load();
-+	if (CHECK_FAIL(!skel)) {
-+		perror("test_sockmap_progs_query__open_and_load");
-+		return;
-+	}
-+
-+	map = bpf_map__fd(skel->maps.sock_map);
-+
-+	if (attach_type == BPF_SK_MSG_VERDICT)
-+		verdict = bpf_program__fd(skel->progs.prog_skmsg_verdict);
-+	else
-+		verdict = bpf_program__fd(skel->progs.prog_skb_verdict);
-+
-+	err = bpf_prog_query(map, attach_type, 0 /* query flags */,
-+			     &attach_flags, prog_ids, &prog_cnt);
-+	if (CHECK(err, "bpf_prog_query", "failed\n"))
-+		goto out;
-+
-+	if (CHECK(attach_flags != 0, "bpf_prog_query",
-+		  "wrong attach_flags on query: %u", attach_flags))
-+		goto out;
-+
-+	if (CHECK(prog_cnt != 0, "bpf_prog_query",
-+		  "wrong program count on query: %u", prog_cnt))
-+		goto out;
-+
-+	err = bpf_prog_attach(verdict, map, attach_type, 0);
-+	if (CHECK(err, "bpf_prog_attach", "failed\n"))
-+		goto out;
-+
-+	prog_cnt = 1;
-+	err = bpf_prog_query(map, attach_type, 0 /* query flags */,
-+			     &attach_flags, prog_ids, &prog_cnt);
-+	if (CHECK(err, "bpf_prog_query", "failed\n"))
-+		goto detach;
-+
-+	if (CHECK(attach_flags != 0, "bpf_prog_query attach_flags",
-+		  "wrong attach_flags on query: %u", attach_flags))
-+		goto detach;
-+
-+	if (CHECK(prog_cnt != 1, "bpf_prog_query prog_cnt",
-+		  "wrong program count on query: %u", prog_cnt))
-+		goto detach;
-+
-+	if (CHECK(prog_ids[0] != query_prog_id(verdict), "bpf_prog_query",
-+		  "wrong prog_ids on query: %u", prog_ids[0]))
-+		goto detach;
-+
-+detach:
-+	bpf_prog_detach2(verdict, map, attach_type);
-+out:
-+	test_sockmap_progs_query__destroy(skel);
-+
-+}
-+
- void test_sockmap_basic(void)
- {
- 	if (test__start_subtest("sockmap create_update_free"))
-@@ -341,4 +420,10 @@ void test_sockmap_basic(void)
- 		test_sockmap_skb_verdict_attach(BPF_SK_SKB_STREAM_VERDICT,
- 						BPF_SK_SKB_VERDICT);
- 	}
-+	if (test__start_subtest("sockmap progs query")) {
-+		test_sockmap_progs_query(BPF_SK_MSG_VERDICT);
-+		test_sockmap_progs_query(BPF_SK_SKB_STREAM_PARSER);
-+		test_sockmap_progs_query(BPF_SK_SKB_STREAM_VERDICT);
-+		test_sockmap_progs_query(BPF_SK_SKB_VERDICT);
-+	}
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_sockmap_progs_query.c b/tools/testing/selftests/bpf/progs/test_sockmap_progs_query.c
-new file mode 100644
-index 000000000000..9d58d61c0dee
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_sockmap_progs_query.c
-@@ -0,0 +1,24 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_SOCKMAP);
-+	__uint(max_entries, 1);
-+	__type(key, __u32);
-+	__type(value, __u64);
-+} sock_map SEC(".maps");
-+
-+SEC("sk_skb")
-+int prog_skb_verdict(struct __sk_buff *skb)
-+{
-+	return SK_PASS;
-+}
-+
-+SEC("sk_msg")
-+int prog_skmsg_verdict(struct sk_msg_md *msg)
-+{
-+	return SK_PASS;
-+}
-+
-+char _license[] SEC("license") = "GPL";
+   mediatek,u3p-dis-msk:
+     $ref: /schemas/types.yaml#/definitions/uint32
 -- 
-2.27.0
+2.18.0
 
