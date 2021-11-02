@@ -2,119 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C472442FE3
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 15:09:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50ED244303E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 15:23:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231133AbhKBOMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 10:12:10 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:25345 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231663AbhKBOMI (ORCPT
+        id S230336AbhKBOZs convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 2 Nov 2021 10:25:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229530AbhKBOZr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 10:12:08 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HkBVJ2k4mzbhWs;
-        Tue,  2 Nov 2021 22:04:40 +0800 (CST)
-Received: from kwepemm600015.china.huawei.com (7.193.23.52) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Tue, 2 Nov 2021 22:09:24 +0800
-Received: from huawei.com (10.175.127.227) by kwepemm600015.china.huawei.com
- (7.193.23.52) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Tue, 2 Nov
- 2021 22:09:23 +0800
-From:   ChenXiaoSong <chenxiaosong2@huawei.com>
-To:     <viro@zeniv.linux.org.uk>, <stable@vger.kernel.org>,
-        <gregkh@linuxfoundation.org>
-CC:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <dhowells@redhat.com>, <yukuai3@huawei.com>, <yi.zhang@huawei.com>,
-        <zhangxiaoxu5@huawei.com>, <chenxiaosong2@huawei.com>
-Subject: [PATCH 4.19,v3] VFS: Fix memory leak caused by concurrently mounting fs with subtype
-Date:   Tue, 2 Nov 2021 22:22:06 +0800
-Message-ID: <20211102142206.3972465-1-chenxiaosong2@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        Tue, 2 Nov 2021 10:25:47 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5269DC061714
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 07:23:12 -0700 (PDT)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1mhugw-000560-4X; Tue, 02 Nov 2021 15:23:10 +0100
+Received: from pza by lupine with local (Exim 4.94.2)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1mhugk-004FAn-K7; Tue, 02 Nov 2021 15:22:58 +0100
+Message-ID: <7f4925be01831bce1e48efa8ee7eb6983c818a9c.camel@pengutronix.de>
+Subject: Re: [PATCH 1/2] rtc: Add driver for Sunplus SP7021
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Vincent Shih <vincent.sunplus@gmail.com>, a.zummo@towertech.it,
+        alexandre.belloni@bootlin.com, linux-kernel@vger.kernel.org,
+        linux-rtc@vger.kernel.org, robh+dt@kernel.org,
+        devicetree@vger.kernel.org
+Cc:     Vincent Shih <vincent.shih@sunplus.com>
+Date:   Tue, 02 Nov 2021 15:22:58 +0100
+In-Reply-To: <1635834123-24668-2-git-send-email-vincent.shih@sunplus.com>
+References: <1635834123-24668-1-git-send-email-vincent.shih@sunplus.com>
+         <1635834123-24668-2-git-send-email-vincent.shih@sunplus.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.38.3-1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemm600015.china.huawei.com (7.193.23.52)
-X-CFilter-Loop: Reflected
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If two processes mount same superblock, memory leak occurs:
+On Tue, 2021-11-02 at 14:22 +0800, Vincent Shih wrote:
+[...]
+> +static int sp_rtc_probe(struct platform_device *plat_dev)
+> +{
+> +	int ret;
+> +	int err, irq;
+> +	struct rtc_device *rtc = NULL;
+> +	struct resource *res;
+> +	void __iomem *reg_base = NULL;
+> +
+> +	FUNC_DEBUG();
 
-CPU0               |  CPU1
-do_new_mount       |  do_new_mount
-  fs_set_subtype   |    fs_set_subtype
-    kstrdup        |
-                   |      kstrdup
-    memrory leak   |
+Drop these.
 
-The following reproducer triggers the problem:
+> +	memset(&sp_rtc, 0, sizeof(sp_rtc));
+> +
+> +	// find and map our resources
+> +	res = platform_get_resource_byname(plat_dev, IORESOURCE_MEM, RTC_REG_NAME);
+> +	RTC_DEBUG("res = 0x%x\n", res->start);
 
-1. shell command: mount -t ntfs /dev/sda1 /mnt &
-2. c program: mount("/dev/sda1", "/mnt", "fuseblk", 0, "...")
+Drop, this will crash if res == NULL.
 
-with kmemleak report being along the lines of
+> +
+> +	if (res) {
+> +		reg_base = devm_ioremap_resource(&plat_dev->dev, res);
+> +		if (IS_ERR(reg_base))
+> +			RTC_ERR("%s devm_ioremap_resource fail\n", RTC_REG_NAME);
+> +	}
+> +	RTC_DEBUG("reg_base = 0x%lx\n", (unsigned long)reg_base);
 
-unreferenced object 0xffff888235f1a5c0 (size 8):
-  comm "mount.ntfs", pid 2860, jiffies 4295757824 (age 43.423s)
-  hex dump (first 8 bytes):
-    00 a5 f1 35 82 88 ff ff                          ...5....
-  backtrace:
-    [<00000000656e30cc>] __kmalloc_track_caller+0x16e/0x430
-    [<000000008e591727>] kstrdup+0x3e/0x90
-    [<000000008430d12b>] do_mount.cold+0x7b/0xd9
-    [<0000000078d639cd>] ksys_mount+0xb2/0x150
-    [<000000006015988d>] __x64_sys_mount+0x29/0x40
-    [<00000000e0a7c118>] do_syscall_64+0xc1/0x1d0
-    [<00000000bcea7df5>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-    [<00000000803a4067>] 0xffffffffffffffff
+Drop or use dev_dbg() instead.
 
-Linus's tree already have refactoring patchset [1], one of them can fix this bug:
-        c30da2e981a7 ("fuse: convert to use the new mount API")
-After refactoring, init super_block->s_subtype in fuse_fill_super.
+> +
+> +	// clk
+> +	sp_rtc.rtcclk = devm_clk_get(&plat_dev->dev, NULL);
+> +	RTC_DEBUG("sp_rtc->clk = 0x%lx\n", (unsigned long)sp_rtc.rtcclk);
+> +	if (IS_ERR(sp_rtc.rtcclk))
+> +		RTC_DEBUG("devm_clk_get fail\n");
+> +
+> +	ret = clk_prepare_enable(sp_rtc.rtcclk);
 
-Since we did not merge the refactoring patchset in this branch, I create this patch.
-This patch fix this by adding a write lock while calling fs_set_subtype.
+Only enable the clock after all resources are requested. That will
+simplify the error path.
 
-[1] https://patchwork.kernel.org/project/linux-fsdevel/patch/20190903113640.7984-3-mszeredi@redhat.com/
+> +
+> +	// reset
+> +	sp_rtc.rstc = devm_reset_control_get(&plat_dev->dev, NULL);
 
-Fixes: 79c0b2df79eb ("add filesystem subtype support")
-Cc: David Howells <dhowells@redhat.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: ChenXiaoSong <chenxiaosong2@huawei.com>
----
-v1: Can not mount sshfs ([PATCH linux-4.19.y] VFS: Fix fuseblk memory leak caused by mount concurrency)
-v2: Use write lock while writing superblock ([PATCH 4.19,v2] VFS: Fix fuseblk memory leak caused by mount concurrency)
-v3: Update commit message
+Use devm_reset_control_get_exclusive() instead.
+This should be done before clk_prepare_enable().
 
- fs/namespace.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+> +	RTC_DEBUG("sp_rtc->rstc = 0x%lx\n", (unsigned long)sp_rtc.rstc);
+> +	if (IS_ERR(sp_rtc.rstc)) {
+> +		ret = PTR_ERR(sp_rtc.rstc);
+> +		RTC_ERR("SPI failed to retrieve reset controller: %d\n", ret);
+> +		goto free_clk;
 
-diff --git a/fs/namespace.c b/fs/namespace.c
-index 2f3c6a0350a8..396ff1bcfdad 100644
---- a/fs/namespace.c
-+++ b/fs/namespace.c
-@@ -2490,9 +2490,12 @@ static int do_new_mount(struct path *path, const char *fstype, int sb_flags,
- 		return -ENODEV;
- 
- 	mnt = vfs_kern_mount(type, sb_flags, name, data);
--	if (!IS_ERR(mnt) && (type->fs_flags & FS_HAS_SUBTYPE) &&
--	    !mnt->mnt_sb->s_subtype)
--		mnt = fs_set_subtype(mnt, fstype);
-+	if (!IS_ERR(mnt) && (type->fs_flags & FS_HAS_SUBTYPE)) {
-+		down_write(&mnt->mnt_sb->s_umount);
-+		if (!mnt->mnt_sb->s_subtype)
-+			mnt = fs_set_subtype(mnt, fstype);
-+		up_write(&mnt->mnt_sb->s_umount);
-+	}
- 
- 	put_filesystem(type);
- 	if (IS_ERR(mnt))
--- 
-2.31.1
+Then you could use return dev_err_probe() here.
 
+> +	}
+> +
+> +	ret = reset_control_deassert(sp_rtc.rstc);
+
+Same as for the clock, only deassert the reset after all resources are
+requested.
+
+> +	if (ret)
+> +		goto free_clk;
+> +
+> +	rtc_reg_ptr = (struct sp_rtc_reg *)(reg_base);
+> +
+> +	// Keep RTC from system reset
+> +	writel((1 << (16+4)) | (1 << 4), &rtc_reg_ptr->rtc_ctrl);
+> +
+> +	// request irq
+> +	irq = platform_get_irq(plat_dev, 0);
+
+This should be done before clk_prepare_enable().
+
+> +	if (irq < 0) {
+> +		RTC_ERR("platform_get_irq failed\n");
+> +		goto free_reset_assert;
+> +	}
+> +
+> +	err = devm_request_irq(&plat_dev->dev, irq, rtc_irq_handler,
+> +					IRQF_TRIGGER_RISING, "rtc irq", plat_dev);
+> +	if (err) {
+> +		RTC_ERR("devm_request_irq failed: %d\n", err);
+> +		goto free_reset_assert;
+> +	}
+> +
+> +	// Get charging-mode.
+> +	ret = of_property_read_u32(plat_dev->dev.of_node, "charging-mode", &sp_rtc.charging_mode);
+
+This could be done before clk_prepare_enable().
+
+> +	if (ret) {
+> +		RTC_ERR("Failed to retrieve \'charging-mode\'!\n");
+> +		goto free_reset_assert;
+> +	}
+> +	sp_rtc_set_batt_charge_ctrl(sp_rtc.charging_mode);
+> +
+> +	device_init_wakeup(&plat_dev->dev, 1);
+> +
+> +	rtc = devm_rtc_device_register(&plat_dev->dev, "sp7021-rtc", &sp_rtc_ops, THIS_MODULE);
+> +	if (IS_ERR(rtc)) {
+> +		ret = PTR_ERR(rtc);
+> +		goto free_reset_assert;
+> +	}
+> +
+> +	platform_set_drvdata(plat_dev, rtc);
+> +
+> +	RTC_INFO("sp7021-rtc loaded\n");
+
+Use dev_info() instead.
+
+> +
+> +	return 0;
+> +
+> +free_reset_assert:
+> +	reset_control_assert(sp_rtc.rstc);
+> +free_clk:
+> +	clk_disable_unprepare(sp_rtc.rtcclk);
+> +
+> +	return ret;
+> +}
+> +
+> +static int sp_rtc_remove(struct platform_device *plat_dev)
+> +{
+> +	reset_control_assert(sp_rtc.rstc);
+
+	clk_disable_unprepare(sp_rtc.rtcclk);
+
+
+regards
+Philipp
