@@ -2,183 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D683442573
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 03:08:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8245442579
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 03:10:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229526AbhKBCKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 22:10:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35498 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229458AbhKBCKp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 22:10:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F104D60F36
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 02:08:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635818891;
-        bh=o4Y1/O2KjncLfMawRxMHVVrBmttatJPx2bTgoqvhEa8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=BVcXlIsxpWmtMby5PshVIQ9MhUMSB+iXvnq+jLMiEXOEDKvCyQAnbs+evASu5L1Ja
-         qa+Jpyh3lZpzjSTdH0FKLrncEZpmB8vMHPu3jvBPjIMr+SDOzEq0n7VifVLtg3XFT1
-         sxMR7QvK3RYL3oBdxeNhvww/7vtn9jeB/j915Jbh8O5TMqhtlLuSqzc8KLzKyY23t6
-         2Ek1buUNVEpIfack5JavW1txasMZySdbo5ig+zK3+Obw0Z/Xs2wW7/J0W5wdPVXVtr
-         UrMGQKh2ClIcA1BkZpwq4biyWrhLj62VwMnXLd8J1VusWfPzf/IkjG9pSUiW5kFDsc
-         wCSMUOmm75vZw==
-Received: by mail-ua1-f41.google.com with SMTP id b3so11537066uam.1
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 19:08:10 -0700 (PDT)
-X-Gm-Message-State: AOAM530zJNnF3Hy/4vTp//6oprV5D7OPcCy3jlmTcKmpeV/293s/vLMy
-        BNTt9wKn4PZOsMpUbeUk8FiSsRfJDCo3yF9uCRA=
-X-Google-Smtp-Source: ABdhPJw+B6DnDEcgSX/gvPPBK4ZiKWQ5vR/FFezghPiwBbO0YAxFFIFTuIIkY4l0r+6LXZGZUhicdBDxGcxduaxlT6s=
-X-Received: by 2002:a05:6102:510d:: with SMTP id bm13mr14823367vsb.28.1635818889988;
- Mon, 01 Nov 2021 19:08:09 -0700 (PDT)
+        id S229616AbhKBCNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 22:13:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229458AbhKBCNa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 22:13:30 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E76CEC061714;
+        Mon,  1 Nov 2021 19:10:55 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id bk22so11656385qkb.6;
+        Mon, 01 Nov 2021 19:10:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FCErorh1OD8co7JK7IKyoKFC4gg1Jidiv0Vg9N7U25s=;
+        b=PbBG86CwC/c6+MDLy+G/4bORNzn0WtIUNX/PwsuYQiBSM3XhHeOaOPiQAANC3LrLwM
+         PgbX6hOGwVpBqpEQkaFgCgYc3TTcEfNhEoR76tAqWdefuRog9/Kl1We0iHog9h3tkNaR
+         yUefUeSpn5W1Jhjeed+ykRU6wD5fdYsXRYSrNgGqNoU4PC+K4RyrBh+Ydji1P+qQzDl7
+         q6UyRAVj74zzCfojG3wjP1CcRYkJWcT/e4N/y4fo8p5q/FrSCe5kT0VEqQXKyq/NTFO4
+         lyK5IyglD7TdYbB8b2mBO5XpbuaJy6LCOdUcDEmiSst3fSaF+5dyEAfoK9esGtsxU3ZF
+         mLLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FCErorh1OD8co7JK7IKyoKFC4gg1Jidiv0Vg9N7U25s=;
+        b=H4aQsDZ3bq1ivAKQ2SVDN0j0FDnLd7KOGJvNLxGolqqDgMBSAE7YQZ0ChZ5BWhokR8
+         phPtttWLC0/VwQGDEJnzfkACzfh2fbgvb6lYcl38q86dURlLLhHm/OS/cJwDXEmaDzPm
+         zNl/jXwUZ3bGSMD7JLF/JbXaspLL7IZEsRFOZD1tEl6ql34u/MJjRYU7qMx/R6ZOcQw/
+         b3YKly0Vs+TZ1e6MB4K7tPKdoi/UlBRM2DsUwXrB1lD42tc4Uf9kOY3Hx6Y4afWAPgxw
+         fplehY5t77ubGyxZY7zzAzoaRE/153boK6JNUSCJJRxjvyAoI1Vma4X8e38uZZnGa5/m
+         vY4g==
+X-Gm-Message-State: AOAM531qTDlqCxWSy3QZBYbhZHb+s4Jz5UP1HMlPNdGCIpVMqXQvho9Y
+        OrAaSfBxvuD3sQEz5uk3G3BLxV/CZlIv7PbXnQ9eWwFv
+X-Google-Smtp-Source: ABdhPJwn0p2NjRzvNNq9O2e6BHd6q2v1tLF5/02UsbOnLEnf+EaDvA5qfYafeVkdSDwvw860S8/ci7Ar/c6pEctMokg=
+X-Received: by 2002:a05:620a:c53:: with SMTP id u19mr26529059qki.304.1635819054871;
+ Mon, 01 Nov 2021 19:10:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211025040607.92786-1-wefu@redhat.com> <mhng-ac32ff92-86cb-4377-ba63-de1856e84fb1@palmerdabbelt-glaptop>
-In-Reply-To: <mhng-ac32ff92-86cb-4377-ba63-de1856e84fb1@palmerdabbelt-glaptop>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Tue, 2 Nov 2021 10:07:58 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTT90V6gQw12XZEXB1TJXb5QNdXM6qcfXh1yzWzDPExgPQ@mail.gmail.com>
-Message-ID: <CAJF2gTT90V6gQw12XZEXB1TJXb5QNdXM6qcfXh1yzWzDPExgPQ@mail.gmail.com>
-Subject: Re: [RESEND PATCH V3 0/2] riscv: add RISC-V Svpbmt Standard Extension supports
-To:     Palmer Dabbelt <palmerdabbelt@google.com>
-Cc:     Wei Fu <wefu@redhat.com>, Anup Patel <Anup.Patel@wdc.com>,
-        Atish Patra <Atish.Patra@wdc.com>,
-        =?UTF-8?Q?Christoph_M=C3=BCllner?= <christoph.muellner@vrull.eu>,
-        Philipp Tomsich <philipp.tomsich@vrull.eu>,
-        Christoph Hellwig <hch@lst.de>,
-        liush <liush@allwinnertech.com>,
-        =?UTF-8?B?V2VpIFd1ICjlkLTkvJ8p?= <lazyparser@gmail.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        taiten.peng@canonical.com,
-        Aniket Ponkshe <aniket.ponkshe@canonical.com>,
-        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
-        Gordan Markus <gordan.markus@canonical.com>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Arnd Bergmann <arnd@arndb.de>, Chen-Yu Tsai <wens@csie.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        Greg Favor <gfavor@ventanamicro.com>,
-        Andrea Mondelli <andrea.mondelli@huawei.com>,
-        Jonathan Behrens <behrensj@mit.edu>,
-        "Xinhaoqu (Freddie)" <xinhaoqu@huawei.com>,
-        Bill Huffman <huffman@cadence.com>,
-        Nick Kossifidis <mick@ics.forth.gr>,
-        Allen Baum <allen.baum@esperantotech.com>,
-        Josh Scheid <jscheid@ventanamicro.com>,
-        Richard Trauben <rtrauben@gmail.com>
+References: <20211101020416.31402-1-xingwu.yang@gmail.com> <ae67eb7b-a25f-57d3-195f-cdbd9247ef5b@ssi.bg>
+In-Reply-To: <ae67eb7b-a25f-57d3-195f-cdbd9247ef5b@ssi.bg>
+From:   yangxingwu <xingwu.yang@gmail.com>
+Date:   Tue, 2 Nov 2021 10:10:43 +0800
+Message-ID: <CA+7U5JtY-K4P2L9V8N8TeA9cUJDd67YRLR-PKWaHEL9WnybEfw@mail.gmail.com>
+Subject: Re: [PATCH nf-next v5] netfilter: ipvs: Fix reuse connection if RS
+ weight is 0
+To:     Julian Anastasov <ja@ssi.bg>
+Cc:     Simon Horman <horms@verge.net.au>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        netdev@vger.kernel.org, lvs-devel@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-doc@vger.kernel.org, Chuanqi Liu <legend050709@qq.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 8:12 AM Palmer Dabbelt <palmerdabbelt@google.com> w=
-rote:
+Julian,
+
+thanks for your help
+
+A big problem has been fixed :)
+
+On Tue, Nov 2, 2021 at 2:21 AM Julian Anastasov <ja@ssi.bg> wrote:
 >
-> On Sun, 24 Oct 2021 21:06:05 PDT (-0700), wefu@redhat.com wrote:
-> > From: Fu Wei <wefu@redhat.com>
-> >
-> > This patch follows the  RISC-V standard Svpbmt extension in
-> > privilege spec to solve the non-coherent SOC DMA synchronization
-> > issues.
-> >
-> > The svpbmt PTE format:
-> > | 63 | 62-61 | 60-8 | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0
-> >   N     MT     RSW    D   A   G   U   X   W   R   V
-> >         ^
-> >
-> > Of the Reserved bits [63:54] in a leaf PTE, the bits [62:61] are used a=
-s
-> > the MT (aka MemType) field. This field specifies one of three memory ty=
-pes
-> > as shown in the following table=EF=BC=9A
-> > MemType     RISC-V Description
-> > ----------  ------------------------------------------------
-> > 00 - PMA    Normal Cacheable, No change to implied PMA memory type
-> > 01 - NC     Non-cacheable, idempotent, weakly-ordered Main Memory
-> > 10 - IO     Non-cacheable, non-idempotent, strongly-ordered I/O memory
-> > 11 - Rsvd   Reserved for future standard use
 >
-> Do you have a pointer to the spec that contains these?  I'm specifically
-> worried about these page-based attributes being elided when paging is
-> off (ie, M-mode), which has caused issues in systems I've worked with in
-> the past.
-Don't worry about that, I've compiled the Linux with the patch and
-below modification in k210_nommu_defconfig. Passed
-
-diff --git a/arch/riscv/include/asm/pgtable-bits.h
-b/arch/riscv/include/asm/pgtable-bits.h
-index 3b38fe14f169..b4bb41337fdc 100644
---- a/arch/riscv/include/asm/pgtable-bits.h
-+++ b/arch/riscv/include/asm/pgtable-bits.h
-@@ -25,7 +25,7 @@
- #define _PAGE_SOFT      (1 << 8)    /* Reserved for software */
-
- #ifndef __ASSEMBLY__
--#ifdef CONFIG_64BIT
-+#if defined(CONFIG_64BIT) && defined(CONFIG_MMU)
- /*
-  * rv64 PTE format:
-  * | 63 | 62 61 | 60 54 | 53  10 | 9             8 | 7 | 6 | 5 | 4 |
-3 | 2 | 1 | 0
-diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index d198eabe55d4..58639dfe5917 100644
---- a/arch/riscv/mm/init.c
-+++ b/arch/riscv/mm/init.c
-@@ -856,7 +856,7 @@ int __meminit vmemmap_populate(unsigned long
-start, unsigned long end, int node,
- }
- #endif
-
--#ifdef CONFIG_64BIT
-+#if defined(CONFIG_64BIT) && defined(CONFIG_MMU)
- struct __riscv_svpbmt_struct __riscv_svpbmt __ro_after_init;
- EXPORT_SYMBOL(__riscv_svpbmt);
-
-So, I don't think the patch would affect M-mode nommu Linux.
-
-To separate MMU & no-MMU clearly, I suggest fuwei add
-#if defined(CONFIG_64BIT) && defined(CONFIG_MMU)
-
-> I'm assuming there's something related to this in the specs,
-> but I'm worried we'll need some sort of ack from M-mode that it's been
-> setup to work that way.  One could imagine an MPRV-like approach
-> working, but I don't see enough in the old specs and I'm having trouble
-> figuring out where the canonical version of this lives.
+>         Hello,
 >
-> > The standard protection_map[] needn't be modified because the "PMA"
-> > type keeps the highest bits zero.
-> > And the whole modification is limited in the arch/riscv/* and using
-> > a global variable(__riscv_svpbmt) as _PAGE_DMA_MASK/IO/NC for
-> > pgprot_noncached (&writecombine) in pgtable.h.
-> > We also add _PAGE_CHG_MASK to filter PFN than before.
+> On Mon, 1 Nov 2021, yangxingwu wrote:
+>
+> > We are changing expire_nodest_conn to work even for reused connections when
+> > conn_reuse_mode=0, just as what was done with commit dc7b3eb900aa ("ipvs:
+> > Fix reuse connection if real server is dead").
 > >
-> > Enable it in devicetree - (Add "mmu-supports-svpbmt" in cpu node)
-> >  - mmu-supports-svpbmt
->
-> Maybe this is enough of an ack, but we'll need to have some pretty
-> specific documentation if that's the case.  It's not described that way
-> in the docs right now, they just talk about CPU support (IMO we could
-> probe that with a trap, but I'm fine with the DT entry as it's a bit
-> simpler).
->
-> > Wei Fu (2):
-> >   dt-bindings: riscv: add mmu-supports-svpbmt for Svpbmt
-> >   riscv: add RISC-V Svpbmt extension supports
+> > For controlled and persistent connections, the new connection will get the
+> > needed real server depending on the rules in ip_vs_check_template().
 > >
-> >  .../devicetree/bindings/riscv/cpus.yaml       |  5 +++
-> >  arch/riscv/include/asm/fixmap.h               |  2 +-
-> >  arch/riscv/include/asm/pgtable-64.h           |  8 ++--
-> >  arch/riscv/include/asm/pgtable-bits.h         | 41 ++++++++++++++++++-
-> >  arch/riscv/include/asm/pgtable.h              | 39 ++++++++++++++----
-> >  arch/riscv/kernel/cpufeature.c                | 32 +++++++++++++++
-> >  arch/riscv/mm/init.c                          |  5 +++
-> >  7 files changed, 117 insertions(+), 15 deletions(-)
-
-
-
---=20
-Best Regards
- Guo Ren
-
-ML: https://lore.kernel.org/linux-csky/
+> > Fixes: d752c3645717 ("ipvs: allow rescheduling of new connections when port reuse is detected")
+> > Co-developed-by: Chuanqi Liu <legend050709@qq.com>
+> > Signed-off-by: Chuanqi Liu <legend050709@qq.com>
+> > Signed-off-by: yangxingwu <xingwu.yang@gmail.com>
+>
+>         Looks good to me, thanks!
+>
+> Acked-by: Julian Anastasov <ja@ssi.bg>
+>
+> > ---
+> >  Documentation/networking/ipvs-sysctl.rst | 3 +--
+> >  net/netfilter/ipvs/ip_vs_core.c          | 8 ++++----
+> >  2 files changed, 5 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/Documentation/networking/ipvs-sysctl.rst b/Documentation/networking/ipvs-sysctl.rst
+> > index 2afccc63856e..1cfbf1add2fc 100644
+> > --- a/Documentation/networking/ipvs-sysctl.rst
+> > +++ b/Documentation/networking/ipvs-sysctl.rst
+> > @@ -37,8 +37,7 @@ conn_reuse_mode - INTEGER
+> >
+> >       0: disable any special handling on port reuse. The new
+> >       connection will be delivered to the same real server that was
+> > -     servicing the previous connection. This will effectively
+> > -     disable expire_nodest_conn.
+> > +     servicing the previous connection.
+> >
+> >       bit 1: enable rescheduling of new connections when it is safe.
+> >       That is, whenever expire_nodest_conn and for TCP sockets, when
+> > diff --git a/net/netfilter/ipvs/ip_vs_core.c b/net/netfilter/ipvs/ip_vs_core.c
+> > index 128690c512df..f9d65d2c8da8 100644
+> > --- a/net/netfilter/ipvs/ip_vs_core.c
+> > +++ b/net/netfilter/ipvs/ip_vs_core.c
+> > @@ -1964,7 +1964,6 @@ ip_vs_in(struct netns_ipvs *ipvs, unsigned int hooknum, struct sk_buff *skb, int
+> >       struct ip_vs_proto_data *pd;
+> >       struct ip_vs_conn *cp;
+> >       int ret, pkts;
+> > -     int conn_reuse_mode;
+> >       struct sock *sk;
+> >
+> >       /* Already marked as IPVS request or reply? */
+> > @@ -2041,15 +2040,16 @@ ip_vs_in(struct netns_ipvs *ipvs, unsigned int hooknum, struct sk_buff *skb, int
+> >       cp = INDIRECT_CALL_1(pp->conn_in_get, ip_vs_conn_in_get_proto,
+> >                            ipvs, af, skb, &iph);
+> >
+> > -     conn_reuse_mode = sysctl_conn_reuse_mode(ipvs);
+> > -     if (conn_reuse_mode && !iph.fragoffs && is_new_conn(skb, &iph) && cp) {
+> > +     if (!iph.fragoffs && is_new_conn(skb, &iph) && cp) {
+> >               bool old_ct = false, resched = false;
+> > +             int conn_reuse_mode = sysctl_conn_reuse_mode(ipvs);
+> >
+> >               if (unlikely(sysctl_expire_nodest_conn(ipvs)) && cp->dest &&
+> >                   unlikely(!atomic_read(&cp->dest->weight))) {
+> >                       resched = true;
+> >                       old_ct = ip_vs_conn_uses_old_conntrack(cp, skb);
+> > -             } else if (is_new_conn_expected(cp, conn_reuse_mode)) {
+> > +             } else if (conn_reuse_mode &&
+> > +                        is_new_conn_expected(cp, conn_reuse_mode)) {
+> >                       old_ct = ip_vs_conn_uses_old_conntrack(cp, skb);
+> >                       if (!atomic_read(&cp->n_control)) {
+> >                               resched = true;
+> > --
+> > 2.30.2
+>
+> Regards
+>
+> --
+> Julian Anastasov <ja@ssi.bg>
