@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE750443A27
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 00:55:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 917E4443A29
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 00:55:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231778AbhKBX5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 19:57:54 -0400
-Received: from smtpcmd13146.aruba.it ([62.149.156.146]:53923 "EHLO
+        id S231556AbhKBX56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 19:57:58 -0400
+Received: from smtpcmd13146.aruba.it ([62.149.156.146]:46771 "EHLO
         smtpcmd13146.aruba.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231383AbhKBX5h (ORCPT
+        with ESMTP id S231360AbhKBX5i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 19:57:37 -0400
+        Tue, 2 Nov 2021 19:57:38 -0400
 Received: from ubuntu.localdomain ([146.241.216.221])
         by Aruba Outgoing Smtp  with ESMTPSA
-        id i3cHmA3UmueW5i3cLmi7pT; Wed, 03 Nov 2021 00:55:01 +0100
+        id i3cHmA3UmueW5i3cLmi7q8; Wed, 03 Nov 2021 00:55:02 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
-        t=1635897301; bh=ynIO0mTSNG8tw09g0D+x+IDu4qU8epvSNYGB4CRniXw=;
+        t=1635897302; bh=8kdScjOBBS93+UGfp956fOdLvuBlLnFPwKLK2Q17pVg=;
         h=From:To:Subject:Date:MIME-Version;
-        b=hrbTXEzDNXQ/8hSrYTtZ0sX7jfA5qPpxF3UsajqBm94KOKQdgubYhQJxmid3X6ysx
-         DmpMuswinnhnAxxVh39DQOxdQWobOU6MAq2N3BIaMcJt7WyPU8sp2fQJeNBfdHbBZm
-         ijMl/jEtGosjcxfU0dzY9Sm5CiawMZ0Bcje5FNlBaJjIdptWDe9G0fuEkR5tQqD4Jp
-         +I05A976mcLY7mclkmNVPhCnj9BzfB8cg5JwL5Bi4Jir6vHyKuwFtbKvhb1ORwoxnG
-         9FVtcoWNTeZTqcrzZ8NNdlK4N6AYyS6rd52MZZ/dKSWAGpbT2X4ThuZDuocYPN/uiw
-         pMJbNpcikJ2lA==
+        b=C1FErG0c8fd6YeIQs/B2RiIGKL31KdtkThsGV/aGjqy2Aa/VG8N8XSa6oUu17D0Qd
+         ckQ7j87eSrJrZPqJFiRkXzVsBhvv/3zGWyqWVsmJtacV7c3Jn/A1qUbbo+PAoaGCmJ
+         BcHj1oeK2BT/kBcjWCp888M8b0iPGQMWCTmqCGUJfxOTFN54YBU88yp1a8JJQUG8v6
+         IRSUceJ1oHzfndJWUMgeFqanqpWzvG+nkdrPcjUWqHKFy7GocpTUdrvkan/SYn/Qz3
+         zksAnqBw2QJAdgcpAlwpJTlTpkRhzrPiR6cjyba7stIyV0gzwrjp/GLCYfSoz3fYsy
+         3OpjyRewhi9OQ==
 From:   Giulio Benetti <giulio.benetti@benettiengineering.com>
 To:     Lubomir Rintel <lkundrak@v3.sk>
 Cc:     Rob Herring <robh+dt@kernel.org>, Daniel Mack <daniel@zonque.org>,
@@ -37,20 +37,20 @@ Cc:     Rob Herring <robh+dt@kernel.org>, Daniel Mack <daniel@zonque.org>,
         Sam Ravnborg <sam@ravnborg.org>,
         linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 5/7] ARM: pxa168: update pxa168_defconfig to fix wrong static ip autoconf
-Date:   Wed,  3 Nov 2021 00:54:54 +0100
-Message-Id: <20211102235456.710617-6-giulio.benetti@benettiengineering.com>
+Subject: [PATCH 6/7] ARM: pxa3xx: update pxa3xx_defconfig to fix wrong static ip autoconf
+Date:   Wed,  3 Nov 2021 00:54:55 +0100
+Message-Id: <20211102235456.710617-7-giulio.benetti@benettiengineering.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211102235456.710617-1-giulio.benetti@benettiengineering.com>
 References: <20211102235456.710617-1-giulio.benetti@benettiengineering.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4wfNZBlezE3q4CTdtZBYX3W4QjIdrBUp2QWAGFbYEimtHwREntB47cQyDqOBXrXuxkSA2sc2PnU3jl8Q9Z+LycDtfJKTh9zihgJlCUmUDAcEOYSxWJv3id
- 6Jhk2tZ2xsD8KgVTAmkWt5axGzbcgVGbvgHFKpm0Css2PEMdH+bYOVg0mSBzSbgMFDHZdxBTFdFP57a/JIqQEyLfRapKiSWJLBjDyV7LWiaO8w8v3NW+3ss+
- j6XPLdcUb31elwRmSG6zQxGUEHBEJJ6YlZYEjttFbUFxyfHDxDLxq0+Hj47Z5+Gz4yuLm/Ak+jVj41YP9Kbk9d3/bvdtLwvf1SLCmzyentzxWivzi5+3675k
- XFSrBCj1rzpG6jATW1OfnBQas3+Jz87qUVlMYljF7AtmX6tOQq7JSIDCPeGbj/Hl5ikr+Nrw90HXKHqCKOmNfLpwTrOoajfv9fYIL+i5L1wkHIP2NW3j8Xfr
- UUcgBBXkl0P+10ZICPvaDYtNfymOaSFRaPNxFBCOfrmoaXZzl7mN0Znm9TnfW86ihPK6JGNWX0NkKxLdGr5WpfgvwcHU/5iwKolSunea05LL8VyBqoawOcgo
- sOy0zyuJtcH8QKCWMkXap03qj9VOFIhpNQx8P0gD4REfSdS05joJEgmnJALrhZnqw/3UU1KJFgB/yi+10d17Sc3ecL72IzBEAZsR6n5l0UGZYg==
+X-CMAE-Envelope: MS4wfBeQFITUefc5p0YRpGdN1pihTrXklNwZgSko7+yR4yXBPuiEG8B2bMMsjBFVAmB4oh6rHv0c1hIIFJvLXsxSU6si7mv/2Hm1WcI5GUmxDgJmmZEBljMr
+ xy84rxfnFxsCHKrOmYyFiN6Qa98tfabuS4s+cH3lqtjnnjBgSWS9g/qloC80P6VJ7Ly24epkv8yXpjlldI0kX6u3ugDHeZyBy0IuBXet+Fe3X2RYIoUFhgUs
+ yKQHI4X96RNTksVLZI7vJiFLJXruo9VnUejW0pIIiibHavu1XD42ZxnSfbGim7FocYR3GmDwe6o5dqZUQv/eU7PHpRxsIGXdAkxo/Hdu5VMvb4g0Uw5b9qZr
+ zf6as/zTaVM9/8t+pbfT2OYPe2jkSt6cjMCX8ZQ2Wg+CA5zn/R5WS0KuXUGY76w7I5Xa3LDElMr5uh7blA6+rs6jQIWsH1rJFBnflWNbCnUz10mCGua2ZsqZ
+ PHgCE1Qg3bcK6/j7lWOJxNRZem16tPN7cwjNv8tceHRd3/J2zPhny5RFVCgPBVrGROL35S+v5OCQaGT91PbhSay1GzPv45Sz+EK0/aDcFX2jeQb2VaeTZB6L
+ H4UeG3pO5phNDf3lIVQCjrJWMep/DLUqgwW1D4e088IzP73s55WE/uzM3btloUQoiZIH91CqQX1aOP2XGZ1cf3r5fmCV4qNDuCLgM3f8/zGxPQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -69,19 +69,19 @@ So let's substitute <autoconf> 'on' with 'off'.
 
 Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
 ---
- arch/arm/configs/pxa168_defconfig | 2 +-
+ arch/arm/configs/pxa3xx_defconfig | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/configs/pxa168_defconfig b/arch/arm/configs/pxa168_defconfig
-index 0947f022954d..3a972bae1be3 100644
---- a/arch/arm/configs/pxa168_defconfig
-+++ b/arch/arm/configs/pxa168_defconfig
-@@ -16,7 +16,7 @@ CONFIG_PREEMPT=y
+diff --git a/arch/arm/configs/pxa3xx_defconfig b/arch/arm/configs/pxa3xx_defconfig
+index f0c34017f2aa..ffe106c4c006 100644
+--- a/arch/arm/configs/pxa3xx_defconfig
++++ b/arch/arm/configs/pxa3xx_defconfig
+@@ -14,7 +14,7 @@ CONFIG_PREEMPT=y
  CONFIG_AEABI=y
  CONFIG_ZBOOT_ROM_TEXT=0x0
  CONFIG_ZBOOT_ROM_BSS=0x0
--CONFIG_CMDLINE="root=/dev/nfs rootfstype=nfs nfsroot=192.168.2.100:/nfsroot/ ip=192.168.2.101:192.168.2.100::255.255.255.0::eth0:on console=ttyS0,115200 mem=128M"
-+CONFIG_CMDLINE="root=/dev/nfs rootfstype=nfs nfsroot=192.168.2.100:/nfsroot/ ip=192.168.2.101:192.168.2.100::255.255.255.0::eth0:off console=ttyS0,115200 mem=128M"
+-CONFIG_CMDLINE="root=/dev/nfs rootfstype=nfs nfsroot=192.168.1.100:/nfsroot/ ip=192.168.1.101:192.168.1.100::255.255.255.0::eth0:on console=ttyS0,115200 mem=64M debug"
++CONFIG_CMDLINE="root=/dev/nfs rootfstype=nfs nfsroot=192.168.1.100:/nfsroot/ ip=192.168.1.101:192.168.1.100::255.255.255.0::eth0:off console=ttyS0,115200 mem=64M debug"
  CONFIG_FPE_NWFPE=y
  CONFIG_NET=y
  CONFIG_PACKET=y
