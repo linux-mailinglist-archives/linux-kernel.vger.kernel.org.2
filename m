@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A657244382A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 23:02:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A00A44382B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 23:02:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231535AbhKBWE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 18:04:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33826 "EHLO
+        id S231669AbhKBWE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 18:04:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231216AbhKBWEy (ORCPT
+        with ESMTP id S231240AbhKBWEy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 2 Nov 2021 18:04:54 -0400
 Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7AEFC061203;
-        Tue,  2 Nov 2021 15:02:18 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 478FBC061714
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 15:02:19 -0700 (PDT)
 Received: from meer.lwn.net (unknown [IPv6:2601:281:8300:104d::5f6])
-        by ms.lwn.net (Postfix) with ESMTPA id 685CD5EC8;
+        by ms.lwn.net (Postfix) with ESMTPA id D52EE9B4;
         Tue,  2 Nov 2021 22:02:18 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 685CD5EC8
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net D52EE9B4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1635890538; bh=zbsiGWfqK5orLR+KEARR8fWOciWx/3Xh24nN8dCoJio=;
+        t=1635890539; bh=O1Oizdi3GsjZEryfYChbmXQeObgHv1rXkYHFf6Oq9eA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k3QxIJTlSxQf1HMp52NCWYPqZabAXtmXXqPjQMLqyRYggLv0blqHN/a4EfBqPpeUV
-         5FjfP/fH0MymT6HMMKUvjnu1H3X97SrdsrQeKx++F7Wj+Lp56vvIaDlWMc+gYOChHH
-         /zLWuOMnt2Uj9i4SndQ2+YV+QRGfr2xY5PVazZcU4SHZbOJdgaH0Y0q/zFulrvUCyF
-         24yl1E65B1rW9870yCxY8mPD1YNX905YWBMiEsYJ52Wa2x+MJdFosYjmdCMOOlq4hc
-         cxNHdhN1t60LMHU8T+X0v4hH33SUQ0H8ROnr3sUa2aqhahcNslB4iOheIkZqQP+Xt6
-         Yn4oPh0DwX5BQ==
+        b=qOTwfwZOhLOb8J+hwbPlIBUG58F1RSYCHwkD7JSeKDOPvYW8mJwa9lO7zGCtxHfbi
+         E7y21QGEglqBX8fQ7xbSC69mTB3GLKOqsToOI6sS10r4rpd7aBSVDGUxmHJe9gO8uG
+         JmkN6mDqiiGVzb+3es+tTt/ccPeFqlcU0pFMi8UWe7tCDyP8ZI5fO/pmS9KdKorD8T
+         M7j5s3qzmlkTkdkyQhOTf6mACiSs/EmBR5vi6n/Dg1jG1yLWXgW/SawO9sxS+j71Fj
+         GJEqgqeZG9zgOI/TihyxFD3cX1xOrKVPze8MP9YLT3eDHuhElHwFiVm05QNArrhRpp
+         K1duzKwtGBq2A==
 From:   Jonathan Corbet <corbet@lwn.net>
 To:     linux-kernel@vger.kernel.org
-Cc:     Jonathan Corbet <corbet@lwn.net>, Christoph Hellwig <hch@lst.de>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        linux-nfs@vger.kernel.org
-Subject: [PATCH 2/9] nfs: remove unused header <linux/pnfs_osd_xdr.h>
-Date:   Tue,  2 Nov 2021 16:01:56 -0600
-Message-Id: <20211102220203.940290-3-corbet@lwn.net>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Nicolas Pitre <npitre@baylibre.com>,
+        Mike Rapoport <rppt@kernel.org>, Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH 3/9] Remove unused header <linux/cnt32_to_63.h>
+Date:   Tue,  2 Nov 2021 16:01:57 -0600
+Message-Id: <20211102220203.940290-4-corbet@lwn.net>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211102220203.940290-1-corbet@lwn.net>
 References: <20211102220203.940290-1-corbet@lwn.net>
@@ -46,343 +45,129 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 19fcae3d4f2dd ("scsi: remove the SCSI OSD library") deleted the last
-file that included <linux/pnfs_osd_xdr.h> but left that file behind.  It's
-unused, get rid of it now.
+Commit fb37409a01b0 ("arch: remove unicore32 port) deleted the last file
+that included <linux/cnt32_to_63.h>, but left that header file behind.
+Nothing uses it, delete it now.
 
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Trond Myklebust <trond.myklebust@hammerspace.com>
-Cc: Anna Schumaker <anna.schumaker@netapp.com>
-Cc: linux-nfs@vger.kernel.org
+Cc: Nicolas Pitre <npitre@baylibre.com>
+Cc: Mike Rapoport <rppt@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Jonathan Corbet <corbet@lwn.net>
 ---
- include/linux/pnfs_osd_xdr.h | 317 -----------------------------------
- 1 file changed, 317 deletions(-)
- delete mode 100644 include/linux/pnfs_osd_xdr.h
+ include/linux/cnt32_to_63.h | 104 ------------------------------------
+ 1 file changed, 104 deletions(-)
+ delete mode 100644 include/linux/cnt32_to_63.h
 
-diff --git a/include/linux/pnfs_osd_xdr.h b/include/linux/pnfs_osd_xdr.h
+diff --git a/include/linux/cnt32_to_63.h b/include/linux/cnt32_to_63.h
 deleted file mode 100644
-index 17d7d0d20eca..000000000000
---- a/include/linux/pnfs_osd_xdr.h
+index 064428479f2d..000000000000
+--- a/include/linux/cnt32_to_63.h
 +++ /dev/null
-@@ -1,317 +0,0 @@
+@@ -1,104 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-only */
 -/*
-- *  pNFS-osd on-the-wire data structures
+- *  Extend a 32-bit counter to 63 bits
 - *
-- *  Copyright (C) 2007 Panasas Inc. [year of first publication]
-- *  All rights reserved.
-- *
-- *  Benny Halevy <bhalevy@panasas.com>
-- *  Boaz Harrosh <ooo@electrozaur.com>
-- *
-- *  This program is free software; you can redistribute it and/or modify
-- *  it under the terms of the GNU General Public License version 2
-- *  See the file COPYING included with this distribution for more details.
-- *
-- *  Redistribution and use in source and binary forms, with or without
-- *  modification, are permitted provided that the following conditions
-- *  are met:
-- *
-- *  1. Redistributions of source code must retain the above copyright
-- *     notice, this list of conditions and the following disclaimer.
-- *  2. Redistributions in binary form must reproduce the above copyright
-- *     notice, this list of conditions and the following disclaimer in the
-- *     documentation and/or other materials provided with the distribution.
-- *  3. Neither the name of the Panasas company nor the names of its
-- *     contributors may be used to endorse or promote products derived
-- *     from this software without specific prior written permission.
-- *
-- *  THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED
-- *  WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
-- *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-- *  DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
-- *  FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-- *  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-- *  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
-- *  BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-- *  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-- *  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-- *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-- */
--#ifndef __PNFS_OSD_XDR_H__
--#define __PNFS_OSD_XDR_H__
--
--#include <linux/nfs_fs.h>
--
--/*
-- * draft-ietf-nfsv4-minorversion-22
-- * draft-ietf-nfsv4-pnfs-obj-12
+- *  Author:	Nicolas Pitre
+- *  Created:	December 3, 2006
+- *  Copyright:	MontaVista Software, Inc.
 - */
 -
--/* Layout Structure */
+-#ifndef __LINUX_CNT32_TO_63_H__
+-#define __LINUX_CNT32_TO_63_H__
 -
--enum pnfs_osd_raid_algorithm4 {
--	PNFS_OSD_RAID_0		= 1,
--	PNFS_OSD_RAID_4		= 2,
--	PNFS_OSD_RAID_5		= 3,
--	PNFS_OSD_RAID_PQ	= 4     /* Reed-Solomon P+Q */
+-#include <linux/compiler.h>
+-#include <linux/types.h>
+-#include <asm/byteorder.h>
+-
+-/* this is used only to give gcc a clue about good code generation */
+-union cnt32_to_63 {
+-	struct {
+-#if defined(__LITTLE_ENDIAN)
+-		u32 lo, hi;
+-#elif defined(__BIG_ENDIAN)
+-		u32 hi, lo;
+-#endif
+-	};
+-	u64 val;
 -};
 -
--/*   struct pnfs_osd_data_map4 {
-- *       uint32_t                    odm_num_comps;
-- *       length4                     odm_stripe_unit;
-- *       uint32_t                    odm_group_width;
-- *       uint32_t                    odm_group_depth;
-- *       uint32_t                    odm_mirror_cnt;
-- *       pnfs_osd_raid_algorithm4    odm_raid_algorithm;
-- *   };
-- */
--struct pnfs_osd_data_map {
--	u32	odm_num_comps;
--	u64	odm_stripe_unit;
--	u32	odm_group_width;
--	u32	odm_group_depth;
--	u32	odm_mirror_cnt;
--	u32	odm_raid_algorithm;
--};
 -
--/*   struct pnfs_osd_objid4 {
-- *       deviceid4       oid_device_id;
-- *       uint64_t        oid_partition_id;
-- *       uint64_t        oid_object_id;
-- *   };
-- */
--struct pnfs_osd_objid {
--	struct nfs4_deviceid	oid_device_id;
--	u64			oid_partition_id;
--	u64			oid_object_id;
--};
--
--/* For printout. I use:
-- * kprint("dev(%llx:%llx)", _DEVID_LO(pointer), _DEVID_HI(pointer));
-- * BE style
-- */
--#define _DEVID_LO(oid_device_id) \
--	(unsigned long long)be64_to_cpup((__be64 *)(oid_device_id)->data)
--
--#define _DEVID_HI(oid_device_id) \
--	(unsigned long long)be64_to_cpup(((__be64 *)(oid_device_id)->data) + 1)
--
--enum pnfs_osd_version {
--	PNFS_OSD_MISSING              = 0,
--	PNFS_OSD_VERSION_1            = 1,
--	PNFS_OSD_VERSION_2            = 2
--};
--
--struct pnfs_osd_opaque_cred {
--	u32 cred_len;
--	void *cred;
--};
--
--enum pnfs_osd_cap_key_sec {
--	PNFS_OSD_CAP_KEY_SEC_NONE     = 0,
--	PNFS_OSD_CAP_KEY_SEC_SSV      = 1,
--};
--
--/*   struct pnfs_osd_object_cred4 {
-- *       pnfs_osd_objid4         oc_object_id;
-- *       pnfs_osd_version4       oc_osd_version;
-- *       pnfs_osd_cap_key_sec4   oc_cap_key_sec;
-- *       opaque                  oc_capability_key<>;
-- *       opaque                  oc_capability<>;
-- *   };
-- */
--struct pnfs_osd_object_cred {
--	struct pnfs_osd_objid		oc_object_id;
--	u32				oc_osd_version;
--	u32				oc_cap_key_sec;
--	struct pnfs_osd_opaque_cred	oc_cap_key;
--	struct pnfs_osd_opaque_cred	oc_cap;
--};
--
--/*   struct pnfs_osd_layout4 {
-- *       pnfs_osd_data_map4      olo_map;
-- *       uint32_t                olo_comps_index;
-- *       pnfs_osd_object_cred4   olo_components<>;
-- *   };
-- */
--struct pnfs_osd_layout {
--	struct pnfs_osd_data_map	olo_map;
--	u32				olo_comps_index;
--	u32				olo_num_comps;
--	struct pnfs_osd_object_cred	*olo_comps;
--};
--
--/* Device Address */
--enum pnfs_osd_targetid_type {
--	OBJ_TARGET_ANON = 1,
--	OBJ_TARGET_SCSI_NAME = 2,
--	OBJ_TARGET_SCSI_DEVICE_ID = 3,
--};
--
--/*   union pnfs_osd_targetid4 switch (pnfs_osd_targetid_type4 oti_type) {
-- *       case OBJ_TARGET_SCSI_NAME:
-- *           string              oti_scsi_name<>;
+-/**
+- * cnt32_to_63 - Expand a 32-bit counter to a 63-bit counter
+- * @cnt_lo: The low part of the counter
 - *
-- *       case OBJ_TARGET_SCSI_DEVICE_ID:
-- *           opaque              oti_scsi_device_id<>;
+- * Many hardware clock counters are only 32 bits wide and therefore have
+- * a relatively short period making wrap-arounds rather frequent.  This
+- * is a problem when implementing sched_clock() for example, where a 64-bit
+- * non-wrapping monotonic value is expected to be returned.
 - *
-- *       default:
-- *           void;
-- *   };
+- * To overcome that limitation, let's extend a 32-bit counter to 63 bits
+- * in a completely lock free fashion. Bits 0 to 31 of the clock are provided
+- * by the hardware while bits 32 to 62 are stored in memory.  The top bit in
+- * memory is used to synchronize with the hardware clock half-period.  When
+- * the top bit of both counters (hardware and in memory) differ then the
+- * memory is updated with a new value, incrementing it when the hardware
+- * counter wraps around.
 - *
-- *   union pnfs_osd_targetaddr4 switch (bool ota_available) {
-- *       case TRUE:
-- *           netaddr4            ota_netaddr;
-- *       case FALSE:
-- *           void;
-- *   };
+- * Because a word store in memory is atomic then the incremented value will
+- * always be in synch with the top bit indicating to any potential concurrent
+- * reader if the value in memory is up to date or not with regards to the
+- * needed increment.  And any race in updating the value in memory is harmless
+- * as the same value would simply be stored more than once.
 - *
-- *   struct pnfs_osd_deviceaddr4 {
-- *       pnfs_osd_targetid4      oda_targetid;
-- *       pnfs_osd_targetaddr4    oda_targetaddr;
-- *       uint64_t                oda_lun;
-- *       opaque                  oda_systemid<>;
-- *       pnfs_osd_object_cred4   oda_root_obj_cred;
-- *       opaque                  oda_osdname<>;
-- *   };
+- * The restrictions for the algorithm to work properly are:
+- *
+- * 1) this code must be called at least once per each half period of the
+- *    32-bit counter;
+- *
+- * 2) this code must not be preempted for a duration longer than the
+- *    32-bit counter half period minus the longest period between two
+- *    calls to this code;
+- *
+- * Those requirements ensure proper update to the state bit in memory.
+- * This is usually not a problem in practice, but if it is then a kernel
+- * timer should be scheduled to manage for this code to be executed often
+- * enough.
+- *
+- * And finally:
+- *
+- * 3) the cnt_lo argument must be seen as a globally incrementing value,
+- *    meaning that it should be a direct reference to the counter data which
+- *    can be evaluated according to a specific ordering within the macro,
+- *    and not the result of a previous evaluation stored in a variable.
+- *
+- * For example, this is wrong:
+- *
+- *	u32 partial = get_hw_count();
+- *	u64 full = cnt32_to_63(partial);
+- *	return full;
+- *
+- * This is fine:
+- *
+- *	u64 full = cnt32_to_63(get_hw_count());
+- *	return full;
+- *
+- * Note that the top bit (bit 63) in the returned value should be considered
+- * as garbage.  It is not cleared here because callers are likely to use a
+- * multiplier on the returned value which can get rid of the top bit
+- * implicitly by making the multiplier even, therefore saving on a runtime
+- * clear-bit instruction. Otherwise caller must remember to clear the top
+- * bit explicitly.
 - */
--struct pnfs_osd_targetid {
--	u32				oti_type;
--	struct nfs4_string		oti_scsi_device_id;
--};
+-#define cnt32_to_63(cnt_lo) \
+-({ \
+-	static u32 __m_cnt_hi; \
+-	union cnt32_to_63 __x; \
+-	__x.hi = __m_cnt_hi; \
+- 	smp_rmb(); \
+-	__x.lo = (cnt_lo); \
+-	if (unlikely((s32)(__x.hi ^ __x.lo) < 0)) \
+-		__m_cnt_hi = __x.hi = (__x.hi ^ 0x80000000) + (__x.hi >> 31); \
+-	__x.val; \
+-})
 -
--/*   struct netaddr4 {
-- *       // see struct rpcb in RFC1833
-- *       string r_netid<>;    // network id
-- *       string r_addr<>;     // universal address
-- *   };
-- */
--struct pnfs_osd_net_addr {
--	struct nfs4_string	r_netid;
--	struct nfs4_string	r_addr;
--};
--
--struct pnfs_osd_targetaddr {
--	u32				ota_available;
--	struct pnfs_osd_net_addr	ota_netaddr;
--};
--
--struct pnfs_osd_deviceaddr {
--	struct pnfs_osd_targetid	oda_targetid;
--	struct pnfs_osd_targetaddr	oda_targetaddr;
--	u8				oda_lun[8];
--	struct nfs4_string		oda_systemid;
--	struct pnfs_osd_object_cred	oda_root_obj_cred;
--	struct nfs4_string		oda_osdname;
--};
--
--/* LAYOUTCOMMIT: layoutupdate */
--
--/*   union pnfs_osd_deltaspaceused4 switch (bool dsu_valid) {
-- *       case TRUE:
-- *           int64_t     dsu_delta;
-- *       case FALSE:
-- *           void;
-- *   };
-- *
-- *   struct pnfs_osd_layoutupdate4 {
-- *       pnfs_osd_deltaspaceused4    olu_delta_space_used;
-- *       bool                        olu_ioerr_flag;
-- *   };
-- */
--struct pnfs_osd_layoutupdate {
--	u32	dsu_valid;
--	s64	dsu_delta;
--	u32	olu_ioerr_flag;
--};
--
--/* LAYOUTRETURN: I/O Rrror Report */
--
--enum pnfs_osd_errno {
--	PNFS_OSD_ERR_EIO		= 1,
--	PNFS_OSD_ERR_NOT_FOUND		= 2,
--	PNFS_OSD_ERR_NO_SPACE		= 3,
--	PNFS_OSD_ERR_BAD_CRED		= 4,
--	PNFS_OSD_ERR_NO_ACCESS		= 5,
--	PNFS_OSD_ERR_UNREACHABLE	= 6,
--	PNFS_OSD_ERR_RESOURCE		= 7
--};
--
--/*   struct pnfs_osd_ioerr4 {
-- *       pnfs_osd_objid4     oer_component;
-- *       length4             oer_comp_offset;
-- *       length4             oer_comp_length;
-- *       bool                oer_iswrite;
-- *       pnfs_osd_errno4     oer_errno;
-- *   };
-- */
--struct pnfs_osd_ioerr {
--	struct pnfs_osd_objid	oer_component;
--	u64			oer_comp_offset;
--	u64			oer_comp_length;
--	u32			oer_iswrite;
--	u32			oer_errno;
--};
--
--/* OSD XDR Client API */
--/* Layout helpers */
--/* Layout decoding is done in two parts:
-- * 1. First Call pnfs_osd_xdr_decode_layout_map to read in only the header part
-- *    of the layout. @iter members need not be initialized.
-- *    Returned:
-- *             @layout members are set. (@layout->olo_comps set to NULL).
-- *
-- *             Zero on success, or negative error if passed xdr is broken.
-- *
-- * 2. 2nd Call pnfs_osd_xdr_decode_layout_comp() in a loop until it returns
-- *    false, to decode the next component.
-- *    Returned:
-- *       true if there is more to decode or false if we are done or error.
-- *
-- * Example:
-- *	struct pnfs_osd_xdr_decode_layout_iter iter;
-- *	struct pnfs_osd_layout layout;
-- *	struct pnfs_osd_object_cred comp;
-- *	int status;
-- *
-- *	status = pnfs_osd_xdr_decode_layout_map(&layout, &iter, xdr);
-- *	if (unlikely(status))
-- *		goto err;
-- *	while(pnfs_osd_xdr_decode_layout_comp(&comp, &iter, xdr, &status)) {
-- *		// All of @comp strings point to inside the xdr_buffer
-- *		// or scrach buffer. Copy them out to user memory eg.
-- *		copy_single_comp(dest_comp++, &comp);
-- *	}
-- *	if (unlikely(status))
-- *		goto err;
-- */
--
--struct pnfs_osd_xdr_decode_layout_iter {
--	unsigned total_comps;
--	unsigned decoded_comps;
--};
--
--extern int pnfs_osd_xdr_decode_layout_map(struct pnfs_osd_layout *layout,
--	struct pnfs_osd_xdr_decode_layout_iter *iter, struct xdr_stream *xdr);
--
--extern bool pnfs_osd_xdr_decode_layout_comp(struct pnfs_osd_object_cred *comp,
--	struct pnfs_osd_xdr_decode_layout_iter *iter, struct xdr_stream *xdr,
--	int *err);
--
--/* Device Info helpers */
--
--/* Note: All strings inside @deviceaddr point to space inside @p.
-- * @p should stay valid while @deviceaddr is in use.
-- */
--extern void pnfs_osd_xdr_decode_deviceaddr(
--	struct pnfs_osd_deviceaddr *deviceaddr, __be32 *p);
--
--/* layoutupdate (layout_commit) xdr helpers */
--extern int
--pnfs_osd_xdr_encode_layoutupdate(struct xdr_stream *xdr,
--				 struct pnfs_osd_layoutupdate *lou);
--
--/* osd_ioerror encoding (layout_return) */
--extern __be32 *pnfs_osd_xdr_ioerr_reserve_space(struct xdr_stream *xdr);
--extern void pnfs_osd_xdr_encode_ioerr(__be32 *p, struct pnfs_osd_ioerr *ioerr);
--
--#endif /* __PNFS_OSD_XDR_H__ */
+-#endif
 -- 
 2.31.1
 
