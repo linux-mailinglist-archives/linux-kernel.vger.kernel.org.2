@@ -2,94 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF2E4443797
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 21:59:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6C4F44379F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 22:03:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231696AbhKBVBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 17:01:35 -0400
-Received: from mail-ot1-f51.google.com ([209.85.210.51]:38819 "EHLO
-        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230061AbhKBVBe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 17:01:34 -0400
-Received: by mail-ot1-f51.google.com with SMTP id c2-20020a056830348200b0055a46c889a8so638377otu.5;
-        Tue, 02 Nov 2021 13:58:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=X+PbCIBbupD5QlN7dstqXrkneFhSekQ8ud9fjKAPemE=;
-        b=5d8I1HX+yOeXST/NTwGV+6nN2V77fuvjfequtTZv9YyyA+uqy6dBzeIpO6d5sWiAqL
-         I7AzRVLrtfLf/j6awhTVFctF7a/fH1kO7dh5R+izoC0/2Q74V5+W9p5w8CNYZyvUNPIA
-         hPloMV6KpohYCf5thdfNfLGjvdRRphyRS/986ciSTluxKpsJfjPZdYj4oSIlEA6BiKTe
-         Fhz5FW8x0AjwqIKWo0aOj6G7UsuY/Zwyjug2oM8udm11e0Q848Hmv+rqdlcXGkZfs7Ba
-         UDvIblxF1qjMSjm06Q3D8Vds34r+Nkp+sRS0cJ1UzsAOOeaiyaRen/mrWMOlpOjsv3rG
-         b5WQ==
-X-Gm-Message-State: AOAM532SI9TWVOcI5qrnVpJbMS6zLmkP+FsmaIohInwE5spXmfqIFCe7
-        FyKEPmkC1koLvC7J0kxakg==
-X-Google-Smtp-Source: ABdhPJxd7nHSOxQQYcM1AqgSl5jOlctl2u+Zih91go3saWqDKwRuki9qZYS+68Gyo04l8qmpTPDT3Q==
-X-Received: by 2002:a9d:75c2:: with SMTP id c2mr29999973otl.69.1635886738566;
-        Tue, 02 Nov 2021 13:58:58 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id q63sm17699oia.55.2021.11.02.13.58.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Nov 2021 13:58:58 -0700 (PDT)
-Received: (nullmailer pid 3465321 invoked by uid 1000);
-        Tue, 02 Nov 2021 20:58:57 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Cc:     plai@codeaurora.org, tiwai@suse.com, robh+dt@kernel.org,
-        perex@perex.cz, devicetree@vger.kernel.org, judyhsiao@chromium.org,
-        bjorn.andersson@linaro.org, linux-kernel@vger.kernel.org,
-        broonie@kernel.org, lgirdwood@gmail.com,
-        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
-        swboyd@chromium.org, bgoswami@codeaurora.org,
-        alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
-        agross@kernel.org
-In-Reply-To: <1635851372-19151-2-git-send-email-srivasam@codeaurora.org>
-References: <1635851372-19151-1-git-send-email-srivasam@codeaurora.org> <1635851372-19151-2-git-send-email-srivasam@codeaurora.org>
-Subject: Re: [PATCH v5 1/2] ASoC: google: dt-bindings: Add sc7280-herobrine machine bindings
-Date:   Tue, 02 Nov 2021 15:58:56 -0500
-Message-Id: <1635886737.005870.3465320.nullmailer@robh.at.kernel.org>
+        id S231167AbhKBVFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 17:05:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43240 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229931AbhKBVFh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 17:05:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 68B61608FE;
+        Tue,  2 Nov 2021 21:03:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635886981;
+        bh=z+hVzXNghIcbV+r8KbOGewHIfEFdNzsSyt90QW7QRoo=;
+        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+        b=rFW0exD5vK/pXZPsXsQl49M+NpDymOQSvFwCUSrQr6XM+BcrOGpr0PpVsPBpM1RWP
+         GXWKI2JAaiIUsl18nFq91mVODofEKa6ZcYUdv1d5SIn7DHfnKbk/bbvM1rOckjVdRx
+         CYnfhdK2zgFDlpiEwIBrivTSBfrFiTriaMyXhqAQ1Q7eNp8aT+LD3TULnJfpja3GIQ
+         x2ATYtVduUW5TAU9L/wesjwSoyNY5VoC4lJpv4JjdvE5N13tuvlLZqVkL/9iy9k5z+
+         OCxBJJ3v/jhUsO8qaxvOJIHGglQRELjX8J4xkeeyCkSBJ6z/D+L3gRM/cdlIzxuX2V
+         rgVCOZmn0e0vQ==
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 5771C27C0054;
+        Tue,  2 Nov 2021 17:02:59 -0400 (EDT)
+Received: from imap48 ([10.202.2.98])
+  by compute6.internal (MEProxy); Tue, 02 Nov 2021 17:02:59 -0400
+X-ME-Sender: <xms:gqeBYR0vGizdHmm2QaIQehhBwYOsIF_y08PfssyQ9v1j5E9OmrQNFA>
+    <xme:gqeBYYE5LCqAAObb-tKSp9PJ7Syhw0iL0QoybYPSsCColrtL7YQ3I1Mno28Cy026N
+    DbfMD22GHw7aObteDE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrtddtgdduudekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgfgsehtqhertderreejnecuhfhrohhmpedftehn
+    ugihucfnuhhtohhmihhrshhkihdfuceolhhuthhosehkvghrnhgvlhdrohhrgheqnecugg
+    ftrfgrthhtvghrnhepvdelheejjeevhfdutdeggefftdejtdffgeevteehvdfgjeeiveei
+    ueefveeuvdetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
+    homheprghnugihodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduudeiudek
+    heeifedvqddvieefudeiiedtkedqlhhuthhopeepkhgvrhhnvghlrdhorhhgsehlihhnuh
+    igrdhluhhtohdruhhs
+X-ME-Proxy: <xmx:g6eBYR66yoi2Q11gWBWpuVHqtebkwTeFRz0ZrQAdtnr7WxOSjKCEhg>
+    <xmx:g6eBYe2eEz4eICHCodRuBhbkZViSulaawxefnRV_vgLSmdGT2nTrQg>
+    <xmx:g6eBYUFd41PhoiKGIKhVybgHZggigsDifm8bnvGoyJHLIr6GtggZUg>
+    <xmx:g6eBYX-HZ4wP9AQvGtw3xbTU3jpWEzc129aEYfGbMyIQ3wksTZdOwxbyb6o>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id E1DF421E0073; Tue,  2 Nov 2021 17:02:58 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-1369-gd055fb5e7c-fm-20211018.002-gd055fb5e
+Mime-Version: 1.0
+Message-Id: <90a14299-ce56-41d5-9df9-f625aae1ac70@www.fastmail.com>
+In-Reply-To: <202111021040.6570189A5@keescook>
+References: <CAMj1kXEvemVOWf4M_0vsduN_kiCsGVmM92cE7KPMoNKViKp=RQ@mail.gmail.com>
+ <20211031163920.GV174703@worktop.programming.kicks-ass.net>
+ <CAMj1kXHk5vbrT49yRCivX3phrEkN6Xbb+g8WEmavL_d1iE0OxQ@mail.gmail.com>
+ <YX74Ch9/DtvYxzh/@hirez.programming.kicks-ass.net>
+ <CAMj1kXG+MuGaG3BHk8pnE1MKVmRf5E+nRNoFMHxOA1y84eGikg@mail.gmail.com>
+ <YX8AQJqyB+H3PF1d@hirez.programming.kicks-ass.net>
+ <CAMj1kXF3n-oQ1WP8=asb60K6UjSYOtz5RVhrcoCoNq3v7mZdQg@mail.gmail.com>
+ <20211101090155.GW174703@worktop.programming.kicks-ass.net>
+ <CAMj1kXGhRmdM3om289Q2-s1Pzfob3D2iSDMorzggfhSk1oj53A@mail.gmail.com>
+ <YYE1yPClPMHvyvIt@hirez.programming.kicks-ass.net>
+ <202111021040.6570189A5@keescook>
+Date:   Tue, 02 Nov 2021 14:02:38 -0700
+From:   "Andy Lutomirski" <luto@kernel.org>
+To:     "Kees Cook" <keescook@chromium.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Cc:     "Ard Biesheuvel" <ardb@kernel.org>,
+        "Sami Tolvanen" <samitolvanen@google.com>,
+        "Mark Rutland" <mark.rutland@arm.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "Josh Poimboeuf" <jpoimboe@redhat.com>,
+        "Nathan Chancellor" <nathan@kernel.org>,
+        "Nick Desaulniers" <ndesaulniers@google.com>,
+        "Sedat Dilek" <sedat.dilek@gmail.com>,
+        "Steven Rostedt" <rostedt@goodmis.org>,
+        linux-hardening@vger.kernel.org,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH] static_call,x86: Robustify trampoline patching
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 02 Nov 2021 16:39:31 +0530, Srinivasa Rao Mandadapu wrote:
-> Add devicetree bindings documentation file for sc7280 sound card
-> registration.
-> 
-> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-> ---
->  .../bindings/sound/google,sc7280-herobrine.yaml    | 170 +++++++++++++++++++++
->  1 file changed, 170 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml
-> 
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-yamllint warnings/errors:
+On Tue, Nov 2, 2021, at 11:10 AM, Kees Cook wrote:
+> On Tue, Nov 02, 2021 at 01:57:44PM +0100, Peter Zijlstra wrote:
+>> On Mon, Nov 01, 2021 at 03:14:41PM +0100, Ard Biesheuvel wrote:
+>> > On Mon, 1 Nov 2021 at 10:05, Peter Zijlstra <peterz@infradead.org> =
+wrote:
+>>=20
+>> > > How is that not true for the jump table approach? Like I showed e=
+arlier,
+>> > > it is *trivial* to reconstruct the actual function pointer from a
+>> > > jump-table entry pointer.
+>> > >
+>> >=20
+>> > That is not the point. The point is that Clang instruments every
+>> > indirect call that it emits, to check whether the type of the jump
+>> > table entry it is about to call matches the type of the caller. IOW,
+>> > the indirect calls can only branch into jump tables, and all jump
+>> > table entries in a table each branch to the start of some function =
+of
+>> > the same type.
+>> >=20
+>> > So the only thing you could achieve by adding or subtracting a
+>> > constant value from the indirect call address is either calling
+>> > another function of the same type (if you are hitting another entry=
+ in
+>> > the same table), or failing the CFI type check.
+>>=20
+>> Ah, I see, so the call-site needs to have a branch around the indirect
+>> call instruction.
+>>=20
+>> > Instrumenting the callee only needs something like BTI, and a
+>> > consistent use of the landing pads to ensure that you cannot trivia=
+lly
+>> > omit the check by landing right after it.
+>>=20
+>> That does bring up another point tho; how are we going to do a kernel
+>> that's optimal for both software CFI and hardware aided CFI?
+>>=20
+>> All questions that need answering I think.
+>
+> I'm totally fine with designing a new CFI for a future option,
+> but blocking the existing (working) one does not best serve our end
+> users.=20
 
-dtschema/dtc warnings/errors:
-Error: Documentation/devicetree/bindings/sound/google,sc7280-herobrine.example.dts:46.24-25 syntax error
-FATAL ERROR: Unable to parse input tree
-make[1]: *** [scripts/Makefile.lib:385: Documentation/devicetree/bindings/sound/google,sc7280-herobrine.example.dt.yaml] Error 1
-make[1]: *** Waiting for unfinished jobs....
-make: *** [Makefile:1441: dt_binding_check] Error 2
+I like security, but I also like building working systems, and I think I=
+ disagree with you. There are a whole bunch of CFI schemes out there, wi=
+th varying hardware requirements, and they provide varying degrees of fi=
+ne grained protection and varying degrees of protection against improper=
+ speculation.  We do not want to merge clang CFI just because it=E2=80=99=
+s =E2=80=9Cready=E2=80=9D and end up with a mess that makes it harder to=
+ support other schemes in the kernel.
 
-doc reference errors (make refcheckdocs):
+So, yes, a good CFI scheme needs caller-side protection, especially if I=
+BT isn=E2=80=99t in use.  But a good CFI scheme also needs to interopera=
+te with the rest of the kernel, and this whole =E2=80=9Ccanonical=E2=80=9D=
+ and symbol-based lookup and static_call thing is nonsense.  I think we =
+need a better implementation, whether it uses intrinsics or little C hel=
+pers or whatever.
 
-See https://patchwork.ozlabs.org/patch/1549576
+I=E2=80=99m not saying this needs to be incompatible with current clang =
+releases, but I do think we need a clear story for how operations like s=
+tatic call patching are supposed to work.
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
+FYI, Ard, many years ago we merged kernel support for the original gcc s=
+tack protector. We have since *removed* it on x86_32 in favor of a nicer=
+ implementation that requires a newer toolchain.
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
 
