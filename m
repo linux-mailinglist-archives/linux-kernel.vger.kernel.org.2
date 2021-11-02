@@ -2,220 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4090442E6A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 13:47:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6E80442E77
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 13:50:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230208AbhKBMuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 08:50:14 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:45173 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbhKBMuN (ORCPT
+        id S231239AbhKBMxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 08:53:00 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:36886 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229712AbhKBMw4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 08:50:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1635857258; x=1667393258;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=DZUcZcHqALQ4+UhMh7jslj10ipoGPWk6sk+ihB2fR6A=;
-  b=GaFO55Tq+csEIlRjUv8CLtgS2JKfdLiJQaZVgq9LyRSx3398l1Gkx4nO
-   gjVZZtmnfkmRAS710dENwESgT2b/OlTDXeoM2yRfQ+CoWpWY/EBZl5K43
-   PB890vH8twRYtgB67Kd9hIBa4nvRTTjO1YXn1QPnN0P3O4esyl+Jni9C6
-   2685o1EMUs5s0K0hlDldhhzfTfNRH9RA4FaVyV2Su5WBveWBoUGp9N+ru
-   11/cY3WBIhL0w4/CSFqaj8JSrv1QtYB2gCvHLnQ0ALNDeQjdklYXz9msJ
-   fB1oFsdiNqIgcPxpZrCIK0Gc2iBIYGcylIxpSFQKZWJzfe75Kb/2MI60p
-   w==;
-IronPort-SDR: F2SlwY9SzhVyphytmZx0V9EcCqOgQVvze6SeDih5GcwoBkG0cfIcd+MfzTYghUcJ0goF001MAr
- MJIVGgF9QBcAxp8Fq2uqh91/gN7CN2dUrH37kG4jLjWMomdtOd+xQZl0nBR813FCe6lZf/Ya+Y
- 0vCUz9dGsAwYVucJ67yrLNUsKocsOHsbGNM6kXeFKqm3p4mAQE1rIACzTcEYLvgaedAjNF8uTG
- o2bfOdzKoDVCBhz89ieUM8CUBaSb/XH9hS4PO/FYT9q7WsnIYiIYrJwkr1CDqWvHyzktkE1c4Q
- Ddro8k8rHDPLNWESKOWQ3nDn
-X-IronPort-AV: E=Sophos;i="5.87,202,1631602800"; 
-   d="scan'208";a="150413429"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 02 Nov 2021 05:47:37 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Tue, 2 Nov 2021 05:47:37 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.71) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.14 via Frontend
- Transport; Tue, 2 Nov 2021 05:47:37 -0700
+        Tue, 2 Nov 2021 08:52:56 -0400
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1A2BdeJI021981;
+        Tue, 2 Nov 2021 12:50:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-type : mime-version;
+ s=corp-2021-07-09; bh=diz4IT3VJeBNqxXSFcg/yMgwJzHoeJ3Rsx8mHTIv4Xs=;
+ b=hTG8vNw6iA4RyFj9+rIPUsMsF1atHz448P1wUEL/A5/QGFlWrRLT7OiTQfqayEGuznQd
+ mQ2y6qCS8LtUCPp7uMVej/Mcn1LGT69aPVsFwzzg08XYr/zg4+U0ou15Er48iqPph0WS
+ 36hy4B3NEjvTQyrWYQwueKtdVRf4xMCUbtE2qRLaco9G3pE6I3uFRKtmTl/jyZ0+73Pt
+ WPxvUpa8rixIfezwkAoiTUrNHWRGISTUzp93eHfdt2VekXoW/EHlE/vQzRYSJoopYqN3
+ 7lIDiS8t9EoDGq5szk1B3MbgmaeqN/qI97tavAXrc8y3ZF3v9D+KWivtdJxHnnh/Gth+ HA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3c278nfcn7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 02 Nov 2021 12:50:19 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1A2CoGcV196448;
+        Tue, 2 Nov 2021 12:50:17 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2176.outbound.protection.outlook.com [104.47.57.176])
+        by userp3020.oracle.com with ESMTP id 3c1khtecg3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 02 Nov 2021 12:50:17 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=S7Kr9HDbDAqSGZ8hf/spzHSAmDJYVmLjdODbRKBKy17KRE5eg5CdBOhI2gI6rcvWB8cLknlJRFIbTuEWQxT5L5jBaYE7qcy1+fkGQ0m8OVaXsbX7KKan+5zsJ5pK/oaYFLuHRyskFqdmySub1UGeFUD3pvW+Fhk7a0Eo+q+5dUXTV59C9A/W/xARZoumHhaNBreyNCoYwIq29611Hkb490wcRaoHJQIeNdt8IrMh+mZyxCYByrTniOEcRQcQokoNjpT7jcvqBdSen17HOpb4pa/BuYRFJNngKbLttBfbrJaXNgZOg41/nQ2C5PytqQEZlT8yPVZW0KzEvIwh36QIjA==
+ b=CziEKd6jRpsbLsibrayF6QuTQzLJ002V1hMdI/LQlTbvjaxW6L45QLjrzJVoEGksc1uHDQKJsjQUR7hb0Ub48zClsHFK+ja5hNuy/Vq9LgZhdKnhrvXuIUHZNG69Y7b4gFPAwDU8koeMq6PFHQyWc5x6obHwLyEzuzySKhTng2Xr6q+/r2rQ8KoL4Z1GSWy/GJL9vsf1D5mLj3lchCkph3qtd7qKAUmlGbQDNneZDFOhG6A5pyBZ0Sp8nFdzFZJFXtaeBsIgY/ncOl1SU5WQ8iJzfoXesDXJJdIlIeokb9bSdRAIlMpOXctf7xkMW+qZAgPbmqcpuoz3t8MOplXTwA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EDFk5b/0qJRD0pK6a/pnuvhZotB6PiGes0hjWMH7fr0=;
- b=KTMaxWFLLZPLpq7AclH2KzlcmFw+LqDc5EMprQYOJijCq4HSnLLKo5ePIwcgP/9x0Mq4A/+1ZyOnheEBoqSRjmHM/tx231xO0WdixjLRzn97y2DzEQuhKoiOMVCWnjbYY6LOjlJ9DdKzqfTTSHn8Fp+LGg2z3H/ZNxvasG2zQ6fmZcCmXSXRwjppyGQUI8k707L+8guZCcIk8k3StPFLmkG8VyjFhb9oaxQXgwMUTjvQL66vjfYAkfKA0ivlvdYdK+w4MkAoHzAnsJczxWGdJI7vFD1BtWndtbf7FalP1XJVg7NRz9kKImQ8xojqvxjxyTROqp4grCiAfhQVWjYKHw==
+ bh=diz4IT3VJeBNqxXSFcg/yMgwJzHoeJ3Rsx8mHTIv4Xs=;
+ b=FrnBFZTi1oZ481MqMRNdfeJZ+sOlIET/On6em8eP1eLHab7ShXpBwiTWyESm2VG6WvbTcKxklZWy0SMGd5Hw/3g2YhzF38caxLLFikmVlTwXGHcwdxcz7U/uSkLuTxvv9MExf6KpCOCeHDHe6UPVG32LbKfAwxAwxlunHp6amnhtIE19yFiUiwc5kRInZemuA2KSlDIVHa+iIq3zVqfzZauvLqKdwdki0SXQZcrZYlcIWUscYigMDHdTdeDiFEz0Bh/4p2cOqNU/Bh3CLdi4nDgxa1JEnMcf9aghQF1A+ItSp64ENei2rOCzbkSoK+So2XHqxcjz/Za2zKvitmHkEQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EDFk5b/0qJRD0pK6a/pnuvhZotB6PiGes0hjWMH7fr0=;
- b=IumRkwp5OrVRPJrTYeeTU09MgRsJ138BlhAkJ+9YMajPXxtVPqNzP4jVmeeZQJs1mmI9SzyzEn4oovHoYdD768Nu8zBuhXP77I5bTJ/+dkm00p1mteui+FYmw3qBJsrP6YsREVTpVPH0tbanUpkoS27RgArmLxQv5eFfHcZMReA=
-Received: from CO1PR11MB4865.namprd11.prod.outlook.com (2603:10b6:303:9c::9)
- by CO1PR11MB5010.namprd11.prod.outlook.com (2603:10b6:303:93::9) with
+ bh=diz4IT3VJeBNqxXSFcg/yMgwJzHoeJ3Rsx8mHTIv4Xs=;
+ b=BTWKCXnGNhSFe80hZWaDB0VkczgCMCstZclGfrfucwU1T8/hKuevATwNEQkbHf+bdthT13Br9H8rXpm2dQsOBxTrt27FRB4L3n/AOfZD5xp1pE2xVU7VNDHxwPpLmygI40plHbKWQKZgHdh74fIDdYuNCGykgrYpyn9nTNhD4ro=
+Authentication-Results: linuxfoundation.org; dkim=none (message not signed)
+ header.d=none;linuxfoundation.org; dmarc=none action=none
+ header.from=oracle.com;
+Received: from BN0PR10MB5192.namprd10.prod.outlook.com (2603:10b6:408:115::8)
+ by BN0PR10MB5046.namprd10.prod.outlook.com (2603:10b6:408:127::21) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.13; Tue, 2 Nov
- 2021 12:47:27 +0000
-Received: from CO1PR11MB4865.namprd11.prod.outlook.com
- ([fe80::fc7a:748b:9fd:b66b]) by CO1PR11MB4865.namprd11.prod.outlook.com
- ([fe80::fc7a:748b:9fd:b66b%5]) with mapi id 15.20.4649.020; Tue, 2 Nov 2021
- 12:47:27 +0000
-From:   <Kavyasree.Kotagiri@microchip.com>
-To:     <sboyd@kernel.org>, <robh+dt@kernel.org>, <mturquette@baylibre.com>
-CC:     <Nicolas.Ferre@microchip.com>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <UNGLinuxDriver@microchip.com>, <Eugen.Hristev@microchip.com>,
-        <Manohar.Puri@microchip.com>
-Subject: [PATCH v9 0/3] Add driver for lan966x Generic Clock Controller
-Thread-Topic: [PATCH v9 0/3] Add driver for lan966x Generic Clock Controller
-Thread-Index: AQHXxLyyXrq0ORj5M02kh5PHyHuV8avwRQwQ
-Date:   Tue, 2 Nov 2021 12:47:27 +0000
-Message-ID: <CO1PR11MB4865DDA9CB07F699288CC762928B9@CO1PR11MB4865.namprd11.prod.outlook.com>
-References: <20211019074030.31294-1-kavyasree.kotagiri@microchip.com>
-In-Reply-To: <20211019074030.31294-1-kavyasree.kotagiri@microchip.com>
-Accept-Language: en-IN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=microchip.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 83681562-e168-4a7d-d3da-08d99dfeed06
-x-ms-traffictypediagnostic: CO1PR11MB5010:
-x-microsoft-antispam-prvs: <CO1PR11MB501032837E41B5CF48D93936928B9@CO1PR11MB5010.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Hqp0R3XTvklJwFxBfA4jaInr7c+tUI20IwwY2LoPHy0/CoLd22IaMsDD7YJW7DjFViMOt3g3ZkXM/jEDKJ9Bq/zfc9q2GPSsF9YuXXa8pCkKAV3JFTzBQqLbwuJN6oB1MYoDRd7KRkbSs/wLbyrM/zPvtMcfyzpcpDXLF4zTWBxYoOS1HShXmPUAQ5nawMz1Svu3Rh4eGo3iLPp4tSoBWwseTgHlcnJm+rONUo/SPJgJ9PUvksN4ZGdwRdtOBW+D1DhX69243jwTOV70kb7i0TXgwFuscj6C6Tng5Nvw4LSPLLwZAENhIzBfKaaFud9B6m4jcbNf+upfVD9wkajwam0sRokF3V2TBNOKu6VArNjfEL5a7M0N0mukyU9+pzRJXM2U6713x25KvQeQENpXQ2WZ9QYcEW5UEaYYxXdC6v/c2kxTDrgCEF/GudpuoDsTA6T6xnKe73D9P2GeCD3ssSR6QbcptL4MI/e1QTF5MacBAdmdvIQHWs7vTyLEbhmFWGwIiT/FMh+kChqpP+bMeFYWuL/NqRYfUBqgmgITwm7TtIqtltlIa/aUQPZ6XvXxNphmS2ReavuENIH/+Cd0wOSmNMOb9BQCCmGcWxCMkD5CkqHsxYuiFfkCmVbiEStDXZPuQ641tGEwL8WsZLgHz6G9P6eB4YxJY5dUnqejmOh2aWOrsr+fxJAX7j9S7K/MF+diGG+ec6JiS8EWNto0ok/Iqy0B83QT9yU/tOsm1Fo=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB4865.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(5660300002)(8936002)(110136005)(83380400001)(8676002)(33656002)(4326008)(38100700002)(122000001)(316002)(508600001)(55016002)(107886003)(86362001)(38070700005)(9686003)(71200400001)(53546011)(186003)(7696005)(66556008)(66476007)(64756008)(6506007)(66946007)(52536014)(26005)(66446008)(76116006)(2906002)(54906003)(41533002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?pPI2N0D8LfcXk2Kx68xaotFJpmeJW8iLhMHeAAsY1uaeyf+2KBc1Qdap5o0N?=
- =?us-ascii?Q?aq7mruDOwkbaDoYyariJfR9ne1Dv4bxVSiZF29SOk9NbYSvYWp9+deWeRcRX?=
- =?us-ascii?Q?od8GOo3qrxsOm/fR5d6RoMBhjj8Sz+UDhT2jXJJxOTHTNLaHPFKfrMdlakxU?=
- =?us-ascii?Q?xQaIM+rSjW5H/r3mPatQX55Ox9Z/PAH0sNhEq6TPVLS+5EyHfTvPWKSFpZv0?=
- =?us-ascii?Q?3sxhJ7CfORSUuB2p/yhEuqp8/yLnZYOlO8ky10yPREttObaAuNHKz5j4Erkq?=
- =?us-ascii?Q?jRKaBnuJOcRNn51+zTdCCBvhHKAmOoq1wzYuCuVgOaKos0YBcJ/f1Wuxv6Xp?=
- =?us-ascii?Q?3hGGRzk3DMJzhrEd66vubOnW4Ta4qUWN0T8sMnSTHyqdzEXY2/ldcxIcPMoZ?=
- =?us-ascii?Q?ds5u7KgGUp0jSFTmxI1AYTgVlu4/URmoqnHUZwe5NTG4FWLHKFWFogbS7+aM?=
- =?us-ascii?Q?fUlMCm0PWzA92HDnGnc/ICX2KZLVJ3brELr9bhrRqHwDnw0WbPH3VmTJMtwi?=
- =?us-ascii?Q?zc79HHOjyWNn63vTkxkeEkc0IUD4iLKfw9Na1VoAWpfIEMG08kQ7W0Gyvabd?=
- =?us-ascii?Q?+rk6p9PCIn3Sc+3JCQau29jqOUFDyDVqrTOVeHdgLphN2wSAIqHJ8zKiBSvb?=
- =?us-ascii?Q?HVtG5DRzu/wS+phfpG7MFEnxfU7OLWqgsDp4r+3kBL+GiJHkvV2WTv7K+c5A?=
- =?us-ascii?Q?aYnUD0bt2jMhEUpS4GRQTq3RGaVInf3iDwrf7uIykQk8RZ3EI2H3UJPjAldy?=
- =?us-ascii?Q?SO5tJJLXjh3YKykevE/gPrrPnJI2MK4NHwrGpOfbwWZa82fWBOWJXyN02kEE?=
- =?us-ascii?Q?YH7y0A4vxM478E2CoMvsewtFIDUV39ap1yCp4LpBhvKkiTGaf8X4rRNuaSrI?=
- =?us-ascii?Q?FFQIKadwryJ0pKM7REN83MXsMsw9rUlNjKj7f+VAUDsS6X7FIK2CGwmNxeAT?=
- =?us-ascii?Q?oZkbSZQjr9hMeTTOtP7N62S05p/4slgX/OFMAjy3IKkktTDfNXpSkooN3/hD?=
- =?us-ascii?Q?ZyAKORYMXeLx1hrcCDuiDRQC1whwOFtjDPbTCvy79YCfmwdkbVD7zEekQhDk?=
- =?us-ascii?Q?SQUsyJLjYn3VnCWRS70rCJNptWRQ0Epj4cxnkbHdZUObxuwYlWWxr0Uw+51V?=
- =?us-ascii?Q?h7128zn4uq2P1oZc8FuALqhQBaPveV/kuX1H+2gN18u1G7JE9qnGhyFDaM78?=
- =?us-ascii?Q?Hcf+sliVP12uoq2TepKNtAIT3OuZMU+f0aOk9s7DuAae30ICTBye20EMJs9k?=
- =?us-ascii?Q?Vxqd4MYx/q51AYXlEmPLxRQwSWRxxEKFVWt9q8S/HIlYtKJGDza40EZg/03e?=
- =?us-ascii?Q?j+K3wscd2EMRNvgjylfqBRxtlyHJsvABxUxGLLu2GrOJU60xYkBT6USsw5G7?=
- =?us-ascii?Q?6CGuzmv+H6H0cOaQSJysNbw+5xieb0ut+RhSYSGayq2IVknDaA0aZyvDAEJH?=
- =?us-ascii?Q?2BsKiLJqeOGLZDOlzpvQKOJU/K3KNbLuKO+h0cAqKRhm66gl+1S1OfgmvkGI?=
- =?us-ascii?Q?lqNM+Vt0SqHrGgGPYVRNdt/Oa32pV0ojrycC0IX+04NokRv7qupwd63oQHKc?=
- =?us-ascii?Q?lJHCeW2l+Nn19WWoUPrX2JQS1vUjaZIH5vvEc6SEgRwKH6SnRdDfUZt/pjWW?=
- =?us-ascii?Q?7ZEENmLqGK4tobqCkm9Dtu2stkLGEniCLPdqcZsESb9LWi2y8jgb4b9YojTp?=
- =?us-ascii?Q?TQzoKS8WWbjollE8cj4FsHz+ayt2Nmwvw7RCS+Y5uwSzXH4L?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.10; Tue, 2 Nov
+ 2021 12:50:13 +0000
+Received: from BN0PR10MB5192.namprd10.prod.outlook.com
+ ([fe80::8823:3dbf:b88f:2c0e]) by BN0PR10MB5192.namprd10.prod.outlook.com
+ ([fe80::8823:3dbf:b88f:2c0e%5]) with mapi id 15.20.4649.020; Tue, 2 Nov 2021
+ 12:50:13 +0000
+From:   George Kennedy <george.kennedy@oracle.com>
+To:     gregkh@linuxfoundation.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com
+Cc:     george.kennedy@oracle.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dan.carpenter@oracle.com
+Subject: [PATCH] scsi: scsi_debug: fix type in min_t to avoid stack OOB
+Date:   Tue,  2 Nov 2021 07:47:58 -0500
+Message-Id: <1635857278-29246-1-git-send-email-george.kennedy@oracle.com>
+X-Mailer: git-send-email 1.9.4
+Content-Type: text/plain
+X-ClientProxiedBy: BYAPR02CA0003.namprd02.prod.outlook.com
+ (2603:10b6:a02:ee::16) To BN0PR10MB5192.namprd10.prod.outlook.com
+ (2603:10b6:408:115::8)
 MIME-Version: 1.0
+Received: from dhcp-10-152-13-169.usdhcp.oraclecorp.com.com (209.17.40.42) by BYAPR02CA0003.namprd02.prod.outlook.com (2603:10b6:a02:ee::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.17 via Frontend Transport; Tue, 2 Nov 2021 12:50:12 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 95fddadf-2bf2-4aea-5c1f-08d99dff5022
+X-MS-TrafficTypeDiagnostic: BN0PR10MB5046:
+X-Microsoft-Antispam-PRVS: <BN0PR10MB5046BF7943A2FA0E658B15D2E68B9@BN0PR10MB5046.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: uOZoP8HdLfDEgDyTgOErLLPhpVkrtu2Xg3vpJEAgomw4R0+Cw8KtWVjo1lCtXe16gSB3kfwqDGLxY9qQVaU4mCwBZu2fercX85qSnILVDhCMR0zGtwdssolevy3I9lFlRClFvPGfOyicrBssXfDyybVg3iaGwrQdcPBgdH8NSqyuT5K8rNjXpp3el5DzAc/0uj8o/0XdXR451yPVjX3awN/3EzKMo00aCHKTZMQf50kKVA0n4i5R8UWccLrY0THobLCGotlRF+cuKvWe3F3NGD99pffHt7Bw1CvD/lT4sCWNboQbChTduvuxe4mn2w+RwfGAv9ZLHO6lKsNfe93sGpPxxa0MKJgUfNLoQHnyFWxHbkdOUKshmV1B9MUNXo3c8SAq4ijhqnG0ePOa5QJdGqCTC8PAPZLR0ITYyJBXZD9/LWp122wx8Zyznfa7XF4ZsxUy6UopjB6cYsauDcopiHO1D1itkzoCi62W0GQWs3yHIAA4aI1rmru5B25b+15vr+wmzlhBIN11Y7y0AnukUfMKcLgc5lVmhSXmBrqBERp86Nn0ZTCP3EGyi1x+71tE3DUxGnCG8yefahdkMAISGb/QfxHLn0ShT8fSYVTGop3LF6YpUoRT1q+wN2qIOXyNQz0qftWYkg8bx4jhIpRL2ofE35cWs1BrWpFlyW9TeLBMy7kFrZrlHu0Y81JCMCy5BDo//vZkNtLLg33yEsR72g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN0PR10MB5192.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(6636002)(186003)(6486002)(107886003)(44832011)(5660300002)(83380400001)(66946007)(6506007)(4326008)(66556008)(66476007)(508600001)(52116002)(36756003)(2616005)(2906002)(956004)(8676002)(26005)(316002)(8936002)(38100700002)(38350700002)(6512007)(86362001)(6666004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?JR6mwyLoBfl993P8NxeNiW1ID8ZkC0od1+nrQuyjDEZmdPyYWQspRjnCn1MS?=
+ =?us-ascii?Q?/8Z/O0fpGHT5C9+xOJbvjYm7mJaXb6CE1CdkwYHfo4axjPXZQ7eNBkW2gah8?=
+ =?us-ascii?Q?ntcXHUGaGx/L7sdYy9Dnj6Dt8XSQX6vjHsBLwh2YZ58xOn1jfCTmkEgZue7t?=
+ =?us-ascii?Q?7Q+/2TrF/q+7oZcBXfdyFbixSPkg+WLCeIgqHUyOLTZwaUZl7vzVNAOg91hQ?=
+ =?us-ascii?Q?esUjjhoVGecru7kFkG8BzMbsp3V2X6a7TNf6W2g4XdOmu8Mx7v3oILj2JSgd?=
+ =?us-ascii?Q?HyLG5tnETh3MzMm4GBzXG+qPJKvxG6mPmc6eplXqo1JYCMdhxZZVRioMl8kG?=
+ =?us-ascii?Q?4c+AkzGNlq6RQIsBRj3E+jqftmBgfMwiilQgi257W8Lbps1mNu9hB4QAHUBt?=
+ =?us-ascii?Q?dvYqsancSDZEU4xtDEOhuAEbF5RP8wB2F6xlXb0G+qdqQT9rJ6+Lwo9EQsdu?=
+ =?us-ascii?Q?DRXqd8kBCvSE7S02KasAXWyhWrYvm4sO4DZs6EUsWUaijezT9WK5oxBlKiPW?=
+ =?us-ascii?Q?UzX7w2AW7NB4QG4fxdoOEo0qPT3pXiCF5Dhp+9qDEny9+ufRZUqElaUZ4ntr?=
+ =?us-ascii?Q?gKS1Lu7jj2HXxsU9p+eFCoAoJLbKyH05Kdv1ikRauoEDGLGjNEJoZI0tsoMr?=
+ =?us-ascii?Q?TUuon28TXkrtzUKqvsz9cFqVG4yd9vc9lIv9b14RcKPgrdZt8zHyMqhfIUQF?=
+ =?us-ascii?Q?wNRmoc6DGsHaBchMX3ukMkXLupxYd9gmq92ObFL/g5Bn4p6Lg2BXL+qEZ3to?=
+ =?us-ascii?Q?00I9buFIoRQcDcII1Ka6Qi7mXYxE+2i5g+/Ps/JsJew71/boXUvn1MEPvQIv?=
+ =?us-ascii?Q?I3kEKUpOu51wMtBEkeaBc7atAJl6kkfVlV8w9JfwuOFdBOhnElVcVKjRIlQh?=
+ =?us-ascii?Q?ihI3cvu8UTHBeGc7qOhRQ7Q8UQvOOyuRZHdxqe8HWRm0LT0j7aC8FvaQPZjn?=
+ =?us-ascii?Q?RPrYm6yu4wt2OPuLnLOPyZ75x/tAbd82tpcuDlLvs6kHRC6kvY1Qp1DhuWCu?=
+ =?us-ascii?Q?pJelHHnyJqlrhJxM9/KdsggNWxz1yH/EhBp2zl6qJWuqvOvCEiLDIzTXLSrf?=
+ =?us-ascii?Q?UE8jlrJonJ8UE8LIGN4uvGG1NqId+gM3sZwtiFdOv+oNJiZQRsM+xgeA0rYH?=
+ =?us-ascii?Q?Vyz4qHbm9/UfRE5C+mmM96kKraa1/a6tGaAdEsVP6atcX2PDtuDvZ0ia6Usr?=
+ =?us-ascii?Q?gG01OCZSWvg16Z289P7xEaH8JNniq9P7ZggM/YBzNWQMupdktRqspXzX22oB?=
+ =?us-ascii?Q?ga8/3yd9ghzkAGt90eAvKc17HOOjxo0nfgOVrfJZos3UKfJE0ezDXtUQRDXZ?=
+ =?us-ascii?Q?mG3sLRjD3/hzlfcdj350+tv8s6sqD6E1sIw+YBJYI3YIoOmCYK+Y5kzbXnOF?=
+ =?us-ascii?Q?bawa8BnARS3QS4SwQ4AvvXbwo+xo6jitCUy6C0w2GYbI9rJlnhj60HXb9qAR?=
+ =?us-ascii?Q?A1B+XQt3GTjTynXYyERIBpQCEuqvoan8h8kjSSg8dBW9knjujwKu6xGn8oYr?=
+ =?us-ascii?Q?3yPBwyu0zhVV0tG+UZbwjf/QOhP4Zmp8CTmDAg3aih68smsT3VJxNdtWo4KO?=
+ =?us-ascii?Q?gPDL4KoeYl+hFmQsASaxkbH+aJFcf4GPNRNYvm5SNmB9mxh4f3YywVcmt1TB?=
+ =?us-ascii?Q?88weL7dWOJ62ecckIqU8HbNtqTiHq3cviT5jXINaSL1giGgQtHhTUDMDOF7u?=
+ =?us-ascii?Q?0ZF/Sg=3D=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 95fddadf-2bf2-4aea-5c1f-08d99dff5022
+X-MS-Exchange-CrossTenant-AuthSource: BN0PR10MB5192.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB4865.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 83681562-e168-4a7d-d3da-08d99dfeed06
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Nov 2021 12:47:27.1625
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2021 12:50:13.8038
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: yf3WQHN2ooA2E1VZqr69kSM9YU58718EeR9v7M3F/+PEzOx7vEgO5nA9ZFWRpwZHlZbCeHVws4D0B9KLlAQ6CA3JcXYqNM9ET6JS4GHVveMlHzkeHAzjKhXE36Ja/0Ku
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB5010
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: CcCBgsDMqg84Kha61uwYm9MvN9jwSvLQaHzSeHxJnl3wrcuGT823iRiUv9Ko3dRC9EHb0byCFk/JvDuFK+rNDYiVDvozTN8Zxdv719uuBYM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR10MB5046
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10155 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 phishscore=0 bulkscore=0
+ spamscore=0 adultscore=0 suspectscore=0 mlxlogscore=999 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
+ definitions=main-2111020076
+X-Proofpoint-GUID: ZCtQYrgzHEjHiuau8L_ITGRn_BqVnMSl
+X-Proofpoint-ORIG-GUID: ZCtQYrgzHEjHiuau8L_ITGRn_BqVnMSl
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+Change min_t() to use type "unsigned int" instead of type "int" to
+avoid stack out of bounds. With min_t() type "int" the values get
+sign extended and the larger value gets used causing stack out of bounds.
 
-Could you please let me know if this patch series will be taken for 5.16?
+Reported-by: syzkaller <syzkaller@googlegroups.com>
+Signed-off-by: George Kennedy <george.kennedy@oracle.com>
 
-Thanks,
-Kavya
-> -----Original Message-----
-> From: Kavyasree Kotagiri [mailto:kavyasree.kotagiri@microchip.com]
-> Sent: Tuesday, October 19, 2021 1:10 PM
-> To: robh+dt@kernel.org; mturquette@baylibre.com; sboyd@kernel.org
-> Cc: Nicolas Ferre - M43238 <Nicolas.Ferre@microchip.com>; linux-
-> kernel@vger.kernel.org; devicetree@vger.kernel.org; linux-
-> clk@vger.kernel.org; UNGLinuxDriver <UNGLinuxDriver@microchip.com>;
-> Eugen Hristev - M18282 <Eugen.Hristev@microchip.com>; Kavyasree Kotagiri
-> - I30978 <Kavyasree.Kotagiri@microchip.com>; Manohar Puri - I30488
-> <Manohar.Puri@microchip.com>
-> Subject: [PATCH v9 0/3] Add driver for lan966x Generic Clock Controller
->=20
-> This patch series adds a device driver for Generic Clock Controller
-> of lan966x SoC.
->=20
-> v8 -> v9:
-> - Added Acked-by to dt-bindings and Documentation file.
-> - Changed clk_name "timer" to "timer1"
-> - Updated devm_kzalloc in probe function.
->=20
-> v7 -> v8:
-> - Defined new constant DIV_MAX.
-> - Corrected and updated prescaler divider condition check.
-> - Added Acked-by.
->=20
-> v6 -> v7:
-> - Added Kconfig and Makefile entires for lan966x clock driver.
->=20
-> v5 -> v6:
-> - Added Acked-by to dt-bindings file.
-> - Removed "_clk" in clock-names.
-> - Added Reviewed-by to Documentation file.
->=20
-> v4 -> v5:
-> - In v4 dt-bindings, missed adding "clock-names" in required
->   properties and example. So, added them.
-> - Returning proper error - PTR_ERR.
-> - Removed unused variable "ret" in probe function.
->=20
-> v3 -> v4:
-> - Updated "clocks" and added "clock-names" in dt-bindings.
-> - Used clk_parent_data instead of of_clk_get_parent_name().
->=20
-> v2 -> v3:
-> - Fixed dt_binding_check errors.
->=20
-> v1 -> v2:
-> - Updated license in dt-bindings.
-> - Updated example provided for clock controller node.
->=20
-> Kavyasree Kotagiri (3):
->   dt-bindings: clock: lan966x: Add binding includes for lan966x SoC
->     clock IDs
->   dt-bindings: clock: lan966x: Add LAN966X Clock Controller
->   clk: lan966x: Add lan966x SoC clock driver
->=20
->  .../bindings/clock/microchip,lan966x-gck.yaml |  57 +++++
->  drivers/clk/Kconfig                           |   7 +
->  drivers/clk/Makefile                          |   1 +
->  drivers/clk/clk-lan966x.c                     | 240 ++++++++++++++++++
->  include/dt-bindings/clock/microchip,lan966x.h |  28 ++
->  5 files changed, 333 insertions(+)
->  create mode 100644
-> Documentation/devicetree/bindings/clock/microchip,lan966x-gck.yaml
->  create mode 100644 drivers/clk/clk-lan966x.c
->  create mode 100644 include/dt-bindings/clock/microchip,lan966x.h
->=20
-> --
-> 2.17.1
+BUG: KASAN: stack-out-of-bounds in memcpy include/linux/fortify-string.h:191 [inline]
+BUG: KASAN: stack-out-of-bounds in sg_copy_buffer+0x1de/0x240 lib/scatterlist.c:976
+Read of size 127 at addr ffff888072607128 by task syz-executor.7/18707
+
+CPU: 1 PID: 18707 Comm: syz-executor.7 Not tainted 5.15.0-syzk #1
+Hardware name: Red Hat KVM, BIOS 1.13.0-2.module+el8.3.0+7860+a7792d29 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x89/0xb5 lib/dump_stack.c:106
+ print_address_description.constprop.9+0x28/0x160 mm/kasan/report.c:256
+ __kasan_report mm/kasan/report.c:442 [inline]
+ kasan_report.cold.14+0x7d/0x117 mm/kasan/report.c:459
+ check_region_inline mm/kasan/generic.c:183 [inline]
+ kasan_check_range+0x1a3/0x210 mm/kasan/generic.c:189
+ memcpy+0x23/0x60 mm/kasan/shadow.c:65
+ memcpy include/linux/fortify-string.h:191 [inline]
+ sg_copy_buffer+0x1de/0x240 lib/scatterlist.c:976
+ sg_copy_from_buffer+0x33/0x40 lib/scatterlist.c:1000
+ fill_from_dev_buffer.part.34+0x82/0x130 drivers/scsi/scsi_debug.c:1162
+ fill_from_dev_buffer drivers/scsi/scsi_debug.c:1888 [inline]
+ resp_readcap16+0x365/0x3b0 drivers/scsi/scsi_debug.c:1887
+ schedule_resp+0x4d8/0x1a70 drivers/scsi/scsi_debug.c:5478
+ scsi_debug_queuecommand+0x8c9/0x1ec0 drivers/scsi/scsi_debug.c:7533
+ scsi_dispatch_cmd drivers/scsi/scsi_lib.c:1520 [inline]
+ scsi_queue_rq+0x16b0/0x2d40 drivers/scsi/scsi_lib.c:1699
+ blk_mq_dispatch_rq_list+0xb9b/0x2700 block/blk-mq.c:1639
+ __blk_mq_sched_dispatch_requests+0x28f/0x590 block/blk-mq-sched.c:325
+ blk_mq_sched_dispatch_requests+0x105/0x190 block/blk-mq-sched.c:358
+ __blk_mq_run_hw_queue+0xe5/0x150 block/blk-mq.c:1761
+ __blk_mq_delay_run_hw_queue+0x4f8/0x5c0 block/blk-mq.c:1838
+ blk_mq_run_hw_queue+0x18d/0x350 block/blk-mq.c:1891
+ blk_mq_sched_insert_request+0x3db/0x4e0 block/blk-mq-sched.c:474
+ blk_execute_rq_nowait+0x16b/0x1c0 block/blk-exec.c:62
+ sg_common_write.isra.18+0xeb3/0x2000 drivers/scsi/sg.c:836
+ sg_new_write.isra.19+0x570/0x8c0 drivers/scsi/sg.c:774
+ sg_ioctl_common+0x14d6/0x2710 drivers/scsi/sg.c:939
+ sg_ioctl+0xa2/0x180 drivers/scsi/sg.c:1165
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:874 [inline]
+ __se_sys_ioctl fs/ioctl.c:860 [inline]
+ __x64_sys_ioctl+0x19d/0x220 fs/ioctl.c:860
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3a/0x80 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+---
+ drivers/scsi/scsi_debug.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/scsi/scsi_debug.c b/drivers/scsi/scsi_debug.c
+index 40b473e..e4c48fb 100644
+--- a/drivers/scsi/scsi_debug.c
++++ b/drivers/scsi/scsi_debug.c
+@@ -1189,7 +1189,7 @@ static int p_fill_from_dev_buffer(struct scsi_cmnd *scp, const void *arr,
+ 		 __func__, off_dst, scsi_bufflen(scp), act_len,
+ 		 scsi_get_resid(scp));
+ 	n = scsi_bufflen(scp) - (off_dst + act_len);
+-	scsi_set_resid(scp, min_t(int, scsi_get_resid(scp), n));
++	scsi_set_resid(scp, min_t(unsigned int, scsi_get_resid(scp), n));
+ 	return 0;
+ }
+ 
+@@ -1714,7 +1714,7 @@ static int resp_inquiry(struct scsi_cmnd *scp, struct sdebug_dev_info *devip)
+ 	}
+ 	put_unaligned_be16(0x2100, arr + n);	/* SPL-4 no version claimed */
+ 	ret = fill_from_dev_buffer(scp, arr,
+-			    min_t(int, alloc_len, SDEBUG_LONG_INQ_SZ));
++			    min_t(unsigned int, alloc_len, SDEBUG_LONG_INQ_SZ));
+ 	kfree(arr);
+ 	return ret;
+ }
+@@ -1774,7 +1774,7 @@ static int resp_requests(struct scsi_cmnd *scp,
+ 			arr[7] = 0xa;
+ 		}
+ 	}
+-	return fill_from_dev_buffer(scp, arr, min_t(int, len, alloc_len));
++	return fill_from_dev_buffer(scp, arr, min_t(unsigned int, len, alloc_len));
+ }
+ 
+ static int resp_start_stop(struct scsi_cmnd *scp, struct sdebug_dev_info *devip)
+@@ -1885,7 +1885,7 @@ static int resp_readcap16(struct scsi_cmnd *scp,
+ 	}
+ 
+ 	return fill_from_dev_buffer(scp, arr,
+-			    min_t(int, alloc_len, SDEBUG_READCAP16_ARR_SZ));
++			    min_t(unsigned int, alloc_len, SDEBUG_READCAP16_ARR_SZ));
+ }
+ 
+ #define SDEBUG_MAX_TGTPGS_ARR_SZ 1412
+@@ -1959,9 +1959,9 @@ static int resp_report_tgtpgs(struct scsi_cmnd *scp,
+ 	 * - The constructed command length
+ 	 * - The maximum array size
+ 	 */
+-	rlen = min_t(int, alen, n);
++	rlen = min_t(unsigned int, alen, n);
+ 	ret = fill_from_dev_buffer(scp, arr,
+-			   min_t(int, rlen, SDEBUG_MAX_TGTPGS_ARR_SZ));
++			   min_t(unsigned int, rlen, SDEBUG_MAX_TGTPGS_ARR_SZ));
+ 	kfree(arr);
+ 	return ret;
+ }
+@@ -2467,7 +2467,7 @@ static int resp_mode_sense(struct scsi_cmnd *scp,
+ 		arr[0] = offset - 1;
+ 	else
+ 		put_unaligned_be16((offset - 2), arr + 0);
+-	return fill_from_dev_buffer(scp, arr, min_t(int, alloc_len, offset));
++	return fill_from_dev_buffer(scp, arr, min_t(unsigned int, alloc_len, offset));
+ }
+ 
+ #define SDEBUG_MAX_MSELECT_SZ 512
+@@ -2652,9 +2652,9 @@ static int resp_log_sense(struct scsi_cmnd *scp,
+ 		mk_sense_invalid_fld(scp, SDEB_IN_CDB, 3, -1);
+ 		return check_condition_result;
+ 	}
+-	len = min_t(int, get_unaligned_be16(arr + 2) + 4, alloc_len);
++	len = min_t(unsigned int, get_unaligned_be16(arr + 2) + 4, alloc_len);
+ 	return fill_from_dev_buffer(scp, arr,
+-		    min_t(int, len, SDEBUG_MAX_INQ_ARR_SZ));
++		    min_t(unsigned int, len, SDEBUG_MAX_INQ_ARR_SZ));
+ }
+ 
+ static inline bool sdebug_dev_is_zoned(struct sdebug_dev_info *devip)
+@@ -4425,7 +4425,7 @@ static int resp_report_zones(struct scsi_cmnd *scp,
+ 	put_unaligned_be64(sdebug_capacity - 1, arr + 8);
+ 
+ 	rep_len = (unsigned long)desc - (unsigned long)arr;
+-	ret = fill_from_dev_buffer(scp, arr, min_t(int, alloc_len, rep_len));
++	ret = fill_from_dev_buffer(scp, arr, min_t(unsigned int, alloc_len, rep_len));
+ 
+ fini:
+ 	read_unlock(macc_lckp);
+-- 
+1.8.3.1
 
