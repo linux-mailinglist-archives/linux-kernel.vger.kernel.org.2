@@ -2,154 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D88B14429A9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 09:40:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B94B4429AB
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 09:40:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230324AbhKBIms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 04:42:48 -0400
-Received: from mga12.intel.com ([192.55.52.136]:39571 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229612AbhKBImr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 04:42:47 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10155"; a="211265311"
-X-IronPort-AV: E=Sophos;i="5.87,202,1631602800"; 
-   d="scan'208";a="211265311"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2021 01:40:13 -0700
-X-IronPort-AV: E=Sophos;i="5.87,202,1631602800"; 
-   d="scan'208";a="500426257"
-Received: from sohamdas-mobl.gar.corp.intel.com (HELO localhost) ([10.249.32.13])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2021 01:40:09 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     "Yuan\, Perry" <Perry.Yuan@amd.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     "dri-devel\@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Huang\, Shimmer" <Xinmei.Huang@amd.com>,
-        "Huang\, Ray" <Ray.Huang@amd.com>
-Subject: RE: [PATCH v2] drm/dp: Fix aux->transfer NULL pointer dereference on drm_dp_dpcd_access
-In-Reply-To: <MWHPR12MB1631610D235FCC3B47064F6B9C8B9@MWHPR12MB1631.namprd12.prod.outlook.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20211101061053.38173-1-Perry.Yuan@amd.com> <87a6iodnz7.fsf@intel.com> <MWHPR12MB1631610D235FCC3B47064F6B9C8B9@MWHPR12MB1631.namprd12.prod.outlook.com>
-Date:   Tue, 02 Nov 2021 10:40:07 +0200
-Message-ID: <87y267c5nc.fsf@intel.com>
+        id S230468AbhKBInE convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 2 Nov 2021 04:43:04 -0400
+Received: from relay6-d.mail.gandi.net ([217.70.183.198]:53645 "EHLO
+        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229612AbhKBInA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 04:43:00 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 4E021C0005;
+        Tue,  2 Nov 2021 08:40:24 +0000 (UTC)
+Date:   Tue, 2 Nov 2021 09:40:23 +0100
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     <Tudor.Ambarus@microchip.com>
+Cc:     <p.yadav@ti.com>, <michael@walle.cc>, <richard@nod.at>,
+        <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] MAINTAINERS: Add myself as the SPI NOR co-maintainer
+Message-ID: <20211102094023.768bc021@xps13>
+In-Reply-To: <4f4d36f5-8939-fda1-9c75-cbffbe587451@microchip.com>
+References: <20211029181157.20623-1-p.yadav@ti.com>
+        <4f4d36f5-8939-fda1-9c75-cbffbe587451@microchip.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 02 Nov 2021, "Yuan, Perry" <Perry.Yuan@amd.com> wrote:
-> [AMD Official Use Only]
->
-> Hi Jani:
-> Thanks for your comments.
->
->> -----Original Message-----
->> From: Jani Nikula <jani.nikula@linux.intel.com>
->> Sent: Monday, November 1, 2021 9:07 PM
->> To: Yuan, Perry <Perry.Yuan@amd.com>; Maarten Lankhorst
->> <maarten.lankhorst@linux.intel.com>; Maxime Ripard <mripard@kernel.org>;
->> Thomas Zimmermann <tzimmermann@suse.de>; David Airlie <airlied@linux.ie>;
->> Daniel Vetter <daniel@ffwll.ch>
->> Cc: Yuan, Perry <Perry.Yuan@amd.com>; dri-devel@lists.freedesktop.org; linux-
->> kernel@vger.kernel.org; Huang, Shimmer <Xinmei.Huang@amd.com>; Huang,
->> Ray <Ray.Huang@amd.com>
->> Subject: Re: [PATCH v2] drm/dp: Fix aux->transfer NULL pointer dereference on
->> drm_dp_dpcd_access
->> 
->> [CAUTION: External Email]
->> 
->> On Mon, 01 Nov 2021, Perry Yuan <Perry.Yuan@amd.com> wrote:
->> > Fix below crash by adding a check in the drm_dp_dpcd_access which
->> > ensures that aux->transfer was actually initialized earlier.
->> 
->> Gut feeling says this is papering over a real usage issue somewhere else. Why is
->> the aux being used for transfers before ->transfer has been set? Why should the
->> dp helper be defensive against all kinds of misprogramming?
->> 
->> 
->> BR,
->> Jani.
->> 
->
-> The issue was found by Intel IGT test suite, graphic by pass test case.
-> https://gitlab.freedesktop.org/drm/igt-gpu-tools
-> normally use case will not see the issue. 
-> To avoid this issue happy again when we run the test case , it will be nice to add a check before the transfer is called.
-> And we can see that it really needs to have a check here to make ITG &kernel happy.
+Hi Pratyush,
 
-You're missing my point. What is the root cause? Why do you have the aux
-device or connector registered before ->transfer function is
-initialized. I don't think you should do that.
+Tudor.Ambarus@microchip.com wrote on Tue, 2 Nov 2021 08:13:48 +0000:
 
-BR,
-Jani.
+> Hi, Pratyush,
+> 
+> On 10/29/21 9:11 PM, Pratyush Yadav wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> > 
+> > I have been reviewing patches and contributing for over a year. I would
+> > like to help maintain the subsystem as well.
+> >   
+> 
+> I'm happy to see that you're willing to take more responsibilities, it would
+> be nice to have you on board. I'll wait a bit before applying this patch to
+> give time to the MTD maintainers to review it.
 
+Thanks for stepping up! Tudor, feel free to add my:
 
->
-> Perry.
->
->> 
->> >
->> > BUG: kernel NULL pointer dereference, address: 0000000000000000 PGD 0
->> > P4D 0
->> > Oops: 0010 [#1] SMP NOPTI
->> > RIP: 0010:0x0
->> > Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
->> > RSP: 0018:ffffa8d64225bab8 EFLAGS: 00010246
->> > RAX: 0000000000000000 RBX: 0000000000000020 RCX: ffffa8d64225bb5e
->> > RDX: ffff93151d921880 RSI: ffffa8d64225bac8 RDI: ffff931511a1a9d8
->> > RBP: ffffa8d64225bb10 R08: 0000000000000001 R09: ffffa8d64225ba60
->> > R10: 0000000000000002 R11: 000000000000000d R12: 0000000000000001
->> > R13: 0000000000000000 R14: ffffa8d64225bb5e R15: ffff931511a1a9d8
->> > FS: 00007ff8ea7fa9c0(0000) GS:ffff9317fe6c0000(0000)
->> > knlGS:0000000000000000
->> > CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> > CR2: ffffffffffffffd6 CR3: 000000010d5a4000 CR4: 0000000000750ee0
->> > PKRU: 55555554
->> > Call Trace:
->> > drm_dp_dpcd_access+0x72/0x110 [drm_kms_helper]
->> > drm_dp_dpcd_read+0xb7/0xf0 [drm_kms_helper]
->> > drm_dp_start_crc+0x38/0xb0 [drm_kms_helper]
->> > amdgpu_dm_crtc_set_crc_source+0x1ae/0x3e0 [amdgpu]
->> > crtc_crc_open+0x174/0x220 [drm]
->> > full_proxy_open+0x168/0x1f0
->> > ? open_proxy_open+0x100/0x100
->> > do_dentry_open+0x156/0x370
->> > vfs_open+0x2d/0x30
->> >
->> > v2: fix some typo
->> >
->> > Signed-off-by: Perry Yuan <Perry.Yuan@amd.com>
->> > ---
->> >  drivers/gpu/drm/drm_dp_helper.c | 4 ++++
->> >  1 file changed, 4 insertions(+)
->> >
->> > diff --git a/drivers/gpu/drm/drm_dp_helper.c
->> > b/drivers/gpu/drm/drm_dp_helper.c index 6d0f2c447f3b..76b28396001a
->> > 100644
->> > --- a/drivers/gpu/drm/drm_dp_helper.c
->> > +++ b/drivers/gpu/drm/drm_dp_helper.c
->> > @@ -260,6 +260,10 @@ static int drm_dp_dpcd_access(struct drm_dp_aux
->> *aux, u8 request,
->> >       msg.buffer = buffer;
->> >       msg.size = size;
->> >
->> > +     /* No transfer function is set, so not an available DP connector */
->> > +     if (!aux->transfer)
->> > +             return -EINVAL;
->> > +
->> >       mutex_lock(&aux->hw_mutex);
->> >
->> >       /*
->> 
->> --
->> Jani Nikula, Intel Open Source Graphics Center
+Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
--- 
-Jani Nikula, Intel Open Source Graphics Center
+Thanks,
+Miquèl
