@@ -2,56 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4253442A06
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 10:01:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9074C442A0B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 10:02:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229800AbhKBJD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 05:03:56 -0400
-Received: from foss.arm.com ([217.140.110.172]:58656 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229505AbhKBJDy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 05:03:54 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3C3BB113E;
-        Tue,  2 Nov 2021 02:01:19 -0700 (PDT)
-Received: from bogus (unknown [10.57.46.68])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9C8E33F5A1;
-        Tue,  2 Nov 2021 02:01:17 -0700 (PDT)
-Date:   Tue, 2 Nov 2021 09:01:15 +0000
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Wan Jiabing <wanjiabing@vivo.com>
-Cc:     Wolfram Sang <wsa@kernel.org>, Zhiqi Song <songzhiqi1@huawei.com>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-i2c@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>,
-        linux-kernel@vger.kernel.org, jiabing.wan@qq.com
-Subject: Re: [PATCH] i2c: xgene-slimpro: Fix inconsistent IS_ERR and PTR_ERR
-Message-ID: <20211102090115.svupxektn2vpa7id@bogus>
-References: <20211102021229.18501-1-wanjiabing@vivo.com>
+        id S231136AbhKBJFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 05:05:12 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:55682 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229881AbhKBJFK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 05:05:10 -0400
+X-UUID: ba0947763eba4ab8b4368587899f201f-20211102
+X-UUID: ba0947763eba4ab8b4368587899f201f-20211102
+Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw01.mediatek.com
+        (envelope-from <seiya.wang@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1219803053; Tue, 02 Nov 2021 17:02:33 +0800
+Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.792.15; Tue, 2 Nov 2021 17:02:32 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs10n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.792.3 via Frontend Transport; Tue, 2 Nov 2021 17:02:32 +0800
+From:   Seiya Wang <seiya.wang@mediatek.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <srv_heupstream@mediatek.com>,
+        Seiya Wang <seiya.wang@mediatek.com>
+Subject: [RESEND v2] arm64: dts: mt8183: support coresight-cpu-debug for mt8183
+Date:   Tue, 2 Nov 2021 17:02:30 +0800
+Message-ID: <20211102090230.25013-1-seiya.wang@mediatek.com>
+X-Mailer: git-send-email 2.14.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211102021229.18501-1-wanjiabing@vivo.com>
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wan,
+Add coresight-cpu-debug nodes to mt8183 for dumping
+EDPRSR, EDPCSR, EDCIDSR, EDVIDSR
+while kernel panic happens
 
-On Mon, Nov 01, 2021 at 10:12:27PM -0400, Wan Jiabing wrote:
-> Fix following coccicheck warning:
-> ./drivers/i2c/busses/i2c-xgene-slimpro.c:488:6-12: inconsistent IS_ERR
-> and PTR_ERR on line 490.
+Signed-off-by: Seiya Wang <seiya.wang@mediatek.com>
+---
+ arch/arm64/boot/dts/mediatek/mt8183.dtsi | 64 ++++++++++++++++++++++++++++++++
+ 1 file changed, 64 insertions(+)
 
-There is another version @[1]. Thanks for the effort.
-
-Hi Wolfram,
-
-Can you pick [1] after -rc1 ? I see mailbox updates are in the mainline
-already.
-
+diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+index 409cf827970c..2d36575e7dbe 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+@@ -367,6 +367,70 @@
+ 			reg = <0 0x0c530a80 0 0x50>;
+ 		};
+ 
++		cpu_debug0: cpu-debug@d410000 {
++			compatible = "arm,coresight-cpu-debug", "arm,primecell";
++			reg = <0x0 0xd410000 0x0 0x1000>;
++			clocks = <&infracfg CLK_INFRA_DEBUGSYS>;
++			clock-names = "apb_pclk";
++			cpu = <&cpu0>;
++		};
++
++		cpu_debug1: cpu-debug@d510000 {
++			compatible = "arm,coresight-cpu-debug", "arm,primecell";
++			reg = <0x0 0xd510000 0x0 0x1000>;
++			clocks = <&infracfg CLK_INFRA_DEBUGSYS>;
++			clock-names = "apb_pclk";
++			cpu = <&cpu1>;
++		};
++
++		cpu_debug2: cpu-debug@d610000 {
++			compatible = "arm,coresight-cpu-debug", "arm,primecell";
++			reg = <0x0 0xd610000 0x0 0x1000>;
++			clocks = <&infracfg CLK_INFRA_DEBUGSYS>;
++			clock-names = "apb_pclk";
++			cpu = <&cpu2>;
++		};
++
++		cpu_debug3: cpu-debug@d710000 {
++			compatible = "arm,coresight-cpu-debug", "arm,primecell";
++			reg = <0x0 0xd710000 0x0 0x1000>;
++			clocks = <&infracfg CLK_INFRA_DEBUGSYS>;
++			clock-names = "apb_pclk";
++			cpu = <&cpu3>;
++		};
++
++		cpu_debug4: cpu-debug@d810000 {
++			compatible = "arm,coresight-cpu-debug", "arm,primecell";
++			reg = <0x0 0xd810000 0x0 0x1000>;
++			clocks = <&infracfg CLK_INFRA_DEBUGSYS>;
++			clock-names = "apb_pclk";
++			cpu = <&cpu4>;
++		};
++
++		cpu_debug5: cpu-debug@d910000 {
++			compatible = "arm,coresight-cpu-debug", "arm,primecell";
++			reg = <0x0 0xd910000 0x0 0x1000>;
++			clocks = <&infracfg CLK_INFRA_DEBUGSYS>;
++			clock-names = "apb_pclk";
++			cpu = <&cpu5>;
++		};
++
++		cpu_debug6: cpu-debug@da10000 {
++			compatible = "arm,coresight-cpu-debug", "arm,primecell";
++			reg = <0x0 0xda10000 0x0 0x1000>;
++			clocks = <&infracfg CLK_INFRA_DEBUGSYS>;
++			clock-names = "apb_pclk";
++			cpu = <&cpu6>;
++		};
++
++		cpu_debug7: cpu-debug@db10000 {
++			compatible = "arm,coresight-cpu-debug", "arm,primecell";
++			reg = <0x0 0xdb10000 0x0 0x1000>;
++			clocks = <&infracfg CLK_INFRA_DEBUGSYS>;
++			clock-names = "apb_pclk";
++			cpu = <&cpu7>;
++		};
++
+ 		topckgen: syscon@10000000 {
+ 			compatible = "mediatek,mt8183-topckgen", "syscon";
+ 			reg = <0 0x10000000 0 0x1000>;
 -- 
-Regards,
-Sudeep
+2.14.1
 
-[1] https://lore.kernel.org/kernel-janitors/20211101140235.777322-1-weiyongjun1@huawei.com/
