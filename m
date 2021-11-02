@@ -2,162 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F15E4436E0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 20:59:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3CB54436E2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 21:01:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231148AbhKBUBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 16:01:44 -0400
-Received: from mail-pl1-f175.google.com ([209.85.214.175]:33296 "EHLO
-        mail-pl1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229813AbhKBUBn (ORCPT
+        id S230429AbhKBUEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 16:04:14 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:23382 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230060AbhKBUEN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 16:01:43 -0400
-Received: by mail-pl1-f175.google.com with SMTP id s24so617319plp.0;
-        Tue, 02 Nov 2021 12:59:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RkF10ejv+ZfbbBVLr9JViJZH+YXp2/4h2Ubp9f1gi2c=;
-        b=mc7wf9S3vGDNWjNgPTnaD5ghHG98OpxUGSiTEfwtyeU5sls3AGHrhR7gFuK7F4AwdJ
-         tTITkyIRovka5daBa0lqOS3NqA6sHBNwdiGvtBp41KP5xSOo+kLJByf/IFRTOQtmu2fU
-         kHFQQV0pfX1T+dXoZwEY2VJLZPG6GRqtywPHgdRCaAyBwrV2J5aNuP3ahc1+nieeoYpy
-         idck+y2EdfvRsA+iYx8HKTD4ztf6FygMgffKsg8re0h5L9UBZNnJ90ahqgVuN2V4Mdi8
-         FANMx4ATyYy5Yww90SNtTY8Ye7bFrix/1EG5jZ7olpeZjql5J7QTJNZ/2Z8+X5dt7HHo
-         HcUQ==
-X-Gm-Message-State: AOAM531k+kF1pOdnmbwhvEJRnLCzYmTHEFE02Kh7MwV257GEThRaEOoA
-        Lovu4RwQjbJctSwJJGThvwRdCIJwO/oYUiTdLuo=
-X-Google-Smtp-Source: ABdhPJzAfyeKaGl5VCZ/L0KzMJgJN7/MZZr3d178DvhBBn4vWjScd0QbjXhDeG6xtMzYne48NrYC54CQIPNWsHmSO+U=
-X-Received: by 2002:a17:903:11c5:b0:13f:ef40:e319 with SMTP id
- q5-20020a17090311c500b0013fef40e319mr33828546plh.33.1635883148168; Tue, 02
- Nov 2021 12:59:08 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211102161125.1144023-1-kernel@esmil.dk> <20211102161125.1144023-10-kernel@esmil.dk>
- <CAHp75Ve-P8DR00mtRP_NkrXgB4nsZ+qBkgBen94iTcPqxQYUOg@mail.gmail.com>
-In-Reply-To: <CAHp75Ve-P8DR00mtRP_NkrXgB4nsZ+qBkgBen94iTcPqxQYUOg@mail.gmail.com>
-From:   Emil Renner Berthing <kernel@esmil.dk>
-Date:   Tue, 2 Nov 2021 20:58:57 +0100
-Message-ID: <CANBLGcyb=TAP0h2WuxBAjRvpN9n7Dt1Hvh5yE8NMOwm3ixZWuA@mail.gmail.com>
-Subject: Re: [PATCH v3 09/16] reset: starfive-jh7100: Add StarFive JH7100
- reset driver
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Yury Norov <yury.norov@gmail.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tue, 2 Nov 2021 16:04:13 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1635883298; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=PM2vqsyPhigju6bhWFQKUBBtAyKhjiTZ3RomQD8TF4k=; b=QezvhduCwdW6h1h8maI2JUtIicT7YPdFEOe6dPRjOzEwKge2OXHZXH1KbdhO2ZO/NQTgt+A4
+ QBlVbHEYgQvGElPLJA+wZSJkJaHpCXvCcxD7pgEGXO2LP6uJyT/NTQQh2RqBV961bt47HPov
+ 871aqfin6iJdUNPUHsldL3W4FPI=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 618198fc545d7d365f1e8a64 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 02 Nov 2021 20:01:00
+ GMT
+Sender: manafm=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 81250C4338F; Tue,  2 Nov 2021 20:00:59 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from codeaurora.org (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: manafm)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 76BBDC4360C;
+        Tue,  2 Nov 2021 20:00:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 76BBDC4360C
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>
+To:     Zhang Rui <rui.zhang@intel.com>,
         Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Sagar Kadam <sagar.kadam@sifive.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michael Zhu <michael.zhu@starfivetech.com>,
-        Fu Wei <tekkamanninja@gmail.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Amit Kucheria <amitk@kernel.org>,
+        Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>
+Subject: [PATCH] drivers: thermal: Reset previous low and high trip during thermal zone init
+Date:   Wed,  3 Nov 2021 01:30:40 +0530
+Message-Id: <1635883240-24293-1-git-send-email-manafm@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2 Nov 2021 at 20:43, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> +Cc: Yury (bitmap expert)
->
-> On Tue, Nov 2, 2021 at 6:50 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
-> >
-> > Add a driver for the StarFive JH7100 reset controller.
->
-> ...
->
-> > +#define BIT_MASK32(x) BIT((x) % 32)
->
-> Possible namespace collision.
->
-> ...
->
-> > +/*
-> > + * the registers work like a 32bit bitmap, so writing a 1 to the m'th bit of
-> > + * the n'th ASSERT register asserts line 32n + m, and writing a 0 deasserts the
-> > + * same line.
-> > + * most reset lines have their status inverted so a 0 in the STATUS register
-> > + * means the line is asserted and a 1 means it's deasserted. a few lines don't
-> > + * though, so store the expected value of the status registers when all lines
-> > + * are asserted.
-> > + */
->
-> Besides missing capitalization,
+During the suspend is in process, thermal_zone_device_update bails out
+thermal zone re-evaluation for any sensor trip violation without
+setting next valid trip to that sensor. It assumes during resume
+it will re-evaluate same thermal zone and update trip. But when it is
+in suspend temperature goes down and on resume path while updating
+thermal zone if temperature is less than previously violated trip,
+thermal zone set trip function evaluates the same previous high and
+previous low trip as new high and low trip. Since there is no change
+in high/low trip, it bails out from thermal zone set trip API without
+setting any trip. It leads to a case where sensor high trip or low
+trip is disabled forever even though thermal zone has a valid high
+or low trip.
 
-I'm confused. it was you who wanted all comments to capitalized the same..
-64bi
-if it sounds like bitmap, use bitmap.
-> I have checked DT definitions and it seems you don't even need the
-> BIT_MASK() macro,
->
-> > +static const u32 jh7100_reset_asserted[4] = {
-> > +       /* STATUS0 register */
-> > +       BIT_MASK32(JH7100_RST_U74) |
-> > +       BIT_MASK32(JH7100_RST_VP6_DRESET) |
-> > +       BIT_MASK32(JH7100_RST_VP6_BRESET),
-> > +       /* STATUS1 register */
-> > +       BIT_MASK32(JH7100_RST_HIFI4_DRESET) |
-> > +       BIT_MASK32(JH7100_RST_HIFI4_BRESET),
-> > +       /* STATUS2 register */
-> > +       BIT_MASK32(JH7100_RST_E24),
-> > +       /* STATUS3 register */
-> > +       0,
-> > +};
->
-> Yury, do we have any clever (clean) way to initialize a bitmap with
-> particular bits so that it will be a constant from the beginning? If
-> no, any suggestion what we can provide to such users?
+During thermal zone device init, reset thermal zone previous high
+and low trip. It resolves above mentioned scenario.
 
-The problem is, that even if we could initialize this without the
-monstrosity in our last conversation a 64bit bitmap would still
-produce worse code. As it is now it's simply a 32bit load and mask
-with index and mask already calculated for the registers. In the
-status callback the mask can even be folded into the register read
-mask. With a 64bit bitmap you'd need to calculate new 64bit index and
-masks, and then conditionally shift the bits into position.
+Signed-off-by: Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>
+---
+ drivers/thermal/thermal_core.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-If this reflection of the 32bit registers bothers you that much we
-could alternatively do
+diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+index 21db445..2b7a0b4 100644
+--- a/drivers/thermal/thermal_core.c
++++ b/drivers/thermal/thermal_core.c
+@@ -477,6 +477,8 @@ static void thermal_zone_device_init(struct thermal_zone_device *tz)
+ {
+ 	struct thermal_instance *pos;
+ 	tz->temperature = THERMAL_TEMP_INVALID;
++	tz->prev_low_trip = -INT_MAX;
++	tz->prev_high_trip = INT_MAX;
+ 	list_for_each_entry(pos, &tz->thermal_instances, tz_node)
+ 		pos->initialized = false;
+ }
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-static bool jh7100_reset_inverted(unsigned int idx)
-{
-  switch (idx) {
-  case JH7100_RST_U74:
-  case JH7100_RST_VP6_DRESET:
-  ..
-    return false;
-  }
-  return true;
-}
-
-It'd still produce worse code, but at least it would be readable.
-
-/Emil
-
-> ...
->
-> > +       dev_dbg(rcdev->dev, "reset(%lu)\n", id);
->
-> These debug messages are useless since one should use ftrace facility instead,
->
-> --
-> With Best Regards,
-> Andy Shevchenko
