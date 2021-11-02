@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D15BD4436CA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 20:52:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D1B84436C6
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 20:52:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231451AbhKBTzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 15:55:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40448 "EHLO mail.kernel.org"
+        id S231278AbhKBTzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 15:55:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40496 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229960AbhKBTzA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 15:55:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 8AEF660F56;
+        id S230348AbhKBTzB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 15:55:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id C70D06103C;
         Tue,  2 Nov 2021 19:52:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1635882745;
-        bh=ethvcXAgw7hAXhV6rcxbmeIEGf0BDTarDxmil7yV9RQ=;
+        bh=X2PNqZfaK8dci6B7EhGiHQeTSB7DIKM8msjsuYmgJqE=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=kS9+Jxm6iAIV+kY7hAzPC3KysfZczc3HEAQ68wVbXVM3IxrXnDYuDAcViMT6wrd60
-         KJLn0J19lYXJLO0wQWWovh4sC7976poerFU8fpPuFWpVoS97+N8+PmDHDSZm+xahdm
-         iyX3Ih/KtaTFprJE2r9egCG8P2txe3JafnYYkjFBeUAUOYbn9ddezE+eXXwRmcud5g
-         jqDevM0HkzPaZ+qM3L7op5VYYo2txsY7P1i/yIxCgCH70fIAxCO5F8EaBa62O9z4Gh
-         /wyqgX9MLZUiKz8QlrCX1+I4NDUa23bmvV45YWxUlHz78ADFbjy4WTw6L+OgIdn3Eg
-         FnGX7ViRC2GKQ==
+        b=D3JslLL0mbr/iPjCxFpC3ZdvuGh8/cWmm1KOwzaZCtB0S5cfvFwwOv6uHNe48DKhG
+         RJJMOva5Lg76lvfwBCe5+FkWgzwWp4G9TKIDRk1KECGQMe7WdxJu/B3TzVNmE8+LLh
+         z7WSHtxAHXj9p7bxvc1ikI4D0OElDddDu6EzSC260Xk9rEAnSpVMiq2I3LM1QRwI20
+         YbVx8bGPPWnOz22VUn2IorFsS5fkopSUUWbZCBXOpsCvoSSNwucBbh7SbF8sSpJCTQ
+         7O++A9ftoogC6wfRyBZ027dFVDSYtCKwEL3wZgaaZZIT8fGkb7DxjJJ1JAhseyr/M8
+         INMj9MVtmiHfQ==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7B75D60A90;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id BFA6E60A90;
         Tue,  2 Nov 2021 19:52:25 +0000 (UTC)
-Subject: Re: [GIT PULL] afs: Split readpage and fix file creation mtime
+Subject: Re: [GIT PULL] xfs: new code for 5.16
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <4096836.1635850852@warthog.procyon.org.uk>
-References: <4096836.1635850852@warthog.procyon.org.uk>
+In-Reply-To: <20211102184650.GH24307@magnolia>
+References: <20211102184650.GH24307@magnolia>
 X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <4096836.1635850852@warthog.procyon.org.uk>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git tags/afs-next-20211102
-X-PR-Tracked-Commit-Id: 52af7105eceb311b96b3b7971a367f30a70de907
+X-PR-Tracked-Message-Id: <20211102184650.GH24307@magnolia>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/xfs-5.16-merge-4
+X-PR-Tracked-Commit-Id: 2a09b575074ff3ed23907b6f6f3da87af41f592b
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: a64a325bf6313aa5cde7ecd691927e92892d1b7f
-Message-Id: <163588274544.22794.11941161138322676189.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: bba7d682277c09373b56b0461b0abbd0b3d1e872
+Message-Id: <163588274577.22794.1156896528638745710.pr-tracker-bot@kernel.org>
 Date:   Tue, 02 Nov 2021 19:52:25 +0000
-To:     David Howells <dhowells@redhat.com>
-Cc:     torvalds@linux-foundation.org, dhowells@redhat.com,
-        marc.dionne@auristor.com, linux-afs@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        david@fromorbit.com, linux-kernel@vger.kernel.org,
+        sandeen@sandeen.net, hch@lst.de
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 02 Nov 2021 11:00:52 +0000:
+The pull request you sent on Tue, 2 Nov 2021 11:46:50 -0700:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git tags/afs-next-20211102
+> git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/xfs-5.16-merge-4
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/a64a325bf6313aa5cde7ecd691927e92892d1b7f
+https://git.kernel.org/torvalds/c/bba7d682277c09373b56b0461b0abbd0b3d1e872
 
 Thank you!
 
