@@ -2,88 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E65D44346C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 18:13:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFD1944346F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 18:14:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234242AbhKBRPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 13:15:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56586 "EHLO mail.kernel.org"
+        id S234285AbhKBRQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 13:16:36 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:43634 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234158AbhKBRPx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 13:15:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F84561050;
-        Tue,  2 Nov 2021 17:13:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635873198;
-        bh=QC4eoJ/UG6mp2LiLFOrPYp4zA5ytGJ6WUW2xwUjtOD0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZMuMmAMJAeyQrtEKoziuIV/TSTSlU7ZYp6HMLIe2wulQIkOWfWrSWUWj8PaeNKAgm
-         TwQ4HToRcHn83IrcnlQeL3DB2SLvXfIoBliuiPX6P+WDW2BeQIA54KK2bBxgkQ3Wnq
-         tnh53bP9RPuJngq5fr21zYITGV0Nr9MXD9u0sXZYwmjdzMMyXwj/PiuKkC/qUrNjBr
-         oNgIESxEz6OG/ze0ZDIEVPv+UzzIqScDGJPlq0y4H0r3IAxVoSRqZmPIwAHPbu9vV8
-         Q2fCVuOjSs7jmoGTe1bdZrWFBql0Bipxkjjd7Hr+Y6GZSmvslQE6QQbQMf0gKytymg
-         j2/6mhNNkM7jA==
-Received: by pali.im (Postfix)
-        id 64F3A1E29; Tue,  2 Nov 2021 18:13:16 +0100 (CET)
-From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] MIPS: Cobalt: Explain GT64111 early PCI fixup
-Date:   Tue,  2 Nov 2021 18:12:59 +0100
-Message-Id: <20211102171259.9590-2-pali@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20211102171259.9590-1-pali@kernel.org>
-References: <20211101150405.14618-1-pali@kernel.org>
- <20211102171259.9590-1-pali@kernel.org>
+        id S229684AbhKBRQf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 13:16:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=TmVzMVTE0iCtYUmu/Z950typ+fjZNTMY0APAwpqZYU0=; b=K0lt4lV3mNOCQSick+hrxArjMf
+        RwZt0b05ye6pDrp0S1PLQyUNYcg3671TH6LQmWohavmhFUFAB5jP+ui0BYS6C5ptHeRL0qYDJbWvp
+        V8hBpIOSRprBZcy2BXTI3hIZYdA6HHwIOMNNbli/Ye/ts459qOUKUzsoaiWatzy7dyYs=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mhxM9-00CQKg-OY; Tue, 02 Nov 2021 18:13:53 +0100
+Date:   Tue, 2 Nov 2021 18:13:53 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Grygorii Strashko <grygorii.strashko@ti.com>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-kernel@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [RFC PATCH] net: phy/mdio: enable mmd indirect access through
+ phy_mii_ioctl()
+Message-ID: <YYFx0YJ2KlDhbfQB@lunn.ch>
+References: <20211101182859.24073-1-grygorii.strashko@ti.com>
+ <YYBBHsFEwGdPJw3b@lunn.ch>
+ <YYBF3IZoSN6/O6AL@shell.armlinux.org.uk>
+ <YYCLJnY52MoYfxD8@lunn.ch>
+ <YYExmHYW49jOjfOt@shell.armlinux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YYExmHYW49jOjfOt@shell.armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Properly document why changing PCI Class Code for GT64111 device to Host
-Bridge is required as important details were after 20 years forgotten.
+On Tue, Nov 02, 2021 at 12:39:52PM +0000, Russell King (Oracle) wrote:
+> On Tue, Nov 02, 2021 at 01:49:42AM +0100, Andrew Lunn wrote:
+> > > The use of the indirect registers is specific to PHYs, and we already
+> > > know that various PHYs don't support indirect access, and some emulate
+> > > access to the EEE registers - both of which are handled at the PHY
+> > > driver level.
+> > 
+> > That is actually an interesting point. Should the ioctl call actually
+> > use the PHY driver read_mmd and write_mmd? Or should it go direct to
+> > the bus? realtek uses MII_MMD_DATA for something to do with suspend,
+> > and hence it uses genphy_write_mmd_unsupported(), or it has its own
+> > function emulating MMD operations.
+> > 
+> > So maybe the ioctl handler actually needs to use __phy_read_mmd() if
+> > there is a phy at the address, rather than go direct to the bus?
+> > 
+> > Or maybe we should just say no, you should do this all from userspace,
+> > by implementing C45 over C22 in userspace, the ioctl allows that, the
+> > kernel does not need to be involved.
+> 
+> Yes and no. There's a problem accessing anything that involves some kind
+> of indirect or paged access with the current API - you can only do one
+> access under the bus lock at a time, which makes the whole thing
+> unreliable. We've accepted that unreliability on the grounds that this
+> interface is for debugging only, so if it does go wrong, you get to keep
+> all the pieces!
 
-Signed-off-by: Pali Rohár <pali@kernel.org>
+Agreed.
 
----
-Changes in v2:
-* Split from ARM changes
-* Removal of Kconfig changes
-* Explanation is completely rewritten as as this MIPS Cobalt device
-  predates ARM Orion devices and reason is slightly different.
----
- arch/mips/pci/fixup-cobalt.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+> That said, the MII ioctls are designed to be a bus level thing - you can
+> address anything on the MII bus with them. Pushing the ioctl up to the
+> PHY layer means we need to find the right phy device to operate on. What
+> if we attempt a C45 access at an address that there isn't a phy device?
 
-diff --git a/arch/mips/pci/fixup-cobalt.c b/arch/mips/pci/fixup-cobalt.c
-index 44be65c3e6bb..00206ff52988 100644
---- a/arch/mips/pci/fixup-cobalt.c
-+++ b/arch/mips/pci/fixup-cobalt.c
-@@ -36,6 +36,21 @@
- #define VIA_COBALT_BRD_ID_REG  0x94
- #define VIA_COBALT_BRD_REG_to_ID(reg)	((unsigned char)(reg) >> 4)
- 
-+/*
-+ * Default value of PCI Class Code on GT64111 is PCI_CLASS_MEMORY_OTHER (0x0580)
-+ * instead of PCI_CLASS_BRIDGE_HOST (0x0600). Galileo explained this choice in
-+ * document "GT-64111 System Controller for RC4640, RM523X and VR4300 CPUs",
-+ * section "6.5.3 PCI Autoconfiguration at RESET":
-+ *
-+ *   Some PCs refuse to configure host bridges if they are found plugged into
-+ *   a PCI slot (ask the BIOS vendors why...). The "Memory Controller" Class
-+ *   Code does not cause a problem for these non-compliant BIOSes, so we used
-+ *   this as the default in the GT-64111.
-+ *
-+ * So fix the incorrect default value of PCI Class Code. More details are on:
-+ * https://lore.kernel.org/r/20211102154831.xtrlgrmrizl5eidl@pali/
-+ * https://lore.kernel.org/r/20211102150201.GA11675@alpha.franken.de/
-+ */
- static void qube_raq_galileo_early_fixup(struct pci_dev *dev)
- {
- 	if (dev->devfn == PCI_DEVFN(0, 0) &&
--- 
-2.20.1
+Yes, i think we need to keep with, this API is for MDIO bus access. If
+you want to do C45 over C22, you need to do it in user space, since
+that builds on top of basic MDIO bus accesses.
 
+> Personally, my feeling would be that if we want to solve this, we need
+> to solve this properly - we need to revise the interface so it's
+> possible to request the kernel to perform a group of MII operations, so
+> that userspace can safely access any paged/indirect register. With that
+> solved, there will be no issue with requiring userspace to know what
+> it's doing with indirect C45 accesses.
+
+I'm against that. It opens up an API to allow user space drivers,
+which i have always pushed back against. The current API is good
+enough you can use it for debug, but at the same time it is
+sufficiently broken that anybody trying to do user space drivers over
+it is asking for trouble. That seems like a good balance to me.
+
+   Andrew
