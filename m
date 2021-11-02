@@ -2,76 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76C6E443403
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 17:53:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B66144340D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 17:53:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234907AbhKBQzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 12:55:37 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:49940 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234881AbhKBQzC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 12:55:02 -0400
-Date:   Tue, 2 Nov 2021 17:52:24 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1635871946;
+        id S234522AbhKBQ4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 12:56:16 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:52004 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230008AbhKBQz5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 12:55:57 -0400
+Received: from zn.tnic (p200300ec2f0f6200599060f0a067c463.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:6200:5990:60f0:a067:c463])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id F2C4D1EC0532;
+        Tue,  2 Nov 2021 17:53:20 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1635872001;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=bCJaAndOO/4NSmeYwxNL/qLhoa4w8he58KG9tEjlpvw=;
-        b=dQdvQE+y1gD5dr3P04E2FvHdJB24twVjiPDqDHZCkaobEjGRin4ksCTd6bJJz5RZS4vNN1
-        fFkbc1BSM5TIjs7cBPJsvPFrzEw9qQSJko8+C64lXATbNXuc/8Ml2aboi0ssU/0SazQkNb
-        C4i9wx5rVpWRPT4XPvWUl0xmFK5O1jCWDdxMmBRjSPTEfYzDwiObwH31wNOUUDnsvjpLGQ
-        JMtgZrQk9I7Q5PittMg0jV3jdbYVkaBxatSoCMZyW9Zd4E2lI5dHFi+TCC2/ppLQxQwabc
-        kz13ukIiL5BXZB/lqwOaQi6SeoUf+0QdNGqGBl4o1gF4MIkIQwMGe/zY8+z95Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1635871946;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=bCJaAndOO/4NSmeYwxNL/qLhoa4w8he58KG9tEjlpvw=;
-        b=Zp3JV4lZ5qsNNfFTmiPwbBuYbuMm28Nn4ESQpe1JBEoYm46YEAznqCZFv0y3nvxJj6weaQ
-        far0iFNOgUu3WLDQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     linux-kernel@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH] x86/mm: Include spinlock_t definition in pgtable.
-Message-ID: <20211102165224.wpz4zyhsvwccx5p3@linutronix.de>
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=edrm3R3EEsBQR1D6gAzpHHTA03yLJ3qMQOUPmrVmSFM=;
+        b=eEDc+58iPJ1KEK5RLv3j8dCETvgVFTaSsrzR7pOdy3VmF7evYjnsJqxOiUibHXeetZf9IZ
+        xeLB0+L9Ka9uKeIjLpvQCSEWbp5E+bOJzk6g31SWdUqzALJiSOaft2W9zfN90hdCFQZWU8
+        VlrsoegkGI4LYkNqaMdK2ReBGgMAbQo=
+Date:   Tue, 2 Nov 2021 17:53:15 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        tony.luck@intel.com, marcorr@google.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH v6 14/42] x86/sev: Register GHCB memory when SEV-SNP is
+ active
+Message-ID: <YYFs+5UUMfyDgh/a@zn.tnic>
+References: <20211008180453.462291-1-brijesh.singh@amd.com>
+ <20211008180453.462291-15-brijesh.singh@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+In-Reply-To: <20211008180453.462291-15-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This header file provides forward declartion for pgd_lock but does not
-include the header defining its type. This works since the definition of
-spinlock_t is usually included somehow via printk.
+On Fri, Oct 08, 2021 at 01:04:25PM -0500, Brijesh Singh wrote:
+> +	/* SEV-SNP guest requires that GHCB must be registered. */
+> +	if (cc_platform_has(CC_ATTR_SEV_SNP))
+> +		snp_register_ghcb(data, __pa(ghcb));
 
-By trying to avoid recursive includes on PREEMPT_RT I avoided the loop
-in printk and as a consequnce kernel/intel.c failed to compile due to
-missing type definition.
+This looks like more of that "let's register a GHCB at the time the
+first #VC fires".
 
-Include the needed definition for spinlock_t.
+And there already is setup_ghcb() which is called in the #VC handler.
+And that thing registers a GHCB GPA.
 
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- arch/x86/include/asm/pgtable.h | 1 +
- 1 file changed, 1 insertion(+)
+But then you have to do it here again.
 
-diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
-index 448cd01eb3ecb..a34430b7af4a3 100644
---- a/arch/x86/include/asm/pgtable.h
-+++ b/arch/x86/include/asm/pgtable.h
-@@ -22,6 +22,7 @@
- #define pgprot_decrypted(prot)	__pgprot(__sme_clr(pgprot_val(prot)))
- 
- #ifndef __ASSEMBLY__
-+#include <linux/spinlock.h>
- #include <asm/x86_init.h>
- #include <asm/pkru.h>
- #include <asm/fpu/api.h>
+I think this should be changed together with the CPUID page detection
+stuff we talked about earlier, where, after you've established that this
+is an SNP guest, you call setup_ghcb() *once* and after that you have
+everything set up, including the GHCB GPA. And then the #VC exceptions
+can come.
+
+Right?
+
+Or is there a chicken-and-an-egg issue here which I'm not thinking
+about?
+
 -- 
-2.33.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
