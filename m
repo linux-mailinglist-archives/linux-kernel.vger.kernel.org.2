@@ -2,160 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0646443339
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 17:40:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01DE9443323
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 17:38:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230297AbhKBQmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 12:42:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234682AbhKBQmO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 12:42:14 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F7B8C0797B1
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 09:19:38 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id d27so16199127wrb.6
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 09:19:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=CpUJOmzAX/8URtDkwbVdkTj3rb0UDdNphvTprVMTsPc=;
-        b=A1vwiunFsjHUdX4UhJsd2VuGwcx8879Ito38Bw5Z+CDChY+JvT6+9VdPKIagndQl68
-         Og88/XHn4hWv7jPsWEI8vrmL1C/Hc/2mEQ9VdWVEzqdeb3+ZFzYdkKzk8M76yHKf2DGq
-         uwGggZzG2onxTwiykA04zouRFH1h+4GfgWU5TC5C2w6RuDpXckcllrNcKsv8M5Mq6Cyp
-         X1nmFXPBJO0zVR0TYc5IJ9txNp7kPo+wePNybRPcMKR8W05pyGzsbaxtBE51gquTAzRf
-         uFYRs799Vw3j55o5AyaNmxeBvPuUOyKR4QUA0Y04elwgeoKZTwVuBp5mU67wB9ifnjqJ
-         Lb+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CpUJOmzAX/8URtDkwbVdkTj3rb0UDdNphvTprVMTsPc=;
-        b=lIvdjRcXNOoWunEMAtRPCX1fxok0IrCShmlQYh5MRdd0wpXfhI4kgbS+gcuSmS5EXB
-         RznjyVJUGjLRTVJo/WrtJdCPjG9Pu5Uorud6TtA6Fj7y4RvHbbeT/pfdezu8HkIAzHB7
-         +EiBpQZaErHBCmjgTyAVkAF419p82eBViqhSGUzpdHQ5UBiyssAuTiv2xpM9zFS8SWU7
-         zNxPdPXCx9D2gqLh4lgSTcTRLsTvcAKIwkPzXDEVzvv7FSEpW6YIkA/wKuiuhwwxTjM0
-         VHqIAnBslJHAxfmyWua755NLoCb/jLf7HvV0pApkHvVwMgATnXa0Nw/HUgjisYd/sqkl
-         YBFg==
-X-Gm-Message-State: AOAM5305ckLvNIjNUC5szsdwI1qYgBSEgOK0E0KwRaw3/TmPG3my4WAq
-        yiaFiUYHYO3Y78CU1/BGf1WZ3g==
-X-Google-Smtp-Source: ABdhPJw22Mzzh+DNq9uyjKZ8BMu4fdbemenrQaeiEJsRrbU74XvHd0S+P3XM7QQdIkcWoYevFjDbpQ==
-X-Received: by 2002:a5d:64c8:: with SMTP id f8mr49212985wri.398.1635869976925;
-        Tue, 02 Nov 2021 09:19:36 -0700 (PDT)
-Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id n184sm1327774wme.2.2021.11.02.09.19.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Nov 2021 09:19:36 -0700 (PDT)
-Date:   Tue, 2 Nov 2021 16:19:34 +0000
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Jason Wessel <jason.wessel@windriver.com>,
-        Xiang wangx <wangxiang@cdjrlc.com>,
-        jing yangyang <jing.yangyang@zte.com.cn>,
-        kgdb-bugreport@lists.sourceforge.net,
-        LKML <linux-kernel@vger.kernel.org>,
-        Patch Tracking <patches@linaro.org>
-Subject: Re: [PATCH v3] kdb: Adopt scheduler's task classification
-Message-ID: <20211102161934.664jrypn5rxaszae@maple.lan>
-References: <20211101174344.3220974-1-daniel.thompson@linaro.org>
- <CAD=FV=VVV4n4sDziWRbY517Eb8mRJVxwH+ggxf37FXfYKiTJ6A@mail.gmail.com>
-MIME-Version: 1.0
+        id S234873AbhKBQlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 12:41:08 -0400
+Received: from mail-bn8nam11on2047.outbound.protection.outlook.com ([40.107.236.47]:15713
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234928AbhKBQkT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 12:40:19 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ip5cVBViBQq18Ts/4N7oyyVKY9VKoTp6VmBHIYTGXNg57faKI+DMefC3wNEogtKaHzvixp3E49I8m9JzWAmOv8oKIolfQsq5iRuLP6z8o4dvmBcxGfa6WnNvS8J6N1KbK3hYKx5NaV4YpUNGVcUHEmbTCxTio0z2zRwfPDRXZ3H61w2pAHeYqZM4NhQc9oyntWZtyVf8QjkeM0p9FdziJmY5gePoGxyMrK2oWS/ZlAGK/mgr7wTLiWqIY+t+4cCYV9nXMaFBdU6/fqUaK734CWbmYRe+J1U1ock2hC83ssbFpV6A76OlezHaX2xtyGCozFtb473CNNh01W1f7enUog==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=GXh5+bEYDdbrsKNO6jowEw9juCWIYZWPMRbip8T8Z1I=;
+ b=ggK6ewfXelNqGtBWPqSzgjwHQrO+J21e6g+S/uprEahkxFYSu2feIaxWWWnWNvR6GAOlFxKcivivslAbtrM3ntheDtAiGIr0+Vj1YXCVCqSFZSn6K/pgdhD4uqHWmtQUvzO9lTxs9t1l40ueBqhOAPa04eFfVjlK46au8wtn0ReicqpcXPev1O/wpGmcMph/qYrz1HvMczYlrzlGXuo8uNukXyxBnUr7qGIta7GbhRZPZJCwVpls1mxNU16FEgiAyhOSL3iNAVXgu3UYxdtlYo7IyzURxzzrYuOlhlkm5s9/Y3jWtOxEkojwOxzL35O/xBF5XqPpx4jJE+igKFSwfg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GXh5+bEYDdbrsKNO6jowEw9juCWIYZWPMRbip8T8Z1I=;
+ b=fPiYzEN9PJ5fORqXlrA0bN21EJ3bRK/8EdUYusawbv+hUnTAU2Uhy6ZjENCG1Q8jcEMPKSejT56YdbGNXPtQHbpmFrjiQya9iDnK4JVDcwv90mbyNEf2Tkw2I+J+FoOMVvs5vYOC/1Prkz4nrVW6xpCCqczklr14Wzp9t8ctNt2RT4fpGlSjH1iMotzs/yyefZzvEzNPboJ0SqusDjGwHU+WwHXowZcGDuzxcJUXL57LrLn1PVMFPSH3TDB3MEXmeyZRMA/cJIhdE4W49IW4az3L8HBB6xk00dx3tje6OZ57JH4Gz+VctGv2e/ZO6I+erryXKmAiM6gDR6z3QgoCFA==
+Authentication-Results: lst.de; dkim=none (message not signed)
+ header.d=none;lst.de; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL0PR12MB5540.namprd12.prod.outlook.com (2603:10b6:208:1cb::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.13; Tue, 2 Nov
+ 2021 16:19:55 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4649.020; Tue, 2 Nov 2021
+ 16:19:55 +0000
+Date:   Tue, 2 Nov 2021 13:19:54 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        intel-gfx@lists.freedesktop.org,
+        intel-gvt-dev@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 25/29] drm/i915/gvt: streamline intel_vgpu_create
+Message-ID: <20211102161954.GE2744544@nvidia.com>
+References: <20211102070601.155501-1-hch@lst.de>
+ <20211102070601.155501-26-hch@lst.de>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAD=FV=VVV4n4sDziWRbY517Eb8mRJVxwH+ggxf37FXfYKiTJ6A@mail.gmail.com>
+In-Reply-To: <20211102070601.155501-26-hch@lst.de>
+X-ClientProxiedBy: BL1PR13CA0205.namprd13.prod.outlook.com
+ (2603:10b6:208:2be::30) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
+MIME-Version: 1.0
+Received: from mlx.ziepe.ca (142.162.113.129) by BL1PR13CA0205.namprd13.prod.outlook.com (2603:10b6:208:2be::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.4 via Frontend Transport; Tue, 2 Nov 2021 16:19:55 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mhwVu-005Acx-Go; Tue, 02 Nov 2021 13:19:54 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 26db1839-a232-4824-6aa7-08d99e1c9b5c
+X-MS-TrafficTypeDiagnostic: BL0PR12MB5540:
+X-Microsoft-Antispam-PRVS: <BL0PR12MB5540A5CFFF33E1AC39136B1AC28B9@BL0PR12MB5540.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1201;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: awpv4+nhHwivbxHVpk7MvWq4ULrdTfmr3afdvGkHg7sAt+2BFbrYiXxFzsKZOydIrUAgwXdlwj2iItnrJX9U+j8B62LSE9RXBCXqiNNYEW7d/14dEr59rxfTchmtxZpPQjjPvMEszrvcnGwaxdixxzLaxoJp1lwgVCsul3Vy3/gMDIwX15bsQKr4xK1uWa2Gmi3W7yI53kpJD0IWa2WmKkdlZvVgNG5R4JkT4CPMyIKd05RpoLZqE29EjLu73PISJ3gDD3sU6nPHx9pEy0pvtqNE6kGZnF6xWdQ6Uwkakd8yyO82iVgOygTNm+sj0pOYpSf6G5tmUeMUz43CIfrObuu1simlp26JDgf+LKA/flIEzZ7NUawdCf53o0dLGSYCwNTnr5tF7sDcQ/9+gW4DSRBHXU4hRmYdkVZ7umSWrpJ2pITPC1sq+23BU8smDw50PWMFF9oTlU4qwX7b0xQ2wTxmBmfHhYwcxLrHvNAmA6i9mlgTTEHplKROlmnVeuDKDfJmUpYEV5SQzONRz48/VElda5OmBVVIg+5W96SBJ7wPwlUDk2XwAct0VPBYN19XEnlLWlhwSdycEErzioeDt0vreWFRe8T+CIy0FiiH8qw6vyoybKFCqjBsLDJhziNvtlm2KpCKNjOUke+bnXkFuw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(26005)(2616005)(83380400001)(4744005)(38100700002)(2906002)(5660300002)(33656002)(36756003)(66946007)(8676002)(6916009)(7416002)(4326008)(426003)(9746002)(186003)(9786002)(508600001)(8936002)(1076003)(66556008)(66476007)(316002)(86362001)(54906003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?vIdEEIFI9if5immAKkGaIvF/ANPsNsTFKF8KT49uXBnSuFObCm692BhCQjmS?=
+ =?us-ascii?Q?8ih5XbbNCI2rNkjOK+XQRbZwwdcpsbl97Sfp9orU1ESRQUM6E8UUBg5YC648?=
+ =?us-ascii?Q?tVwOe91WnjigxpLXT+k5FS9jMzZ21CI8EAeQRj+uO2hYSESSmqqczAg3PopE?=
+ =?us-ascii?Q?ExjGyMyNApUdanjmOVTQf5A80+lOT2Jc9lGLUsBOcTtJmTK6RmkzmI0H467A?=
+ =?us-ascii?Q?34IeX+XeRqDRt/57uvaUOHJ+yvgv/I5NXUFUTdpXjs5pa5EpTDzgQID9y0HZ?=
+ =?us-ascii?Q?PGWqVDd29jBzeaapQlIaVtjluRFponFtbxuY1Mygi+OmL7uPH/5WrMp9SP2G?=
+ =?us-ascii?Q?tQIvQO57ti2YBQr/HM1ENHyR1C9A4jCkU+Abgn95yIM8IkuI7itoK8Ucdhlu?=
+ =?us-ascii?Q?tuCswyuVrroX7/aZNgpsnU6tuUmEhNu5Ty0hRHtyb5I1RALtQI8+SS6iiPtv?=
+ =?us-ascii?Q?NvDjDBvqdnw7QsPf8dN/WIMSDzy3S8aYf3BXvV3OrlCbYiSFG6uoFygEzd2E?=
+ =?us-ascii?Q?5THG56b4+yesJMEx4l9J1QxZlkhfiEO8RketopLVCNpjNUg0m8norizxESBd?=
+ =?us-ascii?Q?IOujrvYNVwNmQEHw2fMo+LG+b4HXv9pOfAhaeFXaakzlcusvoy2HU0ajVz4Q?=
+ =?us-ascii?Q?Dh8czyfmG0U68xlJ5/JXj0REXcbxe1LoKSqj03y7wa5eWuDuj3DmM1Q0FQkM?=
+ =?us-ascii?Q?CZddGMR3Zt0zHV1O3iN33KN0kS236wb+Ob830o/SCfY4zzbZRALe4dE4dySX?=
+ =?us-ascii?Q?9xvyXGGRJnx7TO3WD0eP8620CWd8CqoI7uZvNJuBKQk8BnON67HVE1No7Ikr?=
+ =?us-ascii?Q?ui5tFqeKVjeuWdIIwfr0EHLa9zO419nnQeCFXeXCQX7yTzNxkJ+fJKkR1aZq?=
+ =?us-ascii?Q?U1xl9+L0QkCkVs3dYTxK1FS2u/kUoRpOCODtdK4/c4G1rPYg6qkuC9zbjue1?=
+ =?us-ascii?Q?wAbpgVZlnJ0G2RVB6/v0DpY6YdkKEr0ofbgp2TAGburqCaPGpvaKhVlZqjiy?=
+ =?us-ascii?Q?NDYRUbNAcaM65J1DLECKqXH9nEzDr8B+QhvFsFZLPxZgs+M8UBsa5QSHpEqg?=
+ =?us-ascii?Q?oK46NV/2xU3vAQn8rlZ2/7s8G2XpyHwGsOELRZuDi0O+QDVrIjAnQW9nlYvR?=
+ =?us-ascii?Q?w/fBtJwqVsyoDEQvmEu3e6fSCdqE3Ie9WrMc2G6XSx5+QhKsoxi2IA4YCbmQ?=
+ =?us-ascii?Q?j2cb5EbGlaszn5/doRHXWN0bpxcYwlyvgExcCNWtZSIDTQ3szPB/tgvI0QGM?=
+ =?us-ascii?Q?P89/yrZedyzGFaJEjAucnuPQx4DmHIjaG+bwXS3H/YGFMA84ZcG63FwYkxTm?=
+ =?us-ascii?Q?7IyLOTjGJC/PIVyvnRuu77MXkepTa9yZz/dkOvo+oyQ1AMuiNukv+d/DufDn?=
+ =?us-ascii?Q?a2EAfg6+L4fdjyhgpuDq3EWVYgzxgpY2wJlI+8yvOeY6x8oqg1Xxvb2DyGZv?=
+ =?us-ascii?Q?mi75to95DwUJQjpjOLxzbiNrhhi/Qacxizh+Muto9TszbJc+NNtiiyWb5Jiq?=
+ =?us-ascii?Q?E7lIDGnbUUxcDeikhrFT7Cl4D2fdYnytL1A909Darq6LrFJGxAT24PD/peqX?=
+ =?us-ascii?Q?75i3DoZ9Q0ybtW9+DBk=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 26db1839-a232-4824-6aa7-08d99e1c9b5c
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2021 16:19:55.3678
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: CR/IO/E47LA+QptoBKRxyb6RJGdDbM4DFDpRGSQdvVdGZp6EX/rc8Z25oRDR9Wm/
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB5540
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 01, 2021 at 12:56:13PM -0700, Doug Anderson wrote:
-> Hi,
+On Tue, Nov 02, 2021 at 08:05:57AM +0100, Christoph Hellwig wrote:
+> Initialize variables at declaration time, avoid pointless gotos and
+> cater for the fact that intel_gvt_create_vgpu can't return NULL.
 > 
-> On Mon, Nov 1, 2021 at 10:44 AM Daniel Thompson
-> <daniel.thompson@linaro.org> wrote:
-> > diff --git a/kernel/debug/kdb/kdb_bt.c b/kernel/debug/kdb/kdb_bt.c
-> > index 1f9f0e47aeda..3368a2d15d73 100644
-> > --- a/kernel/debug/kdb/kdb_bt.c
-> > +++ b/kernel/debug/kdb/kdb_bt.c
-> > @@ -74,7 +74,7 @@ static void kdb_show_stack(struct task_struct *p, void *addr)
-> >   */
-> >
-> >  static int
-> > -kdb_bt1(struct task_struct *p, unsigned long mask, bool btaprompt)
-> > +kdb_bt1(struct task_struct *p, const char *mask, bool btaprompt)
-> 
-> (Copied from v1 review):
-> 
-> In the comment above this function there is still a reference to
-> "DRSTCZEUIMA". Update that?
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  drivers/gpu/drm/i915/gvt/kvmgt.c | 28 +++++++++-------------------
+>  1 file changed, 9 insertions(+), 19 deletions(-)
 
-/me slaps head
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 
-Sorry. This patch really doesn't seem to have been my finest hour.
-Really thought I'd got it right at v3 (even threw in extra manual
-testing for good measure).
-
-Will fix... immediately.
-
-
-> > @@ -2271,37 +2271,30 @@ static int kdb_cpu(int argc, const char **argv)
-> >  void kdb_ps_suppressed(void)
-> >  {
-> >         int idle = 0, daemon = 0;
-> > -       unsigned long mask_I = kdb_task_state_string("I"),
-> > -                     mask_M = kdb_task_state_string("M");
-> >         unsigned long cpu;
-> >         const struct task_struct *p, *g;
-> >         for_each_online_cpu(cpu) {
-> >                 p = kdb_curr_task(cpu);
-> > -               if (kdb_task_state(p, mask_I))
-> > +               if (kdb_task_state(p, "-"))
-> >                         ++idle;
-> >         }
-> >         for_each_process_thread(g, p) {
-> > -               if (kdb_task_state(p, mask_M))
-> > +               if (kdb_task_state(p, "ims"))
-> >                         ++daemon;
-> >         }
-> >         if (idle || daemon) {
-> >                 if (idle)
-> > -                       kdb_printf("%d idle process%s (state I)%s\n",
-> > +                       kdb_printf("%d idle process%s (state -)%s\n",
-> >                                    idle, idle == 1 ? "" : "es",
-> >                                    daemon ? " and " : "");
-> >                 if (daemon)
-> > -                       kdb_printf("%d sleeping system daemon (state M) "
-> > +                       kdb_printf("%d sleeping system daemon (state [ism]) "
-> 
-> super nitty: elsewhere you use "ims", not "ism". Can you be consistent
-> and change the above to "ims"?
-
-Ack.
-
-
->  @@ -2742,8 +2743,8 @@ static kdbtab_t maintab[] = {
-> >         },
-> >         {       .name = "bta",
-> >                 .func = kdb_bt,
-> > -               .usage = "[D|R|S|T|C|Z|E|U|I|M|A]",
-> > -               .help = "Backtrace all processes matching state flag",
-> > +               .usage = "[<state_chars>|A]",
-> > +               .help = "Backtrace all processes matching whose state matches",
-> 
-> "matching whose state matches" sounds odd. Clean it up and use the
-> saved chars to document "A":
-> 
-> .help = "Backtrace all processes whose state matches (A=all)",
-
-Turns out we don't have enough characters to document A on an 80
-character terminal (some of the other help text is too long as well but
-I'll put that on the list for later).
-
-Will settle for "Backtrace all processes whose state matches" and leave
-it at that.
-
-Will also updates the .usage for ps which doesn't use the <state_chars>.
-
-
-Daniel.
+Jason
