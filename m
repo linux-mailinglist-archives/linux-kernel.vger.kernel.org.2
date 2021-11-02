@@ -2,139 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC81D4439E1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 00:38:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6595F4439E4
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 00:38:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230431AbhKBXkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 19:40:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55348 "EHLO
+        id S231127AbhKBXlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 19:41:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229684AbhKBXkk (ORCPT
+        with ESMTP id S229684AbhKBXlL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 19:40:40 -0400
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 655A6C061714;
-        Tue,  2 Nov 2021 16:38:05 -0700 (PDT)
-Received: by mail-qv1-xf2e.google.com with SMTP id a24so734054qvb.5;
-        Tue, 02 Nov 2021 16:38:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=VDFUI6+9Gqle4Fl3GuOcqR9GGqL6hKFREJxfpi8AcUg=;
-        b=DWclfIX0rDqNx+2O/T+hKL5tIPSEoGQxWRd3THANNkvDydCU3FkXzg2qmZDK/IJEgS
-         pYzQB8gDR9PeLDzxiIZLvHya59tfFQLn/IBO5UW8vyr+tZmbHAAGGfvFSAn/ANu2XtLu
-         AbvSadfIhQlpm/mG+J2lnVlL8Rf46Rx0LRn+Ns+mxvSgtNV/9UQ1bnQRakIJnflPNy/K
-         qDrVNBV9ptlFTeUbzeNzNpqe74l1a+ZCd/JUNIuCUgGxQg7wKWmNFUTjHkMt2exeWbMS
-         yIRLC+QkddF7lAZ7DBrTcaO784Zp/AnPgoJdHO7zkY54iOTF6yWt4yX0InDBlt0Kdz4V
-         ezkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=VDFUI6+9Gqle4Fl3GuOcqR9GGqL6hKFREJxfpi8AcUg=;
-        b=4jdekJXO6V9Hxu+LefVOfBoYuw1mOSszYUEul2KFzAB1N3GpXrJaU6FLdrLOg6+rvg
-         d9EQkArzgn+6NMwfTIsE8xgOMsW2fUSSOEPZfakHItlIvDEF7dBrqP4tr1RIpjFDtiU1
-         1uV7OSr+V4LlFZt2RuNLIZcqJqA12lBiuehxZu035CY2vdNqMMIDb2hCog/+RPcvY7Eh
-         oqikbV1AXbV7Fe8f6VDSF9iVN643GnseVpECPpu01Uu5ic4BEmQIptaG9XvrbEwM70g7
-         XlBXhNXmdGY6VSKnGzGFLM//MlgpaZQYd66c2b2y4VdJ/tszic33hTDknO9uFdE1YtNC
-         VubQ==
-X-Gm-Message-State: AOAM533S/N4QuYdNeCd4Gi2Z1mR2EbwBd9xTBiAaxGAi7CiplowV1uup
-        ckwTD9zVQySZjFWpppJXviM=
-X-Google-Smtp-Source: ABdhPJxZ9E6SGKd4V2qIEhjfOAf1okxxeTzu4O+sd/JwEx3NZ1FjLuwJ3N9jwneBbIQUfOi0xTWATQ==
-X-Received: by 2002:a0c:ecc7:: with SMTP id o7mr8789778qvq.46.1635896284646;
-        Tue, 02 Nov 2021 16:38:04 -0700 (PDT)
-Received: from [10.4.10.38] (146-115-144-188.s4282.c3-0.nwt-cbr1.sbo-nwt.ma.cable.rcncustomer.com. [146.115.144.188])
-        by smtp.gmail.com with ESMTPSA id n15sm354561qkp.102.2021.11.02.16.38.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Nov 2021 16:38:04 -0700 (PDT)
-Message-ID: <9d480d93-c350-f219-e069-d12e16dabb13@gmail.com>
-Date:   Tue, 2 Nov 2021 19:38:02 -0400
+        Tue, 2 Nov 2021 19:41:11 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5111AC061714;
+        Tue,  2 Nov 2021 16:38:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=ZHrRv9lRDnhzq0Dx7ta3YDH1jFpjaiR1Oe9RJjBQ2nk=; b=QMUCqtaR5NG5SISenJY5o1X1mu
+        ovO4VVdO1Xb5uxYcUTjggnYBDDyDFtxds5lICBgAoVvBOzCloiPdyBiHSiuwzR0+/TY7H9sZMD7QX
+        CadmBjPzaMZ34BvbwSPa0p8AjNf9UnTzRmLxY99vc2Avtd+Zwsk6OsaswRfMHkpyddtp1unYN9m/x
+        vL7KG+LaAzpnF4747CXXrORkzjHQwOByo1amtlH4jdsvv3lml4oFNQf6Q8FxRA2M5Oygk/ZXfXCuR
+        rr/0YW02HkBAAKKgTkF8tKXH46nI+wYlWR71R13hXIEca9upeUrT5NWRvyKQ5Rl4Tg25r4Mef5Mhd
+        YwtaRr/g==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55448)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mi3MK-0004Og-Qz; Tue, 02 Nov 2021 23:38:28 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mi3MJ-0005nF-2q; Tue, 02 Nov 2021 23:38:27 +0000
+Date:   Tue, 2 Nov 2021 23:38:27 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Sean Anderson <sean.anderson@seco.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-kernel@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [RFC PATCH] net: phy/mdio: enable mmd indirect access through
+ phy_mii_ioctl()
+Message-ID: <YYHL82nNuh3ylXlq@shell.armlinux.org.uk>
+References: <20211101182859.24073-1-grygorii.strashko@ti.com>
+ <YYBBHsFEwGdPJw3b@lunn.ch>
+ <YYBF3IZoSN6/O6AL@shell.armlinux.org.uk>
+ <YYCLJnY52MoYfxD8@lunn.ch>
+ <YYExmHYW49jOjfOt@shell.armlinux.org.uk>
+ <YYFx0YJ2KlDhbfQB@lunn.ch>
+ <ff601233-0b54-b0ad-37ce-1c18f0b7ca47@seco.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH v2 07/13] clk: imx: Add initial support for i.MXRT clock
- driver
-Content-Language: en-US
-To:     Fabio Estevam <festevam@gmail.com>
-Cc:     NXP Linux Team <linux-imx@nxp.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Stefan Agner <stefan@agner.ch>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org, Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Abel Vesa <abel.vesa@nxp.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Giulio Benetti <giulio.benetti@benettiengineering.com>,
-        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-serial@vger.kernel.org
-References: <20211102225701.98944-1-Mr.Bossman075@gmail.com>
- <20211102225701.98944-8-Mr.Bossman075@gmail.com>
- <CAOMZO5C9wY-BRbF-3D+mvaK3DaYi1kURt5QX-r3=umqpsT+hhw@mail.gmail.com>
-From:   Jesse Taube <mr.bossman075@gmail.com>
-In-Reply-To: <CAOMZO5C9wY-BRbF-3D+mvaK3DaYi1kURt5QX-r3=umqpsT+hhw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ff601233-0b54-b0ad-37ce-1c18f0b7ca47@seco.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 02, 2021 at 03:46:13PM -0400, Sean Anderson wrote:
+> I have not found this to be the case. As soon as you need to access
+> something using phylink, the emulated registers make the ioctls useless
+> (especially because there may be multiple phy-like devices for one
+> interface).
 
+I think you're fundamentally misunderstanding something there.
 
-On 11/2/21 19:34, Fabio Estevam wrote:
-> On Tue, Nov 2, 2021 at 7:57 PM Jesse Taube <mr.bossman075@gmail.com> wrote:
-> 
->> +#include "clk.h"
-This is necessary for the indices.
->> +#define ANATOP_BASE_ADDR       0x400d8000
-OOPs my bad will fix.
-> 
-> This is now unused. Please remove it.
-> 
->> +       clk[IMXRT1050_CLK_USDHC1] = imx_clk_gate2("usdhc1", "usdhc1_podf", ccm_base + 0x80, 2);
->> +       clk[IMXRT1050_CLK_USDHC2] = imx_clk_gate2("usdhc2", "usdhc2_podf", ccm_base + 0x80, 4);
->> +       clk[IMXRT1050_CLK_LPUART1] = imx_clk_gate2("lpuart1", "lpuart_podf", ccm_base + 0x7c, 24);
->> +       clk[IMXRT1050_CLK_LCDIF_APB] = imx_clk_gate2("lcdif", "lcdif_podf", ccm_base + 0x74, 10);
->> +       clk[IMXRT1050_CLK_DMA] = imx_clk_gate("dma", "ipg", ccm_base + 0x7C, 6);
->> +       clk[IMXRT1050_CLK_DMA_MUX] = imx_clk_gate("dmamux0", "ipg", ccm_base + 0x7C, 7);
-> 
-> The imx clock drivers have been converted to the clk_hw API.
-> 
-Oh will do, didn't know this.
-> For a reference, please check:
-> f1541e15e38e ("clk: imx6sx: Switch to clk_hw based API")
-> 
-> The same conversion could be done here.
-> 
->> +       imx_check_clocks(clk, ARRAY_SIZE(clk));
->> +       clk_data.clks = clk;
->> +       clk_data.clk_num = ARRAY_SIZE(clk);
->> +       of_clk_add_provider(np, of_clk_src_onecell_get, &clk_data);
->> +       clk_prepare_enable(clk[IMXRT1050_CLK_PLL1_ARM]);
->> +       clk_prepare_enable(clk[IMXRT1050_CLK_PLL2_SYS]);
->> +       clk_prepare_enable(clk[IMXRT1050_CLK_PLL3_USB_OTG]);
->> +       clk_prepare_enable(clk[IMXRT1050_CLK_PLL3_PFD1_664_62M]);
->> +       clk_prepare_enable(clk[IMXRT1050_CLK_PLL2_PFD2_396M]);
-> 
-> If these clocks are essential for the SoC to work, then you could pass
-> the CLK_IS_CRITICAL flag instead of calling clk_prepare_enable()
-> 
-I'll look into that Thx
+If there is a PHY present, phylink presents no different an interface
+from phylib - it does no emulation what so ever, and you can access any
+address. I use this on Macchiatobin when researching the 88x3310 PHY. I
+have a tool that allows me to view part of the register set in any MMD
+in almost real-time - and I can access either of the two PHYs on the
+xmdio bus from either of their network interfaces. Same for the clause
+22 mdio bus. There is no emulation in this case, and you get full
+access to the MDIO/XMDIO bus just like via phylib. There is absolutely
+no difference.
+
+If there is no PHY connected, then phylink will emulate the accesses
+in just the same way as the fixed-phy support emulates accesses, and
+in a bug-compatible way with fixed-phy. It only emulates for PHY
+address 0. As there is no PHY, there is no MII bus known to phylink,
+so it there is no MII bus for phylink to pass any non-zero address on
+to.
+
+Split PCS support is relatively new, and this brings with it a whole
+host of issues:
+
+1) the PCS may not be on a MII bus, and may not even have a PHY-like
+   set of registers. How do we export that kind of setup through the
+   MII ioctls?
+
+2) when we have a copper SFP plugged in with its own PHY, we export it
+   through the MII ioctls because phylink now has a PHY (so it falls
+   in the "PHY present" case above). If we also have a PCS on a MII
+   bus, we now have two completely different MII buses. Which MII bus
+   do we export?
+
+3) in the non-SFP case, the PHY and PCS may be sitting on different
+   MII buses. Again, which MII bus do we export?
+
+The MII ioctls have no way to indicate which MII bus should be
+accessed.  We can't just look at the address - what if the PHY and PCS
+are at the same address but on different buses?
+
+We may have cases where the PHY and PCS are sitting on the same MII bus
+- and in that case, phylink does not restrict whether you can access
+the PCS through the MII ioctls.
+
+Everything other case is "complicated" and unless we can come up with
+a sane way to fit everything into two or more buses into these
+antequated ioctls that are designed for a single MII bus, it's probably
+best not to even bodge something at the phylink level - it probably
+makes more sense for the network driver to do it. After all, the
+network driver probably has more knowledge about the hardware around it
+than phylink does.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
