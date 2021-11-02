@@ -2,103 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 584AF4429E5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 09:53:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6C634429E8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 09:53:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230465AbhKBIze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 04:55:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50054 "EHLO
+        id S231135AbhKBI4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 04:56:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbhKBIzc (ORCPT
+        with ESMTP id S229577AbhKBI4V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 04:55:32 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51D78C061764
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 01:52:58 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id t11so14965576plq.11
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 01:52:58 -0700 (PDT)
+        Tue, 2 Nov 2021 04:56:21 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0A19C061714
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 01:53:46 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id g10so73048548edj.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 01:53:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=28zW/u+lMLA0zPy0DWfC6ckat3rNbmMHPQv3XuePlcs=;
-        b=RlcWuGHaAzdyO1zsj4xRU3ceaMbNpAKFzJVXf8DT02OGjBBK+tLn0zode+XXcSsMRs
-         27r3XXcF2IN48NXMfp0FgE8m1C6docN+sO+Zw6lV2OlehWw3LZOhuDjz6gR4wVfaiogj
-         lJ8sqbHwje0L3Nz1wCpWXPWTQKwxogmP+5v8Dxa4oo9Iy3wpHc9Ay/RX6j9VQZ59nebq
-         jEeEgjeiF4LIiDCclOUYUZmrsIKeYtn5rD/R60petYUyoialKneGyPZ0TrBBXXUer/yU
-         ByD4sbNO3jRO9CxC5HiD3/G6NlzdcxTFGblAWLfFeB/FpYbUbxeINIjdVxOjfqJf9VVQ
-         V6Sg==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ZYpbgwwXidzFx0y6l+ahI48wcTllx690dVnhP3hPQCY=;
+        b=N1InVPcy/osORKJc6HUfNsI0hxFMHR9zvERLiMyzxeAyR4jes4RW/QckqJUPASH4Ub
+         ggHMahNzJ8HZsiQhQr+NaoRnnTAPKJ9Q+EaLExrbXXs2z6lxpXE2Wt9gaGsax8iwPvT1
+         VUBzWA9pE6KHUQgbo1YxDP1ltxsul8umP6Bvq9v1P+hvqNRNSrs47zOtYvyLkitanV3O
+         4CvC7k5tWxCvCXPwxz3i04RohYrZ77TdPVCv503X4ZVS2jKim1kv0Sn2gplGvfuekmpe
+         +hVScM9AAKNIMjjFs0t5B42flnN6tv7jkiKi1iSJz/cIqVAY11Gr3AKl9QPvvy3zLBWu
+         9OZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=28zW/u+lMLA0zPy0DWfC6ckat3rNbmMHPQv3XuePlcs=;
-        b=sNiT9qI9yJ+hel6b/PKrfNTntuoWOWizqTjPv49cWJqGRbiWNlrAwvWvvNLeDANE50
-         xzbSWTnpi0DtEeFeQBsF6z9UTakMJ2JKr4dJ/HEFrIh8OUY71c3G8swGJR+zS+BuHLGc
-         7h0DSICZw1otCym344T44r1doTRzO8vO+gFnj0UUSJCtN+FqONEzLOe3fug+9UYFhgMD
-         gOwUyw28Ynmy02FKPr5qGdoC/RxRqbVa7kgbQc/QgW2xAbfdrd5VeW4uW5UxNKtl40/9
-         +98/5yzCgSYdj4hGi+kUOq0iRW0dW53G4cKGU8SqTHJzXyBdSNEbbKhUKSTk5MprCBzy
-         AZHw==
-X-Gm-Message-State: AOAM532CObiJ0Qa7eIqIqusqnpRxRADyWw5/K8cjmr4RM/WwwpSxzwwf
-        4Kc132kV9cb8Luj/Z9iSWQfeWUgkPyKj1Pz0JEs=
-X-Google-Smtp-Source: ABdhPJzb5WEP3EoYSzJ2YsCwJMAFfeiWtu7DvwYooSN8o+OoGvClW4XnSnlZXYM5mjuFILI4xC0d5d9KABIKNfHCGvo=
-X-Received: by 2002:a17:90a:b105:: with SMTP id z5mr4882858pjq.181.1635843177930;
- Tue, 02 Nov 2021 01:52:57 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ZYpbgwwXidzFx0y6l+ahI48wcTllx690dVnhP3hPQCY=;
+        b=nhfyUYA4PZsptUnYsz7bEJT5BNwRY98IlBJxleuv4IqS3kFWx+OSrabxUdeAdngsEJ
+         AmroL2bee/9WpbSoFzM2iHxRCvSJlnt3DAcMl8fQ41mCl0QYpCXkgdKgItOKKxMYBP2V
+         M545Tv0V2Fxmrm3064lViacitv6B/6QsDsIfb3EHwCnc1j9VUWpIaYZ8qLODmig7fUx4
+         wWVtyXqmoM5b9zmRyWrOymEKQ39lWaMhlsuo/18QElZoIV9rjBRfPkWJmvX20/LyaD+p
+         K1d3TovbrI2QxpMELvY8Mz1bj/LFBn8psHdWMQDcnZrr3uWjMuoAM+qxjtroHqUkt5Bs
+         +Xpw==
+X-Gm-Message-State: AOAM532cHfHTbzodbRwMHCNsTHy/bdw3ZgfEHmd39N0PTv9hGu2CbU7u
+        gW5Sj0TkZBH3Wy5Z3j9Px1/f8Cq5EmLaJ52Sg+i4mQ==
+X-Google-Smtp-Source: ABdhPJy5bxDfJQ3NlKIxYEVBptUMzEqfXhfHlyF1Ft+a1bSlRfde4E6waZWprBFd/eFOAaxghiseDcpHQrUzKz67Hlc=
+X-Received: by 2002:a50:e184:: with SMTP id k4mr49192077edl.217.1635843225229;
+ Tue, 02 Nov 2021 01:53:45 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a05:6a10:1287:0:0:0:0 with HTTP; Tue, 2 Nov 2021 01:52:57
- -0700 (PDT)
-Reply-To: zafrathamza@yahoo.com
-From:   Miss Zafrat Hamza <malukahobajaluwa@gmail.com>
-Date:   Tue, 2 Nov 2021 01:52:57 -0700
-Message-ID: <CAMyNLE6u1Vt=Q=zge49jkn1TFM4Ynn71XqYhSNH8qfFu-kE0GA@mail.gmail.com>
-Subject: Hello Dearest
-To:     undisclosed-recipients:;
+References: <20211101082440.664392327@linuxfoundation.org>
+In-Reply-To: <20211101082440.664392327@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 2 Nov 2021 14:23:33 +0530
+Message-ID: <CA+G9fYt3vv5wP4-oEUZ=rdnR2ROfthYa635UE1V_HB=akX5ACQ@mail.gmail.com>
+Subject: Re: [PATCH 4.4 00/17] 4.4.291-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
+        f.fainelli@gmail.com, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, linux@roeck-us.net
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-My dear I am Miss Zafrat Hamza, the only daughter to late Dr Azizi
-Hamza from Aleppo in Syrian Arab Republic, We flew the country Syrian
-to Burkina
-Faso as a result of unsettled political crisis in the country, We were
-grant a temporary stay here in Burkina Faso and my father also works
-with (SEMAFO) the biggest Canadian gold producer here in West Africa
-Burkina Faso,
-
-Unfortunately my father was a victim on the deadliest attack by the
-jihadist On the 6 November 2019 when gunmen ambushed a convoy
-transporting workers of the Canadian mining firm Semafo,We escape death
-from Syria down to Burkina Faso without knowing the worst is ahead,, it is
-my sad moment each time I think about this
-
-Before he died he wrote a will and gave to me as my future reference,
-the will involve ($ 3.5 million) deposit made with a bank abroad as
-well ($ 7 million) deposited with a security company in United Arab
-Emirates (Dubai)
-
-
-The bank is aware of my father sudden death and they are very eager
-to remit the fund back to me, but due to my temporary stay like
-refugee under asylum I have no right to execute such fund under my
-care according to the law of the country,
-
-The security company also ask me to come for the money along with my
-relative which I plan to present you to them as my relative, but due
-to this current covid-19 pandemic the embassy said I am not eligible
-to travel for now,
+On Mon, 1 Nov 2021 at 14:49, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.4.291 release.
+> There are 17 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 03 Nov 2021 08:24:20 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.4.291-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
 
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-My dear I am writing this message to you with tears is my eye because
-I don't have any further idea on what to do, please I need your advice
-and guidance to retrieve my fund out from the bank and security
-company to enable me complete my studies and start a new life,
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
+NOTE:
+With new gcc-11 toolchain arm builds failed.
+The fix patch is under review [1].
+Due to this reason not considering it as a kernel regression.
+* arm, build
+    - gcc-11-defconfig FAILED
 
-Please reply me back as soon as you read this message to my private email
-zafrathamza@yahoo.com
+[1]
+ARM: drop cc-option fallbacks for architecture selection
+https://lore.kernel.org/linux-arm-kernel/20211018140735.3714254-1-arnd@kern=
+el.org/
 
+## Build
+* kernel: 4.4.291-rc1
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-4.4.y
+* git commit: d0c0f8a764f8c71b396535e71f1d3bd792f4b34d
+* git describe: v4.4.290-18-gd0c0f8a764f8
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.4.y/build/v4.4.2=
+90-18-gd0c0f8a764f8
 
-Sincerely
+## No regressions (compared to v4.4.290)
 
-Miss Zafrat Hamza
+## No fixes (compared to v4.4.290)
+
+## Test result summary
+total: 45115, pass: 36135, fail: 217, skip: 7755, xfail: 1008
+
+## Build Summary
+* arm: 258 total, 207 passed, 51 failed
+* arm64: 34 total, 34 passed, 0 failed
+* i386: 18 total, 18 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 22 total, 22 passed, 0 failed
+* sparc: 12 total, 12 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 18 total, 18 passed, 0 failed
+
+## Test suites summary
+* fwts
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
