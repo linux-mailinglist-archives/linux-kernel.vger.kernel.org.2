@@ -2,131 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B58C442B5A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 11:06:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32F25442B50
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 11:04:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231181AbhKBKIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 06:08:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38492 "EHLO
+        id S230109AbhKBKHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 06:07:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231168AbhKBKIo (ORCPT
+        with ESMTP id S229770AbhKBKHC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 06:08:44 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ACC7C061714
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 03:06:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=pfITbUW7BK/9jsSc/LFkNWLfMqDm0biQuCkMFm8jx0M=; b=Qc1ePlZ6ZG8aqHABSElBRiZfuM
-        DsqT23hJvPro6AOz6rJdQWIdcX2mbYayuatZrrdDtR9zM6i6ckjHQ6P+PXF4lkvN/53BkRba/qMrC
-        6VZdM7strYGzh7zKm7WEHrXZzpb7t8tgF3pvn7ZHJ1c5aq+m6QpSg+Ce6meaId0Cy7CuKJSLxHa76
-        2zOeZ7dvp1O8+EOlHwInDOuRWpjJbl6I2InPirzFtK4M4qu9WP3bc4Z2Obq8RLmNR00E+MEwActqe
-        Ub9Y4Ghc8Ugwrfdrz9rBvrCd86lJpcFxuz+w/6oksZD4YZIgPQh/XbAJh0dWP3mxZwCyYcdE93jVx
-        YHC9BPIQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mhqdt-004QGl-Ax; Tue, 02 Nov 2021 10:04:21 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 46A04300130;
-        Tue,  2 Nov 2021 11:03:44 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 35C33286DB58E; Tue,  2 Nov 2021 11:03:44 +0100 (CET)
-Date:   Tue, 2 Nov 2021 11:03:44 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Alexander Popov <alex.popov@linux.com>
-Subject: Re: Stackleak vs noinstr (Was: [GIT pull] objtool/core for v5.16-rc1)
-Message-ID: <YYENAKB0igNFnFmK@hirez.programming.kicks-ass.net>
-References: <163572864256.3357115.931779940195622047.tglx@xen13>
- <163572864563.3357115.8793939214537874196.tglx@xen13>
- <CAHk-=wgNzL3AaVNruwLv=kcGXi1EbJN9CZC6GoRY66t6WFcfGg@mail.gmail.com>
- <YYDwJORywW2FjprP@hirez.programming.kicks-ass.net>
- <YYD/bpLabfumrvL+@hirez.programming.kicks-ass.net>
+        Tue, 2 Nov 2021 06:07:02 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAC04C061714
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 03:04:27 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id r4so73333457edi.5
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 03:04:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura-hr.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3+t+3tBvZ55KmjFJAzPVh7PkIiV/wiSXOJElNmqRWcA=;
+        b=vY2STts06FZ60Ai8F4v458MeLyNssicvxtTXqeZyary7pXATu6moH8Z6oNoItXFd1K
+         do0ecGZJcKW8qxAcguJ6E9yflvb6YkhuyoUZBdI+Ad9632jFt3Iak3QfZfGDHgEu2vOf
+         kIhaX8r3x3B3N6g8gLT8x4U9VvbmXedif/6C5vew9rX+dSqIY0++CAt0snzPpuqf53S/
+         4p9F4YKpjyIfUjqQq9zjTzrpHfVOfdg3sauat/fGGlF/+PdrkY7VOcs8UZAYjxYguvBt
+         cCetI+Aj+I6JDyogCQaippbVsNrmeVkJ7BpSFTc9wTzw6ij8CFaAyux73bsNYSyV7y2F
+         BQ5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3+t+3tBvZ55KmjFJAzPVh7PkIiV/wiSXOJElNmqRWcA=;
+        b=SbnsJRqvT5mFFzHJhFdqJly3eBdUtnFV0gCxpHbf7KeF9BBTd90bEA6vluRImE4k0R
+         DX/kdKh/Eft4lt+ap47T0VcmmiAecWziUk44zk1o/Ren83LsEumDa4Svhx+bM6nACFqZ
+         3BnTqAQTbXf5dZR9QDvcwv3lBNCIaQi0ZAzC8JBCnZlMKBjexw2fUcfvIQsLg6jEB6ys
+         L4Vsg9zMwxENrATybeY7jzRgvpCDvG5FNWT01EM6jbU+q2Fm5oEJzDpcNysaBIvmjoQy
+         zGM4LWbY/xAvH1VD06cU0DwCqZbprOeTuGrlIqEW5mPrgEEwaVhtRQfvzdwJwsfQ3Ln3
+         rlUw==
+X-Gm-Message-State: AOAM531KJpUOgxxomvec8BNneEIfU8g1xSKkIXJQWHFjw70lc9SRsfgL
+        Jklv78CJGjiftrmNXwY+nTKshHiHUuIXWQ==
+X-Google-Smtp-Source: ABdhPJzPPOlmw+56IrpuffgY8cuBqnbuQC7FWqs5RhZpbye0kVsz8iOJTbEaWXGfb5gw7ph3/UURbQ==
+X-Received: by 2002:a05:6402:152:: with SMTP id s18mr49021718edu.314.1635847466394;
+        Tue, 02 Nov 2021 03:04:26 -0700 (PDT)
+Received: from fedora.. (cpezg-94-253-144-183-cbl.xnet.hr. [94.253.144.183])
+        by smtp.googlemail.com with ESMTPSA id j15sm10534090edl.34.2021.11.02.03.04.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Nov 2021 03:04:26 -0700 (PDT)
+From:   Robert Marko <robert.marko@sartura.hr>
+To:     lee.jones@linaro.org, michael@walle.cc,
+        linux-kernel@vger.kernel.org
+Cc:     Robert Marko <robert.marko@sartura.hr>
+Subject: [PATCH] mfd: simple-mfd-i2c: Select MFD_CORE to fix build error
+Date:   Tue,  2 Nov 2021 11:04:20 +0100
+Message-Id: <20211102100420.112215-1-robert.marko@sartura.hr>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YYD/bpLabfumrvL+@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 10:05:50AM +0100, Peter Zijlstra wrote:
-> On Tue, Nov 02, 2021 at 09:00:36AM +0100, Peter Zijlstra wrote:
-> > On Mon, Nov 01, 2021 at 01:44:39PM -0700, Linus Torvalds wrote:
-> 
-> > >     do_machine_check()+0x27: call to stackleak_track_stack ...
-> > >     do_syscall_64()+0x9: call to stackleak_track_stack ...
-> > >     do_int80_syscall_32()+0x9: call to stackleak_track_stack ...
-> > >     exc_general_protection()+0x22: call to stackleak_track_stack ...
-> > >     fixup_bad_iret()+0x20: call to stackleak_track_stack ...
-> > >     .entry.text+0x10e6: call to stackleak_erase ...
-> > >     .entry.text+0x143: call to stackleak_erase ...
-> > >     .entry.text+0x17d9: call to stackleak_erase ...
-> > > 
-> > > most seem to be about the stackleak thing,
-> > 
-> > Right, I recently ran into this and hacen't yet had time to look into
-> > it. I suspect my normal build box doesn't have the GCC plugin crud
-> > enabled or somesuch.
-> > 
-> > I think the GCC stackleak plugin needs fixing, specifically it needs a
-> > function attribute such that it will not emit instrumentation in noinstr
-> > functions. I'll go chase down the developer of that thing.
-> 
-> Alexander, is there any way to make this plugin grow a function
-> attribute which we can add to noinstr ? There's a strict requirement the
-> compiler doesn't add extra code to noinstr functions these days.
-> 
-> We'll 'soon' be running noinstr C code before switching to kernel page
-> tables even.
+MFD_SIMPLE_MFD_I2C should select the MFD_CORE to a prevent build error:
 
-Using my pre-release GCC-12 compiler (the only one I have with plugin
-crud enabled apparently), the below seems to work.
+aarch64-linux-ld: drivers/mfd/simple-mfd-i2c.o: in function `simple_mfd_i2c_probe':
+drivers/mfd/simple-mfd-i2c.c:55: undefined reference to `devm_mfd_add_devices'
 
-Having the plugin gate on section name seems a lot hacky, but given it's
-already doing that, one more doesn't hurt.
-
+Fixes: 3abee4579484 ("mfd: Add simple regmap based I2C driver")
+Signed-off-by: Robert Marko <robert.marko@sartura.hr>
 ---
-diff --git a/kernel/stackleak.c b/kernel/stackleak.c
-index ce161a8e8d97..135866ca8878 100644
---- a/kernel/stackleak.c
-+++ b/kernel/stackleak.c
-@@ -48,7 +48,7 @@ int stack_erasing_sysctl(struct ctl_table *table, int write,
- #define skip_erasing()	false
- #endif /* CONFIG_STACKLEAK_RUNTIME_DISABLE */
- 
--asmlinkage void notrace stackleak_erase(void)
-+asmlinkage noinstr void stackleak_erase(void)
- {
- 	/* It would be nice not to have 'kstack_ptr' and 'boundary' on stack */
- 	unsigned long kstack_ptr = current->lowest_stack;
-@@ -102,7 +102,6 @@ asmlinkage void notrace stackleak_erase(void)
- 	/* Reset the 'lowest_stack' value for the next syscall */
- 	current->lowest_stack = current_top_of_stack() - THREAD_SIZE/64;
- }
--NOKPROBE_SYMBOL(stackleak_erase);
- 
- void __used __no_caller_saved_registers notrace stackleak_track_stack(void)
- {
-diff --git a/scripts/gcc-plugins/stackleak_plugin.c b/scripts/gcc-plugins/stackleak_plugin.c
-index e9db7dcb3e5f..07688a1c686b 100644
---- a/scripts/gcc-plugins/stackleak_plugin.c
-+++ b/scripts/gcc-plugins/stackleak_plugin.c
-@@ -446,6 +446,8 @@ static bool stackleak_gate(void)
- 			return false;
- 		if (!strncmp(TREE_STRING_POINTER(section), ".meminit.text", 13))
- 			return false;
-+		if (!strncmp(TREE_STRING_POINTER(section), ".noinstr.text", 13))
-+			return false;
- 	}
- 
- 	return track_frame_size >= 0;
+ drivers/mfd/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+index 61992edf6a4d..2de69892b631 100644
+--- a/drivers/mfd/Kconfig
++++ b/drivers/mfd/Kconfig
+@@ -1204,6 +1204,7 @@ config MFD_SI476X_CORE
+ config MFD_SIMPLE_MFD_I2C
+ 	tristate
+ 	depends on I2C
++	select MFD_CORE
+ 	select REGMAP_I2C
+ 	help
+ 	  This driver creates a single register map with the intention for it
+-- 
+2.33.1
+
