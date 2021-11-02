@@ -2,174 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B930444294E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 09:24:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E9924429EE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 09:55:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231138AbhKBI1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 04:27:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229577AbhKBI1N (ORCPT
+        id S231176AbhKBI6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 04:58:07 -0400
+Received: from m15111.mail.126.com ([220.181.15.111]:39058 "EHLO
+        m15111.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229720AbhKBI6E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 04:27:13 -0400
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F6DCC061714
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 01:24:38 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:5050:fce2:2424:248f])
-        by laurent.telenet-ops.be with bizsmtp
-        id DLQb2600B0xGf5L01LQbSu; Tue, 02 Nov 2021 09:24:36 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mhp5v-009fdO-5X; Tue, 02 Nov 2021 09:24:35 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mhp5u-00G21O-N2; Tue, 02 Nov 2021 09:24:34 +0100
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Taras Chornyi <tchornyi@marvell.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Volodymyr Mytnyk <vmytnyk@marvell.com>,
-        Yevhen Orlov <yevhen.orlov@plvision.eu>,
-        Vadym Kochan <vkochan@marvell.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] [-next] net: marvell: prestera: Add explicit padding
-Date:   Tue,  2 Nov 2021 09:24:33 +0100
-Message-Id: <20211102082433.3820514-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+        Tue, 2 Nov 2021 04:58:04 -0400
+X-Greylist: delayed 1812 seconds by postgrey-1.27 at vger.kernel.org; Tue, 02 Nov 2021 04:58:04 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=yYK7j
+        4zSR3tU5Nj9zPzz1aeMvcwXiqLMsS3fqcTDIo0=; b=FyTEuFR5OddJJXvGzdYLC
+        hl/50cqBbzP5rucXIXGTH0R7PC3oLBn7067f7YYykbRQJwygiFfOa0aEdLfqFW0B
+        N/zMo0noiv0rc6Pe7A7QyUmbBMy9RLZLZDRQYQksd25Y5k2G57LCV1Z4DKvHjfp9
+        TK7mJ4l8y1/qjVfyLixPnE=
+Received: from pek-lpd-ccm5.wrs.com (unknown [60.247.85.82])
+        by smtp1 (Coremail) with SMTP id C8mowADX5XHI9YBh3wm5CQ--.38969S2;
+        Tue, 02 Nov 2021 16:24:53 +0800 (CST)
+From:   Zhaolong Zhang <zhangzl2013@126.com>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Yanteng Si <siyanteng@loongson.cn>, linux-mips@vger.kernel.org,
+        Zhaolong Zhang <zhangzl2013@126.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] mips: fix HUGETLB function without THP enabled
+Date:   Tue,  2 Nov 2021 16:24:37 +0800
+Message-Id: <20211102082437.3319235-1-zhangzl2013@126.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: C8mowADX5XHI9YBh3wm5CQ--.38969S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxZF4DKr15tw1rtr13Jry3XFb_yoW5CFy5pF
+        Z3AF48uw4UtFnrJay3trnYqry3Xr4kXayDtr17Ga1DX3WUKw40gF4vgw4avrn5XrWkZFWx
+        AFZ0gayj9rsrJw7anT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UeMKtUUUUU=
+X-Originating-IP: [60.247.85.82]
+X-CM-SenderInfo: x2kd0wt2osiiat6rjloofrz/1tbiaRU-z1pEDpurlwAAs7
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On m68k:
+ltp test futex_wake04 without THP enabled leads to below bt:
+  [<ffffffff80a03728>] BUG+0x0/0x8
+  [<ffffffff80a0624c>] internal_get_user_pages_fast+0x81c/0x820
+  [<ffffffff8093ac18>] get_futex_key+0xa0/0x480
+  [<ffffffff8093b074>] futex_wait_setup+0x7c/0x1a8
+  [<ffffffff8093b2c0>] futex_wait+0x120/0x228
+  [<ffffffff8093dbe8>] do_futex+0x140/0xbd8
+  [<ffffffff8093e78c>] sys_futex+0x10c/0x1c0
+  [<ffffffff808703d0>] syscall_common+0x34/0x58
 
-    In function ‘prestera_hw_build_tests’,
-	inlined from ‘prestera_hw_switch_init’ at drivers/net/ethernet/marvell/prestera/prestera_hw.c:788:2:
-    ././include/linux/compiler_types.h:335:38: error: call to ‘__compiletime_assert_345’ declared with attribute error: BUILD_BUG_ON failed: sizeof(struct prestera_msg_switch_attr_req) != 16
-    ...
+Move pmd_write() and pmd_page() from TRANSPARENT_HUGEPAGE scope to
+MIPS_HUGE_TLB_SUPPORT scope, because both THP and HUGETLB will need
+them.
 
-The driver assumes structure members are naturally aligned, but does not
-add explicit padding, thus breaking architectures where integral values
-are not always naturally aligned (e.g. on m68k, __alignof(int) is 2, not
-4).
-
-Fixes: bb5dbf2cc64d5cfa ("net: marvell: prestera: add firmware v4.0 support")
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Zhaolong Zhang <zhangzl2013@126.com>
 ---
-Compile-tested only.
+ arch/mips/include/asm/pgtable.h | 40 +++++++++++++++++----------------
+ 1 file changed, 21 insertions(+), 19 deletions(-)
 
-BTW, I sincerely doubt the use of __packed on structs like:
-
-    union prestera_msg_switch_param {
-	    u8 mac[ETH_ALEN];
-	    __le32 ageing_timeout_ms;
-    } __packed;
-
-This struct is only used as a member in another struct, where it is
-be naturally aligned anyway.
-
-Some of the other __packed attributes look fishy to me, too.
----
- drivers/net/ethernet/marvell/prestera/prestera_hw.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/drivers/net/ethernet/marvell/prestera/prestera_hw.c b/drivers/net/ethernet/marvell/prestera/prestera_hw.c
-index 41ba17cb29657392..4f5f52dcdd9d2814 100644
---- a/drivers/net/ethernet/marvell/prestera/prestera_hw.c
-+++ b/drivers/net/ethernet/marvell/prestera/prestera_hw.c
-@@ -189,6 +189,7 @@ struct prestera_msg_switch_attr_req {
- 	struct prestera_msg_cmd cmd;
- 	__le32 attr;
- 	union prestera_msg_switch_param param;
-+	u8 pad[2];
- };
+diff --git a/arch/mips/include/asm/pgtable.h b/arch/mips/include/asm/pgtable.h
+index 804889b70965..1fcf4be5cd20 100644
+--- a/arch/mips/include/asm/pgtable.h
++++ b/arch/mips/include/asm/pgtable.h
+@@ -86,10 +86,12 @@ extern void paging_init(void);
+  */
+ #define pmd_phys(pmd)		virt_to_phys((void *)pmd_val(pmd))
  
- struct prestera_msg_switch_init_resp {
-@@ -313,6 +314,7 @@ struct prestera_msg_port_info_resp {
- 	__le32 hw_id;
- 	__le32 dev_id;
- 	__le16 fp_id;
-+	u8 pad[2];
- };
++#ifndef CONFIG_MIPS_HUGE_TLB_SUPPORT
+ #define __pmd_page(pmd)		(pfn_to_page(pmd_phys(pmd) >> PAGE_SHIFT))
+ #ifndef CONFIG_TRANSPARENT_HUGEPAGE
+ #define pmd_page(pmd)		__pmd_page(pmd)
+ #endif /* CONFIG_TRANSPARENT_HUGEPAGE  */
++#endif /* CONFIG_MIPS_HUGE_TLB_SUPPORT */
  
- struct prestera_msg_vlan_req {
-@@ -345,11 +347,13 @@ struct prestera_msg_bridge_req {
- 	__le32 port;
- 	__le32 dev;
- 	__le16 bridge;
-+	u8 pad[2];
- };
+ #define pmd_page_vaddr(pmd)	pmd_val(pmd)
  
- struct prestera_msg_bridge_resp {
- 	struct prestera_msg_ret ret;
- 	__le16 bridge;
-+	u8 pad[2];
- };
+@@ -416,6 +418,25 @@ static inline pte_t pte_mkhuge(pte_t pte)
+ 	pte_val(pte) |= _PAGE_HUGE;
+ 	return pte;
+ }
++
++#define pmd_write pmd_write
++static inline int pmd_write(pmd_t pmd)
++{
++	return !!(pmd_val(pmd) & _PAGE_WRITE);
++}
++
++static inline unsigned long pmd_pfn(pmd_t pmd)
++{
++	return pmd_val(pmd) >> _PFN_SHIFT;
++}
++
++static inline struct page *pmd_page(pmd_t pmd)
++{
++	if (pmd_val(pmd) & _PAGE_HUGE)
++		return pfn_to_page(pmd_pfn(pmd));
++
++	return pfn_to_page(pmd_phys(pmd) >> PAGE_SHIFT);
++}
+ #endif /* CONFIG_MIPS_HUGE_TLB_SUPPORT */
  
- struct prestera_msg_acl_action {
-@@ -408,16 +412,19 @@ struct prestera_msg_acl_ruleset_bind_req {
- 	__le32 port;
- 	__le32 dev;
- 	__le16 ruleset_id;
-+	u8 pad[2];
- };
+ #ifdef CONFIG_HAVE_ARCH_SOFT_DIRTY
+@@ -591,12 +612,6 @@ static inline pmd_t pmd_mkhuge(pmd_t pmd)
+ extern void set_pmd_at(struct mm_struct *mm, unsigned long addr,
+ 		       pmd_t *pmdp, pmd_t pmd);
  
- struct prestera_msg_acl_ruleset_req {
- 	struct prestera_msg_cmd cmd;
- 	__le16 id;
-+	u8 pad[2];
- };
+-#define pmd_write pmd_write
+-static inline int pmd_write(pmd_t pmd)
+-{
+-	return !!(pmd_val(pmd) & _PAGE_WRITE);
+-}
+-
+ static inline pmd_t pmd_wrprotect(pmd_t pmd)
+ {
+ 	pmd_val(pmd) &= ~(_PAGE_WRITE | _PAGE_SILENT_WRITE);
+@@ -677,19 +692,6 @@ static inline pmd_t pmd_clear_soft_dirty(pmd_t pmd)
+ /* Extern to avoid header file madness */
+ extern pmd_t mk_pmd(struct page *page, pgprot_t prot);
  
- struct prestera_msg_acl_ruleset_resp {
- 	struct prestera_msg_ret ret;
- 	__le16 id;
-+	u8 pad[2];
- };
- 
- struct prestera_msg_span_req {
-@@ -425,11 +432,13 @@ struct prestera_msg_span_req {
- 	__le32 port;
- 	__le32 dev;
- 	u8 id;
-+	u8 pad[3];
- };
- 
- struct prestera_msg_span_resp {
- 	struct prestera_msg_ret ret;
- 	u8 id;
-+	u8 pad[3];
- };
- 
- struct prestera_msg_stp_req {
-@@ -443,6 +452,7 @@ struct prestera_msg_stp_req {
- struct prestera_msg_rxtx_req {
- 	struct prestera_msg_cmd cmd;
- 	u8 use_sdma;
-+	u8 pad[3];
- };
- 
- struct prestera_msg_rxtx_resp {
-@@ -455,12 +465,14 @@ struct prestera_msg_lag_req {
- 	__le32 port;
- 	__le32 dev;
- 	__le16 lag_id;
-+	u8 pad[2];
- };
- 
- struct prestera_msg_cpu_code_counter_req {
- 	struct prestera_msg_cmd cmd;
- 	u8 counter_type;
- 	u8 code;
-+	u8 pad[2];
- };
- 
- struct mvsw_msg_cpu_code_counter_ret {
+-static inline unsigned long pmd_pfn(pmd_t pmd)
+-{
+-	return pmd_val(pmd) >> _PFN_SHIFT;
+-}
+-
+-static inline struct page *pmd_page(pmd_t pmd)
+-{
+-	if (pmd_trans_huge(pmd))
+-		return pfn_to_page(pmd_pfn(pmd));
+-
+-	return pfn_to_page(pmd_phys(pmd) >> PAGE_SHIFT);
+-}
+-
+ static inline pmd_t pmd_modify(pmd_t pmd, pgprot_t newprot)
+ {
+ 	pmd_val(pmd) = (pmd_val(pmd) & (_PAGE_CHG_MASK | _PAGE_HUGE)) |
 -- 
-2.25.1
+2.27.0
 
