@@ -2,65 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6664B442769
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 08:04:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E398442773
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 08:06:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230321AbhKBHGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 03:06:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55589 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229526AbhKBHGq (ORCPT
+        id S230450AbhKBHIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 03:08:41 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:12197 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229970AbhKBHIj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 03:06:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635836651;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uwe6Im3+/C2CeP/app36OOxG3mb9S7+W5YEuat7D8xk=;
-        b=Hl4Umsz023NiCDpuC4Poz/6PdPQ3EsroC1I20ZbRB8y7T/pxSZzQmexdLYRJnoKW1lHeVw
-        bfm8E8hI9NlA8GbaasZ8jfd3deb/JgFyWke2abW9FOg0P9zgb/naIn4nmvFM6IYb/cLULh
-        gnRPYz3HMfa4Nf5noqJ4vPy7oi0YQ0w=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-243-Uflqv8ODMQCSZp2YZnz36Q-1; Tue, 02 Nov 2021 03:04:10 -0400
-X-MC-Unique: Uflqv8ODMQCSZp2YZnz36Q-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Tue, 2 Nov 2021 03:08:39 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1635836764; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=5fEtNBfMOPuQvrIufJ+iE7zhzDqTILQAqeScWkbv0Rg=; b=pK/nCdqg5T91f4epB03AnpIqHuF0wb7P76RaKwcuUqCbp5JBTfTV3JHF9pptC+tX0n2+FYB2
+ JqtUUgd4NlmMjSRJClf6RND8E3DEUg41VI9l6Jx9uwLSDCWi90tnjDKtA1VURgi3NK8j2BVg
+ 709db6mPwy0YdDvi/jjQ4d4Djjs=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 6180e32b648aeeca5c45cb7c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 02 Nov 2021 07:05:15
+ GMT
+Sender: zijuhu=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 5DA17C43616; Tue,  2 Nov 2021 07:05:15 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from zijuhu-gv.qualcomm.com (unknown [180.166.53.21])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 05185802682;
-        Tue,  2 Nov 2021 07:04:09 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E312860C05;
-        Tue,  2 Nov 2021 07:04:05 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20211102090749.009f42b3@canb.auug.org.au>
-References: <20211102090749.009f42b3@canb.auug.org.au> <20210921135421.13eac778@canb.auug.org.au>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     dhowells@redhat.com, Matthew Wilcox <willy@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the folio tree with the fscache tree
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <4010601.1635836645.1@warthog.procyon.org.uk>
-Date:   Tue, 02 Nov 2021 07:04:05 +0000
-Message-ID: <4010602.1635836645@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+        (Authenticated sender: zijuhu)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6C9F2C4338F;
+        Tue,  2 Nov 2021 07:05:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 6C9F2C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Zijun Hu <zijuhu@codeaurora.org>
+To:     robh@kernel.org, gregkh@linuxfoundation.org, jirislaby@kernel.org
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-bluetooth@vger.kernel.org, zijuhu@codeaurora.org,
+        Zijun Hu <quic_zijuhu@quicinc.com>
+Subject: [PATCH v1 1/3] serdev: Add interface serdev_device_ioctl
+Date:   Tue,  2 Nov 2021 15:05:07 +0800
+Message-Id: <1635836707-29341-1-git-send-email-zijuhu@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+From: Zijun Hu <quic_zijuhu@quicinc.com>
 
-> >   405f4ff7f8a3 ("fscache: Remove the old I/O API")
+For serdev_device which is mounted at virtual tty port, tty ioctl()
+maybe be used to make serdev_device ready to talk with tty port, so
+add interface serdev_device_ioctl().
 
-This branch is now obsolete.  I'm testing a replacement branch and will
-hopefully push that to fscache-next this morning.
+Signed-off-by: Zijun Hu <quic_zijuhu@quicinc.com>
+---
+ drivers/tty/serdev/core.c           | 13 +++++++++++++
+ drivers/tty/serdev/serdev-ttyport.c | 12 ++++++++++++
+ include/linux/serdev.h              |  9 +++++++++
+ 3 files changed, 34 insertions(+)
 
-David
+diff --git a/drivers/tty/serdev/core.c b/drivers/tty/serdev/core.c
+index f1324fe99378..dee934203277 100644
+--- a/drivers/tty/serdev/core.c
++++ b/drivers/tty/serdev/core.c
+@@ -405,6 +405,19 @@ int serdev_device_set_tiocm(struct serdev_device *serdev, int set, int clear)
+ }
+ EXPORT_SYMBOL_GPL(serdev_device_set_tiocm);
+ 
++int serdev_device_ioctl(struct serdev_device *serdev, unsigned int cmd, unsigned long arg)
++{
++	struct serdev_controller *ctrl = serdev->ctrl;
++
++	if (!ctrl)
++		return -ENOTTY;
++	else if	(!ctrl->ops->ioctl)
++		return -ENOSYS;
++	else
++		return ctrl->ops->ioctl(ctrl, cmd, arg);
++}
++EXPORT_SYMBOL_GPL(serdev_device_ioctl);
++
+ static int serdev_drv_probe(struct device *dev)
+ {
+ 	const struct serdev_device_driver *sdrv = to_serdev_device_driver(dev->driver);
+diff --git a/drivers/tty/serdev/serdev-ttyport.c b/drivers/tty/serdev/serdev-ttyport.c
+index d367803e2044..66afad1eb1b7 100644
+--- a/drivers/tty/serdev/serdev-ttyport.c
++++ b/drivers/tty/serdev/serdev-ttyport.c
+@@ -247,6 +247,17 @@ static int ttyport_set_tiocm(struct serdev_controller *ctrl, unsigned int set, u
+ 	return tty->ops->tiocmset(tty, set, clear);
+ }
+ 
++static int ttyport_ioctl(struct serdev_controller *ctrl, unsigned int cmd, unsigned long arg)
++{
++	struct serport *serport = serdev_controller_get_drvdata(ctrl);
++	struct tty_struct *tty = serport->tty;
++
++	if (!tty->ops->ioctl)
++		return -ENOSYS;
++
++	return tty->ops->ioctl(tty, cmd, arg);
++}
++
+ static const struct serdev_controller_ops ctrl_ops = {
+ 	.write_buf = ttyport_write_buf,
+ 	.write_flush = ttyport_write_flush,
+@@ -259,6 +270,7 @@ static const struct serdev_controller_ops ctrl_ops = {
+ 	.wait_until_sent = ttyport_wait_until_sent,
+ 	.get_tiocm = ttyport_get_tiocm,
+ 	.set_tiocm = ttyport_set_tiocm,
++	.ioctl = ttyport_ioctl,
+ };
+ 
+ struct device *serdev_tty_port_register(struct tty_port *port,
+diff --git a/include/linux/serdev.h b/include/linux/serdev.h
+index 3368c261ab62..5804201fafb2 100644
+--- a/include/linux/serdev.h
++++ b/include/linux/serdev.h
+@@ -91,6 +91,7 @@ struct serdev_controller_ops {
+ 	void (*wait_until_sent)(struct serdev_controller *, long);
+ 	int (*get_tiocm)(struct serdev_controller *);
+ 	int (*set_tiocm)(struct serdev_controller *, unsigned int, unsigned int);
++	int (*ioctl)(struct serdev_controller *ctrl, unsigned int cmd, unsigned long arg);
+ };
+ 
+ /**
+@@ -201,6 +202,7 @@ int serdev_device_write_buf(struct serdev_device *, const unsigned char *, size_
+ void serdev_device_wait_until_sent(struct serdev_device *, long);
+ int serdev_device_get_tiocm(struct serdev_device *);
+ int serdev_device_set_tiocm(struct serdev_device *, int, int);
++int serdev_device_ioctl(struct serdev_device *serdev, unsigned int cmd, unsigned long arg);
+ void serdev_device_write_wakeup(struct serdev_device *);
+ int serdev_device_write(struct serdev_device *, const unsigned char *, size_t, long);
+ void serdev_device_write_flush(struct serdev_device *);
+@@ -254,6 +256,13 @@ static inline int serdev_device_set_tiocm(struct serdev_device *serdev, int set,
+ {
+ 	return -ENOTSUPP;
+ }
++
++static inline int serdev_device_ioctl(struct serdev_device *serdev,
++				      unsigned int cmd, unsigned long arg)
++{
++	return -ENOSYS;
++}
++
+ static inline int serdev_device_write(struct serdev_device *sdev, const unsigned char *buf,
+ 				      size_t count, unsigned long timeout)
+ {
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
 
