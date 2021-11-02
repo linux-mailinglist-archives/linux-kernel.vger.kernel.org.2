@@ -2,101 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E55D9443325
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 17:38:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03A2B443319
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 17:38:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234890AbhKBQlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 12:41:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42818 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234865AbhKBQkV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 12:40:21 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DF13C0432EF
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 09:36:53 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id x64so1648800pfd.6
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 09:36:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=kzaasMMBTXjWCF2aP5KAdydXQMo8KpV1k3e0lAQIo44=;
-        b=F7ISfMno8xtoB4Js7RP8rkONBvLUr9wt+CzoJTq12uwh2ehtnzzCsBAFArwhugCAW2
-         zTLisHtU3YxHuUMGIb96EdsJTCCaNzt9KVxKUZ6fsz5RjRQf8jUDMO9MW29LbkAI8z+l
-         tCTdUOlRUn4OjYKX8bu0x3VqAbvXrS4NziveV5tUOc546LoxNnQ5ouoq/0pybFybjwIz
-         kbaDOt0dtw5dp5jBjmOp5qovElzsY7YNDUOvzxo1ScqrcbBE6e0bXX3+048AFjl9uFIi
-         UsO2H6UM7bQ2YNSoqdsjD8a5KLTOAXKGNAOMmiXI++J3RBOOlaqqN8T3FdwM5Rc71sRu
-         KNyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition;
-        bh=kzaasMMBTXjWCF2aP5KAdydXQMo8KpV1k3e0lAQIo44=;
-        b=p4RKfn0bqpvXthbsJO58a8Nm3a2dQ4yPxdgVFPHgfR7A8rIDvNxrRNTc0imf2QUz6b
-         5QMTZ2XiyBhI4uwc1miLNU5HHngTimngm9uqKqol0mR6WpyKEITNIyuyC0IQiJK/KVNu
-         oJQ9spoiTCA1IJ8bZRsrLZFy6IOPRIQ9x1jmFOBYu8/EeJivgL4QNkVQBFN3T/6PCid+
-         ogLP1ahfDk8jSAFEj/j/rcxufZ2xPhg0cBAL1PzAHPxe/A1JS4rL8R7N6WVrlrlDTNyP
-         pPZWVHiukGcQ0UY6BWSC5VdDr+2Ajd6af74UV0AFaQVI6+eXtchT2UR658/CUanJbQpP
-         e1kg==
-X-Gm-Message-State: AOAM533ueAlUpKh6ElyHhA+iRpTiZCbPInPuOC+jCbc6UdSAVpJkZizn
-        CYeyjRTO3y8nK/d+prYJN7x9TEUrcno8WA==
-X-Google-Smtp-Source: ABdhPJxlxLSZSHAWHfrbfbQpeKE9/+xiaudmOsKqtl/0klqrojAFXfPafNFSZTosAqDN0Vw3wjj6Dg==
-X-Received: by 2002:a63:f753:: with SMTP id f19mr16897970pgk.92.1635871012621;
-        Tue, 02 Nov 2021 09:36:52 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id l3sm18558189pff.4.2021.11.02.09.36.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Nov 2021 09:36:52 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 2 Nov 2021 06:36:50 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [GIT PULL] workqueue changes for v5.16-rc1
-Message-ID: <YYFpIp/sa4Oiix71@slm.duckdns.org>
-MIME-Version: 1.0
+        id S234822AbhKBQk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 12:40:26 -0400
+Received: from mail-bn8nam08on2049.outbound.protection.outlook.com ([40.107.100.49]:25024
+        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234826AbhKBQjg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 12:39:36 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oLvaIjgYe4dhSI67yxYjQBVK6YK22UPYHEA6I8SuaZI5XIg0c9IS17kRK3EpwGxdaPCvRAX7+GykGqz3V4+xqYeylcgDbpWDjtnau5qnwPxKjWu0F/BpEkNj6eODe+MP56RXR4NQsmmkuCaRd2Vg2cx8HIFpueLbHDa0hSUDjJm/qKqrrRZyOe0u/We+9dOttMQcGzCgxkMG3Tt4NbkpaonGqvfbpknIkVlkjycF3ct/o4WRzYZ+fYJGzRAkEjATddZEvCVx6Frl5qEparWaRkiQCvroZLSPLFiNfP5BbsdTwMbrGL4/9Dv+mbcNtVEaK7GQA+TXdMCIqVLut1+HdQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Tf8Jhv1zDs8aaHpgyxt08mFpbdvgZwMVr0yHV8ae7GI=;
+ b=lofiXhu3ifgeZqeTQJtf/aYUy6Qx5jg78ldq8RICj0c3vsUwAsT7Xg9qhWXqLMVuv3BHoe7TdELD8ho0ej7pZUzfmspDRQbw0+ccxLONIaAQAKu5QswMT11qNQ2vGs4aMh5VZC1V/NpNFMUQwm+IbZcb+GLTxaZD40SnYptk30bNuz011Z+4xxqPJPB+r4dO5f8ECxxdaY/pgO8hFV7Muug/ibf/EP9+lQ+3ZQMDrEYWPXtqYMiTFaOXsX0Ul1u8V41QYvFuWRd9HVvxlYBffxOTImS028s+9Q4bphhAbcMS8XadsxARAP9xKJVhrdENJ45P4fTd+7scqNTcLHulxw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Tf8Jhv1zDs8aaHpgyxt08mFpbdvgZwMVr0yHV8ae7GI=;
+ b=Iqg3Ei0XF0vtws2bFQC80luHUtjpDvRwIWokSsdxam9cYvREoDjvgNjYADdG3WW8Ty6XYYuCQCSW+KQU0KpgmNtjmxsjOEDeJq18l993Ivz7BItCF2CDOgd7ENYiazEWCxWH3ho0rMP6VclKBmNRd+dgPeMLcrTs8GUznJE/p4ujo4qUjtVdjNaNKDuHQ0Y/zia8D6WW0e3ekjfP8ew2EHzYNeHaqLPlD1zvN+xUIHxV97GnTVR53WzmE0jmL+qRVXXbCW4dwoZZMtg8eyqJ6zGw+oyilz7jd8t4Pdsqoc6Qun6OdinMUkz79M+VDqJbxu0VceQKc3ne59tTEFNyEQ==
+Authentication-Results: lst.de; dkim=none (message not signed)
+ header.d=none;lst.de; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5175.namprd12.prod.outlook.com (2603:10b6:208:318::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.14; Tue, 2 Nov
+ 2021 16:36:59 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4649.020; Tue, 2 Nov 2021
+ 16:36:59 +0000
+Date:   Tue, 2 Nov 2021 13:36:57 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        intel-gfx@lists.freedesktop.org,
+        intel-gvt-dev@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 27/29] drm/i915/gvt: remove kvmgt_guest_{init,exit}
+Message-ID: <20211102163657.GH2744544@nvidia.com>
+References: <20211102070601.155501-1-hch@lst.de>
+ <20211102070601.155501-28-hch@lst.de>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20211102070601.155501-28-hch@lst.de>
+X-ClientProxiedBy: MN2PR10CA0028.namprd10.prod.outlook.com
+ (2603:10b6:208:120::41) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
+MIME-Version: 1.0
+Received: from mlx.ziepe.ca (142.162.113.129) by MN2PR10CA0028.namprd10.prod.outlook.com (2603:10b6:208:120::41) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.15 via Frontend Transport; Tue, 2 Nov 2021 16:36:59 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mhwmP-005Arh-T6; Tue, 02 Nov 2021 13:36:57 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 44c79e02-f53e-459f-089a-08d99e1efdb8
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5175:
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5175C08BC738481975FF630DC28B9@BL1PR12MB5175.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:260;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: zH/pD9GCt3rlKIcq/EdZZjElpRa/v46wTWRLNyO5liH+yhaIJHDA1w4Ue1lE1Jn+D6RuVTTjVuP72D/gcSr/uFgoM9g0uqFHi6MKs1dWwqZqZkfLp7uPRur5koRlpCf5CpXa5BscQ6BuF+S8iMtSm9MvHFqOK3CMrwX9Zgk6BOmP0UNKHXy3NloLxtXWXKThqkcO6nLj++d4SGjYQgHS0yX96B+vgthxjKqKfH9vRvAVAg1yt9mWfP6eIb/YRWpsdJKRXl3b+QvUZa2oGZXCNKv5XEeIjyGdasSRKKCrPkH4w0h4LhJbhry/hmUUTjFgcFl3SlJ5e+YCHGuxjx47Y/4bwTZdHUGaxuy9egHaGrVgGbA48q7jHnAUyZnk8URKs2RgyzyfZvWkcrFxrYrdM4n0QvpqdGs6QuMdR+FaPm5wN1RmB3p2tnLRDtug72Z3C/43n699180H8wk2GZltjpxve0WJTH1CCserKjXhZahx8/jjX+yPY/7PhW0RMXvTzWLY+jWMcLlmOgGnqpY+ODNuNzxhJIv6+wkPuc7j/b58eg77vBaw0Cyc4zksjJecT6AkQx51CyXSpuMWFLvYmQMg4vDjWkub+mxhs8f0CKL7xcKVYtfKUWMaI7wSMEmP8i30wSRzPhmkjdR1hxuFFA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(316002)(2616005)(26005)(38100700002)(66556008)(6916009)(66476007)(54906003)(8936002)(8676002)(83380400001)(66946007)(5660300002)(33656002)(1076003)(508600001)(426003)(9786002)(9746002)(4326008)(36756003)(4744005)(186003)(86362001)(7416002)(2906002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?2s6qJJjOP7FBTRcQG0o1Vj6d0O3rIon4lIvI6M4e47bzAnWKaq621fNewggB?=
+ =?us-ascii?Q?Abx6MnP5/GEnd9v7Vl4DbY/6FktxcxDBvoXBniRk9LvzMT1M9e0yWGNBUkCK?=
+ =?us-ascii?Q?hemP5Mhz3yJl9M3VkJSdIGea6Q5a8Y1eA4ESkxiWOF83OYcnDPCOFhDNGjnU?=
+ =?us-ascii?Q?6fpV3XV4BY82L6uP2QGq2AufFl60xOutAY1WlaiV1vUBM0vYAjnOcpURcWJq?=
+ =?us-ascii?Q?U9xQcgI1rNfTkwYW7EcBIaFF66GleWW9OReBmTcNhF92a+b6WJjvw0nn/apv?=
+ =?us-ascii?Q?xs5GYc57Do7fU1t8AXmGJSLjSf6h8QWiN+iPjzlJV2u4N7Q73z+omXHmCm1L?=
+ =?us-ascii?Q?ZE/Kx2Ba449t1OvsrNsSETZwZLUyXdATTdqAIvHNH7LTQfWb9KgEir18895u?=
+ =?us-ascii?Q?F0gXdthQKcQMoPa5A5RtB5RtpWuz6f4w2IhowAuU5NBJjehAiol6xhMlXmJG?=
+ =?us-ascii?Q?DX1mD7oCsgQzxc/2HnNFrRc7p7XChjaVfUkAJD4zRDhAJZMn8z13M899PHpX?=
+ =?us-ascii?Q?munUuzaMbd2hpwlDngsP+y2L3z8mTPW9VSr2HJPwV4pVRIJRqutnNLgdx/FZ?=
+ =?us-ascii?Q?ippZAQXKAiSW4Qt3Fwq5OKVD1vNX2m8ZmHo4qHt6BhGZKDLlfJrjLzMPLhhl?=
+ =?us-ascii?Q?RH0AnPxct8s1XZcP+TX/URZqUd1LSuZKUGNoIBIrsdWpjYq55Q/L0p5kOH4Z?=
+ =?us-ascii?Q?ice2C2+CloJg2CBHrUVXCjktwwzULgzhB9iu2/+Y3N6osOUm+eNrxrmTD5i6?=
+ =?us-ascii?Q?bdZ0qOK+cl5vtNeA7XMEGp9X5jL9sgaOlOwMlqjiL7dkJDSPsGtwYPMyVRlG?=
+ =?us-ascii?Q?C+8L+2PLCFBAxdudqz4X/QiEWmt5UT3VoEiFj6ixUgwDFe0AHvJfFBkJ1+1z?=
+ =?us-ascii?Q?7gO+sRzfKDyPRiMVoamOIzmyr7pChPskx75ic94KL/OXE7O3CPP8Xcp/KZPL?=
+ =?us-ascii?Q?/IVBSrrbLRc5dOi6FEYKUUgBkQO8B5Eh3qdCNH3obaUqHmhbcdtW0dkIAnDP?=
+ =?us-ascii?Q?YeRFGr0mTIpMHwC1TZXc0LqwiQE0xhrkIAcflVRKPr90jepXqOCNGs09dRuh?=
+ =?us-ascii?Q?O3NSK/LwvXKQBOdIGmNNIsSwhHze02ornHgQXmj4wEdOsep/jxJtl1Ncojp+?=
+ =?us-ascii?Q?GXv1dCPsZpZgCN1ybFRNlAg72JPuMd9jZUJ2HQP/zaAQ7GeEeBQsQ0atNmlg?=
+ =?us-ascii?Q?/bxrng7xVfci9zrpfKr/ISWRUKk7N7u+6Yq+sDDYXjDRwkSXR7VxPOaUwwUX?=
+ =?us-ascii?Q?odUXGaada0W3wbzVgJDdYK6FjflP7vI03FbMqqAE2L75i8OhiPyt4L9MBW5m?=
+ =?us-ascii?Q?chX04SimiTBpqZEjMLpVPPR+L8eYFywfvufJPYzXLMcNnv8oAvT7L71To1cy?=
+ =?us-ascii?Q?q6WYvJcAOHqEUW4zdBuMF3NdUohW+LBNaV+j0LsNnSVZ+yoJuAyVUgmEa89d?=
+ =?us-ascii?Q?KmEKkuR/mcqQEFZS44JkZ4C0oYEYA18t1kigBpEjvabxbsCseVeVMjt7P4m+?=
+ =?us-ascii?Q?ufmiTqj/w2I1ut9ru/qJCQRh4DZ72/rdqN9OwgEbqwVRD+kchP9wwl7NHFAz?=
+ =?us-ascii?Q?4uCADu0UH4OIKcTfSEA=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 44c79e02-f53e-459f-089a-08d99e1efdb8
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2021 16:36:59.3993
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: h94dWPYsCLrLBHoJW0nt1V8Tk/WL1gnhu97oeDQ8bcnfdIHkTYvvoiyDgm9fo7uj
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5175
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Linus.
+On Tue, Nov 02, 2021 at 08:05:59AM +0100, Christoph Hellwig wrote:
+> Merge these into their only callers.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  drivers/gpu/drm/i915/gvt/kvmgt.c | 129 ++++++++++++++-----------------
+>  1 file changed, 60 insertions(+), 69 deletions(-)
 
-Nothing too interesting. An optimization to short-circuit noop cpumask
-updates, debug dump code reorg, and doc update.
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 
-Thanks.
-
-The following changes since commit d9abdee5fd5abffd0e763e52fbfa3116de167822:
-
-  Merge branch 'akpm' (patches from Andrew) (2021-10-19 05:41:36 -1000)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tj/wq.git for-5.16
-
-for you to fetch changes up to f9eaaa82b474350aa8436d15a7ae150a3c8b9d5c:
-
-  workqueue: doc: Call out the non-reentrance conditions (2021-10-25 07:18:40 -1000)
-
-----------------------------------------------------------------
-Boqun Feng (1):
-      workqueue: doc: Call out the non-reentrance conditions
-
-Imran Khan (1):
-      workqueue: Introduce show_one_worker_pool and show_one_workqueue.
-
-Menglong Dong (1):
-      workqueue: make sysfs of unbound kworker cpumask more clever
-
- Documentation/core-api/workqueue.rst |  21 +++-
- drivers/tty/sysrq.c                  |   2 +-
- include/linux/workqueue.h            |   3 +-
- kernel/power/process.c               |   2 +-
- kernel/workqueue.c                   | 187 ++++++++++++++++++++---------------
- 5 files changed, 128 insertions(+), 87 deletions(-)
-
--- 
-tejun
+Jason
