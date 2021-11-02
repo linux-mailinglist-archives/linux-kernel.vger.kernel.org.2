@@ -2,172 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BB1A442DD3
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 13:27:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7153C442DD6
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 13:27:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230201AbhKBM3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 08:29:52 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:37670 "EHLO
+        id S230519AbhKBMaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 08:30:15 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:37694 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbhKBM3s (ORCPT
+        with ESMTP id S230349AbhKBMaM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 08:29:48 -0400
+        Tue, 2 Nov 2021 08:30:12 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id CAFE11FD75;
-        Tue,  2 Nov 2021 12:27:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1635856031; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        by smtp-out2.suse.de (Postfix) with ESMTP id 6F8FA1FD4C;
+        Tue,  2 Nov 2021 12:27:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1635856057; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Lb3sXNgxIYkY72+OGozUnacdQhpziHv4MBif6sV3P3Q=;
-        b=XcqGPV5wA8l4NnlzvUr7wGo7VA5dT478XE+Bx4Na/Uykvj5PJjFmxQGw6HAeNMFkqykBKT
-        ZbCvPMfhpanF4zJpRJJw5b/udrOm4+1jNmon8wJhb8LRKtPeD2hu0fvZyFJkfWoXrUO84u
-        c0msjVUeEu9Wis80hBBUKlh7oD1v2uA=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 9BFE8A3B81;
-        Tue,  2 Nov 2021 12:27:11 +0000 (UTC)
-Date:   Tue, 2 Nov 2021 13:27:11 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Alexey Makhalov <amakhalov@vmware.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Oscar Salvador <OSalvador@suse.com>
-Subject: Re: [PATCH] mm: fix panic in __alloc_pages
-Message-ID: <YYEun6s/mF9bE+rQ@dhcp22.suse.cz>
-References: <20211101201312.11589-1-amakhalov@vmware.com>
- <YYDtDkGNylpAgPIS@dhcp22.suse.cz>
- <7136c959-63ff-b866-b8e4-f311e0454492@redhat.com>
- <C69EF2FE-DFF6-492E-AD40-97A53739C3EC@vmware.com>
- <YYD/FkpAk5IvmOux@dhcp22.suse.cz>
- <b2e4a611-45a6-732a-a6d3-6042afd2af6e@redhat.com>
- <E34422F0-A44A-48FD-AE3B-816744359169@vmware.com>
- <b3908fce-6b07-8390-b691-56dd2f85c05f@redhat.com>
- <YYEkqH8l0ASWv/JT@dhcp22.suse.cz>
- <42abfba6-b27e-ca8b-8cdf-883a9398b506@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+        bh=6nE7xU/FFP5yqVCM/ob/RuNgtbC6lpn41P9w84srlH8=;
+        b=0pdHwkfXf5YZ4StFJg6TqAi1CeKQGLIQU2mBgHjm704zNZbIZptPz9stTyorKFWoXDUQ2j
+        lpriAimphFUlhpu2eF5oFIfb9QZhn3bc8UCcp/fz34mEDh+dILuys/73Q07RnAWUt8pKct
+        I3LVVqDoTwRowqR/1QCU2ce3XEKrMeI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1635856057;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6nE7xU/FFP5yqVCM/ob/RuNgtbC6lpn41P9w84srlH8=;
+        b=yhJicjYRrkKHRgsrsDY+4ApWmkaVIvtAaTstfy1FR3JmHxZXzBfr6T3rPWmbEXyzEM2+ka
+        ClFe9L1hdKK/RrDg==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id 59436A3B88;
+        Tue,  2 Nov 2021 12:27:37 +0000 (UTC)
+Date:   Tue, 02 Nov 2021 13:27:37 +0100
+Message-ID: <s5hcznipwsm.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Zqiang <qiang.zhang1211@gmail.com>
+Cc:     tiwai@suse.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ALSA: seq: Fix RCU stall in snd_seq_write()
+In-Reply-To: <47f05b3a-811b-e64c-0366-3aebaece6c8e@gmail.com>
+References: <20211102033222.3849-1-qiang.zhang1211@gmail.com>
+        <s5hy267ot27.wl-tiwai@suse.de>
+        <2d05ceab-b8b7-0c7b-f847-69950c6db14e@gmail.com>
+        <s5ho872q25p.wl-tiwai@suse.de>
+        <47f05b3a-811b-e64c-0366-3aebaece6c8e@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <42abfba6-b27e-ca8b-8cdf-883a9398b506@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 02-11-21 13:06:06, David Hildenbrand wrote:
-> On 02.11.21 12:44, Michal Hocko wrote:
-> > On Tue 02-11-21 12:00:57, David Hildenbrand wrote:
-> >> On 02.11.21 11:34, Alexey Makhalov wrote:
-> > [...]
-> >>>> The node onlining logic when onlining a CPU sounds bogus as well: Let's
-> >>>> take a look at try_offline_node(). It checks that:
-> >>>> 1) That no memory is *present*
-> >>>> 2) That no CPU is *present*
-> >>>>
-> >>>> We should online the node when adding the CPU ("present"), not when
-> >>>> onlining the CPU.
-> >>>
-> >>> Possible.
-> >>> Assuming try_online_node was moved under add_cpu(), let’s
-> >>> take look on this call stack:
-> >>> add_cpu()
-> >>>   try_online_node()
-> >>>     __try_online_node()
-> >>>       hotadd_new_pgdat()
-> >>> At line 1190 we'll have a problem:
-> >>> 1183         pgdat = NODE_DATA(nid);
-> >>> 1184         if (!pgdat) {
-> >>> 1185                 pgdat = arch_alloc_nodedata(nid);
-> >>> 1186                 if (!pgdat)
-> >>> 1187                         return NULL;
-> >>> 1188
-> >>> 1189                 pgdat->per_cpu_nodestats =
-> >>> 1190                         alloc_percpu(struct per_cpu_nodestat);
-> >>> 1191                 arch_refresh_nodedata(nid, pgdat);
-> >>>
-> >>> alloc_percpu() will go for all possible CPUs and will eventually end up
-> >>> calling alloc_pages_node() trying to use subject nid for corresponding CPU
-> >>> hitting the same state #2 problem as NODE_DATA(nid) is still NULL and nid
-> >>> is not yet online.
+On Tue, 02 Nov 2021 12:20:32 +0100,
+Zqiang wrote:
+> 
+> 
+> On 2021/11/2 下午6:31, Takashi Iwai wrote:
+> > On Tue, 02 Nov 2021 10:41:57 +0100,
+> > Zqiang wrote:
 > >>
-> >> Right, we will end up calling pcpu_alloc_pages()->alloc_pages_node() for
-> >> each possible CPU. We use cpu_to_node() to come up with the NID.
-> > 
-> > Shouldn't this be numa_mem_id instead? Memory less nodes are odd little
+> >> On 2021/11/2 下午4:33, Takashi Iwai wrote:
+> >>> On Tue, 02 Nov 2021 04:32:22 +0100,
+> >>> Zqiang wrote:
+> >>>> If we have a lot of cell object, this cycle may take a long time, and
+> >>>> trigger RCU stall. insert a conditional reschedule point to fix it.
+> >>>>
+> >>>> rcu: INFO: rcu_preempt self-detected stall on CPU
+> >>>> rcu: 	1-....: (1 GPs behind) idle=9f5/1/0x4000000000000000
+> >>>> 	softirq=16474/16475 fqs=4916
+> >>>> 	(t=10500 jiffies g=19249 q=192515)
+> >>>> NMI backtrace for cpu 1
+> >>>> ......
+> >>>> asm_sysvec_apic_timer_interrupt
+> >>>> RIP: 0010:_raw_spin_unlock_irqrestore+0x38/0x70
+> >>>> spin_unlock_irqrestore
+> >>>> snd_seq_prioq_cell_out+0x1dc/0x360
+> >>>> snd_seq_check_queue+0x1a6/0x3f0
+> >>>> snd_seq_enqueue_event+0x1ed/0x3e0
+> >>>> snd_seq_client_enqueue_event.constprop.0+0x19a/0x3c0
+> >>>> snd_seq_write+0x2db/0x510
+> >>>> vfs_write+0x1c4/0x900
+> >>>> ksys_write+0x171/0x1d0
+> >>>> do_syscall_64+0x35/0xb0
+> >>>>
+> >>>> Reported-by: syzbot+bb950e68b400ab4f65f8@syzkaller.appspotmail.com
+> >>>> Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+> >>>> ---
+> >>>>    sound/core/seq/seq_queue.c | 2 ++
+> >>>>    1 file changed, 2 insertions(+)
+> >>>>
+> >>>> diff --git a/sound/core/seq/seq_queue.c b/sound/core/seq/seq_queue.c
+> >>>> index d6c02dea976c..f5b1e4562a64 100644
+> >>>> --- a/sound/core/seq/seq_queue.c
+> >>>> +++ b/sound/core/seq/seq_queue.c
+> >>>> @@ -263,6 +263,7 @@ void snd_seq_check_queue(struct snd_seq_queue *q, int atomic, int hop)
+> >>>>    		if (!cell)
+> >>>>    			break;
+> >>>>    		snd_seq_dispatch_event(cell, atomic, hop);
+> >>>> +		cond_resched();
+> >>>>    	}
+> >>>>      	/* Process time queue... */
+> >>>> @@ -272,6 +273,7 @@ void snd_seq_check_queue(struct snd_seq_queue *q, int atomic, int hop)
+> >>>>    		if (!cell)
+> >>>>    			break;
+> >>>>    		snd_seq_dispatch_event(cell, atomic, hop);
+> >>>> +		cond_resched();
+> >>> It's good to have cond_resched() in those places but it must be done
+> >>> more carefully, as the code path may be called from the non-atomic
+> >>> context, too.  That is, it must have a check of atomic argument, and
+> >>> cond_resched() is applied only when atomic==false.
+> >>>
+> >>> But I still wonder how this gets a RCU stall out of sudden.  Looking
+> >>> through https://syzkaller.appspot.com/bug?extid=bb950e68b400ab4f65f8
+> >>> it's triggered by many cases since the end of September...
+> >> I did not find useful information from the log,  through calltrace, I
+> >> guess it may be triggered by the long cycle time, which caused the
+> >> static state of the RCU to
+> >>
+> >> not be reported in time.
+> > Yes, I understand that logic.  But I wonder why this gets triggered
+> > *now* out of sudden.  The code has been present over decades, and I
+> > don't think the similar test case must have been performed by fuzzer.
+> >
+> >> I ignore the atomic parameter check,  I will resend v2 .   in
+> >> no-atomic context, we can insert
+> >>
+> >> cond_resched() to avoid this situation, but in atomic context,
+> >>
+> >> the RCU stall maybe still trigger.
+> > Right, so maybe it's better to have an upper limit for the processed
+> > cells, something like below (totally untested).
+> >
+> > Could you reproduce the problem locally?  Otherwise it's all nothing
+> > but a guess...
 > 
-> Hm, good question. Most probably yes for offline nodes.
+> yes, this is just a guess.  I haven't reproduced locally, limiting the
+> number of cycles is a suitable modification,
 > 
-> diff --git a/mm/percpu-vm.c b/mm/percpu-vm.c
-> index 2054c9213c43..c21ff5bb91dc 100644
-> --- a/mm/percpu-vm.c
-> +++ b/mm/percpu-vm.c
-> @@ -84,15 +84,19 @@ static int pcpu_alloc_pages(struct pcpu_chunk *chunk,
->                             gfp_t gfp)
->  {
->         unsigned int cpu, tcpu;
-> -       int i;
-> +       int i, nid;
->  
->         gfp |= __GFP_HIGHMEM;
->  
->         for_each_possible_cpu(cpu) {
-> +               nid = cpu_to_node(cpu);
-> +
-> +               if (nid == NUMA_NO_NODE || !node_online(nid))
-> +                       nid = numa_mem_id();
+> but the  MAX_CELL_PROCESSES_IN_QUEUE is an experience value.
 
-or simply nid = cpu_to_mem(cpu)
+Yes, that's why we need the reproducer in anyway before moving
+forward.  The problem is that the patch looks as if it were fixing the
+RCU stall, but we haven't verified it at all that it is really the
+cause.  Even we haven't checked whether it's really the too many cells
+queued, or just because the concurrent queuing made the function
+re-running.
 
->                 for (i = page_start; i < page_end; i++) {
->                         struct page **pagep = &pages[pcpu_page_idx(cpu, i)];
->  
-> -                       *pagep = alloc_pages_node(cpu_to_node(cpu), gfp, 0);
-> +                       *pagep = alloc_pages_node(nid, gfp, 0);
->                         if (!*pagep)
->                                 goto err;
->                 }
-> 
-> 
-> > critters crafted into the MM code without wider considerations. From
-> > time to time we are struggling with some fallouts but the primary thing
-> > is that zonelists should be valid for all memory less nodes.
-> 
-> Yes, but a zonelist cannot be correct for an offline node, where we might
-> not even have an allocated pgdat yet. No pgdat, no zonelist. So as soon as
-> we allocate the pgdat and set the node online (->hotadd_new_pgdat()), the zone lists have to be correct. And I can spot an build_all_zonelists() in hotadd_new_pgdat().
 
-Yes, that is what I had in mind. We are talking about two things here.
-Memoryless nodes and offline nodes. The later sounds like a bug to me.
-
-> I agree that someone passing an offline NID into an allocator function
-> should be fixed.
-
-Right
-
-> Maybe __alloc_pages_bulk() and alloc_pages_node() should bail out directly
-> (VM_BUG()) in case we're providing an offline node with eventually no/stale pgdat as
-> preferred nid.
-
-Historically, those allocation interfaces were not trying to be robust
-against wrong inputs because that adds cpu cycles for everybody for
-"what if buggy" code. This has worked (surprisingly) well. Memory less
-nodes have brought in some confusion but this is still something that we
-can address on a higher level. Nobody give arbitrary nodes as an input.
-cpu_to_node might be tricky because it can point to a memory less node
-which along with __GFP_THISNODE is very likely not something anybody
-wants. Hence cpu_to_mem should be used for allocations. I hate we have
-two very similar APIs...
-
-But something seems wrong in this case. cpu_to_node shouldn't return
-offline nodes. That is just a land mine. It is not clear to me how the
-cpu has been brought up so that the numa node allocation was left
-behind. As pointed in other email add_cpu resp. cpu_up is not it.
-Is it possible that the cpu bring up was only half way?
--- 
-Michal Hocko
-SUSE Labs
+Takashi
