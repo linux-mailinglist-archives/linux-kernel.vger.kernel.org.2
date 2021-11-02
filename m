@@ -2,94 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56AB1442EF9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 14:17:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52D52442EFA
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 14:17:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231232AbhKBNT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 09:19:57 -0400
-Received: from mga06.intel.com ([134.134.136.31]:60430 "EHLO mga06.intel.com"
+        id S231312AbhKBNUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 09:20:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42208 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229530AbhKBNTy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 09:19:54 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10155"; a="292090908"
-X-IronPort-AV: E=Sophos;i="5.87,203,1631602800"; 
-   d="scan'208";a="292090908"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2021 06:17:19 -0700
-X-IronPort-AV: E=Sophos;i="5.87,203,1631602800"; 
-   d="scan'208";a="489107359"
-Received: from kumarsh2-mobl.gar.corp.intel.com ([10.215.113.239])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2021 06:17:14 -0700
-Message-ID: <0d0f1d106cfbd98e352a0f08904d04d08a6fec04.camel@linux.intel.com>
-Subject: Re: [PATCH 0/6] MODULE_DEVICE_TABLE() support for the ISHTP bus
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     Jiri Kosina <jikos@kernel.org>, Hans de Goede <hdegoede@redhat.com>
-Cc:     Thomas =?ISO-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mark Gross <markgross@kernel.org>,
-        Rushikesh S Kadam <rushikesh.s.kadam@intel.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Benson Leung <bleung@chromium.org>,
-        platform-driver-x86@vger.kernel.org, linux-kbuild@vger.kernel.org
-Date:   Tue, 02 Nov 2021 06:17:10 -0700
-In-Reply-To: <nycvar.YFH.7.76.2111021249520.12554@cbobk.fhfr.pm>
-References: <20211029152901.297939-1-linux@weissschuh.net>
-         <883db585-c9bb-5255-4ddd-f093616af1a1@redhat.com>
-         <1bb82b37-06e4-4937-ba0d-57fd301eaf2e@t-8ch.de>
-         <85cb78cd-92d9-69ed-9360-f5d6f8f904af@redhat.com>
-         <nycvar.YFH.7.76.2111021249520.12554@cbobk.fhfr.pm>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.0-1 
+        id S231265AbhKBNUA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 09:20:00 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CD69360EBC;
+        Tue,  2 Nov 2021 13:17:23 +0000 (UTC)
+Date:   Tue, 2 Nov 2021 09:17:22 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Carles Pey <carles.pey@gmail.com>,
+        Changbin Du <changbin.du@intel.com>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Punit Agrawal <punitagrawal@gmail.com>,
+        "Robin H. Johnson" <robbat2@gentoo.org>,
+        Song Liu <songliubraving@fb.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Viktor Rosendahl <Viktor.Rosendahl@bmw.de>,
+        Wang ShaoBo <bobo.shaobowang@huawei.com>,
+        Weizhao Ouyang <o451686892@gmail.com>,
+        chongjiapeng <jiapeng.chong@linux.alibaba.com>,
+        kernel test robot <lkp@intel.com>,
+        =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: Re: [GIT PULL] tracing: Updates for 5.16
+Message-ID: <20211102091722.5375b885@gandalf.local.home>
+In-Reply-To: <CAHk-=wgY1B0Ae+gVNP0e2bZPSBgaDJPwSVXFOx5r-dGgurJuvQ@mail.gmail.com>
+References: <20211101175544.00fc0d57@gandalf.local.home>
+        <CAHk-=wgY1B0Ae+gVNP0e2bZPSBgaDJPwSVXFOx5r-dGgurJuvQ@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-11-02 at 12:50 +0100, Jiri Kosina wrote:
-> On Mon, 1 Nov 2021, Hans de Goede wrote:
+On Mon, 1 Nov 2021 20:08:30 -0700
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
+
+> On Mon, Nov 1, 2021 at 2:55 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> > Also, this pull request will conflict with your tree against a fix I had
+> > for trace recursions. I did the conflict resolution and pushed it to my
+> > ftrace/conflicts branch if you want to reference it.  
 > 
-> > > > Since most of the changes here are under drivers/hid and since
-> > > > the latter
-> > > > patches depend on 1/6, I believe it would be best to merge the
-> > > > entire series
-> > > > through the HID tree, here is my ack for this:
-> > > > 
-> > > > Acked-by: Hans de Goede <hdegoede@redhat.com>
-
-Acked-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-
-> > > 
-> > > Please note that patch 6 modifies a driver that is not yet
-> > > available in the HID
-> > > and 5.15 trees but only in pdx86/for-next.
-> > 
-> > Right, but given where we are in the cycle this is going to be
-> > something to
-> > merge post 5.16-rc1 anyways which resolves the dependency issue.
-> > 
-> > I guess it might be good to send this our in a later pull-req as a
-> > fix series
-> > for a later 5.16-rc# though, to avoid the eclite and chrome-ec
-> > drivers from
-> > autoloading on all systems with an ISH, even though they usually
-> > will not be
-> > used there.
+> In the meantime, my tree had grown a few more conflicts elsewhere, but
+> it all looked fairly straightforward.
 > 
-> I'll be happy to take this as 5.16 fixups after the merge window is
-> over 
-> (I am not adding anything new to the branches now, before Linus
-> merges HID 
-> tree), but I'd still like to see Ack from Srinivas.
-Done.
+> It might be a good idea if you were to double-check that everything
+> looks good, though.
+>
 
-Thanks,
-Srinivas
+I performed the merge and conflict resolution to the same commit you used,
+and came up with pretty much the same (sans whitespace differences).
 
-> 
-> Thanks,
-> 
+The only thing I would like to bring attention to is the wording for the
+comment to kprobe_flush_task() that both Thomas and Masami updated, and I
+want to make sure they are both happy with the final result:
+
+Thomas, Masami ?
+
+/*
+ * This function is called from delayed_put_task_struct() when a task is
+ * dead and cleaned up to recycle any kretprobe instances associated with
+ * this task. These left over instances represent probed functions that
+ * have been called but will never return.
+ */
+void kprobe_flush_task(struct task_struct *tk)
+
+You OK with the above wording?
 
 
+-- Steve
