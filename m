@@ -2,133 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDE2944370F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 21:13:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF4D944370E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 21:12:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232124AbhKBUPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 16:15:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232112AbhKBUPM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 16:15:12 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D74AC06122B
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 13:12:15 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id e144so155497iof.3
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 13:12:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vSPlWm2hs69Rrwv7pMsIZ6ZEjm3Jr85/4hUvPPRbxSY=;
-        b=HYAtKgTX3PWNExtxLEVgelwQbaKIcCqdFVUUlL+xjFymnNK4MBlki0KZ8xiwn5pTTU
-         50wtyk9r0viovOjnSlH//z1q/vyUwgLFADoCTESoPdmsy921k2KE7d532c/UbGk5jQqg
-         FppHvZTuqWz/yVxxXUfNpf0ZplB8TbeFFdhPg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vSPlWm2hs69Rrwv7pMsIZ6ZEjm3Jr85/4hUvPPRbxSY=;
-        b=ZawCivGPOQt6CUdVOhLDNEPj9+TOzStAcZdWIds4r70xfCUr8Bp3gVlwRoBgqBWZco
-         j4UL8KmsWS8v8AfjPKF/0k5P74p8/RjWOmU8okF4LnPxRjmxdAv0z8w2X72fVvy4dQZB
-         TBQbBCqwk8u1c1lQiISOHkqLLr1+EbZMQTGCq3j7SMkxmYoBw2coWkDPOgSNc8rKthpm
-         JukrdWvz1PuzXzcaCGfO02xzoPeyFLgdAYHGzbgCbgurzfGqt+xd3HXrijnz9/c0YnaN
-         Bbx9t7Q9u1+SJg7niBBDA0dmNnrpxI6dSJRryfGN8UQjohu0Le82VxMXaiHfNMe83I/J
-         WwAA==
-X-Gm-Message-State: AOAM533r+zOOzQ7Yb4k3PtjGPHmxKTX2WWUixeP5vaJTD284cFdGCCro
-        DF83Ub64yFT9uNNJiU56w1TGouTuRB6aCg==
-X-Google-Smtp-Source: ABdhPJyTIK2OZjAbz1w3LPFeLRwjWexYob4M3Q4L/MRv+lzn2b6PfFPTMv/jcNTgqO32Uts+WDGQNA==
-X-Received: by 2002:a05:6602:2b10:: with SMTP id p16mr27926726iov.207.1635883934420;
-        Tue, 02 Nov 2021 13:12:14 -0700 (PDT)
-Received: from mail-io1-f54.google.com (mail-io1-f54.google.com. [209.85.166.54])
-        by smtp.gmail.com with ESMTPSA id y13sm27685ill.77.2021.11.02.13.12.13
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Nov 2021 13:12:13 -0700 (PDT)
-Received: by mail-io1-f54.google.com with SMTP id n128so119460iod.9
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 13:12:13 -0700 (PDT)
-X-Received: by 2002:a6b:109:: with SMTP id 9mr2801480iob.128.1635883932783;
- Tue, 02 Nov 2021 13:12:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211102173158.3315227-1-daniel.thompson@linaro.org>
-In-Reply-To: <20211102173158.3315227-1-daniel.thompson@linaro.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Tue, 2 Nov 2021 13:12:01 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=Uk43Y3L0oTAxR1YDBUO3axz3joK2NGkGNXQPbUPwerig@mail.gmail.com>
-Message-ID: <CAD=FV=Uk43Y3L0oTAxR1YDBUO3axz3joK2NGkGNXQPbUPwerig@mail.gmail.com>
-Subject: Re: [PATCH v4] kdb: Adopt scheduler's task classification
-To:     Daniel Thompson <daniel.thompson@linaro.org>
-Cc:     Jason Wessel <jason.wessel@windriver.com>,
-        Xiang wangx <wangxiang@cdjrlc.com>,
-        jing yangyang <jing.yangyang@zte.com.cn>,
-        kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        patches@linaro.org
+        id S232217AbhKBUP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 16:15:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50166 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231898AbhKBUOu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 16:14:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 89BDD61053;
+        Tue,  2 Nov 2021 20:12:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635883935;
+        bh=PbeKWGBDAChMLC+Nu9bVzhinu6LEbxlXwqNnu7DoCz4=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=qnOJxHBMHOyaSST/GpmLdrZ4+t5G4dZjMTmPCIcBCjcVlkUnPZN9vQ4zK3oBPx6fY
+         RJtoVvH7KBNZ3tDEX4Ld6xYs3ps0y1+GZXvkHcWPQAXWwXnAcQMt+6pYl1slPJNoiY
+         sITiR6F6mEeFuqO4KPuKfkPRQpwJNRiMsOC2yhbVmdlbJ82guZTZNOMfL/zFKMHS0S
+         5H/cpp1WDITvX1VxBRbM6YW2Qbq89U6eGAtQSTDzk8ybAGyES8SK7c1PwLILE4uP1U
+         w6dqWV8vDCgxD5wZjeSuXoM3jZxANswq9aEtJajP4p/zr5RFrMYsDKM5FrRbl8y7cJ
+         9F43jON2KKJwQ==
+Message-ID: <c70af622b09439d2c168654e4bfab081eedaa489.camel@kernel.org>
+Subject: Re: [PATCH v10 2/2] x86/sgx: Add an attribute for the amount of SGX
+ memory in a NUMA node
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>, reinette.chatre@intel.com,
+        tony.luck@intel.com, nathaniel@profian.com,
+        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org
+Date:   Tue, 02 Nov 2021 22:12:12 +0200
+In-Reply-To: <YYFvdy0cH6HXeuX+@kroah.com>
+References: <20211102164820.593385-1-jarkko@kernel.org>
+         <20211102164820.593385-2-jarkko@kernel.org> <YYFvdy0cH6HXeuX+@kroah.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.40.4-1 
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, 2021-11-02 at 18:03 +0100, Greg Kroah-Hartman wrote:
+> On Tue, Nov 02, 2021 at 06:48:19PM +0200, Jarkko Sakkinen wrote:
+> > * Change the attribute name as sgx_total_bytes, and attribute group
+> > =C2=A0 name as "x86" (Dave).
+>=20
+> <snip>
+>=20
+> > --- a/Documentation/ABI/stable/sysfs-devices-node
+> > +++ b/Documentation/ABI/stable/sysfs-devices-node
+> > @@ -176,3 +176,10 @@ Contact:=C2=A0=C2=A0=C2=A0Keith Busch <keith.busch=
+@intel.com>
+> > =C2=A0Description:
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0The cache write policy: 0 for write-back, 1 for =
+write-through,
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0other or unknown.
+> > +
+> > +What:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/sys/=
+devices/system/node/nodeX/sgx/size
+>=20
+> Looks like the attribute group name is still "sgx" :(
 
-On Tue, Nov 2, 2021 at 10:32 AM Daniel Thompson
-<daniel.thompson@linaro.org> wrote:
->
-> Currently kdb contains some open-coded routines to generate a summary
-> character for each task. This code currently issues warnings, is
-> almost certainly broken and won't make sense to any kernel dev who
-> has ever used /proc to examine task states.
->
-> Fix both the warning and the potential for confusion by adopting the
-> scheduler's task classification. Whilst doing this we also simplify the
-> filtering by using mask strings directly (which means we don't have to
-> guess all the characters the scheduler might give us).
->
-> Unfortunately we can't quite match the scheduler classification completely.
-> We add four extra states: - for idle loops and i, m and s sleeping system
-> daemons (which means kthreads in one of the I, M and S states). These
-> extra states are used to manage the filters for tools to make the output
-> of ps and bta less noisy.
->
-> Note: The Fixes below is the last point the original dubious code was
->       moved; it was not introduced by that patch. However it gives us
->       the last point to which this patch can be easily backported.
->       Happily that should be enough to cover the introduction of
->       CONFIG_WERROR!
->
-> Fixes: 2f064a59a11f ("sched: Change task_struct::state")
-> Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
-> ---
->
-> Notes:
->     v4:
->     - Get rid of the final `DRSTCZEUIMA` from the comments (Doug)
->     - Change "state [ism]" to "state [ims]" to match other uses
->       of IMS/ims (Doug)
->     - Fix broken english in the bta online help (Doug)
->     - Update ps online help to use <state_chars> to match other
->       synopses (me)
->
->     v3:
->     - Fix the uninitialized cpu variable (Doug and 0-day CI bot)
->     - Added a Fixes: (Doug)
->     - Changed "state I" -> "state -" and "state M" to "state [ism]"
->
->     v2:
->     - Fix the typos in the description (Doug)
->     - Stop trying to bend to world so I can keep 'I' exactly as
->       it was before. Instead we now replace 'I' with '-' and
->       fully adopt the scheduler description of tasks. kdb
->       it an interactive tool, not ABI so this is OK. (Doug)
->     - Don't try to enumerate all possible letters in the
->       comments and help. You can learn what to filter from
->       the output of ps anyway, (Doug)
->     - Fix the sleeping system daemon stuff.
->
->  kernel/debug/kdb/kdb_bt.c      |  16 ++---
->  kernel/debug/kdb/kdb_main.c    |  37 ++++++-----
->  kernel/debug/kdb/kdb_private.h |   4 +-
->  kernel/debug/kdb/kdb_support.c | 118 +++++++--------------------------
->  4 files changed, 53 insertions(+), 122 deletions(-)
+Ugh, also commit message needs an update. Thanks, I'll do
+fix this, apologies.
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+/Jarkko
