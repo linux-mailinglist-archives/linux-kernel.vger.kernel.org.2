@@ -2,52 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCC5644380D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 22:53:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A880D443813
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 22:53:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231230AbhKBVzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 17:55:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59360 "EHLO mail.kernel.org"
+        id S231419AbhKBV4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 17:56:03 -0400
+Received: from mga09.intel.com ([134.134.136.24]:30055 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229525AbhKBVzu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 17:55:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 53EB760F5A;
-        Tue,  2 Nov 2021 21:53:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635889995;
-        bh=zdQytRuvrkr9G5j2JmIJsK4ktMBWLhAVf7giPA7NPdY=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=GrZ2tN5wb7gRJKctxZsB+wKGEncigvAw2Od19UCuWpCgUM2PfDC/f5FdfgGxpvU6w
-         mMuxrHrYuqMHaSzatcFbblsB4FDEs86cO8BVmm+ydA73q4whkLqg/XPOtoDONNrVan
-         5MQqXKXoT+QKrI/BfZJeU6N0TCkW7nAwdJaho4yHtETeb5pYpH3V3UrCpLFWevgRgq
-         VJliYzJzMwYaDf+hh618lCKYDohmfSobFC6YFKvov9tkagQ6UFWkGGWs7qZivIPW8b
-         STWLu8MqPDDw1n3gATBqB6L0P+O+LraqEZu72JIlFuF4P/50avENtZDJQ+maG4dBKi
-         O2X3EemQkBnQw==
-Content-Type: text/plain; charset="utf-8"
+        id S231308AbhKBVz6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 17:55:58 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10156"; a="231226446"
+X-IronPort-AV: E=Sophos;i="5.87,203,1631602800"; 
+   d="scan'208";a="231226446"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2021 14:53:21 -0700
+X-IronPort-AV: E=Sophos;i="5.87,203,1631602800"; 
+   d="scan'208";a="489283551"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2021 14:53:20 -0700
+From:   ira.weiny@intel.com
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Ira Weiny <ira.weiny@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        linux-kernel@vger.kernel.org, Dave Jiang <dave.jiang@intel.com>,
+        linux-doc@vger.kernel.org
+Subject: [PATCH 0/3] Improve Auxiliary Device documentation
+Date:   Tue,  2 Nov 2021 14:53:14 -0700
+Message-Id: <20211102215317.3676782-1-ira.weiny@intel.com>
+X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CO1PR11MB4865DDA9CB07F699288CC762928B9@CO1PR11MB4865.namprd11.prod.outlook.com>
-References: <20211019074030.31294-1-kavyasree.kotagiri@microchip.com> <CO1PR11MB4865DDA9CB07F699288CC762928B9@CO1PR11MB4865.namprd11.prod.outlook.com>
-Subject: Re: [PATCH v9 0/3] Add driver for lan966x Generic Clock Controller
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Nicolas.Ferre@microchip.com, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
-        UNGLinuxDriver@microchip.com, Eugen.Hristev@microchip.com,
-        Manohar.Puri@microchip.com
-To:     Kavyasree.Kotagiri@microchip.com, mturquette@baylibre.com,
-        robh+dt@kernel.org
-Date:   Tue, 02 Nov 2021 14:53:14 -0700
-Message-ID: <163588999405.2993099.8633091124275421222@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Kavyasree.Kotagiri@microchip.com (2021-11-02 05:47:27)
-> Hi Stephen,
->=20
-> Could you please let me know if this patch series will be taken for 5.16?
->=20
+From: Ira Weiny <ira.weiny@intel.com>
 
-One question on the driver but otherwise looks possible. I'll send
-another PR next week.
+The auxiliary device documentation was not wrong but it was a bit difficult to
+follow.  Add clarifications to ensure that details are not missed.
+
+
+Ira Weiny (3):
+  Documentation/auxiliary_bus: Clarify auxiliary_device creation
+  Documentation/auxiliary_bus: Clarify match_name
+  Documentation/auxiliary_bus: Update Auxiliary device lifespan
+
+ Documentation/driver-api/auxiliary_bus.rst | 136 ++++++++++++++++-----
+ 1 file changed, 107 insertions(+), 29 deletions(-)
+
+-- 
+2.28.0.rc0.12.gb6a658bd00c9
+
