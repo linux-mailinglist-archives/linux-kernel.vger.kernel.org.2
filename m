@@ -2,60 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B809144259D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 03:20:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D6A04425A0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 03:22:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231425AbhKBCWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 22:22:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37880 "EHLO mail.kernel.org"
+        id S232385AbhKBCY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 22:24:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38640 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230015AbhKBCWo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 22:22:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id C605260F0F;
-        Tue,  2 Nov 2021 02:20:09 +0000 (UTC)
+        id S231840AbhKBCYZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 22:24:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F5A0613A1
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 02:21:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635819609;
-        bh=uQl6cO8dcGtDqGSCZKOCifxTFjPPzsfeMqwtHQLojEI=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=P4+/opj6uL6LXCiZOmzOY5gR3o4+PXGZXpJJ6mtIhHRyl+6FgBgw3fRciLnqeBCCO
-         IDifEk1s0CQ4tkK8gCbmq4EnTbDQnFOb7sm0JSS+Hwyyp4Y79JYZv3wT3yzeL67tyP
-         vWLXqFP4srHFYWp+HdmnYsSUL1qhC1kCEFXurRS4Sfgq7QkznZcCorSCMQALWLo7yT
-         j+3NtaD3ait+1WdQwEYWcflr22Lcx1NG/FzwpatavuXf4fUMIEnEx5aV+KdfS7/hC2
-         VoFuo3StuSrRlfn+TJoyD025plUcoJGWCIII3tWVW3oWsnC+/M5hXzJIDxB+yxvCru
-         EHmsazMKSzWlQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id BF86C60A0C;
-        Tue,  2 Nov 2021 02:20:09 +0000 (UTC)
-Subject: Re: [GIT PULL] regulator updates for v5.16
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20211101152117.5E62660F3A@mail.kernel.org>
-References: <20211101152117.5E62660F3A@mail.kernel.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20211101152117.5E62660F3A@mail.kernel.org>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git tags/regulator-v5.16
-X-PR-Tracked-Commit-Id: 7492b724df4d33ca3d5b38b70fb4acb93e6d02bf
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 1260d242d94ae423c585050bbaabe9064741f419
-Message-Id: <163581960977.22980.17418637509532006710.pr-tracker-bot@kernel.org>
-Date:   Tue, 02 Nov 2021 02:20:09 +0000
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+        s=k20201202; t=1635819697;
+        bh=Sh+E3vhcUYFTuSr5p8OLYai9a31WkvMD0XH84I6uVVk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=jGvLS2mvwvbQjzIZdPfSQrOYwqj1joqIK71bIW9nPy+rNYFWVRAYzXRXGzXJQQLld
+         HbhLIGOoecO+5AO2EiTGb9K83lonHTXmC9j9/qJ/4TnJTycWcWRoqVvt+tK1QNuboF
+         bHxd/6eUveB7jjY4Kt9EZj1Gy7tHLyDQHKzKgoSB9QJayujftcJsE4CCpoDdirODGK
+         NYo4JO1KAOPD/K3CJxy4U+/ABjwsjPuSkZUZCXjitWXwDFlZqsn4WGk4qNO8Q/MFoF
+         zzK4O3H+cbpNCSrHhFP9HwY7y0NuFdMs9i3rPr73d48KmTQdc/2UBFy5DJL2EkHzW7
+         Spkq22ZryELLA==
+Received: by mail-vk1-f178.google.com with SMTP id t127so8882486vke.13
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 19:21:37 -0700 (PDT)
+X-Gm-Message-State: AOAM533UBZsUVVYauxJVhnly0ql/SqRx61KmJ6xRxCNRcrRlNo4g7HJ8
+        pHR4BeevCCUVCoWn+MliqPnl2F6x+SQHWDQPESc=
+X-Google-Smtp-Source: ABdhPJxL9iIZ+HGyalsZ8HcJwGeVT3uEvIXAyPennCwENsyNtPuJA9yWQJYWPYLFiyb/lwBb0ciA7KgQ5z3VEUDOr4E=
+X-Received: by 2002:a1f:1844:: with SMTP id 65mr33732861vky.3.1635819696531;
+ Mon, 01 Nov 2021 19:21:36 -0700 (PDT)
+MIME-Version: 1.0
+References: <20211024013303.3499461-1-guoren@kernel.org> <20211024013303.3499461-2-guoren@kernel.org>
+In-Reply-To: <20211024013303.3499461-2-guoren@kernel.org>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Tue, 2 Nov 2021 10:21:25 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTSDTXu7HsABTHfTbCd2TNpHBpzSMqYGh9Av8kzJ+6AOPw@mail.gmail.com>
+Message-ID: <CAJF2gTSDTXu7HsABTHfTbCd2TNpHBpzSMqYGh9Av8kzJ+6AOPw@mail.gmail.com>
+Subject: Re: [PATCH V5 1/3] dt-bindings: vendor-prefixes: add T-Head Semiconductor
+To:     Guo Ren <guoren@kernel.org>, Rob Herring <robh@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 01 Nov 2021 15:21:03 +0000:
+Hi Rob,
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git tags/regulator-v5.16
+ping? If there is no problem, could you help pick up this patch into your tree?
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/1260d242d94ae423c585050bbaabe9064741f419
+On Sun, Oct 24, 2021 at 9:33 AM <guoren@kernel.org> wrote:
+>
+> From: Guo Ren <guoren@linux.alibaba.com>
+>
+> Add vendor prefix for T-Head Semiconductor [1] [2]
+>
+> [1] https://github.com/T-head-Semi
+> [2] https://www.t-head.cn/
+>
+> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> Cc: Rob Herring <robh@kernel.org>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> ---
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> index a867f7102c35..f532a8830693 100644
+> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> @@ -1169,6 +1169,8 @@ patternProperties:
+>      description: Terasic Inc.
+>    "^tfc,.*":
+>      description: Three Five Corp
+> +  "^thead,.*":
+> +    description: T-Head Semiconductor Co., Ltd.
+>    "^thine,.*":
+>      description: THine Electronics, Inc.
+>    "^thingyjp,.*":
+> --
+> 2.25.1
+>
 
-Thank you!
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Best Regards
+ Guo Ren
+
+ML: https://lore.kernel.org/linux-csky/
