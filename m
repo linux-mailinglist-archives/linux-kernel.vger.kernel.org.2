@@ -2,127 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93CE7442D19
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 12:48:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39038442D24
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 12:49:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230128AbhKBLus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 07:50:48 -0400
-Received: from www.zeus03.de ([194.117.254.33]:54550 "EHLO mail.zeus03.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229705AbhKBLur (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 07:50:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=k1; bh=dN9MYJ4hkMa2VeKQrok5+AhQyNq+
-        WxeIgQN6Qx6FS+Y=; b=V6tP6HsdN3Xj6iLwUvhxiY4tcwSh5biRiwe4NwNydSem
-        OSUAKddVbsfz9ExrsubzphmbNQ4SuIbUDhG3GWyVCxcfCUPoGqZoFd8pTEqtgAZN
-        eO+o7DQebaG8rWHzEe+5zfLTtVGzQ/rjIuIMp0B/KJD1YdwS4p8YJmZlA/Gy23s=
-Received: (qmail 3432356 invoked from network); 2 Nov 2021 12:48:09 +0100
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 2 Nov 2021 12:48:09 +0100
-X-UD-Smtp-Session: l3s3148p1@6ngQ3szPvrEgAQnoAGZOAQNlyaw0xFC0
-Date:   Tue, 2 Nov 2021 12:48:09 +0100
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Mark Brown <broonie@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Subject: Re: [PATCH v2 7/7] memory: renesas-rpc-if: Add support for RZ/G2L
-Message-ID: <YYElefbpP4pwfmUl@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Mark Brown <broonie@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-References: <20211025205631.21151-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20211025205631.21151-8-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        id S229924AbhKBLwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 07:52:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33516 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229778AbhKBLwU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 07:52:20 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A9A9C061764
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 04:49:46 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id p18so12389151plf.13
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 04:49:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GaIFo45joCtIbALY4+H73q/4ML+vmLQCj6pBcBGjWho=;
+        b=TvqE4gWEK2JDCGRw3ZG1OomLZxZsLRjXs7xv+VmLItD3E212NodchziFbXAURQKBw3
+         dkeHqKZ+j5sEB1QHUafQnTkl/cYkkX0rUKVaK3q+8IpqtFMWZdrS4lGlWmWdf3vM4Bij
+         WgWkDqwn2gMWsUxRbNoXFzSwR4XUju7Hv0kG5wgh4QtcVOfIn9bCfvV/ueffHtaPSW+0
+         4nc+pxLVjU35BmgpdbDEZ21mBmSINy1e40WaCT2UFwDQV63twocpOx8zV/emHM/j5cWZ
+         yaeb4t6MOU+9rhn0HrR1u/POfGkljVNkrFg78y3ohPhvNH/14A325300EzOfGAj6djPz
+         q/iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GaIFo45joCtIbALY4+H73q/4ML+vmLQCj6pBcBGjWho=;
+        b=1Lo+LD7Lm7H+TEJpoT+4js0wLLiWP7FCkMnybyIeV2B1JnYfHWyZsRz1et887S7Gra
+         2uOC1On8AkYOaERCP4FHaAL3LbML18wltiOHXRkP9TDKAO0CfY8RIDIWTaDkv2f5lI3s
+         qhPk8KY+CZ7x/zErPn42czMy9K+47a2F/bkQ/PK3XG7Ob9caQ/a2gm0CgAz7tMgGtIZ2
+         6sYUdvYPvptgrrkYKXQe7tRe1OhIQ15wzBnQbWfsrTfQV0KrXyPN49kwKu0lCF79T9+3
+         n0Src+dDcnJnIjEr1CgWjkK1poWtL2+GDRMPzExRPubtHnTL1vKyzDc2lvqzDtokdmZH
+         /6uQ==
+X-Gm-Message-State: AOAM530jYxc40TtNcUC7UP5FKYk+vDLpC2HsYerIy3V+bvuOOA6eT6Ta
+        rut8NIWlRaro/KAbe+8r3UgmnJrR6/n1yhLa90qDJA==
+X-Google-Smtp-Source: ABdhPJyh9CGyt6qq9ZsiHAl/WfCjddeiiXcSN+okvKiOqp3IHifyCVQzJSfhbXLiGp5Afl1NXS257Q9cPCyvCazHIGw=
+X-Received: by 2002:a17:902:edc7:b0:141:a2d8:ede9 with SMTP id
+ q7-20020a170902edc700b00141a2d8ede9mr27782887plk.24.1635853785585; Tue, 02
+ Nov 2021 04:49:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Xw48OLVEQGVpdzaE"
-Content-Disposition: inline
-In-Reply-To: <20211025205631.21151-8-prabhakar.mahadev-lad.rj@bp.renesas.com>
+References: <20211025103322.160913-1-robert.foss@linaro.org>
+ <20211025103322.160913-2-robert.foss@linaro.org> <YYBOXQOXM8USks0G@robh.at.kernel.org>
+In-Reply-To: <YYBOXQOXM8USks0G@robh.at.kernel.org>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Tue, 2 Nov 2021 12:49:34 +0100
+Message-ID: <CAG3jFytkHi06uaP8RFaS9cma68S9oz_AcAtkMxCrPKGXBTtfsA@mail.gmail.com>
+Subject: Re: [PATCH v1 2/2] media: dt-bindings: media: camss: Document
+ clock-lanes property
+To:     Rob Herring <robh@kernel.org>
+Cc:     todor.too@gmail.com, agross@kernel.org, bjorn.andersson@linaro.org,
+        mchehab@kernel.org, angelogioacchino.delregno@somainline.org,
+        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>,
+        Andrey Konovalov <andrey.konovalov@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 1 Nov 2021 at 21:30, Rob Herring <robh@kernel.org> wrote:
+>
+> On Mon, Oct 25, 2021 at 12:33:22PM +0200, Robert Foss wrote:
+> > The clock-lanes property corresponds to a hardware register field
+> > that is required to be set, in order to enable the CSI clock signal.
+> >
+> > The physical lane of the clock signal is not programmable, but only
+> > togglable On or Off, which what BIT(7) of the
+> > CSIPHY_3PH_CMN_CSI_COMMON_CTRLn(5) register controls.
+> >
+> > Signed-off-by: Robert Foss <robert.foss@linaro.org>
+> > ---
+> >  .../devicetree/bindings/media/qcom,msm8996-camss.yaml        | 5 +++++
+> >  .../devicetree/bindings/media/qcom,sdm660-camss.yaml         | 5 +++++
+> >  .../devicetree/bindings/media/qcom,sdm845-camss.yaml         | 5 +++++
+> >  3 files changed, 15 insertions(+)
+> >
+> > diff --git a/Documentation/devicetree/bindings/media/qcom,msm8996-camss.yaml b/Documentation/devicetree/bindings/media/qcom,msm8996-camss.yaml
+> > index 38be41e932f0..d4da1fad12cf 100644
+> > --- a/Documentation/devicetree/bindings/media/qcom,msm8996-camss.yaml
+> > +++ b/Documentation/devicetree/bindings/media/qcom,msm8996-camss.yaml
+> > @@ -106,6 +106,11 @@ properties:
+> >
+> >              properties:
+> >                clock-lanes:
+> > +                description:
+> > +                  The index of the clock-lane is not programmable by
+> > +                  the hardware, but is required to define a CSI port.
+> > +                  Lane 7 reflects the hardware register field that enables
+> > +                  the clock lane.
+>
+> If it is fixed, then it should not be required. Fix the required part.
+>
+> >                  items:
+> >                    - const: 7
+>
+> I don't know how we let that in, but this should be the lane number.
+> Each binding can't be making up its own interpretation.
 
---Xw48OLVEQGVpdzaE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Hi Prabhakar,
-
-> +#define RPCIF_PHYADD		0x0070	/* R/W available on R-Car E3/D3/V3M and RZ/G2{E,L} */
-> +#define RPCIF_PHYWR		0x0074	/* R/W available on R-Car E3/D3/V3M and RZ/G2{E,L} */
-
-Nice detailed research, thanks! Minor nit: Keep the sorting
-alphabetical: D3, E3, V3M.
-
-> +static void rpcif_rzg2l_timing_adjust_sdr(struct rpcif *rpc)
-> +{
-> +	u32 data;
-> +
-> +	regmap_write(rpc->regmap, RPCIF_PHYWR, 0xa5390000);
-> +	regmap_write(rpc->regmap, RPCIF_PHYADD, 0x80000000);
-> +	regmap_write(rpc->regmap, RPCIF_PHYWR, 0x00008080);
-> +	regmap_write(rpc->regmap, RPCIF_PHYADD, 0x80000022);
-> +	regmap_write(rpc->regmap, RPCIF_PHYWR, 0x00008080);
-> +	regmap_write(rpc->regmap, RPCIF_PHYADD, 0x80000024);
-> +
-> +	regmap_read(rpc->regmap, RPCIF_PHYCNT, &data);
-> +	regmap_write(rpc->regmap, RPCIF_PHYCNT, data | RPCIF_PHYCNT_CKSEL(3));
-> +	regmap_write(rpc->regmap, RPCIF_PHYWR, 0x00000030);
-> +	regmap_write(rpc->regmap, RPCIF_PHYADD, 0x80000032);
-> +}
-
-Still magic values here. Don't you have them explained in your Gen3
-documentation? It is tables 62.16 and 62.17 in my versions.
-
-Other than these, looks good.
-
-Thanks,
-
-   Wolfram
-
---Xw48OLVEQGVpdzaE
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmGBJXkACgkQFA3kzBSg
-Kbai5w//U9777KhbnAVOH5ipoN2F3nwqrx58di9AO1NxfqlO2pTx9hlFix1jbQ3m
-BMbw0km4viA9iT8XWRI1GsI3EkxIP2HKQJKIww4vxziDvwmT5KtUWzFcvqc6/SE0
-Z8i1j9swoSfgJo0ZFeAhPjNl4YYtsf2ESUl1Wx1xFQc3oGDzsRHUULw5SugbX79H
-qgER7VTWeZhL4eQ1rBUCVVY3G2JPtsLhYZ2jf72jUDBIRS39/BlyaCrSETwzYVcH
-HRGodyfWogpB7t36UdbxesdWM+OMnKM0JCKZEf30sQeFp5YaTqcLYBoVvwg+tePC
-y25zwria2RbGl5FplptuDnj7cg1Khpz/n7uXCmeaOejk8yYF8DR6g1NET4Neo1Rz
-lXlukauT07VLU47RuuQqlg/4z39ai3DphF4ew2qMTSh4Sz11sAn9F3+OEPUuMUiG
-JIvu9CVrie13frUtSd7Xc2M897hyJMP7lKiUP2jrw5klHFPZH7yryCMvKeXEOALX
-rv0Jp10phC2oBtO6HjPlXIQUCcVnHe2BUXAISMDN6l1McnR16SoDi0F00d6Z9YB2
-G3Svf/sfaN+As5bNqkywaalSVfvt8IfqxqXtYRfLyKzwJCUY+f8JhF75sgX4HbGr
-eDYheRfVDVZHewRUDRkdYXtyBlczYwo3q6pgYOCW3gOJ9k12g2E=
-=45MZ
------END PGP SIGNATURE-----
-
---Xw48OLVEQGVpdzaE--
+If the clock lane number isn't programmable, can clock-lanes be omitted?
