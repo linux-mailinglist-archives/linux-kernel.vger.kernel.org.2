@@ -2,97 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75F6844320A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 16:52:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C319144320E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 16:53:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234581AbhKBPzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 11:55:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60950 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231361AbhKBPzR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 11:55:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D5CF60F5A;
-        Tue,  2 Nov 2021 15:52:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635868362;
-        bh=Xrn70LqAzhWxIRJf661+kK3WmUs5EGGtJg+gTiGHOFE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CT5GFiMVgs6DNOCS8EEG+x5j8sP8wFVWrVTY/gcboiI8IXRji/vUsx47ikU85bCMO
-         XY0/E6bR08iEERevAHZtt2kumOVgwEPY9oe/J5S2vZBqMBPT5Q6aaZsjhop59QGrtn
-         KY1gZczh5sAAZ2pcqXZlRVKicXjAcNn8+7gmNawE=
-Date:   Tue, 2 Nov 2021 16:52:28 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Alexey Khoroshilov <khoroshilov@ispras.ru>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Xin Long <lucien.xin@gmail.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, ldv-project@linuxtesting.org
-Subject: Re: [PATCH 5.10 68/77] sctp: add vtag check in sctp_sf_violation
-Message-ID: <YYFevClqyJbASQXH@kroah.com>
-References: <20211101082511.254155853@linuxfoundation.org>
- <20211101082525.833757923@linuxfoundation.org>
- <a3059f52-54c6-6ab3-0f1d-a9b1566ff118@ispras.ru>
+        id S234637AbhKBPzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 11:55:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234606AbhKBPzq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 11:55:46 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24397C0613B9
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 08:53:10 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id b4so13450094pgh.10
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 08:53:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uXG46CNq1yzX39v2pBF3aSKlrNsVM6oau9TO8Y5/ynw=;
+        b=pAs2y+ijAdLSwVnN/iXoGJIDLS2TO7pznZDqrBgEiymfJ5fMb7bmsUqig8SFz/Xfz9
+         j6el+hpRpb/l8ztcGtA143m4jBw95nEruKEKLZflgyH0d2cKE1Vm3WPi9wOqO5i1+Got
+         XoLGG8E6DHHL/sQ7ohtI+bDXXVanHnKjoPPgFat2aSGVzvixVFf5qEt0Ofs/Rn/gfo/M
+         z0d3eH1FlZFlKYHdt3NTZ5BlT9ik94kSiECQBj3WqPjPXKf+mh8TnEQje+pknFsZ5NZd
+         i4H1RfdoBxpT3Fcp/BBPgnShbHpk6nXoYfhmhoGPoZS/pZcuC6RVsf3d2+Y8t8vBgnBj
+         9oPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uXG46CNq1yzX39v2pBF3aSKlrNsVM6oau9TO8Y5/ynw=;
+        b=PorPZXjftW7bCuSxGVsS+b0Xq8kZ4R6l1xb1Zi+zVazpsErTXR0IO5hnR8SogT7VJq
+         femqhh/x/ODgQo5qPHcF1gwJX1RPomoGMCVEuufmZfLAtuWVXazjYpBjkIK+dkmeYUJa
+         w5iW0t8mtIZ+YMvkY2zfhuJMvWLsGuvn2M2wuaFl0HwdlriLZdZwuagjTD79fsOalMxG
+         rWgYd45L+ytj8CT0xWw3HkhsZOWe6OF5/JLswc4/VZFr9ualiraFTP6YlBOqYSjJFdVO
+         AalYKatZ7zZbc7j45LNtz3sH6vt+oyfZD9MLHsTYPAIjCTgeRwin8/wwrwtt5SfyI2XO
+         +lLQ==
+X-Gm-Message-State: AOAM531oOKaFh7E4pUl1JbOIus/bbILtgbEn9TpW/QTuFiAL75sn2eRh
+        nvjJP8AO4SgHhqUpVEe9kiDeEw==
+X-Google-Smtp-Source: ABdhPJxNtDKLBpxoiRVYVgHQ8HO9yQL5vu6uWpAHtSkKWriSHm706e6zFB2nNeZItuHLc1BNhEWGrA==
+X-Received: by 2002:a63:e24b:: with SMTP id y11mr28060654pgj.452.1635868389352;
+        Tue, 02 Nov 2021 08:53:09 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id nr14sm2839945pjb.24.2021.11.02.08.53.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Nov 2021 08:53:08 -0700 (PDT)
+Date:   Tue, 2 Nov 2021 15:53:04 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Maxim Levitsky <mlevitsk@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        Kieran Bingham <kbingham@kernel.org>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jessica Yu <jeyu@kernel.org>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Yang Weijiang <weijiang.yang@intel.com>,
+        linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v3 6/6] KVM: selftests: test KVM_GUESTDBG_BLOCKIRQ
+Message-ID: <YYFe4LKXiuV+DyZh@google.com>
+References: <20210811122927.900604-1-mlevitsk@redhat.com>
+ <20210811122927.900604-7-mlevitsk@redhat.com>
+ <137f2dcc-75d2-9d71-e259-dd66d43ad377@redhat.com>
+ <87sfwfkhk5.fsf@vitty.brq.redhat.com>
+ <b48210a35b3bc6d63beeb33c19b609b3014191dd.camel@redhat.com>
+ <YYB2l9bzFhKzobZB@google.com>
+ <87k0hqkf6p.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a3059f52-54c6-6ab3-0f1d-a9b1566ff118@ispras.ru>
+In-Reply-To: <87k0hqkf6p.fsf@vitty.brq.redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 05:12:16PM +0300, Alexey Khoroshilov wrote:
-> Hello!
+On Tue, Nov 02, 2021, Vitaly Kuznetsov wrote:
+> Sean Christopherson <seanjc@google.com> writes:
+> > I haven't verified on hardware, but my guess is that this code in vmx_vcpu_run()
+> >
+> > 	/* When single-stepping over STI and MOV SS, we must clear the
+> > 	 * corresponding interruptibility bits in the guest state. Otherwise
+> > 	 * vmentry fails as it then expects bit 14 (BS) in pending debug
+> > 	 * exceptions being set, but that's not correct for the guest debugging
+> > 	 * case. */
+> > 	if (vcpu->guest_debug & KVM_GUESTDBG_SINGLESTEP)
+> > 		vmx_set_interrupt_shadow(vcpu, 0);
+> >
+> > interacts badly with APICv=1.  It will kill the STI shadow and cause the IRQ in
+> > vmcs.GUEST_RVI to be recognized when it (micro-)architecturally should not.  My
+> > head is going in circles trying to sort out what would actually happen.  Maybe
+> > comment out that and/or disable APICv to see if either one makes the test pass?
+> >
 > 
-> It seems the patch may lead to NULL pointer dereference.
+> Interestingly,
 > 
+> loading 'kvm-intel' with 'enable_apicv=0' makes the test pass, however,
+> commenting out "vmx_set_interrupt_shadow()" as suggested gives a
+> different result (with enable_apicv=1):
 > 
-> 1. sctp_sf_violation_chunk() calls sctp_sf_violation() with asoc arg
-> equal to NULL.
-> 
-> static enum sctp_disposition sctp_sf_violation_chunk(
-> ...
-> {
-> ...
->     if (!asoc)
->         return sctp_sf_violation(net, ep, asoc, type, arg, commands);
-> ...
-> 
-> 2. Newly added code of sctp_sf_violation() calls to sctp_vtag_verify()
-> with asoc arg equal to NULL.
-> 
-> enum sctp_disposition sctp_sf_violation(struct net *net,
-> ...
-> {
->     struct sctp_chunk *chunk = arg;
-> 
->     if (!sctp_vtag_verify(chunk, asoc))
->         return sctp_sf_pdiscard(net, ep, asoc, type, arg, commands);
-> ...
-> 
-> 3. sctp_vtag_verify() dereferences asoc without any check.
-> 
-> /* Check VTAG of the packet matches the sender's own tag. */
-> static inline int
-> sctp_vtag_verify(const struct sctp_chunk *chunk,
-> 		 const struct sctp_association *asoc)
-> {
-> 	/* RFC 2960 Sec 8.5 When receiving an SCTP packet, the endpoint
-> 	 * MUST ensure that the value in the Verification Tag field of
-> 	 * the received SCTP packet matches its own Tag. If the received
-> 	 * Verification Tag value does not match the receiver's own
-> 	 * tag value, the receiver shall silently discard the packet...
-> 	 */
-> 	if (ntohl(chunk->sctp_hdr->vtag) != asoc->c.my_vtag)
-> 		return 0;
-> 
-> 
-> Found by Linux Verification Center (linuxtesting.org) with SVACE tool.
+> # ./x86_64/debug_regs 
+> ==== Test Assertion Failure ====
+>   x86_64/debug_regs.c:179: run->exit_reason == KVM_EXIT_DEBUG && run->debug.arch.exception == DB_VECTOR && run->debug.arch.pc == target_rip && run->debug.arch.dr6 == target_dr6
+>   pid=16352 tid=16352 errno=0 - Success
+>      1	0x0000000000402b33: main at debug_regs.c:179 (discriminator 10)
+>      2	0x00007f36401bd554: ?? ??:0
+>      3	0x00000000004023a9: _start at ??:?
+>   SINGLE_STEP[1]: exit 9 exception -2147483615 rip 0x1 (should be 0x4024d9) dr6 0xffff4ff0 (should be 0xffff4ff0)
 
-These issues should all be the same with Linus's tree, so can you please
-submit patches to the normal netdev developers and mailing list to
-resolve the above issues?
+Exit 9 is KVM_EXIT_FAIL_ENTRY, which in this case VM-Entry likely failed due to
+invalid guest state because there was STI blocking with single-step enabled but
+no pending BS #DB:
 
-thanks,
+  Bit 14 (BS) must be 1 if the TF flag (bit 8) in the RFLAGS field is 1 and the
+  BTF flag (bit 1) in the IA32_DEBUGCTL field is 0.
 
-greg k-h
+Which is precisely what that hack-a-fix avoids.  There isn't really a clean
+solution for legacy single-step, AFAIK the only way to avoid this would be to
+switch KVM_GUESTDBG_SINGLESTEP to use MTF.
+
+But that mess is a red herring, the test fails with the same signature with APICv=1
+if the STI is replaced by PUSHF+BTS+POPFD (to avoid the STI shadow).  We all missed
+this key detail from Vitaly's report:
+
+SINGLE_STEP[1]: exit 8 exception 1 rip 0x402a25 (should be 0x402a27) dr6 0xffff4ff0 (should be 0xffff4ff0)
+                ^^^^^^
+
+Exit '8' is KVM_EXIT_SHUTDOWN, i.e. the arrival of the IRQ hosed the guest because
+the test doesn't invoke vm_init_descriptor_tables() to install event handlers.
+The "exception 1" shows up because the run page isn't sanitized by the test, i.e.
+it's stale data that happens to match.
+
+So I would fully expect this test to fail with AVIC=1.  The problem is that
+KVM_GUESTDBG_BLOCKIRQ does absolutely nothing to handle APICv interrupts.  And
+even if KVM does something to fudge that behavior in the emulated local APIC, the
+test will then fail miserably virtual IPIs (currently AVIC only).
+
+I stand by my original comment that "Deviating this far from architectural behavior
+will end in tears at some point."  Rather than try to "fix" APICv, I vote to instead
+either reject KVM_GUESTDBG_BLOCKIRQ if APICv=1, or log a debug message saying that
+KVM_GUESTDBG_BLOCKIRQ is ineffective with APICv=1.
