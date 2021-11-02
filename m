@@ -2,117 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D858A442BB9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 11:39:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14BE9442BC1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 11:41:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230324AbhKBKlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 06:41:37 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:16366 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229800AbhKBKlg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 06:41:36 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1635849541; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=5IssT2DP4vP4gHm4/0t00G7qOoes9ldO5A4j8f/thEw=; b=KutRexuDkQiEOKCxOBxNTboYnpizUfW++rFAKulVaKnXfv3nBkF9neSnKymWKmYp5m8sCGjf
- wxeiyDEm3VNUgbb7g1XOd4pCX3tn6moeDr7wxUFFSbxqBaCPUgGRs+AVxqBW7NOsIGaV0T5C
- t95av56mnG5rgP96SetjjK7IJNo=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 61811545c8c1b282a560c188 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 02 Nov 2021 10:39:01
- GMT
-Sender: rnayak=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E8390C43460; Tue,  2 Nov 2021 10:39:00 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-5.4 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.1.102] (unknown [49.207.214.117])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7564BC4338F;
-        Tue,  2 Nov 2021 10:38:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 7564BC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Subject: Re: [PATCH v2 1/2] pinctrl: qcom: Add egpio feature support
-To:     Stephen Boyd <swboyd@chromium.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, linus.walleij@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, psodagud@codeaurora.org,
-        dianders@chromium.org
-References: <1635250056-20274-1-git-send-email-rnayak@codeaurora.org>
- <CAE-0n50E2dmQeDaiggEgMgykrkGB3H38sbkTXDX3avR7XtSizw@mail.gmail.com>
- <40fa13cd-f24c-e3a9-9b49-23ad26507bfe@codeaurora.org>
- <CAE-0n51Ag_KK7wC4r7YFar=C5P-YLLVZHUyJrNAcMEpfwYFy2Q@mail.gmail.com>
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-Message-ID: <67d5895f-0793-7916-067b-346425aeb548@codeaurora.org>
-Date:   Tue, 2 Nov 2021 16:08:53 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-MIME-Version: 1.0
-In-Reply-To: <CAE-0n51Ag_KK7wC4r7YFar=C5P-YLLVZHUyJrNAcMEpfwYFy2Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        id S231126AbhKBKn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 06:43:59 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:46808 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230326AbhKBKn4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 06:43:56 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1A29vE4D009433;
+        Tue, 2 Nov 2021 10:41:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : content-type : content-transfer-encoding :
+ mime-version; s=pp1; bh=RV9146lUgGEB1B0syahFH3GzBDRrCnmWJRzULRbR1HA=;
+ b=p8bjRfa6K5GuvychzYRvKmf105GWjU/fKy5GDu0uHweN+o6XsjWSG28VfL3m/dEsoP84
+ lZldnyMyhKhyVsd26eFRY8mHAy/uwx9GgN9BQgl+xyypizN4oPXKs4qvbvS2KLmdX+kC
+ L9lN0HcpVxqeuS4kyF6WJA8vpnQNAX6T2zVdLnHADZxGSmv7N/LU3yuA+LjTQHACFuTb
+ j4ZO3Dh41M5KVJQDJT0udOZbD+nS1bOV08iSCoYCbU+1PlXTD47esQu30zQ778+DmdQ6
+ ds/+M6EI+HUu3VNjunxE1rCGzlHvJ1QqXFqq+XVaG5KIXHbxltWVs+3Lc7ZNhk8zWAOd pg== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3c2mvmhn8v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 02 Nov 2021 10:41:16 +0000
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1A2AWkfk018281;
+        Tue, 2 Nov 2021 10:41:14 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma04ams.nl.ibm.com with ESMTP id 3c0wpaj8uk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 02 Nov 2021 10:41:14 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1A2AYl9C63963464
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 2 Nov 2021 10:34:48 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4640D4204B;
+        Tue,  2 Nov 2021 10:41:11 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0BDE242049;
+        Tue,  2 Nov 2021 10:41:10 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.95.31])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue,  2 Nov 2021 10:41:09 +0000 (GMT)
+Message-ID: <3f066f52d4937414a9e01c7f46a714e988e6196a.camel@linux.ibm.com>
+Subject: [GIT PULL] integrity subsystem updates for v5.16
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-integrity <linux-integrity@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Tue, 02 Nov 2021 06:41:09 -0400
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: yAPBFttUDV_2EqfXij9qVp3x_j7EBggC
+X-Proofpoint-ORIG-GUID: yAPBFttUDV_2EqfXij9qVp3x_j7EBggC
 Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-02_06,2021-11-02_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ malwarescore=0 adultscore=0 clxscore=1011 priorityscore=1501 mlxscore=0
+ bulkscore=0 spamscore=0 mlxlogscore=999 phishscore=0 suspectscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111020062
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Linus,
 
-On 10/30/2021 12:35 AM, Stephen Boyd wrote:
-> Quoting Rajendra Nayak (2021-10-29 03:19:04)
->>
->>
->> On 10/29/2021 12:24 PM, Stephen Boyd wrote:
->>> Quoting Rajendra Nayak (2021-10-26 05:07:35)
->>>> From: Prasad Sodagudi <psodagud@codeaurora.org>
->>>>
->>>> egpio is a scheme which allows special power Island Domain IOs
->>>> (LPASS,SSC) to be reused as regular chip GPIOs by muxing regular
->>>> TLMM functions with Island Domain functions.
->>>> With this scheme, an IO can be controlled both by the cpu running
->>>> linux and the Island processor. This provides great flexibility to
->>>> re-purpose the Island IOs for regular TLMM usecases.
->>>>
->>>> 2 new bits are added to ctl_reg, egpio_present is a read only bit
->>>> which shows if egpio feature is available or not on a given gpio.
->>>> egpio_enable is the read/write bit and only effective if egpio_present
->>>> is 1. Once its set, the Island IO is controlled from Chip TLMM.
->>>> egpio_enable when set to 0 means the GPIO is used as Island Domain IO.
->>>>
->>>> To support this we add a new function 'egpio' which can be used to
->>>> set the egpio_enable to 0, for any other TLMM controlled functions
->>>> we set the egpio_enable to 1.
->>>>
->>>> Signed-off-by: Prasad Sodagudi <psodagud@codeaurora.org>
->>>> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
->>>> ---
->>>
->>> Does this supersede adding support for lpass pinctrl in this series[1]?
->>
->> No, the driver in [1] actually manages the LPASS TLMM instance, while this patch
->> makes it possible for the 'same' pins to be managed by the SoC TLMM instance.
->> On sc7280 SoC for instance GPIO144-158 maps to LPI-GPIO-0-14, and GPIO159-174
->> maps to SSC-GPIO-0-15.
-> 
-> How do we make sure that the LPASS pins are actually muxed out of the
-> SoC and not blocked by eGPIO in this driver muxing out the pin as a
-> gpio? Do they avoid conflicting with each other somehow?
+Other than the new gid IMA policy rule support and the RCU locking fix,
+the couple of remaining changes are minor/trivial (e.g.
+__ro_after_init, replacing strscpy).
 
-No, currently they don't. The default value of egpio_enable is 0, so
-if SoC TLMM grabs it first and sets it to 1 and then the LPASS TLMM tries
-to grab it, perhaps it can find out and throw and error, though I don;t
-think it does that today.
-I am not sure how this can be caught when its the other way round (LPASS grabs it first)
+thanks,
 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+Mimi
+
+The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
+
+  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git tags/integrity-v5.16
+
+for you to fetch changes up to 32ba540f3c2a7ef61ed5a577ce25069a3d714fc9:
+
+  evm: mark evm_fixmode as __ro_after_init (2021-10-28 18:52:49 -0400)
+
+----------------------------------------------------------------
+integrity-v5.16
+
+----------------------------------------------------------------
+Alex Henrie (1):
+      ima: fix uid code style problems
+
+Austin Kim (1):
+      evm: mark evm_fixmode as __ro_after_init
+
+Curtis Veit (1):
+      ima: add gid support
+
+Petr Vorel (2):
+      ima_policy: Remove duplicate 'the' in docs comment
+      ima: Use strscpy instead of strlcpy
+
+liqiong (1):
+      ima: fix deadlock when traversing "ima_default_rules".
+
+ Documentation/ABI/testing/ima_policy |   8 +-
+ security/integrity/evm/evm_main.c    |   2 +-
+ security/integrity/ima/ima_api.c     |   2 +-
+ security/integrity/ima/ima_policy.c  | 243 ++++++++++++++++++++++++++++-------
+ 4 files changed, 208 insertions(+), 47 deletions(-)
+
