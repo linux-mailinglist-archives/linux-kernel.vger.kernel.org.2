@@ -2,85 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA3DE4429DA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 09:50:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E469E4429DB
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 09:51:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231214AbhKBIw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 04:52:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:30379 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229920AbhKBIwu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 04:52:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635843015;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Gkgz68rvnt7G9X+ym70utCtNaVuCReoBXjCckZay26o=;
-        b=KKNn6CMPI9RMMj1bcEv2GriaVKbl0Uf5q6N5hB2nDiRGja1wSLJd9gdeHUOFtVqZIBkV8n
-        polJPNJnWIV2Mn/m5FuRPdA1lMHQRsrWcOZ95HfAexChOGc38EeRE6eX2eyrAqOUcreLS6
-        iKLPSBFGXzpv8EdDlsE4gcYgoHNdgww=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-167-W4lh5bqyPD-QMzXsgnlZvQ-1; Tue, 02 Nov 2021 04:50:12 -0400
-X-MC-Unique: W4lh5bqyPD-QMzXsgnlZvQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2793D91271;
-        Tue,  2 Nov 2021 08:50:11 +0000 (UTC)
-Received: from asgard.redhat.com (unknown [10.36.110.5])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1C85469FB2;
-        Tue,  2 Nov 2021 08:50:08 +0000 (UTC)
-Date:   Tue, 2 Nov 2021 09:50:05 +0100
-From:   Eugene Syromiatnikov <esyr@redhat.com>
-To:     Jeremy Kerr <jk@codeconstruct.com.au>
-Cc:     Matt Johnston <matt@codeconstruct.com.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 0/2] MCTP sockaddr padding check/initialisation
- fixup
-Message-ID: <20211102085005.GA14342@asgard.redhat.com>
-References: <cover.1635788968.git.esyr@redhat.com>
- <b8c77eb3b3379e52e91b9ecc9c35c2f707cc3ae5.camel@codeconstruct.com.au>
+        id S229924AbhKBIyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 04:54:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38802 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229505AbhKBIyK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 04:54:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CEF7360E98
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 08:51:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635843095;
+        bh=YPf6/M2ebb35G16XuM5VQwFjUhWRcpJIy1yYwPnDS7k=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=fftVrso7Ja5UMZ/cbC8pu8j060xZaMp+R9hjaMQX/jKNo14P80ODhhm5+xz0UFVA/
+         7UipisfN12J1h8YB2OOwWUhmwqtipcxsG6nKRQRkq06YlmdQ7ONJz08r7ipTfYfhor
+         WG3DLzoZ/J9MPfm7es/RvjCPGXo9JUNyBAtoeCGOC3MP/6IzBmQNs+WyFoVUjIb8du
+         Xj/ftxfJ/+4IeS4rPi9F/Ban684Wqg3hUD3tfCn49e+JAw97UhIfi/Kpi9TyqVjr2W
+         ofeAGDV6u2wjiZYT4WET+AjIvA4ErmybIBRzB9BnMm29wPJZRjvXjtEWxNAwz0QK8X
+         OuIubCCa8omkg==
+Received: by mail-vk1-f178.google.com with SMTP id n201so9223528vkn.12
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 01:51:35 -0700 (PDT)
+X-Gm-Message-State: AOAM531I/ukEkRv4xbZJpq5R4sjQwr3qflY4fUrcIOcaBjzLf537eyfs
+        eyCHBi1fogOgTU7en4seuh8Mcm7KBeDM91M8p3M=
+X-Google-Smtp-Source: ABdhPJwrbsKCWw5C3jjAJ84DekQMMCaOINyBIVGKEkLsFaB1DnX4bVGP0b6bJeIeLpHfeJtl0x0CE5eVBWVKtgr6KEs=
+X-Received: by 2002:a05:6122:1682:: with SMTP id 2mr36158634vkl.22.1635843094957;
+ Tue, 02 Nov 2021 01:51:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b8c77eb3b3379e52e91b9ecc9c35c2f707cc3ae5.camel@codeconstruct.com.au>
-User-Agent: Mutt/1.5.23 (2014-03-12)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <20211025040607.92786-1-wefu@redhat.com> <mhng-ac32ff92-86cb-4377-ba63-de1856e84fb1@palmerdabbelt-glaptop>
+ <CAJF2gTT90V6gQw12XZEXB1TJXb5QNdXM6qcfXh1yzWzDPExgPQ@mail.gmail.com> <20211102055857.GB26925@lst.de>
+In-Reply-To: <20211102055857.GB26925@lst.de>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Tue, 2 Nov 2021 16:51:23 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTSfp+JZ4YxiynVA4KO0Z4PwJ4_uF8UO3Tx3mDOHPnFTeQ@mail.gmail.com>
+Message-ID: <CAJF2gTSfp+JZ4YxiynVA4KO0Z4PwJ4_uF8UO3Tx3mDOHPnFTeQ@mail.gmail.com>
+Subject: Re: [RESEND PATCH V3 0/2] riscv: add RISC-V Svpbmt Standard Extension supports
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Palmer Dabbelt <palmerdabbelt@google.com>,
+        Wei Fu <wefu@redhat.com>, Anup Patel <Anup.Patel@wdc.com>,
+        Atish Patra <Atish.Patra@wdc.com>,
+        =?UTF-8?Q?Christoph_M=C3=BCllner?= <christoph.muellner@vrull.eu>,
+        Philipp Tomsich <philipp.tomsich@vrull.eu>,
+        liush <liush@allwinnertech.com>,
+        =?UTF-8?B?V2VpIFd1ICjlkLTkvJ8p?= <lazyparser@gmail.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        taiten.peng@canonical.com,
+        Aniket Ponkshe <aniket.ponkshe@canonical.com>,
+        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
+        Gordan Markus <gordan.markus@canonical.com>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Arnd Bergmann <arnd@arndb.de>, Chen-Yu Tsai <wens@csie.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        Greg Favor <gfavor@ventanamicro.com>,
+        Andrea Mondelli <andrea.mondelli@huawei.com>,
+        Jonathan Behrens <behrensj@mit.edu>,
+        "Xinhaoqu (Freddie)" <xinhaoqu@huawei.com>,
+        Bill Huffman <huffman@cadence.com>,
+        Nick Kossifidis <mick@ics.forth.gr>,
+        Allen Baum <allen.baum@esperantotech.com>,
+        Josh Scheid <jscheid@ventanamicro.com>,
+        Richard Trauben <rtrauben@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 09:57:34AM +0800, Jeremy Kerr wrote:
-> Hi Eugene,
-> 
-> > Padding/reserved fields necessitate appropriate checks in order to be
-> > usable in the future.
-> 
-> We don't have a foreseeable need for extra fields here; so this is a bit
-> hypothetical at the moment. However, I guess there may be something that
-> comes up in future - was there something you have in mind?
+Thx Christoph,
 
-Not really, but reality suggests that many interfaces tend to extend
-over time (including socket addresses, see flags in sockaddr_vm
-as an example), so future-proofing padding allows extending into it
-with minimal implementation complication, comparing to other approaches.
+On Tue, Nov 2, 2021 at 1:59 PM Christoph Hellwig <hch@lst.de> wrote:
+>
+> On Tue, Nov 02, 2021 at 10:07:58AM +0800, Guo Ren wrote:
+> >
+> > To separate MMU & no-MMU clearly, I suggest fuwei add
+> > #if defined(CONFIG_64BIT) && defined(CONFIG_MMU)
+>
+> Actually - for documentation purposes a new CONFIG_RISCV_SVPBMT that
+> depends on 64BIT && MMU would probably much better as it clearly
+> documents the intent here.
+Okay
 
-> The requirements for the padding bytes to be zero on sendmsg() will
-> break the ABI for applications that are using the interface on 5.15;
-> there's a small, contained set of those at the moment though, so I'm OK
-> to handle the updates if this patch is accepted, but we'd need to make a
-> call on that soon.
 
-Yeah, I regret I have not caught it earlier.
+-- 
+Best Regards
+ Guo Ren
 
-> Setting the pad bytes to zero on recvmsg() is a good plan though, I'm
-> happy for that change to go in regardless.
-
-I can split it out in case there is hesitance with regards to applying padding
-checks.
-
+ML: https://lore.kernel.org/linux-csky/
