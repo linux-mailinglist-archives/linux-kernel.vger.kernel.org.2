@@ -2,160 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8BA5442E94
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 13:58:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C229B442E9D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 13:58:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231232AbhKBNAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 09:00:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49116 "EHLO
+        id S231286AbhKBNB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 09:01:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230326AbhKBNAv (ORCPT
+        with ESMTP id S229924AbhKBNBX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 09:00:51 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68B56C061714;
-        Tue,  2 Nov 2021 05:58:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=bGKSmCTDpFoLP1JJLQXqMm0zWZVdp9goOESdYBnNV2s=; b=p0lMGiJdFK4mTiRAYVcEK1G2JK
-        YEbC6rEB5RywDf91bgqWy4Y83973HIJ+Jz5Xu5rt6nJt0hmaFs1hkgzEWR7apTOgcsMiLUsifBSYb
-        tMcUVV8vlvgPp0i4+mgrT/2nQdcaEArOiGjQbLa/k/shnHoY4WkrHaEAxn8134aF/2wlb3kpordKv
-        6woGBkyova35sHK+e9dYSkuq8qS9S/3ciikOGSbBIedmtSG6PdCizOB8uY4bL1oQ+SLsoHN/kcVix
-        3ogE4BhlwnevwpJU09OALRUhFgN3P59PTVTC/uWaL6+EWlXWa9T6D5EZtBS0Ka7JtSZorJzuNSi20
-        MxjTw0zg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mhtMH-00Dkn7-Vb; Tue, 02 Nov 2021 12:57:46 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8EF783005F4;
-        Tue,  2 Nov 2021 13:57:44 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1DB0D2C8D22FD; Tue,  2 Nov 2021 13:57:44 +0100 (CET)
-Date:   Tue, 2 Nov 2021 13:57:44 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        Mark Rutland <mark.rutland@arm.com>, X86 ML <x86@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-hardening@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH] static_call,x86: Robustify trampoline patching
-Message-ID: <YYE1yPClPMHvyvIt@hirez.programming.kicks-ass.net>
-References: <CAMj1kXF4ZNAvdC8tP_H=v1Dn_Zcv=La11Ok43ceQOyb1Xo1jXQ@mail.gmail.com>
- <CAMj1kXEvemVOWf4M_0vsduN_kiCsGVmM92cE7KPMoNKViKp=RQ@mail.gmail.com>
- <20211031163920.GV174703@worktop.programming.kicks-ass.net>
- <CAMj1kXHk5vbrT49yRCivX3phrEkN6Xbb+g8WEmavL_d1iE0OxQ@mail.gmail.com>
- <YX74Ch9/DtvYxzh/@hirez.programming.kicks-ass.net>
- <CAMj1kXG+MuGaG3BHk8pnE1MKVmRf5E+nRNoFMHxOA1y84eGikg@mail.gmail.com>
- <YX8AQJqyB+H3PF1d@hirez.programming.kicks-ass.net>
- <CAMj1kXF3n-oQ1WP8=asb60K6UjSYOtz5RVhrcoCoNq3v7mZdQg@mail.gmail.com>
- <20211101090155.GW174703@worktop.programming.kicks-ass.net>
- <CAMj1kXGhRmdM3om289Q2-s1Pzfob3D2iSDMorzggfhSk1oj53A@mail.gmail.com>
+        Tue, 2 Nov 2021 09:01:23 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4EFBC061714
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 05:58:47 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id f8so54108278edy.4
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 05:58:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oS5P08rKOHmHVOqFsv1wlAiyj1NrRmUfampI9oL2V64=;
+        b=n5PHQAW9dm9kSkiLYV9daCoVja0+TvWv0SvPUz8RC2NAWnAS31ToFveGA1/UPb7uYB
+         f2DFw4kpYFhgjAav2FZdaU4krkdZ7po9IsPMKSRj4oEE7vb5V/lMQlEBKVfIZlCwUM6y
+         W9aK0lSYkAOZmx8r4UpzYRovgJbgvMlb7iUfZ+YUBflrQE4/62VAeOfpv26y5Xn0Gm3J
+         q3zC3SpxcC96EDC1+fvOA9T2Wf5EiD6cs6axCkiyJICxLsJq6xHYZRb0RShO3obZkJMU
+         aEtStNkbcZgbr2ZF4OuZBneJBBa0HWbEyaYhLCSyNlaANsI6r0GVcXsUG8TWX1fH649s
+         W1Fw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oS5P08rKOHmHVOqFsv1wlAiyj1NrRmUfampI9oL2V64=;
+        b=fQ2/mjsIcoH3VJj3W2G50N3BZInhgvHpU/GLjIt6/Ko5A70z/w34b/GMuHa1aOOdcD
+         VwUdrElxdtzsqKiEdwrsfmU5t57kjcVeIGg6vphbqVHLMHAu13mbArLUDdQQse2ghSD9
+         KiYPFRAUoYaEEEHDxSaE39b/xZEarxPnwpUQf6TLWZTkmGFyO+weq3f9Ntc44uGGVUgt
+         1ELf5Mv2nHgCSaB8gr3FmXLjU7Wd7RI+LCYLA4OFeLxNA0opPM5SQZETkZL6IIdTFJ79
+         ZtRgWPLq58GdimqLW3kDpVtnu67kwGznWdct8SBkw3JLMYmB7TnZpkkncr7n0UKOjd/B
+         QcEg==
+X-Gm-Message-State: AOAM530AqDxjhPgds/V1WJpsqrS1+tKC3grGRqHZlk5Ea/QB6O2w96gK
+        I7G5yaC/+TqwMtO35ObnoptZYC6I/PMPUwVRlGiO
+X-Google-Smtp-Source: ABdhPJydRuxERCqDLUerKHEo8hrEbU94yrYYszodlvCbnReZNWzPvF4WrAzB6P1x8AOkiMpqhUts8Pw23pMvedkoZ/M=
+X-Received: by 2002:a17:907:2d12:: with SMTP id gs18mr25449694ejc.126.1635857926118;
+ Tue, 02 Nov 2021 05:58:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXGhRmdM3om289Q2-s1Pzfob3D2iSDMorzggfhSk1oj53A@mail.gmail.com>
+References: <CAHC9VhRJ=fHzMHM6tt8JqkZa4bf0h72CAytSX9YrEs14Oaj8SA@mail.gmail.com>
+ <CAHk-=wj2LqbZ3xSLKfnR42y7ZEgqw8K42-mE+nsHwsoFiNNpKw@mail.gmail.com>
+ <CAHC9VhS3LfGvuVyXW5ePTQNtQ0KeQ7vz3wLinoZrbGVjU6GuoQ@mail.gmail.com>
+ <CAHk-=whvZRaJSXirjcWKn75H-2H1tc54cru8p-vXE_2UyuvGNQ@mail.gmail.com> <CAHk-=wj0fNVO9tfEmWTcW7i+HoN4K4PejZ44sQYCEfL1S3UPWA@mail.gmail.com>
+In-Reply-To: <CAHk-=wj0fNVO9tfEmWTcW7i+HoN4K4PejZ44sQYCEfL1S3UPWA@mail.gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Tue, 2 Nov 2021 08:58:35 -0400
+Message-ID: <CAHC9VhTZW-thM3rhMArYNQYD1PjLWh3Y3XBQ_XGv86TqkN3GVg@mail.gmail.com>
+Subject: Re: [GIT PULL] SELinux patches for v5.16
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     SElinux list <selinux@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 01, 2021 at 03:14:41PM +0100, Ard Biesheuvel wrote:
-> On Mon, 1 Nov 2021 at 10:05, Peter Zijlstra <peterz@infradead.org> wrote:
-
-> > How is that not true for the jump table approach? Like I showed earlier,
-> > it is *trivial* to reconstruct the actual function pointer from a
-> > jump-table entry pointer.
+On Tue, Nov 2, 2021 at 12:23 AM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Mon, Nov 1, 2021 at 8:55 PM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
 > >
-> 
-> That is not the point. The point is that Clang instruments every
-> indirect call that it emits, to check whether the type of the jump
-> table entry it is about to call matches the type of the caller. IOW,
-> the indirect calls can only branch into jump tables, and all jump
-> table entries in a table each branch to the start of some function of
-> the same type.
-> 
-> So the only thing you could achieve by adding or subtracting a
-> constant value from the indirect call address is either calling
-> another function of the same type (if you are hitting another entry in
-> the same table), or failing the CFI type check.
+> > This follow-up was sufficient. In fact, the original should have been
+> > sufficient for me.
+>
+> ... and as you saw from the pr-tracker-bot, it's all merged now.
+>
+> Sorry for missing that part of your original pull request.
 
-Ah, I see, so the call-site needs to have a branch around the indirect
-call instruction.
+The important part is that it is now in your tree, thanks.
 
-> Instrumenting the callee only needs something like BTI, and a
-> consistent use of the landing pads to ensure that you cannot trivially
-> omit the check by landing right after it.
-
-That does bring up another point tho; how are we going to do a kernel
-that's optimal for both software CFI and hardware aided CFI?
-
-All questions that need answering I think.
-
-
-So how insane is something like this, have each function:
-
-foo.cfi:
-	endbr64
-	xorl $0xdeadbeef, %r10d
-	jz foo
-	ud2
-	nop	# make it 16 bytes
-foo:
-	# actual function text goes here
-
-
-And for each hash have two thunks:
-
-
-	# arg: r11
-	# clobbers: r10, r11
-__x86_indirect_cfi_deadbeef:
-	movl -9(%r11), %r10		# immediate in foo.cfi
-	xorl $0xdeadbeef, %r10		# our immediate
-	jz 1f
-	ud2
-1:	ALTERNATIVE_2	"jmp *%r11",
-			"jmp __x86_indirect_thunk_r11", X86_FEATURE_RETPOLINE
-			"lfence; jmp *%r11", X86_FEATURE_RETPOLINE_AMD
-
-
-
-	# arg: r11
-	# clobbers: r10, r11
-__x86_indirect_ibt_deadbeef:
-	movl $0xdeadbeef, %r10
-	subq $0x10, %r11
-	ALTERNATIVE "", "lfence", X86_FEATURE_RETPOLINE
-	jmp *%r11
-
-
-
-And have the actual indirect callsite look like:
-
-	# r11 - &foo
-	ALTERNATIVE_2	"cs call __x86_indirect_thunk_r11",
-			"cs call __x86_indirect_cfi_deadbeef", X86_FEATURE_CFI
-			"cs call __x86_indirect_ibt_deadbeef", X86_FEATURE_IBT
-
-Although if the compiler were to emit:
-
-	cs call __x86_indirect_cfi_deadbeef
-
-we could probaly fix it up from there.
-
-
-Then we can at runtime decide between:
-
-  {!cfi, cfi, ibt} x {!retpoline, retpoline, retpoline-amd}
-
+-- 
+paul moore
+www.paul-moore.com
