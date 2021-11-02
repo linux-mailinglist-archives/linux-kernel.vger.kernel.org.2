@@ -2,236 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BF7D443451
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 18:07:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DACD443454
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 18:08:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234948AbhKBRJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 13:09:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50080 "EHLO
+        id S234848AbhKBRKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 13:10:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234928AbhKBRJk (ORCPT
+        with ESMTP id S229846AbhKBRKi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 13:09:40 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A71E2C061203;
-        Tue,  2 Nov 2021 10:07:05 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id b2-20020a1c8002000000b0032fb900951eso2518336wmd.4;
-        Tue, 02 Nov 2021 10:07:05 -0700 (PDT)
+        Tue, 2 Nov 2021 13:10:38 -0400
+Received: from mail-wm1-x349.google.com (mail-wm1-x349.google.com [IPv6:2a00:1450:4864:20::349])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F22D9C061714
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 10:08:02 -0700 (PDT)
+Received: by mail-wm1-x349.google.com with SMTP id n189-20020a1c27c6000000b00322f2e380f2so1443295wmn.6
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 10:08:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=8oHRsraxLr95dyqIZ4i9gXSUOIKBzXvt3sHaqmNleG0=;
-        b=OqjNpfDy0PUdCVV1P26ri7l8lKLTQsh2UcZ6l2GN0uogRjm1BD3KoebfP6om75E6rs
-         QLeJTes1JktuwmDiStKQEPhewLZ50hveU63bhUCIP7CW8LyCvQ1JWsvqifB43LEscbLd
-         TifylW4u5W2qb5V3HzJ79D6HSx0sZq1A1qU6syLF4QbknNMtz7mkUVYpGJ3FD2GWQiuL
-         uXuw8kxrS6Lb0PFGPj8eoSOH5nAVtPbeyCdPqLwORz9skH8LU8+MC1LtbflcqbuP/dPd
-         sPsj0IuFmm1ZBb7WZacOkoJ4zS7jnfpK8tY5+W3inGCj28azStpZKbetgSRJkSF3E5Vl
-         eVOw==
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=VZR4veHDB/Hv5J8c9l5kvLwMvvSzVFvPkC6CzrVLaSc=;
+        b=h5ZsJTLfAG9mNnQa0xWFAL2KxUVTpouTD3NLPXa9euGiJQFSkr8NLeCyb+LPhUqP4V
+         CPA2cifJNDzf9m/dmWlxblumpDSRXmGZiavxecw6BQJ96z2N8jO+p74zDsfB4VZZpLCv
+         PmQc1vrw1arnNklp77e5CMB5UGoAwRo1MCEk1M6IfXh8yLkVc27xokue/B18c8j0vRAc
+         KBecirNBiVNE0bMRB52sbc1zt17fEXCH1dZys8h9YwrObCrr3Hk863S5dozbA4NqD3QX
+         6Yghlp9lPxhgjSIpsyDH5v1/oyULTQrrKGG4bz9Dwe9VREtkSvgGaNuyrq4T5QWD5Iti
+         Ts8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=8oHRsraxLr95dyqIZ4i9gXSUOIKBzXvt3sHaqmNleG0=;
-        b=3zG44NETv7ttTRT5NkZMbEV1Ynm2kzRCLpbQmi5+SSUDwACzuHfFoEi5LuPAHbqtcB
-         Y5a5b/9tV2q2CFaVBC5F3jnG9Gt+cAjtCU6E9tkfNeP+cs0aDxjwVY17FrzWAPewJoYX
-         9etM39b2cB/XELZh7g/DDpbDECAShRt3AMAZJMGme0n8CcLBX5V0O91XMZSWDzsOcDdy
-         FLlZilHzzGQJahWVr5zExrN4yAQfZxC8XcWHTsnwjcckPAPOKRUdbfqwjBCET6AxZiBW
-         mP8q68fgpFkucWM2UBfkkRrL87s0P2XVU5TdBkdwIRat/RdCli0vUf0exbxrA84BvDQY
-         DjtA==
-X-Gm-Message-State: AOAM530UVj7cuRLqcIwgDEFoWUctXVo+DOhwgngVQmdGh7CV0gLPkoVt
-        CrKTKOBJ6oiLhrJ7/39nf1oEBkpIKmVKsecPys8=
-X-Google-Smtp-Source: ABdhPJzloyupizZ7CVP+cylrlRwT3lgpREZU9rA+BH8jQPtuqSLx4DwsJrvizBVECMnuYLbESVnlvmxl8hBhMSibCsc=
-X-Received: by 2002:a05:600c:1ca7:: with SMTP id k39mr8761216wms.74.1635872824205;
- Tue, 02 Nov 2021 10:07:04 -0700 (PDT)
-MIME-Version: 1.0
-References: <1635843092-12907-1-git-send-email-yangtiezhu@loongson.cn>
-In-Reply-To: <1635843092-12907-1-git-send-email-yangtiezhu@loongson.cn>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Tue, 2 Nov 2021 18:06:52 +0100
-Message-ID: <CAJ+HfNhtZFnxNjzDo8gSJdyDhEEicgUo5hDdCeBYJ=rutBZ93w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4] bpf: Change value of MAX_TAIL_CALL_CNT from
- 32 to 33
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, illusionist.neo@gmail.com,
-        zlim.lnx@gmail.com, naveen.n.rao@linux.ibm.com,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Xi Wang <xi.wang@gmail.com>, iii@linux.ibm.com,
-        hca@linux.ibm.com, gor@linux.ibm.com, udknight@gmail.com,
-        David Miller <davem@davemloft.net>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=VZR4veHDB/Hv5J8c9l5kvLwMvvSzVFvPkC6CzrVLaSc=;
+        b=D5Sv4VBV2Fdv/SJJfrc7IeOE+LnY5rDh0bUzknK1dB2/1FDjMQ86YvM+yrEAQ3teAT
+         SunWNugj7DBqG2GufWjWp+RlhKDM7aoddT1VZmdPMOewDyAZnaxsTe5Wqh9QBF4jNxnM
+         tQJ0FbHzH8ko81AOWf7xLqplh7LERFJxP7QLk2Qghe5UAulGGVTMYaH5hsZYq613tiSJ
+         w1XAmeZhoaOLH3Jr8lSwPf/1OCyoUq+fIvmTl/hEJcKjmIRkfaGp1xumiSj8aBfKHBFq
+         YeQ/C6myfSu4lw4pGulKplO5veZ8lFry4i4RjTgjn7+egJgdpl71tmWFraZabYYv/Kld
+         0WFQ==
+X-Gm-Message-State: AOAM5333bZPU/X+vCB/kiAglq3KzrE2OUg9bOvIMF6eVfsdjmZgZyzuf
+        +q7Hlt1A6KUqV50QMOqC1ipmab18GQ==
+X-Google-Smtp-Source: ABdhPJwsVlfeyltofJcj5J/2mtf997JPKCeDSm4UOFJj0uTkZTZ3OpdauGeH/9tTUDezWE+nVfvjDDTIJA==
+X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:c225:73fc:3369:a4ae])
+ (user=elver job=sendgmr) by 2002:a5d:51cf:: with SMTP id n15mr38162615wrv.106.1635872881388;
+ Tue, 02 Nov 2021 10:08:01 -0700 (PDT)
+Date:   Tue,  2 Nov 2021 18:07:33 +0100
+Message-Id: <20211102170733.648216-1-elver@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.1.1089.g2158813163f-goog
+Subject: [PATCH] mm/slab_common: use WARN() if cache still has objects on destroy
+From:   Marco Elver <elver@google.com>
+To:     elver@google.com, Andrew Morton <akpm@linux-foundation.org>
+Cc:     Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        kasan-dev@googlegroups.com, Ingo Molnar <mingo@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2 Nov 2021 at 09:51, Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
->
-> In the current code, the actual max tail call count is 33 which is greate=
-r
-> than MAX_TAIL_CALL_CNT (defined as 32), the actual limit is not consisten=
-t
-> with the meaning of MAX_TAIL_CALL_CNT, there is some confusion and need t=
-o
-> spend some time to think about the reason at the first glance.
->
-> We can see the historical evolution from commit 04fd61ab36ec ("bpf: allow
-> bpf programs to tail-call other bpf programs") and commit f9dabe016b63
-> ("bpf: Undo off-by-one in interpreter tail call count limit").
->
-> In order to avoid changing existing behavior, the actual limit is 33 now,
-> this is reasonable.
->
-> After commit 874be05f525e ("bpf, tests: Add tail call test suite"), we ca=
-n
-> see there exists failed testcase.
->
-> On all archs when CONFIG_BPF_JIT_ALWAYS_ON is not set:
->  # echo 0 > /proc/sys/net/core/bpf_jit_enable
->  # modprobe test_bpf
->  # dmesg | grep -w FAIL
->  Tail call error path, max count reached jited:0 ret 34 !=3D 33 FAIL
->
-> On some archs:
->  # echo 1 > /proc/sys/net/core/bpf_jit_enable
->  # modprobe test_bpf
->  # dmesg | grep -w FAIL
->  Tail call error path, max count reached jited:1 ret 34 !=3D 33 FAIL
->
-> Although the above failed testcase has been fixed in commit 18935a72eb25
-> ("bpf/tests: Fix error in tail call limit tests"), it is still necessary
-> to change the value of MAX_TAIL_CALL_CNT from 32 to 33 to make the code
-> more readable, then do some small changes of the related code.
->
-> With this patch, it does not change the current limit 33, MAX_TAIL_CALL_C=
-NT
-> can reflect the actual max tail call count, the related tailcall testcase=
-s
-> in test_bpf and selftests can work well for the interpreter and the JIT.
->
+Calling kmem_cache_destroy() while the cache still has objects allocated
+is a kernel bug, and will usually result in the entire cache being
+leaked. While the message in kmem_cache_destroy() resembles a warning,
+it is currently not implemented using a real WARN().
 
-[...]
+This is problematic for infrastructure testing the kernel, all of which
+rely on the specific format of WARN()s to pick up on bugs.
 
-> diff --git a/arch/riscv/net/bpf_jit_comp32.c b/arch/riscv/net/bpf_jit_com=
-p32.c
-> index e649742..ead9733 100644
-> --- a/arch/riscv/net/bpf_jit_comp32.c
-> +++ b/arch/riscv/net/bpf_jit_comp32.c
-> @@ -799,13 +799,12 @@ static int emit_bpf_tail_call(int insn, struct rv_j=
-it_context *ctx)
->         emit_bcc(BPF_JGE, lo(idx_reg), RV_REG_T1, off, ctx);
->
->         /*
-> -        * temp_tcc =3D tcc - 1;
-> -        * if (tcc < 0)
-> +        * if (--tcc < 0)
->          *   goto out;
->          */
->         emit(rv_addi(RV_REG_T1, RV_REG_TCC, -1), ctx);
->         off =3D ninsns_rvoff(tc_ninsn - (ctx->ninsns - start_insn));
-> -       emit_bcc(BPF_JSLT, RV_REG_TCC, RV_REG_ZERO, off, ctx);
-> +       emit_bcc(BPF_JSLT, RV_REG_T1, RV_REG_ZERO, off, ctx);
->
->         /*
->          * prog =3D array->ptrs[index];
-> diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_com=
-p64.c
-> index 2ca345c..9822f58 100644
-> --- a/arch/riscv/net/bpf_jit_comp64.c
-> +++ b/arch/riscv/net/bpf_jit_comp64.c
-> @@ -327,12 +327,12 @@ static int emit_bpf_tail_call(int insn, struct rv_j=
-it_context *ctx)
->         off =3D ninsns_rvoff(tc_ninsn - (ctx->ninsns - start_insn));
->         emit_branch(BPF_JGE, RV_REG_A2, RV_REG_T1, off, ctx);
->
-> -       /* if (TCC-- < 0)
-> +       /* if (--tcc < 0)
->          *     goto out;
->          */
->         emit_addi(RV_REG_T1, tcc, -1, ctx);
->         off =3D ninsns_rvoff(tc_ninsn - (ctx->ninsns - start_insn));
-> -       emit_branch(BPF_JSLT, tcc, RV_REG_ZERO, off, ctx);
-> +       emit_branch(BPF_JSLT, RV_REG_T1, RV_REG_ZERO, off, ctx);
->
->         /* prog =3D array->ptrs[index];
->          * if (!prog)
+Some 13 years ago this used to be a simple WARN_ON() in slub, but
+d629d8195793 ("slub: improve kmem_cache_destroy() error message")
+changed it into an open-coded warning to avoid confusion with a bug in
+slub itself.
 
-The RISC-V code can be simplified, to save one move:
+Instead, turn the open-coded warning into a real WARN() with the message
+preserved, so that test systems can actually identify these issues, and
+we get all the other benefits of using a normal WARN(). The warning
+message is extended with "when called from <caller-ip>" to make it even
+clearer where the fault lies.
 
-diff --git a/arch/riscv/net/bpf_jit_comp32.c b/arch/riscv/net/bpf_jit_comp3=
-2.c
-index e6497424cbf6..529a83b85c1c 100644
---- a/arch/riscv/net/bpf_jit_comp32.c
-+++ b/arch/riscv/net/bpf_jit_comp32.c
-@@ -799,11 +799,10 @@ static int emit_bpf_tail_call(int insn, struct
-rv_jit_context *ctx)
-        emit_bcc(BPF_JGE, lo(idx_reg), RV_REG_T1, off, ctx);
+For most configurations this is only a cosmetic change, however, note
+that WARN() here will now also respect panic_on_warn.
 
-        /*
--        * temp_tcc =3D tcc - 1;
--        * if (tcc < 0)
-+        * if (--tcc < 0)
-         *   goto out;
-         */
--       emit(rv_addi(RV_REG_T1, RV_REG_TCC, -1), ctx);
-+       emit(rv_addi(RV_REG_TCC, RV_REG_TCC, -1), ctx);
-        off =3D ninsns_rvoff(tc_ninsn - (ctx->ninsns - start_insn));
-        emit_bcc(BPF_JSLT, RV_REG_TCC, RV_REG_ZERO, off, ctx);
+Signed-off-by: Marco Elver <elver@google.com>
+---
+ mm/slab_common.c | 11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
 
-@@ -829,7 +828,6 @@ static int emit_bpf_tail_call(int insn, struct
-rv_jit_context *ctx)
-        if (is_12b_check(off, insn))
-                return -1;
-        emit(rv_lw(RV_REG_T0, off, RV_REG_T0), ctx);
--       emit(rv_addi(RV_REG_TCC, RV_REG_T1, 0), ctx);
-        /* Epilogue jumps to *(t0 + 4). */
-        __build_epilogue(true, ctx);
-        return 0;
-diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp6=
-4.c
-index 2ca345c7b0bf..f4466b7997b5 100644
---- a/arch/riscv/net/bpf_jit_comp64.c
-+++ b/arch/riscv/net/bpf_jit_comp64.c
-@@ -327,12 +327,12 @@ static int emit_bpf_tail_call(int insn, struct
-rv_jit_context *ctx)
-        off =3D ninsns_rvoff(tc_ninsn - (ctx->ninsns - start_insn));
-        emit_branch(BPF_JGE, RV_REG_A2, RV_REG_T1, off, ctx);
+diff --git a/mm/slab_common.c b/mm/slab_common.c
+index ec2bb0beed75..0155a3042203 100644
+--- a/mm/slab_common.c
++++ b/mm/slab_common.c
+@@ -497,8 +497,6 @@ void slab_kmem_cache_release(struct kmem_cache *s)
+ 
+ void kmem_cache_destroy(struct kmem_cache *s)
+ {
+-	int err;
+-
+ 	if (unlikely(!s))
+ 		return;
+ 
+@@ -509,12 +507,9 @@ void kmem_cache_destroy(struct kmem_cache *s)
+ 	if (s->refcount)
+ 		goto out_unlock;
+ 
+-	err = shutdown_cache(s);
+-	if (err) {
+-		pr_err("%s %s: Slab cache still has objects\n",
+-		       __func__, s->name);
+-		dump_stack();
+-	}
++	WARN(shutdown_cache(s),
++	     "%s %s: Slab cache still has objects when called from %pS",
++	     __func__, s->name, (void *)_RET_IP_);
+ out_unlock:
+ 	mutex_unlock(&slab_mutex);
+ 	cpus_read_unlock();
+-- 
+2.33.1.1089.g2158813163f-goog
 
--       /* if (TCC-- < 0)
-+       /* if (--TCC < 0)
-         *     goto out;
-         */
--       emit_addi(RV_REG_T1, tcc, -1, ctx);
-+       emit_addi(RV_REG_TCC, tcc, -1, ctx);
-        off =3D ninsns_rvoff(tc_ninsn - (ctx->ninsns - start_insn));
--       emit_branch(BPF_JSLT, tcc, RV_REG_ZERO, off, ctx);
-+       emit_branch(BPF_JSLT, RV_REG_TCC, RV_REG_ZERO, off, ctx);
-
-        /* prog =3D array->ptrs[index];
-         * if (!prog)
-@@ -352,7 +352,6 @@ static int emit_bpf_tail_call(int insn, struct
-rv_jit_context *ctx)
-        if (is_12b_check(off, insn))
-                return -1;
-        emit_ld(RV_REG_T3, off, RV_REG_T2, ctx);
--       emit_mv(RV_REG_TCC, RV_REG_T1, ctx);
-        __build_epilogue(true, ctx);
-        return 0;
- }
-
-With that change applied, for RISC-V:
-
-Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org>
-
-
-Bj=C3=B6rn
