@@ -2,149 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ABC7442FAB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 15:00:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81CF4442FB5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 15:01:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231450AbhKBOD2 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 2 Nov 2021 10:03:28 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:47184 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230436AbhKBOD0 (ORCPT
+        id S231340AbhKBOET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 10:04:19 -0400
+Received: from angie.orcam.me.uk ([78.133.224.34]:36590 "EHLO
+        angie.orcam.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230257AbhKBOES (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 10:03:26 -0400
-Received: from smtpclient.apple (p4fefc15c.dip0.t-ipconnect.de [79.239.193.92])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 67872CECF0;
-        Tue,  2 Nov 2021 15:00:47 +0100 (CET)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 15.0 \(3693.20.0.1.32\))
-Subject: Re: [PATCH] Bluetooth: Fix receiving
- HCI_LE_Advertising_Set_Terminated event
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20211102192742.1.I3ba1a76d72da5a813cf6e6f219838c9ef28c5eaa@changeid>
-Date:   Tue, 2 Nov 2021 15:00:46 +0100
-Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        Archie Pusaka <apusaka@chromium.org>,
-        Alain Michaud <alainm@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org
+        Tue, 2 Nov 2021 10:04:18 -0400
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id B92D992009D; Tue,  2 Nov 2021 15:01:41 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id B1C7B92009B;
+        Tue,  2 Nov 2021 14:01:41 +0000 (GMT)
+Date:   Tue, 2 Nov 2021 14:01:41 +0000 (GMT)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
+cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Russell King <linux@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: Marvell: Update PCIe fixup
+In-Reply-To: <20211102125843.sqsusis4krnmhorq@pali>
+Message-ID: <alpine.DEB.2.21.2111021312160.57165@angie.orcam.me.uk>
+References: <20211101150405.14618-1-pali@kernel.org> <20211102084241.GA6134@alpha.franken.de> <20211102090246.unmbruykfdjabfga@pali> <20211102094700.GA7376@alpha.franken.de> <20211102100034.rhcb3k2jvr6alm6y@pali> <alpine.DEB.2.21.2111021210180.57165@angie.orcam.me.uk>
+ <20211102125843.sqsusis4krnmhorq@pali>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8BIT
-Message-Id: <4049F5B5-D5A7-4F60-A33D-F22B601E7064@holtmann.org>
-References: <20211102192742.1.I3ba1a76d72da5a813cf6e6f219838c9ef28c5eaa@changeid>
-To:     Archie Pusaka <apusaka@google.com>
-X-Mailer: Apple Mail (2.3693.20.0.1.32)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Archie,
+On Tue, 2 Nov 2021, Pali Rohár wrote:
 
-> This event is received when the controller stops advertising,
-> specifically for these three reasons:
-> (a) Connection is successfully created (success).
-> (b) Timeout is reached (error).
-> (c) Number of advertising events is reached (error).
-> (*) This event is NOT generated when the host stops the advertisement.
-> Refer to the BT spec ver 5.3 vol 4 part E sec 7.7.65.18. Note that the
-> section was revised from BT spec ver 5.0 vol 2 part E sec 7.7.65.18
-> which was ambiguous about (*).
+> >  None of the Galileo system controllers I came across had the class code 
+> > set incorrectly.
 > 
-> Some chips (e.g. RTL8822CE) send this event when the host stops the
-> advertisement with status = HCI_ERROR_CANCELLED_BY_HOST (due to (*)
-> above). This is treated as an error and the advertisement will be
-> removed and userspace will be informed via MGMT event.
+> In kernel there is quirk only for one device with id:
+> PCI_VENDOR_ID_MARVELL (0x11ab) PCI_DEVICE_ID_MARVELL_GT64111 (0x4146)
 > 
-> On suspend, we are supposed to temporarily disable advertisements,
-> and continue advertising on resume. However, due to the behavior
-> above, the advertisements are removed instead.
+> So for some reasons quirk is needed... Anyway, patch for this quirk just
+> adds comment as there is no explanation for it. It does not modify quirk
+> code.
 > 
-> This patch returns early if HCI_ERROR_CANCELLED_BY_HOST is received.
+> So it is possible that Marvell (or rather Galileo at that time) included
+> some config space fixup in some products and 0x4146 did not have it.
+> Just guessing... We can really only guess what could happen at that time
+> 20 years ago...
 
-lets include a btmon snippet here to show the faulty behavior.
+ Ah, there you go! -- sadly I don't seem to have a copy of the datasheet 
+for the GT-64111, but the GT-64115 has it[1]:
 
+Table 158: PCI Class Code and Revision ID, Offset: 0x008
+ Bits  Field name Function                                     Initial Value
+ 7:0   RevID      Indicates the GT-64115 PCI Revision          0x01
+                  number.
+ 15:8  Reserved   Read only.                                   0x0
+ 23:16 SubClass   Indicates the GT-64115 Subclass - Mem-       0x80
+                  ory controller.
+ 31:24 BaseClass  Indicates the GT-64115 Base Class -          0x05
+                  memory controller.
+
+and then:
+
+"Device and Vendor ID (0x000), Class Code and Revision ID (0x008), and 
+Header Type (0x00e) fields are read only from the PCI bus.  These fields 
+can be modified and read via the CPU bus."
+
+Likewise with the GT-64120[2]:
+
+Table 208: PCI_0 Class Code and Revision ID, Offset: 0x008 from PCI_0 or CPU; 0x088 from
+           PCI_1
+ Bits  Field name Function                                      Initial Value
+ 7:0   RevID      Indicates the GT-64120 PCI_0 revision number. 0x02
+ 15:8  Reserved   Read Only 0.                                  0x0
+ 23:16 SubClass   Indicates the GT-64120 Subclass               Depends on value
+                  0x00 - Host Bridge Device.                    sampled at reset
+                  0x80 - Memory Device.                         on BankSel[0]. See
+                                                                Table 44 on page
+                                                                11-1.
+ 31:24 BaseClass  Indicates the GT-64120 Base Class             Depends on value
+                  0x06 - Bridge Device.                         sampled at reset
+                  0x05 - Memory Device.                         on BankSel[0]. See
+                                                                Table 44 on page
+                                                                11-1.
+
+Table 209: PCI_1 Class Code and Revision ID, Offset: 0x088 from PCI_0 or CPU; 0x008 from
+           PCI_1
+ Bits  Field name Function                                      Initial Value
+ 31:0  Various    Same as for PCI_0 Class Code and Revision ID.
+
+and then also:
+
+"Device and Vendor ID (0x000), Class Code and Revision ID (0x008), and 
+Header Type (0x00e) fields are read only from the PCI bus.  These fields 
+can be modified and read via the CPU bus."
+
+-- so this is system-specific and an intended chip feature rather than an 
+erratum (or rather it is a system erratum if the reset strap or the boot 
+firmware has got it wrong).
+
+ The memory device class code is IIUC meant to be typically chosen when 
+the Galileo/Marvell device is used without the CPU interface, i.e. as a 
+PCI memory controller device only[3].
+
+> > The lack of a quirk with a platform does not mean it cannot have a certain 
+> > PCI/e device.
 > 
-> Additionally, this patch also clear HCI_LE_ADV if there are no more
-> advertising instances after receiving other errors.
+> This is 11ab:4620 device an there is no PCIe capability in its config
+> space (you can inspect it via 'lspci -F dump.txt -nn -vv' but there is
+> nothing interesting).
 
-Does this really belong in this patch? I think it warrants a separate patch with an appropriate Fixes: tag. Especially in the case we are working around a firmware bug, this should be separate. It gives us a better chance to bisect anything if we ever have to.
+ Of course, just as Thomas told you about the GT-64111 too.  But you were 
+right in that the memory controller feature seems shared across all the 
+chip line, whether PCI or PCIe.
 
-> 
-> Signed-off-by: Archie Pusaka <apusaka@chromium.org>
-> Reviewed-by: Alain Michaud <alainm@chromium.org>
-> 
-> ---
-> 
-> include/net/bluetooth/hci.h |  1 +
-> net/bluetooth/hci_event.c   | 12 ++++++++++++
-> 2 files changed, 13 insertions(+)
-> 
-> diff --git a/include/net/bluetooth/hci.h b/include/net/bluetooth/hci.h
-> index 63065bc01b76..84db6b275231 100644
-> --- a/include/net/bluetooth/hci.h
-> +++ b/include/net/bluetooth/hci.h
-> @@ -566,6 +566,7 @@ enum {
-> #define HCI_ERROR_INVALID_LL_PARAMS	0x1e
-> #define HCI_ERROR_UNSPECIFIED		0x1f
-> #define HCI_ERROR_ADVERTISING_TIMEOUT	0x3c
-> +#define HCI_ERROR_CANCELLED_BY_HOST	0x44
-> 
-> /* Flow control modes */
-> #define HCI_FLOW_CTL_MODE_PACKET_BASED	0x00
-> diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-> index d4b75a6cfeee..150b50677790 100644
-> --- a/net/bluetooth/hci_event.c
-> +++ b/net/bluetooth/hci_event.c
-> @@ -5538,6 +5538,14 @@ static void hci_le_ext_adv_term_evt(struct hci_dev *hdev, struct sk_buff *skb)
-> 
-> 	adv = hci_find_adv_instance(hdev, ev->handle);
-> 
-> +	/* Some chips (e.g. RTL8822CE) emit HCI_ERROR_CANCELLED_BY_HOST. This
-> +	 * event is being fired as a result of a hci_cp_le_set_ext_adv_enable
-> +	 * disable request, which will have its own callback and cleanup via
-> +	 * the hci_cc_le_set_ext_adv_enable path.
-> +	 */
+References:
 
-I am not in favor of pointing fingers at bad hardware in the source code of core (that belongs in a commit message). Blaming hardware is really up to the drivers. So I would rather phrase it like this:
+[1] "GT-64115 System Controller for RC4640, RM523X, and VR4300 CPUs", 
+    Galileo Technology, Datasheet Revision 1.11, APR 04, 2000, Section 
+    18.16 "PCI Configuration", p. 161
 
-	/* The Bluetooth Core 5.3 specification clearly states that this event
-	 * shall not be sent when the Host disables the advertising set. So in
-	 * case of HCI_ERROR_CANCELLED_BY_HOST, just ignore the event.
-	 *
-	 * When the Host disables an advertising set, all cleanup is done via
-	 * its command callback and not needed to be duplicated here.
-	 */
+[2] "GT-64120 System Controller For RC4650/4700/5000 and RM526X/527X/7000 
+    CPUs", Galileo Technology, Datasheet Revision 1.4, SEP 14, 1999, 
+    Section 17.16 "PCI Configuration", p. 17-59
 
-> +	if (ev->status == HCI_ERROR_CANCELLED_BY_HOST)
-> +		return;
-> +
+[3] same, Chapter 14. "Using the GT-64120 Without the CPU Interface", p. 
+    14-1
 
-And since this is clearly an implementation issue, the manufactures can issue a firmware fix for this. So lets be verbose and complain about it.
-
-	if (ev->status == HCI_ERRROR..) {
-		bt_dev_warn_ratelimited(hdev, “Unexpected advertising set terminated event”);
-		return;
-	}
-
-> 	if (ev->status) {
-> 		if (!adv)
-> 			return;
-> @@ -5546,6 +5554,10 @@ static void hci_le_ext_adv_term_evt(struct hci_dev *hdev, struct sk_buff *skb)
-> 		hci_remove_adv_instance(hdev, ev->handle);
-> 		mgmt_advertising_removed(NULL, hdev, ev->handle);
-> 
-> +		/* If we are no longer advertising, clear HCI_LE_ADV */
-> +		if (list_empty(&hdev->adv_instances))
-> +			hci_dev_clear_flag(hdev, HCI_LE_ADV);
-> +
-
-See comment above why this might be better suited for a separate patch.
-
-Regards
-
-Marcel
-
+  Maciej
