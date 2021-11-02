@@ -2,94 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF2274425E8
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 04:06:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1B7C4425F1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 04:14:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231693AbhKBDJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 23:09:19 -0400
-Received: from mail-pl1-f177.google.com ([209.85.214.177]:41858 "EHLO
-        mail-pl1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbhKBDJP (ORCPT
+        id S231856AbhKBDRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 23:17:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229811AbhKBDRS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 23:09:15 -0400
-Received: by mail-pl1-f177.google.com with SMTP id k4so3967939plx.8;
-        Mon, 01 Nov 2021 20:06:41 -0700 (PDT)
+        Mon, 1 Nov 2021 23:17:18 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A0E9C061714
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 20:14:44 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id m14so18008717edd.0
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 20:14:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KHkSeemGPSvNiCh0s45k04F2zwQ0kuwkYVmbYsHMt8o=;
+        b=EgiznZQNFI7r6O00KTXk7Ec0KBjB5MD7j7Q7Vt8ty3OZq0TTmFpp0STErNyzw6TOMv
+         4FY+oJFrfNjh6hAiVr0WDZATY6EONr3+qDov4y/RR2USrRSzJWbQmy9hcdgE0NjhXtTt
+         CgDTNcSNzmODBrlinMP9n3Z9uFViS/4oL5qjo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=sRFLt+ScwC+b6JXHsh7TwBXtQ96PKTlE+P2DMsJLhhs=;
-        b=FcCe4/f+3Xg8dmHE0Kj0NAPeHu/r1im4y5i+/AC4/t459C8MmtJtRO2jxqzp7rj2Zk
-         eW/ydBUeoZWutoYBnBYBldo75gKO6j8Z3EOymANhWWMJNdMAZVPOj2NjPe9psX/neByk
-         S+yORPF/WVmRjHqUBj6E0B8hRI/znhbEKziq9xwMq4XNb7YSfgDwNf1AGomDG1tV4Z2f
-         eWKuQeJYkH3dw1tAyhqAKzUy7njWNUJW3JaBE75Uij8njgVCGF5qVC+I/YbmYL1fGg7v
-         aWaapEIbjsXbYr7y96Y97fmBn4/b+z/GxYBusnlXzYo7ACLIRwIrf6VRhSDVoQ48bBTM
-         SQpg==
-X-Gm-Message-State: AOAM533iURa9eeEG72DFzqXq8IgHNS/QBraUtzm0ywadzoEEjHLaISDH
-        TGFhuD2AMd381Wi3w/prWes=
-X-Google-Smtp-Source: ABdhPJwkWYOi+Mc8Z28I2BpP/jo7JaPVHapN3DGw0ezCNQ5DEAQ0Kf5GXkVA0qAyVFdOfGX6qxRhtg==
-X-Received: by 2002:a17:90b:1e0e:: with SMTP id pg14mr3354228pjb.143.1635822400637;
-        Mon, 01 Nov 2021 20:06:40 -0700 (PDT)
-Received: from ?IPV6:2601:647:4000:d7:70a9:502a:2a58:d9ba? ([2601:647:4000:d7:70a9:502a:2a58:d9ba])
-        by smtp.gmail.com with ESMTPSA id w5sm14147382pgp.79.2021.11.01.20.06.39
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KHkSeemGPSvNiCh0s45k04F2zwQ0kuwkYVmbYsHMt8o=;
+        b=tkm7YVrEYLrvILq8yr++QH3l3qXC3L1nYiAF9AHh3zu5X1y2Y8l/os35NfhO6CMejP
+         dMb4SWbjDNu+doqVJ38vnaJwhreJfH2FPxiqazRbsoDUtKmZBUN4RRfkG/aWuB0I7+j4
+         HE8MUwnkQwPJxhOq9ZvqakV04UhvSvOunvEg7ktVW0RoKP3ZakmkZveo2faPneXoUrcC
+         NrYir4KJBDjznY8Bzd7cHzTZikGBij4O0/mLynAFNXdamQxF3E5r6EldGCXbCp41UwO4
+         /uigA9AQ/A3Oc8OCZMcsesDkPO/i+tmjTFaKIMoOYA5MTdDuXWZMvsmrBHHYc123njpu
+         WpOg==
+X-Gm-Message-State: AOAM531ayV1JqtXK0SxfBstcl+8dEpoHTyFi6MAWDKixf4eyVA9nHKMZ
+        P3y4t7PRj5GuK4seMPdofkMqE9cD7rdpKRlfBMo=
+X-Google-Smtp-Source: ABdhPJz8VGqalF5HQPNThahWo6/MdqkHzADEaaH9xXAgFAupQuZPesHOctnfyPYwS7ZcTbJ43ZAP4A==
+X-Received: by 2002:a17:907:6eaa:: with SMTP id sh42mr33455574ejc.556.1635822882527;
+        Mon, 01 Nov 2021 20:14:42 -0700 (PDT)
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com. [209.85.208.44])
+        by smtp.gmail.com with ESMTPSA id w18sm10341661edc.4.2021.11.01.20.14.42
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Nov 2021 20:06:39 -0700 (PDT)
-Message-ID: <17a1b72e-2c2a-8492-cb92-4dec36a6531d@acm.org>
-Date:   Mon, 1 Nov 2021 20:06:38 -0700
+        Mon, 01 Nov 2021 20:14:42 -0700 (PDT)
+Received: by mail-ed1-f44.google.com with SMTP id z20so71293427edc.13
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 20:14:42 -0700 (PDT)
+X-Received: by 2002:a19:ad0c:: with SMTP id t12mr31485660lfc.173.1635822526470;
+ Mon, 01 Nov 2021 20:08:46 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH] scsi: core: initialize cmd->cmnd before it is used
-Content-Language: en-US
-To:     dgilbert@interlog.com, Tadeusz Struk <tadeusz.struk@linaro.org>,
-        linux-scsi@vger.kernel.org
-Cc:     Christoph Hellwig <hch@lst.de>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        syzbot+5516b30f5401d4dcbcae@syzkaller.appspotmail.com
-References: <20211101192417.324799-1-tadeusz.struk@linaro.org>
- <4cfa4049-aae5-51db-4ad2-b4c9db996525@acm.org>
- <0024e0e1-589c-e2cd-2468-f4af8ec1cb95@linaro.org>
- <da8d3418-b95c-203d-16c3-8c4086ceaf73@acm.org>
- <8fbb619a-37b3-4890-37e0-b586bdee49d6@interlog.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <8fbb619a-37b3-4890-37e0-b586bdee49d6@interlog.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20211101175544.00fc0d57@gandalf.local.home>
+In-Reply-To: <20211101175544.00fc0d57@gandalf.local.home>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 1 Nov 2021 20:08:30 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgY1B0Ae+gVNP0e2bZPSBgaDJPwSVXFOx5r-dGgurJuvQ@mail.gmail.com>
+Message-ID: <CAHk-=wgY1B0Ae+gVNP0e2bZPSBgaDJPwSVXFOx5r-dGgurJuvQ@mail.gmail.com>
+Subject: Re: [GIT PULL] tracing: Updates for 5.16
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Carles Pey <carles.pey@gmail.com>,
+        Changbin Du <changbin.du@intel.com>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Punit Agrawal <punitagrawal@gmail.com>,
+        "Robin H. Johnson" <robbat2@gentoo.org>,
+        Song Liu <songliubraving@fb.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Viktor Rosendahl <Viktor.Rosendahl@bmw.de>,
+        Wang ShaoBo <bobo.shaobowang@huawei.com>,
+        Weizhao Ouyang <o451686892@gmail.com>,
+        chongjiapeng <jiapeng.chong@linux.alibaba.com>,
+        kernel test robot <lkp@intel.com>,
+        =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/1/21 18:56, Douglas Gilbert wrote:
-> On 2021-11-01 4:20 p.m., Bart Van Assche wrote:
->> One of the functions in the call stack in the first message of this email
->> thread is sg_io(). I am not aware of any documentation that specifies 
->> whether
->> it is valid to set cmd_len in the sg_io header to zero. My opinion is 
->> that
->> the SG_IO implementation should either reject cmd_len == 0 or set cmd_len
->> to a valid value if it is zero.
-> 
-> For the sg driver in production, the v3 interface users (including
-> ioctl(<sg_fd>, SG_IO,) ) have this check:
-> 
->         if ((!hp->cmdp) || (hp->cmd_len < 6) || (hp->cmd_len > sizeof 
-> (cmnd))) {
->                  sg_remove_request(sfp, srp);
->                  return -EMSGSIZE;
->          }
+On Mon, Nov 1, 2021 at 2:55 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> Also, this pull request will conflict with your tree against a fix I had
+> for trace recursions. I did the conflict resolution and pushed it to my
+> ftrace/conflicts branch if you want to reference it.
 
-Hi Doug,
+In the meantime, my tree had grown a few more conflicts elsewhere, but
+it all looked fairly straightforward.
 
-Thanks for having taken a look. I found the above check in 
-sg_new_write(). To me that function seems to come from a code path that 
-is unrelated to sg_io(), the function shown in the call stack in the 
-email at the start of this thread. Maybe I overlooked something but I 
-haven't found a minimum size check for hdr->cmd_len in sg_io() before 
-the blk_execute_rq() call. Should such a check perhaps be added?
+It might be a good idea if you were to double-check that everything
+looks good, though.
 
-Thanks,
-
-Bart.
+                    Linus
