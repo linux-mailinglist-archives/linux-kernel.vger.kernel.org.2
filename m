@@ -2,190 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BF644434B1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 18:41:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 633124434B3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 18:41:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234317AbhKBRn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 13:43:59 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:15238 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231702AbhKBRn5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 13:43:57 -0400
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1A2Gx85j015155;
-        Tue, 2 Nov 2021 17:41:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type :
- content-transfer-encoding : in-reply-to : mime-version; s=corp-2021-07-09;
- bh=m28oPls5galvMYmkW4VPhjRSw3lrwUldAhC7JwkSIIE=;
- b=asSPtG44yTorN7ZCOT+RArKvT8gbhyFCuwrPPw8xfQfdB0jAt7zWVmWdRFAYxZWc3Mkm
- yp/ZVKOTJp8zM3SEnQkegK/FSQAWUi0pU6gx+FBIczTMiZtwiErD8uWgdLEB/xBkzBPW
- hN7L4tTNYC8sYrkjKQCbWaDXMvwaHek72yZMhIDOBNK+qYWvade4u9QQVl8HlalE3n3C
- LDm2UPX/YzB6PnuFvtn5c91UJ59XvkFQmx4oxnbBePMRJHJIP5XlC/qO7JWAaxbwV39s
- gQ9B9CQdRtrqQJl2Yubh6t/1+J21YSjM3OKUQkBTr63EnJYqx1FG8mxOLsDipDuoZRLx /A== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3c290h0phc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 02 Nov 2021 17:41:01 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1A2HVtQc090155;
-        Tue, 2 Nov 2021 17:40:59 GMT
-Received: from nam04-bn8-obe.outbound.protection.outlook.com (mail-bn8nam08lp2043.outbound.protection.outlook.com [104.47.74.43])
-        by aserp3020.oracle.com with ESMTP id 3c0wv4pqh5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 02 Nov 2021 17:40:59 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kJedgqk3P1JeUtgGhc5/9reHIzOUD850vtj/BarxMsAk8ikvhtNPF/Nvag0DItOiKXd0rs73yVRVVxpzGw9u5uQ4gVkKeuoCk6szp4SP/wEHl6vFR2YGhrgnzDVV+NpRFvJm+baQW2wL0afBOVu1CxD9QwXW6sr1SIoy6XgAab4BCDNPftZMgowpsQB9nq3sllYQXuTWv5bq3oKQ2wrVOfEYDckbt4JELnRSSjM8hhWCHlKDVb6jRtUi23fvTp1KtjqTrHwJ+TDSAUjofxHZ3cN5TCU/sYUHktam3QtI2q90yL3nzgR1jtgZg9LEZ8d/eRGEz/a3OH3HFkzbT1vq+w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Q45auxJqCymJM2sVQznjdc0GoMtYm1O6Ua/wQGuW+6Q=;
- b=K/OO1iYX4OJz5Vzbv40otqmWTS58tmgeaQCJmAq4ac5QVWahPMBVGXhP9m2bV45afiiNZuZY6mE1Z6JG5cXnRPL5orKFaM5QVh5l8KTjWTLM+8YpaS9Woy8fAN8rSMaSesf/DRhv2BJ1zVpBJ+oTnS1H5p+D9JVo8Q7b2pB9GjG+B3b7jxUlJa6w3pvgmSAj/TFXaB/9VNkEL3aS2RZDlRfcTY84iTiNYbIW6T1dQEGhgdeTyevSsQT9mpAGLf3MpqPkpusU2K6TpGZtGI6rdrMVS12jLZ0rSR6TP6q5/AvkUTOF1M9tWmzMaKicP+rDGkdDa6mhlW54uJU1bc1C2Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Q45auxJqCymJM2sVQznjdc0GoMtYm1O6Ua/wQGuW+6Q=;
- b=tvGa9X32kCtitT6POMdG99moGooKRBPEO34LrEZSakwNnylsjP1pPimKVnbL+mzCkQFZ0ZdXtqakKxhBP9N2PL+vhApL0rBlaHd+G+pNi7XDNpVavB4t2ZjUto0qmQvhkPQlPQAPLlpcd1SFlXF7ZJ/QHc2DGtRZjgYWiL2DA7s=
-Authentication-Results: baylibre.com; dkim=none (message not signed)
- header.d=none;baylibre.com; dmarc=none action=none header.from=oracle.com;
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28) by CO6PR10MB5412.namprd10.prod.outlook.com
- (2603:10b6:303:13c::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.15; Tue, 2 Nov
- 2021 17:40:57 +0000
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::d409:11b5:5eb2:6be9]) by MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::d409:11b5:5eb2:6be9%5]) with mapi id 15.20.4649.020; Tue, 2 Nov 2021
- 17:40:56 +0000
-Date:   Tue, 2 Nov 2021 20:40:28 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     LABBE Corentin <clabbe@baylibre.com>
-Cc:     mchehab@kernel.org, hverkuil@xs4all.nl, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, mjpeg-users@lists.sourceforge.net
-Subject: Re: [PATCH v2 04/10] staging: media: zoran: add debugfs
-Message-ID: <20211102174027.GK2794@kadam>
-References: <20211013185812.590931-1-clabbe@baylibre.com>
- <20211013185812.590931-5-clabbe@baylibre.com>
- <20211014073752.GM8429@kadam>
- <YWyB8kwsqAvHMuhb@Red>
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YWyB8kwsqAvHMuhb@Red>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: JN2P275CA0031.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:2::19)
- To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
-MIME-Version: 1.0
-Received: from kadam (62.8.83.22) by JN2P275CA0031.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:2::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.17 via Frontend Transport; Tue, 2 Nov 2021 17:40:49 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ad627bf6-289b-4751-59c9-08d99e27ece9
-X-MS-TrafficTypeDiagnostic: CO6PR10MB5412:
-X-Microsoft-Antispam-PRVS: <CO6PR10MB54126373814855CEC9363E588E8B9@CO6PR10MB5412.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8qB+x2FsV24GZfiuTGX+T8sZ9y6De6PKtx/C0vKaB+JHi2sRBAV2dFqaMcCE9s17tVXbxf2Knxxqg3Mc+o+pt+NwQwriw4zDHbmuWfME+8Lxc6FZdK60i/QKgtJ7EQYYs9zV4Xtuy3J6ez3BMLFZYAcjGRj3MiQxxgwJQ6+KY9m1rNuFDA7PNI9LX08/8XsVCQINCRmlX72vjJeylZcU2vShVIThUJpmCZfr0SLR16dQsgJClDUqGbhtN3uEf71SssxQ9guSGXhFWFfToHguCxjr3UDtI/RpaNkWxg4F+Yv3L0RWotzJCDUM9MoJ9oQYaH9/t5l0x+HojIES9e3KRoP9/G4ipy8V+YFWi51wZ8OGPG5oyRPPRHT/EJdeVERQ9fIYlVhp3za5T8ZwCFM9u3evw+cwxdGtWqLjfd+knPItpRX6AySvXyOIRcNYXORP8MmfO7xbZuPgCqYqQgOkVc8k2GkSp9q05byb+4PN1wbmiWeYleghyPjAGk28H8JKCJxsw2W7f+168cOcjO5MzHXZm5UkQnrlrPKVT0A97++9VwXVUI0bL8mnRFLX5OnvTlr0w9RmhZ7oROCr/tDdbyvgjuTq9rBiCr2uZLQHo3Bl7SeVMUHlQsILJZnYknU2s1txIVzGe8VMLJv/0qLWQ0eRApVCZAzZj+MLBUM80tHjGi7y37JcKKmAe4I8hOb+Ah9CCgPES7FxnZz6Z4QZug==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(4326008)(9576002)(86362001)(33716001)(8676002)(2906002)(38100700002)(8936002)(66476007)(5660300002)(66946007)(33656002)(66556008)(508600001)(9686003)(38350700002)(186003)(44832011)(6666004)(55016002)(956004)(66574015)(1076003)(26005)(6916009)(83380400001)(52116002)(316002)(6496006);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?lq8+Mcka58hxmcSKGbJFrYD8Aa1hRGtEQJwh1bKyX/u7sncE72S+2rZK6H?=
- =?iso-8859-1?Q?/mAOlFevgsXxs4j1AZEeVewetlStZPVApVUx7fHKygIG7AsWxzo6nSpVhO?=
- =?iso-8859-1?Q?xC3euvlJN9+P00Guy4Fi6h4JpkhaawdRcAzG2U+tnAb4ygAsGpfya9ArfN?=
- =?iso-8859-1?Q?M4EkpQDCSQuH/gLP9wGBD+NjTSs9g6psijH6nN15Mm3dk48ksz6hK6jJRK?=
- =?iso-8859-1?Q?6ueIz0SR0qxVuDmblNTPuT0H+8TGXa98R9qvVeRb787nbh48C2PhAEW4cC?=
- =?iso-8859-1?Q?9BG45nPs7rTHea7DeDr8CkiDBcmgQtxqfFwmyFy2I1HfKwUADHNRgl+KIx?=
- =?iso-8859-1?Q?qMxFWCCbAwlRPIx19psrn7SqdQu35QiS1nlHY+ns9RVVuXOP4R97Z7hrFn?=
- =?iso-8859-1?Q?agao9Z3Z+XIb+sauDAtP7V9vHQFGmJii3hBZLA5aWgQGRh6Q9HPHB+UBpk?=
- =?iso-8859-1?Q?gOgs5ycRMgsCkYS9UPPGpOU/Aw6EGHeWRzLr+YRgMJ44O0uiOLhYaQKJIs?=
- =?iso-8859-1?Q?+b5Ev+OfWXzhILSMctaFMocmHlNW5k4SY563/svnrj2J+e+Vj5lb3vnR0b?=
- =?iso-8859-1?Q?NvcF7j8vE3U6P4MeGzIae0RW8avMXS0I1AYClwtju3ekzhlVKjg8yApuin?=
- =?iso-8859-1?Q?iVkUDTVQ74NT6TJXvGCfkvs+QtYmPla/SRcQTSqHxuMby/pwFncNvhtkVo?=
- =?iso-8859-1?Q?5Zvt3ump3UZJQkyu+ojLN27caHMVVqM3Git5O5RrXBHv/hdg+WE3ezyJ+N?=
- =?iso-8859-1?Q?TOAneCS/a0rX3thgRKQ5HtMHblPjMR0akq4Isivm6m9DYsY/umkzj4MuZO?=
- =?iso-8859-1?Q?gBkjvcoxtlsJAFOWD6RajjdxIgCW8dpWT1r9FqABeG0QzDwfJuE39a+F9A?=
- =?iso-8859-1?Q?bJChEa2KsLUY7Ja0EZ64bQOd3JgV9mEgVNe5o/iZhZf4bXwhJSrDTPZrir?=
- =?iso-8859-1?Q?oiRYffqS4qtaGjPTGinJprZswKvUpSqMDZxHgwtWdkXbXtXQUIjFFqHZ7j?=
- =?iso-8859-1?Q?e4qlot65VkoWl6Cd0Ae6246BSJl1gVfc8hXArRy9ZeMrJejuKdH/Xt/aeq?=
- =?iso-8859-1?Q?GwoHTevB6JmvpYTf75VV82c6OCE6sAA0BvKJwKrZd/TLiiL0LA/c+iMXQX?=
- =?iso-8859-1?Q?E41kPlbJS4gN8FsVvr/U7mra3jThE0po0bjjgkmHWmzFVCRDA3Tr1pbMeb?=
- =?iso-8859-1?Q?Rr72LbbpCjzdtqtpm8FZl1N4j0G703XidS5ZKjocVsqOwg+YFLoDOTulb1?=
- =?iso-8859-1?Q?OuXbh6vMv7hY8diSZHHHiIOLV0yV2lmv2b9EunAUF5wdEHiKsITJjQyR2B?=
- =?iso-8859-1?Q?bIdzbbwYgrAleTBMxY8P76lMd+ynV4ETk0WDi2VLwWITSgcJ4sgrqU1jA3?=
- =?iso-8859-1?Q?QNl+YNoZNvXlKLZbJ90XaellmIrssAkmnU0HbfNl9Ar8MKoh1KaIUie0xJ?=
- =?iso-8859-1?Q?W1mBPGfrcwiEVgoh5Arxs5p0F94PJXHYuBJcF/WsEPRkTTT6Bp9oArS3dh?=
- =?iso-8859-1?Q?YuHDIFwWdV/RefhZztx7WKHqUuHZxmODxGeAa4qTgeoIkf9mJYt/DE7O0p?=
- =?iso-8859-1?Q?hvv/R1KfooRNO3Pt105AB0UbFpZx/6SiZ5mmj8DvzgioclkdSB+C8JdAp1?=
- =?iso-8859-1?Q?lcXQXSr64gQVRx1ONwzaRDeMifkyA9CW6mCSFzmzeaVUINapGTCT10rQqt?=
- =?iso-8859-1?Q?AH4koVHaUFRb2v/LW2zPaFk8Lq/sCOW7c1kDOfQE8/J7KqEeYALRlirjhk?=
- =?iso-8859-1?Q?grUw=3D=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ad627bf6-289b-4751-59c9-08d99e27ece9
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2021 17:40:56.8932
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: w97YDfstUubHlQLmiIsfnMvTI/+6siirS3G2hCUmD2fV+/vcaH+DCjeiHIeP+uZnhxBzFxZy9rGHn1sqhtHbqjtxGr4Lb1TmjPFCWQS0D3I=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR10MB5412
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10156 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 malwarescore=0
- mlxscore=0 suspectscore=0 mlxlogscore=632 adultscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2111020099
-X-Proofpoint-GUID: rxut2FgLRUpquLV3c-Xr0kSOcAXH2_Nc
-X-Proofpoint-ORIG-GUID: rxut2FgLRUpquLV3c-Xr0kSOcAXH2_Nc
+        id S234489AbhKBRo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 13:44:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41948 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231702AbhKBRo1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 13:44:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 62FA66008E;
+        Tue,  2 Nov 2021 17:41:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635874912;
+        bh=3XSpQaUwPEKb13yeaG//g+9vOMJnbnGdxpaOEjWYUx8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Fbed59+RDIbJ4gdX6IAGZQRWG0RY2Q6PkeADnxdHTyKXYMIOXFaIKMcHPBtiVJap2
+         jlxy/uUI2LRtYW0mffIbeBgHosZGSb2ZDnxeMFymiiT1VejD/CnYiHX1SWzEAK9kXX
+         h8RqtP8OBgoDslyaBQBu6Ut8wgJ3xhsk5Csuk9AQs0OYaYMuzWz1bMHA444/drK2Zt
+         GCtVXL181pfSx708Ebic1iQaTWJVo3EflSrZfgKlffH2Hu9P6TUzL0LpCGyeG/BR/W
+         +uDQUkFyx4pNGz00dAAEgJLmSNCJLeRJ3kj9mxViZwwoOGCyD2ZC5XMxrCS3XZ4Vnw
+         zLW3v9Xmaobaw==
+Date:   Wed, 3 Nov 2021 02:41:45 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Carles Pey <carles.pey@gmail.com>,
+        Changbin Du <changbin.du@intel.com>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Punit Agrawal <punitagrawal@gmail.com>,
+        "Robin H. Johnson" <robbat2@gentoo.org>,
+        Song Liu <songliubraving@fb.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Viktor Rosendahl <Viktor.Rosendahl@bmw.de>,
+        Wang ShaoBo <bobo.shaobowang@huawei.com>,
+        Weizhao Ouyang <o451686892@gmail.com>,
+        chongjiapeng <jiapeng.chong@linux.alibaba.com>,
+        kernel test robot <lkp@intel.com>,
+        =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: Re: [GIT PULL] tracing: Updates for 5.16
+Message-Id: <20211103024145.8e3fafade181fc989f3baca6@kernel.org>
+In-Reply-To: <20211102091722.5375b885@gandalf.local.home>
+References: <20211101175544.00fc0d57@gandalf.local.home>
+        <CAHk-=wgY1B0Ae+gVNP0e2bZPSBgaDJPwSVXFOx5r-dGgurJuvQ@mail.gmail.com>
+        <20211102091722.5375b885@gandalf.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 17, 2021 at 10:05:06PM +0200, LABBE Corentin wrote:
-> Le Thu, Oct 14, 2021 at 10:37:52AM +0300, Dan Carpenter a écrit :
-> > On Wed, Oct 13, 2021 at 06:58:06PM +0000, Corentin Labbe wrote:
-> > > +config VIDEO_ZORAN_DEBUG
-> > > +	bool "Enable zoran debugfs"
-> > > +	depends on VIDEO_ZORAN
-> > > +	depends on DEBUG_FS
-> > > +	help
-> > > +	  Say y to enable zoran debug file.
-> > > +	  This will create /sys/kernel/debug/CARD_NAME/debug for displaying
-> > > +	  stats and debug information.
-> > 
-> > Why bother with a CONFIG?  Just make it always on?
-> > 
+On Tue, 2 Nov 2021 09:17:22 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
+
+> On Mon, 1 Nov 2021 20:08:30 -0700
+> Linus Torvalds <torvalds@linux-foundation.org> wrote:
 > 
-> Hello
+> > On Mon, Nov 1, 2021 at 2:55 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+> > >
+> > > Also, this pull request will conflict with your tree against a fix I had
+> > > for trace recursions. I did the conflict resolution and pushed it to my
+> > > ftrace/conflicts branch if you want to reference it.  
+> > 
+> > In the meantime, my tree had grown a few more conflicts elsewhere, but
+> > it all looked fairly straightforward.
+> > 
+> > It might be a good idea if you were to double-check that everything
+> > looks good, though.
+> >
 > 
-> I love to provides choice to user (and so avoid a dep on DEBUG_FS), even if I think I am the only one remaining user.
+> I performed the merge and conflict resolution to the same commit you used,
+> and came up with pretty much the same (sans whitespace differences).
+> 
+> The only thing I would like to bring attention to is the wording for the
+> comment to kprobe_flush_task() that both Thomas and Masami updated, and I
+> want to make sure they are both happy with the final result:
+> 
+> Thomas, Masami ?
+> 
+> /*
+>  * This function is called from delayed_put_task_struct() when a task is
+>  * dead and cleaned up to recycle any kretprobe instances associated with
+>  * this task. These left over instances represent probed functions that
+>  * have been called but will never return.
+>  */
+> void kprobe_flush_task(struct task_struct *tk)
+> 
+> You OK with the above wording?
 
-Sorry, for the delay, I was on vacation.
+Yes, this looks good to me :-)
+Thank you for merging nicely!
 
-No, there is no depends on DEBUG_FS in the method that I am describing.
-
-How that works is when DEBUG_FS is turned on then it's on for everything,
-but when it's disabled it's disabled for everything.  You do not need
-the "depends on DEBUG_FS" and if you make this an option the it feels
-like it should be a selects DEBUG_FS instead.
-
-How this normally works is that when you have debugfs disabled, there
-are dummy files in the debugfs .h files.  I bet the compiler can tell
-most of those are empty and removes them.  So if you have DEBUG_FS then
-it doesn't use that much more memory than when VIDEO_ZORAN_DEBUG is
-disabled.
-
-I don't know if I'm being clear at all #jetlag.
-
-It should be easy to check.  Just remove the "depends on DEBUG_FS" and
-enable VIDEO_ZORAN_DEBUG.  Disable DEBUG_FS.  It should still build fine
-because of the dummy functions.  That's build 1.  Then disable
-VIDEO_ZORAN_DEBUG and that's build 2.  See how much memory difference
-there is between 1 and 2.
-
-regards,
-dan carpenter
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
