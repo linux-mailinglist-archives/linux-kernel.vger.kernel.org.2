@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B15C44346B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 18:13:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E65D44346C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 18:13:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234164AbhKBRPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 13:15:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56452 "EHLO mail.kernel.org"
+        id S234242AbhKBRPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 13:15:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56586 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230382AbhKBRPw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 13:15:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ACFD561051;
-        Tue,  2 Nov 2021 17:13:16 +0000 (UTC)
+        id S234158AbhKBRPx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 13:15:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F84561050;
+        Tue,  2 Nov 2021 17:13:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635873197;
-        bh=G1om8c0vcFzwgqgDeCK6eQYDL8ECQ2Fb4KIp+WlFoDM=;
+        s=k20201202; t=1635873198;
+        bh=QC4eoJ/UG6mp2LiLFOrPYp4zA5ytGJ6WUW2xwUjtOD0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B1lOwW8/97VvuJii5R7+ucTEe7y0m0FA2LMnjF/3qzpbtU2cXiSfu0UDdvLzV4Lly
-         z9xUXM+uU7XcJb6qKlG97ZM2Wf7axTSMYhm4O4LftgMELqiNu5sYOlfVhOdhupxfXp
-         XmwzrozrQ/8/ULq8ir3TaggKp8c4UGqDcvgHHgVsch/HvknhH4I2lbogJynq4XUWEd
-         Vmz5NW6ZT2Jow5ZQ9F+rP6qEzNQv1k5DCMpFgEA+jJdwIgBiFleNEeMxvDXZEPCcER
-         qH4IOn6asXr+3HAh3v6PS8wzbXurECYsCNp5QAQ5Pp1gQwGXZex9g9MUC+xQX23QqC
-         3HM+aiiUpvyyQ==
+        b=ZMuMmAMJAeyQrtEKoziuIV/TSTSlU7ZYp6HMLIe2wulQIkOWfWrSWUWj8PaeNKAgm
+         TwQ4HToRcHn83IrcnlQeL3DB2SLvXfIoBliuiPX6P+WDW2BeQIA54KK2bBxgkQ3Wnq
+         tnh53bP9RPuJngq5fr21zYITGV0Nr9MXD9u0sXZYwmjdzMMyXwj/PiuKkC/qUrNjBr
+         oNgIESxEz6OG/ze0ZDIEVPv+UzzIqScDGJPlq0y4H0r3IAxVoSRqZmPIwAHPbu9vV8
+         Q2fCVuOjSs7jmoGTe1bdZrWFBql0Bipxkjjd7Hr+Y6GZSmvslQE6QQbQMf0gKytymg
+         j2/6mhNNkM7jA==
 Received: by pali.im (Postfix)
-        id 42803A41; Tue,  2 Nov 2021 18:13:14 +0100 (CET)
+        id 64F3A1E29; Tue,  2 Nov 2021 18:13:16 +0100 (CET)
 From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-To:     Russell King <linux@armlinux.org.uk>, Andrew Lunn <andrew@lunn.ch>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/2] ARM: Marvell: Update PCIe fixup
-Date:   Tue,  2 Nov 2021 18:12:58 +0100
-Message-Id: <20211102171259.9590-1-pali@kernel.org>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 2/2] MIPS: Cobalt: Explain GT64111 early PCI fixup
+Date:   Tue,  2 Nov 2021 18:12:59 +0100
+Message-Id: <20211102171259.9590-2-pali@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20211101150405.14618-1-pali@kernel.org>
+In-Reply-To: <20211102171259.9590-1-pali@kernel.org>
 References: <20211101150405.14618-1-pali@kernel.org>
+ <20211102171259.9590-1-pali@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -45,142 +43,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-- The code relies on rc_pci_fixup being called, which only happens
-  when CONFIG_PCI_QUIRKS is enabled, so add that to Kconfig. Omitting
-  this causes a booting failure with a non-obvious cause.
-- Update rc_pci_fixup to set the class properly, copying the
-  more modern style from other places
-- Correct the rc_pci_fixup comment
-
-This patch just re-applies commit 1dc831bf53fd ("ARM: Kirkwood: Update
-PCI-E fixup") for all other Marvell ARM platforms which have same buggy
-PCIe controller and do not use pci-mvebu.c controller driver yet.
-
-Long-term goal for these Marvell ARM platforms should be conversion to
-pci-mvebu.c controller driver and removal of these fixups in arch code.
+Properly document why changing PCI Class Code for GT64111 device to Host
+Bridge is required as important details were after 20 years forgotten.
 
 Signed-off-by: Pali Rohár <pali@kernel.org>
-Cc: Jason Gunthorpe <jgg@nvidia.com>
-Cc: stable@vger.kernel.org
 
 ---
 Changes in v2:
-* Move MIPS change into separate patch
-* Add information that this patch is for platforms which do not use pci-mvebu.c
+* Split from ARM changes
+* Removal of Kconfig changes
+* Explanation is completely rewritten as as this MIPS Cobalt device
+  predates ARM Orion devices and reason is slightly different.
 ---
- arch/arm/Kconfig              |  1 +
- arch/arm/mach-dove/pcie.c     | 11 ++++++++---
- arch/arm/mach-mv78xx0/pcie.c  | 11 ++++++++---
- arch/arm/mach-orion5x/Kconfig |  1 +
- arch/arm/mach-orion5x/pci.c   | 12 +++++++++---
- 5 files changed, 27 insertions(+), 9 deletions(-)
+ arch/mips/pci/fixup-cobalt.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index fc196421b2ce..9f157e973555 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -400,6 +400,7 @@ config ARCH_DOVE
- 	select GENERIC_IRQ_MULTI_HANDLER
- 	select GPIOLIB
- 	select HAVE_PCI
-+	select PCI_QUIRKS if PCI
- 	select MVEBU_MBUS
- 	select PINCTRL
- 	select PINCTRL_DOVE
-diff --git a/arch/arm/mach-dove/pcie.c b/arch/arm/mach-dove/pcie.c
-index ee91ac6b5ebf..ecf057a0f5ba 100644
---- a/arch/arm/mach-dove/pcie.c
-+++ b/arch/arm/mach-dove/pcie.c
-@@ -135,14 +135,19 @@ static struct pci_ops pcie_ops = {
- 	.write = pcie_wr_conf,
- };
+diff --git a/arch/mips/pci/fixup-cobalt.c b/arch/mips/pci/fixup-cobalt.c
+index 44be65c3e6bb..00206ff52988 100644
+--- a/arch/mips/pci/fixup-cobalt.c
++++ b/arch/mips/pci/fixup-cobalt.c
+@@ -36,6 +36,21 @@
+ #define VIA_COBALT_BRD_ID_REG  0x94
+ #define VIA_COBALT_BRD_REG_to_ID(reg)	((unsigned char)(reg) >> 4)
  
 +/*
-+ * The root complex has a hardwired class of PCI_CLASS_MEMORY_OTHER, when it
-+ * is operating as a root complex this needs to be switched to
-+ * PCI_CLASS_BRIDGE_HOST or Linux will errantly try to process the BAR's on
-+ * the device. Decoding setup is handled by the orion code.
++ * Default value of PCI Class Code on GT64111 is PCI_CLASS_MEMORY_OTHER (0x0580)
++ * instead of PCI_CLASS_BRIDGE_HOST (0x0600). Galileo explained this choice in
++ * document "GT-64111 System Controller for RC4640, RM523X and VR4300 CPUs",
++ * section "6.5.3 PCI Autoconfiguration at RESET":
++ *
++ *   Some PCs refuse to configure host bridges if they are found plugged into
++ *   a PCI slot (ask the BIOS vendors why...). The "Memory Controller" Class
++ *   Code does not cause a problem for these non-compliant BIOSes, so we used
++ *   this as the default in the GT-64111.
++ *
++ * So fix the incorrect default value of PCI Class Code. More details are on:
++ * https://lore.kernel.org/r/20211102154831.xtrlgrmrizl5eidl@pali/
++ * https://lore.kernel.org/r/20211102150201.GA11675@alpha.franken.de/
 + */
- static void rc_pci_fixup(struct pci_dev *dev)
+ static void qube_raq_galileo_early_fixup(struct pci_dev *dev)
  {
--	/*
--	 * Prevent enumeration of root complex.
--	 */
- 	if (dev->bus->parent == NULL && dev->devfn == 0) {
- 		int i;
- 
-+		dev->class &= 0xff;
-+		dev->class |= PCI_CLASS_BRIDGE_HOST << 8;
- 		for (i = 0; i < DEVICE_COUNT_RESOURCE; i++) {
- 			dev->resource[i].start = 0;
- 			dev->resource[i].end   = 0;
-diff --git a/arch/arm/mach-mv78xx0/pcie.c b/arch/arm/mach-mv78xx0/pcie.c
-index 636d84b40466..9362b5fc116f 100644
---- a/arch/arm/mach-mv78xx0/pcie.c
-+++ b/arch/arm/mach-mv78xx0/pcie.c
-@@ -177,14 +177,19 @@ static struct pci_ops pcie_ops = {
- 	.write = pcie_wr_conf,
- };
- 
-+/*
-+ * The root complex has a hardwired class of PCI_CLASS_MEMORY_OTHER, when it
-+ * is operating as a root complex this needs to be switched to
-+ * PCI_CLASS_BRIDGE_HOST or Linux will errantly try to process the BAR's on
-+ * the device. Decoding setup is handled by the orion code.
-+ */
- static void rc_pci_fixup(struct pci_dev *dev)
- {
--	/*
--	 * Prevent enumeration of root complex.
--	 */
- 	if (dev->bus->parent == NULL && dev->devfn == 0) {
- 		int i;
- 
-+		dev->class &= 0xff;
-+		dev->class |= PCI_CLASS_BRIDGE_HOST << 8;
- 		for (i = 0; i < DEVICE_COUNT_RESOURCE; i++) {
- 			dev->resource[i].start = 0;
- 			dev->resource[i].end   = 0;
-diff --git a/arch/arm/mach-orion5x/Kconfig b/arch/arm/mach-orion5x/Kconfig
-index e94a61901ffd..7189a5b1ec46 100644
---- a/arch/arm/mach-orion5x/Kconfig
-+++ b/arch/arm/mach-orion5x/Kconfig
-@@ -6,6 +6,7 @@ menuconfig ARCH_ORION5X
- 	select GPIOLIB
- 	select MVEBU_MBUS
- 	select FORCE_PCI
-+	select PCI_QUIRKS
- 	select PHYLIB if NETDEVICES
- 	select PLAT_ORION_LEGACY
- 	help
-diff --git a/arch/arm/mach-orion5x/pci.c b/arch/arm/mach-orion5x/pci.c
-index 76951bfbacf5..5145fe89702e 100644
---- a/arch/arm/mach-orion5x/pci.c
-+++ b/arch/arm/mach-orion5x/pci.c
-@@ -509,14 +509,20 @@ static int __init pci_setup(struct pci_sys_data *sys)
- /*****************************************************************************
-  * General PCIe + PCI
-  ****************************************************************************/
-+
-+/*
-+ * The root complex has a hardwired class of PCI_CLASS_MEMORY_OTHER, when it
-+ * is operating as a root complex this needs to be switched to
-+ * PCI_CLASS_BRIDGE_HOST or Linux will errantly try to process the BAR's on
-+ * the device. Decoding setup is handled by the orion code.
-+ */
- static void rc_pci_fixup(struct pci_dev *dev)
- {
--	/*
--	 * Prevent enumeration of root complex.
--	 */
- 	if (dev->bus->parent == NULL && dev->devfn == 0) {
- 		int i;
- 
-+		dev->class &= 0xff;
-+		dev->class |= PCI_CLASS_BRIDGE_HOST << 8;
- 		for (i = 0; i < DEVICE_COUNT_RESOURCE; i++) {
- 			dev->resource[i].start = 0;
- 			dev->resource[i].end   = 0;
+ 	if (dev->devfn == PCI_DEVFN(0, 0) &&
 -- 
 2.20.1
 
