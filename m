@@ -2,127 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CFB54436E9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 21:02:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 356D04436F7
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 21:08:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231222AbhKBUFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 16:05:22 -0400
-Received: from smtp-fw-80007.amazon.com ([99.78.197.218]:34207 "EHLO
-        smtp-fw-80007.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230155AbhKBUFV (ORCPT
+        id S230401AbhKBUK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 16:10:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36498 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229813AbhKBUKx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 16:05:21 -0400
+        Tue, 2 Nov 2021 16:10:53 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAC8BC061714;
+        Tue,  2 Nov 2021 13:08:17 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id j21so1475797edt.11;
+        Tue, 02 Nov 2021 13:08:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1635883367; x=1667419367;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=T8LBLtsFEwmy6zb7QwWHHt7X8rl/w6GkvA3NJPrl0OQ=;
-  b=WxmK9DEzqO7ianicR7+8Jp2J16IoCbezfbCyqKXrGEFKzdfV1+wnyv+Q
-   wNaHHJbcS/aVSUM7UCSfo4AgN5q38U1b1+L4JNZMLfws1f7mxEiHnQJx+
-   dgdAUEKZIa80aPRsto0yF8YbFsIy9XejlCSP8tOdgSdrGPcEZaCK7JJpb
-   E=;
-X-IronPort-AV: E=Sophos;i="5.87,203,1631577600"; 
-   d="scan'208";a="38681449"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-iad-1a-b27d4a00.us-east-1.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-80007.pdx80.corp.amazon.com with ESMTP; 02 Nov 2021 20:02:30 +0000
-Received: from EX13D16EUB003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-iad-1a-b27d4a00.us-east-1.amazon.com (Postfix) with ESMTPS id 73ABE81605;
-        Tue,  2 Nov 2021 20:02:27 +0000 (UTC)
-Received: from [192.168.4.199] (10.43.162.89) by EX13D16EUB003.ant.amazon.com
- (10.43.166.99) with Microsoft SMTP Server (TLS) id 15.0.1497.24; Tue, 2 Nov
- 2021 20:02:21 +0000
-Message-ID: <65d5d6b8-03bc-772c-8d06-63989302e45c@amazon.com>
-Date:   Tue, 2 Nov 2021 22:02:10 +0200
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ob+aAAsnJvY/so9O4S728AW2SLVYJnzjDGvzTWGx1F8=;
+        b=YfWubnYBo8tPkcp/NoWphnxsoI0SM7757XkLqDiWoOWFvtEUHtUA/3iGSZFtVSAXJK
+         U7wQyuSpXEi8YPYvVjbsNMyxpxsibH5bl7gP4un4Ma7OsdG9VyuFTgWsR2EMMx3/84Pt
+         f264w4Ams8/Aq3+Zlfztc31hgrQ0TlFcvkAjY6uYC+kzXniThvBS1YwlCVW6mmuP1IG9
+         EF+vw4WFOzA9PZ1xACySTdnm90aURqtvG9oSEzajKQKjk0r0qiyEX2qZ5W/zGJXPwJQQ
+         w+B4pmUYJCGkkNcbYDMOuU8TN3I7J42xjyGvJGJPOXw+9W//0WbIc4cNbupYZyda9+TI
+         XEyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ob+aAAsnJvY/so9O4S728AW2SLVYJnzjDGvzTWGx1F8=;
+        b=yY2H9xo3/gbP99DfsdqTlvq75KuLFw4pK+knQv7E4Kw6ndC3F6vCZ5J0Jkh3r6I20N
+         5knvnrg9KJ0m1wmlgPKLtgNy9UCPDCdFRa53ekkj7+6ANJ4aIhT03ACCvqT1qALdvYnV
+         +aObgGlur+tiKgjFyyC3QKPluWRr6nGPyeWcsEwMEyiJqY8CaJFPeyML/QG/Pg8sjVFh
+         k1kMkQF46yFmN5CqqCTuCw5QFXUFJhxi+sfTFASODmiCtG0OPy0iMzBP/7Q5NbWFEJlV
+         15TISWpHZP8MR4fvSsrt4F8ZWjIqd3wjssW6jhTmUpT5zFNjgtRFaeSPhNPMlGYtCbBM
+         zz8A==
+X-Gm-Message-State: AOAM530D/m/6XMU00qdzWIiLuykNvZ1TgG8UD9xj5K60L1u2/7SBB8O/
+        nqMHslPbjvGpuddtJIZFsAfr7GXtoFrul1NTkWA=
+X-Google-Smtp-Source: ABdhPJw5iTrK423ECEm/XcyMbYGdWGhn+ReKSJ1f4ncBZTxkWvudYTd3g2Ba8tgP+Bouv9tQnfgHqJdUB8NEHv4b0xE=
+X-Received: by 2002:a17:906:9f21:: with SMTP id fy33mr47921381ejc.567.1635883696196;
+ Tue, 02 Nov 2021 13:08:16 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.1
-Subject: Re: [PATCH v2] nitro_enclaves: Fix implicit type conversion
-Content-Language: en-US
-To:     Jiasheng Jiang <jiasheng@iscas.ac.cn>
-CC:     <linux-kernel@vger.kernel.org>, <lexnv@amazon.com>,
-        <alcioa@amazon.com>, Greg KH <gregkh@linuxfoundation.org>,
-        Kamal Mostafa <kamal@canonical.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "Vitaly Kuznetsov" <vkuznets@redhat.com>,
-        "ne-devel-upstream@amazon.com" <ne-devel-upstream@amazon.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
-References: <1635472126-1822073-1-git-send-email-jiasheng@iscas.ac.cn>
-From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
-In-Reply-To: <1635472126-1822073-1-git-send-email-jiasheng@iscas.ac.cn>
-X-Originating-IP: [10.43.162.89]
-X-ClientProxiedBy: EX13D35UWB004.ant.amazon.com (10.43.161.230) To
- EX13D16EUB003.ant.amazon.com (10.43.166.99)
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: base64
+References: <20211102161125.1144023-1-kernel@esmil.dk> <20211102161125.1144023-13-kernel@esmil.dk>
+ <CAHp75VdmnnrisuP00W0KYta0KgmC+fu3WMxm959dt5X1kpiKTw@mail.gmail.com>
+In-Reply-To: <CAHp75VdmnnrisuP00W0KYta0KgmC+fu3WMxm959dt5X1kpiKTw@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 2 Nov 2021 22:07:26 +0200
+Message-ID: <CAHp75VcuGdaq_TjjRS0S8R5y-nryLABZSp7ehrXz-fUS2W3vfA@mail.gmail.com>
+Subject: Re: [PATCH v3 12/16] pinctrl: starfive: Add pinctrl driver for
+ StarFive SoCs
+To:     Emil Renner Berthing <kernel@esmil.dk>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Sagar Kadam <sagar.kadam@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michael Zhu <michael.zhu@starfivetech.com>,
+        Fu Wei <tekkamanninja@gmail.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Huan Feng <huan.feng@starfivetech.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CgpPbiAyOS8xMC8yMDIxIDA0OjQ4LCBKaWFzaGVuZyBKaWFuZyB3cm90ZToKPiAKPiBUaGUgdmFy
-aWFibGUgJ2NwdScgYW5kICdjcHVfc2libGluZycgYXJlIGRlZmluZWQgYXMgdW5zaWduZWQgaW50
-Lgo+IEhvd2V2ZXIgaW4gdGhlIGZvcl9lYWNoX2NwdSwgdGhlaXIgdmFsdWVzIGFyZSBhc3NpZ25l
-ZCB0byAtMS4KPiBUaGF0IGRvZXNuJ3QgbWFrZSBzZW5zZSBhbmQgaW4gdGhlIGNwdW1hc2tfbmV4
-dCgpIHRoZXkgYXJlIGltcGxpY2l0bHkKPiB0eXBlIGNvbnZlcnNlZCB0byBpbnQuCj4gSXQgaXMg
-dW5pdmVyc2FsbHkgYWNjZXB0ZWQgdGhhdCB0aGUgaW1wbGljaXQgdHlwZSBjb252ZXJzaW9uIGlz
-Cj4gdGVycmlibGUuCj4gQWxzbywgaGF2aW5nIHRoZSBnb29kIHByb2dyYW1taW5nIGN1c3RvbSB3
-aWxsIHNldCBhbiBleGFtcGxlIGZvcgo+IG90aGVycy4KPiBUaHVzLCBpdCBtaWdodCBiZSBiZXR0
-ZXIgdG8gY2hhbmdlIHRoZSBkZWZpbml0aW9uIG9mICdjcHUnIGFuZAo+ICdjcHVfc2libGluZycg
-ZnJvbSB1bnNpZ25lZCBpbnQgdG8gaW50Lgo+IAo+IFNpZ25lZC1vZmYtYnk6IEppYXNoZW5nIEpp
-YW5nIDxqaWFzaGVuZ0Bpc2Nhcy5hYy5jbj4KPiAtLS0KPiAgIGRyaXZlcnMvdmlydC9uaXRyb19l
-bmNsYXZlcy9uZV9taXNjX2Rldi5jIHwgMTQgKysrKysrKy0tLS0tLS0KPiAgIDEgZmlsZSBjaGFu
-Z2VkLCA3IGluc2VydGlvbnMoKyksIDcgZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL2Ry
-aXZlcnMvdmlydC9uaXRyb19lbmNsYXZlcy9uZV9taXNjX2Rldi5jIGIvZHJpdmVycy92aXJ0L25p
-dHJvX2VuY2xhdmVzL25lX21pc2NfZGV2LmMKPiBpbmRleCBlMjFlMWU4Li4yZDgwODc5IDEwMDY0
-NAo+IC0tLSBhL2RyaXZlcnMvdmlydC9uaXRyb19lbmNsYXZlcy9uZV9taXNjX2Rldi5jCj4gKysr
-IGIvZHJpdmVycy92aXJ0L25pdHJvX2VuY2xhdmVzL25lX21pc2NfZGV2LmMKPiBAQCAtMTY4LDkg
-KzE2OCw5IEBAIHN0YXRpYyBib29sIG5lX2NoZWNrX2VuY2xhdmVzX2NyZWF0ZWQodm9pZCkKPiAg
-IHN0YXRpYyBpbnQgbmVfc2V0dXBfY3B1X3Bvb2woY29uc3QgY2hhciAqbmVfY3B1X2xpc3QpCj4g
-ICB7Cj4gICAgICAgICAgaW50IGNvcmVfaWQgPSAtMTsKPiAtICAgICAgIHVuc2lnbmVkIGludCBj
-cHUgPSAwOwo+ICsgICAgICAgaW50IGNwdSA9IDA7Cj4gICAgICAgICAgY3B1bWFza192YXJfdCBj
-cHVfcG9vbDsKPiAtICAgICAgIHVuc2lnbmVkIGludCBjcHVfc2libGluZyA9IDA7Cj4gKyAgICAg
-ICBpbnQgY3B1X3NpYmxpbmcgPSAwOwo+ICAgICAgICAgIHVuc2lnbmVkIGludCBpID0gMDsKPiAg
-ICAgICAgICBpbnQgbnVtYV9ub2RlID0gLTE7Cj4gICAgICAgICAgaW50IHJjID0gLUVJTlZBTDsK
-PiBAQCAtMzc0LDcgKzM3NCw3IEBAIHN0YXRpYyBpbnQgbmVfc2V0dXBfY3B1X3Bvb2woY29uc3Qg
-Y2hhciAqbmVfY3B1X2xpc3QpCj4gICAgKi8KPiAgIHN0YXRpYyB2b2lkIG5lX3RlYXJkb3duX2Nw
-dV9wb29sKHZvaWQpCj4gICB7Cj4gLSAgICAgICB1bnNpZ25lZCBpbnQgY3B1ID0gMDsKPiArICAg
-ICAgIGludCBjcHUgPSAwOwo+ICAgICAgICAgIHVuc2lnbmVkIGludCBpID0gMDsKPiAgICAgICAg
-ICBpbnQgcmMgPSAtRUlOVkFMOwo+IAo+IEBAIC01MTYsNyArNTE2LDcgQEAgc3RhdGljIGludCBu
-ZV9nZXRfdW51c2VkX2NvcmVfZnJvbV9jcHVfcG9vbCh2b2lkKQo+ICAgc3RhdGljIGludCBuZV9z
-ZXRfZW5jbGF2ZV90aHJlYWRzX3Blcl9jb3JlKHN0cnVjdCBuZV9lbmNsYXZlICpuZV9lbmNsYXZl
-LAo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgaW50IGNvcmVf
-aWQsIHUzMiB2Y3B1X2lkKQo+ICAgewo+IC0gICAgICAgdW5zaWduZWQgaW50IGNwdSA9IDA7Cj4g
-KyAgICAgICBpbnQgY3B1ID0gMDsKPiAKPiAgICAgICAgICBpZiAoY29yZV9pZCA8IDAgJiYgdmNw
-dV9pZCA9PSAwKSB7Cj4gICAgICAgICAgICAgICAgICBkZXZfZXJyX3JhdGVsaW1pdGVkKG5lX21p
-c2NfZGV2LnRoaXNfZGV2aWNlLAo+IEBAIC01NjIsNyArNTYyLDcgQEAgc3RhdGljIGludCBuZV9z
-ZXRfZW5jbGF2ZV90aHJlYWRzX3Blcl9jb3JlKHN0cnVjdCBuZV9lbmNsYXZlICpuZV9lbmNsYXZl
-LAo+ICAgc3RhdGljIGludCBuZV9nZXRfY3B1X2Zyb21fY3B1X3Bvb2woc3RydWN0IG5lX2VuY2xh
-dmUgKm5lX2VuY2xhdmUsIHUzMiAqdmNwdV9pZCkKPiAgIHsKPiAgICAgICAgICBpbnQgY29yZV9p
-ZCA9IC0xOwo+IC0gICAgICAgdW5zaWduZWQgaW50IGNwdSA9IDA7Cj4gKyAgICAgICBpbnQgY3B1
-ID0gMDsKPiAgICAgICAgICB1bnNpZ25lZCBpbnQgaSA9IDA7Cj4gICAgICAgICAgaW50IHJjID0g
-LUVJTlZBTDsKPiAKPiBAQCAtMTAxNyw3ICsxMDE3LDcgQEAgc3RhdGljIGludCBuZV9zdGFydF9l
-bmNsYXZlX2lvY3RsKHN0cnVjdCBuZV9lbmNsYXZlICpuZV9lbmNsYXZlLAo+ICAgICAgICAgIHN0
-cnVjdCBuZV9lbmNsYXZlX3N0YXJ0X2luZm8gKmVuY2xhdmVfc3RhcnRfaW5mbykKPiAgIHsKPiAg
-ICAgICAgICBzdHJ1Y3QgbmVfcGNpX2Rldl9jbWRfcmVwbHkgY21kX3JlcGx5ID0ge307Cj4gLSAg
-ICAgICB1bnNpZ25lZCBpbnQgY3B1ID0gMDsKPiArICAgICAgIGludCBjcHUgPSAwOwo+ICAgICAg
-ICAgIHN0cnVjdCBlbmNsYXZlX3N0YXJ0X3JlcSBlbmNsYXZlX3N0YXJ0X3JlcSA9IHt9Owo+ICAg
-ICAgICAgIHVuc2lnbmVkIGludCBpID0gMDsKPiAgICAgICAgICBzdHJ1Y3QgcGNpX2RldiAqcGRl
-diA9IG5lX2RldnMubmVfcGNpX2Rldi0+cGRldjsKPiBAQCAtMTM2MCw3ICsxMzYwLDcgQEAgc3Rh
-dGljIHZvaWQgbmVfZW5jbGF2ZV9yZW1vdmVfYWxsX21lbV9yZWdpb25fZW50cmllcyhzdHJ1Y3Qg
-bmVfZW5jbGF2ZSAqbmVfZW5jbGEKPiAgICAqLwo+ICAgc3RhdGljIHZvaWQgbmVfZW5jbGF2ZV9y
-ZW1vdmVfYWxsX3ZjcHVfaWRfZW50cmllcyhzdHJ1Y3QgbmVfZW5jbGF2ZSAqbmVfZW5jbGF2ZSkK
-PiAgIHsKPiAtICAgICAgIHVuc2lnbmVkIGludCBjcHUgPSAwOwo+ICsgICAgICAgaW50IGNwdSA9
-IDA7Cj4gICAgICAgICAgdW5zaWduZWQgaW50IGkgPSAwOwo+IAo+ICAgICAgICAgIG11dGV4X2xv
-Y2soJm5lX2NwdV9wb29sLm11dGV4KTsKPiAtLQo+IDIuNy40Cj4gCgpSZXZpZXdlZC1ieTogQW5k
-cmEgUGFyYXNjaGl2IDxhbmRyYXByc0BhbWF6b24uY29tPgoKQXMgYSBmb2xsb3ctdXAsIGluIGdl
-bmVyYWwsIHdoZW4gc2VuZGluZyBuZXcgdmVyc2lvbnMgb2YgdGhlIHBhdGNoKGVzKSAKcGxlYXNl
-IGFsc28gaW5jbHVkZSB0aGUgY2hhbmdlbG9nIGFmdGVyIHRoZSAiLS0tIiBsaW5lLiBGb3IgZXhh
-bXBsZToKCi0tLQpDaGFuZ2Vsb2cKCnYxIC0+IHYyCgoqIENoYW5nZSAxLgoqIENoYW5nZSAyLgou
-Li4uLi4uLi4uLgoKClRoYXQgaGVscHMgd2l0aCBwYXRjaChlcykgY2hhbmdlcyB0cmFja2luZy4K
-ClRoYW5rcywKQW5kcmEKCgoKQW1hem9uIERldmVsb3BtZW50IENlbnRlciAoUm9tYW5pYSkgUy5S
-LkwuIHJlZ2lzdGVyZWQgb2ZmaWNlOiAyN0EgU2YuIExhemFyIFN0cmVldCwgVUJDNSwgZmxvb3Ig
-MiwgSWFzaSwgSWFzaSBDb3VudHksIDcwMDA0NSwgUm9tYW5pYS4gUmVnaXN0ZXJlZCBpbiBSb21h
-bmlhLiBSZWdpc3RyYXRpb24gbnVtYmVyIEoyMi8yNjIxLzIwMDUuCg==
+On Tue, Nov 2, 2021 at 10:02 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+> On Tue, Nov 2, 2021 at 6:50 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
 
+...
+
+> > +static int starfive_pinconf_group_set(struct pinctrl_dev *pctldev,
+> > +                                     unsigned int gsel,
+> > +                                     unsigned long *configs,
+> > +                                     unsigned int num_configs)
+> > +{
+> > +       struct starfive_pinctrl *sfp = pinctrl_dev_get_drvdata(pctldev);
+> > +       const struct group_desc *group;
+> > +       u16 mask, value;
+> > +       int i;
+> > +
+> > +       group = pinctrl_generic_get_group(pctldev, gsel);
+> > +       if (!group)
+> > +               return -EINVAL;
+> > +
+> > +       mask = 0;
+> > +       value = 0;
+> > +       for (i = 0; i < num_configs; i++) {
+> > +               int param = pinconf_to_config_param(configs[i]);
+> > +               u32 arg = pinconf_to_config_argument(configs[i]);
+> > +
+> > +               switch (param) {
+> > +               case PIN_CONFIG_BIAS_DISABLE:
+> > +                       mask |= PAD_BIAS_MASK;
+> > +                       value = (value & ~PAD_BIAS_MASK) | PAD_BIAS_DISABLE;
+> > +                       break;
+> > +               case PIN_CONFIG_BIAS_PULL_DOWN:
+> > +                       if (arg == 0)
+> > +                               return -ENOTSUPP;
+> > +                       mask |= PAD_BIAS_MASK;
+> > +                       value = (value & ~PAD_BIAS_MASK) | PAD_BIAS_PULL_DOWN;
+> > +                       break;
+> > +               case PIN_CONFIG_BIAS_PULL_UP:
+> > +                       if (arg == 0)
+> > +                               return -ENOTSUPP;
+> > +                       mask |= PAD_BIAS_MASK;
+> > +                       value = value & ~PAD_BIAS_MASK;
+> > +                       break;
+> > +               case PIN_CONFIG_DRIVE_STRENGTH:
+> > +                       mask |= PAD_DRIVE_STRENGTH_MASK;
+> > +                       value = (value & ~PAD_DRIVE_STRENGTH_MASK) |
+> > +                               starfive_drive_strength_from_max_mA(arg);
+> > +                       break;
+> > +               case PIN_CONFIG_INPUT_ENABLE:
+> > +                       mask |= PAD_INPUT_ENABLE;
+> > +                       if (arg)
+> > +                               value |= PAD_INPUT_ENABLE;
+> > +                       else
+> > +                               value &= ~PAD_INPUT_ENABLE;
+> > +                       break;
+> > +               case PIN_CONFIG_INPUT_SCHMITT_ENABLE:
+> > +                       mask |= PAD_INPUT_SCHMITT_ENABLE;
+> > +                       if (arg)
+> > +                               value |= PAD_INPUT_SCHMITT_ENABLE;
+> > +                       else
+> > +                               value &= ~PAD_INPUT_SCHMITT_ENABLE;
+> > +                       break;
+> > +               case PIN_CONFIG_SLEW_RATE:
+> > +                       mask |= PAD_SLEW_RATE_MASK;
+> > +                       value = (value & ~PAD_SLEW_RATE_MASK) |
+> > +                               ((arg << PAD_SLEW_RATE_POS) & PAD_SLEW_RATE_MASK);
+> > +                       break;
+> > +               case PIN_CONFIG_STARFIVE_STRONG_PULL_UP:
+> > +                       if (arg) {
+> > +                               mask |= PAD_BIAS_MASK;
+> > +                               value = (value & ~PAD_BIAS_MASK) |
+> > +                                       PAD_BIAS_STRONG_PULL_UP;
+> > +                       } else {
+> > +                               mask |= PAD_BIAS_STRONG_PULL_UP;
+> > +                               value = value & ~PAD_BIAS_STRONG_PULL_UP;
+> > +                       }
+> > +                       break;
+> > +               default:
+> > +                       return -ENOTSUPP;
+> > +               }
+> > +       }
+> > +
+> > +       for (i = 0; i < group->num_pins; i++)
+> > +               starfive_padctl_rmw(sfp, group->pins[i], mask, value);
+> > +
+> > +       return 0;
+> > +}
+
+Linus any comments on this code (sorry if I missed your reply)? The
+idea behind above is to skip all settings from the same category and
+apply only the last one, e.g. if we have "bias set to X", ..., "bias
+disable", ..., "bias set to Y", the hardware will see only the last
+operation, i.e. "bias set to Y". I think it may not be the best
+approach (theoretically?) since the hardware definitely may behave
+differently on the other side in case of such series of the
+configurations (yes, I have seen some interesting implementations of
+the touchpad / touchscreen GPIOs that may be affected).
+
+-- 
+With Best Regards,
+Andy Shevchenko
