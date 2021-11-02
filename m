@@ -2,87 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8CEE442A16
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 10:06:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C71DA442A18
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 10:07:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229970AbhKBJIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 05:08:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229577AbhKBJIh (ORCPT
+        id S230326AbhKBJJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 05:09:41 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:15342 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229577AbhKBJJb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 05:08:37 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A69D4C061714
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 02:06:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=t5NNARZCESkBMHbSFDkU2uCQli76k4Fpys6MwbkQNlo=; b=mSQ2ZFseLavWzq0jedg7nLp2UV
-        zjZuZR/r/S4Xu2qHwUi51oGatHYNHlYSK98Z7QrgzNukrlAVxxFHoe8Ig92/rKA4/hd1W3vxgwp7d
-        fAlBDfArWqZhgUZOA2A2nadUpkFy0YdJ1n57vrUZGZO6l1VL6hUjZQuqqRXawOEZfdU0VUUs3fdot
-        7shBeHxjO0xURBIbiumt6BPkrfr1pOg3iFhQX6c8PpnThDuz/1mhmVZOoqFoln5NpsssIQ7exLZ/j
-        zFUVI3zHvNXaCRnze6bupk38Mk4StB7tVotrqqRQlYQQSBHei21Q853ZweFbyPkMkbECmihpv9iqL
-        8NzWmdvA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mhpjt-00DjBb-1H; Tue, 02 Nov 2021 09:05:53 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9FF1E30022C;
-        Tue,  2 Nov 2021 10:05:50 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 88106202732EF; Tue,  2 Nov 2021 10:05:50 +0100 (CET)
-Date:   Tue, 2 Nov 2021 10:05:50 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Alexander Popov <alex.popov@linux.com>
-Subject: Stackleak vs noinstr (Was: [GIT pull] objtool/core for v5.16-rc1)
-Message-ID: <YYD/bpLabfumrvL+@hirez.programming.kicks-ass.net>
-References: <163572864256.3357115.931779940195622047.tglx@xen13>
- <163572864563.3357115.8793939214537874196.tglx@xen13>
- <CAHk-=wgNzL3AaVNruwLv=kcGXi1EbJN9CZC6GoRY66t6WFcfGg@mail.gmail.com>
- <YYDwJORywW2FjprP@hirez.programming.kicks-ass.net>
+        Tue, 2 Nov 2021 05:09:31 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Hk3tZ16Jdz90lF;
+        Tue,  2 Nov 2021 17:06:46 +0800 (CST)
+Received: from dggpeml500024.china.huawei.com (7.185.36.10) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Tue, 2 Nov 2021 17:06:54 +0800
+Received: from [10.174.176.231] (10.174.176.231) by
+ dggpeml500024.china.huawei.com (7.185.36.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Tue, 2 Nov 2021 17:06:53 +0800
+Subject: Re: [PATCH] mm, slub: place the trace before freeing memory in
+ kmem_cache_free()
+To:     John Hubbard <jhubbard@nvidia.com>, <cl@linux.com>,
+        <penberg@kernel.org>, <rientjes@google.com>,
+        <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>, <vbabka@suse.cz>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
+CC:     <wuxu.wu@huawei.com>, Hewenliang <hewenliang4@huawei.com>
+References: <867f6da4-6d38-6435-3fbb-a2a3744029f1@huawei.com>
+ <df216633-cc14-6c3b-29ed-cdce136402eb@nvidia.com>
+From:   Yunfeng Ye <yeyunfeng@huawei.com>
+Message-ID: <2ea4e792-816c-a734-db1f-388516c74ea9@huawei.com>
+Date:   Tue, 2 Nov 2021 17:06:42 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YYDwJORywW2FjprP@hirez.programming.kicks-ass.net>
+In-Reply-To: <df216633-cc14-6c3b-29ed-cdce136402eb@nvidia.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.176.231]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500024.china.huawei.com (7.185.36.10)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 09:00:36AM +0100, Peter Zijlstra wrote:
-> On Mon, Nov 01, 2021 at 01:44:39PM -0700, Linus Torvalds wrote:
 
-> >     do_machine_check()+0x27: call to stackleak_track_stack ...
-> >     do_syscall_64()+0x9: call to stackleak_track_stack ...
-> >     do_int80_syscall_32()+0x9: call to stackleak_track_stack ...
-> >     exc_general_protection()+0x22: call to stackleak_track_stack ...
-> >     fixup_bad_iret()+0x20: call to stackleak_track_stack ...
-> >     .entry.text+0x10e6: call to stackleak_erase ...
-> >     .entry.text+0x143: call to stackleak_erase ...
-> >     .entry.text+0x17d9: call to stackleak_erase ...
-> > 
-> > most seem to be about the stackleak thing,
+
+On 2021/11/2 15:03, John Hubbard wrote:
+> On 10/30/21 03:11, Yunfeng Ye wrote:
+>> After the memory is freed, it may be allocated by other CPUs and has
+>> been recorded by trace. So the timing sequence of the memory tracing is
+>> inaccurate.
+>>
+>> For example, we expect the following timing sequeuce:
+>>
+>>      CPU 0                 CPU 1
+>>
+>>    (1) alloc xxxxxx
+>>    (2) free  xxxxxx
+>>                           (3) alloc xxxxxx
+>>                           (4) free  xxxxxx
+>>
+>> However, the following timing sequence may occur:
+>>
+>>      CPU 0                 CPU 1
+>>
+>>    (1) alloc xxxxxx
+>>                           (2) alloc xxxxxx
+>>    (3) free  xxxxxx
+>>                           (4) free  xxxxxx
+>>
+>> So place the trace before freeing memory in kmem_cache_free().
 > 
-> Right, I recently ran into this and hacen't yet had time to look into
-> it. I suspect my normal build box doesn't have the GCC plugin crud
-> enabled or somesuch.
+> Hi Yunfeng,
 > 
-> I think the GCC stackleak plugin needs fixing, specifically it needs a
-> function attribute such that it will not emit instrumentation in noinstr
-> functions. I'll go chase down the developer of that thing.
+> Like Muchun, I had some difficulty with the above description, but
+> now I think I get it. :)
+> 
+> In order to make it easier for others, how about this wording and subject
+> line, instead:
+> 
+Ok,I will modify the description in the next version patch.
 
-Alexander, is there any way to make this plugin grow a function
-attribute which we can add to noinstr ? There's a strict requirement the
-compiler doesn't add extra code to noinstr functions these days.
-
-We'll 'soon' be running noinstr C code before switching to kernel page
-tables even.
+Thanks.
+> 
+> mm, slub: emit the "free" trace report before freeing memory in kmem_cache_free()
+> 
+> After the memory is freed, it can be immediately allocated by other
+> CPUs, before the "free" trace report has been emitted. This causes
+> inaccurate traces.
+> 
+> For example, if the following sequence of events occurs:
+> 
+>     CPU 0                 CPU 1
+> 
+>   (1) alloc xxxxxx
+>   (2) free  xxxxxx
+>                          (3) alloc xxxxxx
+>                          (4) free  xxxxxx
+> 
+> ...then they will be inaccurately reported via tracing, so that they
+> appear to have happened in this order. This makes it look like CPU 1
+> somehow managed to allocate mmemory that CPU 0 still had allocated for
+> itself:
+> 
+>     CPU 0                 CPU 1
+> 
+>   (1) alloc xxxxxx
+>                          (2) alloc xxxxxx
+>   (3) free  xxxxxx
+>                          (4) free  xxxxxx
+> 
+> In order to avoid this, emit the "free xxxxxx" tracing report just
+> before the actual call to free the memory, instead of just after it.
+> 
+> 
+>>
+>> Signed-off-by: Yunfeng Ye <yeyunfeng@huawei.com>
+>> ---
+>>   mm/slub.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/mm/slub.c b/mm/slub.c
+>> index 432145d7b4ec..427e62034c3f 100644
+>> --- a/mm/slub.c
+>> +++ b/mm/slub.c
+>> @@ -3526,8 +3526,8 @@ void kmem_cache_free(struct kmem_cache *s, void *x)
+>>       s = cache_from_obj(s, x);
+>>       if (!s)
+>>           return;
+>> -    slab_free(s, virt_to_head_page(x), x, NULL, 1, _RET_IP_);
+>>       trace_kmem_cache_free(_RET_IP_, x, s->name);
+>> +    slab_free(s, virt_to_head_page(x), x, NULL, 1, _RET_IP_);
+>>   }
+>>   EXPORT_SYMBOL(kmem_cache_free);
+>>
+> 
+> ...the diffs seem correct, too, but I'm not exactly a slub reviewer, so
+> take that for what it's worth.
+> 
+> 
+> thanks,
