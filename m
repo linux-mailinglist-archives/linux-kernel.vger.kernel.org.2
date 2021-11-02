@@ -2,132 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AF07443160
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 16:15:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D77CB44316E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 16:18:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234295AbhKBPSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 11:18:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234185AbhKBPS2 (ORCPT
+        id S234329AbhKBPU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 11:20:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45471 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234301AbhKBPUx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 11:18:28 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E05A3C061714;
-        Tue,  2 Nov 2021 08:15:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Lji0Q0mKscbCR4s6xv/OULJVtCJGnkPpvCozvtfPKyM=; b=rQyjFmdABWfQuxVIFtBoZm6409
-        f7Q8mBnnIbnhARKu8AfsBA+4oU06whRCygb0Kmatd7/iZv1bYZsEWfsGsixFCGVYvb84ZDTeWPrCp
-        Q6jCl/jLsDBIJ0mcDOI6pJvQ8RlkyBRHWj8FjpOu/YcCrGs13flAN4Igvu4smCRzFdUkiQYzuSUb1
-        6es1pUMYkJOvoNjyCsH0ehnNGvmn8bAy43xYzwsGy3VH+5/D/uiBNNq0DomJQKUaKqwYD21X2okrq
-        VEuxt2Gfwz+P27cZgCnyOIvyi6YhiZE/m01nwh44rhuizmTlrOLtuZ0qOfiu//1K+/L7/4sth9g6M
-        5L7zz5Wg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mhvVb-00DluO-H2; Tue, 02 Nov 2021 15:15:31 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 989D1300366;
-        Tue,  2 Nov 2021 16:15:30 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7D7AA2D5FE2D6; Tue,  2 Nov 2021 16:15:30 +0100 (CET)
-Date:   Tue, 2 Nov 2021 16:15:30 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        Mark Rutland <mark.rutland@arm.com>, X86 ML <x86@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-hardening@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        llvm@lists.linux.dev, joao@overdrivepizza.com
-Subject: Re: [PATCH] static_call,x86: Robustify trampoline patching
-Message-ID: <YYFWEnBb/UaZKGzz@hirez.programming.kicks-ass.net>
-References: <CAMj1kXEvemVOWf4M_0vsduN_kiCsGVmM92cE7KPMoNKViKp=RQ@mail.gmail.com>
- <20211031163920.GV174703@worktop.programming.kicks-ass.net>
- <CAMj1kXHk5vbrT49yRCivX3phrEkN6Xbb+g8WEmavL_d1iE0OxQ@mail.gmail.com>
- <YX74Ch9/DtvYxzh/@hirez.programming.kicks-ass.net>
- <CAMj1kXG+MuGaG3BHk8pnE1MKVmRf5E+nRNoFMHxOA1y84eGikg@mail.gmail.com>
- <YX8AQJqyB+H3PF1d@hirez.programming.kicks-ass.net>
- <CAMj1kXF3n-oQ1WP8=asb60K6UjSYOtz5RVhrcoCoNq3v7mZdQg@mail.gmail.com>
- <20211101090155.GW174703@worktop.programming.kicks-ass.net>
- <CAMj1kXGhRmdM3om289Q2-s1Pzfob3D2iSDMorzggfhSk1oj53A@mail.gmail.com>
- <YYE1yPClPMHvyvIt@hirez.programming.kicks-ass.net>
+        Tue, 2 Nov 2021 11:20:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635866298;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6dODq+TaBd9o3SXxOkqAmjs0L7/fBuFRIhrp2FL47OI=;
+        b=F9VS9tmcgCat/hgki00bgMT6zDvGWBADK8fLmTCEbv/Jm3uImiaIcaZk8dOKNZBCjKiavv
+        lfGgWObkh4av7RwE+rIeZFjxuERjuS4egLD6lXWaCALYCTYiRa31zqCE8TkV+vFTqN7+Co
+        gMTLWWcFSJaC15TDOAN8g8FCnIU6L+A=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-339-AklUD-MXNQ26qIBOPeLekg-1; Tue, 02 Nov 2021 11:18:15 -0400
+X-MC-Unique: AklUD-MXNQ26qIBOPeLekg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7AE5A362FC;
+        Tue,  2 Nov 2021 15:18:11 +0000 (UTC)
+Received: from T590 (ovpn-8-19.pek2.redhat.com [10.72.8.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id D981F60C82;
+        Tue,  2 Nov 2021 15:17:44 +0000 (UTC)
+Date:   Tue, 2 Nov 2021 23:17:39 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Miroslav Benes <mbenes@suse.cz>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, tj@kernel.org,
+        gregkh@linuxfoundation.org, akpm@linux-foundation.org,
+        minchan@kernel.org, jeyu@kernel.org, shuah@kernel.org,
+        bvanassche@acm.org, dan.j.williams@intel.com, joe@perches.com,
+        tglx@linutronix.de, keescook@chromium.org, rostedt@goodmis.org,
+        linux-spdx@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        live-patching@vger.kernel.org, ming.lei@redhat.com
+Subject: Re: [PATCH v8 11/12] zram: fix crashes with cpu hotplug multistate
+Message-ID: <YYFWkwHSK1Px9cEo@T590>
+References: <alpine.LSU.2.21.2110190820590.15009@pobox.suse.cz>
+ <YW6OptglA6UykZg/@T590>
+ <alpine.LSU.2.21.2110200835490.26817@pobox.suse.cz>
+ <YW/KEsfWJMIPnz76@T590>
+ <alpine.LSU.2.21.2110201014400.26817@pobox.suse.cz>
+ <YW/q70dLyF+YudyF@T590>
+ <YXfA0jfazCPDTEBw@alley>
+ <YXgguuAY5iEUIV0u@T590>
+ <YYFH85CmVOYIMdYh@alley>
+ <YYFQdWvpXOV4foyS@alley>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YYE1yPClPMHvyvIt@hirez.programming.kicks-ass.net>
+In-Reply-To: <YYFQdWvpXOV4foyS@alley>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 01:57:44PM +0100, Peter Zijlstra wrote:
+On Tue, Nov 02, 2021 at 03:51:33PM +0100, Petr Mladek wrote:
+> On Tue 2021-11-02 15:15:19, Petr Mladek wrote:
+> > On Tue 2021-10-26 23:37:30, Ming Lei wrote:
+> > > On Tue, Oct 26, 2021 at 10:48:18AM +0200, Petr Mladek wrote:
+> > > > Below are more details about the livepatch code. I hope that it will
+> > > > help you to see if zram has similar problems or not.
+> > > > 
+> > > > We have kobject in three structures: klp_func, klp_object, and
+> > > > klp_patch, see include/linux/livepatch.h.
+> > > > 
+> > > > These structures have to be statically defined in the module sources
+> > > > because they define what is livepatched, see
+> > > > samples/livepatch/livepatch-sample.c
+> > > > 
+> > > > The kobject is used there to show information about the patch, patched
+> > > > objects, and patched functions, in sysfs. And most importantly,
+> > > > the sysfs interface can be used to disable the livepatch.
+> > > > 
+> > > > The problem with static structures is that the module must stay
+> > > > in the memory as long as the sysfs interface exists. It can be
+> > > > solved in module_exit() callback. It could wait until the sysfs
+> > > > interface is destroyed.
+> > > > 
+> > > > kobject API does not support this scenario. The relase() callbacks
+> > > 
+> > > kobject_delete() is for supporting this scenario, that is why we don't
+> > > need to grab module refcnt before calling show()/store() of the
+> > > kobject's attributes.
+> > > 
+> > > kobject_delete() can be called in module_exit(), then any show()/store()
+> > > will be done after kobject_delete() returns.
+> > 
+> > I am a bit confused. I do not see kobject_delete() anywhere in kernel
+> > sources.
+> > 
+> > I see only kobject_del() and kobject_put(). AFAIK, they do _not_
+> > guarantee that either the sysfs interface was destroyed or
+> > the release callbacks were called. For example, see
+> > schedule_delayed_work(&kobj->release, delay) in kobject_release().
+> 
+> Grr, I always get confused by the code. kobject_del() actually waits
+> until the sysfs interface gets destroyed. This is why there is
+> the deadlock.
 
-> So how insane is something like this, have each function:
-> 
-> foo.cfi:
-> 	endbr64
-> 	xorl $0xdeadbeef, %r10d
-> 	jz foo
-> 	ud2
-> 	nop	# make it 16 bytes
-> foo:
-> 	# actual function text goes here
-> 
-> 
-> And for each hash have two thunks:
-> 
-> 
-> 	# arg: r11
-> 	# clobbers: r10, r11
-> __x86_indirect_cfi_deadbeef:
-> 	movl -9(%r11), %r10		# immediate in foo.cfi
-> 	xorl $0xdeadbeef, %r10		# our immediate
-> 	jz 1f
-> 	ud2
-> 1:	ALTERNATIVE_2	"jmp *%r11",
-> 			"jmp __x86_indirect_thunk_r11", X86_FEATURE_RETPOLINE
-> 			"lfence; jmp *%r11", X86_FEATURE_RETPOLINE_AMD
-> 
-> 
-> 
-> 	# arg: r11
-> 	# clobbers: r10, r11
-> __x86_indirect_ibt_deadbeef:
-> 	movl $0xdeadbeef, %r10
-> 	subq $0x10, %r11
-> 	ALTERNATIVE "", "lfence", X86_FEATURE_RETPOLINE
-> 	jmp *%r11
-> 
+Right.
 
-These two thunks could of course be one big alternative.
+> 
+> But kobject_put() is _not_ synchronous. And the comment above
+> kobject_add() repeat 3 times that kobject_put() must be called
+> on success:
+> 
+>  * Return: If this function returns an error, kobject_put() must be
+>  *         called to properly clean up the memory associated with the
+>  *         object.  Under no instance should the kobject that is passed
+>  *         to this function be directly freed with a call to kfree(),
+>  *         that can leak memory.
+>  *
+>  *         If this function returns success, kobject_put() must also be called
+>  *         in order to properly clean up the memory associated with the object.
+>  *
+>  *         In short, once this function is called, kobject_put() MUST be called
+>  *         when the use of the object is finished in order to properly free
+>  *         everything.
+> 
+> and similar text in Documentation/core-api/kobject.rst
+> 
+>   After a kobject has been registered with the kobject core successfully, it
+>   must be cleaned up when the code is finished with it.  To do that, call
+>   kobject_put().
+> 
+> 
+> If I read the code correctly then kobject_put() calls kref_put()
+> that might call kobject_delayed_cleanup(). This function does a lot
+> of things and need to access struct kobject.
 
-> And have the actual indirect callsite look like:
-> 
-> 	# r11 - &foo
-> 	ALTERNATIVE_2	"cs call __x86_indirect_thunk_r11",
-> 			"cs call __x86_indirect_cfi_deadbeef", X86_FEATURE_CFI
-> 			"cs call __x86_indirect_ibt_deadbeef", X86_FEATURE_IBT
+Yes, then what is the problem here wrt. kobject_put() which may not be
+synchronous?
 
-Also simplifying this.
+> 
+> > IMHO, kobject API does not support static structures and module
+> > removal.
+> 
+> If kobject_put() has to be called also for static structures then
+> module_exit() must explicitly wait until the clean up is finished.
 
-> Although if the compiler were to emit:
-> 
-> 	cs call __x86_indirect_cfi_deadbeef
-> 
-> we could probaly fix it up from there.
-> 
-> 
-> Then we can at runtime decide between:
-> 
->   {!cfi, cfi, ibt} x {!retpoline, retpoline, retpoline-amd}
-> 
+Right, that is exactly how klp_patch kobject is implemented. klp_patch
+kobject has to be disabled first, then module refcnt can be dropped after
+the klp_patch kobject is released. Then module_exit() is possible.
+
+Thanks,
+Ming
+
