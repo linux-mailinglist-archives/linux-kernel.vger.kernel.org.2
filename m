@@ -2,143 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32EDA44289A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 08:33:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1B3944287D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 08:32:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231830AbhKBHfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 03:35:34 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:50838 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231544AbhKBHfM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 03:35:12 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1635838358; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=JiEOJqa3aqS2iNBJDoYuclB4bw9U3vBvyQW5D9XElQE=; b=OMrO30Ekkc3Nxxq8Jx43dDPSHO+jSJLF4PGuQgJ41BfZ047Bx7z8IDoH32vTwpI28Q9I2D8J
- m9Q4amSDSJdj41gKr5E/80AlYFbtDH/h/BiO1+1p+/A4h33N/JK0n2qICXAZ0a2ufQB9DIUY
- o2hjb+BG429bgZ17XbKiu5tEg7c=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 6180e989648aeeca5c5ab9bc (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 02 Nov 2021 07:32:25
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 0B032C4361A; Tue,  2 Nov 2021 07:32:24 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from hu-srivasam-hyd.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C51ACC4363B;
-        Tue,  2 Nov 2021 07:32:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org C51ACC4363B
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        swboyd@chromium.org, judyhsiao@chromium.org
-Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        Venkata Prasad Potturu <potturu@codeaurora.org>
-Subject: [PATCH v4 10/10] ASoC: qcom: SC7280: Update config for building codec dma drivers
-Date:   Tue,  2 Nov 2021 13:01:05 +0530
-Message-Id: <1635838265-27346-11-git-send-email-srivasam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1635838265-27346-1-git-send-email-srivasam@codeaurora.org>
-References: <1635838265-27346-1-git-send-email-srivasam@codeaurora.org>
+        id S231475AbhKBHe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 03:34:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231461AbhKBHe0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 03:34:26 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B58F5C0613F5;
+        Tue,  2 Nov 2021 00:31:51 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id 131so39296064ybc.7;
+        Tue, 02 Nov 2021 00:31:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OluhKtBimmP7E/0/GgG/7vGECz49HSub0BngF4v6Qkk=;
+        b=Bvf2fbUNYYZs+yDoofQfIvShNimuZiQJy/Zp9hrH0CGU5n80NwA+7lS4xFoh0aRwPr
+         98I/K3k/I6QiAluHUcR1ANMi4gmbQ6FkS2BuJEEBcGZJibMDly8GvavxbysCb/E3DEIu
+         1k4jSu2ljyTm6S8gRdiSlJv/d/j37volSZzDeRiMvUyXJ9c0xSQPPgv3juozIUVuuc5w
+         GvS68SPhYtUTmL4r6wrh9dGuWad9mhGJzRq94FOmyMsthjYY45dFHbbPidjbsntO+my0
+         VgG1ARPTQdmlY9OXrXAU8qdB/wANbnxZGzVxc46++kzxevRN1e+DtE8Aqh++Z6oGkFDA
+         uEuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OluhKtBimmP7E/0/GgG/7vGECz49HSub0BngF4v6Qkk=;
+        b=6N8bSJUliBPKTKsbPGg8pVg/B88po3NsLgftSioAJRrO7DA7vBId7d4F12OUX9BHrS
+         0lw7+q1YWWehdx4/BezsMJvVsCs1gTNnsE06u0TMGbiooqSyCby7ywlkw8ohJ1O2nx3J
+         uYTwTZiha2ZxPiLqGh9MBycqYqtlsIZAuSHlaIByVVkMT/+pEkJGviJEKhtg9AFA3rCb
+         xq+4ipmMRJppiD1fvblXGphSoTLW0xaHRpZ/9Go2eJy/uSYp/Z9h+dQr85JroXkXn+Qq
+         DpEY+WaZWtuHuOI34KedLZ8QmEHQQr1K3AM9q/+E16GUNHBNdHzCpDawjwcjnrRhWvBS
+         FhMg==
+X-Gm-Message-State: AOAM532YTZZ7WEK3eqxeV2Ap/oEq53Ct873ZOp9DvEoDD3chpKPKcbvX
+        +T3oK2jeu1Jan1zpfBgs509fb51Kf0tHv5Jz8tg=
+X-Google-Smtp-Source: ABdhPJyv6KqPsjyT+qQxOopmtsEESwOY6fY2G6+8d+IXWs3OLmtof/rN/ulyY0nAtjzJEMlBgpC9RIU9jr4hfZlhPYA=
+X-Received: by 2002:a25:34d5:: with SMTP id b204mr26987557yba.154.1635838310937;
+ Tue, 02 Nov 2021 00:31:50 -0700 (PDT)
+MIME-Version: 1.0
+References: <20211028141938.3530-1-lukas.bulwahn@gmail.com>
+ <20211028141938.3530-12-lukas.bulwahn@gmail.com> <CAK8P3a0Nq9hLbGiPCQTjVTiGFPR9-tdhN8Tf06Q=cWTgMK78yw@mail.gmail.com>
+ <CACPK8XfiN5qziPHLU6J=bC34mcjz+ix7jjSX=xk9zsr7+vyTdw@mail.gmail.com>
+In-Reply-To: <CACPK8XfiN5qziPHLU6J=bC34mcjz+ix7jjSX=xk9zsr7+vyTdw@mail.gmail.com>
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Tue, 2 Nov 2021 08:31:40 +0100
+Message-ID: <CAKXUXMyrhrM2o-OEW_qTTKjfKgxt-Z6Nt69geU80AoFnM1OuMA@mail.gmail.com>
+Subject: Re: [PATCH 11/13] arm: npcm: drop selecting non-existing ARM_ERRATA_794072
+To:     Joel Stanley <joel@jms.id.au>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Tomer Maimon <tmaimon77@gmail.com>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Linus Walleij <linusw@kernel.org>,
+        Imre Kaloz <kaloz@openwrt.org>,
+        Krzysztof Halasa <khalasa@piap.pl>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        kernel-janitors <kernel-janitors@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add configuration for building SC7280 audio codec dma drivers.
+On Fri, Oct 29, 2021 at 8:36 AM Joel Stanley <joel@jms.id.au> wrote:
+>
+> On Thu, 28 Oct 2021 at 14:57, Arnd Bergmann <arnd@arndb.de> wrote:
+> >
+> > On Thu, Oct 28, 2021 at 4:19 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+> > >
+> > > There is no and never was a Kconfig for ARM_ERRATA_794072 in the kernel
+> > > tree. So, there is no need to select ARM_ERRATA_794072 in
+> > > ./arch/arm/mach-npcm/Kconfig.
+> > >
+> > > Simply drop selecting the non-existing ARM_ERRATA_794072.
+> > >
+> > > This issue was discovered with ./scripts/checkkconfigsymbols.py.
+> > >
+> > > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> > > ---
+> >
+> > Could this be a typo? Maybe we need to enable a different errata workaround
+> > here, or maybe that code is actually needed and has to get sent.
+>
+> Doing some searching, u-boot had a workaround for something called
+> ARM_ERRATA_794072.
+>
+> https://github.com/u-boot/u-boot/commit/f71cbfe3ca5d2ad20159871700e8e248c8818ba8
+>
+> Lore has the review history for that patch:
+>
+> https://lore.kernel.org/all/6be32e0b5b454ed7b609317266a8e798@BLUPR03MB358.namprd03.prod.outlook.com/
+>
+> It looks like it's the same workaround as ARM_ERRATA_742230, which the
+> kernel does implement.
+>
+> It would be good to hear from the Nuvoton people, or an Arm person.
+>
 
-Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Co-developed-by: Venkata Prasad Potturu <potturu@codeaurora.org>
-Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
----
- sound/soc/qcom/Kconfig  | 13 +++++++++++++
- sound/soc/qcom/Makefile |  4 ++++
- 2 files changed, 17 insertions(+)
+I will happily update the patch to select ARM_ERRATA_742230 instead of
+the dead non-existing ARM_ERRATA_794072.
 
-diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-index d9ffcb7..2b98ad9 100644
---- a/sound/soc/qcom/Kconfig
-+++ b/sound/soc/qcom/Kconfig
-@@ -20,6 +20,10 @@ config SND_SOC_LPASS_PLATFORM
- 	tristate
- 	select REGMAP_MMIO
- 
-+config SND_SOC_LPASS_CDC_DMA
-+	tristate
-+	select REGMAP_MMIO
-+
- config SND_SOC_LPASS_IPQ806X
- 	tristate
- 	select SND_SOC_LPASS_CPU
-@@ -36,6 +40,13 @@ config SND_SOC_LPASS_SC7180
- 	select SND_SOC_LPASS_PLATFORM
- 	select SND_SOC_LPASS_HDMI
- 
-+config SND_SOC_LPASS_SC7280
-+	tristate
-+	select SND_SOC_LPASS_CPU
-+	select SND_SOC_LPASS_PLATFORM
-+	select SND_SOC_LPASS_HDMI
-+	select SND_SOC_LPASS_CDC_DMA
-+
- config SND_SOC_STORM
- 	tristate "ASoC I2S support for Storm boards"
- 	select SND_SOC_LPASS_IPQ806X
-@@ -156,7 +167,9 @@ config SND_SOC_SC7280
- 	tristate "SoC Machine driver for SC7280 boards"
- 	depends on I2C && SOUNDWIRE
- 	select SND_SOC_QCOM_COMMON
-+	select SND_SOC_LPASS_SC7280
- 	select SND_SOC_MAX98357A
-+	select SND_SOC_WCD938X
- 	select SND_SOC_LPASS_RX_MACRO
- 	select SND_SOC_LPASS_TX_MACRO
- 	help
-diff --git a/sound/soc/qcom/Makefile b/sound/soc/qcom/Makefile
-index 625aec6..8b7b876 100644
---- a/sound/soc/qcom/Makefile
-+++ b/sound/soc/qcom/Makefile
-@@ -1,18 +1,22 @@
- # SPDX-License-Identifier: GPL-2.0
- # Platform
- snd-soc-lpass-cpu-objs := lpass-cpu.o
-+snd-soc-lpass-cdc-dma-objs := lpass-cdc-dma.o
- snd-soc-lpass-hdmi-objs := lpass-hdmi.o
- snd-soc-lpass-platform-objs := lpass-platform.o
- snd-soc-lpass-ipq806x-objs := lpass-ipq806x.o
- snd-soc-lpass-apq8016-objs := lpass-apq8016.o
- snd-soc-lpass-sc7180-objs := lpass-sc7180.o
-+snd-soc-lpass-sc7280-objs := lpass-sc7280.o
- 
- obj-$(CONFIG_SND_SOC_LPASS_CPU) += snd-soc-lpass-cpu.o
-+obj-$(CONFIG_SND_SOC_LPASS_CDC_DMA) += snd-soc-lpass-cdc-dma.o
- obj-$(CONFIG_SND_SOC_LPASS_HDMI) += snd-soc-lpass-hdmi.o
- obj-$(CONFIG_SND_SOC_LPASS_PLATFORM) += snd-soc-lpass-platform.o
- obj-$(CONFIG_SND_SOC_LPASS_IPQ806X) += snd-soc-lpass-ipq806x.o
- obj-$(CONFIG_SND_SOC_LPASS_APQ8016) += snd-soc-lpass-apq8016.o
- obj-$(CONFIG_SND_SOC_LPASS_SC7180) += snd-soc-lpass-sc7180.o
-+obj-$(CONFIG_SND_SOC_LPASS_SC7280) += snd-soc-lpass-sc7280.o
- 
- # Machine
- snd-soc-storm-objs := storm.o
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+In contrast to the current patch that basically only cleans up "dead
+config" and has no effective functional change, the new patch would
+change the behaviour. I cannot test this patch (beyond some basic
+compile test) on the hardware; so, we certainly need someone to have
+that hardware, knows how to test it or confirm otherwise that we
+should select the ARM_ERRATA_742230 fix for this hardware.
 
+The current patch should be subsumed by the new patch; the submission
+of the new patch is deferred until that person shows up. Let's see.
+
+Lukas
