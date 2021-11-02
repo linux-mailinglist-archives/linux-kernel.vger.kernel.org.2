@@ -2,140 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8F83443239
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 17:00:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD75E44323C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 17:00:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234469AbhKBQCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 12:02:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234359AbhKBQCj (ORCPT
+        id S234646AbhKBQDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 12:03:06 -0400
+Received: from mail-ot1-f49.google.com ([209.85.210.49]:38812 "EHLO
+        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234338AbhKBQDF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 12:02:39 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C5DDC0613B9
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 09:00:04 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id u18so34093251wrg.5
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 09:00:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=soQC7NvwSDRBZqkI7s6xnknhSLp6r09XDuYbODEjkgc=;
-        b=mI1LdYKr3uNkluaEcBClbKGUsJfGPt6nnozQwAb02R4IwXZXZYGCrtZv+Q0v5NPyVQ
-         S9T/yR5BkKLFfLwvO2Vi7sjIk/Kxow9Q8jPhxeLwuO4yv7M2costSM+57epqyeJ9OFK3
-         N3kSnL5rWFVzYsVblRrjKoQSO9SE+taHm0AsvZWZ+2wZmAdKWMfETwnoAWZvZcgkhLZF
-         RR/vubCeacoqiI+vUEaYFxaXVaIIIXr0mouqVUgxvZFa6X2zZ9kLGkObCQYJTbP8y5lz
-         58D4t340IPKY2lUP+WSppERmUJ5gPTIfnzzdrhffNcpi8qVM3i6Jxsq3XgNLibxNvYqT
-         GSnw==
+        Tue, 2 Nov 2021 12:03:05 -0400
+Received: by mail-ot1-f49.google.com with SMTP id c2-20020a056830348200b0055a46c889a8so9921202otu.5;
+        Tue, 02 Nov 2021 09:00:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=soQC7NvwSDRBZqkI7s6xnknhSLp6r09XDuYbODEjkgc=;
-        b=1FhbfFZl7wruL+Z21HQd53b+CnGmxTk6SpvrA5lHg1/G28ivLKynU0++oOZFSk2HbT
-         BRzgBaFJCJMLLBnk0KifIIGR+wqwQazD+rnSnHWRsIXQgaAuUCfG3AiHWxtNU4+1YnDg
-         Mdl3IRDqIGi5I1vF3dgbkhRklRqIn3pU04eH/ZpPvPj14T2pmy9ODbNSytw1PGMcXME5
-         KNEKySFBVW5nGiN9XjRFaIHz7TERhi9YUE1W0QThQjAj+mEQ1AT6oWJusfxOWZIZwMDh
-         BRmkPQrc2vMGLdCM60ZbLuifw0Mo4BM6bATyLQUqZrMPkVgrGuriChQepdxZp73+5NU0
-         rBLA==
-X-Gm-Message-State: AOAM532KFOoPIeB3wJUZKbyOy50VdMmHi9VVGYFUqHMi4rXagNnSJsbk
-        xYc+mPY9eP/cLptSqFSOra65CA==
-X-Google-Smtp-Source: ABdhPJw9jPPQfCPPiExh9uQm6mXjK33Pw8aA2tl7f4/xtTsMj7OHHX5OrVdH3CJO/RqZC/el9fIZYA==
-X-Received: by 2002:adf:ef4f:: with SMTP id c15mr3296739wrp.226.1635868802700;
-        Tue, 02 Nov 2021 09:00:02 -0700 (PDT)
-Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id 10sm3576379wme.27.2021.11.02.09.00.01
+         :mime-version:content-disposition:in-reply-to;
+        bh=lVZoZLYUpaZTi2RFg9sQqLoO8E1t6WatefP2gNVJXh0=;
+        b=BElFdXZD8wmO+crOoTR43KGto43bFGM23Eo/9ypt4xmyJxUjZyBif34wUC5jgwOvFs
+         bX0BM0vAsNvv1pJPPFp4/k0lpMEHQjN5sSJTGR5kXvhLCWFZqluEvIMOn5tGq0RGw9Wf
+         jT8W0AloIHm5oSoU163GEu7CKaA8ienNGIujWvOe/Nq1jmEoGeXVq/rz3JqZqd+Uzlt0
+         qROIXaizF1rqat7dy03rQ8ANJz/zDE4QvQ7fKvASFMvhPfrJlDZBbfYyLTJjdKlLbBVo
+         ozci4HeqMVOY6Z0m609ciHJZsKw3M7qHvPYvj0JVdljf197/OzqhJDd8LkiMhn0UEoB5
+         EEUg==
+X-Gm-Message-State: AOAM532sBAGbCiHf2MIXk9kSqtV5/klYH1grgjolZyXLyiMWbENrnyap
+        /MKJ2D6ffAXWwf0LitLXIg==
+X-Google-Smtp-Source: ABdhPJy5Lv9+vYTWTHyrrDWVaGcPa3crXL5SfGnGCNqx3oF0uap1WO1+gdNe56Y4Qsn7XED5FXiGrA==
+X-Received: by 2002:a05:6830:1293:: with SMTP id z19mr27624339otp.353.1635868829838;
+        Tue, 02 Nov 2021 09:00:29 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id p62sm600981oif.43.2021.11.02.09.00.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Nov 2021 09:00:02 -0700 (PDT)
-Date:   Tue, 2 Nov 2021 16:00:00 +0000
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     =?utf-8?B?TWHDrXJh?= Canal <maira.canal@usp.br>
-Cc:     lee.jones@linaro.org, jingoohan1@gmail.com,
-        thierry.reding@gmail.com, u.kleine-koenig@pengutronix.de,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org
-Subject: Re: [PATCH v4] backlight: lp855x: Switch to atomic PWM API
-Message-ID: <20211102160000.kvi6hhhgdjowgnft@maple.lan>
-References: <YX/pWeXPv1bykg2g@fedora>
+        Tue, 02 Nov 2021 09:00:29 -0700 (PDT)
+Received: (nullmailer pid 2970063 invoked by uid 1000);
+        Tue, 02 Nov 2021 16:00:28 -0000
+Date:   Tue, 2 Nov 2021 11:00:27 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Jim Quinlan <jim2101024@gmail.com>
+Cc:     linux-pci@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 7/9] PCI: brcmstb: Add control of subdevice voltage
+ regulators
+Message-ID: <YYFgmxMCnKtTlaqL@robh.at.kernel.org>
+References: <20211029200319.23475-1-jim2101024@gmail.com>
+ <20211029200319.23475-8-jim2101024@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YX/pWeXPv1bykg2g@fedora>
+In-Reply-To: <20211029200319.23475-8-jim2101024@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 01, 2021 at 10:19:21AM -0300, Maíra Canal wrote:
-> Remove legacy PWM interface (pwm_config, pwm_enable, pwm_disable) and
-> replace it for the atomic PWM API.
-> 
-> Signed-off-by: Maíra Canal <maira.canal@usp.br>
-> ---
-> V1 -> V2: Initialize variable and simply conditional loop
-> V2 -> V3: Fix assignment of NULL variable
-> V3 -> V4: Replace division for pwm_set_relative_duty_cycle
-> ---
->  drivers/video/backlight/lp855x_bl.c | 20 ++++++++------------
->  1 file changed, 8 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/video/backlight/lp855x_bl.c b/drivers/video/backlight/lp855x_bl.c
-> index e94932c69f54..bbf24564082a 100644
-> --- a/drivers/video/backlight/lp855x_bl.c
-> +++ b/drivers/video/backlight/lp855x_bl.c
-> @@ -233,9 +233,8 @@ static int lp855x_configure(struct lp855x *lp)
->  
->  static void lp855x_pwm_ctrl(struct lp855x *lp, int br, int max_br)
->  {
-> -	unsigned int period = lp->pdata->period_ns;
-> -	unsigned int duty = br * period / max_br;
->  	struct pwm_device *pwm;
-> +	struct pwm_state state;
->  
->  	/* request pwm device with the consumer name */
->  	if (!lp->pwm) {
-> @@ -245,18 +244,15 @@ static void lp855x_pwm_ctrl(struct lp855x *lp, int br, int max_br)
->  
->  		lp->pwm = pwm;
->  
-> -		/*
-> -		 * FIXME: pwm_apply_args() should be removed when switching to
-> -		 * the atomic PWM API.
-> -		 */
-> -		pwm_apply_args(pwm);
-> +		pwm_init_state(lp->pwm, &state);
-> +		state.period = lp->pdata->period_ns;
->  	}
->  
-> -	pwm_config(lp->pwm, duty, period);
-> -	if (duty)
-> -		pwm_enable(lp->pwm);
-> -	else
-> -		pwm_disable(lp->pwm);
-> +	pwm_get_state(lp->pwm, &state);
+On Fri, Oct 29, 2021 at 04:03:15PM -0400, Jim Quinlan wrote:
+> This Broadcom STB PCIe RC driver has one port and connects directly to one
+> device, be it a switch or an endpoint.  We want to be able to turn on/off
+> any regulators for that device.  Control of regulators is needed because of
+> the chicken-and-egg situation: although the regulator is "owned" by the
+> device and would be best handled by its driver, the device cannot be
+> discovered and probed unless its regulator is already turned on.
 
-Should this be:
+I think this can be done in a much more simple way that avoids the 
+prior patches using the pci_ops.add_bus() (and remove_bus()) hook. 
+add_bus is called before the core scans a child bus. In the handler, you 
+just need to get the bridge device, then the bridge DT node, and then 
+get the regulators and enable.  
 
-	} else {
-		pwm_get_state(lp->pwm, &state);
-	}
+Given we're talking about standard properties in a standard (bridge) 
+node, I think the implementation for .add_bus should be common 
+(drivers/pci/of.c). It doesn't scale to be doing this in every host 
+bridge driver.
 
-As currently written this will clobber the state.period that was set
-above.
-
-
-Daniel.
-
-
-> +	pwm_set_relative_duty_cycle(&state, br, max_br);
-> +	state.enabled = state.duty_cycle;
-> +
-> +	pwm_apply_state(lp->pwm, &state);
->  }
->  
->  static int lp855x_bl_update_status(struct backlight_device *bl)
-> -- 
-> 2.31.1
-> 
+Rob
