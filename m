@@ -2,52 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC14C442824
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 08:18:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 973A2442827
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 08:19:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231176AbhKBHVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 03:21:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56372 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230460AbhKBHVQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 03:21:16 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA57CC061714;
-        Tue,  2 Nov 2021 00:18:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=l2WBiCb5duYJRA9nKpihqrJOH1Qjg6utSrFiu8qAdtc=; b=rYzd+eYGfJ6fsIL1bvrdH+6z6F
-        /Z6hBNR00bFAg/rLz2gHbXhdm3JAEzUsgWG31jO2K0nSTgOWi0ssci1a+RwOlzp0S6wqHJUJ4AWJ0
-        J1g6G+zSNmkjd2DnMUB7ZOH2Ow9+j+21sI4yaLuR05dnd78ybWcG1INB+M1lURnnEIGNB78ejAhEr
-        739s4aA1+dHAXeby8VPPf+BklpAynJLZzjHnCMKZtEvLAvAjmXqeLGfkL6fZVANPO7bIw7vHXtQPS
-        6R+TBL73pwKh4R+O72Sd0t41BeNRfySSc59haNnzTZMXG6isL30t2DH4ROw9Z4ezQcCjSjw1/pG54
-        UUD4b2zw==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mho46-000kqt-8b; Tue, 02 Nov 2021 07:18:38 +0000
-Date:   Tue, 2 Nov 2021 00:18:38 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH 12/21] iomap: Convert iomap_read_inline_data to take a
- folio
-Message-ID: <YYDmTnpDnN4xgHtC@infradead.org>
-References: <20211101203929.954622-1-willy@infradead.org>
- <20211101203929.954622-13-willy@infradead.org>
+        id S231320AbhKBHVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 03:21:43 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:46091 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231219AbhKBHVk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 03:21:40 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1635837546; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: References: Cc: To:
+ Subject: From: Sender; bh=y6Sz6xkt/HSEuNS0flTXHuzKjPeOjD94Xhcr7nenToU=;
+ b=S5lSnoZa0VrENqPxzaTyYk5IFGMK+ZCAEOHmZXavKSw2orC1G/v0TWNaAGuIGty0XcGZmX5H
+ 4BJSjnY/Zsd0FH8DXgrGmWYOLoDsr/Bt+IL7mVmmhF0FWW2rBf0f9UJnry8xEK9dqLO4lK6a
+ myWB3rYcrjlNUMvKIWxLfRAqDjM=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 6180e65caeb239055603ddb8 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 02 Nov 2021 07:18:52
+ GMT
+Sender: zijuhu=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 56A90C4338F; Tue,  2 Nov 2021 07:18:52 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-5.4 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.0.104] (unknown [183.195.15.125])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: zijuhu)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 28A10C4360C;
+        Tue,  2 Nov 2021 07:18:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 28A10C4360C
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Zijun Hu <zijuhu@codeaurora.org>
+Subject: Re: [PATCH v1] serdev: Add interface serdev_device_ioctl
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Marcel Holtmann <marcel@holtmann.org>
+Cc:     robh@kernel.org, jirislaby@kernel.org,
+        linux-serial@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        Zijun Hu <quic_zijuhu@quicinc.com>
+References: <1635753048-5289-1-git-send-email-zijuhu@codeaurora.org>
+ <YX+eRgCrUs2Y5iaX@kroah.com>
+ <fe5a8bec-b186-c719-5f02-a0a67eb8862f@codeaurora.org>
+ <YX+mDGr8tDzVT4Hr@kroah.com>
+ <573d3640-2e8b-9266-4205-755ac0951abd@codeaurora.org>
+ <YX/M/MZL8jbu7p7I@kroah.com>
+ <DC399B43-DB1E-42AC-8A31-3A2C9407EE6D@holtmann.org>
+ <YX/VYUC3ngOf5bX5@kroah.com>
+Message-ID: <787fa2b6-146a-16b1-e304-c7e3b26dbf99@codeaurora.org>
+Date:   Tue, 2 Nov 2021 15:18:46 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211101203929.954622-13-willy@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <YX/VYUC3ngOf5bX5@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks good,
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+
+On 11/1/2021 7:54 PM, Greg KH wrote:
+> On Mon, Nov 01, 2021 at 12:45:36PM +0100, Marcel Holtmann wrote:
+>> Hi Greg,
+>>
+>>>>>>>> For serdev_device which is mounted at virtual tty port, tty ioctl()
+>>>>>>>> maybe be used to make serdev_device ready to talk with tty port, so
+>>>>>>>> add interface serdev_device_ioctl().
+>>>>>>>>
+>>>>>>>> Signed-off-by: Zijun Hu <quic_zijuhu@quicinc.com>
+>>>>>>>> ---
+>>>>>>>> drivers/tty/serdev/core.c           | 11 +++++++++++
+>>>>>>>> drivers/tty/serdev/serdev-ttyport.c | 12 ++++++++++++
+>>>>>>>> include/linux/serdev.h              |  9 +++++++++
+>>>>>>>> 3 files changed, 32 insertions(+)
+>>>>>>>>
+>>>>>>>> diff --git a/drivers/tty/serdev/core.c b/drivers/tty/serdev/core.c
+>>>>>>>> index f1324fe99378..c0f6cd64716b 100644
+>>>>>>>> --- a/drivers/tty/serdev/core.c
+>>>>>>>> +++ b/drivers/tty/serdev/core.c
+>>>>>>>> @@ -405,6 +405,17 @@ int serdev_device_set_tiocm(struct serdev_device *serdev, int set, int clear)
+>>>>>>>> }
+>>>>>>>> EXPORT_SYMBOL_GPL(serdev_device_set_tiocm);
+>>>>>>>>
+>>>>>>>> +int serdev_device_ioctl(struct serdev_device *serdev, unsigned int cmd, unsigned long arg)
+>>>>>>>> +{
+>>>>>>>> +	struct serdev_controller *ctrl = serdev->ctrl;
+>>>>>>>> +
+>>>>>>>> +	if (!ctrl || !ctrl->ops->ioctl)
+>>>>>>>> +		return -EOPNOTSUPP;
+>>>>>>>
+>>>>>>> Wrong error for returning that an ioctl is not handled :(
+>>>>>> checkpatch.pl always reports below WARNING when i use ENOTSUPP as present interfaces
+>>>>>> do. so i change error code to EOPNOTSUPP.
+>>>>>>
+>>>>>> #28: FILE: drivers/tty/serdev/core.c:412:
+>>>>>> +               return -ENOTSUPP;
+>>>>>>
+>>>>>> WARNING: ENOTSUPP is not a SUSV4 error code, prefer EOPNOTSUPP
+>>>>>
+>>>>> Both of them are not the correct error to return when an ioctl is not
+>>>>> supported.
+>>>>>
+>>>> is ENODEV okay?
+>>>
+>>> No, -ENOTTY is the correct one as per the documentation, right?
+>>>
+>>>>>>> Anyway, what in-tree driver needs this functionality?  Why does serdev
+>>>>>>> need any ioctl commands?
+>>>>>>>
+>>>>>> i am developing driver for a special bluetooth controller which is integrated within SOC,
+>>>>>> and it does not connect with the BT HOST with UART as normal controller do, but it has very
+>>>>>> similar features as the BT controller with UART I/F. it is mounted on a virtual serial port
+>>>>>> driven by a tty driver developed. but it need to call tty ioctl to make the 
+>>>>>> special BT controller ready to talk with tty port. so i add this interface.
+>>>>>
+>>>>> Please submit this change when you submit your driver that uses it at
+>>>>> the same time so we can review them all at once.  We do not add apis
+>>>>> that are not used in the kernel tree.
+>>>>>
+>>>> okay
+>>>>>> as you known, the main purpose of ioctl is to achieve MISC and irregular control. so it is useful
+>>>>>> for these irregular devices.
+>>>>>
+>>>>> For tty devices, "custom" ioctls are not ok, use the standard tty
+>>>>> commands and you should be fine for everything you need to do.
+>>>>>
+>>>>> If not, then perhaps your design is incorrect?
+>>>>>
+>>>> i just want to refer bt_ioctl within https://source.codeaurora.org/quic/qsdk/oss/kernel/linux-ipq-5.4/tree/drivers/soc/qcom/bt_tty.c?h=NHSS.QSDK.11.5.0.5.r2
+>>>> by serdev. so add this interface.
+>>>
+>>> The 5.4 kernel is not relevant here, so I do not understand.
+>>>
+>>>> are there any other good solution to advise?
+>>>
+>>> Why not work with the bluetooth developers on this?
+>>
+>> if this is just to have some hackish Bluetooth driver, then NAK from my side. Since we have serdev, we have no need for, or requirements for any ioctl anymore. If such thing is needed, it is a bad design.
+> 
+> Thanks for the confirmation, seems sane to me!
+> 
+> Zijun, please fix up your driver and submit it to be merged and all
+> should be fine, no need for any custom ioctls.
+> 
+ thank you Greg, i have submitted all changes to support the special BT controller, certainly, it includes this serdev change.
+> thanks,
+> 
+> greg k-h
+> 
