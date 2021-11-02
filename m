@@ -2,94 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 715F0443208
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 16:51:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2F6D443215
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 16:53:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232666AbhKBPy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 11:54:29 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:57796 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231361AbhKBPyZ (ORCPT
+        id S234667AbhKBPz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 11:55:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234642AbhKBPzy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 11:54:25 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 8D178212C3;
-        Tue,  2 Nov 2021 15:51:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1635868303; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9Jn3BaAn3lExYJcPf9xUO6RYJ/5roELy886njRhgwJY=;
-        b=wB/1cmf5b6RnbrrA20EJZzimJvULePq1Q91n5m9al5Y+o5W4DDQbL8KMqNyXnCMDaYU96Q
-        /+bUednnEYrxG1wgF4oLwOcQzWohrJAUwmenR3R9lK1YOmhDdcj8FuvxpV6Bo2+/mkBZjO
-        TNcHox+RD6VMaQx3xdVqpQ7S8PO2iBA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1635868303;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9Jn3BaAn3lExYJcPf9xUO6RYJ/5roELy886njRhgwJY=;
-        b=x2VoycqqmoqL5TlYQH6i+IRqs0XEjjGWxwkvnjIbVdtXTSaETvxlUhmsd1EGjdaPacL46G
-        3Dx5fVZr7FId6aDQ==
-Received: from hawking.suse.de (hawking.suse.de [10.160.4.0])
-        by relay2.suse.de (Postfix) with ESMTP id 80F14A3B81;
-        Tue,  2 Nov 2021 15:51:43 +0000 (UTC)
-Received: by hawking.suse.de (Postfix, from userid 17005)
-        id 666894431CC; Tue,  2 Nov 2021 16:51:43 +0100 (CET)
-From:   Andreas Schwab <schwab@suse.de>
-To:     linux-riscv@lists.infradead.org
-Cc:     Saleem Abdulrasool <abdulras@google.com>,
-        linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@dabbelt.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Bill Wendling <morbo@google.com>,
-        clang-built-linux@googlegroups.com
-Subject: [PATCH] riscv: fix building external modules
-References: <20210804173214.1027994-1-abdulras@google.com>
-X-Yow:  An INK-LING?  Sure -- TAKE one!!  Did you BUY any COMMUNIST UNIFORMS??
-Date:   Tue, 02 Nov 2021 16:51:43 +0100
-In-Reply-To: <20210804173214.1027994-1-abdulras@google.com> (Saleem
-        Abdulrasool's message of "Wed, 4 Aug 2021 17:32:14 +0000")
-Message-ID: <mvma6imr1ww.fsf@suse.de>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        Tue, 2 Nov 2021 11:55:54 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 531FDC061714;
+        Tue,  2 Nov 2021 08:53:19 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id g14so15346532edz.2;
+        Tue, 02 Nov 2021 08:53:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Uh3V+KhWN7/HDkvhbVf6laOL4Ct4HKkj535+ZUd6sTc=;
+        b=mljJuPk2s95J1Zu/X2yPZDdeX9Tf7AHTEqZnBDycdLY58ImXaeR/qCwS/yHo/ygp0E
+         RJym9wVijZxG5saxzNG0JyJ8gLTZ+dTaAz7P00YLje3/Bs/H1KQprhFV6hGbWx7oL2dF
+         BAD/6VP1Gvg2rZNZqWifEKMjNYV5/GmhwwUK8pKpMX/8GSMjhTIqexDbTk4ZsSxk7SCN
+         XyTXy4gm/8KLLwipx5eOiFBhN1eDI5/KyGFLQAOHh5abx1wrsRuuh3qxqR0eldbXT9Gk
+         L2oTZNC4gw/F+adHjZPGZqN1TgQTWAbRqOebK++aRc9XMQUAztT3+iPOC+qz641ayfM4
+         rOWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Uh3V+KhWN7/HDkvhbVf6laOL4Ct4HKkj535+ZUd6sTc=;
+        b=OK2eOGhS17AWr5hEBZTm8mBJzKAhkYqhc7c3F/6z6caO6Ymo9TqVBp1UShfRZfKEJj
+         qYJG5yCG2eIjKVjp8Day9sU7mZg90VYwXmVhlXO2OqNX1WTPwJB3/EWMbYzSppb8+bwV
+         dSIPvXOpr94pTRDqxZ921YyAGytEs6xXFcblVWZzh9Ho4vrnOrcky7007+Uo5VFrZEUC
+         BXD5t5J9GqJ67BfMxpHyyvM7EAYgEF+3f/lVjyiTBnsXGHHfkVtttUamQzeDMohDWXs8
+         JK5tu1EAe7ZmQkMjg87hLkHm/mmGEpnjVmyBvvEvtvDtbxvK2yrW+bZqk77tZVDLtn6v
+         cmOA==
+X-Gm-Message-State: AOAM531NZZzvNOsKl0AADAEmRjmODye7JpOYi4kBTNSAUFYCsE3Ub2iH
+        Ftlpc0Ns2SesAPN6zmf5bTkNYVXDiLUtYlfEIMc=
+X-Google-Smtp-Source: ABdhPJyTjVXWUex3kx74jUkyZZy1Lgyk60TiagscYsQU7F+1Bp3htGq7r9PeARDpBYraFJPo86RpwCEz5AO3nHAjN0c=
+X-Received: by 2002:a17:906:9f21:: with SMTP id fy33mr46127665ejc.567.1635868395452;
+ Tue, 02 Nov 2021 08:53:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20211102094907.31271-1-hdegoede@redhat.com> <20211102094907.31271-11-hdegoede@redhat.com>
+ <CAHp75Vd-xY43H8jPOUqJp55Rq3Wuhsdzctfhqq300S0vAKTzpw@mail.gmail.com> <1f4377bb-2902-05e9-95c7-ad924477b543@redhat.com>
+In-Reply-To: <1f4377bb-2902-05e9-95c7-ad924477b543@redhat.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 2 Nov 2021 17:52:26 +0200
+Message-ID: <CAHp75VfJZYiVvE0uQ6ahOJo9wxh0EwjgkeN81vas89pNMDv3GQ@mail.gmail.com>
+Subject: Re: [PATCH v5 10/11] platform/x86: int3472: Pass tps68470_regulator_platform_data
+ to the tps68470-regulator MFD-cell
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Kate Hsuan <hpa@redhat.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When building external modules, vdso_prepare should not be run.  If the
-kernel sources are read-only, it will fail.
+On Tue, Nov 2, 2021 at 4:59 PM Hans de Goede <hdegoede@redhat.com> wrote:
+> On 11/2/21 15:34, Andy Shevchenko wrote:
+> > On Tue, Nov 2, 2021 at 11:50 AM Hans de Goede <hdegoede@redhat.com> wrote:
 
-Fixes: fde9c59aebaf ("riscv: explicitly use symbol offsets for VDSO")
-Signed-off-by: Andreas Schwab <schwab@suse.de>
----
- arch/riscv/Makefile | 2 ++
- 1 file changed, 2 insertions(+)
+...
 
-diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
-index 0eb4568fbd29..41f3a75fe2ec 100644
---- a/arch/riscv/Makefile
-+++ b/arch/riscv/Makefile
-@@ -108,11 +108,13 @@ PHONY += vdso_install
- vdso_install:
- 	$(Q)$(MAKE) $(build)=arch/riscv/kernel/vdso $@
- 
-+ifeq ($(KBUILD_EXTMOD),)
- ifeq ($(CONFIG_MMU),y)
- prepare: vdso_prepare
- vdso_prepare: prepare0
- 	$(Q)$(MAKE) $(build)=arch/riscv/kernel/vdso include/generated/vdso-offsets.h
- endif
-+endif
- 
- ifneq ($(CONFIG_XIP_KERNEL),y)
- ifeq ($(CONFIG_RISCV_M_MODE)$(CONFIG_SOC_CANAAN),yy)
+> >> +               board_data = int3472_tps68470_get_board_data(dev_name(&client->dev));
+> >> +               if (!board_data) {
+> >> +                       dev_err(&client->dev, "No board-data found for this laptop/tablet model\n");
+> >> +                       return -ENODEV;
+> >
+> > It's fine to use dev_err_probe() for known error codes.
+> >
+> >> +               }
+> >
+> > ...
+> >
+> >> +               cells[1].platform_data = (void *)board_data->tps68470_regulator_pdata;
+> >
+> > Do we need casting?
+>
+> Yes, the cast casts away a "const", the const is correct
+> since the data only ever gets read by the regulator driver,
+> but platform_data pointers are normally not const, so it
+> is either the cast, or loose the const on the definition
+> of the struct to which board_data->tps68470_regulator_pdata
+> points...
+>
+> So not good choice here really, only chosing between bad
+> options and I picked the lets do the cast "least worse"
+> option (at least to me). I'm open to changing this.
+
+Hmm... Okay, I was under the impression that MFD is using const for
+that field...
+
 -- 
-2.33.1
-
-
--- 
-Andreas Schwab, SUSE Labs, schwab@suse.de
-GPG Key fingerprint = 0196 BAD8 1CE9 1970 F4BE  1748 E4D4 88E3 0EEA B9D7
-"And now for something completely different."
+With Best Regards,
+Andy Shevchenko
