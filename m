@@ -2,181 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 067394430C8
+	by mail.lfdr.de (Postfix) with ESMTP id 534B24430CB
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 15:49:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232992AbhKBOwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 10:52:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59484 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232941AbhKBOwH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 10:52:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E13560C4B;
-        Tue,  2 Nov 2021 14:49:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635864572;
-        bh=0gzjGPbTbWWRcc0SsPOGB293mdUumRiH7yGEhUiWRNA=;
+        id S233036AbhKBOwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 10:52:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232981AbhKBOwN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 10:52:13 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23B00C061714;
+        Tue,  2 Nov 2021 07:49:36 -0700 (PDT)
+Date:   Tue, 2 Nov 2021 15:49:32 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
+        s=mail; t=1635864573;
+        bh=ZGMvUOgROs39Y2IRIABQgQtjLMkOhIgv7EWo6kdBvL4=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hk+bqY54hAjCxl2dbLTXy/Cbu90+I2wTQ3Oj8AiemS2N5+G12QV0doOkIBdEG43/S
-         lJUAjKvHlYpCIy/vw7RmbhI5HavAVY2mSrsfbaTYSxE1eaKXjz8q6GZueNOYFwSjrt
-         7lmCXMiIio8rZnBfo23AIvTSGcQCwMTMGI6aBD4I3xCTJXHDegBOnqw4q6slPn69Yl
-         4PKr+d81SgLPQrRP8iH9J0EkZGlu+BEyoQ1xDIncDr5MGDr7YUUrKhNnTQKXQdtepi
-         DZRKEXyZVk8IhFBt88gDk10xnnOWCI2pAhf0YRiYUP+Y9uPJmp1kZ4zH/jO3pQEZTq
-         JFig1OF3SfC+w==
-Received: by pali.im (Postfix)
-        id 25765A41; Tue,  2 Nov 2021 15:49:30 +0100 (CET)
-Date:   Tue, 2 Nov 2021 15:49:29 +0100
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI: Marvell: Update PCIe fixup
-Message-ID: <20211102144929.c5wt5pbl42ocrxly@pali>
-References: <20211101150405.14618-1-pali@kernel.org>
- <20211102084241.GA6134@alpha.franken.de>
- <20211102090246.unmbruykfdjabfga@pali>
- <20211102094700.GA7376@alpha.franken.de>
- <20211102100034.rhcb3k2jvr6alm6y@pali>
- <alpine.DEB.2.21.2111021210180.57165@angie.orcam.me.uk>
- <20211102125843.sqsusis4krnmhorq@pali>
- <alpine.DEB.2.21.2111021312160.57165@angie.orcam.me.uk>
+        b=WtoiCs3Ok0L6ElJs1cv+gVEIMDUM6+ZcXvWMRUR/2708Hh8iZYYUswLpgbAM/oU3P
+         5Nbv3nAUsr/mOdTy0Pf1QOjg01OL0FzDJzHewkqfzbqVX2nIAvb05Uu6ycf8lat9uZ
+         RHoBDMnEBpynIWVofT6yXipDAoq9UFbhcOGCg7xc=
+From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To:     Dominique Martinet <asmadeus@codewreck.org>
+Cc:     Eric Van Hensbergen <ericvh@gmail.com>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        v9fs-developer@lists.sourceforge.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net/9p: autoload transport modules
+Message-ID: <ddf6b6c9-1d9b-4378-b2ee-b7ac4a622010@t-8ch.de>
+References: <20211017134611.4330-1-linux@weissschuh.net>
+ <YYEYMt543Hg+Hxzy@codewreck.org>
+ <922a4843-c7b0-4cdc-b2a6-33bf089766e4@t-8ch.de>
+ <YYEmOcEf5fjDyM67@codewreck.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/mixed; boundary="2rCd6YTQfhfeI0Ff"
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <alpine.DEB.2.21.2111021312160.57165@angie.orcam.me.uk>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <YYEmOcEf5fjDyM67@codewreck.org>
+Jabber-ID: thomas@t-8ch.de
+X-Accept: text/plain, text/html;q=0.2, text/*;q=0.1
+X-Accept-Language: en-us, en;q=0.8, de-de;q=0.7, de;q=0.6
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday 02 November 2021 14:01:41 Maciej W. Rozycki wrote:
-> On Tue, 2 Nov 2021, Pali Rohár wrote:
-> 
-> > >  None of the Galileo system controllers I came across had the class code 
-> > > set incorrectly.
+
+--2rCd6YTQfhfeI0Ff
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+
+On 2021-11-02 20:51+0900, Dominique Martinet wrote:
+> Thomas Weißschuh wrote on Tue, Nov 02, 2021 at 11:59:32AM +0100:
+> > On 2021-11-02 19:51+0900, Dominique Martinet wrote:
+> > > Sorry for the late reply
+> > > 
+> > > Thomas Weißschuh wrote on Sun, Oct 17, 2021 at 03:46:11PM +0200:
+> > > > Automatically load transport modules based on the trans= parameter
+> > > > passed to mount.
+> > > > The removes the requirement for the user to know which module to use.
+> > > 
+> > > This looks good to me, I'll test this briefly on differnet config (=y,
+> > > =m) and submit to Linus this week for the next cycle.
 > > 
-> > In kernel there is quirk only for one device with id:
-> > PCI_VENDOR_ID_MARVELL (0x11ab) PCI_DEVICE_ID_MARVELL_GT64111 (0x4146)
+> > Thanks. Could you also fix up the typo in the commit message when applying?
+> > ("The removes" -> "This removes")
+> 
+> Sure, done -- I hadn't even noticed it..
+> 
+> > > Makes me wonder why trans_fd is included in 9pnet and not in a 9pnet-fd
+> > > or 9pnet-tcp module but that'll be for another time...
 > > 
-> > So for some reasons quirk is needed... Anyway, patch for this quirk just
-> > adds comment as there is no explanation for it. It does not modify quirk
-> > code.
-> > 
-> > So it is possible that Marvell (or rather Galileo at that time) included
-> > some config space fixup in some products and 0x4146 did not have it.
-> > Just guessing... We can really only guess what could happen at that time
-> > 20 years ago...
+> > To prepare for the moment when those transport modules are split into their own
+> > module(s), we could already add MODULE_ALIAS_9P() calls to net/9p/trans_fd.c.
 > 
->  Ah, there you go! -- sadly I don't seem to have a copy of the datasheet 
-> for the GT-64111, but the GT-64115 has it[1]:
+> I guess it wouldn't hurt to have 9p-tcp 9p-unix and 9p-fd aliases to the
+> 9pnet module, but iirc these transports were more closely tied to the
+> rest of 9pnet than the rest so it might take a while to do and I don't
+> have much time for this right now...
+> I'd rather not prepare for something I'll likely never get onto, so
+> let's do this if there is progress.
 > 
-> Table 158: PCI Class Code and Revision ID, Offset: 0x008
->  Bits  Field name Function                                     Initial Value
->  7:0   RevID      Indicates the GT-64115 PCI Revision          0x01
->                   number.
->  15:8  Reserved   Read only.                                   0x0
->  23:16 SubClass   Indicates the GT-64115 Subclass - Mem-       0x80
->                   ory controller.
->  31:24 BaseClass  Indicates the GT-64115 Base Class -          0x05
->                   memory controller.
-> 
-> and then:
-> 
-> "Device and Vendor ID (0x000), Class Code and Revision ID (0x008), and 
-> Header Type (0x00e) fields are read only from the PCI bus.  These fields 
-> can be modified and read via the CPU bus."
-> 
-> Likewise with the GT-64120[2]:
-> 
-> Table 208: PCI_0 Class Code and Revision ID, Offset: 0x008 from PCI_0 or CPU; 0x088 from
->            PCI_1
->  Bits  Field name Function                                      Initial Value
->  7:0   RevID      Indicates the GT-64120 PCI_0 revision number. 0x02
->  15:8  Reserved   Read Only 0.                                  0x0
->  23:16 SubClass   Indicates the GT-64120 Subclass               Depends on value
->                   0x00 - Host Bridge Device.                    sampled at reset
->                   0x80 - Memory Device.                         on BankSel[0]. See
->                                                                 Table 44 on page
->                                                                 11-1.
->  31:24 BaseClass  Indicates the GT-64120 Base Class             Depends on value
->                   0x06 - Bridge Device.                         sampled at reset
->                   0x05 - Memory Device.                         on BankSel[0]. See
->                                                                 Table 44 on page
->                                                                 11-1.
-> 
-> Table 209: PCI_1 Class Code and Revision ID, Offset: 0x088 from PCI_0 or CPU; 0x008 from
->            PCI_1
->  Bits  Field name Function                                      Initial Value
->  31:0  Various    Same as for PCI_0 Class Code and Revision ID.
-> 
-> and then also:
-> 
-> "Device and Vendor ID (0x000), Class Code and Revision ID (0x008), and 
-> Header Type (0x00e) fields are read only from the PCI bus.  These fields 
-> can be modified and read via the CPU bus."
-> 
-> -- so this is system-specific and an intended chip feature rather than an 
-> erratum (or rather it is a system erratum if the reset strap or the boot 
-> firmware has got it wrong).
-> 
->  The memory device class code is IIUC meant to be typically chosen when 
-> the Galileo/Marvell device is used without the CPU interface, i.e. as a 
-> PCI memory controller device only[3].
-> 
-> > > The lack of a quirk with a platform does not mean it cannot have a certain 
-> > > PCI/e device.
-> > 
-> > This is 11ab:4620 device an there is no PCIe capability in its config
-> > space (you can inspect it via 'lspci -F dump.txt -nn -vv' but there is
-> > nothing interesting).
-> 
->  Of course, just as Thomas told you about the GT-64111 too.  But you were 
-> right in that the memory controller feature seems shared across all the 
-> chip line, whether PCI or PCIe.
-> 
-> References:
-> 
-> [1] "GT-64115 System Controller for RC4640, RM523X, and VR4300 CPUs", 
->     Galileo Technology, Datasheet Revision 1.11, APR 04, 2000, Section 
->     18.16 "PCI Configuration", p. 161
-> 
-> [2] "GT-64120 System Controller For RC4650/4700/5000 and RM526X/527X/7000 
->     CPUs", Galileo Technology, Datasheet Revision 1.4, SEP 14, 1999, 
->     Section 17.16 "PCI Configuration", p. 17-59
-> 
-> [3] same, Chapter 14. "Using the GT-64120 Without the CPU Interface", p. 
->     14-1
-> 
->   Maciej
+> Of course if you'd like to have a look that'd be more than welcome :-)
 
-Hello Maciej! Thank you very much for the explanation!
+If you are still testing anyways, you could also try the attached patch.
+(It requires the autload patch)
 
-Now it makes sense and looks like that for GT-64111 it is "system
-erratum" that strapping pins are incorrectly set which leads to wrong
-PCI class code.
+It builds fine and I see no reason for it not to work.
 
-I will update comment for GT-64111 quirk in v2.
+Thomas
 
-I'm surprised that Marvell copied this 20 years old MIPS Galileo PCI
-logic into followup ARM SoC PCIe IPs (and later also into recent ARM64
-A3720 SoC PCIe IP), removed configuration of PCI class code via
-strapping pins and let default PCI class code value to Memory device,
-even also when PCIe controller is running in Root Complex mode. And so
-correction can be done only from "CPU bus".
+--2rCd6YTQfhfeI0Ff
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: attachment; filename="9p-transport-fd-module.patch"
 
-Just Marvell forgot to include chapter about usage without CPU interface
-in new ARM and ARM64 SoCs and origin/usage of that Memory Controller
-Device was lost in history, even Marvell people was not able to figure
-out what was wrong with PCIe IP in their ARM SoCs...
-https://lore.kernel.org/linux-pci/20211003120944.3lmwxylnhlp2kfj7@pali/
+diff --git a/include/net/9p/9p.h b/include/net/9p/9p.h
+index 03614de86942..f420f8cb378d 100644
+--- a/include/net/9p/9p.h
++++ b/include/net/9p/9p.h
+@@ -553,6 +553,4 @@ struct p9_fcall {
+ int p9_errstr2errno(char *errstr, int len);
+ 
+ int p9_error_init(void);
+-int p9_trans_fd_init(void);
+-void p9_trans_fd_exit(void);
+ #endif /* NET_9P_H */
+diff --git a/net/9p/Makefile b/net/9p/Makefile
+index aa0a5641e5d0..b7d2ea495f65 100644
+--- a/net/9p/Makefile
++++ b/net/9p/Makefile
+@@ -1,5 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0
+ obj-$(CONFIG_NET_9P) := 9pnet.o
++obj-$(CONFIG_NET_9P) += 9pnet_fd.o
+ obj-$(CONFIG_NET_9P_XEN) += 9pnet_xen.o
+ obj-$(CONFIG_NET_9P_VIRTIO) += 9pnet_virtio.o
+ obj-$(CONFIG_NET_9P_RDMA) += 9pnet_rdma.o
+@@ -9,9 +10,11 @@ obj-$(CONFIG_NET_9P_RDMA) += 9pnet_rdma.o
+ 	client.o \
+ 	error.o \
+ 	protocol.o \
+-	trans_fd.o \
+ 	trans_common.o \
+ 
++9pnet_fd-objs := \
++	trans_fd.o \
++
+ 9pnet_virtio-objs := \
+ 	trans_virtio.o \
+ 
+diff --git a/net/9p/mod.c b/net/9p/mod.c
+index 5126566850bd..dee263f8e361 100644
+--- a/net/9p/mod.c
++++ b/net/9p/mod.c
+@@ -164,7 +164,6 @@ static int __init init_p9(void)
+ 
+ 	p9_error_init();
+ 	pr_info("Installing 9P2000 support\n");
+-	p9_trans_fd_init();
+ 
+ 	return ret;
+ }
+@@ -178,7 +177,6 @@ static void __exit exit_p9(void)
+ {
+ 	pr_info("Unloading 9P2000 support\n");
+ 
+-	p9_trans_fd_exit();
+ 	p9_client_exit();
+ }
+ 
+diff --git a/net/9p/trans_fd.c b/net/9p/trans_fd.c
+index 007bbcc68010..ff95bdf8baa5 100644
+--- a/net/9p/trans_fd.c
++++ b/net/9p/trans_fd.c
+@@ -1092,6 +1092,7 @@ static struct p9_trans_module p9_tcp_trans = {
+ 	.show_options = p9_fd_show_options,
+ 	.owner = THIS_MODULE,
+ };
++MODULE_ALIAS_9P("tcp");
+ 
+ static struct p9_trans_module p9_unix_trans = {
+ 	.name = "unix",
+@@ -1105,6 +1106,7 @@ static struct p9_trans_module p9_unix_trans = {
+ 	.show_options = p9_fd_show_options,
+ 	.owner = THIS_MODULE,
+ };
++MODULE_ALIAS_9P("unix");
+ 
+ static struct p9_trans_module p9_fd_trans = {
+ 	.name = "fd",
+@@ -1118,6 +1120,7 @@ static struct p9_trans_module p9_fd_trans = {
+ 	.show_options = p9_fd_show_options,
+ 	.owner = THIS_MODULE,
+ };
++MODULE_ALIAS_9P("fd");
+ 
+ /**
+  * p9_poll_workfn - poll worker thread
+@@ -1167,3 +1170,10 @@ void p9_trans_fd_exit(void)
+ 	v9fs_unregister_trans(&p9_unix_trans);
+ 	v9fs_unregister_trans(&p9_fd_trans);
+ }
++
++module_init(p9_trans_fd_init);
++module_exit(p9_trans_fd_exit);
++
++MODULE_AUTHOR("Eric Van Hensbergen <ericvh@gmail.com>");
++MODULE_DESCRIPTION("Filedescriptor Transport for 9P");
++MODULE_LICENSE("GPL");
 
-Maciej, if I had known that you have this kind of information I would
-have written you year ago :-)
+--2rCd6YTQfhfeI0Ff--
