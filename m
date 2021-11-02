@@ -2,83 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70813442BDC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 11:52:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57E80442BEA
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 11:54:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230114AbhKBKyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 06:54:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229577AbhKBKyb (ORCPT
+        id S230333AbhKBK53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 06:57:29 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:57116 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229577AbhKBK53 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 06:54:31 -0400
-Received: from nautica.notk.org (ipv6.notk.org [IPv6:2001:41d0:1:7a93::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15CB6C061714;
-        Tue,  2 Nov 2021 03:51:57 -0700 (PDT)
-Received: by nautica.notk.org (Postfix, from userid 108)
-        id 3C75BC01F; Tue,  2 Nov 2021 11:51:54 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1635850314; bh=/+rgwyKj69Vlkv0On+QcUYGVMOPrFUm5qkV/iCdjSuE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Bllg/2urLxMrhi0EQ9vJE7hUT0j+9sipszv0uG4cD9GuneRFwaENHv+XPEAdtgpQ3
-         BVZFTpfit0eEaeAj9ywQWv/smY2YtZf/mN1EftGrFsHzhC67p51Ja+zi9mOki67ikU
-         bdIOsRWgYttAr8XixlwRIvmTM5QPJPhvaYQl+i4PciRR/q6EjKgIK9zuCcXtvpzGCT
-         F6cNTJrPC0PmYKCC1kkyGGVZkhrhgSGZvmFlOFrzcqKJS7YGgoDKwgS5dJxErfmMuV
-         dFziBQSpjp8J7wMtEcSa8ZcvMgc3mDpa8Bk+q/Hu3wSrbpkD3bkf3uCZvblDuGHCiN
-         D2l1P2++pR8Rw==
-X-Spam-Checker-Version: SpamAssassin 3.3.2 (2011-06-06) on nautica.notk.org
-X-Spam-Level: 
-X-Spam-Status: No, score=0.0 required=5.0 tests=UNPARSEABLE_RELAY
-        autolearn=unavailable version=3.3.2
-Received: from odin.codewreck.org (localhost [127.0.0.1])
-        by nautica.notk.org (Postfix) with ESMTPS id 7322BC009;
-        Tue,  2 Nov 2021 11:51:50 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1635850312; bh=/+rgwyKj69Vlkv0On+QcUYGVMOPrFUm5qkV/iCdjSuE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VMaB08Hu6Foyxs/pdMDPS6K8Al/e8m6rZ0Eoedy5eGGFg0BtzkXXkdvbiOhcja/bN
-         nuUiCNQjIatikUFrmzTeCECJFWeWKEKzGxeMzs+Apt97UYqRG/ckfOhZmPwhsvD0zk
-         WquzyAbppLOCo4qmbE1QJQ596SSnNxFVctkKlsxx71fQmYCyHTx61PGM5W+vV19UBR
-         Y8CZYyWKlsHYEuE5CFwrqz/p2Gm5JZns92Z2k90P8+brOGfJojqbgPBRaRuGg3JP0P
-         3yPeY9Oedsw7HTF2llivfdcWzb2wcY1P7/YE8RP9ZLuG5ZIzMw+4GplxnYfmp2hV/p
-         f8wa6F+jyfD+g==
-Received: from localhost (odin.codewreck.org [local])
-        by odin.codewreck.org (OpenSMTPD) with ESMTPA id b13de0de;
-        Tue, 2 Nov 2021 10:51:45 +0000 (UTC)
-Date:   Tue, 2 Nov 2021 19:51:30 +0900
-From:   Dominique Martinet <asmadeus@codewreck.org>
-To:     Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Cc:     Eric Van Hensbergen <ericvh@gmail.com>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        v9fs-developer@lists.sourceforge.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net/9p: autoload transport modules
-Message-ID: <YYEYMt543Hg+Hxzy@codewreck.org>
-References: <20211017134611.4330-1-linux@weissschuh.net>
+        Tue, 2 Nov 2021 06:57:29 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1A27KWag027459;
+        Tue, 2 Nov 2021 11:54:41 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=F3zslvwLhHMv15l+DDp1BP8HK4d2H8Odbk6ORCpvSWM=;
+ b=4+RNds1W1D6p9AXQqCyxrSLALcHZ+vLrsPJBZ6WVQvxYuznQMcqnGuUfK0jJJ4il4Rly
+ xbUyNvUWI3JyFe05zy6gkdA0lmP9g7m6o83G+kCa/07678UqBsjgQSo5g3b7b5CS/NaZ
+ APLE+CEwYIj3DpVyxlYJ4mWiDmx4WHjtMtW5rvXn4RCHPpYm3KxkBkJ7YrQ3D9y6quIq
+ CV994KH5lLOUKVamJtmocmLDT/ialwaRUM3SY2ncGC7O1N7ivEVZ5xJ28JYfP53kwLyv
+ BuHiPDQ1KUS4fnMjWadXsieARNUDGVXJKetTj91+T0Ew0zrVI8IApapnALXthhN8wEdL rA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3c30uvhbwa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 02 Nov 2021 11:54:41 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 5DC1210002A;
+        Tue,  2 Nov 2021 11:54:40 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id D729921667C;
+        Tue,  2 Nov 2021 11:54:38 +0100 (CET)
+Received: from lmecxl0889.lme.st.com (10.75.127.47) by SFHDAG2NODE2.st.com
+ (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 2 Nov
+ 2021 11:54:38 +0100
+Subject: Re: [PATCH v10 0/2] Add rpmsg tty driver
+To:     Jiri Slaby <jirislaby@kernel.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Suman Anna <s-anna@ti.com>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-remoteproc@vger.kernel.org>
+References: <20211015094701.5732-1-arnaud.pouliquen@foss.st.com>
+ <0b42eede-d909-1afb-f3fc-c4ee1e2fc0f4@kernel.org>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
+Message-ID: <dae498c3-3460-e493-564e-bc903e4aa5b8@foss.st.com>
+Date:   Tue, 2 Nov 2021 11:54:37 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <0b42eede-d909-1afb-f3fc-c4ee1e2fc0f4@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211017134611.4330-1-linux@weissschuh.net>
+X-Originating-IP: [10.75.127.47]
+X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-02_06,2021-11-02_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Jiri,
 
-Sorry for the late reply
+On 11/1/21 8:27 AM, Jiri Slaby wrote:
+> On 15. 10. 21, 11:46, Arnaud Pouliquen wrote:
+> ...
+>>   drivers/rpmsg/rpmsg_core.c       |  21 +++
+>>   drivers/rpmsg/rpmsg_internal.h   |   2 +
+>>   drivers/rpmsg/virtio_rpmsg_bus.c |  10 ++
+>>   drivers/tty/Kconfig              |  12 ++
+>>   drivers/tty/Makefile             |   1 +
+>>   drivers/tty/rpmsg_tty.c          | 274 +++++++++++++++++++++++++++++++
+>>   include/linux/rpmsg.h            |  10 ++
+> 
+> Hi,
+> 
+> care to add an entry to MAINTAINERS too?
 
-Thomas Weißschuh wrote on Sun, Oct 17, 2021 at 03:46:11PM +0200:
-> Automatically load transport modules based on the trans= parameter
-> passed to mount.
-> The removes the requirement for the user to know which module to use.
+That's a good point. I will send a patch to propose myself as maintainer.
 
-This looks good to me, I'll test this briefly on differnet config (=y,
-=m) and submit to Linus this week for the next cycle.
+Thanks,
+Arnaud
 
-Makes me wonder why trans_fd is included in 9pnet and not in a 9pnet-fd
-or 9pnet-tcp module but that'll be for another time...
--- 
-Dominique
+> 
+> thanks,
