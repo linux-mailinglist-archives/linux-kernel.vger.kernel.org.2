@@ -2,101 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5004442C57
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 12:17:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22033442C60
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 12:19:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230096AbhKBLUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 07:20:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54330 "EHLO
+        id S230336AbhKBLWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 07:22:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229720AbhKBLUL (ORCPT
+        with ESMTP id S230109AbhKBLWV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 07:20:11 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B2EDC061714
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 04:17:36 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id r9-20020a7bc089000000b00332f4abf43fso1379842wmh.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 04:17:36 -0700 (PDT)
+        Tue, 2 Nov 2021 07:22:21 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67C85C061764
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 04:19:46 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id c4so2740166wrd.9
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 04:19:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=LMHrZiJqV7S0JuH1izO6L2hdtZQgXaQXDt7dk8GGzPY=;
-        b=M8+SDVg2dlzMqHLw4Lsjc8SwZ6celGapRcFhXVzvU3BVKaTY6JtYxBXhZrkjSdRbSt
-         jcyvAYxqKLWWOLRECIPVONHHi0khZP2SjqXAtjrL39qu1kUQNBuzEZi7HsZwRIknMzR6
-         96YYKICBfsahTvJ8aamjaQ07/lw4MT6tqrFQipD+APMOPbnN0KELS/P/KarqDGF4fTKi
-         i3tDzZ99uICsbtqZDMXrRayD9CgaMQjdt1PF9zyX3sFPAJSIpEf+qEVOjEM3zzWumx4W
-         48ou2WqE5TRucn90ipWgzfXc2+yTNAVhB1TTSj4ALkVkdV5nbxic4brpW37Bj+ZP4MpB
-         cpHQ==
+         :content-disposition:in-reply-to;
+        bh=BV8Q7dK1iGHktSvqteqNvvvCLpO0ziqstJ96eN7bGFk=;
+        b=A1gsw59Vbk/Jh1FfF8wS+fZtmmzy1sG243dqu4q2SMzGM5qQYUYDVZP2dsnTKhumxp
+         vrtteRbXOpg23prSjFtAQLzUZ87X+FU+3hZTiIHXw5q/3zwPu4dQy9u51X8K0YAyrMGo
+         xhWx511b8CXLTsotaAbOw+sK5xJoworEZpNaugvmeVuFgX1eXUZv0pyUqdmY+kCnQrnk
+         Uh33ILG3NHJlqOpoEK6UFl3JpyIXOLufPjgM5H+AbuWCao8XS7cc1+f2GSCmJkpgiJvh
+         zbHVUrhxO5aenN6OxX7Yg7+wjZ/Om+tKDR9iv2klL8KHDMv25Ssm2sSWftq0LJ4eEJbP
+         1TGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=LMHrZiJqV7S0JuH1izO6L2hdtZQgXaQXDt7dk8GGzPY=;
-        b=ew80nr2XVUNHXYSvgTVVBLIl3TG/8xa09LKuEvLg/ctUl/lW3QzQl6jzOiL9bhssV1
-         Sjawubx9EGFcFrlzP9kybXXfrmCAhe8QTMw9a1se0Ud24q6CaydO8fMtZ0E/EA1ZwrUA
-         vbgUtt2PlsMB1wzbo/+knLKeWfG+rJHj+lFecw5KD999yujTh6eUDNVECiKnlazL4j1u
-         LAt6LeWh3/dkcEzLDwO3lyGDEagSpuBezteMFQZsJtnu4CmTCU8KkHlCshtCBL+L0gmt
-         nKk76gnq0z6M3qsseD6mHZFdixdUxJX9Jd7suREi467ftSuNK+oz8zr8S7q//AKJmzPp
-         my7A==
-X-Gm-Message-State: AOAM531YBcoRwXezen2n+smNMr7ov8EjrazJ31Lk0N1evHGYKs+ty7Oh
-        WHtP+NTbFXUVgaEe+EMsrchjQ7ZypPz+pA==
-X-Google-Smtp-Source: ABdhPJxCcObd+QRyFIzBLvnmYXiZKqSA10ff+r6tn/nQo4XhpaZmA3NxfyXPpUkhgxM+6xDanai89w==
-X-Received: by 2002:a05:600c:3511:: with SMTP id h17mr6020459wmq.144.1635851853082;
-        Tue, 02 Nov 2021 04:17:33 -0700 (PDT)
-Received: from google.com ([95.148.6.174])
-        by smtp.gmail.com with ESMTPSA id o1sm9395816wrn.63.2021.11.02.04.17.32
+         :mime-version:content-disposition:in-reply-to;
+        bh=BV8Q7dK1iGHktSvqteqNvvvCLpO0ziqstJ96eN7bGFk=;
+        b=SAN8lqsigafljfaExN5Shi5TOqBeCtV7iORz28VaF7wYVIURJ4Ny1UO5jd23lpWBbI
+         ewwGzLOMm+HqWBkIaQ0REqsJKPt9IuLrbXsgEZEfPoVggGLGfMjWMGQD2kkbvAqcv8rm
+         EdnjP0W8y6+q5bmdmbESaoF5iBwjwaOHllpoRDY3X13tEBFuwOhuCQo2ZiXBOOfXbv4O
+         Rt4B8K2iHItweZOXSBnyvE7UUfRMvpcfD9KIfyjQtElViAqGJ2wF0P3bTyRaANxg79B0
+         Q6rkmpar8GFmc97lwvuuk27dyR9uKJP0jbwkZrrMWr/WzW7laQnANDA7jqY+INmV4ins
+         mRXA==
+X-Gm-Message-State: AOAM531umDQiqN7vPiYUYLnQ+4GMoxgWfXn6EdAZjNvtFPXgQLRPNbKC
+        QpUu6pUOwIdwJZwlDbWCsG6Y6w==
+X-Google-Smtp-Source: ABdhPJzsgj6uVqgv7RqK4Hm+cJXI2XbHFrlQVJx51sEeWWeqYjbui2a8pf8Adkd1Tw4XyS+ZlRtJEg==
+X-Received: by 2002:a5d:522e:: with SMTP id i14mr30689564wra.43.1635851984882;
+        Tue, 02 Nov 2021 04:19:44 -0700 (PDT)
+Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id e3sm3783843wrp.8.2021.11.02.04.19.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Nov 2021 04:17:32 -0700 (PDT)
-Date:   Tue, 2 Nov 2021 11:17:31 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Robert Marko <robert.marko@sartura.hr>
-Cc:     michael@walle.cc, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mfd: simple-mfd-i2c: Select MFD_CORE to fix build error
-Message-ID: <YYEeS8gz8TBW63X8@google.com>
-References: <20211102100420.112215-1-robert.marko@sartura.hr>
+        Tue, 02 Nov 2021 04:19:44 -0700 (PDT)
+Date:   Tue, 2 Nov 2021 11:19:42 +0000
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Corentin LABBE <clabbe@baylibre.com>
+Cc:     lee.jones@linaro.org, jingoohan1@gmail.com,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, khilman@baylibre.com,
+        Jean-Jacques Hiblot <jjhiblot@ti.com>,
+        Pavel Machek <pavel@ucw.cz>
+Subject: Re: [PATCH] backlight: led_bl: Add support for an "enable" GPIO
+Message-ID: <20211102111942.xd7eqz2zrtb7zotc@maple.lan>
+References: <20211102100455.2016610-1-clabbe@baylibre.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211102100420.112215-1-robert.marko@sartura.hr>
+In-Reply-To: <20211102100455.2016610-1-clabbe@baylibre.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 02 Nov 2021, Robert Marko wrote:
-
-> MFD_SIMPLE_MFD_I2C should select the MFD_CORE to a prevent build error:
+On Tue, Nov 02, 2021 at 10:04:55AM +0000, Corentin LABBE wrote:
+> From: Jean-Jacques Hiblot <jjhiblot@ti.com>
 > 
-> aarch64-linux-ld: drivers/mfd/simple-mfd-i2c.o: in function `simple_mfd_i2c_probe':
-> drivers/mfd/simple-mfd-i2c.c:55: undefined reference to `devm_mfd_add_devices'
+> This patch adds support for an "enable GPIO".
 
-What is your use-case?
+Before taking this kind of change is there a good reason why backlight
+should manage the GPIO? I thought that the LED subsystem was a sub
+system for LEDs (not LED controllers). In other words if you direct
+that the LED be lit up then isn't it the LED driver's job to manage
+the GPIO and ensure that it lights up?
 
-How are you enabling this symbol?
 
-> Fixes: 3abee4579484 ("mfd: Add simple regmap based I2C driver")
-> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+Daniel.
+
+
+> Signed-off-by: Jean-Jacques Hiblot <jjhiblot@ti.com>
+> Signed-off-by: Corentin LABBE <clabbe@baylibre.com>
 > ---
->  drivers/mfd/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
+>  drivers/video/backlight/led_bl.c | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
 > 
-> diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-> index 61992edf6a4d..2de69892b631 100644
-> --- a/drivers/mfd/Kconfig
-> +++ b/drivers/mfd/Kconfig
-> @@ -1204,6 +1204,7 @@ config MFD_SI476X_CORE
->  config MFD_SIMPLE_MFD_I2C
->  	tristate
->  	depends on I2C
-> +	select MFD_CORE
->  	select REGMAP_I2C
->  	help
->  	  This driver creates a single register map with the intention for it
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+> diff --git a/drivers/video/backlight/led_bl.c b/drivers/video/backlight/led_bl.c
+> index f54d256e2d54..ebd7acc32980 100644
+> --- a/drivers/video/backlight/led_bl.c
+> +++ b/drivers/video/backlight/led_bl.c
+> @@ -8,6 +8,7 @@
+>  
+>  #include <linux/backlight.h>
+>  #include <linux/leds.h>
+> +#include <linux/gpio.h>
+>  #include <linux/module.h>
+>  #include <linux/platform_device.h>
+>  
+> @@ -15,6 +16,7 @@ struct led_bl_data {
+>  	struct device		*dev;
+>  	struct backlight_device	*bl_dev;
+>  	struct led_classdev	**leds;
+> +	struct gpio_desc        *enable_gpio;
+>  	bool			enabled;
+>  	int			nb_leds;
+>  	unsigned int		*levels;
+> @@ -35,6 +37,9 @@ static void led_bl_set_brightness(struct led_bl_data *priv, int level)
+>  	for (i = 0; i < priv->nb_leds; i++)
+>  		led_set_brightness(priv->leds[i], bkl_brightness);
+>  
+> +	if (!priv->enabled)
+> +		gpiod_set_value_cansleep(priv->enable_gpio, 1);
+> +
+>  	priv->enabled = true;
+>  }
+>  
+> @@ -48,6 +53,9 @@ static void led_bl_power_off(struct led_bl_data *priv)
+>  	for (i = 0; i < priv->nb_leds; i++)
+>  		led_set_brightness(priv->leds[i], LED_OFF);
+>  
+> +	if (priv->enabled)
+> +		gpiod_set_value_cansleep(priv->enable_gpio, 0);
+> +
+>  	priv->enabled = false;
+>  }
+>  
+> @@ -209,6 +217,11 @@ static int led_bl_probe(struct platform_device *pdev)
+>  		return PTR_ERR(priv->bl_dev);
+>  	}
+>  
+> +	priv->enable_gpio = devm_gpiod_get_optional(&pdev->dev, "enable",
+> +						    GPIOD_OUT_LOW);
+> +	if (IS_ERR(priv->enable_gpio))
+> +		return PTR_ERR(priv->enable_gpio);
+> +
+>  	for (i = 0; i < priv->nb_leds; i++)
+>  		led_sysfs_disable(priv->leds[i]);
+>  
+> -- 
+> 2.25.1
+> 
