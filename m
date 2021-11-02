@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65C6E442778
+	by mail.lfdr.de (Postfix) with ESMTP id D3DCD442779
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 08:06:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230281AbhKBHIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 03:08:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53254 "EHLO
+        id S229778AbhKBHI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 03:08:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230508AbhKBHIr (ORCPT
+        with ESMTP id S230451AbhKBHIu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 03:08:47 -0400
+        Tue, 2 Nov 2021 03:08:50 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3ADAC061764
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 00:06:12 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AC24C061714
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 00:06:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=iSMKRB1ypj4SY7bifdaR84NOhT38ADMlZ3HEJkbTNbE=; b=M9SAJkXgnmnpT24mLBYSbsvtyy
-        AmLXr7WkmOZO1YP+7nBAUKFqJpfL1L4075C3FSNOdXbY+6HmCIRbHYDqV/e7DspfeVwUtW7VobI1t
-        Bv2uCewjW8M0DKCdQU2ubIv6IItT83fF6hAhXOUgCbxaybxiXfQoM/FM0ZqdaPm592hBtVaocQxf2
-        BEcge4KYu0gA3VMhkfdP0tQnSf0VijX7WQs/LwXihTx95QfopVWHWnEANjFN+Ftk0Q1uyhEQTII4T
-        OvrffEwsT+UNTgsrzWPRT/EzxtmG+nyIybLisnvg+7jE41njR3HxfHrb1zXSkISyi8eDVaTlL1QPd
-        Mo6u4AiQ==;
+        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
+        :Reply-To:Content-Type:Content-ID:Content-Description;
+        bh=IGVxyvjj8wXeCYhT6CzTbR/ke8h8L+4v3JBouegccAI=; b=xuz7Pg6HRx6pjfl/p5EmaHC61v
+        DPOOh3jPtvhr8M6xFdpCqxf81D6eLREP0JBhAf5pk80fOXIlq9gkj02ZY3LQztsy+/2V8h25anzqW
+        SpwBoxpXfRMybvABVRPABf64Z58TWYJwLZzzCSO7MgQo4lzgRGRaiX1wxMWCs4Y9EBSwsKgW7op5A
+        CePCOxCq8tU13yN4xpkPiOhzXJWa7AJr7Gbq77auE8ea7d2mSdKdux4oUnCrUd/DI5Fjf3B8SqymP
+        SdvCUtnXpbMUxyrrGGwu0IXDN2gfoUIq+v3cFP0LQIXNZuiH0TnGT8UoN/x5/WDhqEdeyNj7IJLCm
+        MsqpDqYQ==;
 Received: from 213-225-15-89.nat.highway.a1.net ([213.225.15.89] helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mhnry-000hyd-I7; Tue, 02 Nov 2021 07:06:07 +0000
+        id 1mhns4-000hyp-I2; Tue, 02 Nov 2021 07:06:13 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Jani Nikula <jani.nikula@linux.intel.com>,
         Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
@@ -37,10 +37,12 @@ To:     Jani Nikula <jani.nikula@linux.intel.com>,
 Cc:     Jason Gunthorpe <jgg@nvidia.com>, intel-gfx@lists.freedesktop.org,
         intel-gvt-dev@lists.freedesktop.org,
         dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: refactor the i915 GVT support and move to the modern mdev API v2
-Date:   Tue,  2 Nov 2021 08:05:32 +0100
-Message-Id: <20211102070601.155501-1-hch@lst.de>
+Subject: [PATCH 01/29] drm/i915/gvt: undef TRACE_INCLUDE_FILE in i915_trace.h
+Date:   Tue,  2 Nov 2021 08:05:33 +0100
+Message-Id: <20211102070601.155501-2-hch@lst.de>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20211102070601.155501-1-hch@lst.de>
+References: <20211102070601.155501-1-hch@lst.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
@@ -48,57 +50,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+From: Zhenyu Wang <zhenyuw@linux.intel.com>
 
-the GVT code in the i915 is a bit of a mess right now due to strange
-abstractions and lots of indirect calls.  This series refactors various
-bits to clean that up.  The main user visible change is that almost all
-of the GVT code moves out of the main i915 driver and into the kvmgt
-module.
+Allow for including multiple trace headers.
 
-Tested on my Thinkpad with a Kaby Lake CPU and integrated graphics.
+XXX: Needs a singoff.
+---
+ drivers/gpu/drm/i915/i915_trace.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-Git tree:
+diff --git a/drivers/gpu/drm/i915/i915_trace.h b/drivers/gpu/drm/i915/i915_trace.h
+index 63fec1c3c132d..a35a8b46ac2ce 100644
+--- a/drivers/gpu/drm/i915/i915_trace.h
++++ b/drivers/gpu/drm/i915/i915_trace.h
+@@ -17,6 +17,7 @@
+ 
+ #undef TRACE_SYSTEM
+ #define TRACE_SYSTEM i915
++#undef TRACE_INCLUDE_FILE
+ #define TRACE_INCLUDE_FILE i915_trace
+ 
+ /* watermark/fifo updates */
+-- 
+2.30.2
 
-    git://git.infradead.org/users/hch/misc.git i915-gvt
-
-Gitweb:
-
-    http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/i915-gvt
-
-Changes since v1:
- - rebased on Linux 5.15
- - allow the kvmgvt module to be loaded at any time and thus solve
-   the deadlock when both i915 amd kvmgvt are modular
- - include the conversion to the modern mdev API
-
-Note that I do expect to rebased this again against 5.16-rc1 once
-released, but I'd like to get this out for review ASAP.
-
-Diffstat:
- b/drivers/gpu/drm/i915/Kconfig          |   33 
- b/drivers/gpu/drm/i915/Makefile         |   31 
- b/drivers/gpu/drm/i915/gvt/cfg_space.c  |   89 --
- b/drivers/gpu/drm/i915/gvt/cmd_parser.c |    4 
- b/drivers/gpu/drm/i915/gvt/dmabuf.c     |   36 -
- b/drivers/gpu/drm/i915/gvt/execlist.c   |   12 
- b/drivers/gpu/drm/i915/gvt/gtt.c        |   55 +
- b/drivers/gpu/drm/i915/gvt/gvt.h        |  125 ++-
- b/drivers/gpu/drm/i915/gvt/interrupt.c  |   38 +
- b/drivers/gpu/drm/i915/gvt/kvmgt.c      | 1099 +++++++++++++++-----------------
- b/drivers/gpu/drm/i915/gvt/mmio.c       |    4 
- b/drivers/gpu/drm/i915/gvt/opregion.c   |  148 ----
- b/drivers/gpu/drm/i915/gvt/page_track.c |    8 
- b/drivers/gpu/drm/i915/gvt/scheduler.c  |   37 -
- b/drivers/gpu/drm/i915/gvt/trace.h      |    2 
- b/drivers/gpu/drm/i915/gvt/vgpu.c       |   22 
- b/drivers/gpu/drm/i915/i915_drv.c       |    7 
- b/drivers/gpu/drm/i915/i915_drv.h       |    1 
- b/drivers/gpu/drm/i915/i915_trace.h     |    1 
- b/drivers/gpu/drm/i915/intel_gvt.c      |  162 +++-
- b/drivers/gpu/drm/i915/intel_gvt.h      |   17 
- drivers/gpu/drm/i915/gvt/Makefile       |    9 
- drivers/gpu/drm/i915/gvt/gvt.c          |  340 ---------
- drivers/gpu/drm/i915/gvt/hypercall.h    |   82 --
- drivers/gpu/drm/i915/gvt/mpt.h          |  400 -----------
- 25 files changed, 929 insertions(+), 1833 deletions(-)
