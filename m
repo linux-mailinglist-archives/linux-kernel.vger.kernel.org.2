@@ -2,101 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F85F44374B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 21:27:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67871443748
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 21:27:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231543AbhKBUaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 16:30:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231254AbhKBUaF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 16:30:05 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11894C061714;
-        Tue,  2 Nov 2021 13:27:30 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id j21so1624283edt.11;
-        Tue, 02 Nov 2021 13:27:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=QAaXhUzziYq9zGj4Dn+TSRAKewTMaW26NBtOKk5rNW0=;
-        b=bgMThWbXBX8BJYCrH5bovFBKEVLKqcpIEs4af/BStQOpvBfKG1/neFup8YmukpBfJG
-         ymGA3GTTcuH96/OqfzVR2//BXRBdm0Jj8xxO8+4L+ktsjKk+IcFiEDBm+Ur/7j5D/qPE
-         rxnt493wXJ5+QdktZURiZhtO2aXNpKz2w2YgorA6CbrmDruVbGkEpv4Y2KO8oZ8ALEi1
-         1MW5RM1u/EtE880HX92DzbHSEi6VenQ0r7qadMTm/+Z8cX3XZ8Cp2taWFTpQylW2U4bS
-         m4UjDxNbRrj3kLGd+2LTPP288+/7CcmEMF0d3nF7mdReC7rs2OfHO1O4WnfiFEJwWu54
-         07Tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=QAaXhUzziYq9zGj4Dn+TSRAKewTMaW26NBtOKk5rNW0=;
-        b=LfT5HbcOcJ7x8dDtg9fuqyib/pXN9sSP1nxvqhRwXX6+B5aDuOEKWijvb6xvp4cT/c
-         vm5JGNnyZyCLAB0wSKkDwFhLL8hRgvAStbMDTK4IvrDYO4Hw9tcTTAZ0hjqLYnx53ALo
-         mbbU8BSzaNqRga2dPl0xPI0NtblxQVp4kfuUH8JkEaf1vOPqHYFkf7eViN6PXCTGQt3x
-         XPelVkQITH+fUsdIR95HiXbg14LjS150F0ytisELIPGV5jA30E9JGNrMGebvZb0tW5hZ
-         pSW6eyQhF+oT/WB4rJaHYZsJ0d3DW4GvGHGQHrsXTqYHST2KZQLKabKPu0hCZsieQjm0
-         tpMg==
-X-Gm-Message-State: AOAM530HkCdxSQvCAyDZw5i9gDfY2lXazqF5ZqCv4P3qdGtcXYwusdOp
-        PLwGWplVC8O7UeE7Z+V4tMlcC6l9QdsEXcjec0o=
-X-Google-Smtp-Source: ABdhPJycZI0Dw0WaYwPwN+hEursxXTV7aXeKrv8My/ffFTCtVJCoYnTriOQyB5q1M8/qy6lu8Qsdekqd70HIlrTsS4g=
-X-Received: by 2002:a17:907:7601:: with SMTP id jx1mr48274365ejc.69.1635884848667;
- Tue, 02 Nov 2021 13:27:28 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211101200346.16466-1-quic_qiancai@quicinc.com>
- <CAHp75VcrWPdR8EVGpcsniQedT0J4X700N7thFs6+srTP1MTgwQ@mail.gmail.com>
- <c5767824-f39c-772c-d376-77db24bb2f84@quicinc.com> <CAHp75VebqgAyOz5MYRjdujijhas2iTw3viS1vpXm8RNkBevaMg@mail.gmail.com>
-In-Reply-To: <CAHp75VebqgAyOz5MYRjdujijhas2iTw3viS1vpXm8RNkBevaMg@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 2 Nov 2021 22:26:39 +0200
-Message-ID: <CAHp75Vfo0Bp5SCeb1_oKa5BZBj=X9KdDicbVpUyR4HKY_MDsqg@mail.gmail.com>
-Subject: Re: [RFC PATCH] software node: Skip duplicated software_node sysfs
-To:     Qian Cai <quic_qiancai@quicinc.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S231451AbhKBU35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 16:29:57 -0400
+Received: from mail.ispras.ru ([83.149.199.84]:50372 "EHLO mail.ispras.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229813AbhKBU34 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 16:29:56 -0400
+Received: from hednb3.Dlink (unknown [109.252.87.51])
+        by mail.ispras.ru (Postfix) with ESMTPSA id C175E40D403D;
+        Tue,  2 Nov 2021 20:27:16 +0000 (UTC)
+From:   Alexey Khoroshilov <khoroshilov@ispras.ru>
+To:     Vlad Yasevich <vyasevich@gmail.com>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Jakub Kicinski <kuba@kernel.org>, Xin Long <lucien.xin@gmail.com>,
+        linux-sctp@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org,
+        Alexey Khoroshilov <khoroshilov@ispras.ru>
+Subject: [PATCH] sctp: avoid NULL pointer dereference in sctp_sf_violation
+Date:   Tue,  2 Nov 2021 23:27:04 +0300
+Message-Id: <1635884824-28790-1-git-send-email-khoroshilov@ispras.ru>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 2, 2021 at 10:20 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
-> On Tue, Nov 2, 2021 at 9:44 PM Qian Cai <quic_qiancai@quicinc.com> wrote:
-> > On 11/1/21 7:51 PM, Andy Shevchenko wrote:
-> > > No, it=E2=80=99s not so easy. What you are doing is a papering over t=
-he real issue
-> > > which is the limitation of the firmware nodes to two. What we need is=
- to
-> > > drop the link from struct fwnode_handle, move it to upper layer and m=
-odify
-> > > all fwnode ops to be used over the list of fwnode:s.
-> >
-> > Andy, this is my first time touching fwnode/swnode. After reading the
-> > source code for a few hours, I still don't understand the hint here.
-> > Specifically, what does the "the link" refer to?
->
-> https://elixir.bootlin.com/linux/latest/source/include/linux/fwnode.h#L36
->
-> (Property related) fwnode (as of today) is the single linked list with
-> only two possible entries. Comments against set_primary_fwnode()
-> followed by set_secondary_fwnode() may shed a bit of light here
-> https://elixir.bootlin.com/linux/latest/source/drivers/base/core.c#L4724
+Some callers (e.g. sctp_sf_violation_chunk) passes NULL to
+asoc argument of sctp_sf_violation. So, it should check it
+before calling sctp_vtag_verify().
 
-What you can start with, btw, is adding the trace events / points to
-these two functions. (Currently only devres is enabled:
-https://elixir.bootlin.com/linux/latest/source/drivers/base/trace.h)
+Probably it could be exploited by a malicious SCTP packet
+to cause NULL pointer dereference.
 
-When you do this, you may actually see what's going on and how the
-swnode tries to recreate the same file.
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
---=20
-With Best Regards,
-Andy Shevchenko
+Signed-off-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
+Fixes: aa0f697e4528 ("sctp: add vtag check in sctp_sf_violation")
+---
+ net/sctp/sm_statefuns.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/sctp/sm_statefuns.c b/net/sctp/sm_statefuns.c
+index fb3da4d8f4a3..77f3cd6c516e 100644
+--- a/net/sctp/sm_statefuns.c
++++ b/net/sctp/sm_statefuns.c
+@@ -4669,7 +4669,7 @@ enum sctp_disposition sctp_sf_violation(struct net *net,
+ {
+ 	struct sctp_chunk *chunk = arg;
+ 
+-	if (!sctp_vtag_verify(chunk, asoc))
++	if (asoc && !sctp_vtag_verify(chunk, asoc))
+ 		return sctp_sf_pdiscard(net, ep, asoc, type, arg, commands);
+ 
+ 	/* Make sure that the chunk has a valid length. */
+-- 
+2.7.4
+
