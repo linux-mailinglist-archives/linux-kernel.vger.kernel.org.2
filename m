@@ -2,57 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94425442FBF
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 15:04:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FFF1442FC3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 15:05:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230419AbhKBOHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 10:07:18 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:37164 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230124AbhKBOHN (ORCPT
+        id S231284AbhKBOIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 10:08:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231138AbhKBOIM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 10:07:13 -0400
-X-UUID: 6670d21069c341a5b8172b5157fe5cef-20211102
-X-UUID: 6670d21069c341a5b8172b5157fe5cef-20211102
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw01.mediatek.com
-        (envelope-from <mark-pk.tsai@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 672707749; Tue, 02 Nov 2021 22:04:34 +0800
-Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 2 Nov 2021 22:04:33 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs10n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.792.3 via Frontend Transport; Tue, 2 Nov 2021 22:04:33 +0800
-From:   Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-To:     <linux@armlinux.org.uk>
-CC:     <bjorn.andersson@linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-remoteproc@vger.kernel.org>, <mark-pk.tsai@mediatek.com>,
-        <mathieu.poirier@linaro.org>, <matthias.bgg@gmail.com>,
-        <ohad@wizery.com>, <yj.chiang@mediatek.com>
-Subject: Re: [PATCH] remoteproc: use %d format string to print return error code
-Date:   Tue, 2 Nov 2021 22:04:33 +0800
-Message-ID: <20211102140433.28170-1-mark-pk.tsai@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <YYErBcJlkTi0sJ/N@shell.armlinux.org.uk>
-References: <YYErBcJlkTi0sJ/N@shell.armlinux.org.uk>
+        Tue, 2 Nov 2021 10:08:12 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6AF3C061203
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 07:05:34 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id o4-20020a1c7504000000b0032cab7473caso1640752wmc.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 07:05:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=+IYXwWS8RTx2nLZKN578GTrttVorrBmCdGgRqqEdI34=;
+        b=aDm24t85uRClN+XO1YGgcwD+8BAIZ3ICQ1+kxTfb0AC9ny1rPjXf71kfbXm7rFkw6M
+         mlrAqcVe7aGX96UQRA9prWqVGWvRj+ZlyMGHS3sUa7X7015IG1Ky5fTWFVeB4fT2G4sO
+         7eWEBF8QngyWKZpJzx4IXMGUX5JYeVk11faNoo34GcgiI2cQZqpLHWNIuziPzaygVoVE
+         n4HaIva8ek3caSnNkpkYw6UPm5yMoq4FbYj8qAAN3fR3yhEVAJrOBHan4jMO9qpYBAS9
+         9aXwFslzFJ6JLtT2+BGIOxNFDuICkdlFLtjweURXASUHpyifZ1eK1FRRXq5N59mO1pk+
+         2nTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=+IYXwWS8RTx2nLZKN578GTrttVorrBmCdGgRqqEdI34=;
+        b=YhRfsqbRB9c4ZcE9D53zbUDp4ebyqC8j0GunTNWcLZLI0xac5YTMsHXyjfcP47vzp7
+         jiuvIIWdbbiOLJoGHOPMoXikxsZP4mC00h6pebR1/ziL1fuhv6B8WzHrYK6aeLULLi1G
+         qqxprEiFc3c0HGI3Y5ecGKNjJqMv1WrauYKT2yH2KXtJOFOc5lu/DK3/ivyiqXg+X+Mc
+         ggzGDtQG8Baq3cnrrIbuGJcHoMU7OVT0wZ6YOEbhzyW9tAiQlHC29hM7qKIBVVgokxFV
+         bguUqdqHuNknq2aahV/DvLjj3CJjqhkIKBTmWHm7EFL6GAMTNR1oqT5jaO801Eyyp7Az
+         FmbQ==
+X-Gm-Message-State: AOAM532jBrIs88TwiIF7UvbE2lZkKkZ/Q9GxmfW8DNjgCJ1jraillK6D
+        Kit4iQe9JbhpHDaSTx8gWcYI3w==
+X-Google-Smtp-Source: ABdhPJzxg0SHqhkEzFQ1UmuimY5KEsGE4OUHBHVSwXpPdDc44Og9JozAJKDqnW7UGZNY5rLd2HpfGQ==
+X-Received: by 2002:a1c:a904:: with SMTP id s4mr7080812wme.163.1635861933267;
+        Tue, 02 Nov 2021 07:05:33 -0700 (PDT)
+Received: from [192.168.0.30] (cpc78119-cwma10-2-0-cust590.7-3.cable.virginm.net. [81.96.50.79])
+        by smtp.gmail.com with ESMTPSA id z12sm12443417wrv.78.2021.11.02.07.05.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Nov 2021 07:05:32 -0700 (PDT)
+Message-ID: <df3c0fd1-5ec1-5cf7-f94c-1b2db2882333@linaro.org>
+Date:   Tue, 2 Nov 2021 14:05:31 +0000
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v1 00/15] create power sequencing subsystem
+Content-Language: en-US
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stanimir Varbanov <svarbanov@mm-sol.com>
+Cc:     linux-arm-msm@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org
+References: <2h9GS3myO9uyX8sDYwU_43cDbBCW_SE1h5qolKQLKT9ZVvz0-K6z6cix50eVsgMsYLtgTLsW37DxF0lf78vxCA==@protonmail.internalid>
+ <20211006035407.1147909-1-dmitry.baryshkov@linaro.org>
+From:   Caleb Connolly <caleb.connolly@linaro.org>
+In-Reply-To: <20211006035407.1147909-1-dmitry.baryshkov@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Tue, Nov 02, 2021 at 08:08:05PM +0800, Mark-PK Tsai wrote:
-> > Use %d format string to print return error code which
-> > make the error message easier to understand.
-> 
-> Even better, if you use %pe after converting "ret" to a pointer via
-> ERR_PTR(ret), when the kernel is appropriately configured, the kernel
-> will give a textual version of the error code, which is even easier!
+Hi Dmitry,
 
-Thanks for the suggestion!
-I will use it in v2.
+On 06/10/2021 04:53, Dmitry Baryshkov wrote:
+> This is a proposed power sequencer subsystem. This is a
+> generification of the MMC pwrseq code. The subsystem tries to abstract
+> the idea of complex power-up/power-down/reset of the devices.
+> 
+> The primary set of devices that promted me to create this patchset is
+> the Qualcomm BT+WiFi family of chips. They reside on serial+platform
+> or serial + SDIO interfaces (older generations) or on serial+PCIe (newer
+> generations).  They require a set of external voltage regulators to be
+> powered on and (some of them) have separate WiFi and Bluetooth enable
+> GPIOs.
+> 
+> The major drawback for now is the lack of proper PCIe integration
+> At this moment support for PCIe is hacked up to be able to test the
+> PCIe part of qca6390. Proper PCIe support would require automatically
+> powering up the devices before the scan basing on the proper device
+> structure in the device tree. This two last patches are noted as WIP and
+> are included into the patchset for the purpose of testing WiFi on newer
+> chips (like qca6390/qca6391).
+> 
+> Changes since RFC v2:
+>   - Add documentation for the pwrseq code. Document data structures,
+>     macros and exported functions.
+>   - Export of_pwrseq_xlate_onecell()
+>   - Add separate pwrseq_set_drvdata() function to follow the typical API
+>     design
+>   - Remove pwrseq_get_optional()/devm_pwrseq_get_optional()
+>   - Moved code to handle old mmc-pwrseq binding to the MMC patch
+>   - Split of_pwrseq_xlate_onecell() support to a separate patch
+> 
+> Changes since RFC v1:
+>   - Provider pwrseq fallback support
+>   - Implement fallback support in pwrseq_qca.
+>   - Mmove susclk handling to pwrseq_qca.
+>   - Significantly simplify hci_qca.c changes, by dropping all legacy
+>     code. Now hci_qca uses only pwrseq calls to power up/down bluetooth
+>     parts of the chip.
+> 
+> 
+> 
+Tested-by: Caleb Connolly <caleb.connolly@linaro.org>
+[Tested on the OnePlus 6]
+
+-- 
+Kind Regards,
+Caleb (they/them)
