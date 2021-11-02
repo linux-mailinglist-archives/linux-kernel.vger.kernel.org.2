@@ -2,223 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BBBC442949
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 09:22:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49BC1442946
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 09:22:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231133AbhKBIZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 04:25:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229920AbhKBIY4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S231126AbhKBIZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 04:25:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35520 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229924AbhKBIY4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 2 Nov 2021 04:24:56 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CF7CC061764;
-        Tue,  2 Nov 2021 01:22:16 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id p16so41399169lfa.2;
-        Tue, 02 Nov 2021 01:22:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ne7EPu6jTpGVLHdvimehHVoEG1G7OTA5OiY+BOnLe4A=;
-        b=PjUNJMcSRJ62akTQe/diEaqWuErpiYU8V09h41nU2mp9HKydnky/bk6OV2dQuyewS2
-         S9RuIpT48CK73n4qcfBiHUYtyhouUpWA0+J54GBgSj7yynd2vT4DW8fv4ahrzlsrT0E6
-         /lijxNB4x8IwycViFV+jzEaUZm/3pQxtQJf916W/qvzbddRwXkIOIm4OiMVLn/WIZ/DY
-         N5odBUKp0BxW4l3NBxeuLswtCe3PZ5pflo9kkmST1Cs2eJToB0wimMkmOPSuyQTpfxUg
-         oA9KmxcFF04RD5lgmyzKxuHhhF7bgKu7R5M+jFKRFH6KtY1r31FAMN4zM91jGi33Xl0z
-         BFsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ne7EPu6jTpGVLHdvimehHVoEG1G7OTA5OiY+BOnLe4A=;
-        b=1WFLEUF16Ai7gOsHSqGBy/gsqn3ghIsMr0ZOnaIyQMzg9FxHIhe/GSOd1pCRzhmSgJ
-         A+23GYFvan8gBDS5jMGfD9IUugvbtyd55BGw9cPC8s6wvoNjBOgly1YZi6qYDL4KJ5qB
-         8DOgy3ExtgsPVO+0qf7PFrRYyuFh0/foVVpOcgawrWUWmkdQVoYE3wJp8VXAou7y6Fij
-         C18AzTeiiD3s66uNIyQhbxAa4Z7gpyVIf76z+ra74UwRLQAVIPB6vnpoAduyjsUrZ/YW
-         XTO06qZkABY+0IYElKEy3MU1MLwv3SfHOKf8D8y8kvDLnE0QfzFoDG4n7651WAN7rT0K
-         yuGA==
-X-Gm-Message-State: AOAM530bR1n1ELHva8LRKZdm2qD3R2nDuDI6sqUjEMMMEJfcDN/jWaCE
-        ziucLvUbU1ZJOxFRTyuIwuCxZvllLnEL/04D0A==
-X-Google-Smtp-Source: ABdhPJz2sTRMCaO5nz6DI/gO9EPlcsOXPYF/+nvlvqLAyf4DhHKZV4nnIz1ld2TtCyuBcBxPgayITk4DR6CTKXKkKxk=
-X-Received: by 2002:a05:6512:3c9e:: with SMTP id h30mr2097037lfv.93.1635841334320;
- Tue, 02 Nov 2021 01:22:14 -0700 (PDT)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E659F60F56;
+        Tue,  2 Nov 2021 08:22:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1635841342;
+        bh=OlufxP2/b5AJ7f2PZ8iRRthfSpRo/3L6cs+0T238eAo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ATCZf01PmmeXolcv8LWG1fPWIRiMrS/Egb1hTFg8vR+Na0ZI0o7cCbZ2kUwpp4yf8
+         SWEzSxCnF6y4xG0++3J8tcIP+YE0unRBIc4kcgFr0dkcO6HvqxRA2FsXUv0Sccz7jT
+         r+CSBdfkb5JX6PVOD13czdRmQSJDwtApSHL5n5Ls=
+Date:   Tue, 2 Nov 2021 09:22:20 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Zijun Hu <zijuhu@codeaurora.org>
+Cc:     marcel@holtmann.org, johan.hedberg@gmail.com,
+        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
+        c-hbandi@codeaurora.org, hemantg@codeaurora.org, mka@chromium.org,
+        rjliao@codeaurora.org, Zijun Hu <quic_zijuhu@quicinc.com>
+Subject: Re: [PATCH v1 3/3] Bluetooth: hci_qca: Add support for QTI bluetooth
+ MAPLE
+Message-ID: <YYD1PJrFw/xmEXIW@kroah.com>
+References: <1635837177-1341-1-git-send-email-zijuhu@codeaurora.org>
+ <YYDqW6ewycWP1Y7a@kroah.com>
+ <4f6aee28-4d86-116c-6c47-bfce5de6551b@codeaurora.org>
 MIME-Version: 1.0
-References: <20211028141938.3530-1-lukas.bulwahn@gmail.com>
- <20211028141938.3530-12-lukas.bulwahn@gmail.com> <CAK8P3a0Nq9hLbGiPCQTjVTiGFPR9-tdhN8Tf06Q=cWTgMK78yw@mail.gmail.com>
- <CACPK8XfiN5qziPHLU6J=bC34mcjz+ix7jjSX=xk9zsr7+vyTdw@mail.gmail.com> <CAKXUXMyrhrM2o-OEW_qTTKjfKgxt-Z6Nt69geU80AoFnM1OuMA@mail.gmail.com>
-In-Reply-To: <CAKXUXMyrhrM2o-OEW_qTTKjfKgxt-Z6Nt69geU80AoFnM1OuMA@mail.gmail.com>
-From:   Avi Fishman <avifishman70@gmail.com>
-Date:   Tue, 2 Nov 2021 10:22:03 +0200
-Message-ID: <CAKKbWA7OiU_pp33=EQoCTOeyd3Ecmm-dtTFeu1VB_Xcpt0gMvg@mail.gmail.com>
-Subject: Re: [PATCH 11/13] arm: npcm: drop selecting non-existing ARM_ERRATA_794072
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Joel Stanley <joel@jms.id.au>, Arnd Bergmann <arnd@arndb.de>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Sekhar Nori <nsekhar@ti.com>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Linus Walleij <linusw@kernel.org>,
-        Imre Kaloz <kaloz@openwrt.org>,
-        Krzysztof Halasa <khalasa@piap.pl>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        kernel-janitors <kernel-janitors@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4f6aee28-4d86-116c-6c47-bfce5de6551b@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Nov 02, 2021 at 03:53:33PM +0800, Zijun Hu wrote:
+> 
+> 
+> On 11/2/2021 3:35 PM, Greg KH wrote:
+> > On Tue, Nov 02, 2021 at 03:12:57PM +0800, Zijun Hu wrote:
+> >> From: Zijun Hu <quic_zijuhu@quicinc.com>
+> >>
+> >> Add support for MAPLE integrated within SOC, it is mounted on
+> >> a virtual tty port and powered on/off via relevant IOCTL, neither
+> >> IBS nor RAMPATCH downloading is not required.
+> >>
+> >> Signed-off-by: Zijun Hu <quic_zijuhu@quicinc.com>
+> >> ---
+> >>  drivers/bluetooth/btqca.c   | 13 ++++++++++++-
+> >>  drivers/bluetooth/btqca.h   | 13 +++++++++++++
+> >>  drivers/bluetooth/hci_qca.c | 47 ++++++++++++++++++++++++++++++++++++++++++++-
+> >>  3 files changed, 71 insertions(+), 2 deletions(-)
+> >>
+> >> diff --git a/drivers/bluetooth/btqca.c b/drivers/bluetooth/btqca.c
+> >> index be04d74037d2..b83d2ecefe5d 100644
+> >> --- a/drivers/bluetooth/btqca.c
+> >> +++ b/drivers/bluetooth/btqca.c
+> >> @@ -255,6 +255,8 @@ static void qca_tlv_check_data(struct hci_dev *hdev,
+> >>  		BT_DBG("TLV Type\t\t : 0x%x", type_len & 0x000000ff);
+> >>  		BT_DBG("Length\t\t : %d bytes", length);
+> >>  
+> >> +		if (qca_is_maple(soc_type))
+> >> +			break;
+> >>  		idx = 0;
+> >>  		data = tlv->data;
+> >>  		while (idx < length) {
+> >> @@ -552,6 +554,9 @@ int qca_uart_setup(struct hci_dev *hdev, uint8_t baudrate,
+> >>  	rom_ver = ((soc_ver & 0x00000f00) >> 0x04) | (soc_ver & 0x0000000f);
+> >>  
+> >>  	/* Download rampatch file */
+> >> +	if (qca_is_maple(soc_type))
+> >> +		goto download_nvm;
+> >> +
+> >>  	config.type = TLV_TYPE_PATCH;
+> >>  	if (qca_is_wcn399x(soc_type)) {
+> >>  		snprintf(config.fwname, sizeof(config.fwname),
+> >> @@ -580,6 +585,7 @@ int qca_uart_setup(struct hci_dev *hdev, uint8_t baudrate,
+> >>  	/* Give the controller some time to get ready to receive the NVM */
+> >>  	msleep(10);
+> >>  
+> >> +download_nvm:
+> >>  	/* Download NVM configuration */
+> >>  	config.type = TLV_TYPE_NVM;
+> >>  	if (firmware_name)
+> >> @@ -597,6 +603,9 @@ int qca_uart_setup(struct hci_dev *hdev, uint8_t baudrate,
+> >>  	else if (soc_type == QCA_QCA6390)
+> >>  		snprintf(config.fwname, sizeof(config.fwname),
+> >>  			 "qca/htnv%02x.bin", rom_ver);
+> >> +	else if (qca_is_maple(soc_type))
+> >> +		snprintf(config.fwname, sizeof(config.fwname),
+> >> +			 "qca/mpnv%02x.bin", rom_ver);
+> >>  	else if (soc_type == QCA_WCN6750)
+> >>  		snprintf(config.fwname, sizeof(config.fwname),
+> >>  			 "qca/msnv%02x.bin", rom_ver);
+> >> @@ -609,6 +618,8 @@ int qca_uart_setup(struct hci_dev *hdev, uint8_t baudrate,
+> >>  		bt_dev_err(hdev, "QCA Failed to download NVM (%d)", err);
+> >>  		return err;
+> >>  	}
+> >> +	if (qca_is_maple(soc_type))
+> >> +		msleep(MAPLE_NVM_READY_DELAY_MS);
+> >>  
+> >>  	if (soc_type >= QCA_WCN3991) {
+> >>  		err = qca_disable_soc_logging(hdev);
+> >> @@ -637,7 +648,7 @@ int qca_uart_setup(struct hci_dev *hdev, uint8_t baudrate,
+> >>  		return err;
+> >>  	}
+> >>  
+> >> -	if (soc_type == QCA_WCN3991 || soc_type == QCA_WCN6750) {
+> >> +	if (soc_type == QCA_WCN3991 || soc_type == QCA_WCN6750 || qca_is_maple(soc_type)) {
+> >>  		/* get fw build info */
+> >>  		err = qca_read_fw_build_info(hdev);
+> >>  		if (err < 0)
+> >> diff --git a/drivers/bluetooth/btqca.h b/drivers/bluetooth/btqca.h
+> >> index 30afa7703afd..0a5a7d1daa71 100644
+> >> --- a/drivers/bluetooth/btqca.h
+> >> +++ b/drivers/bluetooth/btqca.h
+> >> @@ -46,6 +46,8 @@
+> >>  
+> >>  #define QCA_FW_BUILD_VER_LEN		255
+> >>  
+> >> +#define MAPLE_NVM_READY_DELAY_MS        1500
+> >> +#define MAPLE_POWER_CONTROL_DELAY_MS    50
+> >>  
+> >>  enum qca_baudrate {
+> >>  	QCA_BAUDRATE_115200 	= 0,
+> >> @@ -145,6 +147,7 @@ enum qca_btsoc_type {
+> >>  	QCA_WCN3991,
+> >>  	QCA_QCA6390,
+> >>  	QCA_WCN6750,
+> >> +	QCA_MAPLE,
+> >>  };
+> >>  
+> >>  #if IS_ENABLED(CONFIG_BT_QCA)
+> >> @@ -167,6 +170,11 @@ static inline bool qca_is_wcn6750(enum qca_btsoc_type soc_type)
+> >>  	return soc_type == QCA_WCN6750;
+> >>  }
+> >>  
+> >> +static inline bool qca_is_maple(enum qca_btsoc_type soc_type)
+> >> +{
+> >> +	return soc_type == QCA_MAPLE;
+> >> +}
+> >> +
+> >>  #else
+> >>  
+> >>  static inline int qca_set_bdaddr_rome(struct hci_dev *hdev, const bdaddr_t *bdaddr)
+> >> @@ -204,6 +212,11 @@ static inline bool qca_is_wcn6750(enum qca_btsoc_type soc_type)
+> >>  	return false;
+> >>  }
+> >>  
+> >> +static inline bool qca_is_maple(enum qca_btsoc_type soc_type)
+> >> +{
+> >> +	return false;
+> >> +}
+> >> +
+> >>  static inline int qca_send_pre_shutdown_cmd(struct hci_dev *hdev)
+> >>  {
+> >>  	return -EOPNOTSUPP;
+> >> diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
+> >> index dd768a8ed7cb..f1d9670719c4 100644
+> >> --- a/drivers/bluetooth/hci_qca.c
+> >> +++ b/drivers/bluetooth/hci_qca.c
+> >> @@ -70,6 +70,10 @@
+> >>  #define QCA_CRASHBYTE_PACKET_LEN	1096
+> >>  #define QCA_MEMDUMP_BYTE		0xFB
+> >>  
+> >> +#ifndef IOCTL_IPC_BOOT
+> >> +#define IOCTL_IPC_BOOT                  0xBE
+> >> +#endif
+> > 
+> > You send this command, but never use it.  Where is the driver code that
+> > uses this command?
+> > 
+> qca_maple_power_control() will use it.  this driver depends on bt_tty kernel module
+> https://source.codeaurora.org/quic/qsdk/oss/kernel/linux-ipq-5.4/tree/drivers/soc/qcom/bt_tty.c?h=NHSS.QSDK.11.5.0.5.r2
 
-At Nuvoton we implied this WA in the past, not because we encountered
-a specific problem but since the errata says so and we saw this in
-other patches like:
-https://patchwork.kernel.org/project/linux-arm-kernel/patch/1396298072-13254-2-git-send-email-nitin.garg@freescale.com/
-But we didn't upstream the arch/arm/mm/proc-v7.S
+You can not add code to the kernel that is not used by the kernel
+itself.  That driver needs to be in the tree as well, why is it not
+submitted now too?
 
-From the errata document.
-"794072 A short loop including a DMB instruction might cause a denial
-of service on
-another processor which executes a CP15 broadcast operation
-Status
-Affects:
-Fault Type:
-Fault Status: Cortex-A9 MPCore.
-Programmer Category B
-Present in: All r1, r2, r3 and r4 revisions Open
-Description
-A processor which continuously executes a short loop containing a DMB
-instruction might prevent a CP15
-operation broadcast by another processor making further progress,
-causing a denial of service.
-Configurations affected
-This erratum affects all Cortex-A9 MPCore processors with two or more
-processors.
-Conditions
-The erratum requires the following conditions:
-- Two or more processors are working in SMP mode (ACTLR.SMP=1)
-- One of the processors continuously executes a short loop containing
-at least one DMB instruction.
-- Another processor executes a CP15 maintenance operation that is
-broadcast. This requires that this
-processor has enabled the broadcasting of CP15 operations (ACTLR.FW=1)
-For the erratum to occur, the short loop containing the DMB
-instruction must meet all of the following additional
-conditions:
-- No more than 10 instructions other than the DMB are executed between each DMB
-- No non-conditional Load or Store, or conditional Load or Store which
-pass the condition code check, are
-executed between each DMB
-When all the conditions for the erratum are met, the short loop
-creates a continuous stream of DMB instructions.
-This might cause a denial of service, by preventing the processor
-executing the short loop from executing the
-received broadcast CP15 operation. As a result, the processor that
-originally executed the broadcast CP15
-operation is stalled until the execution of the loop is interrupted.
-Note that because the process issuing the CP15 broadcast operation
-cannot complete operation, it cannot enter
-any debug-mode, and cannot take any interrupt. If the processor
-executing the short loop also cannot be
-interrupted, for example if it has disabled its interrupts, or if no
-interrupts are routed to this processor, this
-erratum might cause a system livelock.
-Implications
-The erratum might create performance issues, or in the worst case it
-might cause a system livelock if the
-processor executing the DMB is in an infinite loop that cannot be interrupted.
-Workaround
-This erratum can be worked round by setting bit[4] of the undocumented
-Diagnostic Control Register to 1. This
-register is encoded as CP15 c15 0 c0 1.
-This bit can be written in Secure state only, with the following
-Read/Modify/Write code sequence:
-MRC p15,0,rt,c15,c0,1
-ORR rt,rt,#0x10
-MCR p15,0,rt,c15,c0,1
-When it is set, this bit causes the DMB instruction to be decoded and
-executed like a DSB.
-Using this software workaround is not expected to have any impact on
-the overall performance of the processor
-on a typical code base.
-Other workarounds are also available for this erratum, to either
-prevent or interrupt the continuous stream of
-DMB instructions that causes the deadlock. For example:
-- Inserting a non-conditional Load or Store instruction in the loop
-between each DMB
-- Inserting additional instructions in the loop, such as NOPs, to
-avoid the processor seeing back to back
-DMB instructions.
-- Making the processor executing the short loop take regular interrupts."
+> > And why not tabs?
+> > 
+> > And why is this patch series not properly threaded so tools can pick it
+> > up and find them?
+> > 
+> > And why the odd named ioctl that is different from other ones in this
+> > file?
+> > 
+> that IOCTL name is defined by that module.
+> https://source.codeaurora.org/quic/qsdk/oss/kernel/linux-ipq-5.4/tree/include/linux/bt.h?h=NHSS.QSDK.11.5.0.5.r2
 
-Avi
+Again, it needs to be in the tree.
 
-On Tue, Nov 2, 2021 at 9:31 AM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
->
-> On Fri, Oct 29, 2021 at 8:36 AM Joel Stanley <joel@jms.id.au> wrote:
-> >
-> > On Thu, 28 Oct 2021 at 14:57, Arnd Bergmann <arnd@arndb.de> wrote:
-> > >
-> > > On Thu, Oct 28, 2021 at 4:19 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
-> > > >
-> > > > There is no and never was a Kconfig for ARM_ERRATA_794072 in the kernel
-> > > > tree. So, there is no need to select ARM_ERRATA_794072 in
-> > > > ./arch/arm/mach-npcm/Kconfig.
-> > > >
-> > > > Simply drop selecting the non-existing ARM_ERRATA_794072.
-> > > >
-> > > > This issue was discovered with ./scripts/checkkconfigsymbols.py.
-> > > >
-> > > > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> > > > ---
-> > >
-> > > Could this be a typo? Maybe we need to enable a different errata workaround
-> > > here, or maybe that code is actually needed and has to get sent.
-> >
-> > Doing some searching, u-boot had a workaround for something called
-> > ARM_ERRATA_794072.
-> >
-> > https://github.com/u-boot/u-boot/commit/f71cbfe3ca5d2ad20159871700e8e248c8818ba8
-> >
-> > Lore has the review history for that patch:
-> >
-> > https://lore.kernel.org/all/6be32e0b5b454ed7b609317266a8e798@BLUPR03MB358.namprd03.prod.outlook.com/
-> >
-> > It looks like it's the same workaround as ARM_ERRATA_742230, which the
-> > kernel does implement.
-> >
-> > It would be good to hear from the Nuvoton people, or an Arm person.
-> >
->
-> I will happily update the patch to select ARM_ERRATA_742230 instead of
-> the dead non-existing ARM_ERRATA_794072.
->
-> In contrast to the current patch that basically only cleans up "dead
-> config" and has no effective functional change, the new patch would
-> change the behaviour. I cannot test this patch (beyond some basic
-> compile test) on the hardware; so, we certainly need someone to have
-> that hardware, knows how to test it or confirm otherwise that we
-> should select the ARM_ERRATA_742230 fix for this hardware.
->
-> The current patch should be subsumed by the new patch; the submission
-> of the new patch is deferred until that person shows up. Let's see.
->
-> Lukas
+> > And why not just use normal power management hooks for doing things like
+> > turning on and off the hardware like all other drivers?
+> > 
+> this device is special.
 
+All drivers and devices are special and unique.  Just like all of them :)
 
+What is so odd about this device that it can not work with the existing
+infrastructure that the kernel has for all of the hundreds of thousands
+of other devices it supports?
 
--- 
-Regards,
-Avi
+> it seems BT maintainer decides to drop this patch.
+
+Of course, at the very least because there is no in-kernel user, why
+would you accept such a patch if you were the maintainer?
+
+Please submit your driver first.
+
+thanks,
+
+greg k-h
