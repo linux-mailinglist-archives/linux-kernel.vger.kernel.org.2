@@ -2,253 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7719844276F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 08:05:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65C6E442778
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 08:06:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229966AbhKBHIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 03:08:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53114 "EHLO
+        id S230281AbhKBHIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 03:08:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbhKBHIP (ORCPT
+        with ESMTP id S230508AbhKBHIr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 03:08:15 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3228C061714
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 00:05:40 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id w1so18503968edd.10
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 00:05:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=VaCMksvFtE0EnGB6kRonNUJMQ4iRy0D6ljvvHKCGuqI=;
-        b=X7DdlnrzAn8FatDLSsVp26XJ38mRH44c/M7WFMWR1qUrHiN0BbNNeTWkaRTiyZ9fJy
-         AVSmUYSfAgoaQ2N1lU3/HAnrLuq4oYiERRKtjT88DvRHFzWSFDZsKcTGAHPzohfhEG+N
-         2PMhaH85PINScZElkuqrps11y8GNj4OaWQOnnTFNo8lzwGwbphpC1nbMwlMP9Aj2tXBt
-         wuAZ7QsBp9WVtNHZ3ae5QAcwsod2qT8QTcjWkDDFELQCJgAuy3MPOFH3Kh7XQ4jPks7S
-         Ct/i/XRHaHldRnp66RXBwGkQjrA6rtRSqfnKAUVmos5pD0fWZEcvYwCx+/48W2G7JIT4
-         QvRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=VaCMksvFtE0EnGB6kRonNUJMQ4iRy0D6ljvvHKCGuqI=;
-        b=UmAISwXUEdRDCAG3btTgyy8Xz9J8C2TBYltSHj3pu/kEqgfG+IG+bg4wq2myZgdwqS
-         chsox6QENoXnVbrD/TI10c0oZX2MwCmYRaYXICEfzWTkW8mIoksCu6Dh5jcirqtd77Fl
-         SY2pTIv9taefz4OuFVCguRWWCmjaI6MVIxSX1DTvKgvwpM0NK6Rd6/NsvqPE8J8CG6i9
-         5+FTRyfj90v2taTZVIGdIJPefRmpSz2o9kfE6m8dESpzKk7FKE7WmlXWFV4YK+GYAz1Q
-         rem+tSXHhQyTgsG4olk9nmVerA6eO3JcH5xeb44b9pMffLSxCL8ViMsgVONQH5cu8XNp
-         Gxog==
-X-Gm-Message-State: AOAM533vzYX3cY/jP0O7pftcN3gtbzrKRm5q+z/KisgtSToKvJ2HUI5Z
-        x2PtE3f2OLaLbA/M2YW4RdaeX+vHC64RzMPK9i/sLDf7/VPxWg==
-X-Google-Smtp-Source: ABdhPJw3Bw71ZiokbNdrYiCQKOk+NYKR+Z0DrbbUjUfv9vJ0NS9HAaplAziMvsin1JKn3PgFRR5B2VqRvpnUTmFnTUU=
-X-Received: by 2002:a17:907:7601:: with SMTP id jx1mr42838785ejc.69.1635836739258;
- Tue, 02 Nov 2021 00:05:39 -0700 (PDT)
+        Tue, 2 Nov 2021 03:08:47 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3ADAC061764
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 00:06:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=iSMKRB1ypj4SY7bifdaR84NOhT38ADMlZ3HEJkbTNbE=; b=M9SAJkXgnmnpT24mLBYSbsvtyy
+        AmLXr7WkmOZO1YP+7nBAUKFqJpfL1L4075C3FSNOdXbY+6HmCIRbHYDqV/e7DspfeVwUtW7VobI1t
+        Bv2uCewjW8M0DKCdQU2ubIv6IItT83fF6hAhXOUgCbxaybxiXfQoM/FM0ZqdaPm592hBtVaocQxf2
+        BEcge4KYu0gA3VMhkfdP0tQnSf0VijX7WQs/LwXihTx95QfopVWHWnEANjFN+Ftk0Q1uyhEQTII4T
+        OvrffEwsT+UNTgsrzWPRT/EzxtmG+nyIybLisnvg+7jE41njR3HxfHrb1zXSkISyi8eDVaTlL1QPd
+        Mo6u4AiQ==;
+Received: from 213-225-15-89.nat.highway.a1.net ([213.225.15.89] helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mhnry-000hyd-I7; Tue, 02 Nov 2021 07:06:07 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>, intel-gfx@lists.freedesktop.org,
+        intel-gvt-dev@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: refactor the i915 GVT support and move to the modern mdev API v2
+Date:   Tue,  2 Nov 2021 08:05:32 +0100
+Message-Id: <20211102070601.155501-1-hch@lst.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20211101082511.254155853@linuxfoundation.org>
-In-Reply-To: <20211101082511.254155853@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 2 Nov 2021 12:35:27 +0530
-Message-ID: <CA+G9fYuhSXxDvtfK3rCVdSZ2S8ACe4fuqb0nrX0+_eKnO=sqgA@mail.gmail.com>
-Subject: Re: [PATCH 5.10 00/77] 5.10.77-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
-        f.fainelli@gmail.com, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, linux@roeck-us.net
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 1 Nov 2021 at 14:55, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.10.77 release.
-> There are 77 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 03 Nov 2021 08:24:20 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.10.77-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.10.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Hi all,
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+the GVT code in the i915 is a bit of a mess right now due to strange
+abstractions and lots of indirect calls.  This series refactors various
+bits to clean that up.  The main user visible change is that almost all
+of the GVT code moves out of the main i915 driver and into the kvmgt
+module.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Tested on my Thinkpad with a Kaby Lake CPU and integrated graphics.
 
-NOTE:
-With new gcc-11 toolchain arm builds failed.
-The fix patch is under review [1].
-Due to this reason not considering it as a kernel regression.
-* arm, build
-    - gcc-11-defconfig
+Git tree:
 
-[1]
-ARM: drop cc-option fallbacks for architecture selection
-https://lore.kernel.org/linux-arm-kernel/20211018140735.3714254-1-arnd@kern=
-el.org/
+    git://git.infradead.org/users/hch/misc.git i915-gvt
 
-## Build
-* kernel: 5.10.77-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-5.10.y
-* git commit: 18363fa5f60b61ec6d80beddfbf38ef05f99f68b
-* git describe: v5.10.76-78-g18363fa5f60b
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
-.76-78-g18363fa5f60b
+Gitweb:
 
-## No regressions (compared to v5.10.76)
+    http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/i915-gvt
 
-## No fixes (compared to v5.10.76)
+Changes since v1:
+ - rebased on Linux 5.15
+ - allow the kvmgvt module to be loaded at any time and thus solve
+   the deadlock when both i915 amd kvmgvt are modular
+ - include the conversion to the modern mdev API
 
-## Test result summary
-total: 83370, pass: 70690, fail: 558, skip: 11347, xfail: 775
+Note that I do expect to rebased this again against 5.16-rc1 once
+released, but I'd like to get this out for review ASAP.
 
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 422 total, 370 passed, 52 failed
-* arm64: 40 total, 40 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 39 total, 39 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 37 total, 37 passed, 0 failed
-* parisc: 12 total, 12 passed, 0 failed
-* powerpc: 36 total, 36 passed, 0 failed
-* riscv: 24 total, 24 passed, 0 failed
-* s390: 18 total, 18 passed, 0 failed
-* sh: 24 total, 24 passed, 0 failed
-* sparc: 12 total, 12 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 40 total, 40 passed, 0 failed
-
-## Test suites summary
-* fwts
-* kselftest-android
-* kselftest-arm64
-* kselftest-arm64/arm64.btitest.bti_c_func
-* kselftest-arm64/arm64.btitest.bti_j_func
-* kselftest-arm64/arm64.btitest.bti_jc_func
-* kselftest-arm64/arm64.btitest.bti_none_func
-* kselftest-arm64/arm64.btitest.nohint_func
-* kselftest-arm64/arm64.btitest.paciasp_func
-* kselftest-arm64/arm64.nobtitest.bti_c_func
-* kselftest-arm64/arm64.nobtitest.bti_j_func
-* kselftest-arm64/arm64.nobtitest.bti_jc_func
-* kselftest-arm64/arm64.nobtitest.bti_none_func
-* kselftest-arm64/arm64.nobtitest.nohint_func
-* kselftest-arm64/arm64.nobtitest.paciasp_func
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libgpiod
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+Diffstat:
+ b/drivers/gpu/drm/i915/Kconfig          |   33 
+ b/drivers/gpu/drm/i915/Makefile         |   31 
+ b/drivers/gpu/drm/i915/gvt/cfg_space.c  |   89 --
+ b/drivers/gpu/drm/i915/gvt/cmd_parser.c |    4 
+ b/drivers/gpu/drm/i915/gvt/dmabuf.c     |   36 -
+ b/drivers/gpu/drm/i915/gvt/execlist.c   |   12 
+ b/drivers/gpu/drm/i915/gvt/gtt.c        |   55 +
+ b/drivers/gpu/drm/i915/gvt/gvt.h        |  125 ++-
+ b/drivers/gpu/drm/i915/gvt/interrupt.c  |   38 +
+ b/drivers/gpu/drm/i915/gvt/kvmgt.c      | 1099 +++++++++++++++-----------------
+ b/drivers/gpu/drm/i915/gvt/mmio.c       |    4 
+ b/drivers/gpu/drm/i915/gvt/opregion.c   |  148 ----
+ b/drivers/gpu/drm/i915/gvt/page_track.c |    8 
+ b/drivers/gpu/drm/i915/gvt/scheduler.c  |   37 -
+ b/drivers/gpu/drm/i915/gvt/trace.h      |    2 
+ b/drivers/gpu/drm/i915/gvt/vgpu.c       |   22 
+ b/drivers/gpu/drm/i915/i915_drv.c       |    7 
+ b/drivers/gpu/drm/i915/i915_drv.h       |    1 
+ b/drivers/gpu/drm/i915/i915_trace.h     |    1 
+ b/drivers/gpu/drm/i915/intel_gvt.c      |  162 +++-
+ b/drivers/gpu/drm/i915/intel_gvt.h      |   17 
+ drivers/gpu/drm/i915/gvt/Makefile       |    9 
+ drivers/gpu/drm/i915/gvt/gvt.c          |  340 ---------
+ drivers/gpu/drm/i915/gvt/hypercall.h    |   82 --
+ drivers/gpu/drm/i915/gvt/mpt.h          |  400 -----------
+ 25 files changed, 929 insertions(+), 1833 deletions(-)
